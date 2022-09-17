@@ -19,14 +19,14 @@
 
 library(proxistat)
 
-library(frsdata)
-data(package='frsdata')
+library(EJAMfrsdata)
+data(package='EJAMfrsdata')
 # frs is the table with newer data but less useful formatting so far. and many more sites.
 # frs_naics_2016 is older, so fewer sites, but in long format, ie has multiple rows for a site (registry id) if it has multiple programs/program ids
 
-# > names(frsdata::frs)
+# > names(EJAMfrsdata::frs)
 # [1] "REGISTRY_ID"    "PRIMARY_NAME"   "SITE_TYPE_NAME" "PGM_SYS_ACRNMS" "INTEREST_TYPES" "NAICS_CODES"    "SIC_CODES"      "LAT"            "LONG"          
-# > names(frsdata::frs_naics_2016)
+# > names(EJAMfrsdata::frs_naics_2016)
 # [1] "PROGRAM"     "PROGRAM_ID"  "REGISTRY_ID" "NAICS"       "LAT"         "LONG"       
 #
 # > dim(frs) # 
@@ -57,8 +57,8 @@ count_near_eachother <- function(pts, miles_lte, returnfullmatrix=FALSE, return_
 }
 
 samplefrslatlon <- function(n=10) {
-  these <- sample(1:NROW(frsdata::frs), n, replace = FALSE)
-  sites <- frsdata::frs[these, c('LAT', 'LONG')]
+  these <- sample(1:NROW(EJAMfrsdata::frs), n, replace = FALSE)
+  sites <- EJAMfrsdata::frs[these, c('LAT', 'LONG')]
   names(sites) <- gsub('LAT', 'lat', names(sites))
   names(sites) <- gsub('LONG', 'lon', names(sites))
   return(sites)  

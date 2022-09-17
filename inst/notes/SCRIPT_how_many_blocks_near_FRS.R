@@ -13,7 +13,7 @@ if(1 == 0) {
 ########################################################## #
 
 # This is the larger FRS dataset of 3.1 million, not the 1.5 mill actives in ECHO. 
-load('C:/Program Files/R/mypackages/EJAM-FRSdata/data/frs.rdata')
+load('C:/Program Files/R/mypackages/EJAM-EJAMfrsdata/data/frs.rdata')
 # dim(frs)  # [1] 3,144,206       9
 # > names(frs)
 # [1] "REGISTRY_ID"    "PRIMARY_NAME"   "SITE_TYPE_NAME" "PGM_SYS_ACRNMS" "INTEREST_TYPES"

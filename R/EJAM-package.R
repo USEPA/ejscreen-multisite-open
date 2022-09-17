@@ -59,13 +59,13 @@
 #' 
 #'    **[naics2latlon()](naics_selected)** returns `sitepoints` data.table (note here, siteid is just 1:n)
 #'  
-#'      Required **frsdata::frs_naics_2016.rdata** **to be updated** 
+#'      Required **EJAMfrsdata::frs_naics_2016.rdata** **to be updated** 
 #'      Need to update FRS data used here regularly, ideally frequently.
 #'      The 2016 version was facdata.rdata renamed  frs_naics_2016.rdata 
 #'      with columns PROGRAM, PROGRAM_ID, REGISTRY_ID, NAICS, LAT, LONG
 #'      data.table needed to get lat lon by naics
 #'      Initially from the 2016 version, one row per naics per registry id
-#'    * frsdata::frs* is not really needed for EJAM... A data.table with lat/lon location and other information
+#'    * EJAMfrsdata::frs* is not really needed for EJAM... A data.table with lat/lon location and other information
 #'      (The 2021 Facility Registry System version was 98 MB as .rdata, >1 million rows, EPA-regulated facilities)
 #'       
 #'  **2. BY FACILITY ID:**  
@@ -75,7 +75,7 @@
 #' 
 #'    **[frsid2latlon()](frsids)** returns `sitepoints` data.table
 #'  
-#'         Requires **[frsdata::frsid2latlon].rdata** data.table with cols frsid, lat, lon 
+#'         Requires **[EJAMfrsdata::frsid2latlon].rdata** data.table with cols frsid, lat, lon 
 #' 
 #'  **3- BY LAT/LON POINT: **
 #'         Interface so user can upload latitude longitude siteid (and optionally others like sitename),
