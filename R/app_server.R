@@ -7,6 +7,11 @@
 app_server <- function(input, output, session) {
   # Your application server logic
   
+  #   how to avoid or still have a global.R file in the golem approach, 
+  # https://github.com/ThinkR-open/golem/issues/6
+
+    
+  
   # this will refer to modules but for now it has the entire server code
   
   # build localtree quad tree index for this session ####

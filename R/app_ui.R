@@ -304,7 +304,6 @@ golem_add_external_resources <- function() {
     "www",
     app_sys("app/www")
   )
-
   tags$head(
     favicon(),
     bundle_resources(
@@ -313,5 +312,6 @@ golem_add_external_resources <- function() {
     )
     # Add here other external resources
     # for example, you can add shinyalert::useShinyalert()
+    
   )
 }

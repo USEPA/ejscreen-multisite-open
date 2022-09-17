@@ -14,6 +14,9 @@ run_app <- function(
   uiPattern = "/",
   ...
 ) {
+  # temporary workaround, see https://github.com/ThinkR-open/golem/issues/6
+  source(system.file("global.R", package = "EJAM"))
+  
   with_golem_options(
     app = shinyApp(
       ui = app_ui,
