@@ -61,7 +61,10 @@
 #'   ## see   https://www.census.gov/naics/
 #'
 #'   # to get 2017 version into this format, see NAICS_get 
-#'   NAICS <- NAICS_get(); save(NAICS, file = 'yourpath/EJAM/data/NAICS.rdata')
+#'   NAICS <- NAICS_get()
+#'   # specify metadata here on vintage of data, etc.
+#'   usethis::use_data(NAICS)
+#'   # save(NAICS, file = 'yourpath/EJAM/data/NAICS.rda')
 #'   }
 #' @seealso  \link{NAICS_find}  \link{NAICS_categories}   \link{NAICS_get} 
 NULL

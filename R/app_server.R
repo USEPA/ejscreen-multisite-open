@@ -9,16 +9,17 @@ app_server <- function(input, output, session) {
   
   #   how to avoid or still have a global.R file in the golem approach, 
   # https://github.com/ThinkR-open/golem/issues/6
-
-    
+  
+  
   
   # this will refer to modules but for now it has the entire server code
   
-  # build localtree quad tree index for this session ####
+  # build localtree quad tree index for EVERY session?? ####
   ## *** DOES localtree HAVE TO BE RECREATED EACH TIME dataLocationListProcessed REACTIVE UPDATES??
   # SEEMS LIKE THAT WOULD BE EVERY TIME radius is updated, 
   # but this is slow and only needs to happen once per session, right?
-  localtree <- SearchTrees::createTree(blockdata::quaddata, treeType = "quad", dataType = "point")
+  cat('\n BUILDING INDEX TO ALL BLOCKS IN USA - TAKES A FEW SECONDS...\n\n')
+  localtree <- SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
   
   # warnings and text outputs re selected Facilities, Industry, or Locations ##########################################
   numUniverseSource <- function() {
@@ -124,16 +125,16 @@ app_server <- function(input, output, session) {
     return(maxcutoff_default)
   })
   
-  setUnique <- reactive({
-    if (input$uniqueOutput=="no"){
-      return(FALSE)
-    }
-    else {
-      return(TRUE)
-    }
-  })
+  # setUnique <- reactive({  # OBSOLETE 
+  #   if (input$uniqueOutput=="no"){
+  #     return(FALSE)
+  #   }
+  #   else {
+  #     return(TRUE)
+  #   }
+  # })
   
-  #avoidorphans
+  #avoidorphans  # THIS WOULD ALLOW ONE TO GET SOME RESULTS EVEN IF CIRCLE IS SO SMALL NO BLOCK HAS A CENTROID IN IT. 
   # Expand distance for facilities with no nearby block centroid ####
   doExpandradius <- reactive({
     if (input$expandRadius=="no"){
@@ -143,7 +144,7 @@ app_server <- function(input, output, session) {
       return(TRUE)
     }
   })
-  # _______________________________ ####
+  # ______________Lat Long_________________ ####
   ####################################################################################################################### #
   # *** LAT LON: dataLocationList DEFINES BUFFERS** ######
   # imported location data
@@ -176,27 +177,31 @@ app_server <- function(input, output, session) {
     get_unique = setUnique()     # reactive, TRUE = stats are for dissolved single buffer to avoid doublecounting. FALSE = we want to count each person once for each site they are near.
     avoidorphans = doExpandradius() # Expand distance searched, when a facility has no census block centroid within selected buffer distance
     
-    # note this does require that blockquadtree be available as data
+    # note this does require that EJAMblockdata be loaded
     # getblocksnearby  ####
-    system.time({
+    
+    elapsed <- system.time({
       sites2blocks <- EJAM::getblocksnearby(
         sitepoints =  sitepoints,
         cutoff = cutoff, # radius
         maxcutoff = maxcutoff,
-        # uniqueonly = uniqueonly,
         avoidorphans = avoidorphans,
-        quadtree = localtree
+        quadtree = localtree          # this is very large... do we need to pass it to the function, or can it be just in global?
       )
     }) # end of timed function
-    system.time({
+    print('Found nearby blocks'); print(elapsed)
+    
+    elapsed <- system.time({
       out <- doaggregate(sites2blocks = sites2blocks)
-    })
+    }) # end of timed function
+    print('Summarized indicators in each buffer and overall'); print(elapsed)
+    
     return(out)
   })
   # End of functions used for the dataLocList option
   
   
-  # _______________________________ ####
+  # ______________Facility ID_________________ ####
   ####################################################################################################################### #
   # *** FACILITY ID: dataFacList DEFINES BUFFERS** #######
   # imported facility list  ...  uploaded_FRS_IDs
@@ -225,7 +230,6 @@ app_server <- function(input, output, session) {
     kimsunique$ID <- c(seq.int(nrow(kimsunique)))
     kimsunique <-as.data.table(unique(kimsunique[,.(ID,LAT,LONG)]))
     
-    
     cutoff = getCutoff() # radius (units?)
     maxcutoff = getMaxcutoff()  # reactive, max distance to search
     get_unique = setUnique()     # reactive, TRUE = stats are for dissolved single buffer to avoid doublecounting. FALSE = we want to count each person once for each site they are near.
@@ -235,7 +239,6 @@ app_server <- function(input, output, session) {
       sitepoints =  kimsunique, ##
       cutoff = cutoff, # radius
       maxcutoff = maxcutoff,
-      # uniqueonly = uniqueonly,  # get_unique
       avoidorphans = avoidorphans,
       quadtree = localtree
     ))
@@ -246,7 +249,7 @@ app_server <- function(input, output, session) {
   # End of functions used for the dataFacList option #######3
   ####################################################################################################################### #
   
-  # _______________________________ ####
+  # ______________NAICS_________________ ####
   
   ####################################################################################################################### #
   # *** NAICS: SECTOR(S) DEFINE BUFFERS**  #######
@@ -356,7 +359,6 @@ app_server <- function(input, output, session) {
             sitepoints =  sitepoints,
             cutoff = cutoff, # radius
             maxcutoff = maxcutoff,
-            # uniqueonly = uniqueonly,
             avoidorphans = avoidorphans,
             quadtree = localtree
           )
@@ -389,7 +391,7 @@ app_server <- function(input, output, session) {
       length_string=nchar(mystring)
       userin=paste(mystring, userin,sep = "\n")
       userin=paste(strdesc, userin, " ")
-      cat(userin,  file=file,append=T)
+      cat(userin,  file=file, append=T)   # THIS USED TO SIMPLY APPEND THIS METADATA TO THE TABULAR OUTPUTS
     }
     #if(!is.null(mystring)) {
     
@@ -402,89 +404,106 @@ app_server <- function(input, output, session) {
     return(userin)
   }
   
+  ############################################################################################## #
+  
   # Download the Results #######
   
   output$downloadData1 <- downloadHandler(
     filename = function() {
-      paste0("ej-", Sys.Date(), "-",Sys.time(), ".csv",sep='')
+      fname <- paste0("EJAM-OUT-", Sys.Date(), "-",Sys.time(), ".csv",sep='')
+      fname
     },
     contentType = 'text/csv',
     content = function(file) {
-      cat('\nTRYING TO DOWNLOAD downloadData1 as ', paste0("ej-", Sys.Date(), "-",Sys.time(), ".csv",sep=''), '\n\n')
-      print(str(datasetResults()))
+      cat('\nTRYING TO DOWNLOAD ', fname, '\n\n')
+      # print(str(datasetResults())) # was for debugging
       
-      if (input$uniqueOutput == 'no') {
-        write.csv(datasetResults()$results_bysite, file, row.names = FALSE) # check this - why does it write here and again below??
-      } 
-      if (input$uniqueOutput == 'yes') {
-        write.csv(datasetResults()$results_overall, file, row.names = FALSE)
-      } 
-      if (input$uniqueOutput == 'both') {
+
+      # OUTPUT RESULTS TABLE HERE - ONE ROW IS FOR OVERALL UNIQUE RESIDENTS OR BLOCKS, THEN 1 ROW PER SITE:
+      
+      write.csv(rbind(datasetResults()$results_overall, datasetResults()$results_bysite, fill=TRUE), file, row.names = FALSE)
+   
+      # OBSOLETE
+      if (1 == 'obsolete code- it was meant to output metadata appended to the tabular results but we want a clean table and any metadata separately if at all') {
+        #obsolete code 
+        # if (input$uniqueOutput == 'no') {
+        #   write.csv(datasetResults()$results_bysite, file, row.names = FALSE) # it used to separately output either 1 row per site, or just the overall result
+        # } 
+        # if (input$uniqueOutput == 'yes') {
+        #   write.csv(datasetResults()$results_overall, file, row.names = FALSE)
+        # } 
+        # if (input$uniqueOutput == 'both') {
         write.csv(rbind(datasetResults()$results_overall, datasetResults()$results_bysite, fill=TRUE), file, row.names = FALSE)
-      }
-      
-      # write.csv(datasetResults()[ , 'results_bysite'], file)
-      #must go back to version control and add this back in   ????????????
-      if (1 == 'have not fixed this code yet') {
+        # }
         
-        userin=""
-        
-        selectNaics_in_Datasystem1=paste(input$selectNaics_in_Datasystem1,collapse=", ")
-        selectNaics_and_Datasystem2=paste(input$selectNaics_and_Datasystem2,collapse=", ")
-        industryList=paste(input$selectIndustry1_byNAICS,collapse=", ")
-        industryList=paste(industryList,input$selectIndustry2_by_selectInput,collapse=", ")
+        userin = ""
+        #
+        selectNaics_in_Datasystem1  = paste(input$selectNaics_in_Datasystem1,  collapse = ", ")
+        selectNaics_and_Datasystem2 = paste(input$selectNaics_and_Datasystem2, collapse = ", ")
+        industryList = paste(input$selectIndustry1_byNAICS, collapse = ", ")
+        industryList = paste(industryList,input$selectIndustry2_by_selectInput, collapse = ", ")
         
         #"Individual facility statistics"
+        # 
+        # definedOutput1=""
+        # definedOutput2=""
+        # # if(!is.null(input$uniqueOutput)) {
+        #   # if (nchar(input$uniqueOutput)>1){
+        #   #   if(input$uniqueOutput=="yes"){
+        #       definedOutput1="Output for aggregating population statistics"
+        #   #   }
+        #   #   else {
+        #       definedOutput2="Individual facility statistics"
+        #   #   }
+        #   # }
+        # # }
         
-        definedOutput1=""
-        definedOutput2=""
-        if(!is.null(input$uniqueOutput)) {
-          if (nchar(input$uniqueOutput)>1){
-            if(input$uniqueOutput=="yes"){
-              definedOutput1="Output for aggregating population statistics"
-            }
-            else {
-              definedOutput2="Individual facility statistics"
-            }
-          }
-        }
-        
+        # The list of uploaded/ specified Facility IDs 
         f1=""
         if(!is.null(input$file_uploaded_FRS_IDs)) {
           f1=input$file_uploaded_FRS_IDs
           f1=f1[0]
         }
         
-        f2=""
-        if(!is.null(input$file_uploaded_latlons)) {
-          f2=input$file_uploaded_latlons
-          f2=f2[0]
-        }
+        # The list of uploaded/ specified latitude longitudes is already output as part of the output table now.
+        # f2=""
+        # if(!is.null(input$file_uploaded_latlons)) {
+        #   f2=input$file_uploaded_latlons
+        #   f2=f2[0]
+        # }
         
         #addUserInput <- function(file,userin,mystring,strdesc){
-        userin=addUserInput(file,userin, definedOutput1,   "Defined output: ")
-        userin=addUserInput(file,userin, definedOutput2,   "Defined output: ")
+        # this used to report on whether the results were for unique blocks/residents or for each site including doublecounting, but it returns both now. 
+        # userin=addUserInput(file,userin, definedOutput1,   "Defined output: ")
+        # userin=addUserInput(file,userin, definedOutput2,   "Defined output: ")
+        
+        # This might not be an option at all - may just pick one approach
         userin=addUserInput(file,userin, input$expandRadius, "Expand distance for facilities with no census block centroid within selected buffer distance: ")
+        
+        # this used to output this metadata on what distance was used, but that is in the output table now?
         userin=addUserInput(file,userin, as.character(getCutoff()), "Define Buffer Distance (in miles?): ") #as.character(getCutoff())
+        
+        # This used to output metadata about what NAICS or facility IDs, etc. were specified by the user:
         userin=addUserInput(file,userin, selectNaics_and_Datasystem2, "Include facilities with records in: ")
         userin=addUserInput(file,userin, selectNaics_in_Datasystem1, "Match your NAICS code selection with: ")
         userin=addUserInput(file,userin, industryList,   "Industry/Industries: ")
         userin=addUserInput(file,userin, f1,  "Upload list of FRS IDs. Filename: ") #input$file_uploaded_FRS_IDs
-        userin=addUserInput(file,userin, f2,  "Upload list of locations with lat lon coordinates. Filename: ") #input$file2 was old name # file_uploaded_latlons
+        # used to report the name of the lat/lon uploaded file:
+        # userin=addUserInput(file,userin, f2,  "Upload list of locations with lat lon coordinates. Filename: ") #input$file2 was old name # file_uploaded_latlons
         
         cat(userin,  file=file)
         
-        # append tabular data to the file of results ?? #### 
+        # This used to append tabular data results to the file of metadata #### 
         write.table(datasetResults()$results_bysite, file, append = T, sep = ",")
         # write.table(datasetResults()[ , 'results_bysite'], file, append = T, sep=",")
+        # write.csv(datasetResults()[ , 'results_bysite'], file)
       }
-      
+     
       cat('\n\n Wrote to ', file)
-      
       #session$reload()
-      
     }
   )
+  ############################################################################################## #
   
   datasetResults <- function(){
     if (length(getWarning1() > 1) | length(getWarning2() > 1)) {

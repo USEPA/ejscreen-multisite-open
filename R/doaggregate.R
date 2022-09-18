@@ -14,7 +14,7 @@
 #' @details
 #'  \preformatted{
 #'
-#'   requires the following as data lazy loaded for example from blockdata package
+#'   requires the following as data lazy loaded for example from EJAMblockdata package
 #'    blockwts  data.table   with these columns: 
 #'       blockid , bgid, blockwt
 #'    quaddata, and blockquadtree data.table and quad tree,  for indexes of block points  
@@ -33,7 +33,7 @@
 #'   See sites2blocks_example dataset in package, as input to this function
 #' @param ... more to pass
 #' @import data.table
-#' @import blockdata
+#' @import EJAMblockdata
 #' @export
 #'
 doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculatedcols=NULL, testing=FALSE, ...) {
@@ -110,10 +110,6 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
   
   # HANDLING DOUBLE COUNTING
   # Some steps are the same for overall and site-by-site so it is more efficient to do both together if want both. 
-  # The uniqueonly parameter got removed from getblocksnearby... to be handled in doaggregate() 
-  # uniqueonly <- FALSE  meant that it returned overall unique blocks summary. 
-  # FALSE = we want to count each person once for each site they are near.
-  # TRUE = stats are for dissolved single buffer to avoid double-counting. 
   
   # SEE NOTES ON HOW TO MAKE AGGREGATE...
   
@@ -125,15 +121,15 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
   
   if (testing) {
     # FOR TESTING
-    library(data.table); library(blockdata); data("blockwts")
+    library(data.table); library(EJAMblockdata); data("blockwts")
     data('sites2blocks_example') # it is called  sites2blocks_example
     sites2blocks <- sites2blocks_example
   }
   # data.table::setkey(result, "blockid", "siteid", "distance") #  has been done by getblocksnearby  now
   
   # use blockid, not fips.   *********************  THIS IS SLOW:
-  # sites2blocks***** <- merge(blockdata::blockid2fips, sites2blocks, by='blockfips', all.x=FALSE, all.y=TRUE)
-  # sites2blocks$blockid <- blockdata::blockid2fips[sites2blocks, .(blockid), on='blockfips']
+  # sites2blocks***** <- merge(EJAMblockdata::blockid2fips, sites2blocks, by='blockfips', all.x=FALSE, all.y=TRUE)
+  # sites2blocks$blockid <- EJAMblockdata::blockid2fips[sites2blocks, .(blockid), on='blockfips']
   # sites2blocks[,blockfips := NULL]
   # data.table::setkey(sites2blocks, 'blockid', 'siteid')
   
@@ -141,7 +137,7 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
   
   ## get weights for nearby blocks ####
   # sites2blocks <- merge(sites2blocks, blockwts, by='blockid', all.x	=TRUE, all.y=FALSE) # incomparables=NA
-  sites2blocks <- blockdata::blockwts[sites2blocks, .(siteid,blockid,distance,blockwt,bgid), on='blockid']
+  sites2blocks <- EJAMblockdata::blockwts[sites2blocks, .(siteid,blockid,distance,blockwt,bgid), on='blockid']
   
   ## optional: Calc # of sites nearby each block: #### 
   # How many of these sites are near this resident? this bg? avg resident overall? 
@@ -421,7 +417,7 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
   
   
   ##################################################### #
-  # .....EJSCREENbatch code.... for comparison #### 
+  # .....EJSCREENBatch code.... for comparison #### 
   # took weighted mean of data within each buffer (shape_ID) for these indicators:
   ##################################################### #
   # 
@@ -440,7 +436,7 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
   # 
   # # ...
   # 
-  #   EJSCREENbatch code uses ecdf function here on the entire ejscreen dataset each time??, 
+  #   EJSCREENBatch code uses ecdf function here on the entire ejscreen dataset each time??, 
   #  to estimate US AND THEN STATE percentiles
   # 
   # #Rejoin, then calculate nat'l percentiles

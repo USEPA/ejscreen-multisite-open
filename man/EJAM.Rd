@@ -13,75 +13,35 @@ It summarizes conditions as the conditions for the average resident in the buffe
 A buffer or location here is defined as the area within a specified distance of a specified site.
 A site of facility in this package is defined as a single geographic point (by latitude and longitude).
 
-The functions here are somewhat generalized, but the specific datasets included here enable an
-environmental justice (EJ) proximity analysis of US EPA's EJSCREEN data, including
+The functions here will be somewhat generalized, but the specific datasets included here enable an
+environmental justice (EJ) proximity analysis of US EPA's EJScreen data, including
 environmental indicators (e.g., local traffic score, or estimated PM2.5 concentration)
 and demographic indicators (e.g., percent low-income),
-for the populations estimated to live within a specified distance (e.g., 3 miles) from
+for the populations estimated to live within a specified distance (e.g., 1 mile) from
 one or more sites, typically EPA-regulated facilities.
-This means the tools can provide the same information that an EJSCREEN standard report provides,
+This means the tools can provide the same information that an EJScreen standard report provides,
 but for a large number of reports (one for each site).
 }
-\details{
-\subsection{\strong{Key Functions:}}{
+\section{\strong{Key Functions:}}{
 \itemize{
-\item \code{\link[=doaggregate]{doaggregate()}}* Summarize the indicators from blockgroupstats
-within each buffer weighted using blockwts
-(for average resident within specified distance of site or facility)
-NOTE: FUNCTION IS BEING REWRITTEN to be generic to use any indicators,
-and to use smaller data files, and be faster, etc.
-work in progress.
-\item \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}}* or just \emph{\code{\link[=getblocksnearby]{getblocksnearby()}}} which is a wrapper
+\item \strong{\code{\link[=run_app]{run_app()}}} Launch the Shiny app (web interface)
+\item \strong{\code{\link[=getblocksnearby_and_doaggregate]{getblocksnearby_and_doaggregate()}}} Use outside the shiny app, does both in 1 function
+\item \strong{\code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}}} or just \strong{\code{\link[=getblocksnearby]{getblocksnearby()}}} which is a wrapper
 Very fast method to buffer, identifying which blocks are
 within specified distance of site or facility
 Compare to ESRI ArcGIS methods \link{https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/an-overview-of-the-proximity-toolset.htm}
 and see map service that can identify nearby blocks:
 \link[=https://geopub.epa.gov/arcgis/rest/services/ejscreen/ejquery/MapServer/71/query?where=&text=&objectIds=&time=&timeRelation=esriTimeRelationOverlaps&geometry=-91.0211604,30.4848044&geometryType=esriGeometryPoint&inSR=&spatialRel=esriSpatialRelContains&distance=1&units=esriSRUnit_StatuteMile&relationParam=&outFields=*&returnGeometry=false&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&havingClause=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&historicMoment=&returnDistinctValues=false&resultOffset=&resultRecordCount=&returnExtentOnly=false&sqlFormat=none&datumTransformation=&parameterValues=&rangeValues=&quantizationParameters=&featureEncoding=esriDefault&f=pjson]{https://geopub.epa.gov/arcgis/rest/services/ejscreen/ejquery/MapServer/71/query?where=&text=&objectIds=&time=&timeRelation=esriTimeRelationOverlaps&geometry=-91.0211604\%2C30.4848044&geometryType=esriGeometryPoint&inSR=&spatialRel=esriSpatialRelContains&distance=1&units=esriSRUnit_StatuteMile&relationParam=&outFields=*&returnGeometry=false&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&havingClause=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&historicMoment=&returnDistinctValues=false&resultOffset=&resultRecordCount=&returnExtentOnly=false&sqlFormat=none&datumTransformation=&parameterValues=&rangeValues=&quantizationParameters=&featureEncoding=esriDefault&f=pjson}ddddddddddddddddddddd
 'https://geopub.epa.gov/arcgis/rest/services/ejscreen/ejquery/MapServer/71/query?where=&text=&objectIds=&time=&timeRelation=esriTimeRelationOverlaps&geometry=-91.0211604\%2C30.4848044&geometryType=esriGeometryPoint&inSR=&spatialRel=esriSpatialRelContains&distance=1&units=esriSRUnit_StatuteMile&relationParam=&outFields=*&returnGeometry=false&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&havingClause=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&historicMoment=&returnDistinctValues=false&resultOffset=&resultRecordCount=&returnExtentOnly=false&sqlFormat=none&datumTransformation=&parameterValues=&rangeValues=&quantizationParameters=&featureEncoding=esriDefault&f=pjson'
+\item \strong{\code{\link[=doaggregate]{doaggregate()}}} Summarize the indicators from  \strong{\link{blockgroupstats}.rda} (see below)
+within each buffer weighted using blockwts
+(for average resident within specified distance of site or facility)
+NOTE: FUNCTION IS BEING REWRITTEN to be generic to use any indicators,
+and to use smaller data files, and be faster, etc. -  work in progress.
 }
 }
 
-\subsection{\strong{DATA FILES FOR DISTANCE ANALYSIS}}{
-
-\strong{\link[blockdata:quaddata]{blockdata::quaddata}.rda} (may rename as blockpoints)  dataset data.table
-<5.8m rows (>8m if nonpopulated blocks were kept).  120MB file for 2020 Census.
-(Census 2010 version was 140 MB as .rdata, 6.2 million rows populated blocks)
-\itemize{
-\item blockid
-\item BLOCK_X, BLOCK_Y, BLOCK_Z  (not lat, lon)
-}
-
-\strong{\link[blockdata:blockquadtree]{blockdata::blockquadtree}.rda}  (may rename as blocktree)
-Index to quaddata (QuadTree class, via SearchTrees pkg), not a data.table
-
-(An older file was called blockdata.rda ... pre-2022 had been used to hold many columns,
-like variables used in doaggregate and nonessential ones too,
-BLOCKID, BLOCKGROUPFIPS, STUSAB, STATE, COUNTY, TRACT, BLKGRP, BLOCK, POP100, HU100, Census2010Totalpop)
-(Census 2010 version was 335 MB as .rdata, 6.2 million rows; Census 2020 would be 8.2 million)
-
--------then those are used in getblocksnearbyviaQuadTree with user's sitepoints to create user's sites2blocks:
-}
-
-\subsection{\strong{OUTPUT RESULTS CREATED FOR USER}}{
-
-\code{results_overall}   one row data.table, like results_by_site, but just one row with
-aggregated results for all unique residents.
-
-\code{results_by_site}   results for individual sites (buffers) - a data.table of results,
-one row per siteid, one column per indicator
-\itemize{
-\item maybe want some extra rows with summary stats across people and sites
-(about the distribution), one column per indicator.
-BUT MOST OF THE INTERESTING STATS LIKE MEDIAN PERSON'S SCORE, OR WORST BLOCKGROUP,
-HAVE TO BE CALCULATED BEFORE AGGREGATING/ SUMMARIZING BY SITE (BUFFER), FROM RAW BG DATA!
-Same for sites: worst site as measured by highest nearby blockgroup-level
-\%poor needs raw bg data before summarized by siteid.
-\item maybe some extra columns with summary stats across indicators, as
-separate summary stats beyond what EJSCREEN report does?, one row per site and for overall.
-}
-}
-}
-\section{\strong{SPECIFYING BUFFER SITES/FACILITIES}}{
+\section{\strong{Specifying buffer sites / facilities:}}{
 A user can specify locations, via an interface, and that shiny app returns
 \emph{\code{sitepoints}}, a data.table with fields siteid, lat, lon.
 A user-specified table with maybe 100, 1k, 10k+ points (centers of circular buffers)
@@ -89,56 +49,56 @@ A user-specified table with maybe 100, 1k, 10k+ points (centers of circular buff
 One can specify sitepoints, the places to be analyzed (sites or facilities),
 in one of three ways:
 \enumerate{
-\item NAICS code (selecting from a list, one or more types of facilities, as defined by NAICS).
+\item \strong{NAICS code} (selecting from a list, one or more types of facilities, as defined by NAICS).
 The NAICS are 2-digit to 6-digit codes that specify sectors or types of facilities, such as
 325 - Chemical Manufacturing, or 325211 - Plastics Material and Resin Manufacturing.
-\item Facility IDs - EPA Facility Registry System (FRS) ID numbers
-\item uploaded locations as lat/lon points.
+\item \strong{Facility IDs} - EPA Facility Registry System (FRS) ID numbers
+\item \strong{uploaded locations} as lat/lon points.
 }
 
-**1. BY INDUSTRIAL SECTOR/ NAICS:  **
+\strong{1. BY INDUSTRIAL SECTOR/ NAICS:}
 Interface lets user select NAICS from pulldown, or type in NAICS
 Interface returns \code{naics_selected}, a vector of one or more naics codes,
-converted to \code{sitepoints} by naics2latlon().
-
-\strong{\href{naics_selected}{naics2latlon()}} returns \code{sitepoints} data.table (note here, siteid is just 1:n)
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{ Required **EJAMfrsdata::frs_naics_2016.rdata** **to be updated** 
- Need to update FRS data used here regularly, ideally frequently.
- The 2016 version was facdata.rdata renamed  frs_naics_2016.rdata 
- with columns PROGRAM, PROGRAM_ID, REGISTRY_ID, NAICS, LAT, LONG
- data.table needed to get lat lon by naics
- Initially from the 2016 version, one row per naics per registry id
-}\if{html}{\out{</div>}}
+converted to \code{sitepoints} by \code{\link[=naics2latlon]{naics2latlon()}}.
 \itemize{
-\item EJAMfrsdata::frs* is not really needed for EJAM... A data.table with lat/lon location and other information
-(The 2021 Facility Registry System version was 98 MB as .rdata, >1 million rows, EPA-regulated facilities)
+\item \strong{\href{naics_selected}{naics2latlon()}} returns \code{sitepoints} data.table (note here, siteid is just 1:n)
+
+Required \strong{EJAMfrsdata::frs_naics_2016.rda} \strong{to be updated}
+Need to update FRS data used here regularly, ideally frequently.
+The 2016 version was facdata.rda renamed  frs_naics_2016.rda
+with columns PROGRAM, PROGRAM_ID, REGISTRY_ID, NAICS, LAT, LONG
+data.table needed to get lat lon by naics
+Initially from the 2016 version, one row per naics per registry id
+\item \strong{\link[EJAMfrsdata:frs]{EJAMfrsdata::frs}} is not really needed for EJAM... A data.table with lat/lon location and other information
+(The 2021 Facility Registry System version was 98 MB as .rda, >1 million rows, EPA-regulated facilities)
 }
 
 \strong{2. BY FACILITY ID:}
 Interface so user can upload FRS REGISTRY_ID csv file,
 Interface returns \code{frsids}, list of REGISTRY_ID values from FRS
 converted to \code{sitepoints} by frsid2latlon().
+\itemize{
+\item \strong{\href{frsids}{EJAMfrsdata::frsid2latlon()}} returns \code{sitepoints} data.table
 
-\strong{\href{frsids}{frsid2latlon()}} returns \code{sitepoints} data.table
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{    Requires **[EJAMfrsdata::frsid2latlon].rdata** data.table with cols frsid, lat, lon 
-}\if{html}{\out{</div>}}
-
-**3- BY LAT/LON POINT: **
-Interface so user can upload latitude longitude siteid (and optionally others like sitename),
-Returns \code{sitepoints[ , .(siteid, lat, lon)]}  data.table (here, siteid is just 1:n)
+Requires \strong{\link[EJAMfrsdata:frsid2latlon]{EJAMfrsdata::frsid2latlon}.rda} data.table with cols frsid, lat, lon
 }
 
-\section{\strong{BUFFERING, TO FIND site-block DISTANCES}}{
-Input: \strong{\code{sitepoints}} data.table from user picking points
-Columns are siteid, lat, lon; maybe 100 to 10k points
+\strong{3. BY LAT/LON POINT:}
+Interface so user can upload latitude longitude siteid (and optionally others like sitename).
 
-\strong{\href{sitepoints}{getblocksnearbyviaQuadTree}} or just \emph{\link{getblocksnearby(sitepoints)}}
+\if{html}{\out{<div class="sourceCode">}}\preformatted{    Returns `sitepoints[ , .(siteid, lat, lon)]`  data.table (here, siteid is just 1:n)
+}\if{html}{\out{</div>}}
+}
+
+\section{\strong{Buffering to find site-block-distances:}}{
+Input: \strong{\code{sitepoints}} data.table from user picking points
+
+Columns are siteid, lat, lon; maybe 100 to 10k points
+\itemize{
+\item \strong{\href{sitepoints}{getblocksnearbyviaQuadTree}} or just \emph{\link{getblocksnearby(sitepoints)}}
 Returns \code{sites2blocks}
 Requires datasets \link{quaddata} and \link{blockquadtree} (may rename)
-
-\strong{sites2blocks}   Created by \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} and passed to  \code{\link[=doaggregate]{doaggregate()}}
+\item \strong{sites2blocks}   Created by \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} and passed to  \code{\link[=doaggregate]{doaggregate()}}
 This is a data table with maybe 100k to 1m rows (assume 1k blocks within 3 miles of each site, or 100 blocks within 1 mile),
 \verb{sites2blocks[ , .(siteid, blockid, distance or dist)]}
 \itemize{
@@ -149,16 +109,33 @@ since a block is only in this table if in one or more buffers,
 unless analysis is for residents within x miles of the edges of some shapes, like facility boundaries)
 }
 }
+}
 
-\section{\strong{SUMMARIZING INDICATORS IN BUFFERS}}{
+\section{\strong{Data files used for distance calculation:}}{
+\itemize{
+\item \strong{\link[EJAMblockdata:quaddata]{EJAMblockdata::quaddata}.rda} (may rename as blockpoints)  dataset data.table
+}
+
+<5.8m rows (>8m if nonpopulated blocks were kept).  120MB file for 2020 Census.
+(Census 2010 version was 140 MB as .rda, 6.2 million rows populated blocks)
+- blockid
+- BLOCK_X, BLOCK_Y, BLOCK_Z  (not lat, lon)
+\itemize{
+\item \strong{\link[EJAMblockdata:blockquadtree]{EJAMblockdata::blockquadtree}.rda}  (may rename as blocktree)
+
+Index to quaddata (QuadTree class, via SearchTrees pkg), not a data.table
+}
+
+-------then those are used in getblocksnearbyviaQuadTree with user's sitepoints to create user's sites2blocks:
+}
+
+\section{\strong{Summarizing indicators in buffers:}}{
 \if{html}{\out{<div class="sourceCode">}}\preformatted{  INPUT IS  `sites2blocks`, 
   OUTPUT IS results_overall, results_bysite, and maybe other summary stats  ####
 }\if{html}{\out{</div>}}
-
-\emph{\code{\link[=doaggregate]{doaggregate()}}} <- function(sites2blocks) **
-#(in buffer and overall)
-
-\strong{\link[blockdata:blockwts]{blockdata::blockwts}.rda}
+\itemize{
+\item \strong{\code{\link[=doaggregate]{doaggregate()}}} = function(sites2blocks) This summarizes in each buffer and for all unique residents across all buffers.
+\item \strong{\link[EJAMblockdata:blockwts]{EJAMblockdata::blockwts}.rda}
 Required by \code{\link[=doaggregate]{doaggregate()}}. A data.table of 6-8m rows
 \itemize{
 \item blockwt  The fraction of parent blockgroup decennial pop that is in this one block
@@ -167,44 +144,57 @@ Required by \code{\link[=doaggregate]{doaggregate()}}. A data.table of 6-8m rows
 \item bgid   integer key instead of bgfips - For sum(blockwt), by=bgid, and for join to blockgroupstats$bgid.
 More efficient than bgfips but bgfips is easier
 }
-
-\strong{\link{blockgroupstats}.rda} a data.table with 220k rows (blockgroups), and about 200 cols.
+\item \strong{\link{blockgroupstats}.rda} a data.table with 220k rows (blockgroups), and about 200 cols.
 Will need bgid not just bgfips, to join to blockwts$bgid
-Needs to be updated each time EJSCREEN is updated.
-(such as EJSCREEN demographic and environmental data
-EJSCREEN 2020 version was about 100MB as .rdata)
-\itemize{
-\item \link{usastats}* and \emph{\link{statestats}}  data.table lookup of 100 percentiles and means
+Needs to be updated each time EJScreen is updated.
+(such as EJScreen demographic and environmental data
+EJScreen 2020 version was about 100MB as .rda)
+\item \strong{\link{usastats}.rda} and \strong{\link{statestats}.rda}  data.table lookup of 100 percentiles and means
 (for each indicator in blockgroupstats) in each zone (us, region, or state).
 Need to update each time blockgroupstats is updated. Taken from EJScreen data or ejscreen::lookupUSA & lookupStates
-\item \link{stateregions}*  data.table lookup of EPA REGION given the ST (state code like AK)
-\item \link{statesshp}*   possibly obsolete  shapefile of state boundries to determine what state a point is in
-}
-
-** blocks_unique?**  Intermediate result, not saved
+\item \link{stateregions}.rda  data.table lookup of EPA REGION given the ST (state code like AK)
+\item \link{statesshp}.rda   possibly obsolete  shapefile of state boundries to determine what state a point is in
+\item \emph{blocks_unique?}  Intermediate result, not saved
 \itemize{
 \item blockid  Just the unique blockid values from sites2blocks
 \item sitecount  Number of sites near this block, which is just how many duplicates there were of this blockid
 \item distance  The minimum (worst-case) distance among all the duplicates for this blockid (if any dupes)
 Probably do not need to save additional details about range of distances or which site
 }
-
-** bg2sites?**  Intermediate result, not saved.  aggregated version of sites2blocks
-via  \code{bg2sites <- sites2blocks[ , bgwt = sum(blockwt), by=bgid ]}
+\item \strong{bg2sites?}  Intermediate result, not saved.  aggregated version of sites2blocks
+via  \code{bg2sites = sites2blocks[ , bgwt = sum(blockwt), by=bgid ]}
 then possibly do rm(sites2blocks); gc()
 unless we want to preserve the full bg2sites info for other detailed
 analysis of distribution of distances in each demog group.
 }
+}
 
-\section{OTHER DATA FILES}{
+\section{\strong{Output results for user:}}{
 \itemize{
-\item \link{sites2blocks_example}* sample output of getblocksnearbyviaQuadTree or just getblocksnearby
-\item \link{points100example}* Random test datapoints
-\item \link{points1000example}* Random test datapoints
+\item \strong{\code{results_overall}}   one row data.table, like results_by_site, but just one row with
+aggregated results for all unique residents.
+\item \strong{\code{results_by_site}}   results for individual sites (buffers) - a data.table of results,
+one row per siteid, one column per indicator
+\item maybe want some extra rows with summary stats across people and sites
+(about the distribution), one column per indicator.
+BUT MOST OF THE INTERESTING STATS LIKE MEDIAN PERSON'S SCORE, OR WORST BLOCKGROUP,
+HAVE TO BE CALCULATED BEFORE AGGREGATING/ SUMMARIZING BY SITE (BUFFER), FROM RAW BG DATA!
+Same for sites: worst site as measured by highest nearby blockgroup-level
+\%poor needs raw bg data before summarized by siteid.
+\item maybe some extra columns with summary stats across indicators, as
+separate summary stats beyond what EJScreen report does?, one row per site and for overall.
 }
 }
 
-\section{Buffering method:}{
+\section{\strong{Data files available as examples:}}{
+\itemize{
+\item \link{sites2blocks_example}.rda sample output of getblocksnearbyviaQuadTree or just getblocksnearby
+\item \link{points100example}.rda Random test datapoints
+\item \link{points1000example}.rda Random test datapoints
+}
+}
+
+\section{\strong{Buffering methodology:}}{
 The buffering is currently done in a way that includes all Census blocks (2010 blocks, as of 8/2021)
 whose "internal point" (a lat/lon provided by Census) is within the specified distance of the facility point.
 

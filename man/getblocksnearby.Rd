@@ -8,7 +8,6 @@ getblocksnearby(
   sitepoints,
   cutoff = 1,
   maxcutoff = 31.07,
-  uniqueonly = FALSE,
   avoidorphans = TRUE,
   quadtree,
   ...
@@ -20,8 +19,6 @@ getblocksnearby(
 \item{cutoff}{see \link{getblocksnearbyviaQuadTree} or other such functions}
 
 \item{maxcutoff}{see \link{getblocksnearbyviaQuadTree} or other such functions}
-
-\item{uniqueonly}{see \link{getblocksnearbyviaQuadTree} or other such functions}
 
 \item{avoidorphans}{see \link{getblocksnearbyviaQuadTree} or other such functions}
 

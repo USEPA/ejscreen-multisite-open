@@ -8,7 +8,6 @@ getblocksnearby_and_doaggregate(
   sitepoints,
   cutoff = 1,
   maxcutoff = 31.07,
-  uniqueonly = FALSE,
   avoidorphans = TRUE,
   quadtree,
   ...
@@ -20,8 +19,6 @@ getblocksnearby_and_doaggregate(
 \item{cutoff}{see \link{getblocksnearbyviaQuadTree_Clustered} or other such functions}
 
 \item{maxcutoff}{see \link{getblocksnearbyviaQuadTree_Clustered} or other such functions}
-
-\item{uniqueonly}{see \link{getblocksnearbyviaQuadTree_Clustered} or other such functions}
 
 \item{avoidorphans}{see \link{getblocksnearbyviaQuadTree_Clustered} or other such functions}
 

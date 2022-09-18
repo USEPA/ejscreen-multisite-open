@@ -2,16 +2,9 @@
 % Please edit documentation in R/summarizeForFacilities.R
 \name{summarizeForFacilities}
 \alias{summarizeForFacilities}
-\title{Wrapper for other functions doing the work}
+\title{Wrapper for other functions doing the work - seems to duplicate getblocksnearby_and_doaggregate.R}
 \usage{
-summarizeForFacilities(
-  sitepoints,
-  cutoff,
-  maxcutoff,
-  uniqueonly,
-  avoidorphans,
-  ...
-)
+summarizeForFacilities(sitepoints, cutoff, maxcutoff, avoidorphans, ...)
 }
 \arguments{
 \item{sitepoints}{see \link{getrelevantCensusBlocksviaQuadTree_Clustered} or other such functions}
@@ -20,12 +13,10 @@ summarizeForFacilities(
 
 \item{maxcutoff}{see \link{getrelevantCensusBlocksviaQuadTree_Clustered} or other such functions}
 
-\item{uniqueonly}{see \link{getrelevantCensusBlocksviaQuadTree_Clustered} or other such functions}
-
 \item{avoidorphans}{see \link{getrelevantCensusBlocksviaQuadTree_Clustered} or other such functions}
 
 \item{...}{see \link{getrelevantCensusBlocksviaQuadTree_Clustered} or other such functions}
 }
 \description{
-Wrapper for other functions doing the work
+Wrapper for other functions doing the work - seems to duplicate getblocksnearby_and_doaggregate.R
 }

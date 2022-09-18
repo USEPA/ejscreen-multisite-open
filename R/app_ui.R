@@ -6,14 +6,11 @@
 #' @noRd
 app_ui <- function(request) {
   tagList(
-    # Leave this function for adding external resources
+    # Leave this function for adding external resources, see end of this source file.
     golem_add_external_resources(),
-    # Your application UI logic
-    # fluidPage(
-    #   h1("EJAM")
-    # )
-    
-    # this will refer to modules but for now it has the entire UI
+ 
+    # This will refer to modules but for now it has the entire UI
+    # MODULES WILL GO HERE ####
     
     fluidPage(
       htmltools::includeCSS("inst/app/www/styles.css"),
@@ -175,7 +172,7 @@ app_ui <- function(request) {
                     height = 15,
                     width = 15
                   ),
-                  href = "www/ibutton_help.html#help_location",
+                  href = "www/ibutton_help.html#help_location",  # could edit to explain xlsx, csv etc format allowed when approp
                   target = "_blank"
                 )
               )
@@ -219,7 +216,7 @@ app_ui <- function(request) {
                     6,
                     style = "overflow: hidden;",
                     
-                    radioButtons(
+                    radioButtons( ## need to check if expand distance param is really still needed ####
                       "expandRadius",
                       label = htmltools::h5(
                         "Expand distance for facilities with no census block centroid within selected buffer distance."
@@ -233,33 +230,33 @@ app_ui <- function(request) {
                   )
                 )),
       
-      fluidRow(column(12, wellPanel(
-        # 3. OVERALL SUMMARY or SITE-BY-SITE? ####### 
-        # dissolve sites so person near 2+ sites double-counted, or not
-        radioButtons(inputId = "uniqueOutput",
-                     label = htmltools::h4(
-                       "3. Output",
-                       htmltools::a(
-                         htmltools::img(
-                           id = "ibutton",
-                           src = "www/i.png",
-                           height = 15,
-                           width = 15
-                         ),
-                         href = "www/ibutton_help.html#help_output",
-                         target = "_blank"
-                       )
-                     ),
-                     c(
-                       "Summary row plus 1 row/site, all in 1 table" = "both",
-                       "Site-by-Site results" = "no",
-                       "Overall Summary (avoids double-counting any residents near 2+ sites) [*this may change]" = "yes" 
-                     ),
-                     selected = 'both',
-                     inline = TRUE,
-                     width = NULL
-        )
-      ))),
+      # fluidRow(column(12, wellPanel(   # OBSOLETE
+      #   # 3. OVERALL SUMMARY or SITE-BY-SITE? ###### # 
+      #   # dissolve sites so person near 2+ sites double-counted, or not
+      #   radioButtons(inputId = "uniqueOutput",
+      #                label = htmltools::h4(
+      #                  "3. Output",
+      #                  htmltools::a(
+      #                    htmltools::img(
+      #                      id = "ibutton",
+      #                      src = "www/i.png",
+      #                      height = 15,
+      #                      width = 15
+      #                    ),
+      #                    href = "www/ibutton_help.html#help_output",
+      #                    target = "_blank"
+      #                  )
+      #                ),
+      #                c(
+      #                  "Summary row plus 1 row/site, all in 1 table" = "both",
+      #                  "Site-by-Site results" = "no",
+      #                  "Overall Summary (avoids double-counting any residents near 2+ sites) [*this may change]" = "yes" 
+      #                ),
+      #                selected = 'both',
+      #                inline = TRUE,
+      #                width = NULL
+      #   )
+      # ))),
       
       htmltools::br(),
       htmltools::br(),
@@ -274,8 +271,7 @@ app_ui <- function(request) {
         )
       ),
       
-      
-      mainPanel( # for testing: see selections ##########
+      mainPanel( # for testing: mostly obsolete ##########
                  verbatimTextOutput("selectInd2_for_testing"),
                  verbatimTextOutput("selectInd1_for_testing"),
                  verbatimTextOutput("selectScope1"),
@@ -291,7 +287,7 @@ app_ui <- function(request) {
   )
 }
 
-#' Add external Resources to the Application
+#' Add external Resources to App (from golem package code) ####
 #'
 #' This function is internally used to add external
 #' resources inside the Shiny application.

@@ -22,93 +22,101 @@
 #' @param sitepoints data.table with columns siteid, lat, lon giving point locations of sites or facilities around which are circular buffers
 #' @param cutoff miles radius, defining circular buffer around site point 
 #' @param maxcutoff miles distance (max distance to check? if not even 1 block point is within cutoff)
-#' @param uniqueonly logical WILL BE REMOVED AND DONE apart from THIS FUNCTION. default FALSE (may remove this param) Whether to retain only unique blocks (unique residents) to avoid double-counting (but we want to drop duplicates later, not in here)
 #' @param avoidorphans logical
-#' @param quadtree a quadtree object created from the SearchTree package example:
-#'    SearchTrees::createTree(blockdata::quaddata, treeType = "quad", dataType = "point")
+#' @param quadtree a large quadtree object created from the SearchTree package example:
+#'    SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
 #'    Would take about 5 seconds to create this each time it is needed.
+#'    But note: this is very large... do we need to pass it to the function, or can it be just in global?
 #'
 #' @seealso \link{getblocksnearbyviaQuadTree_Clustered}  \link{computeActualDistancefromSurfacedistance}
 #' @export
 #' @import data.table
 #' @importFrom pdist "pdist"
 #'
-getblocksnearbyviaQuadTree <- function(sitepoints, cutoff=1, maxcutoff=31.07, 
-                                       uniqueonly=FALSE, avoidorphans=TRUE, 
-                                       quadtree) {
+getblocksnearbyviaQuadTree  <- function(sitepoints, cutoff=1, maxcutoff=31.07, 
+                                        avoidorphans=TRUE, 
+                                        quadtree) {
   if(class(quadtree) != "QuadTree"){
     stop('quadtree must be an object created from SearchTrees package with treeType = "quad" and dataType = "point"')  
   }
   #pass in a list of uniques and the surface cutoff distance
-  #filter na values
+  #filter na values? or keep length of out same as input? ####
   sitepoints <- sitepoints[!is.na(sitepoints$lat) & !is.na(sitepoints$lon), ]
-  #compute and add grid info
+  #compute and add grid info ####
   earthRadius_miles <- 3959 # in case it is not already in global envt
   radians_per_degree <- pi / 180
   
+
   sitepoints[ , lat_RAD := lat * radians_per_degree] # PROBLEM - this alters sitepoints in the calling envt bc of how data.table works
   sitepoints[ , lon_RAD := lon * radians_per_degree]
   cos_lat <- cos(sitepoints$lat_RAD)
   sitepoints[ , FAC_X := earthRadius_miles * cos_lat * cos(lon_RAD)]
   sitepoints[ , FAC_Y := earthRadius_miles * cos_lat * sin(lon_RAD)]
   sitepoints[ , FAC_Z := earthRadius_miles * sin(lat_RAD)]
-  # sitepoints[,"FAC_X"] <- earthRadius_miles * cos_lat * cos(sitepoints$lon_RAD)
-  # sitepoints[,"FAC_Y"] <- earthRadius_miles * cos_lat * sin(sitepoints$lon_RAD)
-  # sitepoints[,"FAC_Z"] <- earthRadius_miles * sin(sitepoints$lat_RAD)
   
   # indexgridsize was defined in initialization as say 10 miles
   # and buffer_indexdistance defined here in code but is never used anywhere...  
-  buffer_indexdistance <- ceiling(cutoff/indexgridsize) 
+  # buffer_indexdistance <- ceiling(cutoff/indexgridsize) 
   truedistance <- computeActualDistancefromSurfacedistance(cutoff)   # simply 7918*sin(cutoff/7918) 
   
   # main reason for using foreach::foreach() is that it supports parallel execution,
   # that is, it can execute those repeated operations on multiple processors/cores on your computer
   # (and there are other advantages as well)
   
-  # -- Get ready for loop 
+  #---- Get ready for loop here ----
   
   # allocate result list
   nRowsDf <- NROW(sitepoints)
-  res <- vector('list', nRowsDf)
-  
-  #### LOOP OVER THE sitepoints STARTS HERE ####
-  
-  
-  result <- data.frame()
-  
-  for (i in 1:nRowsDf) {
+  res <- vector('list', nRowsDf)  # list of data.frames?  cols will be blockid, distance, siteid    
+  result <- data.frame() # cols will be blockid, distance, siteid
+
     
+  
+  
+  
+  
+  
+  for (i in 1:nRowsDf) {    # LOOP OVER SITES HERE ----
+  
     coords <- sitepoints[i, .(FAC_X, FAC_Z)]  # the similar clustered function uses sitepoints2use not sitepoints
     x_low <- coords[,FAC_X]-truedistance;
     x_hi  <-  coords[,FAC_X]+truedistance
     z_low <- coords[,FAC_Z]-truedistance;
     z_hi  <-  coords[,FAC_Z]+truedistance
     
-    if ((i %% 100)==0) {print(paste("Cells currently processing: ",i," of ", nRowsDf) ) }
+    if ((i %% 100) == 0) {print(paste("Cells currently processing: ",i," of ", nRowsDf) ) }
     
-    vec <- SearchTrees::rectLookup(quadtree, unlist(c(x_low,z_low)), unlist(c(x_hi,z_hi)))
+    vec <- SearchTrees::rectLookup(quadtree, unlist(c(x_low,      z_low     )), unlist(c(x_hi,      z_hi))) #x and z things are now vectorized
+    # *** FIX/CHECK: 
+    #    quadtree (localtree passed here as quadtree) 
+    # vs EJAMblockdata::blockquadtree  (can it be this way, or need to create it again for each session?)
+    # vs was just localtree from global env in clustered version of function
     
-    tmp <- blockdata::quaddata[vec, ] 
-    x <- tmp[ , .(BLOCK_X, BLOCK_Y, BLOCK_Z)] # but not blockid , blockid /  blockfips?? 
-    y <- sitepoints[i, c('FAC_X','FAC_Y','FAC_Z')]  # the similar clustered function uses sitepoints2use not sitepoints
-    distances <- as.matrix(pdist::pdist(x,y))
+    tmp <- EJAMblockdata::quaddata[vec, ] 
+    x <- tmp[ , .(BLOCK_X, BLOCK_Y, BLOCK_Z)] # but not blockid ?? 
+    y <- sitepoints[i, c('FAC_X','FAC_Y','FAC_Z')]  # the similar clustered function uses something other than sitepoints here - why?
+    distances <- as.matrix(pdist::pdist(x, y))
     
     #clean up fields
     tmp[ , distance := distances[ , c(1)]]
-    tmp[ , siteid := sitepoints[i, .(siteid)]]  # the similar clustered function uses sitepoints2use not sitepoints
+    tmp[ , siteid := sitepoints[i, .(siteid)]]  # the similar clustered function differs, why?
     
     #filter actual distance
     tmp <- tmp[distance <= truedistance, .(blockid, distance, siteid)]
     
     # hold your horses, what if there are no blocks and you are supposed to avoid that
-    if ( avoidorphans && (nrow(tmp))==0 ){
+    if ( avoidorphans && (nrow(tmp)) == 0) {
       #search neighbors, allow for multiple at equal distance
-      vec <- SearchTrees::knnLookup(quadtree, unlist(c(coords[ , 'FAC_X'])), unlist(c(coords[ , 'FAC_Z'])), k=10)      
-      tmp <- blockdata::quaddata[vec[1,], ]
+      vec  <- SearchTrees::knnLookup(quadtree, unlist(c(coords[ , 'FAC_X'])), unlist(c(coords[ , 'FAC_Z'])), k=10)      
+      # *** FIX/CHECK: 
+      #    quadtree (localtree passed here as quadtree) 
+      # vs EJAMblockdata::blockquadtree  (can it be this way, or need to create it again for each session?)
+      # vs was just localtree from global env in clustered version of function
+      tmp <- EJAMblockdata::quaddata[vec[1, ], ]
       
-      x <- tmp[, .(BLOCK_X,BLOCK_Y,BLOCK_Z)]
-      y <- sitepoints[i, .(FAC_X,FAC_Y,FAC_Z)]
-      distances <- as.matrix(pdist::pdist(x,y))
+      x <- tmp[, .(BLOCK_X, BLOCK_Y, BLOCK_Z)]
+      y <- sitepoints[i, .(FAC_X, FAC_Y, FAC_Z)]
+      distances <- as.matrix(pdist::pdist(x, y))
       
       #clean up fields
       tmp[ , distance := distances[ , c(1)]]
@@ -121,28 +129,10 @@ getblocksnearbyviaQuadTree <- function(sitepoints, cutoff=1, maxcutoff=31.07,
     } else {
       result <- rbind(result, tmp)
     }
-    
   }
-  
-  # Actually, should only do this removal of duplicate blocks (residents) outside the getblocksnearby function, so that the function gets all facility-specific results to save, 
-  # and later they can be used to get site specific stats for all blocks at a site
-  # and later they can also be used to get aggregated stats for all unique blocks (residents) among all the sites as a whole.
-  if ( uniqueonly) {
-    stop('will be recoded to allow this removal of duplicate blocks (residents) only outside this getblocksnearby function')
-    data.table::setkey(result) #  uses all columns as keys 
-    result <- unique(result, by=c("blockid")) # unique values of that specified column
-  }
-  data.table::setkey(result, "blockid", "siteid", "distance")
-  
-  print(paste0(nRowsDf, ' input sites'))
-  print(paste0(data.table::uniqueN(result, by = 'siteid'), ' output sites (got results)'))
-  bcount <- data.table::uniqueN(result)
-  print(paste0(bcount, " blocks in final row count (block-to-site pairs)" ))
-  bcount_unique <- data.table::uniqueN(result, by = 'blockid')
-  print(paste0(bcount_unique , ' unique blocks'))
-  print(paste0(round(bcount / nRowsDf, 0), ' blocks per site, on average'))
-  print(paste0(round(1 - (bcount_unique / bcount), 2), '% of blocks are duplicates because those residents are near two or more sites'))
-  
+
+  data.table::setkey(result, blockid, siteid, distance)
+  # print(summary_of_blockcount(result))
+
   return(result)
 }
-

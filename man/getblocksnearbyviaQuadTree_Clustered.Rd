@@ -8,7 +8,6 @@ getblocksnearbyviaQuadTree_Clustered(
   facilities,
   cutoff,
   maxcutoff,
-  uniqueonly,
   avoidorphans,
   CountCPU = 1
 )
@@ -19,8 +18,6 @@ getblocksnearbyviaQuadTree_Clustered(
 \item{cutoff}{miles distance (check what this actually does)}
 
 \item{maxcutoff}{miles distance (check what this actually does)}
-
-\item{uniqueonly}{logical}
 
 \item{avoidorphans}{logical}
 

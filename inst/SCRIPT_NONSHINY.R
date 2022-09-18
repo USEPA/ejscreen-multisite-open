@@ -16,15 +16,15 @@ if (FALSE) {
   
   # set up parameters, functions ####
   # includes library(EJAM) which provides datasets like blockgroupstats, facilities, etc.
-  library(blockdata) # for 2020 data. 
+  library(EJAMblockdata) # for 2020 data. 
   library(EJAM)
   library(data.table)
-  # data("blockwts") # should lazy load from blockdata pkg
+  # data("blockwts") # should lazy load from EJAMblockdata pkg
   
   # SLOW - takes about 5 seconds ------------
   # This must be done for each session?? - One cannot save it as .rda and just load via a pkg. 
   system.time({
-    localtree <- SearchTrees::createTree(blockdata::quaddata, treeType = "quad", dataType = "point")
+    localtree <- SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
   })
   
   # CountCPU <- 2
@@ -56,22 +56,22 @@ if (FALSE) {
   maxcutoff <- 31.07 # 50 km  # max distance to expand search to, if avoidorphans=TRUE
   avoidorphans <- TRUE  # Expand distance searched, when a facility has no census block centroid within selected buffer distance.
   
-  uniqueonly <- FALSE   # The uniqueonly parameter will be removed from getblocksnearby  and handled in doaggregate() 
-  
   ############################################################################ #
   
   # call function that finds nearby blocks  ####
   
-  system.time({  # about under 1 second for 100 sites, but 7.25 seconds for 1,000 sites, or 500k/hour for this step
+  elapsed <- system.time({  # about under 1 second for 100 sites, but 7.25 seconds for 1,000 sites, or 500k/hour for this step
     sites2blocks <- EJAM::getblocksnearby(
       sitepoints =  sitepoints,
       cutoff = radius,
       maxcutoff = maxcutoff,
-      # uniqueonly = uniqueonly,
       avoidorphans = avoidorphans,
       quadtree = localtree
     )
   }) # end of timed function
+  print(elapsed)
+  print(summary_of_blockcount(sites2blocks))
+  
   
   #  head(sites2blocks)
   ##    blockid  distance siteid
@@ -82,7 +82,11 @@ if (FALSE) {
   # can use this example dataset of 99 sites, with 11,567 nearby blocks:
   # sites2blocks_example
   
-  out <- doaggregate(sites2blocks = sites2blocks)
+  elapsed <- system.time({
+    out <- doaggregate(sites2blocks = sites2blocks)
+  }) 
+  print(elapsed)
+  
   names(out)
   # [1] "results_overall" "results_bysite"
   
@@ -253,16 +257,17 @@ if (FALSE) {
   ############################################################################ #
   # in one step, 
   # getblocksnearby_and_doaggregate ####
-  system.time({
+  elapsed <- system.time({
     out2 <- getblocksnearby_and_doaggregate(
       sitepoints =  sitepoints,
       cutoff = radius,
       maxcutoff = maxcutoff,
-      # uniqueonly = uniqueonly,
       avoidorphans = avoidorphans,
       quadtree = localtree
     )
   })
+  print(elapsed)
+  
   stop('done')
   #################################################################################
   

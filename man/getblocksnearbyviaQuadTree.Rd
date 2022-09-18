@@ -8,7 +8,6 @@ getblocksnearbyviaQuadTree(
   sitepoints,
   cutoff = 1,
   maxcutoff = 31.07,
-  uniqueonly = FALSE,
   avoidorphans = TRUE,
   quadtree
 )
@@ -20,13 +19,12 @@ getblocksnearbyviaQuadTree(
 
 \item{maxcutoff}{miles distance (max distance to check? if not even 1 block point is within cutoff)}
 
-\item{uniqueonly}{logical WILL BE REMOVED AND DONE apart from THIS FUNCTION. default FALSE (may remove this param) Whether to retain only unique blocks (unique residents) to avoid double-counting (but we want to drop duplicates later, not in here)}
-
 \item{avoidorphans}{logical}
 
-\item{quadtree}{a quadtree object created from the SearchTree package example:
-SearchTrees::createTree(blockdata::quaddata, treeType = "quad", dataType = "point")
-Would take about 5 seconds to create this each time it is needed.}
+\item{quadtree}{a large quadtree object created from the SearchTree package example:
+SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
+Would take about 5 seconds to create this each time it is needed.
+But note: this is very large... do we need to pass it to the function, or can it be just in global?}
 }
 \description{
 Given a set of points and a specified radius (cutoff), 

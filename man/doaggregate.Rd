@@ -36,7 +36,7 @@ This updated 2022 code takes a set of facilities and the set of blocks that are 
 \details{
 \preformatted{
 
-  requires the following as data lazy loaded for example from blockdata package
+  requires the following as data lazy loaded for example from EJAMblockdata package
    blockwts  data.table   with these columns: 
       blockid , bgid, blockwt
    quaddata, and blockquadtree data.table and quad tree,  for indexes of block points  

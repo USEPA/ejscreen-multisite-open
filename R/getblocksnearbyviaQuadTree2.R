@@ -22,11 +22,11 @@
 #' @param sitepoints data.table with columns siteid, lat, lon giving point locations of sites or facilities around which are circular buffers
 #' @param cutoff miles radius, defining circular buffer around site point 
 #' @param maxcutoff miles distance (max distance to check? if not even 1 block point is within cutoff)
-#' @param uniqueonly logical WILL BE REMOVED AND DONE apart from THIS FUNCTION. default FALSE (may remove this param) Whether to retain only unique blocks (unique residents) to avoid double-counting (but we want to drop duplicates later, not in here)
 #' @param avoidorphans logical
-#' @param quadtree a quadtree object created from the SearchTree package example:
-#'    SearchTrees::createTree(blockdata::quaddata, treeType = "quad", dataType = "point")
+#' @param quadtree a large quadtree object created from the SearchTree package example:
+#'    SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
 #'    Would take about 5 seconds to create this each time it is needed.
+#'    But note: this is very large... do we need to pass it to the function, or can it be just in global?
 #'
 #' @seealso \link{getblocksnearbyviaQuadTree_Clustered}  \link{getblocksnearbyviaQuadTree2}  \link{computeActualDistancefromSurfacedistance}
 #' @export
@@ -34,10 +34,8 @@
 #' @importFrom pdist "pdist"
 #'
 getblocksnearbyviaQuadTree2 <- function(sitepoints, cutoff=1, maxcutoff=31.07, 
-                                        uniqueonly=FALSE, avoidorphans=TRUE, 
-                                        # indexgridsize,
-                                        quadtree
-) {
+                                       avoidorphans=TRUE, # indexgridsize,
+                                        quadtree) {
   if(class(quadtree) != "QuadTree"){
     stop('quadtree must be an object created from SearchTrees package with treeType = "quad" and dataType = "point"')  
   }
@@ -47,7 +45,6 @@ getblocksnearbyviaQuadTree2 <- function(sitepoints, cutoff=1, maxcutoff=31.07,
   #compute and add grid info ####
   earthRadius_miles <- 3959 # in case it is not already in global envt
   radians_per_degree <- pi / 180
-  
   f2 <- data.table::copy(sitepoints) # make a copy to avoid altering sitepoints in the calling envt when modifying by reference using data.table
   rm(sitepoints) 
   f2[ , lat_RAD  := lat * radians_per_degree]   # data.table modifies it by reference
@@ -67,7 +64,8 @@ getblocksnearbyviaQuadTree2 <- function(sitepoints, cutoff=1, maxcutoff=31.07,
   # (and there are other advantages as well)
   
   #---- Get ready for loop here ----
-  #allocate result list
+  
+  # allocate result list
   nRowsDf <- NROW(f2)
   res <- vector('list', nRowsDf)  # list of data.frames?  cols will be blockid, distance, siteid
   result <- data.frame() # cols will be blockid, distance, siteid
@@ -84,20 +82,24 @@ getblocksnearbyviaQuadTree2 <- function(sitepoints, cutoff=1, maxcutoff=31.07,
     
     
     
+    
+    
     if ((i %% 100) == 0) {print(paste("Cells currently processing: ",i," of ", nRowsDf) ) }
     
+    vec <- SearchTrees::rectLookup(quadtree, unlist(c(x_low[i, ], z_low[i, ])), unlist(c(x_hi[i, ], z_hi[i, ]))) 
+    # *** FIX/CHECK: 
+    #    quadtree (localtree passed here as quadtree) 
+    # vs EJAMblockdata::blockquadtree  (can it be this way, or need to create it again for each session?)
+    # vs was just localtree from global env in clustered version of function
     
-    vec <- SearchTrees::rectLookup(blockdata::blockquadtree, unlist(c(x_low[i, ], z_low[i, ])), unlist(c(x_hi[i, ], z_hi[i, ]))) 
-    # blockquadtree  here but localtree in clustered version of function
-    
-    tmp <- blockdata::quaddata[vec, ]
+    tmp <- EJAMblockdata::quaddata[vec, ]
     x <- tmp[ , .(BLOCK_X, BLOCK_Y, BLOCK_Z)] # but not blockid ?? 
-    y <- f2[i, c('FAC_X','FAC_Y','FAC_Z')]  # the similar clustered function uses facilities2use 
+    y <-         f2[i, c('FAC_X','FAC_Y','FAC_Z')]  # the similar clustered function uses something other than f2 or sitepoints here - why?
     distances <- as.matrix(pdist::pdist(x, y))
     
     #clean up fields
     tmp[ , distance := distances[ , c(1)]]
-    tmp[ , siteid := f2[i , .(siteid)]]  # the similar clustered function uses facilities2use 
+    tmp[ , siteid :=         f2[i, .(siteid)]]  # the similar clustered function differs, why?
     
     #filter actual distance
     tmp <- tmp[distance <= truedistance, .(blockid, distance, siteid)]
@@ -105,17 +107,20 @@ getblocksnearbyviaQuadTree2 <- function(sitepoints, cutoff=1, maxcutoff=31.07,
     # hold your horses, what if there are no blocks and you are supposed to avoid that
     if ( avoidorphans && (nrow(tmp)) == 0) {
       #search neighbors, allow for multiple at equal distance
-      vec  <- SearchTrees::knnLookup(blockdata::blockquadtree, unlist(c(coords[i, 'FAC_X'])), unlist(c(coords[i, 'FAC_Z'])), k=10) # blockquadtree  here but localtree in clustered version of function
-      #vec <- SearchTrees::knnLookup(blockdata::blockquadtree, c(coords[i, FAC_X]),           c(coords[i, FAC_Z]), k=10)    # blockquadtree  here but localtree in clustered version of function
-      tmp <- blockdata::quaddata[vec[1, ], ]
+      vec  <- SearchTrees::knnLookup(quadtree, unlist(c(coords[i, 'FAC_X'])), unlist(c(coords[i, 'FAC_Z'])), k=10) 
+      # *** FIX/CHECK: 
+      #    quadtree (localtree passed here as quadtree) 
+      # vs EJAMblockdata::blockquadtree  (can it be this way, or need to create it again for each session?)
+      # vs was just localtree from global env in clustered version of function
+      tmp <- EJAMblockdata::quaddata[vec[1, ], ]
       
       x <- tmp[, .(BLOCK_X, BLOCK_Y, BLOCK_Z)]
-      y <- f2[i, .(FAC_X, FAC_Y, FAC_Z)]
+      y <-         f2[i, .(FAC_X, FAC_Y, FAC_Z)]
       distances <- as.matrix(pdist::pdist(x, y))
       
       #clean up fields
       tmp[ , distance := distances[ , c(1)]]
-      tmp[ , siteid := f2[i, .(siteid)]]
+      tmp[ , siteid :=         f2[i, .(siteid)]]
       
       #filter to max distance
       truemaxdistance <- computeActualDistancefromSurfacedistance(maxcutoff)
@@ -126,25 +131,9 @@ getblocksnearbyviaQuadTree2 <- function(sitepoints, cutoff=1, maxcutoff=31.07,
     }
   }
   result <- data.table::rbindlist(res) 
-  
-  # Actually, should only do this removal of duplicate blocks (residents) outside the getblocksnearbyviaQuadTree function, so that the function gets all facility-specific results to save, 
-  # and later they can be used to get site specific stats for all blocks at a site
-  # and later they can also be used to get aggregated stats for all unique blocks (residents) among all the sites as a whole.
-  if ( uniqueonly) {
-    stop('will be recoded to allow this removal of duplicate blocks (residents) only outside this getblocksnearbyviaQuadTree function')
-    data.table::setkey(result, "blockid", "siteid", "distance") # not sure why that was here
-    result <- data.table::unique(result, by=c("blockid"))
-  }
-  data.table::setkey(result, "blockid", "siteid", "distance")
-  
-  print(paste0(nRowsDf, ' input sites'))
-  print(paste0(data.table::uniqueN(result, by = 'siteid'), ' output sites (got results)'))
-  bcount <- data.table::uniqueN(result)
-  print(paste0(bcount, " blocks in final row count (block-to-site pairs)" ))
-  bcount_unique <- data.table::uniqueN(result, by = 'blockid')
-  print(paste0(bcount_unique , ' unique blocks'))
-  print(paste0(round(bcount / nRowsDf, 0), ' blocks per site, on average'))
-  print(paste0(round(1 - (bcount_unique / bcount), 2), '% of blocks are duplicates because those residents are near two or more sites'))
+
+  data.table::setkey(result, blockid, siteid, distance)
+  # print(summary_of_blockcount(result))
   
   return(result)
 }

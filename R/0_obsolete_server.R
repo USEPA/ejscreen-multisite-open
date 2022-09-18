@@ -11,7 +11,7 @@ shinyServer(function(input, output, session) {
   ## *** DOES localtree HAVE TO BE RECREATED EACH TIME dataLocationListProcessed REACTIVE UPDATES??
   # SEEMS LIKE THAT WOULD BE EVERY TIME radius is updated, 
   # but this is slow and only needs to happen once per session, right?
-  localtree <- SearchTrees::createTree(blockdata::quaddata, treeType = "quad", dataType = "point")
+  localtree <- SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
   
   # warnings and text outputs re selected Facilities, Industry, or Locations ##########################################
   numUniverseSource <- function() {
@@ -263,7 +263,7 @@ shinyServer(function(input, output, session) {
     
     ################################################################## #
     # prep full FRS that has NAICS of all sites and their lat lon ####
-    # Dataset of FRS sites and NAICS in long format (used to be facdata.rdata)
+    # Dataset of FRS sites and NAICS in long format (used to be facdata.rda)
     ################################################################## #
     
     mytest <- EJAMfrsdata::frs_naics_2016 # EJAMfrsdata::facilities

@@ -7,13 +7,12 @@
 #' @param facilities data.table with columns LAT, LONG
 #' @param cutoff miles distance (check what this actually does)
 #' @param maxcutoff miles distance (check what this actually does)
-#' @param uniqueonly logical
 #' @param avoidorphans logical
 #' @param CountCPU for parallel processing via makeCluster() and doSNOW::registerDoSNOW()
 #' @seealso \link{getblocksnearbyviaQuadTree}  \link{computeActualDistancefromSurfacedistance}
 #' @export
 #'
-getblocksnearbyviaQuadTree_Clustered <-function(facilities,cutoff,maxcutoff,uniqueonly,avoidorphans,CountCPU=1) {
+getblocksnearbyviaQuadTree_Clustered <-function(facilities,cutoff,maxcutoff, avoidorphans,CountCPU=1) {
   #pass in a list of uniques and the surface cutoff distance
   #filter na values
 facilities <- facilities[!is.na(facilities$LAT) & !is.na(facilities$LONG), ]
@@ -44,7 +43,7 @@ facilities <- facilities[!is.na(facilities$LAT) & !is.na(facilities$LONG), ]
   }
 
   # This should have been done in server.R 
-  # localtree <- SearchTrees::createTree(blockdata::quaddata, treeType = "quad", dataType = "point")
+  # localtree <- SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
   
   # parallel::makePSOCKcluster is an enhanced version of snow::makeSOCKcluster in package snow. It runs Rscript on the specified host(s) to set up a worker process which listens on a socket for expressions to evaluate, and returns the results (as serialized objects).
   cl <- parallel::makeCluster(CountCPU, outfile="")
@@ -154,10 +153,7 @@ facilities <- facilities[!is.na(facilities$LAT) & !is.na(facilities$LONG), ]
   bound <- do.call('rbind', parref)
 
   print(paste("Total Rowcount: ",nrow(bound)) )
-  if ( uniqueonly) {
-    data.table::setkey(bound, "blockid","distance","ID")
-    bound <- unique(bound, by=c("blockid"))
-  }
+ 
   print(paste("Final Rowcount: ",nrow(bound)) )
   # is this from parallel or snow package?
   parallel::stopCluster(cl)

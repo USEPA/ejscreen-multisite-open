@@ -15,13 +15,13 @@
 # pkgs <- list()
 
 library(EJAM) # This package's functions and data (block points, blockgroup indicators, facility points, NAICS, etc.)
+library(EJAMblockdata)
+library(EJAMfrsdata)
 library(foreach) # main reason for using foreach::foreach() is that it supports parallel execution, that is, it can execute those repeated operations on multiple processors/cores on your computer (and there are other advantages as well)
 library(sp) # https://cran.r-project.org/web/packages/sp/vignettes/over.pdf
 library(SearchTrees)# efficient storage of block points info and selection of those within a certain distance
 library(data.table)  # faster than data.frame
 library(pdist)
-library(blockdata)
-library(frsdata)
 
 # library(doSNOW) ; library(foreach)  # parallel processing, efficient looping?
 # library(rgdal) ; library(maps) ; library(pdist) #?  # Geospatial tools
