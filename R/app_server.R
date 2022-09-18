@@ -276,7 +276,7 @@ app_server <- function(input, output, session) {
     # Dataset of FRS sites and NAICS in long format (used to be facdata.rdata)
     ################################################################## #
     
-    mytest <- EJAMfrsdata::frs_naics_2016 # EJAMfrsdata::facilities
+    mytest <- EJAMfrsdata::frs_naics_2022 # EJAMfrsdata::facilities
     mytest$cnaics <- as.character(mytest$NAICS)
     
     sub2 <- data.table::data.table(a = numeric(0), b = character(0))

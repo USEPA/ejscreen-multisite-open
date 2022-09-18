@@ -43,8 +43,8 @@ datasetNAICS <- function(selectIndustry1_byNAICS, selectIndustry2_by_selectInput
   # Dataset of FRS sites and NAICS in long format (used to be facdata.rdata)
   ################################################################## #
   
-  mytest <- EJAMfrsdata::frs_naics_2016 # EJAMfrsdata::facilities
-  mytest$cnaics <- as.character(mytest$NAICS) # was stored as factor w/ 22 levels
+  mytest <- EJAMfrsdata::frs_naics_2022 # EJAMfrsdata::facilities
+  mytest$cnaics <- as.character(mytest$NAICS) # was stored as factor 
   
   sub2 <- data.table::data.table(a = numeric(0), b = character(0))
   

@@ -21,23 +21,26 @@ library(proxistat)
 
 library(EJAMfrsdata)
 data(package='EJAMfrsdata')
-# frs is the table with newer data but less useful formatting so far. and many more sites.
-# frs_naics_2016 is older, so fewer sites, but in long format, ie has multiple rows for a site (registry id) if it has multiple programs/program ids
+# frs is the table with  less useful formatting so far 
+# frs_naics_2022 is in long format, but actives only. 
+#  ie has multiple rows for a site (registry id) if it has multiple programs/program ids
 
 # > names(EJAMfrsdata::frs)
 # [1] "REGISTRY_ID"    "PRIMARY_NAME"   "SITE_TYPE_NAME" "PGM_SYS_ACRNMS" "INTEREST_TYPES" "NAICS_CODES"    "SIC_CODES"      "LAT"            "LONG"          
-# > names(EJAMfrsdata::frs_naics_2016)
-# [1] "PROGRAM"     "PROGRAM_ID"  "REGISTRY_ID" "NAICS"       "LAT"         "LONG"       
+# > names(EJAMfrsdata::frs_naics_2022)
+#   "REGISTRY_ID"  "NAICS"     lat   lon
 #
 # > dim(frs) # 
 # [1] 3,144,206       9  The latest frs has 3.1 mill sites while the older one had 1.8 mill. ? 
 # > dim(frs_naics_2016)
 # [1] 1,847,061       6
+# > dim(frs_naics_2022)
+# [1] 2695942       4
 
 # > length(unique(frs$REGISTRY_ID))
-# [1] 3,14,4206
-# > length(unique(frs_naics_2016$REGISTRY_ID))  
-# [1] 1,237,040
+# [1] 2576278
+# > length(unique(frs_naics_2022$REGISTRY_ID))  
+# [1] 2576278
 
 
 count_near_eachother <- function(pts, miles_lte, returnfullmatrix=FALSE, return_min_dist=FALSE, silent=FALSE) {
