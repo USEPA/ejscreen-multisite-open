@@ -1,3 +1,3 @@
-# EJAM 2.1.1
+# EJAM 2.1.1 (9/19/2022)
 
-* Added a `NEWS.md` file to track changes to the package.
+* First version on USEPA github
