@@ -9,22 +9,23 @@ see also: "NOTES_fix-update_E_and_D_variablenames_updates.R"
 **	OW EJSCREENBatch:: outputs (just the buffering part that should output counts?; not summary/ graphics/tables?)
 
 **	EJAM::blockgroupstats dataset	
-	EJAM::doaggregate() source code has lists of formulas and variables.
+	EJAM::doaggregate() source code has lists of formulas and variables, including which are summed, wtd mean, or calculated via formulas.
 	EJAM::  outputs of EJAM::doaggregate (the app outputs like ejscreenapi outputs)
 	EJAM::usastats
 ****	EJAM::  xls? doaggregate_output.xls, reconciliation tab (xwalk doag -API -batchsum)
 
-****   /batch.summarizer/doaggregate_output12032021.csv & xlsx has a crosswalk !!
-       ***** see tab with crosswalk doag vs API vs old live working batchsum ****
+****   /batch.summarizer/ still? doaggregate_output12032021.csv
+  	    & xlsx tab had crosswalk doag vs API vs old live working batchsum 
 ****	batch.summarizer::  csv of map_batch_to_friendly  fieldnames v1 - works for old live batchsum
 	batch.summarizer::  inputs needed by batch.summarizer 
 	batch.summarizer::  outputs of downloaded table (has more summary stats than the input table)
-   /batch.summarizer/  map_batch_to_friendly_fieldnames_2021_EJAM.xlsx (may later delete  csv version) 
-   /batch.summarizer/  map_batch_to_friendly_fieldnames_2021_EJAM.csv
+
+   /batch.summarizer/  map_batch_to_friendly_fieldnames_2022_EJAM.xlsx (may later delete  csv version) 
+   /batch.summarizer/  map_batch_to_friendly_fieldnames_2022_EJAM.csv
    /batch.summarizer/data/  map_batch_to_friendly_fieldnames_2021_EJAM.rda
    /batch.summarizer/inst/ejscreenapi_variable_names_2022-04.xlsx
 
-**	ejscreenapi variable names / map_headernames.csv and was .xlsx and was .rda too
+**	ejscreenapi variable names / map_headernames.csv and was in .rda too
 	ejscreenapi's  make.popups.api() 
 	ejscreenapi  outputs  -NOT ESSENTIAL AS CANT USE TO SUMMARIZE ACROSS SITES
 
