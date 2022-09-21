@@ -3,7 +3,8 @@
 #' @title NAICS (industry classification system codes) 
 #' 
 #' @description
-#'   These industry names and codes get updated about every 4 years (2017 version replaced by 2022 version in January 2022).
+#'   These industry names and codes get updated about every 4 years 
+#'   (2017 version replaced by 2022 version in January 2022).
 #'   See \url{https://www.census.gov/naics/}
 #'  \preformatted{
 #'  This is a list (but may change to data.frame) of NAICS codes.
@@ -34,7 +35,7 @@
 #'  
 #'  The codes were updated 2007, 2012, 2017, and for 2022 (announced Dec. 2021).
 #'  Proposed changes https://www.census.gov/naics/federal_register_notices/notices/fr02jy21.pdf
-#'  Finalized changes: https://www.census.gov/naics/federal_register_notices/notices/fr21dc21.pdf 
+#'  Finalized changes: https://www.census.gov/naics/federal_register_notices/notices/fr21dc21.pdf
 #'  Effective Date for 2022 NAICS
 #'  United States codes and Statistical
 #'  Policy Directives: Federal statistical

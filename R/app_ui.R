@@ -10,27 +10,34 @@ app_ui <- function(request) {
     golem_add_external_resources(),
  
     # This will refer to modules but for now it has the entire UI
-    # MODULES WILL GO HERE ####
+    # UI MODULES WILL GO BELOW ####
     
-    fluidPage(
+    fluidPage( # Overall fluidPage ####
       htmltools::includeCSS("inst/app/www/styles.css"),
       headerPanel(
         title = htmltools::a("EJ Proximity Tool for Multiple Facilities",href = "www/ibutton_help.html",target = "_blank"),
         windowTitle = "EJ Proximity Tool for Multiple Facilities"
       ),
       #titlePanel(a("EJSCREEN Batch Processor",href="www/ibutton_help.html", target="_blank")),
-      
-      wellPanel(
-        # 1. LOCATIONS TO ANALYZE (universe of interest) ####
+      textAreaInput('analysis_shortname', value = 'These Facilities', placeholder = 'very short name identifying this set'),
+      # . ####
+      # ______________ LOCATIONS _________________ ####
+      # . ####
+      wellPanel(# 1. LOCATIONS TO ANALYZE (universe of interest) ####
+        
         fluidRow(column(
           12, style = "overflow: hidden;", htmltools::h4("1. Universe of Interest")
         )),
+        # . ####
+        ## A) ___ by Industry / NAICS ##########
         
-        ## A) by Industry / NAICS ##########
         wellPanel(
-          fluidRow(
+          fluidRow( 
             column(12,style = "overflow: hidden;",
+                   
+                   # . ####
                    ### i. pick list/ search Industry (selectNaics_in_Datasystem1) ####
+                   
                    column(12,
                           htmltools::h5(
                             "Select Industry",
@@ -49,7 +56,9 @@ app_ui <- function(request) {
                    column(2,
                           htmltools::br(),htmltools::br(),htmltools::h4("OR", align = "center")
                    ),
+                   
                    ### ii. type in NAICS #####
+                   
                    column(5,
                           textInput(
                             "selectIndustry1_byNAICS",
@@ -68,7 +77,8 @@ app_ui <- function(request) {
                    htmltools::br(),
                    htmltools::tags$head(htmltools::tags$style("#inputWarning{color: red;font-size: 14px;font-style: italic;}")),
                    
-                   ### & limit to fac w NAICS in this EPA program #####
+                   ### ...& limit to fac w NAICS in this EPA program #####
+                   
                    column(
                      12,
                      #radioButtons("selectFrom1", label = htmltools::h5("Match your NAICS code selection with:"),
@@ -102,7 +112,8 @@ app_ui <- function(request) {
                        inline = TRUE
                      ),
                      
-                     ### & limit to fac in this EPA program #####
+                     ### ...& limit to fac in this EPA program #####
+                     
                      #radioButtons("selectFrom2", label = htmltools::h5("Include facilities with records in:"),
                      #  c("All EPA data systems" = "any", "Select data systems" = "some"), selected = NULL, inline = TRUE, width = NULL),
                      htmltools::h5(
@@ -139,7 +150,10 @@ app_ui <- function(request) {
         
         fluidRow(
           column(12, wellPanel(
-            ## B) by Facility IDs uploaded (as file_uploaded_FRS_IDs) ##########
+            
+            # . ####
+            ## B) ___ by Facility IDs uploaded (as file_uploaded_FRS_IDs) ##########
+            
             fileInput(
               'file_uploaded_FRS_IDs',
               label = htmltools::h5(
@@ -160,7 +174,10 @@ app_ui <- function(request) {
           htmltools::h4("OR", align = "center"),
           
           column(12, wellPanel(
-            ## C) by points (lat lon) uploaded (file_uploaded_latlons) ##########
+            
+            # . ####
+            ## C) ___ by points (lat lon) uploaded (file_uploaded_latlons) ##########
+            
             fileInput(
               "file_uploaded_latlons",
               label = htmltools::h5(
@@ -181,6 +198,9 @@ app_ui <- function(request) {
         )
       ),
       
+      # . ####
+      # ______________ DISTANCE _________________ ####
+      # . ####
       wellPanel(# 2. DISTANCE (circular buffer radius)  ##########
                 
                 fluidRow(column(
@@ -260,7 +280,12 @@ app_ui <- function(request) {
       
       htmltools::br(),
       htmltools::br(),
-      # DOWNLOAD RESULTS  ##########
+      
+      # . ####
+      # ______________ DOWNLOAD _________________ ####
+      # . ####
+      # 3. DOWNLOAD RESULTS  ##########
+      
       downloadButton('downloadData1', 'Download'),
       
       textOutput("inputWarning2"),
@@ -270,7 +295,10 @@ app_ui <- function(request) {
           "#inputWarning2{color: red; font-size: 14px; font-style: italic; }"
         )
       ),
-      
+
+      # . ####
+      # ______________ OTHER _________________ ####
+      # . ####
       mainPanel( # for testing: mostly obsolete ##########
                  verbatimTextOutput("selectInd2_for_testing"),
                  verbatimTextOutput("selectInd1_for_testing"),

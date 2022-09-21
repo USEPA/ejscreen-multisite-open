@@ -2,11 +2,11 @@ if (FALSE) {
 # 
 # clean up selected NAICS facilities by NAICS industrial sector code
 # 
-#  NOTE:   A VERSION OF THIS IS WITHIN server.R    **** 
+#  **** NOTE:   A VERSION OF THIS IS WITHIN server.R *****
   
 #  and this was work in progress to possibly move it to a separate function
 #  but that would require passing all these tables as parameters
-#  or assuming they are in memory.
+#  or assuming they are in memory, like via library(EJAMfrsdata) or whatever dataset is needed here.
 # \preformatted{
 #     To pass all the reactives as parameters, you would do this:
 # 
@@ -44,7 +44,7 @@ datasetNAICS <- function(selectIndustry1_byNAICS, selectIndustry2_by_selectInput
   ################################################################## #
   
   mytest <- EJAMfrsdata::frs_naics_2022 # EJAMfrsdata::facilities
-  mytest$cnaics <- as.character(mytest$NAICS) # was stored as factor 
+  mytest$cnaics <- as.character(mytest$NAICS) # was stored as factor w/ 22 levels
   
   sub2 <- data.table::data.table(a = numeric(0), b = character(0))
   
@@ -117,7 +117,7 @@ datasetNAICS <- function(selectIndustry1_byNAICS, selectIndustry2_by_selectInput
     if (nrow(sub2)>0) {
       
       system.time({
-        res <- getblocksnearby(
+        res <- getrelevantCensusBlocksviaQuadTree(
           sitepoints = sub2, cutoff, maxcutoff, get_unique, avoidorphans
           )
         })

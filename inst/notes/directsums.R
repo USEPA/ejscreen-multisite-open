@@ -1,6 +1,7 @@
-#' Weighted sum of counts of indicators, used to roll up population counts?
+#' obsolete - Weighted sum of counts of indicators, used to roll up population counts?
 #'
-#'  This function seems to just find the scaled and weighted sum(s) of field(s),
+#'  This function seems to just roll up to a summary for a buffer? 
+#'  to find the scaled and weighted sum(s) of field(s),
 #'  using scaling value and scoringweight both multiplied by value of field in data.
 #'  But it is unclear why the code uses  scoringweight  and what that is, where it is defined.
 #'  Also, this seems to use only POP100 as the only fieldname in data.

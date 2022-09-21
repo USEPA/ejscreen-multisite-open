@@ -1,4 +1,12 @@
-
+#' experimental/ work in progress: in chunks, get ACS data or Block weights nearby via EPA API
+#'
+#' @param objectIds see API
+#' @param chunksize see API
+#' @param ... passed to getacs_epaquery()
+#'
+#' @return a table
+#' @export
+#'
 get_any_rest_chunked_by_id <- function(objectIds, chunksize=200, ...) {
   #  to get ACS data or Block weights nearby from EPA server via API  ###   #
   
@@ -24,9 +32,30 @@ get_any_rest_chunked_by_id <- function(objectIds, chunksize=200, ...) {
   }
   return(do.call(rbind, x))
 }
+############################################################## #  ############################################################## #
 
-getacs_epaquery_chunked <- function(servicenumber=7,
-                                    objectIds=1:3, 
+#' experimental/ work in progress: in chunks, get ACS data via EPA API
+#'
+#' @param servicenumber see API
+#' @param objectIds see API
+#' @param outFields see API
+#' @param returnGeometry  see API
+#' @param justurl  see API
+#' @param chunksize eg 200 for chunks of 200 each request
+#' @param ... passed to getacs_epaquery()
+#'
+#' @return table
+#' @export
+#'
+#' @examples
+#'  \dontrun {
+#'   x <- list() # chunked chunks. best not to ask for all these:
+#'   x[[1]] <- getacs_epaquery_chunked(   1:1000, chunksize = 100)
+#'   x[[2]] <- getacs_epaquery_chunked(1001:5000, chunksize = 100)
+#'   xall <- do.call(rbind, x)
+#'  } 
+getacs_epaquery_chunked <- function(objectIds=1:3, 
+                                    servicenumber=7,
                                     outFields=NULL, 
                                     returnGeometry=FALSE, 
                                     justurl=FALSE, 
@@ -57,49 +86,58 @@ getacs_epaquery_chunked <- function(servicenumber=7,
     x[[chunk]] <- getacs_epaquery(objectIds = idchunk, outFields=outFields, servicenumber=servicenumber, ...)
   }
   return(do.call(rbind, x))  
-  
-  # # TESTING:
-  # x <- list() # chunked chunks
-  # x[[1]] <- getacs_epaquery_chunked(    1:10000, chunksize = 100)
-  # x[[2]] <- getacs_epaquery_chunked(10001:50000, chunksize = 100)
-  # x[[3]] <- getacs_epaquery_chunked(50001:70000, chunksize = 100)
-  # x[[4]] <- getacs_epaquery_chunked(70001:74000, chunksize = 100)
-  # x[[5]] <- getacs_epaquery_chunked(74001:75000, chunksize = 100)
-  # x[[6]] <- getacs_epaquery_chunked(75001:76000, chunksize = 100)
-  # xall <- do.call(rbind, x)
 }
+############################################################## ############################################################### #
 
-############################################################## #
-# function to request <200 rows from mapservice ####
-############################################################## #
-
-getacs_epaquery <- function(servicenumber=7,
-                            objectIds=1:3, 
+#' experimental/ work in progress: get ACS data via EPA API (for <200 places)
+#'
+#'
+#'  uses ACS2019 rest services ejscreen ejquery MapServer 7
+#'  
+#' @param objectIds see API
+#' @param servicenumber see API
+#' @param outFields see API. eg "STCNTRBG","TOTALPOP","PCT_HISP",
+#' @param returnGeometry see API
+#' @param justurl if TRUE, returns url instead of default making API request
+#' @param ... passed to getacs_epaquery_chunked()
+#'
+#' Documentation of format and examples of input parameters:
+#' [https://geopub.epa.gov/arcgis/sdk/rest/index.html#/Query_Map_Service_Layer/02ss0000000r000000/]
+#' 
+#' @return table
+#' @export
+#'
+#' @examples  getacs_epaquery(justurl=TRUE) 
+getacs_epaquery <- function(objectIds=1:3, 
+                            servicenumber=7,
                             outFields=NULL, 
                             returnGeometry=FALSE, 
                             justurl=FALSE, 
-                           ...) {
+                            ...) {
   # Documentation of format and examples of input parameters:
   # https://geopub.epa.gov/arcgis/sdk/rest/index.html#/Query_Map_Service_Layer/02ss0000000r000000/
+  
+  print('this uses ACS2019 rest services ejscreen ejquery MapServer 7')
+  
   
   # if (length(objectIds) < 1 | !all(is.numeric(objectIds))) {stop('no objectIds specified or some are not numbers')}
   if (any(objectIds == '*')) {stop('Trying to specify all objectIds will not work')}
   if (length(objectIds) > 200) {
     warning('seems to crash if more than about 211 requested per query - chunked version not yet tested')
     
-    # return(get_any_rest_chunked_by_id(servicenumber=servicenumber,
-    #                                   objectIds=objectIds, 
+    # return(get_any_rest_chunked_by_id(objectIds=objectIds, 
+    #                                   servicenumber=servicenumber,
     #                                   outFields=outFields, 
     #                                   returnGeometry=returnGeometry, 
     #                                   justurl=justurl, 
     #                                   ...))
-    return(getacs_epaquery_chunked(servicenumber=servicenumber,
-                                   objectIds=objectIds, 
+    return(getacs_epaquery_chunked(objectIds=objectIds, 
+                                   servicenumber=servicenumber,
                                    outFields=outFields, 
                                    returnGeometry=returnGeometry, 
                                    justurl=justurl, 
                                    ...))
-    }
+  }
   
   # use bestvars default outFields if unspecified ####
   if (is.null(outFields)) {
@@ -168,7 +206,4 @@ getacs_epaquery <- function(servicenumber=7,
   if (justurl) {return(url_to_use)}
   return(get_via_url(url_to_use))
 }
-
-
-
- 
+############################################################## #  ############################################################## #

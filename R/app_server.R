@@ -109,7 +109,10 @@ app_server <- function(input, output, session) {
   output$inputValue <- renderPrint(input$goButton3)  # seems not to be used at all
   output$file_uploaded_FRS_IDs_df <- renderPrint({input$file_uploaded_FRS_IDs}) # not really used except in testing tab
   output$file_uploaded_latlons_df <- renderPrint({input$file_uploaded_latlons}) # not really used except in testing tab
-  
+  # . ####
+  # ______________ User inputs _________________ ####
+  # . ####
+  # UPLOAD/INPUT QUERY 
   # names of input file  ##########################################
   myfile_uploaded_FRS_IDs <- reactive({input$file_uploaded_FRS_IDs})
   myfile_uploaded_latlons <- reactive({input$file_uploaded_latlons})
@@ -144,7 +147,9 @@ app_server <- function(input, output, session) {
       return(TRUE)
     }
   })
-  # ______________Lat Long_________________ ####
+  # . ####
+  # ______________ Lat Lon _________________ ####
+  # . ####
   ####################################################################################################################### #
   # *** LAT LON: dataLocationList DEFINES BUFFERS** ######
   # imported location data
@@ -164,9 +169,9 @@ app_server <- function(input, output, session) {
     }
   )
   ####################################################################################### #
-  # _____Find nearby blocks and aggregate for buffer - via quadtree and doaggregate  # *********** ########
-  # IT GETS NEARBY BLOCKS AND AGGREGATES EJSCREEN DATA FROM THE BLOCKS NEAR EACH POINT
+  # _ Find nearby blocks and aggregate for buffer ########
   ####################################################################################### #
+  
   dataLocationListProcessed <- reactive({
     if(is.null(dataLocationList())) {return () }
     sitepoints <- data.table::copy(dataLocationList())
@@ -174,11 +179,12 @@ app_server <- function(input, output, session) {
     
     cutoff = getCutoff() # radius (units?)
     maxcutoff = getMaxcutoff()  # reactive, max distance to search
-    get_unique = setUnique()     # reactive, TRUE = stats are for dissolved single buffer to avoid doublecounting. FALSE = we want to count each person once for each site they are near.
+    # get_unique = setUnique()     # reactive, TRUE = stats are for dissolved single buffer to avoid doublecounting. FALSE = we want to count each person once for each site they are near.
     avoidorphans = doExpandradius() # Expand distance searched, when a facility has no census block centroid within selected buffer distance
     
     # note this does require that EJAMblockdata be loaded
-    # getblocksnearby  ####
+    
+    # ___ getblocksnearby()  ################################
     
     elapsed <- system.time({
       sites2blocks <- EJAM::getblocksnearby(
@@ -191,6 +197,8 @@ app_server <- function(input, output, session) {
     }) # end of timed function
     print('Found nearby blocks'); print(elapsed)
     
+    # ___ doaggregate()  ################################
+    
     elapsed <- system.time({
       out <- doaggregate(sites2blocks = sites2blocks)
     }) # end of timed function
@@ -201,7 +209,9 @@ app_server <- function(input, output, session) {
   # End of functions used for the dataLocList option
   
   
-  # ______________Facility ID_________________ ####
+  # . ####
+  # ______________ Facility ID _________________ ####
+  # . ####
   ####################################################################################################################### #
   # *** FACILITY ID: dataFacList DEFINES BUFFERS** #######
   # imported facility list  ...  uploaded_FRS_IDs
@@ -218,9 +228,9 @@ app_server <- function(input, output, session) {
     dataFacList()
   })
   ####################################################################################### #
-  # _____Find nearby blocks and aggregate for buffer - via quadtree and doaggregate  # *********** ########
-  # IT GETS NEARBY BLOCKS AND AGGREGATES EJSCREEN DATA FROM THE BLOCKS NEAR EACH POINT
+  # _ Find nearby blocks and aggregate for buffer ########
   ####################################################################################### #
+  
   dataFacListProcessed <- reactive({
     kimssampledata <- dataFacList()
     kimssamplefacilities <- data.table::as.data.table(merge(x = kimssampledata, y = EJAMfrsdata::frs, by.x='REGISTRY_ID', by.y='REGISTRY_ID', all.x=TRUE))
@@ -232,9 +242,11 @@ app_server <- function(input, output, session) {
     
     cutoff = getCutoff() # radius (units?)
     maxcutoff = getMaxcutoff()  # reactive, max distance to search
-    get_unique = setUnique()     # reactive, TRUE = stats are for dissolved single buffer to avoid doublecounting. FALSE = we want to count each person once for each site they are near.
+    # get_unique = setUnique()     # reactive, TRUE = stats are for dissolved single buffer to avoid doublecounting. FALSE = we want to count each person once for each site they are near.
     avoidorphans = doExpandradius() # Expand distance searched, when a facility has no census block centroid within selected buffer distance
-    # getblocksnearby  ####
+
+    # ___ getblocksnearby()  ################################
+    
     system.time(sites2blocks <- EJAM::getblocksnearby(
       sitepoints =  kimsunique, ##
       cutoff = cutoff, # radius
@@ -242,6 +254,9 @@ app_server <- function(input, output, session) {
       avoidorphans = avoidorphans,
       quadtree = localtree
     ))
+    
+    # ___ doaggregate()  ################################
+    
     system.time(out <- doaggregate(sites2blocks))
     
     return(out)
@@ -249,16 +264,19 @@ app_server <- function(input, output, session) {
   # End of functions used for the dataFacList option #######3
   ####################################################################################################################### #
   
-  # ______________NAICS_________________ ####
-  
+  # . ####
+  # ______________ NAICS _________________ ####
+  # . ####
   ####################################################################################################################### #
   # *** NAICS: SECTOR(S) DEFINE BUFFERS**  #######
   ####################################################################################################################### #
   
   # function that runs buffering on facilities selected via the NAICS dataset,
   # is defined here, not easily in separate file because it uses several reactives and facilities? which is in global env
+  # so the file with this function needs to be deleted if not used.
   
   datasetNAICS <- function() {
+    
     #### to pass all the reactives as parameters, you would do this:
     # selectIndustry1_byNAICS=input$selectIndustry1_byNAICS,
     # selectIndustry2_by_selectInput=input$selectIndustry2_by_selectInput,
@@ -277,6 +295,7 @@ app_server <- function(input, output, session) {
     ################################################################## #
     
     mytest <- EJAMfrsdata::frs_naics_2022 # EJAMfrsdata::facilities
+    #  REGISTRY_ID  NAICS      lat       lon
     mytest$cnaics <- as.character(mytest$NAICS)
     
     sub2 <- data.table::data.table(a = numeric(0), b = character(0))
@@ -290,7 +309,7 @@ app_server <- function(input, output, session) {
     }
     cutoff=getCutoff()  # reactive  (e.g., 3) in miles
     maxcuttoff=getMaxcutoff()  # reactive, max distance to search e.g. 4000
-    get_unique=setUnique() # maybe no longer users?  reactive, TRUE = stats are for dissolved single buffer to avoid doublecounting. FALSE = we want to count each person once for each site they are near.
+    # get_unique=setUnique() # maybe no longer users?  reactive, TRUE = stats are for dissolved single buffer to avoid doublecounting. FALSE = we want to count each person once for each site they are near.
     avoidorphans=doExpandradius()  # reactive # Expand distance searched, when a facility has no census block centroid within selected buffer distance
     
     # which datasystems are we searching?
@@ -320,7 +339,7 @@ app_server <- function(input, output, session) {
       matches <- unique(grep(y, mytest$cnaics, value=TRUE))  #
       
       if (length(selectNaics_in_Datasystem1)>0 & length(selectNaics_and_Datasystem2)>0) {
-        temp<-mytest[PROGRAM %in% selectNaics_in_Datasystem1] # PROGRAM  IS MISSING
+        temp<-mytest[PROGRAM %in% selectNaics_in_Datasystem1] # PROGRAM  IS MISSING... in frs but not frs_naics_2022
         temp<-temp[cnaics %in% matches]
         temp<-unique(temp[,.(REGISTRY_ID)])
         sub1 <-data.table::as.data.table(merge(x = mytest, y = temp, by.x='REGISTRY_ID', by.y='REGISTRY_ID'), all.y=TRUE)
@@ -337,13 +356,9 @@ app_server <- function(input, output, session) {
         colnames(sub2)
       }
       print(paste("Number of matches = ", nrow(sub2)))
-      
-      ################################################################## #
-      # CALL FUNCTIONS DOING DISTANCES (BUFFERS) AND AGGREGATION  ### ###
-      ################################################################## #
+       
       ####################################################################################### #
-      # _____Find nearby blocks and aggregate for buffer - via quadtree and doaggregate  # *********** ########
-      # IT GETS NEARBY BLOCKS AND AGGREGATES EJSCREEN DATA FROM THE BLOCKS NEAR EACH POINT
+      # _ Find nearby blocks and aggregate for buffer ########
       ####################################################################################### #
       
       if (nrow(sub2)>0) {
@@ -353,7 +368,8 @@ app_server <- function(input, output, session) {
         # system.time(dat <- doaggregate(sub2,res))
         # return(dat)
         
-        # getblocksnearby  ####
+        # ___ getblocksnearby()  ################################
+        
         system.time({
           sites2blocks <- EJAM::getblocksnearby(
             sitepoints =  sitepoints,
@@ -363,6 +379,9 @@ app_server <- function(input, output, session) {
             quadtree = localtree
           )
         }) 
+        
+        # ___ doaggregate()  ################################
+        
         system.time({out <- doaggregate(sites2blocks = sites2blocks)})
         return(out)        
       }
@@ -385,6 +404,7 @@ app_server <- function(input, output, session) {
   #### Get user info as metadata on results #########
   # ###########################################'
   # Support function for grabbing the user input that will be output as meta data in the data download
+  
   addUserInput <- function(file,userin,mystring,strdesc){
     length_string = 0
     if(!is.null(mystring)) {
@@ -403,19 +423,55 @@ app_server <- function(input, output, session) {
     #}
     return(userin)
   }
+  ####################################################################################################################### #
+  
+  # . ####
+  # ______________ WHICH RESULTS? _________________ ####
+  # . ####
+  # outputs based on latlon, ID, or NAICS _________________ ####
+  
+  datasetResults <- function(){
+    if (length(getWarning1() > 1) | length(getWarning2() > 1)) {
+      return()
+    }
+    else if (nchar(input$selectIndustry1_byNAICS) > 0 | length(input$selectIndustry2_by_selectInput) > 0) {
+      # e.g.,   "324110"  might be the value of input$selectIndustry2_by_selectInput 
+      return(datasetNAICS( )) # that is a separate function not a reactive
+    }
+    else if (length(myfile_uploaded_latlons()) > 1) {
+      return(dataLocationListProcessed())
+    }
+    else if (length(myfile_uploaded_FRS_IDs()) > 1) {
+      stop('dataFacListProcessed reactive and myfile_uploaded_FRS_IDs not working currently')
+      return(dataFacListProcessed())
+    }
+  }
+  
+  # [obsolete output? I DO NOT UNDERSTAND WHAT this was for - UNUSED] ####
+  #
+  # output$inNAICSresult <- renderTable(
+  #   {
+  #     # note that datasetNAICS is a separate function, not a reactive
+  #     if(is.null(datasetNAICS( ))) {return () }
+  #     datasetNAICS( )
+  #   }
+  # )
   
   ############################################################################################## #
-  
+  # . ####
+  # ______________ DOWNLOAD RESULTS _________________ ####
+  # . ####
   # Download the Results #######
-  
   output$downloadData1 <- downloadHandler(
     filename = function() {
-      fname <- paste0("EJAM-OUT-", Sys.Date(), "-",Sys.time(), ".csv",sep='')
+      fname <- paste0("EJAM-OUT-", input$analysis_shortname, "-",Sys.time(), ".csv",sep='')
       fname
     },
     contentType = 'text/csv',
     content = function(file) {
-      cat('\nTRYING TO DOWNLOAD ', fname, '\n\n')
+      cat('\nTRYING TO DOWNLOAD ', 
+          paste0("EJAM-OUT-", Sys.Date(), "-",Sys.time(), ".csv",sep=''),
+          '\n\n')
       # print(str(datasetResults())) # was for debugging
       
 
@@ -423,7 +479,7 @@ app_server <- function(input, output, session) {
       
       write.csv(rbind(datasetResults()$results_overall, datasetResults()$results_bysite, fill=TRUE), file, row.names = FALSE)
    
-      # OBSOLETE
+      # OBSOLETE code about user metadata we could save ####
       if (1 == 'obsolete code- it was meant to output metadata appended to the tabular results but we want a clean table and any metadata separately if at all') {
         #obsolete code 
         # if (input$uniqueOutput == 'no') {
@@ -504,33 +560,5 @@ app_server <- function(input, output, session) {
     }
   )
   ############################################################################################## #
-  
-  datasetResults <- function(){
-    if (length(getWarning1() > 1) | length(getWarning2() > 1)) {
-      return()
-    }
-    else if (nchar(input$selectIndustry1_byNAICS) > 0 | length(input$selectIndustry2_by_selectInput) > 0) {
-      # e.g.,   "324110"  might be the value of input$selectIndustry2_by_selectInput 
-      return(datasetNAICS( )) # that is a separate function not a reactive
-    }
-    else if (length(myfile_uploaded_latlons()) > 1) {
-      return(dataLocationListProcessed())
-    }
-    else if (length(myfile_uploaded_FRS_IDs()) > 1) {
-      stop('dataFacListProcessed reactive and myfile_uploaded_FRS_IDs not working currently')
-      return(dataFacListProcessed())
-    }
-  }
-  
-  output$inNAICSresult <- renderTable(
-    {
-      # note that datasetNAICS is a separate function, not a reactive
-      if(is.null(datasetNAICS( ))) {return () }
-      datasetNAICS( )
-    }
-  )
-  
-  
-  
-  
+
 }

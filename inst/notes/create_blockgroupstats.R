@@ -10,7 +10,7 @@ create_blockgroupstats <- function(bg=ejscreen::bg22plus , meta) {
   # drop the text labels describing the percentile values as in popups
   dropping <- c(dropping, grep('^pctile\\.text', names(b2), value = TRUE ) ) # certainly do not need pctile.text... cols
   dropping <- c(dropping, grep('^pctile\\.',     names(b2), value = TRUE)) # probably do not need these - pctiles for buffer scores are looked up, not calculated as popwtd means, right?
-  dropping <- c(dropping, "VNI.eo", "VDI.eo") #obsolete, they were basis for alt1 and alt2 EJ Indexes. VNI.eo is just mean of mins and lowinc counts. VSI.eo is mean of pctlowinc and pctmin, simple avg of those 2, treating as if denominator is pop for both.
+  # dropping <- c(dropping, "VNI.eo", "VDI.eo") #obsolete, they were basis for alt1 and alt2 EJ Indexes. VNI.eo is just mean of mins and lowinc counts. VSI.eo is mean of pctlowinc and pctmin, simple avg of those 2, treating as if denominator is pop for both.
   dropping <- c(dropping, "FIPS.TRACT", "FIPS.COUNTY", 'countyname', "FIPS.ST", "ST", "statename", "REGION") # none stay useful if just using blockgroupstats for buffer summary since buffer can span multiple states, etc.
   dropping <- c(dropping, "AREALAND", "AREAWATER", 'area') # could be analyzed as a count variable to get total area, but if circular buffer pi * radius^2 is easier
   dropping <- c(dropping,  "OBJECTID") # maybe keep ??

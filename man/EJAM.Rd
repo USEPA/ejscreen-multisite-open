@@ -75,11 +75,11 @@ data.table needed to get lat lon by naics
 \strong{2. BY FACILITY ID:}
 Interface so user can upload FRS REGISTRY_ID csv file,
 Interface returns \code{frsids}, list of REGISTRY_ID values from FRS
-converted to \code{sitepoints} by frsid2latlon().
+converted to \code{sitepoints} by a lookup function and data table
 \itemize{
-\item \strong{\href{frsids}{EJAMfrsdata::frsid2latlon()}} returns \code{sitepoints} data.table
+\item \strong{frsid2latlon function? applied to frsids will return} \code{sitepoints} data.table
 
-Requires \strong{\link[EJAMfrsdata:frsid2latlon]{EJAMfrsdata::frsid2latlon}.rda} data.table with cols frsid, lat, lon
+This will require \strong{frsid2latlon .rda?} data.table with cols frsid, lat, lon
 }
 
 \strong{3. BY LAT/LON POINT:}

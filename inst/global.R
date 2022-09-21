@@ -32,7 +32,9 @@ library(pdist)
 ######################################################################################################## #
 
 library(shiny)
-library(frsdata)
+library(EJAM)
+library(EJAMblockdata)
+library(EJAMfrsdata)
 s_options <- EJAM::NAICS  # lazy loaded from this package as data, used in ui.R
 s_dropdown_naics <- c()
 options(shiny.maxRequestSize = 9*1024^2)

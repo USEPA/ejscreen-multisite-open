@@ -1,8 +1,17 @@
 
 
+ 
+# To aggregate in a buffer, there are
+# 
+# 1) counts to be summed (see list below)
+# 2) environmental scores to be population weighted as averages (see list below)
+# 3) variables to be calculated using formulas (e.g. %lowincome) based on sums of counts, generally (formulas below or in ejscreenformulas.rda file here)
+# 4) percentiles to be looked up in lookup tables, via code and data lookup tables.
 
+
+
+##############################################
 # EXCERPTED FROM HARD CODED VERSION OF EJAM::doaggregate.R
-
 
 
     countcols <- c(
@@ -15,7 +24,7 @@
       'pre1960',  'builtunits',
       "nhwa", "hisp", "nhba", "nhaa", "nhaiana", "nhnhpia", "nhotheralone", "nhmulti" # not in EJScreen 2.0 but will use here
     )
-  } 
+  
   # **** but we probably treat pctpre1960 as pop wtd mean like other Evars?
   
   if (is.null(calculatedcols)) {
@@ -29,10 +38,12 @@
       "flagged"
     )
     
+    ###################################################################################################
+    
     # These must be calculated after aggregating count variables and using those at siteid level. 
     # e.g. Use ejscreen::ejscreenformulas$formula to calculate these.
-  }
-  if (is.null(popmeancols)) {
+  
+
     # popmeancols <- c(ejscreen::names.e, ejscreen::names.ej)
     # or to avoid depending on ejscreen package, 
     # dput(c(ejscreen::names.e, ejscreen::names.ej) )
@@ -60,10 +71,13 @@
     # (or alternatively could perhaps tell us if there is any flagged bg at all in buffer?).
 
 
--------------------------------------------------------------------------------
+    ###################################################################################################
+    
+# formulas could be hard coded here like below, 
+    # but are also provided in the file ejscreen::ejscreenformulas, which I have save a copy of in this folder
 
-
-
+    
+    
   results_overall[ , `:=`(
     pctover64 = ifelse(pop==0, 0, over64 / pop),
     pctunder5 = ifelse(pop==0, 0, under5 / pop),
@@ -107,6 +121,8 @@
   results_bysite[ , `:=`(
     VSI.eo = (pctlowinc + pctmin) / 2
   )]
+  
+  
   ##################################################### #  ##################################################### #  ##################################################### #
   
   # VSI.eo.US = sum(mins) / sum(pop)  +  sum(lowinc) / sum(povknownratio) ) / 2, 
@@ -136,17 +152,7 @@
   #  weightLayerCount which might be the count of blocks nearby???
   # "timeSeconds", "radius.miles", "unit", "statlevel", "inputAreaMiles"
 
-
-
-
-
-
-
-
-
 --------------------------------------------------------------------
-
-
 
 
   ##################################################### #

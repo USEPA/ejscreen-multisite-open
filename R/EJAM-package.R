@@ -75,11 +75,11 @@
 #'  **2. BY FACILITY ID:**  
 #'         Interface so user can upload FRS REGISTRY_ID csv file, 
 #'         Interface returns `frsids`, list of REGISTRY_ID values from FRS
-#'         converted to `sitepoints` by frsid2latlon().
+#'         converted to `sitepoints` by a lookup function and data table
 #' 
-#'    - **[EJAMfrsdata::frsid2latlon()](frsids)** returns `sitepoints` data.table
+#'    - **frsid2latlon function? applied to frsids will return** `sitepoints` data.table
 #'  
-#'         Requires **[EJAMfrsdata::frsid2latlon].rda** data.table with cols frsid, lat, lon 
+#'         This will require **frsid2latlon .rda?** data.table with cols frsid, lat, lon 
 #' 
 #'  **3. BY LAT/LON POINT:**
 #'         Interface so user can upload latitude longitude siteid (and optionally others like sitename).
