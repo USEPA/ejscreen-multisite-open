@@ -3,10 +3,6 @@
 # **** like blockgroupstats, quaddata, etc. ****
 if (FALSE) {
   
-  # DEMOG SUBGROUPS ARE NOT IN LOOKUP TABLES OF PERCENTILES YET, SO NEED TO BE.
-  # state.pctile.  all NA values so far
-  
-  
   # should getblocksnearby() redirect now to getblocksnearbyviaQuadTree or to getblocksnearbyviaQuadTree2 ??
   
   # See details in help for ?EJAM
@@ -15,23 +11,23 @@ if (FALSE) {
   
   
   # set up parameters, functions ####
-  # includes library(EJAM) which provides datasets like blockgroupstats, facilities, etc.
-  library(EJAMblockdata) # for 2020 data. 
-  library(EJAM)
+  # includes library(EJAM) which provides datasets like blockgroupstats,   etc.
+  library(EJAM) 
+  library(EJAMblockdata) # for 2020 Census blocks, with lat lon population weights etc. 
+  library(EJAMfrsdata) # EPA Facility Registry System data with lat lon for each regulated site
+  # library(EJAMejscreendata)  
+  # not needed since this pkg has versions of the key parts,
+    # using friendlier variable names and some extra columns of info and race ethnic subgroups
   library(data.table)
-  # data("blockwts") # should lazy load from EJAMblockdata pkg
+  # data("blockwts") # not needed - this should lazy load as needed from EJAMblockdata pkg
   
-  # SLOW - takes about 5 seconds ------------
+  # NEXT STEP IS SLOW - takes about 5 seconds ------------
   # This must be done for each session?? - One cannot save it as .rda and just load via a pkg. 
   system.time({
     localtree <- SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
   })
   
-  # CountCPU <- 2
-  CountCPU <- parallel::detectCores()
-  indexgridsize <- 10  # This does not seem to be used ever - it is just used to create buffer_indexdistance which is not used.
-  
-  # to use random test points (sites) ######
+ # to use random test points (sites) ######
   # sitepoints <- EJAM::points100example %>% head(1)# data in this package
   
   # to use 100 testpoints
@@ -56,6 +52,10 @@ if (FALSE) {
   maxcutoff <- 31.07 # 50 km  # max distance to expand search to, if avoidorphans=TRUE
   avoidorphans <- TRUE  # Expand distance searched, when a facility has no census block centroid within selected buffer distance.
   
+  # CountCPU <- 2
+  CountCPU <- parallel::detectCores()
+  indexgridsize <- 10  # This does not seem to be used ever - it is just used to create buffer_indexdistance which is not used.
+  
   ############################################################################ #
   
   # call function that finds nearby blocks  ####
@@ -70,7 +70,7 @@ if (FALSE) {
     )
   }) # end of timed function
   print(elapsed)
-  print(summary_of_blockcount(sites2blocks))
+  print(summarize_blockcount(sites2blocks))
   
   
   #  head(sites2blocks)

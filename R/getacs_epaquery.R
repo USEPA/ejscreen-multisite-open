@@ -31,8 +31,7 @@ get_any_rest_chunked_by_id <- function(objectIds, chunksize=200, ...) {
     x[[chunk]] <- getacs_epaquery(objectIds = idchunk,  ...)
   }
   return(do.call(rbind, x))
-}
-############################################################## #  ############################################################## #
+} ############################################################## #  ############################################################## #
 
 #' experimental/ work in progress: in chunks, get ACS data via EPA API
 #'
@@ -47,13 +46,13 @@ get_any_rest_chunked_by_id <- function(objectIds, chunksize=200, ...) {
 #' @return table
 #' @export
 #'
-#' @examples
-#'  \dontrun {
-#'   x <- list() # chunked chunks. best not to ask for all these:
-#'   x[[1]] <- getacs_epaquery_chunked(   1:1000, chunksize = 100)
-#'   x[[2]] <- getacs_epaquery_chunked(1001:5000, chunksize = 100)
-#'   xall <- do.call(rbind, x)
-#'  } 
+#' @examples  #
+#'  #\dontrun {
+#'  # x <- list() # chunked chunks. best not to ask for all these:
+#'  # x[[1]] <- getacs_epaquery_chunked(   1:1000, chunksize = 100)
+#'  # x[[2]] <- getacs_epaquery_chunked(1001:5000, chunksize = 100)
+#'  # xall <- do.call(rbind, x)
+#'  #} 
 getacs_epaquery_chunked <- function(objectIds=1:3, 
                                     servicenumber=7,
                                     outFields=NULL, 
@@ -86,14 +85,16 @@ getacs_epaquery_chunked <- function(objectIds=1:3,
     x[[chunk]] <- getacs_epaquery(objectIds = idchunk, outFields=outFields, servicenumber=servicenumber, ...)
   }
   return(do.call(rbind, x))  
-}
-############################################################## ############################################################### #
+} ############################################################## ############################################################### #
 
 #' experimental/ work in progress: get ACS data via EPA API (for <200 places)
 #'
 #'
 #'  uses ACS2019 rest services ejscreen ejquery MapServer 7
 #'  
+#'   Documentation of format and examples of input parameters:
+#'   [https://geopub.epa.gov/arcgis/sdk/rest/index.html#/Query_Map_Service_Layer/02ss0000000r000000/]
+#' 
 #' @param objectIds see API
 #' @param servicenumber see API
 #' @param outFields see API. eg "STCNTRBG","TOTALPOP","PCT_HISP",
@@ -101,9 +102,6 @@ getacs_epaquery_chunked <- function(objectIds=1:3,
 #' @param justurl if TRUE, returns url instead of default making API request
 #' @param ... passed to getacs_epaquery_chunked()
 #'
-#' Documentation of format and examples of input parameters:
-#' [https://geopub.epa.gov/arcgis/sdk/rest/index.html#/Query_Map_Service_Layer/02ss0000000r000000/]
-#' 
 #' @return table
 #' @export
 #'

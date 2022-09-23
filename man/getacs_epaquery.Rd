@@ -24,16 +24,16 @@ getacs_epaquery(
 
 \item{justurl}{if TRUE, returns url instead of default making API request}
 
-\item{...}{passed to getacs_epaquery_chunked()
-
-Documentation of format and examples of input parameters:
-[https://geopub.epa.gov/arcgis/sdk/rest/index.html#/Query_Map_Service_Layer/02ss0000000r000000/]}
+\item{...}{passed to getacs_epaquery_chunked()}
 }
 \value{
 table
 }
 \description{
 uses ACS2019 rest services ejscreen ejquery MapServer 7
+ 
+  Documentation of format and examples of input parameters:
+  [https://geopub.epa.gov/arcgis/sdk/rest/index.html#/Query_Map_Service_Layer/02ss0000000r000000/]
 }
 \examples{
  getacs_epaquery(justurl=TRUE) 
