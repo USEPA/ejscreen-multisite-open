@@ -51,10 +51,10 @@ if (FALSE) {
   radius <- 1 # radius (miles)
   maxcutoff <- 31.07 # 50 km  # max distance to expand search to, if avoidorphans=TRUE
   avoidorphans <- TRUE  # Expand distance searched, when a facility has no census block centroid within selected buffer distance.
-  
+
   # CountCPU <- 2
-  CountCPU <- parallel::detectCores()
-  indexgridsize <- 10  # This does not seem to be used ever - it is just used to create buffer_indexdistance which is not used.
+  # CountCPU <- parallel::detectCores() # this is in global.R and only used if using getblocksnearbyviaQuadTree_Clustered()
+  # indexgridsize <- 10  # This does not seem to be used ever - it is just used to create buffer_indexdistance which is not used.
   
   ############################################################################ #
   

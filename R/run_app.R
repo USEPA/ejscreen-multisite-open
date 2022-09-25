@@ -1,5 +1,10 @@
 #' Run the Shiny Application
-#'
+#' 
+#' @description EJAMM::run_app() is used here to run the app instead of shiny::runApp()
+#'   to allow this app to be shared as an R package, and to provide other 
+#'   useful features that the golem package enables. 
+#' @details See https://thinkr-open.github.io/golem/ 
+#'   
 #' @param ... arguments to pass to golem_opts.
 #' See `?golem::get_golem_options` for more details.
 #' @inheritParams shiny::shinyApp

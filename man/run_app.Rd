@@ -37,5 +37,10 @@ expression in order for the match to be considered successful.}
 See `?golem::get_golem_options` for more details.}
 }
 \description{
-Run the Shiny Application
+EJAMM::run_app() is used here to run the app instead of shiny::runApp()
+  to allow this app to be shared as an R package, and to provide other 
+  useful features that the golem package enables.
+}
+\details{
+See https://thinkr-open.github.io/golem/
 }

@@ -1,4 +1,4 @@
-#' save_report UI Function
+#' PLACEHOLDER FOR POSSIBLE MODULE - save_report UI Function
 #'
 #' @description A shiny Module.
 #'
@@ -24,8 +24,8 @@ mod_save_report_server <- function(id){
   })
 }
     
-## To be copied in the UI
-# mod_save_report_ui("save_report_1")
+## To be copied in the app_ui.R
+#   mod_save_report_ui("save_report_1")
     
-## To be copied in the server
-# mod_save_report_server("save_report_1")
+## To be copied in the app_server.R
+#   mod_save_report_server("save_report_1")

@@ -5,110 +5,27 @@
 #' @import shiny
 #' @noRd
 app_server <- function(input, output, session) {
-  # Your application server logic
   
-  #   how to avoid or still have a global.R file in the golem approach, 
+  # Note: how to avoid or still have a global.R file in the golem approach, 
   # https://github.com/ThinkR-open/golem/issues/6
   
+  # This app_server() function will be broken out into and refer to 
+  #   functions and modules 
+  #   but for now it has all the code in this file.
+  # SERVER MODULES WILL PROBABLY REPLACE MOST OF THE CODE BELOW ####
+  # such as possibly these placeholders:
+  #  mod_view_results_server("view_results_1")
+  #  mod_save_report_server("save_report_1")
+  #  mod_specify_sites_server("specify_sites_1")
   
   
-  # this will refer to modules but for now it has the entire server code
-  
-  # build localtree quad tree index for EVERY session?? ####
+  # Build localtree quad tree index for EVERY session?? ####
   ## *** DOES localtree HAVE TO BE RECREATED EACH TIME dataLocationListProcessed REACTIVE UPDATES??
   # SEEMS LIKE THAT WOULD BE EVERY TIME radius is updated, 
   # but this is slow and only needs to happen once per session, right?
   cat('\n BUILDING INDEX TO ALL BLOCKS IN USA - TAKES A FEW SECONDS...\n\n')
   localtree <- SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
   
-  # warnings and text outputs re selected Facilities, Industry, or Locations ##########################################
-  numUniverseSource <- function() {
-    selInd=0
-    if (nchar(input$selectIndustry1_byNAICS)>0 | length(input$selectIndustry2_by_selectInput)>0) {
-      selInd=1
-    }
-    numLoc=nrow(dataLocationList())  # reactive, from reading input$file_uploaded_latlons
-    numFac=nrow(dataFacList())       # reactive, from reading input$file_uploaded_FRS_IDs
-    if (!is.null(numFac)) {
-      if (numFac>0) {numFac=1}
-    }
-    if (!is.null(numLoc)) {
-      if (numLoc>0) {numLoc=1}
-    }
-    tot=sum(selInd,numLoc,numFac)
-    return (tot)
-  }
-  
-  getWarning1 <- function() {
-    if (nchar(input$selectIndustry1_byNAICS)>0 & length(input$selectIndustry2_by_selectInput)>0) {
-      print("Please use a single industry select option.")
-    }
-  }
-  
-  getWarning2 <- function() {
-    tot=numUniverseSource()
-    length_selectIndustry1=0
-    length_selectIndustry2=0
-    if (!is.null(input$selectIndustry1_byNAICS)) {
-      length_selectIndustry1=nchar(input$selectIndustry1_byNAICS)
-    }
-    if (!is.null(input$selectIndustry2_by_selectInput)) {
-      length_selectIndustry2=nchar(input$selectIndustry2_by_selectInput)
-    }
-    if (length_selectIndustry1>0 & length_selectIndustry2>0) {
-      print("Please use a single industry select option.")
-    }
-    else if(tot>1) {
-      print(paste("Please use only one method of selecting universe (ie, select by industry, location, OR facility)"))
-      #print(paste("Please use only one method of selecting universe (ie, select by industry, location, OR facility)",tot,"; numLoc=",nrow(dataLocationList()),"; numFac=",nrow(dataFacList())))
-    }
-  }
-  
-  output$inputWarning <- renderPrint({
-    getWarning1()
-  })
-  
-  output$inputWarning2 <- renderPrint({
-    getWarning2()
-  })
-  
-  output$selectInd1_for_testing <- renderPrint({
-    if (length(input$selectIndustry1_byNAICS) > 1) {  # not really used except in testing tab
-      x = paste(input$selectIndustry1_byNAICS,collapse=", ")
-      return(paste("Selected industries ", x))
-    }  else {
-      if (length(input$selectIndustry1_byNAICS) == 1 & nchar(input$selectIndustry1_byNAICS) > 0) {
-        return(paste("Selected industry ", input$selectIndustry1_byNAICS))
-      }
-    }
-    return('')
-  })
-  
-  output$selectInd2_for_testing <- renderPrint({  # not really used except in testing tab
-    if (length(input$selectIndustry2_by_selectInput) > 1) {
-      x=paste(input$selectIndustry2_by_selectInput,collapse=", ")
-      return(paste("Selected industries ", x))
-    } else {
-      # & nchar(input$selectIndustry2_by_selectInput) > 0
-      if (length(input$selectIndustry2_by_selectInput) == 1 ) {
-        return(paste("Selected industry ", input$selectIndustry2_by_selectInput))
-      }
-    } 
-    return('')
-  })
-  
-  output$selectScope1 <- renderPrint({
-    input$goButton1  # seems not to be used at all
-    isolate(input$selectFrom1)
-  })
-  
-  output$selectScope2 <- renderPrint({
-    input$goButton1  # seems not to be used at all
-    isolate(input$selectFrom2) })
-  
-  output$inputValue <- renderPrint(input$goButton3)  # seems not to be used at all
-  output$file_uploaded_FRS_IDs_df <- renderPrint({input$file_uploaded_FRS_IDs}) # not really used except in testing tab
-  output$file_uploaded_latlons_df <- renderPrint({input$file_uploaded_latlons}) # not really used except in testing tab
   # . ####
   # ______________ User inputs _________________ ####
   # . ####
@@ -244,7 +161,7 @@ app_server <- function(input, output, session) {
     maxcutoff = getMaxcutoff()  # reactive, max distance to search
     # get_unique = setUnique()     # reactive, TRUE = stats are for dissolved single buffer to avoid doublecounting. FALSE = we want to count each person once for each site they are near.
     avoidorphans = doExpandradius() # Expand distance searched, when a facility has no census block centroid within selected buffer distance
-
+    
     # ___ getblocksnearby()  ################################
     
     system.time(sites2blocks <- EJAM::getblocksnearby(
@@ -356,7 +273,7 @@ app_server <- function(input, output, session) {
         colnames(sub2)
       }
       print(paste("Number of matches = ", nrow(sub2)))
-       
+      
       ####################################################################################### #
       # _ Find nearby blocks and aggregate for buffer ########
       ####################################################################################### #
@@ -400,6 +317,95 @@ app_server <- function(input, output, session) {
   }
   # _______________________________ ####
   
+  # warnings and text outputs re selected Facilities, Industry, or Locations ##########################################
+  numUniverseSource <- function() {
+    selInd=0
+    if (nchar(input$selectIndustry1_byNAICS)>0 | length(input$selectIndustry2_by_selectInput)>0) {
+      selInd=1
+    }
+    numLoc=nrow(dataLocationList())  # reactive, from reading input$file_uploaded_latlons
+    numFac=nrow(dataFacList())       # reactive, from reading input$file_uploaded_FRS_IDs
+    if (!is.null(numFac)) {
+      if (numFac>0) {numFac=1}
+    }
+    if (!is.null(numLoc)) {
+      if (numLoc>0) {numLoc=1}
+    }
+    tot=sum(selInd,numLoc,numFac)
+    return (tot)
+  }
+  
+  getWarning1 <- function() {
+    if (nchar(input$selectIndustry1_byNAICS)>0 & length(input$selectIndustry2_by_selectInput)>0) {
+      print("Please use a single industry select option.")
+    }
+  }
+  
+  getWarning2 <- function() {
+    tot=numUniverseSource()
+    length_selectIndustry1=0
+    length_selectIndustry2=0
+    if (!is.null(input$selectIndustry1_byNAICS)) {
+      length_selectIndustry1=nchar(input$selectIndustry1_byNAICS)
+    }
+    if (!is.null(input$selectIndustry2_by_selectInput)) {
+      length_selectIndustry2=nchar(input$selectIndustry2_by_selectInput)
+    }
+    if (length_selectIndustry1>0 & length_selectIndustry2>0) {
+      print("Please use a single industry select option.")
+    }
+    else if(tot>1) {
+      print(paste("Please use only one method of selecting universe (ie, select by industry, location, OR facility)"))
+      #print(paste("Please use only one method of selecting universe (ie, select by industry, location, OR facility)",tot,"; numLoc=",nrow(dataLocationList()),"; numFac=",nrow(dataFacList())))
+    }
+  }
+  
+  output$inputWarning <- renderPrint({
+    getWarning1()
+  })
+  
+  output$inputWarning2 <- renderPrint({
+    getWarning2()
+  })
+  
+  output$selectInd1_for_testing <- renderPrint({
+    if (length(input$selectIndustry1_byNAICS) > 1) {  # not really used except in testing tab
+      x = paste(input$selectIndustry1_byNAICS,collapse=", ")
+      return(paste("Selected industries ", x))
+    }  else {
+      if (length(input$selectIndustry1_byNAICS) == 1 & nchar(input$selectIndustry1_byNAICS) > 0) {
+        return(paste("Selected industry ", input$selectIndustry1_byNAICS))
+      }
+    }
+    return('')
+  })
+  
+  output$selectInd2_for_testing <- renderPrint({  # not really used except in testing tab
+    if (length(input$selectIndustry2_by_selectInput) > 1) {
+      x=paste(input$selectIndustry2_by_selectInput,collapse=", ")
+      return(paste("Selected industries ", x))
+    } else {
+      # & nchar(input$selectIndustry2_by_selectInput) > 0
+      if (length(input$selectIndustry2_by_selectInput) == 1 ) {
+        return(paste("Selected industry ", input$selectIndustry2_by_selectInput))
+      }
+    } 
+    return('')
+  })
+  
+  output$selectScope1 <- renderPrint({
+    input$goButton1  # seems not to be used at all
+    isolate(input$selectFrom1)
+  })
+  
+  output$selectScope2 <- renderPrint({
+    input$goButton1  # seems not to be used at all
+    isolate(input$selectFrom2) })
+  
+  output$inputValue <- renderPrint(input$goButton3)  # seems not to be used at all
+  output$file_uploaded_FRS_IDs_df <- renderPrint({input$file_uploaded_FRS_IDs}) # not really used except in testing tab
+  output$file_uploaded_latlons_df <- renderPrint({input$file_uploaded_latlons}) # not really used except in testing tab
+  
   # ###########################################'
   #### Get user info as metadata on results #########
   # ###########################################'
@@ -426,7 +432,7 @@ app_server <- function(input, output, session) {
   ####################################################################################################################### #
   
   # . ####
-  # ______________ WHICH RESULTS? _________________ ####
+  # ______________ WHICH RESULTS TO RETURN? _________________ ####
   # . ####
   # outputs based on latlon, ID, or NAICS _________________ ####
   
@@ -474,11 +480,11 @@ app_server <- function(input, output, session) {
           '\n\n')
       # print(str(datasetResults())) # was for debugging
       
-
+      
       # OUTPUT RESULTS TABLE HERE - ONE ROW IS FOR OVERALL UNIQUE RESIDENTS OR BLOCKS, THEN 1 ROW PER SITE:
       
       write.csv(rbind(datasetResults()$results_overall, datasetResults()$results_bysite, fill=TRUE), file, row.names = FALSE)
-   
+      
       # OBSOLETE code about user metadata we could save ####
       if (1 == 'obsolete code- it was meant to output metadata appended to the tabular results but we want a clean table and any metadata separately if at all') {
         #obsolete code 
@@ -554,11 +560,11 @@ app_server <- function(input, output, session) {
         # write.table(datasetResults()[ , 'results_bysite'], file, append = T, sep=",")
         # write.csv(datasetResults()[ , 'results_bysite'], file)
       }
-     
+      
       cat('\n\n Wrote to ', file)
       #session$reload()
     }
   )
   ############################################################################################## #
-
+  
 }

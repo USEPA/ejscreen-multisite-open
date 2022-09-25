@@ -25,7 +25,7 @@ facilities <- facilities[!is.na(facilities$LAT) & !is.na(facilities$LONG), ]
   facilities[,"FAC_Z"] <- earthRadius_miles * sin(facilities$LAT_RAD)
 
   #now we need to buffer around the grid cell by the actual cutoff distance
-  buffer_indexdistance <- ceiling(cutoff/indexgridsize) # this will be one or larger ... but where is this ever used??  indexgridsize was defined in initialization as say 10 miles
+  # buffer_indexdistance <- ceiling(cutoff/indexgridsize) # this will be one or larger ... but where is this ever used??  indexgridsize was defined in initialization as say 10 miles
 
   # allocate result list
   nRowsDf <- nrow(facilities)

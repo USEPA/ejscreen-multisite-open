@@ -36,10 +36,11 @@ table
 experimental/ work in progress: in chunks, get ACS data via EPA API
 }
 \examples{
- \dontrun {
-  x <- list() # chunked chunks. best not to ask for all these:
-  x[[1]] <- getacs_epaquery_chunked(   1:1000, chunksize = 100)
-  x[[2]] <- getacs_epaquery_chunked(1001:5000, chunksize = 100)
-  xall <- do.call(rbind, x)
- } 
+ #
+ #\dontrun {
+ # x <- list() # chunked chunks. best not to ask for all these:
+ # x[[1]] <- getacs_epaquery_chunked(   1:1000, chunksize = 100)
+ # x[[2]] <- getacs_epaquery_chunked(1001:5000, chunksize = 100)
+ # xall <- do.call(rbind, x)
+ #} 
 }

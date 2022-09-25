@@ -56,7 +56,7 @@ getblocksnearbyviaQuadTree2 <- function(sitepoints, cutoff=1, maxcutoff=31.07,
   
   # indexgridsize was defined in global? could be passed here as a parameter ####
   # and buffer_indexdistance defined here in code but is never used anywhere...  
-  buffer_indexdistance <- ceiling(cutoff / indexgridsize) 
+  # buffer_indexdistance <- ceiling(cutoff / indexgridsize) 
   truedistance <- computeActualDistancefromSurfacedistance(cutoff)   # simply 7918*sin(cutoff/7918) 
   
   # main reason for using foreach::foreach() is that it supports parallel execution,

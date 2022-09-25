@@ -1,4 +1,4 @@
-#' view_results UI Function
+#' PLACEHOLDER FOR POSSIBLE MODULE - view_results UI Function
 #'
 #' @description A shiny Module.
 #'

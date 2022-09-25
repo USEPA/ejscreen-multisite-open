@@ -1,8 +1,8 @@
 ---
-title: "EJAM"
+title: "EJAM - basic usage in RStudio"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{EJAM}
+  %\VignetteIndexEntry{EJAM - basic usage in RStudio}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -39,10 +39,10 @@ library(EJAMblockdata)
 library(EJAMfrsdata)   
 library(data.table)
 # library(EJAMejscreendata) 
-# not needed since this pkg has versions of the key parts,
-# using friendlier variable names and some extra columns of info and race ethnic subgroups
-#
-# data("blockwts") # not needed - it should lazy load as needed from EJAMblockdata::blockwts
+#   is not needed since EJAM pkg has versions of the key parts,
+#   using friendlier variable names and some extra columns of info and race ethnic subgroups
+# data("blockwts") 
+#   is not needed - it should lazy load as needed from EJAMblockdata::blockwts
 ```
 
 ### Create the index of where blocks are, to be able to quickly find those nearby a given site
@@ -82,7 +82,6 @@ sitepoints <- data.table::copy(EJAM::points100example) # [1:5, ]
   avoidorphans <- TRUE
   # max distance to expand search to, if avoidorphans=TRUE
   maxcutoff <- 31.07 # 50 km
-  CountCPU <- parallel::detectCores() # not sure this is used right now
 ```
 
 ### The function getblocksnearby_and_doaggregate() provides results in just one function (or see further below for each step separately)

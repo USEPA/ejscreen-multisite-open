@@ -13,13 +13,13 @@ Imports:
     golem (>= 0.3.3),
     shiny (>= 1.7.2), 
     foreach, 
+    sp, 
+    SearchTrees, 
     data.table, 
+    pdist,
     DBI, 
     RMySQL, 
-    SearchTrees, 
-    doSNOW, 
-    sp, 
-    pdist
+    doSNOW
 Remotes: 
     github::USEPA/EJAMblockdata,
     github::USEPA/EJAMfrsdata

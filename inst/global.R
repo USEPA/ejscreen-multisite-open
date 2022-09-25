@@ -8,21 +8,27 @@
 
 ############ NOTE ON LOADING PACKAGES ############
 
-# DO I NEED TO LOAD SOME OR ALL PACKAGES HERE?
-# Should not load packages using library or require in a package, but specify in DESCRIPTION file.
-# but need to in a Shiny app.
+# Need to clarify how to handle installation of EJAM package if deploying this app to a server.
+# would be installed by someone who gets the package to run locally.
+# Normally in a shiny app you should not load packages using library or require in a package,
+# and just specify in DESCRIPTION file Imports instead.
+# But what about in a golem-style package that is also a Shiny app? 
+# If the pkg gets installed during deployment to the server, DESCRIPTION Imports handles this.
+# But to deploy a shiny app, does the server know to treat it like a package that has to be installed?
+# How does a deployed shiny app like this make clear  require(EJAM) ?
 
-# pkgs <- list()
+library(EJAM)   # # This package's functions and data (blockgroup indicators, NAICS, etc.)
 
-library(EJAM) # This package's functions and data (block points, blockgroup indicators, facility points, NAICS, etc.)
-library(EJAMblockdata)
-library(EJAMfrsdata)
-library(foreach) # main reason for using foreach::foreach() is that it supports parallel execution, that is, it can execute those repeated operations on multiple processors/cores on your computer (and there are other advantages as well)
-library(sp) # https://cran.r-project.org/web/packages/sp/vignettes/over.pdf
-library(SearchTrees)# efficient storage of block points info and selection of those within a certain distance
-library(data.table)  # faster than data.frame
-library(pdist)
-
+# THESE ARE HANDLED BY DESCRIPTION once EJAM package is installed:
+# library(shiny)
+# library(EJAMblockdata)
+# library(EJAMfrsdata)  # Has Facility Registry System FRS list of regulated sites with ID and lat/lon
+# library(sp) # https://cran.r-project.org/web/packages/sp/vignettes/over.pdf
+# library(SearchTrees)# efficient storage of block points info and selection of those within a certain distance
+# library(data.table)  # faster than data.frame
+# library(pdist)
+#  # Possibly less essential?: 
+# library(foreach) # main reason for using foreach::foreach() is that it supports parallel execution, that is, it can execute those repeated operations on multiple processors/cores on your computer (and there are other advantages as well)
 # library(doSNOW) ; library(foreach)  # parallel processing, efficient looping?
 # library(rgdal) ; library(maps) ; library(pdist) #?  # Geospatial tools
 # library(RMySQL) # only if loading data from SQL or using SQL for buffering as was tested in an alternative to getblocksnearby
@@ -31,63 +37,37 @@ library(pdist)
 ############  Things needed only if running this Shiny app:############
 ######################################################################################################## #
 
-library(shiny)
-library(EJAM)
-library(EJAMblockdata)
-library(EJAMfrsdata)
-s_options <- EJAM::NAICS  # lazy loaded from this package as data, used in ui.R
-s_dropdown_naics <- c()
-options(shiny.maxRequestSize = 9*1024^2)
-server <- "127.0.0.1"
-# setwd("~")
+naics_to_pick_from <- EJAM::NAICS  # lazy loaded from package as data, a list of code number and name of industry, used in ui.R
 
+options(shiny.maxRequestSize = 9*1024^2) # not sure what this was for
+server <- "127.0.0.1" # not sure what this was for
 
 ############ PARAMETERS SPECIFIC TO USER OR SERVER ############
 
 # these probably should get passed as user-specified parameters to functions with default values, rather than putting them in a script
 # CountCPU <- 2
 CountCPU <- parallel::detectCores() # this only matters if using getblocksnearbyviaQuadTree_Clustered 
-indexgridsize <- 10  # need to confirm if and how this grid is actually used
-translate_fieldnames <- TRUE # may depend on dataset - this is about whether to rename the columns to friendlier variable names in init.getdata.R
-
-maxcutoff_default <- 4000 # 4000 miles seems excessive, so just check if it matters for performance. 
-
-############ GET DATASETS? in package ############
-# 
-# For names of the data files needed and their colnames, see
-# EJAM-package.R via help(package='EJAM')
+# indexgridsize <- 10  # unused. need to confirm if and how this grid was actually used
+# translate_fieldnames <- TRUE #unused. may depend on dataset - this is about whether to rename the columns to friendlier variable names in init.getdata.R
+maxcutoff_default <- 4000 # 4000 miles seems excessive, so just check if it matters for performance. for some reason the old code in server makes this into a reactive and then uses it every time getblocksnearby() is called
 
 ############ CONSTANTS ############
 
 earthRadius_miles <- 3959 # hard coded this elsewhere but not everywhere
+crd <- function(x) {2 * sin(x / 2)}
 
-crd <- function(x){
-  return( 2*sin(x/2) )
-}
-
-#### calculate DEMOGRAPHIC INDEX for US overall, needed later #####
+#### MUST UPDATE FOR EACH VERSION OF EJScreen ! *** ###################################
+# calculate DEMOGRAPHIC INDEX for US overall, needed later #####
 #
 # As seen in the lookup table:
-# National_Demographic_Index <- EJAM::usastats[EJAM::usastats$PCTILE == 'mean', 'VULEOPCT']
-# EJSCREEN2019 (ACS2013-2017) value is  0.3588634
+# EJScreen 2.1  (ACS2016-2020) value is 0.347071
+National_Demographic_Index <- EJAM::usastats$VSI.eo[EJAM::usastats$PCTILE == 'mean']
+# same answer:
+#looktemp = EJAMejscreendata::USA_2022
+#looktemp$VULEOPCT[looktemp$PCTILE == 'mean']
+###[1] 0.347071
 #
-# As Calculated from the full latest dataset:
-# This is a close enough approximation (see examples below) of more careful method where povknownratio is denominator for pctlowinc:
-
-National_Demographic_Index <- (stats::weighted.mean(EJAM::blockgroupstats$pctmin, EJAM::blockgroupstats$pop, na.rm = TRUE) +
-                                 stats::weighted.mean(EJAM::blockgroupstats$pctlowinc, EJAM::blockgroupstats$pop, na.rm = TRUE) ) / 2
-# National_Demographic_Index <- (stats::weighted.mean(EJAM::blockgroupstats$pctmin, EJAM::blockgroupstats$pop, na.rm = TRUE) +
-#                                  stats::weighted.mean(EJAM::blockgroupstats$pctlowinc, EJAM::blockgroupstats$pop, na.rm = TRUE) ) / 2
-
-# cat(
-#   '\n CALCULATED DEMOG US INDEX AVG: \n National_Demographic_Index <- usastats[usastats$PCTILE == \'mean\',
-#   \'VULEOPCT\'] # 2016 value is  0.3588634 \n\n'
-# )
-
-
-
-
-# comparing ways of calculating national overall avg of us pctlowinc and us pctmin:
+# ## compare ways of calculating national overall avg of us pctlowinc and us pctmin:
 #
 #  pctlowinc.us.popwtd <- stats::weighted.mean(blockgroupstats$pctlowinc, blockgroupstats$pop, na.rm = TRUE)
 #  pctmin.us.popwtd    <- stats::weighted.mean(blockgroupstats$pctmin,    blockgroupstats$pop, na.rm = TRUE)
@@ -95,7 +75,7 @@ National_Demographic_Index <- (stats::weighted.mean(EJAM::blockgroupstats$pctmin
 #  pctmin.us.careful    <- sum(blockgroupstats$mins,   na.rm = TRUE) / sum(blockgroupstats$pop,           na.rm = TRUE)
 #
 #  vsi.us.popwtd.vsi <- stats::weighted.mean(blockgroupstats$VSI.eo, blockgroupstats$pop, na.rm = TRUE)
-#  vsi.us.popwtd.each <- mean(c( pctlowinc.us.popwtd,  pctmin.us.popwtd),  na.rm = TRUE)
+#  vsi.us.popwtd.each <- mean(c( pctlowinc.us.popwtd,  pctmin.us.popwtd),  na.rm = TRUE) # simplistic if pop not povknownratio is weight
 #  vsi.us.careful     <- mean(c( pctlowinc.us.careful, pctmin.us.careful), na.rm = TRUE)
 #
 #  rbind(pctlowinc.us.careful, pctlowinc.us.popwtd, pctmin.us.careful,pctmin.us.popwtd)
@@ -110,17 +90,5 @@ National_Demographic_Index <- (stats::weighted.mean(EJAM::blockgroupstats$pctmin
 # # vsi.us.careful     0.359 477   # ** only slighly different -- mean of the two US values that are exact overall US % of correct denominator
 # # vsi.us.popwtd.each 0.360 171   # mean of the two US values that are popwtd means of bgs
 # # vsi.us.popwtd.vsi  0.360 142   # mean of popwtd means is almost same as popwtd mean of means
-
-
-
-# if (exists(usastats)) {
-#   # To calculate this constant that is needed later:
-#   National_Demographic_Index <- usastats[usastats$PCTILE == 'mean', 'VULEOPCT'] # 2016 value is  0.3588634
-#   cat(
-#     '\n CALCULATED DEMOG US INDEX AVG: \n National_Demographic_Index <- usastats[usastats$PCTILE == \'mean\',
-#   \'VULEOPCT\'] # 2016 value is  0.3588634 \n\n'
-#   )
-# } else {
-#   # approximation while testing
-#   National_Demographic_Index <- 0.36
-# }
+# #
+# National_Demographic_Index <-  vsi.us.careful
