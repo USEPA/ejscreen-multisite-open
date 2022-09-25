@@ -18,6 +18,10 @@ app_server <- function(input, output, session) {
   #  mod_save_report_server("save_report_1")
   #  mod_specify_sites_server("specify_sites_1")
   
+  # [this is a button that helps while debugging (REMOVE BEFORE DEPLOYING)] ####
+  observeEvent(input$browser,{
+    browser()
+  })
   
   # Build localtree quad tree index for EVERY session?? ####
   ## *** DOES localtree HAVE TO BE RECREATED EACH TIME dataLocationListProcessed REACTIVE UPDATES??

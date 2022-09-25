@@ -18,6 +18,13 @@ app_ui <- function(request) {
     #  mod_save_report_ui("save_report_1")
     #  mod_specify_sites_ui("specify_sites_1")
     
+    # [this is a button that helps while debugging (REMOVE BEFORE DEPLOYING)] ####
+    # And to unhide the button in the app, while debugging, go 
+    # to your web browser, open the JS console, 
+    # And type:
+    #   $('#browser').show();
+    actionButton("browser", "browser"),
+    tags$script("$('#browser').hide();"),
     
     fluidPage( # Overall fluidPage ####
                htmltools::includeCSS("inst/app/www/styles.css"),
