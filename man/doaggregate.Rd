@@ -27,11 +27,17 @@ This updated 2022 code takes a set of facilities and the set of blocks that are 
   and combines those with indicator scores for block groups.
 
   It aggregates the blockgroup scores to create a summary of each indicator,
+   as a raw score and US percentile and State percentile,
    in each buffer (i.e., near each facility):
-     -Sums of counts, such as for population or number of households or Hispanics
-     -Calculated variables for the buffer via formulas based on aggregated counts, 
-       such as percent low income.
-     -Population-Weighted means for EJ Indexes or Environmental indicators.
+     - SUMS of counts: such as for population or number of households or Hispanics
+     - POPULATION-WEIGHTED MEANS: for  Environmental indicators.
+     -  NOTE: *** EJ Indexes: These could be in theory recalculated via formula, but the way EJScreen 
+         does this is apparently finding the pop wtd mean of EJ Index raw scores,
+         not the EJ Index formula applied to the summarized demographic score and aggregated envt number.
+     - CALCULATED BY FORMULA: Buffer or overall score calculated via formulas using aggregated counts, 
+         such as percent low income = sum of counts low income / sum of counts of denominator, 
+         which in this case is the count of those for whom the poverty ratio is known.
+     - LOOKED UP VALUES: Aggregated scores are converted into percentile terms via lookup tables (US or State version).
 }
 \details{
 \preformatted{

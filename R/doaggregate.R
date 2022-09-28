@@ -5,11 +5,17 @@
 #'   and combines those with indicator scores for block groups.
 #'
 #'   It aggregates the blockgroup scores to create a summary of each indicator,
+#'    as a raw score and US percentile and State percentile,
 #'    in each buffer (i.e., near each facility):
-#'      -Sums of counts, such as for population or number of households or Hispanics
-#'      -Calculated variables for the buffer via formulas based on aggregated counts, 
-#'        such as percent low income.
-#'      -Population-Weighted means for EJ Indexes or Environmental indicators.
+#'      - SUMS of counts: such as for population or number of households or Hispanics
+#'      - POPULATION-WEIGHTED MEANS: for  Environmental indicators.
+#'      -  NOTE: *** EJ Indexes: These could be in theory recalculated via formula, but the way EJScreen 
+#'          does this is apparently finding the pop wtd mean of EJ Index raw scores,
+#'          not the EJ Index formula applied to the summarized demographic score and aggregated envt number.
+#'      - CALCULATED BY FORMULA: Buffer or overall score calculated via formulas using aggregated counts, 
+#'          such as percent low income = sum of counts low income / sum of counts of denominator, 
+#'          which in this case is the count of those for whom the poverty ratio is known.
+#'      - LOOKED UP VALUES: Aggregated scores are converted into percentile terms via lookup tables (US or State version).
 #'
 #' @details
 #'  \preformatted{
@@ -40,6 +46,15 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
   
   # HARDCODED blockgroup dataset, FOR NOW ####
   # including the names of the variables.
+  # 
+  # This function could either take as input params...
+  # - lists of variable names and a data.frame (like now), 
+  #   or 
+  # - lists of the actual indicator values, 
+  #   or   
+  # - it could even be given a table of scores and a table of what to do with each indicator (their names, 
+  #   formulas for them, etc.)
+  # for each type of indicator (countcols vs popmeancols, etc.),
   
   ##################################################### #  ##################################################### #
   # Which vars are sum of counts, vs wtd avg, vs via formula ####
@@ -94,7 +109,7 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
       "EJ.DISPARITY.proximity.npl.eo", "EJ.DISPARITY.proximity.rmp.eo", "EJ.DISPARITY.proximity.tsdf.eo", "EJ.DISPARITY.proximity.npdes.eo", 
       "EJ.DISPARITY.ust.eo"
       
-      # QUESTION... DO WE CALCULATE THE STATE-FOCUSED EJ INDEXES USING THE STATE AVERAGE DEMOG?? ejscreen was not doing that as of mid 2022 even though it should have been?, 
+      # WE NEED TO ADD  STATE-FOCUSED EJ INDEXES 
       # & ASSIGN STATE PERCENTILES OF EJ INDEXES AND THEN ROLL UP IN BUFFER BY FINDING POPWTD MEAN STATE PERCENTILE???
       #  OR DO WE ASSUME THE ENTIRE BUFFER IS MAINLY OR ALL IN ONE STATE AND LOOK UP THE RAW EJ INDEX IN THAT STATE'S LOOKUP TO ASSIGN THE PERCENTILE. THE LATTER, I THINK. 
     )
@@ -273,8 +288,9 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
   rm(results_bysite_popmeans,  sites2bgs_plusblockgroupdate_bysite)
   
   ##################################################### #
-  # and/or if some variables have to be calculated using formulas, 
-  # can do that using the list of formulas and this function: ... 
+  # CALC via FORMULAS [hardcoded here, for now]
+  # could do that using a list of formulas like in ejscreen::ejscreenformulas 
+  # and a function like analyze.stuff::calc.fields() 
   ##################################################### #
   
   # CALC via FORMULAS with Rolled up Counts #### 
@@ -283,44 +299,44 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
   # "nonmins <- nhwa"
   # "mins <- pop - nhwa" 
   results_overall[ , `:=`(
-    pctover64 = ifelse(pop==0, 0, over64 / pop),
-    pctunder5 = ifelse(pop==0, 0, under5 / pop),
-    pcthisp = ifelse(pop==0, 0, as.numeric(hisp ) / pop),
-    pctnhwa = ifelse(pop==0, 0, as.numeric(nhwa ) / pop),
-    pctnhba = ifelse(pop==0, 0, as.numeric(nhba ) / pop) ,
-    pctnhaiana = ifelse(pop==0, 0, as.numeric(nhaiana ) / pop),
-    pctnhaa = ifelse(pop==0, 0, as.numeric(nhaa ) / pop), 
-    pctnhnhpia = ifelse(pop==0, 0, as.numeric(nhnhpia ) / pop),
-    pctnhotheralone = ifelse(pop==0, 0, as.numeric(nhotheralone ) / pop), 
-    pctnhmulti = ifelse(pop==0, 0, as.numeric(nhmulti ) / pop),
-    pctmin = ifelse(pop==0, 0, as.numeric(mins ) / pop), 
-    pctlowinc = ifelse( povknownratio==0, 0, lowinc / povknownratio),                                                                                                                      
-    pctlths = ifelse(age25up==0, 0, as.numeric(lths ) / age25up), 
-    pctlingiso = ifelse( hhlds==0, 0, lingiso / hhlds), 
-    pctpre1960 = ifelse( builtunits==0, 0, pre1960 / builtunits),
-    pctunemployed = ifelse(unemployedbase==0, 0, as.numeric(unemployed) / unemployedbase)
+    pctover64       = ifelse(pop==0, 0,            over64        / pop),
+    pctunder5       = ifelse(pop==0, 0,            under5        / pop),
+    pcthisp         = ifelse(pop==0, 0, as.numeric(hisp )        / pop),
+    pctnhwa         = ifelse(pop==0, 0, as.numeric(nhwa )        / pop),
+    pctnhba         = ifelse(pop==0, 0, as.numeric(nhba )        / pop),
+    pctnhaiana      = ifelse(pop==0, 0, as.numeric(nhaiana)      / pop),
+    pctnhaa         = ifelse(pop==0, 0, as.numeric(nhaa )        / pop), 
+    pctnhnhpia      = ifelse(pop==0, 0, as.numeric(nhnhpia )     / pop),
+    pctnhotheralone = ifelse(pop==0, 0, as.numeric(nhotheralone) / pop), 
+    pctnhmulti      = ifelse(pop==0, 0, as.numeric(nhmulti )     / pop),
+    pctmin          = ifelse(pop==0, 0, as.numeric(mins)         / pop), 
+    pctlow        = ifelse(povknownratio  == 0, 0, lowinc                 / povknownratio),
+    pctlths       = ifelse(age25up        == 0, 0, as.numeric(lths)       / age25up), 
+    pctlingiso    = ifelse(hhlds          == 0, 0, lingiso                / hhlds), 
+    pctpre1960    = ifelse(builtunits     == 0, 0, pre1960                / builtunits),
+    pctunemployed = ifelse(unemployedbase == 0, 0, as.numeric(unemployed) / unemployedbase)
   ) ]
   # cbind(sum = prettyNum(results_overall, big.mark = ','))
   results_overall[ , `:=`(
-    VSI.eo = (pctlowinc + pctmin) / 2
+    VSI.eo = (pctlowinc + pctmin) / 2  # *** NEED TO CONFIRM V 2.1 STILL USES THIS ####
   )]
   results_bysite[ , `:=`(
-    pctover64 = ifelse(pop==0, 0, over64 / pop),
-    pctunder5 = ifelse(pop==0, 0, under5 / pop),
-    pcthisp = ifelse(pop==0, 0, as.numeric(hisp ) / pop),
-    pctnhwa = ifelse(pop==0, 0, as.numeric(nhwa ) / pop),
-    pctnhba = ifelse(pop==0, 0, as.numeric(nhba ) / pop) ,
-    pctnhaiana = ifelse(pop==0, 0, as.numeric(nhaiana ) / pop),
-    pctnhaa = ifelse(pop==0, 0, as.numeric(nhaa ) / pop), 
-    pctnhnhpia = ifelse(pop==0, 0, as.numeric(nhnhpia ) / pop),
-    pctnhotheralone = ifelse(pop==0, 0, as.numeric(nhotheralone ) / pop), 
-    pctnhmulti = ifelse(pop==0, 0, as.numeric(nhmulti ) / pop),
-    pctmin = ifelse(pop==0, 0, as.numeric(mins ) / pop), 
-    pctlowinc = ifelse( povknownratio==0, 0, lowinc / povknownratio),                                                                                                                      
-    pctlths = ifelse(age25up==0, 0, as.numeric(lths ) / age25up), 
-    pctlingiso = ifelse( hhlds==0, 0, lingiso / hhlds), 
-    pctpre1960 = ifelse( builtunits==0, 0, pre1960 / builtunits),
-    pctunemployed = ifelse(unemployedbase==0, 0, as.numeric(unemployed) / unemployedbase)
+    pctover64       = ifelse(pop==0, 0,            over64        / pop),
+    pctunder5       = ifelse(pop==0, 0,            under5        / pop),
+    pcthisp         = ifelse(pop==0, 0, as.numeric(hisp )        / pop),
+    pctnhwa         = ifelse(pop==0, 0, as.numeric(nhwa )        / pop),
+    pctnhba         = ifelse(pop==0, 0, as.numeric(nhba )        / pop),
+    pctnhaiana      = ifelse(pop==0, 0, as.numeric(nhaiana)      / pop),
+    pctnhaa         = ifelse(pop==0, 0, as.numeric(nhaa )        / pop), 
+    pctnhnhpia      = ifelse(pop==0, 0, as.numeric(nhnhpia )     / pop),
+    pctnhotheralone = ifelse(pop==0, 0, as.numeric(nhotheralone) / pop), 
+    pctnhmulti      = ifelse(pop==0, 0, as.numeric(nhmulti )     / pop),
+    pctmin          = ifelse(pop==0, 0, as.numeric(mins)         / pop), 
+    pctlow        = ifelse(povknownratio  == 0, 0, lowinc                 / povknownratio),
+    pctlths       = ifelse(age25up        == 0, 0, as.numeric(lths)       / age25up), 
+    pctlingiso    = ifelse(hhlds          == 0, 0, lingiso                / hhlds), 
+    pctpre1960    = ifelse(builtunits     == 0, 0, pre1960                / builtunits),
+    pctunemployed = ifelse(unemployedbase == 0, 0, as.numeric(unemployed) / unemployedbase)
   ) ]
   results_bysite[ , `:=`(
     VSI.eo = (pctlowinc + pctmin) / 2
@@ -373,7 +389,7 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
   
   # hard coded for now:
   # varsneedpctiles <- c(ejscreen::names.e, union(ejscreen::names.d, 'pctunemployed'), ejscreen::names.d.subgroups, ejscreen::names.ej)
-  varsneedpctiles <- c(names_e, union( names_d, 'pctunemployed'),  names_d_subgroups, names_ej)
+  varsneedpctiles <- c(names_e,  names_d, names_d_subgroups, names_ej)
   varnames.us.pctile <- paste0('pctile.', varsneedpctiles)
   varnames.state.pctile <- paste0('state.pctile.', varsneedpctiles)
   
@@ -383,34 +399,38 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
   state.pctile.cols_overall <- data.frame(matrix(nrow = NROW(results_overall), ncol = length(varsneedpctiles))); colnames(state.pctile.cols_overall) <- varnames.state.pctile
   
   for (i in seq_along(varsneedpctiles)) {
-    # using EJAM::usastats not ejscreen::lookupUSA now but older code 2015 had used  EJAM::lookup.pctile.US(results_bysite[ , myvar], .....  i=1
+    # using EJAM::usastats not ejscreen::lookupUSA now
     myvar <- varsneedpctiles[i]
     if (myvar %in% names(usastats)) { # just like ejscreen::lookupUSA , and EJAM::lookup.pctile.US is like ejanalysis::lookup.pctile()
-      us.pctile.cols_bysite[ , varnames.us.pctile[[i]]] <-  lookup.pctile.US(unlist(results_bysite[  , ..myvar]), varname.in.lookup.table = myvar, lookup = usastats) 
-      us.pctile.cols_overall[, varnames.us.pctile[[i]]] <-  lookup.pctile.US(unlist(results_overall[ , ..myvar]), varname.in.lookup.table = myvar, lookup = usastats) 
-      # state.pctile.cols_bysite[ , varnames.state.pctile[[i]]] <- lookup.pctile.US(unlist(results_bysite[  , ..myvar]), varname.in.lookup.table = myvar, lookup = statestats, zone =  results_bysite$ST) 
-      # It may not make sense to do state percentiles except for EJ Indexes, in the "overall" summary:
-      # state.pctile.cols_overall[, varnames.state.pctile[[i]]] <- lookup.pctile.US(results_overall[ , varsneedpctiles[i]], varname.in.lookup.table = varsneedpctiles[i], lookup = statestats, zone =  results_overall$ST)
+      us.pctile.cols_bysite[    , varnames.us.pctile[[i]]]    <- lookup.pctile.US(unlist(results_bysite[  , ..myvar]), varname.in.lookup.table = myvar, lookup = usastats) 
+      us.pctile.cols_overall[   , varnames.us.pctile[[i]]]    <- lookup.pctile.US(unlist(results_overall[ , ..myvar]), varname.in.lookup.table = myvar, lookup = usastats) 
+      state.pctile.cols_bysite[ , varnames.state.pctile[[i]]] <- lookup.pctile.US(unlist(results_bysite[  , ..myvar]), varname.in.lookup.table = myvar, lookup = statestats, zone =  results_bysite$ST)
+      state.pctile.cols_overall[, varnames.state.pctile[[i]]] <- lookup.pctile.US(unlist(results_overall[ , ..myvar]), varname.in.lookup.table = myvar, lookup = statestats, zone =  results_overall$ST)
+      # but it may not make sense to do state percentiles except for EJ Indexes, in the "overall" summary?
     } else {
-      us.pctile.cols_bysite[ , varnames.us.pctile[[i]]] <- NA
-      us.pctile.cols_overall[, varnames.us.pctile[[i]]] <- NA
+      us.pctile.cols_bysite[  , varnames.us.pctile[[i]]] <- NA
+      us.pctile.cols_overall[ , varnames.us.pctile[[i]]] <- NA
+      state.pctile.cols_bysite[ , varnames.state.pctile[[i]]] <- NA
+      state.pctile.cols_overall[, varnames.state.pctile[[i]]] <- NA
     }
   }
-  
   # setdiff(varsneedpctiles, names(usastats)) # like ejscreen::lookupUSA
   # [1] "ust"                 "pctunemployed"      "pctnhwa"             "pcthisp"            
   # [5] "pctnhba"             "pctnhaa"             "pctnhaiana"          "pctnhnhpia"         
   # [9] "pctnhotheralone"     "pctnhmulti"          "EJ.DISPARITY.ust.eo"
   
   results_overall <- cbind(siteid=NA, results_overall, us.pctile.cols_overall, state.pctile.cols_overall)
-  results_bysite  <- cbind(results_bysite,  us.pctile.cols_bysite,  state.pctile.cols_bysite)
+  results_bysite  <- cbind(           results_bysite,  us.pctile.cols_bysite,  state.pctile.cols_bysite )
   
   ##################################################### #  ##################################################### #  ##################################################### #
   # DONE - Return list of results ####
   
-  results <- list(results_overall = results_overall, results_bysite = results_bysite)
+  results <- list(
+    results_overall = results_overall, 
+    results_bysite = results_bysite
+  )
   return(results)
   ##################################################### #  ##################################################### #  ##################################################### #
 }
-  
-  
+
+
