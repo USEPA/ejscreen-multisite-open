@@ -3,8 +3,8 @@
 #' @title EJSCREEN demographic and enviromental indicators for Census block groups
 #'
 #' @description 
-#' This is essentially the EJSCREEN dataset, plus more demographic subgroups.  
-#'   It has demographic and environmental data from EJSCREEN.
+#' This is essentially the EJScreen dataset, plus more demographic subgroups.  
+#'   It has demographic and environmental data from EJScreen.
 #'   
 #' @details 
 #'   As of 10/2022 it will be EJScreen 2.1 version of data, which uses ACS 2016-2020.
@@ -14,6 +14,7 @@
 #'   NOTE: It also has the race/ethnic subgroups that add up to minority or people of color 
 #'   
 #'   Each year this could be created as for the latest version.
+#'   See attributes(blockgroupstats)
 #'   It is also available in a similar form via the ejscreen package on github, 
 #'   but there are differences in which columns are kept.
 #'   
@@ -24,6 +25,6 @@
 #'   
 #'   See notes on cleaning up and changing the dataset starting from ejscreen::bg22plus
 #'   
-#'   see source code in EJAM::create_blockgroupstats ? 
+#'   see source code and notes in EJAM::create_blockgroupstats  
 #'   
 NULL
