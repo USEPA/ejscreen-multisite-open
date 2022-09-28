@@ -1,10 +1,10 @@
-#'  old code to create a look up table to find percentile that a raw score is at within given US State
+#'  obsolete code to create a look up table to find percentile that a raw score is at within given US State
 #'
 #' @details CURRENTLY HARD CODED TO USE THESE SPECIFIC FIELDS - NEEDS TO BE MADE GENERIC.
 #'   This should be about the same as ejanalysis::lookup.pctile()
 #'   using lookup tables from something like ejscreen::ejscreen.lookuptables()
 #'   See user ejanalysis, ejscreen and ejanalysis packages on GitHub
-#'
+#'   
 #' @param data passed to \link{lookup.pctile.US}
 #' @param thisregion passed to \link{lookup.pctile.US}
 #' @param ... passed to \link{lookup.pctile.US}
@@ -13,7 +13,8 @@
 #' @export
 #'
 lookup.pctile.State <- function(data, thisregion, ...) {
-  lookup.pctile.US(data = data, thisregion = thisregion, geolevel = 'state', ...)
+  stop('obsolete function')
+  # lookup.pctile.US(data = data, thisregion = thisregion, geolevel = 'state', ...)
 }
 
 # old version copied most of US code

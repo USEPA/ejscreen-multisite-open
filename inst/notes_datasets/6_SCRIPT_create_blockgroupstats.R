@@ -1,8 +1,66 @@
+#################################################################################################### #
+# create ejscreen datasets for EJAM etc ####
+
+## FULL SET OF SCRIPTS  to create EJScreen-related datasets, including blockgroupstats.rda for EJAM  
+
+# 0.   EJAM/inst/notes_datasets/0_SCRIPT_overview_get_ejscreendata.R
+#       - this list of steps
+# 1.   EJAM/inst/notes_datasets/1_SCRIPT_EJAMejscreen_download.R  
+#       - to add metadata also see  ejscreen::add_metadata() 
+# 2.   EJAM/inst/notes_datasets/2_SCRIPT_FOR_FIPS_ST_TRACT_CNTY.R    
+#       - to rename cols and add some fips fields and fix countyname col
+# 3.   EJAM/inst/notes_datasets/3_SCRIPT_create_bgDemog_ejscreen2.1_andtracts.R 
+#       - to get demog race ethnicity subgroups 
+# 4.   EJAM/inst/notes_datasets/4_SCRIPT_ADD_PUERTORICO_DEMOG_SUBGROUPS.R 
+#       - to download the PR demog subgroup part
+# 5.   EJAM/inst/notes_datasets/5_SCRIPT_merge_demogsubgroups_v2.1.R  
+#       - to MERGE SUBGROUPS info TO EJScreen  
+# 6.   EJAM/inst/notes_datasets/6_SCRIPT_create_blockgroupstats.R 
+#       - to simplify and save as data.table for EJAM::blockgroupstats
+
+#################################################################################################### #
+######################################################################## #
+# # notes on converting 
+# EJAMejscreendata::EJSCREEN_Full_with_AS_CNMI_GU_VI  etc.
+# and
+# ejscreen::bg22DemographicSubgroups2016to2020  (might not save this separately)
+# to
+# EJAMejscreendata::EJAMejscreendata::EJSCREEN_Full_with_AS_CNMI_GU_VI   etc.
+# and 
+# EJAM::blockgroupstats
+# and
+# ejscreen::bg22plus
+######################################################################## #
+
+
+# Redone 9/2022 to start from EJAMejscreendata::EJSCREEN_Full_with_AS_CNMI_GU_VI
+# and EJAMejscreendata::EJSCREEN_StatePct_with_AS_CNMI_GU_VI
+# plus demog race/ethnic subgroups
+
+library(EJAMejscreendata) 
+# EJAMejscreendata::EJSCREEN_Full_with_AS_CNMI_GU_VI
+# EJAMejscreendata::EJSCREEN_StatePct_with_AS_CNMI_GU_VI
+
+
+
+
 create_blockgroupstats <- function(bg=ejscreen::bg22plus , meta) {
+  
   ## script to create blockgroupstats.rda for EJAM
   
-  b2 <- bg #  # work with it as a data.frame not data.table until a later step
+  if (missing(meta)) {
+    meta   <- list(
+      census_version = 2020,
+      acs_version = '2016-2020',
+      acs_releasedate = '3/17/2022',
+      ejscreen_version = '2.1',
+      ejscreen_releasedate = 'October 2022',
+      ejscreen_pkg_data = 'bg22'
+    )
+  }
+  #later: attributes(blockgroupstats) <- c(attributes(blockgroupstats), meta)
   
+  b2 <- bg #  # work with it as a data.frame not data.table until a later step
   # b2 <- bg22plus
   
   # drop the bin number for percentiles, which just tells what decile except 10 is 90-95th pctile and bin 11 is 95-100, like ejscreen orange and red map colors in choropleths 
@@ -11,7 +69,9 @@ create_blockgroupstats <- function(bg=ejscreen::bg22plus , meta) {
   dropping <- c(dropping, grep('^pctile\\.text', names(b2), value = TRUE ) ) # certainly do not need pctile.text... cols
   dropping <- c(dropping, grep('^pctile\\.',     names(b2), value = TRUE)) # probably do not need these - pctiles for buffer scores are looked up, not calculated as popwtd means, right?
   # dropping <- c(dropping, "VNI.eo", "VDI.eo") #obsolete, they were basis for alt1 and alt2 EJ Indexes. VNI.eo is just mean of mins and lowinc counts. VSI.eo is mean of pctlowinc and pctmin, simple avg of those 2, treating as if denominator is pop for both.
+  
   dropping <- c(dropping, "FIPS.TRACT", "FIPS.COUNTY", 'countyname', "FIPS.ST", "ST", "statename", "REGION") # none stay useful if just using blockgroupstats for buffer summary since buffer can span multiple states, etc.
+  
   dropping <- c(dropping, "AREALAND", "AREAWATER", 'area') # could be analyzed as a count variable to get total area, but if circular buffer pi * radius^2 is easier
   dropping <- c(dropping,  "OBJECTID") # maybe keep ??
   dropping <- c(dropping, 'Shape_Length') # to avoid issue when merge since both files have these cols
@@ -20,7 +80,7 @@ create_blockgroupstats <- function(bg=ejscreen::bg22plus , meta) {
   
   b2 <- b2[ , !names(b2) %in% dropping]
   
-  names(b2) <- gsub('FIPS', 'bgfips', names(b2))
+  names(b2) <- gsub('FIPS$', 'bgfips', names(b2))
   names(b2) <- gsub('NPL_CNT', 'count.NPL', names(b2))
   names(b2) <- gsub('TSDF_CNT', 'count.TSDF', names(b2))
   
@@ -31,16 +91,7 @@ create_blockgroupstats <- function(bg=ejscreen::bg22plus , meta) {
   data.table::setDT(blockgroupstats, key = 'bgid') # by reference only 
   rm(b2); rm(subgroups);rm(dropping)
   
-  if (missing(meta)) {
-    meta   <- list(
-      census_version = 2020,
-      acs_version = '2016-2020',
-      acs_releasedate = '3/17/2022',
-      ejscreen_version = '2.1',
-      ejscreen_releasedate = 'September 2022',
-      ejscreen_pkg_data = 'bg22'
-    )
-  }
+
   attributes(blockgroupstats) <- c(attributes(blockgroupstats), meta)
   
   

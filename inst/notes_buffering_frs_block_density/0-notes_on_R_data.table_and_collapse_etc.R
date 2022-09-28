@@ -1,18 +1,9 @@
 # notes_on_R_data.table_and_collapse_etc
 # 
-# 
 # ################################################
 # # general notes on R and data.table package
 # ################################################
 # 
-# BIG BOOK OF R
-# https://www.bigbookofr.com/index.html
-# some graphics to look at:
-#   library(inspectdf) 
-# https://bbc.github.io/rcookbook/#how_does_the_bbplot_package_work 
-#   https://www.desmog.com/2022/01/11/proximity-oil-gas-drilling-hypertension-pregnancy-willis/
-#   
-#   
 #   DATA TABLE - UPDATE BY REFERENCE TO AVOID COPIES:
 #   
 #   General note on data.table and making copies vs just updating by reference:
