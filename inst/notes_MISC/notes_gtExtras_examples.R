@@ -26,7 +26,7 @@ pen_qu <- penguins |>
   dplyr::group_by(species, sex) |>
   dplyr::summarise(
     quantile = list(
-      quantile(body_mass_g,
+      stats::quantile(body_mass_g,
                c(0.25, 0.5, 0.75),
                q = c(0.25, 0.5, 0.75)
       )
