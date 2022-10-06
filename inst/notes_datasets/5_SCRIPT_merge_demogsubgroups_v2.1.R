@@ -44,7 +44,7 @@ addmargins(table(substr(bg22DemographicSubgroups2016to2020$FIPS,1,2) != '72'))
 # bg22plus <- bg22plus[bg22plus$ST != 'PR',]
 ################################################### #
 
-# bg22plus <- ejscreen::add_metadata(bg22plus)
+# bg22plus <- ejscreen::metadata_add(bg22plus)
 # set attributes to store metadata on vintage ####
 metadata <- list(
   census_version = 2020,

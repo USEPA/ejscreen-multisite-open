@@ -24,7 +24,7 @@ EJSCREEN_StatePct_with_AS_CNMI_GU_VI  <- as.data.frame(readr::read_csv("EJSCREEN
 USA_2022                              <- as.data.frame(readr::read_csv("USA_2022.csv"))
 States_2022                           <- as.data.frame(readr::read_csv("States_2022.csv"))
 
-# see add_metadata() and rdattr()  or set metadata like this instead:
+# see metadata_add() and metadata_check()  or set metadata like this instead:
 #e.g., 
 #  meta   <- list(
 #    census_version = 2020,

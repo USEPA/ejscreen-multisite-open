@@ -32,7 +32,7 @@ MeansByGroup_and_Ratios <- ejanalysis::RR.means(
 )
 MeansByGroup_and_Ratios 
 
-# MeansByGroup_and_Ratios <- ejscreen::add_metadata(MeansByGroup_and_Ratios)
+# MeansByGroup_and_Ratios <- metadata_add(MeansByGroup_and_Ratios)
 # or manually set attributes to store metadata on vintage
 metadata <- list(
   census_version = 2020,
@@ -43,6 +43,7 @@ metadata <- list(
   ejscreen_pkg_data = 'bg22'
 )
 attributes(MeansByGroup_and_Ratios) <- c(attributes(MeansByGroup_and_Ratios), metadata)
+
 usethis::use_data(MeansByGroup_and_Ratios)
 
 rm(bg)

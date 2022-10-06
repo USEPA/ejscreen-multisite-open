@@ -21,8 +21,11 @@ if (FALSE) {
   library(data.table)
   # data("blockwts") # not needed - this should lazy load as needed from EJAMblockdata pkg
   
+  # if quaddata didn't already exist, it would be created from block points like this:
+  
   # NEXT STEP IS SLOW - takes about 5 seconds ------------
   # This must be done for each session?? - One cannot save it as .rda and just load via a pkg. 
+  # The 1st 2 columns of EJAMblockdata::quaddata have to be the x and y 
   system.time({
     localtree <- SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
   })

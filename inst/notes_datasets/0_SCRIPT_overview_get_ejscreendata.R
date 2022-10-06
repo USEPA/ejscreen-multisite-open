@@ -7,7 +7,7 @@
 # 0.   EJAM/inst/notes_datasets/0_SCRIPT_overview_get_ejscreendata.R
 #       - this list of steps
 # 1.   EJAM/inst/notes_datasets/1_SCRIPT_EJAMejscreen_download.R  
-#       - to add metadata also see  ejscreen::add_metadata() 
+#       - to add metadata also see  EJAM::metadata_add()
 # 2.   EJAM/inst/notes_datasets/2_SCRIPT_FOR_FIPS_ST_TRACT_CNTY.R    
 #       - to rename cols and add some fips fields and fix countyname col
 # 3.   EJAM/inst/notes_datasets/3_SCRIPT_create_bgDemog_ejscreen2.1_andtracts.R 

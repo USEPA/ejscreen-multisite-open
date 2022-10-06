@@ -13,7 +13,7 @@ if (!dir.exists(mydir)) dir.create(mydir) # and the ejscreen.acsget will create 
 
 ##################################################################### #
 # set metadata on vintage ####
-# x <- ejscreen::add_metadata(x)
+# x <- ejscreen::metadata_add(x)
 metadata <- list(
   census_version = 2020,
   acs_version = '2016-2020',
@@ -30,7 +30,7 @@ acsdata_B03002 <- ejscreen::ejscreen.acsget(tables = 'B03002',
                                   base.path = mydir, sumlevel = 'both' )
 # 6 minutes (or up to 10 minutes?) slow - downloads each state
 names(acsdata_B03002) # "bg"      "tracts"  "headers" "info"
-acsdata_B03002 <- add_metadata(acsdata_B03002, metadata)
+acsdata_B03002 <- metadata_add(acsdata_B03002, metadata)
 
 ##################################################################### #
 # CALC block group dataset ####

@@ -15,7 +15,7 @@
 ## FULL SET OF SCRIPTS  to create EJScreen-related datasets, including blockgroupstats.rda for EJAM  
 
 # 1.  EJAMejscreendata/inst/SCRIPT_EJAMejscreen_download.R  
-#       - to add metadata ( and ejscreen::add_metadata() )
+#       - to add metadata ( and ejscreen::metadata_add() )
 # 2.   ejscreen/inst/2_SCRIPT_FOR_FIPS_ST_TRACT_CNTY.R    
 #       - to rename cols and add some fips fields and fix countyname col
 # 3.   ejscreen/inst/3_SCRIPT_create_bgDemog_ejscreen2.1_andtracts.R 
