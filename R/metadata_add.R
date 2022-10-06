@@ -1,3 +1,49 @@
+#' helper function for package to set attributes of a dataset
+#' @description This can be used annually to update some datasets in a package.
+#'  It just makes it easier to set a few metadata attributes similarly
+#'  for a number of data elements, for example,
+#'  to add new or update existing attributes.
+#' @param x dataset (or any object) whose metadata you want to update or create
+#' @param metadata must be a named list, so that the function can do this for each i:
+#'   attr(x, which=names(metadata)[i]) <- metadata[[i]]
+#' @seealso metadata_check()
+#'
+#' @return returns x but with new or altered attributes
+#' @export
+#'
+#' @examples
+#'   x <- data.frame(a=1:10,b=1001:1010)
+#'   metadata <- list(
+#'   census_version = 2020,
+#'   acs_version = '2016-2020',
+#'   acs_releasedate = '3/17/2022',
+#'   ejscreen_version = '2.1',
+#'   ejscreen_releasedate = 'October 2022',
+#'   ejscreen_pkg_data = 'bg22'
+#'   )
+#'   x <- metadata_add(x, metadata)
+#'   attributes(x)
+#'   x <- metadata_add(x, list(status='final'))
+#'   attr(x,'status')
+metadata_add <- function(x, metadata) {
+
+  if (missing(metadata)) {
+    metadata <- list(
+      census_version = 2020,
+      acs_version = '2016-2020',
+      acs_releasedate = '3/17/2022',
+      ejscreen_version = '2.1',
+      ejscreen_releasedate = 'October 2022',
+      ejscreen_pkg_data = 'bg22'
+    )
+  }
+  if (!is.list(metadata)) {stop('metadata has to be a named list')}
+  for (i in seq_along(metadata)) {
+    attr(x, which = names(metadata)[i]) <- metadata[[i]]
+  }
+  return(x)
+}
+
 #' helper function in updating the package metadata
 #' @description Quick and dirty helper during development, to check all the 
 #'   attributes of all the data files in relevant packages. 
@@ -13,12 +59,13 @@
 #'
 #' @export
 #'
-rdattr <- function(packages=NULL, which=c(
+metadata_check <- function(packages=NULL, which=c(
   'census_version', 
   'acs_version', 'acs_releasedate', 'ACS', 
   'ejscreen_version', 'ejscreen_releasedate', 'ejscreen_pkg_data', 
   'year', 'released'),
   loadifnotloaded=TRUE) {
+  
   # census_version = 2020,
   # acs_version = '2016-2020',
   # acs_releasedate = '3/17/2022',
@@ -74,8 +121,3 @@ rdattr <- function(packages=NULL, which=c(
   names(allresults) <- packages
   return(allresults)
 }
-
-# rdattr()
-# library(ejscreen)
-# rdattr(which=c('year', 'ACS'), packages = 'ejscreen')
-# rdattr(which=c('year', 'ACS', 'released', 'ejscreen_version'), packages = 'ejscreen')
