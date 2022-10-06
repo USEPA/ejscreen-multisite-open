@@ -23,8 +23,9 @@ app_ui <- function(request) {
     # to your web browser, open the JS console, 
     # And type:
     #   $('#browser').show();
-    actionButton("browser", "browser"),
-    tags$script("$('#browser').hide();"),
+    #
+    # actionButton("browser", "browser"),
+    # tags$script("$('#browser').hide();"),
     
     fluidPage( # Overall fluidPage ####
                htmltools::includeCSS("inst/app/www/styles.css"),
@@ -33,7 +34,7 @@ app_ui <- function(request) {
                  windowTitle = "EJ Proximity Tool for Multiple Facilities"
                ),
                #titlePanel(a("EJSCREEN Batch Processor",href="www/ibutton_help.html", target="_blank")),
-               textAreaInput('analysis_shortname', value = 'These Facilities', placeholder = 'very short name identifying this set'),
+               # textAreaInput('analysis_shortname', value = 'These Facilities', placeholder = 'very short name identifying this set'),
                # . ####
                # ______________ LOCATIONS _________________ ####
                # . ####
