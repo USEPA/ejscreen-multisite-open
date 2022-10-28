@@ -47,7 +47,6 @@ See \url{https://www.census.gov/naics/}
  NAICS_find('pulp', add_children = TRUE)
  NAICS_find('asdfasdf', add_children = TRUE)
  NAICS_find('asdfasdf', add_children = FALSE)
- 
 }
 \seealso{
 \link{NAICS_categories} \link{NAICS}

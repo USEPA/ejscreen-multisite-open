@@ -32,7 +32,7 @@
 #'  NAICS_find('pulp', add_children = TRUE)
 #'  NAICS_find('asdfasdf', add_children = TRUE)
 #'  NAICS_find('asdfasdf', add_children = FALSE)
-#'  
+#' @import data.table
 #' @export
 #'
 NAICS_find <- function(query, add_children=FALSE, naics_dataset=NULL, ignore.case=TRUE) {
@@ -64,15 +64,16 @@ NAICS_find <- function(query, add_children=FALSE, naics_dataset=NULL, ignore.cas
       # prefix <- naics_dataset[[rownum_1]]
       #   ALSO NOW ADD IN ALL THOSE BELOW the 1 parent (THOSE WITH LONGER NAICS CODES THAT START WITH THE 1 HIT CODE)
       # found <- substr(names(naics_dataset), 1, nchar(prefix)) == prefix
+      # but much faster way would be  
+      # found <- startsWith(names(naics_dataset), prefix = prefix)
       
       # ADD IN ALL THOSE BELOW ANY OF THESE HITS
       codes_matching <- naics_dataset[rownum]
       codes_plus_kids <- naics2children(codes_matching, naics_dataset)
       
-      found <- which(naics_dataset %in% codes_plus_kids)
+      found <- which(naics_dataset %chin% codes_plus_kids)
     }
   }
-  
   return( (naics_dataset[found]) )
 }
 
@@ -95,11 +96,11 @@ naics2children <- function(codes, allcodes) {
   kidrows <- NULL
   for (digits in 2:5) {
     sibset <- codes[nchar(codes) == digits]
-    kidrows <- union(kidrows, which(substr(allcodes,1,digits) %in% sibset))
+    kidrows <- union(kidrows, which(substr(allcodes, 1, digits) %chin% sibset))
+    # if that were a data.table then funion() could be used which is faster
   }
   x <- c(codes, allcodes[kidrows])
   x <- x[!duplicated(x)]
-  x <- allcodes[allcodes %in% x]
-  
+  x <- allcodes[allcodes %chin% x]
   return(x)
 }

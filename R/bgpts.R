@@ -14,7 +14,7 @@
 #'   
 #'   How lat lon were estimated:
 #' 
-#' # proxistat::bgpts had a lat/lon internal point for each us block group for Census 2010.
+#' # proxistat::bg.pts had a lat/lon internal point for each us block group for Census 2010.
 #' # that had been used to include those lat/lon in ejscreen::bg21, for convenience. 
 #'  > head(proxistat::bg.pts)
 #'            FIPS    aland   awater      lat       lon
