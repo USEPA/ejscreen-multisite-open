@@ -19,6 +19,7 @@ app_server <- function(input, output, session) {
   #  mod_specify_sites_server("specify_sites_1")
   
   # [this is a button that helps while debugging (REMOVE BEFORE DEPLOYING)] ####
+  print('NOTE: remove the debugging button before deploying')
   observeEvent(input$browser,{
     browser()
   })
@@ -474,20 +475,23 @@ app_server <- function(input, output, session) {
   # Download the Results #######
   output$downloadData1 <- downloadHandler(
     filename = function() {
-      fname <- paste0("EJAM-OUT-", input$analysis_shortname, "-",Sys.time(), ".csv",sep='')
+      fname <- paste0("EJAM-OUT-", input$analysis_shortname, "-", Sys.time(), ".csv", sep='')
       fname
     },
     contentType = 'text/csv',
     content = function(file) {
       cat('\nTRYING TO DOWNLOAD ', 
-          paste0("EJAM-OUT-", Sys.Date(), "-",Sys.time(), ".csv",sep=''),
+          paste0("EJAM-OUT-", Sys.Date(), "-", Sys.time(), ".csv", sep=''),
           '\n\n')
       # print(str(datasetResults())) # was for debugging
       
       
       # OUTPUT RESULTS TABLE HERE - ONE ROW IS FOR OVERALL UNIQUE RESIDENTS OR BLOCKS, THEN 1 ROW PER SITE:
       
-      write.csv(rbind(datasetResults()$results_overall, datasetResults()$results_bysite, fill=TRUE), file, row.names = FALSE)
+      #write.csv(x = rbind(datasetResults()$results_overall, datasetResults()$results_bysite, fill = TRUE), file = file, row.names = FALSE)
+      # this should be much faster than write.csv, and works on data.frame or data.table:
+      data.table::fwrite(   x = rbind(datasetResults()$results_overall, datasetResults()$results_bysite, fill = TRUE), file = file)
+      cat('\n\n Wrote to ', file)
       
       # OBSOLETE code about user metadata we could save ####
       if (1 == 'obsolete code- it was meant to output metadata appended to the tabular results but we want a clean table and any metadata separately if at all') {
@@ -501,13 +505,12 @@ app_server <- function(input, output, session) {
         # if (input$uniqueOutput == 'both') {
         write.csv(rbind(datasetResults()$results_overall, datasetResults()$results_bysite, fill=TRUE), file, row.names = FALSE)
         # }
-        
         userin = ""
-        #
-        selectNaics_in_Datasystem1  = paste(input$selectNaics_in_Datasystem1,  collapse = ", ")
-        selectNaics_and_Datasystem2 = paste(input$selectNaics_and_Datasystem2, collapse = ", ")
-        industryList = paste(input$selectIndustry1_byNAICS, collapse = ", ")
-        industryList = paste(industryList,input$selectIndustry2_by_selectInput, collapse = ", ")
+
+        selectNaics_in_Datasystem1  = paste(input$selectNaics_in_Datasystem1,     collapse = ", ")
+        selectNaics_and_Datasystem2 = paste(input$selectNaics_and_Datasystem2,    collapse = ", ")
+        #industryList =               paste(input$selectIndustry1_byNAICS,        collapse = ", ")
+        industryList =  paste(industryList, input$selectIndustry2_by_selectInput, collapse = ", ")
         
         #"Individual facility statistics"
         # 
@@ -564,8 +567,7 @@ app_server <- function(input, output, session) {
         # write.table(datasetResults()[ , 'results_bysite'], file, append = T, sep=",")
         # write.csv(datasetResults()[ , 'results_bysite'], file)
       }
-      
-      cat('\n\n Wrote to ', file)
+      # cat('\n\n Wrote to ', file)
       #session$reload()
     }
   )
