@@ -22,6 +22,9 @@ getblocksnearby_and_doaggregate(
 
 \item{avoidorphans}{see \link{getblocksnearbyviaQuadTree_Clustered} or other such functions}
 
+\item{quadtree}{a large quadtree object created from the SearchTree package example:
+SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")}
+
 \item{...}{see \link{getblocksnearbyviaQuadTree_Clustered} or other such functions}
 }
 \description{

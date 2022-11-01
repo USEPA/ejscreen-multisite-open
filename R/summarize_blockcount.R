@@ -3,7 +3,7 @@
 #' how many sites have only 1 block nearby, or have <30 nearby, etc.
 #' 
 #' @param x The output of getblocksnearby()
-#'
+#' @param varname colname of variable in data.table x that is the one to summarize by
 #' @return invisibly, a list of stats
 #' @import data.table
 #' @export
@@ -22,7 +22,7 @@ summarize_blocks_per_site <- function(x, varname='siteid') {
 #' Get summary stats on how many sites are near various blocks (residents)
 #'
 #' @param x The output of getblocksnearby()
-#'
+#' @param varname colname of variable in data.table x that is the one to summarize by
 #' @return invisibly, a list of stats
 #' @import data.table
 #' @export

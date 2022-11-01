@@ -6,6 +6,8 @@
 #' @param cutoff       see \link{getblocksnearbyviaQuadTree} or other such functions
 #' @param maxcutoff    see \link{getblocksnearbyviaQuadTree} or other such functions
 #' @param avoidorphans see \link{getblocksnearbyviaQuadTree} or other such functions
+#' @param quadtree a large quadtree object created from the SearchTree package example:
+#'    SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
 #' @param ...          see \link{getblocksnearbyviaQuadTree_Clustered} or other such functions
 #'
 #' @export
@@ -16,7 +18,7 @@ getblocksnearby <- function(sitepoints, cutoff=1, maxcutoff=31.07,
                             quadtree,
                             ...
                             ) {
-  # wrapper to make it simple to switch between functions to use for this, clustered vs not, etc.
+  # wrapper to make it simple to (later?) switch between functions to use for this, clustered vs not, etc.
 
   
   getblocksnearbyviaQuadTree(sitepoints=sitepoints, cutoff=cutoff, maxcutoff=maxcutoff, 

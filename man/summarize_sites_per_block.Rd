@@ -8,6 +8,8 @@ summarize_sites_per_block(x, varname = "blockid")
 }
 \arguments{
 \item{x}{The output of getblocksnearby()}
+
+\item{varname}{colname of variable in data.table x that is the one to summarize by}
 }
 \value{
 invisibly, a list of stats

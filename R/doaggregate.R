@@ -37,6 +37,15 @@
 #'   nearby Census block internal points, with columns siteid, blockid, distance,
 #'   created by getblocksnearby  function. 
 #'   See sites2blocks_example dataset in package, as input to this function
+#' @param countcols character vector of names of variables  to aggregate within a buffer
+#'   using a sum of counts, like, for example, the number of people for whom a 
+#'   poverty ratio is known, the count of which is the exact denominator needed
+#'   to correctly calculate percent low income. 
+#' @param popmeancols character vector of names of variables to aggregate within a buffer
+#'   using population weighted mean.
+#' @param calculatedcols character vector of names of variables to aggregate within a buffer
+#'   using formulas that have to be specified.
+#' @param testing used while testing this function
 #' @param ... more to pass
 #' @import data.table
 #' @import EJAMblockdata
@@ -136,8 +145,8 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
   
   if (testing) {
     # FOR TESTING
-    library(data.table); library(EJAMblockdata); data("blockwts")
-    data('sites2blocks_example') # it is called  sites2blocks_example
+    library(data.table); library(EJAMblockdata)
+    # data("blockwts"); data('sites2blocks_example') # it is called  sites2blocks_example
     sites2blocks <- sites2blocks_example
   }
   # data.table::setkey(result, "blockid", "siteid", "distance") #  has been done by getblocksnearby  now

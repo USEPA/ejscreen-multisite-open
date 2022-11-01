@@ -19,6 +19,19 @@ nearby Census block internal points, with columns siteid, blockid, distance,
 created by getblocksnearby  function. 
 See sites2blocks_example dataset in package, as input to this function}
 
+\item{countcols}{character vector of names of variables  to aggregate within a buffer
+using a sum of counts, like, for example, the number of people for whom a 
+poverty ratio is known, the count of which is the exact denominator needed
+to correctly calculate percent low income.}
+
+\item{popmeancols}{character vector of names of variables to aggregate within a buffer
+using population weighted mean.}
+
+\item{calculatedcols}{character vector of names of variables to aggregate within a buffer
+using formulas that have to be specified.}
+
+\item{testing}{used while testing this function}
+
 \item{...}{more to pass}
 }
 \description{

@@ -50,7 +50,7 @@ metadata_add <- function(x, metadata) {
 #'   It loads unloaded packages as needed, which you might not want it to do, 
 #'   but it is not coded to be able to check attributes without doing that.
 #' 
-#' @param package Optional. e.g. 'EJAMejscreendata', or can be a vector of character strings, 
+#' @param packages Optional. e.g. 'EJAMejscreendata', or can be a vector of character strings, 
 #'   and if not specified, default is to report on all packages with EJ as part of their name, 
 #'   like EJAMblockdata or ejscreenapi
 #' @param which Optional vector (not list) of strings, the attributes. 
