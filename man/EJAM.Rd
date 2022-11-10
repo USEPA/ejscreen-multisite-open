@@ -63,23 +63,22 @@ converted to \code{sitepoints} by \code{\link[=naics2latlon]{naics2latlon()}}.
 \itemize{
 \item \strong{\href{naics_selected}{naics2latlon()}} returns \code{sitepoints} data.table (note here, siteid is just 1:n)
 
-Required \strong{EJAMfrsdata::frs_naics_2022.rda}
+Required \strong{EJAMfrsdata::frs_by_naics.rda}
 Need to update FRS data used here regularly, ideally frequently.
-2016 version had  columns  REGISTRY_ID, NAICS, LAT, LONG, PROGRAM, PROGRAM_ID
 2022 version has columns   REGISTRY_ID  NAICS, lat, lon
-data.table needed to get lat lon by naics
+A data.table, needed to get lat lon by naics
 \item \strong{\link[EJAMfrsdata:frs]{EJAMfrsdata::frs}} is not really needed for EJAM... A data.table with lat/lon location and other information
-(The 2021 Facility Registry System version was 98 MB as .rda, >1 million rows, EPA-regulated facilities)
 }
 
-\strong{2. BY FACILITY ID:}
-Interface so user can upload FRS REGISTRY_ID csv file,
+\strong{2. BY FACILITY or PROGRAM ID:}
+Interface so user can upload FRS REGISTRY_ID or PROGRAM ID csv/xls file,
 Interface returns \code{frsids}, list of REGISTRY_ID values from FRS
-converted to \code{sitepoints} by a lookup function and data table
+converted to \code{sitepoints} with lat lon, by a lookup function and data table
+- see EJAMfrsdata::frs (to find by registry id) and EJAMfrsdata::frs_by_programid
 \itemize{
 \item \strong{frsid2latlon function? applied to frsids will return} \code{sitepoints} data.table
 
-This will require \strong{frsid2latlon .rda?} data.table with cols frsid, lat, lon
+This will require \strong{\link[EJAMfrsdata:frs_by_programid]{EJAMfrsdata::frs_by_programid}} data.table with cols frsid, lat, lon
 }
 
 \strong{3. BY LAT/LON POINT:}

@@ -24,8 +24,8 @@ app_ui <- function(request) {
     # And type:
     #   $('#browser').show();
     #
-    # actionButton("browser", "browser"),
-    # tags$script("$('#browser').hide();"),
+    actionButton("browser", "browser"),
+    tags$script("$('#browser').hide();"),
     
     fluidPage( # Overall fluidPage ####
                htmltools::includeCSS("inst/app/www/styles.css"),
@@ -51,7 +51,7 @@ app_ui <- function(request) {
                              column(12,style = "overflow: hidden;",
                                     
                                     # . ####
-                                    ### i. pick list/ search Industry (selectNaics_in_Datasystem1) ####
+                                    ### i. pick list/ search Industry (facility_mustbe_that_naics_in_this_program) ####
                                     
                                     column(12,
                                            htmltools::h5(
@@ -60,9 +60,9 @@ app_ui <- function(request) {
                                     ),
                                     column(5,
                                            selectInput(
-                                             "selectIndustry2_by_selectInput",
+                                             "naics_user_picked_from_list",
                                              label = htmltools::h6("Select industry of interest"),
-                                             choices = naics_to_pick_from,
+                                             choices = naics_to_pick_from, # named numeric vector, number is NAICS like 31182, names are like "31182 - Cookie, Cracker, and Pasta Manufacturing" 
                                              selected = NULL,
                                              width = 400,
                                              multiple = TRUE
@@ -76,7 +76,7 @@ app_ui <- function(request) {
                                     
                                     column(5,
                                            textInput(
-                                             "selectIndustry1_byNAICS",
+                                             "naics_user_wrote_in_box",
                                              label = htmltools::h6(
                                                "Enter NAICS codes of interest - ",
                                                htmltools::a("Look up NAICS", href ="https://www.census.gov/naics"),
@@ -114,15 +114,15 @@ app_ui <- function(request) {
                                       ),
                              
                              checkboxGroupInput(
-                               "selectNaics_in_Datasystem1",
-                               "",
-                               c("TRIS" = "TRIS",
-                                 "RCRAINFO" = "RCRAINFO",
-                                 "AIRS/AFS" = "AIRS/AFS",
-                                 "E-GGRT" = "E-GGRT",
-                                 "NPDES" = "NPDES",
-                                 "RCRAINFO" = "RCRAINFO",
-                                 "RMP" = "RMP"
+                               inputId = "facility_mustbe_that_naics_in_this_program", 
+                               label = "",
+                               choices = c("TRIS" = "TRIS",
+                                           "RCRAINFO" = "RCRAINFO",
+                                           "AIRS/AFS" = "AIRS/AFS",
+                                           "E-GGRT" = "E-GGRT",
+                                           "NPDES" = "NPDES",
+                                           "RCRAINFO" = "RCRAINFO",
+                                           "RMP" = "RMP"
                                ),
                                inline = TRUE
                              ),
@@ -145,16 +145,16 @@ app_ui <- function(request) {
                                )
                              ),
                              checkboxGroupInput(
-                               "selectNaics_and_Datasystem2",
-                               "",
-                               c("TRIS" = "TRIS",
-                                 "RCRAINFO" = "RCRAINFO",
-                                 "AIRS/AFS" = "AIRS/AFS",
-                                 "E-GGRT" = "E-GGRT",
-                                 "NPDES" = "NPDES",
-                                 "RCRAINFO" = "RCRAINFO",
-                                 "RMP" = "RMP"
-                               ),
+                               inputId = "facility_mustbe_in_this_program", 
+                               label = "",
+                               choices = c("TRIS" = "TRIS",
+                                           "RCRAINFO" = "RCRAINFO",
+                                           "AIRS/AFS" = "AIRS/AFS",
+                                           "E-GGRT" = "E-GGRT",
+                                           "NPDES" = "NPDES",
+                                           "RCRAINFO" = "RCRAINFO",
+                                           "RMP" = "RMP"
+                               ), 
                                inline = TRUE
                              )
                                     )
@@ -340,7 +340,7 @@ golem_add_external_resources <- function() { # Add external Resources to App ###
     app_sys("app/www")
   )
   tags$head(
-    favicon(),
+    favicon(ext = 'png'),
     bundle_resources(
       path = app_sys("app/www"),
       app_title = "EJAM"

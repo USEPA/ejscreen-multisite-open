@@ -280,11 +280,11 @@
         <div class="well">
           <div id="selectFrom1" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline">
             <label class="control-label" for="selectFrom1">
-              <h5>You may upload a list of location coordinates (latitudes and longitudes). The file should contain 3 columns: ID, LAT, LONG. The ID column should be unique (no duplicates), and each record should be separated by a carriage return. </h5> 
-              <h5>The file should be formatted as follows: </h5> 
+              <h5>You may upload a list of location coordinates (latitudes and longitudes). The file should contain at least these two columns: lat and lon. There can be other columns like an ID column that should be unique (no duplicates), and each record should be separated by a carriage return. It also will work with some alternative names (and case insensitive) like Latitude, Lat, latitude, long, longitude, Longitude, Long, LONG, LAT, etc. but to avoid any mixup of names it is suggested that the file use lat and lon. </h5> 
+              <h5>The file could be formatted as follows, for example: </h5> 
             </label>
 		<br>
-		ID,LAT,LONG<br>
+		ID,lat,lon<br>
 		1,36.26333,-98.48083<br>
 		2,41.01778,-80.36194<br>
 		3,43.43772,-91.90365<br>

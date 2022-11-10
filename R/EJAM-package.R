@@ -63,23 +63,22 @@
 #' 
 #'    - **[naics2latlon()](naics_selected)** returns `sitepoints` data.table (note here, siteid is just 1:n)
 #'  
-#'      Required **EJAMfrsdata::frs_naics_2022.rda**   
+#'      Required **EJAMfrsdata::frs_by_naics.rda**   
 #'      Need to update FRS data used here regularly, ideally frequently.
-#'      2016 version had  columns  REGISTRY_ID, NAICS, LAT, LONG, PROGRAM, PROGRAM_ID
 #'      2022 version has columns   REGISTRY_ID  NAICS, lat, lon
-#'      data.table needed to get lat lon by naics
+#'      A data.table, needed to get lat lon by naics
 #'      
 #'    - **[EJAMfrsdata::frs]** is not really needed for EJAM... A data.table with lat/lon location and other information
-#'      (The 2021 Facility Registry System version was 98 MB as .rda, >1 million rows, EPA-regulated facilities)
 #'       
-#'  **2. BY FACILITY ID:**  
-#'         Interface so user can upload FRS REGISTRY_ID csv file, 
+#'  **2. BY FACILITY or PROGRAM ID:**  
+#'         Interface so user can upload FRS REGISTRY_ID or PROGRAM ID csv/xls file, 
 #'         Interface returns `frsids`, list of REGISTRY_ID values from FRS
-#'         converted to `sitepoints` by a lookup function and data table
+#'         converted to `sitepoints` with lat lon, by a lookup function and data table 
+#'         - see EJAMfrsdata::frs (to find by registry id) and EJAMfrsdata::frs_by_programid
 #' 
 #'    - **frsid2latlon function? applied to frsids will return** `sitepoints` data.table
 #'  
-#'         This will require **frsid2latlon .rda?** data.table with cols frsid, lat, lon 
+#'         This will require **[EJAMfrsdata::frs_by_programid]** data.table with cols frsid, lat, lon 
 #' 
 #'  **3. BY LAT/LON POINT:**
 #'         Interface so user can upload latitude longitude siteid (and optionally others like sitename).

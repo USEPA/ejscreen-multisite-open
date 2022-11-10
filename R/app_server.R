@@ -1,5 +1,5 @@
-#' The application server-side
-#'
+#' EJAM app server
+#' 
 #' @param input,output,session Internal parameters for {shiny}.
 #'     DO NOT REMOVE.
 #' @import shiny
@@ -42,33 +42,14 @@ app_server <- function(input, output, session) {
   # Input Radius, Maxcutoff, etc. parameters ##########################################
   
   # THESE DO NOT MAKE SENSE... input$whatever is already a reactive value... so why redefine those here just renaming them??
-  getCutoff <- reactive({
-    return(input$cutoffRadius)
-  })
+  getCutoff    <- reactive({return(input$cutoffRadius)})
+  getMaxcutoff <- reactive({return(maxcutoff_default)})
+  # setUnique <- reactive({if (input$uniqueOutput=="no"){return(FALSE)} else {return(TRUE)}})  # OBSOLETE
   
-  getMaxcutoff <- reactive({
-    return(maxcutoff_default)
-  })
-  
-  # setUnique <- reactive({  # OBSOLETE 
-  #   if (input$uniqueOutput=="no"){
-  #     return(FALSE)
-  #   }
-  #   else {
-  #     return(TRUE)
-  #   }
-  # })
-  
-  #avoidorphans  # THIS WOULD ALLOW ONE TO GET SOME RESULTS EVEN IF CIRCLE IS SO SMALL NO BLOCK HAS A CENTROID IN IT. 
+  # avoidorphans  # THIS WOULD ALLOW ONE TO GET SOME RESULTS EVEN IF CIRCLE IS SO SMALL NO BLOCK HAS A CENTROID IN IT. 
   # Expand distance for facilities with no nearby block centroid ####
-  doExpandradius <- reactive({
-    if (input$expandRadius=="no"){
-      return(FALSE)
-    }
-    else {
-      return(TRUE)
-    }
-  })
+  doExpandradius <- reactive({if (input$expandRadius=="no"){return(FALSE)} else {return(TRUE)}})
+  
   # . ####
   # ______________ Lat Lon _________________ ####
   # . ####
@@ -80,29 +61,34 @@ app_server <- function(input, output, session) {
     in2File <- input$file_uploaded_latlons
     if (is.null(in2File))
       return(NULL)
-    isolate(read.table(file=in2File$datapath, sep=',', header=TRUE, quote='"'))
-    
+    isolate({ # THIS ISOLATE SEEMS LIKE IT WOULD NOT DO ANYTHING HERE. NOT SURE WHY THEY PUT IT IN.
+      # read.table(file=in2File$datapath, sep=',', header=TRUE, quote='"')
+      mypoints <- EJAMbatch.summarizer::read_csv_or_xl(fname = in2File$datapath, show_col_types = FALSE)
+      names(mypoints) <- latlon_infer(names(mypoints))
+    })
+    mypoints
   })
   
-  output$inLocationList <- renderTable(
-    {
-      if(is.null(dataLocationList())) {return () }
-      dataLocationList()
-    }
-  )
+  output$inLocationList <- renderTable({
+    if(is.null(dataLocationList())) {return () }
+    dataLocationList()
+  })
   ####################################################################################### #
   # _ Find nearby blocks and aggregate for buffer ########
   ####################################################################################### #
   
   dataLocationListProcessed <- reactive({
     if(is.null(dataLocationList())) {return () }
-    sitepoints <- data.table::copy(dataLocationList())
-    setDT(sitepoints)#, key = 'siteid')
-    
-    cutoff = getCutoff() # radius (units?)
-    maxcutoff = getMaxcutoff()  # reactive, max distance to search
-    # get_unique = setUnique()     # reactive, TRUE = stats are for dissolved single buffer to avoid doublecounting. FALSE = we want to count each person once for each site they are near.
-    avoidorphans = doExpandradius() # Expand distance searched, when a facility has no census block centroid within selected buffer distance
+    sitepoints <- dataLocationList() # this is a data.frame not tibble not data.table yet
+    if (!('siteid' %in% names(sitepoints))) {sitepoints$siteid <- seq.int(length.out = NROW(sitepoints))}
+    setDT(sitepoints) #, key = 'siteid') # make it a data.table, by reference.
+    # id sitename       lon      lat
+    # 1:  1   site A -73.95738 40.77560
+    # 2:  2   site B -66.38670 18.43211
+    cutoff <- getCutoff() # radius (units?)
+    maxcutoff <- getMaxcutoff()  # reactive, max distance to search
+    # get_unique <- setUnique()     # reactive, TRUE = stats are for dissolved single buffer to avoid doublecounting. FALSE = we want to count each person once for each site they are near.
+    avoidorphans <- doExpandradius() # Expand distance searched, when a facility has no census block centroid within selected buffer distance
     
     # note this does require that EJAMblockdata be loaded
     
@@ -130,7 +116,6 @@ app_server <- function(input, output, session) {
   })
   # End of functions used for the dataLocList option
   
-  
   # . ####
   # ______________ Facility ID _________________ ####
   # . ####
@@ -154,13 +139,14 @@ app_server <- function(input, output, session) {
   ####################################################################################### #
   
   dataFacListProcessed <- reactive({
-    kimssampledata <- dataFacList()
-    kimssamplefacilities <- data.table::as.data.table(merge(x = kimssampledata, y = EJAMfrsdata::frs, by.x='REGISTRY_ID', by.y='REGISTRY_ID', all.x=TRUE))
-    kimsunique <- data.table::as.data.table(unique(kimssamplefacilities[,.(REGISTRY_ID,LAT,LONG)]))
-    rm(kimssampledata)
-    rm(kimssamplefacilities)
-    kimsunique$ID <- c(seq.int(nrow(kimsunique)))
-    kimsunique <-as.data.table(unique(kimsunique[,.(ID,LAT,LONG)]))
+    kf <- copy(dataFacList())
+    # very old code... probably can make this much faster:
+    kimssamplefacilities <- merge(x = kf, y = EJAMfrsdata::frs, by.x='REGISTRY_ID', by.y='REGISTRY_ID', all.x=TRUE)
+    kimsunique <- data.table::unique(kimssamplefacilities[,.(REGISTRY_ID, lat, lon)])
+    # rm(kf)
+    # rm(kimssamplefacilities)
+    kimsunique[ , ID := .I]  
+    kimsunique <- kimsunique[ , .(ID, lat, lon)]
     
     cutoff = getCutoff() # radius (units?)
     maxcutoff = getMaxcutoff()  # reactive, max distance to search
@@ -199,98 +185,94 @@ app_server <- function(input, output, session) {
   
   datasetNAICS <- function() {
     
-    #### to pass all the reactives as parameters, you would do this:
-    # selectIndustry1_byNAICS=input$selectIndustry1_byNAICS,
-    # selectIndustry2_by_selectInput=input$selectIndustry2_by_selectInput,
-    # cutoff=getCutoff(),
-    # maxcutoff=getMaxcutoff(),
-    # get_unique=TRUE,
-    # avoidorphans=TRUE,
-    # doExpandradius=doExpandradius(),
-    # selectNaics_in_Datasystem1= input$selectNaics_in_Datasystem1,
-    # selectNaics_and_Datasystem2 =input$selectNaics_and_Datasystem2)
-    
-    
-    ################################################################## #
-    # prep full FRS that has NAICS of all sites and their lat lon ####
-    # Dataset of FRS sites and NAICS in long format (used to be facdata.rdata)
-    ################################################################## #
-    
-    mytest <- EJAMfrsdata::frs_naics_2022 # EJAMfrsdata::facilities
-    #  REGISTRY_ID  NAICS      lat       lon
-    mytest$cnaics <- as.character(mytest$NAICS)
-    
-    sub2 <- data.table::data.table(a = numeric(0), b = character(0))
+    #   All this complicated code on query by NAICS/program info at the same time...
+    # probably could be greatly improved/ replaced...
+    #     very old code, a mess - I don't understand it... probably could be greatly improved/ replaced:
+    # The files frs, frs_by_naics, and frs_by_programid are not set up to facilitate queries that look 
+    # at program and NAICS at the same time, but this code was trying to do that (with an older differently formatted set of FRS info)
+    #  This code seemed very messy and could be simplified and replaced I think.
+    # At a minimum it should be easier to simply query by NAICS in the data.table EJAMfrsdata::frs_by_naics
+    # without specifying anything about which program it is in, etc.
     
     ################################################################## #
     # clean up users selections ####
     ################################################################## #
+ 
+    if (nchar(input$naics_user_wrote_in_box)>0 & length(input$naics_user_picked_from_list)>0) {return()} # WHY? can't do both??
     
-    if (nchar(input$selectIndustry1_byNAICS)>0 & length(input$selectIndustry2_by_selectInput)>0) {
-      return()
-    }
-    cutoff=getCutoff()  # reactive  (e.g., 3) in miles
-    maxcuttoff=getMaxcutoff()  # reactive, max distance to search e.g. 4000
-    # get_unique=setUnique() # maybe no longer users?  reactive, TRUE = stats are for dissolved single buffer to avoid doublecounting. FALSE = we want to count each person once for each site they are near.
-    avoidorphans=doExpandradius()  # reactive # Expand distance searched, when a facility has no census block centroid within selected buffer distance
+    naics_user_wrote_in_box <- input$naics_user_wrote_in_box  # e.g. '' (empty)            # IF USER PICKED NAICS FROM LIST 
+    naics_user_wrote_in_box <- as.list(strsplit(naics_user_wrote_in_box, ",")[[1]])
+    naics_user_picked_from_list <- input$naics_user_picked_from_list                      # IF USER TYPED IN NAICS
     
-    # which datasystems are we searching?
-    selectNaics_in_Datasystem1 = input$selectNaics_in_Datasystem1 # e.g. NULL
-    selectNaics_and_Datasystem2 = input$selectNaics_and_Datasystem2 # e.g. NULL
-    inNAICS1 = input$selectIndustry1_byNAICS  # e.g. '' (empty)
-    inputnaics1 <- as.list(strsplit(inNAICS1, ",")[[1]])
-    inNAICS2=input$selectIndustry2_by_selectInput
-    
-    if (nchar(inNAICS1)>0 | length(inNAICS2)>0) {
-      
-      selectNaics_in_Datasystem1 = c('OIL','AIRS/AFS')
-      selectNaics_and_Datasystem2 = c('RCRAINFO')
-      nrow(selectNaics_in_Datasystem1)
-      
-      inputnaics1 <- as.list(strsplit(inNAICS1, ",")[[1]])
-      inputnaics <- input$selectIndustry2_by_selectInput
-      inputnaics=c(inputnaics1,inNAICS2)
-      inputnaics=unique(inputnaics[inputnaics != ""])
-      x <- paste("^",inputnaics,collapse="|")   ### the NAICS specified by user
-      y <- stringr::str_replace_all(string=x, pattern=" ", repl="")
+    if (nchar(naics_user_wrote_in_box)>0 | length(naics_user_picked_from_list)>0) {
+      inputnaics <- c(naics_user_wrote_in_box, naics_user_picked_from_list)
+      inputnaics <- unique(inputnaics[inputnaics != ""])
+      inputnaics <- paste("^", inputnaics, collapse="|")   ### the NAICS specified by user
+      inputnaics <- stringr::str_replace_all(string = inputnaics, pattern = " ", replacement = "")
       
       ################################################################## #
       # Match user NAICS to FRS NAICS, TO GET LAT/LON OF MATCHED SITES ####
       ################################################################## #
       
-      matches <- unique(grep(y, mytest$cnaics, value=TRUE))  #
+      #     very old code, a mess - I don't understand it... probably could be greatly improved/ replaced:
+  
+      ################################################################## #
+      # use full FRS dataset that has NAICS of all sites and their lat lon ####
+      # Dataset of FRS sites and NAICS in long format  
+      ################################################################## #
+      # Sites that match based on just NAICS codes:
+      sitepoints <- EJAMfrsdata::frs_by_naics[NAICS %in% inputnaics ,  ] # lat        lon  REGISTRY_ID  NAICS
+      #  REGISTRY_ID  NAICS      lat       lon 
+      # Also see EJAMfrsdata::frs , EJAMfrsdata::frs_by_programid 
       
-      if (length(selectNaics_in_Datasystem1)>0 & length(selectNaics_and_Datasystem2)>0) {
-        temp<-mytest[PROGRAM %in% selectNaics_in_Datasystem1] # PROGRAM  IS MISSING... in frs but not frs_naics_2022
-        temp<-temp[cnaics %in% matches]
-        temp<-unique(temp[,.(REGISTRY_ID)])
-        sub1 <-data.table::as.data.table(merge(x = mytest, y = temp, by.x='REGISTRY_ID', by.y='REGISTRY_ID'), all.y=TRUE)
-        sub2<-sub1[PROGRAM %in% selectNaics_and_Datasystem2]
-        sub2$ID<- c(seq.int(nrow(sub2)))
+      ############################### #
+      # Input that specifies which datasystems are we searching for NAICS
+      ############################### #
+      # facility_mustbe_that_naics_in_this_program <- c('OIL','AIRS/AFS') # for testing?
+      # facility_mustbe_in_this_program <- c('RCRAINFO') # for testing?
+ 
+     facility_mustbe_that_naics_in_this_program  <- input$facility_mustbe_that_naics_in_this_program # e.g. NULL # USER SPECIFIED PROGRAM LIKE AIRS/AFS
+     facility_mustbe_in_this_program <- input$facility_mustbe_in_this_program # e.g. NULL # USER SPECIFIED PROGRAM LIKE AIRS/AFS
+
+      if (length(facility_mustbe_that_naics_in_this_program)>0 & length(facility_mustbe_in_this_program)>0) {
+        # User filtered it both ways: 
+        # The found sites must be in specified program(s) (listed as any NAICS in that program, as long as the queried NAICS apply to the site under at least some other program)
+        # and also the site must be listed as being that queried NAICS within specified program(s) 
+        
+#xxxx        
+        
+        # temp <- frsfull[program %in% facility_mustbe_that_naics_in_this_program] # 
+        # temp <- temp[char_naics %in% matches]
+        # temp <- unique(temp[,.(REGISTRY_ID)])
+        # sub1 <- data.table::as.data.table(merge(x = frsfull, y = temp, by.x='REGISTRY_ID', by.y='REGISTRY_ID'), all.y=TRUE)
+        # sitepoints <- sub1[program %in% facility_mustbe_in_this_program]
       }
-      else if (length(selectNaics_and_Datasystem2)>0) {
-        sub2<-mytest[PROGRAM %in% selectNaics_and_Datasystem2]
-        sub2$ID<- c(seq.int(nrow(sub2)))
+      else if (length(facility_mustbe_in_this_program)>0) {
+          
       }
-      else if (length(selectNaics_in_Datasystem1)>0) {
-        sub2<-mytest[cnaics %in% matches]
-        sub2$ID<- c(seq.int(nrow(sub2)))
-        colnames(sub2)
+      else if (length(facility_mustbe_that_naics_in_this_program)>0) {
+        
+        # xxxx
+        
+        
+        
+        # sitepoints <- frsfull[ , ]
+        # sitepoints <- frsfull[char_naics %in% matches, ]
       }
-      print(paste("Number of matches = ", nrow(sub2)))
+      sitepoints$ID <- c(seq.int(nrow(sitepoints)))
+      print(paste("Number of matches = ", nrow(sitepoints)))
       
       ####################################################################################### #
       # _ Find nearby blocks and aggregate for buffer ########
       ####################################################################################### #
       
-      if (nrow(sub2)>0) {
-        
-        # older code:
-        # system.time(res <- getblocksnearby(sitepoints=sub2,cutoff,maxcuttoff,get_unique,avoidorphans))
-        # system.time(dat <- doaggregate(sub2,res))
-        # return(dat)
+      if (nrow(sitepoints)>0) {
         
         # ___ getblocksnearby()  ################################
+        
+        cutoff=getCutoff()  # reactive  (e.g., 3) in miles
+        maxcuttoff=getMaxcutoff()  # reactive, max distance to search e.g. 4000
+        avoidorphans=doExpandradius()  # reactive # Expand distance searched, when a facility has no census block centroid within selected buffer distance
         
         system.time({
           sites2blocks <- EJAM::getblocksnearby(
@@ -300,23 +282,21 @@ app_server <- function(input, output, session) {
             avoidorphans = avoidorphans,
             quadtree = localtree
           )
-        }) 
+        })
         
         # ___ doaggregate()  ################################
         
         system.time({out <- doaggregate(sites2blocks = sites2blocks)})
-        return(out)        
-      }
-      else {
+        return(out)
+      } else {
         print("No matches were found")
-        out <- data.table::as.data.table(setNames(data.frame(matrix(ncol = 1, nrow = 0)),paste0("No matches were found"#, c(1:1)
+        out <- data.table::as.data.table(setNames(data.frame(matrix(ncol = 1, nrow = 0)), paste0("No matches were found" #, c(1:1)
         )))
         return(out)
       }
-    }
-    else {
+    } else {
       print("Please submit an industry to run this query")
-      out <- data.table::as.data.table(setNames(data.frame(matrix(ncol = 1, nrow = 0)),paste0("Please submit an industry to run this query", c(1:1))))
+      out <- data.table::as.data.table(setNames(data.frame(matrix(ncol = 1, nrow = 0)), paste0("Please submit an industry to run this query", c(1:1))))
       return(out)
     }
   }
@@ -325,7 +305,7 @@ app_server <- function(input, output, session) {
   # warnings and text outputs re selected Facilities, Industry, or Locations ##########################################
   numUniverseSource <- function() {
     selInd=0
-    if (nchar(input$selectIndustry1_byNAICS)>0 | length(input$selectIndustry2_by_selectInput)>0) {
+    if (nchar(input$naics_user_wrote_in_box)>0 | length(input$naics_user_picked_from_list)>0) {
       selInd=1
     }
     numLoc=nrow(dataLocationList())  # reactive, from reading input$file_uploaded_latlons
@@ -341,7 +321,7 @@ app_server <- function(input, output, session) {
   }
   
   getWarning1 <- function() {
-    if (nchar(input$selectIndustry1_byNAICS)>0 & length(input$selectIndustry2_by_selectInput)>0) {
+    if (nchar(input$naics_user_wrote_in_box)>0 & length(input$naics_user_picked_from_list)>0) {
       print("Please use a single industry select option.")
     }
   }
@@ -350,11 +330,11 @@ app_server <- function(input, output, session) {
     tot=numUniverseSource()
     length_selectIndustry1=0
     length_selectIndustry2=0
-    if (!is.null(input$selectIndustry1_byNAICS)) {
-      length_selectIndustry1=nchar(input$selectIndustry1_byNAICS)
+    if (!is.null(input$naics_user_wrote_in_box)) {
+      length_selectIndustry1=nchar(input$naics_user_wrote_in_box)
     }
-    if (!is.null(input$selectIndustry2_by_selectInput)) {
-      length_selectIndustry2=nchar(input$selectIndustry2_by_selectInput)
+    if (!is.null(input$naics_user_picked_from_list)) {
+      length_selectIndustry2=nchar(input$naics_user_picked_from_list)
     }
     if (length_selectIndustry1>0 & length_selectIndustry2>0) {
       print("Please use a single industry select option.")
@@ -374,25 +354,25 @@ app_server <- function(input, output, session) {
   })
   
   output$selectInd1_for_testing <- renderPrint({
-    if (length(input$selectIndustry1_byNAICS) > 1) {  # not really used except in testing tab
-      x = paste(input$selectIndustry1_byNAICS,collapse=", ")
+    if (length(input$naics_user_wrote_in_box) > 1) {  # not really used except in testing tab
+      x = paste(input$naics_user_wrote_in_box,collapse=", ")
       return(paste("Selected industries ", x))
     }  else {
-      if (length(input$selectIndustry1_byNAICS) == 1 & nchar(input$selectIndustry1_byNAICS) > 0) {
-        return(paste("Selected industry ", input$selectIndustry1_byNAICS))
+      if (length(input$naics_user_wrote_in_box) == 1 & nchar(input$naics_user_wrote_in_box) > 0) {
+        return(paste("Selected industry ", input$naics_user_wrote_in_box))
       }
     }
     return('')
   })
   
   output$selectInd2_for_testing <- renderPrint({  # not really used except in testing tab
-    if (length(input$selectIndustry2_by_selectInput) > 1) {
-      x=paste(input$selectIndustry2_by_selectInput,collapse=", ")
+    if (length(input$naics_user_picked_from_list) > 1) {
+      x=paste(input$naics_user_picked_from_list,collapse=", ")
       return(paste("Selected industries ", x))
     } else {
-      # & nchar(input$selectIndustry2_by_selectInput) > 0
-      if (length(input$selectIndustry2_by_selectInput) == 1 ) {
-        return(paste("Selected industry ", input$selectIndustry2_by_selectInput))
+      # & nchar(input$naics_user_picked_from_list) > 0
+      if (length(input$naics_user_picked_from_list) == 1 ) {
+        return(paste("Selected industry ", input$naics_user_picked_from_list))
       }
     } 
     return('')
@@ -424,14 +404,6 @@ app_server <- function(input, output, session) {
       userin=paste(strdesc, userin, " ")
       cat(userin,  file=file, append=T)   # THIS USED TO SIMPLY APPEND THIS METADATA TO THE TABULAR OUTPUTS
     }
-    #if(!is.null(mystring)) {
-    
-    #if (!is.null(mystring) & nchar(mystring)>0)
-    #{
-    #  userin=paste(mystring, userin,sep = "\n")
-    #    userin=paste(strdesc, userin, " ")
-    #    cat(userin,  file=file,append=T)
-    #}
     return(userin)
   }
   ####################################################################################################################### #
@@ -444,9 +416,9 @@ app_server <- function(input, output, session) {
   datasetResults <- function(){
     if (length(getWarning1() > 1) | length(getWarning2() > 1)) {
       return()
-    }
-    else if (nchar(input$selectIndustry1_byNAICS) > 0 | length(input$selectIndustry2_by_selectInput) > 0) {
-      # e.g.,   "324110"  might be the value of input$selectIndustry2_by_selectInput 
+    } 
+    else if (nchar(input$naics_user_wrote_in_box) > 0 | length(input$naics_user_picked_from_list) > 0) {
+      # e.g.,   "324110"  might be the value of input$naics_user_picked_from_list 
       return(datasetNAICS( )) # that is a separate function not a reactive
     }
     else if (length(myfile_uploaded_latlons()) > 1) {
@@ -458,22 +430,12 @@ app_server <- function(input, output, session) {
     }
   }
   
-  # [obsolete output? I DO NOT UNDERSTAND WHAT this was for - UNUSED] ####
-  #
-  # output$inNAICSresult <- renderTable(
-  #   {
-  #     # note that datasetNAICS is a separate function, not a reactive
-  #     if(is.null(datasetNAICS( ))) {return () }
-  #     datasetNAICS( )
-  #   }
-  # )
-  
   ############################################################################################## #
   # . ####
   # ______________ DOWNLOAD RESULTS _________________ ####
   # . ####
   # Download the Results #######
-  output$downloadData1 <- downloadHandler(
+  output$downloadData1 <- shiny::downloadHandler(
     filename = function() {
       fname <- paste0("EJAM-OUT-", input$analysis_shortname, "-", Sys.time(), ".csv", sep='')
       fname
@@ -481,10 +443,8 @@ app_server <- function(input, output, session) {
     contentType = 'text/csv',
     content = function(file) {
       cat('\nTRYING TO DOWNLOAD ', 
-          paste0("EJAM-OUT-", Sys.Date(), "-", Sys.time(), ".csv", sep=''),
+          paste0("EJAM-OUT-", Sys.Date(), "-", gsub(':','-',Sys.time()), ".csv", sep=''),
           '\n\n')
-      # print(str(datasetResults())) # was for debugging
-      
       
       # OUTPUT RESULTS TABLE HERE - ONE ROW IS FOR OVERALL UNIQUE RESIDENTS OR BLOCKS, THEN 1 ROW PER SITE:
       
@@ -495,22 +455,13 @@ app_server <- function(input, output, session) {
       
       # OBSOLETE code about user metadata we could save ####
       if (1 == 'obsolete code- it was meant to output metadata appended to the tabular results but we want a clean table and any metadata separately if at all') {
-        #obsolete code 
-        # if (input$uniqueOutput == 'no') {
-        #   write.csv(datasetResults()$results_bysite, file, row.names = FALSE) # it used to separately output either 1 row per site, or just the overall result
-        # } 
-        # if (input$uniqueOutput == 'yes') {
-        #   write.csv(datasetResults()$results_overall, file, row.names = FALSE)
-        # } 
-        # if (input$uniqueOutput == 'both') {
         write.csv(rbind(datasetResults()$results_overall, datasetResults()$results_bysite, fill=TRUE), file, row.names = FALSE)
-        # }
         userin = ""
-
-        selectNaics_in_Datasystem1  = paste(input$selectNaics_in_Datasystem1,     collapse = ", ")
-        selectNaics_and_Datasystem2 = paste(input$selectNaics_and_Datasystem2,    collapse = ", ")
-        #industryList =               paste(input$selectIndustry1_byNAICS,        collapse = ", ")
-        industryList =  paste(industryList, input$selectIndustry2_by_selectInput, collapse = ", ")
+        
+        facility_mustbe_that_naics_in_this_program  = paste(input$facility_mustbe_that_naics_in_this_program,     collapse = ", ")
+        facility_mustbe_in_this_program = paste(input$facility_mustbe_in_this_program,    collapse = ", ")
+        #industryList =               paste(input$naics_user_wrote_in_box,        collapse = ", ")
+        industryList =  paste(industryList, input$naics_user_picked_from_list, collapse = ", ")
         
         #"Individual facility statistics"
         # 
@@ -553,8 +504,8 @@ app_server <- function(input, output, session) {
         userin=addUserInput(file,userin, as.character(getCutoff()), "Define Buffer Distance (in miles?): ") #as.character(getCutoff())
         
         # This used to output metadata about what NAICS or facility IDs, etc. were specified by the user:
-        userin=addUserInput(file,userin, selectNaics_and_Datasystem2, "Include facilities with records in: ")
-        userin=addUserInput(file,userin, selectNaics_in_Datasystem1, "Match your NAICS code selection with: ")
+        userin=addUserInput(file,userin, facility_mustbe_in_this_program, "Include facilities with records in: ")
+        userin=addUserInput(file,userin, facility_mustbe_that_naics_in_this_program, "Match your NAICS code selection with: ")
         userin=addUserInput(file,userin, industryList,   "Industry/Industries: ")
         userin=addUserInput(file,userin, f1,  "Upload list of FRS IDs. Filename: ") #input$file_uploaded_FRS_IDs
         # used to report the name of the lat/lon uploaded file:
@@ -572,5 +523,4 @@ app_server <- function(input, output, session) {
     }
   )
   ############################################################################################## #
-  
 }

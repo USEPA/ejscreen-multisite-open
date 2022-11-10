@@ -1,0 +1,66 @@
+FRS EJ and Air map services that might be useful 
+
+FRS facility registry services data and maps:
+https://www.epa.gov/frs/frs-data-sources
+https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/FRS_INTERESTS/FeatureServer
+-------------------------------------------------
+CJEST
+https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/CEJST_Tool_Data/FeatureServer
+CEJST_Beta_Shapefile_9202022 (FeatureServer)
+https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/CEJST_Beta_Shapefile_9202022/FeatureServer
+-------------------------------------------------
+EJ_SCREEN__US_WFL1 (FeatureServer) 2015-2019
+Census block groups by # of EJSCREEN indexes over 80th percentile (US)
+-------------------------------------------------
+Cleanups_in_my_Community_Sites (FeatureServer)
+https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/Cleanups_in_my_Community_Sites/FeatureServer
+-------------------------------------------------
+COUNTIES
+https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/counties_t/FeatureServer/0
+-------------------------------------------------
+
+You can add monitored design values by county, to EJScreen using these services:
+
+https://services.arcgis.com/cJ9YHowT8TU7DUyn/arcgis/rest/services/DesignValueServices2021/FeatureServer
+PM25_Annual County Level (µg/m³) (2021 map service)
+https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/DesignValueServices2021/FeatureServer/20
+PM25_Annual NAA Level (µg/m³) (2021 map service)
+https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/DesignValueServices2021/FeatureServer/21
+PM25_Annual Site Level (µg/m³) (2021 map service)
+https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/DesignValueServices2021/FeatureServer/22
+O3_County Level (ppm) (2021 map service)
+https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/DesignValueServices2021/FeatureServer/8
+O3_NAA Level (ppm) (2021 map service)
+https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/DesignValueServices2021/FeatureServer/9
+O3_Site Level (ppm) (2021 map service)
+https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/DesignValueServices2021/FeatureServer/10
+
+Counties_With_Historic_Air_Quality_Data (FeatureServer)
+https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/Counties_With_Historic_Air_Quality_Data/FeatureServer
+
+-------------------------------------------------
+
+AirToxScreen
+https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/ATS_Risk_View/FeatureServer/0
+
+AirToxScreen_AMA_AnnualMonitoring_2017_V2 (FeatureServer)
+https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/AirToxScreen_AMA_AnnualMonitoring_2017_V2/FeatureServer
+
+CMA_Air_Toxics_P (FeatureServer) 2014
+https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/CMA_Air_Toxics_P/FeatureServer
+
+HAP-SPECIFIC MAPS OF RISK, HI, AND CONCENTRATION:
+haz index for all HAPs in one map:
+https://www.arcgis.com/apps/mapviewer/index.html?url=https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/NATA18AC_CRP_CRSG_HI/FeatureServer/1&source=sd
+Diesel_PM_air_toxics_Ambient_concentration_μg_m3 (FeatureServer)
+Diesel_PM_air_toxics_Ambient_concentration_μg_m3_Tiles (MapServer)
+Diesel_PM_air_toxics_Respiratory_risk_hazard_quotient (FeatureServer)
+Diesel_PM_air_toxics_Respiratory_risk_hazard_quotient_Tiles (MapServer)
+Formaldehyde_air_toxics_Ambient_concentration_μg_m3_Tiles (MapServer)
+Formaldehyde_air_toxics_Ambient_concentration_μgm3 (FeatureServer)
+Formaldehyde_air_toxics_Cancer_risk_per_million (FeatureServer)
+Formaldehyde_air_toxics_Cancer_risk_per_million_Tiles (MapServer)
+Formaldehyde_air_toxics_Respiratory_risk_hazard_quotient (FeatureServer)
+Formaldehyde_air_toxics_Respiratory_risk_hazard_quotient_Tiles (MapServer)
+etc 
+
