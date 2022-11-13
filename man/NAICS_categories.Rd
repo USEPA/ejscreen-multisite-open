@@ -9,7 +9,7 @@ NAICS_categories(digits = 2, dataset = ifelse(exists(NAICS), NAICS, NULL))
 \arguments{
 \item{digits}{default is 2-digits NAICS, which is the top level, but could say 3 or more}
 
-\item{dataset}{Should default to the dataset called NAICS, installed with this package. 
+\item{dataset}{Should default to the dataset called NAICS, installed with this package.
 see \link{NAICS}  Check attr(NAICS, 'year')}
 }
 \description{

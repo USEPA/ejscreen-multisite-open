@@ -1,12 +1,12 @@
 #' Wrapper for getblocksnearby() plus doaggregate()
 #'
-#' @param sitepoints    see \link{getblocksnearbyviaQuadTree_Clustered} or other such functions
-#' @param cutoff        see \link{getblocksnearbyviaQuadTree_Clustered} or other such functions
-#' @param maxcutoff     see \link{getblocksnearbyviaQuadTree_Clustered} or other such functions
-#' @param avoidorphans  see \link{getblocksnearbyviaQuadTree_Clustered} or other such functions
+#' @param sitepoints    see [getblocksnearbyviaQuadTree_Clustered] or other such functions
+#' @param cutoff        see [getblocksnearbyviaQuadTree_Clustered] or other such functions
+#' @param maxcutoff     see [getblocksnearbyviaQuadTree_Clustered] or other such functions
+#' @param avoidorphans  see [getblocksnearbyviaQuadTree_Clustered] or other such functions
 #' @param quadtree a large quadtree object created from the SearchTree package example:
 #'    SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
-#' @param ...  see \link{getblocksnearbyviaQuadTree_Clustered} or other such functions
+#' @param ...  see [getblocksnearbyviaQuadTree_Clustered] or other such functions
 #'
 #' @export
 getblocksnearby_and_doaggregate <- function(sitepoints, cutoff=1, maxcutoff=31.07, 

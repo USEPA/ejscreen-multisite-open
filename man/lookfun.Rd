@@ -11,7 +11,7 @@ lookfun(myvector, varname.in.lookup.table, lookup)
 
 \item{varname.in.lookup.table}{Character element, required. Name of column in lookup table to look in to find interval where a given element of myvector values is.}
 
-\item{lookup}{lookup must be specified - This is the lookup table data.frame with a PCTILE column 
+\item{lookup}{lookup must be specified - This is the lookup table data.frame with a PCTILE column
 and column whose name is the value of varname.in.lookup.table.}
 }
 \value{
@@ -19,17 +19,17 @@ By default, returns numeric vector length of myvector.
 }
 \description{
 This is used with lookup, a data.frame that is a lookup table
-  The data.frame us or lookup must have a field called "PCTILE" that contains quantiles/percentiles
-  and other column(s) with values that fall at those percentiles.
+The data.frame us or lookup must have a field called "PCTILE" that contains quantiles/percentiles
+and other column(s) with values that fall at those percentiles.
 }
 \details{
-This function accepts lookup table 
-  and finds the number in the PCTILE column that corresponds to where a specified value (in myvector)
-  appears in the column called varname.in.lookup.table.
-  The function just looks for where the specified value fits between values in the lookup table 
-  and returns the approximate percentile as found in the PCTILE column.
-  If the value is between the cutpoints listed as percentiles 89 and 90, it returns 89, for example.
-  If the value is exactly equal to the cutpoint listed as percentile 90, it returns percentile 90.
-  If the value is less than the cutpoint listed as percentile 0, which should be the minimum value in the dataset,
-  it still returns 0 as the percentile, but with a warning that the value checked was less than the minimum in the dataset.
+This function accepts lookup table
+and finds the number in the PCTILE column that corresponds to where a specified value (in myvector)
+appears in the column called varname.in.lookup.table.
+The function just looks for where the specified value fits between values in the lookup table
+and returns the approximate percentile as found in the PCTILE column.
+If the value is between the cutpoints listed as percentiles 89 and 90, it returns 89, for example.
+If the value is exactly equal to the cutpoint listed as percentile 90, it returns percentile 90.
+If the value is less than the cutpoint listed as percentile 0, which should be the minimum value in the dataset,
+it still returns 0 as the percentile, but with a warning that the value checked was less than the minimum in the dataset.
 }

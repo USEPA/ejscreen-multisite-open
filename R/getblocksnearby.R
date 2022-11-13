@@ -2,13 +2,13 @@
 #' 
 #'  As written it assumes that certain things are already in global environment. 
 #'  
-#' @param sitepoints   see \link{getblocksnearbyviaQuadTree} or other such functions
-#' @param cutoff       see \link{getblocksnearbyviaQuadTree} or other such functions
-#' @param maxcutoff    see \link{getblocksnearbyviaQuadTree} or other such functions
-#' @param avoidorphans see \link{getblocksnearbyviaQuadTree} or other such functions
+#' @param sitepoints   see [getblocksnearbyviaQuadTree] or other such functions
+#' @param cutoff       see [getblocksnearbyviaQuadTree] or other such functions
+#' @param maxcutoff    see [getblocksnearbyviaQuadTree] or other such functions
+#' @param avoidorphans see [getblocksnearbyviaQuadTree] or other such functions
 #' @param quadtree a large quadtree object created from the SearchTree package example:
 #'    SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
-#' @param ...          see \link{getblocksnearbyviaQuadTree_Clustered} or other such functions
+#' @param ...          see [getblocksnearbyviaQuadTree_Clustered] or other such functions
 #'
 #' @export
 #'

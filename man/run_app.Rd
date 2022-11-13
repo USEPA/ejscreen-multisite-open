@@ -34,12 +34,12 @@ request. Note that the entire request path must match the regular
 expression in order for the match to be considered successful.}
 
 \item{...}{arguments to pass to golem_opts.
-See `?golem::get_golem_options` for more details.}
+See \code{?golem::get_golem_options} for more details.}
 }
 \description{
 EJAMM::run_app() is used here to run the app instead of shiny::runApp()
-  to allow this app to be shared as an R package, and to provide other 
-  useful features that the golem package enables.
+to allow this app to be shared as an R package, and to provide other
+useful features that the golem package enables.
 }
 \details{
 See https://thinkr-open.github.io/golem/

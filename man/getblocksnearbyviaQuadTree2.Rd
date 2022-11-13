@@ -27,25 +27,25 @@ Would take about 5 seconds to create this each time it is needed.
 But note: this is very large... do we need to pass it to the function, or can it be just in global?}
 }
 \description{
-Given a set of points and a specified radius (cutoff), 
-  this function quickly finds all the US Census blocks near each point. 
-  For each point, it uses the specified cutoff distance and finds the distance to 
-  every block within the circle defined by the radius (cutoff). 
-  Each block is defined by its Census-provided internal point, by latitude and longitude.
-  
-  Each point can be the location of a regulated facility or other type of site, and 
-  the blocks are a high-resolution source of information about where
-  residents live. 
-  
-  Finding which blocks have their internal points in a circle provides 
-  a way to quickly estimate what fraction of a block group is 
-  inside the circular buffer more accurately and more quickly than
-  areal apportionment of block groups would provide.
+Given a set of points and a specified radius (cutoff),
+this function quickly finds all the US Census blocks near each point.
+For each point, it uses the specified cutoff distance and finds the distance to
+every block within the circle defined by the radius (cutoff).
+Each block is defined by its Census-provided internal point, by latitude and longitude.
+
+Each point can be the location of a regulated facility or other type of site, and
+the blocks are a high-resolution source of information about where
+residents live.
+
+Finding which blocks have their internal points in a circle provides
+a way to quickly estimate what fraction of a block group is
+inside the circular buffer more accurately and more quickly than
+areal apportionment of block groups would provide.
 }
 \details{
-Relies on blockquadtree, indexgridsize and quaddata  
-  variables that need to be available in the global environment, as data
-  from a loaded package.
+Relies on blockquadtree, indexgridsize and quaddata
+variables that need to be available in the global environment, as data
+from a loaded package.
 }
 \seealso{
 \link{getblocksnearbyviaQuadTree_Clustered}  \link{getblocksnearbyviaQuadTree2}  \link{computeActualDistancefromSurfacedistance}

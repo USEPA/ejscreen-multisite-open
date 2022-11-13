@@ -30,10 +30,12 @@ app_ui <- function(request) {
     fluidPage( # Overall fluidPage ####
                htmltools::includeCSS("inst/app/www/styles.css"),
                headerPanel(
-                 title = htmltools::a("EJ Proximity Tool for Multiple Facilities", href = "www/ibutton_help.html",target = "_blank"),
-                 windowTitle = "EJ Proximity Tool for Multiple Facilities"
+                 title = htmltools::a(
+                   "EJAM (Environmental Justice Analysis Multi-site) Tool - Fast EJ Stats Near Multiple Facilities", 
+                   href = "www/ibutton_help.html",target = "_blank"
+                 ),
+                 windowTitle = "EJAM (Environmental Justice Analysis Multi-site) Tool - Fast EJ Stats Near Multiple Facilities"
                ),
-               #titlePanel(a("EJSCREEN Batch Processor",href="www/ibutton_help.html", target="_blank")),
                # textAreaInput('analysis_shortname', value = 'These Facilities', placeholder = 'very short name identifying this set'),
                # . ####
                # ______________ LOCATIONS _________________ ####
@@ -92,6 +94,7 @@ app_ui <- function(request) {
                                     htmltools::br(),
                                     htmltools::tags$head(htmltools::tags$style("#inputWarning{color: red;font-size: 14px;font-style: italic;}")),
                                     
+                                    ##################################################### #
                                     ### ...& limit to fac w NAICS in this EPA program #####
                                     
                                     column(
@@ -126,7 +129,7 @@ app_ui <- function(request) {
                                ),
                                inline = TRUE
                              ),
-                             
+                             ############################################### # 
                              ### ...& limit to fac in this EPA program #####
                              
                              #radioButtons("selectFrom2", label = htmltools::h5("Include facilities with records in:"),
@@ -158,6 +161,7 @@ app_ui <- function(request) {
                                inline = TRUE
                              )
                                     )
+                             ############################################### # 
                              )
                            )),
                          
@@ -196,7 +200,7 @@ app_ui <- function(request) {
                              fileInput(
                                "file_uploaded_latlons",
                                label = htmltools::h5(
-                                 "Upload list of locations with coordinates",
+                                 "Upload list of locations with lat lon coordinates",
                                  htmltools::a(
                                    htmltools::img(
                                      id = "ibutton",
@@ -239,10 +243,10 @@ app_ui <- function(request) {
                              style = "overflow: hidden;",
                              numericInput(
                                'cutoffRadius',
-                               label = htmltools::h5("Define Buffer Distance"),
-                               value = 3.0,
+                               label = htmltools::h5("Radius of circular buffer in miles"),
+                               value = 1.0,
                                min = 0.0,
-                               max = NA,
+                               max = 10,
                                step = NA,
                                width = NULL
                              )
@@ -310,7 +314,7 @@ app_ui <- function(request) {
                    "#inputWarning2{color: red; font-size: 14px; font-style: italic; }"
                  )
                ),
-               
+               h4('DEBUGGING / TESTING INFO'), htmltools::br(),
                # . ####
                # ______________ OTHER _________________ ####
                # . ####

@@ -15,6 +15,6 @@ summarize_blocks_per_site(x, varname = "siteid")
 invisibly, a list of stats
 }
 \description{
-Tells you # of blocks near avg site, 
+Tells you # of blocks near avg site,
 how many sites have only 1 block nearby, or have <30 nearby, etc.
 }

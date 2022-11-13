@@ -26,20 +26,20 @@ but can also see all the subcategories within the matching one.
 }
 \details{
 See \url{https://www.census.gov/naics/}
- NOTE: By default, this shows NAICS that match the text query,
- and also can include all the children NAICS even if they do not match based on text query.
- So it first finds NAICS that match the text (or code) query via grep(),
- and then can also include all subcategories within those categories.
- 
- So NAICS_find('soap', add_children=TRUE) shows "325612 - Polish and Other Sanitation Good Manufacturing",
- and others, not just "3256 - Soap, Cleaning Compound, and Toilet Preparation Manufacturing",
- because 3256 matches 'soap' and 325612 is a subcategory of 3256.
- 
- The format of NAICS, the naics_dataset, in this package is 
- dput(NAICS[1:4]) 
- c(`11 - Agriculture, Forestry, Fishing and Hunting` = 11, `111 - Crop Production` = 111, 
-   `1111 - Oilseed and Grain Farming` = 1111, `11111 - Soybean Farming` = 11111
-   )
+NOTE: By default, this shows NAICS that match the text query,
+and also can include all the children NAICS even if they do not match based on text query.
+So it first finds NAICS that match the text (or code) query via grep(),
+and then can also include all subcategories within those categories.
+
+So NAICS_find('soap', add_children=TRUE) shows "325612 - Polish and Other Sanitation Good Manufacturing",
+and others, not just "3256 - Soap, Cleaning Compound, and Toilet Preparation Manufacturing",
+because 3256 matches 'soap' and 325612 is a subcategory of 3256.
+
+The format of NAICS, the naics_dataset, in this package is
+dput(NAICS\link{1:4})
+c(\verb{11 - Agriculture, Forestry, Fishing and Hunting} = 11, \verb{111 - Crop Production} = 111,
+\verb{1111 - Oilseed and Grain Farming} = 1111, \verb{11111 - Soybean Farming} = 11111
+)
 }
 \examples{
  # NAICS_find('paper')

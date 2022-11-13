@@ -1,10 +1,10 @@
 #' Wrapper for other functions doing the work - seems to duplicate getblocksnearby_and_doaggregate.R
 #'
-#' @param sitepoints see \link{getrelevantCensusBlocksviaQuadTree_Clustered} or other such functions
-#' @param cutoff  see \link{getrelevantCensusBlocksviaQuadTree_Clustered} or other such functions
-#' @param maxcutoff  see \link{getrelevantCensusBlocksviaQuadTree_Clustered} or other such functions
-#' @param avoidorphans  see \link{getrelevantCensusBlocksviaQuadTree_Clustered} or other such functions
-#' @param ...  see \link{getrelevantCensusBlocksviaQuadTree_Clustered} or other such functions
+#' @param sitepoints see [getrelevantCensusBlocksviaQuadTree_Clustered] or other such functions
+#' @param cutoff  see [getrelevantCensusBlocksviaQuadTree_Clustered] or other such functions
+#' @param maxcutoff  see [getrelevantCensusBlocksviaQuadTree_Clustered] or other such functions
+#' @param avoidorphans  see [getrelevantCensusBlocksviaQuadTree_Clustered] or other such functions
+#' @param ...  see [getrelevantCensusBlocksviaQuadTree_Clustered] or other such functions
 #'
 #' @export
 

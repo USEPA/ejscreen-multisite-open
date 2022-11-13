@@ -4,7 +4,7 @@
 #' but can also see all the subcategories within the matching one.
 #'
 #' @details
-#' See \url{https://www.census.gov/naics/}
+#' See <https://www.census.gov/naics/>
 #'  NOTE: By default, this shows NAICS that match the text query,
 #'  and also can include all the children NAICS even if they do not match based on text query.
 #'  So it first finds NAICS that match the text (or code) query via grep(),
@@ -22,10 +22,10 @@
 #'
 #' @param query a single word or phrase such as "chemical manufacturing" or "cement"
 #' @param add_children default is FALSE, so it does NOT chidren (subcategories) of those that match the query.
-#' @param naics_dataset Should default to the dataset NAICS, installed with this package. see \link{NAICS}
+#' @param naics_dataset Should default to the dataset NAICS, installed with this package. see [NAICS]
 #' @param ignore.case default TRUE, ignoring whether query is upper or lower case
 #'
-#' @seealso  \link{NAICS_categories} \link{NAICS} 
+#' @seealso  [NAICS_categories] [NAICS] 
 #' @examples
 #'  # NAICS_find('paper')
 #'  NAICS_find('pulp', add_children = FALSE)

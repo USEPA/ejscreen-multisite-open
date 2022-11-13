@@ -22,5 +22,5 @@ names list with year as an attribute
 }
 \description{
 See source code. Mostly just a short script to get the 2017 or 2022 codes and names.
-See \url{'https://www.census.gov/naics/?48967'}
+See <'https://www.census.gov/naics/?48967'>
 }

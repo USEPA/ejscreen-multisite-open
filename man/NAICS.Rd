@@ -5,10 +5,10 @@
 \alias{NAICS}
 \title{NAICS (industry classification system codes)}
 \description{
-These industry names and codes get updated about every 4 years 
-  (2017 version replaced by 2022 version in January 2022).
-  See \url{https://www.census.gov/naics/}
- \preformatted{
+These industry names and codes get updated about every 4 years
+(2017 version replaced by 2022 version in January 2022).
+See \url{https://www.census.gov/naics/}
+\preformatted{
  This is a list (but may change to data.frame) of NAICS codes.
   The codes are numeric, where names are the code followed by the title of the industrial sector.
   To check the vintage of the dataset, check

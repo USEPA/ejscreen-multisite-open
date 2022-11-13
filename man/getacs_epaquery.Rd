@@ -31,9 +31,9 @@ table
 }
 \description{
 uses ACS2019 rest services ejscreen ejquery MapServer 7
- 
-  Documentation of format and examples of input parameters:
-  [https://geopub.epa.gov/arcgis/sdk/rest/index.html#/Query_Map_Service_Layer/02ss0000000r000000/]
+
+Documentation of format and examples of input parameters:
+\link{https://geopub.epa.gov/arcgis/sdk/rest/index.html#/Query_Map_Service_Layer/02ss0000000r000000/}
 }
 \examples{
  getacs_epaquery(justurl=TRUE) 

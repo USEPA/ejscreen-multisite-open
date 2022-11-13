@@ -14,13 +14,13 @@ doaggregate(
 )
 }
 \arguments{
-\item{sites2blocks}{data.table of distances in miles between all sites (facilities) and 
+\item{sites2blocks}{data.table of distances in miles between all sites (facilities) and
 nearby Census block internal points, with columns siteid, blockid, distance,
-created by getblocksnearby  function. 
+created by getblocksnearby  function.
 See sites2blocks_example dataset in package, as input to this function}
 
 \item{countcols}{character vector of names of variables  to aggregate within a buffer
-using a sum of counts, like, for example, the number of people for whom a 
+using a sum of counts, like, for example, the number of people for whom a
 poverty ratio is known, the count of which is the exact denominator needed
 to correctly calculate percent low income.}
 
@@ -32,39 +32,39 @@ using formulas that have to be specified.}
 
 \item{testing}{used while testing this function}
 
-\item{...}{more to pass}
+\item{...}{more to pass to another function? Not used currently.}
 }
 \description{
 This updated 2022 code takes a set of facilities and the set of blocks that are near each,
-  (as identified previously, in other code that has identified which blocks are nearby)
-  and combines those with indicator scores for block groups.
+(as identified previously, in other code that has identified which blocks are nearby)
+and combines those with indicator scores for block groups.
 
-  It aggregates the blockgroup scores to create a summary of each indicator,
-   as a raw score and US percentile and State percentile,
-   in each buffer (i.e., near each facility):
-     - SUMS of counts: such as for population or number of households or Hispanics
-     - POPULATION-WEIGHTED MEANS: for  Environmental indicators.
-     -  NOTE: *** EJ Indexes: These could be in theory recalculated via formula, but the way EJScreen 
-         does this is apparently finding the pop wtd mean of EJ Index raw scores,
-         not the EJ Index formula applied to the summarized demographic score and aggregated envt number.
-     - CALCULATED BY FORMULA: Buffer or overall score calculated via formulas using aggregated counts, 
-         such as percent low income = sum of counts low income / sum of counts of denominator, 
-         which in this case is the count of those for whom the poverty ratio is known.
-     - LOOKED UP VALUES: Aggregated scores are converted into percentile terms via lookup tables (US or State version).
+It aggregates the blockgroup scores to create a summary of each indicator,
+as a raw score and US percentile and State percentile,
+in each buffer (i.e., near each facility):
+- SUMS of counts: such as for population or number of households or Hispanics
+- POPULATION-WEIGHTED MEANS: for  Environmental indicators.
+-  NOTE: *** EJ Indexes: These could be in theory recalculated via formula, but the way EJScreen
+does this is apparently finding the pop wtd mean of EJ Index raw scores,
+not the EJ Index formula applied to the summarized demographic score and aggregated envt number.
+- CALCULATED BY FORMULA: Buffer or overall score calculated via formulas using aggregated counts,
+such as percent low income = sum of counts low income / sum of counts of denominator,
+which in this case is the count of those for whom the poverty ratio is known.
+- LOOKED UP VALUES: Aggregated scores are converted into percentile terms via lookup tables (US or State version).
 }
 \details{
 \preformatted{
 
-  requires the following as data lazy loaded for example from EJAMblockdata package
-   blockwts  data.table   with these columns: 
-      blockid , bgid, blockwt
-   quaddata, and blockquadtree data.table and quad tree,  for indexes of block points  
+  requires the following as data lazy loaded for example from EJAMblockdata package:
+  
+   - blockwts: data.table with these columns: blockid , bgid, blockwt
    
-   and
+   - quaddata, and blockquadtree: data.table and quad tree,  for indexes of block points
    
-   EJAM::blockgroupstats - A data.table (such as EJSCREEN demographic and environmental data by blockgroup?)
+   - EJAM::blockgroupstats - A data.table (such as EJSCREEN demographic and environmental data by blockgroup?)
    
-   statesshp   (a shapefile of state boundries to determine what state a point is in)
-   stateregions  data.table lookup of EPA REGION given the ST (state code like AK)
+   - statesshp?    (had been used - a shapefile of state boundries to determine what state a point is in)
+   
+   - stateregions? (had been used - data.table lookup of EPA REGION given the ST - state code like AK)
  }
 }

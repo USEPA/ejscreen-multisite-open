@@ -437,20 +437,23 @@ app_server <- function(input, output, session) {
   # Download the Results #######
   output$downloadData1 <- shiny::downloadHandler(
     filename = function() {
-      fname <- paste0("EJAM-OUT-", input$analysis_shortname, "-", Sys.time(), ".csv", sep='')
+      cleandate <- gsub(' ', '_', gsub(':', '.', Sys.time()))
+      fname <- paste0("EJAM-OUT-", input$analysis_shortname, "_", 
+                      input$cutoffRadius, '_miles_', cleandate, ".xlsx", sep='')
       fname
     },
-    contentType = 'text/csv',
+    
     content = function(file) {
       cat('\nTRYING TO DOWNLOAD ', 
-          paste0("EJAM-OUT-", Sys.Date(), "-", gsub(':','-',Sys.time()), ".csv", sep=''),
+               paste0("EJAM-OUT-", input$analysis_shortname, "-", gsub(':', '-', Sys.time()), ".xlsx", sep=''),
           '\n\n')
       
       # OUTPUT RESULTS TABLE HERE - ONE ROW IS FOR OVERALL UNIQUE RESIDENTS OR BLOCKS, THEN 1 ROW PER SITE:
       
       #write.csv(x = rbind(datasetResults()$results_overall, datasetResults()$results_bysite, fill = TRUE), file = file, row.names = FALSE)
       # this should be much faster than write.csv, and works on data.frame or data.table:
-      data.table::fwrite(   x = rbind(datasetResults()$results_overall, datasetResults()$results_bysite, fill = TRUE), file = file)
+      # data.table::fwrite(   x = rbind(datasetResults()$results_overall, datasetResults()$results_bysite, fill = TRUE), file = file)
+      openxlsx::write.xlsx(rbind(datasetResults()$results_overall, datasetResults()$results_bysite, fill = TRUE), file = file)
       cat('\n\n Wrote to ', file)
       
       # OBSOLETE code about user metadata we could save ####

@@ -28,7 +28,7 @@
 #'    Would take about 5 seconds to create this each time it is needed.
 #'    But note: this is very large... do we need to pass it to the function, or can it be just in global?
 #'
-#' @seealso \link{getblocksnearbyviaQuadTree_Clustered}  \link{computeActualDistancefromSurfacedistance}
+#' @seealso [getblocksnearbyviaQuadTree_Clustered]  [computeActualDistancefromSurfacedistance]
 #' @export
 #' @import data.table
 #' @importFrom pdist "pdist"

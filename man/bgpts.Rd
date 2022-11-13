@@ -6,14 +6,14 @@
 \title{lat lon of popwtd center of blockgroup, and count of blocks per block group}
 \description{
 This is just a list of US block groups and how many blocks are in each...
-  It also has the lat and lon roughly of each blockgroup
+It also has the lat and lon roughly of each blockgroup
 }
 \details{
-The point used for each bg is the Census 2020 population weighted mean 
- of the blocks' internal points. It gives an approximation of where people live
-  and where each bg is, which is useful for some situations.
-  
-  \preformatted{
+The point used for each bg is the Census 2020 population weighted mean
+of the blocks' internal points. It gives an approximation of where people live
+and where each bg is, which is useful for some situations.
+
+\preformatted{
   As of 10/2022 it is the EJScreen 2.1 version of data, which uses ACS 2016-2020
   and Census 2020. it has all US States, DC, PR, but not  "AS" "GU" "MP" "VI"
   

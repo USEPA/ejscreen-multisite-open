@@ -24,12 +24,12 @@ getblocksnearbyviaQuadTree_Clustered(
 \item{CountCPU}{for parallel processing via makeCluster() and doSNOW::registerDoSNOW()}
 }
 \description{
-Uses packages \link[pkg]{parallel} and snow. parallel::makePSOCKcluster is an enhanced version of snow::makeSOCKcluster in package snow.
-    It runs Rscript on the specified host(s) to set up a worker process which listens on a socket for expressions to evaluate, and returns the results (as serialized objects).
+Uses packages \link{parallel} and \link{snow}. parallel::makePSOCKcluster is an enhanced version of snow::makeSOCKcluster in package snow.
+It runs Rscript on the specified host(s) to set up a worker process which listens on a socket for expressions to evaluate, and returns the results (as serialized objects).
 }
 \details{
 Uses indexgridsize and quaddata  variables that come from global environment (but should pass to this function rather than assume in global env?)
 }
 \seealso{
-\link{getblocksnearbyviaQuadTree}  \link{computeActualDistancefromSurfacedistance}
+\code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}}  \code{\link[=computeActualDistancefromSurfacedistance]{computeActualDistancefromSurfacedistance()}}
 }

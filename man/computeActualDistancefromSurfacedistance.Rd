@@ -10,11 +10,12 @@ computeActualDistancefromSurfacedistance(x)
 \item{x}{surface distance in miles}
 }
 \description{
-\preformatted{
+\if{html}{\out{<div class="sourceCode">}}\preformatted{\preformatted{
     Just a simple formula:
    earthRadius_miles <- 3959
    angle_rad <- x/earthRadius_miles
    # Calculate  radius * cord length
    return( earthRadius_miles * 2*sin(angle_rad/2) )
    }
+}\if{html}{\out{</div>}}
 }

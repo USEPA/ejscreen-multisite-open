@@ -1,7 +1,7 @@
 #' script to download NAICS file with code and name of sector
 #'
 #' See source code. Mostly just a short script to get the 2017 or 2022 codes and names.
-#' See \url{'https://www.census.gov/naics/?48967'}
+#' See <'https://www.census.gov/naics/?48967'>
 #' @param year which vintage of NAICS codes to use, 2012, 2017, or 2022
 #' @param urlpattern full url of xlsx file to use, but with YYYY instead of year
 #' @param destfile full path and name of file to save as locally

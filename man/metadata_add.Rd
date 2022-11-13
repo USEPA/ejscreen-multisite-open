@@ -10,16 +10,16 @@ metadata_add(x, metadata)
 \item{x}{dataset (or any object) whose metadata you want to update or create}
 
 \item{metadata}{must be a named list, so that the function can do this for each i:
-attr(x, which=names(metadata)[i]) <- metadata[[i]]}
+attr(x, which=names(metadata)\link{i}) <- metadata[\link{i}]}
 }
 \value{
 returns x but with new or altered attributes
 }
 \description{
 This can be used annually to update some datasets in a package.
- It just makes it easier to set a few metadata attributes similarly
- for a number of data elements, for example,
- to add new or update existing attributes.
+It just makes it easier to set a few metadata attributes similarly
+for a number of data elements, for example,
+to add new or update existing attributes.
 }
 \examples{
   x <- data.frame(a=1:10,b=1001:1010)
