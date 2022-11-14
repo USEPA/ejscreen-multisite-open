@@ -23,12 +23,17 @@ app_ui <- function(request) {
     # to your web browser, open the JS console, 
     # And type:
     #   $('#browser').show();
-    #
+    
     actionButton("browser", "browser"),
     tags$script("$('#browser').hide();"),
     
+    
+     
     fluidPage( # Overall fluidPage ####
                htmltools::includeCSS("inst/app/www/styles.css"),
+               
+               epaRShinyTemplate::epaSlimHeader("epaNav",appEnvironment = "prod"),
+               
                headerPanel(
                  title = htmltools::a(
                    "EJAM (Environmental Justice Analysis Multi-site) Tool - Fast EJ Stats Near Multiple Facilities", 
@@ -37,6 +42,8 @@ app_ui <- function(request) {
                  windowTitle = "EJAM (Environmental Justice Analysis Multi-site) Tool - Fast EJ Stats Near Multiple Facilities"
                ),
                # textAreaInput('analysis_shortname', value = 'These Facilities', placeholder = 'very short name identifying this set'),
+              
+                
                # . ####
                # ______________ LOCATIONS _________________ ####
                # . ####
@@ -193,8 +200,7 @@ app_ui <- function(request) {
                            htmltools::h4("OR", align = "center"),
                            
                            column(12, wellPanel(
-                             
-                             # . ####
+                              # . ####
                              ## C) ___ by points (lat lon) uploaded (file_uploaded_latlons) ##########
                              
                              fileInput(
@@ -326,7 +332,8 @@ app_ui <- function(request) {
                           verbatimTextOutput("file_uploaded_FRS_IDs_df"),
                           verbatimTextOutput("file_uploaded_latlons_df"),
                )
-    )
+    ), 
+    epaRShinyTemplate::epaSlimFooter("epaFoot", appVersion = "2022-11-11", appPublished = "local")
   )
 } ########################################################################### #
 
