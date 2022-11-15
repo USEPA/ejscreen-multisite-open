@@ -25,3 +25,6 @@ guess which columns have lat and lon based on aliases like latitude, FacLat, etc
   latlon_infer(c('lat', 'lat', 'Lon')) # dupes left as dupes but warn!
   
 }
+\seealso{
+latlon_df_clean() latlon_infer() latlon_is.valid() latlon_as.numeric()
+}

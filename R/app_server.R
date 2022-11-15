@@ -44,8 +44,6 @@ app_server <- function(input, output, session) {
   # THESE DO NOT MAKE SENSE... input$whatever is already a reactive value... so why redefine those here just renaming them??
   getCutoff    <- reactive({return(input$cutoffRadius)})
   getMaxcutoff <- reactive({return(maxcutoff_default)})
-  # setUnique <- reactive({if (input$uniqueOutput=="no"){return(FALSE)} else {return(TRUE)}})  # OBSOLETE
-  
   # avoidorphans  # THIS WOULD ALLOW ONE TO GET SOME RESULTS EVEN IF CIRCLE IS SO SMALL NO BLOCK HAS A CENTROID IN IT. 
   # Expand distance for facilities with no nearby block centroid ####
   doExpandradius <- reactive({if (input$expandRadius=="no"){return(FALSE)} else {return(TRUE)}})
@@ -65,6 +63,8 @@ app_server <- function(input, output, session) {
       # read.table(file=in2File$datapath, sep=',', header=TRUE, quote='"')
       mypoints <- EJAMbatch.summarizer::read_csv_or_xl(fname = in2File$datapath, show_col_types = FALSE)
       names(mypoints) <- latlon_infer(names(mypoints))
+        mypoints <- latlon_df_clean(mypoints)
+      # mypoints <- latlon_readclean(in2File$datapath)
     })
     mypoints
   })
@@ -127,7 +127,6 @@ app_server <- function(input, output, session) {
     inFile <- input$file_uploaded_FRS_IDs
     if (is.null(inFile))
       return(NULL)
-    input$goButton3  # seems not to be used at all
     isolate(data.table::as.data.table(read.table(file=inFile$datapath, sep=',', header=TRUE, quote='"')))
   })
   output$inFacList <- renderTable({
@@ -197,7 +196,7 @@ app_server <- function(input, output, session) {
     ################################################################## #
     # clean up users selections ####
     ################################################################## #
- 
+    
     if (nchar(input$naics_user_wrote_in_box)>0 & length(input$naics_user_picked_from_list)>0) {return()} # WHY? can't do both??
     
     naics_user_wrote_in_box <- input$naics_user_wrote_in_box  # e.g. '' (empty)            # IF USER PICKED NAICS FROM LIST 
@@ -215,7 +214,7 @@ app_server <- function(input, output, session) {
       ################################################################## #
       
       #     very old code, a mess - I don't understand it... probably could be greatly improved/ replaced:
-  
+      
       ################################################################## #
       # use full FRS dataset that has NAICS of all sites and their lat lon ####
       # Dataset of FRS sites and NAICS in long format  
@@ -230,16 +229,16 @@ app_server <- function(input, output, session) {
       ############################### #
       # facility_mustbe_that_naics_in_this_program <- c('OIL','AIRS/AFS') # for testing?
       # facility_mustbe_in_this_program <- c('RCRAINFO') # for testing?
- 
-     facility_mustbe_that_naics_in_this_program  <- input$facility_mustbe_that_naics_in_this_program # e.g. NULL # USER SPECIFIED PROGRAM LIKE AIRS/AFS
-     facility_mustbe_in_this_program <- input$facility_mustbe_in_this_program # e.g. NULL # USER SPECIFIED PROGRAM LIKE AIRS/AFS
-
+      
+      facility_mustbe_that_naics_in_this_program  <- input$facility_mustbe_that_naics_in_this_program # e.g. NULL # USER SPECIFIED PROGRAM LIKE AIRS/AFS
+      facility_mustbe_in_this_program <- input$facility_mustbe_in_this_program # e.g. NULL # USER SPECIFIED PROGRAM LIKE AIRS/AFS
+      
       if (length(facility_mustbe_that_naics_in_this_program)>0 & length(facility_mustbe_in_this_program)>0) {
         # User filtered it both ways: 
         # The found sites must be in specified program(s) (listed as any NAICS in that program, as long as the queried NAICS apply to the site under at least some other program)
         # and also the site must be listed as being that queried NAICS within specified program(s) 
         
-#xxxx        
+        #xxxx        
         
         # temp <- frsfull[program %in% facility_mustbe_that_naics_in_this_program] # 
         # temp <- temp[char_naics %in% matches]
@@ -248,7 +247,7 @@ app_server <- function(input, output, session) {
         # sitepoints <- sub1[program %in% facility_mustbe_in_this_program]
       }
       else if (length(facility_mustbe_in_this_program)>0) {
-          
+        
       }
       else if (length(facility_mustbe_that_naics_in_this_program)>0) {
         
@@ -340,7 +339,7 @@ app_server <- function(input, output, session) {
       print("Please use a single industry select option.")
     }
     else if(tot>1) {
-      print(paste("Please use only one method of selecting universe (ie, select by industry, location, OR facility)"))
+      print(paste("Please use only one method of specifying locations (ie, select by industry, lat/lon points, OR facility IDs)"))
       #print(paste("Please use only one method of selecting universe (ie, select by industry, location, OR facility)",tot,"; numLoc=",nrow(dataLocationList()),"; numFac=",nrow(dataFacList())))
     }
   }
@@ -379,17 +378,13 @@ app_server <- function(input, output, session) {
   })
   
   output$selectScope1 <- renderPrint({
-    input$goButton1  # seems not to be used at all
+    # input$goButton1  # seems not to be used at all
     isolate(input$selectFrom1)
   })
   
-  output$selectScope2 <- renderPrint({
-    input$goButton1  # seems not to be used at all
-    isolate(input$selectFrom2) })
-  
-  output$inputValue <- renderPrint(input$goButton3)  # seems not to be used at all
-  output$file_uploaded_FRS_IDs_df <- renderPrint({input$file_uploaded_FRS_IDs}) # not really used except in testing tab
-  output$file_uploaded_latlons_df <- renderPrint({input$file_uploaded_latlons}) # not really used except in testing tab
+  output$selectScope2 <- renderPrint({input$selectFrom2}) # used ONLY in debuggin/testing tab
+  output$file_uploaded_FRS_IDs_df <- renderPrint({input$file_uploaded_FRS_IDs}) # used ONLY in debuggin/testing tab
+  output$file_uploaded_latlons_df <- renderPrint({input$file_uploaded_latlons}) # used ONLY in debuggin/testing tab
   
   # ###########################################'
   #### Get user info as metadata on results #########
@@ -413,7 +408,7 @@ app_server <- function(input, output, session) {
   # . ####
   # outputs based on latlon, ID, or NAICS _________________ ####
   
-  datasetResults <- function(){
+  datasetResults <- function() {
     if (length(getWarning1() > 1) | length(getWarning2() > 1)) {
       return()
     } 
@@ -445,64 +440,56 @@ app_server <- function(input, output, session) {
     
     content = function(file) {
       cat('\nTRYING TO DOWNLOAD ', 
-               paste0("EJAM-OUT-", input$analysis_shortname, "-", gsub(':', '-', Sys.time()), ".xlsx", sep=''),
+          paste0("EJAM-OUT-", input$analysis_shortname, "-", gsub(':', '-', Sys.time()), ".xlsx", sep=''),
           '\n\n')
       
       # OUTPUT RESULTS TABLE HERE - ONE ROW IS FOR OVERALL UNIQUE RESIDENTS OR BLOCKS, THEN 1 ROW PER SITE:
       
       #write.csv(x = rbind(datasetResults()$results_overall, datasetResults()$results_bysite, fill = TRUE), file = file, row.names = FALSE)
-      # this should be much faster than write.csv, and works on data.frame or data.table:
+      #  this  would be much faster than write.csv, and works on data.frame or data.table:
       # data.table::fwrite(   x = rbind(datasetResults()$results_overall, datasetResults()$results_bysite, fill = TRUE), file = file)
-      openxlsx::write.xlsx(rbind(datasetResults()$results_overall, datasetResults()$results_bysite, fill = TRUE), file = file)
+      # see "EJAM/inst/notes_MISC"
+      #
+      #  but now using Excel output:
+      # library(openxlsx)
+ 
+      wb <- workbook_output_styled(
+        overall = datasetResults()$results_overall, 
+        eachsite = datasetResults()$results_bysite
+        )
+      saveWorkbook(wb, file = file, overwrite = TRUE)
+      
+      # openxlsx::write.xlsx(rbind(
+      #   datasetResults()$results_overall, 
+      #   datasetResults()$results_bysite, 
+      #   fill = TRUE
+      # ), 
+      # file = file)
+      # openxlsx::createStyle()
       cat('\n\n Wrote to ', file)
       
+      ############################################################################### #
       # OBSOLETE code about user metadata we could save ####
-      if (1 == 'obsolete code- it was meant to output metadata appended to the tabular results but we want a clean table and any metadata separately if at all') {
-        write.csv(rbind(datasetResults()$results_overall, datasetResults()$results_bysite, fill=TRUE), file, row.names = FALSE)
-        userin = ""
+      
+      if (1 == 'obsolete code- it was meant to output metadata appended
+          to the tabular results but we want a clean table and any metadata separately if at all') {
         
+        # save to file which NAICS filters used
+        userin = ""
         facility_mustbe_that_naics_in_this_program  = paste(input$facility_mustbe_that_naics_in_this_program,     collapse = ", ")
         facility_mustbe_in_this_program = paste(input$facility_mustbe_in_this_program,    collapse = ", ")
         #industryList =               paste(input$naics_user_wrote_in_box,        collapse = ", ")
         industryList =  paste(industryList, input$naics_user_picked_from_list, collapse = ", ")
         
-        #"Individual facility statistics"
-        # 
-        # definedOutput1=""
-        # definedOutput2=""
-        # # if(!is.null(input$uniqueOutput)) {
-        #   # if (nchar(input$uniqueOutput)>1){
-        #   #   if(input$uniqueOutput=="yes"){
-        #       definedOutput1="Output for aggregating population statistics"
-        #   #   }
-        #   #   else {
-        #       definedOutput2="Individual facility statistics"
-        #   #   }
-        #   # }
-        # # }
-        
-        # The list of uploaded/ specified Facility IDs 
+        # save to file list of Facility IDs specified
         f1=""
         if(!is.null(input$file_uploaded_FRS_IDs)) {
           f1=input$file_uploaded_FRS_IDs
           f1=f1[0]
         }
         
-        # The list of uploaded/ specified latitude longitudes is already output as part of the output table now.
-        # f2=""
-        # if(!is.null(input$file_uploaded_latlons)) {
-        #   f2=input$file_uploaded_latlons
-        #   f2=f2[0]
-        # }
-        
-        #addUserInput <- function(file,userin,mystring,strdesc){
-        # this used to report on whether the results were for unique blocks/residents or for each site including doublecounting, but it returns both now. 
-        # userin=addUserInput(file,userin, definedOutput1,   "Defined output: ")
-        # userin=addUserInput(file,userin, definedOutput2,   "Defined output: ")
-        
-        # This might not be an option at all - may just pick one approach
+        # save to file these settings - This might not be an option at all - may just pick one approach
         userin=addUserInput(file,userin, input$expandRadius, "Expand distance for facilities with no census block centroid within selected buffer distance: ")
-        
         # this used to output this metadata on what distance was used, but that is in the output table now?
         userin=addUserInput(file,userin, as.character(getCutoff()), "Define Buffer Distance (in miles?): ") #as.character(getCutoff())
         
@@ -514,15 +501,13 @@ app_server <- function(input, output, session) {
         # used to report the name of the lat/lon uploaded file:
         # userin=addUserInput(file,userin, f2,  "Upload list of locations with lat lon coordinates. Filename: ") #input$file2 was old name # file_uploaded_latlons
         
-        cat(userin,  file=file)
-        
-        # This used to append tabular data results to the file of metadata #### 
-        write.table(datasetResults()$results_bysite, file, append = T, sep = ",")
-        # write.table(datasetResults()[ , 'results_bysite'], file, append = T, sep=",")
-        # write.csv(datasetResults()[ , 'results_bysite'], file)
+        # save to file output results overall  ?
+          
+        cat(userin,  file=file) # write all those settings.
+ 
+        # cat('\n\n Wrote to ', file)
       }
-      # cat('\n\n Wrote to ', file)
-      #session$reload()
+      # session$reload()
     }
   )
   ############################################################################################## #

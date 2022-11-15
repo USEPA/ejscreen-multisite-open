@@ -368,7 +368,7 @@ make_action_button <- function(tag, inputId = NULL) {
 }
 
 
-# UNCOMMENT AND USE
+# UNCOMMENT to USE
 #
 # attachment::att_amend_desc()
 #

@@ -15,7 +15,11 @@
 run_app <- function(
   onStart = NULL,
   options = list(),
-  enableBookmarking = NULL,
+  
+  enableBookmarking = 'server', 
+  # this and the bookmarkButton() in ui let user save any uploaded files plus state of all  input$  settings, saved on server.
+  # also see onBookmark() onBookmarked() onRestore() onRestored()
+  
   uiPattern = "/",
   ...
 ) {

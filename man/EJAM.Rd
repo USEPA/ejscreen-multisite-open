@@ -115,7 +115,6 @@ unless analysis is for residents within x miles of the edges of some shapes, lik
 }
 
 <5.8m rows (>8m if nonpopulated blocks were kept).  120MB file for 2020 Census.
-(Census 2010 version was 140 MB as .rda, 6.2 million rows populated blocks)
 - blockid
 - BLOCK_X, BLOCK_Y, BLOCK_Z  (not lat, lon)
 \itemize{
@@ -187,14 +186,15 @@ separate summary stats beyond what EJScreen report does?, one row per site and f
 \section{\strong{Data files available as examples:}}{
 \itemize{
 \item \link{sites2blocks_example}.rda sample output of getblocksnearbyviaQuadTree or just getblocksnearby
-\item \link{points100example}.rda Random test datapoints
-\item \link{points1000example}.rda Random test datapoints
+\item \link{testpoints_100_dt}.rda  Random test points data.table with columns lat lon site
+\item \link{testpoints_1000_dt}.rda Random test points data.table with columns lat lon site
 }
 }
 
 \section{\strong{Buffering methodology:}}{
-The buffering is currently done in a way that includes all Census blocks (2010 blocks, as of 8/2021)
-whose "internal point" (a lat/lon provided by Census) is within the specified distance of the facility point.
+The buffering is currently done in a way that includes all 2020 Census blocks whose
+"internal point" (a lat/lon provided by Census) is within the specified distance of the facility point.
+This is taken from the EJScreen block weights file, but can also be independently calculated. See \link{EJAMblockdata} package.
 
 The summary or aggregation or "rollup" within the buffer is done by calculating the
 population-weighted average block group score among all the people residing in the buffer.

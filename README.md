@@ -21,7 +21,7 @@ for example.
 
 **Note that EJAM is still in active development, not yet released for
 anything other than testing, even internally. For an interim, related
-tool, please see [EJAM’s ejscreenapi
+tool being tested, please see [EJAM’s ejscreenapi
 app.](https://rstudio-connect.dmap-stage.aws.epa.gov/content/374e6403-c660-4692-b62f-61139d1fef69/)**
 
 # What is EJAM?

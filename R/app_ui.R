@@ -28,7 +28,7 @@ app_ui <- function(request) {
     tags$script("$('#browser').hide();"),
     
     
-     
+    
     fluidPage( # Overall fluidPage ####
                htmltools::includeCSS("inst/app/www/styles.css"),
                
@@ -42,15 +42,15 @@ app_ui <- function(request) {
                  windowTitle = "EJAM (Environmental Justice Analysis Multi-site) Tool - Fast EJ Stats Near Multiple Facilities"
                ),
                # textAreaInput('analysis_shortname', value = 'These Facilities', placeholder = 'very short name identifying this set'),
-              
-                
+               
+               
                # . ####
                # ______________ LOCATIONS _________________ ####
                # . ####
                wellPanel(# 1. LOCATIONS TO ANALYZE (universe of interest) ####
                          
                          fluidRow(column(
-                           12, style = "overflow: hidden;", htmltools::h4("1. Universe of Interest")
+                           12, style = "overflow: hidden;", htmltools::h4("1. Specify Locations to Analyze")
                          )),
                          # . ####
                          ## A) ___ by Industry / NAICS ##########
@@ -65,11 +65,11 @@ app_ui <- function(request) {
                                     column(12,
                                            htmltools::h5(
                                              "Select Industry",
-                                             htmltools::a(htmltools::img(id = "ibutton",src = "www/i.png",height = 15,width = 15),href = "www/ibutton_help.html#help_industry",target = "_blank"))
+                                             htmltools::a(htmltools::img(id = "ibutton", src = "www/i.png", height = 15, width = 15), href = "www/ibutton_help.html#help_industry", target = "_blank"))
                                     ),
                                     column(5,
                                            selectInput(
-                                             "naics_user_picked_from_list",
+                                             inputId = "naics_user_picked_from_list",
                                              label = htmltools::h6("Select industry of interest"),
                                              choices = naics_to_pick_from, # named numeric vector, number is NAICS like 31182, names are like "31182 - Cookie, Cracker, and Pasta Manufacturing" 
                                              selected = NULL,
@@ -78,14 +78,15 @@ app_ui <- function(request) {
                                            )
                                     ),
                                     column(2,
-                                           htmltools::br(),htmltools::br(),htmltools::h4("OR", align = "center")
+                                           # htmltools::br(),
+                                           htmltools::h5("OR", align = "center")
                                     ),
                                     
                                     ### ii. type in NAICS #####
                                     
                                     column(5,
                                            textInput(
-                                             "naics_user_wrote_in_box",
+                                             inputId = "naics_user_wrote_in_box",
                                              label = htmltools::h6(
                                                "Enter NAICS codes of interest - ",
                                                htmltools::a("Look up NAICS", href ="https://www.census.gov/naics"),
@@ -96,83 +97,77 @@ app_ui <- function(request) {
                                              placeholder = NULL
                                            )
                                     ),
-                                    htmltools::br(),
+                                    # htmltools::br(),
                                     textOutput("inputWarning"),
-                                    htmltools::br(),
+                                    # htmltools::br(),
                                     htmltools::tags$head(htmltools::tags$style("#inputWarning{color: red;font-size: 14px;font-style: italic;}")),
                                     
                                     ##################################################### #
-                                    ### ...& limit to fac w NAICS in this EPA program #####
                                     
-                                    column(
-                                      12,
-                                      #radioButtons("selectFrom1", label = htmltools::h5("Match your NAICS code selection with:"),
-                                      #   c("Any EPA data system" = "any","Select data systems" = "some"), selected = NULL, inline = TRUE, width = NULL),
-                                      htmltools::h5(
-                                        "Limit to facilities where selected NAICS is found within these EPA lists: (all included by default):
-                             (A facilty may have different NAICS in each list)",
-                             htmltools::a(
-                               htmltools::img(
-                                 id = "ibutton",
-                                 src = "www/i.png",
-                                 height = 15,
-                                 width = 15
-                               ),
-                               href = "www/ibutton_help.html#help_match",
-                               target = "_blank"
-                             )
-                                      ),
-                             
-                             checkboxGroupInput(
-                               inputId = "facility_mustbe_that_naics_in_this_program", 
-                               label = "",
-                               choices = c("TRIS" = "TRIS",
-                                           "RCRAINFO" = "RCRAINFO",
-                                           "AIRS/AFS" = "AIRS/AFS",
-                                           "E-GGRT" = "E-GGRT",
-                                           "NPDES" = "NPDES",
-                                           "RCRAINFO" = "RCRAINFO",
-                                           "RMP" = "RMP"
-                               ),
-                               inline = TRUE
-                             ),
-                             ############################################### # 
-                             ### ...& limit to fac in this EPA program #####
-                             
-                             #radioButtons("selectFrom2", label = htmltools::h5("Include facilities with records in:"),
-                             #  c("All EPA data systems" = "any", "Select data systems" = "some"), selected = NULL, inline = TRUE, width = NULL),
-                             htmltools::h5(
-                               "Limit to facilities on these EPA lists (all included by default):",
-                               htmltools::a(
-                                 htmltools::img(
-                                   id = "ibutton",
-                                   src = "www/i.png",
-                                   height = 15,
-                                   width = 15
-                                 ),
-                                 href = "www/ibutton_help.html#help_include",
-                                 target = "_blank"
-                               )
-                             ),
-                             checkboxGroupInput(
-                               inputId = "facility_mustbe_in_this_program", 
-                               label = "",
-                               choices = c("TRIS" = "TRIS",
-                                           "RCRAINFO" = "RCRAINFO",
-                                           "AIRS/AFS" = "AIRS/AFS",
-                                           "E-GGRT" = "E-GGRT",
-                                           "NPDES" = "NPDES",
-                                           "RCRAINFO" = "RCRAINFO",
-                                           "RMP" = "RMP"
-                               ), 
-                               inline = TRUE
-                             )
-                                    )
-                             ############################################### # 
+                                    
+                                    #    ##   TEMPORARILY REMOVE THESE DETAILS - NON ESSENTIAL AND NOT DEBUGGED YET
+                                    
+                                    
+                                    #        ### ...& limit to fac w NAICS in this EPA program #####
+                                    #        #    THIS SECTION DEFINES THESE INPUTS:
+                                    #        # input$selectFrom1, 
+                                    #        # input$facility_mustbe_that_naics_in_this_program, 
+                                    #        # input$facility_mustbe_in_this_program
+                                    # 
+                                    #        column(
+                                    #          12,
+                                    #          #radioButtons("selectFrom1", label = htmltools::h5("Match your NAICS code selection with:"),
+                                    #          #   c("Any EPA data system" = "any","Select data systems" = "some"), selected = NULL, inline = TRUE, width = NULL),
+                                    #          htmltools::h5(
+                                    #            "Limit to facilities where selected NAICS is found within these EPA lists: (all are searched by default):
+                                    # (A facility may have different NAICS in each list)",
+                                    #            htmltools::a(htmltools::img(id = "ibutton", src = "www/i.png", height = 15, width = 15), href = "www/ibutton_help.html#help_match", target = "_blank")
+                                    #          ),
+                                    # 
+                                    # checkboxGroupInput(
+                                    #   inputId = "facility_mustbe_that_naics_in_this_program", 
+                                    #   inline = TRUE, 
+                                    #   label = "",
+                                    #   choices = c(
+                                    #     "TRIS" = "TRIS",
+                                    #     "RCRAINFO" = "RCRAINFO",
+                                    #     "AIRS/AFS" = "AIRS/AFS",
+                                    #     "E-GGRT" = "E-GGRT",
+                                    #     "NPDES" = "NPDES",
+                                    #     "RCRAINFO" = "RCRAINFO",
+                                    #     "RMP" = "RMP"
+                                    #   )
+                                    # ),
+                                    # ############################################### # 
+                                    # ### ...& limit to fac in this EPA program #####
+                                    # 
+                                    #  # NOT USED now
+                                    #  ### radioButtons("selectFrom2", label = htmltools::h5("Include facilities with records in:"),
+                                    #  ###   c("All EPA data systems" = "any", "Select data systems" = "some"), selected = NULL, inline = TRUE, width = NULL),
+                                    #
+                                    # htmltools::h5(
+                                    #   "Limit to facilities on these EPA lists (all included by default):",
+                                    #   htmltools::a(htmltools::img(id = "ibutton", src = "www/i.png", height = 15, width = 15), href = "www/ibutton_help.html#help_include", target = "_blank")
+                                    # ),
+                                    # checkboxGroupInput(
+                                    #   inputId = "facility_mustbe_in_this_program", 
+                                    #   label = "",
+                                    #   choices = c("TRIS" = "TRIS",
+                                    #               "RCRAINFO" = "RCRAINFO",
+                                    #               "AIRS/AFS" = "AIRS/AFS",
+                                    #               "E-GGRT" = "E-GGRT",
+                                    #               "NPDES" = "NPDES",
+                                    #               "RCRAINFO" = "RCRAINFO",
+                                    #               "RMP" = "RMP"
+                                    #   ), 
+                                    #   inline = TRUE
+                                    # )
+                                    #        )
+                                    ############################################### # 
                              )
                            )),
                          
-                         htmltools::h4("OR", align = "center"),
+                         htmltools::h5("OR", align = "center"),
                          
                          fluidRow(
                            column(12, wellPanel(
@@ -181,41 +176,29 @@ app_ui <- function(request) {
                              ## B) ___ by Facility IDs uploaded (as file_uploaded_FRS_IDs) ##########
                              
                              fileInput(
-                               'file_uploaded_FRS_IDs',
+                               inputId = 'file_uploaded_FRS_IDs',
                                label = htmltools::h5(
                                  "Upload list of FRS identifiers",
                                  htmltools::a(
-                                   htmltools::img(
-                                     id = "ibutton",
-                                     src = "www/i.png",
-                                     height = 15,
-                                     width = 15
-                                   ),
-                                   href = "www/ibutton_help.html#help_frs",
-                                   target = "_blank"
-                                 )
+                                   htmltools::img(id = "ibutton", src = "www/i.png", height = 15, width = 15), href = "www/ibutton_help.html#help_frs", target = "_blank")
                                )
                              )
                            )),
-                           htmltools::h4("OR", align = "center"),
+                           
+                           htmltools::h5("OR", align = "center"),
                            
                            column(12, wellPanel(
-                              # . ####
+                             # . ####
                              ## C) ___ by points (lat lon) uploaded (file_uploaded_latlons) ##########
                              
                              fileInput(
-                               "file_uploaded_latlons",
+                               inputId = "file_uploaded_latlons",
                                label = htmltools::h5(
                                  "Upload list of locations with lat lon coordinates",
                                  htmltools::a(
-                                   htmltools::img(
-                                     id = "ibutton",
-                                     src = "www/i.png",
-                                     height = 15,
-                                     width = 15
-                                   ),
-                                   href = "www/ibutton_help.html#help_location",  # could edit to explain xlsx, csv etc format allowed when approp
-                                   target = "_blank"
+                                   htmltools::img(id = "ibutton", src = "www/i.png", height = 15, width = 15),
+                                   href = "www/ibutton_help.html#help_location",  target = "_blank"
+                                   # could edit to explain xlsx, csv etc format allowed when approp
                                  )
                                )
                              )
@@ -231,16 +214,8 @@ app_ui <- function(request) {
                          fluidRow(column(
                            12, htmltools::h4(
                              "2. Distance",
-                             htmltools::a(
-                               htmltools::img(
-                                 id = "ibutton",
-                                 src = "www/i.png",
-                                 height = 15,
-                                 width = 15
-                               ),
-                               href = "www/ibutton_help.html#help_distance",
-                               target = "_blank"
-                             )
+                             htmltools::a(htmltools::img(id = "ibutton", src = "www/i.png", height = 15, width = 15), target = "_blank",
+                               href = "www/ibutton_help.html#help_distance")
                            )
                          )),
                          fluidRow(
@@ -276,33 +251,25 @@ app_ui <- function(request) {
                          )),
                
                # fluidRow(column(12, wellPanel(   # OBSOLETE
-               #   # 3. OVERALL SUMMARY or SITE-BY-SITE? ###### # 
+               #   # 3. OVERALL SUMMARY or SITE-BY-SITE? ###### #
                #   # dissolve sites so person near 2+ sites double-counted, or not
                #   radioButtons(inputId = "uniqueOutput",
                #                label = htmltools::h4(
                #                  "3. Output",
-               #                  htmltools::a(
-               #                    htmltools::img(
-               #                      id = "ibutton",
-               #                      src = "www/i.png",
-               #                      height = 15,
-               #                      width = 15
-               #                    ),
-               #                    href = "www/ibutton_help.html#help_output",
-               #                    target = "_blank"
-               #                  )
+               #                htmltools::a(htmltools::img(id = "ibutton", src = "www/i.png", height = 15, width = 15), target = "_blank",
+               #                  href = "www/ibutton_help.html#help_output")
                #                ),
                #                c(
                #                  "Summary row plus 1 row/site, all in 1 table" = "both",
                #                  "Site-by-Site results" = "no",
-               #                  "Overall Summary (avoids double-counting any residents near 2+ sites) [*this may change]" = "yes" 
+               #                  "Overall Summary (avoids double-counting any residents near 2+ sites) [*this may change]" = "yes"
                #                ),
                #                selected = 'both',
                #                inline = TRUE,
                #                width = NULL
                #   )
                # ))),
-               
+
                htmltools::br(),
                htmltools::br(),
                
@@ -320,11 +287,17 @@ app_ui <- function(request) {
                    "#inputWarning2{color: red; font-size: 14px; font-style: italic; }"
                  )
                ),
+               
+               # possibly enable bookmarking on server which saves user's uploaded file on server and all  input$  values.
+               bookmarkButton(),
+               
+               htmltools::br(),
+               
                h4('DEBUGGING / TESTING INFO'), htmltools::br(),
                # . ####
                # ______________ OTHER _________________ ####
                # . ####
-               mainPanel( # Testing: mostly obsolete ##########
+               mainPanel( # Testing: maybe obsolete ##########
                           verbatimTextOutput("selectInd2_for_testing"),
                           verbatimTextOutput("selectInd1_for_testing"),
                           verbatimTextOutput("selectScope1"),

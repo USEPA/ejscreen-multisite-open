@@ -3,6 +3,7 @@
 #' @param mycolnames e.g., colnames(x) where x is a data.frame from read.csv
 #'
 #' @return returns all of mycolnames except replacing the best candidates with lat and lon
+#' @seealso latlon_df_clean() latlon_infer() latlon_is.valid() latlon_as.numeric()
 #' @export
 #'
 #' @examples 
@@ -46,9 +47,9 @@ latlon_infer <- function(mycolnames) {
   x <- infer('lat', x)
   x <- infer('lon', x)
   x
-
+  
 }
-             
+
 ## tests
 if (1==9) {
   latlon_infer(c('trilat', 'belong', 'belong')) # warns if no alias found. Does not warn of dupes in other terms, just preferred term.

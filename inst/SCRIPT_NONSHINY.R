@@ -2,12 +2,11 @@
 # ****  presumes that other data are in global environment, ****
 # **** like blockgroupstats, quaddata, etc. ****
 if (FALSE) {
+   
   
-  # should getblocksnearby() redirect now to getblocksnearbyviaQuadTree or to getblocksnearbyviaQuadTree2 ??
   
-  # See details in help for ?EJAM
+  # See details in help for ?EJAM  and see EJAM.Rmd 
   
-  # and facilities_prep may be obsolete or should be done before save that as dataset and build a package.
   
   
   # set up parameters, functions ####
@@ -15,9 +14,8 @@ if (FALSE) {
   library(EJAM) 
   library(EJAMblockdata) # for 2020 Census blocks, with lat lon population weights etc. 
   library(EJAMfrsdata) # EPA Facility Registry System data with lat lon for each regulated site
-  # library(EJAMejscreendata)  
-  # not needed since this pkg has versions of the key parts,
-    # using friendlier variable names and some extra columns of info and race ethnic subgroups
+  # library(EJAMejscreendata)    # not needed since this pkg has versions of the key parts,
+     # using friendlier variable names and some extra columns of info and race ethnic subgroups
   library(data.table)
   # data("blockwts") # not needed - this should lazy load as needed from EJAMblockdata pkg
   
@@ -31,16 +29,11 @@ if (FALSE) {
   })
   
  # to use random test points (sites) ######
-  # sitepoints <- EJAM::points100example %>% head(1)# data in this package
+  # sitepoints <- EJAM::testpoints_100_dt %>% head(1)# data in this package
   
   # to use 100 testpoints
-  sitepoints <- data.table::copy(EJAM::points100example) # [1:5, ])
-  # sitepoints <- data.table::copy(EJAM::points1000example)  
-  # NOTE the first point is far outside the continental US and returns no data using census 2010 blocks.
-  sitepoints[ , siteid := .I] # .I JUST NUMBERS THE SITES
-  data.table::setnames(sitepoints, 'LAT', 'lat')
-  data.table::setnames(sitepoints, 'LONG', 'lon')
-  data.table::setkey(sitepoints) #,  c('siteid', 'lat', 'lon'))
+  sitepoints <- data.table::copy(EJAM::testpoints_100_dt) # [1:5, ])
+  # sitepoints <- data.table::copy(EJAM::testpoints_1000_dt)  
   # head(sitepoints)
   # lon      lat siteid
   # 1: -156.5141 20.88059     80
@@ -61,6 +54,8 @@ if (FALSE) {
   
   ############################################################################ #
   
+  # sitepoints <-  latlon_readclean(filenamepath)
+  
   # call function that finds nearby blocks  ####
   
   elapsed <- system.time({  # about under 1 second for 100 sites, but 7.25 seconds for 1,000 sites, or 500k/hour for this step
@@ -74,8 +69,7 @@ if (FALSE) {
   }) # end of timed function
   print(elapsed)
   print(summarize_blockcount(sites2blocks))
-  
-  
+   
   #  head(sites2blocks)
   ##    blockid  distance siteid
   ## 1:  388798 0.9879380     29
