@@ -4,20 +4,20 @@ workbook_output_styled <- function(overall, eachsite, graycolnums=NULL, narrowco
   
   # example
   # wb <- workbook_output_styled(datasetResults()$results_overall, datasetResults()$results_bysite)
-  # saveWorkbook(wb, "results.xlsx", overwrite = TRUE)
+  # openxlsx::saveWorkbook(wb, "results.xlsx", overwrite = TRUE)
   
   if (!is.null(graycolnums))   {graycolnums <- which(grepl('avg', names(overall)) | grepl('state', names(overall)))}   # only works for the short names
   if (!is.null(narrowcolnums)) {narrowcolnums <- graycolnums}
   
   wb <- openxlsx::createWorkbook()
-  addWorksheet(wb, 'Overall')
-  addWorksheet(wb, 'Each Site')
+  openxlsx::addWorksheet(wb, 'Overall')
+  openxlsx::addWorksheet(wb, 'Each Site')
   
-  addWorksheet(wb, sheetName = "plot", gridLines = FALSE)
-  addWorksheet(wb, sheetName = "notes", gridLines = FALSE)
+  openxlsx::addWorksheet(wb, sheetName = "plot", gridLines = FALSE)
+  openxlsx::addWorksheet(wb, sheetName = "notes", gridLines = FALSE)
   # showGridLines(wb, sheet = "plot", showGridLines = FALSE)
   
-  headstyle_basic <- createStyle(
+  headstyle_basic <- openxlsx::createStyle(
     wrapText = TRUE, halign = "CENTER", valign = 'center',
     fgFill = "#4F81BD",  textDecoration = "Bold" #,
     # border = "Bottom", fontColour = "white"
@@ -41,13 +41,13 @@ workbook_output_styled <- function(overall, eachsite, graycolnums=NULL, narrowco
                       ...
   )
   # freezePane(wb, sheet = 'Overall',   firstRow = TRUE) #, firstCol = TRUE)  ## freeze first row and column
-  freezePane(wb, sheet = 'Each Site', firstRow = TRUE) #, firstCol = TRUE)  ## freeze first row and column
+  openxlsx::freezePane(wb, sheet = 'Each Site', firstRow = TRUE) #, firstCol = TRUE)  ## freeze first row and column
   
-  setColWidths(wb, 'Overall',   cols = narrowcolnums, widths = narrow6)
-  setColWidths(wb, 'Each Site', cols = narrowcolnums, widths = narrow6)
-  style_gray <- createStyle(bgFill = graycolor)
-  addStyle(wb, 'Overall',   cols = graycolnums, style = style_gray)
-  addStyle(wb, 'Each Site', cols = graycolnums, style = style_gray)
+  openxlsx::setColWidths(wb, 'Overall',   cols = narrowcolnums, widths = narrow6)
+  openxlsx::setColWidths(wb, 'Each Site', cols = narrowcolnums, widths = narrow6)
+  style_gray <- openxlsx::createStyle(bgFill = graycolor)
+  openxlsx::addStyle(wb, 'Overall',   cols = graycolnums, rows = 1, style = style_gray)
+  openxlsx:: addStyle(wb, 'Each Site', cols = graycolnums, rows = 1, style = style_gray)
   
   return(wb)
   

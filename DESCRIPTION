@@ -29,7 +29,8 @@ Imports:
     EJAMbatch.summarizer,
     EJAMejscreendata,
     EJAMejscreenapi,
-    epaRShinyTemplate
+    epaRShinyTemplate,
+    openxlsx
 Remotes: 
     github::USEPA/EJAM,
     github::USEPA/EJAMblockdata,
