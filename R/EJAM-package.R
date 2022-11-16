@@ -21,6 +21,10 @@
 #' This means the tools can provide the same information that an EJScreen standard report provides,
 #' but for a large number of reports (one for each site).
 #'
+#' @details  # **Vignette** ####################################################################
+#' 
+#' Please see the vignette  
+#' 
 #' @details  # **Key Functions:** ####################################################################
 #' 
 #'   - **[run_app()]** Launch the Shiny app (web interface)

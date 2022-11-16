@@ -34,7 +34,7 @@
 #' @importFrom pdist "pdist"
 #'
 getblocksnearbyviaQuadTree2 <- function(sitepoints, cutoff=1, maxcutoff=31.07, 
-                                       avoidorphans=TRUE, # indexgridsize,
+                                        avoidorphans=TRUE,  
                                         quadtree) {
   if(class(quadtree) != "QuadTree"){
     stop('quadtree must be an object created from SearchTrees package with treeType = "quad" and dataType = "point"')  
@@ -46,15 +46,15 @@ getblocksnearbyviaQuadTree2 <- function(sitepoints, cutoff=1, maxcutoff=31.07,
   earthRadius_miles <- 3959 # in case it is not already in global envt
   radians_per_degree <- pi / 180
   f2 <- data.table::copy(sitepoints) # make a copy to avoid altering sitepoints in the calling envt when modifying by reference using data.table
-  rm(sitepoints) 
+  # rm(sitepoints) # probably slow
   f2[ , lat_RAD  := lat * radians_per_degree]   # data.table modifies it by reference
   f2[ , lon_RAD  := lon * radians_per_degree]
   cos_lat <- cos(f2[,lat_RAD])
-  f2[ , FAC_X := earthRadius_miles * cos_lat * cos(f2[,lon_RAD])]
-  f2[ , FAC_Y := earthRadius_miles * cos_lat * sin(f2[,lon_RAD])]
-  f2[ , FAC_Z := earthRadius_miles *  sin(f2[,lat_RAD])]
+  f2[ , FAC_X := earthRadius_miles * cos_lat * cos(lon_RAD)]
+  f2[ , FAC_Y := earthRadius_miles * cos_lat * sin(lon_RAD)]
+  f2[ , FAC_Z := earthRadius_miles *  sin(lat_RAD)]
   
-  # indexgridsize was defined in global? could be passed here as a parameter ####
+  # indexgridsize was defined at start as say 10 miles in global? could be passed here as a parameter ####
   # and buffer_indexdistance defined here in code but is never used anywhere...  
   # buffer_indexdistance <- ceiling(cutoff / indexgridsize) 
   truedistance <- computeActualDistancefromSurfacedistance(cutoff)   # simply 7918*sin(cutoff/7918) 
@@ -67,8 +67,8 @@ getblocksnearbyviaQuadTree2 <- function(sitepoints, cutoff=1, maxcutoff=31.07,
   
   # allocate result list
   nRowsDf <- NROW(f2)
-  res <- vector('list', nRowsDf)  # list of data.frames?  cols will be blockid, distance, siteid
-  result <- data.frame() # cols will be blockid, distance, siteid
+  res <- vector('list', nRowsDf)  # list of data.tables   cols will be blockid, distance, siteid
+  
   #these are now outside the loop, so they can be used in the vectorized way
   coords <- f2[ , .(FAC_X, FAC_Z)] 
   x_low <- coords[ , FAC_X] -truedistance;
@@ -93,16 +93,17 @@ getblocksnearbyviaQuadTree2 <- function(sitepoints, cutoff=1, maxcutoff=31.07,
     # vs was just localtree from global env in clustered version of function
     
     tmp <- EJAMblockdata::quaddata[vec, ]
-    x <- tmp[ , .(BLOCK_X, BLOCK_Y, BLOCK_Z)] # but not blockid ?? 
-    y <-         f2[i, c('FAC_X','FAC_Y','FAC_Z')]  # the similar clustered function uses something other than f2 or sitepoints here - why?
-    distances <- as.matrix(pdist::pdist(x, y))
+    # x <- tmp[ , .(BLOCK_X, BLOCK_Y, BLOCK_Z)] # but not blockid ?? 
+    # y <-         f2[i, c('FAC_X','FAC_Y','FAC_Z')]  # the similar clustered function uses something other than f2 or sitepoints here - why?
+    
+    distances <- as.matrix(pdist::pdist(tmp[ , .(BLOCK_X, BLOCK_Y, BLOCK_Z)] , f2[i, c('FAC_X','FAC_Y','FAC_Z')] ))
     
     #clean up fields
     tmp[ , distance := distances[ , c(1)]]
     tmp[ , siteid :=         f2[i, .(siteid)]]  # the similar clustered function differs, why?
     
     #filter actual distance
-    tmp <- tmp[distance <= truedistance, .(blockid, distance, siteid)]
+    tmp     <- tmp[distance <= truedistance, .(blockid, distance, siteid)]
     
     # hold your horses, what if there are no blocks and you are supposed to avoid that
     if ( avoidorphans && (nrow(tmp)) == 0) {
@@ -124,16 +125,20 @@ getblocksnearbyviaQuadTree2 <- function(sitepoints, cutoff=1, maxcutoff=31.07,
       
       #filter to max distance
       truemaxdistance <- computeActualDistancefromSurfacedistance(maxcutoff)
-      tmp <- tmp[distance <= truemaxdistance, .(blockid, distance, siteid)]
-      res[[i]] <- tmp # saving results as a list of tables to rbind after loop; old code did rbind for each table, inside loop 
+      res[[i]] <- tmp[distance <= truemaxdistance, .(blockid, distance, siteid)]
+      # saving results as a list of tables to rbind after loop; old code did rbind for each table, inside loop 
     } else {
       res[[i]] <- tmp
     }
   }
   result <- data.table::rbindlist(res) 
-
+  
   data.table::setkey(result, blockid, siteid, distance)
   # print(summary_of_blockcount(result))
   
   return(result)
 }
+
+
+
+

@@ -22,6 +22,10 @@ one or more sites, typically EPA-regulated facilities.
 This means the tools can provide the same information that an EJScreen standard report provides,
 but for a large number of reports (one for each site).
 }
+\section{\strong{Vignette}}{
+Please see the vignette
+}
+
 \section{\strong{Key Functions:}}{
 \itemize{
 \item \strong{\code{\link[=run_app]{run_app()}}} Launch the Shiny app (web interface)
@@ -220,8 +224,4 @@ or else an approach that uses higher resolution estimates of residential locatio
 the Decennial census blocks can provide, such as a dasymetric map approach.
 }
 
-\author{
-\strong{Maintainer}: Mark Corrales \email{Corrales.mark@epa.gov}
-
-}
 \keyword{internal}

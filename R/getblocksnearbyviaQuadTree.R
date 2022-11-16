@@ -45,18 +45,18 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, cutoff=1, maxcutoff=31.07,
   #compute and add grid info ####
   earthRadius_miles <- 3959 # in case it is not already in global envt
   radians_per_degree <- pi / 180
+  # f2 <- data.table::copy(sitepoints) # make a copy 
   
-
   sitepoints[ , lat_RAD := lat * radians_per_degree] # PROBLEM - this alters sitepoints in the calling envt bc of how data.table works
   sitepoints[ , lon_RAD := lon * radians_per_degree]
-  cos_lat <- cos(sitepoints$lat_RAD)
+  cos_lat <- cos(sitepoints[ , lat_RAD])
   sitepoints[ , FAC_X := earthRadius_miles * cos_lat * cos(lon_RAD)]
   sitepoints[ , FAC_Y := earthRadius_miles * cos_lat * sin(lon_RAD)]
   sitepoints[ , FAC_Z := earthRadius_miles * sin(lat_RAD)]
   
-  # indexgridsize was defined in initialization as say 10 miles
+  # indexgridsize was defined at start as say 10 miles in global? could be passed here as a parameter ####
   # and buffer_indexdistance defined here in code but is never used anywhere...  
-  # buffer_indexdistance <- ceiling(cutoff/indexgridsize) 
+  # buffer_indexdistance <- ceiling(cutoff / indexgridsize) 
   truedistance <- computeActualDistancefromSurfacedistance(cutoff)   # simply 7918*sin(cutoff/7918) 
   
   # main reason for using foreach::foreach() is that it supports parallel execution,
@@ -67,45 +67,46 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, cutoff=1, maxcutoff=31.07,
   
   # allocate result list
   nRowsDf <- NROW(sitepoints)
-  res <- vector('list', nRowsDf)  # list of data.frames?  cols will be blockid, distance, siteid    
-  result <- data.frame() # cols will be blockid, distance, siteid
-
-    
+  res <- vector('list', nRowsDf)  # list of data.tables   cols will be blockid, distance, siteid    
+  
+  
+  
   
   
   
   
   
   for (i in 1:nRowsDf) {    # LOOP OVER SITES HERE ----
-  
+    
     coords <- sitepoints[i, .(FAC_X, FAC_Z)]  # the similar clustered function uses sitepoints2use not sitepoints
     x_low <- coords[,FAC_X]-truedistance;
     x_hi  <-  coords[,FAC_X]+truedistance
     z_low <- coords[,FAC_Z]-truedistance;
-    z_hi  <-  coords[,FAC_Z]+truedistance
+    # z_hi  <-  coords[,FAC_Z]+truedistance   # ** THIS waS   THE SLOWEST LINE  OVERALL ***
     
     if ((i %% 100) == 0) {print(paste("Cells currently processing: ",i," of ", nRowsDf) ) }
     
-    vec <- SearchTrees::rectLookup(quadtree, unlist(c(x_low,      z_low     )), unlist(c(x_hi,      z_hi))) #x and z things are now vectorized
+    vec <- SearchTrees::rectLookup(quadtree, unlist(c(x_low, z_low  )), unlist(c(x_hi, coords[,FAC_Z]+truedistance))) # x and z things are now vectorized
     # *** FIX/CHECK: 
     #    quadtree (localtree passed here as quadtree) 
     # vs EJAMblockdata::blockquadtree  (can it be this way, or need to create it again for each session?)
     # vs was just localtree from global env in clustered version of function
     
     tmp <- EJAMblockdata::quaddata[vec, ] 
-    x <- tmp[ , .(BLOCK_X, BLOCK_Y, BLOCK_Z)] # but not blockid ?? 
-    y <- sitepoints[i, c('FAC_X','FAC_Y','FAC_Z')]  # the similar clustered function uses something other than sitepoints here - why?
-    distances <- as.matrix(pdist::pdist(x, y))
+    # x <- tmp[ , .(BLOCK_X, BLOCK_Y, BLOCK_Z)] # but not blockid ??   # ** SLOW STEP TO OPTIMIZE
+    # y <- sitepoints[i, c('FAC_X','FAC_Y','FAC_Z')]  # the similar clustered function uses something other than sitepoints here - why?
+    
+    distances <- as.matrix(pdist::pdist(tmp[ , .(BLOCK_X, BLOCK_Y, BLOCK_Z)] , sitepoints[i, c('FAC_X','FAC_Y','FAC_Z')] ))
     
     #clean up fields
     tmp[ , distance := distances[ , c(1)]]
     tmp[ , siteid := sitepoints[i, .(siteid)]]  # the similar clustered function differs, why?
     
     #filter actual distance
-    tmp <- tmp[distance <= truedistance, .(blockid, distance, siteid)]
+    res[[i]] <- tmp[distance <= truedistance, .(blockid, distance, siteid)]  # ** SLOW STEP TO OPTIMIZE
     
     # hold your horses, what if there are no blocks and you are supposed to avoid that
-    if ( avoidorphans && (nrow(tmp)) == 0) {
+    if ( avoidorphans && (nrow(res[[i]])) == 0) { # rarely get here so not critical to optimize
       #search neighbors, allow for multiple at equal distance
       vec  <- SearchTrees::knnLookup(quadtree, unlist(c(coords[ , 'FAC_X'])), unlist(c(coords[ , 'FAC_Z'])), k=10)      
       # *** FIX/CHECK: 
@@ -124,15 +125,16 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, cutoff=1, maxcutoff=31.07,
       
       #filter to max distance
       truemaxdistance <- computeActualDistancefromSurfacedistance(maxcutoff)
-      tmp <- tmp[distance <= truemaxdistance, .(blockid, distance, siteid)]
-      result <- rbind(result, tmp)
+      res[[i]] <- tmp[distance <= truemaxdistance, .(blockid, distance, siteid)]
+      # saving results as a list of tables to rbind after loop; old code did rbind for each table, inside loop 
     } else {
-      result <- rbind(result, tmp)
     }
+    
   }
-
+  result <- data.table::rbindlist(res)  
+  
   data.table::setkey(result, blockid, siteid, distance)
   # print(summary_of_blockcount(result))
-
+  
   return(result)
 }

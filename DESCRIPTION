@@ -2,43 +2,51 @@ Package: EJAM
 Title: EJAM Environmental Justice Analysis Multisite tool
 Version: 2.1.1
 Date: 2022-11-11
-Authors@R: person('Mark', 'Corrales', email = 'Corrales.mark@epa.gov', role = c('cre', 'aut'))
+Author: Mark Corrales
+Maintainer: Mark Corrales <corrales.mark@epa.gov>
+License: MIT + file LICENSE
 Description: Tools for summarizing environmental and demographic indicators 
     (such as those in EJSCREEN) for residents living near any one of a number of 
     specific sites. It uses quad tree search/indexing of block locations, data.table, parallel processing 
     to provide very fast identification of nearby blocks, distances, and 
     aggregation of indicators within each distance. It can be uses as a web app, with the user interface provided by the shiny R package.
+Depends: 
+    R (>= 2.10), 
+    shiny (>= 1.7.2), 
+    EJAMblockdata,
+    EJAMfrsdata
 Imports:
+    data.table, 
     config (>= 0.3.1),
     golem (>= 0.3.3),
-    shiny (>= 1.7.2), 
     foreach, 
     sp, 
     SearchTrees, 
-    data.table, 
     pdist,
     DBI, 
     RMySQL, 
-    doSNOW
+    doSNOW,
+    EJAMbatch.summarizer,
+    EJAMejscreendata,
+    EJAMejscreenapi,
+    epaRShinyTemplate
 Remotes: 
+    github::USEPA/EJAM,
     github::USEPA/EJAMblockdata,
     github::USEPA/EJAMfrsdata,
     github::USEPA/EJAMbatch.summarizer,
-    # github::USEPA/EJAMejscreendata,
-    # github::USEPA/EJAMejscreenapi,
+    github::USEPA/EJAMejscreendata,
+    github::USEPA/EJAMejscreenapi,
     github::USEPA/epaRShinyTemplate
-License: MIT + file LICENSE
-Encoding: UTF-8
-LazyData: true
-RoxygenNote: 7.2.1
 Suggests: 
     knitr,
     rmarkdown,
     spelling,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+Encoding: UTF-8
+LazyData: true
 Language: en-US
 VignetteBuilder: knitr
-Depends: 
-    R (>= 2.10)
+RoxygenNote: 7.2.1
 Roxygen: list(markdown = TRUE)

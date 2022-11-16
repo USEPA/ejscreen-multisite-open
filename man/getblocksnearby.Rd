@@ -14,18 +14,18 @@ getblocksnearby(
 )
 }
 \arguments{
-\item{sitepoints}{see \link{getblocksnearbyviaQuadTree} or other such functions}
+\item{sitepoints}{see \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} or other such functions}
 
-\item{cutoff}{see \link{getblocksnearbyviaQuadTree} or other such functions}
+\item{cutoff}{see \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} or other such functions}
 
-\item{maxcutoff}{see \link{getblocksnearbyviaQuadTree} or other such functions}
+\item{maxcutoff}{see \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} or other such functions}
 
-\item{avoidorphans}{see \link{getblocksnearbyviaQuadTree} or other such functions}
+\item{avoidorphans}{see \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} or other such functions}
 
 \item{quadtree}{a large quadtree object created from the SearchTree package example:
 SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")}
 
-\item{...}{see \link{getblocksnearbyviaQuadTree_Clustered} or other such functions}
+\item{...}{see \code{\link[=getblocksnearbyviaQuadTree_Clustered]{getblocksnearbyviaQuadTree_Clustered()}} or other such functions}
 }
 \description{
 As written it assumes that certain things are already in global environment.

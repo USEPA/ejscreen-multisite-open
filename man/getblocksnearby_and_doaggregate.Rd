@@ -14,13 +14,13 @@ getblocksnearby_and_doaggregate(
 )
 }
 \arguments{
-\item{sitepoints}{see \link{getblocksnearbyviaQuadTree_Clustered} or other such functions}
+\item{sitepoints}{see \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} or other such functions}
 
-\item{cutoff}{see \link{getblocksnearbyviaQuadTree_Clustered} or other such functions}
+\item{cutoff}{see \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} or other such functions}
 
-\item{maxcutoff}{see \link{getblocksnearbyviaQuadTree_Clustered} or other such functions}
+\item{maxcutoff}{see \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} or other such functions}
 
-\item{avoidorphans}{see \link{getblocksnearbyviaQuadTree_Clustered} or other such functions}
+\item{avoidorphans}{see \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} or other such functions}
 
 \item{quadtree}{a large quadtree object created from the SearchTree package example:
 SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")}

@@ -1,0 +1,231 @@
+---
+title: "Basics of using EJAM in RStudio"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Basics of using EJAM in RStudio}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+knitr::opts_chunk$set(eval = FALSE)
+# https://r-pkgs.org/vignettes.html
+```
+
+## Install EJAM
+
+The R package is still in active development, but a current version can be installed from the github USEPA github repository. You can install the development version of EJAM like so:
+
+```{r install}
+if (!require(EJAM)) {
+  if (!require(devtools)) {install.packages('devtools')}
+  devtools::install_github('USEPA/EJAM')
+}
+```
+
+## See the [README](https://github.com/USEPA/EJAM#readme "github.com/USEPA/EJAM#readme") if you need a basic intro and broad overview
+
+You can find it here: <https://github.com/USEPA/EJAM#readme>
+
+## Get Help / See Documentation on all the Functions and Data
+
+```{r help}
+help("EJAM")
+```
+
+## Run the Shiny app on your own computer, in RStudio
+
+Launch the web app with run_app() instead of shiny's runApp() because this shiny app is also an R package based on the golem package framework.
+
+```{r run_app}
+run_app()
+```
+
+## **Get proximity analysis via R script or console**
+
+### Install other R packages
+
+Relevant or essential packages only available on the [USEPA github](https://github.com/USEPA/EJAM "github.com/USEPA/EJAM") (not CRAN) are:
+
+-   [EJAM](https://github.com/USEPA/EJAM#readme "github.com/USEPA/EJAM")
+-   [EJAMblockdata](https://github.com/USEPA/EJAMblockdata#readme "github.com/USEPA/EJAMblockdata#readme")
+-   [EJAMfrsdata](https://github.com/USEPA/EJAMfrsdata#readme "github.com/USEPA/EJAMfrsdata")
+-   [EJAMejscreendata](https://github.com/USEPA/EJAMejscreendata#readme "github.com/USEPA/EJAMejscreendata")
+-   [EJAMejscreenapi](https://github.com/USEPA/EJAMejscreenapi#readme "github.com/USEPA/EJAMejscreenapi")
+-   [EJAMbatch.summarizer](https://github.com/USEPA/EJAMbatch.summarizer#readme "github.com/USEPA/EJAMbatch.summarizer")
+
+```{r install_others}
+if (!require(EJAM)) {
+  if (!require(devtools)) {install.packages('devtools')}
+  devtools::install_github('USEPA/EJAM')
+}
+if (!require(data.table)) {install.packages('data.table')}
+# These and other required should get installed and loaded and attached by EJAM 
+#   library(EJAMblockdata)
+#   library(EJAMfrsdata) ## EPA Facility Registry Service data for lat/lon of each regulated site
+```
+
+### Create the index of where blocks are, to be able to quickly find those nearby a given site
+
+THIS IS SLOW - takes a few seconds. This (seemingly) must be done for each session? One cannot save it as .rda and just load via a pkg since it is like a pointer to the index in RAM or something like that.
+
+```{r BUILD_INDEX}
+system.time({
+  localtree <- SearchTrees::createTree(
+    EJAMblockdata::quaddata, treeType = "quad", dataType = "point"
+  )
+})
+```
+
+### Specify points (where you want to center the circular buffers)
+
+#### Use lat and lon to specify points
+
+```{r}
+sitepoints <- data.frame(
+  lon = c(-92.1, -91.8), 
+  lat = c(34.8799123, 30.2906971), 
+  siteid = 1:2
+  )
+```
+
+#### Use point data you read from a file
+
+You can use lat lon coordinates from an xlsx or csv file. The first row should be column names including lat and lon, or something that can be interpreted as that - see latlon_infer()
+
+```{r eval=FALSE, include=FALSE}
+write.csv(data.frame(LONG = c(-92.1, -91.8), Latitude = c(34.8, 30.2), siteid = 1:2), file = 'mypoints.csv')
+
+sitepoints <- latlon_readclean('mypoints.csv')
+```
+
+#### Use test points example that comes with the package
+
+```{r testpoints, eval=FALSE, include=FALSE}
+# EJAM::testpoints_100_dt |> head(2) # data in this package
+# sitepoints <- data.table::copy(EJAM::testpoints_100_dt)  # [1:5, ]
+head(sitepoints, 2)
+```
+
+### Specify radius for circular buffer, and other key parameters
+
+```{r}
+radius <- 1 # radius (miles).  5 km = 3.1 miles, 10 km = 6.2 miles
+```
+
+### Note these Key Functions
+
+-   **getblocksnearby_and_doaggregate()** provides results in just one function.
+
+-   **getblocksnearby()** takes a set of points (e.g., facilities) and finds the Census blocks near each.
+
+-   **doaggregate()** takes the list of blocks near each point, joins it to blockgroup indicators like from EJScreen, and aggregates at each buffered point as well as for the overall set of unique blocks (residents).
+
+### Get results in one step
+
+```{r}
+sitepoints <- as.data.table(sitepoints)  
+## This function just combines getblocksnearby() and doaggregate()
+elapsed <- system.time({
+  # out2 <- getblocksnearby_and_doaggregate(
+  #   sitepoints =  sitepoints,
+  #   cutoff = radius,
+  #   quadtree = localtree
+  # )
+})
+print(elapsed)
+  
+```
+
+### Get results step by step, and view details
+
+#### getblocksnearby() will find residents/blocks that are within specified distance
+
+About \< 1 second for 100 sites, but a few seconds for 1,000 sites, or roughly 500k / hour for this step
+
+```{r}
+sitepoints <- data.table::as.data.table(sitepoints)  
+elapsed <- system.time({
+  
+  sites2blocks <- EJAM::getblocksnearby(
+    sitepoints = sitepoints,
+    cutoff = radius,
+    quadtree = localtree
+  )
+  
+}) # end of timed function
+print(elapsed)
+```
+
+#### View some diagnostics or stats on the intermediate result:
+
+-   what blocks are near each site
+-   how far are they
+-   etc.
+
+```{r}
+  ## can use this example intermediate step dataset 
+  ## of 99 sites, with 11,567 nearby blocks:
+  # sites2blocks_example
+  # sites2blocks <- data.table::copy(sites2blocks_example)
+names(sites2blocks)
+summarize_blocks_per_site(sites2blocks) # print() shows more info returned invisibly
+summarize_sites_per_block(sites2blocks) # print() shows more info returned invisibly
+summarize_blockcount(sites2blocks)
+# Use data.table package here:
+sites2blocks <- sites2blocks[ , .(
+  avgDistance = round(mean(distance), 2),
+  blocksfound = .N, 
+  blocks_within_1mile = sum(distance <= 1),
+  blocks_within_0.75   = sum(distance <= 0.75),
+  blocks_within_0.25  = sum(distance <= 0.25)
+  ), by = 'siteid'][order(blocksfound), ]
+setorder(sites2blocks, siteid)
+head(sites2blocks)
+```
+
+#### doaggregate() will summarize indicators within each buffer and overall
+
+```{r}
+# out <- doaggregate(sites2blocks_example)
+
+elapsed <- system.time({
+  out <- suppressWarnings( 
+    
+    doaggregate(sites2blocks = sites2blocks) 
+    
+  )
+}) 
+print(elapsed)
+
+names(out)
+dim(out$results_bysite)
+```
+
+#### See indicators aggregated over all people across all sites
+
+```{r}
+  # cbind(prettyNum((out$results_overall[ , ..names_all])))
+  
+  ## To see just some subset of indicators, like Environmental only:
+  # cbind(prettyNum((out$results_overall[ , ..names_e])))
+  # cbind(prettyNum((out$results_overall[ , ..names_d])))
+  # cbind(prettyNum((out$results_overall[ , ..names_d_subgroups])))
+  # cbind(prettyNum((out$results_overall[ , ..names_e_pctile])))
+  # cbind(prettyNum((out$results_overall[ , ..names_d_pctile])))
+  # cbind(prettyNum((out$results_overall[ , ..names_ej_pctile])))
+  
+  ## view output of batch run aggregation ####
+  # cbind(prettyNum((out$results_overall))) 
+names(out$results_)
+```
+
+-   *note: Demographic subgroups are not in the lookup tables of percentiles yet.*
+
+-   *note: state.pctile indicators are all NA values so far until the State percentiles data is added to blockgroupstats*
+
+# TO BE CONTINUED
