@@ -16,21 +16,22 @@ Depends:
     EJAMblockdata,
     EJAMfrsdata
 Imports:
-    data.table, 
+    data.table,
     config (>= 0.3.1),
     golem (>= 0.3.3),
-    foreach, 
-    sp, 
-    SearchTrees, 
+    foreach,
+    sp,
+    SearchTrees,
     pdist,
-    DBI, 
-    RMySQL, 
+    DBI,
+    RMySQL,
     doSNOW,
     EJAMbatch.summarizer,
     EJAMejscreendata,
     EJAMejscreenapi,
     epaRShinyTemplate,
-    openxlsx
+    openxlsx,
+    pkgload
 Remotes: 
     github::USEPA/EJAM,
     github::USEPA/EJAMblockdata,
