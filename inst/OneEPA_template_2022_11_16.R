@@ -1,55 +1,27 @@
-#' The application User-Interface
-#'
-#' @param request Internal parameter for `{shiny}`.
-#'     DO NOT REMOVE.
-#' @import shiny
-#' @noRd
-app_ui <- function(request) {
-  tagList(
-    # Leave this function for adding external resources, see end of this source file.
-    golem_add_external_resources(),
-    
-    # This app_ui() function will be broken out into and refer to 
-    #   functions and modules 
-    #   but for now it has all the code in this file.
-    # UI MODULES WILL PROBABLY REPLACE MOST OF THE CODE BELOW ####
-    # such as possibly these placeholders:
-    #  mod_view_results_ui("view_results_1")
-    #  mod_save_report_ui("save_report_1")
-    #  mod_specify_sites_ui("specify_sites_1")
-    
-    # [this is a button that helps while debugging (REMOVE BEFORE DEPLOYING)] ####
-    # And to unhide the button in the app, while debugging, go 
-    # to your web browser, open the JS console, 
-    # And type:
-    #   $('#browser').show();
-    
-    actionButton("browser", "browser"),
-    tags$script("$('#browser').hide();"),
-    
-    fluidPage(
-      # Overall fluidPage ####
-      
-      #################################################################################################################### #
-      # ___EPA SHINY APP WEBPAGE TEMPLATE ####
-      
-      # WHERE TO FIND THIS template # 
-      # https://github.com/USEPA/webcms/blob/main/utilities/r/OneEPA_template.R
-      
-      # START OF ONEEPA SHINY APP WEB UI TEMPLATE to insert within your fluid page  
-      
-      tags$html(class = "no-js", lang="en"),
-      tags$head(
-        HTML(
-          "<!-- Google Tag Manager -->
-		  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+# require(shiny)
+# you already would have this ui <- fluidPage( ####
+ui <- shiny::fluidPage(
+  
+#################################################################################################################### #
+# A__copy from here to B and insert in top part of your ui, right after ui <- fluid( ####
+
+# WHERE TO FIND THIS template # 
+# https://github.com/USEPA/webcms/blob/main/utilities/r/OneEPA_template.R
+
+# START OF ONEEPA SHINY APP WEB UI TEMPLATE to insert within your fluid page  
+  
+  tags$html(class = "no-js", lang="en"),
+  tags$head(
+    HTML(
+      "<!-- Google Tag Manager -->
+		<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 		new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 		j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 		'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 		})(window,document,'script','dataLayer','GTM-L8ZB');</script>
 		<!-- End Google Tag Manager -->
 		"
-        ),
+    ),
 		tags$meta(charset="utf-8"),
 		tags$meta(property="og:site_name", content="US EPA"),
 		#tags$link(rel = "stylesheet", type = "text/css", href = "css/uswds.css"),
@@ -74,10 +46,11 @@ app_ui <- function(request) {
 		
 		
 		#  ***  your app title *** ####
+		# tags$title('ContDataQC | US EPA'),
 		
 		tags$title('EJAM | US EPA'),
 		
-		## (more EPA template) ####
+		## (more template) ####
 		tags$link(rel="icon", type="image/x-icon", href="https://www.epa.gov/themes/epa_theme/images/favicon.ico"),
 		tags$meta(name="msapplication-TileColor", content="#FFFFFF"),
 		tags$meta(name="msapplication-TileImage", content="https://www.epa.gov/themes/epa_theme/images/favicon-144.png"),
@@ -121,13 +94,13 @@ app_ui <- function(request) {
             margin-left: 30px;
         }'
 		))
-      ),
-		tags$body(class="path-themes not-front has-wide-template", id="top",
-		          tags$script(src = 'https://cdnjs.cloudflare.com/ajax/libs/uswds/3.0.0-beta.3/js/uswds.min.js')),
-		
-		# Site Header
-		HTML(
-		  '<div class="skiplinks" role="navigation" aria-labelledby="skip-to-main">
+  ),
+  tags$body(class="path-themes not-front has-wide-template", id="top",
+            tags$script(src = 'https://cdnjs.cloudflare.com/ajax/libs/uswds/3.0.0-beta.3/js/uswds.min.js')),
+  
+  # Site Header
+  HTML(
+    '<div class="skiplinks" role="navigation" aria-labelledby="skip-to-main">
       <a id="skip-to-main" href="#main" class="skiplinks__link visually-hidden focusable">Skip to main content</a>
     </div>
 
@@ -247,11 +220,11 @@ app_ui <- function(request) {
       </div>
     </header>
     <main id="main" class="main" role="main" tabindex="-1">'
-		),
-	
-	# Individual Page Header 
-	HTML(
-	  '<div class="l-page  has-footer">
+  ),
+  
+  # Individual Page Header 
+  HTML(
+    '<div class="l-page  has-footer">
       <div class="l-constrain">
         <div class="l-page__header">
           <div class="l-page__header-first">
@@ -262,341 +235,67 @@ app_ui <- function(request) {
           </div>
         </div>
         <article class="article">'
-	),
-	
-	# Insert your UI code here
-	
-	#################################################################################################################### #
-	
-	htmltools::includeCSS("inst/app/www/styles.css"),
-	
-	headerPanel(
-	  title = htmltools::a(
-	    "EJAM (Environmental Justice Analysis Multi-site) Tool - Fast EJ Stats Near Multiple Facilities", 
-	    href = "www/ibutton_help.html",target = "_blank"
-	  ),
-	  windowTitle = "EJAM (Environmental Justice Analysis Multi-site) Tool - Fast EJ Stats Near Multiple Facilities"
-	),
-	# textAreaInput('analysis_shortname', value = 'These Facilities', placeholder = 'very short name identifying this set'),
-	
-	# . ####
-	# ______________ LOCATIONS _________________ ####
-	# . ####
-	wellPanel(
-	  # 1. LOCATIONS TO ANALYZE (universe of interest) ####
-	  
-	  fluidRow(column(
-	    12, style = "overflow: hidden;", htmltools::h4("1. Specify Locations to Analyze")
-	  )),
-	  # . ####
-	  ## A) ___ by Industry / NAICS ##########
-	  
-	  wellPanel(
-	    fluidRow(
-	      
-	      column(
-	        12,  style = "overflow: hidden;",
-	        # . ####
-	        ### i. pick list/ search Industry (facility_mustbe_that_naics_in_this_program) ####
-	        
-	        column(
-	          12,
-	          htmltools::h5(
-	            "Select Industry",
-	            htmltools::a(htmltools::img(id = "ibutton", src = "www/i.png", height = 15, width = 15), href = "www/ibutton_help.html#help_industry", target = "_blank"))
-	        ),
-	        column(
-	          5,
-	          selectInput(
-	            inputId = "naics_user_picked_from_list",
-	            label = htmltools::h6("Select industry of interest"),
-	            choices = naics_to_pick_from, # named numeric vector, number is NAICS like 31182, names are like "31182 - Cookie, Cracker, and Pasta Manufacturing" 
-	            selected = NULL,
-	            width = 400,
-	            multiple = TRUE
-	          )
-	        ),
-	        column(
-	          2,
-	          # htmltools::br(),
-	          htmltools::h5("OR", align = "center")
-	        ),
-	        
-	        ### ii. type in NAICS #####
-	        
-	        column(
-	          5,
-	          textInput(
-	            inputId = "naics_user_wrote_in_box",
-	            label = htmltools::h6(
-	              "Enter NAICS codes of interest - ",
-	              htmltools::a("Look up NAICS", href ="https://www.census.gov/naics"),
-	              htmltools::a(htmltools::img(id = "ibutton",src = "www/i.png",height = 15,width = 15),href = "www/ibutton_help.html#help_naicslist",target = "_blank")
-	            ),
-	            value = "",
-	            width = 400,
-	            placeholder = NULL
-	          )
-	        ),
-	        # htmltools::br(),
-	        textOutput("inputWarning"),
-	        # htmltools::br(),
-	        htmltools::tags$head(htmltools::tags$style("#inputWarning{color: red;font-size: 14px;font-style: italic;}")),
-	        
-	        ##################################################### #
-	        
-	        
-	        #    ##   TEMPORARILY hide THESE DETAILS - NON ESSENTIAL AND NOT DEBUGGED YET
-	        
-	        
-	        #        ### ...& limit to fac w NAICS in this EPA program #####
-	        #        #    THIS SECTION DEFINES THESE INPUTS:
-	        #        # input$selectFrom1, 
-	        #        # input$facility_mustbe_that_naics_in_this_program, 
-	        #        # input$facility_mustbe_in_this_program
-	        # 
-	        #   column(
-	        #      12,
-	        #      #radioButtons("selectFrom1", label = htmltools::h5("Match your NAICS code selection with:"),
-	        #      #   c("Any EPA data system" = "any","Select data systems" = "some"), selected = NULL, inline = TRUE, width = NULL),
-	        #      htmltools::h5(
-	        #        "Limit to facilities where selected NAICS is found within these EPA lists: (all are searched by default):
-	        #        (A facility may have different NAICS in each list)",
-	        #        htmltools::a(htmltools::img(id = "ibutton", src = "www/i.png", height = 15, width = 15), href = "www/ibutton_help.html#help_match", target = "_blank")
-	        #      ),
-	        # 
-	        # checkboxGroupInput(
-	        #   inputId = "facility_mustbe_that_naics_in_this_program",
-	        #   inline = TRUE,
-	        #   label = "",
-	        #   choices = c(
-	        #     "TRIS" = "TRIS",
-	        #     "RCRAINFO" = "RCRAINFO",
-	        #     "AIRS/AFS" = "AIRS/AFS",
-	        #     "E-GGRT" = "E-GGRT",
-	        #     "NPDES" = "NPDES",
-	        #     "RCRAINFO" = "RCRAINFO",
-	        #     "RMP" = "RMP"
-	        #   )
-	        # ),
-	        # ############################################### # 
-	        # ### ...& limit to fac in this EPA program #####
-	        # 
-	        #  # NOT USED now
-	        #  ### radioButtons("selectFrom2", label = htmltools::h5("Include facilities with records in:"),
-	        #  ###   c("All EPA data systems" = "any", "Select data systems" = "some"), selected = NULL, inline = TRUE, width = NULL),
-	        #
-	        # htmltools::h5(
-	        #   "Limit to facilities on these EPA lists (all included by default):",
-	        #   htmltools::a(htmltools::img(id = "ibutton", src = "www/i.png", height = 15, width = 15), href = "www/ibutton_help.html#help_include", target = "_blank")
-	        # ),
-	        # checkboxGroupInput(
-	        #   inputId = "facility_mustbe_in_this_program", 
-	        #   label = "",
-	        #   choices = c("TRIS" = "TRIS",
-	        #               "RCRAINFO" = "RCRAINFO",
-	        #               "AIRS/AFS" = "AIRS/AFS",
-	        #               "E-GGRT" = "E-GGRT",
-	        #               "NPDES" = "NPDES",
-	        #               "RCRAINFO" = "RCRAINFO",
-	        #               "RMP" = "RMP"
-	        #   ), 
-	        #   inline = TRUE
-	        # )
-	        #        )
-	        ############################################### # 
-	      )
-	    )), # end of A __ by NAICS, and wellpanel and fluidrow 
-	  
-	  
-	  htmltools::h5("OR", align = "center"),
-	  
-	  
-	  fluidRow(
-	    
-	    column(12, wellPanel(
-	      # . ####
-	      ## B) ___ by Facility IDs uploaded (as file_uploaded_FRS_IDs) ##########
-	      
-	      fileInput(
-	        inputId = 'file_uploaded_FRS_IDs',
-	        label = htmltools::h5(
-	          "Upload list of FRS identifiers",
-	          htmltools::a(
-	            htmltools::img(id = "ibutton", src = "www/i.png", height = 15, width = 15), href = "www/ibutton_help.html#help_frs", target = "_blank")
-	        )
-	      )
-	    )),
-	    
-	    htmltools::h5("OR", align = "center"),
-	    
-	    column(12, wellPanel(
-	      # . ####
-	      ## C) ___ by points (lat lon) uploaded (file_uploaded_latlons) ##########
-	      
-	      fileInput(
-	        inputId = "file_uploaded_latlons",
-	        label = htmltools::h5(
-	          "Upload list of locations with lat lon coordinates",
-	          htmltools::a(
-	            htmltools::img(id = "ibutton", src = "www/i.png", height = 15, width = 15),
-	            href = "www/ibutton_help.html#help_location",  target = "_blank"
-	            # could edit to explain xlsx, csv etc format allowed when approp
-	          )
-	        )
-	      )
-	    ))
-	    
-	  )
-	  
-	),
-	
-	# . ####
-	# ______________ DISTANCE _________________ ####
-	# . ####
-	wellPanel(# 2. DISTANCE (circular buffer radius)  ##########
-	          
-	          fluidRow(column(
-	            12, htmltools::h4(
-	              "2. Distance",
-	              htmltools::a(htmltools::img(id = "ibutton", src = "www/i.png", height = 15, width = 15), target = "_blank",
-	                           href = "www/ibutton_help.html#help_distance")
-	            )
-	          )),
-	          fluidRow(
-	            column(
-	              6,
-	              style = "overflow: hidden;",
-	              numericInput(
-	                'cutoffRadius',
-	                label = htmltools::h5("Radius of circular buffer in miles"),
-	                value = 1.0,
-	                min = 0.0,
-	                max = 10,
-	                step = NA,
-	                width = NULL
-	              )
-	            ),
-	            column(
-	              6,
-	              style = "overflow: hidden;",
-	              
-	              radioButtons( ## need to check if expand distance param is really still needed ####
-	                            "expandRadius",
-	                            label = htmltools::h5(
-	                              "Expand distance for facilities with no census block centroid within selected buffer distance."
-	                            ),
-	                            c("Yes" = "yes",
-	                              "No" = "no"),
-	                            selected = "no",
-	                            inline = TRUE,
-	                            width = NULL
-	              )
-	            )
-	          )),
-	
-	# fluidRow(column(12, wellPanel(   # OBSOLETE
-	#   # 3. OVERALL SUMMARY or SITE-BY-SITE? ###### #
-	#   # dissolve sites so person near 2+ sites double-counted, or not
-	#   radioButtons(inputId = "uniqueOutput",
-	#                label = htmltools::h4(
-	#                  "3. Output",
-	#                htmltools::a(htmltools::img(id = "ibutton", src = "www/i.png", height = 15, width = 15), target = "_blank",
-	#                  href = "www/ibutton_help.html#help_output")
-	#                ),
-	#                c(
-	#                  "Summary row plus 1 row/site, all in 1 table" = "both",
-	#                  "Site-by-Site results" = "no",
-	#                  "Overall Summary (avoids double-counting any residents near 2+ sites) [*this may change]" = "yes"
-	#                ),
-	#                selected = 'both',
-	#                inline = TRUE,
-	#                width = NULL
-	#   )
-	# ))),
-	
-	htmltools::br(),
-	htmltools::br(),
-	
-	# . ####
-	# ______________ DOWNLOAD _________________ ####
-	# . ####
-	# 3. DOWNLOAD RESULTS  ##########
-	
-	downloadButton('downloadData1', 'Download'),
-	htmltools::br(),
-	
-	# Bookmark button ####
-	# may enable bookmarking on server which saves user's uploaded file on server
-	#  and all  input$  values.
-	bookmarkButton(),
-	htmltools::br(),
-	
-	# . ####
-	# ______________ OTHER _________________ ####
-	# . ####
-	
-	textOutput("inputWarning2"),
-	htmltools::br(),
-	htmltools::tags$head(
-	  htmltools::tags$style(
-	    "#inputWarning2{color: red; font-size: 14px; font-style: italic; }"
-	  )
-	),
-	htmltools::br(),
-	
-	h4('DEBUGGING / TESTING INFO'), 
-	htmltools::br(),
-	mainPanel( # Testing: maybe obsolete ##########
-	           verbatimTextOutput("selectInd2_for_testing"),
-	           verbatimTextOutput("selectInd1_for_testing"),
-	           verbatimTextOutput("selectScope1"),
-	           verbatimTextOutput("selectScope2"),
-	           verbatimTextOutput("file_uploaded_FRS_IDs_df"),
-	           verbatimTextOutput("file_uploaded_latlons_df"),
-	),
-	
-	#     ui code ends here  ####
-	#  __ ### #
-	#################################################################################################################### #
-	## __End SHINY APP UI code v
-	
-	# (remainer of template) ####
-	
-	# IMPORTANT! For a navbar page, you will need to place the header and footer inside the navbar section (as shown below)  -
-	# you will then want to comment out lines 201-213 and lines 254-263
-	#   navbarPage(
-	#     title = h2("Sample App"),
-	#     header = HTML(
-	#       '<div class="l-page  has-footer">
-	#         <div class="l-constrain">
-	#           <div class="l-page__header">
-	#             <div class="l-page__header-first">
-	#               <div class="web-area-title"></div>
-	#             </div>
-	#             <div class="l-page__header-last">
-	#               <a href="#" class="header-link">Contact Us</a>
-	#             </div>
-	#           </div>
-	#           <article class="article">'
-	#     ),
-	#     footer = HTML(
-	#       '</article>
-	# 	        </div>
-	#           <div class="l-page__footer">
-	#             <div class="l-constrain">
-	#               <p><a href="#">Contact Us</a> to ask a question, provide feedback, or report a problem.</p>
-	#             </div>
-	#           </div>
-	#         </div>'
-	#     ),
-	#     tabPanel("Sample Tab 1"),
-	#     tabPanel("Sample Tab 2"),
-	#   ),
-	
-	# Individual Page Footer
-	HTML(
-	  '</article>
+  ),
+  
+  # Insert your UI code here
+  
+  #################################################################################################################### #
+  #  B __     ####
+  #
+  # titlePanel("Hello Shiny!"),  
+  # sidebarLayout(
+  #   sidebarPanel(sliderInput("obs","Number of observations:",min = 0,max = 1000,value = 500)),
+  #   mainPanel(plotOutput("distPlot"))
+  # )
+  #
+  #  your ui code is next  ####
+  
+
+  
+  
+    
+  
+  #   your ui code ends here (make sure line prior has a comma at end) ####   ,
+# C__copy from here to D and put after your ui code ####
+  #################################################################################################################### #
+  ## __End SHINY APP UI code v
+  
+  # (remainer of template) ####
+  
+  # IMPORTANT! For a navbar page, you will need to place the header and footer inside the navbar section (as shown below)  -
+  # you will then want to comment out lines 201-213 and lines 254-263
+  #   navbarPage(
+  #     title = h2("Sample App"),
+  #     header = HTML(
+  #       '<div class="l-page  has-footer">
+  #         <div class="l-constrain">
+  #           <div class="l-page__header">
+  #             <div class="l-page__header-first">
+  #               <div class="web-area-title"></div>
+  #             </div>
+  #             <div class="l-page__header-last">
+  #               <a href="#" class="header-link">Contact Us</a>
+  #             </div>
+  #           </div>
+  #           <article class="article">'
+  #     ),
+  #     footer = HTML(
+  #       '</article>
+  # 	        </div>
+  #           <div class="l-page__footer">
+  #             <div class="l-constrain">
+  #               <p><a href="#">Contact Us</a> to ask a question, provide feedback, or report a problem.</p>
+  #             </div>
+  #           </div>
+  #         </div>'
+  #     ),
+  #     tabPanel("Sample Tab 1"),
+  #     tabPanel("Sample Tab 2"),
+  #   ),
+  
+  # Individual Page Footer
+  HTML(
+    '</article>
     </div>
     <div class="l-page__footer">
       <div class="l-constrain">
@@ -604,11 +303,11 @@ app_ui <- function(request) {
       </div>
     </div>
   </div>'
-	),
-	
-	# Site Footer
-	HTML(
-	  '</main>
+  ),
+  
+  # Site Footer
+  HTML(
+    '</main>
       <footer class="footer" role="contentinfo">
       <div class="l-constrain">
         <img class="footer__epa-seal" src="https://www.epa.gov/themes/epa_theme/images/epa-seal.svg" alt="United States Environmental Protection Agency" height="100" width="100">
@@ -779,36 +478,9 @@ app_ui <- function(request) {
         <path fill="currentColor" d="M2.3 12l7.5-7.5 7.5 7.5 2.3-2.3L9.9 0 .2 9.7 2.5 12z"></path>
       </svg>
     </a>'
-	)
-	
-	#  __ END OF fluidPage  ### #
-    ) # end of fluid page
   )
-  # ______________   _________________ ####
-} ########################################################################### #
+  
+# D__ END OF fluidPage IS ONE LAST CLOSE PARENS ####
+) 
 
-#' Add external Resources to App (from golem package code)
-#'
-#' This function is internally used to add external
-#' resources inside the Shiny application.
-#'
-#' @import shiny
-#' @importFrom golem add_resource_path activate_js favicon bundle_resources
-#' @noRd
-golem_add_external_resources <- function() {   # (adds external Resources to App) ####
-  add_resource_path(
-    "www",
-    app_sys("app/www")
-  )
-  tags$head(
-    favicon(ext = 'png'),
-    bundle_resources(
-      path = app_sys("app/www"),
-      app_title = "EJAM"
-    )
-    # Add here other external resources
-    # for example, you can add shinyalert::useShinyalert()
-    
-    
-  )
-}
+#################################################################################################################### #
