@@ -29,7 +29,10 @@ app_server <- function(input, output, session) {
   # SEEMS LIKE THAT WOULD BE EVERY TIME radius is updated, 
   # but this is slow and only needs to happen once per session, right?
   cat('\n BUILDING INDEX TO ALL BLOCKS IN USA - TAKES A FEW SECONDS...\n\n')
-  localtree <- SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
+  # maybe this can be done on load of package?
+  if (!exists('localtree')) {
+    localtree <- SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
+  }
   
   # . ####
   # ______________ User inputs _________________ ####
