@@ -1,0 +1,14 @@
+State/state equivalent entity-based text files containing the mean centers of population for each census block group within a state/state equivalent entity for the 2020 Census.
+
+Select a State
+The record layout is:
+
+STATEFP:  2-character state FIPS code
+COUNTYFP:  3-character county FIPS code
+TRACTCE:  6-character census tract code
+BLKGRPCE:  1-character census block group code
+POPULATION:  2020 Census population tabulated for the block group
+LATITUDE:  latitude coordinate for the center of population for the block group
+LONGITUDE:  longitude coordinate for the center of population for the block group
+
+https://www2.census.gov/geo/docs/reference/cenpop2020/blkgrp/CenPop2020_Mean_BG.txt

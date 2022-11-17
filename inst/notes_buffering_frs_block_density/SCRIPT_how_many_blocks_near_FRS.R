@@ -18,17 +18,7 @@ load('C:/Program Files/R/mypackages/EJAM-EJAMfrsdata/data/frs.rdata')
 # > names(frs)
 # [1] "REGISTRY_ID"    "PRIMARY_NAME"   "SITE_TYPE_NAME" "PGM_SYS_ACRNMS" "INTEREST_TYPES"
 # [6] "NAICS_CODES"    "SIC_CODES"      "LAT"            "LONG"  
-# t(frs[19,])
-# [,1]
-# REGISTRY_ID    "110045685941"
-# PRIMARY_NAME   "OCEAN BEAUTY SEAFOODS ALITAK"
-# SITE_TYPE_NAME "STATIONARY"
-# PGM_SYS_ACRNMS "AIR:AK0000000215000019, AIRS/AFS:0215000019, CEDRI:CEDRI1550, EIS:10585311, NPDES:AKG520036, SFDW:AK2250315, SFDW:AK2250315 32219"
-# INTEREST_TYPES "AIR EMISSIONS CLASSIFICATION UNKNOWN, AIR SYNTHETIC MINOR, COMPLIANCE AND EMISSIONS REPORTING, ICIS-NPDES NON-MAJOR, TRANSIENT NON-COMMUNITY WATER SYSTEM, WATER TREATMENT PLANT"
-# NAICS_CODES    "311710, 311712" # There can be multiple codes for one site
-# SIC_CODES      "2091, 2092"
-# LAT            "56.8987"
-# LONG           "-154.2475"
+
 
 frs1000 <- frs[sample(1:NROW(frs), 1000), c('REGISTRY_ID', 'LAT', 'LONG', 'NAICS_CODES')]
 rm(frs)
@@ -52,6 +42,8 @@ load('~/OneDrive - Environmental Protection Agency (EPA)/Downloads/blocks2020.rd
 library(proxistat) # install_github('ejanalysis/proxistat')
 # Using proxistat::get.distances.chunked()  since crashes lacking RAM if nonchunked used on 1000 frompoints.
 #  is very very slow... only about 500 points per hour, so about 2 hours for just 1000 FRS at 1 distance.
+
+# actually,  now EJAM::getblocksnearby() would do this much faster.
 
 ########################################################### #
 # radius of 1 mile ###########################################################
