@@ -95,7 +95,7 @@
 #'   
 #'   Columns are siteid, lat, lon; maybe 100 to 10k points
 #'      
-#'   - **[getblocksnearbyviaQuadTree](sitepoints)** or just *[getblocksnearby(sitepoints)]*
+#'   - **[getblocksnearby](sitepoints)** which by default uses *[getblocksnearbyviaQuadTree(sitepoints)]*
 #'        Returns `sites2blocks` 
 #'        Requires datasets [quaddata] and [blockquadtree] (may rename)
 #'        
@@ -112,7 +112,9 @@
 #' 
 #'   - **[EJAMblockdata::quaddata].rda** (may rename as blockpoints)  dataset data.table
 #'   
-#'    <5.8m rows (>8m if nonpopulated blocks were kept).  120MB file for 2020 Census.
+#'    8,174,955 rows when non-populated blocks are kept. 
+#'    5,806,512 rows have Census 2020 population (and blockwt) > 0. 
+#'    This is the largest file in the package, and is 168 MB as a file, for 2020 Census.
 #'      - blockid 
 #'      - BLOCK_X, BLOCK_Y, BLOCK_Z  (not lat, lon)
 #'  

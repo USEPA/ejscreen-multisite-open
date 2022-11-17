@@ -16,11 +16,15 @@ knitr::opts_chunk$set(eval = FALSE)
 # https://r-pkgs.org/vignettes.html
 ```
 
-## Install EJAM
+## Accessing and using the code/ data/ app
 
-The R package is still in active development, but a current version can be installed from the github USEPA github repository. You can install the development version of EJAM like so:
+The app is not on a server. The R package is still in active development, but a current version can be installed from the github USEPA github repository. It can be installed locally as an R package, and the data or functions can be used even without launching the shiny app interface. This is work in progress - only the lat/lon upload may be working right now, for example, not the NAICS/FRS queries.
 
-```{r install}
+## Installing EJAM
+
+You can install the development version of EJAM like so:
+
+``` r
 if (!require(EJAM)) {
   if (!require(devtools)) {install.packages('devtools')}
   devtools::install_github('USEPA/EJAM')
@@ -31,10 +35,12 @@ if (!require(EJAM)) {
 
 You can find it here: <https://github.com/USEPA/EJAM#readme>
 
-## Get Help / See Documentation on all the Functions and Data
+## Documentation of functions and data
 
-```{r help}
-help("EJAM")
+See this vignette and help documentation for the package overall, and individual functions and datasets.
+
+```{r help, eval=FALSE, include=FALSE}
+help("EJAM", package='EJAM')
 ```
 
 ## Run the Shiny app on your own computer, in RStudio

@@ -1,5 +1,5 @@
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
+<!-- README.md is generated from README.Rmd. Please edit Rmd not md  -->
 <!-- badges: start -->
 
 [![Lifecycle:
@@ -21,8 +21,8 @@ for example.
 
 **Note that EJAM is still in active development, not yet released for
 anything other than testing, even internally. For an interim, related
-tool being tested, please see [EJAM’s ejscreenapi
-app.](https://rstudio-connect.dmap-stage.aws.epa.gov/content/374e6403-c660-4692-b62f-61139d1fef69/)**
+tool being tested, please see** [EJAM’s ejscreenapi
+tool](https://rstudio-connect.dmap-stage.aws.epa.gov/content/dc3cda00-20a2-47ed-a753-0dcb89eb8f2a/ "https://rstudio-connect.dmap-stage.aws.epa.gov/content/dc3cda00-20a2-47ed-a753-0dcb89eb8f2a/")
 
 # What is EJAM?
 
@@ -57,47 +57,29 @@ analysis or a new regulation being considered, for example.
 
 # Related tools and packages
 
--   [EJScreen](https://www.epa.gov/ejscreen)
+-   [EJScreen](https://www.epa.gov/ejscreen "https://www.epa.gov/ejscreen")
 
--   [EJAM’s ejscreenapi live (internal use) interim
-    tool](https://rstudio-connect.dmap-stage.aws.epa.gov/content/374e6403-c660-4692-b62f-61139d1fef69/)
+-   [EJAM’s ejscreenapi tool (in
+    testing)](https://rstudio-connect.dmap-stage.aws.epa.gov/content/dc3cda00-20a2-47ed-a753-0dcb89eb8f2a/ "https://rstudio-connect.dmap-stage.aws.epa.gov/content/dc3cda00-20a2-47ed-a753-0dcb89eb8f2a/")
 
 -   EJAM’s code repository for internal EPA use:
-    [USEPA/EJAM](https://github.com/USEPA/EJAM#readme) and it relies on
-    [EJAMblockdata](https://github.com/USEPA/EJAMblockdata#readme) and
-    [EJAMfrsdata](https://github.com/USEPA/EJAMfrsdata#readme)
+    [USEPA/EJAM](https://github.com/USEPA/EJAM#readme "https://github.com/USEPA/EJAM#readme")
+    and it relies on
+    [EJAMblockdata](https://github.com/USEPA/EJAMblockdata#readme "https://github.com/USEPA/EJAMblockdata#readme")
+    and
+    [EJAMfrsdata](https://github.com/USEPA/EJAMfrsdata#readme "https://github.com/USEPA/EJAMfrsdata#readme")
 
 -   OW’s EJSCREENBatch package repo: [OW’s
     EJSCREENBatch](https://github.com/USEPA/EJSCREENBatch#readme)
 
-## Installation
+## Documentation
 
-You can install the development version of EJAM like so:
+See the vignette, and help documentation for the package.
 
-``` r
-#    devtools::install_github('USEPA/EJAM')
-## But see ?remotes::install_github 
-## To install from a private repo, generate a personal access token (PAT) with at least 
-## repo scope in https://github.com/settings/tokens and supply to this argument. 
-## This is safer than using a password because you can easily delete a PAT without affecting any others.
-## Defaults to the GITHUB_PAT environment variable.
-```
-
-## Help / Documentation
-
-``` r
-# library(EJAM)
-# help("EJAM")
-### also see SCRIPT_NONSHINY.R in the package inst folder
-```
-
-## Launching the shiny app on your local computer
-
-``` r
-# library(EJAM)
-# run_app()
-##
-```
+The app is not on a server, but can be installed locally as an R
+package, and the data or functions can be used even without launching
+the shiny app interface. This is work in progress - only the lat/lon
+upload may be working right now, for example, not the NAICS/FRS queries.
 
 ## EJAM features and benefits
 
@@ -120,15 +102,14 @@ power:
 
 The tool uses default indicators but is flexible enough for work with
 other environmental and demographic indicators. The default
-environmental indicators are \[EJScreen’s environmental indicators\]
-(<https://www.epa.gov/ejscreen/overview-environmental-indicators-ejscreen>),
+environmental indicators are [EJScreen’s environmental
+indicators](https://www.epa.gov/ejscreen/overview-environmental-indicators-ejscreen "https://www.epa.gov/ejscreen/overview-environmental-indicators-ejscreen"),
 but an analysis can also include other user-selected EPA-hosted data
 layers on risks or concentrations (at block group resolution), or
 user-provided scores for each block group.
 
-The default demographic indicators are be \[EJScreen’s basic demographic
-indicators\]
-(<https://www.epa.gov/ejscreen/overview-demographic-indicators-ejscreen>),
+The default demographic indicators are be [EJScreen’s basic demographic
+indicators](https://www.epa.gov/ejscreen/overview-demographic-indicators-ejscreen "https://www.epa.gov/ejscreen/overview-demographic-indicators-ejscreen"),
 with the addition of the 8 race/ethnicity subgroups in ACS5 Table B03002
 and % poor as derived from Table C17002. EJAM can also analyze other
 demographic indicators, to include user-selected EPA-hosted layers, or

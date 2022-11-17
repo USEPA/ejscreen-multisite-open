@@ -40,8 +40,7 @@ NAICS_find <- function(query, add_children=FALSE, naics_dataset=NULL, ignore.cas
   if (is.null(naics_dataset) & !exists('NAICS')) {warning('missing NAICS dataset and not passed as a parameter to NAICS_find'); return(NA)}
   if (is.null(naics_dataset) &  exists('NAICS')) {naics_dataset <- NAICS}
   if (class(naics_dataset) != 'numeric' | length(naics_dataset) < 2000) {warning('naics_dataset does not seem to be what is expected')}
-  # browser()
-  
+
   # Find all industry entries that match the query at all, including say 4 digit and 5 or 6 digit codes as well,
   #  ( not any parent or children entries unless they each match, themselves )
   suppressWarnings( rownum <-     which(grepl(query, names(naics_dataset), ignore.case = ignore.case)) )

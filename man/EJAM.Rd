@@ -97,7 +97,7 @@ Input: \strong{\code{sitepoints}} data.table from user picking points
 
 Columns are siteid, lat, lon; maybe 100 to 10k points
 \itemize{
-\item \strong{\href{sitepoints}{getblocksnearbyviaQuadTree}} or just \emph{\link{getblocksnearby(sitepoints)}}
+\item \strong{\href{sitepoints}{getblocksnearby}} which by default uses \emph{\link{getblocksnearbyviaQuadTree(sitepoints)}}
 Returns \code{sites2blocks}
 Requires datasets \link{quaddata} and \link{blockquadtree} (may rename)
 \item \strong{sites2blocks}   Created by \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} and passed to  \code{\link[=doaggregate]{doaggregate()}}
@@ -118,7 +118,9 @@ unless analysis is for residents within x miles of the edges of some shapes, lik
 \item \strong{\link[EJAMblockdata:quaddata]{EJAMblockdata::quaddata}.rda} (may rename as blockpoints)  dataset data.table
 }
 
-<5.8m rows (>8m if nonpopulated blocks were kept).  120MB file for 2020 Census.
+8,174,955 rows when non-populated blocks are kept.
+5,806,512 rows have Census 2020 population (and blockwt) > 0.
+This is the largest file in the package, and is 168 MB as a file, for 2020 Census.
 - blockid
 - BLOCK_X, BLOCK_Y, BLOCK_Z  (not lat, lon)
 \itemize{

@@ -103,7 +103,6 @@ multimonte <- function(
       d=distances[i]
       n=sectorsizes[ii]
       res[i,ii] <- monte(n=n, d=d,trials=trials, silent=silent)
-      # browser()
     }
   }
   return(res)
