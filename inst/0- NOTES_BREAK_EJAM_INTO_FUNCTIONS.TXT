@@ -1,0 +1,96 @@
+
+We want functions to do these separately:
+
+get_siteid_from_naics()     - see...?
+given NAICS names or codes, 
+return facility registry IDs
+
+get_siteid_from_programid()  - see ejscreenapi::locate_by_id() or get_facility_info_...
+given program system IDs, 
+return facility registry IDs
+
+get_point_from_siteid()  or get_latlon_from_siteid()?  - see ejscreenapi::locate_by_id() etc.
+given facility registry IDs, 
+return facility lat/lon values (and other facility info, like name, NAICS, etc.?)
+
+FOR SHAPEFILES
+
+get_shapefile_buffer_around_point()  = circular buffers but if want as shapefiles
+given lat/lon values and radius (or multiple ones; or max?), 
+return circular buffers as shapefiles? (in case someone wants to use areal apportionment)
+
+get_shapefile_buffer_around_shapefile() 
+given shapefiles & buffer radius, 
+return shapefiles that buffer from those edges 
+
+get_shapefile_from_nplid() ?
+given NPL ids, or some other IDs that refer to sites with shapefile info? 
+return shapefile for each ? 
+
+get_shapefile_from_upload() ?
+given filename, 
+upload_shapefiles and return shapefile
+
+get_shapefile_from_drawing() ?
+draw on map??, return shapefile?
+
+???
+get_bgareas_by_fips() ?? or get_shapefile_from_fips() ??? - if someone wants to run a report for each county? or each CBSA? in a set?
+given census fips of blockgroup?, tract, CBSA??, MSA??, Other types of geos?
+return shapefile of each (note: this is not useful if just want to know which blocks are inside, etc. - can go directly from FIPS to get_bgareas_by_fips()  or even just join directly pull in entire blockgroup indicator scores)
+-----------------------------------------------
+
+get_distances2blocks_from_sitepoints()  or nearby_blockpoints()? - this is currently in EJAM::getnearbyblocks() ?
+given site lat/lons, all US blocks, & max radius (or radii?), 
+return DISTANCES for SITE-BLOCK pairs
+
+get_blockpoints_in_buffers() - or nearby_blockpoints()
+given buffers as a shapefile per site, 
+return site-block pairs (but not distance to each, just whether inside buffer) (using intersect like ejscreenbatch or others)
+
+get_blockareas_in_buffers() or arealapportion_blocks()? - see ejscreenbatch
+given buffer shapefiles by site, 
+return fraction of each BLOCK area that is inside buffer (for dissolved overall shape and/or each buffer)
+ **note this has to be redone for some new grouping of sites, at least for those with overlapping doublecounted blocks.
+ 
+get_bgareas_in_buffers()  - or arealapportion_bg()? see ejscreenbatch
+given buffer shapefiles by site, 
+return fraction of each BLOCKGROUP area that is inside buffer (for dissolved overall shape and/or each buffer)
+ **note this has to be redone for some new grouping of sites, at least for those with overlapping doublecounted blocks.
+ 
+get_rastercells_in_buffers()  - see ejscreenbatch
+given buffer shapefiles by site, 
+return which RASTER CELLS are inside buffer (for dissolved overall shape and/or each buffer)
+
+given site-block-distance table & weight of each BLOCK, 
+return (overall for unique blocks, and/or for each site) each BLOCKGROUP's weight (the fraction of bg to include). **note this has to be redone for some new grouping of sites, at least for those with overlapping doublecounted blocks.
+-----------------------------------------------
+
+given blockgroup weights (by site and overall), blockgroupstats (any indicators, for each blockgroup in US), metadata on types of indicators (how to aggregate them), etc., 
+return (at each site and overall) all the indicators (by site and overall) - raw values only ? (percentiles lookup separately?)
+**this could be broken up into 
+rollup_counts(), 
+rollup_wtdmeans(), 
+calculate_by_formula(), 
+combine those.
+
+given raw values of indicators, percentiles lookup tables,
+return percentiles (US and State?), and also popup text of percentiles?
+  
+given raw values of indicators, and US/State overall means, 
+return those as ratios to US (and State?) overall means. 
+
+-----------------------
+
+
+# server.R  had     **1700** lines of code in batch.summarizer package
+# 
+# batch.summarize()  **350** lines of code in batch.summarizer package
+
+batch.summarize() ... break up
+batch.clean() ....
+
+
+
+
+  

@@ -1,6 +1,6 @@
 if (1 == 0 ) {
   
-  # Maybe want to use the official EJScreen block weights numbers from here:
+  #  official EJScreen version 2.0 block weights numbers were here:
   # 
   # Description: Centroids with statistic weight factors 
   #   for both 2010 Census SF3 and 2012 ACS, block level
@@ -39,6 +39,9 @@ if (1 == 0 ) {
   #######################################
   # BUFFER STATS FOR COUNTS:
   #   
+spherical geometry versus planar geometry
+https://s2geometry.io/about/overview
+
   #   see EJAM-package.R for names of data files needed and column names.
   # 
   # Question: When to join the 200 or so blockgroupstats columns to the other info? 3 options a/b/c:
