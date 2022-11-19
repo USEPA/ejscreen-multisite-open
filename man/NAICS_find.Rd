@@ -43,11 +43,13 @@ c(\verb{11 - Agriculture, Forestry, Fishing and Hunting} = 11, \verb{111 - Crop 
 }
 \examples{
  # NAICS_find('paper')
+ NAICS_find('cement | concrete')
+ NAICS_find('pig')
  NAICS_find('pulp', add_children = FALSE)
  NAICS_find('pulp', add_children = TRUE)
- NAICS_find('asdfasdf', add_children = TRUE)
+ NAICS_find('asdfasdf', add_children = TRUE) # not working yet
  NAICS_find('asdfasdf', add_children = FALSE)
 }
 \seealso{
-\link{NAICS_categories} \link{NAICS}
+\link{NAICS_categories} \link{NAICS} get_facility_info_via_ECHO function
 }

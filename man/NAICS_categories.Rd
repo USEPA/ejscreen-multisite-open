@@ -2,17 +2,26 @@
 % Please edit documentation in R/NAICS_categories.R
 \name{NAICS_categories}
 \alias{NAICS_categories}
-\title{see the top level (or other) industrial categories in the NAICS list}
+\title{See the names of industrical categories and their NAICS code
+Easy way to list the 2-digit NAICS (17 categories), or other level}
 \usage{
-NAICS_categories(digits = 2, dataset = ifelse(exists(NAICS), NAICS, NULL))
+NAICS_categories(digits = 2, dataset = EJAM::NAICS)
 }
 \arguments{
-\item{digits}{default is 2-digits NAICS, which is the top level, but could say 3 or more}
+\item{digits}{default is 2, for 2-digits NAICS, the top level, but could be up to 6.}
 
 \item{dataset}{Should default to the dataset called NAICS, installed with this package.
 see \link{NAICS}  Check attr(NAICS, 'year')}
 }
 \description{
+See the names of industrical categories and their NAICS code
+Easy way to list the 2-digit NAICS (17 categories), or other level
+}
+\details{
+There are this many NAICS codes roughly by number of digits in the code:
+table(nchar(NAICS))
+2    3    4    5    6
+17   99  311  709 1057
 See \url{https://www.census.gov/naics/}
 }
 \seealso{

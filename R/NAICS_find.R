@@ -2,7 +2,7 @@
 #'
 #' Just a utility, quick way to view NAICS industrial sectors that contain queried word or phrase,
 #' but can also see all the subcategories within the matching one.
-#'
+#' 
 #' @details
 #' See <https://www.census.gov/naics/>
 #'  NOTE: By default, this shows NAICS that match the text query,
@@ -25,12 +25,14 @@
 #' @param naics_dataset Should default to the dataset NAICS, installed with this package. see [NAICS]
 #' @param ignore.case default TRUE, ignoring whether query is upper or lower case
 #'
-#' @seealso  [NAICS_categories] [NAICS] 
+#' @seealso  [NAICS_categories] [NAICS] get_facility_info_via_ECHO function
 #' @examples
 #'  # NAICS_find('paper')
+#'  NAICS_find('cement | concrete')
+#'  NAICS_find('pig')
 #'  NAICS_find('pulp', add_children = FALSE)
 #'  NAICS_find('pulp', add_children = TRUE)
-#'  NAICS_find('asdfasdf', add_children = TRUE)
+#'  NAICS_find('asdfasdf', add_children = TRUE) # not working yet
 #'  NAICS_find('asdfasdf', add_children = FALSE)
 #' @import data.table
 #' @export
