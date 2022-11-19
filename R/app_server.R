@@ -18,10 +18,17 @@ app_server <- function(input, output, session) {
   #  mod_save_report_server("save_report_1")
   #  mod_specify_sites_server("specify_sites_1")
   
-  # [this is a button that helps while debugging (REMOVE BEFORE DEPLOYING)] ####
-  print('NOTE: remove the debugging button before deploying')
-  observeEvent(input$browser,{
-    browser()
+  # Button to help during debugging (REMOVE BEFORE DEPLOYING)] ####
+  if (golem::app_dev()) {
+    cat('NOTE: remove the debugging button from app_server.R before deploying\n')
+    observeEvent(input$browser, {browser()}) # if developer clicks the button, the app pauses
+  }
+  output$debugbutton_ui <- renderUI({
+    conditionalPanel(
+      condition = golem::app_dev(), 
+      actionButton("browser", "browser"),
+      tags$script("$('#browser').hide();")
+    )
   })
   
   # Build localtree quad tree index for EVERY session?? ####
@@ -47,8 +54,12 @@ app_server <- function(input, output, session) {
   # THESE DO NOT MAKE SENSE... input$whatever is already a reactive value... so why redefine those here just renaming them??
   getCutoff    <- reactive({return(input$cutoffRadius)})
   getMaxcutoff <- reactive({return(maxcutoff_default)})
+  
   # avoidorphans  # THIS WOULD ALLOW ONE TO GET SOME RESULTS EVEN IF CIRCLE IS SO SMALL NO BLOCK HAS A CENTROID IN IT. 
   # Expand distance for facilities with no nearby block centroid ####
+  # no, here, means small circular buffers in rural, low density places will return no results 
+  # instead of results based on some fraction of the one blockgroup that is closest (contains the closest block)
+  # but the count of people nearby may be very far off reality in that 
   doExpandradius <- reactive({if (input$expandRadius=="no"){return(FALSE)} else {return(TRUE)}})
   
   # . ####
@@ -66,7 +77,7 @@ app_server <- function(input, output, session) {
       # read.table(file=in2File$datapath, sep=',', header=TRUE, quote='"')
       mypoints <- EJAMbatch.summarizer::read_csv_or_xl(fname = in2File$datapath, show_col_types = FALSE)
       names(mypoints) <- latlon_infer(names(mypoints))
-        mypoints <- latlon_df_clean(mypoints)
+      mypoints <- latlon_df_clean(mypoints)
       # mypoints <- latlon_readclean(in2File$datapath)
     })
     mypoints
@@ -455,11 +466,11 @@ app_server <- function(input, output, session) {
       #
       #  but now using Excel output:
       # library(openxlsx)
- 
+      
       wb <- workbook_output_styled(
         overall = datasetResults()$results_overall, 
         eachsite = datasetResults()$results_bysite
-        )
+      )
       openxlsx::saveWorkbook(wb, file = file, overwrite = TRUE)
       
       # openxlsx::write.xlsx(rbind(
@@ -505,9 +516,9 @@ app_server <- function(input, output, session) {
         # userin=addUserInput(file,userin, f2,  "Upload list of locations with lat lon coordinates. Filename: ") #input$file2 was old name # file_uploaded_latlons
         
         # save to file output results overall  ?
-          
+        
         cat(userin,  file=file) # write all those settings.
- 
+        
         # cat('\n\n Wrote to ', file)
       }
       # session$reload()
@@ -515,3 +526,4 @@ app_server <- function(input, output, session) {
   )
   ############################################################################################## #
 }
+
