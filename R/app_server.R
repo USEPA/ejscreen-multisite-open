@@ -26,7 +26,7 @@ app_server <- function(input, output, session) {
   output$debugbutton_ui <- renderUI({
     conditionalPanel(
       condition = golem::app_dev(), 
-      actionButton("browser", "browser"),
+      actionButton(inputId = "browser", label = "PAUSE APP via browser() FOR DEBUGGING"),
       tags$script("$('#browser').hide();")
     )
   })

@@ -12,20 +12,21 @@ app_ui <- function(request) {
     # This app_ui() function could be broken into  
     #   functions and modules 
     #   but for now it has all the code in this file.
-    # UI MODULES WILL PROBABLY REPLACE MOST OF THE CODE BELOW ####
+    # UI MODULES WILL PROBABLY REPLACE MOST OF THE CODE BELOW 
     # such as possibly these placeholders:
     #  mod_view_results_ui("view_results_1")
     #  mod_save_report_ui("save_report_1")
     #  mod_specify_sites_ui("specify_sites_1")
     
-    # [this is a button that helps while debugging (REMOVE BEFORE DEPLOYING)] ####
-    # And to unhide the button in the app, while debugging, go 
+    # [ Button to help in Debugging ]  ####
+    # (REMOVE BEFORE DEPLOYING)] 
+    # and to unhide the button in the app, while debugging, go 
     # to your web browser, open the JS console, and type:
     #   $('#browser').show();
     shiny::uiOutput('debugbutton_ui'),
     
     fluidPage(
-      # Overall fluidPage ####
+      # overall fluidPage ####
       
       #################################################################################################################### #
       # ___EPA SHINY APP WEBPAGE TEMPLATE ####
@@ -36,6 +37,7 @@ app_ui <- function(request) {
       # START OF ONEEPA SHINY APP WEB UI TEMPLATE to insert within your fluid page  
       
       tags$html(class = "no-js", lang="en"),
+      ## head ####
       tags$head(
         HTML(
           "<!-- Google Tag Manager -->
@@ -69,10 +71,9 @@ app_ui <- function(request) {
 		tags$meta(name="viewport", content="width=device-width, initial-scale=1.0"),
 		tags$meta(`http-equiv`="x-ua-compatible", content="ie=edge"),
 		
-		
-		#  ***  your app title *** ####
-		
-		tags$title('EJAM | US EPA'),
+		# ##  ***  app title *** ####
+		# 
+		# tags$title('EJAM | US EPA'),
 		
 		## (more EPA template) ####
 		tags$link(rel="icon", type="image/x-icon", href="https://www.epa.gov/themes/epa_theme/images/favicon.ico"),
@@ -119,10 +120,9 @@ app_ui <- function(request) {
         }'
 		))
       ),
+		## body tag and site header ####
 		tags$body(class="path-themes not-front has-wide-template", id="top",
 		          tags$script(src = 'https://cdnjs.cloudflare.com/ajax/libs/uswds/3.0.0-beta.3/js/uswds.min.js')),
-		
-		# Site Header
 		HTML(
 		  '<div class="skiplinks" role="navigation" aria-labelledby="skip-to-main">
       <a id="skip-to-main" href="#main" class="skiplinks__link visually-hidden focusable">Skip to main content</a>
@@ -246,7 +246,7 @@ app_ui <- function(request) {
     <main id="main" class="main" role="main" tabindex="-1">'
 		),
 	
-	# Individual Page Header 
+	## Individual Page Header ####
 	HTML(
 	  '<div class="l-page  has-footer">
       <div class="l-constrain">
@@ -261,21 +261,21 @@ app_ui <- function(request) {
         <article class="article">'
 	),
 	
-	# Insert your UI code here
+	# ______________Shiny app UI code ______________####
 	
 	#################################################################################################################### #
 	
 	htmltools::includeCSS("inst/app/www/styles.css"),
 	
-	headerPanel(
-	  title = htmltools::a(
-	    "EJAM (Environmental Justice Analysis Multi-site) Tool - Fast EJ Stats Near Multiple Facilities", 
-	    href = "www/ibutton_help.html",target = "_blank"
-	  ),
-	  windowTitle = "EJAM (Environmental Justice Analysis Multi-site) Tool - Fast Summary Stats for Multiple Facilities"
+	headerPanel(title = "EJAM (Environmental Justice Analysis Multi-site) Tool",
+	            # title = htmltools::a(
+	            #   "EJAM info", 
+	            #   href = "www/ibutton_help.html", target = "_blank"
+	            # ),
+	            windowTitle = "EJAM_ (Environmental Justice Analysis Multi-site) Tool"
 	),
+	#################################################################################################################### #
 	# textAreaInput('analysis_shortname', value = 'These Facilities', placeholder = 'very short name identifying this set'),
-	
 	# . ####
 	# ______________ LOCATIONS _________________ ####
 	# . ####
@@ -294,7 +294,7 @@ app_ui <- function(request) {
 	      column(
 	        12,  style = "overflow: hidden;",
 	        # . ####
-	        ### i. pick list/ search Industry (facility_mustbe_that_naics_in_this_program) ####
+	        ### i. user picks list/ search Industry (facility_mustbe_that_naics_in_this_program) ####
 	        
 	        column(
 	          12,
@@ -315,11 +315,10 @@ app_ui <- function(request) {
 	        ),
 	        column(
 	          2,
-	          # htmltools::br(),
 	          htmltools::h5("OR", align = "center")
 	        ),
 	        
-	        ### ii. type in NAICS #####
+	        ### ii. user writes in the NAICS #####
 	        
 	        column(
 	          5,
@@ -328,24 +327,18 @@ app_ui <- function(request) {
 	            label = htmltools::h6(
 	              "Enter NAICS codes of interest - ",
 	              htmltools::a("Look up NAICS", href ="https://www.census.gov/naics"),
-	              htmltools::a(htmltools::img(id = "ibutton",src = "www/i.png",height = 15,width = 15),href = "www/ibutton_help.html#help_naicslist",target = "_blank")
+	              htmltools::a(htmltools::img(id = "ibutton",src = "www/i.png",height = 15,width = 15),
+	                           href = "www/ibutton_help.html#help_naicslist",target = "_blank")
 	            ),
 	            value = "",
 	            width = 400,
 	            placeholder = NULL
 	          )
 	        ),
-	        # htmltools::br(),
 	        textOutput("inputWarning"),
-	        # htmltools::br(),
 	        htmltools::tags$head(htmltools::tags$style("#inputWarning{color: red;font-size: 14px;font-style: italic;}")),
 	        
-	        ##################################################### #
-	        
-	        
-	        #    ##   TEMPORARILY hide THESE DETAILS - NON ESSENTIAL AND NOT DEBUGGED YET
-	        
-	        
+	        ##################################################### #	     - NON ESSENTIAL AND NOT DEBUGGED YET   
 	        ### ...& limit to fac w NAICS in this EPA program #####
 	        #    THIS SECTION DEFINES THESE INPUTS:
 	        # input$selectFrom1,
@@ -354,60 +347,46 @@ app_ui <- function(request) {
 	        
 	        column(
 	          12,
-	          #radioButtons("selectFrom1", label = htmltools::h5("Match your NAICS code selection with:"),
-	          #   c("Any EPA data system" = "any","Select data systems" = "some"), selected = NULL, inline = TRUE, width = NULL),
 	          htmltools::h5(
 	            "Limit to facilities where selected NAICS is found within these EPA lists: (all are searched by default):
 	               (A facility may have different NAICS in each list)",
-	            htmltools::a(htmltools::img(id = "ibutton", src = "www/i.png", height = 15, width = 15), href = "www/ibutton_help.html#help_match", target = "_blank")
+	            htmltools::a(htmltools::img(id = "ibutton", src = "www/i.png", height = 15, width = 15), 
+	                         href = "www/ibutton_help.html#help_match", target = "_blank")
 	          ),
-	          
 	          checkboxGroupInput(
 	            inputId = "facility_mustbe_that_naics_in_this_program",
-	            inline = TRUE,
-	            label = "",
+	            inline = TRUE, label = "",
 	            choices = c(
-	              "TRIS" = "TRIS",
-	              "RCRAINFO" = "RCRAINFO",
-	              "AIRS/AFS" = "AIRS/AFS",
-	              "E-GGRT" = "E-GGRT",
-	              "NPDES" = "NPDES",
-	              "RCRAINFO" = "RCRAINFO",
-	              "RMP" = "RMP"
+	              "TRIS" = "TRIS", "RCRAINFO" = "RCRAINFO",
+	              "AIRS/AFS" = "AIRS/AFS", "E-GGRT" = "E-GGRT",
+	              "NPDES" = "NPDES", "RCRAINFO" = "RCRAINFO", "RMP" = "RMP"
 	            )
 	          ),
-	          ############################################### #
+	          ############################################### #       - NON ESSENTIAL AND NOT DEBUGGED YET
 	          ### ...& limit to fac in this EPA program #####
-	          
-	          # NOT USED now
-	          ### radioButtons("selectFrom2", label = htmltools::h5("Include facilities with records in:"),
-	          ###   c("All EPA data systems" = "any", "Select data systems" = "some"), selected = NULL, inline = TRUE, width = NULL),
 	          
 	          htmltools::h5(
 	            "Limit to facilities on these EPA lists (all included by default):",
-	            htmltools::a(htmltools::img(id = "ibutton", src = "www/i.png", height = 15, width = 15), href = "www/ibutton_help.html#help_include", target = "_blank")
+	            htmltools::a(htmltools::img(id = "ibutton", src = "www/i.png", height = 15, width = 15), 
+	                         href = "www/ibutton_help.html#help_include", target = "_blank")
 	          ),
 	          checkboxGroupInput(
 	            inputId = "facility_mustbe_in_this_program",
-	            label = "",
-	            choices = c("TRIS" = "TRIS",
-	                        "RCRAINFO" = "RCRAINFO",
-	                        "AIRS/AFS" = "AIRS/AFS",
-	                        "E-GGRT" = "E-GGRT",
-	                        "NPDES" = "NPDES",
-	                        "RCRAINFO" = "RCRAINFO",
-	                        "RMP" = "RMP"
-	            ),
-	            inline = TRUE
+	            inline = TRUE, label = "",
+	            choices = c(
+	              "TRIS" = "TRIS", "RCRAINFO" = "RCRAINFO",
+	              "AIRS/AFS" = "AIRS/AFS", "E-GGRT" = "E-GGRT",
+	              "NPDES" = "NPDES", "RCRAINFO" = "RCRAINFO", "RMP" = "RMP"
+	            )
 	          )
 	        )
 	        ############################################### # 
 	      )
-	    )), # end of A __ by NAICS, and wellpanel and fluidrow 
-	  
+	    ) # end of fluidrow
+	  ), # end of wellpanel
+	  # end of  by NAICS   
 	  
 	  htmltools::h5("OR", align = "center"),
-	  
 	  
 	  fluidRow(
 	    
@@ -420,9 +399,11 @@ app_ui <- function(request) {
 	        label = htmltools::h5(
 	          "Upload list of FRS identifiers",
 	          htmltools::a(
-	            htmltools::img(id = "ibutton", src = "www/i.png", height = 15, width = 15), href = "www/ibutton_help.html#help_frs", target = "_blank")
+	            htmltools::img(id = "ibutton", src = "www/i.png", height = 15, width = 15), 
+	            href = "www/ibutton_help.html#help_frs", target = "_blank")
 	        )
 	      )
+	      
 	    )),
 	    
 	    htmltools::h5("OR", align = "center"),
@@ -447,7 +428,7 @@ app_ui <- function(request) {
 	  )
 	  
 	),
-	
+	################################################################################################# # 
 	# . ####
 	# ______________ DISTANCE _________________ ####
 	# . ####
@@ -469,7 +450,7 @@ app_ui <- function(request) {
 	                'cutoffRadius',
 	                label = htmltools::h5("Radius of circular buffer in miles"),
 	                value = 1.0,
-	                min = 0.1,
+	                min = 0.25,
 	                max = 10,
 	                step = NA,
 	                width = NULL
@@ -496,7 +477,7 @@ app_ui <- function(request) {
 	
 	htmltools::br(),
 	htmltools::br(),
-	
+	################################################################################################# # 
 	# . ####
 	# ______________ DOWNLOAD _________________ ####
 	# . ####
@@ -574,6 +555,7 @@ app_ui <- function(request) {
 	#   ),
 	
 	# Individual Page Footer
+	
 	HTML(
 	  '</article>
     </div>
