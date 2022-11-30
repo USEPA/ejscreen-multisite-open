@@ -226,4 +226,11 @@ or else an approach that uses higher resolution estimates of residential locatio
 the Decennial census blocks can provide, such as a dasymetric map approach.
 }
 
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/USEPA/EJAM}
+}
+
+}
 \keyword{internal}

@@ -1,5 +1,17 @@
 # Launch the ShinyApp (Do not remove this comment)
-# To deploy, run: rsconnect::deployApp()
+# This app.R file is used by the RStudio Connect server to launch the app since the 
+#                 EJAM
+#  app is a package unlike a typical shiny app,
+#  and run_app() is loaded as an exported function that actually runs the app,
+#  and while shiny normally sources all files in the /R folder, 
+#  here _disable_autoload.R is used to avoid that 
+#  since they are already loaded as part of the package being loaded (below).
+#  This was set up using  golem::add_rstudioconnect_file()
+#  But note that this add_rstudioconnect_file() function says 
+#  one needs to say pkgload::myfunction() to refer to the package functions ??
+#  Need to clarify when/why/if... Within server code but not when used as non-shiny functions??
+#
+# To deploy, run:   rsconnect::deployApp()
 # Or use the blue button on top of this file
 
 # rm(list = ls())

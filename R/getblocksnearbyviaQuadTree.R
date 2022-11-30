@@ -21,8 +21,9 @@
 #' 
 #' @param sitepoints data.table with columns siteid, lat, lon giving point locations of sites or facilities around which are circular buffers
 #' @param cutoff miles radius, defining circular buffer around site point 
-#' @param maxcutoff miles distance (max distance to check? if not even 1 block point is within cutoff)
-#' @param avoidorphans logical
+#' @param maxcutoff miles distance (max distance to check if not even 1 block point is within cutoff)
+#' @param avoidorphans logical Whether to avoid case where no block points are within cutoff, 
+#'   so if TRUE, it keeps looking past cutoff to find nearest one within maxcutoff.
 #' @param quadtree a large quadtree object created from the SearchTree package example:
 #'    SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
 #'    Would take about 5 seconds to create this each time it is needed.
@@ -47,9 +48,9 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, cutoff=1, maxcutoff=31.07,
   radians_per_degree <- pi / 180
   # f2 <- data.table::copy(sitepoints) # make a copy 
   
-  sitepoints[ , lat_RAD := lat * radians_per_degree] # PROBLEM - this alters sitepoints in the calling envt bc of how data.table works
+  sitepoints[ , lat_RAD := lat * radians_per_degree] # PROBLEM? - this alters sitepoints in the calling envt bc of how data.table works
   sitepoints[ , lon_RAD := lon * radians_per_degree]
-  cos_lat <- cos(sitepoints[ , lat_RAD])
+  cos_lat <- cos(sitepoints[ , lat_RAD])    # or maybe # sitepoints[ , cos_lat := cos(lat_RAD)]
   sitepoints[ , FAC_X := earthRadius_miles * cos_lat * cos(lon_RAD)]
   sitepoints[ , FAC_Y := earthRadius_miles * cos_lat * sin(lon_RAD)]
   sitepoints[ , FAC_Z := earthRadius_miles * sin(lat_RAD)]
@@ -65,7 +66,7 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, cutoff=1, maxcutoff=31.07,
   
   #---- Get ready for loop here ----
   
-  # allocate result list
+  # allocate memory for result list
   nRowsDf <- NROW(sitepoints)
   res <- vector('list', nRowsDf)  # list of data.tables   cols will be blockid, distance, siteid    
   
@@ -79,12 +80,12 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, cutoff=1, maxcutoff=31.07,
   for (i in 1:nRowsDf) {    # LOOP OVER SITES HERE ----
     
     coords <- sitepoints[i, .(FAC_X, FAC_Z)]  # the similar clustered function uses sitepoints2use not sitepoints
-    x_low <- coords[,FAC_X]-truedistance;
+    x_low  <- coords[,FAC_X]-truedistance;
     x_hi  <-  coords[,FAC_X]+truedistance
-    z_low <- coords[,FAC_Z]-truedistance;
+    z_low  <- coords[,FAC_Z]-truedistance;
     # z_hi  <-  coords[,FAC_Z]+truedistance   # ** THIS waS   THE SLOWEST LINE  OVERALL ***
     
-    if ((i %% 100) == 0) {print(paste("Cells currently processing: ",i," of ", nRowsDf) ) }
+    if ((i %% 100) == 0) {print(paste("Cells currently processing: ",i," of ", nRowsDf) ) } # i %% 100 indicates i mod 100 (“i modulo 100”) 
     
     vec <- SearchTrees::rectLookup(quadtree, unlist(c(x_low, z_low  )), unlist(c(x_hi, coords[,FAC_Z]+truedistance))) # x and z things are now vectorized
     # *** FIX/CHECK: 
@@ -97,6 +98,7 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, cutoff=1, maxcutoff=31.07,
     # y <- sitepoints[i, c('FAC_X','FAC_Y','FAC_Z')]  # the similar clustered function uses something other than sitepoints here - why?
     
     distances <- as.matrix(pdist::pdist(tmp[ , .(BLOCK_X, BLOCK_Y, BLOCK_Z)] , sitepoints[i, c('FAC_X','FAC_Y','FAC_Z')] ))
+    # pdist computes a n by p distance matrix using two seperate matrices
     
     #clean up fields
     tmp[ , distance := distances[ , c(1)]]

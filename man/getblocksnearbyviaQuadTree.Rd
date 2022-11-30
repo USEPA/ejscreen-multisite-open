@@ -17,9 +17,10 @@ getblocksnearbyviaQuadTree(
 
 \item{cutoff}{miles radius, defining circular buffer around site point}
 
-\item{maxcutoff}{miles distance (max distance to check? if not even 1 block point is within cutoff)}
+\item{maxcutoff}{miles distance (max distance to check if not even 1 block point is within cutoff)}
 
-\item{avoidorphans}{logical}
+\item{avoidorphans}{logical Whether to avoid case where no block points are within cutoff,
+so if TRUE, it keeps looking past cutoff to find nearest one within maxcutoff.}
 
 \item{quadtree}{a large quadtree object created from the SearchTree package example:
 SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")

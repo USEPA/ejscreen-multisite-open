@@ -21,7 +21,7 @@
 #'   but there are differences in which columns are kept.
 #'   
 #'   It is a data.table of US Census blockgroups (not blocks). With PR, 242,335 rows, approx 175 columns.
-#'   See <https:\\www.epa.gov\ejscreen>
+#'   See <https://www.epa.gov/ejscreen>
 #'   
 #'   column names include bgfips, bgid (for join to blockwt$bgid), pop, pctlowinc, pcthisp, etc.
 #'   

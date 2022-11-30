@@ -34,6 +34,7 @@ pen_qu <- penguins |>
     plot = list(body_mass_g),
     .groups = "drop"
   ) |>
+  #   but also note data.table::dcast() and data.table::melt()
   tidyr::unnest_wider(quantile) |>
   dplyr::arrange(species, desc(sex))
 

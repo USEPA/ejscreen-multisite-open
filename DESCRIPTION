@@ -10,6 +10,7 @@ Description: Tools for summarizing environmental and demographic indicators
     specific sites. It uses quad tree search/indexing of block locations, data.table, parallel processing 
     to provide very fast identification of nearby blocks, distances, and 
     aggregation of indicators within each distance. It can be uses as a web app, with the user interface provided by the shiny R package.
+URL: https://github.com/USEPA/EJAM
 Depends: 
     R (>= 2.10), 
     shiny (>= 1.7.2), 
