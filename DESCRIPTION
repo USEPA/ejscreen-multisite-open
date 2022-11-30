@@ -30,7 +30,6 @@ Imports:
     EJAMbatch.summarizer,
     EJAMejscreendata,
     EJAMejscreenapi,
-    epaRShinyTemplate,
     openxlsx,
     pkgload
 Remotes: 
@@ -39,8 +38,7 @@ Remotes:
     github::USEPA/EJAMfrsdata,
     github::USEPA/EJAMbatch.summarizer,
     github::USEPA/EJAMejscreendata,
-    github::USEPA/EJAMejscreenapi,
-    github::USEPA/epaRShinyTemplate
+    github::USEPA/EJAMejscreenapi
 Suggests: 
     knitr,
     rmarkdown,
