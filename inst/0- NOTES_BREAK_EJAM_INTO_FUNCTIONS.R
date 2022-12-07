@@ -4,9 +4,9 @@ We want functions to do these separately:
 -----------------------------------------------
 TO GET FACILITIES AND POINTS (LAT / LON):
 
-** get_siteid_from_naics()    [see FRS and get_facility_info_via_ECHO() , or search in NAICS data.table]
+**(done) EJAMfrsdata::get_siteid_from_naics()    [see FRS and get_facility_info_via_ECHO() , or search in NAICS data.table]
 -Given NAICS names or codes, 
--Return facility registry IDs
+-Return facility registry IDs (or lat lon also)
 
 get_siteid_from_sic() ?
 

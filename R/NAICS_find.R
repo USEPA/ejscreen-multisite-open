@@ -42,7 +42,7 @@ NAICS_find <- function(query, add_children=FALSE, naics_dataset=NULL, ignore.cas
   if (is.null(naics_dataset) & !exists('NAICS')) {warning('missing NAICS dataset and not passed as a parameter to NAICS_find'); return(NA)}
   if (is.null(naics_dataset) &  exists('NAICS')) {naics_dataset <- NAICS}
   if (class(naics_dataset) != 'numeric' | length(naics_dataset) < 2000) {warning('naics_dataset does not seem to be what is expected')}
-
+  
   # Find all industry entries that match the query at all, including say 4 digit and 5 or 6 digit codes as well,
   #  ( not any parent or children entries unless they each match, themselves )
   suppressWarnings( rownum <-     which(grepl(query, names(naics_dataset), ignore.case = ignore.case)) )
@@ -79,21 +79,29 @@ NAICS_find <- function(query, add_children=FALSE, naics_dataset=NULL, ignore.cas
 }
 
 
-naics2children <- function(codes, allcodes) {
-  # return the codes queried plus all children of any of those.
-  #
-  # start with shortest (highest level) codes. since tied for nchar, these branches have zero overlap, so do each.
-  # for each of those, get its children = all rows where parentcode == substr(allcodes, 1, nchar(parentcode))
-  # put together list of all codes we want to include so far.
-  # now for the next longest set of codes in original list of codes, 
-  # do same thing. 
-  # etc. until did it for 5 digit ones to get 6digit children.
-  # take the unique(allthat)
-  # table(nchar(as.character(NAICS)))
-  # 
-  # 2    3    4    5    6 
-  # 17   99  311  709 1057 
-  if (missing(allcodes)) {allcodes <- NAICS} # data from this package
+#' See NAICS codes queried plus all children of any of those
+#' @details 
+#' start with shortest (highest level) codes. since tied for nchar, these branches have zero overlap, so do each.
+#' for each of those, get its children = all rows where parentcode == substr(allcodes, 1, nchar(parentcode))
+#' put together list of all codes we want to include so far.
+#' now for the next longest set of codes in original list of codes, 
+#' do same thing. 
+#' etc. until did it for 5 digit ones to get 6digit children.
+#' take the unique(allthat)
+#' table(nchar(as.character(NAICS)))
+#'    2    3    4    5    6 
+#'   17   99  311  709 1057 
+#' 
+#' @param codes vector of numerical or character
+#' @param allcodes Optional (already loaded with package) - dataset with all the codes
+#'
+#' @return vector of codes and their names
+#' @export
+#'
+#' @examples
+naics2children <- function(codes, allcodes=EJAM::NAICS) {
+  # if (missing(allcodes)) {allcodes <- NAICS} # data from this package
+  codes <- as.character(codes)
   kidrows <- NULL
   for (digits in 2:5) {
     sibset <- codes[nchar(codes) == digits]
@@ -102,6 +110,7 @@ naics2children <- function(codes, allcodes) {
   }
   x <- c(codes, allcodes[kidrows])
   x <- x[!duplicated(x)]
-  x <- allcodes[allcodes %chin% x]
-  return(x)
+  x <- allcodes[allcodes %in% x] # cannot use %chin% unless using as.character(allcodes). fast enough anyway.
+  cat(paste0('\n', names(x)), '\n')
+  invisible(x)
 }
