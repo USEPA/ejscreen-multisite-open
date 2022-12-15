@@ -146,66 +146,63 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
    
   # Start Aggregating #############################################################################################
   
-  # NOTE ON HANDLING DOUBLE COUNTING
   # Some steps are the same for overall and site-by-site so it is more efficient to do both together if want both. 
-  # (SEE NOTES ON HOW TO MAKE AGGREGATE...)
-  
-  if (testing) {
-    # FOR TESTING
-    library(data.table); library(EJAMblockdata)
-    # data("blockwts"); data('sites2blocks_example') # it is called  sites2blocks_example
-    sites2blocks <- sites2blocks_example
-  }
+  if (testing) {library(data.table); library(EJAMblockdata);     sites2blocks <- EJAM::sites2blocks_example }
   # data.table::setkey(result, "blockid", "siteid", "distance") #  has been done by getblocksnearby  now
+  # use blockid, not fips.   *********************  THIS was SLOW trying to do merge by blockfips or join on blockfips
+
+  ## BLOCK RESOLUTION  #######################################
   
-  # use blockid, not fips.   *********************  THIS IS SLOW:
-  # sites2blocks***** <- merge(EJAMblockdata::blockid2fips, sites2blocks, by='blockfips', all.x=FALSE, all.y=TRUE)
-  # sites2blocks$blockid <- EJAMblockdata::blockid2fips[sites2blocks, .(blockid), on='blockfips']
-  # sites2blocks[,blockfips := NULL]
-  # data.table::setkey(sites2blocks, 'blockid', 'siteid')
-  
-  
-  
-  ## block weights  #######################################
-  
-  ## Get pop weights for nearby blocks ####
+  ## Get pop weights of nearby blocks ####
+  # to know what fraction of each parent block group is considered inside the buffer 
   # sites2blocks <- merge(sites2blocks, blockwts, by='blockid', all.x	=TRUE, all.y=FALSE) # incomparables=NA
   sites2blocks <- EJAMblockdata::blockwts[sites2blocks, .(siteid,blockid,distance,blockwt,bgid), on='blockid']
+  # note that this still has some blocks appearing more than once if near 2+ sites - each row has info on one site only
   
  # sort rows
   data.table::setorder(sites2blocks, siteid, bgid, blockid) # new
   
+  
+  
+  ##################################################### #  ##################################################### #
+  
   ###################################### #
-  ## * # of Sites near each Block (or person): #### 
+  ## _PROXIMITY METRICS IDEAS   #### 
+  #  Some kinds of info about 1) # of Sites and 2) their distances, or 3) proximity score** (combo of count and distance)
+  #  near each Block (or person), by block group, by site, and then by Demographic group.  
+  #  Useful potentially.
+  # **  EJScreen style proximity score for each block group as a way to summarize the count and distance of each site.
+  # 
+  # Summarize count/distance/proximity score info for various groups/places: 
+  #  - avg and worst-case resident overall (averages, and min dist, max count, max proximity score)
+  #  - avg and worst-case resident in each Demographic group (flags notable disparities in Demog group proximities and site counts nearby)
+  #  - worst-case sites? to flag notable sites. [usually just 1 site nearby, at avg distance of Radius * 0.67, and worst case distance zero and several sites nearby; 
+  #       The cumulative effect of some of these sites being somewhat clustered near each other. 
   ###################################### #
-  # Useful but not sure it was provided in outputs?
-  # Can use to calculate How many of these sites are near avg resident in a given bg,
-  # or count of nearby sites for people near this given site (avg person near site, or max count for any person near the site)
-  # or distribution of counts of nearby sites across all by demog group, 
-  # or near avg resident overall? 
   sites2blocks[, sitecount_near_block := .N, by=blockid] # (for this, must use the table with duplicate blocks, not unique only)
+  
+  
+  
+  
+  ##### *****  work in progress -   by=blockid    creates the same info in each row for duplicate blockids, which is ok
+  
+  
+  
   
   ###################################### #
   ## * Unique residents (blocks) only, used for Overall stats #### 
   ###################################### #
-  # and thus each person only once even if near 2+ sites.
+  # each block only once, and therefore each person only once even if near 2+ sites.
   # For each overall resident (blockid) near 1 or more sites, 
-  # find and save the info for just the closest single siteid.
-  # ***    Just for now, The simplistic way to drop duplicate blocks (even if other columns are not duplicates), 
-  #    which are residents near 2 or more sites, to avoid double-counting them, is this:
-  sites2blocks_overall <- unique(sites2blocks, by="blockid")  # ???
-
-  ###################################### #
-  ## * AVG & MIN DISTANCE stats useful ####
-  ###################################### #
-  ## * These would be useful - are they calculated yet or returned? ####
-  #
-  ## _Proximity (block to site) of AVG person in bg ####
-  #    (i.e., the censuspop-wtd mean of block-specific distances, for each bg)
-  # AND
-  ## _Proximity (block to site) of CLOSEST person in bg ? #### 
-  # AND
-  ## _Proximity (block to site) of EVERY BLOCK (resident) to see full distribution of distances even within a bg ? ####
+  # find and save the info for just the closest single siteid (sitedistance_min)
+  # ***    Just for now, the simplistic way to drop duplicate blocks (even if other columns are not duplicates), 
+  #    which are residents near 2 or more sites, to avoid double-counting them, is unique() 
+  # This seems fine for overall stats, since you are just dropping a duplicate block 
+  # so you just need to realize one row with that block had info on site 1 and another row w that duplicated block had info on site 2.
+  # So you actually need to sum the counts and proximity scores for the consolidated block, 
+  # and use the min distance (which block-site had the closer site?)
+  # sites2blocks_overall <- unique(sites2blocks, by=blockid)    # would keep all columns but only one nearby site would be kept for each block.
+  # Slowest way, but could get all that explicitly maybe like specifying each as max or min 
 
   # Note the unique() would just pick the first instance found of a given blockid, regardless of which siteid that was for,
   # so it retains whatever distance happened to be the one found first, and same for all site characteristics.
@@ -213,12 +210,8 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
   # to be able to have summary stats by group of distance to the closest site, not to a random site among those nearby. 
   # What is the efficient way to find that?
 
-   
-  # ????????????????????
   
-  
-  
-  # block groups analysis:   #######################################
+  # BLOCK GROUPS RESOLUTION analysis:   #######################################
   
   ##################################################### #
   ## (check this idea) ####
@@ -230,7 +223,6 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
   # rm(blockwts) ; gc()  # drop 6m row block table to save RAM # does not seem to be loaded to do that??
   ##################################################### #
   
-  
   ## Aggregate blocks into blockgroups, per siteid ***  #######################################
   
   ## Calc bgwt, the fraction of each (parent)blockgroup's censuspop that is in buffer #### 
@@ -239,36 +231,43 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
      # sites2blocks_overall[, bg_fraction_in_buffer_overall := sum(blockwt), by=bgid]  # variable not used !
      # sites2blocks[, bg_fraction_in_buffer_bysite := sum(blockwt, na.rm = TRUE), by=c('bgid', 'siteid')]
   # VERSUS
-     sites2bgs_overall <- sites2blocks_overall[ , .(bgwt = sum(blockwt)), by=bgid ]
-     sites2bgs_bysite  <- sites2blocks[ , .(bgwt = sum(blockwt, na.rm = TRUE)), by=.(siteid, bgid)]
+     sites2bgs_overall <- sites2blocks_overall[ , .(bgwt = sum(blockwt, na.rm = TRUE)), by=          bgid ]
+     sites2bgs_bysite  <- sites2blocks[         , .(bgwt = sum(blockwt, na.rm = TRUE)), by=.(siteid, bgid)]
   
-     
-  ## * Count # unique sites near each bg #### 
+  ## * COUNT # unique sites near each bg? #### 
+     # (and that is not same as max count for any block in the bg)
   sites2bgs_bysite[ , sitecount_near_bg := length(unique(siteid)), by=bgid] 
   
-  # Count # blocks or bgs near each site ####
+     ## * AVG AND WORST DISTANCE TO SITE, for each bg? (avg person)
+     
+     # ?
+     
+     ## * AVG and WORST PROXIMITY SCORE, for each bg? (avg person)
+     
+     # ? 
+     
+  # * Count # blocks or bgs near each SITE? MAYBE FOR AVG PERSON, OR WORST CASE PERSON NEAR THAT SITE?? ####
+  # Is that at all useful really??
   blockcount_by_site <- sites2blocks[, .(blockcount_near_site = .N), by=siteid] # new----------------------------------------------- -
   bgcount_by_site    <- sites2blocks[, .(bgcount_near_site = length(unique(bgid))), by=siteid] # new------------------------------------ -
   count_of_blocks_near_multiple_sites <- (NROW(sites2blocks) - NROW(sites2blocks_overall)) # NEW fraction is over /NROW(sites2blocks_overall)
+  
   # how many blockgroups here were found near 1, 2, or 3 sites? 
   # e.g., 6k bg were near only 1/100 sites tested, 619 near 2, 76 bg had 3 of the 100 sites nearby.
   # table(table(sites2bgs_bysite$bgid))
-  
-  ##################################################### #
+
   # * HOW TO GET MORE STATS ON DISTRIBUTION OF DISTANCES OR ENVT, BY GROUP? ####
-  #
-  # considered removing sites2blocks and sites2blocks_overall NOW TO FREE UP RAM, BUT THAT IS slow!:
+ 
+   # considered removing sites2blocks and sites2blocks_overall NOW TO FREE UP RAM, BUT THAT IS slow!:
   # if (!testing) {rm(sites2blocks); gc() }
-  # And need save that to analyze distance distribution!
-  #  Maybe want some extra summary stats across people and sites (about the distribution), one column per indicator. 
+  # And need save that to analyze distance distribution! or 
+  # At least save avg and worst for each block group, if not each block.
   # *****  BUT MOST OF THE INTERESTING STATS LIKE MEDIAN PERSON'S SCORE, OR WORST BLOCKGROUP, 
   #  HAVE TO BE CALCULATED FROM BG DATA BEFORE WE AGGREGATE WITHIN EACH SITE (BUFFER)... 
   #  Same for sites: worst site as measured by highest nearby blockgroup-level %poor needs raw bg data before summarized by siteid.
   
-  
-  
   ##################################################### #  ##################################################### #
-  
+  ##################################################### #  ##################################################### #
   
   ##################################################### #
   #  *** JOIN sites-BGs to EJScreen indicators ####
@@ -433,50 +432,43 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
   
   
   ##################################################### #
-  # PERCENTILES - show raw scores as pctiles #### 
-  #  VIA  lookup tables of US/State  percentiles
+  # PERCENTILES - show raw scores (from results_bysite AND  results_overall) in percentile terms #### 
+  #  VIA  lookup tables of US/State  percentiles, called EJAM::usastats   and statestats
+  #  note: usastats is  like ejscreen::lookupUSA , and EJAM::lookup_pctile is like ejanalysis::lookup.pctile()
   ##################################################### #
-  
-  # results_bysite
-  # results_overall
-  
-  # Use the dataset called EJAM::usastats as the lookup table for USA percentiles and mean. 
-  # but update/ fix it so it uses right variable names, etc., or replace with the one from ejscreen pkg
-  
-  # hard coded for now:
-  # varsneedpctiles <- c(ejscreen::names.e, union(ejscreen::names.d, 'pctunemployed'), ejscreen::names.d.subgroups, ejscreen::names.ej)
-  varsneedpctiles <- c(names_e,  names_d, names_d_subgroups, names_ej)
+ 
+  # specify which variables get converted to percentile form
+  varsneedpctiles <- c(names_e,  names_d, names_d_subgroups, names_ej) # NEED TO ADD SUPPLEMENTAL INDEXES HERE
   varnames.us.pctile <- paste0('pctile.', varsneedpctiles)
   varnames.state.pctile <- paste0('state.pctile.', varsneedpctiles)
-  
+  # set up empty tables to store the percentiles we find
   us.pctile.cols_bysite     <- data.frame(matrix(nrow = NROW(results_bysite),  ncol = length(varsneedpctiles))); colnames(us.pctile.cols_bysite)     <- varnames.us.pctile
   state.pctile.cols_bysite  <- data.frame(matrix(nrow = NROW(results_bysite),  ncol = length(varsneedpctiles))); colnames(state.pctile.cols_bysite)  <- varnames.state.pctile
   us.pctile.cols_overall    <- data.frame(matrix(nrow = NROW(results_overall), ncol = length(varsneedpctiles))); colnames(us.pctile.cols_overall)    <- varnames.us.pctile
   state.pctile.cols_overall <- data.frame(matrix(nrow = NROW(results_overall), ncol = length(varsneedpctiles))); colnames(state.pctile.cols_overall) <- varnames.state.pctile
   
+  # SURELY THERE IS A FASTER / VECTORIZED WAY TO DO THIS (but only worth fixing if this actually is noticeably slow):
+  
   for (i in seq_along(varsneedpctiles)) {
-    # using EJAM::usastats not ejscreen::lookupUSA now
     myvar <- varsneedpctiles[i]
-    if (myvar %in% names(usastats)) { # just like ejscreen::lookupUSA , and EJAM::lookup.pctile.US is like ejanalysis::lookup.pctile()
       us.pctile.cols_bysite[    , varnames.us.pctile[[i]]]    <- lookup.pctile.US(unlist(results_bysite[  , ..myvar]), varname.in.lookup.table = myvar, lookup = usastats) 
       us.pctile.cols_overall[   , varnames.us.pctile[[i]]]    <- lookup.pctile.US(unlist(results_overall[ , ..myvar]), varname.in.lookup.table = myvar, lookup = usastats) 
       state.pctile.cols_bysite[ , varnames.state.pctile[[i]]] <- lookup.pctile.US(unlist(results_bysite[  , ..myvar]), varname.in.lookup.table = myvar, lookup = statestats, zone =  results_bysite$ST)
       state.pctile.cols_overall[, varnames.state.pctile[[i]]] <- lookup.pctile.US(unlist(results_overall[ , ..myvar]), varname.in.lookup.table = myvar, lookup = statestats, zone =  results_overall$ST)
-      # but it may not make sense to do state percentiles except for EJ Indexes, in the "overall" summary?
-    } else {
+    if (myvar %in% names(usastats)) {  # use this function to look in the lookup table to find the percentile that corresponds to each raw score value:
+      # (note it is a bit hard to explain using an average of state percentiles   in the "overall" summary)
+    } else { # cannot find that variable in the percentiles lookup table
       us.pctile.cols_bysite[    , varnames.us.pctile[[i]]] <- NA
       us.pctile.cols_overall[   , varnames.us.pctile[[i]]] <- NA
       state.pctile.cols_bysite[ , varnames.state.pctile[[i]]] <- NA
       state.pctile.cols_overall[, varnames.state.pctile[[i]]] <- NA
     }
   }
-  # setdiff(varsneedpctiles, names(usastats)) # like ejscreen::lookupUSA
-  # [1] "ust"                 "pctunemployed"      "pctnhwa"             "pcthisp"            
-  # [5] "pctnhba"             "pctnhaa"             "pctnhaiana"          "pctnhnhpia"         
-  # [9] "pctnhotheralone"     "pctnhmulti"          "EJ.DISPARITY.ust.eo"
-  
+ 
   results_overall <- cbind(siteid=NA, results_overall, us.pctile.cols_overall, state.pctile.cols_overall)
   results_bysite  <- cbind(           results_bysite,  us.pctile.cols_bysite,  state.pctile.cols_bysite )
+  
+  
   ##################################################### #  ##################################################### #  ##################################################### #
   # Put results columns in a more useful/ convenient order ####
   {
