@@ -451,11 +451,11 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
   
   for (i in seq_along(varsneedpctiles)) {
     myvar <- varsneedpctiles[i]
-      us.pctile.cols_bysite[    , varnames.us.pctile[[i]]]    <- lookup.pctile.US(unlist(results_bysite[  , ..myvar]), varname.in.lookup.table = myvar, lookup = usastats) 
-      us.pctile.cols_overall[   , varnames.us.pctile[[i]]]    <- lookup.pctile.US(unlist(results_overall[ , ..myvar]), varname.in.lookup.table = myvar, lookup = usastats) 
-      state.pctile.cols_bysite[ , varnames.state.pctile[[i]]] <- lookup.pctile.US(unlist(results_bysite[  , ..myvar]), varname.in.lookup.table = myvar, lookup = statestats, zone =  results_bysite$ST)
-      state.pctile.cols_overall[, varnames.state.pctile[[i]]] <- lookup.pctile.US(unlist(results_overall[ , ..myvar]), varname.in.lookup.table = myvar, lookup = statestats, zone =  results_overall$ST)
     if (myvar %in% names(usastats)) {  # use this function to look in the lookup table to find the percentile that corresponds to each raw score value:
+      us.pctile.cols_bysite[    , varnames.us.pctile[[i]]]    <- lookup_pctile(unlist(results_bysite[  , ..myvar]), varname.in.lookup.table = myvar, lookup = usastats) 
+      us.pctile.cols_overall[   , varnames.us.pctile[[i]]]    <- lookup_pctile(unlist(results_overall[ , ..myvar]), varname.in.lookup.table = myvar, lookup = usastats) 
+      state.pctile.cols_bysite[ , varnames.state.pctile[[i]]] <- lookup_pctile(unlist(results_bysite[  , ..myvar]), varname.in.lookup.table = myvar, lookup = statestats, zone =  results_bysite$ST)
+      state.pctile.cols_overall[, varnames.state.pctile[[i]]] <- lookup_pctile(unlist(results_overall[ , ..myvar]), varname.in.lookup.table = myvar, lookup = statestats, zone =  results_overall$ST)
       # (note it is a bit hard to explain using an average of state percentiles   in the "overall" summary)
     } else { # cannot find that variable in the percentiles lookup table
       us.pctile.cols_bysite[    , varnames.us.pctile[[i]]] <- NA
