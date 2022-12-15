@@ -19,34 +19,39 @@
 
 library(EJAM)   # # This package's functions and data (blockgroup indicators, NAICS, etc.)
 
-# THESE ARE HANDLED BY DESCRIPTION once EJAM package is installed:
+# other packages ARE HANDLED BY DESCRIPTION file once EJAM package is installed:
 # library(shiny)
-# library(EJAMblockdata)
+# library(EJAMblockdata) # has weights based on census block 2020 population counts, to estimate what fraction of parent block group population is in a buffer
 # library(EJAMfrsdata)  # Has Facility Registry System FRS list of regulated sites with ID and lat/lon
-# library(sp) # https://cran.r-project.org/web/packages/sp/vignettes/over.pdf
 # library(SearchTrees)# efficient storage of block points info and selection of those within a certain distance
-# library(data.table)  # faster than data.frame
+# library(data.table)  # much faster than data.frame, used in doaggregate() and elsewhere
 # library(pdist)
+# library(sp) # https://cran.r-project.org/web/packages/sp/vignettes/over.pdf
 #  # Possibly less essential?: 
 # library(foreach) # main reason for using foreach::foreach() is that it supports parallel execution, that is, it can execute those repeated operations on multiple processors/cores on your computer (and there are other advantages as well)
 # library(doSNOW) ; library(foreach)  # parallel processing, efficient looping?
 # library(rgdal) ; library(maps) ; library(pdist) #?  # Geospatial tools
 # library(RMySQL) # only if loading data from SQL or using SQL for buffering as was tested in an alternative to getblocksnearby
+# # not in DESCRIPTION file
+# library(parallelly) # if using getblocksnearbyviaQuadTree_Clustered()
 
 ######################################################################################################## #
 ############  Things needed only if running this Shiny app:############
 ######################################################################################################## #
 
-naics_to_pick_from <- EJAM::NAICS  # lazy loaded from package as data, a list of code number and name of industry, used in ui.R
+naics_to_pick_from <- EJAM::NAICS  # maybe avoid this in case session does not need NAICS lookups? otherwise would be lazy loaded from package as data, a list of code number and name of industry, used in ui.R
 
 options(shiny.maxRequestSize = 9*1024^2) # not sure what this was for
 server <- "127.0.0.1" # not sure what this was for
 
 ############ PARAMETERS SPECIFIC TO USER OR SERVER ############
 
-# these probably should get passed as user-specified parameters to functions with default values, rather than putting them in a script
+# Specifying CPU count is irrelevant unless using getblocksnearbyviaQuadTree_Clustered() and do not want default of 1 cpu
 # CountCPU <- 2
-CountCPU <- parallel::detectCores() # this only matters if using getblocksnearbyviaQuadTree_Clustered 
+# CountCPU <- parallelly::availableCores() 
+# CountCPU <- parallel::detectCores() # why detectCores() is a bad idea: https://www.r-bloggers.com/2022/12/please-avoid-detectcores-in-your-r-packages/
+
+# Probably should get passed as user-specified parameters to functions with default values, rather than putting them in a script
 # indexgridsize <- 10  # unused. need to confirm if and how this grid was actually used
 # translate_fieldnames <- TRUE #unused. may depend on dataset - this is about whether to rename the columns to friendlier variable names in init.getdata.R
 maxcutoff_default <- 4000 # 4000 miles seems excessive, so just check if it matters for performance. for some reason the old code in server makes this into a reactive and then uses it every time getblocksnearby() is called

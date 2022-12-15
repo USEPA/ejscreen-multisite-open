@@ -1,4 +1,4 @@
-#' Key buffering function - wrapper redirecting to the right version of the getblocksnearby function
+#' Key buffering function - wrapper redirecting to the right version of getblocksnearby()
 #' 
 #'  As written it assumes that certain things are already in global environment. 
 #'  

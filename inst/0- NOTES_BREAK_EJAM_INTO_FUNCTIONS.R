@@ -4,11 +4,13 @@ We want functions to do these separately:
 -----------------------------------------------
 TO GET FACILITIES AND POINTS (LAT / LON):
 
-**(done) EJAMfrsdata::get_siteid_from_naics()    [see FRS and get_facility_info_via_ECHO() , or search in NAICS data.table]
+**(done) EJAMfrsdata::get_siteid_from_naics()  
+     [and maybe  get_facility_info_via_ECHO() ]
 -Given NAICS names or codes, 
 -Return facility registry IDs (or lat lon also)
 
-get_siteid_from_sic() ?
+get_siteid_from_sic() ? not urgent
+get_siteid_from_mact_subpart() ?
 
 get_siteid_from_programid()  - see EJAMejscreenapi::locate_by_id(type = 'program') or get_facility_info_...
 given program system IDs, 
@@ -18,22 +20,23 @@ return facility registry IDs (locate_by_id() does this and then also gets lat/lo
 given facility registry IDs, 
 return facility lat/lon values (and other facility info, like name, NAICS, etc.? locate_by_id() does)
 
-get_latlon_from_naics(), _sic, _programid ? (wrappers for pairs of the above)
+get_latlon_from_naics(),    -  see EJAMfrsdata::siteid_from_naics()  
+get_latlon_from_sic  and  get_latlon_from_programid ? (wrappers for pairs of the above)
 
 This had all been done by locate_by_id() which took either 
 -----------------------------------------------
 TO GET SHAPEFILES / POLYGON DATA:
 
-get_shape_from_buffered_latlon() 
+get_shape_from_buffered_latlon()   use  sf::st_buffer() to add a buffer around point or polygon
 (To get circular buffers but if needed as shapefiles/ polygons)
 -Given lat/lon values and radius (or multiple ones; or max?), 
 -Return circular buffers as shapefiles (or sp polygon data) (in case someone wants to use areal apportionment)
 
-get_shape_from_upload() **
+get_shape_from_upload() **    use   sf::st_read()
 -Given filename, 
--Return uploaded shapefile (or sp polygon data)
+-Return uploaded shapefile    
 
-get_shape_from_fips()
+get_shape_from_fips()    maybe use TIGER file of bounds, or EJScreen map services or file?
 - Given Census FIPS of County/Tract/Block group
 - Return shapefile (polygon)
 If someone wants to run a report for each CBSA??, MSA??, Other types of geos?
@@ -43,30 +46,44 @@ get_shape_from_drawing()
 -Given series of lat/lon points a user clicked on, to draw polygon on map, 
 -Return shapefile (or sp polygon data)
 
-get_shape_from_buffered_shape() 
+get_shape_from_buffered_shape()   use  sf::st_buffer() to add a buffer around   polygon
 -Given shapefiles/poly & buffer radius, 
 -Return shapefiles that buffered from those edges (or sp polygon data) 
 
-get_shape_from_siteid() 
+get_shape_from_siteid()   EJScreen is working on this for NPL sites at least.
 -Given NPL ids, or some other IDs that refer to sites with shapefile info? 
 -Return shapefile for each  (or sp polygon data) 
 
 -----------------------------------------------
+  
+# NEAR A POINT = INSIDE (CIRCULAR) BUFFER AROUND A POINT:  
+#     sf::st_is_within_distance()   
+
+# INSIDE A POLYGON LIKE HIGH-RISK ZONE: WHAT POINTS ARE INSIDE SOME POLYGON LIKE A BUFFER:  
+#     sf::st_intersects() to find points inside polygon or buffered polygon.
+
+# NEAR A POLYGON (NONCIRCULAR) BUFFER AROUND A POLYGON = near a POLYGON OR ROAD LINE: 
+#     CREATE A BUFFER THAT ADDS SOME DISTANCE FROM A SHAPE LIKE NPL SITE  with 
+#     sf::st_buffer() to add buffer around polygon
+#     sf::st_intersects() to then find points in that buffer, i.e., near the polygon.
+
+
+-----------------------------------------------
 TO GET RESIDENTS IN A CIRCLE/ NEARBY, OR GET DISTANCE TO EACH 
 
-**EJAM::getblocksnearby() is currently a poorly named function.
-  get_block_distances() ? 
-  get_blocks_nearby() ? that does not mention distances.
-  get_distance2blocks() ? _from_sitepoints ?
+**EJAM::getblocksnearby() is currently a poorly named function.   see also   sf::st_is_within_distance()  
+ possible names:  get_block_distances() ? 
+                  get_blocks_nearby() ? that does not mention distances.
+                  get_distance2blocks() ? _from_sitepoints ?
 -Given site lat/lons & max radius (radii?), and table of all US blocks, 
 -Return DISTANCES for SITE-BLOCK pairs
 (for each site, and maybe an overall dissolved version that has for each unique block the minimum distance to any site, and average distance if near >1 site)
 
-get_blocks_in_circle() ?? do we really need this?
--Given site lat/lons & max radius (radii?), and table of all US blocks 
--Return which blockids are nearby (but not distance information? - why not just get distances too?) (for each site, and overall dissolved) 
+    get_blocks_in_circle() ?? do we really need this?  see also   sf::st_is_within_distance()  
+    -Given site lat/lons & max radius (radii?), and table of all US blocks 
+    -Return which blockids are nearby (but not distance information? - why not just get distances too?) (for each site, and overall dissolved) 
 
-get_blockpoints_in_shape() - or nearby_blockpoints()
+get_blockpoints_in_shape() - or nearby_blockpoints()  try  sf::st_intersects() to find points inside polygon or buffered polygon.
 -Given shapes/buffers as a polygon per site, 
 -Return site-block pairs (but not distance to each, just whether inside buffer) (using intersect like ejscreenbatch or others)
 

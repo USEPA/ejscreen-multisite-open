@@ -34,6 +34,7 @@ facilities <- facilities[!is.na(facilities$LAT) & !is.na(facilities$LONG), ]
   truedistance <- computeActualDistancefromSurfacedistance(cutoff)   # simply 7918*sin(cutoff/7918)
 
   #set up cluster, splitting up the facilities among the available CPUs
+  #   but see this on why detectCores() is a bad idea:  https://www.r-bloggers.com/2022/12/please-avoid-detectcores-in-your-r-packages/
   cpuids <- 1:CountCPU
   facilities[,"CPUAFFINITY"] <- rep_len(cpuids, length.out=nrow(facilities))
   percpufacilities<- vector('list', CountCPU)
