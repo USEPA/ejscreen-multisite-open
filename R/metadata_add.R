@@ -55,7 +55,7 @@ metadata_add <- function(x, metadata) {
 #'   like EJAMblockdata or ejscreenapi
 #' @param which Optional vector (not list) of strings, the attributes. 
 #'   Default is some typical ones used in EJAM-related packages currently.
-#' @param loadifnotloaded Optional to control if func should load packages not already loaded.
+#' @param loadifnotloaded Optional to control if func should temporarily attach packages not already loaded.
 #'
 #' @export
 #'
@@ -88,6 +88,7 @@ metadata_check <- function(packages=NULL, which=c(
   allresults <- list()
   ii <- 0
   for (pkg in packages) {
+    # browser()
     ii <- ii + 1
     if (!(pkg %in% installed.packages(fields = 'Package'))) {
       cat(paste0(pkg, ' package not installed\n'))
@@ -95,14 +96,18 @@ metadata_check <- function(packages=NULL, which=c(
       results <- which; names(results) <- results; results[] <- NA
       next
     }
-    if (!isNamespaceLoaded(pkg)) {
-      
-      cat(paste0(pkg, ' package not loaded\n'))
-    }
     
     rdafiles <- data(package=pkg)
     rdafiles <- rdafiles$results[ , 'Item']
-    # rdafiles <- gsub(' .*' , '', rdafiles) # obsolete
+    
+    if (!isNamespaceLoaded(pkg) & loadifnotloaded) {
+      wasnotloaded <- pkg
+      cat(paste0(pkg, ' package was not loaded, loading and attaching now\n'))
+      attachNamespace(pkg, include.only = rdafiles)   # library(pkg, character.only = TRUE)
+    } else {
+      wasnotloaded <- NULL
+    }
+    
     if (length(which) == 1) {
       results <- cbind(sapply(rdafiles, FUN = get1attribute, which))
       colnames(results) <- which
@@ -115,6 +120,9 @@ metadata_check <- function(packages=NULL, which=c(
       colnames(results) <- which
     }
     allresults[[ii]] <- results
+    if (!is.null(wasnotloaded)) {
+      unloadNamespace(asNamespace(wasnotloaded))
+    }
   }
   #maybe...
   # allresults <- do.call(cbind, results)
