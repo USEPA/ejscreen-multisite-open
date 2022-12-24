@@ -27,25 +27,38 @@
 #'
 #' @seealso  [NAICS_categories] [NAICS] get_facility_info_via_ECHO function
 #' @examples
-#'  # NAICS_find('paper')
+#'  NAICS_find('paper')
 #'  NAICS_find('cement | concrete')
-#'  NAICS_find('pig')
+#'  cbind(NAICS_find('pig'))
 #'  NAICS_find('pulp', add_children = FALSE)
 #'  NAICS_find('pulp', add_children = TRUE)
-#'  NAICS_find('asdfasdf', add_children = TRUE) # not working yet
+#'  NAICS_find('asdfasdf', add_children = TRUE)  
 #'  NAICS_find('asdfasdf', add_children = FALSE)
+#'  
+#'   NAICS_find(211, exactnumber=TRUE)
+#'   NAICS_find(211, exactnumber=TRUE, add_children = TRUE)
+#'   naics2children(211)
+#'   NAICS[211][1:3] # wrong
+#'   NAICS[NAICS == 211]
+#'   NAICS["211 - Oil and Gas Extraction"]
 #' @import data.table
 #' @export
 #'
-NAICS_find <- function(query, add_children=FALSE, naics_dataset=NULL, ignore.case=TRUE) {
+NAICS_find <- function(query, add_children=FALSE, naics_dataset=NULL, ignore.case=TRUE, exactnumber=FALSE) {
   # NAICS would be from installed package, EJAM::NAICS  
   if (is.null(naics_dataset) & !exists('NAICS')) {warning('missing NAICS dataset and not passed as a parameter to NAICS_find'); return(NA)}
   if (is.null(naics_dataset) &  exists('NAICS')) {naics_dataset <- NAICS}
   if (class(naics_dataset) != 'numeric' | length(naics_dataset) < 2000) {warning('naics_dataset does not seem to be what is expected')}
+  if (length(query) > 1) {stop("query NAICS_find() with only 1 item at a time")}
   
   # Find all industry entries that match the query at all, including say 4 digit and 5 or 6 digit codes as well,
   #  ( not any parent or children entries unless they each match, themselves )
-  suppressWarnings( rownum <-     which(grepl(query, names(naics_dataset), ignore.case = ignore.case)) )
+  if (exactnumber) {
+    rownum <-   which(naics_dataset == query)
+  } else {
+    suppressWarnings( rownum <-     which(grepl(query, names(naics_dataset), ignore.case = ignore.case)) )
+  }
+  
   if (!add_children) {
     
     if (0 == length(rownum)) {
@@ -72,14 +85,17 @@ NAICS_find <- function(query, add_children=FALSE, naics_dataset=NULL, ignore.cas
       codes_matching <- naics_dataset[rownum]
       codes_plus_kids <- naics2children(codes_matching, naics_dataset)
       
-      found <- which(naics_dataset %chin% codes_plus_kids)
+      found <- which(naics_dataset %in% codes_plus_kids)
     }
   }
-  return( (naics_dataset[found]) )
+  x <- naics_dataset[found]
+  cat(paste0('\n', names(x)), '\n')
+  invisible(x)
 }
 
 
 #' See NAICS codes queried plus all children of any of those
+#' Used by NAICS_find()
 #' @details 
 #' start with shortest (highest level) codes. since tied for nchar, these branches have zero overlap, so do each.
 #' for each of those, get its children = all rows where parentcode == substr(allcodes, 1, nchar(parentcode))
@@ -96,9 +112,16 @@ NAICS_find <- function(query, add_children=FALSE, naics_dataset=NULL, ignore.cas
 #' @param allcodes Optional (already loaded with package) - dataset with all the codes
 #'
 #' @return vector of codes and their names
+#' @seealso NAICS_find() NAICS
 #' @export
 #'
-#' @examples
+#' @examples 
+#'   naics2children(211)
+#'   NAICS_find(211, exactnumber=TRUE)
+#'   NAICS_find(211, exactnumber=TRUE, add_children = TRUE)
+#'   NAICS[211][1:3] # wrong
+#'   NAICS[NAICS == 211]
+#'   NAICS["211 - Oil and Gas Extraction"]
 naics2children <- function(codes, allcodes=EJAM::NAICS) {
   # if (missing(allcodes)) {allcodes <- NAICS} # data from this package
   codes <- as.character(codes)

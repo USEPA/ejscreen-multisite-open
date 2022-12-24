@@ -2,7 +2,7 @@
 #' @docType data
 #' @title NAICS (industry classification system codes) 
 #' 
-#' @description
+#' @details 
 #'   These industry names and codes get updated about every 4 years 
 #'   (2017 version replaced by 2022 version in January 2022).
 #'   See <https://www.census.gov/naics/>
