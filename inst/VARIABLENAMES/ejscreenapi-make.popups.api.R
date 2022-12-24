@@ -12,7 +12,7 @@ make.popups.api <- function(out, linkcolname='pdfurl', linkcolname2=NULL, verbos
   # maybe these can be stored in and derived from map_headernames (as csv or as data)
   names.d.api        <- c("VSI.eo", "pctmin", "pctlowinc", "pctlths","pctlingiso", "pctunder5", "pctover64", "pctunemployed")
   names.d.pctile.api <- paste0('pctile.', names.d.api) 
-  names.d.nice.api   <- c("Demog.Ind.", "% Low-inc.", "% Minority", "% <High School", "% Linguistic Isol.", "% < age 5", "% > age 64", "% Unemployed")
+  names.d.nice.api   <- c("Demog.Ind.", "% Low-inc.", "% Minority", "% < High School", "% Linguistic Isol.", "% < age 5", "% > age 64", "% Unemployed")
   
   names.e.api        <- c("pm", "o3", "cancer", "resp", "dpm", "pctpre1960", "traffic.score", "proximity.npl", "proximity.rmp", "proximity.tsdf", "proximity.npdes", "ust")
   names.e.pctile.api <- paste0('pctile.', names.e.api)  
