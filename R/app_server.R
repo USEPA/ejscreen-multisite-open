@@ -234,6 +234,7 @@ app_server <- function(input, output, session) {
       # Dataset of FRS sites and NAICS in long format  
       ################################################################## #
       # Sites that match based on just NAICS codes:
+      
       sitepoints <- EJAMfrsdata::frs_by_naics[NAICS %in% inputnaics ,  ] # lat        lon  REGISTRY_ID  NAICS
       #  REGISTRY_ID  NAICS      lat       lon 
       # Also see EJAMfrsdata::frs , EJAMfrsdata::frs_by_programid 
@@ -309,7 +310,8 @@ app_server <- function(input, output, session) {
       }
     } else {
       print("Please submit an industry to run this query")
-      out <- data.table::as.data.table(setNames(data.frame(matrix(ncol = 1, nrow = 0)), paste0("Please submit an industry to run this query", c(1:1))))
+      out <- data.table::as.data.table(setNames(data.frame(matrix(ncol = 1, nrow = 0)), 
+                                                paste0("Please submit an industry to run this query", c(1:1))))
       return(out)
     }
   }

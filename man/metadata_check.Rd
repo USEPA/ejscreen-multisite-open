@@ -19,7 +19,7 @@ like EJAMblockdata or ejscreenapi}
 \item{which}{Optional vector (not list) of strings, the attributes.
 Default is some typical ones used in EJAM-related packages currently.}
 
-\item{loadifnotloaded}{Optional to control if func should load packages not already loaded.}
+\item{loadifnotloaded}{Optional to control if func should temporarily attach packages not already loaded.}
 }
 \description{
 Quick and dirty helper during development, to check all the

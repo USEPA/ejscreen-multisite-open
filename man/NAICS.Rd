@@ -5,6 +5,9 @@
 \alias{NAICS}
 \title{NAICS (industry classification system codes)}
 \description{
+NAICS (industry classification system codes)
+}
+\details{
 These industry names and codes get updated about every 4 years
 (2017 version replaced by 2022 version in January 2022).
 See \url{https://www.census.gov/naics/}
@@ -58,8 +61,7 @@ See \url{https://www.census.gov/naics/}
    information-regulatory-affairs/
    statistical-programs-standards/.
  }
-}
-\details{
+
 \preformatted{
   ## see   https://www.census.gov/naics/
 

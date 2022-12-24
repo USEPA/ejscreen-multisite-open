@@ -2,7 +2,7 @@
 % Please edit documentation in R/getblocksnearby.R
 \name{getblocksnearby}
 \alias{getblocksnearby}
-\title{Key buffering function - wrapper redirecting to the right version of the getblocksnearby function}
+\title{Key buffering function - wrapper redirecting to the right version of getblocksnearby()}
 \usage{
 getblocksnearby(
   sitepoints,

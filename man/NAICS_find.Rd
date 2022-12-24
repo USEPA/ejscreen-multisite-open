@@ -8,7 +8,8 @@ NAICS_find(
   query,
   add_children = FALSE,
   naics_dataset = NULL,
-  ignore.case = TRUE
+  ignore.case = TRUE,
+  exactnumber = FALSE
 )
 }
 \arguments{
@@ -42,13 +43,20 @@ c(\verb{11 - Agriculture, Forestry, Fishing and Hunting} = 11, \verb{111 - Crop 
 )
 }
 \examples{
- # NAICS_find('paper')
+ NAICS_find('paper')
  NAICS_find('cement | concrete')
- NAICS_find('pig')
+ cbind(NAICS_find('pig'))
  NAICS_find('pulp', add_children = FALSE)
  NAICS_find('pulp', add_children = TRUE)
- NAICS_find('asdfasdf', add_children = TRUE) # not working yet
+ NAICS_find('asdfasdf', add_children = TRUE)  
  NAICS_find('asdfasdf', add_children = FALSE)
+ 
+  NAICS_find(211, exactnumber=TRUE)
+  NAICS_find(211, exactnumber=TRUE, add_children = TRUE)
+  naics2children(211)
+  NAICS[211][1:3] # wrong
+  NAICS[NAICS == 211]
+  NAICS["211 - Oil and Gas Extraction"]
 }
 \seealso{
 \link{NAICS_categories} \link{NAICS} get_facility_info_via_ECHO function
