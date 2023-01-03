@@ -4,7 +4,7 @@ Version: 2.1.1
 Date: 2022-11-11
 Author: Mark Corrales
 Maintainer: Mark Corrales <corrales.mark@epa.gov>
-License: MIT + file LICENSE
+License: MIT + file LICENSE.md
 Description: Tools for summarizing environmental and demographic indicators 
     (such as those in EJSCREEN) for residents living near any one of a number of 
     specific sites. It uses quad tree search/indexing of block locations, data.table, parallel processing 
