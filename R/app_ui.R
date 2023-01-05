@@ -1,10 +1,14 @@
-#' The application User-Interface
+#' Shiny app User-Interface
 #'
 #' @param request Internal parameter for `{shiny}`.
 #'     DO NOT REMOVE.
 #' @import shiny
 #' @noRd
 app_ui <- function(request) {
+  
+## Use Alt-O in RStudio to fold code, then expand app_ui line to see sections.
+## Use Ctrl-Shift-O in RStudio to view the document Outline panel 
+  
   tagList(
     # Leave this function for adding external resources, see end of this source file.
     golem_add_external_resources(),
@@ -12,7 +16,7 @@ app_ui <- function(request) {
     # This app_ui() function could be broken into  
     #   functions and modules 
     #   but for now it has all the code in this file.
-    # UI MODULES WILL PROBABLY REPLACE MOST OF THE CODE BELOW 
+    # UI MODULES MIGHT REPLACE MOST OF THE CODE BELOW 
     # such as possibly these placeholders:
     #  mod_view_results_ui("view_results_1")
     #  mod_save_report_ui("save_report_1")
@@ -26,15 +30,14 @@ app_ui <- function(request) {
     shiny::uiOutput('debugbutton_ui'),
     
     fluidPage(
-      # overall fluidPage ####
-      
       #################################################################################################################### #
-      # ___EPA SHINY APP WEBPAGE TEMPLATE ####
+      # ______________TEMPLATE ONE EPA SHINY APP WEBPAGE ####
       
       # WHERE TO FIND THIS template # 
-      # https://github.com/USEPA/webcms/blob/main/utilities/r/OneEPA_template.R
+      # browseURL("https://github.com/USEPA/webcms/blob/main/utilities/r/OneEPA_template.R")
       
       # START OF ONEEPA SHINY APP WEB UI TEMPLATE to insert within your fluid page  
+      #################################################################################################################### #      
       
       tags$html(class = "no-js", lang="en"),
       ## head ####
@@ -261,7 +264,7 @@ app_ui <- function(request) {
         <article class="article">'
 	),
 	
-	# ______________Shiny app UI code ______________####
+	# ______________END TEMPLATE. START Shiny app UI ______________####
 	
 	#################################################################################################################### #
 	
@@ -276,16 +279,16 @@ app_ui <- function(request) {
 	),
 	#################################################################################################################### #
 	# textAreaInput('analysis_shortname', value = 'These Facilities', placeholder = 'very short name identifying this set'),
-	# . ####
-	# ______________ LOCATIONS _________________ ####
-	# . ####
+
+	# __________ LOCATIONS _________________ ####
+	# 1. LOCATIONS TO ANALYZE (universe of interest) ####
+	
 	wellPanel(
-	  # 1. LOCATIONS TO ANALYZE (universe of interest) ####
-	  
+
 	  fluidRow(column(
 	    12, style = "overflow: hidden;", htmltools::h4("Specify Locations to Analyze")
 	  )),
-	  # . ####
+ 
 	  ## A) ___ by Industry / NAICS ##########
 	  
 	  wellPanel(
@@ -293,8 +296,8 @@ app_ui <- function(request) {
 	      
 	      column(
 	        12,  style = "overflow: hidden;",
-	        # . ####
-	        ### i. user picks list/ search Industry (facility_mustbe_that_naics_in_this_program) ####
+
+	        ### i.  user picks list/ search Industry (facility_mustbe_that_naics_in_this_program) ####
 	        
 	        column(
 	          12,
@@ -429,10 +432,10 @@ app_ui <- function(request) {
 	  
 	),
 	################################################################################################# # 
-	# . ####
-	# ______________ DISTANCE _________________ ####
-	# . ####
-	wellPanel(# 2. DISTANCE (circular buffer radius)  ##########
+
+	# __________ DISTANCE _________________ ####
+	# 2. DISTANCE (circular buffer radius)  ##########
+	wellPanel(
 	          
 	          fluidRow(
 	            column(
@@ -460,7 +463,8 @@ app_ui <- function(request) {
 	              6,
 	              style = "overflow: hidden;",
 	              
-	              radioButtons( ## need to check if expand distance param is really still needed ####
+	  ## need to check if expand distance param is really still needed ####	              
+	              radioButtons( 
 	                            "expandRadius",
 	                            label = htmltools::h5(
 	                              "Expand distance in search for nearby blocks, to at least report on the one nearest block, if a facility has with no census block centroid within the selected buffer distance."
@@ -478,9 +482,9 @@ app_ui <- function(request) {
 	htmltools::br(),
 	htmltools::br(),
 	################################################################################################# # 
-	# . ####
-	# ______________ DOWNLOAD _________________ ####
-	# . ####
+ 
+	# __________ DOWNLOAD _________________ ####
+ 
 	# 3. DOWNLOAD RESULTS  ##########
 	
 	downloadButton('downloadData1', 'Start Analysis & Download Results'),
@@ -492,22 +496,10 @@ app_ui <- function(request) {
 	bookmarkButton(),
 	htmltools::br(),
 	
-	# . ####
-	# ______________ OTHER _________________ ####
-	# . ####
-	
-	textOutput("inputWarning2"),
-	htmltools::br(),
-	htmltools::tags$head(
-	  htmltools::tags$style(
-	    "#inputWarning2{color: red; font-size: 14px; font-style: italic; }"
-	  )
-	),
-	htmltools::br(),
-	
-	h4('DEBUGGING / TESTING INFO:'), 
-	htmltools::br(),
-	mainPanel( # Testing: maybe obsolete ##########
+ 	# __________ OTHER _________________ ####
+  
+	# Testing: maybe obsolete ##########
+	mainPanel( 
 	           verbatimTextOutput("selectInd2_for_testing"),
 	           verbatimTextOutput("selectInd1_for_testing"),
 	           verbatimTextOutput("selectScope1"),
@@ -746,13 +738,13 @@ app_ui <- function(request) {
     ) # end of fluid page
   )
   # ______________   _________________ ####
-} ########################################################################### #
+} ################################################# #
 
-#' Add external Resources to App (from golem package code)
-#'
-#' This function is internally used to add external
-#' resources inside the Shiny application.
-#'
+## Use Alt-O in RStudio to fold code, then expand app_ui line to see sections.
+## Use Ctrl-Shift-O in RStudio to view the document Outline panel 
+
+#' Add external resources to the shiny app
+#' This function (from the golem package) is used internally.
 #' @import shiny
 #' @importFrom golem add_resource_path activate_js favicon bundle_resources
 #' @noRd

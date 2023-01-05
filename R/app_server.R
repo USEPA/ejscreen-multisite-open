@@ -6,6 +6,12 @@
 #' @noRd
 app_server <- function(input, output, session) {
   
+  
+  ## Use Alt-O in RStudio to fold code, then expand app_ui line to see sections.
+  ## Use Ctrl-Shift-O in RStudio to view the document Outline panel 
+  
+  
+  
   # Note: how to avoid or still have a global.R file in the golem approach, 
   # https://github.com/ThinkR-open/golem/issues/6
   
@@ -528,4 +534,8 @@ app_server <- function(input, output, session) {
   )
   ############################################################################################## #
 }
+
+## Use Alt-O in RStudio to fold code, then expand app_ui line to see sections.
+## Use Ctrl-Shift-O in RStudio to view the document Outline panel 
+
 
