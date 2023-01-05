@@ -20,6 +20,8 @@ NAICS_find(
 \item{naics_dataset}{Should default to the dataset NAICS, installed with this package. see \link{NAICS}}
 
 \item{ignore.case}{default TRUE, ignoring whether query is upper or lower case}
+
+\item{exactnumber}{if TRUE, only return the exact match to (each) queried number (NAICS code)}
 }
 \description{
 Just a utility, quick way to view NAICS industrial sectors that contain queried word or phrase,

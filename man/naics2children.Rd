@@ -31,6 +31,14 @@ table(nchar(as.character(NAICS)))
 2    3    4    5    6
 17   99  311  709 1057
 }
+\examples{
+  naics2children(211)
+  NAICS_find(211, exactnumber=TRUE)
+  NAICS_find(211, exactnumber=TRUE, add_children = TRUE)
+  NAICS[211][1:3] # wrong
+  NAICS[NAICS == 211]
+  NAICS["211 - Oil and Gas Extraction"]
+}
 \seealso{
 NAICS_find() NAICS
 }

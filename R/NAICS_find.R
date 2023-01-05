@@ -24,7 +24,7 @@
 #' @param add_children default is FALSE, so it does NOT chidren (subcategories) of those that match the query.
 #' @param naics_dataset Should default to the dataset NAICS, installed with this package. see [NAICS]
 #' @param ignore.case default TRUE, ignoring whether query is upper or lower case
-#'
+#' @param exactnumber if TRUE, only return the exact match to (each) queried number (NAICS code)
 #' @seealso  [NAICS_categories] [NAICS] get_facility_info_via_ECHO function
 #' @examples
 #'  NAICS_find('paper')
