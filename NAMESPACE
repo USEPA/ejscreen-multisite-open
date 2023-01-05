@@ -3,6 +3,7 @@
 export(NAICS_categories)
 export(NAICS_find)
 export(NAICS_get)
+export(app_run_EJAM)
 export(computeActualDistancefromSurfacedistance)
 export(datapack)
 export(datasetlist)
