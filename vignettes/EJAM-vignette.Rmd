@@ -134,7 +134,7 @@ radius <- 1 # radius (miles).  5 km = 3.1 miles, 10 km = 6.2 miles
 ### Get results in one step
 
 ```{r}
-sitepoints <- as.data.table(sitepoints)  
+sitepoints <- data.table::as.data.table(sitepoints)  
 ## This function just combines getblocksnearby() and doaggregate()
 elapsed <- system.time({
   # out2 <- getblocksnearby_and_doaggregate(
