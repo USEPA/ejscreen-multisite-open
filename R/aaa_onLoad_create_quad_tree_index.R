@@ -3,7 +3,7 @@
   # This cannot be done during package build and saved, because of what this createTree function creates.
   
   
-  # NOT TESTED 
+  # NOT TESTED in context of an app published on RStudio Server
   
   
   assign(
