@@ -23,7 +23,7 @@ This means the tools can provide the same information that an EJScreen standard 
 but for a large number of reports (one for each site).
 }
 \section{\strong{Vignette}}{
-Please see the vignette
+Please see the vignette (development version may be in vignettes folder of locally installed package)
 }
 
 \section{\strong{Key Functions:}}{
@@ -63,9 +63,9 @@ The NAICS are 2-digit to 6-digit codes that specify sectors or types of faciliti
 \strong{1. BY INDUSTRIAL SECTOR/ NAICS:}
 Interface lets user select NAICS from pulldown, or type in NAICS
 Interface returns \code{naics_selected}, a vector of one or more naics codes,
-converted to \code{sitepoints} by \code{\link[=naics2latlon]{naics2latlon()}}.
+converted to \code{sitepoints} by \code{\link[EJAMfrsdata:get_siteid_from_naics]{EJAMfrsdata::get_siteid_from_naics()}} or \code{\link[EJAMfrsdata:get_siteid_from_naics]{EJAMfrsdata::get_latlon_from_naics()}}.
 \itemize{
-\item \strong{\href{naics_selected}{naics2latlon()}} returns \code{sitepoints} data.table (note here, siteid is just 1:n)
+\item \strong{\href{naics_selected}{EJAMfrsdata::get_latlon_from_naics()}} returns \code{sitepoints} data.table (note here, siteid is just 1:n)
 
 Required \strong{EJAMfrsdata::frs_by_naics.rda}
 Need to update FRS data used here regularly, ideally frequently.

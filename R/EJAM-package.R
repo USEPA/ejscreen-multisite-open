@@ -23,7 +23,7 @@
 #'
 #' @details  # **Vignette** ####################################################################
 #' 
-#' Please see the vignette  
+#' Please see the vignette (development version may be in vignettes folder of locally installed package)
 #' 
 #' @details  # **Key Functions:** ####################################################################
 #' 
@@ -63,9 +63,9 @@
 #'  **1. BY INDUSTRIAL SECTOR/ NAICS:**
 #'         Interface lets user select NAICS from pulldown, or type in NAICS 
 #'         Interface returns `naics_selected`, a vector of one or more naics codes,
-#'         converted to `sitepoints` by [naics2latlon()].
+#'         converted to `sitepoints` by [EJAMfrsdata::get_siteid_from_naics()] or [EJAMfrsdata::get_latlon_from_naics()].
 #' 
-#'    - **[naics2latlon()](naics_selected)** returns `sitepoints` data.table (note here, siteid is just 1:n)
+#'    - **[EJAMfrsdata::get_latlon_from_naics()](naics_selected)** returns `sitepoints` data.table (note here, siteid is just 1:n)
 #'  
 #'      Required **EJAMfrsdata::frs_by_naics.rda**   
 #'      Need to update FRS data used here regularly, ideally frequently.
