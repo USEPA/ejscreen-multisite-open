@@ -29,6 +29,7 @@
 #'    Would take about 5 seconds to create this each time it is needed.
 #'    But note: this is very large... do we need to pass it to the function, or can it be just in global?
 #' @examples 
+#'   x = getblocksnearby(testpoints_1000_dt, quadtree = localtree)
 #'   
 #' @seealso [getblocksnearbyviaQuadTree_Clustered()]  [computeActualDistancefromSurfacedistance()] [getblocksnearbyviaQuadTree2()]
 #' @export
@@ -42,6 +43,8 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, cutoff=1, maxcutoff=31.07,
     stop('quadtree must be an object created from SearchTrees package with treeType = "quad" and dataType = "point"')  
   }
   if (!data.table::is.data.table(sitepoints)) {data.table::setDT(sitepoints)}
+  
+  if (!('siteid' %in% names(sitepoints))) {sitepoints$siteid <- seq.int(length.out = NROW(sitepoints))}
   
   #pass in a list of uniques and the surface cutoff distance
   #filter na values? or keep length of out same as input? ####
