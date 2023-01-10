@@ -49,5 +49,5 @@ variables that need to be available in the global environment, as data
 from a loaded package.
 }
 \seealso{
-\link{getblocksnearbyviaQuadTree_Clustered}  \link{computeActualDistancefromSurfacedistance}
+\code{\link[=getblocksnearbyviaQuadTree_Clustered]{getblocksnearbyviaQuadTree_Clustered()}}  \code{\link[=computeActualDistancefromSurfacedistance]{computeActualDistancefromSurfacedistance()}} \code{\link[=getblocksnearbyviaQuadTree2]{getblocksnearbyviaQuadTree2()}}
 }

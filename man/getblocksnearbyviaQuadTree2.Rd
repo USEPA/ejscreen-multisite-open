@@ -17,9 +17,10 @@ getblocksnearbyviaQuadTree2(
 
 \item{cutoff}{miles radius, defining circular buffer around site point}
 
-\item{maxcutoff}{miles distance (max distance to check? if not even 1 block point is within cutoff)}
+\item{maxcutoff}{miles distance (max distance to check if not even 1 block point is within cutoff)}
 
-\item{avoidorphans}{logical}
+\item{avoidorphans}{logical Whether to avoid case where no block points are within cutoff,
+so if TRUE, it keeps looking past cutoff to find nearest one within maxcutoff.}
 
 \item{quadtree}{a large quadtree object created from the SearchTree package example:
 SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
@@ -27,6 +28,9 @@ Would take about 5 seconds to create this each time it is needed.
 But note: this is very large... do we need to pass it to the function, or can it be just in global?}
 }
 \description{
+This should be almost identical to getblocksnearbyviaQuadTree(),
+but it uses f2, a copy of sitepoints, and more importantly it
+pulls some code out of the for loop and uses a vectorized approach.
 Given a set of points and a specified radius (cutoff),
 this function quickly finds all the US Census blocks near each point.
 For each point, it uses the specified cutoff distance and finds the distance to
@@ -48,5 +52,5 @@ variables that need to be available in the global environment, as data
 from a loaded package.
 }
 \seealso{
-\link{getblocksnearbyviaQuadTree_Clustered}  \link{getblocksnearbyviaQuadTree2}  \link{computeActualDistancefromSurfacedistance}
+\code{\link[=getblocksnearbyviaQuadTree_Clustered]{getblocksnearbyviaQuadTree_Clustered()}}  \code{\link[=computeActualDistancefromSurfacedistance]{computeActualDistancefromSurfacedistance()}} \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}}
 }

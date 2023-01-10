@@ -28,8 +28,9 @@
 #'    SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
 #'    Would take about 5 seconds to create this each time it is needed.
 #'    But note: this is very large... do we need to pass it to the function, or can it be just in global?
-#'
-#' @seealso [getblocksnearbyviaQuadTree_Clustered]  [computeActualDistancefromSurfacedistance]
+#' @examples 
+#'   
+#' @seealso [getblocksnearbyviaQuadTree_Clustered()]  [computeActualDistancefromSurfacedistance()] [getblocksnearbyviaQuadTree2()]
 #' @export
 #' @import data.table
 #' @importFrom pdist "pdist"
@@ -40,20 +41,23 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, cutoff=1, maxcutoff=31.07,
   if(class(quadtree) != "QuadTree"){
     stop('quadtree must be an object created from SearchTrees package with treeType = "quad" and dataType = "point"')  
   }
+  if (!data.table::is.data.table(sitepoints)) {data.table::setDT(sitepoints)}
+  
   #pass in a list of uniques and the surface cutoff distance
   #filter na values? or keep length of out same as input? ####
-  sitepoints <- sitepoints[!is.na(sitepoints$lat) & !is.na(sitepoints$lon), ]
+  sitepoints <- sitepoints[!is.na(sitepoints$lat) & !is.na(sitepoints$lon), ] # perhaps could do this by reference to avoid making a copy
   #compute and add grid info ####
   earthRadius_miles <- 3959 # in case it is not already in global envt
   radians_per_degree <- pi / 180
-  # f2 <- data.table::copy(sitepoints) # make a copy 
   
-  sitepoints[ , lat_RAD := lat * radians_per_degree] # PROBLEM? - this alters sitepoints in the calling envt bc of how data.table works
+  # f2 <- data.table::copy(sitepoints) # make a copy?
+  
+  sitepoints[ , lat_RAD := lat * radians_per_degree]   # PROBLEM? - this alters sitepoints in the calling envt bc of how data.table works
   sitepoints[ , lon_RAD := lon * radians_per_degree]
   cos_lat <- cos(sitepoints[ , lat_RAD])    # or maybe # sitepoints[ , cos_lat := cos(lat_RAD)]
   sitepoints[ , FAC_X := earthRadius_miles * cos_lat * cos(lon_RAD)]
   sitepoints[ , FAC_Y := earthRadius_miles * cos_lat * sin(lon_RAD)]
-  sitepoints[ , FAC_Z := earthRadius_miles * sin(lat_RAD)]
+  sitepoints[ , FAC_Z := earthRadius_miles *           sin(lat_RAD)]
   
   # indexgridsize was defined at start as say 10 miles in global? could be passed here as a parameter ####
   # and buffer_indexdistance defined here in code but is never used anywhere...  
@@ -70,7 +74,7 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, cutoff=1, maxcutoff=31.07,
   nRowsDf <- NROW(sitepoints)
   res <- vector('list', nRowsDf)  # list of data.tables   cols will be blockid, distance, siteid    
   
-  
+  # **** getblocksnearbyviaQuadTree2.R is different here
   
   
   
@@ -87,7 +91,7 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, cutoff=1, maxcutoff=31.07,
     
     if ((i %% 100) == 0) {print(paste("Cells currently processing: ",i," of ", nRowsDf) ) } # i %% 100 indicates i mod 100 (“i modulo 100”) 
     
-    vec <- SearchTrees::rectLookup(quadtree, unlist(c(x_low, z_low  )), unlist(c(x_hi, coords[,FAC_Z]+truedistance))) # x and z things are now vectorized
+    vec <- SearchTrees::rectLookup(quadtree, unlist(c(x_low, z_low  )),         unlist(c(x_hi, coords[,FAC_Z]+truedistance))) # x and z things are now vectorized
     # *** FIX/CHECK: 
     #    quadtree (localtree passed here as quadtree) 
     # vs EJAMblockdata::blockquadtree  (can it be this way, or need to create it again for each session?)
@@ -98,7 +102,7 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, cutoff=1, maxcutoff=31.07,
     # y <- sitepoints[i, c('FAC_X','FAC_Y','FAC_Z')]  # the similar clustered function uses something other than sitepoints here - why?
     
     distances <- as.matrix(pdist::pdist(tmp[ , .(BLOCK_X, BLOCK_Y, BLOCK_Z)] , sitepoints[i, c('FAC_X','FAC_Y','FAC_Z')] ))
-    # pdist computes a n by p distance matrix using two seperate matrices
+    # pdist computes a n by p distance matrix using two separate matrices
     
     #clean up fields
     tmp[ , distance := distances[ , c(1)]]
@@ -130,8 +134,8 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, cutoff=1, maxcutoff=31.07,
       res[[i]] <- tmp[distance <= truemaxdistance, .(blockid, distance, siteid)]
       # saving results as a list of tables to rbind after loop; old code did rbind for each table, inside loop 
     } else {
+      
     }
-    
   }
   result <- data.table::rbindlist(res)  
   

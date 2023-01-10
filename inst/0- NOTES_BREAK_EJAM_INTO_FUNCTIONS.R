@@ -4,6 +4,35 @@
 # -----------------------------------------------
 # TO GET FACILITIES AND POINTS (LAT / LON):  - see EJAMejscreenapi::locate_by_id(type = 'program') 
 # 
+# examples:
+# 
+#   # See a data table of facilities in one industry
+#   
+#   DT::datatable(
+#     EJAMfrsdata::frs[EJAMfrsdata::frs$REGISTRY_ID %chin% unlist(
+#       EJAMfrsdata::get_siteid_from_naics(
+#         EJAM::NAICS_find("pulp", add_children = FALSE))[,"REGISTRY_ID"]), 1:5], 
+#     caption = "FACILITIES WITH NAICS CODE MATCHING QUERY TERM 'PULP' ", filter = "top")
+# 
+# # See a map of one industry
+# 
+# EJAMejscreenapi::mapfast(
+#   EJAMfrsdata::frs[EJAMfrsdata::frs$REGISTRY_ID %chin% unlist(
+#     EJAMfrsdata::get_siteid_from_naics(
+#       EJAM::NAICS_find("pulp", add_children = TRUE))[,"REGISTRY_ID"]),  ])
+# 
+# # Map sites by facility ID
+# 
+# mapfast(get_latlon_from_siteid(test_query_input_registry_id$registry_id))
+
+# read_and_clean_points() ??
+
+# EJAMejscreenapi::latlon_any_format()   Very flexible function.
+#    - Given lat and lon vectors, 
+#      or a data.table or data.frame with columns that seem to be lat/lon, 
+#      or a filename .csv or .xlsx with such a table
+#    - Return table of points with columns lat and lon  
+
 # **(done) EJAMfrsdata::get_siteid_from_naics()   
 #      [and maybe  get_facility_info_via_ECHO() but that is slow]
 #   -Given NAICS names or codes, 
@@ -20,7 +49,10 @@
 #   -given facility registry IDs, 
 #   -return facility lat/lon values (and other facility info, like name, NAICS, etc.? locate_by_id() does)
 # 
-# # get_latlon_from_naics(),    -  see EJAMfrsdata::get_siteid_from_naics()  
+# # get_latlon_from_naics() - EJAMfrsdata::get_latlon_from_naics() is an alias for EJAMfrsdata::get_siteid_from_naics()  
+#   - Given NAICS code(s) numbers,
+    # - Returns data.table with columns lat, lon, etc
+
 # # get_latlon_from_sic  and  get_latlon_from_programid ? (wrappers for pairs of the above)
 # # 
 # # This had all been done by locate_by_id() which took either    get_facility_info_via_FRS <- locate_by_id # get_facility_info_via_FRS() alias

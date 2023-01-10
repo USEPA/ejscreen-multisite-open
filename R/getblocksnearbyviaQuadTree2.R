@@ -1,6 +1,9 @@
 #' Find nearby blocks using Quad Tree data structure for speed, NO PARALLEL PROCESSING
-#'
-#' @description Given a set of points and a specified radius (cutoff), 
+#' @description 
+#'   This should be almost identical to getblocksnearbyviaQuadTree(), 
+#'   but it uses f2, a copy of sitepoints, and more importantly it 
+#'   pulls some code out of the for loop and uses a vectorized approach.
+#'   Given a set of points and a specified radius (cutoff), 
 #'   this function quickly finds all the US Census blocks near each point. 
 #'   For each point, it uses the specified cutoff distance and finds the distance to 
 #'   every block within the circle defined by the radius (cutoff). 
@@ -21,14 +24,16 @@
 #' 
 #' @param sitepoints data.table with columns siteid, lat, lon giving point locations of sites or facilities around which are circular buffers
 #' @param cutoff miles radius, defining circular buffer around site point 
-#' @param maxcutoff miles distance (max distance to check? if not even 1 block point is within cutoff)
-#' @param avoidorphans logical
+#' @param maxcutoff miles distance (max distance to check if not even 1 block point is within cutoff)
+#' @param avoidorphans logical Whether to avoid case where no block points are within cutoff, 
+#'   so if TRUE, it keeps looking past cutoff to find nearest one within maxcutoff.
 #' @param quadtree a large quadtree object created from the SearchTree package example:
 #'    SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
 #'    Would take about 5 seconds to create this each time it is needed.
 #'    But note: this is very large... do we need to pass it to the function, or can it be just in global?
-#'
-#' @seealso [getblocksnearbyviaQuadTree_Clustered]  [getblocksnearbyviaQuadTree2]  [computeActualDistancefromSurfacedistance]
+#' @examples 
+#'   
+#' @seealso [getblocksnearbyviaQuadTree_Clustered()]  [computeActualDistancefromSurfacedistance()] [getblocksnearbyviaQuadTree()]  
 #' @export
 #' @import data.table
 #' @importFrom pdist "pdist"
@@ -39,20 +44,23 @@ getblocksnearbyviaQuadTree2 <- function(sitepoints, cutoff=1, maxcutoff=31.07,
   if(class(quadtree) != "QuadTree"){
     stop('quadtree must be an object created from SearchTrees package with treeType = "quad" and dataType = "point"')  
   }
+  if (!is.data.table(sitepoints)) {setDT(sitepoints)}
+  
   #pass in a list of uniques and the surface cutoff distance
   #filter na values? or keep length of out same as input? ####
-  sitepoints <- sitepoints[!is.na(sitepoints$lat) & !is.na(sitepoints$lon), ]  
+  sitepoints <- sitepoints[!is.na(sitepoints$lat) & !is.na(sitepoints$lon), ] # perhaps could do this by reference to avoid making a copy
   #compute and add grid info ####
   earthRadius_miles <- 3959 # in case it is not already in global envt
   radians_per_degree <- pi / 180
-  f2 <- data.table::copy(sitepoints) # make a copy to avoid altering sitepoints in the calling envt when modifying by reference using data.table
+  
+  f2   <- data.table::copy(sitepoints) # make a copy to avoid altering sitepoints in the calling envt when modifying by reference using data.table
   # rm(sitepoints) # probably slow
-  f2[ , lat_RAD  := lat * radians_per_degree]   # data.table modifies it by reference
-  f2[ , lon_RAD  := lon * radians_per_degree]
-  cos_lat <- cos(f2[,lat_RAD])
-  f2[ , FAC_X := earthRadius_miles * cos_lat * cos(lon_RAD)]
-  f2[ , FAC_Y := earthRadius_miles * cos_lat * sin(lon_RAD)]
-  f2[ , FAC_Z := earthRadius_miles *  sin(lat_RAD)]
+  f2[         , lat_RAD := lat * radians_per_degree]   # data.table modifies it by reference
+  f2[         , lon_RAD := lon * radians_per_degree]
+  cos_lat <- cos(         f2[, lat_RAD])    # or maybe # sitepoints[ , cos_lat := cos(lat_RAD)]
+  f2[         , FAC_X := earthRadius_miles * cos_lat * cos(lon_RAD)]
+  f2[         , FAC_Y := earthRadius_miles * cos_lat * sin(lon_RAD)]
+  f2[         , FAC_Z := earthRadius_miles *           sin(lat_RAD)]
   
   # indexgridsize was defined at start as say 10 miles in global? could be passed here as a parameter ####
   # and buffer_indexdistance defined here in code but is never used anywhere...  
@@ -65,11 +73,11 @@ getblocksnearbyviaQuadTree2 <- function(sitepoints, cutoff=1, maxcutoff=31.07,
   
   #---- Get ready for loop here ----
   
-  # allocate result list
+  # allocate memory for result list
   nRowsDf <- NROW(f2)
   res <- vector('list', nRowsDf)  # list of data.tables   cols will be blockid, distance, siteid
   
-  #these are now outside the loop, so they can be used in the vectorized way
+  # **** these are now outside the loop, so they can be used in the vectorized way
   coords <- f2[ , .(FAC_X, FAC_Z)] 
   x_low <- coords[ , FAC_X] -truedistance;
   x_hi  <-  coords[ , FAC_X] +truedistance
@@ -84,7 +92,7 @@ getblocksnearbyviaQuadTree2 <- function(sitepoints, cutoff=1, maxcutoff=31.07,
     
     
     
-    if ((i %% 100) == 0) {print(paste("Cells currently processing: ",i," of ", nRowsDf) ) }
+    if ((i %% 100) == 0) {print(paste("Cells currently processing: ",i," of ", nRowsDf) ) } # i %% 100 indicates i mod 100 (“i modulo 100”) 
     
     vec <- SearchTrees::rectLookup(quadtree, unlist(c(x_low[i, ], z_low[i, ])), unlist(c(x_hi[i, ], z_hi[i, ]))) 
     # *** FIX/CHECK: 
@@ -93,20 +101,21 @@ getblocksnearbyviaQuadTree2 <- function(sitepoints, cutoff=1, maxcutoff=31.07,
     # vs was just localtree from global env in clustered version of function
     
     tmp <- EJAMblockdata::quaddata[vec, ]
-    # x <- tmp[ , .(BLOCK_X, BLOCK_Y, BLOCK_Z)] # but not blockid ?? 
+    # x <- tmp[ , .(BLOCK_X, BLOCK_Y, BLOCK_Z)] # but not blockid ??   # ** SLOW STEP TO OPTIMIZE 
     # y <-         f2[i, c('FAC_X','FAC_Y','FAC_Z')]  # the similar clustered function uses something other than f2 or sitepoints here - why?
     
-    distances <- as.matrix(pdist::pdist(tmp[ , .(BLOCK_X, BLOCK_Y, BLOCK_Z)] , f2[i, c('FAC_X','FAC_Y','FAC_Z')] ))
+    distances <- as.matrix(pdist::pdist(tmp[ , .(BLOCK_X, BLOCK_Y, BLOCK_Z)] ,         f2[i, c('FAC_X','FAC_Y','FAC_Z')] ))
+    # pdist computes a n by p distance matrix using two separate matrices
     
     #clean up fields
     tmp[ , distance := distances[ , c(1)]]
     tmp[ , siteid :=         f2[i, .(siteid)]]  # the similar clustered function differs, why?
     
     #filter actual distance
-    tmp     <- tmp[distance <= truedistance, .(blockid, distance, siteid)]
+    tmp      <- tmp[distance <= truedistance, .(blockid, distance, siteid)]  # ** SLOW STEP TO OPTIMIZE
     
     # hold your horses, what if there are no blocks and you are supposed to avoid that
-    if ( avoidorphans && (nrow(tmp)) == 0) {
+    if ( avoidorphans && (nrow(tmp))      == 0) {
       #search neighbors, allow for multiple at equal distance
       vec  <- SearchTrees::knnLookup(quadtree, unlist(c(coords[i, 'FAC_X'])), unlist(c(coords[i, 'FAC_Z'])), k=10) 
       # *** FIX/CHECK: 
@@ -138,7 +147,3 @@ getblocksnearbyviaQuadTree2 <- function(sitepoints, cutoff=1, maxcutoff=31.07,
   
   return(result)
 }
-
-
-
-

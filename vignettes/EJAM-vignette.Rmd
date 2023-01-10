@@ -16,6 +16,10 @@ knitr::opts_chunk$set(eval = FALSE)
 # https://r-pkgs.org/vignettes.html
 ```
 
+## *Developer note on building and updating this vignette*
+
+See important info at <https://r-pkgs.org/vignettes.html#sec-vignettes-how-built>
+
 ## Accessing and using the code/ data/ app
 
 The app is not on a server. The R package is still in active development, but a current version can be installed from the github USEPA github repository. It can be installed locally as an R package, and the data or functions can be used even without launching the shiny app interface. This is work in progress - only the lat/lon upload may be working right now, for example, not the NAICS/FRS queries.
@@ -41,6 +45,25 @@ See this vignette and help documentation for the package overall, and individual
 
 ```{r help, eval=FALSE, include=FALSE}
 help("EJAM", package='EJAM')
+```
+
+## Find and Map EPA-regulated Facilities
+
+```{r}
+# See a data table of facilities in one industry
+
+DT::datatable(
+  EJAMfrsdata::frs[EJAMfrsdata::frs$REGISTRY_ID %chin% unlist(
+    EJAMfrsdata::get_siteid_from_naics(
+      EJAM::NAICS_find("pulp", add_children = FALSE))[,"REGISTRY_ID"]), 1:5], 
+  caption = "FACILITIES WITH NAICS CODE MATCHING QUERY TERM 'PULP' ", filter = "top")
+
+# See a map of one industry
+
+EJAMejscreenapi::mapfast(
+  EJAMfrsdata::frs[EJAMfrsdata::frs$REGISTRY_ID %chin% unlist(
+    EJAMfrsdata::get_siteid_from_naics(
+      EJAM::NAICS_find("pulp", add_children = TRUE))[,"REGISTRY_ID"]),  ])
 ```
 
 ## Run the Shiny app on your own computer, in RStudio
@@ -77,9 +100,12 @@ if (!require(data.table)) {install.packages('data.table')}
 
 ### Create the index of where blocks are, to be able to quickly find those nearby a given site
 
-THIS IS SLOW - takes a few seconds. This (seemingly) must be done for each session? One cannot save it as .rda and just load via a pkg since it is like a pointer to the index in RAM or something like that.
+IMPORTANT NOTE: During development of this package, at least, this index is built when the package is loaded, automatically, by the .onLoad() function in the file EJAM/R/aaa_onLoad_create_quad_tree_index.R 
+THIS IS SLOW - It takes a few seconds. This (seemingly) must be done for each session? One cannot save it as .rda and just load via a pkg since it is like a pointer to the index in RAM or something like that.
 
 ```{r BUILD_INDEX}
+# One could manually rebuild the index (if quaddata were updated, for example),
+#  like this:
 system.time({
   localtree <- SearchTrees::createTree(
     EJAMblockdata::quaddata, treeType = "quad", dataType = "point"
@@ -103,17 +129,16 @@ sitepoints <- data.frame(
 
 You can use lat lon coordinates from an xlsx or csv file. The first row should be column names including lat and lon, or something that can be interpreted as that - see latlon_infer()
 
-```{r eval=FALSE, include=FALSE}
+```{r eval=FALSE, include=TRUE}
 write.csv(data.frame(LONG = c(-92.1, -91.8), Latitude = c(34.8, 30.2), siteid = 1:2), file = 'mypoints.csv')
-
 sitepoints <- latlon_readclean('mypoints.csv')
 ```
 
 #### Use test points example that comes with the package
 
-```{r testpoints, eval=FALSE, include=FALSE}
-# EJAM::testpoints_100_dt |> head(2) # data in this package
-# sitepoints <- data.table::copy(EJAM::testpoints_100_dt)  # [1:5, ]
+```{r testpoints, eval=TRUE, include=TRUE}
+EJAM::testpoints_100_dt |> head(2) # data in this package
+sitepoints <- data.table::copy(EJAM::testpoints_100_dt)  # [1:5, ]
 head(sitepoints, 2)
 ```
 
@@ -134,7 +159,7 @@ radius <- 1 # radius (miles).  5 km = 3.1 miles, 10 km = 6.2 miles
 ### Get results in one step
 
 ```{r}
-sitepoints <- data.table::as.data.table(sitepoints)  
+# sitepoints <- data.table::as.data.table(sitepoints)  # the function will ensure it is a data.table
 ## This function just combines getblocksnearby() and doaggregate()
 elapsed <- system.time({
   # out2 <- getblocksnearby_and_doaggregate(

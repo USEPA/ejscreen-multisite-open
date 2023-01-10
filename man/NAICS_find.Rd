@@ -45,14 +45,20 @@ c(\verb{11 - Agriculture, Forestry, Fishing and Hunting} = 11, \verb{111 - Crop 
 )
 }
 \examples{
- NAICS_find('paper')
- NAICS_find('cement | concrete')
- cbind(NAICS_find('pig'))
- NAICS_find('pulp', add_children = FALSE)
- NAICS_find('pulp', add_children = TRUE)
- NAICS_find('asdfasdf', add_children = TRUE)  
- NAICS_find('asdfasdf', add_children = FALSE)
+ NAICS_find("paper")
+ NAICS_find("cement | concrete")
+ cbind(NAICS_find("pig")
+ NAICS_find("pulp", add_children = FALSE)
+ NAICS_find("pulp", add_children = TRUE)
+ NAICS_find("asdfasdf", add_children = TRUE)  
+ NAICS_find("asdfasdf", add_children = FALSE)
  
+ EJAMfrsdata::frs[EJAMfrsdata::frs$REGISTRY_ID \%chin\% unlist(
+   EJAMfrsdata::get_siteid_from_naics(EJAM::NAICS_find("pulp", add_children = TRUE))[,"REGISTRY_ID"]), 1:5]
+   
+ EJAMejscreenapi::mapfast(EJAMfrsdata::frs[EJAMfrsdata::frs$REGISTRY_ID \%chin\% unlist(
+   EJAMfrsdata::get_siteid_from_naics(EJAM::NAICS_find("pulp"))[,"REGISTRY_ID"]),   ])
+   
   NAICS_find(211, exactnumber=TRUE)
   NAICS_find(211, exactnumber=TRUE, add_children = TRUE)
   naics2children(211)

@@ -3,9 +3,9 @@
 
 # Define lists of names of EJScreen-related variables for use here
 
+# see also:  EJAMejscreenapi/map_headernames.csv or EJAMejscreenapi::map_headernames
 # see also:  EJAM/data-raw/names_of_indicators.R
 # see also:  EJAMbatch.summarizer/data-raw/names_of_variables.R
-# see also:  EJAMejscreenapi/map_headernames.csv
 # see also: ejscreen::names.e, ejscreenformulas, etc. 
 
 # Also could create: names_e_avg, names_d_avg, names_e_state_avg, names_d_state_avg etc
