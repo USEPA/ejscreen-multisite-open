@@ -4,23 +4,26 @@
 #'   (as identified previously, in other code that has identified which blocks are nearby)
 #'   and combines those with indicator scores for block groups.
 #'
-#'   It aggregates the blockgroup scores to create a summary of each indicator,
+#' @details
+#'   This function aggregates the blockgroup scores to create a summary of each indicator,
 #'    as a raw score and US percentile and State percentile,
 #'    in each buffer (i.e., near each facility):
-#'      - SUMS of counts: such as for population or number of households or Hispanics
-#'      - POPULATION-WEIGHTED MEANS: for  Environmental indicators.
-#'      -  NOTE: *** EJ Indexes: These could be in theory recalculated via formula, but the way EJScreen 
+#'    
+#'    - **SUMS OF COUNTS**: for population count, or number of households or Hispanics, etc.
+#'      
+#'    - **POPULATION-WEIGHTED MEANS**: for  Environmental indicators.
+#'      
+#'        ***EJ Indexes**:* These could be in theory recalculated via formula, but the way EJScreen 
 #'          does this is apparently finding the pop wtd mean of EJ Index raw scores,
 #'          not the EJ Index formula applied to the summarized demographic score and aggregated envt number.
-#'      - CALCULATED BY FORMULA: Buffer or overall score calculated via formulas using aggregated counts, 
+#'          
+#'    - **CALCULATED BY FORMULA**: Buffer or overall score calculated via formulas using aggregated counts, 
 #'          such as percent low income = sum of counts low income / sum of counts of denominator, 
 #'          which in this case is the count of those for whom the poverty ratio is known.
-#'      - LOOKED UP VALUES: Aggregated scores are converted into percentile terms via lookup tables (US or State version).
+#'          
+#'    - **LOOKED UP**: Aggregated scores are converted into percentile terms via lookup tables (US or State version).
 #'
-#' @details
-#'  \preformatted{
-#'
-#'   requires the following as data lazy loaded for example from EJAMblockdata package:
+#'   This function requires the following as data lazy loaded for example from EJAMblockdata package:
 #'   
 #'    - blockwts: data.table with these columns: blockid , bgid, blockwt
 #'    
@@ -28,10 +31,9 @@
 #'    
 #'    - EJAM::blockgroupstats - A data.table (such as EJSCREEN demographic and environmental data by blockgroup?)
 #'    
-#'    - statesshp?    (had been used - a shapefile of state boundries to determine what state a point is in)
+#'    - statesshp?    (obsolete? had been used - a shapefile of state boundries to determine what state a point is in)
 #'    
-#'    - stateregions? (had been used - data.table lookup of EPA REGION given the ST - state code like AK)
-#'  }
+#'    - stateregions? (obsolete? had been used - data.table lookup of EPA REGION given the ST - state code like AK)
 #'
 #' @param sites2blocks data.table of distances in miles between all sites (facilities) and 
 #'   nearby Census block internal points, with columns siteid, blockid, distance,
@@ -68,7 +70,7 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
   
   ##################################################### #  ##################################################### #
   ## Specify Which vars are sum of counts, vs wtd avg, vs via formula ####
-  
+  # browser()
   if (is.null(countcols)) {
     # # note that names.d.count was not yet defined in ejscreen pkg, and would lack denominators if only based on pctxyz
     # names.d.count <- union( gsub('pct','', grep(pattern = 'pct', ejscreen::names.d, value=TRUE)),
@@ -179,7 +181,6 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
   #  - worst-case sites? to flag notable sites. [usually just 1 site nearby, at avg distance of Radius * 0.67, and worst case distance zero and several sites nearby; 
   #       The cumulative effect of some of these sites being somewhat clustered near each other. 
   ###################################### #
-  sites2blocks[, sitecount_near_block := .N, by=blockid] # (for this, must use the table with duplicate blocks, not unique only)
   
   
   
@@ -188,6 +189,21 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
   
   
   
+  ## _min distance to any site, for each block ####
+  # do we really need this here, or only when 1) summarizing by blockgroup and retaining both sites at one block, eg,
+  #  and 2) when dropping the duplicate blocks to get overall stats?
+  
+  sites2blocks[, sitedistance_min := min(distance, na.rm = TRUE), by=blockid] # Presumably sometimes very close to zero or to effective radius of nearest block.
+  
+  ## _count of sites, for (near) each block ####
+  sites2blocks[, sitecount := .N, by=blockid] # (for this, must use the table with duplicate blocks, not unique only)
+  
+  ## _Proximity Score of block ####
+  sites2blocks[, proximityscore := sum(1 / distance, na.rm = TRUE), by=blockid]
+  # **** TO BE FIXED: / WARNING:  doesnt the formula need the adjustment for small distance?? You need the block area to calculate its effective radius and adjust score if distance is <that? see EJScreen tech doc
+  warning('proximityscore lacks small distance adjustment factor - not yet implemented')
+  
+  sites2blocks[, sitedistance_min := min(distance, na.rm = TRUE), by=blockid]
   
   ###################################### #
   ## * Unique residents (blocks) only, used for Overall stats #### 
@@ -203,12 +219,15 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
   # and use the min distance (which block-site had the closer site?)
   # sites2blocks_overall <- unique(sites2blocks, by=blockid)    # would keep all columns but only one nearby site would be kept for each block.
   # Slowest way, but could get all that explicitly maybe like specifying each as max or min 
-
-  # Note the unique() would just pick the first instance found of a given blockid, regardless of which siteid that was for,
-  # so it retains whatever distance happened to be the one found first, and same for all site characteristics.
-  # *** We actually instead want to save the shortest distance for that blockid, as the worst case proximity
-  # to be able to have summary stats by group of distance to the closest site, not to a random site among those nearby. 
-  # What is the efficient way to find that?
+  
+  # done above: sites2blocks <- EJAMblockdata::blockwts[sites2blocks, .(siteid,blockid,distance,blockwt,bgid), on='blockid']
+   
+  sites2blocks_overall <- sites2blocks[, list(sitedistance_min = min(sitedistance_min), # it already has done this, actually
+                                              sitecount_max = .N,
+                                              proximityscore = sum(proximityscore),
+                                              blockwt # ?????
+                                              ),
+                                        by="blockid"]
 
   
   # BLOCK GROUPS RESOLUTION analysis:   #######################################
@@ -227,16 +246,40 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
   
   ## Calc bgwt, the fraction of each (parent)blockgroup's censuspop that is in buffer #### 
   
-  ## *?? WHICH OF THESE VERSIONS WAS BETTER? BY REFERENCE?  #### 
-     # sites2blocks_overall[, bg_fraction_in_buffer_overall := sum(blockwt), by=bgid]  # variable not used !
-     # sites2blocks[, bg_fraction_in_buffer_bysite := sum(blockwt, na.rm = TRUE), by=c('bgid', 'siteid')]
-  # VERSUS
-     sites2bgs_overall <- sites2blocks_overall[ , .(bgwt = sum(blockwt, na.rm = TRUE)), by=          bgid ]
-     sites2bgs_bysite  <- sites2blocks[         , .(bgwt = sum(blockwt, na.rm = TRUE)), by=.(siteid, bgid)]
   
+  
+  
+  
+  
+  
+     browser("it was stuck here")
+  
+  
+  
+  
+  
+  
+  
+  ## *?? WHICH OF THESE VERSIONS WAS BETTER? BY REFERENCE?  #### 
+     # sites2blocks_overall[, bg_fraction_in_buffer_overall := sum(blockwt),     by="bgid"]  # variable not used !
+     # sites2blocks[        , bg_fraction_in_buffer_bysite  := sum(blockwt, na.rm = TRUE), by=c("siteid", "bgid")]
+  # VERSUS
+     sites2bgs_overall   <-   sites2blocks_overall[ , .(bgwt = sum(blockwt, na.rm = TRUE)), by=            "bgid" ]
+     sites2bgs_bysite    <-   sites2blocks[         , .(bgwt = sum(blockwt, na.rm = TRUE)), by=.("siteid", "bgid")]
+  
+     
+     
+     
+     
+     
+     
+     
+     
+     
+     
   ## * COUNT # unique sites near each bg? #### 
      # (and that is not same as max count for any block in the bg)
-  sites2bgs_bysite[ , sitecount_near_bg := length(unique(siteid)), by=bgid] 
+  sites2bgs_bysite[ , sitecount_near_bg := length(unique(siteid)), by="bgid"] 
   
      ## * AVG AND WORST DISTANCE TO SITE, for each bg? (avg person)
      
