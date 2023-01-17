@@ -20,7 +20,20 @@
 #       - to simplify and save as data.table for EJAM::blockgroupstats
 
 #################################################################################################### #
- 
+
+#'     Files available from FTP site as of 1/2023:
+#'     
+#'   EJSCREEN_2022_with_AS_CNMI_GU_VI.gdb.zip
+#'   
+#'   EJSCREEN_2022_Full_with_AS_CNMI_GU_VI.csv.zip
+#'   EJSCREEN_2022_StatePct_with_AS_CNMI_GU_VI.csv.zip
+#'   2022_EJSCREEN_BG_Columns.xlsx
+#'   
+#'   EJSCREEN_2022_Supplemental_with_AS_CNMI_GU_VI.csv.zip  
+#'   EJSCREEN_2022_Supplemental_StatePct_with_AS_CNMI_GU_VI.csv.zip
+#'   2022_EJSCREEN_Supplemental_BG_Columns.xlsx
+#'   
+
 ######################################################################## #
 # # notes on converting 
 # EJAMejscreendata::EJSCREEN_Full_with_AS_CNMI_GU_VI  etc.

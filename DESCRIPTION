@@ -13,10 +13,10 @@ URL: https://github.com/USEPA/EJAM
 Depends: 
     R (>= 2.10), 
     shiny (>= 1.7.2), 
+    data.table,
     EJAMblockdata,
     EJAMfrsdata
 Imports:
-    data.table,
     config (>= 0.3.1),
     golem (>= 0.3.3),
     foreach,

@@ -101,7 +101,7 @@ system.time({
 ```{r}
 # See a data table of facilities in one industry
 industryword <- "pulp"
-mysites <- EJAMfrsdata::frs[EJAMfrsdata::frs$REGISTRY_ID %chin% unlist(
+mysites <- EJAMfrsdata::frs[EJAMfrsdata::frs$REGISTRY_ID %in% unlist(
   EJAMfrsdata::get_siteid_from_naics(
     EJAM::NAICS_find(industryword, add_children = FALSE))[,"REGISTRY_ID"]), 1:5]
 
@@ -112,17 +112,17 @@ DT::datatable(
 
 # See a map of one industry
 
-sitepoints1 <- EJAMfrsdata::frs[EJAMfrsdata::frs$REGISTRY_ID %chin% unlist(
+sitepoints639 <- EJAMfrsdata::frs[EJAMfrsdata::frs$REGISTRY_ID %in% unlist(
     EJAMfrsdata::get_siteid_from_naics(
       EJAM::NAICS_find(industryword, add_children = TRUE))[,"REGISTRY_ID"]),  ]
-EJAMejscreenapi::mapfast(sitepoints1)
-nrow(sitepoints1)
+EJAMejscreenapi::mapfast(sitepoints639)
+nrow(sitepoints639)
 ```
 
 #### Use lat and lon to specify points
 
 ```{r}
-sitepoints  <- data.frame(
+sitepoints2  <- data.frame(
   lon = c(-92.1, -91.8), 
   lat = c(34.8799123, 30.2906971), 
   siteid = 1:2
@@ -135,16 +135,16 @@ You can use lat lon coordinates from an xlsx or csv file. The first row should b
 
 ```{r eval=FALSE, include=TRUE}
 testjunk <- file.path(tempdir(), 'testjunk.csv')
-write.csv(data.frame(LONG = c(-92.1, -91.8), Latitude = c(34.8, 30.2), siteid = 1:2), file = testjunk)
-sitepoints3 <- latlon_readclean(testjunk)
+write.csv(data.frame(LONG = c(-92.1, -91.8), Latitude = c(34.8, 30.2), siteid = 1:2), file = testjunk, row.names = FALSE)
+sitepoints2 <- latlon_readclean(testjunk)
 ```
 
 #### Use test points example that comes with the package
 
 ```{r testpoints, eval=TRUE, include=TRUE}
-EJAM::testpoints_100_dt |> head(2) # data in this package
-sitepoints4 <- data.table::copy(EJAM::testpoints_100_dt)  # [1:5, ]
-head(sitepoints4, 3)
+EJAM::testpoints_100_dt |> head(2) # data.table, in this package
+sitepoints100 <- data.table::copy(EJAM::testpoints_100_dt)  # [1:5, ]
+head(sitepoints100, 3)
 ```
 
 ### Specify radius for circular buffer, and other key parameters
@@ -167,7 +167,7 @@ radius <- 1 # radius (miles).  5 km = 3.1 miles, 10 km = 6.2 miles
 ## This function just combines getblocksnearby() and doaggregate()
 elapsed <- system.time({
    out2 <- getblocksnearby_and_doaggregate(
-     sitepoints =  sitepoints,
+     sitepoints =  sitepoints100,
      cutoff = radius,
      quadtree = localtree
    )
@@ -183,6 +183,7 @@ print(elapsed)
 About \< 1 second for 100 sites, but a few seconds for 1,000 sites, or roughly 500k / hour for this step
 
 ```{r}
+sitepoints <- data.table::copy(EJAM::testpoints_100_dt) 
 elapsed <- system.time({
   
   sites2blocks <- EJAM::getblocksnearby(
@@ -193,24 +194,30 @@ elapsed <- system.time({
   
 }) # end of timed function
 print(elapsed)
+sites2blocks
 ```
 
 #### View some diagnostics or stats on the intermediate result:
 
 -   what blocks are near each site
 -   how far are they
--   etc.
+-   how many blocks are typically near a given site (population density varies a lot)
+-   how many sites are near a block (residents who have more than 1 site near them)
 
 ```{r}
-## can use this example intermediate step dataset 
+## Also could use this example intermediate step dataset 
 ## of 99 sites, with 11,567 nearby blocks:
-# sites2blocks_example
 # sites2blocks <- data.table::copy(sites2blocks_example)
+sitepoints <- data.table::copy(EJAM::testpoints_100_dt) 
+sites2blocks <- EJAM::getblocksnearby(sitepoints,radius,quadtree = localtree)
 names(sites2blocks)
 summarize_blocks_per_site(sites2blocks) # print() shows more info returned invisibly
 summarize_sites_per_block(sites2blocks) # print() shows more info returned invisibly
 summarize_blockcount(sites2blocks)
-# Use data.table package here:
+# Use data.table package here
+
+# Very few blocks are within a radius of 1/4 mile.
+# Hundreds are often within 1 mile, but sometimes there are only a handful or even zero.
 s2b_stats <- sites2blocks[ , .(
   avgDistance = round(mean(distance), 2),
   blocksfound = .N, 
@@ -221,19 +228,32 @@ s2b_stats <- sites2blocks[ , .(
 setorder(s2b_stats, siteid)
 head(s2b_stats)
 
-if (!('siteid' %in% names(sitepoints))) {sitepoints$siteid <- seq.int(length.out = NROW(sitepoints))}
-s2b_stats <- merge(sitepoints, s2b_stats, by = "siteid")
-mapfast(s2b_stats)
-mapfast(s2b_stats[87:88,])
-s2b_stats[,PGM_SYS_ACRNMS := NULL] # remove verbose column
-DT::datatable(s2b_stats)
 
-quantile(s2b_stats$blocks_within_1mile, probs = (0:4)* 0.25)
-t(summary(s2b_stats)) 
 
+# CDF of how many blocks are nearby a site
 plot(sort(s2b_stats$blocks_within_1mile), main="How many blocks are near each facility?", ylab="# of blocks (whose internal point is) within 1 mile of each facility", xlab=paste0(nrow(s2b_stats), " facilities ranked by # of blocks nearby"))
 abline(h=quantile(s2b_stats$blocks_within_1mile, probs = (0:4)* 0.25))
 abline(h=mean(s2b_stats$blocks_within_1mile), col="red")
+
+# Histogram of how many blocks are nearby a site
+hist(sites2blocks[,.N,by="siteid"][,N],20, xlab = "How many blocks are nearby?", ylab="Frequency (# of sites)", main = "A given site may have zero to hundreds of blocks nearby", sub="A typical site in this example has about 100 blocks nearby")
+
+s2b_stats[,PGM_SYS_ACRNMS := NULL] # remove verbose column
+DT::datatable(s2b_stats)
+# more summaries showing there may be only 1 block or several hundred blocks within 1 mile
+quantile(s2b_stats$blocks_within_1mile, probs = (0:4)* 0.25)
+t(summary(s2b_stats)) 
+
+# map the sites with popups about how many blocks were found near each
+if (!('siteid' %in% names(sitepoints))) {sitepoints$siteid <- seq.int(length.out = NROW(sitepoints))}
+s2b_stats <- merge(sitepoints, s2b_stats, by = "siteid")
+EJAMejscreenapi::mapfast(s2b_stats, radius = radius)
+
+# A 1 mile radius is huge within a dense urban area
+EJAMejscreenapi::mapfast(s2b_stats[87:88,], radius = radius)
+
+# Within a 1 mile radius, the blocks found tend to be about 2/3 of a mile from the site at the center.
+summary(s2b_stats$avgDistance)
 
 # See how each site is surrounded by block points
 x <- merge( sites2blocks, blockpoints )
@@ -243,8 +263,9 @@ x <- merge(sitepoints, x, by = "siteid")
 x[,PGM_SYS_ACRNMS := NULL]
 x
 bplot=function(x,n) {plot(x$blocklon[x$siteid==n], x$blocklat[x$siteid==n] ); points(x$lon[x$siteid==n], x$lat[x$siteid==n] , col="red")}
-bplot(x, sample(1:nrow(sitepoints),1)) # pick one of the sites and plot the site surrounded by block points
-
+# for (i in 1:20) {
+  bplot(x, sample(1:nrow(sitepoints),1)) # plots a random site surrounded by nearby block points
+# }
 ```
 
 #### doaggregate() will summarize indicators within each buffer and overall

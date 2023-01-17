@@ -25,8 +25,8 @@
 #'   
 #'   column names include bgfips, bgid (for join to blockwt$bgid), pop, pctlowinc, pcthisp, etc.
 #'   
-#'   See notes on cleaning up and changing the dataset starting from ejscreen::bg22plus
+#'   see source code and notes in EJAM/inst/notes_datasets/ which has  create_blockgroupstats()  
 #'   
-#'   see source code and notes in EJAM::create_blockgroupstats  
+#'   See maybe the notes on cleaning up and changing the dataset starting from ejscreen::bg22plus
 #'   
 NULL
