@@ -8,7 +8,7 @@
 NAICS (industry classification system codes)
 }
 \details{
-These industry names and codes get updated about every 4 years
+These industry names and codes get updated every 5 years
 (2017 version replaced by 2022 version in January 2022).
 See \url{https://www.census.gov/naics/}
 \preformatted{
@@ -17,6 +17,7 @@ See \url{https://www.census.gov/naics/}
   To check the vintage of the dataset, check
    attr(NAICS, 'year')
   The format is like this, and for 2017 version it had 2193 entries:
+  but placeholders added in 2023 for 31,32,33, 44,45, 48,49
  #  x <- list(
  #   `11 - Agriculture, Forestry, Fishing and Hunting` = 11,
  #   `111 - Crop Production` = 111,
@@ -38,7 +39,6 @@ See \url{https://www.census.gov/naics/}
  related to the U.S. business economy.
  
  The codes were updated 2007, 2012, 2017, and for 2022 (announced Dec. 2021).
- Proposed changes https://www.census.gov/naics/federal_register_notices/notices/fr02jy21.pdf
  Finalized changes: https://www.census.gov/naics/federal_register_notices/notices/fr21dc21.pdf
  Effective Date for 2022 NAICS
  United States codes and Statistical
@@ -65,10 +65,10 @@ See \url{https://www.census.gov/naics/}
 \preformatted{
   ## see   https://www.census.gov/naics/
 
-  # to get 2017 version into this format, see NAICS_get 
+  # to get 2017 version into this format, see [NAICS_get()] 
   NAICS <- NAICS_get()
   # specify metadata here on vintage of data, etc.
-  usethis::use_data(NAICS)
+  usethis::use_data(NAICS, overwrite=TRUE)
   # save(NAICS, file = 'yourpath/EJAM/data/NAICS.rda')
   }
 }

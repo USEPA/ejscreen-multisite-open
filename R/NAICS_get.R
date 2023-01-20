@@ -37,8 +37,61 @@ NAICS_get <- function(year=2017, urlpattern='https://www.census.gov/naics/YYYYNA
   # attr(NAICS, 'year')
   # [1] 2017 # for example
   
+  ################# #  ################# #  ################# #  ################# #
+  ################# #  ################# #  ################# #  ################# #
+  # ADDED IN 2023:
+  # CREATES PLACEHOLDERS AT 2-DIGIT LEVEL SO THEY SHOW UP IN LISTING
+  # SINCE THESE WERE NOT LISTED AT 2 DIGIT LEVEL IN ORIGINAL NAICS LIST USED HERE
+  
+  extrarows <- c(
+    31,32,33, 
+    44,45,  
+    48,49
+  )
+  names(extrarows) <- c(
+    "31 - Manufacturing",
+    "32 - Manufacturing",
+    "33 - Manufacturing",
+    
+    "44 - Retail Trade",
+    "45 - Retail Trade",
+    
+    "48 - Transportation and Warehousing",
+    "49 - Transportation and Warehousing"
+  )
+  
+  NAICS <- c(NAICS, extrarows)
+  # usethis::use_data(NAICS, overwrite = TRUE)
+  
+  # code	industry_title
+  # 11	Agriculture, Forestry, Fishing and Hunting
+  # 21	Mining
+  # 22	Utilities
+  # 23	Construction
+  # 31-33	Manufacturing
+  # 42	Wholesale Trade
+  # 44-45	Retail Trade
+  # 48-49	Transportation and Warehousing
+  # 51	Information
+  # 52	Finance and Insurance
+  # 53	Real Estate Rental and Leasing
+  # 54	Professional, Scientific, and Technical Services
+  # 55	Management of Companies and Enterprises
+  # 56	Administrative and Support and Waste Management and Remediation Services
+  # 61	Educational Services
+  # 62	Health Care and Social Assistance
+  # 71	Arts, Entertainment, and Recreation
+  # 72	Accommodation and Food Services
+  # 81	Other Services (except Public Administration)
+  # 92	Public Administration
+  
+  
+  
+  
+  ################# #
+  
   cat('To update source code R package, try usethis::use_data(NAICS.rdata) or save(NAICS, file = \'yourpath/EJAM/data/NAICS.rdata\') \n')
-  # usethis::use_data(NAICS.rdata)
+  # usethis::use_data(NAICS.rdata, overwrite = TRUE)
   # save(NAICS, file = './data/NAICS.rdata')
   
   return(NAICS)

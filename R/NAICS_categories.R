@@ -1,19 +1,22 @@
-#' See the names of industrical categories and their NAICS code
+#' See the names of industrial categories and their NAICS code
 #' Easy way to list the 2-digit NAICS (17 categories), or other level 
-#' @details There are this many NAICS codes roughly by number of digits in the code:
+#' @details 
+#'  Also see [https://www.naics.com/search/]
+#' There are this many NAICS codes roughly by number of digits in the code:
 #'   table(nchar(NAICS))
 #'    2    3    4    5    6
 #'   17   99  311  709 1057 
-#'   See <https://www.census.gov/naics/>
-#'
+#'   See [https://www.census.gov/naics/]
+#'   
 #' @param digits default is 2, for 2-digits NAICS, the top level, but could be up to 6.
 #' @param dataset Should default to the dataset called NAICS, installed with this package. 
 #'   see [NAICS]  Check attr(NAICS, 'year')
-#'
+#' @examples  NAICS_categories()
 #' @export
 #'
 #' @seealso [NAICS_find]  [NAICS]
 NAICS_categories <- function(digits=2, dataset=EJAM::NAICS) {
+  cat("Also see https://www.naics.com/search/ \n")
   if (is.null(dataset)) {warning('missing NAICS dataset'); return(NA)}
   cbind(cbind(dataset[nchar(as.character(dataset)) == digits]))
 }

@@ -25,7 +25,9 @@
 #' @param naics_dataset Should default to the dataset NAICS, installed with this package. see [NAICS]
 #' @param ignore.case default TRUE, ignoring whether query is upper or lower case
 #' @param exactnumber if TRUE, only return the exact match to (each) queried number (NAICS code)
-#' @seealso  [NAICS_categories] [NAICS] get_facility_info_via_ECHO function
+#' @param search_on_naics_website if TRUE (not default), 
+#'   returns URL of webpage at naics.com with info on the sector
+#' @seealso  [NAICS_categories] [NAICS] [NAICS_findwebscrape()] get_facility_info_via_ECHO function [NAICS_url_of_code()] [NAICS_url_of_query()]
 #' @examples
 #'  NAICS_find("paper")
 #'  NAICS_find("cement | concrete")
@@ -34,11 +36,15 @@
 #'  NAICS_find("pulp", add_children = TRUE)
 #'  NAICS_find("asdfasdf", add_children = TRUE)  
 #'  NAICS_find("asdfasdf", add_children = FALSE)
+#'  NAICS_find("copper smelting", search_on_naics_website=FALSE)
+#'  NAICS_find("copper smelting", search_on_naics_website=TRUE)
+#'  # browseURL(NAICS_find("copper smelting", search_on_naics_website=TRUE))
 #'  
-#'  EJAMfrsdata::frs[EJAMfrsdata::frs$REGISTRY_ID %chin% unlist(
-#'    EJAMfrsdata::get_siteid_from_naics(EJAM::NAICS_find("pulp", add_children = TRUE))[,"REGISTRY_ID"]), 1:5]
+#'  EJAMfrsdata::frs[EJAMfrsdata::frs$REGISTRY_ID %in% unlist(
+#'    EJAMfrsdata::get_siteid_from_naics(
+#'      EJAM::NAICS_find("pulp", add_children = TRUE))[,"REGISTRY_ID"]), 1:5]
 #'    
-#'  EJAMejscreenapi::mapfast(EJAMfrsdata::frs[EJAMfrsdata::frs$REGISTRY_ID %chin% unlist(
+#'  EJAMejscreenapi::mapfast(EJAMfrsdata::frs[EJAMfrsdata::frs$REGISTRY_ID %in% unlist(
 #'    EJAMfrsdata::get_siteid_from_naics(EJAM::NAICS_find("pulp"))[,"REGISTRY_ID"]),   ])
 #'    
 #'   NAICS_find(211, exactnumber=TRUE)
@@ -50,12 +56,16 @@
 #' @import data.table
 #' @export
 #'
-NAICS_find <- function(query, add_children=FALSE, naics_dataset=NULL, ignore.case=TRUE, exactnumber=FALSE) {
+NAICS_find <- function(query, add_children=FALSE, naics_dataset=NULL, ignore.case=TRUE, exactnumber=FALSE, search_on_naics_website=FALSE) {
   # NAICS would be from installed package, EJAM::NAICS, so it will always exist if this function exists  
   # if (is.null(naics_dataset) & !exists('NAICS', )) {warning('missing NAICS dataset and not passed as a parameter to NAICS_find'); return(NA)}
   if (is.null(naics_dataset) &  exists('NAICS')) {naics_dataset <- EJAM::NAICS}
   if (class(naics_dataset) != 'numeric' | length(naics_dataset) < 2000) {warning('naics_dataset does not seem to be what is expected')}
   if (length(query) > 1) {stop("query NAICS_find() with only 1 item at a time")}
+  
+  if (search_on_naics_website) {
+    return(NAICS_url_of_query(query))
+  }
   
   # Find all industry entries that match the query at all, including say 4 digit and 5 or 6 digit codes as well,
   #  ( not any parent or children entries unless they each match, themselves )

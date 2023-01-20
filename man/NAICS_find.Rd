@@ -9,7 +9,8 @@ NAICS_find(
   add_children = FALSE,
   naics_dataset = NULL,
   ignore.case = TRUE,
-  exactnumber = FALSE
+  exactnumber = FALSE,
+  search_on_naics_website = FALSE
 )
 }
 \arguments{
@@ -22,6 +23,9 @@ NAICS_find(
 \item{ignore.case}{default TRUE, ignoring whether query is upper or lower case}
 
 \item{exactnumber}{if TRUE, only return the exact match to (each) queried number (NAICS code)}
+
+\item{search_on_naics_website}{if TRUE (not default),
+returns URL of webpage at naics.com with info on the sector}
 }
 \description{
 Just a utility, quick way to view NAICS industrial sectors that contain queried word or phrase,
@@ -52,11 +56,15 @@ c(\verb{11 - Agriculture, Forestry, Fishing and Hunting} = 11, \verb{111 - Crop 
  NAICS_find("pulp", add_children = TRUE)
  NAICS_find("asdfasdf", add_children = TRUE)  
  NAICS_find("asdfasdf", add_children = FALSE)
+ NAICS_find("copper smelting", search_on_naics_website=FALSE)
+ NAICS_find("copper smelting", search_on_naics_website=TRUE)
+ # browseURL(NAICS_find("copper smelting", search_on_naics_website=TRUE))
  
- EJAMfrsdata::frs[EJAMfrsdata::frs$REGISTRY_ID \%chin\% unlist(
-   EJAMfrsdata::get_siteid_from_naics(EJAM::NAICS_find("pulp", add_children = TRUE))[,"REGISTRY_ID"]), 1:5]
+ EJAMfrsdata::frs[EJAMfrsdata::frs$REGISTRY_ID \%in\% unlist(
+   EJAMfrsdata::get_siteid_from_naics(
+     EJAM::NAICS_find("pulp", add_children = TRUE))[,"REGISTRY_ID"]), 1:5]
    
- EJAMejscreenapi::mapfast(EJAMfrsdata::frs[EJAMfrsdata::frs$REGISTRY_ID \%chin\% unlist(
+ EJAMejscreenapi::mapfast(EJAMfrsdata::frs[EJAMfrsdata::frs$REGISTRY_ID \%in\% unlist(
    EJAMfrsdata::get_siteid_from_naics(EJAM::NAICS_find("pulp"))[,"REGISTRY_ID"]),   ])
    
   NAICS_find(211, exactnumber=TRUE)
@@ -67,5 +75,5 @@ c(\verb{11 - Agriculture, Forestry, Fishing and Hunting} = 11, \verb{111 - Crop 
   NAICS["211 - Oil and Gas Extraction"]
 }
 \seealso{
-\link{NAICS_categories} \link{NAICS} get_facility_info_via_ECHO function
+\link{NAICS_categories} \link{NAICS} \code{\link[=NAICS_findwebscrape]{NAICS_findwebscrape()}} get_facility_info_via_ECHO function \code{\link[=NAICS_url_of_code]{NAICS_url_of_code()}} \code{\link[=NAICS_url_of_query]{NAICS_url_of_query()}}
 }
