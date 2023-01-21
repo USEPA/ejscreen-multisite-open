@@ -22,10 +22,11 @@ getblocksnearbyviaQuadTree2(
 \item{avoidorphans}{logical Whether to avoid case where no block points are within cutoff,
 so if TRUE, it keeps looking past cutoff to find nearest one within maxcutoff.}
 
-\item{quadtree}{a large quadtree object created from the SearchTree package example:
+\item{quadtree}{(a pointer to the large quadtree object?)
+created from the SearchTree package example:
 SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
-Would take about 5 seconds to create this each time it is needed.
-But note: this is very large... do we need to pass it to the function, or can it be just in global?}
+Takes about 2-5 seconds to create this each time it is needed.
+It can be automatically created when the package is loaded via the \code{\link[=.onLoad]{.onLoad()}} function}
 }
 \description{
 This should be almost identical to getblocksnearbyviaQuadTree(),
