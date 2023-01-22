@@ -11,11 +11,11 @@
 #' @param digits default is 2, for 2-digits NAICS, the top level, but could be up to 6.
 #' @param dataset Should default to the dataset called NAICS, installed with this package. 
 #'   see [NAICS]  Check attr(NAICS, 'year')
-#' @examples  NAICS_categories()
+#' @examples  naics_categories()
 #' @export
 #'
-#' @seealso [NAICS_find]  [NAICS]
-NAICS_categories <- function(digits=2, dataset=EJAM::NAICS) {
+#' @seealso [naics_find]  [NAICS]
+naics_categories <- function(digits=2, dataset=EJAM::NAICS) {
   cat("Also see https://www.naics.com/search/ \n")
   if (is.null(dataset)) {warning('missing NAICS dataset'); return(NA)}
   cbind(cbind(dataset[nchar(as.character(dataset)) == digits]))

@@ -1,5 +1,5 @@
 #' See NAICS codes queried plus all children of any of those
-#' Used by NAICS_find()
+#' Used by naics_find()
 #' @details 
 #' start with shortest (highest level) codes. since tied for nchar, these branches have zero overlap, so do each.
 #' for each of those, get its children = all rows where parentcode == substr(allcodes, 1, nchar(parentcode))
@@ -16,13 +16,13 @@
 #' @param allcodes Optional (already loaded with package) - dataset with all the codes
 #'
 #' @return vector of codes and their names
-#' @seealso NAICS_find() NAICS
+#' @seealso naics_find() NAICS
 #' @export
 #'
 #' @examples 
 #'   naics2children(211)
-#'   NAICS_find(211, exactnumber=TRUE)
-#'   NAICS_find(211, exactnumber=TRUE, add_children = TRUE)
+#'   naics_find(211, exactnumber=TRUE)
+#'   naics_find(211, exactnumber=TRUE, add_children = TRUE)
 #'   NAICS[211][1:3] # wrong
 #'   NAICS[NAICS == 211]
 #'   NAICS["211 - Oil and Gas Extraction"]

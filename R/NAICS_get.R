@@ -9,7 +9,7 @@
 #' @return names list with year as an attribute
 #' @export
 #'
-NAICS_get <- function(year=2017, urlpattern='https://www.census.gov/naics/YYYYNAICS/2-6%20digit_YYYY_Codes.xlsx', destfile= paste0('~/Downloads/',year,'NAICS.xlsx')) {
+naics_get <- function(year=2017, urlpattern='https://www.census.gov/naics/YYYYNAICS/2-6%20digit_YYYY_Codes.xlsx', destfile= paste0('~/Downloads/',year,'NAICS.xlsx')) {
   # this can be used to create the NAICS dataset as for this package
   # See \url{https://www.census.gov/naics/}
   if (!(year %in% c(2012, 2017, 2020))) {stop('only works for 2012, 2017, 2020')}

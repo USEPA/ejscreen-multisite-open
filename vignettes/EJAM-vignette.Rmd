@@ -103,7 +103,7 @@ system.time({
 industryword <- "pulp"
 mysites <- EJAMfrsdata::frs[EJAMfrsdata::frs$REGISTRY_ID %in% unlist(
   EJAMfrsdata::get_siteid_from_naics(
-    EJAM::NAICS_find(industryword, add_children = FALSE))[,"REGISTRY_ID"]), 1:5]
+    EJAM::naics_find(industryword, add_children = FALSE))[,"REGISTRY_ID"]), 1:5]
 
 DT::datatable(
   mysites, 
@@ -114,7 +114,7 @@ DT::datatable(
 
 sitepoints639 <- EJAMfrsdata::frs[EJAMfrsdata::frs$REGISTRY_ID %in% unlist(
     EJAMfrsdata::get_siteid_from_naics(
-      EJAM::NAICS_find(industryword, add_children = TRUE))[,"REGISTRY_ID"]),  ]
+      EJAM::naics_find(industryword, add_children = TRUE))[,"REGISTRY_ID"]),  ]
 EJAMejscreenapi::mapfast(sitepoints639)
 nrow(sitepoints639)
 ```
@@ -157,20 +157,21 @@ radius <- 1 # radius (miles).  5 km = 3.1 miles, 10 km = 6.2 miles
 
 -   **getblocksnearby_and_doaggregate()** provides results in just one function.
 
--   **getblocksnearby()** takes a set of points (e.g., facilities) and finds the Census blocks near each.
+-   **getblocksnearby()** takes a set of points (e.g., facilities) and finds the Census blocks near each. Sample input is in testpoints_100_dt, and sample output is in sites2blocks_example.
 
--   **doaggregate()** takes the list of blocks near each point, joins it to blockgroup indicators like from EJScreen, and aggregates at each buffered point as well as for the overall set of unique blocks (residents).
+-   **doaggregate()** takes the list of blocks near each point, joins it to blockgroup indicators like from EJScreen, and aggregates at each buffered point as well as for the overall set of unique blocks (residents). Sample input is in sites2blocks_example.
 
 ### Get results in one step
 
 ```{r}
 ## This function just combines getblocksnearby() and doaggregate()
 elapsed <- system.time({
-   out2 <- getblocksnearby_and_doaggregate(
-     sitepoints =  sitepoints100,
-     cutoff = radius,
-     quadtree = localtree
-   )
+  # # commented out, for now
+   # out2 <- getblocksnearby_and_doaggregate(
+   #   sitepoints =  sitepoints100,
+   #   cutoff = radius,
+   #   quadtree = localtree
+   # )
 })
 print(elapsed)
 

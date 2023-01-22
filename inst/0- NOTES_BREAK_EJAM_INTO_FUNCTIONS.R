@@ -11,7 +11,7 @@
 #   DT::datatable(
 #     EJAMfrsdata::frs[EJAMfrsdata::frs$REGISTRY_ID %chin% unlist(
 #       EJAMfrsdata::get_siteid_from_naics(
-#         EJAM::NAICS_find("pulp", add_children = FALSE))[,"REGISTRY_ID"]), 1:5], 
+#         EJAM::naics_find("pulp", add_children = FALSE))[,"REGISTRY_ID"]), 1:5], 
 #     caption = "FACILITIES WITH NAICS CODE MATCHING QUERY TERM 'PULP' ", filter = "top")
 # 
 # # See a map of one industry
@@ -19,7 +19,7 @@
 # EJAMejscreenapi::mapfast(
 #   EJAMfrsdata::frs[EJAMfrsdata::frs$REGISTRY_ID %chin% unlist(
 #     EJAMfrsdata::get_siteid_from_naics(
-#       EJAM::NAICS_find("pulp", add_children = TRUE))[,"REGISTRY_ID"]),  ])
+#       EJAM::naics_find("pulp", add_children = TRUE))[,"REGISTRY_ID"]),  ])
 # 
 # # Map sites by facility ID
 # 

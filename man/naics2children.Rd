@@ -3,7 +3,7 @@
 \name{naics2children}
 \alias{naics2children}
 \title{See NAICS codes queried plus all children of any of those
-Used by NAICS_find()}
+Used by naics_find()}
 \usage{
 naics2children(codes, allcodes = EJAM::NAICS)
 }
@@ -17,7 +17,7 @@ vector of codes and their names
 }
 \description{
 See NAICS codes queried plus all children of any of those
-Used by NAICS_find()
+Used by naics_find()
 }
 \details{
 start with shortest (highest level) codes. since tied for nchar, these branches have zero overlap, so do each.
@@ -33,12 +33,12 @@ table(nchar(as.character(NAICS)))
 }
 \examples{
   naics2children(211)
-  NAICS_find(211, exactnumber=TRUE)
-  NAICS_find(211, exactnumber=TRUE, add_children = TRUE)
+  naics_find(211, exactnumber=TRUE)
+  naics_find(211, exactnumber=TRUE, add_children = TRUE)
   NAICS[211][1:3] # wrong
   NAICS[NAICS == 211]
   NAICS["211 - Oil and Gas Extraction"]
 }
 \seealso{
-NAICS_find() NAICS
+naics_find() NAICS
 }

@@ -65,13 +65,13 @@ See \url{https://www.census.gov/naics/}
 \preformatted{
   ## see   https://www.census.gov/naics/
 
-  # to get 2017 version into this format, see [NAICS_get()] 
-  NAICS <- NAICS_get()
+  # to get 2017 version into this format, see [naics_get()] 
+  NAICS <- naics_get()
   # specify metadata here on vintage of data, etc.
   usethis::use_data(NAICS, overwrite=TRUE)
   # save(NAICS, file = 'yourpath/EJAM/data/NAICS.rda')
   }
 }
 \seealso{
-\link{NAICS_find}  \link{NAICS_categories}   \link{NAICS_get}
+\link{naics_find}  \link{naics_categories}   \link{naics_get}
 }
