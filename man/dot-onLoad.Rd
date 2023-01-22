@@ -7,9 +7,9 @@
 .onLoad(libname, pkgname)
 }
 \arguments{
-\item{libname}{}
+\item{libname}{na}
 
-\item{pkgname}{}
+\item{pkgname}{na}
 }
 \description{
 Creates index to all US blocks (internal point lat lon) at package load

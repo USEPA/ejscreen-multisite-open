@@ -1,12 +1,8 @@
 #' Creates index to all US blocks (internal point lat lon) at package load
 #'
-#' @param libname 
-#' @param pkgname 
+#' @param libname na
+#' @param pkgname na
 #'
-#' @return
-#' @export
-#'
-#' @examples
 .onLoad <- function(libname, pkgname) {
   # This should create the index of all US block points to enable fast queries 
   # This cannot be done during package build and saved, because of what this createTree function creates.
