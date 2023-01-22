@@ -23,7 +23,7 @@
 #'
 #' @details  # **Vignette** ####################################################################
 #' 
-#' Please see the vignette (development version may be in vignettes folder of locally installed package)
+#' Please see the vignette (development version can be knit from vignettes folder of locally installed package)
 #' 
 #' @details  # **Key Functions:** ####################################################################
 #' 
