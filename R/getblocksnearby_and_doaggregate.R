@@ -6,7 +6,7 @@
 #' @param avoidorphans  see [getblocksnearbyviaQuadTree()] or other such functions
 #' @param quadtree a large quadtree object created from the SearchTree package example:
 #'    SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
-#' @param ...  see [getblocksnearbyviaQuadTree_Clustered] or other such functions
+#' @param ...  see [getblocksnearbyviaQuadTree_Clustered()] or other such functions
 #'
 #' @export
 getblocksnearby_and_doaggregate <- function(sitepoints, 
@@ -17,12 +17,12 @@ getblocksnearby_and_doaggregate <- function(sitepoints,
 ) {
   cat('Finding blocks nearby, in buffers\n')
   cat('Aggregating at each buffer and overall\n')
-  doaggregate(
-    sitepoints=sitepoints,  
-    getblocksnearby(sitepoints=sitepoints, 
-                    cutoff=cutoff, maxcutoff=maxcutoff, 
-                    avoidorphans=avoidorphans, 
-                    quadtree=quadtree,
-                    ...)
-  )
+  mysites2blocks <- getblocksnearby(
+    sitepoints=sitepoints, 
+    cutoff=cutoff, maxcutoff=maxcutoff, 
+    avoidorphans=avoidorphans, 
+    quadtree=quadtree,
+    ...)
+  x <- suppressWarnings (doaggregate(sites2blocks = mysites2blocks))
+  return(x)
 }

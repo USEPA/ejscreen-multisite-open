@@ -15,3 +15,6 @@ A list of stats
 \description{
 Get summary stats on counts of blocks (unique vs doublecounted) near sites
 }
+\examples{
+ summarize_blockcount(sites2blocks_example)
+}

@@ -113,8 +113,8 @@ DT::datatable(
 # See a map of one industry
 
 sitepoints639 <- EJAMfrsdata::frs[EJAMfrsdata::frs$REGISTRY_ID %in% unlist(
-    EJAMfrsdata::get_siteid_from_naics(
-      EJAM::naics_find(industryword, add_children = TRUE))[,"REGISTRY_ID"]),  ]
+  EJAMfrsdata::get_siteid_from_naics(
+    EJAM::naics_find(industryword, add_children = TRUE))[,"REGISTRY_ID"]),  ]
 EJAMejscreenapi::mapfast(sitepoints639)
 nrow(sitepoints639)
 ```
@@ -150,7 +150,7 @@ head(sitepoints100, 3)
 ### Specify radius for circular buffer, and other key parameters
 
 ```{r}
-radius <- 1 # radius (miles).  5 km = 3.1 miles, 10 km = 6.2 miles
+radius <- 3 # radius (miles).  5 km = 3.1 miles, 10 km = 6.2 miles
 ```
 
 ### Note these Key Functions
@@ -165,17 +165,41 @@ radius <- 1 # radius (miles).  5 km = 3.1 miles, 10 km = 6.2 miles
 
 ```{r}
 ## This function just combines getblocksnearby() and doaggregate()
+sitepoints <- testpoints_1000
 elapsed <- system.time({
   # # commented out, for now
-   # out2 <- getblocksnearby_and_doaggregate(
-   #   sitepoints =  sitepoints100,
-   #   cutoff = radius,
-   #   quadtree = localtree
-   # )
+  out2 <- getblocksnearby_and_doaggregate(
+    sitepoints =  sitepoints  ,
+    cutoff = radius,
+    quadtree = localtree
+  )
 })
 print(elapsed)
+cbind(as.list(out2$results_overall))
+cbind(overall = as.list( out2$results_overall[ , ..names_d]))
+cbind(overall = as.list( out2$results_overall[ , ..names_d_subgroups]))
+
+## Site by site results in map or table:
+out2 <- merge(testpon)
+mapfast(out2$results_bysite, radius = radius)
+
+DT::datatable(out2$results_bysite)
 
 ```
+
+### See summary stats
+
+```{r}
+outsum <-  batch.summarize(
+  data.frame(out2$results_bysite), 
+  data.frame(out2$results_bysite)
+)
+ 
+round(outsum$rows[,names_d],2)
+round(outsum$rows[,names_d_pctile],2)
+
+```
+
 
 ### Get results step by step, and view details
 
@@ -229,8 +253,6 @@ s2b_stats <- sites2blocks[ , .(
 setorder(s2b_stats, siteid)
 head(s2b_stats)
 
-
-
 # CDF of how many blocks are nearby a site
 plot(sort(s2b_stats$blocks_within_1mile), main="How many blocks are near each facility?", ylab="# of blocks (whose internal point is) within 1 mile of each facility", xlab=paste0(nrow(s2b_stats), " facilities ranked by # of blocks nearby"))
 abline(h=quantile(s2b_stats$blocks_within_1mile, probs = (0:4)* 0.25))
@@ -256,16 +278,16 @@ EJAMejscreenapi::mapfast(s2b_stats[87:88,], radius = radius)
 # Within a 1 mile radius, the blocks found tend to be about 2/3 of a mile from the site at the center.
 summary(s2b_stats$avgDistance)
 
-# See how each site is surrounded by block points
+# See map of how each site is surrounded by block points
 x <- merge( sites2blocks, blockpoints )
 setnames(x, 'lat', 'blocklat')
 setnames(x, 'lon', 'blocklon')
 x <- merge(sitepoints, x, by = "siteid")
 x[,PGM_SYS_ACRNMS := NULL]
 x
-bplot=function(x,n) {plot(x$blocklon[x$siteid==n], x$blocklat[x$siteid==n] ); points(x$lon[x$siteid==n], x$lat[x$siteid==n] , col="red")}
+bplot=function(x,n, ... ) {plot(x$blocklon[x$siteid==n], x$blocklat[x$siteid==n], ... ); points(x$lon[x$siteid==n], x$lat[x$siteid==n] , col="red")}
 # for (i in 1:20) {
-  bplot(x, sample(1:nrow(sitepoints),1)) # plots a random site surrounded by nearby block points
+bplot(x, sample(1:nrow(sitepoints),1)) # plots a random site surrounded by nearby block points
 # }
 ```
 
@@ -276,9 +298,7 @@ bplot=function(x,n) {plot(x$blocklon[x$siteid==n], x$blocklat[x$siteid==n] ); po
 
 elapsed <- system.time({
   out <- suppressWarnings( 
-    
     doaggregate(sites2blocks = sites2blocks) 
-    
   )
 }) 
 print(elapsed)
@@ -290,23 +310,44 @@ dim(out$results_bysite)
 #### See indicators aggregated over all people across all sites
 
 ```{r}
-# cbind(prettyNum((out$results_overall[ , ..names_all])))
+## view output of batch run aggregation ####
+cbind(overall = as.list( out$results_overall))
 
 ## To see just some subset of indicators, like Environmental only:
-# cbind(prettyNum((out$results_overall[ , ..names_e])))
-# cbind(prettyNum((out$results_overall[ , ..names_d])))
-# cbind(prettyNum((out$results_overall[ , ..names_d_subgroups])))
-# cbind(prettyNum((out$results_overall[ , ..names_e_pctile])))
-# cbind(prettyNum((out$results_overall[ , ..names_d_pctile])))
-# cbind(prettyNum((out$results_overall[ , ..names_ej_pctile])))
-
-## view output of batch run aggregation ####
-# cbind(prettyNum((out$results_overall))) 
-names(out$results_)
+cbind(overall = as.list( out$results_overall[ , ..names_e]))
+cbind(overall = as.list( out$results_overall[ , ..names_d]))
+cbind(overall = as.list( out$results_overall[ , ..names_d_subgroups]))
+cbind(overall = as.list( out$results_overall[ , ..names_e_pctile]))
+cbind(overall = as.list( out$results_overall[ , ..names_d_pctile]))
+cbind(overall = as.list( out$results_overall[ , ..names_ej_pctile]))
 ```
 
 -   *note: Demographic subgroups are not in the lookup tables of percentiles yet.*
 
 -   *note: state.pctile indicators are all NA values so far until the State percentiles data is added to blockgroupstats*
+
+#### Histogram of indicators distribution over all people across all sites
+
+```{r}
+hist(out2$results_bysite$pctile.traffic.score,10, xlab="Local traffic scores (expressed as a percentile)", ylab="count of sites in each bin, out of 1,000 sites", freq = TRUE, main="Actual distribution of indicators nearby, as percentiles, vs flat line = USA overall");abline(h=nrow(out2$results_bysite)/10)
+```
+
+#### Compare to results from EJScreen API
+
+```{r}
+sitepoints <- testpoints_1000_dt
+outapi <- EJAMejscreenapi::ejscreenapi_plus(sitepoints[1:5, ], radius = radius)
+cbind(as.list(outapi[1, ]))
+
+
+setdiff( names(outapi), names(out2$results_overall))
+# Demog.Index  versus  VSI.eo  names differ currently
+# lat lon kept in API outputs.
+# links to report or map
+# statename, ST, REGION, etc. not yet in EJAM output.
+# us and state averages not yet there.
+# 
+
+```
 
 # TO BE CONTINUED

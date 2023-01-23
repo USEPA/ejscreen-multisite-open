@@ -124,12 +124,12 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
       # "EJ.DISPARITY.proximity.npl.eo", "EJ.DISPARITY.proximity.rmp.eo", "EJ.DISPARITY.proximity.tsdf.eo", "EJ.DISPARITY.proximity.npdes.eo", 
       # "EJ.DISPARITY.ust.eo"
     ))      
-      # WE NEED TO   ASSIGN   STATE PERCENTILES OF EJ INDEXES 
-      # AND THEN ROLL UP IN BUFFER BY FINDING POPWTD MEAN STATE PERCENTILE ? 
-      # or state pctile of the popwtd mean raw EJ index?...
-      #   where WE ASSUME THE ENTIRE BUFFER IS MAINLY OR ALL IN ONE STATE AND 
-      #   LOOK UP THE RAW EJ INDEX IN THAT STATE'S LOOKUP TO ASSIGN THE PERCENTILE. THE LATTER, I THINK. 
-
+    # WE NEED TO   ASSIGN   STATE PERCENTILES OF EJ INDEXES 
+    # AND THEN ROLL UP IN BUFFER BY FINDING POPWTD MEAN STATE PERCENTILE ? 
+    # or state pctile of the popwtd mean raw EJ index?...
+    #   where WE ASSUME THE ENTIRE BUFFER IS MAINLY OR ALL IN ONE STATE AND 
+    #   LOOK UP THE RAW EJ INDEX IN THAT STATE'S LOOKUP TO ASSIGN THE PERCENTILE. THE LATTER, I THINK. 
+    
     
     # ** CHECK THIS:  EJScreen treats pctpre1960 as if can do popwtd avg, right? Technically pctpre1960 should use ejscreenformulas... ratio of sums of counts pre1960 and denom builtunits  
     # only 3 of names.d are exactly popmeans,  ("pctmin", "pctunder5", "pctover64") since denominators are pop. 
@@ -142,23 +142,24 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
   
   
   
-   
+  
   # Start Aggregating #############################################################################################
   
   # Some steps are the same for overall and site-by-site so it is more efficient to do both together if want both. 
   if (testing) {library(data.table); library(EJAMblockdata);     sites2blocks <- EJAM::sites2blocks_example }
   # data.table::setkey(result, "blockid", "siteid", "distance") #  has been done by getblocksnearby  now
   # use blockid, not fips.   *********************  THIS was SLOW trying to do merge by blockfips or join on blockfips
-
-  ## BLOCK RESOLUTION  #######################################
   
-  ## Get pop weights of nearby blocks ####
+  ## BLOCK RESOLUTION  #######################################
+ 
+    ## Get pop weights of nearby blocks ####
   # to know what fraction of each parent block group is considered inside the buffer 
   # sites2blocks <- merge(sites2blocks, blockwts, by='blockid', all.x	=TRUE, all.y=FALSE) # incomparables=NA
   sites2blocks <- EJAMblockdata::blockwts[sites2blocks, .(siteid,blockid,distance,blockwt,bgid), on='blockid']
   # note that this still has some blocks appearing more than once if near 2+ sites - each row has info on one site only
+  # xyz
   
- # sort rows
+  # sort rows
   data.table::setorder(sites2blocks, siteid, bgid, blockid) # new
   
   
@@ -182,7 +183,7 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
   
   
   
-  ##### *****  work in progress -   by=blockid    creates the same info in each row for duplicate blockids, which is ok
+  ##### *****  work in progress -   by=blockid    creates the same info in each row for duplicate blockids, which is ok. Typically not a large % are duplicated so it is not much slower, and dupes are removed later for overall stats.
   
   
   
@@ -199,7 +200,7 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
   sites2blocks[, proximityscore := sum(1 / distance, na.rm = TRUE), by=blockid]
   # **** TO BE FIXED: / WARNING:  doesnt the formula need the adjustment for small distance?? You need the block area to calculate its effective radius and adjust score if distance is <that? see EJScreen tech doc
   warning('proximityscore lacks small distance adjustment factor - not yet implemented')
-  
+  # Save the distance that .... 
   sites2blocks[, sitedistance_min := min(distance, na.rm = TRUE), by=blockid]
   
   ###################################### #
@@ -218,14 +219,16 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
   # Slowest way, but could get all that explicitly maybe like specifying each as max or min 
   
   # done above: sites2blocks <- EJAMblockdata::blockwts[sites2blocks, .(siteid,blockid,distance,blockwt,bgid), on='blockid']
-   
+  # browser()
   sites2blocks_overall <- sites2blocks[, list(sitedistance_min = min(sitedistance_min), # it already has done this, actually
                                               sitecount_max = .N,
                                               proximityscore = sum(proximityscore),
-                                              blockwt # ?????
-                                              ),
-                                        by="blockid"]
-
+                                              bgid,
+                                              
+                                              blockwt # ????? xyz
+  ),
+  by="blockid"]
+  
   
   # BLOCK GROUPS RESOLUTION analysis:   #######################################
   
@@ -242,63 +245,45 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
   ## Aggregate blocks into blockgroups, per siteid ***  #######################################
   
   ## Calc bgwt, the fraction of each (parent)blockgroup's censuspop that is in buffer #### 
-  
-  
-  
-  
-  
-  
-  
-     browser("it was stuck here")
-  
-  
-  
-  
-  
-  
-  
+   
   ## *?? WHICH OF THESE VERSIONS WAS BETTER? BY REFERENCE?  #### 
-     # sites2blocks_overall[, bg_fraction_in_buffer_overall := sum(blockwt),     by="bgid"]  # variable not used !
-     # sites2blocks[        , bg_fraction_in_buffer_bysite  := sum(blockwt, na.rm = TRUE), by=c("siteid", "bgid")]
+  # sites2blocks_overall[, bg_fraction_in_buffer_overall := sum(blockwt),     by="bgid"]  # variable not used !
+  # sites2blocks[        , bg_fraction_in_buffer_bysite  := sum(blockwt, na.rm = TRUE), by=c("siteid", "bgid")]
   # VERSUS
-     sites2bgs_overall   <-   sites2blocks_overall[ , .(bgwt = sum(blockwt, na.rm = TRUE)), by=            "bgid" ]
-     sites2bgs_bysite    <-   sites2blocks[         , .(bgwt = sum(blockwt, na.rm = TRUE)), by=.("siteid", "bgid")]
+  sites2bgs_overall   <-   sites2blocks_overall[ , .(bgwt = sum(blockwt, na.rm = TRUE)), by=         "bgid" ]
+  sites2bgs_bysite    <-   sites2blocks[         , .(bgwt = sum(blockwt, na.rm = TRUE)), by=.(siteid, bgid)]
   
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
   ## * COUNT # unique sites near each bg? #### 
-     # (and that is not same as max count for any block in the bg)
+  # (and that is not same as max count for any block in the bg)
+  
   sites2bgs_bysite[ , sitecount_near_bg := length(unique(siteid)), by="bgid"] 
   
-     ## * AVG AND WORST DISTANCE TO SITE, for each bg? (avg person)
-     
-     # ?
-     
-     ## * AVG and WORST PROXIMITY SCORE, for each bg? (avg person)
-     
-     # ? 
-     
+  ## * AVG AND WORST DISTANCE TO SITE, for each bg? (avg person)
+  
+  # ?
+  
+  ## * AVG and WORST PROXIMITY SCORE, for each bg? (avg person)
+  
+  # ? 
+  
   # * Count # blocks or bgs near each SITE? MAYBE FOR AVG PERSON, OR WORST CASE PERSON NEAR THAT SITE?? ####
   # Is that at all useful really??
+  # "blockcount_near_site"            "bgcount_near_site"
   blockcount_by_site <- sites2blocks[, .(blockcount_near_site = .N), by=siteid] # new----------------------------------------------- -
   bgcount_by_site    <- sites2blocks[, .(bgcount_near_site = length(unique(bgid))), by=siteid] # new------------------------------------ -
   count_of_blocks_near_multiple_sites <- (NROW(sites2blocks) - NROW(sites2blocks_overall)) # NEW fraction is over /NROW(sites2blocks_overall)
   
+  # * Count # blocks or bgs near any 2+ sites overall ####
+  blockcount_overall <- length(unique(sites2blocks$blockid))
+  bgcount_overall    <- length(unique(sites2blocks$bgid))
+  
   # how many blockgroups here were found near 1, 2, or 3 sites? 
   # e.g., 6k bg were near only 1/100 sites tested, 619 near 2, 76 bg had 3 of the 100 sites nearby.
   # table(table(sites2bgs_bysite$bgid))
-
+  
   # * HOW TO GET MORE STATS ON DISTRIBUTION OF DISTANCES OR ENVT, BY GROUP? ####
- 
-   # considered removing sites2blocks and sites2blocks_overall NOW TO FREE UP RAM, BUT THAT IS slow!:
+  
+  # considered removing sites2blocks and sites2blocks_overall NOW TO FREE UP RAM, BUT THAT IS slow!:
   # if (!testing) {rm(sites2blocks); gc() }
   # And need save that to analyze distance distribution! or 
   # At least save avg and worst for each block group, if not each block.
@@ -361,11 +346,13 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
   # CALC POP WEIGHTED MEAN FOR SOME VARIABLES ####   
   # ( ENVT, EJ index.... AND MAYBE ALL THE DEMOG TOO???)
   ##################################################### #
-  
+
   # POP wtd MEAN OVERALL ####
   results_overall_popmeans <- sites2bgs_plusblockgroupdate_overall[ ,  lapply(
     .SD, FUN = function(x) stats::weighted.mean(x, w = bgwt * pop, na.rm = TRUE)), .SDcols = popmeancols ]
   results_overall <- cbind(results_overall, results_overall_popmeans)
+  results_overall <- cbind(results_overall, blockcount_overall = blockcount_overall) # new ---------------------------------------------- -
+  results_overall <- cbind(results_overall, bgcount_overall = bgcount_overall) # new ---------------------------------------------- -
   # cbind(sum = prettyNum(results_overall, big.mark = ','))
   
   # POP wtd MEAN BY SITE ####
@@ -379,7 +366,6 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
   # rm(results_overall_popmeans, sites2bgs_plusblockgroupdate_overall)
   # rm(results_bysite_popmeans,  sites2bgs_plusblockgroupdate_bysite)
   
-  
   ##################################################### #
   # CALCULATE PERCENT DEMOGRAPHICS FROM SUMS OF COUNTS, via FORMULAS  [hardcoded here, for now]
   #
@@ -387,50 +373,65 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
   # and a function like analyze.stuff::calc.fields() 
   ##################################################### #
   
+  #      NOTE ON PERCENTAGES AS 0 TO 1.00 RATHER THAN O TO 100.
+  # 
+  #  API returns demographic percent indicators like percent low income as 0-100, 
+  #   (which doesn't make much sense but popups code needs to know)
+  #  and EJAM doaggregate() was returning them as 0-100, but 1/23/23 changed those to 0 to 1.00, 
+  #    so that lookups of demographics in percentile tables will work right.
+  #  but 
+  #  the lookup tables like EJAM::usastats store those variables as 0 to 1.00 .... see usastats[74:80,1:9]
+  #  and the dataset of all US blockgroups (from EJScreen FTP site or in EJAM::blockgroupstats) stores that as 0 to 1.00
+  
+
   # CALC via FORMULAS with Rolled up Counts #### 
   # this was meant to handle multiple columns (formula for each new one) for many rows (and here in buffer results, one site is a row, not one blockgroup) 
   
   # "nonmins <- nhwa"
   # "mins <- pop - nhwa" 
   results_overall[ , `:=`(
-    pctover64       = 100 * ifelse(pop==0, 0,            over64        / pop),
-    pctunder5       = 100 * ifelse(pop==0, 0,            under5        / pop),
-    pcthisp         = 100 * ifelse(pop==0, 0, as.numeric(hisp )        / pop),
-    pctnhwa         = 100 * ifelse(pop==0, 0, as.numeric(nhwa )        / pop),
-    pctnhba         = 100 * ifelse(pop==0, 0, as.numeric(nhba )        / pop),
-    pctnhaiana      = 100 * ifelse(pop==0, 0, as.numeric(nhaiana)      / pop),
-    pctnhaa         = 100 * ifelse(pop==0, 0, as.numeric(nhaa )        / pop), 
-    pctnhnhpia      = 100 * ifelse(pop==0, 0, as.numeric(nhnhpia )     / pop),
-    pctnhotheralone = 100 * ifelse(pop==0, 0, as.numeric(nhotheralone) / pop), 
-    pctnhmulti      = 100 * ifelse(pop==0, 0, as.numeric(nhmulti )     / pop),
-    pctmin          = 100 * ifelse(pop==0, 0, as.numeric(mins)         / pop), 
-    pctlowinc       = 100 * ifelse(povknownratio  == 0, 0, lowinc                 / povknownratio),
-    pctlths         = 100 * ifelse(age25up        == 0, 0, as.numeric(lths)       / age25up), 
-    pctlingiso      = 100 * ifelse(hhlds          == 0, 0, lingiso                / hhlds), 
-    pctpre1960      = 100 * ifelse(builtunits     == 0, 0, pre1960                / builtunits),
-    pctunemployed   = 100 * ifelse(unemployedbase == 0, 0, as.numeric(unemployed) / unemployedbase)
+    pctover64       = 1 * ifelse(pop==0, 0,            over64        / pop),
+    pctunder5       = 1 * ifelse(pop==0, 0,            under5        / pop),
+    pcthisp         = 1 * ifelse(pop==0, 0, as.numeric(hisp )        / pop),
+    pctnhwa         = 1 * ifelse(pop==0, 0, as.numeric(nhwa )        / pop),
+    pctnhba         = 1 * ifelse(pop==0, 0, as.numeric(nhba )        / pop),
+    pctnhaiana      = 1 * ifelse(pop==0, 0, as.numeric(nhaiana)      / pop),
+    pctnhaa         = 1 * ifelse(pop==0, 0, as.numeric(nhaa )        / pop), 
+    pctnhnhpia      = 1 * ifelse(pop==0, 0, as.numeric(nhnhpia )     / pop),
+    pctnhotheralone = 1 * ifelse(pop==0, 0, as.numeric(nhotheralone) / pop), 
+    pctnhmulti      = 1 * ifelse(pop==0, 0, as.numeric(nhmulti )     / pop),
+    pctmin          = 1 * ifelse(pop==0, 0, as.numeric(mins)         / pop), 
+    pctlowinc       = 1 * ifelse(povknownratio  == 0, 0, lowinc                 / povknownratio),
+    pctlths         = 1 * ifelse(age25up        == 0, 0, as.numeric(lths)       / age25up), 
+    pctlingiso      = 1 * ifelse(hhlds          == 0, 0, lingiso                / hhlds), 
+    pctpre1960      = 1 * ifelse(builtunits     == 0, 0, pre1960                / builtunits),
+    pctunemployed   = 1 * ifelse(unemployedbase == 0, 0, as.numeric(unemployed) / unemployedbase)
   ) ]
   # cbind(sum = prettyNum(results_overall, big.mark = ','))
   results_overall[ , `:=`(
-    VSI.eo = (pctlowinc + pctmin) / 2  # *** add supplemental indicator too, when possible. ####
+    VSI.eo = (pctlowinc + pctmin) / 2  
+    
+    # *** add supplemental indicator too, when possible. ####
+    
+    
   )]
   results_bysite[ , `:=`(
-    pctover64       = 100 * ifelse(pop==0, 0,            over64        / pop),
-    pctunder5       = 100 * ifelse(pop==0, 0,            under5        / pop),
-    pcthisp         = 100 * ifelse(pop==0, 0, as.numeric(hisp )        / pop),
-    pctnhwa         = 100 * ifelse(pop==0, 0, as.numeric(nhwa )        / pop),
-    pctnhba         = 100 * ifelse(pop==0, 0, as.numeric(nhba )        / pop),
-    pctnhaiana      = 100 * ifelse(pop==0, 0, as.numeric(nhaiana)      / pop),
-    pctnhaa         = 100 * ifelse(pop==0, 0, as.numeric(nhaa )        / pop), 
-    pctnhnhpia      = 100 * ifelse(pop==0, 0, as.numeric(nhnhpia )     / pop),
-    pctnhotheralone = 100 * ifelse(pop==0, 0, as.numeric(nhotheralone) / pop), 
-    pctnhmulti      = 100 * ifelse(pop==0, 0, as.numeric(nhmulti )     / pop),
-    pctmin          = 100 * ifelse(pop==0, 0, as.numeric(mins)         / pop), 
-    pctlowinc       = 100 * ifelse(povknownratio  == 0, 0, lowinc                 / povknownratio),
-    pctlths         = 100 * ifelse(age25up        == 0, 0, as.numeric(lths)       / age25up), 
-    pctlingiso      = 100 * ifelse(hhlds          == 0, 0, lingiso                / hhlds), 
-    pctpre1960      = 100 * ifelse(builtunits     == 0, 0, pre1960                / builtunits),
-    pctunemployed   = 100 * ifelse(unemployedbase == 0, 0, as.numeric(unemployed) / unemployedbase)
+    pctover64       = 1 * ifelse(pop==0, 0,            over64        / pop),
+    pctunder5       = 1 * ifelse(pop==0, 0,            under5        / pop),
+    pcthisp         = 1 * ifelse(pop==0, 0, as.numeric(hisp )        / pop),
+    pctnhwa         = 1 * ifelse(pop==0, 0, as.numeric(nhwa )        / pop),
+    pctnhba         = 1 * ifelse(pop==0, 0, as.numeric(nhba )        / pop),
+    pctnhaiana      = 1 * ifelse(pop==0, 0, as.numeric(nhaiana)      / pop),
+    pctnhaa         = 1 * ifelse(pop==0, 0, as.numeric(nhaa )        / pop), 
+    pctnhnhpia      = 1 * ifelse(pop==0, 0, as.numeric(nhnhpia )     / pop),
+    pctnhotheralone = 1 * ifelse(pop==0, 0, as.numeric(nhotheralone) / pop), 
+    pctnhmulti      = 1 * ifelse(pop==0, 0, as.numeric(nhmulti )     / pop),
+    pctmin          = 1 * ifelse(pop==0, 0, as.numeric(mins)         / pop), 
+    pctlowinc       = 1 * ifelse(povknownratio  == 0, 0, lowinc                 / povknownratio),
+    pctlths         = 1 * ifelse(age25up        == 0, 0, as.numeric(lths)       / age25up), 
+    pctlingiso      = 1 * ifelse(hhlds          == 0, 0, lingiso                / hhlds), 
+    pctpre1960      = 1 * ifelse(builtunits     == 0, 0, pre1960                / builtunits),
+    pctunemployed   = 1 * ifelse(unemployedbase == 0, 0, as.numeric(unemployed) / unemployedbase)
   ) ]
   results_bysite[ , `:=`(
     VSI.eo = (pctlowinc + pctmin) / 2
@@ -470,15 +471,17 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
   
   
   
-  
   ##################################################### #
   # PERCENTILES - show raw scores (from results_bysite AND  results_overall) in percentile terms #### 
   #  VIA  lookup tables of US/State  percentiles, called EJAM::usastats   and statestats
   #  note: usastats is  like ejscreen::lookupUSA , and EJAM::lookup_pctile is like ejanalysis::lookup.pctile()
   ##################################################### #
- 
+  
   # specify which variables get converted to percentile form
-  varsneedpctiles <- c(names_e,  names_d, names_d_subgroups, names_ej) # NEED TO ADD SUPPLEMENTAL INDEXES HERE
+  
+  ### ***NEED TO ADD SUPPLEMENTAL INDEXES HERE ####
+  # browser()
+  varsneedpctiles <- c(names_e,  names_d, names_d_subgroups, names_ej) 
   varnames.us.pctile <- paste0('pctile.', varsneedpctiles)
   varnames.state.pctile <- paste0('state.pctile.', varsneedpctiles)
   # set up empty tables to store the percentiles we find
@@ -504,7 +507,7 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
       state.pctile.cols_overall[, varnames.state.pctile[[i]]] <- NA
     }
   }
- 
+  
   results_overall <- cbind(siteid=NA, results_overall, us.pctile.cols_overall, state.pctile.cols_overall)
   results_bysite  <- cbind(           results_bysite,  us.pctile.cols_bysite,  state.pctile.cols_bysite )
   
@@ -512,66 +515,66 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
   ##################################################### #  ##################################################### #  ##################################################### #
   # Put results columns in a more useful/ convenient order ####
   {
-  useful_column_order <- c(
-    'id', 'siteid',
-    'radius', 'radius.miles', # it will use whichever version of name is found
-    'pop',           # '[or names_wts]',
-    'sitename',
-    'lon', 'lat',
-    'ST', 'statename', 'REGION', 
-    
-    ## DEMOGRAPHICS -----------------
-    
-    ### D RAW % ####
-    names_d, names_d_subgroups,
-    ###  D US RATIOS? TO BE CALCULATED WILL GO HERE ####
-    
-    ### D US PCTILE ####
-    "pctile.Demog.Index", names_d_pctile,  names_d_subgroups_pctile, 
-    ### D US AVERAGES? ####
-     #could create: names_e_avg, names_d_avg, names_e_state_avg, names_d_state_avg,#"us.avg.Demog.Index" ,
-    ### D STATE RATIOS? TO BE CALCULATED WILL GO HERE  ####
-    
-    ### D STATE PCTILE
-    "state.pctile.Demog.Index", names_d_state_pctile, names_d_subgroups_state_pctile, 
-    ### D STATE AVERAGES? ####
-    #could create: names_e_avg, names_d_avg, names_e_state_avg, names_d_state_avg,# eg    state.avg.pctmin 
-    ### D RAW COUNTS? #### 
-    #  names_d_count, names_d_subgroups_count,  # were in EJAM output but NOT ESSENTIAL IN OUTPUT
-    #  names_other,  # were in EJAM output but NOT ESSENTIAL IN OUTPUT # denominator counts but also pop which is already above
-    
-    ## ENVIRONMENTAL  -----------------
-    
-    ### E RAW # ####
-    names_e,  
-    ### E US RATIOS? TO BE CALCULATED WILL GO HERE]####
-    
-    ### E US PCTILE ####
-    names_e_pctile, #(US) 
-    ### E US AVERAGES?  ####
-    #could create: names_e_avg, names_d_avg, names_e_state_avg, names_d_state_avg,# eg  us.avg.pm 
-    ### E STATE RATIOS? TO BE CALCULATED WILL GO HERE] ####
-    
-    ### E STATE PCTILE ####
-    names_e_state_pctile, 
-    ### E STATE AVERAGES? ####
-     #could create: names_e_avg, names_d_avg, names_e_state_avg, names_d_state_avg, # eg  state.avg.pm  
-    ### MISC E ####
-    'NUM_NPL', 'NUM_TSDF', # Extra from EJScreen - essentially envt related
-    
-    ## EJ INDEXES -----------------
-    ### EJ RAW -NOT NEEDED? ####
-    # names_ej, # raw scores not essential in output 
-    ### EJ PCTILE US ####
-    names_ej_pctile, 
-    ### EJ PCTILE STATE ####
-    names_ej_state_pctile,  #  
-    
-    ## BG AND BLOCK COUNTS ----
-    #  # it will use whichever version of name is found
-    'statLayerCount',      "bgcount_near_site", # count of blockgroups, as named in API vs in EJAM outputs
-    'weightLayerCount', "blockcount_near_site"  # count of blocks, as named in API vs in EJAM outputs     
-  )
+    useful_column_order <- c(
+      'id', 'siteid',
+      'radius', 'radius.miles', # it will use whichever version of name is found
+      'pop',           # '[or names_wts]',
+      'sitename',
+      'lon', 'lat',
+      'ST', 'statename', 'REGION', 
+      
+      ## DEMOGRAPHICS -----------------
+      
+      ### D RAW % ####
+      names_d, names_d_subgroups,
+      ###  D US RATIOS? TO BE CALCULATED could GO HERE ####
+      
+      ### D US PCTILE ####
+      "pctile.Demog.Index", names_d_pctile,  names_d_subgroups_pctile, 
+      ### D US AVERAGES? ####
+      #could create: names_e_avg, names_d_avg, names_e_state_avg, names_d_state_avg,#"us.avg.Demog.Index" ,
+      ### D STATE RATIOS? TO BE CALCULATED WILL GO HERE  ####
+      
+      ### D STATE PCTILE
+      "state.pctile.Demog.Index", names_d_state_pctile, names_d_subgroups_state_pctile, 
+      ### D STATE AVERAGES? ####
+      #could create: names_e_avg, names_d_avg, names_e_state_avg, names_d_state_avg,# eg    state.avg.pctmin 
+      ### D RAW COUNTS? #### 
+      #  names_d_count, names_d_subgroups_count,  # were in EJAM output but NOT ESSENTIAL IN OUTPUT
+      #  names_other,  # were in EJAM output but NOT ESSENTIAL IN OUTPUT # denominator counts but also pop which is already above
+      
+      ## ENVIRONMENTAL  -----------------
+      
+      ### E RAW # ####
+      names_e,  
+      ### E US RATIOS? TO BE CALCULATED could GO HERE]####
+      
+      ### E US PCTILE ####
+      names_e_pctile, #(US) 
+      ### E US AVERAGES?  ####
+      #could create: names_e_avg, names_d_avg, names_e_state_avg, names_d_state_avg,# eg  us.avg.pm 
+      ### E STATE RATIOS? TO BE CALCULATED WILL GO HERE] ####
+      
+      ### E STATE PCTILE ####
+      names_e_state_pctile, 
+      ### E STATE AVERAGES? ####
+      #could create: names_e_avg, names_d_avg, names_e_state_avg, names_d_state_avg, # eg  state.avg.pm  
+      ### MISC E ####
+      'NUM_NPL', 'NUM_TSDF', # Extra from EJScreen - essentially envt related
+      
+      ## EJ INDEXES -----------------
+      ### EJ RAW -NOT NEEDED? ####
+      # names_ej, # raw scores not essential in output 
+      ### EJ PCTILE US ####
+      names_ej_pctile, 
+      ### EJ PCTILE STATE ####
+      names_ej_state_pctile,  #  
+      
+      ## BG AND BLOCK COUNTS ----
+      #  # it will use whichever version of name is found
+      'statLayerCount',      "bgcount_near_site", # count of blockgroups, as named in API vs in EJAM outputs
+      'weightLayerCount', "blockcount_near_site"  # count of blocks, as named in API vs in EJAM outputs     
+    )
   }
   useful_column_order <- useful_column_order[useful_column_order %in% names(results_overall)]
   data.table::setcolorder(results_overall, neworder = useful_column_order)
@@ -592,9 +595,10 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
   
   results <- list(
     results_overall = results_overall, 
-    results_bysite = results_bysite
+    results_bysite  = results_bysite
   )
-  return(results)
+  print(cbind(overall = as.list( results$results_overall)))
+  invisible(results)
   ##################################################### #  ##################################################### #  ##################################################### #
 }
 
