@@ -37,6 +37,14 @@
 # and EJAMejscreendata::EJSCREEN_StatePct_with_AS_CNMI_GU_VI
 # plus demog race/ethnic subgroups
 
+
+# Being redone 1/23/23 to retain FIPS-related columns like ST, etc. 
+#  and want to pull in new Supplemental indicators, life expectancy, Supplemental EJ index, etc.
+#  and want to ensure Island Areas are included, 
+#  and create lookup tables for demog race/ethnic subgroups, 
+#   and see if those are avail for PR at least.
+
+
 library(EJAMejscreendata) 
 # EJAMejscreendata::EJSCREEN_Full_with_AS_CNMI_GU_VI
 # EJAMejscreendata::EJSCREEN_StatePct_with_AS_CNMI_GU_VI
@@ -70,7 +78,9 @@ create_blockgroupstats <- function(bg=ejscreen::bg22plus , meta) {
   dropping <- c(dropping, grep('^pctile\\.',     names(b2), value = TRUE)) # probably do not need these - pctiles for buffer scores are looked up, not calculated as popwtd means, right?
   # dropping <- c(dropping, "VNI.eo", "VDI.eo") #obsolete, they were basis for alt1 and alt2 EJ Indexes. VNI.eo is just mean of mins and lowinc counts. VSI.eo is mean of pctlowinc and pctmin, simple avg of those 2, treating as if denominator is pop for both.
   
-  dropping <- c(dropping, "FIPS.TRACT", "FIPS.COUNTY", 'countyname', "FIPS.ST", "ST", "statename", "REGION") # none stay useful if just using blockgroupstats for buffer summary since buffer can span multiple states, etc.
+  # dropping <- c(dropping, "FIPS.TRACT", "FIPS.COUNTY", 'countyname', "FIPS.ST", "ST", "statename", "REGION") 
+  # none stay useful if just using blockgroupstats for buffer summary since buffer can span multiple states, etc.
+  # but they are useful for creating state percentile lookups for new indicators, or other uses, so keep them.
   
   dropping <- c(dropping, "AREALAND", "AREAWATER", 'area') # could be analyzed as a count variable to get total area, but if circular buffer pi * radius^2 is easier
   dropping <- c(dropping,  "OBJECTID") # maybe keep ??

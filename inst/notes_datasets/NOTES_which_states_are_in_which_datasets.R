@@ -1,6 +1,10 @@
 # # WHICH STATES OR TERRITORIES OR PR ARE IN WHICH DATASETS 
 # # what is missing in each dataset as of 10/22?
 
+# EJAM package uses blockgroupstats that has race/ethnic subgroups but not in PR (and NEEDS TO BE FIXED / UPDATED  to include 4 island areas)
+# EJAMejscreendata package  # ****** lookup table NEEDS TO BE FIXED / UPDATED  to include 4 island areas**********
+# ejscreen package   # ****** lookup tables and bg lists TO BE FIXED / UPDATED to include 4 island areas **********
+
 # Define the universe of what states/other places might be included
 
 stinfo   <- ejanalysis::get.state.info()
@@ -24,6 +28,14 @@ universe <- universe[universe$ST != 'UM', ]
 
 # # what is missing in each dataset as of 10/22? ####
 
+################ RACE/ETHNIC SUBGROUPS?
+
+# EJAM::blockgroupstats has race/ethnic subgroups for US but not PR (and not Island Areas):
+t(table(is.na(blockgroupstats$pcthisp),  get.state.info(substr(blockgroupstats$bgfips,1,2))[,"ST"] ))
+
+
+################ GEOGRAPHIES?
+
 
 # EJAMejscreendata package  # ****** lookup table NEEDS TO BE FIXED / UPDATED  to include 4 island areas**********
 
@@ -45,7 +57,7 @@ setdiff(universe$ST, unique(EJAMejscreendata::States_2022$REGION  ))  # ****** T
 
 EJAM::datapack(ejscreen)
 # 9                               bg21plus 
-# 12                              bg22plus 
+# 12                              bg22plus  -- THIS HAS THE RACE/ETHNIC SUBGROUPS !
 # 10                                  bg22 ACS blockgroup data for EJScre
 # 11    bg22DemographicSubgroups2016to2020 Demographic subgroups of race/
 # 16                          lookupStates The State-level latest version
@@ -72,10 +84,14 @@ setdiff(universe$ST, ejscreen::bg22plus$ST)
 # [1] "AS" "GU" "MP"  "VI"
 get.state.info( setdiff(universe$FIPS.ST, substr(ejscreen::bg22DemographicSubgroups2016to2020$FIPS,1,2)))[,'ST']
 # [1] "AS" "GU" "MP" "PR"  "VI"      # ****** missing pr here but it was put into bg22plus... may drop this? THIS NEEDS TO BE FIXED / UPDATED **********
+#   # Also see https://www.census.gov/content/dam/Census/library/publications/2020/acs/acs_prcs_handbook_2020_ch04.pdf  
+#   # script to add PR demog subgroups was in C:/Users/mcorrale/R/mysource/EJAM/inst/notes_datasets/4_SCRIPT_ADD_PUERTORICO_DEMOG_SUBGROUPS.R 
 setdiff(universe$ST,  acs_B03002_2016_2020_bg_tract$bg$STUSAB)
 # [1] "AS" "GU" "MP" "PR"  "VI"  # ****** missing pr here but it was put into bg22plus... may drop this? THIS NEEDS TO BE FIXED / UPDATED **********
 get.state.info( setdiff(universe$FIPS.ST, substr(tract22DemographicSubgroups2016to2020$FIPS,1,2)))$ST
 # [1] "AS" "GU" "MP" "PR"  "VI"  # ****** missing pr here but it was put into bg22plus... may drop this? THIS NEEDS TO BE FIXED / UPDATED **********
+
+
 
 
 # EJAM package # ****** bg lists TO BE FIXED / UPDATED  to include 4 island areas**********
@@ -84,19 +100,13 @@ EJAM::datapack('EJAM')
 # 2                    bgpts lat lon of popwtd center of bl
 # 3          blockgroupstats EJSCREEN demographic and envir
 # 22               stateinfo data.frame of state abbreviati
-# 23            stateregions data.table that shows which st
-# 24               statesshp Shape File with boundaries of 
 # 25              statestats data.table of 100 percentiles 
+ejanalysis::get.state.info( setdiff(universe$FIPS.ST, substr(EJAM::blockgroupstats$bgfips, 1,2) ))[,'ST'] 
+# [1] "AS" "GU" "MP" "VI"  
 ejanalysis::get.state.info( setdiff(universe$FIPS.ST, substr(EJAM::bgpts$bgfips, 1,2) ))[,'ST']
 # [1] "AS" "GU" "MP" "VI"
-ejanalysis::get.state.info( setdiff(universe$FIPS.ST, substr(EJAM::blockgroupstats$bgfips, 1,2) ))[,'ST']
-# [1] "AS" "GU" "MP" "VI"  
 setdiff(universe$ST, EJAM::stateinfo$ST)
 # [1] "AS" "GU" "MP" "UM" "VI"
-setdiff(universe$ST, EJAM::stateregions$ST)
-# [1] "AS" "GU" "MP" "PR" "VI"
-setdiff(universe$ST, EJAM::statesshp$STUSPS)
-# character(0)
 setdiff(universe$ST, EJAM::statestats$REGION)
 # [1] "AS" "GU" "MP" "UM" "VI"
 

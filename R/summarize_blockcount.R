@@ -41,7 +41,7 @@ summarize_sites_per_block <- function(x, varname='blockid') {
 #' @param x The output of [getblocksnearby()] like sites2blocks_example
 #'
 #' @return A list of stats
-#' @example summarize_blockcount(sites2blocks_example)
+#' @examples  summarize_blockcount(sites2blocks_example)
 #' @import data.table
 #' @export
 #'

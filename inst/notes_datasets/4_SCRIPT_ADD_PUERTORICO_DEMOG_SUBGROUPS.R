@@ -11,7 +11,9 @@
   #   # but that did not include PR. Puerto Rico was missing if using ACSDownload package code.
   #   #   setdiff(substr(bg22$FIPS, 1,2), substr(bg22DemographicSubgroups2016to2020$FIPS,1,2))
   #   #   # "72" which is the FIPS code for Puerto Rico.
-  # 
+  
+  #   #  # also see https://www.census.gov/content/dam/Census/library/publications/2020/acs/acs_prcs_handbook_2020_ch04.pdf  
+  
   #   # PR table B03002 from ACS2016-2020 block groups was obtained from
   #   # browseURL('https://data.census.gov/cedsci/table?g=0100000US_0400000US72%241500000&y=2020&tid=ACSDT5Y2020.B03002')
   # 
