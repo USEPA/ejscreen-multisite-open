@@ -7,7 +7,7 @@
 summarize_blockcount(x)
 }
 \arguments{
-\item{x}{The output of getblocksnearby()}
+\item{x}{The output of \code{\link[=getblocksnearby]{getblocksnearby()}} like sites2blocks_example}
 }
 \value{
 A list of stats

@@ -426,7 +426,7 @@ app_server <- function(input, output, session) {
   ####################################################################################################################### #
   
   # . ####
-  # ______________ WHICH RESULTS TO RETURN? _________________ ####
+  # _______ WHICH RESULTS TO RETURN? _________________ ####
   # . ####
   # outputs based on latlon, ID, or NAICS _________________ ####
   
@@ -449,7 +449,7 @@ app_server <- function(input, output, session) {
   
   ############################################################################################## #
   # . ####
-  # ______________ DOWNLOAD RESULTS _________________ ####
+  # _______ DOWNLOAD RESULTS _________________ ####
   # . ####
   # Download the Results #######
   output$downloadData1 <- shiny::downloadHandler(
@@ -465,22 +465,20 @@ app_server <- function(input, output, session) {
           paste0("EJAM-OUT-", input$analysis_shortname, "-", gsub(':', '-', Sys.time()), ".xlsx", sep=''),
           '\n\n')
       
-      # OUTPUT RESULTS TABLE HERE - ONE ROW IS FOR OVERALL UNIQUE RESIDENTS OR BLOCKS, THEN 1 ROW PER SITE:
+      # OUTPUT RESULTS TABLES - 1 tab=ONE ROW FOR OVERALL UNIQUE RESIDENTS (BLOCKS), other tab= 1 ROW PER SITE:
       
       #write.csv(x = rbind(datasetResults()$results_overall, datasetResults()$results_bysite, fill = TRUE), file = file, row.names = FALSE)
       #  this  would be much faster than write.csv, and works on data.frame or data.table:
       # data.table::fwrite(   x = rbind(datasetResults()$results_overall, datasetResults()$results_bysite, fill = TRUE), file = file)
       # see "EJAM/inst/notes_MISC"
-      #
       #  but now using Excel output:
       # library(openxlsx)
       
       wb <- workbook_output_styled(
-        overall = datasetResults()$results_overall, 
+        overall  = datasetResults()$results_overall, 
         eachsite = datasetResults()$results_bysite
       )
       openxlsx::saveWorkbook(wb, file = file, overwrite = TRUE)
-      
       # openxlsx::write.xlsx(rbind(
       #   datasetResults()$results_overall, 
       #   datasetResults()$results_bysite, 
@@ -492,44 +490,35 @@ app_server <- function(input, output, session) {
       
       ############################################################################### #
       # OBSOLETE code about user metadata we could save ####
-      
       if (1 == 'obsolete code- it was meant to output metadata appended
-          to the tabular results but we want a clean table and any metadata separately if at all') {
-        
-        # save to file which NAICS filters used
+          to the tabular results, but we just want a clean table 
+          and any metadata separately if at all') {
+        #       This used to save to file which NAICS filters used
         userin = ""
         facility_mustbe_that_naics_in_this_program  = paste(input$facility_mustbe_that_naics_in_this_program,     collapse = ", ")
         facility_mustbe_in_this_program = paste(input$facility_mustbe_in_this_program,    collapse = ", ")
-        #industryList =               paste(input$naics_user_wrote_in_box,        collapse = ", ")
-        industryList =  paste(industryList, input$naics_user_picked_from_list, collapse = ", ")
-        
-        # save to file list of Facility IDs specified
-        f1=""
-        if(!is.null(input$file_uploaded_FRS_IDs)) {
-          f1=input$file_uploaded_FRS_IDs
-          f1=f1[0]
-        }
-        
-        # save to file these settings - This might not be an option at all - may just pick one approach
+        industryList =                    paste(input$naics_user_wrote_in_box,            collapse = ", ")
+        industryList = paste(industryList, input$naics_user_picked_from_list, collapse = ", ")
+        #       This used to save settings in a file - This might not be an option at all - may just pick one approach
         userin=addUserInput(file,userin, input$expandRadius, "Expand distance for facilities with no census block centroid within selected buffer distance: ")
-        # this used to output this metadata on what distance was used, but that is in the output table now?
+        #       This used to output this metadata on what distance was used, but that is in the output table now?
         userin=addUserInput(file,userin, as.character(getCutoff()), "Define Buffer Distance (in miles?): ") #as.character(getCutoff())
-        
-        # This used to output metadata about what NAICS or facility IDs, etc. were specified by the user:
+        #       This used to output metadata about what NAICS or facility IDs, etc. were specified by the user:
         userin=addUserInput(file,userin, facility_mustbe_in_this_program, "Include facilities with records in: ")
         userin=addUserInput(file,userin, facility_mustbe_that_naics_in_this_program, "Match your NAICS code selection with: ")
         userin=addUserInput(file,userin, industryList,   "Industry/Industries: ")
-        userin=addUserInput(file,userin, f1,  "Upload list of FRS IDs. Filename: ") #input$file_uploaded_FRS_IDs
-        # used to report the name of the lat/lon uploaded file:
+        #       This used to save list of Facility IDs specified, in a file
+        f1="";  if(!is.null(input$file_uploaded_FRS_IDs)) {  f1=input$file_uploaded_FRS_IDs; f1=f1[0]  }
+        userin=addUserInput(file,userin, f1, "Upload list of FRS IDs. Filename: ") #input$file_uploaded_FRS_IDs
+        #       This used to save the name of the lat/lon uploaded file:
         # userin=addUserInput(file,userin, f2,  "Upload list of locations with lat lon coordinates. Filename: ") #input$file2 was old name # file_uploaded_latlons
-        
-        # save to file output results overall  ?
-        
+        #       This used to also have code to save to file the results overall  ?
         cat(userin,  file=file) # write all those settings.
-        
-        # cat('\n\n Wrote to ', file)
+        # cat('\n\n Wrote to ', file, '\n')
+        # session$reload()
       }
-      # session$reload()
+      ############################################################################### #
+      
     }
   )
   ############################################################################################## #

@@ -2,8 +2,7 @@
 % Please edit documentation in R/getblocksnearby2.R
 \name{getblocksnearby2}
 \alias{getblocksnearby2}
-\title{Key buffering function - wrapper redirecting to the right version of getblocksnearby()
-Like getblocksnearby() but tries to handle localtree and quadtree parameter differently - not sure how to check if they are in the right environment.}
+\title{Key buffering function - wrapper redirecting to the right version of getblocksnearby()}
 \usage{
 getblocksnearby2(
   sitepoints,
@@ -30,7 +29,12 @@ SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "
 }
 \description{
 Key buffering function - wrapper redirecting to the right version of getblocksnearby()
-Like getblocksnearby() but tries to handle localtree and quadtree parameter differently - not sure how to check if they are in the right environment.
+}
+\details{
+Like getblocksnearby() but tries to handle localtree and quadtree parameter differently
+\itemize{
+\item not sure how to check if they are in the right environment.
+}
 }
 \seealso{
 \code{\link[=getblocksnearby]{getblocksnearby()}}

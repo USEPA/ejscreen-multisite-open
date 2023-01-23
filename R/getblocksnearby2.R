@@ -1,5 +1,7 @@
 #' Key buffering function - wrapper redirecting to the right version of getblocksnearby()
-#' Like getblocksnearby() but tries to handle localtree and quadtree parameter differently - not sure how to check if they are in the right environment.
+#' @details 
+#'   Like getblocksnearby() but tries to handle localtree and quadtree parameter differently 
+#'   - not sure how to check if they are in the right environment.
 #'  
 #' @param sitepoints   see [getblocksnearbyviaQuadTree()] or other such functions
 #' @param cutoff       see [getblocksnearbyviaQuadTree()] or other such functions

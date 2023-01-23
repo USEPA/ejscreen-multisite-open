@@ -148,9 +148,6 @@
 #'   - **[usastats].rda** and **[statestats].rda**  data.table lookup of 100 percentiles and means 
 #'       (for each indicator in blockgroupstats) in each zone (us, region, or state).
 #'       Need to update each time blockgroupstats is updated. Taken from EJScreen data or ejscreen::lookupUSA & lookupStates
-#'       
-#'   - [stateregions].rda  data.table lookup of EPA REGION given the ST (state code like AK)
-#'   - [statesshp].rda   possibly obsolete  shapefile of state boundries to determine what state a point is in
 #' 
 #'   - *blocks_unique?*  Intermediate result, not saved
 #'     - blockid  Just the unique blockid values from sites2blocks
@@ -188,10 +185,10 @@
 #'   * [testpoints_100_dt].rda  Random test points data.table with columns lat lon site
 #'   * [testpoints_1000_dt].rda Random test points data.table with columns lat lon site
 #'
-#' @details  # **Buffering methodology:** ####################################################################
+#' @details  # **Identification of nearby residents -- methodology:** ####################################################################
 #'
-#' The buffering is currently done in a way that includes all 2020 Census blocks whose
-#' "internal point" (a lat/lon provided by Census) is within the specified distance of the facility point.
+#' The identification of nearby residents is currently done in a way that includes all 2020 Census blocks whose
+#' "internal point" (a lat/lon provided by the Census Bureau) is within the specified distance of the facility point.
 #' This is taken from the EJScreen block weights file, but can also be independently calculated. See [EJAMblockdata] package.
 #' 
 #' The summary or aggregation or "rollup" within the buffer is done by calculating the

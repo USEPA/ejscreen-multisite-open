@@ -2,8 +2,7 @@
 % Please edit documentation in R/getblocksnearby.R
 \name{getblocksnearby}
 \alias{getblocksnearby}
-\title{Key buffering function - wrapper redirecting to the right version of getblocksnearby()
-As written it assumes that certain things are already in global environment.}
+\title{Key buffering function - wrapper redirecting to the right version of getblocksnearby()}
 \usage{
 getblocksnearby(
   sitepoints,
@@ -30,7 +29,10 @@ SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "
 }
 \description{
 Key buffering function - wrapper redirecting to the right version of getblocksnearby()
-As written it assumes that certain things are already in global environment.
+}
+\details{
+As written it assumes that certain things are
+already in global environment.
 }
 \seealso{
 \code{\link[=getblocksnearby2]{getblocksnearby2()}} that was work in progress

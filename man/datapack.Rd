@@ -2,20 +2,26 @@
 % Please edit documentation in R/datapack.R
 \name{datapack}
 \alias{datapack}
-\title{Print list of data sets in package(s)
-Wrapper for data(), for convenience}
+\title{See info about the data sets in one or more packages
+Wrapper for data() - just shows info in console and silently returns a data.frame}
 \usage{
-datapack(pkg = NULL, len = 30)
+datapack(pkg = ejampackages, len = 30)
 }
 \arguments{
 \item{pkg}{a character vector giving the package(s) to look in for data sets}
 
-\item{len}{number of characters to limit Title to, making it easier to see in the console.}
+\item{len}{Only affects what is printed to console - specifies the
+number of characters to limit Title to, making it easier to see in the console.}
 }
 \value{
 data.frame with Item and Title as columns
 }
 \description{
-Print list of data sets in package(s)
-Wrapper for data(), for convenience
+See info about the data sets in one or more packages
+Wrapper for data() - just shows info in console and silently returns a data.frame
+}
+\examples{
+ datapack("datasets")
+ datapack("MASS")
+ datapack(ejampackages)
 }

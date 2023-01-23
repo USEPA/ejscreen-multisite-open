@@ -59,9 +59,8 @@ which in this case is the count of those for whom the poverty ratio is known.
 This function requires the following as data lazy loaded for example from EJAMblockdata package:
 \itemize{
 \item blockwts: data.table with these columns: blockid , bgid, blockwt
-\item quaddata, and blockquadtree: data.table and quad tree,  for indexes of block points
+\item quaddata, and blockquadtree: data.table and quad tree, for indexes of block points
+(and localtree that is created when package is loaded)
 \item EJAM::blockgroupstats - A data.table (such as EJSCREEN demographic and environmental data by blockgroup?)
-\item statesshp?    (obsolete? had been used - a shapefile of state boundries to determine what state a point is in)
-\item stateregions? (obsolete? had been used - data.table lookup of EPA REGION given the ST - state code like AK)
 }
 }

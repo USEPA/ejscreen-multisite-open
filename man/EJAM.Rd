@@ -155,8 +155,6 @@ EJScreen 2020 version was about 100MB as .rda)
 \item \strong{\link{usastats}.rda} and \strong{\link{statestats}.rda}  data.table lookup of 100 percentiles and means
 (for each indicator in blockgroupstats) in each zone (us, region, or state).
 Need to update each time blockgroupstats is updated. Taken from EJScreen data or ejscreen::lookupUSA & lookupStates
-\item \link{stateregions}.rda  data.table lookup of EPA REGION given the ST (state code like AK)
-\item \link{statesshp}.rda   possibly obsolete  shapefile of state boundries to determine what state a point is in
 \item \emph{blocks_unique?}  Intermediate result, not saved
 \itemize{
 \item blockid  Just the unique blockid values from sites2blocks
@@ -197,9 +195,9 @@ separate summary stats beyond what EJScreen report does?, one row per site and f
 }
 }
 
-\section{\strong{Buffering methodology:}}{
-The buffering is currently done in a way that includes all 2020 Census blocks whose
-"internal point" (a lat/lon provided by Census) is within the specified distance of the facility point.
+\section{\strong{Identification of nearby residents -- methodology:}}{
+The identification of nearby residents is currently done in a way that includes all 2020 Census blocks whose
+"internal point" (a lat/lon provided by the Census Bureau) is within the specified distance of the facility point.
 This is taken from the EJScreen block weights file, but can also be independently calculated. See \link{EJAMblockdata} package.
 
 The summary or aggregation or "rollup" within the buffer is done by calculating the

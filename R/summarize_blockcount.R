@@ -18,10 +18,12 @@ summarize_blocks_per_site <- function(x, varname='siteid') {
   print(summary(as.numeric(table(x[ , ..varname]))))
   invisible(blocks_per_site_histo)
 }
+######################################################################################### # 
+
 
 #' Get summary stats on how many sites are near various blocks (residents)
 #'
-#' @param x The output of getblocksnearby()
+#' @param x The output of [getblocksnearby()] like sites2blocks_example
 #' @param varname colname of variable in data.table x that is the one to summarize by
 #' @return invisibly, a list of stats
 #' @import data.table
@@ -30,12 +32,16 @@ summarize_blocks_per_site <- function(x, varname='siteid') {
 summarize_sites_per_block <- function(x, varname='blockid') {
   table(table(x[ , ..varname]))
 }
+######################################################################################### # 
+
+
 
 #' Get summary stats on counts of blocks (unique vs doublecounted) near sites
 #'
-#' @param x The output of getblocksnearby()
+#' @param x The output of [getblocksnearby()] like sites2blocks_example
 #'
 #' @return A list of stats
+#' @example summarize_blockcount(sites2blocks_example)
 #' @import data.table
 #' @export
 #'
@@ -58,22 +64,19 @@ summarize_blockcount <- function(x) {
   uniqueblocks_near_multisite  <- blockcount_unique - uniqueblocks_near_only1site
   pct_of_unique_blocks_in_overlaps <- uniqueblocks_near_multisite / blockcount_unique
   
-  sites_withany_overlap   <- # print(as.numeric(summarize_sites_per_block(x)['2'])) 
-    # that tells you how many blocks are near 2 sites, but not how many or which sites those were. 
-    
-    # summarize_blocks_per_site(x) # tells you # of blocks near avg site, how many sites have only 1 block nearby, or <30 nearby, etc.
-  
   count_block_site_distances <- blockcount_incl_dupes # number of rows in output table of all block-site pairs with their distance.
   blockcount_avgsite         <- blockcount_incl_dupes / sitecount_unique_out
   
-
-  
   x <- list(
     sitecount_unique_out = sitecount_unique_out, 
-    # sites_withany_overlap = sites_withany_overlap,
+    # sites_withany_overlap = as.numeric(summarize_sites_per_block(x)['2']),
+    # that tells you how many blocks are near 2 sites, but not how many or which sites those were. 
+    
+    # summarize_blocks_per_site(x) # tells you # of blocks near avg site, how many sites have only 1 block nearby, or <30 nearby, etc.
     blockcount_avgsite = blockcount_avgsite, 
     blockcount_incl_dupes = blockcount_incl_dupes, 
     blockcount_unique = blockcount_unique, 
+    
     ratio_blocks_incl_dupes_to_unique = ratio_blocks_incl_dupes_to_unique,
     uniqueblocks_near_only1site = uniqueblocks_near_only1site,
     uniqueblocks_near_multisite = uniqueblocks_near_multisite,
@@ -90,13 +93,9 @@ summarize_blockcount <- function(x) {
   cat(paste0(prit(blockcount_incl_dupes), " blocks including doublecounting in overlaps, 
              in final row count (block-to-site pairs table)\n" ))
   cat(paste0(prit(blockcount_unique), " actual unique blocks total\n" ))
-  cat(paste0(prit(uniqueblocks_near_only1site) , ' blocks /residents are in only a single buffer,
-             so do not have 2+ sites nearby,
-             ie not in overlap of circular buffers)\n'))
-  cat(paste0(prit(uniqueblocks_near_exactly2site) , ' blocks are in exactly 2 buffers,
-             ie have exactly 2 sites nearby\n'))
-  cat(paste0(prit(uniqueblocks_near_exactly3site) , ' blocks are in exactly 3 buffers,
-             ie have exactly 3 sites nearby\n'))
+  cat(paste0(prit(uniqueblocks_near_only1site) ,    ' blocks (and their residents) have exactly 1 site nearby \n'))
+  cat(paste0(prit(uniqueblocks_near_exactly2site) , ' blocks (and their residents) have exactly 2 sites nearby \n'))
+  cat(paste0(prit(uniqueblocks_near_exactly3site) , ' blocks (and their residents) have exactly 3 sites nearby \n'))
   cat(paste0(prit(ratio_blocks_incl_dupes_to_unique), ' is ratio of blocks including multicounting / actual count of unique blocks\n'))
   cat(paste0(prit(100 * round(pct_of_unique_blocks_in_overlaps, 3)), 
              '% of unique blocks could get counted more than once 
@@ -105,3 +104,4 @@ summarize_blockcount <- function(x) {
   
   invisible(x)
 }
+######################################################################################### # 

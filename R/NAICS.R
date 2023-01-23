@@ -61,11 +61,11 @@
 #'  \preformatted{
 #'   ## see   https://www.census.gov/naics/
 #'
-#'   # to get 2017 version into this format, see [naics_get()] 
-#'   NAICS <- naics_get()
+#'   # to get 2017 version into this format, see [naics_download()] 
+#'   NAICS <- naics_download()
 #'   # specify metadata here on vintage of data, etc.
 #'   usethis::use_data(NAICS, overwrite=TRUE)
 #'   # save(NAICS, file = 'yourpath/EJAM/data/NAICS.rda')
 #'   }
-#' @seealso  [naics_find]  [naics_categories]   [naics_get] 
+#' @seealso  [naics_find()]  [naics_categories()]   [naics_download()] 
 NULL
