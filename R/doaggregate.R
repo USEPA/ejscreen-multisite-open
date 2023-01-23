@@ -27,13 +27,10 @@
 #'   
 #'    - blockwts: data.table with these columns: blockid , bgid, blockwt
 #'    
-#'    - quaddata, and blockquadtree: data.table and quad tree,  for indexes of block points
+#'    - quaddata, and blockquadtree: data.table and quad tree, for indexes of block points
+#'      (and localtree that is created when package is loaded)
 #'    
 #'    - EJAM::blockgroupstats - A data.table (such as EJSCREEN demographic and environmental data by blockgroup?)
-#'    
-#'    - statesshp?    (obsolete? had been used - a shapefile of state boundries to determine what state a point is in)
-#'    
-#'    - stateregions? (obsolete? had been used - data.table lookup of EPA REGION given the ST - state code like AK)
 #'
 #' @param sites2blocks data.table of distances in miles between all sites (facilities) and 
 #'   nearby Census block internal points, with columns siteid, blockid, distance,
