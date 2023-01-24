@@ -12,17 +12,40 @@ app_ui <- function(request) {
     ## begin app UI
     fluidPage(
       
+      ## add title for app and browser tab
+      titlePanel(title = "EJAM (Environmental Justice Analysis Multi-site) Tool",
+                 windowTitle = "EJAM (Environmental Justice Analysis Multi-site) Tool"
+      ),
+      
       ## create tabsetPanel with tabs for different sections
       tabsetPanel(
         id = 'all_tabs',
+        
         ## site selection tab
-        tabPanel(title = 'Site Selection'),
+        tabPanel(title = 'Site Selection',
+                 
+           ## input: Select NAICS from list
+           selectInput(
+             inputId = "ss_select_naics",
+             label = htmltools::h6("Select industry of interest"),
+             # choose from named numeric vector on server-side
+             ## number is NAICS like 31182, names are like "31182 - Cookie, Cracker, and Pasta Manufacturing" 
+             choices = NULL, 
+             selected = NULL,
+             width = 400,
+             multiple = TRUE
+           )         
+        ),
+        
         ## analysis settings tab
         tabPanel(title = 'Analysis Settings'),
+        
         ## buffering tools tab
         tabPanel(title = 'Buffering Tools'),
+        
         ## summaries tab
         tabPanel(title = 'Summaries'),
+        
         ## report generation tab
         tabPanel(title = 'Generate Report')
       )
