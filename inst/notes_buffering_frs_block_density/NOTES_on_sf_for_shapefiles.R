@@ -1,12 +1,16 @@
 
-# HOW TO DO BUFFERING OR FIND POINTS WITHIN A DISTANCE, IN R, USING sf package and either R2 or S2 (s2 package, spherical approach)
-# and using st_buffer versus st_is_within_distance
-
+# FIND POINTS WITHIN A DISTANCE via sf:: ####
+#
+# like getblocksnearby but via sf package 
+# * st_buffer() vs st_is_within_distance() ####
+# * st_buffer() via R2 vs S2 (s2 pkg, spherical approach) ####
 browseURL( "https://r-spatial.github.io/sf/articles/sf7.html")
 # https://r-spatial.github.io/sf/articles/ 
 # sf_use_s2()
+# ____ ####
 
-# st_buffer or st_is_within_distance?
+# Picking between st_buffer and st_is_within_distance ####
+#
 #   As discussed in the sf issue tracker, deciding on workflows and selecting 
 # appropriate levels of level of geographic resolution can be an iterative process. 
 # * st_buffer as powered by GEOS, for R2 data, are smooth and (nearly) exact. 
@@ -24,22 +28,22 @@ browseURL( "https://r-spatial.github.io/sf/articles/sf7.html")
 # *** all features of y that are within a certain distance d from x. 
 # *** The S2 version of this function uses spatial indexes, so is fast for large datasets. ***
 
-
 # old way of using sp to create a spatial dataframe (but sf will replace sp over time)
-# mydf <- EJAMejscreenapi::testoutput_ejscreenapi_plus_50
-# mysp   <- sp::SpatialPoints(mydf[,c('lon','lat')])
-# myspdf <- sp::SpatialPointsDataFrame(mysp, mydf)
+#   mydf <- EJAMejscreenapi::testoutput_ejscreenapi_plus_50
+#   mysp   <- sp::SpatialPoints(mydf[,c('lon','lat')])
+#   myspdf <- sp::SpatialPointsDataFrame(mysp, mydf)
 
 
 ########################################################################### # 
-# use sf to read a SHAPEFILE (of the CEJST dataset)
+# sf to read SHAPEFILE ####
 
 library(sf)
 sf_use_s2(TRUE)
- # library(dplyr) 
+# library(dplyr) 
+
+## e.g. read CEJST dataset ####
 usa <- st_read( "~/../../OneDrive - Environmental Protection Agency (EPA)/Downloads/1.0-shapefile-codebook/usa/" )
 usa
-
 # add FIPS.ST and ST columns, and 
 # add that info for Island areas too
 # usa$ST <- ejanalysis::get.state.info(usa$FIPS.ST )[,'ST']
@@ -56,19 +60,19 @@ usa$ST   <-  stateinfo2$ST[match(usa$FIPS.ST,  stateinfo2$FIPS.ST)]
 usa$FIPS.ST = substr(usa$GEOID10,1,2)
 
 ########################################################################### # 
-# MAP THE SHAPEFILE INFO # TRACT RESOLUTION
+# mapview to see shapefile tracts ####
 usa
 mapview::mapview(usa[usa$ST == 'DE', c( "GEOID10" ,"SF"   ,   "CF"  ,    "DF_PFS", 'FIPS.ST', 'ST', 'geometry') ])
 mapview::mapview(usa[usa$ST == 'NY',  ])
 usa_cejst_shape <- usa; rm(usa)
 ########################################################################### # 
-# SAVE SHAPEFILE  
-
+# Save shapefile as .rda ####
 save(usa_cejst_shape, file = 'usa_cejst_shape.rda')
-
-
+# ___ ####
 ########################################################################### # 
-# BUFFERING    EXAMPLE data
+# Using sf:: ####
+
+## get example data ####
 cycleway_osm = osmdata::osmdata_sf(osmdata::add_osm_feature(
   opq = osmdata::opq("leeds"), key = "name", 
   value = "Cycle Superhighway 1"))
@@ -78,16 +82,28 @@ mysite <- st_sf(data.frame(name = "cycleway"), geometry)
 class(mysite)
 
 ########################################################################### # 
-# NEAR A POINT = INSIDE (CIRCULAR) BUFFER AROUND A POINT:  
+# ** NEAR A POINT = in a circular buffer ####
+
 #     sf::st_is_within_distance()   
 
-# INSIDE A POLYGON LIKE HIGH-RISK ZONE: WHAT POINTS ARE INSIDE SOME POLYGON LIKE A BUFFER:  
-#     sf::st_intersects() to find points inside polygon or buffered polygon.
 
-# NEAR A POLYGON (NONCIRCULAR) BUFFER AROUND A POLYGON = near a POLYGON OR ROAD LINE: 
+
+########################################################################### # 
+# ** INSIDE A POLYGON LIKE HIGH-RISK ZONE ####
+#   WHAT POINTS ARE INSIDE SOME POLYGON LIKE A BUFFER:  
+
+## sf::st_intersects() to find points inside polygon or buffered polygon.  
+
+
+
+########################################################################### # 
+# ** NEAR A POLYGON (buffer, then intersects) ####
+#    (NONCIRCULAR) BUFFER AROUND A POLYGON = near a POLYGON OR ROAD LINE: 
 #     CREATE A BUFFER THAT ADDS SOME DISTANCE FROM A SHAPE LIKE NPL SITE  with 
-#     sf::st_buffer() to add buffer around polygon
-#     sf::st_intersects() to then find points in that buffer, i.e., near the polygon.
+
+# sf::st_buffer() to add buffer around polygon ####
+# sf::st_intersects() to then find points in that buffer, i.e., near the polygon. #
+
 
 mysite <- st_sf(data.frame(name = "cycleway"), geometry) 
   plot(mysite, main='buffering around this shape')
@@ -106,3 +122,96 @@ buffer_hires = st_buffer(mysite, 100, max_cells = 9000)
  # buf = st_buffer(polygon, 1)
  # buf = st_buffer(polygon, units::set_units(1, degree))
  
+########################################################################################################## #
+  
+  # ___ ####
+  # Another set of notes, separate:
+  
+  
+  
+  #################################### #
+  ##### Example of sf::st_buffer() and mapview() ####
+  
+  library(units)
+  library(tidyverse)
+  library(sf)
+  library(mapview)
+  #  help("mapview", package = "mapview")
+  
+  radius <- 5000
+  # should also use units::install_unit()  ?
+  
+  #################################### #
+  ## Specify point to be center of circular buffer: ####
+
+  lon <- -76.6    # e.g. in Baltimore
+  lat <- 39.2
+  elev <- units::set_units(242.0, "ft") # just an example
+  
+  site <- sf::st_point(x = c(lon, lat, elev), dim = "XYZ")
+  site <- site %>% sf::st_sfc(crs = 4326)
+  # # transform your coordinate to Irish Grid, if viewing Dublin  # site = sf::st_transform(site, 29902)
+
+  #################################### #  
+  ## Create your buffer in meters around this point: ####
+  
+  buffer <- sf::st_buffer(site, radius)
+  
+  #################################### #
+  ## plot the site and circle ####
+  # plot(buffer)
+  # plot(site, add = TRUE)
+  
+  ################################### #
+  #### mapview for nice interactive map with basemaps ####
+  
+  mapview::mapview(buffer, map.types = c("OpenStreetMap", "OpenTopoMap", "Esri.WorldImagery", "CartoDB.Positron"  ))
+  # see help("mapview", package = "mapview")
+  
+  ####################################################################### #
+  
+  #################################### #
+  ## annulus (ring) ####
+  
+  buff1 <- sf::st_buffer(site, dist=1*radius)
+  buff2 <- sf::st_buffer(site, dist=2*radius)
+  ring  <- sf::st_difference(buff2, buff1)
+  
+  mapview::mapview(ring, map.types = c("OpenStreetMap", "OpenTopoMap", "Esri.WorldImagery", "CartoDB.Positron"  ))
+  
+  #################################### #
+  #### plot just using ggplot #########
+  
+  # ring %>%
+  #   ggplot2::ggplot() +
+  #   ggplot2::geom_sf()
+  
+  ####################################################################### #
+  
+  #################################### #
+  #### put grid on top of shapefile ####
+  
+  nc <- NULL
+  demo(nc, ask = FALSE, echo = FALSE)
+  sf::st_crs(nc)$proj4string
+  # [1] "+proj=longlat +datum=NAD27 +no_defs"
+  
+  nc <- sf::st_transform(nc, crs=sf::st_crs(5070))
+  cs <- c(10000, 10000)
+  my_grid <- sf::st_make_grid(x = nc,
+                              cellsize=cs)
+  
+  #################################### #
+  #### mapview for plot of grid and States #######
+  
+  mapview::mapview(my_grid) + mapview::mapview(nc['NAME'])
+  
+  #################################### #
+  #### plot state and grid using plot #########
+  
+  # plot(nc['NAME'], main = 'North Carolina')
+  # plot(my_grid, add = TRUE)
+  ###################################################################### ##
+  
+  
+  
