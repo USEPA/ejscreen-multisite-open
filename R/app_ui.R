@@ -7,7 +7,7 @@
 app_ui <- function(request) {
   tagList(
     # Leave this function for adding external resources, see end of this source file.
-    golem_add_external_resources(),
+    #golem_add_external_resources(),
     
     ## begin app UI
     fluidPage(
@@ -34,7 +34,22 @@ app_ui <- function(request) {
              selected = NULL,
              width = 400,
              multiple = TRUE
-           )         
+           ),
+           
+           ## input: Upload list of facility lat/longs
+           fileInput(inputId = 'ss_upload_latlon',  
+                     label = 'Upload file of site to buffer and summarize (.csv, .xls, or .xlsx) with lat & lon as column headers in row 1',
+                     #placeholder = 'test_input_latlon.csv', 
+                     multiple = FALSE,
+                     accept = c('.xls', '.xlsx', ".csv", "text/csv", "text/comma-separated-values,text/plain")
+                     # add hover tips here maybe, or even a button to view examples of valid formats and details on that.
+           ),
+           
+           ## input: Find sites via ECHO
+           shiny::actionButton(inputId = 'ss_search_echo', label = 'Find sites via ECHO'),
+           
+           ## REMOVE later - check for uploaded latlon dataset
+           tableOutput('upload_check')
         ),
         
         ## analysis settings tab

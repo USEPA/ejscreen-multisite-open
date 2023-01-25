@@ -39,6 +39,15 @@ library(EJAM)   # # This package's functions and data (blockgroup indicators, NA
 ############  Things needed only if running this Shiny app:############
 ######################################################################################################## #
 
+## text message about ECHO facility search
+echo_url <-  'https://echo.epa.gov/facilities/facility-search' # used in server.R and in message below
+echo_message <- shiny::HTML(paste0('To use the ECHO website to search for and specify a list of regulated facilities, 
+                                    <br>1) go to ', '<a href=\"', echo_url, '\", target=\"_blank\">', echo_url,  '</a>', ' and <br>
+                                    2) under Facility Characteristics Results View select data table, click Search, then <br>
+                                    3) click Customize Columns, use checkboxes to include Latitude and Longitude, then <br>
+                                    4) click Download Data, then <br>
+                                    5) return to this app to upload that ECHO site list.<br>'))
+
 naics_to_pick_from <- EJAM::NAICS  # maybe avoid this in case session does not need NAICS lookups? otherwise would be lazy loaded from package as data, a list of code number and name of industry, used in ui.R
 
 options(shiny.maxRequestSize = 9*1024^2) # not sure what this was for
