@@ -26,8 +26,18 @@
 proxistat2 <- function(pts, cutoff=8.04672, quadtree) {
   
   warning("temporarily uses block areas from another dataset for most but not all blocks")
-  warning("if none found within cutoff of 5km, this func does not yet create score based on single nearest")
-  
+  warning("if none found within cutoff of 5km, this func does not yet create score based on single nearest - see source code for notes")
+  ######################################## #
+  # Sequence of steps in finding d value(s):
+  ######################################## #
+  #
+  # 1) get distances that are <=radius using get.distances()
+  # 2) where d < min.dist, set d <- min.dist to adjust it upwards
+  # 3)     and for those, check again to see if new d is still <= radius. keep only if d<=radius now. *** 
+  # 4) for each frompoints, if no distances were found, get nearest single d at any radius,
+  #       originally thought perhaps by expanding outwards step by step until at least one is found (but not worth the overhead vs just finding ALL d and picking min)
+
+  # steps 3 and 4 had not yet been implemented as of 1/29/23.  
   
   # 8.04672 miles is 5 km which is the EJScreen max search range for proximity scores
   # # FACILITY DENSITY INDICATOR 
