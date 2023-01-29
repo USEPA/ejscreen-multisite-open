@@ -29,6 +29,10 @@
 #'   returns URL of webpage at naics.com with info on the sector
 #' @seealso  [naics_categories] [NAICS] [naics_findwebscrape()] get_facility_info_via_ECHO function [naics_url_of_code()] [naics_url_of_query()]
 #' @examples
+#'  naics_find(8111, exactnumber = FALSE)
+#'  naics_find(8111, exactnumber = TRUE)
+#'  naics_find(8111, exactnumber = TRUE, add_children = TRUE)
+#'  
 #'  naics_find("paper")
 #'  naics_find("cement | concrete")
 #'  cbind(naics_find("pig")

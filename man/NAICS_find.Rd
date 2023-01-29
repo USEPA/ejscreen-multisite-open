@@ -49,6 +49,10 @@ c(\verb{11 - Agriculture, Forestry, Fishing and Hunting} = 11, \verb{111 - Crop 
 )
 }
 \examples{
+ naics_find(8111, exactnumber = FALSE)
+ naics_find(8111, exactnumber = TRUE)
+ naics_find(8111, exactnumber = TRUE, add_children = TRUE)
+ 
  naics_find("paper")
  naics_find("cement | concrete")
  cbind(naics_find("pig")
