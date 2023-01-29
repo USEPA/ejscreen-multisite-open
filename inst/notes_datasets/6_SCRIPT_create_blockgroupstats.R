@@ -50,9 +50,7 @@ library(EJAMejscreendata)
 # EJAMejscreendata::EJSCREEN_StatePct_with_AS_CNMI_GU_VI
 
 
-
-
-create_blockgroupstats <- function(bg=ejscreen::bg22plus , meta) {
+create_blockgroupstats <- function(bg=ejscreen::bg22 , meta) {
   
   ## script to create blockgroupstats.rda for EJAM
   
@@ -103,7 +101,6 @@ create_blockgroupstats <- function(bg=ejscreen::bg22plus , meta) {
   
 
   attributes(blockgroupstats) <- c(attributes(blockgroupstats), meta)
-  
   
   
   print('You can now add it to the package with this:   usethis::use_data(blockgroupstats)')
