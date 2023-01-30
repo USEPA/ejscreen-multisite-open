@@ -1,3 +1,10 @@
+library(magrittr)
+library(dplyr)
+library(devtools)
+if (!require("EJSCREENbatch")) {
+  devtools::install_github('USEPA/EJSCREENbatch', build_vignettes=TRUE)
+  library(EJSCREENbatch)
+}
 
 ##################################################### #
 # excerpts of EJSCREENBatch code.... ####
@@ -6,8 +13,9 @@
 
 #  took weighted mean of data within each buffer (shape_ID) for these indicators:
 # 
-# Extract key variables, take ***pop-weighted*** average
-df.var.wm <-list_data %>%
+# Extract key variables, 
+# take ***pop-weighted*** average ####
+df.var.wm <- list_data %>%
   as.data.frame() %>%
   dplyr::select(shape_ID, ACSTOTPOP, PM25, OZONE, DSLPM, CANCER,
                 RESP, PTRAF, PNPL, PRMP, PRE1960PCT, PTSDF, PWDIS,
@@ -21,12 +29,13 @@ df.var.wm <-list_data %>%
 # 
 # # ...
 # 
-#   EJSCREENBatch code uses ecdf function here on the entire ejscreen dataset each time??, 
-#  to estimate US AND THEN STATE percentiles
+#   EJSCREENBatch code uses ecdf function here on the entire ejscreen dataset each time?? 
+#  ecdf() to estimate US, STATE percentiles ####
 # 
-# #Rejoin, then calculate nat'l percentiles
+# #Rejoin ####
 df.var.wm <- df.var.wm %>%
   dplyr::left_join(df.var.state, by = 'shape_ID') %>%
+  # Calc nat'l percentiles ####
   dplyr::mutate(across(PM25:LINGISOPCT,
                        list(~round(ecdf(ejscreen_data %>%
                                           as.data.frame() %>%
@@ -45,7 +54,8 @@ df.var.wm <- df.var.wm %>%
                                    ,0)),
                        .names="P_{.col}_US"))
 # 
-# #Calculate state percentiles
+# #Calc state percentiles ####
+
 states <- na.omit(unique(df.var.wm$ST_ABBREV))
 temp_state <- lapply(states, function(x){
   ti2 <- df.var.wm %>%
@@ -71,7 +81,7 @@ temp_state <- lapply(states, function(x){
                          .names="P_{.col}_state"))
 })
 
-# ow code to name all the percentile columns
+# name the percentile columns ####
 #
 df.var.wm <- data.table::rbindlist(temp_state) %>%
   dplyr::rename_at(vars(rename_cols), ~paste0('P_',all_of(rename_cols),'_raw')) %>%
@@ -81,7 +91,7 @@ df.var.wm <- data.table::rbindlist(temp_state) %>%
   dplyr::mutate(variable=stringi::stri_replace_last_fixed(variable,'_','.')) %>%
   tidyr::separate(variable, into=c("variable","geography"), sep="\\.",extra="merge", fill = "left")   %>%
   tidyr::pivot_wider(names_from = c(variable)) %>%
-  dplyr::rename(Lead         = P_PRE1960PCT,
+  dplyr::rename('Lead'        = P_PRE1960PCT,
                 'Diesel PM'         = P_DSLPM,
                 'Air, Cancer'       = P_CANCER,
                 'Resp. Hazard'      = P_RESP,
@@ -110,21 +120,22 @@ df.var.wm <- data.table::rbindlist(temp_state) %>%
                 '<100% P.L. (%)'    = P_frac_pov99) %>%
   dplyr::select(-ST_ABBREV)
 # 
-# OW code to sum count of population at each site?
+#  sum count of pop at each site  ####
 # 
 # # Sum of population w/in 5miles
 df.pop.sum <- list_data %>%
   dplyr::select(ACSTOTPOP, shape_ID) %>%
   dplyr::rename(`Pop. Count` = ACSTOTPOP) %>%
   dplyr::group_by(shape_ID) %>%
-  dplyr::summarize_at(vars(`Pop. Count`),funs(sum))
+  dplyr::summarize_at(vars(`Pop. Count`), funs(sum))
 # 
-# Need lat/lon, (previously: URL to the facility's DFR)
+# Get lat/lon from facil_data #### 
+# , (previously: URL to the facility's DFR)
 df.latlon <- facil_data %>%
   dplyr::select(shape_ID, geometry) %>%
   sf::st_transform(crs = 4326)
 
-# Merge all together
+# Merge wtd means and sum pop counts  ####
 together.sf <- dplyr::inner_join(df.var.wm, df.pop.sum, by = "shape_ID") %>%
   dplyr::inner_join(df.latlon, by = 'shape_ID') %>%
   dplyr::relocate(shape_ID, `Pop. Count`,

@@ -27,10 +27,10 @@ bg22plus$bgid <- 1:NROW(bg22plus)
 # 
 # Note that only Puerto Rico (FIPS starting with 72) is missing from this ACS subgroups dataset.
 # while bg22 has PR, so when merged, the PR rows would be NA for pcthisp, etc.
-dim(ejscreen::bg22)  # [1] 242,335    157
-dim(bg22)            # [1] 242,335    157
-dim(bg22DemographicSubgroups2016to2020) # [1] 239,780     21
-dim(bg22plus)        # [1] 242,335    174
+# dim(ejscreen::bg22)  # [1] 242,335    157
+# dim(bg22)            # [1] 242,335    157
+# dim(bg22DemographicSubgroups2016to2020) # [1] 239,780     21
+# dim(bg22plus)        # [1] 242,335    174 # OBSOLETE
 #
 setdiff(substr(bg22$FIPS, 1,2), substr(bg22DemographicSubgroups2016to2020$FIPS,1,2))
 # [1]    72
@@ -56,8 +56,12 @@ metadata <- list(
 )
 attributes(bg22plus) <- c(attributes(bg22plus), metadata)
 
+######################### #
+# GOT RID OF bg22plus and kept all that in bg22, to avoid redundancy as of 1/2023 ####
+bg22 <- bg22plus
+
 # SAVE DATASET FOR THE PACKAGE ####
-usethis::use_data(bg22plus, overwrite = TRUE)
+usethis::use_data(bg22, overwrite = TRUE)
 
 # and confirmed that sort is same bgid, bgfips, as in blockwts$bgid or blockdata::bgid2fips
 

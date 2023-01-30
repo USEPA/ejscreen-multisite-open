@@ -38,9 +38,9 @@ if (1 == 0 ) {
   
   #######################################
   # BUFFER STATS FOR COUNTS:
-  #   
-spherical geometry versus planar geometry
-https://s2geometry.io/about/overview
+#   #   
+# spherical geometry versus planar geometry
+# https://s2geometry.io/about/overview
 
   #   see EJAM-package.R for names of data files needed and column names.
   # 

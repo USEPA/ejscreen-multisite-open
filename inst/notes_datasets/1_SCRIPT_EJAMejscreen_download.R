@@ -1,31 +1,45 @@
 # Import ejscreen 2.1 data for EJAMejscreendata package
 
+########################################################### #
 
-# **NOTE THE EXAMPLE BELOW DOES NOT YET HAVE in data files or lookups**
-#
+# new Supplemental indicators are here - but probably want to combine merge the supplemental and other !? ####
 # *LIFE EXPECTANCY (Raw value, pctile, state.pctile, bin, state.bin, textpopup)
 # *1 SUPPLEMENTARY DEMOG INDEX BASED ON 5 DEMOG VARS (raw, pctile, etc.)
 # *12 SUPPLEMENTARY EJ INDEXES BASED ON SUPPL DEMOG IND (raw, pctile, etc.)
 
-
+# DOWNLOAD ZIP FILES ####
 # # Obtain the file with something like this or manually download and unzip it:
 # download.file(
 #  'https://gaftp.epa.gov/EJSCREEN/2022/EJSCREEN_Full_with_AS_CNMI_GU_VI.zip', 
 #                           destfile = 'EJSCREEN_Full_with_AS_CNMI_GU_VI.zip')
-#  unzip(                              'EJSCREEN_Full_with_AS_CNMI_GU_VI.zip', exdir = getwd())
-### etc. for these 4 files:
-# 'EJSCREEN_Full_with_AS_CNMI_GU_VI.csv',
-# 'EJSCREEN_StatePct_with_AS_CNMI_GU_VI.csv',
-# 'USA_2022.csv',
-# 'States_2022.csv'
-
+fnames <- c(
+  "EJSCREEN_2022_Supplemental_with_AS_CNMI_GU_VI.csv.zip",
+  "EJSCREEN_2022_Supplemental_StatePct_with_AS_CNMI_GU_VI.csv.zip"
+)
+baseurl = "https://gaftp.epa.gov/EJSCREEN/2022/"
+for (i in fnames) {
+  a = file.path(baseurl, fnames[i])
+  b = fnames[i]
+  download.file(url=a, destfile = b, exdir = getwd())
+}
+# download.file("https://gaftp.epa.gov/EJSCREEN/2022/EJSCREEN_2022_Supplemental_with_AS_CNMI_GU_VI.csv.zip", 
+#               destfile = "EJSCREEN_2022_Supplemental_with_AS_CNMI_GU_VI.csv.zip")
+# UNZIP ####
+for (i in fnames) {
+  unzip(fnames[i], exdir = getwd())  
+}
+########################################################### #
+# READ CSV FILES ####
 EJSCREEN_Full_with_AS_CNMI_GU_VI      <- as.data.frame(readr::read_csv("EJSCREEN_Full_with_AS_CNMI_GU_VI.csv"))
 EJSCREEN_StatePct_with_AS_CNMI_GU_VI  <- as.data.frame(readr::read_csv("EJSCREEN_StatePct_with_AS_CNMI_GU_VI.csv"))
 USA_2022                              <- as.data.frame(readr::read_csv("USA_2022.csv"))
 States_2022                           <- as.data.frame(readr::read_csv("States_2022.csv"))
+# __but probably want to combine merge the supplemental and other !? ####
+EJSCREEN_2022_Supplemental_with_AS_CNMI_GU_VI          <- as.data.frame(readr::read_csv("EJSCREEN_2022_Supplemental_with_AS_CNMI_GU_VI.csv"))
+EJSCREEN_2022_Supplemental_StatePct_with_AS_CNMI_GU_VI <- as.data.frame(readr::read_csv("EJSCREEN_2022_Supplemental_StatePct_with_AS_CNMI_GU_VI.csv"))
 
-# see metadata_add() and metadata_check()  or set metadata like this instead:
-#e.g., 
+# ADD METADATA ####
+# see EJAM::metadata_add() and metadata_check()  or set metadata like this instead, E.G. :
 #  meta   <- list(
 #    census_version = 2020,
 #    acs_version = '2016-2020',
@@ -34,18 +48,63 @@ States_2022                           <- as.data.frame(readr::read_csv("States_2
 #    ejscreen_releasedate = 'October 2022',
 #    ejscreen_pkg_data = 'bg22'
 #  )
-#
 #attributes(EJSCREEN_Full_with_AS_CNMI_GU_VI)     <- c(attributes(EJSCREEN_Full_with_AS_CNMI_GU_VI),     meta)
-#attributes(EJSCREEN_StatePct_with_AS_CNMI_GU_VI) <- c(attributes(EJSCREEN_StatePct_with_AS_CNMI_GU_VI), meta)
-#attributes(USA_2022)     <- c(attributes(USA_2022),    meta)
-#attributes(States_2022)  <- c(attributes(States_2022), meta)
+EJSCREEN_Full_with_AS_CNMI_GU_VI      <- EJAM::metadata_add(EJSCREEN_Full_with_AS_CNMI_GU_VI)
+EJSCREEN_StatePct_with_AS_CNMI_GU_VI  <- EJAM::metadata_add(EJSCREEN_StatePct_with_AS_CNMI_GU_VI) 
+USA_2022                              <- EJAM::metadata_add(USA_2022)
+States_2022                           <- EJAM::metadata_add(States_2022)
+EJSCREEN_2022_Supplemental_with_AS_CNMI_GU_VI          <- EJAM::metadata_add(EJSCREEN_2022_Supplemental_with_AS_CNMI_GU_VI)
+EJSCREEN_2022_Supplemental_StatePct_with_AS_CNMI_GU_VI <- EJAM::metadata_add(EJSCREEN_2022_Supplemental_StatePct_with_AS_CNMI_GU_VI)
 
-# add to this package
-usethis::use_data(EJSCREEN_Full_with_AS_CNMI_GU_VI)
-usethis::use_data(EJSCREEN_StatePct_with_AS_CNMI_GU_VI)
-usethis::use_data(USA_2022)
-usethis::use_data(States_2022)
 
+# what about lookups for supplemental indicators?? ####
+
+
+
+
+
+########################################################### #
+# RENAME ALL VARIABLES (COLUMN NAMES) ####
+# NEW AS OF 1/26/2023 - WILL RENAME COLUMNS OF DATA.FRAME TO MATCH WHAT IS USED IN EJAM:: and in ejscreen::
+# instead of sticking with variable names from FTP site.
+
+bg <- copy(EJSCREEN_Full_with_AS_CNMI_GU_VI) # copied in case doing this after already part of package and just updating
+names(bg) <- ejscreen::change.fieldnames.ejscreen.csv( names(bg) )
+EJSCREEN_Full_with_AS_CNMI_GU_VI <- copy(bg)
+
+bg <- copy(EJSCREEN_StatePct_with_AS_CNMI_GU_VI)
+names(bg) <- ejscreen::change.fieldnames.ejscreen.csv( names(bg) )
+EJSCREEN_StatePct_with_AS_CNMI_GU_VI <- copy(bg)
+
+bg <- copy(USA_2022)
+names(bg) <- ejscreen::change.fieldnames.ejscreen.csv( names(bg) )
+USA_2022  <- copy(bg)
+
+bg <- copy(States_2022)
+names(bg) <- ejscreen::change.fieldnames.ejscreen.csv( names(bg) )
+States_2022 <- copy(bg)
+
+bg <- copy(EJAMejscreendata::EJSCREEN_2022_Supplemental_with_AS_CNMI_GU_VI)
+names(bg) <- ejscreen::change.fieldnames.ejscreen.csv( names(bg) )
+EJSCREEN_2022_Supplemental_with_AS_CNMI_GU_VI <- copy(bg)
+
+bg <- copy(EJAMejscreendata::EJSCREEN_2022_Supplemental_StatePct_with_AS_CNMI_GU_VI)
+names(bg) <- ejscreen::change.fieldnames.ejscreen.csv( names(bg) )
+EJSCREEN_2022_Supplemental_StatePct_with_AS_CNMI_GU_VI <- copy(bg)
+
+#################################################################################
+
+# ADD DATA TO PACKAGE ####
+usethis::use_data(EJSCREEN_Full_with_AS_CNMI_GU_VI,     overwrite = T)
+usethis::use_data(EJSCREEN_StatePct_with_AS_CNMI_GU_VI, overwrite = T)
+usethis::use_data(USA_2022,    overwrite = T)
+usethis::use_data(States_2022, overwrite = T)
+# new:
+usethis::use_data(EJSCREEN_2022_Supplemental_with_AS_CNMI_GU_VI,          overwrite = T)
+usethis::use_data(EJSCREEN_2022_Supplemental_StatePct_with_AS_CNMI_GU_VI, overwrite = T)
+
+#################################################################################
+# LOOK AT IT ####
 
 dim(EJSCREEN_Full_with_AS_CNMI_GU_VI)
 # [1] 242940    155

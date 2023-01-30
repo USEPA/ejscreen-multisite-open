@@ -1,5 +1,8 @@
 #' look at several packages to spot conflicting exported names (functions or data)
-#'
+#' See what objects are exported by a given package
+#' @details This can help find duplicates/conflicts within source code 
+#'   and make sure they are on search path, for when renaming / moving functions/packages
+#'   
 #' @param pkg one or more package names as vector of strings. 
 #'   If "all" it checks all installed pkgs, but takes very very long potentially.
 #' @param sortbypkg If TRUE, just returns same thing but sorted by package name
@@ -8,7 +11,15 @@
 #' @export
 #'
 dupenames <- function(pkg = EJAM::ejampackages, sortbypkg=FALSE) {
-  
+
+  # Get list of exported names in package1, then look in package1 to
+  #   obs <- getNamespaceExports(pkg)
+  # find those appearing in source code .R files without package1:: specified,
+  # since code using those functions and code defining those have to both be in the same pkg,
+  #  (or need to add xyz:: specified)
+  # and maybe want to do global search replace within files, like this:
+  #   xfun::gsub_file()
+
   # latlon_as.numeric
   # latlon_df_clean
   # latlon_infer
