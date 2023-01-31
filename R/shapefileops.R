@@ -1,4 +1,4 @@
-#' Spatial overlay of facilities points and US States shapefiles to add STATE as column in facility table
+#' OBSOLETE Spatial overlay of facilities points and US States shapefiles to add STATE as column in facility table
 #'
 #' @param facs facilities LONG LAT table
 #' @param shapefile shapefile of States
