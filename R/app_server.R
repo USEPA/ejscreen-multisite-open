@@ -45,5 +45,36 @@ app_server <- function(input, output, session) {
   output$upload_check <- renderTable({
     head(data_latlon())
   })
+  
+  ## output: leaflet map of uploaded points
+  output$an_leaf_map <- leaflet::renderLeaflet({
+    
+    #req(input$ss_upload_latlon)
+    
+    ## function in global.R, will go in own script later
+    ## once name is settled
+    plot_facilities(data_latlon())
+  })
+  
+  ## output: display number of uploaded sites
+  output$an_map_text <- renderText({
+    req(input$ss_upload_latlon)
+    
+    paste0(nrow(data_latlon()), ' points uploaded')
+  })
+  
+  ## output: display barplot
+  output$summ_display_bar <- renderPlot({
+    
+    ## placeholder code for barplot
+    barplot(table(InsectSprays$spray))
+  })
+  
+  ## output: display histogram
+  output$summ_display_hist <- renderPlot({
+    
+    ## placeholder code for histogram
+    hist(InsectSprays$count)
+  })
 }
 
