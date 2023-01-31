@@ -2,41 +2,41 @@
 % Please edit documentation in R/proxistat2.R
 \name{proxistat2}
 \alias{proxistat2}
-\title{create proximity score for every blockgroup
-indicator of each blockgroups proximity to user set of facilities or sites
-Still need area of each block to fix this func proxistat2()}
+\title{Calculate a proximity score for every blockgroup
+Indicator of proximity of each blockgroups to some set of facilities or sites.
+Proximity score is sum of (1/d) where each d is distance of a given site in km,
+summed over all sites within 5km, as in EJScreen.
+
+*** Still need area of each block to fix this func proxistat2()}
 \usage{
 proxistat2(pts, cutoff = 8.04672, quadtree)
 }
 \arguments{
 \item{pts}{data.table of lat lon}
 
-\item{cutoff}{distance max, in miles, default is 5km}
+\item{cutoff}{distance max, in miles, default is 5km (8.04672 miles)
+which is the EJScreen max search range for proximity scores}
 
 \item{quadtree}{must be localtree from EJAM::}
-
-\item{area}{A number or vector of numbers giving size of each spatial unit with FIPS.pop,
-in square miles or square kilometers depending on the \code{units} parameter.
-Optional. Default is 0, in which case no adjustment is made for small distance,
-which can cause unrealistically large scores.
-But if point to point distance is zero distance, and area=0,
-NA instead of Inf will be returned for the score.}
 }
 \value{
 data.table with proximityscore, bgfips, lat, lon, etc.
 }
 \description{
-create proximity score for every blockgroup
-indicator of each blockgroups proximity to user set of facilities or sites
-Still need area of each block to fix this func proxistat2()
+Calculate a proximity score for every blockgroup
+Indicator of proximity of each blockgroups to some set of facilities or sites.
+Proximity score is sum of (1/d) where each d is distance of a given site in km,
+summed over all sites within 5km, as in EJScreen.
+
+*** Still need area of each block to fix this func proxistat2()
 }
 \examples{
- # x <- proxiscore_bg(pts = pts[1:1000,], quadtree = localtree) 
+ # pts <- testpoints_50
+ # x <- proxistat2(pts = pts[1:1000,], quadtree = localtree) 
  #
  # summary(x$proximityscore)
  # # analyze.stuff::pctiles(x$proximityscore)
  # plot(x$lon, x$lat)
- # cat("problem = still have infinite or huge values since function is not yet correcting for tiny distances \n")
  # tops = x$proximityscore > 500 & !is.infinite(x$proximityscore) & !is.na(x$proximityscore)
  # points(x$lon[tops], x$lat[tops], col="red")
  
