@@ -12,6 +12,9 @@ app_ui <- function(request) {
     ## begin app UI
     fluidPage(
       
+      ## add HTML header as ui output
+      uiOutput(outputId = 'html_header'),
+      
       ## add title for app and browser tab
       titlePanel(title = "EJAM (Environmental Justice Analysis Multi-site) Tool",
                  windowTitle = "EJAM (Environmental Justice Analysis Multi-site) Tool"
@@ -178,6 +181,17 @@ app_ui <- function(request) {
                  shiny::actionButton(inputId = 'bt_get_results', 
                                      label = 'Process Facilities'),
                  
+                 ## input: upload batch buffer output - standard report stats
+                 shiny::fileInput(inputId = 'bt_upload_adj',
+                                  label = 'Upload batch buffer output - with standard report stats',
+                                  accept = c('.xls', '.xlsx', ".csv", "text/csv", "text/comma-separated-values, text/plain")
+                 ),
+                 
+                 ## input: upload batch buffer output - adjusted for double counting
+                 shiny::fileInput(inputId = 'bt_upload_std',
+                                  label = 'Upload batch buffer output - adjusted for double counting',
+                                  accept = c('.xls', '.xlsx', ".csv", "text/csv", "text/comma-separated-values, text/plain")
+                 )
         ),
         
         ## summaries tab
@@ -301,8 +315,10 @@ app_ui <- function(request) {
                  shiny::downloadButton(outputId = 'rg_download', 
                                        label = 'Download report')
         )
-      )
+      ),
       
+      ## add HTML footer as ui output
+      uiOutput(outputId = 'html_footer')
     ) ## end fluidPage
   )
 } ########################################################################### #

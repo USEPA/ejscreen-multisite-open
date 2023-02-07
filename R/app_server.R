@@ -10,12 +10,26 @@ app_server <- function(input, output, session) {
   # https://github.com/ThinkR-open/golem/issues/6
   
   
+  ## output: html page header using OneEPA template code
+  output$html_header <- renderUI({
+    isolate(
+      source('html_header.R')
+    )
+  })
+  
+  ## output: html page footer using OneEPA template code
+  output$html_footer <- renderUI({
+    isolate(
+      source('html_footer.R')
+    )
+  })
+  
   ## update ss_select_NAICS input options
   updateSelectizeInput(session, inputId = 'ss_select_naics', 
                        choices = EJAM::NAICS, server = TRUE)
   
-  ## reactive: process uploaded latlon
-  data_latlon <- reactive({
+  ## reactive: read uploaded latlon
+  data_up_latlon <- reactive({
     ## wait for file to be uploaded
     req(input$ss_upload_latlon)
     
@@ -24,11 +38,62 @@ app_server <- function(input, output, session) {
     
     ## if acceptable file type, read in; if not, send warning text
     ext <- switch(ext,
-      csv =  read.csv(input$ss_upload_latlon$datapath),
-      xls = read.table(input$ss_upload_latlon$datapath),
-      xlsx = read.table(input$ss_upload_latlon$datapath),
-      shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
+                  csv =  read.csv(input$ss_upload_latlon$datapath),
+                  xls = read.table(input$ss_upload_latlon$datapath),
+                  xlsx = read.table(input$ss_upload_latlon$datapath),
+                  shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
     )
+    
+    ext
+  })
+  
+  ## reactive: data uploaded by FRS IDs
+  data_up_frs <- reactive({
+    ## depends on FRS file upload
+    req(input$ss_upload_frs)
+  })
+  
+  ## reactive: data uploaded by NAICS
+  data_up_naics <- reactive({
+    ## depends on NAICS entering or selection
+    req(input$ss_enter_naics | input$ss_select_naics)
+    
+  })
+  
+  ## reactive: data uploaded by ECHO
+  data_up_echo <- reactive({
+    ## depends on ECHO upload - which may use same file upload as latlon/FRS
+    #req(input$ss_upload_echo)
+    
+  })
+  
+  ## reactive: process uploaded data
+  data_processed <- reactive({
+    ## getblocksnearby
+    sitepoints <- as.data.table(data_up_latlon() %>% rename(lat = FacLat, lon = FacLong,
+                                                            siteid = RegistryID)) 
+    
+    getblocksnearby(sitepoints,
+                    cutoff = input$bt_rad_buff,
+                    quadtree = localtree
+    )
+  })
+  
+  ## reactive: summarize processed data
+  data_summarized <- reactive({
+    ## run EJAMbatch.summarizer::batch.summarize on already processed data
+    # a) processed in-app: 
+    data_processed()
+    # b) processed and downloaded another time, to be re-uploaded now
+    req(input$bt_upload_adj, input$bt_upload_std)
+  })
+  
+  ## reactive: data for use in static report
+  data_report <- reactive({
+    ## this is to take in the summarized results and 
+    ## reduce them down to only the pieces that will
+    ## go into the static report
+    # data_summarized()
   })
   
   ## pull up modal with ECHO information on button click
@@ -43,7 +108,7 @@ app_server <- function(input, output, session) {
   
   ## REMOVE later - print first few rows of uploaded latlon data
   output$upload_check <- renderTable({
-    head(data_latlon())
+    head(data_up_latlon())
   })
   
   ## output: leaflet map of uploaded points
@@ -53,14 +118,14 @@ app_server <- function(input, output, session) {
     
     ## function in global.R, will go in own script later
     ## once name is settled
-    plot_facilities(data_latlon())
+    plot_facilities(data_up_latlon())
   })
   
   ## output: display number of uploaded sites
   output$an_map_text <- renderText({
     req(input$ss_upload_latlon)
     
-    paste0(nrow(data_latlon()), ' points uploaded')
+    paste0(nrow(data_up_latlon()), ' points uploaded')
   })
   
   ## output: display barplot

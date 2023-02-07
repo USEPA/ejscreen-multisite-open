@@ -84,3 +84,8 @@ plot_facilities <- function(mypoints, rad = 4){
   leaflet.extras2::addEasyprint(map = mymap, options = leaflet.extras2::easyprintOptions(exportOnly = TRUE, title='Save Map Snapshot'))
   
 }
+
+## code to generate quadtree dataset on app startup
+localtree <- SearchTrees::createTree(
+  EJAMblockdata::quaddata, treeType = "quad", dataType = "point"
+)
