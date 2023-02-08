@@ -15,30 +15,29 @@
 #'   inside the circular buffer more accurately and more quickly than
 #'   areal apportionment of block groups would provide. 
 #'   
-#' @details  Relies on blockquadtree, indexgridsize and quaddata  
-#'   variables that need to be available in the global environment, as data
-#'   from a loaded package. 
-#' 
 #' @param sitepoints data.table with columns siteid, lat, lon giving point locations of sites or facilities around which are circular buffers
 #' @param cutoff miles radius, defining circular buffer around site point 
 #' @param maxcutoff miles distance (max distance to check if not even 1 block point is within cutoff)
 #' @param avoidorphans logical Whether to avoid case where no block points are within cutoff, 
 #'   so if TRUE, it keeps looking past cutoff to find nearest one within maxcutoff.
-#' @param quadtree (a pointer to the large quadtree object?) 
+#' @param quadtree (a pointer to the large quadtree object) 
 #'    created from the SearchTree package example:
 #'    SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
 #'    Takes about 2-5 seconds to create this each time it is needed.
 #'    It can be automatically created when the package is loaded via the [.onLoad()] function
+#' @param report_progress_every_n Reports progress to console after every n points,
+#'   mostly for testing, but a progress bar feature might be useful unless this is super fast.
 #' @examples 
-#'   x = getblocksnearby(testpoints_1000_dt, quadtree = localtree)
+#'   localtree_example = SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
+#'   x = getblocksnearby(testpoints_1000_dt, quadtree = localtree_example)
 #'   
-#' @seealso [getblocksnearbyviaQuadTree_Clustered()]  [computeActualDistancefromSurfacedistance()] [getblocksnearbyviaQuadTree2()]
+#' @seealso [getblocksnearbyviaQuadTree_Clustered()] [getblocksnearbyviaQuadTree2()]
 #' @export
 #' @import data.table
 #' @importFrom pdist "pdist"
 #'
 getblocksnearbyviaQuadTree  <- function(sitepoints, cutoff=1, maxcutoff=31.07, 
-                                        avoidorphans=TRUE, 
+                                        avoidorphans=TRUE, report_progress_every_n=500, 
                                         quadtree) {
   if(class(quadtree) != "QuadTree"){
     stop('quadtree must be an object created from SearchTrees package with treeType = "quad" and dataType = "point"')  
@@ -93,7 +92,7 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, cutoff=1, maxcutoff=31.07,
     z_low  <- coords[,FAC_Z]-truedistance;
     # z_hi  <-  coords[,FAC_Z]+truedistance   # ** THIS waS   THE SLOWEST LINE  OVERALL ***
     
-    if ((i %% 100) == 0) {print(paste("Cells currently processing: ",i," of ", nRowsDf) ) } # i %% 100 indicates i mod 100 (“i modulo 100”) 
+    if ((i %% report_progress_every_n) == 0) {print(paste("Cells currently processing: ",i ," of ", nRowsDf) ) } # i %% report_progress_every_n indicates i mod report_progress_every_n (“i modulo report_progress_every_n”) 
     
     vec <- SearchTrees::rectLookup(quadtree, unlist(c(x_low, z_low  )),         unlist(c(x_hi, coords[,FAC_Z]+truedistance))) # x and z things are now vectorized
     # *** FIX/CHECK: 

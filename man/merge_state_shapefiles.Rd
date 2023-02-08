@@ -2,7 +2,7 @@
 % Please edit documentation in R/shapefileops.R
 \name{merge_state_shapefiles}
 \alias{merge_state_shapefiles}
-\title{Spatial overlay of facilities points and US States shapefiles to add STATE as column in facility table}
+\title{OBSOLETE Spatial overlay of facilities points and US States shapefiles to add STATE as column in facility table}
 \usage{
 merge_state_shapefiles(facs, shapefile)
 }
@@ -15,5 +15,5 @@ merge_state_shapefiles(facs, shapefile)
 Returns the facs that was passed to this function, but with a new column, STATE, that has the name of the State each point is inside of
 }
 \description{
-Spatial overlay of facilities points and US States shapefiles to add STATE as column in facility table
+OBSOLETE Spatial overlay of facilities points and US States shapefiles to add STATE as column in facility table
 }
