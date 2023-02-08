@@ -27,6 +27,18 @@ app_ui <- function(request) {
         ## site selection tab
         tabPanel(title = 'Site Selection',
                  
+                 ## REMOVE later - vertical space
+                 br(),
+                 
+                 ## input: Upload list of facility lat/longs
+                 fileInput(inputId = 'ss_upload_latlon',  
+                           label = 'Upload file of site to buffer and summarize (.csv, .xls, or .xlsx) with lat & lon as column headers in row 1',
+                           #placeholder = 'test_input_latlon.csv', 
+                           multiple = FALSE,
+                           accept = c('.xls', '.xlsx', ".csv", "text/csv", "text/comma-separated-values,text/plain")
+                           # add hover tips here maybe, or even a button to view examples of valid formats and details on that.
+                 ),       
+                 
                  ## input: Enter NAICS code manually       
                  textInput(
                    inputId = "ss_enter_naics",
@@ -53,14 +65,6 @@ app_ui <- function(request) {
                    multiple = TRUE
                  ),
                  
-                 ## input: Upload list of facility lat/longs
-                 fileInput(inputId = 'ss_upload_latlon',  
-                           label = 'Upload file of site to buffer and summarize (.csv, .xls, or .xlsx) with lat & lon as column headers in row 1',
-                           #placeholder = 'test_input_latlon.csv', 
-                           multiple = FALSE,
-                           accept = c('.xls', '.xlsx', ".csv", "text/csv", "text/comma-separated-values,text/plain")
-                           # add hover tips here maybe, or even a button to view examples of valid formats and details on that.
-                 ),
                  
                  ## input: Upload list of FRS identifiers
                  shiny::fileInput(
@@ -68,13 +72,6 @@ app_ui <- function(request) {
                    label = 'Upload list of FRS identifiers',
                    accept = c('.xls', '.xlsx', ".csv", "text/csv", "text/comma-separated-values, text/plain")
                  ),
-                 
-                 ## TESTING - need to validate uploaded files
-                 ## input: upload shapefile with facilities
-                 shiny::fileInput(inputId = "ss_upload_shp", 
-                                  label = "Upload Shapefile", 
-                                  accept=c('.shp','.dbf','.sbn','.sbx','.shx',".prj"), 
-                                  multiple=TRUE),
                  
                  ## input: Limit to facilities where selected NAICS is found w/in EPA list
                  shiny::checkboxGroupInput(
@@ -100,6 +97,12 @@ app_ui <- function(request) {
                  ## input: Find sites via ECHO
                  shiny::actionButton(inputId = 'ss_search_echo', label = 'Find sites via ECHO'),
                  
+                 ## input: Upload list of FRS identifiers
+                 shiny::fileInput(
+                   inputId = 'ss_upload_echo',
+                   label = 'Upload list of ECHO facilities',
+                   accept = c('.xls', '.xlsx', ".csv", "text/csv", "text/comma-separated-values, text/plain")
+                 ),
                  
                  ## REMOVE later - check for uploaded latlon dataset
                  tableOutput('upload_check')
@@ -111,6 +114,29 @@ app_ui <- function(request) {
                  ## REMOVE later - add space
                  br(),  
                  
+                 ## output: display number of uploaded sites
+                 textOutput(outputId = 'an_map_text'),
+                 
+                 ## input: highlight clusters on map? yes/no
+                 shiny::checkboxInput(inputId = 'an_map_clusters', 
+                                      label = 'Highlight overlaps?'
+                 ),
+                 
+                 ## REMOVE LATER - add space
+                 br(),
+                 
+                 ## output: show leaflet map of uploaded points
+                 leaflet::leafletOutput(outputId = 'an_leaf_map', 
+                                        height = '500px', 
+                                        width = '500px'),
+                 
+                 ## input: Specify radius of circular buffer       
+                 shiny::sliderInput(inputId = 'bt_rad_buff',
+                                    label = htmltools::h5("Radius of circular buffer in miles"),
+                                    value = 1.0, step = 0.25,
+                                    min = 0.25, max = 10 
+                 ),
+                 
                  ## input: Percentiles of sites & residents to calculate
                  shiny::checkboxGroupInput(inputId = 'an_list_pctiles', 
                                            label = 'Percentiles of sites & residents to calculate:', 
@@ -120,6 +146,15 @@ app_ui <- function(request) {
                                            choiceValues = probs.default.values,
                                            selected = probs.default.selected,
                                            inline = TRUE),
+                 
+                 ## input: button to run batch processing code
+                 shiny::actionButton(inputId = 'bt_get_results', 
+                                     label = 'Process Facilities'),
+                 
+        ),
+        
+        ## buffering tools tab
+        tabPanel(title = 'Buffering Tools',
                  
                  ## input: Name for 1st set of comparisons
                  shiny::textInput(inputId = 'an_name_comp1', 
@@ -149,37 +184,8 @@ app_ui <- function(request) {
                               value=threshold.default['comp2']
                  ),
                  
-                 ## input: highlight clusters on map? yes/no
-                 shiny::checkboxInput(inputId = 'an_map_clusters', 
-                                      label = 'Highlight overlaps?'
-                 ),
-                 
-                 ## output: display number of uploaded sites
-                 textOutput(outputId = 'an_map_text'),
-                 
-                 ## REMOVE LATER - add space
+                 ## REMOVE LATER - vertical space     
                  br(),
-                 
-                 ## output: show leaflet map of uploaded points
-                 leaflet::leafletOutput(outputId = 'an_leaf_map', 
-                                        height = '500px', 
-                                        width = '500px')
-                 
-        ),
-        
-        ## buffering tools tab
-        tabPanel(title = 'Buffering Tools',
-                 
-                 ## input: Specify radius of circular buffer       
-                 shiny::sliderInput(inputId = 'bt_rad_buff',
-                                    label = htmltools::h5("Radius of circular buffer in miles"),
-                                    value = 1.0, step = 0.25,
-                                    min = 0.25, max = 10 
-                 ),
-                 
-                 ## input: button to request buffer results
-                 shiny::actionButton(inputId = 'bt_get_results', 
-                                     label = 'Process Facilities'),
                  
                  ## input: upload batch buffer output - standard report stats
                  shiny::fileInput(inputId = 'bt_upload_adj',
@@ -191,36 +197,15 @@ app_ui <- function(request) {
                  shiny::fileInput(inputId = 'bt_upload_std',
                                   label = 'Upload batch buffer output - adjusted for double counting',
                                   accept = c('.xls', '.xlsx', ".csv", "text/csv", "text/comma-separated-values, text/plain")
-                 )
+                 ),
+                 
+                 ## input: button to run batch processing code
+                 shiny::actionButton(inputId = 'bt_get_summary', 
+                                     label = 'Summarize Buffer Output'),
         ),
         
         ## summaries tab
         tabPanel(title = 'Summaries',
-                 
-                 ## row of barplot settings        
-                 fluidRow(
-                   h4('Barplot settings'),
-                   ## input: Barplot setting - indicator type
-                   column(4, 
-                          radioButtons(inputId = 'summ_bar_ind', 
-                                       label = h5('Indicator type'), 
-                                       choices = c('Demographic', 'Environmental','EJ'))
-                   ),
-                   ## input: Barplot setting - data type
-                   column(3, 
-                          radioButtons(inputId = 'summ_bar_data', label = 'Data Type', 
-                                       choiceValues = c('ratio', 'pctile','raw'), 
-                                       choiceNames = c('Ratio to US','Percentile of population', 'Raw data'))
-                   ),
-                   ## input: Barplot setting - statistic type
-                   column(3, 
-                          radioButtons(inputId = 'summ_bar_stat', 'Statistic', 
-                                       choiceValues = c('avg', 'med'),
-                                       choiceNames = c('Average', 'Median')))
-                 ),
-                 
-                 ## output: display barplot
-                 plotOutput(outputId = 'summ_display_bar'),
                  
                  ## row of histogram settings
                  fluidRow(
@@ -255,7 +240,33 @@ app_ui <- function(request) {
                  ),
                  
                  ## output: display histogram
-                 plotOutput(outputId = 'summ_display_hist'),
+                 plotOutput(outputId = 'summ_display_hist'),     
+                 
+                 ## row of barplot settings        
+                 fluidRow(
+                   h4('Barplot settings'),
+                   ## input: Barplot setting - indicator type
+                   column(4, 
+                          radioButtons(inputId = 'summ_bar_ind', 
+                                       label = h5('Indicator type'), 
+                                       choices = c('Demographic', 'Environmental','EJ'))
+                   ),
+                   ## input: Barplot setting - data type
+                   column(3, 
+                          radioButtons(inputId = 'summ_bar_data', label = 'Data Type', 
+                                       choiceValues = c('ratio', 'pctile','raw'), 
+                                       choiceNames = c('Ratio to US','Percentile of population', 'Raw data'))
+                   ),
+                   ## input: Barplot setting - statistic type
+                   column(3, 
+                          radioButtons(inputId = 'summ_bar_stat', 'Statistic', 
+                                       choiceValues = c('avg', 'med'),
+                                       choiceNames = c('Average', 'Median')))
+                 ),
+                 
+                 ## output: display barplot
+                 plotOutput(outputId = 'summ_display_bar'),
+                 
                  
                  
                  ## row of executive summary settings

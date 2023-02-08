@@ -1,5 +1,10 @@
 # global.R defines variables needed in global environment
 
+library(tidyverse)
+library(leaflet)
+library(data.table)
+library(EJAM)
+
 ## text message about ECHO facility search
 ## used by inputId 'ss_search_echo'
 echo_url <-  'https://echo.epa.gov/facilities/facility-search' # used in server.R and in message below
@@ -29,7 +34,7 @@ epa_programs <- c(
 #                           "0.90", "0.95", "0.99", "1.00")
 probs.default.selected <- c(0.25, 0.75, 0.95)
 probs.default.values <- c(0, 0.25, 0.5, 0.75, 0.8, 
-                           0.9, 0.95, 0.99, 1)
+                          0.9, 0.95, 0.99, 1)
 probs.default.names <- formatC(probs.default.values, digits = 2, format='f', zero.print = '0')
 
 
@@ -44,8 +49,11 @@ threshgroup.default <- list(
   'comp1' = "EJ US pctiles",  'comp2' = "EJ State pctiles"
 )
 
+## global variables for mapping
+meters_per_mile <- 1609.344
+
 ## function for making leaflet map of uploaded points
-plot_facilities <- function(mypoints, rad = 4){
+plot_facilities <- function(mypoints, rad = 4, highlight = FALSE, clustered){
   
   ## map settings
   base_color      <- 'blue'
@@ -53,12 +61,13 @@ plot_facilities <- function(mypoints, rad = 4){
   highlight_color<- 'orange'
   circleweight <- 4
   
-  # names(mypoints) <- gsub('lon','longitude', names(mypoints))
-  # names(mypoints) <- gsub('lat','latitude', names(mypoints))
-  
-  names(mypoints) <- gsub('FacLat','latitude', names(mypoints))
-  names(mypoints) <- gsub('FacLong','longitude', names(mypoints))
-  
+  ## if checkbox to highlight clusters is checked
+  if(highlight == TRUE){
+    ## compare latlons using is_clustered() reactive
+    circle_color <- ifelse(clustered == TRUE, cluster_color, base_color)
+  } else {
+    circle_color <- base_color
+  }
   
   if (length(mypoints) != 0) {
     isolate({ # do not redraw entire map and zoom out and reset location viewed just because radius changed?
@@ -66,8 +75,8 @@ plot_facilities <- function(mypoints, rad = 4){
         addTiles()  %>%
         addCircles(
           #radius = input$radius * meters_per_mile,
-          radius = rad,
-          color = base_color, fillColor = base_color, 
+          radius = rad * meters_per_mile,
+          color = circle_color, fillColor = circle_color, 
           fill = TRUE, weight = circleweight, 
           #popup = popup_to_show()
         )
