@@ -1,7 +1,5 @@
 #' Key buffering function - wrapper redirecting to the right version of getblocksnearby()
 #' @details 
-#'  As written it assumes that certain things are 
-#'  already in global environment. 
 #'  
 #' @param sitepoints   see [getblocksnearbyviaQuadTree()] or other such functions
 #' @param cutoff       see [getblocksnearbyviaQuadTree()] or other such functions

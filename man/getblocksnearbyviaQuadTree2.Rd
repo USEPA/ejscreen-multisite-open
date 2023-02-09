@@ -9,6 +9,7 @@ getblocksnearbyviaQuadTree2(
   cutoff = 1,
   maxcutoff = 31.07,
   avoidorphans = TRUE,
+  report_progress_every_n = 500,
   quadtree
 )
 }
@@ -22,7 +23,10 @@ getblocksnearbyviaQuadTree2(
 \item{avoidorphans}{logical Whether to avoid case where no block points are within cutoff,
 so if TRUE, it keeps looking past cutoff to find nearest one within maxcutoff.}
 
-\item{quadtree}{(a pointer to the large quadtree object?)
+\item{report_progress_every_n}{Reports progress to console after every n points,
+mostly for testing, but a progress bar feature might be useful unless this is super fast.}
+
+\item{quadtree}{(a pointer to the large quadtree object)
 created from the SearchTree package example:
 SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
 Takes about 2-5 seconds to create this each time it is needed.
@@ -47,11 +51,11 @@ a way to quickly estimate what fraction of a block group is
 inside the circular buffer more accurately and more quickly than
 areal apportionment of block groups would provide.
 }
-\details{
-Relies on blockquadtree, indexgridsize and quaddata
-variables that need to be available in the global environment, as data
-from a loaded package.
+\examples{
+  localtree_example = SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
+  x = getblocksnearby2(testpoints_1000_dt, quadtree = localtree_example)
+
 }
 \seealso{
-\code{\link[=getblocksnearbyviaQuadTree_Clustered]{getblocksnearbyviaQuadTree_Clustered()}}  \code{\link[=computeActualDistancefromSurfacedistance]{computeActualDistancefromSurfacedistance()}} \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}}
+\code{\link[=getblocksnearbyviaQuadTree_Clustered]{getblocksnearbyviaQuadTree_Clustered()}}  \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}}
 }

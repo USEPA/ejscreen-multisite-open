@@ -30,10 +30,6 @@ SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "
 \description{
 Key buffering function - wrapper redirecting to the right version of getblocksnearby()
 }
-\details{
-As written it assumes that certain things are
-already in global environment.
-}
 \seealso{
 \code{\link[=getblocksnearby2]{getblocksnearby2()}} that was work in progress
 }
