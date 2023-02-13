@@ -1,4 +1,6 @@
-#' Run the Shiny Application
+#' Launch the Shiny Application in RStudio
+#' @description This lets you launch the shiny web app from RStudio
+#' @details 
 #' app_run_EJAM()                 is like EJAM::run_app()
 #' app_run_EJAMejscreenapi()      is like EJAMejscreenapi::run_app()
 #' app_run_EJAMbatch.summarizer() is like EJAMbatch.summarizer::run_app()
