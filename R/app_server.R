@@ -49,6 +49,28 @@ app_server <- function(input, output, session) {
   
   ## reactive: data uploaded by FRS IDs
   data_up_frs <- reactive({
+    req(input$ss_upload_frs)
+    ## check if file extension is appropriate
+    ext <- tools::file_ext(input$ss_upload_frs$name)
+    
+    read_frs <- switch(ext,
+                       csv =  read.csv(input$ss_upload_frs$datapath),
+                       xls = read.table(input$ss_upload_frs$datapath),
+                       xlsx = read_excel(input$ss_upload_frs$datapath),
+                       shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
+    )
+    
+    #include frs_is_valid verification check function
+    if (frs_is_valid(read_frs)){
+      
+      read_frs_dt <- data.table::as.data.table(read_frs)
+      
+      frs_lat_lon <- merge(x = read_frs_dt, y = EJAMfrsdata::frs, by.x='REGISTRY_ID', by.y='REGISTRY_ID', all.x=TRUE)
+      
+    }else{
+      shiny::validate('Records with invalid Registry IDs')
+    }
+    
     ## depends on FRS file upload
     #req(input$ss_upload_frs)
   })
@@ -56,8 +78,37 @@ app_server <- function(input, output, session) {
   ## reactive: data uploaded by NAICS
   data_up_naics <- reactive({
     ## depends on NAICS entering or selection
-    #req(shiny::isTruthy(input$ss_enter_naics) || shiny::isTruthy(input$ss_select_naics))
+    req(shiny::isTruthy(input$ss_enter_naics) || shiny::isTruthy(input$ss_select_naics))
     
+    #define inputs
+    naics_user_wrote_in_box <- input$ss_enter_naics
+    naics_user_picked_from_list <- input$ss_select_naics
+    
+    #NAICS validation function to check for non empty NAICS inputs
+    if(NAICS_validation(input$ss_enter_naics,input$ss_select_naics)){
+      
+      #splits up comma separated list if user manually inserts list
+      if(nchar(input$ss_enter_naics)>0){
+        naics_wib_split <- as.list(strsplit(naics_user_wrote_in_box, ",")[[1]])
+      }else{
+        naics_wib_split <- ""
+      }
+      
+      #construct regex expression and finds sites that align with user-selected naics codes
+      
+      inputnaics <- c(naics_wib_split, naics_user_picked_from_list)
+      inputnaics <- unique(inputnaics[inputnaics != ""])
+      inputnaics <- paste("^", inputnaics, collapse="|")   ### the NAICS specified by user
+      inputnaics <- stringr::str_replace_all(string = inputnaics, pattern = " ", replacement = "")
+      
+      #merge user-selected NAICS with FRS facility location information
+      sitepoints <- EJAMfrsdata::frs_by_naics[NAICS %like% inputnaics ,  ] 
+      
+    }else{
+      shiny::validate('Invalid NAIC Input')
+    }
+    
+    sitepoints
   })
   
   ## reactive: data uploaded by ECHO
@@ -91,6 +142,8 @@ app_server <- function(input, output, session) {
   
   ## reactive: hub for any/all uploaded data, gets passed to processing
   data_uploaded <- reactive({
+    
+    
     ## check for values from all upload reactives
     #req(shiny::isTruthy(input$ss_upload_latlon) || shiny::isTruthy(input$ss_upload_echo))
     #req(input$ss_upload_latlon)
@@ -101,16 +154,18 @@ app_server <- function(input, output, session) {
     #   shiny::isTruthy(data_up_naics()) +
     #   shiny::isTruthy(data_up_echo())
     
-    print(num_ul_methods())
+    #print(num_ul_methods())
     
     ## send message if more than 1 upload method used
     # shiny::validate(
     #   need(num_ul_methods() <= 1, message = "Please only use 1 upload method at a time")
     # )
-    
+    validate(
+      need(num_ul_methods() > 0, "Please upload a data set")
+    )
     
     ## if using lat/lon upload
-    if(isTruthy(data_up_latlon())){
+    if(isTruthy(input$ss_upload_latlon)){
       
       data_up_latlon() %>% 
         ## search for lat/lon-like column names and rename them
@@ -118,27 +173,31 @@ app_server <- function(input, output, session) {
         ## convert to data.table format
         data.table::as.data.table()
       
-    } #else if(isTruthy(data_up_echo())){
-    #   print('check')
-    #   data_up_echo() %>%
-    #     ## search for lat/lon-like column names and rename them
-    #     EJAM::latlon_df_clean() %>%
-    #     ## convert to data.table format
-    #     data.table::as.data.table()
-    # }
+    } else if(isTruthy(input$ss_select_naics)){
+      
+      data_up_naics()
+      
+    } else if(isTruthy(input$ss_upload_frs)){
+      
+      data_up_frs()
+      
+    } else if(isTruthy(input$ss_upload_echo)){
+      data_up_echo() %>% 
+        ## search for lat/lon-like column names and rename them
+        EJAM::latlon_df_clean() %>% 
+        ## convert to data.table format
+        data.table::as.data.table()
+    }
     
     ## needs to account for checklists of facility types to limit
     #req(input$ss_limit_fac1, input$ss_limit_fac2)
   })
   
-  ## reactive: process uploaded data
-  data_processed <- reactive({
+  data_processed <- reactiveVal(NULL)
+  
+  observeEvent(input$bt_get_results, {
     
-    ## requires data_uploaded reactive to exist
-    #req(isTruthy(data_uploaded()), input$bt_rad_buff)
-    #req(isTruthy(data_uploaded()))
-    
-    print('Processing facilities now')
+    showNotification('Processing facilities now!', type = 'message', duration = 0.5)
     
     ## run EJAM::getblocksnearby
     sites2blocks <- EJAM::getblocksnearby(
@@ -147,19 +206,54 @@ app_server <- function(input, output, session) {
       quadtree = localtree
     )
     
-    print('Running doaggregate')
+    #print('Running doaggregate')
+    #showNotification('Processing facilities now!', type = 'message', duration = 0.5)
     
     ## run EJAM::doaggregate
-    out <- EJAM::doaggregate(
+    out <- suppressWarnings(EJAM::doaggregate(
       sites2blocks = sites2blocks
-    )
+    ))
     
-    print('Processing complete')
+    showNotification('Processing complete!', type = 'message', duration = 3)
+    
+    #print('Processing complete')
     
     ## return output object
-    out
-    #data_processed() <- out    
+    data_processed(out)
+    
   })
+  
+  ## reactive: process uploaded data
+  #data_processed <- reactive({
+  # data_processed <- eventReactive(input$bt_get_results, {  
+  #   ## requires data_uploaded reactive to exist
+  #   #req(isTruthy(data_uploaded()), input$bt_rad_buff)
+  #   #req(isTruthy(data_uploaded()))
+  # 
+  #   print('Processing facilities now')
+  # 
+  #   ## run EJAM::getblocksnearby
+  #   sites2blocks <- EJAM::getblocksnearby(
+  #                     sitepoints = data_uploaded(),
+  #                     cutoff = input$bt_rad_buff,
+  #                     quadtree = localtree
+  #                   )
+  #   
+  #   print('Running doaggregate')
+  # 
+  #   ## run EJAM::doaggregate
+  #   out <- EJAM::doaggregate(
+  #     sites2blocks = sites2blocks
+  #   )
+  # 
+  #   print('Processing complete')
+  # 
+  #   ## return output object
+  #   out
+  #   
+  #   out
+  #   #data_processed() <- out    
+  # })
   
   ## reactive: summarize processed data
   data_summarized <- reactive({
@@ -188,6 +282,22 @@ app_server <- function(input, output, session) {
     ## go into the static report
     # data_summarized()
   })
+  
+  
+  ## TESTING - 
+  output$print_test <- renderText({
+    #req(isTruthy(data_uploaded()))
+    str(data_up_naics())
+    
+  })
+  
+  ## TESTING
+  output$print_test2 <- renderPrint({
+    
+    #req(input$ss_select_naics)
+    head(data_up_naics())    
+  })
+  
   
   ## pull up modal with ECHO information on button click
   observeEvent(input$ss_search_echo, {
@@ -225,8 +335,10 @@ app_server <- function(input, output, session) {
     
     ## function in global.R, will go in own script later
     ## once name is settled
-    plot_facilities(data_uploaded(), rad = input$bt_rad_buff, highlight = input$an_map_clusters,
-                    clustered = is_clustered())
+    suppressMessages(
+      plot_facilities(data_uploaded(), rad = input$bt_rad_buff, highlight = input$an_map_clusters,
+                      clustered = is_clustered())
+    )
   })
   
   ## update leaflet map when inputs change
@@ -241,17 +353,108 @@ app_server <- function(input, output, session) {
     } else {
       circle_color <- base_color
     }
-    
-    leafletProxy(mapId = 'an_leaf_map', session, data = data_uploaded()) %>% 
-      clearShapes() %>% 
-      addCircles(
-        radius = input$bt_rad_buff * meters_per_mile,
-        color = circle_color, fillColor = circle_color, 
-        fill = TRUE, weight = 4, 
-        #popup = popup_to_show()
-      )
+    suppressMessages(
+      leafletProxy(mapId = 'an_leaf_map', session, data = data_uploaded()) %>% 
+        clearShapes() %>% 
+        addCircles(
+          radius = input$bt_rad_buff * meters_per_mile,
+          color = circle_color, fillColor = circle_color, 
+          fill = TRUE, weight = 4, 
+          #popup = popup_to_show()
+        )
+    )
   })
   
+  ## output: show total population from doaggregate output
+  output$view1_total_pop <- renderText({
+    
+    req(data_processed())
+    
+    pop_num <- prettyNum(data_processed()$results_overall$pop, big.mark=',')
+    
+    paste0('Estimated total population: ', pop_num)
+  })
+  
+  ## output: show table of indicators in view 1
+  output$view1_demog_table <- DT::renderDT({
+    req(data_processed())
+    
+    dt <- cbind('Value at Uploaded Sites' = as.list( 100*round(data_processed()$results_overall[ , ..names_d], 2)),
+                'State Percentile' = as.list(round(data_processed()$results_overall[, ..names_d_state_pctile], 2)),
+                'National Percentile' = as.list(round(data_processed()$results_overall[, ..names_d_pctile], 2)))
+    
+    rownames(dt) <- EJAMbatch.summarizer::names_d_friendly[pmatch(names_d, EJAMbatch.summarizer::names_d_batch)]
+    rownames(dt)[1] <- 'Demographic Index'
+    
+    dt <- as.data.frame(dt) %>% rownames_to_column(var = 'Indicator')
+    
+    DT::datatable(dt, rownames = FALSE, 
+                  options = list(autoWidth = TRUE))
+  })
+  
+  ## output: show table of indicators in view 1
+  output$view1_envt_table <- DT::renderDT({
+    req(data_processed())
+    
+    #data_processed()[, ..EJAMbatch.summarizer::names_d_batch]
+    dt <- cbind('Value at Uploaded Sites' = 
+                  as.list(round(data_processed()$results_overall[ , ..names_e],2)),
+                'State Percentile' = as.list(round(data_processed()$results_overall[, ..names_e_state_pctile],2)),
+                'Percentile in USA' = as.list(round(data_processed()$results_overall[, ..names_e_pctile],2)))
+    
+    #scales::percent_format(accuracy = 0.1)()
+    rownames(dt) <- EJAMbatch.summarizer::names_e_friendly[pmatch(names_e, EJAMbatch.summarizer::names_e_batch)]
+    
+    dt <- as.data.frame(dt) %>% rownames_to_column(var = 'Indicator')
+    
+    DT::datatable(dt, rownames=FALSE,
+                  options = list(autoWidth = TRUE))
+  })
+  
+  ## output: show site-by-site table in View 3
+  output$view3_table <- DT::renderDT({
+    req(data_processed())
+    
+    DT::datatable(round(data_processed()$results_bysite,digits=2), rownames = FALSE, 
+                  #filter = 'top',
+                  selection = 'single',
+                  #extensions = c('FixedColumns','Buttons'),
+                  extensions = 'FixedColumns',
+                  options = list(
+                    #buttons = c('csv','excel'),
+                    autoWidth = TRUE,
+                    fixedHeader = TRUE, fixedColumns = list(leftColumns = 2),
+                    pageLength = 25, scrollX = TRUE, scrollY = '250px')
+    ) 
+    
+  })
+  
+  observe({
+    
+    req(data_processed())
+    site_ids <- data_processed()$results_bysite$siteid
+    names(site_ids) <- paste0('Site ', site_ids)
+    
+    
+    ## update v4_site_dropdown input options
+    updateSelectizeInput(session, inputId = 'v4_site_dropdown', 
+                         choices = site_ids, server = TRUE)
+    
+  })
+  
+  
+  ## output: dropdown of site IDs for view 4
+  # output$v4_site_dropdown <- renderUI({
+  #   req(data_processed())
+  #   
+  #   site_ids <- data_processed()$results_bysite$siteid
+  #   names(site_ids) <- paste0('Site ', site_ids)
+  #  
+  #   selectInput(inputId = 'v4_site_dropdown',
+  #               label = 'Select a site to explore',
+  #               choices = site_ids
+  #   )
+  # })
   
   ## output: display number of uploaded sites
   output$an_map_text <- renderText({
@@ -289,6 +492,31 @@ app_server <- function(input, output, session) {
     abline(h=nrow(data_processed()$results_bysite)/10)
   })
   
+  ## download 1-page summary comparable to EJScreen report
+  output$summary_download <- downloadHandler(
+    filename = 'brief_summary.html',
+    content = function(file) {
+      # Copy the report file to a temporary directory before processing it, in
+      # case we don't have write permissions to the current working dir (which
+      # can happen when deployed).
+      tempReport <- file.path(tempdir(), "brief_summary.Rmd")
+      file.copy("www/brief_summary.Rmd", tempReport, overwrite = TRUE)
+      
+      # Set up parameters to pass to Rmd document
+      params <- list(n = 3, cur_data = data_processed() %>% as.data.frame())
+      
+      # Knit the document, passing in the `params` list, and eval it in a
+      # child of the global environment (this isolates the code in the document
+      # from the code in this app).
+      rmarkdown::render(tempReport, output_format = 'html_document',
+                        output_file = file,
+                        params = params,
+                        envir = new.env(parent = globalenv())
+      )
+    }
+  )
+  
+  ## download full static report
   output$rg_download <- downloadHandler(
     filename = 'report.docx',
     content = function(file) {

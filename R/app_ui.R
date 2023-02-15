@@ -11,9 +11,14 @@ app_ui <- function(request) {
     
     ## begin app UI
     fluidPage(
-      
+      tags$style(HTML("
+        .tabbable > .nav > li[class=active] > a {
+           background-color: #005ea2;
+           font-weight: bold;
+        }")),
       ## add HTML header as ui output
-      uiOutput(outputId = 'html_header'),
+      #uiOutput(outputId = 'html_header'),
+      html_header_fmt,
       
       ## add title for app and browser tab
       titlePanel(title = "EJAM (Environmental Justice Analysis Multi-site) Tool",
@@ -23,6 +28,16 @@ app_ui <- function(request) {
       ## create tabsetPanel with tabs for different sections
       tabsetPanel(
         id = 'all_tabs',
+        type = 'pills',
+        
+        ## introduction tab
+        tabPanel(title = 'Introduction',
+                 
+                 br(),
+                 
+                 ## html intro text - in global.R
+                 intro_text
+        ),
         
         ## site selection tab
         tabPanel(title = 'Site Selection',
@@ -30,88 +45,181 @@ app_ui <- function(request) {
                  ## REMOVE later - vertical space
                  br(),
                  
-                 ## input: Upload list of facility lat/longs
-                 fileInput(inputId = 'ss_upload_latlon',  
-                           label = 'Upload file of site to buffer and summarize (.csv, .xls, or .xlsx) with lat & lon as column headers in row 1',
-                           #placeholder = 'test_input_latlon.csv', 
-                           multiple = FALSE,
-                           accept = c('.xls', '.xlsx', ".csv", "text/csv", "text/comma-separated-values,text/plain")
-                           # add hover tips here maybe, or even a button to view examples of valid formats and details on that.
-                 ),       
+                 h3('Specifying Locations to Analyze'),
                  
-                 ## input: Enter NAICS code manually       
-                 textInput(
-                   inputId = "ss_enter_naics",
-                   label = htmltools::h6(
-                     "Enter NAICS codes of interest - ",
-                     htmltools::a("Look up NAICS", href ="https://www.census.gov/naics"),
-                     htmltools::a(htmltools::img(id = "ibutton",src = "www/i.png",height = 15,width = 15),
-                                  href = "www/ibutton_help.html#help_naicslist",target = "_blank")
+                 ## upload help text - in global.R
+                 HTML(upload_help_msg),
+                 
+                 ## input: dropdown to choose upload method
+                 selectInput(inputId = 'ss_choose_method',
+                             label = 'Please choose an upload method:',
+                             choices = c('NAICS code selection' = 'NAICS',
+                                         'Upload facility FRS ID file' = 'FRS',
+                                         'Upload facility lat/lon file' = 'latlon',
+                                         'Upload ECHO dataset' = 'ECHO')),
+                 
+                 ## add tooltip to dropdown for additional info
+                 tags$style(HTML("
+                .tooltip > .tooltip-inner {
+                background-color: #005ea2;
+                }
+                ")), 
+                 shinyBS::bsTooltip(id = 'ss_choose_method', title = 'Please read the upload instructions given below.',
+                                    placement = 'right', trigger = 'hover'),
+                 
+                 ## conditional Panels to show/hide other selection methods
+                 
+                 ## NAICS condition
+                 conditionalPanel(
+                   condition = "input.ss_choose_method == 'NAICS'",
+                   
+                   ## input: Enter NAICS code manually       
+                   textInput(
+                     inputId = "ss_enter_naics",
+                     label = htmltools::h6(
+                       "Enter NAICS codes of interest - ",
+                       htmltools::a("Look up NAICS", href ="https://www.census.gov/naics"),
+                       htmltools::a(htmltools::img(id = "ibutton",src = "www/i.png",height = 15,width = 15),
+                                    href = "www/ibutton_help.html#help_naicslist",target = "_blank")
+                     ),
+                     value = "",
+                     width = 400,
+                     placeholder = NULL
                    ),
-                   value = "",
-                   width = 400,
-                   placeholder = NULL
+                   
+                   ## input: Select NAICS from list
+                   selectInput(
+                     inputId = "ss_select_naics",
+                     label = htmltools::h6("Select industry of interest"),
+                     # choose from named numeric vector on server-side
+                     ## number is NAICS like 31182, names are like "31182 - Cookie, Cracker, and Pasta Manufacturing" 
+                     choices = NULL, 
+                     selected = NULL,
+                     width = 400,
+                     multiple = TRUE
+                   ),
+                   
+                   ## testing 
+                   verbatimTextOutput('print_test2'),
+                   
+                   ## read more about NAICS - expandable/collabsible panel
+                   shinyBS::bsCollapse(
+                     id = 'naics_help', open = 'Read more about NAICS',
+                     shinyBS::bsCollapsePanel(title = 'Read more about NAICS',
+                                              style = 'success',
+                                              h3('Select industry'),
+                                              helpText('You may define your universe of interest by selecting specific industries that you wish to query.'),
+                                              htmltools::a('NAICS definitions at Census', href='https://www.census.gov/eos/www/naics/index.html', target='_blank')
+                     )
+                   )
+                 ), # end NAICS conditionalPanel
+                 
+                 ## FRS conditional panel
+                 conditionalPanel(
+                   condition = "input.ss_choose_method == 'FRS'",
+                   ## input: Upload list of FRS identifiers
+                   shiny::fileInput(
+                     inputId = 'ss_upload_frs',
+                     label = 'Upload list of FRS identifiers',
+                     accept = c('.xls', '.xlsx', ".csv", "text/csv", "text/comma-separated-values, text/plain")
+                   ),
+                   
+                   ## input: Limit to facilities where selected NAICS is found w/in EPA list
+                   shiny::checkboxGroupInput(
+                     inputId = "ss_limit_fac1",
+                     label = "Limit to facilities where selected NAICS is found within these EPA lists: (all are searched by default)",
+                     choices = epa_programs,
+                     selected = epa_programs,
+                     inline = TRUE
+                   ),
+                   
+                   ## input: Limit to facilities in these EPA programs
+                   shiny::checkboxGroupInput(
+                     inputId = "ss_limit_fac2",
+                     label = "Limit to facilities on these EPA lists (all included by default)",
+                     choices = epa_programs,
+                     selected = epa_programs,
+                     inline = TRUE
+                   ),
+                   
+                   ## read more about NAICS - expandable/collabsible panel
+                   shinyBS::bsCollapse(
+                     id = 'frs_help', open = 'FRS file upload details',
+                     bsCollapsePanel(title = 'FRS file upload details',
+                                     style = 'success',
+                                     ## naics help text - in global.R
+                                     naics_help_msg
+                     )
+                   )), # end FRS conditionalPanel
+                 
+                 ## latlon conditional panel
+                 conditionalPanel(
+                   condition = "input.ss_choose_method == 'latlon'",
+                   
+                   ## input: Upload list of facility lat/longs
+                   fileInput(inputId = 'ss_upload_latlon',  
+                             label = 'Upload file of site to buffer and summarize (.csv, .xls, or .xlsx) with lat & lon as column headers in row 1',
+                             #placeholder = 'test_input_latlon.csv', 
+                             multiple = FALSE,
+                             accept = c('.xls', '.xlsx', ".csv", "text/csv", "text/comma-separated-values,text/plain")
+                             # add hover tips here maybe, or even a button to view examples of valid formats and details on that.
+                   ),
+                   
+                   shinyBS::bsCollapse(
+                     id = 'latlon_help', open = 'Location file upload details',
+                     shinyBS::bsCollapsePanel(title = 'Location file upload details',
+                                              style = 'success',
+                                              HTML(latlon_help_msg)
+                     )
+                   )
+                   
+                 ), # end latlong conditionalPanel
+                 ## ECHO conditional panel
+                 conditionalPanel(
+                   condition = "input.ss_choose_method == 'ECHO'",
+                   ## input: Find sites via ECHO
+                   # shiny::actionButton(inputId = 'ss_search_echo', label = 'Find sites via ECHO'),
+                   # 
+                   # ## vertical space
+                   # br(),
+                   
+                   ## input: Upload list of ECHO facilities
+                   shiny::fileInput(
+                     inputId = 'ss_upload_echo',
+                     label = 'Upload list of ECHO facilities',
+                     accept = c('.xls', '.xlsx', ".csv", "text/csv", "text/comma-separated-values, text/plain")
+                   ),
+                   
+                   br(),
+                   
+                   shinyBS::bsCollapse(
+                     id = 'echo_help', open = 'ECHO upload details',
+                     
+                     shinyBS::bsCollapsePanel(title = 'ECHO upload details',
+                                              style = 'success',
+                                              ## echo help text - in global.R
+                                              echo_message
+                                              
+                     )
+                   )
                  ),
                  
-                 ## input: Select NAICS from list
-                 selectInput(
-                   inputId = "ss_select_naics",
-                   label = htmltools::h6("Select industry of interest"),
-                   # choose from named numeric vector on server-side
-                   ## number is NAICS like 31182, names are like "31182 - Cookie, Cracker, and Pasta Manufacturing" 
-                   choices = NULL, 
-                   selected = NULL,
-                   width = 400,
-                   multiple = TRUE
-                 ),
                  
+                 ## TEST - print output from getblocksnearby 
+                 #verbatimTextOutput(outputId = 'print_test'),
                  
-                 ## input: Upload list of FRS identifiers
-                 shiny::fileInput(
-                   inputId = 'ss_upload_frs',
-                   label = 'Upload list of FRS identifiers',
-                   accept = c('.xls', '.xlsx', ".csv", "text/csv", "text/comma-separated-values, text/plain")
-                 ),
+                 ## vertical space
+                 br()
                  
-                 ## input: Limit to facilities where selected NAICS is found w/in EPA list
-                 shiny::checkboxGroupInput(
-                   inputId = "ss_limit_fac1",
-                   label = "Limit to facilities where selected NAICS is found within these EPA lists: (all are searched by default)",
-                   choices = epa_programs,
-                   selected = epa_programs,
-                   inline = TRUE
-                 ),
-                 
-                 ## input: Limit to facilities in these EPA programs
-                 shiny::checkboxGroupInput(
-                   inputId = "ss_limit_fac2",
-                   label = "Limit to facilities on these EPA lists (all included by default)",
-                   choices = epa_programs,
-                   selected = epa_programs,
-                   inline = TRUE
-                 ),
-                 
-                 ## REMOVE later - add space
-                 br(),
-                 
-                 ## input: Find sites via ECHO
-                 shiny::actionButton(inputId = 'ss_search_echo', label = 'Find sites via ECHO'),
-                 
-                 ## input: Upload list of FRS identifiers
-                 shiny::fileInput(
-                   inputId = 'ss_upload_echo',
-                   label = 'Upload list of ECHO facilities',
-                   accept = c('.xls', '.xlsx', ".csv", "text/csv", "text/comma-separated-values, text/plain")
-                 ),
                  
                  ## REMOVE later - check for uploaded latlon dataset
-                 tableOutput('upload_check')
+                 #tableOutput('upload_check')
         ),
         
         ## analysis settings tab
         tabPanel(title = 'Analysis Settings',
                  
-                 ## REMOVE later - add space
+                 ## vertical space
                  br(),  
                  
                  ## output: display number of uploaded sites
@@ -122,7 +230,7 @@ app_ui <- function(request) {
                                       label = 'Highlight overlaps?'
                  ),
                  
-                 ## REMOVE LATER - add space
+                 ## vertical space
                  br(),
                  
                  ## output: show leaflet map of uploaded points
@@ -151,6 +259,69 @@ app_ui <- function(request) {
                  shiny::actionButton(inputId = 'bt_get_results', 
                                      label = 'Process Facilities'),
                  
+        ),
+        
+        ## First view - similar to EJSCREEN standard report
+        tabPanel(title = 'First View',
+                 
+                 ## vertical space
+                 br(),
+                 
+                 ## output: button to download summary report
+                 shiny::downloadButton(outputId = 'summary_download', 
+                                       label = 'Download this summary'),
+                 ## vertical space
+                 br(),
+                 
+                 h3('Overall Summary Report'),
+                 
+                 
+                 ## show count of population among selected sites
+                 textOutput(outputId = 'view1_total_pop'),
+                 
+                 ## vertical space
+                 br(),
+                 
+                 h4('Demographic Indicators'),
+                 
+                 ## output: table of overall demographic indicators
+                 DT::DTOutput(outputId = 'view1_demog_table'),
+                 
+                 br(),
+                 
+                 h4('Environmental Indicators'),
+                 ## output: table of overall environmental indicators
+                 DT::DTOutput(outputId = 'view1_envt_table')
+                 
+        ),
+        
+        ## Second view - summary stats about distribution of scores across people
+        tabPanel(title = 'Second View',
+                 
+                 helpText('Goal: to show summary stats about the distribution of scores across people')),
+        
+        ## Third view - site-by-site table
+        tabPanel(title = 'Third View',
+                 
+                 br(),
+                 
+                 h3('Site-by-Site Table'),
+                 br(),
+                 DT::DTOutput(outputId = 'view3_table')
+        ),
+        
+        ## Fourth view - drill down to single site
+        tabPanel(title = 'Fourth view',
+                 helpText('Goal: drill down to single site details'),     
+                 #uiOutput(outputId = 'v4_site_dropdown')
+                 selectInput(
+                   inputId = "v4_site_dropdown",
+                   label = htmltools::h6("Choose a site to explore"),
+                   # choose from named vector on server-side
+                   choices = NULL, 
+                   selected = NULL,
+                   width = 400
+                 )
         ),
         
         ## buffering tools tab
@@ -329,7 +500,8 @@ app_ui <- function(request) {
       ),
       
       ## add HTML footer as ui output
-      uiOutput(outputId = 'html_footer')
+      #uiOutput(outputId = 'html_footer'),
+      html_footer_fmt
     ) ## end fluidPage
   )
 } ########################################################################### #
