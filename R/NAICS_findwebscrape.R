@@ -23,7 +23,7 @@ naics_findwebscrape <- function(query) {
   myurl <- naics_url_of_query(query)
     
   htm <- rvest::read_html(myurl)
-  x <- htm %>% rvest::html_elements(css = ".first_child a") %>% rvest::html_text2()
+  x <- htm |> rvest::html_elements(css = ".first_child a") |> rvest::html_text2()
   x <- data.frame(matrix(x, ncol=2, byrow = TRUE), stringsAsFactors = FALSE)
   names(x) <- c("naics", "title")
   x
