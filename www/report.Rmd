@@ -1,0 +1,190 @@
+---
+title: Analysis of demographic and environmental conditions near selected facilities based on USEPA's EJAM tool
+date: "`r Sys.Date()`"
+params:
+  authorname1: NA
+  authoremail1: NA
+  radius: NA
+  where: NA
+  sectorname_short: NA
+  sitecount: NA
+  acs_version: "2016-2020"
+  ejscreen_version: "2.1"
+  zonetype: NA
+  in_the_x_zone: NA
+  within_x_miles_of: NA
+  facilities_studied: NA
+  in_areas_where: NA
+  risks_are_x: NA
+  demog_how_elevated: NA
+  envt_how_elevated: NA
+  demog_high_at_what_share_of_sites: NA
+  envt_high_at_what_share_of_sites: NA
+  source_of_latlons: NA
+  fundingsource: NA
+  conclusion1: NA
+  conclusion2: NA
+  conclusion3: NA
+author:
+  - name: "`r params$authorname1`"
+    email: "`r params$authoremail1`"
+editor_options:
+  markdown: wrap 72
+linenumbers: false
+keywords: 
+  - environmental justice
+  - socioeconomic
+  - demographic
+  - environmental pollutants
+abstract: Abstract - Executive Order 14008 calls on EPA and other Agencies to make achieving environmental justice part of their missions, and EO 12989 directed EPA to make environmental justice part of their mission by identifying and addressing, as appropriate, disproportionately high and adverse human health or environmental effects of their programs, policies, and activities on minority populations and low-income populations in the United States. The United States Environmental Protection Agency (US EPA) analyzed baseline demographic and environmental conditions in communities living `r params$where` `r params$facilities_analyzed`. The analysis used EPA's EJAM tool and EJScreen version `r params$ejscreen_version` with demographic data based on the Census Bureau’s `r params$acs_version` American Community Survey (ACS). **The analysis found that**
+output: 
+  word_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+---
+
+Authors: `r params$authorname1`
+Author contact info: `r params$authoremail1`
+
+Radius: `r params$radius`
+
+ 
+```{r, echo=FALSE}
+in_the_places_analyzed <- {
+    switch (
+      params$zonetype,
+    zone_is_named_x = params$in_the_x_zone, 
+    zone_is_nearby = paste0(params$within_x_miles_of, params$facilities_studied),
+    zone_is_risk_x = paste0(params$in_areas_where, params$risks_are_x)
+    )}
+```
+
+# Executive Summary	 
+
+Executive Order 14008 calls on EPA and other Agencies to make achieving
+environmental justice part of their missions, and EO 12989 directed EPA
+to make environmental justice part of their mission by identifying and
+addressing, as appropriate, disproportionately high and adverse human
+health or environmental effects of their programs, policies, and
+activities on minority populations and low-income populations in the
+United States.
+
+EPA has conducted an analysis to characterize baseline environmental
+conditions faced by communities living near `r params$sectorname_short`.
+The United States Environmental Protection Agency (US EPA) analyzed
+baseline demographic and environmental conditions in communities living
+`r params$where`. The analysis used EPA's EJAM tool and EJScreen version
+`r params$ejscreen_version` with demographic data based on the Census
+Bureau's `r params$acs_version` American Community Survey (ACS).
+
+
+## Broad overview of findings 
+
+## Summary of Findings 
+
+### Demographics overall 
+
+### Demographics at key sites 
+
+### Environment overall 
+
+### Environment at key sites 
+
+### Cumulative impacts at key sites 
+
+# Introduction 
+
+Executive Order 12898 (59 FR 7629; February 16, 1994) established
+federal executive policy on environmental justice. Its main provision
+directed federal agencies, to the greatest extent practicable and
+permitted by law, to make environmental justice part of their mission by
+identifying and addressing, as appropriate, disproportionately high and
+adverse human health or environmental effects of their programs,
+policies, and activities on minority populations and low-income
+populations in the United States.
+
+EPA defines environmental justice as the fair treatment and meaningful
+involvement of all people regardless of race, color, national origin, or
+income with respect to the development, implementation, and enforcement
+of environmental laws, regulations, and policies.
+
+Executive Order 14008 (86 FR 7619; January 27, 2021) also calls on
+Agencies to make achieving environmental justice part of their missions
+"by developing programs, policies, and activities to address the
+disproportionately high and adverse human health, environmental,
+climate-related and other cumulative impacts on disadvantaged
+communities, as well as the accompanying economic challenges of such
+impacts." It also declares a policy "to secure environmental justice and
+spur economic opportunity for disadvantaged communities that have been
+historically marginalized and overburdened by pollution and
+under-investment in housing, transportation, water and wastewater
+infrastructure and health care."
+
+EPA also released its "Technical Guidance for Assessing Environmental
+Justice in Regulatory Analysis" (U.S. EPA, 2016) to provide
+recommendations that encourage analysts to conduct the highest quality
+analysis feasible, recognizing that data limitations, time and resource
+constraints, and analytic challenges will vary by media and
+circumstance.
+
+
+# Methods 
+
+## Selection of sites analyzed 
+
+## Estimating locations and population counts of residents 
+
+### Spatial resolution of data 
+
+### Analytic method for buffering, and tools used to implement that method 
+
+## Demographic and environmental indicators 
+
+# Findings 
+
+## Text on Findings 
+
+## Data Table 1 
+
+## Data Table 2 
+
+## Data Viz 1 – Barplot 
+
+## Data Viz 2 – Map 
+
+## Data Viz 3 – Boxplots 
+
+# Notes on creating this document 
+
+#### Table of EJAM Tool Parameter Values
+
+```{r, warning=F, message=F, echo=F}
+library(tidyverse)
+param_table <- aggregate(values~ind, stack(params), toString) %>% 
+  rename(Parameter = ind, 'Current Value' = values)
+
+knitr::kable(param_table)
+```
+
+## Notes on formatting for a manuscript 
+
+## Bibliography styles 
+
+## Equations 
+
+# Appendices 
+
+## Competing interests 
+
+## Author contributions 
+
+## Acknowledgements 
+
+## List of Abbreviations 
+
+# References – from .bib file  
+
+ 
+
+ 

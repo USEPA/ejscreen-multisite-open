@@ -3,6 +3,7 @@
 #' @param input,output,session Internal parameters for {shiny}.
 #'     DO NOT REMOVE.
 #' @import shiny
+#' @importFrom data.table ":="
 #' @noRd
 app_server <- function(input, output, session) {
   
@@ -37,12 +38,12 @@ app_server <- function(input, output, session) {
     
     ## if acceptable file type, read in; if not, send warning text
     ext <- switch(ext,
-                  csv =  read.csv(input$ss_upload_latlon$datapath),
-                  xls = read.table(input$ss_upload_latlon$datapath),
-                  xlsx = read.table(input$ss_upload_latlon$datapath),
-                  shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
+      csv =  read.csv(input$ss_upload_latlon$datapath),
+      xls = read.table(input$ss_upload_latlon$datapath),
+      xlsx = read.table(input$ss_upload_latlon$datapath),
+      shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
     )
-    
+  
     ext
   })
   
@@ -53,17 +54,17 @@ app_server <- function(input, output, session) {
     ext <- tools::file_ext(input$ss_upload_frs$name)
     
     read_frs <- switch(ext,
-                       csv =  read.csv(input$ss_upload_frs$datapath),
-                       xls = read.table(input$ss_upload_frs$datapath),
-                       xlsx = read_excel(input$ss_upload_frs$datapath),
-                       shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
+                  csv =  read.csv(input$ss_upload_frs$datapath),
+                  xls = read.table(input$ss_upload_frs$datapath),
+                  xlsx = read_excel(input$ss_upload_frs$datapath),
+                  shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
     )
     
     #include frs_is_valid verification check function
     if (frs_is_valid(read_frs)){
-      
+    
       read_frs_dt <- data.table::as.data.table(read_frs)
-      
+    
       frs_lat_lon <- merge(x = read_frs_dt, y = EJAMfrsdata::frs, by.x='REGISTRY_ID', by.y='REGISTRY_ID', all.x=TRUE)
       
     }else{
@@ -78,9 +79,9 @@ app_server <- function(input, output, session) {
   ## reactive: data uploaded by NAICS
   data_up_naics <- reactiveVal(NULL)
   observeEvent(input$submit_naics, {
-    #data_up_naics <- reactive({
+  #data_up_naics <- reactive({
     req(shiny::isTruthy(input$ss_enter_naics) || shiny::isTruthy(input$ss_select_naics))
-    
+
     #define inputs
     naics_user_wrote_in_box <- input$ss_enter_naics
     naics_user_picked_from_list <- input$ss_select_naics
@@ -186,7 +187,7 @@ app_server <- function(input, output, session) {
   data_up_echo <- reactive({
     ## depends on ECHO upload - which may use same file upload as latlon/FRS
     req(input$ss_upload_echo)
-    
+   
     ## check if file extension is appropriate
     ext <- tools::file_ext(input$ss_upload_echo$name)
     
@@ -214,7 +215,7 @@ app_server <- function(input, output, session) {
   ## reactive: hub for any/all uploaded data, gets passed to processing
   data_uploaded <- reactive({
     
-    
+   
     ## check for values from all upload reactives
     #req(shiny::isTruthy(input$ss_upload_latlon) || shiny::isTruthy(input$ss_upload_echo))
     #req(input$ss_upload_latlon)
@@ -224,7 +225,7 @@ app_server <- function(input, output, session) {
     #   shiny::isTruthy(data_up_frs()) +
     #   shiny::isTruthy(data_up_naics()) +
     #   shiny::isTruthy(data_up_echo())
-    
+  
     #print(num_ul_methods())
     
     ## send message if more than 1 upload method used
@@ -234,24 +235,24 @@ app_server <- function(input, output, session) {
     validate(
       need(num_ul_methods() > 0, "Please upload a data set")
     )
-    
+  
     ## if using lat/lon upload
     if(isTruthy(input$ss_upload_latlon)){
-      
+     
       data_up_latlon() %>% 
-        ## search for lat/lon-like column names and rename them
-        EJAM::latlon_df_clean() %>% 
-        ## convert to data.table format
-        data.table::as.data.table()
+      ## search for lat/lon-like column names and rename them
+       EJAM::latlon_df_clean() %>% 
+      ## convert to data.table format
+       data.table::as.data.table()
       
-    } else if(isTruthy(input$ss_select_naics) || isTruthy(input$ss_enter_naics)){
+     } else if(isTruthy(input$ss_select_naics) || isTruthy(input$ss_enter_naics)){
       
       data_up_naics()
       
     } else if(isTruthy(input$ss_upload_frs)){
-      
+
       data_up_frs()
-      
+    
     } else if(isTruthy(input$ss_upload_echo)){
       data_up_echo() %>% 
         ## search for lat/lon-like column names and rename them
@@ -328,26 +329,26 @@ app_server <- function(input, output, session) {
   
   ## reactive: summarize processed data
   data_summarized <- reactiveVal(NULL)
-  
+
   observeEvent(input$bt_get_summary, {  
-    
+  
     ## run EJAMbatch.summarizer::batch.summarize on already processed data
     # a) processed in-app: 
-    
+  
     showNotification('Summarizing in progress...', type = 'message', duration = 0.5)
     
-    ## need to determine difference between sitestats and popstats
-    outsum <- EJAMbatch.summarizer::batch.summarize(
-      sitestats = data.frame(data_processed()$results_bysite),
-      popstats =  data.frame(data_processed()$results_bysite),
-      ## user-selected quantiles to use
-      probs = as.numeric(input$an_list_pctiles)
-    )
+      ## need to determine difference between sitestats and popstats
+      outsum <- EJAMbatch.summarizer::batch.summarize(
+        sitestats = data.frame(data_processed()$results_bysite),
+        popstats =  data.frame(data_processed()$results_bysite),
+        ## user-selected quantiles to use
+        probs = as.numeric(input$an_list_pctiles)
+      )
     
-    showNotification('Summarizing complete!', type = 'message', duration = 0.5)
-    
-    ## return output
-    data_summarized(outsum)
+      showNotification('Summarizing complete!', type = 'message', duration = 0.5)
+      
+      ## return output
+      data_summarized(outsum)
     
     # b) processed and downloaded another time, to be re-uploaded now
     # req(input$bt_upload_adj, input$bt_upload_std)
@@ -386,7 +387,7 @@ app_server <- function(input, output, session) {
     }else{
       head(data_uploaded())
     }
-    
+     
   })
   
   
@@ -432,7 +433,7 @@ app_server <- function(input, output, session) {
                       label = paste0('Radius of circular buffer (', lab, ')'),
                       min = 0.25, val = val, step = 0.25, max = 10)
   })
-  
+
   
   ## update radius units 
   # output$bt_rad_buff <- renderUI({
@@ -465,7 +466,7 @@ app_server <- function(input, output, session) {
     ## once name is settled
     suppressMessages(
       plot_facilities(data_uploaded(), rad = input$bt_rad_buff, highlight = input$an_map_clusters,
-                      clustered = is_clustered(), circle_type = input$circle_type, map_units = input$radius_units)
+                    clustered = is_clustered(), circle_type = input$circle_type, map_units = input$radius_units)
     )
   })
   
@@ -528,7 +529,7 @@ app_server <- function(input, output, session) {
   
   ## output: show total population from doaggregate output
   output$view1_total_pop <- renderText({
-    
+
     req(data_processed())
     
     pop_num <- prettyNum(data_processed()$results_overall$pop, big.mark=',')
@@ -541,8 +542,8 @@ app_server <- function(input, output, session) {
     req(data_processed())
     
     dt <- cbind('Value at Uploaded Sites' = as.list( 100*round(data_processed()$results_overall[ , ..names_d], 2)),
-                'State Percentile' = as.list(round(data_processed()$results_overall[, ..names_d_state_pctile], 2)),
-                'National Percentile' = as.list(round(data_processed()$results_overall[, ..names_d_pctile], 2)))
+          'State Percentile' = as.list(round(data_processed()$results_overall[, ..names_d_state_pctile], 2)),
+          'National Percentile' = as.list(round(data_processed()$results_overall[, ..names_d_pctile], 2)))
     
     rownames(dt) <- EJAMbatch.summarizer::names_d_friendly[pmatch(names_d, EJAMbatch.summarizer::names_d_batch)]
     rownames(dt)[1] <- 'Demographic Index'
@@ -560,8 +561,8 @@ app_server <- function(input, output, session) {
     #data_processed()[, ..EJAMbatch.summarizer::names_d_batch]
     dt <- cbind('Value at Uploaded Sites' = 
                   as.list(round(data_processed()$results_overall[ , ..names_e],2)),
-                'State Percentile' = as.list(round(data_processed()$results_overall[, ..names_e_state_pctile],2)),
-                'Percentile in USA' = as.list(round(data_processed()$results_overall[, ..names_e_pctile],2)))
+          'State Percentile' = as.list(round(data_processed()$results_overall[, ..names_e_state_pctile],2)),
+          'Percentile in USA' = as.list(round(data_processed()$results_overall[, ..names_e_pctile],2)))
     
     #scales::percent_format(accuracy = 0.1)()
     rownames(dt) <- EJAMbatch.summarizer::names_e_friendly[pmatch(names_e, EJAMbatch.summarizer::names_e_batch)]
@@ -583,17 +584,17 @@ app_server <- function(input, output, session) {
       unlist(data_processed()$results_overall[1, ..names_d_batch_fix])
     
     ratio.to.us.d.bysite <- data.frame()
-    
+      
     for(i in 1:nrow(data_processed()$results_bysite)){
       ratio.to.us.d.bysite <- rbind(ratio.to.us.d.bysite,
-                                    unlist(data_summarized()$rows['Average person', names_d_batch_fix])  / data_processed()$results_bysite[i, ..names_d_batch_fix]
+        unlist(data_summarized()$rows['Average person', names_d_batch_fix])  / data_processed()$results_bysite[i, ..names_d_batch_fix]
       )
     }
     
     names(ratio.to.us.d.bysite) <- EJAMbatch.summarizer::names_d_friendly
     ratio.to.us.d.bysite <- ratio.to.us.d.bysite %>% 
       pivot_longer(cols = everything(), names_to = 'indicator')
-    
+      
     towhat_nicename <- "US Average"
     mymaintext <- paste0("Ratios to ", towhat_nicename, 
                          ", as distributed across these sites")
@@ -614,7 +615,7 @@ app_server <- function(input, output, session) {
             axis.title = element_text(size=16),
             plot.title = element_text(size=24),
             legend.position = 'none'
-      ) 
+            ) 
     
   })
   
@@ -624,15 +625,15 @@ app_server <- function(input, output, session) {
     
     cols_to_select <- c('siteid', 'pop', 'VSI.eo', EJAMbatch.summarizer::names_all[-1])
     friendly_names <- c('Site ID', 'Est. Population',  EJAMbatch.summarizer::names_all_friendly)
-    
-    #dt <- round(data_processed()$results_bysite,digits=2)
+      
+   #dt <- round(data_processed()$results_bysite,digits=2)
     dt <- data_processed()$results_bysite %>% 
-      as.data.frame(dt) %>%
-      mutate(across(where(is.numeric), .fns = function(x) {round(x, digits=2)})) %>%
-      select(all_of(cols_to_select))
+            as.data.frame(dt) %>%
+            mutate(across(where(is.numeric), .fns = function(x) {round(x, digits=2)})) %>%
+            select(all_of(cols_to_select))
     
     colnames(dt) <- friendly_names
-    
+      
     DT::datatable(dt, rownames = FALSE, 
                   #filter = 'top',
                   selection = 'single',
@@ -641,9 +642,9 @@ app_server <- function(input, output, session) {
                   options = list(
                     #buttons = c('csv','excel'),
                     autoWidth = TRUE,
-                    fixedHeader = TRUE, fixedColumns = list(leftColumns = 2),
-                    pageLength = 25, scrollX = TRUE, scrollY = '250px')
-    ) 
+                     fixedHeader = TRUE, fixedColumns = list(leftColumns = 2),
+                     pageLength = 25, scrollX = TRUE, scrollY = '250px')
+                ) 
     
   })
   
@@ -651,9 +652,9 @@ app_server <- function(input, output, session) {
   data_sitemap <- reactiveVal(NULL)
   
   observeEvent(input$view3_table_rows_selected,{
-    req(data_processed())
-    
-    data_sitemap(data_uploaded()[input$view3_table_rows_selected,])
+      req(data_processed())
+      
+      data_sitemap(data_uploaded()[input$view3_table_rows_selected,])
   })
   
   output$v4_sitemap <- renderLeaflet({
@@ -662,8 +663,8 @@ app_server <- function(input, output, session) {
     
     validate(
       need(!is.null(input$view3_table_rows_selected),
-           'Select a row in the table to see its location'
-      )
+             'Select a row in the table to see its location'
+           )
     )
     
     #plot_facilities(data_sitemap(), rad = 1)
@@ -681,12 +682,12 @@ app_server <- function(input, output, session) {
     names(site_ids) <- paste0('Site ', site_ids)
     
     
-    ## update v4_site_dropdown input options
+     ## update v4_site_dropdown input options
     updateSelectizeInput(session, inputId = 'v4_site_dropdown', 
                          choices = site_ids, server = TRUE)
     
   })
-  
+
   
   ## output: dropdown of site IDs for view 4
   # output$v4_site_dropdown <- renderUI({
@@ -703,9 +704,9 @@ app_server <- function(input, output, session) {
   
   ## output: display number of uploaded sites
   output$an_map_text <- renderText({
-    req(data_uploaded())
+      req(data_uploaded())
     
-    paste0(nrow(data_uploaded()), ' points uploaded')
+      paste0(nrow(data_uploaded()), ' points uploaded')
   })
   
   ## output: display barplot
@@ -780,7 +781,7 @@ app_server <- function(input, output, session) {
           str_replace(report_outline, 
                       'Broad overview of findings',
                       '<mark>Broad overview of findings</mark>'
-          )
+                      )
         )
       )
     )
@@ -841,5 +842,11 @@ app_server <- function(input, output, session) {
       )
     }
   )
+  ## TEST - show PDF preview
+  # observeEvent(input$pdf_preview, {
+    # output$pdfview <- renderUI({
+    #   tags$iframe(style="height:600px; width:100%", src="test_preview.pdf")
+    # })
+  # })
 }
 

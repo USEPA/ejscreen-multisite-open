@@ -11,6 +11,7 @@ app_ui <- function(request) {
     
     ## begin app UI
     fluidPage(
+      shinyjs::useShinyjs(),
       tags$style(HTML("
         .tabbable > .nav > li[class=active] > a {
            background-color: #005ea2;
@@ -29,9 +30,9 @@ app_ui <- function(request) {
       tabsetPanel(
         id = 'all_tabs',
         type = 'pills',
-        
+        selected = 'Site Selection',
         ## introduction tab
-        tabPanel(title = 'Introduction',
+        tabPanel(title = 'About EJAM',
                  
                  br(),
                  
@@ -48,15 +49,25 @@ app_ui <- function(request) {
                  h3('Specifying Locations to Analyze'),
                  
                  ## upload help text - in global.R
-                 HTML(upload_help_msg),
+                 #HTML(upload_help_msg),
+                 
+                 
+                 radioButtons(inputId = 'ss_choose_method',
+                              label = 'Please pick one of the following facility selection methods',
+                              choiceValues = c('NAICS','FRS','latlon','ECHO'),
+                              choiceNames = c('Select by Industry (NAICS) Code',
+                                              'Upload EPA Facility ID (FRS Identifers) file',
+                                              'Upload Location (latitude/longitude) file',
+                                              'Upload ECHO file'),
+                              width = '400px'),
                  
                  ## input: dropdown to choose upload method
-                 selectInput(inputId = 'ss_choose_method',
-                             label = 'Please choose an upload method:',
-                             choices = c('NAICS code selection' = 'NAICS',
-                                         'Upload facility FRS ID file' = 'FRS',
-                                         'Upload facility lat/lon file' = 'latlon',
-                                         'Upload ECHO dataset' = 'ECHO')),
+                 # selectInput(inputId = 'ss_choose_method',
+                 #             label = 'Please choose an upload method:',
+                 #             choices = c('NAICS code selection' = 'NAICS',
+                 #                         'Upload facility FRS ID file' = 'FRS',
+                 #                         'Upload facility lat/lon file' = 'latlon',
+                 #                         'Upload ECHO dataset' = 'ECHO')),
                  
                  ## add tooltip to dropdown for additional info
                  tags$style(HTML("
@@ -64,8 +75,9 @@ app_ui <- function(request) {
                 background-color: #005ea2;
                 }
                 ")), 
-                 shinyBS::bsTooltip(id = 'ss_choose_method', title = 'Please read the upload instructions given below.',
+                 shinyBS::bsTooltip(id = 'ss_select_naics', title = 'Please read the upload instructions given below.',
                                     placement = 'right', trigger = 'hover'),
+                 
                  
                  ## conditional Panels to show/hide other selection methods
                  
@@ -73,34 +85,67 @@ app_ui <- function(request) {
                  conditionalPanel(
                    condition = "input.ss_choose_method == 'NAICS'",
                    
-                   ## input: Enter NAICS code manually       
-                   textInput(
-                     inputId = "ss_enter_naics",
-                     label = htmltools::h6(
-                       "Enter NAICS codes of interest - ",
-                       htmltools::a("Look up NAICS", href ="https://www.census.gov/naics"),
-                       htmltools::a(htmltools::img(id = "ibutton",src = "www/i.png",height = 15,width = 15),
-                                    href = "www/ibutton_help.html#help_naicslist",target = "_blank")
+                   radioButtons('naics_ul_type', 'Choose how to enter NAICS codes',
+                                choiceNames = c('Select codes from dropdown' ,
+                                                'Enter text or code to search'),
+                                choiceValues = c('dropdown','enter')),
+                   
+                   conditionalPanel(
+                     condition = "input.naics_ul_type == 'enter'",
+                     ## input: Enter NAICS code manually       
+                     textInput(
+                       inputId = "ss_enter_naics",
+                       label = htmltools::h6(
+                         "Enter NAICS codes of interest - ",
+                         htmltools::a("Look up NAICS", href ="https://www.census.gov/naics"),
+                         htmltools::a(htmltools::img(id = "ibutton",src = "www/i.png",height = 15,width = 15),
+                                      href = "www/ibutton_help.html#help_naicslist",target = "_blank")
+                       ),
+                       value = "",
+                       width = 400,
+                       placeholder = NULL
+                     )
+                   ),
+                   
+                   conditionalPanel(
+                     condition = "input.naics_ul_type == 'dropdown'",
+                     ## input: Select NAICS from list
+                     selectInput(
+                       inputId = "ss_select_naics",
+                       label = htmltools::h6("Select industry of interest"),
+                       # choose from named numeric vector on server-side
+                       ## number is NAICS like 31182, names are like "31182 - Cookie, Cracker, and Pasta Manufacturing" 
+                       choices = NULL, 
+                       selected = NULL,
+                       width = 400,
+                       multiple = TRUE
                      ),
-                     value = "",
-                     width = 400,
-                     placeholder = NULL
+                     
                    ),
                    
-                   ## input: Select NAICS from list
-                   selectInput(
-                     inputId = "ss_select_naics",
-                     label = htmltools::h6("Select industry of interest"),
-                     # choose from named numeric vector on server-side
-                     ## number is NAICS like 31182, names are like "31182 - Cookie, Cracker, and Pasta Manufacturing" 
-                     choices = NULL, 
-                     selected = NULL,
-                     width = 400,
-                     multiple = TRUE
-                   ),
                    
-                   ## testing 
-                   verbatimTextOutput('print_test2'),
+                   br(),
+                   actionButton(inputId = 'submit_naics', label = 'Submit entries'),
+                   br(),br(),
+                   
+                   ## input: Limit to facilities where selected NAICS is found w/in EPA list
+                   # shiny::checkboxGroupInput(
+                   #   inputId = "ss_limit_fac1",
+                   #   label = "Limit to facilities where selected NAICS is found within these EPA lists: (all are searched by default)",
+                   #   choices = epa_programs,
+                   #   selected = epa_programs,
+                   #   inline = TRUE
+                   # ),
+                   # 
+                   # ## input: Limit to facilities in these EPA programs
+                   # shiny::checkboxGroupInput(
+                   #   inputId = "ss_limit_fac2",
+                   #   label = "Limit to facilities on these EPA lists (all included by default)",
+                   #   choices = epa_programs,
+                   #   selected = epa_programs,
+                   #   inline = TRUE
+                   # ),
+                   
                    
                    ## read more about NAICS - expandable/collabsible panel
                    shinyBS::bsCollapse(
@@ -124,31 +169,13 @@ app_ui <- function(request) {
                      accept = c('.xls', '.xlsx', ".csv", "text/csv", "text/comma-separated-values, text/plain")
                    ),
                    
-                   ## input: Limit to facilities where selected NAICS is found w/in EPA list
-                   shiny::checkboxGroupInput(
-                     inputId = "ss_limit_fac1",
-                     label = "Limit to facilities where selected NAICS is found within these EPA lists: (all are searched by default)",
-                     choices = epa_programs,
-                     selected = epa_programs,
-                     inline = TRUE
-                   ),
-                   
-                   ## input: Limit to facilities in these EPA programs
-                   shiny::checkboxGroupInput(
-                     inputId = "ss_limit_fac2",
-                     label = "Limit to facilities on these EPA lists (all included by default)",
-                     choices = epa_programs,
-                     selected = epa_programs,
-                     inline = TRUE
-                   ),
-                   
-                   ## read more about NAICS - expandable/collabsible panel
+                   ## read more about FRS - expandable/collabsible panel
                    shinyBS::bsCollapse(
                      id = 'frs_help', open = 'FRS file upload details',
                      bsCollapsePanel(title = 'FRS file upload details',
                                      style = 'success',
-                                     ## naics help text - in global.R
-                                     naics_help_msg
+                                     ## FRS help text - in global.R
+                                     frs_help_msg
                      )
                    )), # end FRS conditionalPanel
                  
@@ -165,6 +192,7 @@ app_ui <- function(request) {
                              # add hover tips here maybe, or even a button to view examples of valid formats and details on that.
                    ),
                    
+                   ## read more about latlon 
                    shinyBS::bsCollapse(
                      id = 'latlon_help', open = 'Location file upload details',
                      shinyBS::bsCollapsePanel(title = 'Location file upload details',
@@ -222,12 +250,26 @@ app_ui <- function(request) {
                  ## vertical space
                  br(),  
                  
+                 h4('Previewing uploaded data'),
+                 
+                 ## testing 
+                 verbatimTextOutput('print_test2'),
+                 
                  ## output: display number of uploaded sites
                  textOutput(outputId = 'an_map_text'),
                  
-                 ## input: highlight clusters on map? yes/no
-                 shiny::checkboxInput(inputId = 'an_map_clusters', 
-                                      label = 'Highlight overlaps?'
+                 fluidRow(
+                   column(6, 
+                          radioButtons(inputId = 'circle_type', 
+                                       label = 'Circle Type', choices = c('circles', 'circleMarkers'),
+                                       inline = TRUE
+                          ),
+                   ), column(6,
+                             ## input: highlight clusters on map? yes/no
+                             shiny::checkboxInput(inputId = 'an_map_clusters', 
+                                                  label = 'Highlight overlaps?'
+                             ),
+                   )
                  ),
                  
                  ## vertical space
@@ -236,14 +278,36 @@ app_ui <- function(request) {
                  ## output: show leaflet map of uploaded points
                  leaflet::leafletOutput(outputId = 'an_leaf_map', 
                                         height = '500px', 
-                                        width = '500px'),
-                 
-                 ## input: Specify radius of circular buffer       
-                 shiny::sliderInput(inputId = 'bt_rad_buff',
-                                    label = htmltools::h5("Radius of circular buffer in miles"),
-                                    value = 1.0, step = 0.25,
-                                    min = 0.25, max = 10 
+                                        width = '80%'),
+                 fluidRow(
+                   column(8,
+                          ## input: Specify radius of circular buffer       
+                          shiny::sliderInput(inputId = 'bt_rad_buff',
+                                             label = htmltools::h5("Radius of circular buffer in miles"),
+                                             value = 1.0, step = 0.25,
+                                             min = 0.25, max = 10
+                          )
+                          #uiOutput('bt_rad_buff')
+                   ),
+                   column(4,
+                          ## input: switch units to km for radius slider
+                          radioButtons(inputId = 'radius_units', 
+                                       label = 'Choose units for radius',
+                                       choices = c('miles','kilometers'),
+                                       selected = 'miles')
+                   )
                  ),
+                 
+                 
+                 br(), 
+                 hr(),
+                 br(),
+                 h4('Processing uploaded data'),
+                 
+                 ## input: button to run batch processing code
+                 shiny::actionButton(inputId = 'bt_get_results', 
+                                     label = 'Process Facilities'),
+                 
                  
                  ## input: Percentiles of sites & residents to calculate
                  shiny::checkboxGroupInput(inputId = 'an_list_pctiles', 
@@ -256,8 +320,8 @@ app_ui <- function(request) {
                                            inline = TRUE),
                  
                  ## input: button to run batch processing code
-                 shiny::actionButton(inputId = 'bt_get_results', 
-                                     label = 'Process Facilities'),
+                 shiny::actionButton(inputId = 'bt_get_summary', 
+                                     label = 'Summarize Buffer Output'),
                  
         ),
         
@@ -291,14 +355,20 @@ app_ui <- function(request) {
                  
                  h4('Environmental Indicators'),
                  ## output: table of overall environmental indicators
-                 DT::DTOutput(outputId = 'view1_envt_table')
+                 DT::DTOutput(outputId = 'view1_envt_table'),
+                 
+                 br(),
+                 
+                 plotOutput(outputId = 'view1_boxplot')
                  
         ),
         
         ## Second view - summary stats about distribution of scores across people
         tabPanel(title = 'Second View',
                  
-                 helpText('Goal: to show summary stats about the distribution of scores across people')),
+                 helpText('Goal: to show summary stats about the distribution of scores across people'),
+                 
+        ),
         
         ## Third view - site-by-site table
         tabPanel(title = 'Third View',
@@ -307,7 +377,9 @@ app_ui <- function(request) {
                  
                  h3('Site-by-Site Table'),
                  br(),
-                 DT::DTOutput(outputId = 'view3_table')
+                 DT::DTOutput(outputId = 'view3_table', width = '80%', height='500px'),
+                 br(),
+                 leaflet::leafletOutput(outputId = 'v4_sitemap')
         ),
         
         ## Fourth view - drill down to single site
@@ -370,9 +442,6 @@ app_ui <- function(request) {
                                   accept = c('.xls', '.xlsx', ".csv", "text/csv", "text/comma-separated-values, text/plain")
                  ),
                  
-                 ## input: button to run batch processing code
-                 shiny::actionButton(inputId = 'bt_get_summary', 
-                                     label = 'Summarize Buffer Output'),
         ),
         
         ## summaries tab
@@ -464,38 +533,223 @@ app_ui <- function(request) {
         ## report generation tab
         tabPanel(title = 'Generate Report',
                  
-                 ## REMOVE LATER - add space
-                 br(),
-                 
-                 ## input: add author information - name       
-                 shiny::textInput(inputId = "rg_author_name", 
-                                  label = "Author Name(s):", 
-                                  value = "authorname1 goes here"),
-                 
-                 ## input: add author information - email
-                 shiny::textInput("rg_author_email", 
-                                  label = "Author Email(s):", 
-                                  value = "authoremail1 goes here"),
-                 
-                 ## input: enter analysis details - "within xyz miles of"
-                 shiny::textInput(inputId = "rg_enter_miles", 
-                                  label = "Analysis Location:", 
-                                  value = "within Xyz miles of"),
-                 
-                 ## input: enter analysis details - which sites analyzed
-                 shiny::textInput(inputId = "rg_enter_sites", 
-                                  label = "Describe sites analyzed:", 
-                                  value = "facilities in the polymers and resins I source category (for example)"),
-                 
-                 ## input: enter analysis details - which facilities analyzed
-                 shiny::textInput(inputId = "rg_enter_fac", 
-                                  label = "Describe facilities_analyzed:", 
-                                  value = "facilities subject to this proposed rule (for example)"),
-                 
-                 
+                 br(),       
+                 wellPanel(       
+                   ## REMOVE LATER - add space
+                   br(),
+                   
+                   fluidRow(
+                     column(2, 
+                            ## input: add author information - name       
+                            shiny::textInput(inputId = "rg_author_name", 
+                                             label = "Author Name(s):", 
+                                             value = "FirstName LastName")
+                     ),
+                     
+                     column(2,
+                            ## input: add author information - email
+                            shiny::textInput("rg_author_email", 
+                                             label = "Author Email(s):", 
+                                             value = "author@email.org")
+                     ),
+                     column(2,
+                            checkboxInput('add_coauthors',label = 'Add co-authors?',
+                                          value = FALSE)
+                     )
+                   ),   
+                   
+                   conditionalPanel(
+                     condition = 'input.add_coauthors == 1',
+                     fluidRow(
+                       column(2, 
+                              textInput('coauthor_names', 'Co-Author Name(s)')
+                       ), 
+                       column(2,
+                              textInput('coauthor_emails', 'Co-Author Email(s)')
+                       )
+                     )
+                   ),
+                   
+                   fluidRow(
+                     column(4,
+                            
+                            uiOutput('rg_enter_miles')
+                            ## input: enter analysis details - "within xyz miles of"
+                            # shiny::textInput(inputId = "rg_enter_miles", 
+                            #                  label = "Analysis Location:", 
+                            #                  value = "within Xyz miles of")
+                            #   )
+                     )),
+                   
+                   fluidRow(
+                     column(4,
+                            ## input: enter analysis details - which sites analyzed
+                            shiny::textInput(inputId = "rg_enter_sites", 
+                                             label = "Describe sites analyzed:", 
+                                             value = "facilities in the polymers and resins I source category"),
+                     ), column(6,
+                               ## input: enter analysis details - which facilities analyzed
+                               # shiny::textInput(inputId = "rg_enter_fac", 
+                               #                  label = "Describe facilities_analyzed:", 
+                               #                  value = "facilities subject to this proposed rule (for example)"),
+                     )),
+                   
+                   fluidRow(
+                     column(4,
+                            selectInput(inputId = 'zonetype', label = 'Zone Type (How are zones defined?)',
+                                        choices = c('General' = 'zone_is_named_x','Proximity'= 'zone_is_nearby',
+                                                    'Risk' = 'zone_is_risk_x'))
+                     ),
+                     column(4,
+                            selectInput(inputId = 'within_x_miles_of', label = 'Near to',
+                                        choices = c('near the','nearby',''))
+                     )
+                   ),
+                   
+                   fluidRow(
+                     column(4,
+                            selectInput(inputId = 'in_areas_where', 
+                                        label = 'Describe the surrounding area',
+                                        choices = c('in areas with',
+                                                    'where','in block groups where')
+                            )
+                     ),
+                     column(4,
+                            textInput(inputId = 'in_areas_where_enter',
+                                      label = 'Add area details', value = '')
+                     )
+                   ),
+                   
+                   fluidRow(
+                     column(4,
+                            selectInput(inputId = 'in_the_x_zone', label = 'General study location',
+                                        choices = 
+                                          c('in the study area' = 'area', 'in the analyzed locations' = 'locs',
+                                            'in [State X] (specify)' = 'state', 
+                                            'in EPA Region [XX] (specify)' = 'region')
+                            )
+                     ),
+                     column(4,
+                            
+                            conditionalPanel(
+                              condition = "input.in_the_x_zone == 'state' || input.in_the_x_zone == 'region'",
+                              textInput('in_the_x_zone_enter', label = 'Other - please specify',
+                                        value = 'in ')
+                            )
+                     )
+                   ),
+                   
+                   
+                   #uiOutput('in_the_x_zone_custom'),
+                   
+                   # fluidRow(
+                   #   column(8,
+                   # selectInput(inputId = 'within_x_miles_of', label = 'Near to',
+                   #             choices = c('near the','nearby',''))
+                   #   )
+                   # ),
+                   
+                   fluidRow(
+                     column(4,
+                            selectInput(inputId = 'facilities_studied', label = 'Facilities Studied',
+                                        choices = c('facilities subject to this proposed rule' = 'rule',
+                                                    'analyzed facilities' = 'fac','analyzed sites' = 'sites',
+                                                    'facilities in the xxxx source category' = 'cat',
+                                                    'facilities in the xxxx sector (NAICS code xxxx)' = 'sector')
+                            )
+                     ), 
+                     column(4,
+                            conditionalPanel(
+                              condition = "input.facilities_studied == 'cat' || input.facilities_studied == 'sector' || input.facilities_studied == 'rule'",
+                              textInput('facilities_studied_enter', label = 'Other - please specify')
+                            )
+                     )
+                   ), 
+                   
+                   fluidRow(
+                     column(8,
+                            selectInput('risks_are_x', label = 'Risk level',
+                                        choices = c("risk is at or above 1 per million (lifetime individual cancer risk due to inhalation of air toxics from this source category)",
+                                                    "risk is above 1 per million",
+                                                    "the area is in nonattainment",
+                                                    "PM2.5 levels are in the highest decile",
+                                                    "ozone concentrations are at least 70 ppb")
+                            )
+                     )
+                   ),
+                   
+                   fluidRow(
+                     column(4,
+                            textInput('demog_how_elevated', label = 'Elevation of Demographic Indicators',
+                                      placeholder = 'moderately elevated'),
+                     ),
+                     column(4,
+                            textInput('envt_how_elevated', label = 'Elevation of Environmental Indicators',
+                                      placeholder = 'moderately elevated'),
+                     )),
+                   
+                   fluidRow(
+                     column(4,
+                            selectInput('demog_high_at_what_share_of_sites',
+                                        label = 'Demographic indicators high at what share of sites?',
+                                        choices = c('a surprisingly large share of these sites',
+                                                    'some of these sites, just as it varies nationwide',
+                                                    'a relatively small share of these sites'),
+                                        selected = 'some of these sites, just as it varies nationwide'
+                            ),
+                     ), column(4,
+                               selectInput('envt_high_at_what_share_of_sites',
+                                           label = 'Environmental indicators high at what share of sites?',
+                                           choices = c('a surprisingly large share of these sites',
+                                                       'some of these sites, just as it varies nationwide',
+                                                       'a relatively small share of these sites'),
+                                           selected = 'some of these sites, just as it varies nationwide'
+                               ),
+                     )),
+                   
+                   fluidRow(
+                     column(4,
+                            textInput('source_of_latlons',
+                                      label = 'Source of Points',
+                                      placeholder = "EPA's Facility Registry Service (FRS)"),
+                     ), 
+                     column(4,
+                            textInput('fundingsource',
+                                      label = 'Funding Source',
+                                      placeholder = "The Inflation Reduction Act (for example)"),
+                     )),
+                   
+                   fluidRow(
+                     column(8,
+                            textAreaInput('conclusion1',
+                                          label = 'Conclusion 1',
+                                          placeholder = "The people living near these sites are 40% more likely to be in Limited-English Households than the average US resident. (for example)"
+                            )
+                     )),
+                   fluidRow(
+                     column(8,
+                            textAreaInput('conclusion2', label = 'Conclusion 2',
+                                          
+                                          placeholder = "The % low income among these residents is 2.4 times the rate in the US overall. (for example)"
+                            )
+                     )),
+                   fluidRow(
+                     column(8,
+                            textAreaInput('conclusion3', label = 'Conclusion 3',
+                                          
+                                          placeholder = "The average resident near these sites is 1.5 times as likely to be Hispanic as the average person in their State overall. (for example)"
+                            )
+                     )),
+                   
+                   ## TEST - button to show PDF preview     
+                   # actionButton(inputId = "pdf_preview", "Preview PDF"),
+                   #uiOutput(outputId = "pdfview")
+                 ),
                  ## output: button to download static report
                  shiny::downloadButton(outputId = 'rg_download', 
-                                       label = 'Download report')
+                                       label = 'Download report'),
+                 
+                 actionButton(inputId = 'show_outline', label = 'Show Report Outline')
         )
       ),
       
