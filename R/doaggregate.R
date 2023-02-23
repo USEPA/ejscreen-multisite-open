@@ -405,15 +405,17 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
     pctlths         = 1 * ifelse(age25up        == 0, 0, as.numeric(lths)       / age25up), 
     pctlingiso      = 1 * ifelse(hhlds          == 0, 0, lingiso                / hhlds), 
     pctpre1960      = 1 * ifelse(builtunits     == 0, 0, pre1960                / builtunits),
-    pctunemployed   = 1 * ifelse(unemployedbase == 0, 0, as.numeric(unemployed) / unemployedbase)
+    pctunemployed   = 1 * ifelse(unemployedbase == 0, 0, as.numeric(unemployed) / unemployedbase)  # ,
+    
   ) ]
   # cbind(sum = prettyNum(results_overall, big.mark = ','))
+  
   results_overall[ , `:=`(
-    VSI.eo = (pctlowinc + pctmin) / 2  
-    
-    # *** add supplemental indicator too, when possible. ####
-    
-    
+    VSI.eo = (pctlowinc + pctmin) / 2  # , 
+    # *** add supplemental indicator too, when possible. need lowlifeexpectancy etc. and Demog.Index.Supp needs to be in names_d  and lookup tables for usastats and statestats ####
+    # # supplemental demographic index = (% low-income + % unemployed + % less than high school education + % limited English speaking + low life expectancy) / 5 
+    # For block groups where low life expectancy data is missing, the formula will average the other four factors! 
+    # Demog.Index.Supp = (pctlowinc + pctunemployed + pctlths + pctlingiso + lowlifex ) / ifelse(lowlifex == 0, 4, 5) # where is lowlifex available?
   )]
   results_bysite[ , `:=`(
     pctover64       = 1 * ifelse(pop==0, 0,            over64        / pop),
@@ -431,10 +433,13 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
     pctlths         = 1 * ifelse(age25up        == 0, 0, as.numeric(lths)       / age25up), 
     pctlingiso      = 1 * ifelse(hhlds          == 0, 0, lingiso                / hhlds), 
     pctpre1960      = 1 * ifelse(builtunits     == 0, 0, pre1960                / builtunits),
-    pctunemployed   = 1 * ifelse(unemployedbase == 0, 0, as.numeric(unemployed) / unemployedbase)
+    pctunemployed   = 1 * ifelse(unemployedbase == 0, 0, as.numeric(unemployed) / unemployedbase)  # ,
+    
   ) ]
   results_bysite[ , `:=`(
-    VSI.eo = (pctlowinc + pctmin) / 2
+    VSI.eo = (pctlowinc + pctmin) / 2 # ,
+    # *** add supplemental indicator too, when possible. need lowlifeexpectancy etc. and Demog.Index.Supp needs to be in names_d  and lookup tables for usastats and statestats ####
+    # Demog.Index.Supp = (pctlowinc + pctunemployed + pctlths + pctlingiso + lowlifex ) / ifelse(lowlifex == 0, 4, 5) # where is lowlifex available? needs to be here once per site
   )]
   ##################################################### #  ##################################################### #  ##################################################### #
   
@@ -469,6 +474,11 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
   # results_overall$pop
   ##################################################### #  ##################################################### #  ##################################################### #
   
+  # assign state abbrev and name and region to each site!! (allows for state percentiles and averages to be looked up)
+# xxx
+    
+  # results_bysite[ , ST := sf::st_from_latlon(lat,lon)]
+  
   
   
   ##################################################### #
@@ -479,8 +489,6 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
   
   # specify which variables get converted to percentile form
   
-  ### ***NEED TO ADD SUPPLEMENTAL INDEXES HERE ####
-  # browser()
   varsneedpctiles <- c(names_e,  names_d, names_d_subgroups, names_ej) 
   varnames.us.pctile <- paste0('pctile.', varsneedpctiles)
   varnames.state.pctile <- paste0('state.pctile.', varsneedpctiles)
@@ -507,6 +515,10 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
       state.pctile.cols_overall[, varnames.state.pctile[[i]]] <- NA
     }
   }
+  
+  ### ***NEED TO ADD SUPPLEMENTAL INDEXES HERE ####
+  
+  # does this convert it from data.table to data.frame?  xxx
   
   results_overall <- cbind(siteid=NA, results_overall, us.pctile.cols_overall, state.pctile.cols_overall)
   results_bysite  <- cbind(           results_bysite,  us.pctile.cols_bysite,  state.pctile.cols_bysite )
@@ -590,11 +602,17 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
   #   names_ej,          names_ej_pctile,          names_ej_state_pctile 
   # )
   
+  names(results_overall) <- gsub("VSI.eo", "Demog.Index", names(results_overall))
+  names(results_bysite) <- gsub("VSI.eo", "Demog.Index", names(results_bysite))
+  # names(results_bybg) <- gsub("VSI.eo", "Demog.Index", names(results_bybg))
+
+    
   ##################################################### #  ##################################################### #  ##################################################### #
   # DONE - Return list of results ####
   
   results <- list(
     results_overall = results_overall, 
+    # results_bybg = results_bybg,
     results_bysite  = results_bysite
   )
   print(cbind(overall = as.list( results$results_overall)))
