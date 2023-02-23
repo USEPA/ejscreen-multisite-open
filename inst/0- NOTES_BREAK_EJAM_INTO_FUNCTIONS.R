@@ -4,7 +4,29 @@
 # -----------------------------------------------
 # TO GET FACILITIES AND POINTS (LAT / LON):  - see EJAMejscreenapi::locate_by_id(type = 'program') 
 # 
-# examples:
+
+# **MAYBE WE SHOULD RENAME THESE RELATED FUNCTIONS TO BE CONSISTENTLY NAMED?**
+# Several functions that query on y to find x,
+# Maybe rename something like   x_from_y()   or   get_x_from_y()   or y2x() 
+# e.g., 
+# EJAM::naics_find  could be renamed maybe  get_naics_from_naicsindustryname()
+#   or maybe naics_from_naicsindustryname() 
+
+ # These functions are used to go between these x and y: 
+# latlon
+# naicsindustryname,   "pulp" or "Pulp, Paper, and Paperboard Mills"
+# naics            3221
+# sicindustryname
+# sic
+# siteid
+# programid
+# program
+#   etc. etc. 
+# 
+
+
+
+# examples of using them right now:
 # 
 #   # See a data table of facilities in one industry
 #   
@@ -15,7 +37,13 @@
 #     caption = "FACILITIES WITH NAICS CODE MATCHING QUERY TERM 'PULP' ", filter = "top")
 # 
 # # See a map of one industry
+#  
+# # Easy to get just lat,lon,site,naics:
+
+#   mapfast( get_siteid_from_naics( naics_find("pulp")))  
 # 
+# # But to get site name and program and programid, it is a little more awkward right now:
+#
 # EJAMejscreenapi::mapfast(
 #   EJAMfrsdata::frs[EJAMfrsdata::frs$REGISTRY_ID %chin% unlist(
 #     EJAMfrsdata::get_siteid_from_naics(
