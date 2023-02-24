@@ -2,16 +2,18 @@
 % Please edit documentation in R/statestats_query.R
 \name{usastats_means}
 \alias{usastats_means}
-\title{see statestats_query()}
+\title{convenient way to see USA MEANS of ENVIRONMENTAL and DEMOGRAPHIC indicators from lookup table}
 \usage{
 usastats_means(...)
 }
 \arguments{
-\item{...}{see statestats_query()}
+\item{...}{
+  Arguments passed on to \code{\link[=usastats_query]{usastats_query}}
+  \describe{
+    \item{\code{varnames}}{names of columns in lookup table, like "proximity.rmp"}
+    \item{\code{PCTILES}}{vector of percentiles 0-100 and/or "mean"}
+  }}
 }
 \description{
-see statestats_query()
-}
-\examples{
-see statestats_query()
+convenient way to see USA MEANS of ENVIRONMENTAL and DEMOGRAPHIC indicators from lookup table
 }

@@ -1,7 +1,11 @@
 #' @name states_shapefile
 #' @docType data
 #' @title US States boundaries 2020 shapefile from TIGER
+#' @description This is used to figure out which state contains each point (facility/site)
+#'   that the user wants to analyze. 
+#' @seealso [state_from_latlon()]
 #' @details
+#'  Created roughly as follows: 
 #'  
 #'  setwd("~/../../R/mysource/EJAM/data-raw")
 #'  

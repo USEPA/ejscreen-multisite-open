@@ -477,7 +477,7 @@ doaggregate <- function(sites2blocks, countcols=NULL, popmeancols=NULL, calculat
   # assign state abbrev and name and region to each site!! (allows for state percentiles and averages to be looked up)
 # xxx
     
-  # results_bysite[ , ST := sf::st_from_latlon(lat,lon)]
+  # results_bysite[ , ST := EJAM::state_from_latlon(lat,lon)]
   
   
   

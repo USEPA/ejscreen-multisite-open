@@ -1,4 +1,4 @@
-#' get mean, pctiles of envt or demog indicators in 1+states, from lookup table
+#' convenient way to see mean, pctiles of Env or Demog indicators from lookup table
 #'
 #' @param ST vector of state abbreviations, or USA
 #' @param varnames names of columns in lookup table, like "proximity.rmp"
@@ -60,6 +60,10 @@ statestats_query <- function(ST=sort(unique(EJAM::statestats$REGION)), varnames=
   x
 }
 
+#' convenient way to see mean, pctiles of DEMOG indicators from lookup table
+#' @inherit statestats_query params return description details seealso examples
+#' @export
+#'
 statestats_queryd <- function(ST=sort(unique(EJAM::statestats$REGION)), varnames=  EJAM::names_d , 
                               PCTILES=NULL, dig=2) { 
   if (is.null(PCTILES))  {
@@ -69,6 +73,10 @@ statestats_queryd <- function(ST=sort(unique(EJAM::statestats$REGION)), varnames
   }
 }
 
+#' convenient way to see mean, pctiles of ENVIRONMENTAL indicators from lookup table
+#' @inherit statestats_query return description details seealso examples
+#' @export
+#'
 statestats_querye <- function(ST=sort(unique(EJAM::statestats$REGION)), varnames=  EJAM::names_e , 
                               PCTILES=NULL, dig=2) { 
   if (is.null(PCTILES))  {
@@ -79,12 +87,11 @@ statestats_querye <- function(ST=sort(unique(EJAM::statestats$REGION)), varnames
 }
 
 
-#' see statestats_query()
-#'
-#' @param varnames see statestats_query()
-#' @param PCTILES see statestats_query()
-#' @param dig see statestats_query()
-#'
+#' convenient way to see USA mean, pctiles of Env and Demog indicators from lookup table
+#' @inherit statestats_query return description details seealso examples
+#' @param varnames names of columns in lookup table, like "proximity.rmp"
+#' @param PCTILES vector of percentiles 0-100 and/or "mean"
+#' @param @dig how many digits to round to
 #' @export
 #'
 usastats_query   <- function(varnames=c(EJAM::names_e, EJAM::names_d), PCTILES=NULL, dig=2) {
@@ -98,40 +105,33 @@ usastats_query   <- function(varnames=c(EJAM::names_e, EJAM::names_d), PCTILES=N
 }
 
 
-#' see statestats_query()
-#'
-#' @param varnames see statestats_query()
-#' @param PCTILES see statestats_query()
-#' @param dig see statestats_query()
-#'
+#' convenient way to see USA mean, pctiles of ENVIRONMENTAL indicators from lookup table
+#' @inherit statestats_query return description details seealso examples
+#' @param varnames names of columns in lookup table, like "proximity.rmp"
+#' @param PCTILES vector of percentiles 0-100 and/or "mean"
+#' @param @dig how many digits to round to
 #' @export
 #'
-#' @examples see statestats_query()
 usastats_querye  <- function(varnames=EJAM::names_e, PCTILES=NULL, dig=2) {
    statestats_query(ST="us", varnames = varnames, PCTILES = PCTILES, dig = dig)
 }
 
-#' see statestats_query()
-#'
-#' @param varnames see statestats_query()
-#' @param PCTILES see statestats_query()
-#' @param dig see statestats_query()
-#'
+#' convenient way to see USA mean, pctiles of DEMOGRAPHIC indicators from lookup table
+#' @inherit statestats_query return description details seealso examples
+#' @param varnames names of columns in lookup table, like "proximity.rmp"
+#' @param PCTILES vector of percentiles 0-100 and/or "mean"
+#' @param @dig how many digits to round to
 #' @export
 #'
-#' @examples see statestats_query()
 usastats_queryd  <- function(varnames=EJAM::names_d, PCTILES=NULL, dig=2) {
   statestats_query(ST="us", varnames = varnames, PCTILES = PCTILES, dig = dig)
 }
 
 
-#' see statestats_query()
-#'
-#' @param ... see statestats_query()
-#'
+#' convenient way to see USA MEANS of ENVIRONMENTAL and DEMOGRAPHIC indicators from lookup table
+#' @inheritDotParams usastats_query
 #' @export
 #'
-#' @examples see statestats_query()
 usastats_means <- function(...) {
   x = usastats_query(PCTILES = "mean", ...)
   x$REGION=NULL; x$PCTILE=NULL # so t(x) wont make everything into character class

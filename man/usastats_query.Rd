@@ -2,7 +2,7 @@
 % Please edit documentation in R/statestats_query.R
 \name{usastats_query}
 \alias{usastats_query}
-\title{see statestats_query()}
+\title{convenient way to see USA mean, pctiles of Env and Demog indicators from lookup table}
 \usage{
 usastats_query(
   varnames = c(EJAM::names_e, EJAM::names_d),
@@ -11,12 +11,40 @@ usastats_query(
 )
 }
 \arguments{
-\item{varnames}{see statestats_query()}
+\item{varnames}{names of columns in lookup table, like "proximity.rmp"}
 
-\item{PCTILES}{see statestats_query()}
+\item{PCTILES}{vector of percentiles 0-100 and/or "mean"}
 
-\item{dig}{see statestats_query()}
+\item{@dig}{how many digits to round to}
 }
 \description{
-see statestats_query()
+convenient way to see USA mean, pctiles of Env and Demog indicators from lookup table
+}
+\examples{
+\dontrun{
+## in USA overall, see mean and key percentiles for all demog and envt indicators
+usastats_query() # or statestats_query('us') # can say us or US or USA or usa etc.
+usastats_query(PCTILES = 'mean')
+usastats_means() # same but nicer looking format in console
+usastats_means(dig=4)
+usastats[!(usastats$PCTILE < 50), c("PCTILE", names_d)]
+usastats[!(usastats$PCTILE < 50), c("PCTILE", names_e)]
+## in 1 state, see mean and key percentiles for all demog and envt indicators
+statestats_query('MD')
+## in 1 state, see mean and key percentiles for just demog indicators
+statestats_queryd('MD')
+## 1 indicator in 1 state, see a few key percentiles and mean
+statestats_query('MD','proximity.tsdf')
+## mean of 1 indicator for each state
+statestats_query(varnames = 'proximity.tsdf')
+## using full blockgroup dataset, not lookup tables of percentiles, 
+blockgroupstats[,   lapply(.SD, function(x) mean(x, na.rm=T)),  .SDcols= c(names_d, names_e)]
+##   see all total counts (not just US means), 
+##   demographics including subgroups, 
+##   but not environmental indicators.
+t(round(EJAMbatch.summarizer::ustotals2(bg = EJAM::blockgroupstats),2))
+t(blockgroupstats[,   lapply(.SD, function(x) mean(x, na.rm=T)),  .SDcols= c(names_e, names_d)])
+
+}
+
 }

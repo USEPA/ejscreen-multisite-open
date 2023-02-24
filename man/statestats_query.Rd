@@ -2,7 +2,7 @@
 % Please edit documentation in R/statestats_query.R
 \name{statestats_query}
 \alias{statestats_query}
-\title{get mean, pctiles of envt or demog indicators in 1+states, from lookup table}
+\title{convenient way to see mean, pctiles of Env or Demog indicators from lookup table}
 \usage{
 statestats_query(
   ST = sort(unique(EJAM::statestats$REGION)),
@@ -21,7 +21,7 @@ statestats_query(
 \item{dig}{digits to round to}
 }
 \description{
-get mean, pctiles of envt or demog indicators in 1+states, from lookup table
+convenient way to see mean, pctiles of Env or Demog indicators from lookup table
 }
 \examples{
 \dontrun{

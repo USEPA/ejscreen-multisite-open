@@ -1,6 +1,7 @@
-#' Key buffering function - wrapper redirecting to the right version of getblocksnearby()
-#' @details 
-#'  
+#' Fast way to find nearby points - finds distance to each Census block centroid nearby
+#' @details wrapper redirecting to the right version like [getblocksnearbyviaQuadTree()]
+#'    Census block "internal points" are actually what it looks for, like a centroid. 
+#'    The blocks are pre-indexed for the whole USA, via the data object quadtree or localtree
 #' @param sitepoints   see [getblocksnearbyviaQuadTree()] or other such functions
 #' @param cutoff       see [getblocksnearbyviaQuadTree()] or other such functions
 #' @param maxcutoff    see [getblocksnearbyviaQuadTree()] or other such functions
