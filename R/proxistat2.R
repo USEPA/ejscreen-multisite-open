@@ -43,12 +43,26 @@ proxistat2 <- function(pts, cutoff=8.04672, quadtree) {
   # # FACILITY DENSITY INDICATOR 
   #  AS PROXIMITY SCORE FOR SITES IN FRS
   
+  # EFFICIENCY QUESTION: 
+  #  Obvious algorithm is to 
+  #  STEP 1: loop through all 8 million US blocks, and for each block count all nearby facilities (sites),
+  #   but vast majority of blocks will have zero sites nearby, so 
+  #   STEP 2: for every block with zero sites nearby, expand search somehow until finding nearest 1 site. HOW?
+  
+  #  Maybe another approach to check is 
+  # STEP 1: loop through just the sites (is it faster than step 1 above?), and for each site find all nearby blocks, maybe 1k each, say. 
+  #   then do STEP 2 as above.
+  
   sites2blocks_dt <- getblocksnearby(sitepoints = pts, cutoff = cutoff, quadtree = quadtree)
   
+  # THE VAST MAJORITY OF BLOCKS WILL HAVE ZERO WITHIN THE 5 KM RADIUS, SO NEAREST 1 IS BASIS FOR THEIR SCORE, BUT
+  #   SOME WILL EVEN HAVE ZERO WITHIN THE MAX RADIUS TO CHECK
   # if none found within cutoff of 5km, this func does not yet create score based on single nearest
+
   
   
   #     TO BE ADDED HERE 
+  
   
   
   #  ADJUST DISTANCE USING A MINIMUM DISTANCE ####
@@ -61,6 +75,9 @@ proxistat2 <- function(pts, cutoff=8.04672, quadtree) {
   # miles_per_km <- EJAMejscreenapi::meters_per_mile / 1000
   km_a_mile = 1.609344
   # distance in miles needs min.dist in square miles; if distance in meters, square meters.
+  # We should precalculate effective radius of each block, 
+  #    blockpoints[ , effectiveradius := sqrt(area/pi)]
+  # effectiveradius might be a better name for min.dist but code here used min.dist
   # min.dist <- 0.9 * sqrt( area / pi )
   # min.dist <- (0.9 / sqrt(pi)) * sqrt(area)
   # (0.9 / sqrt(pi)) = 0.5077706  # so, min.dist := 0.5077706 * sqrt(area)
@@ -69,12 +86,15 @@ proxistat2 <- function(pts, cutoff=8.04672, quadtree) {
   sites2blocks_dt[ , min.dist.km := 0.0005077706 * sqrt(area)]
   sites2blocks_dt[ , distance.km := pmax(min.dist.meters, distance * km_a_mile, na.rm = TRUE)]
   
-  # create score per block ####
+  
+  
+  
+  # create score per block = sum of sites wtd by 1/d ####
   blockscores <- sites2blocks_dt[ , sum(1 / distance.km, na.rm = TRUE), by=blockid] # result is data.table with blockid, V1
    # blockscores[is.infinite(V1), V1 := 999]
   x <- data.table::merge.data.table(blockwts, blockscores, by="blockid", all.x = FALSE, all.y = TRUE)
   
-  # create score per block group ####
+  # create score per block group = popwtd mean of block scores ####
   bgscore <- x[, sum(V1 * blockwt, na.rm=TRUE)/sum(blockwt, na.rm=TRUE), by=bgid]
   setnames(bgscore, 'V1', "proximityscore")
   bgscore = merge(bgscore, bgpts, by = "bgid", all.x = TRUE, all.y = FALSE)
