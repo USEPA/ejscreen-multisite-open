@@ -1,10 +1,16 @@
 
-# EJAM should output one row per site but 
-# also another table that is 
-# one row per block group 
-# where only unique blocks were counted.  
+
+#    doaggregate() now outputs this info as  y$results_bybg_people
+#  and see ratiostats.R
+
 #
-# That is how summarizer can show distribution across people more accurately 
+# EJAM::doaggregate() or EJAM::getblocksnearby() ??? 
+# should output one row per site like it already does, but 
+# also another table that is 
+# one row **per block group** 
+#  where only unique blocks were counted.  
+#
+# That is how a summarizer can show distribution across people more accurately 
 # than by doing only 1 clump of people per site weighted by site for example,
 # and you can show a histogram of people/pdf/cdf, etc.
 
@@ -16,11 +22,11 @@
 # you can output the demog counts at each bg
 # and the percentages at each bg
 # to then show distribution of risk or even distances across these people 
-# you would have 
+# you would have ...
 
 
 # and then still have the overall stats done into one row as summary formulas
-# based on 
+# based on ....
 
 
 

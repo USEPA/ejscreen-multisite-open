@@ -6,6 +6,44 @@ if (!require("EJSCREENbatch")) {
   library(EJSCREENbatch)
 }
 
+########################################################################## # 
+# selected key lines from ejscreenbatch, NOT WORKING SCRIPT HERE, JUST NOTES:
+ # 
+# Join EJSCREEN + ACS Data
+# data.state.uspr <- fetch_data_ej( working_dir, state)
+# acs.cbg.data    <- fetch_acs_data(working_dir, state)
+# data.tog <- data.state.uspr %>% dplyr::left_join(acs.cbg.data, by = c('ID' = 'GEOID'))
+# bgdata <- data.tog
+# 
+# for(i in buffers) {
+#   
+#   # 3 MILE BUFFER AROUND EACH POINT (LOI = locations of interest, sites to analyze)
+#   facility_buff <- st_buffer(LOI_data %>% st_transform("ESRI:102005"), dist = units::set_units(3,"mi"))
+#   mycircles <- facility_buff
+# 
+# # robust did intersection of circles and ejscreendata
+#
+# area3_intersection <- sf::st_intersection( #************
+#   mycircles, 
+#   sf::st_buffer(bgdata, 0) 
+#   ) 
+# 
+#   # quick did a join using intersects method, of circles and ejscreendata
+#  
+# area1_intersect <- sf::st_join( #************
+#   mycircles, 
+#   bgdata, 
+#    join=st_intersects           #************
+#   ) %>%
+#   dplyr::select(-geometry) %>%
+#   as.data.frame()
+#  
+# }
+########################################################################## # 
+
+
+
+
 ##################################################### #
 # excerpts of EJSCREENBatch code.... ####
 #  annotated with notes relevant to EJAM and for comparison 
