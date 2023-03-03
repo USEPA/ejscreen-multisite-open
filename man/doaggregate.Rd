@@ -6,10 +6,12 @@
 \usage{
 doaggregate(
   sites2blocks,
+  sites2states = NA,
   countcols = NULL,
   popmeancols = NULL,
   calculatedcols = NULL,
   testing = FALSE,
+  include_ejindexes = FALSE,
   ...
 )
 }
@@ -18,6 +20,8 @@ doaggregate(
 nearby Census block internal points, with columns siteid, blockid, distance,
 created by getblocksnearby  function.
 See sites2blocks_example dataset in package, as input to this function}
+
+\item{sites2states}{table of siteid (each unique one in sites2blocks) and ST (2-character State abbreviation)}
 
 \item{countcols}{character vector of names of variables  to aggregate within a buffer
 using a sum of counts, like, for example, the number of people for whom a
@@ -31,6 +35,8 @@ using population weighted mean.}
 using formulas that have to be specified.}
 
 \item{testing}{used while testing this function}
+
+\item{include_ejindexes}{not yet implemented}
 
 \item{...}{more to pass to another function? Not used currently.}
 }
@@ -62,5 +68,15 @@ This function requires the following as data lazy loaded for example from EJAMbl
 \item quaddata, and blockquadtree: data.table and quad tree, for indexes of block points
 (and localtree that is created when package is loaded)
 \item EJAM::blockgroupstats - A data.table (such as EJSCREEN demographic and environmental data by blockgroup?)
+}
+}
+\examples{
+\dontrun{
+  testsites <- EJAMfrsdata::frs[sample(1:nrow(EJAMfrsdata::frs), 1e3),]
+  x <- getblocksnearby(testsites, cutoff = 3.1, quadtree = localtree)
+  stinfo <- data.frame(siteid=1:nrow(testsites),  state_from_latlon(lat=testsites$lat, lon=testsites$lon))
+  y <- doaggregate(x, sites2states = stinfo)
+
+
 }
 }
