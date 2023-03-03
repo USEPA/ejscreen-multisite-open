@@ -425,7 +425,12 @@ app_ui <- function(request) {
 	            # could edit to explain xlsx, csv etc format allowed when approp
 	          )
 	        )
-	      )
+	      ), 
+	      
+	      # . ####
+	      ## D) ___ by shapefile uploaded ####
+	      
+	      mod_get_shape_from_upload_ui("get_shape_from_upload_1")
 	    ))
 	    
 	  )
