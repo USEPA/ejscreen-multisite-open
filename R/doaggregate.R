@@ -46,6 +46,7 @@
 #' @param calculatedcols character vector of names of variables to aggregate within a buffer
 #'   using formulas that have to be specified.
 #' @param testing used while testing this function
+#' @param updateProgress progress bar function used for shiny app
 #' @param include_ejindexes not yet implemented 
 #' @param ... more to pass to another function? Not used currently.
 #' @import data.table
@@ -60,7 +61,7 @@
 #' }
 #' @export
 #'
-doaggregate <- function(sites2blocks, sites2states=NA, countcols=NULL, popmeancols=NULL, calculatedcols=NULL, testing=FALSE, include_ejindexes=FALSE, ...) {
+doaggregate <- function(sites2blocks, sites2states=NA, countcols=NULL, popmeancols=NULL, calculatedcols=NULL, testing=FALSE, include_ejindexes=FALSE, updateProgress = NULL, ...) {
   
   # Check STATES were provided ####
   if (missing(sites2states)) {
@@ -178,6 +179,13 @@ doaggregate <- function(sites2blocks, sites2states=NA, countcols=NULL, popmeanco
   }  
   ##################################################### #  ##################################################### #
   
+  ## update progress bar in shiny app
+  if(is.function(updateProgress)){
+    
+    boldtext <- paste0('Starting aggregation')
+    updateProgress(message_main = boldtext, 
+                   value = 0.2)
+  }
   
   
   
@@ -316,7 +324,13 @@ doaggregate <- function(sites2blocks, sites2states=NA, countcols=NULL, popmeanco
   
   # ? 
   
-  
+  ## update progress bar in shiny app
+  if(is.function(updateProgress)){
+    
+    boldtext <- paste0('Analyzing blockgroups')
+    updateProgress(message_main = boldtext, 
+                   value = 0.4)
+  }
   
   
   #***  ###################################### #
@@ -400,6 +414,14 @@ doaggregate <- function(sites2blocks, sites2states=NA, countcols=NULL, popmeanco
                                                 all.x = TRUE, all.y=FALSE, by='bgid')
   # rm(sites2bgs_overall, sites2bgs_bysite); rm(blockgroupstats)
   
+  ## update progress bar in shiny app
+  if(is.function(updateProgress)){
+    
+    boldtext <- paste0('Joining blockgroups to EJScreen indicators')
+    updateProgress(message_main = boldtext, 
+                   value = 0.6)
+  }
+  
   ##################################################### #
   # CALC TOTALS FOR COUNT VARIABLES at EACH SITE & OVERALL ####  
   # AND ALSO SUBGROUPS IF WANT TO 
@@ -472,6 +494,13 @@ doaggregate <- function(sites2blocks, sites2states=NA, countcols=NULL, popmeanco
   #  the lookup tables like EJAM::usastats store those variables as 0 to 1.00 . . .. see usastats[74:80,1:9]
   #  and the dataset of all US blockgroups (from EJScreen FTP site or in EJAM::blockgroupstats) stores that as 0 to 1.00
   
+  ## update progress bar in shiny app
+  if(is.function(updateProgress)){
+    
+    boldtext <- paste0('Computing results')
+    updateProgress(message_main = boldtext, 
+                   value = 0.8)
+  }
   
   # CALC via FORMULAS with Rolled up Counts #### 
   # this was meant to handle multiple columns (formula for each new one) for many rows (and here in buffer results, one site is a row, not one blockgroup) 
