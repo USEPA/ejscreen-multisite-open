@@ -2,10 +2,7 @@
 % Please edit documentation in R/app_run_EJAM.R
 \name{app_run_EJAM}
 \alias{app_run_EJAM}
-\title{Run the Shiny Application
-app_run_EJAM()                 is like EJAM::run_app()
-app_run_EJAMejscreenapi()      is like EJAMejscreenapi::run_app()
-app_run_EJAMbatch.summarizer() is like EJAMbatch.summarizer::run_app()}
+\title{Launch the Shiny Application in RStudio}
 \usage{
 app_run_EJAM(
   onStart = NULL,
@@ -40,7 +37,9 @@ expression in order for the match to be considered successful.}
 See \code{?golem::get_golem_options} for more details.}
 }
 \description{
-Run the Shiny Application
+This lets you launch the shiny web app from RStudio
+}
+\details{
 app_run_EJAM()                 is like EJAM::run_app()
 app_run_EJAMejscreenapi()      is like EJAMejscreenapi::run_app()
 app_run_EJAMbatch.summarizer() is like EJAMbatch.summarizer::run_app()

@@ -2,7 +2,7 @@
 % Please edit documentation in R/getblocksnearby.R
 \name{getblocksnearby}
 \alias{getblocksnearby}
-\title{Key buffering function - wrapper redirecting to the right version of getblocksnearby()}
+\title{Fast way to find nearby points - finds distance to each Census block centroid nearby}
 \usage{
 getblocksnearby(
   sitepoints,
@@ -28,7 +28,12 @@ SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "
 \item{...}{see \code{\link[=getblocksnearbyviaQuadTree_Clustered]{getblocksnearbyviaQuadTree_Clustered()}} or other such functions}
 }
 \description{
-Key buffering function - wrapper redirecting to the right version of getblocksnearby()
+Fast way to find nearby points - finds distance to each Census block centroid nearby
+}
+\details{
+wrapper redirecting to the right version like \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}}
+Census block "internal points" are actually what it looks for, like a centroid.
+The blocks are pre-indexed for the whole USA, via the data object quadtree or localtree
 }
 \seealso{
 \code{\link[=getblocksnearby2]{getblocksnearby2()}} that was work in progress

@@ -85,12 +85,12 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, cutoff=1, maxcutoff=31.07,
   
   
   for (i in 1:nRowsDf) {    # LOOP OVER SITES HERE ----
-    
-    coords <- sitepoints[i, .(FAC_X, FAC_Z)]  # the similar clustered function uses sitepoints2use not sitepoints
+    ########################################################################### ## ** SLOW STEP TO OPTIMIZE 
+    coords <- sitepoints[i, .(FAC_X, FAC_Z)]  # ** SLOWEST STEP TO OPTIMIZE  #  1 OF SLOWEST LINES   (the similar clustered function uses sitepoints2use not sitepoints)
     x_low  <- coords[,FAC_X]-truedistance;
     x_hi  <-  coords[,FAC_X]+truedistance
     z_low  <- coords[,FAC_Z]-truedistance;
-    # z_hi  <-  coords[,FAC_Z]+truedistance   # ** THIS waS   THE SLOWEST LINE  OVERALL ***
+    # z_hi  <-  coords[,FAC_Z]+truedistance   # ** THIS HAD BEEN THE SLOWEST LINE  OVERALL ***
     
     if ((i %% report_progress_every_n) == 0) {print(paste("Cells currently processing: ",i ," of ", nRowsDf) ) } # i %% report_progress_every_n indicates i mod report_progress_every_n (“i modulo report_progress_every_n”) 
     
@@ -101,10 +101,11 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, cutoff=1, maxcutoff=31.07,
     # vs was just localtree from global env in clustered version of function
     
     tmp <- EJAMblockdata::quaddata[vec, ] 
-    # x <- tmp[ , .(BLOCK_X, BLOCK_Y, BLOCK_Z)] # but not blockid ??   # ** SLOW STEP TO OPTIMIZE
+    # x <- tmp[ , .(BLOCK_X, BLOCK_Y, BLOCK_Z)] # but not blockid ?? 
     # y <- sitepoints[i, c('FAC_X','FAC_Y','FAC_Z')]  # the similar clustered function uses something other than sitepoints here - why?
     
-    distances <- as.matrix(pdist::pdist(tmp[ , .(BLOCK_X, BLOCK_Y, BLOCK_Z)] , sitepoints[i, c('FAC_X','FAC_Y','FAC_Z')] ))
+    ########################################################################### ## ** SLOW STEP TO OPTIMIZE 
+    distances <- as.matrix(pdist::pdist(tmp[ , .(BLOCK_X, BLOCK_Y, BLOCK_Z)] , sitepoints[i, c('FAC_X','FAC_Y','FAC_Z')] ))  # ** SLOW STEP TO OPTIMIZE  #  1 OF SLOWEST LINES  
     # pdist computes a n by p distance matrix using two separate matrices
     
     #clean up fields
@@ -112,7 +113,8 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, cutoff=1, maxcutoff=31.07,
     tmp[ , siteid := sitepoints[i, .(siteid)]]  # the similar clustered function differs, why?
     
     #filter actual distance
-    res[[i]] <- tmp[distance <= truedistance, .(blockid, distance, siteid)]  # ** SLOW STEP TO OPTIMIZE
+    ########################################################################### ## ** SLOW STEP TO OPTIMIZE 
+    res[[i]] <- tmp[distance <= truedistance, .(blockid, distance, siteid)]  # ** SLOW STEP TO OPTIMIZE  #  1 OF SLOWEST LINES  
     
     # hold your horses, what if there are no blocks and you are supposed to avoid that
     if ( avoidorphans && (nrow(res[[i]])) == 0) { # rarely get here so not critical to optimize

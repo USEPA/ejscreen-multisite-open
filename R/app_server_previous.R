@@ -69,6 +69,16 @@ app_server <- function(input, output, session) {
   doExpandradius <- reactive({if (input$expandRadius=="no"){return(FALSE)} else {return(TRUE)}})
   
   # . ####
+  # ______________ Upload Shapefile(s) _________________ ####
+  # . ####
+  ####################################################################################################################### #
+  # *** upload shapefile(s)** ######
+  #  
+  ####################################################################################################################### #
+  
+  mod_get_shape_from_upload_server("get_shape_from_upload_1")
+  
+  # . ####
   # ______________ Lat Lon _________________ ####
   # . ####
   ####################################################################################################################### #
@@ -455,14 +465,14 @@ app_server <- function(input, output, session) {
   output$downloadData1 <- shiny::downloadHandler(
     filename = function() {
       cleandate <- gsub(' ', '_', gsub(':', '.', Sys.time()))
-      fname <- paste0("EJAM-OUT-", input$analysis_shortname, "_", 
+      fname <- paste0("EJAM_output_", input$analysis_shortname, "_", 
                       input$cutoffRadius, '_miles_', cleandate, ".xlsx", sep='')
       fname
     },
     
     content = function(file) {
       cat('\nTRYING TO DOWNLOAD ', 
-          paste0("EJAM-OUT-", input$analysis_shortname, "-", gsub(':', '-', Sys.time()), ".xlsx", sep=''),
+          paste0("EJAM_output_", input$analysis_shortname, "-", gsub(':', '-', Sys.time()), ".xlsx", sep=''),
           '\n\n')
       
       # OUTPUT RESULTS TABLES - 1 tab=ONE ROW FOR OVERALL UNIQUE RESIDENTS (BLOCKS), other tab= 1 ROW PER SITE:
@@ -526,5 +536,4 @@ app_server <- function(input, output, session) {
 
 ## Use Alt-O in RStudio to fold code, then expand app_ui line to see sections.
 ## Use Ctrl-Shift-O in RStudio to view the document Outline panel 
-
 

@@ -6,8 +6,8 @@
 #' @noRd
 app_ui <- function(request) {
   
-## Use Alt-O in RStudio to fold code, then expand app_ui line to see sections.
-## Use Ctrl-Shift-O in RStudio to view the document Outline panel 
+  ## Use Alt-O in RStudio to fold code, then expand app_ui line to see sections.
+  ## Use Ctrl-Shift-O in RStudio to view the document Outline panel 
   
   tagList(
     # Leave this function for adding external resources, see end of this source file.
@@ -52,66 +52,66 @@ app_ui <- function(request) {
 		<!-- End Google Tag Manager -->
 		"
         ),
-		tags$meta(charset="utf-8"),
-		tags$meta(property="og:site_name", content="US EPA"),
-		#tags$link(rel = "stylesheet", type = "text/css", href = "css/uswds.css"),
-		tags$link(rel = "stylesheet", type = "text/css", href = "https://cdnjs.cloudflare.com/ajax/libs/uswds/3.0.0-beta.3/css/uswds.min.css", integrity="sha512-ZKvR1/R8Sgyx96aq5htbFKX84hN+zNXN73sG1dEHQTASpNA8Pc53vTbPsEKTXTZn9J4G7R5Il012VNsDEReqCA==", crossorigin="anonymous", referrerpolicy="no-referrer"),
-		tags$meta(property="og:url", content="https://www.epa.gov/themes/epa_theme/pattern-lab/.markup-only.html"),
-		tags$link(rel="canonical", href="https://www.epa.gov/themes/epa_theme/pattern-lab/.markup-only.html"),
-		tags$link(rel="shortlink", href="https://www.epa.gov/themes/epa_theme/pattern-lab/.markup-only.html"),
-		tags$meta(property="og:url", content="https://www.epa.gov/themes/epa_theme/pattern-lab/.markup-only.html"),
-		tags$meta(property="og:image", content="https://www.epa.gov/sites/all/themes/epa/img/epa-standard-og.jpg"),
-		tags$meta(property="og:image:width", content="1200"),
-		tags$meta(property="og:image:height", content="630"),
-		tags$meta(property="og:image:alt", content="U.S. Environmental Protection Agency"),
-		tags$meta(name="twitter:card", content="summary_large_image"),
-		tags$meta(name="twitter:image:alt", content="U.S. Environmental Protection Agency"),
-		tags$meta(name="twitter:image:height", content="600"),
-		tags$meta(name="twitter:image:width", content="1200"),
-		tags$meta(name="twitter:image", content="https://www.epa.gov/sites/all/themes/epa/img/epa-standard-twitter.jpg"),
-		tags$meta(name="MobileOptimized", content="width"),
-		tags$meta(name="HandheldFriendly", content="true"),
-		tags$meta(name="viewport", content="width=device-width, initial-scale=1.0"),
-		tags$meta(`http-equiv`="x-ua-compatible", content="ie=edge"),
-		
-		# ##  ***  app title *** ####
-		# 
-		# tags$title('EJAM | US EPA'),
-		
-		## (more EPA template) ####
-		tags$link(rel="icon", type="image/x-icon", href="https://www.epa.gov/themes/epa_theme/images/favicon.ico"),
-		tags$meta(name="msapplication-TileColor", content="#FFFFFF"),
-		tags$meta(name="msapplication-TileImage", content="https://www.epa.gov/themes/epa_theme/images/favicon-144.png"),
-		tags$meta(name="application-name", content=""),
-		tags$meta(name="msapplication-config", content="https://www.epa.gov/themes/epa_theme/images/ieconfig.xml"),
-		tags$link(rel="apple-touch-icon-precomposed", sizes="196x196", href="https://www.epa.gov/themes/epa_theme/images/favicon-196.png"),
-		tags$link(rel="apple-touch-icon-precomposed", sizes="152x152", href="https://www.epa.gov/themes/epa_theme/images/favicon-152.png"),
-		tags$link(rel="apple-touch-icon-precomposed", sizes="144x144", href="https://www.epa.gov/themes/epa_theme/images/favicon-144.png"),
-		tags$link(rel="apple-touch-icon-precomposed", sizes="120x120", href="https://www.epa.gov/themes/epa_theme/images/favicon-120.png"),
-		tags$link(rel="apple-touch-icon-precomposed", sizes="114x114", href="https://www.epa.gov/themes/epa_theme/images/favicon-114.png"),
-		tags$link(rel="apple-touch-icon-precomposed", sizes="72x72", href="https://www.epa.gov/themes/epa_theme/images/favicon-72.png"),
-		tags$link(rel="apple-touch-icon-precomposed", href="https://www.epa.gov/themes/epa_theme/images/favicon-180.png"),
-		tags$link(rel="icon", href="https://www.epa.gov/themes/epa_theme/images/favicon-32.png", sizes="32x32"),
-		tags$link(rel="preload", href="https://www.epa.gov/themes/epa_theme/fonts/source-sans-pro/sourcesanspro-regular-webfont.woff2", as="font", crossorigin="anonymous"),
-		tags$link(rel="preload", href="https://www.epa.gov/themes/epa_theme/fonts/source-sans-pro/sourcesanspro-bold-webfont.woff2", as="font", crossorigin="anonymous"),
-		tags$link(rel="preload", href="https://www.epa.gov/themes/epa_theme/fonts/merriweather/Latin-Merriweather-Bold.woff2", as="font", crossorigin="anonymous"),
-		tags$link(rel="stylesheet", media="all", href="https://www.epa.gov/core/themes/stable/css/system/components/ajax-progress.module.css?r6lsex"),
-		tags$link(rel="stylesheet", media="all", href="https://www.epa.gov/core/themes/stable/css/system/components/autocomplete-loading.module.css?r6lsex" ),
-		tags$link(rel="stylesheet", media="all", href="https://www.epa.gov/core/themes/stable/css/system/components/js.module.css?r6lsex"),
-		tags$link(rel="stylesheet", media="all", href="https://www.epa.gov/core/themes/stable/css/system/components/sticky-header.module.css?r6lsex"),
-		tags$link(rel="stylesheet", media="all", href="https://www.epa.gov/core/themes/stable/css/system/components/system-status-counter.css?r6lsex"),
-		tags$link(rel="stylesheet", media="all", href="https://www.epa.gov/core/themes/stable/css/system/components/system-status-report-counters.css?r6lsex"),
-		tags$link(rel="stylesheet", media="all", href="https://www.epa.gov/core/themes/stable/css/system/components/system-status-report-general-info.css?r6lsex"),
-		tags$link(rel="stylesheet", media="all", href="https://www.epa.gov/core/themes/stable/css/system/components/tabledrag.module.css?r6lsex"),
-		tags$link(rel="stylesheet", media="all", href="https://www.epa.gov/core/themes/stable/css/system/components/tablesort.module.css?r6lsex"),
-		tags$link(rel="stylesheet", media="all", href="https://www.epa.gov/core/themes/stable/css/system/components/tree-child.module.css?r6lsex"),
-		tags$link(rel="stylesheet", media="all", href="https://www.epa.gov/themes/epa_theme/css/styles.css?r6lsex"),
-		tags$link(rel="stylesheet", media="all", href="https://www.epa.gov/themes/epa_theme/css-lib/colorbox.min.css?r6lsex"),
-		
-		tags$script(src = 'https://cdnjs.cloudflare.com/ajax/libs/uswds/3.0.0-beta.3/js/uswds-init.min.js'),
-		#fix container-fluid that boostrap RShiny uses
-		tags$style(HTML(
-		  '.container-fluid {
+        tags$meta(charset="utf-8"),
+        tags$meta(property="og:site_name", content="US EPA"),
+        #tags$link(rel = "stylesheet", type = "text/css", href = "css/uswds.css"),
+        tags$link(rel = "stylesheet", type = "text/css", href = "https://cdnjs.cloudflare.com/ajax/libs/uswds/3.0.0-beta.3/css/uswds.min.css", integrity="sha512-ZKvR1/R8Sgyx96aq5htbFKX84hN+zNXN73sG1dEHQTASpNA8Pc53vTbPsEKTXTZn9J4G7R5Il012VNsDEReqCA==", crossorigin="anonymous", referrerpolicy="no-referrer"),
+        tags$meta(property="og:url", content="https://www.epa.gov/themes/epa_theme/pattern-lab/.markup-only.html"),
+        tags$link(rel="canonical", href="https://www.epa.gov/themes/epa_theme/pattern-lab/.markup-only.html"),
+        tags$link(rel="shortlink", href="https://www.epa.gov/themes/epa_theme/pattern-lab/.markup-only.html"),
+        tags$meta(property="og:url", content="https://www.epa.gov/themes/epa_theme/pattern-lab/.markup-only.html"),
+        tags$meta(property="og:image", content="https://www.epa.gov/sites/all/themes/epa/img/epa-standard-og.jpg"),
+        tags$meta(property="og:image:width", content="1200"),
+        tags$meta(property="og:image:height", content="630"),
+        tags$meta(property="og:image:alt", content="U.S. Environmental Protection Agency"),
+        tags$meta(name="twitter:card", content="summary_large_image"),
+        tags$meta(name="twitter:image:alt", content="U.S. Environmental Protection Agency"),
+        tags$meta(name="twitter:image:height", content="600"),
+        tags$meta(name="twitter:image:width", content="1200"),
+        tags$meta(name="twitter:image", content="https://www.epa.gov/sites/all/themes/epa/img/epa-standard-twitter.jpg"),
+        tags$meta(name="MobileOptimized", content="width"),
+        tags$meta(name="HandheldFriendly", content="true"),
+        tags$meta(name="viewport", content="width=device-width, initial-scale=1.0"),
+        tags$meta(`http-equiv`="x-ua-compatible", content="ie=edge"),
+        
+        # ##  ***  app title *** ####
+        # 
+        # tags$title('EJAM | US EPA'),
+        
+        ## (more EPA template) ####
+        tags$link(rel="icon", type="image/x-icon", href="https://www.epa.gov/themes/epa_theme/images/favicon.ico"),
+        tags$meta(name="msapplication-TileColor", content="#FFFFFF"),
+        tags$meta(name="msapplication-TileImage", content="https://www.epa.gov/themes/epa_theme/images/favicon-144.png"),
+        tags$meta(name="application-name", content=""),
+        tags$meta(name="msapplication-config", content="https://www.epa.gov/themes/epa_theme/images/ieconfig.xml"),
+        tags$link(rel="apple-touch-icon-precomposed", sizes="196x196", href="https://www.epa.gov/themes/epa_theme/images/favicon-196.png"),
+        tags$link(rel="apple-touch-icon-precomposed", sizes="152x152", href="https://www.epa.gov/themes/epa_theme/images/favicon-152.png"),
+        tags$link(rel="apple-touch-icon-precomposed", sizes="144x144", href="https://www.epa.gov/themes/epa_theme/images/favicon-144.png"),
+        tags$link(rel="apple-touch-icon-precomposed", sizes="120x120", href="https://www.epa.gov/themes/epa_theme/images/favicon-120.png"),
+        tags$link(rel="apple-touch-icon-precomposed", sizes="114x114", href="https://www.epa.gov/themes/epa_theme/images/favicon-114.png"),
+        tags$link(rel="apple-touch-icon-precomposed", sizes="72x72", href="https://www.epa.gov/themes/epa_theme/images/favicon-72.png"),
+        tags$link(rel="apple-touch-icon-precomposed", href="https://www.epa.gov/themes/epa_theme/images/favicon-180.png"),
+        tags$link(rel="icon", href="https://www.epa.gov/themes/epa_theme/images/favicon-32.png", sizes="32x32"),
+        tags$link(rel="preload", href="https://www.epa.gov/themes/epa_theme/fonts/source-sans-pro/sourcesanspro-regular-webfont.woff2", as="font", crossorigin="anonymous"),
+        tags$link(rel="preload", href="https://www.epa.gov/themes/epa_theme/fonts/source-sans-pro/sourcesanspro-bold-webfont.woff2", as="font", crossorigin="anonymous"),
+        tags$link(rel="preload", href="https://www.epa.gov/themes/epa_theme/fonts/merriweather/Latin-Merriweather-Bold.woff2", as="font", crossorigin="anonymous"),
+        tags$link(rel="stylesheet", media="all", href="https://www.epa.gov/core/themes/stable/css/system/components/ajax-progress.module.css?r6lsex"),
+        tags$link(rel="stylesheet", media="all", href="https://www.epa.gov/core/themes/stable/css/system/components/autocomplete-loading.module.css?r6lsex" ),
+        tags$link(rel="stylesheet", media="all", href="https://www.epa.gov/core/themes/stable/css/system/components/js.module.css?r6lsex"),
+        tags$link(rel="stylesheet", media="all", href="https://www.epa.gov/core/themes/stable/css/system/components/sticky-header.module.css?r6lsex"),
+        tags$link(rel="stylesheet", media="all", href="https://www.epa.gov/core/themes/stable/css/system/components/system-status-counter.css?r6lsex"),
+        tags$link(rel="stylesheet", media="all", href="https://www.epa.gov/core/themes/stable/css/system/components/system-status-report-counters.css?r6lsex"),
+        tags$link(rel="stylesheet", media="all", href="https://www.epa.gov/core/themes/stable/css/system/components/system-status-report-general-info.css?r6lsex"),
+        tags$link(rel="stylesheet", media="all", href="https://www.epa.gov/core/themes/stable/css/system/components/tabledrag.module.css?r6lsex"),
+        tags$link(rel="stylesheet", media="all", href="https://www.epa.gov/core/themes/stable/css/system/components/tablesort.module.css?r6lsex"),
+        tags$link(rel="stylesheet", media="all", href="https://www.epa.gov/core/themes/stable/css/system/components/tree-child.module.css?r6lsex"),
+        tags$link(rel="stylesheet", media="all", href="https://www.epa.gov/themes/epa_theme/css/styles.css?r6lsex"),
+        tags$link(rel="stylesheet", media="all", href="https://www.epa.gov/themes/epa_theme/css-lib/colorbox.min.css?r6lsex"),
+        
+        tags$script(src = 'https://cdnjs.cloudflare.com/ajax/libs/uswds/3.0.0-beta.3/js/uswds-init.min.js'),
+        #fix container-fluid that boostrap RShiny uses
+        tags$style(HTML(
+          '.container-fluid {
             padding-right: 0;
             padding-left: 0;
             margin-right: 0;
@@ -121,13 +121,13 @@ app_ui <- function(request) {
             margin-right: 30px;
             margin-left: 30px;
         }'
-		))
+        ))
       ),
-		## body tag and site header ####
-		tags$body(class="path-themes not-front has-wide-template", id="top",
-		          tags$script(src = 'https://cdnjs.cloudflare.com/ajax/libs/uswds/3.0.0-beta.3/js/uswds.min.js')),
-		HTML(
-		  '<div class="skiplinks" role="navigation" aria-labelledby="skip-to-main">
+      ## body tag and site header ####
+      tags$body(class="path-themes not-front has-wide-template", id="top",
+                tags$script(src = 'https://cdnjs.cloudflare.com/ajax/libs/uswds/3.0.0-beta.3/js/uswds.min.js')),
+      HTML(
+        '<div class="skiplinks" role="navigation" aria-labelledby="skip-to-main">
       <a id="skip-to-main" href="#main" class="skiplinks__link visually-hidden focusable">Skip to main content</a>
     </div>
 
@@ -247,11 +247,11 @@ app_ui <- function(request) {
       </div>
     </header>
     <main id="main" class="main" role="main" tabindex="-1">'
-		),
-	
-	## Individual Page Header ####
-	HTML(
-	  '<div class="l-page  has-footer">
+      ),
+      
+      ## Individual Page Header ####
+      HTML(
+        '<div class="l-page  has-footer">
       <div class="l-constrain">
         <div class="l-page__header">
           <div class="l-page__header-first">
@@ -262,294 +262,299 @@ app_ui <- function(request) {
           </div>
         </div>
         <article class="article">'
-	),
-	
-	# ______________END TEMPLATE. START Shiny app UI ______________####
-	
-	#################################################################################################################### #
-	
-	htmltools::includeCSS("inst/app/www/styles.css"),
-	
-	headerPanel(title = "EJAM (Environmental Justice Analysis Multi-site) Tool",
-	            # title = htmltools::a(
-	            #   "EJAM info", 
-	            #   href = "www/ibutton_help.html", target = "_blank"
-	            # ),
-	            windowTitle = "EJAM_ (Environmental Justice Analysis Multi-site) Tool"
-	),
-	#################################################################################################################### #
-	# textAreaInput('analysis_shortname', value = 'These Facilities', placeholder = 'very short name identifying this set'),
-
-	# __________ LOCATIONS _________________ ####
-	# 1. LOCATIONS TO ANALYZE (universe of interest) ####
-	
-	wellPanel(
-
-	  fluidRow(column(
-	    12, style = "overflow: hidden;", htmltools::h4("Specify Locations to Analyze")
-	  )),
- 
-	  ## A) ___ by Industry / NAICS ##########
-	  
-	  wellPanel(
-	    fluidRow(
-	      
-	      column(
-	        12,  style = "overflow: hidden;",
-
-	        ### i.  user picks list/ search Industry (facility_mustbe_that_naics_in_this_program) ####
-	        
-	        column(
-	          12,
-	          htmltools::h5(
-	            "Select Industry",
-	            htmltools::a(htmltools::img(id = "ibutton", src = "www/i.png", height = 15, width = 15), href = "www/ibutton_help.html#help_industry", target = "_blank"))
-	        ),
-	        column(
-	          5,
-	          selectInput(
-	            inputId = "naics_user_picked_from_list",
-	            label = htmltools::h6("Select industry of interest"),
-	            choices = naics_to_pick_from, # named numeric vector, number is NAICS like 31182, names are like "31182 - Cookie, Cracker, and Pasta Manufacturing" 
-	            selected = NULL,
-	            width = 400,
-	            multiple = TRUE
-	          )
-	        ),
-	        column(
-	          2,
-	          htmltools::h5("OR", align = "center")
-	        ),
-	        
-	        ### ii. user writes in the NAICS #####
-	        
-	        column(
-	          5,
-	          textInput(
-	            inputId = "naics_user_wrote_in_box",
-	            label = htmltools::h6(
-	              "Enter NAICS codes of interest - ",
-	              htmltools::a("Look up NAICS", href ="https://www.census.gov/naics"),
-	              htmltools::a(htmltools::img(id = "ibutton",src = "www/i.png",height = 15,width = 15),
-	                           href = "www/ibutton_help.html#help_naicslist",target = "_blank")
-	            ),
-	            value = "",
-	            width = 400,
-	            placeholder = NULL
-	          )
-	        ),
-	        textOutput("inputWarning"),
-	        htmltools::tags$head(htmltools::tags$style("#inputWarning{color: red;font-size: 14px;font-style: italic;}")),
-	        
-	        ##################################################### #	     - NON ESSENTIAL AND NOT DEBUGGED YET   
-	        ### ...& limit to fac w NAICS in this EPA program #####
-	        #    THIS SECTION DEFINES THESE INPUTS:
-	        # input$selectFrom1,
-	        # input$facility_mustbe_that_naics_in_this_program,
-	        # input$facility_mustbe_in_this_program
-	        
-	        column(
-	          12,
-	          htmltools::h5(
-	            "Limit to facilities where selected NAICS is found within these EPA lists: (all are searched by default):
+      ),
+      
+      # ______________END TEMPLATE. START Shiny app UI ______________####
+      
+      #################################################################################################################### #
+      
+      htmltools::includeCSS("inst/app/www/styles.css"),
+      
+      headerPanel(title = "EJAM (Environmental Justice Analysis Multi-site) Tool",
+                  # title = htmltools::a(
+                  #   "EJAM info", 
+                  #   href = "www/ibutton_help.html", target = "_blank"
+                  # ),
+                  windowTitle = "EJAM_ (Environmental Justice Analysis Multi-site) Tool"
+      ),
+      #################################################################################################################### #
+      # textAreaInput('analysis_shortname', value = 'These Facilities', placeholder = 'very short name identifying this set'),
+      
+      # __________ LOCATIONS _________________ ####
+      # 1. LOCATIONS TO ANALYZE (universe of interest) ####
+      
+      wellPanel(
+        
+        fluidRow(column(
+          12, style = "overflow: hidden;", htmltools::h4("Specify Locations to Analyze")
+        )),
+        
+        ## A) ___ by Industry / NAICS ##########
+        
+        wellPanel(
+          fluidRow(
+            
+            column(
+              12,  style = "overflow: hidden;",
+              
+              ### i.  user picks list/ search Industry (facility_mustbe_that_naics_in_this_program) ####
+              
+              column(
+                12,
+                htmltools::h5(
+                  "Select Industry",
+                  htmltools::a(htmltools::img(id = "ibutton", src = "www/i.png", height = 15, width = 15), href = "www/ibutton_help.html#help_industry", target = "_blank"))
+              ),
+              column(
+                5,
+                selectInput(
+                  inputId = "naics_user_picked_from_list",
+                  label = htmltools::h6("Select industry of interest"),
+                  choices = naics_to_pick_from, # named numeric vector, number is NAICS like 31182, names are like "31182 - Cookie, Cracker, and Pasta Manufacturing" 
+                  selected = NULL,
+                  width = 400,
+                  multiple = TRUE
+                )
+              ),
+              column(
+                2,
+                htmltools::h5("OR", align = "center")
+              ),
+              
+              ### ii. user writes in the NAICS #####
+              
+              column(
+                5,
+                textInput(
+                  inputId = "naics_user_wrote_in_box",
+                  label = htmltools::h6(
+                    "Enter NAICS codes of interest - ",
+                    htmltools::a("Look up NAICS", href ="https://www.census.gov/naics"),
+                    htmltools::a(htmltools::img(id = "ibutton",src = "www/i.png",height = 15,width = 15),
+                                 href = "www/ibutton_help.html#help_naicslist",target = "_blank")
+                  ),
+                  value = "",
+                  width = 400,
+                  placeholder = NULL
+                )
+              ),
+              textOutput("inputWarning"),
+              htmltools::tags$head(htmltools::tags$style("#inputWarning{color: red;font-size: 14px;font-style: italic;}")),
+              
+              ##################################################### #	     - NON ESSENTIAL AND NOT DEBUGGED YET   
+              ### ...& limit to fac w NAICS in this EPA program #####
+              #    THIS SECTION DEFINES THESE INPUTS:
+              # input$selectFrom1,
+              # input$facility_mustbe_that_naics_in_this_program,
+              # input$facility_mustbe_in_this_program
+              
+              column(
+                12,
+                htmltools::h5(
+                  "Limit to facilities where selected NAICS is found within these EPA lists: (all are searched by default):
 	               (A facility may have different NAICS in each list)",
-	            htmltools::a(htmltools::img(id = "ibutton", src = "www/i.png", height = 15, width = 15), 
-	                         href = "www/ibutton_help.html#help_match", target = "_blank")
-	          ),
-	          checkboxGroupInput(
-	            inputId = "facility_mustbe_that_naics_in_this_program",
-	            inline = TRUE, label = "",
-	            choices = c(
-	              "TRIS" = "TRIS", "RCRAINFO" = "RCRAINFO",
-	              "AIRS/AFS" = "AIRS/AFS", "E-GGRT" = "E-GGRT",
-	              "NPDES" = "NPDES", "RCRAINFO" = "RCRAINFO", "RMP" = "RMP"
-	            )
-	          ),
-	          ############################################### #       - NON ESSENTIAL AND NOT DEBUGGED YET
-	          ### ...& limit to fac in this EPA program #####
-	          
-	          htmltools::h5(
-	            "Limit to facilities on these EPA lists (all included by default):",
-	            htmltools::a(htmltools::img(id = "ibutton", src = "www/i.png", height = 15, width = 15), 
-	                         href = "www/ibutton_help.html#help_include", target = "_blank")
-	          ),
-	          checkboxGroupInput(
-	            inputId = "facility_mustbe_in_this_program",
-	            inline = TRUE, label = "",
-	            choices = c(
-	              "TRIS" = "TRIS", "RCRAINFO" = "RCRAINFO",
-	              "AIRS/AFS" = "AIRS/AFS", "E-GGRT" = "E-GGRT",
-	              "NPDES" = "NPDES", "RCRAINFO" = "RCRAINFO", "RMP" = "RMP"
-	            )
-	          )
-	        )
-	        ############################################### # 
-	      )
-	    ) # end of fluidrow
-	  ), # end of wellpanel
-	  # end of  by NAICS   
-	  
-	  htmltools::h5("OR", align = "center"),
-	  
-	  fluidRow(
-	    
-	    column(12, wellPanel(
-	      # . ####
-	      ## B) ___ by Facility IDs uploaded (as file_uploaded_FRS_IDs) ##########
-	      
-	      fileInput(
-	        inputId = 'file_uploaded_FRS_IDs',
-	        label = htmltools::h5(
-	          "Upload list of FRS identifiers",
-	          htmltools::a(
-	            htmltools::img(id = "ibutton", src = "www/i.png", height = 15, width = 15), 
-	            href = "www/ibutton_help.html#help_frs", target = "_blank")
-	        )
-	      )
-	      
-	    )),
-	    
-	    htmltools::h5("OR", align = "center"),
-	    
-	    column(12, wellPanel(
-	      # . ####
-	      ## C) ___ by points (lat lon) uploaded (file_uploaded_latlons) ##########
-	      
-	      fileInput(
-	        inputId = "file_uploaded_latlons",
-	        label = htmltools::h5(
-	          "Upload list of locations with lat lon coordinates",
-	          htmltools::a(
-	            htmltools::img(id = "ibutton", src = "www/i.png", height = 15, width = 15),
-	            href = "www/ibutton_help.html#help_location",  target = "_blank"
-	            # could edit to explain xlsx, csv etc format allowed when approp
-	          )
-	        )
-	      )
-	    ))
-	    
-	  )
-	  
-	),
-	################################################################################################# # 
-
-	# __________ DISTANCE _________________ ####
-	# 2. DISTANCE (circular buffer radius)  ##########
-	wellPanel(
-	          
-	          fluidRow(
-	            column(
-	              12, htmltools::h4(
-	                "Specify Distance (to report on all residents within X miles of a facility)",
-	                htmltools::a(htmltools::img(id = "ibutton", src = "www/i.png", height = 15, width = 15), target = "_blank",
-	                             href = "www/ibutton_help.html#help_distance")
-	              )
-	            )),
-	          fluidRow(
-	            column(
-	              6,
-	              style = "overflow: hidden;",
-	              numericInput(
-	                'cutoffRadius',
-	                label = htmltools::h5("Radius of circular buffer in miles"),
-	                value = 1.0,
-	                min = 0.25,
-	                max = 10,
-	                step = NA,
-	                width = NULL
-	              )
-	            ),
-	            column(
-	              6,
-	              style = "overflow: hidden;",
-	              
-	  ## need to check if expand distance param is really still needed ####	              
-	              radioButtons( 
-	                            "expandRadius",
-	                            label = htmltools::h5(
-	                              "Expand distance in search for nearby blocks, to at least report on the one nearest block, if a facility has with no census block centroid within the selected buffer distance."
-	                            ),
-	                            c("Yes" = "yes",
-	                              "No" = "no"),
-	                            selected = "no", 
-	                            inline = TRUE,
-	                            width = NULL
-	              )
-	            )
-	          )   # end of 
-	),  # end of well panel
-	
-	htmltools::br(),
-	htmltools::br(),
-	################################################################################################# # 
- 
-	# __________ DOWNLOAD _________________ ####
- 
-	# 3. DOWNLOAD RESULTS  ##########
-	
-	downloadButton('downloadData1', 'Start Analysis & Download Results'),
-	htmltools::br(),
-	
-	# Bookmark button ####
-	# may enable bookmarking on server which saves user's uploaded file on server
-	#  and all  input$  values.
-	bookmarkButton(),
-	htmltools::br(),
-	
- 	# __________ OTHER _________________ ####
-  
-	# Testing: maybe obsolete ##########
-	mainPanel( 
-	           verbatimTextOutput("selectInd2_for_testing"),
-	           verbatimTextOutput("selectInd1_for_testing"),
-	           verbatimTextOutput("selectScope1"),
-	           verbatimTextOutput("selectScope2"),
-	           verbatimTextOutput("file_uploaded_FRS_IDs_df"),
-	           verbatimTextOutput("file_uploaded_latlons_df"),
-	),
-	
-	#     ui code ends here  ####
-	#  __ ### #
-	#################################################################################################################### #
-	## __End SHINY APP UI code v
-	
-	# (remainer of template) ####
-	
-	# IMPORTANT! For a navbar page, you will need to place the header and footer inside the navbar section (as shown below)  -
-	# you will then want to comment out lines 201-213 and lines 254-263
-	#   navbarPage(
-	#     title = h2("Sample App"),
-	#     header = HTML(
-	#       '<div class="l-page  has-footer">
-	#         <div class="l-constrain">
-	#           <div class="l-page__header">
-	#             <div class="l-page__header-first">
-	#               <div class="web-area-title"></div>
-	#             </div>
-	#             <div class="l-page__header-last">
-	#               <a href="#" class="header-link">Contact Us</a>
-	#             </div>
-	#           </div>
-	#           <article class="article">'
-	#     ),
-	#     footer = HTML(
-	#       '</article>
-	# 	        </div>
-	#           <div class="l-page__footer">
-	#             <div class="l-constrain">
-	#               <p><a href="#">Contact Us</a> to ask a question, provide feedback, or report a problem.</p>
-	#             </div>
-	#           </div>
-	#         </div>'
-	#     ),
-	#     tabPanel("Sample Tab 1"),
-	#     tabPanel("Sample Tab 2"),
-	#   ),
-	
-	# Individual Page Footer
-	
-	HTML(
-	  '</article>
+                  htmltools::a(htmltools::img(id = "ibutton", src = "www/i.png", height = 15, width = 15), 
+                               href = "www/ibutton_help.html#help_match", target = "_blank")
+                ),
+                checkboxGroupInput(
+                  inputId = "facility_mustbe_that_naics_in_this_program",
+                  inline = TRUE, label = "",
+                  choices = c(
+                    "TRIS" = "TRIS", "RCRAINFO" = "RCRAINFO",
+                    "AIRS/AFS" = "AIRS/AFS", "E-GGRT" = "E-GGRT",
+                    "NPDES" = "NPDES", "RCRAINFO" = "RCRAINFO", "RMP" = "RMP"
+                  )
+                ),
+                ############################################### #       - NON ESSENTIAL AND NOT DEBUGGED YET
+                ### ...& limit to fac in this EPA program #####
+                
+                htmltools::h5(
+                  "Limit to facilities on these EPA lists (all included by default):",
+                  htmltools::a(htmltools::img(id = "ibutton", src = "www/i.png", height = 15, width = 15), 
+                               href = "www/ibutton_help.html#help_include", target = "_blank")
+                ),
+                checkboxGroupInput(
+                  inputId = "facility_mustbe_in_this_program",
+                  inline = TRUE, label = "",
+                  choices = c(
+                    "TRIS" = "TRIS", "RCRAINFO" = "RCRAINFO",
+                    "AIRS/AFS" = "AIRS/AFS", "E-GGRT" = "E-GGRT",
+                    "NPDES" = "NPDES", "RCRAINFO" = "RCRAINFO", "RMP" = "RMP"
+                  )
+                )
+              )
+              ############################################### # 
+            )
+          ) # end of fluidrow
+        ), # end of wellpanel
+        # end of  by NAICS   
+        
+        htmltools::h5("OR", align = "center"),
+        
+        fluidRow(
+          
+          column(12, wellPanel(
+            # . ####
+            ## B) ___ by Facility IDs uploaded (as file_uploaded_FRS_IDs) ##########
+            
+            fileInput(
+              inputId = 'file_uploaded_FRS_IDs',
+              label = htmltools::h5(
+                "Upload list of FRS identifiers",
+                htmltools::a(
+                  htmltools::img(id = "ibutton", src = "www/i.png", height = 15, width = 15), 
+                  href = "www/ibutton_help.html#help_frs", target = "_blank")
+              )
+            )
+            
+          )),
+          
+          htmltools::h5("OR", align = "center"),
+          
+          column(12, wellPanel(
+            # . ####
+            ## C) ___ by points (lat lon) uploaded (file_uploaded_latlons) ##########
+            
+            fileInput(
+              inputId = "file_uploaded_latlons",
+              label = htmltools::h5(
+                "Upload list of locations with lat lon coordinates",
+                htmltools::a(
+                  htmltools::img(id = "ibutton", src = "www/i.png", height = 15, width = 15),
+                  href = "www/ibutton_help.html#help_location",  target = "_blank"
+                  # could edit to explain xlsx, csv etc format allowed when approp
+                )
+              )
+            ), 
+            
+            # . ####
+            ## D) ___ by shapefile uploaded ####
+            
+            mod_get_shape_from_upload_ui("get_shape_from_upload_1")
+          ))
+          
+        )
+        
+      ),
+      ################################################################################################# # 
+      
+      # __________ DISTANCE _________________ ####
+      # 2. DISTANCE (circular buffer radius)  ##########
+      wellPanel(
+        
+        fluidRow(
+          column(
+            12, htmltools::h4(
+              "Specify Distance (to report on all residents within X miles of a facility)",
+              htmltools::a(htmltools::img(id = "ibutton", src = "www/i.png", height = 15, width = 15), target = "_blank",
+                           href = "www/ibutton_help.html#help_distance")
+            )
+          )),
+        fluidRow(
+          column(
+            6,
+            style = "overflow: hidden;",
+            numericInput(
+              'cutoffRadius',
+              label = htmltools::h5("Radius of circular buffer in miles"),
+              value = 1.0,
+              min = 0.25,
+              max = 10,
+              step = NA,
+              width = NULL
+            )
+          ),
+          column(
+            6,
+            style = "overflow: hidden;",
+            
+            ## need to check if expand distance param is really still needed ####	              
+            radioButtons( 
+              "expandRadius",
+              label = htmltools::h5(
+                "Expand distance in search for nearby blocks, to at least report on the one nearest block, if a facility has with no census block centroid within the selected buffer distance."
+              ),
+              c("Yes" = "yes",
+                "No" = "no"),
+              selected = "no", 
+              inline = TRUE,
+              width = NULL
+            )
+          )
+        )   # end of 
+      ),  # end of well panel
+      
+      htmltools::br(),
+      htmltools::br(),
+      ################################################################################################# # 
+      
+      # __________ DOWNLOAD _________________ ####
+      
+      # 3. DOWNLOAD RESULTS  ##########
+      
+      downloadButton('downloadData1', 'Start Analysis & Download Results'),
+      htmltools::br(),
+      
+      # Bookmark button ####
+      # may enable bookmarking on server which saves user's uploaded file on server
+      #  and all  input$  values.
+      bookmarkButton(),
+      htmltools::br(),
+      
+      # __________ OTHER _________________ ####
+      
+      # Testing: maybe obsolete ##########
+      mainPanel( 
+        verbatimTextOutput("selectInd2_for_testing"),
+        verbatimTextOutput("selectInd1_for_testing"),
+        verbatimTextOutput("selectScope1"),
+        verbatimTextOutput("selectScope2"),
+        verbatimTextOutput("file_uploaded_FRS_IDs_df"),
+        verbatimTextOutput("file_uploaded_latlons_df"),
+      ),
+      
+      #     ui code ends here  ####
+      #  __ ### #
+      #################################################################################################################### #
+      ## __End SHINY APP UI code v
+      
+      # (remainer of template) ####
+      
+      # IMPORTANT! For a navbar page, you will need to place the header and footer inside the navbar section (as shown below)  -
+      # you will then want to comment out lines 201-213 and lines 254-263
+      #   navbarPage(
+      #     title = h2("Sample App"),
+      #     header = HTML(
+      #       '<div class="l-page  has-footer">
+      #         <div class="l-constrain">
+      #           <div class="l-page__header">
+      #             <div class="l-page__header-first">
+      #               <div class="web-area-title"></div>
+      #             </div>
+      #             <div class="l-page__header-last">
+      #               <a href="#" class="header-link">Contact Us</a>
+      #             </div>
+      #           </div>
+      #           <article class="article">'
+      #     ),
+      #     footer = HTML(
+      #       '</article>
+      # 	        </div>
+      #           <div class="l-page__footer">
+      #             <div class="l-constrain">
+      #               <p><a href="#">Contact Us</a> to ask a question, provide feedback, or report a problem.</p>
+      #             </div>
+      #           </div>
+      #         </div>'
+      #     ),
+      #     tabPanel("Sample Tab 1"),
+      #     tabPanel("Sample Tab 2"),
+      #   ),
+      
+      # Individual Page Footer
+      
+      HTML(
+        '</article>
     </div>
     <div class="l-page__footer">
       <div class="l-constrain">
@@ -557,11 +562,11 @@ app_ui <- function(request) {
       </div>
     </div>
   </div>'
-	),
-	
-	# Site Footer
-	HTML(
-	  '</main>
+      ),
+      
+      # Site Footer
+      HTML(
+        '</main>
       <footer class="footer" role="contentinfo">
       <div class="l-constrain">
         <img class="footer__epa-seal" src="https://www.epa.gov/themes/epa_theme/images/epa-seal.svg" alt="United States Environmental Protection Agency" height="100" width="100">
@@ -732,9 +737,9 @@ app_ui <- function(request) {
         <path fill="currentColor" d="M2.3 12l7.5-7.5 7.5 7.5 2.3-2.3L9.9 0 .2 9.7 2.5 12z"></path>
       </svg>
     </a>'
-	)
-	
-	#  __ END OF fluidPage  ### #
+      )
+      
+      #  __ END OF fluidPage  ### #
     ) # end of fluid page
   )
   # ______________   _________________ ####

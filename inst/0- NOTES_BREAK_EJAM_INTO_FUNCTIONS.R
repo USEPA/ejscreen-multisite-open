@@ -4,7 +4,29 @@
 # -----------------------------------------------
 # TO GET FACILITIES AND POINTS (LAT / LON):  - see EJAMejscreenapi::locate_by_id(type = 'program') 
 # 
-# examples:
+
+# **MAYBE WE SHOULD RENAME THESE RELATED FUNCTIONS TO BE CONSISTENTLY NAMED?**
+# Several functions that query on y to find x,
+# Maybe rename something like   x_from_y()   or   get_x_from_y()   or y2x() 
+# e.g., 
+# EJAM::naics_find  could be renamed maybe  get_naics_from_naicsindustryname()
+#   or maybe naics_from_naicsindustryname() 
+
+ # These functions are used to go between these x and y: 
+# latlon
+# naicsindustryname,   "pulp" or "Pulp, Paper, and Paperboard Mills"
+# naics            3221
+# sicindustryname
+# sic
+# siteid
+# programid
+# program
+#   etc. etc. 
+# 
+
+
+
+# examples of using them right now:
 # 
 #   # See a data table of facilities in one industry
 #   
@@ -15,7 +37,13 @@
 #     caption = "FACILITIES WITH NAICS CODE MATCHING QUERY TERM 'PULP' ", filter = "top")
 # 
 # # See a map of one industry
+#  
+# # Easy to get just lat,lon,site,naics:
+
+#   mapfast( get_siteid_from_naics( naics_find("pulp")))  
 # 
+# # But to get site name and program and programid, it is a little more awkward right now:
+#
 # EJAMejscreenapi::mapfast(
 #   EJAMfrsdata::frs[EJAMfrsdata::frs$REGISTRY_ID %chin% unlist(
 #     EJAMfrsdata::get_siteid_from_naics(
@@ -79,10 +107,10 @@
 #   -Given series of lat/lon points a user clicked on, to draw polygon on map, 
 #   -Return shapefile (or sp polygon data)
 # 
-# get_shape_from_buffered_shape()   use  sf::st_buffer() to add a buffer around   polygon
+# get_shape_buffered()   ALREADY DRAFTED THIS FUNCTION.  uses  sf::st_buffer() to add a buffer around   polygon
 #   -Given shapefiles/poly & buffer radius, 
-#   -Return shapefiles that buffered from those edges (or sp polygon data) 
-# 
+#   -Return shapefiles that buffered from those edges (or sp polygon data)
+
 # get_shape_from_siteid()   EJScreen is working on this for NPL sites at least.
 #   -Given NPL ids, or some other IDs that refer to sites with shapefile info? 
 #   -Return shapefile for each  (or sp polygon data) 
@@ -94,6 +122,11 @@
 
 # INSIDE A POLYGON LIKE HIGH-RISK ZONE: WHAT POINTS ARE INSIDE SOME POLYGON LIKE A BUFFER:  
 #     sf::st_intersects() to find points inside polygon or buffered polygon.
+# 
+#   OW suggested this good idea: First use sf::st_intersects() or similar to
+#    find which BLOCKGROUPS are at least partially inside each polygon (which might be roughly 1,000 for example)
+#    then filter US blocks (8 million) down to just blocks that are children of those identified BLOCKGROUPS,
+#   which may be something like 1k to 10k per site?
 
 # NEAR A POLYGON (NONCIRCULAR) BUFFER AROUND A POLYGON = near a POLYGON OR ROAD LINE: 
 #     CREATE A BUFFER THAT ADDS SOME DISTANCE FROM A SHAPE LIKE NPL SITE  with 
@@ -116,8 +149,8 @@
 #     -Given site lat/lons & max radius (radii?), and table of all US blocks 
 #     -Return which blockids are nearby (but not distance information? - why not just get distances too?) (for each site, and overall dissolved) 
 # 
-# get_blockpoints_in_shape() - or nearby_blockpoints()  try  sf::st_intersects() to find points inside polygon or buffered polygon.
-# -Given shapes/buffers as a polygon per site, 
+# get_blockpoints_in_shape() - DRAFTED a start at THIS ALREADY 3/2023.  find points inside polygon or buffered polygon.
+# -Given shapes as a polygon per site, and optionally extra distance to use to add buffering at each, 
 # -Return site-block pairs (but not distance to each, just whether inside buffer) (using intersect like ejscreenbatch or others)
 
 
