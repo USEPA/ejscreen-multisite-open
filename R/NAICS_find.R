@@ -27,7 +27,7 @@
 #' @param exactnumber if TRUE, only return the exact match to (each) queried number (NAICS code)
 #' @param search_on_naics_website if TRUE (not default), 
 #'   returns URL of webpage at naics.com with info on the sector
-#' @seealso [EJAMfrsdata::get_latlon_from_naics()] [naics_categories] [NAICS] [naics_findwebscrape()] get_facility_info_via_ECHO function [naics_url_of_code()] [naics_url_of_query()]
+#' @seealso  [naics_categories] [NAICS] [naics_findwebscrape()] get_facility_info_via_ECHO function [naics_url_of_code()] [naics_url_of_query()]
 #' @examples
 #'  naics_find(8111, exactnumber = FALSE)
 #'  naics_find(8111, exactnumber = TRUE)

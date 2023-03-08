@@ -7,13 +7,13 @@
 #'
 frs_is_valid <- function(frs_upload) {
   #checks for registry id in second column of FRS uploaded dataset
-  if(colnames(frs_upload)[2] == "REGISTRY_ID"){
-    for (i in frs_upload$REGISTRY_ID) {
-      if(nchar(i) != 12){ #is every registry ID the correct length
-        return(FALSE)
-      }
+  if(any(colnames(frs_upload) %in% "REGISTRY_ID")){
+   # for (i in frs_upload$REGISTRY_ID) {
+      #if(nchar(i) != 12){ #is every registry ID the correct length
+        #return(FALSE)
+      #}
       
-    }
+    #}
     return(TRUE)
   }else{
     return(FALSE)

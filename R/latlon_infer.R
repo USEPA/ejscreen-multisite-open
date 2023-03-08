@@ -28,7 +28,7 @@ latlon_infer <- function(mycolnames) {
       }
       if (lword == 'lon') {
         # try to infer lon, using these in order of preferred to less
-        aliases <- tolower(c('lon', 'longitude83', 'longitude', 'longitudes', 'faclong', 'long', 'longs', 'lons'))
+        aliases <- tolower(c('lon', 'longitude83', 'longitude', 'longitudes', 'faclong', 'long', 'longs', 'lons','lng'))
       }
       
       bestfound <- intersect(aliases, tolower(x))[1] 
