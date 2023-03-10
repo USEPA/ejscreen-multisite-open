@@ -19,9 +19,12 @@ app_run_EJAM <- function(
   ...
 ) {
   # temporary workaround, see https://github.com/ThinkR-open/golem/issues/6
-  source(system.file("global.R", package = "EJAM"))
-
-  with_golem_options(
+  #source(system.file("global.R", package = "EJAM"))
+  ## source repo version of global.R until package is re-built
+  source('./inst/global.R')
+  
+  
+  golem::with_golem_options(
     app = shinyApp(
       ui = app_ui,
       server = app_server,

@@ -31,7 +31,11 @@ Imports:
     EJAMejscreendata,
     EJAMejscreenapi,
     openxlsx,
-    pkgload
+    pkgload,
+    attempt,
+    DT,
+    glue,
+    htmltools
 Remotes: 
     github::USEPA/EJAM,
     github::USEPA/EJAMblockdata,
