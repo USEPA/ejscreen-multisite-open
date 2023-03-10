@@ -1,135 +1,65 @@
 # global.R defines variables needed in global environment
 
+## load packages
 library(tidyverse)
 library(leaflet)
 library(data.table)
+library(DT)
 library(EJAM)
 library(shinyBS)
+library(shinyjs)
+library(readxl)
+library(shinycssloaders)
+
+## load functions from repo that are newer than EJAM package
 source('frs_is_valid.R')
 source('NAICS_validation.R')
 source('doaggregate.R')
 source('lookup_pctile.R')
+source('latlon_infer.R')
+source('workbook_output_styled.R')
+source('plot_facilities.R')
+source('format_gt_table.R')
 
-## add hex codes for EPA blue and green
-## from https://www.epa.gov/aboutepa/using-epa-seal-and-logo
-epa_blue  <- '#0e6cb6'
-epa_green <- '#62c342'
+## set color and type of loading spinners
+## note: was set at type = 1, but this caused screen to "bounce"
+options(spinner.color="#005ea2", spinner.type = 4)
 
-## text for introduction tab
-intro_text <- tagList(
-  tags$h5("EPA has developed a number of different tools for environmental justice (EJ) mapping, screening, and analysis, including EJScreen. EJScreen has a dataset with environmental, demographic, and EJ indicators for each block group in the US. It can provide a report summarizing those values for the average person within some distance (e.g., 1 mile) from a specified point."),
-  tags$h5("It is often useful to know the nature of the environmental conditions, the demographics, and/or EJ index values near a whole set of the facilities in a particular sector, such as in the context of developing a proposed rule. EJAM allows users to select a set of facilities, defined by NAICs industrial category codes or by uploading a list of locations. The tool then can provide statistics for a user-specified buffer area around the selected facilities."),
-  tags$h5("See EJAM user guide or readme document for more about using the app. "),
-  tags$h5("See the R package vignette and documentation for information about using the R functions and data."),
-  tags$h5("Features of this tool include:"),
-  tags$ul(
-    tags$li("Several methods of selecting a set of facilities for analysis, including industry sector and uploaded of facility locations"),
-    tags$li("User-specified buffer distance;"),
-    tags$li("Very fast analysis of which residents (defined by Census blocks) are nearby, and the distance to each block's internal point.;"),
-    tags$li("Optional use of the next nearest census block centroid for facilities with no census block centroid within selected buffer distance."),
-    tags$li("At each facility, calculation of demographic, environmental, or other EJ-related statistics;"),
-    tags$li("Overall, for the facilities and residents near any of them as a whole, calculation of the same kinds of statistics, but with no double counting of residents near two or more facilities.;"),
-    tags$li("Interactive views of results in tables, maps, plots, and text;"),
-    tags$li("Downloads of results in tables, maps, plots, and report text;")
-  )
+# increase memory limit for file uploads to 100Mb
+options(shiny.maxRequestSize = 100*1024^2) 
+
+## sub out demographic indicator name
+names_d_fixed <- gsub('VSI.eo','Demog.Index' , EJAM::names_d)
+
+# used in lat/lon and ECHO data validation
+# only process if latm and lon (or aliases) exist in uploaded data
+lat_alias <- c('lat', 'latitude83', 'latitude', 'latitudes', 'faclat', 'lats')
+lon_alias <- c('lon', 'longitude83', 'longitude', 'longitudes', 'faclong', 'long', 'longs', 'lons','lng')
+
+
+## global variable for mapping
+meters_per_mile <- 1609.344
+
+## code to generate quadtree dataset on app startup
+localtree <- SearchTrees::createTree(
+  EJAMblockdata::quaddata, treeType = "quad", dataType = "point"
 )
 
-## help text for all upload methods
-upload_help_msg <- ' <div class="row">
-    <div class="col-sm-12">
-        <div id="selectFrom1" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline">
-          <label class="control-label" for="selectFrom1">
-            <h5>Users may use only one of the four methods of defining the Universe of Interest: 
-            <ul>
-              <li>Select by Industry (NAICS) Code</li>
-              <li>Upload EPA Facility ID (FRS Identifers) file</li>
-              <li>Upload Location (latitude/longitude) file</li>
-              <li>Upload ECHO file</li>
-            </ul>
-            </h5>
-          </label>
-      </div>
-    </div>
-  </div>'
 
-## help text for latlon upload
-latlon_help_msg <- '
-<div class="row">
-  <div class="col-sm-12">
-  <div class="well">
-  <div id="selectFrom1" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline">
-  <label class="control-label" for="selectFrom1">
-  <h5>You may upload a list of location coordinates (latitudes and longitudes). The file should contain at least these two columns: lat and lon. There can be other columns like an ID column that should be unique (no duplicates), and each record should be separated by a carriage return. It also will work with some alternative names (and case insensitive) like Latitude, Lat, latitude, long, longitude, Longitude, Long, LONG, LAT, etc. but to avoid any mixup of names it is suggested that the file use lat and lon. </h5> 
-  <h5>The file could be formatted as follows, for example: </h5> 
-  </label>
-  <br>
-  ID,lat,lon<br>
-  1,36.26333,-98.48083<br>
-  2,41.01778,-80.36194<br>
-  3,43.43772,-91.90365<br>
-  4,29.69083,-91.34333<br>
-  5,40.11389,-75.34806<br>
-  6,35.97889,-78.88056<br>
-  7,32.82556,-89.53472<br>
-  8,30.11275,-83.59778<br>
-  9,30.11667,-83.58333<br>
-  10,38.06861,-88.75361<br><br>
-  </div>
-  </div>
-  </div>
-  </div>'
+## create list of NAICS codes split by first 2 numbers in code - not currently used
+## e.g. "11 - Agriculture, Forestry, Fishing and Hunting",                              
+## "21 - Mining, Quarrying, and Oil and Gas Extraction", "22 - Utilities"     
+# naics_start_code <- substr(EJAM::NAICS, 1, 2)
+# n_uniq_naics <- length(unique(naics_start_code))
+# naics_as_list <- vector('list', length = n_uniq_naics)
+# for(j in 1:n_uniq_naics){
+#   naics_as_list[[j]] <- EJAM::NAICS[substr(EJAM::NAICS, 1, 2) == unique(naics_start_code)[j]]
+#   names(naics_as_list)[[j]] <- names(EJAM::NAICS)[EJAM::NAICS == unique(naics_start_code)[j]]
+# }
 
-## text message about ECHO facility search
-## used by inputId 'ss_search_echo'
-echo_url <-  'https://echo.epa.gov/facilities/facility-search' # used in server.R and in message below
-echo_message <- shiny::HTML(paste0('To use the ECHO website to search for and specify a list of regulated facilities, 
-                                    <br>1) go to ', '<a href=\"', echo_url, '\", target=\"_blank\">', echo_url,  '</a>', ' and <br>
-                                    2) under Facility Characteristics Results View select data table, click Search, then <br>
-                                    3) click Customize Columns, use checkboxes to include Latitude and Longitude, then <br>
-                                    4) click Download Data, then <br>
-                                    5) return to this app to upload that ECHO site list.<br>'))
-
-## help text for NAICS
-frs_help_msg <- HTML('  <div class="row">
-    <div class="col-sm-12">
-      <div class="well">
-        <div id="selectFrom1" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline">
-          <label class="control-label" for="selectFrom1">
-            <h5>You may upload a list of FRS IDs. The FRS ID should be in the second column. It should be unique (no duplicates), and it should be titled REGISTRY_ID. Each record should be separated by a carriage return. </h5> 
-            <h5>The file should be formatted as follows: </h5> 
-          </label>
-					<br>num,REGISTRY_ID<br>
-		      1,110000308006<br>
-		      2,110000308015<br>
-      		3,110000308024<br>
-		      4,110000308202<br>
-      		5,110000308211<br>
-		      6,110000308220<br>
-      		7,110000308346<br>
-		      8,110000308355<br>
-		      9,110000308364<br>
-		      <br>
-        </div>
-      </div>
-    </div>
-  </div>')
-
-
-## named vector of EPA programs to limit facilities to
-## used by inputId 'ss_limit_fac1' and 'ss_limit_fac2'
-epa_programs <- c(
-  "TRIS" = "TRIS", "RCRAINFO" = "RCRAINFO",
-  "AIRS/AFS" = "AIRS/AFS", "E-GGRT" = "E-GGRT",
-  "NPDES" = "NPDES", "RCRAINFO" = "RCRAINFO", "RMP" = "RMP"
-)
 
 # Defaults for quantiles summary stats
-# (probs of 0, 0.50, 1 are redundant since min, median, max are
-# already separately shown)
-## used by inputId 'an_list_pctiles'
-
-#probs.default.choices <- c("0", "0.25", "0.50", "0.75", "0.80", 
-#                           "0.90", "0.95", "0.99", "1.00")
+## can be used by inputId 'an_list_pctiles'
 probs.default.selected <- c(0.25, 0.75, 0.95)
 probs.default.values <- c(0, 0.25, 0.5, 0.75, 0.8, 
                           0.9, 0.95, 0.99, 1)
@@ -147,85 +77,7 @@ threshgroup.default <- list(
   'comp1' = "EJ US pctiles",  'comp2' = "EJ State pctiles"
 )
 
-## global variables for mapping
-meters_per_mile <- 1609.344
-
-## function for making leaflet map of uploaded points
-plot_facilities <- function(mypoints, rad = 4, highlight = FALSE, clustered,
-                            circle_type = 'circles', map_units = 'miles', zoom_level){
-  
-  ## map settings
-  base_color      <- 'blue'
-  cluster_color   <- 'red'
-  highlight_color<- 'orange'
-  circleweight <- 4
-  
-  ## convert units to miles for circle size
-  if(map_units == 'kilometers'){
-    rad = rad * 0.62137119
-  }
-  
-  ## if checkbox to highlight clusters is checked
-  if(highlight == TRUE){
-    ## compare latlons using is_clustered() reactive
-    circle_color <- ifelse(clustered == TRUE, cluster_color, base_color)
-  } else {
-    circle_color <- base_color
-  }
-  print(head(mypoints))
-  if (length(mypoints) != 0) {
-    isolate({ # do not redraw entire map and zoom out and reset location viewed just because radius changed?
-      
-      if(circle_type == 'circles'){
-        mymap <- leaflet(mypoints) %>% 
-          addTiles()  %>%
-          addCircles(
-            #radius = input$radius * meters_per_mile,
-            radius = rad * meters_per_mile,
-            color = circle_color, fillColor = circle_color, 
-            fill = TRUE, weight = circleweight
-            #popup = popup_to_show()
-            
-          ) %>% 
-          leaflet.extras::addFullscreenControl()
-        
-        #### %>% clearBounds() # clears the bound, so that the view will be automatically determined by the range of latitude/longitude data in the map layers if provided;
-        mymap
-      } else if(circle_type == 'circleMarkers'){
-        mymap <- leaflet(mypoints) %>% 
-          addTiles()  %>%
-          addCircleMarkers(
-            #radius = input$radius * meters_per_mile,
-            radius = rad,
-            color = circle_color, fillColor = circle_color, 
-            fill = TRUE, weight = circleweight,
-            clusterOptions = markerClusterOptions()
-            #popup = popup_to_show()
-            ## possible way to use circleMarkers - need conversion of meters to pixels so they scale properly
-            #meters_per_px <- 156543.03392 * cos(mean(m$x$limits$lat) * pi/180) / m$x$options
-          ) 
-        
-        #### %>% clearBounds() # clears the bound, so that the view will be automatically determined by the range of latitude/longitude data in the map layers if provided;
-        mymap
-      }
-      
-    })
-  } else {  # length(mypoints) == 0
-    mymap <- leaflet() %>% 
-      addTiles() %>% 
-      setView(-110, 46, zoom = 3)
-    mymap
-  }
-  ### Button to print map ####
-  leaflet.extras2::addEasyprint(map = mymap, options = leaflet.extras2::easyprintOptions(exportOnly = TRUE, title='Save Map Snapshot'))
-  
-}
-
-## code to generate quadtree dataset on app startup
-localtree <- SearchTrees::createTree(
-  EJAMblockdata::quaddata, treeType = "quad", dataType = "point"
-)
-
+## HTML outline for full report
 report_outline <- "
 <div style = 'height: 90vh; overflow-y: auto;'>
     <ol>
@@ -277,6 +129,122 @@ report_outline <- "
         <li>References</li>
     </ol>
 </div>"
+
+
+## text for About EJAM tab
+intro_text <- tagList(
+  tags$h5("EPA has developed a number of different tools for environmental justice (EJ) mapping, screening, and analysis, including EJScreen. EJScreen has a dataset with environmental, demographic, and EJ indicators for each block group in the US. \nIt can provide a report summarizing those values for the average person within some distance (e.g., 1 mile) from a specified point."),
+  tags$h5("It is often useful to know the nature of the environmental conditions, the demographics, and/or EJ index values near a whole set of the facilities in a particular sector, such as in the context of developing a proposed rule. EJAM allows users to select a set of facilities, defined by NAICs industrial category codes or by uploading a list of locations. The tool then can provide statistics for a user-specified buffer area around the selected facilities."),
+  tags$h5("See EJAM user guide or readme document for more about using the app. "),
+  tags$h5("See the R package vignette and documentation for information about using the R functions and data."),
+  tags$h5("Features of this tool include:"),
+  tags$ul(
+    tags$li("Several methods of selecting a set of facilities for analysis, including industry sector and uploaded of facility locations"),
+    tags$li("User-specified buffer distance;"),
+    tags$li("Very fast analysis of which residents (defined by Census blocks) are nearby, and the distance to each block's internal point.;"),
+    tags$li("Optional use of the next nearest census block centroid for facilities with no census block centroid within selected buffer distance."),
+    tags$li("At each facility, calculation of demographic, environmental, or other EJ-related statistics;"),
+    tags$li("Overall, for the facilities and residents near any of them as a whole, calculation of the same kinds of statistics, but with no double counting of residents near two or more facilities.;"),
+    tags$li("Interactive views of results in tables, maps, plots, and text;"),
+    tags$li("Downloads of results in tables, maps, plots, and report text;")
+  )
+)
+
+## help text for all upload methods - not currently used
+# upload_help_msg <- ' <div class="row">
+#     <div class="col-sm-12">
+#         <div id="selectFrom1" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline">
+#           <label class="control-label" for="selectFrom1">
+#             <h5>Users may use only one of the four methods of defining the Universe of Interest: 
+#             <ul>
+#               <li>Select by Industry (NAICS) Code</li>
+#               <li>Upload EPA Facility ID (FRS Identifers) file</li>
+#               <li>Upload Location (latitude/longitude) file</li>
+#               <li>Upload ECHO file</li>
+#             </ul>
+#             </h5>
+#           </label>
+#       </div>
+#     </div>
+#   </div>'
+
+## help text for latlon upload
+latlon_help_msg <- '
+<div class="row">
+  <div class="col-sm-12">
+  <div class="well">
+  <div id="selectFrom1" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline">
+  <label class="control-label" for="selectFrom1">
+  <p>You may upload a list of location coordinates (latitudes and longitudes).</p> 
+  <p>The file should contain at least these two columns: lat and lon. 
+  There can be other columns like an ID column that should be unique (no duplicates), 
+  and each record should be separated by a carriage return.</p>
+  <p>It also will work with some alternative names (and case insensitive) like 
+  Latitude, Lat, latitude, long, longitude, Longitude, Long, LONG, LAT, etc. 
+  but to avoid any mixup of names it is suggested that the file use lat and lon. </p> 
+  <p>The file could be formatted as follows, for example: </p> 
+  </label>
+  <br>
+  ID,lat,lon<br>
+  1,36.26333,-98.48083<br>
+  2,41.01778,-80.36194<br>
+  3,43.43772,-91.90365<br>
+  4,29.69083,-91.34333<br>
+  5,40.11389,-75.34806<br>
+  6,35.97889,-78.88056<br>
+  7,32.82556,-89.53472<br>
+  8,30.11275,-83.59778<br>
+  9,30.11667,-83.58333<br>
+  10,38.06861,-88.75361<br><br>
+  </div>
+  </div>
+  </div>
+  </div>'
+
+## text message about ECHO facility search
+## used by inputId 'ss_search_echo'
+echo_url <-  'https://echo.epa.gov/facilities/facility-search' # used in server.R and in message below
+echo_message <- shiny::HTML(paste0('To use the ECHO website to search for and specify a list of regulated facilities, 
+                                    <br>1) Go to ', '<a href=\"', echo_url, '\", target=\"_blank\">', echo_url,  '</a>', ' and <br>
+                                    2) Navigate website and select categories to include in data, then <br>  
+                                    3) Under Search Criteria Selected-Facility Characteristics-Results View select <b>Data Table</b> and click <b>Search</b>, then <br>
+                                    3) click Customize Columns, use checkboxes to include Latitude and Longitude, then <br>
+                                    4) click Download Data, then <br>
+                                    5) Return to this app to upload that ECHO site list.<br>'))
+
+## help text for FRS
+frs_help_msg <- HTML('  <div class="row">
+    <div class="col-sm-12">
+      <div class="well">
+        <div id="selectFrom1" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline">
+          <label class="control-label" for="selectFrom1">
+            <h5>You may upload a list of FRS IDs. The FRS ID should be in the second column. It should be unique (no duplicates), and it should be titled REGISTRY_ID. Each record should be separated by a carriage return. </h5> 
+            <h5>The file should be formatted as follows: </h5> 
+          </label>
+					<br>num,REGISTRY_ID<br>
+		      1,110000308006<br>
+		      2,110000308015<br>
+      		3,110000308024<br>
+		      4,110000308202<br>
+      		5,110000308211<br>
+		      6,110000308220<br>
+      		7,110000308346<br>
+		      8,110000308355<br>
+		      9,110000308364<br>
+		      <br>
+        </div>
+      </div>
+    </div>
+  </div>')
+
+
+## named vector of EPA programs to limit facilities to
+## used by inputId 'ss_limit_fac1' and 'ss_limit_fac2'
+epa_programs <- c(
+  "TRIS" = "TRIS", "RCRAINFO" = "RCRAINFO",
+  "AIRS/AFS" = "AIRS/AFS", "E-GGRT" = "E-GGRT",
+  "NPDES" = "NPDES", "RCRAINFO" = "RCRAINFO", "RMP" = "RMP"
+)
 
 html_header_fmt <- tagList(
   #################################################################################################################### #
@@ -703,3 +671,4 @@ html_footer_fmt <- tagList(
       </a>'
   )
 )
+  
