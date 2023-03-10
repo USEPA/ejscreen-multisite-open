@@ -164,7 +164,8 @@ library(tidyverse)
 param_table <- aggregate(values~ind, stack(params), toString) %>% 
   rename(Parameter = ind, 'Current Value' = values)
 
-knitr::kable(param_table)
+#knitr::kable(param_table)
+param_table
 ```
 
 ## Notes on formatting for a manuscript 
