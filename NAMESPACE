@@ -2,8 +2,8 @@
 
 S3method(all,equal_functions)
 export(app_run_EJAM)
-export(computeActualDistancefromSurfacedistance)
 export(datapack)
+export(distance_via_surfacedistance)
 export(doaggregate)
 export(dupenames)
 export(get_any_rest_chunked_by_id)

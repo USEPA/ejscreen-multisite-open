@@ -9,7 +9,7 @@
 #' @param maxcutoff miles distance (check what this actually does)
 #' @param avoidorphans logical
 #' @param CountCPU for parallel processing via makeCluster() and doSNOW::registerDoSNOW()
-#' @seealso [getblocksnearbyviaQuadTree()]  [computeActualDistancefromSurfacedistance()]
+#' @seealso [getblocksnearbyviaQuadTree()]  [distance_via_surfacedistance()]
 #' @export
 #'
 getblocksnearbyviaQuadTree_Clustered <-function(facilities,cutoff,maxcutoff, avoidorphans,CountCPU=1) {
@@ -31,7 +31,7 @@ facilities <- facilities[!is.na(facilities$LAT) & !is.na(facilities$LONG), ]
   nRowsDf <- nrow(facilities)
   res <- vector('list', nRowsDf)
 
-  truedistance <- computeActualDistancefromSurfacedistance(cutoff)   # simply 7918*sin(cutoff/7918)
+  truedistance <- distance_via_surfacedistance(cutoff)   # simply 7918*sin(cutoff/7918)
 
   #set up cluster, splitting up the facilities among the available CPUs
   #   but see this on why detectCores() is a bad idea:  https://www.r-bloggers.com/2022/12/please-avoid-detectcores-in-your-r-packages/
@@ -55,7 +55,7 @@ facilities <- facilities[!is.na(facilities$LAT) & !is.na(facilities$LONG), ]
   # that is, it can execute those repeated operations on multiple processors/cores on your computer (and there are other advantages as well)
   cpuIndex <- 1 ; FAC_X<-0; FAC_Z<-0 # this just stops the warning about undefined variable since IDE does not understand it being defined in foreach()
   #### LOOP OVER THE CPUs ##############################################################################################
-  parref <- foreach::foreach(cpuIndex=1:CountCPU, .export = c("computeActualDistancefromSurfacedistance","earthRadius_miles","crd","quaddata"), .packages = c("SearchTrees","data.table","pdist"), .errorhandling = 'pass', .verbose = TRUE) %dopar% {
+  parref <- foreach::foreach(cpuIndex=1:CountCPU, .export = c("distance_via_surfacedistance","earthRadius_miles","crd","quaddata"), .packages = c("SearchTrees","data.table","pdist"), .errorhandling = 'pass', .verbose = TRUE) %dopar% {
 
     print(.packages())
     #2 seconds overhead to create the quad tree
@@ -140,7 +140,7 @@ facilities <- facilities[!is.na(facilities$LAT) & !is.na(facilities$LONG), ]
         tmp[,ID := facilities2use[i, .(ID)]]
 
         #filter to max distance
-        truemaxdistance <- computeActualDistancefromSurfacedistance(maxcutoff)
+        truemaxdistance <- distance_via_surfacedistance(maxcutoff)
         tmp <- tmp[distance<=truemaxdistance, .(blockid, distance,ID)]
         partialres[[i]] <- tmp
       } else {

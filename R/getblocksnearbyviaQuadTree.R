@@ -65,7 +65,7 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, cutoff=1, maxcutoff=31.07,
   # indexgridsize was defined at start as say 10 miles in global? could be passed here as a parameter ####
   # and buffer_indexdistance defined here in code but is never used anywhere...  
   # buffer_indexdistance <- ceiling(cutoff / indexgridsize) 
-  truedistance <- computeActualDistancefromSurfacedistance(cutoff)   # simply 7918*sin(cutoff/7918) 
+  truedistance <- distance_via_surfacedistance(cutoff)   # simply 7918*sin(cutoff/7918) 
   
   # main reason for using foreach::foreach() is that it supports parallel execution,
   # that is, it can execute those repeated operations on multiple processors/cores on your computer
@@ -135,7 +135,7 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, cutoff=1, maxcutoff=31.07,
       tmp[ , siteid := sitepoints[i, .(siteid)]]
       
       #filter to max distance
-      truemaxdistance <- computeActualDistancefromSurfacedistance(maxcutoff)
+      truemaxdistance <- distance_via_surfacedistance(maxcutoff)
       res[[i]] <- tmp[distance <= truemaxdistance, .(blockid, distance, siteid)]
       # saving results as a list of tables to rbind after loop; old code did rbind for each table, inside loop 
     } else {

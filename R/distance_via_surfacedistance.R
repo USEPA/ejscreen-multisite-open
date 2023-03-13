@@ -12,6 +12,6 @@
 #'
 #' @export
 #'
-computeActualDistancefromSurfacedistance <- function(x){
+distance_via_surfacedistance <- function(x){
   return( 7918*sin(x/7918) )
 }

@@ -31,5 +31,5 @@ It runs Rscript on the specified host(s) to set up a worker process which listen
 Uses indexgridsize and quaddata  variables that come from global environment (but should pass to this function rather than assume in global env?)
 }
 \seealso{
-\code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}}  \code{\link[=computeActualDistancefromSurfacedistance]{computeActualDistancefromSurfacedistance()}}
+\code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}}  \code{\link[=distance_via_surfacedistance]{distance_via_surfacedistance()}}
 }
