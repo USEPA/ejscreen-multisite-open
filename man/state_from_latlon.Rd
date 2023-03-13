@@ -15,8 +15,8 @@ state_from_latlon(lat, lon, states_shapefile = EJAM::states_shapefile)
 \item{shapefile}{shapefile of US States, in package already}
 }
 \value{
-Returns data.frame: ST, statename, FIPS.ST, REGION,
-each as long as lat or lon
+Returns data.frame: ST, statename, FIPS.ST, REGION, n
+as many rows as elements in lat or lon
 }
 \description{
 find what state is where each point is located
