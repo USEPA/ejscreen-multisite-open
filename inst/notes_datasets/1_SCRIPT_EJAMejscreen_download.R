@@ -1,6 +1,68 @@
 # Import ejscreen 2.1 data for EJAMejscreendata package
 
 ########################################################### #
+options(timeout = max(300, getOption("timeout"))) # default of 60 seconds is not enough
+ejscreen_download_gdb <- function(
+    folder = tempdir(), 
+    gdbzipname = "EJSCREEN_2022_with_AS_CNMI_GU_VI.gdb.zip", 
+    gdbname = "EJSCREEN_2022_with_AS_CNMI_GU_VI.gdb", 
+    baseurl = "https://gaftp.epa.gov/EJSCREEN/2022/") {
+  # get percentile lookup tables ####
+  # the percentile lookup tables are in the gdb but not provided as csv.zip files on the ftp site
+  cat("downloading\n")
+  download.file(file.path(baseurl, gdbzipname), destfile = file.path(folder, gdbzipname))
+return(file.path(folder, gdbzipname))
+}
+ejscreen_unzip_gdb <- function(zipfilepath) {
+  cat("unzipping\n")
+  unzip(zipfilepath,   exdir = dirname(zipfilepath))
+  return( gsub(".zip", "", zipfilepath))
+}
+ejscreen_read_unzipped_lookups <- function(mypath) {
+  print(sf::st_layers(mypath))
+  States_2022 <- sf::st_read(mypath, 'States')   # aka statestats
+  USA_2022    <- sf::st_read(mypath, 'USA')      # aka usastats
+  # "FileGDB" or "OpenFileGDB" is the driver to use.
+  return(list(
+    States_2022 = States_2022,
+    USA_2022 = USA_2022
+  ))
+}
+ejscreen_pctile_lookups_from_ftp <- function(
+    folder = tempdir(), 
+    gdbzipname = "EJSCREEN_2022_with_AS_CNMI_GU_VI.gdb.zip", 
+    gdbname = "EJSCREEN_2022_with_AS_CNMI_GU_VI.gdb", 
+    baseurl = "https://gaftp.epa.gov/EJSCREEN/2022/") {
+  
+  mypath <- ejscreen_download_gdb(folder, gdbzipname, gdbname, baseurl)
+  mypath <- ejscreen_unzip_gdb(mypath)
+  return(   ejscreen_read_unzipped_lookups(mypath) )
+}
+################## #
+
+x <- ejscreen_pctile_lookups_from_ftp()
+USA_2022    <- x$USA_2022
+States_2022 <- x$States_2022
+
+# rename indicator variables ####
+# maybe change names, but which function to use?
+# this  works but relies on ejscreen:: pkg, and see EJAMbatch.summarizer::change... and fixnames and fixcolnames and fixnamestype etc. 
+names(USA_2022)    <- ejscreen::ejscreenformulas$Rfieldname[match(names(USA_2022),    ejscreen::ejscreenformulas$gdbfieldname)]
+names(States_2022) <- ejscreen::ejscreenformulas$Rfieldname[match(names(States_2022), ejscreen::ejscreenformulas$gdbfieldname)]
+
+#  ***********  * * * * * * *    to be completed still   
+
+
+# maybe change units (1 vs 100?) - percentages are 0 to 1, percentiles are 0 to 100, in these lookup tables. and in blockgroupstats
+
+
+#  ***********  * * * * * * *    to be completed still   
+ # ALSO see script in  /EJAM/data-raw/usastats_subgroups.R
+# That was used to add subgroups to these 2 tables before they were saved for the package.
+# usethis::use_data(USA_2022,    overwrite = TRUE)
+# usethis::use_data(States_2022, overwrite = TRUE)
+
+########################################################### #
 
 # new Supplemental indicators are here - but probably want to combine merge the supplemental and other !? ####
 # *LIFE EXPECTANCY (Raw value, pctile, state.pctile, bin, state.bin, textpopup)
@@ -8,35 +70,58 @@
 # *12 SUPPLEMENTARY EJ INDEXES BASED ON SUPPL DEMOG IND (raw, pctile, etc.)
 
 # DOWNLOAD ZIP FILES ####
-# # Obtain the file with something like this or manually download and unzip it:
-# download.file(
-#  'https://gaftp.epa.gov/EJSCREEN/2022/EJSCREEN_Full_with_AS_CNMI_GU_VI.zip', 
-#                           destfile = 'EJSCREEN_Full_with_AS_CNMI_GU_VI.zip')
-fnames <- c(
-  "EJSCREEN_2022_Supplemental_with_AS_CNMI_GU_VI.csv.zip",
-  "EJSCREEN_2022_Supplemental_StatePct_with_AS_CNMI_GU_VI.csv.zip"
-)
 baseurl = "https://gaftp.epa.gov/EJSCREEN/2022/"
-for (i in fnames) {
-  a = file.path(baseurl, fnames[i])
-  b = fnames[i]
-  download.file(url=a, destfile = b, exdir = getwd())
-}
+browseURL(baseurl)
+fnames <- c(
+  "EJSCREEN_2022_with_AS_CNMI_GU_VI.csv.zip",
+  "EJSCREEN_2022_StatePct_with_AS_CNMI_GU_VI.csv.zip",   # do we really need this? it has block level state percentiles but we recalculate those anyway for any given buffer analysis.
+  "EJSCREEN_2022_Supplemental_with_AS_CNMI_GU_VI.csv.zip",
+  "EJSCREEN_2022_Supplemental_StatePct_with_AS_CNMI_GU_VI.csv.zip"  # do we really need this? 
+)
+
+td <- tempdir()
+
+# localpath <-  "~/../EJ 2021/EJSCREEN 2022 2.1 DATA late2022/2022-11-07-FINAL-2.1/"
+ 
+# new function in curl:: 
+curl::multi_download(urls = file.path(baseurl, fnames), destfiles = file.path(td, fnames))
+
+# Download status: 4 done; 0 in progress. Total size: 340.12 Mb (100%)... done!             
+#   # A tibble: 4 × 10
+#    success status_code resumefrom url                           destf…¹ error type  modified             time headers
+#    <lgl>         <int>      <dbl> <chr>                         <chr>   <chr> <chr> <dttm>              <dbl> <list> 
+#   1 TRUE            200          0 https://gaftp.epa.gov/EJSCRE… "C:\\U… NA    appl… 2022-11-02 09:50:34  8.31 <chr>  
+#   2 TRUE            200          0 https://gaftp.epa.gov/EJSCRE… "C:\\U… NA    appl… 2022-11-02 09:50:30 11.1  <chr>  
+#   3 TRUE            200          0 https://gaftp.epa.gov/EJSCRE… "C:\\U… NA    appl… 2022-12-27 16:18:40 19.6  <chr>  
+#   4 TRUE            200          0 https://gaftp.epa.gov/EJSCRE… "C:\\U… NA    appl… 2022-12-27 16:18:41 12.6  <chr>  
+#   # … with abbreviated variable name  destfile
+# for (i in fnames) {
+#   a = file.path(baseurl, fnames[i])
+#   b = fnames[i]
+#   download.file(url=a, destfile = b, exdir = td)
+# }
 # download.file("https://gaftp.epa.gov/EJSCREEN/2022/EJSCREEN_2022_Supplemental_with_AS_CNMI_GU_VI.csv.zip", 
 #               destfile = "EJSCREEN_2022_Supplemental_with_AS_CNMI_GU_VI.csv.zip")
 # UNZIP ####
-for (i in fnames) {
-  unzip(fnames[i], exdir = getwd())  
+for (i in 1:length(fnames)) {
+  print( unzip(file.path(td, fnames[i]), exdir = getwd(), overwrite = TRUE)  )
 }
 ########################################################### #
 # READ CSV FILES ####
-EJSCREEN_Full_with_AS_CNMI_GU_VI      <- as.data.frame(readr::read_csv("EJSCREEN_Full_with_AS_CNMI_GU_VI.csv"))
-EJSCREEN_StatePct_with_AS_CNMI_GU_VI  <- as.data.frame(readr::read_csv("EJSCREEN_StatePct_with_AS_CNMI_GU_VI.csv"))
-USA_2022                              <- as.data.frame(readr::read_csv("USA_2022.csv"))
-States_2022                           <- as.data.frame(readr::read_csv("States_2022.csv"))
+getfile <- function(fname, folder=td) {as.data.frame(readr::read_csv(file.path(folder, fname)))}
+
+EJSCREEN_Full_with_AS_CNMI_GU_VI      <- getfile("EJSCREEN_Full_with_AS_CNMI_GU_VI.csv")
+EJSCREEN_StatePct_with_AS_CNMI_GU_VI  <- getfile("EJSCREEN_StatePct_with_AS_CNMI_GU_VI.csv")
 # __but probably want to combine merge the supplemental and other !? ####
-EJSCREEN_2022_Supplemental_with_AS_CNMI_GU_VI          <- as.data.frame(readr::read_csv("EJSCREEN_2022_Supplemental_with_AS_CNMI_GU_VI.csv"))
-EJSCREEN_2022_Supplemental_StatePct_with_AS_CNMI_GU_VI <- as.data.frame(readr::read_csv("EJSCREEN_2022_Supplemental_StatePct_with_AS_CNMI_GU_VI.csv"))
+EJSCREEN_2022_Supplemental_with_AS_CNMI_GU_VI          <- getfile("EJSCREEN_2022_Supplemental_with_AS_CNMI_GU_VI.csv")
+EJSCREEN_2022_Supplemental_StatePct_with_AS_CNMI_GU_VI <- getfile("EJSCREEN_2022_Supplemental_StatePct_with_AS_CNMI_GU_VI.csv")
+
+# check if same varnames used for state and us pctiles, and make them distinct
+
+
+   #  ***********  * * * * * * *    to be completed still   
+
+
 
 # ADD METADATA ####
 # see EJAM::metadata_add() and metadata_check()  or set metadata like this instead, E.G. :
@@ -60,6 +145,7 @@ EJSCREEN_2022_Supplemental_StatePct_with_AS_CNMI_GU_VI <- EJAM::metadata_add(EJS
 # what about lookups for supplemental indicators?? ####
 
 
+#  ***********  * * * * * * *    to be completed still   
 
 
 
@@ -94,14 +180,13 @@ EJSCREEN_2022_Supplemental_StatePct_with_AS_CNMI_GU_VI <- copy(bg)
 
 #################################################################################
 
-# ADD DATA TO PACKAGE ####
-usethis::use_data(EJSCREEN_Full_with_AS_CNMI_GU_VI,     overwrite = T)
-usethis::use_data(EJSCREEN_StatePct_with_AS_CNMI_GU_VI, overwrite = T)
-usethis::use_data(USA_2022,    overwrite = T)
-usethis::use_data(States_2022, overwrite = T)
-# new:
-usethis::use_data(EJSCREEN_2022_Supplemental_with_AS_CNMI_GU_VI,          overwrite = T)
-usethis::use_data(EJSCREEN_2022_Supplemental_StatePct_with_AS_CNMI_GU_VI, overwrite = T)
+# if need to ADD DATA TO a PACKAGE ####
+
+# usethis::use_data(EJSCREEN_Full_with_AS_CNMI_GU_VI,     overwrite = T)
+# usethis::use_data(EJSCREEN_StatePct_with_AS_CNMI_GU_VI, overwrite = T)
+# # new:
+# usethis::use_data(EJSCREEN_2022_Supplemental_with_AS_CNMI_GU_VI,          overwrite = T)
+# usethis::use_data(EJSCREEN_2022_Supplemental_StatePct_with_AS_CNMI_GU_VI, overwrite = T)
 
 #################################################################################
 # LOOK AT IT ####

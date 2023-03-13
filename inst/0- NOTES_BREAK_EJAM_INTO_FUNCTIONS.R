@@ -3,7 +3,6 @@
 # 
 # -----------------------------------------------
 # TO GET FACILITIES AND POINTS (LAT / LON):  - see EJAMejscreenapi::locate_by_id(type = 'program') 
-# 
 
 # **MAYBE WE SHOULD RENAME THESE RELATED FUNCTIONS TO BE CONSISTENTLY NAMED?**
 # Several functions that query on y to find x,
@@ -22,9 +21,6 @@
 # programid
 # program
 #   etc. etc. 
-# 
-
-
 
 # examples of using them right now:
 # 
@@ -73,7 +69,7 @@
 #   -given program system IDs, 
 #   -return facility registry IDs (locate_by_id() does this and then also gets lat/lon)
 # 
-# ** get_latlon_from_siteid()  - see EJAMejscreenapi::locate_by_id(type = 'frs') etc.
+# ** get_latlon_from_siteid() or maybe _from_regid to clarify it is not siteid like 1:n  - see EJAMejscreenapi::locate_by_id(type = 'frs') etc.
 #   -given facility registry IDs, 
 #   -return facility lat/lon values (and other facility info, like name, NAICS, etc.? locate_by_id() does)
 # 
@@ -96,12 +92,33 @@
 # get_shape_from_upload() **    use   sf::st_read()
 #   -Given filename, 
 #   -Return uploaded shapefile    
-# 
-# get_shape_from_fips()    maybe use TIGER file of bounds, or EJScreen map services or file?
+
+ 
+# NOT NEEDED: get_blocks_from_fips()  No. that would be a waste to break bg or larger FIPS into the blocks, only to roll them back up to blockgroup scale that is where we have demog and other indicators. 
+
+#   break doaggregate() into 
+#
+# 1. rollup_blocks2blockgroups() 
+#    - given  blockid,siteid,distance (or NA if no distance info) 
+#    - return bgid,bgwt,siteid, plus stats on distance: eg, distancemin, distanceavg, proxiscoreavg (or NA if no distance info)
+#
+# 2. rollup_blockgroups2sites() 
+#    - given  bgid,bgwt,siteid,  plus stats on distance and nearby sites, plus bg-scale E&D&EJ indicators
+#    - return like doaggregate() did:  summary by siteid plus overall stats. 
+ 
+# get_blockgroups_from_fips()  using helper like get_bgfips_from_anyfips()
+#  - Given siteid,FIPS table i.e., 1 or more lists of FIPS (as blockgroups/tract/county/state-FIPS/ or bg grouped into "sites" like metro areas, attainment areas, etc.)
+#  - Return bgid,siteid table to be used in an aggregation function
+  #  like rollup_blockgroups2sites() 
+   # 
+# (note: Shape itself - boundaries -  is not useful if just want to know which blocks are inside, etc. 
+ # - can go directly from FIPS to get_shape_from_fips()  or even just join directly pull in entire blockgroup indicator scores)
+# ?get_shape_from_fips()? No, this is not really needed unless trying to intersect shape with raster- 
+#   if we just want to know which block points or which blockgroups are included, 
+#   then we don't need the shape - just need the fips. 
+#  If we really did want the shape, we would maybe use TIGER file of bounds, or EJScreen map services or file?
 #   - Given Census FIPS of County/Tract/Block group
 #   - Return shapefile (polygon)
-# If someone wants to run a report for each CBSA??, MSA??, Other types of geos?
-# (note: this is not useful if just want to know which blocks are inside, etc. - can go directly from FIPS to get_shape_from_fips()  or even just join directly pull in entire blockgroup indicator scores)
 # 
 # get_shape_from_drawing() 
 #   -Given series of lat/lon points a user clicked on, to draw polygon on map, 
@@ -137,7 +154,8 @@
 # -----------------------------------------------
 # TO GET RESIDENTS IN A CIRCLE/ NEARBY, OR GET DISTANCE TO EACH 
 # 
-# **EJAM::getblocksnearby() is currently a poorly named function.   see also   sf::st_is_within_distance()  
+# **EJAM::getblocksnearby() is currently a poorly named function .  
+#  see also   sf::st_is_within_distance()  
 #  possible names:  get_block_distances() ? 
 #                   get_blocks_nearby() ? that does not mention distances.
 #                   get_distance2blocks() ? _from_sitepoints ?

@@ -7,6 +7,11 @@
 # see also:  EJAM/data-raw/names_of_indicators.R
 # see also:  EJAMbatch.summarizer/data-raw/names_of_variables.R
 # see also: ejscreen::names.e, ejscreenformulas, etc. 
+# rename indicator variables ####
+#    to change names,   which function to use?
+# e.g. this  works but relies on ejscreen:: pkg, and see EJAMbatch.summarizer::change... and fixnames and fixcolnames and fixnamestype etc. 
+   # names(USA_2022)    <- ejscreen::ejscreenformulas$Rfieldname[match(names(USA_2022),    ejscreen::ejscreenformulas$gdbfieldname)] 
+   # names(States_2022) <- ejscreen::ejscreenformulas$Rfieldname[match(names(States_2022), ejscreen::ejscreenformulas$gdbfieldname)]
 
 
 # names_e_avg, names_d_avg, names_e_state_avg, names_d_state_avg  

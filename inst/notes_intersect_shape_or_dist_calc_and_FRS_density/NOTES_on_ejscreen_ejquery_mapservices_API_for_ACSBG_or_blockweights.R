@@ -6,10 +6,10 @@
   
   ## notes - examples #### 
   if (1==0) {
-    getacs_epaquery(  objectIds=1:4,                 outFields = 'STCNTRBG', justurl = TRUE)
-    t(getacs_epaquery(objectIds=sample(1:220000,2),  outFields = '*'))
-    t(getacs_epaquery(objectIds=sample(1:220000,2)))
-    getacs_epaquery(  objectIds=sample(1:220000,10), outFields = c('STCNTRBG', 'STATE', 'COUNTY', 'TRACT', 'BLKGRP'), justurl = FALSE)
+    url_getacs_epaquery(  objectIds=1:4,                 outFields = 'STCNTRBG', justurl = TRUE)
+    t(url_getacs_epaquery(objectIds=sample(1:220000,2),  outFields = '*'))
+    t(url_getacs_epaquery(objectIds=sample(1:220000,2)))
+    url_getacs_epaquery(  objectIds=sample(1:220000,10), outFields = c('STCNTRBG', 'STATE', 'COUNTY', 'TRACT', 'BLKGRP'), justurl = FALSE)
   }  
   # notes - useful map services to query ####
   #https://geopub.epa.gov/arcgis/sdk/rest/index.html#/Query_Map_Service_Layer/02ss0000000r000000/

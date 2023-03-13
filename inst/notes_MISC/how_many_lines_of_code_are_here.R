@@ -46,7 +46,7 @@
 # 27   228      119  109      EJAMejscreenapi   /R/                     locate_by_id.R
 # 29   221      133   88      EJAMejscreenapi   /R/                get.distances.all.R
 # 30   216       52  164      EJAMejscreenapi   /R/       get_facility_info_via_ECHO.R
-# 33   207       49  158                 EJAM   /R/                  getacs_epaquery.R
+# 33   207       49  158                 EJAM   /R/                  url_getacs_epaquery.R
 
 #
 # Most of the code is in these files:
@@ -97,7 +97,7 @@
 # 3    575       53  522    EJAM   /R/     doaggregate.R
 # 4    541        8  533    EJAM   /R/      app_server.R
 # 7    405      170  235    EJAM   /R/  golem_utils_ui.R
-# 14   207       49  158    EJAM   /R/ getacs_epaquery.R
+# 14   207       49  158    EJAM   /R/ url_getacs_epaquery.R
 
 
 
