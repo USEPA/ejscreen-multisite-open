@@ -23,6 +23,9 @@ getblocksnearby_and_doaggregate <- function(sitepoints,
     avoidorphans=avoidorphans, 
     quadtree=quadtree,
     ...)
-  x <- suppressWarnings (doaggregate(sites2blocks = mysites2blocks))
+  sites2states = data.frame(siteid = sitepoints$siteid, ST=NA)
+  # sites2states$siteid <- sitepoints$siteid
+  sites2states$ST <- state_from_latlon(lat = sitepoints$lat, lon = sitepoints$lon)[, "ST"]
+  x <- suppressWarnings (doaggregate(sites2blocks = mysites2blocks, sites2states = sites2states))
   return(x)
 }

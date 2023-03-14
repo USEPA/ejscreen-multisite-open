@@ -36,7 +36,7 @@
 #'   nearby Census block internal points, with columns siteid, blockid, distance,
 #'   created by getblocksnearby  function. 
 #'   See sites2blocks_example dataset in package, as input to this function
-#' @param sites2states table of siteid (each unique one in sites2blocks) and ST (2-character State abbreviation)
+#' @param sites2states_or_latlon data.table or just data.frame, with columns siteid (each unique one in sites2blocks) and ST (2-character State abbreviation) or lat and lon 
 #' @param countcols character vector of names of variables  to aggregate within a buffer
 #'   using a sum of counts, like, for example, the number of people for whom a 
 #'   poverty ratio is known, the count of which is the exact denominator needed
@@ -60,36 +60,29 @@
 #' }
 #' @export
 #'
-doaggregate <- function(sites2blocks, sites2states=NA, countcols=NULL, popmeancols=NULL, calculatedcols=NULL, testing=FALSE, include_ejindexes=FALSE, ...) {
+doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL, popmeancols=NULL, calculatedcols=NULL, testing=FALSE, include_ejindexes=FALSE, ...) {
   
-  # Check STATES were provided ####
-  if (missing(sites2states)) {
-    bad_sites2states <- TRUE
-  } else {
-    if (!all(c("siteid", "ST") %in% names(sites2states))) {
-      warning("cannot provide state percentiles unless sites2states param is data.frame with colnames siteid and ST.
-            Try state_from_latlon(lat= pts$lat, lon= pts$lon) to identify the state containing each site based on lat/lon of each siteid.")
-      bad_sites2states <- TRUE
-    } else {
-      bad_sites2states <- FALSE
-    }
-    if (!all(unique(sites2blocks$siteid) %in% sites2states$siteid)) {
-      warning("cannot provide state percentiles unless all siteid values in sites2blocks are also in sites2stats")
-      bad_sites2states <- TRUE
-    } else {
-      bad_sites2states <- FALSE
-    }
-    if (!all(sites2states$ST %in% EJAM::stateinfo$ST)) {
-      warning("cannot provide state percentiles unless all sites2states$ST values are valid 2-character State abbreviations")
-      bad_sites2states <- TRUE
-    } else {
-      bad_sites2states <- FALSE
-    }
-  }
-  if (bad_sites2states) {
-    sites2states <- data.frame(siteid=1:length(unique(sites2blocks$siteid)), ST=NA)
-  }
-
+  # Get ST (state) each site is in, to report scores as state percentiles ####
+  # This will be a data.frame with siteid, ST, (and maybe other columns).
+  # Do prelim cleanup of that lookup table that is later used in 
+  # reporting each site's scores as state percentiles, 
+  #  and then popwtd avg of sites state pctiles will be used as overall state pctiles.
+  #
+  # sites2states lookup table can be used after rollup blocks to BGs, so you can 
+  #  convert raw BG scores to state.pctiles, via statestats lookup 
+  #  [OR, if fast/efficient, maybe every BG in blockgroupstats should already have its own state pctile scores columns, in which case wont need to look up those bg pctiles via raw scores!]
+  #
+  # * and an extra feature could be-- using BG-scale dataset (per site or at least overall) calc avg state pctile in each Demog group (per site or at least overall).
+  #   (but probably dont want to just do bg-wtd-popwtd avg of those bg-specific pctiles to get overall pctiles per site??); 
+  # and then do rollup of raw scores from bgs to just sites, 
+  #  and using state of each site, [ignore blockgroups near site that are in a different state than the site's central point, right?]
+  # *** aggregated raw scores at each site can be looked up and reported as percentile in that state; 
+  # *** popwtd avg of sites state pctiles (not raw scores) will be used as the overall state pctiles.
+  #  (Because each site has a different site, you cannot just convert overall raw scores to state pctiles).
+  
+  
+  # sites2states <- states_infer(sites2states_or_latlon) 
+  
   
   
   # HARDCODED blockgroup dataset, FOR NOW ####
@@ -116,6 +109,10 @@ doaggregate <- function(sites2blocks, sites2states=NA, countcols=NULL, popmeanco
     # countcols <- unique(c('pop', 'nonmins', names.d.count,
     #                "povknownratio",  "age25up", "hhlds",  'pre1960', 'builtunits',
     #                ejscreen::names.d.subgroups.count)) 
+    
+    
+    # blockcount_by_site, bgcount_by_site
+    
     countcols <- unique(c(
       names_other, names_d_count, names_d_subgroups_count
       # "pop", 'nonmins', "mins", 
@@ -242,7 +239,6 @@ doaggregate <- function(sites2blocks, sites2states=NA, countcols=NULL, popmeanco
   warning('proximityscore lacks small distance adjustment factor - not yet implemented')
   
   
-  sites2blocks[, sitedistance_min := min(distance, na.rm = TRUE), by=blockid]
   
   ###################################### #
   ## * Unique residents (blocks) only, used for Overall stats #### 
@@ -261,20 +257,22 @@ doaggregate <- function(sites2blocks, sites2states=NA, countcols=NULL, popmeanco
   
   # done above: sites2blocks <- EJAMblockdata::blockwts[sites2blocks, .(siteid,blockid,distance,blockwt,bgid), on='blockid']
   # browser()
-  sites2blocks_overall <- sites2blocks[, list(sitedistance_min = min(sitedistance_min),  
+  #####   THIS SEEMS REDUNDANT... It already created by blockid all these and now again summarizing them by blockid? 
+  sites2blocks_overall <- sites2blocks[, list(sitedistance_min = min(sitedistance_min),
                                               sitecount_max = .N,
                                               proximityscore = sum(proximityscore),
                                               bgid,
                                               
-                                              blockwt # ????? xyz
+                                              blockwt # ???
   ),
   by="blockid"]
-  ##################################################### #  ##################################################### #  ##################################################### #
+  
+  #__________________________ #################################################### #  ##################################################### #  ######################################################
   
   
   
   ##################################################### #
-  # BLOCK GROUPS RESOLUTION analysis:   ######
+  # ___summarize by blockGROUP now___ ######
   
   ##################################################### #
   ## (check this idea) ####
@@ -320,18 +318,41 @@ doaggregate <- function(sites2blocks, sites2states=NA, countcols=NULL, popmeanco
   
   
   #***  ###################################### #
-  # Add STATE of each site to bg-resolution analysis ####
-  # siteid, ST are in sites2states lookup; siteid is in sites2bgs  
+  # Add STATE of each site to blockgroup-resolution analysis ####
+  # siteid, ST are in sites2states lookup; siteid is in sites2bgs 
   #  but not sure if have/want  statename, FIPS.ST, REGION   and maybe even lat,lon
   # for example, if siteid is just rownumber of pts,   sites2states <- data.frame(siteid=1:length(pts$lat), state_from_latlon_compiled(lat = pts$lat, lon = pts$lon))
   # Assign state abbrev to each site!! (allows for state percentiles and averages to be looked up) (and statename, FIPS.ST, REGION?) 
+  
+  # ** MUST CALCULATE ALL STATE PERCENTILES BEFORE finalizing THE "overall" aggregation across sites! ####
+  #  or at least calculate each site state.pctiles and then take the popwtd mean of state.pctile... over all sites
+  #  and then merge / join that to the overall analysis row.
+  #  since each site may be in a different state and rollup would lose that info!
+  
   if (bad_sites2states) {
     sites2bgs_bysite[ , ST := NA] # verify that state pctile lookups function will return NA if ST is NA. xxx
+    sites2bgs_overall[ , ST := NA] #
   } else {
-    sites2bgs_bysite[ ,  .(sites2states[match(siteid, sites2states$siteid)])]  # wouldnt a merge or actual join be faster? 
+    sites2bgs_bysite[ ,  ST := "CA"] # TEMPORARILY # .(sites2states$ST[match(siteid, sites2states$siteid)])]  # wouldnt a merge or actual join be faster? 
+    sites2bgs_overall[ , ST := "CA"] # TEMPORARILY 
     # results_bysite[ , ST := EJAM::state_from_latlon(lat,lon)]
   }
   #***  ###################################### #
+  ##################################################### #
+  # ASSIGN BY SITE, but not a sum or mean:  'ST' ####
+  ##################################################### #
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   
   #***  ###################################### #
@@ -341,12 +362,13 @@ doaggregate <- function(sites2blocks, sites2states=NA, countcols=NULL, popmeanco
   # * Count # blocks or bgs near each SITE?  or MAYBE FOR AVG PERSON, OR WORST CASE PERSON NEAR THAT SITE?? ####
   # Is that at all useful really??
   # "blockcount_near_site"            "bgcount_near_site"
-  # 
+  
   blockcount_by_site <- sites2blocks[, .(blockcount_near_site = .N), by=siteid] # new----------------------------------------------- -
   bgcount_by_site    <- sites2blocks[, .(bgcount_near_site = length(unique(bgid))), by=siteid] # new------------------------------------ -
-  count_of_blocks_near_multiple_sites <- (NROW(sites2blocks) - NROW(sites2blocks_overall)) # NEW fraction is over /NROW(sites2blocks_overall)
+  
   
   # * Count # blocks or bgs near any 2+ sites overall ####
+  count_of_blocks_near_multiple_sites <- (NROW(sites2blocks) - NROW(sites2blocks_overall)) # NEW fraction is over /NROW(sites2blocks_overall)
   blockcount_overall <- length(unique(sites2blocks$blockid))
   bgcount_overall    <- length(unique(sites2blocks$bgid))
   
@@ -367,8 +389,9 @@ doaggregate <- function(sites2blocks, sites2states=NA, countcols=NULL, popmeanco
   #  HAVE TO BE CALCULATED FROM BG DATA BEFORE WE AGGREGATE WITHIN EACH SITE (BUFFER). . . 
   #  Same for sites: worst site as measured by highest nearby blockgroup-level %poor needs raw bg data before summarized by siteid.
   
-
+  
   ##################################################### #  ##################################################### #
+  
   
   
   ##################################################### #
@@ -400,26 +423,39 @@ doaggregate <- function(sites2blocks, sites2states=NA, countcols=NULL, popmeanco
                                                 all.x = TRUE, all.y=FALSE, by='bgid')
   # rm(sites2bgs_overall, sites2bgs_bysite); rm(blockgroupstats)
   
+  #_________________________________ #  ######################################################
+  
+  # ___summarize by site now___ ####
+
   ##################################################### #
   # CALC TOTALS FOR COUNT VARIABLES at EACH SITE & OVERALL ####  
   # AND ALSO SUBGROUPS IF WANT TO 
   #  USE FORMULAS TO GET EXACT %D AT EACH SITE AS SUM OF NUMERATORS / SUM OF DENOMINATORS)
   ##################################################### #
   
+  ##  Counts Overall (all sites/ whole sector)  ####
+  results_overall <- sites2bgs_plusblockgroupdata_overall[ ,  lapply(.SD, FUN = function(x) {
+    round(sum(x * bgwt, na.rm=TRUE), 1)
+  } ), .SDcols = countcols ]
+  
+  # to be sum of unique, BY SITE, TO RETURN: blockcount_by_site, bgcount_by_site, 
+  
+  # others for OVERALL:  count_of_blocks_near_multiple_sites, blockcount_overall, bgcount_overall
+  
+  # OTHERs BY BG, TO do sum or avg or max,  othercols <-   c('bgwt', 'proximityscore', 'distance_avg', 'sitedistance_min', 'sitecount_max')
+  
+  # should it be distance_min or sitedistance_min ? 
   #    keep these too, as we sum over BGs near each site: xxx
-  #  distance_min  := min(sitedistance_min)
-  #  sitecount_max := max(sitecount_max)
-  #  sitecount_avg  := wtdmean(sitecount_near_bg)
+  #?#  distance_min  := min(sitedistance_min)
+  #?#  sitecount_avg  := wtdmean(sitecount_near_bg)
   #  proximityscore := wtdmean(proximityscore)
   #  distance_avg   := wtdmean(distance_avg)
-  # SEPARATE VARIABLES TO RETURN ALONE: blockcount_by_site, bgcount_by_site, count_of_blocks_near_multiple_sites, blockcount_overall, bgcount_overall
-  
-  # countcols <- c(countcols, )
-  ##  Counts Overall (all sites/ whole sector)  ####
-  results_overall <- sites2bgs_plusblockgroupdata_overall[ ,  lapply(.SD, FUN = function(x) round(sum(x * bgwt, na.rm=TRUE), 1) ), .SDcols = countcols ]
+  #  sitecount_max := max(sitecount_max)
   
   ##  Counts by site/facility  ####
-  results_bysite <- sites2bgs_plusblockgroupdata_bysite[ ,    lapply(.SD, FUN = function(x) round(sum(x * bgwt, na.rm=TRUE), 1) ), .SDcols = countcols, by = .(siteid) ]
+  results_bysite <- sites2bgs_plusblockgroupdata_bysite[ ,    lapply(.SD, FUN = function(x) {
+    round(sum(x * bgwt, na.rm=TRUE), 1)
+  } ), .SDcols = countcols, by = .(siteid) ]
   
   # results_bysite[1:100,1:8]
   # cbind(sum = prettyNum(results_overall,big.mark = ','))
@@ -429,14 +465,20 @@ doaggregate <- function(sites2blocks, sites2states=NA, countcols=NULL, popmeanco
   # but sum(outapi_3mile_100sites$pop[outapi_3mile_100sites$statename != 'PUERTO RICO' ])
   # [1] 10,022,946
   
+  results_bysite <- merge(results_bysite, blockcount_by_site) # on="siteid" ? new ---------------------------------------------- -
+  results_bysite <- merge(results_bysite, bgcount_by_site)    # on="siteid" ? new ---------------------------------------------- -
+  
+  
   ##################################################### #
   # CALC POP WEIGHTED MEAN FOR SOME VARIABLES ####   
   # ( ENVT, EJ index. . .. AND MAYBE ALL THE DEMOG TOO???)
   ##################################################### #
   
   # POP wtd MEAN OVERALL ####
-  results_overall_popmeans <- sites2bgs_plusblockgroupdata_overall[ ,  lapply(
-    .SD, FUN = function(x) stats::weighted.mean(x, w = bgwt * pop, na.rm = TRUE)), .SDcols = popmeancols ]
+  results_overall_popmeans <- sites2bgs_plusblockgroupdata_overall[ ,  lapply(.SD, FUN = function(x) {
+    stats::weighted.mean(x, w = bgwt * pop, na.rm = TRUE)
+  }), .SDcols = popmeancols ]
+  
   # redo these in data.table:: style, for speed? but it is just a 1-row result  *********************************
   results_overall <- cbind(results_overall, results_overall_popmeans)
   results_overall <- cbind(results_overall, blockcount_overall = blockcount_overall) # new ---------------------------------------------- -
@@ -444,12 +486,16 @@ doaggregate <- function(sites2blocks, sites2states=NA, countcols=NULL, popmeanco
   # cbind(sum = prettyNum(results_overall, big.mark = ','))
   
   # POP wtd MEAN BY SITE ####
-  results_bysite_popmeans <- sites2bgs_plusblockgroupdata_bysite[   ,  lapply(
-    .SD, FUN = function(x) stats::weighted.mean(x, w = bgwt * pop, na.rm = TRUE)), .SDcols = popmeancols, by = .(siteid) ]
-  # redo these in data.table:: style, for speed?  *********************************
+  results_bysite_popmeans <- sites2bgs_plusblockgroupdata_bysite[   ,  lapply(.SD, FUN = function(x) {
+    stats::weighted.mean(x, w = bgwt * pop, na.rm = TRUE)
+  }), .SDcols = popmeancols, by = .(siteid) ]
+  
+  # xxx
+  
+  # redo these in data.table:: style, for speed? this is just by site so only 1 row per site is not that many usually, but is a lot of columns (200?) *********************************
   results_bysite <- merge(results_bysite, results_bysite_popmeans)
-  results_bysite <- merge(results_bysite, blockcount_by_site) # new ---------------------------------------------- -
-  results_bysite <- merge(results_bysite, bgcount_by_site) # new ---------------------------------------------- -
+  
+  
   
   # save.image('~/R/mypackages/EJAM/inst/doagg2 so far just before calculated vars made.rda')
   # rm(results_overall_popmeans, sites2bgs_plusblockgroupdata_overall)
@@ -496,7 +542,7 @@ doaggregate <- function(sites2blocks, sites2states=NA, countcols=NULL, popmeanco
     pctpre1960      = 1 * ifelse(builtunits     == 0, 0, pre1960                / builtunits),
     pctunemployed   = 1 * ifelse(unemployedbase == 0, 0, as.numeric(unemployed) / unemployedbase)  # ,
   ) ]
-
+  
   if (!("lowlifex" %in% names(results_overall))) {results_overall[ , lowlifex := 0] } # if not available yet, treat like zero for now
   
   results_overall[ , `:=`(
@@ -527,7 +573,7 @@ doaggregate <- function(sites2blocks, sites2states=NA, countcols=NULL, popmeanco
     pctpre1960      = 1 * ifelse(builtunits     == 0, 0, pre1960                / builtunits),
     pctunemployed   = 1 * ifelse(unemployedbase == 0, 0, as.numeric(unemployed) / unemployedbase)  # ,
   )]
- 
+  
   if (!("lowlifex" %in% names(results_bysite)))  {results_bysite[ ,  lowlifex := 0] } # if not available yet, treat like zero for now
   
   results_bysite[ , `:=`(
@@ -566,14 +612,14 @@ doaggregate <- function(sites2blocks, sites2states=NA, countcols=NULL, popmeanco
   # t(results_bysite[1:5,])
   # sum(results_bysite$pop)
   # results_overall$pop
-  ##################################################### #  ##################################################### #  ##################################################### #
+  #________________________________  #  ##################################################### #  ######################################################
   
   
   
   ##################################################### #
   # PERCENTILES - show raw scores (from results_bysite AND  results_overall) in percentile terms #### 
   #  VIA  lookup tables of US/State  percentiles, called EJAM::usastats   and statestats
-  #  note: usastats is  like ejscreen::lookupUSA , and EJAM::lookup_pctile is like ejanalysis::lookup.pctile()
+  #  note: usastats is  like ejscreen::lookupUSA , and EJAM::pctile_from_raw_lookup is like ejanalysis::lookup.pctile()
   ##################################################### #
   
   # specify which variables get converted to percentile form
@@ -594,17 +640,21 @@ doaggregate <- function(sites2blocks, sites2states=NA, countcols=NULL, popmeanco
   for (i in seq_along(varsneedpctiles)) {
     myvar <- varsneedpctiles[i]
     if (myvar %in% names(usastats)) {  # use this function to look in the lookup table to find the percentile that corresponds to each raw score value:
-      us.pctile.cols_bysite[    , varnames.us.pctile[[i]]]    <- lookup_pctile(unlist(results_bysite[  , ..myvar]), varname.in.lookup.table = myvar, lookup = usastats) 
-      us.pctile.cols_overall[   , varnames.us.pctile[[i]]]    <- lookup_pctile(unlist(results_overall[ , ..myvar]), varname.in.lookup.table = myvar, lookup = usastats) 
-      state.pctile.cols_bysite[ , varnames.state.pctile[[i]]] <- lookup_pctile(unlist(results_bysite[  , ..myvar]), varname.in.lookup.table = myvar, lookup = statestats, zone =  results_bysite$ST)
-      state.pctile.cols_overall[, varnames.state.pctile[[i]]] <- lookup_pctile(unlist(results_overall[ , ..myvar]), varname.in.lookup.table = myvar, lookup = statestats, zone =  results_overall$ST)
+      us.pctile.cols_bysite[    , varnames.us.pctile[[i]]]    <- pctile_from_raw_lookup(unlist(results_bysite[  , ..myvar]), varname.in.lookup.table = myvar, lookup = usastats) 
+      us.pctile.cols_overall[   , varnames.us.pctile[[i]]]    <- pctile_from_raw_lookup(unlist(results_overall[ , ..myvar]), varname.in.lookup.table = myvar, lookup = usastats) 
       # (note it is a bit hard to explain using an average of state percentiles   in the "overall" summary)
     } else { # cannot find that variable in the percentiles lookup table
       us.pctile.cols_bysite[    , varnames.us.pctile[[i]]] <- NA
       us.pctile.cols_overall[   , varnames.us.pctile[[i]]] <- NA
+    }
+    if (myvar %in% names(statestats)) {
+      state.pctile.cols_bysite[ , varnames.state.pctile[[i]]] <- pctile_from_raw_lookup(unlist(results_bysite[  , ..myvar]), varname.in.lookup.table = myvar, lookup = statestats, zone =  results_bysite$ST)
+      state.pctile.cols_overall[, varnames.state.pctile[[i]]] <- pctile_from_raw_lookup(unlist(results_overall[ , ..myvar]), varname.in.lookup.table = myvar, lookup = statestats, zone =  results_overall$ST)
+    } else {
       state.pctile.cols_bysite[ , varnames.state.pctile[[i]]] <- NA
       state.pctile.cols_overall[, varnames.state.pctile[[i]]] <- NA
     }
+    
   }
   
   # does this convert it from data.table to data.frame?  xxx
@@ -618,45 +668,45 @@ doaggregate <- function(sites2blocks, sites2states=NA, countcols=NULL, popmeanco
   # but then the raw EJ indexes themselves need to be made into percentiles.  
   ###################### # #  
   if (include_ejindexes) {
-  # The 2023 new EJ index formula: 
+    # The 2023 new EJ index formula: 
     # 1) IMPORTANT QUESTION FOR OEJ: DOES THE STATE PERCENTILES VERSION OF EJ INDEX USE STATE PERCENTILE IN ITS FORMULA?? 
     # 2)    also we need to name these columns carefully - EJ index is always shown as a percentile and variable name that was used for that percentile might have been without the pctile. prefix?
     # 3) For the state percentile,   WE ASSUME THE ENTIRE BUFFER IS MAINLY OR ALL IN ONE STATE (based on point in center of circle) AND 
     #   LOOK UP  RAW EJ INDEX IN THAT STATE'S LOOKUP TO ASSIGN THE PERCENTILE. 
-  warning("if using EJ indexes here, confirm the formula for state percentile version")
- 
-  ## basic 2023 EJ Indexes = 2-factor demog index times the envt percentile ####
-  results_bysite <- results_bysite[ , lapply(.SD, FUN = function(x) {
-    VSI.eo * x
+    warning("if using EJ indexes here, confirm the formula for state percentile version")
+    
+    ## basic 2023 EJ Indexes = 2-factor demog index times the envt percentile ####
+    results_bysite <- results_bysite[ , lapply(.SD, FUN = function(x) {
+      VSI.eo * x
     }), .SDcols = names_e_pctile]
-  ## supplementary EJ Indexes = 5-factor suppl demog index times the envt percentile  ####
-  results_bysite <- results_bysite[ ,  lapply(
-    .SD, FUN = function(x) {
-      Demog.Index.Supp * x
+    ## supplementary EJ Indexes = 5-factor suppl demog index times the envt percentile  ####
+    results_bysite <- results_bysite[ ,  lapply(
+      .SD, FUN = function(x) {
+        Demog.Index.Supp * x
       }), .SDcols = names_e_pctile]
     
-  # #other package did them like this but formula not updated there yet
-  # names_ej_state_pctile, names_ej_state_pctile
-  # EJ.new <-   # or  EJ.supp 
-  #   data.frame(
-  #     ejanalysis::ej.indexes(
-  #       env.df  = results_bysite[, names_e],
-  #       demog   = results_bysite[, 'VSI.eo'], # or Demog.Index.Supp
-  #       weights = results_bysite[, 'pop'],
-  #       type = "new"  # or supplementary
-  #     ),
-  #     stringsAsFactors = FALSE
-  #   ) # note this calculates overall VSI.eo.US   on the fly
-
-  ## NEED TO ASSIGN PERCENTILES TO EJ INDEXES ####
-  
-  warning("percentiles need to be assigned to EJ raw index scores")
-  
-  
-  
-  
-  # fix column names of ej percentiles?  
-  
+    # #other package did them like this but formula not updated there yet
+    # names_ej_state_pctile, names_ej_state_pctile
+    # EJ.new <-   # or  EJ.supp 
+    #   data.frame(
+    #     ejanalysis::ej.indexes(
+    #       env.df  = results_bysite[, names_e],
+    #       demog   = results_bysite[, 'VSI.eo'], # or Demog.Index.Supp
+    #       weights = results_bysite[, 'pop'],
+    #       type = "new"  # or supplementary
+    #     ),
+    #     stringsAsFactors = FALSE
+    #   ) # note this calculates overall VSI.eo.US   on the fly
+    
+    ## NEED TO ASSIGN PERCENTILES TO EJ INDEXES ####
+    
+    warning("percentiles need to be assigned to EJ raw index scores")
+    
+    
+    
+    
+    # fix column names of ej percentiles?  
+    
   }
   ############################################################################## #   
   

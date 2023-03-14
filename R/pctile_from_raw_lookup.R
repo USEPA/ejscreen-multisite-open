@@ -33,7 +33,7 @@
 #'   
 #' @return By default, returns numeric vector length of myvector.
 #' @export
-lookup_pctile <- function(myvector, varname.in.lookup.table, lookup=usastats, zone) {
+pctile_from_raw_lookup <- function(myvector, varname.in.lookup.table, lookup=usastats, zone) {
   
   if (missing(lookup) & (exists('us'))) {lookup <- us}
   if (missing(lookup) & !exists('us')) {stop('must specify lookup= or have it in memory named "us"')}

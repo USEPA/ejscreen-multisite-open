@@ -4,8 +4,8 @@
 #' @param lon longitudes vector
 #' @param shapefile shapefile of US States, in package already
 #' @seealso [states_shapefile] [get_blockpoints_in_shape()]
-#' @return Returns data.frame: ST, statename, FIPS.ST, REGION,
-#'   each as long as lat or lon
+#' @return Returns data.frame: ST, statename, FIPS.ST, REGION, n
+#'   as many rows as elements in lat or lon
 #' @export
 #'
 state_from_latlon <- function(lat, lon, states_shapefile=EJAM::states_shapefile) {
@@ -20,10 +20,36 @@ state_from_latlon <- function(lat, lon, states_shapefile=EJAM::states_shapefile)
   pts <- as.data.frame(pts)[,c("STUSPS", "NAME", "STATEFP")]
   colnames(pts) <- c("ST", "statename", "FIPS.ST")
   pts$REGION <- EJAM::stateinfo$REGION[match(pts$statename, stateinfo$statename)]
+  pts$n <- 1:NROW(pts)
   return(pts)
 }
 
 state_from_latlon_compiled <- compiler::cmpfun(state_from_latlon)
+
+#' state_from_blocktable
+#' given data.table with blockid column, get state abbreviation of each
+#' @param dt_with_blockid 
+#'
+#' @return vector of ST info like AK, CA, DE, etc.
+#' @export
+#'
+#' @examples state_from_blocktable(blockpoints[45:49,])
+state_from_blocktable <- function(dt_with_blockid) {
+  stateinfo$ST[match(blockid2fips[dt_with_blockid, substr(blockfips,1,2), on="blockid"], stateinfo$FIPS.ST)]
+}
+
+#' state_from_blockid
+#' given vector of blockids, get state abbreviation of each
+#' @param blockid vector of blockid values as from EJAM::blockpoints
+#'
+#' @return vector of ST info like AK, CA, DE, etc.
+#' @export
+#'
+#' @examples state_from_blockid(c(8174952, blockpoints$blockid[5:6]))
+state_from_blockid <- function(blockid) {
+  stateinfo$ST[match(blockid2fips[blockid, substr(blockfips,1,2)], stateinfo$FIPS.ST)]
+}
+
 
 # checking speed
 

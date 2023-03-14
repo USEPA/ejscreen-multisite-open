@@ -6,7 +6,7 @@
 \usage{
 doaggregate(
   sites2blocks,
-  sites2states = NA,
+  sites2states_or_latlon = NA,
   countcols = NULL,
   popmeancols = NULL,
   calculatedcols = NULL,
@@ -21,7 +21,7 @@ nearby Census block internal points, with columns siteid, blockid, distance,
 created by getblocksnearby  function.
 See sites2blocks_example dataset in package, as input to this function}
 
-\item{sites2states}{table of siteid (each unique one in sites2blocks) and ST (2-character State abbreviation)}
+\item{sites2states_or_latlon}{data.table or just data.frame, with columns siteid (each unique one in sites2blocks) and ST (2-character State abbreviation) or lat and lon}
 
 \item{countcols}{character vector of names of variables  to aggregate within a buffer
 using a sum of counts, like, for example, the number of people for whom a

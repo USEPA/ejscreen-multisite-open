@@ -130,7 +130,7 @@ app_server <- function(input, output, session) {
         cutoff = cutoff, # radius
         maxcutoff = maxcutoff,
         avoidorphans = avoidorphans,
-        quadtree = localtree          # this is very large... do we need to pass it to the function, or can it be just in global?
+        quadtree = localtree          
       )
     }) # end of timed function
     print('Found nearby blocks'); print(elapsed)
@@ -138,7 +138,10 @@ app_server <- function(input, output, session) {
     # ___ doaggregate()  ################################
     
     elapsed <- system.time({
-      out <- doaggregate(sites2blocks = sites2blocks)
+      
+      sites2states <- data.frame(siteid=sitepoints$siteid, ST=state_from_latlon(lat = sitepoints$lat, lon = sitepoints$lon)[, "ST"])
+      out <- doaggregate(sites2blocks = sites2blocks, sites2states = sites2states)
+      
     }) # end of timed function
     print('Summarized indicators in each buffer and overall'); print(elapsed)
     
