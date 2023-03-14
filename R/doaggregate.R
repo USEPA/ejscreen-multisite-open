@@ -46,21 +46,23 @@
 #' @param calculatedcols character vector of names of variables to aggregate within a buffer
 #'   using formulas that have to be specified.
 #' @param testing used while testing this function
+#' @param updateProgress progress bar function used for shiny app
 #' @param include_ejindexes not yet implemented 
 #' @param ... more to pass to another function? Not used currently.
 #' @import data.table
+#' 
 #' @import EJAMblockdata
 #' @examples \dontrun{
 #'   testsites <- EJAMfrsdata::frs[sample(1:nrow(EJAMfrsdata::frs), 1e3),]
 #'   x <- getblocksnearby(testsites, cutoff = 3.1, quadtree = localtree)
 #'   stinfo <- data.frame(siteid=1:nrow(testsites),  state_from_latlon(lat=testsites$lat, lon=testsites$lon))
-#'   y <- doaggregate(x, sites2states = stinfo)
+#'   y <- doaggregate(x, sites2states_or_latlon = stinfo)
 #' 
 #' 
 #' }
 #' @export
-#'
-doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL, popmeancols=NULL, calculatedcols=NULL, testing=FALSE, include_ejindexes=FALSE, ...) {
+#' 
+doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL, popmeancols=NULL, calculatedcols=NULL, testing=FALSE, include_ejindexes=FALSE, updateProgress = NULL, ...) {
   
   # Get ST (state) each site is in, to report scores as state percentiles ####
   # This will be a data.frame with siteid, ST, (and maybe other columns).
@@ -80,10 +82,9 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL,
   # *** popwtd avg of sites state pctiles (not raw scores) will be used as the overall state pctiles.
   #  (Because each site has a different site, you cannot just convert overall raw scores to state pctiles).
   
-  
+  sites2states <-  sites2states_or_latlon  # temporarily while in progress
   # sites2states <- states_infer(sites2states_or_latlon) 
-  
-  
+  # xxx states calculations
   
   # HARDCODED blockgroup dataset, FOR NOW ####
   # including the names of the variables.
@@ -161,10 +162,6 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL,
       # "EJ.DISPARITY.proximity.npl.eo", "EJ.DISPARITY.proximity.rmp.eo", "EJ.DISPARITY.proximity.tsdf.eo", "EJ.DISPARITY.proximity.npdes.eo", 
       # "EJ.DISPARITY.ust.eo"
     ))
-    # WE NEED TO  calc  state pctile of the popwtd mean raw EJ index?   Does the formula itself use state percentile of envt in that case??
-    # if so, we'd need to separate the variables into raw ej score versus state-specific raw ej score, like we already do with the percentiles.
-    # That would require some more code. 
-    
     
     # ** CHECK THIS:  EJScreen treats pctpre1960 as if can do popwtd avg, right? Technically pctpre1960 should use ejscreenformulas. . . ratio of sums of counts pre1960 and denom builtunits  
     # only 3 of names.d are exactly popmeans,  ("pctmin", "pctunder5", "pctover64") since denominators are pop. 
@@ -175,8 +172,13 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL,
   }  
   ##################################################### #  ##################################################### #
   
-  
-  
+  ## update progress bar in shiny app
+  if(is.function(updateProgress)){
+    
+    boldtext <- paste0('Starting aggregation')
+    updateProgress(message_main = boldtext, 
+                   value = 0.2)
+  }
   
   # Start Aggregating #############################################################################################
   
@@ -192,12 +194,10 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL,
   # sites2blocks <- merge(sites2blocks, blockwts, by='blockid', all.x	=TRUE, all.y=FALSE) # incomparables=NA
   sites2blocks <- EJAMblockdata::blockwts[sites2blocks, .(siteid,blockid,distance,blockwt,bgid), on='blockid']
   # note that this still has some blocks appearing more than once if near 2+ sites - each row has info on one site only
-  # xyz
+  # xxx
   
   # sort rows
   data.table::setorder(sites2blocks, siteid, bgid, blockid) # new
-  
-  
   
   ##################################################### #  ##################################################### #
   
@@ -314,45 +314,13 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL,
   
   # ? 
   
-  
-  
-  
-  #***  ###################################### #
-  # Add STATE of each site to blockgroup-resolution analysis ####
-  # siteid, ST are in sites2states lookup; siteid is in sites2bgs 
-  #  but not sure if have/want  statename, FIPS.ST, REGION   and maybe even lat,lon
-  # for example, if siteid is just rownumber of pts,   sites2states <- data.frame(siteid=1:length(pts$lat), state_from_latlon_compiled(lat = pts$lat, lon = pts$lon))
-  # Assign state abbrev to each site!! (allows for state percentiles and averages to be looked up) (and statename, FIPS.ST, REGION?) 
-  
-  # ** MUST CALCULATE ALL STATE PERCENTILES BEFORE finalizing THE "overall" aggregation across sites! ####
-  #  or at least calculate each site state.pctiles and then take the popwtd mean of state.pctile... over all sites
-  #  and then merge / join that to the overall analysis row.
-  #  since each site may be in a different state and rollup would lose that info!
-  
-  if (bad_sites2states) {
-    sites2bgs_bysite[ , ST := NA] # verify that state pctile lookups function will return NA if ST is NA. xxx
-    sites2bgs_overall[ , ST := NA] #
-  } else {
-    sites2bgs_bysite[ ,  ST := "CA"] # TEMPORARILY # .(sites2states$ST[match(siteid, sites2states$siteid)])]  # wouldnt a merge or actual join be faster? 
-    sites2bgs_overall[ , ST := "CA"] # TEMPORARILY 
-    # results_bysite[ , ST := EJAM::state_from_latlon(lat,lon)]
+  ## update progress bar in shiny app
+  if(is.function(updateProgress)){
+    
+    boldtext <- paste0('Analyzing blockgroups')
+    updateProgress(message_main = boldtext, 
+                   value = 0.4)
   }
-  #***  ###################################### #
-  ##################################################### #
-  # ASSIGN BY SITE, but not a sum or mean:  'ST' ####
-  ##################################################### #
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   
   
   #***  ###################################### #
@@ -427,6 +395,14 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL,
   
   # ___summarize by site now___ ####
 
+  ## update progress bar in shiny app
+  if(is.function(updateProgress)){
+    
+    boldtext <- paste0('Joining blockgroups to EJScreen indicators')
+    updateProgress(message_main = boldtext, 
+                   value = 0.6)
+  }
+
   ##################################################### #
   # CALC TOTALS FOR COUNT VARIABLES at EACH SITE & OVERALL ####  
   # AND ALSO SUBGROUPS IF WANT TO 
@@ -445,7 +421,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL,
   # OTHERs BY BG, TO do sum or avg or max,  othercols <-   c('bgwt', 'proximityscore', 'distance_avg', 'sitedistance_min', 'sitecount_max')
   
   # should it be distance_min or sitedistance_min ? 
-  #    keep these too, as we sum over BGs near each site: xxx
+  #    keep these too, as we sum over BGs near each site:  xxx
   #?#  distance_min  := min(sitedistance_min)
   #?#  sitecount_avg  := wtdmean(sitecount_near_bg)
   #  proximityscore := wtdmean(proximityscore)
@@ -468,13 +444,22 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL,
   results_bysite <- merge(results_bysite, blockcount_by_site) # on="siteid" ? new ---------------------------------------------- -
   results_bysite <- merge(results_bysite, bgcount_by_site)    # on="siteid" ? new ---------------------------------------------- -
   
-  
   ##################################################### #
   # CALC POP WEIGHTED MEAN FOR SOME VARIABLES ####   
   # ( ENVT, EJ index. . .. AND MAYBE ALL THE DEMOG TOO???)
   ##################################################### #
   
+  # POP wtd MEAN BY SITE ####
+  results_bysite_popmeans <- sites2bgs_plusblockgroupdata_bysite[   ,  lapply(.SD, FUN = function(x) {
+    stats::weighted.mean(x, w = bgwt * pop, na.rm = TRUE)
+  }), .SDcols = popmeancols, by = .(siteid) ]
+  
+  # redo these in data.table:: style, for speed? this is just by site so only 1 row per site is not that many usually, but is a lot of columns (200?) *********************************
+  results_bysite <- merge(results_bysite, results_bysite_popmeans)
+ 
   # POP wtd MEAN OVERALL ####
+  ## later, for results_overall, will calc state pctiles once we have them for each site 
+  
   results_overall_popmeans <- sites2bgs_plusblockgroupdata_overall[ ,  lapply(.SD, FUN = function(x) {
     stats::weighted.mean(x, w = bgwt * pop, na.rm = TRUE)
   }), .SDcols = popmeancols ]
@@ -484,17 +469,6 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL,
   results_overall <- cbind(results_overall, blockcount_overall = blockcount_overall) # new ---------------------------------------------- -
   results_overall <- cbind(results_overall, bgcount_overall = bgcount_overall) # new ---------------------------------------------- -
   # cbind(sum = prettyNum(results_overall, big.mark = ','))
-  
-  # POP wtd MEAN BY SITE ####
-  results_bysite_popmeans <- sites2bgs_plusblockgroupdata_bysite[   ,  lapply(.SD, FUN = function(x) {
-    stats::weighted.mean(x, w = bgwt * pop, na.rm = TRUE)
-  }), .SDcols = popmeancols, by = .(siteid) ]
-  
-  # xxx
-  
-  # redo these in data.table:: style, for speed? this is just by site so only 1 row per site is not that many usually, but is a lot of columns (200?) *********************************
-  results_bysite <- merge(results_bysite, results_bysite_popmeans)
-  
   
   
   # save.image('~/R/mypackages/EJAM/inst/doagg2 so far just before calculated vars made.rda')
@@ -518,6 +492,13 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL,
   #  the lookup tables like EJAM::usastats store those variables as 0 to 1.00 . . .. see usastats[74:80,1:9]
   #  and the dataset of all US blockgroups (from EJScreen FTP site or in EJAM::blockgroupstats) stores that as 0 to 1.00
   
+  ## update progress bar in shiny app
+  if(is.function(updateProgress)){
+    
+    boldtext <- paste0('Computing results')
+    updateProgress(message_main = boldtext, 
+                   value = 0.8)
+  }
   
   # CALC via FORMULAS with Rolled up Counts #### 
   # this was meant to handle multiple columns (formula for each new one) for many rows (and here in buffer results, one site is a row, not one blockgroup) 
@@ -615,6 +596,34 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL,
   #________________________________  #  ##################################################### #  ######################################################
   
   
+    
+  
+  ## SPECIFY EACH SITES STATE HERE ####
+  # Assign state abbrev to each site!! (allows for state percentiles and averages to be looked up) (and statename, FIPS.ST, REGION?) 
+  # 
+  # xxx
+  # already did this: sites2states <- states_infer(sites2states_or_latlon) # states_infer() will just clean up that lookup table. Get cleaned table of US State etc. by siteid, from lat/lon or other info
+  # 
+  # siteid, ST are in sites2states lookup; siteid is in sites2bgs 
+  #  but not sure if have/want  statename, FIPS.ST, REGION   and maybe even lat,lon
+  # for example, if siteid is just rownumber of pts,   sites2states <- data.frame(siteid=1:length(pts$lat), state_from_latlon_compiled(lat = pts$lat, lon = pts$lon))
+  
+  if (bad_sites2states) {
+    #  xxx
+    #  where should we try to assign based on lat lon or even FIPS of closest block or blockgroup if that is the only option? in sites2states
+    # results_bysite[ , ST := EJAM::state_from_latlon(lat,lon)] # assuming that results_bysite actually has the lat,lon !!
+    # # could use one of these:
+    #  state_from_latlon_compiled(lat=, lon=, states_shapefile=)
+    #  state_from_blocktable(dt_with_blockid=)
+    #  state_from_blockid(blockid=)
+    results_bysite[ , ST := NA] # verify that state pctile lookups function will return NA if ST is NA. 
+    } else {
+      results_bysite[ ,  ST := .(sites2states$ST[match(siteid, sites2states$siteid)])] # wouldnt a merge or actual join be faster? 
+    # results_bysite[ ,  ST := "CA"] # TEMPORARILY?  # 
+  }
+  #***  ###################################### #
+
+  
   
   ##################################################### #
   # PERCENTILES - show raw scores (from results_bysite AND  results_overall) in percentile terms #### 
@@ -633,7 +642,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL,
   us.pctile.cols_bysite     <- data.frame(matrix(nrow = NROW(results_bysite),  ncol = length(varsneedpctiles))); colnames(us.pctile.cols_bysite)     <- varnames.us.pctile
   state.pctile.cols_bysite  <- data.frame(matrix(nrow = NROW(results_bysite),  ncol = length(varsneedpctiles))); colnames(state.pctile.cols_bysite)  <- varnames.state.pctile
   us.pctile.cols_overall    <- data.frame(matrix(nrow = NROW(results_overall), ncol = length(varsneedpctiles))); colnames(us.pctile.cols_overall)    <- varnames.us.pctile
-  state.pctile.cols_overall <- data.frame(matrix(nrow = NROW(results_overall), ncol = length(varsneedpctiles))); colnames(state.pctile.cols_overall) <- varnames.state.pctile
+  # state.pctile.cols_overall <- data.frame(matrix(nrow = NROW(results_overall), ncol = length(varsneedpctiles))); colnames(state.pctile.cols_overall) <- varnames.state.pctile
   
   # SURELY THERE IS A FASTER / VECTORIZED WAY TO DO THIS (but only worth fixing if this actually is noticeably slow):
   
@@ -649,19 +658,20 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL,
     }
     if (myvar %in% names(statestats)) {
       state.pctile.cols_bysite[ , varnames.state.pctile[[i]]] <- pctile_from_raw_lookup(unlist(results_bysite[  , ..myvar]), varname.in.lookup.table = myvar, lookup = statestats, zone =  results_bysite$ST)
-      state.pctile.cols_overall[, varnames.state.pctile[[i]]] <- pctile_from_raw_lookup(unlist(results_overall[ , ..myvar]), varname.in.lookup.table = myvar, lookup = statestats, zone =  results_overall$ST)
+      ## These must be done later, as avg of sites:
+      # state.pctile.cols_overall[, varnames.state.pctile[[i]]] <- pctile_from_raw_lookup(unlist(results_overall[ , ..myvar]), varname.in.lookup.table = myvar, lookup = statestats, zone =  results_overall$ST)
     } else {
       state.pctile.cols_bysite[ , varnames.state.pctile[[i]]] <- NA
-      state.pctile.cols_overall[, varnames.state.pctile[[i]]] <- NA
+      # state.pctile.cols_overall[, varnames.state.pctile[[i]]] <- NA
     }
     
   }
   
-  # does this convert it from data.table to data.frame?  xxx
+  # Q: does this convert it from data.table to data.frame?  xxx
   
-  results_overall <- cbind(siteid=NA, results_overall, us.pctile.cols_overall, state.pctile.cols_overall)
+  results_overall <- cbind(siteid=NA, results_overall, us.pctile.cols_overall ) # , state.pctile.cols_overall)
   results_bysite  <- cbind(           results_bysite,  us.pctile.cols_bysite,  state.pctile.cols_bysite )
-  
+
   ############################################################################## #   
   # EJ INDEXES if needed ####
   #  EJ Indexes need to be calculated AFTER the envt percentiles are done, 
@@ -707,8 +717,30 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL,
     
     # fix column names of ej percentiles?  
     
+    
+    ## Question on EJ Index State Percentiles! #### 
+    #*# xxx 
+    #*# WE need to calc  state pctile of the popwtd mean raw EJ index? 
+    #*#   Does the formula itself use state percentile of envt in that case??
+    # if so, we'd need to separate the variables into raw ej score versus state-specific raw ej score, like we already do with the percentiles.
+    # That would require some more code. 
+    
+    
+
   }
   ############################################################################## #   
+  
+  # ***Calc STATE PERCENTILES for results_overall ####
+  #  (as popwtd mean of sites state pctiles) 
+  # now that site-specific percentiles have been calculated and looked up,
+  # you can calculate that overall state percentiles from those as a pop wtd mean (not by looking them up from raw scores as would be done for US pctiles, since each site may be in its own state)
+    # xxx
+  state.pctile.cols_overall <-  results_bysite[ ,  lapply(.SD, FUN = function(x) {
+    stats::weighted.mean(x, w = pop, na.rm = TRUE)
+  }), .SDcols = varnames.state.pctile ]
+  
+  # redo these in data.table:: style, for speed? but it is just a 1-row result  *********************************
+  results_overall <- cbind(results_overall, state.pctile.cols_overall)
   
   
   ##################################################### #  ##################################################### #  ##################################################### #
@@ -816,5 +848,4 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL,
   invisible(results)
   ##################################################### #  ##################################################### #  ##################################################### #
 }
-
 

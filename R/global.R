@@ -1,4 +1,4 @@
-# inst/global.R defines variables and functions needed in global environment
+# global.R defines variables needed in global environment
 
 ## load packages
 library(tidyverse)
@@ -12,15 +12,14 @@ library(readxl)
 library(shinycssloaders)
 
 ## load functions from repo that are newer than EJAM package
-## paths point from /inst folder to R/ folder
-source('./R/frs_is_valid.R')
-source('./R/NAICS_validation.R')
-source('./R/doaggregate.R')
-source('./R/lookup_pctile.R')
-source('./R/latlon_infer.R')
-source('./R/workbook_output_styled.R')
-source('./R/plot_facilities.R')
-source('./R/format_gt_table.R')
+source('frs_is_valid.R')
+source('NAICS_validation.R')
+source('doaggregate.R')
+source('lookup_pctile.R')
+source('latlon_infer.R')
+source('workbook_output_styled.R')
+source('plot_facilities.R')
+source('format_gt_table.R')
 
 ## set color and type of loading spinners
 ## note: was set at type = 1, but this caused screen to "bounce"
@@ -672,3 +671,4 @@ html_footer_fmt <- tagList(
       </a>'
   )
 )
+  
