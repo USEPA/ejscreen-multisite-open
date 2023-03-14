@@ -2,12 +2,12 @@
 #'
 #' @param objectIds see API
 #' @param chunksize see API
-#' @param ... passed to getacs_epaquery()
+#' @param ... passed to url_getacs_epaquery()
 #'
 #' @return a table
 #' @export
 #'
-get_any_rest_chunked_by_id <- function(objectIds, chunksize=200, ...) {
+url_get_eparest_chunked_by_id <- function(objectIds, chunksize=200, ...) {
   #  to get ACS data or Block weights nearby from EPA server via API  ###   #
   
   ############################################################## #
@@ -28,7 +28,7 @@ get_any_rest_chunked_by_id <- function(objectIds, chunksize=200, ...) {
     iend <- min(iend, n)
     idchunk <- objectIds[istart:iend]
      
-    x[[chunk]] <- getacs_epaquery(objectIds = idchunk,  ...)
+    x[[chunk]] <- url_getacs_epaquery(objectIds = idchunk,  ...)
   }
   return(do.call(rbind, x))
 } ############################################################## #  ############################################################## #
@@ -41,7 +41,7 @@ get_any_rest_chunked_by_id <- function(objectIds, chunksize=200, ...) {
 #' @param returnGeometry  see API
 #' @param justurl  see API
 #' @param chunksize eg 200 for chunks of 200 each request
-#' @param ... passed to getacs_epaquery()
+#' @param ... passed to url_getacs_epaquery()
 #'
 #' @return table
 #' @export
@@ -49,11 +49,11 @@ get_any_rest_chunked_by_id <- function(objectIds, chunksize=200, ...) {
 #' @examples  #
 #'  #\dontrun {
 #'  # x <- list() # chunked chunks. best not to ask for all these:
-#'  # x[[1]] <- getacs_epaquery_chunked(   1:1000, chunksize = 100)
-#'  # x[[2]] <- getacs_epaquery_chunked(1001:5000, chunksize = 100)
+#'  # x[[1]] <- url_getacs_epaquery_chunked(   1:1000, chunksize = 100)
+#'  # x[[2]] <- url_getacs_epaquery_chunked(1001:5000, chunksize = 100)
 #'  # xall <- do.call(rbind, x)
 #'  #} 
-getacs_epaquery_chunked <- function(objectIds=1:3, 
+url_getacs_epaquery_chunked <- function(objectIds=1:3, 
                                     servicenumber=7,
                                     outFields=NULL, 
                                     returnGeometry=FALSE, 
@@ -82,7 +82,7 @@ getacs_epaquery_chunked <- function(objectIds=1:3,
     #   x[[chunk]] <- data.frame(id=idchunk, dat=NA)
     #   print(idchunk); print(x) # cumulative so far
     
-    x[[chunk]] <- getacs_epaquery(objectIds = idchunk, outFields=outFields, servicenumber=servicenumber, ...)
+    x[[chunk]] <- url_getacs_epaquery(objectIds = idchunk, outFields=outFields, servicenumber=servicenumber, ...)
   }
   return(do.call(rbind, x))  
 } ############################################################## ############################################################### #
@@ -100,13 +100,13 @@ getacs_epaquery_chunked <- function(objectIds=1:3,
 #' @param outFields see API. eg "STCNTRBG","TOTALPOP","PCT_HISP",
 #' @param returnGeometry see API
 #' @param justurl if TRUE, returns url instead of default making API request
-#' @param ... passed to getacs_epaquery_chunked()
+#' @param ... passed to url_getacs_epaquery_chunked()
 #'
 #' @return table
 #' @export
 #'
-#' @examples  getacs_epaquery(justurl=TRUE) 
-getacs_epaquery <- function(objectIds=1:3, 
+#' @examples  url_getacs_epaquery(justurl=TRUE) 
+url_getacs_epaquery <- function(objectIds=1:3, 
                             servicenumber=7,
                             outFields=NULL, 
                             returnGeometry=FALSE, 
@@ -123,13 +123,13 @@ getacs_epaquery <- function(objectIds=1:3,
   if (length(objectIds) > 200) {
     warning('seems to crash if more than about 211 requested per query - chunked version not yet tested')
     
-    # return(get_any_rest_chunked_by_id(objectIds=objectIds, 
+    # return(url_get_eparest_chunked_by_id(objectIds=objectIds, 
     #                                   servicenumber=servicenumber,
     #                                   outFields=outFields, 
     #                                   returnGeometry=returnGeometry, 
     #                                   justurl=justurl, 
     #                                   ...))
-    return(getacs_epaquery_chunked(objectIds=objectIds, 
+    return(url_getacs_epaquery_chunked(objectIds=objectIds, 
                                    servicenumber=servicenumber,
                                    outFields=outFields, 
                                    returnGeometry=returnGeometry, 
@@ -202,6 +202,6 @@ getacs_epaquery <- function(objectIds=1:3,
   # call GET function (submit the query) ####
   
   if (justurl) {return(url_to_use)}
-  return(get_via_url(url_to_use))
+  return(url_get_via_url(url_to_use))
 }
 ############################################################## #  ############################################################## #

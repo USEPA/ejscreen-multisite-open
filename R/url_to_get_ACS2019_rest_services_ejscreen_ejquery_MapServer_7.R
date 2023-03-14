@@ -53,13 +53,13 @@ url_to_get_ACS2019_rest_services_ejscreen_ejquery_MapServer_7 <- function(
   
   ## notes - examples #### 
   if (1==0) {
-    getacs_epaquery(  objectIds=1:4,                 outFields = 'STCNTRBG', justurl = TRUE)
-    t(getacs_epaquery(objectIds=sample(1:220000,2),  outFields = '*'))
-    t(getacs_epaquery(objectIds=sample(1:220000,2)))
-    getacs_epaquery(  objectIds=sample(1:220000,10), outFields = c('STCNTRBG', 'STATE', 'COUNTY', 'TRACT', 'BLKGRP'), justurl = FALSE)
-    y <- get_via_url(url_to_any_rest_services_ejscreen_ejquery(         servicenumber=71, lat=30.494982, lon=-91.132107, miles = 1))
-    x <- get_via_url(url_to_get_nearby_blocks_rest_services_ejscreen_ejquery_MapServer_71(lat=30.494982, lon=-91.132107, miles = 1))
-    z <- get_via_url(url_to_get_ACS2019_rest_services_ejscreen_ejquery_MapServer_7())
+    url_getacs_epaquery(  objectIds=1:4,                 outFields = 'STCNTRBG', justurl = TRUE)
+    t(url_getacs_epaquery(objectIds=sample(1:220000,2),  outFields = '*'))
+    t(url_getacs_epaquery(objectIds=sample(1:220000,2)))
+    url_getacs_epaquery(  objectIds=sample(1:220000,10), outFields = c('STCNTRBG', 'STATE', 'COUNTY', 'TRACT', 'BLKGRP'), justurl = FALSE)
+    y <- url_get_via_url(url_to_any_rest_services_ejscreen_ejquery(         servicenumber=71, lat=30.494982, lon=-91.132107, miles = 1))
+    x <- url_get_via_url(url_to_get_nearby_blocks_rest_services_ejscreen_ejquery_MapServer_71(lat=30.494982, lon=-91.132107, miles = 1))
+    z <- url_get_via_url(url_to_get_ACS2019_rest_services_ejscreen_ejquery_MapServer_7())
   }
   
   # Documentation of format and examples of input parameters:

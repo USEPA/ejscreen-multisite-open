@@ -5,7 +5,7 @@
 #' @return json
 #' @export
 #'
-get_via_url <- function(url) { 
+url_get_via_url <- function(url) { 
   
   # function to GET json via url of ejscreen ejquery map services ### #
   
