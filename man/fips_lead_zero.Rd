@@ -23,3 +23,6 @@ Note it does NOT VALIDATE FIPS -
 It does NOT check if FIPS is valid other than checking its length seems OK,
 i.e., it might be a state, county, tract, blockgroup, or block FIPS code.
 }
+\examples{
+fips_lead_zero(c(1,"01",1234,"1234","12345",123456))
+}

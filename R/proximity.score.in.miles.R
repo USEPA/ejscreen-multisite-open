@@ -15,7 +15,7 @@ proximity.score.in.miles <- function(scoresdf=NULL) {
   # and traffic.score is weighted by volume of traffic and units or scope differ
   miles_per_km <- 0.6213712 # 1000 / EJAMejscreenapi::meters_per_mile
   scoresdf <- as.data.frame(scoresdf)
-  # browser()
+  
   x = 1 / scoresdf
   x = miles_per_km * x
   # x = sapply(scoresdf, function(z) miles_per_km / z)

@@ -102,7 +102,7 @@ system.time({
 # See a data table of facilities in one industry
 industryword <- "pulp"
 mysites <- EJAMfrsdata::frs[EJAMfrsdata::frs$REGISTRY_ID %in% unlist(
-  EJAMfrsdata::get_siteid_from_naics(
+  EJAMfrsdata::siteid_from_naics(
     EJAM::naics_find(industryword, add_children = FALSE))[,"REGISTRY_ID"]), 1:5]
 
 DT::datatable(
@@ -113,7 +113,7 @@ DT::datatable(
 # See a map of one industry
 
 sitepoints639 <- EJAMfrsdata::frs[EJAMfrsdata::frs$REGISTRY_ID %in% unlist(
-  EJAMfrsdata::get_siteid_from_naics(
+  EJAMfrsdata::siteid_from_naics(
     EJAM::naics_find(industryword, add_children = TRUE))[,"REGISTRY_ID"]),  ]
 EJAMejscreenapi::mapfast(sitepoints639)
 nrow(sitepoints639)
@@ -136,7 +136,7 @@ You can use lat lon coordinates from an xlsx or csv file. The first row should b
 ```{r eval=FALSE, include=TRUE}
 testjunk <- file.path(tempdir(), 'testjunk.csv')
 write.csv(data.frame(LONG = c(-92.1, -91.8), Latitude = c(34.8, 30.2), siteid = 1:2), file = testjunk, row.names = FALSE)
-sitepoints2 <- latlon_readclean(testjunk)
+sitepoints2 <- latlon_from_anything(testjunk)
 ```
 
 #### Use test points example that comes with the package
@@ -341,7 +341,7 @@ cbind(as.list(outapi[1, ]))
 
 
 setdiff( names(outapi), names(out2$results_overall))
-# Demog.Index  versus  VSI.eo  names differ currently
+
 # lat lon kept in API outputs.
 # links to report or map
 # statename, ST, REGION, etc. not yet in EJAM output.

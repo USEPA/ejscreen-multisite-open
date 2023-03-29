@@ -1,3 +1,22 @@
+
+
+# a copy of this seems to be in inst/global.R now
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # require(shiny)
 # you already would have this ui <- fluidPage( ####
 ui <- shiny::fluidPage(

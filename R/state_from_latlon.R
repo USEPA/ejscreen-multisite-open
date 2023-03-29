@@ -50,6 +50,18 @@ state_from_blockid <- function(blockid) {
   stateinfo$ST[match(blockid2fips[blockid, substr(blockfips,1,2)], stateinfo$FIPS.ST)]
 }
 
+#' state_from_fips
+#'
+#' @param fips Census FIPS codes vector, numeric or char, 2-digit, 5-digit, etc. OK
+#'
+#' @return vector of 2-character state abbreviations like CA,MD,TX,OH
+#' @export
+#'
+state_from_fips <- function(fips) {
+  fips <- fipsbg_from_anyfips(fips)
+  stateinfo$ST[match(substr(fips,1,2), stateinfo$FIPS.ST)]
+}
+
 
 # checking speed
 

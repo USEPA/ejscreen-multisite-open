@@ -6,7 +6,7 @@
 \usage{
 getblocksnearby(
   sitepoints,
-  cutoff = 1,
+  cutoff = 3,
   maxcutoff = 31.07,
   avoidorphans = TRUE,
   quadtree,
@@ -14,27 +14,45 @@ getblocksnearby(
 )
 }
 \arguments{
-\item{sitepoints}{see \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} or other such functions}
+\item{sitepoints}{data.table with columns siteid, lat, lon giving point locations of sites or facilities around which are circular buffers}
 
-\item{cutoff}{see \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} or other such functions}
+\item{cutoff}{miles radius, defining circular buffer around site point}
 
-\item{maxcutoff}{see \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} or other such functions}
+\item{maxcutoff}{miles distance (max distance to check if not even 1 block point is within cutoff)}
 
-\item{avoidorphans}{see \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} or other such functions}
+\item{avoidorphans}{logical Whether to avoid case where no block points are within cutoff,
+so if TRUE, it keeps looking past cutoff to find nearest one within maxcutoff.}
 
-\item{quadtree}{a large quadtree object created from the SearchTree package example:
-SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")}
+\item{quadtree}{(a pointer to the large quadtree object)
+created from the SearchTree package example:
+SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
+Takes about 2-5 seconds to create this each time it is needed.
+It is automatically created when the package is loaded via the \code{\link[=.onLoad]{.onLoad()}} function}
 
-\item{...}{see \code{\link[=getblocksnearbyviaQuadTree_Clustered]{getblocksnearbyviaQuadTree_Clustered()}} or other such functions}
+\item{...}{passed to \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} or other such functions}
 }
 \description{
-Fast way to find nearby points - finds distance to each Census block centroid nearby
+Given a set of points and a specified radius (cutoff),
+this function quickly finds all the US Census blocks near each point.
+For each point, it uses the specified cutoff distance and finds the distance to
+every block within the circle defined by the radius (cutoff).
+Each block is defined by its Census-provided internal point, by latitude and longitude.
+
+Each point can be the location of a regulated facility or other type of site, and
+the blocks are a high-resolution source of information about where
+residents live.
+
+Finding which blocks have their internal points in a circle provides
+a way to quickly estimate what fraction of a block group is
+inside the circular buffer more accurately and more quickly than
+areal apportionment of block groups would provide.
 }
 \details{
-wrapper redirecting to the right version like \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}}
+For all examples, see \code{\link[=ejamit]{ejamit()}}
+getblocksnearby() is a wrapper redirecting to the right version like \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}}
 Census block "internal points" are actually what it looks for, like a centroid.
 The blocks are pre-indexed for the whole USA, via the data object quadtree or localtree
 }
 \seealso{
-\code{\link[=getblocksnearby2]{getblocksnearby2()}} that was work in progress
+\code{\link[=ejamit]{ejamit()}}  \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} \code{\link[=getblocksnearbyviaQuadTree_Clustered]{getblocksnearbyviaQuadTree_Clustered()}} \code{\link[=getblocksnearbyviaQuadTree2]{getblocksnearbyviaQuadTree2()}}
 }

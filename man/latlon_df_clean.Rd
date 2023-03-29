@@ -7,7 +7,7 @@
 latlon_df_clean(df)
 }
 \arguments{
-\item{df}{data.frame With columns lat and lon or names that can be interpreted as such - see latlon_infer()}
+\item{df}{data.frame With columns lat and lon or names that can be interpreted as such}
 }
 \value{
 Returns the same data.frame but with relevant colnames changed to lat and lon,
@@ -24,5 +24,5 @@ Cleans up lat and lon values (removes extra characters, makes numeric)
 #  x <- latlon_df_clean(x)
 }
 \seealso{
-latlon_df_clean() latlon_infer() latlon_is.valid() latlon_as.numeric()
+Used by \code{\link[=latlon_from_anything]{latlon_from_anything()}}. Uses \code{\link[=latlon_infer]{latlon_infer()}} \code{\link[=latlon_is.valid]{latlon_is.valid()}} \code{\link[=latlon_as.numeric]{latlon_as.numeric()}}
 }

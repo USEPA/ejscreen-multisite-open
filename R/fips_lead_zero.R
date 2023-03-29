@@ -8,7 +8,7 @@
 #' @return vector of same length 
 #' @export
 #'
-#' @examples
+#' @examples fips_lead_zero(c(1,"01",1234,"1234","12345",123456))
 fips_lead_zero <- function(fips) {
   
   #	TRY TO CLEAN UP vector of FIPS AND INFER GEOGRAPHIC SCALE

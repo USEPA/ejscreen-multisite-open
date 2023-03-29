@@ -2,9 +2,9 @@
 #' @description Utility to identify lat and lon columns, renaming and cleaning them up.
 #' @details Tries to figure out which columns seem to have lat lon values, renames those in the data.frame. 
 #'   Cleans up lat and lon values (removes extra characters, makes numeric)
-#' @param df data.frame With columns lat and lon or names that can be interpreted as such - see latlon_infer()
+#' @param df data.frame With columns lat and lon or names that can be interpreted as such
 #'
-#' @seealso latlon_df_clean() latlon_infer() latlon_is.valid() latlon_as.numeric()
+#' @seealso Used by [EJAM::latlon_from_anything()]. Uses [latlon_infer()] [latlon_is.valid()] [latlon_as.numeric()]
 #' @return Returns the same data.frame but with relevant colnames changed to lat and lon,
 #'    and invalid lat or lon values cleaned up if possible or else replaced with NA
 #' @export

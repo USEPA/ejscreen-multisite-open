@@ -3,6 +3,7 @@
 \docType{data}
 \name{testdata_sites2blocks}
 \alias{testdata_sites2blocks}
+\alias{sites2blocks_example}
 \title{data.table of output of \code{\link[=getblocknearby]{getblocknearby()}}, each row is a unique site-block-distance}
 \description{
 data.table of output of \code{\link[=getblocknearby]{getblocknearby()}}, each row is a unique site-block-distance

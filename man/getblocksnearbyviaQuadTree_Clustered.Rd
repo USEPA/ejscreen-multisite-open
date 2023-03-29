@@ -28,8 +28,10 @@ Uses packages \link{parallel} and \link{snow}. parallel::makePSOCKcluster is an 
 It runs Rscript on the specified host(s) to set up a worker process which listens on a socket for expressions to evaluate, and returns the results (as serialized objects).
 }
 \details{
+For all examples, see \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}}
+
 Uses indexgridsize and quaddata  variables that come from global environment (but should pass to this function rather than assume in global env?)
 }
 \seealso{
-\code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}}  \code{\link[=distance_via_surfacedistance]{distance_via_surfacedistance()}}
+\code{\link[=getblocksnearby_and_doaggregate]{getblocksnearby_and_doaggregate()}} \code{\link[=getblocksnearby]{getblocksnearby()}} \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} \code{\link[=getblocksnearbyviaQuadTree_Clustered]{getblocksnearbyviaQuadTree_Clustered()}} \code{\link[=getblocksnearbyviaQuadTree2]{getblocksnearbyviaQuadTree2()}}
 }

@@ -12,14 +12,14 @@
 #' @export
 #'
 datapack <- function(pkg=ejampackages, len=30) {
-  # browser()
+  
   n <- length(pkg)
   ok <- rep(FALSE, n)
   for (i in 1:n) {
     ok[i] <- 0 != length(find.package(pkg[i], quiet = TRUE))
   }
   pkg <- pkg[ok]
-  # browser()
+   
   if (length(pkg) > 0) {
     zrows <- as.data.frame(data(package=pkg)$results)
     zrows <- zrows[ , c("Package", "Item", "Title")]

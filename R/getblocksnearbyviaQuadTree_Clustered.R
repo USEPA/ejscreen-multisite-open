@@ -2,14 +2,16 @@
 #' @description Uses packages [parallel] and [snow]. parallel::makePSOCKcluster is an enhanced version of snow::makeSOCKcluster in package snow.
 #'     It runs Rscript on the specified host(s) to set up a worker process which listens on a socket for expressions to evaluate, and returns the results (as serialized objects).
 #'
-#' @details  Uses indexgridsize and quaddata  variables that come from global environment (but should pass to this function rather than assume in global env?)
+#' @details  For all examples, see [getblocksnearbyviaQuadTree()]
+#' 
+#'  Uses indexgridsize and quaddata  variables that come from global environment (but should pass to this function rather than assume in global env?)
 #'
 #' @param facilities data.table with columns LAT, LONG
 #' @param cutoff miles distance (check what this actually does)
 #' @param maxcutoff miles distance (check what this actually does)
 #' @param avoidorphans logical
 #' @param CountCPU for parallel processing via makeCluster() and doSNOW::registerDoSNOW()
-#' @seealso [getblocksnearbyviaQuadTree()]  [distance_via_surfacedistance()]
+#' @seealso [getblocksnearby_and_doaggregate()] [getblocksnearby()] [getblocksnearbyviaQuadTree()] [getblocksnearbyviaQuadTree_Clustered()] [getblocksnearbyviaQuadTree2()]
 #' @export
 #'
 getblocksnearbyviaQuadTree_Clustered <-function(facilities,cutoff,maxcutoff, avoidorphans,CountCPU=1) {

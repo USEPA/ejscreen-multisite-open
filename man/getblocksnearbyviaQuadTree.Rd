@@ -6,7 +6,7 @@
 \usage{
 getblocksnearbyviaQuadTree(
   sitepoints,
-  cutoff = 1,
+  cutoff = 3,
   maxcutoff = 31.07,
   avoidorphans = TRUE,
   report_progress_every_n = 500,
@@ -30,7 +30,7 @@ mostly for testing, but a progress bar feature might be useful unless this is su
 created from the SearchTree package example:
 SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
 Takes about 2-5 seconds to create this each time it is needed.
-It can be automatically created when the package is loaded via the \code{\link[=.onLoad]{.onLoad()}} function}
+It is automatically created when the package is loaded via the \code{\link[=.onLoad]{.onLoad()}} function}
 }
 \description{
 Given a set of points and a specified radius (cutoff),
@@ -48,11 +48,6 @@ a way to quickly estimate what fraction of a block group is
 inside the circular buffer more accurately and more quickly than
 areal apportionment of block groups would provide.
 }
-\examples{
-  localtree_example = SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
-  x = getblocksnearby(testpoints_1000_dt, quadtree = localtree_example)
-  
-}
 \seealso{
-\code{\link[=getblocksnearbyviaQuadTree_Clustered]{getblocksnearbyviaQuadTree_Clustered()}} \code{\link[=getblocksnearbyviaQuadTree2]{getblocksnearbyviaQuadTree2()}}
+\code{\link[=ejamit]{ejamit()}} \code{\link[=getblocksnearby]{getblocksnearby()}} \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} \code{\link[=getblocksnearbyviaQuadTree_Clustered]{getblocksnearbyviaQuadTree_Clustered()}} \code{\link[=getblocksnearbyviaQuadTree2]{getblocksnearbyviaQuadTree2()}}
 }

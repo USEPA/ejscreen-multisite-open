@@ -6,7 +6,7 @@
 \usage{
 getblocksnearby2(
   sitepoints,
-  cutoff = 1,
+  cutoff = 3,
   maxcutoff = 31.07,
   avoidorphans = TRUE,
   quadtree = is.null,
@@ -31,11 +31,13 @@ SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "
 Key buffering function - wrapper redirecting to the right version of getblocksnearby()
 }
 \details{
+For all examples, see \code{\link[=ejamit]{ejamit()}}
+
 Like getblocksnearby() but tries to handle localtree and quadtree parameter differently
 \itemize{
 \item not sure how to check if they are in the right environment.
 }
 }
 \seealso{
-\code{\link[=getblocksnearby]{getblocksnearby()}}
+\code{\link[=getblocksnearby_and_doaggregate]{getblocksnearby_and_doaggregate()}} \code{\link[=getblocksnearby]{getblocksnearby()}} \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} \code{\link[=getblocksnearbyviaQuadTree_Clustered]{getblocksnearbyviaQuadTree_Clustered()}} \code{\link[=getblocksnearbyviaQuadTree2]{getblocksnearbyviaQuadTree2()}}
 }

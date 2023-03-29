@@ -4,8 +4,6 @@
 #' @param NAICS upload validate missing and/or improper inputs
 #' @return boolean value (valid or not valid)
 #' @export
-#' EJAM::NAICS 
-
 NAICS_validation <- function(NAICS_enter,NAIC_select){
   
   if (nchar(NAICS_enter)>0 | length(NAIC_select)>0) {

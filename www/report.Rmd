@@ -2,14 +2,19 @@
 title: Analysis of demographic and environmental conditions near selected facilities based on USEPA's EJAM tool
 date: "`r Sys.Date()`"
 params:
+  analysis_title: NA
   authorname1: NA
   authoremail1: NA
-  radius: NA
   where: NA
   sectorname_short: NA
   sitecount: NA
-  acs_version: "2016-2020"
-  ejscreen_version: "2.1"
+  distance: NA
+  total_pop: NA
+  results: NA
+  map: NA
+  envt_table: NA
+  demog_table: NA
+  boxplot: NA
   zonetype: NA
   in_the_x_zone: NA
   within_x_miles_of: NA
@@ -20,23 +25,26 @@ params:
   envt_how_elevated: NA
   demog_high_at_what_share_of_sites: NA
   envt_high_at_what_share_of_sites: NA
-  source_of_latlons: NA
-  fundingsource: NA
   conclusion1: NA
   conclusion2: NA
   conclusion3: NA
+  source_of_latlons: NA
+  acs_version: "2016-2020"
+  ejscreen_version: "2.1"
+  fundingsource: NA
 author:
   - name: "`r params$authorname1`"
     email: "`r params$authoremail1`"
 editor_options:
   markdown: wrap 72
+    wrap: 72
 linenumbers: false
-keywords: 
+keywords:
   - environmental justice
   - socioeconomic
   - demographic
   - environmental pollutants
-abstract: Abstract - Executive Order 14008 calls on EPA and other Agencies to make achieving environmental justice part of their missions, and EO 12989 directed EPA to make environmental justice part of their mission by identifying and addressing, as appropriate, disproportionately high and adverse human health or environmental effects of their programs, policies, and activities on minority populations and low-income populations in the United States. The United States Environmental Protection Agency (US EPA) analyzed baseline demographic and environmental conditions in communities living `r params$where` `r params$facilities_analyzed`. The analysis used EPA's EJAM tool and EJScreen version `r params$ejscreen_version` with demographic data based on the Census Bureau’s `r params$acs_version` American Community Survey (ACS). **The analysis found that**
+abstract: Abstract - Executive Order 14008 calls on EPA and other Agencies to make achieving environmental justice part of their missions, and EO 12989 directed EPA to make environmental justice part of their mission by identifying and addressing, as appropriate, disproportionately high and adverse human health or environmental effects of their programs, policies, and activities on minority populations and low-income populations in the United States. The United States Environmental Protection Agency (US EPA) analyzed baseline demographic and environmental conditions in communities living `r params$where` `r params$facilities_analyzed`. The analysis used EPA's EJAM tool and EJScreen version `r params$ejscreen_version` with demographic data based on the Census Bureau’s `r params$acs_version` American Community Survey (ACS). **The analysis found that...................**
 output: 
   word_document:
     toc: true
@@ -44,12 +52,10 @@ output:
     number_sections: true
 ---
 
-Authors: `r params$authorname1`
-Author contact info: `r params$authoremail1`
+Authors: `r params$authorname1` Author contact info: `r params$authoremail1`
 
-Radius: `r params$radius`
+Radius: `r params$distance`
 
- 
 ```{r, echo=FALSE}
 in_the_places_analyzed <- {
     switch (
@@ -60,102 +66,102 @@ in_the_places_analyzed <- {
     )}
 ```
 
-# Executive Summary	 
+# Executive Summary
 
-Executive Order 14008 calls on EPA and other Agencies to make achieving
-environmental justice part of their missions, and EO 12989 directed EPA
-to make environmental justice part of their mission by identifying and
-addressing, as appropriate, disproportionately high and adverse human
-health or environmental effects of their programs, policies, and
-activities on minority populations and low-income populations in the
-United States.
+Executive Order 14008 calls on EPA and other Agencies to make achieving environmental justice part of their missions, and EO 12989 directed EPA to make environmental justice part of their mission by identifying and addressing, as appropriate, disproportionately high and adverse human health or environmental effects of their programs, policies, and activities on minority populations and low-income populations in the United States.
 
-EPA has conducted an analysis to characterize baseline environmental
-conditions faced by communities living near `r params$sectorname_short`.
-The United States Environmental Protection Agency (US EPA) analyzed
-baseline demographic and environmental conditions in communities living
-`r params$where`. The analysis used EPA's EJAM tool and EJScreen version
-`r params$ejscreen_version` with demographic data based on the Census
-Bureau's `r params$acs_version` American Community Survey (ACS).
+EPA has conducted an analysis to characterize baseline environmental conditions faced by communities living near `r params$sectorname_short`. The United States Environmental Protection Agency (US EPA) analyzed baseline demographic and environmental conditions in communities living `r params$where`. The analysis used EPA's EJAM tool and EJScreen version `r params$ejscreen_version` with demographic data based on the Census Bureau's `r params$acs_version` American Community Survey (ACS).
 
+## Broad overview of findings
 
-## Broad overview of findings 
+The environmental indicators -- especially proximity scores -- are more notable than the demographic indicators at these sites. Demographic indicators are moderately above average overall.
 
-## Summary of Findings 
+## Summary of Findings
 
-### Demographics overall 
+-   Overall, % people of color, % limited English proficiency, and the Demographic Indicator are more than 1.5x the State rate, for the population within 1 mile.
 
-### Demographics at key sites 
+-   About a third of these sites are above the 80th percentile in State for the Demographic Indicator. The same is true for % low income and % with less than high school.
 
-### Environment overall 
+-   About half of these 57 sites are in just 4 states: FL, NY, PA, or MA. Most of the people here live near just 8 sites (15% of sites). Most of the sites with the higher demographic indicators are owned by Covanta or Wheelabrator.
 
-### Environment at key sites 
+-   Many of the sites with the highest demographic indicators also have proximity scores that are 5 to 10 times the State average.
 
-### Cumulative impacts at key sites 
+    -   The average person's RMP score is more than 3x their State's average.
+    -   The average person's NPL and TSDF scores are about 2.5x State averages.
+    -   Most of these sites are \>=80th in State for NATA. Same for RMP.
 
-# Introduction 
+### Demographics overall
 
-Executive Order 12898 (59 FR 7629; February 16, 1994) established
-federal executive policy on environmental justice. Its main provision
-directed federal agencies, to the greatest extent practicable and
-permitted by law, to make environmental justice part of their mission by
-identifying and addressing, as appropriate, disproportionately high and
-adverse human health or environmental effects of their programs,
-policies, and activities on minority populations and low-income
-populations in the United States.
+### Demographics at key sites
 
-EPA defines environmental justice as the fair treatment and meaningful
-involvement of all people regardless of race, color, national origin, or
-income with respect to the development, implementation, and enforcement
-of environmental laws, regulations, and policies.
+### Environment overall
 
-Executive Order 14008 (86 FR 7619; January 27, 2021) also calls on
-Agencies to make achieving environmental justice part of their missions
-"by developing programs, policies, and activities to address the
-disproportionately high and adverse human health, environmental,
-climate-related and other cumulative impacts on disadvantaged
-communities, as well as the accompanying economic challenges of such
-impacts." It also declares a policy "to secure environmental justice and
-spur economic opportunity for disadvantaged communities that have been
-historically marginalized and overburdened by pollution and
-under-investment in housing, transportation, water and wastewater
-infrastructure and health care."
+### Environment at key sites
 
-EPA also released its "Technical Guidance for Assessing Environmental
-Justice in Regulatory Analysis" (U.S. EPA, 2016) to provide
-recommendations that encourage analysts to conduct the highest quality
-analysis feasible, recognizing that data limitations, time and resource
-constraints, and analytic challenges will vary by media and
-circumstance.
+### Cumulative impacts at key sites
 
+# Introduction
 
-# Methods 
+Executive Order 12898 (59 FR 7629; February 16, 1994) established federal executive policy on environmental justice. Its main provision directed federal agencies, to the greatest extent practicable and permitted by law, to make environmental justice part of their mission by identifying and addressing, as appropriate, disproportionately high and adverse human health or environmental effects of their programs, policies, and activities on minority populations and low-income populations in the United States.
 
-## Selection of sites analyzed 
+EPA defines environmental justice as the fair treatment and meaningful involvement of all people regardless of race, color, national origin, or income with respect to the development, implementation, and enforcement of environmental laws, regulations, and policies.
 
-## Estimating locations and population counts of residents 
+Executive Order 14008 (86 FR 7619; January 27, 2021) also calls on Agencies to make achieving environmental justice part of their missions "by developing programs, policies, and activities to address the disproportionately high and adverse human health, environmental, climate-related and other cumulative impacts on disadvantaged communities, as well as the accompanying economic challenges of such impacts." It also declares a policy "to secure environmental justice and spur economic opportunity for disadvantaged communities that have been historically marginalized and overburdened by pollution and under-investment in housing, transportation, water and wastewater infrastructure and health care."
 
-### Spatial resolution of data 
+EPA also released its "Technical Guidance for Assessing Environmental Justice in Regulatory Analysis" (U.S. EPA, 2016) to provide recommendations that encourage analysts to conduct the highest quality analysis feasible, recognizing that data limitations, time and resource constraints, and analytic challenges will vary by media and circumstance.
 
-### Analytic method for buffering, and tools used to implement that method 
+# Methods
 
-## Demographic and environmental indicators 
+## Selection of sites analyzed
 
-# Findings 
+## Estimating locations and population counts of residents
 
-## Text on Findings 
+### Spatial resolution of data
 
-## Data Table 1 
+### Analytic method for buffering, and tools used to implement that method
 
-## Data Table 2 
+## Demographic and environmental indicators
 
-## Data Viz 1 – Barplot 
+# Findings
 
-## Data Viz 2 – Map 
+## Text on Findings
 
-## Data Viz 3 – Boxplots 
+## Data Table 1
 
-# Notes on creating this document 
+```{r, out.width ='900px'}
+ # dt <- cbind('Value at Uploaded Sites' = as.list( 100*round(params$results$results_overall[ , ..names_d], 2)),
+ #          'State Percentile' = as.list(round(params$results$results_overall[, ..names_d_state_pctile], 2)),
+ #          'National Percentile' = as.list(round(params$results$results_overall[, ..names_d_pctile], 2)))
+ #    
+ #  rownames(dt) <- EJAMbatch.summarizer::names_d_friendly[pmatch(names_d, EJAMbatch.summarizer::names_d_batch)]
+ #  rownames(dt)[1] <- 'Demographic Index'
+ #  
+ #  dt <- as.data.frame(dt) %>% rownames_to_column(var = 'Indicator')
+ #    
+ #  DT::datatable(dt, rownames = FALSE, 
+ #                options = list(autoWidth = TRUE))
+params$demog_table
+```
+
+## Data Table 2
+
+## Data Viz 1 -- Barplot
+
+## Data Viz 2 -- Map
+
+## Data Viz 3 -- Boxplots
+
+```{r boxplot, out.width = '800px', out.height = '500px', fig.align='center'}
+params$boxplot +
+  ggplot2::scale_x_discrete(labels = function(x) stringr::str_wrap(x, 10)) +
+  theme(plot.title = element_text(hjust=0.5, size=12),
+        plot.subtitle = element_text(hjust=0.5, size=11),
+        axis.title.y = element_text(size=10),
+        axis.text = element_text(size=9)
+        )
+```
+
+# Notes on creating this document
 
 #### Table of EJAM Tool Parameter Values
 
@@ -168,24 +174,20 @@ param_table <- aggregate(values~ind, stack(params), toString) %>%
 param_table
 ```
 
-## Notes on formatting for a manuscript 
+## Notes on formatting for a manuscript
 
-## Bibliography styles 
+## Bibliography styles
 
-## Equations 
+## Equations
 
-# Appendices 
+# Appendices
 
-## Competing interests 
+## Competing interests
 
-## Author contributions 
+## Author contributions
 
-## Acknowledgements 
+## Acknowledgements
 
-## List of Abbreviations 
+## List of Abbreviations
 
-# References – from .bib file  
-
- 
-
- 
+# References -- from .bib file

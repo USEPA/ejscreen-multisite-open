@@ -37,7 +37,7 @@ expression in order for the match to be considered successful.}
 See \code{?golem::get_golem_options} for more details.}
 }
 \description{
-This lets you launch the shiny web app from RStudio
+launch Shiny web app from RStudio
 }
 \details{
 app_run_EJAM()                 is like EJAM::run_app()

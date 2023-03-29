@@ -44,8 +44,25 @@ library(ejscreen)
 library(EJAMejscreendata)
 library(EJAMblockdata)
 
+
+
+
+
+
+
+
+
 # not  done but 
 # to start to redo bg22, from EJAMejscreendata::EJSCREEN_Full_with_AS_CNMI_GU_VI
+
+
+# TEMPORARY/INTERIM FIX TO ADD ST TO EJAM::blockgroupstats while not already there:
+# blockgroupstats[, ST := stateinfo$ST[match(substr(bgfips,1,2), stateinfo$FIPS.ST)]]
+
+
+
+
+
 bgejam <- EJAMejscreendata::EJSCREEN_Full_with_AS_CNMI_GU_VI
 # fix variable names to be friendlier
 names(bgejam) <- ejscreen::change.fieldnames.ejscreen.csv(names(bgejam))

@@ -12,6 +12,7 @@ doaggregate(
   calculatedcols = NULL,
   testing = FALSE,
   include_ejindexes = FALSE,
+  updateProgress = NULL,
   ...
 )
 }
@@ -38,14 +39,18 @@ using formulas that have to be specified.}
 
 \item{include_ejindexes}{not yet implemented}
 
+\item{updateProgress}{progress bar function used for shiny app}
+
 \item{...}{more to pass to another function? Not used currently.}
 }
 \description{
-This updated 2022 code takes a set of facilities and the set of blocks that are near each,
+This updated 2023 code takes a set of facilities and the set of blocks that are near each,
 (as identified previously, in other code that has identified which blocks are nearby)
 and combines those with indicator scores for block groups.
 }
 \details{
+For all examples, see \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}}
+
 This function aggregates the blockgroup scores to create a summary of each indicator,
 as a raw score and US percentile and State percentile,
 in each buffer (i.e., near each facility):
@@ -70,13 +75,6 @@ This function requires the following as data lazy loaded for example from EJAMbl
 \item EJAM::blockgroupstats - A data.table (such as EJSCREEN demographic and environmental data by blockgroup?)
 }
 }
-\examples{
-\dontrun{
-  testsites <- EJAMfrsdata::frs[sample(1:nrow(EJAMfrsdata::frs), 1e3),]
-  x <- getblocksnearby(testsites, cutoff = 3.1, quadtree = localtree)
-  stinfo <- data.frame(siteid=1:nrow(testsites),  state_from_latlon(lat=testsites$lat, lon=testsites$lon))
-  y <- doaggregate(x, sites2states = stinfo)
-
-
-}
+\seealso{
+\link{ejamit}   \code{\link[=getblocksnearby]{getblocksnearby()}}
 }

@@ -4,20 +4,18 @@
 #'     DO NOT REMOVE.
 #' @import shiny
 #' @noRd
-app_ui <- function(request) {
+app_ui  <- function(request) {
   tagList(
+    # golem_add_external_resources() ####
     # Leave this function for adding external resources, see end of this source file.
     golem_add_external_resources(),
     
-    ## begin app UI
+    # __________App UI fluidPage starts here _______ ####
     fluidPage(
-      ## enable JavaScript functionality (such as resetting inputs)
+      ### enable JavaScript functionality (such as resetting inputs) etc. ####
       shinyjs::useShinyjs(),
-      
       ## javascript function for jumping to top of screen
-      shinyjs::extendShinyjs(text = "shinyjs.toTop = function() {window.scrollTo(0, 0);}",
-                             functions = "toTop"),
-      
+      shinyjs::extendShinyjs(text = "shinyjs.toTop = function() {window.scrollTo(0, 0);}", functions = "toTop"),
       ## change selected tab color - #005ea2 matches blue on rest of website
       tags$style(HTML("
         .tabbable > .nav > li[class=active] > a {
@@ -25,10 +23,10 @@ app_ui <- function(request) {
            font-weight: bold;
         }")),
       
-      ## add HTML header - in global.R
+      ### HTML header inserted from global.R ####
       html_header_fmt,
       
-      ## add title for app and browser tab
+      ### Title (for app and browser tab) ####
       titlePanel(title = "EJAM (Environmental Justice Analysis Multi-site) Tool",
                  windowTitle = "EJAM (Environmental Justice Analysis Multi-site) Tool"
       ),
@@ -39,48 +37,48 @@ app_ui <- function(request) {
         type = 'pills',
         selected = 'Site Selection',
         
-        ## introduction tab
+        # INTRO tab ####
         tabPanel(title = 'About EJAM',
                  
-                 ## vertical space
-                 br(),
+                 br(), ## vertical space
                  
-                 ## html intro text - in global.R
+                 ## html intro text from global.R ####
                  intro_text,
                  
                  ## button to reveal Advanced Settings tab 
                  actionButton('show_advanced_settings','Show Advanced Settings Tab', 
                               style ='color: #fff; background-color: #005ea2;')
         ),
+        ######################################################################################################### #
         
-        ## site selection tab
+        # SITE SELECTION tab ####
+        
         tabPanel(title = 'Site Selection',
                  
-                 ## vertical space
-                 br(),br(),
-                 
+                 br(), ## vertical space
+                 br(),
                  
                  ## container for upload method (left column) and map (right column)
                  fluidRow(
                    
                    ## upload method column
-                   column(5, 
+                   column(5,
+                          h3('Specify Locations to Analyze', style='text-align: center;'),
                           
-                          h3('Specifying Locations to Analyze', style='text-align: center;'),
-                          
-                          ## horizontal line
-                          hr(),
+                          hr(), ## horizontal line
                           
                           ## input: selecting upload method
                           radioButtons(inputId = 'ss_choose_method',
-                                       label = 'Please use one of the following facility selection methods',
-                                       choiceValues = c('latlon', 'NAICS','FRS','ECHO'),
+                                       label = 'How would you like to identify facilities?',
+                                       choiceValues = c('latlon', 
+                                                        'NAICS',
+                                                        'FRS',
+                                                        'ECHO'),
                                        choiceNames = c('Upload Location (latitude/longitude) file',
                                                        'Select by Industry (NAICS) Code',
                                                        'Upload EPA Facility ID (FRS Identifers) file',
                                                        'Search using ECHO database'),
                                        width = '400px'),
-                          
                           
                           ## latlon conditional panel
                           conditionalPanel(
@@ -88,15 +86,13 @@ app_ui <- function(request) {
                             
                             ## input: Upload list of facility lat/longs
                             fileInput(inputId = 'ss_upload_latlon',  
-                                      label = 'Upload file of site to buffer and summarize (.csv, .xls, or .xlsx) with lat & lon as column headers in row 1',
+                                      label = 'Upload a list of sites in a spreadsheet (.csv, .xls, or .xlsx with lat & lon as table headers)',
                                       #placeholder = 'test_input_latlon.csv', 
                                       multiple = FALSE,
                                       accept = c('.xls', '.xlsx', ".csv", "text/csv", "text/comma-separated-values,text/plain")
                                       # add hover tips here maybe, or even a button to view examples of valid formats and details on that.
                             ),
-                            
                           ), # end latlong conditionalPanel
-                          
                           
                           ## NAICS conditional panel
                           conditionalPanel(
@@ -105,16 +101,18 @@ app_ui <- function(request) {
                             radioButtons('naics_ul_type', 'Choose how to enter NAICS codes',
                                          choiceNames = c('Select codes from dropdown' ,
                                                          'Enter text or code to search'),
-                                         choiceValues = c('dropdown','enter')),
+                                         choiceValues = c('dropdown',
+                                                          'enter')
+                            ), 
                             
-                            ## conditional panel if entering naics
+                            ### conditional sub- panel if entering naics
                             conditionalPanel(
                               condition = "input.naics_ul_type == 'enter'",
                               ## input: Enter NAICS code manually       
                               textInput(
                                 inputId = "ss_enter_naics",
                                 label = htmltools::h6(
-                                  "Enter NAICS codes of interest - ",
+                                  "Enter Industry NAICS codes - ",
                                   htmltools::a("Look up NAICS", href ="https://www.census.gov/naics"),
                                   htmltools::a(htmltools::img(id = "ibutton",src = "www/i.png",height = 15,width = 15),
                                                href = "www/ibutton_help.html#help_naicslist",target = "_blank")
@@ -123,10 +121,9 @@ app_ui <- function(request) {
                                 width = 400,
                                 placeholder = NULL
                               )
-                            ),
+                            ), # end manually entry of NAICS sub- conditionalPanel
                             
-                            
-                            ## conditional panel if using NAICS dropdown
+                            ### conditional sub- panel if using NAICS dropdown
                             conditionalPanel(
                               condition = "input.naics_ul_type == 'dropdown'",
                               ## input: Select NAICS from list
@@ -139,19 +136,15 @@ app_ui <- function(request) {
                                 selected = NULL,
                                 width = 400,
                                 multiple = TRUE
-                              ),
-                              
-                            ),
+                              )#, # xxx
+                            ),  # end dropdown NAICS sub- conditionalPanel
                             
-                            ## vertical space
-                            br(),
+                            br(), ## vertical space
                             
                             ## input: button to submit NAICS codes that were entered/selected
                             actionButton(inputId = 'submit_naics', label = 'Submit entries',
-                                         style = 'color: #fff; background-color: #005ea2;'),
-                            
-                            
-                          ), # end NAICS conditionalPanel
+                                         style = 'color: #fff; background-color: #005ea2;')#, # xxx
+                          ), # end NAICS conditionalPanel overall
                           
                           ## FRS conditional panel
                           conditionalPanel(
@@ -159,19 +152,16 @@ app_ui <- function(request) {
                             ## input: Upload list of FRS identifiers
                             shiny::fileInput(
                               inputId = 'ss_upload_frs',
-                              label = 'Upload list of FRS identifiers',
+                              label = 'Upload a file with FRS identifiers',
                               accept = c('.xls', '.xlsx', ".csv", "text/csv", "text/comma-separated-values, text/plain")
-                            ),
-                            
+                            )#, # xxx
                           ), # end FRS conditionalPanel
-                          
                           
                           ## ECHO upload conditional panel
                           conditionalPanel(
                             condition = "input.ss_choose_method == 'ECHO'",
                             
-                            # ## vertical space
-                            br(),
+                            br(), ## vertical space
                             
                             ## input: Upload list of ECHO facilities
                             shiny::fileInput(
@@ -179,14 +169,10 @@ app_ui <- function(request) {
                               label = 'Upload list of ECHO facilities',
                               accept = c('.xls', '.xlsx', ".csv", "text/csv", "text/comma-separated-values, text/plain")
                             ), 
-                            
                             #br(),
-                            
-                            
                           ), #end ECHO conditional panel
                           
-                          ## horizontal line
-                          hr(),
+                          hr(), ## horizontal line
                           
                           h4('Processing uploaded data'),
                           
@@ -195,21 +181,18 @@ app_ui <- function(request) {
                             column(8, 
                                    ## input: title for analysis (goes in report header)
                                    shiny::textInput('analysis_title', 
-                                                    label = 'Specify Analysis Title',
-                                                    placeholder = 'My EJ Analysis',
-                                                    value = 'My EJ Analysis'),
+                                                    label = 'Name of Your Analysis',
+                                                    placeholder = 'EJ Analysis of My List of Places',
+                                                    value = 'EJ Analysis of My List of Places'),
                             ), 
                             column(4, style='padding: 10px',
                                    ## input: run analysis button     
                                    shiny::actionButton(inputId = 'bt_get_results', 
-                                                       label = 'Run Analysis',
+                                                       label = 'Start Analysis',
                                                        ## extra formatting - optional
                                                        style = 'color: #fff; background-color: #005ea2; height: 50px; width: 100px; border-radius: 5%;')
                             )
                           )
-                          
-                          
-                          
                    ), #end upload column 
                    
                    ## map column
@@ -217,21 +200,20 @@ app_ui <- function(request) {
                           ## add vertical line between columns
                           style = 'border-left: 1px solid;',
                           
-                          h3('Previewing uploaded data', style='text-align: center;'),
+                          h3('Review selected sites & Pick a distance', style='text-align: center;'),
                           
-                          ## horizontal line
-                          hr(),
+                          hr(), ## horizontal line
                           
                           ## arrange summary text and button to view uploaded data
                           fluidPage(
                             column(8,
                                    ## output: display number of uploaded sites
-                                   htmlOutput(outputId = 'an_map_text'),
+                                   htmlOutput(outputId = 'an_map_text')#, # xxx
                             ),
                             
                             column(4,
                                    ## add button and modal to show uploaded data interactively
-                                   actionButton('show_data_preview', label = 'View uploaded data',
+                                   actionButton('show_data_preview', label = 'Review selected sites',
                                                 style = 'color: #fff; background-color: #005ea2;'),
                                    
                                    ## on button click, show modal with DT table of uploaded
@@ -250,19 +232,19 @@ app_ui <- function(request) {
                                                    width = '100%')
                           ),
                           
-                          ## arrange map options below map
+                          ## arrange map options above or below map
                           fluidRow(
                             column(8,
                                    align = 'center',
                                    ## input: Specify radius of circular buffer       
                                    shiny::sliderInput(inputId = 'bt_rad_buff',
                                                       ## label is updated in server
-                                                      label = 'Radius of circular buffer',
+                                                      label = 'Within what distance of a site?',
                                                       #label = htmltools::h5("Radius of circular buffer in miles"),
                                                       value = 1.0, step = 0.25,
                                                       min = 0.25, max = 10,
                                                       post = ' miles'
-                                   ),
+                                   )#,  # xxx
                             ),
                             column(4,
                                    ## input: highlight clusters on map? yes/no
@@ -289,75 +271,74 @@ app_ui <- function(request) {
                 }
                 ")
                  ), 
-                 shinyBS::bsTooltip(id = 'ss_choose_method', title = 'Please read the upload instructions given below.',
-                                    placement = 'right', trigger = 'hover'),
-                 
-                 
-                 ## horizontal line
-                 hr(),
-                 
-                 ## conditional Panels to show help pages for each selection method
-                 
-                 ## NAICS help page
-                 conditionalPanel(
-                   condition = "input.ss_choose_method == 'NAICS'",
-                   shinyBS::bsCollapse(
-                     id = 'naics_help', 
-                     open = 'Read more about NAICS',
-                     shinyBS::bsCollapsePanel(title = 'Read more about NAICS',
-                                              style = 'primary',
-                                              h3('Select industry'),
-                                              helpText('You may define your universe of interest by selecting specific industries that you wish to query.'),
-                                              htmltools::a('NAICS definitions at Census', href='https://www.census.gov/naics', target='_blank')
-                     )
-                   )
-                 ),
-                 ## FRS help page
-                 conditionalPanel(
-                   condition = "input.ss_choose_method == 'FRS'",
-                   shinyBS::bsCollapse(
-                     id = 'frs_help', open = 'FRS file upload instructions',
-                     bsCollapsePanel(title = 'FRS file upload instructions',
-                                     style = 'primary',
-                                     ## FRS help text - in global.R
-                                     frs_help_msg
-                     )
-                     
-                   )
-                 ),
-                 ## latlon help page
-                 conditionalPanel(
-                   condition = "input.ss_choose_method == 'latlon'",
-                   ## read more about latlon 
-                   shinyBS::bsCollapse(
-                     id = 'latlon_help', open = 'Location file upload instructions',
-                     shinyBS::bsCollapsePanel(title = 'Location file upload instructions',
-                                              style = 'primary',
-                                              HTML(latlon_help_msg)
-                     )
-                   )
-                 ),
-                 ## ECHO help page
-                 conditionalPanel(
-                   condition = "input.ss_choose_method == 'ECHO'",
-                   ## collapsible ECHO help panel 
-                   shinyBS::bsCollapse(
-                     id = 'echo_help', open = 'ECHO upload instructions',
-                     
-                     shinyBS::bsCollapsePanel(title = 'ECHO upload instructions',
-                                              style = 'primary',
-                                              ## echo help text - in global.R
-                                              echo_message)
-                   )
-                 ), #end ECHO conditionalPanel
-                 
+                shinyBS::bsTooltip(id = 'ss_choose_method', title = 'Please read the upload instructions given below.',
+                                   placement = 'right', trigger = 'hover'),
+                
+                hr(), ## horizontal line
+                
+                ## conditional Panels to show help pages for each selection method
+                
+                ## NAICS help page
+                conditionalPanel(
+                  condition = "input.ss_choose_method == 'NAICS'",
+                  shinyBS::bsCollapse(
+                    id = 'naics_help', 
+                    open = 'Read more about NAICS',
+                    shinyBS::bsCollapsePanel(title = 'Read more about NAICS',
+                                             style = 'primary',
+                                             h3('Select industry'),
+                                             helpText('You may define your universe of interest by selecting specific industries that you wish to query.'),
+                                             htmltools::a('NAICS definitions at Census', href='https://www.census.gov/naics', target='_blank')
+                    )
+                  )
+                ),
+                ## FRS help page
+                conditionalPanel(
+                  condition = "input.ss_choose_method == 'FRS'",
+                  shinyBS::bsCollapse(
+                    id = 'frs_help', open = 'FRS file upload instructions',
+                    shinyBS::bsCollapsePanel(title = 'FRS file upload instructions',
+                                             style = 'primary',
+                                             ## FRS help text - in global.R
+                                             frs_help_msg
+                    )
+                  )
+                ),
+                ## latlon help page
+                conditionalPanel(
+                  condition = "input.ss_choose_method == 'latlon'",
+                  ## read more about latlon 
+                  shinyBS::bsCollapse(
+                    id = 'latlon_help', open = 'Location file upload instructions',
+                    shinyBS::bsCollapsePanel(title = 'Location file upload instructions',
+                                             style = 'primary',
+                                             HTML(latlon_help_msg)
+                    )
+                  )
+                ),
+                ## ECHO help page
+                conditionalPanel(
+                  condition = "input.ss_choose_method == 'ECHO'",
+                  ## collapsible ECHO help panel 
+                  shinyBS::bsCollapse(
+                    id = 'echo_help', open = 'ECHO upload instructions',
+                    
+                    shinyBS::bsCollapsePanel(title = 'ECHO upload instructions',
+                                             style = 'primary',
+                                             ## echo help text - in global.R
+                                             echo_message)
+                  )
+                ) #, # xxx #end ECHO conditionalPanel
         ), # end Site Selection tab
         
-        ## Summary Report tab - similar to EJSCREEN standard report
+        ######################################################################################################### #
+        
+        # Short Report tab - similar to EJSCREEN standard report ####
+        
         tabPanel(title = 'Summary Report',
+                 ## _Header, pop count, etc.  ####
                  
-                 ## vertical space
-                 br(),
+                 br(), ## vertical space
                  
                  ## add images to top of screen
                  HTML('<div id="logorow" class="row">
@@ -369,16 +350,6 @@ app_ui <- function(request) {
                         </div>
                       </div>'),  
                  
-                 ## output: button to download summary report
-                 tags$div(
-                   shiny::downloadButton(outputId = 'summary_download', 
-                                         label = 'Download Summary Report',
-                                         style = 'color: #fff; background-color: #005ea2'),
-                   style = 'text-align: center;'
-                 ),
-                 
-                 ## vertical space
-                 br(),
                  
                  
                  HTML('<div style="font-weight: bold; font-size: 14pt; font-family: Tahoma; text-align: center;">EJAM Report (EJScreen v2.1)</div>'),
@@ -386,22 +357,18 @@ app_ui <- function(request) {
                  ## show count of population among selected sites
                  htmlOutput(outputId = 'view1_total_pop'),
                  
-                 ## vertical space
-                 br(),
+                 br(), ## vertical space
                  
-                 
-                 ## output: table of overall demographic indicators
+                 ## _Table of demographics overall ####
                  shinycssloaders::withSpinner(
                    gt::gt_output(outputId = 'view1_demog_table')
                  ),
                  ## previous version of table - interactive
                  #DT::DTOutput(outputId = 'view1_demog_table'),
                  
+                 br(), ## vertical space
                  
-                 ## vertical space
-                 br(),
-                 
-                 ## output: boxplots of demographic indicators
+                 ## _Boxplots demographics overall ####
                  fluidRow(
                    column(
                      12, 
@@ -414,8 +381,7 @@ app_ui <- function(request) {
                  
                  # ),
                  
-                 ## vertical space
-                 br(),
+                 br(), ## vertical space
                  
                  ## add formatted text
                  HTML("<p  style='font-size: 8pt; color: navy; font-family: sans-serif;'>This report shows the values
@@ -430,7 +396,7 @@ app_ui <- function(request) {
                  interpretations and applications of these indicators. 
                       Please see EJScreen documentation for discussion of these issues before using reports.</p>"),
                  
-                 ## output: show report map
+                 ## _Map for report  ####
                  fluidRow(
                    column(12,
                           align = 'center',
@@ -440,19 +406,17 @@ app_ui <- function(request) {
                    )
                  ),
                  
-                 ## vertical space
-                 br(),br(),
+                 br(), ## vertical space
+                 br(),
                  
-                 
-                 ## output: table of overall environmental indicators
+                 ## _Table of environmental indicators overall  ####
                  shinycssloaders::withSpinner(
                    gt::gt_output(outputId = 'view1_envt_table')
                  ),
                  ## previous version: interactive version of table
                  #DT::dataTableOutput(outputId = 'view1_envt_table'),
                  
-                 ## vertical space
-                 br(),
+                 br(), ## vertical space
                  
                  ## add formatted text
                  HTML("<p style='font-size: 8pt; color: navy; font-family: sans-serif;'>*Diesel particulate matter, air toxics cancer risk, 
@@ -470,11 +434,9 @@ app_ui <- function(request) {
                  ## add link
                  HTML('For additional information, see: <a>https://www.epa.gov/environmentaljustice</a>'),
                  
-                 ## horizontal line
-                 hr(),
+                 hr(), ## horizontal line
                  
-                 ## vertical space
-                 br(),
+                 # br(), ## vertical space
                  
                  ## add formatted text
                  HTML("<p style='font-size: 8pt; color: navy; font-family: sans-serif;'>Users should keep in mind that screening tools 
@@ -486,54 +448,85 @@ app_ui <- function(request) {
                  impact and demographic factor that may be relevant to a particular location. EJScreen outputs should be supplemented 
                  with additional information and local knowledge before taking any action to address potential EJ concerns.</p>"),
                  
+                 
+                 ## _button to download short report ####
+                 tags$div(
+                   shiny::downloadButton(outputId = 'summary_download', 
+                                         label = 'Download Summary Report (as webpage)',
+                                         style = 'color: #fff; background-color: #005ea2'),
+                   style = 'text-align: center;'
+                 ),
+                 ## _radio button on format of short report ####
+                 radioButtons("format1pager", "Format", choices = c("html", "pdf"), inline = TRUE)
         ),
         
-        ## Third view - site-by-site table
-        tabPanel(title = 'Tabular Results',
+        br(), ## vertical space
+        
+        ######################################################################################################### #
+        
+        # Results Overall tall tab ####
+        
+        tabPanel(title = 'Results Overall',
                  
-                 ## vertical space
-                 br(),
+                 br(), ## vertical space
                  
-                 h3('Key Indicators'),
-                 wellPanel(
-                   
-                   ## input: dropdown for demographic indicator used in summary text
-                   selectInput('key_ind_d', label = 'Choose a demographic indicator',
-                               choices = setNames(names_d_fixed,
-                                                  EJAMejscreenapi::map_headernames$names_friendly[match(names_d_fixed, EJAMejscreenapi::map_headernames$newnames_ejscreenapi)]
-                               )
-                   ),
-                   
-                   ## output: Demographic executive summary text
-                   shinycssloaders::withSpinner(
-                     htmlOutput('exec_summ_d')
-                   ),
-                   
-                   ## vertical space
-                   br(),br(),
-                   
-                   ## input: dropdown for demographic indicator used in summary text
-                   selectInput('key_ind_e', 
-                               label = 'Choose an environmental indicator',
-                               choices = setNames(EJAM::names_e,
-                                                  EJAMbatch.summarizer::names_e_friendly
-                               )
-                   ),
-                   
-                   ## output: Environmental executive summary text
-                   shinycssloaders::withSpinner(
-                     htmlOutput('exec_summ_e')
-                   )
-                 ), 
+                 h3('Overall Results (avg person'),
                  
-                 ## vertical space
-                 br(),
+                 DTOutput("overall_results_tall", height="100%")
+        ),
+        
+        ######################################################################################################### #
+        
+        # Result Overall and by Site tab ####
+        
+        tabPanel(title = 'Result Overall and by Site',
                  
-                 ## arrange header and Excel download button
+                 br(), ## vertical space
+                 
+                 ############################################################################### # 
+                 
+                 # h3('Key Indicators'),
+                 # wellPanel(
+                 #   
+                 #  ## _input: Demog. indicator (dropdown) to use in summary text ####
+                 #   selectInput(
+                 #     'key_ind_d', label = 'Choose a demographic indicator',
+                 #     choices = setNames(
+                 #       names_d_fixed,
+                 #       c(names_d_friendly, names_d_subgroups_friendly)
+                 #       # EJAMejscreenapi::map_headernames$names_friendly[match(names_d_fixed, EJAMejscreenapi::map_headernames$newnames_ejscreenapi)]
+                 #     )
+                 #   ),
+                 #   
+                 #   ## _output: Demog. Exec. Summary Text ####
+                 #   shinycssloaders::withSpinner(
+                 #     htmlOutput('exec_summ_d')
+                 #   ),
+                 #   
+                 #   br(), ## vertical space
+                 #   br(),
+                 #   
+                 #   ## _input: Envt. indicator (dropdown) to use in summary text ####
+                 #   selectInput('key_ind_e', 
+                 #               label = 'Choose an environmental indicator',
+                 #               choices = setNames(EJAM::names_e,
+                 #                                  EJAMbatch.summarizer::names_e_friendly
+                 #               )
+                 #   ),
+                 #   
+                 #   ## _output: Envt. Exec. Summary Text ####
+                 #   shinycssloaders::withSpinner(
+                 #     htmlOutput('exec_summ_e')
+                 #   )
+                 # ), 
+                 # 
+                 # br(), ## vertical space
+                 ############################################################################### # 
+                 
+                 ## _button: Excel Download ####
                  fluidRow(
                    column(6,
                           h3('Site-by-Site Table'),
-                          
                    ),
                    column(6,
                           ## button to download excel table of results - uses workbook_output_styled
@@ -541,22 +534,20 @@ app_ui <- function(request) {
                                          style = 'color: #fff; background-color: #005ea2;')
                    )
                  ),
+                 br(), ## vertical space
                  
-                 ## vertical space
-                 br(),
-                 
-                 ## output: interactive table
+                 ## _output: Interactive Table of Sites ####
                  shinycssloaders::withSpinner(
                    DT::DTOutput(outputId = 'view3_table', width = '100%')
                  ),
-                 ## output: map of single site selected from table
+                 ## _output: Map 1 site selected from table ####
                  shinycssloaders::withSpinner(
                    leaflet::leafletOutput(outputId = 'v3_sitemap')
                  ),
                  
         ), # end Tabular results tab
         
-        ## graphical results tab - barplots and histograms
+        # graphical results tab (barplots, histograms)
         tabPanel(title = 'Graphical Results',
                  h3('Compare Across Indicators'),
                  
@@ -571,8 +562,8 @@ app_ui <- function(request) {
                                          choices = c('Demographic', 'Environmental','EJ')),
                             ## input: Barplot setting - data type
                             radioButtons(inputId = 'summ_bar_data', label = 'Data Type', 
-                                         choiceValues = c('ratio','raw'), # no 'pctile' at this time
-                                         choiceNames = c('Ratio to US','Raw data'), # no 'Percentile of population' at this time
+                                         choiceValues = c('ratio',      'raw'),      # no 'pctile' at this time
+                                         choiceNames  = c('Ratio to US','Raw data'), # no 'Percentile of population' at this time
                                          selected = 'ratio'), 
                             
                             ## hiding this option for now - defaulting to Average
@@ -589,12 +580,10 @@ app_ui <- function(request) {
                             )
                      )
                    )
-                   
-                   
                  ),
                  
-                 ## vertical space
-                 br(),br(),
+                 br(), ## vertical space
+                 br(),
                  
                  h3("Explore Indicator Distributions"),
                  
@@ -612,12 +601,11 @@ app_ui <- function(request) {
                             ## input; Histogram settings - data type
                             radioButtons(inputId = 'summ_hist_data', label = h5('Data type'),
                                          choiceNames = c('Percentile of US', 'Raw data'),
-                                         choiceValues = c('pctile', 'raw')),
+                                         choiceValues = c('pctile',          'raw')),
                             
                             ## input: Histogram settings - number of bins
                             sliderInput(inputId = 'summ_hist_bins', label = h5('Bins'),
                                         min = 5, max = 50, step = 5, value = 10),
-                            
                      ),
                      column(10, align='center',
                             ## output: display histogram
@@ -629,29 +617,28 @@ app_ui <- function(request) {
                               column(6, offset=3,
                                      ## input: indicator dropdown for histogram
                                      selectInput('summ_hist_ind', label = 'Choose indicator',
-                                                 choices = setNames(c(gsub('VSI.eo', 'Demog.Index',EJAM::names_d), EJAM::names_e, EJAM::names_ej),
+                                                 choices = setNames(c(EJAM::names_d, EJAM::names_e, EJAM::names_ej),
                                                                     c(EJAMbatch.summarizer::names_d_friendly, 
                                                                       EJAMbatch.summarizer::names_e_friendly, 
                                                                       EJAMbatch.summarizer::names_ej_friendly))
                                      )
                               )
                             )
-                            
-                            
                      ) #end column with hist 
                    ) #end fluidrow
                  ) # end wellpanel
         ), # end graphical results tab
         
-        ## full report generation tab
+        ######################################################################################################### #
+        
+        # Full written report tab ####
+        
         tabPanel(title = 'Full Report',
                  
-                 ## vertical space       
-                 br(),       
+                 br(), ## vertical space
                  
                  wellPanel(       
-                   ## vertical space
-                   br(),
+                   br(), ## vertical space
                    
                    ## arrange text and buttons
                    fluidRow(
@@ -887,8 +874,11 @@ app_ui <- function(request) {
                  
         ), # end report generation tab
         
-        ## advanced settings tab - this is hidden by default
-        ## but can be activated by a button (see About EJAM tab)
+        ######################################################################################################### #
+        
+        # Advanced settings tab ####
+        
+        # - hidden by default but can be activated by a button (see About EJAM tab)
         tabPanel(title = 'Advanced Settings',
                  
                  ## input: Name for 1st set of comparisons
@@ -919,8 +909,7 @@ app_ui <- function(request) {
                               value=threshold.default['comp2']
                  ),
                  
-                 ## vertical space     
-                 br(),
+                 br(), ## vertical space
                  
                  ## input: upload batch buffer output - standard report stats
                  shiny::fileInput(inputId = 'bt_upload_adj',
@@ -933,7 +922,6 @@ app_ui <- function(request) {
                                   label = 'Upload batch buffer output - adjusted for double counting',
                                   accept = c('.xls', '.xlsx', ".csv", "text/csv", "text/comma-separated-values, text/plain")
                  ),
-                 
                  
                  ## input: Limit to facilities where selected NAICS is found w/in EPA list
                  shiny::checkboxGroupInput(
@@ -961,7 +949,11 @@ app_ui <- function(request) {
       
     ) ## end fluidPage
   )
-} ########################################################################### #
+}
+
+
+########################################################################### #
+# ___________ App UI ends here ________ ####
 
 #' Add external Resources to App (from golem package code)
 #'
@@ -988,3 +980,4 @@ golem_add_external_resources <- function() {   # (adds external Resources to App
     
   )
 }
+########################################################################### #

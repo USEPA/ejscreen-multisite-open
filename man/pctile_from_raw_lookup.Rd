@@ -2,6 +2,7 @@
 % Please edit documentation in R/pctile_from_raw_lookup.R
 \name{pctile_from_raw_lookup}
 \alias{pctile_from_raw_lookup}
+\alias{lookup_pctile}
 \title{Find approx wtd percentiles in lookup table that is in memory}
 \usage{
 pctile_from_raw_lookup(

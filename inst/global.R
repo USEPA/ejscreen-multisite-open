@@ -1,53 +1,57 @@
-# inst/global.R defines variables and functions needed in global environment
+# global.R defines variables needed in global environment
 
-## load packages
-library(tidyverse)
-library(leaflet)
-library(data.table)
-library(DT)
-library(EJAM)
-library(shinyBS)
-library(shinyjs)
-library(readxl)
-library(shinycssloaders)
+## demographic indicator name ####
 
-## load functions from repo that are newer than EJAM package
-## paths point from /inst folder to R/ folder
-source('./R/frs_is_valid.R')
-source('./R/NAICS_validation.R')
-source('./R/doaggregate.R')
-source('./R/lookup_pctile.R')
-source('./R/latlon_infer.R')
-source('./R/workbook_output_styled.R')
-source('./R/plot_facilities.R')
-source('./R/format_gt_table.R')
+names_d_fixed              <- c(EJAM::names_d ,              EJAM::names_d_subgroups)
+names_d_pctile_fixed       <- c(EJAM::names_d_pctile ,       EJAM::names_d_subgroups_pctile)
+names_d_state_pctile_fixed <- c(EJAM::names_d_state_pctile , EJAM::names_d_subgroups_state_pctile)
+## get display names from map_headernames file
+# long_names_d <- EJAMejscreenapi::map_headernames %>%
+#   filter(newnames_ejscreenapi %in% names_d_fixed) %>%
+#   select(vars = newnames_ejscreenapi, var_names = longname_tableheader)
+# maybe this is easier
+long_names_d <- data.frame(vars=names_d_fixed, var_names= c(names_d_friendly, names_d_subgroups_friendly), stringsAsFactors = FALSE) 
 
-## set color and type of loading spinners
+
+
+# see DESCRIPTION file for packages this depends on or imports  
+
+## set color and type of loading spinners ####
 ## note: was set at type = 1, but this caused screen to "bounce"
 options(spinner.color="#005ea2", spinner.type = 4)
 
-# increase memory limit for file uploads to 100Mb
+# increase memory limit for file uploads to 100Mb ####
 options(shiny.maxRequestSize = 100*1024^2) 
 
-## sub out demographic indicator name
-names_d_fixed <- gsub('VSI.eo','Demog.Index' , EJAM::names_d)
+# aliases for lat/lon and ECHO data validation - but this should be handled in latlon_infer()  
+# only process if lat and lon (or aliases) exist in uploaded data
+lat_alias <- c('lat', 'latitude83',  'latitude',  'latitudes',  'faclat',  'lats')
+lon_alias <- c('lon', 'longitude83', 'longitude', 'longitudes', 'faclong', 'lons', 'long', 'longs', 'lng')
 
-# used in lat/lon and ECHO data validation
-# only process if latm and lon (or aliases) exist in uploaded data
-lat_alias <- c('lat', 'latitude83', 'latitude', 'latitudes', 'faclat', 'lats')
-lon_alias <- c('lon', 'longitude83', 'longitude', 'longitudes', 'faclong', 'long', 'longs', 'lons','lng')
-
-
-## global variable for mapping
+## global variable for mapping (EJAMejscreenapi had this as data loaded by pkg?)
 meters_per_mile <- 1609.344
 
-## code to generate quadtree dataset on app startup
-localtree <- SearchTrees::createTree(
-  EJAMblockdata::quaddata, treeType = "quad", dataType = "point"
+## generate quadtree index on app startup in case not already autoloaded when EJAM package was loaded 
+if (!exists("localtree")) {
+  localtree <- SearchTrees::createTree(
+    EJAMblockdata::quaddata, treeType = "quad", dataType = "point"
+  )
+}
+
+## EPA programs to limit NAICS/ facilities query #### 
+## used by inputId 'ss_limit_fac1' and 'ss_limit_fac2'
+epa_programs <- c(
+  "TRIS" = "TRIS",
+  "RCRAINFO" = "RCRAINFO",
+  "AIRS/AFS" = "AIRS/AFS", 
+  "E-GGRT" = "E-GGRT",
+  "NPDES" = "NPDES", 
+  "RCRAINFO" = "RCRAINFO", 
+  "RMP" = "RMP"
 )
 
-
-## create list of NAICS codes split by first 2 numbers in code - not currently used
+## 2-digit NAICS - not used ####
+# create list of NAICS codes split by first 2 numbers in code - not currently used
 ## e.g. "11 - Agriculture, Forestry, Fishing and Hunting",                              
 ## "21 - Mining, Quarrying, and Oil and Gas Extraction", "22 - Utilities"     
 # naics_start_code <- substr(EJAM::NAICS, 1, 2)
@@ -58,14 +62,12 @@ localtree <- SearchTrees::createTree(
 #   names(naics_as_list)[[j]] <- names(EJAM::NAICS)[EJAM::NAICS == unique(naics_start_code)[j]]
 # }
 
+# Defaults for quantiles summary stats etc. ####
 
-# Defaults for quantiles summary stats
 ## can be used by inputId 'an_list_pctiles'
-probs.default.selected <- c(0.25, 0.75, 0.95)
-probs.default.values <- c(0, 0.25, 0.5, 0.75, 0.8, 
-                          0.9, 0.95, 0.99, 1)
+probs.default.selected <- c(   0.25,            0.80,     0.95)
+probs.default.values   <- c(0, 0.25, 0.5, 0.75, 0.8, 0.9, 0.95, 0.99, 1)
 probs.default.names <- formatC(probs.default.values, digits = 2, format='f', zero.print = '0')
-
 
 # a default for cutoff in at/above threshold stat summarizing EJ US percentiles
 ## used by inputIds 'an_thresh_comp1' and 'an_thresh_comp2'
@@ -78,7 +80,9 @@ threshgroup.default <- list(
   'comp1' = "EJ US pctiles",  'comp2' = "EJ State pctiles"
 )
 
-## HTML outline for full report
+# ~~~~ ####
+## *** HTML outline for full report ####
+
 report_outline <- "
 <div style = 'height: 90vh; overflow-y: auto;'>
     <ol>
@@ -130,9 +134,9 @@ report_outline <- "
         <li>References</li>
     </ol>
 </div>"
+# ~~~~ ####
+## text for "About EJAM" tab ####
 
-
-## text for About EJAM tab
 intro_text <- tagList(
   tags$h5("EPA has developed a number of different tools for environmental justice (EJ) mapping, screening, and analysis, including EJScreen. EJScreen has a dataset with environmental, demographic, and EJ indicators for each block group in the US. \nIt can provide a report summarizing those values for the average person within some distance (e.g., 1 mile) from a specified point."),
   tags$h5("It is often useful to know the nature of the environmental conditions, the demographics, and/or EJ index values near a whole set of the facilities in a particular sector, such as in the context of developing a proposed rule. EJAM allows users to select a set of facilities, defined by NAICs industrial category codes or by uploading a list of locations. The tool then can provide statistics for a user-specified buffer area around the selected facilities."),
@@ -151,25 +155,8 @@ intro_text <- tagList(
   )
 )
 
-## help text for all upload methods - not currently used
-# upload_help_msg <- ' <div class="row">
-#     <div class="col-sm-12">
-#         <div id="selectFrom1" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline">
-#           <label class="control-label" for="selectFrom1">
-#             <h5>Users may use only one of the four methods of defining the Universe of Interest: 
-#             <ul>
-#               <li>Select by Industry (NAICS) Code</li>
-#               <li>Upload EPA Facility ID (FRS Identifers) file</li>
-#               <li>Upload Location (latitude/longitude) file</li>
-#               <li>Upload ECHO file</li>
-#             </ul>
-#             </h5>
-#           </label>
-#       </div>
-#     </div>
-#   </div>'
+## help text for latlon upload ####
 
-## help text for latlon upload
 latlon_help_msg <- '
 <div class="row">
   <div class="col-sm-12">
@@ -202,8 +189,28 @@ latlon_help_msg <- '
   </div>
   </div>'
 
-## text message about ECHO facility search
+## help text for all upload methods - not currently used
+# upload_help_msg <- ' <div class="row">
+#     <div class="col-sm-12">
+#         <div id="selectFrom1" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline">
+#           <label class="control-label" for="selectFrom1">
+#             <h5>Users may use only one of the four methods of defining the Universe of Interest: 
+#             <ul>
+#               <li>Select by Industry (NAICS) Code</li>
+#               <li>Upload EPA Facility ID (FRS Identifers) file</li>
+#               <li>Upload Location (latitude/longitude) file</li>
+#               <li>Upload ECHO file</li>
+#             </ul>
+#             </h5>
+#           </label>
+#       </div>
+#     </div>
+#   </div>'
+
+
+## help text about ECHO facility search ####
 ## used by inputId 'ss_search_echo'
+
 echo_url <-  'https://echo.epa.gov/facilities/facility-search' # used in server.R and in message below
 echo_message <- shiny::HTML(paste0('To use the ECHO website to search for and specify a list of regulated facilities, 
                                     <br>1) Go to ', '<a href=\"', echo_url, '\", target=\"_blank\">', echo_url,  '</a>', ' and <br>
@@ -213,7 +220,8 @@ echo_message <- shiny::HTML(paste0('To use the ECHO website to search for and sp
                                     4) click Download Data, then <br>
                                     5) Return to this app to upload that ECHO site list.<br>'))
 
-## help text for FRS
+## help text for FRS ####
+
 frs_help_msg <- HTML('  <div class="row">
     <div class="col-sm-12">
       <div class="well">
@@ -239,26 +247,24 @@ frs_help_msg <- HTML('  <div class="row">
   </div>')
 
 
-## named vector of EPA programs to limit facilities to
-## used by inputId 'ss_limit_fac1' and 'ss_limit_fac2'
-epa_programs <- c(
-  "TRIS" = "TRIS", "RCRAINFO" = "RCRAINFO",
-  "AIRS/AFS" = "AIRS/AFS", "E-GGRT" = "E-GGRT",
-  "NPDES" = "NPDES", "RCRAINFO" = "RCRAINFO", "RMP" = "RMP"
-)
+
+# ~~~~ ####
+# ___TEMPLATE ONE EPA SHINY APP WEBPAGE _______ ####
 
 html_header_fmt <- tagList(
   #################################################################################################################### #
-  # ______________TEMPLATE ONE EPA SHINY APP WEBPAGE ####
   
-  # WHERE TO FIND THIS template # 
+  
+  # WHERE TO FIND THIS template (?) # 
   # browseURL("https://github.com/USEPA/webcms/blob/main/utilities/r/OneEPA_template.R")
   
   # START OF ONEEPA SHINY APP WEB UI TEMPLATE to insert within your fluid page  
   #################################################################################################################### #      
   
   tags$html(class = "no-js", lang="en"),
-  ## head ####
+  
+  ### head ####
+  
   tags$head(
     HTML(
       "<!-- Google Tag Manager -->
@@ -272,11 +278,13 @@ html_header_fmt <- tagList(
     ),
     tags$meta(charset="utf-8"),
     tags$meta(property="og:site_name", content="US EPA"),
+    
     #tags$link(rel = "stylesheet", type = "text/css", href = "css/uswds.css"),
-    tags$link(rel = "stylesheet", type = "text/css", href = "https://cdnjs.cloudflare.com/ajax/libs/uswds/3.0.0-beta.3/css/uswds.min.css", integrity="sha512-ZKvR1/R8Sgyx96aq5htbFKX84hN+zNXN73sG1dEHQTASpNA8Pc53vTbPsEKTXTZn9J4G7R5Il012VNsDEReqCA==", crossorigin="anonymous", referrerpolicy="no-referrer"),
-    tags$meta(property="og:url", content="https://www.epa.gov/themes/epa_theme/pattern-lab/.markup-only.html"),
+    tags$link(rel="stylesheet", type = "text/css", href = "https://cdnjs.cloudflare.com/ajax/libs/uswds/3.0.0-beta.3/css/uswds.min.css", integrity="sha512-ZKvR1/R8Sgyx96aq5htbFKX84hN+zNXN73sG1dEHQTASpNA8Pc53vTbPsEKTXTZn9J4G7R5Il012VNsDEReqCA==", crossorigin="anonymous", referrerpolicy="no-referrer"),
     tags$link(rel="canonical", href="https://www.epa.gov/themes/epa_theme/pattern-lab/.markup-only.html"),
     tags$link(rel="shortlink", href="https://www.epa.gov/themes/epa_theme/pattern-lab/.markup-only.html"),
+    
+    tags$meta(property="og:url", content="https://www.epa.gov/themes/epa_theme/pattern-lab/.markup-only.html"),
     tags$meta(property="og:url", content="https://www.epa.gov/themes/epa_theme/pattern-lab/.markup-only.html"),
     tags$meta(property="og:image", content="https://www.epa.gov/sites/all/themes/epa/img/epa-standard-og.jpg"),
     tags$meta(property="og:image:width", content="1200"),
@@ -292,7 +300,7 @@ html_header_fmt <- tagList(
     tags$meta(name="viewport", content="width=device-width, initial-scale=1.0"),
     tags$meta(`http-equiv`="x-ua-compatible", content="ie=edge"),
     
-    # ##  ***  app title *** ####
+    ### Title?   ####
     # 
     # tags$title('EJAM | US EPA'),
     
@@ -341,7 +349,9 @@ html_header_fmt <- tagList(
           }'
     ))
   ),
-  ## body tag and site header ####
+  
+  ### Body tag and Site Header ####
+  
   tags$body(class="path-themes not-front has-wide-template", id="top",
             tags$script(src = 'https://cdnjs.cloudflare.com/ajax/libs/uswds/3.0.0-beta.3/js/uswds.min.js')),
   HTML(
@@ -467,7 +477,7 @@ html_header_fmt <- tagList(
       <main id="main" class="main" role="main" tabindex="-1">'
   ),
   
-  ## Individual Page Header ####
+  ### Individual Page Header ####
   HTML(
     '<div class="l-page  has-footer">
         <div class="l-constrain">
@@ -484,7 +494,7 @@ html_header_fmt <- tagList(
 )
 
 html_footer_fmt <- tagList(
-  # Individual Page Footer
+  ### Individual Page Footer ####
   
   HTML(
     '</article>
@@ -497,7 +507,7 @@ html_footer_fmt <- tagList(
     </div>'
   ),
   
-  # Site Footer
+  ### Site Footer ####
   HTML(
     '</main>
         <footer class="footer" role="contentinfo">
@@ -672,3 +682,5 @@ html_footer_fmt <- tagList(
       </a>'
   )
 )
+# ~~~~ ####
+

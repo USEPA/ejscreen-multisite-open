@@ -29,65 +29,67 @@
 #' 
 #'   - **[run_app()]** Launch the Shiny app (web interface)
 #' 
-#'   - **[getblocksnearby_and_doaggregate()]** Use outside the shiny app, does both in 1 function 
+#'   - **[ejamit()]** Use outside the shiny app, does in 1 function the two steps below:
 #' 
-#'   - **[getblocksnearbyviaQuadTree()]** or just **[getblocksnearby()]** which is a wrapper   
-#'     Very fast method to buffer, identifying which blocks are 
-#'     within specified distance of site or facility
-#'     Compare to ESRI ArcGIS methods [https://pro.arcgis.com/en/pro-app/latest/tool-reference/analysis/an-overview-of-the-proximity-toolset.htm]
-#'     and see map service that can identify nearby blocks: 
-#'  [https://geopub.epa.gov/arcgis/rest/services/ejscreen/ejquery/MapServer/71/query?where=&text=&objectIds=&time=&timeRelation=esriTimeRelationOverlaps&geometry=-91.0211604%2C30.4848044&geometryType=esriGeometryPoint&inSR=&spatialRel=esriSpatialRelContains&distance=1&units=esriSRUnit_StatuteMile&relationParam=&outFields=*&returnGeometry=false&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&havingClause=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&historicMoment=&returnDistinctValues=false&resultOffset=&resultRecordCount=&returnExtentOnly=false&sqlFormat=none&datumTransformation=&parameterValues=&rangeValues=&quantizationParameters=&featureEncoding=esriDefault&f=pjson]ddddddddddddddddddddd     
-#'  'https://geopub.epa.gov/arcgis/rest/services/ejscreen/ejquery/MapServer/71/query?where=&text=&objectIds=&time=&timeRelation=esriTimeRelationOverlaps&geometry=-91.0211604%2C30.4848044&geometryType=esriGeometryPoint&inSR=&spatialRel=esriSpatialRelContains&distance=1&units=esriSRUnit_StatuteMile&relationParam=&outFields=*&returnGeometry=false&returnTrueCurves=false&maxAllowableOffset=&geometryPrecision=&outSR=&havingClause=&returnIdsOnly=false&returnCountOnly=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&returnZ=false&returnM=false&gdbVersion=&historicMoment=&returnDistinctValues=false&resultOffset=&resultRecordCount=&returnExtentOnly=false&sqlFormat=none&datumTransformation=&parameterValues=&rangeValues=&quantizationParameters=&featureEncoding=esriDefault&f=pjson'
-#'  
-#'   - **[doaggregate()]** Summarize the indicators from  **[blockgroupstats].rda** (see below)
-#'     within each buffer weighted using blockwts
-#'     (for average resident within specified distance of site or facility)
-#'      NOTE: FUNCTION IS BEING REWRITTEN to be generic to use any indicators,
-#'      and to use smaller data files, and be faster, etc. -  work in progress.
+#'     - **[getblocksnearby()]**  Very fast method to buffer, identifying which blocks are within specified distance of site or facility
+#'     
+#'     - **[doaggregate()]** Summarize the demographic and environmental indicators from **[blockgroupstats].rda** (see below)
+#'      within each buffer weighted using blockwts (for average resident within specified distance of site or facility).
+#'      NOTE: FUNCTION IS BEING MODIFIED, to be generic to use any indicators, and be faster, etc.  
 #'
 #' @details  # **Specifying buffer sites / facilities:** ####################################################################
 #' 
-#'   A user can specify locations, via an interface, and that shiny app returns  
-#'  *`sitepoints`*, a data.table with fields siteid, lat, lon.
-#'   A user-specified table with maybe 100, 1k, 10k+ points (centers of circular buffers)
+#'   A user can specify locations, via an interface, and that shiny app returns 
+#'    
+#'  - *`sitepoints`*, a data.table with fields siteid, lat, lon. 
+#'  A user-specified table with maybe 100, 1k, 10k+ points (centers of circular buffers)
 #'   
-#'  One can specify sitepoints, the places to be analyzed (sites or facilities), 
+#'  One can specify sitepoints, with lat/lon coordinates of the places to be analyzed (sites or facilities), 
 #'  in one of three ways:
 #' 
 #'    1. **NAICS code** (selecting from a list, one or more types of facilities, as defined by NAICS). 
 #'         The NAICS are 2-digit to 6-digit codes that specify sectors or types of facilities, such as
 #'         325 - Chemical Manufacturing, or 325211 - Plastics Material and Resin Manufacturing.
+#'         
 #'    2. **Facility IDs** - EPA Facility Registry System (FRS) ID numbers
+#'    
 #'    3. **uploaded locations** as lat/lon points.
 #'    
+#'    
 #'  **1. BY INDUSTRIAL SECTOR/ NAICS:**
+#'  
 #'         Interface lets user select NAICS from pulldown, or type in NAICS 
-#'         Interface returns `naics_selected`, a vector of one or more naics codes,
-#'         converted to `sitepoints` by [EJAMfrsdata::get_siteid_from_naics()] or [EJAMfrsdata::get_latlon_from_naics()].
+#'         Interface returns a vector of one or more naics codes,
+#'         to be converted to sitepoints.
 #' 
-#'    - **[EJAMfrsdata::get_latlon_from_naics()](naics_selected)** returns `sitepoints` data.table (note here, siteid is just 1:n)
-#'  
-#'      Required **EJAMfrsdata::frs_by_naics.rda**   
+#'    - **[EJAMfrsdata::latlon_from_naics()]** takes NAICS codes and returns a data.table of site points.
+#'      Relies on **[EJAMfrsdata::frs_by_naics].rda**  A data.table, needed to get lat lon by naics. 
 #'      Need to update FRS data used here regularly, ideally frequently.
-#'      2022 version has columns   REGISTRY_ID  NAICS, lat, lon
-#'      A data.table, needed to get lat lon by naics
+#'      2023 version has columns   REGISTRY_ID,  NAICS, lat, lon
 #'      
-#'    - **[EJAMfrsdata::frs]** is not really needed for EJAM... A data.table with lat/lon location and other information
+#'      NAICS codes also can be selected by text search of industry names or by categories of codes, via [EJAMfrsdata::naics_from_any()]
 #'       
-#'  **2. BY FACILITY or PROGRAM ID:**  
-#'         Interface so user can upload FRS REGISTRY_ID or PROGRAM ID csv/xls file, 
-#'         Interface returns `frsids`, list of REGISTRY_ID values from FRS
-#'         converted to `sitepoints` with lat lon, by a lookup function and data table 
-#'         - see EJAMfrsdata::frs (to find by registry id) and EJAMfrsdata::frs_by_programid
-#' 
-#'    - **frsid2latlon function? applied to frsids will return** `sitepoints` data.table
+#'       
+#'  **2. BY FACILITY ID or PROGRAM ID:**  
 #'  
-#'         This will require **[EJAMfrsdata::frs_by_programid]** data.table with cols frsid, lat, lon 
+#'         Interface so user can upload FRS REGISTRY_ID or PROGRAM ID csv/xls file, 
+#'         Interface returns a list of REGISTRY_ID values from a copy of the EPA facility registry services (FRS) data  
+#'         to be converted to sitepoints.
+#' 
+#'    - **[EJAM::frs_from_siteid()]** takes REGISTRY_ID values and returns a data.table of site points.
+#'      Relies on **[EJAMfrsdata::frs]** data.table with columns REGISTRY_ID, lat, lon, etc.
+#'      
+#'    - **[EJAM::frs_from_programid()]** takes EPA program-specific site ID values and returns a data.table of site points.
+#'      Relies on **[EJAMfrsdata::frs_by_programid]** data.table with columns program, pgm_sys_id, REGISTRY_ID, lat, lon 
+#'      
 #' 
 #'  **3. BY LAT/LON POINT:**
-#'         Interface so user can upload latitude longitude siteid (and optionally others like sitename).
+#'  
+#'         Interface so user can specify or upload latitude longitude siteid (and optionally others like sitename),
+#'         when using [ejamit()] which in turn uses [latlon_from_anything()].
 #'         
-#'         Returns `sitepoints[ , .(siteid, lat, lon)]`  data.table (here, siteid is just 1:n)
+#'         Interface returns sitepoints data.table with siteid, lat, lon (here, siteid may be just the row number)
+#' 
 #' 
 #' @details  # **Buffering to find site-block-distances:** ####################################################################
 #' 
@@ -95,22 +97,23 @@
 #'   
 #'   Columns are siteid, lat, lon; maybe 100 to 10k points
 #'      
-#'   - **[getblocksnearby](sitepoints)** which by default uses *[getblocksnearbyviaQuadTree(sitepoints)]*
+#'   - **[getblocksnearby()](sitepoints)** which by default uses *[getblocksnearbyviaQuadTree()]*
 #'        Returns `sites2blocks` 
-#'        Requires datasets [quaddata] and [blockquadtree] (may rename)
+#'        Requires datasets [quaddata] and [blockquadtree] 
 #'        
-#'   - **sites2blocks**   Created by [getblocksnearbyviaQuadTree()] and passed to  [doaggregate()]  
+#'   - **sites2blocks**   Created by [getblocksnearby()] and passed to  [doaggregate()]  
 #'      This is a data table with maybe 100k to 1m rows (assume 1k blocks within 3 miles of each site, or 100 blocks within 1 mile),
 #'      `sites2blocks[ , .(siteid, blockid, distance or dist)]`
 #'     - siteid    (site with circular buffer to group by)
-#'     - blockid   (and blockfips?)  for join to blockwts
+#'     - blockid     for join to blockwts
 #'     - distance or dist  (in miles, from block to site) (0 or irrelevant for noncircular buffers, 
 #'          since a block is only in this table if in one or more buffers, 
 #'          unless analysis is for residents within x miles of the edges of some shapes, like facility boundaries)
 #'          
+#'          
 #' @details  # **Data files used for distance calculation:** ####################################################################
 #' 
-#'   - **[EJAMblockdata::quaddata].rda** (may rename as blockpoints)  dataset data.table
+#'   - **[EJAMblockdata::quaddata].rda** dataset data.table
 #'   
 #'    8,174,955 rows when non-populated blocks are kept. 
 #'    5,806,512 rows have Census 2020 population (and blockwt) > 0. 
@@ -122,7 +125,8 @@
 #'   
 #'     Index to quaddata (QuadTree class, via SearchTrees pkg), not a data.table 
 #' 
-#'   -------then those are used in getblocksnearbyviaQuadTree with user's sitepoints to create user's sites2blocks:
+#'   -------then those are used in getblocksnearby with some sitepoints to create sites2blocks:
+#'   
 #'   
 #' @details  # **Summarizing indicators in buffers:** ####################################################################
 #' 
@@ -146,19 +150,11 @@
 #'       EJScreen 2020 version was about 100MB as .rda)
 #'
 #'   - **[usastats].rda** and **[statestats].rda**  data.table lookup of 100 percentiles and means 
-#'       (for each indicator in blockgroupstats) in each zone (us, region, or state).
+#'       (for each indicator in blockgroupstats) in each zone (us,   or a state).
 #'       Need to update each time blockgroupstats is updated. Taken from EJScreen data or ejscreen::lookupUSA & lookupStates
 #' 
-#'   - *blocks_unique?*  Intermediate result, not saved
-#'     - blockid  Just the unique blockid values from sites2blocks
-#'     - sitecount  Number of sites near this block, which is just how many duplicates there were of this blockid
-#'     - distance  The minimum (worst-case) distance among all the duplicates for this blockid (if any dupes)
-#'         Probably do not need to save additional details about range of distances or which site
-#'   
 #'   - **bg2sites?**  Intermediate result, not saved.  aggregated version of sites2blocks
-#'        via  `bg2sites = sites2blocks[ , bgwt = sum(blockwt), by=bgid ]`
-#'            then possibly do rm(sites2blocks); gc() 
-#'            unless we want to preserve the full bg2sites info for other detailed 
+#'            unless we want to preserve the full bg2sites info for other site groupings, or later detailed 
 #'            analysis of distribution of distances in each demog group.
 #'            
 #' @details  # **Output results for user:** ####################################################################
@@ -181,9 +177,11 @@
 #'      
 #' @details  # **Data files available as examples:** ####################################################################
 #'   
-#'   * [sites2blocks_example].rda sample output of getblocksnearbyviaQuadTree or just getblocksnearby
+#'   * [testpoints_n()] can generate random test points at places weighted by population, FRS facilities, blockgroup, area, block
 #'   * [testpoints_100_dt].rda  Random test points data.table with columns lat lon site
 #'   * [testpoints_1000_dt].rda Random test points data.table with columns lat lon site
+#'   * [sites2blocks_example].rda sample output of getblocksnearbyviaQuadTree or just getblocksnearby
+#'   * See list.files("./inst/testdata/")
 #'
 #' @details  # **Identification of nearby residents -- methodology:** ####################################################################
 #'

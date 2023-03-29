@@ -26,7 +26,7 @@ see also: "NOTES_fix-update_E_and_D_variablenames_updates.R"
    /batch.summarizer/inst/ejscreenapi_variable_names_2022-04.xlsx
 
 **	ejscreenapi variable names / map_headernames.csv and was in .rda too
-	ejscreenapi's  make.popups.api() 
+	ejscreenapi's  EJAMejscreenapi::popup_from_ejscreen() 
 	ejscreenapi  outputs  -NOT ESSENTIAL AS CANT USE TO SUMMARIZE ACROSS SITES
 
 ****	ejscreen::ejscreenformulas etc. (name lists)

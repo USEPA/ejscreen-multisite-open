@@ -1,9 +1,10 @@
 #' Search for an industrial sector in the list of NAICS codes, see subsectors
-#'
+#'  THIS SHOULD BE REPLACED WITH CLEARER FUNCTIONS to get naicstable now,
+#'  i.e., EJAMfrsdata::naics_from_any()
+#' @details    
 #' Just a utility, quick way to view NAICS industrial sectors that contain queried word or phrase,
 #' but can also see all the subcategories within the matching one.
 #' 
-#' @details
 #' See <https://www.census.gov/naics/>
 #'  NOTE: By default, this shows NAICS that match the text query,
 #'  and also can include all the children NAICS even if they do not match based on text query.
@@ -24,7 +25,8 @@
 #' @param add_children default is FALSE, so it does NOT chidren (subcategories) of those that match the query.
 #' @param naics_dataset Should default to the dataset NAICS, installed with this package. see [NAICS]
 #' @param ignore.case default TRUE, ignoring whether query is upper or lower case
-#' @param exactnumber if TRUE, only return the exact match to (each) queried number (NAICS code)
+#' @param exactnumber if TRUE, only return the exact match to (each) queried number (NAICS code). 
+#'   Otherwise it can give unexpected results like finding 92811 when you queried 811.
 #' @param search_on_naics_website if TRUE (not default), 
 #'   returns URL of webpage at naics.com with info on the sector
 #' @seealso  [naics_categories] [NAICS] [naics_findwebscrape()] get_facility_info_via_ECHO function [naics_url_of_code()] [naics_url_of_query()]
@@ -45,11 +47,11 @@
 #'  # browseURL(naics_find("copper smelting", search_on_naics_website=TRUE))
 #'  
 #'  EJAMfrsdata::frs[EJAMfrsdata::frs$REGISTRY_ID %in% unlist(
-#'    EJAMfrsdata::get_siteid_from_naics(
+#'    EJAMfrsdata::siteid_from_naics(
 #'      EJAM::naics_find("pulp", add_children = TRUE))[,"REGISTRY_ID"]), 1:5]
 #'    
 #'  EJAMejscreenapi::mapfast(EJAMfrsdata::frs[EJAMfrsdata::frs$REGISTRY_ID %in% unlist(
-#'    EJAMfrsdata::get_siteid_from_naics(EJAM::naics_find("pulp"))[,"REGISTRY_ID"]),   ])
+#'    EJAMfrsdata::siteid_from_naics(EJAM::naics_find("pulp"))[,"REGISTRY_ID"]),   ])
 #'    
 #'   naics_find(211, exactnumber=TRUE)
 #'   naics_find(211, exactnumber=TRUE, add_children = TRUE)
@@ -60,7 +62,7 @@
 #' @import data.table
 #' @export
 #'
-naics_find <- function(query, add_children=FALSE, naics_dataset=NULL, ignore.case=TRUE, exactnumber=FALSE, search_on_naics_website=FALSE) {
+naics_find <- function(query, add_children=FALSE, naics_dataset=NULL, ignore.case=TRUE, exactnumber=TRUE, search_on_naics_website=FALSE) {
   # NAICS would be from installed package, EJAM::NAICS, so it will always exist if this function exists  
   # if (is.null(naics_dataset) & !exists('NAICS', )) {warning('missing NAICS dataset and not passed as a parameter to naics_find'); return(NA)}
   if (is.null(naics_dataset) &  exists('NAICS')) {naics_dataset <- EJAM::NAICS}
@@ -112,4 +114,9 @@ naics_find <- function(query, add_children=FALSE, naics_dataset=NULL, ignore.cas
   cat(paste0('\n', names(x)), '\n')
   invisible(x)
 }
+
+naics_from_name_query <- function(query) {
+  
+}
+
 

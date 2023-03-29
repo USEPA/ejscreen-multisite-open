@@ -1,11 +1,23 @@
+#' workbook_output_styled
+#' Format EJAM tabular outputs for saving as Excel spreadsheet
+#' @details  NEED TO MERGE THIS WITH EJAMejscreenapi's  prep_for_excel() 
+#' @param overall table to save in one tab, from EJAM analysis of indicators overall (one row)
+#' @param eachsite table to save in another tab, from EJAM analysis site by site (one row per site)
+#' @param graycolnums which columns to deemphasize
+#' @param graycolor color used to deemphasize some columns
+#' @param narrowcolnums which columns to make narrow
+#' @param narrow6 how narrow
+#' @param ... other params passed along to [openxlsx::writeData()]
+#'
+#' @return a workbook, ready to be saved in spreadsheet format, with tabs like "Overall" and "Each Site"
+#' @export
+#'
+#' @examples \dontrun{
+#'   wb <- workbook_output_styled(datasetResults()$results_overall, datasetResults()$results_bysite)
+#'   openxlsx::saveWorkbook(wb, "results.xlsx", overwrite = TRUE)
+#' }
 workbook_output_styled <- function(overall, eachsite, graycolnums=NULL, narrowcolnums=NULL, graycolor='gray', narrow6=6, ...) {
-  
-  # NEED TO MERGE THIS WITH EJAMejscreenapi's  prep_for_excel() 
-  
-  # example
-  # wb <- workbook_output_styled(datasetResults()$results_overall, datasetResults()$results_bysite)
-  # openxlsx::saveWorkbook(wb, "results.xlsx", overwrite = TRUE)
-  
+
   if (!is.null(graycolnums))   {graycolnums <- which(grepl('avg', names(overall)) | grepl('state', names(overall)))}   # only works for the short names
   if (!is.null(narrowcolnums)) {narrowcolnums <- graycolnums}
   
@@ -23,11 +35,20 @@ workbook_output_styled <- function(overall, eachsite, graycolnums=NULL, narrowco
     # border = "Bottom", fontColour = "white"
   )
   
+  #  also  can use  tableStyle = "TableStyleLight2" for example
+  
+  # keepNA	
+  #  If TRUE, NA values are converted to #N/A (or na.string, if not NULL) in Excel -- else NA cells will be empty.
+  #  If FALSE, NA values shown as blank/empty cells.
+  
+  # na.string	
+  #   If not NULL, and if keepNA is TRUE, NA values are converted to this string in Excel.
+  
   openxlsx::writeData(wb, 
                       sheet = 'Overall', x = overall, 
                       xy = c(1,1), colNames = TRUE, 
                       withFilter = FALSE, 
-                      keepNA = TRUE, na.string = "NA",  #  NA converted to blank or to #N/A or to na.string
+
                       headerStyle = headstyle_basic ,
                       ...
                       # borders = "rows", borderStyle = "medium",
@@ -40,36 +61,51 @@ workbook_output_styled <- function(overall, eachsite, graycolnums=NULL, narrowco
                       headerStyle = headstyle_basic ,
                       ...
   )
-  # freezePane(wb, sheet = 'Overall',   firstRow = TRUE) #, firstCol = TRUE)  ## freeze first row and column
-  openxlsx::freezePane(wb, sheet = 'Each Site', firstRow = TRUE) #, firstCol = TRUE)  ## freeze first row and column
   
+  # freeze panes
+  openxlsx::freezePane(wb, sheet = 'Each Site', firstRow = TRUE) #, firstCol = TRUE)  ## freeze first row and column
+  # freezePane(wb, sheet = 'Overall',   firstRow = TRUE)   ## freeze   column ?
+  
+  # make some cols NARROWER
   openxlsx::setColWidths(wb, 'Overall',   cols = narrowcolnums, widths = narrow6)
   openxlsx::setColWidths(wb, 'Each Site', cols = narrowcolnums, widths = narrow6)
+  
+  # make some cols GRAY/DIMMED
   style_gray <- openxlsx::createStyle(bgFill = graycolor)
   openxlsx::addStyle(wb, 'Overall',   cols = graycolnums, rows = 1, style = style_gray)
-  openxlsx:: addStyle(wb, 'Each Site', cols = graycolnums, rows = 1, style = style_gray)
+  openxlsx::addStyle(wb, 'Each Site', cols = graycolnums, rows = 1, style = style_gray)
   
   return(wb)
   
+  #                         NOTES ON OTHER IDEAS: 
+
+  #   PERCENTAGE STYLE
+  #
   # style1 <- createStyle(   numFmt = "percentage")
   # addStyle(wb, 1, style = style1, 
   #          rows = 2:(nrow(df) + 1), cols = cols1, gridExpand = TRUE)
+  # 
   
-  # ## colourscale colours cells based on cell value
-  # df <- read.xlsx(system.file("readTest.xlsx", package = "openxlsx"), sheet = 4)
-  # writeData(wb, "colourScale", df, colNames = FALSE)  ## write data.frame
-   
-  
-  # qplot(data = iris, x = Sepal.Length, y = Sepal.Width, colour = Species)
-  # insertPlot(wb, sheet = 'plot', xy = c("B", 3))  ## insert plot at cell B3
-  ## To stop auto-formatting numerics set
-  # options(openxlsx.numFmt = NULL)
-  # means <- aggregate(x = iris[, -5], by = list(iris$Species), FUN = mean)
-  
-  # writeDataTable() # can use  tableStyle = "TableStyleLight2" and
+  # 
   # class(df$Cash2) <- "accounting"
   # class(df$hLink) <- "hyperlink"
   # class(df$Percentage) <- "percentage"
+  # 
+  ## To stop auto-formatting numerics set
+  # options(openxlsx.numFmt = NULL)
+  
+  
+  #   HEATMAP COLORING (conditional formatting)
+  #
+  # ## colourscale colours cells based on cell value
+  # df <- read.xlsx(system.file("readTest.xlsx", package = "openxlsx"), sheet = 4)
+  # writeData(wb, "colourScale", df, colNames = FALSE)  ## write data.frame
+  
+  #   INSERT A PLOT 
+  # 
+  # qplot(data = iris, x = Sepal.Length, y = Sepal.Width, colour = Species)
+  # insertPlot(wb, sheet = 'plot', xy = c("B", 3))  ## insert plot at cell B3
+  
 }
 
 

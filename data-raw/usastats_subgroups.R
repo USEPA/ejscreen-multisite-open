@@ -2,6 +2,25 @@
 # This is a script used to add columns to usastats and statestats with info on demographic subgroups
 
 
+# and fixed the Demog.Index vs VSI.eo issue here too (maybe already changed usastats):
+# names(usastats) <- gsub("VSI.eo","Demog.Index",names(usastats))
+# names(statestats) <- gsub("VSI.eo","Demog.Index",names(statestats))
+
+
+# TEMPORARILY PUT IN ZEROES FOR THESE 2 VARIABLES UNTIL EJSCREEN PROVIDES THEM FOR DOWNLOAD ####
+usastats$lowlifex <- 0
+usastats$Demog.Index.Supp <- 0
+statestats$lowlifex <- 0 
+statestats$Demog.Index.Supp <- 0
+usethis::use_data(usastats,overwrite = TRUE)
+# ✔ Setting active project to 'C:/Users/mcorrale/R/mysource/EJAM'
+# ✔ Saving 'usastats' to 'data/usastats.rda'
+# • Document your data (see 'https://r-pkgs.org/data.html')
+usethis::use_data(statestats,overwrite = TRUE)
+# ✔ Saving 'statestats' to 'data/statestats.rda'
+# • Document your data (see 'https://r-pkgs.org/data.html')
+
+
 # Create percentile lookup tables for extra variables like demographic race/ethnicity subgroups
 bg <- data.table::copy(EJAM::blockgroupstats)
 bg <- data.table::setDF(bg)
@@ -46,8 +65,11 @@ usastats2                           <- EJAM::metadata_add(usastats2)
 
 usastats <- usastats2
 data.table::setDF(usastats) # keep as data.frame actually
+
 usethis::use_data(usastats, overwrite = TRUE)
 
 statestats <- statestats2
 data.table::setDF(statestats) # keep as data.frame actually
+
+
 usethis::use_data(statestats, overwrite = TRUE)

@@ -7,11 +7,14 @@
 #' @export
 #'
 #' @examples 
-#'   latlon_infer(c('trilat', 'belong', 'belong')) # warns if no alias found. Does not warn of dupes in other terms, just preferred term.
+#'   latlon_infer(c('trilat', 'belong', 'belong')) # warns if no alias found, 
+#'     #  but doesnt warn of dupes in other terms, just preferred term.
 #'   latlon_infer(c('a', 'LONG', 'Longitude', 'lat')) # only the best alias is converted/used
 #'   latlon_infer(c('a', 'LONGITUDE', 'Long', 'Lat')) # only the best alias is converted/used
-#'   latlon_infer(c('a', 'longing', 'Lat', 'lat', 'LAT')) # case variants of preferred are left alone only if lowercase one is found
-#'   latlon_infer(c('LONG', 'long', 'lat')) # case variants of a single alias are converted to preferred word (if pref not found), creating dupes!  warn!
+#'   latlon_infer(c('a', 'longing', 'Lat', 'lat', 'LAT')) # case variants of preferred are 
+#'       # left alone only if lowercase one is found
+#'   latlon_infer(c('LONG', 'long', 'lat')) # case variants of a single alias are 
+#'       # converted to preferred word (if pref not found), creating dupes!  warn!
 #'   latlon_infer(c('LONG', 'LONG')) # dupes of an alias are renamed and still are dupes! warn!
 #'   latlon_infer(c('lat', 'lat', 'Lon')) # dupes left as dupes but warn!
 #'   
@@ -46,6 +49,7 @@ latlon_infer <- function(mycolnames) {
   
   x <- infer('lat', x)
   x <- infer('lon', x)
+  if (!isTRUE(all.equal(x, mycolnames))) {warning("Replaced column names that were inferred to be and therefore renamed as the lat and/or lon columns!")}
   x
   
 }

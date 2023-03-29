@@ -38,7 +38,7 @@
 # 9    541        8  533                 EJAM   /R/                       app_server.R
 # 12   405      170  235                 EJAM   /R/                   golem_utils_ui.R
 # 13   380       27  353 EJAMbatch.summarizer   /R/                  batch.summarize.R
-# 15   328       27  301      EJAMejscreenapi   /R/                  make.popups.api.R
+# 15   328       27  301      EJAMejscreenapi   /R/                  make.popups.api.R renamed EJAMejscreenapi::popup_from_ejscreen
 # 16   325       47  278      EJAMejscreenapi   /R/                      ejscreenapi.R
 # 19   281        9  272 EJAMbatch.summarizer   /R/ ascript_for_now_to_get_US_TOTALS.R
 # 22   256       96  160      EJAMejscreenapi   /R/               ejscreenapi_script.R
@@ -65,7 +65,7 @@
 # 12   405      170  235                 EJAM                     /R/                            golem_utils_ui.R
 # 13   380       27  353 EJAMbatch.summarizer                     /R/                           batch.summarize.R
 
-# 15   328       27  301      EJAMejscreenapi                     /R/                           make.popups.api.R
+# 15   328       27  301      EJAMejscreenapi                     /R/                           make.popups.api.R renamed EJAMejscreenapi::popup_from_ejscreen
 # 16   325       47  278      EJAMejscreenapi                     /R/                               ejscreenapi.R
 
 # 18   281        9  272 EJAMbatch.summarizer                     /R/          ascript_for_now_to_get_US_TOTALS.R
@@ -126,7 +126,7 @@
 # Most of the code is in these files:
 #
 #   lines comments code         package where                     filename
-# 4    328       27  301 EJAMejscreenapi   /R/            make.popups.api.R
+# 4    328       27  301 EJAMejscreenapi   /R/            make.popups.api.R renamed EJAMejscreenapi::popup_from_ejscreen
 # 5    325       47  278 EJAMejscreenapi   /R/                ejscreenapi.R
 # 7    256       96  160 EJAMejscreenapi   /R/         ejscreenapi_script.R
 # 8    228      119  109 EJAMejscreenapi   /R/               locate_by_id.R

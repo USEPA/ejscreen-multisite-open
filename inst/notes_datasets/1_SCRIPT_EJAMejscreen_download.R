@@ -40,34 +40,16 @@ ejscreen_pctile_lookups_from_ftp <- function(
 }
 ################## #
 
-x <- ejscreen_pctile_lookups_from_ftp()
-USA_2022    <- x$USA_2022
-States_2022 <- x$States_2022
-
-# rename indicator variables ####
-# maybe change names, but which function to use?
-# this  works but relies on ejscreen:: pkg, and see EJAMbatch.summarizer::change... and fixnames and fixcolnames and fixnamestype etc. 
-names(USA_2022)    <- ejscreen::ejscreenformulas$Rfieldname[match(names(USA_2022),    ejscreen::ejscreenformulas$gdbfieldname)]
-names(States_2022) <- ejscreen::ejscreenformulas$Rfieldname[match(names(States_2022), ejscreen::ejscreenformulas$gdbfieldname)]
-
-#  ***********  * * * * * * *    to be completed still   
 
 
-# maybe change units (1 vs 100?) - percentages are 0 to 1, percentiles are 0 to 100, in these lookup tables. and in blockgroupstats
 
-
-#  ***********  * * * * * * *    to be completed still   
- # ALSO see script in  /EJAM/data-raw/usastats_subgroups.R
-# That was used to add subgroups to these 2 tables before they were saved for the package.
-# usethis::use_data(USA_2022,    overwrite = TRUE)
-# usethis::use_data(States_2022, overwrite = TRUE)
 
 ########################################################### #
 
 # new Supplemental indicators are here - but probably want to combine merge the supplemental and other !? ####
-# *LIFE EXPECTANCY (Raw value, pctile, state.pctile, bin, state.bin, textpopup)
-# *1 SUPPLEMENTARY DEMOG INDEX BASED ON 5 DEMOG VARS (raw, pctile, etc.)
-# *12 SUPPLEMENTARY EJ INDEXES BASED ON SUPPL DEMOG IND (raw, pctile, etc.)
+# *LIFE EXPECTANCY (Raw value, pctile, state.pctile, bin, state.bin, textpopup)   lowlifex ... 
+# *1 SUPPLEMENTARY DEMOG INDEX BASED ON 5 DEMOG VARS (raw, pctile, etc.)         Demog.Index.Supp   etc
+# *12 SUPPLEMENTARY EJ INDEXES BASED ON SUPPL DEMOG IND (raw, pctile, etc.)     EJ.DISPARITY.traffic.score.supp   ...
 
 # DOWNLOAD ZIP FILES ####
 baseurl = "https://gaftp.epa.gov/EJSCREEN/2022/"
@@ -104,22 +86,95 @@ curl::multi_download(urls = file.path(baseurl, fnames), destfiles = file.path(td
 #               destfile = "EJSCREEN_2022_Supplemental_with_AS_CNMI_GU_VI.csv.zip")
 # UNZIP ####
 for (i in 1:length(fnames)) {
-  print( unzip(file.path(td, fnames[i]), exdir = getwd(), overwrite = TRUE)  )
+  print( unzip(file.path(td, fnames[i]),  exdir =  td, overwrite = TRUE)  )
 }
 ########################################################### #
 # READ CSV FILES ####
 getfile <- function(fname, folder=td) {as.data.frame(readr::read_csv(file.path(folder, fname)))}
 
-EJSCREEN_Full_with_AS_CNMI_GU_VI      <- getfile("EJSCREEN_Full_with_AS_CNMI_GU_VI.csv")
-EJSCREEN_StatePct_with_AS_CNMI_GU_VI  <- getfile("EJSCREEN_StatePct_with_AS_CNMI_GU_VI.csv")
+
+# note the 2022 is omitted here in how they get renamed which can be confusing:
+
+EJSCREEN_Full_with_AS_CNMI_GU_VI      <- getfile("EJSCREEN_2022_Full_with_AS_CNMI_GU_VI.csv", td)
+EJSCREEN_StatePct_with_AS_CNMI_GU_VI  <- getfile("EJSCREEN_2022_StatePct_with_AS_CNMI_GU_VI.csv", td)
 # __but probably want to combine merge the supplemental and other !? ####
-EJSCREEN_2022_Supplemental_with_AS_CNMI_GU_VI          <- getfile("EJSCREEN_2022_Supplemental_with_AS_CNMI_GU_VI.csv")
-EJSCREEN_2022_Supplemental_StatePct_with_AS_CNMI_GU_VI <- getfile("EJSCREEN_2022_Supplemental_StatePct_with_AS_CNMI_GU_VI.csv")
+EJSCREEN_2022_Supplemental_with_AS_CNMI_GU_VI          <- getfile("EJSCREEN_2022_Supplemental_with_AS_CNMI_GU_VI.csv", td)
+EJSCREEN_2022_Supplemental_StatePct_with_AS_CNMI_GU_VI <- getfile("EJSCREEN_2022_Supplemental_StatePct_with_AS_CNMI_GU_VI.csv", td)
 
 # check if same varnames used for state and us pctiles, and make them distinct
 
+these = c(
+'EJSCREEN_Full_with_AS_CNMI_GU_VI',
+'EJSCREEN_StatePct_with_AS_CNMI_GU_VI',
+'EJSCREEN_2022_Supplemental_with_AS_CNMI_GU_VI',
+'EJSCREEN_2022_Supplemental_StatePct_with_AS_CNMI_GU_VI'
+)
+sapply(these, function(x) dim(get(x)))
+# setdiff(names(EJSCREEN_2022_Supplemental_with_AS_CNMI_GU_VI), names(EJSCREEN_Full_with_AS_CNMI_GU_VI))
+# [1] "LIFEEXPCT"   "P_LIFEEXPCT" "B_LIFEEXPCT" "T_LIFEEXPCT"
+
 
    #  ***********  * * * * * * *    to be completed still   
+
+
+
+
+
+x <- ejscreen_pctile_lookups_from_ftp()
+USA_2022    <- x$USA_2022
+States_2022 <- x$States_2022
+
+# SUPPLEMENTARY NOT THERE YET AS OF 3/29/2023
+
+
+#  ***********  * * * * * * *    to be completed still   
+
+
+
+
+# maybe change units (1 vs 100?) - percentages are 0 to 1, percentiles are 0 to 100, in these lookup tables. and in blockgroupstats
+
+
+
+
+#  ***********  * * * * * * *    to be completed still   
+
+
+
+
+# ALSO see script in  /EJAM/data-raw/usastats_subgroups.R
+# That was used to add subgroups to these 2 tables before they were saved for the package.
+
+# rename indicator variables ####
+
+# LACK lowlifex, Demog.Index.Supp, etc.
+
+# may change names, but which function to use?
+# this  works but relies on ejscreen:: pkg, and see EJAMbatch.summarizer::change... and fixnames and fixcolnames and fixnamestype etc. 
+names(USA_2022)    <- ejscreen::ejscreenformulas$Rfieldname[match(names(USA_2022), ejscreen::ejscreenformulas$gdbfieldname)]
+# map_headernames$newnames_ejscreenapi[match(names(USA_2022), map_headernames$oldnames)]
+names(States_2022) <- ejscreen::ejscreenformulas$Rfieldname[match(names(States_2022), ejscreen::ejscreenformulas$gdbfieldname)]
+# names(USA_2022)    <- ejscreen::ejscreenformulas$Rfieldname[match(names(USA_2022),    ejscreen::ejscreenformulas$gdbfieldname)]
+# names(States_2022) <- ejscreen::ejscreenformulas$Rfieldname[match(names(States_2022), ejscreen::ejscreenformulas$gdbfieldname)]
+names(USA_2022)[2]
+names(USA_2022)[2] <- "PCTILE"
+names(States_2022) <- "PCTILE"
+gsub("VSI.eo","Demog.Index", names(USA_2022))
+gsub("VSI.eo","Demog.Index", names(States_2022))
+
+# asdf <- copy(USA_2022)
+# names(asdf) <- ejscreen::change.fieldnames.ejscreen.csv( names(asdf) )
+# USA_2022  <- copy(asdf)
+# 
+# asdf <- copy(States_2022)
+# names(asdf) <- ejscreen::change.fieldnames.ejscreen.csv( names(asdf) )
+# States_2022 <- copy(asdf)
+
+# names(USA_2022)    <- EJAMejscreenapi::map_headernames
+# ?EJAMejscreenapi::map_headernames
+
+# usethis::use_data(USA_2022,    overwrite = TRUE)
+# usethis::use_data(States_2022, overwrite = TRUE)
 
 
 
@@ -136,16 +191,43 @@ EJSCREEN_2022_Supplemental_StatePct_with_AS_CNMI_GU_VI <- getfile("EJSCREEN_2022
 #attributes(EJSCREEN_Full_with_AS_CNMI_GU_VI)     <- c(attributes(EJSCREEN_Full_with_AS_CNMI_GU_VI),     meta)
 EJSCREEN_Full_with_AS_CNMI_GU_VI      <- EJAM::metadata_add(EJSCREEN_Full_with_AS_CNMI_GU_VI)
 EJSCREEN_StatePct_with_AS_CNMI_GU_VI  <- EJAM::metadata_add(EJSCREEN_StatePct_with_AS_CNMI_GU_VI) 
+
 USA_2022                              <- EJAM::metadata_add(USA_2022)
 States_2022                           <- EJAM::metadata_add(States_2022)
+
 EJSCREEN_2022_Supplemental_with_AS_CNMI_GU_VI          <- EJAM::metadata_add(EJSCREEN_2022_Supplemental_with_AS_CNMI_GU_VI)
 EJSCREEN_2022_Supplemental_StatePct_with_AS_CNMI_GU_VI <- EJAM::metadata_add(EJSCREEN_2022_Supplemental_StatePct_with_AS_CNMI_GU_VI)
 
 
 # what about lookups for supplemental indicators?? ####
+# LIFEEXPCT	% low life expectancy
 
 
 #  ***********  * * * * * * *    to be completed still   
+
+
+# 
+# D_PM25_2	Supplemental EJ Index for Particulate Matter 2.5
+# D_OZONE_2	Supplemental EJ Index for Ozone
+# D_DSLPM_2	Supplemental EJ Index for Diesel particulate matter
+# D_CANCR_2	Supplemental EJ Index for Air toxics cancer risk
+# D_RESP_2	Supplemental EJ Index for Air toxics respiratory HI
+# D_PTRAF_2	Supplemental EJ Index for Traffic proximity
+# D_LDPNT_2	Supplemental EJ Index for Lead paint
+# D_PNPL_2	Supplemental EJ Index for Superfund Proximity
+# D_PRMP_2	Supplemental EJ Index for RMP Facility Proximity
+# D_PTSDF_2	Supplemental EJ Index for Hazardous waste proximity
+# D_UST_2	Supplemental EJ Index for Underground storage tanks
+# D_PWDIS_2	Supplemental EJ Index for Wastewater discharge
+
+
+
+
+
+
+
+
+
 
 
 
@@ -161,14 +243,6 @@ EJSCREEN_Full_with_AS_CNMI_GU_VI <- copy(bg)
 bg <- copy(EJSCREEN_StatePct_with_AS_CNMI_GU_VI)
 names(bg) <- ejscreen::change.fieldnames.ejscreen.csv( names(bg) )
 EJSCREEN_StatePct_with_AS_CNMI_GU_VI <- copy(bg)
-
-bg <- copy(USA_2022)
-names(bg) <- ejscreen::change.fieldnames.ejscreen.csv( names(bg) )
-USA_2022  <- copy(bg)
-
-bg <- copy(States_2022)
-names(bg) <- ejscreen::change.fieldnames.ejscreen.csv( names(bg) )
-States_2022 <- copy(bg)
 
 bg <- copy(EJAMejscreendata::EJSCREEN_2022_Supplemental_with_AS_CNMI_GU_VI)
 names(bg) <- ejscreen::change.fieldnames.ejscreen.csv( names(bg) )

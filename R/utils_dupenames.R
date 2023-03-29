@@ -131,3 +131,8 @@ all.equal_functions <- function(fun="latlon_infer", package1="EJAM", package2="E
   x <- (TRUE == all.equal(body(f1), body(f2))) & (TRUE == all.equal(formals(f1), formals(f2)))
   return(x)
 }
+
+#' @export
+setdiff_yx = function(x,y) setdiff(y,x)
+
+

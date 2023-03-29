@@ -6,7 +6,7 @@
 \usage{
 getblocksnearbyviaQuadTree2(
   sitepoints,
-  cutoff = 1,
+  cutoff = 3,
   maxcutoff = 31.07,
   avoidorphans = TRUE,
   report_progress_every_n = 500,

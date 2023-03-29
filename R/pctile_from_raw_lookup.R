@@ -42,27 +42,33 @@ pctile_from_raw_lookup <- function(myvector, varname.in.lookup.table, lookup=usa
   if (!('PCTILE' %in% names(lookup))) {stop('lookup must have a field called "PCTILE" that contains quantiles/percentiles')}
   lookup <- lookup[lookup$PCTILE != "std.dev", ]
   lookup <- lookup[lookup$PCTILE != "mean", ]
-
-  if (missing(zone)) {
-    whichinterval <- findInterval(myvector, lookup[ , varname.in.lookup.table])
+# browser()
+    if (!(varname.in.lookup.table %in% colnames(lookup))) {
+    warning(paste0(varname.in.lookup.table, " must be a column in lookup table"))
+    return(rep(NA, length(myvector)))
   } else {
-    if (any(!(zone %in% lookup$REGION))) {stop('zone(s) not found in lookup')}
-
-    # also see similar code in ejanalysis::assign.pctiles()
-    whichinterval <- vector(length = NROW(myvector))
-
-    for (z in unique(zone)) {
-      #find sort vectors for each zone
-      myvector_selection <- sort(myvector)
-      myvector_lookup <- sort(lookup[lookup$REGION == z, varname.in.lookup.table])
-
-      # should be OK if some or all those values in myvector are NA
-      # should check what if some or all in lookup are NA, though
-
-      whichinterval[zone == z] <- findInterval(myvector_selection, myvector_lookup)
+    if (missing(zone)) {
+      
+      whichinterval <- findInterval(myvector, lookup[ , varname.in.lookup.table])
+      
+    } else {
+      if (any(!(zone %in% lookup$REGION))) {stop('zone(s) not found in lookup')}
+      
+      # also see similar code in ejanalysis::assign.pctiles()
+      whichinterval <- vector(length = NROW(myvector))
+      
+      for (z in unique(zone)) {
+        #find sort vectors for each zone
+        myvector_selection <- sort(myvector)
+        myvector_lookup <- sort(lookup[lookup$REGION == z, varname.in.lookup.table])
+        
+        # should be OK if some or all those values in myvector are NA
+        # should check what if some or all in lookup are NA, though
+        
+        whichinterval[zone == z] <- findInterval(myvector_selection, myvector_lookup)
+      }
     }
   }
-
   # would be an error if zeroeth row were selected here,
   # so just say it is at the lowest percentile listed (which is 0)
   # even if it is below the minimum value that supposedly defines the lower edge

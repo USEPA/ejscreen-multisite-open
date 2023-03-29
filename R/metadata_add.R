@@ -36,12 +36,14 @@ metadata_add <- function(x, metadata) {
       ejscreen_releasedate = 'October 2022',
       ejscreen_pkg_data = 'bg22'
     )
+    warning("metadata not specified, so assumed it should be the following: \n")
+    print(cbind(attributes = metadata))
   }
   if (!is.list(metadata)) {stop('metadata has to be a named list')}
   for (i in seq_along(metadata)) {
     attr(x, which = names(metadata)[i]) <- metadata[[i]]
   }
-  return(x)
+  invisible(x)
 }
 
 #' helper function in updating the package metadata
@@ -88,7 +90,7 @@ metadata_check <- function(packages=NULL, which=c(
   allresults <- list()
   ii <- 0
   for (pkg in packages) {
-    # browser()
+     
     ii <- ii + 1
     if (!(pkg %in% installed.packages(fields = 'Package'))) {
       cat(paste0(pkg, ' package not installed\n'))

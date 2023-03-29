@@ -24,19 +24,17 @@
 #'    created from the SearchTree package example:
 #'    SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
 #'    Takes about 2-5 seconds to create this each time it is needed.
-#'    It can be automatically created when the package is loaded via the [.onLoad()] function
+#'    It is automatically created when the package is loaded via the [.onLoad()] function
 #' @param report_progress_every_n Reports progress to console after every n points,
 #'   mostly for testing, but a progress bar feature might be useful unless this is super fast.
-#' @examples 
-#'   localtree_example = SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
-#'   x = getblocksnearby(testpoints_1000_dt, quadtree = localtree_example)
-#'   
-#' @seealso [getblocksnearbyviaQuadTree_Clustered()] [getblocksnearbyviaQuadTree2()]
+#' @seealso [ejamit()] [getblocksnearby()] [getblocksnearbyviaQuadTree()] [getblocksnearbyviaQuadTree_Clustered()] [getblocksnearbyviaQuadTree2()]
+#' 
+#' 
 #' @export
 #' @import data.table
 #' @importFrom pdist "pdist"
-#'
-getblocksnearbyviaQuadTree  <- function(sitepoints, cutoff=1, maxcutoff=31.07, 
+#'   
+getblocksnearbyviaQuadTree  <- function(sitepoints, cutoff=3, maxcutoff=31.07, 
                                         avoidorphans=TRUE, report_progress_every_n=500, 
                                         quadtree) {
   if(class(quadtree) != "QuadTree"){

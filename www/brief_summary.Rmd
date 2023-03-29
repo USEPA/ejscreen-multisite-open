@@ -2,11 +2,11 @@
 title: "&#32;"
 output: html_document
 params:
-  n_sites: NA
+  sitecount: NA
   distance: NA
   total_pop: NA
   analysis_title: NA
-  cur_data: NA
+  results: NA
   map: NA
   envt_table: NA
   demog_table: NA
@@ -37,7 +37,7 @@ EJAM Report (EJScreen v2.1)
 :::
 ::: {#headerDiv style="font-weight: bold; font-size: 11pt; text-align: center;"}
 `r params$analysis_title`\
-Residents within `r params$distance` of any of the `r params$n_sites` sites analyzed\
+Residents within `r params$distance` of any of the `r params$sitecount` sites analyzed\
 \
 Total Population: `r params$total_pop`
 :::
@@ -53,9 +53,9 @@ library(EJAMbatch.summarizer)
 ```
 
 ```{r, out.width ='900px'}
- # dt <- cbind('Value at Uploaded Sites' = as.list( 100*round(params$cur_data$results_overall[ , ..names_d], 2)),
- #          'State Percentile' = as.list(round(params$cur_data$results_overall[, ..names_d_state_pctile], 2)),
- #          'National Percentile' = as.list(round(params$cur_data$results_overall[, ..names_d_pctile], 2)))
+ # dt <- cbind('Value at Uploaded Sites' = as.list( 100*round(params$results$results_overall[ , ..names_d], 2)),
+ #          'State Percentile' = as.list(round(params$results$results_overall[, ..names_d_state_pctile], 2)),
+ #          'National Percentile' = as.list(round(params$results$results_overall[, ..names_d_pctile], 2)))
  #    
  #  rownames(dt) <- EJAMbatch.summarizer::names_d_friendly[pmatch(names_d, EJAMbatch.summarizer::names_d_batch)]
  #  rownames(dt)[1] <- 'Demographic Index'
@@ -65,11 +65,12 @@ library(EJAMbatch.summarizer)
  #  DT::datatable(dt, rownames = FALSE, 
  #                options = list(autoWidth = TRUE))
 params$demog_table
+
 ```
 
 ```{r boxplot, out.width = '800px', out.height = '500px', fig.align='center'}
 params$boxplot +
-  scale_x_discrete(labels = function(x) stringr::str_wrap(x, 10)) +
+  ggplot2::scale_x_discrete(labels = function(x) stringr::str_wrap(x, 10)) +
   theme(plot.title = element_text(hjust=0.5, size=12),
         plot.subtitle = element_text(hjust=0.5, size=11),
         axis.title.y = element_text(size=10),
@@ -90,9 +91,9 @@ params$map
 
 ```{r}
 # dt <- cbind('Value at Uploaded Sites' = 
-#                   as.list(round(params$cur_data$results_overall[ , ..names_e],2)),
-#           'State Percentile' = as.list(round(params$cur_data$results_overall[, ..names_e_state_pctile],2)),
-#           'Percentile in USA' = as.list(round(params$cur_data$results_overall[, ..names_e_pctile],2)))
+#                   as.list(round(params$results$results_overall[ , ..names_e],2)),
+#           'State Percentile' = as.list(round(params$results$results_overall[, ..names_e_state_pctile],2)),
+#           'Percentile in USA' = as.list(round(params$results$results_overall[, ..names_e_pctile],2)))
 #     
 #     #scales::percent_format(accuracy = 0.1)()
 #     rownames(dt) <- EJAMbatch.summarizer::names_e_friendly[pmatch(names_e, EJAMbatch.summarizer::names_e_batch)]

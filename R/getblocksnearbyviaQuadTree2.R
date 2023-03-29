@@ -39,7 +39,7 @@
 #' @import data.table
 #' @importFrom pdist "pdist"
 #'
-getblocksnearbyviaQuadTree2 <- function(sitepoints, cutoff=1, maxcutoff=31.07, 
+getblocksnearbyviaQuadTree2 <- function(sitepoints, cutoff=3, maxcutoff=31.07, 
                                         avoidorphans=TRUE,  report_progress_every_n=500,
                                         quadtree) {
   if(class(quadtree) != "QuadTree"){

@@ -1,4 +1,4 @@
-#' Title
+#' format_gt_table
 #'
 #' @param df, a data frame with 6 columns (var_names, value, state_avg, state_pctile, usa_avg, usa_pctile), and one row per indicator
 #' @param type, string - one of 'demog', 'envt' 
@@ -8,7 +8,6 @@
 #' @return a 'gt'-style table with formatting to closely match EJScreen standard report formatting
 #' @export
 #'
-#' @examples
 format_gt_table <- function(df, type, my_cell_color =  '#dce6f0', my_border_color = '#0070c0'){
   
   if(type == 'demog'){

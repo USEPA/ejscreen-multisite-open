@@ -1,5 +1,6 @@
 #' Key buffering function - wrapper redirecting to the right version of getblocksnearby()
-#' @details 
+#' @details  For all examples, see [ejamit()]
+#' 
 #'   Like getblocksnearby() but tries to handle localtree and quadtree parameter differently 
 #'   - not sure how to check if they are in the right environment.
 #'  
@@ -10,10 +11,10 @@
 #' @param quadtree a large quadtree object created from the SearchTree package example:
 #'    SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
 #' @param ...          see [getblocksnearbyviaQuadTree_Clustered()] or other such functions
-#' @seealso [getblocksnearby()] 
+#' @seealso [getblocksnearby_and_doaggregate()] [getblocksnearby()] [getblocksnearbyviaQuadTree()] [getblocksnearbyviaQuadTree_Clustered()] [getblocksnearbyviaQuadTree2()]
 #' @export
 #'
-getblocksnearby2 <- function(sitepoints, cutoff=1, maxcutoff=31.07, 
+getblocksnearby2 <- function(sitepoints, cutoff=3, maxcutoff=31.07, 
                              avoidorphans=TRUE, 
                              # indexgridsize,
                              quadtree=is.null,
