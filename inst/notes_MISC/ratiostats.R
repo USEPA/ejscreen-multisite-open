@@ -14,7 +14,7 @@ ratiostats <- function(results_bybg_people, pts, dig=2 ) {
   z <- results_bybg_people # a data.table from  doaggregate()[,"results_bybg_people"]
   
   vars <- c("proximityscore", "sitecount_max", "sitecount_near_bg", names_e)
-  vars2 <- c("distance_avg", "sitedistance_min")
+  vars2 <- c("distance_avg", "distance_min")
   vars <- c(vars, vars2)
   
   # other functions that do similar things
@@ -57,7 +57,7 @@ ratiostats <- function(results_bybg_people, pts, dig=2 ) {
   # [1] "group" "not"   "ratio"
   # 
   # $e
-  # [1] "proximityscore"    "distance_avg"      "sitedistance_min"  "sitecount_max"     "sitecount_near_bg"
+  # [1] "proximityscore"    "distance_avg"      "distance_min"  "sitecount_max"     "sitecount_near_bg"
   # [6] "pm"                "o3"                "cancer"            "resp"              "dpm"              
   # [11] "pctpre1960"        "traffic.score"     "proximity.npl"     "proximity.rmp"     "proximity.tsdf"   
   # [16] "proximity.npdes"   "ust"              

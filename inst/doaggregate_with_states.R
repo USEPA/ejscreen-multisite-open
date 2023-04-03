@@ -196,7 +196,7 @@ doaggregate_with_states <- function(sites2blocks, countcols=NULL, popmeancols=NU
   # do we really need this here, or only when 1) summarizing by blockgroup and retaining both sites at one block, eg,
   #  and 2) when dropping the duplicate blocks to get overall stats?
 
-  sites2blocks[, sitedistance_min := min(distance, na.rm = TRUE), by=blockid] # Presumably sometimes very close to zero or to effective radius of nearest block.
+  sites2blocks[, distance_min := min(distance, na.rm = TRUE), by=blockid] # Presumably sometimes very close to zero or to effective radius of nearest block.
 
   ## _count of sites, for (near) each block ####
   sites2blocks[, sitecount := .N, by=blockid] # (for this, must use the table with duplicate blocks, not unique only)
@@ -206,14 +206,14 @@ doaggregate_with_states <- function(sites2blocks, countcols=NULL, popmeancols=NU
   # **** TO BE FIXED: / WARNING:  doesnt the formula need the adjustment for small distance?? You need the block area to calculate its effective radius and adjust score if distance is <that? see EJScreen tech doc
   warning('proximityscore lacks small distance adjustment factor - not yet implemented')
   # Save the distance that ....
-  sites2blocks[, sitedistance_min := min(distance, na.rm = TRUE), by=blockid]
+  sites2blocks[, distance_min := min(distance, na.rm = TRUE), by=blockid]
 
   ###################################### #
   ## * Unique residents (blocks) only, used for Overall stats ####
   ###################################### #
   # each block only once, and therefore each person only once even if near 2+ sites.
   # For each overall resident (blockid) near 1 or more sites,
-  # find and save the info for just the closest single siteid (sitedistance_min)
+  # find and save the info for just the closest single siteid (distance_min)
   # ***    Just for now, the simplistic way to drop duplicate blocks (even if other columns are not duplicates),
   #    which are residents near 2 or more sites, to avoid double-counting them, is unique()
   # This seems fine for overall stats, since you are just dropping a duplicate block
@@ -225,7 +225,7 @@ doaggregate_with_states <- function(sites2blocks, countcols=NULL, popmeancols=NU
 
   # done above: sites2blocks <- EJAMblockdata::blockwts[sites2blocks, .(siteid,blockid,distance,blockwt,bgid), on='blockid']
  
-  sites2blocks_overall <- sites2blocks[, list(sitedistance_min = min(sitedistance_min), # it already has done this, actually
+  sites2blocks_overall <- sites2blocks[, list(distance_min = min(distance_min), # it already has done this, actually
                                               sitecount_max = .N,
                                               proximityscore = sum(proximityscore),
                                               bgid,

@@ -78,11 +78,11 @@ distance_by_group <- function( results_bybg_people, demogvarname="Demog.Index", 
     results_bybg_people <- results_bybg_people$results_bybg_people
   }
   # remove duplicated blockgroups, since here we do not need stats site by site, so use shorter distance for any bg that is near 2+ sites.
-  results_bybg_people[ , distance_avg := min(distance_avg, na.rm = TRUE), by = "bgid"] # bug? they seem to be identical so taking min does nothing here???
+  results_bybg_people[ , distance_avg := min(distance_min_avgperson, na.rm = TRUE), by = "bgid"] # bug? they seem to be identical so taking min does nothing here???
   results_bybg_people <- unique(results_bybg_people, by = "bgid")
-  results_bybg_people$distance_avg[ is.infinite(results_bybg_people$distance_avg)]  <- NA
-  distance_avg_d    <- results_bybg_people[ , sum(distance_avg * pop *      .SD,  na.rm = TRUE) / sum(pop *      .SD,  na.rm = TRUE), .SDcols=demogvarname]
-  distance_avg_nond <- results_bybg_people[ , sum(distance_avg * pop * (1 - .SD), na.rm = TRUE) / sum(pop * (1 - .SD), na.rm = TRUE), .SDcols=demogvarname]
+  results_bybg_people$distance_avg[ is.infinite(results_bybg_people$distance_min_avgperson)]  <- NA
+  distance_avg_d    <- results_bybg_people[ , sum(distance_min_avgperson * pop *      .SD,  na.rm = TRUE) / sum(pop *      .SD,  na.rm = TRUE), .SDcols=demogvarname]
+  distance_avg_nond <- results_bybg_people[ , sum(distance_min_avgperson * pop * (1 - .SD), na.rm = TRUE) / sum(pop * (1 - .SD), na.rm = TRUE), .SDcols=demogvarname]
   # cat(
   #   round( distance_avg_d,   3), " vs ", 
   #   round( distance_avg_nond,3),

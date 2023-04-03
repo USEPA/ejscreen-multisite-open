@@ -25,6 +25,9 @@
 #' @import dplyr
 #' 
 app_server <- function(input, output, session) {
+  # browser()
+  ## to profile parts of the shiny app for performance
+  # callModule(profvis_server, "profiler")
   
   # Note: how to avoid or still have a global.R file in the golem approach, 
   # https://github.com/ThinkR-open/golem/issues/6

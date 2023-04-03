@@ -263,6 +263,7 @@ usethis::use_data(namez, overwrite = TRUE)
 # AND ALSO STORE EACH LITTLE OBJECT ?? ####
 
 usethis::use_data(
+  names_all,
   names_wts, names_d, names_d_pctile, names_d_state_pctile, names_d_count, names_d_friendly, names_d_avg, names_d_state_avg, 
   names_d_subgroups, names_d_subgroups_pctile, names_d_subgroups_state_pctile, names_d_subgroups_count, names_d_subgroups_avg, names_d_subgroups_state_avg, 
   names_e, names_e_pctile, names_e_state_pctile, names_e_friendly, names_e_avg, names_e_state_avg,

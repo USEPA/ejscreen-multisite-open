@@ -7,7 +7,7 @@ Plot a graphic showing cumulative shares of ONE demographic group that are withi
 \usage{
 distance_cdf_by_group_plot(
   results_bybg_people,
-  radius_miles = round(max(x$distance_avg, na.rm = T), 1),
+  radius_miles = round(max(x$distance_min_avgperson, na.rm = T), 1),
   demogvarname = "Demog.Index",
   demoglabel = demogvarname,
   color1 = "red",

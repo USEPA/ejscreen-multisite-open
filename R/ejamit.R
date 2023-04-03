@@ -88,7 +88,7 @@ ejamit <- function(sitepoints,
   # select file
   if (missing(sitepoints)) { 
     if (interactive()) {
-      sitepoints <- rstudioapi::selectFile()
+      sitepoints <- rstudioapi::selectFile(caption = "Select xlsx or csv with lat,lon values", path = '.',existing = FALSE )
     } else {
       stop("sitepoints (locations to analyze) is missing but required.")
     }
@@ -106,14 +106,17 @@ ejamit <- function(sitepoints,
     quadtree=quadtree,
     ...)
   
-  # pass along lat and lon, and hopefully ST too, so State percentiles can be reported
-  sites2states <- sitepoints
-  
   cat('Aggregating at each buffer and overall.\n')
   
-  out <- suppressWarnings (
-    doaggregate(sites2blocks = mysites2blocks, sites2states = sites2states)
+  if ("ST" %in% names(sitepoints)) { # if ST already available, use that and don't take the time to look up the ST based on blockfips or lat,lon
+    out <- suppressWarnings (
+      doaggregate(sites2blocks = mysites2blocks, sites2states = sitepoints)
     )
+  } else {
+    out <- suppressWarnings (
+      doaggregate(sites2blocks = mysites2blocks)  # omit sites2states so that it gets ST from blockfips (not lat,lon which is slow)
+    )
+  }
 
   if (interactive()) {
     
@@ -125,6 +128,11 @@ ejamit <- function(sitepoints,
     # Show datatable view in RStudio - Site by Site (each site)
     
     # Plot some results 
+      # mapfast(out$results_bysite)
+    # had a problem with Error in validateCoords(lng, lat, funcName) : 
+    # addCircles requires numeric longitude/latitude values
+    # In addition: There were 11 warnings (use warnings() to see them)
+    # Called from: validateCoords(lng, lat, funcName)
   }
   return(out)
 }

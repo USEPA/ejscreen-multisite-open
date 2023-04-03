@@ -2,6 +2,7 @@
 
 S3method(all,equal_functions)
 export(NAICS_validation)
+export(ST_by_site_from_sites2blocks)
 export(app_run_EJAM)
 export(bg_from_county)
 export(counties_as_sites)

@@ -12,7 +12,7 @@
 #' @export
 #'
 #'
-plot_distance_cdf_by_group <- function(results_bybg_people, radius_miles=round(max(x$distance_avg, na.rm = T), 1), 
+plot_distance_cdf_by_group <- function(results_bybg_people, radius_miles=round(max(x$distance_min_avgperson, na.rm = T), 1), 
                                    demogvarname= c(namez$d, namez$d_subgroups),  
                                    demoglabel= NULL,
                                    colorlist=colors()[1:length(demogvarname)], coloroverall="gray") {
@@ -27,8 +27,10 @@ plot_distance_cdf_by_group <- function(results_bybg_people, radius_miles=round(m
   }
   
   x <- results_bybg_people # not a full slow copy... done by reference using data.table::
-  data.table::setorder(x, distance_avg) 
-  x[ , distance_avg := min(distance_avg, na.rm = TRUE), by = "bgid"]
+  data.table::setorder(x, distance_min_avgperson) 
+  x[ , distance_min_avgperson := min(distance_min_avgperson, na.rm = TRUE), by = "bgid"]
+  x$distance_min_avgperson[ is.infinite(x$distance_min_avgperson)]  <- NA
+  
   x <- unique(x, by = "bgid")
   x[ , overall := 1]
   demogvarname <- c("overall", demogvarname)
@@ -49,7 +51,7 @@ plot_distance_cdf_by_group <- function(results_bybg_people, radius_miles=round(m
     # collapse::fcumsum(pop *  .SD,  fill=TRUE) / sum(pop *  .SD,  na.rm = TRUE) ,  # if .SDcols=demogvarname
     collapse::fcumsum(  .SD,  fill=TRUE) / sum(  .SD,  na.rm = TRUE) ,   # if .SDcols=countvarname
      
-    dist = distance_avg
+    dist = distance_min_avgperson
     ),
     # .SDcols = countvarname] 
    .SDcols =  demogvarname]
@@ -97,7 +99,7 @@ plot_distance_cdf_by_group <- function(results_bybg_people, radius_miles=round(m
 #' @return invisibly returns full table of sorted distances of blockgroups, cumulative count of demog group at that block group's distance, 
 #' and cumulative count of everyone else in that block group
 #'
-distance_cdf_by_group_plot <- function(results_bybg_people, radius_miles=round(max(x$distance_avg, na.rm = T), 1), 
+distance_cdf_by_group_plot <- function(results_bybg_people, radius_miles=round(max(x$distance_min_avgperson, na.rm = T), 1), 
                        demogvarname="Demog.Index", demoglabel=demogvarname,
                        color1="red", color2="black") {
   if (is.list(results_bybg_people) & ("results_bybg_people" %in% names(results_bybg_people))) {
@@ -106,16 +108,16 @@ distance_cdf_by_group_plot <- function(results_bybg_people, radius_miles=round(m
   }
  
    x <- results_bybg_people # not a full slow copy... done by reference using data.table::
-  data.table::setorder(x, distance_avg) 
+  data.table::setorder(x, distance_min_avgperson) 
   
   # remove duplicated blockgroups, since here we do not need stats site by site, so use shorter distance for any bg that is near 2+ sites.
-  x[ , distance_avg := min(distance_avg, na.rm = TRUE), by = "bgid"]
+  x[ , distance_min_avgperson := min(distance_min_avgperson, na.rm = TRUE), by = "bgid"]
   x <- unique(x, by = "bgid")
   
   # should recode this to use directly the counts of D instead of recreating them via pop * .SD
   
   cumdata <- x[ , .(
-    dist = distance_avg, 
+    dist = distance_min_avgperson, 
     # count_d = pop *   .SD, 
     cumall_d    = collapse::fcumsum(pop *   .SD,       fill=TRUE) / sum(pop *        .SD,  na.rm = TRUE) , 
     cumall_nond = collapse::fcumsum(pop * (1 -   .SD), fill=TRUE) / sum(pop * (1 -   .SD), na.rm = TRUE)),
@@ -130,7 +132,7 @@ distance_cdf_by_group_plot <- function(results_bybg_people, radius_miles=round(m
        )
   points(cumdata$dist, 100 * cumdata$cumall_nond, col=color2)
   legend("topleft", legend = c(demoglabel, paste0("All other residents")), fill = c(color1, color2))
-  
+  cat('This takes a very long time to plot for 1,000 sites, e.g.... please wait... \n\n')
   print(  distance_by_group(x, demogvarname=demogvarname, demoglabel=demoglabel) )
   invisible(cumdata)
 }

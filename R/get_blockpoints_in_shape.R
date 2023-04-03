@@ -7,7 +7,6 @@
 #' @return Polygons with joined block points info. **********
 #' @export
 #'
-#' @examples
 get_blockpoints_in_shape <- function(polys, addedbuffermiles=0) {
   if (!exists("blockpoints")) {stop("requires the blockpoints data.table called EJAMblockdata::blockpoints ")}
   
@@ -28,7 +27,7 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0) {
   
   
   #### examples / testing ideas ####
-  
+
   # testsites <- EJAMfrsdata::frs[sample(1:nrow(EJAMfrsdata::frs), 1e2),]
   # testsites$siteid <- 1:nrow(testsites)
   # testsites <- sf::st_as_sf(testsites, coords=c("lon","lat"), crs=4269)
@@ -36,16 +35,16 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0) {
   # # myrad10 <- units::set_units(10,"km")
   # # myrad50 <- units::set_units(50,"km")
   # testpolycircles <- get_shape_buffered(testsites, radius = myrad5 ) # several seconds
-  
-  # testblocks <- copy(EJAMblockdata::blockpoints) # entire usa
-  # # testblocks <- copy(EJAMblockdata::blockpoints[sample(1:nrow(frs), 1e5),])
-  # THIS IS EXTREMELY SLOW FOR ALL US BLOCK POINTS AND SHOULD BE DONE IN ADVANCE BY PACKAGE:
+# 
+  #### testblocks <- copy(EJAMblockdata::blockpoints) # entire usa
+   # testblocks <- copy(EJAMblockdata::blockpoints[sample(1:nrow(frs), 1e5),])
+  #### THIS IS EXTREMELY SLOW FOR ALL US BLOCK POINTS AND SHOULD BE DONE IN ADVANCE BY PACKAGE:
   # testblocks <- sf::st_as_sf(testblocks, coords=c("lon","lat"), crs=4269) # several seconds
   # plot(testpolycircles)
   # plot(testblocks, add=TRUE)
-  # VERY SLOW:
+  #### VERY SLOW:
   # results1  <- testblocks |> sf::st_join(testpolycircles)    # a couple minutes  ********************
-  
+
   # NOT EVEN FEASIBLE:
   ### results2  <- sf::st_join(testpolycircles, testblocks)     # THIS TAKES ESSENTIALLY FOREVER !!  ********************
   

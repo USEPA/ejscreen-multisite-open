@@ -32,33 +32,57 @@ getblocksnearby  <- function(sitepoints, cutoff=3, maxcutoff=31.07,
                              avoidorphans=TRUE, 
                              # indexgridsize,
                              quadtree,
+                             parallel=FALSE,
                              ...
 ) {
-  
-  cat("Analyzing", NROW(sitepoints), "points, radius of", cutoff, "miles.\n") 
-  
-  # wrapper to make it simple to (later?) switch between functions to use for this, clustered vs not, etc.
+  ################################################################################## #
+  # select file if missing
+  if (missing(sitepoints)) { 
+    if (interactive()) {
+      sitepoints <- rstudioapi::selectFile()
+    } else {
+      stop("sitepoints (locations to analyze) is missing but required.")
+    }
+  }
+  # if user entered a table, path to a file (csv, xlsx), or whatever, then read it to get the lat lon values from there
+  sitepoints <- latlon_from_anything(sitepoints)
+  ################################################################################## #
   
   # timed <- system.time({
   
-  x <- getblocksnearbyviaQuadTree(sitepoints=sitepoints, cutoff=cutoff, maxcutoff=maxcutoff, 
-                             avoidorphans=avoidorphans, 
-                             # indexgridsize=indexgridsize,
-                             quadtree=quadtree,
-                             ...)
+  if (missing(quadtree)) {
+    if (exists("localtree")) {
+      quadtree <- localtree 
+    } else {
+      stop("Nationwide index of block locations is required but missing (quadtree parameter default is called localtree but was not found).")
+    }
+  }
+  cat("Analyzing", NROW(sitepoints), "points, radius of", cutoff, "miles.\n") 
   
-  # getblocksnearbyviaQuadTree_Clustered(sitepoints=sitepoints, cutoff=cutoff, maxcutoff=maxcutoff, 
-  #                                        avoidorphans=avoidorphans, 
-  #                                      # indexgridsize=indexgridsize,
-  #                                      quadtree=quadtree,
-  #                                      ...)
+  ################################################################################## #
+  # wrapper to make it simple to (later?) switch between functions to use for this, clustered vs not, etc.
+  
+  if (!parallel) {
+    x <- getblocksnearbyviaQuadTree(sitepoints=sitepoints, cutoff=cutoff, maxcutoff=maxcutoff, 
+                                    avoidorphans=avoidorphans, 
+                                    # indexgridsize=indexgridsize,
+                                    quadtree=quadtree,
+                                    ...)
+  } else {
+    stop('parallel processing version not implemented yet')
+    x <- getblocksnearbyviaQuadTree_Clustered(sitepoints=sitepoints, cutoff=cutoff, maxcutoff=maxcutoff,
+                                         avoidorphans=avoidorphans,
+                                         # indexgridsize=indexgridsize,
+                                         quadtree=quadtree,
+                                         ...)
+  }
   
   # getblocksnearbyviaQuadTree2(sitepoints=sitepoints, cutoff=cutoff, maxcutoff=maxcutoff, 
   #                               avoidorphans=avoidorphans, 
   #                             # indexgridsize=indexgridsize,
   #                             quadtree=quadtree,
   #                             ...)
-    
+  
   # })
   # print(timed)
   

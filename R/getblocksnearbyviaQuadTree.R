@@ -45,8 +45,10 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, cutoff=3, maxcutoff=31.07,
   if (!('siteid' %in% names(sitepoints))) {sitepoints$siteid <- seq.int(length.out = NROW(sitepoints))}
   
   #pass in a list of uniques and the surface cutoff distance
+  
   #filter na values? or keep length of out same as input? ####
-  sitepoints <- sitepoints[!is.na(sitepoints$lat) & !is.na(sitepoints$lon), ] # perhaps could do this by reference to avoid making a copy
+  # sitepoints <- sitepoints[!is.na(sitepoints$lat) & !is.na(sitepoints$lon), ] # perhaps could do this by reference to avoid making a copy
+  
   #compute and add grid info ####
   earthRadius_miles <- 3959 # in case it is not already in global envt
   radians_per_degree <- pi / 180
@@ -83,9 +85,9 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, cutoff=3, maxcutoff=31.07,
   
   
   for (i in 1:nRowsDf) {    # LOOP OVER SITES HERE ----
-    ########################################################################### ## ** SLOW STEP TO OPTIMIZE 
-    coords <- sitepoints[i, .(FAC_X, FAC_Z)]  # ** SLOWEST STEP TO OPTIMIZE  #  1 OF SLOWEST LINES   (the similar clustered function uses sitepoints2use not sitepoints)
-    x_low  <- coords[,FAC_X]-truedistance;
+    ########################################################################### ## ** SLOW STEP TO OPTIMIZE   *** ** ** ** 
+    coords <- sitepoints[i, .(FAC_X, FAC_Z)]  # ** SLOW STEP TO OPTIMIZE  (the similar clustered function uses sitepoints2use not sitepoints)
+    x_low  <- coords[,FAC_X]-truedistance;  #  EXTREMELY SLOW LINE
     x_hi  <-  coords[,FAC_X]+truedistance
     z_low  <- coords[,FAC_Z]-truedistance;
     # z_hi  <-  coords[,FAC_Z]+truedistance   # ** THIS HAD BEEN THE SLOWEST LINE  OVERALL ***

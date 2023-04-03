@@ -28,7 +28,10 @@ speedtest <- function(n=10, sitepoints=NULL, weighting='frs',
   # - get stats that summarize those indicators
   # - compare times between steps and radii and other approaches or tools
   
-  if (n == 0 & is.null(sitepoints)) {if (interactive()) {sitepoints <- file.choose()}}
+  if (n == 0 & is.null(sitepoints)) {
+    if (interactive()) {sitepoints <- rstudioapi::selectFile("Select xlsx or csv file with lat,lon coordinates", path=".", existing = FALSE)
+    }
+  }
   
   if (is.null(sitepoints)) {
     # PICK TEST DATASET OF FACILITY POINTS 

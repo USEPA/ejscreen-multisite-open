@@ -3,7 +3,7 @@
 #' @param lat latitudes vector
 #' @param lon longitudes vector
 #' @param shapefile shapefile of US States, in package already
-#' @seealso [states_shapefile] [get_blockpoints_in_shape()]
+#' @seealso [states_shapefile] [get_blockpoints_in_shape()] [states_infer()]
 #' @return Returns data.frame: ST, statename, FIPS.ST, REGION, n
 #'   as many rows as elements in lat or lon
 #' @export

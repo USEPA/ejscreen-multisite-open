@@ -10,6 +10,7 @@ getblocksnearby(
   maxcutoff = 31.07,
   avoidorphans = TRUE,
   quadtree,
+  parallel = FALSE,
   ...
 )
 }

@@ -3,12 +3,12 @@
 \name{states_infer}
 \alias{states_infer}
 \title{states_infer
-Get cleaned table of US State etc. by siteid, from lat/lon or other info}
+Get cleaned table of US State etc. by siteid, from lat/lon, or from FIPS}
 \usage{
 states_infer(x)
 }
 \arguments{
-\item{x}{data.frame or data.table with either ST column or lat and lon columns,
+\item{x}{data.frame or data.table with either ST column or lat and lon columns, or FIPS,
 and optionally a column with siteid or column called n}
 }
 \value{
@@ -16,5 +16,8 @@ data.frame with unique siteid, ST, etc.
 }
 \description{
 states_infer
-Get cleaned table of US State etc. by siteid, from lat/lon or other info
+Get cleaned table of US State etc. by siteid, from lat/lon, or from FIPS
+}
+\seealso{
+\code{\link[=state_from_latlon]{state_from_latlon()}} \code{\link[=state_from_fips]{state_from_fips()}}
 }

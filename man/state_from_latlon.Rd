@@ -23,5 +23,5 @@ find what state is where each point is located
 Takes 3 seconds to find state for 1k points, so a faster alternative would be useful
 }
 \seealso{
-\link{states_shapefile} \code{\link[=get_blockpoints_in_shape]{get_blockpoints_in_shape()}}
+\link{states_shapefile} \code{\link[=get_blockpoints_in_shape]{get_blockpoints_in_shape()}} \code{\link[=states_infer]{states_infer()}}
 }

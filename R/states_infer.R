@@ -1,8 +1,8 @@
 #' states_infer
-#' Get cleaned table of US State etc. by siteid, from lat/lon or other info
-#' @param x data.frame or data.table with either ST column or lat and lon columns, 
+#' Get cleaned table of US State etc. by siteid, from lat/lon, or from FIPS
+#' @param x data.frame or data.table with either ST column or lat and lon columns, or FIPS,
 #'   and optionally a column with siteid or column called n
-#'
+#' @seealso [state_from_latlon()] [state_from_fips()]
 #' @return data.frame with unique siteid, ST, etc.
 #' @export
 #'
@@ -12,7 +12,7 @@ states_infer <- function(x) {
   if (data.table::is.data.table(sites2states)) data.table::setDF(sites2states)
   # error handling
   bad_sites2states <- FALSE
-  if (missing(sites2states)) {
+  if (missing(x)) {
     bad_sites2states <- TRUE
   }
   ### overly inflexible to require identical lists of siteid values -- 
@@ -41,7 +41,7 @@ states_infer <- function(x) {
     # is lat / lon there?
     if (("lat" %in% names(sites2states) ) & ("lon" %in% names(sites2states))) {
       # use lat lon to get ST, but it takes a few seconds to use the shapefile to do this:
-      sites2states <- cbind(sites2states, state_from_latlon(lat = sites2states$lat, lon = sites2states$lon))
+      sites2states <- cbind(sites2states, state_from_latlon(lat = sites2states$lat, lon = sites2states$lon)) ## VERY SLOW STEP
     } else {
       # is blockgroup FIPS, or even any FIPS there?
       if ("fips" %in% names(sites2states)) {

@@ -12,6 +12,9 @@ app_ui  <- function(request) {
     
     # __________App UI fluidPage starts here _______ ####
     fluidPage(
+      ## to profile parts of the Shiny app instead of all:
+      # profvis_ui("profiler") # and see module in server
+      
       ### enable JavaScript functionality (such as resetting inputs) etc. ####
       shinyjs::useShinyjs(),
       ## javascript function for jumping to top of screen

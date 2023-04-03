@@ -8,7 +8,7 @@ Each groups distribution of distances}
 \usage{
 plot_distance_cdf_by_group(
   results_bybg_people,
-  radius_miles = round(max(x$distance_avg, na.rm = T), 1),
+  radius_miles = round(max(x$distance_min_avgperson, na.rm = T), 1),
   demogvarname = c(namez$d, namez$d_subgroups),
   demoglabel = NULL,
   colorlist = colors()[1:length(demogvarname)],
