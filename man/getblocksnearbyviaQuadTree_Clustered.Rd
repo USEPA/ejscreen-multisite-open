@@ -5,15 +5,16 @@
 \title{find nearby blocks using Quad Tree data structure for speed, CLUSTERED FOR PARALLEL PROCESSING}
 \usage{
 getblocksnearbyviaQuadTree_Clustered(
-  facilities,
+  sitepoints,
   cutoff,
   maxcutoff,
   avoidorphans,
-  CountCPU = 1
+  CountCPU = 1,
+  quadtree
 )
 }
 \arguments{
-\item{facilities}{data.table with columns LAT, LONG}
+\item{sitepoints}{data.table with columns LAT, LONG}
 
 \item{cutoff}{miles distance (check what this actually does)}
 
@@ -22,6 +23,8 @@ getblocksnearbyviaQuadTree_Clustered(
 \item{avoidorphans}{logical}
 
 \item{CountCPU}{for parallel processing via makeCluster() and doSNOW::registerDoSNOW()}
+
+\item{quadtree}{index of all US blocks like localtree}
 }
 \description{
 Uses packages \link{parallel} and \link{snow}. parallel::makePSOCKcluster is an enhanced version of snow::makeSOCKcluster in package snow.

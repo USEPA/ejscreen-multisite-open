@@ -6,48 +6,46 @@
 #' 
 #'  Uses indexgridsize and quaddata  variables that come from global environment (but should pass to this function rather than assume in global env?)
 #'
-#' @param facilities data.table with columns LAT, LONG
+#' @param sitepoints data.table with columns LAT, LONG
 #' @param cutoff miles distance (check what this actually does)
 #' @param maxcutoff miles distance (check what this actually does)
 #' @param avoidorphans logical
 #' @param CountCPU for parallel processing via makeCluster() and doSNOW::registerDoSNOW()
+#' @param quadtree index of all US blocks like localtree
 #' @seealso [getblocksnearby_and_doaggregate()] [getblocksnearby()] [getblocksnearbyviaQuadTree()] [getblocksnearbyviaQuadTree_Clustered()] [getblocksnearbyviaQuadTree2()]
 #' @export
 #'
-getblocksnearbyviaQuadTree_Clustered <-function(facilities,cutoff,maxcutoff, avoidorphans,CountCPU=1) {
+getblocksnearbyviaQuadTree_Clustered <-function(sitepoints,cutoff,maxcutoff, avoidorphans, CountCPU=1, quadtree) {
   #pass in a list of uniques and the surface cutoff distance
   #filter na values
-facilities <- facilities[!is.na(facilities$LAT) & !is.na(facilities$LONG), ]
+sitepoints <- sitepoints[!is.na(sitepoints$LAT) & !is.na(sitepoints$LONG), ]
   #compute and add grid info
   earthRadius_miles <- 3959 # in case it is not already in global envt
-  facilities[,"LAT_RAD"] <- facilities$LAT * pi / 180
-  facilities[,"LONG_RAD"] <- facilities$LONG * pi / 180
-  facilities[,"FAC_X"] <- earthRadius_miles * cos(facilities$LAT_RAD) * cos(facilities$LONG_RAD)
-  facilities[,"FAC_Y"] <- earthRadius_miles * cos(facilities$LAT_RAD) * sin(facilities$LONG_RAD)
-  facilities[,"FAC_Z"] <- earthRadius_miles * sin(facilities$LAT_RAD)
+  sitepoints[,"LAT_RAD"] <- sitepoints$LAT * pi / 180
+  sitepoints[,"LONG_RAD"] <- sitepoints$LONG * pi / 180
+  sitepoints[,"FAC_X"] <- earthRadius_miles * cos(sitepoints$LAT_RAD) * cos(sitepoints$LONG_RAD)
+  sitepoints[,"FAC_Y"] <- earthRadius_miles * cos(sitepoints$LAT_RAD) * sin(sitepoints$LONG_RAD)
+  sitepoints[,"FAC_Z"] <- earthRadius_miles * sin(sitepoints$LAT_RAD)
 
   #now we need to buffer around the grid cell by the actual cutoff distance
   # buffer_indexdistance <- ceiling(cutoff/indexgridsize) # this will be one or larger ... but where is this ever used??  indexgridsize was defined in initialization as say 10 miles
 
   # allocate result list
-  nRowsDf <- nrow(facilities)
+  nRowsDf <- nrow(sitepoints)
   res <- vector('list', nRowsDf)
 
   truedistance <- distance_via_surfacedistance(cutoff)   # simply 7918*sin(cutoff/7918)
 
-  #set up cluster, splitting up the facilities among the available CPUs
+  #set up cluster, splitting up the sitepoints among the available CPUs
   #   but see this on why detectCores() is a bad idea:  https://www.r-bloggers.com/2022/12/please-avoid-detectcores-in-your-r-packages/
   cpuids <- 1:CountCPU
-  facilities[,"CPUAFFINITY"] <- rep_len(cpuids, length.out=nrow(facilities))
-  percpufacilities<- vector('list', CountCPU)
+  sitepoints[,"CPUAFFINITY"] <- rep_len(cpuids, length.out=nrow(sitepoints))
+  percpusitepoints<- vector('list', CountCPU)
   for(i in 1:CountCPU)  ## for each CPU
   {
-    percpufacilities[[i]] <- subset(facilities, CPUAFFINITY==i)
+    percpusitepoints[[i]] <- subset(sitepoints, CPUAFFINITY==i)
   }
 
-  # This should have been done in server.R 
-  # localtree <- SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
-  
   # parallel::makePSOCKcluster is an enhanced version of snow::makeSOCKcluster in package snow. It runs Rscript on the specified host(s) to set up a worker process which listens on a socket for expressions to evaluate, and returns the results (as serialized objects).
   cl <- parallel::makeCluster(CountCPU, outfile="")
   doSNOW::registerDoSNOW(cl)
@@ -59,16 +57,16 @@ facilities <- facilities[!is.na(facilities$LAT) & !is.na(facilities$LONG), ]
   #### LOOP OVER THE CPUs ##############################################################################################
   parref <- foreach::foreach(cpuIndex=1:CountCPU, .export = c("distance_via_surfacedistance","earthRadius_miles","crd","quaddata"), .packages = c("SearchTrees","data.table","pdist"), .errorhandling = 'pass', .verbose = TRUE) %dopar% {
 
-    print(.packages())
+    # print(.packages())
     #2 seconds overhead to create the quad tree
 
-    facilities2use <- percpufacilities[[cpuIndex]]
+    sitepoints2use <- percpusitepoints[[cpuIndex]]
 
     # allocate result list
-    subnRowsDf <- nrow(facilities2use)
+    subnRowsDf <- nrow(sitepoints2use)
     partialres <- vector('list', subnRowsDf)
 
-    #### LOOP OVER THE FACILITIES STARTS HERE, within loop over CPUs ##################################################################
+    #### LOOP OVER THE sitepoints STARTS HERE, within loop over CPUs ##################################################################
 
     for(i in 1:subnRowsDf)  { ## for each row
 
@@ -77,7 +75,7 @@ facilities <- facilities[!is.na(facilities$LAT) & !is.na(facilities$LONG), ]
 
 
 
-      coords <- facilities2use[i, .(FAC_X,FAC_Z)]
+      coords <- sitepoints2use[i, .(FAC_X,FAC_Z)]
       x_low <- coords[,FAC_X]-truedistance;
       x_hi  <-  coords[,FAC_X]+truedistance
       z_low <- coords[,FAC_Z]-truedistance;
@@ -88,7 +86,7 @@ facilities <- facilities[!is.na(facilities$LAT) & !is.na(facilities$LONG), ]
       tryCatch(
         expr = {
           print('trying')
-          #vec <- SearchTrees::rectLookup(localtree, c(x_low, z_low), c(x_hi, z_hi))
+           # vec <- SearchTrees::rectLookup(quadtree, c(x_low, z_low), c(x_hi, z_hi))
         },
         error = function(e) {
           print("yay")
@@ -114,12 +112,12 @@ facilities <- facilities[!is.na(facilities$LAT) & !is.na(facilities$LONG), ]
 
       # tmp <- quaddata[vec,]
       # x <- tmp[, .(BLOCK_X,BLOCK_Y,BLOCK_Z)]
-      # y <- facilities2use[i, .(FAC_X,FAC_Y,FAC_Z)]
+      # y <- sitepoints2use[i, .(FAC_X,FAC_Y,FAC_Z)]
       # distances <- as.matrix(pdist(x,y))
 
       # #clean up fields
       # tmp[,distance := distances[,c(1)]]
-      # tmp[,ID := facilities2use[i, .(ID)]]
+      # tmp[,ID := sitepoints2use[i, .(ID)]]
 
       # #filter actual distance
       # tmp <- tmp[distance <= truedistance, .(blockid, distance, ID)]
@@ -129,17 +127,19 @@ facilities <- facilities[!is.na(facilities$LAT) & !is.na(facilities$LONG), ]
       if ( avoidorphans) {
         #search neighbors, allow for multiple at equal distance
         print("inbefore knn")
-        vec <- SearchTrees::knnLookup(localtree,c(coords[,FAC_X]),c(coords[,FAC_Z]),k=10)
+        # This should have been done in server.R 
+        # quadtree <- SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
+        vec <- SearchTrees::knnLookup(quadtree, c(coords[,FAC_X]), c(coords[,FAC_Z]), k=10)
         print("did we knn? ")
         tmp <- quaddata[vec[1,],]
 
         x <-tmp[, .(BLOCK_X,BLOCK_Y,BLOCK_Z)]
-        y <-facilities2use[i, .(FAC_X,FAC_Y,FAC_Z)]
+        y <-sitepoints2use[i, .(FAC_X,FAC_Y,FAC_Z)]
         distances <- as.matrix(pdist(x,y))
 
         #clean up fields
         tmp[,distance := distances[,c(1)]]
-        tmp[,ID := facilities2use[i, .(ID)]]
+        tmp[,ID := sitepoints2use[i, .(ID)]]
 
         #filter to max distance
         truemaxdistance <- distance_via_surfacedistance(maxcutoff)
