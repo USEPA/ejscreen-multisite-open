@@ -428,7 +428,6 @@ app_server <- function(input, output, session) {
     DT::datatable(dt, options = list(pageLength = 100, scrollX = TRUE, scrollY = '500px'))
   })
   
-  
   ## reactive: check if uploaded points are clustered (may double-count people) ####
   is_clustered <- shiny::reactive({
     req(data_uploaded())
@@ -650,7 +649,7 @@ app_server <- function(input, output, session) {
     req(data_processed())
     ## format and return total population
     ## some of these numbers seem very large! possible double-counting??
-    prettyNum(round(data_processed()$results_overall$pop, 0 ), big.mark=',')
+    round(data_processed()$results_overall$pop, 0 )
   })
   
   ## header info for summary report ####
@@ -664,7 +663,7 @@ app_server <- function(input, output, session) {
                          'Residents within ', 
                          #input$bt_rad_buff, ' ', input$radius_units, ' of any of the ', 
                          input$bt_rad_buff, ' miles of any of the ',
-                         prettyNum( nrow(data_processed()$results_bysite), big.mark = ","), ' sites analyzed<br>',
+                         prettyNum( NROW(data_processed()$results_bysite), big.mark = ","), ' sites analyzed<br>',
                          #    "in the xxx source category or sector<br>",
                          'Estimated total population: ', prettyNum( total_pop(), big.mark = ","), '</div>'
     )
