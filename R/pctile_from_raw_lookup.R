@@ -2,7 +2,7 @@
 #' @description This is used with a data.frame that is a lookup table used to
 #'   convert a raw indicator value to a percentile - US, Region, or State percentile.
 #' @details
-#'   This could be recoded to be more efficient.
+#'   This could be recoded to be more efficient - could use data.table
 #'   The data.frame lookup table must have a field called "PCTILE" that has quantiles/percentiles
 #'   and other column(s) with values that fall at those percentiles.
 #'   EJAM::usastats, EJAM::statstats, EJAM::regionstats are such lookup tables.
@@ -40,10 +40,10 @@ pctile_from_raw_lookup <- function(myvector, varname.in.lookup.table, lookup=usa
   if (missing(zone) & lookup$REGION[1] != 'USA') {stop('If lookup is not us, need to specify zone="NY" for example')}
   # lookup table must have PCTILE field (& this removes the row called 'mean')
   if (!('PCTILE' %in% names(lookup))) {stop('lookup must have a field called "PCTILE" that contains quantiles/percentiles')}
-  lookup <- lookup[lookup$PCTILE != "std.dev", ]
+  # lookup <- lookup[lookup$PCTILE != "std.dev", ]  # SLOW - now DROPPED BEFORE SAVING AS DATA FOR THE PACKAGE
   lookup <- lookup[lookup$PCTILE != "mean", ]
-# browser()
-    if (!(varname.in.lookup.table %in% colnames(lookup))) {
+  
+  if (!(varname.in.lookup.table %in% colnames(lookup))) {
     warning(paste0(varname.in.lookup.table, " must be a column in lookup table"))
     return(rep(NA, length(myvector)))
   } else {

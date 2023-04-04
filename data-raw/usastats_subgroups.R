@@ -6,6 +6,9 @@
 # names(usastats) <- gsub("VSI.eo","Demog.Index",names(usastats))
 # names(statestats) <- gsub("VSI.eo","Demog.Index",names(statestats))
 
+# drop the std.dev rows since the code that omits them in pctile_from_raw_lookup() is kind of slow.
+usastats <- usastats[usastats$PCTILE != "std.dev", ]
+statestats <- statestats[statestats$PCTILE != "std.dev", ]
 
 # TEMPORARILY PUT IN ZEROES FOR THESE 2 VARIABLES UNTIL EJSCREEN PROVIDES THEM FOR DOWNLOAD ####
 usastats$lowlifex <- 0
