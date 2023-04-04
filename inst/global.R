@@ -1,18 +1,7 @@
 # global.R defines variables needed in global environment
 
 ## demographic indicator name ####
-
-names_d_fixed              <- c(EJAM::names_d ,              EJAM::names_d_subgroups)
-names_d_pctile_fixed       <- c(EJAM::names_d_pctile ,       EJAM::names_d_subgroups_pctile)
-names_d_state_pctile_fixed <- c(EJAM::names_d_state_pctile , EJAM::names_d_subgroups_state_pctile)
-## get display names from map_headernames file
-# long_names_d <- EJAMejscreenapi::map_headernames %>%
-#   filter(newnames_ejscreenapi %in% names_d_fixed) %>%
-#   select(vars = newnames_ejscreenapi, var_names = longname_tableheader)
-# maybe this is easier
-long_names_d <- data.frame(vars=names_d_fixed, var_names= c(names_d_friendly, names_d_subgroups_friendly), stringsAsFactors = FALSE) 
-
-
+# now created as data for packages in names_of_indicators_creationscript.R 
 
 # see DESCRIPTION file for packages this depends on or imports  
 
@@ -80,7 +69,7 @@ threshgroup.default <- list(
   'comp1' = "EJ US pctiles",  'comp2' = "EJ State pctiles"
 )
 
-# ~~~~ ####
+# ~ ####
 ## *** HTML outline for full report ####
 
 report_outline <- "
@@ -134,20 +123,23 @@ report_outline <- "
         <li>References</li>
     </ol>
 </div>"
-# ~~~~ ####
+# ~ ####
 ## text for "About EJAM" tab ####
 
 intro_text <- tagList(
-  tags$h5("EPA has developed a number of different tools for environmental justice (EJ) mapping, screening, and analysis, including EJScreen. EJScreen has a dataset with environmental, demographic, and EJ indicators for each block group in the US. \nIt can provide a report summarizing those values for the average person within some distance (e.g., 1 mile) from a specified point."),
-  tags$h5("It is often useful to know the nature of the environmental conditions, the demographics, and/or EJ index values near a whole set of the facilities in a particular sector, such as in the context of developing a proposed rule. EJAM allows users to select a set of facilities, defined by NAICs industrial category codes or by uploading a list of locations. The tool then can provide statistics for a user-specified buffer area around the selected facilities."),
+  tags$h5("EPA has developed a number of different tools for mapping and analysis of information related to environmental justice (EJ), including EJScreen and EJAM. "),
+  tags$h5("EJScreen provides a dataset with environmental, demographic, and EJ indicators for each Census block group in the US. \n"),
+  tags$h5("EJScreen can provide a report summarizing those values for the average resident within some distance (e.g., 1 mile) from a specified point."),
+  tags$h5("It is often useful to know the nature of the environmental conditions, the demographics, and/or EJ index values near a whole set of the facilities in a particular sector, such as in the context of developing a proposed rule. "),
+  tags$h5("EJAM allows users to select a set of facilities, defined by NAICs industrial category codes or by uploading a list of locations. EJAM then provides a summary report for all residential locations near the selected facilities."),
   tags$h5("See EJAM user guide or readme document for more about using the app. "),
-  tags$h5("See the R package vignette and documentation for information about using the R functions and data."),
+  # tags$h5("See the R package vignette and documentation for information about using the R functions and data."),
   tags$h5("Features of this tool include:"),
   tags$ul(
     tags$li("Several methods of selecting a set of facilities for analysis, including industry sector and uploaded of facility locations"),
     tags$li("User-specified buffer distance;"),
     tags$li("Very fast analysis of which residents (defined by Census blocks) are nearby, and the distance to each block's internal point.;"),
-    tags$li("Optional use of the next nearest census block centroid for facilities with no census block centroid within selected buffer distance."),
+    # tags$li("Optional use of the next nearest census block centroid for facilities with no census block centroid within selected buffer distance."),
     tags$li("At each facility, calculation of demographic, environmental, or other EJ-related statistics;"),
     tags$li("Overall, for the facilities and residents near any of them as a whole, calculation of the same kinds of statistics, but with no double counting of residents near two or more facilities.;"),
     tags$li("Interactive views of results in tables, maps, plots, and text;"),
@@ -248,7 +240,7 @@ frs_help_msg <- HTML('  <div class="row">
 
 
 
-# ~~~~ ####
+# ~ ####
 # ___TEMPLATE ONE EPA SHINY APP WEBPAGE _______ ####
 
 html_header_fmt <- tagList(
@@ -682,5 +674,5 @@ html_footer_fmt <- tagList(
       </a>'
   )
 )
-# ~~~~ ####
+# ~ ####
 

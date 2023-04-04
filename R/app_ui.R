@@ -9,7 +9,7 @@ app_ui  <- function(request) {
     # golem_add_external_resources() ####
     # Leave this function for adding external resources, see end of this source file.
     golem_add_external_resources(),
-    
+    # ~ ####
     # __________App UI fluidPage starts here _______ ####
     fluidPage(
       ## to profile parts of the Shiny app instead of all:
@@ -39,7 +39,7 @@ app_ui  <- function(request) {
         id = 'all_tabs',
         type = 'pills',
         selected = 'Site Selection',
-        
+        # ~ ####
         # INTRO tab ####
         tabPanel(title = 'About EJAM',
                  
@@ -53,7 +53,7 @@ app_ui  <- function(request) {
                               style ='color: #fff; background-color: #005ea2;')
         ),
         ######################################################################################################### #
-        
+        # ~ ####
         # SITE SELECTION tab ####
         
         tabPanel(title = 'Site Selection',
@@ -335,7 +335,7 @@ app_ui  <- function(request) {
         ), # end Site Selection tab
         
         ######################################################################################################### #
-        
+        # ~ ####
         # Short Report tab - similar to EJSCREEN standard report ####
         
         tabPanel(title = 'Summary Report',
@@ -466,7 +466,7 @@ app_ui  <- function(request) {
         br(), ## vertical space
         
         ######################################################################################################### #
-        
+        # ~ ####
         # Results Overall tall tab ####
         
         tabPanel(title = 'Results Overall',
@@ -479,7 +479,7 @@ app_ui  <- function(request) {
         ),
         
         ######################################################################################################### #
-        
+        # ~ ####
         # Result Overall and by Site tab ####
         
         tabPanel(title = 'Result Overall and by Site',
@@ -495,10 +495,9 @@ app_ui  <- function(request) {
                  #   selectInput(
                  #     'key_ind_d', label = 'Choose a demographic indicator',
                  #     choices = setNames(
-                 #       names_d_fixed,
+                 #       c(names_d         , names_d_subgroups ),
                  #       c(names_d_friendly, names_d_subgroups_friendly)
-                 #       # EJAMejscreenapi::map_headernames$names_friendly[match(names_d_fixed, EJAMejscreenapi::map_headernames$newnames_ejscreenapi)]
-                 #     )
+                 #        )
                  #   ),
                  #   
                  #   ## _output: Demog. Exec. Summary Text ####
@@ -620,10 +619,15 @@ app_ui  <- function(request) {
                               column(6, offset=3,
                                      ## input: indicator dropdown for histogram
                                      selectInput('summ_hist_ind', label = 'Choose indicator',
-                                                 choices = setNames(c(EJAM::names_d, EJAM::names_e, EJAM::names_ej),
-                                                                    c(EJAMbatch.summarizer::names_d_friendly, 
-                                                                      EJAMbatch.summarizer::names_e_friendly, 
-                                                                      EJAMbatch.summarizer::names_ej_friendly))
+                                                 choices = setNames(c(EJAM::names_d,
+                                                                      EJAM::names_d_subgroups,
+                                                                      EJAM::names_e, 
+                                                                      EJAM::names_ej),
+                                                                    c(EJAM::names_d_friendly,
+                                                                      EJAM::names_d_subgroups_friendly,
+                                                                      EJAM::names_e_friendly, 
+                                                                      EJAM::names_ej_friendly
+                                                                    ))
                                      )
                               )
                             )
@@ -633,7 +637,7 @@ app_ui  <- function(request) {
         ), # end graphical results tab
         
         ######################################################################################################### #
-        
+        # ~ ####
         # Full written report tab ####
         
         tabPanel(title = 'Full Report',
@@ -878,7 +882,7 @@ app_ui  <- function(request) {
         ), # end report generation tab
         
         ######################################################################################################### #
-        
+        # ~ ####
         # Advanced settings tab ####
         
         # - hidden by default but can be activated by a button (see About EJAM tab)
@@ -956,6 +960,7 @@ app_ui  <- function(request) {
 
 
 ########################################################################### #
+# ~ ####
 # ___________ App UI ends here ________ ####
 
 #' Add external Resources to App (from golem package code)

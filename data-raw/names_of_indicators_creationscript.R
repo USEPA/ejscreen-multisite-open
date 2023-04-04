@@ -34,7 +34,7 @@
 #  and then code to create all the small .rda files via usethis::use_data() in \data-raw\names_of_indicators.R will be obsolete,
 #  and we can get rid of all those small data objects in the /EJAM/data/ folder
 #    via   something like this:
-# file.remove( list.files(path = "./data/", pattern = "names_"))  # and note there is one called names_d_fixed.rda  related to VSI.eo vs Demog.Index issues 
+# file.remove( list.files(path = "./data/", pattern = "names_"))  #  
 #
 # paste(namesoflistsofnames, collapse = ", ")
 #  "names_wts, names_d, names_d_pctile, names_d_state_pctile, names_d_count, names_d_friendly, names_d_avg, names_d_state_avg, names_d_subgroups, names_d_subgroups_pctile, names_d_subgroups_state_pctile, names_d_subgroups_count, names_d_subgroups_avg, names_d_subgroups_state_avg, names_e, names_e_pctile, names_e_state_pctile, names_e_friendly, names_e_avg, names_e_state_avg, names_ej, names_ej_pctile, names_ej_state_pctile, names_ej_friendly, names_other, names_pctile, names_state_pctile, names_need_pctile, names_need_state_pctile"
@@ -132,6 +132,7 @@ names_e_friendly  <- c(
   "% built pre-1960", "Traffic", "NPL proximity", "RMP proximity", 
   "TSDF proximity", "NPDES proximity", "Underground storage tanks")
 
+
 ############################################################################## #
 
 # AVERAGE AND MEDIAN IN US AND STATE ####
@@ -175,6 +176,7 @@ names_e_state_pctile     <- paste0('state.pctile.', names_e)
 names_ej_state_pctile    <- paste0('state.pctile.', names_ej)
 names_d_subgroups_state_pctile <- 
                             paste0('state.pctile.', names_d_subgroups) # newer
+
 names_pctile <- c(
   names_d_pctile,
   names_e_pctile,
@@ -196,14 +198,22 @@ names_need_state_pctile <- gsub("state.pctile.", "", names_pctile)
 ############################################################################## #
 
 # * names_d_fixed and long_names_d were temporarily used before VSI.eo changed to Demog.Index ####
+# BUT THESE ARE NOW OBSOLETE - JUST USE DIRECTLY SOMETHING LIKE  c(names_d,              names_d_subgroups)
 
-names_d_fixed        <- c(  names_d,              names_d_subgroups)
-names_d_pctile_fixed <- c( names_d_pctile,       names_d_subgroups_pctile)
-names_d_state_pctile_fixed <- c( names_d_state_pctile, names_d_subgroups_state_pctile)
-long_names_d <- data.frame(
-  vars=names_d_fixed, 
-  var_names= c(names_d_friendly, names_d_subgroups_friendly), 
-  stringsAsFactors = FALSE) # maybe this is easier
+# data.frames long_names_e and long_names_d were used  in left_join for renaming in server code
+# long_names_e <- data.frame(vars=names_e, var_names= names_e_friendly, stringsAsFactors = FALSE) # just for convenient way to use left_join to rename for plot labels
+
+# names_d_fixed              <- c(names_d,              names_d_subgroups)
+# names_d_pctile_fixed       <- c(names_d_pctile,       names_d_subgroups_pctile)
+# names_d_state_pctile_fixed <- c(names_d_state_pctile, names_d_subgroups_state_pctile)
+
+# data.frames long_names_e and long_names_d are used  in left_join for renaming in server code
+# long_names_d <- data.frame(
+#   vars=      c(names_d,          names_d_subgroups),       #  names_d_fixed, 
+#   var_names= c(names_d_friendly, names_d_subgroups_friendly), 
+#   stringsAsFactors = FALSE) # 
+
+# EJAMejscreenapi::map_headernames$names_friendly[match(names_d_fixed, EJAMejscreenapi::map_headernames$newnames_ejscreenapi)]
 
 ############################################################################## #
 
@@ -222,6 +232,7 @@ namesoflistsofnames = c(
   # names_d_med,  names_d_state_med,
   
   'names_d_subgroups', 'names_d_subgroups_pctile', 'names_d_subgroups_state_pctile', 'names_d_subgroups_count', 
+  'names_d_subgroups_friendly',
   'names_d_subgroups_avg', 'names_d_subgroups_state_avg',
   # names_d_subgroups_med,  names_d_subgroups_state_med,
   
@@ -251,8 +262,7 @@ names_all <- as.vector(unlist(namez))
 names_all <- unique(names_all) # pop would appear twice
 
 ############################################################################## #
-
-  #d_fixed=names_d_fixed,
+ 
 
 ############################################################################## #
 
@@ -271,4 +281,11 @@ usethis::use_data(
   names_other, names_pctile, names_state_pctile, names_need_pctile, names_need_state_pctile,  
   overwrite = TRUE
 )
+
+# data.frames mapping short to friendly/long names - obsolete
+# usethis::use_data(
+#   long_names_d,
+#   long_names_e
+# )
+
 

@@ -49,7 +49,7 @@
 #'
 latlon_from_anything <- function(x,y) {
   if (missing(x)) {
-    if (interactive()) { x <- rstudioapi::selectFile() } else {
+    if (interactive()) { x <- rstudioapi::selectFile(caption = "Select xlsx or csv with lat,lon values", path = '.' ) } else {
     stop("file path/name needed but not provided")
   }}
   

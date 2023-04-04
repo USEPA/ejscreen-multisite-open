@@ -88,7 +88,7 @@ ejamit <- function(sitepoints,
   # select file
   if (missing(sitepoints)) { 
     if (interactive()) {
-      sitepoints <- rstudioapi::selectFile(caption = "Select xlsx or csv with lat,lon values", path = '.',existing = FALSE )
+      sitepoints <- rstudioapi::selectFile(caption = "Select xlsx or csv with lat,lon values", path = '.' )
     } else {
       stop("sitepoints (locations to analyze) is missing but required.")
     }
