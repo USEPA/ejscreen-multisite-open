@@ -2,8 +2,8 @@
 % Please edit documentation in R/naics_find.R
 \name{naics_find}
 \alias{naics_find}
-\title{Search for an industrial sector in the list of NAICS codes, see subsectors
-THIS SHOULD BE REPLACED WITH CLEARER FUNCTIONS to get naicstable now,
+\title{OBSOLETE- Search for an industrial sector in the list of NAICS codes, see subsectors
+THIS IS NOW REPLACED WITH CLEARER FUNCTIONS to get naicstable now,
 i.e., EJAMfrsdata::naics_from_any()}
 \usage{
 naics_find(
@@ -31,8 +31,8 @@ Otherwise it can give unexpected results like finding 92811 when you queried 811
 returns URL of webpage at naics.com with info on the sector}
 }
 \description{
-Search for an industrial sector in the list of NAICS codes, see subsectors
-THIS SHOULD BE REPLACED WITH CLEARER FUNCTIONS to get naicstable now,
+OBSOLETE- Search for an industrial sector in the list of NAICS codes, see subsectors
+THIS IS NOW REPLACED WITH CLEARER FUNCTIONS to get naicstable now,
 i.e., EJAMfrsdata::naics_from_any()
 }
 \details{
@@ -62,14 +62,10 @@ c(\verb{11 - Agriculture, Forestry, Fishing and Hunting} = 11, \verb{111 - Crop 
  
  naics_find("paper")
  naics_find("cement | concrete")
- cbind(naics_find("pig")
  naics_find("pulp", add_children = FALSE)
  naics_find("pulp", add_children = TRUE)
  naics_find("asdfasdf", add_children = TRUE)  
- naics_find("asdfasdf", add_children = FALSE)
- naics_find("copper smelting", search_on_naics_website=FALSE)
- naics_find("copper smelting", search_on_naics_website=TRUE)
- # browseURL(naics_find("copper smelting", search_on_naics_website=TRUE))
+ naics_find("asdfasdf", add_children = FALSE) 
  
  EJAMfrsdata::frs[EJAMfrsdata::frs$REGISTRY_ID \%in\% unlist(
    EJAMfrsdata::siteid_from_naics(
@@ -86,5 +82,5 @@ c(\verb{11 - Agriculture, Forestry, Fishing and Hunting} = 11, \verb{111 - Crop 
   NAICS["211 - Oil and Gas Extraction"]
 }
 \seealso{
-\link{naics_categories} \link{NAICS} \code{\link[=naics_findwebscrape]{naics_findwebscrape()}} get_facility_info_via_ECHO function \code{\link[=naics_url_of_code]{naics_url_of_code()}} \code{\link[=naics_url_of_query]{naics_url_of_query()}}
+\link{naics_categories} \link{NAICS} \code{\link[=naics_findwebscrape]{naics_findwebscrape()}} get_facility_info_via_ECHO function \code{\link[=naics_url_of_code]{naics_url_of_code()}} \code{\link[=url_naics.com]{url_naics.com()}}
 }

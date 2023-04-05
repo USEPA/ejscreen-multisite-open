@@ -1,5 +1,5 @@
-#' Search for an industrial sector in the list of NAICS codes, see subsectors
-#'  THIS SHOULD BE REPLACED WITH CLEARER FUNCTIONS to get naicstable now,
+#' OBSOLETE- Search for an industrial sector in the list of NAICS codes, see subsectors
+#'  THIS IS NOW REPLACED WITH CLEARER FUNCTIONS to get naicstable now,
 #'  i.e., EJAMfrsdata::naics_from_any()
 #' @details    
 #' Just a utility, quick way to view NAICS industrial sectors that contain queried word or phrase,
@@ -29,7 +29,7 @@
 #'   Otherwise it can give unexpected results like finding 92811 when you queried 811.
 #' @param search_on_naics_website if TRUE (not default), 
 #'   returns URL of webpage at naics.com with info on the sector
-#' @seealso  [naics_categories] [NAICS] [naics_findwebscrape()] get_facility_info_via_ECHO function [naics_url_of_code()] [naics_url_of_query()]
+#' @seealso  [naics_categories] [NAICS] [naics_findwebscrape()] get_facility_info_via_ECHO function [naics_url_of_code()] [url_naics.com()]
 #' @examples
 #'  naics_find(8111, exactnumber = FALSE)
 #'  naics_find(8111, exactnumber = TRUE)
@@ -37,14 +37,10 @@
 #'  
 #'  naics_find("paper")
 #'  naics_find("cement | concrete")
-#'  cbind(naics_find("pig")
 #'  naics_find("pulp", add_children = FALSE)
 #'  naics_find("pulp", add_children = TRUE)
 #'  naics_find("asdfasdf", add_children = TRUE)  
-#'  naics_find("asdfasdf", add_children = FALSE)
-#'  naics_find("copper smelting", search_on_naics_website=FALSE)
-#'  naics_find("copper smelting", search_on_naics_website=TRUE)
-#'  # browseURL(naics_find("copper smelting", search_on_naics_website=TRUE))
+#'  naics_find("asdfasdf", add_children = FALSE) 
 #'  
 #'  EJAMfrsdata::frs[EJAMfrsdata::frs$REGISTRY_ID %in% unlist(
 #'    EJAMfrsdata::siteid_from_naics(
@@ -69,9 +65,6 @@ naics_find <- function(query, add_children=FALSE, naics_dataset=NULL, ignore.cas
   if (class(naics_dataset) != 'numeric' | length(naics_dataset) < 2000) {warning('naics_dataset does not seem to be what is expected')}
   if (length(query) > 1) {stop("query naics_find() with only 1 item at a time")}
   
-  if (search_on_naics_website) {
-    return(naics_url_of_query(query))
-  }
   
   # Find all industry entries that match the query at all, including say 4 digit and 5 or 6 digit codes as well,
   #  ( not any parent or children entries unless they each match, themselves )
@@ -114,9 +107,5 @@ naics_find <- function(query, add_children=FALSE, naics_dataset=NULL, ignore.cas
   cat(paste0('\n', names(x)), '\n')
   invisible(x)
 }
-
-naics_from_name_query <- function(query) {
-  
-}
-
+ 
 

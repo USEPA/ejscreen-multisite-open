@@ -72,7 +72,7 @@ This function requires the following as data lazy loaded for example from EJAMbl
 \item blockwts: data.table with these columns: blockid , bgid, blockwt
 \item quaddata, and blockquadtree: data.table and quad tree, for indexes of block points
 (and localtree that is created when package is loaded)
-\item EJAM::blockgroupstats - A data.table (such as EJSCREEN demographic and environmental data by blockgroup?)
+\item EJAM::blockgroupstats - A data.table (such as EJScreen demographic and environmental data by blockgroup?)
 }
 }
 \seealso{

@@ -35,7 +35,7 @@ This is used with a data.frame that is a lookup table used to
 convert a raw indicator value to a percentile - US, Region, or State percentile.
 }
 \details{
-This could be recoded to be more efficient.
+This could be recoded to be more efficient - could use data.table
 The data.frame lookup table must have a field called "PCTILE" that has quantiles/percentiles
 and other column(s) with values that fall at those percentiles.
 EJAM::usastats, EJAM::statstats, EJAM::regionstats are such lookup tables.

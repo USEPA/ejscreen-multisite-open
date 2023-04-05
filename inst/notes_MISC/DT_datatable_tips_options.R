@@ -18,7 +18,8 @@
 #   extensions = 'Buttons',
 #   selection = 'single', ## enable selection of a single row
 #   filter = 'bottom',    ## include column filters at the bottom
-#   rownames = FALSE      ## don't show row numbers/names
+#   rownames = FALSE ,     ## don't show row numbers/names
+#   escape = FALSE  # may add security risk but makes URLs clickable links if they are already html links
 # )
 
 # Heatmap-like fill effect:
