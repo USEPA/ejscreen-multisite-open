@@ -110,6 +110,7 @@ ejamit <- function(sitepoints,
   
   if ("ST" %in% names(sitepoints)) { # if ST already available, use that and don't take the time to look up the ST based on blockfips or lat,lon
     out <- suppressWarnings (
+      # doaggregate() ####
       doaggregate(sites2blocks = mysites2blocks, sites2states = sitepoints)
     )
   } else {
@@ -117,23 +118,58 @@ ejamit <- function(sitepoints,
       doaggregate(sites2blocks = mysites2blocks)  # omit sites2states so that it gets ST from blockfips (not lat,lon which is slow)
     )
   }
-
+  
+  ################################################################ # 
+  
+  # add nice links to output site by site table ####
+   
+  if ("REGISTRY_ID" %in% names(out$results_bysite)) {
+    echolink = url_echo_facility_webpage(REGISTRY_ID, as_html = T)
+  } else {
+    echolink = rep(NA,nrow(out$results_bysite))
+  }
+  out$results_bysite[ , `:=`(
+    `EJScreen Report` = url_ejscreen_report(    lat = out$results_bysite$lat, lon = out$results_bysite$lon, distance = cutoff, as_html = T), 
+    `EJScreen Map`    = url_ejscreenmap(        lat = out$results_bysite$lat, lon = out$results_bysite$lon,                    as_html = T), 
+    `ACS Report`      = url_ejscreen_acs_report(lat = out$results_bysite$lat, lon = out$results_bysite$lon, distance = cutoff, as_html = T),
+    `ECHO report` = echolink
+  )]
+  out$results_overall[ , `:=`(
+    `EJScreen Report` = rep(NA,nrow(out$results_bysite)), 
+    `EJScreen Map`    = rep(NA,nrow(out$results_bysite)),  
+    `ACS Report`      = rep(NA,nrow(out$results_bysite)), 
+    `ECHO report`     = rep(NA,nrow(out$results_bysite))  
+  )]
+  newcolnames <- c(
+    "EJScreen Report", 
+    "EJScreen Map", 
+    "ACS Report", 
+    "ECHO report")
+  setcolorder(out$results_bysite, neworder = newcolnames)
+  setcolorder(out$results_bysite, neworder = newcolnames)
+  out$longnames <- c(newcolnames, out$longnames)
+  ################################################################ # 
+  
   if (interactive()) {
-    
     # already done by doaggregate()
-    
     # Show as nicely named indicators in console of RStudio - Overall results (across all sites)
-     # print to console
-     
+    # print to console
     # Show datatable view in RStudio - Site by Site (each site)
-    
-    # Plot some results 
-      # mapfast(out$results_bysite)
+    DT::datatable(
+      out$results_bysite[1:min(nrow(out$results_bysite), 2000) ], # >2k rows is too much for client-side DataTables
+      escape = FALSE,
+      caption = paste0(nrow(out$results_bysite), ' FACILITIES "', " ", '"'),
+      filter = "top"
+    )
+    # Map of facilities in an industry, plus popups with links to each facility in ECHO and EJScreen
+    # mapfast(out$results_bysite) 
     # had a problem with Error in validateCoords(lng, lat, funcName) : 
     # addCircles requires numeric longitude/latitude values
     # In addition: There were 11 warnings (use warnings() to see them)
     # Called from: validateCoords(lng, lat, funcName)
   }
+  ################################################################ # 
+  
   return(out)
 }
 

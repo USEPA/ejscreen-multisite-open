@@ -33,14 +33,15 @@ app_server <- function(input, output, session) {
   # https://github.com/ThinkR-open/golem/issues/6
   
   #############################################################################  # 
+  
+  ## ______ SELECT SITES ________####
   # ~ ####
-  # ________ SELECT SITES ________####
-  # ~ ####
+  
   # update ss_select_NAICS input options ###
   updateSelectizeInput(session, inputId = 'ss_select_naics',
                        ## use named list version, grouped by first two code numbers
                        #choices = naics_as_list, # need to keep formatting
-                       choices = EJAM::NAICS, 
+                       choices = EJAM::NAICS, # named list of codes
                        server = TRUE)
   
   ## hide advanced settings tab by default
@@ -64,23 +65,27 @@ app_server <- function(input, output, session) {
   # observeEvent(input$close_welcome,{
   #   removeModal()
   # })
+  #############################################################################  # 
   
   ## define current upload method using radio button ####
   current_upload_method <- reactive({
     switch(
       input$ss_choose_method,
-      latlon = 'Location (lat/lon)',
-      FRS = 'FRS',
-      ECHO = 'ECHO',
-      NAICS = 'NAICS'
+      latlon = "latlon",  # 'Location (lat/lon)',
+      FRS =  "FRS", # 'FRS (facility ID)',
+      ECHO = "ECHO", # 'ECHO Search Tools',
+      NAICS = "NAICS" # 'NAICS (industry name or code)'
     )
   })
+  #############################################################################  # 
+  ## reactive: data uploaded as latlon ####
   
-  ## reactive: read uploaded latlon ####
   data_up_latlon <- reactive({
     
     ## wait for file to be uploaded
     req(input$ss_upload_latlon)
+    
+    ################# #  THIS SECTION should/COULD BE REPLACED WITH latlon_from_anything()
     
     ## check if file extension is appropriate
     ext <- tools::file_ext(input$ss_upload_latlon$name)
@@ -96,7 +101,7 @@ app_server <- function(input, output, session) {
     ## if column names are found in lat/long alias comparison, process
     if(any(tolower(colnames(ext)) %in% lat_alias) & any(tolower(colnames(ext)) %in% lon_alias)){
       ext %>% 
-        EJAM::latlon_df_clean() %>% 
+        EJAM::latlon_df_clean() %>%   # This does latlon_infer() and latlon_as.numeric() and latlon_is.valid()
         data.table::as.data.table()
       
     }else{
@@ -105,15 +110,18 @@ app_server <- function(input, output, session) {
     }
   })
   
+  #############################################################################  # 
   ## reactive: data uploaded by FRS IDs ####
+  
   data_up_frs <- reactive({
     
     ## wait for file to be uploaded
     req(input$ss_upload_frs)
     
+    ################# #  THIS SECTION should/COULD BE REPLACED WITH latlon_from_anything()
+    
     ## check if file extension is appropriate
     ext <- tools::file_ext(input$ss_upload_frs$name)
-    
     ## if acceptable file type, read in; if not, send warning text
     read_frs <- switch(ext,
                        csv =  read.csv(input$ss_upload_frs$datapath),
@@ -121,32 +129,30 @@ app_server <- function(input, output, session) {
                        xlsx = read_excel(input$ss_upload_frs$datapath),
                        shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
     )
-    
     #include frs_is_valid verification check function
     if (frs_is_valid(read_frs)){
-      
       read_frs_dt <- data.table::as.data.table(read_frs)
+      #why not setDT(read_frs)  ?
       
       #converts registry id to character if not already in that class (EJAMfrsdata::frs registry ids are character)
       if(class(read_frs_dt$REGISTRY_ID) != "character"){
         read_frs_dt$REGISTRY_ID = as.character(read_frs_dt$REGISTRY_ID)
       }
-      
       frs_lat_lon <- merge(x = read_frs_dt, y = EJAMfrsdata::frs, by.x='REGISTRY_ID', by.y='REGISTRY_ID', all.x=TRUE)
-      
-    }else{
+    } else {
       shiny::validate('Records with invalid Registry IDs')
     }
     
     ## return merged dataset
     frs_lat_lon
-    
   })
   
+  #############################################################################  # 
   ## reactive: data uploaded by NAICS ####
+  
   data_up_naics <- reactiveVal(NULL)
   
-  ## when NAICS submit button is pressed
+  ## when NAICS submit button is pressed ------------   work in progress ====== not tested
   observeEvent(input$submit_naics, {
     
     ## check if anything has been selected or entered
@@ -155,9 +161,10 @@ app_server <- function(input, output, session) {
     #define inputs
     naics_user_wrote_in_box <- input$ss_enter_naics
     naics_user_picked_from_list <- input$ss_select_naics
-    
-    #NAICS validation function to check for non empty NAICS inputs
-    if(NAICS_validation(input$ss_enter_naics,input$ss_select_naics)){
+    add_naics_subcategories <- input$add_naics_subcategories
+      
+    # naics_validation function to check for non empty NAICS inputs
+    if(naics_validation(input$ss_enter_naics,input$ss_select_naics)){
       inputnaics = {}
       #splits up comma separated list if user manually inserts list
       if(nchar(input$ss_enter_naics)>0){
@@ -165,47 +172,51 @@ app_server <- function(input, output, session) {
         #checks for non-numeric values in text box; if they are not numeric, then search by name
         if(!grepl("^\\d+(,\\d+)*$",input$ss_enter_naics)){
           print('test')
-          inputnaics = naics_find(input$ss_enter_naics)
+          inputnaics = naics_from_any(input$ss_enter_naics)[,code] # this used to be naics_find()
+          
           if(length(inputnaics) == 0 | all(is.na(inputnaics))){
             ################ Should output something saying no valid results returned ######## #
             shiny::validate('No Results Returned')
           }        
-        }else{
+        } else {
           naics_wib_split <- as.list(strsplit(naics_user_wrote_in_box, ",")[[1]])
           print(naics_wib_split)
         }
-      }else{
+      } else {
         naics_wib_split <- ""
       }
-      # if not empty, assume its pulled using naics_find above
-      if(length(inputnaics) == 0 | rlang::is_empty(inputnaics)){
+      # if not empty, assume its pulled using naics_from_any() or older naics_find() above
+      if(length(inputnaics) == 0 | rlang::is_empty(inputnaics)) {
         #construct regex expression and finds sites that align with user-selected naics codes
         inputnaics <- c(naics_wib_split, naics_user_picked_from_list)
         inputnaics <- unique(inputnaics[inputnaics != ""])
-        inputnaics <- paste("^", inputnaics, collapse="|")   ### the NAICS specified by user
-        inputnaics <- stringr::str_replace_all(string = inputnaics, pattern = " ", replacement = "")
+        # inputnaics <- paste("^", inputnaics, collapse="|")   ### the NAICS specified by user
+        # inputnaics <- stringr::str_replace_all(string = inputnaics, pattern = " ", replacement = "")
         print(inputnaics)
+        
         #merge user-selected NAICS with FRS facility location information
-        sitepoints <- EJAMfrsdata::frs_by_naics[NAICS %like% inputnaics ,  ]
+        # sitepoints <- EJAMfrsdata::frs_by_naics[NAICS %like% inputnaics ,  ]
+        sitepoints <- frs_from_naics(inputnaics, children=add_naics_subcategories)[, .(lat,lon,REGISTRY_ID,PRIMARY_NAME,NAICS)] # xxx
         print(sitepoints)
         if(rlang::is_empty(sitepoints) | nrow(sitepoints) == 0){
           ################ Should output something saying no valid results returned ######## #
           shiny::validate('No Results Returned')
         }
-      } else{
-        sitepoints <- EJAMfrsdata::frs_by_naics[NAICS %in% inputnaics,]
+      } else{  # THIS COULD BE REPLACED WITH frs_from_naics() 
+        # sitepoints <- EJAMfrsdata::frs_by_naics[NAICS %in% inputnaics,]
+        sitepoints <- frs_from_naics(inputnaics, children=add_naics_subcategories)[, .(lat,lon,REGISTRY_ID,PRIMARY_NAME,NAICS)] # xxx
         print(sitepoints)
         showNotification('Points submitted successfully!', duration = 1)
       }
     }else{
       ################ Should output something saying no valid results returned ######## #
-      shiny::validate('Invalid NAIC Input')
+      shiny::validate('Invalid NAICS Input')
     }
+    cat("SITE COUNT VIA NAICS: ", NROW(sitepoints), "\n")
     
     ## assign final value to data_up_naics reactive variable
     data_up_naics(sitepoints)
   })
-  
   
   ## if NAICS radio button is toggled between dropdown/enter, empty the other one
   observeEvent(input$naics_ul_type, {
@@ -216,7 +227,9 @@ app_server <- function(input, output, session) {
     }
   })
   
+  #############################################################################  # 
   ## reactive: data uploaded by ECHO ####
+  
   data_up_echo <- reactive({
     ## depends on ECHO upload - which may use same file upload as latlon
     req(input$ss_upload_echo)
@@ -233,34 +246,30 @@ app_server <- function(input, output, session) {
     )
     
     ## only process if lats and lon (or aliases) exist in uploaded data  
-    lat_alias <- c('lat', 'latitude83', 'latitude', 'latitudes', 'faclat', 'lats')
-    lon_alias <- c('lon', 'longitude83', 'longitude', 'longitudes', 'faclong', 'long', 'longs', 'lons','lng')
-    
     ## if column names are matched to aliases, process it    
     if(any(tolower(colnames(ext)) %in% lat_alias) & any(tolower(colnames(ext)) %in% lon_alias)){
-      
       ext %>% 
         EJAM::latlon_df_clean() %>% 
         data.table::as.data.table()
-      
     }else{
       ## if not matched, return this message
       shiny::validate('No coordinate columns found.')
     }
-    
   })
   
-  ## reactive: count number of data upload methods currently used ####
+  #############################################################################  # 
+  ## reactive: count data upload methods currently used ####
   num_ul_methods <- reactive({
     shiny::isTruthy(input$ss_upload_latlon) +
       shiny::isTruthy(input$ss_upload_frs) +
       (shiny::isTruthy(input$ss_enter_naics) ||  shiny::isTruthy(input$ss_select_naics)) +
       shiny::isTruthy(input$ss_upload_echo)
-    
   })
   
   ## reactive: hub for any/all uploaded data, gets passed to processing ####
   data_uploaded <- reactive({
+    print("data_uploaded reactive was updated!")
+    cat("method is ", current_upload_method(), "\n")
     
     ## send message if no data uploaded
     validate(
@@ -271,12 +280,12 @@ app_server <- function(input, output, session) {
     ## that is currently selected by the ss_choose_method radio button
     
     ## if using lat/lon upload
-    if(current_upload_method() == 'Location (lat/lon)'){
+    if(current_upload_method() == 'latlon'){
       
       data_up_latlon() #%>% 
       
     } else if(current_upload_method() == 'NAICS'){
-      
+      print('setting data_uploaded() to data_up_naics() ... ')
       data_up_naics()
       
     } else if(current_upload_method() == 'FRS'){
@@ -290,6 +299,7 @@ app_server <- function(input, output, session) {
     }
     
   })
+  #############################################################################  # 
   
   ## disable run button until there is data uploaded; then enable
   observe({
@@ -300,36 +310,148 @@ app_server <- function(input, output, session) {
     }
   })
   
-  ## initialize data_processed reactive variable 
-  ## this will hold results from doaggregate
-  data_processed <- reactiveVal(NULL)
+  #############################################################################  # 
+  # ~ ####
+  # ______ VIEW UPLOADED / SELECTED POINTS ####
+  # ~ ####
   
-  ## initialize data_summarized data 
-  ## this will hold results from batch.summarize
-  data_summarized <- reactiveVal(NULL)
+  ## How many valid points? warn if no valid lat/lon ####
+  output$an_map_text <- renderUI({
+    req(data_uploaded())
+    #separate inputs with valid/invalid lat/lon values
+    num_na    <- nrow(data_uploaded()[ (is.na(data_uploaded()$lat) | is.na(data_uploaded()$lon)),])
+    num_notna <- nrow(data_uploaded()[!(is.na(data_uploaded()$lat) | is.na(data_uploaded()$lon)),])
+    ## if invalid data found, send modal to screen
+    if(num_na > 0){
+      showModal(modalDialog(title = 'Invalid data found', 'FYI, some of your data was not valid.', size = 's'))
+    }
+    HTML(paste0('Current upload method: <strong>',  current_upload_method(), '</strong><br>', 
+                'Total site(s) uploaded: <strong>', prettyNum(nrow(data_uploaded()), big.mark=','),'</strong><br>',
+                'Valid site(s) uploaded: <strong>', prettyNum(num_notna, big.mark=','),'</strong><br>',
+                'Site(s) with invalid lat/lon values: <strong>', prettyNum(num_na,big.mark=','), '</strong>'))
+  })
+  
+  ## See table of uploaded points ####
+  
+  output$print_test2_dt <- DT::renderDT({
+    req(data_uploaded())
+    browser()
+    dt <- data_uploaded() # now naics-queried sites format is OK to view, since using different function to get sites by naics
+    
+    # if(current_upload_method() == 'NAICS'){
+      
+      ###takes NAICS codes selected, finds NAICS descriptions, and presents them  
+      # dt_result_by_naic = data_uploaded()[, .(Count = .N), by = NAICS]
+      # naics_desc = EJAM::NAICS[EJAM::NAICS %in% dt_result_by_naic$NAICS]
+      # dt_names = data.frame("NAICS"=naics_desc,"Description"=names(naics_desc))
+      # naicsdt = merge(x = dt_result_by_naic, y = dt_names, by='NAICS')
+      # naics_reorder = data.frame(naicsdt$Description,naicsdt$Count)
+      # colnames(naics_reorder) = c("NAICS Code","Facility Count")
+      # dt <- naics_reorder
+      ###print(naics_reorder,row.names=FALSE)
+    # }else{
+      # dt <- data_uploaded()
+    # }
+    
+    DT::datatable(dt, options = list(pageLength = 100, scrollX = TRUE, scrollY = '500px'), escape = FALSE) # escape=FALSE may add security issue but makes links clickable in table
+  })
+  
+  ## reactive: check if uploaded points are clustered (may double-count people) ####
+  # note this had been done in EJAMejscreenapi::addlinks_clusters_and_sort_cols() 
+  is_clustered <- shiny::reactive({
+    req(data_uploaded())
+    
+    # which sites have residents that might also be near others sites?
+    # circles overlap if 2 facilities are twice the radius apart  # in miles
+    EJAMejscreenapi::near_eachother(
+      lon = data_uploaded()$lon, 
+      lat = data_uploaded()$lat,
+      distance = 2 * input$bt_rad_buff
+      ## if switching units between miles and km - not currently used
+      # distance = ifelse(input$radius_units == 'miles', 
+      #                   2 * input$bt_rad_buff,
+      #                   2 * input$bt_rad_buff * 0.62137119
+      #)
+    ) 
+  })
+  
+  #############################################################################  # 
+  # ~ ####
+  # ______ MAP UPLOADED POINTS ________####
+  # ~ ####  
+  
+  ## update map radius label based on button ####
+  
+  observe({
+    val <- input$bt_rad_buff
+    lab <- paste0('Radius of circular buffer: ', val, ' mi ','(',round(val / 0.62137119, 2), ' km)')
+    
+    updateSliderInput(session, inputId = 'bt_rad_buff', label = lab)
+    
+    ## if switching units between miles and km - not currently used
+    #req(input$radius_units)
+    #lab <- input$radius_units
+    # updateSliderInput(session, inputId = 'bt_rad_buff',
+    #                   label = paste0('Radius of circular buffer (', lab, ')'),
+    #                   min = 0.25, val = val, step = 0.25, max = 10)
+  })
+  
+  orig_leaf_map <- reactive({
+    req(data_uploaded())
+    max_pts <- max_points_can_map
+    ## don't draw map if > 5000 points are uploaded
+    if(nrow(data_uploaded()) < max_pts){
+      suppressMessages(
+        map_facilities(mypoints = as.data.frame(data_uploaded()), 
+                       rad = input$bt_rad_buff, 
+                       highlight = input$an_map_clusters,
+                       clustered = is_clustered())
+      )
+    } else {
+      validate(paste0('Too many points (> ',prettyNum(max_pts, big.mark=','),') uploaded for map to be displayed'))
+    }
+  })
+  
+  ## output: draw map of uploaded points ####
+  output$an_leaf_map <- leaflet::renderLeaflet({
+    req(data_uploaded())
+    orig_leaf_map()
+  })
   
   #############################################################################  # 
   
   # ~ ####
-  # ________ RUN ANALYSIS  button is pressed ________####
+  # ______ RUN ANALYSIS  button is pressed ________####
   # ~ ####
+  
+  ## initialize data_processed reactive variable 
+  ##  to hold results of doaggregate()
+  data_processed <- reactiveVal(NULL)
+  
+  ## initialize data_summarized data 
+  ##  to hold results of batch.summarize()
+  data_summarized <- reactiveVal(NULL)
+  
   
   observeEvent(input$bt_get_results, {
     
     showNotification('Processing sites now!', type = 'message', duration = 0.5)
     
-    ## overall progress bar for 3 operations (getblocksnearby, doaggregate, batch.summarize)
+    ## progress bar setup overall for 3 operations   
+    # (getblocksnearby, doaggregate, batch.summarize)
     progress_all <- shiny::Progress$new(min = 0, max = 1)
     progress_all$set(value = 0, message = 'Step 1 of 3', detail = 'Getting nearby census blocks')
     
-    ## run EJAM::getblocksnearby ####
+    #############################################################################  # 
+    ## 1) **EJAM::getblocksnearby()** ####
+    
     sites2blocks <- getblocksnearby(
       sitepoints = data_uploaded(),
       cutoff = input$bt_rad_buff,
       quadtree = localtree
     )
     
-    ### update overall progress bar ####
+    ## progress bar update overall  
     progress_all$inc(1/3, message = 'Step 2 of 3', detail = 'Aggregating')
     ## create progress bar to show doaggregate status
     progress_doagg <- shiny::Progress$new(min = 0, max = 1)
@@ -343,7 +465,9 @@ app_server <- function(input, output, session) {
       progress_doagg$set(value = value, message = message_main, detail = message_detail)
     }
     
-    ## run doaggregate
+    #############################################################################  # 
+    ## 2) **EJAM::doaggregate()** ####
+    
     out <- suppressWarnings(doaggregate(
       sites2blocks = sites2blocks, 
       sites2states = data_uploaded(),
@@ -354,13 +478,46 @@ app_server <- function(input, output, session) {
     ## close doaggregate progress bar
     progress_doagg$close()
     
+    #############################################################################  # 
+    # add hyperlinks  ####
+    
+    # duplicated almost exactly in ejamit() but reactives are not reactives there
+    if ("REGISTRY_ID" %in% names(out$results_bysite)) {
+      echolink = url_echo_facility_webpage(REGISTRY_ID, as_html = T)
+    } else {
+      echolink = rep(NA,nrow(out$results_bysite))
+    }
+    out$results_bysite[ , `:=`(
+      `EJScreen Report` = url_ejscreen_report(    lat = data_uploaded()$lat, lon = data_uploaded()$lon, distance = input$bt_rad_buff, as_html = T), 
+      `EJScreen Map`    = url_ejscreenmap(        lat = data_uploaded()$lat, lon = data_uploaded()$lon,                               as_html = T), 
+      `ACS Report`      = url_ejscreen_acs_report(lat = data_uploaded()$lat, lon = data_uploaded()$lon, distance = input$bt_rad_buff, as_html = T),
+      `ECHO report` = echolink
+    )]
+    out$results_overall[ , `:=`(
+      `EJScreen Report` = NA, 
+      `EJScreen Map`    = NA, 
+      `ACS Report`      = NA,
+      `ECHO report`     = NA
+    )]
+    newcolnames <- c(
+      "EJScreen Report", 
+      "EJScreen Map", 
+      "ACS Report", 
+      "ECHO report")
+    setcolorder(out$results_bysite, neworder = newcolnames)
+    setcolorder(out$results_bysite, neworder = newcolnames)
+    out$longnames <- c(newcolnames, out$longnames)
+    #############################################################################  # 
+    
     ## assign doaggregate output to data_processed reactive ####
     data_processed(out)
     
     ## update overall progress bar
     progress_all$inc(1/3, message='Step 3 of 3', detail = 'Summarizing')
     
-    # run EJAMbatch.summarizer::batch.summarize on already processed data ####
+    #############################################################################  # 
+    # 3) **EJAMbatch.summarizer::batch.summarize()** on already processed data ####
+    
     outsum <- EJAMbatch.summarizer::batch.summarize(
       sitestats = data.frame(data_processed()$results_bysite),
       popstats =  data.frame(data_processed()$results_bysite),
@@ -385,6 +542,8 @@ app_server <- function(input, output, session) {
     
   })
   
+  #############################################################################  # 
+  
   ## static preview of uploaded dataset - not used currently
   # output$print_test2 <- renderTable({
   #     req(data_uploaded())
@@ -406,112 +565,10 @@ app_server <- function(input, output, session) {
   #     
   #   })
   
-  ## interactive data table of raw upload ####
-  output$print_test2_dt <- DT::renderDT({
-    req(data_uploaded())
-    
-    if(current_upload_method() == 'NAICS'){
-      
-      #takes NAICS codes selected, finds NAICS descriptions, and presents them  
-      dt_result_by_naic = data_uploaded()[, .(Count = .N), by = NAICS]
-      naics_desc = EJAM::NAICS[EJAM::NAICS %in% dt_result_by_naic$NAICS]
-      dt_names = data.frame("NAICS"=naics_desc,"Description"=names(naics_desc))
-      naicsdt = merge(x = dt_result_by_naic, y = dt_names, by='NAICS')
-      naics_reorder = data.frame(naicsdt$Description,naicsdt$Count)
-      colnames(naics_reorder) = c("NAICS Code","Facility Count")
-      
-      dt <- naics_reorder
-      #print(naics_reorder,row.names=FALSE)
-    }else{
-      dt <- data_uploaded()
-    }
-    DT::datatable(dt, options = list(pageLength = 100, scrollX = TRUE, scrollY = '500px'))
-  })
-  
-  ## reactive: check if uploaded points are clustered (may double-count people) ####
-  is_clustered <- shiny::reactive({
-    req(data_uploaded())
-    
-    # which sites have residents that might also be near others sites?
-    # circles overlap if 2 facilities are twice the radius apart  # in miles
-    EJAMejscreenapi::near_eachother(
-      lon = data_uploaded()$lon, 
-      lat = data_uploaded()$lat,
-      distance = 2 * input$bt_rad_buff
-      ## if switching units between miles and km - not currently used
-      # distance = ifelse(input$radius_units == 'miles', 
-      #                   2 * input$bt_rad_buff,
-      #                   2 * input$bt_rad_buff * 0.62137119
-      #)
-    ) 
-  })
-  
-  ## update map radius label based on button ####
-  observe({
-    
-    val <- input$bt_rad_buff
-    lab <- paste0('Radius of circular buffer: ', val, ' mi ','(',round(val / 0.62137119, 2), ' km)')
-    
-    updateSliderInput(session, inputId = 'bt_rad_buff', label = lab)
-    
-    ## if switching units between miles and km - not currently used
-    #req(input$radius_units)
-    #lab <- input$radius_units
-    # updateSliderInput(session, inputId = 'bt_rad_buff',
-    #                   label = paste0('Radius of circular buffer (', lab, ')'),
-    #                   min = 0.25, val = val, step = 0.25, max = 10)
-  })
   
   #############################################################################  # 
   # ~ ####
-  ## ________MAP UPLOADED POINTS ________####
-  # ~ ####
-  orig_leaf_map <- reactive({
-    req(data_uploaded())
-    max_pts <- 5000
-    ## don't draw map if > 5000 points are uploaded
-    if(nrow(data_uploaded()) < max_pts){
-      suppressMessages(
-        map_facilities(mypoints = as.data.frame(data_uploaded()), 
-                       rad = input$bt_rad_buff, 
-                       highlight = input$an_map_clusters,
-                       clustered = is_clustered())
-      )
-    } else {
-      validate(paste0('Too many points (> ',prettyNum(max_pts, big.mark=','),') uploaded for map to be displayed'))
-    }
-    
-  })
-  
-  ## output: leaflet map of uploaded points ####
-  output$an_leaf_map <- leaflet::renderLeaflet({
-    req(data_uploaded())
-    orig_leaf_map()
-  })
-  
-  ## output: display # of uploaded sites ####
-  output$an_map_text <- renderUI({
-    req(data_uploaded())
-    #separate inputs with valid/invalid lat/lon values
-    num_na    <- nrow(data_uploaded()[ (is.na(data_uploaded()$lat) | is.na(data_uploaded()$lon)),])
-    num_notna <- nrow(data_uploaded()[!(is.na(data_uploaded()$lat) | is.na(data_uploaded()$lon)),])
-    ## if invalid data found, send modal to screen
-    if(num_na > 0){
-      showModal(
-        modalDialog(title = 'Invalid data found', 'FYI, some of your data was not valid.', size = 's')
-      )
-    }
-    
-    ## display summary of uploaded # valid ## ## 
-    HTML(paste0('Current upload method: <strong>', current_upload_method(), '</strong><br>', 
-                'Total site(s) uploaded: <strong>',prettyNum(nrow(data_uploaded()), big.mark=','),'</strong><br>',
-                'Valid site(s) uploaded: <strong>',prettyNum(num_notna, big.mark=','),'</strong><br>',
-                'Site(s) with invalid lat/lon values: <strong>', prettyNum(num_na,big.mark=','), '</strong>'))
-  })
-  
-  #############################################################################  # 
-  # ~ ####
-  # _________RESULTS OF ANALYSIS ####
+  # ______ RESULTS OF ANALYSIS ####
   # ~ ####
   
   ## ** US AVERAGE for each indicator  
@@ -543,9 +600,17 @@ app_server <- function(input, output, session) {
     #doaggregate results_overall output, if needed: unlist(data_processed()$results_overall[1, ..names_e])
   })
   
+  #   in plots for ejscreenapi, it may do this:
+  # out <- results_table()
+  # names(out) <- fixnames(names(out), mapping_for_names = map_headernames)
+  # us.ratios    <- ratios_to_avg(out)
+  # c(EJAM::names_d_avg, EJAM::names_d_subgroups_avg)
+  # 
+  # names_d_us_ratio 
+  
   #############################################################################  # 
   # ~ ####
-  # ________ SUMMARY IN TALL FORMAT  ####
+  # ______ SUMMARY IN TALL FORMAT  ####
   
   output$overall_results_tall <- renderDT({
     tallout <- cbind(overall = round(unlist(data_processed()$results_overall), 3))
@@ -556,9 +621,9 @@ app_server <- function(input, output, session) {
   
   #############################################################################  # 
   # ~ ####
-  # ________ SUMMARY REPORT_________ ####
+  # ______ SUMMARY REPORT_________ ####
   # ~ ####
-  ## MAP for summary report ####
+  ## *MAP for summary report ####
   report_map <- reactive({
     circle_color <- '#000080'
     
@@ -643,16 +708,7 @@ app_server <- function(input, output, session) {
   })
   
   #############################################################################  # 
-  ## *estimated total population ####
-  total_pop <- reactive({
-    
-    req(data_processed())
-    ## format and return total population
-    ## some of these numbers seem very large! possible double-counting??
-    round(data_processed()$results_overall$pop, 0 )
-  })
-  
-  ## header info for summary report ####
+  ## *Header info on summary report ####
   output$view1_total_pop <- renderUI({
     
     req(data_processed())
@@ -670,38 +726,58 @@ app_server <- function(input, output, session) {
     ## return formatted HTML text
     HTML(title_text)
   })
+  ## * Total population count ####
+  total_pop <- reactive({
+    
+    req(data_processed())
+    ## format and return total population
+    ## some of these numbers seem very large! possible double-counting??
+    round(data_processed()$results_overall$pop, 0 )
+  })
+  
   #############################################################################  # 
-  ## *reactive: demographic summary table #### 
+  ## *Demographic summary table #### 
+  
   v1_demog_table <- reactive({
     
     req(data_processed())
     
-    ## create dataframe with 6 columns - vars (indicator names), value (raw indicator value),
+    ## create dataframe with 6? columns - vars (indicator names), value (raw indicator value),
     ## state_avg (State Avg indicator value), state_pctile (State Pctile for indicator),
     ## usa_avg (US Avg indicator value), usa_pctile (US Pctile for indicator)
+    
+    ## now include these also:
+    # ratio.to.us.d()
+    # ratio.to.us.e()
+    
     tab_data_d <- data.frame(
       var_names =  c(names_d_friendly, names_d_subgroups_friendly),
       # vars = c(names_d, names_d_subgroups),
       value = data_processed()$results_overall[, c(..names_d, ..names_d_subgroups)] %>% t, 
       
-      ## state averages and percentiles are not included at all yet!!
+      ## state averages   are not included at all yet!!
       ## to include them, need state-level info for each site and then add to these 
       ## columns, using something not from EJAM::statestats, but the 
       # average of state averages weighted by all the people analyzed who are in various states! 
-      # so each site should have a state average and pop, and we want the popwtd mean of those site-specific state averages.
+      # so need a function that separately accepts vector of ST 1persite, 
+      # and knows what varnames need state.avg 
+      # each site (not every BG- that is overkill- just use mean of state site is in overall even if partly out of state)
+      # should get the state average for every indicator and pop,
+      #  and we want the popwtd mean of those site-specific state averages.
       #  I probably need to calculate that within the server code and provide it as outputs in data_processed()$results_overall
-      'state_avg' = as.numeric(NA),
+      'state_avg' = as.numeric(NA), # complicated since it is the popwtd mean
       'state_pctile' = (data_processed()$results_overall[, c(..names_d_state_pctile, ..names_d_subgroups_state_pctile)]) %>% t, 
       
       ## us average pulled from EJAM::usastats
       'usa_avg' = EJAM::usastats %>% filter(PCTILE == 'mean') %>% select(all_of(c(names_d, names_d_subgroups))) %>% t, 
-      'usa_pctile'  =  (data_processed()$results_overall[, c(..names_d_pctile, ..names_d_subgroups_pctile)]) %>% t  #,
-      # "ratio_to_us" = data_processed()$results_overall[, ..names_d_us_ratio] %>% t ####, 
-      #"ratio_to_state" = data_processed()$results_overall[, ..names_d_state_ratio] %>% t
+      'usa_pctile'  =  (data_processed()$results_overall[, c(..names_d_pctile, ..names_d_subgroups_pctile)]) %>% t # ,
+      # "ratio_to_us" = ratio.to.us.d() %>% t #, # data_processed()$results_overall[, ..names_d_us_ratio] %>% t ####, 
+      # "ratio_to_state" = ratio.to.state.d() # data_processed()$results_overall[, ..names_d_state_ratio] %>% t
     )
+    tab_data_d$ratio_to_us <- round(tab_data_d$value / tab_data_d$usa_avg, 2)
     
     # need to verify percentile should be rounded here or use ceiling() maybe? try to replicate EJScreen percentiles as they report them.
-    tab_data_d$usa_pctile <- round(tab_data_d$usa_pctile ,0)
+    tab_data_d$usa_pctile   <- round(tab_data_d$usa_pctile ,0)
     tab_data_d$state_pctile <- round(tab_data_d$state_pctile ,0)
     
     ## join long indicator names and move them to first column - done above now
@@ -727,7 +803,8 @@ app_server <- function(input, output, session) {
     v1_demog_table()
   })
   #############################################################################  # 
-  ## * reactive: environmental indicator table #### 
+  ## *Environmental indicator table #### 
+  
   v1_envt_table <- reactive({
     req(data_processed())
     
@@ -738,15 +815,17 @@ app_server <- function(input, output, session) {
       var_names = names_e_friendly,
       # vars = names_e,  
       value = data_processed()$results_overall[, names_e, with=FALSE] %>% t,
+      
       ## state averages  are not included at all yet!!
       ## to include them, need state-level info for each site and then add to these 
       ## columns, using something like  statestats
       'state_avg' = as.numeric(NA),
-      # 'state_pctile' = as.numeric(NA),
+      
       'state_pctile' = data_processed()$results_overall[, ..names_e_state_pctile] %>% t, 
       'usa_avg' =  usastats %>% filter(PCTILE == 'mean') %>% select(all_of(names_e)) %>% t, 
-      'usa_pctile' = data_processed()$results_overall[,  names_e, with=FALSE] %>% t
+      'usa_pctile' = data_processed()$results_overall[,  names_e_pctile, with=FALSE] %>% t
     ) 
+    tab_data_e$ratio_to_us <- round(tab_data_e$value / tab_data_e$usa_avg, 2)
     
     # NEED TO CONFIRM HOW TO ROUND TO REPLICATE EJSCREEN 
     tab_data_e$usa_pctile   <- round(tab_data_e$usa_pctile,  0)
@@ -776,105 +855,128 @@ app_server <- function(input, output, session) {
     v1_envt_table()
   })
   #############################################################################  # 
-  ## BOXPLOTS of demographic ratios vs US average ####
+  ## *BOXPLOTS of demographic ratios vs US average ####
   
   v1_boxplot <- reactive({
     req(data_summarized())
     
-    ## ratios by site
-    ratio.to.us.d.bysite <- data.frame()
-    ## ratios for individual sites   
-    ## uses (doaggregate output results_bysite) / (EJAM::usastats mean in USA).
-    
-    ## could probably be simplified instead of using a loop
-    for(i in 1:nrow(data_processed()$results_bysite)){
+    if ("try BARPLOT" == "try BARPLOT") {
+      # browser()
+      # ratios overall (demog here / demog avg in US)
+      ratio.to.us.d.overall <- unlist(round( unlist(data_processed()$results_overall[ , c(..names_d, ..names_d_subgroups)]) / 
+                                               avg.in.us[,c(names_d, names_d_subgroups)], 2))
+      supershortnames <- substr(gsub(" |-|age","",gsub("People of Color","POC",c(names_d_friendly, names_d_subgroups_friendly))),1,6)
+      names(ratio.to.us.d.overall) <- supershortnames
+      ratio.to.us.d.overall[is.infinite(ratio.to.us.d.overall)] <- 0 
+      # use yellow/orange/red for ratio >= 1x, 2x, 3x 
+      mycolors <- c("gray", "yellow", "orange", "red")[1+findInterval(ratio.to.us.d.overall, c(1.01, 2, 3))] 
+      barplot(ratio.to.us.d.overall, main = 'Ratio vs. US Average for Demographic Indicators', cex.names = 0.8, col = mycolors)
+      abline(h=1, col="gray")
       
-      ratio.to.us.d.bysite <- rbind(
-        ratio.to.us.d.bysite,
-        unlist(data_processed()$results_bysite[i, c(..names_d, ..names_d_subgroups )]) /
-          avg.in.us[, c(names_d, names_d_subgroups )]
+    } else {    
+      
+      ## ratios by site  (demog each site / demog avg in US)
+      ratio.to.us.d.bysite <- data.frame()
+      ## ratios for individual sites   
+      ## uses (doaggregate output results_bysite) / (EJAM::usastats mean in USA).
+      
+      ## could probably be simplified instead of using a loop
+      for(i in 1:nrow(data_processed()$results_bysite)){
+        
+        ratio.to.us.d.bysite <- rbind(
+          ratio.to.us.d.bysite,
+          unlist(data_processed()$results_bysite[i, c(..names_d, ..names_d_subgroups )]) /
+            avg.in.us[, c(names_d, names_d_subgroups )]
+        )
+      }
+      
+      ## assign column names (could use left_join like elsewhere)
+      names(ratio.to.us.d.bysite) <-  c(names_d_friendly, names_d_subgroups_friendly) # long_names_d$var_names[match( names_d_fixed, long_names_d$vars)]
+      
+      
+      
+      
+      
+      ## pivot data from wide to long - now one row per indicator
+      ratio.to.us.d.bysite <- ratio.to.us.d.bysite %>% 
+        pivot_longer(cols = everything(), names_to = 'indicator') %>% 
+        ## replace Infs with NAs - these happen when indicator at a site is equal to zero
+        mutate(value = na_if(value, Inf)) #%>% 
+      # arrange(match(indicator, names(ratio.to.us.d.bysite) )) # did not help order boxplots
+      # NOTE THIS IS A tibble, not data.frame, and is in LONG format now.
+      
+      towhat_nicename <- "US Average"
+      mymaintext <- paste0("Ratios to ", towhat_nicename, ", as distributed across these sites")
+      
+      ## find max of ratios 
+      max.ratio.d.bysite <- max(ratio.to.us.d.bysite$value, na.rm = TRUE)
+      
+      max.name.d.bysite <- ratio.to.us.d.bysite$indicator[which.max(ratio.to.us.d.bysite$value)]
+      
+      ## find 75th %ile of ratios for the indicator with the max ratio 
+      q75.ratio.d.bysite <- quantile(ratio.to.us.d.bysite$value[ratio.to.us.d.bysite$indicator == max.name.d.bysite], 0.75, na.rm=TRUE)
+      
+      ## paste subtitle for boxplot
+      subtitle <- paste0('Within ', input$bt_rad_buff,' miles of one site, ', 
+                         max.name.d.bysite, ' is ', round(max.ratio.d.bysite,1), 'x the US average\n' #,
+                         # 'and 1 in 4 sites is at least ',round(q75.ratio.d.bysite,2), 'x the US average' 
       )
+      
+      ## specify # of characters to wrap indicator labels
+      n_chars_wrap <- 13
+      
+      ## specify upper bound for ratios (will drop values above this from graphic)
+      # perhaps want a consistent y limits to ease comparisons across multiple reports the user might run.
+      # If the max value of any ratio is say 2.6, we might want ylim to be up to 3.0, 
+      # if the max ratio is 1.01, do we still want ylim to be up to 3.0??
+      # if the max ratio or even max of 95th pctiles is >10, don't show it, but 
+      # what if the 75th pctile value of some indicator is >10? expand the scale to always include all 75ths.
+      # what if median
+      q75.maxof75s <- max(quantile(ratio.to.us.d.bysite$value, 0.75, na.rm=TRUE),na.rm = TRUE)
+      ylimit <- ceiling(q75.maxof75s) # max of 75th pctiles rounded up to nearest 1.0x?   
+      max_limit <- max(3, ylimit, na.rm = TRUE) #   
+      
+      
+      ## much of this is plotting code is based on EJAMejscreenapi::boxplots_ratios
+      ggplot2::ggplot(
+        ratio.to.us.d.bysite, 
+        aes(x = indicator, y = value, fill = indicator)) +
+        ## draw boxplots
+        geom_boxplot() +
+        ## draw points - removed as they cover up boxplots with large datasets
+        #geom_jitter(color = 'black', size=0.4, alpha=0.9, ) +
+        ## set color scheme
+        scale_fill_brewer(palette = 'Dark2') +
+        ## alternate color scheme
+        # viridis::scale_fill_viridis(discrete = TRUE, alpha = 0.6) +
+        ## wrap indicator labels on x axis
+        scale_x_discrete(labels = function(x) stringr::str_wrap(x, n_chars_wrap)) +
+        ## set limits for ratio on y axis - use hard limit at 0, make upper limit 5% higher than max limit
+        scale_y_continuous(limits = c(0,max_limit), expand = expansion(mult = c(0, 0.05))) +
+        ## alternate version that clips top and bottom axes exactly at (0, max_limit)
+        # scale_y_continuous(limits = c(0,max_limit), expand = c(0,0)) +
+        ## add horizontal line at 1
+        geom_hline(aes(yintercept = 1)) +
+        ## set plot axis labels and titles
+        labs(x = "",
+             y = "Ratio of Indicator values in selected locations\n vs. US average value",
+             subtitle = subtitle,
+             title = 'Ratio vs. US Average for Demographic Indicators') +
+        theme_bw() +
+        theme(
+          ## set font size of text
+          text = element_text(size = 14),
+          #axis.text  = ggplot2::element_text(size = 16),
+          ## set font size of axis titles
+          axis.title = element_text(size=16),
+          ## center and resize plot title
+          plot.title = element_text(size=22, hjust = 0.5),
+          ## center subtitle
+          plot.subtitle = element_text(hjust = 0.5),
+          ## hide legend
+          legend.position = 'none'
+        )
     }
-    
-    ## assign column names (could use left_join like elsewhere)
-    names(ratio.to.us.d.bysite) <-  c(names_d_friendly, names_d_subgroups_friendly) # long_names_d$var_names[match( names_d_fixed, long_names_d$vars)]
-    
-    ## pivot data from wide to long - now one row per indicator
-    ratio.to.us.d.bysite <- ratio.to.us.d.bysite %>% 
-      pivot_longer(cols = everything(), names_to = 'indicator') %>% 
-      ## replace Infs with NAs - these happen when indicator at a site is equal to zero
-      mutate(value = na_if(value, Inf))
-    # NOTE THIS IS A tibble, not data.frame, and is in LONG format now.
-    towhat_nicename <- "US Average"
-    mymaintext <- paste0("Ratios to ", towhat_nicename, ", as distributed across these sites")
-    
-    ## find max of ratios 
-    max.ratio.d.bysite <- max(ratio.to.us.d.bysite$value, na.rm = TRUE)
-    
-    max.name.d.bysite <- ratio.to.us.d.bysite$indicator[which.max(ratio.to.us.d.bysite$value)]
-    
-    ## find 75th %ile of ratios for the indicator with the max ratio 
-    q75.ratio.d.bysite <- quantile(ratio.to.us.d.bysite$value[ratio.to.us.d.bysite$indicator == max.name.d.bysite], 0.75, na.rm=TRUE)
-    
-    ## paste subtitle for boxplot
-    subtitle <- paste0('Within ', input$bt_rad_buff,' miles of one site, ', 
-                       max.name.d.bysite, ' is ', round(max.ratio.d.bysite,1), 'x the US average\n',
-                       'and 1 in 4 sites is at least ',round(q75.ratio.d.bysite,2), 'x the US average' 
-    )
-    
-    ## specify # of characters to wrap indicator labels
-    n_chars_wrap <- 13
-    
-    ## specify upper bound for ratios (will drop values above this from graphic)
-    # perhaps want a consistent y limits to ease comparisons across multiple reports the user might run.
-    # If the max value of any ratio is say 2.6, we might want ylim to be up to 3.0, 
-    # if the max ratio is 1.01, do we still want ylim to be up to 3.0??
-    # if the max ratio or even max of 95th pctiles is >10, don't show it, but 
-    # what if the 75th pctile value of some indicator is >10? expand the scale to always include all 75ths.
-    # what if median
-    q75.maxof75s <- max(quantile(ratio.to.us.d.bysite$value, 0.75, na.rm=TRUE),na.rm = TRUE)
-    ylimit <- ceiling(q75.maxof75s) # max of 75th pctiles rounded up to nearest 1.0x?   
-    max_limit <- max(3, ylimit, na.rm = TRUE) #   
-    
-    ## much of this is plotting code is based on EJAMejscreenapi::boxplots_ratios
-    ggplot2::ggplot(
-      ratio.to.us.d.bysite, 
-      aes(x = indicator, y = value, fill = indicator)) +
-      ## draw boxplots
-      geom_boxplot() +
-      ## draw points - removed as they cover up boxplots with large datasets
-      #geom_jitter(color = 'black', size=0.4, alpha=0.9, ) +
-      ## set color scheme
-      scale_fill_brewer(palette = 'Dark2') +
-      ## alternate color scheme
-      # viridis::scale_fill_viridis(discrete = TRUE, alpha = 0.6) +
-      ## wrap indicator labels on x axis
-      scale_x_discrete(labels = function(x) stringr::str_wrap(x, n_chars_wrap)) +
-      ## set limits for ratio on y axis - use hard limit at 0, make upper limit 5% higher than max limit
-      scale_y_continuous(limits = c(0,max_limit), expand = expansion(mult = c(0, 0.05))) +
-      ## alternate version that clips top and bottom axes exactly at (0, max_limit)
-      # scale_y_continuous(limits = c(0,max_limit), expand = c(0,0)) +
-      ## add horizontal line at 1
-      geom_hline(aes(yintercept = 1)) +
-      ## set plot axis labels and titles
-      labs(x = "",
-           y = "Ratio of Indicator values in selected locations\n vs. US average value",
-           subtitle = subtitle,
-           title = 'Ratio vs. US Average for Demographic Indicators') +
-      theme_bw() +
-      theme(
-        ## set font size of text
-        text = element_text(size = 14),
-        #axis.text  = ggplot2::element_text(size = 16),
-        ## set font size of axis titles
-        axis.title = element_text(size=16),
-        ## center and resize plot title
-        plot.title = element_text(size=22, hjust = 0.5),
-        ## center subtitle
-        plot.subtitle = element_text(hjust = 0.5),
-        ## hide legend
-        legend.position = 'none'
-      )
   })
   
   ## output: show boxplot of indicator ratios in Summary Report # 
@@ -934,7 +1036,7 @@ app_server <- function(input, output, session) {
   
   #############################################################################  # 
   # ~ ####
-  # ______SOME EXEC SUM TEXT  ####
+  # ______ SOME EXEC SUM TEXT  ####
   # ~ ####
   
   ## output: demographic executive summary text ####
@@ -1081,7 +1183,7 @@ app_server <- function(input, output, session) {
   
   #############################################################################  # 
   # ~ ####
-  # ________ SITE-BY-SITE TABLE ________ ####
+  # ______ SITE-BY-SITE TABLE ________ ####
   # ~ ####
   #output: site by site datatable 
   output$view3_table <- DT::renderDT({
@@ -1212,7 +1314,8 @@ app_server <- function(input, output, session) {
                     scrollY = '500px'
                   ),
                   ## set overall table height
-                  height = 1000
+                  height = 1000, 
+                  escape = FALSE  # escape=FALSE may add security issue but makes links clickable in table
     )
     ## code for bolding certain rows - not currently used
     #           ) %>% 
@@ -1225,7 +1328,7 @@ app_server <- function(input, output, session) {
   })
   #############################################################################  # 
   
-  ## ______ EXCEL DOWNLOAD of site-by-site results ####
+  # ______ EXCEL DOWNLOAD of site-by-site results ####
   
   output$download_results_table <- downloadHandler(
     filename = function(){'results_table.xlsx'},
@@ -1298,7 +1401,7 @@ app_server <- function(input, output, session) {
   })
   #############################################################################  # 
   # ~ ####
-  # _____ BARPLOT _____ ####
+  # ______ BARPLOT _____ ####
   # ~ ####
   # output: 
   output$summ_display_bar <- renderPlot({
@@ -1313,9 +1416,9 @@ app_server <- function(input, output, session) {
     
     ## set indicator group friendly names  
     mybarvars.friendly <- switch(input$summ_bar_ind,
-                                 'Demographic'   = EJAMbatch.summarizer::names_d_friendly,
-                                 'Environmental' = EJAMbatch.summarizer::names_e_friendly,
-                                 'EJ'            = EJAMbatch.summarizer::names_ej_friendly
+                                 'Demographic'   = c(names_d_friendly, names_d_subgroups_friendly),
+                                 'Environmental' = names_e_friendly,
+                                 'EJ'            = names_ej_friendly
     )
     
     ## only using average for now
@@ -1388,7 +1491,7 @@ app_server <- function(input, output, session) {
         geom_bar(aes(x = indicator_label, y = value, fill = Summary), stat='identity', position='dodge') +
         #viridis::scale_fill_viridis(discrete = TRUE, alpha = 0.6) +
         scale_fill_brewer(palette = 'Dark2') +
-        scale_x_discrete(labels = function(x) str_wrap(x, n_chars_wrap)) +
+        scale_x_discrete(labels = function(x) stringr::str_wrap(x, n_chars_wrap)) +
         ## set y axis limits to (0, max value) but allow 5% higher on upper end
         scale_y_continuous(limits = c(0, NA), expand = expansion(mult = c(0, 0.05))) +
         facet_wrap(~indicator_label, ncol = 4, scales = 'free_x') +
@@ -1472,7 +1575,7 @@ app_server <- function(input, output, session) {
         ## alternate color scheme
         #viridis::scale_fill_viridis(discrete = TRUE, alpha = 0.6) +
         ## wrap long indicator labels on x axis
-        scale_x_discrete(labels = function(x) str_wrap(x, n_chars_wrap)) +
+        scale_x_discrete(labels = function(x) stringr::str_wrap(x, n_chars_wrap)) +
         ## set y axis limits to (0, max value) but allow 5% higher on upper end
         scale_y_continuous(limits = c(0, NA), expand = expansion(mult = c(0, 0.05))) +
         ## set axis labels
@@ -1484,7 +1587,7 @@ app_server <- function(input, output, session) {
   })
   
   #############################################################################  # 
-  # _____ HISTOGRAM _____  ####
+  # ______ HISTOGRAM _____  ####
   # ~ ####
   ## output: 
   output$summ_display_hist <- renderPlot({
@@ -1592,11 +1695,11 @@ app_server <- function(input, output, session) {
                      #input$radius_units, " of")
     )
   })
-
+  
   
   #############################################################################  # 
   # ~ ####
-  # ____  FULL LONGER REPORT _________ ####
+  # ______ FULL LONGER REPORT _________ ####
   # ~ ####
   
   
@@ -1606,9 +1709,9 @@ app_server <- function(input, output, session) {
       modalDialog(
         #HTML(report_outline)
         HTML(
-          str_replace(report_outline, 
-                      'Broad overview of findings',
-                      '<mark>Broad overview of findings</mark>'
+          stringr::str_replace(report_outline, 
+                               'Broad overview of findings',
+                               '<mark>Broad overview of findings</mark>'
           )
         )
       )

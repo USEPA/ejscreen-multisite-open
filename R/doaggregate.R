@@ -32,7 +32,7 @@
 #'    - quaddata, and blockquadtree: data.table and quad tree, for indexes of block points
 #'      (and localtree that is created when package is loaded)
 #'    
-#'    - EJAM::blockgroupstats - A data.table (such as EJSCREEN demographic and environmental data by blockgroup?)
+#'    - EJAM::blockgroupstats - A data.table (such as EJScreen demographic and environmental data by blockgroup?)
 #'
 #' @param sites2blocks data.table of distances in miles between all sites (facilities) and 
 #'   nearby Census block internal points, with columns siteid, blockid, distance,
@@ -874,15 +874,38 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL,
   results_overall <- cbind(results_overall, state.pctile.cols_overall)
   results_overall$ST <- NA
   # sites2bgs_plusblockgroupdata_bysite$ST <-  
-  # ________________________________________________________________________############ #  ######################## 
   
-  
+  if (1==0) {
+  ############################################################################## #   
+  # INCLUDE STATE AVERAGE FOR EACH SITE AND INDICATOR ####
+  # THEN CALC OVERALL POPWTD MEAN OF THOSE PER INDICATOR 
+  # 
+    # this is just a rough cut sketch, not tried or tested yet....
+    # 
+  avg_colnames <- c(names_d, names_d_subgroups, names_e)
+  # pull averages from the statestats table
+  state.avg.cols_bysite <- results_bysite[ statestats[PCTILE=="mean",] , ..avg_colnames, on = c(ST="REGION")] 
+  # rename the colnames to be state.avg. instead of just basic names?
+  setnames(state.avg.cols_bysite,  avg_colnames,  paste0("state.avg.", avg_colnames))
+  # cbind??
+  results_bysite <- cbind(results_bysite, state.avg.cols_bysite)
+  # calc overall popwtd mean of each state avg
+  state.avg.cols_overall <-  results_bysite[ ,  lapply(.SD, FUN = function(x) {
+    stats::weighted.mean(x, w = pop, na.rm = TRUE)
+  }), .SDcols = avg_colnames]
+  # rename the colnames to be state.avg. instead of just basic names?
+  setnames(state.avg.cols_bysite,  avg_colnames,  paste0("state.avg.", avg_colnames))
+  results_overall <- cbind(results_overall, state.avg.cols_overall)
+  }
+  ############################################################################## #   
   # RATIOS could be done here? ####
+  # or where summary table is done?
+  # or using code from EJAMejscreenapi::  ? 
   # or outside doaggregate()
+ 
   
   
-  
-  
+  # ________________________________________________________________________############ #  ######################## 
   
   
   #***  ###################################### #
@@ -1085,11 +1108,11 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL,
     x$longname <- substr(x$longname, 1, 40)
     x$overall <- round(x$overall, 3)
     print(x) # print to console, 125 rows
-    cat("See viewer for datatable view site by site\n")
+    # cat("See viewer for datatable view site by site\n")
     # Show datatable view of each site by site in RStudio ####
     
-    bysite <- results$results_bysite
-    print(DT::datatable(bysite, options = list(paging=FALSE), colnames=results$longnames ))
+    # bysite <- results$results_bysite
+    # print(DT::datatable(bysite, options = list(paging=FALSE), colnames=results$longnames , escape=FALSE))
   }
   warning('proximityscore lacks small distance adjustment factor - not yet implemented')
   

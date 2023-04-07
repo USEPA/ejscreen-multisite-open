@@ -1,12 +1,17 @@
 #' See the names of industrial categories and their NAICS code
 #' Easy way to list the 2-digit NAICS (17 categories), or other level 
 #' @details 
-#'  Also see [https://www.naics.com/search/]
+#'  Also see <https://www.naics.com/search/>
+#'  
 #' There are this many NAICS codes roughly by number of digits in the code:
+#' 
 #'   table(nchar(NAICS))
+#'   
 #'    2    3    4    5    6
+#'    
 #'   17   99  311  709 1057 
-#'   See [https://www.census.gov/naics/]
+#'   
+#'   See <https://www.census.gov/naics/>
 #'   
 #' @param digits default is 2, for 2-digits NAICS, the top level, but could be up to 6.
 #' @param dataset Should default to the dataset called NAICS, installed with this package. 

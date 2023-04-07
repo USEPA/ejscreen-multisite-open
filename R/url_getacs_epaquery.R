@@ -93,7 +93,8 @@ url_getacs_epaquery_chunked <- function(objectIds=1:3,
 #'  uses ACS2019 rest services ejscreen ejquery MapServer 7
 #'  
 #'   Documentation of format and examples of input parameters:
-#'   [https://geopub.epa.gov/arcgis/sdk/rest/index.html#/Query_Map_Service_Layer/02ss0000000r000000/]
+#'   
+#'   <https://geopub.epa.gov/arcgis/sdk/rest/index.html#/Query_Map_Service_Layer/02ss0000000r000000/>
 #' 
 #' @param objectIds see API
 #' @param servicenumber see API

@@ -20,7 +20,8 @@ format_gt_table <- function(df, type, my_cell_color =  '#dce6f0', my_border_colo
         state_avg = gt::md('**State<br>Average**'),
         state_pctile = gt::md('**Percentile<br>in State**'),
         usa_avg = gt::md('**USA<br>Average**'),
-        usa_pctile = gt::md('**Percentile<br>in USA**')
+        usa_pctile = gt::md('**Percentile<br>in USA**'), 
+        ratio_to_us = gt::md('**USA<br>Ratio to Avg.**')
       )  %>% 
       ## format decimal places for all indicators
       gt::fmt_percent(columns = c(2,3,5), rows = everything(),  decimals = 0) %>%
@@ -50,7 +51,8 @@ format_gt_table <- function(df, type, my_cell_color =  '#dce6f0', my_border_colo
         state_avg = gt::md('**State<br>Average**'),
         state_pctile = gt::md('**Percentile<br>in State**'),
         usa_avg = gt::md('**USA<br>Average**'),
-        usa_pctile = gt::md('**Percentile<br>in USA**')
+        usa_pctile = gt::md('**Percentile<br>in USA**'),
+        ratio_to_us = gt::md('**USA<br>Ratio to Avg.**')
       ) %>% 
       ## format different decimal places for each indicator
       ## pm 2.5
@@ -112,9 +114,11 @@ format_gt_table <- function(df, type, my_cell_color =  '#dce6f0', my_border_colo
       row_group.padding = '1px',
       row_group.padding.horizontal = '0px',
       footnotes.padding = '20px',
+      
       ## change colors of cells
       row.striping.background_color = my_cell_color,
       row_group.background.color = my_cell_color,
+      
       ## change colors of lines/borders
       column_labels.vlines.color = my_border_color,
       row_group.border.top.color = my_border_color,
@@ -127,5 +131,21 @@ format_gt_table <- function(df, type, my_cell_color =  '#dce6f0', my_border_colo
     gt::tab_style(
       style = gt::cell_text(align = 'center', v_align = 'middle'),
       locations = gt::cells_column_labels(columns = everything())
-    ) 
+    ) # %>% 
+  # gtExtras::gt_color_rows( # https://jthomasmock.github.io/gtExtras/reference/gt_color_rows.html
+  # 
+  #   palette = "ggthemes::colorblind",
+  #   # note that you can manually define range like c(4, 6, 8)
+  #   domain = c(80,90,95),
+  #   pal_type = "discrete"
+  # )
+  # gt::data_color(  # 
+  #   columns = c(state_pctile, usa_pctile),
+  #   method = "bin",
+  #   palette = c("white", "yellow", "orange", "red"),
+  #   domain = c(0, 80, 90, 95)
+  # )
+  
+  
+  
 }

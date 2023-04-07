@@ -8,7 +8,7 @@
 named list of all NAICS code numbers and industry name for each
 }
 \details{
-see \link{https://naics.com}
+see \url{https://naics.com}
 }
 \seealso{
 \link{naicstable} \code{\link[=naics_from_any]{naics_from_any()}} \code{\link[=naics_categories]{naics_categories()}} \link{NAICS}

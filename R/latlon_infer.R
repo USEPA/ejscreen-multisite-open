@@ -27,11 +27,13 @@ latlon_infer <- function(mycolnames) {
     if (!(lword %in% x)) {
       if (lword == 'lat') {
         # try to infer lat, using these in order of preferred to less
-        aliases <- tolower(c('lat', 'latitude83', 'latitude', 'latitudes', 'faclat', 'lats'))
+        # aliases <- tolower(c('lat', 'latitude83', 'latitude', 'latitudes', 'faclat', 'lats'))
+        aliases <- EJAM::lat_alias
       }
       if (lword == 'lon') {
         # try to infer lon, using these in order of preferred to less
-        aliases <- tolower(c('lon', 'longitude83', 'longitude', 'longitudes', 'faclong', 'long', 'longs', 'lons','lng'))
+        # aliases <- tolower(c('lon', 'longitude83', 'longitude', 'longitudes', 'faclong', 'long', 'longs', 'lons','lng'))
+        aliases <- EJAM::lon_alias
       }
       
       bestfound <- intersect(aliases, tolower(x))[1] 

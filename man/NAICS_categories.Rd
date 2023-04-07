@@ -18,12 +18,17 @@ See the names of industrial categories and their NAICS code
 Easy way to list the 2-digit NAICS (17 categories), or other level
 }
 \details{
-Also see \link{https://www.naics.com/search/}
+Also see \url{https://www.naics.com/search/}
+
 There are this many NAICS codes roughly by number of digits in the code:
+
 table(nchar(NAICS))
+
 2    3    4    5    6
+
 17   99  311  709 1057
-See \link{https://www.census.gov/naics/}
+
+See \url{https://www.census.gov/naics/}
 }
 \examples{
  naics_categories()

@@ -1,33 +1,17 @@
 # global.R defines variables needed in global environment
 
-## demographic indicator name ####
-# now created as data for packages in names_of_indicators_creationscript.R 
-
-# see DESCRIPTION file for packages this depends on or imports  
-
-## set color and type of loading spinners ####
-## note: was set at type = 1, but this caused screen to "bounce"
-options(spinner.color="#005ea2", spinner.type = 4)
-
-# increase memory limit for file uploads to 100Mb ####
+# Raise Memory Limit on file upload to 100Mb ####
 options(shiny.maxRequestSize = 100*1024^2) 
 
-# aliases for lat/lon and ECHO data validation - but this should be handled in latlon_infer()  
-# only process if lat and lon (or aliases) exist in uploaded data
-lat_alias <- c('lat', 'latitude83',  'latitude',  'latitudes',  'faclat',  'lats')
-lon_alias <- c('lon', 'longitude83', 'longitude', 'longitudes', 'faclong', 'lons', 'long', 'longs', 'lng')
+# DEFINE SOME VARIABLES (but most are loaded with package as data) ####
+
+# max points can map ####
+max_points_can_map<- 1500
 
 ## global variable for mapping (EJAMejscreenapi had this as data loaded by pkg?)
 meters_per_mile <- 1609.344
 
-## generate quadtree index on app startup in case not already autoloaded when EJAM package was loaded 
-if (!exists("localtree")) {
-  localtree <- SearchTrees::createTree(
-    EJAMblockdata::quaddata, treeType = "quad", dataType = "point"
-  )
-}
-
-## EPA programs to limit NAICS/ facilities query #### 
+## EPA Programs (to limit NAICS/ facilities query) #### 
 ## used by inputId 'ss_limit_fac1' and 'ss_limit_fac2'
 epa_programs <- c(
   "TRIS" = "TRIS",
@@ -39,20 +23,12 @@ epa_programs <- c(
   "RMP" = "RMP"
 )
 
-## 2-digit NAICS - not used ####
-# create list of NAICS codes split by first 2 numbers in code - not currently used
-## e.g. "11 - Agriculture, Forestry, Fishing and Hunting",                              
-## "21 - Mining, Quarrying, and Oil and Gas Extraction", "22 - Utilities"     
-# naics_start_code <- substr(EJAM::NAICS, 1, 2)
-# n_uniq_naics <- length(unique(naics_start_code))
-# naics_as_list <- vector('list', length = n_uniq_naics)
-# for(j in 1:n_uniq_naics){
-#   naics_as_list[[j]] <- EJAM::NAICS[substr(EJAM::NAICS, 1, 2) == unique(naics_start_code)[j]]
-#   names(naics_as_list)[[j]] <- names(EJAM::NAICS)[EJAM::NAICS == unique(naics_start_code)[j]]
-# }
+## Loading/wait spinners (color, type) ####
+## note: was set at type = 1, but this caused screen to "bounce"
+options(spinner.color="#005ea2", spinner.type = 4)
 
-# Defaults for quantiles summary stats etc. ####
-
+## Defaults for quantiles summary stats etc. ####
+#
 ## can be used by inputId 'an_list_pctiles'
 probs.default.selected <- c(   0.25,            0.80,     0.95)
 probs.default.values   <- c(0, 0.25, 0.5, 0.75, 0.8, 0.9, 0.95, 0.99, 1)
@@ -69,8 +45,24 @@ threshgroup.default <- list(
   'comp1' = "EJ US pctiles",  'comp2' = "EJ State pctiles"
 )
 
+## If needed, build index of Census blocks ####
+# (if not already autoloaded when EJAM package loaded) 
+if (!exists("localtree")) {
+  localtree <- SearchTrees::createTree(
+    EJAMblockdata::quaddata, treeType = "quad", dataType = "point"
+  )
+}
+
+
+
+################################################################# # 
+
+
+
 # ~ ####
-## *** HTML outline for full report ####
+# HTML OUTLINE FOR FULL REPORT ####
+
+# report is in    /EJAM/www/report.Rmd
 
 report_outline <- "
 <div style = 'height: 90vh; overflow-y: auto;'>
@@ -124,7 +116,10 @@ report_outline <- "
     </ol>
 </div>"
 # ~ ####
-## text for "About EJAM" tab ####
+
+# HELP TEXT ####
+
+### info text for "About EJAM" tab ####
 
 intro_text <- tagList(
   tags$h5("EPA has developed a number of different tools for mapping and analysis of information related to environmental justice (EJ), including EJScreen and EJAM. "),
@@ -147,7 +142,7 @@ intro_text <- tagList(
   )
 )
 
-## help text for latlon upload ####
+### help text for latlon upload ####
 
 latlon_help_msg <- '
 <div class="row">
@@ -200,7 +195,7 @@ latlon_help_msg <- '
 #   </div>'
 
 
-## help text about ECHO facility search ####
+### help text about ECHO facility search ####
 ## used by inputId 'ss_search_echo'
 
 echo_url <-  'https://echo.epa.gov/facilities/facility-search' # used in server.R and in message below
@@ -212,7 +207,7 @@ echo_message <- shiny::HTML(paste0('To use the ECHO website to search for and sp
                                     4) click Download Data, then <br>
                                     5) Return to this app to upload that ECHO site list.<br>'))
 
-## help text for FRS ####
+### help text for FRS ####
 
 frs_help_msg <- HTML('  <div class="row">
     <div class="col-sm-12">
@@ -239,9 +234,9 @@ frs_help_msg <- HTML('  <div class="row">
   </div>')
 
 
-
+#################################################################################################################### #
 # ~ ####
-# ___TEMPLATE ONE EPA SHINY APP WEBPAGE _______ ####
+# TEMPLATE ONE EPA SHINY APP WEBPAGE _______ ####
 
 html_header_fmt <- tagList(
   #################################################################################################################### #
@@ -674,5 +669,5 @@ html_footer_fmt <- tagList(
       </a>'
   )
 )
-# ~ ####
+ 
 

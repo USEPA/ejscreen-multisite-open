@@ -107,6 +107,10 @@ app_ui  <- function(request) {
                                          choiceValues = c('dropdown',
                                                           'enter')
                             ), 
+                            radioButtons('add_naics_subcategories', "Add all subcategories of NAICS?",
+                                          choiceNames = c("Yes","No"),
+                                         choiceValues = c(TRUE,FALSE),
+                                         selected = TRUE),
                             
                             ### conditional sub- panel if entering naics
                             conditionalPanel(
@@ -116,7 +120,8 @@ app_ui  <- function(request) {
                                 inputId = "ss_enter_naics",
                                 label = htmltools::h6(
                                   "Enter Industry NAICS codes - ",
-                                  htmltools::a("Look up NAICS", href ="https://www.census.gov/naics"),
+                                  HTML(paste0('<a href=\"', 'https://www.census.gov/naics', '\", target=\"_blank\">', 'Look up NAICS', '</a>')),
+                                  # htmltools::a("Look up NAICS", href ="https://www.census.gov/naics", ),
                                   htmltools::a(htmltools::img(id = "ibutton",src = "www/i.png",height = 15,width = 15),
                                                href = "www/ibutton_help.html#help_naicslist",target = "_blank")
                                 ),
@@ -145,7 +150,7 @@ app_ui  <- function(request) {
                             br(), ## vertical space
                             
                             ## input: button to submit NAICS codes that were entered/selected
-                            actionButton(inputId = 'submit_naics', label = 'Submit entries',
+                            actionButton(inputId = 'submit_naics', label = 'Submit NAICS / Find Facilities',
                                          style = 'color: #fff; background-color: #005ea2;')#, # xxx
                           ), # end NAICS conditionalPanel overall
                           
@@ -455,7 +460,7 @@ app_ui  <- function(request) {
                  ## _button to download short report ####
                  tags$div(
                    shiny::downloadButton(outputId = 'summary_download', 
-                                         label = 'Download Summary Report (as webpage)',
+                                         label = 'Download Summary Report',
                                          style = 'color: #fff; background-color: #005ea2'),
                    style = 'text-align: center;'
                  ),
@@ -549,7 +554,8 @@ app_ui  <- function(request) {
                  
         ), # end Tabular results tab
         
-        # graphical results tab (barplots, histograms)
+        # BARPLOTS - Graphics results tab (barplots, histograms) ####
+        
         tabPanel(title = 'Graphical Results',
                  h3('Compare Across Indicators'),
                  
@@ -561,7 +567,7 @@ app_ui  <- function(request) {
                      column(2,  
                             radioButtons(inputId = 'summ_bar_ind', 
                                          label = h5('Indicator type'), 
-                                         choices = c('Demographic', 'Environmental','EJ')),
+                                         choices = c('Demographic', 'Environmental','EJ'), selected = "Environmental"),
                             ## input: Barplot setting - data type
                             radioButtons(inputId = 'summ_bar_data', label = 'Data Type', 
                                          choiceValues = c('ratio',      'raw'),      # no 'pctile' at this time
@@ -586,7 +592,7 @@ app_ui  <- function(request) {
                  
                  br(), ## vertical space
                  br(),
-                 
+                 # HISTOGRAMS ####
                  h3("Explore Indicator Distributions"),
                  
                  wellPanel(
