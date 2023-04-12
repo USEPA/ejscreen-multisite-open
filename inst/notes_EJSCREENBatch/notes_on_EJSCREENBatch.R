@@ -1,3 +1,13 @@
+
+
+
+
+# this is somewhat obsolete ...
+# see the newer notes in my copy of 
+#  mysource/EJSCREENBatch/R/EJfunction.R
+
+
+
 library(magrittr)
 library(dplyr)
 library(devtools)
@@ -45,7 +55,7 @@ if (!require("EJSCREENbatch")) {
 
 
 ##################################################### #
-# excerpts of EJSCREENBatch code.... ####
+# excerpts of EJSCREENbatch code.... ####
 #  annotated with notes relevant to EJAM and for comparison 
 ##################################################### #
 
@@ -67,7 +77,7 @@ df.var.wm <- list_data %>%
 # 
 # # ...
 # 
-#   EJSCREENBatch code uses ecdf function here on the entire ejscreen dataset each time?? 
+#   EJSCREENbatch code uses ecdf function here on the entire ejscreen dataset each time?? 
 #  ecdf() to estimate US, STATE percentiles ####
 # 
 # #Rejoin ####

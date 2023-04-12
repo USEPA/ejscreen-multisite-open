@@ -15,7 +15,7 @@ frs_is_valid <- function(frs_upload) {
       
     #}
     return(TRUE)
-  }else{
+  } else {
     return(FALSE)
   }
 }

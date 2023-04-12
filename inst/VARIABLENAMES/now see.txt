@@ -1,0 +1,59 @@
+Consolidate these 2 approaches - one uses a table of variable names, the other uses lists of variable names 
+
+ 
+ EJAM\data-raw\names_of_indicators_creationscript.R 
+
+	creates EJAM::names_d, etc. 
+
+	> EJAM::names_e
+	 [1] "pm"              "o3"              "cancer"          "resp"           
+	 [5] "dpm"             "pctpre1960"      "traffic.score"   "proximity.npl"  
+	 [9] "proximity.rmp"   "proximity.tsdf"  "proximity.npdes" "ust"           
+	> EJAM::names_d_subgroups_friendly
+	[1] "% White nha (White non-Hispanic, single race)"                                      
+	[2] "% Hisp (Hispanic or Latino)"                                                        
+	[3] "% Black nha (Black or African American non-Hispanic, single race)"                  
+	[4] "% Asian nha (Asian non-Hispanic, single race)"                                      
+	[5] "% AmIndian nha (American Indian and Alaska Native non-Hispanic, single race)"       
+	[6] "% Hawaii nha (Native Hawaiian and Other Pacific Islander non-Hispanic, single race)"
+	[7] "% Other nha (Other race non-Hispanic, single race)"                                 
+	[8] "% Multi nha (Two or more races non-Hispanic)"    
+	> EJAM::names_d_friendly
+	 [1] "Demog.Ind."          "Suppl Demog Index"   "% Low-inc."         
+	 [4] "% People of Color"   "% <High School"      "% Linguistic Isol." 
+	 [7] "% < age 5"           "% > age 64"          "% unemployed"       
+	[10] "Low life expectancy"
+
+
+versus 
+
+
+ EJAMejscreenapi\data-raw\map_headernames_create.R 
+
+	creates EJAMejscreenapi::map_headernames  
+
+	> EJAMejscreenapi::map_headernames$newnames_ejscreenapi[1:20]
+	 [1] "REGION"                    "ST"                        "statename"                
+	 [4] "count.NPL"                 "count.TSDF"                "pop"                      
+	 [7] "Demog.Index"               "us.avg.Demog.Index"        "pctile.Demog.Index"       
+	[10] "region.avg.Demog.Index"    "region.pctile.Demog.Index" "state.avg.Demog.Index"    
+	[13] "state.pctile.Demog.Index"  "pctmin"                    "us.avg.pctmin"            
+	[16] "pctile.pctmin"             "region.avg.pctmin"         "region.pctile.pctmin"     
+	[19] "state.avg.pctmin"          "state.pctile.pctmin"      
+	
+	> names(EJAMejscreenapi::map_headernames)
+	 [1] "oldnames"                   "newnames_ejscreenapi"      
+	 [3] "gdblongname"                "from_EJSCREEN_API"         
+	 [5] "from_ejscreenapi_Rshinyapp" "longname_tableheader"      
+	 [7] "jsondoc_JSON_name_API"      "jsondoc_Description_API"   
+	 [9] "jsondoc_Section_API"        "jsondoc_DEJ"               
+	[11] "jsondoc_indicated_topic"    "jsondoc_vartype"           
+	[13] "jsondoc_shortvartype"       "jsondoc_zone"              
+	[15] "jsondoc_shortzone"          "jsondoc_Rfieldname"        
+	[17] "jsondoc_sort_DvsEEJ"        "jsondoc_sort_topic"        
+	[19] "jsondoc_sort_DEJ"           "jsondoc_sort_zone"         
+	[21] "jsondoc_sort_vartype"       "jsondoc_sort_all"          
+	[23] "jsondoc_sort"               "n"                         
+	[25] "names_friendly"             "varlist"                   
+	[27] "names.e.api"                "sigfigs"                   
+	[29] "units"                      "ejscreenreport"   

@@ -1,21 +1,15 @@
-#' Get complete EJ analysis numbers (demographic and environmental indicators) for a list of locations
+#' Get complete EJ analysis numbers (demographic and environmental indicators) near a list of locations
 #' @description This is the main function in EJAM for users who want to use EJAM from RStudio.
+#'   It does essentially what the webapp does to analyze/summarize near a set of points.
 #'   See help("EJAM")  
-#' @param sitepoints    see [getblocksnearbyviaQuadTree()] or other such functions
-#' @param cutoff        see [getblocksnearbyviaQuadTree()] or other such functions
-#' @param maxcutoff     see [getblocksnearbyviaQuadTree()] or other such functions
-#' @param avoidorphans  see [getblocksnearbyviaQuadTree()] or other such functions
-#' @param quadtree User does not need to provide this parameter. 
-#'   Already created when EJAM package is loaded, this is 
-#'   a large quadtree object created from the SearchTree package example:
-#'   SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
-#' @param ...  see [getblocksnearbyviaQuadTree_Clustered()] or other such functions
+#' @inheritParams getblocksnearby
+#' @return A list of tables of results.
 #' @examples \dontrun{
 #' 
 #'  # All in one step, using functions not shiny app:
 #'  out <- ejamit(testpoints_100_dt, 2, quadtree=localtree)
 #'  
-#'  # do not specify sitepoints and it will prompt you for a file,
+#'  # Do not specify sitepoints and it will prompt you for a file,
 #'  # if in RStudio in interactive mode!
 #'  out <- ejamit(cutoff = 3)
 #'  
@@ -26,7 +20,7 @@
 #'   testsites <- latlon_from_anything(
 #'    "./inst/testdata/testpoints_207_sites_with_signif_violations_NAICS_326_ECHO.csv")
 #'   # use facility points from a random sample of EPA-regulated facilities
-#'   testsites <- EJAMfrsdata::frs[sample(1:nrow(EJAMfrsdata::frs), 1e3),] # this is slow
+#'   testsites <- testpoints_n(1e3)  
 #'   
 #'   # Specify max distance from sites to look at (residents within X miles of site point)
 #'   radius <- 3.1 # miles
@@ -84,9 +78,11 @@ ejamit <- function(sitepoints,
   }
   
   ################################################################################## #
-  # note this overlaps or duplicates code in latlon_from_anything()
+  # note this overlaps or duplicates code in app_server.R 
+  #   for data_up_latlon() around lines 81-110 and data_up_frs() at 116-148
+  
   # select file
-  if (missing(sitepoints)) { 
+  if (missing(sitepoints)) {
     if (interactive()) {
       sitepoints <- rstudioapi::selectFile(caption = "Select xlsx or csv with lat,lon values", path = '.' )
     } else {
@@ -94,9 +90,9 @@ ejamit <- function(sitepoints,
     }
   }
   # if user entered a table, path to a file (csv, xlsx), or whatever, then read it to get the lat lon values from there
-  sitepoints <- latlon_from_anything(sitepoints)
+  sitepoints <- latlon_from_anything(sitepoints)  
   ################################################################################## #
-  
+  # getblocksnearby() ####
   cat('Finding blocks nearby.\n')
   
   mysites2blocks <- getblocksnearby(
@@ -106,23 +102,27 @@ ejamit <- function(sitepoints,
     quadtree=quadtree,
     ...)
   
+  # doaggregate() ####
   cat('Aggregating at each buffer and overall.\n')
   
-  if ("ST" %in% names(sitepoints)) { # if ST already available, use that and don't take the time to look up the ST based on blockfips or lat,lon
-    out <- suppressWarnings (
-      # doaggregate() ####
-      doaggregate(sites2blocks = mysites2blocks, sites2states = sitepoints)
+  out <- suppressWarnings (
+    doaggregate(
+      sites2blocks = mysites2blocks, 
+      sites2states = sitepoints
     )
-  } else {
-    out <- suppressWarnings (
-      doaggregate(sites2blocks = mysites2blocks)  # omit sites2states so that it gets ST from blockfips (not lat,lon which is slow)
-    )
-  }
+  )
+  # provide sitepoints table provided by user aka data_uploaded(), (or could pass only lat,lon and ST -if avail- not all cols?)
+  # and doaggregate() decides where to pull ST info from - 
+  # ideally from ST column, 
+  # second from fips of block with smallest distance to site, 
+  # third from lat,lon of sitepoints intersected with shapefile of state bounds
   
   ################################################################ # 
   
-  # add nice links to output site by site table ####
-   
+  # add hyperlinks (to site by site table) ####
+  #  >this should be a function, since used here and in ejamit() ####
+  # duplicated almost exactly in app_server but uses reactives there
+  
   if ("REGISTRY_ID" %in% names(out$results_bysite)) {
     echolink = url_echo_facility_webpage(REGISTRY_ID, as_html = T)
   } else {
@@ -135,10 +135,10 @@ ejamit <- function(sitepoints,
     `ECHO report` = echolink
   )]
   out$results_overall[ , `:=`(
-    `EJScreen Report` = rep(NA,nrow(out$results_bysite)), 
-    `EJScreen Map`    = rep(NA,nrow(out$results_bysite)),  
-    `ACS Report`      = rep(NA,nrow(out$results_bysite)), 
-    `ECHO report`     = rep(NA,nrow(out$results_bysite))  
+    `EJScreen Report` = NA,   #  rep(NA,nrow(out$results_bysite)), 
+    `EJScreen Map`    = NA,    # rep(NA,nrow(out$results_bysite)),  
+    `ACS Report`      = NA,   #  rep(NA,nrow(out$results_bysite)), 
+    `ECHO report`     = NA     # rep(NA,nrow(out$results_bysite))
   )]
   newcolnames <- c(
     "EJScreen Report", 
@@ -146,31 +146,46 @@ ejamit <- function(sitepoints,
     "ACS Report", 
     "ECHO report")
   setcolorder(out$results_bysite, neworder = newcolnames)
-  setcolorder(out$results_bysite, neworder = newcolnames)
+  setcolorder(out$results_overall, neworder = newcolnames)
   out$longnames <- c(newcolnames, out$longnames)
-  ################################################################ # 
   
-  if (interactive()) {
+  ################################################################ # 
+  # 3) **EJAMbatch.summarizer::batch.summarize()** on already processed data ####
+  out$results_summarized <- EJAMbatch.summarizer::batch.summarize(
+    sitestats = data.frame(out$results_bysite),
+    popstats =  data.frame(out$results_bysite),
+    ## user-selected quantiles to use
+    #probs = as.numeric(input$an_list_pctiles),
+    threshold = list(95) # compare variables to 95th %ile
+  )
+  
+  ################################################################ # 
+  if (interactive()) {  # would be nice to provide the 1pager summary report as html here too
     # already done by doaggregate()
     # Show as nicely named indicators in console of RStudio - Overall results (across all sites)
     # print to console
     # Show datatable view in RStudio - Site by Site (each site)
-    DT::datatable(
+    print(
+      DT::datatable(
       out$results_bysite[1:min(nrow(out$results_bysite), 2000) ], # >2k rows is too much for client-side DataTables
+      colnames = out$longnames,
       escape = FALSE,
       caption = paste0(nrow(out$results_bysite), ' FACILITIES "', " ", '"'),
       filter = "top"
     )
+    )
     # Map of facilities in an industry, plus popups with links to each facility in ECHO and EJScreen
-    # mapfast(out$results_bysite) 
-    # had a problem with Error in validateCoords(lng, lat, funcName) : 
-    # addCircles requires numeric longitude/latitude values
-    # In addition: There were 11 warnings (use warnings() to see them)
-    # Called from: validateCoords(lng, lat, funcName)
+    # mapfast(out$results_bysite)  
+    # had some bugs/ problems with mapfast if using "ej" option and too many indicators otherwise
+    cat("\nSome more key results: \n\n")
+    somenames <- grep("ratio.to.state", names(out$results_summarized$rows), value = TRUE)
+    print(  round(t(out$results_summarized$rows[ , somenames])[ ,c(1,2,6)],2)  )  # 1:70 
+    # site counts and distance minima
+    print(  round(tail(t(out$results_summarized$rows)[ ,1:7],7),1)  )
   }
   ################################################################ # 
   
-  return(out)
+  invisible(out)
 }
 
 #' @export

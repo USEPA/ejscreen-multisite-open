@@ -1,4 +1,5 @@
-#' Get population weighted sums of indicators
+#' Get population weighted sums of indicators -MOSTLY OBSOLETE
+#' The code in doaggregate() does pop wtd means faster using data.tables and [collapse::fmean()]
 #'
 #' @param data data.table with demographic and/or environmental data
 #' @param fieldnames vector of terms like pctmin, traffic.score, pm, etc.

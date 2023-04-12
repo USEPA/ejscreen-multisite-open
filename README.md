@@ -82,8 +82,8 @@ product or activity by EPA or the United States Government.
     and
     [EJAMfrsdata](https://github.com/USEPA/EJAMfrsdata#readme "https://github.com/USEPA/EJAMfrsdata#readme")
 
--   OW’s EJSCREENBatch package repo: [OW’s
-    EJSCREENBatch](https://github.com/USEPA/EJSCREENBatch#readme)
+-   OW’s EJSCREENbatch package repo: [OW’s
+    EJSCREENbatch](https://github.com/USEPA/EJSCREENBatch#readme)
 
 ## Documentation
 

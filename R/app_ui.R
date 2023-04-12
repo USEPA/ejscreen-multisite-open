@@ -10,12 +10,13 @@ app_ui  <- function(request) {
     # Leave this function for adding external resources, see end of this source file.
     golem_add_external_resources(),
     # ~ ####
-    # __________App UI fluidPage starts here _______ ####
+    # _____App UI fluidPage starts here _______ ####
     fluidPage(
       ## to profile parts of the Shiny app instead of all:
       # profvis_ui("profiler") # and see module in server
       
-      ### enable JavaScript functionality (such as resetting inputs) etc. ####
+      ### enable JavaScript   ####
+      #   functionality (such as resetting inputs) etc.
       shinyjs::useShinyjs(),
       ## javascript function for jumping to top of screen
       shinyjs::extendShinyjs(text = "shinyjs.toTop = function() {window.scrollTo(0, 0);}", functions = "toTop"),
@@ -26,10 +27,10 @@ app_ui  <- function(request) {
            font-weight: bold;
         }")),
       
-      ### HTML header inserted from global.R ####
+      ### html header inserted from global.R ####
       html_header_fmt,
       
-      ### Title (for app and browser tab) ####
+      ### title (for app and browser tab) ####
       titlePanel(title = "EJAM (Environmental Justice Analysis Multi-site) Tool",
                  windowTitle = "EJAM (Environmental Justice Analysis Multi-site) Tool"
       ),
@@ -40,12 +41,12 @@ app_ui  <- function(request) {
         type = 'pills',
         selected = 'Site Selection',
         # ~ ####
-        # INTRO tab ####
+        # ABOUT ####
         tabPanel(title = 'About EJAM',
                  
                  br(), ## vertical space
                  
-                 ## html intro text from global.R ####
+                 ## html intro text from global.R  
                  intro_text,
                  
                  ## button to reveal Advanced Settings tab 
@@ -54,7 +55,7 @@ app_ui  <- function(request) {
         ),
         ######################################################################################################### #
         # ~ ####
-        # SITE SELECTION tab ####
+        # SITE SELECTION   ####
         
         tabPanel(title = 'Site Selection',
                  
@@ -108,7 +109,7 @@ app_ui  <- function(request) {
                                                           'enter')
                             ), 
                             radioButtons('add_naics_subcategories', "Add all subcategories of NAICS?",
-                                          choiceNames = c("Yes","No"),
+                                         choiceNames = c("Yes","No"),
                                          choiceValues = c(TRUE,FALSE),
                                          selected = TRUE),
                             
@@ -341,10 +342,12 @@ app_ui  <- function(request) {
         
         ######################################################################################################### #
         # ~ ####
-        # Short Report tab - similar to EJSCREEN standard report ####
+        # SHORT REPORT ####
+        # - similar to EJSCREEN standard report  
+        # | ####
         
         tabPanel(title = 'Summary Report',
-                 ## _Header, pop count, etc.  ####
+                 ## _Header, pop count, etc. *********************************####
                  
                  br(), ## vertical space
                  
@@ -356,10 +359,7 @@ app_ui  <- function(request) {
                         <div class="col-xs-6" style="text-align: right;">
                          <img src="https://ejscreen.epa.gov/mapper/images/ejlogo.png">
                         </div>
-                      </div>'),  
-                 
-                 
-                 
+                      </div>'),
                  HTML('<div style="font-weight: bold; font-size: 14pt; font-family: Tahoma; text-align: center;">EJAM Report (EJScreen v2.1)</div>'),
                  
                  ## show count of population among selected sites
@@ -367,7 +367,8 @@ app_ui  <- function(request) {
                  
                  br(), ## vertical space
                  
-                 ## _Table of demographics overall ####
+                 ## _Table of demographics overall *********************************####
+                 
                  shinycssloaders::withSpinner(
                    gt::gt_output(outputId = 'view1_demog_table')
                  ),
@@ -376,17 +377,17 @@ app_ui  <- function(request) {
                  
                  br(), ## vertical space
                  
-                 ## _Boxplots demographics overall ####
+                 ## _Box/barplots demographics overall *********************************####
+                 
                  fluidRow(
                    column(
                      12, 
                      align = 'center',
                      shinycssloaders::withSpinner(
-                       plotOutput(outputId = 'view1_boxplot', width = '900px', height='500px')
+                       plotOutput(outputId = 'view1_summary_plot', width = '900px', height='500px')
                      )
                    )
                  ),
-                 
                  # ),
                  
                  br(), ## vertical space
@@ -404,7 +405,8 @@ app_ui  <- function(request) {
                  interpretations and applications of these indicators. 
                       Please see EJScreen documentation for discussion of these issues before using reports.</p>"),
                  
-                 ## _Map for report  ####
+                 ## _Map of sites for report *********************************####
+                 
                  fluidRow(
                    column(12,
                           align = 'center',
@@ -417,7 +419,8 @@ app_ui  <- function(request) {
                  br(), ## vertical space
                  br(),
                  
-                 ## _Table of environmental indicators overall  ####
+                 ## _Table of environmental indicators overall *********************************####
+                 
                  shinycssloaders::withSpinner(
                    gt::gt_output(outputId = 'view1_envt_table')
                  ),
@@ -443,7 +446,6 @@ app_ui  <- function(request) {
                  HTML('For additional information, see: <a>https://www.epa.gov/environmentaljustice</a>'),
                  
                  hr(), ## horizontal line
-                 
                  # br(), ## vertical space
                  
                  ## add formatted text
@@ -456,8 +458,8 @@ app_ui  <- function(request) {
                  impact and demographic factor that may be relevant to a particular location. EJScreen outputs should be supplemented 
                  with additional information and local knowledge before taking any action to address potential EJ concerns.</p>"),
                  
-                 
                  ## _button to download short report ####
+                 
                  tags$div(
                    shiny::downloadButton(outputId = 'summary_download', 
                                          label = 'Download Summary Report',
@@ -472,22 +474,23 @@ app_ui  <- function(request) {
         
         ######################################################################################################### #
         # ~ ####
-        # Results Overall tall tab ####
+        # OVERALL RESULTS TALL FORMAT ####
         
-        tabPanel(title = 'Results Overall',
-                 
-                 br(), ## vertical space
-                 
-                 h3('Overall Results (avg person'),
-                 
-                 DTOutput("overall_results_tall", height="100%")
-        ),
+        # tabPanel(title = 'Results Overall',
+        #          
+        #          br(), ## vertical space
+        #          
+        #          h3('Overall Results (avg person'),
+        #          
+        #          DTOutput("overall_results_tall", height="100%")
+        # ),
         
         ######################################################################################################### #
         # ~ ####
-        # Result Overall and by Site tab ####
+        # SITE BY SITE (AND OVERALL) TABLE   ####
+        # | ####
         
-        tabPanel(title = 'Result Overall and by Site',
+        tabPanel(title = 'Table of Results',
                  
                  br(), ## vertical space
                  
@@ -536,7 +539,7 @@ app_ui  <- function(request) {
                           h3('Site-by-Site Table'),
                    ),
                    column(6,
-                          ## button to download excel table of results - uses workbook_output_styled
+                          ## button to download excel table of results - uses xls_formatting2
                           downloadButton('download_results_table', 'Download Results Table',
                                          style = 'color: #fff; background-color: #005ea2;')
                    )
@@ -553,15 +556,18 @@ app_ui  <- function(request) {
                  ),
                  
         ), # end Tabular results tab
+        ######################################################################################################### #
         
-        # BARPLOTS - Graphics results tab (barplots, histograms) ####
+        # ~ ####
+        # GRAPHICS  (barplots, histograms) ####
         
         tabPanel(title = 'Graphical Results',
                  h3('Compare Across Indicators'),
                  
                  wellPanel(
                    
-                   ## row of barplot settings        
+                   ## _BARPLOT ####
+                   
                    fluidRow(
                      ## input: Barplot setting - indicator type
                      column(2,  
@@ -592,8 +598,11 @@ app_ui  <- function(request) {
                  
                  br(), ## vertical space
                  br(),
-                 # HISTOGRAMS ####
-                 h3("Explore Indicator Distributions"),
+                 ######################################################################################################### #
+                 
+                  ## _HISTOGRAM ####
+                 
+                  h3("Explore Indicator Distributions"),
                  
                  wellPanel(
                    ## row of histogram settings
@@ -644,7 +653,7 @@ app_ui  <- function(request) {
         
         ######################################################################################################### #
         # ~ ####
-        # Full written report tab ####
+        # FULL REPORT   ####
         
         tabPanel(title = 'Full Report',
                  
@@ -889,7 +898,7 @@ app_ui  <- function(request) {
         
         ######################################################################################################### #
         # ~ ####
-        # Advanced settings tab ####
+        # Advanced settings   ####
         
         # - hidden by default but can be activated by a button (see About EJAM tab)
         tabPanel(title = 'Advanced Settings',

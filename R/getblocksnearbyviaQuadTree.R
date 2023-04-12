@@ -82,7 +82,7 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, cutoff=3, maxcutoff=31.07,
   
   
   
-  
+  cat("Finding nearby Census blocks.\n")
   
   for (i in 1:nRowsDf) {    # LOOP OVER SITES HERE ----
     ########################################################################### ## ** SLOW STEP TO OPTIMIZE   *** ** ** ** 
@@ -91,8 +91,6 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, cutoff=3, maxcutoff=31.07,
     x_hi  <-  coords[,FAC_X]+truedistance
     z_low  <- coords[,FAC_Z]-truedistance;
     # z_hi  <-  coords[,FAC_Z]+truedistance   # ** THIS HAD BEEN THE SLOWEST LINE  OVERALL ***
-    
-    if ((i %% report_progress_every_n) == 0) {print(paste("Cells currently processing: ",i ," of ", nRowsDf) ) } # i %% report_progress_every_n indicates i mod report_progress_every_n (“i modulo report_progress_every_n”) 
     
     vec <- SearchTrees::rectLookup(quadtree, unlist(c(x_low, z_low  )),         unlist(c(x_hi, coords[,FAC_Z]+truedistance))) # x and z things are now vectorized
     # *** FIX/CHECK: 
@@ -141,6 +139,7 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, cutoff=3, maxcutoff=31.07,
     } else {
       
     }
+    if ((i %% report_progress_every_n) == 0 & interactive()) {cat(paste("Finished finding blocks near ",i ," of ", nRowsDf),"\n" ) } # i %% report_progress_every_n indicates i mod report_progress_every_n (“i modulo report_progress_every_n”) 
   }
   result <- data.table::rbindlist(res)  
   

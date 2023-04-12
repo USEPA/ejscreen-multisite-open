@@ -146,7 +146,7 @@ nc <- NULL
 demo(nc, ask = FALSE, echo = FALSE)
 sf::st_crs(nc)$proj4string
 # [1] "+proj=longlat +datum=NAD27 +no_defs"
-nc <- sf::st_transform(nc, crs=sf::st_crs(5070))
+nc <- sf::st_transform(nc, crs =sf::st_crs(5070)) # NAD27
 cs <- c(10000, 10000)
 my_grid <- sf::st_make_grid(x = nc, cellsize=cs)
 mapview::mapview(my_grid) + mapview::mapview(nc['NAME'])

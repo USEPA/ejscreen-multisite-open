@@ -1,76 +1,102 @@
 #' find blocks that are in a polygon, using internal point of block - WORK IN PROGRESS ****
 #' @description This is like getblocksnearby() but for a polygonal buffer area instead of 
 #'   a circular buffer.  
-#' @param polys polygons (FORMAT???)
-#' @param addedbuffermiles width of optional buffering to add to edges, in miles
-#'
-#' @return Polygons with joined block points info. **********
+#' @details This uses getblocksnearby() to get a very fast rough/good estimate of 
+#'   which US block points are nearby (with a safety margin - see param below),
+#'   before then using sf:: to carefully identify which of those candidate blocks are actually 
+#'   inside each polygon (e.g., circle) according to sf:: methods.
+#'   For circular buffers, just using getblocksnearby() should work and not need this function.
+#'   For noncircular polygons, buffered or not, this function will provide a way to very quickly
+#'   filter down to which of the millions of US blocks should be examined by the sf:: join / intersect,
+#'   since otherwise it takes forever for sf:: to check all US blocks.
+#' @param polys Spatial data as from sf::st_as_sf(), with a column called siteid, like 
+#'   points as from [get_shapefile_from_sitepoints()],
+#'   or a table of points with lat,lon columns that will first be converted here using that function,
+#'   or polygons (not yet tested). 
+#' @param addedbuffermiles width of optional buffering to add to the points (or edges), in miles
+#' @param blocksnearby optional table of blocks with blockid,siteid (from which lat,lon can be looked up in blockpoints dt)
+#' @param dissolved If TRUE, use sf::st_union(polys) to find unique blocks inside any one or more of polys
+#' @param safety_margin_ratio multiplied by addedbuffermiles, how far to search for 
+#'   blocks nearby using getblocksnearby(), before using those found to do the intersection via sf::
+#' @import sf
+#' @return Block points table for those blocks whose internal point is inside the buffer 
+#'   which is just a circular buffer of specified radius if polys are just points. 
+#'   
+#' @examples  
+#'   x = get_shapefile_from_sitepoints(testpoints_n(2))
+#'   # y = get_blockpoints_in_shape(x, 1)  # very very slow
+#' @seealso [get_blockpoints_in_shape()] [get_shapefile_from_sitepoints()] [get_shape_buffered_from_shapefile_points()]
 #' @export
 #'
-get_blockpoints_in_shape <- function(polys, addedbuffermiles=0) {
-  if (!exists("blockpoints")) {stop("requires the blockpoints data.table called EJAMblockdata::blockpoints ")}
+get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NULL, dissolved=FALSE, safety_margin_ratio=1.10) {
+  if (!exists("blockpoints_sf")) {stop("requires the blockpoints   called blockpoints_sf ")}
   
-  # CHECK FORMAT OF polys - ensure it is spatial object (with data.frame/ attribute table? ) ? 
-  
-  
-  
-  # ensure it has unique IDs called siteid column, or else add that column  
-  
-  
-  
-  
-  # MAYBE MORE EFFICIENT TO 1st intersect with blockgroups or even counties,
-  # and then use those bg or counties to filter to a smaller table of blocks
-  # and then find from among just those blocks which ones are in the polygons.
-  
-  # also could try is_within_distance()  to maybe find those blocks inside not just near a poly?
+  # CHECK FORMAT OF polys - ensure it is spatial object (with data.frame/ attribute table? ) 
+  if (!("sf" %in% class(polys))) {
+    polys <-  get_shapefile_from_sitepoints(polys)
+  }
+    ARE_POINTS <- "POINT" == names(which.max(table(sf::st_geometry_type(polys)))) 
+    
+  # ensure it has unique IDs called siteid column, or else add that column? getblocksnearby() adds it  
   
   
-  #### examples / testing ideas ####
-
-  # testsites <- EJAMfrsdata::frs[sample(1:nrow(EJAMfrsdata::frs), 1e2),]
-  # testsites$siteid <- 1:nrow(testsites)
-  # testsites <- sf::st_as_sf(testsites, coords=c("lon","lat"), crs=4269)
-  # myrad5 <- units::set_units(5,"km")
-  # # myrad10 <- units::set_units(10,"km")
-  # # myrad50 <- units::set_units(50,"km")
-  # testpolycircles <- get_shape_buffered(testsites, radius = myrad5 ) # several seconds
-# 
-  #### testblocks <- copy(EJAMblockdata::blockpoints) # entire usa
-   # testblocks <- copy(EJAMblockdata::blockpoints[sample(1:nrow(frs), 1e5),])
-  #### THIS IS EXTREMELY SLOW FOR ALL US BLOCK POINTS AND SHOULD BE DONE IN ADVANCE BY PACKAGE:
-  # testblocks <- sf::st_as_sf(testblocks, coords=c("lon","lat"), crs=4269) # several seconds
-  # plot(testpolycircles)
-  # plot(testblocks, add=TRUE)
-  #### VERY SLOW:
-  # results1  <- testblocks |> sf::st_join(testpolycircles)    # a couple minutes  ********************
-
-  # NOT EVEN FEASIBLE:
-  ### results2  <- sf::st_join(testpolycircles, testblocks)     # THIS TAKES ESSENTIALLY FOREVER !!  ********************
-  
-  # sum(is.na(results1$siteid))/nrow(results1)
-  # # [1] 0.87
-  # # 87% of blocks in US   had none of these 1000 sites near them (within 5 km)
-  #
-  ### length(unique(results2$siteid))
- ## # length(unique(results2$blockid))
-  # 
   
   if (addedbuffermiles > 0) {
-    addedbuffermiles <- units::set_units(addedbuffermiles, "miles")
-    polys <- get_shape_buffered(polys, radius = addedbuffermiles)
+    addedbuffermiles_withunits <- units::set_units(addedbuffermiles, "miles")
+    polys <- get_shape_buffered_from_shapefile_points(polys,  addedbuffermiles_withunits)
+    # addedbuffermiles_withunits  name used since below getblocksnearby( , cutoff=addedbuffermiles etc ) warns units not expected
   }  
   
-  ######################################### #
-  # THIS IS EXTREMELY SLOW FOR ALL US BLOCK POINTS AND SHOULD BE DONE IN ADVANCE BY PACKAGE:
-  blockz  <- EJAMblockdata::blockpoints |>
-    sf::st_as_sf(coords = c("lon", "lat"))     #  , crs = sf::st_crs(other_shapefile))
-  sf::st_as_sf(coords = c("lon", "lat"), crs = sf::st_crs(other_shapefile))     #  , crs = sf::st_crs(other_shapefile))
-####################################### #
+    
   
   # use   sf::st_intersects() or st_join(, join=intersects) 
-  polys <- sf::st_join(blockz, polys)
   
-  return(polys)
+# browser()
+  if (is.null(blocksnearby) & ARE_POINTS) {
+    #  calculate it here since not provided
+    # get lat,lon of sites
+    pts <-  data.table(sf::st_coordinates(polys))  # this is wasteful if they provided a data.frame or data.table and we convert it to sf and then here go backwards
+    setnames(pts, c("lon","lat"))
+    # get blockid of each nearby census block
+    blocksnearby <- getblocksnearby(pts, addedbuffermiles * safety_margin_ratio)  # blockid, distance, siteid # don't care which siteid was how this block got included in the filtered list
+    # get lat,lon of nearby blocks
+    blocksnearby <- (blockpoints[blocksnearby, .(lat,lon,blockid), on="blockid"])  # blockid,      lat ,      lon
+  }
+  if (is.null(blocksnearby) & !ARE_POINTS) {
+    # must use extremely slow method ?
+    stop("noncircular buffers not working yet - too slow to find all US blocks in each via simple sf::st_join   ")
+    
+    if (dissolved) {
+      # warning("using getblocksnearby() to filter US blocks to those near each site must be done before a dissolve  ")
+      polys <- sf::st_union(polys)
+    }
+    blocksinside <- sf::st_join(blockpoints_sf, sf::st_transform(polys,4269), join=sf::st_intersects ) #  
+    
+    
+    # OR...  find centroid of each polygon and 
+    # figure out bounding box (or max radius) of each 
+    # and then use getblocksnearby() to find all in bounding box (based on some radius like 
+      # farthest point from centroid, which is worst-case, distance to the furthest corner of bounding box??)
+      
+      
+      
+  }
+  
+  if (dissolved) {
+    # warning("using getblocksnearby() to filter US blocks to those near each site must be done before a dissolve  ")
+    polys <- sf::st_union(polys)
+  }
+  
+  blocksnearbyf <- unique(blocksnearby)
+  if (!("sf" %in% class(blocksnearby))) {
+    blocksnearby <-  get_shapefile_from_sitepoints(blocksnearby)
+  }
+  
+  blocksinside <- sf::st_join(blocksnearby, sf::st_transform(polys,4269), join=sf::st_intersects )
+  
+  blocksinside <- blocksinside[!is.na(blocksinside$siteid),]
+  
+  return(blocksinside)
+  
 }
 

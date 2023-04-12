@@ -2,7 +2,8 @@
 % Please edit documentation in R/popweightedsums.R
 \name{popweightedsums}
 \alias{popweightedsums}
-\title{Get population weighted sums of indicators}
+\title{Get population weighted sums of indicators -MOSTLY OBSOLETE
+The code in doaggregate() does pop wtd means faster using data.tables and \code{\link[collapse:fmean]{collapse::fmean()}}}
 \usage{
 popweightedsums(data, fieldnames, fieldnames_out, scaling, popname = "POP100")
 }
@@ -18,5 +19,6 @@ popweightedsums(data, fieldnames, fieldnames_out, scaling, popname = "POP100")
 \item{popname}{name of column with population counts to use for weighting}
 }
 \description{
-Get population weighted sums of indicators
+Get population weighted sums of indicators -MOSTLY OBSOLETE
+The code in doaggregate() does pop wtd means faster using data.tables and \code{\link[collapse:fmean]{collapse::fmean()}}
 }

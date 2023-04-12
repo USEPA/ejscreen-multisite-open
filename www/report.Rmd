@@ -154,10 +154,10 @@ params$demog_table
 ```{r boxplot, out.width = '800px', out.height = '500px', fig.align='center'}
 params$boxplot +
   ggplot2::scale_x_discrete(labels = function(x) stringr::str_wrap(x, 10)) +
-  theme(plot.title = element_text(hjust=0.5, size=12),
-        plot.subtitle = element_text(hjust=0.5, size=11),
-        axis.title.y = element_text(size=10),
-        axis.text = element_text(size=9)
+  theme(plot.title = ggplot2::element_text(hjust=0.5, size=12),
+        plot.subtitle = ggplot2::element_text(hjust=0.5, size=11),
+        axis.title.y = ggplot2::element_text(size=10),
+        axis.text = ggplot2::element_text(size=9)
         )
 ```
 

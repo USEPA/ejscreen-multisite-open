@@ -11,10 +11,11 @@
 #' @return data.frame with group, ratio, avg_distance_for_group, avg_distance_for_nongroup
 #' @export
 plot_distance_mean_by_group <- function(results_bybg_people, 
-                               demogvarname=c(namez$d, namez$d_subgroups),  
+                               demogvarname=c(EJAM::names_d, EJAM::names_d_subgroups), # namez$d, namez$d_subgroups),  
                                demoglabel=NULL, graph=TRUE) {
   if (is.null(demoglabel) & missing(demogvarname)) {
-    demoglabel <- c(namez$d_friendly, namez$d_subgroups_friendly)
+    demoglabel <- c(EJAM::names_d_friendly, EJAM::names_d_subgroups_friendly)
+    # demoglabel <- c(namez$d_friendly, namez$d_subgroups_friendly)
   }
   dlist <- demogvarname
   x <- list()

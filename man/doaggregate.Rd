@@ -13,6 +13,7 @@ doaggregate(
   testing = FALSE,
   include_ejindexes = FALSE,
   updateProgress = NULL,
+  need_proximityscore = FALSE,
   ...
 )
 }
@@ -40,6 +41,8 @@ using formulas that have to be specified.}
 \item{include_ejindexes}{not yet implemented}
 
 \item{updateProgress}{progress bar function used for shiny app}
+
+\item{need_proximityscore}{whether to calculate proximity scores}
 
 \item{...}{more to pass to another function? Not used currently.}
 }
@@ -70,7 +73,7 @@ which in this case is the count of those for whom the poverty ratio is known.
 This function requires the following as data lazy loaded for example from EJAMblockdata package:
 \itemize{
 \item blockwts: data.table with these columns: blockid , bgid, blockwt
-\item quaddata, and blockquadtree: data.table and quad tree, for indexes of block points
+\item Index built from quaddata, and blockquadtree: data.table and quad tree, for indexes of block points
 (and localtree that is created when package is loaded)
 \item EJAM::blockgroupstats - A data.table (such as EJScreen demographic and environmental data by blockgroup?)
 }

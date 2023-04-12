@@ -21,3 +21,6 @@ URL as string
 Get URL for page with info about industry sectors by text query term
 See \link{naics.com} for more information on NAICS codes
 }
+\seealso{
+\code{\link[=url_linkify]{url_linkify()}}
+}

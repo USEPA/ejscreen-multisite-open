@@ -85,11 +85,11 @@ app_server <- function(input, output, session) {
     ## wait for file to be uploaded
     req(input$ss_upload_latlon)
     
-    ################# #  THIS SECTION should/COULD BE REPLACED WITH latlon_from_anything()
+    # >this part could be replaced by  latlon_from_anything() #### 
+    #  ext <- latlon_from_anything(input$ss_upload_latlon$datapath)
     
     ## check if file extension is appropriate
     ext <- tools::file_ext(input$ss_upload_latlon$name)
-    
     ## if acceptable file type, read in; if not, send warning text
     ext <- switch(ext,
                   csv =  read.csv(input$ss_upload_latlon$datapath),
@@ -104,7 +104,7 @@ app_server <- function(input, output, session) {
         EJAM::latlon_df_clean() %>%   # This does latlon_infer() and latlon_as.numeric() and latlon_is.valid()
         data.table::as.data.table()
       
-    }else{
+    } else {
       ## if not matched, show this message instead
       shiny::validate('No coordinate columns found.')
     }
@@ -118,7 +118,8 @@ app_server <- function(input, output, session) {
     ## wait for file to be uploaded
     req(input$ss_upload_frs)
     
-    ################# #  THIS SECTION should/COULD BE REPLACED WITH latlon_from_anything()
+    ##  >this part could be replaced by  latlon_from_anything() ####
+    # ext <- latlon_from_anything(input$ss_upload_latlon$datapath)
     
     ## check if file extension is appropriate
     ext <- tools::file_ext(input$ss_upload_frs$name)
@@ -131,9 +132,9 @@ app_server <- function(input, output, session) {
     )
     #include frs_is_valid verification check function
     if (frs_is_valid(read_frs)){
-      read_frs_dt <- data.table::as.data.table(read_frs)
-      #why not setDT(read_frs)  ?
-      
+      # read_frs_dt <- data.table::as.data.table(read_frs)
+        data.table::setDT(read_frs) # same but less memory/faster?
+
       #converts registry id to character if not already in that class (EJAMfrsdata::frs registry ids are character)
       if(class(read_frs_dt$REGISTRY_ID) != "character"){
         read_frs_dt$REGISTRY_ID = as.character(read_frs_dt$REGISTRY_ID)
@@ -162,7 +163,7 @@ app_server <- function(input, output, session) {
     naics_user_wrote_in_box <- input$ss_enter_naics
     naics_user_picked_from_list <- input$ss_select_naics
     add_naics_subcategories <- input$add_naics_subcategories
-      
+    
     # naics_validation function to check for non empty NAICS inputs
     if(naics_validation(input$ss_enter_naics,input$ss_select_naics)){
       inputnaics = {}
@@ -202,13 +203,12 @@ app_server <- function(input, output, session) {
           ################ Should output something saying no valid results returned ######## #
           shiny::validate('No Results Returned')
         }
-      } else{  # THIS COULD BE REPLACED WITH frs_from_naics() 
-        # sitepoints <- EJAMfrsdata::frs_by_naics[NAICS %in% inputnaics,]
+      } else{  
         sitepoints <- frs_from_naics(inputnaics, children=add_naics_subcategories)[, .(lat,lon,REGISTRY_ID,PRIMARY_NAME,NAICS)] # xxx
         print(sitepoints)
         showNotification('Points submitted successfully!', duration = 1)
       }
-    }else{
+    } else {
       ################ Should output something saying no valid results returned ######## #
       shiny::validate('Invalid NAICS Input')
     }
@@ -229,10 +229,13 @@ app_server <- function(input, output, session) {
   
   #############################################################################  # 
   ## reactive: data uploaded by ECHO ####
-  
+  # 
   data_up_echo <- reactive({
     ## depends on ECHO upload - which may use same file upload as latlon
     req(input$ss_upload_echo)
+    
+    ## >this part could be replaced by ####################################
+    # ext <- latlon_from_anything(input$ss_upload_echo$datapath)
     
     ## check if file extension is appropriate
     ext <- tools::file_ext(input$ss_upload_echo$name)
@@ -251,7 +254,7 @@ app_server <- function(input, output, session) {
       ext %>% 
         EJAM::latlon_df_clean() %>% 
         data.table::as.data.table()
-    }else{
+    } else {
       ## if not matched, return this message
       shiny::validate('No coordinate columns found.')
     }
@@ -339,18 +342,18 @@ app_server <- function(input, output, session) {
     dt <- data_uploaded() # now naics-queried sites format is OK to view, since using different function to get sites by naics
     
     # if(current_upload_method() == 'NAICS'){
-      
-      ###takes NAICS codes selected, finds NAICS descriptions, and presents them  
-      # dt_result_by_naic = data_uploaded()[, .(Count = .N), by = NAICS]
-      # naics_desc = EJAM::NAICS[EJAM::NAICS %in% dt_result_by_naic$NAICS]
-      # dt_names = data.frame("NAICS"=naics_desc,"Description"=names(naics_desc))
-      # naicsdt = merge(x = dt_result_by_naic, y = dt_names, by='NAICS')
-      # naics_reorder = data.frame(naicsdt$Description,naicsdt$Count)
-      # colnames(naics_reorder) = c("NAICS Code","Facility Count")
-      # dt <- naics_reorder
-      ###print(naics_reorder,row.names=FALSE)
-    # }else{
-      # dt <- data_uploaded()
+    
+    ###takes NAICS codes selected, finds NAICS descriptions, and presents them  
+    # dt_result_by_naic = data_uploaded()[, .(Count = .N), by = NAICS]
+    # naics_desc = EJAM::NAICS[EJAM::NAICS %in% dt_result_by_naic$NAICS]
+    # dt_names = data.frame("NAICS"=naics_desc,"Description"=names(naics_desc))
+    # naicsdt = merge(x = dt_result_by_naic, y = dt_names, by='NAICS')
+    # naics_reorder = data.frame(naicsdt$Description,naicsdt$Count)
+    # colnames(naics_reorder) = c("NAICS Code","Facility Count")
+    # dt <- naics_reorder
+    ###print(naics_reorder,row.names=FALSE)
+    # } else {
+    # dt <- data_uploaded()
     # }
     
     DT::datatable(dt, options = list(pageLength = 100, scrollX = TRUE, scrollY = '500px'), escape = FALSE) # escape=FALSE may add security issue but makes links clickable in table
@@ -474,23 +477,29 @@ app_server <- function(input, output, session) {
       ## pass progress bar function as argument
       updateProgress = updateProgress_doagg
     ))
+    # provide sitepoints table provided by user aka data_uploaded(), (or could pass only lat,lon and ST -if avail- not all cols?)
+    # and doaggregate() decides where to pull ST info from - 
+    # ideally from ST column, 
+    # second from fips of block with smallest distance to site, 
+    # third from lat,lon of sitepoints intersected with shapefile of state bounds
     
     ## close doaggregate progress bar
     progress_doagg$close()
     
     #############################################################################  # 
-    # add hyperlinks  ####
-    
+    # add hyperlinks (to site by site table) ####
+    #  >this should be a function, since used here and in ejamit() ####
     # duplicated almost exactly in ejamit() but reactives are not reactives there
+    
     if ("REGISTRY_ID" %in% names(out$results_bysite)) {
       echolink = url_echo_facility_webpage(REGISTRY_ID, as_html = T)
     } else {
       echolink = rep(NA,nrow(out$results_bysite))
     }
     out$results_bysite[ , `:=`(
-      `EJScreen Report` = url_ejscreen_report(    lat = data_uploaded()$lat, lon = data_uploaded()$lon, distance = input$bt_rad_buff, as_html = T), 
-      `EJScreen Map`    = url_ejscreenmap(        lat = data_uploaded()$lat, lon = data_uploaded()$lon,                               as_html = T), 
-      `ACS Report`      = url_ejscreen_acs_report(lat = data_uploaded()$lat, lon = data_uploaded()$lon, distance = input$bt_rad_buff, as_html = T),
+      `EJScreen Report` = url_ejscreen_report(    lat = data_uploaded()$lat, lon = data_uploaded()$lon, distance = input$bt_rad_buff, as_html = TRUE), 
+      `EJScreen Map`    = url_ejscreenmap(        lat = data_uploaded()$lat, lon = data_uploaded()$lon,                               as_html = TRUE), 
+      `ACS Report`      = url_ejscreen_acs_report(lat = data_uploaded()$lat, lon = data_uploaded()$lon, distance = input$bt_rad_buff, as_html = TRUE),
       `ECHO report` = echolink
     )]
     out$results_overall[ , `:=`(
@@ -511,7 +520,7 @@ app_server <- function(input, output, session) {
     
     ## assign doaggregate output to data_processed reactive ####
     data_processed(out)
-    
+
     ## update overall progress bar
     progress_all$inc(1/3, message='Step 3 of 3', detail = 'Summarizing')
     
@@ -539,7 +548,6 @@ app_server <- function(input, output, session) {
     Sys.sleep(0.2) ### why wait? ####
     shinyjs::js$toTop();
     updateTabsetPanel(session, "all_tabs", "Summary Report")
-    
   })
   
   #############################################################################  # 
@@ -559,12 +567,10 @@ app_server <- function(input, output, session) {
   #       
   #       naics_reorder
   #       #print(naics_reorder,row.names=FALSE)
-  #     }else{
+  #     } else {
   #       head(data_uploaded())
   #     }
-  #     
   #   })
-  
   
   #############################################################################  # 
   # ~ ####
@@ -591,7 +597,7 @@ app_server <- function(input, output, session) {
   })
   
   ## ** RATIOS OVERALL TO US E AVG  ####
-  # 
+  #  *****************   but these are now already calculated in doaggregate() right? as 
   ## (batch.summarize 'Average person' / EJAM::usastats mean in USA   )
   ## this needs further verification
   # we already have avg.in.us and ratios also?  
@@ -612,18 +618,21 @@ app_server <- function(input, output, session) {
   # ~ ####
   # ______ SUMMARY IN TALL FORMAT  ####
   
-  output$overall_results_tall <- renderDT({
-    tallout <- cbind(overall = round(unlist(data_processed()$results_overall), 3))
-    rownames(tallout) <- fixnames_to_type(rownames(tallout), "newnames_ejscreenapi", "longname_tableheader")
-    # rownames(tallout) <- fixnames_to_type(rownames(tallout), "jsondoc_Rfieldname", "longname_tableheader")
-    tallout
-  })
+  # output$overall_results_tall <- renderDT({
+  #   tallout <- cbind(overall = round(unlist(data_processed()$results_overall), 3))
+  #   rownames(tallout) <- fixnames_to_type(rownames(tallout), "newnames_ejscreenapi", "longname_tableheader")
+  #   # rownames(tallout) <- fixnames_to_type(rownames(tallout), "jsondoc_Rfieldname", "longname_tableheader")
+  #   tallout
+  # })
   
   #############################################################################  # 
   # ~ ####
   # ______ SUMMARY REPORT_________ ####
   # ~ ####
+  
+  #############################################################################  # 
   ## *MAP for summary report ####
+  
   report_map <- reactive({
     circle_color <- '#000080'
     
@@ -742,13 +751,10 @@ app_server <- function(input, output, session) {
     
     req(data_processed())
     
-    ## create dataframe with 6? columns - vars (indicator names), value (raw indicator value),
+    ## create dataframe  - vars (indicator names), value (raw indicator value),
     ## state_avg (State Avg indicator value), state_pctile (State Pctile for indicator),
     ## usa_avg (US Avg indicator value), usa_pctile (US Pctile for indicator)
-    
-    ## now include these also:
-    # ratio.to.us.d()
-    # ratio.to.us.e()
+    # and ratio_to_us is now included also
     
     tab_data_d <- data.frame(
       var_names =  c(names_d_friendly, names_d_subgroups_friendly),
@@ -779,12 +785,6 @@ app_server <- function(input, output, session) {
     # need to verify percentile should be rounded here or use ceiling() maybe? try to replicate EJScreen percentiles as they report them.
     tab_data_d$usa_pctile   <- round(tab_data_d$usa_pctile ,0)
     tab_data_d$state_pctile <- round(tab_data_d$state_pctile ,0)
-    
-    ## join long indicator names and move them to first column - done above now
-    # tab_data_d <- tab_data_d %>% 
-    #   left_join(long_names_d, by = c('vars')) %>% 
-    #   relocate(var_names, .before = 1) %>% 
-    #   select(-vars)
     
     ## set colors for table
     my_cell_color <- '#dce6f0'
@@ -847,7 +847,6 @@ app_server <- function(input, output, session) {
                                  my_border_color = my_border_color)
     ## return final table
     tab_out_e
-    
   })
   
   ## output: show environmental indicator table
@@ -855,12 +854,12 @@ app_server <- function(input, output, session) {
     v1_envt_table()
   })
   #############################################################################  # 
-  ## *BOXPLOTS of demographic ratios vs US average ####
+  ## *BOXPLOTS/barplot? of demographic ratios vs US average ####
   
-  v1_boxplot <- reactive({
+  v1_summary_plot <- reactive({
     req(data_summarized())
     
-    if ("try BARPLOT" == "try BARPLOT") {
+    if ("try BARPLOT" == "try BARPLOT") {   # do BARPLOT NOT BOXPLOT
       # browser()
       # ratios overall (demog here / demog avg in US)
       ratio.to.us.d.overall <- unlist(round( unlist(data_processed()$results_overall[ , c(..names_d, ..names_d_subgroups)]) / 
@@ -873,7 +872,7 @@ app_server <- function(input, output, session) {
       barplot(ratio.to.us.d.overall, main = 'Ratio vs. US Average for Demographic Indicators', cex.names = 0.8, col = mycolors)
       abline(h=1, col="gray")
       
-    } else {    
+    } else {    # do BOXPLOT NOT BARPLOT
       
       ## ratios by site  (demog each site / demog avg in US)
       ratio.to.us.d.bysite <- data.frame()
@@ -892,10 +891,6 @@ app_server <- function(input, output, session) {
       
       ## assign column names (could use left_join like elsewhere)
       names(ratio.to.us.d.bysite) <-  c(names_d_friendly, names_d_subgroups_friendly) # long_names_d$var_names[match( names_d_fixed, long_names_d$vars)]
-      
-      
-      
-      
       
       ## pivot data from wide to long - now one row per indicator
       ratio.to.us.d.bysite <- ratio.to.us.d.bysite %>% 
@@ -936,7 +931,6 @@ app_server <- function(input, output, session) {
       ylimit <- ceiling(q75.maxof75s) # max of 75th pctiles rounded up to nearest 1.0x?   
       max_limit <- max(3, ylimit, na.rm = TRUE) #   
       
-      
       ## much of this is plotting code is based on EJAMejscreenapi::boxplots_ratios
       ggplot2::ggplot(
         ratio.to.us.d.bysite, 
@@ -965,14 +959,14 @@ app_server <- function(input, output, session) {
         theme_bw() +
         theme(
           ## set font size of text
-          text = element_text(size = 14),
+          text = ggplot2::element_text(size = 14),
           #axis.text  = ggplot2::element_text(size = 16),
           ## set font size of axis titles
-          axis.title = element_text(size=16),
+          axis.title = ggplot2::element_text(size=16),
           ## center and resize plot title
-          plot.title = element_text(size=22, hjust = 0.5),
+          plot.title = ggplot2::element_text(size=22, hjust = 0.5),
           ## center subtitle
-          plot.subtitle = element_text(hjust = 0.5),
+          plot.subtitle = ggplot2::element_text(hjust = 0.5),
           ## hide legend
           legend.position = 'none'
         )
@@ -980,12 +974,12 @@ app_server <- function(input, output, session) {
   })
   
   ## output: show boxplot of indicator ratios in Summary Report # 
-  output$view1_boxplot <- renderPlot({
-    v1_boxplot()
+  output$view1_summary_plot <- renderPlot({
+    v1_summary_plot()
   })
   #############################################################################  # 
   # ~ ####
-  # ______ SUMMARY REPORT DOWNLOADER ________ ####
+  # ______ SUMMARY REPORT DOWNLOAD ________ ####
   
   # 1-3-page summary comparable to EJScreen report  
   output$summary_download <- downloadHandler(
@@ -997,16 +991,17 @@ app_server <- function(input, output, session) {
       tempReport <- file.path(tempdir(), "brief_summary.Rmd")
       file.copy("www/brief_summary.Rmd", tempReport, overwrite = TRUE)
       #file.copy("../www/test_report1pager.Rmd", tempReport, overwrite = TRUE)
+      
       # Set up parameters to pass to Rmd document
       params <- list(sitecount = nrow(data_processed()$results_bysite), 
                      distance = paste0(input$bt_rad_buff,' miles'), #input$radius_units),
                      total_pop = prettyNum( total_pop(), big.mark = ","),
                      analysis_title = input$analysis_title,
-                     results = data_processed(),
-                     map = report_map(),
-                     envt_table = v1_envt_table(),
+                     # results     = data_processed(),  # NOT NEEDED HERE IF PASSING MAP, TABLES, AND PLOT AS PARAMS
+                     map         = report_map(),
+                     envt_table  = v1_envt_table(),
                      demog_table = v1_demog_table(),
-                     boxplot = v1_boxplot())
+                     summary_plot     = v1_summary_plot())
       # [TEMPORARILY SAVE PARAMS FOR TESTING] ####
       # saveRDS(params, file="./inst/testparamsSHORT.RDS") # ############################### TEMPORARILY SAVE PARAMS FOR TESTING###### # 
       
@@ -1022,7 +1017,7 @@ app_server <- function(input, output, session) {
                         envir = new.env(parent = globalenv()),
                         intermediates_dir = tempdir()
       )
-      if (input$format1pager == "pdf") { 
+      if (input$format1pager == "pdf") {
         ## alternative ways to save PDFs #### 
         # - these go to local folders
         ## add line to save html output as pdf
@@ -1054,7 +1049,7 @@ app_server <- function(input, output, session) {
       max.ratio.d <- max(ratio.to.us.d())
       max.name.d <- names(ratio.to.us.d())[which.max(ratio.to.us.d())]
       
-      max.name.d.friendly <- EJAMbatch.summarizer::names_d_friendly[which.max(ratio.to.us.d())]
+      max.name.d.friendly <- EJAMbatch.summarizer::names_d_friendly[which.max(ratio.to.us.d())]  # xxx
       
       median.pctile.in.us <- data_summarized()$rows['Median site', paste0('pctile.',max.name.d)]
       
@@ -1080,7 +1075,7 @@ app_server <- function(input, output, session) {
       cur.ratio.d <- ratio.to.us.d()[cur.name.d]
       
       ## get friendly version of D name
-      cur.name.d.friendly <- EJAMejscreenapi::map_headernames %>% 
+      cur.name.d.friendly <- EJAMejscreenapi::map_headernames %>%   # replace with EJAM::names_d_friendly
         filter(newnames_ejscreenapi == cur.name.d) %>% 
         pull(names_friendly)
       
@@ -1126,7 +1121,7 @@ app_server <- function(input, output, session) {
       max.ratio.e <- max(ratio.to.us.e())
       max.name.e <- names(ratio.to.us.e())[which.max(ratio.to.us.e())]
       
-      max.name.e.friendly <- EJAMbatch.summarizer::names_e_friendly[which.max(ratio.to.us.e())]
+      max.name.e.friendly <- EJAM::names_e_friendly[which.max(ratio.to.us.e())]
       
       median.pctile.in.us <- data_summarized()$rows['Median site', paste0('pctile.',max.name.e)]
       
@@ -1186,7 +1181,7 @@ app_server <- function(input, output, session) {
   # ______ SITE-BY-SITE TABLE ________ ####
   # ~ ####
   #output: site by site datatable 
-  output$view3_table <- DT::renderDT({
+  output$view3_table <- DT::renderDT(server = TRUE, expr = {
     req(data_processed())
     
     include_states <- TRUE
@@ -1237,58 +1232,61 @@ app_server <- function(input, output, session) {
       n_cols_freeze <- 5
       
     } else {
-      ## obsolete? ####
-      ## vector of column names to keep
-      cols_to_select <- c('siteid', 'pop', EJAMbatch.summarizer::names_all)
-      ## vector of nicer names to use in table header
-      friendly_names <- c('Site ID', 'Est. Population',  EJAMbatch.summarizer::names_all_friendly,
-                          '# of indicators above 95% threshold')
-      
-      ## format doaggregate results_overall output - use as summary row ## 
-      dt_overall <- data_processed()$results_overall %>% 
-        as.data.frame() %>% 
-        mutate(siteid = 'All sites',
-               across(where(is.numeric), .fns = function(x) {round(x, digits=2)})) %>% 
-        select(all_of(cols_to_select))
-      
-      ## format doaggregate results_bysite output
-      dt <- data_processed()$results_bysite %>% 
-        as.data.frame() %>%
-        mutate(across(where(is.numeric), .fns = function(x) {round(x, digits=2)}),
-               siteid = as.character(siteid)) %>%
-        select(all_of(cols_to_select))
-      
-      ## format batch.summarize Average person and Average site output - use as summary row
-      dt_avg <- data_summarized()$rows[c('Average person','Average site'),] %>% 
-        mutate(siteid = c('Average person', 'Average site'), 
-               across(where(is.numeric), .fns = function(x) {round(x, digits=2)}),
-               siteid = as.character(siteid)) %>%
-        select(all_of(cols_to_select))
-      
-      dt_final <- dt %>% 
-        ## add summary columns - # of indicators > threshold
-        bind_cols(data_summarized()$cols) %>% 
-        ## add summary rows
-        bind_rows(dt_avg) %>% 
-        bind_rows(dt_overall) %>% 
-        ## sort by site ID so summary rows end up at top of table
-        arrange(desc(siteid)) %>% 
-        #arrange(desc(pop)) %>% 
-        ## format population
-        mutate(pop = prettyNum(pop, big.mark = ',')) %>% 
-        ## drop column
-        select(-Max.of.variables)
-      
-      ## change to nicer names
-      colnames(dt_final) <- friendly_names
-      
-      ## move this column earlier in table
-      dt_final <- dt_final %>% 
-        relocate(c('# of indicators above 95% threshold'), .before = 2)
-      
-      ## number of columns to keep on left of table when scrolling 
-      ## currently set to 3 for Site ID, Population, # of indicators above 95% threshold'
-      n_cols_freeze <- 3
+      # ## obsolete? ####
+      # ## vector of column names to keep xxx
+      # cols_to_select <- c('siteid', 'pop', c(EJAM::names_d , EJAM::names_d_subgroups, EJAM::names_e, EJAM::names_ej)) #  EJAMbatch.summarizer::names_all)
+      # # setdiff( c(EJAM::names_d , EJAM::names_d_subgroups, EJAM::names_e, EJAM::names_ej), EJAMbatch.summarizer::names_all)
+      # # [1] "Demog.Index.Supp" "lowlifex"         "pctnhwa" "pcthisp" "pctnhba" "pctnhaa" "pctnhaiana" "pctnhnhpia"  "pctnhotheralone"  "pctnhmulti" 
+      # ## vector of nicer names to use in table header
+      # friendly_names <- c('Site ID', 'Est. Population', 
+      #                     c(EJAM::names_d_friendly , EJAM::names_d_subgroups_friendly, EJAM::names_e_friendly, EJAM::names_ej_friendly), #   EJAMbatch.summarizer::names_all_friendly,
+      #                     '# of indicators above 95% threshold')
+      # 
+      # ## format doaggregate results_overall output - use as summary row ## 
+      # dt_overall <- data_processed()$results_overall %>% 
+      #   as.data.frame() %>% 
+      #   mutate(siteid = 'All sites',
+      #          across(where(is.numeric), .fns = function(x) {round(x, digits=2)})) %>% 
+      #   select(all_of(cols_to_select))
+      # 
+      # ## format doaggregate results_bysite output
+      # dt <- data_processed()$results_bysite %>% 
+      #   as.data.frame() %>%
+      #   mutate(across(where(is.numeric), .fns = function(x) {round(x, digits=2)}),
+      #          siteid = as.character(siteid)) %>%
+      #   select(all_of(cols_to_select))
+      # 
+      # ## format batch.summarize Average person and Average site output - use as summary row
+      # dt_avg <- data_summarized()$rows[c('Average person','Average site'),] %>% 
+      #   mutate(siteid = c('Average person', 'Average site'), 
+      #          across(where(is.numeric), .fns = function(x) {round(x, digits=2)}),
+      #          siteid = as.character(siteid)) %>%
+      #   select(all_of(cols_to_select))
+      # 
+      # dt_final <- dt %>% 
+      #   ## add summary columns - # of indicators > threshold
+      #   bind_cols(data_summarized()$cols) %>% 
+      #   ## add summary rows
+      #   bind_rows(dt_avg) %>% 
+      #   bind_rows(dt_overall) %>% 
+      #   ## sort by site ID so summary rows end up at top of table
+      #   arrange(desc(siteid)) %>% 
+      #   #arrange(desc(pop)) %>% 
+      #   ## format population
+      #   mutate(pop = prettyNum(pop, big.mark = ',')) %>% 
+      #   ## drop column
+      #   select(-Max.of.variables)
+      # 
+      # ## change to nicer names
+      # colnames(dt_final) <- friendly_names
+      # 
+      # ## move this column earlier in table
+      # dt_final <- dt_final %>% 
+      #   relocate(c('# of indicators above 95% threshold'), .before = 2)
+      # 
+      # ## number of columns to keep on left of table when scrolling 
+      # ## currently set to 3 for Site ID, Population, # of indicators above 95% threshold'
+      # n_cols_freeze <- 3
     }
     
     ## format data table
@@ -1334,8 +1332,8 @@ app_server <- function(input, output, session) {
     filename = function(){'results_table.xlsx'},
     content = function(fname){
       
-      ## previous - use EJAMejscreenapi::prep_for_excel approach
-      
+      ## previous - use EJAMejscreenapi::xls_formatting_api approach
+      # 
       #table_as_displayed <- data_processed()$results_bysite
       # pctile_colnums <- which(EJAMejscreenapi::map_headernames$jsondoc_shortvartype[match(names(table_as_displayed), 
       #                                                                                     EJAMejscreenapi::map_headernames$newnames_ejscreenapi)] == 'pctile')
@@ -1343,7 +1341,7 @@ app_server <- function(input, output, session) {
       #                                                                          EJAMejscreenapi::map_headernames$newnames_ejscreenapi)]
       # 
       #names(table_as_displayed) <- ifelse(!is.na(longnames), longnames, names(table_as_displayed))
-      # wb_out <- prep_EJAM_for_excel(df = table_as_displayed,
+      # wb_out <- xls_formatting(df = table_as_displayed,
       #                               heatmap_colnames = names(table_as_displayed)[pctile_colnums],
       #                               heatmap_cuts=c(80, 90, 95),
       #                               heatmap_colors=c('yellow', 'orange', 'red'))
@@ -1351,23 +1349,28 @@ app_server <- function(input, output, session) {
       ## use EJAM::workbook_ouput_styled approach
       ## future: can add other sheets from doaggregate output
       
+      # Recode this to avoid making copies which slows it down:
       table_overall <- data_processed()$results_overall
       table_bysite  <- data_processed()$results_bysite
+      # table_bybg <- data_processed()$results_bybg_people
       
-      ## attempt to clean up some column names
+      ## attempt to clean up some column names xxx
       longnames <- EJAMejscreenapi::map_headernames$longname_tableheader[match(names(data_processed()$results_bysite),
                                                                                EJAMejscreenapi::map_headernames$newnames_ejscreenapi)]
       names(table_overall) <- ifelse(!is.na(longnames), longnames, names(table_overall))
       names(table_bysite)  <- ifelse(!is.na(longnames), longnames, names(table_bysite))
+      # names(table_bybg_people)  <- ifelse(!is.na(longnames), longnames, names(table_bybg_people))
       
       ## format excel workbook
-      wb_out <- workbook_output_styled(overall = table_overall, eachsite = table_bysite)
+      wb_out <- xls_formatting2(
+        overall = table_overall, 
+        # eachblockgroup = table_bybg_people, # data_processed()$results_bybg_people,
+        eachsite = table_bysite
+      )
       
       ## save file and return for downloading
       openxlsx::saveWorkbook(wb_out, fname)
-      
     }
-    
   )
   
   #############################################################################  # 
@@ -1442,10 +1445,10 @@ app_server <- function(input, output, session) {
     ## set ggplot theme elements for all versions of barplot
     ggplot_theme_bar <- theme_bw() +
       theme(legend.position = 'top',
-            axis.text = element_text(size = 16),
-            axis.title = element_text(size = 16),
-            legend.title = element_text(size = 16),
-            legend.text = element_text(size = 16),
+            axis.text = ggplot2::element_text(size = 16),
+            axis.title = ggplot2::element_text(size = 16),
+            legend.title = ggplot2::element_text(size = 16),
+            legend.text = ggplot2::element_text(size = 16),
             strip.text = element_blank(),
             strip.background = element_blank()
       )
@@ -1596,9 +1599,9 @@ app_server <- function(input, output, session) {
     
     ## set font sizes
     ggplot_theme_hist <- theme(
-      plot.title = element_text(size=18, hjust=0.5),
-      axis.text = element_text(size=16),
-      axis.title = element_text(size=16)
+      plot.title = ggplot2::element_text(size=18, hjust=0.5),
+      axis.text = ggplot2::element_text(size=16),
+      axis.title = ggplot2::element_text(size=16)
     )
     
     ## future settings: bin sizes, reference lines

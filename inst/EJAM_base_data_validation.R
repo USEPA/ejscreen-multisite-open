@@ -22,7 +22,7 @@ expected_columns_quad <- c("BLOCK_X","BLOCK_Z","BLOCK_Y","blockid")
 
 if(any(colnames(EJAMblockdata::quaddata) != expected_columns_quad)){
   print(paste0("Unexpected columns ",expected_columns_quad[colnames(EJAMfrsdata::quaddata) != expected_columns_quad]))
-}else{
+} else {
   print("Expected columns exist for EJAMfrsdata::quaddata)")
 }
 
@@ -36,7 +36,7 @@ expected_columns_frs <- c("lat","lon","REGISTRY_ID","PRIMARY_NAME","NAICS","PGM_
 
 if(any(colnames(EJAMfrsdata::frs) != expected_columns_frs)){
   print(paste0("Unexpected columns ",expected_columns_frs[colnames(EJAMfrsdata::frs) != expected_columns_frs]))
-}else{
+} else {
   print("Expected columns exist for EJAMfrsdata::frs)")
 }
 
@@ -50,7 +50,7 @@ expected_columns_bgw <- c("blockid","bgid","blockwt")
 
 if(any(colnames(EJAMblockdata::blockwts) != expected_columns_bgw)){
   print(paste0("Unexpected columns ",expected_columns_frs[colnames(EJAMblockdata::blockwts) != expected_columns_bgw]))
-}else{
+} else {
   print("Expected columns exist for EJAMblockdata::blockwts)")
 }
 
@@ -78,7 +78,7 @@ missing_states <- unique(bg_ejscreen_nomerge$ST_ABBREV)
 
 if(!all(missing_states %in% mp_islands)){
   print(paste0("Unexpected missing states/territories in blockgroupstats ",missing_states[missing_states %in% mp_islands]))
-}else{
+} else {
   print("Expected states/territories present in blockgroupstats")
 }
 
@@ -86,7 +86,7 @@ if(!all(missing_states %in% mp_islands)){
 #confirm 242,335 rows (raw EJSCREEN - terroritory cleaning)
 if(nrow(EJAM::blockgroupstats) != nrow(bg_ejscreen_merge)){
   print("Unexpected row count for blockgroupstats dataset. Please check/update EJSCREEN_Full_with_AS_CNMI_GU_VI at")
-}else{
+} else {
   print("Row counts in blockgroupstats are expected numbers")
 }
 
@@ -105,7 +105,7 @@ expected_states <-c("AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL",
 statestats_current <- unique(EJAM::statestats$REGION)
 if(!all(statestats_current %in% expected_states)){
   print(paste0("Missing state/territory ",statestats_current[!(statestats_current %in% expected_states)]))
-}else{
+} else {
   print("Expected states/territories present in statestats")
 }
 
@@ -116,6 +116,6 @@ if(!all(statestats_current %in% expected_states)){
 #confirm 103 rows (one for each percentile from 0-100 plus mean and std)
 if(nrow(EJAM::usastats) != 103){
   print("Unexpected row count for blockgroupstats dataset")
-}else{
+} else {
   print("Expected percentile/statistics present in usastats")
 }

@@ -1,12 +1,15 @@
 #' fipsbg_from_anyfips
 #' convert any FIPS codes to the FIPS of all the blockgroups that are
 #'   among or within or containing those FIPS
-#' This is a way to get a list of blockgroups, specified by state/county/tract or even block.
+#' @details  This is a way to get a list of blockgroups, specified by state/county/tract or even block.
+#' 
 #' Takes a vector of one or more FIPS that could be State (2-digit), County (5-digit),
 #'   Tract (11-digit), or blockgroup (12 digit), or even block (15-digit fips). 
+#'   
 #'   Returns unique vector of FIPS of all US blockgroups (including DC and Puerto Rico)
 #'   that contain any specified blocks, are equal to any specified blockgroup fips, 
 #'   or are contained within any provided tract/county/state FIPS. 
+#'   
 #'   stateinfo$ST[match( unique(substr(blockgroupstats$bgfips,1,2)), stateinfo$FIPS.ST)]
 #' @param fips vector of US FIPS codes, as character or numeric,
 #'   with or without their leading zeroes, each with as many characters

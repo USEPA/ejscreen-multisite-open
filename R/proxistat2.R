@@ -1,7 +1,9 @@
 #' Calculate a proximity score for every blockgroup 
 #' Indicator of proximity of each blockgroups to some set of facilities or sites.
-#' Proximity score is sum of (1/d) where each d is distance of a given site in km, 
+#' @details  Proximity score is sum of (1/d) where each d is distance of a given site in km, 
 #'   summed over all sites within 5km, as in EJScreen.
+#'   
+#'   doaggregate() has a bit of code in it to do this same thing that proxistat2() does.
 #'   
 #'   *** Still need area of each block to fix this func proxistat2()
 #'  
@@ -84,7 +86,7 @@ proxistat2 <- function(pts, cutoff=8.04672, quadtree) {
   sites2blocks_dt <- proxistat::blockpoints_area_pop[sites2blocks_dt, .(blockid, distance, siteid, area), on="blockid"]
   # area was in square meters, so convert   1609.344 meters per mile 
   sites2blocks_dt[ , min.dist.km := 0.0005077706 * sqrt(area)]
-  sites2blocks_dt[ , distance.km := pmax(min.dist.meters, distance * km_a_mile, na.rm = TRUE)]
+  sites2blocks_dt[ , distance.km := pmax(min.dist.meters, distance * km_a_mile, na.rm = TRUE)] # collapse::fmin() is probably much faster
   
   
   

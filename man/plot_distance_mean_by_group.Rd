@@ -7,7 +7,7 @@ Barplot of Average Proximity to sites, by Demographic Group (vs everyone else)}
 \usage{
 plot_distance_mean_by_group(
   results_bybg_people,
-  demogvarname = c(namez$d, namez$d_subgroups),
+  demogvarname = c(EJAM::names_d, EJAM::names_d_subgroups),
   demoglabel = NULL,
   graph = TRUE
 )

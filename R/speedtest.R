@@ -18,6 +18,7 @@ speedtest <- function(n=10, sitepoints=NULL, weighting='frs',
                       do_batch.summarize=TRUE,
                       logging=TRUE, logfolder=getwd(), logfilename="log_n_datetime.txt", honk_when_ready=TRUE) {
   
+  cat('see profvis::profvis({}) for viewing where the bottlenecks are!\n')
   
   # Test script that times each step of EJAM for a large dataset
   

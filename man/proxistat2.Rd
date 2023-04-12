@@ -3,11 +3,7 @@
 \name{proxistat2}
 \alias{proxistat2}
 \title{Calculate a proximity score for every blockgroup
-Indicator of proximity of each blockgroups to some set of facilities or sites.
-Proximity score is sum of (1/d) where each d is distance of a given site in km,
-summed over all sites within 5km, as in EJScreen.
-
-*** Still need area of each block to fix this func proxistat2()}
+Indicator of proximity of each blockgroups to some set of facilities or sites.}
 \usage{
 proxistat2(pts, cutoff = 8.04672, quadtree)
 }
@@ -25,8 +21,12 @@ data.table with proximityscore, bgfips, lat, lon, etc.
 \description{
 Calculate a proximity score for every blockgroup
 Indicator of proximity of each blockgroups to some set of facilities or sites.
+}
+\details{
 Proximity score is sum of (1/d) where each d is distance of a given site in km,
 summed over all sites within 5km, as in EJScreen.
+
+doaggregate() has a bit of code in it to do this same thing that proxistat2() does.
 
 *** Still need area of each block to fix this func proxistat2()
 }

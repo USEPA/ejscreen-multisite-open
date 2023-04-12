@@ -158,7 +158,7 @@ for (i in 1:length(sampleSize)) {
       newrow
     }
 
-  } else {
+  } else { 
     # not parallelized
     print("NOT PARALLEL")
     for (n in 1:nrow(sf)) {

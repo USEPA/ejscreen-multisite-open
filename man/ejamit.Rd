@@ -2,7 +2,7 @@
 % Please edit documentation in R/ejamit.R
 \name{ejamit}
 \alias{ejamit}
-\title{Get complete EJ analysis numbers (demographic and environmental indicators) for a list of locations}
+\title{Get complete EJ analysis numbers (demographic and environmental indicators) near a list of locations}
 \usage{
 ejamit(
   sitepoints,
@@ -13,24 +13,9 @@ ejamit(
   ...
 )
 }
-\arguments{
-\item{sitepoints}{see \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} or other such functions}
-
-\item{cutoff}{see \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} or other such functions}
-
-\item{maxcutoff}{see \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} or other such functions}
-
-\item{avoidorphans}{see \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} or other such functions}
-
-\item{quadtree}{User does not need to provide this parameter.
-Already created when EJAM package is loaded, this is
-a large quadtree object created from the SearchTree package example:
-SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")}
-
-\item{...}{see \code{\link[=getblocksnearbyviaQuadTree_Clustered]{getblocksnearbyviaQuadTree_Clustered()}} or other such functions}
-}
 \description{
 This is the main function in EJAM for users who want to use EJAM from RStudio.
+It does essentially what the webapp does to analyze/summarize near a set of points.
 See help("EJAM")
 }
 \examples{
@@ -39,7 +24,7 @@ See help("EJAM")
  # All in one step, using functions not shiny app:
  out <- ejamit(testpoints_100_dt, 2, quadtree=localtree)
  
- # do not specify sitepoints and it will prompt you for a file,
+ # Do not specify sitepoints and it will prompt you for a file,
  # if in RStudio in interactive mode!
  out <- ejamit(cutoff = 3)
  
@@ -50,7 +35,7 @@ See help("EJAM")
   testsites <- latlon_from_anything(
    "./inst/testdata/testpoints_207_sites_with_signif_violations_NAICS_326_ECHO.csv")
   # use facility points from a random sample of EPA-regulated facilities
-  testsites <- EJAMfrsdata::frs[sample(1:nrow(EJAMfrsdata::frs), 1e3),] # this is slow
+  testsites <- testpoints_n(1e3)  
   
   # Specify max distance from sites to look at (residents within X miles of site point)
   radius <- 3.1 # miles

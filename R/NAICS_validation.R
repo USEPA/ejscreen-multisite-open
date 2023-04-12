@@ -8,7 +8,7 @@ naics_validation <- function(NAICS_enter,NAIC_select){
   
   if (nchar(NAICS_enter)>0 | length(NAIC_select)>0) {
     return(TRUE)
-  }else{
+  } else {
     return(FALSE)
   }
   

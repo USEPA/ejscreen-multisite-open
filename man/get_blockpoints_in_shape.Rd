@@ -4,17 +4,52 @@
 \alias{get_blockpoints_in_shape}
 \title{find blocks that are in a polygon, using internal point of block - WORK IN PROGRESS ****}
 \usage{
-get_blockpoints_in_shape(polys, addedbuffermiles = 0)
+get_blockpoints_in_shape(
+  polys,
+  addedbuffermiles = 0,
+  blocksnearby = NULL,
+  dissolved = FALSE,
+  safety_margin_ratio = 1.1
+)
 }
 \arguments{
-\item{polys}{polygons (FORMAT???)}
+\item{polys}{Spatial data as from sf::st_as_sf(), with a column called siteid, like
+points as from \code{\link[=get_shapefile_from_sitepoints]{get_shapefile_from_sitepoints()}},
+or a table of points with lat,lon columns that will first be converted here using that function,
+or polygons (not yet tested).}
 
-\item{addedbuffermiles}{width of optional buffering to add to edges, in miles}
+\item{addedbuffermiles}{width of optional buffering to add to the points (or edges), in miles}
+
+\item{blocksnearby}{optional table of blocks with blockid,siteid (from which lat,lon can be looked up in blockpoints dt)}
+
+\item{dissolved}{If TRUE, use sf::st_union(polys) to find unique blocks inside any one or more of polys}
+
+\item{safety_margin_ratio}{multiplied by addedbuffermiles, how far to search for
+blocks nearby using getblocksnearby(), before using those found to do the intersection via sf::}
 }
 \value{
-Polygons with joined block points info. **********
+Block points table for those blocks whose internal point is inside the buffer
+which is just a circular buffer of specified radius if polys are just points.
 }
 \description{
 This is like getblocksnearby() but for a polygonal buffer area instead of
 a circular buffer.
+}
+\details{
+This uses getblocksnearby() to get a very fast rough/good estimate of
+which US block points are nearby (with a safety margin - see param below),
+before then using sf:: to carefully identify which of those candidate blocks are actually
+inside each polygon (e.g., circle) according to sf:: methods.
+For circular buffers, just using getblocksnearby() should work and not need this function.
+For noncircular polygons, buffered or not, this function will provide a way to very quickly
+filter down to which of the millions of US blocks should be examined by the sf:: join / intersect,
+since otherwise it takes forever for sf:: to check all US blocks.
+}
+\examples{
+ 
+  x = get_shapefile_from_sitepoints(testpoints_n(2))
+  # y = get_blockpoints_in_shape(x, 1)  # very very slow
+}
+\seealso{
+\code{\link[=get_blockpoints_in_shape]{get_blockpoints_in_shape()}} \code{\link[=get_shapefile_from_sitepoints]{get_shapefile_from_sitepoints()}} \code{\link[=get_shape_buffered_from_shapefile_points]{get_shape_buffered_from_shapefile_points()}}
 }
