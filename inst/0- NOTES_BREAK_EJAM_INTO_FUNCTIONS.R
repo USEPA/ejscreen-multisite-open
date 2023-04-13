@@ -17,9 +17,9 @@
 # EJAMejscreenapi::read_and_clean_points  - obsolete or overlaps with latlon_from_anything()
 
 # TO upload SHAPEFILES / POLYGON DATA:
-# get_shape_from_upload() ** NOT WRITTEN   use   sf::st_read()
-#   -Given filename, 
-#   -Return uploaded shapefile    
+# get_shape_from_upload() ** NOT WRITTEN   use   sf::st_read() e.g.,  dep <- sf::read_sf("~/afile_000_2022.gpkg", layer = "mylayer")
+#   -Given path\filename 
+#   -Return uploaded shapefile
 
 # -----------------------------------------------
 # QUERY FRS, NAICS, ETC. TO GET LAT/LON, STATE, FACILITY INFO, ETC.

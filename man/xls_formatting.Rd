@@ -3,7 +3,7 @@
 \name{xls_formatting}
 \alias{xls_formatting}
 \title{Format batch results for excel
-See EJAM code related to this also!}
+also see other functions related to this!}
 \usage{
 xls_formatting(
   df,
@@ -32,5 +32,5 @@ A workbook via openxlsx::writeData() ready to be saved via openxlsx::saveWorkboo
 }
 \description{
 Format batch results for excel
-See EJAM code related to this also!
+also see other functions related to this!
 }

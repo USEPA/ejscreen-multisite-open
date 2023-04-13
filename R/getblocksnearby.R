@@ -47,14 +47,16 @@ getblocksnearby  <- function(sitepoints, cutoff=3, maxcutoff=31.07,
   # if user entered a table, path to a file (csv, xlsx), or whatever, then read it to get the lat lon values from there
   sitepoints <- latlon_from_anything(sitepoints)
   ################################################################################## #
-  
   # timed <- system.time({
-  
   if (missing(quadtree)) {
     if (exists("localtree")) {
       quadtree <- localtree 
     } else {
-      stop("Nationwide index of block locations is required but missing (quadtree parameter default is called localtree but was not found).")
+      
+      stop(paste0("Nationwide index of block locations is required but missing (quadtree parameter default is called localtree but was not found).\n",
+                  'Try this: \n',
+                  'localtree <- SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point") \n'
+      ))
     }
   }
   cat("Analyzing", NROW(sitepoints), "points, radius of", cutoff, "miles.\n") 
@@ -71,10 +73,10 @@ getblocksnearby  <- function(sitepoints, cutoff=3, maxcutoff=31.07,
   } else {
     stop('parallel processing version not implemented yet')
     x <- getblocksnearbyviaQuadTree_Clustered(sitepoints=sitepoints, cutoff=cutoff, maxcutoff=maxcutoff,
-                                         avoidorphans=avoidorphans,
-                                         # indexgridsize=indexgridsize,
-                                         quadtree=quadtree,
-                                         ...)
+                                              avoidorphans=avoidorphans,
+                                              # indexgridsize=indexgridsize,
+                                              quadtree=quadtree,
+                                              ...)
   }
   
   # getblocksnearbyviaQuadTree2(sitepoints=sitepoints, cutoff=cutoff, maxcutoff=maxcutoff, 

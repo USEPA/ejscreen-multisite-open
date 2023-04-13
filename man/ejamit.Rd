@@ -9,9 +9,30 @@ ejamit(
   cutoff = 3,
   maxcutoff = 31.07,
   avoidorphans = TRUE,
-  quadtree,
+  quadtree = NULL,
   ...
 )
+}
+\arguments{
+\item{sitepoints}{data.table with columns siteid, lat, lon giving point locations of sites or facilities around which are circular buffers}
+
+\item{cutoff}{miles radius, defining circular buffer around site point}
+
+\item{maxcutoff}{miles distance (max distance to check if not even 1 block point is within cutoff)}
+
+\item{avoidorphans}{logical Whether to avoid case where no block points are within cutoff,
+so if TRUE, it keeps looking past cutoff to find nearest one within maxcutoff.}
+
+\item{quadtree}{(a pointer to the large quadtree object)
+created from the SearchTree package example:
+SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
+Takes about 2-5 seconds to create this each time it is needed.
+It is automatically created when the package is loaded via the \code{\link[=.onLoad]{.onLoad()}} function}
+
+\item{...}{passed to \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} or other such functions}
+}
+\value{
+A list of tables of results.
 }
 \description{
 This is the main function in EJAM for users who want to use EJAM from RStudio.
@@ -70,9 +91,6 @@ See help("EJAM")
   # if doing just 2d step of ejamit()
   #  get summaries of all indicators based on table of distances
   out <- doaggregate(s2b, testsites) # this works now and is simpler
-  
-  # if localtree had to be built from block point data again
-  localtree_example = SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
   
 }
 }

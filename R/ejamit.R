@@ -56,27 +56,18 @@
 #'   #  get summaries of all indicators based on table of distances
 #'   out <- doaggregate(s2b, testsites) # this works now and is simpler
 #'   
-#'   # if localtree had to be built from block point data again
-#'   localtree_example = SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
-#'   
 #' }
 #' @seealso  [getblocksnearby()] [doaggregate()]
 #' @export
 ejamit <- function(sitepoints, 
                    cutoff=3, maxcutoff=31.07, 
-                   avoidorphans=TRUE, 
-                   quadtree,
+                   avoidorphans=TRUE,
+                   quadtree=NULL,
                    ...
 ) {
   if (missing(cutoff)) cat("\nUsing default radius of", cutoff, "miles.\n")
-  if (missing(quadtree)) {
-    if (exists("localtree")) {
-      quadtree <- localtree 
-    } else {
-      stop("Nationwide index of block locations is required but missing (quadtree parameter default is called localtree but was not found).")
-    }
-  }
-  
+  if (!missing(quadtree)) {stop("quadtree should not be provided to ejamit() - that is handled by getblocksnearby() ")}
+
   ################################################################################## #
   # note this overlaps or duplicates code in app_server.R 
   #   for data_up_latlon() around lines 81-110 and data_up_frs() at 116-148
@@ -92,17 +83,16 @@ ejamit <- function(sitepoints,
   # if user entered a table, path to a file (csv, xlsx), or whatever, then read it to get the lat lon values from there
   sitepoints <- latlon_from_anything(sitepoints)  
   ################################################################################## #
-  # getblocksnearby() ####
+  # 1. getblocksnearby() ####
   cat('Finding blocks nearby.\n')
   
   mysites2blocks <- getblocksnearby(
     sitepoints=sitepoints, 
     cutoff=cutoff, maxcutoff=maxcutoff, 
     avoidorphans=avoidorphans, 
-    quadtree=quadtree,
     ...)
   
-  # doaggregate() ####
+  # 2. doaggregate() ####
   cat('Aggregating at each buffer and overall.\n')
   
   out <- suppressWarnings (
@@ -119,10 +109,10 @@ ejamit <- function(sitepoints,
   
   ################################################################ # 
   
-  # add hyperlinks (to site by site table) ####
-  #  >this should be a function, since used here and in ejamit() ####
+  # Hyperlinks added (to site by site table) ####
+  ##  >>this should be a function, since used here and in ejamit() ####
   # duplicated almost exactly in app_server but uses reactives there
-  
+  browser()
   if ("REGISTRY_ID" %in% names(out$results_bysite)) {
     echolink = url_echo_facility_webpage(REGISTRY_ID, as_html = T)
   } else {
@@ -150,7 +140,7 @@ ejamit <- function(sitepoints,
   out$longnames <- c(newcolnames, out$longnames)
   
   ################################################################ # 
-  # 3) **EJAMbatch.summarizer::batch.summarize()** on already processed data ####
+  # 3. batch.summarize()** on already processed data ####
   out$results_summarized <- EJAMbatch.summarizer::batch.summarize(
     sitestats = data.frame(out$results_bysite),
     popstats =  data.frame(out$results_bysite),
@@ -181,6 +171,7 @@ ejamit <- function(sitepoints,
     somenames <- grep("ratio.to.state", names(out$results_summarized$rows), value = TRUE)
     print(  round(t(out$results_summarized$rows[ , somenames])[ ,c(1,2,6)],2)  )  # 1:70 
     # site counts and distance minima
+    
     print(  round(tail(t(out$results_summarized$rows)[ ,1:7],7),1)  )
   }
   ################################################################ # 

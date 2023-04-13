@@ -1,5 +1,5 @@
 #' Format batch results for excel
-#' See EJAM code related to this also!
+#' also see other functions related to this!
 #' @param df data.frame, table of batch buffer results
 #' @param hyperlink_cols vector of names of columns in df to get treated as hyperlinks in excel
 #' @param heatmap_colnames vector of names of columns in df to apply conditional formatting to,
@@ -21,9 +21,6 @@ xls_formatting  <- function(df, hyperlink_cols=NULL,
   if (length(heatmap_cuts) != length(heatmap_colors)) stop('heatmap_cuts and heatmap_colors must be same length')
   if (!all(heatmap_colnames %in% names(df))) {stop('all column names in heatmap_colnames must be found in df')}
   if (!all(hyperlink_cols %in% names(df))) {stop('all column names in hyperlink_cols must be found in df')}
-  
-  
-  # NEED TO MERGE THIS WITH EJAM::xls_formatting2() 
   
   ######################################################################## #
   # CREATE WORKBOOK ####
