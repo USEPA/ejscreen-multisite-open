@@ -6,6 +6,10 @@
 #'   every block within the circle defined by the radius (cutoff). 
 #'   Each block is defined by its Census-provided internal point, by latitude and longitude.
 #'   
+#'   
+#'   
+#'   
+#'   
 #'   Each point can be the location of a regulated facility or other type of site, and 
 #'   the blocks are a high-resolution source of information about where
 #'   residents live. 
@@ -27,14 +31,16 @@
 #'    It is automatically created when the package is loaded via the [.onLoad()] function
 #' @param report_progress_every_n Reports progress to console after every n points,
 #'   mostly for testing, but a progress bar feature might be useful unless this is super fast.
+#'
+#'
+#'
 #' @seealso [ejamit()] [getblocksnearby()] [getblocksnearbyviaQuadTree()] [getblocksnearbyviaQuadTree_Clustered()] [getblocksnearbyviaQuadTree2()]
-#' 
 #' 
 #' @export
 #' @import data.table
 #' @importFrom pdist "pdist"
 #'   
-getblocksnearbyviaQuadTree3  <- function(sitepoints, cutoff=3, maxcutoff=31.07, 
+getblocksnearbyviaQuadTree3 <- function(sitepoints, cutoff=3, maxcutoff=31.07, 
                                         avoidorphans=TRUE, report_progress_every_n=500, 
                                         quadtree) {
   if(class(quadtree) != "QuadTree"){
@@ -54,7 +60,6 @@ getblocksnearbyviaQuadTree3  <- function(sitepoints, cutoff=3, maxcutoff=31.07,
   radians_per_degree <- pi / 180
   
   # f2 <- data.table::copy(sitepoints) # make a copy?
-  browser()
   sitepoints[ , lat_RAD := lat * radians_per_degree]   # PROBLEM? - this warns but makes a shallow copy to avoid altering sitepoints in the calling envt bc of how data.table works
   sitepoints[ , lon_RAD := lon * radians_per_degree]
   cos_lat <- cos(sitepoints[ , lat_RAD])    # or maybe # sitepoints[ , cos_lat := cos(lat_RAD)]
@@ -79,14 +84,10 @@ getblocksnearbyviaQuadTree3  <- function(sitepoints, cutoff=3, maxcutoff=31.07,
   
   # **** getblocksnearbyviaQuadTree2.R is different here
   
-  
-  
-  
   sitepoints[ , x_low := FAC_X - truedistance]
   sitepoints[ , x_hi  := FAC_X + truedistance]
   sitepoints[ , z_low := FAC_Z - truedistance]
   sitepoints[ , z_hi  := FAC_Z + truedistance]
-  
   
   for (i in 1:nRowsDf) {    # LOOP OVER SITES HERE ----
     ########################################################################### ## ** SLOW STEP TO OPTIMIZE   *** ** ** ** 
@@ -95,13 +96,11 @@ getblocksnearbyviaQuadTree3  <- function(sitepoints, cutoff=3, maxcutoff=31.07,
     # x_hi  <-  coords[,FAC_X]+truedistance
     # z_low  <- coords[,FAC_Z]-truedistance;
     # z_hi  <-  coords[,FAC_Z]+truedistance   # ** THIS HAD BEEN THE SLOWEST LINE  OVERALL *** it was moved down to happen during SearchTrees::rectLookup( )
-    
     # moved these above the loop since vectorized now
     # sitepoints[i, x_low := FAC_X - truedistance]
     # sitepoints[i, x_hi  := FAC_X + truedistance]
     # sitepoints[i, z_low := FAC_Z - truedistance]
     # sitepoints[i, z_hi  := FAC_Z + truedistance]
-    
     
     if ((i %% report_progress_every_n) == 0) {print(paste("Cells currently processing: ",i ," of ", nRowsDf) ) } # i %% report_progress_every_n indicates i mod report_progress_every_n (“i modulo report_progress_every_n”) 
     
@@ -121,9 +120,7 @@ getblocksnearbyviaQuadTree3  <- function(sitepoints, cutoff=3, maxcutoff=31.07,
     tmp <- EJAMblockdata::quaddata[vec, ] 
     # x <- tmp[ , .(BLOCK_X, BLOCK_Y, BLOCK_Z)] # but not blockid ?? 
     # y <- sitepoints[i, c('FAC_X','FAC_Y','FAC_Z')]  # the similar clustered function uses something other than sitepoints here - why?
-    
-    ########################################################################### ## ** SLOWEST STEP TO OPTIMIZE: 
-    
+    ########################################################################### ## ** SLOWSTEP TO OPTIMIZE: 
     distances <- as.matrix(pdist::pdist(tmp[ , .(BLOCK_X, BLOCK_Y, BLOCK_Z)] , 
                                         sitepoints[i, c('FAC_X','FAC_Y','FAC_Z')] ))  # ** SLOW STEP TO OPTIMIZE  #  1 OF SLOWEST LINES  
     
@@ -140,11 +137,10 @@ getblocksnearbyviaQuadTree3  <- function(sitepoints, cutoff=3, maxcutoff=31.07,
     # hold your horses, what if there are no blocks and you are supposed to avoid that
     if ( avoidorphans && (nrow(res[[i]])) == 0) { # rarely get here so not critical to optimize
       #search neighbors, allow for multiple at equal distance
-  
-          # vec  <- SearchTrees::knnLookup(quadtree, unlist(c( coords[ , 'FAC_X'])), unlist(c(coords[ , 'FAC_Z'])), k=10)      
+      # vec  <- SearchTrees::knnLookup(quadtree, unlist(c( coords[ , 'FAC_X'])), unlist(c(coords[ , 'FAC_Z'])), k=10)      
       vec  <- SearchTrees::knnLookup(quadtree, unlist(c( sitepoints[i , 'FAC_X'])), unlist(c(sitepoints[i , 'FAC_Z'])), k=10)      
       
-          # *** FIX/CHECK: 
+      # *** FIX/CHECK: 
       #    quadtree (localtree passed here as quadtree) 
       # vs EJAMblockdata::blockquadtree  (can it be this way, or need to create it again for each session?)
       # vs was just localtree from global env in clustered version of function
@@ -163,8 +159,9 @@ getblocksnearbyviaQuadTree3  <- function(sitepoints, cutoff=3, maxcutoff=31.07,
       res[[i]] <- tmp[distance <= truemaxdistance, .(blockid, distance, siteid)]
       # saving results as a list of tables to rbind after loop; old code did rbind for each table, inside loop 
     } else {
-      
+      #?
     }
+    if ((i %% report_progress_every_n) == 0 & interactive()) {cat(paste("Finished finding blocks near ",i ," of ", nRowsDf),"\n" ) } # i %% report_progress_every_n indicates i mod report_progress_every_n (“i modulo report_progress_every_n”) 
   }
   result <- data.table::rbindlist(res)  
   

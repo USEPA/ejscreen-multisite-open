@@ -15,13 +15,19 @@ format_gt_table <- function(df, type, my_cell_color =  '#dce6f0', my_border_colo
     nice_table <- gt::gt(df) %>% 
       ## format column labels
       gt::cols_label(
+        
         var_names = gt::md('**Selected Variables**'),
         value = gt::md('**Value**'),
+        
         state_avg = gt::md('**State<br>Average**'),
         state_pctile = gt::md('**Percentile<br>in State**'),
+        
         usa_avg = gt::md('**USA<br>Average**'),
         usa_pctile = gt::md('**Percentile<br>in USA**'), 
-        ratio_to_us = gt::md('**USA<br>Ratio to Avg.**')
+        
+        state_ratio = gt::md('**USA<br>Ratio to State Avg**'),
+        usa_ratio   = gt::md('**USA<br>Ratio to Avg.**')
+        
       )  %>% 
       ## format decimal places for all indicators
       gt::fmt_percent(columns = c(2,3,5), rows = everything(),  decimals = 0) %>%
@@ -41,18 +47,24 @@ format_gt_table <- function(df, type, my_cell_color =  '#dce6f0', my_border_colo
         align = 'center', columns = c('state_pctile', 'usa_pctile')
       ) 
     
-  } else if(type == 'envt'){
+  } else if(type == 'envt') {
     
     nice_table <- gt::gt(df) %>% 
       ## format column labels
       gt::cols_label(
+        
         var_names = gt::md('**Selected Variables**'),
         value = gt::md('**Value**'),
+        
         state_avg = gt::md('**State<br>Average**'),
         state_pctile = gt::md('**Percentile<br>in State**'),
+        
         usa_avg = gt::md('**USA<br>Average**'),
         usa_pctile = gt::md('**Percentile<br>in USA**'),
-        ratio_to_us = gt::md('**USA<br>Ratio to Avg.**')
+        
+        state_ratio = gt::md('**USA<br>Ratio to State Avg**'),
+        usa_ratio =   gt::md('**USA<br>Ratio to Avg.**')
+        
       ) %>% 
       ## format different decimal places for each indicator
       ## pm 2.5

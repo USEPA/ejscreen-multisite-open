@@ -54,7 +54,6 @@ areal apportionment of block groups would provide.
 \examples{
   localtree_example = SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
   x = getblocksnearby2(testpoints_1000_dt, quadtree = localtree_example)
-
 }
 \seealso{
 \code{\link[=getblocksnearbyviaQuadTree_Clustered]{getblocksnearbyviaQuadTree_Clustered()}}  \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}}

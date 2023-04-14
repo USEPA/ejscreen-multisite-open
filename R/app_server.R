@@ -25,7 +25,7 @@
 #' @import dplyr
 #' 
 app_server <- function(input, output, session) {
-  # browser()
+  
   ## to profile parts of the shiny app for performance
   # callModule(profvis_server, "profiler")
   
@@ -33,6 +33,8 @@ app_server <- function(input, output, session) {
   # https://github.com/ThinkR-open/golem/issues/6
   
   #############################################################################  # 
+  
+  ## ** US AVERAGE for each indicator  
   
   ## ______ SELECT SITES ________####
   # ~ ####
@@ -51,6 +53,10 @@ app_server <- function(input, output, session) {
   observeEvent(input$show_advanced_settings,
                {
                  showTab(inputId = 'all_tabs', target = 'Advanced Settings')
+               })
+  observeEvent(input$hide_advanced_settings,
+               {
+                 hideTab(inputId = 'all_tabs', target = 'Advanced Settings')
                })
   
   ## show welcome modal on app startup - commented out for now
@@ -133,8 +139,8 @@ app_server <- function(input, output, session) {
     #include frs_is_valid verification check function
     if (frs_is_valid(read_frs)){
       # read_frs_dt <- data.table::as.data.table(read_frs)
-        data.table::setDT(read_frs) # same but less memory/faster?
-
+      data.table::setDT(read_frs) # same but less memory/faster?
+      
       #converts registry id to character if not already in that class (EJAMfrsdata::frs registry ids are character)
       if(class(read_frs_dt$REGISTRY_ID) != "character"){
         read_frs_dt$REGISTRY_ID = as.character(read_frs_dt$REGISTRY_ID)
@@ -338,7 +344,7 @@ app_server <- function(input, output, session) {
   
   output$print_test2_dt <- DT::renderDT({
     req(data_uploaded())
-    browser()
+    
     dt <- data_uploaded() # now naics-queried sites format is OK to view, since using different function to get sites by naics
     
     # if(current_upload_method() == 'NAICS'){
@@ -422,9 +428,11 @@ app_server <- function(input, output, session) {
   })
   
   #############################################################################  # 
+  #############################################################################  # 
+  #############################################################################  # 
   
   # ~ ####
-  # ______ RUN ANALYSIS  button is pressed ________####
+  # ______ RUN ANALYSIS  (button is pressed) ________####
   # ~ ####
   
   ## initialize data_processed reactive variable 
@@ -435,9 +443,11 @@ app_server <- function(input, output, session) {
   ##  to hold results of batch.summarize()
   data_summarized <- reactiveVal(NULL)
   
+  # THIS IS VERY VERY SIMILAR TO THE CODE IN ejamit() and perhaps could just rely on one set of code for both. ***xxx
+  # >this part could be replaced by ejamit() or something like that ####
   
-  observeEvent(input$bt_get_results, {
-    
+  observeEvent(input$bt_get_results, {  # (button is pressed) 
+
     showNotification('Processing sites now!', type = 'message', duration = 0.5)
     
     ## progress bar setup overall for 3 operations   
@@ -453,7 +463,6 @@ app_server <- function(input, output, session) {
       cutoff = input$bt_rad_buff,
       quadtree = localtree
     )
-    
     ## progress bar update overall  
     progress_all$inc(1/3, message = 'Step 2 of 3', detail = 'Aggregating')
     ## create progress bar to show doaggregate status
@@ -470,7 +479,8 @@ app_server <- function(input, output, session) {
     
     #############################################################################  # 
     ## 2) **EJAM::doaggregate()** ####
-    
+    blah=data_uploaded()
+    save(blah, file='testup.rda'); save(sites2blocks, file = 'testin.rda')
     out <- suppressWarnings(doaggregate(
       sites2blocks = sites2blocks, 
       sites2states = data_uploaded(),
@@ -486,11 +496,14 @@ app_server <- function(input, output, session) {
     ## close doaggregate progress bar
     progress_doagg$close()
     
-    #############################################################################  # 
-    # add hyperlinks (to site by site table) ####
-    #  >this should be a function, since used here and in ejamit() ####
-    # duplicated almost exactly in ejamit() but reactives are not reactives there
+    ################################################################ # 
     
+    # HYPERLINKS added (to site by site table) ####
+    
+    #  >this should be a function, and is used by both server and ejamit() ####
+    # duplicated almost exactly in ejamit() but reactives are not reactives there
+    # maybe use url_4table() - see ejamit() code
+stop('got here')
     if ("REGISTRY_ID" %in% names(out$results_bysite)) {
       echolink = url_echo_facility_webpage(REGISTRY_ID, as_html = T)
     } else {
@@ -513,18 +526,31 @@ app_server <- function(input, output, session) {
       "EJScreen Map", 
       "ACS Report", 
       "ECHO report")
+    # put those up front as first columns
     setcolorder(out$results_bysite, neworder = newcolnames)
     setcolorder(out$results_bysite, neworder = newcolnames)
     out$longnames <- c(newcolnames, out$longnames)
+    
     #############################################################################  # 
+    
+    ################################################################ # 
+    
+    # add radius to results tables (in server and in ejamit() ####
+    out$results_bysite[      , radius.miles := input$bt_rad_buff]
+    out$results_overall[     , radius.miles := input$bt_rad_buff]
+    out$results_bybg_people[ , radius.miles := input$bt_rad_buff]
+    out$longnames <- c(out$longnames , "Radius (miles)")
+    
+    ################################################################ # 
     
     ## assign doaggregate output to data_processed reactive ####
     data_processed(out)
-
+    
     ## update overall progress bar
     progress_all$inc(1/3, message='Step 3 of 3', detail = 'Summarizing')
     
     #############################################################################  # 
+    
     # 3) **EJAMbatch.summarizer::batch.summarize()** on already processed data ####
     
     outsum <- EJAMbatch.summarizer::batch.summarize(
@@ -549,6 +575,10 @@ app_server <- function(input, output, session) {
     shinyjs::js$toTop();
     updateTabsetPanel(session, "all_tabs", "Summary Report")
   })
+  #############################################################################  # 
+  #############################################################################  # 
+  #############################################################################  # 
+  
   
   #############################################################################  # 
   
@@ -571,48 +601,7 @@ app_server <- function(input, output, session) {
   #       head(data_uploaded())
   #     }
   #   })
-  
-  #############################################################################  # 
-  # ~ ####
-  # ______ RESULTS OF ANALYSIS ####
-  # ~ ####
-  
-  ## ** US AVERAGE for each indicator  
-  # 
-  avg.in.us <-  EJAM::usastats[EJAM::usastats$REGION == "USA" & EJAM::usastats$PCTILE == "mean", ]
-  # avg.in.us <- EJAM::usastats %>% 
-  #   dplyr::filter(REGION == 'USA', PCTILE == 'mean') # %>%
-  
-  # do not bother making a copy of the state averages that are in statestats
-  # EJAM::statestats[ EJAM::statestats$PCTILE == "mean", ]
-  
-  ## ** RATIOS OVERALL TO US D AVG ####
-  #
-  ## uses (doaggregate output results_overall ) / (EJAM::usastats mean in USA)
-  ## (batch.summarize 'Average person' / EJAM::usastats mean in USA   )
-  ## this needs further verification
-  ratio.to.us.d <- reactive({
-    unlist(data_processed()$results_overall[1, ]) / 
-      avg.in.us[, c(names_d, names_d_subgroups)]
-  })
-  
-  ## ** RATIOS OVERALL TO US E AVG  ####
-  #  *****************   but these are now already calculated in doaggregate() right? as 
-  ## (batch.summarize 'Average person' / EJAM::usastats mean in USA   )
-  ## this needs further verification
-  # we already have avg.in.us and ratios also?  
-  ratio.to.us.e <- reactive({ unlist(data_summarized()$rows['Average person', names_e]) / 
-      avg.in.us[, names_e]
-    #doaggregate results_overall output, if needed: unlist(data_processed()$results_overall[1, ..names_e])
-  })
-  
-  #   in plots for ejscreenapi, it may do this:
-  # out <- results_table()
-  # names(out) <- fixnames(names(out), mapping_for_names = map_headernames)
-  # us.ratios    <- ratios_to_avg(out)
-  # c(EJAM::names_d_avg, EJAM::names_d_subgroups_avg)
-  # 
-  # names_d_us_ratio 
+
   
   #############################################################################  # 
   # ~ ####
@@ -624,6 +613,51 @@ app_server <- function(input, output, session) {
   #   # rownames(tallout) <- fixnames_to_type(rownames(tallout), "jsondoc_Rfieldname", "longname_tableheader")
   #   tallout
   # })
+  
+  #############################################################################  # 
+  # ~ ####
+  # ______ AVERAGES & RATIOS TO AVG - FOR PLOTS ####
+  # ~ ####
+  
+  # already done in doaggregate() !! - ALREADY IN data_processed()  !  and (avg.in.us) is a constant, in data.frame format.
+
+  # do not bother making a copy of the state averages that are in statestats
+  # EJAM::statestats[ EJAM::statestats$PCTILE == "mean", ]
+  # and the overall mean and site by site means are in  unlist( data_processed()$results_overall[ , ..names_state_avg_these] )
+  
+  ## ** RATIOS OVERALL TO US or state D AVG ####
+  #
+  ## uses (doaggregate output results_overall ) / (EJAM::usastats mean in USA)
+  ## (batch.summarize 'Average person' / EJAM::usastats mean in USA   )
+  ## this needs further verification
+  
+  ratio.to.us.d    <- reactive({unlist(data_processed()$results_overall[ , .(..names_d_ratio_to_avg,       ..names_d_subgroups_ratio_to_avg)]) }) # ???
+  ratio.to.state.d <- reactive({unlist(data_processed()$results_overall[ , .(..names_d_ratio_to_state_avg, ..names_d_subgroups_ratio_to_state_avg)]) }) # ???
+  # ratio.to.us.d_TEST <- reactive({
+  #   unlist(data_processed()$results_overall[1, ]) / 
+  #     avg.in.us[, c(names_d, names_d_subgroups)]
+  # })
+ 
+    ## ** RATIOS OVERALL TO US or state E AVG  ####
+  #  *****************   but these are now already calculated in doaggregate() right? as 
+  ## (batch.summarize 'Average person' / EJAM::usastats mean in USA   )
+  ## this needs further verification
+  # we already have avg.in.us and ratios also?  
+  
+  ratio.to.us.e <- reactive({unlist(data_processed()$results_overall[ , ..names_e_ratio_to_avg]) })                     # ???
+  # ratio.to.us.e_TEST <- reactive({ unlist(data_summarized()$rows['Average person', names_e]) / 
+  #     avg.in.us[, names_e]
+    #doaggregate results_overall output, if needed: unlist(data_processed()$results_overall[1, ..names_e])
+  # })
+  ratio.to.state.e <- reactive({unlist(data_processed()$results_overall[ , ..names_e_ratio_to_state_avg]) })                     # ???
+  
+  #   in plots for ejscreenapi, it may do this:
+  # out <- results_table()
+  # names(out) <- fixnames(names(out), mapping_for_names = map_headernames)
+  # us.ratios    <- ratios_to_avg(out)
+  # c(EJAM::names_d_avg, EJAM::names_d_subgroups_avg)
+  # 
+  # names_d_us_ratio 
   
   #############################################################################  # 
   # ~ ####
@@ -757,31 +791,22 @@ app_server <- function(input, output, session) {
     # and ratio_to_us is now included also
     
     tab_data_d <- data.frame(
+      
       var_names =  c(names_d_friendly, names_d_subgroups_friendly),
-      # vars = c(names_d, names_d_subgroups),
       value = data_processed()$results_overall[, c(..names_d, ..names_d_subgroups)] %>% t, 
       
-      ## state averages   are not included at all yet!!
-      ## to include them, need state-level info for each site and then add to these 
-      ## columns, using something not from EJAM::statestats, but the 
-      # average of state averages weighted by all the people analyzed who are in various states! 
-      # so need a function that separately accepts vector of ST 1persite, 
-      # and knows what varnames need state.avg 
-      # each site (not every BG- that is overkill- just use mean of state site is in overall even if partly out of state)
-      # should get the state average for every indicator and pop,
-      #  and we want the popwtd mean of those site-specific state averages.
-      #  I probably need to calculate that within the server code and provide it as outputs in data_processed()$results_overall
-      'state_avg' = as.numeric(NA), # complicated since it is the popwtd mean
+      'state_avg' = data_processed()$results_overall[, c(..names_d_state_avg, ..names_d_subgroups_state_avg)] %>% t, 
       'state_pctile' = (data_processed()$results_overall[, c(..names_d_state_pctile, ..names_d_subgroups_state_pctile)]) %>% t, 
       
-      ## us average pulled from EJAM::usastats
-      'usa_avg' = EJAM::usastats %>% filter(PCTILE == 'mean') %>% select(all_of(c(names_d, names_d_subgroups))) %>% t, 
-      'usa_pctile'  =  (data_processed()$results_overall[, c(..names_d_pctile, ..names_d_subgroups_pctile)]) %>% t # ,
-      # "ratio_to_us" = ratio.to.us.d() %>% t #, # data_processed()$results_overall[, ..names_d_us_ratio] %>% t ####, 
-      # "ratio_to_state" = ratio.to.state.d() # data_processed()$results_overall[, ..names_d_state_ratio] %>% t
+      # 'usa_avg' = EJAM::usastats %>% filter(PCTILE == 'mean') %>% select(all_of(c(names_d, names_d_subgroups))) %>% t,     # xxx
+      'usa_avg' = avg.in.us[, c(names_d,names_d_subgroups)] %>% t,
+      'usa_pctile'  = (data_processed()$results_overall[, c(..names_d_pctile, ..names_d_subgroups_pctile)]) %>% t,      # xxx
+      
+      # note these have subgroups too already in them:
+      "state_ratio" = ratio.to.state.d() %>% t,    # data_processed()$results_overall[, ..names_d_state_ratio] %>% t     # xxx
+      "usa_ratio"   = ratio.to.us.d()    %>% t  # data_processed()$results_overall[, ..names_d_us_ratio] %>% t ####,      # xxx
     )
-    tab_data_d$ratio_to_us <- round(tab_data_d$value / tab_data_d$usa_avg, 2)
-    
+
     # need to verify percentile should be rounded here or use ceiling() maybe? try to replicate EJScreen percentiles as they report them.
     tab_data_d$usa_pctile   <- round(tab_data_d$usa_pctile ,0)
     tab_data_d$state_pctile <- round(tab_data_d$state_pctile ,0)
@@ -811,21 +836,22 @@ app_server <- function(input, output, session) {
     ## create dataframe with 6 columns - vars (indicator names), value (raw indicator value),
     ## state_avg (State Avg indicator value), state_pctile (State Pctile for indicator),
     ## usa_avg (US Avg indicator value), usa_pctile (US Pctile for indicator)
+    ## and ratios to averages for state then us
     tab_data_e <- data.frame(
+      
       var_names = names_e_friendly,
-      # vars = names_e,  
       value = data_processed()$results_overall[, names_e, with=FALSE] %>% t,
+    
+      'state_avg' =    data_processed()$results_overall[, ..names_e_state_avg] %>% t,
+      'state_pctile' = data_processed()$results_overall[, ..names_e_state_pctile] %>% t,   
       
-      ## state averages  are not included at all yet!!
-      ## to include them, need state-level info for each site and then add to these 
-      ## columns, using something like  statestats
-      'state_avg' = as.numeric(NA),
+      'usa_avg'     =  avg.in.us, # is a constant already 
+      'usa_pctile'   = data_processed()$results_overall[, ..names_e_pctile] %>% t,  # xxx
       
-      'state_pctile' = data_processed()$results_overall[, ..names_e_state_pctile] %>% t, 
-      'usa_avg' =  usastats %>% filter(PCTILE == 'mean') %>% select(all_of(names_e)) %>% t, 
-      'usa_pctile' = data_processed()$results_overall[,  names_e_pctile, with=FALSE] %>% t
-    ) 
-    tab_data_e$ratio_to_us <- round(tab_data_e$value / tab_data_e$usa_avg, 2)
+      'state_ratio' = unlist(ratio.to.state.e()) ,
+      'usa_ratio' = unlist(ratio.to.us.e())
+    )
+    
     
     # NEED TO CONFIRM HOW TO ROUND TO REPLICATE EJSCREEN 
     tab_data_e$usa_pctile   <- round(tab_data_e$usa_pctile,  0)
@@ -860,34 +886,60 @@ app_server <- function(input, output, session) {
     req(data_summarized())
     
     if ("try BARPLOT" == "try BARPLOT") {   # do BARPLOT NOT BOXPLOT
-      # browser()
-      # ratios overall (demog here / demog avg in US)
-      ratio.to.us.d.overall <- unlist(round( unlist(data_processed()$results_overall[ , c(..names_d, ..names_d_subgroups)]) / 
-                                               avg.in.us[,c(names_d, names_d_subgroups)], 2))
-      supershortnames <- substr(gsub(" |-|age","",gsub("People of Color","POC",c(names_d_friendly, names_d_subgroups_friendly))),1,6)
+      
+      # new way:
+      ratio.to.us.d.overall <- ratio.to.us.d() # reactive already available
+
+      # old way:
+      ## ratios overall (demog here / demog avg in US)
+      # ratio.to.us.d.overall <- unlist(round(
+      #   unlist(data_processed()$results_overall[ , c(..names_d, ..names_d_subgroups)]) /
+      #     avg.in.us[,c(names_d, names_d_subgroups)], 2))
+      # 
+      supershortnames <- substr(gsub(" |-|age","",gsub("People of Color","POC", c(names_d_friendly, names_d_subgroups_friendly))),1,6)
       names(ratio.to.us.d.overall) <- supershortnames
-      ratio.to.us.d.overall[is.infinite(ratio.to.us.d.overall)] <- 0 
+      ratio.to.us.d.overall[is.infinite(ratio.to.us.d.overall)] <- 0
       # use yellow/orange/red for ratio >= 1x, 2x, 3x 
       mycolors <- c("gray", "yellow", "orange", "red")[1+findInterval(ratio.to.us.d.overall, c(1.01, 2, 3))] 
-      barplot(ratio.to.us.d.overall, main = 'Ratio vs. US Average for Demographic Indicators', cex.names = 0.8, col = mycolors)
+
+      barplot(ratio.to.us.d.overall,
+              main = 'Ratio vs. US Average for Demographic Indicators',
+              cex.names = 0.8,
+              col = mycolors)
       abline(h=1, col="gray")
+
+      # # try to do that via ggplot...
+      # ggplot2::ggplot(
+      #   ratio.to.us.d.overall,
+      #   aes(x = indicator, y = value)
+      # ) +
+      #   geom_boxplot() + 
+      #   geom_hline(aes(yintercept = 1)) +
+      #   labs(x = "",
+      #        y = "Ratio of Indicator values for avg. person in selected locations\n vs. US average value",
+      #        title = 'Ratio vs. US Average for Demographic Indicators') 
+      # 
       
     } else {    # do BOXPLOT NOT BARPLOT
       
       ## ratios by site  (demog each site / demog avg in US)
-      ratio.to.us.d.bysite <- data.frame()
+      
+      # new way:
+      ratio.to.us.d.bysite <- data_processed()$results_bysite[ ,  c(..names_d_ratio_to_avg, ..names_d_subgroups_ratio_to_avg)]
+      
+      # old way:
       ## ratios for individual sites   
       ## uses (doaggregate output results_bysite) / (EJAM::usastats mean in USA).
-      
       ## could probably be simplified instead of using a loop
-      for(i in 1:nrow(data_processed()$results_bysite)){
-        
-        ratio.to.us.d.bysite <- rbind(
-          ratio.to.us.d.bysite,
-          unlist(data_processed()$results_bysite[i, c(..names_d, ..names_d_subgroups )]) /
-            avg.in.us[, c(names_d, names_d_subgroups )]
-        )
-      }
+      # 
+      # ratio.to.us.d.bysite <- data.frame()
+      # for(i in 1:nrow(data_processed()$results_bysite)){
+      #   ratio.to.us.d.bysite <- rbind(
+      #     ratio.to.us.d.bysite,
+      #     unlist(data_processed()$results_bysite[i, c(..names_d, ..names_d_subgroups )]) /
+      #       avg.in.us[, c(names_d, names_d_subgroups )]
+      #   )
+      # }
       
       ## assign column names (could use left_join like elsewhere)
       names(ratio.to.us.d.bysite) <-  c(names_d_friendly, names_d_subgroups_friendly) # long_names_d$var_names[match( names_d_fixed, long_names_d$vars)]
@@ -1075,7 +1127,7 @@ app_server <- function(input, output, session) {
       cur.ratio.d <- ratio.to.us.d()[cur.name.d]
       
       ## get friendly version of D name
-      cur.name.d.friendly <- EJAMejscreenapi::map_headernames %>%   # replace with EJAM::names_d_friendly
+      cur.name.d.friendly <- EJAMejscreenapi::map_headernames %>%        # replace with EJAM::names_d_friendly, names_d_subgroups_friendly  XXX
         filter(newnames_ejscreenapi == cur.name.d) %>% 
         pull(names_friendly)
       
@@ -1123,7 +1175,7 @@ app_server <- function(input, output, session) {
       
       max.name.e.friendly <- EJAM::names_e_friendly[which.max(ratio.to.us.e())]
       
-      median.pctile.in.us <- data_summarized()$rows['Median site', paste0('pctile.',max.name.e)]
+      median.pctile.in.us <- data_summarized()$rows['Median site', paste0('pctile.',max.name.e)]    # *** SHOULD DOUBLE CHECK THIS 
       
       exec_text_e <-paste0(
         'Key environmental factor: <strong>',
@@ -1133,8 +1185,10 @@ app_server <- function(input, output, session) {
         ' of any of) these ', nrow(data_processed()$results_bysite),
         ' sites have, on average, <strong>', round(max.ratio.e, 1), ' times</strong> as high indicator values for <strong>', 
         max.name.e.friendly, '</strong> as the average person in the US (',
-        round(data_summarized()$rows['Average person', max.name.e], 2), ' vs. ', 
+        
+        round(data_summarized()$rows['Average person', max.name.e], 2), ' vs. ',    # *** SHOULD DOUBLE CHECK THIS 
         round(avg.in.us[,max.name.e], 2),
+        
         '). The other environmental indicators have lower ratios.',
         '<br>',
         'The median (50th percentile) site here is at the <strong>', 
@@ -1146,7 +1200,7 @@ app_server <- function(input, output, session) {
       cur.name.e <- input$key_ind_e # names(ratio.to.us.d())[which.max(ratio.to.us.d())]
       cur.ratio.e <- ratio.to.us.e()[cur.name.e]
       
-      cur.name.e.friendly <- EJAMejscreenapi::map_headernames %>% 
+      cur.name.e.friendly <- EJAMejscreenapi::map_headernames %>%    #  # replace with EJAM::names_e_friendly XXX
         filter(newnames_ejscreenapi == cur.name.e) %>% 
         pull(names_friendly)
       
@@ -1349,23 +1403,26 @@ app_server <- function(input, output, session) {
       ## use EJAM::workbook_ouput_styled approach
       ## future: can add other sheets from doaggregate output
       
-      # Recode this to avoid making copies which slows it down:
-      table_overall <- data_processed()$results_overall
-      table_bysite  <- data_processed()$results_bysite
-      # table_bybg <- data_processed()$results_bybg_people
+      # Recode this to avoid making copies which slows it down:?
+      table_overall <- copy(data_processed()$results_overall)
+      table_bysite  <- copy(data_processed()$results_bysite)
+      # table_bybg <- data_processed()$results_bybg_people   # large table !!
       
-      ## attempt to clean up some column names xxx
-      longnames <- EJAMejscreenapi::map_headernames$longname_tableheader[match(names(data_processed()$results_bysite),
-                                                                               EJAMejscreenapi::map_headernames$newnames_ejscreenapi)]
+      ## attempt to clean up some column names xxx - CHECK THIS 
+     # longnames_TEST <- EJAMejscreenapi::map_headernames$longname_tableheader[match(names(data_processed()$results_bysite),
+                                                                               # EJAMejscreenapi::map_headernames$newnames_ejscreenapi)]
+      longnames <- data_processed()$longnames
+      
       names(table_overall) <- ifelse(!is.na(longnames), longnames, names(table_overall))
       names(table_bysite)  <- ifelse(!is.na(longnames), longnames, names(table_bysite))
-      # names(table_bybg_people)  <- ifelse(!is.na(longnames), longnames, names(table_bybg_people))
+      #names(table_bybg_people) # CANNOT REALLY TREAT THIS THE SAME - HAS DIFFERENT LIST OF INDICATORS THAN THE OTHER TABLES
       
       ## format excel workbook
       wb_out <- xls_formatting2(
         overall = table_overall, 
-        # eachblockgroup = table_bybg_people, # data_processed()$results_bybg_people,
-        eachsite = table_bysite
+        eachsite = table_bysite  #,
+#        eachblockgroup = table_bybg_people # data_processed()$results_bybg_people,
+        
       )
       
       ## save file and return for downloading

@@ -35,7 +35,6 @@ states_infer <- function(x) {
       sites2states$siteid <- 1:NROW(sites2states)
     }
   }
-    browser()
   # is ST already there?
   if (!("ST"  %in% names(sites2states))) {
     # is lat / lon there?

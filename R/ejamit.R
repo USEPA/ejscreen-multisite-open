@@ -65,9 +65,9 @@ ejamit <- function(sitepoints,
                    quadtree=NULL,
                    ...
 ) {
-  if (missing(cutoff)) cat("\nUsing default radius of", cutoff, "miles.\n")
+  if (missing(cutoff)) {cat("\nUsing default radius of", cutoff, "miles.\n"); warning("Radius assumed because not provided as parameter.")}
   if (!missing(quadtree)) {stop("quadtree should not be provided to ejamit() - that is handled by getblocksnearby() ")}
-
+  
   ################################################################################## #
   # note this overlaps or duplicates code in app_server.R 
   #   for data_up_latlon() around lines 81-110 and data_up_frs() at 116-148
@@ -109,38 +109,57 @@ ejamit <- function(sitepoints,
   
   ################################################################ # 
   
-  # Hyperlinks added (to site by site table) ####
-  ##  >>this should be a function, since used here and in ejamit() ####
-  # duplicated almost exactly in app_server but uses reactives there
-  browser()
+  # HYPERLINKS added (to site by site table) ####
+  
+  #  >this should be a function  and is used by both server and ejamit() ####
+  # duplicated almost exactly in app_server but uses reactives there.
+  # #  Do maybe something like this:
+  # links <- url_4table(out$results_bysite$lat, out$results_bysite$lon, cutoff, regid=ifelse("REGISTRY_ID" %in% names(out$results_bysite), out$results_bysite$REGISTRY_ID, NULL))
+  # out$results_bysite[ , `:=`(links$results_bysite)] # would that work??? how to avoid big cbind step to add the new columns?
+  # out$results_overall <- cbind(out$results_overall, links$results_overall) # 
+  # setcolorder(out$results_bysite, neworder = links$newcolnames)
+  # setcolorder(out$results_overall, neworder = links$newcolnames)
+  # out$longnames <- c(newcolnames, links$longnames)
+  
   if ("REGISTRY_ID" %in% names(out$results_bysite)) {
     echolink = url_echo_facility_webpage(REGISTRY_ID, as_html = T)
   } else {
     echolink = rep(NA,nrow(out$results_bysite))
   }
   out$results_bysite[ , `:=`(
-    `EJScreen Report` = url_ejscreen_report(    lat = out$results_bysite$lat, lon = out$results_bysite$lon, distance = cutoff, as_html = T), 
-    `EJScreen Map`    = url_ejscreenmap(        lat = out$results_bysite$lat, lon = out$results_bysite$lon,                    as_html = T), 
+    `EJScreen Report` = url_ejscreen_report(    lat = out$results_bysite$lat, lon = out$results_bysite$lon, distance = cutoff, as_html = T),
+    `EJScreen Map`    = url_ejscreenmap(        lat = out$results_bysite$lat, lon = out$results_bysite$lon,                    as_html = T),
     `ACS Report`      = url_ejscreen_acs_report(lat = out$results_bysite$lat, lon = out$results_bysite$lon, distance = cutoff, as_html = T),
     `ECHO report` = echolink
   )]
   out$results_overall[ , `:=`(
-    `EJScreen Report` = NA,   #  rep(NA,nrow(out$results_bysite)), 
-    `EJScreen Map`    = NA,    # rep(NA,nrow(out$results_bysite)),  
-    `ACS Report`      = NA,   #  rep(NA,nrow(out$results_bysite)), 
+    `EJScreen Report` = NA,   #  rep(NA,nrow(out$results_bysite)),
+    `EJScreen Map`    = NA,    # rep(NA,nrow(out$results_bysite)),
+    `ACS Report`      = NA,   #  rep(NA,nrow(out$results_bysite)),
     `ECHO report`     = NA     # rep(NA,nrow(out$results_bysite))
   )]
   newcolnames <- c(
-    "EJScreen Report", 
-    "EJScreen Map", 
-    "ACS Report", 
+    "EJScreen Report",
+    "EJScreen Map",
+    "ACS Report",
     "ECHO report")
+  # put those up front as first columns
   setcolorder(out$results_bysite, neworder = newcolnames)
   setcolorder(out$results_overall, neworder = newcolnames)
   out$longnames <- c(newcolnames, out$longnames)
   
   ################################################################ # 
+  
+  # Include radius in results (in server and in ejamit() ####
+  out$results_bysite[      , radius.miles := cutoff]
+  out$results_overall[     , radius.miles := cutoff]
+  out$results_bybg_people[ , radius.miles := cutoff]
+  out$longnames <- c(out$longnames , "Radius (miles)")
+  
+  ################################################################ # 
+  
   # 3. batch.summarize()** on already processed data ####
+  
   out$results_summarized <- EJAMbatch.summarizer::batch.summarize(
     sitestats = data.frame(out$results_bysite),
     popstats =  data.frame(out$results_bysite),
@@ -157,12 +176,12 @@ ejamit <- function(sitepoints,
     # Show datatable view in RStudio - Site by Site (each site)
     print(
       DT::datatable(
-      out$results_bysite[1:min(nrow(out$results_bysite), 2000) ], # >2k rows is too much for client-side DataTables
-      colnames = out$longnames,
-      escape = FALSE,
-      caption = paste0(nrow(out$results_bysite), ' FACILITIES "', " ", '"'),
-      filter = "top"
-    )
+        out$results_bysite[1:min(nrow(out$results_bysite), 2000) ], # >2k rows is too much for client-side DataTables
+        colnames = out$longnames,
+        escape = FALSE,
+        caption = paste0(nrow(out$results_bysite), ' FACILITIES "', " ", '"'),
+        filter = "top"
+      )
     )
     # Map of facilities in an industry, plus popups with links to each facility in ECHO and EJScreen
     # mapfast(out$results_bysite)  
@@ -170,9 +189,16 @@ ejamit <- function(sitepoints,
     cat("\nSome more key results: \n\n")
     somenames <- grep("ratio.to.state", names(out$results_summarized$rows), value = TRUE)
     print(  round(t(out$results_summarized$rows[ , somenames])[ ,c(1,2,6)],2)  )  # 1:70 
-    # site counts and distance minima
     
+    # site counts and distance minima
     print(  round(tail(t(out$results_summarized$rows)[ ,1:7],7),1)  )
+    
+    # how to export simple version to excel for now
+    cat("long=as.data.frame(rbind(out$longnames)); names(long)=names(out$results_overall)\n")
+    cat('writexl::write_xlsx(x = long,  path="longnames_',  NROW(out$results_bysite),'_points_', cutoff,'_miles.xlsx")\n')
+    cat('\n\n To save as excel files, try this:  \n')
+    cat('writexl::write_xlsx(x = as.data.frame(x$results_overall), path="results_overall_', NROW(out$results_bysite),'_points_', cutoff,'_miles.xlsx")\n')
+    cat('writexl::write_xlsx(x = as.data.frame(x$results_bysite ), path="results_bysite_',  NROW(out$results_bysite),'_points_', cutoff,'_miles.xlsx")\n')
   }
   ################################################################ # 
   

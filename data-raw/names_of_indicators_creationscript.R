@@ -216,6 +216,15 @@ names_d_ratio_to_avg_friendly <- paste0("Ratio to ", names_d_avg_friendly); name
 names_d_subgroups_ratio_to_avg_friendly <- paste0("Ratio to ", names_d_subgroups_avg_friendly); names_d_subgroups_ratio_to_state_avg_friendly <- paste0("Ratio to ", names_d_subgroups_state_avg_friendly)
 names_e_ratio_to_avg_friendly <- paste0("Ratio to ", names_e_avg_friendly); names_e_ratio_to_state_avg_friendly <- paste0("Ratio to ", names_e_state_avg_friendly)
 
+
+
+names_these              <- c(names_d,     names_d_subgroups,     names_e)
+names_avg_these          <- c(names_d_avg, names_d_subgroups_avg, names_e_avg)                         # <- paste0("avg.",       names_these) #
+names_state_avg_these    <- c(names_d_state_avg,    names_d_subgroups_state_avg,    names_e_state_avg)  # paste0("state.avg.", names_these)
+names_ratio_to_avg_these <- c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg, names_e_ratio_to_avg)      #<-  paste0("ratio.to.", names_avg_these )
+names_ratio_to_state_avg_these <- c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg, names_e_ratio_to_state_avg)  # <-  paste0("ratio.to.", names_state_avg_these)
+
+
 ############################################################################## #
 
 # * names_d_fixed and long_names_d were temporarily used before VSI.eo changed to Demog.Index ####
@@ -288,7 +297,13 @@ namesoflistsofnames = c(
   'names_pctile',  # all US pctile indicators
   'names_state_pctile',
   'names_need_pctile',  # base indicators that need to be reported as US percentiles not just raw scores
-  'names_need_state_pctile'
+  'names_need_state_pctile', 
+  
+  'names_these',
+  'names_avg_these',
+  'names_state_avg_these',
+  'names_ratio_to_avg_these',
+  'names_ratio_to_state_avg_these'
 )
 
 namez <- lapply(namesoflistsofnames, get)
@@ -297,16 +312,24 @@ names(namez) <- gsub("^names_","", namesoflistsofnames)
 # **names_all__ ####
 names_all <- as.vector(unlist(namez))
 names_all <- unique(names_all) # pop would appear twice
-############################################################################## #
 
 ############################################################################## #
 #   USE_DATA ####
 
 usethis::use_data(namez, overwrite = TRUE)
 
+############################################################################## #
+
+# just for conveniently referring to these in server code
+avg.in.us <- EJAM::usastats[ EJAM::usastats$PCTILE == "mean", names_these] # note the regular name not avg. name is used in the usastats table
+usethis::use_data(avg.in.us, overwrite = TRUE)
+
+############################################################################## #
+
 # AND ALSO STORE EACH LITTLE OBJECT ? ####
 
 usethis::use_data(
+  
   names_all,
   names_wts, 
   
@@ -354,6 +377,13 @@ usethis::use_data(
   names_need_pctile,  # base indicators that need to be reported as US percentiles not just raw scores
   names_need_state_pctile,
 
+  
+  names_these,
+  names_avg_these,
+  names_state_avg_these,
+  names_ratio_to_avg_these,
+  names_ratio_to_state_avg_these,
+  
   overwrite = TRUE
 )
 

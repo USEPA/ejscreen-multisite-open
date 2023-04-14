@@ -1,4 +1,5 @@
 #' Find nearby blocks using Quad Tree data structure for speed, NO PARALLEL PROCESSING
+#' 
 #' @description 
 #'   This should be almost identical to getblocksnearbyviaQuadTree(), 
 #'   but it uses f2, a copy of sitepoints, and more importantly it 
@@ -33,7 +34,6 @@
 #' @examples 
 #'   localtree_example = SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
 #'   x = getblocksnearby2(testpoints_1000_dt, quadtree = localtree_example)
-#' 
 #' @seealso [getblocksnearbyviaQuadTree_Clustered()]  [getblocksnearbyviaQuadTree()]  
 #' @export
 #' @import data.table
@@ -45,17 +45,20 @@ getblocksnearbyviaQuadTree2 <- function(sitepoints, cutoff=3, maxcutoff=31.07,
   if(class(quadtree) != "QuadTree"){
     stop('quadtree must be an object created from SearchTrees package with treeType = "quad" and dataType = "point"')  
   }
-  if (!is.data.table(sitepoints)) {setDT(sitepoints)}
+  if (!data.table::is.data.table(sitepoints)) {data.table::setDT(sitepoints)}
+
+  if (!('siteid' %in% names(sitepoints))) {sitepoints$siteid <- seq.int(length.out = NROW(sitepoints))}
   
   #pass in a list of uniques and the surface cutoff distance
+  
   #filter na values? or keep length of out same as input? ####
   sitepoints <- sitepoints[!is.na(sitepoints$lat) & !is.na(sitepoints$lon), ] # perhaps could do this by reference to avoid making a copy
+  
   #compute and add grid info ####
   earthRadius_miles <- 3959 # in case it is not already in global envt
   radians_per_degree <- pi / 180
   
   f2   <- data.table::copy(sitepoints) # make a copy to avoid altering sitepoints in the calling envt when modifying by reference using data.table
-  # rm(sitepoints) # probably slow
   f2[         , lat_RAD := lat * radians_per_degree]   # data.table modifies it by reference
   f2[         , lon_RAD := lon * radians_per_degree]
   cos_lat <- cos(         f2[, lat_RAD])    # or maybe # sitepoints[ , cos_lat := cos(lat_RAD)]
@@ -92,9 +95,22 @@ getblocksnearbyviaQuadTree2 <- function(sitepoints, cutoff=3, maxcutoff=31.07,
     
     
     
+    
+    
+    
+    
+    
+    
     if ((i %% report_progress_every_n) == 0) {print(paste("Cells currently processing: ",i ," of ", nRowsDf) ) } # i %% report_progress_every_n indicates i mod report_progress_every_n (“i modulo report_progress_every_n”) 
-
-    vec <- SearchTrees::rectLookup(quadtree, unlist(c(x_low[i, ], z_low[i, ])), unlist(c(x_hi[i, ], z_hi[i, ]))) 
+    
+    vec <- SearchTrees::rectLookup(
+      quadtree, 
+      unlist(c(x_low[i, ], z_low[i, ])), 
+      
+      
+      unlist(c(x_hi[i, ], z_hi[i, ]))) 
+    
+    
     # *** FIX/CHECK: 
     #    quadtree (localtree passed here as quadtree) 
     # vs EJAMblockdata::blockquadtree  (can it be this way, or need to create it again for each session?)
@@ -103,8 +119,10 @@ getblocksnearbyviaQuadTree2 <- function(sitepoints, cutoff=3, maxcutoff=31.07,
     tmp <- EJAMblockdata::quaddata[vec, ]
     # x <- tmp[ , .(BLOCK_X, BLOCK_Y, BLOCK_Z)] # but not blockid ??   # ** SLOW STEP TO OPTIMIZE 
     # y <-         f2[i, c('FAC_X','FAC_Y','FAC_Z')]  # the similar clustered function uses something other than f2 or sitepoints here - why?
+    ########################################################################### ## ** SLOWSTEP TO OPTIMIZE: 
+    distances <- as.matrix(pdist::pdist(tmp[ , .(BLOCK_X, BLOCK_Y, BLOCK_Z)] ,
+                                        f2[i, c('FAC_X','FAC_Y','FAC_Z')] ))
     
-    distances <- as.matrix(pdist::pdist(tmp[ , .(BLOCK_X, BLOCK_Y, BLOCK_Z)] ,         f2[i, c('FAC_X','FAC_Y','FAC_Z')] ))
     # pdist computes a n by p distance matrix using two separate matrices
     
     #clean up fields
@@ -112,12 +130,15 @@ getblocksnearbyviaQuadTree2 <- function(sitepoints, cutoff=3, maxcutoff=31.07,
     tmp[ , siteid :=         f2[i, .(siteid)]]  # the similar clustered function differs, why?
     
     #filter actual distance
+    
     tmp      <- tmp[distance <= truedistance, .(blockid, distance, siteid)]  # ** SLOW STEP TO OPTIMIZE
     
     # hold your horses, what if there are no blocks and you are supposed to avoid that
     if ( avoidorphans && (nrow(tmp))      == 0) {
       #search neighbors, allow for multiple at equal distance
       vec  <- SearchTrees::knnLookup(quadtree, unlist(c(coords[i, 'FAC_X'])), unlist(c(coords[i, 'FAC_Z'])), k=10) 
+      
+      
       # *** FIX/CHECK: 
       #    quadtree (localtree passed here as quadtree) 
       # vs EJAMblockdata::blockquadtree  (can it be this way, or need to create it again for each session?)

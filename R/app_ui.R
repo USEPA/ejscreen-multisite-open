@@ -51,6 +51,8 @@ app_ui  <- function(request) {
                  
                  ## button to reveal Advanced Settings tab 
                  actionButton('show_advanced_settings','Show Advanced Settings Tab', 
+                              style ='color: #fff; background-color: #005ea2;'),
+                 actionButton('hide_advanced_settings','Hide Advanced Settings Tab', 
                               style ='color: #fff; background-color: #005ea2;')
         ),
         ######################################################################################################### #

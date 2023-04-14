@@ -35,8 +35,8 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
   if (!("sf" %in% class(polys))) {
     polys <-  get_shapefile_from_sitepoints(polys)
   }
-    ARE_POINTS <- "POINT" == names(which.max(table(sf::st_geometry_type(polys)))) 
-    
+  ARE_POINTS <- "POINT" == names(which.max(table(sf::st_geometry_type(polys)))) 
+  
   # ensure it has unique IDs called siteid column, or else add that column? getblocksnearby() adds it  
   
   
@@ -47,11 +47,10 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
     # addedbuffermiles_withunits  name used since below getblocksnearby( , cutoff=addedbuffermiles etc ) warns units not expected
   }  
   
-    
+  
   
   # use   sf::st_intersects() or st_join(, join=intersects) 
   
-# browser()
   if (is.null(blocksnearby) & ARE_POINTS) {
     #  calculate it here since not provided
     # get lat,lon of sites
@@ -76,10 +75,10 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
     # OR...  find centroid of each polygon and 
     # figure out bounding box (or max radius) of each 
     # and then use getblocksnearby() to find all in bounding box (based on some radius like 
-      # farthest point from centroid, which is worst-case, distance to the furthest corner of bounding box??)
-      
-      
-      
+    # farthest point from centroid, which is worst-case, distance to the furthest corner of bounding box??)
+    
+    
+    
   }
   
   if (dissolved) {
