@@ -123,7 +123,7 @@ app_server <- function(input, output, session) {
     
     ## wait for file to be uploaded
     req(input$ss_upload_frs)
-     ##  >this part could be replaced by  latlon_from_anything() ####
+    ##  >this part could be replaced by  latlon_from_anything() ####
     # ext <- latlon_from_anything(input$ss_upload_latlon$datapath)
     
     ## check if file extension is appropriate
@@ -135,10 +135,10 @@ app_server <- function(input, output, session) {
                        xlsx = read_excel(input$ss_upload_frs$datapath),
                        shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
     ) # returns a data.frame
-      
-     #include frs_is_valid verification check function, must have colname REGISTRY_ID
+    
+    #include frs_is_valid verification check function, must have colname REGISTRY_ID
     if (frs_is_valid(read_frs)){
-     #converts registry id to character if not already in that class (EJAMfrsdata::frs registry ids are character)
+      #converts registry id to character if not already in that class (EJAMfrsdata::frs registry ids are character)
       if(class(read_frs$REGISTRY_ID) != "character"){
         read_frs$REGISTRY_ID = as.character(read_frs$REGISTRY_ID)
       }
@@ -277,8 +277,8 @@ app_server <- function(input, output, session) {
   data_uploaded <- reactive({
     print("data_uploaded reactive was updated!")
     cat("method is ", current_upload_method(), "\n")
-
-        ## send message if no data uploaded
+    
+    ## send message if no data uploaded
     validate(
       need(num_ul_methods() > 0, "Please upload a data set")
     )
@@ -296,7 +296,7 @@ app_server <- function(input, output, session) {
       data_up_naics()
       
     } else if(current_upload_method() == 'FRS'){
-   
+      
       data_up_frs()
       
     } else if(current_upload_method() == 'ECHO'){
@@ -549,7 +549,7 @@ app_server <- function(input, output, session) {
     
     #############################################################################  # 
     
-    # 3) **EJAMbatch.summarizer::batch.summarize()** on already processed data ####
+    # 3) **batch.summarize()** on already processed data ####
     
     outsum <- EJAMbatch.summarizer::batch.summarize(
       sitestats = data.frame(data_processed()$results_bysite),
@@ -1023,10 +1023,10 @@ app_server <- function(input, output, session) {
         
         #  show average persons ratio to US,  for each boxplot column 
         # xxx
-        geom_point(
-          data =  meanratios,
-          aes(x = reorder(indicator, meanratios), y = value), colour = "orange", size=2
-        ) +
+        # geom_point(
+        #   data =  meanratios,
+        #   aes(x = reorder(indicator, meanratios), y = value), colour = "orange", size=2
+        # ) +
         
         ## wrap indicator labels on x axis
         scale_x_discrete(labels = function(x) stringr::str_wrap(x, n_chars_wrap)) +
@@ -1066,7 +1066,7 @@ app_server <- function(input, output, session) {
           ## hide legend
           legend.position = 'none'
         )  # end of ggplot section
-    }
+    } # box
     
   })
   
@@ -1090,7 +1090,8 @@ app_server <- function(input, output, session) {
       #file.copy("../www/test_report1pager.Rmd", tempReport, overwrite = TRUE)
       
       # Set up parameters to pass to Rmd document
-      params <- list(sitecount = nrow(data_processed()$results_bysite), 
+      params <- list(testmode=FALSE,
+                     sitecount = nrow(data_processed()$results_bysite), 
                      distance = paste0(input$bt_rad_buff,' miles'), #input$radius_units),
                      total_pop = prettyNum( total_pop(), big.mark = ","),
                      analysis_title = input$analysis_title,
@@ -1106,8 +1107,8 @@ app_server <- function(input, output, session) {
       # child of the global environment (this isolates the code in the document
       # from the code in this app).
       # if (input$format1pager == "html") {
-        output_format <- "html_document"
-        # }
+      output_format <- "html_document"
+      # }
       if (input$format1pager == "pdf") {  output_format <- "pdf_document"}
       rmarkdown::render(tempReport, 
                         output_format = output_format, # 'html_document' or pdf_document
@@ -1455,7 +1456,7 @@ app_server <- function(input, output, session) {
       table_bysite  <- copy(data_processed()$results_bysite)
       # table_summarized <- copy(data_processed()$results_summarized)
       # table_bybg_people <- data_processed()$results_bybg_people   # large table !!
-
+      
       ## attempt to clean up some column names xxx - CHECK THIS 
       # longnames_TEST <- EJAMejscreenapi::map_headernames$longname_tableheader[match(names(data_processed()$results_bysite),
       # EJAMejscreenapi::map_headernames$newnames_ejscreenapi)]
@@ -1803,7 +1804,7 @@ app_server <- function(input, output, session) {
   })
   
   ## format textinput in Full Report tab using current input radius
-  output$rg_enter_miles <- renderUI({
+  output$rg_enter_miles <- renderUI({   #   E.G.,   within 10 miles of
     
     shiny::textInput(inputId = "rg_enter_miles", 
                      label = "Analysis Location:", 
@@ -1841,7 +1842,7 @@ app_server <- function(input, output, session) {
   #    list_of_inputs <- reactiveValuesToList(input)
   #  })
   
-  ## Create and download full static report ####
+  ## Create and download FULL static report ####
   output$rg_download <- downloadHandler(
     filename = 'report.doc',
     content = function(file) {
@@ -1853,6 +1854,7 @@ app_server <- function(input, output, session) {
       
       # Set up parameters to pass to Rmd document
       params <- list(
+        testmode=FALSE,
         total_pop = NA,
         analysis_title =  NA,
         results =  NA,
