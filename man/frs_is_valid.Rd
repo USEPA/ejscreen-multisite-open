@@ -2,12 +2,12 @@
 % Please edit documentation in R/frs_is_valid.R
 \name{frs_is_valid}
 \alias{frs_is_valid}
-\title{Validate FRS uploads}
+\title{Validate FRS Registry ID list uploads}
 \usage{
 frs_is_valid(frs_upload)
 }
 \arguments{
-\item{frs_upload}{upload frs converted to data frame}
+\item{frs_upload}{upload frs registry IDs table converted to data frame}
 }
 \value{
 boolean value (valid or not valid)
