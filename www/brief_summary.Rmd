@@ -2,6 +2,7 @@
 title: "&#32;"
 output: html_document
 params:
+  testmode: TRUE
   sitecount: NA
   distance: NA
   total_pop: NA
