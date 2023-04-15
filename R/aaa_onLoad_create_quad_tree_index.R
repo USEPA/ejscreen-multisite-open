@@ -9,6 +9,8 @@
   # This cannot be done during package build and saved, because of what this createTree function creates.
   # NOT TESTED in context of an app published on RStudio Server
   cat("Building Index of Census Blocks (localtree)...\n")
+  if (!exists("localtree")) {
+    
   assign(
     "localtree", 
     SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point"), 
@@ -17,6 +19,7 @@
     # But takes a couple seconds at every reload of pkg.
   )
   cat("Done building index.\n")
+  }
   
   
   if (!interactive()) {
