@@ -49,10 +49,10 @@ inside the circular buffer more accurately and more quickly than
 areal apportionment of block groups would provide.
 }
 \details{
-For all examples, see \code{\link[=ejamit]{ejamit()}}
-getblocksnearby() is a wrapper redirecting to the right version like \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}}
-Census block "internal points" are actually what it looks for, like a centroid.
-The blocks are pre-indexed for the whole USA, via the data object quadtree or localtree
+getblocksnearby() is a wrapper redirecting to the right version, like \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}}
+Census block "internal points" (defined by Census Bureau) are actually what it looks for,
+and they are like centroids.
+The blocks are pre-indexed for the whole USA, via the data object quadtree aka localtree
 }
 \seealso{
 \code{\link[=ejamit]{ejamit()}}  \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} \code{\link[=getblocksnearbyviaQuadTree_Clustered]{getblocksnearbyviaQuadTree_Clustered()}} \code{\link[=getblocksnearbyviaQuadTree2]{getblocksnearbyviaQuadTree2()}}

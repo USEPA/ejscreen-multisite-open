@@ -16,13 +16,13 @@
 #'   areal apportionment of block groups would provide. 
 #'   
 #' @details 
-#'  For all examples, see [ejamit()]
-#'  getblocksnearby() is a wrapper redirecting to the right version like [getblocksnearbyviaQuadTree()]
-#'    Census block "internal points" are actually what it looks for, like a centroid. 
-#'    The blocks are pre-indexed for the whole USA, via the data object quadtree or localtree
+#'  getblocksnearby() is a wrapper redirecting to the right version, like [getblocksnearbyviaQuadTree()]
+#'    Census block "internal points" (defined by Census Bureau) are actually what it looks for, 
+#'    and they are like centroids. 
+#'    The blocks are pre-indexed for the whole USA, via the data object quadtree aka localtree
 #'
 #' @inheritParams getblocksnearbyviaQuadTree
-#' 
+#' @inheritSection ejamit examples
 #' @param ...  passed to [getblocksnearbyviaQuadTree()] or other such functions
 #' 
 #' @seealso [ejamit()]  [getblocksnearbyviaQuadTree()] [getblocksnearbyviaQuadTree_Clustered()] [getblocksnearbyviaQuadTree2()]
@@ -51,15 +51,14 @@ getblocksnearby  <- function(sitepoints, cutoff=3, maxcutoff=31.07,
   if (missing(quadtree)) {
     if (exists("localtree")) {
       quadtree <- localtree 
-    } else {
-      
+    } else {      #  SEE IF WE EVER NEED TO OR EVEN CAN CREATE THIS ON THE FLY HERE FOR SOME INTERACTIVE USERS, BUT SHOULD NOT BE AN ISSUE IF PKG LOADED
       stop(paste0("Nationwide index of block locations is required but missing (quadtree parameter default is called localtree but was not found).\n",
                   'Try this: \n',
                   'localtree <- SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point") \n'
       ))
     }
   }
-  cat("Analyzing", NROW(sitepoints), "points, radius of", cutoff, "miles.\n") 
+  cat("Analyzing", NROW(sitepoints), "points, radius of", cutoff, "miles.\n")
   
   ################################################################################## #
   # wrapper to make it simple to (later?) switch between functions to use for this, clustered vs not, etc.
