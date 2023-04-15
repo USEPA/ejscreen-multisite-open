@@ -33,7 +33,7 @@ library(doParallel) # registers R session to make all processors available
 # to narrow down to nearby ones. 
 # on sf package see https://r-spatial.github.io/sf/articles/
 # https://r-spatial.github.io/sf/articles/sf1.html#crs
-browseURL( "https://r-spatial.github.io/sf/articles/sf7.html")
+# browseURL( "https://r-spatial.github.io/sf/articles/sf7.html")
 
 ################################################################################################ #
 

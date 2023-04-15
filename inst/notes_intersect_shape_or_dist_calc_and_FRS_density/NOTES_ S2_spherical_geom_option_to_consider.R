@@ -27,9 +27,9 @@ city_names[as.matrix(st_intersects(cities, canada))]
 # The sf package also supports creating s2 vectors using as_s2_geography() # and maybe also see sf::st_sfc())  and   
 #  sf::st_as_s2(x, ...)  converts an sf POLYGON object into a form readable by s2.
 
- browseURL("https://r-spatial.github.io/sf/")  
- browseURL("https://r-spatial.github.io/s2/")  
- browseURL("https://cran.r-project.org/web/packages/s2/index.html")
+ # browseURL("https://r-spatial.github.io/sf/")  
+ # browseURL("https://r-spatial.github.io/s2/")  
+ # browseURL("https://cran.r-project.org/web/packages/s2/index.html")
 
   # The s2 R package provides bindings to Google's S2Geometry library. The package exposes an API similar to Google's BigQuery Geography API, whose functions also operate on spherical geometries.
  

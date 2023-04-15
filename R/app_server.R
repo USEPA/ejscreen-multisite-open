@@ -958,7 +958,7 @@ app_server <- function(input, output, session) {
     if (input$plotkind_1pager == "box") {
       # do BOXPLOT NOT BARPLOT
       
-      browser() # ****************************************************************************
+      # ****************************************************************************
       
       ## ratios by site  (demog each site / demog avg in US)
       ratio.to.us.d.bysite <- data_processed()$results_bysite[ ,  c(

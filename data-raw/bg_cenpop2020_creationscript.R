@@ -19,7 +19,7 @@
 #01,001,020100,2,1200,+32.482744,-086.486741
 
 if (interactive()) {
-browseURL("https://www2.census.gov/geo/docs/reference/cenpop2020/blkgrp/CenPop2020_Mean_BG.txt")
+# browseURL("https://www2.census.gov/geo/docs/reference/cenpop2020/blkgrp/CenPop2020_Mean_BG.txt")
 }
 ####################################################### # 
 

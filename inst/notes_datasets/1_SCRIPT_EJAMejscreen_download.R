@@ -53,7 +53,7 @@ ejscreen_pctile_lookups_from_ftp <- function(
 
 # DOWNLOAD ZIP FILES ####
 baseurl = "https://gaftp.epa.gov/EJSCREEN/2022/"
-browseURL(baseurl)
+# browseURL(baseurl)
 fnames <- c(
   "EJSCREEN_2022_with_AS_CNMI_GU_VI.csv.zip",
   "EJSCREEN_2022_StatePct_with_AS_CNMI_GU_VI.csv.zip",   # do we really need this? it has block level state percentiles but we recalculate those anyway for any given buffer analysis.

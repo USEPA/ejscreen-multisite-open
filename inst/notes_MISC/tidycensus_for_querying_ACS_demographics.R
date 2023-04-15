@@ -1,6 +1,6 @@
 
-browseURL("https://walker-data.com/tidycensus/articles/basic-usage.html")
-browseURL("https://walker-data.com/umich-workshop-2023/acs-2021/#43")
+# browseURL("https://walker-data.com/tidycensus/articles/basic-usage.html")
+# browseURL("https://walker-data.com/umich-workshop-2023/acs-2021/#43")
 
 library(ggplot2) # makes ggplot2 graphic interactive
 library(ggiraph) # can customize interactivity- super powerfule pkg for interactive maps, plots, etc.
