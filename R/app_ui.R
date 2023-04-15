@@ -211,7 +211,7 @@ app_ui  <- function(request) {
                           ## add vertical line between columns
                           style = 'border-left: 1px solid;',
                           
-                          h3('Review selected sites & Pick a distance', style='text-align: center;'),
+                          # h3('Review selected sites & Pick a distance', style='text-align: center;'),
                           
                           hr(), ## horizontal line
                           
@@ -467,9 +467,10 @@ app_ui  <- function(request) {
                                          label = 'Download Summary Report',
                                          style = 'color: #fff; background-color: #005ea2'),
                    style = 'text-align: center;'
-                 ),
+                 ) , # ,
                  ## _radio button on format of short report ####
-                 radioButtons("format1pager", "Format", choices = c("html", "pdf"), inline = TRUE)
+                 # DISABLED UNTIL PDF KNITTING IS DEBUGGED
+                   radioButtons("format1pager", "Format", choices = c(html="html", html="pdf"), inline = TRUE)  # fix 
         ),
         
         br(), ## vertical space
@@ -904,6 +905,12 @@ app_ui  <- function(request) {
         
         # - hidden by default but can be activated by a button (see About EJAM tab)
         tabPanel(title = 'Advanced Settings',
+                 
+                 ## input: Type of plot for 1page report
+                 shiny::radioButtons(inputId = "plotkind_1pager", 
+                                     label = "Type of plot for 1page report",
+                                    choices = list(Bar="bar", Box="box", Ridgeline="ridgeline"), 
+                                    selected = "bar"),
                  
                  ## input: Name for 1st set of comparisons
                  shiny::textInput(inputId = 'an_name_comp1', 

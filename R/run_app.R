@@ -4,7 +4,8 @@
 #' app_run_EJAM()                 is like EJAM::run_app()
 #' app_run_EJAMejscreenapi()      is like EJAMejscreenapi::run_app()
 #' app_run_EJAMbatch.summarizer() is like EJAMbatch.summarizer::run_app()
-#' @param ... arguments to pass to golem_opts.
+#' @param ... arguments to pass to golem_opts. 
+#'    Can be sitepoints="latlondata.xlsx" or sitepoints=testpoints_50
 #' See `?golem::get_golem_options` for more details.
 #' @inheritParams shiny::shinyApp
 #'
@@ -12,7 +13,7 @@
 #' @importFrom shiny shinyApp
 #' @importFrom golem with_golem_options
 run_app      <- function( ###################################################### #
-    onStart = NULL,
+  onStart = NULL,
     options = list(),
     
     enableBookmarking = 'server',    ################################ #

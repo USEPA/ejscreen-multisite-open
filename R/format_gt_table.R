@@ -9,35 +9,44 @@
 #' @export
 #'
 format_gt_table <- function(df, type, my_cell_color =  '#dce6f0', my_border_color = '#0070c0'){
-  
-  if(type == 'demog'){
-    
-    nice_table <- gt::gt(df) %>% 
+   if(type == 'demog'){
+      subgroup_rows <- which(df$var_names %in% names_d_subgroups_friendly)
+      print(subgroup_rows)
+      
+     nice_table <- gt::gt(df) %>% 
       ## format column labels
       gt::cols_label(
-        
+
         var_names = gt::md('**Selected Variables**'),
-        value = gt::md('**Value**'),
+        value     = gt::md('**Value**'),
         
-        state_avg = gt::md('**State<br>Average**'),
+        state_avg    = gt::md('**Average<br>in State**'),
         state_pctile = gt::md('**Percentile<br>in State**'),
         
-        usa_avg = gt::md('**USA<br>Average**'),
-        usa_pctile = gt::md('**Percentile<br>in USA**'), 
+        usa_avg    = gt::md('**Average<br>in USA**'),
+        usa_pctile = gt::md('**Percentile<br>in USA**'),
         
-        state_ratio = gt::md('**USA<br>Ratio to State Avg**'),
-        usa_ratio   = gt::md('**USA<br>Ratio to Avg.**')
+        state_ratio = gt::md('**Ratio to<br>State Avg.**'),
+        usa_ratio =   gt::md('**Ratio to<br>USA Avg.**')
         
       )  %>% 
+       ## add subgroup header
+       gt::tab_row_group(label = gt::md('**Race/ethnic subgroups**'), 
+                         rows = subgroup_rows  # (2+nrow(df) - length(names_d_subgroups)):(nrow(df)) 
+       ) %>% 
+       ## add all/main group header 
+       gt::tab_row_group(label = gt::md('**Socioeconomic Indicators**'), 
+                         rows = 1:nrow(df)   # 1:(1+nrow(df) - length(names_d_subgroups))  
+       ) %>%   
+       
       ## format decimal places for all indicators
       gt::fmt_percent(columns = c(2,3,5), rows = everything(),  decimals = 0) %>%
       ## replace NAs with --
       gt::sub_missing(missing_text = '--') %>% 
-      ## add group header 
-      gt::tab_row_group(label = gt::md('**Socioeconomic Indicators**'), rows = 1:(nrow(df))) %>% 
+      
       ## add footnote
       gt::tab_footnote(
-        footnote = 'Certain state indicator calculations are not incorporated into EJAM at this time.',
+        footnote = "Avg. in State is the average over all these residents of their State's overall (avg.) value. \nPercentile in State is the average person's State percentile.",
         locations = gt::cells_column_labels(
           columns = c(state_avg, state_pctile)
         )
@@ -54,19 +63,19 @@ format_gt_table <- function(df, type, my_cell_color =  '#dce6f0', my_border_colo
       gt::cols_label(
         
         var_names = gt::md('**Selected Variables**'),
-        value = gt::md('**Value**'),
+        value     = gt::md('**Value**'),
         
-        state_avg = gt::md('**State<br>Average**'),
+        state_avg    = gt::md('**Average<br>in State**'),
         state_pctile = gt::md('**Percentile<br>in State**'),
         
-        usa_avg = gt::md('**USA<br>Average**'),
+        usa_avg    = gt::md('**Average<br>in USA**'),
         usa_pctile = gt::md('**Percentile<br>in USA**'),
         
-        state_ratio = gt::md('**USA<br>Ratio to State Avg**'),
-        usa_ratio =   gt::md('**USA<br>Ratio to Avg.**')
+        state_ratio = gt::md('**Ratio to<br>State Avg.**'),
+        usa_ratio =   gt::md('**Ratio to<br>USA Avg.**')
         
       ) %>% 
-      ## format different decimal places for each indicator
+      ## format different decimal places for each indicator # should get pulled from 
       ## pm 2.5
       gt::fmt_number(columns = c(2,3,5), rows = 1,  decimals = 2) %>% 
       ## ozone
@@ -94,9 +103,10 @@ format_gt_table <- function(df, type, my_cell_color =  '#dce6f0', my_border_colo
       gt::sub_missing(missing_text = '--') %>% 
       ## add group header
       gt::tab_row_group(label = gt::md('**Pollution and Sources**'), rows = 1:(nrow(df)) ) %>% 
+    
       ## add footnote
       gt::tab_footnote(
-        footnote = 'Certain state indicator calculations are not incorporated into EJAM at this time.',
+        footnote = "Avg. in State is the average over all these residents of their State's overall (avg.) value. \nPercentile in State is the average person's State percentile.",
         locations = gt::cells_column_labels(
           columns = c(state_avg, state_pctile)
         )

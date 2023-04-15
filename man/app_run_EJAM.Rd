@@ -42,5 +42,4 @@ launch Shiny web app from RStudio
 \details{
 app_run_EJAM()                 is like \code{\link[=run_app]{run_app()}}
 app_run_EJAMejscreenapi()      is like \code{\link[EJAMejscreenapi:run_app]{EJAMejscreenapi::run_app()}}
-app_run_EJAMbatch.summarizer() is like \code{\link[EJAMbatch.summarizer:run_app]{EJAMbatch.summarizer::run_app()}}
 }

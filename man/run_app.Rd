@@ -34,6 +34,7 @@ request. Note that the entire request path must match the regular
 expression in order for the match to be considered successful.}
 
 \item{...}{arguments to pass to golem_opts.
+Can be sitepoints="latlondata.xlsx" or sitepoints=testpoints_50
 See \code{?golem::get_golem_options} for more details.}
 }
 \description{

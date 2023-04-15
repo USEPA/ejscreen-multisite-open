@@ -117,14 +117,13 @@ app_server <- function(input, output, session) {
   })
   
   #############################################################################  # 
-  ## reactive: data uploaded by FRS IDs ####
+  ## reactive: data uploaded by FRS registry IDs ####
   
   data_up_frs <- reactive({
     
     ## wait for file to be uploaded
     req(input$ss_upload_frs)
-    
-    ##  >this part could be replaced by  latlon_from_anything() ####
+     ##  >this part could be replaced by  latlon_from_anything() ####
     # ext <- latlon_from_anything(input$ss_upload_latlon$datapath)
     
     ## check if file extension is appropriate
@@ -135,21 +134,20 @@ app_server <- function(input, output, session) {
                        xls = read_excel(input$ss_upload_frs$datapath),
                        xlsx = read_excel(input$ss_upload_frs$datapath),
                        shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
-    )
-    #include frs_is_valid verification check function
-    if (frs_is_valid(read_frs)){
-      # read_frs_dt <- data.table::as.data.table(read_frs)
-      data.table::setDT(read_frs) # same but less memory/faster?
+    ) # returns a data.frame
       
-      #converts registry id to character if not already in that class (EJAMfrsdata::frs registry ids are character)
-      if(class(read_frs_dt$REGISTRY_ID) != "character"){
-        read_frs_dt$REGISTRY_ID = as.character(read_frs_dt$REGISTRY_ID)
+     #include frs_is_valid verification check function, must have colname REGISTRY_ID
+    if (frs_is_valid(read_frs)){
+     #converts registry id to character if not already in that class (EJAMfrsdata::frs registry ids are character)
+      if(class(read_frs$REGISTRY_ID) != "character"){
+        read_frs$REGISTRY_ID = as.character(read_frs$REGISTRY_ID)
       }
-      frs_lat_lon <- merge(x = read_frs_dt, y = EJAMfrsdata::frs, by.x='REGISTRY_ID', by.y='REGISTRY_ID', all.x=TRUE)
+      frs_lat_lon <- frs_from_regid(read_frs$REGISTRY_ID)
+      # read_frs_dt <- data.table::as.data.table(read_frs)
+      data.table::setDT(frs_lat_lon) # same but less memory/faster?
     } else {
       shiny::validate('Records with invalid Registry IDs')
     }
-    
     ## return merged dataset
     frs_lat_lon
   })
@@ -279,8 +277,8 @@ app_server <- function(input, output, session) {
   data_uploaded <- reactive({
     print("data_uploaded reactive was updated!")
     cat("method is ", current_upload_method(), "\n")
-    
-    ## send message if no data uploaded
+
+        ## send message if no data uploaded
     validate(
       need(num_ul_methods() > 0, "Please upload a data set")
     )
@@ -298,7 +296,7 @@ app_server <- function(input, output, session) {
       data_up_naics()
       
     } else if(current_upload_method() == 'FRS'){
-      
+   
       data_up_frs()
       
     } else if(current_upload_method() == 'ECHO'){
@@ -447,7 +445,7 @@ app_server <- function(input, output, session) {
   # >this part could be replaced by ejamit() or something like that ####
   
   observeEvent(input$bt_get_results, {  # (button is pressed) 
-
+    
     showNotification('Processing sites now!', type = 'message', duration = 0.5)
     
     ## progress bar setup overall for 3 operations   
@@ -479,8 +477,8 @@ app_server <- function(input, output, session) {
     
     #############################################################################  # 
     ## 2) **EJAM::doaggregate()** ####
-    blah=data_uploaded()
-    save(blah, file='testup.rda'); save(sites2blocks, file = 'testin.rda')
+    # blah=data_uploaded()
+    # save(blah, file='testup.rda'); save(sites2blocks, file = 'testin.rda')
     out <- suppressWarnings(doaggregate(
       sites2blocks = sites2blocks, 
       sites2states = data_uploaded(),
@@ -503,7 +501,7 @@ app_server <- function(input, output, session) {
     #  >this should be a function, and is used by both server and ejamit() ####
     # duplicated almost exactly in ejamit() but reactives are not reactives there
     # maybe use url_4table() - see ejamit() code
-stop('got here')
+    
     if ("REGISTRY_ID" %in% names(out$results_bysite)) {
       echolink = url_echo_facility_webpage(REGISTRY_ID, as_html = T)
     } else {
@@ -601,7 +599,7 @@ stop('got here')
   #       head(data_uploaded())
   #     }
   #   })
-
+  
   
   #############################################################################  # 
   # ~ ####
@@ -620,7 +618,7 @@ stop('got here')
   # ~ ####
   
   # already done in doaggregate() !! - ALREADY IN data_processed()  !  and (avg.in.us) is a constant, in data.frame format.
-
+  
   # do not bother making a copy of the state averages that are in statestats
   # EJAM::statestats[ EJAM::statestats$PCTILE == "mean", ]
   # and the overall mean and site by site means are in  unlist( data_processed()$results_overall[ , ..names_state_avg_these] )
@@ -631,14 +629,14 @@ stop('got here')
   ## (batch.summarize 'Average person' / EJAM::usastats mean in USA   )
   ## this needs further verification
   
-  ratio.to.us.d    <- reactive({unlist(data_processed()$results_overall[ , .(..names_d_ratio_to_avg,       ..names_d_subgroups_ratio_to_avg)]) }) # ???
-  ratio.to.state.d <- reactive({unlist(data_processed()$results_overall[ , .(..names_d_ratio_to_state_avg, ..names_d_subgroups_ratio_to_state_avg)]) }) # ???
+  ratio.to.us.d    <- reactive({unlist(data_processed()$results_overall[ , c(..names_d_ratio_to_avg,       ..names_d_subgroups_ratio_to_avg)]) }) # ???
+  ratio.to.state.d <- reactive({unlist(data_processed()$results_overall[ , c(..names_d_ratio_to_state_avg, ..names_d_subgroups_ratio_to_state_avg)]) }) # ???
   # ratio.to.us.d_TEST <- reactive({
   #   unlist(data_processed()$results_overall[1, ]) / 
   #     avg.in.us[, c(names_d, names_d_subgroups)]
   # })
- 
-    ## ** RATIOS OVERALL TO US or state E AVG  ####
+  
+  ## ** RATIOS OVERALL TO US or state E AVG  ####
   #  *****************   but these are now already calculated in doaggregate() right? as 
   ## (batch.summarize 'Average person' / EJAM::usastats mean in USA   )
   ## this needs further verification
@@ -647,7 +645,7 @@ stop('got here')
   ratio.to.us.e <- reactive({unlist(data_processed()$results_overall[ , ..names_e_ratio_to_avg]) })                     # ???
   # ratio.to.us.e_TEST <- reactive({ unlist(data_summarized()$rows['Average person', names_e]) / 
   #     avg.in.us[, names_e]
-    #doaggregate results_overall output, if needed: unlist(data_processed()$results_overall[1, ..names_e])
+  #doaggregate results_overall output, if needed: unlist(data_processed()$results_overall[1, ..names_e])
   # })
   ratio.to.state.e <- reactive({unlist(data_processed()$results_overall[ , ..names_e_ratio_to_state_avg]) })                     # ???
   
@@ -730,7 +728,7 @@ stop('got here')
           color = circle_color, fillColor = circle_color,
           fill = TRUE, weight = 4,
           group = 'circles',
-          # next version should use something like EJAMejscreenapi::make.popup.api, but with EJAM column names
+          # next version should use something like EJAMejscreenapi::popup_from_ejscreen(), but with EJAM column names
           popup = EJAMejscreenapi::popup_from_df(data_uploaded() %>% as.data.frame())
         )  %>%
         addCircleMarkers(
@@ -795,18 +793,20 @@ stop('got here')
       var_names =  c(names_d_friendly, names_d_subgroups_friendly),
       value = data_processed()$results_overall[, c(..names_d, ..names_d_subgroups)] %>% t, 
       
-      'state_avg' = data_processed()$results_overall[, c(..names_d_state_avg, ..names_d_subgroups_state_avg)] %>% t, 
-      'state_pctile' = (data_processed()$results_overall[, c(..names_d_state_pctile, ..names_d_subgroups_state_pctile)]) %>% t, 
+      'state_avg' = (data_processed()$results_overall[, c(..names_d_state_avg, ..names_d_subgroups_state_avg)] %>% t), 
+      'state_pctile' = (data_processed()$results_overall[, c(..names_d_state_pctile, ..names_d_subgroups_state_pctile)] %>% t), 
       
       # 'usa_avg' = EJAM::usastats %>% filter(PCTILE == 'mean') %>% select(all_of(c(names_d, names_d_subgroups))) %>% t,     # xxx
-      'usa_avg' = avg.in.us[, c(names_d,names_d_subgroups)] %>% t,
-      'usa_pctile'  = (data_processed()$results_overall[, c(..names_d_pctile, ..names_d_subgroups_pctile)]) %>% t,      # xxx
+      'usa_avg' = data.frame(usa_avg = unlist(avg.in.us[, c(names_d,names_d_subgroups)])) ,
+      'usa_pctile'  = (data_processed()$results_overall[, c(..names_d_pctile, ..names_d_subgroups_pctile)]  %>% t),
       
       # note these have subgroups too already in them:
-      "state_ratio" = ratio.to.state.d() %>% t,    # data_processed()$results_overall[, ..names_d_state_ratio] %>% t     # xxx
-      "usa_ratio"   = ratio.to.us.d()    %>% t  # data_processed()$results_overall[, ..names_d_us_ratio] %>% t ####,      # xxx
+      # "state_ratio" = unlist(ratio.to.state.d()),  
+      "state_ratio" = (data_processed()$results_overall[, c(..names_d_ratio_to_state_avg, ..names_d_subgroups_ratio_to_state_avg)] %>% t),     # xxx
+      # "usa_ratio"   = unlist(ratio.to.us.d() )     
+      "usa_ratio"   =  (data_processed()$results_overall[, c(..names_d_ratio_to_avg, ..names_d_subgroups_ratio_to_avg)] %>% t )     # xxx
     )
-
+    
     # need to verify percentile should be rounded here or use ceiling() maybe? try to replicate EJScreen percentiles as they report them.
     tab_data_d$usa_pctile   <- round(tab_data_d$usa_pctile ,0)
     tab_data_d$state_pctile <- round(tab_data_d$state_pctile ,0)
@@ -841,15 +841,17 @@ stop('got here')
       
       var_names = names_e_friendly,
       value = data_processed()$results_overall[, names_e, with=FALSE] %>% t,
-    
+      
       'state_avg' =    data_processed()$results_overall[, ..names_e_state_avg] %>% t,
       'state_pctile' = data_processed()$results_overall[, ..names_e_state_pctile] %>% t,   
       
-      'usa_avg'     =  avg.in.us, # is a constant already 
+      'usa_avg'     =   data.frame(usa_avg = unlist(avg.in.us[ , names_e])), # is a constant already 
       'usa_pctile'   = data_processed()$results_overall[, ..names_e_pctile] %>% t,  # xxx
       
-      'state_ratio' = unlist(ratio.to.state.e()) ,
-      'usa_ratio' = unlist(ratio.to.us.e())
+      # 'state_ratio' = unlist(ratio.to.state.e()) ,
+      "state_ratio" = data_processed()$results_overall[, ..names_e_ratio_to_state_avg] %>% t,
+      # 'usa_ratio' = unlist(ratio.to.us.e()) 
+      "usa_ratio"   =  data_processed()$results_overall[, ..names_e_ratio_to_avg] %>% t
     )
     
     
@@ -885,29 +887,23 @@ stop('got here')
   v1_summary_plot <- reactive({
     req(data_summarized())
     
-    if ("try BARPLOT" == "try BARPLOT") {   # do BARPLOT NOT BOXPLOT
+    # input$plotkind_1pager     # trying out box, bar, ridgeline
+    
+    if (input$plotkind_1pager == 'bar') {  # do BARPLOT NOT BOXPLOT
       
-      # new way:
       ratio.to.us.d.overall <- ratio.to.us.d() # reactive already available
-
-      # old way:
-      ## ratios overall (demog here / demog avg in US)
-      # ratio.to.us.d.overall <- unlist(round(
-      #   unlist(data_processed()$results_overall[ , c(..names_d, ..names_d_subgroups)]) /
-      #     avg.in.us[,c(names_d, names_d_subgroups)], 2))
-      # 
       supershortnames <- substr(gsub(" |-|age","",gsub("People of Color","POC", c(names_d_friendly, names_d_subgroups_friendly))),1,6)
       names(ratio.to.us.d.overall) <- supershortnames
       ratio.to.us.d.overall[is.infinite(ratio.to.us.d.overall)] <- 0
-      # use yellow/orange/red for ratio >= 1x, 2x, 3x 
+      # use yellow/orange/red for ratio >= 1x, 2x, 3x  #  work in progress
       mycolors <- c("gray", "yellow", "orange", "red")[1+findInterval(ratio.to.us.d.overall, c(1.01, 2, 3))] 
-
+      
       barplot(ratio.to.us.d.overall,
               main = 'Ratio vs. US Average for Demographic Indicators',
-              cex.names = 0.8,
+              cex.names = 0.7,
               col = mycolors)
       abline(h=1, col="gray")
-
+      
       # # try to do that via ggplot...
       # ggplot2::ggplot(
       #   ratio.to.us.d.overall,
@@ -918,89 +914,127 @@ stop('got here')
       #   labs(x = "",
       #        y = "Ratio of Indicator values for avg. person in selected locations\n vs. US average value",
       #        title = 'Ratio vs. US Average for Demographic Indicators') 
-      # 
+    }
+    
+    if (input$plotkind_1pager == 'ridgeline') {
       
-    } else {    # do BOXPLOT NOT BARPLOT
+      # https://r-graph-gallery.com/294-basic-ridgeline-plot.html#color
+      # https://r-graph-gallery.com/294-basic-ridgeline-plot.html#shape
+      # library(ggplot2)
+      library(ggridges)
+      library(viridis)
+      library(hrbrthemes)
       
       ## ratios by site  (demog each site / demog avg in US)
-      
-      # new way:
-      ratio.to.us.d.bysite <- data_processed()$results_bysite[ ,  c(..names_d_ratio_to_avg, ..names_d_subgroups_ratio_to_avg)]
-      
-      # old way:
-      ## ratios for individual sites   
-      ## uses (doaggregate output results_bysite) / (EJAM::usastats mean in USA).
-      ## could probably be simplified instead of using a loop
-      # 
-      # ratio.to.us.d.bysite <- data.frame()
-      # for(i in 1:nrow(data_processed()$results_bysite)){
-      #   ratio.to.us.d.bysite <- rbind(
-      #     ratio.to.us.d.bysite,
-      #     unlist(data_processed()$results_bysite[i, c(..names_d, ..names_d_subgroups )]) /
-      #       avg.in.us[, c(names_d, names_d_subgroups )]
-      #   )
-      # }
-      
+      ratio.to.us.d.bysite <- data_processed()$results_bysite[ ,  c(
+        ..names_d_ratio_to_avg, 
+        ..names_d_subgroups_ratio_to_avg
+      )]
       ## assign column names (could use left_join like elsewhere)
-      names(ratio.to.us.d.bysite) <-  c(names_d_friendly, names_d_subgroups_friendly) # long_names_d$var_names[match( names_d_fixed, long_names_d$vars)]
-      
-      ## pivot data from wide to long - now one row per indicator
+      names(ratio.to.us.d.bysite) <-  c(
+        names_d_friendly, 
+        names_d_subgroups_friendly
+      ) # long_names_d$var_names[match( names_d_fixed, long_names_d$vars)]
+      ## pivot data from wide to long - now one row per indicator 
       ratio.to.us.d.bysite <- ratio.to.us.d.bysite %>% 
         pivot_longer(cols = everything(), names_to = 'indicator') %>% 
         ## replace Infs with NAs - these happen when indicator at a site is equal to zero
         mutate(value = na_if(value, Inf)) #%>% 
-      # arrange(match(indicator, names(ratio.to.us.d.bysite) )) # did not help order boxplots
-      # NOTE THIS IS A tibble, not data.frame, and is in LONG format now.
+      # NOTE NOW ratio.to.us.d.bysite IS A tibble, not data.frame, and is in LONG format now. !!!
       
-      towhat_nicename <- "US Average"
-      mymaintext <- paste0("Ratios to ", towhat_nicename, ", as distributed across these sites")
+      # ridgeline Plot 
+      ggplot(ratio.to.us.d.bysite, aes(x = `value`, y = `indicator`, fill = ..x..)) +
+        geom_density_ridges_gradient(scale = 3, rel_min_height = 0.01) +
+        scale_fill_viridis(name = "Ratio to US Overall Value", option = "C") +
+        labs(title = 'Ratio to US Overall for each Demographic Indicator across these Sites') +
+        theme_ipsum() +
+        theme(
+          legend.position="none",
+          panel.spacing = unit(0.1, "lines"),
+          strip.text.x = element_text(size = 8)
+        )
+    }
+    
+    if (input$plotkind_1pager == "box") {
+      # do BOXPLOT NOT BARPLOT
+      
+      browser() # ****************************************************************************
+      
+      ## ratios by site  (demog each site / demog avg in US)
+      ratio.to.us.d.bysite <- data_processed()$results_bysite[ ,  c(
+        ..names_d_ratio_to_avg, 
+        ..names_d_subgroups_ratio_to_avg
+      )]
+      ## assign column names (could use left_join like elsewhere)
+      names(ratio.to.us.d.bysite) <-  c(
+        names_d_friendly, 
+        names_d_subgroups_friendly
+      ) # long_names_d$var_names[match( names_d_fixed, long_names_d$vars)]
+      ## pivot data from wide to long - now one row per indicator 
+      ratio.to.us.d.bysite <- ratio.to.us.d.bysite %>% 
+        pivot_longer(cols = everything(), names_to = 'indicator') %>% 
+        ## replace Infs with NAs - these happen when indicator at a site is equal to zero
+        mutate(value = na_if(value, Inf)) #%>% 
+      # NOTE NOW ratio.to.us.d.bysite IS A tibble, not data.frame, and is in LONG format now. !!!
       
       ## find max of ratios 
       max.ratio.d.bysite <- max(ratio.to.us.d.bysite$value, na.rm = TRUE)
-      
       max.name.d.bysite <- ratio.to.us.d.bysite$indicator[which.max(ratio.to.us.d.bysite$value)]
+      ## specify  upper bound for ratios (will drop values above this from graphic)
+      q75.maxof75s <- max(quantile(ratio.to.us.d.bysite$value, 0.75, na.rm=TRUE),na.rm = TRUE)
+      ylimit <- ceiling(q75.maxof75s) # max of 75th pctiles rounded up to nearest 1.0x?   
+      max_limit <- max(3, ylimit, na.rm = TRUE) #   
+      # perhaps want a consistent y limits to ease comparisons across multiple reports the user might run.
+      #  If the max value of any ratio is say 2.6, we might want ylim to be up to 3.0, 
+      #  if the max ratio is 1.01, do we still want ylim to be up to 3.0??
+      #  if the max ratio or even max of 95th pctiles is >10, don't show it, but 
+      #  what if the 75th pctile value of some indicator is >10? expand the scale to always include all 75ths.
       
       ## find 75th %ile of ratios for the indicator with the max ratio 
       q75.ratio.d.bysite <- quantile(ratio.to.us.d.bysite$value[ratio.to.us.d.bysite$indicator == max.name.d.bysite], 0.75, na.rm=TRUE)
+      
+      # to use for dot showing the mean ratio of each indicator
+      meanratios <- data.frame(
+        indicator = c(names_d_friendly, names_d_subgroups_friendly), 
+        value = unlist(ratio.to.us.d()[c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg)])
+      )
       
       ## paste subtitle for boxplot
       subtitle <- paste0('Within ', input$bt_rad_buff,' miles of one site, ', 
                          max.name.d.bysite, ' is ', round(max.ratio.d.bysite,1), 'x the US average\n' #,
                          # 'and 1 in 4 sites is at least ',round(q75.ratio.d.bysite,2), 'x the US average' 
       )
-      
       ## specify # of characters to wrap indicator labels
       n_chars_wrap <- 13
+      towhat_nicename <- "US Average"
+      mymaintext <- paste0("Ratios to ", towhat_nicename, ", as distributed across these sites")
       
-      ## specify upper bound for ratios (will drop values above this from graphic)
-      # perhaps want a consistent y limits to ease comparisons across multiple reports the user might run.
-      # If the max value of any ratio is say 2.6, we might want ylim to be up to 3.0, 
-      # if the max ratio is 1.01, do we still want ylim to be up to 3.0??
-      # if the max ratio or even max of 95th pctiles is >10, don't show it, but 
-      # what if the 75th pctile value of some indicator is >10? expand the scale to always include all 75ths.
-      # what if median
-      q75.maxof75s <- max(quantile(ratio.to.us.d.bysite$value, 0.75, na.rm=TRUE),na.rm = TRUE)
-      ylimit <- ceiling(q75.maxof75s) # max of 75th pctiles rounded up to nearest 1.0x?   
-      max_limit <- max(3, ylimit, na.rm = TRUE) #   
       
+      ##################################################################################### #
       ## much of this is plotting code is based on EJAMejscreenapi::boxplots_ratios
+      
+      
       ggplot2::ggplot(
-        ratio.to.us.d.bysite, 
-        aes(x = indicator, y = value, fill = indicator)) +
+        ratio.to.us.d.bysite  ,
+        # mydata, 
+        aes(x = indicator, y = value )) + #, fill = indicator)) +
         ## draw boxplots
         geom_boxplot() +
-        ## draw points - removed as they cover up boxplots with large datasets
-        #geom_jitter(color = 'black', size=0.4, alpha=0.9, ) +
-        ## set color scheme
-        scale_fill_brewer(palette = 'Dark2') +
-        ## alternate color scheme
-        # viridis::scale_fill_viridis(discrete = TRUE, alpha = 0.6) +
+        
+        #  show average persons ratio to US,  for each boxplot column 
+        # xxx
+        geom_point(
+          data =  meanratios,
+          aes(x = reorder(indicator, meanratios), y = value), colour = "orange", size=2
+        ) +
+        
         ## wrap indicator labels on x axis
         scale_x_discrete(labels = function(x) stringr::str_wrap(x, n_chars_wrap)) +
         ## set limits for ratio on y axis - use hard limit at 0, make upper limit 5% higher than max limit
         scale_y_continuous(limits = c(0,max_limit), expand = expansion(mult = c(0, 0.05))) +
         ## alternate version that clips top and bottom axes exactly at (0, max_limit)
         # scale_y_continuous(limits = c(0,max_limit), expand = c(0,0)) +
+        
         ## add horizontal line at 1
         geom_hline(aes(yintercept = 1)) +
         ## set plot axis labels and titles
@@ -1008,6 +1042,16 @@ stop('got here')
              y = "Ratio of Indicator values in selected locations\n vs. US average value",
              subtitle = subtitle,
              title = 'Ratio vs. US Average for Demographic Indicators') +
+        
+        ## draw individual dot per site? at least for small datasets?/few facilities - removed as they cover up boxplots with large datasets
+        #geom_jitter(color = 'black', size=0.4, alpha=0.9, ) +
+        
+        ## set color scheme ?
+        # actually do not need each a color, for boxplot.
+        # scale_fill_brewer(palette = 'Dark2') +
+        ## alternate color scheme
+        # viridis::scale_fill_viridis(discrete = TRUE, alpha = 0.6) +
+        
         theme_bw() +
         theme(
           ## set font size of text
@@ -1021,11 +1065,12 @@ stop('got here')
           plot.subtitle = ggplot2::element_text(hjust = 0.5),
           ## hide legend
           legend.position = 'none'
-        )
+        )  # end of ggplot section
     }
+    
   })
   
-  ## output: show boxplot of indicator ratios in Summary Report # 
+  ## output: show box/barplot of indicator ratios in Summary Report # 
   output$view1_summary_plot <- renderPlot({
     v1_summary_plot()
   })
@@ -1060,8 +1105,10 @@ stop('got here')
       # Knit the document, passing in the `params` list, and eval it in a
       # child of the global environment (this isolates the code in the document
       # from the code in this app).
-      if (input$format1pager == "pdf") {  output_format <- "pdf_document"}  
-      if (input$format1pager == "html"){  output_format <- "html_document"}
+      # if (input$format1pager == "html") {
+        output_format <- "html_document"
+        # }
+      if (input$format1pager == "pdf") {  output_format <- "pdf_document"}
       rmarkdown::render(tempReport, 
                         output_format = output_format, # 'html_document' or pdf_document
                         output_file = file,
@@ -1069,15 +1116,15 @@ stop('got here')
                         envir = new.env(parent = globalenv()),
                         intermediates_dir = tempdir()
       )
-      if (input$format1pager == "pdf") {
-        ## alternative ways to save PDFs #### 
-        # - these go to local folders
-        ## add line to save html output as pdf
-        # pdf(file = 'summary_report.pdf')
-        # file
-        # dev.off()
-        #webshot::webshot(url = file, file = file.path(tempdir(), 'summary_report.pdf'))
-      }
+      # if (input$format1pager == "pdf") {  # was not working to just set output_format="pdf_document"
+      #   ## alternative ways to save PDFs #### 
+      #   # - these go to local folders
+      #   ## add line to save html output as pdf
+      #     pdf(file = 'summary_report.pdf')
+      #     file
+      #     dev.off()
+      #   # webshot::webshot(url = file, file = file.path(tempdir(), 'summary_report.pdf'))
+      # }
     }
   )
   
@@ -1406,24 +1453,34 @@ stop('got here')
       # Recode this to avoid making copies which slows it down:?
       table_overall <- copy(data_processed()$results_overall)
       table_bysite  <- copy(data_processed()$results_bysite)
-      # table_bybg <- data_processed()$results_bybg_people   # large table !!
-      
+      # table_summarized <- copy(data_processed()$results_summarized)
+      # table_bybg_people <- data_processed()$results_bybg_people   # large table !!
+
       ## attempt to clean up some column names xxx - CHECK THIS 
-     # longnames_TEST <- EJAMejscreenapi::map_headernames$longname_tableheader[match(names(data_processed()$results_bysite),
-                                                                               # EJAMejscreenapi::map_headernames$newnames_ejscreenapi)]
+      # longnames_TEST <- EJAMejscreenapi::map_headernames$longname_tableheader[match(names(data_processed()$results_bysite),
+      # EJAMejscreenapi::map_headernames$newnames_ejscreenapi)]
       longnames <- data_processed()$longnames
       
       names(table_overall) <- ifelse(!is.na(longnames), longnames, names(table_overall))
       names(table_bysite)  <- ifelse(!is.na(longnames), longnames, names(table_bysite))
-      #names(table_bybg_people) # CANNOT REALLY TREAT THIS THE SAME - HAS DIFFERENT LIST OF INDICATORS THAN THE OTHER TABLES
+      # table_summarized
+      # names(table_bybg_people) # CANNOT REALLY TREAT THIS THE SAME - HAS DIFFERENT LIST OF INDICATORS THAN THE OTHER TABLES
       
       ## format excel workbook
       wb_out <- xls_formatting2(
         overall = table_overall, 
-        eachsite = table_bysite  #,
-#        eachblockgroup = table_bybg_people # data_processed()$results_bybg_people,
-        
+        eachsite = table_bysite  # the function does not handle the other two
+        # eachblockgroup = table_bybg_people, 
+        # summaryofoverall = table_summarized # could use longnames for it
+        # data_processed()$results_bybg_people 
       )
+      #        
+      
+      # > names( data_processed() )
+      # [1] "results_overall"                     "results_bysite"                     
+      # [3] "results_bybg_people"                 "longnames"                          
+      # [5] "count_of_blocks_near_multiple_sites" "results_summarized"  
+      
       
       ## save file and return for downloading
       openxlsx::saveWorkbook(wb_out, fname)
