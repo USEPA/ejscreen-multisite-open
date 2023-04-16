@@ -42,6 +42,8 @@ params:
   fundingsource: NA
   authorname1: "USEPA"
   authoremail1: ""
+  coauthor_names: NA
+  coauthor_emails: NA
 author:
   - name: "`r params$authorname1`"
     email: "`r params$authoremail1`"
@@ -59,6 +61,13 @@ bibliography: report_references.bib
 ---
 
 ```{r, echo=FALSE}
+      #  MAKE SURE THESE 3 LISTS MATCH: 
+      #  1. list of user inputs in app_ui.R to customize the long report
+      #  2. params list sent by app_server.R to render the Rmd doc
+      #  3. params accepted in report.Rmd yaml info up top (and params as used within body of report.Rmd)
+```
+
+```{r, echo=FALSE}
 
 in_the_places_analyzed <- {
     switch (
@@ -69,8 +78,8 @@ in_the_places_analyzed <- {
     )}
 ```
 
-
 \newpage
+
 # Executive Summary
 
 Executive Order 14008 calls on EPA and other Agencies to make achieving
@@ -128,16 +137,12 @@ sites. Demographic indicators are moderately above average overall.
         about 2.5x State averages.
     -   PLACEHOLDER EXAMPLE Most of these sites are \>=80th in State for
         NATA. Same for RMP.
- 
 
-- PLACEHOLDER EXAMPLE
+-   PLACEHOLDER EXAMPLE
 
-- PLACEHOLDER EXAMPLE
+-   PLACEHOLDER EXAMPLE
 
-- PLACEHOLDER EXAMPLE 
-
-
-
+-   PLACEHOLDER EXAMPLE
 
 # Introduction
 
@@ -177,13 +182,14 @@ circumstance.
 # Methods
 
 EPA's EJAM (Environmental Justice Analysis Multisite) tool was used to
-develop this analysis. EPA's [EJAM tool](https://rstudio-connect.dmap-stage.aws.epa.gov/content/dc3cda00-20a2-47ed-a753-0dcb89eb8f2a/ "Environmental Justice Analysis Multisite (EJAM) tool") is a user-friendly web app that can
-summarize demographics and environmental conditions for any list of
-places in the nation. It provides interactive results and a formatted,
-ready-to-share report with written explanations of the results, tables,
-and graphics. The report can provide EJ-related information about people
-who live in communities near any of the industrial facilities on a list,
-for example.
+develop this analysis. EPA's [EJAM
+tool](https://rstudio-connect.dmap-stage.aws.epa.gov/content/dc3cda00-20a2-47ed-a753-0dcb89eb8f2a/ "Environmental Justice Analysis Multisite (EJAM) tool")
+is a user-friendly web app that can summarize demographics and
+environmental conditions for any list of places in the nation. It
+provides interactive results and a formatted, ready-to-share report with
+written explanations of the results, tables, and graphics. The report
+can provide EJ-related information about people who live in communities
+near any of the industrial facilities on a list, for example.
 
 The basic methodology and data used for this analysis are the same as
 those used in EPA's EJScreen tool, with a few exceptions described
@@ -193,38 +199,132 @@ more technical details available at [EJScreen technical documentation
 page](https://www.epa.gov/ejscreen/technical-information-about-ejscreen "EPA EJScreen technical information").
 The only notable differences are the following:
 
-- EJAM may include additional demographic or environmental indicators.
-- For a proximity analysis (to characterize everyone living within a certain certain distance from a point such as a facility), EJAM identifies which residents live nearby using a slight variation on how the distance to each Census block is measured. While EJScreen uses ESRI's ArcGIS calculations, EJAM calculates the distance using formulas implemented in the R language for statistical computing [@R-base]. These measurements provide almost identical results for estimated distance from the average person in a block to a given site point. PLACEHOLDER MORE INFO
-- EJAM aggregates indicator values within and across locations, converts them to percentiles, and does other summary calculations using the same formulas to the greatest extent possible, but in R rather than within EJScreen itself. There may be slight differences between raw scores and percentiles in EJScreen and EJAM in some cases.
- 
+-   EJAM may include additional demographic or environmental indicators.
+-   For a proximity analysis (to characterize everyone living within a
+    certain certain distance from a point such as a facility), EJAM
+    identifies which residents live nearby using a slight variation on
+    how the distance to each Census block is measured. While EJScreen
+    uses ESRI's ArcGIS calculations, EJAM calculates the distance using
+    formulas implemented in the R language for statistical computing
+    [@R-base]. These measurements provide almost identical results for
+    estimated distance from the average person in a block to a given
+    site point. PLACEHOLDER MORE INFO
+-   EJAM aggregates indicator values within and across locations,
+    converts them to percentiles, and does other summary calculations
+    using the same formulas to the greatest extent possible, but in R
+    rather than within EJScreen itself. There may be slight differences
+    between raw scores and percentiles in EJScreen and EJAM in some
+    cases.
+
 ## Selection of sites analyzed
+
+
+## Data Viz 1 -- Map
+
+```{r map, echo=FALSE,  out.height='500px', out.width='800px'}
+if ("NA" == (params$map)) {
+   (knitr::include_graphics(path = params$map_placeholder_png))
+} else {
+  print( params$map )
+}
+```
 
 
 ## Estimating locations and population counts of residents
 
 ### Spatial resolution of data
 
-The analysis used EPA's EJAM tool and EJScreen version `r params$ejscreen_version` with demographic data based on the Census Bureau's `r params$acs_version` American Community Survey (ACS) and the corresponding version of Decennial Census information on geographic boundaries and FIPS codes for blocks, block groups, tracts, counties, and States.
+The analysis used EPA's EJAM tool and EJScreen version
+`r params$ejscreen_version` with demographic data based on the Census
+Bureau's `r params$acs_version` American Community Survey (ACS) and the
+corresponding version of Decennial Census information on geographic
+boundaries and FIPS codes for blocks, block groups, tracts, counties,
+and States.
 
-See EJScreen methodology for details. 
+See EJScreen methodology for details.
 
 ### Analytic method for buffering, and tools used to implement that method
 
-See EJScreen methodology for details. EJAM finds nearby block points using a very fast approach but otherwise uses the EJScreen method of estimating nearby residential populations for proximity analysis.
+The buffering method was the same as EJScreen's method in principle,
+i.e., Percent of each block group's population that is estimated as
+inside a buffer is based on which Census block internal points are
+included in the buffer and using a block weight that is the Census 2020
+block population as a fraction of the parent block group's Census 2020
+population (which is not quite the same as the ACS population count).
+That block weight is a fraction of the parent block group. A slightly
+different method was used to identify which block points are inside the
+buffer than EJScreen uses, but results should be almost identical
+[confirm this and clarify]
+
+See EJScreen methodology for details. EJAM finds nearby block points
+using a very fast approach but otherwise uses the EJScreen method of
+estimating nearby residential populations for proximity analysis.
 
 ## Demographic and environmental indicators
 
-PLACEHOLDER - The demographics included here are those in EJScreen and also race/ethnicity subgroups that comprise the total count of people of color. POC are defined as all other than those self-identifying in ACS survey data as white, single race, not Hispanic or Latino - i.e., non-hispanic white alone (NHWA). The subgroups include Hispanic or Latino ("hispanic"), several groups that are not hispanic but of only single race (e.g., Asian, or more specifically non-hispanic asian alone), non-hispanic other single race, and non-hispanic multiracial. 
+PLACEHOLDER - The demographics included here are those in EJScreen and
+also race/ethnicity subgroups that comprise the total count of people of
+color. POC are defined as all other than those self-identifying in ACS
+survey data as white, single race, not Hispanic or Latino - i.e.,
+non-hispanic white alone (NHWA). The subgroups include Hispanic or
+Latino ("hispanic"), several groups that are not hispanic but of only
+single race (e.g., Asian, or more specifically non-hispanic asian
+alone), non-hispanic other single race, and non-hispanic multiracial.
 
-See EJScreen methodology for details. 
+See EJScreen methodology for details.
 
 # Findings
 
-
 ## Text on Findings
+
+### Results -- Basic information about the locations analyzed and number of people nearby
+
+•	Explain whether the sites are to be analyzed as a whole or in some type
+of subgroups, such as 2 different source categories, or large vs small
+facilities, or some other categories we will use to compare all these
+stats?
+
+•	Count of locations
+
+•	Locations missing data
+
+•	Where are the sites (regions, states, cities?, urban/rural?)
+
+•	Clustering (are they near each other? How close? Which ones are in
+clusters, maybe?)
+
+•	Total population near any of the sites (count of unique residents) and
+some summary of site-specific Population sizes and population density
+nearby (what % of all people are at x% of the sites? Range and
+Interquartile range of pop counts nearby? etc.). Make clear to what
+extent some people in the overall summary stats are near more than a
+single one of these sites.
 
 
 ### Demographics overall
+
+Overall summary statement of some kind - e.g., a "\_\_\_very large"
+number of all the (12?) envt (or D) indicators were "\_\_\_very high" at
+a "\_\_\_very large" share of the sites or preferably for a "\_\_\_very
+large share of the people"? Or, how many of 12 indicators were "high"
+for the average person and/or site overall? Somehow put that in context
+?? vs other rules, usA, other sites, etc.???
+
+discussion of table here
+
+discussion of table here
+
+## Data Table 1. Demographic Indicators
+
+```{r demog_table, echo=FALSE, out.width='900px'}
+if ("NA" != (params$demog_table)) {
+params$demog_table
+} else {
+  knitr::include_graphics(path = params$demog_table_placeholder_png)
+  # not sure how to do this here:
+  #  print(gt::render_gt(params$demog_table_placeholder_rda))
+}
+```
 
 Almost all the EJ-relevant groups (low-income, people of color, etc.)
 are at least somewhat over-represented near these sites overall (at the
@@ -232,20 +332,83 @@ collection of sites as a whole).
 
 Most notably, % with limited English, % low income, and % with less than
 high school education near these sites are about 1.5 to 1.7 times the US
-overall rates. 
+overall rates.
 
-The people living near these sites are 40% more likely to be in Limited-English Households than the average US resident.
+The people living near these sites are 40% more likely to be in
+Limited-English Households than the average US resident.
 
-The % with limited English is driven by high scores at
-only a few very highly population sites -- it is high enough that the
-rate overall is in the top quintile nationally (83 percentile), but
-other demographics do not reach the top quintile for the entire
-population across all sites as a whole.
+The % with limited English is driven by high scores at only a few very
+highly population sites -- it is high enough that the rate overall is in
+the top quintile nationally (83 percentile), but other demographics do
+not reach the top quintile for the entire population across all sites as
+a whole.
 
 Near most of these 72 sites, % low income is at least 1.3x the rate in
 the US overall, and near 1 in 4 it is at least 1.5x the US rate.
 
+
+discussion of plot goes here
+
+discussion of plot goes here
+
+discussion of plot goes here
+
+discussion of plot goes here
+
+## Data Viz 2-- Barplot
+
+```{r barplot, echo=FALSE,  out.height='500px', out.width='800px'}
+if ("NA" == (params$barplot)) {
+ knitr::include_graphics(path = params$barplot_placeholder_png)
+} else {
+  params$barplot  
+}
+```
+
+
+### Key D group(s) based on policy or default / Key D group(s) based on observed magnitude of disparities here
+
+•	Sdf
+
+•	Asdf
+
+•	Asdf
+
+Largest disparity in presence of any group -- which group was most
+over-represented here?
+
+-   Relative disparity vs US: Which group(s) had the largest ratio of
+    local % (for the overall set of sites) to US % overall?
+
+-   Absolute disparity vs US: which group(s) had
+
+"Large" disparities: which groups were "very" over-represented here?
+
+-   Which indicator has max mean percentile? And how high is that?
+
+-   Which indicator has largest ratio to US? To state? And how large is
+    that?
+
+
 ### Demographics at key sites
+
+Overall summary statement of some kind - e.g., a "\_\_\_very large"
+number of all the (12?) envt (or D) indicators were "\_\_\_very high" at
+a "\_\_\_very large" share of the sites or preferably for a "\_\_\_very
+large share of the people"? Or, how many of 12 indicators were "high"
+for the average person and/or site overall? Somehow put that in context
+?? vs other rules, usA, other sites, etc.???
+
+
+
+
+Demographic stats on the distribution across sites/people
+
+•	What % or count of people/sites have score \> key cutoffs?
+
+•	What is mean or median or 95th pctile score of people/sites ?
+
+•	NOTABLE "WORST" SITES NAMES?
 
 There are a handful of sites each with at least one very high
 demographic stat within 1 mile, however this may be within the normal
@@ -267,6 +430,25 @@ A few sites have over triple the US average unemployment rate (two of
 which are in the top 5% nationwide for their rate of unemployment, Bay
 Shore and Watts Bar).
 
+## Data Viz 3 -- Boxplots
+
+```{r boxplot, echo=FALSE,  out.height='500px', out.width='800px'}
+if ("NA" == (params$boxplot)) {
+ knitr::include_graphics(path = params$boxplot_placeholder_png)
+} else {
+  params$boxplot +
+  ggplot2::scale_x_discrete(labels = function(x) stringr::str_wrap(x, 10)) +
+  ggplot2::theme(plot.title = ggplot2::element_text(hjust=0.5, size=12),
+        plot.subtitle = ggplot2::element_text(hjust=0.5, size=11),
+        axis.title.y = ggplot2::element_text(size=10),
+        axis.text = ggplot2::element_text(size=9)
+        )
+}
+```
+
+
+
+
 ### Environment overall
 
 The people living nearby these sites as a whole are facing relatively
@@ -281,6 +463,50 @@ same is almost true for traffic and UST -- the average person nearby has
 those indicators in the worst quartile of the US. (Wastewater and
 Superfund also tend to be very high at an unusually large share of these
 sites but not necessarily at the ones in highly populated areas).
+
+•	Overall summary statement of some kind. e.g., a "\_\_\_very large"
+number of all the (12?) envt (or D) indicators were "\_\_\_very high" at
+a "\_\_\_very large" share of the sites or preferably for a "\_\_\_very
+large share of the people"? Or, how many of 12 indicators were "high"
+for the average person and/or site overall? Somehow put that in context
+?? vs other rules, usA, other sites, etc.???
+
+•	Which indicator has max mean percentile? And how high is that?
+
+•	Which indicator has largest ratio to US? To state? And how large is
+that?
+
+
+discussion of table here
+
+discussion of table here
+
+discussion of table here
+
+discussion of table here
+
+discussion of table here
+
+## Data Table 2. Environmental Indicators
+
+```{r envt_table, echo=FALSE, out.width='900px'}
+if ("NA" !=  (params$envt_table)) {
+params$envt_table
+} else {
+  knitr::include_graphics(path = params$envt_table_placeholder_png)
+  # not sure how to do this here:
+  #  print(gt::render_gt(params$envt_table_placeholder_rda))
+}
+```
+
+
+### Environmental indicators distribution across the residents and sites
+
+•	What % or count of people/sites have score \> key cutoffs?
+
+•	What is mean or median or 95th pctile score of people/sites ?
+
+•	NOTABLE "WORST" SITES NAMES?
 
 ### Environment at key sites
 
@@ -301,155 +527,145 @@ Multiple environmental stressors are also an issue in some cases - At
 two of the sites, there are five environmental indicators that are all
 more than twice the US average (Valley and Crawford).
 
+discussion of map
 
-discussion of map 
+discussion of map
 
-discussion of map 
+discussion of map
 
-discussion of map 
+discussion of map
 
-discussion of map 
+discussion of map
 
-discussion of map 
+### Combination of demographic and environmental conditions in these locations 
 
+Summary of Envt and Demog across all indicators? In other words, a single score like the combination of 12 EJ indexes as a threshold approach summary? e.g. the average person had 5 or more of the 12 EJ indexes at least at the 95th percentile nationwide?
 
-## Data Viz 1 -- Map
+•	Individual EJ indicator of 12 that generally had highest overall
+percentiles? On average highest vs the one where at least a few sites
+had a very high number? Other?
 
+•	User specified EJ index(es)?
 
-```{r map, echo=FALSE,  out.height='500px', out.width='800px'}
-if ("NA" == (params$map)) {
-   (knitr::include_graphics(path = params$map_placeholder_png))
-} else {
-  print( params$map )
-}
-```
-
-
-
-discussion of plot goes here
-
-
-discussion of plot goes here
-
-
-discussion of plot goes here
-
-
-discussion of plot goes here
-
-
-
-## Data Viz 2-- Barplot
-
-
-```{r barplot, echo=FALSE, fig.align='center', out.height='500px', out.width='800px'}
-if ("NA" == (params$barplot)) {
- knitr::include_graphics(path = params$barplot_placeholder_png)
-} else {
-  params$barplot  
-}
-```
-
- 
-discussion of table here 
-
-
-discussion of table here 
-
-
-
-discussion of table here 
-
-
-discussion of table here 
-
-
-## Data Table 1. Demographic Indicators
-
-```{r demog_table, echo=FALSE, out.width='900px'}
-if ("NA" != (params$demog_table)) {
-params$demog_table
-} else {
-  knitr::include_graphics(path = params$demog_table_placeholder_png)
-  # not sure how to do this here:
-  #  print(gt::render_gt(params$demog_table_placeholder_rda))
-}
-```
-
-
-discussion of table here 
-
-
-discussion of table here 
-
-
-discussion of table here 
-
-
-discussion of table here 
-
-
-discussion of table here 
-
-
-
-## Data Table 2. Environmental Indicators
-
-```{r envt_table, echo=FALSE, out.width='900px'}
-if ("NA" !=  (params$envt_table)) {
-params$envt_table
-} else {
-  knitr::include_graphics(path = params$envt_table_placeholder_png)
-  # not sure how to do this here:
-  #  print(gt::render_gt(params$envt_table_placeholder_rda))
-}
-```
-
-
-
-discussion of plot here 
-
-
-discussion of plot here 
-
-
-discussion of plot here 
-
-
-discussion of plot here 
-
-
-discussion of plot here 
-
-
-
-## Data Viz 3 -- Boxplots
-
-```{r boxplot, echo=FALSE, fig.align='center', out.height='500px', out.width='800px'}
-if ("NA" == (params$boxplot)) {
- knitr::include_graphics(path = params$boxplot_placeholder_png)
-} else {
-  params$boxplot +
-  ggplot2::scale_x_discrete(labels = function(x) stringr::str_wrap(x, 10)) +
-  ggplot2::theme(plot.title = ggplot2::element_text(hjust=0.5, size=12),
-        plot.subtitle = ggplot2::element_text(hjust=0.5, size=11),
-        axis.title.y = ggplot2::element_text(size=10),
-        axis.text = ggplot2::element_text(size=9)
-        )
-}
-```
-
+  
 \newpage
+
 # Appendices
 
+### Appendix 1 - Detailed tables of statistics for each site
+
+e.g. how many of 12 are \>x? does it have any high scores for any E? any
+D? etc.
+
+### Appendix 2 - Detailed tables of statistics for each indicator
+
+#### **What is Score of people/sites at key cutoffs: What is the X (useful) percentile
+value, for this indicator (as %ile of people nearby or of sites)?**
+
+-   min
+-   min other than zero?
+-   mean
+-   25^th^ %ile of these sites or people (25% have lower than this, and
+    75% have higher than this -- those are same if no ties with this
+    value, but can differ if multiple places have this same exact
+    indicator score)
+-   median (half of these sites or people have a score that is \>= this,
+    and half have \<= this)
+-   75^th^ %ile of these sites or people (if a tied value, would want
+    both \>75 and \<25%)
+-   max
+
+#### **How many people/sites have score \> key cutoffs:  What % & what \# of sites & people have this indicator score (raw or percentile) \>= x (useful cutoff)?**
+
+-   **For percentiles**
+    -   \% of sites w data where \>=80
+
+    -   \% of sites w data where \>=90
+
+    -   \% of sites w data where \>=95
+
+    -   \# of sites where \>=95
+
+```{=html}
+<!-- -->
+```
+-   **For ratios to State or USA average overall % of sites w data where
+    \>1 not=1**
+
+    -   \% of sites w data where ratio is \>=2
+    -   \% of sites w data where \>=3
+    -   \% of sites w data where \>=5
+    -   \% of sites w data where \>=10
+    -   \# of sites w data where \>=10
+
+-   **for 12 EJ indexes, how many of the indexes are above a given
+    threshold?**
+
+    -   \# of sites w data where \>=1
+
+    -   \# of sites w data where \>1 not =1
+
+    -   \# of sites w data where \>=4
+
+### Appendix 3 - notes on how to describe places generically/ in parameters
+
+HOW TO REFER TO THE PLACES STUDIED (near these facilities vs more
+general language)
+
+Note: this could be a "proximity analysis" in cases where it relies on
+circular buffers around facility points to define buffers that include
+residents within a fixed distance from one or more facilities/sites. But
+it more generally could be an EJ analysis that describes environmental
+and demographic conditions among residents in any specified places, such
+as all the places where air quality modeling suggests risk is currently
+above 1 in 1 million, for example. So the language should be flexible
+and refer to something like this:
+
+FOR NON-PROXIMITY ANALYSIS, GENERALLY ANY KIND OF BUFFERS/PLACES
+ANALYZED:
+
+The demographics of residents in ...
+
+The demographic / environmental indicators in ...
+
+Percent low income among residents in ...
+
+The environmental conditions in ...
+
+The environmental indicators for the average resident in ...
+
+The PM2.5 levels in ...
+
+Residents in ...
+
+... these locations
+
+... these places
+
+... these areas
+
+... the analyzed locations
+
+FOR PROXIMITY ANALYSIS SPECIFICALLY, EASIER TO SAY one of these:
+
+Residents / conditions ...
+
+... within x miles of these sites...
+
+... within x miles of any of these sites...
+
+... nearby
+
+... near these sites
+
+... near any of these sites
 
 ## Acknowledgements
 
-
 ## List of Abbreviations
 
-
 \newpage
+
 # References
 
 ```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE }
@@ -506,9 +722,6 @@ if ("NA" == (params$boxplot)) {
 
 ```
 
-
-
-
 ```{r eval=params$testmode, message=FALSE, warning=FALSE, include=FALSE}
 # Developer notes on creating this document
 
@@ -520,4 +733,3 @@ param_table <- aggregate(values~ind, stack(params), toString) %>%
 #knitr::kable(param_table)
 param_table
 ```
-

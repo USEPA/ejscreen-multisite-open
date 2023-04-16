@@ -50,11 +50,11 @@ app_server <- function(input, output, session) {
   hideTab(inputId = 'all_tabs', target = 'Advanced Settings')
   
   ## show advanced settings tab on button click (button in 'About EJAM' tab)
-  observeEvent(input$show_advanced_settings,
+  observeEvent(input$ui_show_advanced_settings,
                {
                  showTab(inputId = 'all_tabs', target = 'Advanced Settings')
                })
-  observeEvent(input$hide_advanced_settings,
+  observeEvent(input$ui_hide_advanced_settings,
                {
                  hideTab(inputId = 'all_tabs', target = 'Advanced Settings')
                })
@@ -64,11 +64,11 @@ app_server <- function(input, output, session) {
   #   modalDialog(
   #     title = 'Welcome to EJAM!', 
   #     "Add basic message here",
-  #     footer = actionButton('close_welcome', 'Close')
+  #     footer = actionButton('ui_close_welcome', 'Close')
   #   )
   # )
   ## close welcome modal on button click
-  # observeEvent(input$close_welcome,{
+  # observeEvent(input$ui_close_welcome,{
   #   removeModal()
   # })
   #############################################################################  # 
@@ -1852,7 +1852,11 @@ app_server <- function(input, output, session) {
       tempReport <- file.path(tempdir(), "report.Rmd")
       file.copy("www/report.Rmd", tempReport, overwrite = TRUE)
       
-      # Set up parameters to pass to Rmd document
+      # Set up parameters to pass to Rmd document - 
+      #  MAKE SURE THESE 3 LISTS MATCH: 
+      #  1. list of user inputs in app_ui.R to customize the long report
+      #  2. params list sent by app_server.R to render the Rmd doc
+      #  3. params accepted in report.Rmd yaml info up top (and params as used within body of report.Rmd)
       params <- list(
         testmode=FALSE,
         total_pop = NA,
@@ -1864,9 +1868,11 @@ app_server <- function(input, output, session) {
         boxplot =  NA,
         acs_version =  "2016-2020",
         ejscreen_version =  "2.1",
-        zonetype =  NA,
-        authorname1 = input$rg_author_name,
-        authoremail1 = input$rg_author_email,
+        zonetype =  input$rg_zonetype,
+        authorname1 =    input$rg_author_name,
+        authoremail1 =   input$rg_author_email,
+        coauthor_names = input$coauthor_names, 
+        coauthor_emails = input$coauthor_emails,
         distance = paste0(input$bt_rad_buff,' miles'), #input$radius_units),
         where = input$rg_enter_miles,
         sectorname_short = input$rg_enter_sites,

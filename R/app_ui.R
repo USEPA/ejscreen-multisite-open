@@ -50,9 +50,9 @@ app_ui  <- function(request) {
                  intro_text,
                  
                  ## button to reveal Advanced Settings tab 
-                 actionButton('show_advanced_settings','Show Advanced Settings Tab', 
+                 actionButton('ui_show_advanced_settings','Show Advanced Settings Tab', 
                               style ='color: #fff; background-color: #005ea2;'),
-                 actionButton('hide_advanced_settings','Hide Advanced Settings Tab', 
+                 actionButton('ui_hide_advanced_settings','Hide Advanced Settings Tab', 
                               style ='color: #fff; background-color: #005ea2;')
         ),
         ######################################################################################################### #
@@ -660,6 +660,11 @@ app_ui  <- function(request) {
         
         tabPanel(title = 'Full Report',
                  
+                 #  MAKE SURE THESE 3 LISTS MATCH: 
+                 #  1. list of user inputs in app_ui.R to customize the long report
+                 #  2. params list sent by app_server.R to render the Rmd doc
+                 #  3. params accepted in report.Rmd yaml info up top (and params as used within body of report.Rmd)
+                 
                  br(), ## vertical space
                  
                  wellPanel(       
@@ -681,11 +686,9 @@ app_ui  <- function(request) {
                             ## this could be added throughout the page to show where different text components would be included
                             actionButton(inputId = 'show_outline', label = 'Show Report Outline',
                                          style = 'color: #fff; background-color: #005ea2;'),
-                            
                      )
                    ),
-                   
-                   
+                  
                    fluidRow(
                      column(2, 
                             ## input: add author information - name       
@@ -702,21 +705,21 @@ app_ui  <- function(request) {
                      ),
                      column(2,
                             ## input: checkbox to add line for coauthor information
-                            checkboxInput('add_coauthors',label = 'Add co-authors?',
+                            checkboxInput('rg_add_coauthors',label = 'Add co-authors?',
                                           value = FALSE)
                      )
                    ),   
                    
                    ## if checkbox is checked, add textinputs for co-author name and email
                    conditionalPanel(
-                     condition = 'input.add_coauthors == 1',
+                     condition = 'input.rg_add_coauthors == 1',
                      fluidRow(
                        column(2, 
-                              ## input: coauthor name
+                              ## input: coauthor names
                               textInput('coauthor_names', 'Co-Author Name(s)')
                        ), 
                        column(2,
-                              ## input: coauthor email
+                              ## input: coauthor emails
                               textInput('coauthor_emails', 'Co-Author Email(s)')
                        )
                      )
@@ -726,7 +729,6 @@ app_ui  <- function(request) {
                      column(4,
                             ## input: analysis location - uses current value of radius slider      
                             uiOutput('rg_enter_miles')
-                            
                      )),
                    
                    fluidRow(
@@ -741,7 +743,7 @@ app_ui  <- function(request) {
                    fluidRow(
                      column(4,
                             ## input: zone type
-                            selectInput(inputId = 'zonetype', label = 'Zone Type (How are zones defined?)',
+                            selectInput(inputId = 'rg_zonetype', label = 'Zone Type (How are zones defined?)',
                                         choices = c('General' = 'zone_is_named_x','Proximity'= 'zone_is_nearby',
                                                     'Risk' = 'zone_is_risk_x'))
                      ),
