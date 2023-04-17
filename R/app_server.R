@@ -1097,9 +1097,9 @@ app_server <- function(input, output, session) {
                      analysis_title = input$analysis_title,
                      # results     = data_processed(),  # NOT NEEDED HERE IF PASSING MAP, TABLES, AND PLOT AS PARAMS
                      map         = report_map(),
-                     envt_table  = v1_envt_table(),
-                     demog_table = v1_demog_table(),
-                     summary_plot     = v1_summary_plot())
+                     envt_table   = v1_envt_table(),
+                     demog_table  = v1_demog_table(),
+                     summary_plot = v1_summary_plot())
       # [TEMPORARILY SAVE PARAMS FOR TESTING] ####
       # saveRDS(params, file="./inst/testparamsSHORT.RDS") # ############################### TEMPORARILY SAVE PARAMS FOR TESTING###### # 
       
@@ -1857,15 +1857,17 @@ app_server <- function(input, output, session) {
       #  1. list of user inputs in app_ui.R to customize the long report
       #  2. params list sent by app_server.R to render the Rmd doc
       #  3. params accepted in report.Rmd yaml info up top (and params as used within body of report.Rmd)
+      isolate({
+
       params <- list(
         testmode=FALSE,
-        total_pop = NA,
-        analysis_title =  NA,
-        results =  NA,
-        map =  NA,
-        envt_table =  NA,
-        demog_table =  NA,
-        boxplot =  NA,
+        total_pop = prettyNum( total_pop(), big.mark = ","),
+        analysis_title =  input$analysis_title,
+        results =  data_processed(),
+        map =  report_map(),
+        envt_table =  v1_envt_table(),
+        demog_table = v1_demog_table(),
+        boxplot =     v1_summary_plot(),
         acs_version =  "2016-2020",
         ejscreen_version =  "2.1",
         zonetype =  input$rg_zonetype,
@@ -1897,7 +1899,7 @@ app_server <- function(input, output, session) {
         conclusion2 = input$conclusion2,
         conclusion3 = input$conclusion3
       )
-      
+      })
       # [TEMPORARILY SAVE PARAMS FOR TESTING] ####
       # saveRDS(params, file="./inst/testparams.RDS") ################################ TEMPORARILY SAVE PARAMS FOR TESTING# # 
       

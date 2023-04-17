@@ -18,17 +18,17 @@ params:
   total_pop: NA
   results: NA
   map: NA
-  map_placeholder_png: "map_placeholder.png"
-  envt_table: NA
-  envt_table_placeholder_rda: "envt_table_placeholder.rda"
-  envt_table_placeholder_png: "envt_table_placeholder.png"
-  demog_table: NA
-  demog_table_placeholder_rda:  "demog_table_placeholder.rda"
-  demog_table_placeholder_png:  "demog_table_placeholder.png"
+  map_placeholder_png:                 "map_placeholder.png"
   boxplot: NA
-  boxplot_placeholder_png: "boxplot_placeholder.png"
+  boxplot_placeholder_png:         "boxplot_placeholder.png"
   barplot: NA
-  barplot_placeholder_png: "barplot_placeholder.png"
+  barplot_placeholder_png:         "barplot_placeholder.png"
+  envt_table: NA
+  envt_table_placeholder_png:   "envt_table_placeholder.png"
+  envt_table_placeholder_rda:   "envt_table_placeholder.rda"
+  demog_table: NA
+  demog_table_placeholder_png: "demog_table_placeholder.png"
+  demog_table_placeholder_rda: "demog_table_placeholder.rda"
   demog_how_elevated: NA
   envt_how_elevated: NA
   demog_high_at_what_share_of_sites: NA
@@ -222,11 +222,24 @@ The only notable differences are the following:
 ## Data Viz 1 -- Map
 
 ```{r map, echo=FALSE,  out.height='500px', out.width='800px'}
-if ("NA" == (params$map)) {
-   (knitr::include_graphics(path = params$map_placeholder_png))
-} else {
-  print( params$map )
-}
+# save(params, file="temp params.rda")
+# print(params)
+# browser() 
+
+ print( params$map )
+
+# # did not work, not sure why:
+# if (!("map" %in% names(params))  ) {
+#   (knitr::include_graphics(rel_path = TRUE, path = params$map_placeholder_png))
+# } else {
+#  
+#   if (is.na(params$map) | "NA" == (params$map)) {
+#    (knitr::include_graphics(rel_path = TRUE, path = params$map_placeholder_png))
+# } else {
+#   print( params$map )
+# }
+# }
+
 ```
 
 
@@ -317,13 +330,17 @@ discussion of table here
 ## Data Table 1. Demographic Indicators
 
 ```{r demog_table, echo=FALSE, out.width='900px'}
-if ("NA" != (params$demog_table)) {
-params$demog_table
-} else {
-  knitr::include_graphics(path = params$demog_table_placeholder_png)
-  # not sure how to do this here:
-  #  print(gt::render_gt(params$demog_table_placeholder_rda))
-}
+
+   (params$demog_table)
+
+# 
+# if (any(is.na(params$demog_table)) | "NA" != (params$demog_table)) {
+# params$demog_table
+# } else {
+#   knitr::include_graphics(rel_path = TRUE, path = params$demog_table_placeholder_png)
+#   # not sure how to do this here:
+#   #  print(gt::render_gt(params$demog_table_placeholder_rda))
+# }
 ```
 
 Almost all the EJ-relevant groups (low-income, people of color, etc.)
@@ -358,11 +375,14 @@ discussion of plot goes here
 ## Data Viz 2-- Barplot
 
 ```{r barplot, echo=FALSE,  out.height='500px', out.width='800px'}
-if ("NA" == (params$barplot)) {
- knitr::include_graphics(path = params$barplot_placeholder_png)
-} else {
-  params$barplot  
-}
+
+print( params$barplot  )
+
+# if ("NA" == (params$barplot)) {
+#  knitr::include_graphics(rel_path = TRUE, path = params$barplot_placeholder_png)
+# } else {
+#   params$barplot  
+# }
 ```
 
 
@@ -433,9 +453,12 @@ Shore and Watts Bar).
 ## Data Viz 3 -- Boxplots
 
 ```{r boxplot, echo=FALSE,  out.height='500px', out.width='800px'}
-if ("NA" == (params$boxplot)) {
- knitr::include_graphics(path = params$boxplot_placeholder_png)
-} else {
+
+
+
+# if ("NA" == (params$boxplot)) {
+#  knitr::include_graphics(rel_path = TRUE, path = params$boxplot_placeholder_png)
+# } else {
   params$boxplot +
   ggplot2::scale_x_discrete(labels = function(x) stringr::str_wrap(x, 10)) +
   ggplot2::theme(plot.title = ggplot2::element_text(hjust=0.5, size=12),
@@ -443,7 +466,7 @@ if ("NA" == (params$boxplot)) {
         axis.title.y = ggplot2::element_text(size=10),
         axis.text = ggplot2::element_text(size=9)
         )
-}
+# }
 ```
 
 
@@ -490,13 +513,16 @@ discussion of table here
 ## Data Table 2. Environmental Indicators
 
 ```{r envt_table, echo=FALSE, out.width='900px'}
-if ("NA" !=  (params$envt_table)) {
+
 params$envt_table
-} else {
-  knitr::include_graphics(path = params$envt_table_placeholder_png)
-  # not sure how to do this here:
-  #  print(gt::render_gt(params$envt_table_placeholder_rda))
-}
+# 
+# if ("NA" !=  (params$envt_table)) {
+# params$envt_table
+# } else {
+#   knitr::include_graphics(rel_path = TRUE, path = params$envt_table_placeholder_png)
+#   # not sure how to do this here:
+#   #  print(gt::render_gt(params$envt_table_placeholder_rda))
+# }
 ```
 
 
@@ -660,9 +686,9 @@ Residents / conditions ...
 
 ... near any of these sites
 
-## Acknowledgements
+# Acknowledgements
 
-## List of Abbreviations
+# List of Abbreviations
 
 \newpage
 
