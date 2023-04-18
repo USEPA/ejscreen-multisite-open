@@ -52,12 +52,13 @@
 #' @param include_ejindexes not yet implemented 
 #' @param need_proximityscore whether to calculate proximity scores
 #' @param ... more to pass to another function? Not used currently.
+#' @param silentinteractive Set to FALSE to prevent long output showing in console in RStudio when in interactive mode
 #' @seealso [ejamit]   [getblocksnearby()]  
 #' @import data.table
 #' @import EJAMblockdata
 #' @export
 #' 
-doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL, popmeancols=NULL, calculatedcols=NULL, testing=FALSE, include_ejindexes=FALSE, updateProgress = NULL, need_proximityscore=FALSE, ...) {
+doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL, popmeancols=NULL, calculatedcols=NULL, testing=FALSE, include_ejindexes=FALSE, updateProgress = NULL, need_proximityscore=FALSE, silentinteractive=FALSE, ...) {
   
   # timed <- system.time({
   if (testing) {library(data.table); library(EJAMblockdata);     sites2blocks <- EJAM::sites2blocks_example }
@@ -1196,7 +1197,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL,
   )
   # }) # finish system.time()
   
-  if (interactive()) {  # false if using shiny web app
+  if (interactive() & !silentinteractive) {  # false if using shiny web app
     # print(timed)
     # cat("count of blocks that are near more than 1 site:", results$count_of_blocks_near_multiple_sites, "\n")
     # cat("count of blocks total, near all sites:", results$blockcount_overall, "\n")

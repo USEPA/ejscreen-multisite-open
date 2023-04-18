@@ -4,11 +4,11 @@
 #'   See help("EJAM")  
 #' @inheritParams getblocksnearby
 #' @return A list of tables of results.
-#' @examples \dontrun{
-#' 
+#' @examples
 #'  # All in one step, using functions not shiny app:
+#'  \dontrun{
 #'  out <- ejamit(testpoints_100_dt, 2, quadtree=localtree)
-#'  
+#' 
 #'  # Do not specify sitepoints and it will prompt you for a file,
 #'  # if in RStudio in interactive mode!
 #'  out <- ejamit(cutoff = 3)
@@ -57,6 +57,7 @@
 #'   out <- doaggregate(s2b, testsites) # this works now and is simpler
 #'   
 #' }
+#' 
 #' @seealso  [getblocksnearby()] [doaggregate()]
 #' @export
 ejamit <- function(sitepoints, 
@@ -66,7 +67,7 @@ ejamit <- function(sitepoints,
                    ...
 ) {
   if (missing(cutoff)) {cat("\nUsing default radius of", cutoff, "miles.\n"); warning("Radius assumed because not provided as parameter.")}
-  if (!missing(quadtree)) {stop("quadtree should not be provided to ejamit() - that is handled by getblocksnearby() ")}
+  if (!missing(quadtree)) {warning("quadtree should not be provided to ejamit() - that is handled by getblocksnearby() ")}
   
   ################################################################################## #
   # note this overlaps or duplicates code in app_server.R 

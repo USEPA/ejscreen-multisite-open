@@ -14,6 +14,7 @@ doaggregate(
   include_ejindexes = FALSE,
   updateProgress = NULL,
   need_proximityscore = FALSE,
+  silentinteractive = FALSE,
   ...
 )
 }
@@ -43,6 +44,8 @@ using formulas that have to be specified.}
 \item{updateProgress}{progress bar function used for shiny app}
 
 \item{need_proximityscore}{whether to calculate proximity scores}
+
+\item{silentinteractive}{Set to FALSE to prevent long output showing in console in RStudio when in interactive mode}
 
 \item{...}{more to pass to another function? Not used currently.}
 }

@@ -49,6 +49,8 @@ inside the circular buffer more accurately and more quickly than
 areal apportionment of block groups would provide.
 }
 \details{
+See \code{\link[=ejamit]{ejamit()}} for examples.
+
 getblocksnearby() is a wrapper redirecting to the right version, like \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}}
 Census block "internal points" (defined by Census Bureau) are actually what it looks for,
 and they are like centroids.

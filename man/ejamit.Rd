@@ -40,11 +40,10 @@ It does essentially what the webapp does to analyze/summarize near a set of poin
 See help("EJAM")
 }
 \examples{
-\dontrun{
-
  # All in one step, using functions not shiny app:
+ \dontrun{
  out <- ejamit(testpoints_100_dt, 2, quadtree=localtree)
- 
+
  # Do not specify sitepoints and it will prompt you for a file,
  # if in RStudio in interactive mode!
  out <- ejamit(cutoff = 3)
@@ -93,6 +92,7 @@ See help("EJAM")
   out <- doaggregate(s2b, testsites) # this works now and is simpler
   
 }
+
 }
 \seealso{
 \code{\link[=getblocksnearby]{getblocksnearby()}} \code{\link[=doaggregate]{doaggregate()}}

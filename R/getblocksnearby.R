@@ -16,13 +16,14 @@
 #'   areal apportionment of block groups would provide. 
 #'   
 #' @details 
+#'  See [ejamit()] for examples.
+#'  
 #'  getblocksnearby() is a wrapper redirecting to the right version, like [getblocksnearbyviaQuadTree()]
 #'    Census block "internal points" (defined by Census Bureau) are actually what it looks for, 
 #'    and they are like centroids. 
 #'    The blocks are pre-indexed for the whole USA, via the data object quadtree aka localtree
 #'
 #' @inheritParams getblocksnearbyviaQuadTree
-#' @inheritSection ejamit examples
 #' @param ...  passed to [getblocksnearbyviaQuadTree()] or other such functions
 #' 
 #' @seealso [ejamit()]  [getblocksnearbyviaQuadTree()] [getblocksnearbyviaQuadTree_Clustered()] [getblocksnearbyviaQuadTree2()]
