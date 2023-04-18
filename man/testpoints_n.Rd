@@ -18,6 +18,8 @@ testpoints_n(
 \item{n}{Number of points needed (sample size)}
 
 \item{weighting}{word indicating how to weight the random points (some synonyms are allowed, in addition to those shown here):
+
+Note the default is frs, but you may want to use pop even though it is slower.
 \itemize{
 \item pop or people = Average Person: random person among all US residents (block point of residence per 2020 Census)
 \item frs or facility = Average Facility: random EPA-regulated facility from actives in Facility Registry Services (FRS)
@@ -28,8 +30,7 @@ testpoints_n(
 
 \item{dt}{logical, whether to return a data.table (DEFAULT) instead of normal data.frame}
 
-\item{ST_of_blockgroup}{optional, can be a character vector of 2 letter State abbreviations to pick from only some States,
-but this only works if the weighting is "bg" or "area" (or synonyms) right now.}
+\item{ST_of_blockgroup}{optional, can be a character vector of 2 letter State abbreviations to pick from only some States.}
 }
 \value{
 data.frame or data.table with columns lat, lon in decimal degrees, and
@@ -43,11 +44,12 @@ facility, blockgroup, block, place on the map, or US resident.
 }
 \examples{
 \dontrun{
+mapfast(testpoints_n(300, ST_of_blockgroup = c('LA','MS')) )
 n=2
 for (d in c(TRUE,FALSE)) {
   for (w in c('frs', 'pop', 'area', 'bg', 'block')) {
     cat("n=",n,"  weighting=",w, "  dt=",d,"\n\n")
-    print(testpoints_n(n,w,d))
+    print(x <- testpoints_n(n,w,d)); print(class(x))
     cat('\n')
   }
 }

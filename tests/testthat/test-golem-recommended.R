@@ -55,9 +55,10 @@ test_that(
 testServer(app_server, {
 
   # Set and test an input
-  session$setInputs(x = 2)
-  expect_equal(input$x, 2)
-
+  session$setInputs(bt_rad_buff = 1)
+  expect_equal(input$bt_rad_buff, 1)
+ 
+  
   # Example of tests you can do on the server:
   # - Checking reactiveValues
   # expect_equal(r$lg, 'EN')

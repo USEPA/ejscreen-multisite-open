@@ -4,7 +4,9 @@
 #'   facility, blockgroup, block, place on the map, or US resident.
 #' @param n Number of points needed (sample size)
 #' @param weighting word indicating how to weight the random points (some synonyms are allowed, in addition to those shown here): 
-#' 
+#'   
+#'   Note the default is frs, but you may want to use pop even though it is slower.
+#'   
 #'   - pop or people = Average Person: random person among all US residents (block point of residence per 2020 Census) 
 #'   
 #'   - frs or facility = Average Facility: random EPA-regulated facility from actives in Facility Registry Services (FRS)
@@ -19,18 +21,18 @@
 #'
 #' @return data.frame or data.table with columns lat, lon in decimal degrees, and 
 #'   any other columns that are in the table used (based on weighting)
-#' @param ST_of_blockgroup optional, can be a character vector of 2 letter State abbreviations to pick from only some States,
-#'   but this only works if the weighting is "bg" or "area" (or synonyms) right now.
+#' @param ST_of_blockgroup optional, can be a character vector of 2 letter State abbreviations to pick from only some States.
 #'   
 #' @import data.table
 #' @export
 #'
 #' @examples \dontrun{
+#' mapfast(testpoints_n(300, ST_of_blockgroup = c('LA','MS')) )
 #' n=2
 #' for (d in c(TRUE,FALSE)) {
 #'   for (w in c('frs', 'pop', 'area', 'bg', 'block')) {
 #'     cat("n=",n,"  weighting=",w, "  dt=",d,"\n\n")
-#'     print(testpoints_n(n,w,d))
+#'     print(x <- testpoints_n(n,w,d)); print(class(x))
 #'     cat('\n')
 #'   }
 #' }
@@ -51,7 +53,7 @@ testpoints_n <- function(n=10, weighting=c('frs', 'pop', 'area', 'bg', 'block'),
   }
   
   # Handle weighting synonyms and default
-  if (missing(weighting)) weighting <- 'bg'  # faster than other options
+  if (missing(weighting)) weighting <- 'frs'  # faster than most other options
   if (any( length(weighting) != 1, class(weighting) != "character")) {stop("invalid weighting parameter for testpoints_n")}
   weighting <- tolower(weighting)
   if (weighting %in% c('frs', 'facility', 'facilities', 'facil', 'fac', 'frsid', 'regid')) weighting <- "frs"
@@ -63,9 +65,27 @@ testpoints_n <- function(n=10, weighting=c('frs', 'pop', 'area', 'bg', 'block'),
   
   # RANDOM FACILITIES (EPA-regulated facilities in FRS)
   if (weighting == "frs") {
-    if (!is.null(ST_of_blockgroup)) {warning("Ignoring ST_of_blockgroup ! ")}
+    if (!is.null(ST_of_blockgroup)) {
+      statecount=length(ST_of_blockgroup)
+      
+      # this should be written as a recursive function but didnt have time to do that:
+      extrasize =  150 * statecount * n # try to find n in 1 state must on avg check on 52n, but check 150n to be very likely to have enough.
+      rowtried <- sample.int(EJAMfrsdata::frs[,.N], size = extrasize, replace = FALSE)
+      # browser()
+      rowinstate <- rowtried[state_from_latlon(lat = frs$lat[rowtried], lon = frs$lon[rowtried])$ST %in% ST_of_blockgroup]
+      stillneed <- n - length(rowinstate)
+      if (stillneed > 0) warning('did not find enough within specified state(s) in this attempt')
+      if (stillneed < 0 ) rowinstate <- rowinstate[1:n]
+      # extrasize =  70 * statecount * stillneed
+      # rowtried2 <- sample.int(EJAMfrsdata::frs[-rowtried, .N], size = extrasize, replace = FALSE)
+      # rowinstate2 <- c(rowinstate, rowtried2[state_from_latlon(lat = frs$lat[rowtried2], lon = frs$lon[rowtried2]) %in% ST_of_blockgroup])
+      # 
+      # rownum <- sample.int(EJAMfrsdata::frs[rowinstate,.N], size = n, replace = FALSE)
+      if (!dt) {x=copy(frs[rowinstate,] ); setDF(x); return(x )}
+      return(frs[rowinstate,] )
+      }
     rownum <- sample.int(EJAMfrsdata::frs[,.N], size = n, replace = FALSE)
-    if (!dt) {x=copy(frs); setDF(x); return(x[rownum, ])}
+    if (!dt) {x=copy(frs[rownum, ]); setDF(x); return(x)}
     return(frs[rownum, ] )
   }
   
@@ -79,17 +99,25 @@ testpoints_n <- function(n=10, weighting=c('frs', 'pop', 'area', 'bg', 'block'),
       return(bg_filtered_by_state[rownum, ] )
     } else {
       rownum <- sample.int(EJAM::bgpts[,.N], size = n, replace = FALSE)
-      if (!dt) {x=copy(bgpts); setDF(x); return(x[rownum, ])}
+      if (!dt) {x=copy(bgpts[rownum, ]); setDF(x); return(x)}
       return(bgpts[rownum, ] )
     }
   }
   
   # RANDOM BLOCKS
   if (weighting == 'block') {
-    if (!is.null(ST_of_blockgroup)) {warning("Ignoring ST_of_blockgroup ! ")}
-    rownum <- sample.int(EJAMblockdata::blockpoints[,.N], size = n, replace = FALSE)
-    if (!dt) {x=copy(blockpoints); setDF(x); return(x[rownum, ])}
-    return(blockpoints[rownum, ] )
+    cat('loading blockpoints dataset\n')
+    if (!is.null(ST_of_blockgroup)) {
+      staterownums <- which(state_from_blockid(blockpoints$blockid) %in% ST_of_blockgroup  )
+      rownum <- sample.int(length(staterownums), size = n, replace = FALSE)
+      if (!dt) {x=copy(blockpoints[staterownums,][rownum,]); setDF(x); return(x)}
+      return(blockpoints[staterownums,][rownum,] )
+    } else {
+      rownum <- sample.int(EJAMblockdata::blockpoints[,.N], size = n, replace = FALSE)
+      
+      if (!dt) {x=copy(blockpoints[rownum,]); setDF(x); return(x)}
+      return(blockpoints[rownum,] )
+      }
   }
   
   # RANDOM POINTS ON THE MAP
@@ -115,7 +143,14 @@ testpoints_n <- function(n=10, weighting=c('frs', 'pop', 'area', 'bg', 'block'),
   
   # RANDOM US RESIDENTS
   if (weighting == 'pop') {
-    if (!is.null(ST_of_blockgroup)) {warning("Ignoring ST_of_blockgroup ! ")}
+    if (!is.null(ST_of_blockgroup)) {
+      staterownums <- which(state_from_blockid(blockpoints$blockid) %in% ST_of_blockgroup  )
+      
+      rownum <- sample.int(length(staterownums), size = n, replace = FALSE, prob = blockwts$blockwt[staterownums])
+      if (!dt) {x=copy(blockpoints[staterownums,][rownum,]); setDF(x); return(x)}
+      return(blockpoints[blockwts[staterownums,][rownum,] ,,on="blockid"])
+      # warning("Ignoring ST_of_blockgroup ! ")
+      }
     rownum <- sample.int(EJAMblockdata::blockwts[,.N], size = n, replace = FALSE, prob = blockwts$blockwt)
     if (!dt) {x=copy(blockpoints[blockwts[rownum,], on="blockid"]); setDF(x); return(x)}
     # all(blockpoints[,blockid] == blockwts[,blockid])
