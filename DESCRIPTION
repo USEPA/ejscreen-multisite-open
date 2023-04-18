@@ -21,6 +21,7 @@ Imports:
   attempt,
   collapse,
   config (>= 0.3.1),
+  data.table,
   DBI,
   doSNOW,
   DT,
@@ -44,8 +45,9 @@ Imports:
   shinyjs,
   sf,
   sp,
-  tidyverse,
-  data.table
+  tidyverse, 
+  dplyr,
+  tidyr
 Remotes: 
     github::USEPA/EJAMblockdata,
     github::USEPA/EJAMfrsdata,
