@@ -3,43 +3,51 @@
 \name{speedtest}
 \alias{speedtest}
 \title{speedtest
-Runs EJAM analysis for several radius values for many sitepoints, recording how long each step took.}
+Runs EJAM analysis for several radius values for various numbers of sitepoints, recording how long each step took.}
 \usage{
 speedtest(
   n = 10,
   sitepoints = NULL,
   weighting = "frs",
-  radius = c(1, 3.106856, 5, 10, 20)[1],
-  do_batch.summarize = TRUE,
+  radii = c(1, 3.106856, 5, 10, 31.06856)[1:3],
+  do_batch.summarize = FALSE,
   logging = TRUE,
   logfolder = getwd(),
   logfilename = "log_n_datetime.txt",
-  honk_when_ready = TRUE
+  honk_when_ready = TRUE,
+  saveoutput = FALSE
 )
 }
 \arguments{
-\item{n}{optional, how many random points to test, or set to 0 to interactively pick file of points in RStudio (n is ignored if sitepoints provided)}
+\item{n}{optional, vector of 1 or more counts of how many random points to test, or set to 0 to interactively pick file of points in RStudio (n is ignored if sitepoints provided)}
 
 \item{sitepoints}{optional,  (use if you do not want random points) data.frame of points or path/file with points, where columns are lat and lon in decimal degrees}
 
 \item{weighting}{optional, if using random points, how to weight them, such as facilities, people, or blockgroups. see \code{\link[=testpoints_n]{testpoints_n()}}}
 
-\item{radius}{optional, one or more radius values in miles to use in creating circular buffers when findings residents nearby each of sitepoints}
+\item{radii}{optional, one or more radius values in miles
+to use in creating circular buffers when findings residents nearby each of sitepoints.
+The default list includes one that is 5km (approx 3.1 miles)}
 
 \item{do_batch.summarize}{optional, if want to also do that function}
 
-\item{logging}{logical optional, whether to save log file with timings of steps}
+\item{logging}{logical optional, whether to save log file with timings of steps. NOTE this slows it down though.}
 
 \item{logfolder}{optional, name of folder for log file}
 
 \item{logfilename}{optional, name of log file to go in folder}
 
 \item{honk_when_ready}{optional, self-explanatory}
+
+\item{saveoutput}{but this slows it down if set to TRUE to save each run as .rda file}
 }
 \value{
 EJAM results similar to as from the web app  \code{\link[=ejamit]{ejamit()}}
 }
 \description{
 speedtest
-Runs EJAM analysis for several radius values for many sitepoints, recording how long each step took.
+Runs EJAM analysis for several radius values for various numbers of sitepoints, recording how long each step took.
+}
+\examples{
+#  speedtest(c(10,100),radii=c(1,3),logging=FALSE, honk=FALSE)
 }
