@@ -1156,7 +1156,7 @@ app_server <- function(input, output, session) {
       max.ratio.d <- max(ratio.to.us.d())
       max.name.d <- names(ratio.to.us.d())[which.max(ratio.to.us.d())]
       
-      max.name.d.friendly <- EJAMbatch.summarizer::names_d_friendly[which.max(ratio.to.us.d())]  # xxx
+      max.name.d.friendly <- EJAMbatch.summarizer::names_d_batch_friendly[which.max(ratio.to.us.d())]  # xxx
       
       median.pctile.in.us <- data_summarized()$rows['Median site', paste0('pctile.',max.name.d)]
       
