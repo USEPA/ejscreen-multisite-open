@@ -16,9 +16,28 @@ knitr::opts_chunk$set(eval = FALSE)
 # https://r-pkgs.org/vignettes.html
 ```
 
+## Summary of Demographics and Environment near 100 Sites
+
+```{r echo=TRUE}
+
+library(EJAM)
+
+x <- ejamit(testpoints_n(100))
+mapfast(x$results_bysite)
+
+```
+
+Use interactive file picker without full shiny web app
+
+```{r}
+x <- ejamit()
+```
+
 ## *Developer note on building and updating this vignette*
 
-See important info at <https://r-pkgs.org/vignettes.html#sec-vignettes-how-built>
+*Note this vignette needs to be updated - some function names have changed since it was drafted.*
+
+*See important info at <https://r-pkgs.org/vignettes.html#sec-vignettes-how-built>*
 
 ## Accessing and using the code/ data/ app
 
@@ -26,14 +45,9 @@ The app is not on a server. The R package is still in active development, but a 
 
 ## Installing EJAM
 
-You can install the development version of EJAM like so:
+You can install the development version of EJAM by cloning it from the repository:
 
-``` r
-if (!require(EJAM)) {
-if (!require(devtools)) {install.packages('devtools')}
-devtools::install_github('USEPA/EJAM')
-}
-```
+<https://github.com/USEPA/EJAM>
 
 ## See the [README](https://github.com/USEPA/EJAM#readme "github.com/USEPA/EJAM#readme") if you need a basic intro and broad overview
 
@@ -44,129 +58,140 @@ You can find it here: <https://github.com/USEPA/EJAM#readme>
 Launch the web app with run_app() instead of shiny's runApp() because this shiny app is also an R package based on the golem package framework.
 
 ```{r run_app}
+library(EJAM)
 run_app()
 ```
 
-## Documentation of functions and data
+## See Documentation of Functions and Data
 
 See this vignette and help documentation for the package overall, and individual functions and datasets.
 
 ```{r help, eval=FALSE, include=FALSE}
+?EJAM
+# or 
 help("EJAM", package='EJAM')
 ```
 
-## **Get proximity analysis via R script or console**
+## **Get proximity analysis via R script or console (not shiny app)**
 
 ### Install other R packages
 
-Relevant or essential packages only available on the [USEPA github](https://github.com/USEPA/EJAM "github.com/USEPA/EJAM") (not CRAN) are:
+Essential packages only available on the [USEPA github](https://github.com/USEPA/EJAM "github.com/USEPA/EJAM") (not CRAN) are:
 
 -   [EJAM](https://github.com/USEPA/EJAM#readme "github.com/USEPA/EJAM")
 -   [EJAMblockdata](https://github.com/USEPA/EJAMblockdata#readme "github.com/USEPA/EJAMblockdata#readme")
 -   [EJAMfrsdata](https://github.com/USEPA/EJAMfrsdata#readme "github.com/USEPA/EJAMfrsdata")
--   [EJAMejscreendata](https://github.com/USEPA/EJAMejscreendata#readme "github.com/USEPA/EJAMejscreendata")
 -   [EJAMejscreenapi](https://github.com/USEPA/EJAMejscreenapi#readme "github.com/USEPA/EJAMejscreenapi")
 -   [EJAMbatch.summarizer](https://github.com/USEPA/EJAMbatch.summarizer#readme "github.com/USEPA/EJAMbatch.summarizer")
 
-```{r install_others}
-if (!require(EJAM)) {
-  if (!require(devtools)) {install.packages('devtools')}
-  devtools::install_github('USEPA/EJAM')
-}
-if (!require(data.table)) {install.packages('data.table')}
-# These and other required should get installed and loaded and attached by EJAM 
-#   library(EJAMblockdata)
-#   library(EJAMfrsdata) ## EPA Facility Registry Service data for lat/lon of each regulated site
-```
+Not essential:
+
+-   [EJAMejscreendata](https://github.com/USEPA/EJAMejscreendata#readme "github.com/USEPA/EJAMejscreendata")
 
 ### Create the index of where blocks are, to be able to quickly find those nearby a given site
 
-IMPORTANT NOTE: During development of this package, at least, this index is built when the package is loaded, automatically, by the .onLoad() function in the file EJAM/R/aaa_onLoad_create_quad_tree_index.R 
-THIS IS SLOW - It takes a few seconds. This (seemingly) must be done for each session? One cannot save it as .rda and just load via a pkg since it is like a pointer to the index in RAM or something like that.
+During development of this package, at least, this index is built when the package is loaded, automatically, by the .onLoad() function in the file EJAM/R/aaa_onLoad_create_quad_tree_index.R THIS IS SLOW - It takes a few seconds. This (seemingly) must be done for each session? One cannot save it as .rda and just load via a pkg since it is like a pointer to the index in RAM or something like that.
 
 ```{r BUILD_INDEX}
 # One could manually rebuild the index (if quaddata were updated, for example),
 #  like this:
-system.time({
-  localtree <- SearchTrees::createTree(
-    EJAMblockdata::quaddata, treeType = "quad", dataType = "point"
-  )
-})
+localtree <- SearchTrees::createTree(
+  EJAMblockdata::quaddata, treeType = "quad", dataType = "point"
+)
 ```
 
 ### Specify points (where you want to center the circular buffers)
 
-#### Name an Industrial Sector & Map those EPA-regulated Facilities
+#### NAICS Codes to Specify Facilities in one Industrial Sector
+
+Quick map of EPA-regulated facilities in one industrial category
 
 ```{r}
-# Quick basic map of one industrial category, with popup for each site
-# (but note that FRS lacks NAICS for most facilities!)
-# 
-mapfast(mysites <- frs_from_naics("smelt"))
- 
- # Table of facilities in an industry, plus links to each facility in ECHO and EJScreen
- 
- industryword <- "chemical manuf"
+mapfast(mysites <- frs_from_naics("smelt")) # slow the 1st time as it lazyloads frs dataset
+```
+
+(but note that FRS lacks NAICS for most facilities!)
+
+Table of facilities in an industry, plus links to each facility in ECHO and EJScreen
+
+```{r}
+industryword <- "chemical manuf"
 #  industryword <- "smelt"
- mysites <- frs_from_naics(industryword, children=FALSE)[,1:5]
- regids <- mysites$REGISTRY_ID
- link1 <- url_echo_facility_webpage(regids, as_html = T)
- link2 <- url_ejscreen_report(lat = mysites$lat, lon = mysites$lon, distance = 3, as_html = T)
- link3 <- url_ejscreenmap(lat = mysites$lat, lon = mysites$lon,  as_html = T)
- link4 <- url_ejscreen_acs_report(lat = mysites$lat, lon = mysites$lon, distance = 3, as_html = T)
+mysites <- frs_from_naics(industryword, children=FALSE)[,1:5]
+regids <- mysites$REGISTRY_ID
+link1 <- url_echo_facility_webpage(regids, as_html = T)
+link2 <- url_ejscreen_report(lat = mysites$lat, lon = mysites$lon, distance = 3, as_html = T)
+link3 <- url_ejscreenmap(lat = mysites$lat, lon = mysites$lon,  as_html = T)
+link4 <- url_ejscreen_acs_report(lat = mysites$lat, lon = mysites$lon, distance = 3, as_html = T)
 # # same:
 # my_industry <- naics_from_any("chemical manuf",children = F)[,.(code,name)]
 # mysites <- frs_from_naics(my_industry$code)[,1:5]
 mysites <- cbind(`ECHO report` = link1, 
                  `EJScreen Report` = link2, `EJScreen Map` = link3, `ACS Report` = link4,
                  mysites)
-DT::datatable(
-  mysites[1:min(nrow(mysites), 2000) ], # >2k rows is too much for client-side DataTables
-  escape = FALSE,
-  caption = paste0(nrow(mysites), ' FACILITIES HAVE NAICS MATCHING QUERY TERM "', industryword, '"'),
-  filter = "top"
+print(
+  DT::datatable(
+    mysites[1:min(nrow(mysites), 1500) ], # >2k rows is too much for client-side DataTables
+    escape = FALSE,
+    caption = paste0(nrow(mysites), ' FACILITIES HAVE NAICS MATCHING QUERY TERM "', industryword, '"'),
+    filter = "top"
+  )
 )
+```
 
+Map of facilities in an industry, plus popups with links to each facility in ECHO and EJScreen
 
-
- # Map of facilities in an industry, plus popups with links to each facility in ECHO and EJScreen
-
+```{r}
 EJAMejscreenapi::mapfast(mysites)
+```
 
+NAICS/industry categories
 
-
-# see industry groupings
-  naics_categories()
-  naics_from_any(naics_categories(3))[order(name),.(name,code)][1:10,]
-  naics_from_any(naics_categories(3))[order(code),.(code,name)][1:10,]
+```{r}
+naics_categories()
+naics_from_any(naics_categories(3))[order(name),.(name,code)][1:10,]
+naics_from_any(naics_categories(3))[order(code),.(code,name)][1:10,]
 
 # See a data table of facilities in one industry
 industryword <- "pulp"
-
-# search for industry codes or names
- naics_from_any("plastics and rubber") 
- naics_from_any(326)
- naics_from_any(326, children = T)[,.(code,name)]
- naics_from_any("pig") 
- naics_from_any("pig ") # space after g
-
-# a OR b,  a AND b,  etc.
- a = naics_from_any("plastics")
- b = naics_from_any("rubber")
- fintersect(a,b)[,.(name,code)] #  a AND b
- funion(a,b)[,.(name,code)]     #  a OR  b
- naics_subcodes_from_code(funion(a,b)[,code])[,.(name,code)]   #  plus children
- naics_from_any(funion(a,b)[,code], children=T)[,.(name,code)] #  same
-
- NROW(naics_from_any("chem"))
-#[1] 20
- NROW(naics_from_any("chem", children = T))
-#[1] 104
- 
-
+frs_from_naics(naics_from_any(industryword)$code)[,1:4]
 ```
 
-#### Use lat and lon to specify points
+Search using industry codes or text in industry names
+
+```{r}
+naics_from_any("plastics and rubber") 
+naics_from_any(326)
+naics_from_any(326, children = T)[,.(code,name)]
+naics_from_any("pig") 
+naics_from_any("pig ") # space after g
+
+# a OR b,  a AND b,  etc.
+a = naics_from_any("plastics")
+b = naics_from_any("rubber")
+fintersect(a,b)[,.(name,code)] #  a AND b
+funion(a,b)[,.(name,code)]     #  a OR  b
+naics_subcodes_from_code(funion(a,b)[,code])[,.(name,code)]   #  plus children
+naics_from_any(funion(a,b)[,code], children=T)[,.(name,code)] #  same
+```
+
+A NAICS code can have many "children" or subcategories under it
+
+```{r}
+NROW(naics_from_any("chem"))
+#[1] 20
+NROW(naics_from_any("chem", children = T))
+#[1] 104
+
+  NROW(frs_from_naics(naics_from_any("chem")$code))
+# [1] 4907
+ NROW(frs_from_naics(naics_from_any("chem", children = T)$code))
+# [1] 13543
+```
+
+#### Use lat/lon point data
+
+Enter lat and lon to specify points
 
 ```{r}
 sitepoints2  <- data.frame(
@@ -176,22 +201,32 @@ sitepoints2  <- data.frame(
 )
 ```
 
-#### Use point data you read from a file
+Use lat/lon coordinates in a table like a spreadsheet - xlsx or csv file
 
-You can use lat lon coordinates from an xlsx or csv file. The first row should be column names including lat and lon, or something that can be interpreted as that - see latlon_infer()
+The first row should be column names including lat and lon, or something that can be interpreted as that - see latlon_infer()
 
 ```{r eval=FALSE, include=TRUE}
 testjunk <- file.path(tempdir(), 'testjunk.csv')
 write.csv(data.frame(LONG = c(-92.1, -91.8), Latitude = c(34.8, 30.2), siteid = 1:2), file = testjunk, row.names = FALSE)
 sitepoints2 <- latlon_from_anything(testjunk)
+sitepoints2
 ```
 
-#### Use test points example that comes with the package
+Use test points in examples that comes with the package
 
 ```{r testpoints, eval=TRUE, include=TRUE}
 EJAM::testpoints_100_dt |> head(2) # data.table, in this package
 sitepoints100 <- data.table::copy(EJAM::testpoints_100_dt)  # [1:5, ]
 head(sitepoints100, 3)
+```
+
+Create random test data points
+
+```{r}
+p1k <- testpoints_n(1000)
+mapfast(p1k)
+
+mapfast(testpoints_n(300, ST_of_blockgroup = c('LA','TX')) )
 ```
 
 ### Specify radius for circular buffer, and other key parameters
@@ -200,9 +235,9 @@ head(sitepoints100, 3)
 radius <- 3 # radius (miles).  5 km = 3.1 miles, 10 km = 6.2 miles
 ```
 
-### Note these Key Functions
+### Key Functions in EJAM
 
--   **getblocksnearby_and_doaggregate()** provides results in just one function.
+-   **ejamit()** provides results in just one function.
 
 -   **getblocksnearby()** takes a set of points (e.g., facilities) and finds the Census blocks near each. Sample input is in testpoints_100_dt, and sample output is in sites2blocks_example.
 
@@ -213,42 +248,48 @@ radius <- 3 # radius (miles).  5 km = 3.1 miles, 10 km = 6.2 miles
 ```{r}
 ## This function just combines getblocksnearby() and doaggregate()
 sitepoints <- testpoints_1000
-elapsed <- system.time({
-  # # commented out, for now
-  out2 <- getblocksnearby_and_doaggregate(
+# elapsed <- system.time({
+began = Sys.time()
+  out2 <- ejamit(
     sitepoints =  sitepoints  ,
-    cutoff = radius,
-    quadtree = localtree
+    cutoff = radius
   )
-})
-print(elapsed)
+  speedreport(began, Sys.time(),n = NROW(sitepoints))
+# })
+# print(elapsed)
+
+```
+
+Explore results in map and table
+
+```{r}
+names(out2)
 cbind(as.list(out2$results_overall))
 cbind(overall = as.list( out2$results_overall[ , ..names_d]))
 cbind(overall = as.list( out2$results_overall[ , ..names_d_subgroups]))
 
 ## Site by site results in map or table:
-out2 <- merge(testpon)
+ 
 mapfast(out2$results_bysite, radius = radius)
 
 DT::datatable(out2$results_bysite)
 
 ```
 
-### See summary stats
+See summary stats about the indicators
 
 ```{r}
 outsum <-  batch.summarize(
   data.frame(out2$results_bysite), 
   data.frame(out2$results_bysite)
 )
- 
+
 round(outsum$rows[,names_d],2)
 round(outsum$rows[,names_d_pctile],2)
 
 ```
 
-
-### Get results step by step, and view details
+### Get granular results step by step, and view details
 
 #### getblocksnearby() will find residents/blocks that are within specified distance
 
@@ -269,7 +310,7 @@ print(elapsed)
 sites2blocks
 ```
 
-#### View some diagnostics or stats on the intermediate result:
+#### View detailed diagnostics or stats on the intermediate result:
 
 -   what blocks are near each site
 -   how far are they
@@ -324,8 +365,11 @@ EJAMejscreenapi::mapfast(s2b_stats[87:88,], radius = radius)
 
 # Within a 1 mile radius, the blocks found tend to be about 2/3 of a mile from the site at the center.
 summary(s2b_stats$avgDistance)
+```
 
-# See map of how each site is surrounded by block points
+See map of how each site is surrounded by block points
+
+```{r}
 x <- merge( sites2blocks, blockpoints )
 setnames(x, 'lat', 'blocklat')
 setnames(x, 'lon', 'blocklon')
@@ -388,13 +432,11 @@ cbind(as.list(outapi[1, ]))
 
 
 setdiff( names(outapi), names(out2$results_overall))
-
-# lat lon kept in API outputs.
-# links to report or map
-# statename, ST, REGION, etc. not yet in EJAM output.
-# us and state averages not yet there.
-# 
+cat("----------------\n")
+setdiff_yx( names(outapi), names(out2$results_overall))
+# links to report or map are named differently.
+# us and state averages are there but us ones named with us. prefix in api not ejam
+# EJ pctiles, statename,  REGION, etc. not yet in EJAM output.
+# ratios counts of denominators, demog subgroups, etc. are in EJAM only.  
 
 ```
-
-# TO BE CONTINUED
