@@ -65,6 +65,13 @@ bibliography: report_references.bib
       #  1. list of user inputs in app_ui.R to customize the long report
       #  2. params list sent by app_server.R to render the Rmd doc
       #  3. params accepted in report.Rmd yaml info up top (and params as used within body of report.Rmd)
+
+# see also
+# https://bookdown.org/yihui/rmarkdown/parameterized-reports.html
+# https://bookdown.org/yihui/rmarkdown/
+# https://raw.githubusercontent.com/rstudio/cheatsheets/main/rmarkdown.pdf
+# https://bookdown.org/yihui/rmarkdown-cookbook/word-template.html 
+
 ```
 
 ```{r, echo=FALSE}
@@ -76,6 +83,32 @@ in_the_places_analyzed <- {
     zone_is_nearby = paste0(params$within_x_miles_of, params$facilities_studied),
     zone_is_risk_x = paste0(params$in_areas_where, params$risks_are_x)
     )}
+# 
+# Distributional Analysis for the xxxx Proposed Rule
+# 
+# Demographic and Environmental Conditions…
+# Demographic and Environmental Indicators…
+# Summary of Demographic and Environmental Conditions/Indicators…
+# 
+#  …
+#  …in locations…
+#  …in residential locations…
+#  …among populations who live…
+#  …among residents…
+#  …where people live… 
+# 
+# …at…
+# …Surrounding…
+# …Near…
+# …Close to…
+# …Within 1 mile of any…
+# …in close proximity to…
+# 
+# …___ Facilities [e.g., Vibranium Smelting Facilities/ name of category]
+# …Facilities in the ___ sector/source category
+# …EPA-regulated facilities in the ___ sector/source category
+# 
+
 ```
 
 \newpage
@@ -181,52 +214,29 @@ circumstance.
 
 # Methods
 
-EPA's EJAM (Environmental Justice Analysis Multisite) tool was used to
-develop this analysis. EPA's [EJAM
-tool](https://rstudio-connect.dmap-stage.aws.epa.gov/content/dc3cda00-20a2-47ed-a753-0dcb89eb8f2a/ "Environmental Justice Analysis Multisite (EJAM) tool")
-is a user-friendly web app that can summarize demographics and
-environmental conditions for any list of places in the nation. It
-provides interactive results and a formatted, ready-to-share report with
-written explanations of the results, tables, and graphics. The report
-can provide EJ-related information about people who live in communities
-near any of the industrial facilities on a list, for example.
-
-The basic methodology and data used for this analysis are the same as
-those used in EPA's EJScreen tool, with a few exceptions described
-below, and are described in detail in EJScreen's documentation, at
-[EJScreen](https://epa.gov/ejscreen "EPA EJScreen homepage") and with
-more technical details available at [EJScreen technical documentation
-page](https://www.epa.gov/ejscreen/technical-information-about-ejscreen "EPA EJScreen technical information").
-The only notable differences are the following:
-
--   EJAM may include additional demographic or environmental indicators.
--   For a proximity analysis (to characterize everyone living within a
-    certain certain distance from a point such as a facility), EJAM
-    identifies which residents live nearby using a slight variation on
-    how the distance to each Census block is measured. While EJScreen
-    uses ESRI's ArcGIS calculations, EJAM calculates the distance using
-    formulas implemented in the R language for statistical computing
-    [@R-base]. These measurements provide almost identical results for
-    estimated distance from the average person in a block to a given
-    site point. PLACEHOLDER MORE INFO
--   EJAM aggregates indicator values within and across locations,
-    converts them to percentiles, and does other summary calculations
-    using the same formulas to the greatest extent possible, but in R
-    rather than within EJScreen itself. There may be slight differences
-    between raw scores and percentiles in EJScreen and EJAM in some
-    cases.
-
 ## Selection of sites analyzed
 
+This analysis focused on locations `r params$sectorname_short`, which
+are the sites that may be affected by the proposal rule. The latitude
+and longitude of a point representing each site was obtained from
+`r params$source_of_latlons`. A total of `r params$sitecount` sites had
+location information and were analyzed.
 
-## Data Viz 1 -- Map
+Figure \ref{fig1} shows a map of the sites analyzed.
 
-```{r map, echo=FALSE,  out.height='500px', out.width='800px'}
+## Figure \ref{fig1} Map of Analyzed Sites
+
+```{r fig1, fig.cap = "\\label{fig1}Map of Analyzed Sites", echo=FALSE,  out.height='280px', out.width='600px'}
 # save(params, file="temp params.rda")
 # print(params)
 # browser() 
-
- print( params$map )
+ 
+# if (file.exists(params$map_placeholder_png)) {
+if (params$testmode) {
+  knitr::include_graphics(rel_path = TRUE, path = params$map_placeholder_png)
+} else {
+  print( params$map )
+}
 
 # # did not work, not sure why:
 # if (!("map" %in% names(params))  ) {
@@ -245,33 +255,57 @@ The only notable differences are the following:
 
 ## Estimating locations and population counts of residents
 
+EPA's EJAM (Environmental Justice Analysis Multisite) tool was used to
+develop this analysis. EPA's [EJAM
+tool](https://rstudio-connect.dmap-stage.aws.epa.gov/content/dc3cda00-20a2-47ed-a753-0dcb89eb8f2a/ "Environmental Justice Analysis Multisite (EJAM) tool")
+is a user-friendly web app that can summarize demographics and
+environmental conditions for any list of places in the nation. 
+
 ### Spatial resolution of data
 
 The analysis used EPA's EJAM tool and EJScreen version
 `r params$ejscreen_version` with demographic data based on the Census
-Bureau's `r params$acs_version` American Community Survey (ACS) and the
+Bureau's `r params$acs_version` American Community Survey (ACS) 5-year summary file, and the
 corresponding version of Decennial Census information on geographic
 boundaries and FIPS codes for blocks, block groups, tracts, counties,
-and States.
+and States. Demographic and environmental indicators were at block group resolution, while locations of residential populations was at block resolution (the highest resolution available from the Census Bureau) and then summarized by block group, then by location analyzed, and finally overall across the locations as a whole.
 
 See EJScreen methodology for details.
 
 ### Analytic method for buffering, and tools used to implement that method
 
-The buffering method was the same as EJScreen's method in principle,
-i.e., Percent of each block group's population that is estimated as
+The basic methodology and data used for this analysis are the same as
+those used in EPA's EJScreen tool, with a few exceptions described
+below, and are described in detail in EJScreen's documentation, at
+[EJScreen](https://epa.gov/ejscreen "EPA EJScreen homepage") and with
+more technical details available at [EJScreen technical documentation
+page](https://www.epa.gov/ejscreen/technical-information-about-ejscreen "EPA EJScreen technical information").
+
+Like EJScreen, EJAM identifies residents near a given site by finding which Census block points are nearby, and counting the full block population as nearby if that point is nearby. The percent of each block group's population that is estimated as
 inside a buffer is based on which Census block internal points are
-included in the buffer and using a block weight that is the Census 2020
+included in the buffer, and then using a block weight that is the Census 2020
 block population as a fraction of the parent block group's Census 2020
 population (which is not quite the same as the ACS population count).
-That block weight is a fraction of the parent block group. A slightly
-different method was used to identify which block points are inside the
-buffer than EJScreen uses, but results should be almost identical
-[confirm this and clarify]
+That block weight is a fraction of the parent block group, and is used to estimate how many of the block groups residents are nearby or in the buffer. 
 
-See EJScreen methodology for details. EJAM finds nearby block points
-using a very fast approach but otherwise uses the EJScreen method of
-estimating nearby residential populations for proximity analysis.
+The only notable differences between the EJScreen and EJAM calculations of proximity and indicators are the following:
+
+-   EJAM may include additional demographic or environmental indicators.
+-   For a proximity analysis (to characterize everyone living within a
+    certain certain distance from a point such as a facility), EJAM
+    identifies which residents live nearby using a slight variation on
+    how the distance to each Census block is measured. While EJScreen
+    uses ESRI's ArcGIS calculations, EJAM calculates the distance using
+    formulas implemented in the R language for statistical computing
+    [@R-base]. These measurements provide almost identical results for
+    estimated distance from the average person in a block to a given
+    site point. PLACEHOLDER MORE INFO
+-   EJAM aggregates indicator values within and across locations,
+    converts them to percentiles, and does other summary calculations
+    using the same formulas to the greatest extent possible, but in R
+    rather than within EJScreen itself. There may be slight differences
+    between raw scores and percentiles in EJScreen and EJAM in some
+    cases.
 
 ## Demographic and environmental indicators
 
@@ -286,7 +320,15 @@ alone), non-hispanic other single race, and non-hispanic multiracial.
 
 See EJScreen methodology for details.
 
+
+
+
+
 # Findings
+
+
+
+
 
 ## Text on Findings
 
@@ -300,7 +342,7 @@ stats?
 •	Count of locations
 
 •	Locations missing data
-
+There were several sites where EJScreen did not return any stats, typically (or always) because of low population density nearby (within 1 mile in this case).
 •	Where are the sites (regions, states, cities?, urban/rural?)
 
 •	Clustering (are they near each other? How close? Which ones are in
@@ -316,23 +358,24 @@ single one of these sites.
 
 ### Demographics overall
 
-Overall summary statement of some kind - e.g., a "\_\_\_very large"
-number of all the (12?) envt (or D) indicators were "\_\_\_very high" at
-a "\_\_\_very large" share of the sites or preferably for a "\_\_\_very
+Overall summary statement of some kind - e.g., a "   very large"
+number of all the (12?) envt (or D) indicators were "  very high" at
+a "  very large" share of the sites or preferably for a "  very
 large share of the people"? Or, how many of 12 indicators were "high"
 for the average person and/or site overall? Somehow put that in context
 ?? vs other rules, usA, other sites, etc.???
 
-discussion of table here
-
-discussion of table here
+Table 1 shows key results for the analysis of demographics in these locations. The table shows each demographic group's share of the residential population in these locations and conpares that to their shares of statewide and nationwide population.  
 
 ## Data Table 1. Demographic Indicators
 
 ```{r demog_table, echo=FALSE, out.width='900px'}
 
-   (params$demog_table)
-
+if (params$testmode) {
+  knitr::include_graphics(rel_path = TRUE, path = params$demog_table_placeholder_png)
+} else {
+   params$demog_table
+}
 # 
 # if (any(is.na(params$demog_table)) | "NA" != (params$demog_table)) {
 # params$demog_table
@@ -375,8 +418,11 @@ discussion of plot goes here
 ## Data Viz 2-- Barplot
 
 ```{r barplot, echo=FALSE,  out.height='500px', out.width='800px'}
-
+if (params$testmode) {
+  knitr::include_graphics(rel_path = TRUE, path = params$barplot_placeholder_png)
+} else {
 print( params$barplot  )
+}
 
 # if ("NA" == (params$barplot)) {
 #  knitr::include_graphics(rel_path = TRUE, path = params$barplot_placeholder_png)
@@ -387,12 +433,6 @@ print( params$barplot  )
 
 
 ### Key D group(s) based on policy or default / Key D group(s) based on observed magnitude of disparities here
-
-•	Sdf
-
-•	Asdf
-
-•	Asdf
 
 Largest disparity in presence of any group -- which group was most
 over-represented here?
@@ -453,19 +493,21 @@ Shore and Watts Bar).
 ## Data Viz 3 -- Boxplots
 
 ```{r boxplot, echo=FALSE,  out.height='500px', out.width='800px'}
-
-
-
-# if ("NA" == (params$boxplot)) {
-#  knitr::include_graphics(rel_path = TRUE, path = params$boxplot_placeholder_png)
-# } else {
-  params$boxplot +
+if (params$testmode) {
+   knitr::include_graphics(rel_path = TRUE, path = params$boxplot_placeholder_png)
+} else {
+    params$boxplot +
   ggplot2::scale_x_discrete(labels = function(x) stringr::str_wrap(x, 10)) +
   ggplot2::theme(plot.title = ggplot2::element_text(hjust=0.5, size=12),
         plot.subtitle = ggplot2::element_text(hjust=0.5, size=11),
         axis.title.y = ggplot2::element_text(size=10),
         axis.text = ggplot2::element_text(size=9)
         )
+}
+# if ("NA" == (params$boxplot)) {
+# 
+# } else {
+
 # }
 ```
 
@@ -513,8 +555,11 @@ discussion of table here
 ## Data Table 2. Environmental Indicators
 
 ```{r envt_table, echo=FALSE, out.width='900px'}
-
+if (params$testmode) {
+   knitr::include_graphics(rel_path = TRUE, path = params$envt_table_placeholder_png)
+} else {
 params$envt_table
+}
 # 
 # if ("NA" !=  (params$envt_table)) {
 # params$envt_table
@@ -686,19 +731,243 @@ Residents / conditions ...
 
 ... near any of these sites
 
-# Acknowledgements
+## Author contributions
 
-# List of Abbreviations
+`r params$authorname1` was responsible for planning this analysis and
+defining the locations to be analyzed. `r params$authorname1` was
+responsible for completing the manuscript. All authors evaluated the
+literature on previous relevant analyses. All authors contributed to the
+writing and reviewing of the manuscript and agree on its contents.
+
+## Acknowledgements
+
+We thank \_\_\_\_ for helpful research assistance and \_\_\_ for
+suggesting useful background literature.
+
+## List of Abbreviations
+
+-   AAAS American Association for the Advancement of Science
+-   ACS American Community Survey, Census Bureau
+-   AFO Animal Feeding Operation
+-   AirToxScreen The Air Toxics Screening Assessment, EPA screening tool
+-   ANPR/ ANPRM Advance Notice of Proposed Rule/Rulemaking
+-   AO Office of the Administrator, USEPA
+-   API American Petroleum Institute
+-   API Application Programming Interface; or American Petroleum
+    Institute
+-   AQI Air Quality Index
+-   ARP / ARPA American Rescue Plan Act
+-   BACT Best Available Control Technology
+-   Benmap (EPA criteria pollutants risk and benefit modeling tool)
+-   bg Census Block Group
+-   BR Biennial Report (under RCRA)
+-   CAA Clean Air Act
+-   CAFOs Concentrated Animal Feeding Operations
+-   CAMD Clean Air Markets Division, USEPA
+-   CARB California Air Resources Board
+-   CBG Census Block Group
+-   CDR Chemical Data Reporting (TSCA)
+-   CEQ Council on Environmental Quality, Executive Office of the
+    President
+-   CERCLA Comprehensive Environmental Response, Compensation, and
+    Liability Act / Superfund
+-   CFC Chlorofluorocarbon(s)
+-   CO Carbon Monoxide
+-   CPSC Consumer Product Safety Commission
+-   CRA Congressional Review Act
+-   CWA Clean Water Act
+-   DHS Department of Homeland Security
+-   DMR Discharge Monitoring Report (under CWA)
+-   DoD Department of Defense
+-   DOE Department of Energy
+-   DOT Department of Transportation
+-   dpm diesel particulate matter
+-   ECHO Enforcement and Compliance History Online, USEPA OECA
+-   EDGAR Electronic Data Gathering, Analysis, and Retrieval database
+    (SEC)
+-   EGU electricity generating unit in a power plant
+-   EJ Environmental Justice
+-   EJAM The Environmental Justice Analysis Multi-site tool developed by
+    USEPA
+-   EJScreen / EJSCREEN Environmental Justice Screening and mapping
+    tool, USEPA
+-   ELG effluent limitation guideline
+-   EO Executive Order
+-   EP313 EPCRA Section 313 (established TRI)
+-   EPA United States Environmental Protection Agency
+-   EPCRA Emergency Planning and Community Right-to-Know Act
+-   ERNS Emergency Response Notification System
+-   ESA Endangered Species Act
+-   FAA Federal Aviation Administration
+-   FAQ Frequently Asked Questions
+-   FDA Food and Drug Administration
+-   FESOP Federally Enforceable State Operating Permit (CAA program)
+-   FIFRA Federal Insecticide, Fungicide, and Rodenticide Act
+-   FIP Federal Implementation Plan (CAA program)
+-   FIPS Codes Federal Information Processing Standards codes for
+    geographic locations such as Census block groups
+-   FR, FRN Federal Register, FR Notice (but sometimes FR refers to a
+    Final Rule)
+-   FRS Facility Registry Service
+-   GACT Generally Available Control Technology
+-   GAO Government Accountability Office
+-   GHG greenhouse gas
+-   HAP hazardous air pollutant (air toxic)
+-   HHS / DHHS Department of Health and Human Services
+-   HI Hazard Index, for HAPs
+-   HPV High Priority Violation (under CAA; also see SNC)
+-   ICIS Integrated Compliance Information System
+-   ICR information collection request
+-   ID Identifier or Identification Number
+-   IRA Inflation Reduction Act
+-   IRIS Integrated Risk Information System
+-   LOEL lowest observable effect level
+-   LQG Large Quantity Generator (RCRA Hazardous Waste)
+-   MACT Maximum Achievable Control Technology (CAA program)
+-   MIR maximum individual risk
+-   NAAQS National Ambient Air Quality Standards (for criteria air
+    pollutants, CAA program)
+-   NAICS North American Industry Classification System
+-   NATA National Air Toxics Assessment, USEPA
+-   NCEE National Center for Environmental Economics, USEPA
+-   NDZ no discharge zone
+-   NEJAC EPA's National Environmental Justice Advisory Council
+-   NESHAP National Emission Standards for Hazardous Air Pollutants (CAA
+    program)
+-   NEXUS analytic tool, USEPA/OAR
+-   NGO nongovernmental organization
+-   NHTSA National Highway Traffic Safety Administration
+-   NOAA National Oceanic and Atmospheric Administration
+-   NOEL no observable effect level
+-   NOV Notice of Violation
+-   NOx Nitrogen Oxides
+-   NPDES National Pollutant Discharge Elimination System (CWA permit
+    program)
+-   NPL National Priority List (related to Superfund)
+-   NRPM Notice of Proposed Rulemaking, or proposed rule or proposal
+-   NSPS New Source Performance Standards (CAA program)
+-   NSR New Source Review (CAA program)
+-   O3 ozone
+-   OA Office of the Administrator, USEPA
+-   OAR Office of Air and Radiation, USEPA
+-   OCHP Office of Children's Health Protection, USEPA
+-   OCIR Office of Congressional and Intergovernmental Relations, USEPA
+-   OCSPP Office of Chemical Safety and Pollution Prevention, USEPA
+-   OECA Office of Enforcement and Compliance Assurance, USEPA
+-   OEI Office of Environmental Information, USEPA
+-   OEJ Office of Environmental Justice, USEPA
+-   OGC Office of General Counsel, USEPA
+-   OGWDW Office of Ground Water and Drinking Water, USEPA
+-   OIG / IG Office of Inspector General / Inspector General, USEPA
+-   OIRA Office of Information and Regulatory Affairs, OMB
+-   OITA Office of International and Tribal Affairs, USEPA
+-   OLEM Office of Land and Emergency Management, USEPA
+-   OMB Office of Management and Budget
+-   OMS Office of Mission Services, USEPA
+-   OMS Office of Mission Support, USEPA
+-   OP Office of Policy, or the Policy Office, USEPA
+-   ORD Office of Research and Development, USEPA
+-   ORPM Office of Regulatory Policy and Management, USEPA
+-   OSA Office of Science Advisor, USEPA
+-   OSHA Occupational Safety and Health Administration
+-   OTAQ Office of Transportation Air Quality, USEPA
+-   OW Office of Water, USEPA
+-   OWOW Office of Wetlands, Oceans and Watersheds, USEPA
+-   Pb lead
+-   PCE Partial Compliance Evaluation
+-   PEL Permissible Exposure Limits
+-   PFAS, e.g., PFOS, PFOA Per- and polyfloroalkyl substances (PFOS and
+    PFOA are the 8-carbon PFAS)
+-   PM, PM2.5, PM10 Particulate Matter
+-   POC people of color
+-   POTWs Publicly Owned Treatment Works
+-   PRA Paperwork Reduction Act
+-   PSD Prevention of Significant Deterioration (CAA program)
+-   QNCR Quarterly Noncompliance Report (under CWA)
+-   RCRA Resource Conservation and Recovery Act
+-   RCRAInfo Resource Conservation and Recovery Act Information System
+-   RE Risk Evaluation
+-   REL Reference Exposure Level
+-   RFA reg. Flex analysis or request for applications
+-   RfC reference concentration (toxicology)
+-   RfD reference dose (toxicology)
+-   RFF Resources for the Future
+-   RFG reformulated gasoline
+-   RFS renewable fuel standards
+-   RMP Risk Management Plan
+-   RNC Reportable Noncompliance (under CWA)
+-   RSEI risk estimation tool based on TRI
+-   RTP Research Triangle Park, NC, USEPA
+-   SaRA analytic tool, USEPA/OAR
+-   SARA Superfund Amendments and Reauthorization Act
+-   SDWA Safe Drinking Water Act
+-   SDWIS Safe Drinking Water Information System
+-   SEC U.S. Securities and Exchange Commission
+-   SES socio-economic status
+-   SIC Standard Industrial Classification
+-   SIP State Implementation Plan (under CAA)
+-   SNC Significant Noncompliance (or Noncomplier) (also see HPV)
+-   SOx Sulfur Oxides
+-   SOx oxides of sulfur
+-   SQG Small Quantity Generator (RCRA Hazardous Waste)
+-   TOSHI Target-Organ-Specific Hazard Index, for HAPs
+-   TRC Technical Review Criteria (under CWA)
+-   TRI Toxic Release Inventory (EPCRA)
+-   TRIS Toxics Release Inventory System
+-   TSCA Toxic Substances Control Act
+-   TSD technical support document
+-   TSDF Treatment, Storage, and Disposal Facility (RCRA Hazardous
+    Waste)
+-   UIC Underground Injection Control
+-   USCG United States Coast Guard
+-   USDA United States Department of Agriculture
+-   USEPA United States Environmental Protection Agency
+-   UST underground storage tank
+-   VOC Volatile Organic Compound
+-   VSQG Very Small Quantity Generator (RCRA Hazardous Waste)
+-   WHEJAC White House Environmental Justice Advisory Council
+-   WOTUS Waters of the United States
 
 \newpage
 
-# References
+## References
 
-```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE }
+```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
 
 # <!-- -- References can come from report_bibliography.bib file -->
 # 
+## Notes on formatting for a manuscript
+
+This manuscript will follow the guidelines in the Guide for Authors of
+the relevant journal. For detailed instructions on the elsevier
+article class, see
+<https://www.elsevier.com/authors/policies-and-guidelines/latex-instructions>
+
+## Bibliography styles
+
+Here are two sample references: [@Feynman1963118; @Dirac1953888]. 
+
+By default, natbib will be used with the `authoryear` style, set in the 
+`classoption` variable in a YAML. 
+You can set  extra options with 
+`natbiboptions` variable in a YAML header:
+#``` yaml
+#natbiboptions: longnamesfirst,angle,semicolon
+#```
+
+There are various more specific bibliography styles available at
+<https://support.stmdocs.in/wiki/index.php?title=Model-wise_bibliographic_style_files>.
+To use one of these, add it in the header using, for example,
+`biblio-style: model1-num-names`.
+
+If `citation_package` is set to `default` in `elsevier_article()`, then
+pandoc is used for citations instead of `natbib`.
+
+
+
 # <!-- see citation()  and in Visual mode of report.Rmd editor in RStudio, see Insert Citation -->
+
+
 # <!-- Depends:  -->
 # <!--     R (>= 2.10),  -->
 # <!--     shiny (>= 1.7.2), -->
