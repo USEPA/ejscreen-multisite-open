@@ -16,10 +16,10 @@ knitr::opts_chunk$set(eval = FALSE)
 # https://r-pkgs.org/vignettes.html
 ```
 
-## Summary of Demographics and Environment near 100 Sites
+## Quickstart: Summary of Demographics and Environment near 100 Sites
 
 ```{r echo=TRUE}
-
+# In R/RStudio, clone/install EJAM package and related ones from https://github.com/USEPA/EJAM, etc.
 library(EJAM)
 
 x <- ejamit(testpoints_n(100))
@@ -35,9 +35,10 @@ x <- ejamit()
 
 ## *Developer note on building and updating this vignette*
 
-*Note this vignette needs to be updated - some function names have changed since it was drafted.*
-
-*See important info at <https://r-pkgs.org/vignettes.html#sec-vignettes-how-built>*
+- *Note this vignette needs to be updated - some function names have changed since it was drafted.*
+- *See important info at <https://r-pkgs.org/vignettes.html#sec-vignettes-how-built>*
+- *Vignette at EJAM\vignettes\EJAM-vignette.html  uses devtools::document() to build it.*
+- *See <https://docs.ropensci.org/postdoc/> for a quick easy way to create html help on a pkg. postdoc::render_package_manual('PKGNAME')*
 
 ## Accessing and using the code/ data/ app
 
@@ -297,6 +298,8 @@ About \< 1 second for 100 sites, but a few seconds for 1,000 sites, or roughly 5
 
 ```{r}
 sitepoints <- data.table::copy(EJAM::testpoints_100_dt) 
+# or 
+# sitepoints <- testpoints_n(100,"block") # random points
 elapsed <- system.time({
   
   sites2blocks <- EJAM::getblocksnearby(
@@ -308,6 +311,12 @@ elapsed <- system.time({
 }) # end of timed function
 print(elapsed)
 sites2blocks
+```
+
+#### Map of the blocks found nearby
+
+```{r}
+plotblocksnearby(testpoints_n(1), radius = 3)
 ```
 
 #### View detailed diagnostics or stats on the intermediate result:
