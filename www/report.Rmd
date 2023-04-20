@@ -60,7 +60,7 @@ output:
     toc: true
     toc_depth: 3
     number_sections: true
-bibliography: report_references.bib
+# bibliography: report_references.bib
 ---
 
 ```{r, echo=FALSE}
