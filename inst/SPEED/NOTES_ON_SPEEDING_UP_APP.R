@@ -10,15 +10,16 @@ Try using the app (basic steps seem sluggish like maps, short report, knitting, 
 
 **2 - Identify/prioritize slow, key lines of code.**
 
-Do profiling of bottlenecks, before optimizing code.
+Do profiling of bottlenecks, before optimizing code - find out what steps are slow.
  Can use EJAM::speedtest(c(10,100), radii=c(1,5)) 
   for benchmarking ejamit() or getblocksnearby() and doaggregate()  or more simply something like:
    system.time({  x1=getblocksnearby(testpoints_1000,1);  save(x1,file = 'x1.rda');rm(x1)})
    system.time({  x3=getblocksnearby(testpoints_1000,3);  save(x3,file = 'x3.rda');rm(x3)})
    system.time({  x6=getblocksnearby(testpoints_1000,6);  save(x6,file = 'x6.rda');rm(x6)})
  
-Profile overall, then closer look at key functions. See http://adv-r.had.co.nz/Profiling.html#improve-perf  and consider profvis, microbenchmark, etc. See getblocksnearby() and especially doaggregate() in particular. e.g., the one line of code in doaggregate() that does this: sites2blocks_overall <-  is very slow.  also see on unit testing: https://www.r-bloggers.com/2023/04/unit-testing-analytics-code/
-optimizing percentiles:   OPTIMIZE function that looks up what percentile each raw indicator score is in doaggregate() (IT IS SLOW)
+Profile overall, then closer look at key functions. See http://adv-r.had.co.nz/Profiling.html#improve-perf  and consider profvis, microbenchmark, etc. See getblocksnearby() and especially doaggregate() in particular. e.g., the one line of code in doaggregate() that does this: sites2blocks_overall <-  is very slow.  
+also see on unit testing: https://www.r-bloggers.com/2023/04/unit-testing-analytics-code/
+optimizing percentiles function that looks up what percentile each raw indicator score is in doaggregate() (IT IS SLOW)
 
 
 
@@ -36,6 +37,10 @@ see https://appsilon.com/shinyproxy-vs-posit-connect/ ShinyProxy vs Posit Connec
 Consider strategies such as these (roughly in order of priority or feasibility): 
 
 •	[Again, it is critical to do profiling to confirm what are bottlenecks, first, before trying to optimize anything!  
+- Articles and resources on this: 
+  - https://appsilon.com/speeding-up-r-shiny/
+  - https://appsilon.com/scaling-and-infrastructure-why-is-my-shiny-app-slow/
+  - https://www.r-bloggers.com/2023/04/lessons-learned-with-shiny-benchmark-improving-the-performance-of-a-shiny-dashboard/
 •	Offer a spinner/ good progress bar where relevant, until speed improves.
 •	Have fast basic elements of webpage/tab load asap, then slower ones afterwards.
 •	Use reactive programming optimally - have the minimum of things refresh, like other tabs, using isolate() and bindcache functions, etc., use debouncing of sliders, etc.

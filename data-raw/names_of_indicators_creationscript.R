@@ -3,7 +3,7 @@
 #    EJAM
 
 
-# C:/Users/mcorrale/R/mysource/EJAM/data-raw/names_of_indicators.R
+#  EJAM/data-raw/names_of_indicators_creationscript.R
 
 
 
@@ -58,7 +58,7 @@
    # names(USA_2022)    <- ejscreen::ejscreenformulas$Rfieldname[match(names(USA_2022),    ejscreen::ejscreenformulas$gdbfieldname)] 
    # names(States_2022) <- ejscreen::ejscreenformulas$Rfieldname[match(names(States_2022), ejscreen::ejscreenformulas$gdbfieldname)]
 
-# similar to: EJAMbatch.summarizer::names_d_friendly, EJAMbatch.summarizer::names_e_friendly 
+# similar to: EJAMbatch.summarizer::names_d_batch_friendly, EJAMbatch.summarizer::names_e_batch_friendly 
 
 ############################################################################## #
 
@@ -87,7 +87,8 @@ names_d_friendly <- c(
   "% Linguistic Isol.", "% < age 5", "% > age 64", "% unemployed",
   "Low life expectancy"
 )
-# EJAMbatch.summarizer::names_d_friendly
+# > EJAMbatch.summarizer::names_d_batch_friendly ==  c(names_d_friendly, names_d_subgroups_friendly)
+# [1] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
 
 names_d_count <- gsub('pct', '', names_d); names_d_count <- gsub('min', 'mins', names_d_count); 
 names_d_count <- names_d_count[names_d_count != 'Demog.Index']
@@ -111,7 +112,7 @@ names_d_subgroups_friendly <- c(
   "% Other nha (Other race non-Hispanic, single race)",
   "% Multi nha (Two or more races non-Hispanic)"
 )
-# names_d_subgroups_friendly <- paste0(
+# names_d_subgroups_friendly <- paste0(   #these were shorter but less explicit? neither is great. and need a shorter version for graphic labels.
 #   "% ", c("White", "Hispanic or Latino", "Black or African American", "American Indian and Alaska Native", 
 #           "Native Hawaiian and Other Pacific Islander", "Other race", "Two or more races"),
 #   " (non-Hispanic, single race)")

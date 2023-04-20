@@ -470,7 +470,7 @@ app_ui  <- function(request) {
                  ) , # ,
                  ## _radio button on format of short report ####
                  # DISABLED UNTIL PDF KNITTING IS DEBUGGED
-                   radioButtons("format1pager", "Format", choices = c(html="html", html="pdf"), inline = TRUE)  # fix 
+                 radioButtons("format1pager", "Format", choices = c(html="html", html="pdf"), inline = TRUE)  # fix 
         ),
         
         br(), ## vertical space
@@ -478,7 +478,9 @@ app_ui  <- function(request) {
         ######################################################################################################### #
         # ~ ####
         # OVERALL RESULTS TALL FORMAT ####
-        
+        ###   THIS WAS MEANT TO BE Another way to quickly see all the indicators, in one long list. 
+        # This could be kept here (but look better) if removed from the site by site tab, to keep that table focused on 1 row/site.
+        # not sure if is useful enough to keep. they already appear in the "site by site plus overall" tab, and in excel download.
         # tabPanel(title = 'Results Overall',
         #          
         #          br(), ## vertical space
@@ -492,48 +494,33 @@ app_ui  <- function(request) {
         # ~ ####
         # SITE BY SITE (AND OVERALL) TABLE   ####
         # | ####
-        
         tabPanel(title = 'Table of Results',
-                 
-                 br(), ## vertical space
+                 br(), 
                  
                  ############################################################################### # 
-                 
+                 ###   THIS WAS MEANT TO BE A TINY BIT OF EXECUTIVE-SUMMARY-STYLE TEXT BUT INTERACTIVE
+                 ###    IT DID NOT LOOK GREAT WHERE IT WAS, BUT THE IDEA COULD BE REIMPLEMENTED SOMEWHERE
                  # h3('Key Indicators'),
                  # wellPanel(
-                 #   
+                 ############ # 
                  #  ## _input: Demog. indicator (dropdown) to use in summary text ####
                  #   selectInput(
                  #     'key_ind_d', label = 'Choose a demographic indicator',
-                 #     choices = setNames(
-                 #       c(names_d         , names_d_subgroups ),
-                 #       c(names_d_friendly, names_d_subgroups_friendly)
-                 #        )
+                 #     choices = setNames(c(names_d, names_d_subgroups), c(names_d_friendly, names_d_subgroups_friendly))
                  #   ),
-                 #   
                  #   ## _output: Demog. Exec. Summary Text ####
-                 #   shinycssloaders::withSpinner(
-                 #     htmlOutput('exec_summ_d')
-                 #   ),
-                 #   
-                 #   br(), ## vertical space
-                 #   br(),
-                 #   
+                 #   shinycssloaders::withSpinner(htmlOutput('exec_summ_d')),
+                 #   br(), br(), 
+                 ############ # 
                  #   ## _input: Envt. indicator (dropdown) to use in summary text ####
-                 #   selectInput('key_ind_e', 
-                 #               label = 'Choose an environmental indicator',
-                 #               choices = setNames(EJAM::names_e,
-                 #                                  EJAMbatch.summarizer::names_e_friendly
-                 #               )
+                 #   selectInput(
+                 #     'key_ind_e', label = 'Choose an environmental indicator',
+                 #     choices = setNames(names_e, names_e_friendly)
                  #   ),
-                 #   
                  #   ## _output: Envt. Exec. Summary Text ####
-                 #   shinycssloaders::withSpinner(
-                 #     htmlOutput('exec_summ_e')
-                 #   )
-                 # ), 
-                 # 
-                 # br(), ## vertical space
+                 #   shinycssloaders::withSpinner(htmlOutput('exec_summ_e'))
+                 ############ # 
+                 # ), br(),
                  ############################################################################### # 
                  
                  ## _button: Excel Download ####
@@ -557,11 +544,10 @@ app_ui  <- function(request) {
                  shinycssloaders::withSpinner(
                    leaflet::leafletOutput(outputId = 'v3_sitemap')
                  ),
-                 
         ), # end Tabular results tab
         ######################################################################################################### #
-        
         # ~ ####
+        
         # GRAPHICS  (barplots, histograms) ####
         
         tabPanel(title = 'Graphical Results',
@@ -603,9 +589,9 @@ app_ui  <- function(request) {
                  br(),
                  ######################################################################################################### #
                  
-                  ## _HISTOGRAM ####
+                 ## _HISTOGRAM ####
                  
-                  h3("Explore Indicator Distributions"),
+                 h3("Explore Indicator Distributions"),
                  
                  wellPanel(
                    ## row of histogram settings

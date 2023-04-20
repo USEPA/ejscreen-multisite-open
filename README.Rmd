@@ -11,6 +11,10 @@ output: github_document
 # `README.Rmd` every time you push. An example workflow can be found here:
 # <https://github.com/r-lib/actions/tree/v1/examples>.
 
+# also note simple html version of package documentation can be made via
+# library(postdoc)
+# htmlfile <- render_package_manual(package = 'MASS')
+
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",

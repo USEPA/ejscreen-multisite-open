@@ -1156,7 +1156,7 @@ app_server <- function(input, output, session) {
       max.ratio.d <- max(ratio.to.us.d())
       max.name.d <- names(ratio.to.us.d())[which.max(ratio.to.us.d())]
       
-      max.name.d.friendly <- EJAMbatch.summarizer::names_d_friendly[which.max(ratio.to.us.d())]  # xxx
+      max.name.d.friendly <- EJAMbatch.summarizer::names_d_batch_friendly[which.max(ratio.to.us.d())]  # xxx
       
       median.pctile.in.us <- data_summarized()$rows['Median site', paste0('pctile.',max.name.d)]
       
@@ -1293,110 +1293,45 @@ app_server <- function(input, output, session) {
   output$view3_table <- DT::renderDT(server = TRUE, expr = {
     req(data_processed())
     
-    include_states <- TRUE
+    cols_to_select <- c('siteid',  'pop', 
+                        EJAMbatch.summarizer::names_all_batch)
+    friendly_names <- c('Site ID', 'Est. Population',  
+                        EJAMbatch.summarizer::names_all_batch_friendly, 
+                        'State', 'EPA Region', '# of indicators above 95% threshold')
     
-    ## note: this code with include_states = TRUE used a different version of doaggregate!! # 
-    ##   (now doaggregate_with_states) that retained state info
-    ## if that is ever the case in future, could use this section to add State
-    ## and EPA region columns to DT table
+    dt_overall <- data_processed()$results_overall %>% 
+      as.data.frame() %>% 
+      mutate(siteid = 'All sites', ST = NA,
+             across(where(is.numeric), .fns = function(x) {round(x, digits=2)})) %>% 
+      select(all_of(cols_to_select), ST)
     
-    if(include_states){
-      
-      cols_to_select <- c('siteid', 'pop', EJAMbatch.summarizer::names_all)
-      friendly_names <- c('Site ID', 'Est. Population',  EJAMbatch.summarizer::names_all_friendly, 'State', 'EPA Region',
-                          '# of indicators above 95% threshold')
-      
-      dt_overall <- data_processed()$results_overall %>% 
-        as.data.frame() %>% 
-        mutate(siteid = 'All sites', ST = NA,
-               across(where(is.numeric), .fns = function(x) {round(x, digits=2)})) %>% 
-        select(all_of(cols_to_select), ST)
-      
-      dt <- data_processed()$results_bysite %>% 
-        as.data.frame() %>%
-        mutate(across(where(is.numeric), .fns = function(x) {round(x, digits=2)}),
-               siteid = as.character(siteid)) %>%
-        select(all_of(cols_to_select), ST)
-      
-      dt_avg <- data_summarized()$rows[c('Average person','Average site'),] %>% 
-        mutate(siteid = c('Average person', 'Average site'), ST = NA,
-               across(where(is.numeric), .fns = function(x) {round(x, digits=2)}),
-               siteid = as.character(siteid)) %>%
-        select(all_of(cols_to_select), ST)
-      
-      dt_final <- dt %>% 
-        bind_cols(data_summarized()$cols) %>% 
-        bind_rows(dt_avg) %>% 
-        bind_rows(dt_overall) %>% 
-        arrange(desc(pop)) %>% 
-        mutate(pop = prettyNum(pop, big.mark = ',')) %>% 
-        left_join(EJAM::stateinfo %>% select(ST, statename, REGION), by = 'ST') %>% 
-        select(-ST, -Max.of.variables)
-      
-      colnames(dt_final) <- friendly_names
-      
-      dt_final <- dt_final %>% 
-        relocate(c(State, 'EPA Region', '# of indicators above 95% threshold'), .before = 2)
-      
-      n_cols_freeze <- 5
-      
-    } else {
-      # ## obsolete? ####
-      # ## vector of column names to keep xxx
-      # cols_to_select <- c('siteid', 'pop', c(EJAM::names_d , EJAM::names_d_subgroups, EJAM::names_e, EJAM::names_ej)) #  EJAMbatch.summarizer::names_all)
-      # # setdiff( c(EJAM::names_d , EJAM::names_d_subgroups, EJAM::names_e, EJAM::names_ej), EJAMbatch.summarizer::names_all)
-      # # [1] "Demog.Index.Supp" "lowlifex"         "pctnhwa" "pcthisp" "pctnhba" "pctnhaa" "pctnhaiana" "pctnhnhpia"  "pctnhotheralone"  "pctnhmulti" 
-      # ## vector of nicer names to use in table header
-      # friendly_names <- c('Site ID', 'Est. Population', 
-      #                     c(EJAM::names_d_friendly , EJAM::names_d_subgroups_friendly, EJAM::names_e_friendly, EJAM::names_ej_friendly), #   EJAMbatch.summarizer::names_all_friendly,
-      #                     '# of indicators above 95% threshold')
-      # 
-      # ## format doaggregate results_overall output - use as summary row ## 
-      # dt_overall <- data_processed()$results_overall %>% 
-      #   as.data.frame() %>% 
-      #   mutate(siteid = 'All sites',
-      #          across(where(is.numeric), .fns = function(x) {round(x, digits=2)})) %>% 
-      #   select(all_of(cols_to_select))
-      # 
-      # ## format doaggregate results_bysite output
-      # dt <- data_processed()$results_bysite %>% 
-      #   as.data.frame() %>%
-      #   mutate(across(where(is.numeric), .fns = function(x) {round(x, digits=2)}),
-      #          siteid = as.character(siteid)) %>%
-      #   select(all_of(cols_to_select))
-      # 
-      # ## format batch.summarize Average person and Average site output - use as summary row
-      # dt_avg <- data_summarized()$rows[c('Average person','Average site'),] %>% 
-      #   mutate(siteid = c('Average person', 'Average site'), 
-      #          across(where(is.numeric), .fns = function(x) {round(x, digits=2)}),
-      #          siteid = as.character(siteid)) %>%
-      #   select(all_of(cols_to_select))
-      # 
-      # dt_final <- dt %>% 
-      #   ## add summary columns - # of indicators > threshold
-      #   bind_cols(data_summarized()$cols) %>% 
-      #   ## add summary rows
-      #   bind_rows(dt_avg) %>% 
-      #   bind_rows(dt_overall) %>% 
-      #   ## sort by site ID so summary rows end up at top of table
-      #   arrange(desc(siteid)) %>% 
-      #   #arrange(desc(pop)) %>% 
-      #   ## format population
-      #   mutate(pop = prettyNum(pop, big.mark = ',')) %>% 
-      #   ## drop column
-      #   select(-Max.of.variables)
-      # 
-      # ## change to nicer names
-      # colnames(dt_final) <- friendly_names
-      # 
-      # ## move this column earlier in table
-      # dt_final <- dt_final %>% 
-      #   relocate(c('# of indicators above 95% threshold'), .before = 2)
-      # 
-      # ## number of columns to keep on left of table when scrolling 
-      # ## currently set to 3 for Site ID, Population, # of indicators above 95% threshold'
-      # n_cols_freeze <- 3
-    }
+    dt <- data_processed()$results_bysite %>% 
+      as.data.frame() %>%
+      mutate(across(where(is.numeric), .fns = function(x) {round(x, digits=2)}),
+             siteid = as.character(siteid)) %>%
+      select(all_of(cols_to_select), ST)
+    
+    dt_avg <- data_summarized()$rows[c('Average person','Average site'),] %>% 
+      mutate(siteid = c('Average person', 'Average site'), ST = NA,
+             across(where(is.numeric), .fns = function(x) {round(x, digits=2)}),
+             siteid = as.character(siteid)) %>%
+      select(all_of(cols_to_select), ST)
+    
+    dt_final <- dt %>% 
+      bind_cols(data_summarized()$cols) %>% 
+      bind_rows(dt_avg) %>% 
+      bind_rows(dt_overall) %>% 
+      arrange(desc(pop)) %>% 
+      mutate(pop = prettyNum(pop, big.mark = ',')) %>% 
+      left_join(EJAM::stateinfo %>% select(ST, statename, REGION), by = 'ST') %>% 
+      select(-ST, -Max.of.variables)
+    
+    colnames(dt_final) <- friendly_names
+    
+    dt_final <- dt_final %>% 
+      relocate(c(State, 'EPA Region', '# of indicators above 95% threshold'), .before = 2)
+    
+    n_cols_freeze <- 5
     
     ## format data table
     # see also  EJAM/inst/notes_MISC/DT_datatable_tips_options.R
@@ -1865,47 +1800,47 @@ app_server <- function(input, output, session) {
       #  2. params list sent by app_server.R to render the Rmd doc
       #  3. params accepted in report.Rmd yaml info up top (and params as used within body of report.Rmd)
       isolate({
-
-      params <- list(
-        testmode=FALSE,
-        total_pop = prettyNum( total_pop(), big.mark = ","),
-        analysis_title =  input$analysis_title,
-        results =  data_processed(),
-        map =  report_map(),
-        envt_table =  v1_envt_table(),
-        demog_table = v1_demog_table(),
-        boxplot =     v1_summary_plot(),
-        acs_version =  "2016-2020",
-        ejscreen_version =  "2.1",
-        zonetype =  input$rg_zonetype,
-        authorname1 =    input$rg_author_name,
-        authoremail1 =   input$rg_author_email,
-        coauthor_names = input$coauthor_names, 
-        coauthor_emails = input$coauthor_emails,
-        distance = paste0(input$bt_rad_buff,' miles'), #input$radius_units),
-        where = input$rg_enter_miles,
-        sectorname_short = input$rg_enter_sites,
-        #facilities_analyzed = input$rg_enter_fac,
-        sitecount = nrow(data_processed()$results_bysite),
-        ## allow for either or
-        in_the_x_zone = ifelse(nchar(input$in_the_x_zone_enter) > 0, 
-                               input$in_the_x_zone_enter,
-                               input$in_the_x_zone),
-        facilities_studied = ifelse(nchar(input$facilities_studied_enter) > 0, 
-                                    input$facilities_studied_enter,
-                                    input$facilities_studied),
-        in_areas_where = paste0(input$in_areas_where, ' ', input$in_areas_where_enter),
-        risks_are_x = input$risks_are_x,
-        demog_how_elevated = input$demog_how_elevated,
-        envt_how_elevated = input$envt_how_elevated,
-        demog_high_at_what_share_of_sites = input$demog_high_at_what_share_of_sites,
-        envt_high_at_what_share_of_sites = input$envt_high_at_what_share_of_sites,
-        source_of_latlons = input$source_of_latlons,
-        fundingsource = input$fundingsource,
-        conclusion1 = input$conclusion1,
-        conclusion2 = input$conclusion2,
-        conclusion3 = input$conclusion3
-      )
+        
+        params <- list(
+          testmode=FALSE,
+          total_pop = prettyNum( total_pop(), big.mark = ","),
+          analysis_title =  input$analysis_title,
+          results =  data_processed(),
+          map =  report_map(),
+          envt_table =  v1_envt_table(),
+          demog_table = v1_demog_table(),
+          boxplot =     v1_summary_plot(),
+          acs_version =  "2016-2020",
+          ejscreen_version =  "2.1",
+          zonetype =  input$rg_zonetype,
+          authorname1 =    input$rg_author_name,
+          authoremail1 =   input$rg_author_email,
+          coauthor_names = input$coauthor_names, 
+          coauthor_emails = input$coauthor_emails,
+          distance = paste0(input$bt_rad_buff,' miles'), #input$radius_units),
+          where = input$rg_enter_miles,
+          sectorname_short = input$rg_enter_sites,
+          #facilities_analyzed = input$rg_enter_fac,
+          sitecount = nrow(data_processed()$results_bysite),
+          ## allow for either or
+          in_the_x_zone = ifelse(nchar(input$in_the_x_zone_enter) > 0, 
+                                 input$in_the_x_zone_enter,
+                                 input$in_the_x_zone),
+          facilities_studied = ifelse(nchar(input$facilities_studied_enter) > 0, 
+                                      input$facilities_studied_enter,
+                                      input$facilities_studied),
+          in_areas_where = paste0(input$in_areas_where, ' ', input$in_areas_where_enter),
+          risks_are_x = input$risks_are_x,
+          demog_how_elevated = input$demog_how_elevated,
+          envt_how_elevated = input$envt_how_elevated,
+          demog_high_at_what_share_of_sites = input$demog_high_at_what_share_of_sites,
+          envt_high_at_what_share_of_sites = input$envt_high_at_what_share_of_sites,
+          source_of_latlons = input$source_of_latlons,
+          fundingsource = input$fundingsource,
+          conclusion1 = input$conclusion1,
+          conclusion2 = input$conclusion2,
+          conclusion3 = input$conclusion3
+        )
       })
       # [TEMPORARILY SAVE PARAMS FOR TESTING] ####
       # saveRDS(params, file="./inst/testparams.RDS") ################################ TEMPORARILY SAVE PARAMS FOR TESTING# # 
