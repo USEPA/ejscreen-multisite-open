@@ -3,32 +3,35 @@ title: Analysis of demographic and environmental conditions near selected facili
 date: "`r Sys.Date()`"
 params:
   testmode: TRUE
+  # #------------- WHERE was analyzed? (where/ what sector/zones/types of places)
   analysis_title: "Analysis of demographic and environmental conditions near selected facilities"
   zonetype: NA
+  where: NA
+  distance: NA
+  sectorname_short: NA
   in_the_x_zone: NA
+  facilities_studied: "these sites"
   within_x_miles_of: NA
-  facilities_studied: NA
   in_areas_where: NA
   risks_are_x: NA
-  where: NA
-  facilities_analyzed: "these sites"
-  sectorname_short: NA
+  source_of_latlons: NA
   sitecount: NA
-  distance: NA
+  # #------------- RESULTS (tables - map - plots)
   total_pop: NA
   results: NA
   map: NA
   map_placeholder_png:                 "map_placeholder.png"
-  boxplot: NA
-  boxplot_placeholder_png:         "boxplot_placeholder.png"
-  barplot: NA
-  barplot_placeholder_png:         "barplot_placeholder.png"
   envt_table: NA
   envt_table_placeholder_png:   "envt_table_placeholder.png"
   envt_table_placeholder_rda:   "envt_table_placeholder.rda"
   demog_table: NA
   demog_table_placeholder_png: "demog_table_placeholder.png"
   demog_table_placeholder_rda: "demog_table_placeholder.rda"
+  boxplot: NA
+  boxplot_placeholder_png:         "boxplot_placeholder.png"
+  barplot: NA
+  barplot_placeholder_png:         "barplot_placeholder.png"
+#------------- TEXT PHRASES, DESCRIBING AND INTERPRETING RESULT 
   demog_how_elevated: NA
   envt_how_elevated: NA
   demog_high_at_what_share_of_sites: NA
@@ -36,22 +39,22 @@ params:
   conclusion1: NA
   conclusion2: NA
   conclusion3: NA
-  source_of_latlons: NA
-  acs_version: "2016-2020"
-  ejscreen_version: "2.1"
-  fundingsource: NA
-  authorname1: "USEPA"
+# ------------- METHODS, AUTHORS, ETC.
+  authorname1: "The US EPA"
   authoremail1: ""
   coauthor_names: NA
   coauthor_emails: NA
+  fundingsource: NA
+  acs_version: "2016-2020"
+  ejscreen_version: "2.1"
 author:
-  - name: "`r params$authorname1`"
+  - name:  "`r params$authorname1`"
     email: "`r params$authoremail1`"
 editor_options:
   markdown:
     wrap: 72
 linenumbers: true
-abstract: Abstract - Executive Order 14008 calls on EPA and other Agencies to make achieving environmental justice part of their missions, and EO 12989 directed EPA to make environmental justice part of their mission by identifying and addressing, as appropriate, disproportionately high and adverse human health or environmental effects of their programs, policies, and activities on minority populations and low-income populations in the United States. The United States Environmental Protection Agency (US EPA) analyzed baseline demographic and environmental conditions in communities living `r params$where` `r params$facilities_analyzed`. The analysis used EPA's EJAM tool and EJScreen version `r params$ejscreen_version` with demographic data based on the Census Bureau’s `r params$acs_version` American Community Survey (ACS). The analysis found that PLACEHOLDER EXAMPLE PLACEHOLDER EXAMPLE PLACEHOLDER EXAMPLE PLACEHOLDER EXAMPLE PLACEHOLDER EXAMPLE PLACEHOLDER EXAMPLE PLACEHOLDER EXAMPLE PLACEHOLDER EXAMPLE
+abstract: Abstract - Executive Order 14008 calls on EPA and other Agencies to make achieving environmental justice part of their missions, and EO 12989 directed EPA to make environmental justice part of their mission by identifying and addressing, as appropriate, disproportionately high and adverse human health or environmental effects of their programs, policies, and activities on minority populations and low-income populations in the United States. The United States Environmental Protection Agency (US EPA) analyzed baseline demographic and environmental conditions in communities living `r params$where` `r params$facilities_studied`. The analysis used EPA's EJAM tool and EJScreen version `r params$ejscreen_version` with demographic data based on the Census Bureau’s `r params$acs_version` American Community Survey (ACS). The analysis found that PLACEHOLDER EXAMPLE PLACEHOLDER EXAMPLE PLACEHOLDER EXAMPLE PLACEHOLDER EXAMPLE PLACEHOLDER EXAMPLE PLACEHOLDER EXAMPLE PLACEHOLDER EXAMPLE PLACEHOLDER EXAMPLE
 output: 
   word_document:
     toc: true
@@ -61,12 +64,15 @@ bibliography: report_references.bib
 ---
 
 ```{r, echo=FALSE}
-      #  MAKE SURE THESE 3 LISTS MATCH: 
-      #  1. list of user inputs in app_ui.R to customize the long report
-      #  2. params list sent by app_server.R to render the Rmd doc
-      #  3. params accepted in report.Rmd yaml info up top (and params as used within body of report.Rmd)
-
-# see also
+      #  MAKE SURE all parameter names are used (identical names, & all are there) in these 4 places: 
+      #  1. input$ ids in app_ui.R, from user, to customize the long report
+      #  2. params$ list passed by app_server.R to render the Rmd doc
+      #  3. params: accepted in  .Rmd yaml info header 
+      #  4. params$  as used within body of  .Rmd text inline and in r code blocks.
+ 
+# see these resources: 
+#
+# https://www.r-bloggers.com/2023/04/11-tricks-to-level-up-your-rmarkdown-documents/
 # https://bookdown.org/yihui/rmarkdown/parameterized-reports.html
 # https://bookdown.org/yihui/rmarkdown/
 # https://raw.githubusercontent.com/rstudio/cheatsheets/main/rmarkdown.pdf
@@ -965,7 +971,7 @@ pandoc is used for citations instead of `natbib`.
 
 
 
-# <!-- see citation()  and in Visual mode of report.Rmd editor in RStudio, see Insert Citation -->
+# <!-- see citation()  and in Visual mode of  .Rmd editor in RStudio, see Insert Citation -->
 
 
 # <!-- Depends:  -->
