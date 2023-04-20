@@ -12,7 +12,6 @@ Description: Tools for summarizing environmental and demographic indicators
 URL: https://github.com/USEPA/EJAM
 Depends: 
     R (>= 2.10), 
-    shiny (>= 1.7.2),
     EJAMblockdata,
     EJAMfrsdata,
     EJAMbatch.summarizer,
@@ -40,6 +39,7 @@ Imports:
   rmarkdown,
   RMySQL,
   SearchTrees,
+  shiny (>= 1.7.2),
   shinyBS,
   shinycssloaders,
   shinyjs,
