@@ -5,7 +5,7 @@
 ## need to verify if these are the expected outputs of this function, or if it should
 ## only return two values at most that were matched + converted
 
-# warns if no alias found. Does not warn of dupes in other terms, just preferred term.
+# warns if no alias found. Does not warn of dupes in other terms, just preferred term. PM-pushtest
 test_that('warns if no alias found',{
   expect_warning(val <- latlon_infer(c('trilat', 'belong', 'belong'))) 
   expect_equal(val, c('trilat','belong','belong'))
