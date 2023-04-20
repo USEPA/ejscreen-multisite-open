@@ -61,7 +61,7 @@ metadata_add <- function(x, metadata) {
 #'
 #' @export
 #'
-metadata_check <- function(packages=NULL, which=c(
+metadata_check <- function(packages=EJAM::ejampackages, which=c(
   'census_version', 
   'acs_version', 'acs_releasedate', 'ACS', 
   'ejscreen_version', 'ejscreen_releasedate', 'ejscreen_pkg_data', 
@@ -85,6 +85,7 @@ metadata_check <- function(packages=NULL, which=c(
   if (is.null(packages)) {
     # if not specified, report on all packages with EJ as part of their name, like EJAMblockdata or ejscreenapi.
     packages <- grep(pattern = 'EJ', ignore.case = TRUE, x = installed.packages(fields = 'Package'), value = TRUE)
+    packages <- unique(packages[!grepl(",", packages)])
   }
   
   allresults <- list()

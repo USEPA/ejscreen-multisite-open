@@ -66,7 +66,7 @@ ejamit <- function(sitepoints,
                    quadtree=NULL,
                    ...
 ) {
-  if (missing(cutoff)) {cat("\nUsing default radius of", cutoff, "miles.\n"); warning("Radius assumed because not provided as parameter.")}
+  if (missing(cutoff)) {warning(paste0("Using default radius of ", cutoff, " miles because not provided as parameter."))}
   if (!missing(quadtree)) {warning("quadtree should not be provided to ejamit() - that is handled by getblocksnearby() ")}
   
   ################################################################################## #
