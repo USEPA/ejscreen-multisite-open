@@ -11,7 +11,7 @@
   # NOT TESTED in context of an app published on RStudio Server
   cat("Building index of Census Blocks (localtree)...\n")
   if (!exists("localtree")) {
-    
+    # This assign() below is the same as the function called  indexblocks() 
   assign(
     "localtree", 
     SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point"), 

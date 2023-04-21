@@ -54,10 +54,11 @@ getblocksnearby  <- function(sitepoints, cutoff=3, maxcutoff=31.07,
       quadtree <- localtree 
     } else {      #  SEE IF WE EVER NEED TO OR EVEN CAN CREATE THIS ON THE FLY HERE FOR SOME INTERACTIVE USERS, BUT SHOULD NOT BE AN ISSUE IF PKG LOADED
       # localtree <- SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
-      stop(paste0("Nationwide index of block locations is required but missing (quadtree parameter default is called localtree but was not found). ",
-                  'Try this: \n\n',
-                  'localtree <- SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point") \n\n'
-      ))
+      indexblocks() # not really tested yet in this context
+      # stop(paste0("Nationwide index of block locations is required but missing (quadtree parameter default is called localtree but was not found). ",
+      #             'Try this: \n\n',
+      #             'localtree <- SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point") \n\n'
+      # ))
     }
   }
   cat("Analyzing", NROW(sitepoints), "points, radius of", cutoff, "miles.\n")
