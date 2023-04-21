@@ -1814,6 +1814,13 @@ app_server <- function(input, output, session) {
       tempReport <- file.path(tempdir(), "report.Rmd")
       file.copy("www/report.Rmd", tempReport, overwrite = TRUE)
 
+      ## pass image and bib files needed for knitting to temp directory
+      for(i in list.files(path = 'www', pattern=c('.png|.bib'))){
+        file.copy(from = paste0('www/', i), 
+                  to = file.path(tempdir(), i), 
+                  overwrite = TRUE)
+      }
+      
       # Set up parameters to pass to Rmd document - 
       #  MAKE SURE all parameter names are used (identical names, & all are there) in these 4 places: 
       #  1. input$ ids in app_ui.R, from user, to customize the long report

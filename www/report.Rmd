@@ -60,7 +60,7 @@ output:
     toc: true
     toc_depth: 3
     number_sections: true
-# bibliography: report_references.bib
+bibliography: report_references.bib
 ---
 
 ```{r, echo=FALSE}
@@ -236,13 +236,14 @@ Figure \ref{fig1} shows a map of the sites analyzed.
 # save(params, file="temp params.rda")
 # print(params)
 # browser() 
- 
+print(params$testmode) 
 # if (file.exists(params$map_placeholder_png)) {
-if (params$testmode) {
+#if (params$testmode) {
   knitr::include_graphics(rel_path = TRUE, path = params$map_placeholder_png)
-} else {
-  print( params$map )
-}
+#} else {
+#  params$map
+  #print( params$map )
+#}
 
 # # did not work, not sure why:
 # if (!("map" %in% names(params))  ) {
@@ -377,11 +378,11 @@ Table 1 shows key results for the analysis of demographics in these locations. T
 
 ```{r demog_table, echo=FALSE, out.width='900px'}
 
-if (params$testmode) {
+#if (params$testmode) {
   knitr::include_graphics(rel_path = TRUE, path = params$demog_table_placeholder_png)
-} else {
-   params$demog_table
-}
+#} else {
+#   params$demog_table
+#}
 # 
 # if (any(is.na(params$demog_table)) | "NA" != (params$demog_table)) {
 # params$demog_table
@@ -424,11 +425,11 @@ discussion of plot goes here
 ## Data Viz 2-- Barplot
 
 ```{r barplot, echo=FALSE,  out.height='500px', out.width='800px'}
-if (params$testmode) {
+#if (params$testmode) {
   knitr::include_graphics(rel_path = TRUE, path = params$barplot_placeholder_png)
-} else {
-print( params$barplot  )
-}
+#} else {
+#print( params$barplot  )
+#}
 
 # if ("NA" == (params$barplot)) {
 #  knitr::include_graphics(rel_path = TRUE, path = params$barplot_placeholder_png)
@@ -499,17 +500,17 @@ Shore and Watts Bar).
 ## Data Viz 3 -- Boxplots
 
 ```{r boxplot, echo=FALSE,  out.height='500px', out.width='800px'}
-if (params$testmode) {
+#if (params$testmode) {
    knitr::include_graphics(rel_path = TRUE, path = params$boxplot_placeholder_png)
-} else {
-    params$boxplot +
-  ggplot2::scale_x_discrete(labels = function(x) stringr::str_wrap(x, 10)) +
-  ggplot2::theme(plot.title = ggplot2::element_text(hjust=0.5, size=12),
-        plot.subtitle = ggplot2::element_text(hjust=0.5, size=11),
-        axis.title.y = ggplot2::element_text(size=10),
-        axis.text = ggplot2::element_text(size=9)
-        )
-}
+#} else {
+#     params$boxplot +
+#   ggplot2::scale_x_discrete(labels = function(x) stringr::str_wrap(x, 10)) +
+#   ggplot2::theme(plot.title = ggplot2::element_text(hjust=0.5, size=12),
+#         plot.subtitle = ggplot2::element_text(hjust=0.5, size=11),
+#         axis.title.y = ggplot2::element_text(size=10),
+#         axis.text = ggplot2::element_text(size=9)
+#         )
+# }
 # if ("NA" == (params$boxplot)) {
 # 
 # } else {
@@ -561,11 +562,11 @@ discussion of table here
 ## Data Table 2. Environmental Indicators
 
 ```{r envt_table, echo=FALSE, out.width='900px'}
-if (params$testmode) {
+#if (params$testmode) {
    knitr::include_graphics(rel_path = TRUE, path = params$envt_table_placeholder_png)
-} else {
-params$envt_table
-}
+#} else {
+#params$envt_table
+#}
 # 
 # if ("NA" !=  (params$envt_table)) {
 # params$envt_table
