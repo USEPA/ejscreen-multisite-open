@@ -1294,9 +1294,9 @@ app_server <- function(input, output, session) {
     req(data_processed())
     
     cols_to_select <- c('siteid',  'pop', 
-                        EJAMbatch.summarizer::names_all_batch)
+                        EJAMbatch.summarizer::names_all)
     friendly_names <- c('Site ID', 'Est. Population',  
-                        EJAMbatch.summarizer::names_all_batch_friendly, 
+                        EJAMbatch.summarizer::names_all_friendly, 
                         'State', 'EPA Region', '# of indicators above 95% threshold')
     
     dt_overall <- data_processed()$results_overall %>% 
