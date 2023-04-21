@@ -187,7 +187,7 @@ merge(x, y)
 
 ## ___ * st_buffer() using R2 vs S2 (s2 pkg, spherical approach) ### #
 
-browseURL( "https://r-spatial.github.io/sf/articles/sf7.html")
+# ( "https://r-spatial.github.io/sf/articles/sf7.html")
 # https://r-spatial.github.io/sf/articles/ 
 # ?sf_use_s2()
 

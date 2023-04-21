@@ -9,6 +9,8 @@
 usastats     <- usastats[usastats$PCTILE   != "std.dev", ]
 statestats <- statestats[statestats$PCTILE != "std.dev", ]
 
+############################################################################ #
+
 # TEMPORARILY PUT IN ZEROES FOR THESE 2 VARIABLES UNTIL EJSCREEN PROVIDES THEM FOR DOWNLOAD ####
 usastats$lowlifex <- 0
 usastats$Demog.Index.Supp <- 0
@@ -21,6 +23,8 @@ usethis::use_data(usastats,overwrite = TRUE)
 usethis::use_data(statestats,overwrite = TRUE)
 # ✔ Saving 'statestats' to 'data/statestats.rda'
 # • Document your data (see 'https://r-pkgs.org/data.html')
+############################################################################# # 
+
 
 # Create percentile lookup tables for extra variables like demographic race/ethnicity subgroups
 bg <- data.table::copy(EJAM::blockgroupstats)

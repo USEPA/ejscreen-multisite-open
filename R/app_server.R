@@ -891,6 +891,10 @@ app_server <- function(input, output, session) {
   #############################################################################  # 
   ## *BOXPLOTS/barplot? of demographic ratios vs US average ####
   
+
+    # https://exts.ggplot2.tidyverse.org/gallery/
+  
+  
   v1_summary_plot <- reactive({
     req(data_summarized())
     
@@ -1096,17 +1100,19 @@ app_server <- function(input, output, session) {
       file.copy("www/brief_summary.Rmd", tempReport, overwrite = TRUE)
       #file.copy("../www/test_report1pager.Rmd", tempReport, overwrite = TRUE)
       
-      # Set up parameters to pass to Rmd document
-      params <- list(testmode=FALSE,
-                     sitecount = nrow(data_processed()$results_bysite), 
-                     distance = paste0(input$bt_rad_buff,' miles'), #input$radius_units),
-                     total_pop = prettyNum( total_pop(), big.mark = ","),
-                     analysis_title = input$analysis_title,
-                     # results     = data_processed(),  # NOT NEEDED HERE IF PASSING MAP, TABLES, AND PLOT AS PARAMS
-                     map         = report_map(),
-                     envt_table   = v1_envt_table(),
-                     demog_table  = v1_demog_table(),
-                     summary_plot = v1_summary_plot())
+      isolate({  # need someone to confirm this is needed/helpful and not a problem, to isolate this.
+        # Set up parameters to pass to Rmd document
+        params <- list(testmode=FALSE,
+                       sitecount = nrow(data_processed()$results_bysite), 
+                       distance = paste0(input$bt_rad_buff,' miles'), #input$radius_units),
+                       total_pop = prettyNum( total_pop(), big.mark = ","),
+                       analysis_title = input$analysis_title,
+                       # results     = data_processed(),  # NOT NEEDED HERE IF PASSING MAP, TABLES, AND PLOT AS PARAMS
+                       map         = report_map(),
+                       envt_table   = v1_envt_table(),
+                       demog_table  = v1_demog_table(),
+                       summary_plot = v1_summary_plot())
+      })
       # [TEMPORARILY SAVE PARAMS FOR TESTING] ####
       # saveRDS(params, file="./inst/testparamsSHORT.RDS") # ############################### TEMPORARILY SAVE PARAMS FOR TESTING###### # 
       
@@ -1293,11 +1299,15 @@ app_server <- function(input, output, session) {
   output$view3_table <- DT::renderDT(server = TRUE, expr = {
     req(data_processed())
     
+    # --------------------------------------------------- #
+    # cols_to_select <- names(data_processed)
+    # friendly_names <- longnames???
     cols_to_select <- c('siteid',  'pop', 
                         EJAMbatch.summarizer::names_all)
     friendly_names <- c('Site ID', 'Est. Population',  
                         EJAMbatch.summarizer::names_all_friendly, 
                         'State', 'EPA Region', '# of indicators above 95% threshold')
+    # --------------------------------------------------- #
     
     dt_overall <- data_processed()$results_overall %>% 
       as.data.frame() %>% 
@@ -1463,6 +1473,11 @@ app_server <- function(input, output, session) {
   # ~ ####
   # ______ BARPLOT _____ ####
   # ~ ####
+  
+  
+  # https://exts.ggplot2.tidyverse.org/gallery/
+  
+  
   # output: 
   output$summ_display_bar <- renderPlot({
     req(data_summarized())
@@ -1649,6 +1664,11 @@ app_server <- function(input, output, session) {
   #############################################################################  # 
   # ______ HISTOGRAM _____  ####
   # ~ ####
+  
+  
+  # https://exts.ggplot2.tidyverse.org/gallery/
+  
+  
   ## output: 
   output$summ_display_hist <- renderPlot({
     
@@ -1764,19 +1784,19 @@ app_server <- function(input, output, session) {
   
   
   ## show modal with report outline ####
-  observeEvent(input$show_outline, {
-    showModal(
-      modalDialog(
-        #HTML(report_outline)
-        HTML(
-          stringr::str_replace(report_outline, 
-                               'Broad overview of findings',
-                               '<mark>Broad overview of findings</mark>'
-          )
-        )
-      )
-    )
-  })
+  # observeEvent(input$show_outline, {    # I DONT THINK THIS POPUP OUTLINE LOOKS GREAT AND IT IS HARD TO KEEP IN SYNC WITH ACTUAL RMD OUTLINE
+  #   showModal(
+  #     modalDialog(
+  #       #HTML(report_outline)
+  #       HTML(
+  #         stringr::str_replace(report_outline, 
+  #                              'Broad overview of findings',
+  #                              '<mark>Broad overview of findings</mark>'
+  #         )
+  #       )
+  #     )
+  #   )
+  # })
   
   ## code for storing all shiny input values - not used currently
   # observeEvent(input$all_tabs == 'Generate Report',
@@ -1793,35 +1813,26 @@ app_server <- function(input, output, session) {
       # can happen when deployed).
       tempReport <- file.path(tempdir(), "report.Rmd")
       file.copy("www/report.Rmd", tempReport, overwrite = TRUE)
-      
+
       # Set up parameters to pass to Rmd document - 
-      #  MAKE SURE THESE 3 LISTS MATCH: 
-      #  1. list of user inputs in app_ui.R to customize the long report
-      #  2. params list sent by app_server.R to render the Rmd doc
-      #  3. params accepted in report.Rmd yaml info up top (and params as used within body of report.Rmd)
-      isolate({
-        
+      #  MAKE SURE all parameter names are used (identical names, & all are there) in these 4 places: 
+      #  1. input$ ids in app_ui.R, from user, to customize the long report
+      #  2. params$ list passed by app_server.R to render the Rmd doc
+      #  3. params: accepted in  .Rmd yaml info header 
+      #  4. params$  as used within body of  .Rmd text inline and in r code blocks.
+      
+      isolate({ # need someone to confirm this is needed/helpful and not a problem, to isolate this.
+      
         params <- list(
           testmode=FALSE,
-          total_pop = prettyNum( total_pop(), big.mark = ","),
+          
+          #------- WHERE was analyzed? (where/ what sector/zones/types of places)
+          
           analysis_title =  input$analysis_title,
-          results =  data_processed(),
-          map =  report_map(),
-          envt_table =  v1_envt_table(),
-          demog_table = v1_demog_table(),
-          boxplot =     v1_summary_plot(),
-          acs_version =  "2016-2020",
-          ejscreen_version =  "2.1",
           zonetype =  input$rg_zonetype,
-          authorname1 =    input$rg_author_name,
-          authoremail1 =   input$rg_author_email,
-          coauthor_names = input$coauthor_names, 
-          coauthor_emails = input$coauthor_emails,
-          distance = paste0(input$bt_rad_buff,' miles'), #input$radius_units),
           where = input$rg_enter_miles,
+          distance = paste0(input$bt_rad_buff,' miles'), #input$radius_units),
           sectorname_short = input$rg_enter_sites,
-          #facilities_analyzed = input$rg_enter_fac,
-          sitecount = nrow(data_processed()$results_bysite),
           ## allow for either or
           in_the_x_zone = ifelse(nchar(input$in_the_x_zone_enter) > 0, 
                                  input$in_the_x_zone_enter,
@@ -1829,17 +1840,49 @@ app_server <- function(input, output, session) {
           facilities_studied = ifelse(nchar(input$facilities_studied_enter) > 0, 
                                       input$facilities_studied_enter,
                                       input$facilities_studied),
+          within_x_miles_of = paste0("within ", paste0(input$bt_rad_buff,' miles'), " of"),
+          
           in_areas_where = paste0(input$in_areas_where, ' ', input$in_areas_where_enter),
           risks_are_x = input$risks_are_x,
+          source_of_latlons = input$source_of_latlons,
+          sitecount = nrow(data_processed()$results_bysite),
+          
+          #------- RESULTS (tables and map and plots)
+          
+          total_pop  = prettyNum( total_pop(), big.mark = ","),
+          results =  data_processed(),  # do we need to pass the entire table? may want to use it in appendices, etc.
+          map =  report_map(),
+          # map_placeholder_png=                 "map_placeholder.png",
+          envt_table =  v1_envt_table(),
+          # envt_table_placeholder_png=   "envt_table_placeholder.png",
+          # envt_table_placeholder_rda=   "envt_table_placeholder.rda",
+          demog_table = v1_demog_table(),
+           # demog_table_placeholder_png="demog_table_placeholder.png",
+          # demog_table_placeholder_rda= "demog_table_placeholder.rda",
+          boxplot =     v1_summary_plot(),
+          # boxplot_placeholder_png=         "boxplot_placeholder.png",
+          # barplot= NA
+          # barplot_placeholder_png=         "barplot_placeholder.png",
+           
+          #------- TEXT PHRASES DESCRIBING AND INTERPRETING RESULT 
+          
           demog_how_elevated = input$demog_how_elevated,
           envt_how_elevated = input$envt_how_elevated,
           demog_high_at_what_share_of_sites = input$demog_high_at_what_share_of_sites,
           envt_high_at_what_share_of_sites = input$envt_high_at_what_share_of_sites,
-          source_of_latlons = input$source_of_latlons,
-          fundingsource = input$fundingsource,
           conclusion1 = input$conclusion1,
           conclusion2 = input$conclusion2,
-          conclusion3 = input$conclusion3
+          conclusion3 = input$conclusion3,
+          
+          #------- METHODS, AUTHORS, ETC.
+          
+          authorname1 =    input$rg_author_name,
+          authoremail1 =   input$rg_author_email,
+          coauthor_names = input$coauthor_names, 
+          coauthor_emails = input$coauthor_emails,
+          fundingsource = input$fundingsource,   # need to add input
+          acs_version =  "2016-2020",
+          ejscreen_version =  "2.1"
         )
       })
       # [TEMPORARILY SAVE PARAMS FOR TESTING] ####
@@ -1858,6 +1901,4 @@ app_server <- function(input, output, session) {
       )
     }
   )
-  
 }
-

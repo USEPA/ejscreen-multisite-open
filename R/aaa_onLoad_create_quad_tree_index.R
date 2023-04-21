@@ -4,13 +4,14 @@
 #' @param pkgname na
 #'
 .onLoad <- function(libname, pkgname) {
-  
+  ok_to_do_slow_indexing_early <- FALSE # WHILE TESTING/Building often
+  if (ok_to_do_slow_indexing_early) {
   # This should create the index of all US block points to enable fast queries 
   # This cannot be done during package build and saved, because of what this createTree function creates.
   # NOT TESTED in context of an app published on RStudio Server
   cat("Building index of Census Blocks (localtree)...\n")
   if (!exists("localtree")) {
-    
+    # This assign() below is the same as the function called  indexblocks() 
   assign(
     "localtree", 
     SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point"), 
@@ -20,9 +21,10 @@
   )
   cat("  Done building index.\n")
   }
+  }
   
-  
-  if (!interactive()) {
+  ok_to_do_slow_load_early <- FALSE # WHILE TESTING/Building often
+  if (!interactive() & ok_to_do_slow_load_early) {
   ### Maybe load the datasets now that are needed, 
   ### instead of when user does a query that triggers slow lazyloading?
   cat("Loading data.tables of Census Blocks...\n")

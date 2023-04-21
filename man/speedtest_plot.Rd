@@ -4,7 +4,7 @@
 \alias{speedtest_plot}
 \title{utility to plot output of speedtest(), rate of points analyzed per hour}
 \usage{
-speedtest_plot(x, ltype = "b", plotfile = NULL)
+speedtest_plot(x, ltype = "b", plotfile = NULL, secondsperthousand = FALSE)
 }
 \arguments{
 \item{x}{table from speedtest()}

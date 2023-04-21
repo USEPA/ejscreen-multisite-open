@@ -18,7 +18,8 @@ speedtest(
   logfilename = "log_n_datetime.txt",
   honk_when_ready = TRUE,
   saveoutput = FALSE,
-  plot = TRUE
+  plot = TRUE,
+  ...
 )
 }
 \arguments{
@@ -49,6 +50,8 @@ The default list includes one that is 5km (approx 3.1 miles)}
 \item{saveoutput}{but this slows it down if set to TRUE to save each run as .rda file}
 
 \item{plot}{whether to create plot of results}
+
+\item{...}{passed to plotting function}
 }
 \value{
 EJAM results similar to as from the web app  \code{\link[=ejamit]{ejamit()}} and also creates a plot

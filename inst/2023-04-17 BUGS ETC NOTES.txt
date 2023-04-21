@@ -1,3 +1,20 @@
+Added after 4/17/23:
+
+UPDATE/NOT BUG: Revamp/expand the short summary report to match what EJScreen will show in their new report - Starting in late June 2023, a new EJScreen Standard Report will merge their "standard report" plus key data from "ACS report" to be a 4-page "community profile:"
+ Page 1 - Summary of some demographics: languages spoken, income, age, gender; and map.
+ Page 2 - EJ and Supplementary EJ indexes
+ Page 3 - Table of all raw numbers on E and D
+ Page 4 - All other info - climate, health, critical services, etc. 
+ Their early 2023 static standard report is like this:  
+   EJAM\inst\ejscreen2.1_report_example.pdf
+ and the "ACS report" is like this: 
+   EJAM\inst\ejscreen2.1_acs2020_report_example.pdf
+
+UPDATE/NOT BUG: Update all numbers in usastats, statestats, and blockgroupstats at end of June 2023 when updated EJScreen numbers are made available.  also maybe EJSCREEN_Full_with_AS_CNMI_GU_VI, EJSCREEN_StatePct_with_AS_CNMI_GU_VI, States_2022, USA_2022  . Maybe use the scripts in  EJAM/inst/notes_datasets/1_SCRIPT_EJAMejscreen_download.R  or 
+
+UPDATE/NOT BUG: Update metadata in all relevant data files .rda (via metadata_check() and metadata_add() and usethis::use_data()  ) to reflect EJScreen 2.2 instead of 2.1 (released maybe July 1 2023 or so tbd?) and ACS 2017-2021 (released Dec 2022?) instead of ACS 2016-2020.  include these at least: usastats, statestats, and blockgroupstats; EJSCREEN_Full_with_AS_CNMI_GU_VI, EJSCREEN_StatePct_with_AS_CNMI_GU_VI, States_2022, USA_2022  
+
+
 2023-04-17 notes to add to issues or to do lists
 
 	BUGS
