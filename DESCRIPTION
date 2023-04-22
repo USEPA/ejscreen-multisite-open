@@ -24,7 +24,6 @@ Imports:
   DBI,
   doSNOW,
   DT,
-  EJAMejscreendata,
   foreach,
   ggplot2,
   glue,
