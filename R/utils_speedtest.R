@@ -1,3 +1,23 @@
+
+
+speedtable_expand <- function(speedtable) {
+  # must have columns called  points, miles, and perhr 
+  speedtable$perminute <- round(speedtable$perhr /60, 0)
+  speedtable$persecond <- round(speedtable$perhr /3600, 0)
+  speedtable$minutes   <- round(speedtable$points / (speedtable$perhr / 60), 0)
+  speedtable$seconds   <- round(speedtable$points / (speedtable$perhr / 3600), 0)
+  speedtable$secondsper1000 <- round((1000/speedtable$points) * speedtable$points / (speedtable$perhr / 3600), 0)
+  return(speedtable)
+}
+speedtable_summarize <- function(speedtable) {
+  runs <- sum(speedtable$points)
+  total_hours <- sum(speedtable$points / speedtable$perhr)
+  perhr <-  round(runs / total_hours ,0)
+  
+  mysummary <- data.frame(points=runs, miles=NA, perhr=perhr)
+  return(speedtable_expand(mysummary))
+}
+
 #' speedtest
 #' Runs EJAM analysis for several radius values for various numbers of sitepoints, recording how long each step took. 
 #' @param n optional, vector of 1 or more counts of how many random points to test, or set to 0 to interactively pick file of points in RStudio (n is ignored if sitepoints provided)
@@ -24,7 +44,7 @@
 #'   rstudioapi::savePlotAsImage(        "~/../Downloads/speedseen_nearer_to1k.png")
 #'   
 #'   speedseen_all <- speedtest(
-#'     n = c(1e2,1e3,1e4,1e5), 
+#'     n = c(1e2,1e3,1e4), 
 #'     radii=c(1, 3.106856, 5, 10, 31.06856), 
 #'     logging=TRUE, honk=TRUE
 #'   )
@@ -38,8 +58,8 @@ speedtest <- function(n=10, sitepoints=NULL, weighting='frs',
                       test_getblocksnearby=TRUE, test_doaggregate=TRUE, test_batch.summarize=FALSE, 
                       logging=FALSE, logfolder=getwd(), logfilename="log_n_datetime.txt", honk_when_ready=TRUE, 
                       saveoutput=FALSE, plot=TRUE, ...) {
-  
-  
+  n <- sort(n, decreasing = TRUE) # just to keep organized
+  radii <- sort(radii, decreasing = TRUE) # IT WILL REPORT WRONG NUMBERS / WRONG ORDER OTHERWISE.
   rtextfile <- paste(radii,   collapse = "-")
   ntextfile <- paste(n, collapse = "-")
   
@@ -54,24 +74,7 @@ speedtest <- function(n=10, sitepoints=NULL, weighting='frs',
   # - analyze indicators in circular buffers and overall (find blocks nearby and then calc indicators)
   # - get stats that summarize those indicators
   # - compare times between steps and radii and other approaches or tools
-  
-  speedtable_expand <- function(speedtable) {
-    # must have columns called  points, miles, and perhr 
-    speedtable$perminute <- round(speedtable$perhr /60, 0)
-    speedtable$persecond <- round(speedtable$perhr /3600, 0)
-    speedtable$minutes   <- round(speedtable$points / (speedtable$perhr / 60), 0)
-    speedtable$seconds   <- round(speedtable$points / (speedtable$perhr / 3600), 0)
-    speedtable$secondsper1000 <- round((1000/speedtable$points) * speedtable$points / (speedtable$perhr / 3600), 0)
-    return(speedtable)
-  }
-  speedtable_summarize <- function(speedtable) {
-    runs <- sum(speedtable$points)
-    total_hours <- sum(speedtable$points / speedtable$perhr)
-    perhr <-  round(runs / total_hours ,0)
-    
-    mysummary <- data.frame(points=runs, miles=NA, perhr=perhr)
-    return(speedtable_expand(mysummary))
-  }
+
   ######################### # 
   
   if (n[1] == 0 & is.null(sitepoints)) {
@@ -122,13 +125,12 @@ speedtest <- function(n=10, sitepoints=NULL, weighting='frs',
   if (!exists("localtree")) {
     step0 <- system.time({
       cat("Creating national index of block locations (localtree) since it was not found.\n")
-      localtree <- SearchTrees::createTree(
-        EJAMblockdata::quaddata, treeType = "quad", dataType = "point"
-      )
+      indexblocks()
       cat("Finished createTree()\n")
-      print(step0)
+     
       #time to create quadtree 1.116 seconds
     })
+    print(step0)
   }
   ############################################################### # 
   
@@ -153,7 +155,7 @@ speedtest <- function(n=10, sitepoints=NULL, weighting='frs',
   
   for (n in nlist) {
     
-    i <- which(n == nlist)
+    i <- which(n == nlist) # should be just a counter like combonumber from 1 to x among nlist 
     cat("\n--------------------------------------------------------------------\n")
     cat("\nAnalyzing", n, "facilities:")
     
@@ -205,10 +207,11 @@ speedtest <- function(n=10, sitepoints=NULL, weighting='frs',
       # cat("----------------------------------\n")
       #write time elapsed to csv?
       # write.csv(t(data.matrix(elapsed)),file=paste0("./inst/time_radius_",myradius,"_100k.csv"))
-      perhour <- speedreport(start_time, Sys.time(), n)
+      perhour <- EJAMejscreenapi::speedreport(start_time, Sys.time(), n)
       speedtable[[combonumber]] <- list(points=n, miles=radius, perhr=perhour)
       
-      # could show diagnostics here like how many blocks were found nearby
+      #  show diagnostics here like how many blocks were found nearby
+      getblocks_diagnostics(mysites2blocks)
       
     } # NEXT RADIUS 
     # cat("\nFinished analyzing all radius values for this set of", prettyNum(n, big.mark = ","),"points or sites.\n")

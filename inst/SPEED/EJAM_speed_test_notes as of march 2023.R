@@ -4,8 +4,8 @@
 # see   EJAM::speedtest()
  
 # EJAM vs EJScreen api can provide results for 
-#    100 sites in 7 seconds vs in 21 seconds.
-#  1,000 sites in 18 seconds vs waiting 8 minutes.
+#    100 sites in 7 seconds vs in 21 seconds.  ?? 1 mile??? 
+#  1,000 sites in 18 seconds vs waiting 8 minutes. but   ?? 1 mile??? 
 # 10,000 sites in <<3 minutes vs waiting 1 and 1/2 hours.
 
 

@@ -50,7 +50,7 @@
 #'   s2b <- testdata_sites2blocks
 #'   s2b <- getblocksnearby(testsites, cutoff = radius)
 #'   s2b <- getblocksnearbyviaQuadTree(testsites, cutoff = radius)
-#'   summarize_blockcount(s2b)
+#'   getblocks_diagnostics(s2b)
 #'   
 #'   # if doing just 2d step of ejamit()
 #'   #  get summaries of all indicators based on table of distances

@@ -333,9 +333,8 @@ plotblocksnearby(testpoints_n(1), radius = 3)
 sitepoints <- data.table::copy(EJAM::testpoints_100_dt) 
 sites2blocks <- EJAM::getblocksnearby(sitepoints,radius,quadtree = localtree)
 names(sites2blocks)
-summarize_blocks_per_site(sites2blocks) # print() shows more info returned invisibly
-summarize_sites_per_block(sites2blocks) # print() shows more info returned invisibly
-summarize_blockcount(sites2blocks)
+getblocks_summarize_blocks_per_site(sites2blocks) # print() shows more info returned invisibly
+getblocks_diagnostics(sites2blocks)
 # Use data.table package here
 
 # Very few blocks are within a radius of 1/4 mile.

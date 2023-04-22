@@ -69,7 +69,7 @@ Runs EJAM analysis for several radius values for various numbers of sitepoints, 
   rstudioapi::savePlotAsImage(        "~/../Downloads/speedseen_nearer_to1k.png")
   
   speedseen_all <- speedtest(
-    n = c(1e2,1e3,1e4,1e5), 
+    n = c(1e2,1e3,1e4), 
     radii=c(1, 3.106856, 5, 10, 31.06856), 
     logging=TRUE, honk=TRUE
   )
