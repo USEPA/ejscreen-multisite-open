@@ -16,22 +16,50 @@ knitr::opts_chunk$set(eval = FALSE)
 # https://r-pkgs.org/vignettes.html
 ```
 
-## Quickstart: Summary of Demographics and Environment near 100 Sites
+## Quickstart
+
+### Summary of Demographics and Environment near 100 Sites
 
 ```{r echo=TRUE}
 # In R/RStudio, clone/install EJAM package and related ones from https://github.com/USEPA/EJAM, etc.
 library(EJAM)
 
-x <- ejamit(testpoints_n(100))
+x <- ejamit(testpoints_n(100),1) # 1 mile radius
 mapfast(x$results_bysite)
-
 ```
 
-Use interactive file picker without full shiny web app
+### Interactively point to your file with lat,lon coordinates, without shiny web app
 
 ```{r}
-x <- ejamit()
+x <- ejamit(cutoff = 2) #  2 mile radius
 ```
+
+### Specify all sites in 1 industrial sector
+
+```{r}
+naics_from_any("paint and coating", children = T)
+x <- ejamit(frs_from_naics("paint and coating"),1)
+head(latlon_from_naics(325510)) # has about 1,000 facilities
+```
+
+### Specify sites by facility registry ID
+
+```{r}
+EJAM::frs_from_siteid(c(110071293460, 110000333826))
+```
+
+### Specify sites by facility 
+
+```{r}
+EJAM::latlon_from_programid(c("XJW000012435", "00768SRTRSROAD1"))
+```
+
+### Specify sites by EPA regulatory program or EPA database
+
+```{r}
+EJAM::latlon_from_program("CAMDBS")
+```
+
 
 ## *Developer note on building and updating this vignette*
 
@@ -236,9 +264,12 @@ mapfast(testpoints_n(300, ST_of_blockgroup = c('LA','TX')) )
 radius <- 3 # radius (miles).  5 km = 3.1 miles, 10 km = 6.2 miles
 ```
 
+
+
+
 ### Key Functions in EJAM
 
--   **ejamit()** provides results in just one function.
+-   **ejamit()** provides results in just one function, by using getblocksnearby() and doaggregate():
 
 -   **getblocksnearby()** takes a set of points (e.g., facilities) and finds the Census blocks near each. Sample input is in testpoints_100_dt, and sample output is in sites2blocks_example.
 
@@ -289,6 +320,9 @@ round(outsum$rows[,names_d],2)
 round(outsum$rows[,names_d_pctile],2)
 
 ```
+
+
+
 
 ### Get granular results step by step, and view details
 
