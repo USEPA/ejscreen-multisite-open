@@ -49,7 +49,7 @@
 </tr>
       <tr>
 <th>Built:</th>
-<td class="description-date">2023-04-19 18:08:16 UTC</td>
+<td class="description-date">2023-04-24 01:25:29 UTC</td>
 </tr>
       <tr>
 <th>Source:</th>
@@ -90,12 +90,12 @@ i.e., it might be a state, county, tract, blockgroup, or block FIPS code.</a></l
 convert any FIPS codes to the FIPS of all the blockgroups that are
 among or within or containing those FIPS</a></li>
 <li class="help-index-item"><a href="#format_gt_table">format_gt_table</a></li>
-<li class="help-index-item"><a href="#frs_from_naics">Use NAICS code or industry title text search to see FRS facility registry services data on those EPA-regulated sites</a></li>
-<li class="help-index-item"><a href="#frs_from_program">Use EPA Program acronym like TRIS to see FRS facility registry services data on those EPA-regulated sites</a></li>
-<li class="help-index-item"><a href="#frs_from_programid">Use EPA Program ID to see FRS facility registry services data on those EPA-regulated sites</a></li>
-<li class="help-index-item"><a href="#frs_from_regid">Use registry ID to see FRS facility registry services data on those EPA-regulated sites</a></li>
-<li class="help-index-item"><a href="#frs_from_siteid">Use registry ID to see FRS facility registry services data on those EPA-regulated sites</a></li>
-<li class="help-index-item"><a href="#frs_from_sitename">Use site name text search to see FRS facility registry services data on those EPA-regulated sites
+<li class="help-index-item"><a href="#frs_from_naics">Use NAICS code or industry title text search to see FRS Facility Registry Service data on those EPA-regulated sites</a></li>
+<li class="help-index-item"><a href="#frs_from_program">Use EPA Program acronym like TRIS to see FRS Facility Registry Service data on those EPA-regulated sites</a></li>
+<li class="help-index-item"><a href="#frs_from_programid">Use EPA Program ID to see FRS Facility Registry Service data on those EPA-regulated sites</a></li>
+<li class="help-index-item"><a href="#frs_from_regid">Use registry ID to see FRS Facility Registry Service data on those EPA-regulated sites</a></li>
+<li class="help-index-item"><a href="#frs_from_siteid">Use registry ID to see FRS Facility Registry Service data on those EPA-regulated sites</a></li>
+<li class="help-index-item"><a href="#frs_from_sitename">Use site name text search to see FRS Facility Registry Service data on those EPA-regulated sites
 VERY SLOW search within PRIMARY_NAME of facilities for matching text</a></li>
 <li class="help-index-item"><a href="#frs_is_valid">Validate FRS Registry ID list uploads</a></li>
 <li class="help-index-item"><a href="#get_blockpoints_in_shape">find blocks that are in a polygon, using internal point of block - WORK IN PROGRESS ****</a></li>
@@ -103,18 +103,33 @@ VERY SLOW search within PRIMARY_NAME of facilities for matching text</a></li>
 <li class="help-index-item"><a href="#get_shape_buffered_from_shapefile_points">add buffer around shape (points, here)</a></li>
 <li class="help-index-item"><a href="#get_shapefile_from_sitepoints">convert table of lat,lon points/sites into sf:: shapefile
 Creates a simple feature (sf) dataframe from points</a></li>
+<li class="help-index-item"><a href="#getblocks_diagnostics">Get summary stats on counts of blocks (unique vs doublecounted) near sites</a></li>
+<li class="help-index-item"><a href="#getblocks_summarize_blocks_per_site">helper- Get summary stats on counts of blocks near various sites</a></li>
+<li class="help-index-item"><a href="#getblocks_summarize_sites_per_block">helper- Get summary stats on how many sites are near various blocks (residents)</a></li>
 <li class="help-index-item"><a href="#getblocksnearby">Fast way to find nearby points - finds distance to each Census block centroid nearby</a></li>
 <li class="help-index-item"><a href="#getblocksnearby2">Key buffering function - wrapper redirecting to the right version of getblocksnearby()</a></li>
 <li class="help-index-item"><a href="#getblocksnearbyviaQuadTree">Find nearby blocks using Quad Tree data structure for speed, NO PARALLEL PROCESSING</a></li>
 <li class="help-index-item"><a href="#getblocksnearbyviaQuadTree_Clustered">find nearby blocks using Quad Tree data structure for speed, CLUSTERED FOR PARALLEL PROCESSING</a></li>
 <li class="help-index-item"><a href="#getblocksnearbyviaQuadTree2">Find nearby blocks using Quad Tree data structure for speed, NO PARALLEL PROCESSING</a></li>
 <li class="help-index-item"><a href="#getblocksnearbyviaQuadTree3">Find nearby blocks using Quad Tree data structure for speed, NO PARALLEL PROCESSING</a></li>
+<li class="help-index-item"><a href="#indexblocks">indexblocks
+Create localtree (a quadtree index of all US block centroids) in global environment</a></li>
 <li class="help-index-item"><a href="#input_names_listing">input_names_listing
 Utility checking values of input$ that appear in this code</a></li>
+<li class="help-index-item"><a href="#installejamsource">installejamsource
+utility for when working on the source code - redoes documentation and reinstalls packages</a></li>
 <li class="help-index-item"><a href="#lat_alias-lon_alias">Synonyms for lat and lon</a></li>
 <li class="help-index-item"><a href="#latlon_as.numeric">Strip non-numeric characters from a vector</a></li>
 <li class="help-index-item"><a href="#latlon_df_clean">Find and clean up latitude and longitude columns in a data.frame</a></li>
 <li class="help-index-item"><a href="#latlon_from_anything">Flexibly get lat/lon from file, data.frame, data.table, or lat/lon vectors</a></li>
+<li class="help-index-item"><a href="#latlon_from_naics">Find EPA-regulated facilities in FRS by NAICS code (industrial category)
+Get lat lon, Registry ID, given NAICS industry code(s)
+Find all EPA Facility Registry Service (FRS) sites with this exact NAICS code (not subcategories)</a></li>
+<li class="help-index-item"><a href="#latlon_from_program">Get lat lon, Registry ID, and NAICS, for given FRS Program System CATEGORY
+Find all FRS sites in a program like RCRAINFO, TRIS, or others</a></li>
+<li class="help-index-item"><a href="#latlon_from_programid">Get lat lon, Registry ID, and NAICS, for given FRS Program System ID</a></li>
+<li class="help-index-item"><a href="#latlon_from_regid">Get lat lon (and NAICS) via Facility Registry ID</a></li>
+<li class="help-index-item"><a href="#latlon_from_siteid">Get lat lon (and NAICS) via Facility Registry ID</a></li>
 <li class="help-index-item"><a href="#latlon_infer">guess which columns have lat and lon based on aliases like latitude, FacLat, etc.</a></li>
 <li class="help-index-item"><a href="#latlon_is.valid">Validate latitudes and longitudes</a></li>
 <li class="help-index-item"><a href="#map_facilities">map_facilities</a></li>
@@ -127,12 +142,22 @@ Easy way to list the 2-digit NAICS (17 categories), or other level</a></li>
 <li class="help-index-item"><a href="#naics_findwebscrape">for query term, show list of roughly matching NAICS, scraped from web
 This finds more than just naics_from_any() does, since that needs an exact match
 but this looks at naics.com website which lists various aliases for a sector.</a></li>
+<li class="help-index-item"><a href="#naics_from_any">General way to search for industry names and NAICS codes
+Find industry names and codes by searching for queried code(s) or text</a></li>
+<li class="help-index-item"><a href="#naics_from_code">search for industry names by NAICS code(s), 2-6 digits long each
+See naics_from_any() which uses this</a></li>
+<li class="help-index-item"><a href="#naics_from_name">search for industry names and NAICS codes by query string
+query by parts of words, etc. in the industry name.
+See naics_from_any() which uses this</a></li>
+<li class="help-index-item"><a href="#naics_subcodes_from_code">find subcategories of the given overall NAICS industry code(s)
+Given 3-digit NAICS code, for example, get all NAICS that start with those digits.</a></li>
 <li class="help-index-item"><a href="#naics_url_of_code">Get URL for page with info about industry sector(s) by NAICS
 See naics.com for more information on NAICS codes</a></li>
 <li class="help-index-item"><a href="#naics_validation">Validate NAIC uploads</a></li>
 <li class="help-index-item"><a href="#naics2children">See NAICS codes queried plus all children of any of those
 Used by naics_find()</a></li>
-<li class="help-index-item"><a href="#naicstable">data.table with all NAICS code numbers and industry name for each</a></li>
+<li class="help-index-item"><a href="#naicstable">data.table of NAICS code(s) and industry names for each EPA-regulated site in Facility Registry Service
+Also has the 2,3,4,5,and 6-digit NAICS that this code falls under, where relevant for given length</a></li>
 <li class="help-index-item"><a href="#pctile_from_raw_lookup">Find approx wtd percentiles in lookup table that is in memory</a></li>
 <li class="help-index-item"><a href="#plot_distance_cdf_by_group">plot_distance_cdf_by_group  - SLOW - needs to be optimized
 CDF Line Plots of cumulative share of each demographic group, within each distance
@@ -170,9 +195,6 @@ Get cleaned table of US State etc. by siteid, from lat/lon, or from FIPS</a></li
 <li class="help-index-item"><a href="#statestats_query">convenient way to see mean, pctiles of Env or Demog indicators from lookup table</a></li>
 <li class="help-index-item"><a href="#statestats_queryd">convenient way to see mean, pctiles of DEMOG indicators from lookup table</a></li>
 <li class="help-index-item"><a href="#statestats_querye">convenient way to see mean, pctiles of ENVIRONMENTAL indicators from lookup table</a></li>
-<li class="help-index-item"><a href="#summarize_blockcount">Get summary stats on counts of blocks (unique vs doublecounted) near sites</a></li>
-<li class="help-index-item"><a href="#summarize_blocks_per_site">Get summary stats on counts of blocks near various sites</a></li>
-<li class="help-index-item"><a href="#summarize_sites_per_block">Get summary stats on how many sites are near various blocks (residents)</a></li>
 <li class="help-index-item"><a href="#test_regid">test data, vector of EPA FRS Registry ID numbers</a></li>
 <li class="help-index-item"><a href="#testdata_sites2blocks">data.table of output of getblocknearby(), each row is a unique site-block-distance</a></li>
 <li class="help-index-item"><a href="#testdata_sites2blocks_1000">data.table of output of getblocknearby(testpoints_1000,cutoff = 3.1), each row is a unique site-block-distance</a></li>
@@ -1216,7 +1238,7 @@ It is automatically created when the package is loaded via the <code><a href="#d
   s2b <span class="token operator">&lt;-</span> testdata_sites2blocks
   s2b <span class="token operator">&lt;-</span> getblocksnearby<span class="token punctuation">(</span>testsites<span class="token punctuation">,</span> cutoff <span class="token operator">=</span> radius<span class="token punctuation">)</span>
   s2b <span class="token operator">&lt;-</span> getblocksnearbyviaQuadTree<span class="token punctuation">(</span>testsites<span class="token punctuation">,</span> cutoff <span class="token operator">=</span> radius<span class="token punctuation">)</span>
-  summarize_blockcount<span class="token punctuation">(</span>s2b<span class="token punctuation">)</span>
+  getblocks_diagnostics<span class="token punctuation">(</span>s2b<span class="token punctuation">)</span>
   
   <span class="token comment"># if doing just 2d step of ejamit()</span>
   <span class="token comment">#  get summaries of all indicators based on table of distances</span>
@@ -1408,11 +1430,11 @@ vector of fips passed to this function.
 </div>
 <div class="container manual-page" id="frs_from_naics">
 
-<a href="#frs_from_naics" class="help-page-title"><h2>Use NAICS code or industry title text search to see FRS facility registry services data on those EPA-regulated sites</h2></a>
+<a href="#frs_from_naics" class="help-page-title"><h2>Use NAICS code or industry title text search to see FRS Facility Registry Service data on those EPA-regulated sites</h2></a>
 
 <h3>Description</h3>
 
-<p>Use NAICS code or industry title text search to see FRS facility registry services data on those EPA-regulated sites
+<p>Use NAICS code or industry title text search to see FRS Facility Registry Service data on those EPA-regulated sites
 </p>
 
 
@@ -1432,7 +1454,7 @@ vector of fips passed to this function.
 <tr style="vertical-align: top;">
 <td><code>...</code></td>
 <td>
-<p>passed to <code><a>naics_from_any()</a></code></p>
+<p>passed to <code><a href="#naics_from_any">naics_from_any()</a></code></p>
 </td>
 </tr>
 </table>
@@ -1445,7 +1467,7 @@ vector of fips passed to this function.
 
 <h3>See Also</h3>
 
-<p><code><a>siteid_from_naics()</a></code> <code><a>naics_from_any()</a></code>
+<p><code>siteid_from_naics()</code> <code><a href="#naics_from_any">naics_from_any()</a></code>
 </p>
 
 
@@ -1464,7 +1486,7 @@ vector of fips passed to this function.
 </div>
 <div class="container manual-page" id="frs_from_program">
 
-<a href="#frs_from_program" class="help-page-title"><h2>Use EPA Program acronym like TRIS to see FRS facility registry services data on those EPA-regulated sites</h2></a>
+<a href="#frs_from_program" class="help-page-title"><h2>Use EPA Program acronym like TRIS to see FRS Facility Registry Service data on those EPA-regulated sites</h2></a>
 
 <h3>Description</h3>
 
@@ -1507,11 +1529,11 @@ Find all FRS sites in a program like RCRAINFO, TRIS, or others.
 </div>
 <div class="container manual-page" id="frs_from_programid">
 
-<a href="#frs_from_programid" class="help-page-title"><h2>Use EPA Program ID to see FRS facility registry services data on those EPA-regulated sites</h2></a>
+<a href="#frs_from_programid" class="help-page-title"><h2>Use EPA Program ID to see FRS Facility Registry Service data on those EPA-regulated sites</h2></a>
 
 <h3>Description</h3>
 
-<p>Use EPA Program ID to see FRS facility registry services data on those EPA-regulated sites
+<p>Use EPA Program ID to see FRS Facility Registry Service data on those EPA-regulated sites
 </p>
 
 
@@ -1545,11 +1567,11 @@ Find all FRS sites in a program like RCRAINFO, TRIS, or others.
 </div>
 <div class="container manual-page" id="frs_from_regid">
 
-<a href="#frs_from_regid" class="help-page-title"><h2>Use registry ID to see FRS facility registry services data on those EPA-regulated sites</h2></a>
+<a href="#frs_from_regid" class="help-page-title"><h2>Use registry ID to see FRS Facility Registry Service data on those EPA-regulated sites</h2></a>
 
 <h3>Description</h3>
 
-<p>Use registry ID to see FRS facility registry services data on those EPA-regulated sites
+<p>Use registry ID to see FRS Facility Registry Service data on those EPA-regulated sites
 </p>
 
 
@@ -1581,11 +1603,11 @@ Find all FRS sites in a program like RCRAINFO, TRIS, or others.
 </div>
 <div class="container manual-page" id="frs_from_siteid">
 
-<a href="#frs_from_siteid" class="help-page-title"><h2>Use registry ID to see FRS facility registry services data on those EPA-regulated sites</h2></a>
+<a href="#frs_from_siteid" class="help-page-title"><h2>Use registry ID to see FRS Facility Registry Service data on those EPA-regulated sites</h2></a>
 
 <h3>Description</h3>
 
-<p>Use registry ID to see FRS facility registry services data on those EPA-regulated sites
+<p>Use registry ID to see FRS Facility Registry Service data on those EPA-regulated sites
 </p>
 
 
@@ -1617,12 +1639,12 @@ Find all FRS sites in a program like RCRAINFO, TRIS, or others.
 </div>
 <div class="container manual-page" id="frs_from_sitename">
 
-<a href="#frs_from_sitename" class="help-page-title"><h2>Use site name text search to see FRS facility registry services data on those EPA-regulated sites
+<a href="#frs_from_sitename" class="help-page-title"><h2>Use site name text search to see FRS Facility Registry Service data on those EPA-regulated sites
 VERY SLOW search within PRIMARY_NAME of facilities for matching text</h2></a>
 
 <h3>Description</h3>
 
-<p>Use site name text search to see FRS facility registry services data on those EPA-regulated sites
+<p>Use site name text search to see FRS Facility Registry Service data on those EPA-regulated sites
 VERY SLOW search within PRIMARY_NAME of facilities for matching text
 </p>
 
@@ -1936,6 +1958,130 @@ Creates a simple feature (sf) dataframe from points
 <h3>See Also</h3>
 
 <p><code><a href="#get_blockpoints_in_shape">get_blockpoints_in_shape()</a></code> <code><a href="#get_shapefile_from_sitepoints">get_shapefile_from_sitepoints()</a></code> <code><a href="#get_shape_buffered_from_shapefile_points">get_shape_buffered_from_shapefile_points()</a></code>
+</p>
+
+<hr>
+</div>
+<div class="container manual-page" id="getblocks_diagnostics">
+
+<a href="#getblocks_diagnostics" class="help-page-title"><h2>Get summary stats on counts of blocks (unique vs doublecounted) near sites</h2></a>
+
+<h3>Description</h3>
+
+<p>Get summary stats on counts of blocks (unique vs doublecounted) near sites
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">getblocks_diagnostics<span class="token punctuation">(</span>x<span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table><tr style="vertical-align: top;">
+<td><code>x</code></td>
+<td>
+<p>The output of <code><a href="#getblocksnearby">getblocksnearby()</a></code> like sites2blocks_example</p>
+</td>
+</tr></table>
+<h3>Value</h3>
+
+<p>A list of stats
+</p>
+
+
+<h3>Examples</h3>
+
+<pre class="language-r"><code class="language-r">getblocks_diagnostics<span class="token punctuation">(</span>sites2blocks_example<span class="token punctuation">)</span></code></pre>
+
+<hr>
+</div>
+<div class="container manual-page" id="getblocks_summarize_blocks_per_site">
+
+<a href="#getblocks_summarize_blocks_per_site" class="help-page-title"><h2>helper- Get summary stats on counts of blocks near various sites</h2></a>
+
+<h3>Description</h3>
+
+<p>Tells you # of blocks near avg site,
+how many sites have only 1 block nearby, or have &lt;30 nearby, etc.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">getblocks_summarize_blocks_per_site<span class="token punctuation">(</span>x<span class="token punctuation">,</span> varname <span class="token operator">=</span> <span class="token string">"siteid"</span><span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr style="vertical-align: top;">
+<td><code>x</code></td>
+<td>
+<p>The output of getblocksnearby()</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>varname</code></td>
+<td>
+<p>colname of variable in data.table x that is the one to summarize by</p>
+</td>
+</tr>
+</table>
+<h3>Value</h3>
+
+<p>invisibly, a list of stats
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="#getblocks_diagnostics">getblocks_diagnostics()</a></code>
+</p>
+
+<hr>
+</div>
+<div class="container manual-page" id="getblocks_summarize_sites_per_block">
+
+<a href="#getblocks_summarize_sites_per_block" class="help-page-title"><h2>helper- Get summary stats on how many sites are near various blocks (residents)</h2></a>
+
+<h3>Description</h3>
+
+<p>helper- Get summary stats on how many sites are near various blocks (residents)
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">getblocks_summarize_sites_per_block<span class="token punctuation">(</span>x<span class="token punctuation">,</span> varname <span class="token operator">=</span> <span class="token string">"blockid"</span><span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr style="vertical-align: top;">
+<td><code>x</code></td>
+<td>
+<p>The output of <code><a href="#getblocksnearby">getblocksnearby()</a></code> like sites2blocks_example</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>varname</code></td>
+<td>
+<p>colname of variable in data.table x that is the one to summarize by</p>
+</td>
+</tr>
+</table>
+<h3>Value</h3>
+
+<p>invisibly, a list of stats
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="#getblocks_diagnostics">getblocks_diagnostics()</a></code>
 </p>
 
 <hr>
@@ -2471,6 +2617,37 @@ It is automatically created when the package is loaded via the <code><a href="#d
 
 <hr>
 </div>
+<div class="container manual-page" id="indexblocks">
+
+<a href="#indexblocks" class="help-page-title"><h2>indexblocks
+Create localtree (a quadtree index of all US block centroids) in global environment</h2></a>
+
+<h3>Description</h3>
+
+<p>indexblocks
+Create localtree (a quadtree index of all US block centroids) in global environment
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">indexblocks<span class="token punctuation">(</span><span class="token punctuation">)</span></code></pre>
+
+
+<h3>Details</h3>
+
+<p>.onLoad() can be edited to create this when the package loads,
+but then it takes time each time a developer rebuilds/installs the package or others that load EJAM.
+</p>
+
+
+<h3>Value</h3>
+
+<p>Side effect is it creates the index in memory
+</p>
+
+<hr>
+</div>
 <div class="container manual-page" id="input_names_listing">
 
 <a href="#input_names_listing" class="help-page-title"><h2>input_names_listing
@@ -2499,6 +2676,40 @@ Utility checking values of input$ that appear in this code
 <h3>Value</h3>
 
 <p>character vector of ids of inputs like x,y,z if it found input$x input$y input$z
+</p>
+
+<hr>
+</div>
+<div class="container manual-page" id="installejamsource">
+
+<a href="#installejamsource" class="help-page-title"><h2>installejamsource
+utility for when working on the source code - redoes documentation and reinstalls packages</h2></a>
+
+<h3>Description</h3>
+
+<p>installejamsource
+utility for when working on the source code - redoes documentation and reinstalls packages
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">installejamsource<span class="token punctuation">(</span>pkg <span class="token operator">=</span> EJAM<span class="token operator">::</span>ejampackages<span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table><tr style="vertical-align: top;">
+<td><code>pkg</code></td>
+<td>
+<p>vector of names of folders with source packages,
+but not the full path - just the package name.
+Assumes that R_USER points to the folder that has all those source package folders in it.</p>
+</td>
+</tr></table>
+<h3>Value</h3>
+
+<p>nothing. side effect is it does document() and INSTALL
 </p>
 
 <hr>
@@ -2678,9 +2889,9 @@ be inferred to be that by latlon_infer()</p>
 </p>
 <p>except it also uses these functions:
 </p>
-<p><code><a>EJAMfrsdata::latlon_from_siteid()</a></code>
+<p><code><a href="#latlon_from_siteid">latlon_from_siteid()</a></code>
 </p>
-<p><code><a>EJAMfrsdata::latlon_from_programid()</a></code>   but not  _from_naics() ?
+<p><code><a href="#latlon_from_programid">latlon_from_programid()</a></code>   but not  _from_naics() ?
 </p>
 
 
@@ -2708,6 +2919,268 @@ be inferred to be that by latlon_infer()</p>
  latlon_from_anything<span class="token punctuation">(</span>testpoints_50<span class="token punctuation">[</span><span class="token number">1</span><span class="token operator">:</span><span class="token number">6</span><span class="token punctuation">,</span><span class="token punctuation">]</span> <span class="token punctuation">)</span>
  latlon_from_anything<span class="token punctuation">(</span>testpoints_50<span class="token punctuation">[</span><span class="token number">1</span><span class="token operator">:</span><span class="token number">6</span><span class="token punctuation">,</span> c<span class="token punctuation">(</span><span class="token string">'lat'</span><span class="token punctuation">,</span><span class="token string">'lon'</span><span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token punctuation">)</span>
  latlon_from_anything<span class="token punctuation">(</span>x<span class="token operator">=</span>testpoints_50<span class="token operator">$</span>lon<span class="token punctuation">[</span><span class="token number">1</span><span class="token operator">:</span><span class="token number">6</span><span class="token punctuation">]</span><span class="token punctuation">,</span> y<span class="token operator">=</span>testpoints_50<span class="token operator">$</span>lat<span class="token punctuation">[</span><span class="token number">1</span><span class="token operator">:</span><span class="token number">6</span><span class="token punctuation">]</span> <span class="token punctuation">)</span></code></pre>
+
+<hr>
+</div>
+<div class="container manual-page" id="latlon_from_naics">
+
+<a href="#latlon_from_naics" class="help-page-title"><h2>Find EPA-regulated facilities in FRS by NAICS code (industrial category)
+Get lat lon, Registry ID, given NAICS industry code(s)
+Find all EPA Facility Registry Service (FRS) sites with this exact NAICS code (not subcategories)</h2></a>
+
+<h3>Description</h3>
+
+<p>Find EPA-regulated facilities in FRS by NAICS code (industrial category)
+Get lat lon, Registry ID, given NAICS industry code(s)
+Find all EPA Facility Registry Service (FRS) sites with this exact NAICS code (not subcategories)
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">latlon_from_naics<span class="token punctuation">(</span>naics<span class="token punctuation">,</span> id_only <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table><tr style="vertical-align: top;">
+<td><code>naics</code></td>
+<td>
+<p>a vector of naics codes, or
+a data.table with column named code, as with output of <code><a href="#naics_from_any">naics_from_any()</a></code></p>
+</td>
+</tr></table>
+<h3>Details</h3>
+
+<p>NOTE: many FRS sites lack NAICS code!
+</p>
+<p>Also, this function does not find the sites
+identified by FRS data as being in a child NAICS (subcategory of your exact query)!
+</p>
+<p>Relies on EJAMfrsdata::frs_by_naics (a data.table)
+</p>
+<p>See info about NAICS industry codes at <a href="https://www.naics.com/search" target="_blank">https://www.naics.com/search</a>
+</p>
+
+
+<h3>Value</h3>
+
+<p>A data.table (not just data.frame) with columns called
+lat, lon, REGISTRY_ID, NAICS (but see the id_only parameter)
+</p>
+
+
+<h3>Examples</h3>
+
+<pre class="language-r"><code class="language-r">siteid_from_naics<span class="token punctuation">(</span><span class="token number">321114</span><span class="token punctuation">)</span>
+  latlon_from_naics<span class="token punctuation">(</span><span class="token number">321114</span><span class="token punctuation">)</span>
+  latlon_from_naics<span class="token punctuation">(</span>EJAM<span class="token operator">::</span>naics_from_any<span class="token punctuation">(</span><span class="token string">"cheese"</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token punctuation">,</span>code<span class="token punctuation">]</span> <span class="token punctuation">)</span>
+  head<span class="token punctuation">(</span>latlon_from_naics<span class="token punctuation">(</span>c<span class="token punctuation">(</span><span class="token number">3366</span><span class="token punctuation">,</span> <span class="token number">33661</span><span class="token punctuation">,</span> <span class="token number">336611</span><span class="token punctuation">)</span><span class="token punctuation">,</span> id_only<span class="token operator">=</span><span class="token boolean">TRUE</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  <span class="token comment"># mapfast(frs_from_naics(336611)) # simple map</span></code></pre>
+
+<hr>
+</div>
+<div class="container manual-page" id="latlon_from_program">
+
+<a href="#latlon_from_program" class="help-page-title"><h2>Get lat lon, Registry ID, and NAICS, for given FRS Program System CATEGORY
+Find all FRS sites in a program like RCRAINFO, TRIS, or others</h2></a>
+
+<h3>Description</h3>
+
+<p>Get lat lon, Registry ID, and NAICS, for given FRS Program System CATEGORY
+Find all FRS sites in a program like RCRAINFO, TRIS, or others
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">latlon_from_program<span class="token punctuation">(</span>query<span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table><tr style="vertical-align: top;">
+<td><code>program</code></td>
+<td>
+<p>like "RMP", "RCRAINFO", "TRIS", "RMP", or others.</p>
+</td>
+</tr></table>
+<h3>Details</h3>
+
+<p>For info on FRS program codes in general, see <a href="https://www.epa.gov/frs/frs-program-crosswalks" target="_blank">https://www.epa.gov/frs/frs-program-crosswalks</a>
+</p>
+<p>Also see information at <a href="https://echo.epa.gov/tools/data-downloads/frs-download-summary" target="_blank">https://echo.epa.gov/tools/data-downloads/frs-download-summary</a>
+about the file FRS_PROGRAM_LINKS.csv
+</p>
+<p>For info on program codes ECHO uses, see <a href="https://echo.epa.gov/resources/echo-data/about-the-data" target="_blank">https://echo.epa.gov/resources/echo-data/about-the-data</a>
+</p>
+<p>including <a href="https://www.epa.gov/frs/frs-environmental-interest-types" target="_blank">https://www.epa.gov/frs/frs-environmental-interest-types</a>
+</p>
+<p>For a list of program acronyms, <a href="https://www.epa.gov/frs/frs-rest-services#appendixa" target="_blank">https://www.epa.gov/frs/frs-rest-services#appendixa</a>
+</p>
+<p>The acronym is the abbreviated name that represents the name of an
+information management system for an environmental program.
+The Federal ones with at least 100k facilities each are
+</p>
+<p>RCRAINFO (over 500k sites), NPDES, ICIS, AIR, FIS, EIS, and AIRS/AFS.
+</p>
+
+
+<h3>Value</h3>
+
+<p>data.table with lat  lon  REGISTRY_ID  program – but not pgm_sys_id
+since there could be duplicates where same REGISTRY_ID has 2 different pgm_sys_id values
+in the same program, so results were sometimes longer than if using <code><a href="#frs_from_program">frs_from_program()</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre class="language-r"><code class="language-r"><span class="token comment">## Not run: </span>
+ x <span class="token operator">=</span> latlon_from_program<span class="token punctuation">(</span><span class="token string">"CAMDBS"</span><span class="token punctuation">)</span>
+ EJAMejscreenapi<span class="token operator">::</span>mapfast<span class="token punctuation">(</span>x<span class="token punctuation">)</span>
+ program <span class="token operator">&lt;-</span> c<span class="token punctuation">(</span><span class="token string">"EIS"</span><span class="token punctuation">,</span> <span class="token string">"UST"</span><span class="token punctuation">)</span>
+ x <span class="token operator">=</span> latlon_from_program<span class="token punctuation">(</span>program<span class="token punctuation">)</span>
+ <span class="token comment"># to get the facility name as well:</span>
+ x <span class="token operator">=</span> frs<span class="token punctuation">[</span>grepl<span class="token punctuation">(</span><span class="token string">"RCRAINFO"</span><span class="token punctuation">,</span> PGM_SYS_ACRNMS<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token punctuation">]</span> <span class="token comment"># fast</span>
+ <span class="token comment">## x = latlon_from_siteid(latlon_from_program(program)[,REGISTRY_ID])  # slower!</span>
+ EJAMejscreenapi<span class="token operator">::</span>mapfast<span class="token punctuation">(</span>x<span class="token punctuation">[</span>sample<span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">:</span>nrow<span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">1000</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token punctuation">]</span><span class="token punctuation">)</span>
+
+<span class="token comment">## End(Not run)</span></code></pre>
+
+<hr>
+</div>
+<div class="container manual-page" id="latlon_from_programid">
+
+<a href="#latlon_from_programid" class="help-page-title"><h2>Get lat lon, Registry ID, and NAICS, for given FRS Program System ID</h2></a>
+
+<h3>Description</h3>
+
+<p>Get lat lon, Registry ID, and NAICS, for given FRS Program System ID
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">latlon_from_programid<span class="token punctuation">(</span>programid<span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table><tr style="vertical-align: top;">
+<td><code>programid</code></td>
+<td>
+<p>like "XJW000012435"</p>
+</td>
+</tr></table>
+<h3>Details</h3>
+
+<p>The ID is the identification number, such as the permit number,
+assigned by an information management system that represents a
+facility site, waste site, operable unit, or other feature tracked by that
+Environmental Information System.
+</p>
+<p>Also note the FRS API:
+<a href="https://www.epa.gov/frs/facility-registry-service-frs-api" target="_blank">https://www.epa.gov/frs/facility-registry-service-frs-api</a>
+<a href="https://www.epa.gov/frs/frs-rest-services" target="_blank">https://www.epa.gov/frs/frs-rest-services</a>
+</p>
+
+
+<h3>Value</h3>
+
+<p>data.table with lat  lon  REGISTRY_ID  program   pgm_sys_id
+</p>
+
+
+<h3>Examples</h3>
+
+<pre class="language-r"><code class="language-r">latlon_from_programid<span class="token punctuation">(</span>c<span class="token punctuation">(</span><span class="token string">"XJW000012435"</span><span class="token punctuation">,</span> <span class="token string">"00768SRTRSROAD1"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+ pids <span class="token operator">&lt;-</span> c<span class="token punctuation">(</span><span class="token string">"7-0540-00003"</span><span class="token punctuation">,</span> <span class="token string">"354362"</span><span class="token punctuation">,</span> <span class="token string">"1513529"</span><span class="token punctuation">,</span> <span class="token string">"485659"</span><span class="token punctuation">,</span> <span class="token string">"LAG750956"</span><span class="token punctuation">,</span> 
+   <span class="token string">"CAC002995519"</span><span class="token punctuation">,</span> <span class="token string">"3601252181"</span><span class="token punctuation">,</span> <span class="token string">"3601439158"</span><span class="token punctuation">)</span>
+ latlon_from_siteid<span class="token punctuation">(</span>latlon_from_programid<span class="token punctuation">(</span>pids<span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token punctuation">,</span>REGISTRY_ID<span class="token punctuation">]</span><span class="token punctuation">)</span>
+ latlon_from_programid<span class="token punctuation">(</span>c<span class="token punctuation">(</span><span class="token string">"XJW000012435"</span><span class="token punctuation">,</span> <span class="token string">"00768SRTRSROAD1"</span><span class="token punctuation">,</span> <span class="token string">"asdfsdf"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token punctuation">,</span>.<span class="token punctuation">(</span>lat<span class="token punctuation">,</span>lon<span class="token punctuation">)</span><span class="token punctuation">]</span></code></pre>
+
+<hr>
+</div>
+<div class="container manual-page" id="latlon_from_regid">
+
+<a href="#latlon_from_regid" class="help-page-title"><h2>Get lat lon (and NAICS) via Facility Registry ID</h2></a>
+
+<h3>Description</h3>
+
+<p>Get lat lon (and NAICS) via Facility Registry ID
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">latlon_from_regid<span class="token punctuation">(</span>siteid<span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table><tr style="vertical-align: top;">
+<td><code>siteid</code></td>
+<td>
+<p>Facility Registry Service ID like 110010052520</p>
+</td>
+</tr></table>
+<h3>Value</h3>
+
+<p>data.table with columns
+lat,lon,REGISTRY_ID,PRIMARY_NAME,NAICS,PGM_SYS_ACRNMS
+</p>
+
+
+<h3>Examples</h3>
+
+<pre class="language-r"><code class="language-r">latlon_from_siteid<span class="token punctuation">(</span><span class="token number">110070874073</span><span class="token punctuation">)</span>
+x <span class="token operator">=</span> latlon_from_siteid<span class="token punctuation">(</span>
+    c<span class="token punctuation">(</span><span class="token number">110071293460</span><span class="token punctuation">,</span> <span class="token number">110070874073</span><span class="token punctuation">,</span> <span class="token number">110070538057</span><span class="token punctuation">,</span> <span class="token number">110044340807</span><span class="token punctuation">,</span>
+       <span class="token number">110030509215</span><span class="token punctuation">,</span> <span class="token number">110019033810</span><span class="token punctuation">,</span> <span class="token number">110056111559</span><span class="token punctuation">,</span> <span class="token number">110056982323</span><span class="token punctuation">)</span>
+        <span class="token punctuation">)</span>
+EJAMejscreenapi<span class="token operator">::</span>mapfast<span class="token punctuation">(</span>x<span class="token punctuation">)</span></code></pre>
+
+<hr>
+</div>
+<div class="container manual-page" id="latlon_from_siteid">
+
+<a href="#latlon_from_siteid" class="help-page-title"><h2>Get lat lon (and NAICS) via Facility Registry ID</h2></a>
+
+<h3>Description</h3>
+
+<p>Get lat lon (and NAICS) via Facility Registry ID
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">latlon_from_siteid<span class="token punctuation">(</span>siteid<span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table><tr style="vertical-align: top;">
+<td><code>siteid</code></td>
+<td>
+<p>Facility Registry Service ID like 110010052520</p>
+</td>
+</tr></table>
+<h3>Value</h3>
+
+<p>data.table with columns
+lat,lon,REGISTRY_ID,PRIMARY_NAME,NAICS,PGM_SYS_ACRNMS
+</p>
+
+
+<h3>Examples</h3>
+
+<pre class="language-r"><code class="language-r">latlon_from_siteid<span class="token punctuation">(</span><span class="token number">110070874073</span><span class="token punctuation">)</span>
+x <span class="token operator">=</span> latlon_from_siteid<span class="token punctuation">(</span>
+    c<span class="token punctuation">(</span><span class="token number">110071293460</span><span class="token punctuation">,</span> <span class="token number">110070874073</span><span class="token punctuation">,</span> <span class="token number">110070538057</span><span class="token punctuation">,</span> <span class="token number">110044340807</span><span class="token punctuation">,</span>
+       <span class="token number">110030509215</span><span class="token punctuation">,</span> <span class="token number">110019033810</span><span class="token punctuation">,</span> <span class="token number">110056111559</span><span class="token punctuation">,</span> <span class="token number">110056982323</span><span class="token punctuation">)</span>
+        <span class="token punctuation">)</span>
+EJAMejscreenapi<span class="token operator">::</span>mapfast<span class="token punctuation">(</span>x<span class="token punctuation">)</span></code></pre>
 
 <hr>
 </div>
@@ -2950,7 +3423,7 @@ but it is not coded to be able to check attributes without doing that.
 <h3>Usage</h3>
 
 <pre class="language-r"><code class="language-r">metadata_check<span class="token punctuation">(</span>
-  packages <span class="token operator">=</span> <span class="token keyword">NULL</span><span class="token punctuation">,</span>
+  packages <span class="token operator">=</span> EJAM<span class="token operator">::</span>ejampackages<span class="token punctuation">,</span>
   which <span class="token operator">=</span> c<span class="token punctuation">(</span><span class="token string">"census_version"</span><span class="token punctuation">,</span> <span class="token string">"acs_version"</span><span class="token punctuation">,</span> <span class="token string">"acs_releasedate"</span><span class="token punctuation">,</span> <span class="token string">"ACS"</span><span class="token punctuation">,</span>
     <span class="token string">"ejscreen_version"</span><span class="token punctuation">,</span> <span class="token string">"ejscreen_releasedate"</span><span class="token punctuation">,</span> <span class="token string">"ejscreen_pkg_data"</span><span class="token punctuation">,</span> <span class="token string">"year"</span><span class="token punctuation">,</span> <span class="token string">"released"</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
   loadifnotloaded <span class="token operator">=</span> <span class="token boolean">TRUE</span>
@@ -3002,7 +3475,7 @@ Default is some typical ones used in EJAM-related packages currently.</p>
 
 <h3>See Also</h3>
 
-<p><a href="#naicstable">naicstable</a> <code><a>naics_from_any()</a></code> <code><a href="#naics_categories">naics_categories()</a></code> <a href="#NAICS">NAICS</a>
+<p><a href="#naicstable">naicstable</a> <code><a href="#naics_from_any">naics_from_any()</a></code> <code><a href="#naics_categories">naics_categories()</a></code> <a href="#NAICS">NAICS</a>
 </p>
 
 <hr>
@@ -3121,13 +3594,13 @@ See &lt;'https://www.census.gov/naics/?48967'&gt;
 <div class="container manual-page" id="naics_findwebscrape">
 
 <a href="#naics_findwebscrape" class="help-page-title"><h2>for query term, show list of roughly matching NAICS, scraped from web
-This finds more than just <code><a>naics_from_any()</a></code> does, since that needs an exact match
+This finds more than just <code><a href="#naics_from_any">naics_from_any()</a></code> does, since that needs an exact match
 but this looks at naics.com website which lists various aliases for a sector.</h2></a>
 
 <h3>Description</h3>
 
 <p>for query term, show list of roughly matching NAICS, scraped from web
-This finds more than just <code><a>naics_from_any()</a></code> does, since that needs an exact match
+This finds more than just <code><a href="#naics_from_any">naics_from_any()</a></code> does, since that needs an exact match
 but this looks at naics.com website which lists various aliases for a sector.
 </p>
 
@@ -3153,7 +3626,7 @@ but this looks at naics.com website which lists various aliases for a sector.
 
 <h3>See Also</h3>
 
-<p><code><a>naics_from_any()</a></code>  <code><a href="#url_naics.com">url_naics.com()</a></code>
+<p><code><a href="#naics_from_any">naics_from_any()</a></code>  <code><a href="#url_naics.com">url_naics.com()</a></code>
 </p>
 
 
@@ -3170,6 +3643,293 @@ but this looks at naics.com website which lists various aliases for a sector.
   browseURL<span class="token punctuation">(</span>naics_url_of_code<span class="token punctuation">(</span><span class="token number">326</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
   
 <span class="token comment">## End(Not run)</span></code></pre>
+
+<hr>
+</div>
+<div class="container manual-page" id="naics_from_any">
+
+<a href="#naics_from_any" class="help-page-title"><h2>General way to search for industry names and NAICS codes
+Find industry names and codes by searching for queried code(s) or text</h2></a>
+
+<h3>Description</h3>
+
+<p>General way to search for industry names and NAICS codes
+Find industry names and codes by searching for queried code(s) or text
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">naics_from_any<span class="token punctuation">(</span>
+  query<span class="token punctuation">,</span>
+  children <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
+  ignore.case <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span>
+  fixed <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
+  website_scrape <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
+  website_url <span class="token operator">=</span> <span class="token boolean">FALSE</span>
+<span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr style="vertical-align: top;">
+<td><code>query</code></td>
+<td>
+<p>query string(s) and/or number(s), vector of NAICS codes or industry names or any regular expression or partial words</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>children</code></td>
+<td>
+<p>logical, if TRUE, also return all the subcategories - where NAICS starts with the same digits</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>ignore.case</code></td>
+<td>
+<p>see <code><a href="https://r-universe.dev/manuals/base.html#grep">grepl()</a></code></p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>fixed</code></td>
+<td>
+<p>should it be an exact match? see <code><a href="https://r-universe.dev/manuals/base.html#grep">grepl()</a></code></p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>website_scrape</code></td>
+<td>
+<p>whether to scrape info from the NAICS website to return a table of codes and names that match (web query uses synonyms so gets more hits)</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>website_url</code></td>
+<td>
+<p>whether to return the URL of the webpage with info on the NAICS (web query uses synonyms so gets more hits)</p>
+</td>
+</tr>
+</table>
+<h3>Value</h3>
+
+<p>a subset of the <a href="#naicstable">naicstable</a> data.table (not just the codes column)
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="#naics_subcodes_from_code">naics_subcodes_from_code()</a></code> <code><a href="#naics_from_code">naics_from_code()</a></code>  <code><a href="#naics_from_name">naics_from_name()</a></code>  <code><a href="#naics_from_any">naics_from_any()</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre class="language-r"><code class="language-r"><span class="token comment"># Also see vignette for examples</span>
+  naics_categories<span class="token punctuation">(</span><span class="token punctuation">)</span>
+  naics_from_any<span class="token punctuation">(</span>naics_categories<span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">[</span>order<span class="token punctuation">(</span>name<span class="token punctuation">)</span><span class="token punctuation">,</span>.<span class="token punctuation">(</span>name<span class="token punctuation">,</span>code<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token operator">:</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token punctuation">]</span> 
+  naics_from_any<span class="token punctuation">(</span>naics_categories<span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">[</span>order<span class="token punctuation">(</span>code<span class="token punctuation">)</span><span class="token punctuation">,</span>.<span class="token punctuation">(</span>code<span class="token punctuation">,</span>name<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token operator">:</span><span class="token number">10</span><span class="token punctuation">,</span><span class="token punctuation">]</span> 
+  naics_from_code<span class="token punctuation">(</span><span class="token number">211</span><span class="token punctuation">)</span>
+  naicstable<span class="token punctuation">[</span>code<span class="token operator">==</span><span class="token number">211</span><span class="token punctuation">,</span><span class="token punctuation">]</span>
+  naics_subcodes_from_code<span class="token punctuation">(</span><span class="token number">211</span><span class="token punctuation">)</span>
+  naics_from_code<span class="token punctuation">(</span><span class="token number">211</span><span class="token punctuation">,</span>  children <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">)</span>
+  naicstable<span class="token punctuation">[</span>n3<span class="token operator">==</span><span class="token number">211</span><span class="token punctuation">,</span><span class="token punctuation">]</span>
+  NAICS<span class="token punctuation">[</span><span class="token number">211</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token operator">:</span><span class="token number">3</span><span class="token punctuation">]</span> <span class="token comment"># wrong</span>
+  NAICS<span class="token punctuation">[</span>NAICS <span class="token operator">==</span> <span class="token number">211</span><span class="token punctuation">]</span>
+  NAICS<span class="token punctuation">[</span><span class="token string">"211 - Oil and Gas Extraction"</span><span class="token punctuation">]</span>
+  
+ naics_from_any<span class="token punctuation">(</span><span class="token string">"plastics and rubber"</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token punctuation">,</span>.<span class="token punctuation">(</span>name<span class="token punctuation">,</span>code<span class="token punctuation">)</span><span class="token punctuation">]</span>
+ naics_from_any<span class="token punctuation">(</span><span class="token number">326</span><span class="token punctuation">)</span>
+ naics_from_any<span class="token punctuation">(</span><span class="token number">326</span><span class="token punctuation">,</span> children <span class="token operator">=</span> T<span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token punctuation">,</span>.<span class="token punctuation">(</span>code<span class="token punctuation">,</span>name<span class="token punctuation">)</span><span class="token punctuation">]</span>
+ naics_from_any<span class="token punctuation">(</span><span class="token string">"plastics"</span><span class="token punctuation">,</span> children<span class="token operator">=</span>T<span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token punctuation">,</span>unique<span class="token punctuation">(</span>n3<span class="token punctuation">)</span><span class="token punctuation">]</span> 
+ naics_from_any<span class="token punctuation">(</span><span class="token string">"pig"</span><span class="token punctuation">)</span>
+ naics_from_any<span class="token punctuation">(</span><span class="token string">"pig "</span><span class="token punctuation">)</span> <span class="token comment"># space after g</span>
+ 
+ <span class="token comment"># naics_from_any("copper smelting")</span>
+ <span class="token comment"># naics_from_any("copper smelting", website_scrape=TRUE)</span>
+ <span class="token comment"># browseURL(naics_from_any("copper smelting", website_url=TRUE) )</span>
+ 
+ a <span class="token operator">=</span> naics_from_any<span class="token punctuation">(</span><span class="token string">"plastics"</span><span class="token punctuation">)</span>
+ b <span class="token operator">=</span> naics_from_any<span class="token punctuation">(</span><span class="token string">"rubber"</span><span class="token punctuation">)</span> 
+ fintersect<span class="token punctuation">(</span>a<span class="token punctuation">,</span>b<span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token punctuation">,</span>.<span class="token punctuation">(</span>name<span class="token punctuation">,</span>code<span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token comment">#  a AND b</span>
+ funion<span class="token punctuation">(</span>a<span class="token punctuation">,</span>b<span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token punctuation">,</span>.<span class="token punctuation">(</span>name<span class="token punctuation">,</span>code<span class="token punctuation">)</span><span class="token punctuation">]</span>     <span class="token comment">#  a OR  b</span>
+ naics_subcodes_from_code<span class="token punctuation">(</span>funion<span class="token punctuation">(</span>a<span class="token punctuation">,</span>b<span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token punctuation">,</span>code<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token punctuation">,</span>.<span class="token punctuation">(</span>name<span class="token punctuation">,</span>code<span class="token punctuation">)</span><span class="token punctuation">]</span>   <span class="token comment">#  plus children</span>
+ naics_from_any<span class="token punctuation">(</span>funion<span class="token punctuation">(</span>a<span class="token punctuation">,</span>b<span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token punctuation">,</span>code<span class="token punctuation">]</span><span class="token punctuation">,</span> children<span class="token operator">=</span>T<span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token punctuation">,</span>.<span class="token punctuation">(</span>name<span class="token punctuation">,</span>code<span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token comment">#  same</span>
+ 
+ NROW<span class="token punctuation">(</span>naics_from_any<span class="token punctuation">(</span><span class="token number">325</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token comment">#[1] 1</span>
+ NROW<span class="token punctuation">(</span>naics_from_any<span class="token punctuation">(</span><span class="token number">325</span><span class="token punctuation">,</span> children <span class="token operator">=</span> T<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token comment">#[1] 54</span>
+ NROW<span class="token punctuation">(</span>naics_from_any<span class="token punctuation">(</span><span class="token string">"chem"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token comment">#[1] 20</span>
+ NROW<span class="token punctuation">(</span>naics_from_any<span class="token punctuation">(</span><span class="token string">"chem"</span><span class="token punctuation">,</span> children <span class="token operator">=</span> T<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token number">104</span></code></pre>
+
+<hr>
+</div>
+<div class="container manual-page" id="naics_from_code">
+
+<a href="#naics_from_code" class="help-page-title"><h2>search for industry names by NAICS code(s), 2-6 digits long each
+See <code><a href="#naics_from_any">naics_from_any()</a></code> which uses this</h2></a>
+
+<h3>Description</h3>
+
+<p>search for industry names by NAICS code(s), 2-6 digits long each
+See <code><a href="#naics_from_any">naics_from_any()</a></code> which uses this
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">naics_from_code<span class="token punctuation">(</span>mycodes<span class="token punctuation">,</span> children <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr style="vertical-align: top;">
+<td><code>mycodes</code></td>
+<td>
+<p>vector of numeric NAICS codes. see <a href="https://naics.com" target="_blank">https://naics.com</a></p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>children</code></td>
+<td>
+<p>logical, if TRUE, also return all the subcategories - where NAICS starts with the same digits</p>
+</td>
+</tr>
+</table>
+<h3>Value</h3>
+
+<p>a subset of the <a href="#naicstable">naicstable</a> data.table (not just the codes column)
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="#naics_subcodes_from_code">naics_subcodes_from_code()</a></code> <code><a href="#naics_from_code">naics_from_code()</a></code>  <code><a href="#naics_from_name">naics_from_name()</a></code>  <code><a href="#naics_from_any">naics_from_any()</a></code>
+</p>
+
+<hr>
+</div>
+<div class="container manual-page" id="naics_from_name">
+
+<a href="#naics_from_name" class="help-page-title"><h2>search for industry names and NAICS codes by query string
+query by parts of words, etc. in the industry name.
+See <code><a href="#naics_from_any">naics_from_any()</a></code> which uses this</h2></a>
+
+<h3>Description</h3>
+
+<p>search for industry names and NAICS codes by query string
+query by parts of words, etc. in the industry name.
+See <code><a href="#naics_from_any">naics_from_any()</a></code> which uses this
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">naics_from_name<span class="token punctuation">(</span>mynames<span class="token punctuation">,</span> children <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span> ignore.case <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span> fixed <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr style="vertical-align: top;">
+<td><code>mynames</code></td>
+<td>
+<p>query string, vector of NAICS industry names or any regular expression or partial words. See <a href="https://naics.com" target="_blank">https://naics.com</a></p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>children</code></td>
+<td>
+<p>logical, if TRUE, also return all the subcategories - where NAICS starts with the same digits</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>ignore.case</code></td>
+<td>
+<p>see <code><a href="https://r-universe.dev/manuals/base.html#grep">grepl()</a></code></p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>fixed</code></td>
+<td>
+<p>should it be an exact match? see <code><a href="https://r-universe.dev/manuals/base.html#grep">grepl()</a></code></p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>search_on_naics_website</code></td>
+<td>
+<p>whether to query on naics website for more hits than just search for text in industry title</p>
+</td>
+</tr>
+</table>
+<h3>Value</h3>
+
+<p>a subset of the <a href="#naicstable">naicstable</a> data.table (not just the codes column)
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="#naics_subcodes_from_code">naics_subcodes_from_code()</a></code> <code><a href="#naics_from_code">naics_from_code()</a></code>  <code><a href="#naics_from_name">naics_from_name()</a></code>  <code><a href="#naics_from_any">naics_from_any()</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre class="language-r"><code class="language-r">data.table<span class="token operator">::</span>fintersect<span class="token punctuation">(</span>naics_from_any<span class="token punctuation">(</span> <span class="token string">"manufac"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> naics_from_any<span class="token punctuation">(</span><span class="token string">"chem"</span><span class="token punctuation">)</span><span class="token punctuation">)</span></code></pre>
+
+<hr>
+</div>
+<div class="container manual-page" id="naics_subcodes_from_code">
+
+<a href="#naics_subcodes_from_code" class="help-page-title"><h2>find subcategories of the given overall NAICS industry code(s)
+Given 3-digit NAICS code, for example, get all NAICS that start with those digits.</h2></a>
+
+<h3>Description</h3>
+
+<p>find subcategories of the given overall NAICS industry code(s)
+Given 3-digit NAICS code, for example, get all NAICS that start with those digits.
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">naics_subcodes_from_code<span class="token punctuation">(</span>mycodes<span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table><tr style="vertical-align: top;">
+<td><code>mycodes</code></td>
+<td>
+<p>NAICS codes vector, of 2 to 6 digits each. See <a href="https://naics.com" target="_blank">https://naics.com</a></p>
+</td>
+</tr></table>
+<h3>Details</h3>
+
+<p>similar idea was naics2children() but this is more robust
+See <code><a href="#naics_from_any">naics_from_any()</a></code> which uses this
+</p>
+
+
+<h3>Value</h3>
+
+<p>a subset of the <a href="#naicstable">naicstable</a> data.table (not just the codes column)
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="#naics_subcodes_from_code">naics_subcodes_from_code()</a></code> <code><a href="#naics_from_code">naics_from_code()</a></code>  <code><a href="#naics_from_name">naics_from_name()</a></code>  <code><a href="#naics_from_any">naics_from_any()</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre class="language-r"><code class="language-r">naics_categories<span class="token punctuation">(</span><span class="token punctuation">)</span></code></pre>
 
 <hr>
 </div>
@@ -3308,11 +4068,12 @@ table(nchar(as.character(NAICS)))
 </div>
 <div class="container manual-page" id="naicstable">
 
-<a href="#naicstable" class="help-page-title"><h2>data.table with all NAICS code numbers and industry name for each</h2></a>
+<a href="#naicstable" class="help-page-title"><h2>data.table of NAICS code(s) and industry names for each EPA-regulated site in Facility Registry Service
+Also has the 2,3,4,5,and 6-digit NAICS that this code falls under, where relevant for given length</h2></a>
 
 <h3>Description</h3>
 
-<p>data.table with all NAICS code numbers and industry name for each
+<p>This is similar to the data file EJAM::NAICS but in a more useful format and newer functions work with it.
 </p>
 
 
@@ -3324,7 +4085,7 @@ table(nchar(as.character(NAICS)))
 
 <h3>See Also</h3>
 
-<p><code><a>naics_from_any()</a></code> <code><a href="#naics_categories">naics_categories()</a></code> <a href="#NAICS">NAICS</a> <code><a href="#naics_findwebscrape">naics_findwebscrape()</a></code>
+<p><code><a href="#naics_from_any">naics_from_any()</a></code> <a href="#NAICS">NAICS</a>  <code><a href="#naics_categories">naics_categories()</a></code>  <code><a href="#naics_findwebscrape">naics_findwebscrape()</a></code>
 </p>
 
 <hr>
@@ -3904,12 +4665,13 @@ Runs EJAM analysis for several radius values for various numbers of sitepoints, 
   test_getblocksnearby <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span>
   test_doaggregate <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span>
   test_batch.summarize <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
-  logging <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span>
+  logging <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
   logfolder <span class="token operator">=</span> getwd<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
   logfilename <span class="token operator">=</span> <span class="token string">"log_n_datetime.txt"</span><span class="token punctuation">,</span>
   honk_when_ready <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span>
   saveoutput <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
-  plot <span class="token operator">=</span> <span class="token boolean">TRUE</span>
+  plot <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span>
+  <span class="token ellipsis">...</span>
 <span class="token punctuation">)</span></code></pre>
 
 
@@ -3996,6 +4758,12 @@ The default list includes one that is 5km (approx 3.1 miles)</p>
 <p>whether to create plot of results</p>
 </td>
 </tr>
+<tr style="vertical-align: top;">
+<td><code>...</code></td>
+<td>
+<p>passed to plotting function</p>
+</td>
+</tr>
 </table>
 <h3>Value</h3>
 
@@ -4019,7 +4787,7 @@ The default list includes one that is 5km (approx 3.1 miles)</p>
   rstudioapi<span class="token operator">::</span>savePlotAsImage<span class="token punctuation">(</span>        <span class="token string">"~/../Downloads/speedseen_nearer_to1k.png"</span><span class="token punctuation">)</span>
   
   speedseen_all <span class="token operator">&lt;-</span> speedtest<span class="token punctuation">(</span>
-    n <span class="token operator">=</span> c<span class="token punctuation">(</span><span class="token number">1e2</span><span class="token punctuation">,</span><span class="token number">1e3</span><span class="token punctuation">,</span><span class="token number">1e4</span><span class="token punctuation">,</span><span class="token number">1e5</span><span class="token punctuation">)</span><span class="token punctuation">,</span> 
+    n <span class="token operator">=</span> c<span class="token punctuation">(</span><span class="token number">1e2</span><span class="token punctuation">,</span><span class="token number">1e3</span><span class="token punctuation">,</span><span class="token number">1e4</span><span class="token punctuation">)</span><span class="token punctuation">,</span> 
     radii<span class="token operator">=</span>c<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">3.106856</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">,</span> <span class="token number">31.06856</span><span class="token punctuation">)</span><span class="token punctuation">,</span> 
     logging<span class="token operator">=</span><span class="token boolean">TRUE</span><span class="token punctuation">,</span> honk<span class="token operator">=</span><span class="token boolean">TRUE</span>
   <span class="token punctuation">)</span>
@@ -4040,7 +4808,7 @@ The default list includes one that is 5km (approx 3.1 miles)</p>
 
 <h3>Usage</h3>
 
-<pre class="language-r"><code class="language-r">speedtest_plot<span class="token punctuation">(</span>x<span class="token punctuation">,</span> ltype <span class="token operator">=</span> <span class="token string">"b"</span><span class="token punctuation">)</span></code></pre>
+<pre class="language-r"><code class="language-r">speedtest_plot<span class="token punctuation">(</span>x<span class="token punctuation">,</span> ltype <span class="token operator">=</span> <span class="token string">"b"</span><span class="token punctuation">,</span> plotfile <span class="token operator">=</span> <span class="token keyword">NULL</span><span class="token punctuation">,</span> secondsperthousand <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">)</span></code></pre>
 
 
 <h3>Arguments</h3>
@@ -4056,6 +4824,12 @@ The default list includes one that is 5km (approx 3.1 miles)</p>
 <td><code>ltype</code></td>
 <td>
 <p>optional type of line for plot</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>plotfile</code></td>
+<td>
+<p>optional path and filename of .png image file to save</p>
 </td>
 </tr>
 </table>
@@ -4664,118 +5438,6 @@ t<span class="token punctuation">(</span>blockgroupstats<span class="token punct
 
 <hr>
 </div>
-<div class="container manual-page" id="summarize_blockcount">
-
-<a href="#summarize_blockcount" class="help-page-title"><h2>Get summary stats on counts of blocks (unique vs doublecounted) near sites</h2></a>
-
-<h3>Description</h3>
-
-<p>Get summary stats on counts of blocks (unique vs doublecounted) near sites
-</p>
-
-
-<h3>Usage</h3>
-
-<pre class="language-r"><code class="language-r">summarize_blockcount<span class="token punctuation">(</span>x<span class="token punctuation">)</span></code></pre>
-
-
-<h3>Arguments</h3>
-
-<table><tr style="vertical-align: top;">
-<td><code>x</code></td>
-<td>
-<p>The output of <code><a href="#getblocksnearby">getblocksnearby()</a></code> like sites2blocks_example</p>
-</td>
-</tr></table>
-<h3>Value</h3>
-
-<p>A list of stats
-</p>
-
-
-<h3>Examples</h3>
-
-<pre class="language-r"><code class="language-r">summarize_blockcount<span class="token punctuation">(</span>sites2blocks_example<span class="token punctuation">)</span></code></pre>
-
-<hr>
-</div>
-<div class="container manual-page" id="summarize_blocks_per_site">
-
-<a href="#summarize_blocks_per_site" class="help-page-title"><h2>Get summary stats on counts of blocks near various sites</h2></a>
-
-<h3>Description</h3>
-
-<p>Tells you # of blocks near avg site,
-how many sites have only 1 block nearby, or have &lt;30 nearby, etc.
-</p>
-
-
-<h3>Usage</h3>
-
-<pre class="language-r"><code class="language-r">summarize_blocks_per_site<span class="token punctuation">(</span>x<span class="token punctuation">,</span> varname <span class="token operator">=</span> <span class="token string">"siteid"</span><span class="token punctuation">)</span></code></pre>
-
-
-<h3>Arguments</h3>
-
-<table>
-<tr style="vertical-align: top;">
-<td><code>x</code></td>
-<td>
-<p>The output of getblocksnearby()</p>
-</td>
-</tr>
-<tr style="vertical-align: top;">
-<td><code>varname</code></td>
-<td>
-<p>colname of variable in data.table x that is the one to summarize by</p>
-</td>
-</tr>
-</table>
-<h3>Value</h3>
-
-<p>invisibly, a list of stats
-</p>
-
-<hr>
-</div>
-<div class="container manual-page" id="summarize_sites_per_block">
-
-<a href="#summarize_sites_per_block" class="help-page-title"><h2>Get summary stats on how many sites are near various blocks (residents)</h2></a>
-
-<h3>Description</h3>
-
-<p>Get summary stats on how many sites are near various blocks (residents)
-</p>
-
-
-<h3>Usage</h3>
-
-<pre class="language-r"><code class="language-r">summarize_sites_per_block<span class="token punctuation">(</span>x<span class="token punctuation">,</span> varname <span class="token operator">=</span> <span class="token string">"blockid"</span><span class="token punctuation">)</span></code></pre>
-
-
-<h3>Arguments</h3>
-
-<table>
-<tr style="vertical-align: top;">
-<td><code>x</code></td>
-<td>
-<p>The output of <code><a href="#getblocksnearby">getblocksnearby()</a></code> like sites2blocks_example</p>
-</td>
-</tr>
-<tr style="vertical-align: top;">
-<td><code>varname</code></td>
-<td>
-<p>colname of variable in data.table x that is the one to summarize by</p>
-</td>
-</tr>
-</table>
-<h3>Value</h3>
-
-<p>invisibly, a list of stats
-</p>
-
-<hr>
-</div>
 <div class="container manual-page" id="test_regid">
 
 <a href="#test_regid" class="help-page-title"><h2>test data, vector of EPA FRS Registry ID numbers</h2></a>
@@ -4902,7 +5564,7 @@ facility, blockgroup, block, place on the map, or US resident.
 </p>
 </li>
 <li>
-<p> frs or facility = Average Facility: random EPA-regulated facility from actives in Facility Registry Services (FRS)
+<p> frs or facility = Average Facility: random EPA-regulated facility from actives in Facility Registry Service (FRS)
 </p>
 </li>
 <li>

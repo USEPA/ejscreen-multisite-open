@@ -1188,7 +1188,11 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL,
     #  but need be careful when looking at that stat overall to not count some bgs twice.
     
     longnames = longnames,
+    
     # results_summarized gets added here later, by batch.summarize() in ejamit() or app_server()
+    
+    # formatted gets added here later also  
+    
     
     # SEPARATE VARIABLES TO RETURN ALONE: 
     count_of_blocks_near_multiple_sites = count_of_blocks_near_multiple_sites #, 

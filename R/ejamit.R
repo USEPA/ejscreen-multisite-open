@@ -170,6 +170,11 @@ ejamit <- function(sitepoints,
   )
   
   ################################################################ # 
+  # just a nicer looking tall version of overall results
+  out$formatted <- format_results_overall(out$results_overall)
+
+  
+  ################################################################ # 
   if (interactive()) {  # would be nice to provide the 1pager summary report as html here too
     # already done by doaggregate()
     # Show as nicely named indicators in console of RStudio - Overall results (across all sites)

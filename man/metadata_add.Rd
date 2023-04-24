@@ -10,7 +10,7 @@ metadata_add(x, metadata)
 \item{x}{dataset (or any object) whose metadata you want to update or create}
 
 \item{metadata}{must be a named list, so that the function can do this for each i:
-attr(x, which=names(metadata)\link{i}) <- metadata[\link{i}]}
+\code{attr(x, which=names(metadata)[i]) <- metadata[[i]]}}
 }
 \value{
 returns x but with new or altered attributes

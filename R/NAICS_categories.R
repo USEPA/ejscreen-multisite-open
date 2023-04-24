@@ -19,7 +19,7 @@
 #' @examples  naics_categories()
 #' @export
 #'
-#' @seealso [naics_find]  [NAICS]
+#' @seealso [naics_from_any]  [NAICS]
 naics_categories <- function(digits=2, dataset=EJAM::NAICS) {
   cat("Also see https://www.naics.com/search/ \n")
   if (is.null(dataset)) {warning('missing NAICS dataset'); return(NA)}
