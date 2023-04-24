@@ -2,7 +2,7 @@
 
 # Raise Memory Limit on file upload to 100Mb ####
 options(shiny.maxRequestSize = 100*1024^2) 
-
+library(shiny)
 # DEFINE SOME VARIABLES (but most are loaded with package as data) ####
 
 # max points can map ####
