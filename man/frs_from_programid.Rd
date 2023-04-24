@@ -2,7 +2,7 @@
 % Please edit documentation in R/frs_from_siteid.R
 \name{frs_from_programid}
 \alias{frs_from_programid}
-\title{Use EPA Program ID to see FRS facility registry services data on those EPA-regulated sites}
+\title{Use EPA Program ID to see FRS Facility Registry Service data on those EPA-regulated sites}
 \usage{
 frs_from_programid(programid)
 }
@@ -14,7 +14,7 @@ relevant rows of the data.table called \link{frs}, which has column names that a
 "lat" "lon" "REGISTRY_ID" "PRIMARY_NAME" "NAICS" "PGM_SYS_ACRNMS"
 }
 \description{
-Use EPA Program ID to see FRS facility registry services data on those EPA-regulated sites
+Use EPA Program ID to see FRS Facility Registry Service data on those EPA-regulated sites
 }
 \examples{
 x=frs_from_programid(testids_program_sys_id)

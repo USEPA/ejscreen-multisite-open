@@ -24,29 +24,29 @@
 # -----------------------------------------------
 # QUERY FRS, NAICS, ETC. TO GET LAT/LON, STATE, FACILITY INFO, ETC.
 
-# EJAMfrsdata::latlon_from_naics()
-# EJAMfrsdata::latlon_from_program()
-# EJAMfrsdata::latlon_from_programid()
-# EJAMfrsdata::latlon_from_siteid()  aka latlon_from_regid()  
-# and check these probably obsolete related ones= EJAMejscreenapi::locate_by_id1() and alias is EJAMejscreenapi::get_facility_info_via_FRS()
-# NOT written  -  latlon_from_sitename()
+# unwritten:   latlon_from_sic   code or sic industryname
+# unwritten:   latlon_from_      code or mact name search
 
-# EJAM::frs_from_naics()
-# EJAM::frs_from_program()
-# EJAM::frs_from_programid()
-# EJAM::frs_from_siteid()  aka  frs_from_regid()
-# EJAM::frs_from_sitename()
+# EJAM::latlon_from_program()
+# EJAM::latlon_from_programid()
+# EJAM::latlon_from_siteid()  aka latlon_from_regid()  
+# unwritten!   latlon_from_sitename(), but see frs_from_sitename()
+# EJAM::latlon_from_naics()
 
-# EJAM::naics_findwebscrape()  Searches website to get more hits than naics_from_any() does
-# EJAMfrsdata::naics_from_any()  Queries via NAICS codes or industry names or any regular expression or partial words
+#        EJAM::frs_from_program()
+#        EJAM::frs_from_programid()
+#        EJAM::frs_from_siteid()  aka  frs_from_regid()
+#        EJAM::frs_from_sitename()
+#        EJAM::frs_from_naics()      and   EJAMfrsdata::siteid_from_naics()
+
+#        EJAM::naics_from_any()  Queries via NAICS codes or industry names or any regular expression or partial words
+#        EJAM::naics_findwebscrape()  Searches website to get more hits than naics_from_any() does
 # EJAMfrsdata::naics_from_code()   e.g., 325
 # EJAMfrsdata::naics_from_name()   e.g.,   "pulp" or "Pulp, Paper, and Paperboard Mills"
 # EJAMfrsdata::naics_subcodes_from_code()  (vs EJAM::naics2children() that is not as robust)
-# EJAMfrsdata::siteid_from_naics()
-# EJAM::naics_url_of_code()  NEED TO COMPARE TO /MERGE WITH  EJAM::url_naics.com
-#
-#   NOT written yet:  siteid_from_sic()      / latlon_from_sic   code or sic industryname
-#   NOT written yet:  siteid_from_mact_subpart() / latlon_from_  code or mact name search
+
+#        EJAM::naics_url_of_code()  NEED TO COMPARE TO /MERGE WITH  EJAM::url_naics.com
+# and check these probably obsolete related ones= EJAMejscreenapi::locate_by_id1() and alias is EJAMejscreenapi::get_facility_info_via_FRS()
 
 # EJAM::states_infer()   Get cleaned table of US State etc. by siteid, from lat/lon, or from FIPS
 # EJAM::state_from_blockid()
@@ -60,15 +60,17 @@
 # -----------------------------------------------
 # GET URL FOR MORE INFO FROM EJSCREEN, ECHO, ENVIROFACTS, ETC.
 # 
+# EJAMejscreenapi::addlinks_clusters_and_sort_cols()  needs to be broken up
+#
+# EJAMejscreenapi::url_linkify()
 # EJAMejscreenapi::url_by_id()  too slow
 # EJAMejscreenapi::url_echo_facility_webpage()
 # EJAMejscreenapi::url_ejscreen_acs_report()
 # EJAMejscreenapi::url_ejscreen_report()
 # EJAMejscreenapi::url_ejscreenmap()
 # EJAMejscreenapi::url_envirofacts_report()
-# EJAMejscreenapi::url_linkify()
-# EJAM::naics_url_of_code()  NEED TO COMPARE TO /MERGE WITH  EJAM::url_naics.com
-# EJAMejscreenapi::addlinks_clusters_and_sort_cols()  needs to be broken up
+#            EJAM::url_naics.com        NEED TO COMPARE TO /MERGE WITH  naics_url_of_code
+#            EJAM::naics_url_of_code()  NEED TO COMPARE TO /MERGE WITH  url_naics.com
 
 # -----------------------------------------------# -----------------------------------------------# -----------------------------------------------
 # MAPS AND POPUPS  - these functions are done:

@@ -51,7 +51,7 @@
 #'         The NAICS are 2-digit to 6-digit codes that specify sectors or types of facilities, such as
 #'         325 - Chemical Manufacturing, or 325211 - Plastics Material and Resin Manufacturing.
 #'         
-#'    2. **Facility IDs** - EPA Facility Registry System (FRS) ID numbers
+#'    2. **Facility IDs** - EPA Facility Registry Service (FRS) ID numbers
 #'    
 #'    3. **uploaded locations** as lat/lon points.
 #'    
@@ -62,18 +62,18 @@
 #'         Interface returns a vector of one or more naics codes,
 #'         to be converted to sitepoints.
 #' 
-#'    - **[EJAMfrsdata::latlon_from_naics()]** takes NAICS codes and returns a data.table of site points.
+#'    - **[EJAM::latlon_from_naics()]** takes NAICS codes and returns a data.table of site points.
 #'      Relies on **[EJAMfrsdata::frs_by_naics].rda**  A data.table, needed to get lat lon by naics. 
 #'      Need to update FRS data used here regularly, ideally frequently.
 #'      2023 version has columns   REGISTRY_ID,  NAICS, lat, lon
 #'      
-#'      NAICS codes also can be selected by text search of industry names or by categories of codes, via [EJAMfrsdata::naics_from_any()]
+#'      NAICS codes also can be selected by text search of industry names or by categories of codes, via [EJAM::naics_from_any()]
 #'       
 #'       
 #'  **2. BY FACILITY ID or PROGRAM ID:**  
 #'  
 #'         Interface so user can upload FRS REGISTRY_ID or PROGRAM ID csv/xls file, 
-#'         Interface returns a list of REGISTRY_ID values from a copy of the EPA facility registry services (FRS) data  
+#'         Interface returns a list of REGISTRY_ID values from a copy of the EPA facility registry service (FRS) data  
 #'         to be converted to sitepoints.
 #' 
 #'    - **[EJAM::frs_from_siteid()]** takes REGISTRY_ID values and returns a data.table of site points.

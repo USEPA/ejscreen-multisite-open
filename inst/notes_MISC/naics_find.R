@@ -1,6 +1,6 @@
 #' OBSOLETE- Search for an industrial sector in the list of NAICS codes, see subsectors
 #'  THIS IS NOW REPLACED WITH CLEARER FUNCTIONS to get naicstable now,
-#'  i.e., EJAMfrsdata::naics_from_any()
+#'  i.e.,  naics_from_any()
 #' @details    
 #' Just a utility, quick way to view NAICS industrial sectors that contain queried word or phrase,
 #' but can also see all the subcategories within the matching one.

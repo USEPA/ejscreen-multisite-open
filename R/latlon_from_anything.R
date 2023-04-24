@@ -19,9 +19,9 @@
 #'   
 #'   except it also uses these functions:
 #'   
-#'   [EJAMfrsdata::latlon_from_siteid()]  
+#'   [EJAM::latlon_from_siteid()]  
 #'   
-#'   [EJAMfrsdata::latlon_from_programid()]   but not  _from_naics() ?
+#'   [EJAM::latlon_from_programid()]   but not  _from_naics() ?
 #' 
 #' 
 #' @param x If missing and interactive mode in RStudio, prompts user for file. Otherwise, 
