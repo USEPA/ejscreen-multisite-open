@@ -615,9 +615,9 @@ app_server <- function(input, output, session) {
   
   ################################################################ # 
   # just a nicer looking tall version of overall results
-   output$overall_results_tall <- renderDT({
-     format_results_overall(results_overall = data_processed()$results_overall, longnames =  data_processed()$longnames)
-   })
+   # output$overall_results_tall <- renderDT({
+   #   format_results_overall(results_overall = data_processed()$results_overall, longnames =  data_processed()$longnames)
+   # })
   # output$overall_results_tall <- renderDT({
   #   tallout <- cbind(overall = round(unlist(data_processed()$results_overall), 3))
   #   rownames(tallout) <- fixnames_to_type(rownames(tallout), "newnames_ejscreenapi", "longname_tableheader")
