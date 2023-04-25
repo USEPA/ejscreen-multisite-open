@@ -1103,7 +1103,9 @@ app_server <- function(input, output, session) {
       # case we don't have write permissions to the current working dir (which
       # can happen when deployed).
       tempReport <- file.path(tempdir(), "brief_summary.Rmd")
-      file.copy("www/brief_summary.Rmd", tempReport, overwrite = TRUE)
+      ## copy Rmd from inst/report to temp folder
+      file.copy(from = app_sys('report', 'brief_summary.Rmd'), 
+                to = tempReport, overwrite = TRUE)
       #file.copy("../www/test_report1pager.Rmd", tempReport, overwrite = TRUE)
       
       isolate({  # need someone to confirm this is needed/helpful and not a problem, to isolate this.
@@ -1816,11 +1818,12 @@ app_server <- function(input, output, session) {
       # case we don't have write permissions to the current working dir (which
       # can happen when deployed).
       tempReport <- file.path(tempdir(), "report.Rmd")
-      file.copy("www/report.Rmd", tempReport, overwrite = TRUE)
-
+      ## copy Rmd from inst/report to temp folder
+      file.copy(from = app_sys('report', 'report.Rmd'),
+                to = tempReport, overwrite = TRUE)
       ## pass image and bib files needed for knitting to temp directory
-      for(i in list.files(path = 'www', pattern=c('.png|.bib'))){
-        file.copy(from = paste0('www/', i), 
+      for(i in list.files(app_sys('report'), pattern = '.png|.bib')){
+        file.copy(from = app_sys('report', i),
                   to = file.path(tempdir(), i), 
                   overwrite = TRUE)
       }
