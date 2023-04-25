@@ -1,8 +1,8 @@
-#' Use registry ID to see FRS facility registry services data on those EPA-regulated sites
+#' Use registry ID to see FRS Facility Registry Service data on those EPA-regulated sites
 #' 
 #' @param siteid vector of one or more EPA Registry ID codes used by FRS 
 #' @aliases [frs_from_regid()]
-#' @return relevant rows of the data.table called [frs], which has column names that are
+#' @return relevant rows of the data.table called [EJAMfrsdata::frs], which has column names that are
 #'   "lat" "lon" "REGISTRY_ID" "PRIMARY_NAME" "NAICS" "PGM_SYS_ACRNMS"
 #' @import EJAMfrsdata
 #' @export
@@ -20,10 +20,10 @@ frs_from_regid = frs_from_siteid
 
 ########################################## # 
 
-#' Use EPA Program ID to see FRS facility registry services data on those EPA-regulated sites
+#' Use EPA Program ID to see FRS Facility Registry Service data on those EPA-regulated sites
 #' 
 #' @param siteid vector of one or more EPA Program ID codes used by FRS 
-#' @return relevant rows of the data.table called [frs], which has column names that are
+#' @return relevant rows of the data.table called [EJAMfrsdata::frs], which has column names that are
 #'   "lat" "lon" "REGISTRY_ID" "PRIMARY_NAME" "NAICS" "PGM_SYS_ACRNMS"
 #' @import EJAMfrsdata
 #' @examples x=frs_from_programid(testids_program_sys_id)
@@ -37,11 +37,11 @@ frs_from_programid <- function(programid) {
 ########################################## # 
 
 
-#' Use EPA Program acronym like TRIS to see FRS facility registry services data on those EPA-regulated sites
+#' Use EPA Program acronym like TRIS to see FRS Facility Registry Service data on those EPA-regulated sites
 #' @description Get data.table based on given FRS Program System CATEGORY.
 #'   Find all FRS sites in a program like RCRAINFO, TRIS, or others.
 #' @param program vector of one or more EPA Program names used by FRS 
-#' @return relevant rows of the data.table called [frs], which has column names that are
+#' @return relevant rows of the data.table called [EJAMfrsdata::frs], which has column names that are
 #'   "lat" "lon" "REGISTRY_ID" "PRIMARY_NAME" "NAICS" "PGM_SYS_ACRNMS"
 #' @import EJAMfrsdata
 #' @examples  
@@ -61,11 +61,11 @@ frs_from_program  <- function(program) {
 ########################################## # 
 
 
-#' Use NAICS code or industry title text search to see FRS facility registry services data on those EPA-regulated sites
+#' Use NAICS code or industry title text search to see FRS Facility Registry Service data on those EPA-regulated sites
 #'
 #' @param naics_code_or_name 
 #' @param ... passed to [naics_from_any()]
-#' @return relevant rows of the data.table called [frs], which has column names that are
+#' @return relevant rows of the data.table called [EJAMfrsdata::frs], which has column names that are
 #'   "lat" "lon" "REGISTRY_ID" "PRIMARY_NAME" "NAICS" "PGM_SYS_ACRNMS"
 #' @seealso [siteid_from_naics()] [naics_from_any()]
 #' @export
@@ -85,13 +85,13 @@ frs_from_naics <- function(naics_code_or_name, ...) {
 }
 ########################################## # 
 
-#' Use site name text search to see FRS facility registry services data on those EPA-regulated sites
+#' Use site name text search to see FRS Facility Registry Service data on those EPA-regulated sites
 #' VERY SLOW search within PRIMARY_NAME of facilities for matching text
 #' @param sitenames one or more strings in a vector, which can be regular expressions or query for exact match using fixed=TRUE
 #' @param ignore.case logical, search is not case sensitive by default (unlike [grepl()] default)
 #' @param fixed see [grepl()], if set to TRUE it looks for only exact matches
 #'
-#' @return relevant rows of the data.table called [frs], which has column names that are
+#' @return relevant rows of the data.table called [EJAMfrsdata::frs], which has column names that are
 #'   "lat" "lon" "REGISTRY_ID" "PRIMARY_NAME" "NAICS" "PGM_SYS_ACRNMS"
 #' @export
 #'

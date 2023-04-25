@@ -4,7 +4,7 @@
 #' @param pkgname na
 #'
 .onLoad <- function(libname, pkgname) {
-  ok_to_do_slow_indexing_early <- FALSE # WHILE TESTING/Building often
+  ok_to_do_slow_indexing_early <- TRUE # WHILE TESTING/Building often
   if (ok_to_do_slow_indexing_early) {
   # This should create the index of all US block points to enable fast queries 
   # This cannot be done during package build and saved, because of what this createTree function creates.

@@ -70,7 +70,7 @@ distance_mean_by_group <- plot_distance_mean_by_group
 #' @param results_bybg_people data.table from doaggregate()$results_bybg_people
 #' @param demogvarname e.g., "pctlowinc"
 #' @param demoglabel e.g., "Low Income Residents"
-#' @seealso [distance_by_group_plot()] [distance_by_groups()]
+#' @seealso [plot_distance_mean_by_group()]  
 #' @return list of 2 numbers: avg_distance_for_group and avg_distance_for_nongroup
 #'
 distance_by_group <- function( results_bybg_people, demogvarname="Demog.Index", demoglabel=demogvarname) {

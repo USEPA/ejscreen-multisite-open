@@ -5,7 +5,7 @@
 #'  to add new or update existing attributes.
 #' @param x dataset (or any object) whose metadata you want to update or create
 #' @param metadata must be a named list, so that the function can do this for each i:
-#'   attr(x, which=names(metadata)[i]) <- metadata[[i]]
+#'   `attr(x, which=names(metadata)[i]) <- metadata[[i]]`
 #' @seealso metadata_check()
 #'
 #' @return returns x but with new or altered attributes

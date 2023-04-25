@@ -42,9 +42,9 @@ is similar to what is done by \code{\link[=latlon_from_anything]{latlon_from_any
 
 except it also uses these functions:
 
-\code{\link[EJAMfrsdata:latlon_from_siteid]{EJAMfrsdata::latlon_from_siteid()}}
+\code{\link[=latlon_from_siteid]{latlon_from_siteid()}}
 
-\code{\link[EJAMfrsdata:latlon_from_programid]{EJAMfrsdata::latlon_from_programid()}}   but not  _from_naics() ?
+\code{\link[=latlon_from_programid]{latlon_from_programid()}}   but not  _from_naics() ?
 }
 \examples{
  

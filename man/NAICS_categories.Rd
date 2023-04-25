@@ -34,5 +34,5 @@ See \url{https://www.census.gov/naics/}
  naics_categories()
 }
 \seealso{
-\link{naics_find}  \link{NAICS}
+\link{naics_from_any}  \link{NAICS}
 }

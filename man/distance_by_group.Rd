@@ -47,5 +47,5 @@ And we might also want to see the \%D as a function of continuous distance at ju
 So to retain flexibility doaggregate() reports all instances of blockgroup-site pairings.
 }
 \seealso{
-\code{\link[=distance_by_group_plot]{distance_by_group_plot()}} \code{\link[=distance_by_groups]{distance_by_groups()}}
+\code{\link[=plot_distance_mean_by_group]{plot_distance_mean_by_group()}}
 }

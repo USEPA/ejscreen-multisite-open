@@ -16,7 +16,10 @@ Do profiling of bottlenecks, before optimizing code - find out what steps are sl
    system.time({  x1=getblocksnearby(testpoints_1000,1);  save(x1,file = 'x1.rda');rm(x1)})
    system.time({  x3=getblocksnearby(testpoints_1000,3);  save(x3,file = 'x3.rda');rm(x3)})
    system.time({  x6=getblocksnearby(testpoints_1000,6);  save(x6,file = 'x6.rda');rm(x6)})
- 
+   speedseen_all <- speedtest(
+       n = c(100,500, 1000,5000), 
+        radii=c(1, 3.106856, 5, 10),logging=TRUE)
+     
 Profile overall, then closer look at key functions. See http://adv-r.had.co.nz/Profiling.html#improve-perf  and consider profvis, microbenchmark, etc. See getblocksnearby() and especially doaggregate() in particular. e.g., the one line of code in doaggregate() that does this: sites2blocks_overall <-  is very slow.  
 also see on unit testing: https://www.r-bloggers.com/2023/04/unit-testing-analytics-code/
 optimizing percentiles function that looks up what percentile each raw indicator score is in doaggregate() (IT IS SLOW)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/frs_from_siteid.R
 \name{frs_from_naics}
 \alias{frs_from_naics}
-\title{Use NAICS code or industry title text search to see FRS facility registry services data on those EPA-regulated sites}
+\title{Use NAICS code or industry title text search to see FRS Facility Registry Service data on those EPA-regulated sites}
 \usage{
 frs_from_naics(naics_code_or_name, ...)
 }
@@ -12,11 +12,11 @@ frs_from_naics(naics_code_or_name, ...)
 \item{...}{passed to \code{\link[=naics_from_any]{naics_from_any()}}}
 }
 \value{
-relevant rows of the data.table called \link{frs}, which has column names that are
+relevant rows of the data.table called \link[EJAMfrsdata:frs]{EJAMfrsdata::frs}, which has column names that are
 "lat" "lon" "REGISTRY_ID" "PRIMARY_NAME" "NAICS" "PGM_SYS_ACRNMS"
 }
 \description{
-Use NAICS code or industry title text search to see FRS facility registry services data on those EPA-regulated sites
+Use NAICS code or industry title text search to see FRS Facility Registry Service data on those EPA-regulated sites
 }
 \examples{
   frs_from_naics("uranium")

@@ -23,7 +23,7 @@ This means the tools can provide the same information that an EJScreen standard 
 but for a large number of reports (one for each site).
 }
 \section{\strong{Vignette}}{
-Please see the vignette (development version can be knit from vignettes folder of locally installed package)
+Please see the vignette (development version can be knit from EJAM/www folder of locally installed package)
 }
 
 \section{\strong{Key Functions:}}{
@@ -52,7 +52,7 @@ in one of three ways:
 \item \strong{NAICS code} (selecting from a list, one or more types of facilities, as defined by NAICS).
 The NAICS are 2-digit to 6-digit codes that specify sectors or types of facilities, such as
 325 - Chemical Manufacturing, or 325211 - Plastics Material and Resin Manufacturing.
-\item \strong{Facility IDs} - EPA Facility Registry System (FRS) ID numbers
+\item \strong{Facility IDs} - EPA Facility Registry Service (FRS) ID numbers
 \item \strong{uploaded locations} as lat/lon points.
 }
 
@@ -63,18 +63,18 @@ The NAICS are 2-digit to 6-digit codes that specify sectors or types of faciliti
     to be converted to sitepoints.
 }\if{html}{\out{</div>}}
 \itemize{
-\item \strong{\code{\link[EJAMfrsdata:latlon_from_naics]{EJAMfrsdata::latlon_from_naics()}}} takes NAICS codes and returns a data.table of site points.
+\item \strong{\code{\link[=latlon_from_naics]{latlon_from_naics()}}} takes NAICS codes and returns a data.table of site points.
 Relies on \strong{\link[EJAMfrsdata:frs_by_naics]{EJAMfrsdata::frs_by_naics}.rda}  A data.table, needed to get lat lon by naics.
 Need to update FRS data used here regularly, ideally frequently.
 2023 version has columns   REGISTRY_ID,  NAICS, lat, lon
 
-NAICS codes also can be selected by text search of industry names or by categories of codes, via \code{\link[EJAMfrsdata:naics_from_any]{EJAMfrsdata::naics_from_any()}}
+NAICS codes also can be selected by text search of industry names or by categories of codes, via \code{\link[=naics_from_any]{naics_from_any()}}
 }
 
 \strong{2. BY FACILITY ID or PROGRAM ID:}
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{    Interface so user can upload FRS REGISTRY_ID or PROGRAM ID csv/xls file, 
-    Interface returns a list of REGISTRY_ID values from a copy of the EPA facility registry services (FRS) data  
+    Interface returns a list of REGISTRY_ID values from a copy of the EPA facility registry service (FRS) data  
     to be converted to sitepoints.
 }\if{html}{\out{</div>}}
 \itemize{

@@ -30,8 +30,6 @@ Tract (11-digit), or blockgroup (12 digit), or even block (15-digit fips).
 Returns unique vector of FIPS of all US blockgroups (including DC and Puerto Rico)
 that contain any specified blocks, are equal to any specified blockgroup fips,
 or are contained within any provided tract/county/state FIPS.
-
-stateinfo$ST\link{match( unique(substr(blockgroupstats$bgfips,1,2)), stateinfo$FIPS.ST)}
 }
 \examples{
   # all blockgroups in one state

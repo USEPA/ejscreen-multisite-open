@@ -2,7 +2,7 @@
 % Please edit documentation in R/frs_from_siteid.R
 \name{frs_from_sitename}
 \alias{frs_from_sitename}
-\title{Use site name text search to see FRS facility registry services data on those EPA-regulated sites
+\title{Use site name text search to see FRS Facility Registry Service data on those EPA-regulated sites
 VERY SLOW search within PRIMARY_NAME of facilities for matching text}
 \usage{
 frs_from_sitename(sitenames, ignore.case = TRUE, fixed = FALSE)
@@ -15,11 +15,11 @@ frs_from_sitename(sitenames, ignore.case = TRUE, fixed = FALSE)
 \item{fixed}{see \code{\link[=grepl]{grepl()}}, if set to TRUE it looks for only exact matches}
 }
 \value{
-relevant rows of the data.table called \link{frs}, which has column names that are
+relevant rows of the data.table called \link[EJAMfrsdata:frs]{EJAMfrsdata::frs}, which has column names that are
 "lat" "lon" "REGISTRY_ID" "PRIMARY_NAME" "NAICS" "PGM_SYS_ACRNMS"
 }
 \description{
-Use site name text search to see FRS facility registry services data on those EPA-regulated sites
+Use site name text search to see FRS Facility Registry Service data on those EPA-regulated sites
 VERY SLOW search within PRIMARY_NAME of facilities for matching text
 }
 \examples{

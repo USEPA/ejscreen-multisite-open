@@ -481,14 +481,14 @@ app_ui  <- function(request) {
         ###   THIS WAS MEANT TO BE Another way to quickly see all the indicators, in one long list. 
         # This could be kept here (but look better) if removed from the site by site tab, to keep that table focused on 1 row/site.
         # not sure if is useful enough to keep. they already appear in the "site by site plus overall" tab, and in excel download.
-        # tabPanel(title = 'Results Overall',
-        #          
-        #          br(), ## vertical space
-        #          
-        #          h3('Overall Results (avg person'),
-        #          
-        #          DTOutput("overall_results_tall", height="100%")
-        # ),
+        tabPanel(title = 'Results Overall',
+
+                 br(), ## vertical space
+
+                 h3('Overall Results (avg person'),
+
+                 DTOutput("overall_results_tall", height="100%")
+        ),
         
         ######################################################################################################### #
         # ~ ####
@@ -879,6 +879,7 @@ app_ui  <- function(request) {
                    
                    # total_pop: NA
                    # results: NA
+                   # results_formatted: NA
                    # map: NA
                    # map_placeholder_png:                 "map_placeholder.png"
                    # envt_table: NA

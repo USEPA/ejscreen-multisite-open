@@ -2,7 +2,7 @@
 % Please edit documentation in R/frs_from_siteid.R
 \name{frs_from_program}
 \alias{frs_from_program}
-\title{Use EPA Program acronym like TRIS to see FRS facility registry services data on those EPA-regulated sites}
+\title{Use EPA Program acronym like TRIS to see FRS Facility Registry Service data on those EPA-regulated sites}
 \usage{
 frs_from_program(program)
 }
@@ -10,7 +10,7 @@ frs_from_program(program)
 \item{program}{vector of one or more EPA Program names used by FRS}
 }
 \value{
-relevant rows of the data.table called \link{frs}, which has column names that are
+relevant rows of the data.table called \link[EJAMfrsdata:frs]{EJAMfrsdata::frs}, which has column names that are
 "lat" "lon" "REGISTRY_ID" "PRIMARY_NAME" "NAICS" "PGM_SYS_ACRNMS"
 }
 \description{

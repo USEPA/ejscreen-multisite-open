@@ -10,7 +10,6 @@
 #'   that contain any specified blocks, are equal to any specified blockgroup fips, 
 #'   or are contained within any provided tract/county/state FIPS. 
 #'   
-#'   stateinfo$ST[match( unique(substr(blockgroupstats$bgfips,1,2)), stateinfo$FIPS.ST)]
 #' @param fips vector of US FIPS codes, as character or numeric,
 #'   with or without their leading zeroes, each with as many characters
 #' @seealso [fips_lead_zero()]

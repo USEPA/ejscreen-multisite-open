@@ -187,7 +187,7 @@
 #   
 #   lines comments code     package where                    filename
 # 2   212      138   74 EJAMfrsdata   /R/                   frs_get.R
-# 3   161       89   72 EJAMfrsdata   /R/            naics_from_any.R
+# 3   161       89   72 EJAMfrsdata   /R/            naics_from_any.R (moved to EJAM::)
 # 4   139       19  120 EJAMfrsdata   /R/       frs_update_datasets.R
 # 5   116       40   76 EJAMfrsdata   /R/                  frs_read.R
 # 8    80        7   73 EJAMfrsdata   /R/ frs_make_programid_lookup.R

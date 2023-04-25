@@ -19,6 +19,7 @@ params:
   # #------------- RESULTS (tables - map - plots)
   total_pop: NA
   results: NA
+  results_formatted: NA
   map: NA
   map_placeholder_png:                 "map_placeholder.png"
   envt_table: NA
@@ -630,12 +631,17 @@ had a very high number? Other?
 
 # Appendices
 
-### Appendix 1 - Detailed tables of statistics for each site
+### Appendix 1 - Statistics overall / for all sites in aggregate
+```{r}
+params$results_formatted 
+```
+
+### Appendix 2 - Detailed tables of statistics for each site
 
 e.g. how many of 12 are \>x? does it have any high scores for any E? any
 D? etc.
 
-### Appendix 2 - Detailed tables of statistics for each indicator
+### Appendix 3 - Detailed tables of statistics for each indicator
 
 #### **What is Score of people/sites at key cutoffs: What is the X (useful) percentile
 value, for this indicator (as %ile of people nearby or of sites)?**
@@ -685,7 +691,7 @@ value, for this indicator (as %ile of people nearby or of sites)?**
 
     -   \# of sites w data where \>=4
 
-### Appendix 3 - notes on how to describe places generically/ in parameters
+### Appendix 4 - notes on how to describe places generically/ in parameters
 
 HOW TO REFER TO THE PLACES STUDIED (near these facilities vs more
 general language)
@@ -738,20 +744,7 @@ Residents / conditions ...
 
 ... near any of these sites
 
-## Author contributions
-
-`r params$authorname1` was responsible for planning this analysis and
-defining the locations to be analyzed. `r params$authorname1` was
-responsible for completing the manuscript. All authors evaluated the
-literature on previous relevant analyses. All authors contributed to the
-writing and reviewing of the manuscript and agree on its contents.
-
-## Acknowledgements
-
-We thank \_\_\_\_ for helpful research assistance and \_\_\_ for
-suggesting useful background literature.
-
-## List of Abbreviations
+### Appendix 5 - List of Abbreviations
 
 -   AAAS American Association for the Advancement of Science
 -   ACS American Community Survey, Census Bureau
@@ -934,6 +927,21 @@ suggesting useful background literature.
 -   VSQG Very Small Quantity Generator (RCRA Hazardous Waste)
 -   WHEJAC White House Environmental Justice Advisory Council
 -   WOTUS Waters of the United States
+
+
+## Author contributions
+
+`r params$authorname1` was responsible for planning this analysis and
+defining the locations to be analyzed. `r params$authorname1` was
+responsible for completing the manuscript. All authors evaluated the
+literature on previous relevant analyses. All authors contributed to the
+writing and reviewing of the manuscript and agree on its contents.
+
+## Acknowledgements
+
+We thank \_\_\_\_ for helpful research assistance and \_\_\_ for
+suggesting useful background literature.
+
 
 \newpage
 

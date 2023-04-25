@@ -22,7 +22,7 @@ testpoints_n(
 Note the default is frs, but you may want to use pop even though it is slower.
 \itemize{
 \item pop or people = Average Person: random person among all US residents (block point of residence per 2020 Census)
-\item frs or facility = Average Facility: random EPA-regulated facility from actives in Facility Registry Services (FRS)
+\item frs or facility = Average Facility: random EPA-regulated facility from actives in Facility Registry Service (FRS)
 \item bg = Average Blockgroup: random US Census block group (internal point like a centroid)
 \item block = Average Block: random US Census block (internal point like a centroid)
 \item area or place = Average Place: random point on a map (internal point of avg blockgroup weighted by its square meters size)

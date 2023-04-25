@@ -9,7 +9,7 @@
 #'   
 #'   - pop or people = Average Person: random person among all US residents (block point of residence per 2020 Census) 
 #'   
-#'   - frs or facility = Average Facility: random EPA-regulated facility from actives in Facility Registry Services (FRS)
+#'   - frs or facility = Average Facility: random EPA-regulated facility from actives in Facility Registry Service (FRS)
 #'   
 #'   - bg = Average Blockgroup: random US Census block group (internal point like a centroid)
 #'   

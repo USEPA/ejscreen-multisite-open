@@ -3,7 +3,7 @@
 \name{frs_from_regid}
 \alias{frs_from_regid}
 \alias{[frs_from_siteid()]}
-\title{Use registry ID to see FRS facility registry services data on those EPA-regulated sites}
+\title{Use registry ID to see FRS Facility Registry Service data on those EPA-regulated sites}
 \usage{
 frs_from_regid(siteid)
 }
@@ -11,11 +11,11 @@ frs_from_regid(siteid)
 \item{siteid}{vector of one or more EPA Registry ID codes used by FRS}
 }
 \value{
-relevant rows of the data.table called \link{frs}, which has column names that are
+relevant rows of the data.table called \link[EJAMfrsdata:frs]{EJAMfrsdata::frs}, which has column names that are
 "lat" "lon" "REGISTRY_ID" "PRIMARY_NAME" "NAICS" "PGM_SYS_ACRNMS"
 }
 \description{
-Use registry ID to see FRS facility registry services data on those EPA-regulated sites
+Use registry ID to see FRS Facility Registry Service data on those EPA-regulated sites
 }
 \examples{
 frs_from_siteid(testids_registry_id)
