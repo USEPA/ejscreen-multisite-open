@@ -27,8 +27,8 @@ plotblocksnearby <- function(sitepoints, radius=1, usemapfast=TRUE, ...) {
     xb <- unique(xb)
     xpt = copy(x)
     xpt <- xpt[ !duplicated(xpt[,.(lat,lon)]),]
-    # browser()
-    mapinfo <- rbind(xpt, xb)
+
+        mapinfo <- rbind(xpt, xb)
     z <- mapfast(mapinfo, radius = 0.005, ...)  %>% 
       addCircles(lng = xpt$lon, lat=xpt$lat, radius = meters_per_mile * radius, color = "gray", fillOpacity = 0.06, fillColor = "gray", opacity = 0.7  )  %>% # overall circle
       addCircleMarkers(lng = xpt$lon, lat=xpt$lat, radius = 10, color = "red", opacity = 0.75) %>%  # in pixels for center of circle=point 
