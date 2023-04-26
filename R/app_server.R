@@ -1341,35 +1341,35 @@ app_server <- function(input, output, session) {
     
     dt_overall <- data_processed()$results_overall %>% 
       as.data.frame() %>% 
-      mutate(siteid = 'All sites', ST = NA,
+      dplyr::mutate(siteid = 'All sites', ST = NA,
              across(where(is.numeric), .fns = function(x) {round(x, digits=2)})) %>% 
-      select(all_of(cols_to_select), ST)
+      dplyr::select(dplyr::all_of(cols_to_select), ST)
     
     dt <- data_processed()$results_bysite %>% 
       as.data.frame() %>%
-      mutate(across(where(is.numeric), .fns = function(x) {round(x, digits=2)}),
+      dplyr::mutate(dplyr::across(dplyr::where(is.numeric), .fns = function(x) {round(x, digits=2)}),
              siteid = as.character(siteid)) %>%
-      select(all_of(cols_to_select), ST)
+      dplyr::select(dplyr::all_of(cols_to_select), ST)
     
     dt_avg <- data_summarized()$rows[c('Average person','Average site'),] %>% 
-      mutate(siteid = c('Average person', 'Average site'), ST = NA,
-             across(where(is.numeric), .fns = function(x) {round(x, digits=2)}),
+      dplyr::mutate(siteid = c('Average person', 'Average site'), ST = NA,
+                    dplyr::across(dplyr::where(is.numeric), .fns = function(x) {round(x, digits=2)}),
              siteid = as.character(siteid)) %>%
-      select(all_of(cols_to_select), ST)
+      dplyr::select(dplyr::all_of(cols_to_select), ST)
     
     dt_final <- dt %>% 
-      bind_cols(data_summarized()$cols) %>% 
-      bind_rows(dt_avg) %>% 
-      bind_rows(dt_overall) %>% 
-      arrange(desc(pop)) %>% 
-      mutate(pop = prettyNum(pop, big.mark = ',')) %>% 
-      left_join(EJAM::stateinfo %>% select(ST, statename, REGION), by = 'ST') %>% 
-      select(-ST, -Max.of.variables)
+      dplyr::bind_cols(data_summarized()$cols) %>% 
+      dplyr::bind_rows(dt_avg) %>% 
+      dplyr::bind_rows(dt_overall) %>% 
+      dplyr::arrange(dplyr::desc(pop)) %>% 
+      dplyr::mutate(pop = prettyNum(pop, big.mark = ',')) %>% 
+      dplyr::left_join(EJAM::stateinfo %>% dplyr::select(ST, statename, REGION), by = 'ST') %>% 
+      dplyr::select(-ST, -Max.of.variables)
     
     colnames(dt_final) <- friendly_names
     
     dt_final <- dt_final %>% 
-      relocate(c(State, 'EPA Region', '# of indicators above 95% threshold'), .before = 2)
+      dplyr::relocate(c(State, 'EPA Region', '# of indicators above 95% threshold'), .before = 2)
     
     n_cols_freeze <- 5
     
@@ -1560,7 +1560,7 @@ app_server <- function(input, output, session) {
       
       ## pivot from wide to long, 1 row per indicator 
       barplot_data_raw <- barplot_data %>% 
-        dplyr::select(Summary, all_of( mybarvars)) %>% 
+        dplyr::select(Summary, dplyr::all_of( mybarvars)) %>% 
         tidyr::pivot_longer(cols = -1, names_to = 'indicator') %>% 
         dplyr::mutate(type = 'raw')
       
@@ -1569,7 +1569,7 @@ app_server <- function(input, output, session) {
         barplot_usa_med <- EJAM::usastats %>% 
           dplyr::filter(REGION == 'USA', PCTILE == 50) %>% # for median
           dplyr::mutate(Summary = 'Median person in US') %>% 
-          dplyr::select(Summary, all_of(mybarvars)) %>% 
+          dplyr::select(Summary, dplyr::all_of(mybarvars)) %>% 
           tidyr::pivot_longer(-Summary, names_to = 'indicator')
         
         ## NOTE: Median Person calculations are all 0s for now!
@@ -1625,7 +1625,7 @@ app_server <- function(input, output, session) {
           EJAM::usastats %>% 
             dplyr::filter(REGION == 'USA', PCTILE == 'mean') %>% 
             dplyr::mutate(Summary = 'Average site') %>%
-            dplyr::select(Summary, all_of(mybarvars)) %>% 
+            dplyr::select(Summary, dplyr::all_of(mybarvars)) %>% 
             tidyr::pivot_longer(-Summary, names_to = 'indicator', values_to = 'usa_value')
         )
         
