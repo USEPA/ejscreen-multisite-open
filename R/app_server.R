@@ -695,15 +695,15 @@ app_server <- function(input, output, session) {
   })
   
   ## output: summary report map  
-  output$quick_view_map <- leaflet::renderLeaflet({
-    req(data_uploaded())
-    
-    ## use separate report map
-    report_map()
-    
-    ## or can keep same map as on Site Selection tab
-    # orig_leaf_map()
-  })
+  # output$quick_view_map <- leaflet::renderLeaflet({
+  #   req(data_uploaded())
+  #   
+  #   ## use separate report map
+  #   report_map()
+  #   
+  #   ## or can keep same map as on Site Selection tab
+  #   # orig_leaf_map()
+  # })
   
   ## update leaflet map when inputs change
   ## this is currently resetting map too often in response to checkbox
@@ -761,25 +761,26 @@ app_server <- function(input, output, session) {
     )
   })
   
-  #############################################################################  # 
-  ## *Header info on summary report ####
-  output$view1_total_pop <- renderUI({
-    
-    req(data_processed())
-    
-    ## paste header information together
-    title_text <- paste0('<div style="font-weight: bold; font-size: 11pt; text-align: center;">',
-                         input$analysis_title, '<br>',
-                         'Residents within ', 
-                         #input$bt_rad_buff, ' ', input$radius_units, ' of any of the ', 
-                         input$bt_rad_buff, ' miles of any of the ',
-                         prettyNum( NROW(data_processed()$results_bysite), big.mark = ","), ' sites analyzed<br>',
-                         #    "in the xxx source category or sector<br>",
-                         'Estimated total population: ', prettyNum( total_pop(), big.mark = ","), '</div>'
-    )
-    ## return formatted HTML text
-    HTML(title_text)
-  })
+  # #############################################################################  # 
+  # ## *Header info on summary report ####
+  # output$view1_total_pop <- renderUI({
+  #   
+  #   req(data_processed())
+  #   
+  #   ## paste header information together
+  #   title_text <- paste0('<div style="font-weight: bold; font-size: 11pt; text-align: center;">',
+  #                        input$analysis_title, '<br>',
+  #                        'Residents within ', 
+  #                        #input$bt_rad_buff, ' ', input$radius_units, ' of any of the ', 
+  #                        input$bt_rad_buff, ' miles of any of the ',
+  #                        prettyNum( NROW(data_processed()$results_bysite), big.mark = ","), ' sites analyzed<br>',
+  #                        #    "in the xxx source category or sector<br>",
+  #                        'Estimated total population: ', prettyNum( total_pop(), big.mark = ","), '</div>'
+  #   )
+  #   ## return formatted HTML text
+  #   HTML(title_text)
+  # })
+  
   ## * Total population count ####
   total_pop <- reactive({
     
@@ -837,9 +838,9 @@ app_server <- function(input, output, session) {
   })
   
   ## output: show table of indicators in view 1
-  output$view1_demog_table <- gt::render_gt({
-    v1_demog_table()
-  })
+  # output$view1_demog_table <- gt::render_gt({
+  #   v1_demog_table()
+  # })
   #############################################################################  # 
   ## *Environmental indicator table #### 
   
@@ -891,9 +892,9 @@ app_server <- function(input, output, session) {
   })
   
   ## output: show environmental indicator table
-  output$view1_envt_table <- gt::render_gt({
-    v1_envt_table()
-  })
+  # output$view1_envt_table <- gt::render_gt({
+  #   v1_envt_table()
+  # })
   #############################################################################  # 
   ## *BOXPLOTS/barplot? of demographic ratios vs US average ####
   
@@ -1088,13 +1089,36 @@ app_server <- function(input, output, session) {
   })
   
   ## output: show box/barplot of indicator ratios in Summary Report # 
-  output$view1_summary_plot <- renderPlot({
-    v1_summary_plot()
-  })
+  # output$view1_summary_plot <- renderPlot({
+  #   v1_summary_plot()
+  # })
   #############################################################################  # 
   # ~--------------------------- ####
   # >>>>> SUMMARY REPORT DOWNLOAD ________ ####
   # ~--------------------------- ####
+  
+  ## make summary report directly in shiny app and render on Summary report tab
+  summary_report_params <- eventReactive(input$gen_summary_report, {
+    list(testmode=FALSE,
+         sitecount = nrow(data_processed()$results_bysite), 
+         distance = paste0(input$bt_rad_buff,' miles'), #input$radius_units),
+         total_pop = prettyNum( total_pop(), big.mark = ","),
+         analysis_title = input$analysis_title,
+         # results     = data_processed(),  # NOT NEEDED HERE IF PASSING MAP, TABLES, AND PLOT AS PARAMS
+         map         = report_map(),
+         envt_table   = v1_envt_table(),
+         demog_table  = v1_demog_table(),
+         summary_plot = v1_summary_plot())
+  })
+  
+  output$rendered_summary_report <- renderUI({
+   
+      includeHTML(
+        rmarkdown::render(app_sys('report','brief_summary.Rmd'), 
+                          params = summary_report_params())
+      )
+  })
+  
   # 1-3-page summary comparable to EJScreen report  
   output$summary_download <- downloadHandler(
     filename = ifelse(input$format1pager == "pdf", "summary_report.pdf", 'summary_report.html') ,
