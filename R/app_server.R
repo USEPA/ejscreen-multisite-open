@@ -1560,30 +1560,30 @@ app_server <- function(input, output, session) {
       
       ## pivot from wide to long, 1 row per indicator 
       barplot_data_raw <- barplot_data %>% 
-        select(Summary, all_of( mybarvars)) %>% 
-        pivot_longer(cols = -1, names_to = 'indicator') %>% 
-        mutate(type = 'raw')
+        dplyr::select(Summary, all_of( mybarvars)) %>% 
+        tidyr::pivot_longer(cols = -1, names_to = 'indicator') %>% 
+        dplyr::mutate(type = 'raw')
       
       ## median - not currently displayed
       if(mybarvars.stat == 'med'){
         barplot_usa_med <- EJAM::usastats %>% 
-          filter(REGION == 'USA', PCTILE == 50) %>% # for median
-          mutate(Summary = 'Median person in US') %>% 
-          select(Summary, all_of(mybarvars)) %>% 
-          pivot_longer(-Summary, names_to = 'indicator')
+          dplyr::filter(REGION == 'USA', PCTILE == 50) %>% # for median
+          dplyr::mutate(Summary = 'Median person in US') %>% 
+          dplyr::select(Summary, all_of(mybarvars)) %>% 
+          tidyr::pivot_longer(-Summary, names_to = 'indicator')
         
         ## NOTE: Median Person calculations are all 0s for now!
-        barplot_input <- bind_rows(barplot_data_raw, barplot_usa_med)
+        barplot_input <- dplyr::bind_rows(barplot_data_raw, barplot_usa_med)
         
         ## average  
       } else {
         barplot_usa_avg <- EJAM::usastats %>% 
-          filter(REGION == 'USA', PCTILE == 'mean') %>% 
-          mutate(Summary = 'Average person in US') %>% 
-          select(Summary, all_of(mybarvars)) %>% 
-          pivot_longer(-Summary, names_to = 'indicator')
+          dplyr::filter(REGION == 'USA', PCTILE == 'mean') %>% 
+          dplyr::mutate(Summary = 'Average person in US') %>% 
+          dplyr::select(Summary, dplyr::all_of(mybarvars)) %>% 
+          tidyr::pivot_longer(-Summary, names_to = 'indicator')
         
-        barplot_input <- bind_rows(barplot_data_raw, barplot_usa_avg)
+        barplot_input <- dplyr::bind_rows(barplot_data_raw, barplot_usa_avg)
       }
       
       ## set # of characters to wrap labels
@@ -1610,34 +1610,34 @@ app_server <- function(input, output, session) {
     } else if(input$summ_bar_data == 'ratio'){
       
       barplot_data_raw <- barplot_data %>% 
-        select(Summary, all_of( mybarvars)) %>% 
-        pivot_longer(cols = -1, names_to = 'indicator') 
+        dplyr::select(Summary, dplyr::all_of( mybarvars)) %>% 
+        tidyr::pivot_longer(cols = -1, names_to = 'indicator') 
       
       ## average
       if(mybarvars.stat == 'avg'){
         ## pull US average values from EJAM::usastats to compute ratios
         barplot_usa_avg <-  bind_rows(
           EJAM::usastats %>% 
-            filter(REGION == 'USA', PCTILE == 'mean') %>% 
-            mutate(Summary = 'Average person') %>%
-            select(Summary, all_of(mybarvars)) %>% 
-            pivot_longer(-Summary, names_to = 'indicator', values_to = 'usa_value'),
+            dplyr::filter(REGION == 'USA', PCTILE == 'mean') %>% 
+            dplyr::mutate(Summary = 'Average person') %>%
+            dplyr::select(Summary, dplyr::all_of(mybarvars)) %>% 
+            tidyr::pivot_longer(-Summary, names_to = 'indicator', values_to = 'usa_value'),
           EJAM::usastats %>% 
-            filter(REGION == 'USA', PCTILE == 'mean') %>% 
-            mutate(Summary = 'Average site') %>%
-            select(Summary, all_of(mybarvars)) %>% 
-            pivot_longer(-Summary, names_to = 'indicator', values_to = 'usa_value')
+            dplyr::filter(REGION == 'USA', PCTILE == 'mean') %>% 
+            dplyr::mutate(Summary = 'Average site') %>%
+            dplyr::select(Summary, all_of(mybarvars)) %>% 
+            tidyr::pivot_longer(-Summary, names_to = 'indicator', values_to = 'usa_value')
         )
         
         ## combine raw data with US averages 
-        barplot_input <- left_join(
+        barplot_input <- dplyr::left_join(
           barplot_data_raw, 
           barplot_usa_avg
         ) %>% 
           ## divide to get ratios
-          mutate(ratio = value / usa_value) %>% 
+          dplyr::mutate(ratio = value / usa_value) %>% 
           ## add row of all 1s to represent US average ratio being constant at 1
-          bind_rows(
+          dplyr::bind_rows(
             data.frame(Summary = 'Average person in US', indicator = mybarvars, value = 1, usa_value = 1, ratio = 1)
           )
         
@@ -1645,21 +1645,21 @@ app_server <- function(input, output, session) {
         ## median - not currently displayed
         barplot_usa_med <-  bind_rows(
           EJAM::usastats %>% 
-            filter(REGION == 'USA', PCTILE == 50) %>% 
-            mutate(Summary = 'Median person') %>%
-            select(Summary, all_of(mybarvars)) %>% 
-            pivot_longer(-Summary, names_to = 'indicator', values_to = 'usa_value'),
+            dplyr::filter(REGION == 'USA', PCTILE == 50) %>% 
+            dplyr:: mutate(Summary = 'Median person') %>%
+            dplyr::select(Summary, dplyr::all_of(mybarvars)) %>% 
+            tidyr::pivot_longer(-Summary, names_to = 'indicator', values_to = 'usa_value'),
           EJAM::usastats %>% 
-            filter(REGION == 'USA', PCTILE == 50) %>% 
-            mutate(Summary = 'Median site') %>%
-            select(Summary, all_of(mybarvars)) %>% 
-            pivot_longer(-Summary, names_to = 'indicator', values_to = 'usa_value')
+            dplyr::filter(REGION == 'USA', PCTILE == 50) %>% 
+            dplyr::mutate(Summary = 'Median site') %>%
+            dplyr::select(Summary, dplyr::all_of(mybarvars)) %>% 
+            tidyr::pivot_longer(-Summary, names_to = 'indicator', values_to = 'usa_value')
         )
         
-        barplot_input <- left_join(barplot_data_raw, barplot_usa_med) %>% 
+        barplot_input <- dplyr::left_join(barplot_data_raw, barplot_usa_med) %>% 
           ## calc ratio
-          mutate(ratio = value / usa_value) %>% 
-          bind_rows(
+          dplyr::mutate(ratio = value / usa_value) %>% 
+          dplyr::bind_rows(
             data.frame(Summary = 'Median person in US', indicator = mybarvars, value = 1, usa_value = 1, ratio = 1)
           )
       }
@@ -1669,7 +1669,7 @@ app_server <- function(input, output, session) {
       
       ## join and plot
       barplot_input %>% 
-        left_join( data.frame(indicator = mybarvars, indicator_label =  mybarvars.friendly)) %>% 
+        dplyr::left_join( data.frame(indicator = mybarvars, indicator_label =  mybarvars.friendly)) %>% 
         ggplot() +
         ## add bars - position = 'dodge' places the 3 categories next to each other
         geom_bar(aes(x = indicator_label, y = ratio, fill = Summary), stat='identity', position='dodge') +

@@ -357,6 +357,16 @@ app_ui  <- function(request) {
                  ## otherwise, it will update when any of the inputs are changed
                  actionButton('gen_summary_report', 'Generate Report'),
                  
+                 ## input: Type of plot for 1page report
+                 shiny::radioButtons(inputId = "plotkind_1pager",
+                                     label = "Type of plot for 1page report",
+                                     choices = list(Bar="bar", Box="box", Ridgeline="ridgeline"),
+                                     selected = "bar"),
+                 # 
+                 # shiny::radioButtons(inputId = 'state_or_us_1pager',
+                 #                     label = 'Plot State or US Percentiles?',
+                 #                     choices = c(State='state', National='usa')),
+                 
                  ## display rendered report as HTML in the app
                  uiOutput('rendered_summary_report'),
                  
@@ -374,8 +384,6 @@ app_ui  <- function(request) {
                  radioButtons("format1pager", "Format", choices = c(html="html", html="pdf"), inline = TRUE)  # fix 
         ),
         
-        br(), ## vertical space
-        
         ######################################################################################################### #
         # ~ ####
         # OVERALL RESULTS TALL FORMAT ####
@@ -388,7 +396,7 @@ app_ui  <- function(request) {
 
                  h3('Overall Results (avg person'),
 
-                 DTOutput("overall_results_tall", height="100%")
+                 DT::DTOutput("overall_results_tall", height="100%")
         ),
         
         ######################################################################################################### #
@@ -875,11 +883,6 @@ app_ui  <- function(request) {
         # - hidden by default but can be activated by a button (see About EJAM tab)
         tabPanel(title = 'Advanced Settings',
                  
-                 ## input: Type of plot for 1page report
-                 shiny::radioButtons(inputId = "plotkind_1pager", 
-                                     label = "Type of plot for 1page report",
-                                     choices = list(Bar="bar", Box="box", Ridgeline="ridgeline"), 
-                                     selected = "bar"),
                  
                  ## input: Name for 1st set of comparisons
                  shiny::textInput(inputId = 'an_name_comp1', 
