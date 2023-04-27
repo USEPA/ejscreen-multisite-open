@@ -171,7 +171,7 @@ ejamit <- function(sitepoints,
   
   ################################################################ # 
   # just a nicer looking tall version of overall results
-  out$formatted <- format_results_overall(out$results_overall)
+  out$formatted <- format_results_overall(out$results_overall, out$longnames)
 
   
   ################################################################ # 

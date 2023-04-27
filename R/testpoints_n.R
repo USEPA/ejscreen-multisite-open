@@ -71,8 +71,8 @@ testpoints_n <- function(n=10, weighting=c('frs', 'pop', 'area', 'bg', 'block'),
       # this should be written as a recursive function but didnt have time to do that:
       extrasize =  150 * statecount * n # try to find n in 1 state must on avg check on 52n, but check 150n to be very likely to have enough.
       rowtried <- sample.int(EJAMfrsdata::frs[,.N], size = extrasize, replace = FALSE)
-      # browser()
-      rowinstate <- rowtried[state_from_latlon(lat = frs$lat[rowtried], lon = frs$lon[rowtried])$ST %in% ST_of_blockgroup]
+
+            rowinstate <- rowtried[state_from_latlon(lat = frs$lat[rowtried], lon = frs$lon[rowtried])$ST %in% ST_of_blockgroup]
       stillneed <- n - length(rowinstate)
       if (stillneed > 0) warning('did not find enough within specified state(s) in this attempt')
       if (stillneed < 0 ) rowinstate <- rowinstate[1:n]

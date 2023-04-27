@@ -47,12 +47,6 @@ Imports:
     tidyverse,
     dplyr,
     tidyr
-Remotes: 
-    github::USEPA/EJAMblockdata,
-    github::USEPA/EJAMfrsdata,
-    github::USEPA/EJAMejscreenapi,
-    github::USEPA/EJAMbatch.summarizer,
-    github::USEPA/EJAMejscreendata
 Suggests: 
     knitr,
     spelling,

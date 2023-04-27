@@ -390,14 +390,14 @@ app_ui  <- function(request) {
         ###   THIS WAS MEANT TO BE Another way to quickly see all the indicators, in one long list. 
         # This could be kept here (but look better) if removed from the site by site tab, to keep that table focused on 1 row/site.
         # not sure if is useful enough to keep. they already appear in the "site by site plus overall" tab, and in excel download.
-        tabPanel(title = 'Results Overall',
-
-                 br(), ## vertical space
-
-                 h3('Overall Results (avg person'),
-
-                 DT::DTOutput("overall_results_tall", height="100%")
-        ),
+        # tabPanel(title = 'Results Overall',
+        # 
+        #          br(), ## vertical space
+        # 
+        #          h3('Overall Results (avg person'),
+        # 
+        #          DTOutput("overall_results_tall", height="100%")
+        # ),
         
         ######################################################################################################### #
         # ~ ####
@@ -883,6 +883,11 @@ app_ui  <- function(request) {
         # - hidden by default but can be activated by a button (see About EJAM tab)
         tabPanel(title = 'Advanced Settings',
                  
+                 ## input: Type of plot for 1page report
+                 shiny::radioButtons(inputId = "plotkind_1pager", 
+                                     label = "Type of plot for 1page report",
+                                     choices = list(Bar="bar", Box="box", Ridgeline="ridgeline"), 
+                                     selected = "bar"),
                  
                  ## input: Name for 1st set of comparisons
                  shiny::textInput(inputId = 'an_name_comp1', 
