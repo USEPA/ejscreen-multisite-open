@@ -32,5 +32,6 @@ latlon_from_naics <- function(naics, id_only=FALSE) {
   }
 }
 
+#' @inherit latlon_from_naics
 #' @export
 siteid_from_naics <- latlon_from_naics

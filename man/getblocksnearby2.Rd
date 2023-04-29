@@ -39,5 +39,5 @@ Like getblocksnearby() but tries to handle localtree and quadtree parameter diff
 }
 }
 \seealso{
-\code{\link[=getblocksnearby_and_doaggregate]{getblocksnearby_and_doaggregate()}} \code{\link[=getblocksnearby]{getblocksnearby()}} \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} \code{\link[=getblocksnearbyviaQuadTree_Clustered]{getblocksnearbyviaQuadTree_Clustered()}} \code{\link[=getblocksnearbyviaQuadTree2]{getblocksnearbyviaQuadTree2()}}
+\code{\link[=getblocksnearby]{getblocksnearby()}}
 }

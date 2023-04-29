@@ -4,9 +4,9 @@
 \name{testdata_sites2blocks}
 \alias{testdata_sites2blocks}
 \alias{sites2blocks_example}
-\title{data.table of output of \code{\link[=getblocknearby]{getblocknearby()}}, each row is a unique site-block-distance}
+\title{data.table of output of \code{\link[=getblocksnearby]{getblocksnearby()}}, each row is a unique site-block-distance}
 \description{
-data.table of output of \code{\link[=getblocknearby]{getblocknearby()}}, each row is a unique site-block-distance
+data.table of output of \code{\link[=getblocksnearby]{getblocksnearby()}}, each row is a unique site-block-distance
 }
 \seealso{
 \link{testdata_sites2blocks} \link{testdata_sites2blocks_1000}
