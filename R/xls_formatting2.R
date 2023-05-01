@@ -35,6 +35,12 @@ xls_formatting2 <- function(overall, eachsite, graycolnums=NULL, narrowcolnums=N
     # border = "Bottom", fontColour = "white"
   )
   
+  ## format URL columns as hyperlinks
+  class(eachsite$`EJScreen Report`) <- "hyperlink" 
+  class(eachsite$`EJScreen Map`) <- "hyperlink" 
+  class(eachsite$`ACS Report`) <- "hyperlink" 
+  class(eachsite$`ECHO report`) <- "hyperlink" 
+  
   #  also  can use  tableStyle = "TableStyleLight2" for example
   
   # keepNA	

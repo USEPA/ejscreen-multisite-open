@@ -511,14 +511,14 @@ app_server <- function(input, output, session) {
     # maybe use url_4table() - see ejamit() code
     
     if ("REGISTRY_ID" %in% names(out$results_bysite)) {
-      echolink = url_echo_facility_webpage(REGISTRY_ID, as_html = T)
+      echolink = url_echo_facility_webpage(REGISTRY_ID, as_html = FALSE)
     } else {
       echolink = rep(NA,nrow(out$results_bysite))
     }
     out$results_bysite[ , `:=`(
-      `EJScreen Report` = url_ejscreen_report(    lat = data_uploaded()$lat, lon = data_uploaded()$lon, distance = input$bt_rad_buff, as_html = TRUE), 
-      `EJScreen Map`    = url_ejscreenmap(        lat = data_uploaded()$lat, lon = data_uploaded()$lon,                               as_html = TRUE), 
-      `ACS Report`      = url_ejscreen_acs_report(lat = data_uploaded()$lat, lon = data_uploaded()$lon, distance = input$bt_rad_buff, as_html = TRUE),
+      `EJScreen Report` = url_ejscreen_report(    lat = data_uploaded()$lat, lon = data_uploaded()$lon, distance = input$bt_rad_buff, as_html = FALSE), 
+      `EJScreen Map`    = url_ejscreenmap(        lat = data_uploaded()$lat, lon = data_uploaded()$lon,                               as_html = FALSE), 
+      `ACS Report`      = url_ejscreen_acs_report(lat = data_uploaded()$lat, lon = data_uploaded()$lon, distance = input$bt_rad_buff, as_html = FALSE),
       `ECHO report` = echolink
     )]
     out$results_overall[ , `:=`(
@@ -1479,6 +1479,10 @@ app_server <- function(input, output, session) {
       # [3] "results_bybg_people"                 "longnames"                          
       # [5] "count_of_blocks_near_multiple_sites" "results_summarized"  
       
+      ## add v1_summary_plot() to 'plot' sheet of Excel download
+      ## will be moved to eventual merged 'xls_formatting' function
+      ggsave(filename = paste0(tempdir(), '/', 'summary_plot.png'), plot = v1_summary_plot())
+      openxlsx::insertImage(wb_out, sheet = 'plot', file = paste0(tempdir(), '/', 'summary_plot.png'))
       
       ## save file and return for downloading
       openxlsx::saveWorkbook(wb_out, fname)

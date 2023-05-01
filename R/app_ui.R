@@ -357,11 +357,6 @@ app_ui  <- function(request) {
                  ## otherwise, it will update when any of the inputs are changed
                  #actionButton('gen_summary_report', 'Generate Report'),
                  
-                 ## input: Type of plot for 1page report
-                 shiny::radioButtons(inputId = "plotkind_1pager",
-                                     label = "Type of plot for 1page report",
-                                     choices = list(Bar="bar", Box="box", Ridgeline="ridgeline"),
-                                     selected = "bar"),
                  # 
                  # shiny::radioButtons(inputId = 'state_or_us_1pager',
                  #                     label = 'Plot State or US Percentiles?',
