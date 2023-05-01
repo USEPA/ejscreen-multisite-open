@@ -355,7 +355,7 @@ app_ui  <- function(request) {
                  
                  ## button to trigger (re-)generation of summary report using eventReactive
                  ## otherwise, it will update when any of the inputs are changed
-                 actionButton('gen_summary_report', 'Generate Report'),
+                 #actionButton('gen_summary_report', 'Generate Report'),
                  
                  ## input: Type of plot for 1page report
                  shiny::radioButtons(inputId = "plotkind_1pager",
@@ -368,7 +368,9 @@ app_ui  <- function(request) {
                  #                     choices = c(State='state', National='usa')),
                  
                  ## display rendered report as HTML in the app
-                 uiOutput('rendered_summary_report'),
+                 shinycssloaders::withSpinner(
+                  uiOutput('rendered_summary_report')
+                 ),
                  
                 
                  ## _button to download short report ####

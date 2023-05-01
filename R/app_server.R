@@ -916,14 +916,29 @@ app_server <- function(input, output, session) {
       # use yellow/orange/red for ratio >= 1x, 2x, 3x  #  work in progress
       mycolors <- c("gray", "yellow", "orange", "red")[1+findInterval(ratio.to.us.d.overall, c(1.01, 2, 3))] 
       
-      barplot(ratio.to.us.d.overall,
-              main = 'Ratio vs. US Average for Demographic Indicators',
-              cex.names = 0.7,
-              col = mycolors)
-      abline(h=1, col="gray")
+  
+      # barplot(ratio.to.us.d.overall,
+      #         main = 'Ratio vs. US Average for Demographic Indicators',
+      #         cex.names = 0.7,
+      #         col = mycolors)
       
-      # # try to do that via ggplot...
-      # ggplot2::ggplot(
+      #abline(h=1, col="gray")
+      
+      data.frame(name = names(ratio.to.us.d.overall),
+                 value = ratio.to.us.d.overall,
+                 color = mycolors) %>%
+        ggplot(aes(x = name, y = value, fill = color)) +
+        geom_bar(stat='identity') +
+        scale_fill_identity() +
+        theme_bw() +
+        labs(x = 'Indicator', y = 'Ratio vs. US Average') +
+        scale_x_discrete(labels = scales::label_wrap(7)) +
+        #scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
+        #scale_x_discrete(guide = guide_axis(n.dodge = 2)) +
+      #theme(axis.text.x = element_text(angle = 30, hjust = 0.5, vjust = 0.5)) + # # try to do that via ggplot...
+      NULL
+      
+        # ggplot2::ggplot(
       #   ratio.to.us.d.overall,
       #   aes(x = indicator, y = value)
       # ) +
@@ -932,9 +947,7 @@ app_server <- function(input, output, session) {
       #   labs(x = "",
       #        y = "Ratio of Indicator values for avg. person in selected locations\n vs. US average value",
       #        title = 'Ratio vs. US Average for Demographic Indicators') 
-    }
-    
-    if (input$plotkind_1pager == 'ridgeline') {
+    } else if (input$plotkind_1pager == 'ridgeline') {
       
       # https://r-graph-gallery.com/294-basic-ridgeline-plot.html#color
       # https://r-graph-gallery.com/294-basic-ridgeline-plot.html#shape
@@ -955,9 +968,9 @@ app_server <- function(input, output, session) {
       ) # long_names_d$var_names[match( names_d_fixed, long_names_d$vars)]
       ## pivot data from wide to long - now one row per indicator 
       ratio.to.us.d.bysite <- ratio.to.us.d.bysite %>% 
-        pivot_longer(cols = everything(), names_to = 'indicator') %>% 
+        tidyr::pivot_longer(cols = dplyr::everything(), names_to = 'indicator') %>% 
         ## replace Infs with NAs - these happen when indicator at a site is equal to zero
-        mutate(value = na_if(value, Inf)) #%>% 
+        dplyr::mutate(value = dplyr::na_if(value, Inf)) #%>% 
       # NOTE NOW ratio.to.us.d.bysite IS A tibble, not data.frame, and is in LONG format now. !!!
       
       # ridgeline Plot 
@@ -971,9 +984,7 @@ app_server <- function(input, output, session) {
           panel.spacing = unit(0.1, "lines"),
           strip.text.x = element_text(size = 8)
         )
-    }
-    
-    if (input$plotkind_1pager == "box") {
+    } else if (input$plotkind_1pager == "box") {
       # do BOXPLOT NOT BARPLOT
       
       # ****************************************************************************
@@ -990,9 +1001,9 @@ app_server <- function(input, output, session) {
       ) # long_names_d$var_names[match( names_d_fixed, long_names_d$vars)]
       ## pivot data from wide to long - now one row per indicator 
       ratio.to.us.d.bysite <- ratio.to.us.d.bysite %>% 
-        pivot_longer(cols = everything(), names_to = 'indicator') %>% 
+        tidyr::pivot_longer(cols = dplyr::everything(), names_to = 'indicator') %>% 
         ## replace Infs with NAs - these happen when indicator at a site is equal to zero
-        mutate(value = na_if(value, Inf)) #%>% 
+        dplyr::mutate(value = dplyr::na_if(value, Inf)) #%>% 
       # NOTE NOW ratio.to.us.d.bysite IS A tibble, not data.frame, and is in LONG format now. !!!
       
       ## find max of ratios 
@@ -1098,8 +1109,9 @@ app_server <- function(input, output, session) {
   # ~--------------------------- ####
   
   ## make summary report directly in shiny app and render on Summary report tab
-  summary_report_params <- eventReactive(input$gen_summary_report, {
-    list(testmode=FALSE,
+  #summary_report_params <- eventReactive(input$gen_summary_report, {
+  summary_report_params <- reactive({
+      list(testmode=FALSE,
          sitecount = nrow(data_processed()$results_bysite), 
          distance = paste0(input$bt_rad_buff,' miles'), #input$radius_units),
          total_pop = prettyNum( total_pop(), big.mark = ","),
@@ -1108,15 +1120,17 @@ app_server <- function(input, output, session) {
          map         = report_map(),
          envt_table   = v1_envt_table(),
          demog_table  = v1_demog_table(),
-         summary_plot = v1_summary_plot())
+         summary_plot = v1_summary_plot() #%>% print()
+         )
   })
   
   output$rendered_summary_report <- renderUI({
-   
+   HTML(
       includeHTML(
         rmarkdown::render(app_sys('report','brief_summary.Rmd'), 
                           params = summary_report_params())
       )
+   )
   })
   
   # 1-3-page summary comparable to EJScreen report  
@@ -1359,8 +1373,9 @@ app_server <- function(input, output, session) {
     
     dt_final <- dt %>% 
       dplyr::bind_cols(data_summarized()$cols) %>% 
-      dplyr::bind_rows(dt_avg) %>% 
-      dplyr::bind_rows(dt_overall) %>% 
+      ## hide summary rows from table
+      #dplyr::bind_rows(dt_avg) %>% 
+      #dplyr::bind_rows(dt_overall) %>% 
       dplyr::arrange(dplyr::desc(pop)) %>% 
       dplyr::mutate(pop = prettyNum(pop, big.mark = ',')) %>% 
       dplyr::left_join(EJAM::stateinfo %>% dplyr::select(ST, statename, REGION), by = 'ST') %>% 
@@ -1490,9 +1505,11 @@ app_server <- function(input, output, session) {
       )
     )
     ## zoom in from original map to show single point (can zoom out and see others)
+    print(data_sitemap())
+    print(class(data_sitemap()$lat))
     
     orig_leaf_map() %>% 
-      setView(lng = mean(data_sitemap()$lon), lat = mean(data_sitemap()$lat), zoom = 11)
+      leaflet::setView(lng = data_sitemap()$lon, lat = data_sitemap()$lat, zoom = 8)
     ## alternate: plot single point individually on map (cannot zoom out and see others)
     # leaflet(data_sitemap()) %>%
     #   setView(lat = data_sitemap()$lat, lng = data_sitemap()$lon, zoom = 13) %>%
@@ -1616,7 +1633,7 @@ app_server <- function(input, output, session) {
       ## average
       if(mybarvars.stat == 'avg'){
         ## pull US average values from EJAM::usastats to compute ratios
-        barplot_usa_avg <-  bind_rows(
+        barplot_usa_avg <-  dplyr::bind_rows(
           EJAM::usastats %>% 
             dplyr::filter(REGION == 'USA', PCTILE == 'mean') %>% 
             dplyr::mutate(Summary = 'Average person') %>%
@@ -1643,7 +1660,7 @@ app_server <- function(input, output, session) {
         
       } else {
         ## median - not currently displayed
-        barplot_usa_med <-  bind_rows(
+        barplot_usa_med <-  dplyr::bind_rows(
           EJAM::usastats %>% 
             dplyr::filter(REGION == 'USA', PCTILE == 50) %>% 
             dplyr:: mutate(Summary = 'Median person') %>%
@@ -1862,7 +1879,7 @@ app_server <- function(input, output, session) {
       isolate({ # need someone to confirm this is needed/helpful and not a problem, to isolate this.
       
         params <- list(
-          testmode=FALSE,
+          testmode=TRUE,
           
           #------- WHERE was analyzed? (where/ what sector/zones/types of places)
           

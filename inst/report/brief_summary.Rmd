@@ -71,20 +71,25 @@ params$demog_table
 #                options = list(autoWidth = TRUE))
 ```
 
-```{r summary_plot, out.width = '1000px', out.height = '500px', fig.align='center'}
 
-params$summary_plot +
-  
-# can we pass the entire plot to this short report as a parameter, to avoid duplication of code here?
+```{r summary_plot,  out.height = '500px', fig.align='center'}
 
-  ggplot2::scale_x_discrete(labels = function(x) stringr::str_wrap(x, 9)) +
-  ggplot2::theme(
-    plot.title    = ggplot2::element_text(hjust=0.5, size=12),
-    plot.subtitle = ggplot2::element_text(hjust=0.5, size=11),
-    axis.title.y  = ggplot2::element_text(size=10),
-    axis.text     = ggplot2::element_text(size=9)
-  )
+ params$summary_plot #+
+#   
+# # can we pass the entire plot to this short report as a parameter, to avoid duplication of code here?
+# 
+#   ggplot2::scale_x_discrete(labels = function(x) stringr::str_wrap(x, 9)) +
+#   ggplot2::theme(
+#     plot.title    = ggplot2::element_text(hjust=0.5, size=12),
+#     plot.subtitle = ggplot2::element_text(hjust=0.5, size=11),
+#     axis.title.y  = ggplot2::element_text(size=10),
+#     axis.text     = ggplot2::element_text(size=9)
+#   )
 ```
+<!-- another rendering option - save plot as figure in chunk and show here -->
+<!-- chunk options: dev='png', fig.show='hide', -->
+<!-- ![Test summary plot image](`r knitr::fig_chunk('summary_plot', 'png')`) -->
+
 
 ::: {style="font-size: 8pt; color: navy; font-family: sans-serif;"}
 This report shows the values for environmental and demographic indicators. It shows environmental and demographic raw data (e.g., the estimated concentration of ozone in the air), and also shows what percentile each raw data value represents. These percentiles provide perspective on how the selected block group or buffer area compares to the entire state or nation. For example, if a given location is at the 95th percentile nationwide, this means that only 5 percent of US block groups have a higher value than the average person in the location being analyzed. The years for which the data are available, and the methods used, vary across these indicators. Important caveats and uncertainties apply to this screening-level information, so it is essential to understand the limitations on appropriate interpretations and applications of these indicators. Please see EJScreen documentation for discussion of these issues before using reports.
