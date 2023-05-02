@@ -22,12 +22,12 @@ getblocksnearbyviaQuadTree_Clustered(
 
 \item{avoidorphans}{logical}
 
-\item{CountCPU}{for parallel processing via makeCluster() and doSNOW::registerDoSNOW()}
+\item{CountCPU}{for parallel processing via makeCluster() and \code{\link[doSNOW:registerDoSNOW]{doSNOW::registerDoSNOW()}}}
 
 \item{quadtree}{index of all US blocks like localtree}
 }
 \description{
-Uses packages \link{parallel} and \link{snow}. parallel::makePSOCKcluster is an enhanced version of snow::makeSOCKcluster in package snow.
+Uses packages parallel and snow. \link[parallel:makeCluster]{parallel::makePSOCKcluster} is an enhanced version of \link[snow:snow-startstop]{snow::makeSOCKcluster} in package snow.
 It runs Rscript on the specified host(s) to set up a worker process which listens on a socket for expressions to evaluate, and returns the results (as serialized objects).
 }
 \details{

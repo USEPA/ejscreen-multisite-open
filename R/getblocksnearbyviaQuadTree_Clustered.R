@@ -1,5 +1,5 @@
 #' find nearby blocks using Quad Tree data structure for speed, CLUSTERED FOR PARALLEL PROCESSING
-#' @description Uses packages [parallel] and [snow]. parallel::makePSOCKcluster is an enhanced version of snow::makeSOCKcluster in package snow.
+#' @description Uses packages parallel and snow. [parallel::makePSOCKcluster] is an enhanced version of [snow::makeSOCKcluster] in package snow.
 #'     It runs Rscript on the specified host(s) to set up a worker process which listens on a socket for expressions to evaluate, and returns the results (as serialized objects).
 #'
 #' @details  For all examples, see [getblocksnearbyviaQuadTree()]
@@ -10,7 +10,7 @@
 #' @param cutoff miles distance (check what this actually does)
 #' @param maxcutoff miles distance (check what this actually does)
 #' @param avoidorphans logical
-#' @param CountCPU for parallel processing via makeCluster() and doSNOW::registerDoSNOW()
+#' @param CountCPU for parallel processing via makeCluster() and [doSNOW::registerDoSNOW()]
 #' @param quadtree index of all US blocks like localtree
 #' @seealso [getblocksnearby_and_doaggregate()] [getblocksnearby()] [getblocksnearbyviaQuadTree()] [getblocksnearbyviaQuadTree_Clustered()] [getblocksnearbyviaQuadTree2()]
 #' @export

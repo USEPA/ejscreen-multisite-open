@@ -3,9 +3,9 @@
 \docType{data}
 \name{testdata_sites2blocks_1000}
 \alias{testdata_sites2blocks_1000}
-\title{data.table of output of \link{getblocknearby(testpoints_1000,cutoff = 3.1)}, each row is a unique site-block-distance}
+\title{data.table of output of \link{getblocksnearby(testpoints_1000,cutoff = 3.1)}, each row is a unique site-block-distance}
 \description{
-data.table of output of \link{getblocknearby(testpoints_1000,cutoff = 3.1)}, each row is a unique site-block-distance
+data.table of output of \link{getblocksnearby(testpoints_1000,cutoff = 3.1)}, each row is a unique site-block-distance
 }
 \seealso{
 \link{testdata_sites2blocks}

@@ -3,7 +3,7 @@
 \name{naics_url_of_code}
 \alias{naics_url_of_code}
 \title{Get URL for page with info about industry sector(s) by NAICS
-See \link{naics.com} for more information on NAICS codes}
+See (https://naics.com) for more information on NAICS codes}
 \usage{
 naics_url_of_code(naics)
 }
@@ -15,5 +15,5 @@ vector of URLs as strings like https://www.naics.com/six-digit-naics/?v=2017&cod
 }
 \description{
 Get URL for page with info about industry sector(s) by NAICS
-See \link{naics.com} for more information on NAICS codes
+See (https://naics.com) for more information on NAICS codes
 }

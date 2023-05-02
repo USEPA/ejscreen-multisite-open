@@ -3,7 +3,7 @@
 \name{url_naics.com}
 \alias{url_naics.com}
 \title{Get URL for page with info about industry sectors by text query term
-See \link{naics.com} for more information on NAICS codes}
+See (https://naics.com) for more information on NAICS codes}
 \usage{
 url_naics.com(query, as_html = FALSE, linktext)
 }
@@ -19,8 +19,5 @@ URL as string
 }
 \description{
 Get URL for page with info about industry sectors by text query term
-See \link{naics.com} for more information on NAICS codes
-}
-\seealso{
-\code{\link[=url_linkify]{url_linkify()}}
+See (https://naics.com) for more information on NAICS codes
 }

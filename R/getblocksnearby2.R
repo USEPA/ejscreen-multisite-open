@@ -11,7 +11,7 @@
 #' @param quadtree a large quadtree object created from the SearchTree package example:
 #'    SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
 #' @param ...          see [getblocksnearbyviaQuadTree_Clustered()] or other such functions
-#' @seealso [getblocksnearby_and_doaggregate()] [getblocksnearby()] [getblocksnearbyviaQuadTree()] [getblocksnearbyviaQuadTree_Clustered()] [getblocksnearbyviaQuadTree2()]
+#' @seealso [getblocksnearby()] 
 #' @export
 #'
 getblocksnearby2 <- function(sitepoints, cutoff=3, maxcutoff=31.07, 

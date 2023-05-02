@@ -2,7 +2,7 @@
 #' @docType data
 #' @aliases testdata_sites2blocks
 #' @seealso [testdata_sites2blocks] [testdata_sites2blocks_1000]
-#' @title data.table of output of [getblocknearby()], each row is a unique site-block-distance
+#' @title data.table of output of [getblocksnearby()], each row is a unique site-block-distance
 #'
 NULL
 
@@ -10,13 +10,13 @@ NULL
 #' @docType data
 #' @aliases sites2blocks_example
 #' @seealso [testdata_sites2blocks] [testdata_sites2blocks_1000]
-#' @title data.table of output of [getblocknearby()], each row is a unique site-block-distance
+#' @title data.table of output of [getblocksnearby()], each row is a unique site-block-distance
 NULL
 
 #' @name testdata_sites2blocks_1000
 #' @docType data
 #' @seealso [testdata_sites2blocks]
-#' @title data.table of output of [getblocknearby(testpoints_1000,cutoff = 3.1)], each row is a unique site-block-distance
+#' @title data.table of output of [getblocksnearby(testpoints_1000,cutoff = 3.1)], each row is a unique site-block-distance
 NULL
 
 
