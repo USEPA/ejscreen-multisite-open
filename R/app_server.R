@@ -519,7 +519,10 @@ app_server <- function(input, output, session) {
       `EJScreen Report` = url_ejscreen_report(    lat = data_uploaded()$lat, lon = data_uploaded()$lon, distance = input$bt_rad_buff, as_html = FALSE), 
       `EJScreen Map`    = url_ejscreenmap(        lat = data_uploaded()$lat, lon = data_uploaded()$lon,                               as_html = FALSE), 
       `ACS Report`      = url_ejscreen_acs_report(lat = data_uploaded()$lat, lon = data_uploaded()$lon, distance = input$bt_rad_buff, as_html = FALSE),
-      `ECHO report` = echolink
+      `ECHO report` = echolink#,
+      # `EJScreen Report 2` = url_ejscreen_report(    lat = data_uploaded()$lat, lon = data_uploaded()$lon, distance = input$bt_rad_buff, as_html = TRUE), 
+      # `EJScreen Map 2`    = url_ejscreenmap(        lat = data_uploaded()$lat, lon = data_uploaded()$lon,                               as_html = TRUE), 
+      # `ACS Report 2`      = url_ejscreen_acs_report(lat = data_uploaded()$lat, lon = data_uploaded()$lon, distance = input$bt_rad_buff, as_html = TRUE)
     )]
     out$results_overall[ , `:=`(
       `EJScreen Report` = NA, 
@@ -531,7 +534,11 @@ app_server <- function(input, output, session) {
       "EJScreen Report", 
       "EJScreen Map", 
       "ACS Report", 
-      "ECHO report")
+      "ECHO report"#,
+      # "EJScreen Report 2",
+      # "EJScreen Map 2",
+      # "ACS Report 2")
+    )
     # put those up front as first columns
     setcolorder(out$results_bysite, neworder = newcolnames)
     setcolorder(out$results_bysite, neworder = newcolnames)
@@ -1346,37 +1353,45 @@ app_server <- function(input, output, session) {
     # --------------------------------------------------- #
     # cols_to_select <- names(data_processed)
     # friendly_names <- longnames???
-    cols_to_select <- c('siteid',  'pop', 
+    cols_to_select <- c('siteid',  'pop', 'EJScreen Report', 'EJScreen Map', 'ACS Report', 'ECHO report',
                         EJAMbatch.summarizer::names_all)
-    friendly_names <- c('Site ID', 'Est. Population',  
+    friendly_names <- c('Site ID', 'Est. Population',  'EJScreen Report', 'EJScreen Map', 'ACS Report', 'ECHO report',
                         EJAMbatch.summarizer::names_all_friendly, 
                         'State', 'EPA Region', '# of indicators above 95% threshold')
     # --------------------------------------------------- #
     
-    dt_overall <- data_processed()$results_overall %>% 
-      as.data.frame() %>% 
-      dplyr::mutate(siteid = 'All sites', ST = NA,
-             across(where(is.numeric), .fns = function(x) {round(x, digits=2)})) %>% 
-      dplyr::select(dplyr::all_of(cols_to_select), ST)
+    # dt_overall <- data_processed()$results_overall %>% 
+    #   as.data.frame() %>% 
+    #   dplyr::mutate(siteid = 'All sites', ST = NA,
+    #          across(where(is.numeric), .fns = function(x) {round(x, digits=2)})) %>% 
+    #   dplyr::select(dplyr::all_of(cols_to_select), ST)
     
     dt <- data_processed()$results_bysite %>% 
       as.data.frame() %>%
-      dplyr::mutate(dplyr::across(dplyr::where(is.numeric), .fns = function(x) {round(x, digits=2)}),
-             siteid = as.character(siteid)) %>%
+      dplyr::mutate(dplyr::across(dplyr::where(is.numeric), .fns = function(x) {round(x, digits=2)})#,
+             #siteid = as.character(siteid)
+             ) %>%
       dplyr::select(dplyr::all_of(cols_to_select), ST)
     
-    dt_avg <- data_summarized()$rows[c('Average person','Average site'),] %>% 
-      dplyr::mutate(siteid = c('Average person', 'Average site'), ST = NA,
-                    dplyr::across(dplyr::where(is.numeric), .fns = function(x) {round(x, digits=2)}),
-             siteid = as.character(siteid)) %>%
-      dplyr::select(dplyr::all_of(cols_to_select), ST)
+    dt$`EJScreen Report` <- EJAMejscreenapi::url_linkify(dt$`EJScreen Report`, text = 'EJScreen Report')
+    dt$`EJScreen Map` <- EJAMejscreenapi::url_linkify(dt$`EJScreen Map`, text = 'EJScreen Map')
+    dt$`ACS Report` <- EJAMejscreenapi::url_linkify(dt$`ACS Report`, text = 'ACS Report')
+    
+    
+    # dt_avg <- data_summarized()$rows[c('Average person','Average site'),] %>% 
+    #   dplyr::mutate(siteid = c('Average person', 'Average site'), ST = NA,
+    #                 dplyr::across(dplyr::where(is.numeric), .fns = function(x) {round(x, digits=2)}),
+    #          siteid = as.character(siteid)) %>%
+    #   dplyr::select(dplyr::all_of(cols_to_select), ST)
     
     dt_final <- dt %>% 
       dplyr::bind_cols(data_summarized()$cols) %>% 
       ## hide summary rows from table
       #dplyr::bind_rows(dt_avg) %>% 
       #dplyr::bind_rows(dt_overall) %>% 
-      dplyr::arrange(dplyr::desc(pop)) %>% 
+      ## sort by Site ID - as numeric index
+      dplyr::arrange(siteid) %>% 
+      #dplyr::arrange(dplyr::desc(pop)) %>% 
       dplyr::mutate(pop = prettyNum(pop, big.mark = ',')) %>% 
       dplyr::left_join(EJAM::stateinfo %>% dplyr::select(ST, statename, REGION), by = 'ST') %>% 
       dplyr::select(-ST, -Max.of.variables)
@@ -1493,33 +1508,30 @@ app_server <- function(input, output, session) {
   # ~ ###  #
   # ______ MAP RESULTS ______ sites selected from site-by-site summary table ####
   
-  data_sitemap <- reactiveVal(NULL)
-  
-  observeEvent(input$view3_table_rows_selected,{
-    req(data_processed())
-    data_sitemap(data_uploaded()[input$view3_table_rows_selected,])
-  })
-  
-  output$v3_sitemap <- leaflet::renderLeaflet({
-    ## wait for row to be selected
-    ## note: summary rows are currently mapped but don't have a point location to map
-    validate(
-      need(!is.null(input$view3_table_rows_selected),
-           'Select a specific site in the table to see its location'
-      )
-    )
-    ## zoom in from original map to show single point (can zoom out and see others)
-    print(data_sitemap())
-    print(class(data_sitemap()$lat))
-    
-    orig_leaf_map() %>% 
-      leaflet::setView(lng = data_sitemap()$lon, lat = data_sitemap()$lat, zoom = 8)
-    ## alternate: plot single point individually on map (cannot zoom out and see others)
-    # leaflet(data_sitemap()) %>%
-    #   setView(lat = data_sitemap()$lat, lng = data_sitemap()$lon, zoom = 13) %>%
-    #   addTiles() %>%
-    #   addCircles(radius = 1 *  meters_per_mile)
-  })
+  # data_sitemap <- reactiveVal(NULL)
+  # 
+  # observeEvent(input$view3_table_rows_selected,{
+  #   req(data_processed())
+  #   data_sitemap(data_uploaded()[input$view3_table_rows_selected,])
+  # })
+  # 
+  # output$v3_sitemap <- leaflet::renderLeaflet({
+  #   ## wait for row to be selected
+  #   ## note: summary rows are currently mapped but don't have a point location to map
+  #   validate(
+  #     need(!is.null(input$view3_table_rows_selected),
+  #          'Select a specific site in the table to see its location'
+  #     )
+  #   )
+  #   ## zoom in from original map to show single point (can zoom out and see others)
+  #   orig_leaf_map() %>% 
+  #     leaflet::setView(lng = data_sitemap()$lon, lat = data_sitemap()$lat, zoom = 8)
+  #   ## alternate: plot single point individually on map (cannot zoom out and see others)
+  #   # leaflet(data_sitemap()) %>%
+  #   #   setView(lat = data_sitemap()$lat, lng = data_sitemap()$lon, zoom = 13) %>%
+  #   #   addTiles() %>%
+  #   #   addCircles(radius = 1 *  meters_per_mile)
+  # })
   #############################################################################  # 
   # ~ ####
   # ______ BARPLOT _____ ####
