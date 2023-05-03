@@ -917,7 +917,8 @@ app_server <- function(input, output, session) {
     if (input$plotkind_1pager == 'bar') {  # do BARPLOT NOT BOXPLOT
       
       ratio.to.us.d.overall <- ratio.to.us.d() # reactive already available
-      supershortnames <- substr(gsub(" |-|age","",gsub("People of Color","POC", c(names_d_friendly, names_d_subgroups_friendly))),1,6)
+      #supershortnames <- substr(gsub(" |-|age","",gsub("People of Color","POC", c(names_d_friendly, names_d_subgroups_friendly))),1,6)
+      supershortnames <- gsub(' \\(.*', '', gsub("People of Color","POC", c(names_d_friendly, names_d_subgroups_friendly)))
       names(ratio.to.us.d.overall) <- supershortnames
       ratio.to.us.d.overall[is.infinite(ratio.to.us.d.overall)] <- 0
       # use yellow/orange/red for ratio >= 1x, 2x, 3x  #  work in progress
@@ -934,15 +935,16 @@ app_server <- function(input, output, session) {
       data.frame(name = names(ratio.to.us.d.overall),
                  value = ratio.to.us.d.overall,
                  color = mycolors) %>%
-        ggplot(aes(x = name, y = value, fill = color)) +
-        geom_bar(stat='identity') +
-        scale_fill_identity() +
-        theme_bw() +
-        labs(x = 'Indicator', y = 'Ratio vs. US Average') +
-        scale_x_discrete(labels = scales::label_wrap(7)) +
+        ggplot2::ggplot(ggplot2::aes(x = name, y = value, fill = color)) +
+        ggplot2::geom_bar(stat='identity') +
+        ggplot2::scale_fill_identity() +
+        ggplot2::theme_bw() +
+        ggplot2::labs(x = 'Indicator', y = 'Ratio vs. US Average') +
+        #scale_x_discrete(labels = scales::label_wrap(7)) +
         #scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
         #scale_x_discrete(guide = guide_axis(n.dodge = 2)) +
-      #theme(axis.text.x = element_text(angle = 30, hjust = 0.5, vjust = 0.5)) + # # try to do that via ggplot...
+        ggplot2::scale_y_continuous(limits = c(0, NA), expand = ggplot2::expansion(mult = c(0, 0.05), add = c(0, 0))) +
+        ggplot2::theme(plot.margin=ggplot2::unit(c(1,2,1,1), "cm"), axis.text.x = ggplot2::element_text(angle = -30, hjust = 0, vjust = 1)) + # # try to do that via ggplot...
       NULL
       
         # ggplot2::ggplot(
@@ -1353,9 +1355,9 @@ app_server <- function(input, output, session) {
     # --------------------------------------------------- #
     # cols_to_select <- names(data_processed)
     # friendly_names <- longnames???
-    cols_to_select <- c('siteid',  'pop', 'EJScreen Report', 'EJScreen Map', 'ACS Report', 'ECHO report',
+    cols_to_select <- c('siteid',  'pop', #'EJScreen Report', 'EJScreen Map', 'ACS Report', 'ECHO report',
                         EJAMbatch.summarizer::names_all)
-    friendly_names <- c('Site ID', 'Est. Population',  'EJScreen Report', 'EJScreen Map', 'ACS Report', 'ECHO report',
+    friendly_names <- c('Site ID', 'Est. Population',  #'EJScreen Report', 'EJScreen Map', 'ACS Report', 'ECHO report',
                         EJAMbatch.summarizer::names_all_friendly, 
                         'State', 'EPA Region', '# of indicators above 95% threshold')
     # --------------------------------------------------- #
@@ -1373,9 +1375,9 @@ app_server <- function(input, output, session) {
              ) %>%
       dplyr::select(dplyr::all_of(cols_to_select), ST)
     
-    dt$`EJScreen Report` <- EJAMejscreenapi::url_linkify(dt$`EJScreen Report`, text = 'EJScreen Report')
-    dt$`EJScreen Map` <- EJAMejscreenapi::url_linkify(dt$`EJScreen Map`, text = 'EJScreen Map')
-    dt$`ACS Report` <- EJAMejscreenapi::url_linkify(dt$`ACS Report`, text = 'ACS Report')
+    # dt$`EJScreen Report` <- EJAMejscreenapi::url_linkify(dt$`EJScreen Report`, text = 'EJScreen Report')
+    # dt$`EJScreen Map` <- EJAMejscreenapi::url_linkify(dt$`EJScreen Map`, text = 'EJScreen Map')
+    # dt$`ACS Report` <- EJAMejscreenapi::url_linkify(dt$`ACS Report`, text = 'ACS Report')
     
     
     # dt_avg <- data_summarized()$rows[c('Average person','Average site'),] %>% 
@@ -1468,6 +1470,8 @@ app_server <- function(input, output, session) {
       table_bysite  <- copy(data_processed()$results_bysite)
       # table_summarized <- copy(data_processed()$results_summarized)
       # table_bybg_people <- data_processed()$results_bybg_people   # large table !!
+      table_overall <- table_overall %>% dplyr::mutate(dplyr::across(dplyr::where(is.numeric), function(x) ifelse(!is.finite(x), NA, x)))
+      table_bysite <- table_bysite %>% dplyr::mutate(dplyr::across(dplyr::where(is.numeric), function(x) ifelse(!is.finite(x), NA, x)))
       
       ## attempt to clean up some column names xxx - CHECK THIS 
       # longnames_TEST <- EJAMejscreenapi::map_headernames$longname_tableheader[match(names(data_processed()$results_bysite),

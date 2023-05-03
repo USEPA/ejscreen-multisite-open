@@ -72,7 +72,7 @@ params$demog_table
 ```
 
 
-```{r summary_plot,  out.height = '500px', fig.align='center'}
+```{r summary_plot, fig.width=7, out.width=7 , fig.align='center'}
 
  params$summary_plot #+
 #   

@@ -39,9 +39,18 @@ xls_formatting2 <- function(overall, eachsite, graycolnums=NULL, narrowcolnums=N
   #   dplyr::select(-`EJScreen Report 2`, `EJScreen Map 2`, `ACS Report 2`)
   
   ## format URL columns as hyperlinks
-  class(eachsite$`EJScreen Report`) <- "hyperlink"
-  class(eachsite$`EJScreen Map`) <- "hyperlink"
-  class(eachsite$`ACS Report`) <- "hyperlink"
+  if('EJScreen Report' %in% names(eachsite)){
+    class(eachsite$`EJScreen Report`) <- "hyperlink"   
+  }
+ 
+  if('EJScreen Map' %in% names(eachsite)){
+    class(eachsite$`EJScreen Map`) <- "hyperlink"
+  }
+  
+  if('ACS Report' %in% names(eachsite)){
+    class(eachsite$`ACS Report`) <- "hyperlink"
+    
+  }
   #class(eachsite$`ECHO report`) <- "hyperlink" 
   
   #  also  can use  tableStyle = "TableStyleLight2" for example
