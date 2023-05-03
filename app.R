@@ -5,7 +5,8 @@
 #  and run_app() is loaded as an exported function that actually runs the app,
 #  and while shiny normally sources all files in the /R folder, 
 #  here _disable_autoload.R is used to avoid that 
-#  since they are already loaded as part of the package being loaded (below).
+#  since they are already loaded below via pkgload::load_all() which sources R files and loads data files. 
+#
 #  This was set up using  golem::add_rstudioconnect_file()
 #  But note that this add_rstudioconnect_file() function says 
 #  one needs to say pkgload::myfunction() to refer to the package functions ??

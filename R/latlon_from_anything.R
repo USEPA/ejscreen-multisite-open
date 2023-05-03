@@ -37,7 +37,7 @@
 #'  if (interactive()) {
 #'  pts <- latlon_from_anything()
 #'  }
-#'  latlon_from_anything(system.file("testdata/Sample12.xlsx", 
+#'  latlon_from_anything(system.file("testdata/testpoints_12.xlsx", 
 #'    package="EJAMejscreenapi"))
 #'  latlon_from_anything(system.file("testdata/testpoints_05.csv", 
 #'    package="EJAMejscreenapi"))
