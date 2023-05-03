@@ -7,12 +7,38 @@
 
 
 
+## see map_headernames which now has most or all of these in a table - friendly names differ somewhat
+# library(EJAMejscreenapi)
+# map_headernames[grepl("ej", map_headernames$varlist), c('varlist', 'newnames_ejscreenapi', 'names_friendly')]
+# map_headernames[grepl("_d", map_headernames$varlist), c('varlist', 'newnames_ejscreenapi', 'names_friendly')]
+# map_headernames[map_headernames$varlist == 'names_e' | grepl("names_e_", map_headernames$varlist), c('varlist', 'newnames_ejscreenapi', 'names_friendly')]
+# unique(map_headernames$varlist)
+# [1] ""                               "names_d"                        "names_d_avg"                    "names_d_pctile"                 "names_d_state_avg"             
+# [6] "names_d_state_pctile"           "names_d_subgroups"              "names_d_subgroups_count"        "names_d_subgroups_pctile"       "names_d_subgroups_state_pctile"
+# [11] "names_e"                        "names_e_avg"                    "names_e_pctile"                 "names_e_state_avg"              "names_e_state_pctile"          
+# [16] "names_ej"                       "names_ej_pctile"                "names_ej_state_pctile"          "names_ej_supp"                  "names_ej_supp_pctile"          
+# [21] "names_ej_supp_state_pctile"     "names_d_median"                 "names_e_median"                 "?"                             
+# > 
+# for example...
+#
+# cbind( xlsnames = EJAMejscreenapi::map_headernames['names_ej' == EJAMejscreenapi::map_headernames$varlist, c( 'names_friendly')],  names_ej_friendly )
+# xlsnames                              names_ej_friendly     
+# [1,] "EJ: PM2.5 (raw)"                     "EJ: PM2.5"           
+# [2,] "EJ: Ozone (raw)"                     "EJ: Ozone"           
+# [3,] "EJ: Cancer risk (raw)"               "EJ: Cancer risk"     
+# [4,] "EJ: Respiratory (raw)"               "EJ: Respiratory"     
+# [5,] "EJ: Diesel PM (raw)"                 "EJ: Diesel PM"       
+# [6,] "EJ: % built pre-1960 (raw)"          "EJ: % built pre-1960"
+# [7,] "EJ: Traffic (raw)"                   "EJ: Traffic"         
+# [8,] "EJ: NPL (raw)"                       "EJ: NPL"             
+# [9,] "EJ: RMP (raw)"                       "EJ: RMP"             
+# [10,] "EJ: TSDF (raw)"                      "EJ: TSDF"            
+# [11,] "EJ: NPDES (raw)"                     "EJ: NPDES"           
+# [12,] "EJ: Underground storage tanks (raw)" "EJ: UST" 
 
 
 
-
-
-
+############################################################################## #
 ## code to prepare `names_of_indicators` dataset 
 # Define lists of names of EJScreen-related variables for use here
 ############################################################################## #
@@ -75,20 +101,29 @@ names_wts <- "pop"
 names_d <- c(
   "Demog.Index",   "Demog.Index.Supp",
   
-  "pctlowinc",  "pctmin",    "pctlths",   # note this sort order was fixed 3/2/23 to put lowinc before min, to match friendly order
-  "pctlingiso", "pctunder5",  "pctover64", "pctunemployed",
-  "lowlifex"
+  "pctlowinc",  
+  "pctlingiso",   
+  "pctunemployed",
+  "pctlths",   # note this sort order was fixed 3/2/23 to put lowinc before min, to match friendly order
+   "lowlifex", 
+  "pctunder5",  "pctover64", 
+ 
+  "pctmin"
   )
 
 names_d_friendly <- c(
   "Demog.Ind.",   "Suppl Demog Index", 
   
-  "% Low-inc.", "% People of Color", "% <High School", 
-  "% Linguistic Isol.", "% < age 5", "% > age 64", "% unemployed",
-  "Low life expectancy"
+  "% Low-inc.", 
+  "% Limited English",
+  "% Unemployed",
+  "% < High School", 
+  "Low life expectancy", 
+  "% < age 5", "% > age 64", 
+ 
+  "% People of Color"
 )
-# > EJAMbatch.summarizer::names_d_batch_friendly ==  c(names_d_friendly, names_d_subgroups_friendly)
-# [1] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+
 
 names_d_count <- gsub('pct', '', names_d); names_d_count <- gsub('min', 'mins', names_d_count); 
 names_d_count <- names_d_count[names_d_count != 'Demog.Index']
@@ -100,24 +135,27 @@ names_other <- c("pop","nonmins","povknownratio","age25up", "hhlds","unemployedb
 
 # DEMOG SUBGROUPS ####
 
-names_d_subgroups       <- c("pctnhwa", "pcthisp", "pctnhba", "pctnhaa", "pctnhaiana", "pctnhnhpia", "pctnhotheralone", "pctnhmulti")
-names_d_subgroups_count <- c(   "nhwa",    "hisp",    "nhba",    "nhaa",    "nhaiana",    "nhnhpia",    "nhotheralone",    "nhmulti")
+names_d_subgroups       <- c("pcthisp", "pctnhba", "pctnhaa", "pctnhaiana", "pctnhnhpia", "pctnhotheralone", "pctnhmulti", "pctnhwa")
+names_d_subgroups_count <- c(   "hisp",    "nhba",    "nhaa",    "nhaiana",    "nhnhpia",    "nhotheralone",    "nhmulti",    "nhwa")
 names_d_subgroups_friendly <- c(
-  "% White nha (White non-Hispanic, single race)", 
   "% Hisp (Hispanic or Latino)", 
   "% Black nha (Black or African American non-Hispanic, single race)", 
   "% Asian nha (Asian non-Hispanic, single race)",
   "% AmIndian nha (American Indian and Alaska Native non-Hispanic, single race)", 
   "% Hawaii nha (Native Hawaiian and Other Pacific Islander non-Hispanic, single race)", 
   "% Other nha (Other race non-Hispanic, single race)",
-  "% Multi nha (Two or more races non-Hispanic)"
+  "% Multi nha (Two or more races non-Hispanic)",
+  "% White nha (White non-Hispanic, single race)" 
 )
 # names_d_subgroups_friendly <- paste0(   #these were shorter but less explicit? neither is great. and need a shorter version for graphic labels.
-#   "% ", c("White", "Hispanic or Latino", "Black or African American", "American Indian and Alaska Native", 
-#           "Native Hawaiian and Other Pacific Islander", "Other race", "Two or more races"),
+#   "% ", c("Hispanic or Latino", "Black or African American", "American Indian and Alaska Native", 
+#           "Native Hawaiian and Other Pacific Islander", "Other race", "Two or more races", "White"),
 #   " (non-Hispanic, single race)")
-# names_d_subgroups_friendly[2] <- "% Hispanic or Latino"
-# names_d_subgroups_friendly[7] <- "% Two or more races (non-Hispanic)"
+# names_d_subgroups_friendly[1] <- "% Hispanic or Latino"
+# names_d_subgroups_friendly[6] <- "% Two or more races (non-Hispanic)"
+
+# > EJAMbatch.summarizer::names_d_batch_friendly ==  c(names_d_friendly, names_d_subgroups_friendly)
+# [1] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
 
 ############################################################################## #
 
@@ -136,8 +174,10 @@ names_e_friendly  <- c(
 
 # EJ INDEXES ####
 
+#####   NEED TO CLARIFY raw vs pctile !    
+
 names_ej <- paste0('EJ.DISPARITY.', names_e, '.eo')
-names_ej_friendly <- c(
+names_ej_friendly <- c( # FRIENDLY (RAW) SCORE BUT CAN USE FOR PCTILE SINCE THAT IS THE ONLY THING REPORTED
   "EJ: PM2.5", 
   "EJ: Ozone", 
   "EJ: Cancer risk", 
@@ -145,32 +185,44 @@ names_ej_friendly <- c(
   "EJ: Diesel PM", 
   "EJ: % built pre-1960", 
   "EJ: Traffic", 
-  "EJ: NPL proximity", 
-  "EJ: RMP proximity", 
-  "EJ: TSDF proximity", 
-  "EJ: NPDES proximity", 
-  "EJ: Underground storage tanks")
+  "EJ: NPL", 
+  "EJ: RMP", 
+  "EJ: TSDF", 
+  "EJ: NPDES", 
+  "EJ: UST")
 
+names_ej_supp <- paste0(names_ej, '.supp')
+names_ej_supp_friendly <- gsub("EJ", "Supp. EJ", names_ej_friendly)
+
+# not sure I need or will use these, and whether named the same categories in map_headernames:
+names_ej_pctile_friendly <- names_ej_friendly
+names_ej_state_pctile_friendly <- names_ej_friendly
+names_ej_supp_pctile_friendly <- names_ej_friendly
+names_ej_supp_state_pctile_friendly <- names_ej_friendly
+  
 ############################################################################## #
 
 # PERCENTILES ####
 
-names_d_pctile           <- paste0(      'pctile.', names_d)
-names_d_subgroups_pctile <- paste0(      'pctile.', names_d_subgroups) # newer
-names_e_pctile           <- paste0(      'pctile.', names_e)
-names_ej_pctile          <- paste0(      'pctile.', names_ej)
+names_d_pctile             <- paste0(      'pctile.', names_d)
+names_d_subgroups_pctile   <- paste0(      'pctile.', names_d_subgroups) # newer
+names_e_pctile             <- paste0(      'pctile.', names_e)
+names_ej_pctile            <- paste0(      'pctile.', names_ej)
+names_ej_supp_pctile       <- paste0(      'pctile.', names_ej_supp) # most recently added
 
-names_d_state_pctile     <- paste0('state.pctile.', names_d)
+names_d_state_pctile       <- paste0('state.pctile.', names_d)
 names_d_subgroups_state_pctile <- 
-                            paste0('state.pctile.', names_d_subgroups) # newer
-names_e_state_pctile     <- paste0('state.pctile.', names_e)
-names_ej_state_pctile    <- paste0('state.pctile.', names_ej)
+                              paste0('state.pctile.', names_d_subgroups) # newer
+names_e_state_pctile       <- paste0('state.pctile.', names_e)
+names_ej_state_pctile      <- paste0('state.pctile.', names_ej)
+names_ej_supp_state_pctile <- paste0('state.pctile.', names_ej_supp) # most recently added
 
-names_pctile <- c(
+names_pctile <- c( # usa pctiles
   names_d_pctile,
   names_d_subgroups_pctile,
   names_e_pctile,
-  names_ej_pctile
+  names_ej_pctile,
+  names_ej_supp_pctile
 )
 names_state_pctile <- c(
   gsub("pctile", "state.pctile", names_pctile)
@@ -180,6 +232,7 @@ names_state_pctile <- c(
 
 names_need_pctile <- gsub("pctile.", "", names_pctile)
 names_need_state_pctile <- gsub("state.pctile.", "", names_pctile)
+
 # varsneedpctiles <- c(names_e,  names_d, names_d_subgroups, names_ej)
 # varnames.us.pctile <- paste0('pctile.', varsneedpctiles)
 # varnames.state.pctile <- paste0('state.pctile.', varsneedpctiles)
@@ -194,9 +247,9 @@ names_e_avg <- paste0("avg.", names_e); names_e_state_avg <- paste0("state.avg."
 # names_e_med, names_e_state_med,
 # names_d_med, names_d_state_med,
 
-names_d_avg_friendly  <- paste0("US Avg for ",  names_d_friendly);  names_d_state_avg_friendly <- paste0("State Avg for ", names_d_friendly ) 
-names_d_subgroups_avg_friendly  <- paste0("US average for ", names_d_subgroups_friendly);  names_d_subgroups_state_avg_friendly <- paste0("State average for ", names_d_subgroups_friendly)
-names_e_avg_friendly  <- paste0("US Avg for ",  names_e_friendly);  names_e_state_avg_friendly <- paste0("State Avg for ", names_e_friendly)
+names_d_avg_friendly  <- paste0("US Avg ",  names_d_friendly);  names_d_state_avg_friendly <- paste0("State Avg ", names_d_friendly ) 
+names_d_subgroups_avg_friendly  <- paste0("US average ", names_d_subgroups_friendly);  names_d_subgroups_state_avg_friendly <- paste0("State average ", names_d_subgroups_friendly)
+names_e_avg_friendly  <- paste0("US Avg ",  names_e_friendly);  names_e_state_avg_friendly <- paste0("State Avg ", names_e_friendly)
 
 ############################################################################## #
 
@@ -288,8 +341,8 @@ namesoflistsofnames = c(
   'names_e_ratio_to_avg_friendly', 'names_e_ratio_to_state_avg_friendly',
   # names_e_med, names_e_state_med,  
   
-  'names_ej',   
-  'names_ej_friendly',
+  'names_ej',   # RAW SCORE
+  'names_ej_friendly',  # FRIENDLY (RAW) SCORE BUT CAN USE FOR PCTILE SINCE THAT IS THE ONLY THING REPORTED
   'names_ej_pctile',          'names_ej_state_pctile' ,
   # no friendly pctile names here
   
