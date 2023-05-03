@@ -1,6 +1,15 @@
+
+
+#  get_blockpoints_in_shape()  Was extremely slow as written as of 4/2023
+
+
 ##########################################
 # load packages/ data
 blockpoints_sf <- EJSCREENbatchdata::blockpoints_sf_make()
+# which just does this:
+  # blockpoints_sf <- EJAMblockdata::blockpoints |>
+  #  sf::st_as_sf(coords = c("lon", "lat"), crs= 4269) # Geodetic CRS:  NAD83
+
 # as .rda that took about 35 seconds to load, but only 5-10 seconds to create from EJAMblockdata::blockpoints like this.
 
 library(EJAM) # takes a long time to load if .onLoad is forcing immediate loading of blockpoints and blockwts 
@@ -53,6 +62,7 @@ mapview::mapview(outfast, alpha.regions = 0.5, alpha=1, layer="blocks_nearby" ) 
 # 2.7 sec for 50 @3.1
 # 5.2 sec for 100 @3.1 
 ################################## # 
+
 # > system.time({  # even just 2 sites, only 1 mile, takes 2 minutes
 #   +   outslow = get_blockpoints_in_shape(pts, addedbuffermiles =  rad)
 #   + })
