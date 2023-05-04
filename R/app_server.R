@@ -1355,9 +1355,9 @@ app_server <- function(input, output, session) {
     # --------------------------------------------------- #
     # cols_to_select <- names(data_processed)
     # friendly_names <- longnames???
-    cols_to_select <- c('siteid',  'pop', #'EJScreen Report', 'EJScreen Map', 'ACS Report', 'ECHO report',
+    cols_to_select <- c('siteid',  'pop', 'EJScreen Report', 'EJScreen Map', 'ACS Report', 'ECHO report',
                         EJAMbatch.summarizer::names_all)
-    friendly_names <- c('Site ID', 'Est. Population',  #'EJScreen Report', 'EJScreen Map', 'ACS Report', 'ECHO report',
+    friendly_names <- c('Site ID', 'Est. Population',  'EJScreen Report', 'EJScreen Map', 'ACS Report', 'ECHO report',
                         EJAMbatch.summarizer::names_all_friendly, 
                         'State', 'EPA Region', '# of indicators above 95% threshold')
     # --------------------------------------------------- #
@@ -1375,10 +1375,10 @@ app_server <- function(input, output, session) {
              ) %>%
       dplyr::select(dplyr::all_of(cols_to_select), ST)
     
-    # dt$`EJScreen Report` <- EJAMejscreenapi::url_linkify(dt$`EJScreen Report`, text = 'EJScreen Report')
-    # dt$`EJScreen Map` <- EJAMejscreenapi::url_linkify(dt$`EJScreen Map`, text = 'EJScreen Map')
-    # dt$`ACS Report` <- EJAMejscreenapi::url_linkify(dt$`ACS Report`, text = 'ACS Report')
-    
+    dt$`EJScreen Report` <- EJAMejscreenapi::url_linkify(dt$`EJScreen Report`, text = 'EJScreen Report')
+    dt$`EJScreen Map` <- EJAMejscreenapi::url_linkify(dt$`EJScreen Map`, text = 'EJScreen Map')
+    dt$`ACS Report` <- EJAMejscreenapi::url_linkify(dt$`ACS Report`, text = 'ACS Report')
+
     
     # dt_avg <- data_summarized()$rows[c('Average person','Average site'),] %>% 
     #   dplyr::mutate(siteid = c('Average person', 'Average site'), ST = NA,
