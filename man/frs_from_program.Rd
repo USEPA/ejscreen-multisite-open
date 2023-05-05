@@ -10,7 +10,7 @@ frs_from_program(program)
 \item{program}{vector of one or more EPA Program names used by FRS}
 }
 \value{
-relevant rows of the data.table called \link[EJAMfrsdata:frs]{EJAMfrsdata::frs}, which has column names that are
+relevant rows of the data.table called frs, which has column names that are
 "lat" "lon" "REGISTRY_ID" "PRIMARY_NAME" "NAICS" "PGM_SYS_ACRNMS"
 }
 \description{

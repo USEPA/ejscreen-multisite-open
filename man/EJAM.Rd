@@ -79,7 +79,7 @@ NAICS codes also can be selected by text search of industry names or by categori
 }\if{html}{\out{</div>}}
 \itemize{
 \item \strong{\code{\link[=frs_from_siteid]{frs_from_siteid()}}} takes REGISTRY_ID values and returns a data.table of site points.
-Relies on \strong{\link[EJAMfrsdata:frs]{EJAMfrsdata::frs}} data.table with columns REGISTRY_ID, lat, lon, etc.
+Relies on \strong{frs} data.table with columns REGISTRY_ID, lat, lon, etc.
 \item \strong{\code{\link[=frs_from_programid]{frs_from_programid()}}} takes EPA program-specific site ID values and returns a data.table of site points.
 Relies on \strong{\link[EJAMfrsdata:frs_by_programid]{EJAMfrsdata::frs_by_programid}} data.table with columns program, pgm_sys_id, REGISTRY_ID, lat, lon
 }
