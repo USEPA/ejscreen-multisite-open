@@ -31,7 +31,7 @@ map_facilities <- function(mypoints, rad = 3, highlight = FALSE, clustered) {#, 
   # print(head(mypoints))
   
   if (length(mypoints) != 0) {
-    isolate({ # do not redraw entire map and zoom out and reset location viewed just because radius changed?
+    #isolate({ # do not redraw entire map and zoom out and reset location viewed just because radius changed?
       
       #if(circle_type == 'circles'){
       mymap <- leaflet::leaflet(mypoints) %>% 
@@ -42,7 +42,8 @@ map_facilities <- function(mypoints, rad = 3, highlight = FALSE, clustered) {#, 
           color = circle_color, fillColor = circle_color, 
           fill = TRUE, weight = circleweight,
           group = 'circles',
-          popup = EJAMejscreenapi::popup_from_df(mypoints)
+          popup = popup_from_any(mypoints)
+          #popup = EJAMejscreenapi::popup_from_df(mypoints)
         ) %>% 
         addCircleMarkers(
           #radius = input$radius * meters_per_mile,
@@ -60,7 +61,7 @@ map_facilities <- function(mypoints, rad = 3, highlight = FALSE, clustered) {#, 
       ## return map
       mymap
       
-    })
+    #})
   } else {  # length(mypoints) == 0
     mymap <- leaflet() %>% 
       addTiles() %>% 

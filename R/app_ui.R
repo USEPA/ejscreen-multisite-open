@@ -447,9 +447,9 @@ app_ui  <- function(request) {
                    DT::DTOutput(outputId = 'view3_table', width = '100%')
                  ),
                  ## _output: Map 1 site selected from table ####
-                 # shinycssloaders::withSpinner(
-                 #   leaflet::leafletOutput(outputId = 'v3_sitemap')
-                 # ),
+                 shinycssloaders::withSpinner(
+                   leaflet::leafletOutput(outputId = 'v3_sitemap')
+                 ),
         ), # end Tabular results tab
         ######################################################################################################### #
         # ~ ####

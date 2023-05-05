@@ -416,7 +416,7 @@ app_server <- function(input, output, session) {
     ## don't draw map if > 5000 points are uploaded
     if(nrow(data_uploaded()) < max_pts){
       suppressMessages(
-        map_facilities(mypoints = as.data.frame(data_uploaded()), 
+        map_facilities(mypoints = data_uploaded(), #as.data.frame(data_uploaded()), 
                        rad = input$bt_rad_buff, 
                        highlight = input$an_map_clusters,
                        clustered = is_clustered())
@@ -752,7 +752,8 @@ app_server <- function(input, output, session) {
           fill = TRUE, weight = 4,
           group = 'circles',
           # next version should use something like EJAMejscreenapi::popup_from_ejscreen(), but with EJAM column names
-          popup = EJAMejscreenapi::popup_from_df(data_uploaded() %>% as.data.frame())
+          #popup = EJAMejscreenapi::popup_from_df(data_uploaded() %>% as.data.frame())
+          popup = popup_from_any(data_uploaded())
         )  %>%
         addCircleMarkers(
           radius = input$bt_rad_buff,
@@ -1363,7 +1364,7 @@ app_server <- function(input, output, session) {
                         EJAMbatch.summarizer::names_all)
     friendly_names <- c('Site ID', 'Est. Population',  'EJScreen Report', 'EJScreen Map', 'ACS Report', 'ECHO report',
                         EJAMbatch.summarizer::names_all_friendly, 
-                        'State', 'EPA Region', '# of indicators above 95% threshold')
+                        '# of indicators above 95% threshold', 'State', 'EPA Region')
     # --------------------------------------------------- #
     
     # dt_overall <- data_processed()$results_overall %>% 
@@ -1520,30 +1521,33 @@ app_server <- function(input, output, session) {
   # ~ ###  #
   # ______ MAP RESULTS ______ sites selected from site-by-site summary table ####
   
-  # data_sitemap <- reactiveVal(NULL)
-  # 
-  # observeEvent(input$view3_table_rows_selected,{
-  #   req(data_processed())
-  #   data_sitemap(data_uploaded()[input$view3_table_rows_selected,])
-  # })
-  # 
-  # output$v3_sitemap <- leaflet::renderLeaflet({
-  #   ## wait for row to be selected
-  #   ## note: summary rows are currently mapped but don't have a point location to map
-  #   validate(
-  #     need(!is.null(input$view3_table_rows_selected),
-  #          'Select a specific site in the table to see its location'
-  #     )
-  #   )
-  #   ## zoom in from original map to show single point (can zoom out and see others)
-  #   orig_leaf_map() %>% 
-  #     leaflet::setView(lng = data_sitemap()$lon, lat = data_sitemap()$lat, zoom = 8)
-  #   ## alternate: plot single point individually on map (cannot zoom out and see others)
-  #   # leaflet(data_sitemap()) %>%
-  #   #   setView(lat = data_sitemap()$lat, lng = data_sitemap()$lon, zoom = 13) %>%
-  #   #   addTiles() %>%
-  #   #   addCircles(radius = 1 *  meters_per_mile)
-  # })
+  data_sitemap <- reactiveVal(NULL)
+
+  observeEvent(input$view3_table_rows_selected,{
+    req(data_processed())
+    data_sitemap(data_uploaded()[input$view3_table_rows_selected,])
+  })
+  
+  output$v3_sitemap <- leaflet::renderLeaflet({
+    ## wait for row to be selected
+    ## note: summary rows are currently mapped but don't have a point location to map
+    validate(
+      need(!is.null(input$view3_table_rows_selected),
+           'Select a specific site in the table to see its location'
+      )
+    )
+    
+    ## zoom in from original map to show single point (can zoom out and see others)
+   
+    #orig_leaf_map() #%>%
+     # leaflet::setView(lng = data_sitemap()$lon, lat = data_sitemap()$lat, zoom = 8)
+    
+    ## alternate: plot single point individually on map (cannot zoom out and see others)
+     leaflet(data_sitemap()) %>%
+       setView(lat = data_sitemap()$lat, lng = data_sitemap()$lon, zoom = 13) %>%
+       addTiles() %>%
+       addCircles(radius = 1 *  meters_per_mile, popup = popup_from_any(data_sitemap()))
+  })
   #############################################################################  # 
   # ~ ####
   # ______ BARPLOT _____ ####
