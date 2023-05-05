@@ -169,9 +169,7 @@ toupper(c("as", "gu", "mp", "um", "vi", "us")) %in% proxistat::lookup.states$ST
 # TRUE TRUE TRUE TRUE TRUE TRUE
 
 
-# EJAMfrsdata package
-
-# library(EJAMfrsdata) # no info on states
+#   
 
 
 # ACSdownload package

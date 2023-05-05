@@ -32,7 +32,7 @@
   #  statestats.rda is about 1.3 MB, usastats.rda is about 28 KB
   data(blockpoints, package="EJAMblockdata"); cat('  Done loading blockpoints.\n')  
   data(blockwts,    package="EJAMblockdata"); cat('  Done loading blockwts.\n') 
-  # data(EJAMfrsdata::frs) # will be lazy loaded if/when needed
+  #frs # will be lazy loaded if/when needed
   
   } else {
     cat("Developers may want to modify the .onLoad() function, \n")

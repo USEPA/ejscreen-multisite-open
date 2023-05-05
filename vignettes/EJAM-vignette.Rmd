@@ -109,7 +109,6 @@ Essential packages only available on the [USEPA github](https://github.com/USEPA
 
 -   [EJAM](https://github.com/USEPA/EJAM#readme "github.com/USEPA/EJAM")
 -   [EJAMblockdata](https://github.com/USEPA/EJAMblockdata#readme "github.com/USEPA/EJAMblockdata#readme")
--   [EJAMfrsdata](https://github.com/USEPA/EJAMfrsdata#readme "github.com/USEPA/EJAMfrsdata")
 -   [EJAMejscreenapi](https://github.com/USEPA/EJAMejscreenapi#readme "github.com/USEPA/EJAMejscreenapi")
 -   [EJAMbatch.summarizer](https://github.com/USEPA/EJAMbatch.summarizer#readme "github.com/USEPA/EJAMbatch.summarizer")
 

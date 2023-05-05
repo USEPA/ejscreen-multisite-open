@@ -138,7 +138,7 @@ app_server <- function(input, output, session) {
     
     #include frs_is_valid verification check function, must have colname REGISTRY_ID
     if (frs_is_valid(read_frs)){
-      #converts registry id to character if not already in that class (EJAMfrsdata::frs registry ids are character)
+      #converts registry id to character if not already in that class ( frs registry ids are character)
       if(class(read_frs$REGISTRY_ID) != "character"){
         read_frs$REGISTRY_ID = as.character(read_frs$REGISTRY_ID)
       }
@@ -204,7 +204,7 @@ app_server <- function(input, output, session) {
         print(inputnaics)
         
         #merge user-selected NAICS with FRS facility location information
-        # sitepoints <- EJAMfrsdata::frs_by_naics[NAICS %like% inputnaics ,  ]
+        # sitepoints <- frs_by_naics[NAICS %like% inputnaics ,  ]
         
         #   2. GET FACILITY LAT/LON INFO FROM NAICS CODES  
         

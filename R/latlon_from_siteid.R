@@ -14,7 +14,7 @@
 latlon_from_siteid <- function(siteid) {
   if (missing(siteid)) {return(NULL)}
   frs[match(siteid, frs$REGISTRY_ID), ] # slower but retains order
-  # EJAMfrsdata::frs[REGISTRY_ID %in% siteid, ] # faster but lose sort order of input
+  
 }
 
 #' @export

@@ -1,6 +1,6 @@
 # Author: Parker Malek, Abt Associates
 # script for validating EJAM base datasets
-# Base datasets include EJAMblockdata::quaddata, EJAMfrsdata::frs, EJAMblockdata::blockwts, EJAM::blockgroupstats, EJAM::statestats,EJAM::usastats
+# Base datasets include EJAMblockdata::quaddata,  frs, EJAMblockdata::blockwts, EJAM::blockgroupstats, EJAM::statestats,EJAM::usastats
 
 
 #EJAMblockdata::quaddata
@@ -21,23 +21,23 @@ localtree <- SearchTrees::createTree(
 expected_columns_quad <- c("BLOCK_X","BLOCK_Z","BLOCK_Y","blockid")
 
 if(any(colnames(EJAMblockdata::quaddata) != expected_columns_quad)){
-  print(paste0("Unexpected columns ",expected_columns_quad[colnames(EJAMfrsdata::quaddata) != expected_columns_quad]))
+  print(paste0("Unexpected columns ", expected_columns_quad[colnames(EJAMblockdata::quaddata) != expected_columns_quad]))
 } else {
-  print("Expected columns exist for EJAMfrsdata::quaddata)")
+  print("Expected columns exist for EJAMblockdata::quaddata)")
 }
 
 
 
-#EJAMfrsdata::frs
+ #frs
 
 #Used to link frs with lat/lons for processing
 
 expected_columns_frs <- c("lat","lon","REGISTRY_ID","PRIMARY_NAME","NAICS","PGM_SYS_ACRNMS")
 
-if(any(colnames(EJAMfrsdata::frs) != expected_columns_frs)){
-  print(paste0("Unexpected columns ",expected_columns_frs[colnames(EJAMfrsdata::frs) != expected_columns_frs]))
+if(any(colnames( frs) != expected_columns_frs)){
+  print(paste0("Unexpected columns ",expected_columns_frs[colnames( frs) != expected_columns_frs]))
 } else {
-  print("Expected columns exist for EJAMfrsdata::frs)")
+  print("Expected columns exist for  frs)")
 }
 
 

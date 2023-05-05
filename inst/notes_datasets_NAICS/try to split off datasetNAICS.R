@@ -6,7 +6,7 @@ if (FALSE) {
   
 #  and this was work in progress to possibly move it to a separate function
 #  but that would require passing all these tables as parameters
-#  or assuming they are in memory, like via library(EJAMfrsdata) or whatever dataset is needed here.
+#  or assuming they are in memory,  whatever dataset is needed here.
 # \preformatted{
 #     To pass all the reactives as parameters, you would do this:
 # 
@@ -43,7 +43,7 @@ datasetNAICS <- function(selectIndustry1_byNAICS, selectIndustry2_by_selectInput
   # Dataset of FRS sites and NAICS in long format (used to be facdata.rdata)
   ################################################################## #
   
-  mytest <- EJAMfrsdata::frs_naics_2022 # EJAMfrsdata::facilities
+  mytest <-  frs_naics_2022  
   mytest$cnaics <- as.character(mytest$NAICS) # was stored as factor w/ 22 levels
   
   sub2 <- data.table::data.table(a = numeric(0), b = character(0))
