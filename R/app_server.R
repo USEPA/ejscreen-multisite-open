@@ -2,7 +2,7 @@
 #' 
 #' @param input,output,session Internal parameters for {shiny}.
 #'     DO NOT REMOVE.
-#' @import shiny
+#' @rawNamespace import(shiny, except=c(dataTableOutput, renderDataTable))
 #' @import DT
 #' @import data.table
 #' @importFrom data.table ":="
@@ -510,8 +510,17 @@ app_server <- function(input, output, session) {
     # duplicated almost exactly in ejamit() but reactives are not reactives there
     # maybe use url_4table() - see ejamit() code
     
-    if ("REGISTRY_ID" %in% names(out$results_bysite)) {
-      echolink = url_echo_facility_webpage(REGISTRY_ID, as_html = FALSE)
+    #if ("REGISTRY_ID" %in% names(out$results_bysite)) {
+    # echolink = url_echo_facility_webpage(out$results_bysite$REGISTRY_ID, as_html = FALSE)
+    #} else {
+    # echolink = url_echo_facility_webpage(out$results_bysite$REGISTRY_ID, as_html = FALSE)
+    #}
+    ## the registry ID column is only found in uploaded ECHO/FRS/NAICS data -
+    ## it is not passed to doaggregate output at this point, so pull the column from upload to create URLS
+    if("REGISTRY_ID" %in% names(data_uploaded())){
+      echolink = url_echo_facility_webpage(data_uploaded()$REGISTRY_ID, as_html = FALSE)
+    } else if("RegistryID" %in% names(data_uploaded())){
+      echolink = url_echo_facility_webpage(data_uploaded()$RegistryID, as_html = FALSE)
     } else {
       echolink = rep(NA,nrow(out$results_bysite))
     }
@@ -519,29 +528,23 @@ app_server <- function(input, output, session) {
       `EJScreen Report` = url_ejscreen_report(    lat = data_uploaded()$lat, lon = data_uploaded()$lon, distance = input$bt_rad_buff, as_html = FALSE), 
       `EJScreen Map`    = url_ejscreenmap(        lat = data_uploaded()$lat, lon = data_uploaded()$lon,                               as_html = FALSE), 
       `ACS Report`      = url_ejscreen_acs_report(lat = data_uploaded()$lat, lon = data_uploaded()$lon, distance = input$bt_rad_buff, as_html = FALSE),
-      `ECHO report` = echolink#,
-      # `EJScreen Report 2` = url_ejscreen_report(    lat = data_uploaded()$lat, lon = data_uploaded()$lon, distance = input$bt_rad_buff, as_html = TRUE), 
-      # `EJScreen Map 2`    = url_ejscreenmap(        lat = data_uploaded()$lat, lon = data_uploaded()$lon,                               as_html = TRUE), 
-      # `ACS Report 2`      = url_ejscreen_acs_report(lat = data_uploaded()$lat, lon = data_uploaded()$lon, distance = input$bt_rad_buff, as_html = TRUE)
+      `ECHO report` = echolink
     )]
-    out$results_overall[ , `:=`(
-      `EJScreen Report` = NA, 
-      `EJScreen Map`    = NA, 
-      `ACS Report`      = NA,
-      `ECHO report`     = NA
-    )]
+    # out$results_overall[ , `:=`(
+    #   `EJScreen Report` = NA, 
+    #   `EJScreen Map`    = NA, 
+    #   `ACS Report`      = NA,
+    #   `ECHO report`     = NA
+    # )]
     newcolnames <- c(
       "EJScreen Report", 
       "EJScreen Map", 
       "ACS Report", 
-      "ECHO report"#,
-      # "EJScreen Report 2",
-      # "EJScreen Map 2",
-      # "ACS Report 2")
+      "ECHO report"
     )
     # put those up front as first columns
     setcolorder(out$results_bysite, neworder = newcolnames)
-    setcolorder(out$results_bysite, neworder = newcolnames)
+    #setcolorder(out$results_bysite, neworder = newcolnames)
     out$longnames <- c(newcolnames, out$longnames)
     
     #############################################################################  # 
@@ -1136,7 +1139,8 @@ app_server <- function(input, output, session) {
   output$rendered_summary_report <- renderUI({
    HTML(
       includeHTML(
-        rmarkdown::render(app_sys('report','brief_summary.Rmd'), 
+        rmarkdown::render(app_sys('report','brief_summary.Rmd'),
+                          output_dir = tempdir(),
                           params = summary_report_params())
       )
    )
@@ -1378,7 +1382,8 @@ app_server <- function(input, output, session) {
     dt$`EJScreen Report` <- EJAMejscreenapi::url_linkify(dt$`EJScreen Report`, text = 'EJScreen Report')
     dt$`EJScreen Map` <- EJAMejscreenapi::url_linkify(dt$`EJScreen Map`, text = 'EJScreen Map')
     dt$`ACS Report` <- EJAMejscreenapi::url_linkify(dt$`ACS Report`, text = 'ACS Report')
-
+    dt$`ECHO report` <- ifelse(!is.na(dt$`ECHO report`), EJAMejscreenapi::url_linkify(dt$`ECHO report`, text = 'ECHO Report'), 
+                                      'N/A')
     
     # dt_avg <- data_summarized()$rows[c('Average person','Average site'),] %>% 
     #   dplyr::mutate(siteid = c('Average person', 'Average site'), ST = NA,
@@ -1477,8 +1482,8 @@ app_server <- function(input, output, session) {
       # longnames_TEST <- EJAMejscreenapi::map_headernames$longname_tableheader[match(names(data_processed()$results_bysite),
       # EJAMejscreenapi::map_headernames$newnames_ejscreenapi)]
       longnames <- data_processed()$longnames
-      
-      names(table_overall) <- ifelse(!is.na(longnames), longnames, names(table_overall))
+      longnames_no_url <- setdiff(longnames, c('EJScreen Report','EJScreen Map','ACS Report','ECHO report'))
+      names(table_overall) <- ifelse(!is.na(longnames_no_url), longnames_no_url, names(table_overall))
       names(table_bysite)  <- ifelse(!is.na(longnames), longnames, names(table_bysite))
       # table_summarized
       # names(table_bybg_people) # CANNOT REALLY TREAT THIS THE SAME - HAS DIFFERENT LIST OF INDICATORS THAN THE OTHER TABLES
@@ -1500,8 +1505,11 @@ app_server <- function(input, output, session) {
       
       ## add v1_summary_plot() to 'plot' sheet of Excel download
       ## will be moved to eventual merged 'xls_formatting' function
-      ggsave(filename = paste0(tempdir(), '/', 'summary_plot.png'), plot = v1_summary_plot())
-      openxlsx::insertImage(wb_out, sheet = 'plot', file = paste0(tempdir(), '/', 'summary_plot.png'))
+      ggsave(filename = paste0(tempdir(), '/', 'summary_plot.png'), plot = v1_summary_plot(),
+             height = 7, width = 9, units = 'in')
+      openxlsx::insertImage(wb_out, sheet = 'plot', 
+                            file = paste0(tempdir(), '/', 'summary_plot.png'),
+                            width = 9, height = 7)
       
       ## save file and return for downloading
       openxlsx::saveWorkbook(wb_out, fname)

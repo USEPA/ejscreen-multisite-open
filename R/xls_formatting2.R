@@ -51,7 +51,11 @@ xls_formatting2 <- function(overall, eachsite, graycolnums=NULL, narrowcolnums=N
     class(eachsite$`ACS Report`) <- "hyperlink"
     
   }
-  #class(eachsite$`ECHO report`) <- "hyperlink" 
+  
+  if('ECHO report' %in% names(eachsite)){
+    class(eachsite$`ECHO report`) <- "hyperlink" 
+  }
+
   
   #  also  can use  tableStyle = "TableStyleLight2" for example
   
