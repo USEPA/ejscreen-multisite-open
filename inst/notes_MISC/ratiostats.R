@@ -1,7 +1,7 @@
 #' ratiostats - not used - depends on ejanalysis package
 #' Comparison of Indicator scores for Average person in each Demog Group
 #' @param results_bybg_people data.table from  doaggregate()[,"results_bybg_people"]
-#' @param pts e.g.,  pts <- EJAMfrsdata::frs[sample(1:nrow(EJAMfrsdata::frs), 1e3),]
+#' @param pts e.g.,  pts <-  frs[sample(1:nrow( frs), 1e3),]
 #' @param dig digits to round to
 ratiostats <- function(results_bybg_people, pts, dig=2 ) {
   
@@ -44,7 +44,7 @@ ratiostats <- function(results_bybg_people, pts, dig=2 ) {
   # library(EJAMfrsdata)
   # library(EJAMblockdata
   #         
-  # pts <- EJAMfrsdata::frs[sample(1:nrow(EJAMfrsdata::frs), 1e3),]
+  # pts <-  frs[sample(1:nrow( frs), 1e3),]
   
   
   # > dimnames(r2) when 1st created:

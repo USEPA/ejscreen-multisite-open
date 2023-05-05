@@ -77,7 +77,7 @@
 #'         to be converted to sitepoints.
 #' 
 #'    - **[EJAM::frs_from_siteid()]** takes REGISTRY_ID values and returns a data.table of site points.
-#'      Relies on **[EJAMfrsdata::frs]** data.table with columns REGISTRY_ID, lat, lon, etc.
+#'      Relies on **frs** data.table with columns REGISTRY_ID, lat, lon, etc.
 #'      
 #'    - **[EJAM::frs_from_programid()]** takes EPA program-specific site ID values and returns a data.table of site points.
 #'      Relies on **[EJAMfrsdata::frs_by_programid]** data.table with columns program, pgm_sys_id, REGISTRY_ID, lat, lon 
