@@ -41,7 +41,7 @@ ratiostats <- function(results_bybg_people, pts, dig=2 ) {
   # plot()
   
   # library(EJAM)
-  # library(EJAMfrsdata)
+  
   # library(EJAMblockdata
   #         
   # pts <-  frs[sample(1:nrow( frs), 1e3),]

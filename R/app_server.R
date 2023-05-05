@@ -204,7 +204,7 @@ app_server <- function(input, output, session) {
         print(inputnaics)
         
         #merge user-selected NAICS with FRS facility location information
-        # sitepoints <- EJAMfrsdata::frs_by_naics[NAICS %like% inputnaics ,  ]
+        # sitepoints <- frs_by_naics[NAICS %like% inputnaics ,  ]
         
         #   2. GET FACILITY LAT/LON INFO FROM NAICS CODES  
         

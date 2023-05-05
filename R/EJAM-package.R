@@ -63,7 +63,7 @@
 #'         to be converted to sitepoints.
 #' 
 #'    - **[EJAM::latlon_from_naics()]** takes NAICS codes and returns a data.table of site points.
-#'      Relies on **[EJAMfrsdata::frs_by_naics].rda**  A data.table, needed to get lat lon by naics. 
+#'      Relies on ** frs_by_naics.rda**  A data.table, needed to get lat lon by naics. 
 #'      Need to update FRS data used here regularly, ideally frequently.
 #'      2023 version has columns   REGISTRY_ID,  NAICS, lat, lon
 #'      
@@ -76,11 +76,11 @@
 #'         Interface returns a list of REGISTRY_ID values from a copy of the EPA facility registry service (FRS) data  
 #'         to be converted to sitepoints.
 #' 
-#'    - **[EJAM::frs_from_siteid()]** takes REGISTRY_ID values and returns a data.table of site points.
+#'    - **[frs_from_siteid()]** takes REGISTRY_ID values and returns a data.table of site points.
 #'      Relies on **frs** data.table with columns REGISTRY_ID, lat, lon, etc.
 #'      
 #'    - **[EJAM::frs_from_programid()]** takes EPA program-specific site ID values and returns a data.table of site points.
-#'      Relies on **[EJAMfrsdata::frs_by_programid]** data.table with columns program, pgm_sys_id, REGISTRY_ID, lat, lon 
+#'      Relies on **[frs_by_programid]** data.table with columns program, pgm_sys_id, REGISTRY_ID, lat, lon 
 #'      
 #' 
 #'  **3. BY LAT/LON POINT:**

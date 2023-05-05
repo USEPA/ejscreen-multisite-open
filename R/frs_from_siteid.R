@@ -4,7 +4,6 @@
 #' @aliases [frs_from_regid()]
 #' @return relevant rows of the data.table called frs, which has column names that are
 #'   "lat" "lon" "REGISTRY_ID" "PRIMARY_NAME" "NAICS" "PGM_SYS_ACRNMS"
-#' @import EJAMfrsdata
 #' @export
 #'
 #' @examples frs_from_siteid(testids_registry_id)
@@ -25,7 +24,6 @@ frs_from_regid = frs_from_siteid
 #' @param siteid vector of one or more EPA Program ID codes used by FRS 
 #' @return relevant rows of the data.table called frs, which has column names that are
 #'   "lat" "lon" "REGISTRY_ID" "PRIMARY_NAME" "NAICS" "PGM_SYS_ACRNMS"
-#' @import EJAMfrsdata
 #' @examples x=frs_from_programid(testids_program_sys_id)
 #'   x
 #'   mapfast(x)
@@ -43,7 +41,6 @@ frs_from_programid <- function(programid) {
 #' @param program vector of one or more EPA Program names used by FRS 
 #' @return relevant rows of the data.table called frs, which has column names that are
 #'   "lat" "lon" "REGISTRY_ID" "PRIMARY_NAME" "NAICS" "PGM_SYS_ACRNMS"
-#' @import EJAMfrsdata
 #' @examples  
 #'     mapfast(latlon_from_program("CAMDBS"))
 #'     #p1="TRIS"; p2="EIS"; 

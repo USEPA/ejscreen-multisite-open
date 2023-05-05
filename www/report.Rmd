@@ -986,7 +986,6 @@ pandoc is used for citations instead of `natbib`.
 # <!--     R (>= 2.10),  -->
 # <!--     shiny (>= 1.7.2), -->
 # <!--     EJAMblockdata, -->
-# <!--     EJAMfrsdata, -->
 # <!--     EJAMbatch.summarizer, -->
 # <!--     EJAMejscreenapi -->
 # <!-- Imports: -->
@@ -1020,7 +1019,6 @@ pandoc is used for citations instead of `natbib`.
 # <!--   data.table -->
 # <!-- Remotes:  -->
 # <!--     github::USEPA/EJAMblockdata, -->
-# <!--     github::USEPA/EJAMfrsdata, -->
 # <!--     github::USEPA/EJAMejscreenapi, -->
 # <!--     github::USEPA/EJAMbatch.summarizer, -->
 # <!--     github::USEPA/EJAMejscreendata -->

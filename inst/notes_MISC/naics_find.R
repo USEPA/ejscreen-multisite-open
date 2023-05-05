@@ -43,11 +43,11 @@
 #'  naics_find("asdfasdf", add_children = FALSE) 
 #'  
 #'   frs[ frs$REGISTRY_ID %in% unlist(
-#'    EJAMfrsdata::siteid_from_naics(
+#'     siteid_from_naics(
 #'      EJAM::naics_find("pulp", add_children = TRUE))[,"REGISTRY_ID"]), 1:5]
 #'    
 #'  EJAMejscreenapi::mapfast( frs[ frs$REGISTRY_ID %in% unlist(
-#'    EJAMfrsdata::siteid_from_naics(EJAM::naics_find("pulp"))[,"REGISTRY_ID"]),   ])
+#'    siteid_from_naics(EJAM::naics_find("pulp"))[,"REGISTRY_ID"]),   ])
 #'    
 #'   naics_find(211, exactnumber=TRUE)
 #'   naics_find(211, exactnumber=TRUE, add_children = TRUE)

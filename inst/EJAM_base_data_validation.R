@@ -21,9 +21,9 @@ localtree <- SearchTrees::createTree(
 expected_columns_quad <- c("BLOCK_X","BLOCK_Z","BLOCK_Y","blockid")
 
 if(any(colnames(EJAMblockdata::quaddata) != expected_columns_quad)){
-  print(paste0("Unexpected columns ",expected_columns_quad[colnames(EJAMfrsdata::quaddata) != expected_columns_quad]))
+  print(paste0("Unexpected columns ", expected_columns_quad[colnames(EJAMblockdata::quaddata) != expected_columns_quad]))
 } else {
-  print("Expected columns exist for EJAMfrsdata::quaddata)")
+  print("Expected columns exist for EJAMblockdata::quaddata)")
 }
 
 

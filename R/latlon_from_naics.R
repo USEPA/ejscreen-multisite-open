@@ -6,7 +6,7 @@
 #'   Also, this function does not find the sites 
 #'   identified by FRS data as being in a child NAICS (subcategory of your exact query)!
 #'   
-#'   Relies on EJAMfrsdata::frs_by_naics (a data.table)
+#'   Relies on  frs_by_naics (a data.table)
 #'   
 #'   See info about NAICS industry codes at <https://www.naics.com/search>
 #' @param naics a vector of naics codes, or 
@@ -26,9 +26,9 @@ latlon_from_naics <- function(naics, id_only=FALSE) {
   if (is.data.table(naics) & "code" %in% names(naics)) {naics <- naics$code} # flexible in case it was given output of EJAM::naics_from_any() which is a table not just code
   
   if (id_only) {
-    return(EJAMfrsdata::frs_by_naics[NAICS %in% naics, REGISTRY_ID])
+    return(frs_by_naics[NAICS %in% naics, REGISTRY_ID])
   } else {
-    return(EJAMfrsdata::frs_by_naics[NAICS %in% naics, ])
+    return(frs_by_naics[NAICS %in% naics, ])
   }
 }
 

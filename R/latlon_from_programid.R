@@ -23,5 +23,5 @@
 latlon_from_programid <- function(programid) {
   if (missing(programid)) {return(NULL)}
   frs_by_programid[match(programid, frs_by_programid$pgm_sys_id), ] # slower but retains order
-  # EJAMfrsdata::frs_by_programid[pgm_sys_id %in% programid, ] # faster but lose sort order of input
+  #  frs_by_programid[pgm_sys_id %in% programid, ] # faster but lose sort order of input
 }

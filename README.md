@@ -79,8 +79,7 @@ product or activity by EPA or the United States Government.
     [USEPA/EJAM](https://github.com/USEPA/EJAM#readme "https://github.com/USEPA/EJAM#readme")
     and it relies on
     [EJAMblockdata](https://github.com/USEPA/EJAMblockdata#readme "https://github.com/USEPA/EJAMblockdata#readme")
-    and
-    [EJAMfrsdata](https://github.com/USEPA/EJAMfrsdata#readme "https://github.com/USEPA/EJAMfrsdata#readme")
+    
 
 -   OW’s EJSCREENbatch package repo: [OW’s
     EJSCREENbatch](https://github.com/USEPA/EJSCREENBatch#readme)
