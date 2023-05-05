@@ -123,7 +123,8 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL,
   if (is.null(popmeancols)) {
     popmeancols <- unique(c(
       names_e,
-      names_ej 
+      names_ej  ### but,
+      # ** verify that we want and are using the popwtd mean of PERCENTILES in the case of the EJ Index, unlike Envt or Demog!!
     ))
   }
   # "lowlifex"??   # new, not completely sure it should be via popwtd mean, or calculated via formula actually.
@@ -433,7 +434,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL,
   
   #   Remember that. . .
   # countcols     # like population count, add up within a buffer
-  # popmeancols    # we want average persons raw score,  for Environmental and EJ indexes
+  # popmeancols    # we want average persons raw score,  for Environmental (but maybe avg PERCENTILE for EJ indexes ??)
   # calculatedcols  # use formulas for these, like  sum of counts of lowincome divided by sum of counts of those with known poverty ratio (universe)
   countcols_inbgstats      <- intersect(countcols,      names(blockgroupstats))
   popmeancols_inbgstats    <- intersect(popmeancols,    names(blockgroupstats))
@@ -663,6 +664,9 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL,
     # # supplemental demographic index = (% low-income + % unemployed + % less than high school education + % limited English speaking + low life expectancy) / 5 
     # For block groups where low life expectancy data is missing, the formula will average the other four factors! 
     # Demog.Index.Supp = (pctlowinc + pctunemployed + pctlths + pctlingiso + lowlifex ) / ifelse(lowlifex == 0, 4, 5) # where is lowlifex available?
+    # NOTE THAT EJScreen uses the term "Supplemental Indexes" to refer to 
+    #  EJ Indexes that are based on the Supplemental Demographic Index
+    # See details at  https://www.epa.gov/ejscreen/ejscreen-map-descriptions#supp 
   )]
   
   results_bysite[ , `:=`(

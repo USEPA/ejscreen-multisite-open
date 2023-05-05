@@ -10,20 +10,27 @@ Try using the app (basic steps seem sluggish like maps, short report, knitting, 
 
 **2 - Identify/prioritize slow, key lines of code.**
 
-Do profiling of bottlenecks, before optimizing code - find out what steps are slow.
- Can use EJAM::speedtest(c(10,100), radii=c(1,5)) 
-  for benchmarking ejamit() or getblocksnearby() and doaggregate()  or more simply something like:
-   system.time({  x1=getblocksnearby(testpoints_1000,1);  save(x1,file = 'x1.rda');rm(x1)})
-   system.time({  x3=getblocksnearby(testpoints_1000,3);  save(x3,file = 'x3.rda');rm(x3)})
-   system.time({  x6=getblocksnearby(testpoints_1000,6);  save(x6,file = 'x6.rda');rm(x6)})
-   speedseen_all <- speedtest(
-       n = c(100,500, 1000,5000), 
-        radii=c(1, 3.106856, 5, 10),logging=TRUE)
-     
-Profile overall, then closer look at key functions. See http://adv-r.had.co.nz/Profiling.html#improve-perf  and consider profvis, microbenchmark, etc. See getblocksnearby() and especially doaggregate() in particular. e.g., the one line of code in doaggregate() that does this: sites2blocks_overall <-  is very slow.  
-also see on unit testing: https://www.r-bloggers.com/2023/04/unit-testing-analytics-code/
-optimizing percentiles function that looks up what percentile each raw indicator score is in doaggregate() (IT IS SLOW)
+ Do profiling of bottlenecks, before optimizing code - find out what key functions or steps are slow. 
+ Mostly see getblocksnearby() and especially doaggregate() in particular. 
+ e.g., in doaggregate(), the 1 line of code that does this:  sites2blocks_overall <-  is very slow.  
+ e.g., in doaggregate(), optimizing percentiles function that looks up what percentile each raw indicator score   (IT IS SLOW)
 
+ See http://adv-r.had.co.nz/Profiling.html#improve-perf   
+ Also see on unit testing: https://www.r-bloggers.com/2023/04/unit-testing-analytics-code/
+
+ - ***simplest way, but not consistent timing, is to use system.time({}) ***
+ - ***that is wrapped in speedtest() which automates checking sensitivity to multiple distances and counts of points***
+  but it still relies on system.time() which gives a different answer each time and is not perfect.
+  
+   speedseen_all <- EJAM::speedtest(
+       n = c(100,500, 1000,5000), 
+       radii = c(1, 3.106856, 5, 10), logging = TRUE
+       )
+
+ - ***use profvis::profvis() which is better but does not automate checking sensitivity to multiple distances and counts of points***
+  Better details on which steps are slow /to profile overall groups of functions.
+
+ - ***use microbenchmark::microbenchmark() only to check/compare timing of tiny pieces of function code***
 
 
 **3 - Optimize code and app - see ideas below.**
