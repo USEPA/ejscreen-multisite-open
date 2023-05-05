@@ -239,12 +239,12 @@ Figure \ref{fig1} shows a map of the sites analyzed.
 # browser() 
 print(params$testmode) 
 # if (file.exists(params$map_placeholder_png)) {
-#if (params$testmode) {
+if (params$testmode) {
   knitr::include_graphics(rel_path = TRUE, path = params$map_placeholder_png)
-#} else {
-#  params$map
+} else {
+  params$map
   #print( params$map )
-#}
+}
 
 # # did not work, not sure why:
 # if (!("map" %in% names(params))  ) {
@@ -379,11 +379,11 @@ Table 1 shows key results for the analysis of demographics in these locations. T
 
 ```{r demog_table, echo=FALSE, out.width='900px'}
 
-#if (params$testmode) {
+if (params$testmode) {
   knitr::include_graphics(rel_path = TRUE, path = params$demog_table_placeholder_png)
-#} else {
-#   params$demog_table
-#}
+} else {
+   params$demog_table
+}
 # 
 # if (any(is.na(params$demog_table)) | "NA" != (params$demog_table)) {
 # params$demog_table
@@ -426,11 +426,12 @@ discussion of plot goes here
 ## Data Viz 2-- Barplot
 
 ```{r barplot, echo=FALSE,  out.height='500px', out.width='800px'}
-#if (params$testmode) {
+if (params$testmode) {
   knitr::include_graphics(rel_path = TRUE, path = params$barplot_placeholder_png)
-#} else {
+} else {
+  params$barplot
 #print( params$barplot  )
-#}
+}
 
 # if ("NA" == (params$barplot)) {
 #  knitr::include_graphics(rel_path = TRUE, path = params$barplot_placeholder_png)
@@ -563,11 +564,11 @@ discussion of table here
 ## Data Table 2. Environmental Indicators
 
 ```{r envt_table, echo=FALSE, out.width='900px'}
-#if (params$testmode) {
+if (params$testmode) {
    knitr::include_graphics(rel_path = TRUE, path = params$envt_table_placeholder_png)
-#} else {
-#params$envt_table
-#}
+} else {
+  params$envt_table
+}
 # 
 # if ("NA" !=  (params$envt_table)) {
 # params$envt_table
@@ -1032,7 +1033,7 @@ pandoc is used for citations instead of `natbib`.
 
 ```
 
-```{r eval=params$testmode, message=FALSE, warning=FALSE, include=FALSE}
+```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
 # Developer notes on creating this document
 
 #### Developer notes on EJAM Tool Parameter Values

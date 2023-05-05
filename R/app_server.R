@@ -16,11 +16,11 @@
 #' @import SearchTrees
 #' @import shinyBS
 #' @import shinycssloaders
-#' @import shinyjs
+#' @importFrom shinyjs reset disable enable
 #' @import sf
 #' @import sp
 #' @import tidyverse
-#' @import magrittr
+#' @importFrom magrittr '%>%'
 #' @import tidyr
 #' @import dplyr
 #' 
@@ -705,15 +705,15 @@ app_server <- function(input, output, session) {
   })
   
   ## output: summary report map  
-  # output$quick_view_map <- leaflet::renderLeaflet({
-  #   req(data_uploaded())
-  #   
-  #   ## use separate report map
-  #   report_map()
-  #   
-  #   ## or can keep same map as on Site Selection tab
-  #   # orig_leaf_map()
-  # })
+  output$quick_view_map <- leaflet::renderLeaflet({
+    req(data_uploaded())
+
+    ## use separate report map
+    report_map()
+
+    ## or can keep same map as on Site Selection tab
+    # orig_leaf_map()
+  })
   
   ## update leaflet map when inputs change
   ## this is currently resetting map too often in response to checkbox
@@ -774,23 +774,23 @@ app_server <- function(input, output, session) {
   
   # #############################################################################  # 
   # ## *Header info on summary report ####
-  # output$view1_total_pop <- renderUI({
-  #   
-  #   req(data_processed())
-  #   
-  #   ## paste header information together
-  #   title_text <- paste0('<div style="font-weight: bold; font-size: 11pt; text-align: center;">',
-  #                        input$analysis_title, '<br>',
-  #                        'Residents within ', 
-  #                        #input$bt_rad_buff, ' ', input$radius_units, ' of any of the ', 
-  #                        input$bt_rad_buff, ' miles of any of the ',
-  #                        prettyNum( NROW(data_processed()$results_bysite), big.mark = ","), ' sites analyzed<br>',
-  #                        #    "in the xxx source category or sector<br>",
-  #                        'Estimated total population: ', prettyNum( total_pop(), big.mark = ","), '</div>'
-  #   )
-  #   ## return formatted HTML text
-  #   HTML(title_text)
-  # })
+  output$view1_total_pop <- renderUI({
+
+    req(data_processed())
+
+    ## paste header information together
+    title_text <- paste0('<div style="font-weight: bold; font-size: 11pt; text-align: center;">',
+                         input$analysis_title, '<br>',
+                         'Residents within ',
+                         #input$bt_rad_buff, ' ', input$radius_units, ' of any of the ',
+                         input$bt_rad_buff, ' miles of any of the ',
+                         prettyNum( NROW(data_processed()$results_bysite), big.mark = ","), ' sites analyzed<br>',
+                         #    "in the xxx source category or sector<br>",
+                         'Estimated total population: ', prettyNum( total_pop(), big.mark = ","), '</div>'
+    )
+    ## return formatted HTML text
+    HTML(title_text)
+  })
   
   ## * Total population count ####
   total_pop <- reactive({
@@ -849,9 +849,9 @@ app_server <- function(input, output, session) {
   })
   
   ## output: show table of indicators in view 1
-  # output$view1_demog_table <- gt::render_gt({
-  #   v1_demog_table()
-  # })
+  output$view1_demog_table <- gt::render_gt({
+    v1_demog_table()
+  })
   #############################################################################  # 
   ## *Environmental indicator table #### 
   
@@ -903,9 +903,9 @@ app_server <- function(input, output, session) {
   })
   
   ## output: show environmental indicator table
-  # output$view1_envt_table <- gt::render_gt({
-  #   v1_envt_table()
-  # })
+  output$view1_envt_table <- gt::render_gt({
+    v1_envt_table()
+  })
   #############################################################################  # 
   ## *BOXPLOTS/barplot? of demographic ratios vs US average ####
   
@@ -1094,7 +1094,7 @@ app_server <- function(input, output, session) {
         ## alternate color scheme
         # viridis::scale_fill_viridis(discrete = TRUE, alpha = 0.6) +
         
-        theme_bw() +
+        ggplot2::theme_bw() +
         theme(
           ## set font size of text
           text = ggplot2::element_text(size = 14),
@@ -1113,9 +1113,9 @@ app_server <- function(input, output, session) {
   })
   
   ## output: show box/barplot of indicator ratios in Summary Report # 
-  # output$view1_summary_plot <- renderPlot({
-  #   v1_summary_plot()
-  # })
+  output$view1_summary_plot <- renderPlot({
+    v1_summary_plot()
+  })
   #############################################################################  # 
   # ~--------------------------- ####
   # >>>>> SUMMARY REPORT DOWNLOAD ________ ####
@@ -1594,7 +1594,7 @@ app_server <- function(input, output, session) {
       dplyr::filter(Summary %in% mybarvars.sumstat)
     
     ## set ggplot theme elements for all versions of barplot
-    ggplot_theme_bar <- theme_bw() +
+    ggplot_theme_bar <- ggplot2::theme_bw() +
       theme(legend.position = 'top',
             axis.text = ggplot2::element_text(size = 16),
             axis.title = ggplot2::element_text(size = 16),
@@ -1911,7 +1911,7 @@ app_server <- function(input, output, session) {
       isolate({ # need someone to confirm this is needed/helpful and not a problem, to isolate this.
       
         params <- list(
-          testmode=TRUE,
+          testmode=FALSE,
           
           #------- WHERE was analyzed? (where/ what sector/zones/types of places)
           

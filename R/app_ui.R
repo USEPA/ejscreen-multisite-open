@@ -3,6 +3,7 @@
 #' @param request Internal parameter for `{shiny}`.
 #'     DO NOT REMOVE.
 #' @rawNamespace import(shiny, except=c(dataTableOutput, renderDataTable))
+#' @importFrom shinyjs useShinyjs extendShinyjs
 #' @noRd
 app_ui  <- function(request) {
   tagList(
@@ -353,6 +354,55 @@ app_ui  <- function(request) {
                  
                  br(), ## vertical space
                  
+                 ## show count of population among selected sites
+                 htmlOutput(outputId = 'view1_total_pop'),
+                 
+                 br(), ## vertical space
+                 
+                 ## _Table of demographics overall *********************************####
+                 
+                 shinycssloaders::withSpinner(
+                   gt::gt_output(outputId = 'view1_demog_table')
+                 ),
+                 
+                 br(), ## vertical space
+                 
+                 ## _Box/barplots demographics overall *********************************####
+                 
+                 fluidRow(
+                   column(
+                     12, 
+                     align = 'center',
+                     shinycssloaders::withSpinner(
+                       plotOutput(outputId = 'view1_summary_plot', width = '100%', height='700px')
+                     )
+                   )
+                 ),
+                 # ),
+                 
+                 br(), ## vertical space
+                 
+                
+                 ## _Map of sites for report *********************************####
+                 
+                 fluidRow(
+                   column(12,
+                          align = 'center',
+                          shinycssloaders::withSpinner(
+                            leaflet::leafletOutput('quick_view_map', width = '100%')
+                          )
+                   )
+                 ),
+                 
+                 br(), ## vertical space
+                 br(),
+                 
+                 ## _Table of environmental indicators overall *********************************####
+                 
+                 shinycssloaders::withSpinner(
+                   gt::gt_output(outputId = 'view1_envt_table')
+                 ),
+                 
                  ## button to trigger (re-)generation of summary report using eventReactive
                  ## otherwise, it will update when any of the inputs are changed
                  #actionButton('gen_summary_report', 'Generate Report'),
@@ -363,9 +413,9 @@ app_ui  <- function(request) {
                  #                     choices = c(State='state', National='usa')),
                  
                  ## display rendered report as HTML in the app
-                 shinycssloaders::withSpinner(
-                  uiOutput('rendered_summary_report')
-                 ),
+                 # shinycssloaders::withSpinner(
+                 #  uiOutput('rendered_summary_report')
+                 # ),
                  
                 
                  ## _button to download short report ####
