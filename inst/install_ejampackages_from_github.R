@@ -6,7 +6,7 @@ devtools::install_github('USEPA/EJAMbatch.summarizer', force=TRUE)
 
 devtools::install_github('USEPA/EJAMblockdata',        force=TRUE)
 
-devtools::install_github('USEPA/EJAMejscreendata',     force=TRUE)
+# devtools::install_github('USEPA/EJAMejscreendata',     force=TRUE)  # NOT USED?
 # 
 #  just get rid of dependency on USEPA/EJAMfrsdata
 
@@ -21,8 +21,7 @@ devtools::install_github('USEPA/EJAM',                 force=TRUE)
 
 
 
-# try to recreate it/resave it ?
-
+# Tried various ways to completely recreate it/resave it .
 # NONE OF THOSE WORKED SO I FINALLY MOVED frs.rda and frs.R to the EJAM package,
 # and updated all packages where they said EJAM frsdata :: frs to just say frs 
 # and will rebuild EJAM and EJAM frsdata pacakges.
