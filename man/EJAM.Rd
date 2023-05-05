@@ -64,7 +64,7 @@ The NAICS are 2-digit to 6-digit codes that specify sectors or types of faciliti
 }\if{html}{\out{</div>}}
 \itemize{
 \item \strong{\code{\link[=latlon_from_naics]{latlon_from_naics()}}} takes NAICS codes and returns a data.table of site points.
-Relies on \strong{\link[EJAMfrsdata:frs_by_naics]{EJAMfrsdata::frs_by_naics}.rda}  A data.table, needed to get lat lon by naics.
+Relies on ** frs_by_naics.rda**  A data.table, needed to get lat lon by naics.
 Need to update FRS data used here regularly, ideally frequently.
 2023 version has columns   REGISTRY_ID,  NAICS, lat, lon
 
@@ -81,7 +81,7 @@ NAICS codes also can be selected by text search of industry names or by categori
 \item \strong{\code{\link[=frs_from_siteid]{frs_from_siteid()}}} takes REGISTRY_ID values and returns a data.table of site points.
 Relies on \strong{frs} data.table with columns REGISTRY_ID, lat, lon, etc.
 \item \strong{\code{\link[=frs_from_programid]{frs_from_programid()}}} takes EPA program-specific site ID values and returns a data.table of site points.
-Relies on \strong{\link[EJAMfrsdata:frs_by_programid]{EJAMfrsdata::frs_by_programid}} data.table with columns program, pgm_sys_id, REGISTRY_ID, lat, lon
+Relies on \strong{\link{frs_by_programid}} data.table with columns program, pgm_sys_id, REGISTRY_ID, lat, lon
 }
 
 \strong{3. BY LAT/LON POINT:}

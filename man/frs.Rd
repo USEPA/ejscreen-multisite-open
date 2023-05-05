@@ -10,7 +10,7 @@ You can look up sites by REGISTRY_ID in \link{frs}, and get their location, etc.
 }
 \details{
 This dataset can be updated by a package maintainer by using
-EJAMfrsdata::frs_update_datasets() (which is not an exported function)
+frs_update_datasets() (which is not an exported function)
 
 The definitions of active/inactive here are not quite the
 same as used in ECHO, as of 5/2023.
@@ -45,5 +45,5 @@ frs_by_naics rows:           679,471
    }
 }
 \seealso{
-\link[EJAMfrsdata:frs_by_programid]{EJAMfrsdata::frs_by_programid}  \link[EJAMfrsdata:frs_by_naics]{EJAMfrsdata::frs_by_naics}
+frs_by_programid  frs_by_naics
 }

@@ -27,7 +27,7 @@ NOTE: many FRS sites lack NAICS code!
 Also, this function does not find the sites
 identified by FRS data as being in a child NAICS (subcategory of your exact query)!
 
-Relies on EJAMfrsdata::frs_by_naics (a data.table)
+Relies on  frs_by_naics (a data.table)
 
 See info about NAICS industry codes at \url{https://www.naics.com/search}
 }
