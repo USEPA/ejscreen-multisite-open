@@ -24,8 +24,8 @@ devtools::install_github('USEPA/EJAM',                 force=TRUE)
 # try to recreate it/resave it ?
 
 # NONE OF THOSE WORKED SO I FINALLY MOVED frs.rda and frs.R to the EJAM package,
-# and updated all packages where they said EJAMfrsdata::frs to just say frs 
-# and will rebuild EJAM and EJAMfrsdata pacakges.
+# and updated all packages where they said EJAM frsdata :: frs to just say frs 
+# and will rebuild EJAM and EJAM frsdata pacakges.
 
 rm(list=ls())
 
