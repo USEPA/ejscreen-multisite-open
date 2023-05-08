@@ -109,15 +109,8 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, cutoff=3, maxcutoff=31.07,
       unlist(c(x_low, z_low  )),         
       unlist(c(x_hi, coords[,FAC_Z]+truedistance))) # x and z things are now vectorized
     # *** FIX/CHECK: 
-    #    quadtree (localtree passed here as quadtree) 
-    # vs EJAMblockdata::blockquadtree  (can it be this way, or need to create it again for each session?)
-    # vs was just localtree from global env in clustered version of function
-    
-    
-    
-    
-    
-    tmp <- EJAMblockdata::quaddata[vec, ] 
+
+        tmp <- EJAMblockdata::quaddata[vec, ] 
     # x <- tmp[ , .(BLOCK_X, BLOCK_Y, BLOCK_Z)] # but not blockid ?? 
     # y <- sitepoints[i, c('FAC_X','FAC_Y','FAC_Z')]  # the similar clustered function uses something other than sitepoints here - why?
     ########################################################################### ## ** SLOW STEP TO OPTIMIZE 
@@ -141,10 +134,7 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, cutoff=3, maxcutoff=31.07,
       vec  <- SearchTrees::knnLookup(quadtree, unlist(c(coords[ , 'FAC_X'])), unlist(c(coords[ , 'FAC_Z'])), k=10)  
       
       # *** FIX/CHECK: 
-      #    quadtree (localtree passed here as quadtree) 
-      # vs EJAMblockdata::blockquadtree  (can it be this way, or need to create it again for each session?)
-      # vs was just localtree from global env in clustered version of function
-      tmp <- EJAMblockdata::quaddata[vec[1, ], ]
+       tmp <- EJAMblockdata::quaddata[vec[1, ], ]
       
       x <- tmp[, .(BLOCK_X, BLOCK_Y, BLOCK_Z)]
       y <- sitepoints[i, .(FAC_X, FAC_Y, FAC_Z)]

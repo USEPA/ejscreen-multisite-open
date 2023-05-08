@@ -99,7 +99,7 @@
 #'      
 #'   - **[getblocksnearby()](sitepoints)** which by default uses *[getblocksnearbyviaQuadTree()]*
 #'        Returns `sites2blocks` 
-#'        Requires datasets [quaddata] and [blockquadtree] 
+#'        Requires datasets [quaddata]  
 #'        
 #'   - **sites2blocks**   Created by [getblocksnearby()] and passed to  [doaggregate()]  
 #'      This is a data table with maybe 100k to 1m rows (assume 1k blocks within 3 miles of each site, or 100 blocks within 1 mile),
@@ -121,7 +121,6 @@
 #'      - blockid 
 #'      - BLOCK_X, BLOCK_Y, BLOCK_Z  (not lat, lon)
 #'  
-#'   - **[EJAMblockdata::blockquadtree].rda**  (may rename as blocktree) 
 #'   
 #'     Index to quaddata (QuadTree class, via SearchTrees pkg), not a data.table 
 #' 

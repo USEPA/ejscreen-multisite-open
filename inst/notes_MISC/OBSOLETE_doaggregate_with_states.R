@@ -27,7 +27,7 @@
 #'
 #'    - blockwts: data.table with these columns: blockid , bgid, blockwt
 #'
-#'    - quaddata, and blockquadtree: data.table and quad tree, for indexes of block points
+#'    - quaddata data.table used to create localtree, a quad tree index of block points
 #'      (and localtree that is created when package is loaded)
 #'
 #'    - EJAM::blockgroupstats - A data.table (such as EJSCREEN demographic and environmental data by blockgroup?)
