@@ -20,14 +20,14 @@ format_gt_table <- function(df, type, my_cell_color =  '#dce6f0', my_border_colo
         var_names = gt::md('**Selected Variables**'),
         value     = gt::md('**Value**'),
         
-        state_avg    = gt::md('**Average<br>in State**'),
-        state_pctile = gt::md('**Percentile<br>in State**'),
+        state_avg    = gt::md('**Average<br> in State**'),
+        state_pctile = gt::md('**Percentile<br> in State**'),
         
-        usa_avg    = gt::md('**Average<br>in USA**'),
-        usa_pctile = gt::md('**Percentile<br>in USA**'),
+        usa_avg    = gt::md('**Average<br> in USA**'),
+        usa_pctile = gt::md('**Percentile<br> in USA**'),
         
-        state_ratio = gt::md('**Ratio to<br>State Avg.**'),
-        usa_ratio =   gt::md('**Ratio to<br>USA Avg.**')
+        state_ratio = gt::md('**Ratio to<br> State Avg.**'),
+        usa_ratio =   gt::md('**Ratio to<br> USA Avg.**')
         
       )  %>% 
        ## add subgroup header
@@ -65,14 +65,14 @@ format_gt_table <- function(df, type, my_cell_color =  '#dce6f0', my_border_colo
         var_names = gt::md('**Selected Variables**'),
         value     = gt::md('**Value**'),
         
-        state_avg    = gt::md('**Average<br>in State**'),
-        state_pctile = gt::md('**Percentile<br>in State**'),
+        state_avg    = gt::md('**Average<br> in State**'),
+        state_pctile = gt::md('**Percentile<br> in State**'),
         
-        usa_avg    = gt::md('**Average<br>in USA**'),
-        usa_pctile = gt::md('**Percentile<br>in USA**'),
+        usa_avg    = gt::md('**Average<br> in USA**'),
+        usa_pctile = gt::md('**Percentile<br> in USA**'),
         
-        state_ratio = gt::md('**Ratio to<br>State Avg.**'),
-        usa_ratio =   gt::md('**Ratio to<br>USA Avg.**')
+        state_ratio = gt::md('**Ratio to<br> State Avg.**'),
+        usa_ratio =   gt::md('**Ratio to<br> USA Avg.**')
         
       ) %>% 
       ## format different decimal places for each indicator # should get pulled from 
