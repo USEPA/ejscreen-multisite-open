@@ -50,7 +50,8 @@ map_facilities <- function(mypoints, rad = 3, highlight = FALSE, clustered) {#, 
           radius = rad,
           color = circle_color, fillColor = circle_color, 
           fill = TRUE, weight = circleweight,
-          clusterOptions = markerClusterOptions()
+          clusterOptions = markerClusterOptions(),
+          popup = popup_from_any(mypoints)
           ## possible way to use circleMarkers - need conversion of meters to pixels so they scale properly
           #meters_per_px <- 156543.03392 * cos(mean(m$x$limits$lat) * pi/180) / m$x$options
         ) %>% 

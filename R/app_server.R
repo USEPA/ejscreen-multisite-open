@@ -760,7 +760,8 @@ app_server <- function(input, output, session) {
           color = circle_color, fillColor = circle_color,
           fill = TRUE, weight = 4,
           clusterOptions = markerClusterOptions(),
-          group = 'markers'
+          group = 'markers',
+          popup = popup_from_any(data_uploaded())
           #popup = EJAMejscreenapi::popup_from_df(data_uploaded())
         ) %>%
         ## show circleMarkers (aggregated) at zoom levels 1:6
