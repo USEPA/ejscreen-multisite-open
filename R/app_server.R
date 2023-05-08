@@ -1504,6 +1504,18 @@ app_server <- function(input, output, session) {
       # [3] "results_bybg_people"                 "longnames"                          
       # [5] "count_of_blocks_near_multiple_sites" "results_summarized"  
       
+      ## add analysis overview to 'notes' tab
+      notes_df <- data.frame(
+        'Analysis Title' = input$analysis_title,
+        'Number of Points Analyzed' = nrow(data_processed()$results_bysite),
+        'Radius of Circular Buffer (miles)' = input$bt_rad_buff,
+        check.names = FALSE
+      ) 
+      notes_df <- t(notes_df)
+
+      openxlsx::writeData(wb = wb_out, sheet = 'notes', x = notes_df, rowNames = TRUE, colNames = FALSE)
+      
+      
       ## add v1_summary_plot() to 'plot' sheet of Excel download
       ## will be moved to eventual merged 'xls_formatting' function
       ggsave(filename = paste0(tempdir(), '/', 'summary_plot.png'), plot = v1_summary_plot(),
