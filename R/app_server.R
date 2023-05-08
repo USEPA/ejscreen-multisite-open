@@ -88,16 +88,16 @@ app_server <- function(input, output, session) {
     ## if acceptable file type, read in; if not, send warning text
     ext <- switch(ext,
                   csv = data.table::fread(input$ss_upload_latlon$datapath),
-                  xls = read_excel(input$ss_upload_latlon$datapath),
-                  xlsx = read_excel(input$ss_upload_latlon$datapath),
+                  xls = read_excel(input$ss_upload_latlon$datapath) %>% data.table::as.data.table(),
+                  xlsx = read_excel(input$ss_upload_latlon$datapath)%>% data.table::as.data.table(),
                   shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
     )
     
     ## if column names are found in lat/long alias comparison, process
     if(any(tolower(colnames(ext)) %in% lat_alias) & any(tolower(colnames(ext)) %in% lon_alias)){
       ext %>% 
-        EJAM::latlon_df_clean() %>%   # This does latlon_infer() and latlon_as.numeric() and latlon_is.valid()
-        data.table::as.data.table()
+        EJAM::latlon_df_clean() #%>%   # This does latlon_infer() and latlon_as.numeric() and latlon_is.valid()
+        #data.table::as.data.table()
       
     } else {
       ## if not matched, show this message instead
@@ -242,9 +242,9 @@ app_server <- function(input, output, session) {
     
     ## if acceptable file type, read in; if not, send warning text
     ext <- switch(ext,
-                  csv =  read.csv(input$ss_upload_echo$datapath),
-                  xls = read_excel(input$ss_upload_echo$datapath),
-                  xlsx = read_excel(input$ss_upload_echo$datapath),
+                  csv =  data.table::fread(input$ss_upload_echo$datapath),
+                  xls = read_excel(input$ss_upload_echo$datapath) %>% data.table::as.data.table(),
+                  xlsx = read_excel(input$ss_upload_echo$datapath) %>% data.table::as.data.table(),
                   shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
     )
     
@@ -252,8 +252,8 @@ app_server <- function(input, output, session) {
     ## if column names are matched to aliases, process it    
     if(any(tolower(colnames(ext)) %in% lat_alias) & any(tolower(colnames(ext)) %in% lon_alias)){
       ext %>% 
-        EJAM::latlon_df_clean() %>% 
-        data.table::as.data.table()
+        EJAM::latlon_df_clean() #%>% 
+        #data.table::as.data.table()
     } else {
       ## if not matched, return this message
       shiny::validate('No coordinate columns found.')
