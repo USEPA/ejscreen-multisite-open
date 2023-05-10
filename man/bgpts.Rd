@@ -27,7 +27,7 @@ and where each bg is, which is useful for some situations.
             2 010950306002  6751877 16610261 34.31763 -86.34399
             
  # Now, for Census 2020 blocks, create pop wtd centroids lat lon for each block group #### 
- #  using EJAMblockdata::blockwts and EJAMblockdata::blockpoints
+ #  using EJAMblockdata blockwts and EJAMblockdata blockpoints
  
  bgpts_blocks <- copy(blockpoints) # not essential but ok to make sure we do not change blockpoints itself by reference in data.table operations
  # all.equal(bgpts$blockid , blockwts$blockid)
@@ -42,7 +42,7 @@ and where each bg is, which is useful for some situations.
  # setnames(bgpts, 'bgfips', 'FIPS')
  
  # BUT NOTE this census2020 block table has PR but lacks "AS" "GU" "MP" "VI" ####
- # > uniqueN(EJAMblockdata::blockid2fips[,substr(blockfips,1,2)])
+ # > uniqueN( blockid2fips[,substr(blockfips,1,2)])
  # [1] 52
  # length(unique(EJAMejscreendata::EJSCREEN_Full_with_AS_CNMI_GU_VI$ST_ABBREV))
  # [1] 56

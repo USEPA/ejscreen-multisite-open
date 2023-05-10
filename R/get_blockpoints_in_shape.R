@@ -30,7 +30,7 @@
 #'
 get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NULL, dissolved=FALSE, safety_margin_ratio=1.10) {
   if (!exists("blockpoints_sf")) {
-    stop("requires the blockpoints   called blockpoints_sf  you can make like this: \n blockpoints_sf <- EJAMblockdata::blockpoints |> sf::st_as_sf(coords = c('lon', 'lat'), crs= 4269) \n # Geodetic CRS:  NAD83 ")
+    stop("requires the blockpoints   called blockpoints_sf  you can make like this: \n blockpoints_sf <-  blockpoints |> sf::st_as_sf(coords = c('lon', 'lat'), crs= 4269) \n # Geodetic CRS:  NAD83 ")
   }
   
   # CHECK FORMAT OF polys - ensure it is spatial object (with data.frame/ attribute table? ) 

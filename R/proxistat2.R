@@ -69,8 +69,8 @@ proxistat2 <- function(pts, cutoff=8.04672, quadtree) {
   
   #  ADJUST DISTANCE USING A MINIMUM DISTANCE ####
   # BASED ON SIZE (AREA) OF BLOCK, as in EJScreen proximity scores
-  # proxistat::blockpoints_area_pop  has area in square meters, not yet added to EJAMblockdata::blockpoints
-  # > dim(EJAMblockdata::blockpoints)
+  # proxistat::blockpoints_area_pop  has area in square meters, not yet added to EJAMblockdata  blockpoints
+  # > dim( blockpoints)
   # [1] 8174955       3
   # > dim(blockpoints_area_pop)
   # [1] 8132968       6

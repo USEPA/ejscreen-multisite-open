@@ -99,7 +99,7 @@
 #'      
 #'   - **[getblocksnearby()](sitepoints)** which by default uses *[getblocksnearbyviaQuadTree()]*
 #'        Returns `sites2blocks` 
-#'        Requires datasets [quaddata] and [blockquadtree] 
+#'        Requires datasets [quaddata]  
 #'        
 #'   - **sites2blocks**   Created by [getblocksnearby()] and passed to  [doaggregate()]  
 #'      This is a data table with maybe 100k to 1m rows (assume 1k blocks within 3 miles of each site, or 100 blocks within 1 mile),
@@ -113,7 +113,7 @@
 #'          
 #' @details  # **Data files used for distance calculation:** ####################################################################
 #' 
-#'   - **[EJAMblockdata::quaddata].rda** dataset data.table
+#'   - ** quaddata.rda** dataset data.table
 #'   
 #'    8,174,955 rows when non-populated blocks are kept. 
 #'    5,806,512 rows have Census 2020 population (and blockwt) > 0. 
@@ -121,7 +121,6 @@
 #'      - blockid 
 #'      - BLOCK_X, BLOCK_Y, BLOCK_Z  (not lat, lon)
 #'  
-#'   - **[EJAMblockdata::blockquadtree].rda**  (may rename as blocktree) 
 #'   
 #'     Index to quaddata (QuadTree class, via SearchTrees pkg), not a data.table 
 #' 
@@ -135,7 +134,7 @@
 #'   
 #'   - **[doaggregate()]** = function(sites2blocks) This summarizes in each buffer and for all unique residents across all buffers.
 #'     
-#'   - **[EJAMblockdata::blockwts].rda**
+#'   - ** blockwts.rda**
 #'    Required by [doaggregate()]. A data.table of 6-8m rows 
 #'     - blockwt  The fraction of parent blockgroup decennial pop that is in this one block
 #'     - blockid (integer key  for join to sites2blocks)

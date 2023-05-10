@@ -23,7 +23,7 @@ getblocksnearby2(
 \item{avoidorphans}{see \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} or other such functions}
 
 \item{quadtree}{a large quadtree object created from the SearchTree package example:
-SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")}
+SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point")}
 
 \item{...}{see \code{\link[=getblocksnearbyviaQuadTree_Clustered]{getblocksnearbyviaQuadTree_Clustered()}} or other such functions}
 }

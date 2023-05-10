@@ -100,7 +100,7 @@ Columns are siteid, lat, lon; maybe 100 to 10k points
 \itemize{
 \item \strong{\href{sitepoints}{getblocksnearby()}} which by default uses \emph{\code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}}}
 Returns \code{sites2blocks}
-Requires datasets \link{quaddata} and \link{blockquadtree}
+Requires datasets \link{quaddata}
 \item \strong{sites2blocks}   Created by \code{\link[=getblocksnearby]{getblocksnearby()}} and passed to  \code{\link[=doaggregate]{doaggregate()}}
 This is a data table with maybe 100k to 1m rows (assume 1k blocks within 3 miles of each site, or 100 blocks within 1 mile),
 \verb{sites2blocks[ , .(siteid, blockid, distance or dist)]}
@@ -116,7 +116,7 @@ unless analysis is for residents within x miles of the edges of some shapes, lik
 
 \section{\strong{Data files used for distance calculation:}}{
 \itemize{
-\item \strong{\link[EJAMblockdata:quaddata]{EJAMblockdata::quaddata}.rda} dataset data.table
+\item ** quaddata.rda** dataset data.table
 }
 
 8,174,955 rows when non-populated blocks are kept.
@@ -124,11 +124,9 @@ unless analysis is for residents within x miles of the edges of some shapes, lik
 This is the largest file in the package, and is 168 MB as a file, for 2020 Census.
 - blockid
 - BLOCK_X, BLOCK_Y, BLOCK_Z  (not lat, lon)
-\itemize{
-\item \strong{\link[EJAMblockdata:blockquadtree]{EJAMblockdata::blockquadtree}.rda}  (may rename as blocktree)
 
-Index to quaddata (QuadTree class, via SearchTrees pkg), not a data.table
-}
+\if{html}{\out{<div class="sourceCode">}}\preformatted{Index to quaddata (QuadTree class, via SearchTrees pkg), not a data.table 
+}\if{html}{\out{</div>}}
 
 -------then those are used in getblocksnearby with some sitepoints to create sites2blocks:
 }
@@ -139,7 +137,7 @@ Index to quaddata (QuadTree class, via SearchTrees pkg), not a data.table
 }\if{html}{\out{</div>}}
 \itemize{
 \item \strong{\code{\link[=doaggregate]{doaggregate()}}} = function(sites2blocks) This summarizes in each buffer and for all unique residents across all buffers.
-\item \strong{\link[EJAMblockdata:blockwts]{EJAMblockdata::blockwts}.rda}
+\item ** blockwts.rda**
 Required by \code{\link[=doaggregate]{doaggregate()}}. A data.table of 6-8m rows
 \itemize{
 \item blockwt  The fraction of parent blockgroup decennial pop that is in this one block

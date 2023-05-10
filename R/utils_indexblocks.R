@@ -8,7 +8,7 @@
 indexblocks <- function () {
   assign(
     "localtree", 
-    SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point"), 
+    SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point"), 
     envir = globalenv()
     )
 }

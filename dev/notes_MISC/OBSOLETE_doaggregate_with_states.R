@@ -27,7 +27,7 @@
 #'
 #'    - blockwts: data.table with these columns: blockid , bgid, blockwt
 #'
-#'    - quaddata, and blockquadtree: data.table and quad tree, for indexes of block points
+#'    - quaddata data.table used to create localtree, a quad tree index of block points
 #'      (and localtree that is created when package is loaded)
 #'
 #'    - EJAM::blockgroupstats - A data.table (such as EJSCREEN demographic and environmental data by blockgroup?)
@@ -160,7 +160,7 @@ doaggregate_with_states <- function(sites2blocks, countcols=NULL, popmeancols=NU
     ## Get pop weights of nearby blocks ####
   # to know what fraction of each parent block group is considered inside the buffer
   # sites2blocks <- merge(sites2blocks, blockwts, by='blockid', all.x	=TRUE, all.y=FALSE) # incomparables=NA
-  sites2blocks <- EJAMblockdata::blockwts[sites2blocks, .(siteid,blockid,distance,blockwt,bgid), on='blockid']
+  sites2blocks <-  blockwts[sites2blocks, .(siteid,blockid,distance,blockwt,bgid), on='blockid']
   # note that this still has some blocks appearing more than once if near 2+ sites - each row has info on one site only
   # xyz
 
@@ -223,7 +223,7 @@ doaggregate_with_states <- function(sites2blocks, countcols=NULL, popmeancols=NU
   # sites2blocks_overall <- unique(sites2blocks, by=blockid)    # would keep all columns but only one nearby site would be kept for each block.
   # Slowest way, but could get all that explicitly maybe like specifying each as max or min
 
-  # done above: sites2blocks <- EJAMblockdata::blockwts[sites2blocks, .(siteid,blockid,distance,blockwt,bgid), on='blockid']
+  # done above: sites2blocks <-  blockwts[sites2blocks, .(siteid,blockid,distance,blockwt,bgid), on='blockid']
  
   sites2blocks_overall <- sites2blocks[, list(distance_min = min(distance_min), # it already has done this, actually
                                               sitecount_max = .N,
@@ -342,7 +342,7 @@ doaggregate_with_states <- function(sites2blocks, countcols=NULL, popmeancols=NU
   colnames(STATE_Ab) <- c("bgfips","ST")
 
   #merge for by site and overall
-  state_blfips  <- merge(EJAMblockdata::bgid2fips,
+  state_blfips  <- merge( bgid2fips,
                                                 STATE_Ab,
                                                 all.x = TRUE, all.y=FALSE, by='bgfips')
 

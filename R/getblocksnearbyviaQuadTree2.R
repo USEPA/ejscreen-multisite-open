@@ -26,13 +26,13 @@
 #'   so if TRUE, it keeps looking past cutoff to find nearest one within maxcutoff.
 #' @param quadtree (a pointer to the large quadtree object) 
 #'    created from the SearchTree package example:
-#'    SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
+#'    SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point")
 #'    Takes about 2-5 seconds to create this each time it is needed.
 #'    It can be automatically created when the package is loaded via the [.onLoad()] function 
 #' @param report_progress_every_n Reports progress to console after every n points,
 #'   mostly for testing, but a progress bar feature might be useful unless this is super fast.
 #' @examples 
-#'   localtree_example = SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
+#'   localtree_example = SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point")
 #'   x = getblocksnearby2(testpoints_1000_dt, quadtree = localtree_example)
 #' @seealso [getblocksnearbyviaQuadTree_Clustered()]  [getblocksnearbyviaQuadTree()]  
 #' @export
@@ -112,11 +112,7 @@ getblocksnearbyviaQuadTree2 <- function(sitepoints, cutoff=3, maxcutoff=31.07,
     
     
     # *** FIX/CHECK: 
-    #    quadtree (localtree passed here as quadtree) 
-    # vs EJAMblockdata::blockquadtree  (can it be this way, or need to create it again for each session?)
-    # vs was just localtree from global env in clustered version of function
-    
-    tmp <- EJAMblockdata::quaddata[vec, ]
+    tmp <-  quaddata[vec, ]
     # x <- tmp[ , .(BLOCK_X, BLOCK_Y, BLOCK_Z)] # but not blockid ??   # ** SLOW STEP TO OPTIMIZE 
     # y <-         f2[i, c('FAC_X','FAC_Y','FAC_Z')]  # the similar clustered function uses something other than f2 or sitepoints here - why?
     ########################################################################### ## ** SLOWSTEP TO OPTIMIZE: 
@@ -140,10 +136,7 @@ getblocksnearbyviaQuadTree2 <- function(sitepoints, cutoff=3, maxcutoff=31.07,
       
       
       # *** FIX/CHECK: 
-      #    quadtree (localtree passed here as quadtree) 
-      # vs EJAMblockdata::blockquadtree  (can it be this way, or need to create it again for each session?)
-      # vs was just localtree from global env in clustered version of function
-      tmp <- EJAMblockdata::quaddata[vec[1, ], ]
+      tmp <-  quaddata[vec[1, ], ]
       
       x <- tmp[, .(BLOCK_X, BLOCK_Y, BLOCK_Z)]
       y <-         f2[i, .(FAC_X, FAC_Y, FAC_Z)]

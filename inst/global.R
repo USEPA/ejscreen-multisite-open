@@ -49,7 +49,7 @@ threshgroup.default <- list(
 # (if not already autoloaded when EJAM package loaded) 
 if (!exists("localtree")) {
   localtree <- SearchTrees::createTree(
-    EJAMblockdata::quaddata, treeType = "quad", dataType = "point"
+     quaddata, treeType = "quad", dataType = "point"
   )
 }
 

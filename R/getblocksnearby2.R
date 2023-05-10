@@ -9,7 +9,7 @@
 #' @param maxcutoff    see [getblocksnearbyviaQuadTree()] or other such functions
 #' @param avoidorphans see [getblocksnearbyviaQuadTree()] or other such functions
 #' @param quadtree a large quadtree object created from the SearchTree package example:
-#'    SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
+#'    SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point")
 #' @param ...          see [getblocksnearbyviaQuadTree_Clustered()] or other such functions
 #' @seealso [getblocksnearby()] 
 #' @export

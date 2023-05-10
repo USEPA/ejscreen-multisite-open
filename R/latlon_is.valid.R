@@ -10,7 +10,7 @@
 #' @return logical vector, one element per lat lon pair (location)
 #' @seealso latlon_df_clean() latlon_infer() latlon_is.valid() latlon_as.numeric()
 #' @examples  \dontrun{
-#'  table(latlon_is.valid(lat = EJAMblockdata::blockpoints$lat, lon = EJAMblockdata::blockpoints$lon))
+#'  table(latlon_is.valid(lat =  blockpoints$lat, lon =  blockpoints$lon))
 #'   ##      TRUE 
 #'   ## 8,174,955
 #'   }

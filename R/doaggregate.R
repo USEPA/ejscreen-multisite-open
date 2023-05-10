@@ -29,7 +29,7 @@
 #'   
 #'    - blockwts: data.table with these columns: blockid , bgid, blockwt
 #'    
-#'    - Index built from quaddata, and blockquadtree: data.table and quad tree, for indexes of block points
+#'    - quaddata data.table used to create localtree, a quad tree index of block points
 #'      (and localtree that is created when package is loaded)
 #'    
 #'    - EJAM::blockgroupstats - A data.table (such as EJScreen demographic and environmental data by blockgroup?)
@@ -170,7 +170,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL,
   # to know what fraction of each parent block group is considered inside the buffer
   
   # >>>> A BIT SLOW - CAN WE DO THE FOLLOWING LINE BY REFERENCE INSTEAD OF MAKING A COPY OF sites2blocks? just want to join and add  blockwt & bgid to sites2blocks, from blockwts dt
-  sites2blocks <- EJAMblockdata::blockwts[sites2blocks, .(siteid,blockid,distance,blockwt,bgid), on='blockid']
+  sites2blocks <-  blockwts[sites2blocks, .(siteid,blockid,distance,blockwt,bgid), on='blockid']
   # that does not aggregate at all, it retains all rows, including where a blockid appears twice if it is near 2 different sites.
   
   # sort rows

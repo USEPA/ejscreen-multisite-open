@@ -70,7 +70,7 @@ names(bgejam) <- ejscreen::change.fieldnames.ejscreen.csv(names(bgejam))
 
 #   NOTE this census2020 block table has PR but lacks "AS" "GU" "MP" "VI"
 # while EJScreen 2.1 has those at blockgroup res
-# > uniqueN(EJAMblockdata::blockid2fips[,substr(blockfips,1,2)])
+# > uniqueN( blockid2fips[,substr(blockfips,1,2)])
 # [1] 52
 # length(unique(EJAMejscreendata::EJSCREEN_Full_with_AS_CNMI_GU_VI$ST_ABBREV))
 # [1] 56

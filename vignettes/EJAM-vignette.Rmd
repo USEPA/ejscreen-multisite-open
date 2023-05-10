@@ -124,7 +124,7 @@ During development of this package, at least, this index is built when the packa
 # One could manually rebuild the index (if quaddata were updated, for example),
 #  like this:
 localtree <- SearchTrees::createTree(
-  EJAMblockdata::quaddata, treeType = "quad", dataType = "point"
+   quaddata, treeType = "quad", dataType = "point"
 )
 ```
 

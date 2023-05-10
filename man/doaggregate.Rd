@@ -76,7 +76,7 @@ which in this case is the count of those for whom the poverty ratio is known.
 This function requires the following as data lazy loaded for example from EJAMblockdata package:
 \itemize{
 \item blockwts: data.table with these columns: blockid , bgid, blockwt
-\item Index built from quaddata, and blockquadtree: data.table and quad tree, for indexes of block points
+\item quaddata data.table used to create localtree, a quad tree index of block points
 (and localtree that is created when package is loaded)
 \item EJAM::blockgroupstats - A data.table (such as EJScreen demographic and environmental data by blockgroup?)
 }
