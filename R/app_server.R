@@ -661,14 +661,19 @@ app_server <- function(input, output, session) {
     
     ## similar to previous map but remove controls
     ## and only add circles, not circleMarkers
-    leaflet(data_uploaded(),
+    
+    ## switch this to data analyzed in report, not what was uploaded
+    ## in case there are invalid
+    leaflet(data_processed()$results_bysite,
             options = leafletOptions(zoomControl = FALSE, minZoom = 4)) %>% 
       addTiles()  %>%
       addCircles(
         radius = 1 * meters_per_mile,
         color = circle_color, fillColor = circle_color, 
         fill = TRUE, weight = 4,
-        group = 'circles'
+        group = 'circles',
+        popup = popup_from_any(data_processed()$results_bysite),
+        popupOptions = popupOptions(maxHeight = 200)
       )
   })
   
@@ -692,8 +697,12 @@ app_server <- function(input, output, session) {
   #   #input$radius_units
   # }, {
   observe({
+    
+    req(data_uploaded())
+    
     base_color      <- '#000080'
     cluster_color   <- 'red'
+    
     
     #req(input$bt_rad_buff)
     ## convert units to miles for circle size
@@ -1364,7 +1373,10 @@ app_server <- function(input, output, session) {
 
   observeEvent(input$view3_table_rows_selected,{
     req(data_processed())
-    data_sitemap(data_uploaded()[input$view3_table_rows_selected,])
+    #data_sitemap(data_uploaded()[input$view3_table_rows_selected,])
+    
+    ## link selected row to doaggregate by site output for mapping
+    data_sitemap(data_processed()$results_bysite[siteid %in% input$view3_table_rows_selected])
   })
   
   output$v3_sitemap <- leaflet::renderLeaflet({
@@ -1380,12 +1392,13 @@ app_server <- function(input, output, session) {
    
     #orig_leaf_map() #%>%
      # leaflet::setView(lng = data_sitemap()$lon, lat = data_sitemap()$lat, zoom = 8)
-    
+
     ## alternate: plot single point individually on map (cannot zoom out and see others)
      leaflet(data_sitemap()) %>%
        setView(lat = data_sitemap()$lat, lng = data_sitemap()$lon, zoom = 13) %>%
        addTiles() %>%
-       addCircles(radius = 1 *  meters_per_mile, popup = popup_from_any(data_sitemap()))
+       addCircles(radius = 1 *  meters_per_mile, popup = popup_from_any(data_sitemap()),
+                  popupOptions = popupOptions(maxHeight =  200))
   })
   #############################################################################  # 
   # ~ ####
