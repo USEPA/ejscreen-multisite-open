@@ -16,9 +16,39 @@ library(devtools)
 
 devtools::install_github('USEPA/EJAMejscreenapi',      force=TRUE, upgrade=F) # works fine.
 devtools::install_github('USEPA/EJAMbatch.summarizer', force=TRUE, upgrade=F) # works fine.
+
+
 devtools::install_github('USEPA/EJAM',                 force=TRUE, upgrade=F) # works/worked fine, now includes frs.rda, etc. but needs EJAMblockdata
 
 devtools::install_github('USEPA/EJAMblockdata',        force=TRUE, upgrade=F)  # failed
+
+# # errors most recently, 
+# > library(credentials)
+# Found git version 2.37.3.windows.1
+# Supported HTTPS credential helpers: cache, store, helper-selector
+# , manager-core
+# Found OpenSSH_for_Windows_8.1p1, LibreSSL 3.0.2
+# No key found. Use ssh_keygen() to generate one!
+# > credentials::set_github_pat()
+# If prompted for GitHub credentials, enter your PAT in the password field
+# Using GITHUB_PAT from ejanalysis (credential helper: manager-core)
+# > library(devtools)
+# Loading required package: usethis
+# > # make any changes to pkgs, devtools::document(), push changes to github, then...
+# > devtools::install_github('USEPA/EJAM',                 force=TRUE, upgrade=F) 
+# #works/worked fine, now includes frs.rda, etc. but needs EJAMblockdata
+# Using github PAT from envvar GITHUB_PAT
+# Downloading GitHub repo USEPA/EJAM@HEAD
+# Error in utils::download.file(url, path, method = method, quiet = quiet,  : 
+#       download from 'https://api.github.com/repos/USEPA/EJAM/tarball/HEAD' failed
+#    > devtools::install_github('USEPA/EJAMblockdata',        force=TRUE, upgrade=F)  # failed
+#       Using github PAT from envvar GITHUB_PAT
+#           Downloading GitHub repo USEPA/EJAMblockdata@HEAD
+#            Error in utils::download.file(url, path, method = method, quiet = quiet,  : 
+#           download from 'https://api.github.com/repos/USEPA/EJAMblockdata/tarball/HEAD' failed
+#                                                               
+
+# earlier problems, when lazy loading data:
 
 # Warning: file 'bgid2fips.rda' has magic number 'versi'
 # Use of save versions prior to 2 is deprecated
