@@ -1,0 +1,46 @@
+https://gispub.epa.gov/arcgis/sdk/rest/#/Get_started/02ss00000048000000/
+https://gispub.epa.gov/arcgis/sdk/rest/#/Resources_and_operations/02ss00000053000000/
+https://gispub.epa.gov/arcgis/sdk/rest/#/Using_spatial_references/02ss00000026000000/
+
+https://gispub.epa.gov/arcgis/rest/services
+
+points, polygons, etc.
+https://gispub.epa.gov/arcgis/sdk/rest/#/Geometry_objects/02ss0000008m000000/
+
+Example of one point:
+{"x" : -118.15, "y" : 33.80, "spatialReference" : {"wkid" : 4326}}
+
+Example of 4 points:
+{
+  "points" : [[-97.06138,32.837],[-97.06133,32.836],[-97.06124,32.834],[-97.06127,32.832]],
+  "spatialReference" : {"wkid" : 4326}
+}
+
+Example of  a feature object (geometry plus attributes):
+{
+  "geometry" : {"x" : -118.15, "y" : 33.80},
+
+  "attributes" : {
+    "OWNER" : "Joe Smith",
+    "VALUE" : 94820.37,
+    "APPROVED" : true,
+    "LASTUPDATE" : 1227663551096
+  }
+}
+
+https://gispub.epa.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer/distance
+
+
+https://www.epa.gov/enviro/web-services and https://www.epa.gov/enviro/envirofacts-data-service-api
+https://www.epa.gov/frs/facility-registry-service-frs-api
+https://echo.epa.gov/tools/web-services
+https://www.epa.gov/ejscreen/ejscreen-api
+https://docs.airnowapi.org/
+https://www.epa.gov/airmarkets/cam-api-portal
+
+
+https://gispub.epa.gov/arcgis/sdk/rest/#/Create_Buffers/02ss000001s1000000/
+
+
+
+https://gispub.epa.gov/arcgis/rest/services/Utilities/Geometry/GeometryServer/distance?sr=4326&geometry1=%7B%22geometry%22+%3A+%7B%22x%22+%3A+-118.15%2C+%22y%22+%3A+33.80%7D%7D&geometry2=%7B%22geometry%22+%3A+%7B%22x%22+%3A+-118.15%2C+%22y%22+%3A+33.80%7D%7D&geodesic=false&distanceUnit=Miles&f=html

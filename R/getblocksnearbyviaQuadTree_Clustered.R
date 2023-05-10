@@ -128,7 +128,7 @@ sitepoints <- sitepoints[!is.na(sitepoints$LAT) & !is.na(sitepoints$LONG), ]
         #search neighbors, allow for multiple at equal distance
         print("inbefore knn")
         # This should have been done in server.R 
-        # quadtree <- SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
+        # quadtree <- SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point")
         vec <- SearchTrees::knnLookup(quadtree, c(coords[,FAC_X]), c(coords[,FAC_Z]), k=10)
         print("did we knn? ")
         tmp <- quaddata[vec[1,],]

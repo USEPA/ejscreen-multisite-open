@@ -23,7 +23,7 @@ lon must be ( between -180 and -65) OR (between 172 and 180)
 }
 \examples{
  \dontrun{
- table(latlon_is.valid(lat = EJAMblockdata::blockpoints$lat, lon = EJAMblockdata::blockpoints$lon))
+ table(latlon_is.valid(lat =  blockpoints$lat, lon =  blockpoints$lon))
   ##      TRUE 
   ## 8,174,955
   }

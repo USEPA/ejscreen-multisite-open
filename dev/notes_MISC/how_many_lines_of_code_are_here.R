@@ -88,7 +88,7 @@
 # 17   365      100  265                 EJAM              /data-raw/        names_of_indicators_creationscript.R
 # 19   361       12  349 EJAMbatch.summarizer                  /inst/                         example.not.shiny.R
 # 21   331      255   76                 EJAM /inst/0- NOTES_BREAK...        0- NOTES_BREAK_EJAM_INTO_FUNCTIONS.R
-# 23   325      161  164        EJAMblockdata                  /inst/               NOTES_read_blockweights2020.R
+# 23   325      161  164        EJAM                  /inst/datasets/               NOTES_read_blockweights2020.R
 # 24   311      134  177                 EJAM /inst/notes_intersec...                NOTES_on_sf_for_shapefiles.R
 # 25   310      138  172                 EJAM /inst/notes_datasets...            1_SCRIPT_EJAMejscreen_download.R
 # 27   269      149  120 EJAMbatch.summarizer                  /inst/                                    global.R

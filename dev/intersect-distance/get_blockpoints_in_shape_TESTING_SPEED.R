@@ -7,10 +7,10 @@
 # load packages/ data
 blockpoints_sf <- EJSCREENbatchdata::blockpoints_sf_make()
 # which just does this:
-  # blockpoints_sf <- EJAMblockdata::blockpoints |>
+  # blockpoints_sf <-  blockpoints |>
   #  sf::st_as_sf(coords = c("lon", "lat"), crs= 4269) # Geodetic CRS:  NAD83
 
-# as .rda that took about 35 seconds to load, but only 5-10 seconds to create from EJAMblockdata::blockpoints like this.
+# as .rda that took about 35 seconds to load, but only 5-10 seconds to create from EJAMblockdata blockpoints like this.
 
 library(EJAM) # takes a long time to load if .onLoad is forcing immediate loading of blockpoints and blockwts 
 

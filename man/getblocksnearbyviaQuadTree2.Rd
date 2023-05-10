@@ -28,7 +28,7 @@ mostly for testing, but a progress bar feature might be useful unless this is su
 
 \item{quadtree}{(a pointer to the large quadtree object)
 created from the SearchTree package example:
-SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
+SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point")
 Takes about 2-5 seconds to create this each time it is needed.
 It can be automatically created when the package is loaded via the \code{\link[=.onLoad]{.onLoad()}} function}
 }
@@ -52,7 +52,7 @@ inside the circular buffer more accurately and more quickly than
 areal apportionment of block groups would provide.
 }
 \examples{
-  localtree_example = SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
+  localtree_example = SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point")
   x = getblocksnearby2(testpoints_1000_dt, quadtree = localtree_example)
 }
 \seealso{

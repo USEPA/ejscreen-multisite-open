@@ -120,21 +120,21 @@ EJAM::datapack('EJAMblockdata')
 # 5      blockwts Decennial Census block weights
 # 6 lookup_states basic information about US Sta
 # 7      quaddata quad tree data on locations of
-length(unique(substr(unique(EJAMblockdata::bgid2fips[ , bgfips], by = 'bgfips')  ,1,2)) )
+length(unique(substr(unique( bgid2fips[ , bgfips], by = 'bgfips')  ,1,2)) )
 # [1] 52 # has DC and PR.
-ejanalysis::get.state.info(setdiff(universe$FIPS.ST, unique(substr(unique(EJAMblockdata::bgid2fips[ , bgfips], by = 'bgfips')  ,1,2))))$ST
+ejanalysis::get.state.info(setdiff(universe$FIPS.ST, unique(substr(unique( bgid2fips[ , bgfips], by = 'bgfips')  ,1,2))))$ST
 # [1] "AS" "GU" "MP" "VI"  missing
-ejanalysis::get.state.info(setdiff(universe$FIPS.ST, unique(substr(unique(EJAMblockdata::blockid2fips[ , blockfips], by = 'blockfips')  ,1,2))))$ST
+ejanalysis::get.state.info(setdiff(universe$FIPS.ST, unique(substr(unique( blockid2fips[ , blockfips], by = 'blockfips')  ,1,2))))$ST
 # [1] "AS" "GU" "MP" "VI"
-all.equal(EJAMblockdata::blockid2fips$blockid , EJAMblockdata::blockpoints$blockid)
+all.equal( blockid2fips$blockid ,  blockpoints$blockid)
 # [1] TRUE
-all.equal(EJAMblockdata::blockid2fips$blockid , EJAMblockdata::blockwts$blockid)
+all.equal( blockid2fips$blockid ,  blockwts$blockid)
 # [1] TRUE
-all.equal(EJAMblockdata::blockid2fips$blockid , EJAMblockdata::quaddata$blockid)
+all.equal( blockid2fips$blockid ,  quaddata$blockid)
 # [1] TRUE
-setdiff(universe$ST, EJAMblockdata::lookup_states$ST)
+setdiff(universe$ST,  lookup_states$ST)
 # character(0)
-setdiff(EJAMblockdata::lookup_states$ST, universe$ST)
+setdiff( lookup_states$ST, universe$ST)
 # [1] "UM" "US"
 
 

@@ -113,7 +113,7 @@
 #'          
 #' @details  # **Data files used for distance calculation:** ####################################################################
 #' 
-#'   - **[EJAMblockdata::quaddata].rda** dataset data.table
+#'   - ** quaddata.rda** dataset data.table
 #'   
 #'    8,174,955 rows when non-populated blocks are kept. 
 #'    5,806,512 rows have Census 2020 population (and blockwt) > 0. 
@@ -134,7 +134,7 @@
 #'   
 #'   - **[doaggregate()]** = function(sites2blocks) This summarizes in each buffer and for all unique residents across all buffers.
 #'     
-#'   - **[EJAMblockdata::blockwts].rda**
+#'   - ** blockwts.rda**
 #'    Required by [doaggregate()]. A data.table of 6-8m rows 
 #'     - blockwt  The fraction of parent blockgroup decennial pop that is in this one block
 #'     - blockid (integer key  for join to sites2blocks)

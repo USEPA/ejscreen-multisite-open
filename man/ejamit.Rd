@@ -25,7 +25,7 @@ so if TRUE, it keeps looking past cutoff to find nearest one within maxcutoff.}
 
 \item{quadtree}{(a pointer to the large quadtree object)
 created from the SearchTree package example:
-SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
+SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point")
 Takes about 2-5 seconds to create this each time it is needed.
 It is automatically created when the package is loaded via the \code{\link[=.onLoad]{.onLoad()}} function}
 

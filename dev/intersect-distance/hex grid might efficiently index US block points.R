@@ -18,8 +18,8 @@ options(stringsAsFactors = FALSE)
 library(EJAMblockdata)
 library(sf)
 
-# blockpoints_sf <- EJAMblockdata::blockpoints |> sf::st_as_sf(coords = c("lon", "lat"), crs= 4326) # 
-blockpoints_sf <- EJAMblockdata::blockpoints |> sf::st_as_sf(coords = c("lon", "lat"), crs= 4269) # Geodetic CRS:  NAD83
+# blockpoints_sf <-  blockpoints |> sf::st_as_sf(coords = c("lon", "lat"), crs= 4326) # 
+blockpoints_sf <-  blockpoints |> sf::st_as_sf(coords = c("lon", "lat"), crs= 4269) # Geodetic CRS:  NAD83
 blockpoints_sf <- st_transform(blockpoints_sf, crs = 4326) # this takes forever. not sure it has to be read as nad83 and then transformed like this to I think its wgs84
 blockpoints_sf
 

@@ -116,7 +116,7 @@ testpoints_n <- function(n=10, weighting=c('frs', 'pop', 'area', 'bg', 'block'),
       if (!dt) {x=copy(blockpoints[staterownums,][rownum,]); setDF(x); return(x)}
       return(blockpoints[staterownums,][rownum,] )
     } else {
-      rownum <- sample.int(EJAMblockdata::blockpoints[,.N], size = n, replace = FALSE)
+      rownum <- sample.int( blockpoints[,.N], size = n, replace = FALSE)
       if (!dt) {x=copy(blockpoints[rownum,]); setDF(x); x$siteid <- seq_len(nrow(x)); return(x)}
       x <- blockpoints[rownum, ] ; x$siteid <- seq_len(nrow(x))
       return(x)
@@ -162,7 +162,7 @@ testpoints_n <- function(n=10, weighting=c('frs', 'pop', 'area', 'bg', 'block'),
       return(x)
       # warning("Ignoring ST_of_blockgroup ! ")
       }
-    rownum <- sample.int(EJAMblockdata::blockwts[,.N], size = n, replace = FALSE, prob = blockwts$blockwt)
+    rownum <- sample.int( blockwts[,.N], size = n, replace = FALSE, prob = blockwts$blockwt)
     if (!dt) {x=copy(blockpoints[blockwts[rownum,], on="blockid"]); setDF(x); x$siteid <- seq_len(nrow(x)); return(x)}
     # all(blockpoints[,blockid] == blockwts[,blockid])
     # [1] TRUE

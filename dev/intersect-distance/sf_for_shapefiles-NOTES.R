@@ -296,7 +296,7 @@ plot(buffer_hires, main='slower but higher resolution buffer')
 
 radius_miles <- 3
 mypoints_geo <-  EJAMejscreenapi::testpoints_50 # need to convert to sf format?
-blockpoints_geo <- EJAMblockdata::blockpoints  # need to convert to sf format?
+blockpoints_geo <-  blockpoints  # need to convert to sf format?
 
 sf::st_is_within_distance(x =  mypoints_geo , y= blockpoints_geo,
                       dist = units::set_units(radius_miles, value = US_survey_mile))

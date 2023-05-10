@@ -26,7 +26,7 @@
 #'   so if TRUE, it keeps looking past cutoff to find nearest one within maxcutoff.
 #' @param quadtree (a pointer to the large quadtree object) 
 #'    created from the SearchTree package example:
-#'    SearchTrees::createTree(EJAMblockdata::quaddata, treeType = "quad", dataType = "point")
+#'    SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point")
 #'    Takes about 2-5 seconds to create this each time it is needed.
 #'    It is automatically created when the package is loaded via the [.onLoad()] function
 #' @param report_progress_every_n Reports progress to console after every n points,
@@ -110,7 +110,7 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, cutoff=3, maxcutoff=31.07,
       unlist(c(x_hi, coords[,FAC_Z]+truedistance))) # x and z things are now vectorized
     # *** FIX/CHECK: 
 
-        tmp <- EJAMblockdata::quaddata[vec, ] 
+        tmp <-  quaddata[vec, ] 
     # x <- tmp[ , .(BLOCK_X, BLOCK_Y, BLOCK_Z)] # but not blockid ?? 
     # y <- sitepoints[i, c('FAC_X','FAC_Y','FAC_Z')]  # the similar clustered function uses something other than sitepoints here - why?
     ########################################################################### ## ** SLOW STEP TO OPTIMIZE 
@@ -134,7 +134,7 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, cutoff=3, maxcutoff=31.07,
       vec  <- SearchTrees::knnLookup(quadtree, unlist(c(coords[ , 'FAC_X'])), unlist(c(coords[ , 'FAC_Z'])), k=10)  
       
       # *** FIX/CHECK: 
-       tmp <- EJAMblockdata::quaddata[vec[1, ], ]
+       tmp <-  quaddata[vec[1, ], ]
       
       x <- tmp[, .(BLOCK_X, BLOCK_Y, BLOCK_Z)]
       y <- sitepoints[i, .(FAC_X, FAC_Y, FAC_Z)]
