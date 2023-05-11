@@ -81,7 +81,8 @@ if (!blockweights_csv_available) {
     # same for actual census 2020 population count
   
 library(data.table)
-    fname <- "~/../EJ 2021/EJSCREEN 2022 2.1 DATA late2022/BLOCK20_CENTROIDS_WEIGHTS.csv"
+    basepath = "~/../EJ 2021/EJSCREEN 2022 2.1 DATA late2022/"
+    fname <- file.path(basepath, "BLOCK20_CENTROIDS_WEIGHTS.csv")
 blocks <- data.table::fread(file = fname,
                             colClasses = c(
                               GEOID      = 'character', 
