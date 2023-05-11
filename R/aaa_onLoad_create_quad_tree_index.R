@@ -11,11 +11,14 @@
   cat("Loading data.tables of Census Blocks...\n")
   data("blockgroupstats") # data(EJAM::blockgroupstats)  # 54 MB rda file
   #  statestats.rda is about 1.3 MB, usastats.rda is about 28 KB
-  require(EJAMblockdata)
-  data(blockpoints, package="EJAMblockdata"); cat('  Done loading blockpoints.\n')  
-  data(blockwts,    package="EJAMblockdata"); cat('  Done loading blockwts.\n') 
-  data(quaddata,    package= "EJAMblockdata"); cat('  Done loading quaddata.\n')  
-   
+  
+  # require(EJAMblockdata)
+  data(blockpoints,   package="EJAMblockdata"); cat('  Done loading blockpoints.\n')  
+  data(blockwts,      package="EJAMblockdata"); cat('  Done loading blockwts.\n') 
+  data(quaddata,      package="EJAMblockdata"); cat('  Done loading quaddata.\n')  
+  data(blockid2fips,  package="EJAMblockdata")
+  data(bgid2fips,     package="EJAMblockdata")
+  data(lookup_states, package="EJAMblockdata")
   
   } else {
     cat("Developers may want to modify the .onLoad() function, \n")
