@@ -991,23 +991,22 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL,
   #    app_server code is/was duplicating efforts and trying to calculate these itself !!
   
   ## RATIOS TO US AVG ###
-  ratios_to_avg_bysite  <- round( # numbers look ok
+  ratios_to_avg_bysite  <- 
     results_bysite[  , ..names_these] / 
-      results_bysite[, ..names_avg_these],
-    3)
-  ratios_to_avg_overall <- round(      #  IMPORTANT -- DO WE WANT RATIO OF THESE AVERAGES (as here)? OR an AVERAGE OF RATIOS?? *****
+      results_bysite[, ..names_avg_these]
+    
+  ratios_to_avg_overall <- 
     results_overall[  , ..names_these] /          # AVERAGE PERSON score OVERALL, RIGHT?
-      results_overall[, ..names_avg_these],    # US AVG, RIGHT?
-    3)
+      results_overall[, ..names_avg_these]
+    
   ## RATIOS TO STATE AVG ###
-  ratios_to_state_avg_bysite  <- round( 
+  ratios_to_state_avg_bysite  <- 
     results_bysite[  , ..names_these] / 
-      results_bysite[, ..names_state_avg_these],    # avg persons state average 
-    3)
-  ratios_to_state_avg_overall <- round(    #  IMPORTANT -- DO WE WANT RATIO OF THESE AVERAGES (as here)? OR an AVERAGE OF RATIOS?? *****
+      results_bysite[, ..names_state_avg_these]
+  
+  ratios_to_state_avg_overall <- 
     results_overall[  , ..names_these] / 
-      results_overall[, ..names_state_avg_these],
-    3)
+      results_overall[, ..names_state_avg_these]
   
   # add those all to results tables
   colnames(ratios_to_avg_bysite)  <- names_ratio_to_avg_these

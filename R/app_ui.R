@@ -2,7 +2,8 @@
 #'
 #' @param request Internal parameter for `{shiny}`.
 #'     DO NOT REMOVE.
-#' @import shiny
+#' @rawNamespace import(shiny, except=c(dataTableOutput, renderDataTable))
+#' @importFrom shinyjs useShinyjs extendShinyjs
 #' @noRd
 app_ui  <- function(request) {
   tagList(
@@ -353,17 +354,6 @@ app_ui  <- function(request) {
                  
                  br(), ## vertical space
                  
-                 ## add images to top of screen
-                 HTML('<div id="logorow" class="row">
-                        <div class="col-xs-6" style="text-align: left;">
-                          <img src="https://ejscreen.epa.gov/mapper/images/epalogo_ej.png">
-                        </div>
-                        <div class="col-xs-6" style="text-align: right;">
-                         <img src="https://ejscreen.epa.gov/mapper/images/ejlogo.png">
-                        </div>
-                      </div>'),
-                 HTML('<div style="font-weight: bold; font-size: 14pt; font-family: Tahoma; text-align: center;">EJAM Report (EJScreen v2.1)</div>'),
-                 
                  ## show count of population among selected sites
                  htmlOutput(outputId = 'view1_total_pop'),
                  
@@ -374,8 +364,6 @@ app_ui  <- function(request) {
                  shinycssloaders::withSpinner(
                    gt::gt_output(outputId = 'view1_demog_table')
                  ),
-                 ## previous version of table - interactive
-                 #DT::DTOutput(outputId = 'view1_demog_table'),
                  
                  br(), ## vertical space
                  
@@ -386,7 +374,7 @@ app_ui  <- function(request) {
                      12, 
                      align = 'center',
                      shinycssloaders::withSpinner(
-                       plotOutput(outputId = 'view1_summary_plot', width = '900px', height='500px')
+                       plotOutput(outputId = 'view1_summary_plot', width = '100%', height='700px')
                      )
                    )
                  ),
@@ -394,26 +382,14 @@ app_ui  <- function(request) {
                  
                  br(), ## vertical space
                  
-                 ## add formatted text
-                 HTML("<p  style='font-size: 8pt; color: navy; font-family: sans-serif;'>This report shows the values
-                 for environmental and demographic indicators.
-                 It shows environmental and demographic raw data (e.g., the estimated concentration of ozone in the air), 
-                 and also shows what percentile each raw data value represents. These percentiles provide perspective on
-                 how the selected block group or buffer area compares to the entire state or nation. For example, if a 
-                 given location is at the 95th percentile nationwide, this means that only 5 percent of US block groups 
-                 have a higher value than the average person in the location being analyzed. The years for which the data
-                 are available, and the methods used, vary across these indicators. Important caveats and uncertainties 
-                 apply to this screening-level information, so it is essential to understand the limitations on appropriate 
-                 interpretations and applications of these indicators. 
-                      Please see EJScreen documentation for discussion of these issues before using reports.</p>"),
-                 
+                
                  ## _Map of sites for report *********************************####
                  
                  fluidRow(
                    column(12,
                           align = 'center',
                           shinycssloaders::withSpinner(
-                            leaflet::leafletOutput('quick_view_map', width = '75%')
+                            leaflet::leafletOutput('quick_view_map', width = '100%')
                           )
                    )
                  ),
@@ -426,40 +402,22 @@ app_ui  <- function(request) {
                  shinycssloaders::withSpinner(
                    gt::gt_output(outputId = 'view1_envt_table')
                  ),
-                 ## previous version: interactive version of table
-                 #DT::dataTableOutput(outputId = 'view1_envt_table'),
                  
-                 br(), ## vertical space
+                 ## button to trigger (re-)generation of summary report using eventReactive
+                 ## otherwise, it will update when any of the inputs are changed
+                 #actionButton('gen_summary_report', 'Generate Report'),
                  
-                 ## add formatted text
-                 HTML("<p style='font-size: 8pt; color: navy; font-family: sans-serif;'>*Diesel particulate matter, air toxics cancer risk, 
-                        and air toxics respiratory hazard index are 
-                        from the EPA's Air Toxics Data Update, which is the Agency's ongoing, comprehensive evaluation of 
-                        air toxics in the United States. This effort aims to prioritize air toxics, emission sources, and 
-                        locations of interest for further study. It is important to remember that the air toxics data presented 
-                        here provide broad estimates of health risks over geographic areas of the country, not definitive risks 
-                        to specific individuals or locations. Cancer risks and hazard indices from the Air Toxics Data Update 
-                        are reported to one significant figure and any additional significant figures here are due to rounding. 
-                        More information on the Air Toxics Data Update can be found at:
-                      <a href='https://www.epa.gov/haps/air-toxics-data-update' target = '_blank'>https://www.epa.gov/haps/air-toxics-data-update</a></p>"
-                 ),
+                 # 
+                 # shiny::radioButtons(inputId = 'state_or_us_1pager',
+                 #                     label = 'Plot State or US Percentiles?',
+                 #                     choices = c(State='state', National='usa')),
                  
-                 ## add link
-                 HTML('For additional information, see: <a>https://www.epa.gov/environmentaljustice</a>'),
+                 ## display rendered report as HTML in the app
+                 # shinycssloaders::withSpinner(
+                 #  uiOutput('rendered_summary_report')
+                 # ),
                  
-                 hr(), ## horizontal line
-                 # br(), ## vertical space
-                 
-                 ## add formatted text
-                 HTML("<p style='font-size: 8pt; color: navy; font-family: sans-serif;'>Users should keep in mind that screening tools 
-                 are subject to substantial uncertainty in their 
-                 demographic and environmental data, particularly when looking at small geographic areas. Important caveats 
-                 and uncertainties apply to this screening-level information, so it is essential to understand the limitations 
-                 on appropriate interpretations and applications of these indicators. Please see EJScreen documentation for 
-                 discussion of these issues before using reports. This screening tool does not provide data on every environmental
-                 impact and demographic factor that may be relevant to a particular location. EJScreen outputs should be supplemented 
-                 with additional information and local knowledge before taking any action to address potential EJ concerns.</p>"),
-                 
+                
                  ## _button to download short report ####
                  
                  tags$div(
@@ -472,8 +430,6 @@ app_ui  <- function(request) {
                  # DISABLED UNTIL PDF KNITTING IS DEBUGGED
                  radioButtons("format1pager", "Format", choices = c(html="html", html="pdf"), inline = TRUE)  # fix 
         ),
-        
-        br(), ## vertical space
         
         ######################################################################################################### #
         # ~ ####
@@ -1057,7 +1013,7 @@ app_ui  <- function(request) {
 #' This function is internally used to add external
 #' resources inside the Shiny application.
 #'
-#' @import shiny
+#' @rawNamespace import(shiny, except=c(dataTableOutput, renderDataTable))
 #' @importFrom golem add_resource_path activate_js favicon bundle_resources
 #' @noRd
 golem_add_external_resources <- function() {   # (adds external Resources to App) ####

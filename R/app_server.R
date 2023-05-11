@@ -2,7 +2,7 @@
 #' 
 #' @param input,output,session Internal parameters for {shiny}.
 #'     DO NOT REMOVE.
-#' @import shiny
+#' @rawNamespace import(shiny, except=c(dataTableOutput, renderDataTable))
 #' @import DT
 #' @import data.table
 #' @importFrom data.table ":="
@@ -16,11 +16,11 @@
 #' @import SearchTrees
 #' @import shinyBS
 #' @import shinycssloaders
-#' @import shinyjs
+#' @importFrom shinyjs reset disable enable
 #' @import sf
 #' @import sp
 #' @import tidyverse
-#' @import magrittr
+#' @importFrom magrittr '%>%'
 #' @import tidyr
 #' @import dplyr
 #' 
@@ -59,18 +59,7 @@ app_server <- function(input, output, session) {
                  hideTab(inputId = 'all_tabs', target = 'Advanced Settings')
                })
   
-  ## show welcome modal on app startup - commented out for now
-  # showModal(
-  #   modalDialog(
-  #     title = 'Welcome to EJAM!', 
-  #     "Add basic message here",
-  #     footer = actionButton('ui_close_welcome', 'Close')
-  #   )
-  # )
-  ## close welcome modal on button click
-  # observeEvent(input$ui_close_welcome,{
-  #   removeModal()
-  # })
+ 
   #############################################################################  # 
   
   ## define current upload method using radio button ####
@@ -98,17 +87,17 @@ app_server <- function(input, output, session) {
     ext <- tools::file_ext(input$ss_upload_latlon$name)
     ## if acceptable file type, read in; if not, send warning text
     ext <- switch(ext,
-                  csv =  read.csv(input$ss_upload_latlon$datapath),
-                  xls = read_excel(input$ss_upload_latlon$datapath),
-                  xlsx = read_excel(input$ss_upload_latlon$datapath),
+                  csv = data.table::fread(input$ss_upload_latlon$datapath),
+                  xls = read_excel(input$ss_upload_latlon$datapath) %>% data.table::as.data.table(),
+                  xlsx = read_excel(input$ss_upload_latlon$datapath)%>% data.table::as.data.table(),
                   shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
     )
     
     ## if column names are found in lat/long alias comparison, process
     if(any(tolower(colnames(ext)) %in% lat_alias) & any(tolower(colnames(ext)) %in% lon_alias)){
       ext %>% 
-        EJAM::latlon_df_clean() %>%   # This does latlon_infer() and latlon_as.numeric() and latlon_is.valid()
-        data.table::as.data.table()
+        EJAM::latlon_df_clean() #%>%   # This does latlon_infer() and latlon_as.numeric() and latlon_is.valid()
+        #data.table::as.data.table()
       
     } else {
       ## if not matched, show this message instead
@@ -253,9 +242,9 @@ app_server <- function(input, output, session) {
     
     ## if acceptable file type, read in; if not, send warning text
     ext <- switch(ext,
-                  csv =  read.csv(input$ss_upload_echo$datapath),
-                  xls = read_excel(input$ss_upload_echo$datapath),
-                  xlsx = read_excel(input$ss_upload_echo$datapath),
+                  csv =  data.table::fread(input$ss_upload_echo$datapath),
+                  xls = read_excel(input$ss_upload_echo$datapath) %>% data.table::as.data.table(),
+                  xlsx = read_excel(input$ss_upload_echo$datapath) %>% data.table::as.data.table(),
                   shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
     )
     
@@ -263,8 +252,8 @@ app_server <- function(input, output, session) {
     ## if column names are matched to aliases, process it    
     if(any(tolower(colnames(ext)) %in% lat_alias) & any(tolower(colnames(ext)) %in% lon_alias)){
       ext %>% 
-        EJAM::latlon_df_clean() %>% 
-        data.table::as.data.table()
+        EJAM::latlon_df_clean() #%>% 
+        #data.table::as.data.table()
     } else {
       ## if not matched, return this message
       shiny::validate('No coordinate columns found.')
@@ -416,10 +405,16 @@ app_server <- function(input, output, session) {
     ## don't draw map if > 5000 points are uploaded
     if(nrow(data_uploaded()) < max_pts){
       suppressMessages(
-        map_facilities(mypoints = as.data.frame(data_uploaded()), 
-                       rad = input$bt_rad_buff, 
-                       highlight = input$an_map_clusters,
-                       clustered = is_clustered())
+        leaflet() %>% addTiles() %>% 
+          fitBounds(lng1 = min(data_uploaded()$lon),
+                                               lng2 = max(data_uploaded()$lon),
+                                               lat1 = min(data_uploaded()$lat),
+                                               lat2 = max(data_uploaded()$lat))
+        
+        # map_facilities(mypoints = data_uploaded(), #as.data.frame(data_uploaded()), 
+        #                rad = input$bt_rad_buff, 
+        #                highlight = input$an_map_clusters,
+        #                clustered = is_clustered())
       )
     } else {
       validate(paste0('Too many points (> ',prettyNum(max_pts, big.mark=','),') uploaded for map to be displayed'))
@@ -433,9 +428,7 @@ app_server <- function(input, output, session) {
   })
   
   #############################################################################  # 
-  #############################################################################  # 
-  #############################################################################  # 
-  
+ 
   # ~ ####
   # ______ RUN ANALYSIS  (button is pressed) ________####
   # ~ ####
@@ -510,31 +503,41 @@ app_server <- function(input, output, session) {
     # duplicated almost exactly in ejamit() but reactives are not reactives there
     # maybe use url_4table() - see ejamit() code
     
-    if ("REGISTRY_ID" %in% names(out$results_bysite)) {
-      echolink = url_echo_facility_webpage(REGISTRY_ID, as_html = T)
+    #if ("REGISTRY_ID" %in% names(out$results_bysite)) {
+    # echolink = url_echo_facility_webpage(out$results_bysite$REGISTRY_ID, as_html = FALSE)
+    #} else {
+    # echolink = url_echo_facility_webpage(out$results_bysite$REGISTRY_ID, as_html = FALSE)
+    #}
+    ## the registry ID column is only found in uploaded ECHO/FRS/NAICS data -
+    ## it is not passed to doaggregate output at this point, so pull the column from upload to create URLS
+    if("REGISTRY_ID" %in% names(data_uploaded())){
+      echolink = url_echo_facility_webpage(data_uploaded()$REGISTRY_ID, as_html = FALSE)
+    } else if("RegistryID" %in% names(data_uploaded())){
+      echolink = url_echo_facility_webpage(data_uploaded()$RegistryID, as_html = FALSE)
     } else {
       echolink = rep(NA,nrow(out$results_bysite))
     }
     out$results_bysite[ , `:=`(
-      `EJScreen Report` = url_ejscreen_report(    lat = data_uploaded()$lat, lon = data_uploaded()$lon, distance = input$bt_rad_buff, as_html = TRUE), 
-      `EJScreen Map`    = url_ejscreenmap(        lat = data_uploaded()$lat, lon = data_uploaded()$lon,                               as_html = TRUE), 
-      `ACS Report`      = url_ejscreen_acs_report(lat = data_uploaded()$lat, lon = data_uploaded()$lon, distance = input$bt_rad_buff, as_html = TRUE),
+      `EJScreen Report` = url_ejscreen_report(    lat = data_uploaded()$lat, lon = data_uploaded()$lon, distance = input$bt_rad_buff, as_html = FALSE), 
+      `EJScreen Map`    = url_ejscreenmap(        lat = data_uploaded()$lat, lon = data_uploaded()$lon,                               as_html = FALSE), 
+      `ACS Report`      = url_ejscreen_acs_report(lat = data_uploaded()$lat, lon = data_uploaded()$lon, distance = input$bt_rad_buff, as_html = FALSE),
       `ECHO report` = echolink
     )]
-    out$results_overall[ , `:=`(
-      `EJScreen Report` = NA, 
-      `EJScreen Map`    = NA, 
-      `ACS Report`      = NA,
-      `ECHO report`     = NA
-    )]
+    # out$results_overall[ , `:=`(
+    #   `EJScreen Report` = NA, 
+    #   `EJScreen Map`    = NA, 
+    #   `ACS Report`      = NA,
+    #   `ECHO report`     = NA
+    # )]
     newcolnames <- c(
       "EJScreen Report", 
       "EJScreen Map", 
       "ACS Report", 
-      "ECHO report")
+      "ECHO report"
+    )
     # put those up front as first columns
     setcolorder(out$results_bysite, neworder = newcolnames)
-    setcolorder(out$results_bysite, neworder = newcolnames)
+    #setcolorder(out$results_bysite, neworder = newcolnames)
     out$longnames <- c(newcolnames, out$longnames)
     
     #############################################################################  # 
@@ -582,32 +585,7 @@ app_server <- function(input, output, session) {
     updateTabsetPanel(session, "all_tabs", "Summary Report")
   })
   #############################################################################  # 
-  #############################################################################  # 
-  #############################################################################  # 
-  
-  
-  #############################################################################  # 
-  
-  ## static preview of uploaded dataset - not used currently
-  # output$print_test2 <- renderTable({
-  #     req(data_uploaded())
-  #     
-  #     if(current_upload_method() == 'NAICS'{
-  #       #takes NAICS codes selected, finds NAICS descriptions, and presents them  
-  #       dt_result_by_naic = data_uploaded()[, .(Count = .N), by = NAICS]
-  #       naics_desc = EJAM::NAICS[EJAM::NAICS %in% dt_result_by_naic$NAICS]
-  #       dt_names = data.frame("NAICS"=naics_desc,"Description"=names(naics_desc))
-  #       naicsdt = merge(x = dt_result_by_naic, y = dt_names, by='NAICS')
-  #       naics_reorder = data.frame(naicsdt$Description,naicsdt$Count)
-  #       colnames(naics_reorder) = c("NAICS Code","Facility Count")
-  #       
-  #       naics_reorder
-  #       #print(naics_reorder,row.names=FALSE)
-  #     } else {
-  #       head(data_uploaded())
-  #     }
-  #   })
-  
+ 
   
   #############################################################################  # 
   # ~ ####
@@ -683,40 +661,50 @@ app_server <- function(input, output, session) {
     
     ## similar to previous map but remove controls
     ## and only add circles, not circleMarkers
-    leaflet(data_uploaded(),
+    
+    ## switch this to data analyzed in report, not what was uploaded
+    ## in case there are invalid
+    leaflet(data_processed()$results_bysite,
             options = leafletOptions(zoomControl = FALSE, minZoom = 4)) %>% 
       addTiles()  %>%
       addCircles(
         radius = 1 * meters_per_mile,
         color = circle_color, fillColor = circle_color, 
         fill = TRUE, weight = 4,
-        group = 'circles'
+        group = 'circles',
+        popup = popup_from_any(data_processed()$results_bysite),
+        popupOptions = popupOptions(maxHeight = 200)
       )
   })
   
   ## output: summary report map  
   output$quick_view_map <- leaflet::renderLeaflet({
     req(data_uploaded())
-    
+
     ## use separate report map
     report_map()
-    
+
     ## or can keep same map as on Site Selection tab
     # orig_leaf_map()
   })
   
   ## update leaflet map when inputs change
   ## this is currently resetting map too often in response to checkbox
-  observeEvent(eventExpr = {
-    input$bt_rad_buff
-    input$an_map_clusters
-    is_clustered()
-    #input$radius_units
-  }, {
+  # observeEvent(eventExpr = {
+  #   input$bt_rad_buff
+  #   input$an_map_clusters
+  #   is_clustered()
+  #   #input$radius_units
+  # }, {
+  observe({
+    
+    req(data_uploaded())
+    
     base_color      <- '#000080'
     cluster_color   <- 'red'
     
-    req(input$bt_rad_buff)
+    
+    #req(input$bt_rad_buff)
     ## convert units to miles for circle size
     # if(input$radius_units == 'kilometers'){
     #   rad <- input$bt_rad_buff * meters_per_mile * 0.62137119
@@ -731,47 +719,54 @@ app_server <- function(input, output, session) {
       circle_color <- base_color
     }
     
+    popup_vec <- popup_from_any(data_uploaded())
+    
     # if(input$circle_type == 'circles'){
     suppressMessages(
       leafletProxy(mapId = 'an_leaf_map', session, data = data_uploaded()) %>%
-        clearShapes() %>%
-        clearMarkerClusters() %>%
-        addCircles(
-          radius = rad,
-          color = circle_color, fillColor = circle_color,
-          fill = TRUE, weight = 4,
-          group = 'circles',
-          # next version should use something like EJAMejscreenapi::popup_from_ejscreen(), but with EJAM column names
-          popup = EJAMejscreenapi::popup_from_df(data_uploaded() %>% as.data.frame())
-        )  %>%
-        addCircleMarkers(
-          radius = input$bt_rad_buff,
-          color = circle_color, fillColor = circle_color,
-          fill = TRUE, weight = 4,
-          clusterOptions = markerClusterOptions(),
-          group = 'markers'
-          #popup = EJAMejscreenapi::popup_from_df(data_uploaded())
-        ) %>%
-        ## show circleMarkers (aggregated) at zoom levels 1:6
-        groupOptions(group = 'markers', zoomLevels = 1:6) %>%
-        ## show circles and popups at zoom levels 7:20
-        groupOptions(group = 'circles', zoomLevels = 7:20) %>%
-        ## allow fullscreen map view ([ ] button)
-        leaflet.extras::addFullscreenControl()
+        map_facilities_proxy(rad= input$bt_rad_buff, 
+                             highlight = input$an_map_clusters, clustered = is_clustered(),
+                             popup_vec = popup_vec)
+        # clearShapes() %>%
+        # clearMarkerClusters() %>%
+        # addCircles(
+        #   radius = rad,
+        #   color = circle_color, fillColor = circle_color,
+        #   fill = TRUE, weight = 4,
+        #   group = 'circles',
+        #   # next version should use something like EJAMejscreenapi::popup_from_ejscreen(), but with EJAM column names
+        #   #popup = EJAMejscreenapi::popup_from_df(data_uploaded() %>% as.data.frame())
+        #   popup = popup_from_any(data_uploaded())
+        # )  %>%
+        # addCircleMarkers(
+        #   radius = input$bt_rad_buff,
+        #   color = circle_color, fillColor = circle_color,
+        #   fill = TRUE, weight = 4,
+        #   clusterOptions = markerClusterOptions(),
+        #   group = 'markers',
+        #   popup = popup_from_any(data_uploaded())
+        #   #popup = EJAMejscreenapi::popup_from_df(data_uploaded())
+        # ) %>%
+        # ## show circleMarkers (aggregated) at zoom levels 1:6
+        # groupOptions(group = 'markers', zoomLevels = 1:6) %>%
+        # ## show circles and popups at zoom levels 7:20
+        # groupOptions(group = 'circles', zoomLevels = 7:20) %>%
+        # ## allow fullscreen map view ([ ] button)
+        # leaflet.extras::addFullscreenControl()
     )
   })
   
-  #############################################################################  # 
-  ## *Header info on summary report ####
+  # #############################################################################  # 
+  # ## *Header info on summary report ####
   output$view1_total_pop <- renderUI({
-    
+
     req(data_processed())
-    
+
     ## paste header information together
     title_text <- paste0('<div style="font-weight: bold; font-size: 11pt; text-align: center;">',
                          input$analysis_title, '<br>',
-                         'Residents within ', 
-                         #input$bt_rad_buff, ' ', input$radius_units, ' of any of the ', 
+                         'Residents within ',
+                         #input$bt_rad_buff, ' ', input$radius_units, ' of any of the ',
                          input$bt_rad_buff, ' miles of any of the ',
                          prettyNum( NROW(data_processed()$results_bysite), big.mark = ","), ' sites analyzed<br>',
                          #    "in the xxx source category or sector<br>",
@@ -780,6 +775,7 @@ app_server <- function(input, output, session) {
     ## return formatted HTML text
     HTML(title_text)
   })
+  
   ## * Total population count ####
   total_pop <- reactive({
     
@@ -909,20 +905,37 @@ app_server <- function(input, output, session) {
     if (input$plotkind_1pager == 'bar') {  # do BARPLOT NOT BOXPLOT
       
       ratio.to.us.d.overall <- ratio.to.us.d() # reactive already available
-      supershortnames <- substr(gsub(" |-|age","",gsub("People of Color","POC", c(names_d_friendly, names_d_subgroups_friendly))),1,6)
+      #supershortnames <- substr(gsub(" |-|age","",gsub("People of Color","POC", c(names_d_friendly, names_d_subgroups_friendly))),1,6)
+      supershortnames <- gsub(' \\(.*', '', gsub("People of Color","POC", c(names_d_friendly, names_d_subgroups_friendly)))
       names(ratio.to.us.d.overall) <- supershortnames
       ratio.to.us.d.overall[is.infinite(ratio.to.us.d.overall)] <- 0
       # use yellow/orange/red for ratio >= 1x, 2x, 3x  #  work in progress
       mycolors <- c("gray", "yellow", "orange", "red")[1+findInterval(ratio.to.us.d.overall, c(1.01, 2, 3))] 
       
-      barplot(ratio.to.us.d.overall,
-              main = 'Ratio vs. US Average for Demographic Indicators',
-              cex.names = 0.7,
-              col = mycolors)
-      abline(h=1, col="gray")
+  
+      # barplot(ratio.to.us.d.overall,
+      #         main = 'Ratio vs. US Average for Demographic Indicators',
+      #         cex.names = 0.7,
+      #         col = mycolors)
       
-      # # try to do that via ggplot...
-      # ggplot2::ggplot(
+      #abline(h=1, col="gray")
+      
+      data.frame(name = names(ratio.to.us.d.overall),
+                 value = ratio.to.us.d.overall,
+                 color = mycolors) %>%
+        ggplot2::ggplot(ggplot2::aes(x = name, y = value, fill = color)) +
+        ggplot2::geom_bar(stat='identity') +
+        ggplot2::scale_fill_identity() +
+        ggplot2::theme_bw() +
+        ggplot2::labs(x = 'Indicator', y = 'Ratio vs. US Average') +
+        #scale_x_discrete(labels = scales::label_wrap(7)) +
+        #scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
+        #scale_x_discrete(guide = guide_axis(n.dodge = 2)) +
+        ggplot2::scale_y_continuous(limits = c(0, NA), expand = ggplot2::expansion(mult = c(0, 0.05), add = c(0, 0))) +
+        ggplot2::theme(plot.margin=ggplot2::unit(c(1,2,1,1), "cm"), axis.text.x = ggplot2::element_text(angle = -30, hjust = 0, vjust = 1)) + # # try to do that via ggplot...
+      NULL
+      
+        # ggplot2::ggplot(
       #   ratio.to.us.d.overall,
       #   aes(x = indicator, y = value)
       # ) +
@@ -931,9 +944,7 @@ app_server <- function(input, output, session) {
       #   labs(x = "",
       #        y = "Ratio of Indicator values for avg. person in selected locations\n vs. US average value",
       #        title = 'Ratio vs. US Average for Demographic Indicators') 
-    }
-    
-    if (input$plotkind_1pager == 'ridgeline') {
+    } else if (input$plotkind_1pager == 'ridgeline') {
       
       # https://r-graph-gallery.com/294-basic-ridgeline-plot.html#color
       # https://r-graph-gallery.com/294-basic-ridgeline-plot.html#shape
@@ -954,9 +965,9 @@ app_server <- function(input, output, session) {
       ) # long_names_d$var_names[match( names_d_fixed, long_names_d$vars)]
       ## pivot data from wide to long - now one row per indicator 
       ratio.to.us.d.bysite <- ratio.to.us.d.bysite %>% 
-        pivot_longer(cols = everything(), names_to = 'indicator') %>% 
+        tidyr::pivot_longer(cols = dplyr::everything(), names_to = 'indicator') %>% 
         ## replace Infs with NAs - these happen when indicator at a site is equal to zero
-        mutate(value = na_if(value, Inf)) #%>% 
+        dplyr::mutate(value = dplyr::na_if(value, Inf)) #%>% 
       # NOTE NOW ratio.to.us.d.bysite IS A tibble, not data.frame, and is in LONG format now. !!!
       
       # ridgeline Plot 
@@ -970,9 +981,7 @@ app_server <- function(input, output, session) {
           panel.spacing = unit(0.1, "lines"),
           strip.text.x = element_text(size = 8)
         )
-    }
-    
-    if (input$plotkind_1pager == "box") {
+    } else if (input$plotkind_1pager == "box") {
       # do BOXPLOT NOT BARPLOT
       
       # ****************************************************************************
@@ -989,9 +998,9 @@ app_server <- function(input, output, session) {
       ) # long_names_d$var_names[match( names_d_fixed, long_names_d$vars)]
       ## pivot data from wide to long - now one row per indicator 
       ratio.to.us.d.bysite <- ratio.to.us.d.bysite %>% 
-        pivot_longer(cols = everything(), names_to = 'indicator') %>% 
+        tidyr::pivot_longer(cols = dplyr::everything(), names_to = 'indicator') %>% 
         ## replace Infs with NAs - these happen when indicator at a site is equal to zero
-        mutate(value = na_if(value, Inf)) #%>% 
+        dplyr::mutate(value = dplyr::na_if(value, Inf)) #%>% 
       # NOTE NOW ratio.to.us.d.bysite IS A tibble, not data.frame, and is in LONG format now. !!!
       
       ## find max of ratios 
@@ -1069,7 +1078,7 @@ app_server <- function(input, output, session) {
         ## alternate color scheme
         # viridis::scale_fill_viridis(discrete = TRUE, alpha = 0.6) +
         
-        theme_bw() +
+        ggplot2::theme_bw() +
         theme(
           ## set font size of text
           text = ggplot2::element_text(size = 14),
@@ -1095,6 +1104,33 @@ app_server <- function(input, output, session) {
   # ~--------------------------- ####
   # >>>>> SUMMARY REPORT DOWNLOAD ________ ####
   # ~--------------------------- ####
+  
+  ## make summary report directly in shiny app and render on Summary report tab
+  #summary_report_params <- eventReactive(input$gen_summary_report, {
+  summary_report_params <- reactive({
+      list(testmode=FALSE,
+         sitecount = nrow(data_processed()$results_bysite), 
+         distance = paste0(input$bt_rad_buff,' miles'), #input$radius_units),
+         total_pop = prettyNum( total_pop(), big.mark = ","),
+         analysis_title = input$analysis_title,
+         # results     = data_processed(),  # NOT NEEDED HERE IF PASSING MAP, TABLES, AND PLOT AS PARAMS
+         map         = report_map(),
+         envt_table   = v1_envt_table(),
+         demog_table  = v1_demog_table(),
+         summary_plot = v1_summary_plot() #%>% print()
+         )
+  })
+  
+  output$rendered_summary_report <- renderUI({
+   HTML(
+      includeHTML(
+        rmarkdown::render(app_sys('report','brief_summary.Rmd'),
+                          output_dir = tempdir(),
+                          params = summary_report_params())
+      )
+   )
+  })
+  
   # 1-3-page summary comparable to EJScreen report  
   output$summary_download <- downloadHandler(
     filename = ifelse(input$format1pager == "pdf", "summary_report.pdf", 'summary_report.html') ,
@@ -1103,7 +1139,9 @@ app_server <- function(input, output, session) {
       # case we don't have write permissions to the current working dir (which
       # can happen when deployed).
       tempReport <- file.path(tempdir(), "brief_summary.Rmd")
-      file.copy("www/brief_summary.Rmd", tempReport, overwrite = TRUE)
+      ## copy Rmd from inst/report to temp folder
+      file.copy(from = app_sys('report', 'brief_summary.Rmd'), 
+                to = tempReport, overwrite = TRUE)
       #file.copy("../www/test_report1pager.Rmd", tempReport, overwrite = TRUE)
       
       isolate({  # need someone to confirm this is needed/helpful and not a problem, to isolate this.
@@ -1150,154 +1188,6 @@ app_server <- function(input, output, session) {
   
   #############################################################################  # 
   # ~ ####
-  # ______ SOME EXEC SUM TEXT  ####
-   
-  ## output: demographic executive summary text ### #
-  # output$exec_summ_d <- renderUI({
-  #   
-  #   req(data_summarized())
-  #   
-  #   ## can use a dropdown to select indicator, or..
-  #   ## or just use the most extreme one
-  #   type <- 'max' # 'choose'
-  #   
-  #   ## if only care about max indicator - this is not currently used in favor of the 
-  #   ## dropdown option (type == 'choose')
-  #   if(type == 'max'){
-  #     max.ratio.d <- max(ratio.to.us.d())
-  #     max.name.d <- names(ratio.to.us.d())[which.max(ratio.to.us.d())]
-  #     
-  #     max.name.d.friendly <- EJAMbatch.summarizer::names_d_batch_friendly[which.max(ratio.to.us.d())]  # xxx
-  #     
-  #     median.pctile.in.us <- data_summarized()$rows['Median site', paste0('pctile.',max.name.d)]
-  #     
-  #     exec_text_d <-paste0(
-  #       'Key demographic factor: <strong>',
-  #       max.name.d.friendly, 
-  #       '</strong><br>',
-  #       'People who live near (within ', input$bt_rad_buff,' mile(s)',#, input$radius_units,
-  #       ' of any of) these ', nrow(data_processed()$results_bysite),
-  #       ' sites are <strong>', round(max.ratio.d, 1), ' times</strong> as likely to be ', 
-  #       max.name.d.friendly, ' as the average person in the US (',
-  #       round(100 * data_summarized()$rows['Average person', max.name.d]), '% vs. ', 
-  #       round(100 * avg.in.us[,max.name.d]),
-  #       '%). The other demographic indicators have lower ratios.',
-  #       '<br>',
-  #       'The median (50th percentile) site here is at the <strong>', 
-  #       scales::label_ordinal()(median.pctile.in.us),
-  #       '</strong> percentile of all US residents for ', max.name.d.friendly
-  #     )
-  #   } else if(type == 'choose'){
-  #     
-  #     cur.name.d <-  input$key_ind_d # names(ratio.to.us.d())[which.max(ratio.to.us.d())]
-  #     cur.ratio.d <- ratio.to.us.d()[cur.name.d]
-  #     
-  #     ## get friendly version of D name
-  #     cur.name.d.friendly <- EJAMejscreenapi::map_headernames %>%        # replace with EJAM::names_d_friendly, names_d_subgroups_friendly  XXX
-  #       filter(newnames_ejscreenapi == cur.name.d) %>% 
-  #       pull(names_friendly)
-  #     
-  #     ## grab D percentile of median site ##  ##
-  #     median.pctile.in.us <- data_summarized()$rows['Median site', paste0('pctile.',cur.name.d)]
-  #     
-  #     exec_text_d <-paste0(
-  #       'Key demographic factor: <strong>',
-  #       cur.name.d.friendly, 
-  #       '</strong><br>',
-  #       'People who live near (within ', input$bt_rad_buff,' mile(s)',#, input$radius_units,
-  #       ' of any of) these ', nrow(data_processed()$results_bysite),
-  #       ' sites have, on average, <strong>', round(cur.ratio.d, 1), ' times</strong> as high indicator values for <strong>', 
-  #       cur.name.d.friendly, '</strong> as the average person in the US (',
-  #       round(100 * data_summarized()$rows['Average person', cur.name.d]), '% vs. ', 
-  #       round(100 * avg.in.us[,cur.name.d]),
-  #       '%)',
-  #       '<br>',
-  #       'The median (50th percentile) site here is at the <strong>', 
-  #       scales::label_ordinal()(median.pctile.in.us),
-  #       '</strong> percentile of all US residents for <strong>', cur.name.d.friendly, '</strong>'
-  #     )
-  #   }
-  #   
-  #   HTML(exec_text_d)
-  #   ## need to add state multiplier?
-  #   ## need to add top X% stat?
-  # })
-  # 
-  # ## _  output: environmental executive summary text ###  #
-  # output$exec_summ_e <- renderUI({
-  #   
-  #   req(data_summarized())
-  #   
-  #   ## can use a dropdown to select indicator
-  #   ## or just use the most extreme one
-  #   type <- 'choose' #'max'
-  #   
-  #   
-  #   ## if only care about max indicator - this is not currently used in favor of the 
-  #   ## dropdown option (type == 'choose')
-  #   if(type == 'max'){
-  #     max.ratio.e <- max(ratio.to.us.e())
-  #     max.name.e <- names(ratio.to.us.e())[which.max(ratio.to.us.e())]
-  #     
-  #     max.name.e.friendly <- EJAM::names_e_friendly[which.max(ratio.to.us.e())]
-  #     
-  #     median.pctile.in.us <- data_summarized()$rows['Median site', paste0('pctile.',max.name.e)]    # *** SHOULD DOUBLE CHECK THIS 
-  #     
-  #     exec_text_e <-paste0(
-  #       'Key environmental factor: <strong>',
-  #       max.name.e.friendly, 
-  #       '</strong><br>',
-  #       'People who live near (within ', input$bt_rad_buff,' miles', #input$radius_units,
-  #       ' of any of) these ', nrow(data_processed()$results_bysite),
-  #       ' sites have, on average, <strong>', round(max.ratio.e, 1), ' times</strong> as high indicator values for <strong>', 
-  #       max.name.e.friendly, '</strong> as the average person in the US (',
-  #       
-  #       round(data_summarized()$rows['Average person', max.name.e], 2), ' vs. ',    # *** SHOULD DOUBLE CHECK THIS 
-  #       round(avg.in.us[,max.name.e], 2),
-  #       
-  #       '). The other environmental indicators have lower ratios.',
-  #       '<br>',
-  #       'The median (50th percentile) site here is at the <strong>', 
-  #       scales::label_ordinal()(median.pctile.in.us),
-  #       '</strong> percentile of all US residents for <strong>', max.name.e.friendly
-  #     )
-  #     
-  #   } else if(type == 'choose'){
-  #     cur.name.e <- input$key_ind_e # names(ratio.to.us.d())[which.max(ratio.to.us.d())]
-  #     cur.ratio.e <- ratio.to.us.e()[cur.name.e]
-  #     
-  #     cur.name.e.friendly <- EJAMejscreenapi::map_headernames %>%    #  # replace with EJAM::names_e_friendly XXX
-  #       filter(newnames_ejscreenapi == cur.name.e) %>% 
-  #       pull(names_friendly)
-  #     
-  #     ## _ grab E percentile of median site ###  #
-  #     median.pctile.in.us <- data_summarized()$rows['Median site', paste0('pctile.',cur.name.e)]
-  #     
-  #     exec_text_e <-paste0(
-  #       'Key environmental factor: <strong>',
-  #       cur.name.e.friendly, 
-  #       '</strong><br>',
-  #       'People who live near (within ', input$bt_rad_buff,' mile(s)',#, input$radius_units,
-  #       ' of any of) these ', nrow(data_processed()$results_bysite),
-  #       ' sites have, on average, <strong>', round(cur.ratio.e, 1), ' times</strong> as high indicator values for ', 
-  #       cur.name.e.friendly, ' as the average person in the US (',
-  #       round( data_summarized()$rows['Average person', cur.name.e], 2), ' vs. ', 
-  #       round(avg.in.us[,cur.name.e], 2),
-  #       ')',
-  #       '<br>',
-  #       'The median (50th percentile) site here is at the <strong>', 
-  #       scales::label_ordinal()(median.pctile.in.us),
-  #       '</strong> percentile of all US residents for <strong>', cur.name.e.friendly, '</strong>'
-  #     )
-  #   }
-  #   
-  #   HTML(exec_text_e)
-  #   ## need to add state multiplier?
-  #   ## need to add top X% stat?
-  # })
-  
-  #############################################################################  # 
-  # ~ ####
   # ______ SITE-BY-SITE TABLE ________ ####
   #output: site by site datatable 
   output$view3_table <- DT::renderDT(server = TRUE, expr = {
@@ -1306,44 +1196,54 @@ app_server <- function(input, output, session) {
     # --------------------------------------------------- #
     # cols_to_select <- names(data_processed)
     # friendly_names <- longnames???
-    cols_to_select <- c('siteid',  'pop', 
-                        EJAMbatch.summarizer::names_all_batch)
-    friendly_names <- c('Site ID', 'Est. Population',  
+    cols_to_select <- c('siteid',  'pop', 'EJScreen Report', 'EJScreen Map', 'ACS Report', 'ECHO report',
+                        EJAMbatch.summarizer::names_all_batch) #should use more of EJAM::names_all than are in EJAMbatch.summarizer::names_all_batch
+    friendly_names <- c('Site ID', 'Est. Population',  'EJScreen Report', 'EJScreen Map', 'ACS Report', 'ECHO report',
                         EJAMbatch.summarizer::names_all_batch_friendly, 
-                        'State', 'EPA Region', '# of indicators above 95% threshold')
+                        '# of indicators above 95% threshold', 'State', 'EPA Region')
     # --------------------------------------------------- #
     
-    dt_overall <- data_processed()$results_overall %>% 
-      as.data.frame() %>% 
-      mutate(siteid = 'All sites', ST = NA,
-             across(where(is.numeric), .fns = function(x) {round(x, digits=2)})) %>% 
-      select(all_of(cols_to_select), ST)
+    # dt_overall <- data_processed()$results_overall %>% 
+    #   as.data.frame() %>% 
+    #   dplyr::mutate(siteid = 'All sites', ST = NA,
+    #          across(where(is.numeric), .fns = function(x) {round(x, digits=2)})) %>% 
+    #   dplyr::select(dplyr::all_of(cols_to_select), ST)
     
     dt <- data_processed()$results_bysite %>% 
       as.data.frame() %>%
-      mutate(across(where(is.numeric), .fns = function(x) {round(x, digits=2)}),
-             siteid = as.character(siteid)) %>%
-      select(all_of(cols_to_select), ST)
+      dplyr::mutate(dplyr::across(dplyr::where(is.numeric), .fns = function(x) {round(x, digits=2)})#,
+             #siteid = as.character(siteid)
+             ) %>%
+      dplyr::select(dplyr::all_of(cols_to_select), ST)
     
-    dt_avg <- data_summarized()$rows[c('Average person','Average site'),] %>% 
-      mutate(siteid = c('Average person', 'Average site'), ST = NA,
-             across(where(is.numeric), .fns = function(x) {round(x, digits=2)}),
-             siteid = as.character(siteid)) %>%
-      select(all_of(cols_to_select), ST)
+    dt$`EJScreen Report` <- EJAMejscreenapi::url_linkify(dt$`EJScreen Report`, text = 'EJScreen Report')
+    dt$`EJScreen Map` <- EJAMejscreenapi::url_linkify(dt$`EJScreen Map`, text = 'EJScreen Map')
+    dt$`ACS Report` <- EJAMejscreenapi::url_linkify(dt$`ACS Report`, text = 'ACS Report')
+    dt$`ECHO report` <- ifelse(!is.na(dt$`ECHO report`), EJAMejscreenapi::url_linkify(dt$`ECHO report`, text = 'ECHO Report'), 
+                                      'N/A')
+    
+    # dt_avg <- data_summarized()$rows[c('Average person','Average site'),] %>% 
+    #   dplyr::mutate(siteid = c('Average person', 'Average site'), ST = NA,
+    #                 dplyr::across(dplyr::where(is.numeric), .fns = function(x) {round(x, digits=2)}),
+    #          siteid = as.character(siteid)) %>%
+    #   dplyr::select(dplyr::all_of(cols_to_select), ST)
     
     dt_final <- dt %>% 
-      bind_cols(data_summarized()$cols) %>% 
-      bind_rows(dt_avg) %>% 
-      bind_rows(dt_overall) %>% 
-      arrange(desc(pop)) %>% 
-      mutate(pop = prettyNum(pop, big.mark = ',')) %>% 
-      left_join(EJAM::stateinfo %>% select(ST, statename, REGION), by = 'ST') %>% 
-      select(-ST, -Max.of.variables)
+      dplyr::bind_cols(data_summarized()$cols) %>% 
+      ## hide summary rows from table
+      #dplyr::bind_rows(dt_avg) %>% 
+      #dplyr::bind_rows(dt_overall) %>% 
+      ## sort by Site ID - as numeric index
+      dplyr::arrange(siteid) %>% 
+      #dplyr::arrange(dplyr::desc(pop)) %>% 
+      dplyr::mutate(pop = prettyNum(pop, big.mark = ',')) %>% 
+      dplyr::left_join(EJAM::stateinfo %>% dplyr::select(ST, statename, REGION), by = 'ST') %>% 
+      dplyr::select(-ST, -Max.of.variables)
     
     colnames(dt_final) <- friendly_names
     
     dt_final <- dt_final %>% 
-      relocate(c(State, 'EPA Region', '# of indicators above 95% threshold'), .before = 2)
+      dplyr::relocate(c(State, 'EPA Region', '# of indicators above 95% threshold'), .before = 2)
     
     n_cols_freeze <- 5
     
@@ -1412,13 +1312,15 @@ app_server <- function(input, output, session) {
       table_bysite  <- copy(data_processed()$results_bysite)
       # table_summarized <- copy(data_processed()$results_summarized)
       # table_bybg_people <- data_processed()$results_bybg_people   # large table !!
+      table_overall <- table_overall %>% dplyr::mutate(dplyr::across(dplyr::where(is.numeric), function(x) ifelse(!is.finite(x), NA, x)))
+      table_bysite <- table_bysite %>% dplyr::mutate(dplyr::across(dplyr::where(is.numeric), function(x) ifelse(!is.finite(x), NA, x)))
       
       ## attempt to clean up some column names xxx - CHECK THIS 
       # longnames_TEST <- EJAMejscreenapi::map_headernames$longname_tableheader[match(names(data_processed()$results_bysite),
       # EJAMejscreenapi::map_headernames$newnames_ejscreenapi)]
       longnames <- data_processed()$longnames
-      
-      names(table_overall) <- ifelse(!is.na(longnames), longnames, names(table_overall))
+      longnames_no_url <- setdiff(longnames, c('EJScreen Report','EJScreen Map','ACS Report','ECHO report'))
+      names(table_overall) <- ifelse(!is.na(longnames_no_url), longnames_no_url, names(table_overall))
       names(table_bysite)  <- ifelse(!is.na(longnames), longnames, names(table_bysite))
       # table_summarized
       # names(table_bybg_people) # CANNOT REALLY TREAT THIS THE SAME - HAS DIFFERENT LIST OF INDICATORS THAN THE OTHER TABLES
@@ -1438,6 +1340,25 @@ app_server <- function(input, output, session) {
       # [3] "results_bybg_people"                 "longnames"                          
       # [5] "count_of_blocks_near_multiple_sites" "results_summarized"  
       
+      ## add analysis overview to 'notes' tab
+      notes_df <- data.frame(
+        'Analysis Title' = input$analysis_title,
+        'Number of Points Analyzed' = nrow(data_processed()$results_bysite),
+        'Radius of Circular Buffer (miles)' = input$bt_rad_buff,
+        check.names = FALSE
+      ) 
+      notes_df <- t(notes_df)
+
+      openxlsx::writeData(wb = wb_out, sheet = 'notes', x = notes_df, rowNames = TRUE, colNames = FALSE)
+      
+      
+      ## add v1_summary_plot() to 'plot' sheet of Excel download
+      ## will be moved to eventual merged 'xls_formatting' function
+      ggsave(filename = paste0(tempdir(), '/', 'summary_plot.png'), plot = v1_summary_plot(),
+             height = 7, width = 9, units = 'in')
+      openxlsx::insertImage(wb_out, sheet = 'plot', 
+                            file = paste0(tempdir(), '/', 'summary_plot.png'),
+                            width = 9, height = 7)
       
       ## save file and return for downloading
       openxlsx::saveWorkbook(wb_out, fname)
@@ -1449,10 +1370,13 @@ app_server <- function(input, output, session) {
   # ______ MAP RESULTS ______ sites selected from site-by-site summary table ####
   
   data_sitemap <- reactiveVal(NULL)
-  
+
   observeEvent(input$view3_table_rows_selected,{
     req(data_processed())
-    data_sitemap(data_uploaded()[input$view3_table_rows_selected,])
+    #data_sitemap(data_uploaded()[input$view3_table_rows_selected,])
+    
+    ## link selected row to doaggregate by site output for mapping
+    data_sitemap(data_processed()$results_bysite[siteid %in% input$view3_table_rows_selected])
   })
   
   output$v3_sitemap <- leaflet::renderLeaflet({
@@ -1463,15 +1387,18 @@ app_server <- function(input, output, session) {
            'Select a specific site in the table to see its location'
       )
     )
-    ## zoom in from original map to show single point (can zoom out and see others)
     
-    orig_leaf_map() %>% 
-      setView(lng = mean(data_sitemap()$lon), lat = mean(data_sitemap()$lat), zoom = 11)
+    ## zoom in from original map to show single point (can zoom out and see others)
+   
+    #orig_leaf_map() #%>%
+     # leaflet::setView(lng = data_sitemap()$lon, lat = data_sitemap()$lat, zoom = 8)
+
     ## alternate: plot single point individually on map (cannot zoom out and see others)
-    # leaflet(data_sitemap()) %>%
-    #   setView(lat = data_sitemap()$lat, lng = data_sitemap()$lon, zoom = 13) %>%
-    #   addTiles() %>%
-    #   addCircles(radius = 1 *  meters_per_mile)
+     leaflet(data_sitemap()) %>%
+       setView(lat = data_sitemap()$lat, lng = data_sitemap()$lon, zoom = 13) %>%
+       addTiles() %>%
+       addCircles(radius = 1 *  meters_per_mile, popup = popup_from_any(data_sitemap()),
+                  popupOptions = popupOptions(maxHeight =  200))
   })
   #############################################################################  # 
   # ~ ####
@@ -1519,7 +1446,7 @@ app_server <- function(input, output, session) {
       dplyr::filter(Summary %in% mybarvars.sumstat)
     
     ## set ggplot theme elements for all versions of barplot
-    ggplot_theme_bar <- theme_bw() +
+    ggplot_theme_bar <- ggplot2::theme_bw() +
       theme(legend.position = 'top',
             axis.text = ggplot2::element_text(size = 16),
             axis.title = ggplot2::element_text(size = 16),
@@ -1534,30 +1461,30 @@ app_server <- function(input, output, session) {
       
       ## pivot from wide to long, 1 row per indicator 
       barplot_data_raw <- barplot_data %>% 
-        select(Summary, all_of( mybarvars)) %>% 
-        pivot_longer(cols = -1, names_to = 'indicator') %>% 
-        mutate(type = 'raw')
+        dplyr::select(Summary, dplyr::all_of( mybarvars)) %>% 
+        tidyr::pivot_longer(cols = -1, names_to = 'indicator') %>% 
+        dplyr::mutate(type = 'raw')
       
       ## median - not currently displayed
       if(mybarvars.stat == 'med'){
         barplot_usa_med <- EJAM::usastats %>% 
-          filter(REGION == 'USA', PCTILE == 50) %>% # for median
-          mutate(Summary = 'Median person in US') %>% 
-          select(Summary, all_of(mybarvars)) %>% 
-          pivot_longer(-Summary, names_to = 'indicator')
+          dplyr::filter(REGION == 'USA', PCTILE == 50) %>% # for median
+          dplyr::mutate(Summary = 'Median person in US') %>% 
+          dplyr::select(Summary, dplyr::all_of(mybarvars)) %>% 
+          tidyr::pivot_longer(-Summary, names_to = 'indicator')
         
         ## NOTE: Median Person calculations are all 0s for now!
-        barplot_input <- bind_rows(barplot_data_raw, barplot_usa_med)
+        barplot_input <- dplyr::bind_rows(barplot_data_raw, barplot_usa_med)
         
         ## average  
       } else {
         barplot_usa_avg <- EJAM::usastats %>% 
-          filter(REGION == 'USA', PCTILE == 'mean') %>% 
-          mutate(Summary = 'Average person in US') %>% 
-          select(Summary, all_of(mybarvars)) %>% 
-          pivot_longer(-Summary, names_to = 'indicator')
+          dplyr::filter(REGION == 'USA', PCTILE == 'mean') %>% 
+          dplyr::mutate(Summary = 'Average person in US') %>% 
+          dplyr::select(Summary, dplyr::all_of(mybarvars)) %>% 
+          tidyr::pivot_longer(-Summary, names_to = 'indicator')
         
-        barplot_input <- bind_rows(barplot_data_raw, barplot_usa_avg)
+        barplot_input <- dplyr::bind_rows(barplot_data_raw, barplot_usa_avg)
       }
       
       ## set # of characters to wrap labels
@@ -1584,56 +1511,56 @@ app_server <- function(input, output, session) {
     } else if(input$summ_bar_data == 'ratio'){
       
       barplot_data_raw <- barplot_data %>% 
-        select(Summary, all_of( mybarvars)) %>% 
-        pivot_longer(cols = -1, names_to = 'indicator') 
+        dplyr::select(Summary, dplyr::all_of( mybarvars)) %>% 
+        tidyr::pivot_longer(cols = -1, names_to = 'indicator') 
       
       ## average
       if(mybarvars.stat == 'avg'){
         ## pull US average values from EJAM::usastats to compute ratios
-        barplot_usa_avg <-  bind_rows(
+        barplot_usa_avg <-  dplyr::bind_rows(
           EJAM::usastats %>% 
-            filter(REGION == 'USA', PCTILE == 'mean') %>% 
-            mutate(Summary = 'Average person') %>%
-            select(Summary, all_of(mybarvars)) %>% 
-            pivot_longer(-Summary, names_to = 'indicator', values_to = 'usa_value'),
+            dplyr::filter(REGION == 'USA', PCTILE == 'mean') %>% 
+            dplyr::mutate(Summary = 'Average person') %>%
+            dplyr::select(Summary, dplyr::all_of(mybarvars)) %>% 
+            tidyr::pivot_longer(-Summary, names_to = 'indicator', values_to = 'usa_value'),
           EJAM::usastats %>% 
-            filter(REGION == 'USA', PCTILE == 'mean') %>% 
-            mutate(Summary = 'Average site') %>%
-            select(Summary, all_of(mybarvars)) %>% 
-            pivot_longer(-Summary, names_to = 'indicator', values_to = 'usa_value')
+            dplyr::filter(REGION == 'USA', PCTILE == 'mean') %>% 
+            dplyr::mutate(Summary = 'Average site') %>%
+            dplyr::select(Summary, dplyr::all_of(mybarvars)) %>% 
+            tidyr::pivot_longer(-Summary, names_to = 'indicator', values_to = 'usa_value')
         )
         
         ## combine raw data with US averages 
-        barplot_input <- left_join(
+        barplot_input <- dplyr::left_join(
           barplot_data_raw, 
           barplot_usa_avg
         ) %>% 
           ## divide to get ratios
-          mutate(ratio = value / usa_value) %>% 
+          dplyr::mutate(ratio = value / usa_value) %>% 
           ## add row of all 1s to represent US average ratio being constant at 1
-          bind_rows(
+          dplyr::bind_rows(
             data.frame(Summary = 'Average person in US', indicator = mybarvars, value = 1, usa_value = 1, ratio = 1)
           )
         
       } else {
         ## median - not currently displayed
-        barplot_usa_med <-  bind_rows(
+        barplot_usa_med <-  dplyr::bind_rows(
           EJAM::usastats %>% 
-            filter(REGION == 'USA', PCTILE == 50) %>% 
-            mutate(Summary = 'Median person') %>%
-            select(Summary, all_of(mybarvars)) %>% 
-            pivot_longer(-Summary, names_to = 'indicator', values_to = 'usa_value'),
+            dplyr::filter(REGION == 'USA', PCTILE == 50) %>% 
+            dplyr:: mutate(Summary = 'Median person') %>%
+            dplyr::select(Summary, dplyr::all_of(mybarvars)) %>% 
+            tidyr::pivot_longer(-Summary, names_to = 'indicator', values_to = 'usa_value'),
           EJAM::usastats %>% 
-            filter(REGION == 'USA', PCTILE == 50) %>% 
-            mutate(Summary = 'Median site') %>%
-            select(Summary, all_of(mybarvars)) %>% 
-            pivot_longer(-Summary, names_to = 'indicator', values_to = 'usa_value')
+            dplyr::filter(REGION == 'USA', PCTILE == 50) %>% 
+            dplyr::mutate(Summary = 'Median site') %>%
+            dplyr::select(Summary, dplyr::all_of(mybarvars)) %>% 
+            tidyr::pivot_longer(-Summary, names_to = 'indicator', values_to = 'usa_value')
         )
         
-        barplot_input <- left_join(barplot_data_raw, barplot_usa_med) %>% 
+        barplot_input <- dplyr::left_join(barplot_data_raw, barplot_usa_med) %>% 
           ## calc ratio
-          mutate(ratio = value / usa_value) %>% 
-          bind_rows(
+          dplyr::mutate(ratio = value / usa_value) %>% 
+          dplyr::bind_rows(
             data.frame(Summary = 'Median person in US', indicator = mybarvars, value = 1, usa_value = 1, ratio = 1)
           )
       }
@@ -1643,7 +1570,7 @@ app_server <- function(input, output, session) {
       
       ## join and plot
       barplot_input %>% 
-        left_join( data.frame(indicator = mybarvars, indicator_label =  mybarvars.friendly)) %>% 
+        dplyr::left_join( data.frame(indicator = mybarvars, indicator_label =  mybarvars.friendly)) %>% 
         ggplot() +
         ## add bars - position = 'dodge' places the 3 categories next to each other
         geom_bar(aes(x = indicator_label, y = ratio, fill = Summary), stat='identity', position='dodge') +
@@ -1786,22 +1713,6 @@ app_server <- function(input, output, session) {
   # >>>>>  FULL REPORT DOWNLOAD _________ ####
   # ~--------------------------- ####
   
-  
-  ## show modal with report outline ####
-  # observeEvent(input$show_outline, {    # I DONT THINK THIS POPUP OUTLINE LOOKS GREAT AND IT IS HARD TO KEEP IN SYNC WITH ACTUAL RMD OUTLINE
-  #   showModal(
-  #     modalDialog(
-  #       #HTML(report_outline)
-  #       HTML(
-  #         stringr::str_replace(report_outline, 
-  #                              'Broad overview of findings',
-  #                              '<mark>Broad overview of findings</mark>'
-  #         )
-  #       )
-  #     )
-  #   )
-  # })
-  
   ## code for storing all shiny input values - not used currently
   # observeEvent(input$all_tabs == 'Generate Report',
   #  {
@@ -1816,8 +1727,16 @@ app_server <- function(input, output, session) {
       # case we don't have write permissions to the current working dir (which
       # can happen when deployed).
       tempReport <- file.path(tempdir(), "report.Rmd")
-      file.copy("www/report.Rmd", tempReport, overwrite = TRUE)
-
+      ## copy Rmd from inst/report to temp folder
+      file.copy(from = app_sys('report', 'report.Rmd'),
+                to = tempReport, overwrite = TRUE)
+      ## pass image and bib files needed for knitting to temp directory
+      for(i in list.files(app_sys('report'), pattern = '.png|.bib')){
+        file.copy(from = app_sys('report', i),
+                  to = file.path(tempdir(), i), 
+                  overwrite = TRUE)
+      }
+      
       # Set up parameters to pass to Rmd document - 
       #  MAKE SURE all parameter names are used (identical names, & all are there) in these 4 places: 
       #  1. input$ ids in app_ui.R, from user, to customize the long report

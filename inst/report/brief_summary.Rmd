@@ -1,0 +1,135 @@
+---
+title: "&#32;"
+output: html_document
+params:
+  testmode: TRUE
+  sitecount: NA
+  distance: NA
+  total_pop: NA
+  analysis_title: NA
+  results: NA
+  map: NA
+  envt_table: NA
+  demog_table: NA
+  summary_plot: NA
+---
+
+<style>
+.html-widget {
+margin: auto;
+}
+</style>
+
+------------------------------------------------------------------------
+
+::: {#logorow .row}
+::: {.col-xs-6 style="text-align: left;"}
+![](https://ejscreen.epa.gov/mapper/images/epalogo_ej.png)
+
+:::
+::: {.col-xs-6 style="text-align: right;"}
+![](https://ejscreen.epa.gov/mapper/images/ejlogo.png)
+
+:::
+:::
+
+::: {#reporthead style="font-weight: bold; font-size: 14pt; font-family: Tahoma; text-align: center;"}
+EJAM Report (EJScreen v2.1)
+:::
+::: {#headerDiv style="font-weight: bold; font-size: 11pt; text-align: center;"}
+`r params$analysis_title`\
+Residents within `r params$distance` of any of the `r params$sitecount` sites analyzed\
+\
+Total Population: `r params$total_pop`
+:::
+
+```{r, echo=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+```{r}
+library(DT)
+library(EJAM)
+# library(EJAMbatch.summarizer)
+library(ggplot2)
+```
+
+```{r, out.width ='900px'}
+
+params$demog_table
+
+# dt <- cbind('Value at Uploaded Sites' = as.list( 100*round(params$results$results_overall[ , ..names_d], 2)),
+#          'State Percentile' = as.list(round(params$results$results_overall[, ..names_d_state_pctile], 2)),
+#          'National Percentile' = as.list(round(params$results$results_overall[, ..names_d_pctile], 2)))
+#    
+#  rownames(dt) <- names_d_friendly[pmatch(names_d, EJAMbatch.summarizer::names_d_batch)]
+#  rownames(dt)[1] <- 'Demographic Index'
+#  
+#  dt <- as.data.frame(dt) %>% rownames_to_column(var = 'Indicator')
+#    
+#  DT::datatable(dt, rownames = FALSE, 
+#                options = list(autoWidth = TRUE))
+```
+
+
+```{r summary_plot, out.width='100%', fig.align='center'}
+
+ params$summary_plot #+
+#   
+# # can we pass the entire plot to this short report as a parameter, to avoid duplication of code here?
+# 
+#   ggplot2::scale_x_discrete(labels = function(x) stringr::str_wrap(x, 9)) +
+#   ggplot2::theme(
+#     plot.title    = ggplot2::element_text(hjust=0.5, size=12),
+#     plot.subtitle = ggplot2::element_text(hjust=0.5, size=11),
+#     axis.title.y  = ggplot2::element_text(size=10),
+#     axis.text     = ggplot2::element_text(size=9)
+#   )
+```
+<!-- another rendering option - save plot as figure in chunk and show here -->
+<!-- chunk options: dev='png', fig.show='hide', -->
+<!-- ![Test summary plot image](`r knitr::fig_chunk('summary_plot', 'png')`) -->
+
+
+::: {style="font-size: 8pt; color: navy; font-family: sans-serif;"}
+This report shows the values for environmental and demographic indicators. It shows environmental and demographic raw data (e.g., the estimated concentration of ozone in the air), and also shows what percentile each raw data value represents. These percentiles provide perspective on how the selected block group or buffer area compares to the entire state or nation. For example, if a given location is at the 95th percentile nationwide, this means that only 5 percent of US block groups have a higher value than the average person in the location being analyzed. The years for which the data are available, and the methods used, vary across these indicators. Important caveats and uncertainties apply to this screening-level information, so it is essential to understand the limitations on appropriate interpretations and applications of these indicators. Please see EJScreen documentation for discussion of these issues before using reports.
+:::
+
+***
+
+```{r, fig.align='center'}
+
+params$map
+
+```
+
+
+```{r}
+
+params$envt_table
+
+# dt <- cbind('Value at Uploaded Sites' = 
+#                   as.list(round(params$results$results_overall[ , ..names_e],2)),
+#           'State Percentile' = as.list(round(params$results$results_overall[, ..names_e_state_pctile],2)),
+#           'Percentile in USA' = as.list(round(params$results$results_overall[, ..names_e_pctile],2)))
+#     
+#     #scales::percent_format(accuracy = 0.1)()
+#     rownames(dt) <- names_e_friendly[pmatch(names_e, names_e)]
+#     
+#     dt <- as.data.frame(dt) %>% rownames_to_column(var = 'Indicator')
+#     
+#     DT::datatable(dt, rownames=FALSE,
+#                   options = list(autoWidth = TRUE))
+```
+
+::: {style="font-size: 8pt; color: navy; font-family: sans-serif;"}
+\*Diesel particulate matter, air toxics cancer risk, and air toxics respiratory hazard index are from the EPA's Air Toxics Data Update, which is the Agency's ongoing, comprehensive evaluation of air toxics in the United States. This effort aims to prioritize air toxics, emission sources, and locations of interest for further study. It is important to remember that the air toxics data presented here provide broad estimates of health risks over geographic areas of the country, not definitive risks to specific individuals or locations. Cancer risks and hazard indices from the Air Toxics Data Update are reported to one significant figure and any additional significant figures here are due to rounding. More information on the Air Toxics Data Update can be found at:<https://www.epa.gov/haps/air-toxics-data-update>
+:::
+
+For additional information, see: [https://www.epa.gov/environmentaljustice]
+
+***
+
+::: {style="font-size: 8pt; color: navy; font-family: sans-serif;"}
+Users should keep in mind that screening tools are subject to substantial uncertainty in their demographic and environmental data, particularly when looking at small geographic areas. Important caveats and uncertainties apply to this screening-level information, so it is essential to understand the limitations on appropriate interpretations and applications of these indicators. Please see EJScreen documentation for discussion of these issues before using reports. This screening tool does not provide data on every environmental impact and demographic factor that may be relevant to a particular location. EJScreen outputs should be supplemented with additional information and local knowledge before taking any action to address potential EJ concerns.
+:::

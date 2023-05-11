@@ -236,13 +236,14 @@ Figure \ref{fig1} shows a map of the sites analyzed.
 ```{r fig1, fig.cap = "\\label{fig1}Map of Analyzed Sites", echo=FALSE,  out.height='280px', out.width='600px'}
 # save(params, file="temp params.rda")
 # print(params)
-#
+# browser() 
 print(params$testmode) 
 # if (file.exists(params$map_placeholder_png)) {
 if (params$testmode) {
   knitr::include_graphics(rel_path = TRUE, path = params$map_placeholder_png)
 } else {
-  print( params$map )
+  params$map
+  #print( params$map )
 }
 
 # # did not work, not sure why:
@@ -428,7 +429,8 @@ discussion of plot goes here
 if (params$testmode) {
   knitr::include_graphics(rel_path = TRUE, path = params$barplot_placeholder_png)
 } else {
-print( params$barplot  )
+  params$barplot
+#print( params$barplot  )
 }
 
 # if ("NA" == (params$barplot)) {
@@ -500,17 +502,17 @@ Shore and Watts Bar).
 ## Data Viz 3 -- Boxplots
 
 ```{r boxplot, echo=FALSE,  out.height='500px', out.width='800px'}
-if (params$testmode) {
+#if (params$testmode) {
    knitr::include_graphics(rel_path = TRUE, path = params$boxplot_placeholder_png)
-} else {
-    params$boxplot +
-  ggplot2::scale_x_discrete(labels = function(x) stringr::str_wrap(x, 10)) +
-  ggplot2::theme(plot.title = ggplot2::element_text(hjust=0.5, size=12),
-        plot.subtitle = ggplot2::element_text(hjust=0.5, size=11),
-        axis.title.y = ggplot2::element_text(size=10),
-        axis.text = ggplot2::element_text(size=9)
-        )
-}
+#} else {
+#     params$boxplot +
+#   ggplot2::scale_x_discrete(labels = function(x) stringr::str_wrap(x, 10)) +
+#   ggplot2::theme(plot.title = ggplot2::element_text(hjust=0.5, size=12),
+#         plot.subtitle = ggplot2::element_text(hjust=0.5, size=11),
+#         axis.title.y = ggplot2::element_text(size=10),
+#         axis.text = ggplot2::element_text(size=9)
+#         )
+# }
 # if ("NA" == (params$boxplot)) {
 # 
 # } else {
@@ -565,7 +567,7 @@ discussion of table here
 if (params$testmode) {
    knitr::include_graphics(rel_path = TRUE, path = params$envt_table_placeholder_png)
 } else {
-params$envt_table
+  params$envt_table
 }
 # 
 # if ("NA" !=  (params$envt_table)) {
@@ -986,6 +988,7 @@ pandoc is used for citations instead of `natbib`.
 # <!--     R (>= 2.10),  -->
 # <!--     shiny (>= 1.7.2), -->
 # <!--     EJAMblockdata, -->
+# <!--     EJAMfrsdata, -->
 # <!--     EJAMbatch.summarizer, -->
 # <!--     EJAMejscreenapi -->
 # <!-- Imports: -->
@@ -1019,6 +1022,7 @@ pandoc is used for citations instead of `natbib`.
 # <!--   data.table -->
 # <!-- Remotes:  -->
 # <!--     github::USEPA/EJAMblockdata, -->
+# <!--     github::USEPA/EJAMfrsdata, -->
 # <!--     github::USEPA/EJAMejscreenapi, -->
 # <!--     github::USEPA/EJAMbatch.summarizer, -->
 # <!--     github::USEPA/EJAMejscreendata -->
@@ -1029,7 +1033,7 @@ pandoc is used for citations instead of `natbib`.
 
 ```
 
-```{r eval=params$testmode, message=FALSE, warning=FALSE, include=FALSE}
+```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
 # Developer notes on creating this document
 
 #### Developer notes on EJAM Tool Parameter Values
