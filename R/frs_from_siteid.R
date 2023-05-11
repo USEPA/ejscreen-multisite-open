@@ -41,14 +41,6 @@ frs_from_programid <- function(programid) {
 #' @param program vector of one or more EPA Program names used by FRS 
 #' @return relevant rows of the data.table called frs, which has column names that are
 #'   "lat" "lon" "REGISTRY_ID" "PRIMARY_NAME" "NAICS" "PGM_SYS_ACRNMS"
-#' @examples  
-#'     mapfast(latlon_from_program("CAMDBS"))
-#'     #p1="TRIS"; p2="EIS"; 
-#'     #analyze.stuff::overlaps(
-#'     #  latlon_from_program(p1)$REGISTRY_ID, 
-#'     #  latlon_from_program(p2)$REGISTRY_ID, 
-#'     #  ab_names = c(p1,p2)
-#'     #)
 #'     
 #' @export
 frs_from_program  <- function(program) {

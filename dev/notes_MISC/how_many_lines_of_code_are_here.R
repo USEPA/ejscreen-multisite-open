@@ -11,7 +11,7 @@
 
 
 
-#     x <- analyze.stuff::linesofcode('..', packages = EJAM::ejampackages,  rfolderonly = TRUE)
+#     x <- analyze.stuff  linesofcode('..', packages = EJAM::ejampackages,  rfolderonly = TRUE)
 #
 # cat(round(100 * sum(x$comments)/sum(x$lines),1), "% of all lines in R folders are comments not code.\n")
 ## 23.9 % of all lines in R folders are comments not code.
@@ -63,7 +63,7 @@
 
 
 
-# > analyze.stuff::linesofcode('..', packages = EJAM::ejampackages )
+# > analyze.stuff  linesofcode('..', packages = EJAM::ejampackages )
 # 
 #                package filename lines    INCLUDING R FOLDER AND OTHERS
 
@@ -105,7 +105,7 @@
 
 
  
-# > sapply(EJAM::ejampackages, FUN = function(ppp) analyze.stuff::linesofcode('..', packages = ppp, rfolderonly = TRUE))
+# > sapply(EJAM::ejampackages, FUN = function(ppp) analyze.stuff    linesofcode('..', packages = ppp, rfolderonly = TRUE))
 # 
 # package filename lines
 # 1    EJAM       84 10972

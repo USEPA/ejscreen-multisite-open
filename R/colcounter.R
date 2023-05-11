@@ -32,9 +32,7 @@
 colcounter <- function(x, cutoff, or.tied=TRUE, na.rm=TRUE, below=FALSE, one.cut.per.col=FALSE) {
   # Function to count SCORES ABOVE BENCHMARK(S) at each place, returns list as long as NROW(x).
   #
-  # *** This function should be very similar to or same as
-  #    analyze.stuff::cols.above.count but or.tied= has different default?
-
+ 
   if (is.null(dim(x))) {numcols <- 1; stop('expected data.frame as x but has only 1 dimension')} else {numcols <- dim(x)[2]}
   if (missing(cutoff)) {
     if (one.cut.per.col) {

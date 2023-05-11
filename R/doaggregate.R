@@ -615,7 +615,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL,
   # CALCULATE PERCENT DEMOGRAPHICS FROM SUMS OF COUNTS, via FORMULAS  [hardcoded here, for now]
   #
   # but should do that using a list of formulas like in ejscreen::ejscreenformulas 
-  # and a function like analyze.stuff::calc.fields() 
+  # and a function like analyze.stuff  calc.fields() 
   ##################################################### #
   
   #      NOTE ON PERCENTAGES AS 0 TO 1.00 RATHER THAN O TO 100.

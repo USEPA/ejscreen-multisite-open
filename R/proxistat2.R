@@ -20,7 +20,7 @@
 #'  # x <- proxistat2(pts = pts[1:1000,], quadtree = localtree) 
 #'  #
 #'  # summary(x$proximityscore)
-#'  # # analyze.stuff::pctiles(x$proximityscore)
+#'  # # analyze.stuff   pctiles(x$proximityscore)
 #'  # plot(x$lon, x$lat)
 #'  # tops = x$proximityscore > 500 & !is.infinite(x$proximityscore) & !is.na(x$proximityscore)
 #'  # points(x$lon[tops], x$lat[tops], col="red")
