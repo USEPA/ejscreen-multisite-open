@@ -1,0 +1,33 @@
+#' latlon_from_mactsubpart
+#' Get point locations for US EPA-regulated facilities that have  
+#'   sources subject to Maximum Achievable Control Technology (MACT) standards
+#'   under the Clean Air Act.
+#' @details See <https://www.epa.gov/stationary-sources-air-pollution/national-emission-standards-hazardous-air-pollutants-neshap-8>
+#' @param subpart vector of one or more strings indicating the 
+#'   Subpart of CFR Title 40 Part 63 that covers the source category 
+#'   of interest, such as "FFFF" - see for example, 
+#'   <https://www.ecfr.gov/current/title-40/part-63/subpart-FFFF>
+#'
+#' @return a table of lat, lon, subpart, etc. for US EPA FRS sites with that MACT code
+#' @export
+#'
+latlon_from_mactsubpart <- function(subpart) {
+  # https://www.ecfr.gov/reader-aids/ecfr-developer-resources
+  #  https://www.ecfr.gov/current/title-40/part-63/subpart-FFFF
+  #  https://www.ecfr.gov/current/title-40/chapter-I/subchapter-C/part-63/subpart-FFFF
+  # subparts here focus on various source categories, from F onwards.
+  # https://github.com/usgpo/bulk-data/blob/master/ECFR-XML-User-Guide.md
+  
+  # see e.g.,  https://www.govinfo.gov/content/pkg/FR-2012-09-19/pdf/2012-20642.pdf#page=1 
+  #   which showed NAICS 332813 (and 3311 and 3312) for MACT subpart N (and subpart C) 
+     # as being MACT codes 1607, 1610, 1615 (and 0310).
+  # Chromium Electroplating NESHAP, Subpart N  
+  #   Chromium Anodizing Tanks .........................................332813 1607
+  #   Decorative Chromium Electroplating ............................   332813 1610
+  #   Hard Chromium Electroplating .....................................332813 1615
+  # Steel Pickling—HCl Process Facilities And Hydrochloric Acid Regeneration Plants NESHAP, Subpart CCC ..... 3311, 3312  0310
+
+    stop("latlon_from_mactsubpart() is not yet available")
+  
+  
+}
