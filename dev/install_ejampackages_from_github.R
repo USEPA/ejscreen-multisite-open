@@ -18,9 +18,11 @@ devtools::install_github('USEPA/EJAMejscreenapi',      force=TRUE, upgrade=F) # 
 devtools::install_github('USEPA/EJAMbatch.summarizer', force=TRUE, upgrade=F) # works fine.
 
 
-devtools::install_github('USEPA/EJAM',                 force=TRUE, upgrade=F) # works/worked fine, now includes frs.rda, etc. but needs EJAMblockdata
+devtools::install_github('USEPA/EJAM',                 force=TRUE, upgrade=F) 
+# works/worked fine, now includes frs.rda, etc. but needs EJAMblockdata
 
-devtools::install_github('USEPA/EJAMblockdata',        force=TRUE, upgrade=F)  # failed
+devtools::install_github('USEPA/EJAMblockdata',        force=TRUE, upgrade=F) 
+# failed
 
 # # errors most recently, 
 # > library(credentials)
