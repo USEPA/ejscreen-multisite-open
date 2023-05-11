@@ -82,7 +82,7 @@ product or activity by EPA or the United States Government.
     
 
 -   OW’s EJSCREENbatch package repo: [OW’s
-    EJSCREENbatch](https://github.com/USEPA/EJSCREENBatch#readme)
+    [EJSCREENbatch](https://github.com/USEPA/EJSCREENBatch#readme)
 
 ## Documentation
 

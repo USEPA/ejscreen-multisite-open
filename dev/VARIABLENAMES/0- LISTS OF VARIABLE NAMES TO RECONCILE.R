@@ -5,8 +5,8 @@
 # 
 # --------VARIABLES NAMES TABLES/LISTS TO MERGE:---------
 # 
-# 	OW EJSCREENbatch:: inputs as needed for OW tool? (ACS, ejscreen, Census?)
-# **	OW EJSCREENbatch:: outputs (just the buffering part that should output counts?; not summary/ graphics/tables?)
+# 	OW EJSCREENbatch :: inputs as needed for OW tool? (ACS, ejscreen, Census?)
+# **	OW EJSCREENbatch :: outputs (just the buffering part that should output counts?; not summary/ graphics/tables?)
 # 
 # **	EJAM::blockgroupstats dataset	
 # 	EJAM::doaggregate() source code has lists of formulas and variables, including which are summed, wtd mean, or calculated via formulas.
