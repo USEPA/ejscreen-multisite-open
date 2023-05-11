@@ -1197,9 +1197,9 @@ app_server <- function(input, output, session) {
     # cols_to_select <- names(data_processed)
     # friendly_names <- longnames???
     cols_to_select <- c('siteid',  'pop', 'EJScreen Report', 'EJScreen Map', 'ACS Report', 'ECHO report',
-                        EJAMbatch.summarizer::names_all)
+                        EJAMbatch.summarizer::names_all_batch) #should use more of EJAM::names_all than are in EJAMbatch.summarizer::names_all_batch
     friendly_names <- c('Site ID', 'Est. Population',  'EJScreen Report', 'EJScreen Map', 'ACS Report', 'ECHO report',
-                        EJAMbatch.summarizer::names_all_friendly, 
+                        EJAMbatch.summarizer::names_all_batch_friendly, 
                         '# of indicators above 95% threshold', 'State', 'EPA Region')
     # --------------------------------------------------- #
     
