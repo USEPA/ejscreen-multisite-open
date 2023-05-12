@@ -20,13 +20,13 @@
 #'  # x <- proxistat2(pts = pts[1:1000,], quadtree = localtree) 
 #'  #
 #'  # summary(x$proximityscore)
-#'  # # analyze.stuff::pctiles(x$proximityscore)
+#'  # # analyze.stuff   pctiles(x$proximityscore)
 #'  # plot(x$lon, x$lat)
 #'  # tops = x$proximityscore > 500 & !is.infinite(x$proximityscore) & !is.na(x$proximityscore)
 #'  # points(x$lon[tops], x$lat[tops], col="red")
 #'  
 proxistat2 <- function(pts, cutoff=8.04672, quadtree) {
-  
+  stop("this does not work without proxistat package dataset ")
   warning("temporarily uses block areas from another dataset for most but not all blocks")
   warning("if none found within cutoff of 5km, this func does not yet create score based on single nearest - see source code for notes")
   ######################################## #
@@ -69,7 +69,7 @@ proxistat2 <- function(pts, cutoff=8.04672, quadtree) {
   
   #  ADJUST DISTANCE USING A MINIMUM DISTANCE ####
   # BASED ON SIZE (AREA) OF BLOCK, as in EJScreen proximity scores
-  # proxistat::blockpoints_area_pop  has area in square meters, not yet added to EJAMblockdata  blockpoints
+  # proxistat  package  blockpoints_area_pop  has area in square meters, not yet added to EJAMblockdata  blockpoints
   # > dim( blockpoints)
   # [1] 8174955       3
   # > dim(blockpoints_area_pop)
@@ -83,7 +83,10 @@ proxistat2 <- function(pts, cutoff=8.04672, quadtree) {
   # min.dist <- 0.9 * sqrt( area / pi )
   # min.dist <- (0.9 / sqrt(pi)) * sqrt(area)
   # (0.9 / sqrt(pi)) = 0.5077706  # so, min.dist := 0.5077706 * sqrt(area)
-  sites2blocks_dt <- proxistat::blockpoints_area_pop[sites2blocks_dt, .(blockid, distance, siteid, area), on="blockid"]
+  
+  # this dataset called blockpoints_area_pop  was in the proxistat package:
+  sites2blocks_dt <- blockpoints_area_pop[sites2blocks_dt, .(blockid, distance, siteid, area), on="blockid"]
+  
   # area was in square meters, so convert   1609.344 meters per mile 
   sites2blocks_dt[ , min.dist.km := 0.0005077706 * sqrt(area)]
   sites2blocks_dt[ , distance.km := pmax(min.dist.meters, distance * km_a_mile, na.rm = TRUE)] # collapse::fmin() is probably much faster

@@ -8,13 +8,6 @@
 
 
 
-library(magrittr)
-library(dplyr)
-library(devtools)
-if (!require("EJSCREENbatch")) {
-  devtools::install_github('USEPA/EJSCREENbatch', build_vignettes=TRUE)
-  library(EJSCREENbatch)
-}
 
 ########################################################################## # 
 # selected key lines from ejscreenbatch, NOT WORKING SCRIPT HERE, JUST NOTES:

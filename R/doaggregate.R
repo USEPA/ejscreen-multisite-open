@@ -198,7 +198,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL,
     sites2blocks[distance < 0.063, proximityscore := 1/0.56]  # ROUGHLY 100 yards used as a placeholder until fixed
     # sites2blocks[is.infinite(proximityscore), proximityscore := NA]  # if distance==0, proximityscore is Inf, which sort of makes sense. but would NA make more sense than Inf ?
     # warning('proximityscore lacks small distance adjustment factor - not yet implemented')
-    ## proxistat::blockpoints_area_pop[ , .(blockid, area)]  has this area info (in square meters!!) but need it in blockwts  
+    ## see in proxistat pkg,  blockpoints_area_pop[ , .(blockid, area)]  has this area info (in square meters!!) but need it in blockwts  
     ## area.sq.mi =   area / (meters_per_mile^2)   #  = convert_units(area, from = "sqm", towhat = "sqmi")
     # blockwts[ , effectiveradius :=  sqrt(area.sq.mi/pi)  ]  ## because  area=pi*radius^2 
     ##  sites2blocks$effectiveradius  needed or do calc during join
@@ -615,7 +615,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL,
   # CALCULATE PERCENT DEMOGRAPHICS FROM SUMS OF COUNTS, via FORMULAS  [hardcoded here, for now]
   #
   # but should do that using a list of formulas like in ejscreen::ejscreenformulas 
-  # and a function like analyze.stuff::calc.fields() 
+  # and a function like analyze.stuff  calc.fields() 
   ##################################################### #
   
   #      NOTE ON PERCENTAGES AS 0 TO 1.00 RATHER THAN O TO 100.

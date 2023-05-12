@@ -22,11 +22,9 @@ read_to_save_as_data <- function(myname, mydir=getwd(), justread=TRUE, rename=FA
 }
 
 # specify folder ####
-if (analyze.stuff::os() != 'win') {
-  mydir <- '~/Documents/R PACKAGES/ejscreen'
-} else {
-  mydir <- '~/../Documents/R/mypackages/ejscreen'
-}
+
+  mydir <- '....../ejscreen'
+ 
 
 stop('here')
 

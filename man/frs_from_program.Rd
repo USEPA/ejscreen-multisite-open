@@ -17,14 +17,3 @@ relevant rows of the data.table called frs, which has column names that are
 Get data.table based on given FRS Program System CATEGORY.
 Find all FRS sites in a program like RCRAINFO, TRIS, or others.
 }
-\examples{
- 
-    mapfast(latlon_from_program("CAMDBS"))
-    #p1="TRIS"; p2="EIS"; 
-    #analyze.stuff::overlaps(
-    #  latlon_from_program(p1)$REGISTRY_ID, 
-    #  latlon_from_program(p2)$REGISTRY_ID, 
-    #  ab_names = c(p1,p2)
-    #)
-    
-}

@@ -364,6 +364,7 @@ namez <- lapply(namesoflistsofnames, get)
 names(namez) <- gsub("^names_","", namesoflistsofnames)
 
 # **names_all__ ####
+# NOTE THIS IS VERY DIFFERENT THAN names_all_batch !!
 names_all <- as.vector(unlist(namez))
 names_all <- unique(names_all) # pop would appear twice
 
