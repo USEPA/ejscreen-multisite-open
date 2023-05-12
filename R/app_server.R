@@ -277,9 +277,9 @@ app_server <- function(input, output, session) {
     cat("method is ", current_upload_method(), "\n")
     
     ## send message if no data uploaded
-    validate(
-      need(num_ul_methods() > 0, "Please upload a data set")
-    )
+    # validate(
+    #   need(num_ul_methods() > 0, "Please upload a data set")
+    # )
     
     ## if more than 1 upload method used, it will try to use the one
     ## that is currently selected by the ss_choose_method radio button
@@ -347,20 +347,29 @@ app_server <- function(input, output, session) {
   # ______ VIEW UPLOADED / SELECTED POINTS ####
   # ~ ####
   
+  
   ## How many valid points? warn if no valid lat/lon ####
   output$an_map_text <- renderUI({
     req(data_uploaded())
-    #separate inputs with valid/invalid lat/lon values
-    num_na    <- nrow(data_uploaded()[ (is.na(data_uploaded()$lat) | is.na(data_uploaded()$lon)),])
-    num_notna <- nrow(data_uploaded()[!(is.na(data_uploaded()$lat) | is.na(data_uploaded()$lon)),])
-    ## if invalid data found, send modal to screen
-    if(num_na > 0){
-      showModal(modalDialog(title = 'Invalid data found', 'FYI, some of your data was not valid.', size = 's'))
-    }
-    HTML(paste0('Current upload method: <strong>',  current_upload_method(), '</strong><br>', 
-                'Total site(s) uploaded: <strong>', prettyNum(nrow(data_uploaded()), big.mark=','),'</strong><br>',
-                'Valid site(s) uploaded: <strong>', prettyNum(num_notna, big.mark=','),'</strong><br>',
-                'Site(s) with invalid lat/lon values: <strong>', prettyNum(num_na,big.mark=','), '</strong>'))
+    
+      #separate inputs with valid/invalid lat/lon values
+      num_na    <- nrow(data_uploaded()[ (is.na(data_uploaded()$lat) | is.na(data_uploaded()$lon)),])
+      num_notna <- nrow(data_uploaded()[!(is.na(data_uploaded()$lat) | is.na(data_uploaded()$lon)),])
+      ## if invalid data found, send modal to screen
+      if(num_na > 0){
+        showModal(modalDialog(title = 'Invalid data found', 'FYI, some of your data was not valid.', size = 's'))
+      }
+      
+      HTML(paste0(
+                  'Total site(s) uploaded: <strong>', prettyNum(nrow(data_uploaded()), big.mark=','),'</strong><br>',
+                  'Valid site(s) uploaded: <strong>', prettyNum(num_notna, big.mark=','),'</strong>')
+           )
+                  #'Site(s) with invalid lat/lon values: <strong>', prettyNum(num_na,big.mark=','), '</strong>'))
+      # HTML(paste0('Current upload method: <strong>',  current_upload_method(), '</strong><br>', 
+      #             'Total site(s) uploaded: <strong>', prettyNum(nrow(data_uploaded()), big.mark=','),'</strong><br>',
+      #             'Valid site(s) uploaded: <strong>', prettyNum(num_notna, big.mark=','),'</strong><br>',
+      #             'Site(s) with invalid lat/lon values: <strong>', prettyNum(num_na,big.mark=','), '</strong>'))
+    
   })
   
   ## See table of uploaded points ####
@@ -452,7 +461,18 @@ app_server <- function(input, output, session) {
   
   ## output: draw map of uploaded points ####
   output$an_leaf_map <- leaflet::renderLeaflet({
-    req(data_uploaded())
+    #req(data_uploaded())
+    
+    ## show message until dataset is available for current method
+   cond <- switch(current_upload_method(), 
+                  'latlon' = input$ss_upload_latlon,
+                  'FRS' = input$ss_upload_frs, 
+                  'NAICS' = input$submit_naics,
+                  'ECHO' = input$ss_upload_echo)
+     validate(
+      need(cond, 'Please select a data set.')
+    )
+    
     orig_leaf_map()
   })
   
