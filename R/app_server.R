@@ -211,21 +211,22 @@ app_server <- function(input, output, session) {
     } else {
       ################ Should output something saying no valid results returned ######## #
       shiny::validate('Invalid NAICS Input')
+
     }
     cat("SITE COUNT VIA NAICS: ", NROW(sitepoints), "\n")
-    
+
     ## assign final value to data_up_naics reactive variable
     data_up_naics(sitepoints)
   })
   
   ## if NAICS radio button is toggled between dropdown/enter, empty the other one
-  observeEvent(input$naics_ul_type, {
-    if(input$naics_ul_type == 'dropdown'){
-      shinyjs::reset(id = 'ss_select_naics')
-    } else if(input$naics_ul_type == 'enter'){
-      shinyjs::reset(id = 'ss_enter_naics')
-    }
-  })
+  # observeEvent(input$naics_ul_type, {
+  #   if(input$naics_ul_type == 'dropdown'){
+  #     shinyjs::reset(id = 'ss_select_naics')
+  #   } else if(input$naics_ul_type == 'enter'){
+  #     shinyjs::reset(id = 'ss_enter_naics')
+  #   }
+  # })
   
   #############################################################################  # 
   ## reactive: data uploaded by ECHO ####
@@ -333,6 +334,13 @@ app_server <- function(input, output, session) {
         shinyjs::show(id = 'show_data_preview')
       }
     } else if(current_upload_method() == 'NAICS'){
+        if((input$naics_ul_type == 'enter' & !isTruthy(input$ss_enter_naics)) |
+           (input$naics_ul_type == 'dropdown' & !isTruthy(input$ss_select_naics))){
+          shinyjs::disable(id = 'submit_naics')
+        } else {
+          shinyjs::enable(id = 'submit_naics')
+        }
+      
         if(!isTruthy(input$submit_naics)){
           shinyjs::disable(id = 'bt_get_results')
           shinyjs::hide(id = 'show_data_preview')
@@ -361,7 +369,7 @@ app_server <- function(input, output, session) {
       }
       
       HTML(paste0(
-                  'Total site(s) uploaded: <strong>', prettyNum(nrow(data_uploaded()), big.mark=','),'</strong><br>',
+                  'Total site(s) uploaded: <strong>', prettyNum(num_na + num_notna, big.mark=','),'</strong><br>',
                   'Valid site(s) uploaded: <strong>', prettyNum(num_notna, big.mark=','),'</strong>')
            )
                   #'Site(s) with invalid lat/lon values: <strong>', prettyNum(num_na,big.mark=','), '</strong>'))
