@@ -265,7 +265,9 @@ app_server <- function(input, output, session) {
   num_ul_methods <- reactive({
     shiny::isTruthy(input$ss_upload_latlon) +
       shiny::isTruthy(input$ss_upload_frs) +
-      (shiny::isTruthy(input$ss_enter_naics) ||  shiny::isTruthy(input$ss_select_naics)) +
+      ## switched upload count to use submit button instead of entered codes
+      shiny::isTruthy(input$submit_naics) +
+      #(shiny::isTruthy(input$ss_enter_naics) ||  shiny::isTruthy(input$ss_select_naics)) +
       shiny::isTruthy(input$ss_upload_echo)
   })
   
@@ -304,15 +306,42 @@ app_server <- function(input, output, session) {
   })
   #############################################################################  # 
   
-  ## disable run button until there is data uploaded; then enable
+  ## disable run and hide preview button until there is data uploaded; then enable and show
   observe({
-    if(num_ul_methods() == 0){
-      shinyjs::disable(id = 'bt_get_results' )
-    } else {
-      shinyjs::enable(id = 'bt_get_results')
+    if(current_upload_method() == 'latlon'){
+      if(!isTruthy(input$ss_upload_latlon)){
+        shinyjs::disable(id = 'bt_get_results')
+        shinyjs::hide(id = 'show_data_preview')
+      } else {
+        shinyjs::enable(id = 'bt_get_results')
+        shinyjs::show(id = 'show_data_preview')
+      }
+    } else if(current_upload_method() == 'FRS'){
+      if(!isTruthy(input$ss_upload_frs)){
+        shinyjs::disable(id = 'bt_get_results')
+        shinyjs::hide(id = 'show_data_preview')
+      } else {
+        shinyjs::enable(id = 'bt_get_results')
+        shinyjs::show(id = 'show_data_preview')
+      }
+    } else if(current_upload_method() == 'ECHO'){
+      if(!isTruthy(input$ss_upload_echo)){
+        shinyjs::disable(id = 'bt_get_results')
+        shinyjs::hide(id = 'show_data_preview')
+      } else {
+        shinyjs::enable(id = 'bt_get_results')
+        shinyjs::show(id = 'show_data_preview')
+      }
+    } else if(current_upload_method() == 'NAICS'){
+        if(!isTruthy(input$submit_naics)){
+          shinyjs::disable(id = 'bt_get_results')
+          shinyjs::hide(id = 'show_data_preview')
+        } else {
+          shinyjs::enable(id = 'bt_get_results')
+          shinyjs::show(id = 'show_data_preview')
+        }
     }
   })
-  
   #############################################################################  # 
   # ~ ####
   # ______ VIEW UPLOADED / SELECTED POINTS ####
@@ -1354,7 +1383,7 @@ app_server <- function(input, output, session) {
       
       ## add v1_summary_plot() to 'plot' sheet of Excel download
       ## will be moved to eventual merged 'xls_formatting' function
-      ggsave(filename = paste0(tempdir(), '/', 'summary_plot.png'), plot = v1_summary_plot(),
+      ggplot2::ggsave(filename = paste0(tempdir(), '/', 'summary_plot.png'), plot = v1_summary_plot(),
              height = 7, width = 9, units = 'in')
       openxlsx::insertImage(wb_out, sheet = 'plot', 
                             file = paste0(tempdir(), '/', 'summary_plot.png'),
