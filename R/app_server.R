@@ -88,8 +88,8 @@ app_server <- function(input, output, session) {
     ## if acceptable file type, read in; if not, send warning text
     ext <- switch(ext,
                   csv = data.table::fread(input$ss_upload_latlon$datapath),
-                  xls = read_excel(input$ss_upload_latlon$datapath) %>% data.table::as.data.table(),
-                  xlsx = read_excel(input$ss_upload_latlon$datapath)%>% data.table::as.data.table(),
+                  xls = readxl::read_excel(input$ss_upload_latlon$datapath) %>% data.table::as.data.table(),
+                  xlsx = readxl::read_excel(input$ss_upload_latlon$datapath)%>% data.table::as.data.table(),
                   shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
     )
     
@@ -120,8 +120,8 @@ app_server <- function(input, output, session) {
     ## if acceptable file type, read in; if not, send warning text
     read_frs <- switch(ext,
                        csv =  read.csv(input$ss_upload_frs$datapath),
-                       xls = read_excel(input$ss_upload_frs$datapath),
-                       xlsx = read_excel(input$ss_upload_frs$datapath),
+                       xls = readxl::read_excel(input$ss_upload_frs$datapath),
+                       xlsx = readxl::read_excel(input$ss_upload_frs$datapath),
                        shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
     ) # returns a data.frame
     
@@ -243,8 +243,8 @@ app_server <- function(input, output, session) {
     ## if acceptable file type, read in; if not, send warning text
     ext <- switch(ext,
                   csv =  data.table::fread(input$ss_upload_echo$datapath),
-                  xls = read_excel(input$ss_upload_echo$datapath) %>% data.table::as.data.table(),
-                  xlsx = read_excel(input$ss_upload_echo$datapath) %>% data.table::as.data.table(),
+                  xls = readxl::read_excel(input$ss_upload_echo$datapath) %>% data.table::as.data.table(),
+                  xlsx = readxl::read_excel(input$ss_upload_echo$datapath) %>% data.table::as.data.table(),
                   shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
     )
     
@@ -1136,29 +1136,29 @@ app_server <- function(input, output, session) {
   
   ## make summary report directly in shiny app and render on Summary report tab
   #summary_report_params <- eventReactive(input$gen_summary_report, {
-  summary_report_params <- reactive({
-      list(testmode=FALSE,
-         sitecount = nrow(data_processed()$results_bysite), 
-         distance = paste0(input$bt_rad_buff,' miles'), #input$radius_units),
-         total_pop = prettyNum( total_pop(), big.mark = ","),
-         analysis_title = input$analysis_title,
-         # results     = data_processed(),  # NOT NEEDED HERE IF PASSING MAP, TABLES, AND PLOT AS PARAMS
-         map         = report_map(),
-         envt_table   = v1_envt_table(),
-         demog_table  = v1_demog_table(),
-         summary_plot = v1_summary_plot() #%>% print()
-         )
-  })
-  
-  output$rendered_summary_report <- renderUI({
-   HTML(
-      includeHTML(
-        rmarkdown::render(app_sys('report','brief_summary.Rmd'),
-                          output_dir = tempdir(),
-                          params = summary_report_params())
-      )
-   )
-  })
+  # summary_report_params <- reactive({
+  #     list(testmode=FALSE,
+  #        sitecount = nrow(data_processed()$results_bysite), 
+  #        distance = paste0(input$bt_rad_buff,' miles'), #input$radius_units),
+  #        total_pop = prettyNum( total_pop(), big.mark = ","),
+  #        analysis_title = input$analysis_title,
+  #        # results     = data_processed(),  # NOT NEEDED HERE IF PASSING MAP, TABLES, AND PLOT AS PARAMS
+  #        map         = report_map(),
+  #        envt_table   = v1_en
+  #        demog_table  = v1_demog_table(),
+  #        summary_plot = v1_summary_plot() #%>% print()
+  #        )
+  # })
+  # 
+  # output$rendered_summary_report <- renderUI({
+  #  HTML(
+  #     includeHTML(
+  #       rmarkdown::render(app_sys('report','brief_summary.Rmd'),
+  #                         output_dir = tempdir(),
+  #                         params = summary_report_params())
+  #     )
+  #  )
+  # })
   
   # 1-3-page summary comparable to EJScreen report  
   output$summary_download <- downloadHandler(
