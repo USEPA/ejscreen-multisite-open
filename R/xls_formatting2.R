@@ -40,20 +40,26 @@ xls_formatting2 <- function(overall, eachsite, graycolnums=NULL, narrowcolnums=N
   
   ## format URL columns as hyperlinks
   if('EJScreen Report' %in% names(eachsite)){
+    eachsite$`EJScreen Report` <- gsub('<a href=\"', '',gsub('\", target=\"_blank\".*','',eachsite$`EJScreen Report`)) 
     class(eachsite$`EJScreen Report`) <- "hyperlink"   
   }
  
   if('EJScreen Map' %in% names(eachsite)){
+    eachsite$`EJScreen Map` <- gsub('<a href=\"', '',gsub('\", target=\"_blank\".*','',eachsite$`EJScreen Map`)) 
     class(eachsite$`EJScreen Map`) <- "hyperlink"
   }
   
   if('ACS Report' %in% names(eachsite)){
+    eachsite$`ACS Report` <- gsub('<a href=\"', '',gsub('\", target=\"_blank\".*','',eachsite$`ACS Report`)) 
     class(eachsite$`ACS Report`) <- "hyperlink"
     
   }
   
   if('ECHO report' %in% names(eachsite)){
-    class(eachsite$`ECHO report`) <- "hyperlink" 
+    
+    eachsite$`ECHO report` <-ifelse(eachsite$`ECHO report` == 'N/A', 'N/A',  
+                                    gsub('<a href=\"', '',gsub('\", target=\"_blank\".*','',eachsite$`ECHO report`)) )
+    class(eachsite$`ECHO report`) <- ifelse(eachsite$`ECHO report` == 'N/A', "character", "hyperlink") 
   }
 
   

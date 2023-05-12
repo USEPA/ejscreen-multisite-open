@@ -560,16 +560,16 @@ app_server <- function(input, output, session) {
     ## the registry ID column is only found in uploaded ECHO/FRS/NAICS data -
     ## it is not passed to doaggregate output at this point, so pull the column from upload to create URLS
     if("REGISTRY_ID" %in% names(data_uploaded())){
-      echolink = url_echo_facility_webpage(data_uploaded()$REGISTRY_ID, as_html = FALSE)
+      echolink = url_echo_facility_webpage(data_uploaded()$REGISTRY_ID, as_html = TRUE, linktext = 'ECHO Report')
     } else if("RegistryID" %in% names(data_uploaded())){
-      echolink = url_echo_facility_webpage(data_uploaded()$RegistryID, as_html = FALSE)
+      echolink = url_echo_facility_webpage(data_uploaded()$RegistryID, as_html = TRUE, linktext = 'ECHO Report')
     } else {
-      echolink = rep(NA,nrow(out$results_bysite))
+      echolink = rep('N/A',nrow(out$results_bysite))
     }
     out$results_bysite[ , `:=`(
-      `EJScreen Report` = url_ejscreen_report(    lat = data_uploaded()$lat, lon = data_uploaded()$lon, distance = input$bt_rad_buff, as_html = FALSE), 
-      `EJScreen Map`    = url_ejscreenmap(        lat = data_uploaded()$lat, lon = data_uploaded()$lon,                               as_html = FALSE), 
-      `ACS Report`      = url_ejscreen_acs_report(lat = data_uploaded()$lat, lon = data_uploaded()$lon, distance = input$bt_rad_buff, as_html = FALSE),
+      `EJScreen Report` = url_ejscreen_report(    lat = data_uploaded()$lat, lon = data_uploaded()$lon, distance = input$bt_rad_buff, as_html = TRUE), 
+      `EJScreen Map`    = url_ejscreenmap(        lat = data_uploaded()$lat, lon = data_uploaded()$lon,                               as_html = TRUE), 
+      `ACS Report`      = url_ejscreen_acs_report(lat = data_uploaded()$lat, lon = data_uploaded()$lon, distance = input$bt_rad_buff, as_html = TRUE),
       `ECHO report` = echolink
     )]
     # out$results_overall[ , `:=`(
@@ -706,6 +706,13 @@ app_server <- function(input, output, session) {
   ## *MAP for summary report ####
   
   report_map <- reactive({
+    
+    #req(data_processed())
+    
+    validate(
+      need(data_processed(), 'Please run an analysis to see results.')
+    )
+    
     circle_color <- '#000080'
     
     ## similar to previous map but remove controls
@@ -728,7 +735,7 @@ app_server <- function(input, output, session) {
   
   ## output: summary report map  
   output$quick_view_map <- leaflet::renderLeaflet({
-    req(data_uploaded())
+    #req(data_uploaded())
 
     ## use separate report map
     report_map()
@@ -1265,11 +1272,11 @@ app_server <- function(input, output, session) {
              ) %>%
       dplyr::select(dplyr::all_of(cols_to_select), ST)
     
-    dt$`EJScreen Report` <- EJAMejscreenapi::url_linkify(dt$`EJScreen Report`, text = 'EJScreen Report')
-    dt$`EJScreen Map` <- EJAMejscreenapi::url_linkify(dt$`EJScreen Map`, text = 'EJScreen Map')
-    dt$`ACS Report` <- EJAMejscreenapi::url_linkify(dt$`ACS Report`, text = 'ACS Report')
-    dt$`ECHO report` <- ifelse(!is.na(dt$`ECHO report`), EJAMejscreenapi::url_linkify(dt$`ECHO report`, text = 'ECHO Report'), 
-                                      'N/A')
+    # dt$`EJScreen Report` <- EJAMejscreenapi::url_linkify(dt$`EJScreen Report`, text = 'EJScreen Report')
+    # dt$`EJScreen Map` <- EJAMejscreenapi::url_linkify(dt$`EJScreen Map`, text = 'EJScreen Map')
+    # dt$`ACS Report` <- EJAMejscreenapi::url_linkify(dt$`ACS Report`, text = 'ACS Report')
+    # dt$`ECHO report` <- ifelse(!is.na(dt$`ECHO report`), EJAMejscreenapi::url_linkify(dt$`ECHO report`, text = 'ECHO Report'), 
+    #                                   'N/A')
     
     # dt_avg <- data_summarized()$rows[c('Average person','Average site'),] %>% 
     #   dplyr::mutate(siteid = c('Average person', 'Average site'), ST = NA,
