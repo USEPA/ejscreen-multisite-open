@@ -1374,16 +1374,29 @@ app_server <- function(input, output, session) {
       # Recode this to avoid making copies which slows it down:?
       table_overall <- copy(data_processed()$results_overall)
       table_bysite  <- copy(data_processed()$results_bysite)
+      
+      #filter out sitecount - TEMP
+      filter_out_temp_overall <- !(names(table_overall) %in% c("sitecount_unique","sitecount_avg","sitecount_max"))
+      filter_out_temp_bysite <- !(names(table_bysite) %in% c("sitecount_unique","sitecount_avg","sitecount_max"))
+      
+      table_overall <- table_overall[,..filter_out_temp_overall]
+      table_bysite <- table_bysite[,..filter_out_temp_bysite]
+      
       # table_summarized <- copy(data_processed()$results_summarized)
       # table_bybg_people <- data_processed()$results_bybg_people   # large table !!
       table_overall <- table_overall %>% dplyr::mutate(dplyr::across(dplyr::where(is.numeric), function(x) ifelse(!is.finite(x), NA, x)))
       table_bysite <- table_bysite %>% dplyr::mutate(dplyr::across(dplyr::where(is.numeric), function(x) ifelse(!is.finite(x), NA, x)))
-      
+     
       ## attempt to clean up some column names xxx - CHECK THIS 
       # longnames_TEST <- EJAMejscreenapi::map_headernames$longname_tableheader[match(names(data_processed()$results_bysite),
       # EJAMejscreenapi::map_headernames$newnames_ejscreenapi)]
       longnames <- data_processed()$longnames
+      
+      #filter out sitecount from longnames - TEMP
+      longnames <- longnames[filter_out_temp_bysite]
+      
       longnames_no_url <- setdiff(longnames, c('EJScreen Report','EJScreen Map','ACS Report','ECHO report'))
+    
       names(table_overall) <- ifelse(!is.na(longnames_no_url), longnames_no_url, names(table_overall))
       names(table_bysite)  <- ifelse(!is.na(longnames), longnames, names(table_bysite))
       # table_summarized
