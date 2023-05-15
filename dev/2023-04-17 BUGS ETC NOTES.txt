@@ -43,7 +43,7 @@ BUG: medium/low priority - but asap hide these outputs until they are fixed - Fi
 
 BUG: if select radio button for FRS reg id, but then upload file like testpoints_50.xlsx that lacks REGISTRY_ID column, app crashes and should err gracefully instead. 
 
-BUG: 1pager barplot view - it disappears if you resize or zoom browser window, but should just get redrawn to scale like tables and map. 
+fixed? BUG: 1pager barplot view - it disappears if you resize or zoom browser window, but should just get redrawn to scale like tables and map. 
 
 BUG: 1pager: include subgroups in 1pager plot somehow that fits well, maybe as a second plot of same type. or find way to fit all D groups and subgroups in one plot? 
 
