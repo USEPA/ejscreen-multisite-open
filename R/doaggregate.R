@@ -967,7 +967,6 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL,
   state.avg.cols_overall <-  results_bysite[ ,  lapply(.SD, FUN = function(x) {
     collapse::fmean(x, w = pop)   # stats::weighted.mean(x, w = pop, na.rm = TRUE)
   }), .SDcols = names_state_avg_these] # fixed now?
-  setnames(state.avg.cols_overall,  names_these,  names_state_avg_these)
   
   results_overall <- cbind(results_overall, state.avg.cols_overall)
   
