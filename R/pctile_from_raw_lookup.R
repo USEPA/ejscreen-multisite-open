@@ -58,9 +58,9 @@ pctile_from_raw_lookup <- function(myvector, varname.in.lookup.table, lookup=usa
       whichinterval <- vector(length = NROW(myvector))
       
       for (z in unique(zone)) {
-        #find sort vectors for each zone
-        myvector_selection <- sort(myvector)
-        myvector_lookup <- sort(lookup[lookup$REGION == z, varname.in.lookup.table])
+        #  for each zone
+        myvector_selection <- myvector[zone == z] # sort(myvector)
+        myvector_lookup <-   lookup[lookup$REGION == z, varname.in.lookup.table] 
         
         # should be OK if some or all those values in myvector are NA
         # should check what if some or all in lookup are NA, though
