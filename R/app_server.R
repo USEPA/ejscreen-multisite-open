@@ -22,7 +22,7 @@
 #' @import tidyverse
 #' @importFrom magrittr '%>%'
 #' @import tidyr
-#' @import dplyr
+#' @rawNamespace import(dplyr, except = c(first, last, between))
 #' 
 app_server <- function(input, output, session) {
   
