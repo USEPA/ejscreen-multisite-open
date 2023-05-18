@@ -431,18 +431,27 @@ app_server <- function(input, output, session) {
   
   ## update map radius label based on button ####
   
-  observe({
+  # observe({
+  #   val <- input$bt_rad_buff
+  #   lab <- paste0('Radius of circular buffer: <br />', val, ' mi ','(',round(val / 0.62137119, 2), ' km)')
+  #   
+  #   updateSliderInput(session, inputId = 'bt_rad_buff', label = HTML(lab))
+  #   #shinyjs::html(id = 'bt_rad_buff', html = HTML(lab))
+  #   
+  #   ## if switching units between miles and km - not currently used
+  #   #req(input$radius_units)
+  #   #lab <- input$radius_units
+  #   # updateSliderInput(session, inputId = 'bt_rad_buff',
+  #   #                   label = paste0('Radius of circular buffer (', lab, ')'),
+  #   #                   min = 0.25, val = val, step = 0.25, max = 10)
+  # })
+  
+  ## Create separate radius label to allow line break
+  output$radius_label <- renderUI({
     val <- input$bt_rad_buff
-    lab <- paste0('Radius of circular buffer: ', val, ' mi ','(',round(val / 0.62137119, 2), ' km)')
+    lab <- paste0('<b>Radius of circular buffer: <br/>', val, ' mi ','(',round(val / 0.62137119, 2), ' km)</b>')
     
-    updateSliderInput(session, inputId = 'bt_rad_buff', label = lab)
-    
-    ## if switching units between miles and km - not currently used
-    #req(input$radius_units)
-    #lab <- input$radius_units
-    # updateSliderInput(session, inputId = 'bt_rad_buff',
-    #                   label = paste0('Radius of circular buffer (', lab, ')'),
-    #                   min = 0.25, val = val, step = 0.25, max = 10)
+    HTML(lab)
   })
   
   orig_leaf_map <- reactive({

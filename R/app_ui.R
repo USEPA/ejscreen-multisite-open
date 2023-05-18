@@ -248,10 +248,13 @@ app_ui  <- function(request) {
                           fluidRow(
                             column(8,
                                    align = 'center',
-                                   ## input: Specify radius of circular buffer       
+                                   ## separated label from slider to allow for line break - shiny does not support it
+                                   ## in update*Input: https://github.com/rstudio/shiny/issues/3678
+                                   htmlOutput('radius_label'),
+                                   ## input: Specify radius of circular buffer 
                                    shiny::sliderInput(inputId = 'bt_rad_buff',
                                                       ## label is updated in server
-                                                      label = 'Within what distance of a site?',
+                                                      label = "",#htmltools::h5('Within what distance of a site?'),
                                                       #label = htmltools::h5("Radius of circular buffer in miles"),
                                                       value = 1.0, step = 0.25,
                                                       min = 0.25, max = 10,
