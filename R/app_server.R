@@ -449,7 +449,7 @@ app_server <- function(input, output, session) {
   ## Create separate radius label to allow line break
   output$radius_label <- renderUI({
     val <- input$bt_rad_buff
-    lab <- paste0('<b>Radius of circular buffer: <br/>', val, ' mi ','(',round(val / 0.62137119, 2), ' km)</b>')
+    lab <- paste0('<b>Radius of circular buffer: <br/>', val, ' miles ','(',round(val / 0.62137119, 2), ' km)</b>')
     
     HTML(lab)
   })
@@ -737,8 +737,8 @@ app_server <- function(input, output, session) {
     
     ## switch this to data analyzed in report, not what was uploaded
     ## in case there are invalid
-    leaflet(data_processed()$results_bysite,
-            options = leafletOptions(zoomControl = FALSE, minZoom = 4)) %>% 
+    leaflet(data_processed()$results_bysite) %>% #,
+            #options = leafletOptions(zoomControl = FALSE, minZoom = 4)) %>% 
       addTiles()  %>%
       addCircles(
         radius = 1 * meters_per_mile,
@@ -1000,12 +1000,15 @@ app_server <- function(input, output, session) {
         ggplot2::geom_bar(stat='identity') +
         ggplot2::scale_fill_identity() +
         ggplot2::theme_bw() +
-        ggplot2::labs(x = 'Indicator', y = 'Ratio vs. US Average') +
+        ggplot2::labs(x = 'Indicator', y = 'Ratio vs. US Average',
+                      title = "Demographic Index around the Selected Sites compared to all people's blockgroups in the US") +
         #scale_x_discrete(labels = scales::label_wrap(7)) +
         #scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
         #scale_x_discrete(guide = guide_axis(n.dodge = 2)) +
         ggplot2::scale_y_continuous(limits = c(0, NA), expand = ggplot2::expansion(mult = c(0, 0.05), add = c(0, 0))) +
-        ggplot2::theme(plot.margin=ggplot2::unit(c(1,2,1,1), "cm"), axis.text.x = ggplot2::element_text(angle = -30, hjust = 0, vjust = 1)) + # # try to do that via ggplot...
+        ggplot2::theme(plot.margin=ggplot2::unit(c(0,50,0,0), "points"), 
+                       plot.title = ggplot2::element_text(size = 14, hjust = 0.5),
+                       axis.text.x = ggplot2::element_text(size = 10 , angle = -30, hjust = 0, vjust = 1)) + # # try to do that via ggplot...
       NULL
       
         # ggplot2::ggplot(

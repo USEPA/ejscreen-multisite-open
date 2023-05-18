@@ -40,8 +40,8 @@ format_gt_table <- function(df, type, my_cell_color =  '#dce6f0', my_border_colo
        ) %>%   
        
       ## format decimal places for all indicators
-      gt::fmt_percent(columns = c(2,3,5), rows = everything(),  decimals = 0) %>%
-      gt::fmt_number(columns = c('usa_ratio','state_ratio'), rows = everything(),  decimals = 3) %>%
+      gt::fmt_percent(columns = c(2,3,5), rows = dplyr::everything(),  decimals = 0) %>%
+      gt::fmt_number(columns = c('usa_ratio','state_ratio'), rows = dplyr::everything(),  decimals = 3) %>%
      # gt::fmt_percent(columns = c('usa_ratio','state_ratio'), rows = everything(),  decimals = 3) %>% 
       ## replace NAs with --
       gt::sub_missing(missing_text = '--') %>% 
@@ -103,7 +103,7 @@ format_gt_table <- function(df, type, my_cell_color =  '#dce6f0', my_border_colo
       ## Underground storage tanks - 0 decimal places
       gt::fmt_number(columns = c(2,3,5), rows = 12, decimals = 0) %>% 
       ##state/usa ratio rounding
-      gt::fmt_number(columns = c('usa_ratio','state_ratio'), rows = everything(),  decimals = 3) %>%
+      gt::fmt_number(columns = c('usa_ratio','state_ratio'), rows = dplyr::everything(),  decimals = 3) %>%
       gt::sub_missing(missing_text = '--') %>% 
       ## add group header
       gt::tab_row_group(label = gt::md('**Pollution and Sources**'), rows = 1:(nrow(df)) ) %>% 
@@ -156,7 +156,7 @@ format_gt_table <- function(df, type, my_cell_color =  '#dce6f0', my_border_colo
     ## center column headers
     gt::tab_style(
       style = gt::cell_text(align = 'center', v_align = 'middle'),
-      locations = gt::cells_column_labels(columns = everything())
+      locations = gt::cells_column_labels(columns = dplyr::everything())
     ) # %>% 
   # gtExtras::gt_color_rows( # https://jthomasmock.github.io/gtExtras/reference/gt_color_rows.html
   # 
