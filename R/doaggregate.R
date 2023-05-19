@@ -831,8 +831,8 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL,
   state.pctile.cols_bysite  <- data.frame(matrix(nrow = NROW(results_bysite),  ncol = length(varsneedpctiles))); colnames(state.pctile.cols_bysite)  <- varnames.state.pctile
   us.pctile.cols_overall    <- data.frame(matrix(nrow = NROW(results_overall), ncol = length(varsneedpctiles))); colnames(us.pctile.cols_overall)    <- varnames.us.pctile
   # state.pctile.cols_overall <- data.frame(matrix(nrow = NROW(results_overall), ncol = length(varsneedpctiles))); colnames(state.pctile.cols_overall) <- varnames.state.pctile
-  
-  # SURELY THERE IS A FASTER / VECTORIZED WAY TO DO THIS (this actually is noticeably slow, at least the line that starts with state.pctile.cols_bysite[ , varnames.state.pctile[[i]]] <- pctile_from_raw_lookup( ):
+
+    # SURELY THERE IS A FASTER / VECTORIZED WAY TO DO THIS (this actually is noticeably slow, at least the line that starts with state.pctile.cols_bysite[ , varnames.state.pctile[[i]]] <- pctile_from_raw_lookup( ):
   #  >>>> VERY SLOW STEP; also the function  pctile_from_raw_lookup()  may need to be optimized or avoid passing dt as param to it. ####
   for (i in seq_along(varsneedpctiles)) {
     myvar <- varsneedpctiles[i]
@@ -938,10 +938,9 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL,
   # sites2bgs_plusblockgroupdata_bysite$ST <-  
   
   ############################################################################## #   
-  # US and STATE AVERAGES ####
-  # INCLUDE STATE AVERAGE FOR EACH SITE AND INDICATOR ###
   #
-  # THEN CALC OVERALL POPWTD MEAN OF THOSE PER INDICATOR 
+  # US and STATE AVERAGES ####
+  #     FOR EACH INDICATOR (repeated for all site rows) ###
   
   names_these              <- c(names_d,     names_d_subgroups,     names_e) 
   names_avg_these          <- c(names_d_avg, names_d_subgroups_avg, names_e_avg)                         # <- paste0("avg.",       names_these) # 
@@ -949,8 +948,8 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL,
   names_ratio_to_avg_these <- c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg, names_e_ratio_to_avg)      #<-  paste0("ratio.to.", names_avg_these )  
   names_ratio_to_state_avg_these <- c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg, names_e_ratio_to_state_avg)  # <-  paste0("ratio.to.", names_state_avg_these)  
   
-  # pull averages from the statestats table (note using data.frame syntax here not data.table)
-  
+  # pull averages from statestats table (note using data.frame syntax here not data.table)
+  #
   # must be a cleaner way to do this part but did not have time to think about one
   stinfo <- setDT(statestats[ statestats$PCTILE == "mean" , c("REGION", names_these)])
   setnames(stinfo, "REGION", "ST")
@@ -961,12 +960,13 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL,
   state.avg.cols_bysite[, ST := NULL]
   results_bysite <- cbind(results_bysite, state.avg.cols_bysite)  # cbind?? collapse:: has a faster way   ************
   
-  # calc overall popwtd mean of each state avg !!
+  ############# #
+  #
+  # >>> calc overall popwtd mean of each state avg !!   ####
   
   state.avg.cols_overall <-  results_bysite[ ,  lapply(.SD, FUN = function(x) {
     collapse::fmean(x, w = pop)   # stats::weighted.mean(x, w = pop, na.rm = TRUE)
-  }), .SDcols = names_these]
-  setnames(state.avg.cols_overall,  names_these,  names_state_avg_these)
+  }), .SDcols = names_state_avg_these] # fixed now?
   
   results_overall <- cbind(results_overall, state.avg.cols_overall)
   

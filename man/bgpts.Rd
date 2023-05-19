@@ -19,13 +19,6 @@ and where each bg is, which is useful for some situations.
   
   How lat lon were estimated:
 
-# proxistat::bg.pts had a lat/lon internal point for each us block group for Census 2010.
-# that had been used to include those lat/lon in ejscreen::bg21, for convenience. 
- > head(proxistat::bg.pts)
-           FIPS    aland   awater      lat       lon
-           1 010950302024 14969994 15040133 34.42668 -86.2437
-            2 010950306002  6751877 16610261 34.31763 -86.34399
-            
  # Now, for Census 2020 blocks, create pop wtd centroids lat lon for each block group #### 
  #  using EJAMblockdata blockwts and EJAMblockdata blockpoints
  
