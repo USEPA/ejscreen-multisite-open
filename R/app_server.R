@@ -369,20 +369,22 @@ app_server <- function(input, output, session) {
       }
       
       HTML(paste0(
-                  'Total site(s) uploaded: <strong>', prettyNum(num_na + num_notna, big.mark=','),'</strong><br>',
-                  'Valid site(s) uploaded: <strong>', prettyNum(num_notna, big.mark=','),'</strong>')
+                  "Total site(s) uploaded: <strong>", prettyNum(num_na + num_notna, big.mark=","),"</strong><br>",
+                  "Valid site(s) uploaded: <strong>", prettyNum(num_notna, big.mark=","),"</strong>")
            )
-                  #'Site(s) with invalid lat/lon values: <strong>', prettyNum(num_na,big.mark=','), '</strong>'))
-      # HTML(paste0('Current upload method: <strong>',  current_upload_method(), '</strong><br>', 
-      #             'Total site(s) uploaded: <strong>', prettyNum(nrow(data_uploaded()), big.mark=','),'</strong><br>',
-      #             'Valid site(s) uploaded: <strong>', prettyNum(num_notna, big.mark=','),'</strong><br>',
-      #             'Site(s) with invalid lat/lon values: <strong>', prettyNum(num_na,big.mark=','), '</strong>'))
+                  #"Site(s) with invalid lat/lon values: <strong>", prettyNum(num_na,big.mark=","), "</strong>"))
+      # HTML(paste0("Current upload method: <strong>",  current_upload_method(), "</strong><br>", 
+      #             "Total site(s) uploaded: <strong>", prettyNum(nrow(data_uploaded()), big.mark=","),"</strong><br>",
+      #             "Valid site(s) uploaded: <strong>", prettyNum(num_notna, big.mark=","),"</strong><br>",
+      #             "Site(s) with invalid lat/lon values: <strong>", prettyNum(num_na,big.mark=","), "</strong>"))
     
   })
   
   ## See table of uploaded points ####
   
-  output$print_test2_dt <- DT::renderDT({
+  output$print_test2_dt <- DT::renderDT(
+    ## server = FALSE forces download to include all rows, not just visible ones
+    server = FALSE, {
     req(data_uploaded())
     
     dt <- data_uploaded() # now naics-queried sites format is OK to view, since using different function to get sites by naics
@@ -402,7 +404,44 @@ app_server <- function(input, output, session) {
     # dt <- data_uploaded()
     # }
     
-    DT::datatable(dt, options = list(pageLength = 100, scrollX = TRUE, scrollY = '500px'), escape = FALSE) # escape=FALSE may add security issue but makes links clickable in table
+    DT::datatable(dt, 
+                  ## add download buttons
+                  extensions = 'Buttons',
+                  ## keep rownames in display table
+                  rownames = TRUE,
+                  options = list(pageLength = 100, 
+                                 scrollX = TRUE, 
+                                 scrollY = '500px',
+                                 ## label rownames to remove from download
+                                 columnDefs = list(
+                                   list(
+                                     targets = 0, className = "rownames"
+                                   )
+                                 ),
+                                 ## specify button placement - "B"= buttons, see https://datatables.net/reference/option/dom 
+                                 dom ='Brtip',
+
+                                 buttons = list(
+                                   ## customize CSV button
+                                   list(extend = 'csv',
+                                        ## name of downloaded file
+                                        filename = 'ejam_raw_data_download',
+                                        ## drop rownames for download
+                                        exportOptions = list(columns = ":not(.rownames)")
+                                   ),
+                                   ## customize Excel button
+                                   list(extend = 'excel',
+                                        ## name of downloaded file
+                                        filename = 'ejam_raw_data_download',
+                                        ## drop title row from download
+                                        title = NULL,
+                                        ## drop rownames for download
+                                        exportOptions = list(columns = ":not(.rownames)")
+                                    )
+                                  )
+                                ), # end options
+                  
+                  escape = FALSE) # escape=FALSE may add security issue but makes links clickable in table
   })
   
   ## reactive: check if uploaded points are clustered (may double-count people) ####
