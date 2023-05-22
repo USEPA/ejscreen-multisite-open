@@ -970,7 +970,7 @@ app_server <- function(input, output, session) {
         dplyr::mutate(value = dplyr::na_if(value, Inf)) #%>% 
       # NOTE NOW ratio.to.us.d.bysite IS A tibble, not data.frame, and is in LONG format now. !!!
       
-      # ridgeline Plot 
+      # ridgeline Plot - need to adjust xlim so max is about a ratio of 3.0 (or less if none are >=3x)
       ggplot(ratio.to.us.d.bysite, aes(x = `value`, y = `indicator`, fill = ..x..)) +
         geom_density_ridges_gradient(scale = 3, rel_min_height = 0.01) +
         scale_fill_viridis(name = "Ratio to US Overall Value", option = "C") +
