@@ -109,7 +109,6 @@ app_server <- function(input, output, session) {
   ## reactive: data uploaded by FRS registry IDs ####
   
   data_up_frs <- reactive({
-    
     ## wait for file to be uploaded
     req(input$ss_upload_frs)
     ##  >this part could be replaced by  latlon_from_anything() ####
@@ -124,9 +123,11 @@ app_server <- function(input, output, session) {
                        xlsx = readxl::read_excel(input$ss_upload_frs$datapath),
                        shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
     ) # returns a data.frame
-    
     #include frs_is_valid verification check function, must have colname REGISTRY_ID
     if (frs_is_valid(read_frs)){
+      if ("siteid" %in% colnames(read_frs)){
+        colnames(read_frs) <- gsub("siteid", "REGISTRY_ID", colnames(read_frs))
+      }
       #converts registry id to character if not already in that class ( frs registry ids are character)
       if(class(read_frs$REGISTRY_ID) != "character"){
         read_frs$REGISTRY_ID = as.character(read_frs$REGISTRY_ID)
@@ -359,10 +360,14 @@ app_server <- function(input, output, session) {
   ## How many valid points? warn if no valid lat/lon ####
   output$an_map_text <- renderUI({
     req(data_uploaded())
-    
       #separate inputs with valid/invalid lat/lon values
-      num_na    <- nrow(data_uploaded()[ (is.na(data_uploaded()$lat) | is.na(data_uploaded()$lon)),])
-      num_notna <- nrow(data_uploaded()[!(is.na(data_uploaded()$lat) | is.na(data_uploaded()$lon)),])
+      if (nrow(data_uploaded()) > 1){ 
+        num_na    <- nrow(data_uploaded()[ (is.na(data_uploaded()$lat) | is.na(data_uploaded()$lon)),])
+        num_notna <- nrow(data_uploaded()[!(is.na(data_uploaded()$lat) | is.na(data_uploaded()$lon)),])
+      }else{ # if inputs is only one valid row
+        num_na    <- nrow(data_uploaded()[ (is.na(data_uploaded()$lat) | is.na(data_uploaded()$lon))])
+        num_notna <- nrow(data_uploaded()[!(is.na(data_uploaded()$lat) | is.na(data_uploaded()$lon))])
+      }
       ## if invalid data found, send modal to screen
       if(num_na > 0){
         showModal(modalDialog(title = 'Invalid data found', 'FYI, some of your data was not valid.', size = 's'))

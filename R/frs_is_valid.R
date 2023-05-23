@@ -8,29 +8,33 @@
 frs_is_valid <- function(frs_upload) {
   #checks for registry id in second column of FRS uploaded dataset
   if(any(colnames(frs_upload) %in%  "REGISTRY_ID" )) {  # FRS uses this colname
-    # for (i in frs_upload$REGISTRY_ID) {
-    #if(nchar(i) != 12){ #is every registry ID the correct length
-    #return(FALSE)
-    #}
-    #}
     return(TRUE)
   } else {
     if ("regid" %in% colnames(frs_upload)) {
       colnames(frs_upload) <- gsub("RegistryID", "REGISTRY_ID", colnames(frs_upload)) # ECHO uses this colname
-      return(TRUE)
-    } else {
-      if ("siteid" %in% colnames(frs_upload)) {
+      if(nrow(frs_from_regid(frs_upload$REGISTRY_ID)) != 0){
+        return(TRUE)
+      }else{
+        return(FALSE)
+      }
+    } else if ("siteid" %in% colnames(frs_upload)){
         colnames(frs_upload) <- gsub("siteid", "REGISTRY_ID", colnames(frs_upload))
         warning("assuming siteid column has REGISTRY_ID values")
-        return(TRUE)
-      } else {
-        if ("siteid" %in% colnames(frs_upload)) {
+        if(nrow(frs_from_regid(frs_upload$REGISTRY_ID)) != 0){
+          return(TRUE)
+        }else{
+          return(FALSE)
+        }
+       # return(TRUE)
+      } else if ("siteid" %in% colnames(frs_upload)) {
           colnames(frs_upload) <- gsub("siteid", "REGISTRY_ID", colnames(frs_upload))
           warning("assuming siteid column has REGISTRY_ID values")
-          return(TRUE)
-        }
+          if(nrow(frs_from_regid(frs_upload$REGISTRY_ID)) != 0){
+            return(TRUE)
+          }else{
+            return(FALSE)
+          }
       }
+    return(FALSE)
     } 
   }
-  return(FALSE)
-}
