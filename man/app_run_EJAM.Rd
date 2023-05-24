@@ -7,7 +7,7 @@
 app_run_EJAM(
   onStart = NULL,
   options = list(),
-  enableBookmarking = NULL,
+  enableBookmarking = "server",
   uiPattern = "/",
   ...
 )
