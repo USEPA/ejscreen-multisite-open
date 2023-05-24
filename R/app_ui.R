@@ -248,10 +248,13 @@ app_ui  <- function(request) {
                           fluidRow(
                             column(8,
                                    align = 'center',
-                                   ## input: Specify radius of circular buffer       
+                                   ## separated label from slider to allow for line break - shiny does not support it
+                                   ## in update*Input: https://github.com/rstudio/shiny/issues/3678
+                                   htmlOutput('radius_label'),
+                                   ## input: Specify radius of circular buffer 
                                    shiny::sliderInput(inputId = 'bt_rad_buff',
                                                       ## label is updated in server
-                                                      label = 'Within what distance of a site?',
+                                                      label = "",#htmltools::h5('Within what distance of a site?'),
                                                       #label = htmltools::h5("Radius of circular buffer in miles"),
                                                       value = 1.0, step = 0.25,
                                                       min = 0.25, max = 10,
@@ -352,56 +355,88 @@ app_ui  <- function(request) {
         tabPanel(title = 'Summary Report',
                  ## _Header, pop count, etc. *********************************####
                  
-                 br(), ## vertical space
+                 #br(), ## vertical space
                  
-                 ## show count of population among selected sites
-                 htmlOutput(outputId = 'view1_total_pop'),
-                 
-                 br(), ## vertical space
-                 
-                 ## _Table of demographics overall *********************************####
-                 
-                 shinycssloaders::withSpinner(
-                   gt::gt_output(outputId = 'view1_demog_table')
-                 ),
-                 
-                 br(), ## vertical space
-                 
-                 ## _Box/barplots demographics overall *********************************####
-                 
-                 fluidRow(
-                   column(
-                     12, 
-                     align = 'center',
-                     shinycssloaders::withSpinner(
-                       plotOutput(outputId = 'view1_summary_plot', width = '100%', height='700px')
-                     )
-                   )
-                 ),
+                 htmlTemplate(app_sys('report', 'summary_report_tab.html'),
+                              pop_header = htmlOutput(outputId = 'view1_total_pop'),
+                              demog_table = shinycssloaders::withSpinner(
+                                  gt::gt_output(outputId = 'view1_demog_table')
+                                ),
+                              demog_plot =fluidRow(
+                                column(
+                                  12,
+                                  align = 'center',
+                                  shinycssloaders::withSpinner(
+                                    plotOutput(outputId = 'view1_summary_plot', width = '1200px', height = '400px') #width = '100%', height='700px')
+                                  )
+                                )
+                              ),
+                              
+                              map = shinycssloaders::withSpinner(
+                                leaflet::leafletOutput('quick_view_map', width = '1170px', height = '827px')
+                                ), 
+                              env_table = shinycssloaders::withSpinner(
+                                gt::gt_output(outputId = 'view1_envt_table')
+                                ),
+                              dl_button = tags$div(
+                                shiny::downloadButton(outputId = 'summary_download', 
+                                                      label = 'Download Summary Report',
+                                                      style = 'color: #fff; background-color: #005ea2'),
+                                style = 'text-align: center;'
+                              ) , # ,
+                              ## _radio button on format of short report ####
+                              # DISABLED UNTIL PDF KNITTING IS DEBUGGED
+                              format_button = radioButtons("format1pager", "Format", choices = c(html="html", html="pdf"), inline = TRUE) 
+                            )
+
+                 # ## show count of population among selected sites
+                 # htmlOutput(outputId = 'view1_total_pop'),
+                 # 
+                 # br(), ## vertical space
+                 # 
+                 # ## _Table of demographics overall *********************************####
+                 # 
+                 # shinycssloaders::withSpinner(
+                 #   gt::gt_output(outputId = 'view1_demog_table')
                  # ),
-                 
-                 br(), ## vertical space
-                 
-                
-                 ## _Map of sites for report *********************************####
-                 
-                 fluidRow(
-                   column(12,
-                          align = 'center',
-                          shinycssloaders::withSpinner(
-                            leaflet::leafletOutput('quick_view_map', width = '100%')
-                          )
-                   )
-                 ),
-                 
-                 br(), ## vertical space
-                 br(),
-                 
-                 ## _Table of environmental indicators overall *********************************####
-                 
-                 shinycssloaders::withSpinner(
-                   gt::gt_output(outputId = 'view1_envt_table')
-                 ),
+                 # 
+                 # br(), ## vertical space
+                 # 
+                 # ## _Box/barplots demographics overall *********************************####
+                 # 
+                 # fluidRow(
+                 #   column(
+                 #     12,
+                 #     align = 'center',
+                 #     shinycssloaders::withSpinner(
+                 #       plotOutput(outputId = 'view1_summary_plot', width = '1200px', height = '400px') #width = '100%', height='700px')
+                 #     )
+                 #   )
+                 # ),
+                 # # ),
+                 # 
+                 # br(), ## vertical space
+                 # 
+                 # 
+                 # ## _Map of sites for report *********************************####
+                 # 
+                 # fluidRow(
+                 #   column(12,
+                 #          align = 'center',
+                 #          shinycssloaders::withSpinner(
+                 #            leaflet::leafletOutput('quick_view_map', width = '100%')
+                 #          )
+                 #   )
+                 # ),
+                 # 
+                 # br(), ## vertical space
+                 # br(),
+                 # 
+                 # ## _Table of environmental indicators overall *********************************####
+                 # 
+                 # shinycssloaders::withSpinner(
+                 #   gt::gt_output(outputId = 'view1_envt_table')
+                 # ),
                  
                  ## button to trigger (re-)generation of summary report using eventReactive
                  ## otherwise, it will update when any of the inputs are changed
@@ -420,15 +455,15 @@ app_ui  <- function(request) {
                 
                  ## _button to download short report ####
                  
-                 tags$div(
-                   shiny::downloadButton(outputId = 'summary_download', 
-                                         label = 'Download Summary Report',
-                                         style = 'color: #fff; background-color: #005ea2'),
-                   style = 'text-align: center;'
-                 ) , # ,
-                 ## _radio button on format of short report ####
-                 # DISABLED UNTIL PDF KNITTING IS DEBUGGED
-                 radioButtons("format1pager", "Format", choices = c(html="html", html="pdf"), inline = TRUE)  # fix 
+                 # tags$div(
+                 #   shiny::downloadButton(outputId = 'summary_download', 
+                 #                         label = 'Download Summary Report',
+                 #                         style = 'color: #fff; background-color: #005ea2'),
+                 #   style = 'text-align: center;'
+                 # ) , # ,
+                 # ## _radio button on format of short report ####
+                 # # DISABLED UNTIL PDF KNITTING IS DEBUGGED
+                 # radioButtons("format1pager", "Format", choices = c(html="html", html="pdf"), inline = TRUE)  # fix 
         ),
         
         ######################################################################################################### #

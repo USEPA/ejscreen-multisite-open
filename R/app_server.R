@@ -22,7 +22,7 @@
 #' @import tidyverse
 #' @importFrom magrittr '%>%'
 #' @import tidyr
-#' @import dplyr
+#' @rawNamespace import(dplyr, except = c(first, last, between))
 #' 
 app_server <- function(input, output, session) {
   
@@ -88,8 +88,8 @@ app_server <- function(input, output, session) {
     ## if acceptable file type, read in; if not, send warning text
     ext <- switch(ext,
                   csv = data.table::fread(input$ss_upload_latlon$datapath),
-                  xls = read_excel(input$ss_upload_latlon$datapath) %>% data.table::as.data.table(),
-                  xlsx = read_excel(input$ss_upload_latlon$datapath)%>% data.table::as.data.table(),
+                  xls = readxl::read_excel(input$ss_upload_latlon$datapath) %>% data.table::as.data.table(),
+                  xlsx = readxl::read_excel(input$ss_upload_latlon$datapath)%>% data.table::as.data.table(),
                   shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
     )
     
@@ -109,7 +109,6 @@ app_server <- function(input, output, session) {
   ## reactive: data uploaded by FRS registry IDs ####
   
   data_up_frs <- reactive({
-    
     ## wait for file to be uploaded
     req(input$ss_upload_frs)
     ##  >this part could be replaced by  latlon_from_anything() ####
@@ -120,13 +119,15 @@ app_server <- function(input, output, session) {
     ## if acceptable file type, read in; if not, send warning text
     read_frs <- switch(ext,
                        csv =  read.csv(input$ss_upload_frs$datapath),
-                       xls = read_excel(input$ss_upload_frs$datapath),
-                       xlsx = read_excel(input$ss_upload_frs$datapath),
+                       xls = readxl::read_excel(input$ss_upload_frs$datapath),
+                       xlsx = readxl::read_excel(input$ss_upload_frs$datapath),
                        shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
     ) # returns a data.frame
-    
     #include frs_is_valid verification check function, must have colname REGISTRY_ID
     if (frs_is_valid(read_frs)){
+      if ("siteid" %in% colnames(read_frs)){
+        colnames(read_frs) <- gsub("siteid", "REGISTRY_ID", colnames(read_frs))
+      }
       #converts registry id to character if not already in that class ( frs registry ids are character)
       if(class(read_frs$REGISTRY_ID) != "character"){
         read_frs$REGISTRY_ID = as.character(read_frs$REGISTRY_ID)
@@ -211,21 +212,22 @@ app_server <- function(input, output, session) {
     } else {
       ################ Should output something saying no valid results returned ######## #
       shiny::validate('Invalid NAICS Input')
+
     }
     cat("SITE COUNT VIA NAICS: ", NROW(sitepoints), "\n")
-    
+
     ## assign final value to data_up_naics reactive variable
     data_up_naics(sitepoints)
   })
   
   ## if NAICS radio button is toggled between dropdown/enter, empty the other one
-  observeEvent(input$naics_ul_type, {
-    if(input$naics_ul_type == 'dropdown'){
-      shinyjs::reset(id = 'ss_select_naics')
-    } else if(input$naics_ul_type == 'enter'){
-      shinyjs::reset(id = 'ss_enter_naics')
-    }
-  })
+  # observeEvent(input$naics_ul_type, {
+  #   if(input$naics_ul_type == 'dropdown'){
+  #     shinyjs::reset(id = 'ss_select_naics')
+  #   } else if(input$naics_ul_type == 'enter'){
+  #     shinyjs::reset(id = 'ss_enter_naics')
+  #   }
+  # })
   
   #############################################################################  # 
   ## reactive: data uploaded by ECHO ####
@@ -243,8 +245,8 @@ app_server <- function(input, output, session) {
     ## if acceptable file type, read in; if not, send warning text
     ext <- switch(ext,
                   csv =  data.table::fread(input$ss_upload_echo$datapath),
-                  xls = read_excel(input$ss_upload_echo$datapath) %>% data.table::as.data.table(),
-                  xlsx = read_excel(input$ss_upload_echo$datapath) %>% data.table::as.data.table(),
+                  xls = readxl::read_excel(input$ss_upload_echo$datapath) %>% data.table::as.data.table(),
+                  xlsx = readxl::read_excel(input$ss_upload_echo$datapath) %>% data.table::as.data.table(),
                   shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
     )
     
@@ -265,7 +267,9 @@ app_server <- function(input, output, session) {
   num_ul_methods <- reactive({
     shiny::isTruthy(input$ss_upload_latlon) +
       shiny::isTruthy(input$ss_upload_frs) +
-      (shiny::isTruthy(input$ss_enter_naics) ||  shiny::isTruthy(input$ss_select_naics)) +
+      ## switched upload count to use submit button instead of entered codes
+      shiny::isTruthy(input$submit_naics) +
+      #(shiny::isTruthy(input$ss_enter_naics) ||  shiny::isTruthy(input$ss_select_naics)) +
       shiny::isTruthy(input$ss_upload_echo)
   })
   
@@ -275,9 +279,9 @@ app_server <- function(input, output, session) {
     cat("method is ", current_upload_method(), "\n")
     
     ## send message if no data uploaded
-    validate(
-      need(num_ul_methods() > 0, "Please upload a data set")
-    )
+    # validate(
+    #   need(num_ul_methods() > 0, "Please upload a data set")
+    # )
     
     ## if more than 1 upload method used, it will try to use the one
     ## that is currently selected by the ss_choose_method radio button
@@ -304,39 +308,88 @@ app_server <- function(input, output, session) {
   })
   #############################################################################  # 
   
-  ## disable run button until there is data uploaded; then enable
+  ## disable run and hide preview button until there is data uploaded; then enable and show
   observe({
-    if(num_ul_methods() == 0){
-      shinyjs::disable(id = 'bt_get_results' )
-    } else {
-      shinyjs::enable(id = 'bt_get_results')
+    if(current_upload_method() == 'latlon'){
+      if(!isTruthy(input$ss_upload_latlon)){
+        shinyjs::disable(id = 'bt_get_results')
+        shinyjs::hide(id = 'show_data_preview')
+      } else {
+        shinyjs::enable(id = 'bt_get_results')
+        shinyjs::show(id = 'show_data_preview')
+      }
+    } else if(current_upload_method() == 'FRS'){
+      if(!isTruthy(input$ss_upload_frs)){
+        shinyjs::disable(id = 'bt_get_results')
+        shinyjs::hide(id = 'show_data_preview')
+      } else {
+        shinyjs::enable(id = 'bt_get_results')
+        shinyjs::show(id = 'show_data_preview')
+      }
+    } else if(current_upload_method() == 'ECHO'){
+      if(!isTruthy(input$ss_upload_echo)){
+        shinyjs::disable(id = 'bt_get_results')
+        shinyjs::hide(id = 'show_data_preview')
+      } else {
+        shinyjs::enable(id = 'bt_get_results')
+        shinyjs::show(id = 'show_data_preview')
+      }
+    } else if(current_upload_method() == 'NAICS'){
+        if((input$naics_ul_type == 'enter' & !isTruthy(input$ss_enter_naics)) |
+           (input$naics_ul_type == 'dropdown' & !isTruthy(input$ss_select_naics))){
+          shinyjs::disable(id = 'submit_naics')
+        } else {
+          shinyjs::enable(id = 'submit_naics')
+        }
+      
+        if(!isTruthy(input$submit_naics)){
+          shinyjs::disable(id = 'bt_get_results')
+          shinyjs::hide(id = 'show_data_preview')
+        } else {
+          shinyjs::enable(id = 'bt_get_results')
+          shinyjs::show(id = 'show_data_preview')
+        }
     }
   })
-  
   #############################################################################  # 
   # ~ ####
   # ______ VIEW UPLOADED / SELECTED POINTS ####
   # ~ ####
   
+  
   ## How many valid points? warn if no valid lat/lon ####
   output$an_map_text <- renderUI({
     req(data_uploaded())
-    #separate inputs with valid/invalid lat/lon values
-    num_na    <- nrow(data_uploaded()[ (is.na(data_uploaded()$lat) | is.na(data_uploaded()$lon)),])
-    num_notna <- nrow(data_uploaded()[!(is.na(data_uploaded()$lat) | is.na(data_uploaded()$lon)),])
-    ## if invalid data found, send modal to screen
-    if(num_na > 0){
-      showModal(modalDialog(title = 'Invalid data found', 'FYI, some of your data was not valid.', size = 's'))
-    }
-    HTML(paste0('Current upload method: <strong>',  current_upload_method(), '</strong><br>', 
-                'Total site(s) uploaded: <strong>', prettyNum(nrow(data_uploaded()), big.mark=','),'</strong><br>',
-                'Valid site(s) uploaded: <strong>', prettyNum(num_notna, big.mark=','),'</strong><br>',
-                'Site(s) with invalid lat/lon values: <strong>', prettyNum(num_na,big.mark=','), '</strong>'))
+      #separate inputs with valid/invalid lat/lon values
+      if (nrow(data_uploaded()) > 1){ 
+        num_na    <- nrow(data_uploaded()[ (is.na(data_uploaded()$lat) | is.na(data_uploaded()$lon)),])
+        num_notna <- nrow(data_uploaded()[!(is.na(data_uploaded()$lat) | is.na(data_uploaded()$lon)),])
+      }else{ # if inputs is only one valid row
+        num_na    <- nrow(data_uploaded()[ (is.na(data_uploaded()$lat) | is.na(data_uploaded()$lon))])
+        num_notna <- nrow(data_uploaded()[!(is.na(data_uploaded()$lat) | is.na(data_uploaded()$lon))])
+      }
+      ## if invalid data found, send modal to screen
+      if(num_na > 0){
+        showModal(modalDialog(title = 'Invalid data found', 'FYI, some of your data was not valid.', size = 's'))
+      }
+      
+      HTML(paste0(
+                  "Total site(s) uploaded: <strong>", prettyNum(num_na + num_notna, big.mark=","),"</strong><br>",
+                  "Valid site(s) uploaded: <strong>", prettyNum(num_notna, big.mark=","),"</strong>")
+           )
+                  #"Site(s) with invalid lat/lon values: <strong>", prettyNum(num_na,big.mark=","), "</strong>"))
+      # HTML(paste0("Current upload method: <strong>",  current_upload_method(), "</strong><br>", 
+      #             "Total site(s) uploaded: <strong>", prettyNum(nrow(data_uploaded()), big.mark=","),"</strong><br>",
+      #             "Valid site(s) uploaded: <strong>", prettyNum(num_notna, big.mark=","),"</strong><br>",
+      #             "Site(s) with invalid lat/lon values: <strong>", prettyNum(num_na,big.mark=","), "</strong>"))
+    
   })
   
   ## See table of uploaded points ####
   
-  output$print_test2_dt <- DT::renderDT({
+  output$print_test2_dt <- DT::renderDT(
+    ## server = FALSE forces download to include all rows, not just visible ones
+    server = FALSE, {
     req(data_uploaded())
     
     dt <- data_uploaded() # now naics-queried sites format is OK to view, since using different function to get sites by naics
@@ -356,7 +409,44 @@ app_server <- function(input, output, session) {
     # dt <- data_uploaded()
     # }
     
-    DT::datatable(dt, options = list(pageLength = 100, scrollX = TRUE, scrollY = '500px'), escape = FALSE) # escape=FALSE may add security issue but makes links clickable in table
+    DT::datatable(dt, 
+                  ## add download buttons
+                  extensions = 'Buttons',
+                  ## keep rownames in display table
+                  rownames = TRUE,
+                  options = list(pageLength = 100, 
+                                 scrollX = TRUE, 
+                                 scrollY = '500px',
+                                 ## label rownames to remove from download
+                                 columnDefs = list(
+                                   list(
+                                     targets = 0, className = "rownames"
+                                   )
+                                 ),
+                                 ## specify button placement - "B"= buttons, see https://datatables.net/reference/option/dom 
+                                 dom ='Brtip',
+
+                                 buttons = list(
+                                   ## customize CSV button
+                                   list(extend = 'csv',
+                                        ## name of downloaded file
+                                        filename = 'ejam_raw_data_download',
+                                        ## drop rownames for download
+                                        exportOptions = list(columns = ":not(.rownames)")
+                                   ),
+                                   ## customize Excel button
+                                   list(extend = 'excel',
+                                        ## name of downloaded file
+                                        filename = 'ejam_raw_data_download',
+                                        ## drop title row from download
+                                        title = NULL,
+                                        ## drop rownames for download
+                                        exportOptions = list(columns = ":not(.rownames)")
+                                    )
+                                  )
+                                ), # end options
+                  
+                  escape = FALSE) # escape=FALSE may add security issue but makes links clickable in table
   })
   
   ## reactive: check if uploaded points are clustered (may double-count people) ####
@@ -385,18 +475,27 @@ app_server <- function(input, output, session) {
   
   ## update map radius label based on button ####
   
-  observe({
+  # observe({
+  #   val <- input$bt_rad_buff
+  #   lab <- paste0('Radius of circular buffer: <br />', val, ' mi ','(',round(val / 0.62137119, 2), ' km)')
+  #   
+  #   updateSliderInput(session, inputId = 'bt_rad_buff', label = HTML(lab))
+  #   #shinyjs::html(id = 'bt_rad_buff', html = HTML(lab))
+  #   
+  #   ## if switching units between miles and km - not currently used
+  #   #req(input$radius_units)
+  #   #lab <- input$radius_units
+  #   # updateSliderInput(session, inputId = 'bt_rad_buff',
+  #   #                   label = paste0('Radius of circular buffer (', lab, ')'),
+  #   #                   min = 0.25, val = val, step = 0.25, max = 10)
+  # })
+  
+  ## Create separate radius label to allow line break
+  output$radius_label <- renderUI({
     val <- input$bt_rad_buff
-    lab <- paste0('Radius of circular buffer: ', val, ' mi ','(',round(val / 0.62137119, 2), ' km)')
+    lab <- paste0('<b>Radius of circular buffer: <br/>', val, ' miles ','(',round(val / 0.62137119, 2), ' km)</b>')
     
-    updateSliderInput(session, inputId = 'bt_rad_buff', label = lab)
-    
-    ## if switching units between miles and km - not currently used
-    #req(input$radius_units)
-    #lab <- input$radius_units
-    # updateSliderInput(session, inputId = 'bt_rad_buff',
-    #                   label = paste0('Radius of circular buffer (', lab, ')'),
-    #                   min = 0.25, val = val, step = 0.25, max = 10)
+    HTML(lab)
   })
   
   orig_leaf_map <- reactive({
@@ -423,7 +522,18 @@ app_server <- function(input, output, session) {
   
   ## output: draw map of uploaded points ####
   output$an_leaf_map <- leaflet::renderLeaflet({
-    req(data_uploaded())
+    #req(data_uploaded())
+    
+    ## show message until dataset is available for current method
+   cond <- switch(current_upload_method(), 
+                  'latlon' = input$ss_upload_latlon,
+                  'FRS' = input$ss_upload_frs, 
+                  'NAICS' = input$submit_naics,
+                  'ECHO' = input$ss_upload_echo)
+     validate(
+      need(cond, 'Please select a data set.')
+    )
+    
     orig_leaf_map()
   })
   
@@ -511,16 +621,16 @@ app_server <- function(input, output, session) {
     ## the registry ID column is only found in uploaded ECHO/FRS/NAICS data -
     ## it is not passed to doaggregate output at this point, so pull the column from upload to create URLS
     if("REGISTRY_ID" %in% names(data_uploaded())){
-      echolink = url_echo_facility_webpage(data_uploaded()$REGISTRY_ID, as_html = FALSE)
+      echolink = url_echo_facility_webpage(data_uploaded()$REGISTRY_ID, as_html = TRUE, linktext = 'ECHO Report')
     } else if("RegistryID" %in% names(data_uploaded())){
-      echolink = url_echo_facility_webpage(data_uploaded()$RegistryID, as_html = FALSE)
+      echolink = url_echo_facility_webpage(data_uploaded()$RegistryID, as_html = TRUE, linktext = 'ECHO Report')
     } else {
-      echolink = rep(NA,nrow(out$results_bysite))
+      echolink = rep('N/A',nrow(out$results_bysite))
     }
     out$results_bysite[ , `:=`(
-      `EJScreen Report` = url_ejscreen_report(    lat = data_uploaded()$lat, lon = data_uploaded()$lon, distance = input$bt_rad_buff, as_html = FALSE), 
-      `EJScreen Map`    = url_ejscreenmap(        lat = data_uploaded()$lat, lon = data_uploaded()$lon,                               as_html = FALSE), 
-      `ACS Report`      = url_ejscreen_acs_report(lat = data_uploaded()$lat, lon = data_uploaded()$lon, distance = input$bt_rad_buff, as_html = FALSE),
+      `EJScreen Report` = url_ejscreen_report(    lat = data_uploaded()$lat, lon = data_uploaded()$lon, distance = input$bt_rad_buff, as_html = TRUE), 
+      `EJScreen Map`    = url_ejscreenmap(        lat = data_uploaded()$lat, lon = data_uploaded()$lon,                               as_html = TRUE), 
+      `ACS Report`      = url_ejscreen_acs_report(lat = data_uploaded()$lat, lon = data_uploaded()$lon, distance = input$bt_rad_buff, as_html = TRUE),
       `ECHO report` = echolink
     )]
     # out$results_overall[ , `:=`(
@@ -657,6 +767,13 @@ app_server <- function(input, output, session) {
   ## *MAP for summary report ####
   
   report_map <- reactive({
+    
+    #req(data_processed())
+    
+    validate(
+      need(data_processed(), 'Please run an analysis to see results.')
+    )
+    
     circle_color <- '#000080'
     
     ## similar to previous map but remove controls
@@ -664,8 +781,8 @@ app_server <- function(input, output, session) {
     
     ## switch this to data analyzed in report, not what was uploaded
     ## in case there are invalid
-    leaflet(data_processed()$results_bysite,
-            options = leafletOptions(zoomControl = FALSE, minZoom = 4)) %>% 
+    leaflet(data_processed()$results_bysite) %>% #,
+            #options = leafletOptions(zoomControl = FALSE, minZoom = 4)) %>% 
       addTiles()  %>%
       addCircles(
         radius = 1 * meters_per_mile,
@@ -679,7 +796,7 @@ app_server <- function(input, output, session) {
   
   ## output: summary report map  
   output$quick_view_map <- leaflet::renderLeaflet({
-    req(data_uploaded())
+    #req(data_uploaded())
 
     ## use separate report map
     report_map()
@@ -927,12 +1044,15 @@ app_server <- function(input, output, session) {
         ggplot2::geom_bar(stat='identity') +
         ggplot2::scale_fill_identity() +
         ggplot2::theme_bw() +
-        ggplot2::labs(x = 'Indicator', y = 'Ratio vs. US Average') +
+        ggplot2::labs(x = 'Indicator', y = 'Ratio vs. US Average',
+                      title = "Demographic Index around the Selected Sites compared to all people's blockgroups in the US") +
         #scale_x_discrete(labels = scales::label_wrap(7)) +
         #scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
         #scale_x_discrete(guide = guide_axis(n.dodge = 2)) +
         ggplot2::scale_y_continuous(limits = c(0, NA), expand = ggplot2::expansion(mult = c(0, 0.05), add = c(0, 0))) +
-        ggplot2::theme(plot.margin=ggplot2::unit(c(1,2,1,1), "cm"), axis.text.x = ggplot2::element_text(angle = -30, hjust = 0, vjust = 1)) + # # try to do that via ggplot...
+        ggplot2::theme(plot.margin=ggplot2::unit(c(0,50,0,0), "points"), 
+                       plot.title = ggplot2::element_text(size = 14, hjust = 0.5),
+                       axis.text.x = ggplot2::element_text(size = 10 , angle = -30, hjust = 0, vjust = 1)) + # # try to do that via ggplot...
       NULL
       
         # ggplot2::ggplot(
@@ -1107,29 +1227,29 @@ app_server <- function(input, output, session) {
   
   ## make summary report directly in shiny app and render on Summary report tab
   #summary_report_params <- eventReactive(input$gen_summary_report, {
-  summary_report_params <- reactive({
-      list(testmode=FALSE,
-         sitecount = nrow(data_processed()$results_bysite), 
-         distance = paste0(input$bt_rad_buff,' miles'), #input$radius_units),
-         total_pop = prettyNum( total_pop(), big.mark = ","),
-         analysis_title = input$analysis_title,
-         # results     = data_processed(),  # NOT NEEDED HERE IF PASSING MAP, TABLES, AND PLOT AS PARAMS
-         map         = report_map(),
-         envt_table   = v1_envt_table(),
-         demog_table  = v1_demog_table(),
-         summary_plot = v1_summary_plot() #%>% print()
-         )
-  })
-  
-  output$rendered_summary_report <- renderUI({
-   HTML(
-      includeHTML(
-        rmarkdown::render(app_sys('report','brief_summary.Rmd'),
-                          output_dir = tempdir(),
-                          params = summary_report_params())
-      )
-   )
-  })
+  # summary_report_params <- reactive({
+  #     list(testmode=FALSE,
+  #        sitecount = nrow(data_processed()$results_bysite), 
+  #        distance = paste0(input$bt_rad_buff,' miles'), #input$radius_units),
+  #        total_pop = prettyNum( total_pop(), big.mark = ","),
+  #        analysis_title = input$analysis_title,
+  #        # results     = data_processed(),  # NOT NEEDED HERE IF PASSING MAP, TABLES, AND PLOT AS PARAMS
+  #        map         = report_map(),
+  #        envt_table   = v1_en
+  #        demog_table  = v1_demog_table(),
+  #        summary_plot = v1_summary_plot() #%>% print()
+  #        )
+  # })
+  # 
+  # output$rendered_summary_report <- renderUI({
+  #  HTML(
+  #     includeHTML(
+  #       rmarkdown::render(app_sys('report','brief_summary.Rmd'),
+  #                         output_dir = tempdir(),
+  #                         params = summary_report_params())
+  #     )
+  #  )
+  # })
   
   # 1-3-page summary comparable to EJScreen report  
   output$summary_download <- downloadHandler(
@@ -1216,11 +1336,11 @@ app_server <- function(input, output, session) {
              ) %>%
       dplyr::select(dplyr::all_of(cols_to_select), ST)
     
-    dt$`EJScreen Report` <- EJAMejscreenapi::url_linkify(dt$`EJScreen Report`, text = 'EJScreen Report')
-    dt$`EJScreen Map` <- EJAMejscreenapi::url_linkify(dt$`EJScreen Map`, text = 'EJScreen Map')
-    dt$`ACS Report` <- EJAMejscreenapi::url_linkify(dt$`ACS Report`, text = 'ACS Report')
-    dt$`ECHO report` <- ifelse(!is.na(dt$`ECHO report`), EJAMejscreenapi::url_linkify(dt$`ECHO report`, text = 'ECHO Report'), 
-                                      'N/A')
+    # dt$`EJScreen Report` <- EJAMejscreenapi::url_linkify(dt$`EJScreen Report`, text = 'EJScreen Report')
+    # dt$`EJScreen Map` <- EJAMejscreenapi::url_linkify(dt$`EJScreen Map`, text = 'EJScreen Map')
+    # dt$`ACS Report` <- EJAMejscreenapi::url_linkify(dt$`ACS Report`, text = 'ACS Report')
+    # dt$`ECHO report` <- ifelse(!is.na(dt$`ECHO report`), EJAMejscreenapi::url_linkify(dt$`ECHO report`, text = 'ECHO Report'), 
+    #                                   'N/A')
     
     # dt_avg <- data_summarized()$rows[c('Average person','Average site'),] %>% 
     #   dplyr::mutate(siteid = c('Average person', 'Average site'), ST = NA,
@@ -1310,16 +1430,29 @@ app_server <- function(input, output, session) {
       # Recode this to avoid making copies which slows it down:?
       table_overall <- copy(data_processed()$results_overall)
       table_bysite  <- copy(data_processed()$results_bysite)
+      
+      #filter out sitecount - TEMP
+      filter_out_temp_overall <- !(names(table_overall) %in% c("sitecount_unique","sitecount_avg","sitecount_max"))
+      filter_out_temp_bysite <- !(names(table_bysite) %in% c("sitecount_unique","sitecount_avg","sitecount_max"))
+      
+      table_overall <- table_overall[,..filter_out_temp_overall]
+      table_bysite <- table_bysite[,..filter_out_temp_bysite]
+      
       # table_summarized <- copy(data_processed()$results_summarized)
       # table_bybg_people <- data_processed()$results_bybg_people   # large table !!
       table_overall <- table_overall %>% dplyr::mutate(dplyr::across(dplyr::where(is.numeric), function(x) ifelse(!is.finite(x), NA, x)))
       table_bysite <- table_bysite %>% dplyr::mutate(dplyr::across(dplyr::where(is.numeric), function(x) ifelse(!is.finite(x), NA, x)))
-      
+     
       ## attempt to clean up some column names xxx - CHECK THIS 
       # longnames_TEST <- EJAMejscreenapi::map_headernames$longname_tableheader[match(names(data_processed()$results_bysite),
       # EJAMejscreenapi::map_headernames$newnames_ejscreenapi)]
       longnames <- data_processed()$longnames
+      
+      #filter out sitecount from longnames - TEMP
+      longnames <- longnames[filter_out_temp_bysite]
+      
       longnames_no_url <- setdiff(longnames, c('EJScreen Report','EJScreen Map','ACS Report','ECHO report'))
+    
       names(table_overall) <- ifelse(!is.na(longnames_no_url), longnames_no_url, names(table_overall))
       names(table_bysite)  <- ifelse(!is.na(longnames), longnames, names(table_bysite))
       # table_summarized
@@ -1354,7 +1487,7 @@ app_server <- function(input, output, session) {
       
       ## add v1_summary_plot() to 'plot' sheet of Excel download
       ## will be moved to eventual merged 'xls_formatting' function
-      ggsave(filename = paste0(tempdir(), '/', 'summary_plot.png'), plot = v1_summary_plot(),
+      ggplot2::ggsave(filename = paste0(tempdir(), '/', 'summary_plot.png'), plot = v1_summary_plot(),
              height = 7, width = 9, units = 'in')
       openxlsx::insertImage(wb_out, sheet = 'plot', 
                             file = paste0(tempdir(), '/', 'summary_plot.png'),
