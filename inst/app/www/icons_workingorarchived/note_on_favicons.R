@@ -1,5 +1,5 @@
-# insert this in head of index.html to make all favicon versions work
-# using package from 
+### insert this in head of index.html to make all favicon versions work
+### using this set of icons for various platforms/sizes: 
 
 # <link rel="apple-touch-icon" sizes="180x180" href="/inst/www/apple-touch-icon.png">
 #   <link rel="icon" type="image/png" sizes="32x32" href="/inst/www/favicon-32x32.png">
