@@ -201,7 +201,7 @@ The intent is for EJAM to be designed so that a later enhancement can
 provide a continuous distribution of distances, as distributed across
 blocks or people for one or all of the nearby facilities. This would
 enable exploration of the complete picture of proximities, rather than
-using an arbitrary binary cutoff distance defining near versus far. The
+using an arbitrary single distance defining near versus far. The
 distribution could be sliced later for the summary statistics at any
 distance, or could be summarized as a distribution of distances within
 each demographic group.

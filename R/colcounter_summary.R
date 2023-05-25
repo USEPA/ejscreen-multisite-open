@@ -1,17 +1,17 @@
-#' Summarize how many rows have N columns at or above (or below) various cutoffs?
+#' Summarize how many rows have N columns at or above (or below) various thresholds?
 #' Like colcounter or cols.above.count
-#'   but will handle multiple cutoffs to compare to each indicator, etc.
+#'   but will handle multiple thresholds to compare to each indicator, etc.
 #'   Table of counts, percents, cumulative counts, cumulative percents
 #'   of places with N, or at least N, of the indicators
 #'   at or above the benchmark(s)
-#' @param x Data.frame or matrix of numbers to be compared to cutoff value,
+#' @param x Data.frame or matrix of numbers to be compared to threshold value,
 #'   like percentiles for example.
-#' @param cutofflist vector of numeric cutoff values to compare to
-#' @param or.tied if TRUE, include ties (value in x equals cutoff)
+#' @param thresholdlist vector of numeric threshold values to compare to
+#' @param or.tied if TRUE, include ties (value in x equals threshold)
 #' @param na.rm if TRUE, used by [colcounter()] to count only the non-NA columns in given row
-#' @param below if TRUE, count x below cutoff not above cutoff
-#' @param one.cut.per.col if FALSE, compare each cutoff to all of x.
-#'   If TRUE, specify one cutoff to use for each column.
+#' @param below if TRUE, count x below threshold not above threshold
+#' @param one.cut.per.col if FALSE, compare each threshold to all of x.
+#'   If TRUE, specify one threshold to use for each column.
 #' @seealso [colcounter_summary_all()] [colcounter_summary()] [colcounter_summary_cum()] [colcounter_summary_pct()] [colcounter_summary_cum_pct()]
 #' @seealso [tablefixed()]
 #' @return A table of frequency counts
@@ -30,19 +30,19 @@
 #' colcounter_summary_cum_pct(pdata, 5 * (10:20))
 #' a3 <- colcounter_summary_all(    pdata, pcuts)
 #'
-#' x80 <- colcounter(pdata, cutoff = 80, or.tied = T)
-#' x95 <- colcounter(pdata, cutoff = 95, or.tied = T)
+#' x80 <- colcounter(pdata, threshold = 80, or.tied = T)
+#' x95 <- colcounter(pdata, threshold = 95, or.tied = T)
 #' table(x95)
 #' tablefixed(x95, NCOL(pdata))
 #' cbind(at80=tablefixed(x80, NCOL(pdata)), at95=tablefixed(x95, NCOL(pdata)))
 #'   }
 #'
-colcounter_summary <- function(x, cutofflist, or.tied=TRUE, na.rm=TRUE, below=FALSE, one.cut.per.col=FALSE) {
+colcounter_summary <- function(x, thresholdlist, or.tied=TRUE, na.rm=TRUE, below=FALSE, one.cut.per.col=FALSE) {
 
   ccount <- NCOL(x)
   if (ccount == 1) x <- data.frame(x)
   countpersite_table <- sapply(
-    cutofflist,
+    thresholdlist,
     FUN = function(thiscut) {
       tablefixed(
         colcounter(x, thiscut, or.tied = or.tied, na.rm = na.rm, below = below, one.cut.per.col = one.cut.per.col),
@@ -50,68 +50,68 @@ colcounter_summary <- function(x, cutofflist, or.tied=TRUE, na.rm=TRUE, below=FA
       )
     }
   )
-  colnames(countpersite_table) <-  cutofflist
-  dimnames(countpersite_table) <- list(count.of.cols=rownames(countpersite_table), cutoff=cutofflist)
+  colnames(countpersite_table) <-  thresholdlist
+  dimnames(countpersite_table) <- list(count.of.cols=rownames(countpersite_table), threshold=thresholdlist)
   return(countpersite_table)
 }
 ######################################## #
 
-#' Summarize how many rows have AT LEAST N columns at or above (or below) various cutoffs
+#' Summarize how many rows have AT LEAST N columns at or above (or below) various thresholds
 #' See colcounter_summary() for more info and examples.
-#' @param x Data.frame or matrix of numbers to be compared to cutoff value,
+#' @param x Data.frame or matrix of numbers to be compared to threshold value,
 #'   like percentiles for example.
-#' @param cutofflist vector of numeric cutoff values to compare to
-#' @param or.tied if TRUE, include ties (value in x equals cutoff)
+#' @param thresholdlist vector of numeric threshold values to compare to
+#' @param or.tied if TRUE, include ties (value in x equals threshold)
 #' @param na.rm if TRUE, used by colcounter to count only the non-NA columns in given row
-#' @param below if TRUE, count x below cutoff not above cutoff
-#' @param one.cut.per.col if FALSE, compare each cutoff to all of x.
-#'   If TRUE, specify one cutoff to use for each column.
+#' @param below if TRUE, count x below threshold not above threshold
+#' @param one.cut.per.col if FALSE, compare each threshold to all of x.
+#'   If TRUE, specify one threshold to use for each column.
 #' @seealso colcounter_summary_all() colcounter_summary() colcounter_summary_cum() colcounter_summary_pct() colcounter_summary_cum_pct()
 #' @return A table of cumulative frequency counts
 #' @export
 #'
-colcounter_summary_cum <- function(x, cutofflist, or.tied=TRUE, na.rm=TRUE, below=FALSE, one.cut.per.col=FALSE) {
-  apply(colcounter_summary(x, cutofflist = cutofflist, or.tied = or.tied, na.rm = na.rm,below = below,one.cut.per.col = one.cut.per.col),
+colcounter_summary_cum <- function(x, thresholdlist, or.tied=TRUE, na.rm=TRUE, below=FALSE, one.cut.per.col=FALSE) {
+  apply(colcounter_summary(x, thresholdlist = thresholdlist, or.tied = or.tied, na.rm = na.rm,below = below,one.cut.per.col = one.cut.per.col),
         MARGIN = 2, FUN = function(thiscol) rev(cumsum(rev(thiscol))))
 }
 
-#' Summarize what percent of rows have N columns at or above (or below) various cutoffs
+#' Summarize what percent of rows have N columns at or above (or below) various thresholds
 #' @details See examples for colcounter_summary_cum_pct()
-#' @param x Data.frame or matrix of numbers to be compared to cutoff value,
+#' @param x Data.frame or matrix of numbers to be compared to threshold value,
 #'   like percentiles for example.
-#' @param cutofflist vector of numeric cutoff values to compare to
+#' @param thresholdlist vector of numeric threshold values to compare to
 #' @param ... passed to colcounter_summary()
 #'   like or.tied=TRUE, na.rm=TRUE, below=FALSE, one.cut.per.col=FALSE
 #' @seealso colcounter_summary_all() colcounter_summary() colcounter_summary_cum() colcounter_summary_pct() colcounter_summary_cum_pct()
 #' @export
 #'
-colcounter_summary_pct <- function(x, cutofflist, ...)  {
-  100 * round(colcounter_summary(x, cutofflist = cutofflist, ...) / NROW(x), 2)
+colcounter_summary_pct <- function(x, thresholdlist, ...)  {
+  100 * round(colcounter_summary(x, thresholdlist = thresholdlist, ...) / NROW(x), 2)
   }
 
-#' Summarize what percent of rows have AT LEAST N columns at or above (or below) various cutoffs
+#' Summarize what percent of rows have AT LEAST N columns at or above (or below) various thresholds
 #'
-#' @param x Data.frame or matrix of numbers to be compared to cutoff value,
+#' @param x Data.frame or matrix of numbers to be compared to threshold value,
 #'   like percentiles for example.
-#' @param cutofflist vector of numeric cutoff values to compare to
+#' @param thresholdlist vector of numeric threshold values to compare to
 #' @param ... passed to colcounter_summary_cum()
 #'   like or.tied=TRUE, na.rm=TRUE, below=FALSE, one.cut.per.col=FALSE
 #' @seealso colcounter_summary_all() colcounter_summary() colcounter_summary_cum() colcounter_summary_pct() colcounter_summary_cum_pct()
 #' @export
 #'
-colcounter_summary_cum_pct <- function(x, cutofflist, ...) {
-  100 * round(colcounter_summary_cum(x, cutofflist = cutofflist, ...) / NROW(x), 2)
+colcounter_summary_cum_pct <- function(x, thresholdlist, ...) {
+  100 * round(colcounter_summary_cum(x, thresholdlist = thresholdlist, ...) / NROW(x), 2)
   }
 
 
 
-#' Summarize count (and percent) of rows with exactly (and at least) N cols >= various cutoffs
+#' Summarize count (and percent) of rows with exactly (and at least) N cols >= various thresholds
 #' A wrapper for 4 functions: Returns four tables,
 #'   using colcounter_summary(), colcounter_summary_pct(),
 #'   colcounter_summary_cum(), colcounter_summary_cum_pct()
-#' @param x Data.frame or matrix of numbers to be compared to cutoff value,
+#' @param x Data.frame or matrix of numbers to be compared to threshold value,
 #'   like percentiles for example.
-#' @param cutofflist vector of numeric cutoff values to compare to
+#' @param thresholdlist vector of numeric threshold values to compare to
 #' @param ... passed to the 4 functions
 #'   like or.tied=TRUE, na.rm=TRUE, below=FALSE, one.cut.per.col=FALSE
 #' @seealso colcounter_summary_all() colcounter_summary() colcounter_summary_cum() colcounter_summary_pct() colcounter_summary_cum_pct()
@@ -127,11 +127,11 @@ colcounter_summary_cum_pct <- function(x, cutofflist, ...) {
 #'  # a3['12',,]; a3[13,,]
 #'
 #'  barplot(colcounter_summary_cum_pct(pdata, pcuts)[ , '80'],
-#'     ylab='% of places', xlab='# of indicators at/above cutoff',
+#'     ylab='% of places', xlab='# of indicators at/above threshold',
 #'     main='% of places with at least N/12 indicators >=80th percentile')
 #'
 #'  barplot(colcounter_summary(pdata, pcuts)[2:13 , '95'],
-#'     ylab='# of places', xlab='# of indicators at/above cutoff',
+#'     ylab='# of places', xlab='# of indicators at/above threshold',
 #'     main='# of places with exactly N/12 indicators >=95th percentile')
 #'
 #'   # pdata <- ejscreen::bg22[ , ejscreen::names.e.pctile]
@@ -156,16 +156,16 @@ colcounter_summary_cum_pct <- function(x, cutofflist, ...) {
 #'
 #' @export
 #'
-colcounter_summary_all <- function(x, cutofflist, ...) {
+colcounter_summary_all <- function(x, thresholdlist, ...) {
   listall <- list(
-    counts =  colcounter_summary(        x, cutofflist = cutofflist, ...),
-    cum =     colcounter_summary_cum(    x, cutofflist = cutofflist, ...),
-    pct =     colcounter_summary_pct(    x, cutofflist = cutofflist, ...),
-    cum_pct = colcounter_summary_cum_pct(x, cutofflist = cutofflist, ...)
+    counts =  colcounter_summary(        x, thresholdlist = thresholdlist, ...),
+    cum =     colcounter_summary_cum(    x, thresholdlist = thresholdlist, ...),
+    pct =     colcounter_summary_pct(    x, thresholdlist = thresholdlist, ...),
+    cum_pct = colcounter_summary_cum_pct(x, thresholdlist = thresholdlist, ...)
   )
   bincount <- length(0:NCOL(x))
-  arrayall <- array(NA, dim=c(bincount, length(cutofflist), 4))
+  arrayall <- array(NA, dim=c(bincount, length(thresholdlist), 4))
   for (i in 1:4) {arrayall[ ,, i] <- listall[[i]]}
-  dimnames(arrayall) <- list(count=0:NCOL(x), cut=cutofflist, stat=c('count', 'cum', 'pct', 'cum_pct'))
+  dimnames(arrayall) <- list(count=0:NCOL(x), cut=thresholdlist, stat=c('count', 'cum', 'pct', 'cum_pct'))
   arrayall
 }

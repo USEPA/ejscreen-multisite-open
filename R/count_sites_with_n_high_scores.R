@@ -6,7 +6,7 @@ count_sites_with_n_high_scores <- function(scores, thresholds=c(1.01, 1.50, 2, 3
   
   # e.g., What % of sites have at least 1 demog indicator >2x state avg? 
   
-  # x <- ejamit(testpoints_50,cutoff = 1)
+  # x <- ejamit(testpoints_50, radius = 1)
   # out <- x$results_bysite  # $ratio.to.state.avg.Demog.Index
   # library(data.table)
   # out <- setDF(copy(out))
@@ -20,11 +20,11 @@ count_sites_with_n_high_scores <- function(scores, thresholds=c(1.01, 1.50, 2, 3
     ratiodata[is.infinite(ratiodata[,ccc]), ccc] <- NA
   }  
   
-  sitestats <-  colcounter_summary_all(ratiodata, cutofflist =  ratio_benchmarks, or.tied=TRUE)
+  sitestats <-  colcounter_summary_all(ratiodata, thresholdlist =  ratio_benchmarks, or.tied=TRUE)
   
   cumpcts <-  sitestats[, , "cum_pct"]  
   # sitestats[, , "count"]
-  #                cutoff
+  #                radius
   # count.of.cols      1 1.5  2  3  5 10
   #                0   2   2  2  2  2  2
   #                1   2  17 33 44 48 48

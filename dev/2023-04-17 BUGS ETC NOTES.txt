@@ -60,7 +60,7 @@ BUG:  Rounding: Do not round values that are sent to excel download! only round 
 
 1pager Map popups - should have popups of results like EJAMejscreenapi:: does. 
 
-1pager report demog and envt tables - heatmap colors? Add heatmap method to highlight ratios and also percentiles in both tables like the barplot coloring by ratio bin. See how it looks.   see excel code from EJAMejscreenapi:: and the OW heatmap, but make percentiles normal, yellow, orange, or red, if <80, 80-89, 90-94, 95-100 (red).  The ratio categories of colors should be flexible but H/M/L/0 would be ratio cutoffs of ratio is >3, >2, >1, <=1.
+1pager report demog and envt tables - heatmap colors? Add heatmap method to highlight ratios and also percentiles in both tables like the barplot coloring by ratio bin. See how it looks.   see excel code from EJAMejscreenapi:: and the OW heatmap, but make percentiles normal, yellow, orange, or red, if <80, 80-89, 90-94, 95-100 (red).  The ratio categories of colors should be flexible but H/M/L/0 would be ratio cutpoints of ratio is >3, >2, >1, <=1.
 
 1pager: allow state pctiles as an option on bar/box
 

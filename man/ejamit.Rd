@@ -6,8 +6,8 @@
 \usage{
 ejamit(
   sitepoints,
-  cutoff = 3,
-  maxcutoff = 31.07,
+  radius = 3,
+  maxradius = 31.07,
   avoidorphans = TRUE,
   quadtree = NULL,
   ...
@@ -16,12 +16,12 @@ ejamit(
 \arguments{
 \item{sitepoints}{data.table with columns siteid, lat, lon giving point locations of sites or facilities around which are circular buffers}
 
-\item{cutoff}{miles radius, defining circular buffer around site point}
+\item{radius}{in miles, defining circular buffer around a site point}
 
-\item{maxcutoff}{miles distance (max distance to check if not even 1 block point is within cutoff)}
+\item{maxradius}{miles distance (max distance to check if not even 1 block point is within radius)}
 
-\item{avoidorphans}{logical Whether to avoid case where no block points are within cutoff,
-so if TRUE, it keeps looking past cutoff to find nearest one within maxcutoff.}
+\item{avoidorphans}{logical Whether to avoid case where no block points are within radius,
+so if TRUE, it keeps looking past radius to find nearest one within maxradius.}
 
 \item{quadtree}{(a pointer to the large quadtree object)
 created from the SearchTree package example:
@@ -46,7 +46,7 @@ See help("EJAM")
 
  # Do not specify sitepoints and it will prompt you for a file,
  # if in RStudio in interactive mode!
- out <- ejamit(cutoff = 3)
+ out <- ejamit(radius = 3)
  
   # Specify facilities or sites as points for test data, 
   # use 1000 test facility points from the R package 
@@ -83,8 +83,8 @@ See help("EJAM")
   # if doing just 1st step of ejamit() 
   #  get distance between each site and every nearby Census block
   s2b <- testdata_sites2blocks
-  s2b <- getblocksnearby(testsites, cutoff = radius)
-  s2b <- getblocksnearbyviaQuadTree(testsites, cutoff = radius)
+  s2b <- getblocksnearby(testsites, radius = radius)
+  s2b <- getblocksnearbyviaQuadTree(testsites, radius = radius)
   getblocks_diagnostics(s2b)
   
   # if doing just 2d step of ejamit()

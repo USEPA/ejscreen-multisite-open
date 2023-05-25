@@ -2,16 +2,16 @@
 % Please edit documentation in R/colcounter_summary.R
 \name{colcounter_summary}
 \alias{colcounter_summary}
-\title{Summarize how many rows have N columns at or above (or below) various cutoffs?
+\title{Summarize how many rows have N columns at or above (or below) various thresholds?
 Like colcounter or cols.above.count
-but will handle multiple cutoffs to compare to each indicator, etc.
+but will handle multiple thresholds to compare to each indicator, etc.
 Table of counts, percents, cumulative counts, cumulative percents
 of places with N, or at least N, of the indicators
 at or above the benchmark(s)}
 \usage{
 colcounter_summary(
   x,
-  cutofflist,
+  thresholdlist,
   or.tied = TRUE,
   na.rm = TRUE,
   below = FALSE,
@@ -19,27 +19,27 @@ colcounter_summary(
 )
 }
 \arguments{
-\item{x}{Data.frame or matrix of numbers to be compared to cutoff value,
+\item{x}{Data.frame or matrix of numbers to be compared to threshold value,
 like percentiles for example.}
 
-\item{cutofflist}{vector of numeric cutoff values to compare to}
+\item{thresholdlist}{vector of numeric threshold values to compare to}
 
-\item{or.tied}{if TRUE, include ties (value in x equals cutoff)}
+\item{or.tied}{if TRUE, include ties (value in x equals threshold)}
 
 \item{na.rm}{if TRUE, used by \code{\link[=colcounter]{colcounter()}} to count only the non-NA columns in given row}
 
-\item{below}{if TRUE, count x below cutoff not above cutoff}
+\item{below}{if TRUE, count x below threshold not above threshold}
 
-\item{one.cut.per.col}{if FALSE, compare each cutoff to all of x.
-If TRUE, specify one cutoff to use for each column.}
+\item{one.cut.per.col}{if FALSE, compare each threshold to all of x.
+If TRUE, specify one threshold to use for each column.}
 }
 \value{
 A table of frequency counts
 }
 \description{
-Summarize how many rows have N columns at or above (or below) various cutoffs?
+Summarize how many rows have N columns at or above (or below) various thresholds?
 Like colcounter or cols.above.count
-but will handle multiple cutoffs to compare to each indicator, etc.
+but will handle multiple thresholds to compare to each indicator, etc.
 Table of counts, percents, cumulative counts, cumulative percents
 of places with N, or at least N, of the indicators
 at or above the benchmark(s)
@@ -57,8 +57,8 @@ colcounter_summary_cum_pct(pdata, pcuts)
 colcounter_summary_cum_pct(pdata, 5 * (10:20))
 a3 <- colcounter_summary_all(    pdata, pcuts)
 
-x80 <- colcounter(pdata, cutoff = 80, or.tied = T)
-x95 <- colcounter(pdata, cutoff = 95, or.tied = T)
+x80 <- colcounter(pdata, threshold = 80, or.tied = T)
+x95 <- colcounter(pdata, threshold = 95, or.tied = T)
 table(x95)
 tablefixed(x95, NCOL(pdata))
 cbind(at80=tablefixed(x80, NCOL(pdata)), at95=tablefixed(x95, NCOL(pdata)))

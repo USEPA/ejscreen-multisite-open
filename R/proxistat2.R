@@ -8,7 +8,7 @@
 #'   *** Still need area of each block to fix this func proxistat2()
 #'  
 #' @param pts data.table of lat lon
-#' @param cutoff distance max, in miles, default is 5km (8.04672 miles)
+#' @param radius distance max, in miles, default is 5km (8.04672 miles)
 #'   which is the EJScreen max search range for proximity scores
 #' @param quadtree must be localtree from EJAM:: 
 #' @return data.table with proximityscore, bgfips, lat, lon, etc.
@@ -25,10 +25,10 @@
 #'  # tops = x$proximityscore > 500 & !is.infinite(x$proximityscore) & !is.na(x$proximityscore)
 #'  # points(x$lon[tops], x$lat[tops], col="red")
 #'  
-proxistat2 <- function(pts, cutoff=8.04672, quadtree) {
+proxistat2 <- function(pts, radius=8.04672, quadtree) {
   stop("this does not work without proxistat package dataset ")
   warning("temporarily uses block areas from another dataset for most but not all blocks")
-  warning("if none found within cutoff of 5km, this func does not yet create score based on single nearest - see source code for notes")
+  warning("if none found within radius of 5km, this func does not yet create score based on single nearest - see source code for notes")
   ######################################## #
   # Sequence of steps in finding d value(s):
   ######################################## #
@@ -55,11 +55,11 @@ proxistat2 <- function(pts, cutoff=8.04672, quadtree) {
   # STEP 1: loop through just the sites (is it faster than step 1 above?), and for each site find all nearby blocks, maybe 1k each, say. 
   #   then do STEP 2 as above.
   
-  sites2blocks_dt <- getblocksnearby(sitepoints = pts, cutoff = cutoff, quadtree = quadtree)
+  sites2blocks_dt <- getblocksnearby(sitepoints = pts, radius = radius, quadtree = quadtree)
   
   # THE VAST MAJORITY OF BLOCKS WILL HAVE ZERO WITHIN THE 5 KM RADIUS, SO NEAREST 1 IS BASIS FOR THEIR SCORE, BUT
   #   SOME WILL EVEN HAVE ZERO WITHIN THE MAX RADIUS TO CHECK
-  # if none found within cutoff of 5km, this func does not yet create score based on single nearest
+  # if none found within radius of 5km, this func does not yet create score based on single nearest
 
   
   

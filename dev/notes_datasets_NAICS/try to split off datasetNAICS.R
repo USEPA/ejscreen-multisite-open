@@ -12,8 +12,8 @@ if (FALSE) {
 # 
 #  selectIndustry1_byNAICS=input$selectIndustry1_byNAICS,
 #  selectIndustry2_by_selectInput=input$selectIndustry2_by_selectInput,
-#  cutoff=getCutoff(),
-#  maxcutoff=getMaxcutoff(),
+#  radius=getradius(),
+#  maxradius=getmaxradius(),
 #  get_unique=TRUE,
 #  avoidorphans=TRUE,
 #  doExpandradius=doExpandradius(),
@@ -23,8 +23,8 @@ if (FALSE) {
 # 
 # @param selectIndustry1_byNAICS reactive from shiny input$selectIndustry1_byNAICS
 # @param selectIndustry2_by_selectInput reactive from shiny input$selectIndustry2_by_selectInput
-# @param cutoff  getCutoff()
-# @param maxcutoff  getMaxcutoff()
+# @param radius  getradius()
+# @param maxradius  getmaxradius()
 # @param get_unique default is FALSE now but was TRUE, but likely to get rid of this?!
 # @param avoidorphans default TRUE
 # @param doExpandradius obsolete?
@@ -34,7 +34,7 @@ if (FALSE) {
 ##################################  @export
 
 datasetNAICS <- function(selectIndustry1_byNAICS, selectIndustry2_by_selectInput, 
-                         cutoff, maxcutoff=50, get_unique=FALSE, 
+                         radius, maxradius=50, get_unique=FALSE, 
                          avoidorphans=TRUE, doExpandradius=NULL,
                          selectNaics_in_Datasystem1, selectNaics_and_Datasystem2) {   
   
@@ -55,8 +55,8 @@ datasetNAICS <- function(selectIndustry1_byNAICS, selectIndustry2_by_selectInput
   if (nchar(input$selectIndustry1_byNAICS)>0 & length(input$selectIndustry2_by_selectInput)>0) {
     return()
   }
-  # cutoff=getCutoff() # reactive
-  # maxcutoff=getMaxcutoff() # reactive
+  # radius=getradius() # reactive
+  # maxradius=getmaxradius() # reactive
   # get_unique=setUnique() # reactive
   # avoidorphans=     ???  doExpandradius()  # reactive
   
@@ -118,7 +118,7 @@ datasetNAICS <- function(selectIndustry1_byNAICS, selectIndustry2_by_selectInput
       
       system.time({
         res <- getrelevantCensusBlocksviaQuadTree(
-          sitepoints = sub2, cutoff, maxcutoff, get_unique, avoidorphans
+          sitepoints = sub2, radius, maxradius, get_unique, avoidorphans
           )
         })
       system.time({

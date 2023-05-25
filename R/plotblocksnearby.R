@@ -13,7 +13,7 @@ plotblocksnearby <- function(sitepoints, radius=1, usemapfast=TRUE, ...) {
   if (radius > 32) {stop("cannot use radius >32 miles here")}
   if (nrow(sitepoints) > 100) {stop("this mapping function is not intended for so many points")}
  if (!("siteid" %in% names(sitepoints))) {sitepoints$siteid <- seq_len(nrow(sitepoints))}
- sites2blocks <- getblocksnearby(sitepoints, cutoff = radius, ...)
+ sites2blocks <- getblocksnearby(sitepoints, radius = radius, ...)
  setDT(sitepoints)
    bl <- merge( sites2blocks, blockpoints , on = "blockid")
    setDT(bl)

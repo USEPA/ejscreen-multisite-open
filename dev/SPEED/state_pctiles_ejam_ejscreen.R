@@ -144,7 +144,7 @@ vnames <- names_e; multiplier <- 1 #  STATE PERCENTILES, envt
 vnames <- vnames[vnames %in% names(out)]
  as.data.frame(x$results_bysite[ ,  paste0("state.pctile.", vnames) , with = FALSE])   - out[ ,  paste0("state.pctile.", vnames)]
 
- statestats[statestats$REGION=="IA", 'cancer']  # (20 is  cutoff in IA for all pctiles up to 90th or so ????)  same in 1/3 of FL.
+ statestats[statestats$REGION=="IA", 'cancer']  # (20 is  threshold in IA for all pctiles up to 90th or so ????)  same in 1/3 of FL.
  statestats[statestats$REGION=="GA", 'pctpre1960']  # about 30% of state has score of zero.
   
  ### SIGNIFICANT PROBLEMS WITH THE   state.pctile.proximity.npdes 

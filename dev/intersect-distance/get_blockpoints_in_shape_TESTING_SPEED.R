@@ -28,7 +28,7 @@ pts=testpoints_1000[1:n,]
 ##########################################
 # EJAM analysis
 
-x = ejamit(pts,cutoff = rad)
+x = ejamit(pts, radius = rad)
 out = x$results_bysite
 mapfast(out,rad) # 
 # mapfast(out,rad,column_names = "ej") # 

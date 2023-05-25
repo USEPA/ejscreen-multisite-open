@@ -173,7 +173,7 @@ speedtest <- function(n=10, sitepoints=NULL, weighting='frs',
       # step1 = system.time({
       mysites2blocks <-  getblocksnearby(
         sitepoints=sitepoints[[i]],
-        cutoff=radius, maxcutoff=31.07,
+        radius=radius, maxradius=31.07,
         avoidorphans=TRUE)
       # })
       # cat("Finished getblocksnearby()\n")

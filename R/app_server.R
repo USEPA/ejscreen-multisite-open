@@ -568,7 +568,7 @@ app_server <- function(input, output, session) {
     
     sites2blocks <- getblocksnearby(
       sitepoints = data_uploaded(),
-      cutoff = input$bt_rad_buff,
+      radius = input$bt_rad_buff,
       quadtree = localtree
     )
     ## progress bar update overall  

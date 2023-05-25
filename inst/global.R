@@ -34,7 +34,7 @@ probs.default.selected <- c(   0.25,            0.80,     0.95)
 probs.default.values   <- c(0, 0.25, 0.5, 0.75, 0.8, 0.9, 0.95, 0.99, 1)
 probs.default.names <- formatC(probs.default.values, digits = 2, format='f', zero.print = '0')
 
-# a default for cutoff in at/above threshold stat summarizing EJ US percentiles
+# a default for threshold in at/above threshold stat summarizing EJ US percentiles
 ## used by inputIds 'an_thresh_comp1' and 'an_thresh_comp2'
 threshold.default <- c('comp1' = 95, 'comp2' = 95)  
 

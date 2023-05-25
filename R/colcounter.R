@@ -1,11 +1,11 @@
-#' @title Count columns with Value (at or) above (or below) Cutoff
-#' @param x Data.frame or matrix of numbers to be compared to cutoff value.
-#' @param cutoff numeric cutoff value to compare to
-#' @param or.tied if TRUE, include ties (value in x equals cutoff)
+#' @title Count columns with Value (at or) above (or below) threshold
+#' @param x Data.frame or matrix of numbers to be compared to threshold value.
+#' @param threshold numeric threshold value to compare to
+#' @param or.tied if TRUE, include ties (value in x equals threshold)
 #' @param na.rm if TRUE, used by colcounter to count only the non-NA columns in given row
-#' @param below if TRUE, count x below cutoff not above cutoff
-#' @param one.cut.per.col if FALSE, compare 1 cutoff to all of x.
-#'   If TRUE, specify one cutoff per column.
+#' @param below if TRUE, count x below threshold not above threshold
+#' @param one.cut.per.col if FALSE, compare 1 threshold to all of x.
+#'   If TRUE, specify one threshold per column.
 #' @return vector of counts as long as NROW(x)
 #' @seealso colcounter_summary_all() colcounter_summary() colcounter_summary_cum() colcounter_summary_pct() colcounter_summary_cum_pct() tablefixed()
 #' @export
@@ -22,37 +22,37 @@
 #' colcounter_summary_cum_pct(pdata, pcuts)
 #' colcounter_summary_cum_pct(pdata, 5 * (10:20))
 #'
-#' x80 <- colcounter(pdata, cutoff = 80, or.tied = T)
-#' x95 <- colcounter(pdata, cutoff = 95, or.tied = T)
+#' x80 <- colcounter(pdata, threshold = 80, or.tied = T)
+#' x95 <- colcounter(pdata, threshold = 95, or.tied = T)
 #' table(x95)
 #' tablefixed(x95, NCOL(pdata))
 #' cbind(at80=tablefixed(x80, NCOL(pdata)), at95=tablefixed(x95, NCOL(pdata)))
 #'   }
 #'
-colcounter <- function(x, cutoff, or.tied=TRUE, na.rm=TRUE, below=FALSE, one.cut.per.col=FALSE) {
+colcounter <- function(x, threshold, or.tied=TRUE, na.rm=TRUE, below=FALSE, one.cut.per.col=FALSE) {
   # Function to count SCORES ABOVE BENCHMARK(S) at each place, returns list as long as NROW(x).
   #
  
   if (is.null(dim(x))) {numcols <- 1; stop('expected data.frame as x but has only 1 dimension')} else {numcols <- dim(x)[2]}
-  if (missing(cutoff)) {
+  if (missing(threshold)) {
     if (one.cut.per.col) {
-      cutoff <- colMeans(x, na.rm = na.rm)
+      threshold <- colMeans(x, na.rm = na.rm)
     } else {
-      cutoff <- rowMeans(x, na.rm = na.rm)
+      threshold <- rowMeans(x, na.rm = na.rm)
     }
   }
   if (one.cut.per.col) {
-    if (length(cutoff) != NCOL(x)) {stop('length of cutoff should be same as number of columns in x if one.cut.per.col=T')}
-    x <- t(as.matrix(x)) # this allows it to compare vector of N cutoffs to N columns
+    if (length(threshold) != NCOL(x)) {stop('length of threshold should be same as number of columns in x if one.cut.per.col=T')}
+    x <- t(as.matrix(x)) # this allows it to compare vector of N thresholds to N columns
   } else {
-    if (length(cutoff) != NROW(x) & length(cutoff) != 1) {stop('length of cutoff should be 1 or same as number of columns in x, if one.cut.per.col=F')}
+    if (length(threshold) != NROW(x) & length(threshold) != 1) {stop('length of threshold should be 1 or same as number of columns in x, if one.cut.per.col=F')}
   }
   if (below) {
-    if  (or.tied) { y <- ( x <= cutoff) }
-    if (!or.tied) { y <- ( x <  cutoff) }
+    if  (or.tied) { y <- ( x <= threshold) }
+    if (!or.tied) { y <- ( x <  threshold) }
   } else {
-    if  (or.tied) { y <- ( x >= cutoff) }
-    if (!or.tied) { y <- ( x >  cutoff) }
+    if  (or.tied) { y <- ( x >= threshold) }
+    if (!or.tied) { y <- ( x >  threshold) }
   }
   if (one.cut.per.col) {y <- t(y)}
   count.per.row <- rowSums(y, na.rm = na.rm)

@@ -3,8 +3,8 @@ library(data.table)
 library(EJAM)
 library(EJAMejscreenapi)
 
-x1full = ejscreenit(testpoints_50,radius = 3, save_map = F, save_plot = F, save_table = F)
-x2full = ejamit(testpoints_50, cutoff = 3)
+x1full = ejscreenit(testpoints_50, radius = 3, save_map = F, save_plot = F, save_table = F)
+x2full = ejamit(testpoints_50, radius = 3)
 # names(x1full)
 # names(x2full)
 x1 <- x1full$table
