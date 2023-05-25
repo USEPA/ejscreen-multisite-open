@@ -192,7 +192,7 @@ app_ui  <- function(request) {
                             shiny::fileInput(
                               inputId = 'ss_upload_shp',
                               label = 'Upload a shapefile',
-                              accept = c(".shp",".dbf",".sbn",".sbx",".shx",".prj")
+                              accept = c(".shp",".dbf",".sbn",".sbx",".shx",".prj"),multiple=TRUE
                             )#, # xxx
                           ), # end Shapefile conditionalPanel
                           

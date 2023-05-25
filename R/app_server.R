@@ -263,6 +263,19 @@ app_server <- function(input, output, session) {
     }
   })
   
+  data_up_shp <- reactive({
+    ## depends on ECHO upload - which may use same file upload as latlon
+    req(input$ss_upload_shp)
+    
+    infiles <- input$ss_upload_shp$datapath # get the location of files
+    dir <- unique(dirname(infiles)) # get the directory
+    outfiles <- file.path(dir, input$ss_upload_shp$name) # create new path name
+    name <- strsplit(input$ss_upload_shp$name[1], "\\.")[[1]][1] # strip name 
+    purrr::walk2(infiles, outfiles, ~file.rename(.x, .y)) # rename files
+    shp <- read_sf(file.path(dir, paste0(name, ".shp"))) # read-in shapefile
+    
+  })
+  
   #############################################################################  # 
   ## reactive: count data upload methods currently used ####
   num_ul_methods <- reactive({
@@ -304,6 +317,8 @@ app_server <- function(input, output, session) {
       
       data_up_echo() 
       
+    } else if(current_upload_method() == 'SHP'){
+     
     }
     
   })
