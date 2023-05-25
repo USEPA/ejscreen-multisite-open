@@ -69,7 +69,8 @@ app_server <- function(input, output, session) {
       latlon = "latlon",  # 'Location (lat/lon)',
       FRS =  "FRS", # 'FRS (facility ID)',
       ECHO = "ECHO", # 'ECHO Search Tools',
-      NAICS = "NAICS" # 'NAICS (industry name or code)'
+      NAICS = "NAICS", # 'NAICS (industry name or code)'
+      SHP = "SHP"
     )
   })
   #############################################################################  # 
