@@ -63,6 +63,16 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL,
   # timed <- system.time({
   if (testing) {library(data.table); library(EJAMblockdata);     sites2blocks <- EJAM::sites2blocks_example }
   
+  # add input validation here - check if sites2blocks is valid format, etc. 
+  if (!is.data.table(sites2blocks)) {stop('sites2blocks must be a data.table')}
+  if (any(!(c('siteid', 'blockid', 'distance') %in% names(sites2blocks)))) {stop("sites2blocks must contain columns named siteid, blockid, distance")}
+  
+  # check if optional input params, when provided, are all valid
+
+    
+  
+  
+  
   ##################################################### #  ##################################################### #
   # HARDCODED blockgroup dataset, FOR NOW ####
   # including the names of the variables.
