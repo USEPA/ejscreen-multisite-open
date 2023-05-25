@@ -51,6 +51,14 @@
 #' @param updateProgress progress bar function used for shiny app
 #' @param include_ejindexes not yet implemented 
 #' @param need_proximityscore whether to calculate proximity scores
+#' @param radius Optional radius in miles to limit analysis to. By default this function uses 
+#'   all the distances that were provided in the output of getblocksnearby(). 
+#'   But there may be cases where you want to run getblocksnearby() once for 10 miles, say, 
+#'   on a very long list of sites (1,000 or more, say), and then get summary results for 
+#'   1, 3, 5, and 10 miles without having to redo the getblocksnearby() part for each radius.
+#'   This lets you just run getblocksnearby() once for the largest radius, and then query those
+#'   results to get doaggregate() to summarize at any distance that is less than or equal to the 
+#'   original radius analyzed by getblocksnearby(). 
 #' @param ... more to pass to another function? Not used currently.
 #' @param silentinteractive Set to FALSE to prevent long output showing in console in RStudio when in interactive mode
 #' @seealso [ejamit]   [getblocksnearby()]  
@@ -58,7 +66,7 @@
 #' @import EJAMblockdata
 #' @export
 #' 
-doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL, popmeancols=NULL, calculatedcols=NULL, testing=FALSE, include_ejindexes=FALSE, updateProgress = NULL, need_proximityscore=FALSE, silentinteractive=FALSE, ...) {
+doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, countcols=NULL, popmeancols=NULL, calculatedcols=NULL, testing=FALSE, include_ejindexes=FALSE, updateProgress = NULL, need_proximityscore=FALSE, silentinteractive=FALSE, ...) {
   
   # timed <- system.time({
   if (testing) {library(data.table); library(EJAMblockdata);     sites2blocks <- EJAM::sites2blocks_example }
@@ -72,6 +80,13 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, countcols=NULL,
     
   
   
+  
+  # check if we only want to analyze a subset of all radii in sites2blocks
+  if (!missing(radius)) {
+    if ((length(radius) != 1) | (!is.numeric(radius)) | (radius <= 0) | radius > 50 ) {stop('radius must be a single number, in miles, between 0 and 50')}
+        if (radius > 2 * max(sites2blocks$distance)) {warning('radius requested is much larger than any distance found in sites2blocks, suggesting it is larger than the radius that was analyzed by getblocksnearby()')}
+    sites2blocks <- sites2blocks[distance <= radius, ]
+  }
   
   ##################################################### #  ##################################################### #
   # HARDCODED blockgroup dataset, FOR NOW ####
