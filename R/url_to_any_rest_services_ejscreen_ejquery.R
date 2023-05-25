@@ -3,6 +3,9 @@ url_to_any_rest_services_ejscreen_ejquery <- function(servicenumber=7, ...) {
   
   # Disadvantage of this generic approach is it does not help you by showing a list of parameters, since those are specific to the service like 7 vs 71. 
   
+  # see links to documentation on using APIs here: 
+  # 
+  #   EJAM/dev/intersect-distance/arcgis/ArcGIS REST API basics.txt
   
   ################################################################################# # 
   ## notes - examples #### 
@@ -16,21 +19,7 @@ url_to_any_rest_services_ejscreen_ejquery <- function(servicenumber=7, ...) {
     z <- url_get_via_url(url_to_get_ACS2019_rest_services_ejscreen_ejquery_MapServer_7())
   }
   
-  # notes - useful map services to query ####
-  #https://geopub.epa.gov/arcgis/sdk/rest/index.html#/Query_Map_Service_Layer/02ss0000000r000000/
-  # https://geopub.epa.gov/arcgis/sdk/rest/index.html#/Query_Map_Service_Layer/02ss0000000r000000/
-  # https://geopub.epa.gov/arcgis/sdk/rest/index.html#/Map_Service/02ss0000006v000000/
-  # 'https://geopub.epa.gov/arcgis/rest/services/ejscreen/ejquery/MapServer/'
-  # MaxRecordCount: 1000
-  # https://geopub.epa.gov/arcgis/rest/services/ejscreen/ejquery/MapServer/7/2?f=pjson 
-  #
-  # Block weights 2010 - Centroids with statistic weight factors for both 2010 Census SF3 and 2012 ACS, block level:
-  # https://geopub.epa.gov/arcgis/rest/services/ejscreen/ejquery/MapServer/71
-  
-  
-  
-  # Documentation of format and examples of input parameters:
-  # https://geopub.epa.gov/arcgis/sdk/rest/index.html#/Query_Map_Service_Layer/02ss0000000r000000/
+
   ################################################################################# #
     
   

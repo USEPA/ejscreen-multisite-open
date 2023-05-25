@@ -31,8 +31,8 @@ For example, it could be 'NY' for New York State.}
 By default, returns numeric vector length of myvector.
 }
 \description{
-This is used with a data.frame that is a lookup table used to
-convert a raw indicator value to a percentile - US, Region, or State percentile.
+This is used with a lookup table to
+convert a raw indicator vector to percentiles in US or States.
 }
 \details{
 This could be recoded to be more efficient - could use data.table
@@ -48,8 +48,26 @@ If the value is between the cutpoints listed as
 percentiles 89 and 90, it returns 89, for example.
 If the value is exactly equal to the cutpoint listed as percentile 90,
 it returns percentile 90.
+If the value is exactly the same as the minimum in the lookup table and multiple percentiles
+in that lookup are listed as tied for having the same cutoff (i.e., a large \% of places have
+the same score and it is the minimum score), then the percentile gets reported as 0,
+not the percent of places tied for that minimum score. Note this is true whether they are
+tied at a value of 0 or are tied at some other minimum value than 0.
 If the value is less than the cutpoint listed as percentile 0,
 which should be the minimum value in the dataset,
 it still returns 0 as the percentile, but with a warning that
 the value checked was less than the minimum in the dataset.
+}
+\examples{
+\dontrun{
+  # compare ejscreen API output percentiles to those from this function:
+  for (vname in c(names_d[c(1,3:6,8:10)] )) {
+     print(pctile_from_raw_lookup(testoutput_ejscreenapi_plus_50[,vname] / 100, vname, lookup = usastats) 
+       - testoutput_ejscreenapi_plus_50[,paste0("pctile.",vname)] )
+  }
+  for (vname in c(names_e )) {
+     print(pctile_from_raw_lookup(testoutput_ejscreenapi_plus_50[,vname], vname, lookup = usastats)
+         - testoutput_ejscreenapi_plus_50[,paste0("pctile.",vname)] )
+  }
+}
 }

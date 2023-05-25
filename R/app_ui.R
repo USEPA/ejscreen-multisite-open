@@ -8,7 +8,7 @@
 app_ui  <- function(request) {
   tagList(
     # golem_add_external_resources() ####
-    # Leave this function for adding external resources, see end of this source file.
+    # Leave this function for adding external resources, specifying title of app, see end of this source file.
     golem_add_external_resources(),
     # ~ ####
     # _____App UI fluidPage starts here _______ ####
@@ -1057,7 +1057,34 @@ golem_add_external_resources <- function() {   # (adds external Resources to App
     app_sys("app/www")
   )
   tags$head(
-    golem::favicon(ext = 'png'),
+    
+    ### insert this in head of index.html (or use tags$link() as below) to make all favicon versions work
+    ### using this set of icons for various platforms/sizes: 
+    #
+    # <link rel="shortcut icon"    href="/inst/www/favicon.png"> # this is the only one set up by golem::favicon() and was .ico in the example notes but png is bigger higher res here
+    #
+    # <link rel="apple-touch-icon"                 sizes="180x180" href="/inst/www/apple-touch-icon.png">
+    # <link rel="icon"            type="image/png" sizes="32x32"   href="/inst/www/favicon-32x32.png">
+    # <link rel="icon"            type="image/png" sizes="16x16"   href="/inst/www/favicon-16x16.png">
+    # <link rel="manifest"                                         href="/inst/www/site.webmanifest">
+    # <link rel="mask-icon"                                        href="/inst/www/safari-pinned-tab.svg"  color="#5bbad5">
+    #
+    # <meta name="msapplication-TileColor"  content="#2d89ef">
+    # <meta name="msapplication-config"     content="/inst/www/browserconfig.xml">
+    # <meta name="theme-color"              content="#ffffff">
+    
+    golem::favicon(ext = 'png'), # but see note on favicons set 
+    
+    tags$head(tags$link(rel="apple-touch-icon",                sizes="180x180", href="/inst/www/apple-touch-icon.png")),
+    tags$head(tags$link(rel="icon",           type="image/png",sizes="32x32" ,  href="/inst/www/favicon-32x32.png")),
+    tags$head(tags$link(rel="icon",           type="image/png",sizes="16x16" ,  href="/inst/www/favicon-16x16.png")),
+    tags$head(tags$link(rel="manifest",                                         href="/inst/www/site.webmanifest")),
+    tags$head(tags$link(rel="mask-icon" ,                                       href="/inst/www/safari-pinned-tab.svg",  color="#5bbad5")),
+    tags$meta(name = "msapplication-TileColor",  content="#2d89ef"),
+    tags$meta(name="msapplication-config",     content="/inst/www/browserconfig.xml"),
+    tags$meta(name="theme-color",              content="#ffffff"),
+    
+    # this specifies app title
     golem::bundle_resources(
       path = app_sys("app/www"),
       app_title = "EJAM"

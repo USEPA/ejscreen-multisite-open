@@ -1,5 +1,15 @@
 url_4table <- function(lat, lon, distance, regid=NULL, as_html=TRUE) {
+  
   # add error checking
+  
+
+  
+  # Also could add other links:
+  #   url_frs_report()
+  #   url_enviromapper()   
+  #   url_envirofacts_data()  ?
+  
+  
   
   
   if (!is.null(regid)) {

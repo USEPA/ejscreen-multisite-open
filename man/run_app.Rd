@@ -33,15 +33,13 @@ request to determine whether the \code{ui} should be used to handle the
 request. Note that the entire request path must match the regular
 expression in order for the match to be considered successful.}
 
-\item{...}{arguments to pass to golem_opts.
-Can be sitepoints="latlondata.xlsx" or sitepoints=testpoints_50
+\item{...}{arguments to pass to golem_opts. Maybe could be sitepoints="latlondata.xlsx" or sitepoints=\link{testpoints_50}
 See \code{?golem::get_golem_options} for more details.}
 }
 \description{
 launch Shiny web app from RStudio
 }
 \details{
-app_run_EJAM()                 is like EJAM::run_app()
-app_run_EJAMejscreenapi()      is like EJAMejscreenapi::run_app()
-app_run_EJAMbatch.summarizer() is like EJAMbatch.summarizer::run_app()
+app_run_EJAM()                 is like \code{\link[=run_app]{run_app()}}
+app_run_EJAMejscreenapi()      is like \code{\link[EJAMejscreenapi:run_app]{EJAMejscreenapi::run_app()}}
 }
