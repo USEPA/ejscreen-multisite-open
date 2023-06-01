@@ -80,11 +80,16 @@ app_ui  <- function(request) {
                                        choiceValues = c('latlon', 
                                                         'NAICS',
                                                         'FRS',
-                                                        'ECHO'),
+                                                        'ECHO',
+                                                        'EPA_PROGRAM',
+                                                        'SIC'
+                                                        ),
                                        choiceNames = c('Upload Location (latitude/longitude) file',
                                                        'Select by Industry (NAICS) Code',
                                                        'Upload EPA Facility ID (FRS Identifers) file',
-                                                       'Search using ECHO database'),
+                                                       'Search using ECHO database',
+                                                       'Select an EPA Program',
+                                                       'Select by SIC code'),
                                        width = '400px'),
                           
                           ## latlon conditional panel
@@ -183,6 +188,92 @@ app_ui  <- function(request) {
                             ), 
                             #br(),
                           ), #end ECHO conditional panel
+                          
+                          ## EPA program conditional panel
+                          conditionalPanel(
+                            condition = "input.ss_choose_method == 'EPA_PROGRAM'",
+                            
+                            br(),
+                            
+                            ## input: radio button to choose upload or selecting programs
+                            radioButtons(inputId = 'program_ul_type', label = 'Choose how to submit EPA programs',
+                                         choiceNames = c('Select from dropdown menu',
+                                                         'Upload a file with program IDs'),
+                                         choiceValues = c('dropdown','upload'), selected = 'dropdown'),
+                            
+                            conditionalPanel(
+                              condition = "input.program_ul_type == 'dropdown'",
+                              ## input: select an EPA program from list
+                              selectInput(inputId = 'ss_select_program', label = 'Pick an EPA program',
+                                        choices = epa_programs)
+                            ),
+                            
+                            conditionalPanel(
+                              condition = "input.program_ul_type == 'upload'",
+                              ## input: upload an EPA program ID file
+                              fileInput(inputId = 'ss_upload_program',
+                                        label = 'Upload a file with program IDs')
+                            )
+                            
+                          ), #end EPA program conditional panel
+                          
+                          ## SIC conditional panel
+                          conditionalPanel(
+                            condition = "input.ss_choose_method == 'SIC'",
+                            
+                            radioButtons('sic_ul_type', 'Choose how to enter SIC codes',
+                                         choiceNames = c('Select codes from dropdown' ,
+                                                         'Enter text or code to search'),
+                                         choiceValues = c('dropdown',
+                                                          'enter')),
+                            
+                            radioButtons('add_sic_subcategories', "Add all subcategories of SIC?",
+                                         choiceNames = c("Yes","No"),
+                                         choiceValues = c(TRUE,FALSE),
+                                         selected = TRUE),
+                            
+                            ### conditional sub- panel if entering SIC
+                            conditionalPanel(
+                              condition = "input.sic_ul_type == 'enter'",
+                              ## input: Enter SIC code manually       
+                              textInput(
+                                inputId = "ss_enter_sic",
+                                label = htmltools::h6(
+                                  "Enter Industry SIC codes - ",
+                                  HTML(paste0('<a href=\"', 'https://www.census.gov/naics', '\", target=\"_blank\">', 'Look up SIC', '</a>')),
+                                  # htmltools::a("Look up NAICS", href ="https://www.census.gov/naics", ),
+                                  htmltools::a(htmltools::img(id = "ibutton",src = "www/i.png",height = 15,width = 15),
+                                               href = "www/ibutton_help.html#help_naicslist",target = "_blank")
+                                ),
+                                value = "",
+                                width = 400,
+                                placeholder = NULL
+                              )
+                            ), # end manually entry of SIC sub- conditionalPanel
+                            
+                            ### conditional sub- panel if using SIC dropdown
+                            conditionalPanel(
+                              condition = "input.sic_ul_type == 'dropdown'",
+                              ## input: Select SIC from list
+                              selectInput(
+                                inputId = "ss_select_sic",
+                                label = htmltools::h6("Select industry of interest"),
+                                # choose from named numeric vector on server-side
+                                ## number is NAICS like 31182, names are like "31182 - Cookie, Cracker, and Pasta Manufacturing" 
+                                choices = NULL, 
+                                selected = NULL,
+                                width = 400,
+                                multiple = TRUE
+                              )#, # xxx
+                            ),  # end dropdown SIC sub- conditionalPanel
+                            
+                            br(), ## vertical space
+                            
+                            ## input: button to submit SIC codes that were entered/selected
+                            actionButton(inputId = 'submit_sic', label = 'Submit SIC / Find Facilities',
+                                         style = 'color: #fff; background-color: #005ea2;')
+                            
+                          ), # end SIC conditionalPanel
                           
                           hr(), ## horizontal line
                           

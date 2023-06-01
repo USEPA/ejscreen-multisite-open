@@ -46,6 +46,11 @@ app_server <- function(input, output, session) {
                        choices = EJAM::NAICS, # named list of codes
                        server = TRUE)
   
+  # update ss_select_NAICS input options ###
+  updateSelectizeInput(session, inputId = 'ss_select_sic',
+                       choices = SIC, # named list of codes
+                       server = TRUE)
+  
   ## hide advanced settings tab by default
   hideTab(inputId = 'all_tabs', target = 'Advanced Settings')
   
@@ -69,7 +74,9 @@ app_server <- function(input, output, session) {
       latlon = "latlon",  # 'Location (lat/lon)',
       FRS =  "FRS", # 'FRS (facility ID)',
       ECHO = "ECHO", # 'ECHO Search Tools',
-      NAICS = "NAICS" # 'NAICS (industry name or code)'
+      NAICS = "NAICS", # 'NAICS (industry name or code)'
+      EPA_PROGRAM = "EPA_PROGRAM",
+      SIC = "SIC" 
     )
   })
   #############################################################################  # 
