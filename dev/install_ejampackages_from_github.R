@@ -8,21 +8,53 @@ rm(list=ls())
 ################################################# #
 
 # make sure PAT is set up right. 
-library(credentials)
+# library(credentials)
 credentials::set_github_pat()
 
-library(devtools)
+# library(devtools)
 # make any changes to pkgs, devtools::document(), push changes to github, then...
 
 devtools::install_github('USEPA/EJAMejscreenapi',      force=TRUE, upgrade=F) # works fine.
+# Using github PAT from envvar GITHUB_PAT
+# Downloading GitHub repo USEPA/EJAMejscreenapi@HEAD
+# ── R CMD build ─────────────────────────────────────────────────────────────────────────────────────────────────
+# ✔  checking for file 'C:\Users\mcorrale\AppData\Local\Temp\Rtmpis2NKX\remotes3b2451ef3276\USEPA-EJAMejscreenapi-70f29f3ddf4483d01631c12b9e2ec7314e94a7b4/DESCRIPTION' (514ms)
+# ─  preparing 'EJAMejscreenapi': (3.4s)
+# ✔  checking DESCRIPTION meta-information ... 
+# ─  excluding invalid files
+# Subdirectory 'R' contains invalid file names:   * * ************ * * 
+#   '_disable_autoload.R'
+# ─  checking for LF line-endings in source and make files and shell scripts
+# ─  checking for empty or unneeded directories
+# ─  building 'EJAMejscreenapi_2.1.2.tar.gz'   * * ************ * * 
+# Installing package into ‘C:/Users/mcorrale/R/myinstalled’
+# (as ‘lib’ is unspecified)
+#   * installing *source* package 'EJAMejscreenapi' ...
+# ** using staged installation
+# ** R
+# ** data
+# *** moving datasets to lazyload DB   * * ************ * * 
+# ** inst
+# ** byte-compile and prepare package for lazy loading
+# Greetings!
+#   ** help
+# *** installing help indices
+# ** building package indices
+#   ** testing if installed package can be loaded from temporary location
+#   ** testing if installed package can be loaded from final location
+#   ** testing if installed package keeps a record of temporary installation path
+# * DONE (EJAMejscreenapi)
+# > 
 devtools::install_github('USEPA/EJAMbatch.summarizer', force=TRUE, upgrade=F) # works fine.
 
 
 devtools::install_github('USEPA/EJAM',                 force=TRUE, upgrade=F) 
 # works/worked fine, now includes frs.rda, etc. but needs EJAMblockdata
 
+# BUT, INSTALL FROM GITHUB REMOVES THE L
+
 devtools::install_github('USEPA/EJAMblockdata',        force=TRUE, upgrade=F) 
-# failed
+# This package failed - maybe due to LFS 
 
 # # errors most recently, 
 # > library(credentials)
@@ -137,7 +169,7 @@ rm(list=ls())
 # check the compression type and version of each file in each package
 
 checkdatafiles <- function(pkg, basefolder=Sys.getenv("R_USER")) {
-  pkgfolder <- file.path(basefolder, pkg)
+  pkgfolder  <- file.path(basefolder, pkg)
   datafolder <- file.path(pkgfolder, "data")
   these = list.files(datafolder)
   x = list() # print(these)
