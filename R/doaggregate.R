@@ -968,7 +968,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
   #     FOR EACH INDICATOR (repeated for all site rows) ###
   
   names_these              <- c(names_d,     names_d_subgroups,     names_e) 
-  names_avg_these          <- c(names_d_avg, names_d_subgroups_avg, names_e_avg)                         # <- paste0("avg.",       names_these) # 
+  names_avg_these          <- c(names_d_avg, names_d_subgroups_avg, names_e_avg)                         # <- paste0("avg.",       names_these) #  avg.x was changed to us.avg.x naming scheme
   names_state_avg_these    <- c(names_d_state_avg,    names_d_subgroups_state_avg,    names_e_state_avg)  # paste0("state.avg.", names_these)
   names_ratio_to_avg_these <- c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg, names_e_ratio_to_avg)      #<-  paste0("ratio.to.", names_avg_these )  
   names_ratio_to_state_avg_these <- c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg, names_e_ratio_to_state_avg)  # <-  paste0("ratio.to.", names_state_avg_these)  

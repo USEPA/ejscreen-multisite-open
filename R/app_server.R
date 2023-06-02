@@ -709,7 +709,6 @@ app_server <- function(input, output, session) {
   # output$overall_results_tall <- renderDT({
   #   tallout <- cbind(overall = round(unlist(data_processed()$results_overall), 3))
   #   rownames(tallout) <- fixnames_to_type(rownames(tallout), "newnames_ejscreenapi", "longname_tableheader")
-  #   # rownames(tallout) <- fixnames_to_type(rownames(tallout), "jsondoc_Rfieldname", "longname_tableheader")
   #   tallout
   # })
   
