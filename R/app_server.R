@@ -76,7 +76,8 @@ app_server <- function(input, output, session) {
       ECHO = "ECHO", # 'ECHO Search Tools',
       NAICS = "NAICS", # 'NAICS (industry name or code)'
       EPA_PROGRAM = "EPA_PROGRAM",
-      SIC = "SIC" 
+      SIC = "SIC" ,
+      FIPS = "FIPS"
     )
   })
   #############################################################################  # 

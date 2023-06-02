@@ -82,14 +82,16 @@ app_ui  <- function(request) {
                                                         'FRS',
                                                         'ECHO',
                                                         'EPA_PROGRAM',
-                                                        'SIC'
+                                                        'SIC',
+                                                        'FIPS'
                                                         ),
                                        choiceNames = c('Upload Location (latitude/longitude) file',
                                                        'Select by Industry (NAICS) Code',
                                                        'Upload EPA Facility ID (FRS Identifers) file',
                                                        'Search using ECHO database',
                                                        'Select an EPA Program',
-                                                       'Select by SIC code'),
+                                                       'Select by SIC code',
+                                                       'Upload a FIPS code file'),
                                        width = '400px'),
                           
                           ## latlon conditional panel
@@ -274,6 +276,19 @@ app_ui  <- function(request) {
                                          style = 'color: #fff; background-color: #005ea2;')
                             
                           ), # end SIC conditionalPanel
+                          
+                          ## FIPS conditional panel
+                          conditionalPanel(
+                            condition = "input.ss_choose_method == 'FIPS'",
+                            
+                            ## input: Upload list of facility lat/longs
+                            fileInput(inputId = 'ss_upload_fips',  
+                                      label = 'Upload a list of FIPS codes in a spreadsheet (.csv, .xls, or .xlsx)',
+                                      multiple = FALSE,
+                                      accept = c('.xls', '.xlsx', ".csv", "text/csv", "text/comma-separated-values,text/plain")
+                                      # add hover tips here maybe, or even a button to view examples of valid formats and details on that.
+                            ),
+                          ), # end latlong conditionalPanel
                           
                           hr(), ## horizontal line
                           
