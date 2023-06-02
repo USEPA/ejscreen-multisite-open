@@ -271,6 +271,39 @@ app_server <- function(input, output, session) {
   })
   
   #############################################################################  # 
+  ## reactive: data uploaded by EPA Program IDs ####
+  
+  data_up_epa_program <- reactive({
+    ## wait for file to be uploaded
+    req(input$ss_upload_program)
+    
+    ##  >this part could be replaced by  latlon_from_anything() ####
+    # ext <- latlon_from_anything(input$ss_upload_latlon$datapath)
+    
+    ## check if file extension is appropriate
+    ext <- tools::file_ext(input$ss_upload_program$name)
+    ## if acceptable file type, read in; if not, send warning text
+    read_pgm <- switch(ext,
+                       csv =  read.csv(input$ss_upload_program$datapath),
+                       xls = readxl::read_excel(input$ss_upload_program$datapath),
+                       xlsx = readxl::read_excel(input$ss_upload_program$datapath),
+                       shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
+    ) # returns a data.frame
+    
+    ## need to add data validation checks here 
+    ## look for program in list from unique(frs_by_programid$program)
+    
+    pgm_ids_merged <- dplyr::left_join(
+      read_pgm, frs_by_programid,
+      by = c("program", "pgm_sys_id")
+    )
+    
+    ## return merged dataset
+    pgm_ids_merged
+  })
+  
+  
+  #############################################################################  # 
   ## reactive: count data upload methods currently used ####
   num_ul_methods <- reactive({
     shiny::isTruthy(input$ss_upload_latlon) +
@@ -278,7 +311,8 @@ app_server <- function(input, output, session) {
       ## switched upload count to use submit button instead of entered codes
       shiny::isTruthy(input$submit_naics) +
       #(shiny::isTruthy(input$ss_enter_naics) ||  shiny::isTruthy(input$ss_select_naics)) +
-      shiny::isTruthy(input$ss_upload_echo)
+      shiny::isTruthy(input$ss_upload_echo) +
+      shiny::isTruthy(input$ss_upload_program)
   })
   
   ## reactive: hub for any/all uploaded data, gets passed to processing ####
@@ -311,6 +345,9 @@ app_server <- function(input, output, session) {
       
       data_up_echo() 
       
+    } else if(current_upload_method() == 'EPA_PROGRAM'){
+      print('test')
+      data_up_epa_program()
     }
     
   })
@@ -357,6 +394,15 @@ app_server <- function(input, output, session) {
           shinyjs::enable(id = 'bt_get_results')
           shinyjs::show(id = 'show_data_preview')
         }
+    } else if(current_upload_method() == 'EPA_PROGRAM'){
+      
+      if(!isTruthy(input$ss_upload_program)){
+        shinyjs::disable(id = 'bt_get_results')
+        shinyjs::hide(id = 'show_data_preview')
+      } else {
+        shinyjs::enable(id = 'bt_get_results')
+        shinyjs::show(id = 'show_data_preview')
+      }
     }
   })
   #############################################################################  # 
@@ -537,7 +583,8 @@ app_server <- function(input, output, session) {
                   'latlon' = input$ss_upload_latlon,
                   'FRS' = input$ss_upload_frs, 
                   'NAICS' = input$submit_naics,
-                  'ECHO' = input$ss_upload_echo)
+                  'ECHO' = input$ss_upload_echo,
+                  'EPA_PROGRAM' = input$ss_upload_program)
      validate(
       need(cond, 'Please select a data set.')
     )
