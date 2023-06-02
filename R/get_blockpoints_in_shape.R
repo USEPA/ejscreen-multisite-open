@@ -29,6 +29,9 @@
 #' @export
 #'
 get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NULL, dissolved=FALSE, safety_margin_ratio=1.10) {
+  blockpoints_sf <-  blockpoints %>% sf::st_as_sf(coords = c('lon', 'lat'), crs= 4269)
+  print(blockpoints_sf)
+  #print(blockpoints_sf)
   if (!exists("blockpoints_sf")) {
     stop("requires the blockpoints   called blockpoints_sf  you can make like this: \n blockpoints_sf <-  blockpoints |> sf::st_as_sf(coords = c('lon', 'lat'), crs= 4269) \n # Geodetic CRS:  NAD83 ")
   }
@@ -65,13 +68,13 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
   }
   if (is.null(blocksnearby) & !ARE_POINTS) {
     # must use extremely slow method ?
-    stop("noncircular buffers not working yet - too slow to find all US blocks in each via simple sf::st_join   ")
+    #stop("noncircular buffers not working yet - too slow to find all US blocks in each via simple sf::st_join   ")
     
     if (dissolved) {
       # warning("using getblocksnearby() to filter US blocks to those near each site must be done before a dissolve  ")
       polys <- sf::st_union(polys)
     }
-    blocksinside <- sf::st_join(blockpoints_sf, sf::st_transform(polys,4269), join=sf::st_intersects ) #  
+    blocksinside <- sf::st_join(blockpoints_sf, sf::st_transform(polys,4269), join=sf::st_intersects,left='FALSE' ) #  
     
     
     # OR...  find centroid of each polygon and 
@@ -88,16 +91,16 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
     polys <- sf::st_union(polys)
   }
   
-  blocksnearbyf <- unique(blocksnearby)
-  if (!("sf" %in% class(blocksnearby))) {
-    blocksnearby <-  get_shapefile_from_sitepoints(blocksnearby)
-  }
-  
-  blocksinside <- sf::st_join(blocksnearby, sf::st_transform(polys,4269), join=sf::st_intersects )
-  
-  blocksinside <- blocksinside[!is.na(blocksinside$siteid),]
-  
-  return(blocksinside)
+  blocksinsidef <- unique(blocksinside)
+  # if (!("sf" %in% class(blocksnearby))) {
+  #   blocksnearby <-  get_shapefile_from_sitepoints(blocksinside)
+  # }
+  # 
+  # blocksinside <- sf::st_join(blocksnearby, sf::st_transform(polys,4269), join=sf::st_intersects )
+  # 
+  # blocksinside <- blocksinside[!is.na(blocksinside$siteid),]
+  # 
+  return(blocksinsidef)
   
 }
 

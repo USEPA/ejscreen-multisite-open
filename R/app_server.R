@@ -274,6 +274,9 @@ app_server <- function(input, output, session) {
     purrr::walk2(infiles, outfiles, ~file.rename(.x, .y)) # rename files
     shp <- read_sf(file.path(dir, paste0(name, ".shp"))) # read-in shapefile
     
+    
+    shp
+    
   })
   
   #############################################################################  # 
@@ -318,7 +321,7 @@ app_server <- function(input, output, session) {
       data_up_echo() 
       
     } else if(current_upload_method() == 'SHP'){
-     
+     data_up_shp()
     }
     
   })
@@ -376,6 +379,11 @@ app_server <- function(input, output, session) {
   ## How many valid points? warn if no valid lat/lon ####
   output$an_map_text <- renderUI({
     req(data_uploaded())
+    if(current_upload_method() == "SHP"){
+      print("hi")
+      test<-get_blockpoints_in_shape(data_uploaded()[1,],input$bt_rad_buff)
+      print(test)
+    }else{
       #separate inputs with valid/invalid lat/lon values
       if (nrow(data_uploaded()) > 1){ 
         num_na    <- nrow(data_uploaded()[ (is.na(data_uploaded()$lat) | is.na(data_uploaded()$lon)),])
@@ -399,7 +407,8 @@ app_server <- function(input, output, session) {
       #             "Valid site(s) uploaded: <strong>", prettyNum(num_notna, big.mark=","),"</strong><br>",
       #             "Site(s) with invalid lat/lon values: <strong>", prettyNum(num_na,big.mark=","), "</strong>"))
     
-  })
+  }
+    })
   
   ## See table of uploaded points ####
   
@@ -545,7 +554,8 @@ app_server <- function(input, output, session) {
                   'latlon' = input$ss_upload_latlon,
                   'FRS' = input$ss_upload_frs, 
                   'NAICS' = input$submit_naics,
-                  'ECHO' = input$ss_upload_echo)
+                  'ECHO' = input$ss_upload_echo,
+                  'SHP' = input$ss_upload_shp)
      validate(
       need(cond, 'Please select a data set.')
     )
@@ -709,6 +719,7 @@ app_server <- function(input, output, session) {
     Sys.sleep(0.2) ### why wait? ### #
     shinyjs::js$toTop();
     updateTabsetPanel(session, "all_tabs", "Summary Report")
+    
   })
   #############################################################################  # 
  
@@ -833,6 +844,8 @@ app_server <- function(input, output, session) {
     
     req(data_uploaded())
     
+    if(current_upload_method() != "SHP"){
+    
     base_color      <- '#000080'
     cluster_color   <- 'red'
     
@@ -887,7 +900,7 @@ app_server <- function(input, output, session) {
         # ## allow fullscreen map view ([ ] button)
         # leaflet.extras::addFullscreenControl()
     )
-  })
+  }})
   
   # #############################################################################  # 
   # ## *Header info on summary report ####
