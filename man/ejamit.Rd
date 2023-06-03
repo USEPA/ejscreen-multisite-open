@@ -10,6 +10,7 @@ ejamit(
   maxradius = 31.07,
   avoidorphans = TRUE,
   quadtree = NULL,
+  silentinteractive = F,
   ...
 )
 }
@@ -28,6 +29,9 @@ created from the SearchTree package example:
 SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point")
 Takes about 2-5 seconds to create this each time it is needed.
 It is automatically created when the package is loaded via the \code{\link[=.onLoad]{.onLoad()}} function}
+
+\item{silentinteractive}{Set to FALSE to prevent long output showing in console in RStudio when in interactive mode,
+passed to doaggregate() also.}
 
 \item{...}{passed to \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} or other such functions}
 }

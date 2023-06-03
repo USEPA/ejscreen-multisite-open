@@ -3,6 +3,8 @@
 #'   It does essentially what the webapp does to analyze/summarize near a set of points.
 #'   See help("EJAM")  
 #' @inheritParams getblocksnearby
+#' @param silentinteractive Set to FALSE to prevent long output showing in console in RStudio when in interactive mode,
+#'   passed to doaggregate() also.
 #' @return A list of tables of results.
 #' @examples
 #'  # All in one step, using functions not shiny app:
@@ -64,6 +66,7 @@ ejamit <- function(sitepoints,
                    radius=3, maxradius=31.07, 
                    avoidorphans=TRUE,
                    quadtree=NULL,
+                   silentinteractive=F,
                    ...
 ) {
   if (missing(radius)) {warning(paste0("Using default radius of ", radius, " miles because not provided as parameter."))}
@@ -85,7 +88,7 @@ ejamit <- function(sitepoints,
   sitepoints <- latlon_from_anything(sitepoints)  
   ################################################################################## #
   # 1. getblocksnearby() ####
-  cat('Finding blocks nearby.\n')
+  if (!silentinteractive) {cat('Finding blocks nearby.\n')}
   
   mysites2blocks <- getblocksnearby(
     sitepoints=sitepoints, 
@@ -94,12 +97,13 @@ ejamit <- function(sitepoints,
     ...)
   
   # 2. doaggregate() ####
-  cat('Aggregating at each buffer and overall.\n')
+  if (!silentinteractive) {cat('Aggregating at each buffer and overall.\n')}
   
   out <- suppressWarnings (
     doaggregate(
       sites2blocks = mysites2blocks, 
-      sites2states = sitepoints
+      sites2states = sitepoints,
+      silentinteractive = silentinteractive
     )
   )
   # provide sitepoints table provided by user aka data_uploaded(), (or could pass only lat,lon and ST -if avail- not all cols?)
@@ -175,7 +179,7 @@ ejamit <- function(sitepoints,
 
   
   ################################################################ # 
-  if (interactive()) {  # would be nice to provide the 1pager summary report as html here too
+  if (interactive() & !silentinteractive) {  # would be nice to provide the 1pager summary report as html here too
     # already done by doaggregate()
     # Show as nicely named indicators in console of RStudio - Overall results (across all sites)
     # print to console
