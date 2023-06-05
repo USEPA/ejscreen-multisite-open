@@ -1410,20 +1410,6 @@ app_server <- function(input, output, session) {
     filename = function(){'results_table.xlsx'},
     content = function(fname){
       
-      ## previous - use EJAMejscreenapi::xls_formatting_api approach
-      # 
-      #table_as_displayed <- data_processed()$results_bysite
-      # pctile_colnums <- which(EJAMejscreenapi::map_headernames$jsondoc_shortvartype[match(names(table_as_displayed), 
-      #                                                                                     EJAMejscreenapi::map_headernames$newnames_ejscreenapi)] == 'pctile')
-      # longnames <- EJAMejscreenapi::map_headernames$longname_tableheader[match(names(data_processed()$results_bysite),
-      #                                                                          EJAMejscreenapi::map_headernames$newnames_ejscreenapi)]
-      # 
-      #names(table_as_displayed) <- ifelse(!is.na(longnames), longnames, names(table_as_displayed))
-      # wb_out <- xls_formatting(df = table_as_displayed,
-      #                               heatmap_colnames = names(table_as_displayed)[pctile_colnums],
-      #                               heatmap_cuts=c(80, 90, 95),
-      #                               heatmap_colors=c('yellow', 'orange', 'red'))
-      
       ## use EJAM::workbook_ouput_styled approach
       ## future: can add other sheets from doaggregate output
       
@@ -1431,41 +1417,33 @@ app_server <- function(input, output, session) {
       table_overall <- copy(data_processed()$results_overall)
       table_bysite  <- copy(data_processed()$results_bysite)
       
-      #filter out sitecount - TEMP
-      filter_out_temp_overall <- !(names(table_overall) %in% c("sitecount_unique","sitecount_avg","sitecount_max"))
-      filter_out_temp_bysite <- !(names(table_bysite) %in% c("sitecount_unique","sitecount_avg","sitecount_max"))
-      
-      table_overall <- table_overall[,..filter_out_temp_overall]
-      table_bysite <- table_bysite[,..filter_out_temp_bysite]
-      
-      # table_summarized <- copy(data_processed()$results_summarized)
-      # table_bybg_people <- data_processed()$results_bybg_people   # large table !!
-      table_overall <- table_overall %>% dplyr::mutate(dplyr::across(dplyr::where(is.numeric), function(x) ifelse(!is.finite(x), NA, x)))
-      table_bysite <- table_bysite %>% dplyr::mutate(dplyr::across(dplyr::where(is.numeric), function(x) ifelse(!is.finite(x), NA, x)))
-     
-      ## attempt to clean up some column names xxx - CHECK THIS 
-      # longnames_TEST <- EJAMejscreenapi::map_headernames$longname_tableheader[match(names(data_processed()$results_bysite),
-      # EJAMejscreenapi::map_headernames$newnames_ejscreenapi)]
-      longnames <- data_processed()$longnames
-      
-      #filter out sitecount from longnames - TEMP
-      longnames <- longnames[filter_out_temp_bysite]
-      
-      longnames_no_url <- setdiff(longnames, c('EJScreen Report','EJScreen Map','ACS Report','ECHO report'))
-    
-      names(table_overall) <- ifelse(!is.na(longnames_no_url), longnames_no_url, names(table_overall))
-      names(table_bysite)  <- ifelse(!is.na(longnames), longnames, names(table_bysite))
-      # table_summarized
-      # names(table_bybg_people) # CANNOT REALLY TREAT THIS THE SAME - HAS DIFFERENT LIST OF INDICATORS THAN THE OTHER TABLES
+      ## format excel workbook
+      ## now passes reactive data frame and all names and formatting happen inside this function
+      wb_out <- xls_formatting2(
+        overall = table_overall,
+        eachsite = table_bysite,
+        longnames = data_processed()$longnames,
+        ## optional, shiny-specific arguments to go in 'Plot' and 'Notes' sheets
+        summary_plot = v1_summary_plot(),
+        analysis_title = input$analysis_title,
+        buffer_desc = input$bt_rad_buff
+      )
+        
+      ## save file and return for downloading
+      openxlsx::saveWorkbook(wb_out, fname)
       
       ## format excel workbook
-      wb_out <- xls_formatting2(
-        overall = table_overall, 
-        eachsite = table_bysite  # the function does not handle the other two
-        # eachblockgroup = table_bybg_people, 
-        # summaryofoverall = table_summarized # could use longnames for it
-        # data_processed()$results_bybg_people 
-      )
+      # wb_out <- xls_formatting2(
+      #   overall = table_overall, 
+      #   eachsite = table_bysite,
+      #   headers_overall = names(data_processed()$results_overall) ,
+      #   headers_eachsite = names(data_processed()$results_bysite),
+      #   heatmap_colnames = names(data_processed()$results_bysite)[grep('pctile', names(data_processed()$results_bysite))]
+      #     # the function does not handle the other two
+      #   # eachblockgroup = table_bybg_people, 
+      #   # summaryofoverall = table_summarized # could use longnames for it
+      #   # data_processed()$results_bybg_people 
+      # )
       #        
       
       # > names( data_processed() )
@@ -1473,28 +1451,36 @@ app_server <- function(input, output, session) {
       # [3] "results_bybg_people"                 "longnames"                          
       # [5] "count_of_blocks_near_multiple_sites" "results_summarized"  
       
-      ## add analysis overview to 'notes' tab
-      notes_df <- data.frame(
-        'Analysis Title' = input$analysis_title,
-        'Number of Points Analyzed' = nrow(data_processed()$results_bysite),
-        'Radius of Circular Buffer (miles)' = input$bt_rad_buff,
-        check.names = FALSE
-      ) 
-      notes_df <- t(notes_df)
-
-      openxlsx::writeData(wb = wb_out, sheet = 'notes', x = notes_df, rowNames = TRUE, colNames = FALSE)
       
+      #filter out sitecount - TEMP
+      # filter_out_temp_overall <- !(names(table_overall) %in% c("sitecount_unique","sitecount_avg","sitecount_max"))
+      # filter_out_temp_bysite <- !(names(table_bysite) %in% c("sitecount_unique","sitecount_avg","sitecount_max"))
+      # 
+      # table_overall <- table_overall[,..filter_out_temp_overall]
+      # table_bysite <- table_bysite[,..filter_out_temp_bysite]
+      # 
+      # # table_summarized <- copy(data_processed()$results_summarized)
+      # # table_bybg_people <- data_processed()$results_bybg_people   # large table !!
+      # table_overall <- table_overall %>% dplyr::mutate(dplyr::across(dplyr::where(is.numeric), function(x) ifelse(!is.finite(x), NA, x)))
+      # table_bysite <- table_bysite %>% dplyr::mutate(dplyr::across(dplyr::where(is.numeric), function(x) ifelse(!is.finite(x), NA, x)))
+      # 
+      # ## attempt to clean up some column names xxx - CHECK THIS 
+      # # longnames_TEST <- EJAMejscreenapi::map_headernames$longname_tableheader[match(names(data_processed()$results_bysite),
+      # # EJAMejscreenapi::map_headernames$newnames_ejscreenapi)]
+      # longnames <- data_processed()$longnames
+      # 
+      # #filter out sitecount from longnames - TEMP
+      # longnames <- longnames[filter_out_temp_bysite]
+      # longnames[longnames == ""] <- EJAMejscreenapi::map_headernames$names_friendly[match(names(table_overall)[longnames == ""], 
+      #                                                                                     EJAMejscreenapi::map_headernames$newnames_ejscreenapi)]
+      # 
+      # longnames_no_url <- longnames[!(longnames %in% c('EJScreen Report','EJScreen Map','ACS Report','ECHO report'))] #setdiff(longnames, c('EJScreen Report','EJScreen Map','ACS Report','ECHO report'))
+      # 
+      # names(table_overall) <- ifelse(!is.na(longnames_no_url), longnames_no_url, names(table_overall))
+      # names(table_bysite)  <- ifelse(!is.na(longnames), longnames, names(table_bysite))
+      # table_summarized
+      # names(table_bybg_people) # CANNOT REALLY TREAT THIS THE SAME - HAS DIFFERENT LIST OF INDICATORS THAN THE OTHER TABLES
       
-      ## add v1_summary_plot() to 'plot' sheet of Excel download
-      ## will be moved to eventual merged 'xls_formatting' function
-      ggplot2::ggsave(filename = paste0(tempdir(), '/', 'summary_plot.png'), plot = v1_summary_plot(),
-             height = 7, width = 9, units = 'in')
-      openxlsx::insertImage(wb_out, sheet = 'plot', 
-                            file = paste0(tempdir(), '/', 'summary_plot.png'),
-                            width = 9, height = 7)
-      
-      ## save file and return for downloading
-      openxlsx::saveWorkbook(wb_out, fname)
     }
   )
   
