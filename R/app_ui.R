@@ -44,9 +44,10 @@ app_ui  <- function(request) {
         # ~ ####
         # ABOUT ####
         tabPanel(title = 'About EJAM',
-                 
                  br(), ## vertical space
                  
+             fluidRow(
+               column(8,
                  ## html intro text from global.R  
                  intro_text,
                  
@@ -55,6 +56,11 @@ app_ui  <- function(request) {
                               style ='color: #fff; background-color: #005ea2;'),
                  actionButton('ui_hide_advanced_settings','Hide Advanced Settings Tab', 
                               style ='color: #fff; background-color: #005ea2;')
+             ),
+               column(4,
+                      htmltools::img( id = "biglogo", src = "www/ejamhex4.png")
+                      )
+               )
         ),
         ######################################################################################################### #
         # ~ ####
