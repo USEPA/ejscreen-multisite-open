@@ -3,7 +3,8 @@
 \name{speedtest}
 \alias{speedtest}
 \title{speedtest
-Runs EJAM analysis for several radius values for various numbers of sitepoints, recording how long each step took.}
+Run EJAM analysis for several radii and numbers of sitepoints,
+recording how long each step takes}
 \usage{
 speedtest(
   n = 10,
@@ -23,11 +24,14 @@ speedtest(
 )
 }
 \arguments{
-\item{n}{optional, vector of 1 or more counts of how many random points to test, or set to 0 to interactively pick file of points in RStudio (n is ignored if sitepoints provided)}
+\item{n}{optional, vector of 1 or more counts of how many random points to test, or
+set to 0 to interactively pick file of points in RStudio (n is ignored if sitepoints provided)}
 
-\item{sitepoints}{optional,  (use if you do not want random points) data.frame of points or path/file with points, where columns are lat and lon in decimal degrees}
+\item{sitepoints}{optional,  (use if you do not want random points) data.frame of points or
+path/file with points, where columns are lat and lon in decimal degrees}
 
-\item{weighting}{optional, if using random points, how to weight them, such as facilities, people, or blockgroups. see \code{\link[=testpoints_n]{testpoints_n()}}}
+\item{weighting}{optional, if using random points, how to weight them,
+such as facilities, people, or blockgroups. see \code{\link[=testpoints_n]{testpoints_n()}}}
 
 \item{radii}{optional, one or more radius values in miles
 to use in creating circular buffers when findings residents nearby each of sitepoints.
@@ -39,7 +43,8 @@ The default list includes one that is 5km (approx 3.1 miles)}
 
 \item{test_batch.summarize}{whether to include this function in timing}
 
-\item{logging}{logical optional, whether to save log file with timings of steps. NOTE this slows it down though.}
+\item{logging}{logical optional, whether to save log file with timings of steps.
+NOTE this slows it down though.}
 
 \item{logfolder}{optional, name of folder for log file}
 
@@ -58,13 +63,26 @@ EJAM results similar to as from the web app  \code{\link[=ejamit]{ejamit()}} and
 }
 \description{
 speedtest
-Runs EJAM analysis for several radius values for various numbers of sitepoints, recording how long each step took.
+Run EJAM analysis for several radii and numbers of sitepoints,
+recording how long each step takes
+}
+\details{
+This is essentially a test script that times each step of EJAM for a large dataset
+\itemize{
+\item pick a sample size (n) (or enter sitepoints, or set n=0 to interactively pick file of points in RStudio)
+\item pick n random points
+\item pick a few different radii for circular buffering
+\item analyze indicators in circular buffers and overall (find blocks nearby and then calc indicators)
+\item get stats that summarize those indicators
+\item compare times between steps and radii and other approaches or tools
+}
 }
 \examples{
 \dontrun{ 
   speedseen_few <- speedtest(c(50,500), radii=c(1, 3.106856), logging=FALSE, honk=FALSE)
   
-  speedseen_nearer_to1k <- speedtest(n = c(1e2,1e3,1e4 ), radii=c(1, 3.106856,5 ), logging=TRUE, honk=FALSE)
+  speedseen_nearer_to1k <- speedtest(n = c(1e2,1e3,1e4 ), radii=c(1, 3.106856,5 ),
+    logging=TRUE, honk=FALSE)
   save( speedseen_nearer_to1k, file = "~/../Downloads/speedseen_nearer_to1k.rda")
   rstudioapi::savePlotAsImage(        "~/../Downloads/speedseen_nearer_to1k.png")
   

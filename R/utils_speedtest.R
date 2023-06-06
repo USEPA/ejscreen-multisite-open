@@ -1,35 +1,34 @@
 
 
-speedtable_expand <- function(speedtable) {
-  # must have columns called  points, miles, and perhr 
-  speedtable$perminute <- round(speedtable$perhr /60, 0)
-  speedtable$persecond <- round(speedtable$perhr /3600, 0)
-  speedtable$minutes   <- round(speedtable$points / (speedtable$perhr / 60), 0)
-  speedtable$seconds   <- round(speedtable$points / (speedtable$perhr / 3600), 0)
-  speedtable$secondsper1000 <- round((1000/speedtable$points) * speedtable$points / (speedtable$perhr / 3600), 0)
-  return(speedtable)
-}
-speedtable_summarize <- function(speedtable) {
-  runs <- sum(speedtable$points)
-  total_hours <- sum(speedtable$points / speedtable$perhr)
-  perhr <-  round(runs / total_hours ,0)
-  
-  mysummary <- data.frame(points=runs, miles=NA, perhr=perhr)
-  return(speedtable_expand(mysummary))
-}
+#   SPEEDTEST   #########################################################################
+
 
 #' speedtest
-#' Runs EJAM analysis for several radius values for various numbers of sitepoints, recording how long each step took. 
-#' @param n optional, vector of 1 or more counts of how many random points to test, or set to 0 to interactively pick file of points in RStudio (n is ignored if sitepoints provided)
-#' @param sitepoints optional,  (use if you do not want random points) data.frame of points or path/file with points, where columns are lat and lon in decimal degrees
-#' @param weighting optional, if using random points, how to weight them, such as facilities, people, or blockgroups. see [testpoints_n()]
+#' Run EJAM analysis for several radii and numbers of sitepoints, 
+#'   recording how long each step takes 
+#' @details   
+#'   This is essentially a test script that times each step of EJAM for a large dataset
+#'    - pick a sample size (n) (or enter sitepoints, or set n=0 to interactively pick file of points in RStudio)
+#'    - pick n random points
+#'    - pick a few different radii for circular buffering
+#'    - analyze indicators in circular buffers and overall (find blocks nearby and then calc indicators)
+#'    - get stats that summarize those indicators
+#'    - compare times between steps and radii and other approaches or tools
+#'    
+#' @param n optional, vector of 1 or more counts of how many random points to test, or 
+#'   set to 0 to interactively pick file of points in RStudio (n is ignored if sitepoints provided)
+#' @param sitepoints optional,  (use if you do not want random points) data.frame of points or 
+#'   path/file with points, where columns are lat and lon in decimal degrees
+#' @param weighting optional, if using random points, how to weight them, 
+#'   such as facilities, people, or blockgroups. see [testpoints_n()]
 #' @param radii optional, one or more radius values in miles 
 #'   to use in creating circular buffers when findings residents nearby each of sitepoints.
 #'   The default list includes one that is 5km (approx 3.1 miles)
 #' @param test_getblocksnearby whether to include this function in timing - not used because always done
 #' @param test_doaggregate  whether to include this function in timing
 #' @param test_batch.summarize  whether to include this function in timing
-#' @param logging logical optional, whether to save log file with timings of steps. NOTE this slows it down though.
+#' @param logging logical optional, whether to save log file with timings of steps. 
+#'   NOTE this slows it down though.
 #' @param logfolder optional, name of folder for log file
 #' @param logfilename optional, name of log file to go in folder
 #' @param honk_when_ready optional, self-explanatory
@@ -39,7 +38,8 @@ speedtable_summarize <- function(speedtable) {
 #' @examples \dontrun{ 
 #'   speedseen_few <- speedtest(c(50,500), radii=c(1, 3.106856), logging=FALSE, honk=FALSE)
 #'   
-#'   speedseen_nearer_to1k <- speedtest(n = c(1e2,1e3,1e4 ), radii=c(1, 3.106856,5 ), logging=TRUE, honk=FALSE)
+#'   speedseen_nearer_to1k <- speedtest(n = c(1e2,1e3,1e4 ), radii=c(1, 3.106856,5 ),
+#'     logging=TRUE, honk=FALSE)
 #'   save( speedseen_nearer_to1k, file = "~/../Downloads/speedseen_nearer_to1k.rda")
 #'   rstudioapi::savePlotAsImage(        "~/../Downloads/speedseen_nearer_to1k.png")
 #'   
@@ -96,7 +96,7 @@ speedtest <- function(n=10, sitepoints=NULL, weighting='frs',
   if (is.null(sitepoints)) {
     # PICK TEST DATASET(s) OF FACILITY POINTS 
     cat("Picking random points for testing.\n")
-    # sitepoints <- read.csv(file="./data/SamplePoints100k.csv",stringsAsFactors=FALSE)
+    # Also see test files in EJAM/inst/testdata/latlon/ 
     sitepoints <- list()
     # we can have the smaller sets of points be a random subset of the next larger, to make it more apples to apples
     nsorted <- sort(n,decreasing = TRUE)
@@ -132,9 +132,11 @@ speedtest <- function(n=10, sitepoints=NULL, weighting='frs',
     })
     print(step0)
   }
-  ############################################################### # 
+  ####################### # 
   
-  # START RUNNING ANALYSIS 
+  
+  # START RUNNING ANALYSIS  ------------------------------------------------------------------ -
+  
   
   ntext <- paste(paste0(n,     " sites"), collapse = ", ")
   rtext <- paste(paste0(radii, " miles"), collapse = ", ")
@@ -224,12 +226,13 @@ speedtest <- function(n=10, sitepoints=NULL, weighting='frs',
       save(x, file = file.path(logfolder, paste0("speedtable_",n,"_rad", paste(radii,collapse="-"), ".rda")))
     }
     
-  } # NEXT LIST OF POINTS (facility list) 
+  } # NEXT LIST OF POINTS (facility list) ----------------------------------------------------------------- -
   
   endtime <- Sys.time()
   cat('Stopped timing.\n')
   
   cat("--------------------------------------------------------------------\n")
+  
   CIRCLESDONE <- sum(nlist) * length(radii)
   cat("Finished with all sets of sites,", length(radii),"radius values, each for a total of", 
       prettyNum(sum(nlist), big.mark = ",") ,"sites =", prettyNum(CIRCLESDONE, big.mark = ","), "circles total.\n")
@@ -259,37 +262,12 @@ speedtest <- function(n=10, sitepoints=NULL, weighting='frs',
   return(speedtable)
 }
 
-################################################################################
-# older manual TESTING JUST getblocksnearby() not including doaggregate()
 
-# olddir=getwd()
-# setwd("~/../Downloads")
-# t1_1000=system.time({  x1=getblocksnearby(testpoints_1000,1);  save(x1,file = 'x1_1000.rda');rm(x1)})
-# t3_1000=system.time({  x3=getblocksnearby(testpoints_1000,3);  save(x3,file = 'x3_1000.rda');rm(x3)})
-# t6_1000=system.time({  x6=getblocksnearby(testpoints_1000,6);  save(x6,file = 'x6_1000.rda');rm(x6)})
-# 
-# testpoints_10k <- testpoints_n(10000,"frs")
-# 
-# t1_10k=system.time({  x1=getblocksnearby(testpoints_10k,1);  save(x1,file = 'x1_10k.rda');rm(x1)})
-# t3_10k=system.time({  x3=getblocksnearby(testpoints_10k,3);  save(x3,file = 'x3_10k.rda');rm(x3)})
-# t6_10k=system.time({  x6=getblocksnearby(testpoints_10k,6);  save(x6,file = 'x6_10k.rda');rm(x6)})
-# rm(testpoints_10k)
-# setwd(olddir)
-# 
-# # points per hour: 
-# 
-# prettyNum(round(3600*1000/t1_1000[3],0),big.mark = ",")
-# prettyNum(round(3600*1000/t3_1000[3],0),big.mark = ",")
-# prettyNum(round(3600*1000/t6_1000[3],0),big.mark = ",")
-# 
-# prettyNum(round(3600*10000/t1_10k[3],0),big.mark = ",")
-# prettyNum(round(3600*10000/t3_10k[3],0),big.mark = ",")
-# prettyNum(round(3600*10000/t6_10k[3],0),big.mark = ",")
-################################################################################
+######################################################################### #
 
 
+#' speedtest_plot
 #' utility to plot output of speedtest(), rate of points analyzed per hour
-#'
 #' @param x table from speedtest()
 #' @param ltype optional type of line for plot
 #' @param plotfile optional path and filename of .png image file to save
@@ -297,7 +275,7 @@ speedtest <- function(n=10, sitepoints=NULL, weighting='frs',
 #' @seealso [speedtest()]
 #' @export
 #'
-speedtest_plot = function(x, ltype="b", plotfile=NULL, secondsperthousand=FALSE) { # x is a speedtable from speedtest
+speedtest_plot = function(x, ltype="b", plotfile=NULL, secondsperthousand=FALSE) { 
   radii <- unique(x$miles)
   nlist  <- unique(x$points)
   mycolors <- runif(length(radii), 1, 600)
@@ -338,4 +316,74 @@ speedtest_plot = function(x, ltype="b", plotfile=NULL, secondsperthousand=FALSE)
   }
   return(x)
 }
+
+
+######################################################################### #
+
+#' speedtable_summarize
+#' utility used by speedtest()
+#' @param speedtable from speedtest(), with columns named points and perhr
+#' @seealso [speedtest()]
+#' @export
+#'
+speedtable_summarize <- function(speedtable) {
+  # used by speedtest()
+  runs <- sum(speedtable$points)
+  total_hours <- sum(speedtable$points / speedtable$perhr)
+  perhr <-  round(runs / total_hours ,0)
+  mysummary <- data.frame(points=runs, miles=NA, perhr=perhr)
+  return(speedtable_expand(mysummary))
+}
+
+######################################################################### #
+
+#' speedtable_expand
+#' Utility used by speedtest() and speedtable_summarize()
+#' @param speedtable must have columns called  points, miles, and perhr 
+#'
+#' @export
+#'
+speedtable_expand <- function(speedtable) {
+  # used by speedtest() and by speedtable_summarize()
+  # input param speedtable must have columns called  points, miles, and perhr 
+  speedtable$perminute <- round(speedtable$perhr /60, 0)
+  speedtable$persecond <- round(speedtable$perhr /3600, 0)
+  speedtable$minutes   <- round(speedtable$points / (speedtable$perhr / 60), 0)
+  speedtable$seconds   <- round(speedtable$points / (speedtable$perhr / 3600), 0)
+  speedtable$secondsper1000 <- round((1000/speedtable$points) * speedtable$points / (speedtable$perhr / 3600), 0)
+  return(speedtable)
+}
+
+######################################################################### #
+
+
+
+
+############################################################################### #
+# older manual TESTING JUST getblocksnearby() not including doaggregate()
+
+# olddir=getwd()
+# setwd("~/../Downloads")
+# t1_1000=system.time({  x1=getblocksnearby(testpoints_1000,1);  save(x1,file = 'x1_1000.rda');rm(x1)})
+# t3_1000=system.time({  x3=getblocksnearby(testpoints_1000,3);  save(x3,file = 'x3_1000.rda');rm(x3)})
+# t6_1000=system.time({  x6=getblocksnearby(testpoints_1000,6);  save(x6,file = 'x6_1000.rda');rm(x6)})
+# 
+# testpoints_10k <- testpoints_n(10000,"frs")
+# 
+# t1_10k=system.time({  x1=getblocksnearby(testpoints_10k,1);  save(x1,file = 'x1_10k.rda');rm(x1)})
+# t3_10k=system.time({  x3=getblocksnearby(testpoints_10k,3);  save(x3,file = 'x3_10k.rda');rm(x3)})
+# t6_10k=system.time({  x6=getblocksnearby(testpoints_10k,6);  save(x6,file = 'x6_10k.rda');rm(x6)})
+# rm(testpoints_10k)
+# setwd(olddir)
+# 
+# # points per hour: 
+# 
+# prettyNum(round(3600*1000/t1_1000[3],0),big.mark = ",")
+# prettyNum(round(3600*1000/t3_1000[3],0),big.mark = ",")
+# prettyNum(round(3600*1000/t6_1000[3],0),big.mark = ",")
+# 
+# prettyNum(round(3600*10000/t1_10k[3],0),big.mark = ",")
+# prettyNum(round(3600*10000/t3_10k[3],0),big.mark = ",")
+# prettyNum(round(3600*10000/t6_10k[3],0),big.mark = ",")
+################################################################################
 
