@@ -228,7 +228,18 @@ xls_formatting2 <- function(overall, eachsite, longnames,
   
 }
 
-
+#' vartype2color_ejam
+#' helper function - assign fill color to shade excel cells by indicator type
+#' Use color shading to make spreadsheet easier to use, grouping the indicators
+#'
+#' @param vartype must be one found in varnameinfo$jsondoc_vartype, 
+#'   ie "percentile", "average", or "raw data for indicator"
+#'   NA if not found.
+#'
+#' @return vector of colors like c('lightblue', 'gray') matching length of vartype
+#' @seealso varname2vartype_ejam() varname2color_ejam()
+#' @export
+#'
 vartype2color_ejam <- function(vartype) {
   # for shading headers in Excel of results
   coloring <- matrix(
@@ -244,13 +255,18 @@ vartype2color_ejam <- function(vartype) {
     ncol=2, byrow=TRUE
   )
   colnames(coloring) <- c('vartype', 'color')
-  # but
-  # jsondoc_zone
-  # 'Region' , 'gray'
   coloring[match(vartype, coloring[, 'vartype'], nomatch = NA) , 'color']
   
 }
 
+#' helper function - for color coding excel sheet columns
+#' Wrapper for varname2vartype_ejam() and vartype2color_ejam() to simplify use case
+#' @param varname things like us.avg.pctlowinc 
+#'
+#' @return vector of colors
+#' @seealso varname2vartype_ejam() vartype2color_ejam()
+#' @export
+#'
 varname2color_ejam <- function(varname, varnameinfo) {
   if (missing(varnameinfo)) {
     if (exists('map_headernames'))  {varnameinfo <- map_headernames} else {
@@ -262,6 +278,19 @@ varname2color_ejam <- function(varname, varnameinfo) {
   vartype2color_ejam( varname2vartype_ejam(varname = varname, varnameinfo=varnameinfo))
 }
 
+#' varname2vartype_ejam
+#' helper function - given indicator names, look up what type each is
+#' @details  
+#'   The types are things like raw data count for indicator, average, percentile, etc.
+#'   Variable names are stored in column of varnameinfo called newnames_ejscreenapi
+#'   Types are stored in column of varnameinfo called jsondoc_vartype
+#' @param varname vector of 1 or more names
+#' @param varnameinfo data.frame with info on type of each variable
+#'
+#' @return vector same size as varname
+#' @seealso vartype2color_ejam() varname2color_ejam()
+#' @export
+#'
 varname2vartype_ejam <- function(varname, varnameinfo) {
   if (missing(varnameinfo)) {
     if (exists('map_headernames'))  {varnameinfo <- map_headernames} else {
@@ -282,8 +311,3 @@ varname2vartype_ejam <- function(varname, varnameinfo) {
   return(cur_matches)
   
 }
-
-#header_colors_eachsite <- EJAMejscreenapi::xls_varname2color(names(eachsite), EJAMejscreenapi::map_headernames)
-#header_colors_overall <- EJAMejscreenapi::xls_varname2color(names(overall), EJAMejscreenapi::map_headernames)
-#new_colors <- setdiff(c(unique(header_colors_overall), unique(header_colors_eachsite)), NA)
-#new_colors <- gsub('lightorange', 'orange', new_colors)

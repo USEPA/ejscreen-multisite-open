@@ -4,7 +4,7 @@
 #' @param pkgname na
 #'
 .onLoad <- function(libname, pkgname) {
-    ok_to_do_slow_load_early <- TRUE # WHILE TESTING/Building often
+    ok_to_do_slow_load_early <- FALSE # WHILE TESTING/Building often
   if (  ok_to_do_slow_load_early) {
   ### Maybe load the datasets now that are needed, 
   ### instead of when user does a query that triggers slow lazyloading?
