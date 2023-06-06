@@ -34,8 +34,6 @@ app_server <- function(input, output, session) {
   
   #############################################################################  # 
   
-  ## ** US AVERAGE for each indicator  
-  
   ## ______ SELECT SITES ________####
   # ~ ####
   
@@ -275,8 +273,8 @@ app_server <- function(input, output, session) {
   
   ## reactive: hub for any/all uploaded data, gets passed to processing ####
   data_uploaded <- reactive({
-    print("data_uploaded reactive was updated!")
-    cat("method is ", current_upload_method(), "\n")
+    # print("data_uploaded reactive was updated!")
+    # cat("method is ", current_upload_method(), "\n")
     
     ## send message if no data uploaded
     # validate(

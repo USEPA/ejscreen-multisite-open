@@ -99,8 +99,7 @@ app_ui  <- function(request) {
                             
                             ## input: Upload list of facility lat/longs
                             fileInput(inputId = 'ss_upload_latlon',  
-                                      label = 'Upload a list of sites in a spreadsheet (.csv, .xls, or .xlsx with lat & lon as table headers)',
-                                      #placeholder = 'test_input_latlon.csv', 
+                                      label = 'Upload a list of sites (a spreadsheet with lat & lon as table headers)',
                                       multiple = FALSE,
                                       accept = c('.xls', '.xlsx', ".csv", "text/csv", "text/comma-separated-values,text/plain")
                                       # add hover tips here maybe, or even a button to view examples of valid formats and details on that.
