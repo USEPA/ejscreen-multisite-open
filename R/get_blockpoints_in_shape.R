@@ -30,8 +30,7 @@
 #'
 get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NULL, dissolved=FALSE, safety_margin_ratio=1.10) {
   blockpoints_sf <-  blockpoints %>% sf::st_as_sf(coords = c('lon', 'lat'), crs= 4269)
-  print(blockpoints_sf)
-  #print(blockpoints_sf)
+  
   if (!exists("blockpoints_sf")) {
     stop("requires the blockpoints   called blockpoints_sf  you can make like this: \n blockpoints_sf <-  blockpoints |> sf::st_as_sf(coords = c('lon', 'lat'), crs= 4269) \n # Geodetic CRS:  NAD83 ")
   }
@@ -90,8 +89,12 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
     # warning("using getblocksnearby() to filter US blocks to those near each site must be done before a dissolve  ")
     polys <- sf::st_union(polys)
   }
-  
+ 
   blocksinsidef <- unique(blocksinside)
+  
+  pts <-  data.table(sf::st_coordinates(blocksinsidef)) 
+  setnames(pts, c("lon","lat"))
+  
   # if (!("sf" %in% class(blocksnearby))) {
   #   blocksnearby <-  get_shapefile_from_sitepoints(blocksinside)
   # }
@@ -100,7 +103,7 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
   # 
   # blocksinside <- blocksinside[!is.na(blocksinside$siteid),]
   # 
-  return(blocksinsidef)
+  return(pts)
   
 }
 

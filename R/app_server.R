@@ -274,8 +274,8 @@ app_server <- function(input, output, session) {
     purrr::walk2(infiles, outfiles, ~file.rename(.x, .y)) # rename files
     shp <- read_sf(file.path(dir, paste0(name, ".shp"))) # read-in shapefile
     
-    
-    shp
+     
+    shp[1,]
     
   })
   
@@ -368,7 +368,16 @@ app_server <- function(input, output, session) {
           shinyjs::enable(id = 'bt_get_results')
           shinyjs::show(id = 'show_data_preview')
         }
+    }else if(current_upload_method() == 'SHP'){
+      if(!isTruthy(input$ss_upload_shp)){
+        shinyjs::disable(id = 'bt_get_results')
+        shinyjs::hide(id = 'show_data_preview')
+      } else {
+        shinyjs::enable(id = 'bt_get_results')
+        shinyjs::show(id = 'show_data_preview')
+      }
     }
+      
   })
   #############################################################################  # 
   # ~ ####
@@ -380,9 +389,9 @@ app_server <- function(input, output, session) {
   output$an_map_text <- renderUI({
     req(data_uploaded())
     if(current_upload_method() == "SHP"){
-      print("hi")
-      test<-get_blockpoints_in_shape(data_uploaded()[1,],input$bt_rad_buff)
-      print(test)
+      test<-get_blockpoints_in_shape(data_uploaded(),input$bt_rad_buff)
+      num_na <- 0
+      num_nona <- nrow(test)
     }else{
       #separate inputs with valid/invalid lat/lon values
       if (nrow(data_uploaded()) > 1){ 
@@ -525,15 +534,21 @@ app_server <- function(input, output, session) {
   
   orig_leaf_map <- reactive({
     req(data_uploaded())
+    if(current_upload_method() == "SHP"){
+      d_upload <- get_blockpoints_in_shape(data_uploaded(),input$bt_rad_buff)
+    }else{
+      d_upload <-data_uploaded()
+    }
+    
     max_pts <- max_points_can_map
     ## don't draw map if > 5000 points are uploaded
-    if(nrow(data_uploaded()) < max_pts){
+    if(nrow(d_upload) < max_pts){
       suppressMessages(
         leaflet() %>% addTiles() %>% 
-          fitBounds(lng1 = min(data_uploaded()$lon),
-                                               lng2 = max(data_uploaded()$lon),
-                                               lat1 = min(data_uploaded()$lat),
-                                               lat2 = max(data_uploaded()$lat))
+          fitBounds(lng1 = min(d_upload$lon),
+                                               lng2 = max(d_upload$lon),
+                                               lat1 = min(d_upload$lat),
+                                               lat2 = max(d_upload$lat))
         
         # map_facilities(mypoints = data_uploaded(), #as.data.frame(data_uploaded()), 
         #                rad = input$bt_rad_buff, 
@@ -582,6 +597,7 @@ app_server <- function(input, output, session) {
   
   observeEvent(input$bt_get_results, {  # (button is pressed) 
     
+    
     showNotification('Processing sites now!', type = 'message', duration = 0.5)
     
     ## progress bar setup overall for 3 operations   
@@ -592,11 +608,18 @@ app_server <- function(input, output, session) {
     #############################################################################  # 
     ## 1) **EJAM::getblocksnearby()** ####
     
+    if(current_upload_method() == "SHP"){
+      d_upload <- get_blockpoints_in_shape(data_uploaded(),input$bt_rad_buff)
+    }else{
+      d_upload <-data_uploaded()
+    }
+    
     sites2blocks <- getblocksnearby(
-      sitepoints = data_uploaded(),
+      sitepoints = d_upload,
       cutoff = input$bt_rad_buff,
       quadtree = localtree
     )
+   
     ## progress bar update overall  
     progress_all$inc(1/3, message = 'Step 2 of 3', detail = 'Aggregating')
     ## create progress bar to show doaggregate status
@@ -800,6 +823,7 @@ app_server <- function(input, output, session) {
     validate(
       need(data_processed(), 'Please run an analysis to see results.')
     )
+    print(data_processed())
     
     circle_color <- '#000080'
     
@@ -844,8 +868,11 @@ app_server <- function(input, output, session) {
     
     req(data_uploaded())
     
-    if(current_upload_method() != "SHP"){
-    
+    if(current_upload_method() == "SHP"){
+      d_upload <- get_blockpoints_in_shape(data_uploaded(),input$bt_rad_buff)
+    }else{
+      d_upload <-data_uploaded()
+    }
     base_color      <- '#000080'
     cluster_color   <- 'red'
     
@@ -865,11 +892,11 @@ app_server <- function(input, output, session) {
       circle_color <- base_color
     }
     
-    popup_vec <- popup_from_any(data_uploaded())
+    popup_vec <- popup_from_any(d_upload)
     
     # if(input$circle_type == 'circles'){
     suppressMessages(
-      leafletProxy(mapId = 'an_leaf_map', session, data = data_uploaded()) %>%
+      leafletProxy(mapId = 'an_leaf_map', session, data = d_upload) %>%
         map_facilities_proxy(rad= input$bt_rad_buff, 
                              highlight = input$an_map_clusters, clustered = is_clustered(),
                              popup_vec = popup_vec)
@@ -900,7 +927,7 @@ app_server <- function(input, output, session) {
         # ## allow fullscreen map view ([ ] button)
         # leaflet.extras::addFullscreenControl()
     )
-  }})
+  })
   
   # #############################################################################  # 
   # ## *Header info on summary report ####
