@@ -23,7 +23,14 @@ meters_per_mile <- 1609.344
 #   "RMP" = "RMP"
 # )
 
-epa_programs <- sort(unique(EJAM::frs_by_programid$program))
+## add counts to program acronyms to use in dropdown display
+epa_program_counts <- EJAM::frs_by_programid %>%
+  dplyr::count(program, name = 'count') %>% 
+  dplyr::mutate(pgm_text_dropdown = paste0(program, ' (',prettyNum(count, big.mark = ','), ')'))
+
+epa_programs <- setNames(epa_program_counts$program, epa_program_counts$pgm_text_dropdown)
+
+#epa_programs <- sort(unique(EJAM::frs_by_programid$program))
 
 ## Loading/wait spinners (color, type) ####
 ## note: was set at type = 1, but this caused screen to "bounce"

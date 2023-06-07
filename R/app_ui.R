@@ -207,7 +207,10 @@ app_ui  <- function(request) {
                               condition = "input.program_ul_type == 'dropdown'",
                               ## input: select an EPA program from list
                               selectInput(inputId = 'ss_select_program', label = 'Pick an EPA program',
-                                        choices = epa_programs)
+                                       ## named vector in global.R - values are acronyms, 
+                                       ## names include # of rows corresponding to that program
+                                       choices = epa_programs),
+                              
                             ),
                             
                             conditionalPanel(
@@ -215,7 +218,10 @@ app_ui  <- function(request) {
                               ## input: upload an EPA program ID file
                               fileInput(inputId = 'ss_upload_program',
                                         label = 'Upload a file with program IDs')
-                            )
+                            ),
+                            
+                            ## input: submit button once program is selected from dropdown
+                            actionButton(inputId = 'submit_program', label = 'Submit Program')
                             
                           ), #end EPA program conditional panel
                           

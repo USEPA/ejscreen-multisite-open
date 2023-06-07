@@ -275,11 +275,12 @@ app_server <- function(input, output, session) {
   
   data_up_epa_program <- reactive({
     ## wait for file to be uploaded
+    #req(input$ss_upload_program || isTruthy(input$ss_select_program))
+    req(input$submit_program)
+    
+   if(input$program_ul_type == 'upload'){
     req(input$ss_upload_program)
-    
-    ##  >this part could be replaced by  latlon_from_anything() ####
-    # ext <- latlon_from_anything(input$ss_upload_latlon$datapath)
-    
+     
     ## check if file extension is appropriate
     ext <- tools::file_ext(input$ss_upload_program$name)
     ## if acceptable file type, read in; if not, send warning text
@@ -293,13 +294,22 @@ app_server <- function(input, output, session) {
     ## need to add data validation checks here 
     ## look for program in list from unique(frs_by_programid$program)
     
-    pgm_ids_merged <- dplyr::left_join(
+    pgm_out <- dplyr::left_join(
       read_pgm, frs_by_programid,
       by = c("program", "pgm_sys_id")
     )
+    pgm_out <- pgm_out[latlon_is.valid(pgm_out$lat, pgm_out$lon), ]
     
-    ## return merged dataset
-    pgm_ids_merged
+   } else if(input$program_ul_type == 'dropdown'){
+     
+     req(isTruthy(input$ss_select_program))
+     ## filter frs_by_programid to currently selected program
+     pgm_out <- frs_by_programid[ program== input$ss_select_program]
+     pgm_out <- pgm_out[latlon_is.valid(pgm_out$lat, pgm_out$lon),]
+   }
+    print(nrow(pgm_out))
+    ## return output dataset
+    pgm_out
   })
   
   
@@ -312,7 +322,7 @@ app_server <- function(input, output, session) {
       shiny::isTruthy(input$submit_naics) +
       #(shiny::isTruthy(input$ss_enter_naics) ||  shiny::isTruthy(input$ss_select_naics)) +
       shiny::isTruthy(input$ss_upload_echo) +
-      shiny::isTruthy(input$ss_upload_program)
+      shiny::isTruthy(input$submit_program)
   })
   
   ## reactive: hub for any/all uploaded data, gets passed to processing ####
@@ -395,8 +405,16 @@ app_server <- function(input, output, session) {
           shinyjs::show(id = 'show_data_preview')
         }
     } else if(current_upload_method() == 'EPA_PROGRAM'){
+      if((input$program_ul_type == 'upload' & !isTruthy(input$ss_upload_program)) |
+         (input$program_ul_type == 'dropdown' & !isTruthy(input$ss_select_program))){
+        shinyjs::disable(id = 'submit_program')
+      } else {
+        shinyjs::enable(id = 'submit_program')
+      }
       
-      if(!isTruthy(input$ss_upload_program)){
+      # if((input$program_ul_type == 'upload' & !isTruthy(input$ss_upload_program)) |
+      #    (input$program_ul_type == 'dropdown' & !isTruthy(input$submit_program))){
+      if(!isTruthy(input$submit_program)){
         shinyjs::disable(id = 'bt_get_results')
         shinyjs::hide(id = 'show_data_preview')
       } else {
@@ -584,7 +602,7 @@ app_server <- function(input, output, session) {
                   'FRS' = input$ss_upload_frs, 
                   'NAICS' = input$submit_naics,
                   'ECHO' = input$ss_upload_echo,
-                  'EPA_PROGRAM' = input$ss_upload_program)
+                  'EPA_PROGRAM' = input$submit_program)
      validate(
       need(cond, 'Please select a data set.')
     )
