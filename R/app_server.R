@@ -298,20 +298,100 @@ app_server <- function(input, output, session) {
       read_pgm, frs_by_programid,
       by = c("program", "pgm_sys_id")
     )
-    pgm_out <- pgm_out[latlon_is.valid(pgm_out$lat, pgm_out$lon), ]
-    
+    ## clean so that any invalid latlons become NA
+    pgm_out <- pgm_out %>% 
+      latlon_df_clean()
+
    } else if(input$program_ul_type == 'dropdown'){
      
      req(isTruthy(input$ss_select_program))
      ## filter frs_by_programid to currently selected program
      pgm_out <- frs_by_programid[ program== input$ss_select_program]
-     pgm_out <- pgm_out[latlon_is.valid(pgm_out$lat, pgm_out$lon),]
+     ## clean so that any invalid latlons become NA
+     pgm_out <- pgm_out %>% 
+       latlon_df_clean()
    }
-    print(nrow(pgm_out))
     ## return output dataset
     pgm_out
   })
   
+  #############################################################################  # 
+  ## reactive: data uploaded by SIC ####
+  
+  data_up_sic <- reactiveVal(NULL)
+  
+  ## when SIC submit button is pressed
+  observeEvent(input$submit_sic, {
+    
+    ## check if anything has been selected or entered
+    req(shiny::isTruthy(input$ss_enter_sic) || shiny::isTruthy(input$ss_select_sic))
+    
+    #define inputs
+    #naics_user_wrote_in_box <- input$ss_enter_naics
+    #naics_user_picked_from_list <- input$ss_select_naics
+    add_sic_subcategories <- FALSE #input$add_naics_subcategories 
+    # q: IS IT BETTER TO USE THIS IN naics_from_any() OR IN frs_from_naics() BELOW ??
+    
+    # naics_validation function to check for non empty NAICS inputs
+    if(naics_validation(input$ss_enter_sic,input$ss_select_sic)){
+      inputsic = {}
+      #splits up comma separated list if user manually inserts list
+      if(nchar(input$ss_enter_sic)>0){
+        print('test a')
+        #checks for non-numeric values in text box; if they are not numeric, then search by name
+        if(!grepl("^\\d+(,\\d+)*$",input$ss_enter_sic)){
+          # print('test')
+          
+          #   1. GET NAICS CODES VIA QUERY OF TEXT IN NAMES OR THE NUMBERS
+          
+          inputsic = sic_from_any(input$ss_enter_sic)[,code] # this used to be naics_find()
+          
+          if(length(inputsic) == 0 | all(is.na(inputsic))){
+            ################ Should output something saying no valid results returned ######## #
+            shiny::validate('No Results Returned')
+          }        
+        } else {
+          sic_wib_split <- as.list(strsplit(input$ss_enter_sic, ",")[[1]])
+          print(sic_wib_split)
+        }
+      } else {
+        sic_wib_split <- ""
+      }
+      # if not empty, assume its pulled using naics_from_any() or older naics_find() above
+      if(length(inputsic) == 0 | rlang::is_empty(inputsic)) {
+        #construct regex expression and finds sites that align with user-selected SIC codes
+        inputsic <- c(sic_wib_split, input$ss_select_sic)
+        inputsic <- unique(inputsic[inputsic != ""])
+        
+        print(inputsic)
+        
+        #merge user-selected NAICS with FRS facility location information
+        #sitepoints <- frs_by_sic[SIC %like% inputsic ,  ]
+        
+        #   2. GET FACILITY LAT/LON INFO FROM NAICS CODES  
+        print('testb')
+        sitepoints <- frs_from_sic(inputsic, children=add_sic_subcategories)[, .(lat,lon,REGISTRY_ID,PRIMARY_NAME,SIC)] # xxx
+        # print(sitepoints)
+        if(rlang::is_empty(sitepoints) | nrow(sitepoints) == 0){
+          ################ Should output something saying no valid results returned ######## #
+          shiny::validate('No Results Returned')
+        }
+      } else{  
+        #sitepoints <- frs_by_sic[SIC %like% inputsic ,  ]
+        sitepoints <- frs_from_sic(inputsic, children=add_sic_subcategories)[, .(lat,lon,REGISTRY_ID,PRIMARY_NAME,SIC)] # xxx
+        # print(sitepoints)
+        showNotification('Points submitted successfully!', duration = 1)
+      }
+    } else {
+      ################ Should output something saying no valid results returned ######## #
+      shiny::validate('Invalid SIC Input')
+      
+    }
+    cat("SITE COUNT VIA SIC: ", NROW(sitepoints), "\n")
+    
+    ## assign final value to data_up_naics reactive variable
+    data_up_sic(sitepoints)
+  })
   
   #############################################################################  # 
   ## reactive: count data upload methods currently used ####
@@ -322,7 +402,8 @@ app_server <- function(input, output, session) {
       shiny::isTruthy(input$submit_naics) +
       #(shiny::isTruthy(input$ss_enter_naics) ||  shiny::isTruthy(input$ss_select_naics)) +
       shiny::isTruthy(input$ss_upload_echo) +
-      shiny::isTruthy(input$submit_program)
+      shiny::isTruthy(input$submit_program) +
+      shiny::isTruthy(input$submit_sic)
   })
   
   ## reactive: hub for any/all uploaded data, gets passed to processing ####
@@ -356,8 +437,10 @@ app_server <- function(input, output, session) {
       data_up_echo() 
       
     } else if(current_upload_method() == 'EPA_PROGRAM'){
-      print('test')
-      data_up_epa_program()
+
+        data_up_epa_program()
+    } else if(current_upload_method() == 'SIC'){
+      data_up_sic()
     }
     
   })
@@ -415,6 +498,21 @@ app_server <- function(input, output, session) {
       # if((input$program_ul_type == 'upload' & !isTruthy(input$ss_upload_program)) |
       #    (input$program_ul_type == 'dropdown' & !isTruthy(input$submit_program))){
       if(!isTruthy(input$submit_program)){
+        shinyjs::disable(id = 'bt_get_results')
+        shinyjs::hide(id = 'show_data_preview')
+      } else {
+        shinyjs::enable(id = 'bt_get_results')
+        shinyjs::show(id = 'show_data_preview')
+      }
+    }  else if(current_upload_method() == 'SIC'){
+      if((input$sic_ul_type == 'enter' & !isTruthy(input$ss_enter_sic)) |
+         (input$sic_ul_type == 'dropdown' & !isTruthy(input$ss_select_sic))){
+        shinyjs::disable(id = 'submit_sic')
+      } else {
+        shinyjs::enable(id = 'submit_sic')
+      }
+      
+      if(!isTruthy(input$submit_sic)){
         shinyjs::disable(id = 'bt_get_results')
         shinyjs::hide(id = 'show_data_preview')
       } else {
@@ -602,7 +700,8 @@ app_server <- function(input, output, session) {
                   'FRS' = input$ss_upload_frs, 
                   'NAICS' = input$submit_naics,
                   'ECHO' = input$ss_upload_echo,
-                  'EPA_PROGRAM' = input$submit_program)
+                  'EPA_PROGRAM' = input$submit_program,
+                  'SIC' = input$submit_sic)
      validate(
       need(cond, 'Please select a data set.')
     )

@@ -235,10 +235,10 @@ app_ui  <- function(request) {
                                          choiceValues = c('dropdown',
                                                           'enter')),
                             
-                            radioButtons('add_sic_subcategories', "Add all subcategories of SIC?",
-                                         choiceNames = c("Yes","No"),
-                                         choiceValues = c(TRUE,FALSE),
-                                         selected = TRUE),
+                            # radioButtons('add_sic_subcategories', "Add all subcategories of SIC?",
+                            #              choiceNames = c("Yes","No"),
+                            #              choiceValues = c(TRUE,FALSE),
+                            #              selected = TRUE),
                             
                             ### conditional sub- panel if entering SIC
                             conditionalPanel(
@@ -248,7 +248,7 @@ app_ui  <- function(request) {
                                 inputId = "ss_enter_sic",
                                 label = htmltools::h6(
                                   "Enter Industry SIC codes - ",
-                                  HTML(paste0('<a href=\"', 'https://www.census.gov/naics', '\", target=\"_blank\">', 'Look up SIC', '</a>')),
+                                  HTML(paste0('<a href=\"', 'http://www.siccode.com', '\", target=\"_blank\">', 'Look up SIC', '</a>')),
                                   # htmltools::a("Look up NAICS", href ="https://www.census.gov/naics", ),
                                   htmltools::a(htmltools::img(id = "ibutton",src = "www/i.png",height = 15,width = 15),
                                                href = "www/ibutton_help.html#help_naicslist",target = "_blank")
