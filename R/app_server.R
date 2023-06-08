@@ -620,16 +620,18 @@ app_server <- function(input, output, session) {
     ## 1) **EJAM::getblocksnearby()** ####
     
     if(current_upload_method() == "SHP"){
-      d_upload <-data_uploaded()[['shape']]
+      sites2blocks <-data_uploaded()[['points']]
     }else{
       d_upload <-data_uploaded()
-    }
-    
-    sites2blocks <- getblocksnearby(
+      sites2blocks <- getblocksnearby(
       sitepoints = d_upload,
       cutoff = input$bt_rad_buff,
       quadtree = localtree
     )
+   
+    }
+    
+  
    
     ## progress bar update overall  
     progress_all$inc(1/3, message = 'Step 2 of 3', detail = 'Aggregating')
