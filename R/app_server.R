@@ -273,9 +273,11 @@ app_server <- function(input, output, session) {
     name <- strsplit(input$ss_upload_shp$name[1], "\\.")[[1]][1] # strip name 
     purrr::walk2(infiles, outfiles, ~file.rename(.x, .y)) # rename files
     shp <- read_sf(file.path(dir, paste0(name, ".shp"))) # read-in shapefile
+    d_upload <- {}
     
-     
-    shp[1,]
+    
+    d_upload[['points']] <- get_blockpoints_in_shape(shp,input$bt_rad_buff)
+    d_upload[['shape']] <- shp[1,]
     
   })
   
@@ -287,7 +289,8 @@ app_server <- function(input, output, session) {
       ## switched upload count to use submit button instead of entered codes
       shiny::isTruthy(input$submit_naics) +
       #(shiny::isTruthy(input$ss_enter_naics) ||  shiny::isTruthy(input$ss_select_naics)) +
-      shiny::isTruthy(input$ss_upload_echo)
+      shiny::isTruthy(input$ss_upload_echo)+
+      shiny::isTruthy(input$ss_upload_shp)
   })
   
   ## reactive: hub for any/all uploaded data, gets passed to processing ####
@@ -389,9 +392,13 @@ app_server <- function(input, output, session) {
   output$an_map_text <- renderUI({
     req(data_uploaded())
     if(current_upload_method() == "SHP"){
-      test<-get_blockpoints_in_shape(data_uploaded(),input$bt_rad_buff)
+      shp<-data_uploaded()[['shape']]
       num_na <- 0
-      num_nona <- nrow(test)
+      num_notna <- nrow(shp)
+      HTML(paste0(
+        "Total shape(s) uploaded: <strong>", prettyNum(num_na + num_notna, big.mark=","),"</strong><br>",
+        "Valid shape(s) uploaded: <strong>", prettyNum(num_notna, big.mark=","),"</strong>")
+      )
     }else{
       #separate inputs with valid/invalid lat/lon values
       if (nrow(data_uploaded()) > 1){ 
@@ -426,8 +433,12 @@ app_server <- function(input, output, session) {
     server = FALSE, {
     req(data_uploaded())
     
-    dt <- data_uploaded() # now naics-queried sites format is OK to view, since using different function to get sites by naics
-    
+    #dt <- data_uploaded() # now naics-queried sites format is OK to view, since using different function to get sites by naics
+    if(current_upload_method() == "SHP"){
+      dt <- data_uploaded()[['shape']]
+    }else{
+      dt <-data_uploaded()
+    }
     # if(current_upload_method() == 'NAICS'){
     
     ###takes NAICS codes selected, finds NAICS descriptions, and presents them  
@@ -535,7 +546,7 @@ app_server <- function(input, output, session) {
   orig_leaf_map <- reactive({
     req(data_uploaded())
     if(current_upload_method() == "SHP"){
-      d_upload <- get_blockpoints_in_shape(data_uploaded(),input$bt_rad_buff)
+      d_upload <- data_uploaded()[['points']]
     }else{
       d_upload <-data_uploaded()
     }
@@ -609,7 +620,7 @@ app_server <- function(input, output, session) {
     ## 1) **EJAM::getblocksnearby()** ####
     
     if(current_upload_method() == "SHP"){
-      d_upload <- get_blockpoints_in_shape(data_uploaded(),input$bt_rad_buff)
+      d_upload <-data_uploaded()[['shape']]
     }else{
       d_upload <-data_uploaded()
     }
@@ -869,7 +880,7 @@ app_server <- function(input, output, session) {
     req(data_uploaded())
     
     if(current_upload_method() == "SHP"){
-      d_upload <- get_blockpoints_in_shape(data_uploaded(),input$bt_rad_buff)
+      d_upload <- data_uploaded()[['points']]
     }else{
       d_upload <-data_uploaded()
     }
