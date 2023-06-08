@@ -245,12 +245,12 @@ vartype2color_ejam <- function(vartype) {
   coloring <- matrix(
     c(
       # jsondoc_vartype 
-      'percentile',              'orange',
-      'raw data for indicator' , 'lightblue',
-      'average',                 'darkgreen',
-      'ratio',                   'gold',
-      'count demog',             'purple',
-      'misc',                    'gray'
+      'percentile',              '#ADD8E6', #'lightblue'
+      'raw data for indicator' , '#FFA500', #'orange'
+      'average',                 '#90EE90', #'lightgreen'
+      'ratio',                   '#FFD700', #'gold'
+      'count demog',             '#FFBBFF', #'plum1'
+      'misc',                    '#BEBEBE'  #'gray'
     ), 
     ncol=2, byrow=TRUE
   )
