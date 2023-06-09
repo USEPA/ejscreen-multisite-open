@@ -988,7 +988,9 @@ app_server <- function(input, output, session) {
   observe({
     
     req(data_uploaded())
-    
+    ## This statement needed to ensure map stops if too many points uploaded
+    req(isTruthy(orig_leaf_map()))
+  
     base_color      <- '#000080'
     cluster_color   <- 'red'
     
