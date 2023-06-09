@@ -73,7 +73,7 @@ app_server <- function(input, output, session) {
       input$ss_choose_method,
       latlon = "latlon",  # 'Location (lat/lon)',
       FRS =  "FRS", # 'FRS (facility ID)',
-      ECHO = "ECHO", # 'ECHO Search Tools',
+      #ECHO = "ECHO", # 'ECHO Search Tools',
       NAICS = "NAICS", # 'NAICS (industry name or code)'
       EPA_PROGRAM = "EPA_PROGRAM",
       SIC = "SIC" ,
@@ -240,43 +240,43 @@ app_server <- function(input, output, session) {
   #############################################################################  # 
   ## reactive: data uploaded by ECHO ####
   # 
-  data_up_echo <- reactive({
-    ## depends on ECHO upload - which may use same file upload as latlon
-    req(input$ss_upload_echo)
-    
-    ## >this part could be replaced by ####################################
-    # ext <- latlon_from_anything(input$ss_upload_echo$datapath)
-    
-    ## check if file extension is appropriate
-    ext <- tools::file_ext(input$ss_upload_echo$name)
-    
-    ## if acceptable file type, read in; if not, send warning text
-    ext <- switch(ext,
-                  csv =  data.table::fread(input$ss_upload_echo$datapath),
-                  xls = readxl::read_excel(input$ss_upload_echo$datapath) %>% data.table::as.data.table(),
-                  xlsx = readxl::read_excel(input$ss_upload_echo$datapath) %>% data.table::as.data.table(),
-                  shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
-    )
-    
-    ## only process if lats and lon (or aliases) exist in uploaded data  
-    ## if column names are matched to aliases, process it    
-    if(any(tolower(colnames(ext)) %in% lat_alias) & any(tolower(colnames(ext)) %in% lon_alias)){
-      ext %>% 
-        EJAM::latlon_df_clean() #%>% 
-        #data.table::as.data.table()
-    } else {
-      ## if not matched, return this message
-      shiny::validate('No coordinate columns found.')
-    }
-  })
+  # data_up_echo <- reactive({
+  #   ## depends on ECHO upload - which may use same file upload as latlon
+  #   req(input$ss_upload_echo)
+  #   
+  #   ## >this part could be replaced by ####################################
+  #   # ext <- latlon_from_anything(input$ss_upload_echo$datapath)
+  #   
+  #   ## check if file extension is appropriate
+  #   ext <- tools::file_ext(input$ss_upload_echo$name)
+  #   
+  #   ## if acceptable file type, read in; if not, send warning text
+  #   ext <- switch(ext,
+  #                 csv =  data.table::fread(input$ss_upload_echo$datapath),
+  #                 xls = readxl::read_excel(input$ss_upload_echo$datapath) %>% data.table::as.data.table(),
+  #                 xlsx = readxl::read_excel(input$ss_upload_echo$datapath) %>% data.table::as.data.table(),
+  #                 shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
+  #   )
+  #   
+  #   ## only process if lats and lon (or aliases) exist in uploaded data  
+  #   ## if column names are matched to aliases, process it    
+  #   if(any(tolower(colnames(ext)) %in% lat_alias) & any(tolower(colnames(ext)) %in% lon_alias)){
+  #     ext %>% 
+  #       EJAM::latlon_df_clean() #%>% 
+  #       #data.table::as.data.table()
+  #   } else {
+  #     ## if not matched, return this message
+  #     shiny::validate('No coordinate columns found.')
+  #   }
+  # })
   
   #############################################################################  # 
   ## reactive: data uploaded by EPA Program IDs ####
   
   data_up_epa_program <- reactive({
     ## wait for file to be uploaded
-    #req(input$ss_upload_program || isTruthy(input$ss_select_program))
-    req(input$submit_program)
+    req(isTruthy(input$ss_upload_program) || isTruthy(input$ss_select_program))
+    #req(input$submit_program)
     
    if(input$program_ul_type == 'upload'){
     req(input$ss_upload_program)
@@ -396,7 +396,6 @@ app_server <- function(input, output, session) {
   ## reactive: data uploaded by FIPS ####
 
   data_up_fips <- reactive({
-    ## depends on ECHO upload - which may use same file upload as latlon
     req(input$ss_upload_fips)
 
     ## check if file extension is appropriate
@@ -446,7 +445,7 @@ app_server <- function(input, output, session) {
       ## switched upload count to use submit button instead of entered codes
       shiny::isTruthy(input$submit_naics) +
       #(shiny::isTruthy(input$ss_enter_naics) ||  shiny::isTruthy(input$ss_select_naics)) +
-      shiny::isTruthy(input$ss_upload_echo) +
+      #shiny::isTruthy(input$ss_upload_echo) +
       shiny::isTruthy(input$submit_program) +
       shiny::isTruthy(input$submit_sic) +
       shiny::isTruthy(input$ss_upload_fips)
@@ -478,10 +477,10 @@ app_server <- function(input, output, session) {
       
       data_up_frs()
       
-    } else if(current_upload_method() == 'ECHO'){
-      
-      data_up_echo() 
-      
+    # } else if(current_upload_method() == 'ECHO'){
+    #   
+    #   data_up_echo() 
+       
     } else if(current_upload_method() == 'EPA_PROGRAM'){
 
         data_up_epa_program()
@@ -512,14 +511,14 @@ app_server <- function(input, output, session) {
         shinyjs::enable(id = 'bt_get_results')
         shinyjs::show(id = 'show_data_preview')
       }
-    } else if(current_upload_method() == 'ECHO'){
-      if(!isTruthy(input$ss_upload_echo)){
-        shinyjs::disable(id = 'bt_get_results')
-        shinyjs::hide(id = 'show_data_preview')
-      } else {
-        shinyjs::enable(id = 'bt_get_results')
-        shinyjs::show(id = 'show_data_preview')
-      }
+    # } else if(current_upload_method() == 'ECHO'){
+    #   if(!isTruthy(input$ss_upload_echo)){
+    #     shinyjs::disable(id = 'bt_get_results')
+    #     shinyjs::hide(id = 'show_data_preview')
+    #   } else {
+    #     shinyjs::enable(id = 'bt_get_results')
+    #     shinyjs::show(id = 'show_data_preview')
+    #   }
     } else if(current_upload_method() == 'NAICS'){
         if((input$naics_ul_type == 'enter' & !isTruthy(input$ss_enter_naics)) |
            (input$naics_ul_type == 'dropdown' & !isTruthy(input$ss_select_naics))){
@@ -765,7 +764,7 @@ app_server <- function(input, output, session) {
                   'latlon' = input$ss_upload_latlon,
                   'FRS' = input$ss_upload_frs, 
                   'NAICS' = input$submit_naics,
-                  'ECHO' = input$ss_upload_echo,
+                  #'ECHO' = input$ss_upload_echo,
                   'EPA_PROGRAM' = input$ss_select_program,#input$submit_program,
                   'SIC' = input$submit_sic,
                   'FIPS' = input$ss_upload_fips)

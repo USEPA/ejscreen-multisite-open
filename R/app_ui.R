@@ -80,7 +80,7 @@ app_ui  <- function(request) {
                                        choiceValues = c('latlon', 
                                                         'NAICS',
                                                         'FRS',
-                                                        'ECHO',
+                                                        #'ECHO',
                                                         'EPA_PROGRAM',
                                                         'SIC',
                                                         'FIPS'
@@ -88,7 +88,7 @@ app_ui  <- function(request) {
                                        choiceNames = c('Upload Location (latitude/longitude) file',
                                                        'Select by Industry (NAICS) Code',
                                                        'Upload EPA Facility ID (FRS Identifers) file',
-                                                       'Search using ECHO database',
+                                                       #'Search using ECHO database',
                                                        'Select an EPA Program',
                                                        'Select by SIC code',
                                                        'Upload a FIPS code file'),
@@ -177,19 +177,19 @@ app_ui  <- function(request) {
                           ), # end FRS conditionalPanel
                           
                           ## ECHO upload conditional panel
-                          conditionalPanel(
-                            condition = "input.ss_choose_method == 'ECHO'",
-                            
-                            br(), ## vertical space
-                            
-                            ## input: Upload list of ECHO facilities
-                            shiny::fileInput(
-                              inputId = 'ss_upload_echo',
-                              label = 'Upload list of ECHO facilities',
-                              accept = c('.xls', '.xlsx', ".csv", "text/csv", "text/comma-separated-values, text/plain")
-                            ), 
-                            #br(),
-                          ), #end ECHO conditional panel
+                          # conditionalPanel(
+                          #   condition = "input.ss_choose_method == 'ECHO'",
+                          #   
+                          #   br(), ## vertical space
+                          #   
+                          #   ## input: Upload list of ECHO facilities
+                          #   shiny::fileInput(
+                          #     inputId = 'ss_upload_echo',
+                          #     label = 'Upload list of ECHO facilities',
+                          #     accept = c('.xls', '.xlsx', ".csv", "text/csv", "text/comma-separated-values, text/plain")
+                          #   ), 
+                          #   #br(),
+                          # ), #end ECHO conditional panel
                           
                           ## EPA program conditional panel
                           conditionalPanel(
@@ -442,20 +442,20 @@ app_ui  <- function(request) {
                                              HTML(latlon_help_msg)
                     )
                   )
-                ),
+                ) #,
                 ## ECHO help page
-                conditionalPanel(
-                  condition = "input.ss_choose_method == 'ECHO'",
-                  ## collapsible ECHO help panel 
-                  shinyBS::bsCollapse(
-                    id = 'echo_help', open = 'ECHO upload instructions',
-                    
-                    shinyBS::bsCollapsePanel(title = 'ECHO upload instructions',
-                                             style = 'primary',
-                                             ## echo help text - in global.R
-                                             echo_message)
-                  )
-                ) #, # xxx #end ECHO conditionalPanel
+                # conditionalPanel(
+                #   condition = "input.ss_choose_method == 'ECHO'",
+                #   ## collapsible ECHO help panel 
+                #   shinyBS::bsCollapse(
+                #     id = 'echo_help', open = 'ECHO upload instructions',
+                #     
+                #     shinyBS::bsCollapsePanel(title = 'ECHO upload instructions',
+                #                              style = 'primary',
+                #                              ## echo help text - in global.R
+                #                              echo_message)
+                #   )
+                # ) #, # xxx #end ECHO conditionalPanel
         ), # end Site Selection tab
         
         ######################################################################################################### #
