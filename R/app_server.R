@@ -393,6 +393,51 @@ app_server <- function(input, output, session) {
     data_up_sic(sitepoints)
   })
   
+  ## reactive: data uploaded by FIPS ####
+
+  data_up_fips <- reactive({
+    ## depends on ECHO upload - which may use same file upload as latlon
+    req(input$ss_upload_fips)
+
+    ## check if file extension is appropriate
+    ext <- tools::file_ext(input$ss_upload_fips$name)
+
+    ## if acceptable file type, read in; if not, send warning text
+    ext <- switch(ext,
+                  csv =  data.table::fread(input$ss_upload_fips$datapath),
+                  xls = readxl::read_excel(input$ss_upload_fips$datapath) %>% data.table::as.data.table(),
+                  xlsx = readxl::read_excel(input$ss_upload_fips$datapath) %>% data.table::as.data.table(),
+                  shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
+    )
+
+    ## create named vector of FIPS codes (names used as siteid)
+    fips_vec <- fips_lead_zero(as.character(ext$FIPS))
+    names(fips_vec) <- as.character(fips_vec)
+    
+    ## create two-column dataframe with bgs (values) and original fips (ind)
+    all_bgs <- stack(sapply(fips_vec, fipsbg_from_anyfips))
+    names(all_bgs) <- c('bgid','siteid')
+    all_bgs$siteid <- as.character(all_bgs$siteid)
+    
+    ## only process blockgroups exist for uploaded data
+    if(nrow(all_bgs) > 0){
+      fips_blockpoints <- dplyr::left_join(all_bgs, 
+                                           ## create 12-digit column inline (original table not altered)
+                                           blockid2fips[, .(blockid, blockfips, blockfips12 = substr(blockfips,1,12))], 
+                                           by=c('bgid'='blockfips12'), multiple='all') %>% 
+        dplyr::left_join(blockpoints) %>% 
+        dplyr::mutate(distance=0)
+      
+      ## remove any invalid latlon values 
+      return(fips_blockpoints)
+      
+    } else {
+      ## if not matched, return this message
+      shiny::validate('No blockgroups found for these FIP codes.')
+    }
+  })
+  
+  
   #############################################################################  # 
   ## reactive: count data upload methods currently used ####
   num_ul_methods <- reactive({
@@ -403,7 +448,8 @@ app_server <- function(input, output, session) {
       #(shiny::isTruthy(input$ss_enter_naics) ||  shiny::isTruthy(input$ss_select_naics)) +
       shiny::isTruthy(input$ss_upload_echo) +
       shiny::isTruthy(input$submit_program) +
-      shiny::isTruthy(input$submit_sic)
+      shiny::isTruthy(input$submit_sic) +
+      shiny::isTruthy(input$ss_upload_fips)
   })
   
   ## reactive: hub for any/all uploaded data, gets passed to processing ####
@@ -441,6 +487,8 @@ app_server <- function(input, output, session) {
         data_up_epa_program()
     } else if(current_upload_method() == 'SIC'){
       data_up_sic()
+    } else if(current_upload_method() == 'FIPS'){
+      data_up_fips()
     }
     
   })
@@ -513,6 +561,14 @@ app_server <- function(input, output, session) {
       }
       
       if(!isTruthy(input$submit_sic)){
+        shinyjs::disable(id = 'bt_get_results')
+        shinyjs::hide(id = 'show_data_preview')
+      } else {
+        shinyjs::enable(id = 'bt_get_results')
+        shinyjs::show(id = 'show_data_preview')
+      }
+    } else if(current_upload_method() == 'FIPS'){
+      if(!isTruthy(input$ss_upload_fips)){
         shinyjs::disable(id = 'bt_get_results')
         shinyjs::hide(id = 'show_data_preview')
       } else {
@@ -669,10 +725,20 @@ app_server <- function(input, output, session) {
   })
   
   orig_leaf_map <- reactive({
-    req(data_uploaded())
     max_pts <- max_points_can_map
     ## don't draw map if > 5000 points are uploaded
-    if(nrow(data_uploaded()) < max_pts){
+
+    if(current_upload_method() == 'FIPS'){
+      req(data_uploaded())
+      
+      leaflet() %>% addTiles() %>% 
+        fitBounds(lng1 = min(data_uploaded()$lon),
+                  lng2 = max(data_uploaded()$lon),
+                  lat1 = min(data_uploaded()$lat),
+                  lat2 = max(data_uploaded()$lat))
+      
+    } else if(nrow(data_uploaded()) < max_pts){
+      
       suppressMessages(
         leaflet() %>% addTiles() %>% 
           fitBounds(lng1 = min(data_uploaded()$lon),
@@ -700,8 +766,9 @@ app_server <- function(input, output, session) {
                   'FRS' = input$ss_upload_frs, 
                   'NAICS' = input$submit_naics,
                   'ECHO' = input$ss_upload_echo,
-                  'EPA_PROGRAM' = input$submit_program,
-                  'SIC' = input$submit_sic)
+                  'EPA_PROGRAM' = input$ss_select_program,#input$submit_program,
+                  'SIC' = input$submit_sic,
+                  'FIPS' = input$ss_upload_fips)
      validate(
       need(cond, 'Please select a data set.')
     )
@@ -738,11 +805,16 @@ app_server <- function(input, output, session) {
     #############################################################################  # 
     ## 1) **EJAM::getblocksnearby()** ####
     
-    sites2blocks <- getblocksnearby(
-      sitepoints = data_uploaded(),
-      cutoff = input$bt_rad_buff,
-      quadtree = localtree
-    )
+    if(current_upload_method() == 'FIPS'){
+      sites2blocks <- data_uploaded()
+    } else{
+      sites2blocks <- getblocksnearby(
+        sitepoints = data_uploaded(),
+        cutoff = input$bt_rad_buff,
+        quadtree = localtree
+      )
+    }
+    
     ## progress bar update overall  
     progress_all$inc(1/3, message = 'Step 2 of 3', detail = 'Aggregating')
     ## create progress bar to show doaggregate status
@@ -792,19 +864,28 @@ app_server <- function(input, output, session) {
     #}
     ## the registry ID column is only found in uploaded ECHO/FRS/NAICS data -
     ## it is not passed to doaggregate output at this point, so pull the column from upload to create URLS
-    if("REGISTRY_ID" %in% names(data_uploaded())){
-      echolink = url_echo_facility_webpage(data_uploaded()$REGISTRY_ID, as_html = TRUE, linktext = 'ECHO Report')
-    } else if("RegistryID" %in% names(data_uploaded())){
-      echolink = url_echo_facility_webpage(data_uploaded()$RegistryID, as_html = TRUE, linktext = 'ECHO Report')
+    if(nrow(data_uploaded()) != nrow(out$results_bysite)){
+      out$results_bysite[, `:=`(`EJScreen Report` = rep('N/A', nrow(out$results_bysite)),
+                                `EJScreen Map` = rep('N/A', nrow(out$results_bysite)),
+                                `ACS Report` = rep('N/A', nrow(out$results_bysite)),
+                                `ECHO report` = rep('N/A', nrow(out$results_bysite))
+                                )]
     } else {
-      echolink = rep('N/A',nrow(out$results_bysite))
-    }
+    
+      if("REGISTRY_ID" %in% names(data_uploaded())){
+        echolink = url_echo_facility_webpage(data_uploaded()$REGISTRY_ID, as_html = TRUE, linktext = 'ECHO Report')
+      } else if("RegistryID" %in% names(data_uploaded())){
+        echolink = url_echo_facility_webpage(data_uploaded()$RegistryID, as_html = TRUE, linktext = 'ECHO Report')
+      } else {
+        echolink = rep('N/A',nrow(out$results_bysite))
+      }
     out$results_bysite[ , `:=`(
       `EJScreen Report` = url_ejscreen_report(    lat = data_uploaded()$lat, lon = data_uploaded()$lon, distance = input$bt_rad_buff, as_html = TRUE), 
       `EJScreen Map`    = url_ejscreenmap(        lat = data_uploaded()$lat, lon = data_uploaded()$lon,                               as_html = TRUE), 
       `ACS Report`      = url_ejscreen_acs_report(lat = data_uploaded()$lat, lon = data_uploaded()$lon, distance = input$bt_rad_buff, as_html = TRUE),
       `ECHO report` = echolink
     )]
+    }
     # out$results_overall[ , `:=`(
     #   `EJScreen Report` = NA, 
     #   `EJScreen Map`    = NA, 
@@ -1010,9 +1091,21 @@ app_server <- function(input, output, session) {
       circle_color <- base_color
     }
     
-    popup_vec <- popup_from_any(data_uploaded())
-    
     # if(input$circle_type == 'circles'){
+    if(current_upload_method() == 'FIPS'){
+      
+      ## initial map code - this plots convex hull polygons of blockpoints, not actual shapes though
+      # fips_sf <- sf::st_as_sf(data_uploaded(), coords=c('lon','lat')) %>%
+      #   dplyr::group_by(siteid) %>%
+      #   dplyr::summarize(geometry = sf::st_combine(geometry)) %>%
+      #   sf::st_convex_hull() %>%
+      #   sf::st_cast('POLYGON')  %>% as('Spatial')
+      # 
+      # leafletProxy(mapId = 'an_leaf_map', session, data=fips_sf) %>% addPolygons()
+    } else {
+      
+    popup_vec <- popup_from_any(data_uploaded())
+      
     suppressMessages(
       leafletProxy(mapId = 'an_leaf_map', session, data = data_uploaded()) %>%
         map_facilities_proxy(rad= input$bt_rad_buff, 
@@ -1045,6 +1138,7 @@ app_server <- function(input, output, session) {
         # ## allow fullscreen map view ([ ] button)
         # leaflet.extras::addFullscreenControl()
     )
+    }
   })
   
   # #############################################################################  # 
