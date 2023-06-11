@@ -40,7 +40,7 @@ EJAM also takes note of which residences are near which sites, to avoid double-c
 
 ### Flexibility
 
-EJAM also is designed so that it will be able to provide a continuous distribution of distances, as distributed across blocks or people for one or all of the nearby facilities. This would enable exploration of the complete picture of proximities, rather than using an arbitrary binary cutoff distance defining near versus far. The distribution could be sliced later for the summary statistics at any distance, or could be summarized as a distribution of distances within each demographic group.
+EJAM also is designed so that it will be able to provide a continuous distribution of distances, as distributed across blocks or people for one or all of the nearby facilities. This would enable exploration of the complete picture of proximities, rather than using an arbitrary single distance defining near versus far. The distribution could be sliced later for the summary statistics at any distance, or could be summarized as a distribution of distances within each demographic group.
 
 It is also designed with growth in mind, assuming that the specific indicators of interest will expand or change over time. It is even possible that multiple resolutions of data will need to be analyzed, such as block, block group, and tract data for different indicators. A subsequent refinement might even use a high-resolution raster grid of population estimates rather than the Census Block counts currently used for buffering and weighting block group scores for partially included block groups.
 

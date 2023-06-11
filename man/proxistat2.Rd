@@ -5,12 +5,12 @@
 \title{Calculate a proximity score for every blockgroup
 Indicator of proximity of each blockgroups to some set of facilities or sites.}
 \usage{
-proxistat2(pts, cutoff = 8.04672, quadtree)
+proxistat2(pts, radius = 8.04672, quadtree)
 }
 \arguments{
 \item{pts}{data.table of lat lon}
 
-\item{cutoff}{distance max, in miles, default is 5km (8.04672 miles)
+\item{radius}{distance max, in miles, default is 5km (8.04672 miles)
 which is the EJScreen max search range for proximity scores}
 
 \item{quadtree}{must be localtree from EJAM::}

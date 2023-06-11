@@ -2,12 +2,12 @@
 % Please edit documentation in R/colcounter_summary.R
 \name{colcounter_summary_cum}
 \alias{colcounter_summary_cum}
-\title{Summarize how many rows have AT LEAST N columns at or above (or below) various cutoffs
+\title{Summarize how many rows have AT LEAST N columns at or above (or below) various thresholds
 See colcounter_summary() for more info and examples.}
 \usage{
 colcounter_summary_cum(
   x,
-  cutofflist,
+  thresholdlist,
   or.tied = TRUE,
   na.rm = TRUE,
   below = FALSE,
@@ -15,25 +15,25 @@ colcounter_summary_cum(
 )
 }
 \arguments{
-\item{x}{Data.frame or matrix of numbers to be compared to cutoff value,
+\item{x}{Data.frame or matrix of numbers to be compared to threshold value,
 like percentiles for example.}
 
-\item{cutofflist}{vector of numeric cutoff values to compare to}
+\item{thresholdlist}{vector of numeric threshold values to compare to}
 
-\item{or.tied}{if TRUE, include ties (value in x equals cutoff)}
+\item{or.tied}{if TRUE, include ties (value in x equals threshold)}
 
 \item{na.rm}{if TRUE, used by colcounter to count only the non-NA columns in given row}
 
-\item{below}{if TRUE, count x below cutoff not above cutoff}
+\item{below}{if TRUE, count x below threshold not above threshold}
 
-\item{one.cut.per.col}{if FALSE, compare each cutoff to all of x.
-If TRUE, specify one cutoff to use for each column.}
+\item{one.cut.per.col}{if FALSE, compare each threshold to all of x.
+If TRUE, specify one threshold to use for each column.}
 }
 \value{
 A table of cumulative frequency counts
 }
 \description{
-Summarize how many rows have AT LEAST N columns at or above (or below) various cutoffs
+Summarize how many rows have AT LEAST N columns at or above (or below) various thresholds
 See colcounter_summary() for more info and examples.
 }
 \seealso{

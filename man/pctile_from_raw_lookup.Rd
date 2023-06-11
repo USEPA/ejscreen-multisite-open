@@ -49,8 +49,9 @@ percentiles 89 and 90, it returns 89, for example.
 If the value is exactly equal to the cutpoint listed as percentile 90,
 it returns percentile 90.
 If the value is exactly the same as the minimum in the lookup table and multiple percentiles
-in that lookup are listed as tied for having the same cutoff (i.e., a large \% of places have
-the same score and it is the minimum score), then the percentile gets reported as 0,
+in that lookup are listed as tied for having the same threshold value defining the percentile
+(i.e., a large \% of places have the same score and it is the minimum score),
+then the percentile gets reported as 0,
 not the percent of places tied for that minimum score. Note this is true whether they are
 tied at a value of 0 or are tied at some other minimum value than 0.
 If the value is less than the cutpoint listed as percentile 0,

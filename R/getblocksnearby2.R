@@ -5,8 +5,8 @@
 #'   - not sure how to check if they are in the right environment.
 #'  
 #' @param sitepoints   see [getblocksnearbyviaQuadTree()] or other such functions
-#' @param cutoff       see [getblocksnearbyviaQuadTree()] or other such functions
-#' @param maxcutoff    see [getblocksnearbyviaQuadTree()] or other such functions
+#' @param radius       see [getblocksnearbyviaQuadTree()] or other such functions
+#' @param maxradius    see [getblocksnearbyviaQuadTree()] or other such functions
 #' @param avoidorphans see [getblocksnearbyviaQuadTree()] or other such functions
 #' @param quadtree a large quadtree object created from the SearchTree package example:
 #'    SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point")
@@ -14,7 +14,7 @@
 #' @seealso [getblocksnearby()] 
 #' @export
 #'
-getblocksnearby2 <- function(sitepoints, cutoff=3, maxcutoff=31.07, 
+getblocksnearby2 <- function(sitepoints, radius=3, maxradius=31.07, 
                              avoidorphans=TRUE, 
                              # indexgridsize,
                              quadtree=is.null,
@@ -31,7 +31,7 @@ getblocksnearby2 <- function(sitepoints, cutoff=3, maxcutoff=31.07,
   if (is.null(quadtree)) {
     if (exists('localtree' )) { # not working yet?
       return(
-        getblocksnearbyviaQuadTree(sitepoints=sitepoints, cutoff=cutoff, maxcutoff=maxcutoff, 
+        getblocksnearbyviaQuadTree(sitepoints=sitepoints, radius=radius, maxradius=maxradius, 
                                    avoidorphans=avoidorphans, 
                                    # indexgridsize=indexgridsize,
                                    quadtree=localtree,
@@ -42,19 +42,19 @@ getblocksnearby2 <- function(sitepoints, cutoff=3, maxcutoff=31.07,
     }
   }
   
-  getblocksnearbyviaQuadTree(sitepoints=sitepoints, cutoff=cutoff, maxcutoff=maxcutoff, 
+  getblocksnearbyviaQuadTree(sitepoints=sitepoints, radius=radius, maxradius=maxradius, 
                              avoidorphans=avoidorphans, 
                              # indexgridsize=indexgridsize,
                              quadtree=quadtree,
                              ...)
   
-  # getblocksnearbyviaQuadTree_Clustered(sitepoints=sitepoints, cutoff=cutoff, maxcutoff=maxcutoff, 
+  # getblocksnearbyviaQuadTree_Clustered(sitepoints=sitepoints, radius=radius, maxradius=maxradius, 
   #                                        avoidorphans=avoidorphans, 
   #                                      # indexgridsize=indexgridsize,
   #                                      quadtree=quadtree,
   #                                      ...)
   
-  # getblocksnearbyviaQuadTree2(sitepoints=sitepoints, cutoff=cutoff, maxcutoff=maxcutoff, 
+  # getblocksnearbyviaQuadTree2(sitepoints=sitepoints, radius=radius, maxradius=maxradius, 
   #                               avoidorphans=avoidorphans, 
   #                             # indexgridsize=indexgridsize,
   #                             quadtree=quadtree,

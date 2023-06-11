@@ -34,8 +34,6 @@ app_server <- function(input, output, session) {
   
   #############################################################################  # 
   
-  ## ** US AVERAGE for each indicator  
-  
   ## ______ SELECT SITES ________####
   # ~ ####
   
@@ -275,8 +273,8 @@ app_server <- function(input, output, session) {
   
   ## reactive: hub for any/all uploaded data, gets passed to processing ####
   data_uploaded <- reactive({
-    print("data_uploaded reactive was updated!")
-    cat("method is ", current_upload_method(), "\n")
+    # print("data_uploaded reactive was updated!")
+    # cat("method is ", current_upload_method(), "\n")
     
     ## send message if no data uploaded
     # validate(
@@ -568,7 +566,7 @@ app_server <- function(input, output, session) {
     
     sites2blocks <- getblocksnearby(
       sitepoints = data_uploaded(),
-      cutoff = input$bt_rad_buff,
+      radius = input$bt_rad_buff,
       quadtree = localtree
     )
     ## progress bar update overall  
@@ -709,7 +707,6 @@ app_server <- function(input, output, session) {
   # output$overall_results_tall <- renderDT({
   #   tallout <- cbind(overall = round(unlist(data_processed()$results_overall), 3))
   #   rownames(tallout) <- fixnames_to_type(rownames(tallout), "newnames_ejscreenapi", "longname_tableheader")
-  #   # rownames(tallout) <- fixnames_to_type(rownames(tallout), "jsondoc_Rfieldname", "longname_tableheader")
   #   tallout
   # })
   

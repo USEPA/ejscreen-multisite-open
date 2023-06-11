@@ -46,7 +46,7 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
   if (addedbuffermiles > 0) {
     addedbuffermiles_withunits <- units::set_units(addedbuffermiles, "miles")
     polys <- get_shape_buffered_from_shapefile_points(polys,  addedbuffermiles_withunits)
-    # addedbuffermiles_withunits  name used since below getblocksnearby( , cutoff=addedbuffermiles etc ) warns units not expected
+    # addedbuffermiles_withunits  name used since below getblocksnearby( , radius=addedbuffermiles etc ) warns units not expected
   }  
   
   

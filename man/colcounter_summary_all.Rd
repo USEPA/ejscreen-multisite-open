@@ -2,24 +2,24 @@
 % Please edit documentation in R/colcounter_summary.R
 \name{colcounter_summary_all}
 \alias{colcounter_summary_all}
-\title{Summarize count (and percent) of rows with exactly (and at least) N cols >= various cutoffs
+\title{Summarize count (and percent) of rows with exactly (and at least) N cols >= various thresholds
 A wrapper for 4 functions: Returns four tables,
 using colcounter_summary(), colcounter_summary_pct(),
 colcounter_summary_cum(), colcounter_summary_cum_pct()}
 \usage{
-colcounter_summary_all(x, cutofflist, ...)
+colcounter_summary_all(x, thresholdlist, ...)
 }
 \arguments{
-\item{x}{Data.frame or matrix of numbers to be compared to cutoff value,
+\item{x}{Data.frame or matrix of numbers to be compared to threshold value,
 like percentiles for example.}
 
-\item{cutofflist}{vector of numeric cutoff values to compare to}
+\item{thresholdlist}{vector of numeric threshold values to compare to}
 
 \item{...}{passed to the 4 functions
 like or.tied=TRUE, na.rm=TRUE, below=FALSE, one.cut.per.col=FALSE}
 }
 \description{
-Summarize count (and percent) of rows with exactly (and at least) N cols >= various cutoffs
+Summarize count (and percent) of rows with exactly (and at least) N cols >= various thresholds
 A wrapper for 4 functions: Returns four tables,
 using colcounter_summary(), colcounter_summary_pct(),
 colcounter_summary_cum(), colcounter_summary_cum_pct()
@@ -36,11 +36,11 @@ colcounter_summary_cum(), colcounter_summary_cum_pct()
  # a3['12',,]; a3[13,,]
 
  barplot(colcounter_summary_cum_pct(pdata, pcuts)[ , '80'],
-    ylab='\% of places', xlab='# of indicators at/above cutoff',
+    ylab='\% of places', xlab='# of indicators at/above threshold',
     main='\% of places with at least N/12 indicators >=80th percentile')
 
  barplot(colcounter_summary(pdata, pcuts)[2:13 , '95'],
-    ylab='# of places', xlab='# of indicators at/above cutoff',
+    ylab='# of places', xlab='# of indicators at/above threshold',
     main='# of places with exactly N/12 indicators >=95th percentile')
 
   # pdata <- ejscreen::bg22[ , ejscreen::names.e.pctile]

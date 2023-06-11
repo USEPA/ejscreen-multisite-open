@@ -31,7 +31,7 @@ mapfast(x$results_bysite)
 ### Interactively point to your file with lat,lon coordinates, without shiny web app
 
 ```{r}
-x <- ejamit(cutoff = 2) #  2 mile radius
+x <- ejamit(radius = 2) #  2 mile radius
 ```
 
 ### Specify all sites in 1 industrial sector
@@ -283,7 +283,7 @@ sitepoints <- testpoints_1000
 began = Sys.time()
   out2 <- ejamit(
     sitepoints =  sitepoints  ,
-    cutoff = radius
+    radius = radius
   )
   speedreport(began, Sys.time(),n = NROW(sitepoints))
 # })
@@ -337,7 +337,7 @@ elapsed <- system.time({
   
   sites2blocks <- EJAM::getblocksnearby(
     sitepoints = sitepoints,
-    cutoff = radius,
+    radius = radius,
     quadtree = localtree
   )
   

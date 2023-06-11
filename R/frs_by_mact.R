@@ -1,0 +1,43 @@
+#' @name frs_by_mact
+#' @docType data
+#' @title MACT NESHAP subpart(s) that each EPA-regulated site is subject to
+#' @description 
+#'    This is a data.table with one row per site -- MACT subpart pair, 
+#'    so it has multiple rows for one site if the site is covered by multiple subparts.
+#'  @details  
+#'  
+#'  There are about 68k rows here but only about 53k unique program IDs in this table, 
+#'  
+#'  which is from the ECHO data download of ICIS Air. 
+#'  
+#'  The programid column here should be found in the pgm_sys_id column in frs_by_programid, 
+#'  
+#'  but as of 6/6/23 only a little over half of them were found there, so this is work in progress
+#'  
+#'  to be resolved. 
+#'  
+#'  
+#'   table(frs_by_mact$programid %in% frs_by_programid$pgm_sys_id)
+#'   
+#'   FALSE  TRUE 
+#'   
+#'   31799 36013 
+#'   
+#'   
+#'   Also there are some typos in the downloaded dataset from ECHO/FRS, such as 
+#'   
+#'   "WOOD PERSERVING AREA SOURCES"
+#'   
+#' @examples  
+#'   mact_categories
+#'   mact_categories[order(mact_categories$title),]
+#'   mycodes <- c("BBBBBB", "OOOO")
+#'   frs_by_mact[subpart %in% mycodes, ]
+#'   mact_categories[grepl("smelt", mact_categories$title, ignore.case = T), ]
+#'   frs_by_mact[grepl("smelt", title, ignore.case = T), ]
+#'   # a single site can be covered by 19 categories
+#'   frs_by_mact[, howmany := .N, by="programid"][order(howmany), ] 
+#'   table(frs_by_mact[, howmany := .N, by="programid"][order(howmany), howmany])
+#'   
+#' @seealso [mact_categories] [frs_by_programid]  [frs]
+NULL

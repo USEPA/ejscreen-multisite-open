@@ -4,10 +4,10 @@
 #'   This should be almost identical to getblocksnearbyviaQuadTree(), 
 #'   but it uses f2, a copy of sitepoints, and more importantly it 
 #'   pulls some code out of the for loop and uses a vectorized approach.
-#'   Given a set of points and a specified radius (cutoff), 
+#'   Given a set of points and a specified radius (in miles), 
 #'   this function quickly finds all the US Census blocks near each point. 
-#'   For each point, it uses the specified cutoff distance and finds the distance to 
-#'   every block within the circle defined by the radius (cutoff). 
+#'   For each point, it uses the specified search radius and finds the distance to 
+#'   every block within the circle defined by the radius. 
 #'   Each block is defined by its Census-provided internal point, by latitude and longitude.
 #'   
 #'   Each point can be the location of a regulated facility or other type of site, and 
@@ -20,10 +20,10 @@
 #'   areal apportionment of block groups would provide. 
 #'   
 #' @param sitepoints data.table with columns siteid, lat, lon giving point locations of sites or facilities around which are circular buffers
-#' @param cutoff miles radius, defining circular buffer around site point 
-#' @param maxcutoff miles distance (max distance to check if not even 1 block point is within cutoff)
-#' @param avoidorphans logical Whether to avoid case where no block points are within cutoff, 
-#'   so if TRUE, it keeps looking past cutoff to find nearest one within maxcutoff.
+#' @param radius in miles, defining circular buffer around site point 
+#' @param maxradius miles distance (max distance to check if not even 1 block point is within radius)
+#' @param avoidorphans logical Whether to avoid case where no block points are within radius, 
+#'   so if TRUE, it keeps looking past radius to find nearest one within maxradius.
 #' @param quadtree (a pointer to the large quadtree object) 
 #'    created from the SearchTree package example:
 #'    SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point")
@@ -39,7 +39,7 @@
 #' @import data.table
 #' @importFrom pdist "pdist"
 #'
-getblocksnearbyviaQuadTree2 <- function(sitepoints, cutoff=3, maxcutoff=31.07, 
+getblocksnearbyviaQuadTree2 <- function(sitepoints, radius=3, maxradius=31.07, 
                                         avoidorphans=TRUE,  report_progress_every_n=500,
                                         quadtree) {
   if(class(quadtree) != "QuadTree"){
@@ -49,7 +49,7 @@ getblocksnearbyviaQuadTree2 <- function(sitepoints, cutoff=3, maxcutoff=31.07,
 
   if (!('siteid' %in% names(sitepoints))) {sitepoints$siteid <- seq.int(length.out = NROW(sitepoints))}
   
-  #pass in a list of uniques and the surface cutoff distance
+  #pass in a list of uniques and the surface radius distance
   
   #filter na values? or keep length of out same as input? ####
   sitepoints <- sitepoints[!is.na(sitepoints$lat) & !is.na(sitepoints$lon), ] # perhaps could do this by reference to avoid making a copy
@@ -68,8 +68,8 @@ getblocksnearbyviaQuadTree2 <- function(sitepoints, cutoff=3, maxcutoff=31.07,
   
   # indexgridsize was defined at start as say 10 miles in global? could be passed here as a parameter ####
   # and buffer_indexdistance defined here in code but is never used anywhere...  
-  # buffer_indexdistance <- ceiling(cutoff / indexgridsize) 
-  truedistance <- distance_via_surfacedistance(cutoff)   # simply 7918*sin(cutoff/7918) 
+  # buffer_indexdistance <- ceiling(radius / indexgridsize) 
+  truedistance <- distance_via_surfacedistance(radius)   # simply 7918*sin(radius/7918) 
   
   # main reason for using foreach::foreach() is that it supports parallel execution,
   # that is, it can execute those repeated operations on multiple processors/cores on your computer
@@ -147,7 +147,7 @@ getblocksnearbyviaQuadTree2 <- function(sitepoints, cutoff=3, maxcutoff=31.07,
       tmp[ , siteid :=         f2[i, .(siteid)]]
       
       #filter to max distance
-      truemaxdistance <- distance_via_surfacedistance(maxcutoff)
+      truemaxdistance <- distance_via_surfacedistance(maxradius)
       res[[i]] <- tmp[distance <= truemaxdistance, .(blockid, distance, siteid)]
       # saving results as a list of tables to rbind after loop; old code did rbind for each table, inside loop 
     } else {

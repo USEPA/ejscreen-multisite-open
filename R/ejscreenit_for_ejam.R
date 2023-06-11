@@ -1,18 +1,18 @@
 #' ejscreenit_for_ejam
 #' Wrapper for EJAMejscreenapi::ejscreenit(), to use in EJAM app
 #' @param sitepoints table with lat and lon columns
-#' @param cutoff radius in miles
+#' @param radius in miles
 #' @param ... passed to ejscreenit() but not tested and probably should not use/ not needed
 #'
 #' @return list of results from [EJAMejscreenapi::ejscreenit()]
 #'   i.e., list of these: results_bysite (data.table), map, plot, us.ratios
 #' @export
 #'
-ejscreenit_for_ejam <- function(sitepoints, cutoff=3, ...) {
+ejscreenit_for_ejam <- function(sitepoints, radius=3, ...) {
   # in ejamit() sitepoints is the first parameter
   out <- EJAMejscreenapi::ejscreenit(
     sitepoints, 
-    radius = cutoff, 
+    radius = radius, 
     save_map = F, 
     see_map = F, 
     save_plot = F, 
@@ -37,9 +37,9 @@ ejscreenit_for_ejam <- function(sitepoints, cutoff=3, ...) {
 # add URLs, but this duplicates code in server code
   echolink = rep(NA,nrow(out$results_bysite))
  out$results_bysite[ , `:=`(
-  `EJScreen Report` = url_ejscreen_report(    lat = sitepoints$lat, lon = sitepoints$lon, distance = cutoff, as_html = TRUE), 
+  `EJScreen Report` = url_ejscreen_report(    lat = sitepoints$lat, lon = sitepoints$lon, distance = radius, as_html = TRUE), 
   `EJScreen Map`    = url_ejscreenmap(        lat = sitepoints$lat, lon = sitepoints$lon,                    as_html = TRUE), 
-  `ACS Report`      = url_ejscreen_acs_report(lat = sitepoints$lat, lon = sitepoints$lon, distance = cutoff, as_html = TRUE),
+  `ACS Report`      = url_ejscreen_acs_report(lat = sitepoints$lat, lon = sitepoints$lon, distance = radius, as_html = TRUE),
   `ECHO report` = echolink
 )]
 out$results_overall[ , `:=`(
@@ -58,9 +58,9 @@ setcolorder(out$results_bysite, neworder = newcolnames)
 setcolorder(out$results_bysite, neworder = newcolnames)
 out$longnames <- c(newcolnames, out$longnames)
 
-  out$results_bysite[      , radius.miles := cutoff]
-  out$results_overall[     , radius.miles := cutoff]
-  # out$results_bybg_people[ , radius.miles := cutoff]
+  out$results_bysite[      , radius.miles := radius]
+  out$results_overall[     , radius.miles := radius]
+  # out$results_bybg_people[ , radius.miles := radius]
   out$longnames <- c(out$longnames , "Radius (miles)")
 
   
