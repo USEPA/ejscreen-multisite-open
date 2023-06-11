@@ -6,8 +6,8 @@
 \usage{
 getblocksnearbyviaQuadTree_Clustered(
   sitepoints,
-  cutoff,
-  maxcutoff,
+  radius,
+  maxradius,
   avoidorphans,
   CountCPU = 1,
   quadtree
@@ -16,9 +16,9 @@ getblocksnearbyviaQuadTree_Clustered(
 \arguments{
 \item{sitepoints}{data.table with columns LAT, LONG}
 
-\item{cutoff}{miles distance (check what this actually does)}
+\item{radius}{in miles}
 
-\item{maxcutoff}{miles distance (check what this actually does)}
+\item{maxradius}{miles distance}
 
 \item{avoidorphans}{logical}
 

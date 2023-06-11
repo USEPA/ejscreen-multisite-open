@@ -24,12 +24,12 @@
 #* ejam_overall
 #* @param lat decimal degrees
 #* @param lon decimal degrees
-#* @param cutoff miles radius
+#* @param radius in miles 
 #* @param ... passed to ejamit()
 #* @get /ejam_overall
-function(lat,lon, cutoff=1){
+function(lat,lon, radius=1){
   library(EJAM)
-  as.data.frame(EJAM::ejamit(sitepoints=data.table::data.table(lat=lat, lon=lon), cutoff=cutoff)[["results_overall"]])
+  as.data.frame(EJAM::ejamit(sitepoints=data.table::data.table(lat=lat, lon=lon), radius=radius)[["results_overall"]])
 }
 
 

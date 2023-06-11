@@ -6,8 +6,8 @@
 \usage{
 getblocksnearby(
   sitepoints,
-  cutoff = 3,
-  maxcutoff = 31.07,
+  radius = 3,
+  maxradius = 31.07,
   avoidorphans = TRUE,
   quadtree,
   parallel = FALSE,
@@ -17,12 +17,12 @@ getblocksnearby(
 \arguments{
 \item{sitepoints}{data.table with columns siteid, lat, lon giving point locations of sites or facilities around which are circular buffers}
 
-\item{cutoff}{miles radius, defining circular buffer around site point}
+\item{radius}{in miles, defining circular buffer around a site point}
 
-\item{maxcutoff}{miles distance (max distance to check if not even 1 block point is within cutoff)}
+\item{maxradius}{miles distance (max distance to check if not even 1 block point is within radius)}
 
-\item{avoidorphans}{logical Whether to avoid case where no block points are within cutoff,
-so if TRUE, it keeps looking past cutoff to find nearest one within maxcutoff.}
+\item{avoidorphans}{logical Whether to avoid case where no block points are within radius,
+so if TRUE, it keeps looking past radius to find nearest one within maxradius.}
 
 \item{quadtree}{(a pointer to the large quadtree object)
 created from the SearchTree package example:
@@ -33,10 +33,10 @@ It is automatically created when the package is loaded via the \code{\link[=.onL
 \item{...}{passed to \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} or other such functions}
 }
 \description{
-Given a set of points and a specified radius (cutoff),
+Given a set of points and a specified radius,
 this function quickly finds all the US Census blocks near each point.
-For each point, it uses the specified cutoff distance and finds the distance to
-every block within the circle defined by the radius (cutoff).
+For each point, it uses the specified radius distance and finds the distance to
+every block within the circle defined by the radius.
 Each block is defined by its Census-provided internal point, by latitude and longitude.
 
 Each point can be the location of a regulated facility or other type of site, and

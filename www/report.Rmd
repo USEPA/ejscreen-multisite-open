@@ -471,7 +471,7 @@ for the average person and/or site overall? Somehow put that in context
 
 Demographic stats on the distribution across sites/people
 
-•	What % or count of people/sites have score \> key cutoffs?
+•	What % or count of people/sites have score \> key thresholds?
 
 •	What is mean or median or 95th pctile score of people/sites ?
 
@@ -580,7 +580,7 @@ params$envt_table
 
 ### Environmental indicators distribution across the residents and sites
 
-•	What % or count of people/sites have score \> key cutoffs?
+•	What % or count of people/sites have score \> key thresholds?
 
 •	What is mean or median or 95th pctile score of people/sites ?
 
@@ -642,7 +642,7 @@ D? etc.
 
 ### Appendix 3 - Detailed tables of statistics for each indicator
 
-#### **What is Score of people/sites at key cutoffs: What is the X (useful) percentile
+#### **What is Score of people/sites at key thresholds: What is the X (useful) percentile
 value, for this indicator (as %ile of people nearby or of sites)?**
 
 -   min
@@ -658,7 +658,7 @@ value, for this indicator (as %ile of people nearby or of sites)?**
     both \>75 and \<25%)
 -   max
 
-#### **How many people/sites have score \> key cutoffs:  What % & what \# of sites & people have this indicator score (raw or percentile) \>= x (useful cutoff)?**
+#### **How many people/sites have score \> key thresholds:  What % & what \# of sites & people have this indicator score (raw or percentile) \>= x (useful threshold)?**
 
 -   **For percentiles**
     -   \% of sites w data where \>=80

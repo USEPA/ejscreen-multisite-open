@@ -3,6 +3,8 @@
 #'   It does essentially what the webapp does to analyze/summarize near a set of points.
 #'   See help("EJAM")  
 #' @inheritParams getblocksnearby
+#' @param silentinteractive Set to FALSE to prevent long output showing in console in RStudio when in interactive mode,
+#'   passed to doaggregate() also.
 #' @return A list of tables of results.
 #' @examples
 #'  # All in one step, using functions not shiny app:
@@ -11,7 +13,7 @@
 #' 
 #'  # Do not specify sitepoints and it will prompt you for a file,
 #'  # if in RStudio in interactive mode!
-#'  out <- ejamit(cutoff = 3)
+#'  out <- ejamit(radius = 3)
 #'  
 #'   # Specify facilities or sites as points for test data, 
 #'   # use 1000 test facility points from the R package 
@@ -48,8 +50,8 @@
 #'   # if doing just 1st step of ejamit() 
 #'   #  get distance between each site and every nearby Census block
 #'   s2b <- testdata_sites2blocks
-#'   s2b <- getblocksnearby(testsites, cutoff = radius)
-#'   s2b <- getblocksnearbyviaQuadTree(testsites, cutoff = radius)
+#'   s2b <- getblocksnearby(testsites, radius = radius)
+#'   s2b <- getblocksnearbyviaQuadTree(testsites, radius = radius)
 #'   getblocks_diagnostics(s2b)
 #'   
 #'   # if doing just 2d step of ejamit()
@@ -61,12 +63,13 @@
 #' @seealso  [getblocksnearby()] [doaggregate()]
 #' @export
 ejamit <- function(sitepoints, 
-                   cutoff=3, maxcutoff=31.07, 
+                   radius=3, maxradius=31.07, 
                    avoidorphans=TRUE,
                    quadtree=NULL,
+                   silentinteractive=F,
                    ...
 ) {
-  if (missing(cutoff)) {warning(paste0("Using default radius of ", cutoff, " miles because not provided as parameter."))}
+  if (missing(radius)) {warning(paste0("Using default radius of ", radius, " miles because not provided as parameter."))}
   if (!missing(quadtree)) {warning("quadtree should not be provided to ejamit() - that is handled by getblocksnearby() ")}
   
   ################################################################################## #
@@ -85,21 +88,22 @@ ejamit <- function(sitepoints,
   sitepoints <- latlon_from_anything(sitepoints)  
   ################################################################################## #
   # 1. getblocksnearby() ####
-  cat('Finding blocks nearby.\n')
+  if (!silentinteractive) {cat('Finding blocks nearby.\n')}
   
   mysites2blocks <- getblocksnearby(
     sitepoints=sitepoints, 
-    cutoff=cutoff, maxcutoff=maxcutoff, 
+    radius=radius, maxradius=maxradius, 
     avoidorphans=avoidorphans, 
     ...)
   
   # 2. doaggregate() ####
-  cat('Aggregating at each buffer and overall.\n')
+  if (!silentinteractive) {cat('Aggregating at each buffer and overall.\n')}
   
   out <- suppressWarnings (
     doaggregate(
       sites2blocks = mysites2blocks, 
-      sites2states = sitepoints
+      sites2states = sitepoints,
+      silentinteractive = silentinteractive
     )
   )
   # provide sitepoints table provided by user aka data_uploaded(), (or could pass only lat,lon and ST -if avail- not all cols?)
@@ -115,7 +119,7 @@ ejamit <- function(sitepoints,
   #  >this should be a function  and is used by both server and ejamit() ####
   # duplicated almost exactly in app_server but uses reactives there.
   # #  Do maybe something like this:
-  # links <- url_4table(out$results_bysite$lat, out$results_bysite$lon, cutoff, regid=ifelse("REGISTRY_ID" %in% names(out$results_bysite), out$results_bysite$REGISTRY_ID, NULL))
+  # links <- url_4table(out$results_bysite$lat, out$results_bysite$lon, radius, regid=ifelse("REGISTRY_ID" %in% names(out$results_bysite), out$results_bysite$REGISTRY_ID, NULL))
   # out$results_bysite[ , `:=`(links$results_bysite)] # would that work??? how to avoid big cbind step to add the new columns?
   # out$results_overall <- cbind(out$results_overall, links$results_overall) # 
   # setcolorder(out$results_bysite, neworder = links$newcolnames)
@@ -128,9 +132,9 @@ ejamit <- function(sitepoints,
     echolink = rep(NA,nrow(out$results_bysite))
   }
   out$results_bysite[ , `:=`(
-    `EJScreen Report` = url_ejscreen_report(    lat = out$results_bysite$lat, lon = out$results_bysite$lon, distance = cutoff, as_html = T),
+    `EJScreen Report` = url_ejscreen_report(    lat = out$results_bysite$lat, lon = out$results_bysite$lon, distance = radius, as_html = T),
     `EJScreen Map`    = url_ejscreenmap(        lat = out$results_bysite$lat, lon = out$results_bysite$lon,                    as_html = T),
-    `ACS Report`      = url_ejscreen_acs_report(lat = out$results_bysite$lat, lon = out$results_bysite$lon, distance = cutoff, as_html = T),
+    `ACS Report`      = url_ejscreen_acs_report(lat = out$results_bysite$lat, lon = out$results_bysite$lon, distance = radius, as_html = T),
     `ECHO report` = echolink
   )]
   out$results_overall[ , `:=`(
@@ -152,9 +156,9 @@ ejamit <- function(sitepoints,
   ################################################################ # 
   
   # Include radius in results (in server and in ejamit() ####
-  out$results_bysite[      , radius.miles := cutoff]
-  out$results_overall[     , radius.miles := cutoff]
-  out$results_bybg_people[ , radius.miles := cutoff]
+  out$results_bysite[      , radius.miles := radius]
+  out$results_overall[     , radius.miles := radius]
+  out$results_bybg_people[ , radius.miles := radius]
   out$longnames <- c(out$longnames , "Radius (miles)")
   
   ################################################################ # 
@@ -175,7 +179,7 @@ ejamit <- function(sitepoints,
 
   
   ################################################################ # 
-  if (interactive()) {  # would be nice to provide the 1pager summary report as html here too
+  if (interactive() & !silentinteractive) {  # would be nice to provide the 1pager summary report as html here too
     # already done by doaggregate()
     # Show as nicely named indicators in console of RStudio - Overall results (across all sites)
     # print to console
@@ -201,10 +205,10 @@ ejamit <- function(sitepoints,
     
     # how to export simple version to excel for now
     cat("long=as.data.frame(rbind(out$longnames)); names(long)=names(out$results_overall)\n")
-    cat('writexl::write_xlsx(x = long,  path="longnames_',  NROW(out$results_bysite),'_points_', cutoff,'_miles.xlsx")\n')
+    cat('writexl::write_xlsx(x = long,  path="longnames_',  NROW(out$results_bysite),'_points_', radius,'_miles.xlsx")\n')
     cat('\n\n To save as excel files, try this:  \n')
-    cat('writexl::write_xlsx(x = as.data.frame(x$results_overall), path="results_overall_', NROW(out$results_bysite),'_points_', cutoff,'_miles.xlsx")\n')
-    cat('writexl::write_xlsx(x = as.data.frame(x$results_bysite ), path="results_bysite_',  NROW(out$results_bysite),'_points_', cutoff,'_miles.xlsx")\n')
+    cat('writexl::write_xlsx(x = as.data.frame(x$results_overall), path="results_overall_', NROW(out$results_bysite),'_points_', radius,'_miles.xlsx")\n')
+    cat('writexl::write_xlsx(x = as.data.frame(x$results_bysite ), path="results_bysite_',  NROW(out$results_bysite),'_points_', radius,'_miles.xlsx")\n')
   }
   ################################################################ # 
   

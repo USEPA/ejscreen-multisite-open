@@ -16,7 +16,7 @@ NULL
 #' @name testdata_sites2blocks_1000
 #' @docType data
 #' @seealso [testdata_sites2blocks]
-#' @title data.table of output of [getblocksnearby(testpoints_1000,cutoff = 3.1)], each row is a unique site-block-distance
+#' @title data.table of output of [getblocksnearby(testpoints_1000, radius = 3.1)], each row is a unique site-block-distance
 NULL
 
 

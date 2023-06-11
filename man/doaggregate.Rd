@@ -7,6 +7,7 @@
 doaggregate(
   sites2blocks,
   sites2states_or_latlon = NA,
+  radius = NULL,
   countcols = NULL,
   popmeancols = NULL,
   calculatedcols = NULL,
@@ -25,6 +26,15 @@ created by getblocksnearby  function.
 See sites2blocks_example dataset in package, as input to this function}
 
 \item{sites2states_or_latlon}{data.table or just data.frame, with columns siteid (each unique one in sites2blocks) and ST (2-character State abbreviation) or lat and lon}
+
+\item{radius}{Optional radius in miles to limit analysis to. By default this function uses
+all the distances that were provided in the output of getblocksnearby().
+But there may be cases where you want to run getblocksnearby() once for 10 miles, say,
+on a very long list of sites (1,000 or more, say), and then get summary results for
+1, 3, 5, and 10 miles without having to redo the getblocksnearby() part for each radius.
+This lets you just run getblocksnearby() once for the largest radius, and then query those
+results to get doaggregate() to summarize at any distance that is less than or equal to the
+original radius analyzed by getblocksnearby().}
 
 \item{countcols}{character vector of names of variables  to aggregate within a buffer
 using a sum of counts, like, for example, the number of people for whom a

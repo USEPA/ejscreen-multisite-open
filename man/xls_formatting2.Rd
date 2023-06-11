@@ -8,6 +8,12 @@ Format EJAM tabular outputs for saving as Excel spreadsheet}
 xls_formatting2(
   overall,
   eachsite,
+  longnames,
+  summary_plot = NULL,
+  analysis_title = NULL,
+  buffer_desc = NULL,
+  heatmap_cuts = c(80, 90, 95),
+  heatmap_colors = c("yellow", "orange", "red"),
   graycolnums = NULL,
   narrowcolnums = NULL,
   graycolor = "gray",
@@ -19,6 +25,20 @@ xls_formatting2(
 \item{overall}{table to save in one tab, from EJAM analysis of indicators overall (one row)}
 
 \item{eachsite}{table to save in another tab, from EJAM analysis site by site (one row per site)}
+
+\item{longnames}{vector of indicator names to display in Excel table}
+
+\item{summary_plot}{optional plot passed from EJAM shiny app to save in 'Plot' sheet of Excel table}
+
+\item{analysis_title}{optional title passed from Shiny app to 'Notes' sheet}
+
+\item{buffer_desc}{optional description of buffer used in analysis, passed to 'Notes' sheet}
+
+\item{heatmap_cuts}{vector of values to separate heatmap colors, between 0-100}
+
+\item{heatmap_colors}{vector of color names for heatmap bins, same length as
+heatmap_cuts, where first color is for those >= 1st cutpoint, but <2d,
+second color is for those >=2d cutpoint but <3d, etc.}
 
 \item{graycolnums}{which columns to deemphasize}
 

@@ -2,11 +2,11 @@
 % Please edit documentation in R/colcounter.R
 \name{colcounter}
 \alias{colcounter}
-\title{Count columns with Value (at or) above (or below) Cutoff}
+\title{Count columns with Value (at or) above (or below) threshold}
 \usage{
 colcounter(
   x,
-  cutoff,
+  threshold,
   or.tied = TRUE,
   na.rm = TRUE,
   below = FALSE,
@@ -14,24 +14,24 @@ colcounter(
 )
 }
 \arguments{
-\item{x}{Data.frame or matrix of numbers to be compared to cutoff value.}
+\item{x}{Data.frame or matrix of numbers to be compared to threshold value.}
 
-\item{cutoff}{numeric cutoff value to compare to}
+\item{threshold}{numeric threshold value to compare to}
 
-\item{or.tied}{if TRUE, include ties (value in x equals cutoff)}
+\item{or.tied}{if TRUE, include ties (value in x equals threshold)}
 
 \item{na.rm}{if TRUE, used by colcounter to count only the non-NA columns in given row}
 
-\item{below}{if TRUE, count x below cutoff not above cutoff}
+\item{below}{if TRUE, count x below threshold not above threshold}
 
-\item{one.cut.per.col}{if FALSE, compare 1 cutoff to all of x.
-If TRUE, specify one cutoff per column.}
+\item{one.cut.per.col}{if FALSE, compare 1 threshold to all of x.
+If TRUE, specify one threshold per column.}
 }
 \value{
 vector of counts as long as NROW(x)
 }
 \description{
-Count columns with Value (at or) above (or below) Cutoff
+Count columns with Value (at or) above (or below) threshold
 }
 \examples{
   \dontrun{
@@ -45,8 +45,8 @@ colcounter_summary_cum(    pdata, pcuts)
 colcounter_summary_cum_pct(pdata, pcuts)
 colcounter_summary_cum_pct(pdata, 5 * (10:20))
 
-x80 <- colcounter(pdata, cutoff = 80, or.tied = T)
-x95 <- colcounter(pdata, cutoff = 95, or.tied = T)
+x80 <- colcounter(pdata, threshold = 80, or.tied = T)
+x95 <- colcounter(pdata, threshold = 95, or.tied = T)
 table(x95)
 tablefixed(x95, NCOL(pdata))
 cbind(at80=tablefixed(x80, NCOL(pdata)), at95=tablefixed(x95, NCOL(pdata)))

@@ -6,8 +6,8 @@
 \usage{
 getblocksnearby2(
   sitepoints,
-  cutoff = 3,
-  maxcutoff = 31.07,
+  radius = 3,
+  maxradius = 31.07,
   avoidorphans = TRUE,
   quadtree = is.null,
   ...
@@ -16,9 +16,9 @@ getblocksnearby2(
 \arguments{
 \item{sitepoints}{see \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} or other such functions}
 
-\item{cutoff}{see \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} or other such functions}
+\item{radius}{see \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} or other such functions}
 
-\item{maxcutoff}{see \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} or other such functions}
+\item{maxradius}{see \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} or other such functions}
 
 \item{avoidorphans}{see \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} or other such functions}
 

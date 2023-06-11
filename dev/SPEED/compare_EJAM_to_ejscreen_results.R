@@ -1,16 +1,24 @@
+
 # compare EJAM and ejscreenapi results for the variables that both have, for each site
+
+
 library(data.table)
 library(EJAM)
 library(EJAMejscreenapi)
 
-x1full = ejscreenit(testpoints_50,radius = 3, save_map = F, save_plot = F, save_table = F)
-x2full = ejamit(testpoints_50, cutoff = 3)
+x1full = ejscreenit(testpoints_50, radius = 3, save_map = F, save_plot = F, save_table = F)
+
+x2full = ejamit(testpoints_50, radius = 3)
+
+
 # names(x1full)
 # names(x2full)
 x1 <- x1full$table
 x2 <- x2full$results_bysite
 x2 <- setDF(copy(x2))
 names(x2) <- gsub("", "", names(x2))
+
+# AS OF NOW, AT LEAST... 
 
 cat("In EJScreen API results but not in EJAM:\n")
 setdiff(names(x1), names(x2))

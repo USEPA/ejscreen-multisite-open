@@ -6,8 +6,8 @@
 \usage{
 getblocksnearbyviaQuadTree2(
   sitepoints,
-  cutoff = 3,
-  maxcutoff = 31.07,
+  radius = 3,
+  maxradius = 31.07,
   avoidorphans = TRUE,
   report_progress_every_n = 500,
   quadtree
@@ -16,12 +16,12 @@ getblocksnearbyviaQuadTree2(
 \arguments{
 \item{sitepoints}{data.table with columns siteid, lat, lon giving point locations of sites or facilities around which are circular buffers}
 
-\item{cutoff}{miles radius, defining circular buffer around site point}
+\item{radius}{in miles, defining circular buffer around site point}
 
-\item{maxcutoff}{miles distance (max distance to check if not even 1 block point is within cutoff)}
+\item{maxradius}{miles distance (max distance to check if not even 1 block point is within radius)}
 
-\item{avoidorphans}{logical Whether to avoid case where no block points are within cutoff,
-so if TRUE, it keeps looking past cutoff to find nearest one within maxcutoff.}
+\item{avoidorphans}{logical Whether to avoid case where no block points are within radius,
+so if TRUE, it keeps looking past radius to find nearest one within maxradius.}
 
 \item{report_progress_every_n}{Reports progress to console after every n points,
 mostly for testing, but a progress bar feature might be useful unless this is super fast.}
@@ -36,10 +36,10 @@ It can be automatically created when the package is loaded via the \code{\link[=
 This should be almost identical to getblocksnearbyviaQuadTree(),
 but it uses f2, a copy of sitepoints, and more importantly it
 pulls some code out of the for loop and uses a vectorized approach.
-Given a set of points and a specified radius (cutoff),
+Given a set of points and a specified radius (in miles),
 this function quickly finds all the US Census blocks near each point.
-For each point, it uses the specified cutoff distance and finds the distance to
-every block within the circle defined by the radius (cutoff).
+For each point, it uses the specified search radius and finds the distance to
+every block within the circle defined by the radius.
 Each block is defined by its Census-provided internal point, by latitude and longitude.
 
 Each point can be the location of a regulated facility or other type of site, and

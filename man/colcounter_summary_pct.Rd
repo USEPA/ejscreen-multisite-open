@@ -2,21 +2,21 @@
 % Please edit documentation in R/colcounter_summary.R
 \name{colcounter_summary_pct}
 \alias{colcounter_summary_pct}
-\title{Summarize what percent of rows have N columns at or above (or below) various cutoffs}
+\title{Summarize what percent of rows have N columns at or above (or below) various thresholds}
 \usage{
-colcounter_summary_pct(x, cutofflist, ...)
+colcounter_summary_pct(x, thresholdlist, ...)
 }
 \arguments{
-\item{x}{Data.frame or matrix of numbers to be compared to cutoff value,
+\item{x}{Data.frame or matrix of numbers to be compared to threshold value,
 like percentiles for example.}
 
-\item{cutofflist}{vector of numeric cutoff values to compare to}
+\item{thresholdlist}{vector of numeric threshold values to compare to}
 
 \item{...}{passed to colcounter_summary()
 like or.tied=TRUE, na.rm=TRUE, below=FALSE, one.cut.per.col=FALSE}
 }
 \description{
-Summarize what percent of rows have N columns at or above (or below) various cutoffs
+Summarize what percent of rows have N columns at or above (or below) various thresholds
 }
 \details{
 See examples for colcounter_summary_cum_pct()

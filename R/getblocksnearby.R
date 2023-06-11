@@ -1,9 +1,9 @@
 #' Fast way to find nearby points - finds distance to each Census block centroid nearby
 #' @description 
-#'   Given a set of points and a specified radius (cutoff), 
+#'   Given a set of points and a specified radius, 
 #'   this function quickly finds all the US Census blocks near each point. 
-#'   For each point, it uses the specified cutoff distance and finds the distance to 
-#'   every block within the circle defined by the radius (cutoff). 
+#'   For each point, it uses the specified radius distance and finds the distance to 
+#'   every block within the circle defined by the radius. 
 #'   Each block is defined by its Census-provided internal point, by latitude and longitude.
 #'   
 #'   Each point can be the location of a regulated facility or other type of site, and 
@@ -29,7 +29,7 @@
 #' @seealso [ejamit()]  [getblocksnearbyviaQuadTree()] [getblocksnearbyviaQuadTree_Clustered()] [getblocksnearbyviaQuadTree2()]
 #' @export
 #'
-getblocksnearby  <- function(sitepoints, cutoff=3, maxcutoff=31.07, 
+getblocksnearby  <- function(sitepoints, radius=3, maxradius=31.07, 
                              avoidorphans=TRUE, 
                              # indexgridsize,
                              quadtree,
@@ -62,27 +62,27 @@ getblocksnearby  <- function(sitepoints, cutoff=3, maxcutoff=31.07,
       # ))
     }
   }
-  cat("Analyzing", NROW(sitepoints), "points, radius of", cutoff, "miles.\n")
+  cat("Analyzing", NROW(sitepoints), "points, radius of", radius, "miles.\n")
   
   ################################################################################## #
   # wrapper to make it simple to (later?) switch between functions to use for this, clustered vs not, etc.
   
   if (!parallel) {
-    x <- getblocksnearbyviaQuadTree(sitepoints=sitepoints, cutoff=cutoff, maxcutoff=maxcutoff, 
+    x <- getblocksnearbyviaQuadTree(sitepoints=sitepoints, radius=radius, maxradius=maxradius, 
                                     avoidorphans=avoidorphans, 
                                     # indexgridsize=indexgridsize,
                                     quadtree=quadtree,
                                     ...)
   } else {
     stop('parallel processing version not implemented yet')
-    x <- getblocksnearbyviaQuadTree_Clustered(sitepoints=sitepoints, cutoff=cutoff, maxcutoff=maxcutoff,
+    x <- getblocksnearbyviaQuadTree_Clustered(sitepoints=sitepoints, radius=radius, maxradius=maxradius,
                                               avoidorphans=avoidorphans,
                                               # indexgridsize=indexgridsize,
                                               quadtree=quadtree,
                                               ...)
   }
   
-  # getblocksnearbyviaQuadTree2(sitepoints=sitepoints, cutoff=cutoff, maxcutoff=maxcutoff, 
+  # getblocksnearbyviaQuadTree2(sitepoints=sitepoints, radius=radius, maxradius=maxradius, 
   #                               avoidorphans=avoidorphans, 
   #                             # indexgridsize=indexgridsize,
   #                             quadtree=quadtree,

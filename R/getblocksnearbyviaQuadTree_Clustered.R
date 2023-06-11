@@ -7,16 +7,16 @@
 #'  Uses indexgridsize and quaddata  variables that come from global environment (but should pass to this function rather than assume in global env?)
 #'
 #' @param sitepoints data.table with columns LAT, LONG
-#' @param cutoff miles distance (check what this actually does)
-#' @param maxcutoff miles distance (check what this actually does)
+#' @param radius in miles
+#' @param maxradius miles distance
 #' @param avoidorphans logical
 #' @param CountCPU for parallel processing via makeCluster() and [doSNOW::registerDoSNOW()]
 #' @param quadtree index of all US blocks like localtree
 #' @seealso [getblocksnearby_and_doaggregate()] [getblocksnearby()] [getblocksnearbyviaQuadTree()] [getblocksnearbyviaQuadTree_Clustered()] [getblocksnearbyviaQuadTree2()]
 #' @export
 #'
-getblocksnearbyviaQuadTree_Clustered <-function(sitepoints,cutoff,maxcutoff, avoidorphans, CountCPU=1, quadtree) {
-  #pass in a list of uniques and the surface cutoff distance
+getblocksnearbyviaQuadTree_Clustered <-function(sitepoints,radius,maxradius, avoidorphans, CountCPU=1, quadtree) {
+  #pass in a list of uniques and the surface radius distance
   #filter na values
 sitepoints <- sitepoints[!is.na(sitepoints$LAT) & !is.na(sitepoints$LONG), ]
   #compute and add grid info
@@ -27,14 +27,14 @@ sitepoints <- sitepoints[!is.na(sitepoints$LAT) & !is.na(sitepoints$LONG), ]
   sitepoints[,"FAC_Y"] <- earthRadius_miles * cos(sitepoints$LAT_RAD) * sin(sitepoints$LONG_RAD)
   sitepoints[,"FAC_Z"] <- earthRadius_miles * sin(sitepoints$LAT_RAD)
 
-  #now we need to buffer around the grid cell by the actual cutoff distance
-  # buffer_indexdistance <- ceiling(cutoff/indexgridsize) # this will be one or larger ... but where is this ever used??  indexgridsize was defined in initialization as say 10 miles
+  #now we need to buffer around the grid cell by the actual radius distance
+  # buffer_indexdistance <- ceiling(radius/indexgridsize) # this will be one or larger ... but where is this ever used??  indexgridsize was defined in initialization as say 10 miles
 
   # allocate result list
   nRowsDf <- nrow(sitepoints)
   res <- vector('list', nRowsDf)
 
-  truedistance <- distance_via_surfacedistance(cutoff)   # simply 7918*sin(cutoff/7918)
+  truedistance <- distance_via_surfacedistance(radius)   # simply 7918*sin(radius/7918)
 
   #set up cluster, splitting up the sitepoints among the available CPUs
   #   but see this on why detectCores() is a bad idea:  https://www.r-bloggers.com/2022/12/please-avoid-detectcores-in-your-r-packages/
@@ -142,7 +142,7 @@ sitepoints <- sitepoints[!is.na(sitepoints$LAT) & !is.na(sitepoints$LONG), ]
         tmp[,ID := sitepoints2use[i, .(ID)]]
 
         #filter to max distance
-        truemaxdistance <- distance_via_surfacedistance(maxcutoff)
+        truemaxdistance <- distance_via_surfacedistance(maxradius)
         tmp <- tmp[distance<=truemaxdistance, .(blockid, distance,ID)]
         partialres[[i]] <- tmp
       } else {

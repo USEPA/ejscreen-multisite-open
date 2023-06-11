@@ -8,7 +8,7 @@ ratiostats <- function(results_bybg_people, pts, dig=2 ) {
   # Comparison of Indicator scores for Average person in each Demog Group
   
   stinfo <- data.frame(siteid=1:nrow(pts),  EJAM::state_from_latlon(lat=pts$lat, lon=pts$lon))
-  # x <- getblocksnearby(pts, cutoff = 3.1, quadtree = localtree)
+  # x <- getblocksnearby(pts, radius = 3.1, quadtree = localtree)
   # y <- doaggregate(x, sites2states = stinfo)
   # z <- y$results_bybg_people
   z <- results_bybg_people # a data.table from  doaggregate()[,"results_bybg_people"]

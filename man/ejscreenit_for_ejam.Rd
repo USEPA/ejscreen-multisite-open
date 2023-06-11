@@ -5,12 +5,12 @@
 \title{ejscreenit_for_ejam
 Wrapper for EJAMejscreenapi::ejscreenit(), to use in EJAM app}
 \usage{
-ejscreenit_for_ejam(sitepoints, cutoff = 3, ...)
+ejscreenit_for_ejam(sitepoints, radius = 3, ...)
 }
 \arguments{
 \item{sitepoints}{table with lat and lon columns}
 
-\item{cutoff}{radius in miles}
+\item{radius}{in miles}
 
 \item{...}{passed to ejscreenit() but not tested and probably should not use/ not needed}
 }

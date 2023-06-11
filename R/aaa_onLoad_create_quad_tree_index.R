@@ -4,12 +4,12 @@
 #' @param pkgname na
 #'
 .onLoad <- function(libname, pkgname) {
-    ok_to_do_slow_load_early <- TRUE # WHILE TESTING/Building often
+    ok_to_do_slow_load_early <- FALSE # WHILE TESTING/Building often
   if (  ok_to_do_slow_load_early) {
   ### Maybe load the datasets now that are needed, 
   ### instead of when user does a query that triggers slow lazyloading?
   cat("Loading data.tables of Census Blocks...\n")
-  data("blockgroupstats") # data(EJAM::blockgroupstats)  # 54 MB rda file
+  data("blockgroupstats", package="EJAM") # data(EJAM::blockgroupstats)  # 54 MB rda file
   #  statestats.rda is about 1.3 MB, usastats.rda is about 28 KB
   
   # require(EJAMblockdata)

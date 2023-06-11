@@ -16,8 +16,9 @@
 #'   If the value is exactly equal to the cutpoint listed as percentile 90,
 #'   it returns percentile 90.
 #'   If the value is exactly the same as the minimum in the lookup table and multiple percentiles 
-#'   in that lookup are listed as tied for having the same cutoff (i.e., a large % of places have
-#'   the same score and it is the minimum score), then the percentile gets reported as 0, 
+#'   in that lookup are listed as tied for having the same threshold value defining the percentile
+#'    (i.e., a large % of places have the same score and it is the minimum score), 
+#'    then the percentile gets reported as 0, 
 #'   not the percent of places tied for that minimum score. Note this is true whether they are 
 #'   tied at a value of 0 or are tied at some other minimum value than 0.
 #'   If the value is less than the cutpoint listed as percentile 0,
@@ -94,7 +95,7 @@ pctile_from_raw_lookup <- function(myvector, varname.in.lookup.table, lookup=usa
     # ***   fix case where multiple percentiles are tied in lookup table... as with pctlingiso 
     # findInterval will return the last interval, not the first, that it matches when there are duplicates,
     # which does not mesh with how the lookup table should be interpreted.
-    # -- We want to report the first not last when the same cutoff is shown as being at multiple percentiles, 
+    # -- We want to report the first not last when the same value is shown as being at multiple percentiles, 
     # which happens if a large percent of places are tied at some given value, such as when 30% of places have a score of zero, e.g.
     # One workaround is to check the lookup tables for cases of ties at min value, and add a very tiny amount to each of those, 
     #  which will force it to report 0 percentile for that value that hasn't had the tiny amount added.
@@ -115,7 +116,7 @@ pctile_from_raw_lookup <- function(myvector, varname.in.lookup.table, lookup=usa
     # datacols <- setdiff(names(usastats), c('PCTILE', 'REGION')); states <- unique(usastats$REGION);  for (myvar in datacols) {for (mystate in states) {z = statestats[mystate == usastats$REGION, myvar]
     #   if ((z[1] == z[2]) & (z[1] == 0)) {cat("in ",mystate, " for ", myvar, " = ", z[1], '\n')}}}
     
-    ## also, this probably happens for any set of tied cutoffs (not only ties at min value) - but would need to confirm EJScreen was coded that way.
+    ## also, this probably happens for any set of tied threshold values (not only ties at min value) - but would need to confirm EJScreen was coded that way.
     
     # ** also using data.table might make this whole function significantly faster if statestats is a data.frame with keys REGION and PCTILE 
      # pctile <- lookup[myvector >= ..varname.in.lookup.table, PCTILE[1]] # but also, if none where >= true, pctile <- lookup$PCTILE[1]
