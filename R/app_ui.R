@@ -112,39 +112,39 @@ app_ui  <- function(request) {
                           conditionalPanel(
                             condition = "input.ss_choose_method == 'NAICS'",
                             
-                            radioButtons('naics_ul_type', 'Choose how to enter NAICS codes',
-                                         choiceNames = c('Select codes from dropdown' ,
-                                                         'Enter text or code to search'),
-                                         choiceValues = c('dropdown',
-                                                          'enter')
-                            ), 
+                            # radioButtons('naics_ul_type', 'Choose how to enter NAICS codes',
+                            #              choiceNames = c('Select codes from dropdown' ,
+                            #                              'Enter text or code to search'),
+                            #              choiceValues = c('dropdown',
+                            #                               'enter')
+                            # ), 
                             radioButtons('add_naics_subcategories', "Add all subcategories of NAICS?",
                                          choiceNames = c("Yes","No"),
                                          choiceValues = c(TRUE,FALSE),
                                          selected = TRUE),
                             
                             ### conditional sub- panel if entering naics
-                            conditionalPanel(
-                              condition = "input.naics_ul_type == 'enter'",
-                              ## input: Enter NAICS code manually       
-                              textInput(
-                                inputId = "ss_enter_naics",
-                                label = htmltools::h6(
-                                  "Enter Industry NAICS codes - ",
-                                  HTML(paste0('<a href=\"', 'https://www.census.gov/naics', '\", target=\"_blank\">', 'Look up NAICS', '</a>')),
-                                  # htmltools::a("Look up NAICS", href ="https://www.census.gov/naics", ),
-                                  htmltools::a(htmltools::img(id = "ibutton",src = "www/i.png",height = 15,width = 15),
-                                               href = "www/ibutton_help.html#help_naicslist",target = "_blank")
-                                ),
-                                value = "",
-                                width = 400,
-                                placeholder = NULL
-                              )
-                            ), # end manually entry of NAICS sub- conditionalPanel
-                            
+                            # conditionalPanel(
+                            #   condition = "input.naics_ul_type == 'enter'",
+                            #   ## input: Enter NAICS code manually       
+                            #   textInput(
+                            #     inputId = "ss_enter_naics",
+                            #     label = htmltools::h6(
+                            #       "Enter Industry NAICS codes - ",
+                            #       HTML(paste0('<a href=\"', 'https://www.census.gov/naics', '\", target=\"_blank\">', 'Look up NAICS', '</a>')),
+                            #       # htmltools::a("Look up NAICS", href ="https://www.census.gov/naics", ),
+                            #       htmltools::a(htmltools::img(id = "ibutton",src = "www/i.png",height = 15,width = 15),
+                            #                    href = "www/ibutton_help.html#help_naicslist",target = "_blank")
+                            #     ),
+                            #     value = "",
+                            #     width = 400,
+                            #     placeholder = NULL
+                            #   )
+                            # ), # end manually entry of NAICS sub- conditionalPanel
+                            # 
                             ### conditional sub- panel if using NAICS dropdown
-                            conditionalPanel(
-                              condition = "input.naics_ul_type == 'dropdown'",
+                            #conditionalPanel(
+                            #  condition = "input.naics_ul_type == 'dropdown'",
                               ## input: Select NAICS from list
                               selectInput(
                                 inputId = "ss_select_naics",
@@ -155,8 +155,8 @@ app_ui  <- function(request) {
                                 selected = NULL,
                                 width = 400,
                                 multiple = TRUE
-                              )#, # xxx
-                            ),  # end dropdown NAICS sub- conditionalPanel
+                              ),#, # xxx
+                            #),  # end dropdown NAICS sub- conditionalPanel
                             
                             br(), ## vertical space
                             

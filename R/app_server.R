@@ -159,43 +159,46 @@ app_server <- function(input, output, session) {
   observeEvent(input$submit_naics, {
     
     ## check if anything has been selected or entered
-    req(shiny::isTruthy(input$ss_enter_naics) || shiny::isTruthy(input$ss_select_naics))
+    req(isTruthy(input$ss_select_naics))
+    #req(shiny::isTruthy(input$ss_enter_naics) || shiny::isTruthy(input$ss_select_naics))
     
     #define inputs
-    naics_user_wrote_in_box <- input$ss_enter_naics
+    #naics_user_wrote_in_box <- input$ss_enter_naics
     naics_user_picked_from_list <- input$ss_select_naics
     add_naics_subcategories <- input$add_naics_subcategories 
     # q: IS IT BETTER TO USE THIS IN naics_from_any() OR IN frs_from_naics() BELOW ??
     
     # naics_validation function to check for non empty NAICS inputs
-    if(naics_validation(input$ss_enter_naics,input$ss_select_naics)){
+    if(naics_validation(NAICS_enter='',NAIC_select = input$ss_select_naics)){
+    #if(naics_validation(input$ss_enter_naics,input$ss_select_naics)){
       inputnaics = {}
       #splits up comma separated list if user manually inserts list
-      if(nchar(input$ss_enter_naics)>0){
-        # print('test2')
-        #checks for non-numeric values in text box; if they are not numeric, then search by name
-        if(!grepl("^\\d+(,\\d+)*$",input$ss_enter_naics)){
-          # print('test')
-          
-          #   1. GET NAICS CODES VIA QUERY OF TEXT IN NAMES OR THE NUMBERS
-          
-          inputnaics = naics_from_any(input$ss_enter_naics)[,code] # this used to be naics_find()
-          
-          if(length(inputnaics) == 0 | all(is.na(inputnaics))){
-            ################ Should output something saying no valid results returned ######## #
-            shiny::validate('No Results Returned')
-          }        
-        } else {
-          naics_wib_split <- as.list(strsplit(naics_user_wrote_in_box, ",")[[1]])
-          print(naics_wib_split)
-        }
-      } else {
-        naics_wib_split <- ""
-      }
+      # if(nchar(input$ss_enter_naics)>0){
+      #   # print('test2')
+      #   #checks for non-numeric values in text box; if they are not numeric, then search by name
+      #   if(!grepl("^\\d+(,\\d+)*$",input$ss_enter_naics)){
+      #     # print('test')
+      #     
+      #     #   1. GET NAICS CODES VIA QUERY OF TEXT IN NAMES OR THE NUMBERS
+      #     
+      #     inputnaics = naics_from_any(input$ss_enter_naics)[,code] # this used to be naics_find()
+      #     
+      #     if(length(inputnaics) == 0 | all(is.na(inputnaics))){
+      #       ################ Should output something saying no valid results returned ######## #
+      #       shiny::validate('No Results Returned')
+      #     }        
+      #   } else {
+      #     naics_wib_split <- as.list(strsplit(naics_user_wrote_in_box, ",")[[1]])
+      #     print(naics_wib_split)
+      #   }
+      # } else {
+      #   naics_wib_split <- ""
+      # }
       # if not empty, assume its pulled using naics_from_any() or older naics_find() above
       if(length(inputnaics) == 0 | rlang::is_empty(inputnaics)) {
         #construct regex expression and finds sites that align with user-selected naics codes
-        inputnaics <- c(naics_wib_split, naics_user_picked_from_list)
+        #inputnaics <- c(naics_wib_split, naics_user_picked_from_list)
+        inputnaics <- naics_user_picked_from_list
         inputnaics <- unique(inputnaics[inputnaics != ""])
         # inputnaics <- paste("^", inputnaics, collapse="|")   ### the NAICS specified by user
         # inputnaics <- stringr::str_replace_all(string = inputnaics, pattern = " ", replacement = "")
@@ -520,20 +523,29 @@ app_server <- function(input, output, session) {
     #     shinyjs::show(id = 'show_data_preview')
     #   }
     } else if(current_upload_method() == 'NAICS'){
-        if((input$naics_ul_type == 'enter' & !isTruthy(input$ss_enter_naics)) |
-           (input$naics_ul_type == 'dropdown' & !isTruthy(input$ss_select_naics))){
-          shinyjs::disable(id = 'submit_naics')
-        } else {
-          shinyjs::enable(id = 'submit_naics')
-        }
-      
         if(!isTruthy(input$submit_naics)){
-          shinyjs::disable(id = 'bt_get_results')
-          shinyjs::hide(id = 'show_data_preview')
-        } else {
-          shinyjs::enable(id = 'bt_get_results')
-          shinyjs::show(id = 'show_data_preview')
-        }
+        #if(!isTruthy(input$ss_select_naics)){
+            shinyjs::disable(id = 'bt_get_results')
+            shinyjs::hide(id = 'show_data_preview')
+          } else {
+            shinyjs::enable(id = 'bt_get_results')
+            shinyjs::show(id = 'show_data_preview')
+          }
+      
+       # if((input$naics_ul_type == 'enter' & !isTruthy(input$ss_enter_naics)) |
+       #     (input$naics_ul_type == 'dropdown' & !isTruthy(input$ss_select_naics))){
+       #    shinyjs::disable(id = 'submit_naics')
+       #  } else {
+       #    shinyjs::enable(id = 'submit_naics')
+       #  }
+       # 
+       #  if(!isTruthy(input$submit_naics)){
+       #    shinyjs::disable(id = 'bt_get_results')
+       #    shinyjs::hide(id = 'show_data_preview')
+       #  } else {
+       #    shinyjs::enable(id = 'bt_get_results')
+       #    shinyjs::show(id = 'show_data_preview')
+       #  }
     } else if(current_upload_method() == 'EPA_PROGRAM'){
       if((input$program_ul_type == 'upload' & !isTruthy(input$ss_upload_program)) |
          (input$program_ul_type == 'dropdown' & !isTruthy(input$ss_select_program))){
