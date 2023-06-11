@@ -327,7 +327,8 @@ app_server <- function(input, output, session) {
   observeEvent(input$submit_sic, {
     
     ## check if anything has been selected or entered
-    req(shiny::isTruthy(input$ss_enter_sic) || shiny::isTruthy(input$ss_select_sic))
+    req(isTruthy(input$ss_select_sic))
+    #req(shiny::isTruthy(input$ss_enter_sic) || shiny::isTruthy(input$ss_select_sic))
     
     #define inputs
     #naics_user_wrote_in_box <- input$ss_enter_naics
@@ -335,35 +336,36 @@ app_server <- function(input, output, session) {
     add_sic_subcategories <- FALSE #input$add_naics_subcategories 
     # q: IS IT BETTER TO USE THIS IN naics_from_any() OR IN frs_from_naics() BELOW ??
     
-    # naics_validation function to check for non empty NAICS inputs
-    if(naics_validation(input$ss_enter_sic,input$ss_select_sic)){
+    # naics_validation function to check for non empty SIC inputs
+    if(naics_validation('', input$ss_select_sic)){
+    #if(naics_validation(input$ss_enter_sic,input$ss_select_sic)){
       inputsic = {}
       #splits up comma separated list if user manually inserts list
-      if(nchar(input$ss_enter_sic)>0){
-        print('test a')
-        #checks for non-numeric values in text box; if they are not numeric, then search by name
-        if(!grepl("^\\d+(,\\d+)*$",input$ss_enter_sic)){
-          # print('test')
-          
-          #   1. GET NAICS CODES VIA QUERY OF TEXT IN NAMES OR THE NUMBERS
-          
-          inputsic = sic_from_any(input$ss_enter_sic)[,code] # this used to be naics_find()
-          
-          if(length(inputsic) == 0 | all(is.na(inputsic))){
-            ################ Should output something saying no valid results returned ######## #
-            shiny::validate('No Results Returned')
-          }        
-        } else {
-          sic_wib_split <- as.list(strsplit(input$ss_enter_sic, ",")[[1]])
-          print(sic_wib_split)
-        }
-      } else {
-        sic_wib_split <- ""
-      }
+      # if(nchar(input$ss_enter_sic)>0){
+      #   print('test a')
+      #   #checks for non-numeric values in text box; if they are not numeric, then search by name
+      #   if(!grepl("^\\d+(,\\d+)*$",input$ss_enter_sic)){
+      #     # print('test')
+      #     
+      #     #   1. GET NAICS CODES VIA QUERY OF TEXT IN NAMES OR THE NUMBERS
+      #     
+      #     inputsic = sic_from_any(input$ss_enter_sic)[,code] # this used to be naics_find()
+      #     
+      #     if(length(inputsic) == 0 | all(is.na(inputsic))){
+      #       ################ Should output something saying no valid results returned ######## #
+      #       shiny::validate('No Results Returned')
+      #     }        
+      #   } else {
+      #     sic_wib_split <- as.list(strsplit(input$ss_enter_sic, ",")[[1]])
+      #     print(sic_wib_split)
+      #   }
+      # } else {
+      #   sic_wib_split <- ""
+      # }
       # if not empty, assume its pulled using naics_from_any() or older naics_find() above
       if(length(inputsic) == 0 | rlang::is_empty(inputsic)) {
         #construct regex expression and finds sites that align with user-selected SIC codes
-        inputsic <- c(sic_wib_split, input$ss_select_sic)
+        inputsic <- input$ss_select_sic #c(sic_wib_split, input$ss_select_sic)
         inputsic <- unique(inputsic[inputsic != ""])
         
         print(inputsic)
@@ -564,13 +566,14 @@ app_server <- function(input, output, session) {
         shinyjs::show(id = 'show_data_preview')
       }
     }  else if(current_upload_method() == 'SIC'){
-      if((input$sic_ul_type == 'enter' & !isTruthy(input$ss_enter_sic)) |
-         (input$sic_ul_type == 'dropdown' & !isTruthy(input$ss_select_sic))){
-        shinyjs::disable(id = 'submit_sic')
-      } else {
-        shinyjs::enable(id = 'submit_sic')
-      }
+      # if((input$sic_ul_type == 'enter' & !isTruthy(input$ss_enter_sic)) |
+      #    (input$sic_ul_type == 'dropdown' & !isTruthy(input$ss_select_sic))){
+      #   shinyjs::disable(id = 'submit_sic')
+      # } else {
+      #   shinyjs::enable(id = 'submit_sic')
+      # }
       
+      #if(!isTruthy(input$ss_select_sic)){
       if(!isTruthy(input$submit_sic)){
         shinyjs::disable(id = 'bt_get_results')
         shinyjs::hide(id = 'show_data_preview')

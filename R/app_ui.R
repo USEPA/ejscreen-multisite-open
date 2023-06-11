@@ -229,11 +229,11 @@ app_ui  <- function(request) {
                           conditionalPanel(
                             condition = "input.ss_choose_method == 'SIC'",
                             
-                            radioButtons('sic_ul_type', 'Choose how to enter SIC codes',
-                                         choiceNames = c('Select codes from dropdown' ,
-                                                         'Enter text or code to search'),
-                                         choiceValues = c('dropdown',
-                                                          'enter')),
+                            # radioButtons('sic_ul_type', 'Choose how to enter SIC codes',
+                            #              choiceNames = c('Select codes from dropdown' ,
+                            #                              'Enter text or code to search'),
+                            #              choiceValues = c('dropdown',
+                            #                               'enter')),
                             
                             # radioButtons('add_sic_subcategories', "Add all subcategories of SIC?",
                             #              choiceNames = c("Yes","No"),
@@ -241,27 +241,27 @@ app_ui  <- function(request) {
                             #              selected = TRUE),
                             
                             ### conditional sub- panel if entering SIC
-                            conditionalPanel(
-                              condition = "input.sic_ul_type == 'enter'",
-                              ## input: Enter SIC code manually       
-                              textInput(
-                                inputId = "ss_enter_sic",
-                                label = htmltools::h6(
-                                  "Enter Industry SIC codes - ",
-                                  HTML(paste0('<a href=\"', 'http://www.siccode.com', '\", target=\"_blank\">', 'Look up SIC', '</a>')),
-                                  # htmltools::a("Look up NAICS", href ="https://www.census.gov/naics", ),
-                                  htmltools::a(htmltools::img(id = "ibutton",src = "www/i.png",height = 15,width = 15),
-                                               href = "www/ibutton_help.html#help_naicslist",target = "_blank")
-                                ),
-                                value = "",
-                                width = 400,
-                                placeholder = NULL
-                              )
-                            ), # end manually entry of SIC sub- conditionalPanel
-                            
-                            ### conditional sub- panel if using SIC dropdown
-                            conditionalPanel(
-                              condition = "input.sic_ul_type == 'dropdown'",
+                            # conditionalPanel(
+                            #   condition = "input.sic_ul_type == 'enter'",
+                            #   ## input: Enter SIC code manually       
+                            #   textInput(
+                            #     inputId = "ss_enter_sic",
+                            #     label = htmltools::h6(
+                            #       "Enter Industry SIC codes - ",
+                            #       HTML(paste0('<a href=\"', 'http://www.siccode.com', '\", target=\"_blank\">', 'Look up SIC', '</a>')),
+                            #       # htmltools::a("Look up NAICS", href ="https://www.census.gov/naics", ),
+                            #       htmltools::a(htmltools::img(id = "ibutton",src = "www/i.png",height = 15,width = 15),
+                            #                    href = "www/ibutton_help.html#help_naicslist",target = "_blank")
+                            #     ),
+                            #     value = "",
+                            #     width = 400,
+                            #     placeholder = NULL
+                            #   )
+                            # ), # end manually entry of SIC sub- conditionalPanel
+                            # 
+                            # ### conditional sub- panel if using SIC dropdown
+                            # conditionalPanel(
+                            #   condition = "input.sic_ul_type == 'dropdown'",
                               ## input: Select SIC from list
                               selectInput(
                                 inputId = "ss_select_sic",
@@ -272,8 +272,8 @@ app_ui  <- function(request) {
                                 selected = NULL,
                                 width = 400,
                                 multiple = TRUE
-                              )#, # xxx
-                            ),  # end dropdown SIC sub- conditionalPanel
+                              ), #, # xxx
+                            #),  # end dropdown SIC sub- conditionalPanel
                             
                             br(), ## vertical space
                             
