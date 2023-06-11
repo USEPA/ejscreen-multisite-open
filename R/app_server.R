@@ -451,7 +451,8 @@ app_server <- function(input, output, session) {
       #shiny::isTruthy(input$submit_naics) +
       shiny::isTruthy(input$ss_select_naics) +
       #shiny::isTruthy(input$ss_upload_echo) +
-      shiny::isTruthy(input$submit_program) +
+      #shiny::isTruthy(input$submit_program) +
+      shiny::isTruthy(input$ss_select_program) +
       shiny::isTruthy(input$ss_select_sic) + 
       #shiny::isTruthy(input$submit_sic) +
       shiny::isTruthy(input$ss_upload_fips)
@@ -550,16 +551,16 @@ app_server <- function(input, output, session) {
        #    shinyjs::show(id = 'show_data_preview')
        #  }
     } else if(current_upload_method() == 'EPA_PROGRAM'){
+      # if((input$program_ul_type == 'upload' & !isTruthy(input$ss_upload_program)) |
+      #    (input$program_ul_type == 'dropdown' & !isTruthy(input$ss_select_program))){
+      #   shinyjs::disable(id = 'submit_program')
+      # } else {
+      #   shinyjs::enable(id = 'submit_program')
+      # }
+      
       if((input$program_ul_type == 'upload' & !isTruthy(input$ss_upload_program)) |
          (input$program_ul_type == 'dropdown' & !isTruthy(input$ss_select_program))){
-        shinyjs::disable(id = 'submit_program')
-      } else {
-        shinyjs::enable(id = 'submit_program')
-      }
-      
-      # if((input$program_ul_type == 'upload' & !isTruthy(input$ss_upload_program)) |
-      #    (input$program_ul_type == 'dropdown' & !isTruthy(input$submit_program))){
-      if(!isTruthy(input$submit_program)){
+      #if(!isTruthy(input$submit_program)){
         shinyjs::disable(id = 'bt_get_results')
         shinyjs::hide(id = 'show_data_preview')
       } else {
@@ -781,7 +782,9 @@ app_server <- function(input, output, session) {
                   'FRS' = input$ss_upload_frs, 
                   'NAICS' = input$ss_select_naics,#input$submit_naics,
                   #'ECHO' = input$ss_upload_echo,
-                  'EPA_PROGRAM' = input$ss_select_program,#input$submit_program,
+                  'EPA_PROGRAM' = switch(input$program_ul_type == 'dropdown', 
+                                         'TRUE' = input$ss_select_program,
+                                         'FALSE' = input$ss_upload_program), #input$submit_program,
                   'SIC' = input$ss_select_sic,#input$submit_sic,
                   'FIPS' = input$ss_upload_fips)
      validate(

@@ -223,10 +223,10 @@ app_ui  <- function(request) {
                               ## input: upload an EPA program ID file
                               fileInput(inputId = 'ss_upload_program',
                                         label = 'Upload a file with program IDs')
-                            ),
+                            )#,
                             
                             ## input: submit button once program is selected from dropdown
-                            actionButton(inputId = 'submit_program', label = 'Submit Program')
+                            #actionButton(inputId = 'submit_program', label = 'Submit Program')
                             
                           ), #end EPA program conditional panel
                           
