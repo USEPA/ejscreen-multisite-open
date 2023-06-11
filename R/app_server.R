@@ -75,7 +75,8 @@ app_server <- function(input, output, session) {
       NAICS = "NAICS", # 'NAICS (industry name or code)'
       EPA_PROGRAM = "EPA_PROGRAM",
       SIC = "SIC" ,
-      FIPS = "FIPS"
+      FIPS = "FIPS",
+      MACT = "MACT"
     )
   })
   #############################################################################  # 
@@ -441,6 +442,23 @@ app_server <- function(input, output, session) {
     }
   })
   
+  #############################################################################  # 
+  ## reactive: data uploaded by MACT subpart ####
+  
+  data_up_mact <- reactive({
+
+    req(isTruthy(input$ss_select_mact))
+
+      ## filter frs_by_mact to currently selected subpart
+      mact_out <- frs_by_mact[ subpart == input$ss_select_mact]
+      ## clean so that any invalid latlons become NA
+      mact_out <- mact_out %>% 
+        dplyr::left_join(frs_by_programid, by=c('programid' = 'pgm_sys_id')) %>% 
+        latlon_df_clean()
+    
+    ## return output dataset
+    mact_out
+  })
   
   #############################################################################  # 
   ## reactive: count data upload methods currently used ####
@@ -455,7 +473,8 @@ app_server <- function(input, output, session) {
       shiny::isTruthy(input$ss_select_program) +
       shiny::isTruthy(input$ss_select_sic) + 
       #shiny::isTruthy(input$submit_sic) +
-      shiny::isTruthy(input$ss_upload_fips)
+      shiny::isTruthy(input$ss_upload_fips) +
+      shiny::isTruthy(input$ss_select_mact)
   })
   
   ## reactive: hub for any/all uploaded data, gets passed to processing ####
@@ -495,6 +514,9 @@ app_server <- function(input, output, session) {
       data_up_sic()
     } else if(current_upload_method() == 'FIPS'){
       data_up_fips()
+    } else if(current_upload_method() == 'MACT'){
+     
+      data_up_mact() 
     }
     
   })
@@ -585,6 +607,14 @@ app_server <- function(input, output, session) {
       }
     } else if(current_upload_method() == 'FIPS'){
       if(!isTruthy(input$ss_upload_fips)){
+        shinyjs::disable(id = 'bt_get_results')
+        shinyjs::hide(id = 'show_data_preview')
+      } else {
+        shinyjs::enable(id = 'bt_get_results')
+        shinyjs::show(id = 'show_data_preview')
+      }
+    } else if(current_upload_method() == 'MACT'){
+      if(!isTruthy(input$ss_select_mact)){
         shinyjs::disable(id = 'bt_get_results')
         shinyjs::hide(id = 'show_data_preview')
       } else {
@@ -786,7 +816,8 @@ app_server <- function(input, output, session) {
                                          'TRUE' = input$ss_select_program,
                                          'FALSE' = input$ss_upload_program), #input$submit_program,
                   'SIC' = input$ss_select_sic,#input$submit_sic,
-                  'FIPS' = input$ss_upload_fips)
+                  'FIPS' = input$ss_upload_fips,
+                  'MACT' = input$ss_select_mact)
      validate(
       need(cond, 'Please select a data set.')
     )

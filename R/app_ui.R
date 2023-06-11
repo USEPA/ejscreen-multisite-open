@@ -89,7 +89,8 @@ app_ui  <- function(request) {
                                                         #'ECHO',
                                                         'EPA_PROGRAM',
                                                         'SIC',
-                                                        'FIPS'
+                                                        'FIPS',
+                                                        'MACT'
                                                         ),
                                        choiceNames = c('Upload Location (latitude/longitude) file',
                                                        'Select by Industry (NAICS) Code',
@@ -97,7 +98,8 @@ app_ui  <- function(request) {
                                                        #'Search using ECHO database',
                                                        'Select an EPA Program',
                                                        'Select by SIC code',
-                                                       'Upload a FIPS code file'),
+                                                       'Upload a FIPS code file',
+                                                       'Select a MACT subpart'),
                                        width = '400px'),
                           
                           ## latlon conditional panel
@@ -299,7 +301,19 @@ app_ui  <- function(request) {
                                       accept = c('.xls', '.xlsx', ".csv", "text/csv", "text/comma-separated-values,text/plain")
                                       # add hover tips here maybe, or even a button to view examples of valid formats and details on that.
                             ),
-                          ), # end latlong conditionalPanel
+                          ), # end FIPS conditionalPanel
+                          
+                          conditionalPanel(
+                            condition = "input.ss_choose_method == 'MACT'",
+                            
+                            ## input: choose MACT subpart from dropdown list
+                            selectInput(inputId = 'ss_select_mact',
+                                        label = 'Choose a MACT subpart',
+                                        choices = setNames(mact_categories$subpart,
+                                                          mact_categories$dropdown_label)
+                                        
+                                        )
+                          ), # end MACT conditionalPanel
                           
                           hr(), ## horizontal line
                           
