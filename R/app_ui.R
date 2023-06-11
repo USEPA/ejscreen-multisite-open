@@ -161,8 +161,8 @@ app_ui  <- function(request) {
                             br(), ## vertical space
                             
                             ## input: button to submit NAICS codes that were entered/selected
-                            actionButton(inputId = 'submit_naics', label = 'Submit NAICS / Find Facilities',
-                                         style = 'color: #fff; background-color: #005ea2;')#, # xxx
+                            # actionButton(inputId = 'submit_naics', label = 'Submit NAICS / Find Facilities',
+                            #              style = 'color: #fff; background-color: #005ea2;')#, # xxx
                           ), # end NAICS conditionalPanel overall
                           
                           ## FRS conditional panel
@@ -278,8 +278,8 @@ app_ui  <- function(request) {
                             br(), ## vertical space
                             
                             ## input: button to submit SIC codes that were entered/selected
-                            actionButton(inputId = 'submit_sic', label = 'Submit SIC / Find Facilities',
-                                         style = 'color: #fff; background-color: #005ea2;')
+                            # actionButton(inputId = 'submit_sic', label = 'Submit SIC / Find Facilities',
+                            #              style = 'color: #fff; background-color: #005ea2;')
                             
                           ), # end SIC conditionalPanel
                           

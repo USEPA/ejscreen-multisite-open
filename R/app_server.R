@@ -153,11 +153,11 @@ app_server <- function(input, output, session) {
   #############################################################################  # 
   ## reactive: data uploaded by NAICS ####
   
-  data_up_naics <- reactiveVal(NULL)
+  #data_up_naics <- reactiveVal(NULL)
   
   ## when NAICS submit button is pressed ------------   work in progress ====== not tested
-  observeEvent(input$submit_naics, {
-    
+  #observeEvent(input$submit_naics, {
+  data_up_naics <- reactive({  
     ## check if anything has been selected or entered
     req(isTruthy(input$ss_select_naics))
     #req(shiny::isTruthy(input$ss_enter_naics) || shiny::isTruthy(input$ss_select_naics))
@@ -228,7 +228,8 @@ app_server <- function(input, output, session) {
     cat("SITE COUNT VIA NAICS: ", NROW(sitepoints), "\n")
 
     ## assign final value to data_up_naics reactive variable
-    data_up_naics(sitepoints)
+    #data_up_naics(sitepoints)
+    return(sitepoints)
   })
   
   ## if NAICS radio button is toggled between dropdown/enter, empty the other one
@@ -324,8 +325,8 @@ app_server <- function(input, output, session) {
   data_up_sic <- reactiveVal(NULL)
   
   ## when SIC submit button is pressed
-  observeEvent(input$submit_sic, {
-    
+  #observeEvent(input$submit_sic, {
+  data_up_sic <- reactive({  
     ## check if anything has been selected or entered
     req(isTruthy(input$ss_select_sic))
     #req(shiny::isTruthy(input$ss_enter_sic) || shiny::isTruthy(input$ss_select_sic))
@@ -395,7 +396,8 @@ app_server <- function(input, output, session) {
     cat("SITE COUNT VIA SIC: ", NROW(sitepoints), "\n")
     
     ## assign final value to data_up_naics reactive variable
-    data_up_sic(sitepoints)
+    #data_up_sic(sitepoints)
+    return(sitepoints)
   })
   
   ## reactive: data uploaded by FIPS ####
@@ -448,11 +450,12 @@ app_server <- function(input, output, session) {
     shiny::isTruthy(input$ss_upload_latlon) +
       shiny::isTruthy(input$ss_upload_frs) +
       ## switched upload count to use submit button instead of entered codes
-      shiny::isTruthy(input$submit_naics) +
-      #(shiny::isTruthy(input$ss_enter_naics) ||  shiny::isTruthy(input$ss_select_naics)) +
+      #shiny::isTruthy(input$submit_naics) +
+      shiny::isTruthy(input$ss_select_naics) +
       #shiny::isTruthy(input$ss_upload_echo) +
       shiny::isTruthy(input$submit_program) +
-      shiny::isTruthy(input$submit_sic) +
+      shiny::isTruthy(input$ss_select_sic) + 
+      #shiny::isTruthy(input$submit_sic) +
       shiny::isTruthy(input$ss_upload_fips)
   })
   
@@ -525,8 +528,8 @@ app_server <- function(input, output, session) {
     #     shinyjs::show(id = 'show_data_preview')
     #   }
     } else if(current_upload_method() == 'NAICS'){
-        if(!isTruthy(input$submit_naics)){
-        #if(!isTruthy(input$ss_select_naics)){
+        #if(!isTruthy(input$submit_naics)){
+        if(!isTruthy(input$ss_select_naics)){
             shinyjs::disable(id = 'bt_get_results')
             shinyjs::hide(id = 'show_data_preview')
           } else {
@@ -573,8 +576,8 @@ app_server <- function(input, output, session) {
       #   shinyjs::enable(id = 'submit_sic')
       # }
       
-      #if(!isTruthy(input$ss_select_sic)){
-      if(!isTruthy(input$submit_sic)){
+      if(!isTruthy(input$ss_select_sic)){
+      #if(!isTruthy(input$submit_sic)){
         shinyjs::disable(id = 'bt_get_results')
         shinyjs::hide(id = 'show_data_preview')
       } else {
@@ -778,10 +781,10 @@ app_server <- function(input, output, session) {
    cond <- switch(current_upload_method(), 
                   'latlon' = input$ss_upload_latlon,
                   'FRS' = input$ss_upload_frs, 
-                  'NAICS' = input$submit_naics,
+                  'NAICS' = input$ss_select_naics,#input$submit_naics,
                   #'ECHO' = input$ss_upload_echo,
                   'EPA_PROGRAM' = input$ss_select_program,#input$submit_program,
-                  'SIC' = input$submit_sic,
+                  'SIC' = input$ss_select_sic,#input$submit_sic,
                   'FIPS' = input$ss_upload_fips)
      validate(
       need(cond, 'Please select a data set.')
