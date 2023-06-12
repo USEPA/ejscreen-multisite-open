@@ -829,7 +829,7 @@ app_server <- function(input, output, session) {
                   'latlon' = input$ss_upload_latlon,
                   'FRS' = input$ss_upload_frs, 
                   'NAICS' = input$ss_select_naics,#input$submit_naics,
-                  #'ECHO' = input$ss_upload_echo,
+                  #ECHO = input$ss_upload_echo,
                   'EPA_PROGRAM' = switch(input$program_ul_type, 
                                          'dropdown' = input$ss_select_program,
                                          'upload' = input$ss_upload_program), #input$submit_program,
@@ -1881,7 +1881,7 @@ app_server <- function(input, output, session) {
     )
     
     ## only using average for now
-    mybarvars.stat <- 'avg' #'med'
+    mybarvars.stat <- 'avg' #"med"
     
     ## defaulting to average only in this version of EJAM
     mybarvars.sumstat <- c('Average site', 'Average person')

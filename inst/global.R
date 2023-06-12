@@ -24,9 +24,8 @@ meters_per_mile <- 1609.344
 # )
 
 ## add counts to program acronyms to use in dropdown display
-epa_program_counts <- EJAM::frs_by_programid %>%
-  dplyr::count(program, name = 'count') %>% 
-  dplyr::mutate(pgm_text_dropdown = paste0(program, ' (',prettyNum(count, big.mark = ','), ')'))
+epa_program_counts <- dplyr::count(EJAM::frs_by_programid, program, name = 'count') 
+epa_program_counts$pgm_text_dropdown <- paste0(epa_program_counts$program, ' (',prettyNum(epa_program_counts$count, big.mark = ','), ')')
 
 epa_programs <- setNames(epa_program_counts$program, epa_program_counts$pgm_text_dropdown)
 
