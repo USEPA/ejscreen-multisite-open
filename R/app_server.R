@@ -288,9 +288,9 @@ app_server <- function(input, output, session) {
     ext <- tools::file_ext(input$ss_upload_program$name)
     ## if acceptable file type, read in; if not, send warning text
     read_pgm <- switch(ext,
-                       csv =  read.csv(input$ss_upload_program$datapath),
-                       xls = readxl::read_excel(input$ss_upload_program$datapath),
-                       xlsx = readxl::read_excel(input$ss_upload_program$datapath),
+                       csv =  data.table::fread(input$ss_upload_program$datapath),
+                       xls = readxl::read_excel(input$ss_upload_program$datapath) %>% data.table::as.data.table(),
+                       xlsx = readxl::read_excel(input$ss_upload_program$datapath) %>% data.table::as.data.table(),
                        shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
     ) # returns a data.frame
     
@@ -431,7 +431,8 @@ app_server <- function(input, output, session) {
                                            blockid2fips[, .(blockid, blockfips, blockfips12 = substr(blockfips,1,12))], 
                                            by=c('bgid'='blockfips12'), multiple='all') %>% 
         dplyr::left_join(blockpoints) %>% 
-        dplyr::mutate(distance=0)
+        dplyr::mutate(distance=0) %>% 
+        data.table::as.data.table()
       
       ## remove any invalid latlon values 
       return(fips_blockpoints)
@@ -788,7 +789,7 @@ app_server <- function(input, output, session) {
     ## don't draw map if > 5000 points are uploaded
 
     if(current_upload_method() == 'FIPS'){
-      req(data_uploaded())
+      #req(data_uploaded())
       
       leaflet() %>% addTiles() %>% 
         fitBounds(lng1 = min(data_uploaded()$lon, na.rm=T),
@@ -873,10 +874,12 @@ app_server <- function(input, output, session) {
     ## 1) **EJAM::getblocksnearby()** ####
     
     if(current_upload_method() == 'FIPS'){
-      sites2blocks <- data_uploaded()
+      ## remove any invalid latlons before running 
+      sites2blocks <- data_uploaded()[!is.na(lat) & !is.na(lon),]
     } else{
       sites2blocks <- getblocksnearby(
-        sitepoints = data_uploaded(),
+        ## remove any invalid latlons before running 
+        sitepoints = data_uploaded()[!is.na(lat) & !is.na(lon),],
       radius = input$bt_rad_buff,
         quadtree = localtree
       )
