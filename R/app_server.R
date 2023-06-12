@@ -456,8 +456,13 @@ app_server <- function(input, output, session) {
         dplyr::left_join(frs_by_programid, by=c('programid' = 'pgm_sys_id')) %>% 
         latlon_df_clean()
     
-    ## return output dataset
-    mact_out
+      if(all(is.na(mact_out$lon)) & all(is.na(mact_out$lat))){
+        validate('No valid locations found under this MACT subpart')
+      } else {
+        ## return output dataset
+        mact_out
+      }
+
   })
   
   #############################################################################  # 
@@ -642,7 +647,15 @@ app_server <- function(input, output, session) {
       }
       ## if invalid data found, send modal to screen
       if(num_na > 0){
-        showModal(modalDialog(title = 'Invalid data found', 'FYI, some of your data was not valid.', size = 's'))
+        shinyBS::closeAlert(session, alertId = 'alert1')
+        shinyBS::createAlert(session, anchorId = "invalid_sites_alert", alertId = "alert1", 
+                             title = "Warning", style = 'danger',
+                             content = paste0('There are ', num_na, ' invalid locations in your dataset.'),
+                             dismiss = TRUE, 
+                             append = FALSE)
+        #showModal(modalDialog(title = 'Invalid data found', 'FYI, some of your data was not valid.', size = 's'))
+      } else {
+        shinyBS::closeAlert(session, alertId = 'alert1')
       }
       
       HTML(paste0(
@@ -778,25 +791,30 @@ app_server <- function(input, output, session) {
       req(data_uploaded())
       
       leaflet() %>% addTiles() %>% 
-        fitBounds(lng1 = min(data_uploaded()$lon),
-                  lng2 = max(data_uploaded()$lon),
-                  lat1 = min(data_uploaded()$lat),
-                  lat2 = max(data_uploaded()$lat))
+        fitBounds(lng1 = min(data_uploaded()$lon, na.rm=T),
+                  lng2 = max(data_uploaded()$lon, na.rm=T),
+                  lat1 = min(data_uploaded()$lat, na.rm=T),
+                  lat2 = max(data_uploaded()$lat, na.rm=T))
       
     } else if(nrow(data_uploaded()) < max_pts){
       
-      suppressMessages(
+      ## if more than one valid point
+      if(sum((!is.na(data_uploaded()$lon) & !is.na(data_uploaded()$lat))) > 1){
         leaflet() %>% addTiles() %>% 
-          fitBounds(lng1 = min(data_uploaded()$lon),
-                                               lng2 = max(data_uploaded()$lon),
-                                               lat1 = min(data_uploaded()$lat),
-                                               lat2 = max(data_uploaded()$lat))
-        
+          fitBounds(lng1 = min(data_uploaded()$lon, na.rm=T),
+                    lng2 = max(data_uploaded()$lon, na.rm=T),
+                    lat1 = min(data_uploaded()$lat, na.rm=T),
+                    lat2 = max(data_uploaded()$lat, na.rm=T))
+      ## if only one valid point
+      } else {
+        leaflet() %>% addTiles() %>% 
+          setView(lng = data_uploaded()$lon, lat = data_uploaded()$lat, zoom = 10)
+      }
         # map_facilities(mypoints = data_uploaded(), #as.data.frame(data_uploaded()), 
         #                rad = input$bt_rad_buff, 
         #                highlight = input$an_map_clusters,
         #                clustered = is_clustered())
-      )
+      
     } else {
       validate(paste0('Too many points (> ',prettyNum(max_pts, big.mark=','),') uploaded for map to be displayed'))
     }
@@ -812,9 +830,9 @@ app_server <- function(input, output, session) {
                   'FRS' = input$ss_upload_frs, 
                   'NAICS' = input$ss_select_naics,#input$submit_naics,
                   #'ECHO' = input$ss_upload_echo,
-                  'EPA_PROGRAM' = switch(input$program_ul_type == 'dropdown', 
-                                         'TRUE' = input$ss_select_program,
-                                         'FALSE' = input$ss_upload_program), #input$submit_program,
+                  'EPA_PROGRAM' = switch(input$program_ul_type, 
+                                         'dropdown' = input$ss_select_program,
+                                         'upload' = input$ss_upload_program), #input$submit_program,
                   'SIC' = input$ss_select_sic,#input$submit_sic,
                   'FIPS' = input$ss_upload_fips,
                   'MACT' = input$ss_select_mact)

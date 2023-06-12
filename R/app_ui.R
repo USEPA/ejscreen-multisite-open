@@ -347,6 +347,8 @@ app_ui  <- function(request) {
                           
                           hr(), ## horizontal line
                           
+                          shinyBS::bsAlert(anchorId = 'invalid_sites_alert'),
+                          
                           ## arrange summary text and button to view uploaded data
                           fluidPage(
                             column(8,
