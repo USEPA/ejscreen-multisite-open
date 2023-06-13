@@ -91,7 +91,7 @@ app_server <- function(input, output, session) {
     #  ext <- latlon_from_anything(input$ss_upload_latlon$datapath)
     
     ## check if file extension is appropriate
-    ext <- tools::file_ext(input$ss_upload_latlon$name)
+    ext <- tolower(tools::file_ext(input$ss_upload_latlon$name))
     ## if acceptable file type, read in; if not, send warning text
     ext <- switch(ext,
                   csv = data.table::fread(input$ss_upload_latlon$datapath),
@@ -122,7 +122,7 @@ app_server <- function(input, output, session) {
     # ext <- latlon_from_anything(input$ss_upload_latlon$datapath)
     
     ## check if file extension is appropriate
-    ext <- tools::file_ext(input$ss_upload_frs$name)
+    ext <- tolower(tools::file_ext(input$ss_upload_frs$name))
     ## if acceptable file type, read in; if not, send warning text
     read_frs <- switch(ext,
                        csv =  read.csv(input$ss_upload_frs$datapath),
@@ -285,7 +285,7 @@ app_server <- function(input, output, session) {
     req(input$ss_upload_program)
      
     ## check if file extension is appropriate
-    ext <- tools::file_ext(input$ss_upload_program$name)
+    ext <- tolower(tools::file_ext(input$ss_upload_program$name))
     ## if acceptable file type, read in; if not, send warning text
     read_pgm <- switch(ext,
                        csv =  data.table::fread(input$ss_upload_program$datapath),
@@ -405,7 +405,7 @@ app_server <- function(input, output, session) {
     req(input$ss_upload_fips)
 
     ## check if file extension is appropriate
-    ext <- tools::file_ext(input$ss_upload_fips$name)
+    ext <- tolower(tools::file_ext(input$ss_upload_fips$name))
 
     ## if acceptable file type, read in; if not, send warning text
     ext <- switch(ext,
