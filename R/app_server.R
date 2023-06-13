@@ -416,9 +416,13 @@ app_server <- function(input, output, session) {
     )
 
     ## create named vector of FIPS codes (names used as siteid)
+    if('FIPS' %in% colnames(ext)){
+      
     fips_vec <- fips_lead_zero(as.character(ext$FIPS))
     names(fips_vec) <- as.character(fips_vec)
-    
+    } else{
+      validate('No column named "FIPS" found')
+    }
     ## create two-column dataframe with bgs (values) and original fips (ind)
     all_bgs <- stack(sapply(fips_vec, fipsbg_from_anyfips))
     names(all_bgs) <- c('bgid','siteid')
