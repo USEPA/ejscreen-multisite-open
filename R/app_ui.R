@@ -153,7 +153,7 @@ app_ui  <- function(request) {
                             #conditionalPanel(
                             #  condition = "input.naics_ul_type == 'dropdown'",
                               ## input: Select NAICS from list
-                              selectInput(
+                              selectizeInput(
                                 inputId = "ss_select_naics",
                                 label = htmltools::h6("Select industry of interest"),
                                 # choose from named numeric vector on server-side
@@ -161,7 +161,9 @@ app_ui  <- function(request) {
                                 choices = NULL, 
                                 selected = NULL,
                                 width = 400,
-                                multiple = TRUE
+                                multiple = TRUE,
+                                ## add X to remove selected options from list
+                                options = list('plugins' = list('remove_button'))
                               ),#, # xxx
                             #),  # end dropdown NAICS sub- conditionalPanel
                             
@@ -213,10 +215,12 @@ app_ui  <- function(request) {
                             conditionalPanel(
                               condition = "input.program_ul_type == 'dropdown'",
                               ## input: select an EPA program from list
-                              selectInput(inputId = 'ss_select_program', label = 'Pick an EPA program',
+                              selectizeInput(inputId = 'ss_select_program', label = 'Pick an EPA program',
                                        ## named vector in global.R - values are acronyms, 
                                        ## names include # of rows corresponding to that program
-                                       choices = epa_programs),
+                                       choices = epa_programs,
+                                       ## add X to remove selected options from list
+                                       options = list('plugins' = list('remove_button'))),
                               
                             ),
                             
@@ -270,7 +274,7 @@ app_ui  <- function(request) {
                             # conditionalPanel(
                             #   condition = "input.sic_ul_type == 'dropdown'",
                               ## input: Select SIC from list
-                              selectInput(
+                              selectizeInput(
                                 inputId = "ss_select_sic",
                                 label = htmltools::h6("Select industry of interest"),
                                 # choose from named numeric vector on server-side
@@ -278,7 +282,9 @@ app_ui  <- function(request) {
                                 choices = NULL, 
                                 selected = NULL,
                                 width = 400,
-                                multiple = TRUE
+                                multiple = TRUE,
+                                ## add X to remove selected options from list
+                                options = list('plugins' = list('remove_button'))
                               ), #, # xxx
                             #),  # end dropdown SIC sub- conditionalPanel
                             
@@ -307,10 +313,11 @@ app_ui  <- function(request) {
                             condition = "input.ss_choose_method == 'MACT'",
                             
                             ## input: choose MACT subpart from dropdown list
-                            selectInput(inputId = 'ss_select_mact',
+                            selectizeInput(inputId = 'ss_select_mact',
                                         label = 'Choose a MACT subpart',
                                         choices = setNames(mact_categories$subpart,
-                                                          mact_categories$dropdown_label)
+                                                          mact_categories$dropdown_label),
+                                        options = list('plugins' = list('remove_button'))
                                         
                                         )
                           ), # end MACT conditionalPanel
