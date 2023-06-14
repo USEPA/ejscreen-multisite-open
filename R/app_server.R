@@ -67,7 +67,8 @@ app_server <- function(input, output, session) {
       latlon = "latlon",  # 'Location (lat/lon)',
       FRS =  "FRS", # 'FRS (facility ID)',
       ECHO = "ECHO", # 'ECHO Search Tools',
-      NAICS = "NAICS" # 'NAICS (industry name or code)'
+      NAICS = "NAICS", # 'NAICS (industry name or code)'
+      SHP = "SHP"
     )
   })
   #############################################################################  # 
@@ -260,6 +261,27 @@ app_server <- function(input, output, session) {
     }
   })
   
+  data_up_shp <- reactive({
+    ## depends on ECHO upload - which may use same file upload as latlon
+    req(input$ss_upload_shp)
+    
+    infiles <- input$ss_upload_shp$datapath # get the location of files
+    dir <- unique(dirname(infiles)) # get the directory
+    outfiles <- file.path(dir, input$ss_upload_shp$name) # create new path name
+    name <- strsplit(input$ss_upload_shp$name[1], "\\.")[[1]][1] # strip name 
+    purrr::walk2(infiles, outfiles, ~file.rename(.x, .y)) # rename files
+    shp <- read_sf(file.path(dir, paste0(name, ".shp"))) # read-in shapefile
+    
+    d_upload <-{}
+    d_upload[['points']] <- get_blockpoints_in_shape(shp,input$bt_rad_buff)
+    d_upload[['shape']] <- shp
+    d_upload[['buffer']] <- get_shape_buffered_from_shapefile_points(shp,input$bt_rad_buff)
+    
+    d_upload
+    
+    
+  })
+  
   #############################################################################  # 
   ## reactive: count data upload methods currently used ####
   num_ul_methods <- reactive({
@@ -268,7 +290,8 @@ app_server <- function(input, output, session) {
       ## switched upload count to use submit button instead of entered codes
       shiny::isTruthy(input$submit_naics) +
       #(shiny::isTruthy(input$ss_enter_naics) ||  shiny::isTruthy(input$ss_select_naics)) +
-      shiny::isTruthy(input$ss_upload_echo)
+      shiny::isTruthy(input$ss_upload_echo)+
+      shiny::isTruthy(input$ss_upload_shp)
   })
   
   ## reactive: hub for any/all uploaded data, gets passed to processing ####
@@ -301,6 +324,8 @@ app_server <- function(input, output, session) {
       
       data_up_echo() 
       
+    } else if(current_upload_method() == 'SHP'){
+     data_up_shp()
     }
     
   })
@@ -347,7 +372,16 @@ app_server <- function(input, output, session) {
           shinyjs::enable(id = 'bt_get_results')
           shinyjs::show(id = 'show_data_preview')
         }
+    }else if(current_upload_method() == 'SHP'){
+      if(!isTruthy(input$ss_upload_shp)){
+        shinyjs::disable(id = 'bt_get_results')
+        shinyjs::hide(id = 'show_data_preview')
+      } else {
+        shinyjs::enable(id = 'bt_get_results')
+        shinyjs::show(id = 'show_data_preview')
+      }
     }
+      
   })
   #############################################################################  # 
   # ~ ####
@@ -358,6 +392,19 @@ app_server <- function(input, output, session) {
   ## How many valid points? warn if no valid lat/lon ####
   output$an_map_text <- renderUI({
     req(data_uploaded())
+    if(current_upload_method() == "SHP"){
+      shp<-data_uploaded()[['shape']]
+      num_na <- 0
+      num_notna <- nrow(data_uploaded()[['shape']])
+      
+      num_na_pt <- 0
+      num_notna_pt <- nrow(data_uploaded()[['points']])
+      HTML(paste0(
+        "Total shape(s) uploaded: <strong>", prettyNum(num_na_pt + num_notna_pt, big.mark=","),"</strong><br>",
+        "Total point(s) uploaded: <strong>", prettyNum(num_na + num_notna, big.mark=","),"</strong><br>",
+        "Valid shape(s) uploaded: <strong>", prettyNum(num_notna, big.mark=","),"</strong>")
+      )
+    }else{
       #separate inputs with valid/invalid lat/lon values
       if (nrow(data_uploaded()) > 1){ 
         num_na    <- nrow(data_uploaded()[ (is.na(data_uploaded()$lat) | is.na(data_uploaded()$lon)),])
@@ -381,7 +428,8 @@ app_server <- function(input, output, session) {
       #             "Valid site(s) uploaded: <strong>", prettyNum(num_notna, big.mark=","),"</strong><br>",
       #             "Site(s) with invalid lat/lon values: <strong>", prettyNum(num_na,big.mark=","), "</strong>"))
     
-  })
+  }
+    })
   
   ## See table of uploaded points ####
   
@@ -390,8 +438,12 @@ app_server <- function(input, output, session) {
     server = FALSE, {
     req(data_uploaded())
     
-    dt <- data_uploaded() # now naics-queried sites format is OK to view, since using different function to get sites by naics
-    
+    #dt <- data_uploaded() # now naics-queried sites format is OK to view, since using different function to get sites by naics
+    if(current_upload_method() == "SHP"){
+      dt <- data_uploaded()[['shape']]
+    }else{
+      dt <-data_uploaded()
+    }
     # if(current_upload_method() == 'NAICS'){
     
     ###takes NAICS codes selected, finds NAICS descriptions, and presents them  
@@ -498,15 +550,21 @@ app_server <- function(input, output, session) {
   
   orig_leaf_map <- reactive({
     req(data_uploaded())
+    if(current_upload_method() == "SHP"){
+      d_upload <- data_uploaded()[['points']]
+    }else{
+      d_upload <-data_uploaded()
+    }
+    
     max_pts <- max_points_can_map
     ## don't draw map if > 5000 points are uploaded
-    if(nrow(data_uploaded()) < max_pts){
+    if(nrow(d_upload) < max_pts){
       suppressMessages(
         leaflet() %>% addTiles() %>% 
-          fitBounds(lng1 = min(data_uploaded()$lon),
-                                               lng2 = max(data_uploaded()$lon),
-                                               lat1 = min(data_uploaded()$lat),
-                                               lat2 = max(data_uploaded()$lat))
+          fitBounds(lng1 = min(d_upload$lon),
+                                               lng2 = max(d_upload$lon),
+                                               lat1 = min(d_upload$lat),
+                                               lat2 = max(d_upload$lat))
         
         # map_facilities(mypoints = data_uploaded(), #as.data.frame(data_uploaded()), 
         #                rad = input$bt_rad_buff, 
@@ -527,7 +585,8 @@ app_server <- function(input, output, session) {
                   'latlon' = input$ss_upload_latlon,
                   'FRS' = input$ss_upload_frs, 
                   'NAICS' = input$submit_naics,
-                  'ECHO' = input$ss_upload_echo)
+                  'ECHO' = input$ss_upload_echo,
+                  'SHP' = input$ss_upload_shp)
      validate(
       need(cond, 'Please select a data set.')
     )
@@ -554,6 +613,7 @@ app_server <- function(input, output, session) {
   
   observeEvent(input$bt_get_results, {  # (button is pressed) 
     
+    
     showNotification('Processing sites now!', type = 'message', duration = 0.5)
     
     ## progress bar setup overall for 3 operations   
@@ -564,11 +624,22 @@ app_server <- function(input, output, session) {
     #############################################################################  # 
     ## 1) **EJAM::getblocksnearby()** ####
     
-    sites2blocks <- getblocksnearby(
-      sitepoints = data_uploaded(),
-      radius = input$bt_rad_buff,
-      quadtree = localtree
-    )
+    #define blockpoints to process if shapefile exists
+    if(current_upload_method() == "SHP"){
+      d_upload <-data_uploaded()[['points']]
+      sites2blocks <-d_upload
+    }else{
+      d_upload <-data_uploaded()
+      sites2blocks <- getblocksnearby(
+        sitepoints = d_upload,
+        radius = input$bt_rad_buff,
+        quadtree = localtree
+      )
+   
+    }
+    
+  
+   
     ## progress bar update overall  
     progress_all$inc(1/3, message = 'Step 2 of 3', detail = 'Aggregating')
     ## create progress bar to show doaggregate status
@@ -589,7 +660,7 @@ app_server <- function(input, output, session) {
     # save(blah, file='testup.rda'); save(sites2blocks, file = 'testin.rda')
     out <- suppressWarnings(doaggregate(
       sites2blocks = sites2blocks, 
-      sites2states = data_uploaded(),
+      sites2states = d_upload,
       ## pass progress bar function as argument
       updateProgress = updateProgress_doagg
     ))
@@ -691,6 +762,7 @@ app_server <- function(input, output, session) {
     Sys.sleep(0.2) ### why wait? ### #
     shinyjs::js$toTop();
     updateTabsetPanel(session, "all_tabs", "Summary Report")
+    
   })
   #############################################################################  # 
  
@@ -770,6 +842,7 @@ app_server <- function(input, output, session) {
     validate(
       need(data_processed(), 'Please run an analysis to see results.')
     )
+    print(data_processed()$results_bysite)
     
     circle_color <- '#000080'
     
@@ -814,33 +887,42 @@ app_server <- function(input, output, session) {
     
     req(data_uploaded())
     
-    base_color      <- '#000080'
-    cluster_color   <- 'red'
-    
-    
-    #req(input$bt_rad_buff)
-    ## convert units to miles for circle size
-    # if(input$radius_units == 'kilometers'){
-    #   rad <- input$bt_rad_buff * meters_per_mile * 0.62137119
-    # } else {
-    rad <- input$bt_rad_buff * meters_per_mile
-    #}
-    
-    if(input$an_map_clusters == TRUE){
-      ## compare latlons using is_clustered() reactive
-      circle_color <- ifelse(is_clustered() == TRUE, cluster_color, base_color)
-    } else {
-      circle_color <- base_color
-    }
-    
-    popup_vec <- popup_from_any(data_uploaded())
-    
-    # if(input$circle_type == 'circles'){
-    suppressMessages(
-      leafletProxy(mapId = 'an_leaf_map', session, data = data_uploaded()) %>%
-        map_facilities_proxy(rad= input$bt_rad_buff, 
-                             highlight = input$an_map_clusters, clustered = is_clustered(),
-                             popup_vec = popup_vec)
+    if(current_upload_method() == "SHP"){
+      d_uploadb <- data_uploaded()[['buffer']]  %>% st_zm() %>% as('Spatial') 
+      d_uploads <- data_uploaded()[['shape']]  %>% st_zm() %>% as('Spatial') 
+      
+      leafletProxy(mapId = 'an_leaf_map', session,data=d_uploadb) %>% addPolygons(color="red")
+      leafletProxy(mapId = 'an_leaf_map', session,data=d_uploads) %>% addPolygons()
+      
+    }else{
+      d_upload <-data_uploaded()
+      base_color      <- '#000080'
+      cluster_color   <- 'red'
+      
+      
+      #req(input$bt_rad_buff)
+      ## convert units to miles for circle size
+      # if(input$radius_units == 'kilometers'){
+      #   rad <- input$bt_rad_buff * meters_per_mile * 0.62137119
+      # } else {
+      rad <- input$bt_rad_buff * meters_per_mile
+      #}
+      
+      if(input$an_map_clusters == TRUE){
+        ## compare latlons using is_clustered() reactive
+        circle_color <- ifelse(is_clustered() == TRUE, cluster_color, base_color)
+      } else {
+        circle_color <- base_color
+      }
+      
+      popup_vec <- popup_from_any(d_upload)
+      
+      # if(input$circle_type == 'circles'){
+      suppressMessages(
+        leafletProxy(mapId = 'an_leaf_map', session, data = d_upload) %>%
+          map_facilities_proxy(rad= input$bt_rad_buff, 
+                               highlight = input$an_map_clusters, clustered = is_clustered(),
+                               popup_vec = popup_vec)
         # clearShapes() %>%
         # clearMarkerClusters() %>%
         # addCircles(
@@ -867,7 +949,63 @@ app_server <- function(input, output, session) {
         # groupOptions(group = 'circles', zoomLevels = 7:20) %>%
         # ## allow fullscreen map view ([ ] button)
         # leaflet.extras::addFullscreenControl()
-    )
+      )
+    }
+    #print(d_upload)
+    # base_color      <- '#000080'
+    # cluster_color   <- 'red'
+    # 
+    # 
+    # #req(input$bt_rad_buff)
+    # ## convert units to miles for circle size
+    # # if(input$radius_units == 'kilometers'){
+    # #   rad <- input$bt_rad_buff * meters_per_mile * 0.62137119
+    # # } else {
+    # rad <- input$bt_rad_buff * meters_per_mile
+    # #}
+    # 
+    # if(input$an_map_clusters == TRUE){
+    #   ## compare latlons using is_clustered() reactive
+    #   circle_color <- ifelse(is_clustered() == TRUE, cluster_color, base_color)
+    # } else {
+    #   circle_color <- base_color
+    # }
+    # 
+    # popup_vec <- popup_from_any(d_upload)
+    # 
+    # # if(input$circle_type == 'circles'){
+    # suppressMessages(
+    #   leafletProxy(mapId = 'an_leaf_map', session, data = d_upload) %>%
+    #     map_facilities_proxy(rad= input$bt_rad_buff, 
+    #                          highlight = input$an_map_clusters, clustered = is_clustered(),
+    #                          popup_vec = popup_vec)
+    #     # clearShapes() %>%
+    #     # clearMarkerClusters() %>%
+    #     # addCircles(
+    #     #   radius = rad,
+    #     #   color = circle_color, fillColor = circle_color,
+    #     #   fill = TRUE, weight = 4,
+    #     #   group = 'circles',
+    #     #   # next version should use something like EJAMejscreenapi::popup_from_ejscreen(), but with EJAM column names
+    #     #   #popup = EJAMejscreenapi::popup_from_df(data_uploaded() %>% as.data.frame())
+    #     #   popup = popup_from_any(data_uploaded())
+    #     # )  %>%
+    #     # addCircleMarkers(
+    #     #   radius = input$bt_rad_buff,
+    #     #   color = circle_color, fillColor = circle_color,
+    #     #   fill = TRUE, weight = 4,
+    #     #   clusterOptions = markerClusterOptions(),
+    #     #   group = 'markers',
+    #     #   popup = popup_from_any(data_uploaded())
+    #     #   #popup = EJAMejscreenapi::popup_from_df(data_uploaded())
+    #     # ) %>%
+    #     # ## show circleMarkers (aggregated) at zoom levels 1:6
+    #     # groupOptions(group = 'markers', zoomLevels = 1:6) %>%
+    #     # ## show circles and popups at zoom levels 7:20
+    #     # groupOptions(group = 'circles', zoomLevels = 7:20) %>%
+    #     # ## allow fullscreen map view ([ ] button)
+    #     # leaflet.extras::addFullscreenControl()
+    # )
   })
   
   # #############################################################################  # 
@@ -1448,35 +1586,22 @@ app_server <- function(input, output, session) {
       # [3] "results_bybg_people"                 "longnames"                          
       # [5] "count_of_blocks_near_multiple_sites" "results_summarized"  
       
+      ## add analysis overview to 'notes' tab
+      if(current_upload_method() == "SHP"){
+        radius_description <- 'Radius of Shape Buffer (miles)'
+      }else{
+        radius_description <- 'Radius of Circular Buffer (miles)'
+      }
       
-      #filter out sitecount - TEMP
-      # filter_out_temp_overall <- !(names(table_overall) %in% c("sitecount_unique","sitecount_avg","sitecount_max"))
-      # filter_out_temp_bysite <- !(names(table_bysite) %in% c("sitecount_unique","sitecount_avg","sitecount_max"))
-      # 
-      # table_overall <- table_overall[,..filter_out_temp_overall]
-      # table_bysite <- table_bysite[,..filter_out_temp_bysite]
-      # 
-      # # table_summarized <- copy(data_processed()$results_summarized)
-      # # table_bybg_people <- data_processed()$results_bybg_people   # large table !!
-      # table_overall <- table_overall %>% dplyr::mutate(dplyr::across(dplyr::where(is.numeric), function(x) ifelse(!is.finite(x), NA, x)))
-      # table_bysite <- table_bysite %>% dplyr::mutate(dplyr::across(dplyr::where(is.numeric), function(x) ifelse(!is.finite(x), NA, x)))
-      # 
-      # ## attempt to clean up some column names xxx - CHECK THIS 
-      # # longnames_TEST <- EJAMejscreenapi::map_headernames$longname_tableheader[match(names(data_processed()$results_bysite),
-      # # EJAMejscreenapi::map_headernames$newnames_ejscreenapi)]
-      # longnames <- data_processed()$longnames
-      # 
-      # #filter out sitecount from longnames - TEMP
-      # longnames <- longnames[filter_out_temp_bysite]
-      # longnames[longnames == ""] <- EJAMejscreenapi::map_headernames$names_friendly[match(names(table_overall)[longnames == ""], 
-      #                                                                                     EJAMejscreenapi::map_headernames$newnames_ejscreenapi)]
-      # 
-      # longnames_no_url <- longnames[!(longnames %in% c('EJScreen Report','EJScreen Map','ACS Report','ECHO report'))] #setdiff(longnames, c('EJScreen Report','EJScreen Map','ACS Report','ECHO report'))
-      # 
-      # names(table_overall) <- ifelse(!is.na(longnames_no_url), longnames_no_url, names(table_overall))
-      # names(table_bysite)  <- ifelse(!is.na(longnames), longnames, names(table_bysite))
-      # table_summarized
-      # names(table_bybg_people) # CANNOT REALLY TREAT THIS THE SAME - HAS DIFFERENT LIST OF INDICATORS THAN THE OTHER TABLES
+      notes_df <- data.frame(
+        'Analysis Title' = input$analysis_title,
+        'Number of Points Analyzed' = nrow(data_processed()$results_bysite),
+         radius_description = input$bt_rad_buff,
+        check.names = FALSE
+      ) 
+      notes_df <- t(notes_df)
+
+      openxlsx::writeData(wb = wb_out, sheet = 'notes', x = notes_df, rowNames = TRUE, colNames = FALSE)
       
     }
   )

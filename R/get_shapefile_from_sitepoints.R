@@ -7,7 +7,8 @@
 #' @export
 #'
 get_shapefile_from_sitepoints <- function(sitepoints) {
-  data.table::setDF(sitepoints)
-  return(sf::st_as_sf(sitepoints, coords= c('lon', 'lat'), crs = 4269)) # but want 4269
+  #data.table::setDF(sitepoints)
+  shpcoord<-sf::st_as_sf(sitepoints, coords= c('lon', 'lat'), crs = 4269)
+  return(shpcoord) # but want 4269
 }
  

@@ -86,11 +86,13 @@ app_ui  <- function(request) {
                                        choiceValues = c('latlon', 
                                                         'NAICS',
                                                         'FRS',
-                                                        'ECHO'),
+                                                        'ECHO',
+                                                        'SHP'),
                                        choiceNames = c('Upload Location (latitude/longitude) file',
                                                        'Select by Industry (NAICS) Code',
                                                        'Upload EPA Facility ID (FRS Identifers) file',
-                                                       'Search using ECHO database'),
+                                                       'Search using ECHO database',
+                                                       'Upload Shapefile'),
                                        width = '400px'),
                           
                           ## latlon conditional panel
@@ -188,6 +190,16 @@ app_ui  <- function(request) {
                             ), 
                             #br(),
                           ), #end ECHO conditional panel
+                          ## Shapefile Upload conditional panel
+                          conditionalPanel(
+                            condition = "input.ss_choose_method == 'SHP'",
+                            ## input: Upload list of FRS identifiers
+                            shiny::fileInput(
+                              inputId = 'ss_upload_shp',
+                              label = 'Upload a shapefile',
+                              accept = c(".shp",".dbf",".sbn",".sbx",".shx",".prj"),multiple=TRUE
+                            )#, # xxx
+                          ), # end Shapefile conditionalPanel
                           
                           hr(), ## horizontal line
                           

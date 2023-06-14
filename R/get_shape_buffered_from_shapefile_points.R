@@ -13,11 +13,11 @@
 #' 
 get_shape_buffered_from_shapefile_points <- function(shapefile_points, radius.miles, ...) {
   
-sf::st_buffer(shapefile_points %>%  sf::st_transform(4269), # was "ESRI:102005" but want 4269
-              dist = units::set_units(radius.miles, "mi"), ...)
+return(sf::st_buffer(shapefile_points %>%  sf::st_transform(4269), # was "ESRI:102005" but want 4269
+              dist = units::set_units(radius.miles, "mi"), ...))
 
 }
 
 #' @export
 #' @inherit get_shape_buffered_from_shapefile_points
-get_circles_from_spatialpoints <- get_shape_buffered_from_shapefile_points
+#get_circles_from_spatialpoints <- get_shape_buffered_from_shapefile_points
