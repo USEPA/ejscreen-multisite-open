@@ -18,6 +18,6 @@ return(sf::st_buffer(shapefile_points %>%  sf::st_transform(4269), # was "ESRI:1
 
 }
 
-#' @export
-#' @inherit get_shape_buffered_from_shapefile_points
+# @export
+# @inherit get_shape_buffered_from_shapefile_points
 #get_circles_from_spatialpoints <- get_shape_buffered_from_shapefile_points

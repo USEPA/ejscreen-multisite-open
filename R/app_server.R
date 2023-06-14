@@ -272,10 +272,12 @@ app_server <- function(input, output, session) {
     purrr::walk2(infiles, outfiles, ~file.rename(.x, .y)) # rename files
     shp <- read_sf(file.path(dir, paste0(name, ".shp"))) # read-in shapefile
     
-    d_upload <-{}
-    d_upload[['points']] <- get_blockpoints_in_shape(shp,input$bt_rad_buff)
+    d_upload <-{} 
+    d <- get_blockpoints_in_shape(shp,0)
+    d_upload[['points']] <- d[['pts']]
+    d_upload[['buffer']] <- d[['polys']]
     d_upload[['shape']] <- shp
-    d_upload[['buffer']] <- get_shape_buffered_from_shapefile_points(shp,input$bt_rad_buff)
+    #d_upload[['buffer']] <- get_shape_buffered_from_shapefile_points(shp,0)
     
     d_upload
     
@@ -400,8 +402,8 @@ app_server <- function(input, output, session) {
       num_na_pt <- 0
       num_notna_pt <- nrow(data_uploaded()[['points']])
       HTML(paste0(
-        "Total shape(s) uploaded: <strong>", prettyNum(num_na_pt + num_notna_pt, big.mark=","),"</strong><br>",
-        "Total point(s) uploaded: <strong>", prettyNum(num_na + num_notna, big.mark=","),"</strong><br>",
+        "Total point(s) uploaded: <strong>", prettyNum(num_na_pt + num_notna_pt, big.mark=","),"</strong><br>",
+        "Total shape(s) uploaded: <strong>", prettyNum(num_na + num_notna, big.mark=","),"</strong><br>",
         "Valid shape(s) uploaded: <strong>", prettyNum(num_notna, big.mark=","),"</strong>")
       )
     }else{
@@ -541,6 +543,8 @@ app_server <- function(input, output, session) {
   # })
   
   ## Create separate radius label to allow line break
+  
+  
   output$radius_label <- renderUI({
     val <- input$bt_rad_buff
     lab <- paste0('<b>Radius of circular buffer: <br/>', val, ' miles ','(',round(val / 0.62137119, 2), ' km)</b>')
@@ -552,12 +556,14 @@ app_server <- function(input, output, session) {
     req(data_uploaded())
     if(current_upload_method() == "SHP"){
       d_upload <- data_uploaded()[['points']]
+      max_pts <- 10000000000
     }else{
       d_upload <-data_uploaded()
+      max_pts <- max_points_can_map
     }
     
-    max_pts <- max_points_can_map
-    ## don't draw map if > 5000 points are uploaded
+    #max_pts <- max_points_can_map
+    ## don't draw map if > 1500 points are uploaded
     if(nrow(d_upload) < max_pts){
       suppressMessages(
         leaflet() %>% addTiles() %>% 

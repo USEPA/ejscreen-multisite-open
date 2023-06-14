@@ -97,7 +97,7 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
   
   setnames(pts, c("lon","lat","siteid","blockid","distance"))
   
-  print(pts)
+  #print(list(pts,polys))
   
   # if (!("sf" %in% class(blocksnearby))) {
   #   blocksnearby <-  get_shapefile_from_sitepoints(blocksinside)
@@ -107,7 +107,7 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
   # 
   # blocksinside <- blocksinside[!is.na(blocksinside$siteid),]
   # 
-  return(pts)
+  return(list('pts'=pts,'polys'=polys))
   
 }
 
