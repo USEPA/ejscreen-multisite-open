@@ -275,9 +275,9 @@ app_server <- function(input, output, session) {
     shp <- read_sf(file.path(dir, paste0(name, ".shp"))) # read-in shapefile
     
     d_upload <-{}
-    
     d_upload[['points']] <- get_blockpoints_in_shape(shp,input$bt_rad_buff)
     d_upload[['shape']] <- shp
+    d_upload[['buffer']] <- get_shape_buffered_from_shapefile_points(shp,input$bt_rad_buff)
     
     d_upload
     
@@ -397,9 +397,13 @@ app_server <- function(input, output, session) {
     if(current_upload_method() == "SHP"){
       shp<-data_uploaded()[['shape']]
       num_na <- 0
-      num_notna <- nrow(shp)
+      num_notna <- nrow(data_uploaded()[['shape']])
+      
+      num_na_pt <- 0
+      num_notna_pt <- nrow(data_uploaded()[['points']])
       HTML(paste0(
-        "Total shape(s) uploaded: <strong>", prettyNum(num_na + num_notna, big.mark=","),"</strong><br>",
+        "Total shape(s) uploaded: <strong>", prettyNum(num_na_pt + num_notna_pt, big.mark=","),"</strong><br>",
+        "Total point(s) uploaded: <strong>", prettyNum(num_na + num_notna, big.mark=","),"</strong><br>",
         "Valid shape(s) uploaded: <strong>", prettyNum(num_notna, big.mark=","),"</strong>")
       )
     }else{
@@ -841,7 +845,7 @@ app_server <- function(input, output, session) {
     validate(
       need(data_processed(), 'Please run an analysis to see results.')
     )
-    
+    print(data_processed()$results_bysite)
     
     circle_color <- '#000080'
     
@@ -887,10 +891,11 @@ app_server <- function(input, output, session) {
     req(data_uploaded())
     
     if(current_upload_method() == "SHP"){
-      d_upload <- data_uploaded()[['shape']]  %>% st_zm() %>% as('Spatial') 
-      print(inherits(d_upload, "Spatial"))
+      d_uploadb <- data_uploaded()[['buffer']]  %>% st_zm() %>% as('Spatial') 
+      d_uploads <- data_uploaded()[['shape']]  %>% st_zm() %>% as('Spatial') 
       
-      leafletProxy(mapId = 'an_leaf_map', session,data=d_upload) %>% addPolygons()
+      leafletProxy(mapId = 'an_leaf_map', session,data=d_uploadb) %>% addPolygons(color="red")
+      leafletProxy(mapId = 'an_leaf_map', session,data=d_uploads) %>% addPolygons()
       
     }else{
       d_upload <-data_uploaded()
@@ -1607,10 +1612,16 @@ app_server <- function(input, output, session) {
       # [5] "count_of_blocks_near_multiple_sites" "results_summarized"  
       
       ## add analysis overview to 'notes' tab
+      if(current_upload_method() == "SHP"){
+        radius_description <- 'Radius of Shape Buffer (miles)'
+      }else{
+        radius_description <- 'Radius of Circular Buffer (miles)'
+      }
+      
       notes_df <- data.frame(
         'Analysis Title' = input$analysis_title,
         'Number of Points Analyzed' = nrow(data_processed()$results_bysite),
-        'Radius of Circular Buffer (miles)' = input$bt_rad_buff,
+         radius_description = input$bt_rad_buff,
         check.names = FALSE
       ) 
       notes_df <- t(notes_df)
