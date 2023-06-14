@@ -456,10 +456,9 @@ app_server <- function(input, output, session) {
 
       ## filter frs_by_mact to currently selected subpart
       mact_out <- frs_by_mact[ subpart == input$ss_select_mact]
-      ## clean so that any invalid latlons become NA
-      mact_out <- mact_out %>% 
-        dplyr::left_join(frs_by_programid, by=c('programid' = 'pgm_sys_id')) %>% 
-        latlon_df_clean()
+      ## remove any facilities with invalid latlons before returning
+      mact_out <- mact_out[!is.na(lat) & !is.na(lon),]
+        
     
       if(all(is.na(mact_out$lon)) & all(is.na(mact_out$lat))){
         validate('No valid locations found under this MACT subpart')
