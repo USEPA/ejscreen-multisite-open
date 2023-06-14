@@ -73,7 +73,7 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
       # warning("using getblocksnearby() to filter US blocks to those near each site must be done before a dissolve  ")
       polys <- sf::st_union(polys)
     }
-    blocksinside <- sf::st_join(blockpoints_sf, sf::st_transform(polys,4269), join=sf::st_intersects,left='FALSE' ) #  
+    blocksinside <- sf::st_join(blockpoints_sf, sf::st_transform(polys,4269), join=sf::st_intersects,left='FALSE' )
     
     
     # OR...  find centroid of each polygon and 
@@ -92,8 +92,12 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
  
   blocksinsidef <- unique(blocksinside)
   
-  pts <-  data.table(sf::st_coordinates(blocksinsidef)) 
-  setnames(pts, c("lon","lat"))
+ 
+  pts <-  data.table(sf::st_coordinates(blocksinsidef),blocksinsidef$OBJECTID_1,blocksinsidef$blockid,distance=0) 
+  
+  setnames(pts, c("lon","lat","siteid","blockid","distance"))
+  
+  print(pts)
   
   # if (!("sf" %in% class(blocksnearby))) {
   #   blocksnearby <-  get_shapefile_from_sitepoints(blocksinside)

@@ -273,11 +273,14 @@ app_server <- function(input, output, session) {
     name <- strsplit(input$ss_upload_shp$name[1], "\\.")[[1]][1] # strip name 
     purrr::walk2(infiles, outfiles, ~file.rename(.x, .y)) # rename files
     shp <- read_sf(file.path(dir, paste0(name, ".shp"))) # read-in shapefile
-    d_upload <- {}
     
+    d_upload <-{}
     
     d_upload[['points']] <- get_blockpoints_in_shape(shp,input$bt_rad_buff)
-    d_upload[['shape']] <- shp[1,]
+    d_upload[['shape']] <- shp
+    
+    d_upload
+    
     
   })
   
@@ -619,15 +622,17 @@ app_server <- function(input, output, session) {
     #############################################################################  # 
     ## 1) **EJAM::getblocksnearby()** ####
     
+    #define blockpoints to process if shapefile exists
     if(current_upload_method() == "SHP"){
-      sites2blocks <-data_uploaded()[['points']]
+      d_upload <-data_uploaded()[['points']]
+      sites2blocks <-d_upload
     }else{
       d_upload <-data_uploaded()
       sites2blocks <- getblocksnearby(
-      sitepoints = d_upload,
-      cutoff = input$bt_rad_buff,
-      quadtree = localtree
-    )
+        sitepoints = d_upload,
+        cutoff = input$bt_rad_buff,
+        quadtree = localtree
+      )
    
     }
     
@@ -653,7 +658,7 @@ app_server <- function(input, output, session) {
     # save(blah, file='testup.rda'); save(sites2blocks, file = 'testin.rda')
     out <- suppressWarnings(doaggregate(
       sites2blocks = sites2blocks, 
-      sites2states = data_uploaded(),
+      sites2states = d_upload,
       ## pass progress bar function as argument
       updateProgress = updateProgress_doagg
     ))
@@ -836,7 +841,7 @@ app_server <- function(input, output, session) {
     validate(
       need(data_processed(), 'Please run an analysis to see results.')
     )
-    print(data_processed())
+    
     
     circle_color <- '#000080'
     
@@ -882,37 +887,40 @@ app_server <- function(input, output, session) {
     req(data_uploaded())
     
     if(current_upload_method() == "SHP"){
-      d_upload <- data_uploaded()[['points']]
+      d_upload <- data_uploaded()[['shape']]  %>% st_zm() %>% as('Spatial') 
+      print(inherits(d_upload, "Spatial"))
+      
+      leafletProxy(mapId = 'an_leaf_map', session,data=d_upload) %>% addPolygons()
+      
     }else{
       d_upload <-data_uploaded()
-    }
-    base_color      <- '#000080'
-    cluster_color   <- 'red'
-    
-    
-    #req(input$bt_rad_buff)
-    ## convert units to miles for circle size
-    # if(input$radius_units == 'kilometers'){
-    #   rad <- input$bt_rad_buff * meters_per_mile * 0.62137119
-    # } else {
-    rad <- input$bt_rad_buff * meters_per_mile
-    #}
-    
-    if(input$an_map_clusters == TRUE){
-      ## compare latlons using is_clustered() reactive
-      circle_color <- ifelse(is_clustered() == TRUE, cluster_color, base_color)
-    } else {
-      circle_color <- base_color
-    }
-    
-    popup_vec <- popup_from_any(d_upload)
-    
-    # if(input$circle_type == 'circles'){
-    suppressMessages(
-      leafletProxy(mapId = 'an_leaf_map', session, data = d_upload) %>%
-        map_facilities_proxy(rad= input$bt_rad_buff, 
-                             highlight = input$an_map_clusters, clustered = is_clustered(),
-                             popup_vec = popup_vec)
+      base_color      <- '#000080'
+      cluster_color   <- 'red'
+      
+      
+      #req(input$bt_rad_buff)
+      ## convert units to miles for circle size
+      # if(input$radius_units == 'kilometers'){
+      #   rad <- input$bt_rad_buff * meters_per_mile * 0.62137119
+      # } else {
+      rad <- input$bt_rad_buff * meters_per_mile
+      #}
+      
+      if(input$an_map_clusters == TRUE){
+        ## compare latlons using is_clustered() reactive
+        circle_color <- ifelse(is_clustered() == TRUE, cluster_color, base_color)
+      } else {
+        circle_color <- base_color
+      }
+      
+      popup_vec <- popup_from_any(d_upload)
+      
+      # if(input$circle_type == 'circles'){
+      suppressMessages(
+        leafletProxy(mapId = 'an_leaf_map', session, data = d_upload) %>%
+          map_facilities_proxy(rad= input$bt_rad_buff, 
+                               highlight = input$an_map_clusters, clustered = is_clustered(),
+                               popup_vec = popup_vec)
         # clearShapes() %>%
         # clearMarkerClusters() %>%
         # addCircles(
@@ -939,7 +947,63 @@ app_server <- function(input, output, session) {
         # groupOptions(group = 'circles', zoomLevels = 7:20) %>%
         # ## allow fullscreen map view ([ ] button)
         # leaflet.extras::addFullscreenControl()
-    )
+      )
+    }
+    #print(d_upload)
+    # base_color      <- '#000080'
+    # cluster_color   <- 'red'
+    # 
+    # 
+    # #req(input$bt_rad_buff)
+    # ## convert units to miles for circle size
+    # # if(input$radius_units == 'kilometers'){
+    # #   rad <- input$bt_rad_buff * meters_per_mile * 0.62137119
+    # # } else {
+    # rad <- input$bt_rad_buff * meters_per_mile
+    # #}
+    # 
+    # if(input$an_map_clusters == TRUE){
+    #   ## compare latlons using is_clustered() reactive
+    #   circle_color <- ifelse(is_clustered() == TRUE, cluster_color, base_color)
+    # } else {
+    #   circle_color <- base_color
+    # }
+    # 
+    # popup_vec <- popup_from_any(d_upload)
+    # 
+    # # if(input$circle_type == 'circles'){
+    # suppressMessages(
+    #   leafletProxy(mapId = 'an_leaf_map', session, data = d_upload) %>%
+    #     map_facilities_proxy(rad= input$bt_rad_buff, 
+    #                          highlight = input$an_map_clusters, clustered = is_clustered(),
+    #                          popup_vec = popup_vec)
+    #     # clearShapes() %>%
+    #     # clearMarkerClusters() %>%
+    #     # addCircles(
+    #     #   radius = rad,
+    #     #   color = circle_color, fillColor = circle_color,
+    #     #   fill = TRUE, weight = 4,
+    #     #   group = 'circles',
+    #     #   # next version should use something like EJAMejscreenapi::popup_from_ejscreen(), but with EJAM column names
+    #     #   #popup = EJAMejscreenapi::popup_from_df(data_uploaded() %>% as.data.frame())
+    #     #   popup = popup_from_any(data_uploaded())
+    #     # )  %>%
+    #     # addCircleMarkers(
+    #     #   radius = input$bt_rad_buff,
+    #     #   color = circle_color, fillColor = circle_color,
+    #     #   fill = TRUE, weight = 4,
+    #     #   clusterOptions = markerClusterOptions(),
+    #     #   group = 'markers',
+    #     #   popup = popup_from_any(data_uploaded())
+    #     #   #popup = EJAMejscreenapi::popup_from_df(data_uploaded())
+    #     # ) %>%
+    #     # ## show circleMarkers (aggregated) at zoom levels 1:6
+    #     # groupOptions(group = 'markers', zoomLevels = 1:6) %>%
+    #     # ## show circles and popups at zoom levels 7:20
+    #     # groupOptions(group = 'circles', zoomLevels = 7:20) %>%
+    #     # ## allow fullscreen map view ([ ] button)
+    #     # leaflet.extras::addFullscreenControl()
+    # )
   })
   
   # #############################################################################  # 
