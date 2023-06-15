@@ -764,7 +764,7 @@ app_server <- function(input, output, session) {
   
   output$print_test2_dt <- DT::renderDT(
     ## server = FALSE forces download to include all rows, not just visible ones
-    server = FALSE, {
+    server = TRUE, {
     req(data_uploaded())
     
     #dt <- data_uploaded() # now naics-queried sites format is OK to view, since using different function to get sites by naics
@@ -790,7 +790,7 @@ app_server <- function(input, output, session) {
     
     DT::datatable(dt, 
                   ## add download buttons
-                  extensions = 'Buttons',
+                  #extensions = 'Buttons',
                   ## keep rownames in display table
                   rownames = TRUE,
                   options = list(pageLength = 100, 
@@ -801,32 +801,52 @@ app_server <- function(input, output, session) {
                                    list(
                                      targets = 0, className = "rownames"
                                    )
-                                 ),
+                                 )#,
                                  ## specify button placement - "B"= buttons, see https://datatables.net/reference/option/dom 
-                                 dom ='Brtip',
+                                 #dom ='Brtip',
 
-                                 buttons = list(
-                                   ## customize CSV button
-                                   list(extend = 'csv',
-                                        ## name of downloaded file
-                                        filename = 'ejam_raw_data_download',
-                                        ## drop rownames for download
-                                        exportOptions = list(columns = ":not(.rownames)")
-                                   ),
-                                   ## customize Excel button
-                                   list(extend = 'excel',
-                                        ## name of downloaded file
-                                        filename = 'ejam_raw_data_download',
-                                        ## drop title row from download
-                                        title = NULL,
-                                        ## drop rownames for download
-                                        exportOptions = list(columns = ":not(.rownames)")
-                                    )
-                                  )
+                                 # buttons = list(
+                                 #   ## customize CSV button
+                                 #   list(extend = 'csv',
+                                 #        ## name of downloaded file
+                                 #        filename = 'ejam_raw_data_download',
+                                 #        ## drop rownames for download
+                                 #        exportOptions = list(columns = ":not(.rownames)")
+                                 #   ),
+                                 #   ## customize Excel button
+                                 #   list(extend = 'excel',
+                                 #        ## name of downloaded file
+                                 #        filename = 'ejam_raw_data_download',
+                                 #        ## drop title row from download
+                                 #        title = NULL,
+                                 #        ## drop rownames for download
+                                 #        exportOptions = list(columns = ":not(.rownames)")
+                                 #    )
+                                 #  )
                                 ), # end options
                   
                   escape = FALSE) # escape=FALSE may add security issue but makes links clickable in table
   })
+  
+  ## use external download buttons for preview data
+  ## this allows loading the table on the server-side which improves speed and avoids
+  ## crashes with larger datasets
+  output$download_preview_data_xl <- downloadHandler(filename = 'epa_raw_data_download.xlsx',
+                                                      content = function(file){
+                                                        if(current_upload_method() == "SHP"){
+                                                          dt <- data_uploaded()[['shape']]
+                                                        }else{
+                                                          dt <-data_uploaded()
+                                                        }
+                                                        writexl::write_xlsx(dt, file)})
+  output$download_preview_data_csv <- downloadHandler(filename = 'epa_raw_data_download.csv',
+                                                      content = function(file){
+                                                        if(current_upload_method() == "SHP"){
+                                                          dt <- data_uploaded()[['shape']]
+                                                        }else{
+                                                          dt <-data_uploaded()
+                                                        }
+                                                        data.table::fwrite(dt, file, append = F)})
   
   ## reactive: check if uploaded points are clustered (may double-count people) ####
   # note this had been done in EJAMejscreenapi::addlinks_clusters_and_sort_cols() 

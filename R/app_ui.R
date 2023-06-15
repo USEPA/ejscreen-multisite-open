@@ -419,6 +419,10 @@ app_ui  <- function(request) {
                                                     title = 'Uploaded data', 
                                                     trigger = 'show_data_preview',
                                                     size = 'large',
+                                                    ## use download buttons for speed and handling larger data
+                                                    downloadButton('download_preview_data_csv', label = 'CSV'),
+                                                    downloadButton('download_preview_data_xl', label = 'Excel'),
+                                                    br(),
                                                     DT::DTOutput('print_test2_dt', width = '100%'))
                             )
                           ),
