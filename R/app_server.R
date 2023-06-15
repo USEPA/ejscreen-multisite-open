@@ -69,16 +69,32 @@ app_server <- function(input, output, session) {
   current_upload_method <- reactive({
     switch(
       input$ss_choose_method,
-      latlon = "latlon",  # 'Location (lat/lon)',
-      FRS =  "FRS", # 'FRS (facility ID)',
-      #ECHO = "ECHO", # 'ECHO Search Tools',
-      NAICS = "NAICS", # 'NAICS (industry name or code)'
-      SHP = "SHP",
-      EPA_PROGRAM = "EPA_PROGRAM",
-      SIC = "SIC" ,
-      FIPS = "FIPS",
-      MACT = "MACT"
+      'dropdown' = switch(input$ss_choose_method_drop,
+                          NAICS = "NAICS", # 'NAICS (industry name or code)'
+                          EPA_PROGRAM = "EPA_PROGRAM",
+                          SIC = "SIC" ,
+                          MACT = "MACT"),
+      'upload' = switch(input$ss_choose_method_upload,
+                        SHP = "SHP",
+                        latlon = "latlon",  # 'Location (lat/lon)',
+                        EPA_PROGRAM = "EPA_PROGRAM",
+                        FRS =  "FRS", # 'FRS (facility ID)',
+                        #ECHO = "ECHO", # 'ECHO Search Tools',
+                        FIPS = "FIPS")
     )
+    
+    # switch(
+    #   input$ss_choose_method,
+    #   latlon = "latlon",  # 'Location (lat/lon)',
+    #   FRS =  "FRS", # 'FRS (facility ID)',
+    #   #ECHO = "ECHO", # 'ECHO Search Tools',
+    #   NAICS = "NAICS", # 'NAICS (industry name or code)'
+    #   SHP = "SHP",
+    #   EPA_PROGRAM = "EPA_PROGRAM",
+    #   SIC = "SIC" ,
+    #   FIPS = "FIPS",
+    #   MACT = "MACT"
+    # )
   })
   #############################################################################  # 
   ## reactive: data uploaded as latlon ####
@@ -282,7 +298,8 @@ app_server <- function(input, output, session) {
     req(isTruthy(input$ss_upload_program) || isTruthy(input$ss_select_program))
     #req(input$submit_program)
     
-   if(input$program_ul_type == 'upload'){
+    if(input$ss_choose_method_upload == 'EPA_PROGRAM'){
+   #if(input$program_ul_type == 'upload'){
     req(input$ss_upload_program)
      
     ## check if file extension is appropriate
@@ -324,8 +341,8 @@ app_server <- function(input, output, session) {
     pgm_out <- pgm_out %>% 
       latlon_df_clean()
 
-   } else if(input$program_ul_type == 'dropdown'){
-     
+   #} else if(input$program_ul_type == 'dropdown'){
+    } else if(input$ss_choose_method_drop == 'EPA_PROGRAM'){ 
      req(isTruthy(input$ss_select_program))
      ## filter frs_by_programid to currently selected program
      pgm_out <- frs_by_programid[ program== input$ss_select_program]
@@ -635,8 +652,8 @@ app_server <- function(input, output, session) {
       #   shinyjs::enable(id = 'submit_program')
       # }
       
-      if((input$program_ul_type == 'upload' & !isTruthy(input$ss_upload_program)) |
-         (input$program_ul_type == 'dropdown' & !isTruthy(input$ss_select_program))){
+      if((input$ss_choose_method == 'upload' & !isTruthy(input$ss_upload_program)) |
+         (input$ss_choose_method == 'dropdown' & !isTruthy(input$ss_select_program))){
       #if(!isTruthy(input$submit_program)){
         shinyjs::disable(id = 'bt_get_results')
         shinyjs::hide(id = 'show_data_preview')
@@ -926,7 +943,7 @@ app_server <- function(input, output, session) {
                   'NAICS' = input$ss_select_naics,#input$submit_naics,
                   'SHP' = input$ss_upload_shp,
                   #ECHO = input$ss_upload_echo,
-                  'EPA_PROGRAM' = switch(input$program_ul_type, 
+                  'EPA_PROGRAM' = switch(input$ss_choose_method, 
                                          'dropdown' = input$ss_select_program,
                                          'upload' = input$ss_upload_program), #input$submit_program,
                   'SIC' = input$ss_select_sic,#input$submit_sic,

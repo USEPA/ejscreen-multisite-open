@@ -80,34 +80,67 @@ app_ui  <- function(request) {
                           
                           hr(), ## horizontal line
                           
-                          ## input: selecting upload method
-                          radioButtons(inputId = 'ss_choose_method',
-                                       label = 'How would you like to identify facilities?',
-                                       choiceValues = c('latlon', 
-                                                        'NAICS',
-                                                        'FRS',
-                                                        #"ECHO",
-                                                        'EPA_PROGRAM',
-                                                        'SHP',
-                                                        'SIC',
-                                                        'FIPS',
-                                                        'MACT'
-                                                        ),
-                                       choiceNames = c('Upload Location (latitude/longitude) file',
-                                                       'Select by Industry (NAICS) Code',
-                                                       'Upload EPA Facility ID (FRS Identifers) file',
-                                                       #"Search using ECHO database",
-                                                       'Select an EPA Program',
-                                                       'Upload Shapefile',
-                                                       
-                                                       'Select by SIC code',
-                                                       'Upload a FIPS code file',
-                                                       'Select a MACT subpart'),
-                                       width = '400px'),
+                         ## input: choose between selection and upload
+                         radioButtons(inputId = 'ss_choose_method', 
+                                      label = 'How would you like to identify locations?',
+                                      choiceNames = c('Select a category of locations',
+                                                      'Upload specific locations'),
+                                      choiceValues = c('dropdown', 'upload')),
+                          
+                         ## input: choose among facility dropdown options
+                         conditionalPanel(
+                           condition = 'input.ss_choose_method == "dropdown"',
+                           radioButtons(inputId = 'ss_choose_method_drop', 
+                                        label = 'How would you like to enter the codes?',
+                                        choiceNames = c('Select by Industry (NAICS) Codes',
+                                                        'Select by Industry (SIC) Codes',
+                                                        'Select by EPA Program',
+                                                        'Select by MACT subpart(s)'),
+                                        choiceValues = c('NAICS','SIC','EPA_PROGRAM','MACT'))
+                         ),
+                         
+                         ## input: choose among facility upload options
+                         conditionalPanel(
+                           condition = 'input.ss_choose_method == "upload"',
+                           radioButtons(inputId = 'ss_choose_method_upload',
+                                        label = 'What type of data are you uploading?',
+                                        choiceNames = c('Location (Latitude/Longitude)',
+                                                        'EPA Facility ID (FRS Identifiers)',
+                                                        'EPA Program IDs',
+                                                        'FIPS Codes',
+                                                        'Shapefile of polygons'),
+                                        choiceValues = c('latlon','FRS','EPA_PROGRAM','FIPS','SHP'))
+                         ),
+                     
+                         
+                          # ## input: selecting upload method
+                          # radioButtons(inputId = 'ss_choose_method',
+                          #              label = 'How would you like to identify facilities?',
+                          #              choiceValues = c('latlon', 
+                          #                               'NAICS',
+                          #                               'FRS',
+                          #                               #"ECHO",
+                          #                               'EPA_PROGRAM',
+                          #                               'SHP',
+                          #                               'SIC',
+                          #                               'FIPS',
+                          #                               'MACT'
+                          #                               ),
+                          #              choiceNames = c('Upload Location (latitude/longitude) file',
+                          #                              'Select by Industry (NAICS) Code',
+                          #                              'Upload EPA Facility ID (FRS Identifers) file',
+                          #                              #"Search using ECHO database",
+                          #                              'Select an EPA Program',
+                          #                              'Upload Shapefile',
+                          #                              
+                          #                              'Select by SIC code',
+                          #                              'Upload a FIPS code file',
+                          #                              'Select a MACT subpart'),
+                          #              width = '400px'),
                           
                           ## latlon conditional panel
                           conditionalPanel(
-                            condition = "input.ss_choose_method == 'latlon'",
+                            condition = "input.ss_choose_method == 'upload' && input.ss_choose_method_upload == 'latlon'",
                             
                             ## input: Upload list of facility lat/longs
                             fileInput(inputId = 'ss_upload_latlon',  
@@ -120,7 +153,7 @@ app_ui  <- function(request) {
                           
                           ## NAICS conditional panel
                           conditionalPanel(
-                            condition = "input.ss_choose_method == 'NAICS'",
+                            condition = "input.ss_choose_method == 'dropdown' && input.ss_choose_method_drop == 'NAICS'",
                             
                             # radioButtons('naics_ul_type', 'Choose how to enter NAICS codes',
                             #              choiceNames = c('Select codes from dropdown' ,
@@ -179,7 +212,7 @@ app_ui  <- function(request) {
                           
                           ## FRS conditional panel
                           conditionalPanel(
-                            condition = "input.ss_choose_method == 'FRS'",
+                            condition = "input.ss_choose_method == 'upload' && input.ss_choose_method_upload == 'FRS'",
                             ## input: Upload list of FRS identifiers
                             shiny::fileInput(
                               inputId = 'ss_upload_frs',
@@ -205,18 +238,18 @@ app_ui  <- function(request) {
                           
                           ## EPA program conditional panel
                           conditionalPanel(
-                            condition = "input.ss_choose_method == 'EPA_PROGRAM'",
+                            condition = "input.ss_choose_method == 'dropdown' && input.ss_choose_method_drop == 'EPA_PROGRAM'",
                             
                             br(),
                             
                             ## input: radio button to choose upload or selecting programs
-                            radioButtons(inputId = 'program_ul_type', label = 'Choose how to submit EPA programs',
-                                         choiceNames = c('Select from dropdown menu',
-                                                         'Upload a file with program IDs'),
-                                         choiceValues = c('dropdown','upload'), selected = 'dropdown'),
+                            # radioButtons(inputId = 'program_ul_type', label = 'Choose how to submit EPA programs',
+                            #              choiceNames = c('Select from dropdown menu',
+                            #                              'Upload a file with program IDs'),
+                            #              choiceValues = c('dropdown','upload'), selected = 'dropdown'),
                             
-                            conditionalPanel(
-                              condition = "input.program_ul_type == 'dropdown'",
+                            #conditionalPanel(
+                              #condition = "input.program_ul_type == 'dropdown'",
                               ## input: select an EPA program from list
                               selectizeInput(inputId = 'ss_select_program', label = 'Pick an EPA program',
                                        ## named vector in global.R - values are acronyms, 
@@ -228,20 +261,20 @@ app_ui  <- function(request) {
                             ),
                             
                             conditionalPanel(
-                              condition = "input.program_ul_type == 'upload'",
+                              condition = "input.ss_choose_method == 'upload' && input.ss_choose_method_upload == 'EPA_PROGRAM'",
                               ## input: upload an EPA program ID file
                               fileInput(inputId = 'ss_upload_program',
                                         label = 'Upload a file with program IDs')
-                            )#,
+                            ),#,
                             
                             ## input: submit button once program is selected from dropdown
                             #actionButton(inputId = 'submit_program', label = 'Submit Program')
                             
-                          ), #end EPA program conditional panel
+                          #), #end EPA program conditional panel
                           
                           ## SIC conditional panel
                           conditionalPanel(
-                            condition = "input.ss_choose_method == 'SIC'",
+                            condition = "input.ss_choose_method == 'dropdown' && input.ss_choose_method_drop == 'SIC'",
                             
                             # radioButtons('sic_ul_type', 'Choose how to enter SIC codes',
                             #              choiceNames = c('Select codes from dropdown' ,
@@ -301,7 +334,7 @@ app_ui  <- function(request) {
                           
                           ## FIPS conditional panel
                           conditionalPanel(
-                            condition = "input.ss_choose_method == 'FIPS'",
+                            condition = "input.ss_choose_method == 'upload' && input.ss_choose_method_upload == 'FIPS'",
                             
                             ## input: Upload list of facility lat/longs
                             fileInput(inputId = 'ss_upload_fips',  
@@ -314,7 +347,7 @@ app_ui  <- function(request) {
                           
                           ## Shapefile Upload conditional panel
                           conditionalPanel(
-                            condition = "input.ss_choose_method == 'SHP'",
+                            condition = "input.ss_choose_method == 'upload' && input.ss_choose_method_upload == 'SHP'",
                             ## input: Upload list of FRS identifiers
                             shiny::fileInput(
                               inputId = 'ss_upload_shp',
@@ -323,7 +356,7 @@ app_ui  <- function(request) {
                             )#, # xxx
                           ), # end Shapefile conditionalPanel
                           conditionalPanel(
-                            condition = "input.ss_choose_method == 'MACT'",
+                            condition = "input.ss_choose_method == 'dropdown' && input.ss_choose_method_drop == 'MACT'",
                             
                             ## input: choose MACT subpart from dropdown list
                             selectizeInput(inputId = 'ss_select_mact',
@@ -448,7 +481,7 @@ app_ui  <- function(request) {
                 
                 ## NAICS help page
                 conditionalPanel(
-                  condition = "input.ss_choose_method == 'NAICS'",
+                  condition = "input.ss_choose_method == 'dropdown' && input.ss_choose_method_drop == 'NAICS'",
                   shinyBS::bsCollapse(
                     id = 'naics_help', 
                     open = 'Read more about NAICS',
@@ -462,7 +495,7 @@ app_ui  <- function(request) {
                 ),
                 ## FRS help page
                 conditionalPanel(
-                  condition = "input.ss_choose_method == 'FRS'",
+                  condition = "input.ss_choose_method == 'upload' && input.ss_choose_method_upload == 'FRS'",
                   shinyBS::bsCollapse(
                     id = 'frs_help', open = 'FRS file upload instructions',
                     shinyBS::bsCollapsePanel(title = 'FRS file upload instructions',
@@ -474,7 +507,7 @@ app_ui  <- function(request) {
                 ),
                 ## latlon help page
                 conditionalPanel(
-                  condition = "input.ss_choose_method == 'latlon'",
+                  condition = "input.ss_choose_method == 'upload' && input.ss_choose_method_upload == 'latlon'",
                   ## read more about latlon 
                   shinyBS::bsCollapse(
                     id = 'latlon_help', open = 'Location file upload instructions',
