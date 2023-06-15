@@ -884,7 +884,7 @@ app_server <- function(input, output, session) {
     if(current_upload_method() == "SHP"){
       req(data_uploaded())
       d_upload <- data_uploaded()[['points']]
-      max_pts <- 10000000000
+      max_pts <- max_points_can_map_poly
       
       leaflet() %>% addTiles() %>% 
         fitBounds(lng1 = min(d_upload$lon, na.rm=T),
@@ -893,13 +893,15 @@ app_server <- function(input, output, session) {
                   lat2 = max(d_upload$lat, na.rm=T))
     } else if(current_upload_method() == 'FIPS'){
       #req(data_uploaded())
-      max_pts <- 10000000000
+      max_pts <- max_points_can_map_poly
       
-      leaflet() %>% addTiles() %>% 
-        fitBounds(lng1 = min(data_uploaded()$lon, na.rm=T),
-                  lng2 = max(data_uploaded()$lon, na.rm=T),
-                  lat1 = min(data_uploaded()$lat, na.rm=T),
-                  lat2 = max(data_uploaded()$lat, na.rm=T))
+      validate('Mapping for FIPS codes not yet available')
+      
+      # leaflet() %>% addTiles() %>% 
+      #   fitBounds(lng1 = min(data_uploaded()$lon, na.rm=T),
+      #             lng2 = max(data_uploaded()$lon, na.rm=T),
+      #             lat1 = min(data_uploaded()$lat, na.rm=T),
+      #             lat2 = max(data_uploaded()$lat, na.rm=T))
       
     } else{
       d_upload <-data_uploaded()

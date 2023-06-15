@@ -6,7 +6,9 @@ library(shiny)
 # DEFINE SOME VARIABLES (but most are loaded with package as data) ####
 
 # max points can map ####
-max_points_can_map<- 1500
+max_points_can_map<- 15000
+## use larger cutoff for polygons (FIPS/Shapefiles)
+max_points_can_map_poly <- 1e10
 
 ## global variable for mapping (EJAMejscreenapi had this as data loaded by pkg?)
 meters_per_mile <- 1609.344
