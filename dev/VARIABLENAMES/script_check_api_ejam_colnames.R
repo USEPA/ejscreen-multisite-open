@@ -1,6 +1,6 @@
  library(EJAM)
-ejamout = ejamit(   testpoints_50, silentinteractive = TRUE)
-apiout = ejscreenit(testpoints_50, interactiveprompt = FALSE, nosave = T, nosee = T)
+ejamout <- ejamit(   testpoints_50, silentinteractive = TRUE)
+apiout <- ejscreenit(testpoints_50, interactiveprompt = FALSE, nosave = T, nosee = T)
 
 # > names(apiout)
 # [1] "table"     "map"       "plot"      "us.ratios"
@@ -10,8 +10,8 @@ apiout = ejscreenit(testpoints_50, interactiveprompt = FALSE, nosave = T, nosee 
 # [7] "formatted"   
 
 library(data.table)
-xejam = setDF(copy(ejamout$results_bysite))
-xapi  = apiout$table
+xejam <- data.table::setDF(data.table::copy(ejamout$results_bysite))
+xapi  <- apiout$table
 setdiff(names(xejam), names(xapi))
 # 153 colnames in EJAM that were not in ejscreenapi table output
 # 46 in API only
@@ -19,7 +19,7 @@ setdiff(names(xejam), names(xapi))
 
 
 # related to Supplemental:  (these are being added as placeholders with NA values, in ejscreenapi outputs)
-suppnames = c(
+suppnames <- c(
  "Demog.Index.Supp",                           "lowlifex", 
  "pctile.Demog.Index.Supp",             "pctile.lowlifex", 
  "avg.Demog.Index.Supp",                   "avg.lowlifex" , 
@@ -28,7 +28,7 @@ suppnames = c(
 )
 
 # related to subgroups, not in api:  (will be in June/July release of EJScreen, but were not yet in API)
-subnames = c(
+subnames <- c(
 names_d_subgroups, 
 names_d_subgroups_avg, names_d_subgroups_state_avg,
 names_d_subgroups_pctile, names_d_subgroups_state_pctile ,
@@ -37,15 +37,15 @@ names_d_subgroups_ratio_to_avg, names_d_subgroups_ratio_to_state_avg
 
 # adding these to ejscreenapi at least for basic Demog groups and Envt, but need to add for subgroups and 
 # also need to add state average ratios not just US.
-rationames = grep("ratio\\.to", names(xejam), value = T)
+rationames <- grep("ratio\\.to", names(xejam), value = T)
 # "ratio.to"
 
 # Still need to double check naming conventions:  pctile.EJ.DISPARITY...  versus  EJ.DISPARITY...
 # Mostly have added these to EJAM now. 
-ejnames = grep("EJ\\.DISPARITY", names(xejam), value = T)
+ejnames <- grep("EJ\\.DISPARITY", names(xejam), value = T)
 
 # will not be in api outputs.
-countnames = c(names_d_count, names_d_subgroups_count )
+countnames <- c(names_d_count, names_d_subgroups_count )
 
 ###############################################################
 # SEE WHAT ELSE BESIDES THOSE DOES NOT MATCH ###############################################################
