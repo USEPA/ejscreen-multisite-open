@@ -294,13 +294,31 @@ app_server <- function(input, output, session) {
                        shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
     ) # returns a data.frame
     
-    ## need to add data validation checks here 
+    ## convert pgm_sys_id and REGISTRY_ID columns to character before joining
+    if(class(read_pgm$pgm_sys_id) != "character"){
+      read_pgm$pgm_sys_id = as.character(read_pgm$pgm_sys_id)
+    }
+    if(class(read_pgm$REGISTRY_ID) != "character"){
+      read_pgm$REGISTRY_ID = as.character(read_pgm$REGISTRY_ID)
+    }
+    
+    ## add check for program and pgm_sys_id else validate
+    
     ## look for program in list from unique(frs_by_programid$program)
     
-    pgm_out <- dplyr::left_join(
-      read_pgm, frs_by_programid,
-      by = c("program", "pgm_sys_id")
-    )
+    ## if any of these columns already exist, join by all of them
+    if(any(c('REGISTRY_ID','lat','lon') %in% colnames(read_pgm))){
+      pgm_out <- dplyr::left_join(
+        read_pgm, frs_by_programid#,
+        #by = c("program", "pgm_sys_id")
+      )
+    } else {
+      pgm_out <- dplyr::left_join(
+        read_pgm, frs_by_programid,
+        by = c("program", "pgm_sys_id")
+      )
+    }
+   
     ## clean so that any invalid latlons become NA
     pgm_out <- pgm_out %>% 
       latlon_df_clean()
@@ -416,12 +434,14 @@ app_server <- function(input, output, session) {
     )
 
     ## create named vector of FIPS codes (names used as siteid)
-    if('FIPS' %in% colnames(ext)){
-      
-    fips_vec <- fips_lead_zero(as.character(ext$FIPS))
+    fips_alias <- c('FIPS','fips','fips_code','fipscode','Fips','statefips','countyfips')
+    if(any(colnames(ext)) %in% fips_alias){
+    #if('FIPS' %in% colnames(ext)){
+      firstmatch <- intersect(fips_alias, colnames(ext))[1]
+    fips_vec <- fips_lead_zero(as.character(ext[[firstmatch]]))
     names(fips_vec) <- as.character(fips_vec)
     } else{
-      validate('No column named "FIPS" found')
+      validate(paste0('No FIPS column found. Please use one of the following names: ', paste0(fips_alias, collapse=', ')))
     }
     ## create two-column dataframe with bgs (values) and original fips (ind)
     all_bgs <- stack(sapply(fips_vec, fipsbg_from_anyfips))
