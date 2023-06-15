@@ -13,15 +13,23 @@ meters_per_mile <- 1609.344
 
 ## EPA Programs (to limit NAICS/ facilities query) #### 
 ## used by inputId 'ss_limit_fac1' and 'ss_limit_fac2'
-epa_programs <- c(
-  "TRIS" = "TRIS",
-  "RCRAINFO" = "RCRAINFO",
-  "AIRS/AFS" = "AIRS/AFS", 
-  "E-GGRT" = "E-GGRT",
-  "NPDES" = "NPDES", 
-  "RCRAINFO" = "RCRAINFO", 
-  "RMP" = "RMP"
-)
+# epa_programs <- c(
+#   "TRIS" = "TRIS",
+#   "RCRAINFO" = "RCRAINFO",
+#   "AIRS/AFS" = "AIRS/AFS", 
+#   "E-GGRT" = "E-GGRT",
+#   "NPDES" = "NPDES", 
+#   "RCRAINFO" = "RCRAINFO", 
+#   "RMP" = "RMP"
+# )
+
+## add counts to program acronyms to use in dropdown display
+epa_program_counts <- dplyr::count(EJAM::frs_by_programid, program, name = 'count') 
+epa_program_counts$pgm_text_dropdown <- paste0(epa_program_counts$program, ' (',prettyNum(epa_program_counts$count, big.mark = ','), ')')
+
+epa_programs <- setNames(epa_program_counts$program, epa_program_counts$pgm_text_dropdown)
+
+#epa_programs <- sort(unique(EJAM::frs_by_programid$program))
 
 ## Loading/wait spinners (color, type) ####
 ## note: was set at type = 1, but this caused screen to "bounce"

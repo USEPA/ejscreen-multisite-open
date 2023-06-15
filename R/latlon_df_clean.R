@@ -28,6 +28,8 @@ latlon_df_clean <- function(df) {
   # validate to some extent (are the lat lon plausible values)
   if (any(!latlon_is.valid(lat = df$lat, lon = df$lon))) {
     warning('Some lat or lon values seem invalid - NA or number outside expected range')
+    ## convert invalid latlons to NA
+    df[!latlon_is.valid(lat = df$lat, lon = df$lon), c('lat','lon')] <- NA
   }
   
   return(df)
