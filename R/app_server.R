@@ -721,11 +721,21 @@ app_server <- function(input, output, session) {
       num_na_pt <- 0
       num_notna_pt <- nrow(data_uploaded()[['points']])
       HTML(paste0(
-        "Total point(s) uploaded: <strong>", prettyNum(num_na_pt + num_notna_pt, big.mark=","),"</strong><br>",
-        "Total shape(s) uploaded: <strong>", prettyNum(num_na + num_notna, big.mark=","),"</strong><br>",
-        "Valid shape(s) uploaded: <strong>", prettyNum(num_notna, big.mark=","),"</strong>")
-      )
-    }else{
+        "Total shape(s) uploaded: <strong>", prettyNum(num_na + num_notna, big.mark=",")#,"</strong><br>"#,
+        #"Valid shape(s) uploaded: <strong>", prettyNum(num_notna, big.mark=","),"</strong>"#,
+        #"Total related blockpoints: <strong>", prettyNum(num_na_pt + num_notna_pt, big.mark=","),"</strong><br>")
+      ))
+    } else if(current_upload_method() == 'FIPS'){
+      num_na <- 0
+      num_locs <- length(unique(data_uploaded()$siteid))
+      num_bpts <- nrow(data_uploaded())
+      
+      HTML(paste0(
+        "Total location(s) uploaded: <strong>", prettyNum(num_locs, big.mark=",")#,"</strong><br>",
+        #"Types of location(s) uploaded: <strong>", prettyNum(num_notna, big.mark=","),"</strong>",
+        #"Total related blockpoints: <strong>", prettyNum(num_bpts, big.mark=","),"</strong><br>")
+      ))
+    } else{
       #separate inputs with valid/invalid lat/lon values
       if (nrow(data_uploaded()) > 1){ 
         num_na    <- nrow(data_uploaded()[ (is.na(data_uploaded()$lat) | is.na(data_uploaded()$lon)),])
@@ -748,8 +758,9 @@ app_server <- function(input, output, session) {
       }
       
       HTML(paste0(
-                  "Total site(s) uploaded: <strong>", prettyNum(num_na + num_notna, big.mark=","),"</strong><br>",
-                  "Valid site(s) uploaded: <strong>", prettyNum(num_notna, big.mark=","),"</strong>")
+                  "Total location(s) uploaded: <strong>", prettyNum(num_na + num_notna, big.mark=",")#,"</strong><br>",
+                  #"Valid site(s) uploaded: <strong>", prettyNum(num_notna, big.mark=","),"</strong>")
+      )
            )
                   #"Site(s) with invalid lat/lon values: <strong>", prettyNum(num_na,big.mark=","), "</strong>"))
       # HTML(paste0("Current upload method: <strong>",  current_upload_method(), "</strong><br>", 
