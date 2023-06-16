@@ -4,7 +4,7 @@
 #' @param pkgname na
 #'
 .onLoad <- function(libname, pkgname) {
-    ok_to_do_slow_load_early <- TRUE # WHILE TESTING/Building often
+    ok_to_do_slow_load_early <- FALSE # WHILE TESTING/Building often
   if (  ok_to_do_slow_load_early) {
   ### Maybe load the datasets now that are needed, 
   ### instead of when user does a query that triggers slow lazyloading?
@@ -16,7 +16,11 @@
   data(blockpoints,   package="EJAMblockdata"); cat('  Done loading blockpoints.\n')  
   data(blockwts,      package="EJAMblockdata"); cat('  Done loading blockwts.\n') 
   data(quaddata,      package="EJAMblockdata"); cat('  Done loading quaddata.\n')  
-  data(blockid2fips,  package="EJAMblockdata")
+  
+  data(blockid2fips,  package="EJAMblockdata") 
+  # used only in state_from_blocktable() and state_from_blockid(), which are not necessarily used, 
+  # so maybe should not load this unless/until needed
+  
   data(bgid2fips,     package="EJAMblockdata")
   data(lookup_states, package="EJAMblockdata")
   

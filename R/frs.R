@@ -4,7 +4,7 @@
 #' 
 #' @description This is a data.table snapshot version of the EPA FRS. 
 #'   You can look up sites by REGISTRY_ID in [frs], and get their location, etc.
-#' @seealso  frs_by_programid  frs_by_naics 
+#' @seealso  frs_by_programid  frs_by_naics frs_by_sic
 #' @details 
 #'  This dataset can be updated by a package maintainer by using 
 #'     frs_update_datasets() (which is not an exported function)
@@ -16,7 +16,7 @@
 #'   as provided here: <https://www.epa.gov/ejscreen/ejscreen-map-descriptions#sites-reporting-to-epa>
 #' \preformatted{
 #' 
-#'  As of May 2023
+#'  As of June 2023
 #'  
 #'  Count of    all REGISTRY_ID rows:   7,441,086
 #'  Count of unique REGISTRY_ID values: 4,705,744
@@ -28,6 +28,7 @@
 #' frs rows actives:          2,573,338 
 #' frs_by_programid rows:     3,440,036 
 #' frs_by_naics rows:           679,471 
+#' frs_by_sic rows:           1,081,742
 #' 
 #'   Classes ‘data.table’ and 'data.frame':	 
 #'   Retained only these columns for this package
@@ -37,6 +38,7 @@
 #'   $ REGISTRY_ID   : chr  "110000307668" "110000307695" "110000307739" "110000307757" ...
 #'   $ PRIMARY_NAME  : chr  "HB FULLER COMPANY HBF PUERTO RICO" "RAMCO CHEMICALS INCORPORATED" 
 #'   $ NAICS         : chr  "325520" "" "311119" "312120" ...
+#'   $ SIC           : chr  "2842" "2048" "2047, 2048, 2091" ...
 #'   $ PGM_SYS_ACRNMS: chr  "NCDB:I02#19880913A2001 2, RCRAINFO:PRD090122136
 #'    
 #'    }

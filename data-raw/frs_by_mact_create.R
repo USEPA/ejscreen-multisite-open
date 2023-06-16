@@ -91,16 +91,71 @@ y$title <-  gsub((".* Subpart .{1,8} - ([a-zA-Z]*)"), "\\1", y$AIR_PROGRAM_SUBPA
 y <- y[ , c("PGM_SYS_ID", "subpartclean", "title")]
 names(y) <- c("programid", "subpart", "title")
 
-
-
-
 # Make a table of the unique MACT codes and the title of each category
 
 types <- unique(y[,c("subpart", "title")])
+## paste letters and titles together for displaying in dropdown menu
+types$dropdown_label <- paste(types$subpart, stringr::str_to_title(types$title), sep = ' - ')
 types <- types[order(types$subpart), ]
 rownames(types) <- NULL
-names(types) <- c("subpart", "title")
+names(types) <- c("subpart", "title",'dropdown_label')
 
+
+# add AFS MACT data -------------------------------------------------------
+
+## source: https://echo.epa.gov/tools/data-downloads, AFS Dataset
+## https://echo.epa.gov/files/echodownloads/afs_downloads.zip
+AIR_PROGRAM <- readr::read_csv("afs_downloads/AIR_PROGRAM.csv")
+AFS_FACILITIES <- readr::read_csv("afs_downloads/AFS_FACILITIES.csv")
+
+AIR_PROGRAM$AFS_ID <- stringr::str_pad(AIR_PROGRAM$AFS_ID, width = 10, pad = "0")
+
+AFS_FACILITIES$AIR_PROGRAM_CODE_SUBPARTS <- AIR_PROGRAM$AIR_PROGRAM_CODE_SUBPARTS[match(AFS_FACILITIES$PLANT_ID,AIR_PROGRAM$PLANT_ID)]
+AFS_FACILITIES$AIR_PROGRAM_CODE <- AIR_PROGRAM$AIR_PROGRAM_CODE[match(AFS_FACILITIES$AIR_PROGRAM_CODE_SUBPARTS,AIR_PROGRAM$AIR_PROGRAM_CODE_SUBPARTS)]
+
+AIR_PROGRAM_MACT <- AFS_FACILITIES[AFS_FACILITIES$AIR_PROGRAM_CODE == "M",]
+AIR_PROGRAM_MACT$AFS_ID <- stringr::str_pad(AIR_PROGRAM_MACT$AFS_ID, 10, pad = "0")
+AIR_PROGRAM_MACT <- data.table::data.table(AIR_PROGRAM_MACT)
+
+AIR_PROGRAM_MACT <- tidyr::unnest(AIR_PROGRAM_MACT, cols = AIR_PROGRAM_CODE_SUBPARTS)
+
+AIR_PROGRAM_MACT_PLANT_ID <- tidyr::separate_longer_delim(AIR_PROGRAM_MACT, c(AIR_PROGRAM_CODE_SUBPARTS), delim=",") #AIR_PROGRAM_MACT[,list(AIR_PROGRAM_CODE_SUBPARTS = unlist( strsplit( AIR_PROGRAM_CODE_SUBPARTS , "," ) ) ) , by = PLANT_ID ]
+
+AIR_PROGRAM_MACT_PLANT_ID$AFS_ID <- AIR_PROGRAM_MACT$AFS_ID[match(AIR_PROGRAM_MACT_PLANT_ID$PLANT_ID,AIR_PROGRAM_MACT$PLANT_ID)]
+AIR_PROGRAM_MACT_PLANT_ID$PLANT_NAME <- AIR_PROGRAM_MACT$PLANT_NAME[match(AIR_PROGRAM_MACT_PLANT_ID$PLANT_ID,AIR_PROGRAM_MACT$PLANT_ID)]
+AIR_PROGRAM_MACT_PLANT_ID$EPA_REGION <- AIR_PROGRAM_MACT$EPA_REGION[match(AIR_PROGRAM_MACT_PLANT_ID$PLANT_ID,AIR_PROGRAM_MACT$PLANT_ID)]
+AIR_PROGRAM_MACT_PLANT_ID$PLANT_STREET_ADDRESS <- AIR_PROGRAM_MACT$PLANT_STREET_ADDRESS[match(AIR_PROGRAM_MACT_PLANT_ID$PLANT_ID,AIR_PROGRAM_MACT$PLANT_ID)]
+AIR_PROGRAM_MACT_PLANT_ID$PLANT_CITY <- AIR_PROGRAM_MACT$PLANT_CITY[match(AIR_PROGRAM_MACT_PLANT_ID$PLANT_ID,AIR_PROGRAM_MACT$PLANT_ID)]
+AIR_PROGRAM_MACT_PLANT_ID$PLANT_COUNTY <- AIR_PROGRAM_MACT$PLANT_COUNTY[match(AIR_PROGRAM_MACT_PLANT_ID$PLANT_ID,AIR_PROGRAM_MACT$PLANT_ID)]
+AIR_PROGRAM_MACT_PLANT_ID$STATE <- AIR_PROGRAM_MACT$STATE[match(AIR_PROGRAM_MACT_PLANT_ID$PLANT_ID,AIR_PROGRAM_MACT$PLANT_ID)]
+AIR_PROGRAM_MACT_PLANT_ID$STATE_NUMBER <- AIR_PROGRAM_MACT$STATE_NUMBER[match(AIR_PROGRAM_MACT_PLANT_ID$PLANT_ID,AIR_PROGRAM_MACT$PLANT_ID)]
+AIR_PROGRAM_MACT_PLANT_ID$ZIP_CODE <- AIR_PROGRAM_MACT$ZIP_CODE[match(AIR_PROGRAM_MACT_PLANT_ID$PLANT_ID,AIR_PROGRAM_MACT$PLANT_ID)]
+AIR_PROGRAM_MACT_PLANT_ID$PRIMARY_SIC_CODE <- AIR_PROGRAM_MACT$PRIMARY_SIC_CODE[match(AIR_PROGRAM_MACT_PLANT_ID$PLANT_ID,AIR_PROGRAM_MACT$PLANT_ID)]
+AIR_PROGRAM_MACT_PLANT_ID$SECONDARY_SIC_CODE <- AIR_PROGRAM_MACT$SECONDARY_SIC_CODE[match(AIR_PROGRAM_MACT_PLANT_ID$PLANT_ID,AIR_PROGRAM_MACT$PLANT_ID)]
+AIR_PROGRAM_MACT_PLANT_ID$NAICS_CODE <- AIR_PROGRAM_MACT$NAICS_CODE[match(AIR_PROGRAM_MACT_PLANT_ID$PLANT_ID,AIR_PROGRAM_MACT$PLANT_ID)]
+
+## this now contains approx 44K (19K with valid latlons) additional facilities linked to EPA_PROGRAM 'AIRS/AFS' 
+afs_mact <- AIR_PROGRAM_MACT_PLANT_ID %>% 
+  dplyr::select(programid = "AFS_ID",subpart = "AIR_PROGRAM_CODE_SUBPARTS") %>% 
+  dplyr::rowwise() %>% 
+  ## some subparts written as "6C" instead of "CCCCCC", so converting these to all letters
+  dplyr::mutate(subpart = 
+                  ifelse(stringr::str_detect(subpart, '[:digit:]'),
+                         paste0(rep(substr(subpart, 2, 2), 
+                                    as.numeric(substr(subpart,1,1))),collapse=""),
+                         subpart)
+  ) %>% 
+  dplyr::ungroup() %>% 
+  ## add title column
+  dplyr::left_join(types) 
+
+
+y <- data.table::rbindlist(list(y, afs_mact))
+
+## filter out missing latlons, now 55,411 valid records as of 6/2023
+y <- y %>% 
+  ## join by programid to get lat and lon columns
+  dplyr::left_join(EJAM::frs_by_programid, by=c('programid' = 'pgm_sys_id')) 
 
 ############### # 
 
@@ -110,10 +165,10 @@ setwd("~")
 
 data.table::setDT(y, key = c("subpart", "programid"))
 frs_by_mact <- data.table::copy(y)
-usethis::use_data(frs_by_mact)    # data.table
+usethis::use_data(frs_by_mact, overwrite = TRUE)    # data.table
 
 mact_categories <- types
-usethis::use_data(mact_categories)  # data.frame
+usethis::use_data(mact_categories, overwrite = TRUE)  # data.frame
 
 
 

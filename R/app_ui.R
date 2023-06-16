@@ -80,22 +80,41 @@ app_ui  <- function(request) {
                           
                           hr(), ## horizontal line
                           
-                          ## input: selecting upload method
-                          radioButtons(inputId = 'ss_choose_method',
-                                       label = 'How would you like to identify facilities?',
-                                       choiceValues = c('latlon', 
-                                                        'NAICS',
-                                                        'FRS',
-                                                        'ECHO'),
-                                       choiceNames = c('Upload Location (latitude/longitude) file',
-                                                       'Select by Industry (NAICS) Code',
-                                                       'Upload EPA Facility ID (FRS Identifers) file',
-                                                       'Search using ECHO database'),
-                                       width = '400px'),
+                         ## input: choose between selection and upload
+                         radioButtons(inputId = 'ss_choose_method', 
+                                      label = 'How would you like to identify locations?',
+                                      choiceNames = c('Select a category of locations',
+                                                      'Upload specific locations'),
+                                      choiceValues = c('dropdown', 'upload')),
                           
+                         ## input: choose among facility dropdown options
+                         conditionalPanel(
+                           condition = 'input.ss_choose_method == "dropdown"',
+                           radioButtons(inputId = 'ss_choose_method_drop', 
+                                        label = 'How would you like to enter the codes?',
+                                        choiceNames = c('Select by Industry (NAICS) Codes',
+                                                        'Select by Industry (SIC) Codes',
+                                                        'Select by EPA Program',
+                                                        'Select by MACT subpart(s)'),
+                                        choiceValues = c('NAICS','SIC','EPA_PROGRAM','MACT'))
+                         ),
+                         
+                         ## input: choose among facility upload options
+                         conditionalPanel(
+                           condition = 'input.ss_choose_method == "upload"',
+                           radioButtons(inputId = 'ss_choose_method_upload',
+                                        label = 'What type of data are you uploading?',
+                                        choiceNames = c('Location (Latitude/Longitude)',
+                                                        'EPA Facility ID (FRS Identifiers)',
+                                                        'EPA Program IDs',
+                                                        'FIPS Codes',
+                                                        'Shapefile of polygons'),
+                                        choiceValues = c('latlon','FRS','EPA_PROGRAM','FIPS','SHP'))
+                         ),
+                     
                           ## latlon conditional panel
                           conditionalPanel(
-                            condition = "input.ss_choose_method == 'latlon'",
+                            condition = "input.ss_choose_method == 'upload' && input.ss_choose_method_upload == 'latlon'",
                             
                             ## input: Upload list of facility lat/longs
                             fileInput(inputId = 'ss_upload_latlon',  
@@ -108,43 +127,14 @@ app_ui  <- function(request) {
                           
                           ## NAICS conditional panel
                           conditionalPanel(
-                            condition = "input.ss_choose_method == 'NAICS'",
+                            condition = "input.ss_choose_method == 'dropdown' && input.ss_choose_method_drop == 'NAICS'",
                             
-                            radioButtons('naics_ul_type', 'Choose how to enter NAICS codes',
-                                         choiceNames = c('Select codes from dropdown' ,
-                                                         'Enter text or code to search'),
-                                         choiceValues = c('dropdown',
-                                                          'enter')
-                            ), 
                             radioButtons('add_naics_subcategories', "Add all subcategories of NAICS?",
                                          choiceNames = c("Yes","No"),
                                          choiceValues = c(TRUE,FALSE),
                                          selected = TRUE),
-                            
-                            ### conditional sub- panel if entering naics
-                            conditionalPanel(
-                              condition = "input.naics_ul_type == 'enter'",
-                              ## input: Enter NAICS code manually       
-                              textInput(
-                                inputId = "ss_enter_naics",
-                                label = htmltools::h6(
-                                  "Enter Industry NAICS codes - ",
-                                  HTML(paste0('<a href=\"', 'https://www.census.gov/naics', '\", target=\"_blank\">', 'Look up NAICS', '</a>')),
-                                  # htmltools::a("Look up NAICS", href ="https://www.census.gov/naics", ),
-                                  htmltools::a(htmltools::img(id = "ibutton",src = "www/i.png",height = 15,width = 15),
-                                               href = "www/ibutton_help.html#help_naicslist",target = "_blank")
-                                ),
-                                value = "",
-                                width = 400,
-                                placeholder = NULL
-                              )
-                            ), # end manually entry of NAICS sub- conditionalPanel
-                            
-                            ### conditional sub- panel if using NAICS dropdown
-                            conditionalPanel(
-                              condition = "input.naics_ul_type == 'dropdown'",
-                              ## input: Select NAICS from list
-                              selectInput(
+                          
+                              selectizeInput(
                                 inputId = "ss_select_naics",
                                 label = htmltools::h6("Select industry of interest"),
                                 # choose from named numeric vector on server-side
@@ -152,20 +142,18 @@ app_ui  <- function(request) {
                                 choices = NULL, 
                                 selected = NULL,
                                 width = 400,
-                                multiple = TRUE
-                              )#, # xxx
-                            ),  # end dropdown NAICS sub- conditionalPanel
-                            
+                                multiple = TRUE,
+                                ## add X to remove selected options from list
+                                options = list('plugins' = list('remove_button'))
+                              ),#, # xxx
+
                             br(), ## vertical space
                             
-                            ## input: button to submit NAICS codes that were entered/selected
-                            actionButton(inputId = 'submit_naics', label = 'Submit NAICS / Find Facilities',
-                                         style = 'color: #fff; background-color: #005ea2;')#, # xxx
                           ), # end NAICS conditionalPanel overall
                           
                           ## FRS conditional panel
                           conditionalPanel(
-                            condition = "input.ss_choose_method == 'FRS'",
+                            condition = "input.ss_choose_method == 'upload' && input.ss_choose_method_upload == 'FRS'",
                             ## input: Upload list of FRS identifiers
                             shiny::fileInput(
                               inputId = 'ss_upload_frs',
@@ -174,20 +162,94 @@ app_ui  <- function(request) {
                             )#, # xxx
                           ), # end FRS conditionalPanel
                           
-                          ## ECHO upload conditional panel
+                          ## EPA program dropdown conditional panel
                           conditionalPanel(
-                            condition = "input.ss_choose_method == 'ECHO'",
+                            condition = "input.ss_choose_method == 'dropdown' && input.ss_choose_method_drop == 'EPA_PROGRAM'",
+                            
+                            br(),
+                            
+                              ## input: select an EPA program from list
+                              selectizeInput(inputId = 'ss_select_program', label = 'Pick an EPA program',
+                                       ## named vector in global.R - values are acronyms, 
+                                       ## names include # of rows corresponding to that program
+                                       choices = epa_programs,
+                                       ## add X to remove selected options from list
+                                       options = list('plugins' = list('remove_button'))),
+                              
+                            ),
+                            
+                         ## EPA program upload conditional panel
+                            conditionalPanel(
+                              condition = "input.ss_choose_method == 'upload' && input.ss_choose_method_upload == 'EPA_PROGRAM'",
+                              ## input: upload an EPA program ID file
+                              fileInput(inputId = 'ss_upload_program',
+                                        label = 'Upload a file with program IDs')
+                          
+                            
+                          ), #end EPA program conditional panel
+                          
+                          ## SIC conditional panel
+                          conditionalPanel(
+                            condition = "input.ss_choose_method == 'dropdown' && input.ss_choose_method_drop == 'SIC'",
+                            
+                            # radioButtons('add_sic_subcategories', "Add all subcategories of SIC?",
+                            #              choiceNames = c("Yes","No"),
+                            #              choiceValues = c(TRUE,FALSE),
+                            #              selected = TRUE),
+                            
+                              ## input: Select SIC from list
+                              selectizeInput(
+                                inputId = "ss_select_sic",
+                                label = htmltools::h6("Select industry of interest"),
+                                # choose from named numeric vector on server-side
+                                ## number is NAICS like 31182, names are like "31182 - Cookie, Cracker, and Pasta Manufacturing" 
+                                choices = NULL, 
+                                selected = NULL,
+                                width = 400,
+                                multiple = TRUE,
+                                ## add X to remove selected options from list
+                                options = list('plugins' = list('remove_button'))
+                              ), #, # xxx
+                            #),  # end dropdown SIC sub- conditionalPanel
                             
                             br(), ## vertical space
                             
-                            ## input: Upload list of ECHO facilities
+                          ), # end SIC conditionalPanel
+                          
+                          ## FIPS conditional panel
+                          conditionalPanel(
+                            condition = "input.ss_choose_method == 'upload' && input.ss_choose_method_upload == 'FIPS'",
+                            
+                            ## input: Upload list of facility lat/longs
+                            fileInput(inputId = 'ss_upload_fips',  
+                                      label = 'Upload a list of FIPS codes in a spreadsheet (.csv, .xls, or .xlsx)',
+                                      multiple = FALSE,
+                                      accept = c('.xls', '.xlsx', ".csv", "text/csv", "text/comma-separated-values,text/plain")
+                                      # add hover tips here maybe, or even a button to view examples of valid formats and details on that.
+                            ),
+                          ), # end FIPS conditionalPanel
+                          
+                          ## Shapefile Upload conditional panel
+                          conditionalPanel(
+                            condition = "input.ss_choose_method == 'upload' && input.ss_choose_method_upload == 'SHP'",
+                            ## input: Upload list of FRS identifiers
                             shiny::fileInput(
-                              inputId = 'ss_upload_echo',
-                              label = 'Upload list of ECHO facilities',
-                              accept = c('.xls', '.xlsx', ".csv", "text/csv", "text/comma-separated-values, text/plain")
-                            ), 
-                            #br(),
-                          ), #end ECHO conditional panel
+                              inputId = 'ss_upload_shp',
+                              label = 'Upload a shapefile',
+                              accept = c(".shp",".dbf",".sbn",".sbx",".shx",".prj"),multiple=TRUE
+                            )#, # xxx
+                          ), # end Shapefile conditionalPanel
+                          conditionalPanel(
+                            condition = "input.ss_choose_method == 'dropdown' && input.ss_choose_method_drop == 'MACT'",
+                            
+                            ## input: choose MACT subpart from dropdown list
+                            selectInput(inputId = 'ss_select_mact',
+                                        label = 'Choose a MACT subpart',
+                                        choices = setNames(mact_categories$subpart,
+                                                          mact_categories$dropdown_label)
+                                        
+                                        )
+                          ), # end MACT conditionalPanel
                           
                           hr(), ## horizontal line
                           
@@ -221,6 +283,8 @@ app_ui  <- function(request) {
                           
                           hr(), ## horizontal line
                           
+                          shinyBS::bsAlert(anchorId = 'invalid_sites_alert'),
+                          
                           ## arrange summary text and button to view uploaded data
                           fluidPage(
                             column(8,
@@ -238,6 +302,10 @@ app_ui  <- function(request) {
                                                     title = 'Uploaded data', 
                                                     trigger = 'show_data_preview',
                                                     size = 'large',
+                                                    ## use download buttons for speed and handling larger data
+                                                    downloadButton('download_preview_data_csv', label = 'CSV'),
+                                                    downloadButton('download_preview_data_xl', label = 'Excel'),
+                                                    br(),
                                                     DT::DTOutput('print_test2_dt', width = '100%'))
                             )
                           ),
@@ -300,7 +368,7 @@ app_ui  <- function(request) {
                 
                 ## NAICS help page
                 conditionalPanel(
-                  condition = "input.ss_choose_method == 'NAICS'",
+                  condition = "input.ss_choose_method == 'dropdown' && input.ss_choose_method_drop == 'NAICS'",
                   shinyBS::bsCollapse(
                     id = 'naics_help', 
                     open = 'Read more about NAICS',
@@ -314,7 +382,7 @@ app_ui  <- function(request) {
                 ),
                 ## FRS help page
                 conditionalPanel(
-                  condition = "input.ss_choose_method == 'FRS'",
+                  condition = "input.ss_choose_method == 'upload' && input.ss_choose_method_upload == 'FRS'",
                   shinyBS::bsCollapse(
                     id = 'frs_help', open = 'FRS file upload instructions',
                     shinyBS::bsCollapsePanel(title = 'FRS file upload instructions',
@@ -326,7 +394,7 @@ app_ui  <- function(request) {
                 ),
                 ## latlon help page
                 conditionalPanel(
-                  condition = "input.ss_choose_method == 'latlon'",
+                  condition = "input.ss_choose_method == 'upload' && input.ss_choose_method_upload == 'latlon'",
                   ## read more about latlon 
                   shinyBS::bsCollapse(
                     id = 'latlon_help', open = 'Location file upload instructions',
@@ -335,20 +403,20 @@ app_ui  <- function(request) {
                                              HTML(latlon_help_msg)
                     )
                   )
-                ),
+                ) #,
                 ## ECHO help page
-                conditionalPanel(
-                  condition = "input.ss_choose_method == 'ECHO'",
-                  ## collapsible ECHO help panel 
-                  shinyBS::bsCollapse(
-                    id = 'echo_help', open = 'ECHO upload instructions',
-                    
-                    shinyBS::bsCollapsePanel(title = 'ECHO upload instructions',
-                                             style = 'primary',
-                                             ## echo help text - in global.R
-                                             echo_message)
-                  )
-                ) #, # xxx #end ECHO conditionalPanel
+                # conditionalPanel(
+                #   condition = "input.ss_choose_method == 'ECHO'",
+                #   ## collapsible ECHO help panel 
+                #   shinyBS::bsCollapse(
+                #     id = 'echo_help', open = 'ECHO upload instructions',
+                #     
+                #     shinyBS::bsCollapsePanel(title = 'ECHO upload instructions',
+                #                              style = 'primary',
+                #                              ## echo help text - in global.R
+                #                              echo_message)
+                #   )
+                # ) #, # xxx #end ECHO conditionalPanel
         ), # end Site Selection tab
         
         ######################################################################################################### #

@@ -129,7 +129,7 @@ pctile_from_raw_lookup <- function(myvector, varname.in.lookup.table, lookup=usa
     belowmin <- (whichinterval == 0)
     if (any(belowmin, na.rm = TRUE)) {
       whichinterval[!is.na(belowmin) & belowmin]  <- 1 # which means 0th percentile
-      warning('One or more values were below the minimum, or zeroeth percentile, but are reported by this function as being at the 0 percentile.')
+      if (interactive()) {warning('One or more values were below the minimum, or zeroeth percentile, but are reported by this function as being at the 0 percentile.')}
     }
     whichinterval[is.na(belowmin)] <- NA
     # returns NA if belowmin is NA
