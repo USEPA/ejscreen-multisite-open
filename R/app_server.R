@@ -312,6 +312,11 @@ app_server <- function(input, output, session) {
                        shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
     ) # returns a data.frame
     
+    ## error if no columns provided
+    if(!any(c('program','pgm_sys_id') %in% tolower(colnames(read_pgm)))){
+      validate('Please add a file with at least these two columns: program, pgm_sys_id \n and possibly these columns as well: REGISTRY_ID,lat,lon')
+    }
+    
     ## convert pgm_sys_id and REGISTRY_ID columns to character before joining
     if(class(read_pgm$pgm_sys_id) != "character"){
       read_pgm$pgm_sys_id = as.character(read_pgm$pgm_sys_id)
@@ -495,15 +500,17 @@ app_server <- function(input, output, session) {
     name <- strsplit(input$ss_upload_shp$name[1], "\\.")[[1]][1] # strip name 
     purrr::walk2(infiles, outfiles, ~file.rename(.x, .y)) # rename files
     shp <- read_sf(file.path(dir, paste0(name, ".shp"))) # read-in shapefile
+
+    shp
     
-    d_upload <-{} 
-    d <- get_blockpoints_in_shape(shp,0)
-    d_upload[['points']] <- d[['pts']]
-    d_upload[['buffer']] <- d[['polys']]
-    d_upload[['shape']] <- shp
-    #d_upload[['buffer']] <- get_shape_buffered_from_shapefile_points(shp,0)
-    
-    d_upload
+    # d_upload <-{}
+    # d <- get_blockpoints_in_shape(shp,0)
+    # d_upload[['points']] <- d[['pts']]
+    # d_upload[['buffer']] <- d[['polys']]
+    # d_upload[['shape']] <- shp
+    # #d_upload[['buffer']] <- get_shape_buffered_from_shapefile_points(shp,0)
+    # 
+    # d_upload
     
     
   })
@@ -714,12 +721,14 @@ app_server <- function(input, output, session) {
   output$an_map_text <- renderUI({
     req(data_uploaded())
     if(current_upload_method() == "SHP"){
-      shp<-data_uploaded()[['shape']]
-      num_na <- 0
-      num_notna <- nrow(data_uploaded()[['shape']])
+
       
-      num_na_pt <- 0
-      num_notna_pt <- nrow(data_uploaded()[['points']])
+      shp<-data_uploaded()#[['shape']]
+      num_na <- 0
+      num_notna <- nrow(data_uploaded())#[['shape']])
+      
+      #num_na_pt <- 0
+      #num_notna_pt <- nrow(data_uploaded()[['points']])
       HTML(paste0(
         "Total shape(s) uploaded: <strong>", prettyNum(num_na + num_notna, big.mark=",")#,"</strong><br>"#,
         #"Valid shape(s) uploaded: <strong>", prettyNum(num_notna, big.mark=","),"</strong>"#,
@@ -780,7 +789,7 @@ app_server <- function(input, output, session) {
     
     #dt <- data_uploaded() # now naics-queried sites format is OK to view, since using different function to get sites by naics
     if(current_upload_method() == "SHP"){
-      dt <- data_uploaded()[['shape']]
+      dt <- data_uploaded()#[['shape']]
     }else{
       dt <-data_uploaded()
     }
@@ -914,14 +923,16 @@ app_server <- function(input, output, session) {
     
     if(current_upload_method() == "SHP"){
       req(data_uploaded())
-      d_upload <- data_uploaded()[['points']]
-      max_pts <- max_points_can_map_poly
       
-      leaflet() %>% addTiles() %>% 
-        fitBounds(lng1 = min(d_upload$lon, na.rm=T),
-                  lng2 = max(d_upload$lon, na.rm=T),
-                  lat1 = min(d_upload$lat, na.rm=T),
-                  lat2 = max(d_upload$lat, na.rm=T))
+      
+      #d_upload <- data_uploaded()[['points']]
+      #max_pts <- max_points_can_map_poly
+      
+      leaflet() %>% addTiles() #%>% 
+        # fitBounds(lng1 = min(d_upload$lon, na.rm=T),
+        #           lng2 = max(d_upload$lon, na.rm=T),
+        #           lat1 = min(d_upload$lat, na.rm=T),
+        #           lat2 = max(d_upload$lat, na.rm=T))
     } else if(current_upload_method() == 'FIPS'){
       #req(data_uploaded())
       max_pts <- max_points_can_map_poly
@@ -1021,9 +1032,19 @@ app_server <- function(input, output, session) {
     
     #define blockpoints to process if shapefile exists
     if(current_upload_method() == "SHP"){
-      d_upload <-data_uploaded()[['points']]
-      sites2blocks <-d_upload
-    
+      d_upload <-{}
+      d <- get_blockpoints_in_shape(data_uploaded(),0)
+      #d_upload[['points']] <- d[['pts']]
+      #d_upload[['buffer']] <- d[['polys']]
+      #d_upload[['shape']] <- shp
+      #d_upload[['buffer']] <- get_shape_buffered_from_shapefile_points(shp,0)
+      
+      #d_upload
+      
+      #d_upload <-data_uploaded()[['points']]
+      sites2blocks <-d[['pts']]
+      d_upload <- d[['pts']]
+      
     } else if(current_upload_method() == 'FIPS'){
       ## remove any invalid latlons before running 
       d_upload <-data_uploaded()[!is.na(lat) & !is.na(lon),]
@@ -1300,11 +1321,12 @@ app_server <- function(input, output, session) {
     req(isTruthy(orig_leaf_map()))
   
     if(current_upload_method() == "SHP"){
-      d_uploadb <- data_uploaded()[['buffer']]  %>% st_zm() %>% as('Spatial') 
-      d_uploads <- data_uploaded()[['shape']]  %>% st_zm() %>% as('Spatial') 
+      #d_uploadb <- data_uploaded()[['buffer']]  %>% st_zm() %>% as('Spatial') 
+      d_uploads <- data_uploaded() %>% #[['shape']]  
+          st_zm() %>% as('Spatial') 
       
-      leafletProxy(mapId = 'an_leaf_map', session,data=d_uploadb) %>% 
-        addPolygons(data=d_uploadb, color="red") %>% 
+      leafletProxy(mapId = 'an_leaf_map', session) %>% 
+       # addPolygons(data=d_uploadb, color="red") %>% 
         addPolygons(data=d_uploads)
       #leafletProxy(mapId = 'an_leaf_map', session,data=d_uploads) %>% addPolygons()
       
