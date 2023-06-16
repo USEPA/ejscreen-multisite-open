@@ -16,7 +16,11 @@
   data(blockpoints,   package="EJAMblockdata"); cat('  Done loading blockpoints.\n')  
   data(blockwts,      package="EJAMblockdata"); cat('  Done loading blockwts.\n') 
   data(quaddata,      package="EJAMblockdata"); cat('  Done loading quaddata.\n')  
-  data(blockid2fips,  package="EJAMblockdata")
+  
+  data(blockid2fips,  package="EJAMblockdata") 
+  # used only in state_from_blocktable() and state_from_blockid(), which are not necessarily used, 
+  # so maybe should not load this unless/until needed
+  
   data(bgid2fips,     package="EJAMblockdata")
   data(lookup_states, package="EJAMblockdata")
   
