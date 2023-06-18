@@ -4,7 +4,7 @@
 #' @param pkgname na
 #'
 .onLoad <- function(libname, pkgname) {
-    ok_to_do_slow_load_early <- TRUE # WHILE TESTING/Building often
+    ok_to_do_slow_load_early <- FALSE # MAYBE WANT FALSE WHILE TESTING/Building often
   if (  ok_to_do_slow_load_early) {
   ### Maybe load the datasets now that are needed, 
   ### instead of when user does a query that triggers slow lazyloading?
@@ -33,7 +33,7 @@
     cat("\n- quaddata (168 MB), \n- blockgroupstats  (54 MB), \n- blockpoints (86 MB), \n- blockwts (31 MB), \n- blockid2fips (20 MB)\n ")
     cat("\n")
   }
-  ok_to_do_slow_indexing_early <- TRUE # WHILE TESTING/Building often
+  ok_to_do_slow_indexing_early <- FALSE # MAYBE WANT FALSE WHILE TESTING/Building often
   if (ok_to_do_slow_indexing_early) {
   # This should create the index of all US block points to enable fast queries 
   # This cannot be done during package build and saved, because of what this createTree function creates.
