@@ -4,6 +4,8 @@
 # library dplyr
 # library EJAM
 
+# function is in naics_from_any.R
+
 # test some different syntax
 test_that('no warning for standard code lookup', {
   expect_no_warning(naics_from_code(21112))
