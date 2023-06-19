@@ -924,15 +924,17 @@ app_server <- function(input, output, session) {
     if(current_upload_method() == "SHP"){
       req(data_uploaded())
       
-      
+      ## find bbox for map to zoom to
+      bbox <- sf::st_bbox(data_uploaded())
+     
+      leaflet() %>% addTiles() %>% 
+        fitBounds(
+          lng1 = as.numeric(bbox[1]), lng2 = as.numeric(bbox[3]),
+          lat1 = as.numeric(bbox[2]), lat2 = as.numeric(bbox[4])
+        )
+          
       #d_upload <- data_uploaded()[['points']]
       #max_pts <- max_points_can_map_poly
-      
-      leaflet() %>% addTiles() #%>% 
-        # fitBounds(lng1 = min(d_upload$lon, na.rm=T),
-        #           lng2 = max(d_upload$lon, na.rm=T),
-        #           lat1 = min(d_upload$lat, na.rm=T),
-        #           lat2 = max(d_upload$lat, na.rm=T))
     } else if(current_upload_method() == 'FIPS'){
       #req(data_uploaded())
       max_pts <- max_points_can_map_poly
