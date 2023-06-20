@@ -91,11 +91,11 @@ app_ui  <- function(request) {
                          conditionalPanel(
                            condition = 'input.ss_choose_method == "dropdown"',
                            radioButtons(inputId = 'ss_choose_method_drop', 
-                                        label = 'How would you like to enter the codes?',
-                                        choiceNames = c('Select by Industry (NAICS) Codes',
-                                                        'Select by Industry (SIC) Codes',
-                                                        'Select by EPA Program',
-                                                        'Select by MACT subpart(s)'),
+                                        label = 'How would you like to select catgories?',
+                                        choiceNames = c('by Industry (NAICS) Code',
+                                                        'by Industry (SIC) Code',
+                                                        'by EPA Program',
+                                                        'by MACT subpart'),
                                         choiceValues = c('NAICS','SIC','EPA_PROGRAM','MACT'))
                          ),
                          
