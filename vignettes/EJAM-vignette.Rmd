@@ -464,14 +464,18 @@ hist(out2$results_bysite$pctile.traffic.score,10, xlab="Local traffic scores (ex
 
 ```{r}
 sitepoints <- testpoints_1000_dt
-outapi <- EJAMejscreenapi::ejscreenapi_plus(sitepoints[1:5, ], radius = radius)
+radius <- 1
+
+# outapi2 <- EJAMejscreenapi::ejscreenapi_plus(sitepoints[1:5, ], radius = radius, on_server_so_dont_save_files = T)
+outapi <- (ejscreenit(sitepoints[1:5, ], radius = radius, nosave = T, nosee = T, interactiveprompt = F))$table
 cbind(as.list(outapi[1, ]))
 
-setdiff( names(outapi), names(out2$results_overall))
+outejam <- ejamit(sitepoints =  sitepoints[1:5, ], radius = radius)
+setdiff( names(outapi), names(outejam$results_overall))
 cat("----------------\n")
-setdiff_yx( names(outapi), names(out2$results_overall))
-# links to report or map are named differently.
-# us and state averages are there but us ones named with us. prefix in api not ejam
-# EJ pctiles, statename,  REGION, etc. might not be provided in EJAM output.
+setdiff_yx( names(outapi), names(outejam$results_overall))
+# links to report or map were named differently.
+#  
+# EJ pctiles, etc. might not be provided in EJAM output.
 # ratios counts of denominators, demog subgroups, etc. are in EJAM only.  
 ```

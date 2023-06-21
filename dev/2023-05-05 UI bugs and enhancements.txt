@@ -1,3 +1,11 @@
+
+NEW 6/15/2023:
+
+fix names(EJAM::blockgroupstats) where EJ indexes are EJ.DISPARITY... but should be pctile.EJ.DISPARITY...
+and same for supplementary ones, and same for state.pctile... ones.
+
+
+
 Discussed on 5/4/23:
 
 in xlsx downloaded and interactive version of tables (overall and site by site tables): fix first 4 columns of site by site table in interactive version and excel - State, EPA region and # indicators above x -- seem to have gotten shifted to the right so they show incorrect data - appears that a row number was included as a column by accident and that displaced the state column bumping it to the right into the epa region column, etc. 

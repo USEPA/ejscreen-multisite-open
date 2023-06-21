@@ -13,7 +13,7 @@ write_pctiles_lookup(
 }
 \arguments{
 \item{x}{data.frame with numeric data. Each column will be examined to calculate
-mean, sd, and percentiles, for each zone}
+mean,   and percentiles, for each zone}
 
 \item{zone.vector}{optional names of states or regions, for example. same length as wts, or rows in mydf}
 

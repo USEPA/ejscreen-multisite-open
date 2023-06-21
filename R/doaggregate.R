@@ -127,7 +127,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
   # "under5", "over64",
   # "unemployed",   "unemployedbase", # new in 2022
   # 'pre1960',  'builtunits',
-  # "nhwa", "hisp", "nhba", "nhaa", "nhaiana", "nhnhpia", "nhotheralone", "nhmulti" # not in EJScreen 2.1 but will use here
+  #  "hisp", "nhba", "nhaa", "nhaiana", "nhnhpia", "nhotheralone", "nhmulti" ,"nhwa" # not in EJScreen 2.1 but will use here
   
   if (is.null(calculatedcols)) {
     calculatedcols <- unique(c(
@@ -142,7 +142,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
   #  or to avoid depending on ejscreen package, 
   #  dput(c(ejscreen::names.d, ejscreen::names.d.subgroups, 'flagged')) # but make sure pctunemployed got added
   # Demog.Index", "pctmin", "pctlowinc", "pctlths", "pctlingiso", "pctunder5", "pctover64", 'pctunemployed',
-  # "pctnhwa", "pcthisp", "pctnhba", "pctnhaa", "pctnhaiana", "pctnhnhpia", "pctnhotheralone", "pctnhmulti", 
+  # "pcthisp", "pctnhba", "pctnhaa", "pctnhaiana", "pctnhnhpia", "pctnhotheralone", "pctnhmulti", "pctnhwa", 
   # "flagged"
   #      and will have lowlifex and "Demog.Index.Supp", 
   
@@ -664,14 +664,16 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
   results_overall[ , `:=`(
     pctover64       = 1 * ifelse(pop==0, 0,            over64        / pop),
     pctunder5       = 1 * ifelse(pop==0, 0,            under5        / pop),
+    
     pcthisp         = 1 * ifelse(pop==0, 0, as.numeric(hisp )        / pop),
-    pctnhwa         = 1 * ifelse(pop==0, 0, as.numeric(nhwa )        / pop),
     pctnhba         = 1 * ifelse(pop==0, 0, as.numeric(nhba )        / pop),
     pctnhaiana      = 1 * ifelse(pop==0, 0, as.numeric(nhaiana)      / pop),
     pctnhaa         = 1 * ifelse(pop==0, 0, as.numeric(nhaa )        / pop), 
     pctnhnhpia      = 1 * ifelse(pop==0, 0, as.numeric(nhnhpia )     / pop),
     pctnhotheralone = 1 * ifelse(pop==0, 0, as.numeric(nhotheralone) / pop), 
     pctnhmulti      = 1 * ifelse(pop==0, 0, as.numeric(nhmulti )     / pop),
+    pctnhwa         = 1 * ifelse(pop==0, 0, as.numeric(nhwa )        / pop),
+    
     pctmin          = 1 * ifelse(pop==0, 0, as.numeric(mins)         / pop), 
     pctlowinc       = 1 * ifelse(povknownratio  == 0, 0, lowinc                 / povknownratio),
     pctlths         = 1 * ifelse(age25up        == 0, 0, as.numeric(lths)       / age25up), 
@@ -698,14 +700,16 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
   results_bysite[ , `:=`(
     pctover64       = 1 * ifelse(pop==0, 0,            over64        / pop),
     pctunder5       = 1 * ifelse(pop==0, 0,            under5        / pop),
+    
     pcthisp         = 1 * ifelse(pop==0, 0, as.numeric(hisp )        / pop),
-    pctnhwa         = 1 * ifelse(pop==0, 0, as.numeric(nhwa )        / pop),
     pctnhba         = 1 * ifelse(pop==0, 0, as.numeric(nhba )        / pop),
     pctnhaiana      = 1 * ifelse(pop==0, 0, as.numeric(nhaiana)      / pop),
     pctnhaa         = 1 * ifelse(pop==0, 0, as.numeric(nhaa )        / pop), 
     pctnhnhpia      = 1 * ifelse(pop==0, 0, as.numeric(nhnhpia )     / pop),
     pctnhotheralone = 1 * ifelse(pop==0, 0, as.numeric(nhotheralone) / pop), 
     pctnhmulti      = 1 * ifelse(pop==0, 0, as.numeric(nhmulti )     / pop),
+    pctnhwa         = 1 * ifelse(pop==0, 0, as.numeric(nhwa )        / pop),
+
     pctmin          = 1 * ifelse(pop==0, 0, as.numeric(mins)         / pop), 
     pctlowinc       = 1 * ifelse(povknownratio  == 0, 0, lowinc                 / povknownratio),
     pctlths         = 1 * ifelse(age25up        == 0, 0, as.numeric(lths)       / age25up), 
@@ -837,6 +841,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
   # sites2states  is df or dt with just 1 row/site, and columns= siteid,ST ; and MIGHT have lat,lon and other info.
   
   results_bysite[sites2states,  ST := ST,  on = "siteid"] # check this, including when ST is NA 
+  results_bysite[, statename :=  stateinfo$statename[match(ST, stateinfo$ST)]]    
   results_overall$ST <- NA
   
   ##################################################### #

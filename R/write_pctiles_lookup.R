@@ -53,7 +53,7 @@
 #'   return 1
 #'   
 #' @param x data.frame with numeric data. Each column will be examined to calculate 
-#'   mean, sd, and percentiles, for each zone
+#'   mean,   and percentiles, for each zone
 #' @param zone.vector optional names of states or regions, for example. same length as wts, or rows in mydf
 #' @param zoneOverallName optional. Default is USA.
 #' @param wts not used in EJScreen percentiles anymore
@@ -78,7 +78,8 @@ write_pctiles_lookup <- function(x, zone.vector=NULL, zoneOverallName='USA', wts
     r <- data.frame(                     sapply(mydf, function(x) pctiles.exact(x)))
     
     r <- rbind(r, t(data.frame(   mean = sapply(mydf, function(x) mean(x, na.rm = TRUE)))))
-    r <- rbind(r, t(data.frame(std.dev = sapply(mydf, function(x) sd(  x, na.rm = TRUE)))))
+    #   STOP INCLUDING STANDARD DEVIATION HERE SINCE WE NEVER USE IT
+    # r <- rbind(r, t(data.frame(std.dev = sapply(mydf, function(x) sd(  x, na.rm = TRUE)))))
     r$REGION <- "USA" # zoneOverallName
     r$PCTILE <- rownames(r) # 1:100,'mean','std.dev'
   } else {
@@ -93,7 +94,7 @@ write_pctiles_lookup <- function(x, zone.vector=NULL, zoneOverallName='USA', wts
         r[[i]] <- data.frame(sapply(mydf[zone.vector==z,  ], function(x) pctiles.exact(x)))
         
         r[[i]] <- rbind(r[[i]], t(data.frame(mean = sapply(mydf[zone.vector==z,  ], function(x) mean(x, na.rm = TRUE)))))
-        r[[i]] <- rbind(r[[i]], t(data.frame(std.dev = sapply(mydf[zone.vector==z,  ], function(x) sd(x, na.rm = TRUE)))))
+        # r[[i]] <- rbind(r[[i]], t(data.frame(std.dev = sapply(mydf[zone.vector==z,  ], function(x) sd(x, na.rm = TRUE)))))
         r[[i]]$REGION <- z
         r[[i]]$PCTILE <- rownames(r[[i]]) # 1:100,'mean','std.dev'
       } else {
@@ -102,7 +103,7 @@ write_pctiles_lookup <- function(x, zone.vector=NULL, zoneOverallName='USA', wts
         
         r[[i]] = data.frame(sapply(mydf[zone.vector==z, ], function(x) wtd.pctiles.exact(x, wts[zone.vector==z]) ) )
         r[[i]] = rbind(r[[i]], t(data.frame(mean=sapply(mydf[zone.vector==z,  ], function(x) Hmisc::wtd.mean(x, wts[zone.vector==z], na.rm=TRUE) ) ) ))
-        r[[i]] = rbind(r[[i]], t(data.frame(std.dev=sapply(mydf[zone.vector==z,  ], function(x) sqrt(Hmisc::wtd.var(x, wts[zone.vector==z], na.rm=TRUE) ) )) ))
+        # r[[i]] = rbind(r[[i]], t(data.frame(std.dev=sapply(mydf[zone.vector==z,  ], function(x) sqrt(Hmisc::wtd.var(x, wts[zone.vector==z], na.rm=TRUE) ) )) ))
         r[[i]]$REGION <- z
         r[[i]]$PCTILE <- rownames(r[[i]]) # 1:100,'mean','std.dev'
       }

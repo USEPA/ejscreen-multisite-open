@@ -134,9 +134,8 @@ create_blockgroupstats <- function(bg=ejscreen::bg22 , meta) {
   #   "pctile.EJ.DISPARITY.proximity.npdes.eo", "pctile.EJ.DISPARITY.proximity.npl.eo", 
   #   "pctile.EJ.DISPARITY.proximity.rmp.eo", "pctile.EJ.DISPARITY.proximity.tsdf.eo", 
   #   "pctile.EJ.DISPARITY.o3.eo", "pctile.EJ.DISPARITY.pm.eo", "arealand", 
-  #   "areawater", "count.NPL", "count.TSDF", "area", "pop", "hisp", 
-  #   "nhwa", "nhba", "nhaiana", "nhaa", "nhnhpia", "nhotheralone", 
-  #   "nhmulti", "pctmin", "mins", "nonmins", "pcthisp", "pctnhwa", 
-  #   "pctnhba", "pctnhaiana", "pctnhaa", "pctnhnhpia", "pctnhotheralone", 
-  #   "pctnhmulti")
+  #   "areawater", "count.NPL", "count.TSDF", "area", "pop",
+  # "hisp",  "nhba", "nhaiana", "nhaa", "nhnhpia", "nhotheralone",   "nhmulti",     "nhwa",
+  # "pctmin", "mins", "nonmins",
+  # "pcthisp", "pctnhba", "pctnhaiana", "pctnhaa", "pctnhnhpia", "pctnhotheralone", "pctnhmulti",   "pctnhwa")
 }

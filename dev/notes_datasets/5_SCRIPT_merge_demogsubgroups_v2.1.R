@@ -141,8 +141,8 @@ dput(names(bg22plus))
 #   "arealand", "areawater", "count.NPL", "count.TSDF", "Shape_Length", 
 #   "area", "countyname", 
 # 
-#   "hisp",    "nhwa",     "nhba",   "nhaiana", "nhaa",          "nhnhpia",    "nhotheralone",    "nhmulti", 
-#   "pctnhwa", "pcthisp", "pctnhba", "pctnhaa", "pctnhaiana", "pctnhnhpia", "pctnhotheralone", "pctnhmulti", 
+#    "hisp",    "nhba", "nhaiana",       "nhaa",    "nhnhpia",    "nhotheralone",    "nhmulti",    "nhwa",  
+# "pcthisp", "pctnhba", "pctnhaa", "pctnhaiana", "pctnhnhpia", "pctnhotheralone", "pctnhmulti", "pctnhwa",
 #   "nonmins")
 
 

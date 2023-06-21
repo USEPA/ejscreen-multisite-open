@@ -22,6 +22,7 @@ to be resolved.
 table(frs_by_mact$programid \%in\% frs_by_programid$pgm_sys_id)
 
 FALSE  TRUE
+
 56497 55411
 
 Also there are some typos in the downloaded dataset from ECHO/FRS, such as
