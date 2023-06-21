@@ -1,5 +1,7 @@
 
-NEW 6/15/2023:
+NEW 6/15/2023 - 6/21/23 :
+
+* need to add shapefile test data/ examples to the EJAM/inst/testdata/shape  folder, to let us try out the shapefile tools.
 
 fix names(EJAM::blockgroupstats) where EJ indexes are EJ.DISPARITY... but should be pctile.EJ.DISPARITY...
 and same for supplementary ones, and same for state.pctile... ones.
