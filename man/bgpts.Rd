@@ -37,7 +37,7 @@ and where each bg is, which is useful for some situations.
  # BUT NOTE this census2020 block table has PR but lacks "AS" "GU" "MP" "VI" ####
  # > uniqueN( blockid2fips[,substr(blockfips,1,2)])
  # [1] 52
- # length(unique(EJAMejscreendata::EJSCREEN_Full_with_AS_CNMI_GU_VI$ST_ABBREV))
+ # length(unique(EJSCREEN_Full_with_AS_CNMI_GU_VI$ST_ABBREV)) # which is in the package EJAMejscreendata
  # [1] 56
  #   dim(bgejam)
  # [1] 242,940    155

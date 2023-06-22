@@ -21,11 +21,11 @@
 #################################################################################################### #
 ######################################################################## #
 # # notes on converting 
-# EJAMejscreendata::EJSCREEN_Full_with_AS_CNMI_GU_VI  etc.
+# EJAMejscreendata package file called EJSCREEN_Full_with_AS_CNMI_GU_VI  etc.
 # and
 # ejscreen::bg22DemographicSubgroups2016to2020  (might not save this separately)
 # to
-# EJAMejscreendata::EJAMejscreendata::EJSCREEN_Full_with_AS_CNMI_GU_VI   etc.
+# EJAMejscreendata package file called EJAMejscreendata package file called EJSCREEN_Full_with_AS_CNMI_GU_VI   etc.
 # and 
 # EJAM::blockgroupstats
 # and
@@ -33,8 +33,8 @@
 ######################################################################## #
 
 
-# Redone 9/2022 to start from EJAMejscreendata::EJSCREEN_Full_with_AS_CNMI_GU_VI
-# and EJAMejscreendata::EJSCREEN_StatePct_with_AS_CNMI_GU_VI
+# Redone 9/2022 to start from EJAMejscreendata package file called EJSCREEN_Full_with_AS_CNMI_GU_VI
+# and EJAMejscreendata package file called EJSCREEN_StatePct_with_AS_CNMI_GU_VI
 # plus demog race/ethnic subgroups
 
 
@@ -46,11 +46,11 @@
 
 
 library(EJAMejscreendata) 
-# EJAMejscreendata::EJSCREEN_Full_with_AS_CNMI_GU_VI
-# EJAMejscreendata::EJSCREEN_StatePct_with_AS_CNMI_GU_VI
+# EJAMejscreendata package file called EJSCREEN_Full_with_AS_CNMI_GU_VI
+# EJAMejscreendata package file called EJSCREEN_StatePct_with_AS_CNMI_GU_VI
 
-
-create_blockgroupstats <- function(bg=ejscreen::bg22 , meta) {
+stop('need bg22 from ejscreen pkg')
+create_blockgroupstats <- function(bg = bg22 , meta) {
   
   ## script to create blockgroupstats.rda for EJAM
   

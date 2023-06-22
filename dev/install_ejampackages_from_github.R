@@ -1,12 +1,23 @@
 # ?usethis::use_data_table()
 ################################################# #
 
+# To deploy we do what is in this file:
+### EJAM/dev/install_ejampackages_from_github.R 
+# 
+# to install from source packages on EPA github 
+#    for EJAMejscreenapi and EJAMbatch.summarizer (and EJAMfrsdata for the functions not data anymore)
+#    and for EJAM itself
+# and then deploy by using RStudio's built in publish button that appears when editing the app.R file,
+# and not deploy the dev folder but yes to everything else. 
+
+
+
 rm(list=ls())
 
-
-detach("package:EJAM", unload=TRUE)
-detach("package:EJAMbatch.summarizer", unload=TRUE)
-detach("package:EJAMejscreenapi", unload=TRUE)
+if (is.loaded("EJAM")) {  detach("package:EJAM", unload=TRUE)}
+if (is.loaded("EJAMfrsdata")) {  detach("package:EJAMfrsdata", unload=TRUE)}
+if (is.loaded("EJAMbatch.summarizer")) {  detach("package:EJAMbatch.summarizer", unload=TRUE)}
+if (is.loaded("EJAMejscreenapi")) {  detach("package:EJAMejscreenapi", unload=TRUE)}
 
 ################################################# #
 
@@ -30,26 +41,9 @@ devtools::install_github('USEPA/EJAMejscreenapi',      force=TRUE, upgrade=F) # 
 # ─  checking for LF line-endings in source and make files and shell scripts
 # ─  checking for empty or unneeded directories
 # ─  building 'EJAMejscreenapi_2.1.2.tar.gz'   * * ************ * * 
-# Installing package into ‘R/myinstalled’
-# (as ‘lib’ is unspecified)
-#   * installing *source* package 'EJAMejscreenapi' ...
-# ** using staged installation
-# ** R
-# ** data
-# *** moving datasets to lazyload DB   * * ************ * * 
-# ** inst
-# ** byte-compile and prepare package for lazy loading
-# Greetings!
-#   ** help
-# *** installing help indices
-# ** building package indices
-#   ** testing if installed package can be loaded from temporary location
-#   ** testing if installed package can be loaded from final location
-#   ** testing if installed package keeps a record of temporary installation path
-# * DONE (EJAMejscreenapi)
-# > 
+# ...etc
  
-
+devtools::install_github('USEPA/EJAMfrsdata', force=TRUE, upgrade=F) #   
 
 devtools::install_github('USEPA/EJAMbatch.summarizer', force=TRUE, upgrade=F) # works fine.
 

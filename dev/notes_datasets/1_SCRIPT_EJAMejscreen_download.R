@@ -151,9 +151,10 @@ States_2022 <- x$States_2022
 
 # may change names, but which function to use?
 # this  works but relies on ejscreen:: pkg, and see EJAMbatch.summarizer::change... and fixnames and fixcolnames and fixnamestype etc. 
-names(USA_2022)    <- ejscreen::ejscreenformulas$Rfieldname[match(names(USA_2022), ejscreen::ejscreenformulas$gdbfieldname)]
+stop('need to load from ejscreen package the file called ejscreenformulas')
+names(USA_2022)    <-  ejscreenformulas$Rfieldname[match(names(USA_2022), ejscreenformulas$gdbfieldname)]
 # map_headernames$newnames_ejscreenapi[match(names(USA_2022), map_headernames$oldnames)]
-names(States_2022) <- ejscreen::ejscreenformulas$Rfieldname[match(names(States_2022), ejscreen::ejscreenformulas$gdbfieldname)]
+names(States_2022) <- ejscreenformulas$Rfieldname[match(names(States_2022), ejscreenformulas$gdbfieldname)]
 # names(USA_2022)    <- ejscreen::ejscreenformulas$Rfieldname[match(names(USA_2022),    ejscreen::ejscreenformulas$gdbfieldname)]
 # names(States_2022) <- ejscreen::ejscreenformulas$Rfieldname[match(names(States_2022), ejscreen::ejscreenformulas$gdbfieldname)]
 names(USA_2022)[2]
@@ -235,21 +236,21 @@ EJSCREEN_2022_Supplemental_StatePct_with_AS_CNMI_GU_VI <- EJAM::metadata_add(EJS
 # RENAME ALL VARIABLES (COLUMN NAMES) ####
 # NEW AS OF 1/26/2023 - WILL RENAME COLUMNS OF DATA.FRAME TO MATCH WHAT IS USED IN EJAM:: and in ejscreen::
 # instead of sticking with variable names from FTP site.
-
+stop('need to get from ejscreen package the function change.fieldnames.ejscreen.csv')
 bg <- copy(EJSCREEN_Full_with_AS_CNMI_GU_VI) # copied in case doing this after already part of package and just updating
-names(bg) <- ejscreen::change.fieldnames.ejscreen.csv( names(bg) )
+names(bg) <-  change.fieldnames.ejscreen.csv( names(bg) )
 EJSCREEN_Full_with_AS_CNMI_GU_VI <- copy(bg)
 
 bg <- copy(EJSCREEN_StatePct_with_AS_CNMI_GU_VI)
-names(bg) <- ejscreen::change.fieldnames.ejscreen.csv( names(bg) )
+names(bg) <-  change.fieldnames.ejscreen.csv( names(bg) )
 EJSCREEN_StatePct_with_AS_CNMI_GU_VI <- copy(bg)
+stop('requires EJAMejscreendata package here but want to avoid leaving it in this script to avoid rsconnect thinking that is a dependency, when deploying')
+bg <- copy( EJSCREEN_2022_Supplemental_with_AS_CNMI_GU_VI) # from the EJAMejscreendata package
+names(bg) <-  change.fieldnames.ejscreen.csv( names(bg) ) # cc
+EJSCREEN_2022_Supplemental_with_AS_CNMI_GU_VI <- copy(bg) # 
 
-bg <- copy(EJAMejscreendata::EJSCREEN_2022_Supplemental_with_AS_CNMI_GU_VI)
-names(bg) <- ejscreen::change.fieldnames.ejscreen.csv( names(bg) )
-EJSCREEN_2022_Supplemental_with_AS_CNMI_GU_VI <- copy(bg)
-
-bg <- copy(EJAMejscreendata::EJSCREEN_2022_Supplemental_StatePct_with_AS_CNMI_GU_VI)
-names(bg) <- ejscreen::change.fieldnames.ejscreen.csv( names(bg) )
+bg <- copy( EJSCREEN_2022_Supplemental_StatePct_with_AS_CNMI_GU_VI)  
+names(bg) <-  change.fieldnames.ejscreen.csv( names(bg) ) # vv
 EJSCREEN_2022_Supplemental_StatePct_with_AS_CNMI_GU_VI <- copy(bg)
 
 #################################################################################

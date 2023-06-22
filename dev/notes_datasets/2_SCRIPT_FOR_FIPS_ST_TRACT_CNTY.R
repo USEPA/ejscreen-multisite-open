@@ -1,6 +1,6 @@
 ######################################################################## #
 # # notes on converting 
-# EJAMejscreendata::EJSCREEN_Full_with_AS_CNMI_GU_VI
+# EJAMejscreendata package file called EJSCREEN_Full_with_AS_CNMI_GU_VI
 # and
 # ejscreen::bg22DemographicSubgroups2016to2020
 # to
@@ -48,7 +48,7 @@ library(EJAMejscreendata)
 
 
 # not  done but 
-# to start to redo bg22, from EJAMejscreendata::EJSCREEN_Full_with_AS_CNMI_GU_VI
+# to start to redo bg22, from EJAMejscreendata package file called EJSCREEN_Full_with_AS_CNMI_GU_VI
 
 
 # TEMPORARY/INTERIM FIX TO ADD ST TO EJAM::blockgroupstats while not already there:
@@ -57,17 +57,18 @@ library(EJAMejscreendata)
 
 
 
-
-bgejam <- EJAMejscreendata::EJSCREEN_Full_with_AS_CNMI_GU_VI
+stop(' need to load EJAMejscreendata package file called EJSCREEN_Full_with_AS_CNMI_GU_VI')
+bgejam <-  EJSCREEN_Full_with_AS_CNMI_GU_VI
 # fix variable names to be friendlier
-names(bgejam) <- ejscreen::change.fieldnames.ejscreen.csv(names(bgejam))
+stop('need to load ejscreen package file called change.fieldnames.ejscreen.csv')
+names(bgejam) <- change.fieldnames.ejscreen.csv(names(bgejam))
 
 
 #   NOTE this census2020 block table has PR but lacks "AS" "GU" "MP" "VI"
 # while EJScreen 2.1 has those at blockgroup res
 # > uniqueN( blockid2fips[,substr(blockfips,1,2)])
 # [1] 52
-# length(unique(EJAMejscreendata::EJSCREEN_Full_with_AS_CNMI_GU_VI$ST_ABBREV))
+# length(unique(EJAMejscreendata package file called EJSCREEN_Full_with_AS_CNMI_GU_VI$ST_ABBREV))
 # [1] 56
 #   dim(bgejam)
 # [1] 242,940    155

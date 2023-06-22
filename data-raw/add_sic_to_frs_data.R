@@ -1,5 +1,5 @@
 
-## copy of EJAMfrsdata::frs_clean but with SIC information
+## copy of EJAMfrsdata pkg func called frs_clean but with SIC information
 frs_clean <- function(frs, usefulcolumns=c('LATITUDE83', 'LONGITUDE83', 'REGISTRY_ID', 'PRIMARY_NAME', 'NAICS_CODES', 'SIC_CODES','PGM_SYS_ACRNMS')) {
   
   # REGISTRY_ID = 'c',
@@ -36,8 +36,8 @@ frs_clean <- function(frs, usefulcolumns=c('LATITUDE83', 'LONGITUDE83', 'REGISTR
   return(frs)
 }
 
-
-frs <- EJAMfrsdata::frs_read(fullpath = 'NATIONAL_SINGLE.CSV' , only_essential_cols = T)
+# stop('EJAMfrsdata package provides the function frs_read')
+frs <-  frs_read(fullpath = 'NATIONAL_SINGLE.CSV' , only_essential_cols = T)
 
 frs <- frs_clean(frs)
 

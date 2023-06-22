@@ -53,8 +53,9 @@ usethis::use_data(States_2022_LOOKUP, overwrite = TRUE)
 # now save versions with friendly names (but note file name might be confusing if two version kept with just renamed columns)
 lookupUSA <- USA_2022_LOOKUP
 lookupStates <- States_2022_LOOKUP
-names(lookupStates) <- ejscreen::change.fieldnames.ejscreen.csv(names(lookupStates))
-names(lookupUSA) <- ejscreen::change.fieldnames.ejscreen.csv(names(lookupUSA))
+stop('need ejscreen pkg for change.fieldnames.ejscreen.csv or use EJAM equivalent')
+names(lookupStates) <-  change.fieldnames.ejscreen.csv(names(lookupStates))
+names(lookupUSA) <- change.fieldnames.ejscreen.csv(names(lookupUSA))
 usethis::use_data(   lookupUSA, overwrite = TRUE)
 usethis::use_data(lookupStates, overwrite = TRUE)
 

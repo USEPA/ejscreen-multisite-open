@@ -3,7 +3,8 @@
 ##################################################################### #
 # libraries not on CRAN (on github) are needed for this script
 #
-library(ejscreen); library(ejanalysis); library(analyze.stuff); require(ACSdownload)
+stop('library(ejscreen); library(ejanalysis); library(analyze.stuff); require(ACSdownload)')
+# library(ejscreen); library(ejanalysis); library(analyze.stuff); require(ACSdownload)
 
 ##################################################################### #
 # specify file directory
@@ -25,7 +26,8 @@ metadata <- list(
 ##################################################################### #
 # DOWNLOAD TABLE(S) ####
 #
-acsdata_B03002 <- ejscreen::ejscreen.acsget(tables = 'B03002',
+stop('need from package ejscreen the function ejscreen.acsget')
+acsdata_B03002 <- ejscreen.acsget(tables = 'B03002',
                                   end.year = 2020,
                                   base.path = mydir, sumlevel = 'both' )
 # 6 minutes (or up to 10 minutes?) slow - downloads each state

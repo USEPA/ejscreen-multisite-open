@@ -60,11 +60,11 @@ if(any(colnames( blockwts) != expected_columns_bgw)){
 #EJSCREEN stats by block group
 
 
-#merge blockgroupstats onto EJAMejscreendata::EJSCREEN_Full_with_AS_CNMI_GU_VI and confirm correct cleaning
+#merge blockgroupstats onto EJAMejscreendata package file EJSCREEN_Full_with_AS_CNMI_GU_VI and confirm correct cleaning
 
 mp_islands <- c("AS","GU","MP","VI") #expected missing census state/territory abbreviations
-
-ejscreen <- EJAMejscreendata::EJSCREEN_Full_with_AS_CNMI_GU_VI
+stop('requires EJAMejscreendata package that has EJSCREEN_Full_with_AS_CNMI_GU_VI')
+ejscreen <-  EJSCREEN_Full_with_AS_CNMI_GU_VI
 bgstat <- EJAM::blockgroupstats
 bgstat$merged <- TRUE
 

@@ -9,8 +9,9 @@ library(ejscreen)
 # and those rely on  proxistat::countiesall   
 
 # merge EJScreen with Demographic subgroups ####
+stop('need from ejscreen package the files bg22 and  bg22DemographicSubgroups2016to2020')
 bg22plus <- merge(
-  ejscreen::bg22, ejscreen::bg22DemographicSubgroups2016to2020, 
+   bg22,  bg22DemographicSubgroups2016to2020, 
   all.x = TRUE, by = 'FIPS', suffixes = c('','.duplicatecolumn')
 )
 

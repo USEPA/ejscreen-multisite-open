@@ -194,7 +194,7 @@
 # 
 # Full list is returned invisibly 
 # EJAM         EJAMbatch.summarizer EJAMejscreenapi 
-#   and obsolete: EJAMejscreendata EJAMfrsdata EJAMblockdata 
+#   and mostly not used: EJAMejscreendata   EJAMblockdata   but EJAMfrsdata pkg used for some functions still
 # lines    integer,84   integer,44           integer,8     integer,52      integer,5        integer,21  
 # comments integer,84   integer,44           integer,8     integer,52      integer,5        integer,21  
 # code     integer,84   integer,44           integer,8     integer,52      integer,5        integer,21  

@@ -253,11 +253,12 @@ EJAM::datapack('EJAMejscreendata')
 # 2 EJSCREEN_StatePct_with_AS_CNMI_GU_VI EJScreen 2.1 data for each blo
 # 3                          States_2022 EJScreen 2.1 lookup table of p
 # 4                             USA_2022 EJScreen 2.1 lookup table of p
-setdiff(universe$ST, unique(EJAMejscreendata::EJSCREEN_Full_with_AS_CNMI_GU_VI$ST_ABBREV )) 
+stop('need to load these from package EJAMejscreendata')
+setdiff(universe$ST, unique( EJSCREEN_Full_with_AS_CNMI_GU_VI$ST_ABBREV )) 
 # character(0)
-setdiff(universe$ST, unique(EJAMejscreendata::EJSCREEN_StatePct_with_AS_CNMI_GU_VI$ST_ABBREV )) 
+setdiff(universe$ST, unique( EJSCREEN_StatePct_with_AS_CNMI_GU_VI$ST_ABBREV )) 
 # character(0)
-setdiff(universe$ST, unique(EJAMejscreendata::States_2022$REGION  ))  # ****** THIS NEEDS TO BE FIXED / UPDATED  to include 4 island areas **********
+setdiff(universe$ST, unique( States_2022$REGION  ))  # ****** THIS NEEDS TO BE FIXED / UPDATED  to include 4 island areas **********
 # [1] "AS" "GU" "MP" "VI"  
 
 
@@ -276,21 +277,22 @@ EJAM::datapack(ejscreen)
 # 7                        USA_2022_LOOKUP 
 # 8          acs_B03002_2016_2020_bg_tract 
 # 40 tract22DemographicSubgroups2016to2020 Demographic subgroups of race/
-setdiff(universe$ST, ejscreen::lookupStates$REGION)
+stop('need lookupStates and several other files for below, from ejscreen pkg')
+setdiff(universe$ST, lookupStates$REGION)
 # [1] "AS" "GU" "MP" "VI"
-'PR' %in%  ejscreen::lookupStates$REGION
+'PR' %in%  lookupStates$REGION
 # [1] TRUE
-setdiff(universe$ST, ejscreen::States_2022_LOOKUP$REGION)
-'PR' %in%  ejscreen::States_2022_LOOKUP$REGION
+setdiff(universe$ST, States_2022_LOOKUP$REGION)
+'PR' %in%  States_2022_LOOKUP$REGION
 # [1] TRUE
 # [1] "AS" "GU" "MP" "VI"
-setdiff(universe$ST, ejscreen::States_2021_LOOKUP$REGION)
+setdiff(universe$ST, States_2021_LOOKUP$REGION)
 # [1] "AS" "GU" "MP" "VI"
-setdiff(universe$ST, ejscreen::bg22$ST)
+setdiff(universe$ST, bg22$ST)
 # [1] "AS" "GU" "MP" "VI"
-setdiff(universe$ST, ejscreen::bg22plus$ST)
+setdiff(universe$ST, bg22plus$ST)
 # [1] "AS" "GU" "MP"  "VI"
-get.state.info( setdiff(universe$FIPS.ST, substr(ejscreen::bg22DemographicSubgroups2016to2020$FIPS,1,2)))[,'ST']
+get.state.info( setdiff(universe$FIPS.ST, substr(bg22DemographicSubgroups2016to2020$FIPS,1,2)))[,'ST']
 # [1] "AS" "GU" "MP" "PR"  "VI"      # ****** missing pr here but it was put into bg22plus... may drop this? THIS NEEDS TO BE FIXED / UPDATED **********
 #   # Also see https://www.census.gov/content/dam/Census/library/publications/2020/acs/acs_prcs_handbook_2020_ch04.pdf  
 #   # script to add PR demog subgroups was in C:/Users/mcorrale/R/mysource/EJAM/inst/notes_datasets/4_SCRIPT_ADD_PUERTORICO_DEMOG_SUBGROUPS.R 

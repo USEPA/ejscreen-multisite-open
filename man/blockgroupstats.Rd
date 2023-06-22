@@ -18,8 +18,7 @@ NOTE: It also has the race/ethnic subgroups that add up to minority or people of
 
 Each year this could be created as for the latest version.
 See attributes(blockgroupstats)
-It is also available in a similar form via the ejscreen package on github,
-and EJAMejscreendata::EJSCREEN_Full_with_AS_CNMI_GU_VI
+and see EJSCREEN_Full_with_AS_CNMI_GU_VI  # which is in the package EJAMejscreendata
 but there are differences in which columns are kept.
 
 It is a data.table of US Census blockgroups (not blocks). With PR, 242,335 rows, approx 175 columns.
