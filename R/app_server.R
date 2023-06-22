@@ -245,7 +245,7 @@ app_server <- function(input, output, session) {
 
     ## assign final value to data_up_naics reactive variable
     #data_up_naics(sitepoints)
-    return(sitepoints)
+    return(sitepoints %>% latlon_df_clean())
   })
   
   ## if NAICS radio button is toggled between dropdown/enter, empty the other one
@@ -1107,17 +1107,19 @@ app_server <- function(input, output, session) {
                                 )]
     } else {
     
-      if("REGISTRY_ID" %in% names(data_uploaded())){
-        echolink = url_echo_facility_webpage(data_uploaded()$REGISTRY_ID, as_html = TRUE, linktext = 'ECHO Report')
+      
+      
+      if("REGISTRY_ID" %in% names( d_upload)){
+        echolink = url_echo_facility_webpage( d_upload$REGISTRY_ID, as_html = TRUE, linktext = 'ECHO Report')
       } else if("RegistryID" %in% names(data_uploaded())){
-        echolink = url_echo_facility_webpage(data_uploaded()$RegistryID, as_html = TRUE, linktext = 'ECHO Report')
+        echolink = url_echo_facility_webpage( d_upload$RegistryID, as_html = TRUE, linktext = 'ECHO Report')
       } else {
         echolink = rep('N/A',nrow(out$results_bysite))
       }
     out$results_bysite[ , `:=`(
-      `EJScreen Report` = url_ejscreen_report(    lat = data_uploaded()$lat, lon = data_uploaded()$lon, distance = input$bt_rad_buff, as_html = TRUE), 
-      `EJScreen Map`    = url_ejscreenmap(        lat = data_uploaded()$lat, lon = data_uploaded()$lon,                               as_html = TRUE), 
-      `ACS Report`      = url_ejscreen_acs_report(lat = data_uploaded()$lat, lon = data_uploaded()$lon, distance = input$bt_rad_buff, as_html = TRUE),
+      `EJScreen Report` = url_ejscreen_report(    lat = d_upload$lat, lon =  d_upload$lon, distance = input$bt_rad_buff, as_html = TRUE), 
+      `EJScreen Map`    = url_ejscreenmap(        lat = d_upload$lat, lon =  d_upload$lon,                               as_html = TRUE), 
+      `ACS Report`      = url_ejscreen_acs_report(lat =  d_upload$lat, lon = d_upload$lon, distance = input$bt_rad_buff, as_html = TRUE),
       `ECHO report` = echolink
     )]
     }
