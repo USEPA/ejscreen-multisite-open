@@ -283,7 +283,7 @@ x <- jsonlite::fromJSON(rawToChar(x$content))$Results$ClusterOutput$ClusterData[
 # ECHO API has air services that let you query on MACT subpart, but it fails when I try.
 # ECHO API example of Air services - fails when I try to search on MACT subparts:
 # https://echodata.epa.gov/echo/air_rest_services.get_facilities?output=JSON&p_mact=FFFF&qcolumns=2%2C8%2C22%2C23%2C25%2C26
-browseURL("https://echodata.epa.gov/echo/air_rest_services.get_facilities?output=JSON&p_mact=ZZZZ&qcolumns=2%2C8%2C22%2C23%2C25%2C26")
+# browseURL("https://echodata.epa.gov/echo/air_rest_services.get_facilities?output=JSON&p_mact=ZZZZ&qcolumns=2%2C8%2C22%2C23%2C25%2C26")
 # Key columns to ask for:
 # SourceID 2
 # RegistryID 8

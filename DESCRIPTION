@@ -15,7 +15,6 @@ Depends:
     aws.s3,
     EJAMbatch.summarizer,
     EJAMejscreenapi,
-    EJAMfrsdata,
     shinyBS
 Imports:
     attempt,
