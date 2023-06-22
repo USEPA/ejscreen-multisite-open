@@ -45,7 +45,9 @@
 #   and see if those are avail for PR at least.
 
 
-library(EJAMejscreendata) 
+# library(
+#   EJAMejscreendata
+#   ) 
 # EJAMejscreendata package file called EJSCREEN_Full_with_AS_CNMI_GU_VI
 # EJAMejscreendata package file called EJSCREEN_StatePct_with_AS_CNMI_GU_VI
 
