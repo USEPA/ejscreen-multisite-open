@@ -1633,7 +1633,7 @@ app_server <- function(input, output, session) {
         ggplot2::geom_bar(stat='identity') +
         ggplot2::scale_fill_identity() +
         ggplot2::theme_bw() +
-        ggplot2::labs(x = 'Indicator', y = 'Ratio vs. US Average',
+        ggplot2::labs(x = NULL, y = 'Ratio vs. US Average',
                       title = "Demographic Index around the Selected Sites compared to all people's blockgroups in the US") +
         #scale_x_discrete(labels = scales::label_wrap(7)) +
         #scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +

@@ -330,7 +330,7 @@ app_ui  <- function(request) {
                                                       label = "",#htmltools::h5('Within what distance of a site?'),
                                                       #label = htmltools::h5("Radius of circular buffer in miles"),
                                                       value = 1.0, step = 0.25,
-                                                      min = 0.25, max = 10,
+                                                      min = 0, max = 10,
                                                       post = ' miles'
                                    )#,  # xxx
                             ),
