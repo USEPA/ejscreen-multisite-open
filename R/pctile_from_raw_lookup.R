@@ -154,7 +154,7 @@ pctile_from_raw_lookup <- function(myvector, varname.in.lookup.table, lookup=usa
       }
     }
     
-    # also see similar code in ejanalysis::lookup.pctiles() !
+    # also see similar code in ejanalysis package file lookup.pctiles() !
     
     whichinterval <- vector(length = NROW(myvector))
     percentiles_reported <- vector(length = NROW(myvector))

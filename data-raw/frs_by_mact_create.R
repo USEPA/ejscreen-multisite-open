@@ -247,8 +247,7 @@ usethis::use_data(mact_categories, overwrite = TRUE)  # data.frame
 # NSPS Part 60 - Subpart Dc - SMALL INDUS-COMMER-INSTITUTL STEAM GENERATING UNITS, NSPS Part 60 - Subpart JJJJ - STATIONARY SPARK IGNITION INTERNAL COMBUSTION ENGINES, NSPS Part 60 - Subpart RR - PRESSR-SENST TAPE, LABEL SURFACE COATING OPERATIONS	
 
 stop("stopped here")
-
-library(EJAMejscreenapi)
+ 
 subpart = 'FFFF'
 
 x <- EJAMejscreenapi::get_facility_info_via_ECHO(

@@ -15,20 +15,27 @@
 rm(list=ls())
 
 if (is.loaded("EJAM")) {  detach("package:EJAM", unload=TRUE)}
-if (is.loaded("EJAMfrsdata")) {  detach("package:EJAMfrsdata", unload=TRUE)}
+# if (is.loaded(
+#  "EJAMfrsdata")) {  detach("package:
+# 
+# EJAMfrsdata", unload=TRUE)}
 if (is.loaded("EJAMbatch.summarizer")) {  detach("package:EJAMbatch.summarizer", unload=TRUE)}
 if (is.loaded("EJAMejscreenapi")) {  detach("package:EJAMejscreenapi", unload=TRUE)}
 
 ################################################# #
 
 # make sure PAT is set up right. 
-# library(credentials)
-credentials::set_github_pat()
+# library(
+# credentials
+# )
+ set_github_pat()
 
 # library(devtools)
 # make any changes to pkgs, devtools::document(), push changes to github, then...
 
-devtools::install_github('USEPA/EJAMejscreenapi',      force=TRUE, upgrade=F) # works fine.
+# devtools func called
+
+install_github('USEPA/EJAMejscreenapi',      force=TRUE, upgrade=F) # works fine.
 # Using github PAT from envvar GITHUB_PAT
 # Downloading GitHub repo USEPA/EJAMejscreenapi@HEAD
 # ── R CMD build ─────────────────────────────────────────────────────────────────────────────────────────────────
@@ -43,11 +50,13 @@ devtools::install_github('USEPA/EJAMejscreenapi',      force=TRUE, upgrade=F) # 
 # ─  building 'EJAMejscreenapi_2.1.2.tar.gz'   * * ************ * * 
 # ...etc
  
-devtools::install_github('USEPA/EJAMfrsdata', force=TRUE, upgrade=F) #   
+# devtools::install_github(
 
-devtools::install_github('USEPA/EJAMbatch.summarizer', force=TRUE, upgrade=F) # works fine.
+#     'USEPA/EJAMfrsdata', force=TRUE, upgrade=F) #   
 
-devtools::install_github('USEPA/EJAM',                 force=TRUE, upgrade=F) # DO I HAVE TO DO THIS??
+install_github('USEPA/EJAMbatch.summarizer', force=TRUE, upgrade=F) # works fine.
+
+install_github('USEPA/EJAM',                 force=TRUE, upgrade=F) # DO I HAVE TO DO THIS??
 
 stop()
 

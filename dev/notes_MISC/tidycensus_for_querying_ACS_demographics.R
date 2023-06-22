@@ -5,7 +5,9 @@
 library(ggplot2) # makes ggplot2 graphic interactive
 library(ggiraph) # can customize interactivity- super powerfule pkg for interactive maps, plots, etc.
 
-library(tidycensus)
+# library(
+# tidycensus
+# )
 library(tidyverse)
 library(ggplot2)
 

@@ -68,7 +68,7 @@ frs_make_sic_lookup <- function(x) {
 }
 
 
-# library(EJAMfrsdata)
+# library?  may need EJAMfrsdata
 
 ## import dataset used for frs_by_naics
 ## from https://ordsext.epa.gov/FLA/www3/state_files/

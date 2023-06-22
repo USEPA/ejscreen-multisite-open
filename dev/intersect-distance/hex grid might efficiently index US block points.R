@@ -12,7 +12,9 @@ local_options <- options()
 library(sf)
 library(dplyr)
 library(ggplot2)
-library(h3jsr)
+# library(
+#   h3jsr
+#   )
 options(stringsAsFactors = FALSE)
  
 library(sf)

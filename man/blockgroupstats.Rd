@@ -28,5 +28,5 @@ column names include bgfips, bgid (for join to blockwt$bgid), pop, pctlowinc, pc
 
 see source code and notes in EJAM/inst/notes_datasets/ which has  create_blockgroupstats()
 
-See maybe the notes on cleaning up and changing the dataset starting from ejscreen::bg22plus
+See maybe the notes on cleaning up and changing the dataset starting from ejscreen package file bg22plus
 }

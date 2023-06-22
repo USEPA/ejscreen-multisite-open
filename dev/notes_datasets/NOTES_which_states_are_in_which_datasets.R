@@ -7,7 +7,7 @@
 
 # Define the universe of what states/other places might be included
 
-# stinfo   <- ejanalysis::get.state.info()
+# stinfo   <- ejanalysis package file get.state.info()
 stinfo <-structure(
   list(
     statename = c(
@@ -221,7 +221,7 @@ universe <- stinfo[stinfo$is.usa.plus.pr | stinfo$is.island.areas, 1:10]
 universe <- universe[universe$ST != 'UM', ]
 # Note on US Minor Outlying Islands: 
 # NONE of the EJ-related datasets include "U.S. Minor Outlying Islands" FIPS 74 "UM"  
-# so ignore that even though listed as territories in ejanalysis::get.state.info()
+# so ignore that even though listed as territories in ejanalysis package file get.state.info()
 # Regarding Island Areas see http://www.census.gov/geo/reference/gtc/gtc_island.html which states the following: 
 # Separate from the Island Areas is the term "U.S. Minor Outlying Islands." 
 # The Island Areas of the United States are 
@@ -311,9 +311,9 @@ EJAM::datapack('EJAM')
 # 3          blockgroupstats EJSCREEN demographic and envir
 # 22               stateinfo data.frame of state abbreviati
 # 25              statestats data.table of 100 percentiles 
-# ejanalysis::get.state.info( setdiff(universe$FIPS.ST, substr(EJAM::blockgroupstats$bgfips, 1,2) ))[,'ST'] 
+# ejanalysis package file get.state.info( setdiff(universe$FIPS.ST, substr(EJAM::blockgroupstats$bgfips, 1,2) ))[,'ST'] 
 # [1] "AS" "GU" "MP" "VI"  
-# ejanalysis::get.state.info( setdiff(universe$FIPS.ST, substr(EJAM::bgpts$bgfips, 1,2) ))[,'ST']
+# ejanalysis package file get.state.info( setdiff(universe$FIPS.ST, substr(EJAM::bgpts$bgfips, 1,2) ))[,'ST']
 # [1] "AS" "GU" "MP" "VI"
 # setdiff(universe$ST, EJAM::stateinfo$ST)
 # [1] "AS" "GU" "MP" "UM" "VI"
@@ -332,9 +332,9 @@ EJAM::datapack('EJAM')
 # 7      quaddata quad tree data on locations of
 length(unique(substr(unique( bgid2fips[ , bgfips], by = 'bgfips')  ,1,2)) )
 # [1] 52 # has DC and PR.
-# ejanalysis::get.state.info(setdiff(universe$FIPS.ST, unique(substr(unique( bgid2fips[ , bgfips], by = 'bgfips')  ,1,2))))$ST
+# ejanalysis package file get.state.info(setdiff(universe$FIPS.ST, unique(substr(unique( bgid2fips[ , bgfips], by = 'bgfips')  ,1,2))))$ST
 # [1] "AS" "GU" "MP" "VI"  missing
-# ejanalysis::get.state.info(setdiff(universe$FIPS.ST, unique(substr(unique( blockid2fips[ , blockfips], by = 'blockfips')  ,1,2))))$ST
+# ejanalysis package file get.state.info(setdiff(universe$FIPS.ST, unique(substr(unique( blockid2fips[ , blockfips], by = 'blockfips')  ,1,2))))$ST
 # [1] "AS" "GU" "MP" "VI"
 all.equal( blockid2fips$blockid ,  blockpoints$blockid)
 # [1] TRUE
@@ -350,7 +350,9 @@ setdiff( lookup_states$ST, universe$ST)
 
 # proxistat package
 
-library(proxistat)
+# library(
+#   proxistat
+#   )
 unique(countiesall$ST)
 substr(data(package='proxistat')$results[ , c('Item', 'Title')], 1, 55)
 # Data sets in package ‘proxistat’:
@@ -362,20 +364,20 @@ substr(data(package='proxistat')$results[ , c('Item', 'Title')], 1, 55)
 # [5,] "county.pts_2010" ""                                                       
 # [6,] "lookup.states"   "States and related areas dataset" 
 
-# proxistat::countiesall
-# setdiff( universe$ST, unique(proxistat::countiesall$ST))
+### need proxistat pkg dataset called countiesall and bg.pts and lookup.states
+# setdiff( universe$ST, unique(countiesall$ST))
 # [1] "AS" "GU" "MP" "UM" "VI"
 
-# proxistat::bg.pts
-# ejanalysis::get.state.info(unique(substr(proxistat::bg.pts$FIPS, 1,2) ))$ST
+#  bg.pts from proxistat pkg
+# ejanalysis package file get.state.info(unique(substr( bg.pts$FIPS, 1,2) ))$ST
 # [1] "AL" "AK" "AZ" "AR" "CA" "CO" "CT" "DE" "DC" "FL" "GA" "HI" "ID" "IL" "IN" "IA" "KS" "KY" "LA" "ME" "MD" "MA" "MI" "MN" "MS" "MO" "MT" "NE" "NV" "NH" "NJ" "NM"
 # [33] "NY" "NC" "ND" "OH" "OK" "OR" "PA" "RI" "SC" "SD" "TN" "TX" "UT" "VT" "VA" "WA" "WV" "WI" "WY" "AS" "GU" "MP" "PR" "VI"
-# length(unique(substr(proxistat::bg.pts$FIPS,1,2)))  # 56 !
-# setdiff(ejanalysis::get.state.info(unique(substr(proxistat::bg.pts$FIPS, 1,2) ))$ST, state.abb)
+# length(unique(substr( bg.pts$FIPS,1,2)))  # 56 !
+# setdiff(ejanalysis package file get.state.info(unique(substr( bg.pts$FIPS, 1,2) ))$ST, state.abb)
 # [1] "DC" "AS" "GU" "MP" "PR" "VI"  # the 2010 version had PR **and also the 4 island areas.** 
 
-# proxistat::lookup.states
-# toupper(c("as", "gu", "mp", "um", "vi", "us")) %in% proxistat::lookup.states$ST
+#  lookup.states
+# toupper(c("as", "gu", "mp", "um", "vi", "us")) %in% lookup.states$ST
 # TRUE TRUE TRUE TRUE TRUE TRUE
 
 
@@ -384,7 +386,7 @@ substr(data(package='proxistat')$results[ , c('Item', 'Title')], 1, 55)
 
 # ACSdownload package
 
-# ACSdownload::clean.mystates() relies on data(lookup.states, envir = environment(), package = 'proxistat')
+# clean.mystates() relies on data(lookup.states, envir = environment(), package = 'proxistat')
 
 # ???????????
 

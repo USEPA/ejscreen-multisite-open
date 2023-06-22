@@ -153,7 +153,7 @@ Needs to be updated each time EJScreen is updated.
 EJScreen 2020 version was about 100MB as .rda)
 \item \strong{\link{usastats}.rda} and \strong{\link{statestats}.rda}  data.table lookup of 100 percentiles and means
 (for each indicator in blockgroupstats) in each zone (us,   or a state).
-Need to update each time blockgroupstats is updated. Taken from EJScreen data or ejscreen::lookupUSA & lookupStates
+Need to update each time blockgroupstats is updated. Taken from EJScreen data or ejscreen package file lookupUSA & lookupStates
 \item \strong{bg2sites?}  Intermediate result, not saved.  aggregated version of sites2blocks
 unless we want to preserve the full bg2sites info for other site groupings, or later detailed
 analysis of distribution of distances in each demog group.

@@ -11,9 +11,9 @@ names.dplus <- c( names.d,  names.d.subgroups.pct)
 ###############################################
 # NOT FIXED YET:
 #
-# Ratios <- ejanalysis::RR.table(
+# Ratios <- ejanalysis package file RR.table(
 #   bg, 
-#   Enames = ejscreen::names.e, 
+#   Enames = ejscreen package file names.e, 
 #   Dnames = names.dplus, 
 #   popcolname = 'pop', 
 #   digits = 2
@@ -24,7 +24,7 @@ names.dplus <- c( names.d,  names.d.subgroups.pct)
 # usethis::use_data(RRS.US)
 ###############################################
 
-# MeansByGroup_and_Ratios <- ejanalysis::RR.means(
+# MeansByGroup_and_Ratios <- ejanalysis package file RR.means(
 #   e = subset(bg, select=names.e), 
 #   d = subset(bg, select = names.dplus), 
 #   pop = bg$pop

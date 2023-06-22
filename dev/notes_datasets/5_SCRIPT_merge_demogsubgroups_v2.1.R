@@ -1,12 +1,16 @@
 # merge EJScreen dataset with Demographic subgroups from ACS ####
 
-library(ejanalysis)
-library(ejscreen)
+# library(
+#   ejanalysis
+#   )
+# library(
+#   ejscreen
+#   )
 # cbind(sapply(bg22, function(x) sum(is.na(x)))) 
 #  ejscreen.download() relied on 
-#  ejanalysis::addFIPScomponents() to get those, which used 
-#  data(lookup.states, package='proxistat') and  ejanalysis::get.county.info
-# and those rely on  proxistat::countiesall   
+#  ejanalysis package file addFIPScomponents() to get those, which used 
+#  data(lookup.states, package='proxistat') and  ejanalysis package file get.county.info
+# and those rely on  proxistat pkg dataset called countiesall   
 
 # merge EJScreen with Demographic subgroups ####
 stop('need from ejscreen package the files bg22 and  bg22DemographicSubgroups2016to2020')
@@ -28,7 +32,7 @@ bg22plus$bgid <- 1:NROW(bg22plus)
 # 
 # Note that only Puerto Rico (FIPS starting with 72) is missing from this ACS subgroups dataset.
 # while bg22 has PR, so when merged, the PR rows would be NA for pcthisp, etc.
-# dim(ejscreen::bg22)  # [1] 242,335    157
+# dim(ejscreen package file bg22)  # [1] 242,335    157
 # dim(bg22)            # [1] 242,335    157
 # dim(bg22DemographicSubgroups2016to2020) # [1] 239,780     21
 # dim(bg22plus)        # [1] 242,335    174 # OBSOLETE
@@ -45,7 +49,7 @@ addmargins(table(substr(bg22DemographicSubgroups2016to2020$FIPS,1,2) != '72'))
 # bg22plus <- bg22plus[bg22plus$ST != 'PR',]
 ################################################### #
 
-# bg22plus <- ejscreen::metadata_add(bg22plus)
+# bg22plus <- ejscreen package file metadata_add(bg22plus)
 # set attributes to store metadata on vintage ####
 metadata <- list(
   census_version = 2020,

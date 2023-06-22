@@ -33,7 +33,7 @@ usethis::use_data(statestats,overwrite = TRUE)
 # Create percentile lookup tables for extra variables like demographic race/ethnicity subgroups
 bg <- data.table::copy(EJAM::blockgroupstats)
 bg <- data.table::setDF(bg)
-# bg = ejanalysis::addFIPScomponents(bg, fipscolname = "bgfips",  clean = FALSE)
+# bg = ejanalysis package file addFIPScomponents(bg, fipscolname = "bgfips",  clean = FALSE)
 bg$FIPS.ST <- substr(bg$bgfips,1,2)
 bg$ST <- EJAM::stateinfo$ST[match(bg$FIPS.ST, EJAM::stateinfo$FIPS.ST)]
 

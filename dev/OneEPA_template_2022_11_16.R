@@ -16,8 +16,7 @@
 
 
 
-
-# require(shiny)
+ 
 # you already would have this ui <- fluidPage( ####
 ui <- shiny::fluidPage(
   

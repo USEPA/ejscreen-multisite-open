@@ -23,13 +23,13 @@
 # # notes on converting 
 # EJAMejscreendata package file called EJSCREEN_Full_with_AS_CNMI_GU_VI  etc.
 # and
-# ejscreen::bg22DemographicSubgroups2016to2020  (might not save this separately)
+# ejscreen package file bg22DemographicSubgroups2016to2020  (might not save this separately)
 # to
 # EJAMejscreendata package file called EJAMejscreendata package file called EJSCREEN_Full_with_AS_CNMI_GU_VI   etc.
 # and 
 # EJAM::blockgroupstats
 # and
-# ejscreen::bg22plus
+# ejscreen package file bg22plus
 ######################################################################## #
 
 

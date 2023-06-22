@@ -60,7 +60,7 @@ and where each bg is, which is useful for some situations.
     
   How blockcounts were done: 
    
-  library(data.table)
+ need  data.table pkg
   bg_blockcounts <- blockwts[ , .(blockcount = uniqueN(.SD)), by=bgid]
   sum(bg_blockcounts$blockcount == 1)
     # [1] 1874 blockgroups have only 1 block

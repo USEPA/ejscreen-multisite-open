@@ -3,8 +3,7 @@
 ##################################################################### #
 # libraries not on CRAN (on github) are needed for this script
 #
-stop('library(ejscreen); library(ejanalysis); library(analyze.stuff); require(ACSdownload)')
-# library(ejscreen); library(ejanalysis); library(analyze.stuff); require(ACSdownload)
+stop('code here needs these: (ejscreen); (ejanalysis); (analyze.stuff); (ACSdownload)') 
 
 ##################################################################### #
 # specify file directory
@@ -14,7 +13,7 @@ if (!dir.exists(mydir)) dir.create(mydir) # and the ejscreen.acsget will create 
 
 ##################################################################### #
 # set metadata on vintage ####
-# x <- ejscreen::metadata_add(x)
+# x <- ejscreen package file metadata_add(x)
 metadata <- list(
   census_version = 2020,
   acs_version = '2016-2020',

@@ -29,12 +29,12 @@
 # 	ejscreenapi's  EJAMejscreenapi::popup_from_ejscreen() 
 # 	ejscreenapi  outputs  -NOT ESSENTIAL AS CANT USE TO SUMMARIZE ACROSS SITES
 # 
-# ****	ejscreen::ejscreenformulas etc. (name lists)
-# 	ejscreen::names.e, names.d, etc etc etc (data holding name lists)
+# ****	ejscreen package file ejscreenformulas etc. (name lists)
+# 	ejscreen package file names.e, names.d, etc etc etc (data holding name lists)
 # 	ejscreen/data/  nicenames, names.e.nice, names.evars, etc. etc. etc. etc. etc. 
-# 	ejscreen::bg22plus, and similar data. (data table's column names) 
-# 	output of ejscreen::ejscreen.create (output table's column names)
-# 	ACS or Envt inputs as needed for ejscreen::ejscreen_create() ?? not priority /ACS &Census raw?
+# 	ejscreen package file bg22plus, and similar data. (data table's column names) 
+# 	output of ejscreen package file ejscreen.create (output table's column names)
+# 	ACS or Envt inputs as needed for ejscreen package file ejscreen_create() ?? not priority /ACS &Census raw?
 #    /ejscreen/inst/  ejscreenformulas.xlsx    (deleted csv version) then save as the .rdata version
 #    /ejscreen/data/  ejscreenformulas.rda  (and ejscreenformulasnoej.rda  )
 #    /ejscreen/inst/  EJSCREEN_columns_explained.xlsx   (deleted csv version) 

@@ -21,7 +21,6 @@
 #'   \dontrun{
 #'  pdata <- data.frame(a=rep(80,4),b=rep(93,4), col3=c(49,98,100,100))
 #'   ### pdata <- EJAM::blockgroupstats[ , names_e_pctile]
-#'   ## or ## pdata <- ejscreen::bg22[ , ejscreen::names.e.pctile]
 #'  pcuts <-  5 * (0:20)  # <- as.vector(keystats_e['highcut', ])
 #' colcounter_summary(        pdata, pcuts)
 #' colcounter_summary_pct(    pdata, pcuts)
@@ -115,8 +114,8 @@ colcounter_summary_cum_pct <- function(x, thresholdlist, ...) {
 #' @param ... passed to the 4 functions
 #'   like or.tied=TRUE, na.rm=TRUE, below=FALSE, one.cut.per.col=FALSE
 #' @seealso colcounter_summary_all() colcounter_summary() colcounter_summary_cum() colcounter_summary_pct() colcounter_summary_cum_pct()
-#' @examples
-#'     # df <- ejscreen::bg22[ , ejscreen::names.ej.pctile]
+#' @examples dontrun{
+#'     # df <-  bg22[ , names.ej.pctile]
 #'  df <- data.frame(a=rep(80,4),b=rep(93,4), col3=c(49,98,100,100))
 #'  bench <- 5 * (0:20)
 #'  a3 <- colcounter_summary_all(df, bench)
@@ -134,7 +133,7 @@ colcounter_summary_cum_pct <- function(x, thresholdlist, ...) {
 #'     ylab='# of places', xlab='# of indicators at/above threshold',
 #'     main='# of places with exactly N/12 indicators >=95th percentile')
 #'
-#'   # pdata <- ejscreen::bg22[ , ejscreen::names.e.pctile]
+#'   # pdata <- ejscreen package file bg22[ , names.e.pctile]
 #'   colcounter_summary_cum_pct(pdata,c(50,80,90,95))
 #'   xs <- 1:12
 #'   plot(x=xs, y=colcounter_summary_cum_pct(pdata, 50)[xs+1], type='b', col='gray', ylim=c(0, 100),
@@ -144,7 +143,7 @@ colcounter_summary_cum_pct <- function(x, thresholdlist, ...) {
 #'   points(xs, colcounter_summary_cum_pct(pdata, 95)[xs+1], type='b', col='red')
 #'   legend(x = 'topright', legend = paste0('>= ', c(50, 80, 90, 95),'th percentile'), fill = c('gray', 'blue', 'orange', 'red'))
 #'
-#'   # pdata <- ejscreen::bg22[ , ejscreen::names.ej.pctile]
+#'   # pdata <- bg22[ ,  names.ej.pctile]
 #'   colcounter_summary_cum_pct(pdata,c(50,80,90,95))
 #'   xs <- 1:12
 #'   plot(x=xs, y=colcounter_summary_cum_pct(pdata, 50)[xs+1], type='b', col='gray', ylim=c(0, 40),
@@ -153,6 +152,7 @@ colcounter_summary_cum_pct <- function(x, thresholdlist, ...) {
 #'   points(xs, colcounter_summary_cum_pct(pdata, 90)[xs+1], type='b', col='orange')
 #'   points(xs, colcounter_summary_cum_pct(pdata, 95)[xs+1], type='b', col='red')
 #'   legend(x = 'topright', legend = paste0('>= ', c(50, 80, 90, 95),'th percentile'), fill = c('gray', 'blue', 'orange', 'red'))
+#' }
 #'
 #' @export
 #'

@@ -14,12 +14,12 @@
     ###################################################################################################
     
     # These must be calculated after aggregating count variables and using those at siteid level. 
-    # e.g. Use ejscreen::ejscreenformulas$formula to calculate these.
+    # e.g. Use ejscreen package file ejscreenformulas$formula to calculate these.
   
 
-    # popmeancols <- c(ejscreen::names.e, ejscreen::names.ej)
+    # popmeancols <- c(ejscreen package file names.e, ejscreen package file names.ej)
     # or to avoid depending on ejscreen package, 
-    # dput(c(ejscreen::names.e, ejscreen::names.ej) )
+    # dput(c(ejscreen package file names.e, ejscreen package file names.ej) )
     
       
       # QUESTION... DO WE CALCULATE THE STATE-FOCUSED EJ INDEXES USING THE STATE AVERAGE DEMOG?? ejscreen was not doing that as of mid 2022 even though it should have been?, 

@@ -25,7 +25,7 @@ ratiostats <- function(results_bybg_people, pts, dig=2 ) {
   warning(
     "this depended on a package not on CRAN and is not used anyway"
   )
-  # r2 <- ejanalysis::RR.means(e=z[ , ..vars], d= z[ ,  c(..names_d, ..names_d_subgroups)] , pop=z$pop) 
+  # r2 <- ejanalysis package file RR.means(e=z[ , ..vars], d= z[ ,  c(..names_d, ..names_d_subgroups)] , pop=z$pop) 
   
   r2 <- r2[,"ratio",]
   # essentially for each group it is just =  colSums(x * groupwts) / colSums(groupwts) with na.rm=T
