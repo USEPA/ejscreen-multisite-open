@@ -493,15 +493,16 @@ app_server <- function(input, output, session) {
   data_up_shp <- reactive({
     ## depends on ECHO upload - which may use same file upload as latlon
     req(input$ss_upload_shp)
-    
     infiles <- input$ss_upload_shp$datapath # get the location of files
+    print(infiles)
     dir <- unique(dirname(infiles)) # get the directory
     outfiles <- file.path(dir, input$ss_upload_shp$name) # create new path name
     name <- strsplit(input$ss_upload_shp$name[1], "\\.")[[1]][1] # strip name 
     purrr::walk2(infiles, outfiles, ~file.rename(.x, .y)) # rename files
     shp <- read_sf(file.path(dir, paste0(name, ".shp"))) # read-in shapefile
-
-    shp
+    shp_proj <- sf::st_transform(shp,crs= 4269)
+    
+    shp_proj
     
     # d_upload <-{}
     # d <- get_blockpoints_in_shape(shp,0)
@@ -853,19 +854,12 @@ app_server <- function(input, output, session) {
   ## crashes with larger datasets
   output$download_preview_data_xl <- downloadHandler(filename = 'epa_raw_data_download.xlsx',
                                                       content = function(file){
-                                                        if(current_upload_method() == "SHP"){
-                                                          dt <- data_uploaded()[['shape']]
-                                                        }else{
-                                                          dt <-data_uploaded()
-                                                        }
+                                                        dt <- data_uploaded()
+                                                       
                                                         writexl::write_xlsx(dt, file)})
   output$download_preview_data_csv <- downloadHandler(filename = 'epa_raw_data_download.csv',
                                                       content = function(file){
-                                                        if(current_upload_method() == "SHP"){
-                                                          dt <- data_uploaded()[['shape']]
-                                                        }else{
-                                                          dt <-data_uploaded()
-                                                        }
+                                                        dt <- data_uploaded()
                                                         data.table::fwrite(dt, file, append = F)})
   
   ## reactive: check if uploaded points are clustered (may double-count people) ####
@@ -894,20 +888,11 @@ app_server <- function(input, output, session) {
   
   ## update map radius label based on button ####
   
-  # observe({
-  #   val <- input$bt_rad_buff
-  #   lab <- paste0('Radius of circular buffer: <br />', val, ' mi ','(',round(val / 0.62137119, 2), ' km)')
-  #   
-  #   updateSliderInput(session, inputId = 'bt_rad_buff', label = HTML(lab))
-  #   #shinyjs::html(id = 'bt_rad_buff', html = HTML(lab))
-  #   
-  #   ## if switching units between miles and km - not currently used
-  #   #req(input$radius_units)
-  #   #lab <- input$radius_units
-  #   # updateSliderInput(session, inputId = 'bt_rad_buff',
-  #   #                   label = paste0('Radius of circular buffer (', lab, ')'),
-  #   #                   min = 0.25, val = val, step = 0.25, max = 10)
-  # })
+  observe({
+    if (current_upload_method() == "SHP" & !isTruthy(input$ss_upload_shp)){
+      updateSliderInput(session, inputId = 'bt_rad_buff', value = 0)
+    }
+  })
   
   ## Create separate radius label to allow line break
   
@@ -923,11 +908,12 @@ app_server <- function(input, output, session) {
     
     if(current_upload_method() == "SHP"){
       req(data_uploaded())
+    
       
       ## find bbox for map to zoom to
       bbox <- sf::st_bbox(data_uploaded())
      
-      leaflet() %>% addTiles() %>% 
+      leaflet() %>% addTiles() %>%
         fitBounds(
           lng1 = as.numeric(bbox[1]), lng2 = as.numeric(bbox[3]),
           lat1 = as.numeric(bbox[2]), lat2 = as.numeric(bbox[4])
@@ -1035,7 +1021,7 @@ app_server <- function(input, output, session) {
     #define blockpoints to process if shapefile exists
     if(current_upload_method() == "SHP"){
       d_upload <-{}
-      d <- get_blockpoints_in_shape(data_uploaded(),0)
+      d <- get_blockpoints_in_shape(data_uploaded(),input$bt_rad_buff)
       #d_upload[['points']] <- d[['pts']]
       #d_upload[['buffer']] <- d[['polys']]
       #d_upload[['shape']] <- shp
@@ -1323,6 +1309,14 @@ app_server <- function(input, output, session) {
     req(isTruthy(orig_leaf_map()))
   
     if(current_upload_method() == "SHP"){
+      if(input$bt_rad_buff > 0){
+        
+        d_uploads <- sf::st_buffer(data_uploaded(), # was "ESRI:102005" but want 4269
+                                   dist = units::set_units(input$bt_rad_buff, "mi")) 
+        
+        leafletProxy(mapId = 'an_leaf_map', session) %>% 
+          addPolygons(data=d_uploads, color="red") 
+      }
       #d_uploadb <- data_uploaded()[['buffer']]  %>% st_zm() %>% as('Spatial') 
       d_uploads <- data_uploaded() %>% #[['shape']]  
           st_zm() %>% as('Spatial') 

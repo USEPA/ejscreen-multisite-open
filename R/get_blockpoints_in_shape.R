@@ -114,9 +114,10 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
  
   blocksinsidef <- unique(blocksinside)
   
+  #standardize objectids in shapefile
+  colnames(blocksinsidef)[grepl("OBJECTID",toupper(colnames(blocksinsidef)))] <- "OBJECTID"
+  pts <-  data.table(sf::st_coordinates(blocksinsidef),blocksinsidef$OBJECTID,blocksinsidef$blockid,distance=0) 
  
-  pts <-  data.table(sf::st_coordinates(blocksinsidef),blocksinsidef$OBJECTID_1,blocksinsidef$blockid,distance=0) 
-  
   setnames(pts, c("lon","lat","siteid","blockid","distance"))
   
   #print(list(pts,polys))
