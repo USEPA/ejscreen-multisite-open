@@ -1453,10 +1453,14 @@ app_server <- function(input, output, session) {
   
   # #############################################################################  # 
   # ## *Header info on summary report ####
-  output$view1_total_pop <- renderUI({
-
+  
+  ## create reactive for summary header
+  summary_title <- reactiveVal(NULL)
+  
+  ## update summary header only when 'Start Analysis' button is clicked
+  observeEvent(input$bt_get_results,{
+    
     req(data_processed())
-
     ## paste header information together
     title_text <- paste0('<div style="font-weight: bold; font-size: 11pt; text-align: center;">',
                          input$analysis_title, '<br>',
@@ -1467,8 +1471,15 @@ app_server <- function(input, output, session) {
                          #    "in the xxx source category or sector<br>",
                          'Estimated total population: ', prettyNum( total_pop(), big.mark = ","), '</div>'
     )
+    
+    ## update reactive variable
+    summary_title(title_text)
+  })
+  
+  output$view1_total_pop <- renderUI({
+
     ## return formatted HTML text
-    HTML(title_text)
+    HTML(summary_title())
   })
   
   ## * Total population count ####
