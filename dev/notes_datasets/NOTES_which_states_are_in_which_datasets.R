@@ -319,9 +319,9 @@ EJAM::datapack('EJAM')
 # [1] "AS" "GU" "MP" "UM" "VI"
 
 
-# EJAMblockdata package # ****** block lists and bg list TO BE FIXED / UPDATED  to include 4 island areas**********
+#  # ****** block lists and bg list TO BE FIXED / UPDATED  to include 4 island areas**********
 
-EJAM::datapack('EJAMblockdata')
+##### obsolete:   EJAM::datapack('EJAMblockdata') # now loaded from AWS S3 bucket during .onLoad
 # 1     bgid2fips BLOCK GROUP id for each BLOCK 
 # 2  blockid2fips block id for each block fips c
 # 3   blockpoints Decennial Census block group l

@@ -20,7 +20,7 @@ and where each bg is, which is useful for some situations.
   How lat lon were estimated:
 
  # Now, for Census 2020 blocks, create pop wtd centroids lat lon for each block group #### 
- #  using EJAMblockdata blockwts and EJAMblockdata blockpoints
+ #  using  blockwts and   blockpoints
  
  bgpts_blocks <- copy(blockpoints) # not essential but ok to make sure we do not change blockpoints itself by reference in data.table operations
  # all.equal(bgpts$blockid , blockwts$blockid)
@@ -59,8 +59,7 @@ and where each bg is, which is useful for some situations.
  
     
   How blockcounts were done: 
-  
-  library(EJAMblockdata)
+   
   library(data.table)
   bg_blockcounts <- blockwts[ , .(blockcount = uniqueN(.SD)), by=bgid]
   sum(bg_blockcounts$blockcount == 1)

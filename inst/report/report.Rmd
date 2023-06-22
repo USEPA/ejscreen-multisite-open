@@ -985,51 +985,8 @@ pandoc is used for citations instead of `natbib`.
 
 
 # <!-- Depends:  -->
-# <!--     R (>= 2.10),  -->
-# <!--     shiny (>= 1.7.2), -->
-# <!--     EJAMblockdata, -->
-# <!--     EJAMfrsdata, -->
-# <!--     EJAMbatch.summarizer, -->
-# <!--     EJAMejscreenapi -->
-# <!-- Imports: -->
-# <!--   attempt, -->
-# <!--   collapse, -->
-# <!--   config (>= 0.3.1), -->
-# <!--   DBI, -->
-# <!--   doSNOW, -->
-# <!--   DT, -->
-# <!--   EJAMejscreendata, -->
-# <!--   foreach, -->
-# <!--   ggplot2, -->
-# <!--   glue, -->
-# <!--   golem (>= 0.3.3), -->
-# <!--   htmltools, -->
-# <!--   leaflet, -->
-# <!--   magrittr, -->
-# <!--   openxlsx, -->
-# <!--   pdist, -->
-# <!--   pkgload, -->
-# <!--   readxl, -->
-# <!--   rmarkdown, -->
-# <!--   RMySQL, -->
-# <!--   SearchTrees, -->
-# <!--   shinyBS, -->
-# <!--   shinycssloaders, -->
-# <!--   shinyjs, -->
-# <!--   sf, -->
-# <!--   sp, -->
-# <!--   tidyverse, -->
-# <!--   data.table -->
-# <!-- Remotes:  -->
-# <!--     github::USEPA/EJAMblockdata, -->
-# <!--     github::USEPA/EJAMfrsdata, -->
-# <!--     github::USEPA/EJAMejscreenapi, -->
-# <!--     github::USEPA/EJAMbatch.summarizer, -->
-# <!--     github::USEPA/EJAMejscreendata -->
-# <!-- Suggests:  -->
-# <!--     knitr, -->
-# <!--     spelling, -->
-# <!--     testthat (>= 3.0.0) -->
+# <!--     check latest version of DESCRIPTION file  -->
+ 
 
 ```
 

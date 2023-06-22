@@ -83,7 +83,7 @@ which in this case is the count of those for whom the poverty ratio is known.
 \item \strong{LOOKED UP}: Aggregated scores are converted into percentile terms via lookup tables (US or State version).
 }
 
-This function requires the following as data lazy loaded for example from EJAMblockdata package:
+This function requires the following datasets:
 \itemize{
 \item blockwts: data.table with these columns: blockid , bgid, blockwt
 \item quaddata data.table used to create localtree, a quad tree index of block points

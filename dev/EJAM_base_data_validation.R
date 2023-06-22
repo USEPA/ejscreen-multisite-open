@@ -1,11 +1,11 @@
 # Author: Parker Malek, Abt Associates
 # script for validating EJAM base datasets
-# Base datasets include EJAMblockdata quaddata,  frs, EJAMblockdata blockwts, EJAM::blockgroupstats, EJAM::statestats,EJAM::usastats
+# Base datasets include   quaddata,  frs,   blockwts, EJAM::blockgroupstats, EJAM::statestats, EJAM::usastats
 
 
-#EJAMblockdata quaddata
+#  quaddata
 
-#check for existing EJAMblockdata quaddata, make sure localtree is being correctly loaded
+#check for existing   quaddata, make sure localtree is being correctly loaded
 out <- tryCatch( {
 localtree <- SearchTrees::createTree(
   quaddata, treeType = "quad", dataType = "point"
@@ -23,7 +23,7 @@ expected_columns_quad <- c("BLOCK_X","BLOCK_Z","BLOCK_Y","blockid")
 if(any(colnames( quaddata) != expected_columns_quad)){
   print(paste0("Unexpected columns ", expected_columns_quad[colnames( quaddata) != expected_columns_quad]))
 } else {
-  print("Expected columns exist for EJAMblockdata quaddata)")
+  print("Expected columns exist for   quaddata)")
 }
 
 
@@ -42,7 +42,7 @@ if(any(colnames( frs) != expected_columns_frs)){
 
 
  
-#EJAMblockdata   blockwts
+#  blockwts
 
 #used to weight block groups for doaggregate site/overall summary output
 
@@ -51,7 +51,7 @@ expected_columns_bgw <- c("blockid","bgid","blockwt")
 if(any(colnames( blockwts) != expected_columns_bgw)){
   print(paste0("Unexpected columns ",expected_columns_frs[colnames( blockwts) != expected_columns_bgw]))
 } else {
-  print("Expected columns exist for EJAMblockdata blockwts)")
+  print("Expected columns exist for  blockwts)")
 }
 
 

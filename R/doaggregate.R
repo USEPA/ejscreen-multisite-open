@@ -25,7 +25,7 @@
 #'          
 #'    - **LOOKED UP**: Aggregated scores are converted into percentile terms via lookup tables (US or State version).
 #'
-#'   This function requires the following as data lazy loaded for example from EJAMblockdata package:
+#'   This function requires the following datasets:
 #'   
 #'    - blockwts: data.table with these columns: blockid , bgid, blockwt
 #'    
@@ -62,15 +62,14 @@
 #' @param ... more to pass to another function? Not used currently.
 #' @param silentinteractive Set to FALSE to prevent long output showing in console in RStudio when in interactive mode
 #' @seealso [ejamit]   [getblocksnearby()]  
-#' @import data.table
-#' @import EJAMblockdata
+#' @import data.table 
 #' @export
 #' 
 doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, countcols=NULL, popmeancols=NULL, calculatedcols=NULL, 
                         testing=FALSE, include_ejindexes=FALSE, updateProgress = NULL, need_proximityscore=FALSE, silentinteractive=FALSE, ...) {
   
   # timed <- system.time({
-  if (testing) {library(data.table); library(EJAMblockdata);     sites2blocks <- EJAM::sites2blocks_example }
+  if (testing) {library(data.table);   sites2blocks <- EJAM::sites2blocks_example }
   
   # add input validation here - check if sites2blocks is valid format, etc. 
   if (!is.data.table(sites2blocks)) {stop('sites2blocks must be a data.table')}

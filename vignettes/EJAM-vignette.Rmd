@@ -108,7 +108,6 @@ help("EJAM", package='EJAM')
 Essential packages only available on the [USEPA github](https://github.com/USEPA/EJAM "github.com/USEPA/EJAM") (not CRAN) are:
 
 -   [EJAM](https://github.com/USEPA/EJAM#readme "github.com/USEPA/EJAM")
--   [EJAMblockdata](https://github.com/USEPA/EJAMblockdata#readme "github.com/USEPA/EJAMblockdata#readme")
 -   [EJAMejscreenapi](https://github.com/USEPA/EJAMejscreenapi#readme "github.com/USEPA/EJAMejscreenapi")
 -   [EJAMbatch.summarizer](https://github.com/USEPA/EJAMbatch.summarizer#readme "github.com/USEPA/EJAMbatch.summarizer")
 
