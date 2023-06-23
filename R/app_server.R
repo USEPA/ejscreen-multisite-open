@@ -1263,10 +1263,35 @@ app_server <- function(input, output, session) {
     validate(
       need(data_processed(), 'Please run an analysis to see results.')
     )
-
+    
     circle_color <- '#000080'
     print(dim(data_processed()$results_bysite))
     print(sum(is.na(data_processed()$lon)))
+    
+    #if shapefile, merge geometry and create buffer if nozero buffer is set
+    if(current_upload_method() == "SHP"){
+      d_up <- data_uploaded()
+      
+      colnames(d_up)[grepl("OBJECTID",colnames(d_up))] <- "siteid"
+      
+      d_up_geo <- d_up[,c("siteid","geometry")]
+      
+      d_merge = merge(d_up_geo,data_processed()$results_bysite,by="siteid", all.x = FALSE, all.y = TRUE)
+      
+      
+      if(input$bt_rad_buff > 0){
+        
+        d_uploads <- sf::st_buffer(d_merge, # was "ESRI:102005" but want 4269
+                                   dist = units::set_units(input$bt_rad_buff, "mi")) 
+        
+        leaflet(d_uploads) %>%  addTiles()  %>%
+          addPolygons(color=circle_color) 
+      }else{
+        leaflet(d_merge) %>%  addTiles()  %>%
+          addPolygons(color=circle_color) 
+      }
+      
+    }else{
     ## similar to previous map but remove controls
     ## and only add circles, not circleMarkers
     
@@ -1283,6 +1308,8 @@ app_server <- function(input, output, session) {
         popup = popup_from_any(data_processed()$results_bysite),
         popupOptions = popupOptions(maxHeight = 200)
       )
+    }
+    
   })
   
   ## output: summary report map  
@@ -1309,21 +1336,25 @@ app_server <- function(input, output, session) {
     req(data_uploaded())
     ## This statement needed to ensure map stops if too many points uploaded
     req(isTruthy(orig_leaf_map()))
+    
+    #clear shapes from map so buffers don't show twice
+    
+    leafletProxy(mapId = 'an_leaf_map', session) %>% clearShapes()
   
     if(current_upload_method() == "SHP"){
       if(input$bt_rad_buff > 0){
         
         d_uploads <- sf::st_buffer(data_uploaded(), # was "ESRI:102005" but want 4269
                                    dist = units::set_units(input$bt_rad_buff, "mi")) 
-        
-        leafletProxy(mapId = 'an_leaf_map', session) %>% 
+      
+        leafletProxy(mapId = 'an_leaf_map', session) %>%
           addPolygons(data=d_uploads, color="red") 
       }
       #d_uploadb <- data_uploaded()[['buffer']]  %>% st_zm() %>% as('Spatial') 
       d_uploads <- data_uploaded() %>% #[['shape']]  
           st_zm() %>% as('Spatial') 
       
-      leafletProxy(mapId = 'an_leaf_map', session) %>% 
+      leafletProxy(mapId = 'an_leaf_map', session) %>%
        # addPolygons(data=d_uploadb, color="red") %>% 
         addPolygons(data=d_uploads)
       #leafletProxy(mapId = 'an_leaf_map', session,data=d_uploads) %>% addPolygons()
