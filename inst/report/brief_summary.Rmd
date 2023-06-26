@@ -40,7 +40,7 @@ EJAM Report (EJScreen v2.1)
 `r params$analysis_title`\
 Residents within `r params$distance` of any of the `r params$sitecount` sites analyzed\
 \
-Total Population: `r params$total_pop`
+Population: `r params$total_pop`
 :::
 
 ```{r, echo=FALSE}

@@ -1506,7 +1506,7 @@ app_server <- function(input, output, session) {
                          input$bt_rad_buff, ' miles of any of the ',
                          prettyNum( NROW(data_processed()$results_bysite), big.mark = ","), ' sites analyzed<br>',
                          #    "in the xxx source category or sector<br>",
-                         'Estimated total population: ', prettyNum( total_pop(), big.mark = ","), '</div>'
+                         'Population: ', prettyNum( total_pop(), big.mark = ","), '</div>'
     )
     
     ## update reactive variable
@@ -1671,7 +1671,7 @@ app_server <- function(input, output, session) {
         ggplot2::scale_fill_identity() +
         ggplot2::theme_bw() +
         ggplot2::labs(x = NULL, y = 'Ratio vs. US Average',
-                      title = "Demographic Index around the Selected Sites compared to all people's blockgroups in the US") +
+                      title = "Demographics at the Analyzed Locations Compared to US Overall") +
         #scale_x_discrete(labels = scales::label_wrap(7)) +
         #scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
         #scale_x_discrete(guide = guide_axis(n.dodge = 2)) +
@@ -2182,7 +2182,7 @@ app_server <- function(input, output, session) {
     mybarvars.stat <- 'avg' #"med"
     
     ## defaulting to average only in this version of EJAM
-    mybarvars.sumstat <- c('Average site', 'Average person')
+    mybarvars.sumstat <- c('Average site', 'Average person at these sites')
     
     ## if adding median ('med') back in future, can use this
     #mybarvars.stat <- input$summ_bar_stat
@@ -2194,6 +2194,8 @@ app_server <- function(input, output, session) {
     ## filter to necessary parts of batch.summarize output
     barplot_data <- data_summarized()$rows %>% 
       tibble::rownames_to_column(var = 'Summary') %>% 
+      dplyr::mutate(Summary = gsub('Average person', 
+                                    'Average person at these sites',Summary)) %>% 
       dplyr::filter(Summary %in% mybarvars.sumstat)
     
     ## set ggplot theme elements for all versions of barplot
@@ -2243,7 +2245,7 @@ app_server <- function(input, output, session) {
       
       ## merge with friendly names and plot
       barplot_input %>% 
-        left_join( data.frame(indicator = mybarvars, indicator_label = mybarvars.friendly)) %>% 
+        dplyr::left_join( data.frame(indicator = mybarvars, indicator_label = mybarvars.friendly)) %>% 
         ggplot() +
         geom_bar(aes(x = indicator_label, y = value, fill = Summary), stat='identity', position='dodge') +
         #viridis::scale_fill_viridis(discrete = TRUE, alpha = 0.6) +
@@ -2271,7 +2273,7 @@ app_server <- function(input, output, session) {
         barplot_usa_avg <-  dplyr::bind_rows(
           EJAM::usastats %>% 
             dplyr::filter(REGION == 'USA', PCTILE == 'mean') %>% 
-            dplyr::mutate(Summary = 'Average person') %>%
+            dplyr::mutate(Summary = 'Average person at these sites') %>%
             dplyr::select(Summary, dplyr::all_of(mybarvars)) %>% 
             tidyr::pivot_longer(-Summary, names_to = 'indicator', values_to = 'usa_value'),
           EJAM::usastats %>% 
@@ -2298,7 +2300,7 @@ app_server <- function(input, output, session) {
         barplot_usa_med <-  dplyr::bind_rows(
           EJAM::usastats %>% 
             dplyr::filter(REGION == 'USA', PCTILE == 50) %>% 
-            dplyr:: mutate(Summary = 'Median person') %>%
+            dplyr::mutate(Summary = 'Median person') %>%
             dplyr::select(Summary, dplyr::all_of(mybarvars)) %>% 
             tidyr::pivot_longer(-Summary, names_to = 'indicator', values_to = 'usa_value'),
           EJAM::usastats %>% 
