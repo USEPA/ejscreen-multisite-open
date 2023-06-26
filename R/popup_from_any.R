@@ -57,7 +57,7 @@ popup_from_any <- function (x, column_names = names(x), labels = column_names, n
     x <- x[, ..column_names]
 
     ## create vector of popups with column labels, length=# of rows of data.table
-    popup_vec <- sapply(1:NROW(x), function(row_num) paste(names(x), x[ row_num], sep=': ', collapse='<br>'))
+    popup_vec <- sapply(1:NROW(x), function(row_num) paste(labels, x[ row_num], sep=': ', collapse='<br>'))
     
   } else if(is.data.frame(x)){
     
@@ -78,7 +78,7 @@ popup_from_any <- function (x, column_names = names(x), labels = column_names, n
     x <- x[, column_names]
     
     ## create vector of popups with column labels, length=# of rows of data.frame
-    popup_vec <- sapply(1:NROW(x), function(row_num) paste(names(x), x[row_num,], sep=': ', collapse='<br>'))
+    popup_vec <- sapply(1:NROW(x), function(row_num) paste(labels, x[row_num,], sep=': ', collapse='<br>'))
   } else {
     stop('Please pass in a data.table or data.frame object')
   }

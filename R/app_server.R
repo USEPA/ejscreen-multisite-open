@@ -1295,6 +1295,10 @@ app_server <- function(input, output, session) {
     ## similar to previous map but remove controls
     ## and only add circles, not circleMarkers
     
+    popup_labels <- c(data_processed()$longnames, 'State Name')
+    popup_labels[popup_labels == ""] <- EJAMejscreenapi::map_headernames$names_friendly[match(names(data_processed()$results_bysite)[popup_labels == ""], 
+                                                                                              EJAMejscreenapi::map_headernames$newnames_ejscreenapi)]
+    
     ## switch this to data analyzed in report, not what was uploaded
     ## in case there are invalid
     leaflet(data_processed()$results_bysite) %>% #,
@@ -1305,7 +1309,9 @@ app_server <- function(input, output, session) {
         color = circle_color, fillColor = circle_color, 
         fill = TRUE, weight = 4,
         group = 'circles',
-        popup = popup_from_any(data_processed()$results_bysite),
+        popup = popup_from_any(data_processed()$results_bysite %>% 
+                                 dplyr::mutate(dplyr::across(dplyr::where(is.numeric), \(x) round(x, digits=3))), 
+                               labels = popup_labels),
         popupOptions = popupOptions(maxHeight = 200)
       )
     }
