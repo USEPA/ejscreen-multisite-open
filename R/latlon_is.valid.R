@@ -18,8 +18,7 @@
 #'
 latlon_is.valid <- function(lat, lon) {
   
-  #     valid ranges determined like this: 
-  # library(EJAMblockdata)
+  #     valid ranges determined like this:  
   #   > range(blockpoints$lat)
   # [1] 17.88513 71.39840
   # > # lat must be between 17.5 and 71.5

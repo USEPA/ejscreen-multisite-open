@@ -8,7 +8,7 @@ count_sites_with_n_high_scores <- function(scores, thresholds=c(1.01, 1.50, 2, 3
   
   # x <- ejamit(testpoints_50, radius = 1)
   # out <- x$results_bysite  # $ratio.to.state.avg.Demog.Index
-  # library(data.table)
+  ## library... need to have data.table pkg
   # out <- setDF(copy(out))
   # 
   # ratio_benchmarks <- c(1.01, 1.50, 2, 3, 5, 10)

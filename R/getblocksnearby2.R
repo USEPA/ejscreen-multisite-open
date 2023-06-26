@@ -25,7 +25,7 @@ getblocksnearby2 <- function(sitepoints, radius=3, maxradius=31.07,
   # so this function could be used without specifying that index
   # and the index quadtree could be built using .onLoad() when package is first attached. 
   # not sure that would work on a server, 
-  # and not sure it would work for an R user in RStudio who did library(EJAM)
+  # and not sure it would work for an R user in RStudio who did library to load the EJAM pkg
   
   # wrapper to make it simple to (later?) switch between functions to use for this, clustered vs not, etc.
   if (is.null(quadtree)) {

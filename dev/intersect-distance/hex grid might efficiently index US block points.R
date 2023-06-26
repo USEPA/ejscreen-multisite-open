@@ -12,10 +12,11 @@ local_options <- options()
 library(sf)
 library(dplyr)
 library(ggplot2)
-library(h3jsr)
+# library(
+#   h3jsr
+#   )
 options(stringsAsFactors = FALSE)
-
-library(EJAMblockdata)
+ 
 library(sf)
 
 # blockpoints_sf <-  blockpoints |> sf::st_as_sf(coords = c("lon", "lat"), crs= 4326) # 

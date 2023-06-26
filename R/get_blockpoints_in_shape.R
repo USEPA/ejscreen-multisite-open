@@ -130,6 +130,7 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
   # 
   # blocksinside <- blocksinside[!is.na(blocksinside$siteid),]
   # 
+  # 
   return(list('pts'=pts,'polys'=polys))
   
 }

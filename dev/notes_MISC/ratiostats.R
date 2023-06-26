@@ -25,7 +25,7 @@ ratiostats <- function(results_bybg_people, pts, dig=2 ) {
   warning(
     "this depended on a package not on CRAN and is not used anyway"
   )
-  # r2 <- ejanalysis::RR.means(e=z[ , ..vars], d= z[ ,  c(..names_d, ..names_d_subgroups)] , pop=z$pop) 
+  # r2 <- ejanalysis package file RR.means(e=z[ , ..vars], d= z[ ,  c(..names_d, ..names_d_subgroups)] , pop=z$pop) 
   
   r2 <- r2[,"ratio",]
   # essentially for each group it is just =  colSums(x * groupwts) / colSums(groupwts) with na.rm=T
@@ -41,26 +41,12 @@ ratiostats <- function(results_bybg_people, pts, dig=2 ) {
   # plot()
   
   # library(EJAM)
-  
-  # library(EJAMblockdata
+   
   #         
   # pts <-  frs[sample(1:nrow( frs), 1e3),]
   
   
-  # > dimnames(r2) when 1st created:
-  # $d
-  # [1] "VSI.eo"          "pctlowinc"       "pctmin"          "pctlths"         "pctlingiso"      "pctunder5"      
-  # [7] "pctover64"       "pctunemployed"   "pctnhwa"         "pcthisp"         "pctnhba"         "pctnhaa"        
-  # [13] "pctnhaiana"      "pctnhnhpia"      "pctnhotheralone" "pctnhmulti"     
-  # 
-  # $group.or.not
-  # [1] "group" "not"   "ratio"
-  # 
-  # $e
-  # [1] "proximityscore"    "distance_avg"      "distance_min"  "sitecount_max"     "sitecount_near_bg"
-  # [6] "pm"                "o3"                "cancer"            "resp"              "dpm"              
-  # [11] "pctpre1960"        "traffic.score"     "proximity.npl"     "proximity.rmp"     "proximity.tsdf"   
-  # [16] "proximity.npdes"   "ust"              
+  #  dimnames(r2)  
 }
 
 

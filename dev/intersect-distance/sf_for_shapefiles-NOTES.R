@@ -37,7 +37,7 @@ usa <- sf::st_read( "~/../../OneDrive - Environmental Protection Agency (EPA)/Do
 usa
 # add FIPS.ST and ST columns, and 
 # add that info for Island areas too
-# usa$ST <- ejanalysis::get.state.info(usa$FIPS.ST )[,'ST']
+# usa$ST <- ejanalysis package file get.state.info(usa$FIPS.ST )[,'ST']
 # get.state.info(c("60", "66", "69", "78"))$ST
 # [1] "AS" "GU" "MP" "VI"
 stateinfo2 <- EJAM::stateinfo

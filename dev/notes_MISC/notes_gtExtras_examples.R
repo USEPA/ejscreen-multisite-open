@@ -17,7 +17,9 @@
 library(dplyr)
 library(tidyr)
 library(gt)
-library(palmerpenguins)
+# library(
+# palmerpenguins
+# )
 
 # COMPARING TWO HISTOGRAMS / DENSITY PLOTS NICELY OVERLAID ####
 

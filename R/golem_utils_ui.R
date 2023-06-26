@@ -313,7 +313,7 @@ col_1 <- function(...) {
 #'
 #' @examples
 #' if (interactive()) {
-#'   library(shiny)
+#'    # note needs shiny pkg loaded
 #'
 #'   link <- a(href = "#", "My super link", style = "color: lightblue;")
 #'

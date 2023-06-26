@@ -123,7 +123,7 @@ all.equal_functions <- function(fun="latlon_infer", package1="EJAM", package2="E
   
   f2 = try(silent=TRUE, expr = get((fun), envir = as.environment(paste0("package:", (package2)) ) ))
   if (class(f2) == "try-error") {
-    warning("fails when checking a package that is loaded but not attached - library(__pkgname__) allows it to work. ")
+    warning("fails when checking a package that is loaded but not attached - library func allows it to work. ")
     stop(fun, " not found in ",  package2)
   }
   if (!(is.function(f2))) {warning(package2, "::", fun, " is not a function");return(NA)}

@@ -3,7 +3,7 @@
 ##################################################################### #
 # libraries not on CRAN (on github) are needed for this script
 #
-library(ejscreen); library(ejanalysis); library(analyze.stuff); require(ACSdownload)
+stop('code here needs these: (ejscreen); (ejanalysis); (analyze.stuff); (ACSdownload)') 
 
 ##################################################################### #
 # specify file directory
@@ -13,7 +13,7 @@ if (!dir.exists(mydir)) dir.create(mydir) # and the ejscreen.acsget will create 
 
 ##################################################################### #
 # set metadata on vintage ####
-# x <- ejscreen::metadata_add(x)
+# x <- ejscreen package file metadata_add(x)
 metadata <- list(
   census_version = 2020,
   acs_version = '2016-2020',
@@ -25,7 +25,8 @@ metadata <- list(
 ##################################################################### #
 # DOWNLOAD TABLE(S) ####
 #
-acsdata_B03002 <- ejscreen::ejscreen.acsget(tables = 'B03002',
+stop('need from package ejscreen the function ejscreen.acsget')
+acsdata_B03002 <- ejscreen.acsget(tables = 'B03002',
                                   end.year = 2020,
                                   base.path = mydir, sumlevel = 'both' )
 # 6 minutes (or up to 10 minutes?) slow - downloads each state

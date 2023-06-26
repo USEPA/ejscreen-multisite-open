@@ -1,5 +1,45 @@
 # global.R defines variables needed in global environment
 
+################################################################## # 
+# get block data if missing. ####
+
+fnames <- c('lookup_states.rda', 'bgid2fips.rda', 'blockid2fips.rda', 'blockwts.rda', 'blockpoints.rda', 'quaddata.rda')
+pathnames <- paste0('EJAM/', fnames)
+varnames <- gsub("\\.rda", "", fnames)
+mybucket <- 'dmap-data-commons-oa'
+# if not already in memory/ global envt, get from AWS 
+for (i in 1:length(fnames)) {
+  if (!exists(varnames[i])) {
+    cat('loading', varnames[i], 'from', pathnames[i], '\n')
+    aws.s3::s3load(object = pathnames[i], bucket = mybucket)
+  }
+}
+# BUCKET_CONTENTS <- data.table::rbindlist(aws.s3::get_bucket(bucket = mybucket), fill = TRUE)
+# baseurl <- "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/"
+# urls <- paste0(baseurl, fnames)
+## "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/quaddata.rda"
+## "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/bgid2fips.rda"
+## "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/blockpoints.rda"
+## "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/lookup_states.rda"
+## "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/blockwts.rda"
+## "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/blockid2fips.rda"
+################################################################## # 
+
+# build localtree index if missing ####
+if (!exists("localtree")) {
+  # This assign() below is the same as the function called  indexblocks() 
+  
+  assign(
+    "localtree", 
+    SearchTrees::createTree(quaddata, treeType = "quad", dataType = "point"), 
+    envir = globalenv() 
+    # need to test, but seems to work. 
+    # But takes a couple seconds at every reload of pkg.
+  )
+  cat("  Done building index.\n")
+}
+################################################################## # 
+
 # Raise Memory Limit on file upload to 100Mb ####
 options(shiny.maxRequestSize = 100*1024^2) 
 library(shiny)

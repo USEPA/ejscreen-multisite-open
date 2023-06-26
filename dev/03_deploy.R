@@ -18,6 +18,26 @@
 devtools::check()
 rhub::check_for_cran()
 
+
+# To deploy we do what is in this file:
+
+### EJAM/dev/install_ejampackages_from_github.R 
+ # to install from source packages on EPA github 
+ #    for EJAMejscreenapi and EJAMbatch.summarizer and EJAMfrsdata 
+ #    and for EJAM itself
+ # and then deploy by using RStudio's built in publish button that appears when editing the app.R file,
+ # and not deploy the dev folder but yes to everything else. 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ ############ this is obsolete....  
+ 
 # Deploy
 
 ## Local, CRAN or Package Manager ----

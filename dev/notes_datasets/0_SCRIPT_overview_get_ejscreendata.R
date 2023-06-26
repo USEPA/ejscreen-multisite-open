@@ -36,13 +36,13 @@
 
 ######################################################################## #
 # # notes on converting 
-# EJAMejscreendata::EJSCREEN_Full_with_AS_CNMI_GU_VI  etc.
+# EJAMejscreendata package file called EJSCREEN_Full_with_AS_CNMI_GU_VI  etc.
 # and
-# ejscreen::bg22DemographicSubgroups2016to2020  (might not save this separately)
+# ejscreen package file called bg22DemographicSubgroups2016to2020  (might not save this separately)
 # to
-# EJAMejscreendata::EJAMejscreendata::EJSCREEN_Full_with_AS_CNMI_GU_VI   etc.
+# EJAMejscreendata package file called EJSCREEN_Full_with_AS_CNMI_GU_VI   etc.
 # and 
 # EJAM::blockgroupstats
 # and
-# ejscreen::bg22plus
+# ejscreen package file called bg22plus
 ######################################################################## #

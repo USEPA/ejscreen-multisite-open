@@ -87,7 +87,7 @@ to_blocks <- FALSE # DOES NOT WORK LIKE THIS
 # Error in { : task 1 failed - "st_crs(x) == st_crs(y) is not TRUE"
 # In addition: There were 15 warnings (use warnings() to see them)
 if (to_blocks) {
-  library(EJAMblockdata)
+   
   end.pts <- data.table::setDF(data.table::copy( blockpoints))
   end.pts <- sf::st_as_sf(x = end.pts, coords = c("lon", "lat"), crs = 4269, remove = FALSE)
   # not sure if need st_transform  

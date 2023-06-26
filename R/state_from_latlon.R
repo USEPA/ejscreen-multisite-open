@@ -65,7 +65,7 @@ state_from_fips <- function(fips) {
 
 # checking speed
 
-# library(sf)
+
 # pts <- EJAMejscreenapi::testpoints_1000
 
 # # pts <- testpoints_100_dt[ , .(lat,lon, siteid)]
@@ -74,8 +74,8 @@ state_from_fips <- function(fips) {
 # pts$idn <- 1:nrow(pts)
 
 # # Which state contains each site
-# library(tigris)
-# library(sf)
+
+
 # states_shapefile2 <- tigris::states() %>% sf::st_as_sf() %>%
 #   sf::st_transform(crs ="ESRI:102005") %>%
 #   dplyr::select('NAME') %>%

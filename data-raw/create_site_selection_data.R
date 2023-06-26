@@ -1,4 +1,4 @@
-## works just like EJAMfrsdata::frs_clean but for SIC codes instead of NAICS
+## works just like EJAMfrsdata pkg function called frs_clean but for SIC codes instead of NAICS
 frs_clean_sic <- function (frs, usefulcolumns = c("LATITUDE83", "LONGITUDE83", 
                                                "REGISTRY_ID", "PRIMARY_NAME", "SIC_CODES", "PGM_SYS_ACRNMS")) 
 {
@@ -68,7 +68,7 @@ frs_make_sic_lookup <- function(x) {
 }
 
 
-library(EJAMfrsdata)
+# library?  may need EJAMfrsdata
 
 ## import dataset used for frs_by_naics
 ## from https://ordsext.epa.gov/FLA/www3/state_files/

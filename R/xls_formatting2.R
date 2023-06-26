@@ -73,6 +73,53 @@ xls_formatting2 <- function(overall, eachsite, longnames,
   names(overall) <- ifelse(!is.na(longnames_no_url), longnames_no_url, names(overall))
   names(eachsite)  <- ifelse(!is.na(longnames), longnames, names(eachsite))
   
+  
+  if (length(heatmap_cuts) != length(heatmap_colors))
+    stop("heatmap_cuts and heatmap_colors must be same length")
+  
+  ## if no names provided, use existing column names
+  if(is.null(longnames)){
+    longnames <- names(overall)
+  }
+  
+  ## not currently used
+  # if (!is.null(graycolnums))   {graycolnums <- which(grepl('avg', names(overall)) | grepl('state', names(overall)))}   # only works for the short names
+  # if (!is.null(narrowcolnums)) {narrowcolnums <- graycolnums}
+  
+  
+  headers_overall <- names(overall)
+  headers_eachsite <- names(eachsite)
+  
+  ## replace Inf with NA to remove #NUM! errors in Excel
+  overall <- overall %>% dplyr::mutate(dplyr::across(dplyr::where(is.numeric), function(x) ifelse(!is.finite(x), NA, x)))
+  eachsite <- eachsite %>% dplyr::mutate(dplyr::across(dplyr::where(is.numeric), function(x) ifelse(!is.finite(x), NA, x)))
+  
+  #filter out sitecount - TEMP
+  filter_out_cols <- c("sitecount_unique","sitecount_avg","sitecount_max")
+  filter_out_temp_overall <- !(headers_overall %in% filter_out_cols)
+  filter_out_temp_bysite <- !(headers_eachsite %in% filter_out_cols)
+  
+  overall  <- overall[,..filter_out_temp_overall]
+  eachsite <- eachsite[,..filter_out_temp_bysite]
+  
+  #filter out sitecount from longnames - TEMP
+  longnames <- longnames[filter_out_temp_bysite]
+ 
+  ## fix NA longname added from doaggregate updates
+  longnames[is.na(longnames)] <- 'statename'
+
+  ## replace missing column headers with friendly names 
+  longnames[longnames == ""] <- EJAMejscreenapi::map_headernames$names_friendly[match(names(overall)[longnames == ""], 
+                                                                                      EJAMejscreenapi::map_headernames$newnames_ejscreenapi)]
+  ## add patch to switch 'statename' and 'Radius (miles)' order
+  longnames[length(longnames)] <- 'Radius (Miles)'
+  longnames[length(longnames) - 1] <- 'State Name'
+  
+  ## remove URL columns for overall table
+  longnames_no_url <- longnames[!(longnames %in% c('EJScreen Report','EJScreen Map','ACS Report','ECHO report', 'State Name'))] 
+ 
+  names(overall) <- ifelse(!is.na(longnames_no_url), longnames_no_url, names(overall))
+  names(eachsite)  <- ifelse(!is.na(longnames), longnames, names(eachsite))
  
   wb <- openxlsx::createWorkbook()
   openxlsx::addWorksheet(wb, 'Overall')

@@ -7,7 +7,7 @@
 
 # Define the universe of what states/other places might be included
 
-# stinfo   <- ejanalysis::get.state.info()
+# stinfo   <- ejanalysis package file get.state.info()
 stinfo <-structure(
   list(
     statename = c(
@@ -221,7 +221,7 @@ universe <- stinfo[stinfo$is.usa.plus.pr | stinfo$is.island.areas, 1:10]
 universe <- universe[universe$ST != 'UM', ]
 # Note on US Minor Outlying Islands: 
 # NONE of the EJ-related datasets include "U.S. Minor Outlying Islands" FIPS 74 "UM"  
-# so ignore that even though listed as territories in ejanalysis::get.state.info()
+# so ignore that even though listed as territories in ejanalysis package file get.state.info()
 # Regarding Island Areas see http://www.census.gov/geo/reference/gtc/gtc_island.html which states the following: 
 # Separate from the Island Areas is the term "U.S. Minor Outlying Islands." 
 # The Island Areas of the United States are 
@@ -253,11 +253,12 @@ EJAM::datapack('EJAMejscreendata')
 # 2 EJSCREEN_StatePct_with_AS_CNMI_GU_VI EJScreen 2.1 data for each blo
 # 3                          States_2022 EJScreen 2.1 lookup table of p
 # 4                             USA_2022 EJScreen 2.1 lookup table of p
-setdiff(universe$ST, unique(EJAMejscreendata::EJSCREEN_Full_with_AS_CNMI_GU_VI$ST_ABBREV )) 
+stop('need to load these from package EJAMejscreendata')
+setdiff(universe$ST, unique( EJSCREEN_Full_with_AS_CNMI_GU_VI$ST_ABBREV )) 
 # character(0)
-setdiff(universe$ST, unique(EJAMejscreendata::EJSCREEN_StatePct_with_AS_CNMI_GU_VI$ST_ABBREV )) 
+setdiff(universe$ST, unique( EJSCREEN_StatePct_with_AS_CNMI_GU_VI$ST_ABBREV )) 
 # character(0)
-setdiff(universe$ST, unique(EJAMejscreendata::States_2022$REGION  ))  # ****** THIS NEEDS TO BE FIXED / UPDATED  to include 4 island areas **********
+setdiff(universe$ST, unique( States_2022$REGION  ))  # ****** THIS NEEDS TO BE FIXED / UPDATED  to include 4 island areas **********
 # [1] "AS" "GU" "MP" "VI"  
 
 
@@ -276,21 +277,22 @@ EJAM::datapack(ejscreen)
 # 7                        USA_2022_LOOKUP 
 # 8          acs_B03002_2016_2020_bg_tract 
 # 40 tract22DemographicSubgroups2016to2020 Demographic subgroups of race/
-setdiff(universe$ST, ejscreen::lookupStates$REGION)
+stop('need lookupStates and several other files for below, from ejscreen pkg')
+setdiff(universe$ST, lookupStates$REGION)
 # [1] "AS" "GU" "MP" "VI"
-'PR' %in%  ejscreen::lookupStates$REGION
+'PR' %in%  lookupStates$REGION
 # [1] TRUE
-setdiff(universe$ST, ejscreen::States_2022_LOOKUP$REGION)
-'PR' %in%  ejscreen::States_2022_LOOKUP$REGION
+setdiff(universe$ST, States_2022_LOOKUP$REGION)
+'PR' %in%  States_2022_LOOKUP$REGION
 # [1] TRUE
 # [1] "AS" "GU" "MP" "VI"
-setdiff(universe$ST, ejscreen::States_2021_LOOKUP$REGION)
+setdiff(universe$ST, States_2021_LOOKUP$REGION)
 # [1] "AS" "GU" "MP" "VI"
-setdiff(universe$ST, ejscreen::bg22$ST)
+setdiff(universe$ST, bg22$ST)
 # [1] "AS" "GU" "MP" "VI"
-setdiff(universe$ST, ejscreen::bg22plus$ST)
+setdiff(universe$ST, bg22plus$ST)
 # [1] "AS" "GU" "MP"  "VI"
-get.state.info( setdiff(universe$FIPS.ST, substr(ejscreen::bg22DemographicSubgroups2016to2020$FIPS,1,2)))[,'ST']
+get.state.info( setdiff(universe$FIPS.ST, substr(bg22DemographicSubgroups2016to2020$FIPS,1,2)))[,'ST']
 # [1] "AS" "GU" "MP" "PR"  "VI"      # ****** missing pr here but it was put into bg22plus... may drop this? THIS NEEDS TO BE FIXED / UPDATED **********
 #   # Also see https://www.census.gov/content/dam/Census/library/publications/2020/acs/acs_prcs_handbook_2020_ch04.pdf  
 #   # script to add PR demog subgroups was in C:/Users/mcorrale/R/mysource/EJAM/inst/notes_datasets/4_SCRIPT_ADD_PUERTORICO_DEMOG_SUBGROUPS.R 
@@ -309,9 +311,9 @@ EJAM::datapack('EJAM')
 # 3          blockgroupstats EJSCREEN demographic and envir
 # 22               stateinfo data.frame of state abbreviati
 # 25              statestats data.table of 100 percentiles 
-# ejanalysis::get.state.info( setdiff(universe$FIPS.ST, substr(EJAM::blockgroupstats$bgfips, 1,2) ))[,'ST'] 
+# ejanalysis package file get.state.info( setdiff(universe$FIPS.ST, substr(EJAM::blockgroupstats$bgfips, 1,2) ))[,'ST'] 
 # [1] "AS" "GU" "MP" "VI"  
-# ejanalysis::get.state.info( setdiff(universe$FIPS.ST, substr(EJAM::bgpts$bgfips, 1,2) ))[,'ST']
+# ejanalysis package file get.state.info( setdiff(universe$FIPS.ST, substr(EJAM::bgpts$bgfips, 1,2) ))[,'ST']
 # [1] "AS" "GU" "MP" "VI"
 # setdiff(universe$ST, EJAM::stateinfo$ST)
 # [1] "AS" "GU" "MP" "UM" "VI"
@@ -319,9 +321,9 @@ EJAM::datapack('EJAM')
 # [1] "AS" "GU" "MP" "UM" "VI"
 
 
-# EJAMblockdata package # ****** block lists and bg list TO BE FIXED / UPDATED  to include 4 island areas**********
+#  # ****** block lists and bg list TO BE FIXED / UPDATED  to include 4 island areas**********
 
-EJAM::datapack('EJAMblockdata')
+##### obsolete:   EJAM::datapack('EJAMblockdata') # now loaded from AWS S3 bucket during .onLoad
 # 1     bgid2fips BLOCK GROUP id for each BLOCK 
 # 2  blockid2fips block id for each block fips c
 # 3   blockpoints Decennial Census block group l
@@ -330,9 +332,9 @@ EJAM::datapack('EJAMblockdata')
 # 7      quaddata quad tree data on locations of
 length(unique(substr(unique( bgid2fips[ , bgfips], by = 'bgfips')  ,1,2)) )
 # [1] 52 # has DC and PR.
-# ejanalysis::get.state.info(setdiff(universe$FIPS.ST, unique(substr(unique( bgid2fips[ , bgfips], by = 'bgfips')  ,1,2))))$ST
+# ejanalysis package file get.state.info(setdiff(universe$FIPS.ST, unique(substr(unique( bgid2fips[ , bgfips], by = 'bgfips')  ,1,2))))$ST
 # [1] "AS" "GU" "MP" "VI"  missing
-# ejanalysis::get.state.info(setdiff(universe$FIPS.ST, unique(substr(unique( blockid2fips[ , blockfips], by = 'blockfips')  ,1,2))))$ST
+# ejanalysis package file get.state.info(setdiff(universe$FIPS.ST, unique(substr(unique( blockid2fips[ , blockfips], by = 'blockfips')  ,1,2))))$ST
 # [1] "AS" "GU" "MP" "VI"
 all.equal( blockid2fips$blockid ,  blockpoints$blockid)
 # [1] TRUE
@@ -348,7 +350,9 @@ setdiff( lookup_states$ST, universe$ST)
 
 # proxistat package
 
-library(proxistat)
+# library(
+#   proxistat
+#   )
 unique(countiesall$ST)
 substr(data(package='proxistat')$results[ , c('Item', 'Title')], 1, 55)
 # Data sets in package ‘proxistat’:
@@ -360,20 +364,20 @@ substr(data(package='proxistat')$results[ , c('Item', 'Title')], 1, 55)
 # [5,] "county.pts_2010" ""                                                       
 # [6,] "lookup.states"   "States and related areas dataset" 
 
-# proxistat::countiesall
-# setdiff( universe$ST, unique(proxistat::countiesall$ST))
+### need proxistat pkg dataset called countiesall and bg.pts and lookup.states
+# setdiff( universe$ST, unique(countiesall$ST))
 # [1] "AS" "GU" "MP" "UM" "VI"
 
-# proxistat::bg.pts
-# ejanalysis::get.state.info(unique(substr(proxistat::bg.pts$FIPS, 1,2) ))$ST
+#  bg.pts from proxistat pkg
+# ejanalysis package file get.state.info(unique(substr( bg.pts$FIPS, 1,2) ))$ST
 # [1] "AL" "AK" "AZ" "AR" "CA" "CO" "CT" "DE" "DC" "FL" "GA" "HI" "ID" "IL" "IN" "IA" "KS" "KY" "LA" "ME" "MD" "MA" "MI" "MN" "MS" "MO" "MT" "NE" "NV" "NH" "NJ" "NM"
 # [33] "NY" "NC" "ND" "OH" "OK" "OR" "PA" "RI" "SC" "SD" "TN" "TX" "UT" "VT" "VA" "WA" "WV" "WI" "WY" "AS" "GU" "MP" "PR" "VI"
-# length(unique(substr(proxistat::bg.pts$FIPS,1,2)))  # 56 !
-# setdiff(ejanalysis::get.state.info(unique(substr(proxistat::bg.pts$FIPS, 1,2) ))$ST, state.abb)
+# length(unique(substr( bg.pts$FIPS,1,2)))  # 56 !
+# setdiff(ejanalysis package file get.state.info(unique(substr( bg.pts$FIPS, 1,2) ))$ST, state.abb)
 # [1] "DC" "AS" "GU" "MP" "PR" "VI"  # the 2010 version had PR **and also the 4 island areas.** 
 
-# proxistat::lookup.states
-# toupper(c("as", "gu", "mp", "um", "vi", "us")) %in% proxistat::lookup.states$ST
+#  lookup.states
+# toupper(c("as", "gu", "mp", "um", "vi", "us")) %in% lookup.states$ST
 # TRUE TRUE TRUE TRUE TRUE TRUE
 
 
@@ -382,7 +386,7 @@ substr(data(package='proxistat')$results[ , c('Item', 'Title')], 1, 55)
 
 # ACSdownload package
 
-# ACSdownload::clean.mystates() relies on data(lookup.states, envir = environment(), package = 'proxistat')
+# clean.mystates() relies on data(lookup.states, envir = environment(), package = 'proxistat')
 
 # ???????????
 

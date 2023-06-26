@@ -54,7 +54,7 @@ metadata_add <- function(x, metadata) {
 #' 
 #' @param packages Optional. e.g. 'EJAMejscreendata', or can be a vector of character strings, 
 #'   and if not specified, default is to report on all packages with EJ as part of their name, 
-#'   like EJAMblockdata or ejscreenapi
+#'   like EJAMejscreenapi
 #' @param which Optional vector (not list) of strings, the attributes. 
 #'   Default is some typical ones used in EJAM-related packages currently.
 #' @param loadifnotloaded Optional to control if func should temporarily attach packages not already loaded.
@@ -83,7 +83,7 @@ metadata_check <- function(packages=EJAM::ejampackages, which=c(
   get1attribute <- function(x, which) {try(attr(get(x), which = which))}
   
   if (is.null(packages)) {
-    # if not specified, report on all packages with EJ as part of their name, like EJAMblockdata or ejscreenapi.
+    # if not specified, report on all packages with EJ as part of their name, like EJAMejscreenapi.
     packages <- grep(pattern = 'EJ', ignore.case = TRUE, x = installed.packages(fields = 'Package'), value = TRUE)
     packages <- unique(packages[!grepl(",", packages)])
   }

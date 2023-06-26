@@ -12,7 +12,7 @@
 fips_lead_zero <- function(fips) {
   
   #	TRY TO CLEAN UP vector of FIPS AND INFER GEOGRAPHIC SCALE
-  # # Very similar to ejanalysis::clean.fips()
+  # # Very similar to ejanalysis package file clean.fips()
   
   fips[nchar(fips) == 0]	<- NA
   # 1 or 2 characters is state fips

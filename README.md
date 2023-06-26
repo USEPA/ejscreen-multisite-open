@@ -77,9 +77,6 @@ product or activity by EPA or the United States Government.
 
 -   EJAM’s code repository for internal EPA use:
     [USEPA/EJAM](https://github.com/USEPA/EJAM#readme "https://github.com/USEPA/EJAM#readme")
-    and it relies on
-    [EJAMblockdata](https://github.com/USEPA/EJAMblockdata#readme "https://github.com/USEPA/EJAMblockdata#readme")
-    
 
 -   OW’s EJSCREENbatch package repo: [OW’s
     [EJSCREENbatch](https://github.com/USEPA/EJSCREENBatch#readme)

@@ -25,7 +25,7 @@
 #'          
 #'    - **LOOKED UP**: Aggregated scores are converted into percentile terms via lookup tables (US or State version).
 #'
-#'   This function requires the following as data lazy loaded for example from EJAMblockdata package:
+#'   This function requires the following datasets:
 #'   
 #'    - blockwts: data.table with these columns: blockid , bgid, blockwt
 #'    
@@ -62,15 +62,14 @@
 #' @param ... more to pass to another function? Not used currently.
 #' @param silentinteractive Set to FALSE to prevent long output showing in console in RStudio when in interactive mode
 #' @seealso [ejamit]   [getblocksnearby()]  
-#' @import data.table
-#' @import EJAMblockdata
+#' @import data.table 
 #' @export
 #' 
 doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, countcols=NULL, popmeancols=NULL, calculatedcols=NULL, 
                         testing=FALSE, include_ejindexes=FALSE, updateProgress = NULL, need_proximityscore=FALSE, silentinteractive=FALSE, ...) {
   
   # timed <- system.time({
-  if (testing) {library(data.table); library(EJAMblockdata);     sites2blocks <- EJAM::sites2blocks_example }
+  if (testing) {   sites2blocks <- EJAM::sites2blocks_example }
   
   # add input validation here - check if sites2blocks is valid format, etc. 
   if (!is.data.table(sites2blocks)) {stop('sites2blocks must be a data.table')}
@@ -114,12 +113,12 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
   }
   # **** but we probably treat pctpre1960 as pop wtd mean like other Evars?
   # # note that names.d.count was not yet defined in ejscreen pkg, and would lack denominators if only based on pctxyz
-  # names.d.count <- union( gsub('pct','', grep(pattern = 'pct', ejscreen::names.d, value=TRUE)),
+  # names.d.count <- union( gsub('pct','', grep(pattern = 'pct', ejscreen package file names.d, value=TRUE)),
   #  c('unemployed', 'unemployedbase'))
   # names.d.count <- gsub('^min$', 'mins', names.d.count) # since singular was used in pctmin but plural for count is mins
   # countcols <- unique(c('pop', 'nonmins', names.d.count,
   #                "povknownratio",  "age25up", "hhlds",  'pre1960', 'builtunits',
-  #                ejscreen::names.d.subgroups.count)) 
+  #                ejscreen package file names.d.subgroups.count)) 
   # "pop", 'nonmins', "mins", 
   # "lowinc",   "povknownratio",   
   # "lths",     "age25up", 
@@ -127,7 +126,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
   # "under5", "over64",
   # "unemployed",   "unemployedbase", # new in 2022
   # 'pre1960',  'builtunits',
-  # "nhwa", "hisp", "nhba", "nhaa", "nhaiana", "nhnhpia", "nhotheralone", "nhmulti" # not in EJScreen 2.1 but will use here
+  #  "hisp", "nhba", "nhaa", "nhaiana", "nhnhpia", "nhotheralone", "nhmulti" ,"nhwa" # not in EJScreen 2.1 but will use here
   
   if (is.null(calculatedcols)) {
     calculatedcols <- unique(c(
@@ -137,12 +136,12 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
     ))
   }
   # These must be calculated after aggregating count variables and using those at siteid level. 
-  # e.g. Use ejscreen::ejscreenformulas$formula to calculate these.
-  # calculatedcols <- c(ejscreen::names.d, ejscreen::names.d.subgroups, 'flagged') # use formulas for these
+  # e.g. Use ejscreen package file ejscreenformulas$formula to calculate these.
+  # calculatedcols <- c(ejscreen package file names.d, ejscreen package file names.d.subgroups, 'flagged') # use formulas for these
   #  or to avoid depending on ejscreen package, 
-  #  dput(c(ejscreen::names.d, ejscreen::names.d.subgroups, 'flagged')) # but make sure pctunemployed got added
+  #  dput(c(ejscreen package file names.d, ejscreen package file names.d.subgroups, 'flagged')) # but make sure pctunemployed got added
   # Demog.Index", "pctmin", "pctlowinc", "pctlths", "pctlingiso", "pctunder5", "pctover64", 'pctunemployed',
-  # "pctnhwa", "pcthisp", "pctnhba", "pctnhaa", "pctnhaiana", "pctnhnhpia", "pctnhotheralone", "pctnhmulti", 
+  # "pcthisp", "pctnhba", "pctnhaa", "pctnhaiana", "pctnhnhpia", "pctnhotheralone", "pctnhmulti", "pctnhwa", 
   # "flagged"
   #      and will have lowlifex and "Demog.Index.Supp", 
   
@@ -154,9 +153,9 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
     ))
   }
   # "lowlifex"??   # new, not completely sure it should be via popwtd mean, or calculated via formula actually.
-  # popmeancols <- c(ejscreen::names.e, ejscreen::names.ej)
+  # popmeancols <- c(ejscreen package file names.e, ejscreen package file names.ej)
   # or to avoid depending on ejscreen package, 
-  # dput(c(ejscreen::names.e, ejscreen::names.ej) )
+  # dput(c(ejscreen package file names.e, ejscreen package file names.ej) )
   # 'NUM_NPL', 'NUM_TSDF',
   # "pm", "o3", "cancer", "resp", "dpm", 
   # "pctpre1960", "traffic.score", 
@@ -640,7 +639,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
   ##################################################### #
   # CALCULATE PERCENT DEMOGRAPHICS FROM SUMS OF COUNTS, via FORMULAS  [hardcoded here, for now]
   #
-  # but should do that using a list of formulas like in ejscreen::ejscreenformulas 
+  # but should do that using a list of formulas like in ejscreen package file ejscreenformulas 
   # and a function like analyze.stuff  calc.fields() 
   ##################################################### #
   
@@ -664,14 +663,16 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
   results_overall[ , `:=`(
     pctover64       = 1 * ifelse(pop==0, 0,            over64        / pop),
     pctunder5       = 1 * ifelse(pop==0, 0,            under5        / pop),
+    
     pcthisp         = 1 * ifelse(pop==0, 0, as.numeric(hisp )        / pop),
-    pctnhwa         = 1 * ifelse(pop==0, 0, as.numeric(nhwa )        / pop),
     pctnhba         = 1 * ifelse(pop==0, 0, as.numeric(nhba )        / pop),
     pctnhaiana      = 1 * ifelse(pop==0, 0, as.numeric(nhaiana)      / pop),
     pctnhaa         = 1 * ifelse(pop==0, 0, as.numeric(nhaa )        / pop), 
     pctnhnhpia      = 1 * ifelse(pop==0, 0, as.numeric(nhnhpia )     / pop),
     pctnhotheralone = 1 * ifelse(pop==0, 0, as.numeric(nhotheralone) / pop), 
     pctnhmulti      = 1 * ifelse(pop==0, 0, as.numeric(nhmulti )     / pop),
+    pctnhwa         = 1 * ifelse(pop==0, 0, as.numeric(nhwa )        / pop),
+    
     pctmin          = 1 * ifelse(pop==0, 0, as.numeric(mins)         / pop), 
     pctlowinc       = 1 * ifelse(povknownratio  == 0, 0, lowinc                 / povknownratio),
     pctlths         = 1 * ifelse(age25up        == 0, 0, as.numeric(lths)       / age25up), 
@@ -698,14 +699,16 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
   results_bysite[ , `:=`(
     pctover64       = 1 * ifelse(pop==0, 0,            over64        / pop),
     pctunder5       = 1 * ifelse(pop==0, 0,            under5        / pop),
+    
     pcthisp         = 1 * ifelse(pop==0, 0, as.numeric(hisp )        / pop),
-    pctnhwa         = 1 * ifelse(pop==0, 0, as.numeric(nhwa )        / pop),
     pctnhba         = 1 * ifelse(pop==0, 0, as.numeric(nhba )        / pop),
     pctnhaiana      = 1 * ifelse(pop==0, 0, as.numeric(nhaiana)      / pop),
     pctnhaa         = 1 * ifelse(pop==0, 0, as.numeric(nhaa )        / pop), 
     pctnhnhpia      = 1 * ifelse(pop==0, 0, as.numeric(nhnhpia )     / pop),
     pctnhotheralone = 1 * ifelse(pop==0, 0, as.numeric(nhotheralone) / pop), 
     pctnhmulti      = 1 * ifelse(pop==0, 0, as.numeric(nhmulti )     / pop),
+    pctnhwa         = 1 * ifelse(pop==0, 0, as.numeric(nhwa )        / pop),
+
     pctmin          = 1 * ifelse(pop==0, 0, as.numeric(mins)         / pop), 
     pctlowinc       = 1 * ifelse(povknownratio  == 0, 0, lowinc                 / povknownratio),
     pctlths         = 1 * ifelse(age25up        == 0, 0, as.numeric(lths)       / age25up), 
@@ -732,13 +735,13 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
   ### Demog.Index <- VSI.eo
   
   # # To be replaced with data available to this package
-  # myformulas <- ejscreen::ejscreenformulas
+  # myformulas <- ejscreen package file ejscreenformulas
   # # one row per buffer/site?  
-  # results_bysite_formulas_done <- ejscreen::ejscreen.acs.calc(bg = results_bysite, keep.old = 'all', keep.new = 'all', formulas = myformulas)
+  # results_bysite_formulas_done <- ejscreen package file ejscreen.acs.calc(bg = results_bysite, keep.old = 'all', keep.new = 'all', formulas = myformulas)
   #
   # just one row?
   #
-  # results_overall_formulas_done  <- ejscreen::ejscreen.acs.calc(bg = results_overall, keep.old = 'all', keep.new = 'all', formulas = myformulas)
+  # results_overall_formulas_done  <- ejscreen package file ejscreen.acs.calc(bg = results_overall, keep.old = 'all', keep.new = 'all', formulas = myformulas)
   
   # cbind(prettyNum( (results_bysite[1,]),big.mark = ','))
   # t(usastats[usastats$PCTILE == 'mean', ])
@@ -837,12 +840,13 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
   # sites2states  is df or dt with just 1 row/site, and columns= siteid,ST ; and MIGHT have lat,lon and other info.
   
   results_bysite[sites2states,  ST := ST,  on = "siteid"] # check this, including when ST is NA 
+  results_bysite[, statename :=  stateinfo$statename[match(ST, stateinfo$ST)]]    
   results_overall$ST <- NA
   
   ##################################################### #
   ## PERCENTILES - express raw scores (from results_bysite AND  results_overall) in percentile terms #### 
   #  VIA  lookup tables of US/State  percentiles, called EJAM::usastats   and statestats
-  #  note: usastats is  like ejscreen::lookupUSA , and EJAM::pctile_from_raw_lookup is like ejanalysis::lookup.pctile()
+  #  note: usastats is  like ejscreen package file lookupUSA , and EJAM::pctile_from_raw_lookup is like ejanalysis package file lookup.pctile()
   #
   #  *** this should be extracted as a function (but keeping the efficiency of data.table changes by reference using := or set___)
   #      so that it can be used again later to assign percentiles to EJ indexes once they are calculated from other scores and percentiles.

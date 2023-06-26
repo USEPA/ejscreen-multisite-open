@@ -99,7 +99,7 @@ usastats_query   <- function(varnames=c(EJAM::names_e, EJAM::names_d), PCTILES=N
   ## see all total counts too not just US means for just demographics not envt, including subgroups:
   # t(round(EJAMbatch.summarizer::ustotals2(bg = EJAM::blockgroupstats),2))
   # t(round(rbind(
-  #   EJAMbatch.summarizer::ustotals2(bg=ejscreen::bg22), 
+  #   EJAMbatch.summarizer::ustotals2(bg=ejscreen package file bg22), 
   #   EJAMbatch.summarizer::ustotals2(bg = EJAM::blockgroupstats)
   # ),3))
 }

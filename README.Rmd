@@ -12,7 +12,7 @@ output: github_document
 # <https://github.com/r-lib/actions/tree/v1/examples>.
 
 # also note simple html version of package documentation can be made via
-# library(postdoc)
+# func in pkg postdoc : 
 # htmlfile <- render_package_manual(package = 'MASS')
 
 knitr::opts_chunk$set(
@@ -55,7 +55,7 @@ The United States Environmental Protection Agency (EPA) GitHub project code is p
 
 -   [EJAM's ejscreenapi tool (in testing)](https://rstudio-connect.dmap-stage.aws.epa.gov/content/dc3cda00-20a2-47ed-a753-0dcb89eb8f2a/ "https://rstudio-connect.dmap-stage.aws.epa.gov/content/dc3cda00-20a2-47ed-a753-0dcb89eb8f2a/")
 
--   EJAM's code repository for internal EPA use: [USEPA/EJAM](https://github.com/USEPA/EJAM#readme "https://github.com/USEPA/EJAM#readme") and it relies on [EJAMblockdata](https://github.com/USEPA/EJAMblockdata#readme "https://github.com/USEPA/EJAMblockdata#readme") and  
+-   EJAM's code repository for internal EPA use: [USEPA/EJAM](https://github.com/USEPA/EJAM#readme "https://github.com/USEPA/EJAM#readme")  
 
 -   OW's EJSCREENbatch package repo: [OW's EJSCREENbatch](https://github.com/USEPA/EJSCREENBatch#readme)
 

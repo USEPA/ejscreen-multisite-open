@@ -15,9 +15,8 @@
 #'   NOTE: It also has the race/ethnic subgroups that add up to minority or people of color.
 #'   
 #'   Each year this could be created as for the latest version.
-#'   See attributes(blockgroupstats)
-#'   It is also available in a similar form via the ejscreen package on github, 
-#'   and EJAMejscreendata::EJSCREEN_Full_with_AS_CNMI_GU_VI
+#'   See attributes(blockgroupstats) 
+#'   and see EJSCREEN_Full_with_AS_CNMI_GU_VI  # which is in the package EJAMejscreendata
 #'   but there are differences in which columns are kept.
 #'   
 #'   It is a data.table of US Census blockgroups (not blocks). With PR, 242,335 rows, approx 175 columns.
@@ -27,6 +26,6 @@
 #'   
 #'   see source code and notes in EJAM/inst/notes_datasets/ which has  create_blockgroupstats()  
 #'   
-#'   See maybe the notes on cleaning up and changing the dataset starting from ejscreen::bg22plus
+#'   See maybe the notes on cleaning up and changing the dataset starting from ejscreen package file bg22plus
 #'   
 NULL

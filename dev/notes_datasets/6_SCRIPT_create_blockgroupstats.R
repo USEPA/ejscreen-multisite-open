@@ -21,20 +21,20 @@
 #################################################################################################### #
 ######################################################################## #
 # # notes on converting 
-# EJAMejscreendata::EJSCREEN_Full_with_AS_CNMI_GU_VI  etc.
+# EJAMejscreendata package file called EJSCREEN_Full_with_AS_CNMI_GU_VI  etc.
 # and
-# ejscreen::bg22DemographicSubgroups2016to2020  (might not save this separately)
+# ejscreen package file bg22DemographicSubgroups2016to2020  (might not save this separately)
 # to
-# EJAMejscreendata::EJAMejscreendata::EJSCREEN_Full_with_AS_CNMI_GU_VI   etc.
+# EJAMejscreendata package file called EJAMejscreendata package file called EJSCREEN_Full_with_AS_CNMI_GU_VI   etc.
 # and 
 # EJAM::blockgroupstats
 # and
-# ejscreen::bg22plus
+# ejscreen package file bg22plus
 ######################################################################## #
 
 
-# Redone 9/2022 to start from EJAMejscreendata::EJSCREEN_Full_with_AS_CNMI_GU_VI
-# and EJAMejscreendata::EJSCREEN_StatePct_with_AS_CNMI_GU_VI
+# Redone 9/2022 to start from EJAMejscreendata package file called EJSCREEN_Full_with_AS_CNMI_GU_VI
+# and EJAMejscreendata package file called EJSCREEN_StatePct_with_AS_CNMI_GU_VI
 # plus demog race/ethnic subgroups
 
 
@@ -45,12 +45,14 @@
 #   and see if those are avail for PR at least.
 
 
-library(EJAMejscreendata) 
-# EJAMejscreendata::EJSCREEN_Full_with_AS_CNMI_GU_VI
-# EJAMejscreendata::EJSCREEN_StatePct_with_AS_CNMI_GU_VI
+# library(
+#   EJAMejscreendata
+#   ) 
+# EJAMejscreendata package file called EJSCREEN_Full_with_AS_CNMI_GU_VI
+# EJAMejscreendata package file called EJSCREEN_StatePct_with_AS_CNMI_GU_VI
 
-
-create_blockgroupstats <- function(bg=ejscreen::bg22 , meta) {
+stop('need bg22 from ejscreen pkg')
+create_blockgroupstats <- function(bg = bg22 , meta) {
   
   ## script to create blockgroupstats.rda for EJAM
   
@@ -134,9 +136,8 @@ create_blockgroupstats <- function(bg=ejscreen::bg22 , meta) {
   #   "pctile.EJ.DISPARITY.proximity.npdes.eo", "pctile.EJ.DISPARITY.proximity.npl.eo", 
   #   "pctile.EJ.DISPARITY.proximity.rmp.eo", "pctile.EJ.DISPARITY.proximity.tsdf.eo", 
   #   "pctile.EJ.DISPARITY.o3.eo", "pctile.EJ.DISPARITY.pm.eo", "arealand", 
-  #   "areawater", "count.NPL", "count.TSDF", "area", "pop", "hisp", 
-  #   "nhwa", "nhba", "nhaiana", "nhaa", "nhnhpia", "nhotheralone", 
-  #   "nhmulti", "pctmin", "mins", "nonmins", "pcthisp", "pctnhwa", 
-  #   "pctnhba", "pctnhaiana", "pctnhaa", "pctnhnhpia", "pctnhotheralone", 
-  #   "pctnhmulti")
+  #   "areawater", "count.NPL", "count.TSDF", "area", "pop",
+  # "hisp",  "nhba", "nhaiana", "nhaa", "nhnhpia", "nhotheralone",   "nhmulti",     "nhwa",
+  # "pctmin", "mins", "nonmins",
+  # "pcthisp", "pctnhba", "pctnhaiana", "pctnhaa", "pctnhnhpia", "pctnhotheralone", "pctnhmulti",   "pctnhwa")
 }

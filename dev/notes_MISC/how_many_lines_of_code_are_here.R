@@ -26,9 +26,9 @@
 # 1                 EJAM       84 10,972
 # 2      EJAMejscreenapi       52  5,869
 # 3 EJAMbatch.summarizer       44  5,599
-# 4          EJAMfrsdata       21  1,337
-# 5        EJAMblockdata        8    279
-# 6     EJAMejscreendata        5    266
+# 4          EJAMfrsdata       21  1,337 - obsolete package
+# 5        EJAMblockdata        8    279 - obsolete package
+# 6     EJAMejscreendata        5    266 - obsolete package
 # 
 # 
 # Most of the code is in these files: 
@@ -193,7 +193,8 @@
 # 8    80        7   73 EJAMfrsdata   /R/ frs_make_programid_lookup.R
 # 
 # Full list is returned invisibly 
-# EJAM         EJAMbatch.summarizer EJAMblockdata EJAMejscreenapi EJAMejscreendata EJAMfrsdata 
+# EJAM         EJAMbatch.summarizer EJAMejscreenapi 
+#   and mostly not used: EJAMejscreendata   EJAMblockdata   but EJAMfrsdata pkg used for some functions still
 # lines    integer,84   integer,44           integer,8     integer,52      integer,5        integer,21  
 # comments integer,84   integer,44           integer,8     integer,52      integer,5        integer,21  
 # code     integer,84   integer,44           integer,8     integer,52      integer,5        integer,21  

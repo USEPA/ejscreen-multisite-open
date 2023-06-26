@@ -1,12 +1,12 @@
 ######################################################################## #
 # # notes on converting 
-# EJAMejscreendata::EJSCREEN_Full_with_AS_CNMI_GU_VI
+# EJAMejscreendata package file called EJSCREEN_Full_with_AS_CNMI_GU_VI
 # and
-# ejscreen::bg22DemographicSubgroups2016to2020
+# ejscreen package file bg22DemographicSubgroups2016to2020
 # to
 # EJAM::blockgroupstats
 # and
-# ejscreen::bg22plus
+# ejscreen package file bg22plus
 ######################################################################## #
 
 #################################################################################################### #
@@ -15,7 +15,7 @@
 ## FULL SET OF SCRIPTS  to create EJScreen-related datasets, including blockgroupstats.rda for EJAM  
 
 # 1.  EJAMejscreendata/inst/SCRIPT_EJAMejscreen_download.R  
-#       - to add metadata ( and ejscreen::metadata_add() )
+#       - to add metadata ( and ejscreen package file metadata_add() )
 # 2.   ejscreen/inst/2_SCRIPT_FOR_FIPS_ST_TRACT_CNTY.R    
 #       - to rename cols and add some fips fields and fix countyname col
 # 3.   ejscreen/inst/3_SCRIPT_create_bgDemog_ejscreen2.1_andtracts.R 
@@ -39,21 +39,18 @@
 # add FIPS.TRACT
 # rename CNTY_NAME to countyname
 ######################################################################## #
-
-library(ejscreen)
-library(EJAMejscreendata)
-library(EJAMblockdata)
-
-
-
-
+# 
+# library(
+#   ejscreen)
+# library(
+#   EJAMejscreendata) 
 
 
 
 
 
 # not  done but 
-# to start to redo bg22, from EJAMejscreendata::EJSCREEN_Full_with_AS_CNMI_GU_VI
+# to start to redo bg22, from EJAMejscreendata package file called EJSCREEN_Full_with_AS_CNMI_GU_VI
 
 
 # TEMPORARY/INTERIM FIX TO ADD ST TO EJAM::blockgroupstats while not already there:
@@ -62,21 +59,22 @@ library(EJAMblockdata)
 
 
 
-
-bgejam <- EJAMejscreendata::EJSCREEN_Full_with_AS_CNMI_GU_VI
+stop(' need to load EJAMejscreendata package file called EJSCREEN_Full_with_AS_CNMI_GU_VI')
+bgejam <-  EJSCREEN_Full_with_AS_CNMI_GU_VI
 # fix variable names to be friendlier
-names(bgejam) <- ejscreen::change.fieldnames.ejscreen.csv(names(bgejam))
+stop('need to load ejscreen package file called change.fieldnames.ejscreen.csv')
+names(bgejam) <- change.fieldnames.ejscreen.csv(names(bgejam))
 
 
 #   NOTE this census2020 block table has PR but lacks "AS" "GU" "MP" "VI"
 # while EJScreen 2.1 has those at blockgroup res
 # > uniqueN( blockid2fips[,substr(blockfips,1,2)])
 # [1] 52
-# length(unique(EJAMejscreendata::EJSCREEN_Full_with_AS_CNMI_GU_VI$ST_ABBREV))
+# length(unique(EJAMejscreendata package file called EJSCREEN_Full_with_AS_CNMI_GU_VI$ST_ABBREV))
 # [1] 56
 #   dim(bgejam)
 # [1] 242,940    155
-#   dim(ejscreen::bg22)
+#   dim(ejscreen package file bg22)
 # [1] 242,335    157
 #  these fips will mess up assumptions about bg fips always having 12 characters:
 # > table(bgejam[nchar(bgejam$FIPS) < 12 , 'ST'])
@@ -91,14 +89,14 @@ names(bgejam) <- ejscreen::change.fieldnames.ejscreen.csv(names(bgejam))
 
 bgejam$FIPS <- lead.zeroes(as.numeric(bgejam$FIPS), 12)
 
-# bgejam <- ejanalysis::addFIPScomponents(bgejam) # not robust to this even if add leading zeroes
+# bgejam <- ejanalysis package file addFIPScomponents(bgejam) # not robust to this even if add leading zeroes
 bgejam$FIPS.ST <- substr(bgejam$FIPS,1,2)
 # fix these 4:
 bgejam$FIPS.ST[bgejam$ST == 'AS'] <- '60'
 bgejam$FIPS.ST[bgejam$ST == 'GU'] <- '66'
 bgejam$FIPS.ST[bgejam$ST == 'MP'] <- '69'
 bgejam$FIPS.ST[bgejam$ST == 'VI'] <- '78'  # 00780
-# ejanalysis::get.state.info(c('AS', 'GU', 'VI', 'MP'))$FIPS.ST
+# ejanalysis package file get.state.info(c('AS', 'GU', 'VI', 'MP'))$FIPS.ST
 #  "60", "66", "78" ,"69" 
 table(nchar(bgejam$ST))
 
@@ -127,7 +125,7 @@ bgejam$FIPS.TRACT[NONISLAND] <- get.fips.tract(bgejam$FIPS[NONISLAND])
 head(bgejam$CNTY_NAME)
 # [1] "Autauga County" "Autauga County" "Autauga County" "Autauga County" "Autauga County"
 # [6] "Autauga County"
-# > head(ejscreen::bg22$countyname)
+# > head(ejscreen package file bg22$countyname)
 # [1] "Autauga County, Alabama" "Autauga County, Alabama" "Autauga County, Alabama"
 # [4] "Autauga County, Alabama" "Autauga County, Alabama" "Autauga County, Alabama"
 

@@ -1,6 +1,6 @@
  library(EJAM)
-ejamout <- ejamit(   testpoints_50, silentinteractive = TRUE)
-apiout <- ejscreenit(testpoints_50, interactiveprompt = FALSE, nosave = T, nosee = T)
+ejamout <- ejamit(   testpoints_50[1:10,], silentinteractive = TRUE)
+apiout <- ejscreenit(testpoints_50[1:10,], interactiveprompt = FALSE, nosave = T, nosee = T)
 
 # > names(apiout)
 # [1] "table"     "map"       "plot"      "us.ratios"
@@ -46,11 +46,18 @@ ejnames <- grep("EJ\\.DISPARITY", names(xejam), value = T)
 
 # will not be in api outputs.
 countnames <- c(names_d_count, names_d_subgroups_count )
+# > countnames
+# [1] "lowinc"       "lingiso"      "unemployed"   "lths"         "under5"       "over64"       "mins"     
+# "hisp"         "nhba"  "nhaa"         "nhaiana"      "nhnhpia"      "nhotheralone" "nhmulti"      "nhwa"        
+# > names_other
+# [1] "pop"            "nonmins"        "povknownratio"  "age25up"        "hhlds"          "unemployedbase" "pre1960"        "builtunits"    
 
 ###############################################################
 # SEE WHAT ELSE BESIDES THOSE DOES NOT MATCH ###############################################################
 
-names(xejam)[!(names(xejam) %in% c(names_other, rationames, subnames, suppnames, ejnames, countnames)) & !(names(xejam) %in% names(xapi))]
+names(xejam)[!(names(xejam) %in% c(names_other, subnames,  countnames)) & !(names(xejam) %in% names(xapi))]
+
+# names(xejam)[!(names(xejam) %in% c(names_other, rationames, subnames, suppnames, ejnames, countnames)) & !(names(xejam) %in% names(xapi))]
 
 ###############################################################
  

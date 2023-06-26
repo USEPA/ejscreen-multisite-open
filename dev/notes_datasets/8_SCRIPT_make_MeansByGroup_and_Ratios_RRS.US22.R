@@ -3,18 +3,17 @@
 #     #  See help for RR.table() in ejanalysis package
 #     # (This is very slow right now)
 
-
-bg <- ejscreen::bg22plus  # bg=bg22plus
-
-
-names.dplus <- c(ejscreen::names.d, ejscreen::names.d.subgroups.pct)
+stop('need bg22plus from ejscreen pkg')
+bg <-  bg22plus  # bg=bg22plus
+# names.d.subgroups.pct and names.d are from ejscreen pkg also
+names.dplus <- c( names.d,  names.d.subgroups.pct)
 
 ###############################################
 # NOT FIXED YET:
 #
-# Ratios <- ejanalysis::RR.table(
+# Ratios <- ejanalysis package file RR.table(
 #   bg, 
-#   Enames = ejscreen::names.e, 
+#   Enames = ejscreen package file names.e, 
 #   Dnames = names.dplus, 
 #   popcolname = 'pop', 
 #   digits = 2
@@ -25,7 +24,7 @@ names.dplus <- c(ejscreen::names.d, ejscreen::names.d.subgroups.pct)
 # usethis::use_data(RRS.US)
 ###############################################
 
-# MeansByGroup_and_Ratios <- ejanalysis::RR.means(
+# MeansByGroup_and_Ratios <- ejanalysis package file RR.means(
 #   e = subset(bg, select=names.e), 
 #   d = subset(bg, select = names.dplus), 
 #   pop = bg$pop

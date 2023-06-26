@@ -56,9 +56,9 @@ plot_distance_cdf_by_group <- function(results_bybg_people, radius_miles=round(m
     # .SDcols = countvarname] 
    .SDcols =  demogvarname]
   # names(cumdata)
-  # [1] "overall"         "Demog.Index"     "pctlowinc"       "pctmin"          "pctlths"         "pctlingiso"      "pctunder5"      
-  # [8] "pctover64"       "pctunemployed"   "pctnhwa"         "pcthisp"         "pctnhba"         "pctnhaa"         "pctnhaiana"     
-  # [15] "pctnhnhpia"      "pctnhotheralone" "pctnhmulti"      "dist"           
+  # [1] "overall"         "Demog.Index"     "pctlowinc"       "pctmin"          "pctlths"         "pctlingiso"      "pctunder5"   "pctover64"       "pctunemployed"     
+  #      "pcthisp"         "pctnhba"         "pctnhaa"         "pctnhaiana"   "pctnhnhpia"      "pctnhotheralone" "pctnhmulti"    "pctnhwa"    
+  # "dist"           
   # colnames(cumdata) <- c(demogvarname,'dist') # they are already named like this automatically by data.table
   
   plot(cumdata$dist, 100 * cumdata[ , overall], 
