@@ -82,20 +82,8 @@ app_server <- function(input, output, session) {
                         #ECHO = "ECHO", # 'ECHO Search Tools',
                         FIPS = "FIPS")
     )
-    
-    # switch(
-    #   input$ss_choose_method,
-    #   latlon = "latlon",  # 'Location (lat/lon)',
-    #   FRS =  "FRS", # 'FRS (facility ID)',
-    #   #ECHO = "ECHO", # 'ECHO Search Tools',
-    #   NAICS = "NAICS", # 'NAICS (industry name or code)'
-    #   SHP = "SHP",
-    #   EPA_PROGRAM = "EPA_PROGRAM",
-    #   SIC = "SIC" ,
-    #   FIPS = "FIPS",
-    #   MACT = "MACT"
-    # )
   })
+   
   #############################################################################  # 
   ## reactive: data uploaded as latlon ####
   
@@ -168,18 +156,11 @@ app_server <- function(input, output, session) {
   
   #############################################################################  # 
   ## reactive: data uploaded by NAICS ####
-  
-  #data_up_naics <- reactiveVal(NULL)
-  
-  ## when NAICS submit button is pressed ------------   work in progress ====== not tested
-  #observeEvent(input$submit_naics, {
   data_up_naics <- reactive({  
     ## check if anything has been selected or entered
     req(isTruthy(input$ss_select_naics))
-    #req(shiny::isTruthy(input$ss_enter_naics) || shiny::isTruthy(input$ss_select_naics))
-    
+   
     #define inputs
-    #naics_user_wrote_in_box <- input$ss_enter_naics
     naics_user_picked_from_list <- input$ss_select_naics
     add_naics_subcategories <- input$add_naics_subcategories 
     # q: IS IT BETTER TO USE THIS IN naics_from_any() OR IN frs_from_naics() BELOW ??
@@ -188,36 +169,13 @@ app_server <- function(input, output, session) {
     if(naics_validation(NAICS_enter='',NAIC_select = input$ss_select_naics)){
     #if(naics_validation(input$ss_enter_naics,input$ss_select_naics)){
       inputnaics = {}
-      #splits up comma separated list if user manually inserts list
-      # if(nchar(input$ss_enter_naics)>0){
-      #   # print('test2')
-      #   #checks for non-numeric values in text box; if they are not numeric, then search by name
-      #   if(!grepl("^\\d+(,\\d+)*$",input$ss_enter_naics)){
-      #     # print('test')
-      #     
-      #     #   1. GET NAICS CODES VIA QUERY OF TEXT IN NAMES OR THE NUMBERS
-      #     
-      #     inputnaics = naics_from_any(input$ss_enter_naics)[,code] # this used to be naics_find()
-      #     
-      #     if(length(inputnaics) == 0 | all(is.na(inputnaics))){
-      #       ################ Should output something saying no valid results returned ######## #
-      #       shiny::validate('No Results Returned')
-      #     }        
-      #   } else {
-      #     naics_wib_split <- as.list(strsplit(naics_user_wrote_in_box, ",")[[1]])
-      #     print(naics_wib_split)
-      #   }
-      # } else {
-      #   naics_wib_split <- ""
-      # }
+     
       # if not empty, assume its pulled using naics_from_any() or older naics_find() above
       if(length(inputnaics) == 0 | rlang::is_empty(inputnaics)) {
         #construct regex expression and finds sites that align with user-selected naics codes
-        #inputnaics <- c(naics_wib_split, naics_user_picked_from_list)
         inputnaics <- naics_user_picked_from_list
         inputnaics <- unique(inputnaics[inputnaics != ""])
-        # inputnaics <- paste("^", inputnaics, collapse="|")   ### the NAICS specified by user
-        # inputnaics <- stringr::str_replace_all(string = inputnaics, pattern = " ", replacement = "")
+      
         print(inputnaics)
         
         #merge user-selected NAICS with FRS facility location information
@@ -244,18 +202,8 @@ app_server <- function(input, output, session) {
     cat("SITE COUNT VIA NAICS: ", NROW(sitepoints), "\n")
 
     ## assign final value to data_up_naics reactive variable
-    #data_up_naics(sitepoints)
     return(sitepoints %>% latlon_df_clean())
   })
-  
-  ## if NAICS radio button is toggled between dropdown/enter, empty the other one
-  # observeEvent(input$naics_ul_type, {
-  #   if(input$naics_ul_type == 'dropdown'){
-  #     shinyjs::reset(id = 'ss_select_naics')
-  #   } else if(input$naics_ul_type == 'enter'){
-  #     shinyjs::reset(id = 'ss_enter_naics')
-  #   }
-  # })
   
   #############################################################################  # 
   ## reactive: data uploaded by ECHO ####
@@ -361,48 +309,20 @@ app_server <- function(input, output, session) {
   
   #############################################################################  # 
   ## reactive: data uploaded by SIC ####
-  
-  data_up_sic <- reactiveVal(NULL)
-  
-  ## when SIC submit button is pressed
-  #observeEvent(input$submit_sic, {
   data_up_sic <- reactive({  
     ## check if anything has been selected or entered
     req(isTruthy(input$ss_select_sic))
     #req(shiny::isTruthy(input$ss_enter_sic) || shiny::isTruthy(input$ss_select_sic))
     
     #define inputs
-    #naics_user_wrote_in_box <- input$ss_enter_naics
-    #naics_user_picked_from_list <- input$ss_select_naics
+    
     add_sic_subcategories <- FALSE #input$add_naics_subcategories 
     # q: IS IT BETTER TO USE THIS IN naics_from_any() OR IN frs_from_naics() BELOW ??
     
     # naics_validation function to check for non empty SIC inputs
     if(naics_validation('', input$ss_select_sic)){
-    #if(naics_validation(input$ss_enter_sic,input$ss_select_sic)){
       inputsic = {}
-      #splits up comma separated list if user manually inserts list
-      # if(nchar(input$ss_enter_sic)>0){
-      #   print('test a')
-      #   #checks for non-numeric values in text box; if they are not numeric, then search by name
-      #   if(!grepl("^\\d+(,\\d+)*$",input$ss_enter_sic)){
-      #     # print('test')
-      #     
-      #     #   1. GET NAICS CODES VIA QUERY OF TEXT IN NAMES OR THE NUMBERS
-      #     
-      #     inputsic = sic_from_any(input$ss_enter_sic)[,code] # this used to be naics_find()
-      #     
-      #     if(length(inputsic) == 0 | all(is.na(inputsic))){
-      #       ################ Should output something saying no valid results returned ######## #
-      #       shiny::validate('No Results Returned')
-      #     }        
-      #   } else {
-      #     sic_wib_split <- as.list(strsplit(input$ss_enter_sic, ",")[[1]])
-      #     print(sic_wib_split)
-      #   }
-      # } else {
-      #   sic_wib_split <- ""
-      # }
+     
       # if not empty, assume its pulled using naics_from_any() or older naics_find() above
       if(length(inputsic) == 0 | rlang::is_empty(inputsic)) {
         #construct regex expression and finds sites that align with user-selected SIC codes
@@ -436,7 +356,6 @@ app_server <- function(input, output, session) {
     cat("SITE COUNT VIA SIC: ", NROW(sitepoints), "\n")
     
     ## assign final value to data_up_naics reactive variable
-    #data_up_sic(sitepoints)
     return(sitepoints)
   })
   
@@ -538,33 +457,8 @@ app_server <- function(input, output, session) {
 
   })
   
-  #############################################################################  # 
-  ## reactive: count data upload methods currently used ####
-  num_ul_methods <- reactive({
-    shiny::isTruthy(input$ss_upload_latlon) +
-      shiny::isTruthy(input$ss_upload_frs) +
-      ## switched upload count to use submit button instead of entered codes
-      #shiny::isTruthy(input$submit_naics) +
-      shiny::isTruthy(input$ss_select_naics) +
-      shiny::isTruthy(input$ss_upload_shp)
-      #shiny::isTruthy(input$ss_upload_echo) +
-      #shiny::isTruthy(input$submit_program) +
-      shiny::isTruthy(input$ss_select_program) +
-      shiny::isTruthy(input$ss_select_sic) + 
-      #shiny::isTruthy(input$submit_sic) +
-      shiny::isTruthy(input$ss_upload_fips) +
-      shiny::isTruthy(input$ss_select_mact)
-  })
-  
   ## reactive: hub for any/all uploaded data, gets passed to processing ####
   data_uploaded <- reactive({
-    # print("data_uploaded reactive was updated!")
-    # cat("method is ", current_upload_method(), "\n")
-    
-    ## send message if no data uploaded
-    # validate(
-    #   need(num_ul_methods() > 0, "Please upload a data set")
-    # )
     
     ## if more than 1 upload method used, it will try to use the one
     ## that is currently selected by the ss_choose_method radio button
@@ -638,28 +532,8 @@ app_server <- function(input, output, session) {
             shinyjs::show(id = 'show_data_preview')
           }
       
-       # if((input$naics_ul_type == 'enter' & !isTruthy(input$ss_enter_naics)) |
-       #     (input$naics_ul_type == 'dropdown' & !isTruthy(input$ss_select_naics))){
-       #    shinyjs::disable(id = 'submit_naics')
-       #  } else {
-       #    shinyjs::enable(id = 'submit_naics')
-       #  }
-       # 
-       #  if(!isTruthy(input$submit_naics)){
-       #    shinyjs::disable(id = 'bt_get_results')
-       #    shinyjs::hide(id = 'show_data_preview')
-       #  } else {
-       #    shinyjs::enable(id = 'bt_get_results')
-       #    shinyjs::show(id = 'show_data_preview')
-       #  }
     } else if(current_upload_method() == 'EPA_PROGRAM'){
-      # if((input$program_ul_type == 'upload' & !isTruthy(input$ss_upload_program)) |
-      #    (input$program_ul_type == 'dropdown' & !isTruthy(input$ss_select_program))){
-      #   shinyjs::disable(id = 'submit_program')
-      # } else {
-      #   shinyjs::enable(id = 'submit_program')
-      # }
-      
+     
       if((input$ss_choose_method == 'upload' & !isTruthy(input$ss_upload_program)) |
          (input$ss_choose_method == 'dropdown' & !isTruthy(input$ss_select_program))){
       #if(!isTruthy(input$submit_program)){
@@ -670,12 +544,6 @@ app_server <- function(input, output, session) {
         shinyjs::show(id = 'show_data_preview')
       }
     }  else if(current_upload_method() == 'SIC'){
-      # if((input$sic_ul_type == 'enter' & !isTruthy(input$ss_enter_sic)) |
-      #    (input$sic_ul_type == 'dropdown' & !isTruthy(input$ss_select_sic))){
-      #   shinyjs::disable(id = 'submit_sic')
-      # } else {
-      #   shinyjs::enable(id = 'submit_sic')
-      # }
       
       if(!isTruthy(input$ss_select_sic)){
       #if(!isTruthy(input$submit_sic)){
