@@ -34,6 +34,25 @@ app_server <- function(input, output, session) {
   
   #############################################################################  # 
   
+  ## button to go back from results to site selection
+  observeEvent(input$back_to_site_sel, {
+    updateTabsetPanel(session, inputId = 'all_tabs', 'Site Selection')
+  })
+  
+  observe({
+    if(isTruthy(data_processed())){
+      shinyjs::show(id='return_to_results')
+    } else {
+      shinyjs::hide(id='return_to_results')
+    }
+  })
+  
+  ## button to go back from site selection to results
+  observeEvent(input$return_to_results,{
+    updateTabsetPanel(session, "all_tabs", "See Results")
+    # updateTabsetPanel(session, 'results_tabs', 'Summary')
+  })
+  
   ## ______ SELECT SITES ________####
   # ~ ####
   

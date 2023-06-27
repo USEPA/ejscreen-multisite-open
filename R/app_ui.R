@@ -418,6 +418,13 @@ background-color: #1a4480 !important;
                                                        class = 'usa-button'
                                                        ## extra formatting - optional
                                                        #style = 'color: #fff; background-color: #005ea2; height: 50px; width: 100px; border-radius: 5%;')
+                                   ),
+                                   br(),br(),
+                                   ## input: return to results tab if analysis has been run
+                                   shinyjs::hidden(
+                                     actionButton(inputId = 'return_to_results',
+                                                label = div('Return to Previous Results', HTML('&nbsp;'), icon('play')),
+                                                class = 'usa-button')
                                    )
                                    ),
                           )
