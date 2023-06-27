@@ -133,7 +133,7 @@ naics_from_any <- function(query, children=FALSE, ignore.case = TRUE, fixed = FA
   isnum <- suppressWarnings( !is.na(as.numeric(query)) )
   
   if (website_url) {
-    return(naics_url_of_query(query))
+    return(naics_url_of_code(query))
   }
   if (website_scrape) {
     return(naics_findwebscrape(query))
