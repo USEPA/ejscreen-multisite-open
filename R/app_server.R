@@ -1267,12 +1267,12 @@ app_server <- function(input, output, session) {
       rad <- input$bt_rad_buff * meters_per_mile
       #}
       
-      if(input$an_map_clusters == TRUE){
+      #if(input$an_map_clusters == TRUE){
         ## compare latlons using is_clustered() reactive
         circle_color <- ifelse(is_clustered() == TRUE, cluster_color, base_color)
-      } else {
+      #} else {
         circle_color <- base_color
-      }
+      #}
       
       popup_vec = popup_from_any(d_upload)
       
@@ -1280,34 +1280,10 @@ app_server <- function(input, output, session) {
       suppressMessages(
         leafletProxy(mapId = 'an_leaf_map', session, data = d_upload) %>%
           map_facilities_proxy(rad= input$bt_rad_buff, 
-                               highlight = input$an_map_clusters, clustered = is_clustered(),
+                               highlight = TRUE, #input$an_map_clusters, 
                                popup_vec = popup_vec, use_marker_clusters = nrow(d_upload) > marker_cluster_cutoff)
-        # clearShapes() %>%
-        # clearMarkerClusters() %>%
-        # addCircles(
-        #   radius = rad,
-        #   color = circle_color, fillColor = circle_color,
-        #   fill = TRUE, weight = 4,
-        #   group = 'circles',
-        #   # next version should use something like EJAMejscreenapi::popup_from_ejscreen(), but with EJAM column names
-        #   #popup = EJAMejscreenapi::popup_from_df(data_uploaded() %>% as.data.frame())
-        #   popup = popup_from_any(data_uploaded())
-        # )  %>%
-        # addCircleMarkers(
-        #   radius = input$bt_rad_buff,
-        #   color = circle_color, fillColor = circle_color,
-        #   fill = TRUE, weight = 4,
-        #   clusterOptions = markerClusterOptions(),
-        #   group = 'markers',
-        #   popup = popup_from_any(data_uploaded())
-        #   #popup = EJAMejscreenapi::popup_from_df(data_uploaded())
-        # ) %>%
-        # ## show circleMarkers (aggregated) at zoom levels 1:6
-        # groupOptions(group = 'markers', zoomLevels = 1:6) %>%
-        # ## show circles and popups at zoom levels 7:20
-        # groupOptions(group = 'circles', zoomLevels = 7:20) %>%
-        # ## allow fullscreen map view ([ ] button)
-        # leaflet.extras::addFullscreenControl()
+                               clustered = is_clustered(),
+       
       )
     }
     #print(d_upload)
