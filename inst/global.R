@@ -50,6 +50,9 @@ max_points_can_map<- 15000
 ## use larger cutoff for polygons (FIPS/Shapefiles)
 max_points_can_map_poly <- 1e10
 
+## set points cutoff for using leaflet markerClusters
+marker_cluster_cutoff <- 1000
+
 ## global variable for mapping (EJAMejscreenapi had this as data loaded by pkg?)
 meters_per_mile <- 1609.344
 

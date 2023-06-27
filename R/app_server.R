@@ -82,8 +82,15 @@ app_server <- function(input, output, session) {
                         #ECHO = "ECHO", # 'ECHO Search Tools',
                         FIPS = "FIPS")
     )
-  })
    
+  })
+  
+  ## reactive to keep track of data type used in last analysis
+  submitted_upload_method <- reactiveVal(NULL)
+  observeEvent(input$bt_get_results, {
+    submitted_upload_method(current_upload_method())
+  })
+  
   #############################################################################  # 
   ## reactive: data uploaded as latlon ####
   
@@ -887,7 +894,7 @@ app_server <- function(input, output, session) {
     ## 1) **EJAM::getblocksnearby()** ####
     
     #define blockpoints to process if shapefile exists
-    if(current_upload_method() == "SHP"){
+    if(submitted_upload_method() == "SHP"){
       d_upload <-{}
       d <- get_blockpoints_in_shape(data_uploaded(),input$bt_rad_buff)
       #d_upload[['points']] <- d[['pts']]
@@ -901,7 +908,7 @@ app_server <- function(input, output, session) {
       sites2blocks <-d[['pts']]
       d_upload <- d[['pts']]
       
-    } else if(current_upload_method() == 'FIPS'){
+    } else if(submitted_upload_method() == 'FIPS'){
       ## remove any invalid latlons before running 
       d_upload <-data_uploaded()[!is.na(lat) & !is.na(lon),]
       sites2blocks <- d_upload
@@ -1133,12 +1140,9 @@ app_server <- function(input, output, session) {
     )
     
     circle_color <- '#000080'
-    print(dim(data_processed()$results_bysite))
-    print(sum(is.na(data_processed()$lon)))
-    
+   
     #if shapefile, merge geometry and create buffer if nonzero buffer is set
-    
-    if(current_upload_method() == "SHP"){
+    if(submitted_upload_method() == "SHP"){
       
       d_up <- data_uploaded()
       
@@ -1271,11 +1275,13 @@ app_server <- function(input, output, session) {
       }
       
       popup_vec = popup_from_any(d_upload)
+      
+      
       suppressMessages(
         leafletProxy(mapId = 'an_leaf_map', session, data = d_upload) %>%
           map_facilities_proxy(rad= input$bt_rad_buff, 
                                highlight = input$an_map_clusters, clustered = is_clustered(),
-                               popup_vec = popup_vec)
+                               popup_vec = popup_vec, use_marker_clusters = nrow(d_upload) > marker_cluster_cutoff)
         # clearShapes() %>%
         # clearMarkerClusters() %>%
         # addCircles(
@@ -1951,7 +1957,7 @@ app_server <- function(input, output, session) {
       # [5] "count_of_blocks_near_multiple_sites" "results_summarized"  
       
       ## add analysis overview to 'notes' tab
-      if(current_upload_method() == "SHP"){
+      if(submitted_upload_method() == "SHP"){
         radius_description <- 'Radius of Shape Buffer (miles)'
       }else{
         radius_description <- 'Radius of Circular Buffer (miles)'
@@ -1999,8 +2005,17 @@ app_server <- function(input, output, session) {
     req(data_processed())
     #data_sitemap(data_uploaded()[input$view3_table_rows_selected,])
     
-    ## link selected row to doaggregate by site output for mapping
-    data_sitemap(data_processed()$results_bysite[siteid %in% input$view3_table_rows_selected])
+    if(submitted_upload_method() == 'SHP'){
+      data_shp <- dplyr::inner_join(data_uploaded()[, c('OBJECTID_1', 'geometry')], data_processed()$results_bysite[input$view3_table_rows_selected],
+                                    by = c('OBJECTID_1'='siteid'))
+      print(input$view3_table_rows_selected)
+      print(data_shp)
+      data_sitemap(data_shp)
+    } else {
+      ## link selected row to doaggregate by site output for mapping
+      data_sitemap(data_processed()$results_bysite[siteid %in% input$view3_table_rows_selected])
+    }
+    
   })
   
   output$v3_sitemap <- leaflet::renderLeaflet({
@@ -2016,13 +2031,23 @@ app_server <- function(input, output, session) {
    
     #orig_leaf_map() #%>%
      # leaflet::setView(lng = data_sitemap()$lon, lat = data_sitemap()$lat, zoom = 8)
-
-    ## alternate: plot single point individually on map (cannot zoom out and see others)
-     leaflet(data_sitemap()) %>%
-       setView(lat = data_sitemap()$lat, lng = data_sitemap()$lon, zoom = 13) %>%
-       addTiles() %>%
-       addCircles(radius = 1 *  meters_per_mile, popup = popup_from_any(data_sitemap()),
-                  popupOptions = popupOptions(maxHeight =  200))
+    
+    if(submitted_upload_method() == 'SHP'){
+      ## alternate: plot single point individually on map (cannot zoom out and see others)
+      leaflet(data_sitemap() %>% st_as_sf() %>% st_zm() %>% as('Spatial') ) %>%
+        #setView(lat = data_sitemap()$lat, lng = data_sitemap()$lon, zoom = 13) %>%
+        addTiles() %>%
+        addPolygons(popup = popup_from_any(data_sitemap() %>% sf::st_drop_geometry()),
+                   popupOptions = popupOptions(maxHeight =  200))  
+    } else {
+      ## alternate: plot single point individually on map (cannot zoom out and see others)
+      leaflet(data_sitemap()) %>%
+        setView(lat = data_sitemap()$lat, lng = data_sitemap()$lon, zoom = 13) %>%
+        addTiles() %>%
+        addCircles(radius = 1 *  meters_per_mile, popup = popup_from_any(data_sitemap()),
+                   popupOptions = popupOptions(maxHeight =  200))
+    }
+    
   })
   #############################################################################  # 
   # ~ ####

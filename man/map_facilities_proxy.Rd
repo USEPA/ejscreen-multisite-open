@@ -9,7 +9,8 @@ map_facilities_proxy(
   rad = 3,
   highlight = FALSE,
   clustered = FALSE,
-  popup_vec = NULL
+  popup_vec = NULL,
+  use_marker_clusters = FALSE
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ map_facilities_proxy(
 \item{clustered, }{a vector of T/F values for each point, indicating if they overlap with another}
 
 \item{popup_vec, }{a vector of popup values to display when points are clicked. Length should match number of rows in the dataset.}
+
+\item{use_marker_clusters, }{boolean for whether to group points into markerClusters. Uses logic from shiny app to only implement when n > 1000.}
 }
 \value{
 a leaflet map with circles, circleMarkers, and basic popup
