@@ -1138,6 +1138,7 @@ app_server <- function(input, output, session) {
     
     #if shapefile, merge geometry and create buffer if nozero buffer is set
     if(current_upload_method() == "SHP"){
+      
       d_up <- data_uploaded()
       
       colnames(d_up)[grepl("OBJECTID",colnames(d_up))] <- "siteid"
@@ -1155,8 +1156,10 @@ app_server <- function(input, output, session) {
         leaflet(d_uploads) %>%  addTiles()  %>%
           addPolygons(color=circle_color) 
       }else{
-        leaflet(d_merge) %>%  addTiles()  %>%
-          addPolygons(color=circle_color) 
+        data_spatial_convert <- d_merge %>% st_zm() %>% as('Spatial')
+        
+        leaflet(data_spatial_convert) %>% addTiles()  %>%
+          addPolygons(color=circle_color)
       }
       
     }else{
