@@ -2094,7 +2094,7 @@ app_server <- function(input, output, session) {
     
     ## set ggplot theme elements for all versions of barplot
     ggplot_theme_bar <- ggplot2::theme_bw() +
-      theme(legend.position = 'top',
+      theme(legend.position = 'bottom',
             axis.text = ggplot2::element_text(size = 16),
             axis.title = ggplot2::element_text(size = 16),
             legend.title = ggplot2::element_text(size = 16),
@@ -2137,19 +2137,35 @@ app_server <- function(input, output, session) {
       ## set # of characters to wrap labels
       n_chars_wrap <- 15
       
+      barplot_input$Summary <- factor(barplot_input$Summary, levels = c('Average person in US','Average site','Average person at these sites'))
+      
       ## merge with friendly names and plot
-      barplot_input %>% 
-        dplyr::left_join( data.frame(indicator = mybarvars, indicator_label = mybarvars.friendly)) %>% 
+      p_out <- barplot_input %>% 
+        dplyr::left_join( data.frame(indicator = mybarvars, indicator_label = gsub(' \\(.*', '', mybarvars.friendly))) %>% 
         ggplot() +
         geom_bar(aes(x = indicator_label, y = value, fill = Summary), stat='identity', position='dodge') +
         #viridis::scale_fill_viridis(discrete = TRUE, alpha = 0.6) +
-        scale_fill_brewer(palette = 'Dark2') +
+        scale_fill_manual(values=c('Average person in US' = 'lightgray', 'Average person at these sites'='#62c342',
+                                   'Average site' = '#0e6cb5')) +
+        #scale_fill_brewer(palette = 'Dark2') +
         scale_x_discrete(labels = function(x) stringr::str_wrap(x, n_chars_wrap)) +
         ## set y axis limits to (0, max value) but allow 5% higher on upper end
-        scale_y_continuous(limits = c(0, NA), expand = expansion(mult = c(0, 0.05))) +
-        facet_wrap(~indicator_label, ncol = 4, scales = 'free_x') +
-        labs(x = '', y = 'Indicator Value') +
-        ggplot_theme_bar
+        scale_y_continuous(limits = c(0, NA), expand = expansion(mult = c(0, 0.05)))
+      
+      ## let environmental raw values have their own y axis
+      if(input$summ_bar_ind == 'Environmental'){
+        p_out <- p_out + facet_wrap(~indicator_label, 
+                                    #ncol = 4, 
+                                    scales = 'free')
+      } else {
+        p_out <- p_out + facet_wrap(~indicator_label, 
+                   #ncol = 4, 
+                   scales = 'free_x')
+      }
+        
+        p_out +
+          labs(x = NULL, y = 'Indicator Value') +
+          ggplot_theme_bar
       
       ## future: add % scaling and formatting for demographic indicators
       ## see ggplot2::scale_y_continuous and scales::label_percent
@@ -2215,16 +2231,20 @@ app_server <- function(input, output, session) {
       ## set # of characters to wrap labels
       n_chars_wrap <- 15
       
+      barplot_input$Summary <- factor(barplot_input$Summary, levels = c('Average person in US','Average site','Average person at these sites'))
+      
       ## join and plot
       barplot_input %>% 
-        dplyr::left_join( data.frame(indicator = mybarvars, indicator_label =  mybarvars.friendly)) %>% 
+        dplyr::left_join( data.frame(indicator = mybarvars, indicator_label =  gsub(' \\(.*', '', mybarvars.friendly))) %>% 
         ggplot() +
         ## add bars - position = 'dodge' places the 3 categories next to each other
         geom_bar(aes(x = indicator_label, y = ratio, fill = Summary), stat='identity', position='dodge') +
         ## add horizontal line at 1
         geom_hline(aes(yintercept = 1)) +
         ## set color scheme
-        scale_fill_brewer(palette = 'Dark2') +
+        scale_fill_manual(values=c('Average person in US' = 'lightgray', 'Average person at these sites'='#62c342',
+                                   'Average site' = '#0e6cb5')) +
+       # scale_fill_brewer(palette = 'Dark2') +
         ## alternate color scheme
         #viridis::scale_fill_viridis(discrete = TRUE, alpha = 0.6) +
         ## wrap long indicator labels on x axis
@@ -2234,7 +2254,9 @@ app_server <- function(input, output, session) {
         ## set axis labels
         labs(x = '', y = 'Indicator Ratio') +
         ## break plots into rows of 4 
-        facet_wrap(~indicator_label, ncol = 4, scales='free_x') +
+        facet_wrap(~indicator_label, 
+                   #ncol = 4, 
+                   scales='free_x') +
         ggplot_theme_bar
     }
   })
