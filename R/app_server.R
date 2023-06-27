@@ -1136,7 +1136,8 @@ app_server <- function(input, output, session) {
     print(dim(data_processed()$results_bysite))
     print(sum(is.na(data_processed()$lon)))
     
-    #if shapefile, merge geometry and create buffer if nozero buffer is set
+    #if shapefile, merge geometry and create buffer if nonzero buffer is set
+    
     if(current_upload_method() == "SHP"){
       
       d_up <- data_uploaded()
@@ -1155,6 +1156,7 @@ app_server <- function(input, output, session) {
         
         leaflet(d_uploads) %>%  addTiles()  %>%
           addPolygons(color=circle_color) 
+        
       }else{
         data_spatial_convert <- d_merge %>% st_zm() %>% as('Spatial')
         
