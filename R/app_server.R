@@ -1050,8 +1050,8 @@ app_server <- function(input, output, session) {
     ## wait  then switch tabs and jump to top of screen 
     Sys.sleep(0.2) ### why wait? ### #
     shinyjs::js$toTop();
-    updateTabsetPanel(session, "all_tabs", "Summary Report")
-    
+    updateTabsetPanel(session, "all_tabs", "See Results")
+    updateTabsetPanel(session, 'results_tabs', 'Summary')
   })
   #############################################################################  # 
  
