@@ -1397,7 +1397,7 @@ app_server <- function(input, output, session) {
     
     tab_data_d <- data.frame(
       
-      var_names =  c(names_d_friendly, names_d_subgroups_friendly),
+      var_names =  c(names_d_friendly, gsub('\\)','',gsub('%.*\\(','% ',names_d_subgroups_friendly))),
       value = data_processed()$results_overall[, c(..names_d, ..names_d_subgroups)] %>% t, 
       
       'state_avg' = (data_processed()$results_overall[, c(..names_d_state_avg, ..names_d_subgroups_state_avg)] %>% t), 
@@ -1420,7 +1420,7 @@ app_server <- function(input, output, session) {
     
     ## set colors for table
     my_cell_color <- '#dce6f0'
-    my_border_color <- '#0070c0'
+    my_border_color <- '#aaaaaa' 
     
     ## apply function to format as 'gt' table  
     table_out_d <- format_gt_table(df = tab_data_d, type = 'demog',
@@ -1474,7 +1474,7 @@ app_server <- function(input, output, session) {
     
     ## set colors for table
     my_cell_color <- '#dce6f0'
-    my_border_color <- '#0070c0'
+    my_border_color <- '#aaaaaa'
     
     ## apply function to format as 'gt' table  
     tab_out_e <- format_gt_table(df = tab_data_e, type = 'envt',
@@ -1868,12 +1868,13 @@ app_server <- function(input, output, session) {
                     ## allow scroll left-to-right
                     scrollX = TRUE, 
                     ## set scroll height up and down
-                    scrollY = '500px'
+                    scrollY = '2000px'
                   ),
                   ## set overall table height
-                  height = 1000, 
+                  height = 1500, 
                   escape = FALSE  # escape=FALSE may add security issue but makes links clickable in table
-    )
+    ) #%>% 
+      #DT::formatStyle(names(dt_final), lineHeight='80%')
     ## code for bolding certain rows - not currently used
     #           ) %>% 
     # DT::formatStyle(
