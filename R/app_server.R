@@ -676,7 +676,25 @@ app_server <- function(input, output, session) {
   
   output$invalid_sites_alert2 <- renderUI({
     req(data_uploaded())
-    invalid_alert()
+    
+    if(!is.null(invalid_alert()) & invalid_alert() > 0){
+      HTML(paste0(
+        '<section
+  class="usa-site-alert usa-site-alert--emergency usa-site-alert--slim"
+  aria-label="Site alert,,,,,,"
+>
+  <div class="usa-alert">
+    <div class="usa-alert__body">
+      <p class="usa-alert__text">
+        <strong>', 'Warning!','</strong>', 'There are ', invalid_alert(), ' invalid sites in your dataset.',
+        '</p>
+    </div>
+  </div>
+</section>'))
+    } else {
+      NULL
+    }
+   
   })
   
   ## How many valid points? warn if no valid lat/lon ####
@@ -723,22 +741,8 @@ app_server <- function(input, output, session) {
         #                      content = paste0('There are ', num_na, ' invalid locations in your dataset.'),
         #                      dismiss = TRUE, 
         #                      append = FALSE)
-        invalid_alert(
-          HTML(paste0(
-            '<section
-  class="usa-site-alert usa-site-alert--emergency usa-site-alert--slim"
-  aria-label="Site alert,,,,,,"
->
-  <div class="usa-alert">
-    <div class="usa-alert__body">
-      <p class="usa-alert__text">
-        <strong>', 'Warning!','</strong>', 'There are ', num_na, ' invalid sites in your dataset.',
-      '</p>
-    </div>
-  </div>
-</section>'
-          ))
-        )
+        invalid_alert(num_na)
+        
         #showModal(modalDialog(title = 'Invalid data found', 'FYI, some of your data was not valid.', size = 's'))
       } else {
         invalid_alert(NULL)
