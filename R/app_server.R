@@ -223,7 +223,7 @@ app_server <- function(input, output, session) {
         read_frs$REGISTRY_ID = as.character(read_frs$REGISTRY_ID)
       }
       
-      frs_lat_lon <- dplyr::left_join(read_frs, frs_from_regid(tmp$REGISTRY_ID))
+      frs_lat_lon <- dplyr::left_join(read_frs, frs_from_regid(read_frs$REGISTRY_ID))
       #frs_lat_lon <- frs_from_regid(read_frs$REGISTRY_ID)
       # read_frs_dt <- data.table::as.data.table(read_frs)
       data.table::setDT(frs_lat_lon) # same but less memory/faster?
@@ -456,7 +456,7 @@ app_server <- function(input, output, session) {
     )
 
     ## create named vector of FIPS codes (names used as siteid)
-    fips_alias <- c('FIPS','fips','fips_code','fipscode','Fips','statefips','countyfips')
+    fips_alias <- c('FIPS','fips','fips_code','fipscode','Fips','statefips','countyfips', 'ST_FIPS','st_fips')
     if(any(colnames(ext) %in% fips_alias)){
     #if('FIPS' %in% colnames(ext)){
       firstmatch <- intersect(fips_alias, colnames(ext))[1]
@@ -494,6 +494,12 @@ app_server <- function(input, output, session) {
     req(input$ss_upload_shp)
     infiles <- input$ss_upload_shp$datapath # get the location of files
     print(infiles)
+    
+    infile_ext <- tools::file_ext(infiles)
+    if(!all(c('shp','shx','dbf','prj') %in% infile_ext)){
+      validate('Not all required file extensions found.')
+    }
+    
     dir <- unique(dirname(infiles)) # get the directory
     outfiles <- file.path(dir, input$ss_upload_shp$name) # create new path name
     name <- strsplit(input$ss_upload_shp$name[1], "\\.")[[1]][1] # strip name 
