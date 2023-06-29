@@ -156,13 +156,24 @@ app_ui  <- function(request) {
                                
                                ## input: Upload list of facility lat/longs
                                fileInput(inputId = 'ss_upload_latlon',  
-                                         label = 'Upload a list of sites (a spreadsheet with lat & lon as table headers)',
+                                         label = 'Upload a file with lat-long coordinates',
                                          multiple = FALSE,
                                          accept = c('.xls', '.xlsx', ".csv", "text/csv", "text/comma-separated-values,text/plain")
                                          # add hover tips here maybe, or even a button to view examples of valid formats and details on that.
                                ),
                                
-                               HTML(latlon_help_msg)
+                               tags$span(
+                                 
+                               tags$ul(
+                                 tags$li('Required filetype: .csv, .xls, or .xlsx'),
+                                 tags$li('Required Columns: lat, lon'),
+                                 tags$li('Optional Columns: unique ID')
+                               )
+                               
+                               ),
+                               actionButton('latlon_help', label='More Info', 
+                                            class = 'usa-button usa-button--outline')
+                               #HTML(latlon_help_msg)
                              ), # end latlong conditionalPanel
                              
                              ## NAICS conditional panel
@@ -194,7 +205,18 @@ app_ui  <- function(request) {
                                  inputId = 'ss_upload_frs',
                                  label = 'Upload a file with FRS identifiers',
                                  accept = c('.xls', '.xlsx', ".csv", "text/csv", "text/comma-separated-values, text/plain")
-                               )#, # xxx
+                               ), # xxx
+                               
+                               tags$span(
+                                 tags$ul(
+                                   tags$li('Required filetype: .csv, .xls, or .xlsx'),
+                                   tags$li('Required Columns: REGISTRY_ID'),
+                                   tags$li('Optional Columns: siteid, lat, lon')
+                                 )
+                               ),
+                               
+                               actionButton('frs_help', label='More Info', class='usa-button usa-button--outline')
+                               
                              ), # end FRS conditionalPanel
                              
                              ## EPA program dropdown conditional panel
@@ -220,7 +242,16 @@ app_ui  <- function(request) {
                                condition = "input.ss_choose_method == 'upload' && input.ss_choose_method_upload == 'EPA_PROGRAM'",
                                ## input: upload an EPA program ID file
                                fileInput(inputId = 'ss_upload_program',
-                                         label = 'Upload a file with program IDs')
+                                         label = 'Upload a file with program IDs'),
+                               
+                               tags$ul(
+                                 tags$li('Required filetype: .csv, .xls, or .xlsx'),
+                                 tags$li('Required columns: program, pgm_sys_id'),
+                                 tags$li('Optional columns: siteid, REGISTRY_ID, lat, lon')
+                               ),
+                               
+                               actionButton('epa_program_help', label='More Info', class='usa-button usa-button--outline')
+                               
                                
                                
                              ), #end EPA program conditional panel
@@ -259,11 +290,20 @@ app_ui  <- function(request) {
                                
                                ## input: Upload list of facility lat/longs
                                fileInput(inputId = 'ss_upload_fips',  
-                                         label = 'Upload a list of FIPS codes in a spreadsheet (.csv, .xls, or .xlsx)',
+                                         label = 'Upload a list of FIPS codes',
                                          multiple = FALSE,
                                          accept = c('.xls', '.xlsx', ".csv", "text/csv", "text/comma-separated-values,text/plain")
                                          # add hover tips here maybe, or even a button to view examples of valid formats and details on that.
                                ),
+                               
+                               tags$ul(
+                                 tags$li('Required filetype: .csv, .xls, or .xlsx'),
+                                 tags$li('Required columns: FIPS or alias'),
+                                 tags$li('Optional columns: siteid')
+                               ),
+                               
+                               actionButton('fips_help', label='More Info', class='usa-button usa-button--outline')
+                               
                              ), # end FIPS conditionalPanel
                              
                              ## Shapefile Upload conditional panel
@@ -274,7 +314,16 @@ app_ui  <- function(request) {
                                  inputId = 'ss_upload_shp',
                                  label = 'Upload a shapefile',
                                  accept = c(".shp",".dbf",".sbn",".sbx",".shx",".prj"),multiple=TRUE
-                               )#, # xxx
+                               ),
+                               
+                               tags$ul(
+                                 tags$li('Required files: .shp, .shx, .dbf, .prj'),
+                                 tags$li('Required columns: OBJECTID, geometry')
+                               ),
+                               
+                               actionButton('shp_help', label='More Info', class='usa-button usa-button--outline')
+                               
+                               #, # xxx
                              ), # end Shapefile conditionalPanel
                              conditionalPanel(
                                condition = "input.ss_choose_method == 'dropdown' && input.ss_choose_method_drop == 'MACT'",

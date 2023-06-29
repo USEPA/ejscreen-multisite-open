@@ -65,6 +65,46 @@ app_server <- function(input, output, session) {
     updateTabsetPanel(session, "all_tabs", "About EJAM")
   })
   
+  observeEvent(input$latlon_help, {
+    showModal(
+      modalDialog(
+        HTML(latlon_help_msg), easyClose = TRUE
+      )
+    )
+  })
+  
+  observeEvent(input$frs_help, {
+    showModal(
+      modalDialog(
+        HTML(frs_help_msg), easyClose = TRUE
+      )
+    )
+  })
+  
+  observeEvent(input$epa_program_help, {
+    showModal(
+      modalDialog(
+        HTML(epa_program_help_msg), easyClose = TRUE
+      )
+    )
+  })
+  
+  observeEvent(input$fips_help, {
+    showModal(
+      modalDialog(
+        HTML(fips_help_msg), easyClose = TRUE
+      )
+    )
+  })
+  
+  observeEvent(input$shp_help, {
+    showModal(
+      modalDialog(
+        HTML(shp_help_msg), easyClose = TRUE
+      )
+    )
+  })
+  
   ## ______ SELECT SITES ________####
   # ~ ####
   
