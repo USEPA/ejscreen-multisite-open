@@ -669,6 +669,7 @@ app_server <- function(input, output, session) {
   invalid_alert <- reactiveVal(NULL)
   
   output$invalid_sites_alert2 <- renderUI({
+    req(data_uploaded())
     invalid_alert()
   })
   
@@ -1970,7 +1971,8 @@ app_server <- function(input, output, session) {
                   ## set overall table height
                   height = 1500, 
                   escape = FALSE  # escape=FALSE may add security issue but makes links clickable in table
-    ) #%>% 
+    ) %>% 
+      DT::formatStyle(names(dt_final), 'white-space'='nowrap')
       #DT::formatStyle(names(dt_final), lineHeight='80%')
     ## code for bolding certain rows - not currently used
     #           ) %>% 
