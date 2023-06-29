@@ -182,7 +182,9 @@ app_server <- function(input, output, session) {
       if(('REGISTRY_ID' %in% colnames(read_frs)) & (class(read_frs$REGISTRY_ID) != "character")){
         read_frs$REGISTRY_ID = as.character(read_frs$REGISTRY_ID)
       }
-      frs_lat_lon <- frs_from_regid(read_frs$REGISTRY_ID)
+      
+      frs_lat_lon <- dplyr::left_join(read_frs, frs_from_regid(tmp$REGISTRY_ID))
+      #frs_lat_lon <- frs_from_regid(read_frs$REGISTRY_ID)
       # read_frs_dt <- data.table::as.data.table(read_frs)
       data.table::setDT(frs_lat_lon) # same but less memory/faster?
     } else {
