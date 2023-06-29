@@ -11,7 +11,7 @@ frs_is_valid <- function(frs_upload) {
     return(TRUE)
   } else {
     if ("regid" %in% colnames(frs_upload)) {
-      colnames(frs_upload) <- gsub("RegistryID", "REGISTRY_ID", colnames(frs_upload)) # ECHO uses this colname
+      colnames(frs_upload) <- gsub("regid", "REGISTRY_ID", colnames(frs_upload)) # ECHO uses this colname
       if(nrow(frs_from_regid(frs_upload$REGISTRY_ID)) != 0){
         return(TRUE)
       }else{
@@ -26,8 +26,8 @@ frs_is_valid <- function(frs_upload) {
           return(FALSE)
         }
        # return(TRUE)
-      } else if ("siteid" %in% colnames(frs_upload)) {
-          colnames(frs_upload) <- gsub("siteid", "REGISTRY_ID", colnames(frs_upload))
+      } else if ("RegistryID" %in% colnames(frs_upload)) {
+          colnames(frs_upload) <- gsub("RegistryID", "REGISTRY_ID", colnames(frs_upload))
           warning("assuming siteid column has REGISTRY_ID values")
           if(nrow(frs_from_regid(frs_upload$REGISTRY_ID)) != 0){
             return(TRUE)

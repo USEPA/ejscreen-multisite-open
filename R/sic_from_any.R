@@ -45,14 +45,16 @@ frs_from_sic <- function(sic_code_or_name, ...) {
 #'   head(latlon_from_sic(c('6150', '6300', '5995'), id_only=TRUE))
 #'   # mapfast(frs_from_sic('6150')) # simple map
 latlon_from_sic <- function(sic, id_only=FALSE) {
+  if(length(sic) != 0){
+    if(is.na(as.numeric(sic))){ stop("SIC can not be coerced to a number.")}
+  }
   if (missing(sic)) {return(NULL)}
   if (is.data.table(sic) & "code" %in% names(sic)) {sic <- sic$code} # flexible in case it was given output of EJAM::sic_from_any() which is a table not just code
   
-  if (id_only) {
-    return(frs_by_sic[SIC %in% sic, REGISTRY_ID])
-  } else {
-    return(frs_by_sic[SIC %in% sic, ])
-  }
+  df <- frs_by_sic[SIC %in% sic]
+  if(nrow(df) == 0){warning("There are no sites with that SIC.")}
+  if (id_only) {return(df$REGISTRY_ID)
+  } else { return(df)}
 }
 
 #' @inherit latlon_from_sic
@@ -176,7 +178,11 @@ sic_from_any <- function(query, children=FALSE, ignore.case = TRUE, fixed = FALS
   results <- data.table::rbindlist(list(via_codes, via_text))
   if (children) {
     # add subcategories
-    results <- sic_subcodes_from_code(results$code)
+    # takes subcategories only if the results return something
+    # results <- sic_subcodes_from_code(results$code)
+    # run on query_codes instead and join with results
+    results_subcat <- sic_subcodes_from_code(query_codes)
+    results <- results %>% full_join(results_subcat)
   }
   return(results)
 }
