@@ -456,8 +456,9 @@ app_server <- function(input, output, session) {
     )
 
     ## create named vector of FIPS codes (names used as siteid)
-    fips_alias <- c('FIPS','fips','fips_code','fipscode','Fips','statefips','countyfips', 'ST_FIPS','st_fips')
-    if(any(colnames(ext) %in% fips_alias)){
+    fips_alias <- c('FIPS','fips','fips_code','fipscode','Fips','statefips','countyfips', 'ST_FIPS','st_fips','ST_FIPS','st_fips')
+ 
+    if(any(tolower(colnames(ext)) %in% fips_alias)){
     #if('FIPS' %in% colnames(ext)){
       firstmatch <- intersect(fips_alias, colnames(ext))[1]
     fips_vec <- fips_lead_zero(as.character(ext[[firstmatch]]))
@@ -504,19 +505,26 @@ app_server <- function(input, output, session) {
     outfiles <- file.path(dir, input$ss_upload_shp$name) # create new path name
     name <- strsplit(input$ss_upload_shp$name[1], "\\.")[[1]][1] # strip name 
     purrr::walk2(infiles, outfiles, ~file.rename(.x, .y)) # rename files
+    
+    
     shp <- read_sf(file.path(dir, paste0(name, ".shp"))) # read-in shapefile
-    shp_proj <- sf::st_transform(shp,crs= 4269)
+    
+    if(nrow(shp) > 0){
+      numna <- nrow(shp[!sf::st_is_valid(shp),])
+      invalid_alert(numna)
+      shp_valid <- shp[sf::st_is_valid(shp),] #determines valid shapes
+      
+      shp_valid<- dplyr::mutate(shp_valid, siteid = row_number())
+      
+      shp_proj <- sf::st_transform(shp_valid,crs= 4269)
+    
+   } else {
+        ## if not matched, return this message
+        shiny::validate('No shapes found in file uploaded.')
+    }
     
     shp_proj
     
-    # d_upload <-{}
-    # d <- get_blockpoints_in_shape(shp,0)
-    # d_upload[['points']] <- d[['pts']]
-    # d_upload[['buffer']] <- d[['polys']]
-    # d_upload[['shape']] <- shp
-    # #d_upload[['buffer']] <- get_shape_buffered_from_shapefile_points(shp,0)
-    # 
-    # d_upload
     
     
   })
@@ -734,6 +742,7 @@ app_server <- function(input, output, session) {
         num_notna <- nrow(data_uploaded()[!(is.na(data_uploaded()$lat) | is.na(data_uploaded()$lon))])
       }
       ## if invalid data found, send modal to screen
+      print(num_na)
       if(num_na > 0){
         #shinyBS::closeAlert(session, alertId = 'alert1')
         # shinyBS::createAlert(session, anchorId = "invalid_sites_alert", alertId = "alert1", 
@@ -1253,10 +1262,8 @@ app_server <- function(input, output, session) {
       
       d_up <- data_uploaded()
       
-      colnames(d_up)[grepl("OBJECTID",colnames(d_up))] <- "siteid"
-      
       d_up_geo <- d_up[,c("siteid","geometry")]
-      
+     
       d_merge = merge(d_up_geo,data_processed()$results_bysite,by="siteid", all.x = FALSE, all.y = TRUE)
       
       
@@ -2092,8 +2099,8 @@ app_server <- function(input, output, session) {
     #data_sitemap(data_uploaded()[input$view3_table_rows_selected,])
     
     if(submitted_upload_method() == 'SHP'){
-      data_shp <- dplyr::inner_join(data_uploaded()[, c('OBJECTID_1', 'geometry')], data_processed()$results_bysite[input$view3_table_rows_selected],
-                                    by = c('OBJECTID_1'='siteid'))
+      data_shp <- dplyr::inner_join(data_uploaded()[, c('siteid', 'geometry')], data_processed()$results_bysite[input$view3_table_rows_selected],
+                                    by = c('siteid'='siteid'))
       print(input$view3_table_rows_selected)
       print(data_shp)
       data_sitemap(data_shp)
