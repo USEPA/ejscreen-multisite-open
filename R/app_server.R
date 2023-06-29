@@ -35,7 +35,15 @@ app_server <- function(input, output, session) {
   #############################################################################  # 
   
   ## button to go back from results to site selection
-  observeEvent(input$back_to_site_sel, {
+  observeEvent({
+    input$back_to_site_sel
+    }, {
+    updateTabsetPanel(session, inputId = 'all_tabs', 'Site Selection')
+  })
+  
+  observeEvent({
+    input$back_to_site_sel2
+  }, {
     updateTabsetPanel(session, inputId = 'all_tabs', 'Site Selection')
   })
   
@@ -51,6 +59,10 @@ app_server <- function(input, output, session) {
   observeEvent(input$return_to_results,{
     updateTabsetPanel(session, "all_tabs", "See Results")
     # updateTabsetPanel(session, 'results_tabs', 'Summary')
+  })
+  
+  observeEvent(input$link_to_about, {
+    updateTabsetPanel(session, "all_tabs", "About EJAM")
   })
   
   ## ______ SELECT SITES ________####
