@@ -29,7 +29,29 @@
 #' @export
 #'
 get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NULL, dissolved=FALSE, safety_margin_ratio=1.10) {
-  blockpoints_sf <-  blockpoints %>% sf::st_as_sf(coords = c('lon', 'lat'), crs= 4269)
+  
+  ## overall bbox
+  bbox <- sf::st_bbox(polys)
+  
+  ## filter blockpoints to overall bbox
+  blockpoints_filt <-  blockpoints %>% 
+    dplyr::filter(
+      lon > bbox['xmin'],
+      lon < bbox['xmax'],
+      lat > bbox['ymin'],
+      lat < bbox['ymax']
+    ) 
+  
+  ## individual bbox per polygon
+  bbox_polys <- lapply(polys$geometry, sf::st_bbox)
+  
+  ## filter blockpoints again to individual bboxes, keep unique points
+  blockpoints_filt <- lapply(bbox_polys, function(a) blockpoints_filt[between(lon, a[1], a[3]) & 
+                                                                      between(lat, a[2], a[4]), ]) %>% 
+    rbindlist %>% 
+    unique
+    
+  blockpoints_sf <- sf::st_as_sf(blockpoints_filt, coords = c('lon', 'lat'), crs= 4269)
   
   if (!exists("blockpoints_sf")) {
     stop("requires the blockpoints   called blockpoints_sf  you can make like this: \n blockpoints_sf <-  blockpoints |> sf::st_as_sf(coords = c('lon', 'lat'), crs= 4269) \n # Geodetic CRS:  NAD83 ")
@@ -92,9 +114,10 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
  
   blocksinsidef <- unique(blocksinside)
   
+  #standardize objectids in shapefile
+  colnames(blocksinsidef)[grepl("OBJECTID",toupper(colnames(blocksinsidef)))] <- "OBJECTID"
+  pts <-  data.table(sf::st_coordinates(blocksinsidef),blocksinsidef$OBJECTID,blocksinsidef$blockid,distance=0) 
  
-  pts <-  data.table(sf::st_coordinates(blocksinsidef),blocksinsidef$OBJECTID_1,blocksinsidef$blockid,distance=0) 
-  
   setnames(pts, c("lon","lat","siteid","blockid","distance"))
   
   #print(list(pts,polys))

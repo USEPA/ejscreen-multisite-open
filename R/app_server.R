@@ -245,7 +245,7 @@ app_server <- function(input, output, session) {
 
     ## assign final value to data_up_naics reactive variable
     #data_up_naics(sitepoints)
-    return(sitepoints)
+    return(sitepoints %>% latlon_df_clean())
   })
   
   ## if NAICS radio button is toggled between dropdown/enter, empty the other one
@@ -493,15 +493,16 @@ app_server <- function(input, output, session) {
   data_up_shp <- reactive({
     ## depends on ECHO upload - which may use same file upload as latlon
     req(input$ss_upload_shp)
-    
     infiles <- input$ss_upload_shp$datapath # get the location of files
+    print(infiles)
     dir <- unique(dirname(infiles)) # get the directory
     outfiles <- file.path(dir, input$ss_upload_shp$name) # create new path name
     name <- strsplit(input$ss_upload_shp$name[1], "\\.")[[1]][1] # strip name 
     purrr::walk2(infiles, outfiles, ~file.rename(.x, .y)) # rename files
     shp <- read_sf(file.path(dir, paste0(name, ".shp"))) # read-in shapefile
-
-    shp
+    shp_proj <- sf::st_transform(shp,crs= 4269)
+    
+    shp_proj
     
     # d_upload <-{}
     # d <- get_blockpoints_in_shape(shp,0)
@@ -853,19 +854,12 @@ app_server <- function(input, output, session) {
   ## crashes with larger datasets
   output$download_preview_data_xl <- downloadHandler(filename = 'epa_raw_data_download.xlsx',
                                                       content = function(file){
-                                                        if(current_upload_method() == "SHP"){
-                                                          dt <- data_uploaded()[['shape']]
-                                                        }else{
-                                                          dt <-data_uploaded()
-                                                        }
+                                                        dt <- data_uploaded()
+                                                       
                                                         writexl::write_xlsx(dt, file)})
   output$download_preview_data_csv <- downloadHandler(filename = 'epa_raw_data_download.csv',
                                                       content = function(file){
-                                                        if(current_upload_method() == "SHP"){
-                                                          dt <- data_uploaded()[['shape']]
-                                                        }else{
-                                                          dt <-data_uploaded()
-                                                        }
+                                                        dt <- data_uploaded()
                                                         data.table::fwrite(dt, file, append = F)})
   
   ## reactive: check if uploaded points are clustered (may double-count people) ####
@@ -894,20 +888,11 @@ app_server <- function(input, output, session) {
   
   ## update map radius label based on button ####
   
-  # observe({
-  #   val <- input$bt_rad_buff
-  #   lab <- paste0('Radius of circular buffer: <br />', val, ' mi ','(',round(val / 0.62137119, 2), ' km)')
-  #   
-  #   updateSliderInput(session, inputId = 'bt_rad_buff', label = HTML(lab))
-  #   #shinyjs::html(id = 'bt_rad_buff', html = HTML(lab))
-  #   
-  #   ## if switching units between miles and km - not currently used
-  #   #req(input$radius_units)
-  #   #lab <- input$radius_units
-  #   # updateSliderInput(session, inputId = 'bt_rad_buff',
-  #   #                   label = paste0('Radius of circular buffer (', lab, ')'),
-  #   #                   min = 0.25, val = val, step = 0.25, max = 10)
-  # })
+  observe({
+    if (current_upload_method() == "SHP" & !isTruthy(input$ss_upload_shp)){
+      updateSliderInput(session, inputId = 'bt_rad_buff', value = 0)
+    }
+  })
   
   ## Create separate radius label to allow line break
   
@@ -923,16 +908,19 @@ app_server <- function(input, output, session) {
     
     if(current_upload_method() == "SHP"){
       req(data_uploaded())
+    
       
-      
+      ## find bbox for map to zoom to
+      bbox <- sf::st_bbox(data_uploaded())
+     
+      leaflet() %>% addTiles() %>%
+        fitBounds(
+          lng1 = as.numeric(bbox[1]), lng2 = as.numeric(bbox[3]),
+          lat1 = as.numeric(bbox[2]), lat2 = as.numeric(bbox[4])
+        )
+          
       #d_upload <- data_uploaded()[['points']]
       #max_pts <- max_points_can_map_poly
-      
-      leaflet() %>% addTiles() #%>% 
-        # fitBounds(lng1 = min(d_upload$lon, na.rm=T),
-        #           lng2 = max(d_upload$lon, na.rm=T),
-        #           lat1 = min(d_upload$lat, na.rm=T),
-        #           lat2 = max(d_upload$lat, na.rm=T))
     } else if(current_upload_method() == 'FIPS'){
       #req(data_uploaded())
       max_pts <- max_points_can_map_poly
@@ -1033,7 +1021,7 @@ app_server <- function(input, output, session) {
     #define blockpoints to process if shapefile exists
     if(current_upload_method() == "SHP"){
       d_upload <-{}
-      d <- get_blockpoints_in_shape(data_uploaded(),0)
+      d <- get_blockpoints_in_shape(data_uploaded(),input$bt_rad_buff)
       #d_upload[['points']] <- d[['pts']]
       #d_upload[['buffer']] <- d[['polys']]
       #d_upload[['shape']] <- shp
@@ -1119,17 +1107,19 @@ app_server <- function(input, output, session) {
                                 )]
     } else {
     
-      if("REGISTRY_ID" %in% names(data_uploaded())){
-        echolink = url_echo_facility_webpage(data_uploaded()$REGISTRY_ID, as_html = TRUE, linktext = 'ECHO Report')
+      
+      
+      if("REGISTRY_ID" %in% names( d_upload)){
+        echolink = url_echo_facility_webpage( d_upload$REGISTRY_ID, as_html = TRUE, linktext = 'ECHO Report')
       } else if("RegistryID" %in% names(data_uploaded())){
-        echolink = url_echo_facility_webpage(data_uploaded()$RegistryID, as_html = TRUE, linktext = 'ECHO Report')
+        echolink = url_echo_facility_webpage( d_upload$RegistryID, as_html = TRUE, linktext = 'ECHO Report')
       } else {
         echolink = rep('N/A',nrow(out$results_bysite))
       }
     out$results_bysite[ , `:=`(
-      `EJScreen Report` = url_ejscreen_report(    lat = data_uploaded()$lat, lon = data_uploaded()$lon, distance = input$bt_rad_buff, as_html = TRUE), 
-      `EJScreen Map`    = url_ejscreenmap(        lat = data_uploaded()$lat, lon = data_uploaded()$lon,                               as_html = TRUE), 
-      `ACS Report`      = url_ejscreen_acs_report(lat = data_uploaded()$lat, lon = data_uploaded()$lon, distance = input$bt_rad_buff, as_html = TRUE),
+      `EJScreen Report` = url_ejscreen_report(    lat = d_upload$lat, lon =  d_upload$lon, distance = input$bt_rad_buff, as_html = TRUE), 
+      `EJScreen Map`    = url_ejscreenmap(        lat = d_upload$lat, lon =  d_upload$lon,                               as_html = TRUE), 
+      `ACS Report`      = url_ejscreen_acs_report(lat =  d_upload$lat, lon = d_upload$lon, distance = input$bt_rad_buff, as_html = TRUE),
       `ECHO report` = echolink
     )]
     }
@@ -1273,12 +1263,41 @@ app_server <- function(input, output, session) {
     validate(
       need(data_processed(), 'Please run an analysis to see results.')
     )
-
+    
     circle_color <- '#000080'
     print(dim(data_processed()$results_bysite))
     print(sum(is.na(data_processed()$lon)))
+    
+    #if shapefile, merge geometry and create buffer if nozero buffer is set
+    if(current_upload_method() == "SHP"){
+      d_up <- data_uploaded()
+      
+      colnames(d_up)[grepl("OBJECTID",colnames(d_up))] <- "siteid"
+      
+      d_up_geo <- d_up[,c("siteid","geometry")]
+      
+      d_merge = merge(d_up_geo,data_processed()$results_bysite,by="siteid", all.x = FALSE, all.y = TRUE)
+      
+      
+      if(input$bt_rad_buff > 0){
+        
+        d_uploads <- sf::st_buffer(d_merge, # was "ESRI:102005" but want 4269
+                                   dist = units::set_units(input$bt_rad_buff, "mi")) 
+        
+        leaflet(d_uploads) %>%  addTiles()  %>%
+          addPolygons(color=circle_color) 
+      }else{
+        leaflet(d_merge) %>%  addTiles()  %>%
+          addPolygons(color=circle_color) 
+      }
+      
+    }else{
     ## similar to previous map but remove controls
     ## and only add circles, not circleMarkers
+    
+    popup_labels <- c(data_processed()$longnames, 'State Name')
+    popup_labels[popup_labels == ""] <- EJAMejscreenapi::map_headernames$names_friendly[match(names(data_processed()$results_bysite)[popup_labels == ""], 
+                                                                                              EJAMejscreenapi::map_headernames$newnames_ejscreenapi)]
     
     ## switch this to data analyzed in report, not what was uploaded
     ## in case there are invalid
@@ -1290,9 +1309,13 @@ app_server <- function(input, output, session) {
         color = circle_color, fillColor = circle_color, 
         fill = TRUE, weight = 4,
         group = 'circles',
-        popup = popup_from_any(data_processed()$results_bysite),
+        popup = popup_from_any(data_processed()$results_bysite %>% 
+                                 dplyr::mutate(dplyr::across(dplyr::where(is.numeric), \(x) round(x, digits=3))), 
+                               labels = popup_labels),
         popupOptions = popupOptions(maxHeight = 200)
       )
+    }
+    
   })
   
   ## output: summary report map  
@@ -1319,13 +1342,25 @@ app_server <- function(input, output, session) {
     req(data_uploaded())
     ## This statement needed to ensure map stops if too many points uploaded
     req(isTruthy(orig_leaf_map()))
+    
+    #clear shapes from map so buffers don't show twice
+    
+    leafletProxy(mapId = 'an_leaf_map', session) %>% clearShapes()
   
     if(current_upload_method() == "SHP"){
+      if(input$bt_rad_buff > 0){
+        
+        d_uploads <- sf::st_buffer(data_uploaded(), # was "ESRI:102005" but want 4269
+                                   dist = units::set_units(input$bt_rad_buff, "mi")) 
+      
+        leafletProxy(mapId = 'an_leaf_map', session) %>%
+          addPolygons(data=d_uploads, color="red") 
+      }
       #d_uploadb <- data_uploaded()[['buffer']]  %>% st_zm() %>% as('Spatial') 
       d_uploads <- data_uploaded() %>% #[['shape']]  
           st_zm() %>% as('Spatial') 
       
-      leafletProxy(mapId = 'an_leaf_map', session) %>% 
+      leafletProxy(mapId = 'an_leaf_map', session) %>%
        # addPolygons(data=d_uploadb, color="red") %>% 
         addPolygons(data=d_uploads)
       #leafletProxy(mapId = 'an_leaf_map', session,data=d_uploads) %>% addPolygons()
@@ -1455,10 +1490,14 @@ app_server <- function(input, output, session) {
   
   # #############################################################################  # 
   # ## *Header info on summary report ####
-  output$view1_total_pop <- renderUI({
-
+  
+  ## create reactive for summary header
+  summary_title <- reactiveVal(NULL)
+  
+  ## update summary header only when 'Start Analysis' button is clicked
+  observeEvent(input$bt_get_results,{
+    
     req(data_processed())
-
     ## paste header information together
     title_text <- paste0('<div style="font-weight: bold; font-size: 11pt; text-align: center;">',
                          input$analysis_title, '<br>',
@@ -1467,10 +1506,17 @@ app_server <- function(input, output, session) {
                          input$bt_rad_buff, ' miles of any of the ',
                          prettyNum( NROW(data_processed()$results_bysite), big.mark = ","), ' sites analyzed<br>',
                          #    "in the xxx source category or sector<br>",
-                         'Estimated total population: ', prettyNum( total_pop(), big.mark = ","), '</div>'
+                         'Population: ', prettyNum( total_pop(), big.mark = ","), '</div>'
     )
+    
+    ## update reactive variable
+    summary_title(title_text)
+  })
+  
+  output$view1_total_pop <- renderUI({
+
     ## return formatted HTML text
-    HTML(title_text)
+    HTML(summary_title())
   })
   
   ## * Total population count ####
@@ -1624,8 +1670,8 @@ app_server <- function(input, output, session) {
         ggplot2::geom_bar(stat='identity') +
         ggplot2::scale_fill_identity() +
         ggplot2::theme_bw() +
-        ggplot2::labs(x = 'Indicator', y = 'Ratio vs. US Average',
-                      title = "Demographic Index around the Selected Sites compared to all people's blockgroups in the US") +
+        ggplot2::labs(x = NULL, y = 'Ratio vs. US Average',
+                      title = "Demographics at the Analyzed Locations Compared to US Overall") +
         #scale_x_discrete(labels = scales::label_wrap(7)) +
         #scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
         #scale_x_discrete(guide = guide_axis(n.dodge = 2)) +
@@ -2136,7 +2182,7 @@ app_server <- function(input, output, session) {
     mybarvars.stat <- 'avg' #"med"
     
     ## defaulting to average only in this version of EJAM
-    mybarvars.sumstat <- c('Average site', 'Average person')
+    mybarvars.sumstat <- c('Average site', 'Average person at these sites')
     
     ## if adding median ('med') back in future, can use this
     #mybarvars.stat <- input$summ_bar_stat
@@ -2148,6 +2194,8 @@ app_server <- function(input, output, session) {
     ## filter to necessary parts of batch.summarize output
     barplot_data <- data_summarized()$rows %>% 
       tibble::rownames_to_column(var = 'Summary') %>% 
+      dplyr::mutate(Summary = gsub('Average person', 
+                                    'Average person at these sites',Summary)) %>% 
       dplyr::filter(Summary %in% mybarvars.sumstat)
     
     ## set ggplot theme elements for all versions of barplot
@@ -2197,7 +2245,7 @@ app_server <- function(input, output, session) {
       
       ## merge with friendly names and plot
       barplot_input %>% 
-        left_join( data.frame(indicator = mybarvars, indicator_label = mybarvars.friendly)) %>% 
+        dplyr::left_join( data.frame(indicator = mybarvars, indicator_label = mybarvars.friendly)) %>% 
         ggplot() +
         geom_bar(aes(x = indicator_label, y = value, fill = Summary), stat='identity', position='dodge') +
         #viridis::scale_fill_viridis(discrete = TRUE, alpha = 0.6) +
@@ -2225,7 +2273,7 @@ app_server <- function(input, output, session) {
         barplot_usa_avg <-  dplyr::bind_rows(
           EJAM::usastats %>% 
             dplyr::filter(REGION == 'USA', PCTILE == 'mean') %>% 
-            dplyr::mutate(Summary = 'Average person') %>%
+            dplyr::mutate(Summary = 'Average person at these sites') %>%
             dplyr::select(Summary, dplyr::all_of(mybarvars)) %>% 
             tidyr::pivot_longer(-Summary, names_to = 'indicator', values_to = 'usa_value'),
           EJAM::usastats %>% 
@@ -2252,7 +2300,7 @@ app_server <- function(input, output, session) {
         barplot_usa_med <-  dplyr::bind_rows(
           EJAM::usastats %>% 
             dplyr::filter(REGION == 'USA', PCTILE == 50) %>% 
-            dplyr:: mutate(Summary = 'Median person') %>%
+            dplyr::mutate(Summary = 'Median person') %>%
             dplyr::select(Summary, dplyr::all_of(mybarvars)) %>% 
             tidyr::pivot_longer(-Summary, names_to = 'indicator', values_to = 'usa_value'),
           EJAM::usastats %>% 

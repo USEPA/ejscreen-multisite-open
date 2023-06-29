@@ -91,11 +91,11 @@ app_ui  <- function(request) {
                          conditionalPanel(
                            condition = 'input.ss_choose_method == "dropdown"',
                            radioButtons(inputId = 'ss_choose_method_drop', 
-                                        label = 'How would you like to enter the codes?',
-                                        choiceNames = c('Select by Industry (NAICS) Codes',
-                                                        'Select by Industry (SIC) Codes',
-                                                        'Select by EPA Program',
-                                                        'Select by MACT subpart(s)'),
+                                        label = 'How would you like to select catgories?',
+                                        choiceNames = c('by Industry (NAICS) Code',
+                                                        'by Industry (SIC) Code',
+                                                        'by EPA Program',
+                                                        'by MACT subpart'),
                                         choiceValues = c('NAICS','SIC','EPA_PROGRAM','MACT'))
                          ),
                          
@@ -330,7 +330,7 @@ app_ui  <- function(request) {
                                                       label = "",#htmltools::h5('Within what distance of a site?'),
                                                       #label = htmltools::h5("Radius of circular buffer in miles"),
                                                       value = 1.0, step = 0.25,
-                                                      min = 0.25, max = 10,
+                                                      min = 0, max = 10,
                                                       post = ' miles'
                                    )#,  # xxx
                             ),
