@@ -625,6 +625,12 @@ app_server <- function(input, output, session) {
   # ______ VIEW UPLOADED / SELECTED POINTS ####
   # ~ ####
   
+  ## HTML for alert for invalid sites
+  invalid_alert <- reactiveVal(NULL)
+  
+  output$invalid_sites_alert2 <- renderUI({
+    invalid_alert()
+  })
   
   ## How many valid points? warn if no valid lat/lon ####
   output$an_map_text <- renderUI({
@@ -639,7 +645,7 @@ app_server <- function(input, output, session) {
       #num_na_pt <- 0
       #num_notna_pt <- nrow(data_uploaded()[['points']])
       HTML(paste0(
-        "Total shape(s) uploaded: <strong>", prettyNum(num_na + num_notna, big.mark=",")#,"</strong><br>"#,
+        "<span style='border: 1px solid #005ea2; padding: 10px;'>Total shape(s) uploaded: <strong>", prettyNum(num_na + num_notna, big.mark=","),"</strong></span>"#,
         #"Valid shape(s) uploaded: <strong>", prettyNum(num_notna, big.mark=","),"</strong>"#,
         #"Total related blockpoints: <strong>", prettyNum(num_na_pt + num_notna_pt, big.mark=","),"</strong><br>")
       ))
@@ -649,7 +655,7 @@ app_server <- function(input, output, session) {
       num_bpts <- nrow(data_uploaded())
       
       HTML(paste0(
-        "Total location(s) uploaded: <strong>", prettyNum(num_locs, big.mark=",")#,"</strong><br>",
+        "<span style='border: 1px solid #005ea2; padding: 10px;'>Total location(s) uploaded: <strong>", prettyNum(num_locs, big.mark=","),"</strong></span>"
         #"Types of location(s) uploaded: <strong>", prettyNum(num_notna, big.mark=","),"</strong>",
         #"Total related blockpoints: <strong>", prettyNum(num_bpts, big.mark=","),"</strong><br>")
       ))
@@ -664,19 +670,36 @@ app_server <- function(input, output, session) {
       }
       ## if invalid data found, send modal to screen
       if(num_na > 0){
-        shinyBS::closeAlert(session, alertId = 'alert1')
-        shinyBS::createAlert(session, anchorId = "invalid_sites_alert", alertId = "alert1", 
-                             title = "Warning", style = 'danger',
-                             content = paste0('There are ', num_na, ' invalid locations in your dataset.'),
-                             dismiss = TRUE, 
-                             append = FALSE)
+        #shinyBS::closeAlert(session, alertId = 'alert1')
+        # shinyBS::createAlert(session, anchorId = "invalid_sites_alert", alertId = "alert1", 
+        #                      title = "Warning", style = 'danger',
+        #                      content = paste0('There are ', num_na, ' invalid locations in your dataset.'),
+        #                      dismiss = TRUE, 
+        #                      append = FALSE)
+        invalid_alert(
+          HTML(paste0(
+            '<section
+  class="usa-site-alert usa-site-alert--emergency usa-site-alert--slim"
+  aria-label="Site alert,,,,,,"
+>
+  <div class="usa-alert">
+    <div class="usa-alert__body">
+      <p class="usa-alert__text">
+        <strong>', 'Warning!','</strong>', 'There are ', num_na, ' invalid sites in your dataset.',
+      '</p>
+    </div>
+  </div>
+</section>'
+          ))
+        )
         #showModal(modalDialog(title = 'Invalid data found', 'FYI, some of your data was not valid.', size = 's'))
       } else {
+        invalid_alert(NULL)
         shinyBS::closeAlert(session, alertId = 'alert1')
       }
       
       HTML(paste0(
-                  "Total location(s) uploaded: <strong>", prettyNum(num_na + num_notna, big.mark=",")#,"</strong><br>",
+                  "<span style='border: 1px solid #005ea2; padding: 10px;'>Total location(s) uploaded: <strong>", prettyNum(num_na + num_notna, big.mark=","),"</strong></span>"
                   #"Valid site(s) uploaded: <strong>", prettyNum(num_notna, big.mark=","),"</strong>")
       )
            )
@@ -1218,7 +1241,7 @@ app_server <- function(input, output, session) {
         radius = 1 * meters_per_mile,
         color = circle_color, fillColor = circle_color, 
         fill = TRUE, weight = 4,
-        group = 'circles',
+        #group = 'circles',
         popup = popup_from_any(data_processed()$results_bysite %>% 
                                  dplyr::mutate(dplyr::across(dplyr::where(is.numeric), \(x) round(x, digits=3))), 
                                labels = popup_labels),
@@ -1565,7 +1588,7 @@ app_server <- function(input, output, session) {
         #scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
         #scale_x_discrete(guide = guide_axis(n.dodge = 2)) +
         ggplot2::scale_y_continuous(limits = c(0, NA), expand = ggplot2::expansion(mult = c(0, 0.05), add = c(0, 0))) +
-        ggplot2::theme(plot.margin=ggplot2::unit(c(0,50,0,0), "points"), 
+        ggplot2::theme(plot.margin=ggplot2::unit(c(0,100,0,0), "points"), 
                        plot.title = ggplot2::element_text(size = 14, hjust = 0.5),
                        axis.text.x = ggplot2::element_text(size = 10 , angle = -30, hjust = 0, vjust = 1)) + # # try to do that via ggplot...
       NULL
@@ -1834,7 +1857,7 @@ app_server <- function(input, output, session) {
     cols_to_select <- c('siteid',  'pop', 'EJScreen Report', 'EJScreen Map', 'ACS Report', 'ECHO report',
                         EJAMbatch.summarizer::names_all_batch) #should use more of EJAM::names_all than are in EJAMbatch.summarizer::names_all_batch
     friendly_names <- c('Site ID', 'Est. Population',  'EJScreen Report', 'EJScreen Map', 'ACS Report', 'ECHO report',
-                        EJAMbatch.summarizer::names_all_batch_friendly, 
+                        gsub(' \\(.*', '',EJAMbatch.summarizer::names_all_batch_friendly), 
                         '# of indicators above 95% threshold', 'State', 'EPA Region')
     # --------------------------------------------------- #
     
@@ -1880,7 +1903,7 @@ app_server <- function(input, output, session) {
     dt_final <- dt_final %>% 
       dplyr::relocate(c(State, 'EPA Region', '# of indicators above 95% threshold'), .before = 2)
     
-    n_cols_freeze <- 5
+    n_cols_freeze <- 1
     
     ## format data table
     # see also  EJAM/inst/notes_MISC/DT_datatable_tips_options.R
@@ -1902,7 +1925,7 @@ app_server <- function(input, output, session) {
                     ## allow scroll left-to-right
                     scrollX = TRUE, 
                     ## set scroll height up and down
-                    scrollY = '2000px'
+                    scrollY = '1000px'
                   ),
                   ## set overall table height
                   height = 1500, 
