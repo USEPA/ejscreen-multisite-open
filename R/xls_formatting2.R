@@ -62,13 +62,19 @@ xls_formatting2 <- function(overall, eachsite, longnames,
  
   #filter out sitecount from longnames - TEMP
   longnames <- longnames[filter_out_temp_bysite]
-  
+ 
+  ## fix NA longname added from doaggregate updates
+  longnames[is.na(longnames)] <- 'statename'
+   
   ## replace missing column headers with friendly names 
   longnames[longnames == ""] <- EJAMejscreenapi::map_headernames$names_friendly[match(names(overall)[longnames == ""], 
                                                                                       EJAMejscreenapi::map_headernames$newnames_ejscreenapi)]
+  ## add patch to switch 'statename' and 'Radius (miles)' order
+  longnames[length(longnames)] <- 'Radius (Miles)'
+  longnames[length(longnames) - 1] <- 'State Name'
   
   ## remove URL columns for eachsite table
-  longnames_no_url <- longnames[!(longnames %in% c('EJScreen Report','EJScreen Map','ACS Report','ECHO report'))] 
+  longnames_no_url <- longnames[!(longnames %in% c('EJScreen Report','EJScreen Map','ACS Report','ECHO report', 'State Name'))] 
   
   names(overall) <- ifelse(!is.na(longnames_no_url), longnames_no_url, names(overall))
   names(eachsite)  <- ifelse(!is.na(longnames), longnames, names(eachsite))
