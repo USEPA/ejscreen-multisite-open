@@ -318,7 +318,7 @@ app_ui  <- function(request) {
                                
                                tags$ul(
                                  tags$li('Required files: .shp, .shx, .dbf, .prj'),
-                                 tags$li('Required columns: OBJECTID, geometry')
+                                 tags$li('Required fields: geometry')
                                ),
                                
                                actionButton('shp_help', label='More Info', class='usa-button usa-button--outline')
@@ -346,7 +346,10 @@ app_ui  <- function(request) {
                          ## input: return to results tab if analysis has been run
                          shinyjs::hidden(
                            actionButton(inputId = 'return_to_results',
-                                        label = div('Return to Previous Results', HTML('&nbsp;'), icon('play')),
+                                        label = div(icon('play', 
+                                                         style='transform: rotate(180deg);'),
+                                                    HTML('&nbsp;'), 
+                                                    'Return to Previous Results'),
                                         class = 'usa-button')
                          )
                   ),
@@ -449,7 +452,7 @@ app_ui  <- function(request) {
               br(),br(),
               
               h4('Overall Results'),
-              helpText('Placeholder text to explain the results pages'),
+              helpText('The results of your analysis can be viewed in 3 forms: a summary report, interactive details, or a full written report.'),
               
               #tags$div( class = 'results_tabs_theme',
               tabsetPanel(id = 'results_tabs',
@@ -483,7 +486,7 @@ app_ui  <- function(request) {
                                     ),
                                     
                                     map = shinycssloaders::withSpinner(
-                                      leaflet::leafletOutput('quick_view_map', width = '1170px', height = '827px')
+                                      leaflet::leafletOutput('quick_view_map', width = '1170px', height = '627px')
                                     ), 
                                     env_table = shinycssloaders::withSpinner(
                                       gt::gt_output(outputId = 'view1_envt_table')
@@ -549,7 +552,7 @@ tabPanel(title = 'Details',
            ),
            tabPanel('Data Type Indicators', 
                     h4('About this Chart'),
-                    helpText('info about this chart'),
+                    helpText('These charts compare indicator values from your analysis across groups, either on a raw scale or as compared to US averages.'),
                     
             wellPanel(
              style='width: 100%;',
@@ -605,7 +608,7 @@ tabPanel(title = 'Details',
                               
                               #h3(id = 'histogram',"Explore Indicator Distributions"),
                               h4('About this Chart'),
-                              helpText('More info'),
+                              helpText('This chart shows the spread of indicator values across all locations in your analysis.'),
                               
                               wellPanel(
                                 style='width: 100%;',

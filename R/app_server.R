@@ -684,8 +684,8 @@ app_server <- function(input, output, session) {
   
   output$invalid_sites_alert2 <- renderUI({
     req(data_uploaded())
-    
-    if(!is.null(invalid_alert()) & invalid_alert() > 0){
+    req(invalid_alert())
+    if(invalid_alert() > 0){
       HTML(paste0(
         '<section
   class="usa-site-alert usa-site-alert--emergency usa-site-alert--slim"
@@ -694,13 +694,13 @@ app_server <- function(input, output, session) {
   <div class="usa-alert">
     <div class="usa-alert__body">
       <p class="usa-alert__text">
-        <strong>', 'Warning!','</strong>', 'There are ', invalid_alert(), ' invalid sites in your dataset.',
+        <strong>', 'Warning! ','</strong>', 'There are ', invalid_alert(), ' invalid location(s) in your dataset.',
         '</p>
     </div>
   </div>
 </section>'))
     } else {
-      NULL
+      HTML(NULL)
     }
    
   })
@@ -1330,7 +1330,7 @@ app_server <- function(input, output, session) {
   # }, {
   observe({
     
-    req(data_uploaded())
+   # req(data_uploaded())
     ## This statement needed to ensure map stops if too many points uploaded
     req(isTruthy(orig_leaf_map()))
     
@@ -1636,11 +1636,15 @@ app_server <- function(input, output, session) {
       data.frame(name = names(ratio.to.us.d.overall),
                  value = ratio.to.us.d.overall,
                  color = mycolors) %>%
+        ## drop any indicators with Inf or NaNs
+        dplyr::filter(is.finite(value)) %>% 
         ggplot2::ggplot(ggplot2::aes(x = name, y = value, fill = color)) +
         ggplot2::geom_bar(stat='identity') +
+        ## way to add legend in future - needs tweaking
+        #ggplot2::scale_fill_identity(guide='legend', labels = c('gray'='0-1','yellow'='1-2', 'orange'='2-3', 'red'='> 3'),) +
         ggplot2::scale_fill_identity() +
         ggplot2::theme_bw() +
-        ggplot2::labs(x = NULL, y = 'Ratio vs. US Average',
+        ggplot2::labs(x = NULL, y = 'Ratio vs. US Average', #fill = 'Legend',
                       title = "Demographics at the Analyzed Locations Compared to US Overall") +
         #scale_x_discrete(labels = scales::label_wrap(7)) +
         #scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
@@ -1795,7 +1799,7 @@ app_server <- function(input, output, session) {
         # viridis::scale_fill_viridis(discrete = TRUE, alpha = 0.6) +
         
         ggplot2::theme_bw() +
-        theme(
+        ggplot2::theme(
           ## set font size of text
           text = ggplot2::element_text(size = 14),
           #axis.text  = ggplot2::element_text(size = 16),
@@ -1983,7 +1987,7 @@ app_server <- function(input, output, session) {
                     ## allow scroll left-to-right
                     scrollX = TRUE, 
                     ## set scroll height up and down
-                    scrollY = '1000px'
+                    scrollY = '500px'
                   ),
                   ## set overall table height
                   height = 1500, 
@@ -2191,7 +2195,7 @@ app_server <- function(input, output, session) {
     
     ## set ggplot theme elements for all versions of barplot
     ggplot_theme_bar <- ggplot2::theme_bw() +
-      theme(legend.position = 'bottom',
+      ggplot2::theme(legend.position = 'bottom',
             axis.text = ggplot2::element_text(size = 16),
             axis.title = ggplot2::element_text(size = 16),
             legend.title = ggplot2::element_text(size = 16),
@@ -2261,7 +2265,7 @@ app_server <- function(input, output, session) {
       }
         
         p_out +
-          labs(x = NULL, y = 'Indicator Value') +
+          labs(x = NULL, y = 'Indicator Value', fill = 'Legend') +
           ggplot_theme_bar
       
       ## future: add % scaling and formatting for demographic indicators
@@ -2349,7 +2353,7 @@ app_server <- function(input, output, session) {
         ## set y axis limits to (0, max value) but allow 5% higher on upper end
         scale_y_continuous(limits = c(0, NA), expand = expansion(mult = c(0, 0.05))) +
         ## set axis labels
-        labs(x = '', y = 'Indicator Ratio') +
+        labs(x = '', y = 'Indicator Ratio', fill = 'Legend') +
         ## break plots into rows of 4 
         facet_wrap(~indicator_label, 
                    #ncol = 4, 
@@ -2394,8 +2398,8 @@ app_server <- function(input, output, session) {
           ## set y axis limits to (0, max value) but allow 5% higher on upper end
           scale_y_continuous(limits = c(0, NA), expand = expansion(mult = c(0, 0.05))) +
           labs(
-            x = '',
-            y = '',
+            x = 'Percentile',
+            y = 'Number of sites',
             title = 'Histogram of Raw Indicator Values Across Sites'
           ) +
           theme_bw() +
@@ -2411,8 +2415,8 @@ app_server <- function(input, output, session) {
           geom_histogram(aes(x = indicator), fill = '#005ea2',
                          bins = input$summ_hist_bins) +
           labs(
-            x='',
-            y = '',
+            x='Percentile',
+            y = 'Number of Sites',
             title = 'Histogram of US Percentile Indicator Values Across Sites'
           ) +
           theme_bw() +
