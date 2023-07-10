@@ -33,11 +33,10 @@
 # rsconnect
 # )
 
-
 rm(list=ls())
 
 ### make any changes to pkgs, then...
- # document() # in devtools pkg, 
+# document() # in devtools pkg, 
 #  push changes to github, then...
 
 if (is.loaded("EJAM")) {  detach("package:EJAM", unload=TRUE)}
@@ -50,12 +49,14 @@ if (is.loaded("EJAMejscreenapi")) {  detach("package:EJAMejscreenapi", unload=TR
 
 ################################################# #
 
- 
- # writeManifest()  # not sure  
+# rsconnect : : writeManifest()
+# writeManifest()  # not sure needed
 
 ### make sure PAT is set up right. 
+# credentials : : set_github_pat()
 set_github_pat() # in credentials pkg
 
+# devtools : : install_github()
 install_github('USEPA/EJAMejscreenapi',      force=TRUE, upgrade="never") # works fine. in devtools pkg.
 
 # Using github PAT from envvar GITHUB_PAT
@@ -71,7 +72,7 @@ install_github('USEPA/EJAMejscreenapi',      force=TRUE, upgrade="never") # work
 # ─  checking for empty or unneeded directories
 # ─  building 'EJAMejscreenapi_2.1.2.tar.gz'   * * ************ * * 
 # ...etc
- 
+
 
 install_github('USEPA/EJAMbatch.summarizer', force=TRUE, upgrade="never") # got these warnings/msgs:
 
