@@ -1650,7 +1650,10 @@ app_server <- function(input, output, session) {
       
       # https://r-graph-gallery.com/294-basic-ridgeline-plot.html#color
       # https://r-graph-gallery.com/294-basic-ridgeline-plot.html#shape
-    
+      # library(ggplot2)
+      library(ggridges)
+      library(viridis)
+      library(hrbrthemes)
       
       ## ratios by site  (demog each site / demog avg in US)
       ratio.to.us.d.bysite <- data_processed()$results_bysite[ ,  c(
@@ -2410,12 +2413,6 @@ app_server <- function(input, output, session) {
                      #input$radius_units, " of")
     )
   })
-  
-  #############################################################################  # 
-  # ~ ####
-  # ______ Use EJScreen API to get batch of results _________ ####
-  # ~ ####
-  mod_ejscreenapi_server("ejscreenapi_1")
   
   
   #############################################################################  # 
