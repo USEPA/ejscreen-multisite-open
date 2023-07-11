@@ -17,7 +17,7 @@ format_gt_table <- function(df, type, my_cell_color =  '#dce6f0', my_border_colo
       ## format column labels
       gt::cols_label(
 
-        var_names = gt::md('**Selected Variables**'),
+        var_names = gt::md('**Socioeconomic Indicators**'),
         value     = gt::md('**Value**'),
         
         state_avg    = gt::md('**Average<br> in State**'),
@@ -31,13 +31,13 @@ format_gt_table <- function(df, type, my_cell_color =  '#dce6f0', my_border_colo
         
       )  %>% 
        ## add subgroup header
-       gt::tab_row_group(label = gt::md('**Race/ethnic subgroups**'), 
-                         rows = subgroup_rows  # (2+nrow(df) - length(names_d_subgroups)):(nrow(df)) 
-       ) %>% 
+       # gt::tab_row_group(label = gt::md('**Race/ethnic subgroups**'), 
+       #                   rows = subgroup_rows  # (2+nrow(df) - length(names_d_subgroups)):(nrow(df)) 
+       # ) %>% 
        ## add all/main group header 
-       gt::tab_row_group(label = gt::md('**Socioeconomic Indicators**'), 
-                         rows = 1:nrow(df)   # 1:(1+nrow(df) - length(names_d_subgroups))  
-       ) %>%   
+       # gt::tab_row_group(label = gt::md('**Socioeconomic Indicators**'), 
+       #                   rows = 1:nrow(df)   # 1:(1+nrow(df) - length(names_d_subgroups))  
+       #) %>%   
        
       ## format decimal places for all indicators
       gt::fmt_percent(columns = c(2,3,5), rows = dplyr::everything(),  decimals = 0) %>%
@@ -48,7 +48,7 @@ format_gt_table <- function(df, type, my_cell_color =  '#dce6f0', my_border_colo
       
       ## add footnote
       gt::tab_footnote(
-        footnote = "Avg. in State is the average over all these residents of their State's overall (avg.) value. \nPercentile in State is the average person's State percentile.",
+        footnote = "Avg. in state means the average indicator value, among all the residents at these sites, using the statewide value in each resident's state. Percentile in state means the same, but using the site-specific value (expressed as a percentile) where each resident lives.", 
         locations = gt::cells_column_labels(
           columns = c(state_avg, state_pctile)
         )
@@ -64,7 +64,7 @@ format_gt_table <- function(df, type, my_cell_color =  '#dce6f0', my_border_colo
       ## format column labels
       gt::cols_label(
         
-        var_names = gt::md('**Selected Variables**'),
+        var_names = gt::md('**Pollution and Sources**'),
         value     = gt::md('**Value**'),
         
         state_avg    = gt::md('**Average<br> in State**'),
@@ -106,11 +106,11 @@ format_gt_table <- function(df, type, my_cell_color =  '#dce6f0', my_border_colo
       gt::fmt_number(columns = c('usa_ratio','state_ratio'), rows = dplyr::everything(),  decimals = 3) %>%
       gt::sub_missing(missing_text = '--') %>% 
       ## add group header
-      gt::tab_row_group(label = gt::md('**Pollution and Sources**'), rows = 1:(nrow(df)) ) %>% 
-    
+      # gt::tab_row_group(label = gt::md('**Pollution and Sources**'), rows = 1:(nrow(df)) ) %>% 
+      # 
       ## add footnote
       gt::tab_footnote(
-        footnote = "Avg. in State is the average over all these residents of their State's overall (avg.) value. \nPercentile in State is the average person's State percentile.",
+        footnote = "Avg. in state means the average indicator value, among all the residents at these sites, using the statewide value in each resident's state. Percentile in state means the same, but using the site-specific value (expressed as a percentile) where each resident lives.", 
         locations = gt::cells_column_labels(
           columns = c(state_avg, state_pctile)
         )

@@ -114,21 +114,13 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
  
   blocksinsidef <- unique(blocksinside)
   
- 
-  pts <-  data.table(sf::st_coordinates(blocksinsidef),blocksinsidef$OBJECTID_1,blocksinsidef$blockid,distance=0) 
+  #standardize input shapes for doaggregate
   
+  pts <-  data.table(sf::st_coordinates(blocksinsidef),blocksinsidef$siteid,blocksinsidef$blockid,distance=0) 
+ 
   setnames(pts, c("lon","lat","siteid","blockid","distance"))
   
-  #print(list(pts,polys))
-  
-  # if (!("sf" %in% class(blocksnearby))) {
-  #   blocksnearby <-  get_shapefile_from_sitepoints(blocksinside)
-  # }
-  # 
-  # blocksinside <- sf::st_join(blocksnearby, sf::st_transform(polys,4269), join=sf::st_intersects )
-  # 
-  # blocksinside <- blocksinside[!is.na(blocksinside$siteid),]
-  # 
+
   return(list('pts'=pts,'polys'=polys))
   
 }

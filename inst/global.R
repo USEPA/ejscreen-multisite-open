@@ -50,6 +50,9 @@ max_points_can_map<- 15000
 ## use larger cutoff for polygons (FIPS/Shapefiles)
 max_points_can_map_poly <- 1e10
 
+## set points cutoff for using leaflet markerClusters
+marker_cluster_cutoff <- 1000
+
 ## global variable for mapping (EJAMejscreenapi had this as data loaded by pkg?)
 meters_per_mile <- 1609.344
 
@@ -283,6 +286,79 @@ frs_help_msg <- HTML('  <div class="row">
     </div>
   </div>')
 
+
+epa_program_help_msg <- '
+<div class="row">
+  <div class="col-sm-12">
+  <div class="well">
+  <div id="selectFrom1" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline">
+  <label class="control-label" for="selectFrom1">
+  <p>You may upload a list of EPA Programs and Program IDs.</p> 
+  <p>The file should contain at least these two columns: program and pgm_sys_id. 
+  There can be other columns like an ID column that should be unique (no duplicates), 
+  and each record should be separated by a carriage return.</p>
+  <p>It also will work with additional optional columns such as Facility Registry ID (REGISTRY_ID), latitude (lat), and longitude (lon). </p> 
+  <p>The file could be formatted as follows, for example: </p> 
+  </label>
+  <br>
+  program,	pgm_sys_id<br>
+NC-FITS,	28122<br>
+AIR,	NY0000004432800019<br>
+NPDES,	GAR38F1E2<br>
+TRIS,	7495WCRHMR59SMC<br>
+MN-TEMPO,	17295<br>
+HWTS-DATAMART,	CAR000018374<br>
+IN-FRS,	330015781585<br>
+TX-TCEQ ACR,	RN104404751<br>
+NJ-NJEMS,	353065<br>
+AIR,	IL000031012ACJ<br>
+  </div>
+  </div>
+  </div>
+  </div>'
+
+fips_help_msg <- '
+<div class="row">
+  <div class="col-sm-12">
+  <div class="well">
+  <div id="selectFrom1" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline">
+  <label class="control-label" for="selectFrom1">
+  <p>You may upload a list of FIPS codes specified at the State (2-digit), County (5-digit), Tract (11-digit), or blockgroup (12 digit), or even block (15-digit fips) .</p> 
+  <p>The file should contain at least one column, FIPS, with the fips codes. It will also work with the following aliases: fips, fips_code, fipscode, Fips, statefips, countyfips, ST_FIPS, st_fips
+  There can be other columns like an ID column that should be unique (no duplicates), 
+  and each record should be separated by a carriage return.</p>
+  <p>The file could be formatted as follows, for example: </p> 
+  </label>
+  <br>
+ FIPS<br>
+36001014002<br>
+26163594300<br>
+36029008600<br>
+36061006100<br>
+15003005300<br>
+17031081403<br>
+06037190303<br>
+29031881301<br>
+45091061205<br>
+  </div>
+  </div>
+  </div>
+  </div>'
+
+shp_help_msg <- '
+<div class="row">
+  <div class="col-sm-12">
+  <div class="well">
+  <div id="selectFrom1" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline">
+  <label class="control-label" for="selectFrom1">
+  <p>You may upload a set of shapefiles with polgyons.</p> 
+  <p>The upload should contain at least these four related file extensions: .shp, .shx, .dbf, .prj 
+  There must be an ID column (OBJECTID_1) that should be unique (no duplicates), 
+  and each record should be separated by a carriage return.</p>
+  </div>
+  </div>
+  </div>
+  </div>'
 
 #################################################################################################################### #
 # ~ ####

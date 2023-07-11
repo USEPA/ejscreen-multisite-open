@@ -1,4 +1,5 @@
 ## example unit tests for EJAM::latlon_infer
+# Author: Marschall Furman
 ## these examples are designed to produce warnings - for now, they only check for any
 ## warning but can be made more specific to make sure it the correct warning is reported
 
@@ -46,3 +47,4 @@ test_that('dupes left as dupes',{
   expect_warning(val <- latlon_infer(c('lat', 'lat', 'Lon')))
   expect_equal(val, c('lat','lat','lon'))
 }) 
+

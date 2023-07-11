@@ -38,9 +38,8 @@ EJAM Report (EJScreen v2.1)
 :::
 ::: {#headerDiv style="font-weight: bold; font-size: 11pt; text-align: center;"}
 `r params$analysis_title`\
-Residents within `r params$distance` of any of the `r params$sitecount` sites analyzed\
-\
-Total Population: `r params$total_pop`
+Residents within `r params$distance` of any of the `r params$sitecount` sites analyzed    
+Population: `r params$total_pop`
 :::
 
 ```{r, echo=FALSE}
@@ -72,7 +71,7 @@ params$demog_table
 ```
 
 
-```{r summary_plot, out.width='100%', fig.align='center'}
+```{r summary_plot, out.width='90%', fig.align='center'}
 
  params$summary_plot #+
 #   
