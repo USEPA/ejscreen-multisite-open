@@ -1003,6 +1003,9 @@ tabPanel(title = 'Details',
                # - hidden by default but can be activated by a button (see About EJAM tab)
                tabPanel(title = 'Advanced Settings',
                         
+                        ## Get ejscreen reports via API ####
+                        mod_ejscreenapi_ui("ejscreenapi_1"),
+                        
                         ## input: Type of plot for 1page report
                         shiny::radioButtons(inputId = "plotkind_1pager", 
                                             label = "Type of plot for 1page report",
