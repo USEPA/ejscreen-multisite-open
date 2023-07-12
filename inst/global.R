@@ -173,25 +173,25 @@ report_outline <- "
 # HELP TEXT ####
 
 ### info text for "About EJAM" tab ####
-
-intro_text <- tagList(
+ intro_text <- tagList(
   tags$p("EPA has developed a number of different tools for mapping and analysis of information related to environmental justice (EJ), including EJScreen and EJAM. "),
   tags$p("EJScreen provides a dataset with environmental, demographic, and EJ indicators for each Census block group in the US. \n"),
   tags$p("EJScreen can provide a report summarizing those values for the average resident within some distance (e.g., 1 mile) from a specified point."),
   tags$p("It is often useful to know the nature of the environmental conditions, the demographics, and/or EJ index values near a whole set of the facilities in a particular sector, such as in the context of developing a proposed rule. "),
   tags$p("EJAM allows users to select a set of facilities, defined by NAICs industrial category codes or by uploading a list of locations. EJAM then provides a summary report for all residential locations near the selected facilities."),
-  tags$p("See EJAM user guide or readme document for more about using the app. "),
-  # tags$p("See the R package vignette and documentation for information about using the R functions and data."),
+  tags$p("See in-app info/tips, and the EJAM user guide (forthcoming) for more about using the app."),
+  tags$p("Programmers can see the ", a(href = 'https://github.com/USEPA/EJAM#ejam', "README"), 
+         " document, or the R package ", a(href = 'vignette\EJAM-vignette.html', "Vignette"), " and R package documentation on functions and data."),
   tags$p("Features of this tool include:"),
   tags$ul(
     tags$li("Several methods of selecting a set of facilities for analysis, including industry sector and uploaded of facility locations"),
-    tags$li("User-specified buffer distance;"),
-    tags$li("Very fast analysis of which residents (defined by Census blocks) are nearby, and the distance to each block's internal point.;"),
-    # tags$li("Optional use of the next nearest census block centroid for facilities with no census block centroid within selected buffer distance."),
-    tags$li("At each facility, calculation of demographic, environmental, or other EJ-related statistics;"),
-    tags$li("Overall, for the facilities and residents near any of them as a whole, calculation of the same kinds of statistics, but with no double counting of residents near two or more facilities.;"),
-    tags$li("Interactive views of results in tables, maps, plots, and text;"),
-    tags$li("Downloads of results in tables, maps, plots, and report text;")
+    tags$li("User-specified buffer distance"),
+    tags$li("Very fast analysis of which residents (defined by Census blocks) are nearby, and the distance to each block's internal point"),
+    # tags$li("Optional use of the next nearest census block centroid for facilities with no census block centroid within selected buffer distance"),
+    tags$li("At each facility, calculation of demographic, environmental, or other EJ-related statistics"),
+    tags$li("Overall, for the facilities and residents near any of them as a whole, calculation of the same kinds of statistics, but with no double counting of residents near two or more facilities"),
+    tags$li("Interactive views of results in tables, maps, plots, and text"),
+    tags$li("Downloads of results in tables, maps, plots, and report text")
   )
 )
 
