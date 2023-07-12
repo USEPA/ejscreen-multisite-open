@@ -344,7 +344,8 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <h2>Quickstart</h2>
 <div id="summary-of-demographics-and-environment-near-100-sites" class="section level3">
 <h3>Summary of Demographics and Environment near 100 Sites</h3>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># In R/RStudio, clone/install EJAM package and related ones from https://github.com/USEPA/EJAM, etc.</span></span>
+<p>In R/RStudio, clone/install EJAM package and related ones from <a href="https://github.com/USEPA/EJAM/#readme" class="uri">https://github.com/USEPA/EJAM/#readme</a>, etc.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(EJAM)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">ejamit</span>(<span class="fu">testpoints_n</span>(<span class="dv">100</span>),<span class="dv">1</span>) <span class="co"># 1 mile radius</span></span>
@@ -429,26 +430,28 @@ app)</strong></h2>
 github</a> (not CRAN) are:</p>
 <ul>
 <li><a href="https://github.com/USEPA/EJAM#readme" title="github.com/USEPA/EJAM">EJAM</a></li>
-<li><a href="https://github.com/USEPA/EJAMblockdata#readme" title="github.com/USEPA/EJAMblockdata#readme">EJAMblockdata</a></li>
 <li><a href="https://github.com/USEPA/EJAMejscreenapi#readme" title="github.com/USEPA/EJAMejscreenapi">EJAMejscreenapi</a></li>
 <li><a href="https://github.com/USEPA/EJAMbatch.summarizer#readme" title="github.com/USEPA/EJAMbatch.summarizer">EJAMbatch.summarizer</a></li>
 </ul>
-<p>Not essential:</p>
-<ul>
-<li><a href="https://github.com/USEPA/EJAMejscreendata#readme" title="github.com/USEPA/EJAMejscreendata">EJAMejscreendata</a></li>
-</ul>
 </div>
-<div id="create-the-index-of-where-blocks-are-to-be-able-to-quickly-find-those-nearby-a-given-site" class="section level3">
-<h3>Create the index of where blocks are, to be able to quickly find
-those nearby a given site</h3>
-<p>During development of this package, at least, this index is built
-when the package is loaded, automatically, by the .onLoad() function in
-the file EJAM/R/aaa_onLoad_create_quad_tree_index.R THIS IS SLOW - It
-takes a few seconds. This (seemingly) must be done for each session? One
-cannot save it as .rda and just load via a pkg since it is like a
-pointer to the index in RAM or something like that.</p>
+<div id="reloading-the-datasets-with-info-about-blocks" class="section level3">
+<h3>Reloading the datasets with info about blocks</h3>
+<p>These datasets should be loaded by the app automatically or may be
+when the package is loaded, depending on how the .onLoad() function is
+set up.</p>
+<p>To manually reload them, see the source code for the .onLoad()
+function.</p>
+</div>
+<div id="recreating-the-index-of-where-blocks-are" class="section level3">
+<h3>Recreating the index of where blocks are</h3>
+<p>This index may be built when the package is loaded, automatically,
+depending on how the .onLoad() function is set up in the file
+EJAM/R/aaa_onLoad_create_quad_tree_index.R</p>
+<p>THIS IS SLOW - It takes a few seconds. This (seemingly) must be done
+for each session. One cannot save it as .rda and just load via a pkg
+since it is like a pointer to the index in memory.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># One could manually rebuild the index (if quaddata were updated, for example),</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">#  like this:</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">#  by looking in the source code of the .onLoad() function, or essentially like this:</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>localtree <span class="ot">&lt;-</span> SearchTrees<span class="sc">::</span><span class="fu">createTree</span>(</span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>   quaddata, <span class="at">treeType =</span> <span class="st">&quot;quad&quot;</span>, <span class="at">dataType =</span> <span class="st">&quot;point&quot;</span></span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
@@ -457,9 +460,10 @@ pointer to the index in RAM or something like that.</p>
 <h3>Specify points (where you want to center the circular buffers)</h3>
 <div id="naics-codes-to-specify-facilities-in-one-industrial-sector" class="section level4">
 <h4>NAICS Codes to Specify Facilities in one Industrial Sector</h4>
-<p>Quick map of EPA-regulated facilities in one industrial category</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mapfast</span>(mysites <span class="ot">&lt;-</span> <span class="fu">frs_from_naics</span>(<span class="st">&quot;smelt&quot;</span>)) <span class="co"># slow the 1st time as it lazyloads frs dataset</span></span></code></pre></div>
-<p>(but note that FRS lacks NAICS for most facilities!)</p>
+<p>Quick map of EPA-regulated facilities in one industrial category,
+which you can click on to see popup windows about sites.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mapfast</span>(mysites <span class="ot">&lt;-</span> <span class="fu">frs_from_naics</span>(<span class="st">&quot;smelt&quot;</span>)) <span class="co"># may be slow the 1st time, if it lazyloads frs dataset</span></span></code></pre></div>
+<p>(but note that this FRS dataset lacks NAICS for most facilities!)</p>
 <p>Table of facilities in an industry, plus links to each facility in
 ECHO and EJScreen</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>industryword <span class="ot">&lt;-</span> <span class="st">&quot;chemical manuf&quot;</span></span>
@@ -476,14 +480,17 @@ ECHO and EJScreen</p>
 <span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>mysites <span class="ot">&lt;-</span> <span class="fu">cbind</span>(<span class="st">`</span><span class="at">ECHO report</span><span class="st">`</span> <span class="ot">=</span> link1, </span>
 <span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>                 <span class="st">`</span><span class="at">EJScreen Report</span><span class="st">`</span> <span class="ot">=</span> link2, <span class="st">`</span><span class="at">EJScreen Map</span><span class="st">`</span> <span class="ot">=</span> link3, <span class="st">`</span><span class="at">ACS Report</span><span class="st">`</span> <span class="ot">=</span> link4,</span>
 <span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>                 mysites)</span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(</span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">datatable</span>(</span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    mysites[<span class="dv">1</span><span class="sc">:</span><span class="fu">min</span>(<span class="fu">nrow</span>(mysites), <span class="dv">1500</span>) ], <span class="co"># &gt;2k rows is too much for client-side DataTables</span></span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">escape =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> <span class="fu">paste0</span>(<span class="fu">nrow</span>(mysites), <span class="st">&#39; FACILITIES HAVE NAICS MATCHING QUERY TERM &quot;&#39;</span>, industryword, <span class="st">&#39;&quot;&#39;</span>),</span>
-<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">filter =</span> <span class="st">&quot;top&quot;</span></span>
-<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a> caption <span class="ot">=</span> <span class="fu">paste0</span>(<span class="fu">nrow</span>(mysites), <span class="st">&#39; sites have NAICS matching &quot;&#39;</span>, industryword, <span class="st">&#39;&quot;&#39;</span>)</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">nrow</span>(mysites) <span class="sc">&gt;</span> <span class="dv">1500</span>){ mysites <span class="ot">&lt;-</span> mysites[<span class="dv">1</span><span class="sc">:</span><span class="dv">1500</span>, ]} <span class="co"># &gt;2k rows is too much for client-side DataTables</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a> <span class="fu">cat</span>(caption,<span class="st">&#39;</span><span class="sc">\n</span><span class="st">&#39;</span>)</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>  DT<span class="sc">::</span><span class="fu">datatable</span>(</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>    mysites,</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">escape =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> caption,</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">filter =</span> <span class="st">&quot;top&quot;</span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <p>Map of facilities in an industry, plus popups with links to each
 facility in ECHO and EJScreen</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>EJAMejscreenapi<span class="sc">::</span><span class="fu">mapfast</span>(mysites)</span></code></pre></div>
@@ -505,20 +512,20 @@ facility in ECHO and EJScreen</p>
 <span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co"># a OR b,  a AND b,  etc.</span></span>
 <span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>a <span class="ot">=</span> <span class="fu">naics_from_any</span>(<span class="st">&quot;plastics&quot;</span>)</span>
 <span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>b <span class="ot">=</span> <span class="fu">naics_from_any</span>(<span class="st">&quot;rubber&quot;</span>)</span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="fu">fintersect</span>(a,b)[,.(name,code)] <span class="co">#  a AND b</span></span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="fu">funion</span>(a,b)[,.(name,code)]     <span class="co">#  a OR  b</span></span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="fu">naics_subcodes_from_code</span>(<span class="fu">funion</span>(a,b)[,code])[,.(name,code)]   <span class="co">#  plus children</span></span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="fu">naics_from_any</span>(<span class="fu">funion</span>(a,b)[,code], <span class="at">children=</span>T)[,.(name,code)] <span class="co">#  same</span></span></code></pre></div>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(data.table)</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>data.table<span class="sc">::</span><span class="fu">fintersect</span>(a,b)[,.(name,code)] <span class="co">#  a AND b</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>data.table<span class="sc">::</span><span class="fu">funion</span>(a,b)[,.(name,code)]     <span class="co">#  a OR  b</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="fu">naics_subcodes_from_code</span>(<span class="fu">funion</span>(a,b)[,code])[,.(name,code)]   <span class="co">#  plus children</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="fu">naics_from_any</span>(<span class="fu">funion</span>(a,b)[,code], <span class="at">children=</span>T)[,.(name,code)] <span class="co">#  same</span></span></code></pre></div>
 <p>A NAICS code can have many “children” or subcategories under it</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">NROW</span>(<span class="fu">naics_from_any</span>(<span class="st">&quot;chem&quot;</span>))</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co">#[1] 20</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># about 20</span></span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">NROW</span>(<span class="fu">naics_from_any</span>(<span class="st">&quot;chem&quot;</span>, <span class="at">children =</span> T))</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co">#[1] 104</span></span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">NROW</span>(<span class="fu">frs_from_naics</span>(<span class="fu">naics_from_any</span>(<span class="st">&quot;chem&quot;</span>)<span class="sc">$</span>code))</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a><span class="co"># [1] 4907</span></span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a> <span class="fu">NROW</span>(<span class="fu">frs_from_naics</span>(<span class="fu">naics_from_any</span>(<span class="st">&quot;chem&quot;</span>, <span class="at">children =</span> T)<span class="sc">$</span>code))</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="co"># [1] 13543</span></span></code></pre></div>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># &gt;100</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="fu">NROW</span>(<span class="fu">frs_from_naics</span>(<span class="fu">naics_from_any</span>(<span class="st">&quot;chem&quot;</span>)<span class="sc">$</span>code))</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a><span class="co"># a few thousand</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a> <span class="fu">NROW</span>(<span class="fu">frs_from_naics</span>(<span class="fu">naics_from_any</span>(<span class="st">&quot;chem&quot;</span>, <span class="at">children =</span> T)<span class="sc">$</span>code))</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="co"># &gt;10,000</span></span></code></pre></div>
 </div>
 <div id="use-latlon-point-data" class="section level4">
 <h4>Use lat/lon point data</h4>
@@ -547,7 +554,7 @@ something that can be interpreted as that - see latlon_infer()</p>
 <span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1: -156.5141 20.88059      1</span></span>
 <span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2: -122.2602 37.97029      2</span></span>
 <span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3: -122.2134 37.47238      3</span></span></code></pre></div>
-<p>Create random test data points</p>
+<p>Create random test data points in States of LA and TX</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>p1k <span class="ot">&lt;-</span> <span class="fu">testpoints_n</span>(<span class="dv">1000</span>)</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mapfast</span>(p1k)</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -597,7 +604,7 @@ sites2blocks_example.</p></li>
 <span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a> </span>
 <span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a><span class="fu">mapfast</span>(out2<span class="sc">$</span>results_bysite, <span class="at">radius =</span> radius)</span>
 <span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>DT<span class="sc">::</span><span class="fu">datatable</span>(out2<span class="sc">$</span>results_bysite)</span></code></pre></div>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>DT<span class="sc">::</span><span class="fu">datatable</span>(out2<span class="sc">$</span>results_bysite, <span class="at">escape =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <p>See summary stats about the indicators</p>
 <div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>outsum <span class="ot">&lt;-</span>  <span class="fu">batch.summarize</span>(</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(out2<span class="sc">$</span>results_bysite), </span>
@@ -738,16 +745,20 @@ sites</h4>
 <div id="compare-to-results-from-ejscreen-api" class="section level4">
 <h4>Compare to results from EJScreen API</h4>
 <div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>sitepoints <span class="ot">&lt;-</span> testpoints_1000_dt</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>outapi <span class="ot">&lt;-</span> EJAMejscreenapi<span class="sc">::</span><span class="fu">ejscreenapi_plus</span>(sitepoints[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, ], <span class="at">radius =</span> radius)</span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(<span class="fu">as.list</span>(outapi[<span class="dv">1</span>, ]))</span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="fu">setdiff</span>( <span class="fu">names</span>(outapi), <span class="fu">names</span>(out2<span class="sc">$</span>results_overall))</span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;----------------</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
-<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="fu">setdiff_yx</span>( <span class="fu">names</span>(outapi), <span class="fu">names</span>(out2<span class="sc">$</span>results_overall))</span>
-<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="co"># links to report or map are named differently.</span></span>
-<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="co"># us and state averages are there but us ones named with us. prefix in api not ejam</span></span>
-<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a><span class="co"># EJ pctiles, statename,  REGION, etc. might not be provided in EJAM output.</span></span>
-<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a><span class="co"># ratios counts of denominators, demog subgroups, etc. are in EJAM only.  </span></span></code></pre></div>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>radius <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="co"># outapi2 &lt;- EJAMejscreenapi::ejscreenapi_plus(sitepoints[1:5, ], radius = radius, on_server_so_dont_save_files = T)</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>outapi <span class="ot">&lt;-</span> (<span class="fu">ejscreenit</span>(sitepoints[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, ], <span class="at">radius =</span> radius, <span class="at">nosave =</span> T, <span class="at">nosee =</span> T, <span class="at">interactiveprompt =</span> F))<span class="sc">$</span>table</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cbind</span>(<span class="fu">as.list</span>(outapi[<span class="dv">1</span>, ]))</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>outejam <span class="ot">&lt;-</span> <span class="fu">ejamit</span>(<span class="at">sitepoints =</span>  sitepoints[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, ], <span class="at">radius =</span> radius)</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="fu">setdiff</span>( <span class="fu">names</span>(outapi), <span class="fu">names</span>(outejam<span class="sc">$</span>results_overall))</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;----------------</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a><span class="fu">setdiff_yx</span>( <span class="fu">names</span>(outapi), <span class="fu">names</span>(outejam<span class="sc">$</span>results_overall))</span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a><span class="co"># links to report or map were named differently.</span></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a><span class="co">#  </span></span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a><span class="co"># EJ pctiles, etc. might not be provided in EJAM output.</span></span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a><span class="co"># ratios counts of denominators, demog subgroups, etc. are in EJAM only.  </span></span></code></pre></div>
 </div>
 </div>
 </div>

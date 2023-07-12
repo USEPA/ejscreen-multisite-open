@@ -20,8 +20,9 @@ knitr::opts_chunk$set(eval = FALSE)
 
 ### Summary of Demographics and Environment near 100 Sites
 
+In R/RStudio, clone/install EJAM package and related ones from https://github.com/USEPA/EJAM/#readme, etc.
 ```{r echo=TRUE}
-# In R/RStudio, clone/install EJAM package and related ones from https://github.com/USEPA/EJAM, etc.
+
 library(EJAM)
 
 x <- ejamit(testpoints_n(100),1) # 1 mile radius
@@ -111,17 +112,21 @@ Essential packages only available on the [USEPA github](https://github.com/USEPA
 -   [EJAMejscreenapi](https://github.com/USEPA/EJAMejscreenapi#readme "github.com/USEPA/EJAMejscreenapi")
 -   [EJAMbatch.summarizer](https://github.com/USEPA/EJAMbatch.summarizer#readme "github.com/USEPA/EJAMbatch.summarizer")
 
-Not essential:
+### Reloading the datasets with info about blocks
 
--   [EJAMejscreendata](https://github.com/USEPA/EJAMejscreendata#readme "github.com/USEPA/EJAMejscreendata")
+These datasets should be loaded by the app automatically or may be when the package is loaded, depending on how the .onLoad() function is set up.
 
-### Create the index of where blocks are, to be able to quickly find those nearby a given site
+To manually reload them, see the source code for the .onLoad() function.
 
-During development of this package, at least, this index is built when the package is loaded, automatically, by the .onLoad() function in the file EJAM/R/aaa_onLoad_create_quad_tree_index.R THIS IS SLOW - It takes a few seconds. This (seemingly) must be done for each session? One cannot save it as .rda and just load via a pkg since it is like a pointer to the index in RAM or something like that.
+### Recreating the index of where blocks are
+
+This index may be built when the package is loaded, automatically, depending on how the .onLoad() function is set up in the file EJAM/R/aaa_onLoad_create_quad_tree_index.R 
+
+THIS IS SLOW - It takes a few seconds. This (seemingly) must be done for each session. One cannot save it as .rda and just load via a pkg since it is like a pointer to the index in memory.
 
 ```{r BUILD_INDEX}
 # One could manually rebuild the index (if quaddata were updated, for example),
-#  like this:
+#  by looking in the source code of the .onLoad() function, or essentially like this:
 localtree <- SearchTrees::createTree(
    quaddata, treeType = "quad", dataType = "point"
 )
@@ -131,13 +136,13 @@ localtree <- SearchTrees::createTree(
 
 #### NAICS Codes to Specify Facilities in one Industrial Sector
 
-Quick map of EPA-regulated facilities in one industrial category
+Quick map of EPA-regulated facilities in one industrial category, which you can click on to see popup windows about sites.
 
 ```{r}
-mapfast(mysites <- frs_from_naics("smelt")) # slow the 1st time as it lazyloads frs dataset
+mapfast(mysites <- frs_from_naics("smelt")) # may be slow the 1st time, if it lazyloads frs dataset
 ```
 
-(but note that FRS lacks NAICS for most facilities!)
+(but note that this FRS dataset lacks NAICS for most facilities!)
 
 Table of facilities in an industry, plus links to each facility in ECHO and EJScreen
 
@@ -156,11 +161,14 @@ link4 <- url_ejscreen_acs_report(lat = mysites$lat, lon = mysites$lon, distance 
 mysites <- cbind(`ECHO report` = link1, 
                  `EJScreen Report` = link2, `EJScreen Map` = link3, `ACS Report` = link4,
                  mysites)
+ caption = paste0(nrow(mysites), ' sites have NAICS matching "', industryword, '"')
+if (nrow(mysites) > 1500){ mysites <- mysites[1:1500, ]} # >2k rows is too much for client-side DataTables
+ cat(caption,'\n')
 print(
   DT::datatable(
-    mysites[1:min(nrow(mysites), 1500) ], # >2k rows is too much for client-side DataTables
+    mysites,
     escape = FALSE,
-    caption = paste0(nrow(mysites), ' FACILITIES HAVE NAICS MATCHING QUERY TERM "', industryword, '"'),
+    caption = caption,
     filter = "top"
   )
 )
@@ -196,8 +204,9 @@ naics_from_any("pig ") # space after g
 # a OR b,  a AND b,  etc.
 a = naics_from_any("plastics")
 b = naics_from_any("rubber")
-fintersect(a,b)[,.(name,code)] #  a AND b
-funion(a,b)[,.(name,code)]     #  a OR  b
+library(data.table)
+data.table::fintersect(a,b)[,.(name,code)] #  a AND b
+data.table::funion(a,b)[,.(name,code)]     #  a OR  b
 naics_subcodes_from_code(funion(a,b)[,code])[,.(name,code)]   #  plus children
 naics_from_any(funion(a,b)[,code], children=T)[,.(name,code)] #  same
 ```
@@ -206,14 +215,13 @@ A NAICS code can have many "children" or subcategories under it
 
 ```{r}
 NROW(naics_from_any("chem"))
-#[1] 20
+# about 20
 NROW(naics_from_any("chem", children = T))
-#[1] 104
-
-  NROW(frs_from_naics(naics_from_any("chem")$code))
-# [1] 4907
+# >100
+NROW(frs_from_naics(naics_from_any("chem")$code))
+# a few thousand
  NROW(frs_from_naics(naics_from_any("chem", children = T)$code))
-# [1] 13543
+# >10,000
 ```
 
 #### Use lat/lon point data
@@ -247,7 +255,7 @@ sitepoints100 <- data.table::copy(EJAM::testpoints_100_dt)  # [1:5, ]
 head(sitepoints100, 3)
 ```
 
-Create random test data points
+Create random test data points in States of LA and TX
 
 ```{r}
 p1k <- testpoints_n(1000)
@@ -302,7 +310,7 @@ cbind(overall = as.list( out2$results_overall[ , ..names_d_subgroups]))
  
 mapfast(out2$results_bysite, radius = radius)
 
-DT::datatable(out2$results_bysite)
+DT::datatable(out2$results_bysite, escape = FALSE)
 
 ```
 
