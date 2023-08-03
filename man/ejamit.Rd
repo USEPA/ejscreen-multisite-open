@@ -11,6 +11,7 @@ ejamit(
   avoidorphans = TRUE,
   quadtree = NULL,
   silentinteractive = F,
+  fips = NULL,
   ...
 )
 }

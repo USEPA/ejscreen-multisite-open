@@ -4,8 +4,8 @@
 #'   (based on approx ranges of lat lon seen among block internal points dataset)
 #'   lat must be between 17.5 and 71.5, and 
 #'   lon must be ( between -180 and -65) OR (between 172 and 180) 
-#' @param lat vector of latitudes in decimal degrees
 #' @param lon numeric vector of longitudes in decimal degrees, same length
+#' @param lat vector of latitudes in decimal degrees
 #'
 #' @return logical vector, one element per lat lon pair (location)
 #' @seealso latlon_df_clean() latlon_infer() latlon_is.valid() latlon_as.numeric()
@@ -16,7 +16,7 @@
 #'   }
 #' @export
 #'
-latlon_is.valid <- function(lat, lon) {
+latlon_is.valid <- function(lon, lat) {
   
   #     valid ranges determined like this:  
   #   > range(blockpoints$lat)

@@ -14,12 +14,12 @@
 #' @examples
 #'   x <- data.frame(a=1:10,b=1001:1010)
 #'   metadata <- list(
+#'   ejscreen_version =  '2.2',
+#'   acs_version =          '2017-2021',
 #'   census_version = 2020,
-#'   acs_version = '2016-2020',
-#'   acs_releasedate = '3/17/2022',
-#'   ejscreen_version = '2.1',
-#'   ejscreen_releasedate = 'October 2022',
-#'   ejscreen_pkg_data = 'bg22'
+#'   ejscreen_releasedate = '2023-06-23',
+#'   acs_releasedate =      '2022-12-08',
+#'   ejscreen_pkg_data = NA
 #'   )
 #'   x <- metadata_add(x, metadata)
 #'   attributes(x)
@@ -29,14 +29,15 @@ metadata_add <- function(x, metadata) {
 
   if (missing(metadata)) {
     metadata <- list(
+      ejscreen_version =  '2.2',
+      acs_version =          '2017-2021',
       census_version = 2020,
-      acs_version = '2016-2020',
-      acs_releasedate = '3/17/2022',
-      ejscreen_version = '2.1',
-      ejscreen_releasedate = 'October 2022',
-      ejscreen_pkg_data = 'bg22'
+      ejscreen_releasedate = '2023-06-23',
+      acs_releasedate =      '2022-12-08',
+      ejscreen_pkg_data = NA
     )
-    warning("metadata not specified, so assumed it should be the following: \n")
+    txt <- paste0(paste0(names(metadata), "=", unlist(metadata)), collapse = ", ")
+    warning("metadata not specified, so used defaults from source code of this function: ", txt, "\n")
     print(cbind(attributes = metadata))
   }
   if (!is.list(metadata)) {stop('metadata has to be a named list')}
@@ -68,6 +69,17 @@ metadata_check <- function(packages=EJAM::ejampackages, which=c(
   'year', 'released'),
   loadifnotloaded=TRUE) {
   
+  # ejscreen_version     "2.2"       
+  # acs_version          "2017-2021" 
+  # census_version       2020        
+  # ejscreen_releasedate "2023-06-23"
+  # acs_releasedate      "2022-12-08"
+  # ejscreen_pkg_data    NA      
+  
+  # The 2017-2021 American Community Survey 5-year estimates were released on Thursday, December 8, 2022.
+  # EJScreen incorporated that in mid 2023.
+  
+  #     previously:
   # census_version = 2020,
   # acs_version = '2016-2020',
   # acs_releasedate = '3/17/2022',
@@ -75,8 +87,6 @@ metadata_check <- function(packages=EJAM::ejampackages, which=c(
   # ejscreen_releasedate = 'October 2022',
   # ejscreen_pkg_data = 'bg22'
   #
-  # The 2017-2021 American Community Survey 5-year estimates are scheduled to be released on Thursday, December 8, 2022.
-  # EJScreen might incorporate that in mid/late 2023.
   
   # utility to check if year attribute is set on each data file
   # does it really need to lazy load all these to check their attributes? that would be slow for big datasets, right?

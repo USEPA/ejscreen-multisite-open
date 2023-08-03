@@ -4,12 +4,12 @@
 \alias{latlon_is.valid}
 \title{Validate latitudes and longitudes}
 \usage{
-latlon_is.valid(lat, lon)
+latlon_is.valid(lon, lat)
 }
 \arguments{
-\item{lat}{vector of latitudes in decimal degrees}
-
 \item{lon}{numeric vector of longitudes in decimal degrees, same length}
+
+\item{lat}{vector of latitudes in decimal degrees}
 }
 \value{
 logical vector, one element per lat lon pair (location)

@@ -44,7 +44,7 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius=3, maxradius=31.07,
                                         avoidorphans=TRUE, report_progress_every_n=500, 
                                         quadtree) {
   if(class(quadtree) != "QuadTree"){
-    stop('quadtree must be an object created from SearchTrees package with treeType = "quad" and dataType = "point"')  
+    stop('quadtree must be an object created with indexblocks(), from SearchTrees package with treeType = "quad" and dataType = "point"')  
   }
   if (!data.table::is.data.table(sitepoints)) {data.table::setDT(sitepoints)}
   

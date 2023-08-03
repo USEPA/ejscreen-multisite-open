@@ -51,9 +51,13 @@
 # EJAMejscreendata package file called EJSCREEN_Full_with_AS_CNMI_GU_VI
 # EJAMejscreendata package file called EJSCREEN_StatePct_with_AS_CNMI_GU_VI
 
-stop('need bg22 from ejscreen pkg')
+stop('would need to start with bg22 from the ejscreen pkg to create blockgroupstats this way')
+
+
 create_blockgroupstats <- function(bg = bg22 , meta) {
+
   
+    
   ## script to create blockgroupstats.rda for EJAM
   
   if (missing(meta)) {

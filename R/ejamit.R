@@ -67,8 +67,11 @@ ejamit <- function(sitepoints,
                    avoidorphans=TRUE,
                    quadtree=NULL,
                    silentinteractive=F,
+                   fips=NULL,
                    ...
 ) {
+  if (is.null(fips)) {
+    
   if (missing(radius)) {warning(paste0("Using default radius of ", radius, " miles because not provided as parameter."))}
   if (!missing(quadtree)) {warning("quadtree should not be provided to ejamit() - that is handled by getblocksnearby() ")}
   
@@ -102,7 +105,7 @@ ejamit <- function(sitepoints,
   out <- suppressWarnings (
     doaggregate(
       sites2blocks = mysites2blocks, 
-      sites2states = sitepoints,
+      sites2states = sitepoints, # sites2states_or_latlon = unique(x[ , .(siteid, lat, lon)]))
       silentinteractive = silentinteractive
     )
   )
@@ -112,6 +115,11 @@ ejamit <- function(sitepoints,
   # second from fips of block with smallest distance to site, 
   # third from lat,lon of sitepoints intersected with shapefile of state bounds
   
+  } else {
+    # fips provided, not latlons
+    mysites2blocks <- getblocksnearby_from_fips(fips)
+    out <- doaggregate(mysites2blocks, sites2states_or_latlon = unique(mysites2blocks[ , .(siteid, lat, lon)]))
+  }
   ################################################################ # 
   
   # HYPERLINKS added (to site by site table) ####
@@ -119,7 +127,7 @@ ejamit <- function(sitepoints,
   #  >this should be a function  and is used by both server and ejamit() ####
   # duplicated almost exactly in app_server but uses reactives there.
   # #  Do maybe something like this:
-  # links <- url_4table(out$results_bysite$lat, out$results_bysite$lon, radius, regid=ifelse("REGISTRY_ID" %in% names(out$results_bysite), out$results_bysite$REGISTRY_ID, NULL))
+  # links <- url_4table(lat=out$results_bysite$lat, lon=out$results_bysite$lon, radius = radius, regid=ifelse("REGISTRY_ID" %in% names(out$results_bysite), out$results_bysite$REGISTRY_ID, NULL))
   # out$results_bysite[ , `:=`(links$results_bysite)] # would that work??? how to avoid big cbind step to add the new columns?
   # out$results_overall <- cbind(out$results_overall, links$results_overall) # 
   # setcolorder(out$results_bysite, neworder = links$newcolnames)
@@ -132,9 +140,9 @@ ejamit <- function(sitepoints,
     echolink = rep(NA,nrow(out$results_bysite))
   }
   out$results_bysite[ , `:=`(
-    `EJScreen Report` = url_ejscreen_report(    lat = out$results_bysite$lat, lon = out$results_bysite$lon, distance = radius, as_html = T),
-    `EJScreen Map`    = url_ejscreenmap(        lat = out$results_bysite$lat, lon = out$results_bysite$lon,                    as_html = T),
-    `ACS Report`      = url_ejscreen_acs_report(lat = out$results_bysite$lat, lon = out$results_bysite$lon, distance = radius, as_html = T),
+    `EJScreen Report` = url_ejscreen_report(    lat = out$results_bysite$lat, lon = out$results_bysite$lon, radius = radius, as_html = T),
+    `EJScreen Map`    = url_ejscreenmap(        lat = out$results_bysite$lat, lon = out$results_bysite$lon,                  as_html = T),
+    `ACS Report`      = url_ejscreen_acs_report(lat = out$results_bysite$lat, lon = out$results_bysite$lon, radius = radius, as_html = T),
     `ECHO report` = echolink
   )]
   out$results_overall[ , `:=`(

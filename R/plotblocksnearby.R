@@ -9,7 +9,7 @@
 #' @export
 #'
 #' @examples plotblocksnearby(testpoints_n(1), 2) 
-plotblocksnearby <- function(sitepoints, radius=1, usemapfast=TRUE, ...) {
+plotblocksnearby <- function(sitepoints, radius=3, usemapfast=TRUE, ...) {
   if (radius > 32) {stop("cannot use radius >32 miles here")}
   if (nrow(sitepoints) > 100) {stop("this mapping function is not intended for so many points")}
  if (!("siteid" %in% names(sitepoints))) {sitepoints$siteid <- seq_len(nrow(sitepoints))}

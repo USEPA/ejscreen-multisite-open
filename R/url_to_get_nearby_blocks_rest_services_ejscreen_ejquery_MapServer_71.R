@@ -1,4 +1,4 @@
-url_to_get_nearby_blocks_rest_services_ejscreen_ejquery_MapServer_71 <- function(lat, lon, miles, outFields='GEOID10,OBJECTID,POP_WEIGHT', returnCountOnly='false') {
+url_to_get_nearby_blocks_rest_services_ejscreen_ejquery_MapServer_71 <- function(lon, lat, miles, outFields='GEOID10,OBJECTID,POP_WEIGHT', returnCountOnly='false') {
   # function for service 71, nearby blockweights ####
   ## notes - examples #### 
   if (1==0) {

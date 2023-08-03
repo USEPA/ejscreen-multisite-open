@@ -1,14 +1,14 @@
 #' find what state is where each point is located
 #' Takes 3 seconds to find state for 1k points, so a faster alternative would be useful
-#' @param lat latitudes vector
 #' @param lon longitudes vector
+#' @param lat latitudes vector
 #' @param shapefile shapefile of US States, in package already
 #' @seealso [states_shapefile] [get_blockpoints_in_shape()] [states_infer()]
 #' @return Returns data.frame: ST, statename, FIPS.ST, REGION, n
 #'   as many rows as elements in lat or lon
 #' @export
 #'
-state_from_latlon <- function(lat, lon, states_shapefile=EJAM::states_shapefile) {
+state_from_latlon <- function(lon, lat, states_shapefile=EJAM::states_shapefile) {
   # pts[is.na(lat), lat := 0] 
   # pts[is.na(lon), lon := 0] 
   lat[is.na(lat)] <- 0
@@ -51,15 +51,21 @@ state_from_blockid <- function(blockid) {
 }
 
 #' state_from_fips
-#'
+#' Get the State abbreviations of all blockgroups within the input FIPS
+#' @details Returns a vector of 2-letter State abbreviations that is 
+#'   one per blockgroup that matches the input FIPS, 
+#'   not necessarily a vector as long as the input vector of FIPS codes!, 
+#'   and not just a short list of unique states!
 #' @param fips Census FIPS codes vector, numeric or char, 2-digit, 5-digit, etc. OK
-#'
-#' @return vector of 2-character state abbreviations like CA,MD,TX,OH
+#' @param uniqueonly If set to TRUE, returns only unique results. 
+#'   This parameter is here mostly to remind user that default is not uniques only.
+#' @return vector of 2-character state abbreviations like CA,CA,CA,MD,MD,TX
 #' @export
 #'
-state_from_fips <- function(fips) {
-  fips <- fipsbg_from_anyfips(fips)
-  stateinfo$ST[match(substr(fips,1,2), stateinfo$FIPS.ST)]
+state_from_fips <- function(fips, uniqueonly=FALSE) {
+  fips <- fipsbg_from_anyfips(fips) # returns all the blockgroups fips codes that match, such as all bg in the state or county
+  x <- stateinfo$ST[match(substr(fips,1,2), stateinfo$FIPS.ST)]
+  if (uniqueonly) {return(unique(x))} else {return(x)}
 }
 
 

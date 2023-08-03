@@ -27,7 +27,7 @@ so if TRUE, it keeps looking past radius to find nearest one within maxradius.}
 mostly for testing, but a progress bar feature might be useful unless this is super fast.}
 
 \item{quadtree}{(a pointer to the large quadtree object)
-created from the SearchTree package example:
+created as with indexblocks(), from the SearchTree package example:
 SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point")
 Takes about 2-5 seconds to create this each time it is needed.
 It can be automatically created when the package is loaded via the \code{\link[=.onLoad]{.onLoad()}} function}

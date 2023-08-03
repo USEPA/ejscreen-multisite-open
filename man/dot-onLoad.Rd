@@ -2,7 +2,8 @@
 % Please edit documentation in R/aaa_onLoad_create_quad_tree_index.R
 \name{.onLoad}
 \alias{.onLoad}
-\title{Creates index to all US blocks (internal point lat lon) at package load}
+\title{Creates index to all US blocks (internal point lat lon) at package load
+Note this duplicates some code in global.R}
 \usage{
 .onLoad(libname, pkgname)
 }
@@ -13,4 +14,5 @@
 }
 \description{
 Creates index to all US blocks (internal point lat lon) at package load
+Note this duplicates some code in global.R
 }

@@ -1,13 +1,14 @@
 
-
-#    EJAM
-
-
 #  EJAM/data-raw/names_of_indicators_creationscript.R
 
+# *** This was written for the 2022 ver 2.1 EJScreen*** and 
+# for 2023 ver 2.2 this needs to be updated or replaced with map_headernames approach.
 
+## see map_headernames which now has most or all of these in a table 
+## see   EJAMejscreenapi/data-raw/update_to_ejscreenv2.2.R
 
-## see map_headernames which now has most or all of these in a table - friendly names differ somewhat
+# - friendly names differed somewhat
+#
 # library(EJAMejscreenapi)
 # map_headernames[grepl("ej", map_headernames$varlist), c('varlist', 'newnames_ejscreenapi', 'names_friendly')]
 # map_headernames[grepl("_d", map_headernames$varlist), c('varlist', 'newnames_ejscreenapi', 'names_friendly')]
@@ -164,11 +165,14 @@ names_d_subgroups_friendly <- c(
 names_e <- c(
   "pm", "o3", "cancer", "resp", "dpm", 
   "pctpre1960", "traffic.score",  "proximity.npl", "proximity.rmp", 
-  "proximity.tsdf", "proximity.npdes", "ust")
+  "proximity.tsdf", "proximity.npdes", "ust",
+  "rsei")
+
 names_e_friendly  <- c(
   "PM2.5", "Ozone", "Cancer risk", "Respiratory", "Diesel PM", 
   "% built pre-1960", "Traffic", "NPL proximity", "RMP proximity", 
-  "TSDF proximity", "NPDES proximity", "Underground storage tanks")
+  "TSDF proximity", "NPDES proximity", "Underground storage tanks",
+  "RSEI Air")
 
 ############################################################################## #
 
@@ -189,7 +193,8 @@ names_ej_friendly <- c( # FRIENDLY (RAW) SCORE BUT CAN USE FOR PCTILE SINCE THAT
   "EJ: RMP", 
   "EJ: TSDF", 
   "EJ: NPDES", 
-  "EJ: UST")
+  "EJ: UST",
+  "EJ: RSEI")
 
 names_ej_supp <- paste0(names_ej, '.supp')
 names_ej_supp_friendly <- gsub("EJ", "Supp. EJ", names_ej_friendly)
@@ -207,13 +212,14 @@ names_ej_supp_state_pctile_friendly <- names_ej_friendly
 names_d_pctile             <- paste0(      'pctile.', names_d)
 names_d_subgroups_pctile   <- paste0(      'pctile.', names_d_subgroups) # newer
 names_e_pctile             <- paste0(      'pctile.', names_e)
+
 names_ej_pctile            <- paste0(      'pctile.', names_ej)
 names_ej_supp_pctile       <- paste0(      'pctile.', names_ej_supp) # most recently added
 
 names_d_state_pctile       <- paste0('state.pctile.', names_d)
 names_d_subgroups_state_pctile <- 
-                              paste0('state.pctile.', names_d_subgroups) # newer
 names_e_state_pctile       <- paste0('state.pctile.', names_e)
+
 names_ej_state_pctile      <- paste0('state.pctile.', names_ej)
 names_ej_supp_state_pctile <- paste0('state.pctile.', names_ej_supp) # most recently added
 
@@ -224,6 +230,7 @@ names_pctile <- c( # usa pctiles
   names_ej_pctile,
   names_ej_supp_pctile
 )
+ 
 names_state_pctile <- c(
   gsub("pctile", "state.pctile", names_pctile)
 )
@@ -262,14 +269,23 @@ names_e_avg_friendly  <- paste0("US Avg ",  names_e_friendly);  names_e_state_av
 # names_ratio_to_avg_these       <-  paste0("ratio.to.", names_avg_these )  
 # names_ratio_to_state_avg_these <-  paste0("ratio.to.", names_state_avg_these)  
 
-names_d_ratio_to_avg  <- paste0("ratio.to.", names_d_avg) ;  names_d_ratio_to_state_avg <- paste0("ratio.to.", names_d_state_avg) 
-names_d_subgroups_ratio_to_avg <- paste0("ratio.to.", names_d_subgroups_avg)  ;  names_d_subgroups_ratio_to_state_avg <- paste0("ratio.to.", names_d_subgroups_state_avg)
-names_e_ratio_to_avg  <- paste0("ratio.to.", names_e_avg)  ; names_e_ratio_to_state_avg <- paste0("ratio.to.", names_e_state_avg)
+names_d_ratio_to_avg  <- paste0("ratio.to.", names_d_avg) 
+names_d_ratio_to_state_avg <- paste0("ratio.to.", names_d_state_avg) 
 
-names_d_ratio_to_avg_friendly <- paste0("Ratio to ", names_d_avg_friendly); names_d_ratio_to_state_avg_friendly <- paste0("Ratio to ", names_d_state_avg_friendly) 
-names_d_subgroups_ratio_to_avg_friendly <- paste0("Ratio to ", names_d_subgroups_avg_friendly); names_d_subgroups_ratio_to_state_avg_friendly <- paste0("Ratio to ", names_d_subgroups_state_avg_friendly)
-names_e_ratio_to_avg_friendly <- paste0("Ratio to ", names_e_avg_friendly); names_e_ratio_to_state_avg_friendly <- paste0("Ratio to ", names_e_state_avg_friendly)
+names_d_subgroups_ratio_to_avg <- paste0("ratio.to.", names_d_subgroups_avg)  
+names_d_subgroups_ratio_to_state_avg <- paste0("ratio.to.", names_d_subgroups_state_avg)
 
+names_e_ratio_to_avg  <- paste0("ratio.to.", names_e_avg)  
+names_e_ratio_to_state_avg <- paste0("ratio.to.", names_e_state_avg)
+
+names_d_ratio_to_avg_friendly <- paste0("Ratio to ", names_d_avg_friendly)
+names_d_ratio_to_state_avg_friendly <- paste0("Ratio to ", names_d_state_avg_friendly) 
+
+names_d_subgroups_ratio_to_avg_friendly <- paste0("Ratio to ", names_d_subgroups_avg_friendly)
+names_d_subgroups_ratio_to_state_avg_friendly <- paste0("Ratio to ", names_d_subgroups_state_avg_friendly)
+
+names_e_ratio_to_avg_friendly <- paste0("Ratio to ", names_e_avg_friendly)
+names_e_ratio_to_state_avg_friendly <- paste0("Ratio to ", names_e_state_avg_friendly)
 
 
 names_these              <- c(names_d,     names_d_subgroups,     names_e)
@@ -373,11 +389,6 @@ names_all <- unique(names_all) # pop would appear twice
 
 usethis::use_data(namez, overwrite = TRUE)
 
-############################################################################## #
-
-# just for conveniently referring to these in server code
-avg.in.us <- EJAM::usastats[ EJAM::usastats$PCTILE == "mean", names_these] # note the regular name not avg. name is used in the usastats table
-usethis::use_data(avg.in.us, overwrite = TRUE)
 
 ############################################################################## #
 
@@ -423,6 +434,7 @@ usethis::use_data(
   names_ej,   
   names_ej_friendly,
   names_ej_pctile,          names_ej_state_pctile ,
+  
   # no friendly pctile names here
   
   names_other, # includes pop and other denominator counts
@@ -447,4 +459,13 @@ usethis::use_data(
 #   long_names_d,
 #   long_names_e
 # )
+############################################################################## #
+
+# (first make sure all the Envt variables etc are actually in usastates dataset)
+
+stop('make sure all the Demog and Envt variables etc are actually in the latest installed usastates dataset')
+
+# just for conveniently referring to these in server code
+avg.in.us <- EJAM::usastats[ EJAM::usastats$PCTILE == "mean", names_these] # note the regular name not avg. name is used in the usastats table
+usethis::use_data(avg.in.us, overwrite = TRUE)
 

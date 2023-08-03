@@ -14,7 +14,7 @@ of the blocks' internal points. It gives an approximation of where people live
 and where each bg is, which is useful for some situations.
 
 \preformatted{
-  As of 10/2022 it is the EJScreen 2.1 version of data, which uses ACS 2016-2020
+  As of 8/2023 it is the EJScreen 2.2 version of data, which uses ACS 2017-2021
   and Census 2020. it has all US States, DC, PR, but not  "AS" "GU" "MP" "VI"
   
   How lat lon were estimated:

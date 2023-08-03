@@ -121,16 +121,16 @@ app_server <- function(input, output, session) {
                        server = TRUE)
   
   ## hide advanced settings tab by default
-  hideTab(inputId = 'all_tabs', target = 'Advanced Settings')
+  hideTab(inputId = 'results_tabs', target = 'Advanced Settings')
   
   ## show advanced settings tab on button click (button in 'About EJAM' tab)
   observeEvent(input$ui_show_advanced_settings,
                {
-                 showTab(inputId = 'all_tabs', target = 'Advanced Settings')
+                 showTab(inputId = 'results_tabs', target = 'Advanced Settings')
                })
   observeEvent(input$ui_hide_advanced_settings,
                {
-                 hideTab(inputId = 'all_tabs', target = 'Advanced Settings')
+                 hideTab(inputId = 'results_tabs', target = 'Advanced Settings')
                })
   
  
@@ -456,7 +456,7 @@ app_server <- function(input, output, session) {
     )
 
     ## create named vector of FIPS codes (names used as siteid)
-    fips_alias <- c('FIPS','fips','fips_code','fipscode','Fips','statefips','countyfips', 'ST_FIPS','st_fips','ST_FIPS','st_fips')
+    fips_alias <- c('FIPS','fips','fips_code','fipscode','Fips','statefips','countyfips', 'ST_FIPS','st_fips','ST_FIPS','st_fips', 'FIPS.ST', 'FIPS.COUNTY', 'FIPS.TRACT')
  
     if(any(tolower(colnames(ext)) %in% fips_alias)){
     #if('FIPS' %in% colnames(ext)){
@@ -1108,9 +1108,9 @@ app_server <- function(input, output, session) {
         echolink = rep('N/A',nrow(out$results_bysite))
       }
     out$results_bysite[ , `:=`(
-      `EJScreen Report` = url_ejscreen_report(    lat = d_upload$lat, lon =  d_upload$lon, distance = input$bt_rad_buff, as_html = TRUE), 
-      `EJScreen Map`    = url_ejscreenmap(        lat = d_upload$lat, lon =  d_upload$lon,                               as_html = TRUE), 
-      `ACS Report`      = url_ejscreen_acs_report(lat =  d_upload$lat, lon = d_upload$lon, distance = input$bt_rad_buff, as_html = TRUE),
+      `EJScreen Report` = url_ejscreen_report(    lat = d_upload$lat, lon =  d_upload$lon, radius = input$bt_rad_buff, as_html = TRUE), 
+      `EJScreen Map`    = url_ejscreenmap(        lat = d_upload$lat, lon =  d_upload$lon,                             as_html = TRUE), 
+      `ACS Report`      = url_ejscreen_acs_report(lat =  d_upload$lat, lon = d_upload$lon, radius = input$bt_rad_buff, as_html = TRUE),
       `ECHO report` = echolink
     )]
     }
@@ -2481,7 +2481,7 @@ app_server <- function(input, output, session) {
   #  
   # ______ Use EJScreen API to get batch of results _________ ####
   # ~ ####
-  # mod_ejscreenapi_server("ejscreenapi_1")
+  mod_ejscreenapi_server("ejscreenapi_1")
   
   
   #############################################################################  # 
@@ -2581,8 +2581,8 @@ app_server <- function(input, output, session) {
           coauthor_names = input$coauthor_names, 
           coauthor_emails = input$coauthor_emails,
           fundingsource = input$fundingsource,   # need to add input
-          acs_version =  "2016-2020",
-          ejscreen_version =  "2.1"
+          acs_version =  "2017-2021",
+          ejscreen_version =  "2.2"
         )
       })
       # [TEMPORARILY SAVE PARAMS FOR TESTING] ####

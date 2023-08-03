@@ -22,12 +22,12 @@
 
 
 #* ejam_overall
-#* @param lat decimal degrees
 #* @param lon decimal degrees
+#* @param lat decimal degrees
 #* @param radius in miles 
 #* @param ... passed to ejamit()
 #* @get /ejam_overall
-function(lat,lon, radius=1){
+function(lon, lat, radius=3){
   library(EJAM)
   as.data.frame(EJAM::ejamit(sitepoints=data.table::data.table(lat=lat, lon=lon), radius=radius)[["results_overall"]])
 }
@@ -35,12 +35,12 @@ function(lat,lon, radius=1){
 
 
 #* return see getblocksnearby() -- sites2blocks table given lat lon  
-#* @param lat see [getblocksnearby()]
 #* @param lon see [getblocksnearby()]
+#* @param lat see [getblocksnearby()]
 #* @param ... passed to [getblocksnearby()]
 #* @get /getblocksnearby
-function(lat,lon){
-  EJAM::getblocksnearby(data.table::data.table(lat=lat,lon=lon))
+function(lon, lat){
+  EJAM::getblocksnearby(data.table::data.table(lat=lat, lon=lon))
 }
 
 #* return see doaggregate() -- list of tables and other info summarizing demog and envt based on sites2blocks table  
@@ -51,7 +51,7 @@ function(lat,lon){
 #* @param calculatedcols see [doaggregate()]
 #* @param ... passed to [doaggregate()]
 #* @get /doaggregate
-function(sites2blocks,sites2states_or_latlon, countcols, popmeancols, calculatedcols, ...){
+function(sites2blocks, sites2states_or_latlon, countcols, popmeancols, calculatedcols, ...){
   EJAM::doaggregate(sites2blocks=sites2blocks, sites2states_or_latlon=sites2states_or_latlon, countcols=countcols, popmeancols=popmeancols, calculatedcols=calculatedcols, ... )  
 }
 

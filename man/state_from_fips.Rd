@@ -2,16 +2,27 @@
 % Please edit documentation in R/state_from_latlon.R
 \name{state_from_fips}
 \alias{state_from_fips}
-\title{state_from_fips}
+\title{state_from_fips
+Get the State abbreviations of all blockgroups within the input FIPS}
 \usage{
-state_from_fips(fips)
+state_from_fips(fips, uniqueonly = FALSE)
 }
 \arguments{
 \item{fips}{Census FIPS codes vector, numeric or char, 2-digit, 5-digit, etc. OK}
+
+\item{uniqueonly}{If set to TRUE, returns only unique results.
+This parameter is here mostly to remind user that default is not uniques only.}
 }
 \value{
-vector of 2-character state abbreviations like CA,MD,TX,OH
+vector of 2-character state abbreviations like CA,CA,CA,MD,MD,TX
 }
 \description{
 state_from_fips
+Get the State abbreviations of all blockgroups within the input FIPS
+}
+\details{
+Returns a vector of 2-letter State abbreviations that is
+one per blockgroup that matches the input FIPS,
+not necessarily a vector as long as the input vector of FIPS codes!,
+and not just a short list of unique states!
 }

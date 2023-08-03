@@ -5,7 +5,7 @@
 \title{Map view of Census blocks (their centroids) near one or more sites
 Utility to quickly view one or more facility points on map with the blocks found nearby}
 \usage{
-plotblocksnearby(sitepoints, radius = 1, usemapfast = TRUE, ...)
+plotblocksnearby(sitepoints, radius = 3, usemapfast = TRUE, ...)
 }
 \arguments{
 \item{sitepoints}{table of points with lat, lon in decimal degrees (data.frame or data.table)}

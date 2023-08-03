@@ -5,7 +5,9 @@
 #'   which US block points are nearby (with a safety margin - see param below),
 #'   before then using sf:: to carefully identify which of those candidate blocks are actually 
 #'   inside each polygon (e.g., circle) according to sf:: methods.
+#'   
 #'   For circular buffers, just using getblocksnearby() should work and not need this function.
+#'   
 #'   For noncircular polygons, buffered or not, this function will provide a way to very quickly
 #'   filter down to which of the millions of US blocks should be examined by the sf:: join / intersect,
 #'   since otherwise it takes forever for sf:: to check all US blocks.
@@ -29,6 +31,20 @@
 #' @export
 #'
 get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NULL, dissolved=FALSE, safety_margin_ratio=1.10) {
+  
+  ############################################################################################################### #
+  # NOTE: For comparison or validation one could get the results from the EJScreen API, for a polygon:
+  #      Example of how the API could be used to analyze a polygon, which must use POST not GET:
+  # HTTP POST URL: https://ejscreen.epa.gov/mapper/ejscreenRESTbroker.aspx
+  # HTTP POST Body:
+  #   namestr=
+  #   geometry={"spatialReference":{"wkid":4326},"rings":[[[-76.6418006649668,39.41979061319584],[-76.54223706633402,39.403875492879656],[-76.48158343568997,39.32424541053687],[-76.45526191279846,39.24452456392063],[-76.63378974482964,39.202856485626576],[-76.74021979854052,39.284396329589654],[-76.74594187237864,39.37911140807963],[-76.6418006649668,39.41979061319584]]]}
+  #   distance=
+  #   unit=9035
+  #   areatype=
+  #   areaid=
+  #   f=pjson
+    ############################################################################################################ #
   
   ## overall bbox
   bbox <- sf::st_bbox(polys)

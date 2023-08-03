@@ -5,12 +5,12 @@
 \title{find what state is where each point is located
 Takes 3 seconds to find state for 1k points, so a faster alternative would be useful}
 \usage{
-state_from_latlon(lat, lon, states_shapefile = EJAM::states_shapefile)
+state_from_latlon(lon, lat, states_shapefile = EJAM::states_shapefile)
 }
 \arguments{
-\item{lat}{latitudes vector}
-
 \item{lon}{longitudes vector}
+
+\item{lat}{latitudes vector}
 
 \item{shapefile}{shapefile of US States, in package already}
 }

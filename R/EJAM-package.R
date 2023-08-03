@@ -99,7 +99,7 @@
 #'      
 #'   - **[getblocksnearby()](sitepoints)** which by default uses *[getblocksnearbyviaQuadTree()]*
 #'        Returns `sites2blocks` 
-#'        Requires datasets [quaddata]  
+#'        Requires index called localtree that is build from dataset [quaddata] 
 #'        
 #'   - **sites2blocks**   Created by [getblocksnearby()] and passed to  [doaggregate()]  
 #'      This is a data table with maybe 100k to 1m rows (assume 1k blocks within 3 miles of each site, or 100 blocks within 1 mile),
@@ -113,16 +113,15 @@
 #'          
 #' @details  # **Data files used for distance calculation:** ####################################################################
 #' 
-#'   - ** quaddata.rda** dataset data.table
+#'   - ** quaddata.rda**  data.table
 #'   
 #'    8,174,955 rows when non-populated blocks are kept. 
 #'    5,806,512 rows have Census 2020 population (and blockwt) > 0. 
-#'    This is the largest file in the package, and is 168 MB as a file, for 2020 Census.
+#'    This is the largest file used by the package, and is 168 MB as a file, for 2020 Census.
 #'      - blockid 
 #'      - BLOCK_X, BLOCK_Y, BLOCK_Z  (not lat, lon)
 #'  
-#'   
-#'     Index to quaddata (QuadTree class, via SearchTrees pkg), not a data.table 
+#'     localtree is the index made from quaddata  (QuadTree class, via SearchTrees pkg), not a data.table 
 #' 
 #'   -------then those are used in getblocksnearby with some sitepoints to create sites2blocks:
 #'   

@@ -25,7 +25,7 @@
 #' @param avoidorphans logical Whether to avoid case where no block points are within radius, 
 #'   so if TRUE, it keeps looking past radius to find nearest one within maxradius.
 #' @param quadtree (a pointer to the large quadtree object) 
-#'    created from the SearchTree package example:
+#'    created as with indexblocks(), from the SearchTree package example:
 #'    SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point")
 #'    Takes about 2-5 seconds to create this each time it is needed.
 #'    It can be automatically created when the package is loaded via the [.onLoad()] function 

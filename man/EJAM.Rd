@@ -100,7 +100,7 @@ Columns are siteid, lat, lon; maybe 100 to 10k points
 \itemize{
 \item \strong{\href{sitepoints}{getblocksnearby()}} which by default uses \emph{\code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}}}
 Returns \code{sites2blocks}
-Requires datasets \link{quaddata}
+Requires index called localtree that is build from dataset \link{quaddata}
 \item \strong{sites2blocks}   Created by \code{\link[=getblocksnearby]{getblocksnearby()}} and passed to  \code{\link[=doaggregate]{doaggregate()}}
 This is a data table with maybe 100k to 1m rows (assume 1k blocks within 3 miles of each site, or 100 blocks within 1 mile),
 \verb{sites2blocks[ , .(siteid, blockid, distance or dist)]}
@@ -116,16 +116,16 @@ unless analysis is for residents within x miles of the edges of some shapes, lik
 
 \section{\strong{Data files used for distance calculation:}}{
 \itemize{
-\item ** quaddata.rda** dataset data.table
+\item ** quaddata.rda**  data.table
 }
 
 8,174,955 rows when non-populated blocks are kept.
 5,806,512 rows have Census 2020 population (and blockwt) > 0.
-This is the largest file in the package, and is 168 MB as a file, for 2020 Census.
+This is the largest file used by the package, and is 168 MB as a file, for 2020 Census.
 - blockid
 - BLOCK_X, BLOCK_Y, BLOCK_Z  (not lat, lon)
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{Index to quaddata (QuadTree class, via SearchTrees pkg), not a data.table 
+\if{html}{\out{<div class="sourceCode">}}\preformatted{localtree is the index made from quaddata  (QuadTree class, via SearchTrees pkg), not a data.table 
 }\if{html}{\out{</div>}}
 
 -------then those are used in getblocksnearby with some sitepoints to create sites2blocks:

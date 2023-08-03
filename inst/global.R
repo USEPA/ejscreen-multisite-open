@@ -2,8 +2,15 @@
 
 ################################################################## # 
 # get block data if missing. ####
-
-fnames <- c('lookup_states.rda', 'bgid2fips.rda', 'blockid2fips.rda', 'blockwts.rda', 'blockpoints.rda', 'quaddata.rda')
+#  also see same thing in  EJAM::data_load_from_aws()  and in .onLoad()
+fnames <- c(
+  'lookup_states.rda', 
+  'bgid2fips.rda', 
+  'blockid2fips.rda', 
+  'blockwts.rda', 
+  'blockpoints.rda', 
+  'quaddata.rda'
+)
 pathnames <- paste0('EJAM/', fnames)
 varnames <- gsub("\\.rda", "", fnames)
 mybucket <- 'dmap-data-commons-oa'
@@ -26,14 +33,18 @@ for (i in 1:length(fnames)) {
 ################################################################## # 
 
 # build localtree index if missing ####
+
+# this duplicates code in onLoad() and in indexblocks()
+
 if (!exists("localtree")) {
+  if (!exists("quaddata")) {stop("requires quaddata to be loaded - cannot build localtree without it.")}
   # This assign() below is the same as the function called  indexblocks() 
-  
-  assign(
-    "localtree", 
-    SearchTrees::createTree(quaddata, treeType = "quad", dataType = "point"), 
-    envir = globalenv() 
-    # need to test, but seems to work. 
+  #### EJAM::indexblocks()
+    assign(
+    "localtree",
+    SearchTrees::createTree(quaddata, treeType = "quad", dataType = "point"),
+    envir = globalenv()
+    # need to test, but seems to work.
     # But takes a couple seconds at every reload of pkg.
   )
   cat("  Done building index.\n")
@@ -99,10 +110,10 @@ threshgroup.default <- list(
 )
 
 ## If needed, build index of Census blocks ####
-# (if not already autoloaded when EJAM package loaded) 
+# (if not already autoloaded when EJAM package loaded). quaddata should be part of the package.
 if (!exists("localtree")) {
   localtree <- SearchTrees::createTree(
-     quaddata, treeType = "quad", dataType = "point"
+    quaddata, treeType = "quad", dataType = "point"
   )
 }
 
@@ -173,7 +184,7 @@ report_outline <- "
 # HELP TEXT ####
 
 ### info text for "About EJAM" tab ####
- intro_text <- tagList(
+intro_text <- tagList(
   tags$p("EPA has developed a number of different tools for mapping and analysis of information related to environmental justice (EJ), including EJScreen and EJAM. "),
   tags$p("EJScreen provides a dataset with environmental, demographic, and EJ indicators for each Census block group in the US. \n"),
   tags$p("EJScreen can provide a report summarizing those values for the average resident within some distance (e.g., 1 mile) from a specified point."),
@@ -181,7 +192,7 @@ report_outline <- "
   tags$p("EJAM allows users to select a set of facilities, defined by NAICs industrial category codes or by uploading a list of locations. EJAM then provides a summary report for all residential locations near the selected facilities."),
   tags$p("See in-app info/tips, and the EJAM user guide (forthcoming) for more about using the app."),
   tags$p("Programmers can see the ", a(href = 'https://github.com/USEPA/EJAM#ejam', "README"), 
-         " document, or the R package ", a(href = 'vignette\EJAM-vignette.html', "Vignette"), " and R package documentation on functions and data."),
+         " document, or the R package ", a(href = 'vignette/EJAM-vignette.html', "Vignette"), " and R package documentation on functions and data."),
   tags$p("Features of this tool include:"),
   tags$ul(
     tags$li("Several methods of selecting a set of facilities for analysis, including industry sector and uploaded of facility locations"),
@@ -803,5 +814,5 @@ html_footer_fmt <- tagList(
       </a>'
   )
 )
- 
+
 

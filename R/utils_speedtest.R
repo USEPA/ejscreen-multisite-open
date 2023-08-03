@@ -126,6 +126,7 @@ speedtest <- function(n=10, sitepoints=NULL, weighting='frs',
     step0 <- system.time({
       cat("Creating national index of block locations (localtree) since it was not found.\n")
       indexblocks()
+      quadtree <- localtree
       cat("Finished createTree()\n")
      
       #time to create quadtree 1.116 seconds

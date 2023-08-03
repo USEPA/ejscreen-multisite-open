@@ -44,10 +44,10 @@ states_infer <- function(x) {
     } else {
       # is blockgroup FIPS, or even any FIPS there?
       if ("fips" %in% names(sites2states)) {
-        sites2states$ST <- state_from_fips(sites2states$fips)
+        sites2states$ST <- state_from_fips(sites2states$fips) # note this returns 1 state abbrev for each element of supplied vector even if there are many duplicates.
       } else {
         if ("bgfips" %in% names(sites2states)) {
-          sites2states$ST <- state_from_fips(sites2states$bgfips)
+          sites2states$ST <- state_from_fips(sites2states$bgfips)# note this returns 1 state abbrev for each element of supplied vector even if there are many duplicates.
         } else {
           # nothing was found that could provide the ST info
           bad_sites2states <- TRUE

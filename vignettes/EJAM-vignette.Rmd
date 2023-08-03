@@ -16,22 +16,34 @@ knitr::opts_chunk$set(eval = FALSE)
 # https://r-pkgs.org/vignettes.html
 ```
 
+```{r, echo=FALSE}
+## *Developer note on building and updating this vignette*
+#
+#-   *Note this vignette needs to be updated - some function names have changed since it was drafted.*
+#-   *See important info at <https://r-pkgs.org/vignettes.html#sec-vignettes-how-built>*
+#-   *Vignette at EJAM\vignettes\EJAM-vignette.html* does not use devtools::document() to build it?
+#-   *THIS DID WORK:* rmarkdown::render("vignettes/EJAM-vignette.Rmd") 
+#-   *See <https://docs.ropensci.org/postdoc/> for a quick easy way to create html help on a pkg. postdoc::render_package_manual('PKGNAME')*
+#
+```
+
 ## Quickstart
 
 ### Summary of Demographics and Environment near 100 Sites
 
-In R/RStudio, clone/install EJAM package and related ones from https://github.com/USEPA/EJAM/#readme, etc.
+In R/RStudio, clone/install EJAM package and related ones from <https://github.com/USEPA/EJAM/#readme>, etc.
+
 ```{r echo=TRUE}
 
 library(EJAM)
 
-x <- ejamit(testpoints_n(100),1) # 1 mile radius
+x <- ejamit(testpoints_n(100), 1) # 1 mile radius
 mapfast(x$results_bysite)
 ```
 
 ### Interactively point to your file with lat,lon coordinates, without shiny web app
 
-```{r}
+```{r, eval=FALSE}
 x <- ejamit(radius = 2) #  2 mile radius
 ```
 
@@ -39,17 +51,20 @@ x <- ejamit(radius = 2) #  2 mile radius
 
 ```{r}
 naics_from_any("paint and coating", children = T)
-x <- ejamit(frs_from_naics("paint and coating"),1)
+x <- ejamit(frs_from_naics("paint and coating"), 1)
 head(latlon_from_naics(325510)) # has about 1,000 facilities
 ```
 
 ### Specify sites by facility registry ID
 
-```{r}
+```{r, eval=FALSE}
 EJAM::frs_from_siteid(c(110071293460, 110000333826))
+# to interactively point to your file with regid column
+x <- ejamit(latlon_from_regid(latlon_from_anything()$REGISTRY_ID)) 
+#    (that is a bit awkward and not obvious)
 ```
 
-### Specify sites by facility 
+### Specify sites by facility ID (program system ID)
 
 ```{r}
 EJAM::latlon_from_programid(c("XJW000012435", "00768SRTRSROAD1"))
@@ -61,13 +76,6 @@ EJAM::latlon_from_programid(c("XJW000012435", "00768SRTRSROAD1"))
 EJAM::latlon_from_program("CAMDBS")
 ```
 
-
-## *Developer note on building and updating this vignette*
-
-- *Note this vignette needs to be updated - some function names have changed since it was drafted.*
-- *See important info at <https://r-pkgs.org/vignettes.html#sec-vignettes-how-built>*
-- *Vignette at EJAM\vignettes\EJAM-vignette.html  uses devtools::document() to build it.*
-- *See <https://docs.ropensci.org/postdoc/> for a quick easy way to create html help on a pkg. postdoc::render_package_manual('PKGNAME')*
 
 ## Accessing and using the code/ data/ app
 
@@ -120,7 +128,7 @@ To manually reload them, see the source code for the .onLoad() function.
 
 ### Recreating the index of where blocks are
 
-This index may be built when the package is loaded, automatically, depending on how the .onLoad() function is set up in the file EJAM/R/aaa_onLoad_create_quad_tree_index.R 
+This index may be built when the package is loaded, automatically, depending on how the .onLoad() function is set up in the file EJAM/R/aaa_onLoad_create_quad_tree_index.R
 
 THIS IS SLOW - It takes a few seconds. This (seemingly) must be done for each session. One cannot save it as .rda and just load via a pkg since it is like a pointer to the index in memory.
 
@@ -132,7 +140,62 @@ localtree <- SearchTrees::createTree(
 )
 ```
 
+### Specify Places or Shapes
+
+#### Polygons in shapefiles as the places to compare
+
+You can upload polygons in a shapefile, and use EJAM to analyze them. See the Shiny app.
+
+#### Counties as the places to compare
+
+You can compare places defined by FIPS code, such as a group of US Counties.
+
+```{r}
+# Compare all Counties in a State, using EJAM indicators
+
+mystate <- "Delaware"
+x <- ejamit(fips = fips_counties_from_statename(mystate)) # radius not used
+
+round(t(x$results_summarized$rows)[,1:6],2)
+t(x$results_bysite[ , c(
+  'siteid', 'pop', names_d_subgroups_ratio_to_state_avg), with=F])
+
+mapfast(x$results_bysite, 
+        column_names = c(
+  'siteid', 'pop', names_d_subgroups_ratio_to_state_avg), 
+        labels = c(
+          'FIPS', 'Pop', names_d_subgroups_ratio_to_state_avg_friendly))
+
+x$results_bysite$ratio.to.avg.Demog.Index
+### require( ###  ejanalysis ### ) 
+# cnames <- get.county.info(x$results_bysite$siteid)$countyname
+cnames <- c("Kent County", "New Castle County", "Sussex County")
+cnames <- gsub(" County", "", cnames)
+
+barplot(x$results_bysite$pctlowinc, names.arg = cnames, 
+        main = paste0('% Low Income by County in ', mystate))
+
+# Another example
+mystate <- "Maryland"
+vname <- "% low income"
+xmd <- ejamit(fips = fips_counties_from_statename(mystate))
+ggblanket::gg_col(data = xmd$results_bysite,
+                  y = pctlowinc,
+                  x = siteid, 
+                  title = paste0(vname, ' by County in ', mystate),
+                  y_title = vname
+                  )
+```
+
 ### Specify points (where you want to center the circular buffers)
+
+You can define locations as all residents within X miles of any one or more of the specified points, and you can define those points in a few ways. One way is to upload a table of coordinates -- latitude and longitude for each point, one row per site, with columns called lat and lon (or some synonyms that work).
+
+The simplest way to do that in the RStudio console is to do something like x \<- ejamit(radius=1), and it prompts you to upload a spreadsheet with lat lon columns.
+
+You can also specify a set of facilities by uploading their Registry ID numbers in a table, or using other identifiers. For example, there is a function latlon_from_programid().
+
+You can define circular buffers around a set of EPA-regulated facilities in a few other ways as well, such as by NAICS (or SIC) industry names or codes, EPA program covering the set of facilities (e.g., all greenhouse gas reporters), or a Clean Air Act MACT subpart.
 
 #### NAICS Codes to Specify Facilities in one Industrial Sector
 
@@ -152,9 +215,9 @@ industryword <- "chemical manuf"
 mysites <- frs_from_naics(industryword, children=FALSE)[,1:5]
 regids <- mysites$REGISTRY_ID
 link1 <- url_echo_facility_webpage(regids, as_html = T)
-link2 <- url_ejscreen_report(lat = mysites$lat, lon = mysites$lon, distance = 3, as_html = T)
+link2 <- url_ejscreen_report(lat = mysites$lat, lon = mysites$lon, radius = 3, as_html = T)
 link3 <- url_ejscreenmap(lat = mysites$lat, lon = mysites$lon,  as_html = T)
-link4 <- url_ejscreen_acs_report(lat = mysites$lat, lon = mysites$lon, distance = 3, as_html = T)
+link4 <- url_ejscreen_acs_report(lat = mysites$lat, lon = mysites$lon, radius = 3, as_html = T)
 # # same:
 # my_industry <- naics_from_any("chemical manuf",children = F)[,.(code,name)]
 # mysites <- frs_from_naics(my_industry$code)[,1:5]
@@ -258,6 +321,7 @@ head(sitepoints100, 3)
 Create random test data points in States of LA and TX
 
 ```{r}
+?testpoints_n
 p1k <- testpoints_n(1000)
 mapfast(p1k)
 
@@ -270,9 +334,6 @@ mapfast(testpoints_n(300, ST_of_blockgroup = c('LA','TX')) )
 radius <- 3 # radius (miles).  5 km = 3.1 miles, 10 km = 6.2 miles
 ```
 
-
-
-
 ### Key Functions in EJAM
 
 -   **ejamit()** provides results in just one function, by using getblocksnearby() and doaggregate():
@@ -281,10 +342,12 @@ radius <- 3 # radius (miles).  5 km = 3.1 miles, 10 km = 6.2 miles
 
 -   **doaggregate()** takes the list of blocks near each point, joins it to blockgroup indicators like from EJScreen, and aggregates at each buffered point as well as for the overall set of unique blocks (residents). Sample input is in sites2blocks_example.
 
-### Get results in one step
+### Use ejamit( ) to get results in one step
+
+You can use x \<- ejamit(radius=1) with no dataset specified, in an interactive session in RStudio, and it will prompt you to specify a spreadsheet file with columns named lat and lon, for example. Specify the radius parameter in miles.
 
 ```{r}
-## This function just combines getblocksnearby() and doaggregate()
+## ejamit() just combines getblocksnearby() and doaggregate()
 sitepoints <- testpoints_1000
 # elapsed <- system.time({
 began = Sys.time()
@@ -326,9 +389,6 @@ round(outsum$rows[,names_d],2)
 round(outsum$rows[,names_d_pctile],2)
 
 ```
-
-
-
 
 ### Get granular results step by step, and view details
 

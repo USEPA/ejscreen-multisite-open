@@ -40,7 +40,9 @@ This uses getblocksnearby() to get a very fast rough/good estimate of
 which US block points are nearby (with a safety margin - see param below),
 before then using sf:: to carefully identify which of those candidate blocks are actually
 inside each polygon (e.g., circle) according to sf:: methods.
+
 For circular buffers, just using getblocksnearby() should work and not need this function.
+
 For noncircular polygons, buffered or not, this function will provide a way to very quickly
 filter down to which of the millions of US blocks should be examined by the sf:: join / intersect,
 since otherwise it takes forever for sf:: to check all US blocks.

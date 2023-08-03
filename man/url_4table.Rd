@@ -4,14 +4,14 @@
 \alias{url_4table}
 \title{url_4table}
 \usage{
-url_4table(lat, lon, distance, regid = NULL, as_html = TRUE)
+url_4table(lon, lat, radius, regid = NULL, as_html = TRUE)
 }
 \arguments{
-\item{lat}{vector of latitudes}
-
 \item{lon}{vector of longitudes}
 
-\item{distance}{vector of values for radius in miles}
+\item{lat}{vector of latitudes}
+
+\item{radius}{vector of values for radius in miles}
 
 \item{regid}{vector of FRS registry IDs if available to use to create links to detailed ECHO facility reports}
 

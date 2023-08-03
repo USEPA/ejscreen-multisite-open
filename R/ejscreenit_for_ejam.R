@@ -37,9 +37,9 @@ ejscreenit_for_ejam <- function(sitepoints, radius=3, ...) {
 # add URLs, but this duplicates code in server code
   echolink = rep(NA,nrow(out$results_bysite))
  out$results_bysite[ , `:=`(
-  `EJScreen Report` = url_ejscreen_report(    lat = sitepoints$lat, lon = sitepoints$lon, distance = radius, as_html = TRUE), 
-  `EJScreen Map`    = url_ejscreenmap(        lat = sitepoints$lat, lon = sitepoints$lon,                    as_html = TRUE), 
-  `ACS Report`      = url_ejscreen_acs_report(lat = sitepoints$lat, lon = sitepoints$lon, distance = radius, as_html = TRUE),
+  `EJScreen Report` = url_ejscreen_report(    lat = sitepoints$lat, lon = sitepoints$lon, radius = radius, as_html = TRUE), 
+  `EJScreen Map`    = url_ejscreenmap(        lat = sitepoints$lat, lon = sitepoints$lon,                  as_html = TRUE), 
+  `ACS Report`      = url_ejscreen_acs_report(lat = sitepoints$lat, lon = sitepoints$lon, radius = radius, as_html = TRUE),
   `ECHO report` = echolink
 )]
 out$results_overall[ , `:=`(
