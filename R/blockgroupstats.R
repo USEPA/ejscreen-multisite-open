@@ -7,25 +7,24 @@
 #'   plus more demographic subgroups.
 #'   
 #' @details 
-#'   As of 10/2022 it is the EJScreen 2.1 version of data, which uses ACS 2016-2020.
-#'   EJScreen 2.1 was released October 2022.
-#'   As of  4/2022 it was the EJScreen 2.0 version of data, which used ACS 2015-2019.
-#'   EJScreen 2.0 was released 2/18/2022 (raw data download avail 2/22/2022).
+#'   - As of 08/2023 it was the EJScreen 2.2 version of data, which used ACS 2017-2021.
+#'   - As of 10/2022 it was the EJScreen 2.1 version of data, which used ACS 2016-2020.
+#'   - As of 04/2022 it was the EJScreen 2.0 version of data, which used ACS 2015-2019.
 #'   
-#'   NOTE: It also has the race/ethnic subgroups that add up to minority or people of color.
-#'   
-#'   Each year this could be created as for the latest version.
+#'   Each year this should be re-created as for the latest version.
 #'   See attributes(blockgroupstats) 
-#'   and see EJSCREEN_Full_with_AS_CNMI_GU_VI  # which is in the package EJAMejscreendata
-#'   but there are differences in which columns are kept.
 #'   
-#'   It is a data.table of US Census blockgroups (not blocks). With PR, 242,335 rows, approx 175 columns.
+#'   NOTE: The race/ethnic subgroups that add up to minority or people of color
+#'   are added to blockgroupstats for purposes of this package, 
+#'   but are not in the v2.2 files one can download from the EJScreen FTP site.
+#'   
+#'   It is a data.table of US Census blockgroups (not blocks). 
+#'   With PR, 242,335 rows, approx 134 columns before the race/ethnic subgroups are added.
 #'   See <https://www.epa.gov/ejscreen>
 #'   
-#'   column names include bgfips, bgid (for join to blockwt$bgid), pop, pctlowinc, pcthisp, etc.
+#'   Column names include bgfips, bgid (for join to blockwt$bgid), pop, pctlowinc, 
+#'   plus the addition of pcthisp, etc.
 #'   
-#'   see source code and notes in EJAM/inst/notes_datasets/ which has  create_blockgroupstats()  
-#'   
-#'   See maybe the notes on cleaning up and changing the dataset starting from ejscreen package file bg22plus
+#'   See source code and notes in EJAM/dev/notes_datasets/  or EJAM/data-raw/ 
 #'   
 NULL

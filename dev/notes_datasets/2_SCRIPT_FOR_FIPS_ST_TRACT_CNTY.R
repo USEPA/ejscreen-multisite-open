@@ -62,8 +62,8 @@
 stop(' need to load EJAMejscreendata package file called EJSCREEN_Full_with_AS_CNMI_GU_VI')
 bgejam <-  EJSCREEN_Full_with_AS_CNMI_GU_VI
 # fix variable names to be friendlier
-stop('need to load ejscreen package file called change.fieldnames.ejscreen.csv')
-names(bgejam) <- change.fieldnames.ejscreen.csv(names(bgejam))
+# stop('used to use  ejscreen package file called change.fieldnames.ejscreen.csv')
+names(bgejam) <- fixnames(names(bgejam), oldtype = 'csv', newtype = 'r')
 
 
 #   NOTE this census2020 block table has PR but lacks "AS" "GU" "MP" "VI"

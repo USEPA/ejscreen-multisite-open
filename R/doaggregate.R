@@ -106,7 +106,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
   
   if (is.null(countcols)) {
     countcols <- unique(c(
-      names_other, 
+      names_other_count, 
       names_d_count, 
       names_d_subgroups_count
     ))
@@ -160,11 +160,17 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
   # "pm", "o3", "cancer", "resp", "dpm", 
   # "pctpre1960", "traffic.score", 
   # "proximity.npl", "proximity.rmp", "proximity.tsdf", "proximity.npdes", 
-  # "ust", 
+  # "ust", "rsei"
   # "EJ.DISPARITY.pm.eo", "EJ.DISPARITY.o3.eo", "EJ.DISPARITY.cancer.eo", "EJ.DISPARITY.resp.eo", "EJ.DISPARITY.dpm.eo", 
   # "EJ.DISPARITY.pctpre1960.eo", "EJ.DISPARITY.traffic.score.eo", 
   # "EJ.DISPARITY.proximity.npl.eo", "EJ.DISPARITY.proximity.rmp.eo", "EJ.DISPARITY.proximity.tsdf.eo", "EJ.DISPARITY.proximity.npdes.eo", 
-  # "EJ.DISPARITY.ust.eo"
+  # "EJ.DISPARITY.ust.eo" and rsei
+  # 
+  #  4 types of EJ-related indicators: US2, US5, ST2, ST5: 
+  # x.eo versions,
+  # x.supp versions, 
+  # state.x.eo versions,  
+  # state.x.supp versions
   # 
   # ** CHECK THIS:  EJScreen treats pctpre1960 as if can do popwtd avg, right? Technically pctpre1960 should use ejscreenformulas. . . ratio of sums of counts pre1960 and denom builtunits  
   # only 3 of names.d are exactly popmeans,  ("pctmin", "pctunder5", "pctover64") since denominators are pop. 
@@ -1200,7 +1206,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
       
       ### D RAW COUNTS? -NOT NEEDED?  ###
       names_d_count, names_d_subgroups_count,  # were in EJAM output but NOT ESSENTIAL IN OUTPUT
-      names_other,  # were in EJAM output but NOT ESSENTIAL IN OUTPUT # denominator counts but also pop which is already above
+      names_other_count,  # were in EJAM output but NOT ESSENTIAL IN OUTPUT # denominator counts but also pop which is already above
       
       ## BG AND BLOCK COUNTS ----
       #  # it will use whichever version of name is found

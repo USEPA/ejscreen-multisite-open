@@ -113,7 +113,7 @@ dput(names(bg22plus))
 #   "pctile.EJ.DISPARITY.o3.eo", "pctile.EJ.DISPARITY.pm.eo", "pctile.EJ.DISPARITY.ust.eo", 
 #
 #   "bin.pctmin", "bin.pctlowinc", "bin.pctlths", "bin.pctlingiso", 
-#   "bin.pctunder5", "bin.pctover64", "bin.unemployed", "bin.VSI.eo", 
+#   "bin.pctunder5", "bin.pctover64", "bin.unemployed", "bin.VSI.eo",             # in version 2.2, fixed to pctunemployed
 #   "bin.pctpre1960", "bin.dpm", "bin.cancer", "bin.resp", "bin.traffic.score", 
 #   "bin.proximity.npdes", "bin.proximity.npl", "bin.proximity.rmp", 
 #   "bin.proximity.tsdf", "bin.o3", "bin.pm", "bin.ust", 
@@ -127,7 +127,7 @@ dput(names(bg22plus))
 #
 #    "pctile.text.pctmin", 
 #   "pctile.text.pctlowinc", "pctile.text.pctlths", "pctile.text.pctlingiso", 
-#   "pctile.text.pctunder5", "pctile.text.pctover64", "pctile.text.unemployed", 
+#   "pctile.text.pctunder5", "pctile.text.pctover64", "pctile.text.unemployed",     # in version 2.2, fixed to pctunemployed
 #   "pctile.text.VSI.eo", "pctile.text.pctpre1960", "pctile.text.EJ.DISPARITY.pctpre1960.eo", 
 #   "pctile.text.dpm", 
 # 

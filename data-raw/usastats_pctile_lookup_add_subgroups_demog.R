@@ -1,8 +1,9 @@
 ############################################################################ #
 
 # This script was used for 2022 version 2.1 EJScreen,
-#  and then can be for  2023 version 2.2 IF lookup tables are
-#  missing the subgroups  or supplemental indicators.
+#  and then can be for  2023 version 2.2 IF get blockgroup data on subgroups 
+#  (and we know lookup tables are
+#  missing the subgroups  ).
 
 # This script is
 # to add columns to usastats and statestats with info on demographic subgroups
@@ -13,9 +14,19 @@
 # to add percentile lookup info on demog subgroups, we need that info from blockgroupstats
 
     
-# bg <- data.table::copy(EJAM::blockgroupstats)
-# bg <- data.table::setDF(bg)
+ bg <- data.table::copy(EJAM::blockgroupstats)
+  bg <- data.table::setDF(bg)
 
+  if (  0 == length(intersect(names_d_subgroups, names(bg)))) {
+    stop('need subgroup data to create lookup percentile info for subgroups')
+  } else {
+    if (0 == all(bg[ , names_d_subgroups])) {
+      #placeholder was there but all 0
+      stop('need subgroup data to create lookup percentile info for subgroups')
+    }
+  }
+   
+  
 # need ST column in blockgroupstats to create the statestats lookup table of demog subgroup info,
 # so add FIPS.ST and ST columns to blockgroupstats if not already there
 
@@ -57,7 +68,7 @@ if (!('Demog.Index.Supp' %in% names(statestats))) {statestats$Demog.Index.Supp <
 
 ## CREATE USA LOOKUP ####
 
-if (any(!(names_d_subgroups %in% names(usastats))))  {
+if (all(usastats[,names_d_subgroups] == 0)  | any(!(names_d_subgroups %in% names(usastats))))  {
   
   usastats_subgroups   <- write_pctiles_lookup(data.frame(bg)[ , names_d_subgroups])
   usastats_subgroups <- rbind(0, usastats_subgroups); usastats_subgroups$PCTILE[1] <- 0
@@ -84,7 +95,7 @@ if (any(!(names_d_subgroups %in% names(usastats))))  {
 
 ##  CREATE STATESTATS LOOKUP TABLE ####
 
-if (any(!(names_d_subgroups %in% names(statestats)))) {
+if (all(statestats[,names_d_subgroups] == 0)  | any(!(names_d_subgroups %in% names(statestats)))) {
   
   statestats_subgroups <- write_pctiles_lookup(data.frame(bg)[ , names_d_subgroups], zone.vector = bg$ST)
   

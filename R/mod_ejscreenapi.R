@@ -220,28 +220,28 @@ if (testing) {
         pctmin = c(96,49), pctlowinc = c(75, 24), pctlths = c(23, 7), pctlingiso = c(1,1), pctunder5 = c(8, 5), pctover64 = c(10, 19), pctunemployed = c(18,3), Demog.Index = c(86, 37), 
         pctpre1960 = c(0.22, 0.27), dpm = c(0.464,0.479), cancer = c(51, 58), resp = c(0.7, 0.6), traffic.score = c(980,830), proximity.npdes = c(0.41, 1.7), proximity.npl = c(0.091,0.056), proximity.rmp = c(2, 0.62), proximity.tsdf = c(3.8, 2.1), o3 = c(38, 38.1), pm = c(10.2, 10.3), ust = c(2.9, 2.9), 
         
-        state.avg.pctmin = c(41,41), state.avg.pctlowinc = c(39, 39), state.avg.pctlths = c(15,15), state.avg.pctlingiso = c(2, 2), state.avg.pctunder5 = c(7,7), state.avg.pctover64 = c(15, 15), state.avg.unemployed = c(6,6), state.avg.Demog.Index = c(40, 40), 
+        state.avg.pctmin = c(41,41), state.avg.pctlowinc = c(39, 39), state.avg.pctlths = c(15,15), state.avg.pctlingiso = c(2, 2), state.avg.pctunder5 = c(7,7), state.avg.pctover64 = c(15, 15), state.avg.pctunemployed = c(6,6), state.avg.Demog.Index = c(40, 40), 
         state.avg.pctpre1960 = c(0.2,0.2), state.avg.dpm = c(0.298, 0.298), state.avg.cancer = c(41,41), state.avg.resp = c(0.45, 0.45), 
         state.avg.traffic.score = c(560,560), state.avg.proximity.npdes = c(0.42, 0.42), state.avg.proximity.npl = c(0.086,0.086), state.avg.proximity.rmp = c(0.91, 0.91), state.avg.proximity.tsdf = c(1.4, 1.4), state.avg.o3 = c(37.2, 37.2), state.avg.pm = c(9.22, 9.22), state.avg.ust = c(2, 2), 
         
-        state.pctile.pctmin = c(93, 63), state.pctile.pctlowinc = c(94, 27), state.pctile.pctlths = c(79, 28), state.pctile.pctlingiso = c(67, 67), state.pctile.pctunder5 = c(66,41), state.pctile.pctover64 = c(27, 74), state.pctile.unemployed = c(93,31), state.pctile.Demog.Index = c(96, 52),
+        state.pctile.pctmin = c(93, 63), state.pctile.pctlowinc = c(94, 27), state.pctile.pctlths = c(79, 28), state.pctile.pctlingiso = c(67, 67), state.pctile.pctunder5 = c(66,41), state.pctile.pctover64 = c(27, 74), state.pctile.pctunemployed = c(93,31), state.pctile.Demog.Index = c(96, 52),
         state.pctile.pctpre1960 = c(70,76), state.pctile.dpm = c(81, 82), state.pctile.cancer = c(87,92), state.pctile.resp = c(98, 96), 
         state.pctile.traffic.score = c(85,83), state.pctile.proximity.npdes = c(93, 96), state.pctile.proximity.npl = c(72,53), state.pctile.proximity.rmp = c(85, 60), state.pctile.proximity.tsdf = c(91, 75), state.pctile.o3 = c(64, 67), state.pctile.pm = c(93,98), state.pctile.ust = c(76, 76), state.pctile.EJ.DISPARITY.pctpre1960.eo = c(90, 36), 
         state.pctile.EJ.DISPARITY.dpm.eo = c(95, 60), state.pctile.EJ.DISPARITY.cancer.eo = c(96, 56), state.pctile.EJ.DISPARITY.resp.eo = c(98, 57), 
         state.pctile.EJ.DISPARITY.traffic.score.eo = c(95, 73), state.pctile.EJ.DISPARITY.proximity.npdes.eo = c(96, 94), state.pctile.EJ.DISPARITY.proximity.npl.eo = c(92, 61), state.pctile.EJ.DISPARITY.proximity.rmp.eo = c(95, 69), state.pctile.EJ.DISPARITY.proximity.tsdf.eo = c(97, 74), state.pctile.EJ.DISPARITY.o3.eo = c(94, 55), state.pctile.EJ.DISPARITY.pm.eo = c(95,56), state.pctile.EJ.DISPARITY.ust.eo = c(91, 78), 
         
-        region.avg.pctmin = c(52,52), region.avg.pctlowinc = c(36, 36), region.avg.pctlths = c(15,15), region.avg.pctlingiso = c(6, 6), region.avg.pctunder5 = c(7,7), region.avg.pctover64 = c(13, 13), region.avg.unemployed = c(5,5), region.avg.Demog.Index = c(44, 44), 
+        region.avg.pctmin = c(52,52), region.avg.pctlowinc = c(36, 36), region.avg.pctlths = c(15,15), region.avg.pctlingiso = c(6, 6), region.avg.pctunder5 = c(7,7), region.avg.pctover64 = c(13, 13), region.avg.pctunemployed = c(5,5), region.avg.Demog.Index = c(44, 44), 
         region.avg.pctpre1960 = c(0.16,0.16), region.avg.dpm = c(0.219, 0.219), region.avg.cancer = c(32,32), region.avg.resp = c(0.37, 0.37), 
         region.avg.traffic.score = c(470,470), region.avg.proximity.npdes = c(0.5, 0.5), region.avg.proximity.npl = c(0.08,0.08), region.avg.proximity.rmp = c(0.83, 0.83), region.avg.proximity.tsdf = c(0.8,0.8), region.avg.o3 = c(41.1, 41.1), region.avg.pm = c(9.32, 9.32), region.avg.ust = c(2, 2), 
         
-        region.pctile.pctmin = c(91, 49), region.pctile.pctlowinc = c(95, 34), region.pctile.pctlths = c(75, 33),region.pctile.pctlingiso = c(42, 42), region.pctile.pctunder5 = c(62, 36), region.pctile.pctover64 = c(41, 79), region.pctile.unemployed = c(96, 33), region.pctile.Demog.Index = c(97, 44), 
+        region.pctile.pctmin = c(91, 49), region.pctile.pctlowinc = c(95, 34), region.pctile.pctlths = c(75, 33),region.pctile.pctlingiso = c(42, 42), region.pctile.pctunder5 = c(62, 36), region.pctile.pctover64 = c(41, 79), region.pctile.pctunemployed = c(96, 33), region.pctile.Demog.Index = c(97, 44), 
         region.pctile.pctpre1960 = c(75, 79), region.pctile.dpm = c(95, 96), region.pctile.cancer = c(97, 98), region.pctile.resp = c(99, 99), 
         region.pctile.traffic.score = c(88, 86), region.pctile.proximity.npdes = c(95, 98), region.pctile.proximity.npl = c(76, 62), region.pctile.proximity.rmp = c(89, 60), region.pctile.proximity.tsdf = c(97, 89), region.pctile.o3 = c(29, 30), region.pctile.pm = c(83, 87), region.pctile.ust = c(74, 75),
         
         region.pctile.EJ.DISPARITY.pctpre1960.eo = c(87, 22), region.pctile.EJ.DISPARITY.dpm.eo = c(94, 53), region.pctile.EJ.DISPARITY.cancer.eo = c(92, 49), region.pctile.EJ.DISPARITY.resp.eo = c(94, 50), 
         region.pctile.EJ.DISPARITY.traffic.score.eo = c(92, 66), region.pctile.EJ.DISPARITY.proximity.npdes.eo = c(97, 94), region.pctile.EJ.DISPARITY.proximity.npl.eo = c(86,53), region.pctile.EJ.DISPARITY.proximity.rmp.eo = c(91,60), region.pctile.EJ.DISPARITY.proximity.tsdf.eo = c(97, 74), region.pctile.EJ.DISPARITY.o3.eo = c(83, 47), region.pctile.EJ.DISPARITY.pm.eo = c(86, 48), region.pctile.EJ.DISPARITY.ust.eo = c(85, 69), 
         
-        avg.pctmin = c(40, 40), avg.pctlowinc = c(31, 31), avg.pctlths = c(12, 12), avg.pctlingiso = c(5, 5), avg.pctunder5 = c(6, 6), avg.pctover64 = c(16,16), avg.unemployed = c(5, 5),  avg.Demog.Index = c(36, 36), 
+        avg.pctmin = c(40, 40), avg.pctlowinc = c(31, 31), avg.pctlths = c(12, 12), avg.pctlingiso = c(5, 5), avg.pctunder5 = c(6, 6), avg.pctover64 = c(16,16), avg.pctunemployed = c(5, 5),  avg.Demog.Index = c(36, 36), 
         avg.pctpre1960 = c(0.28, 0.28), avg.dpm = c(0.295, 0.295), avg.cancer = c(29, 29), avg.resp = c(0.36, 0.36), 
         avg.traffic.score = c(710,710), avg.proximity.npdes = c(12, 12), avg.proximity.npl = c(0.13,0.13), avg.proximity.rmp = c(0.75, 0.75), avg.proximity.tsdf = c(2.2,2.2), avg.o3 = c(42.6, 42.6), avg.pm = c(8.74, 8.74), avg.ust = c(3.9,3.9), 
         
