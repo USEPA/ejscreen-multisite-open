@@ -59,6 +59,8 @@
 #'   This lets you just run getblocksnearby() once for the largest radius, and then query those
 #'   results to get doaggregate() to summarize at any distance that is less than or equal to the 
 #'   original radius analyzed by getblocksnearby(). 
+#' @param subgroups_type nh for non-hispanic race subgroups as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh; 
+#'   alone for EJScreen v2.2 style race subgroups as in White Alone, wa and others in names_d_subgroups_alone
 #' @param ... more to pass to another function? Not used currently.
 #' @param silentinteractive Set to FALSE to prevent long output showing in console in RStudio when in interactive mode
 #' @seealso [ejamit]   [getblocksnearby()]  
@@ -66,7 +68,18 @@
 #' @export
 #' 
 doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, countcols=NULL, popmeancols=NULL, calculatedcols=NULL, 
-                        testing=FALSE, include_ejindexes=FALSE, updateProgress = NULL, need_proximityscore=FALSE, silentinteractive=FALSE, ...) {
+                        testing=FALSE, include_ejindexes=FALSE, updateProgress = NULL, need_proximityscore=FALSE, silentinteractive=FALSE, subgroups_type='nh', ...) {
+ 
+  subs_count = switch(subgroups_type,
+                      alone    = names_d_subgroups_alone_count,
+                      nh       = names_d_subgroups_nh_count,  
+                      original = names_d_subgroups_count)
+  subs = switch(subgroups_type,
+                alone    = names_d_subgroups_alone,
+                nh       = names_d_subgroups_nh,  
+                original = names_d_subgroups)
+  # also see code below that starts with   names_these <- 
+  
   
   # timed <- system.time({
   if (testing) {   sites2blocks <- EJAM::sites2blocks_example }
@@ -76,15 +89,15 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
   if (any(!(c('siteid', 'blockid', 'distance') %in% names(sites2blocks)))) {stop("sites2blocks must contain columns named siteid, blockid, distance")}
   
   # check if optional input params, when provided, are all valid
-
-    
+  
+  
   
   
   
   # check if we only want to analyze a subset of all radii in sites2blocks
   if (!missing(radius)) {
     if ((length(radius) != 1) | (!is.numeric(radius)) | (radius <= 0) | radius > 50 ) {stop('radius must be a single number, in miles, between 0 and 50')}
-        if (radius > 2 * max(sites2blocks$distance)) {warning('radius requested is much larger than any distance found in sites2blocks, suggesting it is larger than the radius that was analyzed by getblocksnearby()')}
+    if (radius > 2 * max(sites2blocks$distance)) {warning('radius requested is much larger than any distance found in sites2blocks, suggesting it is larger than the radius that was analyzed by getblocksnearby()')}
     sites2blocks <- sites2blocks[distance <= radius, ]
   }
   
@@ -103,12 +116,18 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
   # for each type of indicator (countcols vs popmeancols, etc.),
   ##################################################### #   
   ## Specify Which vars are sum of counts, vs wtd avg, vs via formula ####
-  
   if (is.null(countcols)) {
     countcols <- unique(c(
-      names_other_count, 
+      names_d_other_count, 
       names_d_count, 
-      names_d_subgroups_count
+      subs_count
+    ))
+  }
+  if (is.null(calculatedcols)) {
+    calculatedcols <- unique(c(
+      names_d,                  #   "lowlifex"    "Demog.Index.Supp",  # already in names_d
+      subs,  
+      'flagged'
     ))
   }
   # **** but we probably treat pctpre1960 as pop wtd mean like other Evars?
@@ -128,13 +147,6 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
   # 'pre1960',  'builtunits',
   #  "hisp", "nhba", "nhaa", "nhaiana", "nhnhpia", "nhotheralone", "nhmulti" ,"nhwa" # 
   
-  if (is.null(calculatedcols)) {
-    calculatedcols <- unique(c(
-      names_d,                  #   "lowlifex"    "Demog.Index.Supp",  # already in names_d
-      names_d_subgroups,  
-      'flagged'
-    ))
-  }
   # These must be calculated after aggregating count variables and using those at siteid level. 
   # e.g. Use ejscreen package file ejscreenformulas$formula to calculate these.
   # calculatedcols <- c(ejscreen package file names.d, ejscreen package file names.d.subgroups, 'flagged') # use formulas for these
@@ -193,7 +205,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
   
   # ____AGGREGATE by BLOCK across sites #############################################################################################
   
-   
+  
   ################################################################ #
   # FIRST, PREPARE TO AGGREGATE BY BLOCK 
   
@@ -503,9 +515,9 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
   
   
   ##################################################### #
+  
   # TOTAL COUNT for each count indicator at EACH SITE & OVERALL ####  
-  # AND ALSO SUBGROUPS IF WANT TO 
-  #  USE FORMULAS TO GET EXACT %D AT EACH SITE AS SUM OF NUMERATORS / SUM OF DENOMINATORS)
+  
   ##################################################### #
   
   ##  Counts Overall (all sites/ whole sector)  ###
@@ -519,7 +531,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
   # others for OVERALL:  count_of_blocks_near_multiple_sites, blockcount_overall, bgcount_overall
   
   
-  ##  Counts by site/facility  ###
+  ## results_bysite  Counts by site/facility  ###
   
   results_bysite <- sites2bgs_plusblockgroupdata_bysite[ ,    lapply(.SD, FUN = function(x) {
     round(sum(x * bgwt, na.rm=TRUE), 1)
@@ -663,41 +675,67 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
   ##################################################### #
   # CALC via FORMULAS 
   #  using the Rolled up Counts #### 
-   # this was meant to handle multiple columns (formula for each new one) for many rows (and here in buffer results, one site is a row, not one blockgroup) 
+  # this was meant to handle multiple columns (formula for each new one) for many rows (and here in buffer results, one site is a row, not one blockgroup) 
   
   # "nonmins <- nhwa"
   # "mins <- pop - nhwa" 
+  
   results_overall[ , `:=`(
     pctover64       = 1 * ifelse(pop==0, 0,            over64        / pop),
-    pctunder5       = 1 * ifelse(pop==0, 0,            under5        / pop),
-    
-    pcthisp         = 1 * ifelse(pop==0, 0, as.numeric(hisp )        / pop),
-    pctnhba         = 1 * ifelse(pop==0, 0, as.numeric(nhba )        / pop),
-    pctnhaiana      = 1 * ifelse(pop==0, 0, as.numeric(nhaiana)      / pop),
-    pctnhaa         = 1 * ifelse(pop==0, 0, as.numeric(nhaa )        / pop), 
-    pctnhnhpia      = 1 * ifelse(pop==0, 0, as.numeric(nhnhpia )     / pop),
-    pctnhotheralone = 1 * ifelse(pop==0, 0, as.numeric(nhotheralone) / pop), 
-    pctnhmulti      = 1 * ifelse(pop==0, 0, as.numeric(nhmulti )     / pop),
-    pctnhwa         = 1 * ifelse(pop==0, 0, as.numeric(nhwa )        / pop),
-    
+    pctunder5       = 1 * ifelse(pop==0, 0,            under5        / pop)
+  ) ]
+  ##################################### #   
+  
+  if ("nh" %in% subgroups_type | "original" %in% subgroups_type) {
+    # original versions of demog subgroups, as in names_d_subgroups_nh or names_d_subgroups
+    #  where they are all NONHISPANIC - MIGHT GET phased out - EJScreen 2.2 does NOT use this version of subgroups
+    results_overall[ , `:=`(
+      pcthisp         = 1 * ifelse(pop==0, 0, as.numeric(hisp )        / pop),
+      pctnhba         = 1 * ifelse(pop==0, 0, as.numeric(nhba )        / pop),
+      pctnhaiana      = 1 * ifelse(pop==0, 0, as.numeric(nhaiana)      / pop),
+      pctnhaa         = 1 * ifelse(pop==0, 0, as.numeric(nhaa )        / pop), 
+      pctnhnhpia      = 1 * ifelse(pop==0, 0, as.numeric(nhnhpia )     / pop),
+      pctnhotheralone = 1 * ifelse(pop==0, 0, as.numeric(nhotheralone) / pop), 
+      pctnhmulti      = 1 * ifelse(pop==0, 0, as.numeric(nhmulti )     / pop),
+      pctnhwa         = 1 * ifelse(pop==0, 0, as.numeric(nhwa )        / pop)
+    )]
+  }
+  if ("alone" %in% subgroups_type) {
+    # new versions of subgroups - as used by EJScreen 2.2 - as in names_d_alone
+    #   they include hispanic within each racial subgroup here, so it is black alone (whether or not hispanic) not just non-hispanic black alone.
+    results_overall[ , `:=`(
+      pcthisp       = 1 * ifelse(pop==0, 0, as.numeric(hisp )      / pop),
+      pctba         = 1 * ifelse(pop==0, 0, as.numeric(ba )        / pop),
+      pctaiana      = 1 * ifelse(pop==0, 0, as.numeric(aiana)      / pop),
+      pctaa         = 1 * ifelse(pop==0, 0, as.numeric(aa )        / pop), 
+      pctnhpia      = 1 * ifelse(pop==0, 0, as.numeric(nhpia )     / pop),
+      pctotheralone = 1 * ifelse(pop==0, 0, as.numeric(otheralone) / pop), 
+      pctmulti      = 1 * ifelse(pop==0, 0, as.numeric(multi )     / pop),
+      pctwa         = 1 * ifelse(pop==0, 0, as.numeric(wa )        / pop)
+    )]
+  }
+  
+  ##################################### #     
+  results_overall[ , `:=`(
     pctmin          = 1 * ifelse(pop==0, 0, as.numeric(mins)         / pop), 
     pctlowinc       = 1 * ifelse(povknownratio  == 0, 0, lowinc                 / povknownratio),
     pctlths         = 1 * ifelse(age25up        == 0, 0, as.numeric(lths)       / age25up), 
     pctlingiso      = 1 * ifelse(hhlds          == 0, 0, lingiso                / hhlds), 
     pctpre1960      = 1 * ifelse(builtunits     == 0, 0, pre1960                / builtunits),
-    pctunemployed   = 1 * ifelse(unemployedbase == 0, 0, as.numeric(unemployed) / unemployedbase)  # ,
+    pctunemployed   = 1 * ifelse(unemployedbase == 0, 0, as.numeric(unemployed) / unemployedbase)  
   ) ]
   
-  if (!("lowlifex" %in% names(results_overall))) {results_overall[ , lowlifex := 0] } # if not available yet, treat like zero for now
-  
+
   results_overall[ , `:=`(
     Demog.Index = (pctlowinc + pctmin) / 2,
-    # *** add supplemental indicator too, when possible. need lowlifeexpectancy etc. and Demog.Index.Supp needs to be in names_d  and lookup tables for usastats and statestats ####
-    Demog.Index.Supp  = (pctlowinc + pctunemployed + pctlths + pctlingiso + lowlifex ) / ifelse(lowlifex == 0, 4, 5)
-    # *** add supplemental indicator too, when possible. need lowlifeexpectancy etc. and Demog.Index.Supp needs to be in names_d  and lookup tables for usastats and statestats ####
+    # *** add supplemental indicator too, when possible. need lowlifeexpectancy etc. and 
+    # Demog.Index.Supp needs to be in names_d  and lookup tables for usastats and statestats ####
+    Demog.Index.Supp  = (pctlowinc + pctunemployed + pctlths + pctlingiso + lowlifex ) / ifelse(is.na(lowlifex), 4, 5)
+    # *** add supplemental indicator too, when possible. need lowlifeexpectancy etc. and
+    # Demog.Index.Supp needs to be in names_d  and lookup tables for usastats and statestats ####
+    
     # # supplemental demographic index = (% low-income + % unemployed + % less than high school education + % limited English speaking + low life expectancy) / 5 
-    # For block groups where low life expectancy data is missing, the formula will average the other four factors! 
-    # Demog.Index.Supp = (pctlowinc + pctunemployed + pctlths + pctlingiso + lowlifex ) / ifelse(lowlifex == 0, 4, 5) # where is lowlifex available?
+    # For block groups where low life expectancy data is missing (NA), the formula will average the other four factors! 
     # NOTE THAT EJScreen uses the term "Supplemental Indexes" to refer to 
     #  EJ Indexes that are based on the Supplemental Demographic Index
     # See details at  https://www.epa.gov/ejscreen/ejscreen-map-descriptions#supp 
@@ -705,17 +743,53 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
   
   results_bysite[ , `:=`(
     pctover64       = 1 * ifelse(pop==0, 0,            over64        / pop),
-    pctunder5       = 1 * ifelse(pop==0, 0,            under5        / pop),
-    
-    pcthisp         = 1 * ifelse(pop==0, 0, as.numeric(hisp )        / pop),
-    pctnhba         = 1 * ifelse(pop==0, 0, as.numeric(nhba )        / pop),
-    pctnhaiana      = 1 * ifelse(pop==0, 0, as.numeric(nhaiana)      / pop),
-    pctnhaa         = 1 * ifelse(pop==0, 0, as.numeric(nhaa )        / pop), 
-    pctnhnhpia      = 1 * ifelse(pop==0, 0, as.numeric(nhnhpia )     / pop),
-    pctnhotheralone = 1 * ifelse(pop==0, 0, as.numeric(nhotheralone) / pop), 
-    pctnhmulti      = 1 * ifelse(pop==0, 0, as.numeric(nhmulti )     / pop),
-    pctnhwa         = 1 * ifelse(pop==0, 0, as.numeric(nhwa )        / pop),
-
+    pctunder5       = 1 * ifelse(pop==0, 0,            under5        / pop)
+  )]
+  
+  ##################################### #     
+  # cbind(EJAM::names_d_subgroups, EJAM::names_d_subgroups_count)
+  # [,1]              [,2]          
+  # [1,] "pcthisp"         "hisp"        
+  # [2,] "pctnhba"         "nhba"        
+  # [3,] "pctnhaa"         "nhaa"        
+  # [4,] "pctnhaiana"      "nhaiana"     
+  # [5,] "pctnhnhpia"      "nhnhpia"     
+  # [6,] "pctnhotheralone" "nhotheralone"
+  # [7,] "pctnhmulti"      "nhmulti"     
+  # [8,] "pctnhwa"         "nhwa"
+  # 
+  if ("nh" %in% subgroups_type | "original" %in% subgroups_type) {
+    # original versions of demog subgroups, as in names_d_subgroups_nh or names_d_subgroups
+    #  where they are all NONHISPANIC - MIGHT GET phased out - EJScreen 2.2 does NOT use this version of subgroups
+    results_bysite[ , `:=`(
+      pcthisp         = 1 * ifelse(pop==0, 0, as.numeric(hisp )        / pop),
+      pctnhba         = 1 * ifelse(pop==0, 0, as.numeric(nhba )        / pop),
+      pctnhaiana      = 1 * ifelse(pop==0, 0, as.numeric(nhaiana)      / pop),
+      pctnhaa         = 1 * ifelse(pop==0, 0, as.numeric(nhaa )        / pop), 
+      pctnhnhpia      = 1 * ifelse(pop==0, 0, as.numeric(nhnhpia )     / pop),
+      pctnhotheralone = 1 * ifelse(pop==0, 0, as.numeric(nhotheralone) / pop), 
+      pctnhmulti      = 1 * ifelse(pop==0, 0, as.numeric(nhmulti )     / pop),
+      pctnhwa         = 1 * ifelse(pop==0, 0, as.numeric(nhwa )        / pop)
+    )]
+  }
+  if ("alone" %in% subgroups_type) {
+    # new versions of subgroups - as used by EJScreen 2.2 - as in names_d_alone
+    #   they include hispanic within each racial subgroup here, so it is black alone (whether or not hispanic) not just non-hispanic black alone.
+    results_bysite[ , `:=`(
+      pcthisp         = 1 * ifelse(pop==0, 0, as.numeric(hisp )        / pop),
+      pctba         = 1 * ifelse(pop==0, 0, as.numeric(ba )        / pop),
+      pctaiana      = 1 * ifelse(pop==0, 0, as.numeric(aiana)      / pop),
+      pctaa         = 1 * ifelse(pop==0, 0, as.numeric(aa )        / pop), 
+      pctnhpia      = 1 * ifelse(pop==0, 0, as.numeric(nhpia )     / pop),
+      pctotheralone = 1 * ifelse(pop==0, 0, as.numeric(otheralone) / pop), 
+      pctmulti      = 1 * ifelse(pop==0, 0, as.numeric(multi )     / pop),
+      pctwa         = 1 * ifelse(pop==0, 0, as.numeric(wa )        / pop)
+    )]
+  }
+  
+  ##################################### #     
+  
+  results_bysite[ , `:=`(
     pctmin          = 1 * ifelse(pop==0, 0, as.numeric(mins)         / pop), 
     pctlowinc       = 1 * ifelse(povknownratio  == 0, 0, lowinc                 / povknownratio),
     pctlths         = 1 * ifelse(age25up        == 0, 0, as.numeric(lths)       / age25up), 
@@ -724,12 +798,10 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
     pctunemployed   = 1 * ifelse(unemployedbase == 0, 0, as.numeric(unemployed) / unemployedbase)  # ,
   )]
   
-  if (!("lowlifex" %in% names(results_bysite)))  {results_bysite[ ,  lowlifex := 0] } # if not available yet, treat like zero for now
-  
-  results_bysite[ , `:=`(
+   results_bysite[ , `:=`(
     Demog.Index = (pctlowinc + pctmin) / 2,
     # *** add this supplemental indicator too, when possible. need lowlifeexpectancy etc. and Demog.Index.Supp needs to be in names_d  and lookup tables for usastats and statestats ####
-    Demog.Index.Supp = (pctlowinc + pctunemployed + pctlths + pctlingiso + lowlifex ) / ifelse(lowlifex == 0, 4, 5)
+    Demog.Index.Supp = (pctlowinc + pctunemployed + pctlths + pctlingiso + lowlifex ) / ifelse(is.na(lowlifex), 4, 5)
   )]
   
   
@@ -863,11 +935,12 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
   ##################################################### #
   # these lines about names of variables should be pulled out of here and defined as params or another way   xxx
   # specify which variables get converted to percentile form
-  varsneedpctiles <- c(names_e,  names_d, names_d_subgroups   )
+  
+  varsneedpctiles <- c(names_e,  names_d, names_d_subgroups   ) # xxx
   # varsneedpctiles <- intersect(varsneedpctiles, names(blockgroupstats))
   # if (include_ejindexes) {
-    # ****  RAW EJ INDEXES FORMULAS DEPEND ON OTHER PERCENTILES, SO THEY CANNOT BE READY YET SO CANNOT DO PERCENTILES YET - MUST DO SEPARATELY LATER.
-    # varsneedpctiles <- c(varsneedpctiles, names_ej) 
+  # ****  RAW EJ INDEXES FORMULAS DEPEND ON OTHER PERCENTILES, SO THEY CANNOT BE READY YET SO CANNOT DO PERCENTILES YET - MUST DO SEPARATELY LATER.
+  # varsneedpctiles <- c(varsneedpctiles, names_ej) 
   # }
   varnames.us.pctile    <- paste0(      'pctile.', varsneedpctiles)
   varnames.state.pctile <- paste0('state.pctile.', varsneedpctiles)
@@ -876,8 +949,8 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
   state.pctile.cols_bysite  <- data.frame(matrix(nrow = NROW(results_bysite),  ncol = length(varsneedpctiles))); colnames(state.pctile.cols_bysite)  <- varnames.state.pctile
   us.pctile.cols_overall    <- data.frame(matrix(nrow = NROW(results_overall), ncol = length(varsneedpctiles))); colnames(us.pctile.cols_overall)    <- varnames.us.pctile
   # done later: state.pctile.cols_overall <- data.frame(matrix(nrow = NROW(results_overall), ncol = length(varsneedpctiles))); colnames(state.pctile.cols_overall) <- varnames.state.pctile
-
-    # SURELY THERE IS A FASTER / VECTORIZED WAY TO DO THIS (this actually is noticeably slow, at least the line that starts with state.pctile.cols_bysite[ , varnames.state.pctile[[i]]] <- pctile_from_raw_lookup( ):
+  
+  # SURELY THERE IS A FASTER / VECTORIZED WAY TO DO THIS (this actually is noticeably slow, at least the line that starts with state.pctile.cols_bysite[ , varnames.state.pctile[[i]]] <- pctile_from_raw_lookup( ):
   #  >>>> VERY SLOW STEP; also the function  pctile_from_raw_lookup()  may need to be optimized or avoid passing dt as param to it. ####
   for (i in seq_along(varsneedpctiles)) {
     myvar <- varsneedpctiles[i]
@@ -908,7 +981,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
   results_overall <- cbind(siteid=NA, results_overall, us.pctile.cols_overall ) # , state.pctile.cols_overall)
   results_bysite  <- cbind(           results_bysite,  us.pctile.cols_bysite,  state.pctile.cols_bysite )
   
-
+  
   
   #____________________________________________________  #  ##################################################### #  ######################################################
   
@@ -998,7 +1071,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
     #*# Does the EJ index formula use the state percentile (not the US percentile) of envt, when creating a raw score that is to be reported as a State percentile?
     # if so, we'd need to separate the variables into raw ej score versus state-specific raw ej score, like we already do with the percentiles.
     # That would require some more code. 
-
+    
     #*# Then for overall results as EJ index State percentile, I guess we use the popwtd mean of the site-specific EJ index State PERCENTILES?
     #*#   (You cannot look up the average (overall) raw score since the US percentiles table is not applicable really.)
     # add certain variable names to the list of variables for which overall average state percentile will be calculated
@@ -1040,14 +1113,25 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
   
   ## >>>Do we want to include EJ Indexes and supplementary ones here?? ####
   
-  names_these <- c(names_d,              names_d_subgroups,              names_e) 
+  
+  ######################################### #
+  # **** names_these and related lists are defined by EJAM already,
+  # but want to ensure it uses the right version(s) of subgroups ! 
+  
+  # names_these <- c(names_d,              names_d_subgroups,              names_e) 
+  #  EJAM::names_these  may not be the same while transitioning to newer subgroups definitions
   names_these <- perfectnames(names_these)
-  # names_avg_these <- c(names_d_avg,          names_d_subgroups_avg,          names_e_avg)        # #  avg.x was changed to us.avg.x naming scheme
-  names_avg_these          <- paste0(      "avg.", names_these) # doing it this way limits it to the subset found by perfectnames(names_these)
-  names_state_avg_these    <- paste0("state.avg.", names_these) # c(names_d_state_avg,    names_d_subgroups_state_avg,    names_e_state_avg)  #     
-  names_ratio_to_avg_these       <- paste0("ratio.to.", names_avg_these )   # <- c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg, names_e_ratio_to_avg) #
-  names_ratio_to_state_avg_these <- paste0("ratio.to.", names_state_avg_these) #  <- c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg, names_e_ratio_to_state_avg)  # 
-
+  # names_these_avg <- c(names_d_avg,          names_d_subgroups_avg,          names_e_avg)        # #  avg.x was changed to us.avg.x naming scheme
+  
+  # THESE ARE ALREADY IN EJAM:: but this ensures they are also in usastats, statestats, and results_bysite
+  
+  names_these_avg          <- paste0(      "avg.", names_these) # doing it this way limits it to the subset found by perfectnames(names_these)
+  names_these_state_avg    <- paste0("state.avg.", names_these) # c(names_d_state_avg,    names_d_subgroups_state_avg,    names_e_state_avg)  #     
+  names_these_ratio_to_avg       <- paste0("ratio.to.", names_these_avg )   # <- c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg, names_e_ratio_to_avg) #
+  names_these_ratio_to_state_avg <- paste0("ratio.to.", names_these_state_avg) #  <- c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg, names_e_ratio_to_state_avg)  # 
+  ######################################### #
+  
+  
   # pull averages from statestats table (note using data.frame syntax here not data.table)
   #
   # must be a cleaner way to do this part but did not have time to think about one
@@ -1056,7 +1140,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
   state.avg.cols_bysite <- stinfo[results_bysite[,.(ST)],  on = "ST"]
   
   # rename the colnames to be state.avg. instead of just basic names
-  setnames(state.avg.cols_bysite,  names_these, names_state_avg_these )
+  setnames(state.avg.cols_bysite,  names_these, names_these_state_avg )
   state.avg.cols_bysite[, ST := NULL]
   results_bysite <- cbind(results_bysite, state.avg.cols_bysite)  # cbind?? collapse:: has a faster way   ************
   
@@ -1066,7 +1150,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
   
   state.avg.cols_overall <-  results_bysite[ ,  lapply(.SD, FUN = function(x) {
     collapse::fmean(x, w = pop)   # stats::weighted.mean(x, w = pop, na.rm = TRUE)
-  }), .SDcols = names_state_avg_these] # fixed now?
+  }), .SDcols = names_these_state_avg] # fixed now?
   
   results_overall <- cbind(results_overall, state.avg.cols_overall)
   
@@ -1078,7 +1162,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
   #  overall     
   avg.cols_overall <-   usastats[ usastats$PCTILE == "mean",  names_these] # not a data.table, or it would need to say  usastats[ PCTILE == "mean",  ..names_these]
   # rename the colnames to avg instead of just basic names?
-  setnames(avg.cols_overall,  names_these,  names_avg_these)
+  setnames(avg.cols_overall,  names_these,  names_these_avg)
   
   results_overall <- cbind(results_overall, avg.cols_overall)
   
@@ -1093,26 +1177,26 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
   ## RATIOS TO US AVG ###
   ratios_to_avg_bysite  <- 
     results_bysite[  , ..names_these] / 
-      results_bysite[, ..names_avg_these]
-    
+    results_bysite[, ..names_these_avg]
+  
   ratios_to_avg_overall <- 
     results_overall[  , ..names_these] /          # AVERAGE PERSON score OVERALL, RIGHT?
-      results_overall[, ..names_avg_these]
-    
+    results_overall[, ..names_these_avg]
+  
   ## RATIOS TO STATE AVG ###
   ratios_to_state_avg_bysite  <- 
     results_bysite[  , ..names_these] / 
-      results_bysite[, ..names_state_avg_these]
+    results_bysite[, ..names_these_state_avg]
   
   ratios_to_state_avg_overall <- 
     results_overall[  , ..names_these] / 
-      results_overall[, ..names_state_avg_these]
+    results_overall[, ..names_these_state_avg]
   
   # add those all to results tables
-  colnames(ratios_to_avg_bysite)  <- names_ratio_to_avg_these
-  colnames(ratios_to_avg_overall) <- names_ratio_to_avg_these
-  colnames(ratios_to_state_avg_bysite)  <- names_ratio_to_state_avg_these
-  colnames(ratios_to_state_avg_overall) <- names_ratio_to_state_avg_these
+  colnames(ratios_to_avg_bysite)  <- names_these_ratio_to_avg
+  colnames(ratios_to_avg_overall) <- names_these_ratio_to_avg
+  colnames(ratios_to_state_avg_bysite)  <- names_these_ratio_to_state_avg
+  colnames(ratios_to_state_avg_overall) <- names_these_ratio_to_state_avg
   
   results_bysite  <- cbind(results_bysite,  ratios_to_avg_bysite,  ratios_to_state_avg_bysite)   # collapse:: has a faster way than cbind here!
   results_overall <- cbind(results_overall, ratios_to_avg_overall, ratios_to_state_avg_overall)
@@ -1151,10 +1235,10 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
       ## RATIOS to AVG in US or State ---------------
       # for D,Dsub,E
       
-      names_ratio_to_avg_these,
-      names_ratio_to_avg_these,
-      names_ratio_to_state_avg_these,
-      names_ratio_to_state_avg_these,
+      names_these_ratio_to_avg,
+      names_these_ratio_to_avg,
+      names_these_ratio_to_state_avg,
+      names_these_ratio_to_state_avg,
       
       ## DEMOGRAPHICS -----------------
       
@@ -1167,9 +1251,9 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
       ###  D US RATIOS?  # (above)
       ### D US PCTILE ###
       # "pctile.Demog.Index", #now in names_d_pctile
-      names_d_pctile,  names_d_subgroups_pctile, 
+      names_d_pctile, names_d_subgroups_pctile, 
       ### D US AVERAGES ###
-      names_d_avg, names_d_subgroups_avg, names_d_subgroups_state_avg,
+      names_d_avg,  names_d_subgroups_avg, names_d_subgroups_state_avg,
       ### D STATE RATIOS?     # (above)
       ### D STATE PCTILE ##
       # "state.pctile.Demog.Index", #now in names_d_pctile
@@ -1206,7 +1290,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
       
       ### D RAW COUNTS? -NOT NEEDED?  ###
       names_d_count, names_d_subgroups_count,  # were in EJAM output but NOT ESSENTIAL IN OUTPUT
-      names_other_count,  # were in EJAM output but NOT ESSENTIAL IN OUTPUT # denominator counts but also pop which is already above
+      names_d_other_count,  # were in EJAM output but NOT ESSENTIAL IN OUTPUT # denominator counts but also pop which is already above
       
       ## BG AND BLOCK COUNTS ----
       #  # it will use whichever version of name is found

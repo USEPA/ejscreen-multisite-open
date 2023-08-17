@@ -3,7 +3,7 @@
 # notes on key steps in using sf package
 
 
-# also see C:/Users/mcorrale/R/mysource/EJAM/inst/notes_intersect_shape_or_dist_calc_and_FRS_density/NOTES_EPA_ATMOS_Highperformancecluster_parallelization.R 
+# also see ~/../../R/mysource/EJAM/dev/intersect-distance/  files with notes  
 
 ########################################################################### # 
 # READ SHAPEFILE ####

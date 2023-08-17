@@ -16,6 +16,7 @@ doaggregate(
   updateProgress = NULL,
   need_proximityscore = FALSE,
   silentinteractive = FALSE,
+  subgroups_type = "nh",
   ...
 )
 }
@@ -56,6 +57,9 @@ using formulas that have to be specified.}
 \item{need_proximityscore}{whether to calculate proximity scores}
 
 \item{silentinteractive}{Set to FALSE to prevent long output showing in console in RStudio when in interactive mode}
+
+\item{subgroups_type}{nh for non-hispanic race subgroups as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh;
+alone for EJScreen v2.2 style race subgroups as in White Alone, wa and others in names_d_subgroups_alone}
 
 \item{...}{more to pass to another function? Not used currently.}
 }

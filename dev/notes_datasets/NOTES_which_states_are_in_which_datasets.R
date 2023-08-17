@@ -295,7 +295,7 @@ setdiff(universe$ST, bg22plus$ST)
 get.state.info( setdiff(universe$FIPS.ST, substr(bg22DemographicSubgroups2016to2020$FIPS,1,2)))[,'ST']
 # [1] "AS" "GU" "MP" "PR"  "VI"      # ****** missing pr here but it was put into bg22plus... may drop this? THIS NEEDS TO BE FIXED / UPDATED **********
 #   # Also see https://www.census.gov/content/dam/Census/library/publications/2020/acs/acs_prcs_handbook_2020_ch04.pdf  
-#   # script to add PR demog subgroups was in C:/Users/mcorrale/R/mysource/EJAM/inst/notes_datasets/4_SCRIPT_ADD_PUERTORICO_DEMOG_SUBGROUPS.R 
+#   # script to add PR demog subgroups was in /EJAM/dev/notes_datasets/4_SCRIPT_ADD_PUERTORICO_DEMOG_SUBGROUPS.R 
 setdiff(universe$ST,  acs_B03002_2016_2020_bg_tract$bg$STUSAB)
 # [1] "AS" "GU" "MP" "PR"  "VI"  # ****** missing pr here but it was put into bg22plus... may drop this? THIS NEEDS TO BE FIXED / UPDATED **********
 get.state.info( setdiff(universe$FIPS.ST, substr(tract22DemographicSubgroups2016to2020$FIPS,1,2)))$ST

@@ -8,15 +8,19 @@
 
 # - friendly names differ somewhat
 
+# ** change when ready to switch to using subgroups_alone like white alone not nonhispanic white alone:
+
+subgroups_type <- c(  'nh', 'alone')[1]  # simple names without _nh or _alone should be usable/ what is used in code, and here get set same as nh for now and set to same as alone when want to switch 
+
 #  *** EJScreen refers to EJ indexes without mentioning they are percentiles, since that is the only way they are reported.
 # Should EJAM do same, or be more explicit with friendly names? 
 # names_ej_friendly can be used instead for pctiles, probably, since it does not mention whether it is raw or percentile
- 
+
 # library(EJAMejscreenapi)
 # map_headernames[grepl("ej", map_headernames$varlist), c('varlist', 'newnames_ejscreenapi', 'names_friendly')]
 # map_headernames[grepl("_d", map_headernames$varlist), c('varlist', 'newnames_ejscreenapi', 'names_friendly')]
 # map_headernames[map_headernames$varlist == 'names_e' | grepl("names_e_", map_headernames$varlist), c('varlist', 'newnames_ejscreenapi', 'names_friendly')]
-  # unique(map_headernames$varlist)
+# unique(map_headernames$varlist)
 
 
 # for example...
@@ -36,14 +40,14 @@
 # [11,] "EJ: NPDES (raw)"                     "EJ: NPDES"           
 # [12,] "EJ: Underground storage tanks (raw)" "EJ: UST" 
 #      RSEI  
- 
+
 
 ############################################################################## #
 ## code to prepare `names_of_indicators` dataset 
 # Define lists of names of EJScreen-related variables for use here
 ############################################################################## #
 
- # FOR NOW I AM putting these all in one list called namez, 
+# FOR NOW I AM putting these all in one list called namez, 
 #  and also lists in the varlist column of EJAMejscreenapi::map_headernames
 # AND ALSO AS multiple objects like names_d 
 #
@@ -83,8 +87,8 @@
 
 #    to change names,   which function to use?
 # e.g. this  works but relies on ejscreen package file  pkg, and see EJAMbatch.summarizer::change... and fixnames and fixcolnames and fixnamestype etc. 
-   # names(USA_2022)    <- ejscreen package file ejscreenformulas$Rfieldname[match(names(USA_2022),    ejscreen package file ejscreenformulas$gdbfieldname)] 
-   # names(States_2022) <- ejscreen package file ejscreenformulas$Rfieldname[match(names(States_2022), ejscreen package file ejscreenformulas$gdbfieldname)]
+# names(USA_2022)    <- ejscreen package file ejscreenformulas$Rfieldname[match(names(USA_2022),    ejscreen package file ejscreenformulas$gdbfieldname)] 
+# names(States_2022) <- ejscreen package file ejscreenformulas$Rfieldname[match(names(States_2022), ejscreen package file ejscreenformulas$gdbfieldname)]
 
 # similar to: EJAMbatch.summarizer::names_d_batch_friendly, EJAMbatch.summarizer::names_e_batch_friendly 
 
@@ -108,11 +112,11 @@ names_d <- c(
   "pctlingiso",   
   "pctunemployed",
   "pctlths",   # note this sort order was fixed 3/2/23 to put lowinc before min, to match friendly order
-   "lowlifex", 
+  "lowlifex", 
   "pctunder5",  "pctover64", 
- 
+  
   "pctmin"
-  )
+)
 
 # friendly raw percents
 names_d_friendly <- c(
@@ -122,9 +126,9 @@ names_d_friendly <- c(
   "% Limited English",
   "% Unemployed",
   "% < High School", 
-  "Low life expectancy",    # note this is not a percent, actually
+  "Low life expectancy",    # note this is not a percent, actually?
   "% < age 5", "% > age 64", 
- 
+  
   "% People of Color"
 )
 
@@ -133,17 +137,16 @@ names_d_count_friendly <- paste0("Count of ", gsub("% ", "", names_d_friendly))
 
 # counts with exceptions, and other counts
 names_d_count <- gsub('pct', '', names_d); names_d_count <- gsub('min', 'mins', names_d_count)
-dontuse = names_d_count %in% c('Demog.Index',  'Demog.Index.Supp', 'Demog.Index.Supp')
+dontuse = names_d_count %in% c('Demog.Index',  'Demog.Index.Supp', 'lowlifex') # there is no count for these
 names_d_count <- names_d_count[!dontuse]
 names_d_count_friendly <- names_d_count_friendly[!dontuse]
-# names_d_count <- names_d_count[names_d_count != 'Demog.Index'];      # there is no count for this
-# names_d_count <- names_d_count[names_d_count != 'Demog.Index.Supp'] # there is no count for this
-# names_d_count <- names_d_count[names_d_count != 'lowlifex']          # there is no count for this
+rm(dontuse)
 
 
-names_other_count <- c("pop", "nonmins", "povknownratio", "age25up", "hhlds", "unemployedbase", "pre1960", "builtunits")
+names_d_other_count <- c("pop", "nonmins", "povknownratio", "age25up", "hhlds", "unemployedbase", "pre1960", "builtunits")
 
-names_other_count_friendly <- c('Count of population', 
+# this was not being used:
+names_d_other_count_friendly <- c('Count of population', 
                                 'Count of people of color, denominator for %POC', 
                                 'Count of hhlds with known poverty ratio, denominator for % low income', 
                                 'Count of age 25+, denominator for %<high school',
@@ -152,43 +155,69 @@ names_other_count_friendly <- c('Count of population',
                                 'Count of housing units built pre-1960',
                                 'Count of housing units, denominator for %pre-1960')
 
-
 ############################################################################## #
 
 # DEMOG SUBGROUPS - rawpct, friendlypct, & count (not pctile) ####
+# 
+# ** As of v2.2, EJAM and EJAMejscreenapi  will use 
+# names_d_subgroups_nh    for non-hispanic versions, and 
+# names_d_subgroups_alone for black alone, white alone, etc. -- ie, 
+#   new ones EJScreen v2.2 uses, which do not exclude hispanic from race groups,
+# so  names_d_subgroups will change to  names_d_subgroups_nh, but will not be used by EJAM for now? 
+# and names_d_subgroups_alone has to be created and used everywhere names_d_subgroups was being used,
+# but friendly names and so on have to be revised to be correct.
+
+# subgroups_type
 
 # raw percents
-names_d_subgroups       <- c("pcthisp", "pctnhba", "pctnhaa", "pctnhaiana", "pctnhnhpia", "pctnhotheralone", "pctnhmulti", "pctnhwa")
+names_d_subgroups_alone  <- c("pcthisp",  "pctba",   "pctaa",   "pctaiana",   "pctnhpia",   "pctotheralone",   "pctmulti",   "pctwa")  # BUT ONLY SOME ARE GENERATED BY EJSCREEN2.2
+names_d_subgroups_nh    <- c("pcthisp", "pctnhba", "pctnhaa", "pctnhaiana", "pctnhnhpia", "pctnhotheralone", "pctnhmulti", "pctnhwa")
+
 # counts
-names_d_subgroups_count <- c(   "hisp",    "nhba",    "nhaa",    "nhaiana",    "nhnhpia",    "nhotheralone",    "nhmulti",    "nhwa")
+names_d_subgroups_alone_count <- c(   "hisp",      "ba",      "aa",      "aiana",      "nhpia",      "otheralone",      "multi",      "wa")
+names_d_subgroups_nh_count    <- c(   "hisp",    "nhba",    "nhaa",    "nhaiana",    "nhnhpia",    "nhotheralone",    "nhmulti",    "nhwa")
 # or  names_d_subgroups_count <-  gsub("pct", "", names_d_subgroups)
 
 # friendly raw percents
-names_d_subgroups_friendly <- c(
-  "% Hisp (Hispanic or Latino)", 
-  "% Black nha (Black or African American non-Hispanic, single race)", 
-  "% Asian nha (Asian non-Hispanic, single race)",
-  "% AmIndian nha (American Indian and Alaska Native non-Hispanic, single race)", 
-  "% Hawaii nha (Native Hawaiian and Other Pacific Islander non-Hispanic, single race)", 
-  "% Other nha (Other race non-Hispanic, single race)",
-  "% Multi nha (Two or more races non-Hispanic)",
-  "% White nha (White non-Hispanic, single race)" 
+
+names_d_subgroups_alone_friendly <- c(
+  "% Hispanic or Latino, any races", 
+  "% Black or African American, single race", 
+  "% Asian, single race",
+  "% American Indian or Alaska Native, single race", 
+  "% Native Hawaiian or Other Pacific Islander, single race", 
+  "% Other race, single race",
+  "% Multirace (two or more races)",
+  "% White, single race"
 )
+names_d_subgroups_nh_friendly <- c(   # , non-Hispanic
+  "% Hispanic or Latino, any races", 
+  "% Black or African American, single race, non-Hispanic", 
+  "% Asian, single race, non-Hispanic",
+  "% American Indian or Alaska Native, single race, non-Hispanic", 
+  "% Native Hawaiian or Other Pacific Islander, single race, non-Hispanic", 
+  "% Other race, single race, non-Hispanic",
+  "% Multirace (two or more races), non-Hispanic",
+  "% White, single race, non-Hispanic"
+)
+# Basic subgroup lists
 
-# no friendly version of counts?  e.g.,  
-#  names_d_subgroups_count_friendly <- paste0("Count of ", gsub("% ", "", names_d_subgroups_friendly)
+if ('alone' %in% subgroups_type) {
+  names_d_subgroups        <-   names_d_subgroups_alone  
+  names_d_subgroups_count    <- names_d_subgroups_alone_count 
+  names_d_subgroups_friendly <- names_d_subgroups_alone_friendly
+} else {
+  names_d_subgroups        <-   names_d_subgroups_nh
+  names_d_subgroups_count    <- names_d_subgroups_nh_count
+  names_d_subgroups_friendly <- names_d_subgroups_nh_friendly
+}
 
+ #   friendly version of counts 
+ names_d_subgroups_count_friendly       <-  gsub("% ", "Count of ", names_d_subgroups_friendly)
+ names_d_subgroups_alone_count_friendly <-  gsub("% ", "Count of ", names_d_subgroups_alone_friendly)
+ names_d_subgroups_nh_count_friendly    <-  gsub("% ", "Count of ", names_d_subgroups_nh_friendly)
+ 
 
-# older / alt version
-# names_d_subgroups_friendly <- paste0(   #these were shorter but less explicit? neither is great. and need a shorter version for graphic labels.
-#   "% ", c("Hispanic or Latino", "Black or African American", "American Indian and Alaska Native", 
-#           "Native Hawaiian and Other Pacific Islander", "Other race", "Two or more races", "White"),
-#   " (non-Hispanic, single race)")
-# names_d_subgroups_friendly[1] <- "% Hispanic or Latino"
-# names_d_subgroups_friendly[6] <- "% Two or more races (non-Hispanic)"
-
-# > EJAMbatch.summarizer::names_d_batch_friendly ==  c(names_d_friendly, names_d_subgroups_friendly)
-# [1] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
 
 ############################################################################## #
 
@@ -239,14 +268,13 @@ names_ej_friendly <- c( # FRIENDLY (RAW) SCORE BUT CAN USE FOR PCTILE SINCE THAT
   "EJ: UST",
   "EJ: RSEI")
 
-names_ej_state      <- paste0('state.', names_ej)
+names_ej_state          <- paste0('state.', names_ej)
+names_ej_state_friendly <- paste0('State ', names_ej_friendly)
 
 names_ej_supp       <- gsub("\\.eo$", ".supp", names_ej) # not just this: # paste0(          names_ej, '.supp')
+names_ej_supp_friendly <- gsub("EJ", "Supp. EJ", names_ej_friendly)
+
 names_ej_supp_state <- paste0('state.', names_ej_supp)
-
-names_ej_state_friendly      <-       paste0('State ', names_ej_friendly)
-
-names_ej_supp_friendly       <- gsub("EJ", "Supp. EJ", names_ej_friendly)
 names_ej_supp_state_friendly <- gsub("EJ", "Supp. EJ", names_ej_state_friendly)
 
 ############################################################################## #
@@ -256,8 +284,21 @@ names_ej_supp_state_friendly <- gsub("EJ", "Supp. EJ", names_ej_state_friendly)
 names_d_pctile                 <- paste0(      'pctile.', names_d)
 names_d_state_pctile           <- paste0('state.pctile.', names_d)
 
-names_d_subgroups_pctile       <- paste0(      'pctile.', names_d_subgroups) # newer
-names_d_subgroups_state_pctile <- paste0('state.pctile.', names_d_subgroups) # newer
+
+names_d_subgroups_alone_pctile       <- paste0(      'pctile.', names_d_subgroups_alone) # newer
+names_d_subgroups_alone_state_pctile <- paste0('state.pctile.', names_d_subgroups_alone) # newer
+
+names_d_subgroups_nh_pctile       <- paste0(      'pctile.', names_d_subgroups_nh) # newer
+names_d_subgroups_nh_state_pctile <- paste0('state.pctile.', names_d_subgroups_nh) # newer
+
+if ('alone' %in% subgroups_type) {
+  names_d_subgroups_pctile            <- names_d_subgroups_alone_pctile
+  names_d_subgroups_state_pctile      <- names_d_subgroups_alone_state_pctile
+} else {
+  names_d_subgroups_pctile            <- names_d_subgroups_nh_pctile
+  names_d_subgroups_state_pctile      <- names_d_subgroups_nh_state_pctile
+}
+
 
 names_e_pctile                 <- paste0(      'pctile.', names_e)
 names_e_state_pctile           <- paste0('state.pctile.', names_e)
@@ -280,15 +321,27 @@ names_ej_supp_state_pctile     <- paste0('state.pctile.', names_ej_supp) # most 
 # note the description in map_headernames omitted the US and just said Percentile
 
 names_d_pctile_friendly                 <- paste0(   'US percentile for ', names_d_friendly)
-names_d_state_pctile_friendly           <- paste0('State percentile for ', names_d)
+names_d_state_pctile_friendly           <- paste0('State percentile for ', names_d_friendly)
 
-names_d_subgroups_pctile_friendly       <- paste0(   'US percentile for ', names_d_subgroups) # newer
-names_d_subgroups_state_pctile_friendly <- paste0('State percentile for ', names_d_subgroups) # newer
 
-names_e_pctile_friendly                 <- paste0(  'US percentile for ',  names_e)
-names_e_state_pctile_friendly           <- paste0('State percentile for ', names_e)
+names_d_subgroups_alone_pctile_friendly       <- paste0(   'US percentile for ', names_d_subgroups_alone_friendly) # newer 
+names_d_subgroups_alone_state_pctile_friendly <- paste0('State percentile for ', names_d_subgroups_alone_friendly) # newer  
 
-################################# ############ #
+names_d_subgroups_nh_pctile_friendly          <- paste0(   'US percentile for ', names_d_subgroups_nh_friendly) # newer 
+names_d_subgroups_nh_state_pctile_friendly    <- paste0('State percentile for ', names_d_subgroups_nh_friendly) # newer 
+
+if ('alone' %in% subgroups_type) {
+  names_d_subgroups_pctile_friendly             <- names_d_subgroups_alone_pctile_friendly
+  names_d_subgroups_state_pctile_friendly       <- names_d_subgroups_alone_state_pctile_friendly
+} else {
+  names_d_subgroups_pctile_friendly             <- names_d_subgroups_nh_pctile_friendly
+  names_d_subgroups_state_pctile_friendly       <- names_d_subgroups_nh_state_pctile_friendly
+}
+
+
+names_e_pctile_friendly                 <- paste0(  'US percentile for ',  names_e_friendly)
+names_e_state_pctile_friendly           <- paste0('State percentile for ', names_e_friendly)
+
 
 #  *** EJScreen refers to EJ indexes without mentioning they are percentiles, since that is the only way they are reported.
 # Should EJAM do same, or be more explicit with friendly names? 
@@ -301,23 +354,28 @@ names_e_state_pctile_friendly           <- paste0('State percentile for ', names
 # names_ej_supp_state_pctile_friendly <- names_ej_friendly
 
 # more explicit/ longer names: 
-   # raw EJ has all 4 of these: US normal, State normal; US Suppl, State Suppl  versions (+friendly)
+# raw EJ has all 4 of these: US normal, State normal; US Suppl, State Suppl  versions (+friendly)
 
-names_ej_pctile_friendly                <- paste0(   'US percentile for ', names_ej)
-names_ej_state_pctile_friendly          <- paste0('State percentile for ', names_ej)
-names_ej_supp_pctile_friendly           <- paste0(   'US percentile for ', names_ej_supp) # most recently added
-names_ej_supp_state_pctile_friendly     <- paste0('State percentile for ', names_ej_supp) # most recently added
-
+names_ej_pctile_friendly                <- paste0(   'US percentile for ', names_ej_friendly)
+names_ej_state_pctile_friendly          <- paste0('State percentile for ', names_ej_friendly)
+names_ej_supp_pctile_friendly           <- paste0(   'US percentile for ', names_ej_supp_friendly) # most recently added
+names_ej_supp_state_pctile_friendly     <- paste0('State percentile for ', names_ej_supp_friendly) # most recently added
 
 ################################# ############ #
 
 
-# compiled list of all US pctiles, but no compiled lists for friendly versions
+# compiled list of raw, root indicators for which the US and State pctiles needing to be looked up ( no need for   friendly versions)
+
 names_pctile <- c( # USA pctiles   # not including friendly version
   names_d_pctile,
-  names_d_subgroups_pctile,
+  
+  #  DO NOT INCLUDE 3 versions here (subgroups, subgroups_alone, subgroups_nh) - just the one we are actually going to use
+ names_d_subgroups_pctile,     # only include one or the other type if at all, but note EJScreen 2.2 does NOT report these as percentiles - only raw percentage.
+  # names_d_subgroups_nh_pctile,                   #  will start to use when ready  xxx
+  # names_d_subgroups_alone_pctile,                #  will start to use when ready  xxx
+  # 
   names_e_pctile,
-  names_ej_pctile,
+  names_ej_pctile,      
   names_ej_supp_pctile 
 )
 # all STATE pctiles, but not friendly versions 
@@ -327,25 +385,41 @@ names_state_pctile <- c( # STATE pctiles   # not including friendly version
 
 # which base indicators need to be reported as percentiles? ####
 
-names_need_pctile <- gsub("pctile.", "", names_pctile)   # NOTE THIS IS US ONLY - NOT STATE
-names_need_state_pctile <- gsub("state.pctile.", "", names_pctile)  # NOTE THIS IS STATE
+names_need_pctile       <- gsub(      "pctile.", "", names_pctile)   # NOTE THIS IS US ONLY - NOT STATE
+names_need_state_pctile <- gsub("state.pctile.", "", names_state_pctile)  # NOTE THIS IS STATE
 # no friendly version need for that list
- 
-# varsneedpctiles <- c(names_e,  names_d, names_d_subgroups, names_ej)
+rm(names_pctile, names_state_pctile)
+# varsneedpctiles <- c(names_e,  names_d, names_d_subgroups, names_ej)  # _nh   and  _alone  ?
 # varnames.us.pctile <- paste0('pctile.', varsneedpctiles)
 # varnames.state.pctile <- paste0('state.pctile.', varsneedpctiles)
+
+
+
+
+
 
 ############################################################################## #
 
 # AVERAGE (not MEDIAN?) IN US AND STATE - raw & friendly versions - not for counts and not for EJ indexes ??  ####
 
-names_d_avg       <- paste0("avg.",       names_d)
-names_d_state_avg <- paste0("state.avg.", names_d)
+names_d_avg                       <- paste0(      "avg.", names_d)
+names_d_state_avg                 <- paste0("state.avg.", names_d)
 
-names_d_subgroups_avg       <- paste0("avg.",       names_d_subgroups)
-names_d_subgroups_state_avg <- paste0("state.avg.", names_d_subgroups)
 
-names_e_avg        <- paste0("avg.",      names_e)
+names_d_subgroups_alone_avg       <- paste0(      "avg.", names_d_subgroups_alone)
+names_d_subgroups_alone_state_avg <- paste0("state.avg.", names_d_subgroups_alone)
+
+names_d_subgroups_nh_avg          <- paste0(      "avg.", names_d_subgroups_nh)  
+names_d_subgroups_nh_state_avg    <- paste0("state.avg.", names_d_subgroups_nh)
+
+names_d_subgroups_avg             <- paste0(      "avg.", names_d_subgroups)   # names_d_subgroups_nh_avg       or  names_d_subgroups_alone_avg
+names_d_subgroups_state_avg       <- paste0("state.avg.", names_d_subgroups)   # names_d_subgroups_nh_state_avg  or names_d_subgroups_alone_state_avg
+# if ('alone' == subgroups_type) {
+# } else {
+#   
+# }
+
+names_e_avg       <- paste0(      "avg.", names_e)
 names_e_state_avg <- paste0("state.avg.", names_e)
 # names_e_med, names_e_state_med,
 # names_d_med, names_d_state_med,
@@ -354,10 +428,18 @@ names_e_state_avg <- paste0("state.avg.", names_e)
 names_d_avg_friendly       <- paste0("US Avg ",    names_d_friendly)
 names_d_state_avg_friendly <- paste0("State Avg ", names_d_friendly) 
 
-names_d_subgroups_avg_friendly       <- paste0("US average ",    names_d_subgroups_friendly)
-names_d_subgroups_state_avg_friendly <- paste0("State average ", names_d_subgroups_friendly)
 
-names_e_avg_friendly  <- paste0("US Avg ",  names_e_friendly);  names_e_state_avg_friendly <- paste0("State Avg ", names_e_friendly)
+names_d_subgroups_nh_avg_friendly       <- paste0("US average ",    names_d_subgroups_nh_friendly)
+names_d_subgroups_nh_state_avg_friendly <- paste0("State average ", names_d_subgroups_nh_friendly)
+
+names_d_subgroups_alone_avg_friendly       <- paste0("US average ",    names_d_subgroups_alone_friendly)
+names_d_subgroups_alone_state_avg_friendly <- paste0("State average ", names_d_subgroups_alone_friendly)
+
+names_d_subgroups_avg_friendly       <- paste0("US average ",    names_d_subgroups_friendly)  #  
+names_d_subgroups_state_avg_friendly <- paste0("State average ", names_d_subgroups_friendly)  # 
+
+names_e_avg_friendly       <- paste0("US Avg ",    names_e_friendly)
+names_e_state_avg_friendly <- paste0("State Avg ", names_e_friendly)
 
 # no ratios used for raw EJ indexes ?
 
@@ -370,52 +452,176 @@ names_e_avg_friendly  <- paste0("US Avg ",  names_e_friendly);  names_e_state_av
 names_d_ratio_to_avg  <- paste0("ratio.to.", names_d_avg) 
 names_d_ratio_to_state_avg <- paste0("ratio.to.", names_d_state_avg) 
 
-names_d_subgroups_ratio_to_avg <- paste0("ratio.to.", names_d_subgroups_avg)  
-names_d_subgroups_ratio_to_state_avg <- paste0("ratio.to.", names_d_subgroups_state_avg)
 
-names_e_ratio_to_avg  <- paste0("ratio.to.", names_e_avg)  
+names_d_subgroups_nh_ratio_to_avg       <- paste0("ratio.to.", names_d_subgroups_nh_avg)  
+names_d_subgroups_nh_ratio_to_state_avg <- paste0("ratio.to.", names_d_subgroups_nh_state_avg)
+
+names_d_subgroups_alone_ratio_to_avg       <- paste0("ratio.to.", names_d_subgroups_alone_avg)  
+names_d_subgroups_alone_ratio_to_state_avg <- paste0("ratio.to.", names_d_subgroups_alone_state_avg)
+
+names_d_subgroups_ratio_to_avg       <- paste0("ratio.to.", names_d_subgroups_avg)            
+names_d_subgroups_ratio_to_state_avg <- paste0("ratio.to.", names_d_subgroups_state_avg)    
+
+
+names_e_ratio_to_avg       <- paste0("ratio.to.", names_e_avg)  
 names_e_ratio_to_state_avg <- paste0("ratio.to.", names_e_state_avg)
 
-names_d_ratio_to_avg_friendly <- paste0("Ratio to ", names_d_avg_friendly)
+names_d_ratio_to_avg_friendly       <- paste0("Ratio to ", names_d_avg_friendly)
 names_d_ratio_to_state_avg_friendly <- paste0("Ratio to ", names_d_state_avg_friendly) 
+ 
 
-names_d_subgroups_ratio_to_avg_friendly <- paste0("Ratio to ", names_d_subgroups_avg_friendly)
-names_d_subgroups_ratio_to_state_avg_friendly <- paste0("Ratio to ", names_d_subgroups_state_avg_friendly)
+names_d_subgroups_nh_ratio_to_avg_friendly          <- paste0("Ratio to ", names_d_subgroups_nh_avg_friendly)
+names_d_subgroups_nh_ratio_to_state_avg_friendly    <- paste0("Ratio to ", names_d_subgroups_nh_state_avg_friendly)
 
-names_e_ratio_to_avg_friendly <- paste0("Ratio to ", names_e_avg_friendly)
+names_d_subgroups_alone_ratio_to_avg_friendly       <- paste0("Ratio to ", names_d_subgroups_alone_avg_friendly)
+names_d_subgroups_alone_ratio_to_state_avg_friendly <- paste0("Ratio to ", names_d_subgroups_alone_state_avg_friendly)
+
+names_d_subgroups_ratio_to_avg_friendly             <- paste0("Ratio to ", names_d_subgroups_avg_friendly)      
+names_d_subgroups_ratio_to_state_avg_friendly       <- paste0("Ratio to ", names_d_subgroups_state_avg_friendly)  
+
+
+names_e_ratio_to_avg_friendly       <- paste0("Ratio to ", names_e_avg_friendly)
 names_e_ratio_to_state_avg_friendly <- paste0("Ratio to ", names_e_state_avg_friendly)
 
 ############################################################################## #
 # these ####
 ## see doaggregate() where these are used:
 
-names_these              <- c(names_d,     names_d_subgroups,     names_e)
-names_avg_these          <- c(names_d_avg, names_d_subgroups_avg, names_e_avg)                         # <- paste0("avg.",       names_these) #
-names_state_avg_these    <- c(names_d_state_avg,    names_d_subgroups_state_avg,    names_e_state_avg)  # paste0("state.avg.", names_these)
-names_ratio_to_avg_these <- c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg, names_e_ratio_to_avg)      #<-  paste0("ratio.to.", names_avg_these )
-names_ratio_to_state_avg_these <- c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg, names_e_ratio_to_state_avg)  # <-  paste0("ratio.to.", names_state_avg_these)
+#  Only one of the 3 ways can be used here:
+#  DO NOT INCLUDE 3 versions here (subgroups, subgroups_alone, subgroups_nh) - just the one we are actually going to use
+# 
+# if (subgroups_type == 'alone') {
+#   names_these                    <- c(names_d,              names_d_subgroups_alone,              names_e)   
+#   names_these_avg                <- c(names_d_avg,          names_d_subgroups_alone_avg,          names_e_avg)                         # <- paste0("avg.",       names_these) #
+#   names_these_state_avg          <- c(names_d_state_avg,    names_d_subgroups_alone_state_avg,    names_e_state_avg)  # paste0("state.avg.", names_these)
+#   names_these_ratio_to_avg       <- c(names_d_ratio_to_avg, names_d_subgroups_alone_ratio_to_avg, names_e_ratio_to_avg)      #<-  paste0("ratio.to.", names_these_avg )
+#   names_these_ratio_to_state_avg <- c(names_d_ratio_to_state_avg,  names_d_subgroups_alone_ratio_to_state_avg,   names_e_ratio_to_state_avg)  # <-  paste0("ratio.to.", names_these_state_avg)
+# } else {
+#   names_these                    <- c(names_d,              names_d_subgroups_nh,              names_e)   
+#   names_these_avg                <- c(names_d_avg,          names_d_subgroups_nh_avg,          names_e_avg)                         # <- paste0("avg.",       names_these) #
+#   names_these_state_avg          <- c(names_d_state_avg,    names_d_subgroups_nh_state_avg,    names_e_state_avg)  # paste0("state.avg.", names_these)
+#   names_these_ratio_to_avg       <- c(names_d_ratio_to_avg, names_d_subgroups_nh_ratio_to_avg, names_e_ratio_to_avg)      #<-  paste0("ratio.to.", names_these_avg )
+#   names_these_ratio_to_state_avg <- c(names_d_ratio_to_state_avg,  names_d_subgroups_nh_ratio_to_state_avg,      names_e_ratio_to_state_avg)  # <-  paste0("ratio.to.", names_these_state_avg)
+# }
+# if (subgroups_type == 'original') {  #  ONLY 
+  names_these                    <- c(names_d,              names_d_subgroups,              names_e)
+  names_these_avg                <- c(names_d_avg,          names_d_subgroups_avg,          names_e_avg)                         # <- paste0("avg.",       names_these) #
+  names_these_state_avg          <- c(names_d_state_avg,    names_d_subgroups_state_avg,    names_e_state_avg)  # paste0("state.avg.", names_these)
+  names_these_ratio_to_avg       <- c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg, names_e_ratio_to_avg)      #<-  paste0("ratio.to.", names_these_avg )
+  names_these_ratio_to_state_avg <- c(names_d_ratio_to_state_avg,  names_d_subgroups_ratio_to_state_avg,    names_e_ratio_to_state_avg)  # <-  paste0("ratio.to.", names_these_state_avg)
+# }
 
+  # no need for friendly versions?
+  
 # counts and e and ej not included here in names_these  ***
 
 ############################################################################## #
- 
-
+#  compilations of names (these lack friendly version of the group)
+   
+  # [14,] "names_wts"         
+  
+   # [1,] "names_all_r"      
+  
+  # [13,] "names_these"        
+  # [2,]  "names_these_avg"          
+  # [11,] "names_these_state_avg"         
+  # [9,]  "names_these_ratio_to_avg"      
+  # [10,] "names_these_ratio_to_state_avg"
+  
+  # [6,] "names_need_pctile"             
+  # [7,] "names_need_state_pctile"       
+              
+           
 ############################################################################## #
 # all_r ####
+#   this is not used by the app but may be useful in maintaining map_headernames or namez, etc.
+  
 names_all_r =  c(
-  names_other_count,
+  names_d_other_count,
   names_d_count, 
-  c(names_d, names_d_avg, names_d_state_avg, names_d_pctile, names_d_state_pctile),
-  names_d_subgroups_count,
-  c(names_d_subgroups, names_d_subgroups_avg,names_d_subgroups_state_avg, names_d_subgroups_pctile, names_d_subgroups_state_pctile),
-  c(names_e, names_e_avg, names_e_state_avg, names_e_pctile, names_e_state_pctile),
-  c(names_ratio_to_avg_these, names_ratio_to_state_avg_these),
+   names_d, 
+   names_d_avg,           names_d_state_avg, 
+   names_d_pctile,        names_d_state_pctile,       
+   names_d_ratio_to_avg,  names_d_ratio_to_state_avg,
+
+    # subgroups_lists,   #   ONLY INCLUDE THE ONE BEING USED BY CODE ?  # subgroups   # not sure we need to include here all 3 versions of names of subgroups indicators
+  names_d_subgroups,         
+  # names_d_subgroups_friendly,
+  names_d_subgroups_avg,         names_d_subgroups_state_avg,
+  # names_d_subgroups_avg_friendly,names_d_subgroups_state_avg_friendly,
+  names_d_subgroups_pctile,      names_d_subgroups_state_pctile, 
+  # names_d_subgroups_pctile_friendly, names_d_subgroups_state_pctile_friendly, 
+  names_d_subgroups_ratio_to_avg,          names_d_subgroups_ratio_to_state_avg,
+  # names_d_subgroups_ratio_to_avg_friendly, names_d_subgroups_ratio_to_state_avg_friendly,
+  # names_d_subgroups_med,     names_d_subgroups_state_med,
+  names_d_subgroups_count,  # no avg, no ratio, no pctiles, for counts
+  
+   
+  c(names_e,  
+    names_e_avg,          names_e_state_avg, 
+    names_e_pctile,       names_e_state_pctile),
+    names_e_ratio_to_avg, names_e_ratio_to_state_avg,
+  
+  # c(names_these_ratio_to_avg, names_these_ratio_to_state_avg), 
+  
   c(names_ej,             names_ej_state,
     names_ej_supp,        names_ej_supp_state,
     names_ej_pctile,      names_ej_state_pctile,
-    names_ej_supp_pctile, names_ej_supp_state_pctile)
+    names_ej_supp_pctile, names_ej_supp_state_pctile)  # no ratios for EJ
 )
 names_all_r <- unique(names_all_r)
+
+############################################################################## #
+# sub_nh_text    <- c( 'names_d_subgroups_nh_count',           
+#                   c('names_d_subgroups_nh',    'names_d_subgroups_nh_avg',    'names_d_subgroups_nh_state_avg',    'names_d_subgroups_nh_pctile',    'names_d_subgroups_nh_state_pctile') )
+sub_nh_text    <- c('names_d_subgroups_nh',        
+  'names_d_subgroups_nh_friendly', 
+  'names_d_subgroups_nh_avg',             'names_d_subgroups_nh_state_avg',   
+  'names_d_subgroups_nh_avg_friendly',    'names_d_subgroups_nh_state_avg_friendly',  
+  'names_d_subgroups_nh_pctile',          'names_d_subgroups_nh_state_pctile',   
+  'names_d_subgroups_nh_pctile_friendly', 'names_d_subgroups_nh_state_pctile_friendly',   
+  'names_d_subgroups_nh_ratio_to_avg',          'names_d_subgroups_nh_ratio_to_state_avg',  
+  'names_d_subgroups_nh_ratio_to_avg_friendly', 'names_d_subgroups_nh_ratio_to_state_avg_friendly',   
+  # names_d_subgroups_nh_med,     names_d_subgroups_nh_state_med,       
+  'names_d_subgroups_nh_count'  # no avg, no ratio, no pctiles, for counts 
+)
+
+# sub_alone_text <- c( 'names_d_subgroups_alone_count',  
+#                   c('names_d_subgroups_alone', 'names_d_subgroups_alone_avg', 'names_d_subgroups_alone_state_avg', 'names_d_subgroups_alone_pctile', 'names_d_subgroups_alone_state_pctile') )   
+sub_alone_text <- c(
+  'names_d_subgroups_alone',        
+  'names_d_subgroups_alone_friendly', 
+  'names_d_subgroups_alone_avg',             'names_d_subgroups_alone_state_avg',   
+  'names_d_subgroups_alone_avg_friendly',    'names_d_subgroups_alone_state_avg_friendly',  
+  'names_d_subgroups_alone_pctile',          'names_d_subgroups_alone_state_pctile',   
+  'names_d_subgroups_alone_pctile_friendly', 'names_d_subgroups_alone_state_pctile_friendly',   
+  'names_d_subgroups_alone_ratio_to_avg',          'names_d_subgroups_alone_ratio_to_state_avg',  
+  'names_d_subgroups_alone_ratio_to_avg_friendly', 'names_d_subgroups_alone_ratio_to_state_avg_friendly',   
+  # names_d_subgroups_alone_med,     names_d_subgroups_alone_state_med,       
+  'names_d_subgroups_alone_count' # no avg, no ratio, no pctiles, for counts   
+)
+
+if ("alone" %in% subgroups_type) {
+  sub_o_text <-  sub_alone_text
+} else {
+  sub_o_text <-  sub_nh_text
+}
+
+subgroups_lists_text <-  sub_o_text  
+
+
+ 
+# 'names_d_subgroups',               
+# 'names_d_subgroups_friendly',      
+# 'names_d_subgroups_avg',             'names_d_subgroups_state_avg',      
+# 'names_d_subgroups_avg_friendly',    'names_d_subgroups_state_avg_friendly',      
+# 'names_d_subgroups_pctile',          'names_d_subgroups_state_pctile',       
+# 'names_d_subgroups_pctile_friendly', 'names_d_subgroups_state_pctile_friendly',       
+# 'names_d_subgroups_ratio_to_avg',          'names_d_subgroups_ratio_to_state_avg',      
+# 'names_d_subgroups_ratio_to_avg_friendly', 'names_d_subgroups_ratio_to_state_avg_friendly',        
+# # names_d_subgroups_med,     names_d_subgroups_state_med,          
+# 'names_d_subgroups_count', # no avg, no ratio, no pctiles, for counts         
+
 
 ############################################################################## #
 
@@ -441,19 +647,14 @@ namesoflistsofnames = c(
   
   'names_d_count',     
   'names_d_count_friendly', 
-  'names_other_count', # includes pop and other denominator counts. no avg, no ratio, no pctiles for this needed.
-  'names_other_count_friendly',  # no avg, no ratios, no percentiles, for counts
+  'names_d_other_count', # includes pop and other denominator counts. no avg, no ratio, no pctiles for this needed.
+  'names_d_other_count_friendly',  # no avg, no ratios, no percentiles, for counts
   
-  'names_d_subgroups',         
-  'names_d_subgroups_friendly',
-  'names_d_subgroups_avg',             'names_d_subgroups_state_avg',
-  'names_d_subgroups_avg_friendly',    'names_d_subgroups_state_avg_friendly',
-  'names_d_subgroups_pctile',          'names_d_subgroups_state_pctile', 
-  'names_d_subgroups_pctile_friendly', 'names_d_subgroups_state_pctile_friendly',  # newer
-  'names_d_subgroups_ratio_to_avg',          'names_d_subgroups_ratio_to_state_avg',
-  'names_d_subgroups_ratio_to_avg_friendly', 'names_d_subgroups_ratio_to_state_avg_friendly',
-  # names_d_subgroups_med,     names_d_subgroups_state_med,
-  'names_d_subgroups_count', # no avg, no ratio, no pctiles, for counts
+  ############################################ # 
+  # subgroups 
+  
+  subgroups_lists_text, 
+  
   ############################################ # 
   
   'names_e',           
@@ -466,10 +667,10 @@ namesoflistsofnames = c(
   'names_e_ratio_to_avg_friendly', 'names_e_ratio_to_state_avg_friendly',
   # names_e_med, names_e_state_med,  
   ############################################ # 
-            
+  
   'names_ej',           'names_ej_state', # RAW EJ SCORE
   'names_ej_friendly',  'names_ej_state_friendly', # FRIENDLY (RAW) SCORE BUT CAN USE FOR PCTILE SINCE THAT IS THE ONLY THING REPORTED
-
+  
   'names_ej_supp',          'names_ej_supp_state', 
   'names_ej_supp_friendly', 'names_ej_supp_state_friendly', 
   
@@ -480,16 +681,16 @@ namesoflistsofnames = c(
   'names_ej_supp_pctile_friendly', 'names_ej_supp_state_pctile_friendly', # new
   ############################################ # 
   
-  'names_pctile',  # all US pctile indicators
-  'names_state_pctile',
+  # 'names_pctile',  # all US pctile indicators #  - this is not used though
+  # 'names_state_pctile', #  - this is not used though
   'names_need_pctile',  # base indicators that need to be reported as US percentiles not just raw scores
   'names_need_state_pctile', 
   
   'names_these',
-  'names_avg_these',
-  'names_state_avg_these',
-  'names_ratio_to_avg_these',
-  'names_ratio_to_state_avg_these'
+  'names_these_avg',
+  'names_these_state_avg',
+  'names_these_ratio_to_avg',
+  'names_these_ratio_to_state_avg'
 )
 
 namez <- lapply(namesoflistsofnames, get)
@@ -528,19 +729,46 @@ usethis::use_data(
   # names_d_med,  names_d_state_med,
   names_d_count,
   names_d_count_friendly,
-  names_other_count,  # includes pop and other denominator counts. no avg, no ratio, no pctiles for this needed.
-  names_other_count_friendly, # no avg, no ratios, no percentiles, for counts
+  names_d_other_count,  # includes pop and other denominator counts. no avg, no ratio, no pctiles for this needed.
+  names_d_other_count_friendly, # no avg, no ratios, no percentiles, for counts
   
+  ############################################ # 
+  # subgroups 
+  
+ #  plain subgroups,   subgroups_alone will match ejscreen v 2.2
   names_d_subgroups,         
   names_d_subgroups_friendly,
   names_d_subgroups_avg,         names_d_subgroups_state_avg,
   names_d_subgroups_avg_friendly,names_d_subgroups_state_avg_friendly,
   names_d_subgroups_pctile,      names_d_subgroups_state_pctile, 
-  names_d_subgroups_pctile_friendly, names_d_subgroups_state_pctile_friendly,  # newer
+  names_d_subgroups_pctile_friendly, names_d_subgroups_state_pctile_friendly, 
   names_d_subgroups_ratio_to_avg,          names_d_subgroups_ratio_to_state_avg,
   names_d_subgroups_ratio_to_avg_friendly, names_d_subgroups_ratio_to_state_avg_friendly,
   # names_d_subgroups_med,     names_d_subgroups_state_med,
   names_d_subgroups_count,  # no avg, no ratio, no pctiles, for counts
+  
+  names_d_subgroups_nh,         
+  names_d_subgroups_nh_friendly,
+  names_d_subgroups_nh_avg,         names_d_subgroups_nh_state_avg,
+  names_d_subgroups_nh_avg_friendly,names_d_subgroups_nh_state_avg_friendly,
+  names_d_subgroups_nh_pctile,      names_d_subgroups_nh_state_pctile, 
+  names_d_subgroups_nh_pctile_friendly, names_d_subgroups_nh_state_pctile_friendly, 
+  names_d_subgroups_nh_ratio_to_avg,          names_d_subgroups_nh_ratio_to_state_avg,
+  names_d_subgroups_nh_ratio_to_avg_friendly, names_d_subgroups_nh_ratio_to_state_avg_friendly,
+  # names_d_subgroups_nh_med,     names_d_subgroups_nh_state_med,
+  names_d_subgroups_nh_count,  # no avg, no ratio, no pctiles, for counts
+  
+  names_d_subgroups_alone,         
+  names_d_subgroups_alone_friendly,
+  names_d_subgroups_alone_avg,         names_d_subgroups_alone_state_avg,
+  names_d_subgroups_alone_avg_friendly,names_d_subgroups_alone_state_avg_friendly,
+  names_d_subgroups_alone_pctile,      names_d_subgroups_alone_state_pctile, 
+  names_d_subgroups_alone_pctile_friendly, names_d_subgroups_alone_state_pctile_friendly, 
+  names_d_subgroups_alone_ratio_to_avg,          names_d_subgroups_alone_ratio_to_state_avg,
+  names_d_subgroups_alone_ratio_to_avg_friendly, names_d_subgroups_alone_ratio_to_state_avg_friendly,
+  # names_d_subgroups_alone_med,     names_d_subgroups_alone_state_med,
+  names_d_subgroups_alone_count,  # no avg, no ratio, no pctiles, for counts
+  
   ############################################ # 
   
   names_e,           
@@ -567,17 +795,17 @@ usethis::use_data(
   names_ej_supp_pctile_friendly, names_ej_supp_state_pctile_friendly, # new
   
   ############################################ # 
-
-  names_pctile,  # all US pctile indicators
-  names_state_pctile,
+  
+  # names_pctile,  # all US pctile indicators - this is not used though
+  # names_state_pctile,  #  - this is not used though
   names_need_pctile,  # base indicators that need to be reported as US percentiles not just raw scores
   names_need_state_pctile,
-
-  names_these,
-  names_avg_these,
-  names_state_avg_these,
-  names_ratio_to_avg_these,
-  names_ratio_to_state_avg_these,
+  
+  names_these,                # used in code, and was set up to contain only subgroups or _alone or _nh but only one of those types
+  names_these_avg,
+  names_these_state_avg,
+  names_these_ratio_to_avg,
+  names_these_ratio_to_state_avg,
   
   overwrite = TRUE
 )
@@ -589,6 +817,11 @@ usethis::use_data(
 stop('make sure all the Demog and Envt variables etc are actually in the latest installed usastates dataset')
 
 # just for conveniently referring to these in server code
+notfound = setdiff(names_these, names(EJAM::usastats))
+notfound_st = setdiff(names_these, names(EJAM::statestats))
+if (length(notfound   ) > 0) {warning('some of names_these are not column names found in EJAM::usastats  ... ',   paste0(notfound,    collapse = ', '), '\n')} else {print('ok')}
+if (length(notfound_st) > 0) {warning('some of names_these are not column names found in EJAM::statestats  ... ', paste0(notfound_st, collapse = ', '), '\n')} else {print('ok')}
+rm(notfound, notfound_st)
 avg.in.us <-  EJAM::usastats[ EJAM::usastats$PCTILE == "mean", intersect(names_these, names( EJAM::usastats))]
 # note the regular name not avg. name is used in the usastats table
 usethis::use_data(avg.in.us, overwrite = TRUE)

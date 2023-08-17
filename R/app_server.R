@@ -1203,7 +1203,7 @@ app_server <- function(input, output, session) {
   
   # do not bother making a copy of the state averages that are in statestats
   # EJAM::statestats[ EJAM::statestats$PCTILE == "mean", ]
-  # and the overall mean and site by site means are in  unlist( data_processed()$results_overall[ , ..names_state_avg_these] )
+  # and the overall mean and site by site means are in  unlist( data_processed()$results_overall[ , ..names_these_state_avg] )
   
   ## ** RATIOS OVERALL TO US or state D AVG ####
   #
@@ -2072,7 +2072,7 @@ app_server <- function(input, output, session) {
       # table_overall <- table_overall %>% dplyr::mutate(dplyr::across(dplyr::where(is.numeric), function(x) ifelse(!is.finite(x), NA, x)))
       # table_bysite <- table_bysite %>% dplyr::mutate(dplyr::across(dplyr::where(is.numeric), function(x) ifelse(!is.finite(x), NA, x)))
       # 
-      # ## attempt to clean up some column names xxx - CHECK THIS 
+      ## attempt to clean up some column names xxx - CHECK THIS
       # # longnames_TEST <- EJAMejscreenapi::map_headernames$longname_tableheader[match(names(data_processed()$results_bysite),
       # # EJAMejscreenapi::map_headernames$newnames_ejscreenapi)]
       # longnames <- data_processed()$longnames

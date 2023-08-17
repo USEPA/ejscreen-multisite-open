@@ -31,6 +31,9 @@ data_load_from_aws <- function(fnames=c('lookup_states.rda', 'bgid2fips.rda', 'b
   for (i in 1:length(fnames)) {
     if (!exists(varnames[i])) {
       cat('loading', varnames[i], 'from', pathnames[i], '\n')
+      
+      # change to use arrow::open.... much faster
+      
       aws.s3::s3load(object = pathnames[i], bucket = mybucket, envir = envir)
     }
   }

@@ -12,8 +12,12 @@
     # get block group data (EJScreen data)
     # but note this only loads a couple of the many data objects needed.
     # EJAM::data_load_from_package() # requires the package be installed already
+    
+    ###  THESE WILL LOAD AS NEEDED, NORMALLY, VIA lazyloading (see DESCRIPTION file and data folder), but that takes time,
+    # so this will load them into memory right now so they are instantly available later:
     data("blockgroupstats", package="EJAM") # one version was a  54 MB rda file
     data("frs", package="EJAM") # was about 80 MB rda file
+    
     # Other .rda files in package data folder are <50MB each, mostly <10MB each.
     # To manually reload block group percentiles and means (EJScreen data):
     #  data("statestats", package="EJAM")
@@ -26,6 +30,7 @@
     
     # get block (and some other) data from EPA AWS Data Commons ####
     # but this means the package cannot correctly load until this function is already in installed pkg
+    
     EJAM::data_load_from_aws() # loads quaddata needed to make localtree index, etc.
     
     # cat("Loading data.tables of Census Blocks...\n")
@@ -55,9 +60,9 @@
     
   } else {
     
-    cat("You can use data(blockgroupstats, package='EJAM') \n")
-    cat("You can use data_load_from_aws() to get the datasets (blocks, etc.) again from the AWS bucket.")
-    cat("You can use EJAM::indexblocks() to rebuild the index of block point locations.\n")
+    cat("You can use data_load_from_aws() to get the datasets (blocks, etc.) again from the AWS bucket.\n")
+    cat("You can use EJAM::indexblocks() after that, to rebuild the index of block point locations.\n")
+    cat("You can use data(blockgroupstats, package='EJAM') if that data.table is not already available. \n")
     cat("\n")
     cat("Developers may want to modify the .onLoad() function, \n")
     cat("to have it immediately load less or more data \n")

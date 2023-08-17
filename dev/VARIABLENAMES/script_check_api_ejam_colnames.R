@@ -43,19 +43,19 @@ rationames <- grep("ratio\\.to", names(xejam), value = T)
 ejnames <- grep("EJ\\.DISPARITY", names(xejam), value = T) # there are 4 types of raw EJ:  x.eo, x.supp, state.x.eo, state.x.supp  
 
 # will not be in api outputs.
-countnames <- c(names_d_count, names_d_subgroups_count ) # names_other_count  maybe ???
+countnames <- c(names_d_count, names_d_subgroups_count ) # names_d_other_count  maybe ???
 # > countnames
 # [1] "lowinc"       "lingiso"      "unemployed"   "lths"         "under5"       "over64"       "mins"     
 # "hisp"         "nhba"  "nhaa"         "nhaiana"      "nhnhpia"      "nhotheralone" "nhmulti"      "nhwa"        
-# > names_other_count
+# > names_d_other_count
 # [1] "pop"            "nonmins"        "povknownratio"  "age25up"        "hhlds"          "unemployedbase" "pre1960"        "builtunits"    
 
 ###############################################################
 # SEE WHAT ELSE BESIDES THOSE DOES NOT MATCH ###############################################################
 
-names(xejam)[!(names(xejam) %in% c(names_other_count, subnames,  countnames)) & !(names(xejam) %in% names(xapi))]
+names(xejam)[!(names(xejam) %in% c(names_d_other_count, subnames,  countnames)) & !(names(xejam) %in% names(xapi))]
 
-# names(xejam)[!(names(xejam) %in% c(names_other_count, rationames, subnames, suppnames, ejnames, countnames)) & !(names(xejam) %in% names(xapi))]
+# names(xejam)[!(names(xejam) %in% c(names_d_other_count, rationames, subnames, suppnames, ejnames, countnames)) & !(names(xejam) %in% names(xapi))]
 
 ###############################################################
  

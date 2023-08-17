@@ -78,7 +78,7 @@ install_github('USEPA/EJAMbatch.summarizer', force=TRUE, upgrade="never") # got 
 # Using github PAT from envvar GITHUB_PAT
 # Downloading GitHub repo USEPA/EJAMbatch.summarizer@HEAD
 # ── R CMD build ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-# ✔  checking for file 'C:\Users\mcorrale\AppData\Local\Temp\RtmpIxpe7O\remotes62c057ae1498\USEPA-EJAMbatch.summarizer-1df55b1a861d37f40b859b3be74a7a2f80bdbaf5/DESCRIPTION' (887ms)
+# ✔  checking for file '.........Temp\RtmpIxpe7O\remotes62c057ae1498\USEPA-EJAMbatch.summarizer-1df55b1a861d37f40b859b3be74a7a2f80bdbaf5/DESCRIPTION' (887ms)
 # ─  preparing 'EJAMbatch.summarizer':
 #   ✔  checking DESCRIPTION meta-information ... 
 # ─  excluding invalid files
@@ -88,7 +88,7 @@ install_github('USEPA/EJAMbatch.summarizer', force=TRUE, upgrade="never") # got 
 # ─  checking for empty or unneeded directories
 # ─  building 'EJAMbatch.summarizer_2.1.0.tar.gz'
 # 
-# Installing package into ‘C:/Users/mcorrale/R/myinstalled’
+# Installing package into ‘~/R/myinstalled’
 # (as ‘lib’ is unspecified)
 # Greetings!
 #   * installing *source* package 'EJAMbatch.summarizer' ...
@@ -124,8 +124,8 @@ install_github('USEPA/EJAM',                 force=TRUE, upgrade= "never")
 # stop() 
 
 deployApp(
-  appDir = "C:/Users/mcorrale/R/mysource/EJAM",     
-  #appFileManifest = "C:/Users/mcorrale/AppData/Local/Temp/5f29-617c-01d5-c927",      
+  appDir = "~/../../R/mysource/EJAM",     # 
+  #appFileManifest = "~/AppData/Local/Temp/5f29-617c-01d5-c927",      
   account = "Mark", server = "rstudio-connect.dmap-stage.aws.epa.gov",      
   appName = "ejam", #appId = 153, 
   launch.browser = function(url) { message("Deployment completed: ", url)  }, 
