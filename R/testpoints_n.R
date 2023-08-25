@@ -1,4 +1,4 @@
-#' Random points on the map
+#' Random points in USA - average resident, facility, BG, block, or square mile
 #' Get data.table of Random Points (lat lon) for Testing/ Benchmarking/ Demos, weighted in various ways. 
 #'   The weighting can be specified so that each point reflects the average EPA-regulated 
 #'   facility, blockgroup, block, place on the map, or US resident.

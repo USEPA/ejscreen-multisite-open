@@ -68,7 +68,7 @@
 #' @export
 #' 
 doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, countcols=NULL, popmeancols=NULL, calculatedcols=NULL, 
-                        testing=FALSE, include_ejindexes=FALSE, updateProgress = NULL, need_proximityscore=FALSE, silentinteractive=FALSE, subgroups_type='nh', ...) {
+                        testing=FALSE, include_ejindexes=FALSE, updateProgress = NULL, need_proximityscore=FALSE, silentinteractive=FALSE, subgroups_type='original', ...) {
  
   subs_count = switch(subgroups_type,
                       alone    = names_d_subgroups_alone_count,
@@ -97,7 +97,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
   # check if we only want to analyze a subset of all radii in sites2blocks
   if (!missing(radius)) {
     if ((length(radius) != 1) | (!is.numeric(radius)) | (radius <= 0) | radius > 50 ) {stop('radius must be a single number, in miles, between 0 and 50')}
-    if (radius > 2 * max(sites2blocks$distance)) {warning('radius requested is much larger than any distance found in sites2blocks, suggesting it is larger than the radius that was analyzed by getblocksnearby()')}
+    if (radius >= 2 * max(sites2blocks$distance)) {warning('radius requested is at least 2x any distance found in sites2blocks, suggesting it is larger than the radius that was analyzed by getblocksnearby()')}
     sites2blocks <- sites2blocks[distance <= radius, ]
   }
   

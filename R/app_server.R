@@ -1062,6 +1062,7 @@ app_server <- function(input, output, session) {
     out <- suppressWarnings(doaggregate(
       sites2blocks = sites2blocks, 
       sites2states = d_upload,
+      # subgroups_type = 'original', 
       ## pass progress bar function as argument
       updateProgress = updateProgress_doagg
     ))

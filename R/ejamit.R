@@ -104,7 +104,7 @@ ejamit <- function(sitepoints,
   
   out <- suppressWarnings (
     doaggregate(
-      sites2blocks = mysites2blocks, 
+      sites2blocks = mysites2blocks,  # subgroups_type = 'original', 
       sites2states = sitepoints, # sites2states_or_latlon = unique(x[ , .(siteid, lat, lon)]))
       silentinteractive = silentinteractive
     )
@@ -118,7 +118,9 @@ ejamit <- function(sitepoints,
   } else {
     # fips provided, not latlons
     mysites2blocks <- getblocksnearby_from_fips(fips)
-    out <- doaggregate(mysites2blocks, sites2states_or_latlon = unique(mysites2blocks[ , .(siteid, lat, lon)]))
+    out <- doaggregate(
+      mysites2blocks, sites2states_or_latlon = unique(mysites2blocks[ , .(siteid, lat, lon)])   , # subgroups_type = 'original'
+      )
   }
   ################################################################ # 
   

@@ -77,7 +77,7 @@ metadata_check <- function(packages=EJAM::ejampackages, which=c(
   # ejscreen_pkg_data    NA      
   
   # The 2017-2021 American Community Survey 5-year estimates were released on Thursday, December 8, 2022.
-  # EJScreen incorporated that in mid 2023.
+  # EJScreen incorporated that in July 2023.
   
   #     previously:
   # census_version = 2020,

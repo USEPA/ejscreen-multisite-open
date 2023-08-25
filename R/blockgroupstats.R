@@ -9,14 +9,12 @@
 #' @details 
 #'   - As of 08/2023 it was the EJScreen 2.2 version of data, which used ACS 2017-2021.
 #'   - As of 10/2022 it was the EJScreen 2.1 version of data, which used ACS 2016-2020.
-#'   - As of 04/2022 it was the EJScreen 2.0 version of data, which used ACS 2015-2019.
 #'   
 #'   Each year this should be re-created as for the latest version.
 #'   See attributes(blockgroupstats) 
 #'   
-#'   NOTE: The race/ethnic subgroups that add up to minority or people of color
-#'   are added to blockgroupstats for purposes of this package, 
-#'   but are not in the v2.2 files one can download from the EJScreen FTP site.
+#'   NOTE: The race/ethnic subgroups are added to blockgroupstats for purposes of this package, 
+#'   but are not in the main v2.2 files one can download from the EJScreen FTP site.
 #'   
 #'   It is a data.table of US Census blockgroups (not blocks). 
 #'   With PR, 242,335 rows, approx 134 columns before the race/ethnic subgroups are added.

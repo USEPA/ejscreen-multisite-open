@@ -16,7 +16,7 @@ doaggregate(
   updateProgress = NULL,
   need_proximityscore = FALSE,
   silentinteractive = FALSE,
-  subgroups_type = "nh",
+  subgroups_type = "original",
   ...
 )
 }

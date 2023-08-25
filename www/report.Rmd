@@ -47,7 +47,7 @@ params:
   coauthor_emails: NA
   fundingsource: NA
   acs_version: "2016-2020"
-  ejscreen_version: "2.1"
+  ejscreen_version: "2.2"
 author:
   - name:  "`r params$authorname1`"
     email: "`r params$authoremail1`"

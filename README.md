@@ -76,21 +76,21 @@ from private repositories:
 
 1.  create GitHub personal access token with ‘repo scope’
 
--   Go to <https://github.com/settings/tokens> and select Tokens
-    (classic) on the left-hand side. Then click ‘Generate New Token’ -\>
-    Generate new token (classic).
--   Give it a name and select all boxes under repo scope. Scroll down
-    and click ‘Generate Token’.
+- Go to <https://github.com/settings/tokens> and select Tokens (classic)
+  on the left-hand side. Then click ‘Generate New Token’ -\> Generate
+  new token (classic).
+- Give it a name and select all boxes under repo scope. Scroll down and
+  click ‘Generate Token’.
 
 2.  set GitHub credentials in Rstudio
 
--   one-time login: from the console, run credentials::set_github_pat().
-    Paste in your PAT to the login popup under ‘Token’.
--   store credentials long-term: run usethis::edit_r\_environ() to open
-    your .Renviron file and and add a line with your PAT in this format:
-    GITHUB_PAT = ‘abc’
-    -   You can specify an extra argument scope = ‘project’ if you only
-        want the PAT to work for a particular Rstudio project.
+- one-time login: from the console, run credentials::set_github_pat().
+  Paste in your PAT to the login popup under ‘Token’.
+- store credentials long-term: run usethis::edit_r\_environ() to open
+  your .Renviron file and and add a line with your PAT in this format:
+  GITHUB_PAT = ‘abc’
+  - You can specify an extra argument scope = ‘project’ if you only want
+    the PAT to work for a particular Rstudio project.
 
 3.  Install the packages using `devtools::install_github()`
 
@@ -102,16 +102,16 @@ devtools::install_github('USEPA/EJAM')
 
 # Related tools and packages
 
--   [EJScreen](https://www.epa.gov/ejscreen "https://www.epa.gov/ejscreen")
+- [EJScreen](https://www.epa.gov/ejscreen "https://www.epa.gov/ejscreen")
 
--   [EJAM’s ejscreenapi tool (in
-    testing)](https://rstudio-connect.dmap-stage.aws.epa.gov/content/dc3cda00-20a2-47ed-a753-0dcb89eb8f2a/ "https://rstudio-connect.dmap-stage.aws.epa.gov/content/dc3cda00-20a2-47ed-a753-0dcb89eb8f2a/")
+- [EJAM’s ejscreenapi tool (in
+  testing)](https://rstudio-connect.dmap-stage.aws.epa.gov/content/dc3cda00-20a2-47ed-a753-0dcb89eb8f2a/ "https://rstudio-connect.dmap-stage.aws.epa.gov/content/dc3cda00-20a2-47ed-a753-0dcb89eb8f2a/")
 
--   EJAM’s code repository for internal EPA use:
-    [USEPA/EJAM](https://github.com/USEPA/EJAM#readme "https://github.com/USEPA/EJAM#readme")
+- EJAM’s code repository for internal EPA use:
+  [USEPA/EJAM](https://github.com/USEPA/EJAM#readme "https://github.com/USEPA/EJAM#readme")
 
--   OW’s EJSCREENbatch package repo: [OW’s
-    EJSCREENbatch](https://github.com/USEPA/EJSCREENBatch#readme)
+- OW’s EJSCREENbatch package repo: [OW’s
+  EJSCREENbatch](https://github.com/USEPA/EJSCREENBatch#readme)
 
 ## Documentation
 
@@ -151,17 +151,14 @@ user-provided scores for each block group.
 
 The default demographic indicators are be [EJScreen’s basic demographic
 indicators](https://www.epa.gov/ejscreen/overview-demographic-indicators-ejscreen "https://www.epa.gov/ejscreen/overview-demographic-indicators-ejscreen"),
-with the addition of the 8 race/ethnicity subgroups in ACS5 Table B03002
-and % poor as derived from Table C17002. EJAM can also analyze other
-demographic indicators, to include user-selected EPA-hosted layers, or
-user-provided data. See
-[ACSDT5Y2019.B03002](https://data.census.gov/cedsci/table?hidePreview=true&tid=ACSDT5Y2019.B03002)
-and
-[ACSDT5Y2019.C17002](https://data.census.gov/cedsci/table?hidePreview=true&tid=ACSDT5Y2019.C17002)
+with the addition of race/ethnicity subgroups.
 
-When using the tool, one should be able to use various approaches to
-defining the areas to be analyzed, using shapefiles rather than just
-circular buffers.
+EJAM will also be able to analyze other demographic indicators, to
+include user-selected EPA-hosted layers, or user-provided data.
+
+When using the tool, one is able to use various approaches to defining
+the areas to be analyzed, using shapefiles rather than just circular
+buffers.
 
 The tool also uses a default, standard report, but allows flexibility
 beyond that. EJAM provides a standard report (text, graphics, and maps)
@@ -196,25 +193,28 @@ and immediately get a ready-to-use report that provides perspective on
 an entire industrial sector or set of places.
 
 EJAM data updates are meant to match EJScreen’s scheduled updates and
-main version numbers, so EJAM 2.1 will use the same basic data as
-EJScreen 2.1. The 2.1 version (starting October 2022) has up-to-date
-demographic data (e.g., Census 2020 block weights and ACS 2016-2020
-block group demographics). Compared to other approaches, EJAM’s
-high-resolution buffering provides more accurate information about which
-populations live inside a buffer, which is important in rural areas
-where a single blockgroup can cover a very large area. For circular
-buffers, EJAM 2.1 uses the locations of internal points of Census 2020
-blocks, not areal apportionment of block groups, to estimate where
-residents live within each block group. This essentially assumes people
-are evenly spread out within each block, not each block group, and
-treats the block population as if they were all located at the block’s
-internal point. There are several million blocks in the US, . The only
-more accurate approaches are to use areal apportionment of blocks (not
-block groups), but that is very slow, or to use a 30x30 meter grid based
-on dasymetric estimates of where people live at even higher resolution
-than a block, but  
-It also should closely replicate EJScreen’s results for a single
-location, to avoid public confusion and inconsistency.
+main version numbers, so EJAM 2.2 uses the same basic data as EJScreen
+2.2. The 2.2 version of EJScreen (rolled out July 2023) had up-to-date
+demographic data (e.g., Census 2020 block weights and ACS 2017-2021
+block group demographics).
+
+Compared to other approaches, EJAM’s high-resolution buffering provides
+more accurate information about which populations live inside a buffer,
+which is important in rural areas where a single blockgroup can cover a
+very large area. For circular buffers, EJAM 2.2 uses the locations of
+internal points of Census 2020 blocks, not areal apportionment of block
+groups, to estimate where residents live within each block group. This
+essentially assumes people are evenly spread out within each block, not
+each block group, and treats the block population as if they were all
+located at the block’s internal point. There are several million blocks
+in the US. The only more accurate approaches are to use areal
+apportionment of blocks (not block groups), but that is very slow, or to
+use a 30x30 meter grid based on dasymetric estimates of where people
+live at even higher resolution than a block, but that requires large
+amounts of storage and computer time. Any analysis ideally should
+closely replicate EJScreen’s results for a single location, such as
+total population count within 1 mile, to avoid public confusion and
+inconsistency.
 
 EJAM also takes note of which residences are near which sites, to avoid
 double-counting people in the summary statistics but still allow a user
