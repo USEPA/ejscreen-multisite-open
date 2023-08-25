@@ -125,7 +125,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
   }
   if (is.null(calculatedcols)) {
     calculatedcols <- unique(c(
-      names_d,                  #   "lowlifex"    "Demog.Index.Supp",  # already in names_d
+      names_d[names_d != 'lowlifex'],      #   "lowlifex"(use popwtd mean)   "Demog.Index.Supp",  # already in names_d
       subs,  
       'flagged'
     ))
@@ -159,12 +159,13 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, co
   
   if (is.null(popmeancols)) {
     popmeancols <- unique(c(
+      'lowlifex',  # I think it is just pop wtd mean  - not completely sure it should be via popwtd mean, or calculated via formula actually.
       names_e,
       names_ej  ### but,
       # ** verify that we want and are using the popwtd mean of PERCENTILES in the case of the EJ Index, unlike Envt or Demog!!
     ))
   }
-  # "lowlifex"??   # new, not completely sure it should be via popwtd mean, or calculated via formula actually.
+  
   # popmeancols <- c(ejscreen package file names.e, ejscreen package file names.ej)
   # or to avoid depending on ejscreen package, 
   # dput(c(ejscreen package file names.e, ejscreen package file names.ej) )
