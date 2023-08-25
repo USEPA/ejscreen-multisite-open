@@ -87,7 +87,7 @@ names(bgejam) <- fixnames(names(bgejam), oldtype = 'csv', newtype = 'r')
 # rv <- stringi::stri_reverse
 # bgejam$FIPS[bgejam$ST %in% islandst]
 
-bgejam$FIPS <- lead.zeroes(as.numeric(bgejam$FIPS), 12)
+bgejam$FIPS <- EJAM::fips_lead_zero(as.numeric(bgejam$FIPS), 12)
 
 # bgejam <- ejanalysis package file addFIPScomponents(bgejam) # not robust to this even if add leading zeroes
 bgejam$FIPS.ST <- substr(bgejam$FIPS,1,2)

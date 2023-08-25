@@ -56,6 +56,7 @@ getblocksnearby  <- function(sitepoints, radius=3, maxradius=31.07,
       if (!exists("quaddata")) {
         EJAM::data_load_from_aws() # loads quaddata needed to make localtree index, and several other large files pkg uses.
       }
+      # need to pause here?
       # localtree <- SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point")
       EJAM::indexblocks() # not really tested yet in this context
       quadtree <- localtree 

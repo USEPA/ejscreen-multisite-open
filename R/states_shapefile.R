@@ -7,14 +7,7 @@
 #'   that the user wants to analyze. That is needed to report indicators in 
 #'   the form of State-specific percentiles 
 #'   (e.g., a score that is at the 80th percentile within Texas).
-#'   It is created by the package via EJAM/data-raw/make_states_shapefile.R
-#'  Created roughly as follows: 
-#'  
-#'  setwd("~/../../R/mysource/EJAM/data-raw")
-#'  download.file("https://www.census.gov/cgi-bin/geo/shapefiles/index.php?year=2020&layergroup=States+%28and+equivalent%29", destfile = "tl_2020_us_state.zip" )
-#'  dir.create("./shp")
-#'  unzip("tl_2020_us_state.zip", exdir = "./shp")
-#'  states_shapefile <- sf::st_read("./shp", quiet = FALSE)
-#'  class(states_shapefile)
+#'   It is created by the package via a script at EJAM/data-raw/datacreate_states_shapefile.R
+#'   which downloads the data from Census Bureau.
 #'  
 NULL

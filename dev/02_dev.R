@@ -18,6 +18,7 @@
 ## install.package('attachment') # if needed.
 attachment::att_amend_desc()
 
+###########################################################################  
 ## Add modules ----
 ## Create a module infrastructure in R/
 golem::add_module(name = "specify_sites", with_test = TRUE) # Name of the module
@@ -40,19 +41,11 @@ golem::add_css_file("custom")
 ## If you have data in your package
 # usethis::use_data_raw(name = "my_dataset", open = FALSE)
 
-
+###########################################################################  
 ## Tests ----
 ## Add one line by test you want to create
 # https://usethis.r-lib.org/reference/use_r.html#ref-usage
 usethis::use_test("app")
-
-
-# Documentation
-
-## Vignette ----
-usethis::use_vignette("EJAM")
-
-devtools::build_vignettes()
 
 ## Code Coverage----
 ## Set the code coverage service ("codecov" or "coveralls")
@@ -61,6 +54,19 @@ devtools::build_vignettes()
 # Create a summary readme for the testthat subdirectory
 # covrpage::covrpage()
 
+###########################################################################  
+# Documentation
+
+## Vignette ----
+usethis::use_vignette("EJAM")
+
+devtools::build_vignettes()
+devtools::build_readme()
+devtools::build_manual()
+
+
+###########################################################################  
+
 ## CI ----
 ## Use this part of the script if you need to set up a CI
 ## service for your application
@@ -68,8 +74,7 @@ devtools::build_vignettes()
 ## (You'll need GitHub there)
 # usethis::use_github()
 
-
-
+###########################################################################  
 # GitHub Actions
 # https://usethis.r-lib.org/reference/github_actions.html?q=use_github_action_pr_commands#use-github-actions-
 
@@ -106,4 +111,7 @@ devtools::build_vignettes()
 
 # You're now set! ----
 # go to dev/03_deploy.R
+
 rstudioapi::navigateToFile("dev/03_deploy.R")
+
+

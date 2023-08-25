@@ -85,7 +85,7 @@
 # 9    653       52  601                 EJAM       /inst/notes_MISC/          OBSOLETE_doaggregate_with_states.R
 # 12   542        1  541      EJAMejscreenapi                  /inst/                            ui_OLDTEMPLATE.R
 # 13   505       11  494                 EJAM                  /inst/                OneEPA_template_2022_11_16.R
-# 17   365      100  265                 EJAM              /data-raw/        names_of_indicators_creationscript.R
+# 17   365      100  265                 EJAM              /data-raw/        datacreate_names_of_indicators.R
 # 19   361       12  349 EJAMbatch.summarizer                  /inst/                         example.not.shiny.R
 # 21   331      255   76                 EJAM /inst/0- NOTES_BREAK...        0- NOTES_BREAK_EJAM_INTO_FUNCTIONS.R
 # 23   325      161  164        EJAM                  /inst/datasets/               NOTES_read_blockweights2020.R
