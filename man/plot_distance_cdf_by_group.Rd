@@ -8,11 +8,14 @@ Each groups distribution of distances}
 \usage{
 plot_distance_cdf_by_group(
   results_bybg_people,
-  radius_miles = round(max(x$distance_min_avgperson, na.rm = T), 1),
-  demogvarname = c(namez$d, namez$d_subgroups),
+  radius_miles =
+    round(max(results_bybg_people$distance_min_avgperson[!is.infinite(results_bybg_people$distance_min_avgperson)],
+    na.rm = T), 1),
+  demogvarname = c(namez$d_subgroups),
   demoglabel = NULL,
-  colorlist = colors()[1:length(demogvarname)],
-  coloroverall = "gray"
+  colorlist = colorspace::diverging_hcl(length(demogvarname)),
+  coloroverall = "black",
+  ...
 )
 }
 \arguments{
@@ -35,6 +38,22 @@ invisibly returns full table of sorted distances of blockgroups, cumulative coun
 plot_distance_cdf_by_group  - SLOW - needs to be optimized
 CDF Line Plots of cumulative share of each demographic group, within each distance
 Each groups distribution of distances
+}
+\examples{
+ y <- ejamit(testpoints_50, radius = 3)
+ plot_distance_mean_by_group(y$results_bybg_people) # or distance_mean_by_group() synonym
+ print(distance_by_group(y$results_bybg_people, 
+   demogvarname = 'pctlowinc', demoglabel = 'Low Income'))
+ distance_by_group_plots(y$results_bybg_people, 
+   demogvarname = 'pctlowinc', demoglabel = 'Low Income')
+ xyz = plot_distance_cdf_by_group(y$results_bybg_people) #  
+ tail(round(xyz,3))
+ tail(xyz[xyz$pctwa <= 0.501, ]) #  Median distance to nearest site here 
+   for White Alone is 2.15 miles, but >60\% of Black Alone have a site that close.
+ tail(xyz[xyz$pctba <= 0.501, ]) #  Median distance to nearest site here 
+   for Black Alone is 1.85 miles
+ round(tail(xyz[xyz$dist <=1, ]), 3) #  11\% of White have a site within 1 mile, 
+   compared to 18.7\% of Asian who do.
 }
 \seealso{
 \code{\link[=distance_by_groups]{distance_by_groups()}} \code{\link[=ejamit]{ejamit()}} for examples

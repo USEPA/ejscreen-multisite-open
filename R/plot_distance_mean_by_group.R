@@ -7,8 +7,9 @@
 #' @param results_bybg_people data.table from doaggregate()$results_bybg_people
 #' @param demogvarname vector of column names like "pctlowinc" etc.
 #' @param demoglabel vector of labels like "Low Income Residents" etc.
-#' @seealso [distance_by_group_plot()]
+#' @seealso [distance_by_group_plot()]  [plot_distance_cdf_by_group()]
 #' @return data.frame with group, ratio, avg_distance_for_group, avg_distance_for_nongroup
+#' @inherit plot_distance_cdf_by_group examples 
 #' @export
 plot_distance_mean_by_group <- function(results_bybg_people, 
                                demogvarname=c(EJAM::names_d, EJAM::names_d_subgroups), # namez$d, namez$d_subgroups),  
@@ -28,20 +29,25 @@ plot_distance_mean_by_group <- function(results_bybg_people,
   rownames(x) <- demoglabel
   x$ratio <- round( x$avg_distance_for_nongroup / x$avg_distance_for_group,3)
   x <- x[ , c("group", "ratio", "avg_distance_for_nongroup", "avg_distance_for_group")]
-  print(x)
+  # print(x)
   if (graph) {
     # x <- distance_by_groups(out)
     barplot(x$ratio, names.arg = substr(rownames(x),1,13), cex.names = 0.6, 
             main = "Ratio of avg distance from facilities among non-group vs group residents" )
     abline(h=1,col="gray")
   }
-  return(x)
+  invisible(x)
 }
+################################################################################# # 
 
 
-distance_mean_by_group <- plot_distance_mean_by_group
+#' distance_mean_by_group or plot_distance_mean_by_group
+#' @inherit plot_distance_mean_by_group
+#' @inherit plot_distance_cdf_by_group examples 
+#' @export
+distance_mean_by_group <- function(...) {plot_distance_mean_by_group(...)}
 
-
+################################################################################# # 
 
 
 #' distance_by_group
@@ -71,6 +77,8 @@ distance_mean_by_group <- plot_distance_mean_by_group
 #' @param demogvarname e.g., "pctlowinc"
 #' @param demoglabel e.g., "Low Income Residents"
 #' @seealso [plot_distance_mean_by_group()]  
+#' @inherit plot_distance_cdf_by_group examples 
+#' @export
 #' @return list of 2 numbers: avg_distance_for_group and avg_distance_for_nongroup
 #'
 distance_by_group <- function( results_bybg_people, demogvarname="Demog.Index", demoglabel=demogvarname) {

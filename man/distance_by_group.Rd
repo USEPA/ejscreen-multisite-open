@@ -46,6 +46,22 @@ And we might also want to see the \%D as a function of continuous distance at ju
 
 So to retain flexibility doaggregate() reports all instances of blockgroup-site pairings.
 }
+\examples{
+ y <- ejamit(testpoints_50, radius = 3)
+ plot_distance_mean_by_group(y$results_bybg_people) # or distance_mean_by_group() synonym
+ print(distance_by_group(y$results_bybg_people, 
+   demogvarname = 'pctlowinc', demoglabel = 'Low Income'))
+ distance_by_group_plots(y$results_bybg_people, 
+   demogvarname = 'pctlowinc', demoglabel = 'Low Income')
+ xyz = plot_distance_cdf_by_group(y$results_bybg_people) #  
+ tail(round(xyz,3))
+ tail(xyz[xyz$pctwa <= 0.501, ]) #  Median distance to nearest site here 
+   for White Alone is 2.15 miles, but >60\% of Black Alone have a site that close.
+ tail(xyz[xyz$pctba <= 0.501, ]) #  Median distance to nearest site here 
+   for Black Alone is 1.85 miles
+ round(tail(xyz[xyz$dist <=1, ]), 3) #  11\% of White have a site within 1 mile, 
+   compared to 18.7\% of Asian who do.
+}
 \seealso{
 \code{\link[=plot_distance_mean_by_group]{plot_distance_mean_by_group()}}
 }
