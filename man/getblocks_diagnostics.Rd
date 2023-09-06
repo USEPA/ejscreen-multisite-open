@@ -18,3 +18,6 @@ Get summary stats on counts of blocks (unique vs doublecounted) near sites
 \examples{
  getblocks_diagnostics(sites2blocks_example)
 }
+\seealso{
+This relies on  \code{\link[=getblocks_summarize_blocks_per_site]{getblocks_summarize_blocks_per_site()}} and \code{\link[=getblocks_summarize_sites_per_block]{getblocks_summarize_sites_per_block()}}
+}

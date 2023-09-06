@@ -54,7 +54,7 @@ getblocksnearby  <- function(sitepoints, radius=3, maxradius=31.07,
       quadtree <- localtree 
     } else {      #  SEE IF WE EVER NEED TO OR EVEN CAN CREATE THIS ON THE FLY HERE FOR SOME INTERACTIVE USERS, BUT SHOULD NOT BE AN ISSUE IF PKG LOADED
       if (!exists("quaddata")) {
-        EJAM::data_load_from_aws() # loads quaddata needed to make localtree index, and several other large files pkg uses.
+        EJAM::dataload_from_aws() # loads quaddata needed to make localtree index, and several other large files pkg uses.
       }
       # need to pause here?
       # localtree <- SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point")
@@ -86,6 +86,7 @@ getblocksnearby  <- function(sitepoints, radius=3, maxradius=31.07,
                                               ...)
   }
   
+  #  DRAFT / WAS WORK IN PROGRESS: 
   # getblocksnearbyviaQuadTree2(sitepoints=sitepoints, radius=radius, maxradius=maxradius, 
   #                               avoidorphans=avoidorphans, 
   #                             # indexgridsize=indexgridsize,

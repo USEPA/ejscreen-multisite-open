@@ -1,14 +1,16 @@
 #' Find nearby blocks using Quad Tree data structure for speed, NO PARALLEL PROCESSING
 #'
 #' @description Given a set of points and a specified radius in miles, 
-#'   this function quickly finds all the US Census blocks near each point. 
+#'   this function quickly finds all the US Census blocks near each point.
+#' @details  
 #'   For each point, it uses the specified search radius and finds the distance to 
 #'   every block within the circle defined by the radius. 
 #'   Each block is defined by its Census-provided internal point, by latitude and longitude.
 #'   
-#'   
-#'   
-#'   
+#'   Results are the sites2blocks table that would be used by doaggregate(), 
+#'   with distance in miles as one output column of data.table.
+#'   Adjusts distance to avg resident in block when it is very small relative to block size,
+#'   the same way EJScreen adjusts distances in creating proximity scores.
 #'   
 #'   Each point can be the location of a regulated facility or other type of site, and 
 #'   the blocks are a high-resolution source of information about where
@@ -22,13 +24,22 @@
 #' @param sitepoints data.table with columns siteid, lat, lon giving point locations of sites or facilities around which are circular buffers
 #' @param radius in miles, defining circular buffer around a site point 
 #' @param maxradius miles distance (max distance to check if not even 1 block point is within radius)
-#' @param avoidorphans logical Whether to avoid case where no block points are within radius, 
-#'   so if TRUE, it keeps looking past radius to find nearest one within maxradius.
+#' @param avoidorphans logical If TRUE, then where not even 1 BLOCK internal point is within radius of a SITE, 
+#'   it keeps looking past radius, up to maxradius, to find nearest 1 BLOCK. 
+#'   What EJScreen does in that case is report NA, right? So, 
+#'   does EJAM really need to report stats on residents presumed to be within radius,
+#'    if no block centroid is within radius? 
+#'   Best estimate might be to report indicators from nearest block centroid which is 
+#'   probably almost always the one your site is sitting inside of,
+#'   but ideally would adjust total count to be a fraction of blockwt based on 
+#'   what is area of circular buffer as fraction of area of block it is apparently inside of.
+#'   
+#'   Note that if creating a proximity score, by contrast, you instead want to find nearest 1 SITE if none within radius of this BLOCK.
 #' @param quadtree (a pointer to the large quadtree object) 
 #'    created from the SearchTree package example:
 #'    SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point")
 #'    Takes about 2-5 seconds to create this each time it is needed.
-#'    It is automatically created when the package is loaded via the [.onLoad()] function
+#'    It can be automatically created when the package is attached via the .onAttach() function
 #' @param report_progress_every_n Reports progress to console after every n points,
 #'   mostly for testing, but a progress bar feature might be useful unless this is super fast.
 #'   
@@ -87,9 +98,9 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius=3, maxradius=31.07,
   
   
   
-  cat("Finding nearby Census blocks.\n")
+  cat("Finding nearby Census blocks...\n")
   
-  for (i in 1:nRowsDf) {    # LOOP OVER SITES HERE ----
+  for (i in 1:nRowsDf) {    # LOOP OVER SITES HERE - can some or all of this be vectorized and done faster via data.table ??  ----
     ########################################################################### ## ** SLOW STEP TO OPTIMIZE   *** ** ** ** 
     coords <- sitepoints[i, .(FAC_X, FAC_Z)]  # ** SLOW STEP TO OPTIMIZE  (the similar clustered function uses sitepoints2use not sitepoints)
     x_low  <- coords[,FAC_X]-truedistance;  #  EXTREMELY SLOW LINE
@@ -97,20 +108,21 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius=3, maxradius=31.07,
     z_low  <- coords[,FAC_Z]-truedistance;
     # z_hi  <-  coords[,FAC_Z]+truedistance   # ** THIS HAD BEEN THE SLOWEST LINE  OVERALL ***
     
+    # why not at least try  
     
     
     
     
-    
-    
+  
+    # USE THE INDEX OF ALL BLOCKS TO FIND BLOCKS NEAR THIS 1 SITE  AND STORE THEM AS tmp
     
     vec <- SearchTrees::rectLookup(
-      quadtree, 
+      quadtree, # quadtree or localtree is the index that enables fast lookup within quaddata (all US blocks)
       unlist(c(x_low, z_low  )),         
       unlist(c(x_hi, coords[,FAC_Z]+truedistance))) # x and z things are now vectorized
     # *** FIX/CHECK: 
-
-        tmp <-  quaddata[vec, ] 
+    
+    tmp <-  quaddata[vec, ]  # all the blocks near this 1 site.
     # x <- tmp[ , .(BLOCK_X, BLOCK_Y, BLOCK_Z)] # but not blockid ?? 
     # y <- sitepoints[i, c('FAC_X','FAC_Y','FAC_Z')]  # the similar clustered function uses something other than sitepoints here - why?
     ########################################################################### ## ** SLOW STEP TO OPTIMIZE 
@@ -125,16 +137,16 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius=3, maxradius=31.07,
     
     #filter actual distance
     ########################################################################### ## ** SLOW STEP TO OPTIMIZE 
-    res[[i]] <- tmp[distance <= truedistance, .(blockid, distance, siteid)]  # ** SLOW STEP TO OPTIMIZE  #  1 OF SLOWEST LINES  
+    res[[i]] <- tmp[distance <= truedistance, .(blockid, distance, siteid)]  # ** SLOW STEP TO OPTIMIZE  #  1 OF SLOWEST LINES  - cant we do this outside the loop just once??
     
-    # hold your horses, what if there are no blocks and you are supposed to avoid that
+    # hold your horses, what if there are no blocks and you are supposed to avoid that - only relevant if creating a proximity score, not if you only want blocks truly within radius of this 1 site. 
     if ( avoidorphans && (nrow(res[[i]])) == 0) { # rarely get here so not critical to optimize
       #search neighbors, allow for multiple at equal distance
       
       vec  <- SearchTrees::knnLookup(quadtree, unlist(c(coords[ , 'FAC_X'])), unlist(c(coords[ , 'FAC_Z'])), k=10)  
       
       # *** FIX/CHECK: 
-       tmp <-  quaddata[vec[1, ], ]
+      tmp <-  quaddata[vec[1, ], ]
       
       x <- tmp[, .(BLOCK_X, BLOCK_Y, BLOCK_Z)]
       y <- sitepoints[i, .(FAC_X, FAC_Y, FAC_Z)]
@@ -153,10 +165,36 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius=3, maxradius=31.07,
     }
     if ((i %% report_progress_every_n) == 0 & interactive()) {cat(paste("Finished finding blocks near ",i ," of ", nRowsDf),"\n" ) } # i %% report_progress_every_n indicates i mod report_progress_every_n (“i modulo report_progress_every_n”) 
   }
-  result <- data.table::rbindlist(res)  
+  sites2blocks <- data.table::rbindlist(res)  
   
-  data.table::setkey(result, blockid, siteid, distance)
-  # print(summary_of_blockcount(result))
+  # data.table::setkey(sites2blocks, blockid, siteid, distance)
+  data.table::setkey(sites2blocks, blockid, siteid, distance)
   
-  return(result)
+    
+  # ADJUST THE VERY SHORT DISTANCES ####
+  
+  if (!("block_radius_miles" %in% names(blockwts))) {
+    # if missing because not added to dataset yet then use placeholder of 100 / meters_per_mile, or 100 meters
+    # not sure if this updates by reference blockwts for the remainder of this session and all users, or if this happens each time getblocksnearby... is called.
+    message("using temporary approximation of block_radius_miles")
+    blockwts[ , block_radius_miles := block_radius_miles_round_temp] # lazy load this and add it into blockwts
+  }
+  # Add block_radius_miles here, now to be able to correct the distances that are small relative to a block size.
+  # This adjusts distance the way EJScreen does for proximity scores - so distance reflects distance to avg resident in block
+  # even if distance to block internal point is so small the site is inside the block. This also avoids infinitely small or zero distances.
+  # 2 ways considered to do join here - may be able to optimize.
+  # a) try to do join that updates sites2blocks by reference - not sure it works this way, but goal was to make join faster:
+  # sites2blocks[blockwts, .(siteid,blockid,distance,blockwt,bgid, block_radius_miles), on = 'blockid']
+  # b) try to do join that updates sites2blocks by making a copy? This does work:
+  sites2blocks <-  blockwts[sites2blocks, .(siteid,blockid,distance,blockwt,bgid, block_radius_miles), on='blockid'] 
+  # 2 ways considered here for how exactly to make the adjustment: 
+  sites2blocks[distance < block_radius_miles, distance := 0.9 * block_radius_miles]  # assumes distance is in miles
+  # or a more continuous adjustment for when dist is between 0.9 and 1.0 times block_radius_miles: 
+  # sites2blocks_dt[ , distance  := pmax(block_radius_miles, distance, na.rm = TRUE)] # assumes distance is in miles
+  
+  # drop that info about area or size of block to save memory. do not need it later in sites2blocks
+  sites2blocks[ , block_radius_miles := NULL] 
+
+  if (interactive()) { cat("You can use  getblocks_diagnostics(sites2blocks)  to see info on distances found.\n")  }
+  return(sites2blocks)
 }
