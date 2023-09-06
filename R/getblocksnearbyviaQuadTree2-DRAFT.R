@@ -1,6 +1,7 @@
 #' Find nearby blocks using Quad Tree data structure for speed, NO PARALLEL PROCESSING
 #' 
-#' @description 
+#' @description    DRAFT / WAS WORK IN PROGRESS  
+
 #'   This should be almost identical to getblocksnearbyviaQuadTree(), 
 #'   but it uses f2, a copy of sitepoints, and more importantly it 
 #'   pulls some code out of the for loop and uses a vectorized approach.
@@ -28,7 +29,7 @@
 #'    created as with indexblocks(), from the SearchTree package example:
 #'    SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point")
 #'    Takes about 2-5 seconds to create this each time it is needed.
-#'    It can be automatically created when the package is loaded via the [.onLoad()] function 
+#'    It can be automatically created when the package is attached via the .onAttach() function 
 #' @param report_progress_every_n Reports progress to console after every n points,
 #'   mostly for testing, but a progress bar feature might be useful unless this is super fast.
 #' @examples 

@@ -1,4 +1,5 @@
 #' Key buffering function - wrapper redirecting to the right version of getblocksnearby()
+#'     DRAFT / WAS WORK IN PROGRESS  
 #' @details  For all examples, see [ejamit()]
 #' 
 #'   Like getblocksnearby() but tries to handle localtree and quadtree parameter differently 
@@ -23,7 +24,7 @@ getblocksnearby2 <- function(sitepoints, radius=3, maxradius=31.07,
   
   # TRYING THIS TO SEE IF localtree can be checked in global environment or calling environment or whatever
   # so this function could be used without specifying that index
-  # and the index quadtree or localtree could be built using .onLoad() when package is first attached. 
+  # and the index quadtree or localtree could be built using .onAttach() or .onLoad() when package is first attached or just loaded. 
   # not sure that would work on a server, 
   # and not sure it would work for an R user in RStudio who did library to load the EJAM pkg
   

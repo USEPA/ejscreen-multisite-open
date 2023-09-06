@@ -1,5 +1,5 @@
 #' Find nearby blocks using Quad Tree data structure for speed, NO PARALLEL PROCESSING
-#'
+#'     DRAFT / WAS WORK IN PROGRESS  
 #' @description Given a set of points and a specified radius (in miles), 
 #'   this function quickly finds all the US Census blocks near each point. 
 #'   For each point, it uses the specified search radius and finds the distance to 
@@ -28,7 +28,7 @@
 #'    created from the SearchTree package example:
 #'    SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point")
 #'    Takes about 2-5 seconds to create this each time it is needed.
-#'    It is automatically created when the package is loaded via the [.onLoad()] function
+#'    It is automatically created when the package is attached via the .onAttach() function
 #' @param report_progress_every_n Reports progress to console after every n points,
 #'   mostly for testing, but a progress bar feature might be useful unless this is super fast.
 #'

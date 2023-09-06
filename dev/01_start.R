@@ -16,7 +16,7 @@
 ##
 ## /!\ Note: if you want to change the name of your app during development,
 ## either re-run this function, call golem::set_golem_name(), or don't forget
-## to change the name in the app_sys() function in app_config.R /!\
+## to change the name in the app_sys() function in app_config.R /!\    # treats EJAM/inst/ as root
 ##
 golem::fill_desc(
   pkg_name = "EJAM", # The Name of the package containing the App

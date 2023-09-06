@@ -12,7 +12,7 @@
 #' @param avoidorphans logical
 #' @param CountCPU for parallel processing via makeCluster() and [doSNOW::registerDoSNOW()]
 #' @param quadtree index of all US blocks like localtree
-#' @seealso [getblocksnearby_and_doaggregate()] [getblocksnearby()] [getblocksnearbyviaQuadTree()] [getblocksnearbyviaQuadTree_Clustered()] [getblocksnearbyviaQuadTree2()]
+#' @seealso   [getblocksnearby()] [getblocksnearbyviaQuadTree()] [getblocksnearbyviaQuadTree_Clustered()] [getblocksnearbyviaQuadTree2()]
 #' @export
 #'
 getblocksnearbyviaQuadTree_Clustered <-function(sitepoints,radius,maxradius, avoidorphans, CountCPU=1, quadtree) {

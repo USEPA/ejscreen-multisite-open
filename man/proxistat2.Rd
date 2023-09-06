@@ -2,7 +2,7 @@
 % Please edit documentation in R/proxistat2.R
 \name{proxistat2}
 \alias{proxistat2}
-\title{Calculate a proximity score for every blockgroup
+\title{Calculate a proximity score for every blockgroup - WORK IN PROGRESS
 Indicator of proximity of each blockgroups to some set of facilities or sites.}
 \usage{
 proxistat2(pts, radius = 8.04672, quadtree)
@@ -13,22 +13,25 @@ proxistat2(pts, radius = 8.04672, quadtree)
 \item{radius}{distance max, in miles, default is 5km (8.04672 miles)
 which is the EJScreen max search range for proximity scores}
 
-\item{quadtree}{must be localtree from EJAM::}
+\item{quadtree}{must be called localtree, an index of block locations,
+built during use of EJAM package. see \link{quaddata}}
 }
 \value{
 data.table with proximityscore, bgfips, lat, lon, etc.
 }
 \description{
-Calculate a proximity score for every blockgroup
+Calculate a proximity score for every blockgroup - WORK IN PROGRESS
 Indicator of proximity of each blockgroups to some set of facilities or sites.
 }
 \details{
 Proximity score is sum of (1/d) where each d is distance of a given site in km,
 summed over all sites within 5km, as in EJScreen.
 
-doaggregate() has a bit of code in it to do this same thing that proxistat2() does.
+doaggregate() has a bit of code in it to do this same thing that this function does.
 
-*** Still need area of each block to fix this func proxistat2()
+*** Still need area of each block to fix this function -
+the block area should get put into one of these:
+\link{blockpoints} or \link{blockwts}
 }
 \examples{
  # pts <- testpoints_50

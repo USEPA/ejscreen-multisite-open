@@ -44,7 +44,36 @@
 #     max.name.d <- names(ratio.to.us.d())[which.max(ratio.to.us.d())]
 #     
 #     max.name.d.friendly <- EJAMbatch.summarizer::names_d_batch_friendly[which.max(ratio.to.us.d())]  # xxx
-#     
+
+############################################################################################################################################### #
+# > c(names_d_friendly, names_d_subgroups_nh_friendly)
+
+# [1] "Demog.Ind."                                                             "Suppl Demog Index"                                                     
+# [3] "% Low-inc."                                                             "% Limited English"         ** different sort order                                                    
+# [5] "% Unemployed"                                                           "% < High School"                                                       
+# [7] "Low life expectancy"                                                    "% < age 5"                                                             
+# [9] "% > age 64"                                                             "% People of Color"       
+
+# [11] "% Hispanic or Latino (any race)"                                        "% Black or African American, single race, non-Hispanic"                
+# [13] "% Asian, single race, non-Hispanic"                                     "% American Indian or Alaska Native, single race, non-Hispanic"         
+# [15] "% Native Hawaiian or Other Pacific Islander, single race, non-Hispanic" "% Other race, single race, non-Hispanic"                               
+# [17] "% Multirace (two or more races), non-Hispanic"                          "% White, single race, non-Hispanic"        
+
+
+# > EJAMbatch.summarizer::names_d_batch_friendly     ** different sort order than above, and worded differently
+
+# [1] "Demog.Ind."                                                                          "Suppl Demog Index"                                                                  
+# [3] "% Low-inc."                                                                          "% People of Color"                                                           
+# [5] "% <High School"                                                                      "% Linguistic Isol."                                                                 
+# [7] "% < age 5"                                                                           "% > age 64"                                                                         
+# [9] "% unemployed"                                                                        "Low life expectancy"  
+
+# [11] "% White nha (White non-Hispanic, single race)"                                       "% Hisp (Hispanic or Latino)"                                                        
+# [13] "% Black nha (Black or African American non-Hispanic, single race)"                   "% Asian nha (Asian non-Hispanic, single race)"                                      
+# [15] "% AmIndian nha (American Indian and Alaska Native non-Hispanic, single race)"        "% Hawaii nha (Native Hawaiian and Other Pacific Islander non-Hispanic, single race)"
+# [17] "% Other nha (Other race non-Hispanic, single race)"                                  "% Multi nha (Two or more races non-Hispanic)"          
+############################################################################################################################################### #
+
 #     median.pctile.in.us <- data_summarized()$rows['Median site', paste0('pctile.',max.name.d)]
 #     
 #     exec_text_d <-paste0(
@@ -106,7 +135,7 @@
 #   
 #   ## can use a dropdown to select indicator
 #   ## or just use the most extreme one
-#   type <- 'choose' #'max'
+#   type <- 'choose' #  "max" 
 #   
 #   
 #   ## if only care about max indicator - this is not currently used in favor of the 

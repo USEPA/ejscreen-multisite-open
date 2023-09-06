@@ -45,7 +45,7 @@ of places with N, or at least N, of the indicators
 at or above the benchmark(s)
 }
 \examples{
-  \dontrun{
+\dontrun{
  pdata <- data.frame(a=rep(80,4),b=rep(93,4), col3=c(49,98,100,100))
   ### pdata <- EJAM::blockgroupstats[ , names_e_pctile]
  pcuts <-  5 * (0:20)  # <- as.vector(keystats_e['highcut', ])

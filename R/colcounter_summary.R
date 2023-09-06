@@ -17,8 +17,7 @@
 #' @return A table of frequency counts
 #' @export
 #'
-#' @examples
-#'   \dontrun{
+#' @examples \dontrun{
 #'  pdata <- data.frame(a=rep(80,4),b=rep(93,4), col3=c(49,98,100,100))
 #'   ### pdata <- EJAM::blockgroupstats[ , names_e_pctile]
 #'  pcuts <-  5 * (0:20)  # <- as.vector(keystats_e['highcut', ])
@@ -114,7 +113,7 @@ colcounter_summary_cum_pct <- function(x, thresholdlist, ...) {
 #' @param ... passed to the 4 functions
 #'   like or.tied=TRUE, na.rm=TRUE, below=FALSE, one.cut.per.col=FALSE
 #' @seealso colcounter_summary_all() colcounter_summary() colcounter_summary_cum() colcounter_summary_pct() colcounter_summary_cum_pct()
-#' @examples dontrun{
+#' @examples \dontrun{
 #'     # df <-  bg22[ , names.ej.pctile]
 #'  df <- data.frame(a=rep(80,4),b=rep(93,4), col3=c(49,98,100,100))
 #'  bench <- 5 * (0:20)
@@ -136,22 +135,28 @@ colcounter_summary_cum_pct <- function(x, thresholdlist, ...) {
 #'   # pdata <- ejscreen package file bg22[ , names.e.pctile]
 #'   colcounter_summary_cum_pct(pdata,c(50,80,90,95))
 #'   xs <- 1:12
-#'   plot(x=xs, y=colcounter_summary_cum_pct(pdata, 50)[xs+1], type='b', col='gray', ylim=c(0, 100),
-#'     main='% of places with at least x/12 indicators >=Nth percentile', ylab='% of places', xlab='# of indicators')
+#'   plot(x=xs, y=colcounter_summary_cum_pct(pdata, 50)[xs+1],
+#'    type='b', col='gray', ylim=c(0, 100),
+#'     main='% of places with at least x/12 indicators >=Nth percentile',
+#'      ylab='% of places', xlab='# of indicators')
 #'   points(xs, colcounter_summary_cum_pct(pdata, 80)[xs+1], type='b', col='blue')
 #'   points(xs, colcounter_summary_cum_pct(pdata, 90)[xs+1], type='b', col='orange')
 #'   points(xs, colcounter_summary_cum_pct(pdata, 95)[xs+1], type='b', col='red')
-#'   legend(x = 'topright', legend = paste0('>= ', c(50, 80, 90, 95),'th percentile'), fill = c('gray', 'blue', 'orange', 'red'))
+#'   legend(x = 'topright', legend = paste0('>= ', c(50, 80, 90, 95),'th percentile'),
+#'    fill = c('gray', 'blue', 'orange', 'red'))
 #'
 #'   # pdata <- bg22[ ,  names.ej.pctile]
 #'   colcounter_summary_cum_pct(pdata,c(50,80,90,95))
 #'   xs <- 1:12
-#'   plot(x=xs, y=colcounter_summary_cum_pct(pdata, 50)[xs+1], type='b', col='gray', ylim=c(0, 40),
-#'     main='% of places with at least x/12 indicators >=Nth percentile', ylab='% of places', xlab='# of indicators')
+#'   plot(x=xs, y=colcounter_summary_cum_pct(pdata, 50)[xs+1], 
+#'     type='b', col='gray', ylim=c(0, 40),
+#'     main='% of places with at least x/12 indicators >=Nth percentile', ylab='% of places', 
+#'     xlab='# of indicators')
 #'   points(xs, colcounter_summary_cum_pct(pdata, 80)[xs+1], type='b', col='blue')
 #'   points(xs, colcounter_summary_cum_pct(pdata, 90)[xs+1], type='b', col='orange')
 #'   points(xs, colcounter_summary_cum_pct(pdata, 95)[xs+1], type='b', col='red')
-#'   legend(x = 'topright', legend = paste0('>= ', c(50, 80, 90, 95),'th percentile'), fill = c('gray', 'blue', 'orange', 'red'))
+#'   legend(x = 'topright', legend = paste0('>= ', c(50, 80, 90, 95),'th percentile'), 
+#'     fill = c('gray', 'blue', 'orange', 'red'))
 #' }
 #'
 #' @export

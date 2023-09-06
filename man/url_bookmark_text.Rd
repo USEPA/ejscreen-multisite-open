@@ -16,8 +16,8 @@ url_bookmark_text(
   xmax = 0.9 * min(x),
   ymin = 0.9 * min(y),
   ymax = 1.1 * min(y),
-  urlrest =
-    "https://geopub.epa.gov/arcgis/rest/services/ejscreen/ejscreen_v2022_with_AS_CNMI_GU_VI/MapServer"
+  urlrest = paste0("https://geopub.epa.gov/arcgis/rest/services",
+    "/ejscreen/ejscreen_v2022_with_AS_CNMI_GU_VI/MapServer")
 )
 }
 \arguments{

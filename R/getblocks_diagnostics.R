@@ -15,8 +15,9 @@ getblocks_summarize_blocks_per_site <- function(x, varname='siteid') {
     blocks_nearby =  as.numeric(names(blocks_per_site_histo)), 
     freq_of_sites =  as.numeric(blocks_per_site_histo)
   )
-  print('Range and mean of count of blocks nearby the various sites')
+  cat('Range and mean of count of blocks nearby the various sites:\n\n')
   print(summary(as.numeric(table(x[ , ..varname]))))
+  cat("\n")
   invisible(blocks_per_site_histo)
 }
 ######################################################################################### # 
@@ -41,7 +42,8 @@ getblocks_summarize_sites_per_block <- function(x, varname='blockid') {
 #'
 #' @param x The output of [getblocksnearby()] like sites2blocks_example
 #'
-#' @return A list of stats
+#' @return A list of stats 
+#' @seealso This relies on  [getblocks_summarize_blocks_per_site()] and [getblocks_summarize_sites_per_block()]
 #' @examples  getblocks_diagnostics(sites2blocks_example)
 #' @import data.table
 #' @export
@@ -68,13 +70,17 @@ getblocks_diagnostics <- function(x) {
   count_block_site_distances <- blockcount_incl_dupes # number of rows in output table of all block-site pairs with their distance.
   blockcount_avgsite         <- blockcount_incl_dupes / sitecount_unique_out
   
+  print(getblocks_summarize_blocks_per_site(x))  # returns table on # of blocks near avg site, how many sites have only 1 block nearby, or <30 nearby, etc.
+  cat("\n\n")
+
+  cbind(percentiles.of.distance = quantile(x$distance, probs=(0:20)/20))
+  
   x <- list(
     sitecount_unique_out = sitecount_unique_out, 
     # sites_withany_overlap = as.numeric(getblocks_summarize_sites_per_block(x)['2']),
     # that tells you how many blocks are near 2 sites, but not how many or which sites those were. 
     
-    # getblocks_summarize_blocks_per_site(x) # returns table on # of blocks near avg site, how many sites have only 1 block nearby, or <30 nearby, etc.
-    blockcount_avgsite = blockcount_avgsite, 
+       blockcount_avgsite = blockcount_avgsite, 
     
     blockcount_incl_dupes = blockcount_incl_dupes, 
     blockcount_unique = blockcount_unique, 
@@ -89,7 +95,7 @@ getblocks_diagnostics <- function(x) {
     uniqueblocks_near_multisite = uniqueblocks_near_multisite
   )
   
-  # print(  getblocks_summarize_blocks_per_site) 
+   
   cat(paste0(prit(sitecount_unique_out), ' unique output sites\n'))
   cat(paste0(prit(round(blockcount_avgsite, 0)), ' blocks are near the avg site or in avg buffer
              (based on their block internal point, like a centroid)\n'))
@@ -107,7 +113,7 @@ getblocks_diagnostics <- function(x) {
              (assuming they live at the block internal point\n'))
   # cat(prit(count_block_site_distances), ' = count_block_site_distances',  '\n')
   # cat(prit(uniqueblocks_near_multisite),' = uniqueblocks_near_multisite ', '\n')
- 
+  boxplot(x$distance ~ x$siteid)
   invisible(x)
 }
 ######################################################################################### # 

@@ -9,7 +9,7 @@ ratiostats <- function(results_bybg_people, pts, dig=2 ) {
   
   stinfo <- data.frame(siteid=1:nrow(pts),  EJAM::state_from_latlon(lat=pts$lat, lon=pts$lon))
   # x <- getblocksnearby(pts, radius = 3.1, quadtree = localtree)
-  # y <- doaggregate(x, sites2states = stinfo)
+  # y <- doaggregate(x, sites2states_or_latlon = stinfo)
   # z <- y$results_bybg_people
   z <- results_bybg_people # a data.table from  doaggregate()[,"results_bybg_people"]
   
