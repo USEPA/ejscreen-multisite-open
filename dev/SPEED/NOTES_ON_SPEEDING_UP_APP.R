@@ -54,7 +54,7 @@ Consider strategies such as these (roughly in order of priority or feasibility):
 •	Offer a spinner/ good progress bar where relevant, until speed improves.
 •	Have fast basic elements of webpage/tab load asap, then slower ones afterwards.
 •	Use reactive programming optimally - have the minimum of things refresh, like other tabs, using isolate() and bindcache functions, etc., use debouncing of sliders, etc.
-•	Preload all large datasets early while user is not waiting (maybe using callr to do it in a separate process?). Decide if it is better to load large datasets at package loading time, via .onLoad() in aaa_onLoad_create_quad_tree_index.R, instead of when user does a query that triggers slow lazyloading? Wait will be either when pkg loads or when query is first done, right? These are the big ones: quaddata (168 MB), blockgroupstats  (54 MB), blockpoints (86 MB) and blockwts (31 MB), blockid2fips (20 MB) files
+•	Preload all large datasets early while user is not waiting (maybe using callr to do it in a separate process?). Decide if it is better to load large datasets at package attach time, via .onAttach() instead of when user does a query that triggers slow lazyloading? Wait will be either when pkg loads or when query is first done, right? These are the big ones: quaddata (168 MB), blockgroupstats  (54 MB), blockpoints (86 MB) and blockwts (31 MB), blockid2fips (20 MB) files
 •	Consider how datasets are designed and used in the code, to avoid some joins or use memory more efficiently or avoid loading nonessential columns, etc.
 •	Fix where doing the same thing twice - some code seemed duplicative in doaggregate(). 
 •	remove some nonessential features/stats if they are bottlenecks. 

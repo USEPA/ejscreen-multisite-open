@@ -106,7 +106,8 @@ url_bookmark_text <- function(
     xmax=0.9*min(x), # <1 because it is negative longitude in USA
     ymin=0.9*min(y),
     ymax=1.1*min(y),
-    urlrest="https://geopub.epa.gov/arcgis/rest/services/ejscreen/ejscreen_v2022_with_AS_CNMI_GU_VI/MapServer"
+    urlrest=paste0("https://geopub.epa.gov/arcgis/rest/services", 
+                   "/ejscreen/ejscreen_v2022_with_AS_CNMI_GU_VI/MapServer")
 ) {
 
   yrinurl <- gsub(".*v20(..).*", "20\\1", urlrest)

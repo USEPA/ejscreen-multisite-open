@@ -266,7 +266,7 @@ xls_formatting2 <- function(overall, eachsite, longnames,
   ## apply number format to count columns (including Total Population)
   count_colnums_overall <- c(which(headers_overall == 'pop'), which(vartypes_overall == 'count demog'))
   count_colnums_eachsite <- c(which(headers_overall == 'pop'), which(vartypes_eachsite == 'count demog'))
-  count_var_style <- openxlsx::createStyle(numFmt = '#,###,###')
+  count_var_style <- openxlsx::createStyle(numFmt = "#,###,###" )
   openxlsx::addStyle(wb, sheet = 'Overall', rows = 2, cols = count_colnums_overall, style=count_var_style)
   openxlsx::addStyle(wb, sheet = 'Each Site', rows = 2:(NROW(eachsite) + 1), cols = count_colnums_eachsite, style=count_var_style, gridExpand = TRUE)
   
@@ -298,12 +298,12 @@ vartype2color_ejam <- function(vartype) {
   coloring <- matrix(
     c(
       # jsondoc_vartype 
-      'percentile',              '#ADD8E6', #'lightblue'
-      'raw data for indicator' , '#FFA500', #'orange'
-      'average',                 '#90EE90', #'lightgreen'
-      'ratio',                   '#FFD700', #'gold'
-      'count demog',             '#FFBBFF', #'plum1'
-      'misc',                    '#BEBEBE'  #'gray'
+      'percentile',              '#ADD8E6', #  "lightblue"
+      'raw data for indicator' , '#FFA500', # "orange"
+      'average',                 '#90EE90', # "lightgreen"
+      'ratio',                   '#FFD700', # "gold"
+      'count demog',             '#FFBBFF', # "plum1"
+      'misc',                    '#BEBEBE'  # "gray"
     ), 
     ncol=2, byrow=TRUE
   )

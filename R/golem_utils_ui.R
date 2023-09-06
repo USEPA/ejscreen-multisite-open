@@ -151,7 +151,7 @@ undisplay <- function(tag) {
   # if not already hidden
   if (
     !is.null(tag$attribs$style) &&
-      !grepl("display:\\s+none", tag$attribs$style)
+    !grepl("display:\\s+none", tag$attribs$style)
   ) {
     tag$attribs$style <- paste(
       "display: none;",
@@ -167,7 +167,7 @@ undisplay <- function(tag) {
 display <- function(tag) {
   if (
     !is.null(tag$attribs$style) &&
-      grepl("display:\\s+none", tag$attribs$style)
+    grepl("display:\\s+none", tag$attribs$style)
   ) {
     tag$attribs$style <- gsub(
       "(\\s)*display:(\\s)*none(\\s)*(;)*(\\s)*",
@@ -341,7 +341,7 @@ make_action_button <- function(tag, inputId = NULL) {
     stop("tag does not have any id. Please use inputId to be able to
            access it on the server side.")
   }
-
+  
   # handle id
   if (!is.null(inputId)) {
     if (!is.null(tag$attribs$id)) {
@@ -356,7 +356,7 @@ make_action_button <- function(tag, inputId = NULL) {
       tag$attribs$id <- inputId
     }
   }
-
+  
   # handle class
   if (is.null(tag$attribs$class)) {
     tag$attribs$class <- "action-button"
@@ -368,38 +368,41 @@ make_action_button <- function(tag, inputId = NULL) {
 }
 
 
-# UNCOMMENT to USE
+# UNCOMMENT function below to USE it  
 #
-# attachment::att_amend_desc()
+# attachment   
+#             ::   att_amend_desc()
 #
 # To use this part of the UI
-#
-#' #' Include Content From a File
-#' #'
-#' #' Load rendered RMarkdown from a file and turn into HTML.
-#' #'
-#' #' @rdname includeRMarkdown
-#' #' @export
-#' #'
-#' #' @importFrom rmarkdown render
-#' #' @importFrom markdown markdownToHTML
-#' #' @importFrom shiny HTML
-#' includeRMarkdown <- function(path){
-#'
-#'   md <- tempfile(fileext = '.md')
-#'
-#'   on.exit(unlink(md),add = TRUE)
-#'
-#'   rmarkdown::render(
-#'     path,
-#'     output_format = 'md_document',
-#'     output_dir = tempdir(),
-#'     output_file = md,quiet = TRUE
-#'     )
-#'
-#'   html <- markdown::markdownToHTML(md, fragment.only = TRUE)
-#'
-#'   Encoding(html) <- "UTF-8"
-#'
-#'   return(HTML(html))
-#' }
+
+
+# #' Include Content From a File
+# #'
+# #' Load rendered RMarkdown from a file and turn into HTML.
+# #'
+# #' @rdname includeRMarkdown
+# #' @export
+# #'
+# #' @importFrom rmarkdown render
+# #' @importFrom markdown markdownToHTML
+# #' @importFrom shiny HTML
+# includeRMarkdown <- function(path){
+# 
+#   md <- tempfile(fileext = '.md')
+# 
+#   on.exit(unlink(md), add = TRUE)
+# 
+#   rmarkdown::render(
+#     path,
+#     output_format = 'md_document',
+#     output_dir = tempdir(),
+#     output_file = md, quiet = TRUE
+#     )
+# 
+#   html <- markdown::markdownToHTML(md, fragment.only = TRUE)
+# 
+#   Encoding(html) <- "UTF-8"
+# 
+#   return(HTML(html))
+# }
+

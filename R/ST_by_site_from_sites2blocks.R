@@ -9,15 +9,14 @@
 #' @return data.table with columns  siteid, ST 
 #' @export
 #'
-#' @examples 
-#'   ST_by_site_from_sites2blocks(sites2blocks_example) 
-#'   \dontrun{
+#' @examples \dontrun{
 #'   fname = './inst/testdata/testpoints_207_sites_with_signif_violations_NAICS_326_ECHO.csv'
 #'   x = ST_by_site_from_sites2blocks(
 #'     getblocksnearby( latlon_from_anything(fname), quadtree = localtree))
 #'   y = read_csv_or_xl(fname)
 #'   x$ST == y$FacState
 #'   }
+#'   ST_by_site_from_sites2blocks(sites2blocks_example) 
 #'   
 ST_by_site_from_sites2blocks <- function(sites2blocks) {
   setDT(sites2blocks)
