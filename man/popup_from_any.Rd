@@ -11,9 +11,12 @@ popup_from_any(x, column_names = names(x), labels = column_names, n = "all")
 \arguments{
 \item{x, }{a data table or data frame}
 
-\item{column_names}{default is all, or a vector of column names from x to use}
+\item{column_names}{default is all, or a vector of column names from x to use.
+If some of column_names requested are not found in names(x),
+a warning is given and NA values returned for those names not in x.
+If some of names(x) not requested by column_names, they are left out.}
 
-\item{labels}{default is colnames(x) - vector used to label
+\item{labels}{default is column_names - vector used to label
 the elements in the popup. Must be same length as column_names}
 
 \item{n}{Show the first n columns of mypoints, in popup. "all" means all of them.}
