@@ -122,22 +122,24 @@ Essential packages only available on the [USEPA github](https://github.com/USEPA
 
 ### Reloading the datasets with info about blocks
 
-These datasets should be loaded by the app automatically or may be when the package is loaded, depending on how the .onLoad() function is set up.
+These datasets should be loaded by the app automatically or may be when the package is loaded, depending on how the .onAttach() function is set up.
 
-To manually reload them, see the source code for the .onLoad() function.
-
+To manually reload them, see ?dataload_from_aws() 
+ 
 ### Recreating the index of where blocks are
 
-This index may be built when the package is loaded, automatically, depending on how the .onLoad() function is set up in the file EJAM/R/aaa_onLoad_create_quad_tree_index.R
+This index may be built when the package is loaded, automatically, depending on how the .onAttach() function is set up  
 
 THIS IS SLOW - It takes a few seconds. This (seemingly) must be done for each session. One cannot save it as .rda and just load via a pkg since it is like a pointer to the index in memory.
 
 ```{r BUILD_INDEX}
 # One could manually rebuild the index (if quaddata were updated, for example),
-#  by looking in the source code of the .onLoad() function, or essentially like this:
-localtree <- SearchTrees::createTree(
-   quaddata, treeType = "quad", dataType = "point"
-)
+#   like this:
+indexblocks()
+# which essentially does something like this:
+# localtree <- SearchTrees::createTree(
+#    quaddata, treeType = "quad", dataType = "point"
+# )
 ```
 
 ### Specify Places or Shapes

@@ -34,7 +34,7 @@ margin: auto;
 :::
 
 ::: {#reporthead style="font-weight: bold; font-size: 14pt; font-family: Tahoma; text-align: center;"}
-EJAM Report (EJScreen v2.2)
+EJAM Report (EJScreen v2.2 8/2023)
 :::
 ::: {#headerDiv style="font-weight: bold; font-size: 11pt; text-align: center;"}
 `r params$analysis_title`\
@@ -61,7 +61,7 @@ params$demog_table
 #          'State Percentile' = as.list(round(params$results$results_overall[, ..names_d_state_pctile], 2)),
 #          'National Percentile' = as.list(round(params$results$results_overall[, ..names_d_pctile], 2)))
 #    
-#  rownames(dt) <- names_d_friendly[pmatch(names_d, EJAMbatch.summarizer::names_d_batch)]
+#  rownames(dt) <- names_d_friendly # different sort order than # names_d_friendly[pmatch(names_d, EJAMbatch.summarizer::names_d_batch)]
 #  rownames(dt)[1] <- 'Demographic Index'
 #  
 #  dt <- as.data.frame(dt) %>% rownames_to_column(var = 'Indicator')
@@ -69,7 +69,6 @@ params$demog_table
 #  DT::datatable(dt, rownames = FALSE, 
 #                options = list(autoWidth = TRUE))
 ```
-
 
 ```{r summary_plot, out.width='90%', fig.align='center'}
 

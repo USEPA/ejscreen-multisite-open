@@ -62,7 +62,7 @@ params$demog_table
 #          'State Percentile' = as.list(round(params$results$results_overall[, ..names_d_state_pctile], 2)),
 #          'National Percentile' = as.list(round(params$results$results_overall[, ..names_d_pctile], 2)))
 #    
-#  rownames(dt) <- names_d_friendly[pmatch(names_d, EJAMbatch.summarizer::names_d_batch)]
+#  rownames(dt) <- names_d_friendly # different sort order than # names_d_friendly[pmatch(names_d, EJAMbatch.summarizer::names_d_batch)]
 #  rownames(dt)[1] <- 'Demographic Index'
 #  
 #  dt <- as.data.frame(dt) %>% rownames_to_column(var = 'Indicator')
