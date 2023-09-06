@@ -16,7 +16,7 @@
 
 # as .rda that took about 35 seconds to load, but only 5-10 seconds to create from  blockpoints like this.
 
-# library(EJAM) # takes a long time to load if .onLoad is forcing immediate loading of blockpoints and blockwts 
+# library(EJAM) # takes a long time to load if .onAttach() is forcing immediate loading of blockpoints and blockwts 
 
 ##########################################
 # test points
