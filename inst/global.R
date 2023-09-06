@@ -2,53 +2,64 @@
 
 ################################################################## # 
 # get block data if missing. ####
-#  also see same thing in  EJAM::data_load_from_aws()  and in .onLoad()
-fnames <- c(
-  'lookup_states.rda', 
-  'bgid2fips.rda', 
-  'blockid2fips.rda', 
-  'blockwts.rda', 
-  'blockpoints.rda', 
-  'quaddata.rda'
-)
-pathnames <- paste0('EJAM/', fnames)
-varnames <- gsub("\\.rda", "", fnames)
-mybucket <- 'dmap-data-commons-oa'
-# if not already in memory/ global envt, get from AWS 
-for (i in 1:length(fnames)) {
-  if (!exists(varnames[i])) {
-    cat('loading', varnames[i], 'from', pathnames[i], '\n')
-    aws.s3::s3load(object = pathnames[i], bucket = mybucket)
-  }
-}
+#  also see same thing in  EJAM::dataload_from_aws()  and in .onAttach()
+
+# EJAM::
+  dataload_from_aws()  # i think it loads only missing ones?
+
+# 
+# fnames <- c(
+#    
+#   'bgid2fips.rda', 
+#   'blockid2fips.rda', 
+#   'blockwts.rda', 
+#   'blockpoints.rda', 
+#   'quaddata.rda'
+# )
+# pathnames <- paste0('EJAM/', fnames)
+# varnames <- gsub("\\.rda", "", fnames)
+# mybucket <- 'dmap-data-commons-oa'
+# # if not already in memory/ global envt, get from AWS 
+# for (i in 1:length(fnames)) {
+#   if (!exists(varnames[i])) {
+#     cat('loading', varnames[i], 'from', pathnames[i], '\n')
+#     aws.s3::s3load(object = pathnames[i], bucket = mybucket)
+#   }
+# }
 # BUCKET_CONTENTS <- data.table::rbindlist(aws.s3::get_bucket(bucket = mybucket), fill = TRUE)
 # baseurl <- "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/"
 # urls <- paste0(baseurl, fnames)
 ## "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/quaddata.rda"
 ## "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/bgid2fips.rda"
 ## "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/blockpoints.rda"
-## "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/lookup_states.rda"
 ## "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/blockwts.rda"
 ## "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/blockid2fips.rda"
 ################################################################## # 
 
 # build localtree index if missing ####
 
-# this duplicates code in onLoad() and in indexblocks()
+# this duplicates code in onAttach()  
 
-if (!exists("localtree")) {
-  if (!exists("quaddata")) {stop("requires quaddata to be loaded - cannot build localtree without it.")}
-  # This assign() below is the same as the function called  indexblocks() 
-  #### EJAM::indexblocks()
-    assign(
-    "localtree",
-    SearchTrees::createTree(quaddata, treeType = "quad", dataType = "point"),
-    envir = globalenv()
-    # need to test, but seems to work.
-    # But takes a couple seconds at every reload of pkg.
-  )
-  cat("  Done building index.\n")
-}
+# EJAM::
+  indexblocks()
+
+# if (!exists("localtree")) {
+#   if (!exists("quaddata")) {stop("requires quaddata to be loaded - cannot build localtree without it.")}
+#   # This assign() below is the same as the function called  indexblocks() 
+#   #### EJAM::indexblocks()
+#     assign(
+#     "localtree",
+#     SearchTrees::createTree(quaddata, treeType = "quad", dataType = "point"),
+#     envir = globalenv()
+#     # need to test, but seems to work.
+#     # But takes a couple seconds at every reload of pkg.
+#   )
+#   cat("  Done building index.\n")
+# }
+################################################################## # 
+# EJAM::
+dataload_from_package() # preload the key dataset at least
+
 ################################################################## # 
 
 # Raise Memory Limit on file upload to 100Mb ####
@@ -100,7 +111,7 @@ probs.default.names <- formatC(probs.default.values, digits = 2, format='f', zer
 
 # a default for threshold in at/above threshold stat summarizing EJ US percentiles
 ## used by inputIds 'an_thresh_comp1' and 'an_thresh_comp2'
-threshold.default <- c('comp1' = 95, 'comp2' = 95)  
+threshold.default <- c('comp1' = 90, 'comp2' = 80)  # at least threshold.default[1] is used in batch.summarizer() by ejamit() and app_server()
 
 # which fields to compare to thresholds 
 # EJ US pctiles or EJ State pctiles
@@ -126,7 +137,7 @@ if (!exists("localtree")) {
 # ~ ####
 # HTML OUTLINE FOR FULL REPORT ####
 
-# report is in    /EJAM/www/report.Rmd
+# report is in    /EJAM/www/  ? or maybe /EJAM/inst/app/www/ ?
 
 report_outline <- "
 <div style = 'height: 90vh; overflow-y: auto;'>

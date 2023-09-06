@@ -1,8 +1,8 @@
 #' indexblocks
 #' Create localtree (a quadtree index of all US block centroids) in global environment
-#' @details Note this is duplicated code in .onLoad() and also in global.R  
+#' @details Note this is duplicated code in .onAttach() and also in global.R  
 #' 
-#'    .onLoad() can be edited to create this when the package loads, 
+#'    .onAttach() can be edited to create this when the package loads, 
 #'   but then it takes time each time a developer rebuilds/installs the package or others that load EJAM.
 #'   
 #' It also has to happen in global.R if it has not already.
@@ -10,14 +10,14 @@
 #' @export
 #'
 indexblocks <- function () {
-  cat("Building index of Census Blocks (localtree)...\n")
+  cat("Checking for index of Census blocks (localtree)...\n")
   if (!exists("localtree")) {
-    if (!exists("quaddata")) {stop("requires quaddata to be loaded - cannot build localtree without it.")}
-    # It is obtained from AWS currently, via  data_load_from_aws()
-    
-    # This assign() below is the same as the function called  indexblocks() 
-    # indexblocks() # this creates  localtree object
-    assign(
+    cat('The index of Census block groups (localtree) has not been created yet...\n')
+    if (!exists("quaddata")) {
+      stop("The index of Census block groups (localtree) cannot be created because quaddata is not loaded and we cannot build localtree without it. Try dataload_from_aws() before indexblocks()")
+      } else {
+        cat("Building index of Census Blocks (localtree)...\n")
+          assign(
       "localtree",
       SearchTrees::createTree(quaddata, treeType = "quad", dataType = "point"),
       envir = globalenv()
@@ -25,6 +25,11 @@ indexblocks <- function () {
       # But takes a couple seconds at every reload of pkg.
     )
     cat("  Done building index.\n")
+    }
+
+
+  } else {
+    cat('The index of Census block groups localtree index of blocks appears to have been created.\n')
   }
   
 }

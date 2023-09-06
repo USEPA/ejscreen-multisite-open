@@ -24,7 +24,8 @@ ejscreenit_for_ejam <- function(sitepoints, radius=3, ...) {
   names(out) <- gsub("table", "results_bysite", names(out))
 
   # create empty placeholder for overall results to emulate structure of output of ejam
-  ov = data.table::data.table(rep(0, ncol(out$results_bysite)))
+  ov <- data.frame(matrix(data = 0, nrow = 1, ncol = NCOL(out$results_bysite)))
+  ov <- data.table::setDT(ov)
   data.table::setnames(ov, names(out$results_bysite))
   out$results_overall <- ov
   

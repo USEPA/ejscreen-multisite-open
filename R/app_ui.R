@@ -1,11 +1,10 @@
 #' The application User-Interface
-#'
+#' @noRd
 #' @param request Internal parameter for `{shiny}`.
 #'     DO NOT REMOVE.
 #' @rawNamespace import(shiny, except=c(dataTableOutput, renderDataTable))
 #' @importFrom shinyjs useShinyjs extendShinyjs
 #' 
-#' @noRd
 app_ui  <- function(request) {
   tagList(
     # golem_add_external_resources() ####
@@ -337,8 +336,8 @@ app_ui  <- function(request) {
                            ## input: choose MACT subpart from dropdown list
                            selectInput(inputId = 'ss_select_mact',
                                        label = 'Choose a MACT subpart',
-                                       choices = setNames(mact_categories$subpart,
-                                                          mact_categories$dropdown_label)
+                                       choices = setNames(mact_table$subpart,
+                                                          mact_table$dropdown_label)
                                        
                            )
                          )#, # end MACT conditionalPanel
@@ -478,7 +477,7 @@ app_ui  <- function(request) {
                                       
                                       br(), ## vertical space
                                       
-                                      htmlTemplate(app_sys('report', 'summary_report_tab.html'),
+                                      htmlTemplate(app_sys('report', 'summary_report_tab.html'),   # treats EJAM/inst/ as root
                                                    pop_header = htmlOutput(outputId = 'view1_total_pop'),
                                                    demog_table = shinycssloaders::withSpinner(
                                                      gt::gt_output(outputId = 'view1_demog_table')
@@ -522,11 +521,11 @@ app_ui  <- function(request) {
                                       div(class='navbar1',
                                           navbarPage(
                                             title=NULL,
-                                            #navlistPanel(
-                                            #'Results Pages',
-                                            #well = FALSE,
+                                            #   navlistPanel(
+                                            #   "Results Pages",
+                                            #   well = FALSE,
                                             fluid = FALSE,
-                                            #widths = c(2,10),
+                                            # widths = c(2,10),
                                             
                                             ######################################################################################################### #
                                             # ~ ####
@@ -1126,7 +1125,7 @@ app_ui  <- function(request) {
 golem_add_external_resources <- function() {   # (adds external Resources to App) ####
   golem::add_resource_path(
     "www",
-    app_sys("app/www")
+    app_sys("app/www") #   points to  EJAM/inst/app/www  actually, not EJAM/www nor EJAM/app/www
   )
   tags$head(
     
@@ -1158,7 +1157,7 @@ golem_add_external_resources <- function() {   # (adds external Resources to App
     
     # this specifies app title
     golem::bundle_resources(
-      path = app_sys("app/www"),
+      path = app_sys("app/www"),  #   points to  EJAM/inst/app/www  actually, not EJAM/www nor EJAM/app/www
       app_title = "EJAM"
     )
     # Add here other external resources

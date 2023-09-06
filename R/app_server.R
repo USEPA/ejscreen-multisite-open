@@ -16,28 +16,45 @@
 #' @import SearchTrees
 #' @import shinyBS
 #' @import shinycssloaders
-#' @importFrom shinyjs reset disable enable
+#' @importFrom shinyjs reset
+#' @importFrom shinyjs disable
+#' @importFrom shinyjs enable
 #' @import sf
 #' @import sp
 #' @import tidyverse
-#' @importFrom magrittr '%>%'
 #' @import tidyr
+#' @importFrom magrittr '%>%'
+#' @importFrom grDevices dev.off png
+#' @importFrom graphics abline barplot legend points
+#' @importFrom methods Summary as
+#' @importFrom stats aggregate density na.omit quantile runif setNames
+#' @importFrom utils data download.file installed.packages object.size read.csv stack tail
 #' @rawNamespace import(dplyr, except = c(first, last, between))
 #' 
 app_server <- function(input, output, session) {
   
+  #############################################################################  #
+  # Note: how to avoid or still have a global.R file in the golem approach 
+  #
+  # https://github.com/ThinkR-open/golem/issues/6 then https://github.com/ThinkR-open/golem/issues/920 then https://github.com/ThinkR-open/golem/discussions/932 
+  # but latest seems to be here: https://cran.r-project.org/web/packages/golem/vignettes/c_deploy.html
+  #   Here is the methodology for integrating what you've got in globals.R inside your golem app:
+  # 
+  # - all the datasets that are fixed should be added as a package dataset 
+  # - functions should be integrated as package functions 
+  # - things that need to be launched at runtime should be listed in the app_server function
+  # + You can also use golem_opts for things needed at runtime, to have something like run_app(param = this). 
+  
+  #############################################################################  #
   ## to profile parts of the shiny app for performance
   # callModule(profvis_server, "profiler")
   
-  # Note: how to avoid or still have a global.R file in the golem approach, 
-  # https://github.com/ThinkR-open/golem/issues/6
-  
-  #############################################################################  # 
+  #############################################################################  #
   
   ## button to go back from results to site selection
   observeEvent({
     input$back_to_site_sel
-    }, {
+  }, {
     updateTabsetPanel(session, inputId = 'all_tabs', 'Site Selection')
   })
   
@@ -48,7 +65,7 @@ app_server <- function(input, output, session) {
   })
   
   observe({
-    if(isTruthy(data_processed())){
+    if(isTruthy(data_processed())) {
       shinyjs::show(id='return_to_results')
     } else {
       shinyjs::hide(id='return_to_results')
@@ -133,7 +150,7 @@ app_server <- function(input, output, session) {
                  hideTab(inputId = 'results_tabs', target = 'Advanced Settings')
                })
   
- 
+  
   #############################################################################  # 
   
   ## define current upload method using radio button ####
@@ -153,7 +170,7 @@ app_server <- function(input, output, session) {
                         #ECHO = "ECHO", # 'ECHO Search Tools',
                         FIPS = "FIPS")
     )
-   
+    
   })
   
   ## reactive to keep track of data type used in last analysis
@@ -184,10 +201,10 @@ app_server <- function(input, output, session) {
     )
     
     ## if column names are found in lat/long alias comparison, process
-    if(any(tolower(colnames(ext)) %in% lat_alias) & any(tolower(colnames(ext)) %in% lon_alias)){
+    if(any(tolower(colnames(ext)) %in% lat_alias) & any(tolower(colnames(ext)) %in% lon_alias)) {
       ext %>% 
         EJAM::latlon_df_clean() #%>%   # This does latlon_infer() and latlon_as.numeric() and latlon_is.valid()
-        #data.table::as.data.table()
+      #data.table::as.data.table()
       
     } else {
       ## if not matched, show this message instead
@@ -214,12 +231,12 @@ app_server <- function(input, output, session) {
                        shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
     ) # returns a data.frame
     #include frs_is_valid verification check function, must have colname REGISTRY_ID
-    if (frs_is_valid(read_frs)){
-      if ("siteid" %in% colnames(read_frs)){
+    if (frs_is_valid(read_frs)) {
+      if ("siteid" %in% colnames(read_frs)) {
         colnames(read_frs) <- gsub("siteid", "REGISTRY_ID", colnames(read_frs))
       }
       #converts registry id to character if not already in that class ( frs registry ids are character)
-      if(('REGISTRY_ID' %in% colnames(read_frs)) & (class(read_frs$REGISTRY_ID) != "character")){
+      if(('REGISTRY_ID' %in% colnames(read_frs)) & (class(read_frs$REGISTRY_ID) != "character")) {
         read_frs$REGISTRY_ID = as.character(read_frs$REGISTRY_ID)
       }
       
@@ -239,23 +256,23 @@ app_server <- function(input, output, session) {
   data_up_naics <- reactive({  
     ## check if anything has been selected or entered
     req(isTruthy(input$ss_select_naics))
-   
+    
     #define inputs
     naics_user_picked_from_list <- input$ss_select_naics
     add_naics_subcategories <- input$add_naics_subcategories 
     # q: IS IT BETTER TO USE THIS IN naics_from_any() OR IN frs_from_naics() BELOW ??
     
     # naics_validation function to check for non empty NAICS inputs
-    if(naics_validation(NAICS_enter='',NAIC_select = input$ss_select_naics)){
-    #if(naics_validation(input$ss_enter_naics,input$ss_select_naics)){
+    if(naics_validation(NAICS_enter='',NAIC_select = input$ss_select_naics)) {
+      #if(naics_validation(input$ss_enter_naics,input$ss_select_naics)) {
       inputnaics = {}
-     
+      
       # if not empty, assume its pulled using naics_from_any() or older naics_find() above
       if(length(inputnaics) == 0 | rlang::is_empty(inputnaics)) {
         #construct regex expression and finds sites that align with user-selected naics codes
         inputnaics <- naics_user_picked_from_list
         inputnaics <- unique(inputnaics[inputnaics != ""])
-      
+        
         print(inputnaics)
         
         #merge user-selected NAICS with FRS facility location information
@@ -265,7 +282,7 @@ app_server <- function(input, output, session) {
         
         sitepoints <- frs_from_naics(inputnaics, children=add_naics_subcategories)[, .(lat,lon,REGISTRY_ID,PRIMARY_NAME,NAICS)] # xxx
         # print(sitepoints)
-        if(rlang::is_empty(sitepoints) | nrow(sitepoints) == 0){
+        if(rlang::is_empty(sitepoints) | nrow(sitepoints) == 0) {
           ################ Should output something saying no valid results returned ######## #
           shiny::validate('No Results Returned')
         }
@@ -277,10 +294,10 @@ app_server <- function(input, output, session) {
     } else {
       ################ Should output something saying no valid results returned ######## #
       shiny::validate('Invalid NAICS Input')
-
+      
     }
     cat("SITE COUNT VIA NAICS: ", NROW(sitepoints), "\n")
-
+    
     ## assign final value to data_up_naics reactive variable
     return(sitepoints %>% latlon_df_clean())
   })
@@ -308,7 +325,7 @@ app_server <- function(input, output, session) {
   #   
   #   ## only process if lats and lon (or aliases) exist in uploaded data  
   #   ## if column names are matched to aliases, process it    
-  #   if(any(tolower(colnames(ext)) %in% lat_alias) & any(tolower(colnames(ext)) %in% lon_alias)){
+  #   if(any(tolower(colnames(ext)) %in% lat_alias) & any(tolower(colnames(ext)) %in% lon_alias)) {
   #     ext %>% 
   #       EJAM::latlon_df_clean() #%>% 
   #       #data.table::as.data.table()
@@ -326,63 +343,63 @@ app_server <- function(input, output, session) {
     req(isTruthy(input$ss_upload_program) || isTruthy(input$ss_select_program))
     #req(input$submit_program)
     
-    if(input$ss_choose_method_upload == 'EPA_PROGRAM'){
-   #if(input$program_ul_type == 'upload'){
-    req(input$ss_upload_program)
-     
-    ## check if file extension is appropriate
-    ext <- tolower(tools::file_ext(input$ss_upload_program$name))
-    ## if acceptable file type, read in; if not, send warning text
-    read_pgm <- switch(ext,
-                       csv =  data.table::fread(input$ss_upload_program$datapath),
-                       xls = readxl::read_excel(input$ss_upload_program$datapath) %>% data.table::as.data.table(),
-                       xlsx = readxl::read_excel(input$ss_upload_program$datapath) %>% data.table::as.data.table(),
-                       shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
-    ) # returns a data.frame
-    
-    ## error if no columns provided
-    if(!any(c('program','pgm_sys_id') %in% tolower(colnames(read_pgm)))){
-      validate('Please add a file with at least these two columns: program, pgm_sys_id \n and possibly these columns as well: REGISTRY_ID,lat,lon')
+    if(input$ss_choose_method_upload == 'EPA_PROGRAM') {
+      #if(input$program_ul_type == 'upload') {
+      req(input$ss_upload_program)
+      
+      ## check if file extension is appropriate
+      ext <- tolower(tools::file_ext(input$ss_upload_program$name))
+      ## if acceptable file type, read in; if not, send warning text
+      read_pgm <- switch(ext,
+                         csv =  data.table::fread(input$ss_upload_program$datapath),
+                         xls = readxl::read_excel(input$ss_upload_program$datapath) %>% data.table::as.data.table(),
+                         xlsx = readxl::read_excel(input$ss_upload_program$datapath) %>% data.table::as.data.table(),
+                         shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
+      ) # returns a data.frame
+      
+      ## error if no columns provided
+      if(!any(c('program','pgm_sys_id') %in% tolower(colnames(read_pgm)))) {
+        validate('Please add a file with at least these two columns: program, pgm_sys_id \n and possibly these columns as well: REGISTRY_ID,lat,lon')
+      }
+      
+      ## convert pgm_sys_id and REGISTRY_ID columns to character before joining
+      if(('pgm_sys_id' %in% colnames(read_pgm)) & (class(read_pgm$pgm_sys_id) != "character")) {
+        read_pgm$pgm_sys_id = as.character(read_pgm$pgm_sys_id)
+      }
+      if(('REGISTRY_ID' %in% colnames(read_pgm)) & (class(read_pgm$REGISTRY_ID) != "character")) {
+        read_pgm$REGISTRY_ID = as.character(read_pgm$REGISTRY_ID)
+      }
+      
+      ## add check for program and pgm_sys_id else validate
+      
+      ## look for program in list from unique(frs_by_programid$program)
+      
+      ## if any of these columns already exist, join by all of them
+      if(any(c('REGISTRY_ID','lat','lon') %in% colnames(read_pgm))) {
+        pgm_out <- dplyr::left_join(
+          read_pgm, frs_by_programid#,
+          #by = c("program", "pgm_sys_id")
+        )
+      } else {
+        pgm_out <- dplyr::left_join(
+          read_pgm, frs_by_programid,
+          by = c("program", "pgm_sys_id")
+        )
+      }
+      
+      ## clean so that any invalid latlons become NA
+      pgm_out <- pgm_out %>% 
+        latlon_df_clean()
+      
+      #} else if(input$program_ul_type == 'dropdown') {
+    } else if(input$ss_choose_method_drop == 'EPA_PROGRAM') { 
+      req(isTruthy(input$ss_select_program))
+      ## filter frs_by_programid to currently selected program
+      pgm_out <- frs_by_programid[ program== input$ss_select_program]
+      ## clean so that any invalid latlons become NA
+      pgm_out <- pgm_out %>% 
+        latlon_df_clean()
     }
-    
-    ## convert pgm_sys_id and REGISTRY_ID columns to character before joining
-    if(('pgm_sys_id' %in% colnames(read_pgm)) & (class(read_pgm$pgm_sys_id) != "character")){
-      read_pgm$pgm_sys_id = as.character(read_pgm$pgm_sys_id)
-    }
-    if(('REGISTRY_ID' %in% colnames(read_pgm)) & (class(read_pgm$REGISTRY_ID) != "character")){
-      read_pgm$REGISTRY_ID = as.character(read_pgm$REGISTRY_ID)
-    }
-    
-    ## add check for program and pgm_sys_id else validate
-    
-    ## look for program in list from unique(frs_by_programid$program)
-    
-    ## if any of these columns already exist, join by all of them
-    if(any(c('REGISTRY_ID','lat','lon') %in% colnames(read_pgm))){
-      pgm_out <- dplyr::left_join(
-        read_pgm, frs_by_programid#,
-        #by = c("program", "pgm_sys_id")
-      )
-    } else {
-      pgm_out <- dplyr::left_join(
-        read_pgm, frs_by_programid,
-        by = c("program", "pgm_sys_id")
-      )
-    }
-   
-    ## clean so that any invalid latlons become NA
-    pgm_out <- pgm_out %>% 
-      latlon_df_clean()
-
-   #} else if(input$program_ul_type == 'dropdown'){
-    } else if(input$ss_choose_method_drop == 'EPA_PROGRAM'){ 
-     req(isTruthy(input$ss_select_program))
-     ## filter frs_by_programid to currently selected program
-     pgm_out <- frs_by_programid[ program== input$ss_select_program]
-     ## clean so that any invalid latlons become NA
-     pgm_out <- pgm_out %>% 
-       latlon_df_clean()
-   }
     ## return output dataset
     pgm_out
   })
@@ -400,9 +417,9 @@ app_server <- function(input, output, session) {
     # q: IS IT BETTER TO USE THIS IN naics_from_any() OR IN frs_from_naics() BELOW ??
     
     # naics_validation function to check for non empty SIC inputs
-    if(naics_validation('', input$ss_select_sic)){
+    if(naics_validation('', input$ss_select_sic)) {
       inputsic = {}
-     
+      
       # if not empty, assume its pulled using naics_from_any() or older naics_find() above
       if(length(inputsic) == 0 | rlang::is_empty(inputsic)) {
         #construct regex expression and finds sites that align with user-selected SIC codes
@@ -418,14 +435,12 @@ app_server <- function(input, output, session) {
         print('testb')
         sitepoints <- frs_from_sic(inputsic, children=add_sic_subcategories)[, .(lat,lon,REGISTRY_ID,PRIMARY_NAME,SIC)] # xxx
         # print(sitepoints)
-        if(rlang::is_empty(sitepoints) | nrow(sitepoints) == 0){
+        if(rlang::is_empty(sitepoints) | nrow(sitepoints) == 0) {
           ################ Should output something saying no valid results returned ######## #
           shiny::validate('No Results Returned')
         }
-      } else{  
-        #sitepoints <- frs_by_sic[SIC %like% inputsic ,  ]
+      } else {
         sitepoints <- frs_from_sic(inputsic, children=add_sic_subcategories)[, .(lat,lon,REGISTRY_ID,PRIMARY_NAME,SIC)] # xxx
-        # print(sitepoints)
         showNotification('Points submitted successfully!', duration = 1)
       }
     } else {
@@ -440,13 +455,13 @@ app_server <- function(input, output, session) {
   })
   
   ## reactive: data uploaded by FIPS ####
-
+  
   data_up_fips <- reactive({
     req(input$ss_upload_fips)
-
+    
     ## check if file extension is appropriate
     ext <- tolower(tools::file_ext(input$ss_upload_fips$name))
-
+    
     ## if acceptable file type, read in; if not, send warning text
     ext <- switch(ext,
                   csv =  data.table::fread(input$ss_upload_fips$datapath),
@@ -454,16 +469,16 @@ app_server <- function(input, output, session) {
                   xlsx = readxl::read_excel(input$ss_upload_fips$datapath) %>% data.table::as.data.table(),
                   shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
     )
-
+    
     ## create named vector of FIPS codes (names used as siteid)
     fips_alias <- c('FIPS','fips','fips_code','fipscode','Fips','statefips','countyfips', 'ST_FIPS','st_fips','ST_FIPS','st_fips', 'FIPS.ST', 'FIPS.COUNTY', 'FIPS.TRACT')
- 
-    if(any(tolower(colnames(ext)) %in% fips_alias)){
-    #if('FIPS' %in% colnames(ext)){
+    
+    if(any(tolower(colnames(ext)) %in% fips_alias)) {
+      #if('FIPS' %in% colnames(ext)) {
       firstmatch <- intersect(fips_alias, colnames(ext))[1]
-    fips_vec <- fips_lead_zero(as.character(ext[[firstmatch]]))
-    names(fips_vec) <- as.character(fips_vec)
-    } else{
+      fips_vec <- fips_lead_zero(as.character(ext[[firstmatch]]))
+      names(fips_vec) <- as.character(fips_vec)
+    } else {
       validate(paste0('No FIPS column found. Please use one of the following names: ', paste0(fips_alias, collapse=', ')))
     }
     ## create two-column dataframe with bgs (values) and original fips (ind)
@@ -472,7 +487,7 @@ app_server <- function(input, output, session) {
     all_bgs$siteid <- as.character(all_bgs$siteid)
     
     ## only process blockgroups exist for uploaded data
-    if(nrow(all_bgs) > 0){
+    if(nrow(all_bgs) > 0) {
       fips_blockpoints <- dplyr::left_join(all_bgs, 
                                            ## create 12-digit column inline (original table not altered)
                                            blockid2fips[, .(blockid, blockfips, blockfips12 = substr(blockfips,1,12))], 
@@ -483,7 +498,6 @@ app_server <- function(input, output, session) {
       
       ## remove any invalid latlon values 
       return(fips_blockpoints)
-      
     } else {
       ## if not matched, return this message
       shiny::validate('No blockgroups found for these FIP codes.')
@@ -497,7 +511,7 @@ app_server <- function(input, output, session) {
     print(infiles)
     
     infile_ext <- tools::file_ext(infiles)
-    if(!all(c('shp','shx','dbf','prj') %in% infile_ext)){
+    if(!all(c('shp','shx','dbf','prj') %in% infile_ext)) {
       validate('Not all required file extensions found.')
     }
     
@@ -506,10 +520,9 @@ app_server <- function(input, output, session) {
     name <- strsplit(input$ss_upload_shp$name[1], "\\.")[[1]][1] # strip name 
     purrr::walk2(infiles, outfiles, ~file.rename(.x, .y)) # rename files
     
-    
     shp <- read_sf(file.path(dir, paste0(name, ".shp"))) # read-in shapefile
     
-    if(nrow(shp) > 0){
+    if(nrow(shp) > 0) {
       numna <- nrow(shp[!sf::st_is_valid(shp),])
       invalid_alert(numna)
       shp_valid <- shp[sf::st_is_valid(shp),] #determines valid shapes
@@ -517,38 +530,34 @@ app_server <- function(input, output, session) {
       shp_valid<- dplyr::mutate(shp_valid, siteid = row_number())
       
       shp_proj <- sf::st_transform(shp_valid,crs= 4269)
-    
-   } else {
-        ## if not matched, return this message
-        shiny::validate('No shapes found in file uploaded.')
+      
+    } else {
+      ## if not matched, return this message
+      shiny::validate('No shapes found in file uploaded.')
     }
-    
     shp_proj
-    
-    
-    
   })
   
   #############################################################################  # 
   ## reactive: data uploaded by MACT subpart ####
   
   data_up_mact <- reactive({
-
-    req(isTruthy(input$ss_select_mact))
-
-      ## filter frs_by_mact to currently selected subpart
-      mact_out <- frs_by_mact[ subpart == input$ss_select_mact]
-      ## remove any facilities with invalid latlons before returning
-      mact_out <- mact_out[!is.na(lat) & !is.na(lon),]
-        
     
-      if(all(is.na(mact_out$lon)) & all(is.na(mact_out$lat))){
-        validate('No valid locations found under this MACT subpart')
-      } else {
-        ## return output dataset
-        mact_out
-      }
-
+    req(isTruthy(input$ss_select_mact))
+    
+    ## filter frs_by_mact to currently selected subpart
+    mact_out <- frs_by_mact[ subpart == input$ss_select_mact]
+    ## remove any facilities with invalid latlons before returning
+    mact_out <- mact_out[!is.na(lat) & !is.na(lon),]
+    
+    
+    if(all(is.na(mact_out$lon)) & all(is.na(mact_out$lat))) {
+      validate('No valid locations found under this MACT subpart')
+    } else {
+      ## return output dataset
+      mact_out
+    }
+    
   })
   
   ## reactive: hub for any/all uploaded data, gets passed to processing ####
@@ -558,33 +567,33 @@ app_server <- function(input, output, session) {
     ## that is currently selected by the ss_choose_method radio button
     
     ## if using lat/lon upload
-    if(current_upload_method() == 'latlon'){
+    if(current_upload_method() == 'latlon') {
       
       data_up_latlon() #%>% 
       
-    } else if(current_upload_method() == 'NAICS'){
+    } else if(current_upload_method() == 'NAICS') {
       print('setting data_uploaded() to data_up_naics() ... ')
       data_up_naics()
       
-    } else if(current_upload_method() == 'FRS'){
+    } else if(current_upload_method() == 'FRS') {
       
       data_up_frs()
       
-    # } else if(current_upload_method() == 'ECHO'){
-    #   
-    #   data_up_echo() 
-       
-    } else if(current_upload_method() == 'EPA_PROGRAM'){
-
-        data_up_epa_program()
-    } else if(current_upload_method() == 'SIC'){
+      # } else if(current_upload_method() == 'ECHO') {
+      #   
+      #   data_up_echo() 
+      
+    } else if(current_upload_method() == 'EPA_PROGRAM') {
+      
+      data_up_epa_program()
+    } else if(current_upload_method() == 'SIC') {
       data_up_sic()
-    } else if(current_upload_method() == 'FIPS'){
+    } else if(current_upload_method() == 'FIPS') {
       data_up_fips()
-    } else if(current_upload_method() == 'MACT'){
+    } else if(current_upload_method() == 'MACT') {
       data_up_mact()
-    } else if(current_upload_method() == 'SHP'){
-     data_up_shp()
+    } else if(current_upload_method() == 'SHP') {
+      data_up_shp()
     }
     
   })
@@ -592,79 +601,79 @@ app_server <- function(input, output, session) {
   
   ## disable run and hide preview button until there is data uploaded; then enable and show
   observe({
-    if(current_upload_method() == 'latlon'){
-      if(!isTruthy(input$ss_upload_latlon)){
+    if(current_upload_method() == 'latlon') {
+      if(!isTruthy(input$ss_upload_latlon)) {
         shinyjs::disable(id = 'bt_get_results')
         shinyjs::hide(id = 'show_data_preview')
       } else {
         shinyjs::enable(id = 'bt_get_results')
         shinyjs::show(id = 'show_data_preview')
       }
-    } else if(current_upload_method() == 'FRS'){
-      if(!isTruthy(input$ss_upload_frs)){
+    } else if(current_upload_method() == 'FRS') {
+      if(!isTruthy(input$ss_upload_frs)) {
         shinyjs::disable(id = 'bt_get_results')
         shinyjs::hide(id = 'show_data_preview')
       } else {
         shinyjs::enable(id = 'bt_get_results')
         shinyjs::show(id = 'show_data_preview')
       }
-    # } else if(current_upload_method() == 'ECHO'){
-    #   if(!isTruthy(input$ss_upload_echo)){
-    #     shinyjs::disable(id = 'bt_get_results')
-    #     shinyjs::hide(id = 'show_data_preview')
-    #   } else {
-    #     shinyjs::enable(id = 'bt_get_results')
-    #     shinyjs::show(id = 'show_data_preview')
-    #   }
-    } else if(current_upload_method() == 'NAICS'){
-        #if(!isTruthy(input$submit_naics)){
-        if(!isTruthy(input$ss_select_naics)){
-            shinyjs::disable(id = 'bt_get_results')
-            shinyjs::hide(id = 'show_data_preview')
-          } else {
-            shinyjs::enable(id = 'bt_get_results')
-            shinyjs::show(id = 'show_data_preview')
-          }
+      # } else if(current_upload_method() == 'ECHO') {
+      #   if(!isTruthy(input$ss_upload_echo)) {
+      #     shinyjs::disable(id = 'bt_get_results')
+      #     shinyjs::hide(id = 'show_data_preview')
+      #   } else {
+      #     shinyjs::enable(id = 'bt_get_results')
+      #     shinyjs::show(id = 'show_data_preview')
+      #   }
+    } else if(current_upload_method() == 'NAICS') {
+      #if(!isTruthy(input$submit_naics)) {
+      if(!isTruthy(input$ss_select_naics)) {
+        shinyjs::disable(id = 'bt_get_results')
+        shinyjs::hide(id = 'show_data_preview')
+      } else {
+        shinyjs::enable(id = 'bt_get_results')
+        shinyjs::show(id = 'show_data_preview')
+      }
       
-    } else if(current_upload_method() == 'EPA_PROGRAM'){
-     
+    } else if(current_upload_method() == 'EPA_PROGRAM') {
+      
       if((input$ss_choose_method == 'upload' & !isTruthy(input$ss_upload_program)) |
-         (input$ss_choose_method == 'dropdown' & !isTruthy(input$ss_select_program))){
-      #if(!isTruthy(input$submit_program)){
+         (input$ss_choose_method == 'dropdown' & !isTruthy(input$ss_select_program))) {
+        #if(!isTruthy(input$submit_program)) {
         shinyjs::disable(id = 'bt_get_results')
         shinyjs::hide(id = 'show_data_preview')
       } else {
         shinyjs::enable(id = 'bt_get_results')
         shinyjs::show(id = 'show_data_preview')
       }
-    }  else if(current_upload_method() == 'SIC'){
+    }  else if(current_upload_method() == 'SIC') {
       
-      if(!isTruthy(input$ss_select_sic)){
-      #if(!isTruthy(input$submit_sic)){
+      if(!isTruthy(input$ss_select_sic)) {
+        #if(!isTruthy(input$submit_sic)) {
         shinyjs::disable(id = 'bt_get_results')
         shinyjs::hide(id = 'show_data_preview')
       } else {
         shinyjs::enable(id = 'bt_get_results')
         shinyjs::show(id = 'show_data_preview')
       }
-    } else if(current_upload_method() == 'FIPS'){
-      if(!isTruthy(input$ss_upload_fips)){
+    } else if(current_upload_method() == 'FIPS') {
+      if(!isTruthy(input$ss_upload_fips)) {
         shinyjs::disable(id = 'bt_get_results')
         shinyjs::hide(id = 'show_data_preview')
       } else {
         shinyjs::enable(id = 'bt_get_results')
         shinyjs::show(id = 'show_data_preview')
       }
-    } else if(current_upload_method() == 'MACT'){
-      if(!isTruthy(input$ss_select_mact)){
+    } else if(current_upload_method() == 'MACT') {
+      if(!isTruthy(input$ss_select_mact)) {
         shinyjs::disable(id = 'bt_get_results')
         shinyjs::hide(id = 'show_data_preview')
       } else {
         shinyjs::enable(id = 'bt_get_results')
         shinyjs::show(id = 'show_data_preview')
       }
-    }else if(current_upload_method() == 'SHP'){
-      if(!isTruthy(input$ss_upload_shp)){
+    }else if(current_upload_method() == 'SHP') {
+      if(!isTruthy(input$ss_upload_shp)) {
         shinyjs::disable(id = 'bt_get_results')
         shinyjs::hide(id = 'show_data_preview')
       } else {
@@ -672,7 +681,7 @@ app_server <- function(input, output, session) {
         shinyjs::show(id = 'show_data_preview')
       }
     }
-      
+    
   })
   #############################################################################  # 
   # ~ ####
@@ -685,7 +694,7 @@ app_server <- function(input, output, session) {
   output$invalid_sites_alert2 <- renderUI({
     req(data_uploaded())
     req(invalid_alert())
-    if(invalid_alert() > 0){
+    if(invalid_alert() > 0) {
       HTML(paste0(
         '<section
   class="usa-site-alert usa-site-alert--emergency usa-site-alert--slim"
@@ -695,21 +704,21 @@ app_server <- function(input, output, session) {
     <div class="usa-alert__body">
       <p class="usa-alert__text">
         <strong>', 'Warning! ','</strong>', 'There are ', invalid_alert(), ' invalid location(s) in your dataset.',
-        '</p>
+'</p>
     </div>
   </div>
 </section>'))
     } else {
       HTML(NULL)
     }
-   
+    
   })
   
   ## How many valid points? warn if no valid lat/lon ####
   output$an_map_text <- renderUI({
     req(data_uploaded())
-    if(current_upload_method() == "SHP"){
-
+    if(current_upload_method() == "SHP") {
+      
       
       shp<-data_uploaded()#[['shape']]
       num_na <- 0
@@ -722,7 +731,7 @@ app_server <- function(input, output, session) {
         #"Valid shape(s) uploaded: <strong>", prettyNum(num_notna, big.mark=","),"</strong>"#,
         #"Total related blockpoints: <strong>", prettyNum(num_na_pt + num_notna_pt, big.mark=","),"</strong><br>")
       ))
-    } else if(current_upload_method() == 'FIPS'){
+    } else if(current_upload_method() == 'FIPS') {
       num_na <- 0
       num_locs <- length(unique(data_uploaded()$siteid))
       num_bpts <- nrow(data_uploaded())
@@ -734,16 +743,16 @@ app_server <- function(input, output, session) {
       ))
     } else{
       #separate inputs with valid/invalid lat/lon values
-      if (nrow(data_uploaded()) > 1){ 
+      if (nrow(data_uploaded()) > 1) { 
         num_na    <- nrow(data_uploaded()[ (is.na(data_uploaded()$lat) | is.na(data_uploaded()$lon)),])
         num_notna <- nrow(data_uploaded()[!(is.na(data_uploaded()$lat) | is.na(data_uploaded()$lon)),])
-      }else{ # if inputs is only one valid row
+      } else { # if inputs is only one valid row
         num_na    <- nrow(data_uploaded()[ (is.na(data_uploaded()$lat) | is.na(data_uploaded()$lon))])
         num_notna <- nrow(data_uploaded()[!(is.na(data_uploaded()$lat) | is.na(data_uploaded()$lon))])
       }
       ## if invalid data found, send modal to screen
       print(num_na)
-      if(num_na > 0){
+      if(num_na > 0) {
         #shinyBS::closeAlert(session, alertId = 'alert1')
         # shinyBS::createAlert(session, anchorId = "invalid_sites_alert", alertId = "alert1", 
         #                      title = "Warning", style = 'danger',
@@ -759,97 +768,96 @@ app_server <- function(input, output, session) {
       }
       
       HTML(paste0(
-                  "<span style='border: 1px solid #005ea2; padding: 10px;'>Total location(s) uploaded: <strong>", prettyNum(num_na + num_notna, big.mark=","),"</strong></span>"
-                  #"Valid site(s) uploaded: <strong>", prettyNum(num_notna, big.mark=","),"</strong>")
+        "<span style='border: 1px solid #005ea2; padding: 10px;'>Total location(s) uploaded: <strong>", prettyNum(num_na + num_notna, big.mark=","),"</strong></span>"
+        #"Valid site(s) uploaded: <strong>", prettyNum(num_notna, big.mark=","),"</strong>")
       )
-           )
-                  #"Site(s) with invalid lat/lon values: <strong>", prettyNum(num_na,big.mark=","), "</strong>"))
+      )
+      #"Site(s) with invalid lat/lon values: <strong>", prettyNum(num_na,big.mark=","), "</strong>"))
       # HTML(paste0("Current upload method: <strong>",  current_upload_method(), "</strong><br>", 
       #             "Total site(s) uploaded: <strong>", prettyNum(nrow(data_uploaded()), big.mark=","),"</strong><br>",
       #             "Valid site(s) uploaded: <strong>", prettyNum(num_notna, big.mark=","),"</strong><br>",
       #             "Site(s) with invalid lat/lon values: <strong>", prettyNum(num_na,big.mark=","), "</strong>"))
-    
-  }
-    })
+    }
+  })
   
   ## See table of uploaded points ####
   
   output$print_test2_dt <- DT::renderDT(
     ## server = FALSE forces download to include all rows, not just visible ones
     server = TRUE, {
-    req(data_uploaded())
-    
-    #dt <- data_uploaded() # now naics-queried sites format is OK to view, since using different function to get sites by naics
-    if(current_upload_method() == "SHP"){
-      dt <- data_uploaded()#[['shape']]
-    }else{
-      dt <-data_uploaded()
-    }
-    # if(current_upload_method() == 'NAICS'){
-    
-    ###takes NAICS codes selected, finds NAICS descriptions, and presents them  
-    # dt_result_by_naic = data_uploaded()[, .(Count = .N), by = NAICS]
-    # naics_desc = EJAM::NAICS[EJAM::NAICS %in% dt_result_by_naic$NAICS]
-    # dt_names = data.frame("NAICS"=naics_desc,"Description"=names(naics_desc))
-    # naicsdt = merge(x = dt_result_by_naic, y = dt_names, by='NAICS')
-    # naics_reorder = data.frame(naicsdt$Description,naicsdt$Count)
-    # colnames(naics_reorder) = c("NAICS Code","Facility Count")
-    # dt <- naics_reorder
-    ###print(naics_reorder,row.names=FALSE)
-    # } else {
-    # dt <- data_uploaded()
-    # }
-    
-    DT::datatable(dt, 
-                  ## add download buttons
-                  #extensions = 'Buttons',
-                  ## keep rownames in display table
-                  rownames = TRUE,
-                  options = list(pageLength = 100, 
-                                 scrollX = TRUE, 
-                                 scrollY = '500px',
-                                 ## label rownames to remove from download
-                                 columnDefs = list(
-                                   list(
-                                     targets = 0, className = "rownames"
-                                   )
-                                 )#,
-                                 ## specify button placement - "B"= buttons, see https://datatables.net/reference/option/dom 
-                                 #dom ='Brtip',
-
-                                 # buttons = list(
-                                 #   ## customize CSV button
-                                 #   list(extend = 'csv',
-                                 #        ## name of downloaded file
-                                 #        filename = 'ejam_raw_data_download',
-                                 #        ## drop rownames for download
-                                 #        exportOptions = list(columns = ":not(.rownames)")
-                                 #   ),
-                                 #   ## customize Excel button
-                                 #   list(extend = 'excel',
-                                 #        ## name of downloaded file
-                                 #        filename = 'ejam_raw_data_download',
-                                 #        ## drop title row from download
-                                 #        title = NULL,
-                                 #        ## drop rownames for download
-                                 #        exportOptions = list(columns = ":not(.rownames)")
-                                 #    )
-                                 #  )
-                                ), # end options
-                  
-                  escape = FALSE) # escape=FALSE may add security issue but makes links clickable in table
-  })
+      req(data_uploaded())
+      
+      #dt <- data_uploaded() # now naics-queried sites format is OK to view, since using different function to get sites by naics
+      if(current_upload_method() == "SHP") {
+        dt <- data_uploaded()#[['shape']]
+      } else {
+        dt <-data_uploaded()
+      }
+      # if(current_upload_method() == 'NAICS') {
+      
+      ###takes NAICS codes selected, finds NAICS descriptions, and presents them  
+      # dt_result_by_naic = data_uploaded()[, .(Count = .N), by = NAICS]
+      # naics_desc = EJAM::NAICS[EJAM::NAICS %in% dt_result_by_naic$NAICS]
+      # dt_names = data.frame("NAICS"=naics_desc,"Description"=names(naics_desc))
+      # naicsdt = merge(x = dt_result_by_naic, y = dt_names, by='NAICS')
+      # naics_reorder = data.frame(naicsdt$Description,naicsdt$Count)
+      # colnames(naics_reorder) = c("NAICS Code","Facility Count")
+      # dt <- naics_reorder
+      ###print(naics_reorder,row.names=FALSE)
+      # } else {
+      # dt <- data_uploaded()
+      # }
+      
+      DT::datatable(dt, 
+                    ## add download buttons
+                    #extensions = 'Buttons',
+                    ## keep rownames in display table
+                    rownames = TRUE,
+                    options = list(pageLength = 100, 
+                                   scrollX = TRUE, 
+                                   scrollY = '500px',
+                                   ## label rownames to remove from download
+                                   columnDefs = list(
+                                     list(
+                                       targets = 0, className = "rownames"
+                                     )
+                                   )#,
+                                   ## specify button placement - "B"= buttons, see https://datatables.net/reference/option/dom 
+                                   #dom ='Brtip',
+                                   
+                                   # buttons = list(
+                                   #   ## customize CSV button
+                                   #   list(extend = 'csv',
+                                   #        ## name of downloaded file
+                                   #        filename = 'ejam_raw_data_download',
+                                   #        ## drop rownames for download
+                                   #        exportOptions = list(columns = ":not(.rownames)")
+                                   #   ),
+                                   #   ## customize Excel button
+                                   #   list(extend = 'excel',
+                                   #        ## name of downloaded file
+                                   #        filename = 'ejam_raw_data_download',
+                                   #        ## drop title row from download
+                                   #        title = NULL,
+                                   #        ## drop rownames for download
+                                   #        exportOptions = list(columns = ":not(.rownames)")
+                                   #    )
+                                   #  )
+                    ), # end options
+                    
+                    escape = FALSE) # escape=FALSE may add security issue but makes links clickable in table
+    })
   
   ## use external download buttons for preview data
   ## this allows loading the table on the server-side which improves speed and avoids
   ## crashes with larger datasets
   output$download_preview_data_xl <- downloadHandler(filename = 'epa_raw_data_download.xlsx',
-                                                      content = function(file){
-                                                        dt <- data_uploaded()
+                                                     content = function(file) {
+                                                       dt <- data_uploaded()
                                                        
-                                                        writexl::write_xlsx(dt, file)})
+                                                       writexl::write_xlsx(dt, file)})
   output$download_preview_data_csv <- downloadHandler(filename = 'epa_raw_data_download.csv',
-                                                      content = function(file){
+                                                      content = function(file) {
                                                         dt <- data_uploaded()
                                                         data.table::fwrite(dt, file, append = F)})
   
@@ -880,7 +888,7 @@ app_server <- function(input, output, session) {
   ## update map radius label based on button ####
   
   observe({
-    if (current_upload_method() == "SHP" & !isTruthy(input$ss_upload_shp)){
+    if (current_upload_method() == "SHP" & !isTruthy(input$ss_upload_shp)) {
       updateSliderInput(session, inputId = 'bt_rad_buff', value = 0)
     }
   })
@@ -897,22 +905,22 @@ app_server <- function(input, output, session) {
   
   orig_leaf_map <- reactive({
     
-    if(current_upload_method() == "SHP"){
+    if(current_upload_method() == "SHP") {
       req(data_uploaded())
-    
+      
       
       ## find bbox for map to zoom to
       bbox <- sf::st_bbox(data_uploaded())
-     
+      
       leaflet() %>% addTiles() %>%
         fitBounds(
           lng1 = as.numeric(bbox[1]), lng2 = as.numeric(bbox[3]),
           lat1 = as.numeric(bbox[2]), lat2 = as.numeric(bbox[4])
         )
-          
+      
       #d_upload <- data_uploaded()[['points']]
       #max_pts <- max_points_can_map_poly
-    } else if(current_upload_method() == 'FIPS'){
+    } else if(current_upload_method() == 'FIPS') {
       #req(data_uploaded())
       max_pts <- max_points_can_map_poly
       
@@ -928,10 +936,10 @@ app_server <- function(input, output, session) {
       d_upload <-data_uploaded()
       max_pts <- max_points_can_map
       
-      if(nrow(data_uploaded()) < max_pts){
+      if(nrow(data_uploaded()) < max_pts) {
         
         ## if more than one valid point
-        if(sum((!is.na(data_uploaded()$lon) & !is.na(data_uploaded()$lat))) > 1){
+        if(sum((!is.na(data_uploaded()$lon) & !is.na(data_uploaded()$lat))) > 1) {
           leaflet() %>% addTiles() %>% 
             fitBounds(lng1 = min(data_uploaded()$lon, na.rm=T),
                       lng2 = max(data_uploaded()$lon, na.rm=T),
@@ -952,7 +960,7 @@ app_server <- function(input, output, session) {
       }
     }
     
-   
+    
   })
   
   ## output: draw map of uploaded points ####
@@ -960,19 +968,19 @@ app_server <- function(input, output, session) {
     #req(data_uploaded())
     
     ## show message until dataset is available for current method
-   cond <- switch(current_upload_method(), 
-                  'latlon' = input$ss_upload_latlon,
-                  'FRS' = input$ss_upload_frs, 
-                  'NAICS' = input$ss_select_naics,#input$submit_naics,
-                  'SHP' = input$ss_upload_shp,
-                  #ECHO = input$ss_upload_echo,
-                  'EPA_PROGRAM' = switch(input$ss_choose_method, 
-                                         'dropdown' = input$ss_select_program,
-                                         'upload' = input$ss_upload_program), #input$submit_program,
-                  'SIC' = input$ss_select_sic,#input$submit_sic,
-                  'FIPS' = input$ss_upload_fips,
-                  'MACT' = input$ss_select_mact)
-     validate(
+    cond <- switch(current_upload_method(), 
+                   'latlon' = input$ss_upload_latlon,
+                   'FRS' = input$ss_upload_frs, 
+                   'NAICS' = input$ss_select_naics,#input$submit_naics,
+                   'SHP' = input$ss_upload_shp,
+                   #ECHO = input$ss_upload_echo,
+                   'EPA_PROGRAM' = switch(input$ss_choose_method, 
+                                          'dropdown' = input$ss_select_program,
+                                          'upload' = input$ss_upload_program), #input$submit_program,
+                   'SIC' = input$ss_select_sic,#input$submit_sic,
+                   'FIPS' = input$ss_upload_fips,
+                   'MACT' = input$ss_select_mact)
+    validate(
       need(cond, 'Please select a data set.')
     )
     
@@ -980,7 +988,7 @@ app_server <- function(input, output, session) {
   })
   
   #############################################################################  # 
- 
+  
   # ~ ####
   # ______ RUN ANALYSIS  (button is pressed) ________####
   # ~ ####
@@ -996,39 +1004,41 @@ app_server <- function(input, output, session) {
   # THIS IS VERY VERY SIMILAR TO THE CODE IN ejamit() and perhaps could just rely on one set of code for both. ***xxx
   # >this part could be replaced by ejamit() or something like that ####
   
-  observeEvent(input$bt_get_results, {  # (button is pressed) 
+  observeEvent(input$bt_get_results, {  # (button is pressed)  
     
+    showNotification('Processing sites now!', type = 'message', duration = 1)
     
-    showNotification('Processing sites now!', type = 'message', duration = 0.5)
-    
-    ## progress bar setup overall for 3 operations   
-    # (getblocksnearby, doaggregate, batch.summarize)
+    ## progress bar setup overall for 3 operations  (getblocksnearby, doaggregate, batch.summarize)
     progress_all <- shiny::Progress$new(min = 0, max = 1)
     progress_all$set(value = 0, message = 'Step 1 of 3', detail = 'Getting nearby census blocks')
     
     #############################################################################  # 
     ## 1) **EJAM::getblocksnearby()** ####
     
-    #define blockpoints to process if shapefile exists
-    if(submitted_upload_method() == "SHP"){
-      d_upload <-{}
+    ################################################# # 
+    if(submitted_upload_method() == "SHP") {
+      
+      #define blockpoints to process if shapefile exists  d_upload <-{}
       d <- get_blockpoints_in_shape(data_uploaded(),input$bt_rad_buff)
       #d_upload[['points']] <- d[['pts']]
       #d_upload[['buffer']] <- d[['polys']]
       #d_upload[['shape']] <- shp
       #d_upload[['buffer']] <- get_shape_buffered_from_shapefile_points(shp,0)
-      
       #d_upload
+      #d_upload <- data_uploaded()[['points']]
+      sites2blocks <- d[['pts']]
+      d_upload     <- d[['pts']]
       
-      #d_upload <-data_uploaded()[['points']]
-      sites2blocks <-d[['pts']]
-      d_upload <- d[['pts']]
+      ################################################# # 
+    } else if(submitted_upload_method() == 'FIPS') {
       
-    } else if(submitted_upload_method() == 'FIPS'){
       ## remove any invalid latlons before running 
       d_upload <-data_uploaded()[!is.na(lat) & !is.na(lon),]
       sites2blocks <- d_upload
-    } else{
+      
+      ################################################# # 
+    } else {  # LATITUDE AND LONGITUDE (POINTS) 
+      
       d_upload <- data_uploaded()[!is.na(lat) & !is.na(lon),]
       sites2blocks <- getblocksnearby(
         ## remove any invalid latlons before running 
@@ -1036,11 +1046,8 @@ app_server <- function(input, output, session) {
         radius = input$bt_rad_buff,
         quadtree = localtree
       )
-   
     }
     
-  
-   
     ## progress bar update overall  
     progress_all$inc(1/3, message = 'Step 2 of 3', detail = 'Aggregating')
     ## create progress bar to show doaggregate status
@@ -1057,15 +1064,20 @@ app_server <- function(input, output, session) {
     
     #############################################################################  # 
     ## 2) **EJAM::doaggregate()** ####
-    # blah=data_uploaded()
-    # save(blah, file='testup.rda'); save(sites2blocks, file = 'testin.rda')
-    out <- suppressWarnings(doaggregate(
-      sites2blocks = sites2blocks, 
-      sites2states = d_upload,
-      # subgroups_type = 'original', 
-      ## pass progress bar function as argument
-      updateProgress = updateProgress_doagg
-    ))
+    
+    out <- suppressWarnings(
+      doaggregate(
+        sites2blocks = sites2blocks, 
+        sites2states_or_latlon = d_upload,
+        radius = input$bt_rad_buff, 
+        #countcols = 0, popmeancols = 0, calculatedcols = 0, # *** if using defaults of doaggregate()
+        # subgroups_type = "", # use default of doaggregate() based on whatever subgroups_d etc are now *** this may get updated/ changed to a parameter or input or default, etc. 
+        testing = FALSE, 
+        include_ejindexes = FALSE, 
+        need_proximityscore = FALSE, 
+        ## pass progress bar function as argument
+        updateProgress = updateProgress_doagg
+      ))
     # provide sitepoints table provided by user aka data_uploaded(), (or could pass only lat,lon and ST -if avail- not all cols?)
     # and doaggregate() decides where to pull ST info from - 
     # ideally from ST column, 
@@ -1091,36 +1103,29 @@ app_server <- function(input, output, session) {
     #}
     ## the registry ID column is only found in uploaded ECHO/FRS/NAICS data -
     ## it is not passed to doaggregate output at this point, so pull the column from upload to create URLS
-    if(nrow(d_upload) != nrow(out$results_bysite)){
-      out$results_bysite[, `:=`(`EJScreen Report` = rep('N/A', nrow(out$results_bysite)),
-                                `EJScreen Map` = rep('N/A', nrow(out$results_bysite)),
-                                `ACS Report` = rep('N/A', nrow(out$results_bysite)),
-                                `ECHO report` = rep('N/A', nrow(out$results_bysite))
-                                )]
+    if(nrow(d_upload) != nrow(out$results_bysite)) {
+      out$results_bysite[, `:=`(
+        `EJScreen Report` = rep('N/A', nrow(out$results_bysite)),
+        `EJScreen Map` = rep('N/A', nrow(out$results_bysite)),
+        `ACS Report` = rep('N/A', nrow(out$results_bysite)),
+        `ECHO report` = rep('N/A', nrow(out$results_bysite))
+      )]
     } else {
-    
       
-      
-      if("REGISTRY_ID" %in% names( d_upload)){
+      if("REGISTRY_ID" %in% names( d_upload)) {
         echolink = url_echo_facility_webpage( d_upload$REGISTRY_ID, as_html = TRUE, linktext = 'ECHO Report')
-      } else if("RegistryID" %in% names(data_uploaded())){
+      } else if("RegistryID" %in% names(data_uploaded())) {
         echolink = url_echo_facility_webpage( d_upload$RegistryID, as_html = TRUE, linktext = 'ECHO Report')
       } else {
         echolink = rep('N/A',nrow(out$results_bysite))
       }
-    out$results_bysite[ , `:=`(
-      `EJScreen Report` = url_ejscreen_report(    lat = d_upload$lat, lon =  d_upload$lon, radius = input$bt_rad_buff, as_html = TRUE), 
-      `EJScreen Map`    = url_ejscreenmap(        lat = d_upload$lat, lon =  d_upload$lon,                             as_html = TRUE), 
-      `ACS Report`      = url_ejscreen_acs_report(lat =  d_upload$lat, lon = d_upload$lon, radius = input$bt_rad_buff, as_html = TRUE),
-      `ECHO report` = echolink
-    )]
+      out$results_bysite[ , `:=`(
+        `EJScreen Report` = url_ejscreen_report(    lat = d_upload$lat, lon =  d_upload$lon, radius = input$bt_rad_buff, as_html = TRUE), 
+        `EJScreen Map`    = url_ejscreenmap(        lat = d_upload$lat, lon =  d_upload$lon,                             as_html = TRUE), 
+        `ACS Report`      = url_ejscreen_acs_report(lat =  d_upload$lat, lon = d_upload$lon, radius = input$bt_rad_buff, as_html = TRUE),
+        `ECHO report` = echolink
+      )]
     }
-    # out$results_overall[ , `:=`(
-    #   `EJScreen Report` = NA, 
-    #   `EJScreen Map`    = NA, 
-    #   `ACS Report`      = NA,
-    #   `ECHO report`     = NA
-    # )]
     newcolnames <- c(
       "EJScreen Report", 
       "EJScreen Map", 
@@ -1159,7 +1164,7 @@ app_server <- function(input, output, session) {
       popstats =  data.frame(data_processed()$results_bysite),
       ## user-selected quantiles to use
       #probs = as.numeric(input$an_list_pctiles),
-      threshold = list(95) # compare variables to 95th %ile
+      threshold = list(input$an_thresh_comp1) # compare variables to 90th %ile or other percentile, like threshold1 param in ejamit()
     )
     
     ## update overall progress bar
@@ -1178,7 +1183,7 @@ app_server <- function(input, output, session) {
     updateTabsetPanel(session, 'results_tabs', 'Summary')
   })
   #############################################################################  # 
- 
+  
   
   #############################################################################  # 
   # ~ ####
@@ -1186,9 +1191,9 @@ app_server <- function(input, output, session) {
   
   ################################################################ # 
   # just a nicer looking tall version of overall results
-   # output$overall_results_tall <- renderDT({
-   #   format_results_overall(results_overall = data_processed()$results_overall, longnames =  data_processed()$longnames)
-   # })
+  # output$overall_results_tall <- renderDT({
+  #   format_results_overall(results_overall = data_processed()$results_overall, longnames =  data_processed()$longnames)
+  # })
   # output$overall_results_tall <- renderDT({
   #   tallout <- cbind(overall = round(unlist(data_processed()$results_overall), 3))
   #   rownames(tallout) <- fixnames_to_type(rownames(tallout), "newnames_ejscreenapi", "longname_tableheader")
@@ -1197,35 +1202,38 @@ app_server <- function(input, output, session) {
   
   #############################################################################  # 
   # ~ ####
-  # ______ AVERAGES & RATIOS TO AVG - FOR PLOTS ####
-  # ~ ####
-  
-  # already done in doaggregate() !! - ALREADY IN data_processed()  !  and (avg.in.us) is a constant, in data.frame format.
-  
-  # do not bother making a copy of the state averages that are in statestats
+  # ______ AVERAGES & RATIOS TO AVG - ALREADY by doaggregate() and kept in data_processed()
+  # Also the overall mean and site by site means are in  unlist( data_processed()$results_overall[ , ..names_these_state_avg] )
+  # and (avg.in.us) is a constant for convenience with that same info, in data.frame format.
+  # but did not bother making a copy of the state averages that are in statestats
   # EJAM::statestats[ EJAM::statestats$PCTILE == "mean", ]
-  # and the overall mean and site by site means are in  unlist( data_processed()$results_overall[ , ..names_these_state_avg] )
+  # and averages were used create ratios in doaggregate()
   
-  ## ** RATIOS OVERALL TO US or state D AVG ####
+  
+  ## ** d RATIOS OVERALL TO US or state D AVG ####
   #
-  ## uses (doaggregate output results_overall ) / (EJAM::usastats mean in USA)
+  ## previously done via (doaggregate output results_overall ) / (EJAM::usastats mean in USA)
   ## (batch.summarize 'Average person' / EJAM::usastats mean in USA   )
   ## this needs further verification
   
-  ratio.to.us.d    <- reactive({unlist(data_processed()$results_overall[ , c(..names_d_ratio_to_avg,       ..names_d_subgroups_ratio_to_avg)]) }) # ???
-  ratio.to.state.d <- reactive({unlist(data_processed()$results_overall[ , c(..names_d_ratio_to_state_avg, ..names_d_subgroups_ratio_to_state_avg)]) }) # ???
+  ratio.to.us.d    <- reactive({unlist(
+    data_processed()$results_overall[ , c(..names_d_ratio_to_avg,       ..names_d_subgroups_ratio_to_avg      )]
+  ) }) # ???
+  ratio.to.state.d <- reactive({unlist(
+    data_processed()$results_overall[ , c(..names_d_ratio_to_state_avg, ..names_d_subgroups_ratio_to_state_avg)]
+  ) }) # ???
   # ratio.to.us.d_TEST <- reactive({
   #   unlist(data_processed()$results_overall[1, ]) / 
   #     avg.in.us[, c(names_d, names_d_subgroups)]
   # })
   
-  ## ** RATIOS OVERALL TO US or state E AVG  ####
+  ## ** e RATIOS OVERALL TO US or state E AVG  ####
   #  *****************   but these are now already calculated in doaggregate() right? as 
   ## (batch.summarize 'Average person' / EJAM::usastats mean in USA   )
   ## this needs further verification
   # we already have avg.in.us and ratios also?  
   
-  ratio.to.us.e <- reactive({unlist(data_processed()$results_overall[ , ..names_e_ratio_to_avg]) })                     # ???
+  ratio.to.us.e    <- reactive({unlist(data_processed()$results_overall[ , ..names_e_ratio_to_avg]) })                     # ???
   # ratio.to.us.e_TEST <- reactive({ unlist(data_summarized()$rows['Average person', names_e]) / 
   #     avg.in.us[, names_e]
   #doaggregate results_overall output, if needed: unlist(data_processed()$results_overall[1, ..names_e])
@@ -1252,23 +1260,18 @@ app_server <- function(input, output, session) {
     
     #req(data_processed())
     
-    validate(
-      need(data_processed(), 'Please run an analysis to see results.')
-    )
+    validate(need(data_processed(), 'Please run an analysis to see results.'))
     
     circle_color <- '#000080'
-   
+      
     #if shapefile, merge geometry and create buffer if nonzero buffer is set
-    if(submitted_upload_method() == "SHP"){
+    if(submitted_upload_method() == "SHP") {
       
       d_up <- data_uploaded()
-      
       d_up_geo <- d_up[,c("siteid","geometry")]
-     
       d_merge = merge(d_up_geo,data_processed()$results_bysite,by="siteid", all.x = FALSE, all.y = TRUE)
       
-      
-      if(input$bt_rad_buff > 0){
+      if(input$bt_rad_buff > 0) {
         
         d_uploads <- sf::st_buffer(d_merge, # was "ESRI:102005" but want 4269
                                    dist = units::set_units(input$bt_rad_buff, "mi")) 
@@ -1276,36 +1279,36 @@ app_server <- function(input, output, session) {
         leaflet(d_uploads) %>%  addTiles()  %>%
           addPolygons(color=circle_color) 
         
-      }else{
+      } else {
         data_spatial_convert <- d_merge %>% st_zm() %>% as('Spatial')
         
         leaflet(data_spatial_convert) %>% addTiles()  %>%
           addPolygons(color=circle_color)
       }
       
-    }else{
-    ## similar to previous map but remove controls
-    ## and only add circles, not circleMarkers
-    
-    popup_labels <- c(data_processed()$longnames, 'State Name')
-    popup_labels[popup_labels == ""] <- EJAMejscreenapi::map_headernames$names_friendly[match(names(data_processed()$results_bysite)[popup_labels == ""], 
-                                                                                              EJAMejscreenapi::map_headernames$newnames_ejscreenapi)]
-    
-    ## switch this to data analyzed in report, not what was uploaded
-    ## in case there are invalid
-    leaflet(data_processed()$results_bysite) %>% #,
-            #options = leafletOptions(zoomControl = FALSE, minZoom = 4)) %>% 
-      addTiles()  %>%
-      addCircles(
-        radius = 1 * meters_per_mile,
-        color = circle_color, fillColor = circle_color, 
-        fill = TRUE, weight = 4,
-        #group = 'circles',
-        popup = popup_from_any(data_processed()$results_bysite %>% 
-                                 dplyr::mutate(dplyr::across(dplyr::where(is.numeric), \(x) round(x, digits=3))), 
-                               labels = popup_labels),
-        popupOptions = popupOptions(maxHeight = 200)
-      )
+    } else {
+      ## similar to previous map but remove controls
+      ## and only add circles, not circleMarkers
+      
+      popup_labels <- c(data_processed()$longnames, 'State Name')
+      popup_labels[popup_labels == ""] <- EJAMejscreenapi::map_headernames$names_friendly[match(names(data_processed()$results_bysite)[popup_labels == ""], 
+                                                                                                EJAMejscreenapi::map_headernames$newnames_ejscreenapi)]
+      
+      ## switch this to data analyzed in report, not what was uploaded
+      ## in case there are invalid
+      leaflet(data_processed()$results_bysite) %>% #,
+        #options = leafletOptions(zoomControl = FALSE, minZoom = 4)) %>% 
+        addTiles()  %>%
+        addCircles(
+          radius = 1 * meters_per_mile,
+          color = circle_color, fillColor = circle_color, 
+          fill = TRUE, weight = 4,
+          #group = 'circles',
+          popup = popup_from_any(data_processed()$results_bysite %>% 
+                                   dplyr::mutate(dplyr::across(dplyr::where(is.numeric), \(x) round(x, digits=3))), 
+                                 labels = popup_labels),
+          popupOptions = popupOptions(maxHeight = 200)
+        )
     }
     
   })
@@ -1313,10 +1316,10 @@ app_server <- function(input, output, session) {
   ## output: summary report map  
   output$quick_view_map <- leaflet::renderLeaflet({
     #req(data_uploaded())
-
+    
     ## use separate report map
     report_map()
-
+    
     ## or can keep same map as on Site Selection tab
     # orig_leaf_map()
   })
@@ -1331,34 +1334,34 @@ app_server <- function(input, output, session) {
   # }, {
   observe({
     
-   # req(data_uploaded())
+    # req(data_uploaded())
     ## This statement needed to ensure map stops if too many points uploaded
     req(isTruthy(orig_leaf_map()))
     
     #clear shapes from map so buffers don't show twice
     
     leafletProxy(mapId = 'an_leaf_map', session) %>% clearShapes()
-  
-    if(current_upload_method() == "SHP"){
-      if(input$bt_rad_buff > 0){
+    
+    if(current_upload_method() == "SHP") {
+      if(input$bt_rad_buff > 0) {
         
         d_uploads <- sf::st_buffer(data_uploaded(), # was "ESRI:102005" but want 4269
                                    dist = units::set_units(input$bt_rad_buff, "mi")) 
-      
+        
         leafletProxy(mapId = 'an_leaf_map', session) %>%
           addPolygons(data=d_uploads, color="red") 
       }
       #d_uploadb <- data_uploaded()[['buffer']]  %>% st_zm() %>% as('Spatial') 
       d_uploads <- data_uploaded() %>% #[['shape']]  
-          st_zm() %>% as('Spatial') 
+        st_zm() %>% as('Spatial') 
       
       leafletProxy(mapId = 'an_leaf_map', session) %>%
-       # addPolygons(data=d_uploadb, color="red") %>% 
+        # addPolygons(data=d_uploadb, color="red") %>% 
         addPolygons(data=d_uploads)
       #leafletProxy(mapId = 'an_leaf_map', session,data=d_uploads) %>% addPolygons()
       
-    }else # if(input$circle_type == 'circles'){
-      if(current_upload_method() == 'FIPS'){
+    }else # if(input$circle_type == 'circles') {
+      if(current_upload_method() == 'FIPS') {
         
         ## initial map code - this plots convex hull polygons of blockpoints, not actual shapes though
         # fips_sf <- sf::st_as_sf(data_uploaded(), coords=c('lon','lat')) %>%
@@ -1368,40 +1371,37 @@ app_server <- function(input, output, session) {
         #   sf::st_cast('POLYGON')  %>% as('Spatial')
         # 
         # leafletProxy(mapId = 'an_leaf_map', session, data=fips_sf) %>% addPolygons()
-    } else{
-      d_upload <-data_uploaded()
-      base_color      <- '#000080'
-      cluster_color   <- 'red'
-      
-      
-      #req(input$bt_rad_buff)
-      ## convert units to miles for circle size
-      # if(input$radius_units == 'kilometers'){
-      #   rad <- input$bt_rad_buff * meters_per_mile * 0.62137119
-      # } else {
-      rad <- input$bt_rad_buff * meters_per_mile
-      #}
-      
-      #if(input$an_map_clusters == TRUE){
-        ## compare latlons using is_clustered() reactive
-        circle_color <- ifelse(is_clustered() == TRUE, cluster_color, base_color)
-      #} else {
-        circle_color <- base_color
-      #}
-      
-      popup_vec = popup_from_any(d_upload)
-      
-      
-      suppressMessages(
-        leafletProxy(mapId = 'an_leaf_map', session, data = d_upload) %>%
-          map_facilities_proxy(rad= input$bt_rad_buff, 
-                               highlight = TRUE, #input$an_map_clusters, 
-                               popup_vec = popup_vec, 
-                               use_marker_clusters = nrow(d_upload) > marker_cluster_cutoff,
-                               clustered = is_clustered())
-       
-      )
-    }
+      } else{
+        d_upload <-data_uploaded()
+        base_color      <- '#000080'
+          cluster_color   <- 'red'
+            
+          #req(input$bt_rad_buff)
+          ## convert units to miles for circle size
+          # if(input$radius_units == 'kilometers') {
+          #   rad <- input$bt_rad_buff * meters_per_mile * 0.62137119
+          # } else {
+          rad <- input$bt_rad_buff * meters_per_mile
+          #}
+          
+          #if(input$an_map_clusters == TRUE) {
+          ## compare latlons using is_clustered() reactive
+          circle_color <- ifelse(is_clustered() == TRUE, cluster_color, base_color)
+          #} else {
+          circle_color <- base_color
+          #}
+          
+          popup_vec = popup_from_any(d_upload)
+          
+          suppressMessages(
+            leafletProxy(mapId = 'an_leaf_map', session, data = d_upload) %>%
+              map_facilities_proxy(rad= input$bt_rad_buff, 
+                                   highlight = TRUE, #input$an_map_clusters, 
+                                   popup_vec = popup_vec, 
+                                   use_marker_clusters = nrow(d_upload) > marker_cluster_cutoff,
+                                   clustered = is_clustered())
+          )
+      }
     #print(d_upload)
     # base_color      <- '#000080'
     # cluster_color   <- 'red'
@@ -1409,13 +1409,13 @@ app_server <- function(input, output, session) {
     # 
     # #req(input$bt_rad_buff)
     # ## convert units to miles for circle size
-    # # if(input$radius_units == 'kilometers'){
+    # # if(input$radius_units == 'kilometers') {
     # #   rad <- input$bt_rad_buff * meters_per_mile * 0.62137119
     # # } else {
     # rad <- input$bt_rad_buff * meters_per_mile
     # #}
     # 
-    # if(input$an_map_clusters == TRUE){
+    # if(input$an_map_clusters == TRUE) {
     #   ## compare latlons using is_clustered() reactive
     #   circle_color <- ifelse(is_clustered() == TRUE, cluster_color, base_color)
     # } else {
@@ -1424,7 +1424,7 @@ app_server <- function(input, output, session) {
     # 
     # popup_vec <- popup_from_any(d_upload)
     # 
-    # # if(input$circle_type == 'circles'){
+    # # if(input$circle_type == 'circles') {
     # suppressMessages(
     #   leafletProxy(mapId = 'an_leaf_map', session, data = d_upload) %>%
     #     map_facilities_proxy(rad= input$bt_rad_buff, 
@@ -1462,6 +1462,14 @@ app_server <- function(input, output, session) {
   # #############################################################################  # 
   # ## *Header info on summary report ####
   
+  ## * Total population count ####
+  total_pop <- reactive({
+    
+    req(data_processed())
+    ## format and return total population  ## some of these numbers seem very large! possible double-counting??
+    round(data_processed()$results_overall$pop, 0 )
+  })
+  
   ## create reactive for summary header
   summary_title <- reactiveVal(NULL)
   
@@ -1479,24 +1487,14 @@ app_server <- function(input, output, session) {
                          #    "in the xxx source category or sector<br>",
                          'Population: ', prettyNum( total_pop(), big.mark = ","), '</div>'
     )
-    
     ## update reactive variable
     summary_title(title_text)
   })
   
   output$view1_total_pop <- renderUI({
-
+    
     ## return formatted HTML text
     HTML(summary_title())
-  })
-  
-  ## * Total population count ####
-  total_pop <- reactive({
-    
-    req(data_processed())
-    ## format and return total population
-    ## some of these numbers seem very large! possible double-counting??
-    round(data_processed()$results_overall$pop, 0 )
   })
   
   #############################################################################  # 
@@ -1513,37 +1511,40 @@ app_server <- function(input, output, session) {
     
     tab_data_d <- data.frame(
       
-      var_names =  c(names_d_friendly, gsub('\\)','',gsub('%.*\\(','% ',names_d_subgroups_friendly))),
-      value = data_processed()$results_overall[, c(..names_d, ..names_d_subgroups)] %>% t, 
+      # *** can we just use reactives ratio.to.us.d() etc. ?? instead of extracting it from data_processed() reactive here:
       
-      'state_avg' = (data_processed()$results_overall[, c(..names_d_state_avg, ..names_d_subgroups_state_avg)] %>% t), 
+      var_names                                            = c(names_d_friendly,       names_d_subgroups_friendly  ),
+      value           = data_processed()$results_overall[, c(..names_d,              ..names_d_subgroups)] %>% t, 
+      
+      'state_avg'    = (data_processed()$results_overall[, c(..names_d_state_avg,    ..names_d_subgroups_state_avg)]    %>% t), 
       'state_pctile' = (data_processed()$results_overall[, c(..names_d_state_pctile, ..names_d_subgroups_state_pctile)] %>% t), 
       
-      # 'usa_avg' = EJAM::usastats %>% filter(PCTILE == 'mean') %>% select(all_of(c(names_d, names_d_subgroups))) %>% t,     # xxx
-      'usa_avg' = data.frame(usa_avg = unlist(avg.in.us[, c(names_d,names_d_subgroups)])) ,
-      'usa_pctile'  = (data_processed()$results_overall[, c(..names_d_pctile, ..names_d_subgroups_pctile)]  %>% t),
+      'usa_avg'  = data.frame(usa_avg = unlist(avg.in.us[, c(  names_d,                names_d_subgroups)])) , # data.frame not data.table
+      'usa_pctile'   = (data_processed()$results_overall[, c(..names_d_pctile,       ..names_d_subgroups_pctile)]  %>% t),
       
       # note these have subgroups too already in them:
       # "state_ratio" = unlist(ratio.to.state.d()),  
-      "state_ratio" = (data_processed()$results_overall[, c(..names_d_ratio_to_state_avg, ..names_d_subgroups_ratio_to_state_avg)] %>% t),     # xxx
+      "state_ratio"  = (data_processed()$results_overall[, c(..names_d_ratio_to_state_avg, ..names_d_subgroups_ratio_to_state_avg)] %>% t),     # xxx
       # "usa_ratio"   = unlist(ratio.to.us.d() )     
-      "usa_ratio"   =  (data_processed()$results_overall[, c(..names_d_ratio_to_avg, ..names_d_subgroups_ratio_to_avg)] %>% t )     # xxx
+      "usa_ratio"   =  (data_processed()$results_overall[, c(..names_d_ratio_to_avg,       ..names_d_subgroups_ratio_to_avg)] %>% t )     # xxx
     )
     
-    # need to verify percentile should be rounded here or use ceiling() maybe? try to replicate EJScreen percentiles as they report them.
+    # need to verify percentile should be rounded here or use ceiling() maybe? 
+    # try to replicate EJScreen percentiles as they report them...
+    # *** should update to use sigfigs or rounding info metadata stored in EJAMejscreenapi::map_headernames table
     tab_data_d$usa_pctile   <- round(tab_data_d$usa_pctile ,0)
     tab_data_d$state_pctile <- round(tab_data_d$state_pctile ,0)
     
     ## set colors for table
     my_cell_color <- '#dce6f0'
-    my_border_color <- '#aaaaaa' 
-    
-    ## apply function to format as 'gt' table  
-    table_out_d <- format_gt_table(df = tab_data_d, type = 'demog',
-                                   my_cell_color = my_cell_color,
-                                   my_border_color = my_border_color)
-    ## return table
-    table_out_d
+      my_border_color <- '#aaaaaa' 
+        
+      ## apply function to format as 'gt' table  
+      table_out_d <- format_gt_table(df = tab_data_d, type = 'demog',
+                                     my_cell_color = my_cell_color,
+                                     my_border_color = my_border_color)
+      ## return table
+      table_out_d
   })
   
   ## output: show table of indicators in view 1
@@ -1560,44 +1561,45 @@ app_server <- function(input, output, session) {
     ## state_avg (State Avg indicator value), state_pctile (State Pctile for indicator),
     ## usa_avg (US Avg indicator value), usa_pctile (US Pctile for indicator)
     ## and ratios to averages for state then us
+    
     tab_data_e <- data.frame(
       
-      var_names = names_e_friendly,
-      value = data_processed()$results_overall[, names_e, with=FALSE] %>% t,
+      var_names        =                                    names_e_friendly,
+      value            = data_processed()$results_overall[, names_e, with=FALSE] %>% t,
       
-      'state_avg' =    data_processed()$results_overall[, ..names_e_state_avg] %>% t,
+      'state_avg'    = data_processed()$results_overall[, ..names_e_state_avg] %>% t,
       'state_pctile' = data_processed()$results_overall[, ..names_e_state_pctile] %>% t,   
       
-      'usa_avg'     =   data.frame(usa_avg = unlist(avg.in.us[ , names_e])), # is a constant already 
+      'usa_avg'  = data.frame(usa_avg = unlist(avg.in.us[ , names_e])), # is a constant already 
       'usa_pctile'   = data_processed()$results_overall[, ..names_e_pctile] %>% t,  # xxx
       
       # 'state_ratio' = unlist(ratio.to.state.e()) ,
-      "state_ratio" = data_processed()$results_overall[, ..names_e_ratio_to_state_avg] %>% t,
+      "state_ratio"  = data_processed()$results_overall[, ..names_e_ratio_to_state_avg] %>% t,
       # 'usa_ratio' = unlist(ratio.to.us.e()) 
-      "usa_ratio"   =  data_processed()$results_overall[, ..names_e_ratio_to_avg] %>% t
+      "usa_ratio"    = data_processed()$results_overall[, ..names_e_ratio_to_avg] %>% t
     )
     
-    
     # NEED TO CONFIRM HOW TO ROUND TO REPLICATE EJSCREEN 
+    # *** should switch to using sigfigs or rounding metadata from EJAMejscreenapi::map_headernames 
     tab_data_e$usa_pctile   <- round(tab_data_e$usa_pctile,  0)
     tab_data_e$state_pctile <- round(tab_data_e$state_pctile,0)
     
     ## join long indicator names and move them to first column - done already 
     # tab_data_e <- tab_data_e %>% 
-    #   left_join(long_names_e, by = c('vars') ) %>% 
+    #   left_join(long_names_e, by = c('vars') ) %>%   # long_names_e no longer exists. use names_e_friendly, etc.
     #   relocate(var_names, .before = 1) %>% 
     #   select(-vars)
     
     ## set colors for table
     my_cell_color <- '#dce6f0'
-    my_border_color <- '#aaaaaa'
-    
-    ## apply function to format as 'gt' table  
-    tab_out_e <- format_gt_table(df = tab_data_e, type = 'envt',
-                                 my_cell_color = my_cell_color,
-                                 my_border_color = my_border_color)
-    ## return final table
-    tab_out_e
+      my_border_color <- '#aaaaaa'
+        
+      ## apply function to format as 'gt' table  
+      tab_out_e <- format_gt_table(df = tab_data_e, type = 'envt',
+                                   my_cell_color = my_cell_color,
+                                   my_border_color = my_border_color)
+      ## return final table
+      tab_out_e
   })
   
   ## output: show environmental indicator table
@@ -1607,9 +1609,7 @@ app_server <- function(input, output, session) {
   #############################################################################  # 
   ## *BOXPLOTS/barplot? of demographic ratios vs US average ####
   
-
-    # https://exts.ggplot2.tidyverse.org/gallery/
-  
+  # https://exts.ggplot2.tidyverse.org/gallery/
   
   v1_summary_plot <- reactive({
     req(data_summarized())
@@ -1626,12 +1626,10 @@ app_server <- function(input, output, session) {
       # use yellow/orange/red for ratio >= 1x, 2x, 3x  #  work in progress
       mycolors <- c("gray", "yellow", "orange", "red")[1+findInterval(ratio.to.us.d.overall, c(1.01, 2, 3))] 
       
-  
       # barplot(ratio.to.us.d.overall,
       #         main = 'Ratio vs. US Average for Demographic Indicators',
       #         cex.names = 0.7,
       #         col = mycolors)
-      
       #abline(h=1, col="gray")
       
       data.frame(name = names(ratio.to.us.d.overall),
@@ -1654,9 +1652,9 @@ app_server <- function(input, output, session) {
         ggplot2::theme(plot.margin=ggplot2::unit(c(0,100,0,0), "points"), 
                        plot.title = ggplot2::element_text(size = 14, hjust = 0.5),
                        axis.text.x = ggplot2::element_text(size = 10 , angle = -30, hjust = 0, vjust = 1)) + # # try to do that via ggplot...
-      NULL
+        NULL
       
-        # ggplot2::ggplot(
+      # ggplot2::ggplot(
       #   ratio.to.us.d.overall,
       #   aes(x = indicator, y = value)
       # ) +
@@ -1683,7 +1681,7 @@ app_server <- function(input, output, session) {
       names(ratio.to.us.d.bysite) <-  c(
         names_d_friendly, 
         names_d_subgroups_friendly
-      ) # long_names_d$var_names[match( names_d_fixed, long_names_d$vars)]
+      ) # long_names_d$var_names[match( names_d_fixed, long_names_d$vars)] #names_d_fixed and long_names_d no longer exist. use names_d_friendly, etc.
       ## pivot data from wide to long - now one row per indicator 
       ratio.to.us.d.bysite <- ratio.to.us.d.bysite %>% 
         tidyr::pivot_longer(cols = dplyr::everything(), names_to = 'indicator') %>% 
@@ -1716,7 +1714,7 @@ app_server <- function(input, output, session) {
       names(ratio.to.us.d.bysite) <-  c(
         names_d_friendly, 
         names_d_subgroups_friendly
-      ) # long_names_d$var_names[match( names_d_fixed, long_names_d$vars)]
+      ) # long_names_d$var_names[match( names_d_fixed, long_names_d$vars)] # names_d_fixed and long_names_d no longer exist. use names_d_friendly, etc.
       ## pivot data from wide to long - now one row per indicator 
       ratio.to.us.d.bysite <- ratio.to.us.d.bysite %>% 
         tidyr::pivot_longer(cols = dplyr::everything(), names_to = 'indicator') %>% 
@@ -1745,7 +1743,6 @@ app_server <- function(input, output, session) {
         indicator = c(names_d_friendly, names_d_subgroups_friendly), 
         value = unlist(ratio.to.us.d()[c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg)])
       )
-      
       ## paste subtitle for boxplot
       subtitle <- paste0('Within ', input$bt_rad_buff,' miles of one site, ', 
                          max.name.d.bysite, ' is ', round(max.ratio.d.bysite,1), 'x the US average\n' #,
@@ -1756,10 +1753,8 @@ app_server <- function(input, output, session) {
       towhat_nicename <- "US Average"
       mymaintext <- paste0("Ratios to ", towhat_nicename, ", as distributed across these sites")
       
-      
       ##################################################################################### #
       ## much of this is plotting code is based on EJAMejscreenapi::boxplots_ratios
-      
       
       ggplot2::ggplot(
         ratio.to.us.d.bysite  ,
@@ -1814,7 +1809,6 @@ app_server <- function(input, output, session) {
           legend.position = 'none'
         )  # end of ggplot section
     } # box
-    
   })
   
   ## output: show box/barplot of indicator ratios in Summary Report # 
@@ -1845,7 +1839,7 @@ app_server <- function(input, output, session) {
   # output$rendered_summary_report <- renderUI({
   #  HTML(
   #     includeHTML(
-  #       rmarkdown::render(app_sys('report','brief_summary.Rmd'),
+  #       rmarkdown::render(app_sys('report','brief_summary.Rmd'),  # treats EJAM/inst/ as root # also look at includeRMarkdown() provided by golem?
   #                         output_dir = tempdir(),
   #                         params = summary_report_params())
   #     )
@@ -1860,8 +1854,8 @@ app_server <- function(input, output, session) {
       # case we don't have write permissions to the current working dir (which
       # can happen when deployed).
       tempReport <- file.path(tempdir(), "brief_summary.Rmd")
-      ## copy Rmd from inst/report to temp folder
-      file.copy(from = app_sys('report', 'brief_summary.Rmd'), 
+      ## copy Rmd from inst/report to temp folder  (note there had been a similar but not identical .Rmd in EJAM/www/)
+      file.copy(from = app_sys('report', 'brief_summary.Rmd'),  # treats EJAM/inst/ as root
                 to = tempReport, overwrite = TRUE)
       #file.copy("../www/test_report1pager.Rmd", tempReport, overwrite = TRUE)
       
@@ -1918,10 +1912,21 @@ app_server <- function(input, output, session) {
     # cols_to_select <- names(data_processed)
     # friendly_names <- longnames???
     cols_to_select <- c('siteid',  'pop', 'EJScreen Report', 'EJScreen Map', 'ACS Report', 'ECHO report',
-                        EJAMbatch.summarizer::names_all_batch) #should use more of EJAM::names_all than are in EJAMbatch.summarizer::names_all_batch
+                        names_d, names_d_subgroups,
+                        names_e #, 
+                        # no names here corresponding to number above x threshold, state, region ??
+    )
     friendly_names <- c('Site ID', 'Est. Population',  'EJScreen Report', 'EJScreen Map', 'ACS Report', 'ECHO report',
-                        gsub(' \\(.*', '',EJAMbatch.summarizer::names_all_batch_friendly), 
+                        names_d_friendly, names_d_subgroups_friendly, 
+                        names_e_friendly, 
                         '# of indicators above 95% threshold', 'State', 'EPA Region')
+    
+    ejcols          <- c(names_ej,          names_ej_state,          names_ej_supp,          names_ej_supp_state)
+    ejcols_friendly <- c(names_ej_friendly, names_ej_state_friendly, names_ej_supp_friendly, names_ej_supp_state_friendly)
+    which_ejcols_here <- which(ejcols %in% names(data_processed()$results_bysite)  )
+    cols_to_select <- c(cols_to_select, ejcols[         which_ejcols_here] )
+    friendly_names <- c(friendly_names, ejcols_friendly[which_ejcols_here])
+    
     # --------------------------------------------------- #
     
     # dt_overall <- data_processed()$results_overall %>% 
@@ -1933,15 +1938,14 @@ app_server <- function(input, output, session) {
     dt <- data_processed()$results_bysite %>% 
       as.data.frame() %>%
       dplyr::mutate(dplyr::across(dplyr::where(is.numeric), .fns = function(x) {round(x, digits=2)})#,
-             #siteid = as.character(siteid)
-             ) %>%
+                    #siteid = as.character(siteid)
+      ) %>%
       dplyr::select(dplyr::all_of(cols_to_select), ST)
     
     # dt$`EJScreen Report` <- EJAMejscreenapi::url_linkify(dt$`EJScreen Report`, text = 'EJScreen Report')
     # dt$`EJScreen Map` <- EJAMejscreenapi::url_linkify(dt$`EJScreen Map`, text = 'EJScreen Map')
     # dt$`ACS Report` <- EJAMejscreenapi::url_linkify(dt$`ACS Report`, text = 'ACS Report')
-    # dt$`ECHO report` <- ifelse(!is.na(dt$`ECHO report`), EJAMejscreenapi::url_linkify(dt$`ECHO report`, text = 'ECHO Report'), 
-    #                                   'N/A')
+    # dt$`ECHO report` <- ifelse(!is.na(dt$`ECHO report`), EJAMejscreenapi::url_linkify(dt$`ECHO report`, text = 'ECHO Report'), 'N/A')
     
     # dt_avg <- data_summarized()$rows[c('Average person','Average site'),] %>% 
     #   dplyr::mutate(siteid = c('Average person', 'Average site'), ST = NA,
@@ -1992,10 +1996,10 @@ app_server <- function(input, output, session) {
                   ),
                   ## set overall table height
                   height = 1500, 
-                  escape = FALSE  # escape=FALSE may add security issue but makes links clickable in table
+                  escape = FALSE  # *** escape=FALSE may add security issue but makes links clickable in table
     ) %>% 
       DT::formatStyle(names(dt_final), 'white-space'='nowrap')
-      #DT::formatStyle(names(dt_final), lineHeight='80%')
+    #DT::formatStyle(names(dt_final), lineHeight='80%')
     ## code for bolding certain rows - not currently used
     #           ) %>% 
     # DT::formatStyle(
@@ -2003,15 +2007,14 @@ app_server <- function(input, output, session) {
     #   target = 'row', columns = 'all',
     #   fontWeight = DT::styleEqual(c('All sites','Average person','Average site'), values = 'bold')
     # )
-    
   })
   #############################################################################  # 
   
   # ______ EXCEL DOWNLOAD of site-by-site results ####
   
   output$download_results_table <- downloadHandler(
-    filename = function(){'results_table.xlsx'},
-    content = function(fname){
+    filename = function() {'results_table.xlsx'},
+    content = function(fname) {
       
       ## use EJAM::workbook_ouput_styled approach
       ## future: can add other sheets from doaggregate output
@@ -2031,7 +2034,7 @@ app_server <- function(input, output, session) {
         analysis_title = input$analysis_title,
         buffer_desc = input$bt_rad_buff
       )
-        
+      
       ## save file and return for downloading
       openxlsx::saveWorkbook(wb_out, fname)
       
@@ -2055,9 +2058,9 @@ app_server <- function(input, output, session) {
       # [5] "count_of_blocks_near_multiple_sites" "results_summarized"  
       
       ## add analysis overview to 'notes' tab
-      if(submitted_upload_method() == "SHP"){
+      if(submitted_upload_method() == "SHP") {
         radius_description <- 'Radius of Shape Buffer (miles)'
-      }else{
+      } else {
         radius_description <- 'Radius of Circular Buffer (miles)'
       }
       
@@ -2098,12 +2101,12 @@ app_server <- function(input, output, session) {
   # ______ MAP RESULTS ______ sites selected from site-by-site summary table ####
   
   data_sitemap <- reactiveVal(NULL)
-
+  
   observeEvent(input$view3_table_rows_selected,{
     req(data_processed())
     #data_sitemap(data_uploaded()[input$view3_table_rows_selected,])
     
-    if(submitted_upload_method() == 'SHP'){
+    if(submitted_upload_method() == 'SHP') {
       data_shp <- dplyr::inner_join(data_uploaded()[, c('siteid', 'geometry')], data_processed()$results_bysite[input$view3_table_rows_selected],
                                     by = c('siteid'='siteid'))
       print(input$view3_table_rows_selected)
@@ -2126,24 +2129,24 @@ app_server <- function(input, output, session) {
     )
     
     ## zoom in from original map to show single point (can zoom out and see others)
-   
-    #orig_leaf_map() #%>%
-     # leaflet::setView(lng = data_sitemap()$lon, lat = data_sitemap()$lat, zoom = 8)
     
-    if(submitted_upload_method() == 'SHP'){
+    #orig_leaf_map() #%>%
+    # leaflet::setView(lng = data_sitemap()$lon, lat = data_sitemap()$lat, zoom = 8)
+    
+    if(submitted_upload_method() == 'SHP') {
       ## alternate: plot single point individually on map (cannot zoom out and see others)
       leaflet(data_sitemap() %>% st_as_sf() %>% st_zm() %>% as('Spatial') ) %>%
         #setView(lat = data_sitemap()$lat, lng = data_sitemap()$lon, zoom = 13) %>%
         addTiles() %>%
         addPolygons(popup = popup_from_any(data_sitemap() %>% sf::st_drop_geometry()),
-                   popupOptions = popupOptions(maxHeight =  200))  
+                    popupOptions = popupOptions(maxHeight =  200))  
     } else {
       ## alternate: plot single point individually on map (cannot zoom out and see others)
       leaflet(data_sitemap()) %>%
         setView(lat = data_sitemap()$lat, lng = data_sitemap()$lon, zoom = 13) %>%
-        addTiles() %>%
-        addCircles(radius = 1 *  meters_per_mile, popup = popup_from_any(data_sitemap()),
-                   popupOptions = popupOptions(maxHeight =  200))
+        addTiles() # %>%     ######## *** 
+      # addCircles(radius = 1 *  meters_per_mile, popup = popup_from_any(data_sitemap()), ######## *** 
+      #            popupOptions = popupOptions(maxHeight =  200))    ######## *** 
     }
     
   })
@@ -2191,22 +2194,22 @@ app_server <- function(input, output, session) {
     barplot_data <- data_summarized()$rows %>% 
       tibble::rownames_to_column(var = 'Summary') %>% 
       dplyr::mutate(Summary = gsub('Average person', 
-                                    'Average person at these sites',Summary)) %>% 
+                                   'Average person at these sites',Summary)) %>% 
       dplyr::filter(Summary %in% mybarvars.sumstat)
     
     ## set ggplot theme elements for all versions of barplot
     ggplot_theme_bar <- ggplot2::theme_bw() +
       ggplot2::theme(legend.position = 'bottom',
-            axis.text = ggplot2::element_text(size = 16),
-            axis.title = ggplot2::element_text(size = 16),
-            legend.title = ggplot2::element_text(size = 16),
-            legend.text = ggplot2::element_text(size = 16),
-            strip.text = element_blank(),
-            strip.background = element_blank()
+                     axis.text = ggplot2::element_text(size = 16),
+                     axis.title = ggplot2::element_text(size = 16),
+                     legend.title = ggplot2::element_text(size = 16),
+                     legend.text = ggplot2::element_text(size = 16),
+                     strip.text = element_blank(),
+                     strip.background = element_blank()
       )
     
     ## raw data 
-    if(input$summ_bar_data == 'raw'){
+    if(input$summ_bar_data == 'raw') {
       
       ## pivot from wide to long, 1 row per indicator 
       barplot_data_raw <- barplot_data %>% 
@@ -2215,7 +2218,7 @@ app_server <- function(input, output, session) {
         dplyr::mutate(type = 'raw')
       
       ## median - not currently displayed
-      if(mybarvars.stat == 'med'){
+      if(mybarvars.stat == 'med') {
         barplot_usa_med <- EJAM::usastats %>% 
           dplyr::filter(REGION == 'USA', PCTILE == 50) %>% # for median
           dplyr::mutate(Summary = 'Median person in US') %>% 
@@ -2255,32 +2258,32 @@ app_server <- function(input, output, session) {
         scale_y_continuous(limits = c(0, NA), expand = expansion(mult = c(0, 0.05)))
       
       ## let environmental raw values have their own y axis
-      if(input$summ_bar_ind == 'Environmental'){
+      if(input$summ_bar_ind == 'Environmental') {
         p_out <- p_out + facet_wrap(~indicator_label, 
                                     #ncol = 4, 
                                     scales = 'free')
       } else {
         p_out <- p_out + facet_wrap(~indicator_label, 
-                   #ncol = 4, 
-                   scales = 'free_x')
+                                    #ncol = 4, 
+                                    scales = 'free_x')
       }
-        
-        p_out +
-          labs(x = NULL, y = 'Indicator Value', fill = 'Legend') +
-          ggplot_theme_bar
+      
+      p_out +
+        labs(x = NULL, y = 'Indicator Value', fill = 'Legend') +
+        ggplot_theme_bar
       
       ## future: add % scaling and formatting for demographic indicators
       ## see ggplot2::scale_y_continuous and scales::label_percent
       
       ## ratio to us  
-    } else if(input$summ_bar_data == 'ratio'){
+    } else if(input$summ_bar_data == 'ratio') {
       
       barplot_data_raw <- barplot_data %>% 
         dplyr::select(Summary, dplyr::all_of( mybarvars)) %>% 
         tidyr::pivot_longer(cols = -1, names_to = 'indicator') 
       
       ## average
-      if(mybarvars.stat == 'avg'){
+      if(mybarvars.stat == 'avg') {
         ## pull US average values from EJAM::usastats to compute ratios
         barplot_usa_avg <-  dplyr::bind_rows(
           EJAM::usastats %>% 
@@ -2346,7 +2349,7 @@ app_server <- function(input, output, session) {
         ## set color scheme
         scale_fill_manual(values=c('Average person in US' = 'lightgray', 'Average person at these sites'='#62c342',
                                    'Average site' = '#0e6cb5')) +
-       # scale_fill_brewer(palette = 'Dark2') +
+        # scale_fill_brewer(palette = 'Dark2') +
         ## alternate color scheme
         #viridis::scale_fill_viridis(discrete = TRUE, alpha = 0.6) +
         ## wrap long indicator labels on x axis
@@ -2385,8 +2388,8 @@ app_server <- function(input, output, session) {
     
     ## future settings: bin sizes, reference lines
     
-    if(input$summ_hist_distn == 'Sites'){
-      if(input$summ_hist_data == 'raw'){
+    if (input$summ_hist_distn == 'Sites') {
+      if (input$summ_hist_data == 'raw') {
         
         ## subset doaggregate results_bysite to selected indicator
         hist_input <- data_processed()$results_bysite[, input$summ_hist_ind, with=FALSE]
@@ -2406,7 +2409,7 @@ app_server <- function(input, output, session) {
           theme_bw() +
           ggplot_theme_hist
         
-      } else if(input$summ_hist_data == 'pctile'){
+      } else if(input$summ_hist_data == 'pctile') {
         
         ## subset doaggregate results_bysite to selected indicator
         hist_input <- data_processed()$results_bysite[, paste0('pctile.',input$summ_hist_ind), with=FALSE]
@@ -2423,8 +2426,8 @@ app_server <- function(input, output, session) {
           theme_bw() +
           ggplot_theme_hist
       }
-    } else if(input$summ_hist_distn == 'People'){
-      if(input$summ_hist_data == 'raw'){
+    } else if(input$summ_hist_distn == 'People') {
+      if(input$summ_hist_data == 'raw') {
         
         ## subset doaggregate results_bysite to selected indicator
         hist_input <- data_processed()$results_bysite[, c('pop', input$summ_hist_ind), with=FALSE]
@@ -2444,7 +2447,7 @@ app_server <- function(input, output, session) {
           theme_bw() +
           ggplot_theme_hist
         
-      } else if(input$summ_hist_data == 'pctile'){
+      } else if(input$summ_hist_data == 'pctile') {
         
         ## subset doaggregate results_bysite to selected indicator
         hist_input <- data_processed()$results_bysite[, c('pop',paste0('pctile.',input$summ_hist_ind)), with=FALSE]
@@ -2484,7 +2487,6 @@ app_server <- function(input, output, session) {
   # ~ ####
   mod_ejscreenapi_server("ejscreenapi_1")
   
-  
   #############################################################################  # 
   # ~--------------------------- ####
   # >>>>>  FULL REPORT DOWNLOAD _________ ####
@@ -2505,11 +2507,11 @@ app_server <- function(input, output, session) {
       # can happen when deployed).
       tempReport <- file.path(tempdir(), "report.Rmd")
       ## copy Rmd from inst/report to temp folder
-      file.copy(from = app_sys('report', 'report.Rmd'),
+      file.copy(from = app_sys('report', 'report.Rmd'),  # treats EJAM/inst/ as root
                 to = tempReport, overwrite = TRUE)
       ## pass image and bib files needed for knitting to temp directory
-      for(i in list.files(app_sys('report'), pattern = '.png|.bib')){
-        file.copy(from = app_sys('report', i),
+      for(i in list.files(app_sys('report'), pattern = '.png|.bib')) {   # treats EJAM/inst/ as root
+        file.copy(from = app_sys('report', i),    # treats EJAM/inst/ as root
                   to = file.path(tempdir(), i), 
                   overwrite = TRUE)
       }
@@ -2522,7 +2524,7 @@ app_server <- function(input, output, session) {
       #  4. params$  as used within body of  .Rmd text inline and in r code blocks.
       
       isolate({ # need someone to confirm this is needed/helpful and not a problem, to isolate this.
-      
+        
         params <- list(
           testmode=FALSE,
           
@@ -2558,13 +2560,13 @@ app_server <- function(input, output, session) {
           # envt_table_placeholder_png=   "envt_table_placeholder.png",
           # envt_table_placeholder_rda=   "envt_table_placeholder.rda",
           demog_table = v1_demog_table(),
-           # demog_table_placeholder_png="demog_table_placeholder.png",
+          # demog_table_placeholder_png="demog_table_placeholder.png",
           # demog_table_placeholder_rda= "demog_table_placeholder.rda",
           boxplot =     v1_summary_plot(),
           # boxplot_placeholder_png=         "boxplot_placeholder.png",
           # barplot= NA
           # barplot_placeholder_png=         "barplot_placeholder.png",
-           
+          
           #------- TEXT PHRASES DESCRIBING AND INTERPRETING RESULT 
           
           demog_how_elevated = input$demog_how_elevated,

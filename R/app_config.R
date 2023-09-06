@@ -9,6 +9,7 @@
 #'
 #' @noRd
 app_sys <- function(...) {
+  # this was set up to treat EJAM/inst/ as root, so app_sys("app/www/ejamhex4.png")  is actually referring to  EJAM/inst/app/www/ejamhex4.png   !! 
   system.file(..., package = "EJAM")
 }
 

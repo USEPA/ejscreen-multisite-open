@@ -12,6 +12,7 @@ ejamit(
   quadtree = NULL,
   silentinteractive = F,
   fips = NULL,
+  threshold1 = 90,
   ...
 )
 }
@@ -22,17 +23,31 @@ ejamit(
 
 \item{maxradius}{miles distance (max distance to check if not even 1 block point is within radius)}
 
-\item{avoidorphans}{logical Whether to avoid case where no block points are within radius,
-so if TRUE, it keeps looking past radius to find nearest one within maxradius.}
+\item{avoidorphans}{logical If TRUE, then where not even 1 BLOCK internal point is within radius of a SITE,
+it keeps looking past radius, up to maxradius, to find nearest 1 BLOCK.
+What EJScreen does in that case is report NA, right? So,
+does EJAM really need to report stats on residents presumed to be within radius,
+if no block centroid is within radius?
+Best estimate might be to report indicators from nearest block centroid which is
+probably almost always the one your site is sitting inside of,
+but ideally would adjust total count to be a fraction of blockwt based on
+what is area of circular buffer as fraction of area of block it is apparently inside of.
+
+Note that if creating a proximity score, by contrast, you instead want to find nearest 1 SITE if none within radius of this BLOCK.}
 
 \item{quadtree}{(a pointer to the large quadtree object)
 created from the SearchTree package example:
 SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point")
 Takes about 2-5 seconds to create this each time it is needed.
-It is automatically created when the package is loaded via the \code{\link[=.onLoad]{.onLoad()}} function}
+It can be automatically created when the package is attached via the .onAttach() function}
 
 \item{silentinteractive}{Set to FALSE to prevent long output showing in console in RStudio when in interactive mode,
 passed to doaggregate() also.}
+
+\item{fips}{FIPS code vector if using FIPS instead of sitepoints to specify places to analyze,
+such as a list of US Counties or tracts.}
+
+\item{threshold1}{percentile like 80 or 90 or 95 to compare percentiles to}
 
 \item{...}{passed to \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} or other such functions}
 }
@@ -45,8 +60,8 @@ It does essentially what the webapp does to analyze/summarize near a set of poin
 See help("EJAM")
 }
 \examples{
+\dontrun{
  # All in one step, using functions not shiny app:
- \dontrun{
  out <- ejamit(testpoints_100_dt, 2, quadtree=localtree)
 
  # Do not specify sitepoints and it will prompt you for a file,

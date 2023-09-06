@@ -16,7 +16,7 @@ doaggregate(
   updateProgress = NULL,
   need_proximityscore = FALSE,
   silentinteractive = FALSE,
-  subgroups_type = "original",
+  subgroups_type = "alone",
   ...
 )
 }
@@ -50,7 +50,7 @@ using formulas that have to be specified.}
 
 \item{testing}{used while testing this function}
 
-\item{include_ejindexes}{not yet implemented}
+\item{include_ejindexes}{whether to calculate EJ Indexes and return that information}
 
 \item{updateProgress}{progress bar function used for shiny app}
 
@@ -58,10 +58,25 @@ using formulas that have to be specified.}
 
 \item{silentinteractive}{Set to FALSE to prevent long output showing in console in RStudio when in interactive mode}
 
-\item{subgroups_type}{nh for non-hispanic race subgroups as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh;
-alone for EJScreen v2.2 style race subgroups as in White Alone, wa and others in names_d_subgroups_alone}
+\item{subgroups_type}{Set this to
+"nh" for non-hispanic race subgroups as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh;
+"alone" for EJScreen v2.2 style race subgroups as in    White Alone, wa and others in names_d_subgroups_alone;
+"both" for both versions. Work in progress.}
 
 \item{...}{more to pass to another function? Not used currently.}
+}
+\value{
+list with named elements:
+\itemize{
+\item \strong{\code{results_overall}}   one row data.table, like results_by_site, but just one row with
+aggregated results for all unique residents.
+\item \strong{\code{results_by_site}}   results for individual sites (buffers) - a data.table of results,
+one row per siteid, one column per indicator
+\item \strong{results_bybg_people}  results for each block group, to allow for showing the distribution of each
+indicator across everyone within each demographic group.
+\item \strong{longnames}  descriptive long names for the indicators in the above outputs
+\item \strong{count_of_blocks_near_multiple_sites}  additional detail
+}
 }
 \description{
 This updated 2023 code takes a set of facilities and the set of blocks that are near each,
@@ -78,7 +93,7 @@ in each buffer (i.e., near each facility):
 \item \strong{SUMS OF COUNTS}: for population count, or number of households or Hispanics, etc.
 \item \strong{POPULATION-WEIGHTED MEANS}: for  Environmental indicators.
 
-\emph{\strong{EJ Indexes}:} These could be in theory recalculated via formula, but the way EJScreen
+\emph{\strong{EJ Indexes}:} The way EJScreen
 does this is apparently finding the pop wtd mean of EJ Index raw scores,
 not the EJ Index formula applied to the summarized demographic score and aggregated envt number.
 \item \strong{CALCULATED BY FORMULA}: Buffer or overall score calculated via formulas using aggregated counts,

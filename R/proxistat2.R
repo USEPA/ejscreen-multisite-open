@@ -1,16 +1,19 @@
-#' Calculate a proximity score for every blockgroup 
+#' Calculate a proximity score for every blockgroup - WORK IN PROGRESS
 #' Indicator of proximity of each blockgroups to some set of facilities or sites.
 #' @details  Proximity score is sum of (1/d) where each d is distance of a given site in km, 
 #'   summed over all sites within 5km, as in EJScreen.
 #'   
-#'   doaggregate() has a bit of code in it to do this same thing that proxistat2() does.
+#'   doaggregate() has a bit of code in it to do this same thing that this function does.
 #'   
-#'   *** Still need area of each block to fix this func proxistat2()
+#'   *** Still need area of each block to fix this function - 
+#'   the block area should get put into one of these: 
+#'    [blockpoints] or [blockwts] 
 #'  
 #' @param pts data.table of lat lon
 #' @param radius distance max, in miles, default is 5km (8.04672 miles)
 #'   which is the EJScreen max search range for proximity scores
-#' @param quadtree must be localtree from EJAM:: 
+#' @param quadtree must be called localtree, an index of block locations, 
+#'   built during use of EJAM package. see [quaddata]
 #' @return data.table with proximityscore, bgfips, lat, lon, etc.
 #' @import data.table
 #' @export
@@ -26,15 +29,79 @@
 #'  # points(x$lon[tops], x$lat[tops], col="red")
 #'  
 proxistat2 <- function(pts, radius=8.04672, quadtree) {
-  stop("this does not work without proxistat package dataset ")
-  warning("temporarily uses block areas from another dataset for most but not all blocks")
-  warning("if none found within radius of 5km, this func does not yet create score based on single nearest - see source code for notes")
+  
+  stop("this does not work without proxistat package dataset 
+       OR having block area 
+       or at least effective radius 
+       in blockpoints or blockwts table.
+       ")
+  
+  warning("temporarily uses block areas from another dataset for most but not all blocks -
+          PR and Island Area lacked block area data in source used as of 9/23 for EJAM")
+  
+  
+  warning("if none found within radius of 5km, this proximity score function does not yet create score based on single nearest - see source code for notes")
+  
+  # excerpt from 2017 tech doc on using min dist to create proximity scores
+  #  but the same idea applies if EJAM is
+  #  calculating and reporting distance from each site to avg resident in each block and then bg) ---
+  # 
+  # Since we cannot easily find out how the
+  # residents are actually distributed in those areas, we made two simplifying assumptions:
+  # - residents are evenly distributed across the surface area of each block, and
+  # - each block can be represented by a circle whose radius is [Block area / Pi]^(1/2) .
+  # We call this latter value the Block Area Equivalent Radius.
+  # Our investigations indicate that for any dij less than the Block Area Equivalent Radius, 0.9 times that
+  # value is a reasonable representation of the average distance from the facility for all residents in the
+  # block. We call this the dij corrected.
+  # Our computational scheme determines the dij values as described above, tests for the comparison with
+  # Block Area Equivalent Radius, and substitutes dij corrected values. We found that we needed to make
+  # that correction for less than 1% of all facility/block combinations in an early testing dataset that used
+  # 2005-2009 ACS data.
+  # 
   ######################################## #
   # Sequence of steps in finding d value(s):
   ######################################## #
   #
-  # 1) get distances that are <=radius using get.distances()
-  # 2) where d < min.dist, set d <- min.dist to adjust it upwards
+
+  ######################################## #
+  
+  #    0)  PRECALCULATE EFFECTIVE RADIUS OR MIN DIST FOR EVERY BLOCK IN USA, in miles ####   
+  # (faster later, since EJAM::getblocksnearby() returns distance in miles)
+  
+  # effective radius or minimum distance for a block is BASED ON SIZE (AREA) OF BLOCK, as in EJScreen proximity scores
+  # proxistat  package  blockpoints_area_pop  has area in square meters, not yet added to    blockpoints ?
+  # > dim( blockpoints)
+  # [1] 8174955       3
+  # > dim(blockpoints_area_pop)
+  # [1] 8132968       6
+  
+  km_per_mile <- EJAMejscreenapi::meters_per_mile / 1000  # km_per_mile = 1.609344  # meters_per_mile #   [1] 1609.344
+  
+  # distance in miles needs min.dist in square miles; if distance in meters, square meters.
+  # We should precalculate effective radius of each block, 
+  #    blockpoints[ , block_radius_miles := sqrt(area/pi)]
+  # block_radius_miles  is the minimum distance? 
+  # min.dist <- 0.9 * sqrt( area / pi )
+  # min.dist <- (0.9 / sqrt(pi)) * sqrt(area)
+  # (0.9 / sqrt(pi)) = 0.5077706  # so, min.dist := 0.5077706 * sqrt(area)
+  
+  # this dataset called blockpoints_area_pop  was in the proxistat package:
+  sites2blocks_dt <- blockpoints_area_pop[sites2blocks_dt, .(blockid, distance, siteid, area), on="blockid"]
+  
+  # area was in square meters, so convert   1609.344 meters per mile 
+  sites2blocks_dt[ , min.dist.km := 0.0005077706 * sqrt(area)]
+  ######################################## #
+  
+  
+  # 1) if not done already via getblocksnearby(), get distances that are <=radius using get.distances()
+  
+  # 2) where d < min.dist, set d <- min.dist to adjust it upwards (ie use the max of min.dist and distance??)
+  
+  sites2blocks_dt[ , distance.km := pmax(min.dist.meters, distance * km_per_mile, na.rm = TRUE)]  # that would convert distance from miles to km not meters !!
+  # collapse::fmin() is probably much faster
+  
+  
   # 3)     and for those, check again to see if new d is still <= radius. keep only if d<=radius now. *** 
   # 4) for each frompoints, if no distances were found, get nearest single d at any radius,
   #       originally thought perhaps by expanding outwards step by step until at least one is found (but not worth the overhead vs just finding ALL d and picking min)
@@ -68,38 +135,24 @@ proxistat2 <- function(pts, radius=8.04672, quadtree) {
   
   
   #  ADJUST DISTANCE USING A MINIMUM DISTANCE ####
-  # BASED ON SIZE (AREA) OF BLOCK, as in EJScreen proximity scores
-  # proxistat  package  blockpoints_area_pop  has area in square meters, not yet added to    blockpoints ?
-  # > dim( blockpoints)
-  # [1] 8174955       3
-  # > dim(blockpoints_area_pop)
-  # [1] 8132968       6
-  # miles_per_km <- EJAMejscreenapi::meters_per_mile / 1000
-  km_a_mile = 1.609344
-  # distance in miles needs min.dist in square miles; if distance in meters, square meters.
-  # We should precalculate effective radius of each block, 
-  #    blockpoints[ , effectiveradius := sqrt(area/pi)]
-  # effectiveradius might be a better name for min.dist but code here used min.dist
-  # min.dist <- 0.9 * sqrt( area / pi )
-  # min.dist <- (0.9 / sqrt(pi)) * sqrt(area)
-  # (0.9 / sqrt(pi)) = 0.5077706  # so, min.dist := 0.5077706 * sqrt(area)
   
-  # this dataset called blockpoints_area_pop  was in the proxistat package:
-  sites2blocks_dt <- blockpoints_area_pop[sites2blocks_dt, .(blockid, distance, siteid, area), on="blockid"]
-  
-  # area was in square meters, so convert   1609.344 meters per mile 
-  sites2blocks_dt[ , min.dist.km := 0.0005077706 * sqrt(area)]
-  sites2blocks_dt[ , distance.km := pmax(min.dist.meters, distance * km_a_mile, na.rm = TRUE)] # collapse::fmin() is probably much faster
+# creating min dist and joining was temporarily done here
   
   
   
   
-  # create score per block = sum of sites wtd by 1/d ####
+  
+  # create score per BLOCK = sum of sites wtd by 1/d ####
+  
   blockscores <- sites2blocks_dt[ , sum(1 / distance.km, na.rm = TRUE), by=blockid] # result is data.table with blockid, V1
    # blockscores[is.infinite(V1), V1 := 999]
+  
+  
+  
   x <- data.table::merge.data.table(blockwts, blockscores, by="blockid", all.x = FALSE, all.y = TRUE)
   
-  # create score per block group = popwtd mean of block scores ####
+  # create score per BLOCK GROUP = popwtd mean of block scores ####
+  
   bgscore <- x[, sum(V1 * blockwt, na.rm=TRUE)/sum(blockwt, na.rm=TRUE), by=bgid]
   setnames(bgscore, 'V1', "proximityscore")
   bgscore = merge(bgscore, bgpts, by = "bgid", all.x = TRUE, all.y = FALSE)

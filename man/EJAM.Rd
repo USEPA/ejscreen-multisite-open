@@ -5,6 +5,11 @@
 \alias{EJAM}
 \alias{_PACKAGE}
 \alias{EJAM-package}
+\alias{blockwts}
+\alias{blockpoints}
+\alias{quaddata}
+\alias{blockid2fips}
+\alias{bgid2fips}
 \title{Environmental Justice (EJ) Analysis Multisite tool}
 \description{
 This package provides functions and data for very fast proximity analysis
@@ -23,19 +28,31 @@ This means the tools can provide the same information that an EJScreen standard 
 but for a large number of reports (one for each site).
 }
 \section{\strong{Vignette}}{
-Please see the vignette (development version can be knit from EJAM/www folder of locally installed package)
+Please see the vignette (development version of vignette can be knit from EJAM/www folder of locally installed package)
 }
 
 \section{\strong{Key Functions:}}{
 \itemize{
-\item \strong{\code{\link[=run_app]{run_app()}}} Launch the Shiny app (web interface)
-\item \strong{\code{\link[=ejamit]{ejamit()}}} Use outside the shiny app, does in 1 function the two steps below:
-\itemize{
-\item \strong{\code{\link[=getblocksnearby]{getblocksnearby()}}}  Very fast method to buffer, identifying which blocks are within specified distance of site or facility
-\item \strong{\code{\link[=doaggregate]{doaggregate()}}} Summarize the demographic and environmental indicators from \strong{\link{blockgroupstats}.rda} (see below)
-within each buffer weighted using blockwts (for average resident within specified distance of site or facility).
-NOTE: FUNCTION IS BEING MODIFIED, to be generic to use any indicators, and be faster, etc.
+\item \strong{\code{\link[=run_app]{run_app()}}} Launch the web app (R Shiny interface)
+\item \strong{\code{\link[=ejamit]{ejamit()}}} Get results (tables, maps, plots) without the web app interface, largely by using these key functions:
+\enumerate{
+\item Getting key datasets and indexing blocks, if not yet done, via \code{\link[=dataload_from_aws]{dataload_from_aws()}} and \code{\link[=indexblocks]{indexblocks()}}
+\item \strong{\code{\link[=getblocksnearby]{getblocksnearby()}}}  Very fast method to buffer, identifying which blocks are
+within specified distance of point(s) like sites/facilities, and get distance to each.
+\item \strong{\code{\link[=doaggregate]{doaggregate()}}} Summarize demographic and environmental indicators from \strong{\link{blockgroupstats}}.rda (see below)
+within each place, weighted using blockwts (for average resident within specified distance of site (e.g., facility),
+or in each shapefile or FIPS-defined location).
 }
+}
+}
+
+\section{\strong{Data files available as examples:}}{
+\itemize{
+\item \strong{Excel files to read into ejamit()} or getblocksnearby() are in the local source package files in EJAM/inst/testdata/latlon
+\item \link{testpoints_10}.rda  and larger datasets each provide a random test points data.frame with columns lat lon siteid
+\item \code{\link[=testpoints_n]{testpoints_n()}} can generate random test points at places weighted by population, FRS facilities, blockgroup, area, block
+\item \link{sites2blocks_example_10}.rda and larger datasets are sample outputs of getblocksnearbyviaQuadTree or just getblocksnearby(),
+to try as inputs to doaggregate()
 }
 }
 
@@ -43,20 +60,30 @@ NOTE: FUNCTION IS BEING MODIFIED, to be generic to use any indicators, and be fa
 A user can specify locations, via an interface, and that shiny app returns
 \itemize{
 \item \emph{\code{sitepoints}}, a data.table with fields siteid, lat, lon.
-A user-specified table with maybe 100, 1k, 10k+ points (centers of circular buffers)
+A user-specified table with maybe 100, 1k, 10k+ points (centers of circular buffers).
+Examples of test data are
 }
 
 One can specify sitepoints, with lat/lon coordinates of the places to be analyzed (sites or facilities),
-in one of three ways:
-\enumerate{
-\item \strong{NAICS code} (selecting from a list, one or more types of facilities, as defined by NAICS).
+or can specify areas to be analyzed in general,
+in one of these ways:
+\itemize{
+\item \strong{Point locations uploaded} (lat, lon coordinates) - these could be regulated facilities
+for which you already have locations, or could be any other types of points uploaded in a spreadsheet.
+\item \strong{Shapefiles uploaded} to directly define the areas to include instead of using circular buffers around points
+\item \strong{FIPS} to specify a list of counties or tracts or blockgroups, for example, to be compared.
+\item \strong{NAICS or SIC code} Industry categories selected from a list of codes or names, or uploaded in a table.
 The NAICS are 2-digit to 6-digit codes that specify sectors or types of facilities, such as
 325 - Chemical Manufacturing, or 325211 - Plastics Material and Resin Manufacturing.
-\item \strong{Facility IDs} - EPA Facility Registry Service (FRS) ID numbers
-\item \strong{uploaded locations} as lat/lon points.
+\item \strong{Facility IDs} - EPA Facility Registry Service (FRS) ID numbers or FRS Program ID numbers
+\item \strong{Program System Types} - picking a whole category of regulated sites, such as all GHG reporters or all TRI reporters.
+\item \strong{MACT Subpart} to specify Clean Air Act NESHAP program Max. Achievable Control Tech.
+source categories (types of air emissions sources) defined by subpart such as OOOO.
 }
 
-\strong{1. BY INDUSTRIAL SECTOR/ NAICS:}
+Some additional details on some of these:
+
+\strong{- BY INDUSTRIAL SECTOR/ NAICS:}
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{    Interface lets user select NAICS from pulldown, or type in NAICS 
     Interface returns a vector of one or more naics codes,
@@ -71,7 +98,7 @@ Need to update FRS data used here regularly, ideally frequently.
 NAICS codes also can be selected by text search of industry names or by categories of codes, via \code{\link[=naics_from_any]{naics_from_any()}}
 }
 
-\strong{2. BY FACILITY ID or PROGRAM ID:}
+\strong{- BY FACILITY ID or PROGRAM ID:}
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{    Interface so user can upload FRS REGISTRY_ID or PROGRAM ID csv/xls file, 
     Interface returns a list of REGISTRY_ID values from a copy of the EPA facility registry service (FRS) data  
@@ -84,7 +111,7 @@ Relies on \strong{frs} data.table with columns REGISTRY_ID, lat, lon, etc.
 Relies on \strong{\link{frs_by_programid}} data.table with columns program, pgm_sys_id, REGISTRY_ID, lat, lon
 }
 
-\strong{3. BY LAT/LON POINT:}
+\strong{- BY LAT/LON POINT:}
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{    Interface so user can specify or upload latitude longitude siteid (and optionally others like sitename),
     when using [ejamit()] which in turn uses [latlon_from_anything()].
@@ -101,13 +128,13 @@ Columns are siteid, lat, lon; maybe 100 to 10k points
 \item \strong{\href{sitepoints}{getblocksnearby()}} which by default uses \emph{\code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}}}
 Returns \code{sites2blocks}
 Requires index called localtree that is build from dataset \link{quaddata}
-\item \strong{sites2blocks}   Created by \code{\link[=getblocksnearby]{getblocksnearby()}} and passed to  \code{\link[=doaggregate]{doaggregate()}}
+\item \strong{sites2blocks}   Created by \code{\link[=getblocksnearby]{getblocksnearby()}} to be passed to  \code{\link[=doaggregate]{doaggregate()}}
 This is a data table with maybe 100k to 1m rows (assume 1k blocks within 3 miles of each site, or 100 blocks within 1 mile),
 \verb{sites2blocks[ , .(siteid, blockid, distance or dist)]}
 \itemize{
 \item siteid    (site with circular buffer to group by)
 \item blockid     for join to blockwts
-\item distance or dist  (in miles, from block to site) (0 or irrelevant for noncircular buffers,
+\item distance  (in miles, from block to site) (0 or irrelevant for noncircular buffers,
 since a block is only in this table if in one or more buffers,
 unless analysis is for residents within x miles of the edges of some shapes, like facility boundaries)
 }
@@ -116,74 +143,53 @@ unless analysis is for residents within x miles of the edges of some shapes, lik
 
 \section{\strong{Data files used for distance calculation:}}{
 \itemize{
-\item ** quaddata.rda**  data.table
+\item ** quaddata.rda** data.table with point location of internal point for each of 8 million Census blocks
+is used prior to or during startup of EJAM to create an index stored in memory, called localtree.
+
+quaddata can be obtained using \code{\link[=data_load_from_aws]{data_load_from_aws()}}
+
+localtree is the index made from quaddata via \code{\link[=indexblocks]{indexblocks()}} (using the SearchTrees package)
 }
 
-8,174,955 rows when non-populated blocks are kept.
-5,806,512 rows have Census 2020 population (and blockwt) > 0.
-This is the largest file used by the package, and is 168 MB as a file, for 2020 Census.
-- blockid
-- BLOCK_X, BLOCK_Y, BLOCK_Z  (not lat, lon)
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{localtree is the index made from quaddata  (QuadTree class, via SearchTrees pkg), not a data.table 
-}\if{html}{\out{</div>}}
-
--------then those are used in getblocksnearby with some sitepoints to create sites2blocks:
+Those are used in getblocksnearby with some sitepoints to create a temporary object called sites2blocks:
 }
 
 \section{\strong{Summarizing indicators in buffers:}}{
 \if{html}{\out{<div class="sourceCode">}}\preformatted{  INPUT IS  `sites2blocks`, 
-  OUTPUT IS results_overall, results_bysite, and maybe other summary stats  ####
+  OUTPUT IS results_overall, results_bysite, and other summary stats  ####
 }\if{html}{\out{</div>}}
 \itemize{
 \item \strong{\code{\link[=doaggregate]{doaggregate()}}} = function(sites2blocks) This summarizes in each buffer and for all unique residents across all buffers.
-\item ** blockwts.rda**
+\item \strong{\link{blockgroupstats}.rda} a data.table with 220k rows (blockgroups) and hundreds of indicator columns.
+Will need bgid not just bgfips, to join to blockwts$bgid
+Needs to be updated each time EJScreen is updated.
+\item \strong{\link{bgej}.rda} a data.table like blockgroupstats but for the EJ Index raw scores.
+\item \strong{\link{usastats}.rda} and \strong{\link{statestats}.rda}  data.table lookup of 100 percentiles and means
+(for each indicator in blockgroupstats, and perhaps bgej) in each zone (USA, or a state or DC, PR).
+Need to update each time blockgroupstats is updated. Taken from EJScreen data or ejscreen package file lookupUSA & lookupStates
+\item \strong{blockwts.rda} see \code{\link[=data_load_from_aws]{data_load_from_aws()}}
 Required by \code{\link[=doaggregate]{doaggregate()}}. A data.table of 6-8m rows
 \itemize{
 \item blockwt  The fraction of parent blockgroup decennial pop that is in this one block
+\item block_radius_miles squared times pi would equal the land plus water area in square miles
 \item blockid (integer key  for join to sites2blocks)
-\item bgfips no longer is here - moved to bgfips2id.
 \item bgid   integer key instead of bgfips - For sum(blockwt), by=bgid, and for join to blockgroupstats$bgid.
-More efficient than bgfips but bgfips is easier
+bgid is more efficient than bgfips. bgfips is not here but is in a bgid2fips data.table
 }
-\item \strong{\link{blockgroupstats}.rda} a data.table with 220k rows (blockgroups), and about 200 cols.
-Will need bgid not just bgfips, to join to blockwts$bgid
-Needs to be updated each time EJScreen is updated.
-(such as EJScreen demographic and environmental data
-EJScreen 2020 version was about 100MB as .rda)
-\item \strong{\link{usastats}.rda} and \strong{\link{statestats}.rda}  data.table lookup of 100 percentiles and means
-(for each indicator in blockgroupstats) in each zone (us,   or a state).
-Need to update each time blockgroupstats is updated. Taken from EJScreen data or ejscreen package file lookupUSA & lookupStates
-\item \strong{bg2sites?}  Intermediate result, not saved.  aggregated version of sites2blocks
-unless we want to preserve the full bg2sites info for other site groupings, or later detailed
-analysis of distribution of distances in each demog group.
 }
 }
 
 \section{\strong{Output results for user:}}{
+\code{\link[=ejamit]{ejamit()}} (or \code{\link[=doaggregate]{doaggregate()}}) provides the following outputs:
 \itemize{
-\item \strong{\code{results_overall}}   one row data.table, like results_by_site, but just one row with
+\item \strong{results_overall}   one row data.table, like results_by_site, but just one row with
 aggregated results for all unique residents.
-\item \strong{\code{results_by_site}}   results for individual sites (buffers) - a data.table of results,
+\item \strong{results_by_site}   results for individual sites (buffers) - a data.table of results,
 one row per siteid, one column per indicator
-\item maybe want some extra rows with summary stats across people and sites
-(about the distribution), one column per indicator.
-BUT MOST OF THE INTERESTING STATS LIKE MEDIAN PERSON'S SCORE, OR WORST BLOCKGROUP,
-HAVE TO BE CALCULATED BEFORE AGGREGATING/ SUMMARIZING BY SITE (BUFFER), FROM RAW BG DATA!
-Same for sites: worst site as measured by highest nearby blockgroup-level
-\%poor needs raw bg data before summarized by siteid.
-\item maybe some extra columns with summary stats across indicators, as
-separate summary stats beyond what EJScreen report does?, one row per site and for overall.
-}
-}
-
-\section{\strong{Data files available as examples:}}{
-\itemize{
-\item \code{\link[=testpoints_n]{testpoints_n()}} can generate random test points at places weighted by population, FRS facilities, blockgroup, area, block
-\item \link{testpoints_100_dt}.rda  Random test points data.table with columns lat lon site
-\item \link{testpoints_1000_dt}.rda Random test points data.table with columns lat lon site
-\item \link{sites2blocks_example}.rda sample output of getblocksnearbyviaQuadTree or just getblocksnearby
-\item See list.files("./inst/testdata/")
+\item \strong{results_bybg_people}  results for each block group, to allow for showing the distribution of each
+indicator across everyone within each demographic group.
+\item \strong{longnames}  descriptive long names for the indicators in the above outputs
+\item \strong{count_of_blocks_near_multiple_sites}  additional detail
 }
 }
 

@@ -5,10 +5,12 @@
 #' @inheritParams getblocksnearby
 #' @param silentinteractive Set to FALSE to prevent long output showing in console in RStudio when in interactive mode,
 #'   passed to doaggregate() also.
+#' @param fips FIPS code vector if using FIPS instead of sitepoints to specify places to analyze,
+#'   such as a list of US Counties or tracts.
+#' @param threshold1 percentile like 80 or 90 or 95 to compare percentiles to
 #' @return A list of tables of results.
-#' @examples
+#' @examples \dontrun{
 #'  # All in one step, using functions not shiny app:
-#'  \dontrun{
 #'  out <- ejamit(testpoints_100_dt, 2, quadtree=localtree)
 #' 
 #'  # Do not specify sitepoints and it will prompt you for a file,
@@ -68,6 +70,7 @@ ejamit <- function(sitepoints,
                    quadtree=NULL,
                    silentinteractive=F,
                    fips=NULL,
+                   threshold1 = 90, # threshold.default['comp1'],
                    ...
 ) {
   if (is.null(fips)) {
@@ -105,7 +108,7 @@ ejamit <- function(sitepoints,
   out <- suppressWarnings (
     doaggregate(
       sites2blocks = mysites2blocks,  # subgroups_type = 'original', 
-      sites2states = sitepoints, # sites2states_or_latlon = unique(x[ , .(siteid, lat, lon)]))
+      sites2states_or_latlon = sitepoints, # sites2states_or_latlon = unique(x[ , .(siteid, lat, lon)]))
       silentinteractive = silentinteractive
     )
   )
@@ -180,7 +183,7 @@ ejamit <- function(sitepoints,
     popstats =  data.frame(out$results_bysite),
     ## user-selected quantiles to use
     #probs = as.numeric(input$an_list_pctiles),
-    threshold = list(95) # compare variables to 95th %ile
+    threshold = list(threshold1) # compare variables to 90 or other  %ile
   )
   
   ################################################################ # 
@@ -224,6 +227,4 @@ ejamit <- function(sitepoints,
   
   invisible(out)
 }
-
-#' @export
-getblocksnearby_and_doaggregate <- ejamit
+ 
