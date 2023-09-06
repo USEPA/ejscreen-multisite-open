@@ -20,13 +20,13 @@ the original list of siteid lat/lon or State info. This can infer the State
 each site is located in, based on the state of the nearest block (and its parent blockgroup).
 }
 \examples{
-  ST_by_site_from_sites2blocks(sites2blocks_example) 
-  \dontrun{
+\dontrun{
   fname = './inst/testdata/testpoints_207_sites_with_signif_violations_NAICS_326_ECHO.csv'
   x = ST_by_site_from_sites2blocks(
     getblocksnearby( latlon_from_anything(fname), quadtree = localtree))
   y = read_csv_or_xl(fname)
   x$ST == y$FacState
   }
+  ST_by_site_from_sites2blocks(sites2blocks_example) 
   
 }
