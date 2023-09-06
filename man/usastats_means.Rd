@@ -2,7 +2,7 @@
 % Please edit documentation in R/statestats_query.R
 \name{usastats_means}
 \alias{usastats_means}
-\title{convenient way to see USA MEANS of ENVIRONMENTAL and DEMOGRAPHIC indicators from lookup table}
+\title{usastats_means - convenient way to see USA MEANS of ENVIRONMENTAL and DEMOGRAPHIC indicators from lookup table}
 \usage{
 usastats_means(...)
 }
@@ -12,8 +12,9 @@ usastats_means(...)
   \describe{
     \item{\code{varnames}}{names of columns in lookup table, like "proximity.rmp"}
     \item{\code{PCTILES}}{vector of percentiles 0-100 and/or "mean"}
+    \item{\code{dig}}{how many digits to round to}
   }}
 }
 \description{
-convenient way to see USA MEANS of ENVIRONMENTAL and DEMOGRAPHIC indicators from lookup table
+usastats_means - convenient way to see USA MEANS of ENVIRONMENTAL and DEMOGRAPHIC indicators from lookup table
 }

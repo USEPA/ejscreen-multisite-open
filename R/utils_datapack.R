@@ -1,5 +1,5 @@
-#' See info about the data sets in one or more packages
-#' Wrapper for data() - just shows info in console and silently returns a data.frame
+#' See info about the data sets in one or more packages - internal utility function
+#' Wrapper for data() and gets memory size of objects and silently returns a data.frame
 #' @details do not rely on this much - it was a quick utility. it also creates and leaves in global envt
 #'   objects in packages 
 #' @param pkg a character vector giving the package(s) to look in for data sets

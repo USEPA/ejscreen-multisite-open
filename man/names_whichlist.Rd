@@ -48,7 +48,8 @@ namez$d_friendly which is a vector of terms like
    subset(x, !grepl("friendly", x$whichlist))
    
    subset(x,  grepl("friendly", x$whichlist))
-   subset(namez, names(namez) != "all_r" & names(namez) \%in\%  subset(x, x$grepmatch == "yes" & !grepl("friendly", x$whichlist))$whichlist  )
+   subset(namez, names(namez) != "all_r" & names(namez) \%in\%
+      subset(x, x$grepmatch == "yes" & !grepl("friendly", x$whichlist))$whichlist  )
    grep("\\\\.eo$", namez$ej, value = T)
    
 }

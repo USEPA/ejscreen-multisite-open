@@ -132,6 +132,8 @@ all.equal_functions <- function(fun="latlon_infer", package1="EJAM", package2="E
   return(x)
 }
 
+#' setdiff_yx
+#' utility just like setdiff except for y,x instead of x,y
 #' @export
 setdiff_yx = function(x,y) setdiff(y,x)
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/statestats_query.R
 \name{usastats_queryd}
 \alias{usastats_queryd}
-\title{convenient way to see USA mean, pctiles of DEMOGRAPHIC indicators from lookup table}
+\title{usastats_queryd - convenient way to see USA mean, pctiles of DEMOGRAPHIC indicators from lookup table}
 \usage{
 usastats_queryd(varnames = EJAM::names_d, PCTILES = NULL, dig = 2)
 }
@@ -11,10 +11,10 @@ usastats_queryd(varnames = EJAM::names_d, PCTILES = NULL, dig = 2)
 
 \item{PCTILES}{vector of percentiles 0-100 and/or "mean"}
 
-\item{@dig}{how many digits to round to}
+\item{dig}{how many digits to round to}
 }
 \description{
-convenient way to see USA mean, pctiles of DEMOGRAPHIC indicators from lookup table
+usastats_queryd - convenient way to see USA mean, pctiles of DEMOGRAPHIC indicators from lookup table
 }
 \examples{
 \dontrun{
@@ -34,12 +34,12 @@ statestats_query('MD','proximity.tsdf')
 ## mean of 1 indicator for each state
 statestats_query(varnames = 'proximity.tsdf')
 ## using full blockgroup dataset, not lookup tables of percentiles, 
-blockgroupstats[,   lapply(.SD, function(x) mean(x, na.rm=T)),  .SDcols= c(names_d, names_e)]
+blockgroupstats[, lapply(.SD, function(x) mean(x, na.rm=T)),  .SDcols= c(names_d, names_e)]
 ##   see all total counts (not just US means), 
 ##   demographics including subgroups, 
 ##   but not environmental indicators.
 t(round(EJAMbatch.summarizer::ustotals2(bg = EJAM::blockgroupstats),2))
-t(blockgroupstats[,   lapply(.SD, function(x) mean(x, na.rm=T)),  .SDcols= c(names_e, names_d)])
+t(blockgroupstats[, lapply(.SD, function(x) mean(x, na.rm=T)),  .SDcols= c(names_e, names_d)])
 
 }
 

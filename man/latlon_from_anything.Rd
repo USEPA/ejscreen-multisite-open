@@ -30,7 +30,7 @@ This function, \code{\link[=latlon_from_anything]{latlon_from_anything()}}
 
 relies on
 
-\code{\link[EJAMbatch.summarizer:read_csv_or_xl]{EJAMbatch.summarizer::read_csv_or_xl()}} = \code{\link[EJAMejscreenapi:read_csv_or_xl]{EJAMejscreenapi::read_csv_or_xl()}} and
+\code{\link[EJAMejscreenapi:read_csv_or_xl]{EJAMejscreenapi::read_csv_or_xl()}} and
 
 \code{\link[=latlon_df_clean]{latlon_df_clean()}} which in turn uses \code{\link[=latlon_infer]{latlon_infer()}} \code{\link[=latlon_as.numeric]{latlon_as.numeric()}} \code{\link[=latlon_is.valid]{latlon_is.valid()}}
 
@@ -60,5 +60,5 @@ except it also uses these functions:
  latlon_from_anything(x=testpoints_50$lon[1:6], y=testpoints_50$lat[1:6] )
 }
 \seealso{
-\code{\link[EJAMbatch.summarizer:read_csv_or_xl]{EJAMbatch.summarizer::read_csv_or_xl()}} \code{\link[=latlon_df_clean]{latlon_df_clean()}}
+\code{\link[EJAMejscreenapi:read_csv_or_xl]{EJAMejscreenapi::read_csv_or_xl()}} \code{\link[=latlon_df_clean]{latlon_df_clean()}}
 }

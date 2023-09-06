@@ -24,7 +24,8 @@ or a lookup table called us must already be in memory. This is the lookup table
 data.frame with a PCTILE column and column whose name is the value of varname.in.lookup.table}
 
 \item{zone}{Character element (or vector as long as myvector), optional.
-If specified, must appear in a column called REGION within the lookup table.
+If specified, must appear in a column called REGION within the lookup table,
+or NA returned for each item looked up and warning give.
 For example, it could be 'NY' for New York State.}
 }
 \value{
@@ -63,11 +64,13 @@ the value checked was less than the minimum in the dataset.
 \dontrun{
   # compare ejscreen API output percentiles to those from this function:
   for (vname in c(names_d[c(1,3:6,8:10)] )) {
-     print(pctile_from_raw_lookup(testoutput_ejscreenapi_plus_50[,vname] / 100, vname, lookup = usastats) 
+     print(pctile_from_raw_lookup(testoutput_ejscreenapi_plus_50[,vname] / 100, vname, 
+       lookup = usastats) 
        - testoutput_ejscreenapi_plus_50[,paste0("pctile.",vname)] )
   }
   for (vname in c(names_e )) {
-     print(pctile_from_raw_lookup(testoutput_ejscreenapi_plus_50[,vname], vname, lookup = usastats)
+     print(pctile_from_raw_lookup(testoutput_ejscreenapi_plus_50[,vname], vname, 
+       lookup = usastats)
          - testoutput_ejscreenapi_plus_50[,paste0("pctile.",vname)] )
   }
 }

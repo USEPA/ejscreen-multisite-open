@@ -1,7 +1,7 @@
 #' @docType package
 #' @title Environmental Justice (EJ) Analysis Multisite tool
 #' @name EJAM
-#' @aliases EJAM-package
+#' @aliases EJAM-package blockwts blockpoints quaddata blockid2fips bgid2fips 
 #'
 #' @md
 #' 
@@ -23,40 +23,64 @@
 #'
 #' @details  # **Vignette** ####################################################################
 #' 
-#' Please see the vignette (development version can be knit from EJAM/www folder of locally installed package)
+#' Please see the vignette (development version of vignette can be knit from EJAM/www folder of locally installed package)
 #' 
 #' @details  # **Key Functions:** ####################################################################
 #' 
-#'   - **[run_app()]** Launch the Shiny app (web interface)
+#'   - **[run_app()]** Launch the web app (R Shiny interface)
 #' 
-#'   - **[ejamit()]** Use outside the shiny app, does in 1 function the two steps below:
-#' 
-#'     - **[getblocksnearby()]**  Very fast method to buffer, identifying which blocks are within specified distance of site or facility
+#'   - **[ejamit()]** Get results (tables, maps, plots) without the web app interface, largely by using these key functions:
 #'     
-#'     - **[doaggregate()]** Summarize the demographic and environmental indicators from **[blockgroupstats].rda** (see below)
-#'      within each buffer weighted using blockwts (for average resident within specified distance of site or facility).
-#'      NOTE: FUNCTION IS BEING MODIFIED, to be generic to use any indicators, and be faster, etc.  
+#'     0. Getting key datasets and indexing blocks, if not yet done, via [dataload_from_aws()] and [indexblocks()]
+#'     
+#'     1. **[getblocksnearby()]**  Very fast method to buffer, identifying which blocks are 
+#'       within specified distance of point(s) like sites/facilities, and get distance to each.
+#'     
+#'     2. **[doaggregate()]** Summarize demographic and environmental indicators from **[blockgroupstats]**.rda (see below)
+#'      within each place, weighted using blockwts (for average resident within specified distance of site (e.g., facility), 
+#'      or in each shapefile or FIPS-defined location).
+#'
+#' @details  # **Data files available as examples:** ####################################################################
+#'   
+#'   * **Excel files to read into ejamit()** or getblocksnearby() are in the local source package files in EJAM/inst/testdata/latlon 
+#'   * [testpoints_10].rda  and larger datasets each provide a random test points data.frame with columns lat lon siteid
+#'   * [testpoints_n()] can generate random test points at places weighted by population, FRS facilities, blockgroup, area, block
+#'   * [sites2blocks_example_10].rda and larger datasets are sample outputs of getblocksnearbyviaQuadTree or just getblocksnearby(), 
+#'     to try as inputs to doaggregate()
 #'
 #' @details  # **Specifying buffer sites / facilities:** ####################################################################
 #' 
 #'   A user can specify locations, via an interface, and that shiny app returns 
 #'    
 #'  - *`sitepoints`*, a data.table with fields siteid, lat, lon. 
-#'  A user-specified table with maybe 100, 1k, 10k+ points (centers of circular buffers)
+#'  A user-specified table with maybe 100, 1k, 10k+ points (centers of circular buffers).
+#'  Examples of test data are 
 #'   
-#'  One can specify sitepoints, with lat/lon coordinates of the places to be analyzed (sites or facilities), 
-#'  in one of three ways:
+#'  One can specify sitepoints, with lat/lon coordinates of the places to be analyzed (sites or facilities),
+#'  or can specify areas to be analyzed in general, 
+#'  in one of these ways:
 #' 
-#'    1. **NAICS code** (selecting from a list, one or more types of facilities, as defined by NAICS). 
+#'    - **Point locations uploaded** (lat, lon coordinates) - these could be regulated facilities 
+#'      for which you already have locations, or could be any other types of points uploaded in a spreadsheet.
+#'    
+#'    - **Shapefiles uploaded** to directly define the areas to include instead of using circular buffers around points
+#'    
+#'    - **FIPS** to specify a list of counties or tracts or blockgroups, for example, to be compared.
+#'    
+#'    - **NAICS or SIC code** Industry categories selected from a list of codes or names, or uploaded in a table.
 #'         The NAICS are 2-digit to 6-digit codes that specify sectors or types of facilities, such as
 #'         325 - Chemical Manufacturing, or 325211 - Plastics Material and Resin Manufacturing.
 #'         
-#'    2. **Facility IDs** - EPA Facility Registry Service (FRS) ID numbers
+#'    - **Facility IDs** - EPA Facility Registry Service (FRS) ID numbers or FRS Program ID numbers
 #'    
-#'    3. **uploaded locations** as lat/lon points.
+#'    - **Program System Types** - picking a whole category of regulated sites, such as all GHG reporters or all TRI reporters.
 #'    
+#'    - **MACT Subpart** to specify Clean Air Act NESHAP program Max. Achievable Control Tech. 
+#'         source categories (types of air emissions sources) defined by subpart such as OOOO. 
 #'    
-#'  **1. BY INDUSTRIAL SECTOR/ NAICS:**
+#'    Some additional details on some of these:
+#'    
+#'  **- BY INDUSTRIAL SECTOR/ NAICS:**
 #'  
 #'         Interface lets user select NAICS from pulldown, or type in NAICS 
 #'         Interface returns a vector of one or more naics codes,
@@ -70,7 +94,7 @@
 #'      NAICS codes also can be selected by text search of industry names or by categories of codes, via [EJAM::naics_from_any()]
 #'       
 #'       
-#'  **2. BY FACILITY ID or PROGRAM ID:**  
+#'  **- BY FACILITY ID or PROGRAM ID:**  
 #'  
 #'         Interface so user can upload FRS REGISTRY_ID or PROGRAM ID csv/xls file, 
 #'         Interface returns a list of REGISTRY_ID values from a copy of the EPA facility registry service (FRS) data  
@@ -83,7 +107,7 @@
 #'      Relies on **[frs_by_programid]** data.table with columns program, pgm_sys_id, REGISTRY_ID, lat, lon 
 #'      
 #' 
-#'  **3. BY LAT/LON POINT:**
+#'  **- BY LAT/LON POINT:**
 #'  
 #'         Interface so user can specify or upload latitude longitude siteid (and optionally others like sitename),
 #'         when using [ejamit()] which in turn uses [latlon_from_anything()].
@@ -101,86 +125,71 @@
 #'        Returns `sites2blocks` 
 #'        Requires index called localtree that is build from dataset [quaddata] 
 #'        
-#'   - **sites2blocks**   Created by [getblocksnearby()] and passed to  [doaggregate()]  
+#'   - **sites2blocks**   Created by [getblocksnearby()] to be passed to  [doaggregate()]  
 #'      This is a data table with maybe 100k to 1m rows (assume 1k blocks within 3 miles of each site, or 100 blocks within 1 mile),
 #'      `sites2blocks[ , .(siteid, blockid, distance or dist)]`
 #'     - siteid    (site with circular buffer to group by)
 #'     - blockid     for join to blockwts
-#'     - distance or dist  (in miles, from block to site) (0 or irrelevant for noncircular buffers, 
+#'     - distance  (in miles, from block to site) (0 or irrelevant for noncircular buffers, 
 #'          since a block is only in this table if in one or more buffers, 
 #'          unless analysis is for residents within x miles of the edges of some shapes, like facility boundaries)
 #'          
 #'          
 #' @details  # **Data files used for distance calculation:** ####################################################################
 #' 
-#'   - ** quaddata.rda**  data.table
+#'   - ** quaddata.rda** data.table with point location of internal point for each of 8 million Census blocks
+#'     is used prior to or during startup of EJAM to create an index stored in memory, called localtree.
 #'   
-#'    8,174,955 rows when non-populated blocks are kept. 
-#'    5,806,512 rows have Census 2020 population (and blockwt) > 0. 
-#'    This is the largest file used by the package, and is 168 MB as a file, for 2020 Census.
-#'      - blockid 
-#'      - BLOCK_X, BLOCK_Y, BLOCK_Z  (not lat, lon)
-#'  
-#'     localtree is the index made from quaddata  (QuadTree class, via SearchTrees pkg), not a data.table 
+#'     quaddata can be obtained using [data_load_from_aws()]
+#'     
+#'     localtree is the index made from quaddata via [indexblocks()] (using the SearchTrees package)
 #' 
-#'   -------then those are used in getblocksnearby with some sitepoints to create sites2blocks:
+#'    Those are used in getblocksnearby with some sitepoints to create a temporary object called sites2blocks:
 #'   
 #'   
 #' @details  # **Summarizing indicators in buffers:** ####################################################################
 #' 
 #'       INPUT IS  `sites2blocks`, 
-#'       OUTPUT IS results_overall, results_bysite, and maybe other summary stats  ####
+#'       OUTPUT IS results_overall, results_bysite, and other summary stats  ####
 #'   
 #'   - **[doaggregate()]** = function(sites2blocks) This summarizes in each buffer and for all unique residents across all buffers.
 #'     
-#'   - ** blockwts.rda**
-#'    Required by [doaggregate()]. A data.table of 6-8m rows 
-#'     - blockwt  The fraction of parent blockgroup decennial pop that is in this one block
-#'     - blockid (integer key  for join to sites2blocks)
-#'     - bgfips no longer is here - moved to bgfips2id.  
-#'     - bgid   integer key instead of bgfips - For sum(blockwt), by=bgid, and for join to blockgroupstats$bgid. 
-#'       More efficient than bgfips but bgfips is easier
-#' 
-#'   - **[blockgroupstats].rda** a data.table with 220k rows (blockgroups), and about 200 cols.
+#'   - **[blockgroupstats].rda** a data.table with 220k rows (blockgroups) and hundreds of indicator columns.
 #'      Will need bgid not just bgfips, to join to blockwts$bgid
 #'      Needs to be updated each time EJScreen is updated. 
-#'      (such as EJScreen demographic and environmental data
-#'       EJScreen 2020 version was about 100MB as .rda)
+#'      
+#'   - **[bgej].rda** a data.table like blockgroupstats but for the EJ Index raw scores. 
 #'
 #'   - **[usastats].rda** and **[statestats].rda**  data.table lookup of 100 percentiles and means 
-#'       (for each indicator in blockgroupstats) in each zone (us,   or a state).
+#'       (for each indicator in blockgroupstats, and perhaps bgej) in each zone (USA, or a state or DC, PR).
 #'       Need to update each time blockgroupstats is updated. Taken from EJScreen data or ejscreen package file lookupUSA & lookupStates
+#'  
+#'   - **blockwts.rda** see [data_load_from_aws()]
+#'    Required by [doaggregate()]. A data.table of 6-8m rows 
+#'     - blockwt  The fraction of parent blockgroup decennial pop that is in this one block
+#'     - block_radius_miles squared times pi would equal the land plus water area in square miles
+#'     - blockid (integer key  for join to sites2blocks)
+#'     - bgid   integer key instead of bgfips - For sum(blockwt), by=bgid, and for join to blockgroupstats$bgid. 
+#'       bgid is more efficient than bgfips. bgfips is not here but is in a bgid2fips data.table
 #' 
-#'   - **bg2sites?**  Intermediate result, not saved.  aggregated version of sites2blocks
-#'            unless we want to preserve the full bg2sites info for other site groupings, or later detailed 
-#'            analysis of distribution of distances in each demog group.
 #'            
 #' @details  # **Output results for user:** ####################################################################
-#' 
-#'   * **`results_overall`**   one row data.table, like results_by_site, but just one row with 
+#'  
+#'  [ejamit()] (or [doaggregate()]) provides the following outputs: 
+#'  
+#'   * **results_overall**   one row data.table, like results_by_site, but just one row with 
 #'     aggregated results for all unique residents. 
 #' 
-#'   * **`results_by_site`**   results for individual sites (buffers) - a data.table of results, 
+#'   * **results_by_site**   results for individual sites (buffers) - a data.table of results, 
 #'     one row per siteid, one column per indicator
 #' 
-#'    * maybe want some extra rows with summary stats across people and sites 
-#'      (about the distribution), one column per indicator. 
-#'      BUT MOST OF THE INTERESTING STATS LIKE MEDIAN PERSON'S SCORE, OR WORST BLOCKGROUP,
-#'      HAVE TO BE CALCULATED BEFORE AGGREGATING/ SUMMARIZING BY SITE (BUFFER), FROM RAW BG DATA!
-#'      Same for sites: worst site as measured by highest nearby blockgroup-level
-#'      %poor needs raw bg data before summarized by siteid.
-#' 
-#'    * maybe some extra columns with summary stats across indicators, as 
-#'      separate summary stats beyond what EJScreen report does?, one row per site and for overall. 
+#'   * **results_bybg_people**  results for each block group, to allow for showing the distribution of each 
+#'      indicator across everyone within each demographic group.
 #'      
-#' @details  # **Data files available as examples:** ####################################################################
+#'   * **longnames**  descriptive long names for the indicators in the above outputs
 #'   
-#'   * [testpoints_n()] can generate random test points at places weighted by population, FRS facilities, blockgroup, area, block
-#'   * [testpoints_100_dt].rda  Random test points data.table with columns lat lon site
-#'   * [testpoints_1000_dt].rda Random test points data.table with columns lat lon site
-#'   * [sites2blocks_example].rda sample output of getblocksnearbyviaQuadTree or just getblocksnearby
-#'   * See list.files("./inst/testdata/")
-#'
+#'   * **count_of_blocks_near_multiple_sites**  additional detail 
+#'   
 #' @details  # **Identification of nearby residents -- methodology:** ####################################################################
 #'
 #' The identification of nearby residents is currently done in a way that includes all 2020 Census blocks whose

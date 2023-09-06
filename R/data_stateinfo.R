@@ -1,0 +1,31 @@
+#' @name stateinfo
+#' @docType data
+#' @title data.frame of state abbreviations and state names (50+DC+PR; not AS, GU, MP, VI, UM)
+#' @description 52 rows and a few variables: ST is the 2-letter abbreviation, 
+#'   statename is the State name, etc.
+#' @seealso [stateinfo2] for more columns
+#' @details 
+#' Created for EJAM by datacreate_stateinfo.R script
+#' 
+#' Also see <https://www.census.gov/programs-surveys/decennial-census/decade/2020/planning-management/release/2020-island-areas-data-products.html> 
+#' 
+#'   column names: "ST"  "statename"  "ftpname"   "FIPS.ST"   "REGION" 
+#'   
+#'   
+#'   Some datasets lack PR. (72)
+#'   
+#'   Many datasets lack these:  AS, GU, MP, VI (codes "60" "66" "69" "78") 
+#'   
+#'   Almost all datasets lack UM. (74)
+#'   
+#'         72 PR                 Puerto Rico
+#'         
+#'         66 GU                        Guam 
+#'         
+#'         69 MP    Northern Mariana Islands  
+#'         
+#'         78 VI         U.S. Virgin Islands 
+#'         
+#'         74 UM U.S. Minor Outlying Islands  
+#'     
+NULL

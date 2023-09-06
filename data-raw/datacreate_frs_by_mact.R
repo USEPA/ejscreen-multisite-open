@@ -167,14 +167,14 @@ data.table::setDT(y, key = c("subpart", "programid"))
 frs_by_mact <- data.table::copy(y)
 usethis::use_data(frs_by_mact, overwrite = TRUE)    # data.table
 
-mact_categories <- types
-usethis::use_data(mact_categories, overwrite = TRUE)  # data.frame
+mact_table <- types
+usethis::use_data(mact_table, overwrite = TRUE)  # data.frame
 
 
 
 
 # save(frs_by_mact, file = "frs_by_mact.rda")
-# save(mact_categories, "mact_categories.rda")
+# save(mact_table, "mact_table.rda")
  
 
 ################################################################################################ #

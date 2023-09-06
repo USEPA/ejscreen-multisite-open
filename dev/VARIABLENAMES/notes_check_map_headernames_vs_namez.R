@@ -34,20 +34,7 @@ for (x in varlists) {
   )}
 }
 rm(ynlist) 
-
-########################################################################################## #
-
-# names_d_other_count  -    FALSE that all match.    # SORT ORDERS DIFFER but probably does not matter
-# 
-# in.namez         rnames           match.or.not
-# [1,] "pop"            "builtunits"     "FALSE"     
-# [2,] "nonmins"        "hhlds"          "FALSE"     
-# [3,] "povknownratio"  "pre1960"        "FALSE"     
-# [4,] "age25up"        "povknownratio"  "FALSE"     
-# [5,] "hhlds"          "unemployedbase" "FALSE"     
-# [6,] "unemployedbase" "age25up"        "FALSE"     
-# [7,] "pre1960"        "nonmins"        "FALSE"     
-# [8,] "builtunits"     "pop"            "FALSE"   
+ # all fixed to match now.
 ########################################################################################## # 
 
 map_headernames[!grepl('bin|text|.supp|.eo', map_headernames$rname) & grepl('DISPARITY', map_headernames$rname), c('rname', 'varlist')]
@@ -55,21 +42,8 @@ map_headernames[!grepl('bin|text|.supp|.eo', map_headernames$rname) & grepl('DIS
 map_headernames[   map_headernames$varlist %in% c('names_ej', 'names_ej_state'), c('rname', 'varlist')]
 
 # map_headernames[   map_headernames$varlist %in% c('names_ej', 'names_ej_state'), c('rname', 'varlist',   'apiname', "csvname2.2")]
-
-
-
-pop
-poc
-povknown
-25
-hhld
-unem
-unitsjpre60
-units
-
-
-
-
+ 
+########################################################################################## # 
 
 # compare friendly names in lists like namez$names_d_friendly etc.  to  map_headernames$names_friendly in matching rows matched on 
 # map_headernames$varlist  matching  gsub('_friendly', '', x) 
@@ -96,6 +70,15 @@ for (i in 1:length(alist)) {
 
 
 
+# need to choose which of 3 versions to use for each varlist - 
+# sometimes namez is best for the friendly versions
+# sometimes map_headernames$names_friendly is best
+# often "long" is the same as map_headernames$names_friendly, but often not. not on d except ratios, 
+# match on subgroups, etc. 
+
+# Differ on envt ones. maphead friendly is shortest. namez is medium. long is very very long. 
+
+# vary a lot on EJ friendly names - namez and maphead each sometimes best.
 
 
 

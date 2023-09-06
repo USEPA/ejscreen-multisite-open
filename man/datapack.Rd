@@ -2,26 +2,35 @@
 % Please edit documentation in R/utils_datapack.R
 \name{datapack}
 \alias{datapack}
-\title{See info about the data sets in one or more packages
-Wrapper for data() - just shows info in console and silently returns a data.frame}
+\title{See info about the data sets in one or more packages - internal utility function
+Wrapper for data() and gets memory size of objects and silently returns a data.frame}
 \usage{
-datapack(pkg = ejampackages, len = 30)
+datapack(pkg = ejampackages, len = 30, sortbysize = TRUE)
 }
 \arguments{
 \item{pkg}{a character vector giving the package(s) to look in for data sets}
 
 \item{len}{Only affects what is printed to console - specifies the
 number of characters to limit Title to, making it easier to see in the console.}
+
+\item{sortbysize}{if TRUE, sort by increasing size of object, within each package, not alpha.}
 }
 \value{
 data.frame with Item and Title as columns
 }
 \description{
-See info about the data sets in one or more packages
-Wrapper for data() - just shows info in console and silently returns a data.frame
+See info about the data sets in one or more packages - internal utility function
+Wrapper for data() and gets memory size of objects and silently returns a data.frame
+}
+\details{
+do not rely on this much - it was a quick utility. it also creates and leaves in global envt
+objects in packages
 }
 \examples{
  datapack("datasets")
  datapack("MASS")
- datapack(ejampackages)
+ y = datapack("EJAM")
+ x = datapack(c("EJAM", "EJAMejscreenapi", "EJAMbatch.summarizer"))
+ x[order(x$Package, x$Item), 1:3]
+ tail(x[ , 1:3], 20)
 }

@@ -24,16 +24,17 @@
 #' ## mean of 1 indicator for each state
 #' statestats_query(varnames = 'proximity.tsdf')
 #' ## using full blockgroup dataset, not lookup tables of percentiles, 
-#' blockgroupstats[,   lapply(.SD, function(x) mean(x, na.rm=T)),  .SDcols= c(names_d, names_e)]
+#' blockgroupstats[, lapply(.SD, function(x) mean(x, na.rm=T)),  .SDcols= c(names_d, names_e)]
 #' ##   see all total counts (not just US means), 
 #' ##   demographics including subgroups, 
 #' ##   but not environmental indicators.
 #' t(round(EJAMbatch.summarizer::ustotals2(bg = EJAM::blockgroupstats),2))
-#' t(blockgroupstats[,   lapply(.SD, function(x) mean(x, na.rm=T)),  .SDcols= c(names_e, names_d)])
+#' t(blockgroupstats[, lapply(.SD, function(x) mean(x, na.rm=T)),  .SDcols= c(names_e, names_d)])
 #' 
 #' }
 #' 
-statestats_query <- function(ST=sort(unique(EJAM::statestats$REGION)), varnames=c(EJAM::names_e, EJAM::names_d), 
+statestats_query <- function(ST=sort(unique(EJAM::statestats$REGION)), 
+                             varnames=c(EJAM::names_e, EJAM::names_d), 
                              PCTILES=NULL, dig=2) {
   if (length(ST)==1) {
     if ( substr(tolower(ST),1,2) == "us") {
@@ -75,6 +76,7 @@ statestats_queryd <- function(ST=sort(unique(EJAM::statestats$REGION)), varnames
 
 #' statestats_querye - convenient way to see mean, pctiles of ENVIRONMENTAL indicators from lookup table
 #' @inherit statestats_query return description details seealso examples
+#' @param dig how many digits to round to
 #' @export
 #'
 statestats_querye <- function(ST=sort(unique(EJAM::statestats$REGION)), varnames=  EJAM::names_e , 
@@ -91,7 +93,7 @@ statestats_querye <- function(ST=sort(unique(EJAM::statestats$REGION)), varnames
 #' @inherit statestats_query return description details seealso examples
 #' @param varnames names of columns in lookup table, like "proximity.rmp"
 #' @param PCTILES vector of percentiles 0-100 and/or "mean"
-#' @param @dig how many digits to round to
+#' @param dig how many digits to round to
 #' @export
 #'
 usastats_query   <- function(varnames=c(EJAM::names_e, EJAM::names_d), PCTILES=NULL, dig=2) {
@@ -109,7 +111,7 @@ usastats_query   <- function(varnames=c(EJAM::names_e, EJAM::names_d), PCTILES=N
 #' @inherit statestats_query return description details seealso examples
 #' @param varnames names of columns in lookup table, like "proximity.rmp"
 #' @param PCTILES vector of percentiles 0-100 and/or "mean"
-#' @param @dig how many digits to round to
+#' @param dig how many digits to round to
 #' @export
 #'
 usastats_querye  <- function(varnames=EJAM::names_e, PCTILES=NULL, dig=2) {
@@ -120,7 +122,7 @@ usastats_querye  <- function(varnames=EJAM::names_e, PCTILES=NULL, dig=2) {
 #' @inherit statestats_query return description details seealso examples
 #' @param varnames names of columns in lookup table, like "proximity.rmp"
 #' @param PCTILES vector of percentiles 0-100 and/or "mean"
-#' @param @dig how many digits to round to
+#' @param dig how many digits to round to
 #' @export
 #'
 usastats_queryd  <- function(varnames=EJAM::names_d, PCTILES=NULL, dig=2) {

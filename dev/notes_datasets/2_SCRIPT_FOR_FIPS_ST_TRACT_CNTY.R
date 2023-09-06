@@ -87,7 +87,7 @@ names(bgejam) <- fixnames(names(bgejam), oldtype = 'csv', newtype = 'r')
 # rv <- stringi::stri_reverse
 # bgejam$FIPS[bgejam$ST %in% islandst]
 
-bgejam$FIPS <- EJAM::fips_lead_zero(as.numeric(bgejam$FIPS), 12)
+bgejam$FIPS <- EJAM::fips_lead_zero(as.numeric(bgejam$FIPS) )
 
 # bgejam <- ejanalysis package file addFIPScomponents(bgejam) # not robust to this even if add leading zeroes
 bgejam$FIPS.ST <- substr(bgejam$FIPS,1,2)
@@ -102,8 +102,11 @@ table(nchar(bgejam$ST))
 
 # unique(substr(bgejam$FIPS[bgejam$FIPS.ST %in% c("60" ,"66", "78", "69")],1,7))
 # [1] "0000060" "0000066" "0000069"    "0078010" "0078020" "0078030"
+
 # Available geographies within each island area:
+
 #   https://www.census.gov/programs-surveys/decennial-census/decade/2020/planning-management/release/2020-island-areas-data-products.html 
+
 #   - American Samoa—Districts, counties, and villages.
 # - Commonwealth of the Northern Mariana Islands—Municipalities, districts, and villages. 
 # - Guam—Municipalities and census designated places.

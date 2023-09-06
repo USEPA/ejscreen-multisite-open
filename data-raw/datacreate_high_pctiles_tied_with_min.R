@@ -78,12 +78,28 @@ usethis::use_data(high_pctiles_tied_with_min, overwrite = TRUE)
 
 # To see what variables in what states or USA have a bunch of tied values at minimum that is NOT zero, and then ties at zero:
 
-datacols <- setdiff(names(statestats), c('PCTILE', 'REGION')); states <- unique(statestats$REGION);  for (myvar in datacols) {for (mystate in states) {z = statestats[mystate == statestats$REGION, myvar]
-  if ((z[1] == z[2]) & (z[1] != 0)) {cat("in ",mystate, " for ", myvar, " = ", z[1], '\n')}}}
+# STATES
+
+datacols <- setdiff(names(statestats), c('PCTILE', 'REGION')); states <- unique(statestats$REGION)
+for (myvar in datacols) {
+  # cat(myvar,":   -----------------------------------------\n")
+  for (mystate in states) {
+    
+    if (mystate == states[1] & myvar == datacols[1]) {cat("\n\n what states or USA have a bunch of tied values at minimum that is NOT zero, and then ties at zero? \n\n")}
+      z = statestats[mystate == statestats$REGION, myvar]
+    #if (mystate == "PR" & myvar == 'lowlifex') {browser()}
+    if (length(z) > 1 & !all(is.na(z))) {
+  if ((z[1] == z[2]) & (z[1] != 0)) {cat("in ", mystate, " for ", myvar, " = ", z[1], '\n')}
+  }}
+  # cat("\n")
+}
 datacols <- setdiff(names(statestats), c('PCTILE', 'REGION')); states <- unique(statestats$REGION);  for (myvar in datacols) {for (mystate in states) {z = statestats[mystate == statestats$REGION, myvar]
   if ((z[1] == z[2]) & (z[1] == 0)) {cat("in ",mystate, " for ", myvar, " = ", z[1], '\n')}}}
 
-datacols <- setdiff(names(usastats), c('PCTILE', 'REGION')); states <- unique(usastats$REGION);  for (myvar in datacols) {for (mystate in states) {z = statestats[mystate == usastats$REGION, myvar]
+# USA
+
+datacols <- setdiff(names(usastats),  c('PCTILE', 'REGION')); states <- unique(usastats$REGION);  for (myvar in datacols) {for (mystate in states) {z = statestats[mystate == usastats$REGION, myvar]
   if ((z[1] == z[2]) & (z[1] != 0)) {cat("in ",mystate, " for ", myvar, " = ", z[1], '\n')}}}
-datacols <- setdiff(names(usastats), c('PCTILE', 'REGION')); states <- unique(usastats$REGION);  for (myvar in datacols) {for (mystate in states) {z = statestats[mystate == usastats$REGION, myvar]
+
+datacols <- setdiff(names(usastats),  c('PCTILE', 'REGION')); states <- unique(usastats$REGION);  for (myvar in datacols) {for (mystate in states) {z = statestats[mystate == usastats$REGION, myvar]
   if ((z[1] == z[2]) & (z[1] == 0)) {cat("in ",mystate, " for ", myvar, " = ", z[1], '\n')}}}

@@ -883,11 +883,4 @@ setnames(blockgroupstats, names_d_subgroups_nh_count , names_d_subgroups_count )
 
 usethis::use_data(blockgroupstats, overwrite = TRUE)
 
-##################### # 
-
-avg.in.us <-   usastats[ usastats$PCTILE == "mean", intersect(names_these, names( usastats))]
-# note the regular name not avg. name is used in the usastats table
-usethis::use_data(avg.in.us, overwrite = TRUE)
-
-
 

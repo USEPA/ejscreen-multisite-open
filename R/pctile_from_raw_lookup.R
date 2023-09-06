@@ -34,18 +34,21 @@
 #'   or a lookup table called us must already be in memory. This is the lookup table
 #'   data.frame with a PCTILE column and column whose name is the value of varname.in.lookup.table
 #' @param zone Character element (or vector as long as myvector), optional.
-#'   If specified, must appear in a column called REGION within the lookup table.
+#'   If specified, must appear in a column called REGION within the lookup table,
+#'    or NA returned for each item looked up and warning give.
 #'   For example, it could be 'NY' for New York State.
 #' @aliases lookup_pctile
 #' @return By default, returns numeric vector length of myvector.
 #' @examples \dontrun{
 #'   # compare ejscreen API output percentiles to those from this function:
 #'   for (vname in c(names_d[c(1,3:6,8:10)] )) {
-#'      print(pctile_from_raw_lookup(testoutput_ejscreenapi_plus_50[,vname] / 100, vname, lookup = usastats) 
+#'      print(pctile_from_raw_lookup(testoutput_ejscreenapi_plus_50[,vname] / 100, vname, 
+#'        lookup = usastats) 
 #'        - testoutput_ejscreenapi_plus_50[,paste0("pctile.",vname)] )
 #'   }
 #'   for (vname in c(names_e )) {
-#'      print(pctile_from_raw_lookup(testoutput_ejscreenapi_plus_50[,vname], vname, lookup = usastats)
+#'      print(pctile_from_raw_lookup(testoutput_ejscreenapi_plus_50[,vname], vname, 
+#'        lookup = usastats)
 #'          - testoutput_ejscreenapi_plus_50[,paste0("pctile.",vname)] )
 #'   }
 #' }
@@ -64,11 +67,11 @@ pctile_from_raw_lookup <- function(myvector, varname.in.lookup.table, lookup=usa
   
   if (all(is.na(myvector))) {
     warning("All values in myvector were NA, so returning NA values as percentiles.")
-    return(rep(NA, length(myvector)))
+    return(rep(NA, length(myvector))) # and note any individual NA values input return NA values as the percentiles
   }
   
   if (!(varname.in.lookup.table %in% colnames(lookup))) {
-    warning(paste0(varname.in.lookup.table, " must be a column in lookup table"))
+    warning(paste0(varname.in.lookup.table, " must be a column in lookup table - returning NA values"))
     return(rep(NA, length(myvector)))
   }  
   
@@ -78,13 +81,19 @@ pctile_from_raw_lookup <- function(myvector, varname.in.lookup.table, lookup=usa
   
   # fixed case where input myvector is just NA value(s) 
   
-  # ** need to fix case where lookup[lookup$REGION == z, varname.in.lookup.table]  is just NA values, as when that indicator is not available in that state (or US overall).
+ 
   
-  if (missing(zone)) {
+  if (missing(zone)) { # USA being used
     
-    if (anyNA(lookup)) {stop("lookup table cannot contain NA values")}
+    if (anyNA(lookup[ , varname.in.lookup.table])) {
+      # findInterval() requires no NA values in vector looked in, so assume the
+      # percentile cannot be looked up for this indicator in this zone, return NA values.
     
+        warning("All values in myvector were NA for ", varname.in.lookup.table, ", so returning NA values as percentiles.")
+        return(rep(NA, length(myvector)))
+    }
     whichinterval <- findInterval(myvector, lookup[ , varname.in.lookup.table])
+    
     # findInterval returns the gap (interval) number, 0 through length(myvector), and
     # 0 if < min of lookup, and counts it as in the gap if tied with lower edge and less than upper edge.
     # If lookup was for pctiles 1-100, the whichinterval would be the same as the percentile, including for findInterval = pctile = 0.
@@ -121,68 +130,87 @@ pctile_from_raw_lookup <- function(myvector, varname.in.lookup.table, lookup=usa
     # ** also using data.table might make this whole function significantly faster if statestats is a data.frame with keys REGION and PCTILE 
      # pctile <- lookup[myvector >= ..varname.in.lookup.table, PCTILE[1]] # but also, if none where >= true, pctile <- lookup$PCTILE[1]
 
-    
-    
-     
- 
-   
+
+   # fix unusual cases
+    # would be an error if zeroeth row were selected here,
+    # so just say it is at the lowest percentile listed (which is 0)
+    # even if it is below the minimum value that supposedly defines the lower edge
+    # whichinterval = 0 (i.e., place has score smaller than min of all places used in creating the lookup table) in which case report 0 for pctile
     belowmin <- (whichinterval == 0)
     if (any(belowmin, na.rm = TRUE)) {
       whichinterval[!is.na(belowmin) & belowmin]  <- 1 # which means 0th percentile
       if (interactive()) {warning('One or more values were below the minimum, or zeroeth percentile, but are reported by this function as being at the 0 percentile.')}
     }
-    whichinterval[is.na(belowmin)] <- NA
-    # returns NA if belowmin is NA
-    # browser()
+   
+    whichinterval[is.na(belowmin)] <- NA  
     percentiles_reported <- as.numeric(lookup$PCTILE[whichinterval])
+# or should it be     
+    # whichinterval[is.na(belowmin)] <- 0
+    # percentiles_reported[is.na(belowmin)] <- NA 
+        
+    
+    
     # ----------------------------------------------------------------------------
     # if reported pctile per lookup function is <= these high_pctiles_tied_with_min, 
     # then report instead zero as the percentile.
     percentiles_reported[percentiles_reported == unlist(high_pctiles_tied_with_min[["USA"]][ , varname.in.lookup.table, with=FALSE]) ] <- 0
     # ----------------------------------------------------------------------------
+
     return(percentiles_reported)
     
-    
+    # finished USA only case 
   } else {
-    if (any(!(zone %in% lookup$REGION))) {stop('zone(s) not found in lookup')}
+    
+    ######################################################################### # 
+    # multiple zones, not just USA
+    ######################################################################### # 
+
     if (length(zone) != length(myvector)) {
       if (length(zone) == 1) {
-        # Assume they meant the one zone (e.g. a State) to apply to all the indicator values provided as myvecgtor
+        # Assume they meant the one zone (e.g. a State) to apply to all the indicator values provided as myvector
         zone <- rep(zone, length(myvector))
       } else {
-        stop('number of values and number of zones provided must be the same')
+        stop('number of raw score values and number of zone values provided must be the same (or if just one zone value, assumed to apply for all)')
       }
     }
-    
+    ######################################################################### # 
     # also see similar code in ejanalysis package file lookup.pctiles() !
     
     whichinterval <- vector(length = NROW(myvector))
     percentiles_reported <- vector(length = NROW(myvector))
     # browser()
+    
     for (z in unique(zone)) {
       
       #  for each zone
+      if (!(z %in% lookup$REGION)) {
+        # this zone is not in lookup table so return NA values and warn
+        warning(z, " not found in percentile lookup table column called REGION")
+        percentiles_reported[zone == z] <- NA
+        next # go to next zone (for this one indicator)
+      }
       myvector_selection <- myvector[zone == z] # sort(myvector)
       myvector_lookup <-   lookup[lookup$REGION == z, varname.in.lookup.table] 
       
-      # should be OK if some or all those values in myvector are NA? 
+      # if all or just some values in myvector_selection are NA, 
+      #  findInterval(x=myvector_selection, vec=myvector_lookup) returns NA for each is.na(x)
       if (all(is.na(myvector_selection))) {
-        warning("All values in myvector were NA for ", varname.in.lookup.table, " in zone = ", z, ", so returning NA values as percentiles.")
+        message("All values in myvector (scores to be converted to percentiles) were NA for ", varname.in.lookup.table, " in zone = ", z, ", so returning NA values as the percentiles.")
         percentiles_reported[zone == z] <- NA
-        next
+        next # go to next zone (for this one indicator)
       }
-      #  if some or all in lookup are NA, though it crashes unless that case is handled
+      # if all or some in lookup are NA, findInterval crashes unless that case is handled
+      # we will just assume the lookup is useless for this indicator in this zone, probably because no blockgroupstats data at all for that indicator in that zone,
+      # rather than figuring out why some percentiles in lookup are NA in this zone.
       if (any(is.na(myvector_lookup))) {
         # whichinterval[zone == z] <- rep(NA, length(myvector_selection))
-        warning("No percentile info available for ", varname.in.lookup.table, " in ", z)
+        message("No percentile info is available in the lookup table, for the indicator ", varname.in.lookup.table, " in ", z)
         percentiles_reported[zone == z] <- NA
-        next
-        
+        next  # go to next zone (for this one indicator)
       } else {
         whichinterval[zone == z] <- findInterval(myvector_selection, myvector_lookup)
       }
-      
-      
+       
       belowmin <- (whichinterval[zone == z] == 0)
       if (any(belowmin, na.rm = TRUE)) {
         whichinterval[zone == z][!is.na(belowmin) & belowmin]  <- 1 # which means 0th percentile
@@ -198,27 +226,14 @@ pctile_from_raw_lookup <- function(myvector, varname.in.lookup.table, lookup=usa
       # then report instead zero as the percentile.
       percentiles_reported[zone == z][percentiles_reported[zone == z] == unlist(high_pctiles_tied_with_min[[z]][ , varname.in.lookup.table, with=FALSE]) ] <- 0
       # ----------------------------------------------------------------------------
-    }
+      
+    } # end of loop over zones ####
     
     return(percentiles_reported)
     
-  }
+  } # end of multiple states case 
   
-  
-  # would be an error if zeroeth row were selected here,
-  # so just say it is at the lowest percentile listed (which is 0)
-  # even if it is below the minimum value that supposedly defines the lower edge
-  # whichinterval = 0 (i.e., place has score smaller than min of all places used in creating the lookup table) in which case report 0 for pctile
-  belowmin <- (whichinterval == 0)
-  if (any(belowmin, na.rm = TRUE)) {
-    whichinterval[!is.na(belowmin) & belowmin]  <- 1 # which means 0th percentile
-    warning('One or more values were below the minimum, or zeroeth percentile, but are reported by this function as being at the 0 percentile.')
-  }
-  whichinterval[is.na(belowmin)] <- 0
-  # returns NA if belowmin is NA
-  percentiles_reported <- as.numeric(lookup$PCTILE[whichinterval])
-  percentiles_reported[is.na(belowmin)] <- NA 
-  return(percentiles_reported)
-  
+  # should never get here!?
 }
+
 lookup_pctile  <- pctile_from_raw_lookup

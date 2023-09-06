@@ -6,7 +6,7 @@
 #' 
 #' relies on
 #' 
-#'   [EJAMbatch.summarizer::read_csv_or_xl()] = [EJAMejscreenapi::read_csv_or_xl()] and
+#'   [EJAMejscreenapi::read_csv_or_xl()] and
 #'   
 #'   [latlon_df_clean()] which in turn uses [latlon_infer()] [latlon_as.numeric()] [latlon_is.valid()]
 #' 
@@ -31,7 +31,7 @@
 #'   File or data.frame/data.table/matrix must have columns called lon and lat, or something that can 
 #'   be inferred to be that by latlon_infer()
 #' @param y If x is a vector of longitudes, y must be the latitudes. Ignored otherwise.
-#' @seealso [EJAMbatch.summarizer::read_csv_or_xl()] [EJAM::latlon_df_clean()]
+#' @seealso [EJAMejscreenapi::read_csv_or_xl()] [EJAM::latlon_df_clean()]
 #' @return A data.frame that has at least columns lon and lat (and others if they were in x)
 #' @examples  
 #'  if (interactive()) {
@@ -59,7 +59,7 @@ latlon_from_anything <- function(x,y) {
   if (data.table::is.data.table(x)) data.table::setDF(x) # syntax is easier here this way. note that a data.table is also a list and data.frame
   if (is.list(x) & !is.data.frame(x)) {x <- as.data.frame(x)} # like if x <- list(lon = 1:5, lat = 1:5)
   if (is.matrix(x) | is.array(x) ) {x <- as.data.frame(x)}
-  if (!is.data.frame(x)) { # also TRUE if data.table type data.frame not just regular data.frame (or possibly a matrix that is not a data.frame?)
+  if (!is.data.frame(x)) { # also TRUE if data.table type is data.frame not just regular data.frame (or possibly a matrix that is not a data.frame?)
     if (is.character(x) & length(x) == 1) {
       # seems to be a file name with path, so read it
       if (!file.exists(x)) {stop(paste0(x, ' is not a filepath/name that exists, and otherwise must be a vector of longitudes or a table of points'))}

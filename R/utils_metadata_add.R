@@ -32,7 +32,7 @@ metadata_add <- function(x, metadata) {
       ejscreen_version =  '2.2',
       acs_version =          '2017-2021',
       census_version = 2020,
-      ejscreen_releasedate = '2023-06-23',
+      ejscreen_releasedate = '2023-08-21',
       acs_releasedate =      '2022-12-08',
       ejscreen_pkg_data = NA
     )

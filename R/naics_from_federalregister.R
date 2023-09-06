@@ -78,7 +78,7 @@ naics_from_federalregister <- function(naics_text_copy_from_fr) {
   # 
   # All Other Miscellaneous Fabricated Metal Product Manufacturing (NAICS code 332999);
   # 
-  # • Oil and Gas Field Machinery and Equipment Manufacturing (NAICS code 333132);
+  # [there was a intToUtf8(8226) bullet here]  Oil and Gas Field Machinery and Equipment Manufacturing (NAICS code 333132);
   # 
   # Bare Printed Circuit Board Manufacturing (NAICS code 334412);
   # 
@@ -109,7 +109,7 @@ naics_from_federalregister <- function(naics_text_copy_from_fr) {
   xx <- gsub(")\\.", ")",  xx)
   xx <- gsub("; and", ";", xx)
   xx <- gsub(";\n", "\n",  xx)
-  xx <- gsub("• ", "",     xx)
+  xx <- gsub(paste0(intToUtf8(8226), " "), "",     xx) # need to get the intToUtf8(8226)
   # cat(xx)
   xx <- strsplit(xx,"\n")
   # xx

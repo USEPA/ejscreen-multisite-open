@@ -2,7 +2,7 @@
 % Please edit documentation in R/testpoints_n.R
 \name{testpoints_n}
 \alias{testpoints_n}
-\title{Random points on the map
+\title{Random points in USA - average resident, facility, BG, block, or square mile
 Get data.table of Random Points (lat lon) for Testing/ Benchmarking/ Demos, weighted in various ways.
 The weighting can be specified so that each point reflects the average EPA-regulated
 facility, blockgroup, block, place on the map, or US resident.}
@@ -37,7 +37,7 @@ data.frame or data.table with columns lat, lon in decimal degrees, and
 any other columns that are in the table used (based on weighting)
 }
 \description{
-Random points on the map
+Random points in USA - average resident, facility, BG, block, or square mile
 Get data.table of Random Points (lat lon) for Testing/ Benchmarking/ Demos, weighted in various ways.
 The weighting can be specified so that each point reflects the average EPA-regulated
 facility, blockgroup, block, place on the map, or US resident.
