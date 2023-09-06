@@ -6,9 +6,11 @@
 ## need to add tests   
 
 #  library(EJAM)
+# dataload_from_aws()
+# indexblocks()
 if (!exists('blockwts')) {
   stop('tests cannot run without blockwts dataset being loaded')
-    #  data_load_from_aws()
+    #  dataload_from_aws()
   }
 
 test_that('error if null empty NA or blank input',{

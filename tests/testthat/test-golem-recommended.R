@@ -22,7 +22,7 @@ test_that(
   "app_sys works",
   {
     expect_true(
-      app_sys("golem-config.yml") != ""
+      app_sys("golem-config.yml") != ""   # treats EJAM/inst/ as root so looks for  EJAM/inst/golem-config.yml
     )
   }
 )
