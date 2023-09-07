@@ -75,55 +75,55 @@ ejamit <- function(sitepoints,
 ) {
   if (is.null(fips)) {
     
-  if (missing(radius)) {warning(paste0("Using default radius of ", radius, " miles because not provided as parameter."))}
-  if (!missing(quadtree)) {warning("quadtree should not be provided to ejamit() - that is handled by getblocksnearby() ")}
-  
-  ################################################################################## #
-  # note this overlaps or duplicates code in app_server.R 
-  #   for data_up_latlon() around lines 81-110 and data_up_frs() at 116-148
-  
-  # select file
-  if (missing(sitepoints)) {
-    if (interactive()) {
-      sitepoints <- rstudioapi::selectFile(caption = "Select xlsx or csv with lat,lon values", path = '.' )
-    } else {
-      stop("sitepoints (locations to analyze) is missing but required.")
+    if (missing(radius)) {warning(paste0("Using default radius of ", radius, " miles because not provided as parameter."))}
+    if (!missing(quadtree)) {warning("quadtree should not be provided to ejamit() - that is handled by getblocksnearby() ")}
+    
+    ################################################################################## #
+    # note this overlaps or duplicates code in app_server.R 
+    #   for data_up_latlon() around lines 81-110 and data_up_frs() at 116-148
+    
+    # select file
+    if (missing(sitepoints)) {
+      if (interactive()) {
+        sitepoints <- rstudioapi::selectFile(caption = "Select xlsx or csv with lat,lon values", path = '.' )
+      } else {
+        stop("sitepoints (locations to analyze) is missing but required.")
+      }
     }
-  }
-  # if user entered a table, path to a file (csv, xlsx), or whatever, then read it to get the lat lon values from there
-  sitepoints <- latlon_from_anything(sitepoints)  
-  ################################################################################## #
-  # 1. getblocksnearby() ####
-  if (!silentinteractive) {cat('Finding blocks nearby.\n')}
-  
-  mysites2blocks <- getblocksnearby(
-    sitepoints=sitepoints, 
-    radius=radius, maxradius=maxradius, 
-    avoidorphans=avoidorphans, 
-    ...)
-  
-  # 2. doaggregate() ####
-  if (!silentinteractive) {cat('Aggregating at each buffer and overall.\n')}
-  
-  out <- suppressWarnings (
-    doaggregate(
-      sites2blocks = mysites2blocks,  # subgroups_type = 'original', 
-      sites2states_or_latlon = sitepoints, # sites2states_or_latlon = unique(x[ , .(siteid, lat, lon)]))
-      silentinteractive = silentinteractive
+    # if user entered a table, path to a file (csv, xlsx), or whatever, then read it to get the lat lon values from there
+    sitepoints <- latlon_from_anything(sitepoints)  
+    ################################################################################## #
+    # 1. getblocksnearby() ####
+    if (!silentinteractive) {cat('Finding blocks nearby.\n')}
+    
+    mysites2blocks <- getblocksnearby(
+      sitepoints=sitepoints, 
+      radius=radius, maxradius=maxradius, 
+      avoidorphans=avoidorphans, 
+      ...)
+    
+    # 2. doaggregate() ####
+    if (!silentinteractive) {cat('Aggregating at each buffer and overall.\n')}
+    
+    out <- suppressWarnings (
+      doaggregate(
+        sites2blocks = mysites2blocks,  # subgroups_type = 'original', 
+        sites2states_or_latlon = sitepoints, # sites2states_or_latlon = unique(x[ , .(siteid, lat, lon)]))
+        silentinteractive = silentinteractive
+      )
     )
-  )
-  # provide sitepoints table provided by user aka data_uploaded(), (or could pass only lat,lon and ST -if avail- not all cols?)
-  # and doaggregate() decides where to pull ST info from - 
-  # ideally from ST column, 
-  # second from fips of block with smallest distance to site, 
-  # third from lat,lon of sitepoints intersected with shapefile of state bounds
-  
+    # provide sitepoints table provided by user aka data_uploaded(), (or could pass only lat,lon and ST -if avail- not all cols?)
+    # and doaggregate() decides where to pull ST info from - 
+    # ideally from ST column, 
+    # second from fips of block with smallest distance to site, 
+    # third from lat,lon of sitepoints intersected with shapefile of state bounds
+    
   } else {
     # fips provided, not latlons
     mysites2blocks <- getblocksnearby_from_fips(fips)
     out <- doaggregate(
       mysites2blocks, sites2states_or_latlon = unique(mysites2blocks[ , .(siteid, lat, lon)])   , # subgroups_type = 'original'
-      )
+    )
   }
   ################################################################ # 
   
@@ -189,7 +189,7 @@ ejamit <- function(sitepoints,
   ################################################################ # 
   # just a nicer looking tall version of overall results
   out$formatted <- format_results_overall(out$results_overall, out$longnames)
-
+  
   
   ################################################################ # 
   if (interactive() & !silentinteractive) {  # would be nice to provide the 1pager summary report as html here too
@@ -206,25 +206,53 @@ ejamit <- function(sitepoints,
         filter = "top"
       )
     )
-    # Map of facilities in an industry, plus popups with links to each facility in ECHO and EJScreen
-    # mapfast(out$results_bysite)  
-    # had some bugs/ problems with mapfast if using "ej" option and too many indicators otherwise
+    ###################################### # 
     cat("\nSome more key results: \n\n")
+    
     somenames <- grep("ratio.to.state", names(out$results_summarized$rows), value = TRUE)
-    print(  round(t(out$results_summarized$rows[ , somenames])[ ,c(1,2,6)],2)  )  # 1:70 
+    someinfo <- t(out$results_summarized$rows[ , somenames])[ , c(1,2,6)] 
+    colnames(someinfo) <- c("Avg site", "Avg resident at sites as a whole", "Avg resident at site with highest value for this stat")
+    print(    round(t(out$results_summarized$rows[ , somenames])[ , c(1,2,6)], 2)  )  # 1:70 
+    cat("\n\n")
     
     # site counts and distance minima
-    print(  round(tail(t(out$results_summarized$rows)[ ,1:7],7),1)  )
+    # print(  round(tail(t(out$results_summarized$rows)[ ,1:7],7),1)  )   
+    # cat("\n\n")
     
-    # how to export simple version to excel for now
+    cat(popshare_p_lives_at_what_pct(out$results_bysite$pop, p = 0.50, astext=TRUE), "\n\n")
+    
+    cat(popshare_at_top_n(out$results_bysite$pop, c(1, 5, 10), astext = TRUE), "\n\n")
+    
+    ###################################### #
+    cat("To see a map in RStudio: \n\n",
+        "mapfast(out$results_bysite, radius = out$results_overall$radius.miles, column_names = 'ej')", 
+        "\n\n")
+    
+    cat("To see a histogram of population counts nearby: \n\n", 
+        'hist(out$results_bysite$pop/1000, 100, xlab = "Residents nearby (in thousands)", ylab = "Number of sites", 
+     main =  "Population Counts within', radius, 'miles of Various Sites")',
+   "\n\n")
+    
+    cat("To see cumulative distribution of population nearby:\n\n", 
+        '        plot(ecdf(out$results_bysite$pop/1000), 
+             ylab="Fraction of total population living any one or more of these sites", 
+             xlab="# of residents (in thousands) near a site, showing one dot for each site", 
+             main="A fraction of these sites are where most of the residents are located")',
+        "\n\n")
+    
+    cat("To see boxplots of Demographics vs US averages:\n\n", 
+        "boxplots_ratios(ratios_to_avg(as.data.frame(out$results_bysite))$ratios_d)",
+        "\n\n")    
+    
+    cat('To save as excel files:  \n\n')
     cat("long=as.data.frame(rbind(out$longnames)); names(long)=names(out$results_overall)\n")
-    cat('writexl::write_xlsx(x = long,  path="longnames_',  NROW(out$results_bysite),'_points_', radius,'_miles.xlsx")\n')
-    cat('\n\n To save as excel files, try this:  \n')
-    cat('writexl::write_xlsx(x = as.data.frame(x$results_overall), path="results_overall_', NROW(out$results_bysite),'_points_', radius,'_miles.xlsx")\n')
-    cat('writexl::write_xlsx(x = as.data.frame(x$results_bysite ), path="results_bysite_',  NROW(out$results_bysite),'_points_', radius,'_miles.xlsx")\n')
+    cat(paste0('writexl::write_xlsx(x = long,  path="longnames_',  NROW(out$results_bysite),'_points_', radius,'_miles.xlsx")\n'))
+  
+    cat(paste0('writexl::write_xlsx(x = as.data.frame(x$results_overall), path="results_overall_', NROW(out$results_bysite),'_points_', radius,'_miles.xlsx")\n'))
+    cat(paste0('writexl::write_xlsx(x = as.data.frame(x$results_bysite ), path="results_bysite_',  NROW(out$results_bysite),'_points_', radius,'_miles.xlsx")\n'))
   }
   ################################################################ # 
   
   invisible(out)
 }
- 
+
