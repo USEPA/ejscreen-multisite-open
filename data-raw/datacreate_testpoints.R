@@ -33,7 +33,7 @@ for (n in nvalues) {
   
   # SAVE AN EXCEL VERSION OF THE TEST DATA POINTS ####
   # varvalue$EJScreenMap = url_ejscreenmap(varvalue$lon, varvalue$lat, as_html = FALSE) # NOT CLICKABLE IN EXCEL THIS WAY BUT OK
-  varvalue$REGISTRY_ID <- as.character(varvalue$REGISTRY_ID)  # for excel just save as character not number, or could write as special zip code format in excel
+  # varvalue$REGISTRY_ID <- as.character(varvalue$REGISTRY_ID)  # for excel just save as character not number, or could write as special zip code format in excel
   writexl::write_xlsx(list(varname = varvalue), path = paste0("./inst/testdata/latlon/", varname, ".xlsx"))  
   
   #  these links work on popup map but not in excel, if as_html=T 
@@ -48,7 +48,6 @@ for (n in nvalues) {
     "#' @name testpoints_", n, " 
 #' @docType data
 #' @title test points data.frame with columns siteid lat lon 
-#'
 NULL
 "
   )
@@ -75,11 +74,65 @@ NULL
       "#' @name ", getoutname, " 
 #' @docType data
 #' @title test output of getblocksnearby() or input to doaggregate() 
-#'
 NULL
 "
     )
     writeChar(filecontents, con = paste0("./R/data_", getoutname, ".R"))
   }
   
-}
+} # end of loop
+
+################################## #   
+
+## create example of doaggregate() output #### 
+
+testdata_doaggregate_output_100 <- doaggregate(sites2blocks_example_100pts_1miles) # , sites2states_or_latlon = testpoints_100, radius = 1)
+
+# use in package
+usethis::use_data(testdata_doaggregate_output_100, overwrite = T)
+
+# create documentation
+getoutvalue = testdata_doaggregate_output_100
+getoutname = ("testdata_doaggregate_output_100")
+# assign(getoutname, getoutvalue)
+
+# SAVE AS DATA IN PACKAGE ####
+text_to_do = paste0("usethis::use_data(", getoutname, ", overwrite=TRUE)")
+eval(parse(text = text_to_do))
+
+# SAVE DOCUMENTATION FILE ####
+filecontents <- paste0( 
+  "#' @name ", getoutname, " 
+#' @docType data
+#' @title test output of doaggregate(sites2blocks_example_100pts_1miles)
+NULL
+"
+)
+writeChar(filecontents, con = paste0("./R/data_", getoutname, ".R"))
+
+################################## #   
+
+## create example of ejamit() output #### 
+
+testdata_ejamit_output_100pts_1mile <- ejamit(testpoints_100, radius = 1)
+# use in package
+usethis::use_data(testdata_ejamit_output_100pts_1mile, overwrite = T)
+
+# create documentation
+getoutvalue = testdata_ejamit_output_100pts_1mile
+getoutname = ("testdata_ejamit_output_100pts_1mile")
+# assign(getoutname, getoutvalue)
+
+# SAVE AS DATA IN PACKAGE ####
+text_to_do = paste0("usethis::use_data(", getoutname, ", overwrite=TRUE)")
+eval(parse(text = text_to_do))
+
+# SAVE DOCUMENTATION FILE ####
+filecontents <- paste0( 
+  "#' @name ", getoutname, " 
+#' @docType data
+#' @title test output of ejamit(testpoints_100, radius = 1)
+NULL
+"
+)
+writeChar(filecontents, con = paste0("./R/data_", getoutname, ".R"))

@@ -3,7 +3,7 @@
 \docType{data}
 \name{testpoints_1000}
 \alias{testpoints_1000}
-\title{test points data.frame with columns siteid lat lon etc.}
+\title{test points data.frame with columns siteid lat lon}
 \description{
-test points data.frame with columns siteid lat lon etc.
+test points data.frame with columns siteid lat lon
 }
