@@ -2,11 +2,12 @@
 % Please edit documentation in R/dataload_from_aws.R
 \name{dataload_from_aws}
 \alias{dataload_from_aws}
-\title{utility to load datasets from AWS}
+\title{utility to load datasets from AWS DMAP Data Commons, into memory}
 \usage{
 dataload_from_aws(
-  fnames = c("bgid2fips.rda", "blockid2fips.rda", "blockwts.rda", "blockpoints.rda",
-    "quaddata.rda"),
+  varnames = c("bgid2fips", "blockid2fips", "blockpoints", "blockwts", "quaddata"),
+  ext = c(".arrow", ".rda")[2],
+  fun = c("arrow::read_ipc_file", "load")[2],
   envir = globalenv(),
   mybucket = "dmap-data-commons-oa",
   mybucketfolder = "EJAM",
@@ -14,8 +15,6 @@ dataload_from_aws(
 )
 }
 \arguments{
-\item{fnames}{vector of the names of the rda files}
-
 \item{envir}{default is parent.frame()}
 
 \item{mybucket}{where in AWS}
@@ -23,15 +22,17 @@ dataload_from_aws(
 \item{mybucketfolder}{where in AWS}
 
 \item{justchecking}{set to TRUE to get object size (and confirm file is accessible/exists)}
+
+\item{fnames}{vector of the names of the rda files}
 }
 \value{
 nothing - just loads data into environment (unless justchecking=T)
 }
 \description{
-utility to load datasets from AWS
+utility to load datasets from AWS DMAP Data Commons, into memory
 }
 \details{
-See source code for details. Requires credentials.
+See source code for details. Requires credentials?
 
 Use dataload_from_aws(justchecking=TRUE),
 
@@ -41,18 +42,19 @@ or tables(),
 
 or object.size(quaddata)
 
+NOTE: blockid2fips is HUGE in memory, and is used only in
+state_from_blocktable() and state_from_blockid(), which are not always needed by the app,
+so maybe should not load this unless/until needed?
+
+blockid2fips is roughly 600 MB in RAM because it stores 8 million block FIPS as text.
+
 List 9/2023 was:
 \itemize{
-\item blockid2fips (20 MB on disk, approx 600 MB RAM)
+\item blockid2fips (20 MB on disk, approx 600 MB RAM !!)
 \item quaddata (168 MB on disk, 218 MB RAM)
 \item blockpoints (86 MB on disk, 156 MB RAM)
 \item blockwts (31 MB on disk, 125 MB RAM)
 \item bgid2fips (18 MB RAM)
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{   quaddata is >150 MB on disk and >200 MB RAM, while all others are smaller on disk.
-   
-   blockid2fips is roughly 600 MB in RAM because it stores 8 million block FIPS as text.
-}\if{html}{\out{</div>}}
 }
 }
 \seealso{
