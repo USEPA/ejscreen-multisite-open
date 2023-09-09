@@ -2,65 +2,27 @@
 
 ################################################################## # 
 # get block data if missing. ####
-#  also see same thing in  EJAM::dataload_from_aws()  and in .onAttach()
+# this duplicates code in .onAttach()  
 
 # EJAM::
-  dataload_from_aws()  # i think it loads only missing ones?
+dataload_from_aws()  # SLOW STEP !! loads only missing ones # see ?dataload_from_aws for details 
 
-# 
-# fnames <- c(
-#    
-#   'bgid2fips.rda', 
-#   'blockid2fips.rda', 
-#   'blockwts.rda', 
-#   'blockpoints.rda', 
-#   'quaddata.rda'
-# )
-# pathnames <- paste0('EJAM/', fnames)
-# varnames <- gsub("\\.rda", "", fnames)
-# mybucket <- 'dmap-data-commons-oa'
-# # if not already in memory/ global envt, get from AWS 
-# for (i in 1:length(fnames)) {
-#   if (!exists(varnames[i])) {
-#     cat('loading', varnames[i], 'from', pathnames[i], '\n')
-#     aws.s3::s3load(object = pathnames[i], bucket = mybucket)
-#   }
-# }
-# BUCKET_CONTENTS <- data.table::rbindlist(aws.s3::get_bucket(bucket = mybucket), fill = TRUE)
-# baseurl <- "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/"
-# urls <- paste0(baseurl, fnames)
-## "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/quaddata.rda"
-## "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/bgid2fips.rda"
-## "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/blockpoints.rda"
-## "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/blockwts.rda"
-## "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/blockid2fips.rda"
 ################################################################## # 
-
 # build localtree index if missing ####
-
-# this duplicates code in onAttach()  
+# this duplicates code in .onAttach()  
 
 # EJAM::
-  indexblocks()
+indexblocks() # see ?indexblocks() for details. takes several seconds. 
 
-# if (!exists("localtree")) {
-#   if (!exists("quaddata")) {stop("requires quaddata to be loaded - cannot build localtree without it.")}
-#   # This assign() below is the same as the function called  indexblocks() 
-#   #### EJAM::indexblocks()
-#     assign(
-#     "localtree",
-#     SearchTrees::createTree(quaddata, treeType = "quad", dataType = "point"),
-#     envir = globalenv()
-#     # need to test, but seems to work.
-#     # But takes a couple seconds at every reload of pkg.
-#   )
-#   cat("  Done building index.\n")
-# }
 ################################################################## # 
+# load bg data now instead of lazyload once/if needed
+# this duplicates code in .onAttach() 
+
 # EJAM::
-dataload_from_package() # preload the key dataset at least
+dataload_from_package() # preload the key dataset at least? not essential
 
 ################################################################## # 
+# Set options and defaults
 
 # Raise Memory Limit on file upload to 100Mb ####
 options(shiny.maxRequestSize = 100*1024^2) 
@@ -80,23 +42,13 @@ meters_per_mile <- 1609.344
 
 ## EPA Programs (to limit NAICS/ facilities query) #### 
 ## used by inputId 'ss_limit_fac1' and 'ss_limit_fac2'
-# epa_programs <- c(
-#   "TRIS" = "TRIS",
-#   "RCRAINFO" = "RCRAINFO",
-#   "AIRS/AFS" = "AIRS/AFS", 
-#   "E-GGRT" = "E-GGRT",
-#   "NPDES" = "NPDES", 
-#   "RCRAINFO" = "RCRAINFO", 
-#   "RMP" = "RMP"
-# )
-
+# see frsprogramcodes data object also
 ## add counts to program acronyms to use in dropdown display
 epa_program_counts <- dplyr::count(EJAM::frs_by_programid, program, name = 'count') 
 epa_program_counts$pgm_text_dropdown <- paste0(epa_program_counts$program, ' (',prettyNum(epa_program_counts$count, big.mark = ','), ')')
-
 epa_programs <- setNames(epa_program_counts$program, epa_program_counts$pgm_text_dropdown)
-
-#epa_programs <- sort(unique(EJAM::frs_by_programid$program))
+# cbind(epa_programs)
+# sort(unique(EJAM::frs_by_programid$program)) # similar  
 
 ## Loading/wait spinners (color, type) ####
 ## note: was set at type = 1, but this caused screen to "bounce"
@@ -120,18 +72,7 @@ threshgroup.default <- list(
   'comp1' = "EJ US pctiles",  'comp2' = "EJ State pctiles"
 )
 
-## If needed, build index of Census blocks ####
-# (if not already autoloaded when EJAM package loaded). quaddata should be part of the package.
-if (!exists("localtree")) {
-  localtree <- SearchTrees::createTree(
-    quaddata, treeType = "quad", dataType = "point"
-  )
-}
-
-
-
 ################################################################# # 
-
 
 
 # ~ ####

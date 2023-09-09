@@ -11,19 +11,26 @@ dataload_from_aws(
   envir = globalenv(),
   mybucket = "dmap-data-commons-oa",
   mybucketfolder = "EJAM",
-  justchecking = FALSE
+  justchecking = FALSE,
+  check_server_even_if_justchecking = TRUE,
+  testing = FALSE
 )
 }
 \arguments{
+\item{varnames}{character vector of the quoted names of the data objects like blockwts or quaddata}
+
 \item{envir}{default is parent.frame()}
 
-\item{mybucket}{where in AWS}
+\item{mybucket}{where in AWS, like}
 
-\item{mybucketfolder}{where in AWS}
+\item{mybucketfolder}{where in AWS, like EJAM}
 
 \item{justchecking}{set to TRUE to get object size (and confirm file is accessible/exists)}
 
-\item{fnames}{vector of the names of the rda files}
+\item{check_server_even_if_justchecking}{set this to TRUE to stop checking server to see if files are there
+when justchecking = TRUE. But server is always checked if justchecking = FALSE.}
+
+\item{testing}{only for testing}
 }
 \value{
 nothing - just loads data into environment (unless justchecking=T)

@@ -7,7 +7,14 @@
 #' @return Returns data.frame: ST, statename, FIPS.ST, REGION, n
 #'   as many rows as elements in lat or lon
 #' @export
-#'
+#' @examples 
+#'  myprogram <- "CAMDBS" # 739 sites
+#'  pts <- frs_from_program(myprogram)[ , .(lat, lon, REGISTRY_ID,  PRIMARY_NAME)]
+#'  # add a column with State abbreviation
+#'  pts[, ST := state_from_latlon(lon = lon, lat=lat)$ST]
+#'  #map these points
+#'  mapfast(pts[ST == 'TX',], radius = 1) # 1 miles radius circles
+#'  
 state_from_latlon <- function(lon, lat, states_shapefile=EJAM::states_shapefile) {
   # pts[is.na(lat), lat := 0] 
   # pts[is.na(lon), lon := 0] 

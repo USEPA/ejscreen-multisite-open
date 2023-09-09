@@ -27,24 +27,27 @@
 #'   
 #'   - bgid2fips (18 MB RAM)
 #'   
-#' @param fnames vector of the names of the rda files
+#' @param varnames character vector of the quoted names of the data objects like blockwts or quaddata
 #' @param envir default is parent.frame()
-#' @param mybucket where in AWS
-#' @param mybucketfolder where in AWS
+#' @param mybucket where in AWS, like 
+#' @param mybucketfolder where in AWS, like EJAM
 #' @param justchecking set to TRUE to get object size (and confirm file is accessible/exists)
+#' @param check_server_even_if_justchecking set this to TRUE to stop checking server to see if files are there
+#'   when justchecking = TRUE. But server is always checked if justchecking = FALSE.
+#' @param testing only for testing
 #' @seealso [datapack()] [dataload_from_aws()] [dataload_from_package()] [indexblocks()] [.onAttach()] 
 #' @return nothing - just loads data into environment (unless justchecking=T)
 #' 
 #' @export
 #'
-dataload_from_aws <- function(varnames= c('bgid2fips',     'blockid2fips',     'blockpoints',  'blockwts' ,       'quaddata' ),
+dataload_from_aws <- function(varnames= c('bgid2fips', 'blockid2fips', 'blockpoints', 'blockwts', 'quaddata' ),
                               ext=c(".arrow", ".rda")[2],
                               fun=c("arrow::read_ipc_file", "load")[2],  
                               envir=globalenv(),  # should it be parent or global or package EJAM envt ??
                               mybucket =  'dmap-data-commons-oa',
                               mybucketfolder = "EJAM",
-                              justchecking = FALSE) {
-
+                              justchecking = FALSE, check_server_even_if_justchecking=TRUE, testing=FALSE) {
+  
   ## Get bucket contents if you want to explore the bucket ----
   # mybucket <-  'dmap-data-commons-oa' # 
   # bucket_contents <- data.table::rbindlist(
@@ -57,32 +60,46 @@ dataload_from_aws <- function(varnames= c('bgid2fips',     'blockid2fips',     '
   if (length(ext) > 1) {stop('must specify only one file extension for all the files')}
   if (ext=='.arrow' & missing(fun)) {fun <- "arrow::read_ipc_file"}
   
-  fnames <- paste0(varnames, ext)
-  objectnames <- paste0(mybucketfolder, '/', fnames) # 
-  # varnames <- gsub("\\.rda", "", fnames)
-  mybucket <- 'dmap-data-commons-oa'
-  
-  # if not already in memory/ global envt, get from AWS 
+  # mybucket =       'dmap-data-commons-oa'
+  # mybucketfolder = "EJAM"
+  # varnames =     c('bgid2fips', 'blockid2fips', 'blockpoints', 'blockwts', 'quaddata' )
+  # ext=      ".rda"
+  fnames     <- paste0(varnames, ext) # varnames are like bgid2fips, ext is .rda, fnames are like bgid2fips.rda
+  objectnames <- paste0(mybucketfolder, '/', fnames) # EJAM/bgid2fips.rda 
+  # make output in console easier to read:  
+  spacing <- sapply(1:length(objectnames), function(x) paste0(rep(" ", max(nchar(objectnames)) - nchar(objectnames[x])), collapse = ''))
+  cat('\n')
+  if (testing) {
+    cat('varnames are:    ', paste0(varnames,    collapse = ", "), '\n')
+    cat('fnames are:      ', paste0(fnames,      collapse = ", "), '\n')
+    cat('mybucketfolder:  ', mybucketfolder,  '\n')
+    cat('objectnames are: ', paste0(objectnames, collapse = ", "), '\n')
+    cat('mybucket:        ', mybucket,  '\n')
+    cat('checking each like this:  aws.s3::object_exists(object = "', objectnames[1], '", bucket = "',mybucketfolder,'")', '\n')
+    cat('\n')
+  }
   
   for (i in 1:length(fnames)) {
     
     if (!justchecking & ext==".rda") {
-      if (!exists(varnames[i], envir = envir) ) {
-        cat('loading', varnames[i], 'from', objectnames[i], '\n')
-        if (try(aws.s3::object_exists(object = objectnames[i], bucket = mybucketfolder))) {
-          aws.s3::s3load(object = objectnames[i], bucket = mybucket, envir = envir)
+      if (!exists(varnames[i], envir = envir) ) {  # if not already in memory/ global envt, get from AWS 
+        cat('loading', varnames[i],spacing[i],  'from', objectnames[i], '\n')
+        if (try(aws.s3::object_exists(object = objectnames[i], bucket = mybucket))) {
+          
+          aws.s3::s3load(object = objectnames[i], bucket = mybucket, envir = envir) ## * * ############# #  
+          
         } else {
-          warning(objectnames[i], 'not found on server')
+          warning('requested object', objectnames[i], spacing[i],  'not found on server')
         }
       } else {
- 
-              }
+        cat(varnames[i], spacing[i], 'is already in specified envt and will not be downloaded again\n')
+      }
     }
     
     if (justchecking & ext==".rda") {
+      # TO SEE COMMAND / CHECK THIS IS WORKING
       # cat('Can download', varnames[i], 'from', objectnames[i], '\n')
-      cat(paste0(  'aws.s3::s3load(object = "', objectnames[i],'", bucket = "', mybucket,'", envir = globalenv()', ')' ),
-          "\n")
+      cat(paste0(  'aws.s3::s3load(object = "', objectnames[i],'", ', spacing[i], 'bucket = "', mybucket,'", envir = globalenv()', ')' ), "\n")
     }
     
     if (ext != ".rda") {
@@ -94,46 +111,52 @@ dataload_from_aws <- function(varnames= c('bgid2fips',     'blockid2fips',     '
       # arrow::open....
       
       text_to_do <- paste0("x <- aws.s3::s3read_using(", 
-                           "object = '", objectnames[i],"', ",
+                           "object = '", objectnames[i],"', ", spacing[i],
                            "FUN = ", fun, ", ",
                            "bucket = '", mybucket,"', opts = list(show_progress = TRUE))")
-      if (justchecking) {text_to_do <- paste0(text_to_do, "\n assign('", varnames[i], "', x, envir=globalenv())")} # printed this way but executed below with right envir,  because tricky to print parameter used to specify envir
+      if (justchecking) {text_to_do <- paste0(text_to_do, "\n assign('", varnames[i], spacing[i], "', x, envir=globalenv())")} # printed this way but executed below with right envir,  because tricky to print parameter used to specify envir
       if (justchecking) {
         cat(text_to_do, "\n")  # TO SEE COMMAND / CHECK THIS IS WORKING
       } else {
-        if (!exists(varnames[i], envir = envir)) {
-          cat('loading', varnames[i], 'from', objectnames[i], '\n')
-          if (aws.s3::object_exists(object = objectnames[i], bucket = mybucketfolder)) {
+        if (!exists(varnames[i], envir = envir)) {  # if not already in memory/ global envt, get from AWS 
+          cat('loading', varnames[i], spacing[i], 'from', objectnames[i], '\n')
+          if (aws.s3::object_exists(object = objectnames[i], bucket = mybucket)) {
             x <- eval(parse(text = text_to_do)) # executes the command
             assign(varnames[i], x, envir = envir) # because unlike using load, s3read_using() returns the object without loading it into memory as an object
           } else {
-            warning('requested object', objectnames[i], 'not found on server')
+            warning('requested object', objectnames[i], spacing[i], 'not found on server')
           }
         } else {
-          cat(varnames[i], 'is already in specified envt and will not be downloaded again\n')
+          cat(varnames[i], spacing[i], 'is already in specified envt and will not be downloaded again\n')
         }
       }
     }
   }
   
   if (justchecking) {
+    cat('\n')
     for (i in 1:length(fnames)) {
-      if (exists(varnames[i], envir = envir)) {cat(varnames[i], 'is already in memory and would not be downloaded again\n')}
-      if (aws.s3::object_exists(object = objectnames[i], bucket = mybucketfolder)) {
-        cat(
-          fnames[i], " = ",
-          aws.s3::object_size(object = objectnames[i], bucket = mybucket) / 10^6, "MB\n"
-        ) 
-      } else {
-        cat('requested object', objectnames[i], 'not found on server\n')
+      if (exists(varnames[i], envir = envir)) {
+        cat(varnames[i], spacing[i], 'is already in memory and would not be downloaded again\n')
+        } else {
+          cat(varnames[i], spacing[i], 'is not in memory and downloaded would be needed\n')
       }
-      
+      if (check_server_even_if_justchecking) {
+        if (aws.s3::object_exists(object = objectnames[i], bucket = mybucket)) {
+          cat(
+            fnames[i], spacing[i], "Found on server. File = ",
+            round(aws.s3::object_size(object = objectnames[i], bucket = mybucket) / 10^6, 3), "MB\n"
+          ) 
+        } else {
+          cat(fnames[i], spacing[i], 'not found on server.\n')
+        }
+      }
     }
   }
   baseurl <- "https://dmap-data-commons-oa.s3.amazonaws.com/"
   paths <- paste0(baseurl, objectnames)
+  cat('\n')
   return(paths)
-  
   
   
   # BUCKET_CONTENTS <- data.table::rbindlist(aws.s3::get_bucket(bucket = mybucket), fill = TRUE)

@@ -12,82 +12,92 @@
 # block area and
 # added precalculated block_radius_miles 
 # to the blockwts data.table 
-# something like this:
-# to create or get created copies of these datasets:
-#
+
 # to recreate them using code from the census2020download package:
 # x <- census2020download  :: census2020_get_data()
 # xlist <- census2020download  ::  census2020_save_datasets(x, save_as_data_for_package = FALSE)
 # rm(x)
 # names(xlist)
-#
-# To load them since they were saved as data sets in local source package census2020download
- # ... get them into memory here via one of these 2 ways:
-pkg = "census2020download"
-data(bgid2fips,blockid2fips, blockpoints, blockwts, quaddata, 
-     package = pkg)
 
+
+## To load once, after the new version were saved as data sets in local source package census2020download
+# pkg = "census2020download"
+# data(bgid2fips,blockid2fips, blockpoints, blockwts, quaddata, 
+#      package = pkg)
+# ***  but those took up > quota of space so then LFS disabled and need to delete those files in that package
 ### or else...
-
-  # load(file = "~/../../R/mysource/census2020download/data/blockwts.rda")
-
+# load(file = "~/../../R/mysource/census2020download/data/blockwts.rda")
 # load(file = "~/../../R/mysource/census2020download/data/bgid2fips.rda")
 # load(file = "~/../../R/mysource/census2020download/data/blockid2fips.rda")
 # load(file = "~/../../R/mysource/census2020download/data/blockpoints.rda")
 # load(file = "~/../../R/mysource/census2020download/data/quaddata.rda")
+
+
 #################################################################################### # 
 
-# create rounded off temporary version that only takes 5.5 MB as dataset
-# to use in getblocks... until replace blockwts data.table on dmap data commons 9/2023
+# Temporarily 9/2023 create rounded off version of the new field that only takes 5.5 MB as dataset
+# to use in getblocks... until replace blockwts data.table on dmap data commons 9/2023.
 # and getblocks will check and use that small temporary file if necessary until finalize update.
-block_radius_miles_round_temp <- round(blockwts$block_radius_miles, 2)
-  usethis::use_data(block_radius_miles_round_temp)
 
-# stopped here - need to save in dmap data commons to replace older .rda version that lacks block_radius_miles info
+block_radius_miles_round_temp <- round(blockwts$block_radius_miles, 2)
+usethis::use_data(block_radius_miles_round_temp)
+
+# *** stopped here - need to save in dmap data commons to replace older .rda version that lacks block_radius_miles info
 
 
 ##############################################################
-# how to write to AWS with new names and new format? need permission for each new file.
+# how to write to AWS with new names and new format? need permission for each new file?
 #############
 
 # replace the tables in AWS with the updated blockwts that has area or block_radius_miles
 
-#   varnames <- c('bgid2fips',   'blockid2fips', 'blockpoints', 'blockwts' , 'quaddata' )
-#   fnames <- paste0(varnames, ".rda")
-#   mybucketfolder <- "EJAM"
-#   pathnames <- paste0(mybucketfolder, '/', fnames)    # "EJAM/blockwts.rda", # pathnames[i],
 # # specify the AWS bucket, etc. 
-# baseurl = "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/"
-#  mybucket <- 'dmap-data-commons-oa' 
+baseurl = "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/"
 
-# i = 4
- # not sure how to use vector of names here instead of typing blockwts, etc.:
+################### # 
 
- # aws.s3::s3save(blockwts, object = "EJAM/blockwts.rda",  bucket = mybucket, opts = list(show_progress = TRUE)) # almost worked
- 
+## Get bucket contents if you want to explore the bucket ----
+mybucket <-  'dmap-data-commons-oa' # 
+bucket_contents <- data.table::rbindlist(
+  aws.s3::get_bucket(bucket = mybucket, prefix = "EJAM"), 
+  fill = TRUE
+)
+bucket_contents
+# bucket_contents
+#                       Key             LastModified                               ETag      Size StorageClass               Bucket
+# 1:     EJAM/bgid2fips.rda 2023-06-21T21:38:26.000Z "9a349f21026dbf26a344087b68f6a311"   1175611     STANDARD dmap-data-commons-oa
+# 2:  EJAM/blockid2fips.rda 2023-06-21T21:38:33.000Z "dc3c9386a7bb979cba2b2620951c00fa"  39515482     STANDARD dmap-data-commons-oa
+# 3:   EJAM/blockpoints.rda 2023-06-21T21:38:18.000Z "383b1dbc2df3b9219a99e7641d513c04" 124644326     STANDARD dmap-data-commons-oa
+# 4:      EJAM/blockwts.rda 2023-06-21T21:37:37.000Z "3f51df469c764c4be37cfb12233f209e"  49905827     STANDARD dmap-data-commons-oa
+# 5: EJAM/lookup_states.rda 2023-06-21T21:38:43.000Z "2963248201de9c7ff43b58596355ea34"      4405     STANDARD dmap-data-commons-oa
+# 6:      EJAM/quaddata.rda 2023-06-21T21:38:51.000Z "398a6980b82d98859801bf195ca4f922" 175983809     STANDARD dmap-data-commons-oa
+# > 
+############################################################# #
+## Use arrow to UPLOAD objects and save them in data commons as .arrow FILES IN A LOOP - not tested #### 
 
+# datawrite_to_aws( "bgid2fips" ) # as .arrow files
+datawrite_to_aws(justchecking = T, ext = '.arrow', varnames = 'blockwts')
+datawrite_to_aws(justchecking = T, ext = '.rda',   varnames = 'blockwts')
 
-### also wanted to try arrow format next: 
-#
-# aws.s3::s3write_using(bgid2fips, FUN = arrow::write_ipc_file, object = "EJAM/bgid2fips.arrow", bucket = mybucket )
-# aws.s3::s3read_using(FUN = arrow::read_ipc_file)
-# aws.s3::s3read_using(FUN = load, object = "EJAM/bgid2fips.rda", bucket = mybucket)
-# 
-# for (i in 1:length(varnames)) {
-#   arrow::write_ipc_file(
-#     x = get(varnames[i]), 
-#     sink = paste0(baseurl, paste0(varnames[i], ".arrow")))
-# }
 ##############################################################
 
- 
+# datawrite_to_aws() # not yet working
+datawrite_to_aws(justchecking = T, ext = '.arrow', varnames = 'blockwts')
+datawrite_to_aws(justchecking = T, ext = '.rda',   varnames = 'blockwts')
+
+##############################################################
+
 # and update documentation of that blockwts data in the package help file for now
 #
 # and document, rebuild /reinstall the package 
 # 
-# You can use the EPA Open Data Metadata editor: https://edg.epa.gov/epa-open-data-metadata-editor/
-#   If you need any assistance please reach out to edg@epa.gov. 
 
+## To load versions already stored in Data Commons
+## but only after it is uploaded with new column, 
+# block_radius_miles
+# dataload_from_aws(varnames = "blockwts", ext=".rda") 
+# dataload_from_aws()
+ ##################
 
 #  
 # Updated code so that when getblocksnearby() code is run, 

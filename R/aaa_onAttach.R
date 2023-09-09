@@ -5,11 +5,11 @@
 #' 
 .onAttach <- function(libname, pkgname) {
   
-  asap_aws   <- FALSE # block_data_from_aws <- FALSE # MAYBE WANT FALSE WHILE TESTING/Building often
-  asap_index <- FALSE # build index using data from aws
-  asap_bg    <- FALSE  #  _data_from_ejam <- TRUE  
+  asap_aws   <- FALSE  # download large datasets now?           Set to FALSE while Testing/Building often
+  asap_index <- FALSE  # build index those now?                 Set to FALSE while Testing/Building often 
+  asap_bg    <- FALSE  # load now vs lazyload blockgroup data?  Set to FALSE while Testing/Building often
   
-  #  see also datapack() dataload_from_aws() dataload_from_package()  indexblocks() .onLoad() .onAttach()
+  # startup message shown at library(EJAM) or when reinstalling from source ####
   
   packageStartupMessage(
     
@@ -31,7 +31,7 @@
          EJAM::indexblocks() does this, using quaddata - see ?indexblocks
       
       3- Load into memory some datasets installed with EJAM (blockgroupstats, usastats, etc.)
-         EJAM::dataload_from_package() does this - see ?dataload_from_package
+         EJAM::dataload_from_package() does this - see ?dataload_from_package and ?datapack()  
          Otherwise these are only lazyloaded at the moment they are needed, making a user wait.
          blockgroupstats (>60 MB on disk, >200 MB in RAM) and usastats, statestats are essential.
          frs-related tables are huge and not always required - needed to look up regulated sites by ID. 
@@ -39,14 +39,14 @@
       These are the times at which you may want them to happen:
       
       - when the EJAM package is loaded and/or attached 
-        i.e., each time the source package is rebuilt it is loaded; but it is attached less often,
+        i.e., every time the source package is rebuilt it is loaded; but it is attached less often,
         as when a coder uses library(EJAM) in RStudio or script
       
       - when the shiny app launches and runs the global.R script 
          i.e., only once a new user opens the app and their session starts,
          and when a coder uses run_app(), either after library(EJAM), or by using EJAM::run_app() 
       
-      - when the app or coder actually needs a given dataset that is available for lazyLoad, which 
+      - once the app or coder actually needs a given dataset that is available for lazyLoad, which 
         works only for data in EJAM/data/ like frs.rda, frs_by_programid.rda, frs_by_sic.rda, and bgej.rda, etc.
         See utils::data( package = 'EJAM' )
       
@@ -55,32 +55,26 @@
     # )
   )
   
+  # download BLOCK (not blockgroup) data, etc, from EPA AWS Data Commons ####
+  
   if (asap_aws) {
     
-    if (length(try(find.package("EJAM", quiet = T))) == 1) { # if it has been installed. but that function has to have already been added to package namespace once 
-      EJAM::dataload_from_aws() # loads quaddata needed to make localtree index, etc. see ?dataload_from_aws
-    } 
+    # Note this duplicates code in global.R too
     
-    # Note this duplicates code in global.R
+    if (length(try(find.package("EJAM", quiet = T))) == 1) { # if it has been installed. but that function has to have already been added to package namespace once 
+      
+      EJAM::dataload_from_aws() 
+      
+    }
     
     #################### # 
-    # download BLOCK (not blockgroup) data, etc, from EPA AWS Data Commons ####
+    # see ?dataload_from_aws  
+    # loads quaddata needed to make localtree index, etc.   
     # 
     #   blockid2fips is used only in state_from_blocktable() and state_from_blockid(), which are not necessarily used, 
     #   so maybe should not load this unless/until needed?
     #     but, then we would need to be sure to track when it is used and load from aws on the fly
-    #
-    # cat("Loading data.tables of Census Blocks...\n")
-    #
-    # fnames <- c( 'bgid2fips.rda', 'blockid2fips.rda', 'blockwts.rda', 'blockpoints.rda', 'quaddata.rda')
-    # pathnames <- paste0('EJAM/', fnames)
-    # varnames <- gsub("\\.rda", "", fnames)
-    # mybucket <- 'dmap-data-commons-oa'
-    # for (i in 1:length(fnames)) {
-    #   cat('loading', varnames[i], 'from', pathnames[i], '\n')
-    #   aws.s3::s3load(object = pathnames[i], bucket = mybucket)
-    # }
-    #
+    
     # BUCKET_CONTENTS <- data.table::rbindlist(aws.s3::get_bucket(bucket = mybucket), fill = TRUE)
     # baseurl <- "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/"
     # urls <- paste0(baseurl, fnames)
@@ -90,16 +84,21 @@
     ## "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/blockwts.rda"
     ## "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/blockid2fips.rda"
     ######################### # 
+    
   }
+  
+  # create index of all US block points, to enable fast queries ####
   
   if (asap_index) {
     
     # this duplicates code from  global.R 
     
-    if (length(try(find.package("EJAM", quiet = T))) == 1) {
-      EJAM::indexblocks()   # should work if pkg already installed, even if not loaded yet. maybe not while in process of rebuilding/reinstalling?
+    if (length(try(find.package("EJAM", quiet = T))) == 1) { # if it has been installed. but that function has to have already been added to package namespace once 
+      
+      EJAM::indexblocks()   
+      
     }
-    # create the index of all US block points to enable fast queries 
+    
     # This cannot be saved with the pkg to be installed as data, because of what this createTree function creates (memory pointers?).
     # NOT TESTED in context of an app published on RStudio Server
     
@@ -121,19 +120,23 @@
     # }
   }
   
+  # load blockgroupstats etc. from package ####
+  
   if (asap_bg) {
-    # the first time you try to install the package, it will not have access to EJAM:: etc.
     
-    if (length(try(find.package("EJAM", quiet = T))) == 1) {
-      EJAM::dataload_from_package()   # should work if pkg already installed, even if not loaded yet. maybe not while in process of rebuilding/reinstalling?
+    # this duplicates code from  global.R 
+    
+    if (length(try(find.package("EJAM", quiet = T))) == 1) { # The first time you try to install the package, it will not have access to EJAM:: etc. !
+      
+      EJAM::dataload_from_package() 
+      
     }
-    # data(list=c("blockgroupstats", "usastats", "statestats"), package="EJAM") # would work after package is installed
-    
-    # data(list=c("frs", "frs_by_programid ", "frs_by_naics"),  package="EJAM") # would be to preload some very large ones not always needed. 
     
     # load to memory  BLOCKGROUP (not block) data (EJScreen indicators), etc. from the installed package
-    # dataload_from_package() 
     # see ?dataload_from_package()
     # This loads some key data, while others get lazy loaded if/when needed.
+    # data(list=c("blockgroupstats", "usastats", "statestats"), package="EJAM") # would work after package is installed
+    # data(list=c("frs", "frs_by_programid ", "frs_by_naics"),  package="EJAM") # would be to preload some very large ones not always needed. 
+    
   } 
 }

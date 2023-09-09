@@ -22,6 +22,15 @@ as many rows as elements in lat or lon
 find what state is where each point is located
 Takes 3 seconds to find state for 1k points, so a faster alternative would be useful
 }
+\examples{
+ myprogram <- "CAMDBS" # 739 sites
+ pts <- frs_from_program(myprogram)[ , .(lat, lon, REGISTRY_ID,  PRIMARY_NAME)]
+ # add a column with State abbreviation
+ pts[, ST := state_from_latlon(lon = lon, lat=lat)$ST]
+ #map these points
+ mapfast(pts[ST == 'TX',], radius = 1) # 1 miles radius circles
+ 
+}
 \seealso{
 \link{states_shapefile} \code{\link[=get_blockpoints_in_shape]{get_blockpoints_in_shape()}} \code{\link[=states_infer]{states_infer()}}
 }
