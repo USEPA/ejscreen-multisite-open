@@ -2020,14 +2020,14 @@ app_server <- function(input, output, session) {
       ## future: can add other sheets from doaggregate output
       
       # Recode this to avoid making copies which slows it down:?
-      table_overall <- copy(data_processed()$results_overall)
-      table_bysite  <- copy(data_processed()$results_bysite)
+      #table_overall <- copy(data_processed()$results_overall)
+      # table_bysite  <- copy(data_processed()$results_bysite)
       
-      ## format excel workbook
+      ## format excel workbook ####
       ## now passes reactive data frame and all names and formatting happen inside this function
       wb_out <- xls_formatting2(
-        overall = table_overall,
-        eachsite = table_bysite,
+        overall   = data_processed()$results_overall, # table_overall,
+        eachsite  = data_processed()$results_bysite, #  table_bysite,
         longnames = data_processed()$longnames,
         ## optional, shiny-specific arguments to go in 'Plot' and 'Notes' sheets
         summary_plot = v1_summary_plot(),
@@ -2057,6 +2057,9 @@ app_server <- function(input, output, session) {
       # [3] "results_bybg_people"                 "longnames"                          
       # [5] "count_of_blocks_near_multiple_sites" "results_summarized"  
       
+      
+      
+      # WHERE DOES THIS EVER GET USED NOW?...
       ## add analysis overview to 'notes' tab
       if(submitted_upload_method() == "SHP") {
         radius_description <- 'Radius of Shape Buffer (miles)'
