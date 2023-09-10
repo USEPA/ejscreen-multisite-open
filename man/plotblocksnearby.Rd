@@ -8,7 +8,8 @@ Utility to quickly view one or more facility points on map with the blocks found
 plotblocksnearby(sitepoints, radius = 3, usemapfast = TRUE, ...)
 }
 \arguments{
-\item{sitepoints}{table of points with lat, lon in decimal degrees (data.frame or data.table)}
+\item{sitepoints}{table of points with lat, lon in decimal degrees (data.frame or data.table),
+but also could just be the output of getblocksnearby() if that has already been done.}
 
 \item{radius}{in miles}
 
@@ -23,6 +24,20 @@ invisibly returns sites2blocks like getblocksnearby() does
 Map view of Census blocks (their centroids) near one or more sites
 Utility to quickly view one or more facility points on map with the blocks found nearby
 }
+\details{
+Uses \code{\link[=getblocksnearby]{getblocksnearby()}} and then displays a map of those blocks near the specified point.
+}
 \examples{
-plotblocksnearby(testpoints_n(1), 2) 
+  # At 2 sites see all Census Blocks within 1 mile
+  plotblocksnearby(sites2blocks_example_2pts_1miles)
+  \dontrun{
+  # See one randomly selected regulated facility from FRS and all Census Blocks within 2 miles:
+  plotblocksnearby(testpoints_n(1), 2) 
+  # See two sites and all Census Blocks within 5 kilometers
+  plotblocksnearby(testpoints_2, radius = convert_units(5, from = "km", towhat = "miles"))
+  # See 100 sites and all blocks within 1 mile of each - 
+  # Note you have to specify radius here or it uses default that may not match intent 
+  # - and this is a bit slow
+  plotblocksnearby(testdata_ejamit_output_100pts_1mile$results_bysite[,.(siteid, lat,lon)], radius = 1) 
+  }
 }
