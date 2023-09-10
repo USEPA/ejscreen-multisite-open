@@ -33,6 +33,7 @@
 #'   probably almost always the one your site is sitting inside of,
 #'   but ideally would adjust total count to be a fraction of blockwt based on 
 #'   what is area of circular buffer as fraction of area of block it is apparently inside of.
+#'   Setting this to TRUE can produce unexpected results, which will not match EJScreen numbers.
 #'   
 #'   Note that if creating a proximity score, by contrast, you instead want to find nearest 1 SITE if none within radius of this BLOCK.
 #' @param quadtree (a pointer to the large quadtree object) 
@@ -52,7 +53,7 @@
 #' @importFrom pdist "pdist"
 #'   
 getblocksnearbyviaQuadTree  <- function(sitepoints, radius=3, maxradius=31.07, 
-                                        avoidorphans=TRUE, report_progress_every_n=500, 
+                                        avoidorphans=FALSE, report_progress_every_n=500, 
                                         quadtree) {
   if(class(quadtree) != "QuadTree"){
     stop('quadtree must be an object created with indexblocks(), from SearchTrees package with treeType = "quad" and dataType = "point"')  
@@ -156,9 +157,10 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius=3, maxradius=31.07,
       tmp[ , distance := distances[ , c(1)]]
       tmp[ , siteid := sitepoints[i, .(siteid)]]
       
-      #filter to max distance
+      # filter to max search distance
       truemaxdistance <- distance_via_surfacedistance(maxradius)
-      res[[i]] <- tmp[distance <= truemaxdistance, .(blockid, distance, siteid)]
+      # keep only the 1 block that is closest to this site (that is > radius but < maxradius) -- NEED TO CONFIRM/TEST THIS !!
+      res[[i]] <- tmp[distance <= truemaxdistance, .(blockid, distance=min(distance), siteid)]
       # saving results as a list of tables to rbind after loop; old code did rbind for each table, inside loop 
     } else {
       #?

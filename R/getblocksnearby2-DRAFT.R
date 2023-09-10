@@ -16,7 +16,7 @@
 #' @export
 #'
 getblocksnearby2 <- function(sitepoints, radius=3, maxradius=31.07, 
-                             avoidorphans=TRUE, 
+                             avoidorphans=FALSE, 
                              # indexgridsize,
                              quadtree=is.null,
                              ...

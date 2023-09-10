@@ -9,7 +9,7 @@ getblocksnearby2(
   sitepoints,
   radius = 3,
   maxradius = 31.07,
-  avoidorphans = TRUE,
+  avoidorphans = FALSE,
   quadtree = is.null,
   ...
 )

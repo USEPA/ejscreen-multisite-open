@@ -66,7 +66,7 @@
 #' @export
 ejamit <- function(sitepoints, 
                    radius=3, maxradius=31.07, 
-                   avoidorphans=TRUE,
+                   avoidorphans=FALSE,
                    quadtree=NULL,
                    silentinteractive=F,
                    fips=NULL,

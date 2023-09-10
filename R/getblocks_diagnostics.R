@@ -49,7 +49,7 @@ getblocks_summarize_sites_per_block <- function(x, varname='blockid') {
 #' @export
 #'
 getblocks_diagnostics <- function(x) {
-  
+  if (NROW(x) == 0) {warning('no blocks found nearby'); return(NA)}
   prit <- function(x) {prettyNum(x, big.mark = ',')}  
   
   sitecount_unique_out       <- data.table::uniqueN(x, by = 'siteid')
