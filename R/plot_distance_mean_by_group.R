@@ -63,7 +63,7 @@ plot_distance_mean_by_group <- function(results_bybg_people,
   x$ratio <- round(x$ratio, 3)
   x$avg_distance_for_group    <- round(x$avg_distance_for_group,    2)
   x$avg_distance_for_nongroup <- round(x$avg_distance_for_nongroup, 2)
-   x <- x[ , c('group', 'nearest', 'nearer', 'ratio', 'avg_distance_for_group', 'avg_distance_for_nongroup')]
+  x <- x[ , c('group', 'nearest', 'nearer', 'ratio', 'avg_distance_for_group', 'avg_distance_for_nongroup')]
   return(x)
 }
 ################################################################################# # 
@@ -74,14 +74,19 @@ plot_distance_mean_by_group <- function(results_bybg_people,
 #' @inherit plot_distance_mean_by_group
 #' @inherit plot_distance_cdf_by_group examples 
 #' @export
-distance_mean_by_group <- function(..., graph=FALSE) {plot_distance_mean_by_group(..., graph = graph)}
+distance_mean_by_group <- function(..., graph=FALSE) {
+  plot_distance_mean_by_group(..., graph = graph)
+}
+
 
 #' distance_by_groups - Avg distance of each demog group (of multiple groups)
 #' Same as [plot_distance_mean_by_group()] but no plot by default
 #' @inherit plot_distance_mean_by_group
 #' @inherit plot_distance_cdf_by_group examples 
 #' @export
-distance_by_groups     <- function(..., graph=FALSE) {plot_distance_mean_by_group(..., graph = graph)}
+distance_by_groups     <- function(..., graph=FALSE) {
+  plot_distance_mean_by_group(..., graph = graph)
+}
 
 ################################################################################# # 
 

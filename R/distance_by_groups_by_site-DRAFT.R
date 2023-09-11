@@ -1,12 +1,13 @@
 #' distance_by_groups_by_site - DRAFT FUNCTION
 #'
-#' @param bybg such as ejamit()$results_bybg_people
+#' @param bybg such as [ejamit()]$results_bybg_people
 #'
 #' @return table of ratios, one col per site, one row per indicator
+#' @seealso [plot_distance_cdf_by_group()] [plot_distance_mean_by_group()] [distance_by_groups()] [distance_mean_by_group()]
 #' @export
 #' 
 distance_by_groups_by_site <- function(bybg) {
-  
+
   # out = ejamit(testpoints_100[1:10,], radius = 6.2)
   # bybg = out$results_bybg_people[siteid < 11,]
   
