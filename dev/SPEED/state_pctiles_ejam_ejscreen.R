@@ -24,12 +24,12 @@ library(EJAM)
 library(EJAMejscreenapi)
 library(data.table)
 
-# out_check <- ejscreenit(testpoints_50, radius = 1, save_map = F, save_plot = F, save_table = F)
+# out_check <- EJAMejscreenapi::ejscreenit(EJAMejscreenapi::testpoints_50, radius = 1, save_map = F, save_plot = F, save_table = F)
 # out2 <- out_check$table
-# testoutput_ejscreenapi_plus_50 <- out2
+# EJAMejscreenapi::testoutput_ejscreenapi_plus_50 <- out2
 # usethis::use_data(testoutput_ejscreenapi_plus_50)
 
-out <- EJAMejscreenapi::testoutput_ejscreenapi_plus_50
+out <- EJAMejscreenapi::testoutput_ejscreenapi_plus_50 # original example here used 
 
 vnames <- names_d; multiplier <- 0.01 #  STATE PERCENTILES, DEMOGRAPHIC (WITH 1/100 ADJUSTED)
 # or   vnames <- names_e; multiplier <- 1 #  STATE PERCENTILES, envt 
@@ -38,8 +38,7 @@ vnames <- vnames[vnames %in% names(out)]
 
 ######################################################## #
 
-x <- ejamit(testoutput_ejscreenapi_plus_50, 1)
-
+x <- ejamit(EJAMejscreenapi::testoutput_ejscreenapi_plus_50, 1)  ## or should it be just using testpoints_50  ??? or use   testoutput_ejscreenit_50 
 cat("\n\nCOMPARE RAW AND STATE PERCENTILES FROM API VS EJAM code that assigns pctiles based on raw values\n\n")
 
 for (i in 1:length(vnames)) {

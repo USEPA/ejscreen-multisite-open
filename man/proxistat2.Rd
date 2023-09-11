@@ -34,7 +34,7 @@ the block area should get put into one of these:
 \link{blockpoints} or \link{blockwts}
 }
 \examples{
- # pts <- testpoints_50
+ # pts <- testpoints_100
  # x <- proxistat2(pts = pts[1:1000,], quadtree = localtree) 
  #
  # summary(x$proximityscore)

@@ -85,7 +85,7 @@ See help("EJAM")
   out <- ejamit(testsites, radius)  
   # out <- ejamit("myfile.xlsx", 3.1)  
   
-  # out2 <- EJAMejscreenapi::ejscreenit(testpoints_1000[1:3,])
+  # out2 <- EJAMejscreenapi::ejscreenit(testpoints_05)
   
   # View results overall
   round(t(out$results_overall), 3.1)
@@ -101,17 +101,19 @@ See help("EJAM")
   t(out$results_bysite[1, ])
   t(out$results_bysite[out$results_bysite$siteid == 2, ])
   
+  
   # if doing just 1st step of ejamit() 
   #  get distance between each site and every nearby Census block
   s2b <- testdata_sites2blocks
   s2b <- getblocksnearby(testsites, radius = radius)
   s2b <- getblocksnearbyviaQuadTree(testsites, radius = radius)
   getblocks_diagnostics(s2b)
-  
+  plotblocksnearby(s2b)
+   
   # if doing just 2d step of ejamit()
   #  get summaries of all indicators based on table of distances
   out <- doaggregate(s2b, testsites) # this works now and is simpler
-  
+
 }
 
 }

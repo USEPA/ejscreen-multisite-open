@@ -19,7 +19,7 @@
 #' @export
 #'
 #' @examples 
-#'  # pts <- testpoints_50
+#'  # pts <- testpoints_100
 #'  # x <- proxistat2(pts = pts[1:1000,], quadtree = localtree) 
 #'  #
 #'  # summary(x$proximityscore)

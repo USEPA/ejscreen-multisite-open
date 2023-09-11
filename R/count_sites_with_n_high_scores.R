@@ -6,7 +6,7 @@ count_sites_with_n_high_scores <- function(scores, thresholds=c(1.01, 1.50, 2, 3
   
   # e.g., What % of sites have at least 1 demog indicator >2x state avg? 
   
-  # x <- ejamit(testpoints_50, radius = 1)
+  # x <- ejamit(testpoints_100, radius = 1)
   # out <- x$results_bysite  # $ratio.to.state.avg.Demog.Index
   ## library... need to have data.table pkg
   # out <- setDF(copy(out))

@@ -47,7 +47,7 @@ And we might also want to see the \%D as a function of continuous distance at ju
 So to retain flexibility doaggregate() reports all instances of blockgroup-site pairings.
 }
 \examples{
- y <- ejamit(testpoints_50, radius = 3)
+ y <- ejamit(testpoints_100, radius = 3)
  plot_distance_mean_by_group(y$results_bybg_people) # or distance_mean_by_group() synonym
  print(distance_by_group(y$results_bybg_people, 
    demogvarname = 'pctlowinc', demoglabel = 'Low Income'))

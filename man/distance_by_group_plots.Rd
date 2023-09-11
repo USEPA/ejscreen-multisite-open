@@ -13,7 +13,7 @@ invisibly returns full table of sorted distances of blockgroups, cumulative coun
 distance_by_group_plots or plot_distance_cdf_by_group
 }
 \examples{
- y <- ejamit(testpoints_50, radius = 3)
+ y <- ejamit(testpoints_100, radius = 3)
  plot_distance_mean_by_group(y$results_bybg_people) # or distance_mean_by_group() synonym
  print(distance_by_group(y$results_bybg_people, 
    demogvarname = 'pctlowinc', demoglabel = 'Low Income'))

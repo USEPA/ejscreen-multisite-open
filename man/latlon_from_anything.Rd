@@ -55,9 +55,9 @@ except it also uses these functions:
    package="EJAMejscreenapi"))
  latlon_from_anything(system.file("testdata/testpoints_05.csv", 
    package="EJAMejscreenapi"))
- latlon_from_anything(testpoints_50[1:6,] )
- latlon_from_anything(testpoints_50[1:6, c('lat','lon')] )
- latlon_from_anything(x=testpoints_50$lon[1:6], y=testpoints_50$lat[1:6] )
+ latlon_from_anything(testpoints_100[1:6,] )
+ latlon_from_anything(testpoints_100[1:6, c('lat','lon')] )
+ latlon_from_anything(x=testpoints_100$lon[1:6], y=testpoints_100$lat[1:6] )
 }
 \seealso{
 \code{\link[EJAMejscreenapi:read_csv_or_xl]{EJAMejscreenapi::read_csv_or_xl()}} \code{\link[=latlon_df_clean]{latlon_df_clean()}}

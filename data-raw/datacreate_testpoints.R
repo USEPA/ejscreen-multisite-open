@@ -8,7 +8,7 @@
 
 if (basename(getwd()) != "EJAM") {stop('do this from EJAM source package folder')}
 
-nvalues <- c(2, 10, 50, 100, 1000, 10000) # numbers of point locations, picked from FRS points.
+nvalues <- c(2, 10, 100, 1000, 10000) # numbers of point locations, picked from FRS points.
 myrad <- 1 # radius in miles. Larger would create MUCH larger versions of sites2blocks example objects
 
 for (n in nvalues) {

@@ -36,7 +36,7 @@ distance_cdf_by_group_plot - SLOW - needs to be optimized
 Plot a graphic showing cumulative shares of ONE demographic group that are within each distance
 }
 \examples{
- y <- ejamit(testpoints_50, radius = 3)
+ y <- ejamit(testpoints_100, radius = 3)
  plot_distance_mean_by_group(y$results_bybg_people) # or distance_mean_by_group() synonym
  print(distance_by_group(y$results_bybg_people, 
    demogvarname = 'pctlowinc', demoglabel = 'Low Income'))

@@ -51,7 +51,7 @@ mod_ejscreenapi_server <- function(id){
       
       as.data.frame(testoutput) 
       
-      # ejscreenit_for_ejam(testpoints_50[1:3, ]) # for testing
+      # ejscreenit_for_ejam(testpoints_100[1:3, ]) # for testing
       
       
       

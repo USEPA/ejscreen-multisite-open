@@ -40,7 +40,7 @@ CDF Line Plots of cumulative share of each demographic group, within each distan
 Each groups distribution of distances
 }
 \examples{
- y <- ejamit(testpoints_50, radius = 3)
+ y <- ejamit(testpoints_100, radius = 3)
  plot_distance_mean_by_group(y$results_bybg_people) # or distance_mean_by_group() synonym
  print(distance_by_group(y$results_bybg_people, 
    demogvarname = 'pctlowinc', demoglabel = 'Low Income'))

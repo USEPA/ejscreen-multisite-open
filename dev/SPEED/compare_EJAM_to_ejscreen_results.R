@@ -6,9 +6,9 @@ library(data.table)
 library(EJAM)
 library(EJAMejscreenapi)
 
-x1full = ejscreenit(testpoints_50, radius = 3, save_map = F, save_plot = F, save_table = F)
+x1full = ejscreenit(testpoints_100, radius = 3, save_map = F, save_plot = F, save_table = F)
 
-x2full = ejamit(testpoints_50, radius = 3)
+x2full = ejamit(testpoints_100, radius = 3)
 
 
 # names(x1full)

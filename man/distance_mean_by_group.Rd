@@ -26,7 +26,7 @@ or exactly on top of the internal point of the block, in which case zero would n
 appropriate estimate of the distance, hence this adjustment is made in EJAM getblocksnearby()
 }
 \examples{
- y <- ejamit(testpoints_50, radius = 3)
+ y <- ejamit(testpoints_100, radius = 3)
  plot_distance_mean_by_group(y$results_bybg_people) # or distance_mean_by_group() synonym
  print(distance_by_group(y$results_bybg_people, 
    demogvarname = 'pctlowinc', demoglabel = 'Low Income'))

@@ -1,13 +1,13 @@
 # no crash for basic example 
 test_that('case simple example, return data.table',{
-  expect_no_error(val <-  getblocksnearby(sitepoints = EJAM::testpoints_100_dt) )
+  expect_no_error(val <-  getblocksnearby(sitepoints = EJAM::testpoints_10) )
   expect_true('data.table' %in% class(val))
   # expect_identical(NROW(val), )
 })
 
 
 # test_that('case simple example, return data.table - ideally should at least warn when radius zero or >50 miles',{
-#   expect_error(val <- EJAM::getblocksnearby(sitepoints = testpoints_50, radius = 0 ))
+#   expect_error(val <- EJAM::getblocksnearby(sitepoints = testpoints_10, radius = 0 ))
 #  
 # })
 
