@@ -47,8 +47,8 @@ plotblocksnearby <- function(sitepoints, radius=3, usemapfast=TRUE, ...) {
     sites2blocks <- getblocksnearby(sitepoints, radius = radius, ...)
   }
   
-  # Get the lat,lon of each block so we can map them
-  bl <- merge( sites2blocks, blockpoints , on = "blockid")
+  # Get the lat,lon of each block so we can map them - could try join instead?? ####
+  bl <- latlon_join_on_blockid(sites2blocks) # now checks 1st to see if lat lon already there.  #old:   merge( sites2blocks, blockpoints , on = "blockid")
   setDT(bl)
   setnames(bl, 'lat', 'blocklat')
   setnames(bl, 'lon', 'blocklon')
@@ -56,7 +56,11 @@ plotblocksnearby <- function(sitepoints, radius=3, usemapfast=TRUE, ...) {
   # in the scenario where we got only output of getblocksnearby() not actual sitepoints,
   # use block lat,lon values to approximate the lat,lon of each site, since we were not given that 
   if (!really_sitepoints) {
+    # infer radius approximately ####
     if (missing(radius)) {radius <- round(max(bl$distance, na.rm = TRUE),1)}
+    # infer sitepoints lat,lon of sites from info in sites2blocks table... 
+    # *** CAN FIX/ IMPROVE THIS APPROXIMATION BY USING trilaterate() to 
+    #  really recreate the sitepoints lat,lon info from distances and lat,lon of blocks!
     sitepoints <- bl[ , list(lat = mean(blocklat), lon = mean(blocklon)), by = "siteid"]
   }
   
