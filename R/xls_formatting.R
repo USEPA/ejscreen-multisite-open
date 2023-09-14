@@ -1,5 +1,4 @@
-#' Format batch results for excel
-#' also see other functions related to this!
+#' Format batch results for excel - OBSOLETE - NOW IN xml_formatting2()
 #' @param df data.frame, table of batch buffer results
 #' @param hyperlink_cols vector of names of columns in df to get treated as hyperlinks in excel
 #' @param heatmap_colnames vector of names of columns in df to apply conditional formatting to,
@@ -55,9 +54,21 @@ xls_formatting  <- function(df, hyperlink_cols=NULL,
   }
   
   ######################################################################## #
+  # HEADER ROW & freeze panes    ####
+  ######################################################################## #
+  row1style <- openxlsx::createStyle(wrapText = TRUE,  textDecoration = "bold", border = "bottom", borderStyle = "medium")
+  openxlsx::addStyle(wb, sheet = 1, row1style, rows = 1, cols = 1:NCOL(df), gridExpand = TRUE)
+  openxlsx::setRowHeights(wb, 1, rows = 1, heights = 115)
+  openxlsx::freezePane(wb, sheet = 1, firstActiveRow = 2, firstActiveCol = 4)
+  
+  
+  ######################################################################## #
   # COLOR CODING / CONDITIONAL FORMATTING HEATMAP  ####
   # to highlight large percentiles in Excel
   ######################################################################## #
+  
+  
+  ## *** **ANOTHER WAY TO HANDLE THIS IS TO USE THE FUNCTIONS LIKE xls_varname2color()  xls_varname2type() etc. ####
   
   if(!is.null(heatmap_colnames)){
     pctilecolnums <- which(names(df) %in% heatmap_colnames)

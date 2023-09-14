@@ -661,9 +661,9 @@ app_ui  <- function(request) {
                                                 choices = setNames(c(EJAM::names_d,
                                                                      EJAM::names_d_subgroups,
                                                                      EJAM::names_e, 
-                                                                     EJAM::names_ej),
+                                                                     EJAM::names_ej_pctile, names_ej_supp_pctile, names_ej_state_pctile, names_ej_supp_state_pctile),
                                                                    c(EJAM::names_d_friendly,
-                                                                     EJAM::names_d_subgroups_friendly,
+                                                                     EJAM::names_d_subgroups_pctile_friendly, names_ej_supp_pctile_friendly, names_ej_state_pctile_friendly, names_ej_supp_state_pctile_friendly,
                                                                      EJAM::names_e_friendly, 
                                                                      EJAM::names_ej_friendly
                                                                    ))

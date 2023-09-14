@@ -1,6 +1,8 @@
 #' Map view of Census blocks (their centroids) near one or more sites
 #' Utility to quickly view one or more facility points on map with the blocks found nearby
-#' @details Uses [getblocksnearby()] and then displays a map of those blocks near the specified point.
+#' @details Uses [getblocksnearby()] if lat,lon points provided as sitepoints,
+#'  but skips it if looks like user passed output of getblocksnearby(),
+#'  and then displays a map of those blocks near the specified point.
 #' @param sitepoints table of points with lat, lon in decimal degrees (data.frame or data.table),
 #'   but also could just be the output of getblocksnearby() if that has already been done.
 #' @param radius in miles
@@ -58,9 +60,10 @@ plotblocksnearby <- function(sitepoints, radius=3, usemapfast=TRUE, ...) {
   if (!really_sitepoints) {
     # infer radius approximately ####
     if (missing(radius)) {radius <- round(max(bl$distance, na.rm = TRUE),1)}
-    # infer sitepoints lat,lon of sites from info in sites2blocks table... 
+    
+    # VERY roughly infer sitepoints lat,lon of sites from info in sites2blocks table... just for a rough map... but 
     # *** CAN FIX/ IMPROVE THIS APPROXIMATION BY USING trilaterate() to 
-    #  really recreate the sitepoints lat,lon info from distances and lat,lon of blocks!
+    #  really more accurately recreate the sitepoints lat,lon info from distances and lat,lon of blocks! (once trilaterate() is debugged/checked)
     sitepoints <- bl[ , list(lat = mean(blocklat), lon = mean(blocklon)), by = "siteid"]
   }
   

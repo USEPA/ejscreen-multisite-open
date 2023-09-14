@@ -34,21 +34,21 @@ url_4table <- function(lon, lat, radius, regid=NULL, as_html=TRUE) {
   newcolnames <- c(
     "EJScreen Report", 
     "EJScreen Map", 
-    "ACS Report", 
+    # "ACS Report", 
     "ECHO report"
   )
   
   results_bysite <- data.table(
     `EJScreen Report` = url_ejscreen_report(    lat = lat, lon = lon, radius = radius, as_html = as_html), 
     `EJScreen Map`    = url_ejscreenmap(        lat = lat, lon = lon,                    as_html = as_html), 
-    `ACS Report`      = url_ejscreen_acs_report(lat = lat, lon = lon, radius = radius, as_html = as_html),
+    # `ACS Report`      = url_ejscreen_acs_report(lat = lat, lon = lon, radius = radius, as_html = as_html),
     `ECHO report` = echolink
   )
   
   results_overall <- data.table(
     `EJScreen Report` = NA,  
     `EJScreen Map`    = NA,  
-    `ACS Report`      = NA,  
+    # `ACS Report`      = NA,  
     `ECHO report`     = NA   
   )
   
@@ -56,7 +56,7 @@ url_4table <- function(lon, lat, radius, regid=NULL, as_html=TRUE) {
   # setcolorder(out$results_overall, neworder = newcolnames)
   # out$longnames <- c(newcolnames, out$longnames)
   return(list(
-    results_bysite = results_bysite,
+    results_bysite  = results_bysite,
     results_overall = results_overall,
     newcolnames=newcolnames
     ))

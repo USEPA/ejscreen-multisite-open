@@ -40,19 +40,19 @@ ejscreenit_for_ejam <- function(sitepoints, radius=3, ...) {
  out$results_bysite[ , `:=`(
   `EJScreen Report` = url_ejscreen_report(    lat = sitepoints$lat, lon = sitepoints$lon, radius = radius, as_html = TRUE), 
   `EJScreen Map`    = url_ejscreenmap(        lat = sitepoints$lat, lon = sitepoints$lon,                  as_html = TRUE), 
-  `ACS Report`      = url_ejscreen_acs_report(lat = sitepoints$lat, lon = sitepoints$lon, radius = radius, as_html = TRUE),
+  # `ACS Report`      = url_ejscreen_acs_report(lat = sitepoints$lat, lon = sitepoints$lon, radius = radius, as_html = TRUE),
   `ECHO report` = echolink
 )]
 out$results_overall[ , `:=`(
   `EJScreen Report` = NA, 
   `EJScreen Map`    = NA, 
-  `ACS Report`      = NA,
+  # `ACS Report`      = NA,
   `ECHO report`     = NA
 )]
 newcolnames <- c(
   "EJScreen Report", 
   "EJScreen Map", 
-  "ACS Report", 
+  # "ACS Report", 
   "ECHO report")
 # put those up front as first columns
 setcolorder(out$results_bysite, neworder = newcolnames)

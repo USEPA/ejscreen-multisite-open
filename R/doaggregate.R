@@ -52,7 +52,8 @@
 #' @param include_ejindexes whether to calculate EJ Indexes and return that information 
 #' @param need_proximityscore whether to calculate proximity scores
 #' @param radius Optional radius in miles to limit analysis to. By default this function uses 
-#'   all the distances that were provided in the output of getblocksnearby(). 
+#'   all the distances that were provided in the output of getblocksnearby(),
+#'   and reports radius estimated as rounded max of distance values in inputs to doaggregate.
 #'   But there may be cases where you want to run getblocksnearby() once for 10 miles, say, 
 #'   on a very long list of sites (1,000 or more, say), and then get summary results for 
 #'   1, 3, 5, and 10 miles without having to redo the getblocksnearby() part for each radius.
@@ -64,7 +65,9 @@
 #'   "nh" for non-hispanic race subgroups as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh; 
 #'   "alone" for EJScreen v2.2 style race subgroups as in    White Alone, wa and others in names_d_subgroups_alone; 
 #'   "both" for both versions. Work in progress.
-#'   
+#' @param infer_sitepoints set to TRUE to try to infer the lat,lon of each site around which the blocks in sites2blocks were found.
+#'   lat,lon of each site will be approximated as average of nearby blocks, although a more accurate slower way would
+#'   be to use reported distance of each of 3 of the furthest block points and triangulate
 #' @param ... more to pass to another function? Not used currently.
 #' @param silentinteractive Set to FALSE to prevent long output showing in console in RStudio when in interactive mode
 #' @seealso [ejamit]   [getblocksnearby()]  
@@ -92,8 +95,9 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
                         testing=FALSE, 
                         include_ejindexes=FALSE, updateProgress = NULL,
                         need_proximityscore=FALSE, silentinteractive=FALSE, 
-                        subgroups_type='alone', ...) {
- 
+                        subgroups_type='alone', 
+                        infer_sitepoints=FALSE, ...) {
+  
   # But note that names_d_subgroups and related lists should already be defined in built package
   # as either the nh versions or alone versions by the datacreate_names_of_indicators.R script
   # and or in EJAMejscreenapi::map_headernames metadata ... work in progress ***
@@ -120,12 +124,14 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   
   # check if optional input params, when provided, are all valid
   
+  # Try to infer lat lon of each sitepoint?
   
   
   
-  
-  # check if we only want to analyze a subset of all radii in sites2blocks
-  if (!missing(radius)) {
+  # Try to infer what the radius was approximately 
+  if (missing(radius)) {
+    radius <- round(max(sites2blocks$distance, na.rm = T), 1)
+  } else  {
     if ((length(radius) != 1) | (!is.numeric(radius)) | (radius <= 0) | radius > 50 ) {stop('radius must be a single number, in miles, between 0 and 50')}
     if (radius >= 2 * max(sites2blocks$distance)) {warning('radius requested is at least 2x any distance found in sites2blocks, suggesting it is larger than the radius that was analyzed by getblocksnearby()')}
     sites2blocks <- sites2blocks[distance <= radius, ]
@@ -191,7 +197,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
     popmeancols <- unique(c(
       'lowlifex',  # I think it is just pop wtd mean  - not completely sure it should be via popwtd mean, or calculated via formula actually.
       names_e
-          ))
+    ))
     if (include_ejindexes) {
       popmeancols <- c(popmeancols, names_ej, names_ej_state, names_ej_supp, names_ej_supp_state)
       ### but,
@@ -249,7 +255,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   #    getblocksnearby() should have already done a join that 
   # adds blockwt 
   # and block_radius_miles and use that to adjust short distances there 
- 
+  
   # >>>> A BIT SLOW - CAN WE DO THE FOLLOWING LINE BY REFERENCE INSTEAD OF MAKING A COPY OF sites2blocks? just want to join and add  blockwt & bgid to sites2blocks, from blockwts dt
   # if ("block_radius_miles" %in% names(blockwts)) {
   #   sites2blocks <-  blockwts[sites2blocks, .(siteid,blockid,distance,blockwt,bgid, block_radius_miles), on='blockid']
@@ -517,7 +523,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   # and not sure I can calculate results at same time, since this kind of join is getting a subset of blockgroupstats but grouping by sites2bgs_bysite$siteid  and 
   # maybe cannot use blockgroupstats[sites2bgs_bysite,    by=.(siteid)    since siteid is in sites2bgs_bysite not in blockgroupstats table. 
   # So, first join blockgroupstats necessary variables to the shorter sites2bgs_bysite:   
-
+  
   if (include_ejindexes) {blockgroupstats <- merge(blockgroupstats, bgej, by = "bgid"); rm(bgej)}  
   
   #   Remember that. . .
@@ -770,7 +776,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
     pctunemployed   = 1 * ifelse(unemployedbase == 0, 0, as.numeric(unemployed) / unemployedbase)  
   ) ]
   
-
+  
   results_overall[ , `:=`(
     Demog.Index = (pctlowinc + pctmin) / 2,
     # *** add supplemental indicator too, when possible. need lowlifeexpectancy etc. and 
@@ -843,7 +849,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
     pctunemployed   = 1 * ifelse(unemployedbase == 0, 0, as.numeric(unemployed) / unemployedbase)  # ,
   )]
   
-   results_bysite[ , `:=`(
+  results_bysite[ , `:=`(
     Demog.Index = (pctlowinc + pctmin) / 2,
     # *** add this supplemental indicator too, when possible. need lowlifeexpectancy etc. and Demog.Index.Supp needs to be in names_d  and lookup tables for usastats and statestats ####
     Demog.Index.Supp = (pctlowinc + pctunemployed + pctlths + pctlingiso + lowlifex ) / ifelse(is.na(lowlifex), 4, 5)
@@ -944,6 +950,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   # *** popwtd avg of sites state pctiles (not raw scores) will be used as the overall state pctiles.
   #  (Because each site has a different site, you cannot just convert overall raw scores to state pctiles).
   
+  
   if (missing(sites2states_or_latlon) | !("ST" %in% names(sites2states_or_latlon))) { # must or should figure out state based on blockid -> blockfips -> ST
     sites2states <- ST_by_site_from_sites2blocks(sites2blocks)
     # returns a data.table with these columns:  siteid, ST
@@ -958,7 +965,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
       # maybe get latlon of closest block?? no, just omit lat,lon in this case
     }
   } else { # hope it has ST, which is best, or latlon which is slowest, but in between was via blockid, done above!
-    sites2states <- states_infer(sites2states_or_latlon) 
+    sites2states <- states_infer(sites2states_or_latlon)
     # returns a data.FRAME with these columns (plus others in input):  lat,lon,siteid, ST, statename, FIPS.ST, REGION,  n 
   }
   # sites2states  is df or dt with just 1 row/site, and columns= siteid,ST ; and MIGHT have lat,lon and other info.
@@ -968,8 +975,20 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   results_bysite[, statename :=  stateinfo$statename[match(ST, stateinfo$ST)]]
   results_overall$statename <- NA
   
-  
   #  ##################################################### #  ######################################################
+  
+  if (missing(radius)) {radius.miles <- round(max(sites2blocks$distance, na.rm = TRUE), 1)}
+  
+  # Infer lat,lon of each siteid if lat,lon not already provided in sites2states_or_latlon ? ####
+  # use block lat,lon values to approximate the lat,lon of each site, if we were not given that 
+  if (infer_sitepoints & !all(c("lat","lon") %in% names(results_bysite))) {
+    sitepoints <- sites2blocks[ , list(lat = mean(lat), lon = mean(lon)), by = "siteid"]
+  }
+  
+  # could use lat,lon to create URLs links to report on each site   ####
+  #  but that gets done in app_server or in ejamit()  
+  #  "EJScreen Report" "EJScreen Map"   "ECHO report" ###
+
   
   ##################################################### #
   ## PERCENTILES - express raw scores (from results_bysite AND  results_overall) in percentile terms #### 
@@ -1000,6 +1019,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   
   # SURELY THERE IS A FASTER / VECTORIZED WAY TO DO THIS (this actually is noticeably slow, at least the line that starts with state.pctile.cols_bysite[ , varnames.state.pctile[[i]]] <- pctile_from_raw_lookup( ):
   #  >>>> VERY SLOW STEP; also the function  pctile_from_raw_lookup()  may need to be optimized or avoid passing dt as param to it. ####
+  # here it loops over the 31 to 83 (if ej) indicators, and then the function itself loops over USA + up to 50+ states ! ***
   for (i in seq_along(varsneedpctiles)) {
     myvar <- varsneedpctiles[i]
     if ((myvar %in% names(usastats)) & (myvar %in% names(results_bysite)) & (myvar %in% names(results_overall))) {  # use this function to look in the lookup table to find the percentile that corresponds to each raw score value:
@@ -1042,9 +1062,9 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
     
     # not sure this EJ pctile work needs to be done separately here, 
     # or if it can just happen as all the other pop wtd pctile calculations happened
-     warning("EJ Indexes NOT TESTED HERE YET. Also, need to confirm the use of separate state percentile version of raw EJ score")
+    warning("EJ Indexes NOT TESTED HERE YET. Also, need to confirm the use of separate state percentile version of raw EJ score")
     ####
-   
+    
     # The 2023 new EJ index formula: 
     # 0) The buffer raw EJ Index is probably just the pop wtd mean of the RAW scores of blockgroups in it, (& reported finally as pctile via lookup)
     #  NOT recalculated via formulas !? It would not make sense to calculate from formula, or would it? Confirm this.
@@ -1059,7 +1079,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
     ## raw EJ Index basic = 2-factor demog index times the envt percentile ####
     # raw EJ index supplemental = 5-factor suppl demog index times the envt percentile  ####
     ejnames_raw =   c(names_ej, names_ej_supp, names_ej_state, names_ej_supp_state)
-      
+    
     varnames.us.pctile <- c(names_ej_pctile, names_ej_supp_pctile)
     varnames.state.pctile <- c(names_ej_state_pctile, names_ej_supp_state_pctile)
     ejnames_pctile <- c(varnames.us.pctile, varnames.state.pctile)
@@ -1067,9 +1087,9 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
     ej_bysite <- results_bysite[ , lapply(.SD, FUN = function(x) {
       x * pop / sum(pop)
     }), .SDcols = ejnames_raw] 
-      
+    
     setnames(ej_bysite, ejnames_raw) #  column names of ej raw not percentiles  
-     
+    
     # do not include raw EJ scores in outputs - just use them to report as percentiles
     # results_overall <- cbind(results_overall, ej_overall, ej_supp_overall)
     # results_bysite  <- cbind(results_bysite,  ej_bysite,  ej_supp_bysite )
@@ -1081,9 +1101,9 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
     # This for now just is a copy of code used above to get percentiles, except it uses standalone table of raw scores not raw scores already placed into the results tables,
     # since we do not really need to keep or return the raw scores of EJ indexes, unlike all other indicators where we want the raw scores.
     # Ideally should have a function to use to do this, but for other variables server code did this, not a function. 
-     
+    
     # set up empty tables to store the percentiles we find
-       us.pctile.cols_bysite     <- data.frame(matrix(nrow = NROW(results_bysite),  ncol = length(varnames.us.pctile))); colnames(us.pctile.cols_bysite)     <- varnames.us.pctile
+    us.pctile.cols_bysite     <- data.frame(matrix(nrow = NROW(results_bysite),  ncol = length(varnames.us.pctile))); colnames(us.pctile.cols_bysite)     <- varnames.us.pctile
     state.pctile.cols_bysite  <- data.frame(matrix(nrow = NROW(results_bysite),  ncol = length(varnames.state.pctile))); colnames(state.pctile.cols_bysite)  <- varnames.state.pctile
     us.pctile.cols_overall    <- data.frame(matrix(nrow = NROW(results_overall), ncol = length(varnames.us.pctile))); colnames(us.pctile.cols_overall)    <- varnames.us.pctile
     # done later: state.pctile.cols_overall 
@@ -1092,8 +1112,8 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
     for (i in seq_along(ejnames_pctile)) {
       myvar <- ejnames_raw[i]  ##   
       if (myvar %in% names(usastats)) {  # use this function to look in the lookup table to find the percentile that corresponds to each raw score value:
-       
-         us.pctile.cols_bysite[    , varnames.us.pctile[[i]]]    <- pctile_from_raw_lookup(
+        
+        us.pctile.cols_bysite[    , varnames.us.pctile[[i]]]    <- pctile_from_raw_lookup(
           unlist( ej_bysite[  , ..myvar]), 
           varname.in.lookup.table = myvar, lookup = usastats) 
         
@@ -1122,7 +1142,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
     # Do not provide the raw EJ scores, just the percentiles?
     results_overall <- cbind(siteid=NA, results_overall, us.pctile.cols_overall ) # , state.pctile.cols_overall)
     results_bysite  <- cbind(           results_bysite,  us.pctile.cols_bysite,  state.pctile.cols_bysite )
-  
+    
     #*# Then for overall results as EJ index State percentile, I guess we use the popwtd mean of the site-specific EJ index State PERCENTILES?
     #*#   (You cannot look up the average (overall) raw score since the US percentiles table is not applicable really.)
     # add certain variable names to the list of variables for which overall average state percentile will be calculated
@@ -1254,6 +1274,13 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   
   # ________________________________________________________________________############ #  ######################## 
   
+  #***  ###################################### #
+  # RADIUS (inferred or passed here) added to results  ####
+  
+  results_overall[ , radius.miles := radius]
+  results_bysite[  , radius.miles := radius]
+  sites2bgs_plusblockgroupdata_bysite[ , radius.miles := radius]
+  # longnames will get all the names translated from colnames of results_overall
   
   #***  ###################################### #
   # LATITUDE & LONGITUDE added to results  ####
@@ -1269,10 +1296,14 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
     results_bysite[ , lon := NA]
   }
   
-  # add those columns to overall, so the format is same for overall and bysite tables
+  # add those columns to overall and bybg, so the format is same for overall and bysite tables
   results_overall[ , lat := NA]
   results_overall[ , lon := NA]
-  #***  ###################################### #
+   
+  sites2bgs_plusblockgroupdata_bysite[ , lat := NA]
+  sites2bgs_plusblockgroupdata_bysite[ , lon := NA]
+
+    #***  ###################################### #
   
   # Put results columns in a more useful/ convenient order ####
   {
@@ -1397,7 +1428,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   # # > all.equal(sort(renamer$old), sort(renamer_check$old))
   # # [1] TRUE
   # longnames[ longnames %in% renamer$old] <- renamer$new[match(longnames[ longnames %in% renamer$old] , renamer$old)]
-
+  
   ## temporarily get friendly versions of some average names ####
   # renamer = data.frame(
   #   old=c(names_e_avg,       names_d_avg,       names_d_subgroups_avg, 

@@ -25,7 +25,9 @@ Map view of Census blocks (their centroids) near one or more sites
 Utility to quickly view one or more facility points on map with the blocks found nearby
 }
 \details{
-Uses \code{\link[=getblocksnearby]{getblocksnearby()}} and then displays a map of those blocks near the specified point.
+Uses \code{\link[=getblocksnearby]{getblocksnearby()}} if lat,lon points provided as sitepoints,
+but skips it if looks like user passed output of getblocksnearby(),
+and then displays a map of those blocks near the specified point.
 }
 \examples{
   # At 2 sites see all Census Blocks within 1 mile

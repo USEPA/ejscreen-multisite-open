@@ -33,7 +33,7 @@
 #'   out <- ejamit(testsites, radius)  
 #'   # out <- ejamit("myfile.xlsx", 3.1)  
 #'   
-#'   # out2 <- EJAMejscreenapi::ejscreenit(testpoints_1000[1:3,])
+#'   # out2 <- EJAMejscreenapi::ejscreenit(testpoints_05)
 #'   
 #'   # View results overall
 #'   round(t(out$results_overall), 3.1)
@@ -49,17 +49,19 @@
 #'   t(out$results_bysite[1, ])
 #'   t(out$results_bysite[out$results_bysite$siteid == 2, ])
 #'   
+#'   
 #'   # if doing just 1st step of ejamit() 
 #'   #  get distance between each site and every nearby Census block
 #'   s2b <- testdata_sites2blocks
 #'   s2b <- getblocksnearby(testsites, radius = radius)
 #'   s2b <- getblocksnearbyviaQuadTree(testsites, radius = radius)
 #'   getblocks_diagnostics(s2b)
-#'   
+#'   plotblocksnearby(s2b)
+#'    
 #'   # if doing just 2d step of ejamit()
 #'   #  get summaries of all indicators based on table of distances
 #'   out <- doaggregate(s2b, testsites) # this works now and is simpler
-#'   
+#'
 #' }
 #' 
 #' @seealso  [getblocksnearby()] [doaggregate()]
@@ -109,7 +111,8 @@ ejamit <- function(sitepoints,
       doaggregate(
         sites2blocks = mysites2blocks,  # subgroups_type = 'original', 
         sites2states_or_latlon = sitepoints, # sites2states_or_latlon = unique(x[ , .(siteid, lat, lon)]))
-        silentinteractive = silentinteractive
+        silentinteractive = silentinteractive,
+        radius = radius
       )
     )
     # provide sitepoints table provided by user aka data_uploaded(), (or could pass only lat,lon and ST -if avail- not all cols?)
@@ -120,9 +123,11 @@ ejamit <- function(sitepoints,
     
   } else {
     # fips provided, not latlons
-    mysites2blocks <- getblocksnearby_from_fips(fips)
+    mysites2blocks <- getblocksnearby_from_fips(fips) # this should have site = each FIPS code (such as each countyfips), and otherwise same outputs as getblocksnearby()
     out <- doaggregate(
-      mysites2blocks, sites2states_or_latlon = unique(mysites2blocks[ , .(siteid, lat, lon)])   , # subgroups_type = 'original'
+      mysites2blocks, 
+      sites2states_or_latlon = unique(mysites2blocks[ , .(siteid, lat, lon)]),   # subgroups_type = 'original'
+      radius = 999
     )
   }
   ################################################################ # 
@@ -147,19 +152,19 @@ ejamit <- function(sitepoints,
   out$results_bysite[ , `:=`(
     `EJScreen Report` = url_ejscreen_report(    lat = out$results_bysite$lat, lon = out$results_bysite$lon, radius = radius, as_html = T),
     `EJScreen Map`    = url_ejscreenmap(        lat = out$results_bysite$lat, lon = out$results_bysite$lon,                  as_html = T),
-    `ACS Report`      = url_ejscreen_acs_report(lat = out$results_bysite$lat, lon = out$results_bysite$lon, radius = radius, as_html = T),
+    # `ACS Report`      = url_ejscreen_acs_report(lat = out$results_bysite$lat, lon = out$results_bysite$lon, radius = radius, as_html = T),
     `ECHO report` = echolink
   )]
   out$results_overall[ , `:=`(
     `EJScreen Report` = NA,   #  rep(NA,nrow(out$results_bysite)),
     `EJScreen Map`    = NA,    # rep(NA,nrow(out$results_bysite)),
-    `ACS Report`      = NA,   #  rep(NA,nrow(out$results_bysite)),
+    # `ACS Report`      = NA,   #  rep(NA,nrow(out$results_bysite)),
     `ECHO report`     = NA     # rep(NA,nrow(out$results_bysite))
   )]
   newcolnames <- c(
     "EJScreen Report",
     "EJScreen Map",
-    "ACS Report",
+    # "ACS Report",
     "ECHO report")
   # put those up front as first columns
   setcolorder(out$results_bysite, neworder = newcolnames)

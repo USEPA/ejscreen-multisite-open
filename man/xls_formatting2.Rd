@@ -10,8 +10,11 @@ xls_formatting2(
   eachsite,
   longnames,
   summary_plot = NULL,
+  plot2 = NULL,
   analysis_title = NULL,
   buffer_desc = NULL,
+  hyperlink_cols = NULL,
+  heatmap_colnames = NULL,
   heatmap_cuts = c(80, 90, 95),
   heatmap_colors = c("yellow", "orange", "red"),
   graycolnums = NULL,
@@ -30,9 +33,13 @@ xls_formatting2(
 
 \item{summary_plot}{optional plot passed from EJAM shiny app to save in 'Plot' sheet of Excel table}
 
+\item{plot2}{another plot for another tab}
+
 \item{analysis_title}{optional title passed from Shiny app to 'Notes' sheet}
 
 \item{buffer_desc}{optional description of buffer used in analysis, passed to 'Notes' sheet}
+
+\item{heatmap_colnames}{optional vector of colnames to apply heatmap colors}
 
 \item{heatmap_cuts}{vector of values to separate heatmap colors, between 0-100}
 
@@ -58,7 +65,7 @@ xls_formatting2
 Format EJAM tabular outputs for saving as Excel spreadsheet
 }
 \details{
-NEED TO MERGE THIS WITH EJAMejscreenapi::xls_formatting_api()
+Already took and put here most or all of code from xls_formatting() or xls_formatting_api()
 }
 \examples{
 \dontrun{

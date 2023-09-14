@@ -17,6 +17,7 @@ doaggregate(
   need_proximityscore = FALSE,
   silentinteractive = FALSE,
   subgroups_type = "alone",
+  infer_sitepoints = FALSE,
   ...
 )
 }
@@ -29,7 +30,8 @@ See sites2blocks_example dataset in package, as input to this function}
 \item{sites2states_or_latlon}{data.table or just data.frame, with columns siteid (each unique one in sites2blocks) and ST (2-character State abbreviation) or lat and lon}
 
 \item{radius}{Optional radius in miles to limit analysis to. By default this function uses
-all the distances that were provided in the output of getblocksnearby().
+all the distances that were provided in the output of getblocksnearby(),
+and reports radius estimated as rounded max of distance values in inputs to doaggregate.
 But there may be cases where you want to run getblocksnearby() once for 10 miles, say,
 on a very long list of sites (1,000 or more, say), and then get summary results for
 1, 3, 5, and 10 miles without having to redo the getblocksnearby() part for each radius.
@@ -62,6 +64,10 @@ using formulas that have to be specified.}
 "nh" for non-hispanic race subgroups as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh;
 "alone" for EJScreen v2.2 style race subgroups as in    White Alone, wa and others in names_d_subgroups_alone;
 "both" for both versions. Work in progress.}
+
+\item{infer_sitepoints}{set to TRUE to try to infer the lat,lon of each site around which the blocks in sites2blocks were found.
+lat,lon of each site will be approximated as average of nearby blocks, although a more accurate slower way would
+be to use reported distance of each of 3 of the furthest block points and triangulate}
 
 \item{...}{more to pass to another function? Not used currently.}
 }

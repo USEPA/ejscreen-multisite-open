@@ -32,7 +32,7 @@
 #' @rawNamespace import(dplyr, except = c(first, last, between))
 #' 
 app_server <- function(input, output, session) {
-  
+  testing=FALSE; if (testing) {cat('testing app_server()\n\n')}
   #############################################################################  #
   # Note: how to avoid or still have a global.R file in the golem approach 
   #
@@ -1106,9 +1106,9 @@ app_server <- function(input, output, session) {
     if(nrow(d_upload) != nrow(out$results_bysite)) {
       out$results_bysite[, `:=`(
         `EJScreen Report` = rep('N/A', nrow(out$results_bysite)),
-        `EJScreen Map` = rep('N/A', nrow(out$results_bysite)),
-        `ACS Report` = rep('N/A', nrow(out$results_bysite)),
-        `ECHO report` = rep('N/A', nrow(out$results_bysite))
+        `EJScreen Map`    = rep('N/A', nrow(out$results_bysite)),
+        # `ACS Report`      = rep('N/A', nrow(out$results_bysite)),  # will drop this one
+        `ECHO report`     = rep('N/A', nrow(out$results_bysite))
       )]
     } else {
       
@@ -1122,14 +1122,14 @@ app_server <- function(input, output, session) {
       out$results_bysite[ , `:=`(
         `EJScreen Report` = url_ejscreen_report(    lat = d_upload$lat, lon =  d_upload$lon, radius = input$bt_rad_buff, as_html = TRUE), 
         `EJScreen Map`    = url_ejscreenmap(        lat = d_upload$lat, lon =  d_upload$lon,                             as_html = TRUE), 
-        `ACS Report`      = url_ejscreen_acs_report(lat =  d_upload$lat, lon = d_upload$lon, radius = input$bt_rad_buff, as_html = TRUE),
+        # `ACS Report`      = url_ejscreen_acs_report(lat = d_upload$lat, lon =  d_upload$lon, radius = input$bt_rad_buff, as_html = TRUE),
         `ECHO report` = echolink
       )]
     }
     newcolnames <- c(
       "EJScreen Report", 
       "EJScreen Map", 
-      "ACS Report", 
+      # "ACS Report", 
       "ECHO report"
     )
     # put those up front as first columns
@@ -1907,16 +1907,18 @@ app_server <- function(input, output, session) {
   #output: site by site datatable 
   output$view3_table <- DT::renderDT(server = TRUE, expr = {
     req(data_processed())
-    
+    if (testing) {cat('view3_table - doing site by site table for DT view \n')
+      # browser()
+      }
     # --------------------------------------------------- #
     # cols_to_select <- names(data_processed)
     # friendly_names <- longnames???
-    cols_to_select <- c('siteid',  'pop', 'EJScreen Report', 'EJScreen Map', 'ACS Report', 'ECHO report',
+    cols_to_select <- c('siteid',  'pop', 'EJScreen Report', 'EJScreen Map', 'ECHO report', # 'ACS Report', 
                         names_d, names_d_subgroups,
                         names_e #, 
                         # no names here corresponding to number above x threshold, state, region ??
     )
-    friendly_names <- c('Site ID', 'Est. Population',  'EJScreen Report', 'EJScreen Map', 'ACS Report', 'ECHO report',
+    friendly_names <- c('Site ID', 'Est. Population',  'EJScreen Report', 'EJScreen Map', 'ECHO report', #'ACS Report', 
                         names_d_friendly, names_d_subgroups_friendly, 
                         names_e_friendly, 
                         '# of indicators above 95% threshold', 'State', 'EPA Region')
@@ -1944,7 +1946,7 @@ app_server <- function(input, output, session) {
     
     # dt$`EJScreen Report` <- EJAMejscreenapi::url_linkify(dt$`EJScreen Report`, text = 'EJScreen Report')
     # dt$`EJScreen Map` <- EJAMejscreenapi::url_linkify(dt$`EJScreen Map`, text = 'EJScreen Map')
-    # dt$`ACS Report` <- EJAMejscreenapi::url_linkify(dt$`ACS Report`, text = 'ACS Report')
+    #    #### dt$`ACS Report` <- EJAMejscreenapi::url_linkify(dt$`ACS Report`, text = 'ACS Report')
     # dt$`ECHO report` <- ifelse(!is.na(dt$`ECHO report`), EJAMejscreenapi::url_linkify(dt$`ECHO report`, text = 'ECHO Report'), 'N/A')
     
     # dt_avg <- data_summarized()$rows[c('Average person','Average site'),] %>% 
@@ -1974,6 +1976,7 @@ app_server <- function(input, output, session) {
     
     ## format data table
     # see also  EJAM/inst/notes_MISC/DT_datatable_tips_options.R
+    
     
     DT::datatable(dt_final, rownames = FALSE, 
                   ## add column filters 
@@ -2015,22 +2018,41 @@ app_server <- function(input, output, session) {
   output$download_results_table <- downloadHandler(
     filename = function() {'results_table.xlsx'},
     content = function(fname) {
+      if (testing  ) {
+        # xproc = data_processed()
+        cat('starting download code\n')
+        # browser()
+        # save(xproc, file = 'table_data_processed-ejam.rda')
+        } # xxx
       
+      # already renamed to whatever was requested via input$usewhichnames
       ## use EJAM::workbook_ouput_styled approach
       ## future: can add other sheets from doaggregate output
       
-      # Recode this to avoid making copies which slows it down:?
-      #table_overall <- copy(data_processed()$results_overall)
-      # table_bysite  <- copy(data_processed()$results_bysite)
-      
       ## format excel workbook ####
       ## now passes reactive data frame and all names and formatting happen inside this function
+      
+      # > names( data_processed() )
+      # [1] "results_overall"                     "results_bysite"                     
+      # [3] "results_bybg_people"                 "longnames"                          
+      # [5] "count_of_blocks_near_multiple_sites" "results_summarized"  
+      
+      # R avoid making copies which slows it down:?
+      # 
+      # table_overall <- copy(data_processed()$results_overall)
+      # table_bysite  <- copy(data_processed()$results_bysite)
+      # table_bybg    <- copy(data_processed()$results_bybg_people) # do we need to provide this to xlsx at all? it is huge and advanced users only
+      
       wb_out <- xls_formatting2(
         overall   = data_processed()$results_overall, # table_overall,
         eachsite  = data_processed()$results_bysite, #  table_bysite,
         longnames = data_processed()$longnames,
-        ## optional, shiny-specific arguments to go in 'Plot' and 'Notes' sheets
-        summary_plot = v1_summary_plot(),
+        hyperlink_cols=c('EJScreenPDF', 'EJScreenMAP'),
+        # heatmap_colnames=names(table_as_displayed)[pctile_colnums],
+        # heatmap_cuts=c(80, 90, 95),
+        # heatmap_colors=c('yellow', 'orange', 'red')
+         ## optional, shiny-specific arguments to go in 'Plot' and 'Notes' sheets
+        summary_plot   = v1_summary_plot(),
         analysis_title = input$analysis_title,
         buffer_desc = input$bt_rad_buff
       )
@@ -2038,64 +2060,13 @@ app_server <- function(input, output, session) {
       ## save file and return for downloading
       openxlsx::saveWorkbook(wb_out, fname)
       
-      ## format excel workbook
-      # wb_out <- xls_formatting2(
-      #   overall = table_overall, 
-      #   eachsite = table_bysite,
-      #   headers_overall = names(data_processed()$results_overall) ,
-      #   headers_eachsite = names(data_processed()$results_bysite),
-      #   heatmap_colnames = names(data_processed()$results_bysite)[grep('pctile', names(data_processed()$results_bysite))]
-      #     # the function does not handle the other two
-      #   # eachblockgroup = table_bybg_people, 
-      #   # summaryofoverall = table_summarized # could use longnames for it
-      #   # data_processed()$results_bybg_people 
-      # )
-      #        
-      
-      # > names( data_processed() )
-      # [1] "results_overall"                     "results_bysite"                     
-      # [3] "results_bybg_people"                 "longnames"                          
-      # [5] "count_of_blocks_near_multiple_sites" "results_summarized"  
-      
-      
-      
-      # WHERE DOES THIS EVER GET USED NOW?...
-      ## add analysis overview to 'notes' tab
+      ## add analysis type info or overview to 'notes' tab
       if(submitted_upload_method() == "SHP") {
         radius_description <- 'Radius of Shape Buffer (miles)'
       } else {
         radius_description <- 'Radius of Circular Buffer (miles)'
       }
-      
-      #filter out sitecount - TEMP
-      # filter_out_temp_overall <- !(names(table_overall) %in% c("sitecount_unique","sitecount_avg","sitecount_max"))
-      # filter_out_temp_bysite <- !(names(table_bysite) %in% c("sitecount_unique","sitecount_avg","sitecount_max"))
-      # 
-      # table_overall <- table_overall[,..filter_out_temp_overall]
-      # table_bysite <- table_bysite[,..filter_out_temp_bysite]
-      # 
-      # # table_summarized <- copy(data_processed()$results_summarized)
-      # # table_bybg_people <- data_processed()$results_bybg_people   # large table !!
-      # table_overall <- table_overall %>% dplyr::mutate(dplyr::across(dplyr::where(is.numeric), function(x) ifelse(!is.finite(x), NA, x)))
-      # table_bysite <- table_bysite %>% dplyr::mutate(dplyr::across(dplyr::where(is.numeric), function(x) ifelse(!is.finite(x), NA, x)))
-      # 
-      ## attempt to clean up some column names xxx - CHECK THIS
-      # # longnames_TEST <- EJAMejscreenapi::map_headernames$longname_tableheader[match(names(data_processed()$results_bysite),
-      # # EJAMejscreenapi::map_headernames$newnames_ejscreenapi)]
-      # longnames <- data_processed()$longnames
-      # 
-      # #filter out sitecount from longnames - TEMP
-      # longnames <- longnames[filter_out_temp_bysite]
-      # longnames[longnames == ""] <- EJAMejscreenapi::map_headernames$names_friendly[match(names(table_overall)[longnames == ""], 
-      #                                                                                     EJAMejscreenapi::map_headernames$newnames_ejscreenapi)]
-      # 
-      # longnames_no_url <- longnames[!(longnames %in% c('EJScreen Report','EJScreen Map','ACS Report','ECHO report'))] #setdiff(longnames, c('EJScreen Report','EJScreen Map','ACS Report','ECHO report'))
-      # 
-      # names(table_overall) <- ifelse(!is.na(longnames_no_url), longnames_no_url, names(table_overall))
-      # names(table_bysite)  <- ifelse(!is.na(longnames), longnames, names(table_bysite))
-      # table_summarized
-      # names(table_bybg_people) # CANNOT REALLY TREAT THIS THE SAME - HAS DIFFERENT LIST OF INDICATORS THAN THE OTHER TABLES
-      
+       
     }
   )
   

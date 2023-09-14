@@ -1,4 +1,11 @@
 # global.R defines variables needed in global environment
+testing=TRUE
+# ##see also for example
+# golem::detach_all_attached()
+# print(.packages())
+# ##[1] "stats"     "graphics"  "grDevices" "utils"     "datasets"  "methods"   "base"     
+# rm(list = ls()
+# ## debug(doaggregate) # 
 
 ################################################################## # 
 # get block data if missing. ####
@@ -26,7 +33,7 @@ dataload_from_package() # preload the key dataset at least? not essential
 
 # Raise Memory Limit on file upload to 100Mb ####
 options(shiny.maxRequestSize = 100*1024^2) 
-library(shiny)
+library(shiny) # should this get removed for golem-style webapp/package?
 # DEFINE SOME VARIABLES (but most are loaded with package as data) ####
 
 # max points can map ####

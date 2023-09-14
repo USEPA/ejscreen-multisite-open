@@ -2,8 +2,7 @@
 % Please edit documentation in R/xls_formatting.R
 \name{xls_formatting}
 \alias{xls_formatting}
-\title{Format batch results for excel
-also see other functions related to this!}
+\title{Format batch results for excel - OBSOLETE - NOW IN xml_formatting2()}
 \usage{
 xls_formatting(
   df,
@@ -31,6 +30,5 @@ second color is for those >=2d cutpoint but <3d, etc.}
 A workbook via openxlsx::writeData() ready to be saved via openxlsx::saveWorkbook()
 }
 \description{
-Format batch results for excel
-also see other functions related to this!
+Format batch results for excel - OBSOLETE - NOW IN xml_formatting2()
 }

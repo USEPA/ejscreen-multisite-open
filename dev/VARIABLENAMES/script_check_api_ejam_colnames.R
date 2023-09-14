@@ -62,7 +62,7 @@ names(xejam)[!(names(xejam) %in% c(names_d_other_count, subnames,  countnames)) 
 # names in api vs in ejam were:   Updated to match, by editing map_headernames file.
 # "EJScreenPDF"    `EJScreen Report` 
 # "EJScreenMAP"    `EJScreen Map` 
-# "EJScreenACS"    `ACS Report`
+
 # `ECHO report`   NOT IN API OUTPUT YET
  
 
