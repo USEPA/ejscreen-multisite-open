@@ -40,8 +40,7 @@ plot_distance_mean_by_group <- function(results_bybg_people,
   rownames(x) <- demoglabel
   x$ratio <- x$avg_distance_for_group / x$avg_distance_for_nongroup
   x <- x[ , c("group", "ratio", "avg_distance_for_nongroup", "avg_distance_for_group") ]
-  # print(x)
-  # browser()
+
   i.min <- which.min(x$ratio)
   mingroup = gsub("% ", "", rownames(x)[i.min])
   mingrouptext = paste0(mingroup, " is only ", round(100*x$ratio[i.min],0),"% as far as everyone else, ", 

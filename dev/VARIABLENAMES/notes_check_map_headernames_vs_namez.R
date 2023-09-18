@@ -30,7 +30,7 @@ for (x in varlists) {
   # print()
   if (!all(ynlist)) {
   print(  
-  cbind(in.namez = namez[[gsub('names_','' , x) ]] , rnames = map_headernames$rname[map_headernames$varlist == x],  match.or.not = ynlist )
+  cbind(in.namez = namez[[gsub('names_','' , x) ]] , rname = map_headernames$rname[map_headernames$varlist == x],  match.or.not = ynlist )
   )}
 }
 rm(ynlist) 

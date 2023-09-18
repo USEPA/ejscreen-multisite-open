@@ -5,6 +5,7 @@
 #' 
 .onAttach <- function(libname, pkgname) {
   
+  # These instead could be set in the golem-config.yml file
   asap_aws   <- FALSE  # download large datasets now?           Set to FALSE while Testing/Building often
   asap_index <- FALSE  # build index those now?                 Set to FALSE while Testing/Building often 
   asap_bg    <- FALSE  # load now vs lazyload blockgroup data?  Set to FALSE while Testing/Building often

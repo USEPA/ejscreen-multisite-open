@@ -91,7 +91,7 @@ popshare_at_top_n = function(pop, n=10, astext=FALSE, dig=0) {
 #' @export
 #'
 popshare_p_lives_at_what_n <- function(pop, p, astext=FALSE, dig=0) {
-# browser()
+
   if (!is.vector(pop)) {stop('pop must be a vector')}
   
   pop = sort(pop, decreasing = T)

@@ -59,9 +59,8 @@
 #'   1, 3, 5, and 10 miles without having to redo the getblocksnearby() part for each radius.
 #'   This lets you just run getblocksnearby() once for the largest radius, and then query those
 #'   results to get doaggregate() to summarize at any distance that is less than or equal to the 
-#'   original radius analyzed by getblocksnearby(). 
-#'   
-#' @param subgroups_type Set this to 
+#'   original radius analyzed by getblocksnearby().    
+#' @param subgroups_type Optional (uses default). Set this to 
 #'   "nh" for non-hispanic race subgroups as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh; 
 #'   "alone" for EJScreen v2.2 style race subgroups as in    White Alone, wa and others in names_d_subgroups_alone; 
 #'   "both" for both versions. Work in progress.
@@ -69,6 +68,7 @@
 #'   lat,lon of each site will be approximated as average of nearby blocks, although a more accurate slower way would
 #'   be to use reported distance of each of 3 of the furthest block points and triangulate
 #' @param ... more to pass to another function? Not used currently.
+#' 
 #' @param silentinteractive Set to FALSE to prevent long output showing in console in RStudio when in interactive mode
 #' @seealso [ejamit]   [getblocksnearby()]  
 #' 

@@ -1,7 +1,7 @@
 #' Launch the Shiny Application in RStudio
 #' @description launch Shiny web app from RStudio
 #' @details 
-#' app_run_EJAM()                 is like [EJAM::run_app()]
+#' app_run_EJAM()                 is like [run_app()] from the EJAM package
 #' app_run_EJAMejscreenapi()      is like [EJAMejscreenapi::run_app()]
 #' @param ... arguments to pass to golem_opts.
 #' See `?golem::get_golem_options` for more details.

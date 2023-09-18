@@ -25,6 +25,9 @@ dupenames <- function(pkg = EJAM::ejampackages, sortbypkg=FALSE, compare.functio
   if ("all" %in% pkg) {
     pkg <- as.vector(installed.packages()[,"Package"])
   } else {
+    
+    # THIS COULD/SHOULD BE REPLACED USING ::: and/or getFromNamespace(), etc.
+    
     findPkgAll <- function(pkg) { # finds path to each installed package of those specified
       unlist(lapply(.libPaths(), function(lib)
         find.package(pkg, lib, quiet=TRUE, verbose=FALSE)))
@@ -39,6 +42,9 @@ dupenames <- function(pkg = EJAM::ejampackages, sortbypkg=FALSE, compare.functio
   # getNamespaceExports will get exported object names, but fails if any pkg is not installed, hence code above
   
   xnames <-  sapply(pkg, function(x) {
+    
+    # DO WE WANT TO CHECK EVEN NON-EXPORTED OBJECTS? see getFromNamespace() and :::
+    
     y <- try(getNamespaceExports(x))
     if (class(y) == "try-error") {return(paste0("nothing_exported_by_", x))} else {return(y)}
   } ) # extremely slow if "all" packages checked
@@ -115,15 +121,26 @@ all.equal_functions <- function(fun="latlon_infer", package1="EJAM", package2="E
   if (!(is.character(fun) & is.character(package1) & is.character(package2))) {
     stop("all params must be quoted ")
   }
-   f1 = try(silent=TRUE, expr = get((fun), envir = as.environment(paste0("package:", (package1)) ) ))
+  # we could attach
+   f1 = try(
+     silent=TRUE, 
+     expr = getFromNamespace(fun, ns = package1) 
+     # get((fun), envir = as.environment(paste0("package:", (package1)) ) ) # this would not work if the package were not already loaded, on search path. see ?getFromNamespace
+            )
   if (class(f1) == "try-error"  ) {
+    # warning("fails when checking a package that is loaded but not attached - library func allows it to work. ")
     stop(fun, " not found in ", package1 )
   }
   if (!(is.function(f1))) {warning(package1, "::", fun, " is not a function");return(NA)}
   
-  f2 = try(silent=TRUE, expr = get((fun), envir = as.environment(paste0("package:", (package2)) ) ))
+  f2 = try(
+    silent=TRUE, 
+    expr = getFromNamespace(fun, ns = package2) 
+      # get((fun), envir = as.environment(paste0("package:", (package2)) ) )
+    )
+  
   if (class(f2) == "try-error") {
-    warning("fails when checking a package that is loaded but not attached - library func allows it to work. ")
+    # warning("fails when checking a package that is loaded but not attached - library func allows it to work. ")
     stop(fun, " not found in ",  package2)
   }
   if (!(is.function(f2))) {warning(package2, "::", fun, " is not a function");return(NA)}

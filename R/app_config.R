@@ -34,7 +34,7 @@ get_golem_config <- function(
   ),
   use_parent = TRUE,
   # Modify this if your config file is somewhere else
-  file = app_sys("golem-config.yml")
+  file = app_sys("golem-config.yml") # this was set up to treat EJAM/inst/ as root, so "golem-config.yml" is in EJAM/inst but can be referred to as just in EJAM/ 
 ) {
   config::get(
     value = value,
@@ -43,3 +43,7 @@ get_golem_config <- function(
     use_parent = use_parent
   )
 }
+# 
+#  f config file to use, like "golem-config.yml"   can be found in EJAM/inst/ referred to as if in root 
+# can use  config :: get  to read whatever value you asked about 
+ # you can do  config::get("app_prod", file="golem-config.yaml") 
