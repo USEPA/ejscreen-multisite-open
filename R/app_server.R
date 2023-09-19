@@ -2048,10 +2048,11 @@ app_server <- function(input, output, session) {
         overall   = data_processed()$results_overall, # table_overall,
         eachsite  = data_processed()$results_bysite, #  table_bysite,
         longnames = data_processed()$longnames,
-        hyperlink_cols=c('EJScreenPDF', 'EJScreenMAP'),
+        hyperlink_cols=c("EJScreen Report", "EJScreen Map" ),
         # heatmap_colnames=names(table_as_displayed)[pctile_colnums],
         # heatmap_cuts=c(80, 90, 95),
         # heatmap_colors=c('yellow', 'orange', 'red')
+        ## optional, shiny-specific arguments to go in 'Plot' and 'Notes' sheets
         summary_plot   = v1_summary_plot(),
         analysis_title = input$analysis_title,
         buffer_desc    = input$bt_rad_buff,

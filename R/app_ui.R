@@ -512,7 +512,7 @@ app_ui  <- function(request) {
                                       
                              ), # end of Summary tab
                              
-                             # DETAILS TABs group -------------------------- ####
+                             # DETAILED RESULTS - TABs group -------------------------- ####
                              
                              tabPanel(title = 'Details',
                                       
@@ -529,8 +529,8 @@ app_ui  <- function(request) {
                                             
                                             ######################################################################################################### #
                                             # ~ ####
-                                            ## SITE BY SITE /TAB    ####
-                                            # . ####
+                                            ## SITE BY SITE (Table and Map)    ####
+                                            
                                             tabPanel(title = 'Site-by-Site Table',
                                                      ## _button: Excel Download ####
                                                      
@@ -543,7 +543,7 @@ app_ui  <- function(request) {
                 #h3(id = 'site_by_site', 'Site-by-Site Table'),
          ),
          column(6,
-                ## button to download excel table of results - uses xls_formatting2
+                ## button to download excel Table of Sites/Results - uses xls_formatting2
                 downloadButton('download_results_table', 'Download Results Table',
                                class = 'usa-button'
                 )
@@ -551,7 +551,7 @@ app_ui  <- function(request) {
        ),
        br(), ## vertical space
        
-       ## _output: Interactive Table of Sites ####
+       ## _output: Interactive Table of Sites/Results ####
        shinycssloaders::withSpinner(
          DT::DTOutput(outputId = 'view3_table', width = '100%')
        ),

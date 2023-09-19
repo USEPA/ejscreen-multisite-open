@@ -48,7 +48,6 @@ passed to doaggregate() also.}
 \item{fips}{FIPS code vector if using FIPS instead of sitepoints to specify places to analyze,
 such as a list of US Counties or tracts.}
 
-\item{threshold1}{percentile like 80 or 90 or 95 to compare percentiles to}
 
 \item{...}{passed to \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} or other such functions}
 }

@@ -11,9 +11,10 @@ xls_formatting2(
   longnames,
   summary_plot = NULL,
   plot2 = NULL,
-  analysis_title = NULL,
-  buffer_desc = NULL,
+  analysis_title = "EJAM analysis",
+  buffer_desc = "Selected Locations",
   hyperlink_cols = NULL,
+  testing = FALSE,
   heatmap_colnames = NULL,
   heatmap_cuts = c(80, 90, 95),
   heatmap_colors = c("yellow", "orange", "red"),
@@ -38,6 +39,10 @@ xls_formatting2(
 \item{analysis_title}{optional title passed from Shiny app to 'Notes' sheet}
 
 \item{buffer_desc}{optional description of buffer used in analysis, passed to 'Notes' sheet}
+
+\item{hyperlink_cols}{which to treat as URLs that should be hyperlinks}
+
+\item{testing}{optional for testing only}
 
 \item{heatmap_colnames}{optional vector of colnames to apply heatmap colors}
 
