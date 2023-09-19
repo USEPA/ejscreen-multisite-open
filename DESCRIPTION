@@ -46,7 +46,6 @@ Imports:
     shiny (>= 1.7.2),
     shinycssloaders,
     shinyjs,
-    sp,
     tidyr,
     tidyverse,
     viridis
