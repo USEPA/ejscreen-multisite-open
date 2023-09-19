@@ -32,7 +32,7 @@
 #' @rawNamespace import(dplyr, except = c(first, last, between))
 #' 
 app_server <- function(input, output, session) {
-  testing=FALSE; if (testing) {cat('testing app_server()\n\n')}
+ 
   #############################################################################  #
   # Note: how to avoid or still have a global.R file in the golem approach 
   #
@@ -1040,11 +1040,14 @@ app_server <- function(input, output, session) {
     } else {  # LATITUDE AND LONGITUDE (POINTS) 
       
       d_upload <- data_uploaded()[!is.na(lat) & !is.na(lon),]
+      
       sites2blocks <- getblocksnearby(
         ## remove any invalid latlons before running 
         sitepoints = d_upload,
         radius = input$bt_rad_buff,
-        quadtree = localtree
+        quadtree = localtree, 
+        avoidorphans = input$avoidorphans,
+        maxradius = input$maxradius
       )
     }
     
@@ -1072,12 +1075,12 @@ app_server <- function(input, output, session) {
         radius = input$bt_rad_buff, 
         #countcols = 0, popmeancols = 0, calculatedcols = 0, # *** if using defaults of doaggregate()
         # subgroups_type = "", # use default of doaggregate() based on whatever subgroups_d etc are now *** this may get updated/ changed to a parameter or input or default, etc. 
-        testing = FALSE, 
-        include_ejindexes = FALSE, 
-        need_proximityscore = FALSE, 
+        testing = input$testing, 
+        include_ejindexes   = input$include_ejindexes, 
+        need_proximityscore = input$need_proximityscore, 
         ## pass progress bar function as argument
         updateProgress = updateProgress_doagg
-      ))
+        ))
     # provide sitepoints table provided by user aka data_uploaded(), (or could pass only lat,lon and ST -if avail- not all cols?)
     # and doaggregate() decides where to pull ST info from - 
     # ideally from ST column, 
@@ -1907,9 +1910,8 @@ app_server <- function(input, output, session) {
   #output: site by site datatable 
   output$view3_table <- DT::renderDT(server = TRUE, expr = {
     req(data_processed())
-    if (testing) {cat('view3_table - doing site by site table for DT view \n')
-      # browser()
-      }
+    if (input$testing) {cat('view3_table - doing site by site table for DT view \n')
+    }
     # --------------------------------------------------- #
     # cols_to_select <- names(data_processed)
     # friendly_names <- longnames???
@@ -2013,17 +2015,16 @@ app_server <- function(input, output, session) {
   })
   #############################################################################  # 
   
-  # ______ EXCEL DOWNLOAD of site-by-site results ####
+  # ______ EXCEL DOWNLOAD of site-by-site and overall results ####
   
   output$download_results_table <- downloadHandler(
     filename = function() {'results_table.xlsx'},
     content = function(fname) {
-      if (testing  ) {
+      if (input$testing  ) {
         # xproc = data_processed()
         cat('starting download code\n')
-        # browser()
         # save(xproc, file = 'table_data_processed-ejam.rda')
-        } # xxx
+      } # xxx
       
       # already renamed to whatever was requested via input$usewhichnames
       ## use EJAM::workbook_ouput_styled approach
@@ -2042,7 +2043,7 @@ app_server <- function(input, output, session) {
       # table_overall <- copy(data_processed()$results_overall)
       # table_bysite  <- copy(data_processed()$results_bysite)
       # table_bybg    <- copy(data_processed()$results_bybg_people) # do we need to provide this to xlsx at all? it is huge and advanced users only
-      
+      if (input$testing) {cat('about to do xls_formatting2 \n')}
       wb_out <- xls_formatting2(
         overall   = data_processed()$results_overall, # table_overall,
         eachsite  = data_processed()$results_bysite, #  table_bysite,
@@ -2051,10 +2052,10 @@ app_server <- function(input, output, session) {
         # heatmap_colnames=names(table_as_displayed)[pctile_colnums],
         # heatmap_cuts=c(80, 90, 95),
         # heatmap_colors=c('yellow', 'orange', 'red')
-         ## optional, shiny-specific arguments to go in 'Plot' and 'Notes' sheets
         summary_plot   = v1_summary_plot(),
         analysis_title = input$analysis_title,
-        buffer_desc = input$bt_rad_buff
+        buffer_desc    = input$bt_rad_buff,
+        testing = input$testing
       )
       
       ## save file and return for downloading
@@ -2066,7 +2067,7 @@ app_server <- function(input, output, session) {
       } else {
         radius_description <- 'Radius of Circular Buffer (miles)'
       }
-       
+      
     }
   )
   
@@ -2562,8 +2563,8 @@ app_server <- function(input, output, session) {
           ejscreen_version =  "2.2"
         )
       })
-      # [TEMPORARILY SAVE PARAMS FOR TESTING] ####
-      # saveRDS(params, file="./inst/testparams.RDS") ################################ TEMPORARILY SAVE PARAMS FOR TESTING# # 
+      # [TEMPORARILY SAVE PARAMS FOR TEST ING] ####
+      if (input$testing) {saveRDS(params, file="./inst/testparams.RDS")} ################################ TEMPORARILY SAVE PARAMS FOR TESTING# # 
       
       # Knit report to Word Doc ####
       

@@ -11,7 +11,7 @@
 #'   If some of names(x) not requested by column_names, they are left out.
 #' @param labels default is column_names - vector used to label 
 #'   the elements in the popup. Must be same length as column_names
-#'
+#' @param testing can set to TRUE while testing function
 #' @return A vector of strings, one per row or map point, 
 #'   with a line break separating column elements
 #' @export
@@ -39,8 +39,8 @@
 #'  dat_df <- as.data.frame(dat_df)
 #'  leaflet::leaflet(dat) |> leaflet::addTiles() |> leaflet::addCircles(popup = popup_from_any(dat))
 
-popup_from_any <- function (x, column_names = names(x), labels = column_names, n = "all") {
-  
+popup_from_any <- function (x, column_names = names(x), labels = column_names, n = "all", testing=FALSE) {
+  if (testing) {print('popup_from_any'); print(names(x)); print(labels); print(n)}
   if (n == "all" | n > NCOL(x)) {
     # nothing
   } else {
@@ -57,7 +57,7 @@ popup_from_any <- function (x, column_names = names(x), labels = column_names, n
     #   If some of column_names requested are not found in names(x), 
     #   a warning is given and NA values returned for those names not in x.
     if (n == "all") {
-    warning('some of requested column_names not found in x for popups - filling with NA values')
+      warning('some of requested column_names not found in x for popups - filling with NA values')
     } else {
       warning('some of requested column_names not found in first n columns of x (specified by n parameter here) for popups - filling with NA values even if small n resulted in ignoring some of cols specified by column_names param')
     }

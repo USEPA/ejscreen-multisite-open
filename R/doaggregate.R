@@ -47,7 +47,6 @@
 #'   using population weighted mean.
 #' @param calculatedcols character vector of names of variables to aggregate within a buffer
 #'   using formulas that have to be specified.
-#' @param testing used while testing this function
 #' @param updateProgress progress bar function used for shiny app
 #' @param include_ejindexes whether to calculate EJ Indexes and return that information 
 #' @param need_proximityscore whether to calculate proximity scores
@@ -69,6 +68,7 @@
 #'   be to use reported distance of each of 3 of the furthest block points and triangulate
 #' @param ... more to pass to another function? Not used currently.
 #' 
+#' @param testing used while testing this function
 #' @param silentinteractive Set to FALSE to prevent long output showing in console in RStudio when in interactive mode
 #' @seealso [ejamit]   [getblocksnearby()]  
 #' 
@@ -114,9 +114,13 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
                 original = names_d_subgroups)
   # also see code below that starts with   names_these <- 
   
-  
   # timed <- system.time({
-  if (testing) {   sites2blocks <- EJAM::sites2blocks_example }
+  
+  if (testing) {  
+    #sites2blocks <- EJAM::sites2blocks_example 
+    
+    
+  }
   
   # add input validation here - check if sites2blocks is valid format, etc. 
   if (!is.data.table(sites2blocks)) {stop('sites2blocks must be a data.table')}

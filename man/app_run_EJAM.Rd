@@ -40,6 +40,6 @@ See \code{?golem::get_golem_options} for more details.}
 launch Shiny web app from RStudio
 }
 \details{
-app_run_EJAM()                 is like \code{\link[=run_app]{run_app()}}
+app_run_EJAM()                 is like \code{\link[=run_app]{run_app()}} from the EJAM package
 app_run_EJAMejscreenapi()      is like \code{\link[EJAMejscreenapi:run_app]{EJAMejscreenapi::run_app()}}
 }

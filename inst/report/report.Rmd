@@ -236,7 +236,7 @@ Figure \ref{fig1} shows a map of the sites analyzed.
 ```{r fig1, fig.cap = "\\label{fig1}Map of Analyzed Sites", echo=FALSE,  out.height='280px', out.width='600px'}
 # save(params, file="temp params.rda")
 # print(params)
-# browser() 
+#  
 print(params$testmode) 
 # if (file.exists(params$map_placeholder_png)) {
 if (params$testmode) {

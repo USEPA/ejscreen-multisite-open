@@ -20,6 +20,10 @@
 # golem::detach_all_attached()
 
 pkgload::load_all(export_all = FALSE, helpers = FALSE, attach_testthat = FALSE)
-options( "golem.app.prod" = TRUE)
+options( "golem.app.prod" = FALSE)
 
-EJAM::run_app() # add parameters here (if any)
+# EJAM::
+  run_app() 
+# add parameters here (if any) 
+# maybe it should just say run_app() so it runs whatever version was loaded here by load_all() 
+# and not rely partly on the package being an installed package. There would be a conflict with EJAMejscreenapi::run_app() as that package is loaded unless that gets removed from that package.
