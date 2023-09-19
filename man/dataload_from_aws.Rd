@@ -11,6 +11,7 @@ dataload_from_aws(
   envir = globalenv(),
   mybucket = "dmap-data-commons-oa",
   mybucketfolder = "EJAM",
+  folder_local_source = "~/../Downloads",
   justchecking = FALSE,
   check_server_even_if_justchecking = TRUE,
   testing = FALSE
@@ -24,6 +25,10 @@ dataload_from_aws(
 \item{mybucket}{where in AWS, like}
 
 \item{mybucketfolder}{where in AWS, like EJAM}
+
+\item{folder_local_source}{path of folder (not ending in forward slash) to
+look in for locally saved copies during development
+to avoid waiting for download from a server.}
 
 \item{justchecking}{set to TRUE to get object size (and confirm file is accessible/exists)}
 
@@ -39,7 +44,11 @@ nothing - just loads data into environment (unless justchecking=T)
 utility to load datasets from AWS DMAP Data Commons, into memory
 }
 \details{
-See source code for details. Requires credentials?
+See source code for details.
+
+CURRENTLY TRIES TO USE dataload_from_local() first, during development to avoid slow downloads.
+
+Does it require credentials?
 
 Use dataload_from_aws(justchecking=TRUE),
 

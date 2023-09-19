@@ -1,5 +1,9 @@
 #' utility to load datasets from AWS DMAP Data Commons, into memory
-#' @details See source code for details. Requires credentials?
+#' @details See source code for details. 
+#' 
+#'  CURRENTLY TRIES TO USE dataload_from_local() first, during development to avoid slow downloads.
+#' 
+#'   Does it require credentials?
 #'   
 #'   Use dataload_from_aws(justchecking=TRUE), 
 #'   
@@ -35,6 +39,9 @@
 #' @param check_server_even_if_justchecking set this to TRUE to stop checking server to see if files are there
 #'   when justchecking = TRUE. But server is always checked if justchecking = FALSE.
 #' @param testing only for testing
+#' @param folder_local_source path of folder (not ending in forward slash) to 
+#'   look in for locally saved copies during development 
+#'   to avoid waiting for download from a server. 
 #' @seealso [datapack()] [dataload_from_aws()] [dataload_from_package()] [indexblocks()] [.onAttach()] 
 #' @return nothing - just loads data into environment (unless justchecking=T)
 #' 
@@ -46,9 +53,10 @@ dataload_from_aws <- function(varnames= c('bgid2fips', 'blockid2fips', 'blockpoi
                               envir=globalenv(),  # should it be parent or global or package EJAM envt ??
                               mybucket =  'dmap-data-commons-oa',
                               mybucketfolder = "EJAM",
+                              folder_local_source = "~/../Downloads", 
                               justchecking = FALSE, check_server_even_if_justchecking=TRUE, testing=FALSE) {
-  
-  ## Get bucket contents if you want to explore the bucket ----
+
+  ## how to get bucket contents if you want to explore the bucket ----
   # mybucket <-  'dmap-data-commons-oa' # 
   # bucket_contents <- data.table::rbindlist(
   #   get_bucket(bucket = mybucket, prefix = "EJAM"), 
@@ -60,28 +68,34 @@ dataload_from_aws <- function(varnames= c('bgid2fips', 'blockid2fips', 'blockpoi
   if (length(ext) > 1) {stop('must specify only one file extension for all the files')}
   if (ext=='.arrow' & missing(fun)) {fun <- "arrow::read_ipc_file"}
   
-  # mybucket =       'dmap-data-commons-oa'
-  # mybucketfolder = "EJAM"
-  # varnames =     c('bgid2fips', 'blockid2fips', 'blockpoints', 'blockwts', 'quaddata' )
-  # ext=      ".rda"
   fnames     <- paste0(varnames, ext) # varnames are like bgid2fips, ext is .rda, fnames are like bgid2fips.rda
-  objectnames <- paste0(mybucketfolder, '/', fnames) # EJAM/bgid2fips.rda 
+  objectnames <- paste0(mybucketfolder,      '/', fnames) # EJAM/bgid2fips.rda 
+  localpaths  <- paste0(folder_local_source, '/', fnames)
   # make output in console easier to read:  
   spacing <- sapply(1:length(objectnames), function(x) paste0(rep(" ", max(nchar(objectnames)) - nchar(objectnames[x])), collapse = ''))
   cat('\n')
   if (testing) {
     cat('varnames are:    ', paste0(varnames,    collapse = ", "), '\n')
     cat('fnames are:      ', paste0(fnames,      collapse = ", "), '\n')
+    cat('localpaths are:  ', paste0(localpaths,  collapse = ", "), '\n')
     cat('mybucketfolder:  ', mybucketfolder,  '\n')
     cat('objectnames are: ', paste0(objectnames, collapse = ", "), '\n')
     cat('mybucket:        ', mybucket,  '\n')
     cat('checking each like this:  aws.s3::object_exists(object = "', objectnames[1], '", bucket = "',mybucketfolder,'")', '\n')
     cat('\n')
   }
+
+  # if (!missing(folder_local_source) ) { # want from local drive
+    dataload_from_local(varnames=varnames, ext=ext, fun=fun, envir=envir, folder_local_source=folder_local_source, justchecking=justchecking)
+    # return(localpaths)
+  # } # done getting from local drive
+  
+  ####################### # 
   
   for (i in 1:length(fnames)) {
     
     if (!justchecking & ext==".rda") {
+      
       if (!exists(varnames[i], envir = envir) ) {  # if not already in memory/ global envt, get from AWS 
         cat('loading', varnames[i],spacing[i],  'from', objectnames[i], '\n')
         if (try(aws.s3::object_exists(object = objectnames[i], bucket = mybucket))) {
@@ -121,25 +135,27 @@ dataload_from_aws <- function(varnames= c('bgid2fips', 'blockid2fips', 'blockpoi
         if (!exists(varnames[i], envir = envir)) {  # if not already in memory/ global envt, get from AWS 
           cat('loading', varnames[i], spacing[i], 'from', objectnames[i], '\n')
           if (aws.s3::object_exists(object = objectnames[i], bucket = mybucket)) {
+            
             x <- eval(parse(text = text_to_do)) # executes the command
             assign(varnames[i], x, envir = envir) # because unlike using load, s3read_using() returns the object without loading it into memory as an object
+            
           } else {
             warning('requested object', objectnames[i], spacing[i], 'not found on server')
           }
         } else {
           cat(varnames[i], spacing[i], 'is already in specified envt and will not be downloaded again\n')
         }
-      }
-    }
-  }
+      } # end trying to get .rda
+    } # end checking and or getting non .rda
+  } # end loop over files
   
   if (justchecking) {
     cat('\n')
     for (i in 1:length(fnames)) {
       if (exists(varnames[i], envir = envir)) {
         cat(varnames[i], spacing[i], 'is already in memory and would not be downloaded again\n')
-        } else {
-          cat(varnames[i], spacing[i], 'is not in memory and downloaded would be needed\n')
+      } else {
+        cat(varnames[i], spacing[i], 'is not in memory and downloaded would be needed\n')
       }
       if (check_server_even_if_justchecking) {
         if (aws.s3::object_exists(object = objectnames[i], bucket = mybucket)) {
@@ -153,6 +169,7 @@ dataload_from_aws <- function(varnames= c('bgid2fips', 'blockid2fips', 'blockpoi
       }
     }
   }
+  
   baseurl <- "https://dmap-data-commons-oa.s3.amazonaws.com/"
   paths <- paste0(baseurl, objectnames)
   cat('\n')
