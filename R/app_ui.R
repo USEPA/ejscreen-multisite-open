@@ -683,7 +683,7 @@ app_ui  <- function(request) {
        ######################################################################################################### #
        # . ####
        
-       ## FULL REPORT TAB  ------------- ####
+       # FULL REPORT - TAB  ------------- ####
        
        tabPanel(title = 'Written Report',
                 
@@ -1010,13 +1010,18 @@ app_ui  <- function(request) {
        
        ######################################################################################################### #
        # ~ ####
-       # Advanced settings   ####
+       # ADVANCED SETTINGS - TAB  ####
        
        # - hidden by default but can be activated by a button (see About EJAM tab)
        tabPanel(title = 'Advanced Settings',
                 
-                ## Get ejscreen reports via API ####
+                ## Get ejscreen reports via API ??? ####
                 mod_ejscreenapi_ui("ejscreenapi_1"),
+                
+                radioButtons("testing", "TESTING APP? testing= ", choices = c(Yes=TRUE, No=FALSE),
+                             inline = TRUE,
+                             selected=default_testing),
+                
                 
                 ## input: Type of plot for 1page report
                 shiny::radioButtons(inputId = "plotkind_1pager", 
@@ -1028,19 +1033,29 @@ app_ui  <- function(request) {
                 # DISABLED UNTIL PDF KNITTING IS DEBUGGED
                 radioButtons("format1pager", "Format", choices = c(html="html", html="pdf"), inline = TRUE),
                 
+                numericInput(inputId = 'maxradius',
+                             label = 'Max distance in miles to search for closest single block if site has none within normal radius',
+                             value =  default_maxradius,  # 50000 / meters_per_mile, # 31.06856 miles !!
+                             min = 0, max = 50000 / meters_per_mile, step = 1), 
+                
+                radioButtons(inputId = "avoidorphans", 
+                             label =  "Avoid orphans (by searching for nearest one out to maxradius, instead of reporting NA when no block is within radius)", 
+                             choices = c(Yes = TRUE, No = FALSE), 
+                             inline = TRUE,
+                             selected = default_avoidorphans),
                 
                 ## input: Name for 1st set of comparisons
                 shiny::textInput(inputId = 'an_name_comp1', 
                                  label='Name for 1st set of comparisons',
                                  ## this will need to be changed later
                                  value = '',
-                                 placeholder =threshgroup.default['comp1']
+                                 placeholder = threshgroup.default['comp1']
                 ),
                 
                 ## input: Threshold value(s) for 1st set of comparisons
                 numericInput(inputId = 'an_thresh_comp1', 
                              label='Threshold value(s) for 1st set of comparisons (e.g. %ile 1-100):', 
-                             value=threshold.default['comp1']
+                             value = threshold.default['comp1']
                 ),
                 
                 ## input: Name for 1st set of comparisons
@@ -1048,13 +1063,13 @@ app_ui  <- function(request) {
                                  label='Name for 2nd set of comparisons',
                                  ## this will need to be changed later
                                  value = '',
-                                 placeholder =threshgroup.default['comp2']
+                                 placeholder = threshgroup.default['comp2']
                 ),
                 
                 ## input: Threshold value(s) for 2nd set of comparisons
                 numericInput(inputId = 'an_thresh_comp2', 
                              label='Threshold value(s) for 2nd set of comparisons (e.g. %ile 1-100):', 
-                             value=threshold.default['comp2']
+                             value = threshold.default['comp2']
                 ),
                 br(), ## vertical space
                 
@@ -1075,7 +1090,7 @@ app_ui  <- function(request) {
                 shiny::checkboxGroupInput(
                   inputId = "ss_limit_fac1", 
                   label = "Limit to facilities where selected NAICS is found within these EPA lists: (all are searched by default)",
-                  choices = epa_programs,
+                  choices  = epa_programs,
                   selected = epa_programs,
                   inline = TRUE
                 ),
@@ -1084,13 +1099,35 @@ app_ui  <- function(request) {
                 shiny::checkboxGroupInput(
                   inputId = "ss_limit_fac2",
                   label = "Limit to facilities on these EPA lists (all included by default)",
-                  choices = epa_programs,
+                  choices  = epa_programs,
                   selected = epa_programs,
                   inline = TRUE
                 ),
                 
+                ## input:  
+                shiny::selectInput('subgroups_type', 
+                                   #    "nh" for non-hispanic race subgroups as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh; 
+                                   #    "alone" for EJScreen v2.2 style race subgroups as in    White Alone, wa and others in names_d_subgroups_alone; 
+                                   #    "both" for both versions. 
+                                   label = "Which definition of demographic race ethnicity subgroups to include?",
+                                   choices = list(NonHispanicAlone = 'nh', Alone = 'alone', Both = 'both'),
+                                   selected = default_subgroups_type),
+                shiny::radioButtons(inputId = "need_proximityscore", 
+                                    label = "Need proximity score?",
+                                    choices = list(Yes=TRUE, No=FALSE ), 
+                                    selected = default_need_proximityscore),
+                shiny::radioButtons(inputId = "include_ejindexes", 
+                                    label = "Need EJ Indexes",
+                                    choices = list(Yes=TRUE, No=FALSE ), 
+                                    selected = default_include_ejindexes),
+                shiny::radioButtons(inputId = "more3", 
+                                    label = "more3",
+                                    choices = list(A="a", B="b", C="c"), 
+                                    selected = "a")  # ,
+                
+                
        ) # end Advanced Settings tab ####
-       
+       ################################################################################ #
        
        
        
@@ -1100,7 +1137,7 @@ app_ui  <- function(request) {
        
        
        
-    
+       
        
       ), # end tabset panel from line 37 or so ####
       

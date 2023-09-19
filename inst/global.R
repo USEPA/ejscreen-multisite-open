@@ -1,6 +1,15 @@
 # global.R defines variables needed in global environment
-testing=TRUE
+
+library(shiny) # should this get removed for golem-style webapp/package?
+
+# Raise Memory Limit on file upload to 100Mb ####
+options(shiny.maxRequestSize = 100*1024^2) 
+################################################################## # 
+
+default_testing <- FALSE
+
 # ##see also for example
+# print(.packages())
 # golem::detach_all_attached()
 # print(.packages())
 # ##[1] "stats"     "graphics"  "grDevices" "utils"     "datasets"  "methods"   "base"     
@@ -31,21 +40,26 @@ dataload_from_package() # preload the key dataset at least? not essential
 ################################################################## # 
 # Set options and defaults
 
-# Raise Memory Limit on file upload to 100Mb ####
-options(shiny.maxRequestSize = 100*1024^2) 
-library(shiny) # should this get removed for golem-style webapp/package?
-# DEFINE SOME VARIABLES (but most are loaded with package as data) ####
+default_include_ejindexes   <- FALSE
+default_need_proximityscore <- FALSE
+default_avoidorphans        <- FALSE # seems like EJScreen itself essentially uses FALSE
+default_maxradius <-  31.06856 # 50000 / meters_per_mile #, # 31.06856 miles !!
+
+default_subgroups_type <- 'nh'  
+# this sets the default in the web app only, not in functions doaggregate() and ejamit() if used outside web app app_server and app_ui code
+# "nh" for non-hispanic race subgroups as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh;
+# "alone" for EJScreen v2.2 style race subgroups as in    White Alone, wa and others in names_d_subgroups_alone;
+# "both" for both versions. Possibly another option is "original" or "default" but work in progress.
+
 
 # max points can map ####
-max_points_can_map<- 15000
+max_points_can_map <- 15000
 ## use larger cutoff for polygons (FIPS/Shapefiles)
 max_points_can_map_poly <- 1e10
 
 ## set points cutoff for using leaflet markerClusters
 marker_cluster_cutoff <- 1000
 
-## global variable for mapping (EJAMejscreenapi had this as data loaded by pkg?)
-meters_per_mile <- 1609.344
 
 ## EPA Programs (to limit NAICS/ facilities query) #### 
 ## used by inputId 'ss_limit_fac1' and 'ss_limit_fac2'
@@ -57,27 +71,32 @@ epa_programs <- setNames(epa_program_counts$program, epa_program_counts$pgm_text
 # cbind(epa_programs)
 # sort(unique(EJAM::frs_by_programid$program)) # similar  
 
-## Loading/wait spinners (color, type) ####
-## note: was set at type = 1, but this caused screen to "bounce"
-options(spinner.color="#005ea2", spinner.type = 4)
 
 ## Defaults for quantiles summary stats etc. ####
 #
-## can be used by inputId 'an_list_pctiles'
-probs.default.selected <- c(   0.25,            0.80,     0.95)
-probs.default.values   <- c(0, 0.25, 0.5, 0.75, 0.8, 0.9, 0.95, 0.99, 1)
+## can be used by inputId 'an_list_pctiles'    #   CHECK IF THESE UNITS SHOULD BE 0-1 OR 0-100 ***
+probs.default.selected <- c(   0.25,            0.80,     0.95)   #   CHECK IF THESE UNITS SHOULD BE 0-1 OR 0-100 ***
+probs.default.values   <- c(0, 0.25, 0.5, 0.75, 0.8, 0.9, 0.95, 0.99, 1)  #   CHECK IF THESE UNITS SHOULD BE 0-1 OR 0-100 ***
 probs.default.names <- formatC(probs.default.values, digits = 2, format='f', zero.print = '0')
-
 # a default for threshold in at/above threshold stat summarizing EJ US percentiles
 ## used by inputIds 'an_thresh_comp1' and 'an_thresh_comp2'
-threshold.default <- c('comp1' = 90, 'comp2' = 80)  # at least threshold.default[1] is used in batch.summarizer() by ejamit() and app_server()
-
+threshold.default <- c('comp1' = 90, 'comp2' = 80)    #   CHECK IF THESE UNITS SHOULD BE 0-1 OR 0-100 ***
+# at least threshold.default[1] is used in batch.summarizer() by ejamit() and app_server()
+#
 # which fields to compare to thresholds 
 # EJ US pctiles or EJ State pctiles
 ## used by inputIds 'an_fields_comp1' and 'an_fields_comp2'
 threshgroup.default <- list(
   'comp1' = "EJ US pctiles",  'comp2' = "EJ State pctiles"
 )
+
+## global variable for mapping (EJAMejscreenapi had this as data loaded by pkg?)
+meters_per_mile <- 1609.344
+
+## Loading/wait spinners (color, type) ####
+## note: was set at type = 1, but this caused screen to "bounce"
+options(spinner.color="#005ea2", spinner.type = 4)
+
 
 ################################################################# # 
 
