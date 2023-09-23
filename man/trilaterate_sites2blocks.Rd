@@ -8,7 +8,7 @@ get data.table with siteid, lat,lon of each site (eg for when you did not save s
 trilaterate_sites2blocks(s2b)
 }
 \arguments{
-\item{s2b}{like \link{sites2blocks_example_2pts_1miles}}
+\item{s2b}{like \link{testoutput_getblocksnearby_10pts_1miles}}
 }
 \value{
 a data.table with one row per unique siteid from input dt,
@@ -19,7 +19,7 @@ trilaterate_sites2blocks - Estimate lat,lon of each siteid, from outputs of getb
 get data.table with siteid, lat,lon of each site (eg for when you did not save sitepoints info)
 }
 \examples{
-s2b = copy(sites2blocks_example_2pts_1miles)
+s2b = copy(testoutput_getblocksnearby_10pts_1miles)
 s2b_located = latlon_join_on_blockid(s2b) # done by trilaterate also
 inferred_sites = trilaterate_sites2blocks(s2b)
 inferred_sites

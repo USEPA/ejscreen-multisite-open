@@ -7,7 +7,7 @@
 getblocks_diagnostics(x)
 }
 \arguments{
-\item{x}{The output of \code{\link[=getblocksnearby]{getblocksnearby()}} like sites2blocks_example}
+\item{x}{The output of \code{\link[=getblocksnearby]{getblocksnearby()}} like testoutput_getblocksnearby_10pts_1miles}
 }
 \value{
 A list of stats
@@ -16,7 +16,7 @@ A list of stats
 Get summary stats on counts of blocks (unique vs doublecounted) near sites
 }
 \examples{
- getblocks_diagnostics(sites2blocks_example)
+ getblocks_diagnostics(testoutput_getblocksnearby_10pts_1miles)
 }
 \seealso{
 This relies on  \code{\link[=getblocks_summarize_blocks_per_site]{getblocks_summarize_blocks_per_site()}} and \code{\link[=getblocks_summarize_sites_per_block]{getblocks_summarize_sites_per_block()}}

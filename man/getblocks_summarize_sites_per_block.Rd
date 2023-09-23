@@ -7,7 +7,7 @@
 getblocks_summarize_sites_per_block(x, varname = "blockid")
 }
 \arguments{
-\item{x}{The output of \code{\link[=getblocksnearby]{getblocksnearby()}} like sites2blocks_example}
+\item{x}{The output of \code{\link[=getblocksnearby]{getblocksnearby()}} like testoutput_getblocksnearby_10pts_1miles}
 
 \item{varname}{colname of variable in data.table x that is the one to summarize by}
 }

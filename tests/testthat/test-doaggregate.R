@@ -24,19 +24,19 @@ test_that('error if null empty NA or blank input',{
 
 # no crash when aggregate basic example of sites2blocks
 test_that('case simple example, return data.table',{
-  expect_no_error(val <- doaggregate(sites2blocks = sites2blocks_example, radius = max(sites2blocks_example$distance)))
+  expect_no_error(val <- doaggregate(sites2blocks = testoutput_getblocksnearby_10pts_1miles, radius = max(testoutput_getblocksnearby_10pts_1miles$distance)))
   expect_true('data.table' %in% class(val))
 })
 test_that('ask for distance larger than what was available in dataset', {
-  expect_warning(val <- doaggregate(sites2blocks = sites2blocks_example, radius = 2 * max(sites2blocks_example$distance)))
+  expect_warning(val <- doaggregate(sites2blocks = testoutput_getblocksnearby_10pts_1miles, radius = 2 * max(testoutput_getblocksnearby_10pts_1miles$distance)))
 })
 test_that('input has column not named distance', {
-  wrongnames <- copy(sites2blocks_example)
+  wrongnames <- copy(testoutput_getblocksnearby_10pts_1miles)
   setnames(wrongnames, 'distance', 'radius')
   expect_error(val <- doaggregate(sites2blocks = wrongnames))
 })
 test_that('input is data.frame not data.table ??? ', {
-  df <- setDF(  copy(sites2blocks_example) )
+  df <- setDF(  copy(testoutput_getblocksnearby_10pts_1miles) )
   expect_no_error(doaggregate(df))
 })
 

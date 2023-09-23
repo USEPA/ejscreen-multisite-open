@@ -51,7 +51,7 @@ or in each shapefile or FIPS-defined location).
 \item \strong{Excel files to read into ejamit()} or getblocksnearby() are in the local source package files in EJAM/inst/testdata/latlon
 \item \link{testpoints_10}.rda  and larger datasets each provide a random test points data.frame with columns lat lon siteid
 \item \code{\link[=testpoints_n]{testpoints_n()}} can generate random test points at places weighted by population, FRS facilities, blockgroup, area, block
-\item \link{sites2blocks_example_10}.rda and larger datasets are sample outputs of getblocksnearbyviaQuadTree or just getblocksnearby(),
+\item \link{testoutput_getblocksnearby_10pts_1miles}.rda and larger datasets are sample outputs of getblocksnearbyviaQuadTree or just getblocksnearby(),
 to try as inputs to doaggregate()
 }
 }

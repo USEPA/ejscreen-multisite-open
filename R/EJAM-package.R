@@ -45,7 +45,7 @@
 #'   * **Excel files to read into ejamit()** or getblocksnearby() are in the local source package files in EJAM/inst/testdata/latlon 
 #'   * [testpoints_10].rda  and larger datasets each provide a random test points data.frame with columns lat lon siteid
 #'   * [testpoints_n()] can generate random test points at places weighted by population, FRS facilities, blockgroup, area, block
-#'   * [sites2blocks_example_10].rda and larger datasets are sample outputs of getblocksnearbyviaQuadTree or just getblocksnearby(), 
+#'   * [testoutput_getblocksnearby_10pts_1miles].rda and larger datasets are sample outputs of getblocksnearbyviaQuadTree or just getblocksnearby(), 
 #'     to try as inputs to doaggregate()
 #'
 #' @details  # **Specifying buffer sites / facilities:** ####################################################################

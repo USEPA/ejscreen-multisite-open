@@ -25,7 +25,7 @@ doaggregate(
 \item{sites2blocks}{data.table of distances in miles between all sites (facilities) and
 nearby Census block internal points, with columns siteid, blockid, distance,
 created by getblocksnearby  function.
-See sites2blocks_example dataset in package, as input to this function}
+See \link{sites2blocks_example_10pts_1miles} aka \link{testoutput_getblocksnearby_10pts_1miles} dataset in package, as input to this function}
 
 \item{sites2states_or_latlon}{data.table or just data.frame, with columns siteid (each unique one in sites2blocks) and ST (2-character State abbreviation) or lat and lon}
 

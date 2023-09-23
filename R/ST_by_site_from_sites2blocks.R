@@ -3,7 +3,7 @@
 #'   the state each site is in, to be able to report state percentiles, but you do not have 
 #'   the original list of siteid lat/lon or State info. This can infer the State
 #'   each site is located in, based on the state of the nearest block (and its parent blockgroup).
-#' @param sites2blocks data.table or data.frame, like [sites2blocks_example],
+#' @param sites2blocks data.table or data.frame, like [testoutput_getblocksnearby_10pts_1miles],
 #'   from [getblocksnearby()] that has columns siteid and blockid and distance
 #'
 #' @return data.table with columns  siteid, ST 
@@ -16,7 +16,7 @@
 #'   y = read_csv_or_xl(fname)
 #'   x$ST == y$FacState
 #'   }
-#'   ST_by_site_from_sites2blocks(sites2blocks_example) 
+#'   ST_by_site_from_sites2blocks(testoutput_getblocksnearby_10pts_1miles) 
 #'   
 ST_by_site_from_sites2blocks <- function(sites2blocks) {
   setDT(sites2blocks)

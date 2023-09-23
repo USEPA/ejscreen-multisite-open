@@ -129,6 +129,6 @@ datawrite_to_aws(justchecking = T, ext = '.rda',   varnames = 'blockwts')
 #  2005-2009 ACS data.
 #  ########### #
 
-# and update also sites2blocks_example
+# and update also testoutput_getblocksnearby_10pts_1miles
 #
 # and document, rebuild /reinstall the package 

@@ -37,7 +37,7 @@
 #' @param sites2blocks data.table of distances in miles between all sites (facilities) and 
 #'   nearby Census block internal points, with columns siteid, blockid, distance,
 #'   created by getblocksnearby  function. 
-#'   See sites2blocks_example dataset in package, as input to this function
+#'   See [sites2blocks_example_10pts_1miles] aka [testoutput_getblocksnearby_10pts_1miles] dataset in package, as input to this function
 #' @param sites2states_or_latlon data.table or just data.frame, with columns siteid (each unique one in sites2blocks) and ST (2-character State abbreviation) or lat and lon 
 #' @param countcols character vector of names of variables  to aggregate within a buffer
 #'   using a sum of counts, like, for example, the number of people for whom a 
@@ -117,7 +117,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   # timed <- system.time({
   
   if (testing) {  
-    #sites2blocks <- EJAM::sites2blocks_example 
+    #sites2blocks <- EJAM::testoutput_getblocksnearby_10pts_1miles 
     
     
   }
@@ -355,9 +355,9 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
     ),
     by="blockid"]
   }
-  #  length(sites2blocks_example$blockid)
+  #  length(testoutput_getblocksnearby_10pts_1miles$blockid)
   # [1] 11567
-  #  length(unique(sites2blocks_example$blockid))
+  #  length(unique(testoutput_getblocksnearby_10pts_1miles$blockid))
   # [1] 11334
   
   #***  ###################################### #

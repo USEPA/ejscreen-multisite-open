@@ -7,7 +7,7 @@
 ST_by_site_from_sites2blocks(sites2blocks)
 }
 \arguments{
-\item{sites2blocks}{data.table or data.frame, like \link{sites2blocks_example},
+\item{sites2blocks}{data.table or data.frame, like \link{testoutput_getblocksnearby_10pts_1miles},
 from \code{\link[=getblocksnearby]{getblocksnearby()}} that has columns siteid and blockid and distance}
 }
 \value{
@@ -27,6 +27,6 @@ each site is located in, based on the state of the nearest block (and its parent
   y = read_csv_or_xl(fname)
   x$ST == y$FacState
   }
-  ST_by_site_from_sites2blocks(sites2blocks_example) 
+  ST_by_site_from_sites2blocks(testoutput_getblocksnearby_10pts_1miles) 
   
 }

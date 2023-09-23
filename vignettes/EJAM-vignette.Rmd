@@ -340,9 +340,9 @@ radius <- 3 # radius (miles).  5 km = 3.1 miles, 10 km = 6.2 miles
 
 -   **ejamit()** provides results in just one function, by using getblocksnearby() and doaggregate():
 
--   **getblocksnearby()** takes a set of points (e.g., facilities) and finds the Census blocks near each. Sample input is in testpoints_100_dt, and sample output is in sites2blocks_example.
+-   **getblocksnearby()** takes a set of points (e.g., facilities) and finds the Census blocks near each. Sample input is in testpoints_100, and sample output is in testoutput_getblocksnearby_10pts_1miles
 
--   **doaggregate()** takes the list of blocks near each point, joins it to blockgroup indicators like from EJScreen, and aggregates at each buffered point as well as for the overall set of unique blocks (residents). Sample input is in sites2blocks_example.
+-   **doaggregate()** takes the list of blocks near each point, joins it to blockgroup indicators like from EJScreen, and aggregates at each buffered point as well as for the overall set of unique blocks (residents). Sample input is in testoutput_getblocksnearby_10pts_1miles
 
 ### Use ejamit( ) to get results in one step
 
@@ -430,8 +430,8 @@ plotblocksnearby(testpoints_n(1), radius = 3)
 
 ```{r}
 ## Also could use this example intermediate step dataset 
-## of 99 sites, with 11,567 nearby blocks:
-# sites2blocks <- data.table::copy(sites2blocks_example)
+## of n sites, with thousands of nearby blocks:
+# sites2blocks <- data.table::copy(testoutput_getblocksnearby_10pts_1miles)
 sitepoints <- data.table::copy(EJAM::testpoints_100_dt) 
 sites2blocks <- EJAM::getblocksnearby(sitepoints,radius,quadtree = localtree)
 names(sites2blocks)
@@ -495,7 +495,7 @@ bplot(x, sample(1:nrow(sitepoints),1)) # plots a random site surrounded by nearb
 #### doaggregate() will summarize indicators within each buffer and overall
 
 ```{r}
-# out <- doaggregate(sites2blocks_example)
+# out <- doaggregate(testoutput_getblocksnearby_10pts_1miles)
 
 elapsed <- system.time({
   out <- suppressWarnings( 

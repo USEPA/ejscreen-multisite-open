@@ -6,7 +6,7 @@ Maintainer: Mark Corrales <corrales.mark@epa.gov>
 License: MIT + file LICENSE.md
 Description: Tools for summarizing environmental and demographic indicators 
     (such as those in EJScreen) for residents living near any one of a number of 
-    specific sites. It uses quad tree search/indexing of block locations, data.table, parallel processing 
+    specific sites. It uses quad tree search/indexing of block locations, data.table, etc.
     to provide very fast identification of nearby blocks, distances, and 
     aggregation of indicators within each distance. It can be uses as a web app, with the user interface provided by R shiny.
 URL: https://github.com/USEPA/EJAM
