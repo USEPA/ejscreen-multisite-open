@@ -62,7 +62,7 @@
 #' @param subgroups_type Optional (uses default). Set this to 
 #'   "nh" for non-hispanic race subgroups as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh; 
 #'   "alone" for EJScreen v2.2 style race subgroups as in    White Alone, wa and others in names_d_subgroups_alone; 
-#'   "both" for both versions. Work in progress.
+#'   "both" for both versions. Possibly another option is "original" or "default" but work in progress.
 #' @param infer_sitepoints set to TRUE to try to infer the lat,lon of each site around which the blocks in sites2blocks were found.
 #'   lat,lon of each site will be approximated as average of nearby blocks, although a more accurate slower way would
 #'   be to use reported distance of each of 3 of the furthest block points and triangulate
@@ -95,7 +95,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
                         testing=FALSE, 
                         include_ejindexes=FALSE, updateProgress = NULL,
                         need_proximityscore=FALSE, silentinteractive=FALSE, 
-                        subgroups_type='alone', 
+                        subgroups_type='nh', 
                         infer_sitepoints=FALSE, ...) {
   
   # But note that names_d_subgroups and related lists should already be defined in built package
@@ -1006,7 +1006,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   # these lines about names of variables should be pulled out of here and defined as params or another way   xxx
   # specify which variables get converted to percentile form
   
-  varsneedpctiles <- c(names_e,  names_d, names_d_subgroups   ) # ONLY IF THESE ARE ALL IN LOOKUP TABLES AND blockgroupstats?
+  varsneedpctiles <- c(names_e,  names_d, subs   ) # ONLY IF THESE ARE ALL IN LOOKUP TABLES AND blockgroupstats?
   # varsneedpctiles <- intersect(varsneedpctiles, names(blockgroupstats))
   if (include_ejindexes) {
     varsneedpctiles <- c(varsneedpctiles, c(names_ej, names_ej_state, names_ej_supp, names_ej_supp_state))
@@ -1197,10 +1197,9 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   #  EJAM::names_these  may not be the same while transitioning to newer subgroups definitions
   names_these <- perfectnames(names_these)
   # names_these_avg <- c(names_d_avg,          names_d_subgroups_avg,          names_e_avg)        # #  avg.x was changed to us.avg.x naming scheme
-  
   # THESE ARE ALREADY IN EJAM:: but this ensures they are also in usastats, statestats, and results_bysite
   
-  names_these_avg          <- paste0(      "avg.", names_these) # doing it this way limits it to the subset found by perfectnames(names_these)
+  names_these_avg          <- paste0(      "avg.", names_these) # allows for "both" nh and alone, and also doing it this way limits it to the subset found by perfectnames(names_these)
   names_these_state_avg    <- paste0("state.avg.", names_these) # c(names_d_state_avg,    names_d_subgroups_state_avg,    names_e_state_avg)  #     
   names_these_ratio_to_avg       <- paste0("ratio.to.", names_these_avg )   # <- c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg, names_e_ratio_to_avg) #
   names_these_ratio_to_state_avg <- paste0("ratio.to.", names_these_state_avg) #  <- c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg, names_e_ratio_to_state_avg)  # 
@@ -1303,11 +1302,11 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   # add those columns to overall and bybg, so the format is same for overall and bysite tables
   results_overall[ , lat := NA]
   results_overall[ , lon := NA]
-   
+  
   sites2bgs_plusblockgroupdata_bysite[ , lat := NA]
   sites2bgs_plusblockgroupdata_bysite[ , lon := NA]
-
-    #***  ###################################### #
+  
+  #***  ###################################### #
   
   # Put results columns in a more useful/ convenient order ####
   {
@@ -1320,7 +1319,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
       
       ## RATIOS to AVG in US or State ---------------
       # for D,Dsub,E
-      
+      # these already contain nh, alone, or both  as the subgroups types
       names_these_ratio_to_avg,
       names_these_ratio_to_avg,
       names_these_ratio_to_state_avg,
@@ -1331,22 +1330,34 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
       ### D RAW % ##
       # "Demog.Index.Supp", # supplemental demographic indicator now is in names_d
       names_d,   # Demog.Index, percent low income, etc.
-      names_d_subgroups,   # percent hispanic etc.
+      subs, # names_d_subgroups,   # percent hispanic etc.
       # low life expectancy score 
       # "lowlifex",   # now is in names_d 
       ###  D US RATIOS?  # (above)
       ### D US PCTILE ###
       # "pctile.Demog.Index", #now in names_d_pctile
-      names_d_pctile, names_d_subgroups_pctile, 
+      names_d_pctile,
+      
+      names_d_subgroups_nh_pctile,       names_d_subgroups_alone_pctile,
+      
       ### D US AVERAGES ###
-      names_d_avg,  names_d_subgroups_avg, names_d_subgroups_state_avg,
+      names_d_avg,
+      
+      names_d_subgroups_nh_avg,       names_d_subgroups_alone_avg,
+      names_d_subgroups_nh_state_avg ,names_d_subgroups_alone_state_avg,
+      # need to make flexible to have nh, alone, ,or both ! ***
+      
       ### D STATE RATIOS?     # (above)
       ### D STATE PCTILE ##
       # "state.pctile.Demog.Index", #now in names_d_pctile
-      names_d_state_pctile, names_d_subgroups_state_pctile, 
+      names_d_state_pctile,
+      
+      names_d_subgroups_nh_state_pctile, names_d_subgroups_alone_state_pctile, # only available ones get used so ok to list all here.  need to make flexible to have nh, alone, ,or both ! ***
+      
       ### D STATE AVERAGES ###
       #could create: names_e_avg, names_d_avg, names_e_state_avg, names_d_state_avg,# eg    state.avg.pctmin 
       names_d_state_avg,
+      # names_d_subgroups_avg,   # need to make flexible to have nh, alone, ,or both ! *** # this was not there but should add something like it ?
       
       ## ENVIRONMENTAL  -----------------
       
@@ -1375,7 +1386,8 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
       names_ej, # raw scores not essential in output 
       
       ### D RAW COUNTS? -NOT NEEDED?  ###
-      names_d_count, names_d_subgroups_count,  # were in EJAM output but NOT ESSENTIAL IN OUTPUT
+      names_d_count,
+      names_d_subgroups_nh_count, names_d_subgroups_alone_count,  # were in EJAM output but NOT ESSENTIAL IN OUTPUT
       names_d_other_count,  # were in EJAM output but NOT ESSENTIAL IN OUTPUT # denominator counts but also pop which is already above
       
       ## BG AND BLOCK COUNTS ----
@@ -1443,7 +1455,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   # longnames[ longnames %in% renamer$old] <- renamer$new[match(longnames[ longnames %in% renamer$old] , renamer$old)]
   
   
-  # not   in map_headernames:
+  # not   in map_headernames (*** but is that still the case?) :
   
   renamer = data.frame(
     old=c(

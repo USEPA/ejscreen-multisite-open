@@ -1074,13 +1074,13 @@ app_server <- function(input, output, session) {
         sites2states_or_latlon = d_upload,
         radius = input$bt_rad_buff, 
         #countcols = 0, popmeancols = 0, calculatedcols = 0, # *** if using defaults of doaggregate()
-        # subgroups_type = "", # use default of doaggregate() based on whatever subgroups_d etc are now *** this may get updated/ changed to a parameter or input or default, etc. 
+        subgroups_type = input$subgroups_type, # nh, alone, or both # or use default of doaggregate() based on whatever subgroups_d etc are now ***   
         testing = input$testing, 
         include_ejindexes   = input$include_ejindexes, 
         need_proximityscore = input$need_proximityscore, 
         ## pass progress bar function as argument
         updateProgress = updateProgress_doagg
-        ))
+      ))
     # provide sitepoints table provided by user aka data_uploaded(), (or could pass only lat,lon and ST -if avail- not all cols?)
     # and doaggregate() decides where to pull ST info from - 
     # ideally from ST column, 

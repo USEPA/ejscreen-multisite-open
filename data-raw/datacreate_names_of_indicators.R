@@ -10,7 +10,7 @@
 
 # ** change when ready to switch to using subgroups_alone like white alone not nonhispanic white alone:
 
-subgroups_type <- c(  'nh', 'alone')[2]  # simple names without _nh or _alone should be usable/ what is used in code, and here get set same as nh for now and set to same as alone when want to switch 
+subgroups_type <- c(  'nh', 'alone')[1]  # simple names without _nh or _alone should be usable/ what is used in code, and here get set same as nh for now and set to same as alone when want to switch 
 
 #  *** EJScreen refers to EJ indexes without mentioning they are percentiles, since that is the only way they are reported.
 # Should EJAM do same, or be more explicit with friendly names? 
@@ -147,13 +147,13 @@ names_d_other_count <- c("pop", "nonmins", "povknownratio", "age25up", "hhlds", 
 
 # this was not being used:
 names_d_other_count_friendly <- c('Population', 
-                                'Count of non-POC', 
-                                'Count of hhlds with known poverty ratio (denominator for % low income)', 
-                                'Count of age 25+ (denominator for %<high school)',
-                                'Count of households (denominator for %limited English)',
-                                'Count of denominator for %unemployed', 
-                                'Count of housing units built pre-1960',
-                                'Count of housing units (denominator for %pre-1960)')
+                                  'Count of non-POC', 
+                                  'Count of hhlds with known poverty ratio (denominator for % low income)', 
+                                  'Count of age 25+ (denominator for %<high school)',
+                                  'Count of households (denominator for %limited English)',
+                                  'Count of denominator for %unemployed', 
+                                  'Count of housing units built pre-1960',
+                                  'Count of housing units (denominator for %pre-1960)')
 
 ############################################################################## #
 
@@ -212,11 +212,11 @@ if ('alone' %in% subgroups_type) {
   names_d_subgroups_friendly <- names_d_subgroups_nh_friendly
 }
 
- #   friendly version of counts 
- names_d_subgroups_count_friendly       <-  gsub("% ", "Count of ", names_d_subgroups_friendly)
- names_d_subgroups_alone_count_friendly <-  gsub("% ", "Count of ", names_d_subgroups_alone_friendly)
- names_d_subgroups_nh_count_friendly    <-  gsub("% ", "Count of ", names_d_subgroups_nh_friendly)
- 
+#   friendly version of counts 
+names_d_subgroups_count_friendly       <-  gsub("% ", "Count of ", names_d_subgroups_friendly)
+names_d_subgroups_alone_count_friendly <-  gsub("% ", "Count of ", names_d_subgroups_alone_friendly)
+names_d_subgroups_nh_count_friendly    <-  gsub("% ", "Count of ", names_d_subgroups_nh_friendly)
+
 
 
 ############################################################################## #
@@ -370,7 +370,7 @@ names_pctile <- c( # USA pctiles   # not including friendly version
   names_d_pctile,
   
   #  DO NOT INCLUDE 3 versions here (subgroups, subgroups_alone, subgroups_nh) - just the one we are actually going to use
- names_d_subgroups_pctile,     # only include one or the other type if at all, but note EJScreen 2.2 does NOT report these as percentiles - only raw percentage.
+  names_d_subgroups_pctile,     # only include one or the other type if at all, but note EJScreen 2.2 does NOT report these as percentiles - only raw percentage.
   # names_d_subgroups_nh_pctile,                   #  will start to use when ready  xxx
   # names_d_subgroups_alone_pctile,                #  will start to use when ready  xxx
   # 
@@ -468,7 +468,7 @@ names_e_ratio_to_state_avg <- paste0("ratio.to.", names_e_state_avg)
 
 names_d_ratio_to_avg_friendly       <- paste0("Ratio to ", names_d_avg_friendly)
 names_d_ratio_to_state_avg_friendly <- paste0("Ratio to ", names_d_state_avg_friendly) 
- 
+
 
 names_d_subgroups_nh_ratio_to_avg_friendly          <- paste0("Ratio to ", names_d_subgroups_nh_avg_friendly)
 names_d_subgroups_nh_ratio_to_state_avg_friendly    <- paste0("Ratio to ", names_d_subgroups_nh_state_avg_friendly)
@@ -504,47 +504,47 @@ names_e_ratio_to_state_avg_friendly <- paste0("Ratio to ", names_e_state_avg_fri
 #   names_these_ratio_to_state_avg <- c(names_d_ratio_to_state_avg,  names_d_subgroups_nh_ratio_to_state_avg,      names_e_ratio_to_state_avg)  # <-  paste0("ratio.to.", names_these_state_avg)
 # }
 # if (subgroups_type == 'original') {  #  ONLY 
-  names_these                    <- c(names_d,              names_d_subgroups,              names_e)
-  names_these_avg                <- c(names_d_avg,          names_d_subgroups_avg,          names_e_avg)                         # <- paste0("avg.",       names_these) #
-  names_these_state_avg          <- c(names_d_state_avg,    names_d_subgroups_state_avg,    names_e_state_avg)  # paste0("state.avg.", names_these)
-  names_these_ratio_to_avg       <- c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg, names_e_ratio_to_avg)      #<-  paste0("ratio.to.", names_these_avg )
-  names_these_ratio_to_state_avg <- c(names_d_ratio_to_state_avg,  names_d_subgroups_ratio_to_state_avg,    names_e_ratio_to_state_avg)  # <-  paste0("ratio.to.", names_these_state_avg)
+names_these                    <- c(names_d,              names_d_subgroups,              names_e)
+names_these_avg                <- c(names_d_avg,          names_d_subgroups_avg,          names_e_avg)                         # <- paste0("avg.",       names_these) #
+names_these_state_avg          <- c(names_d_state_avg,    names_d_subgroups_state_avg,    names_e_state_avg)  # paste0("state.avg.", names_these)
+names_these_ratio_to_avg       <- c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg, names_e_ratio_to_avg)      #<-  paste0("ratio.to.", names_these_avg )
+names_these_ratio_to_state_avg <- c(names_d_ratio_to_state_avg,  names_d_subgroups_ratio_to_state_avg,    names_e_ratio_to_state_avg)  # <-  paste0("ratio.to.", names_these_state_avg)
 # }
 
-  # no need for friendly versions?
-  
+# no need for friendly versions?
+
 # counts and e and ej not included here in names_these  ***
 
 ############################################################################## #
 #  compilations of names (these lack friendly version of the group)
-   
-  # [14,] "names_wts"         
-  
-   # [1,] "names_all_r"      
-  
-  # [13,] "names_these"        
-  # [2,]  "names_these_avg"          
-  # [11,] "names_these_state_avg"         
-  # [9,]  "names_these_ratio_to_avg"      
-  # [10,] "names_these_ratio_to_state_avg"
-  
-  # [6,] "names_need_pctile"             
-  # [7,] "names_need_state_pctile"       
-              
-           
+
+# [14,] "names_wts"         
+
+# [1,] "names_all_r"      
+
+# [13,] "names_these"        
+# [2,]  "names_these_avg"          
+# [11,] "names_these_state_avg"         
+# [9,]  "names_these_ratio_to_avg"      
+# [10,] "names_these_ratio_to_state_avg"
+
+# [6,] "names_need_pctile"             
+# [7,] "names_need_state_pctile"       
+
+
 ############################################################################## #
 # all_r ####
 #   this is not used by the app but may be useful in maintaining map_headernames or namez, etc.
-  
+
 names_all_r =  c(
   names_d_other_count,
   names_d_count, 
-   names_d, 
-   names_d_avg,           names_d_state_avg, 
-   names_d_pctile,        names_d_state_pctile,       
-   names_d_ratio_to_avg,  names_d_ratio_to_state_avg,
-
-    # subgroups_lists,   #   ONLY INCLUDE THE ONE BEING USED BY CODE ?  # subgroups   # not sure we need to include here all 3 versions of names of subgroups indicators
+  names_d, 
+  names_d_avg,           names_d_state_avg, 
+  names_d_pctile,        names_d_state_pctile,       
+  names_d_ratio_to_avg,  names_d_ratio_to_state_avg,
+  
+  # subgroups_lists,   #   ONLY INCLUDE THE ONE BEING USED BY CODE ?  # subgroups   # not sure we need to include here all 3 versions of names of subgroups indicators
   names_d_subgroups,         
   # names_d_subgroups_friendly,
   names_d_subgroups_avg,         names_d_subgroups_state_avg,
@@ -556,11 +556,11 @@ names_all_r =  c(
   # names_d_subgroups_med,     names_d_subgroups_state_med,
   names_d_subgroups_count,  # no avg, no ratio, no pctiles, for counts
   
-   
+  
   c(names_e,  
     names_e_avg,          names_e_state_avg, 
     names_e_pctile,       names_e_state_pctile),
-    names_e_ratio_to_avg, names_e_ratio_to_state_avg,
+  names_e_ratio_to_avg, names_e_ratio_to_state_avg,
   
   # c(names_these_ratio_to_avg, names_these_ratio_to_state_avg), 
   
@@ -575,15 +575,15 @@ names_all_r <- unique(names_all_r)
 # sub_nh_text    <- c( 'names_d_subgroups_nh_count',           
 #                   c('names_d_subgroups_nh',    'names_d_subgroups_nh_avg',    'names_d_subgroups_nh_state_avg',    'names_d_subgroups_nh_pctile',    'names_d_subgroups_nh_state_pctile') )
 sub_nh_text    <- c('names_d_subgroups_nh',        
-  'names_d_subgroups_nh_friendly', 
-  'names_d_subgroups_nh_avg',             'names_d_subgroups_nh_state_avg',   
-  'names_d_subgroups_nh_avg_friendly',    'names_d_subgroups_nh_state_avg_friendly',  
-  'names_d_subgroups_nh_pctile',          'names_d_subgroups_nh_state_pctile',   
-  'names_d_subgroups_nh_pctile_friendly', 'names_d_subgroups_nh_state_pctile_friendly',   
-  'names_d_subgroups_nh_ratio_to_avg',          'names_d_subgroups_nh_ratio_to_state_avg',  
-  'names_d_subgroups_nh_ratio_to_avg_friendly', 'names_d_subgroups_nh_ratio_to_state_avg_friendly',   
-  # names_d_subgroups_nh_med,     names_d_subgroups_nh_state_med,       
-  'names_d_subgroups_nh_count'  # no avg, no ratio, no pctiles, for counts 
+                    'names_d_subgroups_nh_friendly', 
+                    'names_d_subgroups_nh_avg',             'names_d_subgroups_nh_state_avg',   
+                    'names_d_subgroups_nh_avg_friendly',    'names_d_subgroups_nh_state_avg_friendly',  
+                    'names_d_subgroups_nh_pctile',          'names_d_subgroups_nh_state_pctile',   
+                    'names_d_subgroups_nh_pctile_friendly', 'names_d_subgroups_nh_state_pctile_friendly',   
+                    'names_d_subgroups_nh_ratio_to_avg',          'names_d_subgroups_nh_ratio_to_state_avg',  
+                    'names_d_subgroups_nh_ratio_to_avg_friendly', 'names_d_subgroups_nh_ratio_to_state_avg_friendly',   
+                    # names_d_subgroups_nh_med,     names_d_subgroups_nh_state_med,       
+                    'names_d_subgroups_nh_count'  # no avg, no ratio, no pctiles, for counts 
 )
 
 # sub_alone_text <- c( 'names_d_subgroups_alone_count',  
@@ -610,7 +610,7 @@ if ("alone" %in% subgroups_type) {
 subgroups_lists_text <-  sub_o_text  
 
 
- 
+
 # 'names_d_subgroups',               
 # 'names_d_subgroups_friendly',      
 # 'names_d_subgroups_avg',             'names_d_subgroups_state_avg',      
@@ -773,7 +773,7 @@ usethis::use_data(
   ############################################ # 
   # subgroups 
   
- #  plain subgroups,   subgroups_alone will match ejscreen v 2.2
+  #  plain subgroups,   subgroups_alone will match ejscreen v 2.2
   names_d_subgroups,         
   names_d_subgroups_friendly,
   names_d_subgroups_avg,         names_d_subgroups_state_avg,
@@ -850,37 +850,39 @@ usethis::use_data(
 
 ############################################################################## #
 
-# (first make sure all the Envt variables etc are actually in usastates dataset)
-
-stop('make sure all the Demog and Envt variables etc are actually in the latest installed usastates dataset')
-
 # just for conveniently referring to these in server code
 notfound = setdiff(names_these, names(EJAM::usastats))
 notfound_st = setdiff(names_these, names(EJAM::statestats))
-if (length(notfound   ) > 0) {warning('some of names_these are not column names found in EJAM::usastats  ... ',   paste0(notfound,    collapse = ', '), '\n')} else {print('ok')}
-if (length(notfound_st) > 0) {warning('some of names_these are not column names found in EJAM::statestats  ... ', paste0(notfound_st, collapse = ', '), '\n')} else {print('ok')}
-rm(notfound, notfound_st)
+notfound_bg = setdiff(names_these, names(EJAM::blockgroupstats))
+if (length(notfound   ) > 0) {warning('some of names_these are not column names found in EJAM::usastats  ... ',        paste0(notfound,    collapse = ', '), '\n')} else {print('ok')}
+if (length(notfound_st) > 0) {warning('some of names_these are not column names found in EJAM::statestats  ... ',      paste0(notfound_st, collapse = ', '), '\n')} else {print('ok')}
+if (length(notfound_bg) > 0) {warning('some of names_these are not column names found in EJAM::blockgroupstats  ... ', paste0(notfound_bg, collapse = ', '), '\n')} else {print('ok')}
+rm(notfound, notfound_st, notfound_bg)
 
+
+# (first make sure all the Envt variables etc are actually in usastates dataset)
+
+stop('make sure all the Demog and Envt variables etc are actually in the latest installed usastates dataset')
+#   #   NOW BOTH TYPES ARE IN blockgroupstats and in the usastats and statestats pctile lookup tables - alone and nh types as well
 
 # library(EJAM) # will replace the work above if have not resinstalled since that code script was run
-  data(blockgroupstats, package="EJAM")
-data("usastats", package = "EJAM")
-data("statestats", package = "EJAM")
-
-library(data.table)
-
-# replace nh versions with current version (e.g. alone)
-names(usastats)   <- gsub('pctnh', 'pct', names(usastats)  )  # this is badly written as one of sub nh is pctnhnhpia 
-names(statestats) <- gsub('pctnh', 'pct', names(statestats)  )
-
-usethis::use_data(usastats,        overwrite = TRUE)
-usethis::use_data(statestats,      overwrite = TRUE)
-
-
-
-setnames(blockgroupstats, names_d_subgroups_nh, names_d_subgroups)
-setnames(blockgroupstats, names_d_subgroups_nh_count , names_d_subgroups_count )
-
-usethis::use_data(blockgroupstats, overwrite = TRUE)
+# data(blockgroupstats, package = "EJAM")
+# data("usastats",      package = "EJAM")
+# data("statestats",    package = "EJAM")
+# 
+# library(data.table)
+# if (subgroups_type == 'alone') {
+# # replace nh versions with current version (e.g. alone)
+#   stop('fix this or remove it')
+# names(usastats)   <- gsub('pctnh', 'pct', names(usastats)  )  # this is badly written as one of sub nh is pctnhnhpia 
+# names(statestats) <- gsub('pctnh', 'pct', names(statestats)  ) # this is badly written as ....
+# 
+# usethis::use_data(usastats,        overwrite = TRUE)
+# usethis::use_data(statestats,      overwrite = TRUE)
+# }
+# setnames(blockgroupstats, names_d_subgroups_nh, names_d_subgroups)
+# setnames(blockgroupstats, names_d_subgroups_nh_count , names_d_subgroups_count )
+# 
+# usethis::use_data(blockgroupstats, overwrite = TRUE)
 
 

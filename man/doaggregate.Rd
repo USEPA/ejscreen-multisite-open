@@ -15,8 +15,9 @@ doaggregate(
   include_ejindexes = FALSE,
   updateProgress = NULL,
   need_proximityscore = FALSE,
-  silentinteractive = FALSE,
-  subgroups_type = "alone",
+  silentinteractive = TRUE,
+  called_by_ejamit = FALSE,
+  subgroups_type = "nh",
   infer_sitepoints = FALSE,
   ...
 )
@@ -58,12 +59,15 @@ using formulas that have to be specified.}
 
 \item{need_proximityscore}{whether to calculate proximity scores}
 
-\item{silentinteractive}{Set to FALSE to prevent long output showing in console in RStudio when in interactive mode}
+\item{silentinteractive}{Set to TRUE to see results in RStudio console.
+Set to FALSE to prevent long output showing in console in RStudio when in interactive mode}
 
-\item{subgroups_type}{Set this to
+\item{called_by_ejamit}{Set to TRUE by ejamit() to suppress some outputs even if ejamit(silentinteractive=F)}
+
+\item{subgroups_type}{Optional (uses default). Set this to
 "nh" for non-hispanic race subgroups as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh;
 "alone" for EJScreen v2.2 style race subgroups as in    White Alone, wa and others in names_d_subgroups_alone;
-"both" for both versions. Work in progress.}
+"both" for both versions. Possibly another option is "original" or "default" but work in progress.}
 
 \item{infer_sitepoints}{set to TRUE to try to infer the lat,lon of each site around which the blocks in sites2blocks were found.
 lat,lon of each site will be approximated as average of nearby blocks, although a more accurate slower way would

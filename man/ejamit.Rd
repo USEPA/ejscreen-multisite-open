@@ -12,6 +12,7 @@ ejamit(
   quadtree = NULL,
   silentinteractive = F,
   fips = NULL,
+  subgroups_type = "nh",
   threshold1 = 90,
   ...
 )
@@ -43,11 +44,21 @@ Takes about 2-5 seconds to create this each time it is needed.
 It can be automatically created when the package is attached via the .onAttach() function}
 
 \item{silentinteractive}{Set to FALSE to prevent long output showing in console in RStudio when in interactive mode,
-passed to doaggregate() also.}
+passed to doaggregate() also. app server sets this to TRUE when calling doaggregate() but
+ejamit() default is to set this to FALSE when calling doaggregate().}
 
 \item{fips}{FIPS code vector if using FIPS instead of sitepoints to specify places to analyze,
 such as a list of US Counties or tracts.}
 
+\item{subgroups_type}{Optional (uses default). Set this to
+"nh" for non-hispanic race subgroups as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh;
+"alone" for EJScreen v2.2 style race subgroups as in    White Alone, wa and others in names_d_subgroups_alone;
+"both" for both versions. Possibly another option is "original" or "default" but work in progress.}
+
+\item{threshold1}{percentile like 80 or 90 or 95 to compare percentiles to
+"alone" for groups like white alone (whether or not hispanic),
+"both" may try to include both,
+or possibly "original" or "default" might be added as options}
 
 \item{...}{passed to \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} or other such functions}
 }

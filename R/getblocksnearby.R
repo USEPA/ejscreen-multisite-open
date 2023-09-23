@@ -32,7 +32,8 @@
 getblocksnearby  <- function(sitepoints, radius=3, maxradius=31.07, 
                              avoidorphans=FALSE, 
                              # indexgridsize,
-                             quadtree,
+                             quadtree, 
+                             quiet=FALSE,
                              parallel=FALSE,
                              ...
 ) {
@@ -75,7 +76,7 @@ getblocksnearby  <- function(sitepoints, radius=3, maxradius=31.07,
     x <- getblocksnearbyviaQuadTree(sitepoints=sitepoints, radius=radius, maxradius=maxradius, 
                                     avoidorphans=avoidorphans, 
                                     # indexgridsize=indexgridsize,
-                                    quadtree=quadtree,
+                                    quadtree=quadtree, quiet=quiet,
                                     ...)
   } else {
     stop('parallel processing version not implemented yet')

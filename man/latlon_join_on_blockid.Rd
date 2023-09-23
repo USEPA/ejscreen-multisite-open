@@ -8,7 +8,7 @@ get expanded version of sites2blocks data.table, with new lat,lon columns}
 latlon_join_on_blockid(s2b)
 }
 \arguments{
-\item{s2b}{like \link{sites2blocks_example_2pts_1miles}, output of outputs of \code{\link[=getblocksnearby]{getblocksnearby()}}}
+\item{s2b}{like \link{testoutput_getblocksnearby_10pts_1miles}, output of \code{\link[=getblocksnearby]{getblocksnearby()}}}
 }
 \value{
 returns the input data.table but with lat,lon columns added as block coordinates
@@ -18,7 +18,7 @@ latlon_join_on_blockid - get lat,lon of each block internal point via blockid
 get expanded version of sites2blocks data.table, with new lat,lon columns
 }
 \examples{
- s2b = copy(sites2blocks_example_2pts_1miles)
+ s2b = copy(testoutput_getblocksnearby_10pts_1miles)
  latlon_join_on_blockid(s2b) # done by trilaterate also
  
 }
