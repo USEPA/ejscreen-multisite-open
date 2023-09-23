@@ -10,6 +10,7 @@ getblocksnearby(
   maxradius = 31.07,
   avoidorphans = FALSE,
   quadtree,
+  quiet = FALSE,
   parallel = FALSE,
   ...
 )
@@ -39,6 +40,9 @@ created from the SearchTree package example:
 SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point")
 Takes about 2-5 seconds to create this each time it is needed.
 It can be automatically created when the package is attached via the .onAttach() function}
+
+\item{quiet}{Optional. set to TRUE to avoid message about using getblock_diagnostics(),
+which is relevant only if a user saved the output of this function.}
 
 \item{...}{passed to \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} or other such functions}
 }

@@ -7,7 +7,7 @@
 distance_by_group_plots(...)
 }
 \value{
-invisibly returns full table of sorted distances of blockgroups, cumulative count of demog groups at that block group's distance
+see returnwhat parameter
 }
 \description{
 distance_by_group_plots or plot_distance_cdf_by_group

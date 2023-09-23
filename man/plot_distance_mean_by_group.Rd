@@ -9,7 +9,8 @@ plot_distance_mean_by_group(
   results_bybg_people,
   demogvarname = c(EJAM::names_d, EJAM::names_d_subgroups),
   demoglabel = NULL,
-  graph = TRUE
+  graph = TRUE,
+  returnwhat = "table"
 )
 }
 \arguments{
@@ -18,9 +19,14 @@ plot_distance_mean_by_group(
 \item{demogvarname}{vector of column names like "pctlowinc" etc.}
 
 \item{demoglabel}{vector of labels like "Low Income Residents" etc.}
+
+\item{returnwhat}{If returnwhat is "table", invisibly returns a
+data.frame with group, ratio, avg_distance_for_group, avg_distance_for_nongroup.
+If returnwhat is "plotfilename" then it returns the full path including filename of a .png in a tempdir
+If returnwhat is "plot" then it returns the plot object as needed for xls_formatting2() ?}
 }
 \value{
-data.frame with group, ratio, avg_distance_for_group, avg_distance_for_nongroup
+see parameter returnwhat
 }
 \description{
 Note ratio shown is ratio of distance among others to distance in group,

@@ -10,6 +10,7 @@ getblocksnearbyviaQuadTree(
   maxradius = 31.07,
   avoidorphans = FALSE,
   report_progress_every_n = 500,
+  quiet = FALSE,
   quadtree
 )
 }
@@ -35,6 +36,9 @@ Note that if creating a proximity score, by contrast, you instead want to find n
 
 \item{report_progress_every_n}{Reports progress to console after every n points,
 mostly for testing, but a progress bar feature might be useful unless this is super fast.}
+
+\item{quiet}{Optional. set to TRUE to avoid message about using getblock_diagnostics(),
+which is relevant only if a user saved the output of this function.}
 
 \item{quadtree}{(a pointer to the large quadtree object)
 created from the SearchTree package example:

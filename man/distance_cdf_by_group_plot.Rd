@@ -3,11 +3,11 @@
 \name{distance_cdf_by_group_plot}
 \alias{distance_cdf_by_group_plot}
 \title{distance_cdf_by_group_plot - SLOW - needs to be optimized
-Plot a graphic showing cumulative shares of ONE demographic group that are within each distance}
+Plot a graphic showing cumulative shares of ONLY ONE demographic group that are within each distance}
 \usage{
 distance_cdf_by_group_plot(
   results_bybg_people,
-  radius_miles = round(max(x$distance_min_avgperson, na.rm = T), 1),
+  radius_miles = round(max(results_bybg_people$distance_min_avgperson, na.rm = T), 1),
   demogvarname = "Demog.Index",
   demoglabel = demogvarname,
   color1 = "red",
@@ -33,7 +33,7 @@ and cumulative count of everyone else in that block group
 }
 \description{
 distance_cdf_by_group_plot - SLOW - needs to be optimized
-Plot a graphic showing cumulative shares of ONE demographic group that are within each distance
+Plot a graphic showing cumulative shares of ONLY ONE demographic group that are within each distance
 }
 \examples{
  y <- ejamit(testpoints_100, radius = 3)

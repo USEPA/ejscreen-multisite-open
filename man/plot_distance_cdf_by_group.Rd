@@ -7,14 +7,16 @@ CDF Line Plots of cumulative share of each demographic group, within each distan
 Each groups distribution of distances}
 \usage{
 plot_distance_cdf_by_group(
-  results_bybg_people,
+  results_bybg_people = NULL,
   radius_miles =
     round(max(results_bybg_people$distance_min_avgperson[!is.infinite(results_bybg_people$distance_min_avgperson)],
     na.rm = T), 1),
-  demogvarname = c(namez$d_subgroups),
+  subgroups_type = NULL,
+  demogvarname = NULL,
   demoglabel = NULL,
   colorlist = colorspace::diverging_hcl(length(demogvarname)),
   coloroverall = "black",
+  returnwhat = "table",
   ...
 )
 }
@@ -23,16 +25,36 @@ plot_distance_cdf_by_group(
 
 \item{radius_miles}{miles radius that was max distance analyzed}
 
-\item{demogvarname}{names of columns in results_bybg_people, e.g., "pctlowinc"}
+\item{subgroups_type}{optional, can be set to "nh" or "alone".
+Specifies types of race ethnicity subgroups to use for demogvarname
+but only if demogvarname is not specified as a parameter.
+If neither is specified it tries to use default_subgroups_type
+if that is a variable set by global.R, since it cannot check the reactive variable input$subgroups_type
+outside the context of the web app.}
+
+\item{demogvarname}{optional way to specify names of columns to use from results_bybg_people,
+e.g., c("pctlowinc", "pctmin"), or  namez$d, or
+could be a vector of subgroups such as namez$d_subgroups_nh that includes "pctnhba" etc.
+or namez$d_subgroups_alone that includes "pctba" etc.,
+but if demogvarname is not specified here as a parameter,
+this info could also be specified by the subgroups_type parameter here.
+If neither is specified, the function will try to use a default
+(which may not reflect any changes being made during development of EJAM if default_subgroups_type is in flux)}
 
 \item{demoglabel}{friendly text names for labelling graphic, like "Low income residents"}
 
 \item{colorlist}{colors like "red" etc. for the demographic groups of interest}
 
 \item{coloroverall}{color like "gray" for everyone as a whole}
+
+\item{returnwhat}{If returnwhat is "table", invisibly returns a
+full table of sorted distances of blockgroups,
+cumulative count of demog groups at that block group's distance.
+If returnwhat is "plotfilename" then it returns the full path including filename of a .png in a tempdir
+If returnwhat is "plot" then it returns the plot object as needed for xls_formatting2()}
 }
 \value{
-invisibly returns full table of sorted distances of blockgroups, cumulative count of demog groups at that block group's distance
+see returnwhat parameter
 }
 \description{
 plot_distance_cdf_by_group  - SLOW - needs to be optimized
