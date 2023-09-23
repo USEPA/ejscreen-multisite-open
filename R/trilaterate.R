@@ -1,12 +1,12 @@
 #' latlon_join_on_blockid - get lat,lon of each block internal point via blockid
 #' get expanded version of sites2blocks data.table, with new lat,lon columns
-#' @param s2b like [sites2blocks_example_2pts_1miles], output of outputs of [getblocksnearby()]
+#' @param s2b like [testoutput_getblocksnearby_10pts_1miles], output of [getblocksnearby()]
 #'
 #' @return returns the input data.table but with lat,lon columns added as block coordinates
 #' @export
 #'
 #' @examples 
-#'  s2b = copy(sites2blocks_example_2pts_1miles)
+#'  s2b = copy(testoutput_getblocksnearby_10pts_1miles)
 #'  latlon_join_on_blockid(s2b) # done by trilaterate also
 #'  
 latlon_join_on_blockid = function(s2b) {
@@ -20,14 +20,14 @@ latlon_join_on_blockid = function(s2b) {
 
 #' trilaterate_sites2blocks - Estimate lat,lon of each siteid, from outputs of getblocksnearby()
 #' get data.table with siteid, lat,lon of each site (eg for when you did not save sitepoints info)
-#' @param s2b like [sites2blocks_example_2pts_1miles]
+#' @param s2b like [testoutput_getblocksnearby_10pts_1miles]
 #'
 #' @return a data.table with one row per unique siteid from input dt, 
 #'   plus lat,lon columns  
 #' @export
 #'
 #' @examples 
-#' s2b = copy(sites2blocks_example_2pts_1miles)
+#' s2b = copy(testoutput_getblocksnearby_10pts_1miles)
 #' s2b_located = latlon_join_on_blockid(s2b) # done by trilaterate also
 #' inferred_sites = trilaterate_sites2blocks(s2b)
 #' inferred_sites
@@ -37,7 +37,7 @@ trilaterate_sites2blocks <- function(s2b) {
   s2b = copy(s2b) # otherwise it modifies s2b in parent env by reference
   
   # example:
-  # s2b = copy(sites2blocks_example_2pts_1miles)
+  # s2b = copy(testoutput_getblocksnearby_10pts_1miles)
   # latlon_join_on_blockid(s2b) # done by trilaterate also
   # x = trilaterate_sites2blocks(s2b)
   # x
