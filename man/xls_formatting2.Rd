@@ -8,13 +8,18 @@ Format EJAM tabular outputs for saving as Excel spreadsheet}
 xls_formatting2(
   overall,
   eachsite,
-  longnames,
+  longnames = NULL,
+  bybg = NULL,
+  plotfilename = NULL,
   summary_plot = NULL,
-  plot2 = NULL,
+  plotlatest = TRUE,
   analysis_title = "EJAM analysis",
   buffer_desc = "Selected Locations",
+  radius_or_buffer_in_miles = NULL,
   hyperlink_cols = NULL,
   testing = FALSE,
+  launchexcel = FALSE,
+  saveas = NULL,
   heatmap_colnames = NULL,
   heatmap_cuts = c(80, 90, 95),
   heatmap_colors = c("yellow", "orange", "red"),
@@ -32,9 +37,11 @@ xls_formatting2(
 
 \item{longnames}{vector of indicator names to display in Excel table}
 
+\item{plotfilename}{the full path including name of .png file to insert}
+
 \item{summary_plot}{optional plot passed from EJAM shiny app to save in 'Plot' sheet of Excel table}
 
-\item{plot2}{another plot for another tab}
+\item{plotlatest}{optional logical. If TRUE, the most recently displayed plot will be inserted into a tab called plot2}
 
 \item{analysis_title}{optional title passed from Shiny app to 'Notes' sheet}
 
@@ -44,6 +51,11 @@ xls_formatting2(
 
 \item{testing}{optional for testing only}
 
+\item{launchexcel}{Set to TRUE to have this function launch Excel immediately, showing the final workbook created here.}
+
+\item{saveas}{If not NULL, and a valid path with filename.xlsx is provided,
+the workbook will be saved locally at that path and name. Warning: it will overwrite an existing file.}
+
 \item{heatmap_colnames}{optional vector of colnames to apply heatmap colors}
 
 \item{heatmap_cuts}{vector of values to separate heatmap colors, between 0-100}
@@ -52,15 +64,17 @@ xls_formatting2(
 heatmap_cuts, where first color is for those >= 1st cutpoint, but <2d,
 second color is for those >=2d cutpoint but <3d, etc.}
 
-\item{graycolnums}{which columns to deemphasize}
+\item{graycolnums}{which column numbers to deemphasize}
 
-\item{narrowcolnums}{which columns to make narrow}
+\item{narrowcolnums}{which column numbers to make narrow}
 
 \item{graycolor}{color used to deemphasize some columns}
 
 \item{narrow6}{how narrow}
 
 \item{...}{other params passed along to \code{\link[openxlsx:writeData]{openxlsx::writeData()}}}
+
+\item{radius_miles}{If provided, miles buffer distance (from polygon or from point if circular buffers)}
 }
 \value{
 a workbook, ready to be saved in spreadsheet format, with tabs like "Overall" and "Each Site"
@@ -74,7 +88,7 @@ Already took and put here most or all of code from xls_formatting() or xls_forma
 }
 \examples{
 \dontrun{
-  wb <- xls_formatting2(datasetResults()$results_overall, datasetResults()$results_bysite)
-  openxlsx::saveWorkbook(wb, "results.xlsx", overwrite = TRUE)
+  wb <- xls_formatting2(testoutputs_$results_overall, datasetResults()$results_bysite,
+    saveas =  "results.xlsx")
 }
 }
