@@ -166,7 +166,7 @@ plot_distance_cdf_by_group <- function(
   data.table::setorder(x, distance_min_avgperson) 
   
   # x[ , .SD := lapply(.SD, FUN = as.numeric), .SDcols = demogvarname]  ???
-  cumdata <- x[ , lapply(.SD, FUN = function(z) collapse::fcumsum(pop * z, fill=T) / sum(pop * z, na.rm = TRUE)),
+  cumdata <- x[ , lapply(.SD, FUN = function(z) collapse::fcumsum(pop * z, fill = T) / sum(pop * z, na.rm = TRUE)),
                 .SDcols = demogvarname]
   cumdata$dist <- x$distance_min_avgperson # has NA values
   
@@ -174,7 +174,7 @@ plot_distance_cdf_by_group <- function(
   
   plot(cumdata$dist, 100 * cumdata[ , overall], 
        col = coloroverall, 
-       pch = NA_integer_, type = 'l', lty="dotted",
+       pch = NA_integer_, type = 'l', lty = "dotted",
        main = "Share of each Demographic Group Residing at Various Distances from Sites",
        xlab = "Distance from nearest site (for the avg resident in the blockgroup)", 
        ylab = paste0("Of all the residents within ", radius_miles," miles, what % have a site within X miles?"),
@@ -186,7 +186,7 @@ plot_distance_cdf_by_group <- function(
     
     data.table::setDF(cumdata)
     points(cumdata$dist, 100 *  cumdata[ , demogvarname[i]], 
-           col=colorlist[i-1],
+           col = colorlist[i - 1],
            pch = c(0:6,15:25, 7:14)[i], # various base R shapes for the points
            ...)
   }
@@ -200,7 +200,7 @@ plot_distance_cdf_by_group <- function(
     png(file.path(mytempdir, fname), width = 2000, height = 1000)
     plot(cumdata$dist, 100 * cumdata[ , overall], 
          col = coloroverall, 
-         pch = NA_integer_, type = 'l', lty="dotted",
+         pch = NA_integer_, type = 'l', lty = "dotted",
          main = "Share of each Demographic Group Residing at Various Distances from Sites",
          xlab = "Distance from nearest site (for the avg resident in the blockgroup)", 
          ylab = paste0("Of all the residents within ", radius_miles," miles, what % have a site within X miles?"),
@@ -212,7 +212,7 @@ plot_distance_cdf_by_group <- function(
       
       data.table::setDF(cumdata)
       points(cumdata$dist, 100 *  cumdata[ , demogvarname[i]], 
-             col=colorlist[i-1],
+             col = colorlist[i-1],
              pch = c(0:6,15:25, 7:14)[i], # various base R shapes for the points
              ...)
     }
@@ -271,7 +271,7 @@ distance_cdf_by_group_plot <- function(results_bybg_people, radius_miles=round(m
   }
   x <- results_bybg_people # not a full slow copy... done by reference using data.table::
   data.table::setorder(x, distance_min_avgperson) 
-  browser()
+
   # remove duplicated blockgroups, since here we do not need stats site by site, so use shorter distance for any bg that is near 2+ sites.
   x[ , distance_min_avgperson := min(distance_min_avgperson, na.rm = TRUE), by = "bgid"]
   x <- unique(x, by = "bgid")
@@ -281,21 +281,21 @@ distance_cdf_by_group_plot <- function(results_bybg_people, radius_miles=round(m
   cumdata <- x[ , .(
     dist = distance_min_avgperson, 
     # count_d = pop *   .SD, 
-    cumall_d    = collapse::fcumsum(pop *   .SD,       fill=TRUE) / sum(pop *        .SD,  na.rm = TRUE) , 
-    cumall_nond = collapse::fcumsum(pop * (1 -   .SD), fill=TRUE) / sum(pop * (1 -   .SD), na.rm = TRUE)),
+    cumall_d    = collapse::fcumsum(pop *   .SD,       fill = TRUE) / sum(pop *        .SD,  na.rm = TRUE) , 
+    cumall_nond = collapse::fcumsum(pop * (1 -   .SD), fill = TRUE) / sum(pop * (1 -   .SD), na.rm = TRUE)),
     .SDcols = demogvarname]
   # actual names will be dist, cumall_d.pctlowinc, cumall_nond.pctlowinc  for example, but using partial colname below still works:
   plot(cumdata$dist, 100 * cumdata$cumall_d, 
        col = color1, 
        main = "Share of each Demographic Group Residing at Various Distances from Facilities",
        xlab = "Living within X miles of facilities", 
-       ylab= paste0("% of all residents within ", radius_miles," miles"),
-       ylim=c(0,100)
+       ylab = paste0("% of all residents within ", radius_miles," miles"),
+       ylim = c(0,100)
   )
-  points(cumdata$dist, 100 * cumdata$cumall_nond, col=color2)
+  points(cumdata$dist, 100 * cumdata$cumall_nond, col = color2)
   legend("topleft", legend = c(demoglabel, paste0("All other residents")), fill = c(color1, color2))
   cat('This takes a very long time to plot for 1,000 sites, e.g.... please wait... \n\n')
-  print(  distance_by_group(x, demogvarname=demogvarname, demoglabel=demoglabel) )
+  print(  distance_by_group(x, demogvarname = demogvarname, demoglabel = demoglabel) )
   invisible(cumdata)
 }
 ############################################################################################################# # 
