@@ -42,7 +42,7 @@
 #'   out <- ejamit(testsites, radius)  
 #'   # out <- ejamit("myfile.xlsx", 3.1)  
 #'   
-#'   # out2 <- EJAMejscreenapi::ejscreenit(testpoints_05)
+#'   # out2 <- ejscreenit(testpoints_05)
 #'   
 #'   # View results overall
 #'   round(t(out$results_overall), 3.1)
@@ -209,13 +209,13 @@ ejamit <- function(sitepoints,
   
   # (doaggregate does not provide this)
   
-  out$results_summarized <- EJAMbatch.summarizer::batch.summarize(
-    sitestats = data.frame(out$results_bysite),
-    popstats =  data.frame(out$results_bysite),
-    ## user-selected quantiles to use
-    #probs = as.numeric(input$an_list_pctiles),
-    threshold = list(threshold1) # compare variables to 90 or other  %ile
-  )
+  # out$results_summarized <- EJAMbatch.summarizer   ::   batch.summarize(   # disabled in ejam lite package ***
+  #   sitestats = data.frame(out$results_bysite),
+  #   popstats =  data.frame(out$results_bysite),
+  #   ## user-selected quantiles to use
+  #   #probs = as.numeric(input$an_list_pctiles),
+  #   threshold = list(threshold1) # compare variables to 90 or other  %ile
+  # )
   
   #   The percentiles in these $rows seem wrong as of 10/2023 so far:
   #
@@ -256,29 +256,29 @@ ejamit <- function(sitepoints,
     )
     ###################################### # 
     #  *** THE results_summarized$rows percentiles info needs debugging - numbers may be wrong
-    cat("\nWhich Demog groups or Envt stressors are highest (relative to States overall): \n\n")
-    
-    if (subgroups_type == 'nh')    { subratvarnames <- names_d_subgroups_nh_ratio_to_state_avg}
-    if (subgroups_type == 'alone') { subratvarnames <- names_d_subgroups_alone_ratio_to_state_avg}
-    if (subgroups_type == 'both')  { subratvarnames <- c(names_d_subgroups_nh_ratio_to_state_avg, names_d_subgroups_alone_ratio_to_state_avg)}
-    
-    grps <- list(
-      names_d_ratio_to_state_avg,
-      subratvarnames, #names_d_subgroups_ratio_to_state_avg,   #   edited to flexibly use nh, alone, or both types
-      names_e_ratio_to_state_avg
-    )
-    for (somenames in grps) {
-      # somenames <- grep("ratio.to.state", names(out$results_summarized$rows), value = TRUE)
-      # cat("Score as Ratio to State Average:\n")
-      someinfo <- t(out$results_summarized$rows[ , somenames])[ , c(1,2,6)]
-      someinfo <- data.frame(someinfo)
-      rownames(someinfo) <- fixcolnames(somenames, 'rname', 'long')
-      colnames(someinfo) <- c("Avg resident overall", "at site with max ratio", "Avg site")
-      print(
-        round(someinfo[order(someinfo[,"Avg resident overall"], decreasing = TRUE), ], 1)
-      )
-      cat("\n\n")
-    }
+    # cat("\nWhich Demog groups or Envt stressors are highest (relative to States overall): \n\n")
+    # 
+    # if (subgroups_type == 'nh')    { subratvarnames <- names_d_subgroups_nh_ratio_to_state_avg}
+    # if (subgroups_type == 'alone') { subratvarnames <- names_d_subgroups_alone_ratio_to_state_avg}
+    # if (subgroups_type == 'both')  { subratvarnames <- c(names_d_subgroups_nh_ratio_to_state_avg, names_d_subgroups_alone_ratio_to_state_avg)}
+    # 
+    # grps <- list(
+    #   names_d_ratio_to_state_avg, 
+    #   subratvarnames, #names_d_subgroups_ratio_to_state_avg,   #   edited to flexibly use nh, alone, or both types
+    #   names_e_ratio_to_state_avg
+    # )
+    # for (somenames in grps) {
+    #   # somenames <- grep("ratio.to.state", names(out$results_summarized$rows), value = TRUE)
+    #   # cat("Score as Ratio to State Average:\n")
+    #   someinfo <- t(out$results_summarized$rows[ , somenames])[ , c(1,2,6)]         # disabled in ejam lite package ***
+    #   someinfo <- data.frame(someinfo)
+    #   rownames(someinfo) <- fixcolnames(somenames, 'rname', 'long')      
+    #   colnames(someinfo) <- c("Avg resident overall", "at site with max ratio", "Avg site")
+    #   print(
+    #     round(someinfo[order(someinfo[,"Avg resident overall"], decreasing = TRUE), ], 1)
+    #   )
+    #   cat("\n\n")
+    # }
     ###################################### # 
     # site counts and distance minima
     # print(  round(tail(t(out$results_summarized$rows)[ ,1:7],7),1)  )   
@@ -312,8 +312,8 @@ ejamit <- function(sitepoints,
         "\n\n")
     
     cat("To see bar or boxplots of ratios of %Demographics vs US averages:\n\n", 
-        "     ?EJAM::plot_barplot_ratios()  # or ",
-        "     ?EJAMejscreenapi::boxplots_ratios()",
+        "     ?plot_barplot_ratios() in EJAM package # or ",
+        "     ?boxplots_ratios() in EJAMejscreenapi package",
         "     boxplots_ratios(ratios_to_avg(as.data.frame(out$results_bysite))$ratios_d)",
         "\n\n")
     

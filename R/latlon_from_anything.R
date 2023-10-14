@@ -2,26 +2,26 @@
 #' @description Try to figure out if user provided latitude / longitude as vectors, data.frame, file, or interactively pick file.
 #' @details 
 #' 
-#' This function, [EJAM::latlon_from_anything()] 
+#' This function
 #' 
 #' relies on
 #' 
-#'   [EJAMejscreenapi::read_csv_or_xl()] and
+#'   read_csv_or_xl()  and
 #'   
 #'   [latlon_df_clean()] which in turn uses [latlon_infer()] [latlon_as.numeric()] [latlon_is.valid()]
 #' 
 #' 
-#' [EJAMejscreenapi::read_and_clean_points()] 
+#' read_and_clean_points() from EJAMejscreenapi
 #' 
 #'   would be the most general / flexible broadest way to get points, but is still work in progress 
 #' 
-#'   is similar to what is done by [EJAM::latlon_from_anything()]
+#'   is similar to what is done by latlon_from_anything()
 #'   
 #'   except it also uses these functions:
 #'   
-#'   [EJAM::latlon_from_siteid()]  
+#'   [latlon_from_siteid()]  
 #'   
-#'   [EJAM::latlon_from_programid()]   but not  _from_naics() ?
+#'   [latlon_from_programid()]   but not  _from_naics() ?
 #' 
 #' 
 #' @param x If missing and interactive mode in RStudio, prompts user for file. Otherwise, 
@@ -32,16 +32,12 @@
 #'   File or data.frame/data.table/matrix must have columns called lat and lon, or names that can 
 #'   be inferred to be that by latlon_infer()
 #' @param y If x is a vector of longitudes, y must be the latitudes. Ignored otherwise.
-#' @seealso [EJAMejscreenapi::read_csv_or_xl()] [EJAM::latlon_df_clean()]
+#' @seealso read_csv_or_xl() latlon_df_clean()
 #' @return A data.frame that has at least columns lon and lat (and others if they were in x)
 #' @examples  
 #'  if (interactive()) {
 #'  pts <- latlon_from_anything()
 #'  }
-#'  latlon_from_anything(system.file("testdata/testpoints_12.xlsx", 
-#'    package="EJAMejscreenapi"))
-#'  latlon_from_anything(system.file("testdata/testpoints_05.csv", 
-#'    package="EJAMejscreenapi"))
 #'  latlon_from_anything(testpoints_100[1:6,] )
 #'  latlon_from_anything(testpoints_100[1:6, c('lat','lon')] )
 #'  latlon_from_anything(x=testpoints_100$lon[1:6], y=testpoints_100$lat[1:6] )

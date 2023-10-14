@@ -32,7 +32,7 @@
 #'    - quaddata data.table used to create localtree, a quad tree index of block points
 #'      (and localtree that is created when package is loaded)
 #'    
-#'    - EJAM::blockgroupstats - A data.table (such as EJScreen demographic and environmental data by blockgroup?)
+#'    - blockgroupstats - A data.table (such as EJScreen demographic and environmental data by blockgroup?)
 #'
 #' @param sites2blocks data.table of distances in miles between all sites (facilities) and 
 #'   nearby Census block internal points, with columns siteid, blockid, distance,
@@ -103,12 +103,12 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
                         infer_sitepoints=FALSE, ...) {
   
   if (include_ejindexes & !exists("bgej")) {
-    warning("include_ejindexes set to TRUE but bgej file not found, so EJ Indexes will not be returned")
+    warning("include_ejindexes set to TRUE but the (very large) bgej file not found, so EJ Indexes will not be returned")
     include_ejindexes <- FALSE
   }
   # But note that names_d_subgroups and related lists should already be defined in built package
   # as either the nh versions or alone versions by the datacreate_names_of_indicators.R script
-  # and or in EJAMejscreenapi::map_headernames metadata ... work in progress ***
+  # and or in map_headernames metadata 
   #
   subs_count = switch(subgroups_type,
                       alone    = names_d_subgroups_alone_count,
@@ -134,9 +134,9 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   
   
   # add input validation here - check if sites2blocks is valid format, etc. 
-  if (!is.data.table(sites2blocks)) {
+  if (!data.table::is.data.table(sites2blocks)) {
     message('sites2blocks should be a data.table - converting into one')
-    setDT(sites2blocks, key = c("blockid", "siteid", "distance"))
+    data.table::setDT(sites2blocks, key = c("blockid", "siteid", "distance"))
     }
   if (any(!(c('siteid', 'blockid' ) %in% names(sites2blocks)))) {stop("sites2blocks must contain columns named siteid, blockid, and should have distance")}
   
@@ -570,7 +570,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   # joins midsized intermed table of sites & BGs to EJScreen/ blockgroupstats . . . sites2bgs_overall ??  
   ##################################################### #
   #
-  # DO JOIN  OF **EJAM::blockgroupstats**   200 columns, on bgid , 
+  # DO JOIN  OF **blockgroupstats**   200 columns, on bgid , 
   
   # and not sure I can calculate results at same time, since this kind of join is getting a subset of blockgroupstats but grouping by sites2bgs_bysite$siteid  and 
   # maybe cannot use blockgroupstats[sites2bgs_bysite,    by=.(siteid)    since siteid is in sites2bgs_bysite not in blockgroupstats table. 
@@ -774,8 +774,8 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   #  and EJAM doaggregate() was returning them as 0-100, but 1/23/23 changed those to 0 to 1.00, 
   #    so that lookups of demographics in percentile tables will work right.
   #  but 
-  #  the lookup tables like EJAM::usastats store those variables as 0 to 1.00 . . .. see usastats[74:80,1:9]
-  #  and the dataset of all US blockgroups (from EJScreen FTP site or in EJAM::blockgroupstats) stores that as 0 to 1.00
+  #  the lookup tables like usastats store those variables as 0 to 1.00 . . .. see usastats[74:80,1:9]
+  #  and the dataset of all US blockgroups (from EJScreen FTP site or in blockgroupstats) stores that as 0 to 1.00
   
   ##################################################### #
   # CALC via FORMULAS 
@@ -852,7 +852,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   )]
   
   ##################################### #     
-  # cbind(EJAM::names_d_subgroups, EJAM::names_d_subgroups_count)
+  # cbind(names_d_subgroups, names_d_subgroups_count)
   # [,1]              [,2]          
   # [1,] "pcthisp"         "hisp"        
   # [2,] "pctnhba"         "nhba"        
@@ -1048,8 +1048,8 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   
   ##################################################### #
   ## PERCENTILES - express raw scores (from results_bysite AND  results_overall) in percentile terms #### 
-  #  VIA  lookup tables of US/State  percentiles, called EJAM::usastats   and statestats
-  #  note: usastats is  like ejscreen package file lookupUSA , and EJAM::pctile_from_raw_lookup is like ejanalysis package file lookup.pctile()
+  #  VIA  lookup tables of US/State  percentiles, called usastats   and statestats
+  #  note: usastats is  like ejscreen package file lookupUSA , and pctile_from_raw_lookup is like ejanalysis package file lookup.pctile()
   #
   #  *** this should be extracted as a function (but keeping the efficiency of data.table changes by reference using := or set___)
   #      so that it can be used again later to assign percentiles to EJ indexes once they are calculated from other scores and percentiles.
@@ -1250,13 +1250,13 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   
   # names_these <- c(names_d,              names_d_subgroups,              names_e) 
   names_these <- c(names_d, subs, names_e) # to use nh or alone or both!!
-  #  EJAM::names_these  may not be the same while transitioning to newer subgroups definitions
+  # names_these  may not be the same while transitioning to newer subgroups definitions
   names_these <- perfectnames(names_these)
   # names_these_avg <- c(names_d_avg,          names_d_subgroups_avg,          names_e_avg)        # #  avg.x was changed to us.avg.x naming scheme
-  # THESE ARE ALREADY IN EJAM:: but this ensures they are also in usastats, statestats, and results_bysite
+  # THESE ARE ALREADY IN EJAM package but this ensures they are also in usastats, statestats, and results_bysite
   
-  names_these_avg          <- paste0(      "avg.", names_these) # allows for "both" nh and alone, and also doing it this way limits it to the subset found by perfectnames(names_these)
-  names_these_state_avg    <- paste0("state.avg.", names_these) # c(names_d_state_avg,    names_d_subgroups_state_avg,    names_e_state_avg)  #     
+  names_these_avg               <- paste0(      "avg.", names_these) # allows for "both" nh and alone, and also doing it this way limits it to the subset found by perfectnames(names_these)
+  names_these_state_avg         <- paste0("state.avg.", names_these) # c(names_d_state_avg,    names_d_subgroups_state_avg,    names_e_state_avg)  #     
   names_these_ratio_to_avg       <- paste0("ratio.to.", names_these_avg )   # <- c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg, names_e_ratio_to_avg) #
   names_these_ratio_to_state_avg <- paste0("ratio.to.", names_these_state_avg) #  <- c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg, names_e_ratio_to_state_avg)  # 
   ######################################### #
@@ -1482,8 +1482,8 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   
   # older renaming / friendly names code:
   
-  # longnames2 <- EJAMejscreenapi::map_headernames$longname_tableheader[match(
-  #   names(results_overall), EJAMejscreenapi::map_headernames$newnames_ejscreenapi
+  # longnames2 <- map_headernames$longname_tableheader[match(
+  #   names(results_overall), map_headernames$newnames_ejscreenapi
   # )]
   # if no long name found, just use what was there already, otherwise will use the nicer longnames  
   # longnames[is.na(longnames)] <- names(results_bysite)[is.na(longnames)] # none will be NA if using fixcolnames 
@@ -1571,7 +1571,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
       x <- as.list(results$results_overall)
       x <- data.frame(variable = names(x), overall = unlist(x))
       rownames(x) <- NULL
-      x$longname <- results$longname  # EJAMejscreenapi  ::  map_headernames$longname_tableheader[match(x$variable, map_headernames$newnames_ejscreenapi)]
+      x$longname <- results$longname  #   map_headernames$longname_tableheader[match(x$variable, map_headernames$newnames_ejscreenapi)]
       x$longname <- substr(x$longname, 1, 40) # truncated only for dispaly in RStudio console
       x$overall <- round(x$overall, 3) # only for dispaly in RStudio console
       print(x) # print to console, 125 rows

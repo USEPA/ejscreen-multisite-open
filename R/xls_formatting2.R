@@ -292,7 +292,7 @@ xls_formatting2 <- function(overall, eachsite, longnames=NULL, formatted=NULL, b
                       ...
   )
   # CHANGE SO IT IS NOT data.table, 
-  if (is.data.table(eachsite)) {
+  if (data.table::is.data.table(eachsite)) {
     data.table::setDF(eachsite) # to make syntax below work since it was written assuming data.frame only not data.table
   }
   # REPLACE THE URLS WITH GOOD ONES
@@ -353,7 +353,7 @@ xls_formatting2 <- function(overall, eachsite, longnames=NULL, formatted=NULL, b
     if (testing) {cat("trying to apply hyperlinks to column numbers ", paste0(hypercolnums, collapse = ", "), "\n")}    
     hyperlink_text <- hyperlink_colnames
     
-    if (is.data.table(eachsite)) {
+    if (data.table::is.data.table(eachsite)) {
       data.table::setDF(eachsite) # to make syntax below work since it was written assuming data.frame only not data.table
     }
     # failed:
@@ -626,7 +626,7 @@ xls_formatting2 <- function(overall, eachsite, longnames=NULL, formatted=NULL, b
     
     # can group columns too, to help user hide some of them
     average_colnums_eachsite <- which(vartypes_eachsite %in% c('usavg', 'stateavg'))
-    groupColumns(wb, "Each Site", cols = average_colnums_eachsite, hidden = TRUE)
+    openxlsx::groupColumns(wb, "Each Site", cols = average_colnums_eachsite, hidden = TRUE)
     
     
     ###########################################  ###########################################  ########################################## #
@@ -720,8 +720,8 @@ vartype_cat2color_ejam <- function(vartype=raw, varcategory="other") {
   #        "geo")  
   
   # TO SEE THE RESULTS OF THE COLOR ASSIGNMENTS:   
-  # cbind(rname = names(EJAM :: testoutput_ejamit_10pts_1miles$results_bysite), vartype = map_headernames$vartype[match(names(EJAM :: testoutput_ejamit_10pts_1miles$results_bysite), map_headernames$rname)], vartype_cat2color_ejam = vartype_cat2color_ejam(map_headernames$vartype[match(names(EJAM::testoutput_ejamit_10pts_1miles$results_bysite), map_headernames$rname)]), varname2color_ejam = varname2color_ejam(names(EJAM :: testoutput_ejamit_10pts_1miles$results_bysite)))
-  # cbind(rname = names(        testoutput_ejamit_10pts_1miles$results_bysite), vartype = map_headernames$vartype[match(names(    testoutput_ejamit_10pts_1miles$results_bysite), map_headernames$rname)], vartype_cat2color_ejam = vartype_cat2color_ejam(map_headernames$vartype[match(names(EJAM::testoutput_ejamit_10pts_1miles$results_bysite), map_headernames$rname)]), varname2color_ejam = varname2color_ejam(names(    testoutput_ejamit_10pts_1miles$results_bysite))) 
+  # cbind(rname = names(EJAM :: testoutput_ejamit_10pts_1miles$results_bysite), vartype = map_headernames$vartype[match(names(EJAM :: testoutput_ejamit_10pts_1miles$results_bysite), map_headernames$rname)], vartype_cat2color_ejam = vartype_cat2color_ejam(map_headernames$vartype[match(names(testoutput_ejamit_10pts_1miles$results_bysite), map_headernames$rname)]), varname2color_ejam = varname2color_ejam(names(EJAM :: testoutput_ejamit_10pts_1miles$results_bysite)))
+  # cbind(rname = names(        testoutput_ejamit_10pts_1miles$results_bysite), vartype = map_headernames$vartype[match(names(    testoutput_ejamit_10pts_1miles$results_bysite), map_headernames$rname)], vartype_cat2color_ejam = vartype_cat2color_ejam(map_headernames$vartype[match(names(testoutput_ejamit_10pts_1miles$results_bysite), map_headernames$rname)]), varname2color_ejam = varname2color_ejam(names(    testoutput_ejamit_10pts_1miles$results_bysite))) 
   
   # for shading headers in Excel of results
   coloring <- matrix(

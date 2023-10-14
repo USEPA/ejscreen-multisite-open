@@ -8,7 +8,7 @@
 #'   
 #'   The data.frame lookup table must have a field called "PCTILE" that has quantiles/percentiles
 #'   and other column(s) with values that fall at those percentiles.
-#'   [EJAM::usastats] and [EJAM::statstats] are such lookup tables.
+#'   [usastats] and [statstats] are such lookup tables.
 #'   This function accepts lookup table (or uses one called us if that is in memory), and
 #'   finds the number in the PCTILE column that corresponds to where a specified value
 #'   (in myvector) appears in the column called varname.in.lookup.table.
@@ -67,8 +67,8 @@ pctile_from_raw_lookup <- function(myvector, varname.in.lookup.table, lookup=usa
   # CHECK FOR FATAL PROBLEMS  ####
   
   if (length(varname.in.lookup.table) != 1)  {stop("Must specify only one variable (column name) as varname.in.lookup.table, like 'pctlowinc' ")}
-  if (missing(lookup) & !exists("usastats")) {stop("lookup default usastats was not found, but should be available as EJAM::usastats")}
-  if (!is.data.frame(lookup))                {stop("lookup must be a data.frame like EJAM::usastats or EJAM::statestats, with columns PCTILE, REGION, and the names of indicators like pctlowinc")}
+  if (missing(lookup) & !exists("usastats")) {stop("lookup default usastats was not found, but should be available as usastats")}
+  if (!is.data.frame(lookup))                {stop("lookup must be a data.frame like usastats or statestats, with columns PCTILE, REGION, and the names of indicators like pctlowinc")}
   if (!('PCTILE' %in% names(lookup)))        {stop('lookup must have a field called "PCTILE" that contains quantiles/percentiles')}
   if (missing(zone) & any(lookup$REGION != 'USA')) {stop('If no zone (like "NY") is specified, lookup table must have column called REGION that has "USA" in every row.')}
   if (length(zone) != length(myvector)) {

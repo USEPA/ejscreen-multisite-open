@@ -27,13 +27,14 @@
 #' @inherit plot_distance_cdf_by_group examples 
 #' @export
 plot_distance_mean_by_group <- function(results_bybg_people, 
-                                        demogvarname=c(EJAM::names_d, EJAM::names_d_subgroups), # namez$d, namez$d_subgroups),  
+                                        demogvarname=NULL, # namez$d, namez$d_subgroups),  
                                         demoglabel=NULL, graph=TRUE, returnwhat="table") {
-  
-  if (is.null(demoglabel) & missing(demogvarname)) {
-    demoglabel <- c(EJAM::names_d_friendly, EJAM::names_d_subgroups_friendly)
+  if (is.null(demoglabel) & is.null(demogvarname)) {
+    demoglabel <- c(names_d_friendly, names_d_subgroups_friendly)
     # demoglabel <- c(namez$d_friendly, namez$d_subgroups_friendly)
   }
+  if (is.null(demogvarname)) {demogvarname <- c(names_d, names_d_subgroups)} # available from EJAM package. cannot safely put this info in the defaults of the functions without referring to pkg name but want to avoid doing that so this code will work even pkg not installed and just loaded data files and sourced code 
+
   if (!is.data.frame(results_bybg_people)) {
     warning('results_bybg_people must be a data.frame or data.table - returning empty results')
     return(NA)
@@ -117,8 +118,10 @@ plot_distance_mean_by_group <- function(results_bybg_people,
 #' @inherit plot_distance_cdf_by_group examples 
 #' @export
 distance_mean_by_group <- function(results_bybg_people, 
-                                   demogvarname=c(EJAM::names_d, EJAM::names_d_subgroups), # namez$d, namez$d_subgroups),  
+                                   demogvarname=NULL, # namez$d, namez$d_subgroups),  
                                    demoglabel=NULL, returnwhat="table", graph=FALSE) {
+  if (is.null(demogvarname)) {demogvarname <- c(names_d, names_d_subgroups)} # available from EJAM package. cannot safely put this info in the defaults of the functions without referring to pkg name but want to avoid doing that so this code will work even pkg not installed and just loaded data files and sourced code 
+  
   plot_distance_mean_by_group(
     results_bybg_people = results_bybg_people, 
     demogvarname = demogvarname,
@@ -134,8 +137,10 @@ distance_mean_by_group <- function(results_bybg_people,
 #' @inherit plot_distance_cdf_by_group examples 
 #' @export
 distance_by_groups     <- function(results_bybg_people, 
-                                   demogvarname=c(EJAM::names_d, EJAM::names_d_subgroups), # namez$d, namez$d_subgroups),  
+                                   demogvarname=NULL, # namez$d, namez$d_subgroups),  
                                    demoglabel=NULL, returnwhat="table", graph=FALSE) {
+  if (is.null(demogvarname)) {demogvarname <- c(names_d, names_d_subgroups)} # available from EJAM package. cannot safely put this info in the defaults of the functions without referring to pkg name but want to avoid doing that so this code will work even pkg not installed and just loaded data files and sourced code 
+  
   plot_distance_mean_by_group(
     results_bybg_people = results_bybg_people, 
     demogvarname = demogvarname,
