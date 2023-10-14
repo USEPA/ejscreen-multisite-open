@@ -13,6 +13,7 @@
 #' @param in.analysis_title optional title as character string
 #' @param react.v1_summary_plot optional - a plot object
 #' @param radius_or_buffer_description optional text phrase describing places analyzed
+#' @param hyperlink_colnames optional names of columns with URLs
 #' @param ... optional additional parameters passed to [xls_formatting2()], such as 
 #'   heatmap_colnames, heatmap_cuts, heatmap_colors, etc.
 #' @examples \dontrun{
@@ -34,6 +35,7 @@ ejam2excel <- function(ejamitout,
                        buffer_desc = "Selected Locations", 
                        radius_or_buffer_description = 'Miles radius of circular buffer (or distance used if buffering around polygons)', 
                        # radius_or_buffer_description =   "Distance from each site (radius of each circular buffer around a point)",
+                       hyperlink_colnames = c("EJScreen Report", "EJScreen Map", "ECHO report"),
                        ...
 ) {
   
@@ -110,7 +112,7 @@ ejam2excel <- function(ejamitout,
     longnames = ejamitout$longnames,       #  1 row, but full plain English column names
     bybg      = ejamitout$results_bybg_people, # not entirely sure should provide bybg tab? it is huge and only for expert users but enables a plot
     formatted = ejamitout$formatted,  
-    hyperlink_colnames = c("EJScreen Report", "EJScreen Map" ),  # need to ensure these get formatted right to work as links in Excel
+    hyperlink_colnames = hyperlink_colnames,  # need to ensure these get formatted right to work as links in Excel
     # heatmap_colnames=names(table_as_displayed)[pctile_colnums], # can use defaults
     # heatmap_cuts=c(80, 90, 95), # can use defaults
     # heatmap_colors=c('yellow', 'orange', 'red') # can use defaults
