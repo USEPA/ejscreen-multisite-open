@@ -66,8 +66,8 @@ plot_distance_cdf_by_group <- function(
   }
   
   # Figure out what demog variables to use for plot
-  if (missing(demogvarname)) {
-    if (!missing(subgroups_type)) {
+  if (!is.null(demogvarname)) {
+    if (!is.null(subgroups_type)) {
       # user specified a type 
       if (subgroups_type == "nh")    {demogvarname <- namez$d_subgroups_nh}
       if (subgroups_type == "alone") {demogvarname <- namez$d_subgroups_alone}
@@ -92,7 +92,7 @@ plot_distance_cdf_by_group <- function(
   }
   
   # Figure out what labels to use for those demog variables
-  if (missing(demoglabel)) {
+  if (!is.null(demoglabel)) {
     demoglabel <- fixcolnames(demogvarname, 'r', 'long') # renames those it is able to, using an EJAMejscreenapi function fixcolnames
   }
   if (length(demoglabel) != length(demogvarname)) {
