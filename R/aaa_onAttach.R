@@ -1,5 +1,7 @@
 #' Do slow initialization steps - Download data, load key data into RAM, create index to all US blocks
 #' Note this duplicates some code in global.R, and see source code here to adjust settings.
+#' @details Does this even happen if connect server runs app as a regular shiny app without loading all?
+#'   In what order? see app.R too ***
 #' @param libname na
 #' @param pkgname na
 #' 
@@ -11,6 +13,8 @@
   asap_bg    <- FALSE  # load now vs lazyload blockgroup data?  Set to FALSE while Testing/Building often
   
   # startup message shown at library(EJAM) or when reinstalling from source ####
+  packageStartupMessage("Now running .onAttach(), as part of attaching the EJAM package.")
+  # packageStartupMessage('The leaflet package is what requires the sp package\n')
   
   packageStartupMessage(
     
@@ -24,15 +28,15 @@
       These are the slow steps as EJAM starts:
       
       1- Download the large datasets stored in AWS (quaddata, blockpoints, etc.) 
-         EJAM::dataload_from_aws() does this - see ?dataload_from_aws 
+         EJAM function dataload_from_aws() does this - see ?dataload_from_aws 
          quaddata is >150 MB on disk and >200 MB RAM, while all others are smaller on disk.
          blockid2fips is roughly 600 MB in RAM because it stores 8 million block FIPS as text.
       
       2- Build the national index of all block point locations
-         EJAM::indexblocks() does this, using quaddata - see ?indexblocks
+         EJAM function indexblocks() does this, using quaddata - see ?indexblocks
       
       3- Load into memory some datasets installed with EJAM (blockgroupstats, usastats, etc.)
-         EJAM::dataload_from_package() does this - see ?dataload_from_package and ?datapack()  
+         EJAM function dataload_from_package() does this - see ?dataload_from_package and ?datapack()  
          Otherwise these are only lazyloaded at the moment they are needed, making a user wait.
          blockgroupstats (>60 MB on disk, >200 MB in RAM) and usastats, statestats are essential.
          frs-related tables are huge and not always required - needed to look up regulated sites by ID. 
@@ -41,11 +45,11 @@
       
       - when the EJAM package is loaded and/or attached 
         i.e., every time the source package is rebuilt it is loaded; but it is attached less often,
-        as when a coder uses library(EJAM) in RStudio or script
+        as when a coder uses require( ) in RStudio or script
       
       - when the shiny app launches and runs the global.R script 
          i.e., only once a new user opens the app and their session starts,
-         and when a coder uses run_app(), either after library(EJAM), or by using EJAM::run_app() 
+         and when a coder uses run_app(), either after library( ), or by using EJAM function run_app() 
       
       - once the app or coder actually needs a given dataset that is available for lazyLoad, which 
         works only for data in EJAM/data/ like frs.rda, frs_by_programid.rda, frs_by_sic.rda, and bgej.rda, etc.
@@ -64,7 +68,7 @@
     
     if (length(try(find.package("EJAM", quiet = T))) == 1) { # if it has been installed. but that function has to have already been added to package namespace once 
       
-      EJAM::dataload_from_aws() 
+      dataload_from_aws() # EJAM function ... but does it have to say EJAM :: here? trying to avoid having packrat see that and presume EJAM pkg must be installed for app to work. ***
       
     }
     
@@ -96,7 +100,7 @@
     
     if (length(try(find.package("EJAM", quiet = T))) == 1) { # if it has been installed. but that function has to have already been added to package namespace once 
       
-      EJAM::indexblocks()   
+      indexblocks()   # EJAM function works only AFTER shiny does load all/source .R files or package attached
       
     }
     
@@ -127,9 +131,9 @@
     
     # this duplicates code from  global.R 
     
-    if (length(try(find.package("EJAM", quiet = T))) == 1) { # The first time you try to install the package, it will not have access to EJAM:: etc. !
+    if (length(try(find.package("EJAM", quiet = T))) == 1) { # The first time you try to install the package, it will not have access to EJAM :: etc. !
       
-      EJAM::dataload_from_package() 
+      dataload_from_package() # EJAM function works only AFTER shiny does load all/source .R files or package attached
       
     }
     

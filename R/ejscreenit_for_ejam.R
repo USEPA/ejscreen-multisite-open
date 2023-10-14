@@ -1,5 +1,5 @@
 #' ejscreenit_for_ejam
-#' Wrapper for EJAMejscreenapi::ejscreenit(), to use in EJAM app
+#' Wrapper for EJAMejscreenapi::ejscreenit(), to use in EJAM app - NOT USED CURRENTLY
 #' @param sitepoints table with lat and lon columns
 #' @param radius in miles
 #' @param ... passed to ejscreenit() but not tested and probably should not use/ not needed
@@ -62,7 +62,6 @@ out$longnames <- c(newcolnames, out$longnames)
   out$results_bysite[      , radius.miles := radius]
   out$results_overall[     , radius.miles := radius]
   # out$results_bybg_people[ , radius.miles := radius]
-  out$longnames <- c(out$longnames , "Radius (miles)")
 
   
   return(out)

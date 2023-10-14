@@ -1,7 +1,9 @@
 #' utility to load datasets from AWS DMAP Data Commons, into memory
 #' @details See source code for details. 
-#' 
+#'  
 #'  CURRENTLY TRIES TO USE dataload_from_local() first, during development to avoid slow downloads.
+#' 
+#'  Also see <https://shiny.posit.co/r/articles/improve/scoping/>
 #' 
 #'   Does it require credentials?
 #'   
@@ -66,7 +68,7 @@ dataload_from_aws <- function(varnames= c('bgid2fips', 'blockid2fips', 'blockpoi
   
   if (!is.character(fun)) {stop('must specify function in fun parameter as a quoted character string')}
   if (length(ext) > 1) {stop('must specify only one file extension for all the files')}
-  if (ext=='.arrow' & missing(fun)) {fun <- "arrow::read_ipc_file"}
+  if (ext == '.arrow' & missing(fun)) {fun <- "arrow::read_ipc_file"}
   
   fnames     <- paste0(varnames, ext) # varnames are like bgid2fips, ext is .rda, fnames are like bgid2fips.rda
   objectnames <- paste0(mybucketfolder,      '/', fnames) # EJAM/bgid2fips.rda 
@@ -86,7 +88,7 @@ dataload_from_aws <- function(varnames= c('bgid2fips', 'blockid2fips', 'blockpoi
   }
 
   # if (!missing(folder_local_source) ) { # want from local drive
-    dataload_from_local(varnames=varnames, ext=ext, fun=fun, envir=envir, folder_local_source=folder_local_source, justchecking=justchecking)
+    dataload_from_local(varnames = varnames, ext = ext, fun = fun, envir = envir, folder_local_source = folder_local_source, justchecking = justchecking)
     # return(localpaths)
   # } # done getting from local drive
   
@@ -94,7 +96,7 @@ dataload_from_aws <- function(varnames= c('bgid2fips', 'blockid2fips', 'blockpoi
   
   for (i in 1:length(fnames)) {
     
-    if (!justchecking & ext==".rda") {
+    if (!justchecking & ext == ".rda") {
       
       if (!exists(varnames[i], envir = envir) ) {  # if not already in memory/ global envt, get from AWS 
         cat('loading', varnames[i],spacing[i],  'from', objectnames[i], '\n')
@@ -110,7 +112,7 @@ dataload_from_aws <- function(varnames= c('bgid2fips', 'blockid2fips', 'blockpoi
       }
     }
     
-    if (justchecking & ext==".rda") {
+    if (justchecking & ext == ".rda") {
       # TO SEE COMMAND / CHECK THIS IS WORKING
       # cat('Can download', varnames[i], 'from', objectnames[i], '\n')
       cat(paste0(  'aws.s3::s3load(object = "', objectnames[i],'", ', spacing[i], 'bucket = "', mybucket,'", envir = globalenv()', ')' ), "\n")
@@ -188,4 +190,3 @@ dataload_from_aws <- function(varnames= c('bgid2fips', 'blockid2fips', 'blockpoi
   ################################################################## # 
   
 }
-

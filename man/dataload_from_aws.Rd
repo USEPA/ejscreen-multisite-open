@@ -48,6 +48,8 @@ See source code for details.
 
 CURRENTLY TRIES TO USE dataload_from_local() first, during development to avoid slow downloads.
 
+Also see \url{https://shiny.posit.co/r/articles/improve/scoping/}
+
 Does it require credentials?
 
 Use dataload_from_aws(justchecking=TRUE),

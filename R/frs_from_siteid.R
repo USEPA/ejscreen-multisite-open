@@ -1,7 +1,7 @@
 #' Use registry ID to see FRS Facility Registry Service data on those EPA-regulated sites
 #' 
 #' @param siteid vector of one or more EPA Registry ID codes used by FRS 
-#' @aliases [frs_from_regid()]
+#' @aliases frs_from_regid()
 #' @return relevant rows of the data.table called frs, which has column names that are
 #'   "lat" "lon" "REGISTRY_ID" "PRIMARY_NAME" "NAICS" "PGM_SYS_ACRNMS"
 #' @export
@@ -13,7 +13,7 @@ frs_from_siteid <- function(siteid) {
 ########################################## # 
 
 #' @inherit frs_from_siteid
-#' @aliases [frs_from_siteid()]
+#' @aliases frs_from_siteid()
 #' @export
 frs_from_regid = frs_from_siteid
 

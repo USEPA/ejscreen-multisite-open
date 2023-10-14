@@ -19,5 +19,5 @@ This is the largest file used by the package, and is 168 MB as a file, for 2020 
 }\if{html}{\out{</div>}}
 }
 \seealso{
-\code{\link[=indexblocks]{indexblocks()}}
+\code{\link[=indexblocks]{indexblocks()}} \link{EJAM}
 }

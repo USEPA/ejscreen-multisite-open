@@ -11,5 +11,5 @@
 #'     localtree is the index made from quaddata  
 #'     (QuadTree class, via SearchTrees pkg), not a data.table
 #'     
-#' @seealso [indexblocks()]
+#' @seealso [indexblocks()] [EJAM]
 NULL

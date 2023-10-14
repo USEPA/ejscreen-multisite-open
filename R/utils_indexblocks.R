@@ -9,7 +9,7 @@
 #' @return Side effect is it creates the index in memory
 #' @export
 #'
-indexblocks <- function () {
+indexblocks <- function() {
   cat("Checking for index of Census blocks (localtree)...\n")
   if (!exists("localtree")) {
     cat('The index of Census block groups (localtree) has not been created yet...\n')

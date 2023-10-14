@@ -50,6 +50,7 @@
 #' @param updateProgress progress bar function used for shiny app
 #' @param include_ejindexes whether to calculate EJ Indexes and return that information 
 #' @param need_proximityscore whether to calculate proximity scores
+#' @param calculate_ratios whether to calculate and return ratio of each indicator to its US and State overall mean
 #' @param radius Optional radius in miles to limit analysis to. By default this function uses 
 #'   all the distances that were provided in the output of getblocksnearby(),
 #'   and reports radius estimated as rounded max of distance values in inputs to doaggregate.
@@ -69,7 +70,9 @@
 #' @param ... more to pass to another function? Not used currently.
 #' 
 #' @param testing used while testing this function
-#' @param silentinteractive Set to FALSE to prevent long output showing in console in RStudio when in interactive mode
+#' @param silentinteractive Set to TRUE to see results in RStudio console. 
+#'   Set to FALSE to prevent long output showing in console in RStudio when in interactive mode
+#' @param called_by_ejamit Set to TRUE by ejamit() to suppress some outputs even if ejamit(silentinteractive=F)
 #' @seealso [ejamit]   [getblocksnearby()]  
 #' 
 #' @return list with named elements: 
@@ -94,10 +97,15 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
                         countcols=NULL, popmeancols=NULL, calculatedcols=NULL, 
                         testing=FALSE, 
                         include_ejindexes=FALSE, updateProgress = NULL,
-                        need_proximityscore=FALSE, silentinteractive=FALSE, 
+                        need_proximityscore=FALSE, calculate_ratios = TRUE,
+                        silentinteractive=TRUE, called_by_ejamit=FALSE,
                         subgroups_type='nh', 
                         infer_sitepoints=FALSE, ...) {
   
+  if (include_ejindexes & !exists("bgej")) {
+    warning("include_ejindexes set to TRUE but bgej file not found, so EJ Indexes will not be returned")
+    include_ejindexes <- FALSE
+  }
   # But note that names_d_subgroups and related lists should already be defined in built package
   # as either the nh versions or alone versions by the datacreate_names_of_indicators.R script
   # and or in EJAMejscreenapi::map_headernames metadata ... work in progress ***
@@ -117,28 +125,57 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   # timed <- system.time({
   
   if (testing) {  
-    #sites2blocks <- EJAM::testoutput_getblocksnearby_10pts_1miles 
+    #sites2blocks <- EJAM :: testoutput_getblocksnearby_10pts_1miles 
     
     
   }
-  
-  # add input validation here - check if sites2blocks is valid format, etc. 
-  if (!is.data.table(sites2blocks)) {stop('sites2blocks must be a data.table')}
-  if (any(!(c('siteid', 'blockid', 'distance') %in% names(sites2blocks)))) {stop("sites2blocks must contain columns named siteid, blockid, distance")}
-  
   # check if optional input params, when provided, are all valid
   
-  # Try to infer lat lon of each sitepoint?
   
+  
+  # add input validation here - check if sites2blocks is valid format, etc. 
+  if (!is.data.table(sites2blocks)) {
+    message('sites2blocks should be a data.table - converting into one')
+    setDT(sites2blocks, key = c("blockid", "siteid", "distance"))
+    }
+  if (any(!(c('siteid', 'blockid' ) %in% names(sites2blocks)))) {stop("sites2blocks must contain columns named siteid, blockid, and should have distance")}
   
   
   # Try to infer what the radius was approximately 
-  if (missing(radius)) {
-    radius <- round(max(sites2blocks$distance, na.rm = T), 1)
-  } else  {
-    if ((length(radius) != 1) | (!is.numeric(radius)) | (radius <= 0) | radius > 50 ) {stop('radius must be a single number, in miles, between 0 and 50')}
-    if (radius >= 2 * max(sites2blocks$distance)) {warning('radius requested is at least 2x any distance found in sites2blocks, suggesting it is larger than the radius that was analyzed by getblocksnearby()')}
-    sites2blocks <- sites2blocks[distance <= radius, ]
+  if (!("distance" %in% names(sites2blocks))) {
+    warning("distance should be a column in sites2blocks passed to doaggregate but was missing, so distances set to zero")
+    sites2blocks$distance <- 0 # just to have a value but not sure results make sense in this unlikely case except if using polygons or fips and somehow getblocksnearby_from_fips() failed to add distance = 0 as a column
+  }
+  if (all(sites2blocks$distance == 0)) {
+    # seems like they must have used getblocksnearby_from_fips() to do query on block points within certain FIPS or polygons, not circular buffers using radius
+    # so set radius here to 0 , and anyway it will not restrict analysis to distances <= any particular radius
+    # Earlier step, in getblocksnearbyviaQuadTree, it would have adjusted small distances based on effective radius of block.
+    # But here a distance of zero is OK, since we are modeling simple presence of people in a zone (a block, etc.), without proximity to any site point. 
+    # Some stats or plots analyzing proximity (i.e., 1/distance) will not work, but they are not supposed to work for an analysis where distance is not an issue.
+    radius <- 0
+  } else {
+    if (missing(radius)) {
+      if (!is.numeric(sites2blocks$distance)) {
+        warning('Values found in sites2blocks$distance were not but must be numeric - doaggregate() will treat them as zero values')
+        radius <- 0
+      } else {
+      radius <- round(max(sites2blocks$distance, na.rm = T), 1)
+      message('Inferring approximate radius is ', radius, ' miles, based on distances found.')
+      }
+    } else {
+      if ((length(radius) != 1) | (!is.numeric(radius)) | (radius < 0) ) {
+        warning('radius passed to doaggregate() must be a single number, in miles, at least 0, but was not, so now using any and all distances found in sites2block, as provided by getblocksnearby()')
+      }
+      if (radius >= 2 * max(sites2blocks$distance)) {
+        warning('radius passed to doaggregate() is at least 2x any distance found in sites2blocks, suggesting it is larger than the radius that was analyzed by getblocksnearby()')
+      }
+      if (any(sites2blocks$distance > radius)) {message("Restricting this analysis to distances smaller than radius of ", radius, 
+                                                        " as specified in parameter passed to doaggregate(), even though some larger distances were found in sites2blocks table passed from getblocksnearby() to doaggregate()")}
+      
+      sites2blocks <- sites2blocks[distance <= radius, ] 
+      # is sites2blocks already keying on distance? that would speed it up! ***
+      # and, can this subset rows be done faster in data.table somehow?/avoiding copy?
+    }
   }
   
   ##################################################### #  ##################################################### #
@@ -197,6 +234,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   # "flagged"
   #      and will have lowlifex and "Demog.Index.Supp", 
   
+  # DEFAULT COLUMNS TO AGGREGATE VIA POPULATION WEIGHTED AVERAGE OF PARTIAL BLOCK GROUPS IN EACH PLACE
   if (is.null(popmeancols)) {
     popmeancols <- unique(c(
       'lowlifex',  # I think it is just pop wtd mean  - not completely sure it should be via popwtd mean, or calculated via formula actually.
@@ -238,7 +276,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   
   ##################################################### #
   ## ...update progress bar in shiny app ####
-  if(is.function(updateProgress)){
+  if (is.function(updateProgress)) {
     boldtext <- paste0('Calculating indicators at each site and overall')
     updateProgress(message_main = boldtext, value = 0.2)
   }
@@ -273,8 +311,9 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   
   
   ################################################################ #
-  # Just create some new columns in sites2blocks, but not aggregate rows for each block yet
-  # Note:
+  # Just create some new columns in sites2blocks,
+  #    by="blockid" here already
+  
   # Using                 DT[, newcolumn := min(xyz), by="blockid"] creates new column in existing DT, with repeat of the same info in each row for duplicate blockids, which is ok. Typically not a large % are duplicated so it is not much slower, and dupes are removed later for overall stats.
   # Using  rolledup_DT <- DT[, summarycol = sum(xyz), by="blockid"] creates a new DT with fewer rows, by summarizing over the 1-2 sites near a given block.
   
@@ -285,30 +324,32 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   ## _min distance to any site, for each block (each resident's distance from the nearest site) ####
   
   if (need_proximityscore) {
+    
     ## _Proximity Score of block   ####
-    # Note the distance was already adjusted to be the minimum possible value of 0.9 * effective radius of block_radius_miles
+    # Note the distance was already adjusted to be the minimum possible value of 0.9 * effective radius of block_radius_miles, in getblocksnearbyviaQuadTree()
+    
     sites2blocks[, `:=`(
       proximityscore =  1 / distance,  # score here is for only 1 site per block. summed later across all sites near a given block, then get popwtd mean of block prox scores.
-      sitecount = .N,  
-      
+      sitecount = .N,   # done again below, right? 
       # How far is closest site, for each unique block (resident, essentially, or actually avg resident in the block)? 
       # distance_min = collapse::fmin(distance) #,     
       distance_min = distance[1]   # temporarily use first distance among sites near this block to see if essential and how much does this slow it down?
     ),
-    by="blockid"]
+    by = "blockid"]
     
-  } else {
+    if (anyNA(sites2blocks$proximityscore)) {message("Proximity scores were requested but set to Inf where distance=0 as when analyzing unbuffered polygons or FIPS")}
+
+      } else {
+        
     sites2blocks[, `:=`(       
-      sitecount = .N, 
-      
+      sitecount = .N,  # done again below, right? 
       # How far is closest site, for each unique block (resident, essentially, or actually avg resident in the block)? 
       # distance_min = collapse::fmin(distance) #,     
       distance_min = distance[1] # temporarily use first distance among sites near this block to see if essential and how much does this slow it down?
     ),
-    by="blockid"]
+    by = "blockid"]
   }
   ################################################################ #
-  
   
   ###################################### #
   ## * Unique residents (blocks) only, used for Overall stats #### 
@@ -325,36 +366,40 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   # sites2blocks_overall <- unique(sites2blocks, by=blockid)    # would keep all columns but only one nearby site would be kept for each block.
   # Slowest way, but could get all that explicitly maybe like specifying each as max or min 
   
-  
   ##################################################################### #
   # AGGREGATE BY BLOCK (over the 1 or 2 sites it may be near)
   #
   # Using                 DT[, newcolumn := min(xyz), by="blockid"] creates the same info in each row for duplicate blockids, which is ok. Typically not a large % are duplicated so it is not much slower, and dupes are removed later for overall stats.
   # Using  rolledup_DT <- DT[, summarycol = sum(xyz), by="blockid"]  creates a new DT with fewer rows by summarizing over the 1-2 sites near a given block.
   #  So  sites2blocks_overall will have 1 row per block, slightly fewer than above in full sites2blocks.
+  
   if (need_proximityscore) {
+    
     sites2blocks_overall <- sites2blocks[ ,  .(bgid = bgid[1],  # otherwise it retains duplicate rows, same block twice if it is near 2!
                                                blockwt = blockwt[1],  
                                                
                                                proximityscore = proximityscore[1], # sum(proximityscore, na.rm = TRUE), # already did sum over all sites near a block.
                                                # distance_avg = stats::weighted.mean(distance, w = blockwt, na.rm = TRUE),
-                                               distance_min = distance_min[1],  # already did min
+                                               distance_min = distance_min[1],  # already did min or else do only here but not both 
                                                sitecount = .N  # typically some blocks are near 2 or more sites in sites2blocks
                                                # sitecount_avg = .N
     ),
-    by="blockid"]
+    by = "blockid"]
+    
   } else {
+    
     sites2blocks_overall <- sites2blocks[ ,  .(bgid = bgid[1],  # otherwise it retains duplicate rows, same block twice if it is near 2!
                                                blockwt = blockwt[1],  
                                                
                                                #     proximityscore = proximityscore[1], # sum(proximityscore, na.rm = TRUE), # already did sum over all sites near a block.
                                                # distance_avg = stats::weighted.mean(distance, w = blockwt, na.rm = TRUE),
-                                               distance_min = distance_min[1],  # already did min
+                                               distance_min = distance_min[1],  # already did min or else do only here but not both
                                                sitecount = .N  # typically some blocks are near 2 or more sites in sites2blocks
                                                # sitecount_avg = .N
     ),
-    by="blockid"]
+    by = "blockid"]
   }
+  
   #  length(testoutput_getblocksnearby_10pts_1miles$blockid)
   # [1] 11567
   #  length(unique(testoutput_getblocksnearby_10pts_1miles$blockid))
@@ -362,7 +407,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   
   #***  ###################################### #
   ## ...update progress bar in shiny app ####
-  if(is.function(updateProgress)){
+  if (is.function(updateProgress)) {
     boldtext <- paste0('Analyzing blockgroups')
     updateProgress(message_main = boldtext, value = 0.4)
   }
@@ -429,34 +474,36 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
     sites2bgs_bysite   <- sites2blocks[         , .(bgwt = sum(blockwt, na.rm = TRUE),     # 550 msec ??
                                                     
                                                     proximityscore = collapse::fmean(proximityscore,   w = blockwt),
-                                                    distance_min   = collapse::fmin(distance),
-                                                    distance_min_avgperson   = collapse::fmean(distance, w=blockwt), # na.rm=T is default
-                                                    sitecount_avg    = collapse::fmean(sitecount, w= blockwt),
+                                                    distance_min   = collapse::fmin(distance),  # already did min or else do only here but not both
+                                                    distance_min_avgperson   = collapse::fmean(distance, w = blockwt), # na.rm = T is default
+                                                    sitecount_avg    = collapse::fmean(sitecount, w = blockwt),
                                                     sitecount_max    = collapse::fmax(sitecount ),
                                                     sitecount_unique = collapse::fnunique(siteid)
-    ), by=.(siteid, bgid)]
+    ), by = .(siteid, bgid)]
     
     #  >>>> A SLOW STEP TO OPTIMIZE - starts with sites2bgs_overall  <- sites2blocks_overall[  ####
-    # is this redundant since we have sites2bg_bysite and bgid already, and it will get rolled up by siteid only and by bg only, later
+    # THIS IS REDUNDANT / inefficient   since we have sites2bg_bysite and bgid already, ?! ***
+    # and it will get rolled up by siteid only and by bg only, later
+    
     sites2bgs_overall  <- sites2blocks_overall[ , .(bgwt = sum(blockwt, na.rm = TRUE),    # 318 msec
                                                     
                                                     proximityscore = collapse::fmean(proximityscore,   w = blockwt),
-                                                    distance_min = collapse::fmin(distance_min),
+                                                    distance_min = collapse::fmin(distance_min), # already did min or else do only here but not both, or get from _bysite which would be faster? 
                                                     distance_min_avgperson = collapse::fmean(distance_min, w = blockwt),
                                                     sitecount_avg  =  collapse::fmean(sitecount,  w = blockwt),
                                                     sitecount_max    = collapse::fmax(sitecount ),
                                                     sitecount_unique = collapse::fmax(sitecount) # this is an underestimate - TO BE FIXED LATER
-    ), by=         "bgid" ]
+    ), by =         "bgid" ]
   } else {
     sites2bgs_bysite   <- sites2blocks[         , .(bgwt = sum(blockwt, na.rm = TRUE),     # 550 msec ??
                                                     
                                                     # proximityscore = collapse::fmean(proximityscore,   w = blockwt),
                                                     distance_min     = collapse::fmin(distance),
-                                                    distance_min_avgperson   = collapse::fmean(distance, w=blockwt), # na.rm=T is default
-                                                    sitecount_avg    = collapse::fmean(sitecount, w= blockwt),
+                                                    distance_min_avgperson   = collapse::fmean(distance, w = blockwt), # na.rm = T is default
+                                                    sitecount_avg    = collapse::fmean(sitecount, w = blockwt),
                                                     sitecount_max    = collapse::fmax(sitecount ),
                                                     sitecount_unique = collapse::fnunique(siteid)
-    ), by=.(siteid, bgid)]
+    ), by = .(siteid, bgid)]
     
     #  >>>> A SLOW STEP TO OPTIMIZE - starts with sites2bgs_overall  <- sites2blocks_overall[  ####
     # is this redundant since we have sites2bg_bysite and bgid already, and it will get rolled up by siteid only and by bg only, later
@@ -468,7 +515,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
                                                     sitecount_avg  =  collapse::fmean(sitecount,  w = blockwt),
                                                     sitecount_max    = collapse::fmax(sitecount ),
                                                     sitecount_unique = collapse::fmax(sitecount) # this is an underestimate - TO BE FIXED LATER
-    ), by=         "bgid" ]
+    ), by =         "bgid" ]
   }
   # sites2bgs_overall$sitecount_unique <- sites2bgs_bysite[, --- TO BE FINISHED LATER --- , by="bgid"] 
   
@@ -497,7 +544,8 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   #       distance stats to save:  
   # 
   # distance_min  = how close is the closest site to anyone in this bg/site/overall set?f = closest site's distance for any block included in this bg (among all blocks inside buffer)/ at site/ overall.
-  # ?distance_avg??  = not really a useful metric. we care about 1 closest, not avg distance to all nearby.
+  # ?distance_avg??  = not really a useful metric? maybe useful to calc avg distance for each demog.
+  #   we care about 1 closest, not avg distance to all nearby.
   ##   Distance could be then summarized a couple different ways...  
   # distance_min_avgperson ## avg of mins: avg person has a site within x distance = closest site for avg person ;
   #    avg of mins by Demog group: save by bg (or maybe by bg by site) to summarize avg by demographic group, overall and possibly by site.
@@ -528,8 +576,10 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   # maybe cannot use blockgroupstats[sites2bgs_bysite,    by=.(siteid)    since siteid is in sites2bgs_bysite not in blockgroupstats table. 
   # So, first join blockgroupstats necessary variables to the shorter sites2bgs_bysite:   
   
-  if (include_ejindexes) {blockgroupstats <- merge(blockgroupstats, bgej, by = "bgid"); rm(bgej)}  
-  
+  if (include_ejindexes) {
+      blockgroupstats <- merge(blockgroupstats, bgej, by = "bgid")
+      rm(bgej)
+  }
   #   Remember that. . .
   # countcols     # like population count, add up within a buffer
   # popmeancols    # we want average persons raw score,  for Environmental (but maybe avg PERCENTILE for EJ indexes ??)
@@ -540,14 +590,14 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   
   sites2bgs_plusblockgroupdata_bysite  <- merge(sites2bgs_bysite,  #  but has other cols like   "distance_avg" , "proximityscore"  etc. 
                                                 blockgroupstats[ , c('bgid', 'ST', ..countcols_inbgstats, ..popmeancols_inbgstats, ..calculatedcols_inbgstats)], 
-                                                all.x = TRUE, all.y=FALSE, by='bgid')
+                                                all.x = TRUE, all.y = FALSE, by = 'bgid')
   
   
   # just be aware that this is not saving just unique blockgroups, but saves each bgid-siteid pairing???
   
   sites2bgs_plusblockgroupdata_overall <- merge(sites2bgs_overall, 
                                                 blockgroupstats[ , c('bgid',       ..countcols_inbgstats, ..popmeancols_inbgstats, ..calculatedcols_inbgstats)], 
-                                                all.x = TRUE, all.y=FALSE, by='bgid')
+                                                all.x = TRUE, all.y = FALSE, by = 'bgid')
   # rm(sites2bgs_overall, sites2bgs_bysite); rm(blockgroupstats)
   
   
@@ -556,7 +606,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   
   ######################### #
   ## ...update progress bar in shiny app ####
-  if(is.function(updateProgress)){
+  if (is.function(updateProgress)) {
     boldtext <- paste0('Joining blockgroups to EJScreen indicators')
     updateProgress(message_main = boldtext, 
                    value = 0.6)
@@ -578,7 +628,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   ##  Counts Overall (all sites/ whole sector)  ###
   
   results_overall <- sites2bgs_plusblockgroupdata_overall[ ,  lapply(.SD, FUN = function(x) {
-    round(sum(x * bgwt, na.rm=TRUE), 1)
+    round(sum(x * bgwt, na.rm = TRUE), 1)
   } ), .SDcols = countcols_inbgstats ]
   
   # to be sum of unique, BY SITE, TO RETURN: blockcount_by_site, bgcount_by_site, 
@@ -589,7 +639,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   ## results_bysite  Counts by site/facility  ###
   
   results_bysite <- sites2bgs_plusblockgroupdata_bysite[ ,    lapply(.SD, FUN = function(x) {
-    round(sum(x * bgwt, na.rm=TRUE), 1)
+    round(sum(x * bgwt, na.rm = TRUE), 1)
   } ), .SDcols = countcols_inbgstats, by = .(siteid) ]
   
   # results_bysite[1:100,1:8]
@@ -645,19 +695,19 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   
   results_bysite_minmax <- sites2bgs_plusblockgroupdata_bysite[ , .(  
     distance_min = collapse::fmin(distance_min),
-    distance_min_avgperson = collapse::fmean(distance_min_avgperson, w= pop),   # distance_min_avgperson = weighted.mean(distance_min_avgperson, w= pop, na.rm=TRUE),
+    distance_min_avgperson = collapse::fmean(distance_min_avgperson, w = pop),   # distance_min_avgperson = weighted.mean(distance_min_avgperson, w= pop, na.rm=TRUE),
     sitecount_max    = collapse::fmax(sitecount_max ) ,
     sitecount_unique = collapse::fnunique(siteid), ######## CHECK THIS
-    sitecount_avg    = collapse::fmean(sitecount_avg, w= pop)  # sitecount_avg     =weighted.mean(sitecount_avg, w= pop, na.rm=TRUE)
+    sitecount_avg    = collapse::fmean(sitecount_avg, w = pop)  # sitecount_avg     =weighted.mean(sitecount_avg, w= pop, na.rm=TRUE)
   ), by = .(siteid) ]
   results_bysite <- merge(results_bysite, results_bysite_minmax, on = "siteid")
   
   results_overall_minmax <- sites2bgs_plusblockgroupdata_bysite[ , .(  
     distance_min = collapse::fmin(distance_min),
-    distance_min_avgperson = collapse::fmean(distance_min_avgperson, w= pop),   # distance_min_avgperson = weighted.mean(distance_min_avgperson, w= pop, na.rm=TRUE),
+    distance_min_avgperson = collapse::fmean(distance_min_avgperson, w = pop),   # distance_min_avgperson = weighted.mean(distance_min_avgperson, w= pop, na.rm=TRUE),
     sitecount_max    = collapse::fmax(sitecount_max ) ,
     sitecount_unique = collapse::fnunique(siteid), ######## CHECK THIS
-    sitecount_avg     = collapse::fmean(sitecount_avg, w= pop)   # sitecount_avg     =weighted.mean(sitecount_avg, w= pop, na.rm=TRUE)
+    sitecount_avg     = collapse::fmean(sitecount_avg, w = pop)   # sitecount_avg     =weighted.mean(sitecount_avg, w= pop, na.rm=TRUE)
   ) ]  # not by siteid
   results_overall <- cbind(results_overall, results_overall_minmax) # cbind not merge, since only 1 row not by siteid
   
@@ -675,8 +725,8 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   # 
   # Is that at all useful really??
   # "blockcount_near_site"            "bgcount_near_site"
-  blockcount_by_site <- sites2blocks[, .(blockcount_near_site = .N),         by=siteid] # new----------------------------------------------- -
-  bgcount_by_site    <- sites2blocks[, .(bgcount_near_site = collapse::fnunique(bgid)), by=siteid] # new------------------------------------ -
+  blockcount_by_site <- sites2blocks[, .(blockcount_near_site = .N),         by = siteid] # new----------------------------------------------- -
+  bgcount_by_site    <- sites2blocks[, .(bgcount_near_site = collapse::fnunique(bgid)), by = siteid] # new------------------------------------ -
   
   results_bysite <- merge(results_bysite, blockcount_by_site) # on="siteid" new ---------------------------------------------- -
   results_bysite <- merge(results_bysite, bgcount_by_site)    # on="siteid" new ---------------------------------------------- -
@@ -703,7 +753,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   
   ## ...update progress bar in shiny app ####
   ##################################################### #
-  if(is.function(updateProgress)){
+  if (is.function(updateProgress)) {
     boldtext <- paste0('Computing results')
     updateProgress(message_main = boldtext, value = 0.8)
   }
@@ -736,8 +786,8 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   # "mins <- pop - nhwa" 
   
   results_overall[ , `:=`(
-    pctover64       = 1 * ifelse(pop==0, 0,            over64        / pop),
-    pctunder5       = 1 * ifelse(pop==0, 0,            under5        / pop)
+    pctover64       = 1 * ifelse(pop == 0, 0,            over64        / pop),
+    pctunder5       = 1 * ifelse(pop == 0, 0,            under5        / pop)
   ) ]
   ##################################### #   
   
@@ -745,34 +795,34 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
     # original versions of demog subgroups, as in names_d_subgroups_nh or names_d_subgroups
     #  where they are all NONHISPANIC - MIGHT GET phased out - EJScreen 2.2 does NOT use this version of subgroups
     results_overall[ , `:=`(
-      pcthisp         = 1 * ifelse(pop==0, 0, as.numeric(hisp )        / pop),
-      pctnhba         = 1 * ifelse(pop==0, 0, as.numeric(nhba )        / pop),
-      pctnhaiana      = 1 * ifelse(pop==0, 0, as.numeric(nhaiana)      / pop),
-      pctnhaa         = 1 * ifelse(pop==0, 0, as.numeric(nhaa )        / pop), 
-      pctnhnhpia      = 1 * ifelse(pop==0, 0, as.numeric(nhnhpia )     / pop),
-      pctnhotheralone = 1 * ifelse(pop==0, 0, as.numeric(nhotheralone) / pop), 
-      pctnhmulti      = 1 * ifelse(pop==0, 0, as.numeric(nhmulti )     / pop),
-      pctnhwa         = 1 * ifelse(pop==0, 0, as.numeric(nhwa )        / pop)
+      pcthisp         = 1 * ifelse(pop == 0, 0, as.numeric(hisp )        / pop),
+      pctnhba         = 1 * ifelse(pop == 0, 0, as.numeric(nhba )        / pop),
+      pctnhaiana      = 1 * ifelse(pop == 0, 0, as.numeric(nhaiana)      / pop),
+      pctnhaa         = 1 * ifelse(pop == 0, 0, as.numeric(nhaa )        / pop), 
+      pctnhnhpia      = 1 * ifelse(pop == 0, 0, as.numeric(nhnhpia )     / pop),
+      pctnhotheralone = 1 * ifelse(pop == 0, 0, as.numeric(nhotheralone) / pop), 
+      pctnhmulti      = 1 * ifelse(pop == 0, 0, as.numeric(nhmulti )     / pop),
+      pctnhwa         = 1 * ifelse(pop == 0, 0, as.numeric(nhwa )        / pop)
     )]
   }
   if ("alone" %in% subgroups_type | "both" %in% subgroups_type) {
     # new versions of subgroups - as used by EJScreen 2.2 - as in names_d_alone
     #   they include hispanic within each racial subgroup here, so it is black alone (whether or not hispanic) not just non-hispanic black alone.
     results_overall[ , `:=`(
-      pcthisp       = 1 * ifelse(pop==0, 0, as.numeric(hisp )      / pop),
-      pctba         = 1 * ifelse(pop==0, 0, as.numeric(ba )        / pop),
-      pctaiana      = 1 * ifelse(pop==0, 0, as.numeric(aiana)      / pop),
-      pctaa         = 1 * ifelse(pop==0, 0, as.numeric(aa )        / pop), 
-      pctnhpia      = 1 * ifelse(pop==0, 0, as.numeric(nhpia )     / pop),
-      pctotheralone = 1 * ifelse(pop==0, 0, as.numeric(otheralone) / pop), 
-      pctmulti      = 1 * ifelse(pop==0, 0, as.numeric(multi )     / pop),
-      pctwa         = 1 * ifelse(pop==0, 0, as.numeric(wa )        / pop)
+      pcthisp       = 1 * ifelse(pop == 0, 0, as.numeric(hisp )      / pop),
+      pctba         = 1 * ifelse(pop == 0, 0, as.numeric(ba )        / pop),
+      pctaiana      = 1 * ifelse(pop == 0, 0, as.numeric(aiana)      / pop),
+      pctaa         = 1 * ifelse(pop == 0, 0, as.numeric(aa )        / pop), 
+      pctnhpia      = 1 * ifelse(pop == 0, 0, as.numeric(nhpia )     / pop),
+      pctotheralone = 1 * ifelse(pop == 0, 0, as.numeric(otheralone) / pop), 
+      pctmulti      = 1 * ifelse(pop == 0, 0, as.numeric(multi )     / pop),
+      pctwa         = 1 * ifelse(pop == 0, 0, as.numeric(wa )        / pop)
     )]
   }
   
   ##################################### #     
   results_overall[ , `:=`(
-    pctmin          = 1 * ifelse(pop==0, 0, as.numeric(mins)         / pop), 
+    pctmin          = 1 * ifelse(pop == 0, 0, as.numeric(mins)         / pop), 
     pctlowinc       = 1 * ifelse(povknownratio  == 0, 0, lowinc                 / povknownratio),
     pctlths         = 1 * ifelse(age25up        == 0, 0, as.numeric(lths)       / age25up), 
     pctlingiso      = 1 * ifelse(hhlds          == 0, 0, lingiso                / hhlds), 
@@ -797,8 +847,8 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   )]
   
   results_bysite[ , `:=`(
-    pctover64       = 1 * ifelse(pop==0, 0,            over64        / pop),
-    pctunder5       = 1 * ifelse(pop==0, 0,            under5        / pop)
+    pctover64       = 1 * ifelse(pop == 0, 0,            over64        / pop),
+    pctunder5       = 1 * ifelse(pop == 0, 0,            under5        / pop)
   )]
   
   ##################################### #     
@@ -817,35 +867,35 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
     # original versions of demog subgroups, as in names_d_subgroups_nh or names_d_subgroups
     #  where they are all NONHISPANIC - MIGHT GET phased out - EJScreen 2.2 does NOT use this version of subgroups
     results_bysite[ , `:=`(
-      pcthisp         = 1 * ifelse(pop==0, 0, as.numeric(hisp )        / pop),
-      pctnhba         = 1 * ifelse(pop==0, 0, as.numeric(nhba )        / pop),
-      pctnhaiana      = 1 * ifelse(pop==0, 0, as.numeric(nhaiana)      / pop),
-      pctnhaa         = 1 * ifelse(pop==0, 0, as.numeric(nhaa )        / pop), 
-      pctnhnhpia      = 1 * ifelse(pop==0, 0, as.numeric(nhnhpia )     / pop),
-      pctnhotheralone = 1 * ifelse(pop==0, 0, as.numeric(nhotheralone) / pop), 
-      pctnhmulti      = 1 * ifelse(pop==0, 0, as.numeric(nhmulti )     / pop),
-      pctnhwa         = 1 * ifelse(pop==0, 0, as.numeric(nhwa )        / pop)
+      pcthisp         = 1 * ifelse(pop == 0, 0, as.numeric(hisp )        / pop),
+      pctnhba         = 1 * ifelse(pop == 0, 0, as.numeric(nhba )        / pop),
+      pctnhaiana      = 1 * ifelse(pop == 0, 0, as.numeric(nhaiana)      / pop),
+      pctnhaa         = 1 * ifelse(pop == 0, 0, as.numeric(nhaa )        / pop), 
+      pctnhnhpia      = 1 * ifelse(pop == 0, 0, as.numeric(nhnhpia )     / pop),
+      pctnhotheralone = 1 * ifelse(pop == 0, 0, as.numeric(nhotheralone) / pop), 
+      pctnhmulti      = 1 * ifelse(pop == 0, 0, as.numeric(nhmulti )     / pop),
+      pctnhwa         = 1 * ifelse(pop == 0, 0, as.numeric(nhwa )        / pop)
     )]
   }
   if ("alone" %in% subgroups_type | "both" %in% subgroups_type) {
     # new versions of subgroups - as used by EJScreen 2.2 - as in names_d_alone
     #   they include hispanic within each racial subgroup here, so it is black alone (whether or not hispanic) not just non-hispanic black alone.
     results_bysite[ , `:=`(
-      pcthisp         = 1 * ifelse(pop==0, 0, as.numeric(hisp )        / pop),
-      pctba         = 1 * ifelse(pop==0, 0, as.numeric(ba )        / pop),
-      pctaiana      = 1 * ifelse(pop==0, 0, as.numeric(aiana)      / pop),
-      pctaa         = 1 * ifelse(pop==0, 0, as.numeric(aa )        / pop), 
-      pctnhpia      = 1 * ifelse(pop==0, 0, as.numeric(nhpia )     / pop),
-      pctotheralone = 1 * ifelse(pop==0, 0, as.numeric(otheralone) / pop), 
-      pctmulti      = 1 * ifelse(pop==0, 0, as.numeric(multi )     / pop),
-      pctwa         = 1 * ifelse(pop==0, 0, as.numeric(wa )        / pop)
+      pcthisp       = 1 * ifelse(pop == 0, 0, as.numeric(hisp )      / pop),
+      pctba         = 1 * ifelse(pop == 0, 0, as.numeric(ba )        / pop),
+      pctaiana      = 1 * ifelse(pop == 0, 0, as.numeric(aiana)      / pop),
+      pctaa         = 1 * ifelse(pop == 0, 0, as.numeric(aa )        / pop), 
+      pctnhpia      = 1 * ifelse(pop == 0, 0, as.numeric(nhpia )     / pop),
+      pctotheralone = 1 * ifelse(pop == 0, 0, as.numeric(otheralone) / pop), 
+      pctmulti      = 1 * ifelse(pop == 0, 0, as.numeric(multi )     / pop),
+      pctwa         = 1 * ifelse(pop == 0, 0, as.numeric(wa )        / pop)
     )]
   }
   
   ##################################### #     
   
   results_bysite[ , `:=`(
-    pctmin          = 1 * ifelse(pop==0, 0, as.numeric(mins)         / pop), 
+    pctmin          = 1 * ifelse(pop == 0, 0, as.numeric(mins)         / pop), 
     pctlowinc       = 1 * ifelse(povknownratio  == 0, 0, lowinc                 / povknownratio),
     pctlths         = 1 * ifelse(age25up        == 0, 0, as.numeric(lths)       / age25up), 
     pctlingiso      = 1 * ifelse(hhlds          == 0, 0, lingiso                / hhlds), 
@@ -987,12 +1037,14 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   # use block lat,lon values to approximate the lat,lon of each site, if we were not given that 
   if (infer_sitepoints & !all(c("lat","lon") %in% names(results_bysite))) {
     sitepoints <- sites2blocks[ , list(lat = mean(lat), lon = mean(lon)), by = "siteid"]
+    # *** but sitepoints is never used. where should these lat lon values be put, and is this method so inaccurate that it is not worthwhile? trilaterate was not accurate either.
+  # sites2states # ??? see 1339 later where lat and lon added to results. 
   }
   
   # could use lat,lon to create URLs links to report on each site   ####
   #  but that gets done in app_server or in ejamit()  
   #  "EJScreen Report" "EJScreen Map"   "ECHO report" ###
-
+  
   
   ##################################################### #
   ## PERCENTILES - express raw scores (from results_bysite AND  results_overall) in percentile terms #### 
@@ -1050,7 +1102,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   
   # Q: does this convert it from data.table to data.frame? I think not. xxx
   
-  results_overall <- cbind(siteid=NA, results_overall, us.pctile.cols_overall ) # , state.pctile.cols_overall)
+  results_overall <- cbind(siteid = NA, results_overall, us.pctile.cols_overall ) # , state.pctile.cols_overall)
   results_bysite  <- cbind(           results_bysite,  us.pctile.cols_bysite,  state.pctile.cols_bysite )
   #  ##################################################### #  ######################################################
   
@@ -1144,7 +1196,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
     
     # add EJ index percentiles to results compilation (except for overall state percentile which is created as a weighted average of percentiles further below)
     # Do not provide the raw EJ scores, just the percentiles?
-    results_overall <- cbind(siteid=NA, results_overall, us.pctile.cols_overall ) # , state.pctile.cols_overall)
+    results_overall <- cbind(siteid = NA, results_overall, us.pctile.cols_overall ) # , state.pctile.cols_overall)
     results_bysite  <- cbind(           results_bysite,  us.pctile.cols_bysite,  state.pctile.cols_bysite )
     
     #*# Then for overall results as EJ index State percentile, I guess we use the popwtd mean of the site-specific EJ index State PERCENTILES?
@@ -1159,7 +1211,12 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   #
   # *** OVERALL (AVG) STATE PERCENTILE ####
   #  (as popwtd mean of sites state pctiles - which seems bizarre but not sure how else you would do it)
-  
+  # The overall state percentile is either simply the pop wtd mean of state percentiles of each site’s average person’s suppl demog index across all the sites,
+  # or, other idea:
+   #   maybe is the percentile of the raw average compared to adjusted national percentiles table,
+  # where that table is adjusted based on what they would be if those states had the pop counts seen at the sites analyzed, which is more complicated
+  # – essentially construct a nation that has the same state populations as the nearby populations analyzed? something like that.
+    
   # now that site-specific percentiles have been calculated and looked up,
   # you can calculate that overall state percentiles from those as a pop wtd mean (not by looking them up from raw scores as would be done for US pctiles, since each site may be in its own state)
   # xxx
@@ -1169,9 +1226,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   
   # redo these in data.table:: style, for speed? but it is just a 1-row result  *********************************
   results_overall <- cbind(results_overall, state.pctile.cols_overall)
-  
-  # sites2bgs_plusblockgroupdata_bysite$ST <-  
-  
+   
   ############################################################################## #   
   #
   # US and STATE AVERAGES ####
@@ -1194,6 +1249,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   # but want to ensure it uses the right version(s) of subgroups ! 
   
   # names_these <- c(names_d,              names_d_subgroups,              names_e) 
+  names_these <- c(names_d, subs, names_e) # to use nh or alone or both!!
   #  EJAM::names_these  may not be the same while transitioning to newer subgroups definitions
   names_these <- perfectnames(names_these)
   # names_these_avg <- c(names_d_avg,          names_d_subgroups_avg,          names_e_avg)        # #  avg.x was changed to us.avg.x naming scheme
@@ -1243,7 +1299,8 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   results_bysite <- cbind(results_bysite,  avg.cols_overall) # collapse:: has a faster way   ? want that single row data.table repeated once per site here
   
   ############################################################################## #   
-  #
+  
+  if (calculate_ratios) {
   # RATIO to AVERAGE - (do not duplicate IN server code!)  ####
   #
   #    app_server code is/was duplicating efforts and trying to calculate these itself !!
@@ -1274,7 +1331,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   
   results_bysite  <- cbind(results_bysite,  ratios_to_avg_bysite,  ratios_to_state_avg_bysite)   # collapse:: has a faster way than cbind here!
   results_overall <- cbind(results_overall, ratios_to_avg_overall, ratios_to_state_avg_overall)
-  
+  }
   # ________________________________________________________________________############ #  ######################## 
   
   #***  ###################################### #
@@ -1314,10 +1371,11 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
       'id', 'siteid',
       'pop',           # '[or names_wts]',
       'sitename',
-      'lon', 'lat',
+      'lon', 'lat', # do we want to make consistently lat,lon not lon,lat ??? ***
       'ST', 'statename', 'REGION', 
       
       ## RATIOS to AVG in US or State ---------------
+      # if (calculate_ratios) 
       # for D,Dsub,E
       # these already contain nh, alone, or both  as the subgroups types
       names_these_ratio_to_avg,
@@ -1458,14 +1516,14 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   # not   in map_headernames (*** but is that still the case?) :
   
   renamer = data.frame(
-    old=c(
+    old = c(
       'distance_min',
       'distance_min_avgperson',
       'sitecount_max', 
       'sitecount_unique',
       'sitecount_avg'
     ),
-    new=c(
+    new = c(
       "Distance to Closest Site",
       "Distance to Closest Site for Avg Person",
       "Number of Sites Nearby (max)",
@@ -1499,27 +1557,33 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   ########################### #
   # }) # finish system.time()
   
-  if (interactive() & !silentinteractive) {  # false if using shiny web app
+  
+  if (interactive() & !silentinteractive) { # false if using shiny web app
     # print(timed)
     # cat("count of blocks that are near more than 1 site:", results$count_of_blocks_near_multiple_sites, "\n")
     # cat("count of blocks total, near all sites:", results$blockcount_overall, "\n")
     # cat("count of block groups, near all sites:", results$bgcount_overall, "\n")
     
-    ## Show simple overall stats list in console ####
-    
-    x <- as.list(results$results_overall)
-    x <- data.frame(variable = names(x), overall = unlist(x))
-    rownames(x) <- NULL
-    x$longname <- results$longname  # EJAMejscreenapi::map_headernames$longname_tableheader[match(x$variable, map_headernames$newnames_ejscreenapi)]
-    x$longname <- substr(x$longname, 1, 40) # truncated only for dispaly in RStudio console
-    x$overall <- round(x$overall, 3) # only for dispaly in RStudio console
-    print(x) # print to console, 125 rows
-    # cat("See viewer for datatable view site by site\n")
-    # Show datatable view of each site by site in RStudio ####
-    
-    # bysite <- results$results_bysite
-    # print(DT::datatable(bysite, options = list(paging=FALSE), colnames=results$longnames , escape=FALSE))
-    cat('see ejamit() \n')
+    if (!called_by_ejamit) {
+      
+      ## Show simple overall stats list in console ####
+      
+      x <- as.list(results$results_overall)
+      x <- data.frame(variable = names(x), overall = unlist(x))
+      rownames(x) <- NULL
+      x$longname <- results$longname  # EJAMejscreenapi  ::  map_headernames$longname_tableheader[match(x$variable, map_headernames$newnames_ejscreenapi)]
+      x$longname <- substr(x$longname, 1, 40) # truncated only for dispaly in RStudio console
+      x$overall <- round(x$overall, 3) # only for dispaly in RStudio console
+      print(x) # print to console, 125 rows
+      # cat("See viewer for datatable view site by site\n")
+      # Show datatable view of each site by site in RStudio ####
+      
+      # bysite <- results$results_bysite
+      # print(DT::datatable(bysite, options = list(paging=FALSE), colnames=results$longnames , escape=FALSE))
+      # cat('see ejamit() \n')
+      
+      print(structure.of.output.list(x))
+    }
   }
   invisible(results)
   ##################################################### #  ##################################################### #  ##################################################### #

@@ -197,7 +197,7 @@ plot_distance_cdf_by_group <- function(
   if (returnwhat == "plotfilename") {
     fname = "distance_cdf.png"
     mytempdir = tempdir()
-    png(fname)
+    png(file.path(mytempdir, fname), width = 2000, height = 1000)
     plot(cumdata$dist, 100 * cumdata[ , overall], 
          col = coloroverall, 
          pch = NA_integer_, type = 'l', lty="dotted",

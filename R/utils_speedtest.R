@@ -281,16 +281,16 @@ speedtest_plot = function(x, ltype="b", plotfile=NULL, secondsperthousand=FALSE)
   nlist  <- unique(x$points)
   mycolors <- runif(length(radii), 1, 600)
   if (secondsperthousand) {
-    yvals=x$secondsper1000
-    ylab="Seconds per 1,000 sites"
+    yvals = x$secondsper1000
+    ylab = "Seconds per 1,000 sites"
   } else {
     yvals <- x$perhr/1000
-    ylab="Thousands of sites per hour"
+    ylab = "Thousands of sites per hour"
   }
   yl <-  c(0,max(yvals)) # range(x$perhr)
   xl <- c(0,max(x$miles)) # range(x$miles)
-  x$seconds <- x$points / x$perhr *3600
-  atmost=aggregate(x$seconds, by = list(n = x$points), FUN = max )
+  x$seconds <- x$points / x$perhr * 3600
+  atmost = aggregate(x$seconds, by = list(n = x$points), FUN = max )
   maxseconds = atmost$x[match(nlist, atmost$n)] 
   if (!is.null(plotfile)) {
     png(filename = plotfile )
@@ -300,19 +300,19 @@ speedtest_plot = function(x, ltype="b", plotfile=NULL, secondsperthousand=FALSE)
   plot(
     x$miles[x$points == nlist[1]], 
     yvals[x$points == nlist[1]] , 
-    type=ltype, col=mycolors[1],
-    xlim = xl, ylim = yl , ylab=ylab, xlab="miles radius",
-    main="Speed of this analysis")
+    type = ltype, col = mycolors[1],
+    xlim = xl, ylim = yl, ylab = ylab, xlab = "miles radius",
+    main = "Speed of this analysis")
   if (length(nlist) > 1) {
     for (i in 2:length(nlist)) {
       points(
         x$miles[x$points == nlist[i]], 
         yvals[x$points == nlist[i]]  , 
-        type=ltype, col=mycolors[i])
+        type = ltype, col = mycolors[i])
     }
     legwhere = ifelse(secondsperthousand, "topleft", "bottomleft")
     legend(legwhere, 
-           legend= rev(paste0(prettyNum(nlist, big.mark = ","), " points take up to ",  round( maxseconds,0), " seconds")),
+           legend = rev(paste0(prettyNum(nlist, big.mark = ","), " points take up to ",  round(maxseconds, 0), " seconds")),
            fill = rev(  mycolors[1:length(nlist)]))
   }
   return(x)
@@ -332,7 +332,7 @@ speedtable_summarize <- function(speedtable) {
   runs <- sum(speedtable$points)
   total_hours <- sum(speedtable$points / speedtable$perhr)
   perhr <-  round(runs / total_hours ,0)
-  mysummary <- data.frame(points=runs, miles=NA, perhr=perhr)
+  mysummary <- data.frame(points = runs, miles = NA, perhr = perhr)
   return(speedtable_expand(mysummary))
 }
 
@@ -347,8 +347,8 @@ speedtable_summarize <- function(speedtable) {
 speedtable_expand <- function(speedtable) {
   # used by speedtest() and by speedtable_summarize()
   # input param speedtable must have columns called  points, miles, and perhr 
-  speedtable$perminute <- round(speedtable$perhr /60, 0)
-  speedtable$persecond <- round(speedtable$perhr /3600, 0)
+  speedtable$perminute <- round(speedtable$perhr /   60, 0)
+  speedtable$persecond <- round(speedtable$perhr / 3600, 0)
   speedtable$minutes   <- round(speedtable$points / (speedtable$perhr / 60), 0)
   speedtable$seconds   <- round(speedtable$points / (speedtable$perhr / 3600), 0)
   speedtable$secondsper1000 <- round((1000/speedtable$points) * speedtable$points / (speedtable$perhr / 3600), 0)

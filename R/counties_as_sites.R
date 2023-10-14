@@ -18,7 +18,7 @@ bg_from_county <- function(fips) {
 # return counties2bgs table of pairs so doaggregate_blockgroups() or whatever can take that and do full EJ stats.
  
   county2bg <- bgpts[substr(bgfips,1,5) %in% fips, .(countyfips = substr(bgfips,1,5), bgid) ]
-  county2bg[, siteid := .GRP , by="countyfips"]
+  county2bg[, siteid := .GRP , by = "countyfips"]
   county2bg[, .(siteid, countyfips, bgid)]
 }
 

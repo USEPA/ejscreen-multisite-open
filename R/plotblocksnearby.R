@@ -119,28 +119,28 @@ plotblocksnearby <- function(sitepoints, radius=3, sites2blocks,  usemapfast=TRU
     
     if (really_sitepoints) {
       # overall circle centered on each site, to show radius of search
-      z <-  addCircles(z, lng = xpt$lon, lat=xpt$lat, radius = meters_per_mile * radius, color = "gray",
+      z <-  addCircles(z, lat=xpt$lat, lng = xpt$lon, radius = meters_per_mile * radius, color = "gray",
                  fillOpacity = 0.06, fillColor = "gray", opacity = 0.7  ) #  %>% # overall circle
         # site point in center of each circle
-        z <-  addCircleMarkers( z, lng = xpt$lon, lat=xpt$lat, radius = 10, color = "red", opacity = 0.75) # %>%  # in pixels for center of circle=point 
+        z <-  addCircleMarkers( z, lat=xpt$lat, lng = xpt$lon, radius = 10, color = "red", opacity = 0.75) # %>%  # in pixels for center of circle=point 
     }
     # Map popup info for each site (if available) and blocks surrounding the site
-    z <-addCircles(z, lng = mapinfo$lon, lat = mapinfo$lat, fillOpacity = 0.1, 
+    z <-addCircles(z, lat = mapinfo$lat, lng = mapinfo$lon, fillOpacity = 0.1, 
                popup = popup_from_df(setDF(mapinfo)), radius = 10)
     
     print(z)
     # setnames(bl, 'blocklat', 'lat')
     # setnames(bl, 'blocklon', 'lon')
-    # mapfast(rbind(bl, unique(x[,.(lon,lat)])))
+    # mapfast(rbind(bl, unique(x[,.(lat, lon)])))
   } else {
     bplot=function(x,   ... ) {
-      plot(x$blocklon , x$blocklat , ... )
+      plot(x = x$blocklon, y = x$blocklat , ... )
       if (really_sitepoints) {
-        points(x$lon , x$lat  , col = "red")
+        points(x = x$lon, y = x$lat  , col = "red")
       }
     }
     # bplot(x, sample(1:nrow(sitepoints), 1)) # plots a random site surrounded by nearby block points
-    bplot(x, main="Site and surrounding block centroids", xlab="",ylab="" )
+    bplot(x, main="Site and surrounding block centroids", xlab="", ylab="" )
     
   }
   invisible(sites2blocks)

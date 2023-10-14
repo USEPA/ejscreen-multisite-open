@@ -39,6 +39,7 @@ Imports:
     pdist,
     pkgload,
     readxl,
+    rhandsontable,
     rmarkdown,
     RMySQL,
     SearchTrees,
@@ -46,6 +47,7 @@ Imports:
     shiny (>= 1.7.2),
     shinycssloaders,
     shinyjs,
+    sp,
     tidyr,
     tidyverse,
     viridis
@@ -60,3 +62,4 @@ Language: en-US
 VignetteBuilder: knitr
 RoxygenNote: 7.2.3
 Roxygen: list(markdown = TRUE)
+Config/testthat/parallel: true

@@ -152,7 +152,7 @@ pctile_from_raw_lookup <- function(myvector, varname.in.lookup.table, lookup=usa
     
     # Fix if big % of scores are TIED AT MIN ####
     # ...  report zero as the percentile.
-    percentiles_reported[zone == z][percentiles_reported[zone == z] == unlist(high_pctiles_tied_with_min[[z]][ , varname.in.lookup.table, with=FALSE]) ] <- 0
+    percentiles_reported[zone == z][percentiles_reported[zone == z] == unlist(high_pctiles_tied_with_min[[z]][ , varname.in.lookup.table, with = FALSE]) ] <- 0
     # --------------------------------------------------------------------------- -
     
   } # end of loop over zones ####

@@ -18,7 +18,7 @@ datawrite_to_local <- function(varnames= c('bgid2fips',   'blockid2fips', 'block
                                justchecking = TRUE) {
   if (!is.character(fun)) {stop('must specify function in fun parameter as a quoted character string')}
   if (length(ext) > 1) {stop('must specify only one file extension for all the files')}
-  if (ext=='.arrow' & missing(fun)) {fun <- "arrow::write_ipc_file"} 
+  if (ext == '.arrow' & missing(fun)) {fun <- "arrow::write_ipc_file"} 
   
   fnames <- paste0(varnames, ext)
   localpaths  <- paste0(folder_local_source, '/', fnames)

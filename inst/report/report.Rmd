@@ -84,14 +84,14 @@ bibliography: report_references.bib
 ```{r, echo=FALSE}
 
 in_the_places_analyzed <- {
-    switch (
+    switch(
       params$zonetype,
     zone_is_named_x = params$in_the_x_zone, 
     zone_is_nearby = paste0(params$within_x_miles_of, params$facilities_studied),
     zone_is_risk_x = paste0(params$in_areas_where, params$risks_are_x)
     )}
 # 
-# Distributional Analysis for the xxxx Proposed Rule
+# Distributional Analysis for the ___ Proposed Rule
 # 
 # Demographic and Environmental Conditions…
 # Demographic and Environmental Indicators…
@@ -265,7 +265,7 @@ if (params$testmode) {
 
 EPA's EJAM (Environmental Justice Analysis Multisite) tool was used to
 develop this analysis. EPA's [EJAM
-tool](https://rstudio-connect.dmap-stage.aws.epa.gov/content/dc3cda00-20a2-47ed-a753-0dcb89eb8f2a/ "Environmental Justice Analysis Multisite (EJAM) tool")
+tool](https://rstudio-connect.dmap-stage.aws.epa.gov/content/163e7ff5-1a1b-4db4-ad9e-e9aa5d764002/ "Environmental Justice Analysis Multisite (EJAM) tool")
 is a user-friendly web app that can summarize demographics and
 environmental conditions for any list of places in the nation. 
 

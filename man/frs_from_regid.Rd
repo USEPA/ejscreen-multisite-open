@@ -2,7 +2,7 @@
 % Please edit documentation in R/frs_from_siteid.R
 \name{frs_from_regid}
 \alias{frs_from_regid}
-\alias{[frs_from_siteid()]}
+\alias{frs_from_siteid()}
 \title{Use registry ID to see FRS Facility Registry Service data on those EPA-regulated sites}
 \usage{
 frs_from_regid(siteid)

@@ -8,7 +8,7 @@ given vector of blockids, get state abbreviation of each}
 state_from_blockid(blockid)
 }
 \arguments{
-\item{blockid}{vector of blockid values as from EJAM::blockpoints}
+\item{blockid}{vector of blockid values as from EJAM in a table called blockpoints}
 }
 \value{
 vector of ST info like AK, CA, DE, etc.

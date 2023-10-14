@@ -71,15 +71,15 @@ dataload_from_package()
 ####################################################### #
 # ejamit ####
 #* ejamit 
-#* @param lon decimal degrees (single point only, for now)
 #* @param lat decimal degrees (single point only, for now)
+#* @param lon decimal degrees (single point only, for now)
 #* @param radius in miles 
 #* @param ... passed to [ejamit()]
 #* @get /ejamit
 #* @serializer csv
-function(lon, lat, radius=3){
+function(lat, lon, radius=3){
   library(EJAM)
-  out = as.data.frame(EJAM::ejamit(sitepoints=data.table::data.table(lat=lat, lon=lon), radius=radius)[["results_overall"]])
+  out = as.data.frame(EJAM::ejamit(sitepoints = data.table::data.table(lat = lat, lon = lon), radius = radius)[["results_overall"]])
 as_attachment(out)
   ####################################################### # 
   #                      errors
@@ -102,12 +102,12 @@ as_attachment(out)
 ####################################################### #
 # getblocksnearby ####
 #* return see getblocksnearby() -- sites2blocks table given lat lon   # why does the line not just have name like ejamit ?
-#* @param lon see [getblocksnearby()]
 #* @param lat see [getblocksnearby()]
+#* @param lon see [getblocksnearby()]
 #* @param ... passed to [getblocksnearby()]
 #* @get /getblocksnearby
-function(lon, lat){
-  EJAM::getblocksnearby(data.table::data.table(lat=lat, lon=lon))
+function(lat, lon){
+  EJAM::getblocksnearby(data.table::data.table(lat = lat, lon = lon))
 }
 
 ####################################################### # 
@@ -121,7 +121,9 @@ function(lon, lat){
 #* @param ... passed to [doaggregate()]
 #* @get /doaggregate
 function(sites2blocks, sites2states_or_latlon, countcols, popmeancols, calculatedcols, ...){
-  EJAM::doaggregate(sites2blocks=sites2blocks, sites2states_or_latlon=sites2states_or_latlon, countcols=countcols, popmeancols=popmeancols, calculatedcols=calculatedcols, ... )  
+  EJAM::doaggregate(sites2blocks = sites2blocks, 
+                    sites2states_or_latlon = sites2states_or_latlon, 
+                    countcols = countcols, popmeancols = popmeancols, calculatedcols = calculatedcols, ... )
 }
 ####################################################### # 
 

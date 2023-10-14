@@ -41,7 +41,7 @@ universe <- universe[universe$ST != 'UM', ]
 
 ################ RACE/ETHNIC SUBGROUPS?
 
-# EJAM::blockgroupstats has race/ethnic subgroups for US but not PR (and not Island Areas):
+# EJAM blockgroupstats has race/ethnic subgroups for US but not PR (and not Island Areas):
 # t(table(is.na(blockgroupstats$pcthisp), 
         # ejanalysis ::
         # get.state.info(substr(blockgroupstats$bgfips,1,2))[,"ST"] ))
@@ -109,7 +109,7 @@ universe <- universe[universe$ST != 'UM', ]
 # EJAMejscreendata package  # ****** lookup table NEEDS TO BE FIXED / UPDATED  to include 4 island areas**********
 
 stop('be sure you want to do this... it loads all relevant packages to get the info on each...and detach/unloads each that had not been there\n')
-EJAM::datapack('EJAMejscreendata') 
+datapack('EJAMejscreendata') # an EJAM function 
 # The ones at least 1 MB in size: 
 #   
 #            Package                                 Item   size                    Title.Short
@@ -129,7 +129,7 @@ setdiff(universe$ST, unique( States_2022$REGION  ))  # ****** THIS NEEDS TO BE F
 
 # ejscreen package   # ****** lookup tables and bg lists TO BE FIXED / UPDATED to include 4 island areas **********
 stop('be sure you want to do this... it loads all relevant packages to get the info on each...and detach/unloads each that had not been there\n')
-EJAM::datapack("ejscreen")
+datapack("ejscreen") # an EJAM function 
 # The ones at least 1 MB in size: 
 #   
 #     Package                                  Item   size                    Title.Short
@@ -170,7 +170,7 @@ get.state.info( setdiff(universe$FIPS.ST, substr(tract22DemographicSubgroups2016
 
 # EJAM package # ****** bg lists TO BE FIXED / UPDATED  to include 4 island areas**********
 
-EJAM::datapack('EJAM')
+datapack('EJAM') # an EJAM function 
 
 # The ones at least 1 MB in size: 
 #   
@@ -190,13 +190,13 @@ EJAM::datapack('EJAM')
 
 
 
-# ejanalysis package file get.state.info( setdiff(universe$FIPS.ST, substr(EJAM::blockgroupstats$bgfips, 1,2) ))[,'ST'] 
+# ejanalysis package file get.state.info( setdiff(universe$FIPS.ST, substr( blockgroupstats$bgfips, 1,2) ))[,'ST'] 
 # [1] "AS" "GU" "MP" "VI"  
-# ejanalysis package file get.state.info( setdiff(universe$FIPS.ST, substr(EJAM::bgpts$bgfips, 1,2) ))[,'ST']
+# ejanalysis package file get.state.info( setdiff(universe$FIPS.ST, substr( bgpts$bgfips, 1,2) ))[,'ST']
 # [1] "AS" "GU" "MP" "VI"
-# setdiff(universe$ST, EJAM::stateinfo$ST)
+# setdiff(universe$ST,  stateinfo$ST)
 # [1] "AS" "GU" "MP" "UM" "VI"
-# setdiff(universe$ST, EJAM::statestats$REGION)
+# setdiff(universe$ST, statestats$REGION)
 # [1] "AS" "GU" "MP" "UM" "VI"
 
 

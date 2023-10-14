@@ -39,10 +39,10 @@ for (n in nvalues) {
   
   # SAVE AS EXCEL FILE  ####
   #
-  # testpoints_data$EJScreenMap = url_ejscreenmap(testpoints_data$lon, testpoints_data$lat, as_html = FALSE) # NOT CLICKABLE IN EXCEL THIS WAY BUT OK
+  # testpoints_data$EJScreenMap = url_ejscreenmap(lat = testpoints_data$lat, lon = testpoints_data$lon, as_html = FALSE) # NOT CLICKABLE IN EXCEL THIS WAY BUT OK
   # testpoints_data$REGISTRY_ID <- as.character(testpoints_data$REGISTRY_ID)  # for excel just save as character not number, or could write as special zip code format in excel
   # Note the old links work on popup map but not in excel, if as_html=T 
-  # testpoints_data$EJScreenMap = url_ejscreenmap(testpoints_data$lon, testpoints_data$lat, as_html = T)
+  # testpoints_data$EJScreenMap = url_ejscreenmap(lat = testpoints_data$lat, lon = testpoints_data$lon, as_html = T)
   #
   writexl::write_xlsx(list(testpoints = testpoints_data), 
                       path = paste0("./inst/testdata/latlon/", testpoints_name, ".xlsx"))    ############# #
@@ -208,8 +208,55 @@ NULL
     # prefix documentation file names with "data_" 
     writeChar(filecontents, con = paste0("./R/data_", out_varname_ejamit, ".R"))       ############# #
     
+    # SAVE AS EXCEL FILE  ####
+    #
+    junk = xls_formatting2(overall =        out_data_ejamit$results_overall, 
+                           eachsite =       out_data_ejamit$results_bysite, 
+                           longnames =      out_data_ejamit$longnames,
+                           bybg =           out_data_ejamit$results_bybg_people,
+                           analysis_title = "Example of outputs of ejamit() being formatted and saved using xls_formatting2()",  
+                           buffer_desc = paste0("Within ", myrad, " miles"),
+                           plotlatest = FALSE, 
+                           saveas = paste0("./inst/testdata/examples_of_output/", out_varname_ejamit, ".xlsx") 
+    )
   }
   
   ################################## #   ################################## #   ################################## #   
   
 } # end of loop over point counts
+
+############################################# # 
+# for the API that EJScreen provides, for comparison:
+testpoints_name <- "testpoints_10"
+myrad = 1
+testoutput_ejscreenit_10pts_1miles <- EJAMejscreenapi::ejscreenit(testpoints_10, radius = 1, nosave = T, nosee = T, interactiveprompt = F, calculate_ratios = T)
+usethis::use_data(testoutput_ejscreenit_10pts_1miles, overwrite = TRUE)
+
+# SAVE DOCUMENTATION AS A FILE ####
+#
+filecontents <- paste0( 
+  "#' @name ", "testoutput_ejscreenit_10pts_1miles", " 
+#' @docType data
+#' @title test output of ejscreenit(), using the EJScreen API
+#' @details This is the output of 
+#' 
+#'  EJAMejscreenapi::ejscreenit(
+#' 
+#'    testpoints_10, radius = 1, 
+#' 
+#'    nosave = T, nosee = T, interactiveprompt = F, calculate_ratios = T
+#'  )
+#' 
+#'  testoutput_ejscreenit_10pts_1miles$table
+#'  
+#'  should be very similar to
+#'  
+#'  testoutput_ejamit_10pts_1miles$results_bysite
+#' 
+NULL
+"
+)
+# prefix documentation file names with "data_" 
+writeChar(filecontents, con = paste0("./R/data_", "testoutput_ejscreenit_10pts_1miles", ".R"))       ############# #
+
+

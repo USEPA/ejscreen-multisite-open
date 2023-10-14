@@ -4,10 +4,19 @@
 #'   See help("EJAM")  
 #' @inheritParams getblocksnearby
 #' @param silentinteractive Set to FALSE to prevent long output showing in console in RStudio when in interactive mode,
-#'   passed to doaggregate() also.
+#'   passed to doaggregate() also. app server sets this to TRUE when calling doaggregate() but 
+#'   ejamit() default is to set this to FALSE when calling doaggregate(). 
 #' @param fips FIPS code vector if using FIPS instead of sitepoints to specify places to analyze,
 #'   such as a list of US Counties or tracts.
 #' @param threshold1 percentile like 80 or 90 or 95 to compare percentiles to
+#'   "alone" for groups like white alone (whether or not hispanic),
+#'    "both" may try to include both,
+#'     or possibly "original" or "default" might be added as options
+#' @param subgroups_type Optional (uses default). Set this to 
+#'   "nh" for non-hispanic race subgroups as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh; 
+#'   "alone" for EJScreen v2.2 style race subgroups as in    White Alone, wa and others in names_d_subgroups_alone; 
+#'   "both" for both versions. Possibly another option is "original" or "default" but work in progress.
+#' @param calculate_ratios whether to calculate and return ratio of each indicator to US and State overall averages
 #' @return A list of tables of results.
 #' @examples \dontrun{
 #'  # All in one step, using functions not shiny app:
@@ -72,6 +81,7 @@ ejamit <- function(sitepoints,
                    quadtree=NULL,
                    silentinteractive=F,
                    fips=NULL,
+                   subgroups_type = 'nh', calculate_ratios = TRUE,
                    threshold1 = 90, # threshold.default['comp1'],
                    ...
 ) {
@@ -95,23 +105,30 @@ ejamit <- function(sitepoints,
     # if user entered a table, path to a file (csv, xlsx), or whatever, then read it to get the lat lon values from there
     sitepoints <- latlon_from_anything(sitepoints)  
     ################################################################################## #
+    
     # 1. getblocksnearby() ####
+    
     if (!silentinteractive) {cat('Finding blocks nearby.\n')}
     
     mysites2blocks <- getblocksnearby(
-      sitepoints=sitepoints, 
-      radius=radius, maxradius=maxradius, 
-      avoidorphans=avoidorphans, 
+      sitepoints = sitepoints, 
+      radius = radius, maxradius = maxradius, 
+      avoidorphans = avoidorphans, 
+      quiet = TRUE,
       ...)
+    ################################################################################## #
     
     # 2. doaggregate() ####
+    
     if (!silentinteractive) {cat('Aggregating at each buffer and overall.\n')}
     
-    out <- suppressWarnings (
+    out <- suppressWarnings(
       doaggregate(
-        sites2blocks = mysites2blocks,  # subgroups_type = 'original', 
+        sites2blocks = mysites2blocks,  
+        subgroups_type = subgroups_type, 
         sites2states_or_latlon = sitepoints, # sites2states_or_latlon = unique(x[ , .(siteid, lat, lon)]))
-        silentinteractive = silentinteractive,
+        silentinteractive = silentinteractive, called_by_ejamit = TRUE,
+        calculate_ratios = calculate_ratios,
         radius = radius
       )
     )
@@ -126,13 +143,16 @@ ejamit <- function(sitepoints,
     mysites2blocks <- getblocksnearby_from_fips(fips) # this should have site = each FIPS code (such as each countyfips), and otherwise same outputs as getblocksnearby()
     out <- doaggregate(
       mysites2blocks, 
-      sites2states_or_latlon = unique(mysites2blocks[ , .(siteid, lat, lon)]),   # subgroups_type = 'original'
+      subgroups_type = subgroups_type, 
+      sites2states_or_latlon = unique(mysites2blocks[ , .(siteid, lat, lon)]),   #  
       radius = 999
     )
   }
   ################################################################ # 
   
-  # HYPERLINKS added (to site by site table) ####
+  # 2b. add  HYPERLINKS  to output (to site by site table) ####
+  
+  # ( doaggregate does not provide this ? )
   
   #  >this should be a function  and is used by both server and ejamit() ####
   # duplicated almost exactly in app_server but uses reactives there.
@@ -167,21 +187,27 @@ ejamit <- function(sitepoints,
     # "ACS Report",
     "ECHO report")
   # put those up front as first columns
-  setcolorder(out$results_bysite, neworder = newcolnames)
-  setcolorder(out$results_overall, neworder = newcolnames)
+  data.table::setcolorder(out$results_bysite,  neworder = newcolnames)
+  data.table::setcolorder(out$results_overall, neworder = newcolnames)
   out$longnames <- c(newcolnames, out$longnames)
   
   ################################################################ # 
   
-  # Include radius in results (in server and in ejamit() ####
+  # 2c. add  RADIUS  to output (in server and in ejamit() ####
+  
+  # ( doaggregate does not provide this ? )
+  
   out$results_bysite[      , radius.miles := radius]
   out$results_overall[     , radius.miles := radius]
-  out$results_bybg_people[ , radius.miles := radius]
-  out$longnames <- c(out$longnames , "Radius (miles)")
+  out$results_bybg_people[ , radius.miles := radius] # do not really need to export to excel though, and most users do not need this large table
   
   ################################################################ # 
   
-  # 3. batch.summarize()** on already processed data ####
+  # 3. batch.summarize()**  ####
+  
+  # For each indicator, calc AVG and PCTILES, across all SITES and all PEOPLE 
+  
+  # (doaggregate does not provide this)
   
   out$results_summarized <- EJAMbatch.summarizer::batch.summarize(
     sitestats = data.frame(out$results_bysite),
@@ -191,72 +217,116 @@ ejamit <- function(sitepoints,
     threshold = list(threshold1) # compare variables to 90 or other  %ile
   )
   
+  #   The percentiles in these $rows seem wrong as of 10/2023 so far:
+  #
+  # rownames(out$results_summarized$rows)
+  # [1] "Average site"             "Average person"           "Median site"              "Median person"            "Min"                     
+  # [6]  "Max"                      "Sum"  
+  #
+  # "Percentile of sites 0"    "Percentile of sites 25"   "Percentile of sites 50"   "Percentile of sites 75"   "Percentile of sites 80"   "Percentile of sites 90"   "Percentile of sites 95"   "Percentile of sites 99"  "Percentile of sites 100"  
+  # "Percentile of people 0"   "Percentile of people 25"  "Percentile of people 50"  "Percentile of people 75"  "Percentile of people 80"  "Percentile of people 90"  "Percentile of people 95"  "Percentile of people 99"  "Percentile of people 100"
   ################################################################ # 
-  # just a nicer looking tall version of overall results
+  
+  # 4. add a tall summary table ####
+  
+  # (doaggregate alone does not provide this)
+  
   out$formatted <- format_results_overall(out$results_overall, out$longnames)
   
+  # 5. would be nice to provide the 1pager summary report as html here too
   
   ################################################################ # 
-  if (interactive() & !silentinteractive) {  # would be nice to provide the 1pager summary report as html here too
-    # already done by doaggregate()
-    # Show as nicely named indicators in console of RStudio - Overall results (across all sites)
-    # print to console
-    # Show datatable view in RStudio - Site by Site (each site)
+  if (interactive() & !silentinteractive) {  
+    
+    # Show summary info & tips in RStudio console  #### 
+    # NOTE: SOME OF THIS BELOW SHOULD BE USED IN A VIGNETTE RATHER THAN BEING HERE ***
+    
+    # Show bysite in DT::datatable view in RStudio ####
+    # - Site by Site (each site)
+    if (nrow(out$results_bysite) > 1000) {message("> 1,000 rows may be too much for client-side DataTables - only showing some rows here")}
     print(
       DT::datatable(
-        out$results_bysite[1:min(nrow(out$results_bysite), 2000) ], # >2k rows is too much for client-side DataTables
+        out$results_bysite[1:min(nrow(out$results_bysite), 1000) ], # >2k rows is too much for client-side DataTables
         colnames = out$longnames,
+        rownames = FALSE,
         escape = FALSE,
         caption = paste0(nrow(out$results_bysite), ' FACILITIES "', " ", '"'),
         filter = "top"
       )
     )
     ###################################### # 
-    cat("\nSome more key results: \n\n")
+    #  *** THE results_summarized$rows percentiles info needs debugging - numbers may be wrong
+    cat("\nWhich Demog groups or Envt stressors are highest (relative to States overall): \n\n")
     
-    somenames <- grep("ratio.to.state", names(out$results_summarized$rows), value = TRUE)
-    someinfo <- t(out$results_summarized$rows[ , somenames])[ , c(1,2,6)] 
-    colnames(someinfo) <- c("Avg site", "Avg resident at sites as a whole", "Avg resident at site with highest value for this stat")
-    print(    round(t(out$results_summarized$rows[ , somenames])[ , c(1,2,6)], 2)  )  # 1:70 
-    cat("\n\n")
+    if (subgroups_type == 'nh')    { subratvarnames <- names_d_subgroups_nh_ratio_to_state_avg}
+    if (subgroups_type == 'alone') { subratvarnames <- names_d_subgroups_alone_ratio_to_state_avg}
+    if (subgroups_type == 'both')  { subratvarnames <- c(names_d_subgroups_nh_ratio_to_state_avg, names_d_subgroups_alone_ratio_to_state_avg)}
     
+    grps <- list(
+      names_d_ratio_to_state_avg,
+      subratvarnames, #names_d_subgroups_ratio_to_state_avg,   #   edited to flexibly use nh, alone, or both types
+      names_e_ratio_to_state_avg
+    )
+    for (somenames in grps) {
+      # somenames <- grep("ratio.to.state", names(out$results_summarized$rows), value = TRUE)
+      # cat("Score as Ratio to State Average:\n")
+      someinfo <- t(out$results_summarized$rows[ , somenames])[ , c(1,2,6)]
+      someinfo <- data.frame(someinfo)
+      rownames(someinfo) <- fixcolnames(somenames, 'rname', 'long')
+      colnames(someinfo) <- c("Avg resident overall", "at site with max ratio", "Avg site")
+      print(
+        round(someinfo[order(someinfo[,"Avg resident overall"], decreasing = TRUE), ], 1)
+      )
+      cat("\n\n")
+    }
+    ###################################### # 
     # site counts and distance minima
     # print(  round(tail(t(out$results_summarized$rows)[ ,1:7],7),1)  )   
     # cat("\n\n")
     
-    cat(popshare_p_lives_at_what_pct(out$results_bysite$pop, p = 0.50, astext=TRUE), "\n\n")
-    
-    cat(popshare_at_top_n(out$results_bysite$pop, c(1, 5, 10), astext = TRUE), "\n\n")
+    ###################################### # 
+    cat("Population Density:\n")
+    cat("  ", popshare_p_lives_at_what_pct(out$results_bysite$pop, p = 0.50, astext = TRUE), "\n")
+    cat("  ", popshare_at_top_n(out$results_bysite$pop, c(1, 5, 10), astext = TRUE), "\n\n")
     
     ###################################### #
-    cat("To see a map in RStudio: \n\n",
-        "mapfast(out$results_bysite, radius = out$results_overall$radius.miles, column_names = 'ej')", 
-        "\n\n")
     
-    cat("To see a histogram of population counts nearby: \n\n", 
-        'hist(out$results_bysite$pop/1000, 100, xlab = "Residents nearby (in thousands)", ylab = "Number of sites", 
-     main =  "Population Counts within', radius, 'miles of Various Sites")',
-   "\n\n")
+    cat("For example, \n out <- ejamit(testpoints_1000, radius = 1) \n # or\n out <- testoutput_ejamit_1000pts_1miles \n\n") 
+    
+    cat("To see a histogram of population counts nearby: \n\n",
+        '     hist(out$results_bysite$pop/1000, 100, 
+        xlab = "Residents nearby (in thousands)", 
+        ylab = "Number of sites", 
+        main =  "Population Counts within', radius, 'miles of Various Sites")',
+        "\n\n")
     
     cat("To see cumulative distribution of population nearby:\n\n", 
-        '        plot(ecdf(out$results_bysite$pop/1000), 
-             ylab="Fraction of total population living any one or more of these sites", 
-             xlab="# of residents (in thousands) near a site, showing one dot for each site", 
-             main="A fraction of these sites are where most of the residents are located")',
+        '     plot(ecdf(out$results_bysite$pop/1000), 
+        ylab="Fraction of total population living any one or more of these sites", 
+        xlab="# of residents (in thousands) near a site, showing one dot for each site", 
+        main="A fraction of these sites are where most of the residents are located")',
         "\n\n")
     
-    cat("To see boxplots of Demographics vs US averages:\n\n", 
-        "boxplots_ratios(ratios_to_avg(as.data.frame(out$results_bysite))$ratios_d)",
-        "\n\n")    
+    cat("To see barplots of average proximity by demog group:\n\n",
+        '     plot_distance_mean_by_group(out$results_bybg_people)',
+        "\n\n")
     
-    cat('To save as excel files:  \n\n')
-    cat("long=as.data.frame(rbind(out$longnames)); names(long)=names(out$results_overall)\n")
-    cat(paste0('writexl::write_xlsx(x = long,  path="longnames_',  NROW(out$results_bysite),'_points_', radius,'_miles.xlsx")\n'))
-  
-    cat(paste0('writexl::write_xlsx(x = as.data.frame(x$results_overall), path="results_overall_', NROW(out$results_bysite),'_points_', radius,'_miles.xlsx")\n'))
-    cat(paste0('writexl::write_xlsx(x = as.data.frame(x$results_bysite ), path="results_bysite_',  NROW(out$results_bysite),'_points_', radius,'_miles.xlsx")\n'))
+    cat("To see bar or boxplots of ratios of %Demographics vs US averages:\n\n", 
+        "     ?EJAM::plot_barplot_ratios()  # or ",
+        "     ?EJAMejscreenapi::boxplots_ratios()",
+        "     boxplots_ratios(ratios_to_avg(as.data.frame(out$results_bysite))$ratios_d)",
+        "\n\n")
+    
+    cat("To see a map in RStudio: \n\n",
+        "     mapfast(out$results_bysite, radius = out$results_overall$radius.miles, column_names = 'ej')", 
+        "\n\n")
+    
+    cat("To save as excel files, see ?xls_formatting2\n\n")
   }
   ################################################################ # 
+  
+  cat('Output is a list with the following names:\n')
+  print(structure.of.output.list(out) )
   
   invisible(out)
 }

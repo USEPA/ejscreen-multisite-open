@@ -307,8 +307,8 @@ ui <- shiny::fluidPage(
   #           </div>
   #         </div>'
   #     ),
-  #     tabPanel("Sample Tab 1"),
-  #     tabPanel("Sample Tab 2"),
+  #     tabPanel(title = "Sample Tab 1"),
+  #     tabPanel(title = "Sample Tab 2"),
   #   ),
   
   # Individual Page Footer

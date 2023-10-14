@@ -6,7 +6,7 @@ library(data.table)
 myprogram <- "NPDES"  # 384k
 # myprogram <- "CAMDBS" # 739 sites
 pts <- frs_from_program(myprogram)[ , .(lat, lon, REGISTRY_ID,  PRIMARY_NAME)]
-pts[, ST := state_from_latlon(lon = lon, lat=lat)$ST]
+pts[, ST := state_from_latlon(lat = lat, lon = lon)$ST]
 
 nrow(pts) 
 # cbind(sort(table(pts$ST)))  # how many under this program are in each state?

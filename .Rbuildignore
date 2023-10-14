@@ -1,8 +1,2 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^LICENSE\.md$
-^app\.R$
-^rsconnect$
-^data-raw$
-^packrat/
-^\.Rprofile$

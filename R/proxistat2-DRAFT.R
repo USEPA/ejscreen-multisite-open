@@ -24,9 +24,9 @@
 #'  #
 #'  # summary(x$proximityscore)
 #'  # # analyze.stuff   pctiles(x$proximityscore)
-#'  # plot(x$lon, x$lat)
+#'  # plot(x = x$lon, y = x$lat)
 #'  # tops = x$proximityscore > 500 & !is.infinite(x$proximityscore) & !is.na(x$proximityscore)
-#'  # points(x$lon[tops], x$lat[tops], col="red")
+#'  # points(x = x$lon[tops], y = x$lat[tops], col="red")
 #'  
 proxistat2 <- function(pts, radius=8.04672, quadtree) {
   

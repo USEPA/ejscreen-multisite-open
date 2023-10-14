@@ -2,8 +2,7 @@
 % Please edit documentation in R/plot_demogshare_by_distance.R
 \name{plot_demogshare_by_distance}
 \alias{plot_demogshare_by_distance}
-\title{plot_demogshare_by_distance - work in progress
-could also consider plotting something like boxplot(demogvar ~ round(distance, 1))}
+\title{plot_demogshare_by_distance - work in progress}
 \usage{
 plot_demogshare_by_distance(
   results_bybg_people,
@@ -32,5 +31,9 @@ plot_demogshare_by_distance(
 }
 \description{
 plot_demogshare_by_distance - work in progress
-could also consider plotting something like boxplot(demogvar ~ round(distance, 1))
+}
+\details{
+Could also consider plotting something like boxplot(demogvar ~ round(distance, 1))
+
+See notes on plots at \code{\link[=plot_barplot_ratios]{plot_barplot_ratios()}}
 }

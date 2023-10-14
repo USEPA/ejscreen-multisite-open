@@ -15,6 +15,7 @@ doaggregate(
   include_ejindexes = FALSE,
   updateProgress = NULL,
   need_proximityscore = FALSE,
+  calculate_ratios = TRUE,
   silentinteractive = TRUE,
   called_by_ejamit = FALSE,
   subgroups_type = "nh",
@@ -58,6 +59,8 @@ using formulas that have to be specified.}
 \item{updateProgress}{progress bar function used for shiny app}
 
 \item{need_proximityscore}{whether to calculate proximity scores}
+
+\item{calculate_ratios}{whether to calculate and return ratio of each indicator to its US and State overall mean}
 
 \item{silentinteractive}{Set to TRUE to see results in RStudio console.
 Set to FALSE to prevent long output showing in console in RStudio when in interactive mode}

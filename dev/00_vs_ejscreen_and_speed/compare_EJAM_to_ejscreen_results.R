@@ -6,6 +6,46 @@ library(data.table)
 library(EJAM)
 library(EJAMejscreenapi)
 
+
+# ONE EFFORT TO QUICKLY LOOK AT A FEW VARIABLES ###############################
+
+#   (testoutput_ejscreenit_10pts_1miles$table)
+#   should be very similar to
+#  testoutput_ejamit_10pts_1miles$results_bysite
+
+### look at some key indicators from each tool to see some differences: 
+tejam <- as.data.frame(testoutput_ejamit_10pts_1miles$results_bysite)
+tapi  <- as.data.frame(testoutput_ejscreenit_10pts_1miles$table)
+pctcols <- (1 == fixcolnames(names(tejam), 'r', 'percentage'))
+tejam[ , pctcols] <- tejam[ , pctcols] * 100 # so all are 0-100 ?
+
+
+round(tejam[ , c("siteid", "pop", "lat", "lon", names_d)], 0)
+round(cbind(tapi[  , c("id",     "pop", "lat", "lon", names_d)]), 0 )
+
+cbind(
+  EJAM = round(tejam$pop, 0), 
+  API = tapi$pop, 
+  delta =  round(tejam$pop, 0) - tapi$pop, 
+  pctdiff =  round(100 * ((tejam$pop) - tapi$pop) / tapi$pop, 0)
+)
+
+cbind(
+  EJAM = round(tejam$Demog.Index, 0), 
+  API = tapi$Demog.Index, 
+  delta =  round(tejam$Demog.Index, 0) - tapi$Demog.Index, 
+  pctdiff =  round(100 * ((tejam$Demog.Index) - tapi$Demog.Index) / tapi$Demog.Index, 0)
+)
+
+
+
+
+
+
+
+
+# SEPARATE WORK ###############################
+
 x1full = ejscreenit(testpoints_100, radius = 3, save_map = F, save_plot = F, save_table = F)
 
 x2full = ejamit(testpoints_100, radius = 3)
@@ -44,13 +84,13 @@ avgratio = colMeans(ratios)
 
 
 ############################################### # 
-# lowlifex and Demog.Index.Supp are not yet in ejscreen API: ***************
+# lowlifex and Demog.Index.Supp WERE not yet in ejscreen API: ***************
 
 nd <- names_d[!(names_d %in% c("lowlifex", "Demog.Index.Supp"))]
 pnd <- paste0("state.avg.", nd)
 
 ############################################### # 
-# EJAM names_d need to be multiplied by 100x and rounded. ***************
+# EJAM names_d needED to be multiplied by 100x and rounded. ***************
 
 x2[, c(pnd, nd)] <- round(  100 * x2[, c(pnd, nd)]  , 0 )
 

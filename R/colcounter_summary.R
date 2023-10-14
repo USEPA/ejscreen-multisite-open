@@ -49,7 +49,7 @@ colcounter_summary <- function(x, thresholdlist, or.tied=TRUE, na.rm=TRUE, below
     }
   )
   colnames(countpersite_table) <-  thresholdlist
-  dimnames(countpersite_table) <- list(count.of.cols=rownames(countpersite_table), threshold=thresholdlist)
+  dimnames(countpersite_table) <- list(count.of.cols = rownames(countpersite_table), threshold = thresholdlist)
   return(countpersite_table)
 }
 ######################################## #
@@ -169,8 +169,8 @@ colcounter_summary_all <- function(x, thresholdlist, ...) {
     cum_pct = colcounter_summary_cum_pct(x, thresholdlist = thresholdlist, ...)
   )
   bincount <- length(0:NCOL(x))
-  arrayall <- array(NA, dim=c(bincount, length(thresholdlist), 4))
+  arrayall <- array(NA, dim = c(bincount, length(thresholdlist), 4))
   for (i in 1:4) {arrayall[ ,, i] <- listall[[i]]}
-  dimnames(arrayall) <- list(count=0:NCOL(x), cut=thresholdlist, stat=c('count', 'cum', 'pct', 'cum_pct'))
+  dimnames(arrayall) <- list(count = 0:NCOL(x), cut = thresholdlist, stat = c('count', 'cum', 'pct', 'cum_pct'))
   arrayall
 }

@@ -13,6 +13,7 @@ ejamit(
   silentinteractive = F,
   fips = NULL,
   subgroups_type = "nh",
+  calculate_ratios = TRUE,
   threshold1 = 90,
   ...
 )
@@ -38,8 +39,7 @@ Setting this to TRUE can produce unexpected results, which will not match EJScre
 Note that if creating a proximity score, by contrast, you instead want to find nearest 1 SITE if none within radius of this BLOCK.}
 
 \item{quadtree}{(a pointer to the large quadtree object)
-created from the SearchTree package example:
-SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point")
+created using indexblocks() which uses the SearchTree package.
 Takes about 2-5 seconds to create this each time it is needed.
 It can be automatically created when the package is attached via the .onAttach() function}
 
@@ -54,6 +54,8 @@ such as a list of US Counties or tracts.}
 "nh" for non-hispanic race subgroups as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh;
 "alone" for EJScreen v2.2 style race subgroups as in    White Alone, wa and others in names_d_subgroups_alone;
 "both" for both versions. Possibly another option is "original" or "default" but work in progress.}
+
+\item{calculate_ratios}{whether to calculate and return ratio of each indicator to US and State overall averages}
 
 \item{threshold1}{percentile like 80 or 90 or 95 to compare percentiles to
 "alone" for groups like white alone (whether or not hispanic),

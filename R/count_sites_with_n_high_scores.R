@@ -20,7 +20,7 @@ count_sites_with_n_high_scores <- function(scores, thresholds=c(1.01, 1.50, 2, 3
     ratiodata[is.infinite(ratiodata[,ccc]), ccc] <- NA
   }  
   
-  sitestats <-  colcounter_summary_all(ratiodata, thresholdlist =  ratio_benchmarks, or.tied=TRUE)
+  sitestats <-  colcounter_summary_all(ratiodata, thresholdlist =  ratio_benchmarks, or.tied = TRUE)
   
   cumpcts <-  sitestats[, , "cum_pct"]  
   # sitestats[, , "count"]
@@ -66,5 +66,5 @@ count_sites_with_n_high_scores <- function(scores, thresholds=c(1.01, 1.50, 2, 3
         }
     }
   }
-  return(list(stats=sitestats, text=textout))
+  return(list(stats = sitestats, text = textout))
 }

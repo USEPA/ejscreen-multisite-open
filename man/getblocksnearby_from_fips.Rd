@@ -5,7 +5,7 @@
 \title{getblocksnearby_from_fips
 Actually finds all blocks within each of the FIPS codes provided}
 \usage{
-getblocksnearby_from_fips(fips, need_blockwt = TRUE)
+getblocksnearby_from_fips(fips, inshiny = FALSE, need_blockwt = TRUE)
 }
 \arguments{
 \item{fips}{vector of FIPS codes identifying blockgroups, tracts, counties, or states.
@@ -13,6 +13,8 @@ This is useful if -- instead of gettings stats on and comparing circular buffers
 one will be getting stats on one or more tracts,
 or analyzing and comparing blockgroups in a county,
 or comparing whole counties to each other, within a State.}
+
+\item{inshiny}{used by shiny app server code to handle errors via validate() instead of stop()}
 
 \item{need_blockwt}{set to FALSE to speed it up if you do not need blockwt}
 }
@@ -31,5 +33,7 @@ Actually finds all blocks within each of the FIPS codes provided
   
   # x=getblocksnearby_from_fips("482011000011") # one blockgroup only
   # y=doaggregate(x)
-  
+}
+\seealso{
+\code{\link[=fipsbg_from_anyfips]{fipsbg_from_anyfips()}} \code{\link[=fips_lead_zero]{fips_lead_zero()}} \code{\link[=getblocksnearby_from_fips]{getblocksnearby_from_fips()}} \code{\link[=fips_from_table]{fips_from_table()}}
 }

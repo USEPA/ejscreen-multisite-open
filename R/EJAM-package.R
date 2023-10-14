@@ -1,7 +1,7 @@
 #' @docType package
 #' @title Environmental Justice (EJ) Analysis Multisite tool
 #' @name EJAM
-#' @aliases EJAM-package blockwts blockpoints quaddata blockid2fips bgid2fips 
+#' @aliases EJAM-package blockwts blockpoints blockid2fips  bgid2fips 
 #'
 #' @md
 #' 
@@ -86,12 +86,12 @@
 #'         Interface returns a vector of one or more naics codes,
 #'         to be converted to sitepoints.
 #' 
-#'    - **[EJAM::latlon_from_naics()]** takes NAICS codes and returns a data.table of site points.
+#'    - **[latlon_from_naics()]** takes NAICS codes and returns a data.table of site points.
 #'      Relies on ** frs_by_naics.rda**  A data.table, needed to get lat lon by naics. 
 #'      Need to update FRS data used here regularly, ideally frequently.
 #'      2023 version has columns   REGISTRY_ID,  NAICS, lat, lon
 #'      
-#'      NAICS codes also can be selected by text search of industry names or by categories of codes, via [EJAM::naics_from_any()]
+#'      NAICS codes also can be selected by text search of industry names or by categories of codes, via [naics_from_any()]
 #'       
 #'       
 #'  **- BY FACILITY ID or PROGRAM ID:**  
@@ -103,7 +103,7 @@
 #'    - **[frs_from_siteid()]** takes REGISTRY_ID values and returns a data.table of site points.
 #'      Relies on **frs** data.table with columns REGISTRY_ID, lat, lon, etc.
 #'      
-#'    - **[EJAM::frs_from_programid()]** takes EPA program-specific site ID values and returns a data.table of site points.
+#'    - **[frs_from_programid()]** takes EPA program-specific site ID values and returns a data.table of site points.
 #'      Relies on **[frs_by_programid]** data.table with columns program, pgm_sys_id, REGISTRY_ID, lat, lon 
 #'      
 #' 
@@ -121,7 +121,7 @@
 #'   
 #'   Columns are siteid, lat, lon; maybe 100 to 10k points
 #'      
-#'   - **[getblocksnearby()](sitepoints)** which by default uses *[getblocksnearbyviaQuadTree()]*
+#'   - **[getblocksnearby()]** which by default uses *[getblocksnearbyviaQuadTree()]*
 #'        Returns `sites2blocks` 
 #'        Requires index called localtree that is build from dataset [quaddata] 
 #'        

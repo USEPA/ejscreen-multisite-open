@@ -7,7 +7,6 @@
 \alias{EJAM-package}
 \alias{blockwts}
 \alias{blockpoints}
-\alias{quaddata}
 \alias{blockid2fips}
 \alias{bgid2fips}
 \title{Environmental Justice (EJ) Analysis Multisite tool}
@@ -125,7 +124,7 @@ Input: \strong{\code{sitepoints}} data.table from user picking points
 
 Columns are siteid, lat, lon; maybe 100 to 10k points
 \itemize{
-\item \strong{\href{sitepoints}{getblocksnearby()}} which by default uses \emph{\code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}}}
+\item \strong{\code{\link[=getblocksnearby]{getblocksnearby()}}} which by default uses \emph{\code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}}}
 Returns \code{sites2blocks}
 Requires index called localtree that is build from dataset \link{quaddata}
 \item \strong{sites2blocks}   Created by \code{\link[=getblocksnearby]{getblocksnearby()}} to be passed to  \code{\link[=doaggregate]{doaggregate()}}

@@ -7,7 +7,7 @@
 #' @noRd 
 #'
 #' @importFrom shiny NS tagList 
-mod_get_shape_from_upload_ui <- function(id){
+mod_get_shape_upload_ui <- function(id){
   ns <- NS(id)
   tagList(
     ## upload shapefile ####
@@ -23,7 +23,7 @@ mod_get_shape_from_upload_ui <- function(id){
 #' get_shape_from_upload Server Functions
 #'
 #' @noRd 
-mod_get_shape_from_upload_server <- function(id){
+mod_get_shape_upload_server <- function(id){
   shiny::moduleServer( id, function(input, output, session){
     ns <- session$ns
     myshape <- shiny::reactive({
@@ -40,7 +40,7 @@ mod_get_shape_from_upload_server <- function(id){
 }
     
 ## in the UI
-# mod_get_shape_from_upload_ui("get_shape_from_upload_1")
+# mod_get_shape_upload_ui("get_shape_from_upload_1")
     
 ## in the server
-# mod_get_shape_from_upload_server("get_shape_from_upload_1")
+# mod_get_shape_upload_server("get_shape_from_upload_1")

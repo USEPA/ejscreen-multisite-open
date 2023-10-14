@@ -43,7 +43,7 @@
 getblocksnearbyviaQuadTree3 <- function(sitepoints, radius=3, maxradius=31.07, 
                                         avoidorphans=TRUE, report_progress_every_n=500, 
                                         quadtree) {
-  if(class(quadtree) != "QuadTree"){
+  if (class(quadtree) != "QuadTree") {
     stop('quadtree must be an object created from SearchTrees package with treeType = "quad" and dataType = "point"')  
   }
   if (!data.table::is.data.table(sitepoints)) {data.table::setDT(sitepoints)}
@@ -134,7 +134,7 @@ getblocksnearbyviaQuadTree3 <- function(sitepoints, radius=3, maxradius=31.07,
     if ( avoidorphans && (nrow(res[[i]])) == 0) { # rarely get here so not critical to optimize
       #search neighbors, allow for multiple at equal distance
       # vec  <- SearchTrees::knnLookup(quadtree, unlist(c( coords[ , 'FAC_X'])), unlist(c(coords[ , 'FAC_Z'])), k=10)      
-      vec  <- SearchTrees::knnLookup(quadtree, unlist(c( sitepoints[i , 'FAC_X'])), unlist(c(sitepoints[i , 'FAC_Z'])), k=10)      
+      vec  <- SearchTrees::knnLookup(quadtree, unlist(c( sitepoints[i , 'FAC_X'])), unlist(c(sitepoints[i , 'FAC_Z'])), k = 10)      
       
       # *** FIX/CHECK: 
       tmp <-  quaddata[vec[1, ], ]

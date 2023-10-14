@@ -232,7 +232,7 @@ if (nrow(mysites) > 1500){ mysites <- mysites[1:1500, ]} # >2k rows is too much 
 print(
   DT::datatable(
     mysites,
-    escape = FALSE,
+    escape = FALSE,     rownames=FALSE,
     caption = caption,
     filter = "top"
   )
@@ -333,7 +333,7 @@ mapfast(testpoints_n(300, ST_of_blockgroup = c('LA','TX')) )
 ### Specify radius for circular buffer, and other key parameters
 
 ```{r}
-radius <- 3 # radius (miles).  5 km = 3.1 miles, 10 km = 6.2 miles
+radius <- 3 # radius (in miles).  5 km = 3.1 miles, 10 km = 6.2 miles
 ```
 
 ### Key Functions in EJAM
@@ -375,7 +375,7 @@ cbind(overall = as.list( out2$results_overall[ , ..names_d_subgroups]))
  
 mapfast(out2$results_bysite, radius = radius)
 
-DT::datatable(out2$results_bysite, escape = FALSE)
+DT::datatable(out2$results_bysite, escape = FALSE, rownames=FALSE)
 
 ```
 
@@ -460,7 +460,7 @@ abline(h=mean(s2b_stats$blocks_within_1mile), col="red")
 hist(sites2blocks[,.N,by="siteid"][,N],20, xlab = "How many blocks are nearby?", ylab="Frequency (# of sites)", main = "A given site may have zero to hundreds of blocks nearby", sub="A typical site in this example has about 100 blocks nearby")
 
 s2b_stats[,PGM_SYS_ACRNMS := NULL] # remove verbose column
-DT::datatable(s2b_stats)
+DT::datatable(s2b_stats,  rownames=FALSE)
 # more summaries showing there may be only 1 block or several hundred blocks within 1 mile
 quantile(s2b_stats$blocks_within_1mile, probs = (0:4)* 0.25)
 t(summary(s2b_stats)) 
@@ -486,7 +486,9 @@ setnames(x, 'lon', 'blocklon')
 x <- merge(sitepoints, x, by = "siteid")
 x[,PGM_SYS_ACRNMS := NULL]
 x
-bplot=function(x,n, ... ) {plot(x$blocklon[x$siteid==n], x$blocklat[x$siteid==n], ... ); points(x$lon[x$siteid==n], x$lat[x$siteid==n] , col="red")}
+bplot = function(x,n, ... ) {
+  plot(x = x$blocklon[x$siteid == n], y = x$blocklat[x$siteid == n], ... )
+  points(x = x$lon[x$siteid == n], y = x$lat[x$siteid == n] , col = "red")}
 # for (i in 1:20) {
 bplot(x, sample(1:nrow(sitepoints),1)) # plots a random site surrounded by nearby block points
 # }

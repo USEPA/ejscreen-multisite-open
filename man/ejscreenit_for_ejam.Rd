@@ -3,7 +3,7 @@
 \name{ejscreenit_for_ejam}
 \alias{ejscreenit_for_ejam}
 \title{ejscreenit_for_ejam
-Wrapper for EJAMejscreenapi::ejscreenit(), to use in EJAM app}
+Wrapper for EJAMejscreenapi::ejscreenit(), to use in EJAM app - NOT USED CURRENTLY}
 \usage{
 ejscreenit_for_ejam(sitepoints, radius = 3, ...)
 }
@@ -20,5 +20,5 @@ i.e., list of these: results_bysite (data.table), map, plot, us.ratios
 }
 \description{
 ejscreenit_for_ejam
-Wrapper for EJAMejscreenapi::ejscreenit(), to use in EJAM app
+Wrapper for EJAMejscreenapi::ejscreenit(), to use in EJAM app - NOT USED CURRENTLY
 }

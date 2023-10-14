@@ -1,5 +1,8 @@
 #' plot_demogshare_by_distance - work in progress
-#' could also consider plotting something like boxplot(demogvar ~ round(distance, 1))
+#' @details Could also consider plotting something like boxplot(demogvar ~ round(distance, 1))
+#' 
+#'   See notes on plots at [plot_barplot_ratios()]
+#'   
 #' @param results_bybg_people 
 #' @param demogvarname 
 #' @param siteids 

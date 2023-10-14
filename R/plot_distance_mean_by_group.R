@@ -40,7 +40,7 @@ plot_distance_mean_by_group <- function(results_bybg_people,
   }
   miss <- setdiff(c( demogvarname  ), names(results_bybg_people))
   if ( length(miss) > 0) {
-    warning('These must be column names in results_bybg_people but are missing: ', paste0( miss, collapse=", "))
+    warning('These must be column names in results_bybg_people but are missing: ', paste0( miss, collapse = ", "))
     return(
       NA
     )
@@ -77,13 +77,13 @@ plot_distance_mean_by_group <- function(results_bybg_people,
             main = "Ratio of avg distance from site \n among group residents vs non-group",
             xlab = paste0("Groups closer to sites are highlighted, with closest in orange (",mingrouptext,")"),
             col = colorlist, ylab = "Average distance from site(s) for residents in given group / for residents not in given group")
-    abline(h=1, col="gray")
+    abline(h = 1, col = "gray")
   }
   
   if (returnwhat == "plotfilename") {
     fname = "distance_cdf.png"
     mytempdir = tempdir()
-    png(fname)
+    png(file.path(mytempdir, fname), width = 2000, height = 1000)
     
     colorlist <- ifelse(x$ratio < 1, "yellow", "gray")
     colorlist[i.min] <- "orange"
@@ -92,7 +92,7 @@ plot_distance_mean_by_group <- function(results_bybg_people,
             main = "Ratio of avg distance from site \n among group residents vs non-group",
             xlab = paste0("Groups closer to sites are highlighted, with closest in orange (",mingrouptext,")"),
             col = colorlist, ylab = "Average distance from site(s) for residents in given group / for residents not in given group")
-    abline(h=1, col="gray")
+    abline(h = 1, col = "gray")
     
     dev.off()
     return(file.path(mytempdir, fname))
@@ -121,9 +121,9 @@ distance_mean_by_group <- function(results_bybg_people,
                                    demoglabel=NULL, returnwhat="table", graph=FALSE) {
   plot_distance_mean_by_group(
     results_bybg_people = results_bybg_people, 
-    demogvarname=demogvarname,
+    demogvarname = demogvarname,
     # namez$d, namez$d_subgroups),  
-    demoglabel=demoglabel, returnwhat=returnwhat,
+    demoglabel = demoglabel, returnwhat = returnwhat,
     graph = graph)
 }
 ################################################################################# # 
@@ -138,9 +138,9 @@ distance_by_groups     <- function(results_bybg_people,
                                    demoglabel=NULL, returnwhat="table", graph=FALSE) {
   plot_distance_mean_by_group(
     results_bybg_people = results_bybg_people, 
-    demogvarname=demogvarname,
+    demogvarname = demogvarname,
     # namez$d, namez$d_subgroups),  
-    demoglabel=demoglabel,  returnwhat=returnwhat, graph = graph)
+    demoglabel = demoglabel,  returnwhat = returnwhat, graph = graph)
 }
 ################################################################################# # 
 
@@ -182,7 +182,7 @@ distance_by_group <- function(results_bybg_people, demogvarname="Demog.Index", d
   }
   miss <- setdiff(c('distance_min_avgperson', 'bgid', 'pop',   demogvarname  ), names(results_bybg_people))
   if ( length(miss) > 0) {
-    warning('These must be column names in results_bybg_people but are missing: ', paste0( miss, collapse=", "))
+    warning('These must be column names in results_bybg_people but are missing: ', paste0( miss, collapse = ", "))
     return(list(
       avg_distance_for_group     = NA, 
       avg_distance_for_nongroup  = NA
@@ -191,10 +191,11 @@ distance_by_group <- function(results_bybg_people, demogvarname="Demog.Index", d
   
   # remove duplicated blockgroups, since here we do not need stats site by site, so use shorter distance for any bg that is near 2+ sites.
   results_bybg_people[ , distance_avg := min(distance_min_avgperson, na.rm = TRUE), by = "bgid"] # bug? they seem to be identical so taking min does nothing here???
+  results_bybg_people[is.infinite(distance_avg), distance_avg := NA]
   results_bybg_people <- unique(results_bybg_people, by = "bgid")
-  results_bybg_people$distance_avg[ is.infinite(results_bybg_people$distance_min_avgperson)]  <- NA
-  distance_avg_d    <- results_bybg_people[ , sum(distance_min_avgperson * pop *      .SD,  na.rm = TRUE) / sum(pop *      .SD,  na.rm = TRUE), .SDcols=demogvarname]
-  distance_avg_nond <- results_bybg_people[ , sum(distance_min_avgperson * pop * (1 - .SD), na.rm = TRUE) / sum(pop * (1 - .SD), na.rm = TRUE), .SDcols=demogvarname]
+  # results_bybg_people$distance_avg[ is.infinite(results_bybg_people$distance_min_avgperson)]  <- NA
+  distance_avg_d    <- results_bybg_people[ , sum(distance_min_avgperson * pop *      .SD,  na.rm = TRUE) / sum(pop *      .SD,  na.rm = TRUE), .SDcols = demogvarname]
+  distance_avg_nond <- results_bybg_people[ , sum(distance_min_avgperson * pop * (1 - .SD), na.rm = TRUE) / sum(pop * (1 - .SD), na.rm = TRUE), .SDcols = demogvarname]
   # cat(
   #   round( distance_avg_d,   3), " vs ", 
   #   round( distance_avg_nond,3),

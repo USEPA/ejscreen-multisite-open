@@ -76,7 +76,7 @@ mydata <-  data.table::setDF(data.table::copy(EJAM::testpoints_1000_dt[-1, ])) #
 sf_all <- mydata %>% 
   # vroom("/work/projectname/mydata.csv") %>% 
   # dplyr::filter(year > 2015 & year < 2019) %>%
-  dplyr::select(siteid, lon, lat) %>%
+  dplyr::select(siteid, lat, lon) %>%
   dplyr::distinct() %>%
   sf::st_as_sf(coords = c("lon", "lat"), crs = 4269, remove = FALSE) %>% 
   sf::st_transform(3747)  # to use UTM 17N 
@@ -108,10 +108,10 @@ for (i in 1:length(sampleSize)) {
   start.p <- Sys.time()
   
   if (useparallel) {
-    
-    df <- foreach::foreach(n=1:nrow(sf), .combine='rbind', .packages= c("tidyverse", "sf","vroom" )) %dopar% {
+    n <- 0 # just to stop the warning about n not being defined since RStudio does not recognize it in foreach(n = ) 
+    df <- foreach::foreach(n = 1:nrow(sf), .combine = 'rbind', .packages = c("tidyverse", "sf","vroom" )) %dopar% {
       
-      start.pt <- sf[n,]  # get point to measure FROM
+      start.pt <- sf[n, ]  # get point to measure FROM
       
       # points measured TO could be all US blockpoints, or just others in this sample
       
@@ -201,9 +201,9 @@ for (i in 1:length(sampleSize)) {
   performance_summary_newrow <- data.frame(
     nIterations = nrow(sf), 
     seconds = time, 
-    perhour= round((nrow(sf)/time) * 3600,0),  
-    useparallel=useparallel, 
-    n_cores=n_cores,
+    perhour = round((nrow(sf)/time) * 3600,0),  
+    useparallel = useparallel, 
+    n_cores = n_cores,
     radius = radius,
     mincountnear = min(df$count_near),
     meancountnear = mean(df$count_near),

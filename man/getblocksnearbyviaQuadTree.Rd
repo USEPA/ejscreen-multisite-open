@@ -41,8 +41,7 @@ mostly for testing, but a progress bar feature might be useful unless this is su
 which is relevant only if a user saved the output of this function.}
 
 \item{quadtree}{(a pointer to the large quadtree object)
-created from the SearchTree package example:
-SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point")
+created using indexblocks() which uses the SearchTree package.
 Takes about 2-5 seconds to create this each time it is needed.
 It can be automatically created when the package is attached via the .onAttach() function}
 }
@@ -69,6 +68,10 @@ a way to quickly estimate what fraction of a block group is
 inside the circular buffer more accurately and more quickly than
 areal apportionment of block groups would provide.
 }
+\examples{
+  # indexblocks() # if localtree not available yet, quadtree = localtree
+  x = getblocksnearby(testpoints_1000, radius = 3)
+}
 \seealso{
-\code{\link[=ejamit]{ejamit()}} \code{\link[=getblocksnearby]{getblocksnearby()}} \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} \code{\link[=getblocksnearbyviaQuadTree_Clustered]{getblocksnearbyviaQuadTree_Clustered()}} \code{\link[=getblocksnearbyviaQuadTree2]{getblocksnearbyviaQuadTree2()}}
+\code{\link[=ejamit]{ejamit()}} \code{\link[=getblocksnearby]{getblocksnearby()}}
 }

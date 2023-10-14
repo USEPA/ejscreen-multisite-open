@@ -2,7 +2,6 @@
 % Please edit documentation in R/latlon_from_anything.R
 \name{latlon_from_anything}
 \alias{latlon_from_anything}
-\alias{latlon}
 \alias{latlon_any_format}
 \alias{lonlat_any_format}
 \title{Flexibly get lat/lon from file, data.frame, data.table, or lat/lon vectors}
@@ -13,8 +12,9 @@ latlon_from_anything(x, y)
 \item{x}{If missing and interactive mode in RStudio, prompts user for file. Otherwise,
 this can be a filename (csv or xlsx, with path), or data.frame/ data.table/ matrix,
 or vector of longitudes (in which case y must be the latitudes).
-Note that even though it is called latlon_etc the lon is x and comes before the lat among parameters x,y
-File or data.frame/data.table/matrix must have columns called lon and lat, or something that can
+Note that even though it is called latlon_etc the
+lon is x and comes before the lat among parameters x,y (unlike in most other functions here using lat,lon)
+File or data.frame/data.table/matrix must have columns called lat and lon, or names that can
 be inferred to be that by latlon_infer()}
 
 \item{y}{If x is a vector of longitudes, y must be the latitudes. Ignored otherwise.}

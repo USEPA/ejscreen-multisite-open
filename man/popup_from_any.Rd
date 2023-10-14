@@ -6,7 +6,13 @@
 Creates popup vector that leaflet::addCircles or leaflet::addPopups can use.
 Works similarly to EJAMejscreenapi::popup_from_df, but now extends to data.table}
 \usage{
-popup_from_any(x, column_names = names(x), labels = column_names, n = "all")
+popup_from_any(
+  x,
+  column_names = names(x),
+  labels = column_names,
+  n = "all",
+  testing = FALSE
+)
 }
 \arguments{
 \item{x, }{a data table or data frame}
@@ -20,6 +26,8 @@ If some of names(x) not requested by column_names, they are left out.}
 the elements in the popup. Must be same length as column_names}
 
 \item{n}{Show the first n columns of mypoints, in popup. "all" means all of them.}
+
+\item{testing}{can set to TRUE while testing function}
 }
 \value{
 A vector of strings, one per row or map point,

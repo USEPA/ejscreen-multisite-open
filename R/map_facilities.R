@@ -13,16 +13,16 @@ map_facilities <- function(mypoints, rad = 3, highlight = FALSE, clustered) {#, 
   ## map settings
   base_color      <- '#000080'
   cluster_color   <- 'red'
-  highlight_color<- 'orange'   #  NOT USED YET
+  highlight_color <- 'orange'   #  NOT USED YET
   circleweight <- 4
   
   ## convert units to miles for circle size
-  # if(map_units == 'kilometers'){
+  # if (map_units == 'kilometers'){
   #   rad = rad * 0.62137119
   # }
   
   ## if checkbox to highlight clusters is checked
-  if(highlight == TRUE){
+  if (highlight == TRUE) {
     ## compare latlons using is_clustered() reactive
     circle_color <- ifelse(clustered == TRUE, cluster_color, base_color)
   } else {
@@ -70,6 +70,5 @@ map_facilities <- function(mypoints, rad = 3, highlight = FALSE, clustered) {#, 
     mymap
   }
   ### Button to print map ####
-  leaflet.extras2::addEasyprint(map = mymap, options = leaflet.extras2::easyprintOptions(exportOnly = TRUE, title='Save Map Snapshot'))
-  
+  leaflet.extras2::addEasyprint(map = mymap, options = leaflet.extras2::easyprintOptions(exportOnly = TRUE, title = 'Save Map Snapshot'))
 }

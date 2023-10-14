@@ -44,7 +44,7 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
   #   areatype=
   #   areaid=
   #   f=pjson
-    ############################################################################################################ #
+  ############################################################################################################ #
   
   ## overall bbox
   bbox <- sf::st_bbox(polys)
@@ -63,10 +63,10 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
   
   ## filter blockpoints again to individual bboxes, keep unique points
   blockpoints_filt <- lapply(bbox_polys, function(a) blockpoints_filt[between(lon, a[1], a[3]) & 
-                                                                      between(lat, a[2], a[4]), ]) %>% 
+                                                                        between(lat, a[2], a[4]), ]) %>% 
     rbindlist %>% 
     unique
-    
+  
   blockpoints_sf <- sf::st_as_sf(blockpoints_filt, coords = c('lon', 'lat'), crs= 4269)
   
   if (!exists("blockpoints_sf")) {
@@ -97,7 +97,7 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
     #  calculate it here since not provided
     # get lat,lon of sites
     pts <-  data.table(sf::st_coordinates(polys))  # this is wasteful if they provided a data.frame or data.table and we convert it to sf and then here go backwards
-    setnames(pts, c("lon","lat"))
+    setnames(pts, c("lon","lat")) # I think in this case it must be lon first then lat, due to how st_coordinates() output is provided?
     # get blockid of each nearby census block
     blocksnearby <- getblocksnearby(pts, addedbuffermiles * safety_margin_ratio)  # blockid, distance, siteid # don't care which siteid was how this block got included in the filtered list
     # get lat,lon of nearby blocks
@@ -127,16 +127,21 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
     # warning("using getblocksnearby() to filter US blocks to those near each site must be done before a dissolve  ")
     polys <- sf::st_union(polys)
   }
- 
+  
   blocksinsidef <- unique(blocksinside)
   
   #standardize input shapes for doaggregate
   
-  pts <-  data.table(sf::st_coordinates(blocksinsidef),blocksinsidef$siteid,blocksinsidef$blockid,distance=0) 
- 
-  setnames(pts, c("lon","lat","siteid","blockid","distance"))
+  pts <-  data.table(
+    sf::st_coordinates(blocksinsidef),
+    blocksinsidef$siteid,
+    blocksinsidef$blockid,
+    distance=0
+  )
   
-
+  setnames(pts, c("lon","lat","siteid","blockid","distance")) # it is lon then lat due to format of output of st_coordinates() I think
+  
+  
   return(list('pts'=pts,'polys'=polys))
   
 }

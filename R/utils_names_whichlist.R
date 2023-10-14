@@ -65,6 +65,7 @@ names_whichlist <- function(x, exact=T, grepmatching=T, ignore.case.exact=FALSE,
     return(hitlist)
   }
 }
+##################################################################### #
 
 #' names_whichlist_multi
 #' See which lists of names the given indicator names are in
@@ -82,6 +83,7 @@ names_whichlist_multi = function(x, ...) {
   # out <- do.call(rbind, out)
   return(out)
 }
+##################################################################### #
 
 #' names_whichlist_multi_key
 #' See which key lists of names the given indicator names are in

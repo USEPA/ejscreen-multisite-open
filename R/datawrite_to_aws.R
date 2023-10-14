@@ -29,7 +29,7 @@ datawrite_to_aws <- function(varnames= c('bgid2fips',   'blockid2fips', 'blockpo
   
   if (!is.character(fun)) {stop('must specify function in fun parameter as a quoted character string')}
   if (length(ext) > 1) {stop('must specify only one file extension for all the files')}
-  if (ext=='.arrow' & missing(fun)) {fun <- "arrow::write_ipc_file"} 
+  if (ext == '.arrow' & missing(fun)) {fun <- "arrow::write_ipc_file"} 
   
   fnames <- paste0(varnames, ext)
   objectnames <- paste0(mybucketfolder, '/', fnames)

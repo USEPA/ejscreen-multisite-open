@@ -22,7 +22,7 @@ for example.
 **Note that EJAM is still in active development, not yet released for
 anything other than testing, even internally. For an interim, related
 tool being tested, please see** [EJAM’s ejscreenapi
-tool](https://rstudio-connect.dmap-stage.aws.epa.gov/content/dc3cda00-20a2-47ed-a753-0dcb89eb8f2a/ "https://rstudio-connect.dmap-stage.aws.epa.gov/content/dc3cda00-20a2-47ed-a753-0dcb89eb8f2a/")
+tool](https://rstudio-connect.dmap-stage.aws.epa.gov/content/163e7ff5-1a1b-4db4-ad9e-e9aa5d764002/ "https://rstudio-connect.dmap-stage.aws.epa.gov/content/163e7ff5-1a1b-4db4-ad9e-e9aa5d764002/")
 
 # What is EJAM?
 
@@ -105,7 +105,7 @@ devtools::install_github('USEPA/EJAM')
 - [EJScreen](https://www.epa.gov/ejscreen "https://www.epa.gov/ejscreen")
 
 - [EJAM’s ejscreenapi tool (in
-  testing)](https://rstudio-connect.dmap-stage.aws.epa.gov/content/dc3cda00-20a2-47ed-a753-0dcb89eb8f2a/ "https://rstudio-connect.dmap-stage.aws.epa.gov/content/dc3cda00-20a2-47ed-a753-0dcb89eb8f2a/")
+  testing)](https://rstudio-connect.dmap-stage.aws.epa.gov/content/163e7ff5-1a1b-4db4-ad9e-e9aa5d764002/ "https://rstudio-connect.dmap-stage.aws.epa.gov/content/163e7ff5-1a1b-4db4-ad9e-e9aa5d764002/")
 
 - EJAM’s code repository for internal EPA use:
   [USEPA/EJAM](https://github.com/USEPA/EJAM#readme "https://github.com/USEPA/EJAM#readme")

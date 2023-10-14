@@ -9,7 +9,7 @@
 #' @export
 #'
 format_gt_table <- function(df, type, my_cell_color =  '#dce6f0', my_border_color = '#0070c0'){
-   if(type == 'demog'){
+   if (type == 'demog') {
       subgroup_rows <- which(df$var_names %in% names_d_subgroups_friendly)
       print(subgroup_rows)
       
@@ -58,7 +58,7 @@ format_gt_table <- function(df, type, my_cell_color =  '#dce6f0', my_border_colo
         align = 'center', columns = c('state_pctile', 'usa_pctile')
       ) 
     
-  } else if(type == 'envt') {
+  } else if (type == 'envt') {
     
     nice_table <- gt::gt(df) %>% 
       ## format column labels

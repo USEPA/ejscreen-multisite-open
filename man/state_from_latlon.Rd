@@ -5,12 +5,12 @@
 \title{find what state is where each point is located
 Takes 3 seconds to find state for 1k points, so a faster alternative would be useful}
 \usage{
-state_from_latlon(lon, lat, states_shapefile = EJAM::states_shapefile)
+state_from_latlon(lat, lon, states_shapefile = EJAM::states_shapefile)
 }
 \arguments{
-\item{lon}{longitudes vector}
-
 \item{lat}{latitudes vector}
+
+\item{lon}{longitudes vector}
 
 \item{shapefile}{shapefile of US States, in package already}
 }
@@ -26,7 +26,7 @@ Takes 3 seconds to find state for 1k points, so a faster alternative would be us
  myprogram <- "CAMDBS" # 739 sites
  pts <- frs_from_program(myprogram)[ , .(lat, lon, REGISTRY_ID,  PRIMARY_NAME)]
  # add a column with State abbreviation
- pts[, ST := state_from_latlon(lon = lon, lat=lat)$ST]
+ pts[, ST := state_from_latlon(lat=lat, lon = lon)$ST]
  #map these points
  mapfast(pts[ST == 'TX',], radius = 1) # 1 miles radius circles
  

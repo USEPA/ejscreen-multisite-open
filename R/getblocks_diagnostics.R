@@ -28,6 +28,7 @@ getblocks_summarize_blocks_per_site <- function(x, varname='siteid') {
 #' @param x The output of [getblocksnearby()] like testoutput_getblocksnearby_10pts_1miles
 #' @param varname colname of variable in data.table x that is the one to summarize by
 #' @return invisibly, a list of stats
+#' @export
 #' @import data.table
 #' @seealso [getblocks_diagnostics()]
 #'
@@ -41,16 +42,34 @@ getblocks_summarize_sites_per_block <- function(x, varname='blockid') {
 #' Get summary stats on counts of blocks (unique vs doublecounted) near sites
 #'
 #' @param x The output of [getblocksnearby()] like testoutput_getblocksnearby_10pts_1miles
-#'
+#' @param detailed if TRUE, also shows in console a long table of frequencies via [getblocks_summarize_blocks_per_site()]
+#' @param see_plot set TRUE to draw for each site a boxplot of distances of nearby blocks
 #' @return A list of stats 
 #' @seealso This relies on  [getblocks_summarize_blocks_per_site()] and [getblocks_summarize_sites_per_block()]
 #' @examples  getblocks_diagnostics(testoutput_getblocksnearby_10pts_1miles)
 #' @import data.table
 #' @export
 #'
-getblocks_diagnostics <- function(x) {
+getblocks_diagnostics <- function(x, detailed=FALSE, see_plot=FALSE) {
   if (NROW(x) == 0) {warning('no blocks found nearby'); return(NA)}
-  prit <- function(x) {prettyNum(x, big.mark = ',')}  
+  
+  prit <- function(x) {prettyNum(x, big.mark = ',')}
+  
+  # Distances ####
+  
+  cat("Summary stats on distances reported from any sites to any nearby blocks\n\n")
+  print(cbind(percentiles.of.distance = quantile(x$distance, probs = (0:20)/20)))
+  cat("\n")
+  cat("Mean distance: ", mean(x$distance, na.rm = TRUE), "\n")
+  cat("\n")
+  if (detailed) {
+  # Counts of blocks nearby, frequency of x nearby ####
+  print(getblocks_summarize_blocks_per_site(x))
+  # returns table that gives Range and mean of count of blocks nearby the various sites,
+  #   how many sites have only 1 block nearby, or <30 nearby, etc.
+  cat("\n\n")
+  }
+  # calculate extra stats ####
   
   sitecount_unique_out       <- data.table::uniqueN(x, by = 'siteid')
   blockcount_unique          <- data.table::uniqueN(x, by = 'blockid') # how many blocks are there, counting each once, not "how many blocks are unique" ie appear only once
@@ -70,12 +89,7 @@ getblocks_diagnostics <- function(x) {
   count_block_site_distances <- blockcount_incl_dupes # number of rows in output table of all block-site pairs with their distance.
   blockcount_avgsite         <- blockcount_incl_dupes / sitecount_unique_out
   
-  print(getblocks_summarize_blocks_per_site(x))  # returns table on # of blocks near avg site, how many sites have only 1 block nearby, or <30 nearby, etc.
-  cat("\n\n")
-
-  cbind(percentiles.of.distance = quantile(x$distance, probs=(0:20)/20))
-  
-  x <- list(
+  sumstats <- list(
     sitecount_unique_out = sitecount_unique_out, 
     # sites_withany_overlap = as.numeric(getblocks_summarize_sites_per_block(x)['2']),
     # that tells you how many blocks are near 2 sites, but not how many or which sites those were. 
@@ -95,7 +109,8 @@ getblocks_diagnostics <- function(x) {
     uniqueblocks_near_multisite = uniqueblocks_near_multisite
   )
   
-   
+  # Print those extra stats to console ####
+  
   cat(paste0(prit(sitecount_unique_out), ' unique output sites\n'))
   cat(paste0(prit(round(blockcount_avgsite, 0)), ' blocks are near the avg site or in avg buffer
              (based on their block internal point, like a centroid)\n'))
@@ -113,7 +128,12 @@ getblocks_diagnostics <- function(x) {
              (assuming they live at the block internal point\n'))
   # cat(prit(count_block_site_distances), ' = count_block_site_distances',  '\n')
   # cat(prit(uniqueblocks_near_multisite),' = uniqueblocks_near_multisite ', '\n')
-  boxplot(x$distance ~ x$siteid)
-  invisible(x)
+  
+  # PLOT ####
+  ## it is not really useful
+  # if (see_plot) {
+  # boxplot(x$distance ~ x$siteid)
+  # }
+  invisible(sumstats)
 }
 ######################################################################################### # 

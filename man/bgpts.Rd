@@ -48,12 +48,12 @@ and where each bg is, which is useful for some situations.
  
  # view those block group points on a map (plot only a subset which is enough)
  sam <- sample(seq_along(bgpts$bgid),5000) 
- plot(bgpts$lon[sam], bgpts$lat[sam], pch = '.')
+ plot(x = bgpts$lon[sam], y = bgpts$lat[sam], pch = '.')
  
  # view one state, florida, where 12 are the 1st 2 digits of the FIPS:
  # bgpts[bgid2fips[substr(bgfips,1,2) == '12', ], on = 'bgid']
  xx='12'
- mystate <- bgpts[bgid2fips[substr(bgfips, 1, 2) == xx, ], on = 'bgid'][ , .(lon,lat)]
+ mystate <- bgpts[bgid2fips[substr(bgfips, 1, 2) == xx, ], on = 'bgid'][ , .(lon, lat)] 
  plot(mystate, pch = '.')
  rm(mystate, xx)
  

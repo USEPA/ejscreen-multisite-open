@@ -39,7 +39,7 @@ getblocksnearby  <- function(sitepoints, radius=3, maxradius=31.07,
 ) {
   ################################################################################## #
   # select file if missing
-  if (missing(sitepoints)) { 
+  if (missing(sitepoints)) {
     if (interactive()) {
       sitepoints <- rstudioapi::selectFile()
     } else {
@@ -53,13 +53,13 @@ getblocksnearby  <- function(sitepoints, radius=3, maxradius=31.07,
   if (missing(quadtree)) {
     if (exists("localtree")) {
       quadtree <- localtree 
-    } else {      #  SEE IF WE EVER NEED TO OR EVEN CAN CREATE THIS ON THE FLY HERE FOR SOME INTERACTIVE USERS, BUT SHOULD NOT BE AN ISSUE IF PKG LOADED
+    } else {    #  SEE IF WE EVER NEED TO OR EVEN CAN CREATE THIS ON THE FLY HERE FOR SOME INTERACTIVE USERS, BUT SHOULD NOT BE AN ISSUE IF PKG LOADED
       if (!exists("quaddata")) {
-        EJAM::dataload_from_aws() # loads quaddata needed to make localtree index, and several other large files pkg uses.
+        dataload_from_aws() # loads quaddata needed to make localtree index, and several other large files pkg uses.
       }
       # need to pause here?
       # localtree <- SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point")
-      EJAM::indexblocks() # not really tested yet in this context
+      indexblocks() # not really tested yet in this context
       quadtree <- localtree 
       # stop(paste0("Nationwide index of block locations is required but missing (quadtree parameter default is called localtree but was not found). ",
       #             'Try this: \n\n',
@@ -67,31 +67,31 @@ getblocksnearby  <- function(sitepoints, radius=3, maxradius=31.07,
       # ))
     }
   }
-  cat("Analyzing", NROW(sitepoints), "points, radius of", radius, "miles.\n")
+  cat("Analyzing", NROW(sitepoints), "points, radius of", radius, "miles around each.\n")
   
   ################################################################################## #
   # wrapper to make it simple to (later?) switch between functions to use for this, clustered vs not, etc.
   
   if (!parallel) {
-    x <- getblocksnearbyviaQuadTree(sitepoints=sitepoints, radius=radius, maxradius=maxradius, 
-                                    avoidorphans=avoidorphans, 
-                                    # indexgridsize=indexgridsize,
-                                    quadtree=quadtree, quiet=quiet,
+    x <- getblocksnearbyviaQuadTree(sitepoints = sitepoints, radius = radius, maxradius = maxradius, 
+                                    avoidorphans = avoidorphans, 
+                                    # indexgridsize = indexgridsize,
+                                    quadtree = quadtree, quiet = quiet,
                                     ...)
   } else {
     stop('parallel processing version not implemented yet')
-    x <- getblocksnearbyviaQuadTree_Clustered(sitepoints=sitepoints, radius=radius, maxradius=maxradius,
-                                              avoidorphans=avoidorphans,
-                                              # indexgridsize=indexgridsize,
-                                              quadtree=quadtree,
+    x <- getblocksnearbyviaQuadTree_Clustered(sitepoints = sitepoints, radius = radius, maxradius = maxradius,
+                                              avoidorphans = avoidorphans,
+                                              # indexgridsize = indexgridsize,
+                                              quadtree = quadtree,
                                               ...)
   }
   
   #  DRAFT / WAS WORK IN PROGRESS: 
-  # getblocksnearbyviaQuadTree2(sitepoints=sitepoints, radius=radius, maxradius=maxradius, 
-  #                               avoidorphans=avoidorphans, 
-  #                             # indexgridsize=indexgridsize,
-  #                             quadtree=quadtree,
+  # getblocksnearbyviaQuadTree2(sitepoints = sitepoints, radius = radius, maxradius = maxradius, 
+  #                               avoidorphans = avoidorphans, 
+  #                             # indexgridsize = indexgridsize,
+  #                             quadtree = quadtree,
   #                             ...)
   
   # })

@@ -27,8 +27,9 @@
 #' @param x If missing and interactive mode in RStudio, prompts user for file. Otherwise, 
 #'   this can be a filename (csv or xlsx, with path), or data.frame/ data.table/ matrix,
 #'  or vector of longitudes (in which case y must be the latitudes). 
-#'  Note that even though it is called latlon_etc the lon is x and comes before the lat among parameters x,y
-#'   File or data.frame/data.table/matrix must have columns called lon and lat, or something that can 
+#'  Note that even though it is called latlon_etc the 
+#'   lon is x and comes before the lat among parameters x,y (unlike in most other functions here using lat,lon)
+#'   File or data.frame/data.table/matrix must have columns called lat and lon, or names that can 
 #'   be inferred to be that by latlon_infer()
 #' @param y If x is a vector of longitudes, y must be the latitudes. Ignored otherwise.
 #' @seealso [EJAMejscreenapi::read_csv_or_xl()] [EJAM::latlon_df_clean()]
@@ -44,17 +45,17 @@
 #'  latlon_from_anything(testpoints_100[1:6,] )
 #'  latlon_from_anything(testpoints_100[1:6, c('lat','lon')] )
 #'  latlon_from_anything(x=testpoints_100$lon[1:6], y=testpoints_100$lat[1:6] )
-#' @aliases latlon latlon_any_format lonlat_any_format
+#' @aliases latlon_any_format lonlat_any_format
 #' @export
 #'
 latlon_from_anything <- function(x,y) {
   if (missing(x)) {
     if (interactive()) { x <- rstudioapi::selectFile(caption = "Select xlsx or csv with lat,lon values", path = '.' ) } else {
-    stop("file path/name needed but not provided")
-  }}
+      stop("file path/name needed but not provided")
+    }}
   
   # figure out if x is a filename or data.table or data.frame 
-  # of lon, lat values, and clean it up for use.
+  # of lat, lon values, and clean it up for use.
   # otherwise, do the same assuming x,y are lon,lat values as vectors.
   if (data.table::is.data.table(x)) data.table::setDF(x) # syntax is easier here this way. note that a data.table is also a list and data.frame
   if (is.list(x) & !is.data.frame(x)) {x <- as.data.frame(x)} # like if x <- list(lon = 1:5, lat = 1:5)
@@ -63,11 +64,11 @@ latlon_from_anything <- function(x,y) {
     if (is.character(x) & length(x) == 1) {
       # seems to be a file name with path, so read it
       if (!file.exists(x)) {stop(paste0(x, ' is not a filepath/name that exists, and otherwise must be a vector of longitudes or a table of points'))}
-      pts <- EJAMejscreenapi::read_csv_or_xl(x)
+      pts <- read_csv_or_xl(x) # from EJAMejscreenapi :: 
     } else {
       # Not a file, not a data.frame, so x,y should be lon,lat vectors
       if (missing(y)) {stop("if x is not a data.frame or file, then x and y must be longitude and latitude vectors respectively")}
-      pts <- data.frame(lon=x, lat=y)
+      pts <- data.frame(lon = x, lat = y)
     }
   } else {
     # It is a data.frame (or data.table as well)

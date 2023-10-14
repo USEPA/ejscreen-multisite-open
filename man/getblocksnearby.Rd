@@ -36,8 +36,7 @@ Setting this to TRUE can produce unexpected results, which will not match EJScre
 Note that if creating a proximity score, by contrast, you instead want to find nearest 1 SITE if none within radius of this BLOCK.}
 
 \item{quadtree}{(a pointer to the large quadtree object)
-created from the SearchTree package example:
-SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point")
+created using indexblocks() which uses the SearchTree package.
 Takes about 2-5 seconds to create this each time it is needed.
 It can be automatically created when the package is attached via the .onAttach() function}
 

@@ -11,17 +11,17 @@
 #'  myprogram <- "CAMDBS" # 739 sites
 #'  pts <- frs_from_program(myprogram)[ , .(lat, lon, REGISTRY_ID,  PRIMARY_NAME)]
 #'  # add a column with State abbreviation
-#'  pts[, ST := state_from_latlon(lon = lon, lat=lat)$ST]
+#'  pts[, ST := state_from_latlon(lat=lat, lon = lon)$ST]
 #'  #map these points
 #'  mapfast(pts[ST == 'TX',], radius = 1) # 1 miles radius circles
 #'  
-state_from_latlon <- function(lon, lat, states_shapefile=EJAM::states_shapefile) {
+state_from_latlon <- function(lat, lon, states_shapefile=EJAM::states_shapefile) {
   # pts[is.na(lat), lat := 0] 
   # pts[is.na(lon), lon := 0] 
   lat[is.na(lat)] <- 0
   lon[is.na(lon)] <- 0 # will ensure NA is returned by the join for those points with missing coordinates
-  pts <- data.frame(lon=lon, lat=lat) |>
-    sf::st_as_sf(coords = c("lon", "lat"), crs = sf::st_crs(states_shapefile))
+  pts <- data.frame(lat=lat, lon=lon) |>
+    sf::st_as_sf(coords = c("lon", "lat"), crs = sf::st_crs(states_shapefile))  # st_as_sf wants lon,lat not lat,lon
   pts <- pts |> sf::st_join(states_shapefile)
   # pts <- as.data.frame(statename = pts$facility_state)  
   pts <- as.data.frame(pts)[,c("STUSPS", "NAME", "STATEFP")]
@@ -47,7 +47,7 @@ state_from_blocktable <- function(dt_with_blockid) {
 
 #' state_from_blockid
 #' given vector of blockids, get state abbreviation of each
-#' @param blockid vector of blockid values as from EJAM::blockpoints
+#' @param blockid vector of blockid values as from EJAM in a table called blockpoints
 #'
 #' @return vector of ST info like AK, CA, DE, etc.
 #' @export
@@ -137,7 +137,7 @@ state_from_fips <- function(fips, uniqueonly=FALSE) {
 #   lat=pts$lat; lon=pts$lon
 #   lat[is.na(lat)] <- 0
 #   lon[is.na(lon)] <- 0 # will ensure NA is returned by the join for those points with missing coordinates
-#   pts <- data.frame(lon=lon, lat=lat) |>
+#   pts <- data.frame(lat=lat, lon=lon) |>
 #     sf::st_as_sf(coords = c("lon", "lat"), crs = sf::st_crs(states_shapefile))
 #   pts <- pts |> sf::st_join(states_shapefile)
 #   pts <- as.data.frame(pts)[,c("STUSPS", "NAME", "STATEFP")]

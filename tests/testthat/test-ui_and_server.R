@@ -1,3 +1,16 @@
+# # attempting to be able to test a module...
+# mypackage_server <- EJAM::mod_ejscreenapi_server
+# server <- function(id) {
+#   moduleServer(id, mypackage_server)
+# }
+# test_that("The module receives its input", {
+#   shiny::testServer(server, {
+#     session$setInputs(some_input = 100)
+#     expect_equal(output$some_output, 50)
+#   })
+# })
+
+
 test_that("app ui", {
   ui <- app_ui()
   golem::expect_shinytaglist(ui)
@@ -70,6 +83,7 @@ testServer(app_server, {
 test_that(
   "app launches",
   {
+    
     golem::expect_running(sleep = 5)
   }
 )

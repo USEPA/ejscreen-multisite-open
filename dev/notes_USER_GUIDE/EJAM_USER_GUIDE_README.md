@@ -1,6 +1,6 @@
 # EJAM User's Guide
 
-The EJAM User's Guide is designed to explain how to use the [Environmental Justice Analysis Multisite (EJAM) tool](https://rstudio-connect.dmap-stage.aws.epa.gov/content/dc3cda00-20a2-47ed-a753-0dcb89eb8f2a/ "Environmental Justice Analysis Multisite (EJAM) tool").
+The EJAM User's Guide is designed to explain how to use the [Environmental Justice Analysis Multisite (EJAM) tool](https://rstudio-connect.dmap-stage.aws.epa.gov/content/163e7ff5-1a1b-4db4-ad9e-e9aa5d764002/ "Environmental Justice Analysis Multisite (EJAM) tool").
 
 EJAM is a user-friendly web app, provided by the US EPA, that can summarize demographics and environmental conditions for any list of places in the nation. It provides interactive results and a formatted, ready-to-share report with written explanations of the results, tables, and graphics. The report can provide EJ-related information about people who live in communities near any of the industrial facilities on a list, for example.
 

@@ -10,51 +10,54 @@ xls_formatting2(
   eachsite,
   longnames = NULL,
   bybg = NULL,
-  plotfilename = NULL,
+  formatted = NULL,
   summary_plot = NULL,
   plotlatest = TRUE,
+  plotfilename = NULL,
   analysis_title = "EJAM analysis",
   buffer_desc = "Selected Locations",
   radius_or_buffer_in_miles = NULL,
-  hyperlink_cols = NULL,
-  testing = FALSE,
-  launchexcel = FALSE,
-  saveas = NULL,
+  radius_or_buffer_description =
+    "Miles radius of circular buffer (or distance used if buffering around polygons)",
+  notes = NULL,
   heatmap_colnames = NULL,
   heatmap_cuts = c(80, 90, 95),
   heatmap_colors = c("yellow", "orange", "red"),
-  graycolnums = NULL,
-  narrowcolnums = NULL,
+  hyperlink_colnames = c("EJScreen Report", "EJScreen Map", "ECHO report"),
+  graycolnames = NULL,
+  narrowcolnames = NULL,
   graycolor = "gray",
   narrow6 = 6,
+  testing = FALSE,
+  launchexcel = FALSE,
+  saveas = NULL,
   ...
 )
 }
 \arguments{
-\item{overall}{table to save in one tab, from EJAM analysis of indicators overall (one row)}
+\item{overall}{table to save in one tab, from ejamit()$overall, EJAM analysis of indicators overall (one row)}
 
-\item{eachsite}{table to save in another tab, from EJAM analysis site by site (one row per site)}
+\item{eachsite}{table to save in one tab, from ejamit()$overall, EJAM analysis site by site (one row per site)}
 
 \item{longnames}{vector of indicator names to display in Excel table}
 
-\item{plotfilename}{the full path including name of .png file to insert}
+\item{bybg}{Not implemented possibly - large table of details of each block group that is only needed to analyze distances by group.}
+
+\item{formatted}{optional table to save in one tab, from ejamit()$overall, EJAM analysis overall in different format}
 
 \item{summary_plot}{optional plot passed from EJAM shiny app to save in 'Plot' sheet of Excel table}
 
 \item{plotlatest}{optional logical. If TRUE, the most recently displayed plot will be inserted into a tab called plot2}
 
+\item{plotfilename}{the full path including name of .png file to insert}
+
 \item{analysis_title}{optional title passed from Shiny app to 'Notes' sheet}
 
 \item{buffer_desc}{optional description of buffer used in analysis, passed to 'Notes' sheet}
 
-\item{hyperlink_cols}{which to treat as URLs that should be hyperlinks}
+\item{radius_or_buffer_description}{optional text saying if distance is radius or polygon buffer, passed to 'Notes' sheet}
 
-\item{testing}{optional for testing only}
-
-\item{launchexcel}{Set to TRUE to have this function launch Excel immediately, showing the final workbook created here.}
-
-\item{saveas}{If not NULL, and a valid path with filename.xlsx is provided,
-the workbook will be saved locally at that path and name. Warning: it will overwrite an existing file.}
+\item{notes}{Text of additional notes to put in the notes tab, optional vector of character elements pasted in as one line each.}
 
 \item{heatmap_colnames}{optional vector of colnames to apply heatmap colors}
 
@@ -64,13 +67,22 @@ the workbook will be saved locally at that path and name. Warning: it will overw
 heatmap_cuts, where first color is for those >= 1st cutpoint, but <2d,
 second color is for those >=2d cutpoint but <3d, etc.}
 
-\item{graycolnums}{which column numbers to deemphasize}
+\item{hyperlink_colnames}{names of which to treat as URLs that should be hyperlinks}
 
-\item{narrowcolnums}{which column numbers to make narrow}
+\item{graycolnames}{which columns to deemphasize}
+
+\item{narrowcolnames}{which column numbers to make narrow}
 
 \item{graycolor}{color used to deemphasize some columns}
 
 \item{narrow6}{how narrow}
+
+\item{testing}{optional for testing only}
+
+\item{launchexcel}{Set to TRUE to have this function launch Excel immediately, showing the final workbook created here.}
+
+\item{saveas}{If not NULL, and a valid path with filename.xlsx is provided,
+the workbook will be saved locally at that path and name. Warning: it will overwrite an existing file.}
 
 \item{...}{other params passed along to \code{\link[openxlsx:writeData]{openxlsx::writeData()}}}
 

@@ -2,7 +2,8 @@
 % Please edit documentation in R/app_run_EJAM.R
 \name{app_run_EJAM}
 \alias{app_run_EJAM}
-\title{Launch the Shiny Application in RStudio}
+\alias{run_app}
+\title{identical to run_app(), just an alias}
 \usage{
 app_run_EJAM(
   onStart = NULL,
@@ -12,34 +13,6 @@ app_run_EJAM(
   ...
 )
 }
-\arguments{
-\item{onStart}{A function that will be called before the app is actually run.
-This is only needed for \code{shinyAppObj}, since in the \code{shinyAppDir}
-case, a \code{global.R} file can be used for this purpose.}
-
-\item{options}{Named options that should be passed to the \code{runApp} call
-(these can be any of the following: "port", "launch.browser", "host", "quiet",
-"display.mode" and "test.mode"). You can also specify \code{width} and
-\code{height} parameters which provide a hint to the embedding environment
-about the ideal height/width for the app.}
-
-\item{enableBookmarking}{Can be one of \code{"url"}, \code{"server"}, or
-\code{"disable"}. The default value, \code{NULL}, will respect the setting from
-any previous calls to  \code{\link[shiny:enableBookmarking]{enableBookmarking()}}. See \code{\link[shiny:enableBookmarking]{enableBookmarking()}}
-for more information on bookmarking your app.}
-
-\item{uiPattern}{A regular expression that will be applied to each \code{GET}
-request to determine whether the \code{ui} should be used to handle the
-request. Note that the entire request path must match the regular
-expression in order for the match to be considered successful.}
-
-\item{...}{arguments to pass to golem_opts.
-See \code{?golem::get_golem_options} for more details.}
-}
 \description{
 launch Shiny web app from RStudio
-}
-\details{
-app_run_EJAM()                 is like \code{\link[=run_app]{run_app()}} from the EJAM package
-app_run_EJAMejscreenapi()      is like \code{\link[EJAMejscreenapi:run_app]{EJAMejscreenapi::run_app()}}
 }

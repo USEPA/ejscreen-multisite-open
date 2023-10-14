@@ -1,5 +1,6 @@
 #' input_names_listing
 #' Utility checking values of input$ that appear in this code
+#' See appsilon pkg shiny.info now
 #' @param file  path to source file to search in 
 #'
 #' @return character vector of ids of inputs like x,y,z if it found input$x input$y input$z
