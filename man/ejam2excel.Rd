@@ -10,7 +10,9 @@ ejam2excel(
   fname = NULL,
   save_now = TRUE,
   overwrite = TRUE,
+  launchexcel = FALSE,
   interactive_console = TRUE,
+  ok2plot = TRUE,
   in.testing = FALSE,
   in.analysis_title = "EJAM analysis",
   react.v1_summary_plot = NULL,
@@ -18,6 +20,7 @@ ejam2excel(
   buffer_desc = "Selected Locations",
   radius_or_buffer_description =
     "Miles radius of circular buffer (or distance used if buffering around polygons)",
+  hyperlink_colnames = c("EJScreen Report", "EJScreen Map", "ECHO report"),
   ...
 )
 }
@@ -26,12 +29,17 @@ ejam2excel(
 
 \item{fname}{optional name or full path and name of file to save locally, like "out.xlsx"}
 
-\item{save_now}{optional logical, whether to save as a .xlsx file locally or just return workbook object}
+\item{save_now}{optional logical, whether to save as a .xlsx file locally or just return workbook object
+that can later be written to .xlsx file using \code{\link[openxlsx:saveWorkbook]{openxlsx::saveWorkbook()}}}
 
-\item{overwrite}{optional logical, passed to openxlsx::saveWorkbook()}
+\item{overwrite}{optional logical, passed to \code{\link[openxlsx:saveWorkbook]{openxlsx::saveWorkbook()}}}
+
+\item{launchexcel}{optional logical, passed to \code{\link[=xls_formatting2]{xls_formatting2()}}, whether to launch browser to see spreadsheet immediately}
 
 \item{interactive_console}{optional - should set to FALSE when used in code or server. If TRUE,
 prompts RStudio user interactively asking where to save the downloaded file}
+
+\item{ok2plot}{optional logical, passed to  \code{\link[=xls_formatting2]{xls_formatting2()}}, whether safe to try and plot or set FALSE if debugging plot problems}
 
 \item{in.testing}{optional logical}
 
@@ -42,6 +50,8 @@ prompts RStudio user interactively asking where to save the downloaded file}
 \item{radius_or_buffer_in_miles}{optional radius in miles}
 
 \item{radius_or_buffer_description}{optional text phrase describing places analyzed}
+
+\item{hyperlink_colnames}{optional names of columns with URLs}
 
 \item{...}{optional additional parameters passed to \code{\link[=xls_formatting2]{xls_formatting2()}}, such as
 heatmap_colnames, heatmap_cuts, heatmap_colors, etc.}

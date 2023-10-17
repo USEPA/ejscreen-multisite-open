@@ -26,19 +26,19 @@ A data.frame that has at least columns lon and lat (and others if they were in x
 Try to figure out if user provided latitude / longitude as vectors, data.frame, file, or interactively pick file.
 }
 \details{
-This function, \code{\link[=latlon_from_anything]{latlon_from_anything()}}
+This function
 
 relies on
 
-\code{\link[EJAMejscreenapi:read_csv_or_xl]{EJAMejscreenapi::read_csv_or_xl()}} and
+read_csv_or_xl()  and
 
 \code{\link[=latlon_df_clean]{latlon_df_clean()}} which in turn uses \code{\link[=latlon_infer]{latlon_infer()}} \code{\link[=latlon_as.numeric]{latlon_as.numeric()}} \code{\link[=latlon_is.valid]{latlon_is.valid()}}
 
-\code{\link[EJAMejscreenapi:read_and_clean_points]{EJAMejscreenapi::read_and_clean_points()}}
+read_and_clean_points() from EJAMejscreenapi
 
 would be the most general / flexible broadest way to get points, but is still work in progress
 
-is similar to what is done by \code{\link[=latlon_from_anything]{latlon_from_anything()}}
+is similar to what is done by latlon_from_anything()
 
 except it also uses these functions:
 
@@ -51,14 +51,10 @@ except it also uses these functions:
  if (interactive()) {
  pts <- latlon_from_anything()
  }
- latlon_from_anything(system.file("testdata/testpoints_12.xlsx", 
-   package="EJAMejscreenapi"))
- latlon_from_anything(system.file("testdata/testpoints_05.csv", 
-   package="EJAMejscreenapi"))
  latlon_from_anything(testpoints_100[1:6,] )
  latlon_from_anything(testpoints_100[1:6, c('lat','lon')] )
  latlon_from_anything(x=testpoints_100$lon[1:6], y=testpoints_100$lat[1:6] )
 }
 \seealso{
-\code{\link[EJAMejscreenapi:read_csv_or_xl]{EJAMejscreenapi::read_csv_or_xl()}} \code{\link[=latlon_df_clean]{latlon_df_clean()}}
+read_csv_or_xl() latlon_df_clean()
 }

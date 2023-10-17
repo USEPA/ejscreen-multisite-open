@@ -153,6 +153,7 @@ default_calculate_ratios <- TRUE   # probably need to calculate even if not show
 default_include_averages <- TRUE
 default_include_extraindicators <- TRUE
 
+default_ok2plot <- FALSE # the plots to put in excel tabs via ejam2excel() and xls_formatting2() and the plot functions
 
 ################################################################### # 
 # other defaults ####

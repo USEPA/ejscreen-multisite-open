@@ -3,7 +3,7 @@
 \name{varname2color_ejam}
 \alias{varname2color_ejam}
 \title{helper function - for color coding excel sheet columns
-Wrapper for varname2vartype_ejam() and vartype2color_ejam() to simplify use case}
+Convert R variable name of indicator to appropriate color for header row in Excel}
 \usage{
 varname2color_ejam(varname, varnameinfo)
 }
@@ -15,8 +15,8 @@ vector of colors
 }
 \description{
 helper function - for color coding excel sheet columns
-Wrapper for varname2vartype_ejam() and vartype2color_ejam() to simplify use case
+Convert R variable name of indicator to appropriate color for header row in Excel
 }
 \seealso{
-varname2vartype_ejam() vartype2color_ejam()
+\code{\link[=varname2vartype_ejam]{varname2vartype_ejam()}} \code{\link[=varname2varcategory_ejam]{varname2varcategory_ejam()}} \code{\link[=vartype_cat2color_ejam]{vartype_cat2color_ejam()}}
 }

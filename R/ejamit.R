@@ -321,7 +321,7 @@ ejamit <- function(sitepoints,
         "     mapfast(out$results_bysite, radius = out$results_overall$radius.miles, column_names = 'ej')", 
         "\n\n")
     
-    cat("To save as excel files, see ?xls_formatting2\n\n")
+    cat("To view or save as excel files, see ?ejam2excel e.g., ejam2excel(out, fname = 'out.xlsx')  \n\n")
   }
   ################################################################ # 
   

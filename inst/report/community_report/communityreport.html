@@ -1,957 +1,35 @@
 <!DOCTYPE html>
- 
-  <html lang="en-US" title="EJScreen Community Report" class="dj_webkit dj_chrome dj_contentbox">
-  
-  <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+<!-- TITLE AS SHOWN IN HOVER OVER PRINT BUTTON  -->
+<html lang="en-US" title="EJAM / EJScreen Community Report" class="dj_webkit dj_chrome dj_contentbox">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@500;600" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;700&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&amp;display=swap" rel="stylesheet">
+
+  <link rel="stylesheet"  type="text/css" media="all" href="communityreport.css" />  
+  <link rel="stylesheet"  type="text/css" media="all" href="main.css"            />                 
+
+  <!-- print-button NOT ENABLED YET
+  <div id="print-button-background" role="button";
+     style="position: fixed; right: 20px; top: 20px; margin-bottom: -50px; z-index: 1000; width: 70px; height: 70px; border-radius: 70px; background-color: #e4e4e4; filter: drop-shadow(5px 6px 4px #aaaaaa);">
+     <img id="print-button" alt="Printer icon" src="print-button.png" style="position: fixed; right: 8px; top: 10px;" onclick="window.print();">
+  </div>  END of print-button --> 
+
+  <div id = "print-content-frame">
+    <div class = "print-page">
+
+<!--  ------------------------------------------------------------------------------------------------------ -->           
+<!--  Title/Header/Logo Area:  "EJScreen Community Report"   -->
+<!--  ------------------------------------------------------------------------------------------------------ -->           
     
-    <title>`substitute(Filename('', 'Page Title'), '^.', '\u&', '')`</title>
-    
-    <!-- fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@500;600" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;700&amp;display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&amp;display=swap" rel="stylesheet">
-
-    <!-- make responsive -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-  <style>
-        root {
-            --epa-blue-base: #005ea2;
-            --epa-blue-light-1: #aacdec;
-            --epa-blue-light: #4f97d1;
-            --epa-green-base: #5e9f69;
-            --epa-green-light: #86b69e;
-            --epa-secondary-light: #f2938c;
-            --epa-accent-warm-base: #fa9441;
-            --design-blue-base: #0e98d7;
-            --design-green-base: #71bf44;
-            --design-gauge-background: #6c6d70;
-            --design-color-alt-table-header: #71bf44;
-            --design-color-alt-table-secondary-header: #b1db98;
-            --design-color-alt-table-alt-row: #dfeed4;
-            --design-lingiso-background: #d8eeff;
-            --design-age-section-header: #253f8e;
-            --design-data-yellow: #fff101;
-            --design-data-orange: #faba59;
-        }
-
-        #print-content-frame {
-            width: 1092px;
-            margin: 0 8px 0 -8px;
-            font-style: sans-serif;
-            font-family: Arial, sans-serif;
-            font-size: 14px;
-            font-style: normal;
-            font-variant: normal;
-            font-weight: 400;
-            line-height: 23px;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
-        }
-
-        #button {
-            background-color: #4caf50;
-            border-radius: 5px;
-            margin-left: 650px;
-            margin-bottom: 5px;
-            color: white;
-        }
-
-        #header-secondary-background { 
-            background-color: #71bf44;
-            width: 1090px;
-            height: 1042px;
-            display: inline-block;
-            position: absolute;
-            top: -800px;
-            left: 0px;
-            border-radius: 0 0 5% 0;
-        }
-
-        #header-primary-background { 
-            background-color: #0e98d7;
-            width: 1079px;
-            height: 1031px;
-            display: inline-block;
-            border-radius: 0 0 5% 0;
-            position: absolute;
-            top: -810px;
-            left: 0px;
-        }
-
-        #header-background-detail { 
-            display: inline-block;
-            width: 35px;
-            height: 30px;
-            position: absolute;
-            left: 1079px;
-            top: 0;
-            background-color: white;
-        }
-
-        .linear-bar-chart .apexcharts-legend {
-            background-color: #cfcfcf;
-        }
-
-        /* ----------------- alt color table styling begin -------------------- */
-        /* whole table */
-        .color-alt-table { 
-            border-collapse: collapse;
-            font-family: Oswald, Arial, sans-serif;
-            width: 90%;
-            margin: 30px auto;
-        }
-
-        .color-alt-table-title { 
-            font-size: 25px;
-            font-family: Oswald, Arial, sans-serif;
-            text-align: center;
-            text-transform: uppercase;
-            background-color: #71bf44;
-        }
-
-        .color-alt-table-title th {
-            padding: 10px 0; 
-        }
-
-         /* every data cell */
-        .color-alt-table td {
-            font-size: 16px;
-            font-weight: normal;
-        }
-
-        /* all cells */
-        .color-alt-table th,
-        .color-alt-table td {
-            border: 2px solid black;
-        }
-
-        /* header cells */
-        .color-alt-table-header th {
-            font-family: Oswald, Arial, sans-serif;
-            background-color: #71bf44;
-            border: 2px solid black;
-            text-transform: uppercase;
-            font-weight: bolder;
-            font-size: 17px;
-            line-height: 19px;
-            padding: 5px 5px 5px 10px;
-        }
-        .color-alt-table-header th:first-of-type {
-            text-align: left;
-        }
-
-        /* subheader cells */
-        .color-alt-table-subheader th {
-            font-family: Oswald, Arial, sans-serif;
-            background-color: #91cd6eaa;
-            border: 2px solid black;
-            text-transform: uppercase;
-            font-weight: bolder;
-            font-size: 14px;
-            padding-left: 10px;
-        }
-        .color-alt-table-subheader th:first-of-type {
-            text-align: left;
-        }
-        
-        /* even data rows */
-        .color-alt-table tr:nth-child(2n) {
-            background-color: #dfeed4;
-        }
-
-        /* odd data rows */
-        .color-alt-table td:nth-child(2n + 1) {
-            text-align: left;
-        }
-
-        /* first column only */
-        .color-alt-table tr td:first-of-type { 
-            text-align: left;
-            padding-left: 10px;
-        }
-
-        /* all columns but the first */
-        .color-alt-table tr td:not(:first-of-type) { 
-            text-align: center;
-        }
-        /* ---------- alt color table styling end ------------ */
-
-        #lingiso-table td,
-        #lingiso-table tr {
-            border: 1px solid black;
-            padding: 0;
-            margin: 0;
-        }
-
-        h1 {
-            font-family: Arial, sans-serif;
-            font-size: 60px;
-            font-style: normal;
-            font-variant: normal;
-            font-weight: 900;
-            line-height: 23px;
-        }
-
-        h2 {
-            font-family: Arial, sans-serif;
-            font-size: 25px;
-            font-style: normal;
-            font-variant: normal;
-            font-weight: 700;
-            line-height: 23px;
-        }
-
-        h3 {
-            font-family: Arial, sans-serif;
-            font-size: 17px;
-            font-style: normal;
-            font-variant: normal;
-            font-weight: 700;
-            line-height: 23px;
-        }
-
-        h4 {
-            font-family: Arial, sans-serif;
-            font-size: 13.5px;
-            font-style: normal;
-            font-variant: normal;
-            font-weight: 700;
-            line-height: 23px;
-        }
-
-        p {
-            font-family: Arial, sans-serif;
-            font-style: normal;
-            font-variant: normal;
-            font-weight: 400;
-            line-height: 23px;
-        }
-
-        blockquote {
-            font-family: Arial, sans-serif;
-            font-size: 17px;
-            font-style: normal;
-            font-variant: normal;
-            font-weight: 400;
-            line-height: 23px;
-        }
-
-        pre {
-            font-family: Arial, sans-serif;
-            font-size: 11px;
-            font-style: normal;
-            font-variant: normal;
-            font-weight: 400;
-            line-height: 23px;
-        }
-
-        /* table with leader lines (.....)  CSS */
-        .entry {
-            font-family: Oswald, Arial, sans-serif;
-            display: grid;
-            grid-template-columns: auto max-content;
-            grid-template-areas: "chapter page";
-            align-items: end;
-            gap: 0 .25rem;
-        }
-
-        .chapter {
-            font-family: Oswald, Arial, sans-serif;
-            grid-area: chapter;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .fine-print {
-            font-family: 'Noto Sans', Arial, sans-serif;
-            text-align: left;
-            font-size: 0.70em;
-            line-height: 0.9em;
-        }
-
-
-        @media not print { 
-            #page-4-header { 
-                margin-top: -27px;
-            }
-        }
-
-        @media print {
-            @page {
-                width: 8.5in;
-                height: 11in;
-        }
-
-            /* .print-page { 
-                border: 1px solid red;
-            } */
-
-            #footer4 {  
-                display: block;
-                position: relative;
-                top: 540px;
-            }
-
-            .header { 
-                page-break-before: always;
-                position: relative;
-                top: 1px;
-            }
-
-            #header-secondary-background { 
-                background-color: #71bf44;
-                width: 1071px;
-                height: 1042px;
-                display: inline-block;
-                position: absolute;
-                top: -800px;
-                left: 0px;
-                border-radius: 0 0 5% 0;
-            }
-
-            #header-primary-background { 
-                background-color: #0e98d7;
-                width: 1060px;
-                height: 1031px;
-                display: inline-block;
-                border-radius: 0 0 5% 0;
-                position: absolute;
-                top: -810px;
-                left: 0px;
-            }
-            #header-background-detail { 
-                display: inline-block;
-                width: 16px;
-                height: 30px;
-                position: absolute;
-                left: 1055px;
-                top: 0;
-                background-color: white;
-            }
-
-            hr {
-                display: none;
-            }
-
-            #print-button,
-            #print-button-background,
-            #download-button,
-            #download-button-background {
-                display: none;
-            }
-
-            #page-3-header {
-                margin-top: -30px;
-            }
-
-            #page-4-header {
-                margin-top: -30px;
-            }
-        }
-    </style>
-  <link rel="stylesheet" href="https://js.arcgis.com/4.11/esri/css/main.css">
-  <style id="apexcharts-css">@keyframes opaque {
-  0% {
-      opacity: 0
-  }
-
-  to {
-      opacity: 1
-  }
-}
-
-@keyframes resizeanim {
-  0%,to {
-      opacity: 0
-  }
-}
-
-.apexcharts-canvas {
-  position: relative;
-  user-select: none
-}
-
-.apexcharts-canvas ::-webkit-scrollbar {
-  -webkit-appearance: none;
-  width: 6px
-}
-
-.apexcharts-canvas ::-webkit-scrollbar-thumb {
-  border-radius: 4px;
-  background-color: rgba(0,0,0,.5);
-  box-shadow: 0 0 1px rgba(255,255,255,.5);
-  -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5)
-}
-
-.apexcharts-inner {
-  position: relative
-}
-
-.apexcharts-text tspan {
-  font-family: inherit
-}
-
-.legend-mouseover-inactive {
-  transition: .15s ease all;
-  opacity: .2
-}
-
-.apexcharts-legend-text {
-  padding-left: 15px;
-  margin-left: -15px;
-}
-
-.apexcharts-series-collapsed {
-  opacity: 0
-}
-
-.apexcharts-tooltip {
-  border-radius: 5px;
-  box-shadow: 2px 2px 6px -4px #999;
-  cursor: default;
-  font-size: 14px;
-  left: 62px;
-  opacity: 0;
-  pointer-events: none;
-  position: absolute;
-  top: 20px;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  white-space: nowrap;
-  z-index: 12;
-  transition: .15s ease all
-}
-
-.apexcharts-tooltip.apexcharts-active {
-  opacity: 1;
-  transition: .15s ease all
-}
-
-.apexcharts-tooltip.apexcharts-theme-light {
-  border: 1px solid #e3e3e3;
-  background: rgba(255,255,255,.96)
-}
-
-.apexcharts-tooltip.apexcharts-theme-dark {
-  color: #fff;
-  background: rgba(30,30,30,.8)
-}
-
-.apexcharts-tooltip * {
-  font-family: inherit
-}
-
-.apexcharts-tooltip-title {
-  padding: 6px;
-  font-size: 15px;
-  margin-bottom: 4px
-}
-
-.apexcharts-tooltip.apexcharts-theme-light .apexcharts-tooltip-title {
-  background: #eceff1;
-  border-bottom: 1px solid #ddd
-}
-
-.apexcharts-tooltip.apexcharts-theme-dark .apexcharts-tooltip-title {
-  background: rgba(0,0,0,.7);
-  border-bottom: 1px solid #333
-}
-
-.apexcharts-tooltip-text-goals-value,.apexcharts-tooltip-text-y-value,.apexcharts-tooltip-text-z-value {
-  display: inline-block;
-  margin-left: 5px;
-  font-weight: 600
-}
-
-.apexcharts-tooltip-text-goals-label:empty,.apexcharts-tooltip-text-goals-value:empty,.apexcharts-tooltip-text-y-label:empty,.apexcharts-tooltip-text-y-value:empty,.apexcharts-tooltip-text-z-value:empty,.apexcharts-tooltip-title:empty {
-  display: none
-}
-
-.apexcharts-tooltip-text-goals-label,.apexcharts-tooltip-text-goals-value {
-  padding: 6px 0 5px
-}
-
-.apexcharts-tooltip-goals-group,.apexcharts-tooltip-text-goals-label,.apexcharts-tooltip-text-goals-value {
-  display: flex
-}
-
-.apexcharts-tooltip-text-goals-label:not(:empty),.apexcharts-tooltip-text-goals-value:not(:empty) {
-  margin-top: -6px
-}
-
-.apexcharts-tooltip-marker {
-  width: 12px;
-  height: 12px;
-  position: relative;
-  top: 0;
-  margin-right: 10px;
-  border-radius: 50%
-}
-
-.apexcharts-tooltip-series-group {
-  padding: 0 10px;
-  display: none;
-  text-align: left;
-  justify-content: left;
-  align-items: center
-}
-
-.apexcharts-tooltip-series-group.apexcharts-active .apexcharts-tooltip-marker {
-  opacity: 1
-}
-
-.apexcharts-tooltip-series-group.apexcharts-active,.apexcharts-tooltip-series-group:last-child {
-  padding-bottom: 4px
-}
-
-.apexcharts-tooltip-series-group-hidden {
-  opacity: 0;
-  height: 0;
-  line-height: 0;
-  padding: 0!important
-}
-
-.apexcharts-tooltip-y-group {
-  padding: 6px 0 5px
-}
-
-.apexcharts-custom-tooltip,.apexcharts-tooltip-box {
-  padding: 4px 8px
-}
-
-.apexcharts-tooltip-boxPlot {
-  display: flex;
-  flex-direction: column-reverse
-}
-
-.apexcharts-tooltip-box>div {
-  margin: 4px 0
-}
-
-.apexcharts-tooltip-box span.value {
-  font-weight: 700
-}
-
-.apexcharts-tooltip-rangebar {
-  padding: 5px 8px
-}
-
-.apexcharts-tooltip-rangebar .category {
-  font-weight: 600;
-  color: #777
-}
-
-.apexcharts-tooltip-rangebar .series-name {
-  font-weight: 700;
-  display: block;
-  margin-bottom: 5px
-}
-
-.apexcharts-xaxistooltip,.apexcharts-yaxistooltip {
-  opacity: 0;
-  pointer-events: none;
-  color: #373d3f;
-  font-size: 13px;
-  text-align: center;
-  border-radius: 2px;
-  position: absolute;
-  z-index: 10;
-  background: #eceff1;
-  border: 1px solid #90a4ae
-}
-
-.apexcharts-xaxistooltip {
-  padding: 9px 10px;
-  transition: .15s ease all
-}
-
-.apexcharts-xaxistooltip.apexcharts-theme-dark {
-  background: rgba(0,0,0,.7);
-  border: 1px solid rgba(0,0,0,.5);
-  color: #fff
-}
-
-.apexcharts-xaxistooltip:after,.apexcharts-xaxistooltip:before {
-  left: 50%;
-  border: solid transparent;
-  content: " ";
-  height: 0;
-  width: 0;
-  position: absolute;
-  pointer-events: none
-}
-
-.apexcharts-xaxistooltip:after {
-  border-color: transparent;
-  border-width: 6px;
-  margin-left: -6px
-}
-
-.apexcharts-xaxistooltip:before {
-  border-color: transparent;
-  border-width: 7px;
-  margin-left: -7px
-}
-
-.apexcharts-xaxistooltip-bottom:after,.apexcharts-xaxistooltip-bottom:before {
-  bottom: 100%
-}
-
-.apexcharts-xaxistooltip-top:after,.apexcharts-xaxistooltip-top:before {
-  top: 100%
-}
-
-.apexcharts-xaxistooltip-bottom:after {
-  border-bottom-color: #eceff1
-}
-
-.apexcharts-xaxistooltip-bottom:before {
-  border-bottom-color: #90a4ae
-}
-
-.apexcharts-xaxistooltip-bottom.apexcharts-theme-dark:after,.apexcharts-xaxistooltip-bottom.apexcharts-theme-dark:before {
-  border-bottom-color: rgba(0,0,0,.5)
-}
-
-.apexcharts-xaxistooltip-top:after {
-  border-top-color: #eceff1
-}
-
-.apexcharts-xaxistooltip-top:before {
-  border-top-color: #90a4ae
-}
-
-.apexcharts-xaxistooltip-top.apexcharts-theme-dark:after,.apexcharts-xaxistooltip-top.apexcharts-theme-dark:before {
-  border-top-color: rgba(0,0,0,.5)
-}
-
-.apexcharts-xaxistooltip.apexcharts-active {
-  opacity: 1;
-  transition: .15s ease all
-}
-
-.apexcharts-yaxistooltip {
-  padding: 4px 10px
-}
-
-.apexcharts-yaxistooltip.apexcharts-theme-dark {
-  background: rgba(0,0,0,.7);
-  border: 1px solid rgba(0,0,0,.5);
-  color: #fff
-}
-
-.apexcharts-yaxistooltip:after,.apexcharts-yaxistooltip:before {
-  top: 50%;
-  border: solid transparent;
-  content: " ";
-  height: 0;
-  width: 0;
-  position: absolute;
-  pointer-events: none
-}
-
-.apexcharts-yaxistooltip:after {
-  border-color: transparent;
-  border-width: 6px;
-  margin-top: -6px
-}
-
-.apexcharts-yaxistooltip:before {
-  border-color: transparent;
-  border-width: 7px;
-  margin-top: -7px
-}
-
-.apexcharts-yaxistooltip-left:after,.apexcharts-yaxistooltip-left:before {
-  left: 100%
-}
-
-.apexcharts-yaxistooltip-right:after,.apexcharts-yaxistooltip-right:before {
-  right: 100%
-}
-
-.apexcharts-yaxistooltip-left:after {
-  border-left-color: #eceff1
-}
-
-.apexcharts-yaxistooltip-left:before {
-  border-left-color: #90a4ae
-}
-
-.apexcharts-yaxistooltip-left.apexcharts-theme-dark:after,.apexcharts-yaxistooltip-left.apexcharts-theme-dark:before {
-  border-left-color: rgba(0,0,0,.5)
-}
-
-.apexcharts-yaxistooltip-right:after {
-  border-right-color: #eceff1
-}
-
-.apexcharts-yaxistooltip-right:before {
-  border-right-color: #90a4ae
-}
-
-.apexcharts-yaxistooltip-right.apexcharts-theme-dark:after,.apexcharts-yaxistooltip-right.apexcharts-theme-dark:before {
-  border-right-color: rgba(0,0,0,.5)
-}
-
-.apexcharts-yaxistooltip.apexcharts-active {
-  opacity: 1
-}
-
-.apexcharts-yaxistooltip-hidden {
-  display: none
-}
-
-.apexcharts-xcrosshairs,.apexcharts-ycrosshairs {
-  pointer-events: none;
-  opacity: 0;
-  transition: .15s ease all
-}
-
-.apexcharts-xcrosshairs.apexcharts-active,.apexcharts-ycrosshairs.apexcharts-active {
-  opacity: 1;
-  transition: .15s ease all
-}
-
-.apexcharts-ycrosshairs-hidden {
-  opacity: 0
-}
-
-.apexcharts-selection-rect {
-  cursor: move
-}
-
-.svg_select_boundingRect,.svg_select_points_rot {
-  pointer-events: none;
-  opacity: 0;
-  visibility: hidden
-}
-
-.apexcharts-selection-rect+g .svg_select_boundingRect,.apexcharts-selection-rect+g .svg_select_points_rot {
-  opacity: 0;
-  visibility: hidden
-}
-
-.apexcharts-selection-rect+g .svg_select_points_l,.apexcharts-selection-rect+g .svg_select_points_r {
-  cursor: ew-resize;
-  opacity: 1;
-  visibility: visible
-}
-
-.svg_select_points {
-  fill: #efefef;
-  stroke: #333;
-  rx: 2
-}
-
-.apexcharts-svg.apexcharts-zoomable.hovering-zoom {
-  cursor: crosshair
-}
-
-.apexcharts-svg.apexcharts-zoomable.hovering-pan {
-  cursor: move
-}
-
-.apexcharts-menu-icon,.apexcharts-pan-icon,.apexcharts-reset-icon,.apexcharts-selection-icon,.apexcharts-toolbar-custom-icon,.apexcharts-zoom-icon,.apexcharts-zoomin-icon,.apexcharts-zoomout-icon {
-  cursor: pointer;
-  width: 20px;
-  height: 20px;
-  line-height: 24px;
-  color: #6e8192;
-  text-align: center
-}
-
-.apexcharts-menu-icon svg,.apexcharts-reset-icon svg,.apexcharts-zoom-icon svg,.apexcharts-zoomin-icon svg,.apexcharts-zoomout-icon svg {
-  fill: #6e8192
-}
-
-.apexcharts-selection-icon svg {
-  fill: #444;
-  transform: scale(.76)
-}
-
-.apexcharts-theme-dark .apexcharts-menu-icon svg,.apexcharts-theme-dark .apexcharts-pan-icon svg,.apexcharts-theme-dark .apexcharts-reset-icon svg,.apexcharts-theme-dark .apexcharts-selection-icon svg,.apexcharts-theme-dark .apexcharts-toolbar-custom-icon svg,.apexcharts-theme-dark .apexcharts-zoom-icon svg,.apexcharts-theme-dark .apexcharts-zoomin-icon svg,.apexcharts-theme-dark .apexcharts-zoomout-icon svg {
-  fill: #f3f4f5
-}
-
-.apexcharts-canvas .apexcharts-reset-zoom-icon.apexcharts-selected svg,.apexcharts-canvas .apexcharts-selection-icon.apexcharts-selected svg,.apexcharts-canvas .apexcharts-zoom-icon.apexcharts-selected svg {
-  fill: #008ffb
-}
-
-.apexcharts-theme-light .apexcharts-menu-icon:hover svg,.apexcharts-theme-light .apexcharts-reset-icon:hover svg,.apexcharts-theme-light .apexcharts-selection-icon:not(.apexcharts-selected):hover svg,.apexcharts-theme-light .apexcharts-zoom-icon:not(.apexcharts-selected):hover svg,.apexcharts-theme-light .apexcharts-zoomin-icon:hover svg,.apexcharts-theme-light .apexcharts-zoomout-icon:hover svg {
-  fill: #333
-}
-
-.apexcharts-menu-icon,.apexcharts-selection-icon {
-  position: relative
-}
-
-.apexcharts-reset-icon {
-  margin-left: 5px
-}
-
-.apexcharts-menu-icon,.apexcharts-reset-icon,.apexcharts-zoom-icon {
-  transform: scale(.85)
-}
-
-.apexcharts-zoomin-icon,.apexcharts-zoomout-icon {
-  transform: scale(.7)
-}
-
-.apexcharts-zoomout-icon {
-  margin-right: 3px
-}
-
-.apexcharts-pan-icon {
-  transform: scale(.62);
-  position: relative;
-  left: 1px;
-  top: 0
-}
-
-.apexcharts-pan-icon svg {
-  fill: #fff;
-  stroke: #6e8192;
-  stroke-width: 2
-}
-
-.apexcharts-pan-icon.apexcharts-selected svg {
-  stroke: #008ffb
-}
-
-.apexcharts-pan-icon:not(.apexcharts-selected):hover svg {
-  stroke: #333
-}
-
-.apexcharts-toolbar {
-  position: absolute;
-  z-index: 11;
-  max-width: 176px;
-  text-align: right;
-  border-radius: 3px;
-  padding: 0 6px 2px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center
-}
-
-.apexcharts-menu {
-  background: #fff;
-  position: absolute;
-  top: 100%;
-  border: 1px solid #ddd;
-  border-radius: 3px;
-  padding: 3px;
-  right: 10px;
-  opacity: 0;
-  min-width: 110px;
-  transition: .15s ease all;
-  pointer-events: none
-}
-
-.apexcharts-menu.apexcharts-menu-open {
-  opacity: 1;
-  pointer-events: all;
-  transition: .15s ease all
-}
-
-.apexcharts-menu-item {
-  padding: 6px 7px;
-  font-size: 12px;
-  cursor: pointer
-}
-
-.apexcharts-theme-light .apexcharts-menu-item:hover {
-  background: #eee
-}
-
-.apexcharts-theme-dark .apexcharts-menu {
-  background: rgba(0,0,0,.7);
-  color: #fff
-}
-
-@media screen and (min-width:768px) {
-  .apexcharts-canvas:hover .apexcharts-toolbar {
-      opacity: 1
-  }
-}
-
-.apexcharts-canvas .apexcharts-element-hidden,.apexcharts-datalabel.apexcharts-element-hidden,.apexcharts-hide .apexcharts-series-points {
-  opacity: 0
-}
-
-.apexcharts-datalabel,.apexcharts-datalabel-label,.apexcharts-datalabel-value,.apexcharts-datalabels,.apexcharts-pie-label {
-  cursor: default;
-  pointer-events: none
-}
-
-.apexcharts-pie-label-delay {
-  opacity: 0;
-  animation-name: opaque;
-  animation-duration: .3s;
-  animation-fill-mode: forwards;
-  animation-timing-function: ease
-}
-
-.apexcharts-annotation-rect,.apexcharts-area-series .apexcharts-area,.apexcharts-area-series .apexcharts-series-markers .apexcharts-marker.no-pointer-events,.apexcharts-gridline,.apexcharts-line,.apexcharts-line-series .apexcharts-series-markers .apexcharts-marker.no-pointer-events,.apexcharts-point-annotation-label,.apexcharts-radar-series path,.apexcharts-radar-series polygon,.apexcharts-toolbar svg,.apexcharts-tooltip .apexcharts-marker,.apexcharts-xaxis-annotation-label,.apexcharts-yaxis-annotation-label,.apexcharts-zoom-rect {
-  pointer-events: none
-}
-
-.apexcharts-marker {
-  transition: .15s ease all
-}
-
-.resize-triggers {
-  animation: 1ms resizeanim;
-  visibility: hidden;
-  opacity: 0;
-  height: 100%;
-  width: 100%;
-  overflow: hidden
-}
-
-.contract-trigger:before,.resize-triggers,.resize-triggers>div {
-  content: " ";
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0
-}
-
-.resize-triggers>div {
-  height: 100%;
-  width: 100%;
-  background: #eee;
-  overflow: auto
-}
-
-.contract-trigger:before {
-  overflow: hidden;
-  width: 200%;
-  height: 200%
-}
-</style>
-
-</head>
-
-<body>
-  <div style="position: fixed; right: 20px; top: 20px; margin-bottom: -50px; z-index: 1000;
-                width: 70px; height: 70px; border-radius: 70px;
-                background-color: #e4e4e4; filter: drop-shadow(5px 6px 4px #aaaaaa);" id="print-button-background" role="button">
-        <img id="print-button" alt="Printer icon" src="images/ejreport/print-button.png" style="position: fixed; right: 8px; top: 10px;" onclick="window.print();">
-    </div>
-    
-    <div id="print-content-frame">
-<div class="print-page">
-        <!-- Title/Header Area -->
         <div id="header-secondary-background"></div>
         <div id="header-primary-background"></div>
         <div id="header-background-detail"></div>
-        <img src="images/ejreport/EPA_logo_white.png" alt="EPA logo" width="110" height="35" style="position: absolute; left: 850px; top: 15px">
-        <h1 id="title" tabindex="0" style="white-space: nowrap; color: white; position: absolute; left: 40px; top: 40px">
+        <img src="EPA_logo_white.png" alt="EPA logo" width="110" height="35" style="position: absolute; left: 850px; top: 55px">
+        <h1 id="title" tabindex="0" style="white-space: nowrap; color: white; position: absolute; left: 40px; top: 80px">
             EJScreen Community Report
         </h1>
         <p style="
@@ -959,7 +37,7 @@
             font-family: heebo, Arial, sans-serif;
             font-size: 20px;
             position: absolute;
-            top: 120px;
+            top: 160px;
             left: 140px;
             text-align: center;
                 white-space: nowrap;
@@ -968,55 +46,58 @@
             user-defined areas,<br>
             and combines that data into environmental justice and supplemental
             indexes.
-        </p>
-
-<table id="geo-info-bar" role="presentation" tabindex="1" aria-label="Geographic information section header" summary="Geographic information of selected area" style="
+        </p>     <!-- This report provides...  -->
+        
+    <table id="geo-info-bar" role="presentation" tabindex="1" 
+      aria-label="Geographic information section header" summary="Geographic information of selected area" 
+      style="
                 height: 115px;
                 background-color: #0e98d7;
-                margin-top: 272px;
+                margin-top: 292px;
                 width: 100%;
                 color: white;
                 font-weight: bold;
         ">
             <tbody><tr style="max-height: 115px">
+              
                 <th scope="row" style="width: 45%">
-                    <h2 id="placename" style="
-                font-size: 45px;
-                padding-left: 50px;
-                max-width: 100%;
-                line-height: 1.15em;
-                text-align: center;
-                max-height: 115px;
-                margin: 0;
-                ">EJAM Summary for all Locations</h2>
+                 <h2 id="placename" style="
+                 font-size: 45px;padding-left: 50px;max-width: 100%;line-height: 1.15em;text-align: center;max-height: 115px;margin: 0;
+                 ">EJAM Summary</h2>  <!-- instead of saying name of 1 site here, can just say something like  EJAM Summary    -->
                 </th>
+                
                 <td style="
-                font-family: heebo, Arial, sans-serif;
-                text-align: center;
-                font-size: 22px;
-                line-height: 29px;
-                text-align: center;">
-                    <span id="LOCATIONSTR">NA mile Rings Centered at Selected Points</span><br>
-                    Population: <span id="TOTALPOP">NA</span><br>
-                  <!--  Area in square miles: <span id="inputAreaMiles">NA</span>  -->
+                  font-family: heebo, Arial, sans-serif;text-align: center;font-size: 22px;line-height: 29px;text-align: center;">
+                  
+                  Population: <span id="TOTALPOP">{{TOTALPOP_ht}}</span><br>
+                  {{LOCATIONSTR_ht}}<br>
+                  
+                  <!--  Area in square miles: {{inputAreaMiles_ht}}  -->
                 </td>
             </tr>
         </tbody></table>
-        
-        
-  
-  <div id="page-3-header" class="header" style="
+
+<!--  ------------------------------------------------------------------------------------------------------ -->
+<!--  "Environmental and Socioeconomic Indicators Data" page -->
+<!--  ------------------------------------------------------------------------------------------------------ -->           
+
+<!--  PAGE HEADER --> 
+
+<div id="page-3-header" class="header" style="
             background-color: #0e98d7;
             color: white;
             height: 85px;
-                clear: both;
-                margin-top: 7px;">
+            clear: both;
+            margin-top: 7px;">
     <h2 tabindex="12" style="text-align: center; padding-top: 35px; font-size: 32px; padding-left: 20px;">
-      EJAM/EJScreen Environmental and Socioeconomic Indicators Data
+      Environmental and Socioeconomic Indicators Data
     </h2>
-      </div>
-      <table id="data-indicators-table" class="color-alt-table" summary="EJScreen environmental and socioeconomic indicators data">
-        <thead id="data-indicators-table-header" class="color-alt-table-header">
+  </div>
+
+<!-- ENVT/DEMOG TABLE - Column Headings -->           
+
+<table id="data-indicators-table"        class="color-alt-table"  summary="EJScreen environmental and socioeconomic indicators data">
+<thead id="data-indicators-table-header" class="color-alt-table-header">
           <tr>
           <th id="data-indicators-table-selected-variables" scope="col">SELECTED VARIABLES</th>
             <th id="data-indicators-table-value" scope="col">VALUE</th>
@@ -1024,209 +105,214 @@
                 <th id="data-indicators-table-percentile-in-state" scope="col">PERCENTILE<br> IN STATE</th>
                   <th id="data-indicators-table-usa average" scope="col">USA AVERAGE</th>
                     <th id="data-indicators-table-percentile-in-usa" scope="col">PERCENTILE<br> IN USA</th>
-                      </tr>
-                      </thead>
+          </tr>
+         </thead>
 
-<tbody><tr class="color-alt-table-subheader">
-<th colspan="7">
-                          Pollution and Sources
-                        </th>
-</tr>
+<!-- ENVT/DEMOG TABLE BODY --> 
+
+<tbody>
+<tr class="color-alt-table-subheader"><th colspan="7">
+  
+  Pollution and Sources
+  
+</th></tr>
 
 <tr>
  <td headers="data-indicators-table-selected-variables">Particulate Matter&nbsp;&nbsp;(μg/m<span class="table-superscript"><sup>3</sup></span>)</td>
- <td headers="data-indicators-table-value"><span id="RAW_E_PM25">NA</span></td>
- <td headers="data-indicators-table-state-average"><span id="S_E_PM25">NA</span></td>
- <td headers="data-indicators-table-percentile-in-state"><span id="S_E_PM25_PER">NA</span></td>
- <td headers="data-indicators-table-usa average"><span id="N_E_PM25">NA</span></td>
- <td headers="data-indicators-table-percentile-in-usa"><span id="N_E_PM25_PER">NA</span></td>
+ <td headers="data-indicators-table-value">              {{RAW_E_PM25_ht}}</td>
+ <td headers="data-indicators-table-state-average">      {{S_E_PM25_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-state">{{S_E_PM25_PER_ht}}</td>
+ <td headers="data-indicators-table-usa average">        {{N_E_PM25_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-usa">  {{N_E_PM25_PER_ht}}</td>
 </tr>
 <tr>
  <td headers="data-indicators-table-selected-variables">Ozone&nbsp;&nbsp;(ppb)</td>
- <td headers="data-indicators-table-value"><span id="RAW_E_O3">NA</span></td>
- <td headers="data-indicators-table-state-average"><span id="S_E_O3">NA</span></td>
- <td headers="data-indicators-table-percentile-in-state"><span id="S_E_O3_PER">NA</span></td>
- <td headers="data-indicators-table-usa average"><span id="N_E_O3">NA</span></td>
- <td headers="data-indicators-table-percentile-in-usa"><span id="N_E_O3_PER">NA</span></td>
+ <td headers="data-indicators-table-value">              {{RAW_E_O3_ht}}</td>
+ <td headers="data-indicators-table-state-average">      {{S_E_O3_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-state">{{S_E_O3_PER_ht}}</td>
+ <td headers="data-indicators-table-usa average">        {{N_E_O3_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-usa">  {{N_E_O3_PER_ht}}</td>
 </tr>
 <tr>
  <td headers="data-indicators-table-selected-variables">Diesel Particulate Matter&nbsp;&nbsp;(μg/m<span class="table-superscript"><sup>3</sup></span>)</td>
- <td headers="data-indicators-table-value"><span id="RAW_E_DIESEL">NA</span></td>
- <td headers="data-indicators-table-state-average"><span id="S_E_DIESEL">NA</span></td>
- <td headers="data-indicators-table-percentile-in-state"><span id="S_E_DIESEL_PER">NA</span></td>
- <td headers="data-indicators-table-usa average"><span id="N_E_DIESEL">NA</span></td>
- <td headers="data-indicators-table-percentile-in-usa"><span id="N_E_DIESEL_PER">NA</span></td>
+ <td headers="data-indicators-table-value">              {{RAW_E_DIESEL_ht}}</td>
+ <td headers="data-indicators-table-state-average">      {{S_E_DIESEL_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-state">{{S_E_DIESEL_PER_ht}}</td>
+ <td headers="data-indicators-table-usa average">        {{N_E_DIESEL_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-usa">  {{N_E_DIESEL_PER_ht}}</td>
 </tr>
 <tr>
  <td headers="data-indicators-table-selected-variables">Air Toxics Cancer Risk*&nbsp;&nbsp;(lifetime risk per million)</td>
- <td headers="data-indicators-table-value"><span id="RAW_E_CANCER">NA</span></td>
- <td headers="data-indicators-table-state-average"><span id="S_E_CANCER">NA</span></td>
- <td headers="data-indicators-table-percentile-in-state"><span id="S_E_CANCER_PER">NA</span></td>
- <td headers="data-indicators-table-usa average"><span id="N_E_CANCER">NA</span></td>
- <td headers="data-indicators-table-percentile-in-usa"><span id="N_E_CANCER_PER">NA</span></td>
+ <td headers="data-indicators-table-value">              {{RAW_E_CANCER_ht}}</td>
+ <td headers="data-indicators-table-state-average">      {{S_E_CANCER_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-state">{{S_E_CANCER_PER_ht}}</td>
+ <td headers="data-indicators-table-usa average">        {{N_E_CANCER_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-usa">  {{N_E_CANCER_PER_ht}}</td>
 </tr>
 <tr>
  <td headers="data-indicators-table-selected-variables">Air Toxics Respiratory HI*</td>
- <td headers="data-indicators-table-value"><span id="RAW_E_RESP">NA</span></td>
- <td headers="data-indicators-table-state-average"><span id="S_E_RESP">NA</span></td>
- <td headers="data-indicators-table-percentile-in-state"><span id="S_E_RESP_PER">NA</span></td>
- <td headers="data-indicators-table-usa average"><span id="N_E_RESP">NA</span></td>
- <td headers="data-indicators-table-percentile-in-usa"><span id="N_E_RESP_PER">NA</span></td>
+ <td headers="data-indicators-table-value">              {{RAW_E_RESP_ht}}</td>
+ <td headers="data-indicators-table-state-average">      {{S_E_RESP_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-state">{{S_E_RESP_PER_ht}}</td>
+ <td headers="data-indicators-table-usa average">        {{N_E_RESP_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-usa">  {{N_E_RESP_PER_ht}}</td>
 </tr>
 <tr>
  <td headers="data-indicators-table-selected-variables">Toxic Releases to Air</td>
- <td headers="data-indicators-table-value"><span id="RAW_E_RSEI_AIR">NA</span></td>
- <td headers="data-indicators-table-state-average"><span id="S_E_RSEI_AIR">NA</span></td>
- <td headers="data-indicators-table-percentile-in-state"><span id="S_E_RSEI_AIR_PER">NA</span></td>
- <td headers="data-indicators-table-usa average"><span id="N_E_RSEI_AIR">NA</span></td>
- <td headers="data-indicators-table-percentile-in-usa"><span id="N_E_RSEI_AIR_PER">NA</span></td>
+ <td headers="data-indicators-table-value">              {{RAW_E_RSEI_AIR_ht}}</td>
+ <td headers="data-indicators-table-state-average">      {{S_E_RSEI_AIR_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-state">{{S_E_RSEI_AIR_PER_ht}}</td>
+ <td headers="data-indicators-table-usa average">        {{N_E_RSEI_AIR_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-usa">  {{N_E_RSEI_AIR_PER_ht}}</td>
 </tr>
 <tr>
  <td headers="data-indicators-table-selected-variables">Traffic Proximity&nbsp;&nbsp;(daily traffic count/distance to road)</td>
- <td headers="data-indicators-table-value"><span id="RAW_E_TRAFFIC">NA</span></td>
- <td headers="data-indicators-table-state-average"><span id="S_E_TRAFFIC">NA</span></td>
- <td headers="data-indicators-table-percentile-in-state"><span id="S_E_TRAFFIC_PER">NA</span></td>
- <td headers="data-indicators-table-usa average"><span id="N_E_TRAFFIC">NA</span></td>
- <td headers="data-indicators-table-percentile-in-usa"><span id="N_E_TRAFFIC_PER">NA</span></td>
+ <td headers="data-indicators-table-value">              {{RAW_E_TRAFFIC_ht}}</td>
+ <td headers="data-indicators-table-state-average">      {{S_E_TRAFFIC_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-state">{{S_E_TRAFFIC_PER_ht}}</td>
+ <td headers="data-indicators-table-usa average">        {{N_E_TRAFFIC_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-usa">  {{N_E_TRAFFIC_PER_ht}}</td>
 </tr>
 <tr>
  <td headers="data-indicators-table-selected-variables">Lead Paint&nbsp;&nbsp;(% Pre-1960 Housing)</td>
- <td headers="data-indicators-table-value"><span id="RAW_E_LEAD">NA</span></td>
- <td headers="data-indicators-table-state-average"><span id="S_E_LEAD">NA</span></td>
- <td headers="data-indicators-table-percentile-in-state"><span id="S_E_LEAD_PER">NA</span></td>
- <td headers="data-indicators-table-usa average"><span id="N_E_LEAD">NA</span></td>
- <td headers="data-indicators-table-percentile-in-usa"><span id="N_E_LEAD_PER">NA</span></td>
+ <td headers="data-indicators-table-value">              {{RAW_E_LEAD_ht}}</td>
+ <td headers="data-indicators-table-state-average">      {{S_E_LEAD_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-state">{{S_E_LEAD_PER_ht}}</td>
+ <td headers="data-indicators-table-usa average">        {{N_E_LEAD_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-usa">  {{N_E_LEAD_PER_ht}}</td>
 </tr>
 <tr>
  <td headers="data-indicators-table-selected-variables">Superfund Proximity&nbsp;&nbsp;(site count/km distance)</td>
- <td headers="data-indicators-table-value"><span id="RAW_E_NPL">NA</span></td>
- <td headers="data-indicators-table-state-average"><span id="S_E_NPL">NA</span></td>
- <td headers="data-indicators-table-percentile-in-state"><span id="S_E_NPL_PER">NA</span></td>
- <td headers="data-indicators-table-usa average"><span id="N_E_NPL">NA</span></td>
- <td headers="data-indicators-table-percentile-in-usa"><span id="N_E_NPL_PER">NA</span></td>
+ <td headers="data-indicators-table-value">              {{RAW_E_NPL_ht}}</td>
+ <td headers="data-indicators-table-state-average">      {{S_E_NPL_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-state">{{S_E_NPL_PER_ht}}</td>
+ <td headers="data-indicators-table-usa average">        {{N_E_NPL_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-usa">  {{N_E_NPL_PER_ht}}</td>
 </tr>
 <tr>
  <td headers="data-indicators-table-selected-variables">RMP Facility Proximity&nbsp;&nbsp;(facility count/km distance)</td>
- <td headers="data-indicators-table-value"><span id="RAW_E_RMP">NA</span></td>
- <td headers="data-indicators-table-state-average"><span id="S_E_RMP">NA</span></td>
- <td headers="data-indicators-table-percentile-in-state"><span id="S_E_RMP_PER">NA</span></td>
- <td headers="data-indicators-table-usa average"><span id="N_E_RMP">NA</span></td>
- <td headers="data-indicators-table-percentile-in-usa"><span id="N_E_RMP_PER">NA</span></td>
+ <td headers="data-indicators-table-value">              {{RAW_E_RMP_ht}}</td>
+ <td headers="data-indicators-table-state-average">      {{S_E_RMP_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-state">{{S_E_RMP_PER_ht}}</td>
+ <td headers="data-indicators-table-usa average">        {{N_E_RMP_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-usa">  {{N_E_RMP_PER_ht}}</td>
 </tr>
 <tr>
  <td headers="data-indicators-table-selected-variables">Hazardous Waste Proximity&nbsp;&nbsp;(facility count/km distance)</td>
- <td headers="data-indicators-table-value"><span id="RAW_E_TSDF">NA</span></td>
- <td headers="data-indicators-table-state-average"><span id="S_E_TSDF">NA</span></td>
- <td headers="data-indicators-table-percentile-in-state"><span id="S_E_TSDF_PER">NA</span></td>
- <td headers="data-indicators-table-usa average"><span id="N_E_TSDF">NA</span></td>
- <td headers="data-indicators-table-percentile-in-usa"><span id="N_E_TSDF_PER">NA</span></td>
+ <td headers="data-indicators-table-value">              {{RAW_E_TSDF_ht}}</td>
+ <td headers="data-indicators-table-state-average">      {{S_E_TSDF_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-state">{{S_E_TSDF_PER_ht}}</td>
+ <td headers="data-indicators-table-usa average">        {{N_E_TSDF_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-usa">  {{N_E_TSDF_PER_ht}}</td>
 </tr>
 <tr>
  <td headers="data-indicators-table-selected-variables">Underground Storage Tanks&nbsp;&nbsp;(count/km<span class="table-superscript"><sup>3</sup></span>)</td>
- <td headers="data-indicators-table-value"><span id="RAW_E_UST">NA</span></td>
- <td headers="data-indicators-table-state-average"><span id="S_E_UST">NA</span></td>
- <td headers="data-indicators-table-percentile-in-state"><span id="S_E_UST_PER">NA</span></td>
- <td headers="data-indicators-table-usa average"><span id="N_E_UST">NA</span></td>
- <td headers="data-indicators-table-percentile-in-usa"><span id="N_E_UST_PER">NA</span></td>
+ <td headers="data-indicators-table-value">              {{RAW_E_UST_ht}}</td>
+ <td headers="data-indicators-table-state-average">      {{S_E_UST_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-state">{{S_E_UST_PER_ht}}</td>
+ <td headers="data-indicators-table-usa average">        {{N_E_UST_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-usa">  {{N_E_UST_PER_ht}}</td>
 </tr>
 <tr>
  <td headers="data-indicators-table-selected-variables">Wastewater Discharge&nbsp;&nbsp;(toxicity-weighted concentration/m distance)</td>
- <td headers="data-indicators-table-value"><span id="RAW_E_NPDES">NA</span></td>
- <td headers="data-indicators-table-state-average"><span id="S_E_NPDES">NA</span></td>
- <td headers="data-indicators-table-percentile-in-state"><span id="S_E_NPDES_PER">NA</span></td>
- <td headers="data-indicators-table-usa average"><span id="N_E_NPDES">NA</span></td>
- <td headers="data-indicators-table-percentile-in-usa"><span id="N_E_NPDES_PER">NA</span></td>
+ <td headers="data-indicators-table-value">              {{RAW_E_NPDES_ht}}</td>
+ <td headers="data-indicators-table-state-average">      {{S_E_NPDES_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-state">{{S_E_NPDES_PER_ht}}</td>
+ <td headers="data-indicators-table-usa average">        {{N_E_NPDES_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-usa">  {{N_E_NPDES_PER_ht}}</td>
  </tr>
- 
-  <tr class="color-alt-table-subheader">
-  <th colspan="7">
+
+
+<tr class="color-alt-table-subheader"><th colspan="7">
+  
   Socioeconomic Indicators
-</th>
-</tr>
+
+</th></tr>
 
 <tr>
  <td headers="data-indicators-table-selected-variables">Demographic Index</td>
- <td headers="data-indicators-table-value"><span id="RAW_D_DEMOGIDX2">NA</span></td>
- <td headers="data-indicators-table-state-average"><span id="S_D_DEMOGIDX2">NA</span></td>
- <td headers="data-indicators-table-percentile-in-state"><span id="S_D_DEMOGIDX2_PER">NA</span></td>
- <td headers="data-indicators-table-usa average"><span id="N_D_DEMOGIDX2">NA</span></td>
- <td headers="data-indicators-table-percentile-in-usa"><span id="N_D_DEMOGIDX2_PER">NA</span></td>
+ <td headers="data-indicators-table-value">              {{RAW_D_DEMOGIDX2_ht}}</td>
+ <td headers="data-indicators-table-state-average">      {{S_D_DEMOGIDX2_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-state">{{S_D_DEMOGIDX2_PER_ht}}</td>
+ <td headers="data-indicators-table-usa average">        {{N_D_DEMOGIDX2_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-usa">  {{N_D_DEMOGIDX2_PER_ht}}</td>
 </tr>
 <tr>
  <td headers="data-indicators-table-selected-variables">Supplemental Demographic Index</td>
- <td headers="data-indicators-table-value"><span id="RAW_D_DEMOGIDX5">NA</span></td>
- <td headers="data-indicators-table-state-average"><span id="S_D_DEMOGIDX5">NA</span></td>
- <td headers="data-indicators-table-percentile-in-state"><span id="S_D_DEMOGIDX5_PER">NA</span></td>
- <td headers="data-indicators-table-usa average"><span id="N_D_DEMOGIDX5">NA</span></td>
- <td headers="data-indicators-table-percentile-in-usa"><span id="N_D_DEMOGIDX5_PER">NA</span></td>
+ <td headers="data-indicators-table-value">              {{RAW_D_DEMOGIDX5_ht}}</td>
+ <td headers="data-indicators-table-state-average">      {{S_D_DEMOGIDX5_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-state">{{S_D_DEMOGIDX5_PER_ht}}</td>
+ <td headers="data-indicators-table-usa average">        {{N_D_DEMOGIDX5_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-usa">  {{N_D_DEMOGIDX5_PER_ht}}</td>
 </tr>
 <tr>
  <td headers="data-indicators-table-selected-variables">People of Color</td>
- <td headers="data-indicators-table-value"><span id="RAW_D_PEOPCOLOR">NA</span></td>
- <td headers="data-indicators-table-state-average"><span id="S_D_PEOPCOLOR">NA</span></td>
- <td headers="data-indicators-table-percentile-in-state"><span id="S_D_PEOPCOLOR_PER">NA</span></td>
- <td headers="data-indicators-table-usa average"><span id="N_D_PEOPCOLOR">NA</span></td>
- <td headers="data-indicators-table-percentile-in-usa"><span id="N_D_PEOPCOLOR_PER">NA</span></td>
+ <td headers="data-indicators-table-value">              {{RAW_D_PEOPCOLOR_ht}}</td>
+ <td headers="data-indicators-table-state-average">      {{S_D_PEOPCOLOR_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-state">{{S_D_PEOPCOLOR_PER_ht}}</td>
+ <td headers="data-indicators-table-usa average">        {{N_D_PEOPCOLOR_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-usa">  {{N_D_PEOPCOLOR_PER_ht}}</td>
 </tr>
 <tr>
  <td headers="data-indicators-table-selected-variables">Low Income</td>
- <td headers="data-indicators-table-value"><span id="RAW_D_INCOME">NA</span></td>
- <td headers="data-indicators-table-state-average"><span id="S_D_INCOME">NA</span></td>
- <td headers="data-indicators-table-percentile-in-state"><span id="S_D_INCOME_PER">NA</span></td>
- <td headers="data-indicators-table-usa average"><span id="N_D_INCOME">NA</span></td>
- <td headers="data-indicators-table-percentile-in-usa"><span id="N_D_INCOME_PER">NA</span></td>
+ <td headers="data-indicators-table-value">              {{RAW_D_INCOME_ht}}</td>
+ <td headers="data-indicators-table-state-average">      {{S_D_INCOME_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-state">{{S_D_INCOME_PER_ht}}</td>
+ <td headers="data-indicators-table-usa average">        {{N_D_INCOME_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-usa">  {{N_D_INCOME_PER_ht}}</td>
 </tr>
 <tr>
  <td headers="data-indicators-table-selected-variables">Unemployment Rate</td>
- <td headers="data-indicators-table-value"><span id="RAW_D_UNEMPLOYED">NA</span></td>
- <td headers="data-indicators-table-state-average"><span id="S_D_UNEMPLOYED">NA</span></td>
- <td headers="data-indicators-table-percentile-in-state"><span id="S_D_UNEMPLOYED_PER">NA</span></td>
- <td headers="data-indicators-table-usa average"><span id="N_D_UNEMPLOYED">NA</span></td>
- <td headers="data-indicators-table-percentile-in-usa"><span id="N_D_UNEMPLOYED_PER">NA</span></td>
+ <td headers="data-indicators-table-value">              {{RAW_D_UNEMPLOYED_ht}}</td>
+ <td headers="data-indicators-table-state-average">      {{S_D_UNEMPLOYED_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-state">{{S_D_UNEMPLOYED_PER_ht}}</td>
+ <td headers="data-indicators-table-usa average">        {{N_D_UNEMPLOYED_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-usa">  {{N_D_UNEMPLOYED_PER_ht}}</td>
 </tr>
 <tr>
  <td headers="data-indicators-table-selected-variables">Limited English Speaking Households</td>
- <td headers="data-indicators-table-value"><span id="RAW_D_LING">NA</span></td>
- <td headers="data-indicators-table-state-average"><span id="S_D_LING">NA%</span></td>
- <td headers="data-indicators-table-percentile-in-state"><span id="S_D_LING_PER">NA</span></td>
- <td headers="data-indicators-table-usa average"><span id="N_D_LING">NA%</span></td>
- <td headers="data-indicators-table-percentile-in-usa"><span id="N_D_LING_PER">NA</span></td>
+ <td headers="data-indicators-table-value">              {{RAW_D_LING_ht}}</td>
+ <td headers="data-indicators-table-state-average">      {{S_D_LING_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-state">{{S_D_LING_PER_ht}}</td>
+ <td headers="data-indicators-table-usa average">        {{N_D_LING_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-usa">  {{N_D_LING_PER_ht}}</td>
 </tr>
 <tr>
  <td headers="data-indicators-table-selected-variables">Less Than High School Education</td>
- <td headers="data-indicators-table-value"><span id="RAW_D_LESSHS">NA%</span></td>
- <td headers="data-indicators-table-state-average"><span id="S_D_LESSHS">NA%</span></td>
- <td headers="data-indicators-table-percentile-in-state"><span id="S_D_LESSHS_PER">NA</span></td>
- <td headers="data-indicators-table-usa average"><span id="N_D_LESSHS">NA%</span></td>
- <td headers="data-indicators-table-percentile-in-usa"><span id="N_D_LESSHS_PER">NA</span></td>
+ <td headers="data-indicators-table-value">              {{RAW_D_LESSHS_ht}}</td>
+ <td headers="data-indicators-table-state-average">      {{S_D_LESSHS_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-state">{{S_D_LESSHS_PER_ht}}</td>
+ <td headers="data-indicators-table-usa average">        {{N_D_LESSHS_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-usa">  {{N_D_LESSHS_PER_ht}}</td>
 </tr>
 <tr>
  <td headers="data-indicators-table-selected-variables">Under Age 5</td>
- <td headers="data-indicators-table-value"><span id="RAW_D_UNDER5">NA%</span></td>
- <td headers="data-indicators-table-state-average"><span id="S_D_UNDER5">NA%</span></td>
- <td headers="data-indicators-table-percentile-in-state"><span id="S_D_UNDER5_PER">NA</span></td>
- <td headers="data-indicators-table-usa average"><span id="N_D_UNDER5">NA%</span></td>
- <td headers="data-indicators-table-percentile-in-usa"><span id="N_D_UNDER5_PER">NA</span></td>
+ <td headers="data-indicators-table-value">              {{RAW_D_UNDER5_ht}}</td>
+ <td headers="data-indicators-table-state-average">      {{S_D_UNDER5_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-state">{{S_D_UNDER5_PER_ht}}</td>
+ <td headers="data-indicators-table-usa average">        {{N_D_UNDER5_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-usa">  {{N_D_UNDER5_PER_ht}}</td>
 </tr>
 <tr>
  <td headers="data-indicators-table-selected-variables">Over Age 64</td>
- <td headers="data-indicators-table-value"><span id="RAW_D_OVER64">NA%</span></td>
- <td headers="data-indicators-table-state-average"><span id="S_D_OVER64">NA%</span></td>
- <td headers="data-indicators-table-percentile-in-state"><span id="S_D_OVER64_PER">NA</span></td>
- <td headers="data-indicators-table-usa average"><span id="N_D_OVER64">NA%</span></td>
- <td headers="data-indicators-table-percentile-in-usa"><span id="N_D_OVER64_PER">NA</span></td>
+ <td headers="data-indicators-table-value">              {{RAW_D_OVER64_ht}}</td>
+ <td headers="data-indicators-table-state-average">      {{S_D_OVER64_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-state">{{S_D_OVER64_PER_ht}}</td>
+ <td headers="data-indicators-table-usa average">        {{N_D_OVER64_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-usa">  {{N_D_OVER64_PER_ht}}</td>
 </tr>
 <tr>
  <td headers="data-indicators-table-selected-variables">Low Life Expectancy</td>
- <td headers="data-indicators-table-value"><span id="RAW_D_LIFEEXP">NA%</span></td>
- <td headers="data-indicators-table-state-average"><span id="S_D_LIFEEXP">NA%</span></td>
- <td headers="data-indicators-table-percentile-in-state"><span id="S_D_LIFEEXP_PER">NA</span></td>
- <td headers="data-indicators-table-usa average"><span id="N_D_LIFEEXP">NA%</span></td>
- <td headers="data-indicators-table-percentile-in-usa"><span id="N_D_LIFEEXP_PER">NA</span></td>
+ <td headers="data-indicators-table-value">              {{RAW_D_LIFEEXP_ht}}</td>
+ <td headers="data-indicators-table-state-average">      {{S_D_LIFEEXP_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-state">{{S_D_LIFEEXP_PER_ht}}</td>
+ <td headers="data-indicators-table-usa average">        {{N_D_LIFEEXP_ht}}</td>
+ <td headers="data-indicators-table-percentile-in-usa">  {{N_D_LIFEEXP_PER_ht}}</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 
-  <p class="fine-print" style="margin: -24px 5% 5px 5%;">*Diesel particulate matter, air toxics cancer risk, and air toxics respiratory hazard
+<p class="fine-print" style="margin: -24px 5% 5px 5%;">*Diesel particulate matter, air toxics cancer risk, and air toxics respiratory hazard
   index are from the EPA's Air Toxics Data Update, which is the Agency's ongoing, comprehensive evaluation of air 
 toxics in the United States. This effort aims to prioritize air toxics, emission sources, and locations of 
 interest for further study. It is important to remember that the air toxics data presented here provide broad 
@@ -1235,144 +321,165 @@ locations. Cancer risks and hazard indices from the Air Toxics Data Update are r
 figure and any additional significant figures here are due to rounding. More information on the Air Toxics 
 Data Update can be found at: <a tabindex="13" href="https://www.epa.gov/haps/air-toxics-data-update">https://www.epa.gov/haps/air-toxics-data-update</a>.</p>
 
-<table style="margin: 30px auto; width: 90%" role="presentation" summary="Additional environmental and socioeconomic information">
-<tbody><tr>
 
-<td style="
-                border-right: 2px solid black;
-                vertical-align: top;
-                padding-right: 20px;
-                width: 55%;
-            ">
-<h3 tabindex="14" style="font-family: Oswald, Arial, sans-serif">Sites reporting to EPA within defined area:</h3>
-<div style="height: 4px; background-color: #b1db98; margin: -14px 0 10px 0"></div>
+<!--    END OF LARGE TABLE OF ENVT AND DEMOG INDICATORS AVERAGES AND PERCENTILES -------------------------------------  -->
 
-<table style="min-width: 92%; line-height: 18px" summary="Sites reporting to EPA within defined area" role="presentation">
+
+<!-- TRY INSERTING DEMOG PLOT   demog_plot _ht}} -->
+
+ 
+
+
+<!--  OTHER TABLES ON PAGE 3  ------------------------------------- --->
+
+<table summary="Additional environmental and socioeconomic information" style="margin: 30px auto; width: 90%" role="presentation">
 <tbody>
-  
-  <!-- Superfund -->
-  <tr class="entry">
-  <td class="chapter">Superfund<span role="presentation"> . . . . . . . . . . . . . . . . . . . . . . . . . .</span></td>
-  <td class="page" style="text-align: right"><span id="NUM_NPL">NA</span></td>
-  </tr>
+<tr>
 
-  <!-- TSDF -->
-  <tr class="entry">
-  <td class="chapter">
-  Hazardous Waste, Treatment, Storage, and Disposal Facilities<span role="presentation"> . . . . . .  . . . . . . . . . . . . . . . . .</span>
+  <!-- Sites reporting to EPA within defined area (Superfund sites, etc.) -->
+  <td style="border-right: 2px solid black; vertical-align: top; padding-right: 20px; width: 55%;">
+    <h3 tabindex="14" style="font-family: Oswald, Arial, sans-serif">Sites reporting to EPA within defined area:</h3>
+    <div style="height: 4px; background-color: #b1db98; margin: -14px 0 10px 0"></div>
+
+    <table style="min-width: 92%; line-height: 18px" summary="Sites reporting to EPA within defined area" role="presentation">
+    <tbody>
+      
+      <!-- Superfund -->
+      <tr class="entry">
+      <td class="chapter">Superfund<span role="presentation"> . . . . . . . . . . . . . . . . . . . . . . . . . .</span></td>
+      <td class="page" style="text-align: right">{{NUM_NPL_ht}}</td>
+      </tr>
+
+      <!-- TSDF -->
+      <tr class="entry">
+      <td class="chapter">Hazardous Waste, Treatment, Storage, and Disposal Facilities<span role="presentation"> . . . . . .  . . . . . . . . . . . . . . . . .</span></td>
+      <td class="page" style="text-align: right">{{NUM_TSDF_ht}}</td>
+      </tr>
+
+      <!-- Water Dischargers -->
+      <tr class="entry">
+      <td class="chapter">Water Dischargers<span role="presentation"> . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .</span></td>
+      <td class="page" style="text-align: right">{{NUM_WATERDIS_ht}}</td>
+      </tr>
+
+      <!-- Air pollution -->
+      <tr class="entry">
+      <td class="chapter">Air Pollution<span role="presentation" style="padding-left: 0.25ch"> . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .</span></td>
+      <td class="page" style="text-align: right">{{NUM_AIRPOLL_ht}}</td>
+      </tr>
+
+      <!-- Brownfields -->
+      <tr class="entry">
+      <td class="chapter">Brownfields<span role="presentation" style="padding-right: 0.25ch">  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .</span></td>
+      <td class="page" style="text-align: right">{{NUM_BROWNFIELD_ht}}</td>
+      </tr>
+
+      <!-- TRI -->
+      <tr class="entry">
+      <td class="chapter">Toxic Release Inventory<span role="presentation" style="padding-right: 0.25ch">  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .</span></td>
+      <td class="page" style="text-align: right">{{NUM_TRI_ht}}</td>
+      </tr>
+
+    </tbody>
+    </table>
+
   </td>
-  <td class="page" style="text-align: right"><span id="NUM_TSDF">NA</span></td>
-  </tr>
 
-  <!-- Water Dischargers -->
-  <tr class="entry">
-  <td class="chapter">Water Dischargers<span role="presentation"> . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .</span></td>
-  <td class="page" style="text-align: right"><span id="NUM_WATERDIS">NA</span></td>
-  </tr>
+  <!-- Other community features within defined area (schools etc.) --> 
+  <!-- Other environmental data (nontattainment, impaired waters) -->
+  <td style="vertical-align: top; padding-left: 20px;">
+    
+  <h3 tabindex="15" style="font-family: Oswald, Arial, sans-serif">Other community features within defined area:</h3>
+  <div style="height: 4px; background-color: #b1db98; margin: -14px 0 10px 0"></div>
+  
+  <table style="min-width: 92%; line-height: 18px" summary="Other community features within defined area" role="presentation">
+  <tbody>
+    
+    <tr class="entry">
+    <td class="chapter">Schools<span role="presentation" style="padding-left: 0.70ch;"> . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .</span></td>
+    <td class="page" style="text-align: right">{{NUM_SCHOOL_ht}}</td>
+    </tr>
 
-  <!-- Air pollution -->
-  <tr class="entry">
-  <td class="chapter">Air Pollution<span role="presentation" style="padding-left: 0.25ch"> . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .</span></td>
+    <tr class="entry">
+    <td class="chapter">Hospitals<span role="presentation" style="padding-left: 0.30ch;"> . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .</span></td>
+    <td class="page" style="text-align: right">{{NUM_HOSPITAL_ht}}</td>
+    </tr>
 
-<td class="page" style="text-align: right"><span id="NUM_AIRPOLL">NA</span></td>
-</tr>
+    <tr class="entry">
+    <td class="chapter">Places of Worship<span role="presentation"> . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .</span></td>
+    <td class="page" style="text-align: right">{{NUM_CHURCH_ht}}</td>
+    </tr>
 
-  <!-- Brownfields -->
-  <tr class="entry">
-  <td class="chapter">Brownfields<span role="presentation" style="padding-right: 0.25ch">  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .</span></td>
-  <td class="page" style="text-align: right"><span id="NUM_BROWNFIELD">NA</span></td>
-  </tr>
+  </tbody>
+  </table>
 
-  <!-- TRI -->
-  <tr class="entry">
-  <td class="chapter">Toxic Release Inventory<span role="presentation" style="padding-right: 0.25ch">  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .</span></td>
-  <td class="page" style="text-align: right"><span id="NUM_TRI">NA</span></td>
-  </tr>
+  <div style="background-color: black; height: 0.75px; width: 85%; margin: 20px 0;"></div>
+  <h3 tabindex="16" style="font-family: Oswald, Arial, sans-serif">Other environmental data:</h3>
+  <div style="height: 4px; background-color: #b1db98; margin: -14px 0 10px 0"></div>
+  
+  <table style="width: 92%; line-height: 18px" summary="Other environmental data" role="presentation">
+  <tbody>
+    
+    <tr class="entry">
+    <td class="chapter">Air Non-attainment<span role="presentation"> . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .</span></td>
+    <td class="page" style="text-align: right">{{YESNO_AIRNONATT_ht}}</td>
+    </tr>
+    
+    <tr class="entry">
+    <td class="chapter">Impaired Waters<span role="presentation" style="padding-left: 0.35ch"> . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .</span></td>
+    <td class="page" style="text-align: right">{{YESNO_IMPWATERS_ht}}</td>
+    </tr>
+    
+  </tbody>
+  </table>
+  
+  </td>
 
-</tbody></table>
-
-</td>
-
-<td style="vertical-align: top; padding-left: 20px;">
-
-<h3 tabindex="15" style="font-family: Oswald, Arial, sans-serif">Other community features within defined area:</h3>
-
-<div style="height: 4px; background-color: #b1db98; margin: -14px 0 10px 0"></div>
-
-<table style="min-width: 92%; line-height: 18px" summary="Other community features within defined area" role="presentation">
-
-<tbody>
-<tr class="entry">
-<td class="chapter">Schools<span role="presentation" style="padding-left: 0.70ch;"> . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .</span></td>
-<td class="page" style="text-align: right"><span id="NUM_SCHOOL">NA</span></td>
-</tr>
-
-<tr class="entry">
-<td class="chapter">Hospitals<span role="presentation" style="padding-left: 0.30ch;"> . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .</span></td>
-<td class="page" style="text-align: right"><span id="NUM_HOSPITAL">NA</span></td>
-</tr>
-
-<tr class="entry">
-<td class="chapter">Places of Worship<span role="presentation"> . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .</span></td>
-<td class="page" style="text-align: right"><span id="NUM_CHURCH">NA</span></td>
 </tr>
 </tbody>
 </table>
 
-<div style="background-color: black; height: 0.75px; width: 85%; margin: 20px 0;"></div>
+  <!-- Reservation Lands, CEJST, IRA community: -->
+  <section style="background-color: #dfeed4; border: 1.5px solid #71bf44; width: 600px; padding: 10px; margin-left: 55px">
 
-<h3 tabindex="16" style="font-family: Oswald, Arial, sans-serif">Other environmental data:</h3>
-<div style="height: 4px; background-color: #b1db98; margin: -14px 0 10px 0"></div>
+  <div class="entry">
+    <span class="chapter">Selected location contains American Indian Reservation Lands*<span role="presentation" style="padding-left: 0.2ch;">  </span></span>
+    {{YESNO_TRIBAL_ht}}  <!-- FIx *** -->  <!-- " class="page *** -->
+    
+  </div>
 
-<table style="width: 92%; line-height: 18px" summary="Other environmental data" role="presentation">
-<tbody>
-  <tr class="entry">
-<td class="chapter">Air Non-attainment<span role="presentation"> . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .</span></td>
-<td class="page" style="text-align: right"><span id="YESNO_AIRNONATT">NA</span></td>
-</tr>
+  <div class="entry">
+    <span class="chapter">Selected location contains a "Justice40 (CEJST)" disadvantaged community<span role="presentation" style="padding-left: 0.2ch;">  </span></span>
+    {{YESNO_CEJSTDIS_ht}}  <!-- FIx *** --> <!-- " class="page *** -->
+  </div>
 
-<tr class="entry">
-<td class="chapter">Impaired Waters<span role="presentation" style="padding-left: 0.35ch"> . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .</span></td>
-<td class="page" style="text-align: right"><span id="YESNO_IMPWATERS">NA</span></td>
-</tr>
-</tbody></table>
-</td>
-</tr>
-</tbody></table>
+  <div class="entry">
+    <span class="chapter">Selected location contains an EPA IRA disadvantaged community<span role="presentation">  </span></span>
+      <!--Note 6/22/23 temp disable IRA question, always NA until further notice. Remove ID so doesn't update span-->
+		  <!--Note 7/11/23 added back-->
+    {{YESNO_IRADIS_ht}}  <!-- FIx *** --> 	 <!-- " class="page *** -->
+  </div>
+  
+  </section>
 
-<!-- Reservation Lands, CEJST, IRA community: -->
-
-<section style="background-color: #dfeed4; border: 1.5px solid #71bf44; width: 600px; padding: 10px; margin-left: 55px">
-
-<div class="entry">
-<span class="chapter">Selected location contains American Indian Reservation Lands*<span role="presentation" style="padding-left: 0.2ch;">  </span></span>
-<span id="YESNO_TRIBAL" class="page">NA</span>
-</div>
-
-<div class="entry">
-<span class="chapter">Selected location contains a "Justice40 (CEJST)" disadvantaged community<span role="presentation" style="padding-left: 0.2ch;">  </span></span>
-<span id="YESNO_CEJSTDIS" class="page">NA</span>
-</div>
-
-<div class="entry">
-<span class="chapter">Selected location contains an EPA IRA disadvantaged community<span role="presentation">  </span></span>
-<!--Note 6/22/23 temp disable IRA question, always NA until further notice. Remove ID so doesn't update span-->
-				<!--Note 7/11/23 added back-->
-                <span id="YESNO_IRADIS" class="page">NA</span>
-				<!--<span id="" class="page">N/A</span>-->
-            </div>
-        </section>
-
-        <div style=" height: 100px;
+  <!-- Footer that said "Report for ... " on each page -->
+   <!-- <div style=" height: 100px;
         font-style: italic;
         font-size: .82em;
         line-height: 1.65em;
         padding: 0 10px;
         margin: 10px 0 10px 50px;
         ">
-            <span style="font-size: 14px">Report for <span id="LOCATIONSTR3">xyz mile Ring Centered at xyz,xyz</span></span> 
-            </div>
-        </div>
-</div>
-</body>
+   <span style="font-size: 14px">Report for <span id="LOCATIONSTR3">xyz mile Ring Centered at xyz,xyz</span></span> 
+            </div> -->
+
+<br>
+
+</div> <!-- END of class="print-page" ------------------------------------- -->
+</div> <!-- END OF print-content-frame  ------------------------------------- -->
+
+<!--
+</body> 
+ -->
+
 </html>

@@ -20,5 +20,5 @@ TRUE or FALSE
 helper function for checking possibly different versions of a function with same name in 2 packages
 }
 \seealso{
-\code{\link[=dupenames]{dupenames()}}
+\code{\link[=dupenames]{dupenames()}} \code{\link[=all.equal.function]{all.equal.function()}}
 }

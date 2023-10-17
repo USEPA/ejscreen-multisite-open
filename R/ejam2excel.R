@@ -8,6 +8,7 @@
 #' @param launchexcel optional logical, passed to [xls_formatting2()], whether to launch browser to see spreadsheet immediately
 #' @param interactive_console optional - should set to FALSE when used in code or server. If TRUE,
 #'   prompts RStudio user interactively asking where to save the downloaded file
+#' @param ok2plot optional logical, passed to  [xls_formatting2()], whether safe to try and plot or set FALSE if debugging plot problems
 #' @param in.testing optional logical
 #' @param radius_or_buffer_in_miles optional radius in miles
 #' @param in.analysis_title optional title as character string
@@ -27,7 +28,7 @@ ejam2excel <- function(ejamitout,
                        fname = NULL, # full path and name, or just name of .xlsx file 
                        save_now = TRUE, overwrite = TRUE, launchexcel = FALSE,
                        interactive_console = TRUE, 
-                       
+                       ok2plot = TRUE,
                        in.testing = FALSE,
                        in.analysis_title =  "EJAM analysis",
                        react.v1_summary_plot = NULL,
@@ -119,7 +120,7 @@ ejam2excel <- function(ejamitout,
     ## optional, shiny-specific arguments to go in 'Plot' and 'Notes' sheets
     summary_plot   = react.v1_summary_plot, # NULL is fine
     analysis_title = in.analysis_title,
-    
+    ok2plot = ok2plot,
     buffer_desc = buffer_desc,
     radius_or_buffer_in_miles    = radius_or_buffer_in_miles,
     radius_or_buffer_description = radius_or_buffer_description,
@@ -164,11 +165,3 @@ ejam2excel <- function(ejamitout,
     return(wb_out)
   }
 }
-
-
-
-
-
-
-
-

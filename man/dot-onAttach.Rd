@@ -16,3 +16,7 @@ Note this duplicates some code in global.R, and see source code here to adjust s
 Do slow initialization steps - Download data, load key data into RAM, create index to all US blocks
 Note this duplicates some code in global.R, and see source code here to adjust settings.
 }
+\details{
+Does this even happen if connect server runs app as a regular shiny app without loading all?
+In what order? see app.R too ***
+}

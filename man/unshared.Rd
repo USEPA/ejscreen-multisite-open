@@ -2,14 +2,14 @@
 % Please edit documentation in R/utils_dupenames.R
 \name{unshared}
 \alias{unshared}
-\title{setdiff2 or unshared
+\title{setdiff2 aka unshared
 utility just like setdiff except for y,x and also x,y
 Just shows which elements are in one and only one of the sets x and y}
 \usage{
 unshared(x, y)
 }
 \description{
-setdiff2 or unshared
+setdiff2 aka unshared
 utility just like setdiff except for y,x and also x,y
 Just shows which elements are in one and only one of the sets x and y
 }

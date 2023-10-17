@@ -12,7 +12,7 @@
 #' @param plotlatest optional logical. If TRUE, the most recently displayed plot (prior to this function being called) will be inserted into a tab called plot2
 #' @param plotfilename the full path including name of .png file to insert
 #' @param mapadd logical optional - try to include a map of the points 
-#' 
+#' @param ok2plot can set to FALSE to prevent plots from being attempted, while debugging
 #' @param analysis_title optional title passed from Shiny app to 'Notes' sheet
 #' @param buffer_desc optional description of buffer used in analysis, passed to 'Notes' sheet
 #' @param radius_miles If provided, miles buffer distance (from polygon or from point if circular buffers)
@@ -38,7 +38,6 @@
 #' 
 #' @import graphics
 #' @import openxlsx
-#' @import htmlwidgets saveWidget
 #' @import webshot webshot
 #' @return a workbook, ready to be saved in spreadsheet format, with tabs like "Overall" and "Each Site"
 #' @export
@@ -53,7 +52,7 @@ xls_formatting2 <- function(overall, eachsite, longnames=NULL, formatted=NULL, b
                             plotlatest = FALSE, 
                             plotfilename = NULL, 
                             mapadd = FALSE,
-                            
+                            ok2plot = TRUE,
                             analysis_title = "EJAM analysis",
                             buffer_desc = "Selected Locations", 
                             radius_or_buffer_in_miles = NULL,
@@ -70,6 +69,7 @@ xls_formatting2 <- function(overall, eachsite, longnames=NULL, formatted=NULL, b
                             testing=FALSE, launchexcel = FALSE, saveas = NULL,
                             
                             ...) {
+  
   if (is.null(heatmap2_colnames)) {
     heatmap2_colnames <- map_headernames$rname[grepl('ratio', map_headernames$varlist)] # from EJAMejscreenapi ::
   }
@@ -158,60 +158,65 @@ xls_formatting2 <- function(overall, eachsite, longnames=NULL, formatted=NULL, b
   ######################################################################## #
   
   ## write to PLOT sheets ####
-  
-  if (plotlatest) {
-    # inserts the last plot that was drawn before this function was called
-    openxlsx::addWorksheet(wb, sheetName = "plot2",  gridLines = FALSE)
-    openxlsx::insertPlot(wb, sheet = 'plot2', 
-                         fileType = 'png',
-                         width = 9, height = 7)
-  }
-  
-  if (missing(summary_plot)) {
-    
-    # None provided so try to create one anyway? 
-    # example: plot_barplot_ratios( unlist( testoutput_ejamit_1000pts_1miles$results_overall[ , c(..names_d_ratio_to_avg , ..names_d_subgroups_ratio_to_avg) ]))
-    cat('plotting ratios to avg by group\n')
-    summary_plot <- try( plot_barplot_ratios(unlist( overall[ , c(..names_d_ratio_to_avg , ..names_d_subgroups_ratio_to_avg) ])) )
-    if (inherits(summary_plot, "try-error")) {
-      warning('cannot create plot_barplot_ratios() output')
-    } else {
-      print(summary_plot)
-      openxlsx::addWorksheet(wb, sheetName = "plot_ratios",  gridLines = FALSE)
-      openxlsx::insertPlot(wb, "plot_ratios", width = 9, height = 7) # The current plot is saved to a temporary image file using dev.copy. This file is then written to the workbook using insertImage.
+  if (ok2plot)  {
+    if (plotlatest) {
+      # inserts the last plot that was drawn before this function was called
+      openxlsx::addWorksheet(wb, sheetName = "plot2",  gridLines = FALSE)
+      openxlsx::insertPlot(wb, sheet = 'plot2', 
+                           fileType = 'png',
+                           width = 9, height = 7)
     }
     
-  } else {
-    # add summary_plot ggplot object  to 'plot' sheet of Excel download 
-    cat('adding summary_plot that was provided\n')
-    mytempdir <- tempdir()
-    openxlsx::addWorksheet(wb, sheetName = "plot",  gridLines = FALSE)
-    ggplot2::ggsave(filename = paste0(mytempdir, '/', 'summary_plot.png'), plot = summary_plot,
-                    width = 9, height = 7, units = 'in')
-    openxlsx::insertImage(wb, sheet = 'plot', 
-                          file = paste0(mytempdir, '/', 'summary_plot.png'),
-                          width = 9, height = 7)
-  }
-  
-  if (!is.null(bybg) & plot_distance_by_group) {
-    cat('plotting mean distance by group\n')
-    fname  <- try(
-      suppressWarnings(
-        plot_distance_mean_by_group(bybg, returnwhat = "plotfilename", graph = TRUE)
+    if (is.null(summary_plot)) {
+      
+      # None provided so try to create one anyway? 
+      # example: plot_barplot_ratios( unlist( testoutput_ejamit_1000pts_1miles$results_overall[ , c(..names_d_ratio_to_avg , ..names_d_subgroups_ratio_to_avg) ]))
+      cat('plotting ratios to avg by group\n')
+      if (data.table::is.data.table(overall)) {
+        summary_plot <- try( plot_barplot_ratios(unlist( overall[ , c(..names_d_ratio_to_avg , ..names_d_subgroups_ratio_to_avg) ])) )
+      } else {
+        summary_plot <- try( plot_barplot_ratios(unlist(as.data.frame(overall[ , c(names_d_ratio_to_avg , names_d_subgroups_ratio_to_avg) ])) ))
+      }
+      if (inherits(summary_plot, "try-error")) {
+        warning('cannot create plot_barplot_ratios() output')
+        cat('cannot create plot_barplot_ratios() output\n')
+      } else {
+        print(summary_plot)
+        openxlsx::addWorksheet(wb, sheetName = "plot_ratios",  gridLines = FALSE)
+        openxlsx::insertPlot(wb, "plot_ratios", width = 9, height = 7) # The current plot is saved to a temporary image file using dev.copy. This file is then written to the workbook using insertImage.
+      }
+      
+    } else {
+      # add summary_plot ggplot object  to 'plot' sheet of Excel download 
+      cat('adding summary_plot (ggplot output) that was provided\n')
+      mytempdir <- tempdir() # did not work on server?
+      openxlsx::addWorksheet(wb, sheetName = "plot",  gridLines = FALSE)
+      ggplot2::ggsave(filename = paste0(mytempdir, '/', 'summary_plot.png'), plot = summary_plot,
+                      width = 9, height = 7, units = 'in')
+      openxlsx::insertImage(wb, sheet = 'plot', 
+                            file = paste0(mytempdir, '/', 'summary_plot.png'),
+                            width = 9, height = 7)
+    }
+    
+    if (!is.null(bybg) & plot_distance_by_group) {
+      cat('plotting mean distance by group\n')
+      fname  <- try(
+        suppressWarnings(
+          plot_distance_mean_by_group(bybg, returnwhat = "plotfilename", graph = TRUE)
+        )
       )
-    )
-    if (inherits(fname, "try-error")) {
-      fname <- NULL; warning('cannot create distance table')
-    } else {
-      openxlsx::addWorksheet(wb, sheetName = "plot_distances",  gridLines = FALSE)
-      #plot_distances
-      openxlsx::insertImage(wb, sheet = "plot_distances", file = fname, width = 11, height = 7) #  The current plot gets inserted
-      # openxlsx::insertPlot(wb, "plot_distances", width = 9, height = 7) #  The current plot gets inserted
+      if (inherits(fname, "try-error")) {
+        fname <- NULL; warning('cannot create distance table')
+      } else {
+        openxlsx::addWorksheet(wb, sheetName = "plot_distances",  gridLines = FALSE)
+        #plot_distances
+        openxlsx::insertImage(wb, sheet = "plot_distances", file = fname, width = 11, height = 7) #  The current plot gets inserted
+        # openxlsx::insertPlot(wb, "plot_distances", width = 9, height = 7) #  The current plot gets inserted
+      }
+      # plotfilename <- try(plot_distance_mean_by_group(bybg, returnwhat = "plotfilename"))
+      # if (inherits(plotfilename, "try-error")) {plotfilename <- NULL; warning('cannot create plot using plot_distance_mean_by_group')}
     }
-    # plotfilename <- try(plot_distance_mean_by_group(bybg, returnwhat = "plotfilename"))
-    # if (inherits(plotfilename, "try-error")) {plotfilename <- NULL; warning('cannot create plot using plot_distance_mean_by_group')}
   }
-  
   
   # if (!is.null(plotfilename)) {
   #   if (file.exists(plotfilename)) {
@@ -225,19 +230,19 @@ xls_formatting2 <- function(overall, eachsite, longnames=NULL, formatted=NULL, b
   ######################################################################## #
   ## write to map sheet ####
   
- 
+  
   
   ## save html to png   -    THIS IS VERY SLOW HOWEVER. THERE ARE FASTER WAYS THAN CREATING A WIDGET AND THEN TURNING IT INTO A SIMPLE PNG
   if (mapadd) {
-  mytempdir <- tempdir()
-  mypath <- file.path(mytempdir, "temp.html")
+    mytempdir <- tempdir()
+    mypath <- file.path(mytempdir, "temp.html")
     cat("drawing map\n")
     z <- mapfast(eachsite, radius = radius_or_buffer_in_miles, column_names = 'ej')
-  htmlwidgets::saveWidget(z, mypath, selfcontained = FALSE)
-  webshot::webshot(mypath, file = file.path(mytempdir, "map1.png"), cliprect = "viewport")
-  if (testing) cat(file.path(mytempdir, "map1.png"), '\n')
-  openxlsx::insertImage(wb, sheet = 'map', file = file.path(mytempdir, 'map1.png'),
-                        width = 9, height = 7)
+    htmlwidgets::saveWidget(z, mypath, selfcontained = FALSE)
+    webshot::webshot(mypath, file = file.path(mytempdir, "map1.png"), cliprect = "viewport")
+    if (testing) cat(file.path(mytempdir, "map1.png"), '\n')
+    openxlsx::insertImage(wb, sheet = 'map', file = file.path(mytempdir, 'map1.png'),
+                          width = 9, height = 7)
   }
   
   ######################################################################## #
@@ -305,7 +310,7 @@ xls_formatting2 <- function(overall, eachsite, longnames=NULL, formatted=NULL, b
                       keepNA = FALSE,   # NA converted to blank or to #N/A
                       ...
   )
- 
+  
   openxlsx::writeData(wb, 
                       sheet = 'longnames', x = cbind(longnames = longnames, rname = headers_eachsite ), 
                       xy = c(1,1), colNames = TRUE, 
@@ -360,10 +365,10 @@ xls_formatting2 <- function(overall, eachsite, longnames=NULL, formatted=NULL, b
     # # convert from html back to simple URL
     # eachsite[, hyperlink_colnames ] <- gsub('.*(http.*)\", target=.*', '\\1',  eachsite[ , hyperlink_colnames ] )
     # 
-      
+    
     # NOW CONVERT SIMPLE URLS INTO EXCEL HYPERLINKS
     
-   for (i in 1:length(hyperlink_colnames)) {
+    for (i in 1:length(hyperlink_colnames)) {
       # not sure it has to be in a loop actually but only 2 or 3 columns to loop over
       namedvector <- as.vector(eachsite[ , hyperlink_colnames[i]])
       class(namedvector) <- "hyperlink"

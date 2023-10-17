@@ -9,11 +9,14 @@ xls_formatting2(
   overall,
   eachsite,
   longnames = NULL,
-  bybg = NULL,
   formatted = NULL,
+  bybg = NULL,
+  plot_distance_by_group = TRUE,
   summary_plot = NULL,
-  plotlatest = TRUE,
+  plotlatest = FALSE,
   plotfilename = NULL,
+  mapadd = FALSE,
+  ok2plot = TRUE,
   analysis_title = "EJAM analysis",
   buffer_desc = "Selected Locations",
   radius_or_buffer_in_miles = NULL,
@@ -23,6 +26,9 @@ xls_formatting2(
   heatmap_colnames = NULL,
   heatmap_cuts = c(80, 90, 95),
   heatmap_colors = c("yellow", "orange", "red"),
+  heatmap2_colnames = NULL,
+  heatmap2_cuts = c(1.009, 2, 3),
+  heatmap2_colors = c("yellow", "orange", "red"),
   hyperlink_colnames = c("EJScreen Report", "EJScreen Map", "ECHO report"),
   graycolnames = NULL,
   narrowcolnames = NULL,
@@ -41,15 +47,22 @@ xls_formatting2(
 
 \item{longnames}{vector of indicator names to display in Excel table}
 
-\item{bybg}{Not implemented possibly - large table of details of each block group that is only needed to analyze distances by group.}
-
 \item{formatted}{optional table to save in one tab, from ejamit()$overall, EJAM analysis overall in different format}
 
-\item{summary_plot}{optional plot passed from EJAM shiny app to save in 'Plot' sheet of Excel table}
+\item{bybg}{Optional large table of details of each block group that is only needed to analyze distances by group.}
 
-\item{plotlatest}{optional logical. If TRUE, the most recently displayed plot will be inserted into a tab called plot2}
+\item{plot_distance_by_group}{logical, whether to try to add a plot of mean distance by group.
+This requires that bybg be provided as a parameter input to this function.}
+
+\item{summary_plot}{optional plot object passed from EJAM shiny app to save in 'Plot' sheet of Excel table}
+
+\item{plotlatest}{optional logical. If TRUE, the most recently displayed plot (prior to this function being called) will be inserted into a tab called plot2}
 
 \item{plotfilename}{the full path including name of .png file to insert}
+
+\item{mapadd}{logical optional - try to include a map of the points}
+
+\item{ok2plot}{can set to FALSE to prevent plots from being attempted, while debugging}
 
 \item{analysis_title}{optional title passed from Shiny app to 'Notes' sheet}
 

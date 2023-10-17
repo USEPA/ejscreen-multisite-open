@@ -43,13 +43,6 @@ app_server <- function(input, output, session) {
   # - things that need to be launched at runtime should be listed in the app_server function
   # + You can also use golem_opts for things needed at runtime, to have something like run_app(param = this). 
   #############################################################################  #
-  ## to profile parts of the shiny app for performance
-  # callModule(profvis_server, "profiler")
-  #
-  # also see  /EJAM/tests/testthat/test-ui_and_server.R
-  # and see  https://shiny.posit.co/r/articles/improve/debugging/
-  # and see 
-  #############################################################################  #
   # Key reactives = data_uploaded(), data_processed(), data_summarized() ####
   ##  data_uploaded   reactive holds selected latlon points or shapefiles. It is defined later.
   ##  data_processed  reactive holds results of analysis, like output of doaggregate(getblocksnearby(points)) 
@@ -57,7 +50,9 @@ app_server <- function(input, output, session) {
   ##  Note that  ejamit(points)  would do all of those steps in one function, essentially. 
   data_processed <-  reactiveVal(NULL) # initialized so it can be set later in reaction to an event, using data_processed(newvalue)
   data_summarized <- reactiveVal(NULL) # initialized so it can be set later in reaction to an event, using 
-  
+  #
+  # provide nice message if disconnected, via shinydisconnect package
+  observeEvent(input$disconnect, {session$close()})
   ################################################################### #
   
   # *** As of Shiny 1.6.0, we recommend using bindEvent() instead of eventReactive() and observeEvent(). 
@@ -268,19 +263,16 @@ app_server <- function(input, output, session) {
   # # }) %>%
   # #   bindEvent(input$latlontypedin_submit_button) # (updates only when the "Done entering points" button is pressed)  
   
-  ## only while testing: ***
-  # output$test_textout <- renderText("This is only a test \n")
-  # output$test_textout2 = renderText(paste0(" ss_choose_method        input is ", input$ss_choose_method,        '\n'))
-  # output$test_textout3 = renderText(paste0(" ss_choose_method_upload input is ", input$ss_choose_method_upload, '\n'))
-  
+  output$test_textout <- renderText(ifelse(input$testing, "This is only a test \n", ""))
+  output$test_textout2 = renderText(ifelse(input$testing, paste0(" ss_choose_method        input is ", input$ss_choose_method,        '\n'), ""))
+  output$test_textout3 = renderText(ifelse(input$testing, paste0(" ss_choose_method_upload input is ", input$ss_choose_method_upload, '\n'), ""))
+
   data_typedin_latlon <- reactive({
     #   ## wait for typed in data to be submitted, then return cleaned lat lon table data.frame, as data_typedin_latlon() which eventually becomes data_uploaded()
     # req()
     ext <- reactive_data1()  # NEED TO TEST THAT THIS IS ACTUALLY THE USER-EDITED OUTPUT OF THE MODULE   # ss_typedin_latlon()
     #   # ext <- data.frame( siteid=1, lat=0, lon=0) # dummy data for testing
-    #   
-    #   # another approach, not used:
-    #   # ext <- DataEditR::data_edit(latlon_template)
+    ###   # another approach, not used:   # ext <- DataEditR::data_edit(latlon_template)
     
     ## Validate the lat lon values. If column names are found in lat/long alias comparison, clean and return the table of lat lon values
     if (any(tolower(colnames(ext)) %in% lat_alias) & any(tolower(colnames(ext)) %in% lon_alias)) {
@@ -1315,7 +1307,20 @@ app_server <- function(input, output, session) {
   #. ## ##
   # ______ SEE RESULTS _________ ####
   #. ####
+  
   # #############################################################################  # 
+  
+  # ________ COMMUNITY REPORT VIEW __________ ####
+  
+  # output$LOCATIONSTR <- renderText(
+  #   paste0(input$bt_rad_buff, " mile Rings Centered at Selected Points")
+  #     # <span id="LOCATIONSTR">{{LOCATIONSTR}} mile Rings Centered at Selected Points</span>
+  # )
+  # output$TOTALPOP <- renderText(
+  #   prettyNum(total_pop(), big.mark = ",")
+  # )
+  
+  
   
   # ______ SUMMARY REPORT ______ ####
   
@@ -1775,7 +1780,7 @@ app_server <- function(input, output, session) {
           strip.text.x = element_text(size = 8)
         )
       
-    } else if (input$plotkind_1pager == "box") {
+    } else {if (input$plotkind_1pager == "box") {
       
       ## *BOXPLOTS for short report (all sites D ratios vs US avg) ####
       
@@ -1837,12 +1842,13 @@ app_server <- function(input, output, session) {
       ggplot2::ggplot(
         ratio.to.us.d.bysite  ,
         # mydata, 
-        aes(x = indicator, y = value )) + #, fill = indicator)) +
+        aes(x = indicator, y = value )
+        ) + #, fill = indicator)) +
         ## draw boxplots
         geom_boxplot() +
         
         #  show average persons ratio to US,  for each boxplot column 
-        # xxx
+        # xxx   Try to fix / use this: 
         # geom_point(
         #   data =  meanratios,
         #   aes(x = reorder(indicator, meanratios), y = value), colour = "orange", size=2
@@ -1861,7 +1867,8 @@ app_server <- function(input, output, session) {
         labs(x = "",
              y = "Ratio of Indicator values in selected locations\n vs. US average value",
              subtitle = subtitle,
-             title = 'Ratio vs. US Average for Demographic Indicators') +
+             title = mymaintext ) +
+             # title = 'Ratio vs. US Average for Demographic Indicators') +
         
         ## draw individual dot per site? at least for small datasets?/few facilities - removed as they cover up boxplots with large datasets
         #geom_jitter(color = 'black', size=0.4, alpha=0.9, ) +
@@ -1886,7 +1893,9 @@ app_server <- function(input, output, session) {
           ## hide legend
           legend.position = 'none'
         )  # end of ggplot section
-    } # box
+    }
+      }
+    # box
   })
   
   ## output: show box/barplot of indicator ratios in Summary Report # 
@@ -2179,6 +2188,7 @@ app_server <- function(input, output, session) {
           # heatmap_colors=c('yellow', 'orange', 'red') # can use defaults
           ## optional, shiny-specific arguments to go in 'Plot' and 'Notes' sheets
           summary_plot   = v1_summary_plot(),
+          ok2plot = input$ok2plot,
           analysis_title = input$analysis_title,
           buffer_desc    = "Selected Locations", 
           radius_or_buffer_in_miles = input$bt_rad_buff,

@@ -120,7 +120,7 @@ This function requires the following datasets:
 \item blockwts: data.table with these columns: blockid , bgid, blockwt
 \item quaddata data.table used to create localtree, a quad tree index of block points
 (and localtree that is created when package is loaded)
-\item EJAM::blockgroupstats - A data.table (such as EJScreen demographic and environmental data by blockgroup?)
+\item blockgroupstats - A data.table (such as EJScreen demographic and environmental data by blockgroup?)
 }
 }
 \seealso{

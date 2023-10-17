@@ -7,7 +7,7 @@ Same as \code{\link[=plot_distance_mean_by_group]{plot_distance_mean_by_group()}
 \usage{
 distance_mean_by_group(
   results_bybg_people,
-  demogvarname = c(EJAM::names_d, EJAM::names_d_subgroups),
+  demogvarname = NULL,
   demoglabel = NULL,
   returnwhat = "table",
   graph = FALSE

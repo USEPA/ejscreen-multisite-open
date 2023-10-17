@@ -21,6 +21,15 @@ app_ui  <- function(request) {
       ## change selected tab color - #005ea2 matches blue on rest of website
       includeCSS('www/ejam_styling.css'),
       
+      # use friendlier message if user gets disconnected from server
+      disconnectMessage(), actionButton("disconnect", "Disconnect the app"),
+      disconnectMessage(
+        text = "Sorry ... This app has stopped because of an error or a timeout. The app is still being tested and debugged. Also, if the app is left open with no interaction, then once a time limit is reached the server will disconnect to save resources.",
+        refresh = "Click to Restart the App",
+        background = "#FFFFFF", colour = "#444444", refreshColour = "darkgreen", overlayColour = "#000000", overlayOpacity = 0.5,
+        width = 450, top = 50, size = 20, css = ""
+      ),
+      
       ### html header inserted from global.R ####
       html_header_fmt,
       
@@ -542,7 +551,7 @@ app_ui  <- function(request) {
                                    column(
                                      12, align = 'center',
                                      shinycssloaders::withSpinner(
-                                       plotOutput(outputId = 'view1_summary_plot', width = '100%', height = '400px') 
+                                       plotOutput(outputId = 'view1_summary_plot', width = '100%', height = '400px')  # {{ demog_plot }} goes in .html template
                                      )
                                    )
                                  ),
@@ -563,6 +572,164 @@ app_ui  <- function(request) {
                                  format_button = NULL
                                )
                              ), # end of Summary tab
+                             ######################################################################################################### #
+                             # COMMUNITY REPORT VIEW ####
+                             tabPanel(
+                               title = "Community Report",
+                               
+                               # provide html template with a long list of results (indicator stats) to insert in summary report page 
+                               {       
+                                 htmlTemplate(
+                                   
+                                   filename = app_sys('report/community_report', 'communityreport.html'),  
+                                   # document_ = FALSE,
+                                   LOCATIONSTR_ht    = textOutput(outputId = "LOCATIONSTR_out", inline = TRUE), # done manually
+                                   TOTALPOP_ht       = textOutput(outputId = "TOTALPOP_out",    inline = TRUE), # done manually
+                                   
+                                   inputAreaMiles_ht     = textOutput('inputAreaMiles_out',     inline = TRUE),
+                                   RAW_E_PM25_ht         = textOutput('RAW_E_PM25_out',         inline = TRUE),
+                                   S_E_PM25_ht           = textOutput('S_E_PM25_out',           inline = TRUE),
+                                   S_E_PM25_PER_ht       = textOutput('S_E_PM25_PER_out',       inline = TRUE),
+                                   N_E_PM25_ht           = textOutput('N_E_PM25_out',           inline = TRUE),
+                                   N_E_PM25_PER_ht       = textOutput('N_E_PM25_PER_out',       inline = TRUE),
+                                   RAW_E_O3_ht           = textOutput('RAW_E_O3_out',           inline = TRUE),
+                                   S_E_O3_ht             = textOutput('S_E_O3_out',             inline = TRUE),
+                                   S_E_O3_PER_ht         = textOutput('S_E_O3_PER_out',         inline = TRUE),
+                                   N_E_O3_ht             = textOutput('N_E_O3_out',             inline = TRUE),
+                                   N_E_O3_PER_ht         = textOutput('N_E_O3_PER_out',         inline = TRUE),
+                                   RAW_E_DIESEL_ht       = textOutput('RAW_E_DIESEL_out',       inline = TRUE),
+                                   S_E_DIESEL_ht         = textOutput('S_E_DIESEL_out',         inline = TRUE),
+                                   S_E_DIESEL_PER_ht     = textOutput('S_E_DIESEL_PER_out',     inline = TRUE),
+                                   N_E_DIESEL_ht         = textOutput('N_E_DIESEL_out',         inline = TRUE),
+                                   N_E_DIESEL_PER_ht     = textOutput('N_E_DIESEL_PER_out',     inline = TRUE),
+                                   RAW_E_CANCER_ht       = textOutput('RAW_E_CANCER_out',       inline = TRUE),
+                                   S_E_CANCER_ht         = textOutput('S_E_CANCER_out',         inline = TRUE),
+                                   S_E_CANCER_PER_ht     = textOutput('S_E_CANCER_PER_out',     inline = TRUE),
+                                   N_E_CANCER_ht         = textOutput('N_E_CANCER_out',         inline = TRUE),
+                                   N_E_CANCER_PER_ht     = textOutput('N_E_CANCER_PER_out',     inline = TRUE),
+                                   RAW_E_RESP_ht         = textOutput('RAW_E_RESP_out',         inline = TRUE),
+                                   S_E_RESP_ht           = textOutput('S_E_RESP_out',           inline = TRUE),
+                                   S_E_RESP_PER_ht       = textOutput('S_E_RESP_PER_out',       inline = TRUE),
+                                   N_E_RESP_ht           = textOutput('N_E_RESP_out',           inline = TRUE),
+                                   N_E_RESP_PER_ht       = textOutput('N_E_RESP_PER_out',       inline = TRUE),
+                                   RAW_E_RSEI_AIR_ht     = textOutput('RAW_E_RSEI_AIR_out',     inline = TRUE),
+                                   S_E_RSEI_AIR_ht       = textOutput('S_E_RSEI_AIR_out',       inline = TRUE),
+                                   S_E_RSEI_AIR_PER_ht   = textOutput('S_E_RSEI_AIR_PER_out',   inline = TRUE),
+                                   N_E_RSEI_AIR_ht       = textOutput('N_E_RSEI_AIR_out',       inline = TRUE),
+                                   N_E_RSEI_AIR_PER_ht   = textOutput('N_E_RSEI_AIR_PER_out',   inline = TRUE),
+                                   RAW_E_TRAFFIC_ht      = textOutput('RAW_E_TRAFFIC_out',      inline = TRUE),
+                                   S_E_TRAFFIC_ht        = textOutput('S_E_TRAFFIC_out',        inline = TRUE),
+                                   S_E_TRAFFIC_PER_ht    = textOutput('S_E_TRAFFIC_PER_out',    inline = TRUE),
+                                   N_E_TRAFFIC_ht        = textOutput('N_E_TRAFFIC_out',        inline = TRUE),
+                                   N_E_TRAFFIC_PER_ht    = textOutput('N_E_TRAFFIC_PER_out',    inline = TRUE),
+                                   RAW_E_LEAD_ht         = textOutput('RAW_E_LEAD_out',         inline = TRUE),
+                                   S_E_LEAD_ht           = textOutput('S_E_LEAD_out',           inline = TRUE),
+                                   S_E_LEAD_PER_ht       = textOutput('S_E_LEAD_PER_out',       inline = TRUE),
+                                   N_E_LEAD_ht           = textOutput('N_E_LEAD_out',           inline = TRUE),
+                                   N_E_LEAD_PER_ht       = textOutput('N_E_LEAD_PER_out',       inline = TRUE),
+                                   RAW_E_NPL_ht          = textOutput('RAW_E_NPL_out',          inline = TRUE),
+                                   S_E_NPL_ht            = textOutput('S_E_NPL_out',            inline = TRUE),
+                                   S_E_NPL_PER_ht        = textOutput('S_E_NPL_PER_out',        inline = TRUE),
+                                   N_E_NPL_ht            = textOutput('N_E_NPL_out',            inline = TRUE),
+                                   N_E_NPL_PER_ht        = textOutput('N_E_NPL_PER_out',        inline = TRUE),
+                                   RAW_E_RMP_ht          = textOutput('RAW_E_RMP_out',          inline = TRUE),
+                                   S_E_RMP_ht            = textOutput('S_E_RMP_out',            inline = TRUE),
+                                   S_E_RMP_PER_ht        = textOutput('S_E_RMP_PER_out',        inline = TRUE),
+                                   N_E_RMP_ht            = textOutput('N_E_RMP_out',            inline = TRUE),
+                                   N_E_RMP_PER_ht        = textOutput('N_E_RMP_PER_out',        inline = TRUE),
+                                   RAW_E_TSDF_ht         = textOutput('RAW_E_TSDF_out',         inline = TRUE),
+                                   S_E_TSDF_ht           = textOutput('S_E_TSDF_out',           inline = TRUE),
+                                   S_E_TSDF_PER_ht       = textOutput('S_E_TSDF_PER_out',       inline = TRUE),
+                                   N_E_TSDF_ht           = textOutput('N_E_TSDF_out',           inline = TRUE),
+                                   N_E_TSDF_PER_ht       = textOutput('N_E_TSDF_PER_out',       inline = TRUE),
+                                   RAW_E_UST_ht          = textOutput('RAW_E_UST_out',          inline = TRUE),
+                                   S_E_UST_ht            = textOutput('S_E_UST_out',            inline = TRUE),
+                                   S_E_UST_PER_ht        = textOutput('S_E_UST_PER_out',        inline = TRUE),
+                                   N_E_UST_ht            = textOutput('N_E_UST_out',            inline = TRUE),
+                                   N_E_UST_PER_ht        = textOutput('N_E_UST_PER_out',        inline = TRUE),
+                                   RAW_E_NPDES_ht        = textOutput('RAW_E_NPDES_out',        inline = TRUE),
+                                   S_E_NPDES_ht          = textOutput('S_E_NPDES_out',          inline = TRUE),
+                                   S_E_NPDES_PER_ht      = textOutput('S_E_NPDES_PER_out',      inline = TRUE),
+                                   N_E_NPDES_ht          = textOutput('N_E_NPDES_out',          inline = TRUE),
+                                   N_E_NPDES_PER_ht      = textOutput('N_E_NPDES_PER_out',      inline = TRUE),
+                                   RAW_D_DEMOGIDX2_ht    = textOutput('RAW_D_DEMOGIDX2_out',    inline = TRUE),
+                                   S_D_DEMOGIDX2_ht      = textOutput('S_D_DEMOGIDX2_out',      inline = TRUE),
+                                   S_D_DEMOGIDX2_PER_ht  = textOutput('S_D_DEMOGIDX2_PER_out',  inline = TRUE),
+                                   N_D_DEMOGIDX2_ht      = textOutput('N_D_DEMOGIDX2_out',      inline = TRUE),
+                                   N_D_DEMOGIDX2_PER_ht  = textOutput('N_D_DEMOGIDX2_PER_out',  inline = TRUE),
+                                   RAW_D_DEMOGIDX5_ht    = textOutput('RAW_D_DEMOGIDX5_out',    inline = TRUE),
+                                   S_D_DEMOGIDX5_ht      = textOutput('S_D_DEMOGIDX5_out',      inline = TRUE),
+                                   S_D_DEMOGIDX5_PER_ht  = textOutput('S_D_DEMOGIDX5_PER_out',  inline = TRUE),
+                                   N_D_DEMOGIDX5_ht      = textOutput('N_D_DEMOGIDX5_out',      inline = TRUE),
+                                   N_D_DEMOGIDX5_PER_ht  = textOutput('N_D_DEMOGIDX5_PER_out',  inline = TRUE),
+                                   RAW_D_PEOPCOLOR_ht    = textOutput('RAW_D_PEOPCOLOR_out',    inline = TRUE),
+                                   S_D_PEOPCOLOR_ht      = textOutput('S_D_PEOPCOLOR_out',      inline = TRUE),
+                                   S_D_PEOPCOLOR_PER_ht  = textOutput('S_D_PEOPCOLOR_PER_out',  inline = TRUE),
+                                   N_D_PEOPCOLOR_ht      = textOutput('N_D_PEOPCOLOR_out',      inline = TRUE),
+                                   N_D_PEOPCOLOR_PER_ht  = textOutput('N_D_PEOPCOLOR_PER_out',  inline = TRUE),
+                                   RAW_D_INCOME_ht       = textOutput('RAW_D_INCOME_out',       inline = TRUE),
+                                   S_D_INCOME_ht         = textOutput('S_D_INCOME_out',         inline = TRUE),
+                                   S_D_INCOME_PER_ht     = textOutput('S_D_INCOME_PER_out',     inline = TRUE),
+                                   N_D_INCOME_ht         = textOutput('N_D_INCOME_out',         inline = TRUE),
+                                   N_D_INCOME_PER_ht     = textOutput('N_D_INCOME_PER_out',     inline = TRUE),
+                                   RAW_D_UNEMPLOYED_ht   = textOutput('RAW_D_UNEMPLOYED_out',   inline = TRUE),
+                                   S_D_UNEMPLOYED_ht     = textOutput('S_D_UNEMPLOYED_out',     inline = TRUE),
+                                   S_D_UNEMPLOYED_PER_ht = textOutput('S_D_UNEMPLOYED_PER_out', inline = TRUE),
+                                   N_D_UNEMPLOYED_ht     = textOutput('N_D_UNEMPLOYED_out',     inline = TRUE),
+                                   N_D_UNEMPLOYED_PER_ht = textOutput('N_D_UNEMPLOYED_PER_out', inline = TRUE),
+                                   RAW_D_LING_ht         = textOutput('RAW_D_LING_out',         inline = TRUE),
+                                   S_D_LING_ht           = textOutput('S_D_LING_out',           inline = TRUE),
+                                   S_D_LING_PER_ht       = textOutput('S_D_LING_PER_out',       inline = TRUE),
+                                   N_D_LING_ht           = textOutput('N_D_LING_out',           inline = TRUE),
+                                   N_D_LING_PER_ht       = textOutput('N_D_LING_PER_out',       inline = TRUE),
+                                   RAW_D_LESSHS_ht       = textOutput('RAW_D_LESSHS_out',       inline = TRUE),
+                                   S_D_LESSHS_ht         = textOutput('S_D_LESSHS_out',         inline = TRUE),
+                                   S_D_LESSHS_PER_ht     = textOutput('S_D_LESSHS_PER_out',     inline = TRUE),
+                                   N_D_LESSHS_ht         = textOutput('N_D_LESSHS_out',         inline = TRUE),
+                                   N_D_LESSHS_PER_ht     = textOutput('N_D_LESSHS_PER_out',     inline = TRUE),
+                                   RAW_D_UNDER5_ht       = textOutput('RAW_D_UNDER5_out',       inline = TRUE),
+                                   S_D_UNDER5_ht         = textOutput('S_D_UNDER5_out',         inline = TRUE),
+                                   S_D_UNDER5_PER_ht     = textOutput('S_D_UNDER5_PER_out',     inline = TRUE),
+                                   N_D_UNDER5_ht         = textOutput('N_D_UNDER5_out',         inline = TRUE),
+                                   N_D_UNDER5_PER_ht     = textOutput('N_D_UNDER5_PER_out',     inline = TRUE),
+                                   RAW_D_OVER64_ht       = textOutput('RAW_D_OVER64_out',       inline = TRUE),
+                                   S_D_OVER64_ht         = textOutput('S_D_OVER64_out',         inline = TRUE),
+                                   S_D_OVER64_PER_ht     = textOutput('S_D_OVER64_PER_out',     inline = TRUE),
+                                   N_D_OVER64_ht         = textOutput('N_D_OVER64_out',         inline = TRUE),
+                                   N_D_OVER64_PER_ht     = textOutput('N_D_OVER64_PER_out',     inline = TRUE),
+                                   RAW_D_LIFEEXP_ht      = textOutput('RAW_D_LIFEEXP_out',      inline = TRUE),
+                                   S_D_LIFEEXP_ht        = textOutput('S_D_LIFEEXP_out',        inline = TRUE),
+                                   S_D_LIFEEXP_PER_ht    = textOutput('S_D_LIFEEXP_PER_out',    inline = TRUE),
+                                   N_D_LIFEEXP_ht        = textOutput('N_D_LIFEEXP_out',        inline = TRUE),
+                                   N_D_LIFEEXP_PER_ht    = textOutput('N_D_LIFEEXP_PER_out',    inline = TRUE),
+                                   NUM_NPL_ht            = textOutput('NUM_NPL_out',            inline = TRUE),
+                                   NUM_TSDF_ht           = textOutput('NUM_TSDF_out',           inline = TRUE),
+                                   NUM_WATERDIS_ht       = textOutput('NUM_WATERDIS_out',       inline = TRUE),
+                                   NUM_AIRPOLL_ht        = textOutput('NUM_AIRPOLL_out',        inline = TRUE),
+                                   NUM_BROWNFIELD_ht     = textOutput('NUM_BROWNFIELD_out',     inline = TRUE),
+                                   NUM_TRI_ht            = textOutput('NUM_TRI_out',            inline = TRUE),
+                                   NUM_SCHOOL_ht         = textOutput('NUM_SCHOOL_out',         inline = TRUE),
+                                   NUM_HOSPITAL_ht       = textOutput('NUM_HOSPITAL_out',       inline = TRUE),
+                                   NUM_CHURCH_ht         = textOutput('NUM_CHURCH_out',         inline = TRUE),
+                                   YESNO_AIRNONATT_ht    = textOutput('YESNO_AIRNONATT_out',    inline = TRUE),
+                                   YESNO_IMPWATERS_ht    = textOutput('YESNO_IMPWATERS_out',    inline = TRUE),
+                                   YESNO_TRIBAL_ht       = textOutput('YESNO_TRIBAL_out',       inline = TRUE),
+                                   YESNO_CEJSTDIS_ht     = textOutput('YESNO_CEJSTDIS_out',     inline = TRUE),
+                                   YESNO_IRADIS_ht       = textOutput('YESNO_IRADIS_out',       inline = TRUE)
+                                 )} ## end of html template 
+                               ,
+                               demog_plot = fluidRow(
+                                 column(
+                                   12, align = 'center',
+                                   shinycssloaders::withSpinner(
+                                     plotOutput(outputId = 'view1_summary_plot', width = '100%', height = '400px')  # {{ demog_plot }} goes in .html template
+                                   )
+                                 )
+                               )
+                             ),  # end report tab
+                             
+            
+                             ######################################################################################################### #
                              #. ####
                              # ______ DETAILED RESULTS  _________ ####
                              ## tabPanel(title = 'Details' ####
@@ -1228,6 +1395,9 @@ app_ui  <- function(request) {
                               label = 'Results should include extra indicators from Community Report - *** not implemented yet',
                               value = default_include_extraindicators),
                 
+                checkboxInput("ok2plot", 
+                              label = "OK to try to plot graphics and include in Excel download",
+                              value = default_ok2plot),
                 
                 ### Threshold comparisons options --------------------- #
                 

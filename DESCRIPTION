@@ -43,6 +43,7 @@ Imports:
     rmarkdown,
     RMySQL,
     SearchTrees,
+    shinydisconnect,
     sf,
     shiny (>= 1.7.2),
     shinycssloaders,

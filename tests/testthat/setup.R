@@ -31,3 +31,11 @@ ejamoutnow <- try(ejamit(testpoints_10, radius = 1), silent = FALSE)
 # withr::defer(rm(ejamoutnow), teardown_env())  # is this right??
 # Setup code is typically best used to create external resources that are needed by many tests. It’s best kept to a minimum because you will have to manually run it before interactively debugging tests.
 ##############
+
+
+#############################################################################  #
+## to profile parts of the shiny app for performance
+# callModule(profvis_server, "profiler")
+#
+# also see  /EJAM/tests/testthat/test-ui_and_server.R
+# and see  https://shiny.posit.co/r/articles/improve/debugging/
