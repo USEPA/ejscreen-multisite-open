@@ -1,3 +1,15 @@
+#' dataload_from_local
+#' utility for R analysts/developers to store large block data locally instead of redownloading from AWS
+#' @param varnames use defaults
+#' @param ext  use defaults
+#' @param fun  use defaults
+#' @param envir  use defaults
+#' @param folder_local_source Your local folder path
+#' @param justchecking  use defaults
+#' @param testing  use defaults
+#'
+#' @export
+#'
 dataload_from_local <- function(varnames= c('bgid2fips', 'blockid2fips', 'blockpoints', 'blockwts', 'quaddata' ),
                                 ext=c(".arrow", ".rda")[2],
                                 fun=c("arrow::read_ipc_file", "load")[2],  

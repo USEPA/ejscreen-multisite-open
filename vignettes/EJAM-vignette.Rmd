@@ -22,82 +22,134 @@ knitr::opts_chunk$set(eval = FALSE)
 #-   *Note this vignette needs to be updated - some function names have changed since it was drafted.*
 #-   *See important info at <https://r-pkgs.org/vignettes.html#sec-vignettes-how-built>*
 #-   *Vignette at EJAM\vignettes\EJAM-vignette.html* does not use devtools::document() to build it?
-#-   *THIS DID WORK:* rmarkdown::render("vignettes/EJAM-vignette.Rmd") 
+
+#-   *THIS DID WORK:* 
+
+#  rmarkdown::render("vignettes/EJAM-vignette.Rmd") 
+
 #-   *See <https://docs.ropensci.org/postdoc/> for a quick easy way to create html help on a pkg. postdoc::render_package_manual('PKGNAME')*
 #
 ```
 
-## Quickstart
+# Quick start for the web app
 
-### Summary of Demographics and Environment near 100 Sites
+## Trying out the EJAM web app
 
-In R/RStudio, clone/install EJAM package and related ones from <https://github.com/USEPA/EJAM/#readme>, etc.
+The complete version of the app is not on a server as of 10/2023, but a working demo of the most basic feature is on a staging server at [EJAM Lite (Demo/Test on Staging Server)](https://rstudio-connect.dmap-stage.aws.epa.gov/content/725e3761-3dc1-4012-b07c-23126063da97/ "https://rstudio-connect.dmap-stage.aws.epa.gov/content/725e3761-3dc1-4012-b07c-23126063da97/"){.uri target="_blank"}.
 
-```{r echo=TRUE}
+The EJAM R package and app are in active development. The latest current version can be installed from the github USEPA github repository. It can be installed locally as an R package, and the data or functions can be used even without launching the shiny app interface. This is work in progress, so not everything may be working as changes are made on the staging server or GitHub version.
 
+Note that the demo app takes a long time (up to a full minute perhaps) to start up and load all the datasets and packages and then build an index. The analysis can be started only after the blue bar lights up to show that the spreadsheet with lat lon values has been uploaded.
+
+# Quick start for R users
+
+## Trying out the EJAM app or R functions in RStudio
+
+### Install the EJAM R package and related packages
+
+Essential packages only available on the [USEPA github](https://github.com/USEPA/EJAM "github.com/USEPA/EJAM"){.uri target="_blank"} (not CRAN) are:
+
+-   [EJAM](https://github.com/USEPA/EJAM#readme "github.com/USEPA/EJAM"){.uri target="_blank"}
+-   [EJAMejscreenapi](https://github.com/USEPA/EJAMejscreenapi#readme "github.com/USEPA/EJAMejscreenapi"){.uri target="_blank"}
+-   [EJAMbatch.summarizer](https://github.com/USEPA/EJAMbatch.summarizer#readme "github.com/USEPA/EJAMbatch.summarizer"){.uri target="_blank"}
+
+In R/RStudio, clone and build/ install from source the EJAM package and related ones from the [EJAM GitHub Repository (must be at EPA or using VPN)](https://github.com/USEPA/EJAM/#readme "https://github.com/USEPA/EJAM/#readme"){.uri target="_blank"}, etc.
+
+Make sure you have installed EJAM (and packages it relies on, particularly `EJAMejscreenapi` and `EJAMbatch.summarizer` from the [EJAM GitHub Repository (must be at EPA or using VPN](https://github.com/USEPA/EJAM/#readme "https://github.com/USEPA/EJAM/#readme"){.uri target="_blank"}), but also packages listed in the `DESCRIPTION` file of the R package. Then you can use EJAM in RStudio -- either as a web app running locally or as a set of useful functions in the RStudio console.
+
+### Initialize: load/attach package, download block data, build index
+
+To use EJAM in the console you would start like this:
+
+```{r, eval=FALSE}
 library(EJAM)
 
-x <- ejamit(testpoints_n(100), 1) # 1 mile radius
-mapfast(x$results_bysite)
+dataload_from_aws() 
+# It takes some time for the large downloads!
+
+indexblocks()
+# It takes several seconds (or you can omit typing this since it would be run as needed once you try to use key functions)
+```
+
+You can also save a little time if you first save those datasets locally and in later sessions have EJAM read them from your local drive instead of re-downloading from AWS.
+
+Note that the web app (e.g., launched locally) handles loading datasets and indexing blocks, so you would not have to use dataload_from_aws or indexblocks if launching the EJAM app locally.
+
+```{r, eval=FALSE}
+help("dataload_from_local")  
+```
+
+### Summarize Demographics and Environment near 100 Sites
+
+Once you have loaded block data, you can use EJAM. The function `testpoints_n()` provides randomly n chosen points in the US.
+
+```{r echo=TRUE}
+x <- ejamit(testpoints_n(100), radius = 1) # 1 mile radius at random points
+mapfastej(x$results_bysite)
+help("testpoints_n")
+help("ejamit")
+help("mapfast")
 ```
 
 ### Interactively point to your file with lat,lon coordinates, without shiny web app
 
+From RStudio, you can use EJAM functions to interactively select a file from your folders, to upload a spreadsheet or csv with columns called lat and lon in the first row as the header row, and then one row per point.
+
 ```{r, eval=FALSE}
-x <- ejamit(radius = 2) #  2 mile radius
+y <- read_csv_or_xl()
+names(y)
+head(y)
+x <- ejamit(radius = 2) #  2 mile radius. 
 ```
 
 ### Specify all sites in 1 industrial sector
 
 ```{r}
 naics_from_any("paint and coating", children = T)
-x <- ejamit(frs_from_naics("paint and coating"), 1)
 head(latlon_from_naics(325510)) # has about 1,000 facilities
+
+## All sectors with this phrase in their NAICS title
+#
+#  x <- ejamit(frs_from_naics("paint and coating"), 1)
 ```
 
 ### Specify sites by facility registry ID
 
 ```{r, eval=FALSE}
-EJAM::frs_from_siteid(c(110071293460, 110000333826))
-# to interactively point to your file with regid column
-x <- ejamit(latlon_from_regid(latlon_from_anything()$REGISTRY_ID)) 
-#    (that is a bit awkward and not obvious)
+frs_from_siteid(c(110071293460, 110000333826))
+
+# interactively upload file with table of REGISTRY_ID values
+latlon_from_regid(read_csv_or_xl()$REGISTRY_ID)
+
+# and run through EJAM
+# x <- ejamit(latlon_from_regid(read_csv_or_xl()$REGISTRY_ID), radius = 1)
+#  # still debugging Island Areas validation here!
+
 ```
 
 ### Specify sites by facility ID (program system ID)
 
 ```{r}
-EJAM::latlon_from_programid(c("XJW000012435", "00768SRTRSROAD1"))
+latlon_from_programid(c("XJW000012435", "00768SRTRSROAD1"))
 ```
 
 ### Specify sites by EPA regulatory program or EPA database
 
 ```{r}
-EJAM::latlon_from_program("CAMDBS")
+head(cbind(Count.of.facilities = sort(table(frs_by_programid$program), decreasing = T)), 20)
+
+latlon_from_program("CAMDBS")[,1:6]
+ 
 ```
 
+### Specify sites by EPA MACT Subpart in Clean Air Act
 
-## Accessing and using the code/ data/ app
+```{r}
+latlon_from_mactsubpart("OOOO")
 
-The app is not on a server. The R package is still in active development, but a current version can be installed from the github USEPA github repository. It can be installed locally as an R package, and the data or functions can be used even without launching the shiny app interface. This is work in progress - only the lat/lon upload may be working right now, for example, not the NAICS/FRS queries.
+nrow(latlon_from_mactsubpart("OOOO", include_if_no_latlon = FALSE))
 
-## Installing EJAM
-
-You can install the development version of EJAM by cloning it from the repository:
-
-<https://github.com/USEPA/EJAM>
-
-## See the [README](https://github.com/USEPA/EJAM#readme "github.com/USEPA/EJAM#readme") if you need a basic intro and broad overview
-
-You can find it here: <https://github.com/USEPA/EJAM#readme>
-
-## Run the Shiny app on your own computer, in RStudio
-
-Launch the web app with run_app() instead of shiny's runApp() because this shiny app is also an R package based on the golem package framework.
-
-```{r run_app}
-library(EJAM)
-run_app()
+nrow(latlon_from_mactsubpart("OOOO", include_if_no_latlon = TRUE))
 ```
 
 ## See Documentation of Functions and Data
@@ -110,84 +162,7 @@ See this vignette and help documentation for the package overall, and individual
 help("EJAM", package='EJAM')
 ```
 
-## **Get proximity analysis via R script or console (not shiny app)**
-
-### Install other R packages
-
-Essential packages only available on the [USEPA github](https://github.com/USEPA/EJAM "github.com/USEPA/EJAM") (not CRAN) are:
-
--   [EJAM](https://github.com/USEPA/EJAM#readme "github.com/USEPA/EJAM")
--   [EJAMejscreenapi](https://github.com/USEPA/EJAMejscreenapi#readme "github.com/USEPA/EJAMejscreenapi")
--   [EJAMbatch.summarizer](https://github.com/USEPA/EJAMbatch.summarizer#readme "github.com/USEPA/EJAMbatch.summarizer")
-
-### Reloading the datasets with info about blocks
-
-These datasets should be loaded by the app automatically or may be when the package is loaded, depending on how the .onAttach() function is set up.
-
-To manually reload them, see ?dataload_from_aws() 
- 
-### Recreating the index of where blocks are
-
-This index may be built when the package is loaded, automatically, depending on how the .onAttach() function is set up  
-
-THIS IS SLOW - It takes a few seconds. This (seemingly) must be done for each session. One cannot save it as .rda and just load via a pkg since it is like a pointer to the index in memory.
-
-```{r BUILD_INDEX}
-# One could manually rebuild the index (if quaddata were updated, for example),
-#   like this:
-indexblocks()
-# which essentially does something like this:
-# localtree <- SearchTrees::createTree(
-#    quaddata, treeType = "quad", dataType = "point"
-# )
-```
-
-### Specify Places or Shapes
-
-#### Polygons in shapefiles as the places to compare
-
-You can upload polygons in a shapefile, and use EJAM to analyze them. See the Shiny app.
-
-#### Counties as the places to compare
-
-You can compare places defined by FIPS code, such as a group of US Counties.
-
-```{r}
-# Compare all Counties in a State, using EJAM indicators
-
-mystate <- "Delaware"
-x <- ejamit(fips = fips_counties_from_statename(mystate)) # radius not used
-
-round(t(x$results_summarized$rows)[,1:6],2)
-t(x$results_bysite[ , c(
-  'siteid', 'pop', names_d_subgroups_ratio_to_state_avg), with=F])
-
-mapfast(x$results_bysite, 
-        column_names = c(
-  'siteid', 'pop', names_d_subgroups_ratio_to_state_avg), 
-        labels = c(
-          'FIPS', 'Pop', names_d_subgroups_ratio_to_state_avg_friendly))
-
-x$results_bysite$ratio.to.avg.Demog.Index
-### require( ###  ejanalysis ### ) 
-# cnames <- get.county.info(x$results_bysite$siteid)$countyname
-cnames <- c("Kent County", "New Castle County", "Sussex County")
-cnames <- gsub(" County", "", cnames)
-
-barplot(x$results_bysite$pctlowinc, names.arg = cnames, 
-        main = paste0('% Low Income by County in ', mystate))
-
-# Another example
-mystate <- "Maryland"
-vname <- "% low income"
-xmd <- ejamit(fips = fips_counties_from_statename(mystate))
-ggblanket::gg_col(data = xmd$results_bysite,
-                  y = pctlowinc,
-                  x = siteid, 
-                  title = paste0(vname, ' by County in ', mystate),
-                  y_title = vname
-                  )
-```
+## More
 
 ### Specify points (where you want to center the circular buffers)
 
@@ -204,7 +179,7 @@ You can define circular buffers around a set of EPA-regulated facilities in a fe
 Quick map of EPA-regulated facilities in one industrial category, which you can click on to see popup windows about sites.
 
 ```{r}
-mapfast(mysites <- frs_from_naics("smelt")) # may be slow the 1st time, if it lazyloads frs dataset
+mapfast(frs_from_naics("smelt")) # may be slow the 1st time, if it lazyloads frs dataset
 ```
 
 (but note that this FRS dataset lacks NAICS for most facilities!)
@@ -242,7 +217,7 @@ print(
 Map of facilities in an industry, plus popups with links to each facility in ECHO and EJScreen
 
 ```{r}
-EJAMejscreenapi::mapfast(mysites)
+mapfast(mysites)
 ```
 
 NAICS/industry categories
@@ -315,8 +290,8 @@ sitepoints2
 Use test points in examples that comes with the package
 
 ```{r testpoints, eval=TRUE, include=TRUE}
-EJAM::testpoints_100_dt |> head(2) # data.table, in this package
-sitepoints100 <- data.table::copy(EJAM::testpoints_100_dt)  # [1:5, ]
+testpoints_100 |> head(2) # data.table, in this package
+sitepoints100 <- data.table::copy(testpoints_100)  # [1:5, ]
 head(sitepoints100, 3)
 ```
 
@@ -343,6 +318,8 @@ radius <- 3 # radius (in miles).  5 km = 3.1 miles, 10 km = 6.2 miles
 -   **getblocksnearby()** takes a set of points (e.g., facilities) and finds the Census blocks near each. Sample input is in testpoints_100, and sample output is in testoutput_getblocksnearby_10pts_1miles
 
 -   **doaggregate()** takes the list of blocks near each point, joins it to blockgroup indicators like from EJScreen, and aggregates at each buffered point as well as for the overall set of unique blocks (residents). Sample input is in testoutput_getblocksnearby_10pts_1miles
+
+## SPEED CHECK
 
 ### Use ejamit( ) to get results in one step
 
@@ -375,21 +352,59 @@ cbind(overall = as.list( out2$results_overall[ , ..names_d_subgroups]))
  
 mapfast(out2$results_bysite, radius = radius)
 
-DT::datatable(out2$results_bysite, escape = FALSE, rownames=FALSE)
+DT::datatable(out2$results_bysite, escape = FALSE, rownames = FALSE)
 
 ```
 
-See summary stats about the indicators
+### Specify Places or Shapes
+
+#### Polygons in shapefiles as the places to compare
+
+You can upload polygons in a shapefile, and use EJAM to analyze them. See the Shiny app.
+
+#### Counties as the places to compare - DEBUGGING STILL
+
+You can compare places defined by FIPS code, such as a group of US Counties.
 
 ```{r}
-outsum <-  batch.summarize(
-  data.frame(out2$results_bysite), 
-  data.frame(out2$results_bysite)
-)
+# Compare all Counties in a State, using EJAM indicators
 
-round(outsum$rows[,names_d],2)
-round(outsum$rows[,names_d_pctile],2)
+mystate <- "Delaware"
+fips_counties_from_statename(mystate)
 
+# debugging still...
+# x <- ejamit(fips = fips_counties_from_statename(mystate)) # radius not used
+
+#round(t(x$results_summarized$rows)[,1:6],2)
+#t(x$results_bysite[ , c(
+#  'siteid', 'pop', names_d_subgroups_ratio_to_state_avg), with = F])
+#
+#mapfast(x$results_bysite, 
+#        column_names = c(
+#  'siteid', 'pop', names_d_subgroups_ratio_to_state_avg), 
+#        labels = c(
+#          'FIPS', 'Pop', names_d_subgroups_ratio_to_state_avg_friendly))
+
+#x$results_bysite$ratio.to.avg.Demog.Index
+
+ 
+# cnames <- get.county.info(x$results_bysite$siteid)$countyname
+#cnames <- c("Kent County", "New Castle County", "Sussex County")
+#cnames <- gsub(" County", "", cnames)
+
+#barplot(x$results_bysite$pctlowinc, names.arg = cnames, 
+#        main = paste0('% Low Income by County in ', mystate))
+
+# Another example
+#mystate <- "Maryland"
+#vname <- "% low income"
+#xmd <- ejamit(fips = fips_counties_from_statename(mystate))
+#ggblanket::gg_col(data = xmd$results_bysite,
+#                  y = pctlowinc,
+#                  x = siteid, 
+#                  title = paste0(vname, ' by County in ', mystate),
+#                  y_title = vname
+#                  )
 ```
 
 ### Get granular results step by step, and view details
@@ -399,15 +414,15 @@ round(outsum$rows[,names_d_pctile],2)
 About \< 1 second for 100 sites, but a few seconds for 1,000 sites, or roughly 500k / hour for this step
 
 ```{r}
-sitepoints <- data.table::copy(EJAM::testpoints_100_dt) 
+sitepoints <- data.table::copy(testpoints_100) 
 # or 
 # sitepoints <- testpoints_n(100,"block") # random points
+radius <- 3
 elapsed <- system.time({
   
-  sites2blocks <- EJAM::getblocksnearby(
+  sites2blocks <- getblocksnearby(
     sitepoints = sitepoints,
-    radius = radius,
-    quadtree = localtree
+    radius = radius
   )
   
 }) # end of timed function
@@ -432,13 +447,13 @@ plotblocksnearby(testpoints_n(1), radius = 3)
 ## Also could use this example intermediate step dataset 
 ## of n sites, with thousands of nearby blocks:
 # sites2blocks <- data.table::copy(testoutput_getblocksnearby_10pts_1miles)
-sitepoints <- data.table::copy(EJAM::testpoints_100_dt) 
-sites2blocks <- EJAM::getblocksnearby(sitepoints,radius,quadtree = localtree)
+sitepoints <- data.table::copy(testpoints_100) 
+sites2blocks <- getblocksnearby(sitepoints,radius,quadtree = localtree)
 names(sites2blocks)
 getblocks_summarize_blocks_per_site(sites2blocks) # print() shows more info returned invisibly
 getblocks_diagnostics(sites2blocks)
 # Use data.table package here
-
+library(data.table)
 # Very few blocks are within a radius of 1/4 mile.
 # Hundreds are often within 1 mile, but sometimes there are only a handful or even zero.
 s2b_stats <- sites2blocks[ , .(
@@ -452,46 +467,36 @@ setorder(s2b_stats, siteid)
 head(s2b_stats)
 
 # CDF of how many blocks are nearby a site
-plot(sort(s2b_stats$blocks_within_1mile), main="How many blocks are near each facility?", ylab="# of blocks (whose internal point is) within 1 mile of each facility", xlab=paste0(nrow(s2b_stats), " facilities ranked by # of blocks nearby"))
-abline(h=quantile(s2b_stats$blocks_within_1mile, probs = (0:4)* 0.25))
-abline(h=mean(s2b_stats$blocks_within_1mile), col="red")
+plot(sort(s2b_stats$blocks_within_1mile), 
+     main = "How many blocks are near each facility?", 
+     ylab = "# of blocks (whose internal point is) within 1 mile of each facility", 
+     xlab = paste0(nrow(s2b_stats), " facilities ranked by # of blocks nearby"))
+abline(h = quantile(s2b_stats$blocks_within_1mile, probs = (0:4) * 0.25))
+abline(h = mean(s2b_stats$blocks_within_1mile), col = "red")
 
 # Histogram of how many blocks are nearby a site
-hist(sites2blocks[,.N,by="siteid"][,N],20, xlab = "How many blocks are nearby?", ylab="Frequency (# of sites)", main = "A given site may have zero to hundreds of blocks nearby", sub="A typical site in this example has about 100 blocks nearby")
+hist(sites2blocks[,.N,by = "siteid"][,N],20, 
+     xlab = "How many blocks are nearby?", 
+     ylab = "Frequency (# of sites)", 
+     main = "A given site may have zero to hundreds of blocks nearby", 
+     sub = "A typical site in this example has about 100 blocks nearby")
 
-s2b_stats[,PGM_SYS_ACRNMS := NULL] # remove verbose column
-DT::datatable(s2b_stats,  rownames=FALSE)
+#  
+DT::datatable(s2b_stats,  rownames = FALSE)
 # more summaries showing there may be only 1 block or several hundred blocks within 1 mile
-quantile(s2b_stats$blocks_within_1mile, probs = (0:4)* 0.25)
+quantile(s2b_stats$blocks_within_1mile, probs = (0:4) * 0.25)
 t(summary(s2b_stats)) 
 
 # map the sites with popups about how many blocks were found near each
 if (!('siteid' %in% names(sitepoints))) {sitepoints$siteid <- seq.int(length.out = NROW(sitepoints))}
 s2b_stats <- merge(sitepoints, s2b_stats, by = "siteid")
-EJAMejscreenapi::mapfast(s2b_stats, radius = radius)
+mapfast(s2b_stats, radius = radius)
 
 # A 1 mile radius is huge within a dense urban area
-EJAMejscreenapi::mapfast(s2b_stats[87:88,], radius = radius)
+mapfast(s2b_stats[87:88,], radius = radius)
 
 # Within a 1 mile radius, the blocks found tend to be about 2/3 of a mile from the site at the center.
 summary(s2b_stats$avgDistance)
-```
-
-See map of all the block points nearby (i.e, inside the circular buffer surrounding a site)
-
-```{r}
-x <- merge( sites2blocks, blockpoints )
-setnames(x, 'lat', 'blocklat')
-setnames(x, 'lon', 'blocklon')
-x <- merge(sitepoints, x, by = "siteid")
-x[,PGM_SYS_ACRNMS := NULL]
-x
-bplot = function(x,n, ... ) {
-  plot(x = x$blocklon[x$siteid == n], y = x$blocklat[x$siteid == n], ... )
-  points(x = x$lon[x$siteid == n], y = x$lat[x$siteid == n] , col = "red")}
-# for (i in 1:20) {
-bplot(x, sample(1:nrow(sitepoints),1)) # plots a random site surrounded by nearby block points
-# }
 ```
 
 #### doaggregate() will summarize indicators within each buffer and overall
@@ -528,25 +533,36 @@ cbind(overall = as.list( out$results_overall[ , ..names_ej_pctile]))
 #### Histogram of indicators distribution over all people across all sites
 
 ```{r}
-hist(out2$results_bysite$pctile.traffic.score,10, xlab="Local traffic scores (expressed as a percentile)", ylab="count of sites in each bin, out of 1,000 sites", freq = TRUE, main="Actual distribution of indicators nearby, as percentiles, vs flat line = USA overall");abline(h=nrow(out2$results_bysite)/10)
+hist(out$results_bysite$pctile.traffic.score, 10, xlab = "Local traffic scores (expressed as a percentile)", 
+     ylab = "count of sites in each bin, out of 1,000 sites", freq = TRUE, 
+     main = "Actual distribution of indicators nearby, as percentiles, vs flat line = USA overall")
+abline(h = nrow(out$results_bysite)/10)
 ```
 
 #### Compare to results from EJScreen API
 
 ```{r}
-sitepoints <- testpoints_1000_dt
+sitepoints <- testpoints_1000 
 radius <- 1
 
-# outapi2 <- EJAMejscreenapi::ejscreenapi_plus(sitepoints[1:5, ], radius = radius, on_server_so_dont_save_files = T)
-outapi <- (ejscreenit(sitepoints[1:5, ], radius = radius, nosave = T, nosee = T, interactiveprompt = F))$table
-cbind(as.list(outapi[1, ]))
+# outapi2 <- ejscreenapi_plus(sitepoints[1:5, ], radius = radius, on_server_so_dont_save_files = T)
+
+## SLOW
+# outapi <- (ejscreenit(sitepoints[1:5, ], 
+#                      radius = radius, 
+#                      nosave = T, nosee = T, 
+#                      interactiveprompt = F))$table
+#
+#cbind(as.list(outapi[1, ]))
 
 outejam <- ejamit(sitepoints =  sitepoints[1:5, ], radius = radius)
-setdiff( names(outapi), names(outejam$results_overall))
+
+#setdiff( names(outapi), names(outejam$results_overall))
 cat("----------------\n")
-setdiff_yx( names(outapi), names(outejam$results_overall))
+#setdiff_yx( names(outapi), names(outejam$results_overall))
+
+
 # links to report or map were named differently.
 #  
-# EJ pctiles, etc. might not be provided in EJAM output.
-# ratios counts of denominators, demog subgroups, etc. are in EJAM only.  
+# EJ pctiles, etc. might not be provided in EJAM output.   
 ```

@@ -263,17 +263,20 @@ app_server <- function(input, output, session) {
   # # }) %>%
   # #   bindEvent(input$latlontypedin_submit_button) # (updates only when the "Done entering points" button is pressed)  
   
-  output$test_textout <- renderText(ifelse(input$testing, "This is only a test \n", ""))
-  output$test_textout2 = renderText(ifelse(input$testing, paste0(" ss_choose_method        input is ", input$ss_choose_method,        '\n'), ""))
-  output$test_textout3 = renderText(ifelse(input$testing, paste0(" ss_choose_method_upload input is ", input$ss_choose_method_upload, '\n'), ""))
+  # output$test_textout <- renderText(ifelse(input$testing, "This is only a test \n", ""))
+  # output$test_textout2 = renderText(ifelse(input$testing, paste0(" ss_choose_method        input is ", input$ss_choose_method,        '\n'), ""))
+  # output$test_textout3 = renderText(ifelse(input$testing, paste0(" ss_choose_method_upload input is ", input$ss_choose_method_upload, '\n'), ""))
 
+  
+  # DISABLED UNTIL FIXED
+  
   data_typedin_latlon <- reactive({
     #   ## wait for typed in data to be submitted, then return cleaned lat lon table data.frame, as data_typedin_latlon() which eventually becomes data_uploaded()
-    # req()
+      req(reactive_data1() )
     ext <- reactive_data1()  # NEED TO TEST THAT THIS IS ACTUALLY THE USER-EDITED OUTPUT OF THE MODULE   # ss_typedin_latlon()
     #   # ext <- data.frame( siteid=1, lat=0, lon=0) # dummy data for testing
     ###   # another approach, not used:   # ext <- DataEditR::data_edit(latlon_template)
-    
+
     ## Validate the lat lon values. If column names are found in lat/long alias comparison, clean and return the table of lat lon values
     if (any(tolower(colnames(ext)) %in% lat_alias) & any(tolower(colnames(ext)) %in% lon_alias)) {
       ext %>%
@@ -310,7 +313,7 @@ app_server <- function(input, output, session) {
     ## if column names are found in lat/long alias comparison, process
     if (any(tolower(colnames(ext)) %in% lat_alias) & any(tolower(colnames(ext)) %in% lon_alias)) {
       ext %>% 
-        EJAM::latlon_df_clean() #%>%   # This does latlon_infer() and latlon_as.numeric() and latlon_is.valid()
+         latlon_df_clean() #%>%   # This does latlon_infer() and latlon_as.numeric() and latlon_is.valid()
       #data.table::as.data.table()
       
     } else {

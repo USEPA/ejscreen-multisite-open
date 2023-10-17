@@ -181,7 +181,8 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
     #
     # But note looking past radius is NOT how EJScreen works, for buffer reports - it just fails to provide any result if no blockpoint is inside circle. (For proximity scores, which are different than circular buffer reports, EJScreen does look beyond radius, but not for circular zone report). Also, you would rarely get here even if avoidorphans set TRUE.
     # cat('about to check avoidorphans\n')
-    if ( avoidorphans && (NROW(res[[i]])  == 0)) {
+    if ( 1 == 0 ) { 
+    # if ( avoidorphans && (NROW(res[[i]])  == 0)) {
       if (!quiet) {cat("avoidorphans is TRUE, so avoiding reporting zero blocks nearby at site ", i, " by searching past radius of ", radius, " to maxradius of ", maxradius, "\n")}
       #search neighbors, allow for multiple at equal distance
       

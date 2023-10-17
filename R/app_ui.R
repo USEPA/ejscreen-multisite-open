@@ -22,14 +22,14 @@ app_ui  <- function(request) {
       includeCSS('www/ejam_styling.css'),
       
       # use friendlier message if user gets disconnected from server
-      disconnectMessage(), actionButton("disconnect", "Disconnect the app"),
-      disconnectMessage(
+      
+      shinydisconnect::disconnectMessage(
         text = "Sorry ... This app has stopped because of an error or a timeout. The app is still being tested and debugged. Also, if the app is left open with no interaction, then once a time limit is reached the server will disconnect to save resources.",
         refresh = "Click to Restart the App",
         background = "#FFFFFF", colour = "#444444", refreshColour = "darkgreen", overlayColour = "#000000", overlayOpacity = 0.5,
         width = 450, top = 50, size = 20, css = ""
-      ),
-      
+       ), actionButton("disconnect", "Disconnect the app"),
+    
       ### html header inserted from global.R ####
       html_header_fmt,
       
@@ -102,9 +102,9 @@ app_ui  <- function(request) {
               4,  # through about line 359
               h4('Specify Locations to Analyze', style = 'text-align: center;'),
               
-              textOutput('test_textout'),
-              textOutput('test_textout2'),
-              textOutput('test_textout3'),
+              # textOutput('test_textout'),
+              # textOutput('test_textout2'),
+              # textOutput('test_textout3'),
               
               ## input: use CATEGORIES of sites, or upload LOCATIONS ? ####
               div(style = 'border: 1px solid #005ea2; padding: 10px;',
@@ -198,45 +198,45 @@ app_ui  <- function(request) {
                     
                     ## *Latitude Longitude* LOCATIONS TYPED IN (conditional panel)  ------------------------------------- - ####
                     
-                    conditionalPanel(
-                      condition = "input.ss_choose_method == 'upload' && input.ss_choose_method_upload == 'latlontypedin'",
-                      ### input: Type into a table, a few facility lat/longs 
-                      ## _+++ MODULE_UI_latlontypedin  #### 
-                      tags$p("Enter / View / Edit latitude(s) & longitude(s) of point(s) to analyze"),
-                      column(
-                        6,
-                        ## on button click, show modal with DT table of lat lon values
-                        actionButton('show_latlontypedin_module_button', label = "Enter lat lon values on screen", class = 'usa-button usa-button--outline'), 
-                        shinyBS::bsModal(
-                          trigger = 'show_latlontypedin_module_button',
-                          id = 'view_latlontypedin',
-                          size = 'large',
-                          title = 'Location data', 
-                          helpText('Click or double-click a cell to edit. Right-click to add/remove rows or undo. Click-drag to move a row.'),
-                          # p("Click or double-click a cell to edit."), p("Right-click to add/remove rows or undo. Click-drag to move a row."),  
-                          br(),
-                          
-                          MODULE_UI_latlontypedin(id = "pts_entry_table1"),  # this shows the data entry table here
-                          
-                          # actionButton('latlontypedin_submit_button', label = 'Done entering points', class = 'usa-button usa-button--outline'),
-                          ## use download buttons for speed and handling larger data
-                          # downloadButton('download_preview_data_csv', label = 'CSV',   class = 'usa-button'),
-                          # downloadButton('download_preview_data_xl',  label = 'Excel', class = 'usa-button'),
-                          # dataTableOutput("distTable"), # for example, you could put outputs here like this
-                          # verbatimTextOutput("test_textout"),                          
-                          br()
-                        ),
-                      ),
-                      # tags$span(
-                      #   tags$ul(
-                      #     tags$li('Required Columns: lat, lon'),
-                      #     tags$li('Optional Columns: siteid')
-                      #   )
-                      # ),
-                      # actionButton('latlon_help', label='More Info', class = 'usa-button usa-button--outline'),
-                      # HTML(latlon_help_msg)
-                      br()
-                    ),     # end   latlontypedin   conditionalPanel
+                    # conditionalPanel(
+                    #   condition = "input.ss_choose_method == 'upload' && input.ss_choose_method_upload == 'latlontypedin'",
+                    #   ### input: Type into a table, a few facility lat/longs 
+                    #   ## _+++ MODULE_UI_latlontypedin  #### 
+                    #   tags$p("Enter / View / Edit latitude(s) & longitude(s) of point(s) to analyze"),
+                    #   column(
+                    #     6,
+                    #     ## on button click, show modal with DT table of lat lon values
+                    #     actionButton('show_latlontypedin_module_button', label = "Enter lat lon values on screen", class = 'usa-button usa-button--outline'), 
+                    #     shinyBS::bsModal(
+                    #       trigger = 'show_latlontypedin_module_button',
+                    #       id = 'view_latlontypedin',
+                    #       size = 'large',
+                    #       title = 'Location data', 
+                    #       helpText('Click or double-click a cell to edit. Right-click to add/remove rows or undo. Click-drag to move a row.'),
+                    #       # p("Click or double-click a cell to edit."), p("Right-click to add/remove rows or undo. Click-drag to move a row."),  
+                    #       br(),
+                    #       
+                    #       MODULE_UI_latlontypedin(id = "pts_entry_table1"),  # this shows the data entry table here
+                    #       
+                    #       # actionButton('latlontypedin_submit_button', label = 'Done entering points', class = 'usa-button usa-button--outline'),
+                    #       ## use download buttons for speed and handling larger data
+                    #       # downloadButton('download_preview_data_csv', label = 'CSV',   class = 'usa-button'),
+                    #       # downloadButton('download_preview_data_xl',  label = 'Excel', class = 'usa-button'),
+                    #       # dataTableOutput("distTable"), # for example, you could put outputs here like this
+                    #       # verbatimTextOutput("test_textout"),                          
+                    #       br()
+                    #     ),
+                    #   ),
+                    #   # tags$span(
+                    #   #   tags$ul(
+                    #   #     tags$li('Required Columns: lat, lon'),
+                    #   #     tags$li('Optional Columns: siteid')
+                    #   #   )
+                    #   # ),
+                    #   # actionButton('latlon_help', label='More Info', class = 'usa-button usa-button--outline'),
+                    #   # HTML(latlon_help_msg)
+                    #   br()
+                    # ),     # end   latlontypedin   conditionalPanel
                     ################################################################# #
                     
                     ## *Shapefile* LOCATIONS Uploads (conditional panel)  ------------------------------------- - ####

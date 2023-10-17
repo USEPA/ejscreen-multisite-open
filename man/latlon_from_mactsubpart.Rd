@@ -7,13 +7,15 @@ Get point locations for US EPA-regulated facilities that have
 sources subject to Maximum Achievable Control Technology (MACT) standards
 under the Clean Air Act.}
 \usage{
-latlon_from_mactsubpart(subpart)
+latlon_from_mactsubpart(subpart, include_if_no_latlon = FALSE)
 }
 \arguments{
 \item{subpart}{vector of one or more strings indicating the
 Subpart of CFR Title 40 Part 63 that covers the source category
 of interest, such as "FFFF" - see for example,
 \url{https://www.ecfr.gov/current/title-40/part-63/subpart-FFFF}}
+
+\item{include_if_no_latlon}{logical - many in the database lack lat lon values but have a MACT code}
 }
 \value{
 a table of lat, lon, subpart, etc. for US EPA FRS sites with that MACT code
