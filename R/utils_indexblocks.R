@@ -6,7 +6,7 @@
 #'   but then it takes time each time a developer rebuilds/installs the package or others that load EJAM.
 #'   
 #' It also has to happen in global.R if it has not already.
-#' @return Side effect is it creates the index in memory
+#' @return Returns TRUE when done. Side effect is it creates the index in memory.
 #' @export
 #'
 indexblocks <- function() {
@@ -31,5 +31,5 @@ indexblocks <- function() {
   } else {
     cat('The index of Census block groups localtree index of blocks appears to have been created.\n')
   }
-  
+  return(TRUE)
 }

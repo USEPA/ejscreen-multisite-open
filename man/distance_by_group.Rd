@@ -43,6 +43,8 @@ or exactly on top of the internal point of the block, in which case zero would n
 appropriate estimate of the distance, hence this adjustment is made in EJAM getblocksnearby()
 }
 \details{
+see examples in \code{\link[=plot_distance_cdf_by_group]{plot_distance_cdf_by_group()}}
+
 Note on Avg Distance and range of distances in each Demog group, & \%D as function of distance:
 
 We have info on each blockgroup near each site, which means some small \% of those bgs are duplicated in this table:

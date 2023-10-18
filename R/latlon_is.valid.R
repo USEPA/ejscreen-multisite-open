@@ -101,12 +101,6 @@ latlon_is.islandareas <- function(lat, lon)  {
 #' @export
 #'
 latlon_is.valid <- function(lat, lon, quiet = TRUE) {
-  
-  if (missing(lon)) {
-    # maybe user entered a data.frame or data.table
-    
-    
-  }
   # assume none bad until proven otherwise
   bad         <- rep(FALSE, length(lat))
   

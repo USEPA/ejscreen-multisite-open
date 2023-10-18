@@ -13,16 +13,18 @@ app_ui  <- function(request) {
     # . ### #
     # _____App UI fluidPage starts here _______ ####
     fluidPage(
+      
       ### enable JavaScript, CSS   ####
       #   functionality (such as resetting inputs) etc.
       shinyjs::useShinyjs(),
       ## javascript function for jumping to top of screen
       shinyjs::extendShinyjs(text = "shinyjs.toTop = function() {window.scrollTo(0, 0);}", functions = "toTop"),
+      # For info on using javascript in shiny apps,
+      #   see  https://deanattali.com/shinyjs/ and https://connect.thinkr.fr/js4shinyfieldnotes/js-in-shiny.html  
       ## change selected tab color - #005ea2 matches blue on rest of website
       includeCSS('www/ejam_styling.css'),
       
       # use friendlier message if user gets disconnected from server
-      
       shinydisconnect::disconnectMessage(
         text = "Sorry ... This app has stopped because of an error or a timeout. The app is still being tested and debugged. Also, if the app is left open with no interaction, then once a time limit is reached the server will disconnect to save resources.",
         refresh = "Click to Restart the App",

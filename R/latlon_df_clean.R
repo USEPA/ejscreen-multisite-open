@@ -21,13 +21,13 @@ latlon_df_clean <- function(df) {
     df$lat <- latlon_as.numeric(df$lat)
   } else {
     warning('lat or lon column cannot be inferred from colnames of df')
-    }
+  }
   
   # validate, to some extent -- are the lat lon plausible values?
   ok <- latlon_is.valid(lat = df$lat, lon = df$lon)
   if (any(!ok)) {
     # warning and console msg are done in latlon_is.valid()
-
+    
     ## convert invalid latlons to NA
     df[!ok, c('lat','lon')] <- NA
   }
