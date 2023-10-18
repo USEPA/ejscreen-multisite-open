@@ -1,3 +1,14 @@
+#' dupeRfiles
+#' utility for developer to find similarly named .R files in 2 separate folders of source code,
+#'   whether or not they are packages.
+#' 
+#' see [dupenames()] for when they are all packages.
+#' 
+#' @param folder1 path
+#' @param folder2 path
+#'
+#' @export
+#'
 dupeRfiles <- function(folder1 = './R', folder2 = '../EJAM/R') {
   cat("Comparing .R files in ", folder1, ", to the files in ", folder2, "\n\n")
   docs1 <- list.files(folder1)
