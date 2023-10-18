@@ -17,25 +17,27 @@ knitr::opts_chunk$set(eval = FALSE)
 ```
 
 ```{r, echo=FALSE}
-## *Developer note on building and updating this vignette*
 #
-#-   *Note this vignette needs to be updated - some function names have changed since it was drafted.*
-#-   *See important info at <https://r-pkgs.org/vignettes.html#sec-vignettes-how-built>*
-#-   *Vignette at EJAM\vignettes\EJAM-vignette.html* does not use devtools::document() to build it?
-
-#-   *THIS DID WORK:* 
-
-#  rmarkdown::render("vignettes/EJAM-vignette.Rmd") 
-
-#-   *See <https://docs.ropensci.org/postdoc/> for a quick easy way to create html help on a pkg. postdoc::render_package_manual('PKGNAME')*
+#  *>>>>>>>>>> Developer note on updating this vignette <<<<<<<<<<<*
 #
+#  -   *TO UPDATE THIS VIGNETTE:* 
+#
+#    - *This vignette must be regularly tested/edited*
+#
+#    - Do this...   rmarkdown::render("vignettes/EJAM-vignette.Rmd") 
+#
+#  -   *See <https://docs.ropensci.org/postdoc/> for quick way to make html help on a pkg. Do this...   postdoc::render_package_manual('PKGNAME')*
+
+#  -   *See <https://r-pkgs.org/vignettes.html#sec-vignettes-how-built>*
+#
+#  -   *Vignette is in EJAM\vignettes\EJAM-vignette.html*
 ```
 
 # Quick start for the web app
 
 ## Trying out the EJAM web app
 
-The complete version of the app is not on a server as of 10/2023, but a working demo of the most basic feature is on a staging server at [EJAM Lite (Demo/Test on Staging Server)](https://rstudio-connect.dmap-stage.aws.epa.gov/content/725e3761-3dc1-4012-b07c-23126063da97/ "https://rstudio-connect.dmap-stage.aws.epa.gov/content/725e3761-3dc1-4012-b07c-23126063da97/"){.uri target="_blank"}.
+The complete version of the app is not on a server as of 10/2023, but a working demo of the most basic feature is on a staging server at [EJAM Lite (Demo/Test on Staging Server)](https://rstudio-connect.dmap-stage.aws.epa.gov/content/725e3761-3dc1-4012-b07c-23126063da97/ "https://rstudio-connect.dmap-stage.aws.epa.gov/content/725e3761-3dc1-4012-b07c-23126063da97/"){.uri target="_blank" rel="noreferrer noopener"}.
 
 The EJAM R package and app are in active development. The latest current version can be installed from the github USEPA github repository. It can be installed locally as an R package, and the data or functions can be used even without launching the shiny app interface. This is work in progress, so not everything may be working as changes are made on the staging server or GitHub version.
 
@@ -47,15 +49,15 @@ Note that the demo app takes a long time (up to a full minute perhaps) to start 
 
 ### Install the EJAM R package and related packages
 
-Essential packages only available on the [USEPA github](https://github.com/USEPA/EJAM "github.com/USEPA/EJAM"){.uri target="_blank"} (not CRAN) are:
+Essential packages only available on the [USEPA github](https://github.com/USEPA/EJAM "github.com/USEPA/EJAM"){.uri target="_blank" rel="noreferrer noopener"} (not CRAN) are:
 
--   [EJAM](https://github.com/USEPA/EJAM#readme "github.com/USEPA/EJAM"){.uri target="_blank"}
--   [EJAMejscreenapi](https://github.com/USEPA/EJAMejscreenapi#readme "github.com/USEPA/EJAMejscreenapi"){.uri target="_blank"}
--   [EJAMbatch.summarizer](https://github.com/USEPA/EJAMbatch.summarizer#readme "github.com/USEPA/EJAMbatch.summarizer"){.uri target="_blank"}
+-   [EJAM](https://github.com/USEPA/EJAM#readme "github.com/USEPA/EJAM"){.uri target="_blank" rel="noreferrer noopener"}
+-   [EJAMejscreenapi](https://github.com/USEPA/EJAMejscreenapi#readme "github.com/USEPA/EJAMejscreenapi"){.uri target="_blank" rel="noreferrer noopener"}
+-   [EJAMbatch.summarizer](https://github.com/USEPA/EJAMbatch.summarizer#readme "github.com/USEPA/EJAMbatch.summarizer"){.uri target="_blank" rel="noreferrer noopener"}
 
-In R/RStudio, clone and build/ install from source the EJAM package and related ones from the [EJAM GitHub Repository (must be at EPA or using VPN)](https://github.com/USEPA/EJAM/#readme "https://github.com/USEPA/EJAM/#readme"){.uri target="_blank"}, etc.
+In R/RStudio, clone and build/ install from source the EJAM package and related ones from the [EJAM GitHub Repository (must be at EPA or using VPN)](https://github.com/USEPA/EJAM/#readme "https://github.com/USEPA/EJAM/#readme"){.uri target="_blank" rel="noreferrer noopener"}, etc.
 
-Make sure you have installed EJAM (and packages it relies on, particularly `EJAMejscreenapi` and `EJAMbatch.summarizer` from the [EJAM GitHub Repository (must be at EPA or using VPN](https://github.com/USEPA/EJAM/#readme "https://github.com/USEPA/EJAM/#readme"){.uri target="_blank"}), but also packages listed in the `DESCRIPTION` file of the R package. Then you can use EJAM in RStudio -- either as a web app running locally or as a set of useful functions in the RStudio console.
+Make sure you have installed EJAM (and packages it relies on, particularly `EJAMejscreenapi` and `EJAMbatch.summarizer` from the [EJAM GitHub Repository (must be at EPA or using VPN](https://github.com/USEPA/EJAM/#readme "https://github.com/USEPA/EJAM/#readme"){.uri target="_blank" rel="noreferrer noopener"}), but also packages listed in the `DESCRIPTION` file of the R package. Then you can use EJAM in RStudio -- either as a web app running locally or as a set of useful functions in the RStudio console.
 
 ### Initialize: load/attach package, download block data, build index
 
