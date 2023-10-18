@@ -33,7 +33,7 @@
 #'   # See 100 sites and all blocks within 1 mile of each - 
 #'   # Note you have to specify radius here or it uses default that may not match intent 
 #'   # - and this is a bit slow
-#'   plotblocksnearby(testdata_ejamit_output_100pts_1mile$results_bysite[,.(siteid, lat,lon)], radius = 1) 
+#'   plotblocksnearby(testdata_ejamit_output_100pts_1miles$results_bysite[,.(siteid, lat,lon)], radius = 1) 
 #'   }
 plotblocksnearby <- function(sitepoints, radius=3, sites2blocks,  usemapfast=TRUE, ...) {
   if (radius > 32) {stop("cannot use radius >32 miles here")}

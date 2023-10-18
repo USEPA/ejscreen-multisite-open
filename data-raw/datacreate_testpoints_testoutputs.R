@@ -180,8 +180,8 @@ NULL
     
     out_data_ejamit <- ejamit(testpoints_data, radius = myrad)
     
-    # testdata_ejamit_output_1000pts_1mile
-    # testdata_ejamit_output_100pts_1mile
+    # testdata_ejamit_output_1000pts_1miles
+    # testdata_ejamit_output_100pts_1miles
     
     namebase <- "testoutput_ejamit_"
     

@@ -48,7 +48,7 @@ appropriate estimate of the distance, hence this adjustment is made in EJAM getb
  plot_distance_mean_by_group(y$results_bybg_people) # or distance_mean_by_group() synonym
  print(distance_by_group(y$results_bybg_people, 
    demogvarname = 'pctlowinc', demoglabel = 'Low Income'))
- distance_by_group_plots(y$results_bybg_people, 
+ distance_by_group_plot(y$results_bybg_people, 
    demogvarname = 'pctlowinc', demoglabel = 'Low Income')
  xyz = plot_distance_cdf_by_group(y$results_bybg_people) #  
  tail(round(xyz,3))

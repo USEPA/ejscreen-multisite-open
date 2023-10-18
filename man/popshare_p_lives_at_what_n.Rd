@@ -23,7 +23,7 @@ vector of numbers of sites, or text about that
 popshare_p_lives_at_what_n
 }
 \examples{
- x <- testdata_ejamit_output_100pts_1mile$results_bysite
+ x <- testdata_ejamit_output_100pts_1miles$results_bysite
  popshare_p_lives_at_what_pct(x$pop, p = 0.50, astext=TRUE)
  popshare_p_lives_at_what_n(  x$pop, p = c(0.50, 0.67, 0.80, 0.95))
  popshare_at_top_x_pct(       x$pop, x = c(0.25, 0.50, .90))

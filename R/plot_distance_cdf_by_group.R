@@ -25,14 +25,14 @@
 #'   cumulative count of demog groups at that block group's distance.
 #'   If returnwhat is "plotfilename" then it returns the full path including filename of a .png in a tempdir
 #'   If returnwhat is "plot" then it returns the plot object as needed for xls_formatting2()
-#' @seealso [distance_by_groups()] [ejamit()] for examples
+#' @seealso [distance_by_group()] [ejamit()] for examples
 #' @return see returnwhat parameter 
 #' @examples 
 #'  y <- ejamit(testpoints_100, radius = 3)
 #'  plot_distance_mean_by_group(y$results_bybg_people) # or distance_mean_by_group() synonym
 #'  print(distance_by_group(y$results_bybg_people, 
 #'    demogvarname = 'pctlowinc', demoglabel = 'Low Income'))
-#'  distance_by_group_plots(y$results_bybg_people, 
+#'  distance_by_group_plot(y$results_bybg_people, 
 #'    demogvarname = 'pctlowinc', demoglabel = 'Low Income')
 #'  xyz = plot_distance_cdf_by_group(y$results_bybg_people) #  
 #'  tail(round(xyz,3))
@@ -301,9 +301,9 @@ distance_cdf_by_group_plot <- function(results_bybg_people, radius_miles=round(m
 ############################################################################################################# # 
 
 
-#' distance_by_group_plots or plot_distance_cdf_by_group
+#' distance_by_group_plot or plot_distance_cdf_by_group
 #' @export
 #' @inherit plot_distance_cdf_by_group
-distance_by_group_plots <- function(...) {plot_distance_cdf_by_group(...)}
+distance_by_group_plot <- function(...) {plot_distance_cdf_by_group(...)}
 
 

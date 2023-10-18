@@ -131,12 +131,12 @@ distance_mean_by_group <- function(results_bybg_people,
 }
 ################################################################################# # 
 
-#' distance_by_groups - Avg distance of each demog group (of multiple groups)
+#' distance_by_group - Avg distance of each demog group (of multiple groups)
 #' Same as [plot_distance_mean_by_group()] but no plot by default
+#' @details see examples in [plot_distance_cdf_by_group()]
 #' @inherit plot_distance_mean_by_group
-#' @inherit plot_distance_cdf_by_group examples 
 #' @export
-distance_by_groups     <- function(results_bybg_people, 
+distance_by_group     <- function(results_bybg_people, 
                                    demogvarname=NULL, # namez$d, namez$d_subgroups),  
                                    demoglabel=NULL, returnwhat="table", graph=FALSE) {
   if (is.null(demogvarname)) {demogvarname <- c(names_d, names_d_subgroups)} # available from EJAM package. cannot safely put this info in the defaults of the functions without referring to pkg name but want to avoid doing that so this code will work even pkg not installed and just loaded data files and sourced code 
@@ -175,7 +175,7 @@ distance_by_groups     <- function(results_bybg_people,
 #' @param results_bybg_people data.table from doaggregate()$results_bybg_people
 #' @param demogvarname e.g., "pctlowinc"
 #' @param demoglabel e.g., "Low Income Residents"
-#' @seealso [plot_distance_mean_by_group()]  [distance_by_groups()]
+#' @seealso [plot_distance_mean_by_group()]  [distance_by_group()]
 #' @inherit plot_distance_cdf_by_group examples 
 #' @return list of 2 numbers: avg_distance_for_group and avg_distance_for_nongroup
 #'
