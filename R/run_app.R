@@ -2,7 +2,6 @@
 #' @description launch Shiny web app from RStudio
 #' @details 
 #' app_run_EJAM()                 is like [run_app()] from the EJAM package
-#' app_run_EJAMejscreenapi()      is like [EJAMejscreenapi::run_app()]
 #' @param ... arguments to pass to golem_opts. Maybe could be something like sitepoints="latlondata.xlsx" or sitepoints=[testpoints_100]
 #' See `?golem::get_golem_options` for more details.
 #' @inheritParams shiny::shinyApp

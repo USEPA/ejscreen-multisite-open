@@ -8,5 +8,5 @@
 list of demographic indicator names
 }
 \seealso{
-\link[EJAMejscreenapi:map_headernames]{EJAMejscreenapi::map_headernames} \link{names_d} \link{names_e} \link{namez}
+\link{map_headernames} \link{names_d} \link{names_e} \link{namez}
 }

@@ -4,7 +4,7 @@
 #' @param radius in miles
 #' @param ... passed to ejscreenit() but not tested and probably should not use/ not needed
 #'
-#' @return list of results from [EJAMejscreenapi::ejscreenit()]
+#' @return list of results from [ejscreenit()]
 #'   i.e., list of these: results_bysite (data.table), map, plot, us.ratios
 #' @export
 #'

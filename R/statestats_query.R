@@ -28,7 +28,7 @@
 #' ##   see all total counts (not just US means), 
 #' ##   demographics including subgroups, 
 #' ##   but not environmental indicators.
-#' t(round(EJAMbatch.summarizer::ustotals2(bg = EJAM::blockgroupstats),2))
+#' t(round(ustotals2(bg = blockgroupstats),2)) #  ustotals2 is from EJAMbatch.summarizer package
 #' t(blockgroupstats[, lapply(.SD, function(x) mean(x, na.rm=T)),  .SDcols= c(names_e, names_d)])
 #' 
 #' }
@@ -36,7 +36,7 @@
 statestats_query <- function(ST=sort(unique(EJAM::statestats$REGION)), 
                              varnames=c(EJAM::names_e, EJAM::names_d), 
                              PCTILES=NULL, dig=2) {
-  if (length(ST)==1) {
+  if (length(ST) == 1) {
     if ( substr(tolower(ST),1,2) == "us") {
       if (is.null(PCTILES)) {PCTILES <- c("mean", 0,5,50,80,90,95,99,100)}
       x <-  with(usastats, usastats[  PCTILE %in% PCTILES, c('REGION', 'PCTILE', varnames)])
@@ -97,12 +97,12 @@ statestats_querye <- function(ST=sort(unique(EJAM::statestats$REGION)), varnames
 #' @export
 #'
 usastats_query   <- function(varnames=c(EJAM::names_e, EJAM::names_d), PCTILES=NULL, dig=2) {
-  statestats_query(ST="us", varnames = varnames, PCTILES = PCTILES, dig = dig)
+  statestats_query(ST = "us", varnames = varnames, PCTILES = PCTILES, dig = dig)
   ## see all total counts too not just US means for just demographics not envt, including subgroups:
-  # t(round(EJAMbatch.summarizer::ustotals2(bg = EJAM::blockgroupstats),2))
+  # t(round( ustotals2(bg = blockgroupstats),2))
   # t(round(rbind(
-  #   EJAMbatch.summarizer::ustotals2(bg=ejscreen package file bg22), 
-  #   EJAMbatch.summarizer::ustotals2(bg = EJAM::blockgroupstats)
+  #   ustotals2(bg=ejscreen package file bg22), 
+  #    ustotals2(bg = blockgroupstats)
   # ),3))
 }
 
@@ -115,7 +115,7 @@ usastats_query   <- function(varnames=c(EJAM::names_e, EJAM::names_d), PCTILES=N
 #' @export
 #'
 usastats_querye  <- function(varnames=EJAM::names_e, PCTILES=NULL, dig=2) {
-   statestats_query(ST="us", varnames = varnames, PCTILES = PCTILES, dig = dig)
+   statestats_query(ST = "us", varnames = varnames, PCTILES = PCTILES, dig = dig)
 }
 
 #' usastats_queryd - convenient way to see USA mean, pctiles of DEMOGRAPHIC indicators from lookup table
@@ -126,7 +126,7 @@ usastats_querye  <- function(varnames=EJAM::names_e, PCTILES=NULL, dig=2) {
 #' @export
 #'
 usastats_queryd  <- function(varnames=EJAM::names_d, PCTILES=NULL, dig=2) {
-  statestats_query(ST="us", varnames = varnames, PCTILES = PCTILES, dig = dig)
+  statestats_query(ST = "us", varnames = varnames, PCTILES = PCTILES, dig = dig)
 }
 
 
@@ -136,8 +136,8 @@ usastats_queryd  <- function(varnames=EJAM::names_d, PCTILES=NULL, dig=2) {
 #'
 usastats_means <- function(...) {
   x = usastats_query(PCTILES = "mean", ...)
-  x$REGION=NULL; x$PCTILE=NULL # so t(x) wont make everything into character class
-  x=t(x)
-  colnames(x)="us.avg"
+  x$REGION = NULL; x$PCTILE = NULL # so t(x) wont make everything into character class
+  x = t(x)
+  colnames(x) = "us.avg"
   return(x)
   }

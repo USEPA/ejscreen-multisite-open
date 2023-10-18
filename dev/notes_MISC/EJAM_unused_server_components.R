@@ -43,7 +43,7 @@
 #     max.ratio.d <- max(ratio.to.us.d())
 #     max.name.d <- names(ratio.to.us.d())[which.max(ratio.to.us.d())]
 #     
-#     max.name.d.friendly <- EJAMbatch.summarizer::names_d_batch_friendly[which.max(ratio.to.us.d())]  # xxx
+#     max.name.d.friendly <- names_d_batch_friendly[which.max(ratio.to.us.d())]  # xxx from EJAMbatch.summarizer ::
 
 ############################################################################################################################################### #
 # > c(names_d_friendly, names_d_subgroups_nh_friendly)
@@ -60,7 +60,7 @@
 # [17] "% Multirace (two or more races), non-Hispanic"                          "% White, single race, non-Hispanic"        
 
 
-# > EJAMbatch.summarizer::names_d_batch_friendly     ** different sort order than above, and worded differently
+# >  names_d_batch_friendly # from EJAMbatch.summarizer ::   ** different sort order than above, and worded differently
 
 # [1] "Demog.Ind."                                                                          "Suppl Demog Index"                                                                  
 # [3] "% Low-inc."                                                                          "% People of Color"                                                           

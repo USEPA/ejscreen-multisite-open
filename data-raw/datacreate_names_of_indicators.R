@@ -55,7 +55,7 @@ subgroups_type <- c(  'nh', 'alone')[1]  # simple names without _nh or _alone sh
 #  and/or could recode later to use 1 big table, like A MERGED VERSION OF THESE:
 # 
 #  EJAMejscreenapi::map_headernames which is created from .xlsx using the script in /data-raw folder
-# older  EJAMbatch.summarizer::varnamesinfo22.rda  which is prob from EJAMbatch.summarizer/inst/map_batch_to_friendly_fieldnames_2022_EJAM.xlsx but needed a creation script in data-raw folder to clarify that
+# older  EJAMbatch.summarizer  ::  varnamesinfo22.rda  which is prob from EJAMbatch.summarizer/inst/map_batch_to_friendly_fieldnames_2022_EJAM.xlsx but needed a creation script in data-raw folder to clarify that
 #  EJAM::namez 
 #  ejscreen package file ejscreenformulas 
 
@@ -86,11 +86,11 @@ subgroups_type <- c(  'nh', 'alone')[1]  # simple names without _nh or _alone sh
 # To rename indicator variables ####
 
 #    to change names,   which function to use?
-# e.g. this  works but relies on ejscreen package file  pkg, and see EJAMbatch.summarizer::change... and fixnames and fixcolnames and fixnamestype etc. 
+# e.g. this  works but relies on ejscreen package file  pkg, and see older  EJAMbatch.summarizer function change... and fixnames and fixcolnames and fixnamestype etc. 
 # names(USA_2022)    <- ejscreen package file ejscreenformulas$Rfieldname[match(names(USA_2022),    ejscreen package file ejscreenformulas$gdbfieldname)] 
 # names(States_2022) <- ejscreen package file ejscreenformulas$Rfieldname[match(names(States_2022), ejscreen package file ejscreenformulas$gdbfieldname)]
 
-# similar to: EJAMbatch.summarizer::names_d_batch_friendly, EJAMbatch.summarizer::names_e_batch_friendly 
+# similar to: EJAMbatch.summarizer pkg objects names_d_batch_friendly, names_e_batch_friendly 
 
 ############################################################################## #
 

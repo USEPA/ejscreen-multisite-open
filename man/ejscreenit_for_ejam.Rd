@@ -15,7 +15,7 @@ ejscreenit_for_ejam(sitepoints, radius = 3, ...)
 \item{...}{passed to ejscreenit() but not tested and probably should not use/ not needed}
 }
 \value{
-list of results from \code{\link[EJAMejscreenapi:ejscreenit]{EJAMejscreenapi::ejscreenit()}}
+list of results from \code{\link[=ejscreenit]{ejscreenit()}}
 i.e., list of these: results_bysite (data.table), map, plot, us.ratios
 }
 \description{
