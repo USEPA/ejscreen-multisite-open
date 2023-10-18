@@ -341,14 +341,14 @@ xls_formatting2 <- function(overall, eachsite, longnames=NULL, formatted=NULL, b
   # writeData(wb, sheet = 1, x = x, startCol = 10)
   
   # recently how it ends up from e.g., doagg/ejamlite
-  # <a href="https://ejscreen.epa.gov/mapper/index.html?wherestr=40.70103,-75.12058", target="_blank">EJScreen Map</a>
+  # <a href="https://ejscreen.epa.gov/mapper/index.html?wherestr=40.70103,-75.12058", target="_blank" rel="noreferrer noopener">EJScreen Map</a>
   
   # output of ejamit()$results_bysite have a  EJScreen Report  column that has values like this:   
-  # <a href="https://ejscreen.epa.gov/mapper/EJscreen_SOE_report.aspx?namestr=&geometry=%7B%22spatialReference%22:%7B%22wkid%22:4326%7D,%22x%22:-122.64108,%22y%22:45.55001%7D&distance=1&unit=9035&areatype=&areaid=&f=report", target="_blank">EJScreen Report</a>
+  # <a href="https://ejscreen.epa.gov/mapper/EJscreen_SOE_report.aspx?namestr=&geometry=%7B%22spatialReference%22:%7B%22wkid%22:4326%7D,%22x%22:-122.64108,%22y%22:45.55001%7D&distance=1&unit=9035&areatype=&areaid=&f=report", target="_blank" rel="noreferrer noopener">EJScreen Report</a>
   
   # output from app_server code, ready to get sent to xls_formatting2(), is like this:
   #   url_ejscreen_report(    lat = d_upload$lat, lon =  d_upload$lon, radius = input$bt_rad_buff, as_html = TRUE)
-  # "<a href=\"https://ejscreen.epa.gov/mapper/EJscreen_SOE_report.aspx?namestr=&geometry=%7B%22spatialReference%22:%7B%22wkid%22:4326%7D,%22x%22:-103,%22y%22:42%7D&distance=3&unit=9035&areatype=&areaid=&f=report\", target=\"_blank\">EJScreen Report</a>"
+  # "<a href=\"https://ejscreen.epa.gov/mapper/EJscreen_SOE_report.aspx?namestr=&geometry=%7B%22spatialReference%22:%7B%22wkid%22:4326%7D,%22x%22:-103,%22y%22:42%7D&distance=3&unit=9035&areatype=&areaid=&f=report\", target=\"_blank\" rel=\"noreferrer noopener\">EJScreen Report</a>"
   
   # ### code from ejscreenapi that was to make these columns work, somewhat generic naming possible
   

@@ -114,7 +114,7 @@ mod_ejscreenapi_ui <- function(id, simpleradius_default_for_ui = 1, default_radi
                         # SITE SELECTION  _____ (LH column) ####
                         column(
                           4, 
-                          #  would need to fix this link to work from within this module: ***
+                          #  would need to fix this link and/or edit its text to be relevant for within this module. and add rel="noreferrer noopener" ***
                           # HTML(paste('<a href=\"', 'README.html', '\", target=\"_blank\">', 'About this app',  '</a>', sep = '')),
                           tags$br(), tags$br(),
                           verbatimTextOutput(outputId = ns("testinfo_sessionuser") ),
@@ -188,7 +188,6 @@ mod_ejscreenapi_ui <- function(id, simpleradius_default_for_ui = 1, default_radi
                           
                           shiny::uiOutput(ns('tabletips_button_ui')),
                           ##                                           shiny::actionButton(ns('tabletips_button'), 'Tip on using this table'), ## tips on using table ### # 
-                          # HTML(paste('<a href=\"', 'example_webpage.html', '\", target=\"_blank\">', 'Example of how a Webpage Link could go Here',  '</a>', sep = '')), # placeholder in case want this later
                           ## show table ##  ##
                           # #    show uploaded input table after an upload of points OR results once calculated    if that is most recent change
                           #                                DT::DTOutput(ns('rendered_results_table')) # DT::dataTableOutput(ns('rendered_results_table'))   
@@ -343,7 +342,7 @@ mod_ejscreenapi_server <- function(id,
       showModal(
         modalDialog(title = "Use ECHO facility search tools to specify list of sites",
                     echo_message,
-                    shiny::HTML(paste('<a href=\"', echo_url, '\", target=\"_blank\">', echo_url,  '</a>', sep = '')),
+                    shiny::HTML(paste('<a href=\"', echo_url, '\", target=\"_blank\" rel=\"noreferrer noopener\">', echo_url,  '</a>', sep = '')),
                     easyClose = TRUE)
       )
     }), input$echobutton)
@@ -484,7 +483,7 @@ mod_ejscreenapi_server <- function(id,
       }
       
       mapurl <- url_ejscreenmap(lat = pts_filecontents$lat, lon = pts_filecontents$lon)  # e.g.,  "https://ejscreen.epa.gov/mapper/index.html?wherestr=35.3827475,-86.2464592"
-      pts_filecontents$mapurl  <- paste0('<a href=\"', mapurl, '\", target=\"_blank\">EJScreen Map ', rownames(pts_filecontents), '</a>')
+      pts_filecontents$mapurl  <- paste0('<a href=\"', mapurl, '\", target=\"_blank\" rel=\"noreferrer noopener\">EJScreen Map ', rownames(pts_filecontents), '</a>')
       
       pts_filecontents
     }) # END OF pts() reactive 
@@ -962,7 +961,7 @@ mod_ejscreenapi_server <- function(id,
         modalDialog(
           title = "Using the interactive table of results",
           tabletips_message,
-          # HTML(paste('<a href=\"', echo_url, '\", target=\"_blank\">', echo_url,  '</a>', sep = '')),
+          # HTML(paste('<a href=\"', echo_url, '\", target=\"_blank\" rel=\"noreferrer noopener\">', echo_url,  '</a>', sep = '')),
           easyClose = TRUE 
         )
       )

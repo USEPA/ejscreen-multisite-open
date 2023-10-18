@@ -320,7 +320,7 @@ app_ui  <- function(request) {
                     
                     conditionalPanel(
                       condition = "input.ss_choose_method == 'dropdown' && input.ss_choose_method_drop == 'EPA_PROGRAM'",
-                      span('More info about these programs can be found here: ', a('https://www.epa.gov/frs/frs-data-sources', href = 'https://www.epa.gov/frs/frs-data-sources', target = '_blank')),
+                      span('More info about these programs can be found here: ', a('https://www.epa.gov/frs/frs-data-sources', href = 'https://www.epa.gov/frs/frs-data-sources', target = '_blank', rel = 'noreferrer noopener')),
                       br(),
                       ## input: select an EPA program from list ------------------------------------- - ------------------------------------- -
                       selectizeInput(inputId = 'ss_select_program', label = 'Pick an EPA program',

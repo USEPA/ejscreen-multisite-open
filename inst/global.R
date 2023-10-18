@@ -381,7 +381,7 @@ latlon_help_msg <- '
 
 echo_url <-  'https://echo.epa.gov/facilities/facility-search' # used in server.R and in message below
 echo_message <- shiny::HTML(paste0('To use the ECHO website to search for and specify a list of regulated facilities, 
-                                    <br>1) Go to ', '<a href=\"', echo_url, '\", target=\"_blank\">', echo_url,  '</a>', ' and <br>
+                                    <br>1) Go to ', '<a href=\"', echo_url, '\", target=\"_blank\" rel=\"noreferrer noopener\">', echo_url,  '</a>', ' and <br>
                                     2) Navigate website and select categories to include in data, then <br>  
                                     3) Under Search Criteria Selected-Facility Characteristics-Results View select <b>Data Table</b> and click <b>Search</b>, then <br>
                                     3) click Customize Columns, use checkboxes to include Latitude and Longitude, then <br>
