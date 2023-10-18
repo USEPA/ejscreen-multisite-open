@@ -34,7 +34,7 @@ plot_distance_mean_by_group <- function(results_bybg_people,
     # demoglabel <- c(namez$d_friendly, namez$d_subgroups_friendly)
   }
   if (is.null(demogvarname)) {demogvarname <- c(names_d, names_d_subgroups)} # available from EJAM package. cannot safely put this info in the defaults of the functions without referring to pkg name but want to avoid doing that so this code will work even pkg not installed and just loaded data files and sourced code 
-
+  
   if (!is.data.frame(results_bybg_people)) {
     warning('results_bybg_people must be a data.frame or data.table - returning empty results')
     return(NA)
@@ -108,7 +108,7 @@ plot_distance_mean_by_group <- function(results_bybg_people,
     x <- x[ , c('group', 'nearest', 'nearer', 'ratio', 'avg_distance_for_group', 'avg_distance_for_nongroup')]
     return(x)
   }
- 
+  
 }
 ################################################################################# # 
 
@@ -137,8 +137,8 @@ distance_mean_by_group <- function(results_bybg_people,
 #' @inherit plot_distance_mean_by_group
 #' @export
 distance_by_group     <- function(results_bybg_people, 
-                                   demogvarname=NULL, # namez$d, namez$d_subgroups),  
-                                   demoglabel=NULL, returnwhat="table", graph=FALSE) {
+                                  demogvarname=NULL, # namez$d, namez$d_subgroups),  
+                                  demoglabel=NULL, returnwhat="table", graph=FALSE) {
   if (is.null(demogvarname)) {demogvarname <- c(names_d, names_d_subgroups)} # available from EJAM package. cannot safely put this info in the defaults of the functions without referring to pkg name but want to avoid doing that so this code will work even pkg not installed and just loaded data files and sourced code 
   
   plot_distance_mean_by_group(

@@ -91,7 +91,7 @@ popshare_at_top_n = function(pop, n=10, astext=FALSE, dig=0) {
 #' @export
 #'
 popshare_p_lives_at_what_n <- function(pop, p, astext=FALSE, dig=0) {
-
+  
   if (!is.vector(pop)) {stop('pop must be a vector')}
   
   pop = sort(pop, decreasing = T)
@@ -100,7 +100,7 @@ popshare_p_lives_at_what_n <- function(pop, p, astext=FALSE, dig=0) {
   n_high = n_low + 1
   p_low  = frac[n_low]
   p_high = frac[n_high]
-    
+  
   sharetext      <- paste0( paste0(round(100 * p,      dig), "%"), collapse = ", ") 
   sharetext_low  <- paste0( paste0(round(100 * p_low,  dig), "%"), collapse = ", ") 
   sharetext_high <- paste0( paste0(round(100 * p_high, dig), "%"), collapse = ", ") 
@@ -112,7 +112,7 @@ popshare_p_lives_at_what_n <- function(pop, p, astext=FALSE, dig=0) {
   msg      <- paste0(ntext,      " places account for ", sharetext,      " of the total population (approx.)")
   msg_low  <- paste0(ntext_low,  " places account for ", sharetext_low,  " of the total population")
   msg_high <- paste0(ntext_high, " places account for ", sharetext_high, " of the total population")
-    
+  
   if (astext) {
     return(msg)
   } else {

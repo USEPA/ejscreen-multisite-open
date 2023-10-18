@@ -271,7 +271,7 @@ distance_cdf_by_group_plot <- function(results_bybg_people, radius_miles=round(m
   }
   x <- results_bybg_people # not a full slow copy... done by reference using data.table::
   data.table::setorder(x, distance_min_avgperson) 
-
+  
   # remove duplicated blockgroups, since here we do not need stats site by site, so use shorter distance for any bg that is near 2+ sites.
   x[ , distance_min_avgperson := min(distance_min_avgperson, na.rm = TRUE), by = "bgid"]
   x <- unique(x, by = "bgid")

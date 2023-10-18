@@ -8,7 +8,7 @@ Create localtree (a quadtree index of all US block centroids) in global environm
 indexblocks()
 }
 \value{
-Side effect is it creates the index in memory
+Returns TRUE when done. Side effect is it creates the index in memory.
 }
 \description{
 indexblocks

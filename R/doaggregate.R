@@ -137,7 +137,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   if (!data.table::is.data.table(sites2blocks)) {
     message('sites2blocks should be a data.table - converting into one')
     data.table::setDT(sites2blocks, key = c("blockid", "siteid", "distance"))
-    }
+  }
   if (any(!(c('siteid', 'blockid' ) %in% names(sites2blocks)))) {stop("sites2blocks must contain columns named siteid, blockid, and should have distance")}
   
   
@@ -159,8 +159,8 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
         warning('Values found in sites2blocks$distance were not but must be numeric - doaggregate() will treat them as zero values')
         radius <- 0
       } else {
-      radius <- round(max(sites2blocks$distance, na.rm = T), 1)
-      message('Inferring approximate radius is ', radius, ' miles, based on distances found.')
+        radius <- round(max(sites2blocks$distance, na.rm = T), 1)
+        message('Inferring approximate radius is ', radius, ' miles, based on distances found.')
       }
     } else {
       if ((length(radius) != 1) | (!is.numeric(radius)) | (radius < 0) ) {
@@ -338,9 +338,9 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
     by = "blockid"]
     
     if (anyNA(sites2blocks$proximityscore)) {message("Proximity scores were requested but set to Inf where distance=0 as when analyzing unbuffered polygons or FIPS")}
-
-      } else {
-        
+    
+  } else {
+    
     sites2blocks[, `:=`(       
       sitecount = .N,  # done again below, right? 
       # How far is closest site, for each unique block (resident, essentially, or actually avg resident in the block)? 
@@ -577,8 +577,8 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   # So, first join blockgroupstats necessary variables to the shorter sites2bgs_bysite:   
   
   if (include_ejindexes) { # was already set to FALSE if bgej not available
-      blockgroupstats <- merge(blockgroupstats, bgej, by = "bgid")
-      rm(bgej)
+    blockgroupstats <- merge(blockgroupstats, bgej, by = "bgid")
+    rm(bgej)
   }
   #   Remember that. . .
   # countcols     # like population count, add up within a buffer
@@ -1038,7 +1038,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   if (infer_sitepoints & !all(c("lat","lon") %in% names(results_bysite))) {
     sitepoints <- sites2blocks[ , list(lat = mean(lat), lon = mean(lon)), by = "siteid"]
     # *** but sitepoints is never used. where should these lat lon values be put, and is this method so inaccurate that it is not worthwhile? trilaterate was not accurate either.
-  # sites2states # ??? see 1339 later where lat and lon added to results. 
+    # sites2states # ??? see 1339 later where lat and lon added to results. 
   }
   
   # could use lat,lon to create URLs links to report on each site   ####
@@ -1213,10 +1213,10 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   #  (as popwtd mean of sites state pctiles - which seems bizarre but not sure how else you would do it)
   # The overall state percentile is either simply the pop wtd mean of state percentiles of each site’s average person’s suppl demog index across all the sites,
   # or, other idea:
-   #   maybe is the percentile of the raw average compared to adjusted national percentiles table,
+  #   maybe is the percentile of the raw average compared to adjusted national percentiles table,
   # where that table is adjusted based on what they would be if those states had the pop counts seen at the sites analyzed, which is more complicated
   # – essentially construct a nation that has the same state populations as the nearby populations analyzed? something like that.
-    
+  
   # now that site-specific percentiles have been calculated and looked up,
   # you can calculate that overall state percentiles from those as a pop wtd mean (not by looking them up from raw scores as would be done for US pctiles, since each site may be in its own state)
   # xxx
@@ -1226,7 +1226,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   
   # redo these in data.table:: style, for speed? but it is just a 1-row result  *********************************
   results_overall <- cbind(results_overall, state.pctile.cols_overall)
-   
+  
   ############################################################################## #   
   #
   # US and STATE AVERAGES ####
@@ -1301,36 +1301,36 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   ############################################################################## #   
   
   if (calculate_ratios) {
-  # RATIO to AVERAGE - (do not duplicate IN server code!)  ####
-  #
-  #    app_server code is/was duplicating efforts and trying to calculate these itself !!
-  
-  ## RATIOS TO US AVG ###
-  ratios_to_avg_bysite  <- 
-    results_bysite[  , ..names_these] / 
-    results_bysite[, ..names_these_avg]
-  
-  ratios_to_avg_overall <- 
-    results_overall[  , ..names_these] /          # AVERAGE PERSON score OVERALL, RIGHT?
-    results_overall[, ..names_these_avg]
-  
-  ## RATIOS TO STATE AVG ###
-  ratios_to_state_avg_bysite  <- 
-    results_bysite[  , ..names_these] / 
-    results_bysite[, ..names_these_state_avg]
-  
-  ratios_to_state_avg_overall <- 
-    results_overall[  , ..names_these] / 
-    results_overall[, ..names_these_state_avg]
-  
-  # add those all to results tables
-  colnames(ratios_to_avg_bysite)  <- names_these_ratio_to_avg
-  colnames(ratios_to_avg_overall) <- names_these_ratio_to_avg
-  colnames(ratios_to_state_avg_bysite)  <- names_these_ratio_to_state_avg
-  colnames(ratios_to_state_avg_overall) <- names_these_ratio_to_state_avg
-  
-  results_bysite  <- cbind(results_bysite,  ratios_to_avg_bysite,  ratios_to_state_avg_bysite)   # collapse:: has a faster way than cbind here!
-  results_overall <- cbind(results_overall, ratios_to_avg_overall, ratios_to_state_avg_overall)
+    # RATIO to AVERAGE - (do not duplicate IN server code!)  ####
+    #
+    #    app_server code is/was duplicating efforts and trying to calculate these itself !!
+    
+    ## RATIOS TO US AVG ###
+    ratios_to_avg_bysite  <- 
+      results_bysite[  , ..names_these] / 
+      results_bysite[, ..names_these_avg]
+    
+    ratios_to_avg_overall <- 
+      results_overall[  , ..names_these] /          # AVERAGE PERSON score OVERALL, RIGHT?
+      results_overall[, ..names_these_avg]
+    
+    ## RATIOS TO STATE AVG ###
+    ratios_to_state_avg_bysite  <- 
+      results_bysite[  , ..names_these] / 
+      results_bysite[, ..names_these_state_avg]
+    
+    ratios_to_state_avg_overall <- 
+      results_overall[  , ..names_these] / 
+      results_overall[, ..names_these_state_avg]
+    
+    # add those all to results tables
+    colnames(ratios_to_avg_bysite)  <- names_these_ratio_to_avg
+    colnames(ratios_to_avg_overall) <- names_these_ratio_to_avg
+    colnames(ratios_to_state_avg_bysite)  <- names_these_ratio_to_state_avg
+    colnames(ratios_to_state_avg_overall) <- names_these_ratio_to_state_avg
+    
+    results_bysite  <- cbind(results_bysite,  ratios_to_avg_bysite,  ratios_to_state_avg_bysite)   # collapse:: has a faster way than cbind here!
+    results_overall <- cbind(results_overall, ratios_to_avg_overall, ratios_to_state_avg_overall)
   }
   # ________________________________________________________________________############ #  ######################## 
   
