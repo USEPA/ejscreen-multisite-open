@@ -2,14 +2,14 @@
 % Please edit documentation in R/sic_categories.R
 \name{sic_categories}
 \alias{sic_categories}
-\title{See the names of SIC industrial categories and their codes
+\title{sic_categories - See the names of SIC industrial categories and their codes
 Easy way to view, in RStudio console, the SIC categories.
 SIC all are 4-digit codes, like 7218 - Industrial launderers}
 \usage{
 sic_categories()
 }
 \description{
-See the names of SIC industrial categories and their codes
+sic_categories - See the names of SIC industrial categories and their codes
 Easy way to view, in RStudio console, the SIC categories.
 SIC all are 4-digit codes, like 7218 - Industrial launderers
 }

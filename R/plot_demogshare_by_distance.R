@@ -36,11 +36,11 @@ plot_demogshare_by_distance <- function(results_bybg_people, demogvarname=names_
        )
   
   linefit <- function(x, y, type='b', cex=4, show.lowess=TRUE, show.lm=TRUE, show.line=TRUE) {
-    if (show.lowess) { lines(lowess(x, y), type=type, col="blue", pch='.', cex=cex) } # lowess line (x, y)
-    if (show.lm)     { abline(lm(y ~ x, na.action=na.exclude), col="dark green") } # regression line (y ~ x)
-    if (show.line)   { abline(coef(line(x,y)), col='light green') }
+    if (show.lowess) { lines(lowess(x, y), type = type, col = "blue", pch = '.', cex = cex) } # lowess line (x, y)
+    if (show.lm)     { abline(lm(y ~ x, na.action = na.exclude), col = "dark green") } # regression line (y ~ x)
+    if (show.line)   { abline(coef(line(x,y)), col = 'light green') }
   }
-  linefit(xvals, yvals, type='b', cex=4, show.lowess=show.lowess, show.lm=show.lm, show.line=show.line)
+  linefit(xvals, yvals, type = 'b', cex = 4, show.lowess = show.lowess, show.lm  = show.lm, show.line = show.line)
   # lines(lowess(xvals, yvals), type= 'b', col="blue", pch='.', cex=4)
   
 }

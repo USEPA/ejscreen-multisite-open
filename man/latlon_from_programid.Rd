@@ -2,7 +2,7 @@
 % Please edit documentation in R/latlon_from_programid.R
 \name{latlon_from_programid}
 \alias{latlon_from_programid}
-\title{Get lat lon, Registry ID, and NAICS, for given FRS Program System ID}
+\title{latlon_from_programid - Get lat lon, Registry ID, and NAICS, for given FRS Program System ID}
 \usage{
 latlon_from_programid(programid)
 }
@@ -13,7 +13,7 @@ latlon_from_programid(programid)
 data.table with lat  lon  REGISTRY_ID  program   pgm_sys_id
 }
 \description{
-Get lat lon, Registry ID, and NAICS, for given FRS Program System ID
+latlon_from_programid - Get lat lon, Registry ID, and NAICS, for given FRS Program System ID
 }
 \details{
 The ID is the identification number, such as the permit number,

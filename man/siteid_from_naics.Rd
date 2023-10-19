@@ -2,7 +2,7 @@
 % Please edit documentation in R/latlon_from_naics.R
 \name{siteid_from_naics}
 \alias{siteid_from_naics}
-\title{Find EPA-regulated facilities in FRS by NAICS code (industrial category)
+\title{latlon_from_naics - Find EPA-regulated facilities in FRS by NAICS code (industrial category)
 Get lat lon, Registry ID, given NAICS industry code(s)
 Find all EPA Facility Registry Service (FRS) sites with this exact NAICS code (not subcategories)}
 \usage{
@@ -17,7 +17,7 @@ A data.table (not just data.frame) with columns called
 lat, lon, REGISTRY_ID, NAICS (but see the id_only parameter)
 }
 \description{
-Find EPA-regulated facilities in FRS by NAICS code (industrial category)
+latlon_from_naics - Find EPA-regulated facilities in FRS by NAICS code (industrial category)
 Get lat lon, Registry ID, given NAICS industry code(s)
 Find all EPA Facility Registry Service (FRS) sites with this exact NAICS code (not subcategories)
 }

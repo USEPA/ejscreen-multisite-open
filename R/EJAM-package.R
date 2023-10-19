@@ -1,5 +1,5 @@
 #' @docType package
-#' @title Environmental Justice (EJ) Analysis Multisite tool
+#' @title EJAM - Environmental Justice (EJ) Analysis Multisite tool
 #' @name EJAM
 #' @aliases EJAM-package blockwts blockpoints blockid2fips  bgid2fips 
 #'

@@ -1,4 +1,4 @@
-#' @title Find approx wtd percentiles in lookup table that is in memory
+#' pctile_from_raw_lookup - Find approx wtd percentiles in lookup table that is in memory
 #' @description This is used with a lookup table to
 #'   convert a raw indicator vector to percentiles in US or States.
 #' @details
@@ -8,7 +8,7 @@
 #'   
 #'   The data.frame lookup table must have a field called "PCTILE" that has quantiles/percentiles
 #'   and other column(s) with values that fall at those percentiles.
-#'   [usastats] and [statstats] are such lookup tables.
+#'   [usastats] and [statestats] are such lookup tables.
 #'   This function accepts lookup table (or uses one called us if that is in memory), and
 #'   finds the number in the PCTILE column that corresponds to where a specified value
 #'   (in myvector) appears in the column called varname.in.lookup.table.

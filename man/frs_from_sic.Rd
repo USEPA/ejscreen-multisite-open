@@ -2,7 +2,7 @@
 % Please edit documentation in R/sic_from_any.R
 \name{frs_from_sic}
 \alias{frs_from_sic}
-\title{Use SIC code or industry title text search to see FRS Facility Registry Service data on those EPA-regulated sites}
+\title{frs_from_sic - Use SIC code or industry title text search to see FRS Facility Registry Service data on those EPA-regulated sites}
 \usage{
 frs_from_sic(sic_code_or_name, ...)
 }
@@ -16,7 +16,7 @@ relevant rows of the data.table called frs, which has column names that are
 "lat" "lon" "REGISTRY_ID" "PRIMARY_NAME" "NAICS" "SIC" "PGM_SYS_ACRNMS"
 }
 \description{
-Use SIC code or industry title text search to see FRS Facility Registry Service data on those EPA-regulated sites
+frs_from_sic - Use SIC code or industry title text search to see FRS Facility Registry Service data on those EPA-regulated sites
 }
 \examples{
   frs_from_sic("glass")

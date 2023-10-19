@@ -2,7 +2,7 @@
 % Please edit documentation in R/xls_formatting2.R
 \name{varname2color_ejam}
 \alias{varname2color_ejam}
-\title{helper function - for color coding excel sheet columns
+\title{varname2color_ejam - helper function - for color coding excel sheet columns
 Convert R variable name of indicator to appropriate color for header row in Excel}
 \usage{
 varname2color_ejam(varname, varnameinfo)
@@ -14,7 +14,7 @@ varname2color_ejam(varname, varnameinfo)
 vector of colors
 }
 \description{
-helper function - for color coding excel sheet columns
+varname2color_ejam - helper function - for color coding excel sheet columns
 Convert R variable name of indicator to appropriate color for header row in Excel
 }
 \seealso{

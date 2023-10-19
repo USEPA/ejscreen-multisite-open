@@ -1,4 +1,4 @@
-#' Find EPA-regulated facilities in FRS by NAICS code (industrial category)
+#' latlon_from_naics - Find EPA-regulated facilities in FRS by NAICS code (industrial category)
 #' Get lat lon, Registry ID, given NAICS industry code(s)
 #' Find all EPA Facility Registry Service (FRS) sites with this exact NAICS code (not subcategories)
 #' @details NOTE: many FRS sites lack NAICS code! 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/url_naics.com.R
 \name{url_naics.com}
 \alias{url_naics.com}
-\title{Get URL for page with info about industry sectors by text query term
+\title{url_naics.com - Get URL for page with info about industry sectors by text query term
 See (https://naics.com) for more information on NAICS codes}
 \usage{
 url_naics.com(query, as_html = FALSE, linktext)
@@ -18,6 +18,6 @@ url_naics.com(query, as_html = FALSE, linktext)
 URL as string
 }
 \description{
-Get URL for page with info about industry sectors by text query term
+url_naics.com - Get URL for page with info about industry sectors by text query term
 See (https://naics.com) for more information on NAICS codes
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/getblocksnearby2-DRAFT.R
 \name{getblocksnearby2}
 \alias{getblocksnearby2}
-\title{Key buffering function - wrapper redirecting to the right version of getblocksnearby()
+\title{getblocksnearby2 - Key buffering function - wrapper redirecting to the right version of getblocksnearby()
 DRAFT / WAS WORK IN PROGRESS}
 \usage{
 getblocksnearby2(
@@ -29,7 +29,7 @@ SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point")}
 \item{...}{see \code{\link[=getblocksnearbyviaQuadTree_Clustered]{getblocksnearbyviaQuadTree_Clustered()}} or other such functions}
 }
 \description{
-Key buffering function - wrapper redirecting to the right version of getblocksnearby()
+getblocksnearby2 - Key buffering function - wrapper redirecting to the right version of getblocksnearby()
 DRAFT / WAS WORK IN PROGRESS
 }
 \details{

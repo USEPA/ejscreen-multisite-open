@@ -1,10 +1,10 @@
-#' ejscreenit_for_ejam
-#' Wrapper for EJAMejscreenapi::ejscreenit(), to use in EJAM app - NOT USED CURRENTLY
+#' ejscreenit_for_ejam - DRAFT
+#' Wrapper for ejscreenit() from EJAMejscreenapi package, to use in EJAM app - NOT USED CURRENTLY
 #' @param sitepoints table with lat and lon columns
 #' @param radius in miles
 #' @param ... passed to ejscreenit() but not tested and probably should not use/ not needed
 #'
-#' @return list of results from [ejscreenit()]
+#' @return list of results from ejscreenit() 
 #'   i.e., list of these: results_bysite (data.table), map, plot, us.ratios
 #' @export
 #'

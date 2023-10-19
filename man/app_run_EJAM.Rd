@@ -3,7 +3,7 @@
 \name{app_run_EJAM}
 \alias{app_run_EJAM}
 \alias{run_app}
-\title{identical to run_app(), just an alias}
+\title{app_run_EJAM - identical to run_app(), just an alias}
 \usage{
 app_run_EJAM(
   onStart = NULL,

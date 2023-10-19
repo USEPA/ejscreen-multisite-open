@@ -3,9 +3,9 @@
 \docType{data}
 \name{NAICS}
 \alias{NAICS}
-\title{named list of all NAICS code numbers and industry name for each}
+\title{NAICS (DATA) named list of all NAICS code numbers and industry name for each}
 \description{
-named list of all NAICS code numbers and industry name for each
+NAICS (DATA) named list of all NAICS code numbers and industry name for each
 }
 \details{
 see \url{https://naics.com}

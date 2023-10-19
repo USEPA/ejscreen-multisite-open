@@ -78,7 +78,7 @@ speedtest <- function(n=10, sitepoints=NULL, weighting='frs',
   ######################### # 
   
   if (n[1] == 0 & is.null(sitepoints)) {
-    if (interactive()) {sitepoints <- rstudioapi::selectFile("Select xlsx or csv file with lat,lon coordinates", path=".", existing = FALSE)
+    if (interactive()) {sitepoints <- rstudioapi::selectFile("Select xlsx or csv file with lat,lon coordinates", path = ".", existing = FALSE)
     }
   } 
   
@@ -101,10 +101,10 @@ speedtest <- function(n=10, sitepoints=NULL, weighting='frs',
     # we can have the smaller sets of points be a random subset of the next larger, to make it more apples to apples
     nsorted <- sort(n,decreasing = TRUE)
     for (i in 1:length(n)) {
-      if (i == 1) {sitepoints[[1]] <- testpoints_n(n=nsorted[1], weighting=weighting)} else {
+      if (i == 1) {sitepoints[[1]] <- testpoints_n(n = nsorted[1], weighting = weighting)} else {
         # *** Only the overall largest set uses weighted probabilities this way - subsets are uniform likelihood of each from large set
         # otherwise cannot easily take subsets without essentially rewriting testpoints_n() code
-        sitepoints[[i]] <- sitepoints[[i-1]][sample(1:nrow(sitepoints[[1]]), size=nsorted[i] ), ]
+        sitepoints[[i]] <- sitepoints[[i - 1]][sample(1:nrow(sitepoints[[1]]), size = nsorted[i] ), ]
       }
     }
     cat("Finished picking random points for testing.\n\n")
@@ -148,7 +148,7 @@ speedtest <- function(n=10, sitepoints=NULL, weighting='frs',
   cat("test_batch.summarize = ", test_batch.summarize, "\n")
   cat("saveoutput = ", saveoutput, "\n")
   
-  nlist=n
+  nlist = n
   combonumber <- 0
   speedtable <- list()
   
@@ -170,14 +170,14 @@ speedtest <- function(n=10, sitepoints=NULL, weighting='frs',
       cat("\n  Radius of", radius, "miles (Radius #", which(radius == radii), "of the", length(radii), 'being tested).\n')    
       
       start_time <- Sys.time()
-      mysites2blocks=NA
+      mysites2blocks = NA
       # elapsed <- system.time({
       # cat('\nStarting getblocksnearby() to find Census blocks (by internal point) near each facility\n')
       # step1 = system.time({
       mysites2blocks <-  getblocksnearby(
-        sitepoints=sitepoints[[i]],
-        radius=radius, maxradius=31.07,
-        avoidorphans=TRUE)
+        sitepoints = sitepoints[[i]],
+        radius = radius, maxradius = 31.07,
+        avoidorphans = TRUE)
       # })
       # cat("Finished getblocksnearby()\n")
       # print(step1)
@@ -211,7 +211,7 @@ speedtest <- function(n=10, sitepoints=NULL, weighting='frs',
       #write time elapsed to csv?
       # write.csv(t(data.matrix(elapsed)),file=paste0("./inst/time_radius_",myradius,"_100k.csv"))
       perhour <- EJAMejscreenapi::speedreport(start_time, Sys.time(), n)
-      speedtable[[combonumber]] <- list(points=n, miles=radius, perhr=perhour)
+      speedtable[[combonumber]] <- list(points = n, miles = radius, perhr = perhour)
       
       #  show diagnostics here like how many blocks were found nearby
       getblocks_diagnostics(mysites2blocks)
@@ -219,12 +219,12 @@ speedtest <- function(n=10, sitepoints=NULL, weighting='frs',
     } # NEXT RADIUS 
     # cat("\nFinished analyzing all radius values for this set of", prettyNum(n, big.mark = ","),"points or sites.\n")
     if (saveoutput) { # slows it down so just for diagnostics or saving batches of results
-      save(out, file = file.path(logfolder, paste0( "out n", n, "_rad", paste(radii,collapse="-"), ".rda")))
+      save(out, file = file.path(logfolder, paste0( "out n", n, "_rad", paste(radii,collapse = "-"), ".rda")))
       # save(out2, file= "out2.rda")
       x <- as.data.frame(do.call(rbind, speedtable))  # could fix this to be simpler
       x <- as.data.frame(sapply(x, unlist))  # could fix this to be simpler
       
-      save(x, file = file.path(logfolder, paste0("speedtable_",n,"_rad", paste(radii,collapse="-"), ".rda")))
+      save(x, file = file.path(logfolder, paste0("speedtable_", n,"_rad", paste(radii,collapse = "-"), ".rda")))
     }
     
   } # NEXT LIST OF POINTS (facility list) ----------------------------------------------------------------- -

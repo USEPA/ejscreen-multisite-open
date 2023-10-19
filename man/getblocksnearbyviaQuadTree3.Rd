@@ -2,7 +2,7 @@
 % Please edit documentation in R/getblocksnearbyviaQuadTree3-DRAFT.R
 \name{getblocksnearbyviaQuadTree3}
 \alias{getblocksnearbyviaQuadTree3}
-\title{Find nearby blocks using Quad Tree data structure for speed, NO PARALLEL PROCESSING
+\title{getblocksnearbyviaQuadTree3 - Find nearby blocks using Quad Tree data structure for speed, NO PARALLEL PROCESSING
 DRAFT / WAS WORK IN PROGRESS}
 \usage{
 getblocksnearbyviaQuadTree3(

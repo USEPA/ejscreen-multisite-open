@@ -1,4 +1,4 @@
-#' See the names of industrial categories and their NAICS code
+#' naics_categories - See the names of industrial categories and their NAICS code
 #' Easy way to list the 2-digit NAICS (17 categories), or other level 
 #' @details 
 #'  Also see <https://www.naics.com/search/>

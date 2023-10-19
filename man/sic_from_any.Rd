@@ -2,7 +2,7 @@
 % Please edit documentation in R/sic_from_any.R
 \name{sic_from_any}
 \alias{sic_from_any}
-\title{General way to search for industry names and NAICS codes
+\title{sic_from_any - General way to search for industry names and NAICS codes
 Find industry names and codes by searching for queried code(s) or text}
 \usage{
 sic_from_any(
@@ -31,7 +31,7 @@ sic_from_any(
 a subset of the \link{sictable} data.table (not just the codes column)
 }
 \description{
-General way to search for industry names and NAICS codes
+sic_from_any - General way to search for industry names and NAICS codes
 Find industry names and codes by searching for queried code(s) or text
 }
 \seealso{

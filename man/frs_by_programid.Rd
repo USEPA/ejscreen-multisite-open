@@ -3,7 +3,7 @@
 \docType{data}
 \name{frs_by_programid}
 \alias{frs_by_programid}
-\title{data.table of Program System ID code(s) for each EPA-regulated site in
+\title{frs_by_programid (DATA) data.table of Program System ID code(s) for each EPA-regulated site in
 the Facility Registry Service}
 \description{
 \preformatted{

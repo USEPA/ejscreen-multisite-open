@@ -1,3 +1,8 @@
+#' naics_from_federalregister - DRAFT WORK IN PROGRESS
+#'
+#' @param naics_text_copy_from_fr 
+#'
+#' @export
 naics_from_federalregister <- function(naics_text_copy_from_fr) {
   
   

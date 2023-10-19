@@ -2,7 +2,7 @@
 % Please edit documentation in R/sic_from_any.R
 \name{sic_subcodes_from_code}
 \alias{sic_subcodes_from_code}
-\title{find subcategories of the given overall SIC industry code(s)
+\title{sic_subcodes_from_code - find subcategories of the given overall SIC industry code(s)
 Given 3-digit SIC code, for example, get all SIC that start with those digits.}
 \usage{
 sic_subcodes_from_code(mycodes)
@@ -14,7 +14,7 @@ sic_subcodes_from_code(mycodes)
 a subset of the \link{sictable} data.table (not just the codes column)
 }
 \description{
-find subcategories of the given overall SIC industry code(s)
+sic_subcodes_from_code - find subcategories of the given overall SIC industry code(s)
 Given 3-digit SIC code, for example, get all SIC that start with those digits.
 }
 \details{

@@ -2,7 +2,7 @@
 % Please edit documentation in R/state_from_latlon.R
 \name{state_from_latlon}
 \alias{state_from_latlon}
-\title{find what state is where each point is located
+\title{state_from_latlon - find what state is where each point is located
 Takes 3 seconds to find state for 1k points, so a faster alternative would be useful}
 \usage{
 state_from_latlon(lat, lon, states_shapefile = EJAM::states_shapefile)
@@ -19,7 +19,7 @@ Returns data.frame: ST, statename, FIPS.ST, REGION, n
 as many rows as elements in lat or lon
 }
 \description{
-find what state is where each point is located
+state_from_latlon - find what state is where each point is located
 Takes 3 seconds to find state for 1k points, so a faster alternative would be useful
 }
 \examples{

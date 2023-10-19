@@ -3,9 +3,9 @@
 \docType{data}
 \name{test_regid}
 \alias{test_regid}
-\title{test data, vector of EPA FRS Registry ID numbers}
+\title{test_regid (DATA) test data, vector of EPA FRS Registry ID numbers}
 \description{
-test data, vector of EPA FRS Registry ID numbers
+test_regid (DATA) test data, vector of EPA FRS Registry ID numbers
 }
 \details{
 For testing, e.g.,

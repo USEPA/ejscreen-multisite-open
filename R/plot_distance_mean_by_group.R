@@ -149,7 +149,7 @@ distance_by_group     <- function(results_bybg_people,
 }
 ################################################################################# # 
 
-#' distance_by_group  -  JUST ONE GROUP
+#' distance_by_group1  -  JUST ONE GROUP
 #' Get average distance for ONE demographic group versus everyone else
 #' 
 #' @details  
@@ -179,7 +179,7 @@ distance_by_group     <- function(results_bybg_people,
 #' @inherit plot_distance_cdf_by_group examples 
 #' @return list of 2 numbers: avg_distance_for_group and avg_distance_for_nongroup
 #'
-distance_by_group <- function(results_bybg_people, demogvarname="Demog.Index", demoglabel=demogvarname) {
+distance_by_group1 <- function(results_bybg_people, demogvarname="Demog.Index", demoglabel=demogvarname) {
   
   if (is.list(results_bybg_people) & ("results_bybg_people" %in% names(results_bybg_people))) {
     # assume it was a mistake and they meant to provide out$results_bybg_people not out itself

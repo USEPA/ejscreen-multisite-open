@@ -2,7 +2,7 @@
 % Please edit documentation in R/latlon_is.valid.R
 \name{latlon_is.valid}
 \alias{latlon_is.valid}
-\title{Validate latitudes and longitudes}
+\title{latlon_is.valid - Validate latitudes and longitudes}
 \usage{
 latlon_is.valid(lat, lon, quiet = TRUE)
 }

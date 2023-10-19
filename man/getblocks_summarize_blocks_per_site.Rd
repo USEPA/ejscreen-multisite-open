@@ -2,7 +2,7 @@
 % Please edit documentation in R/getblocks_diagnostics.R
 \name{getblocks_summarize_blocks_per_site}
 \alias{getblocks_summarize_blocks_per_site}
-\title{helper- Get summary stats on counts of blocks near various sites}
+\title{getblocks_summarize_blocks_per_site - Get summary stats on counts of blocks near various sites}
 \usage{
 getblocks_summarize_blocks_per_site(x, varname = "siteid")
 }

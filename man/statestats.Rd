@@ -3,7 +3,7 @@
 \docType{data}
 \name{statestats}
 \alias{statestats}
-\title{data.frame of 100 percentiles and means for each US State and PR and DC.}
+\title{statestats (DATA) data.frame of 100 percentiles and means for each US State and PR and DC.}
 \description{
 data.frame of 100 percentiles and means
 for each US State and PR and DC (approx 5,300 rows)

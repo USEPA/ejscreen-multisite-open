@@ -1,4 +1,4 @@
-#' Summarize indicators in each buffer (given the blocks in each buffer and indicators for each block)
+#' doaggregate - Summarize indicators in each buffer (given the blocks in each buffer and indicators for each block)
 #'
 #' @description This updated 2023 code takes a set of facilities and the set of blocks that are near each,
 #'   (as identified previously, in other code that has identified which blocks are nearby)
@@ -37,7 +37,7 @@
 #' @param sites2blocks data.table of distances in miles between all sites (facilities) and 
 #'   nearby Census block internal points, with columns siteid, blockid, distance,
 #'   created by getblocksnearby  function. 
-#'   See [sites2blocks_example_10pts_1miles] aka [testoutput_getblocksnearby_10pts_1miles] dataset in package, as input to this function
+#'   See [sites2blocks_example10pts_1miles] aka [testoutput_getblocksnearby_10pts_1miles] dataset in package, as input to this function
 #' @param sites2states_or_latlon data.table or just data.frame, with columns siteid (each unique one in sites2blocks) and ST (2-character State abbreviation) or lat and lon 
 #' @param countcols character vector of names of variables  to aggregate within a buffer
 #'   using a sum of counts, like, for example, the number of people for whom a 

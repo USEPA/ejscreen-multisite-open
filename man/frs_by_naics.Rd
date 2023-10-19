@@ -3,7 +3,7 @@
 \docType{data}
 \name{frs_by_naics}
 \alias{frs_by_naics}
-\title{data.table of NAICS code(s) for each EPA-regulated site in Facility Registry Service}
+\title{frs_by_naics (DATA) data.table of NAICS code(s) for each EPA-regulated site in Facility Registry Service}
 \description{
 This is the format with one row per site-NAICS pair,
 so multiple rows for one site if it is in multiple NAICS.

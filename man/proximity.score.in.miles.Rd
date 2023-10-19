@@ -2,7 +2,7 @@
 % Please edit documentation in R/proximity.score.in.miles.R
 \name{proximity.score.in.miles}
 \alias{proximity.score.in.miles}
-\title{convert EJScreen proximity scores to miles per site instead of sites per kilometer
+\title{proximity.score.in.miles - convert EJScreen proximity scores to miles per site instead of sites per kilometer
 Shows US percentiles if no arguments used}
 \usage{
 proximity.score.in.miles(scoresdf = NULL)
@@ -12,6 +12,6 @@ proximity.score.in.miles(scoresdf = NULL)
 but not traffic.score or npdes one since those are weighted and not just count per km}
 }
 \description{
-convert EJScreen proximity scores to miles per site instead of sites per kilometer
+proximity.score.in.miles - convert EJScreen proximity scores to miles per site instead of sites per kilometer
 Shows US percentiles if no arguments used
 }

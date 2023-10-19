@@ -1,4 +1,4 @@
-#' experimental/ work in progress: in chunks, get ACS data or Block weights nearby via EPA API
+#' url_get_eparest_chunked_by_id - experimental/ work in progress: in chunks, get ACS data or Block weights nearby via EPA API
 #'
 #' @param objectIds see API
 #' @param chunksize see API
@@ -33,7 +33,9 @@ url_get_eparest_chunked_by_id <- function(objectIds, chunksize=200, ...) {
   return(do.call(rbind, x))
 } ############################################################## #  ############################################################## #
 
-#' experimental/ work in progress: in chunks, get ACS data via EPA API
+
+
+#' url_getacs_epaquery_chunked - experimental/ work in progress: in chunks, get ACS data via EPA API
 #'
 #' @param servicenumber see API
 #' @param objectIds see API
@@ -81,12 +83,14 @@ url_getacs_epaquery_chunked <- function(objectIds=1:3,
     #   x[[chunk]] <- data.frame(id=idchunk, dat=NA)
     #   print(idchunk); print(x) # cumulative so far
     
-    x[[chunk]] <- url_getacs_epaquery(objectIds = idchunk, outFields=outFields, servicenumber=servicenumber, ...)
+    x[[chunk]] <- url_getacs_epaquery(objectIds = idchunk, outFields = outFields, servicenumber = servicenumber, ...)
   }
   return(do.call(rbind, x))  
 } ############################################################## ############################################################### #
 
-#' experimental/ work in progress: get ACS data via EPA API (for <200 places)
+
+
+#' url_getacs_epaquery - experimental/ work in progress: get ACS data via EPA API (for <200 places)
 #'
 #'
 #'  uses ACS2019 rest services ejscreen ejquery MapServer 7
@@ -129,11 +133,11 @@ url_getacs_epaquery <- function(objectIds=1:3,
     #                                   returnGeometry=returnGeometry, 
     #                                   justurl=justurl, 
     #                                   ...))
-    return(url_getacs_epaquery_chunked(objectIds=objectIds, 
-                                   servicenumber=servicenumber,
-                                   outFields=outFields, 
-                                   returnGeometry=returnGeometry, 
-                                   justurl=justurl, 
+    return(url_getacs_epaquery_chunked(objectIds = objectIds, 
+                                   servicenumber = servicenumber,
+                                   outFields = outFields, 
+                                   returnGeometry = returnGeometry, 
+                                   justurl = justurl, 
                                    ...))
   }
   
@@ -193,9 +197,9 @@ url_getacs_epaquery <- function(objectIds=1:3,
   # url_to_get_ACS2019_rest_services_ejscreen_ejquery_MapServer_7()
   url_to_use <- url_to_get_ACS2019_rest_services_ejscreen_ejquery_MapServer_7(
     # servicenumber=servicenumber, 
-    objectIds=objectIds,
-    returnGeometry=returnGeometry,
-    outFields=outFields,         # make same name?
+    objectIds = objectIds,
+    returnGeometry = returnGeometry,
+    outFields = outFields,         # make same name?
     ...)
   ################################################################### #
   

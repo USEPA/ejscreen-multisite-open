@@ -1,4 +1,4 @@
-#' Flexibly get lat/lon from file, data.frame, data.table, or lat/lon vectors
+#' latlon_from_anything - Flexibly get lat/lon from file, data.frame, data.table, or lat/lon vectors
 #' @description Try to figure out if user provided latitude / longitude as vectors, data.frame, file, or interactively pick file.
 #' @details 
 #' 

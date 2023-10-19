@@ -1,4 +1,4 @@
-#' Random points in USA - average resident, facility, BG, block, or square mile
+#' testpoints_n - Random points in USA - average resident, facility, BG, block, or square mile
 #' Get data.table of Random Points (lat lon) for Testing/ Benchmarking/ Demos, weighted in various ways. 
 #'   The weighting can be specified so that each point reflects the average EPA-regulated 
 #'   facility, blockgroup, block, place on the map, or US resident.
@@ -66,7 +66,7 @@ testpoints_n <- function(n=10, weighting=c('frs', 'pop', 'area', 'bg', 'block'),
   # RANDOM FACILITIES (EPA-regulated facilities in FRS)
   if (weighting == "frs") {
     if (!is.null(ST_of_blockgroup)) {
-      statecount=length(ST_of_blockgroup)
+      statecount = length(ST_of_blockgroup)
       
       # this should be written as a recursive function but didnt have time to do that:
       extrasize =  150 * statecount * n # try to find n in 1 state must on avg check on 52n, but check 150n to be very likely to have enough.
@@ -81,12 +81,12 @@ testpoints_n <- function(n=10, weighting=c('frs', 'pop', 'area', 'bg', 'block'),
       # rowinstate2 <- c(rowinstate, rowtried2[state_from_latlon(lat = frs$lat[rowtried2], lon = frs$lon[rowtried2]) %in% ST_of_blockgroup])
       # 
       # rownum <- sample.int( frs[rowinstate,.N], size = n, replace = FALSE)
-      if (!dt) {x=copy(frs[rowinstate,] ); setDF(x); x$siteid <- seq_len(nrow(x)); return(x )}
+      if (!dt) {x = copy(frs[rowinstate,] ); setDF(x); x$siteid <- seq_len(nrow(x)); return(x )}
       x <- frs[rowinstate,]; x$siteid <- seq_len(nrow(x))
       return(x)
       }
     rownum <- sample.int(frs[,.N], size = n, replace = FALSE)
-    if (!dt) {x=copy(frs[rownum, ]); setDF(x);  x$siteid <- seq_len(nrow(x)); return(x)}
+    if (!dt) {x = copy(frs[rownum, ]); setDF(x);  x$siteid <- seq_len(nrow(x)); return(x)}
     x <- frs[rownum,]; x$siteid <- seq_len(nrow(x))
     return(x)
   }
@@ -101,7 +101,7 @@ testpoints_n <- function(n=10, weighting=c('frs', 'pop', 'area', 'bg', 'block'),
       return(bg_filtered_by_state[rownum, ] )
     } else {
       rownum <- sample.int(EJAM::bgpts[,.N], size = n, replace = FALSE)
-      if (!dt) {x=copy(bgpts[rownum, ]); setDF(x); x$siteid <- seq_len(nrow(x)); return(x)}
+      if (!dt) {x = copy(bgpts[rownum, ]); setDF(x); x$siteid <- seq_len(nrow(x)); return(x)}
       x <- bgpts[rownum, ]; x$siteid <- seq_len(nrow(x)) 
       return(x)
     }
@@ -113,11 +113,11 @@ testpoints_n <- function(n=10, weighting=c('frs', 'pop', 'area', 'bg', 'block'),
     if (!is.null(ST_of_blockgroup)) {
       staterownums <- which(state_from_blockid(blockpoints$blockid) %in% ST_of_blockgroup  )
       rownum <- sample.int(length(staterownums), size = n, replace = FALSE)
-      if (!dt) {x=copy(blockpoints[staterownums,][rownum,]); setDF(x); return(x)}
+      if (!dt) {x = copy(blockpoints[staterownums,][rownum,]); setDF(x); return(x)}
       return(blockpoints[staterownums,][rownum,] )
     } else {
       rownum <- sample.int( blockpoints[,.N], size = n, replace = FALSE)
-      if (!dt) {x=copy(blockpoints[rownum,]); setDF(x); x$siteid <- seq_len(nrow(x)); return(x)}
+      if (!dt) {x = copy(blockpoints[rownum,]); setDF(x); x$siteid <- seq_len(nrow(x)); return(x)}
       x <- blockpoints[rownum, ] ; x$siteid <- seq_len(nrow(x))
       return(x)
       }
@@ -143,7 +143,7 @@ testpoints_n <- function(n=10, weighting=c('frs', 'pop', 'area', 'bg', 'block'),
         
     } else {
       rownum <- sample.int(blockgroupstats[,.N], size = n, replace = FALSE, prob = blockgroupstats$arealand)
-      if (!dt) {x=copy(bgpts[blockgroupstats[rownum, ], .(lat, lon, bgfips, bgid, ST, pop, arealand, areawater), on = "bgid"]); setDF(x); x$siteid <- seq_len(nrow(x)); return(x)}
+      if (!dt) {x = copy(bgpts[blockgroupstats[rownum, ], .(lat, lon, bgfips, bgid, ST, pop, arealand, areawater), on = "bgid"]); setDF(x); x$siteid <- seq_len(nrow(x)); return(x)}
       x <-           bgpts[blockgroupstats[rownum,],  .(lat, lon, bgfips, bgid, ST, pop, arealand, areawater), on = "bgid"]
       x$siteid <- seq_len(nrow(x))
       return(x)
@@ -156,14 +156,14 @@ testpoints_n <- function(n=10, weighting=c('frs', 'pop', 'area', 'bg', 'block'),
       staterownums <- which(state_from_blockid(blockpoints$blockid) %in% ST_of_blockgroup  )
       
       rownum <- sample.int(length(staterownums), size = n, replace = FALSE, prob = blockwts$blockwt[staterownums])
-      if (!dt) {x=copy(blockpoints[staterownums,][rownum,]); setDF(x); x$siteid <- seq_len(nrow(x)); return(x)}
-      x <- blockpoints[blockwts[staterownums,][rownum,] ,,on="blockid"]
+      if (!dt) {x = copy(blockpoints[staterownums,][rownum,]); setDF(x); x$siteid <- seq_len(nrow(x)); return(x)}
+      x <- blockpoints[blockwts[staterownums,][rownum,] , ,on = "blockid"]
       x$siteid <- seq_len(nrow(x))
       return(x)
       # warning("Ignoring ST_of_blockgroup ! ")
       }
     rownum <- sample.int( blockwts[,.N], size = n, replace = FALSE, prob = blockwts$blockwt)
-    if (!dt) {x=copy(blockpoints[blockwts[rownum,], on="blockid"]); setDF(x); x$siteid <- seq_len(nrow(x)); return(x)}
+    if (!dt) {x = copy(blockpoints[blockwts[rownum,], on = "blockid"]); setDF(x); x$siteid <- seq_len(nrow(x)); return(x)}
     # all(blockpoints[,blockid] == blockwts[,blockid])
     # [1] TRUE
     x <- blockpoints[blockwts[rownum, ],]

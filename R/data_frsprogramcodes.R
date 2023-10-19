@@ -1,5 +1,5 @@
 #' @name frsprogramcodes
-#' @title EPA programs listed in Facility Registry Service
+#' @title frsprogramcodes DATA EPA programs listed in Facility Registry Service
 #' @docType data
 #' @seealso [frs] 
 #' @description 

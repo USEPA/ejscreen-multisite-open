@@ -84,7 +84,8 @@ if (testing_ejscreenapi_module) {
 # .####
 #    ********************   UI   ******************** <<<< ####
 # .####
-#' ejscreenapi UI Function
+
+#' mod_ejscreenapi_ui - ejscreenapi UI Function
 #'
 #' @description A shiny Module to get EJScreen results via the EJScreen API
 #'
@@ -288,6 +289,7 @@ mod_ejscreenapi_ui <- function(id, simpleradius_default_for_ui = 1, default_radi
 # . ####
 # ###################   #####################   #####################   #################### # 
 
+#' mod_ejscreenapi_server
 #' @noRd 
 mod_ejscreenapi_server <- function(id, 
                                    # default_radius_react,

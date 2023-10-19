@@ -2,8 +2,7 @@
 % Please edit documentation in R/xls_formatting2.R
 \name{varname2varcategory_ejam}
 \alias{varname2varcategory_ejam}
-\title{varname2varcategory_ejam
-helper function - given indicator names, look up what category each is}
+\title{varname2varcategory_ejam - helper function - given indicator names, look up what category each is}
 \usage{
 varname2varcategory_ejam(varname, varnameinfo)
 }
@@ -16,8 +15,7 @@ varname2varcategory_ejam(varname, varnameinfo)
 vector same size as varname
 }
 \description{
-varname2varcategory_ejam
-helper function - given indicator names, look up what category each is
+varname2varcategory_ejam - helper function - given indicator names, look up what category each is
 }
 \details{
 tells if variable is "Demographic" "Environmental" "EJ Index" or "other"

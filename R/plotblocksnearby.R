@@ -1,4 +1,4 @@
-#' Map view of Census blocks (their centroids) near one or more sites
+#' plotblocksnearby - Map view of Census blocks (their centroids) near one or more sites
 #' Utility to quickly view one or more facility points on map with the blocks found nearby
 #' @details Uses [getblocksnearby()] if lat,lon points provided as sitepoints,
 #'  but skips it if looks like user passed output of getblocksnearby(),
@@ -86,7 +86,7 @@ plotblocksnearby <- function(sitepoints, radius=3, sites2blocks,  usemapfast=TRU
     #  really more accurately recreate the sitepoints lat,lon info from distances and lat,lon of blocks! (once trilaterate() is debugged/checked)
     # sitepoints <- bl[ , list(lat = mean(blocklat), lon = mean(blocklon)), by = "siteid"]
     # create dummy empty info for now
-    sitepoints <- data.frame(siteid=-999)
+    sitepoints <- data.frame(siteid = -999)
   }
   
   # Put site point(s) (which have lat,lon) and surrounding block points (which have blocklat,blocklon) into one table
@@ -119,13 +119,13 @@ plotblocksnearby <- function(sitepoints, radius=3, sites2blocks,  usemapfast=TRU
     
     if (really_sitepoints) {
       # overall circle centered on each site, to show radius of search
-      z <-  addCircles(z, lat=xpt$lat, lng = xpt$lon, radius = meters_per_mile * radius, color = "gray",
+      z <-  addCircles(z, lat = xpt$lat, lng = xpt$lon, radius = meters_per_mile * radius, color = "gray",
                  fillOpacity = 0.06, fillColor = "gray", opacity = 0.7  ) #  %>% # overall circle
         # site point in center of each circle
-        z <-  addCircleMarkers( z, lat=xpt$lat, lng = xpt$lon, radius = 10, color = "red", opacity = 0.75) # %>%  # in pixels for center of circle=point 
+        z <-  addCircleMarkers( z, lat = xpt$lat, lng = xpt$lon, radius = 10, color = "red", opacity = 0.75) # %>%  # in pixels for center of circle=point 
     }
     # Map popup info for each site (if available) and blocks surrounding the site
-    z <-addCircles(z, lat = mapinfo$lat, lng = mapinfo$lon, fillOpacity = 0.1, 
+    z <- addCircles(z, lat = mapinfo$lat, lng = mapinfo$lon, fillOpacity = 0.1, 
                popup = popup_from_df(setDF(mapinfo)), radius = 10)
     
     print(z)
@@ -133,14 +133,14 @@ plotblocksnearby <- function(sitepoints, radius=3, sites2blocks,  usemapfast=TRU
     # setnames(bl, 'blocklon', 'lon')
     # mapfast(rbind(bl, unique(x[,.(lat, lon)])))
   } else {
-    bplot=function(x,   ... ) {
+    bplot = function(x,   ... ) {
       plot(x = x$blocklon, y = x$blocklat , ... )
       if (really_sitepoints) {
         points(x = x$lon, y = x$lat  , col = "red")
       }
     }
     # bplot(x, sample(1:nrow(sitepoints), 1)) # plots a random site surrounded by nearby block points
-    bplot(x, main="Site and surrounding block centroids", xlab="", ylab="" )
+    bplot(x, main = "Site and surrounding block centroids", xlab = "", ylab = "" )
     
   }
   invisible(sites2blocks)

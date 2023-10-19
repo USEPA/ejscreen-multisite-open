@@ -3,7 +3,7 @@
 #' @param bybg such as [ejamit()]$results_bybg_people
 #'
 #' @return table of ratios, one col per site, one row per indicator
-#' @seealso [plot_distance_cdf_by_group()] [plot_distance_mean_by_group()] [distance_by_groups()] [distance_mean_by_group()]
+#' @seealso [plot_distance_cdf_by_group()] [plot_distance_mean_by_group()] [distance_by_group()] [distance_mean_by_group()]
 #' @export
 #' 
 distance_by_group_by_site <- function(bybg) {

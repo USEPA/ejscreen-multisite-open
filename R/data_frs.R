@@ -1,6 +1,6 @@
 #' @name frs
 #' @docType data
-#' @title EPA Facility Registry Service table of regulated sites
+#' @title frs (DATA) EPA Facility Registry Service table of regulated sites
 #' 
 #' @description This is a data.table snapshot version of the EPA FRS. 
 #'   You can look up sites by REGISTRY_ID in [frs], and get their location, etc.

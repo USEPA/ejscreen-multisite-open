@@ -1,4 +1,4 @@
-#' Validate FRS Registry ID list uploads
+#' frs_is_valid - Validate FRS Registry ID list uploads
 #' @description Check for proper FRS facility id in uploaded data
 #'
 #' @param frs_upload upload frs registry IDs table converted to data frame

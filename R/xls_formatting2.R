@@ -1,5 +1,5 @@
-#' xls_formatting2
-#' Format EJAM tabular outputs for saving as Excel spreadsheet
+#' xls_formatting2 - Format EJAM tabular outputs for saving as Excel spreadsheet
+#' 
 #' @details  Already took and put here most or all of code from xls_formatting() or xls_formatting_api() 
 #' @param overall  table to save in one tab, from ejamit()$overall, EJAM analysis of indicators overall (one row)
 #' @param eachsite table to save in one tab, from ejamit()$overall, EJAM analysis site by site (one row per site)
@@ -691,8 +691,7 @@ xls_formatting2 <- function(overall, eachsite, longnames=NULL, formatted=NULL, b
 
 
 
-#' vartype_cat2color_ejam
-#' helper function - assign fill color to shade excel cells by indicator type and category
+#' vartype_cat2color_ejam - helper function - assign fill color to shade excel cells by indicator type and category
 #' Use color shading to make spreadsheet easier to use, grouping the indicators
 #'
 #' @param vartype must be one found in dput(unique(map_headernames$vartype)) 
@@ -824,7 +823,7 @@ vartype_cat2color_ejam <- function(vartype=raw, varcategory="other") {
 ################################################################################# # 
 
 
-#' helper function - for color coding excel sheet columns
+#' varname2color_ejam - helper function - for color coding excel sheet columns
 #' Convert R variable name of indicator to appropriate color for header row in Excel
 #' @param varname things like us.avg.pctlowinc 
 #'
@@ -848,8 +847,7 @@ varname2color_ejam <- function(varname, varnameinfo) {
 ################################################################################# # 
 
 
-#' varname2vartype_ejam
-#' helper function - given indicator names, look up what type each is
+#' varname2vartype_ejam - helper function - given indicator names, look up what type each is
 #' @details  
 #'   The types are things like raw data count for indicator, average, percentile, etc.
 #' @param varname vector of 1 or more names
@@ -887,8 +885,7 @@ varname2vartype_ejam <- function(varname, varnameinfo) {
 }
 ################################################################################# # 
 
-#' varname2varcategory_ejam
-#' helper function - given indicator names, look up what category each is
+#' varname2varcategory_ejam - helper function - given indicator names, look up what category each is
 #' @details  
 #' tells if variable is "Demographic" "Environmental" "EJ Index" or "other"
 #'   as from dput(unique(map_headernames$varcategory))

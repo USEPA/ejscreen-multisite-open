@@ -2,7 +2,7 @@
 % Please edit documentation in R/ejamit.R
 \name{ejamit}
 \alias{ejamit}
-\title{Get complete EJ analysis numbers (demographic and environmental indicators) near a list of locations}
+\title{ejamit - Get complete EJ analysis numbers (demographic and environmental indicators) near a list of locations}
 \usage{
 ejamit(
   sitepoints,

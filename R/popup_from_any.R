@@ -1,4 +1,4 @@
-#' Simple map popup from a data.table or data.frame, one point per row
+#' popup_from_any - Simple map popup from a data.table or data.frame, one point per row
 #' Creates popup vector that leaflet::addCircles or leaflet::addPopups can use.
 #' Works similarly to EJAMejscreenapi::popup_from_df, but now extends to data.table
 #' @details Each popup is made from one row of the data.frame. 
@@ -39,7 +39,7 @@
 #'  dat_df <- as.data.frame(dat_df)
 #'  leaflet::leaflet(dat) |> leaflet::addTiles() |> leaflet::addCircles(popup = popup_from_any(dat))
 
-popup_from_any <- function (x, column_names = names(x), labels = column_names, n = "all", testing=FALSE) {
+popup_from_any <- function(x, column_names = names(x), labels = column_names, n = "all", testing=FALSE) {
   if (testing) {print('popup_from_any'); print(names(x)); print(labels); print(n)}
   if (n == "all" | n > NCOL(x)) {
     # nothing
@@ -83,9 +83,9 @@ popup_from_any <- function (x, column_names = names(x), labels = column_names, n
   
   ## create vector of popups with column labels, length=# of rows of data.table
   if (is.data.table(x)) {
-    popup_vec <- sapply(1:NROW(x), function(row_num) paste(labels, x[row_num  ], sep=': ', collapse='<br>'))
+    popup_vec <- sapply(1:NROW(x), function(row_num) paste(labels, x[row_num  ], sep = ': ', collapse = '<br>'))
   } else {
-    popup_vec <- sapply(1:NROW(x), function(row_num) paste(labels, x[row_num, ], sep=': ', collapse='<br>'))
+    popup_vec <- sapply(1:NROW(x), function(row_num) paste(labels, x[row_num, ], sep = ': ', collapse = '<br>'))
   } 
   
   return(popup_vec)

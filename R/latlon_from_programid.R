@@ -1,4 +1,4 @@
-#' Get lat lon, Registry ID, and NAICS, for given FRS Program System ID
+#' latlon_from_programid - Get lat lon, Registry ID, and NAICS, for given FRS Program System ID
 #' @details The ID is the identification number, such as the permit number,
 #'  assigned by an information management system that represents a 
 #'  facility site, waste site, operable unit, or other feature tracked by that

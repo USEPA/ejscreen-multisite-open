@@ -2,7 +2,7 @@
 % Please edit documentation in R/run_app.R
 \name{run_app}
 \alias{run_app}
-\title{Launch the Shiny Application in RStudio}
+\title{run_app - Launch the Shiny Application in RStudio}
 \usage{
 run_app(
   onStart = NULL,

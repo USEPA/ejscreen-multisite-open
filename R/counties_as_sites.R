@@ -1,4 +1,4 @@
-#' Analyze US Counties as if they were sites, to get EJ indicators summary for each county
+#' bg_from_county - Analyze US Counties as if they were sites, to get EJ indicators summary for each county
 #'
 #' @param fips County FIPS vector as character not numeric values
 #'
@@ -22,6 +22,7 @@ bg_from_county <- function(fips) {
   county2bg[, .(siteid, countyfips, bgid)]
 }
 
+#' counties_as_sites
 #' @export
 #' @inherit bg_from_county
 counties_as_sites <- bg_from_county

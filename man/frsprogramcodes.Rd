@@ -3,7 +3,7 @@
 \docType{data}
 \name{frsprogramcodes}
 \alias{frsprogramcodes}
-\title{EPA programs listed in Facility Registry Service}
+\title{frsprogramcodes DATA EPA programs listed in Facility Registry Service}
 \description{
 \if{html}{\out{<div class="sourceCode">}}\preformatted{data.frame
 

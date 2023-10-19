@@ -1,4 +1,4 @@
-#' guess which columns have lat and lon based on aliases like latitude, FacLat, etc.
+#' latlon_infer - guess which columns have lat and lon based on aliases like latitude, FacLat, etc.
 #'
 #' @param mycolnames e.g., colnames(x) where x is a data.frame from read.csv
 #'

@@ -2,7 +2,7 @@
 % Please edit documentation in R/sic_from_any.R
 \name{sic_from_name}
 \alias{sic_from_name}
-\title{search for industry names and SIC codes by query string
+\title{sic_from_name - search for industry names and SIC codes by query string
 query by parts of words, etc. in the industry name.}
 \usage{
 sic_from_name(mynames, children = FALSE, ignore.case = TRUE, fixed = FALSE)
@@ -20,7 +20,7 @@ sic_from_name(mynames, children = FALSE, ignore.case = TRUE, fixed = FALSE)
 a subset of the \link{sictable} data.table (not just the codes column)
 }
 \description{
-search for industry names and SIC codes by query string
+sic_from_name - search for industry names and SIC codes by query string
 query by parts of words, etc. in the industry name.
 }
 \examples{

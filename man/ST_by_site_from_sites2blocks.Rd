@@ -2,7 +2,7 @@
 % Please edit documentation in R/ST_by_site_from_sites2blocks.R
 \name{ST_by_site_from_sites2blocks}
 \alias{ST_by_site_from_sites2blocks}
-\title{Get State that each site is in, from a table of siteid, blockid, distance}
+\title{ST_by_site_from_sites2blocks - Get State that each site is in, from a table of siteid, blockid, distance}
 \usage{
 ST_by_site_from_sites2blocks(sites2blocks)
 }

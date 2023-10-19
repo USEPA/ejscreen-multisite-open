@@ -2,7 +2,7 @@
 % Please edit documentation in R/colcounter_summary.R
 \name{colcounter_summary}
 \alias{colcounter_summary}
-\title{Summarize how many rows have N columns at or above (or below) various thresholds?
+\title{colcounter_summary - Summarize how many rows have N columns at or above (or below) various thresholds?
 Like colcounter or cols.above.count
 but will handle multiple thresholds to compare to each indicator, etc.
 Table of counts, percents, cumulative counts, cumulative percents
@@ -37,7 +37,7 @@ If TRUE, specify one threshold to use for each column.}
 A table of frequency counts
 }
 \description{
-Summarize how many rows have N columns at or above (or below) various thresholds?
+colcounter_summary - Summarize how many rows have N columns at or above (or below) various thresholds?
 Like colcounter or cols.above.count
 but will handle multiple thresholds to compare to each indicator, etc.
 Table of counts, percents, cumulative counts, cumulative percents

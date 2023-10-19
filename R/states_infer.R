@@ -59,7 +59,7 @@ states_infer <- function(x) {
   }
   # if nothing found to tell us the ST info, fill in NA values
   if (bad_sites2states) {
-    sites2states <- data.frame(siteid=1:length(unique(sites2blocks$siteid)), ST=NA)
+    sites2states <- data.frame(siteid = 1:length(unique(sites2blocks$siteid)), ST = NA)
   }
   # check quality of ST info found or looked up
   if (!all(sites2states$ST %in% EJAM::stateinfo$ST)) {

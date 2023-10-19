@@ -2,7 +2,7 @@
 % Please edit documentation in R/naics_url_of_code.R
 \name{naics_url_of_code}
 \alias{naics_url_of_code}
-\title{Get URL for page with info about industry sector(s) by NAICS
+\title{naics_url_of_code - Get URL for page with info about industry sector(s) by NAICS
 See (https://naics.com) for more information on NAICS codes}
 \usage{
 naics_url_of_code(naics)
@@ -14,6 +14,6 @@ naics_url_of_code(naics)
 vector of URLs as strings like https://www.naics.com/six-digit-naics/?v=2017&code=22
 }
 \description{
-Get URL for page with info about industry sector(s) by NAICS
+naics_url_of_code - Get URL for page with info about industry sector(s) by NAICS
 See (https://naics.com) for more information on NAICS codes
 }

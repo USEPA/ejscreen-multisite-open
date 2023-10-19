@@ -3,7 +3,7 @@
 \docType{data}
 \name{states_shapefile}
 \alias{states_shapefile}
-\title{US States boundaries 2020 shapefile from TIGER}
+\title{states_shapefile (DATA) US States boundaries 2020 shapefile from TIGER}
 \description{
 This is used to figure out which state contains each point (facility/site).
 }

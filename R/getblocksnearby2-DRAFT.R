@@ -1,4 +1,4 @@
-#' Key buffering function - wrapper redirecting to the right version of getblocksnearby()
+#' getblocksnearby2 - Key buffering function - wrapper redirecting to the right version of getblocksnearby()
 #'     DRAFT / WAS WORK IN PROGRESS  
 #' @details  For all examples, see [ejamit()]
 #' 
@@ -32,10 +32,10 @@ getblocksnearby2 <- function(sitepoints, radius=3, maxradius=31.07,
   if (is.null(quadtree)) {
     if (exists('localtree' )) { # not working yet?
       return(
-        getblocksnearbyviaQuadTree(sitepoints=sitepoints, radius=radius, maxradius=maxradius, 
-                                   avoidorphans=avoidorphans, 
-                                   # indexgridsize=indexgridsize,
-                                   quadtree=localtree,
+        getblocksnearbyviaQuadTree(sitepoints = sitepoints, radius = radius, maxradius = maxradius, 
+                                   avoidorphans = avoidorphans, 
+                                   # indexgridsize = indexgridsize,
+                                   quadtree = localtree,
                                    ...)
       )
     } else {
@@ -43,10 +43,10 @@ getblocksnearby2 <- function(sitepoints, radius=3, maxradius=31.07,
     }
   }
   
-  getblocksnearbyviaQuadTree(sitepoints=sitepoints, radius=radius, maxradius=maxradius, 
-                             avoidorphans=avoidorphans, 
+  getblocksnearbyviaQuadTree(sitepoints = sitepoints, radius = radius, maxradius = maxradius, 
+                             avoidorphans = avoidorphans, 
                              # indexgridsize=indexgridsize,
-                             quadtree=quadtree,
+                             quadtree = quadtree,
                              ...)
   
   # getblocksnearbyviaQuadTree_Clustered(sitepoints=sitepoints, radius=radius, maxradius=maxradius, 

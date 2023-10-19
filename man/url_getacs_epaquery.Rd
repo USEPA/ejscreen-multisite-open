@@ -2,7 +2,7 @@
 % Please edit documentation in R/url_getacs_epaquery-DRAFT.R
 \name{url_getacs_epaquery}
 \alias{url_getacs_epaquery}
-\title{experimental/ work in progress: get ACS data via EPA API (for <200 places)}
+\title{url_getacs_epaquery - experimental/ work in progress: get ACS data via EPA API (for <200 places)}
 \usage{
 url_getacs_epaquery(
   objectIds = 1:3,

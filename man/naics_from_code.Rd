@@ -2,7 +2,7 @@
 % Please edit documentation in R/naics_from_any.R
 \name{naics_from_code}
 \alias{naics_from_code}
-\title{search for industry names by NAICS code(s), 2-6 digits long each
+\title{naics_from_code - search for industry names by NAICS code(s), 2-6 digits long each
 See \code{\link[=naics_from_any]{naics_from_any()}} which uses this}
 \usage{
 naics_from_code(mycodes, children = FALSE)
@@ -16,7 +16,7 @@ naics_from_code(mycodes, children = FALSE)
 a subset of the \link{naicstable} data.table (not just the codes column)
 }
 \description{
-search for industry names by NAICS code(s), 2-6 digits long each
+naics_from_code - search for industry names by NAICS code(s), 2-6 digits long each
 See \code{\link[=naics_from_any]{naics_from_any()}} which uses this
 }
 \seealso{

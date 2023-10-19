@@ -1,4 +1,4 @@
-#' find what state is where each point is located
+#' state_from_latlon - find what state is where each point is located
 #' Takes 3 seconds to find state for 1k points, so a faster alternative would be useful
 #' @param lon longitudes vector
 #' @param lat latitudes vector
@@ -20,7 +20,7 @@ state_from_latlon <- function(lat, lon, states_shapefile=EJAM::states_shapefile)
   # pts[is.na(lon), lon := 0] 
   lat[is.na(lat)] <- 0
   lon[is.na(lon)] <- 0 # will ensure NA is returned by the join for those points with missing coordinates
-  pts <- data.frame(lat=lat, lon=lon) |>
+  pts <- data.frame(lat = lat, lon = lon) |>
     sf::st_as_sf(coords = c("lon", "lat"), crs = sf::st_crs(states_shapefile))  # st_as_sf wants lon,lat not lat,lon
   pts <- pts |> sf::st_join(states_shapefile)
   # pts <- as.data.frame(statename = pts$facility_state)  
@@ -42,7 +42,7 @@ state_from_latlon_compiled <- compiler::cmpfun(state_from_latlon)
 #'
 #' @examples state_from_blocktable(blockpoints[45:49,])
 state_from_blocktable <- function(dt_with_blockid) {
-  stateinfo$ST[match(blockid2fips[dt_with_blockid, substr(blockfips,1,2), on="blockid"], stateinfo$FIPS.ST)]
+  stateinfo$ST[match(blockid2fips[dt_with_blockid, substr(blockfips,1,2), on = "blockid"], stateinfo$FIPS.ST)]
 }
 
 #' state_from_blockid

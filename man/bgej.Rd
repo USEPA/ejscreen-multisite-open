@@ -3,9 +3,9 @@
 \docType{data}
 \name{bgej}
 \alias{bgej}
-\title{EJScreen EJ Indexes for Census block groups}
+\title{bgej (DATA) EJScreen EJ Indexes for Census block groups}
 \description{
-EJScreen EJ Indexes for Census block groups
+bgej (DATA) EJScreen EJ Indexes for Census block groups
 }
 \details{
 \itemize{

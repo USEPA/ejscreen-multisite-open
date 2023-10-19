@@ -2,8 +2,7 @@
 % Please edit documentation in R/xls_formatting2.R
 \name{xls_formatting2}
 \alias{xls_formatting2}
-\title{xls_formatting2
-Format EJAM tabular outputs for saving as Excel spreadsheet}
+\title{xls_formatting2 - Format EJAM tabular outputs for saving as Excel spreadsheet}
 \usage{
 xls_formatting2(
   overall,
@@ -105,8 +104,7 @@ the workbook will be saved locally at that path and name. Warning: it will overw
 a workbook, ready to be saved in spreadsheet format, with tabs like "Overall" and "Each Site"
 }
 \description{
-xls_formatting2
-Format EJAM tabular outputs for saving as Excel spreadsheet
+xls_formatting2 - Format EJAM tabular outputs for saving as Excel spreadsheet
 }
 \details{
 Already took and put here most or all of code from xls_formatting() or xls_formatting_api()

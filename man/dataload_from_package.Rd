@@ -2,7 +2,7 @@
 % Please edit documentation in R/dataload_from_package.R
 \name{dataload_from_package}
 \alias{dataload_from_package}
-\title{utility to load a couple of datasets using data immediately instead of relying on lazy loading}
+\title{dataload_from_package - utility to load a couple of datasets using data immediately instead of relying on lazy loading}
 \usage{
 dataload_from_package(
   olist = c("blockgroupstats", "usastats", "statestats"),
@@ -20,7 +20,7 @@ This could also include other large datasets that are slow to lazyload but not a
 Nothing
 }
 \description{
-utility to load a couple of datasets using data immediately instead of relying on lazy loading
+dataload_from_package - utility to load a couple of datasets using data immediately instead of relying on lazy loading
 }
 \details{
 Default is to load some but not all the datasets into memory immediately.

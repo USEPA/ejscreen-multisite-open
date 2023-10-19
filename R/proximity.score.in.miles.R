@@ -1,4 +1,4 @@
-#' convert EJScreen proximity scores to miles per site instead of sites per kilometer
+#' proximity.score.in.miles - convert EJScreen proximity scores to miles per site instead of sites per kilometer
 #' Shows US percentiles if no arguments used
 #' @param scoresdf data.frame of simple proximity scores like for tsdf, rmp, npl 
 #'   but not traffic.score or npdes one since those are weighted and not just count per km

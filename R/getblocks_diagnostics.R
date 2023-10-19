@@ -1,4 +1,4 @@
-#' helper- Get summary stats on counts of blocks near various sites
+#' getblocks_summarize_blocks_per_site - Get summary stats on counts of blocks near various sites
 #' @description Tells you # of blocks near avg site, 
 #' how many sites have only 1 block nearby, or have <30 nearby, etc.
 #' 
@@ -23,7 +23,7 @@ getblocks_summarize_blocks_per_site <- function(x, varname='siteid') {
 ######################################################################################### # 
 
 
-#' helper- Get summary stats on how many sites are near various blocks (residents)
+#' getblocks_summarize_sites_per_block - Get summary stats on how many sites are near various blocks (residents)
 #'
 #' @param x The output of [getblocksnearby()] like testoutput_getblocksnearby_10pts_1miles
 #' @param varname colname of variable in data.table x that is the one to summarize by
@@ -39,7 +39,7 @@ getblocks_summarize_sites_per_block <- function(x, varname='blockid') {
 
 
 
-#' Get summary stats on counts of blocks (unique vs doublecounted) near sites
+#' getblocks_diagnostics - Get summary stats on counts of blocks (unique vs doublecounted) near sites
 #'
 #' @param x The output of [getblocksnearby()] like testoutput_getblocksnearby_10pts_1miles
 #' @param detailed if TRUE, also shows in console a long table of frequencies via [getblocks_summarize_blocks_per_site()]

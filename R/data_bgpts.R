@@ -1,6 +1,6 @@
 #' @name bgpts
 #' @docType data
-#' @title lat lon of popwtd center of blockgroup, and count of blocks per block group
+#' @title bgpts (DATA) lat lon of popwtd center of blockgroup, and count of blocks per block group
 #' @description This is just a list of US block groups and how many blocks are in each...
 #'   It also has the lat and lon roughly of each blockgroup 
 #' @details  

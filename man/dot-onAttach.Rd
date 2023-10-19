@@ -2,7 +2,7 @@
 % Please edit documentation in R/aaa_onAttach.R
 \name{.onAttach}
 \alias{.onAttach}
-\title{Do slow initialization steps - Download data, load key data into RAM, create index to all US blocks
+\title{.onAttach - Do slow initialization steps - Download data, load key data into RAM, create index to all US blocks
 Note this duplicates some code in global.R, and see source code here to adjust settings.}
 \usage{
 .onAttach(libname, pkgname)
@@ -13,7 +13,7 @@ Note this duplicates some code in global.R, and see source code here to adjust s
 \item{pkgname}{na}
 }
 \description{
-Do slow initialization steps - Download data, load key data into RAM, create index to all US blocks
+.onAttach - Do slow initialization steps - Download data, load key data into RAM, create index to all US blocks
 Note this duplicates some code in global.R, and see source code here to adjust settings.
 }
 \details{

@@ -1,6 +1,6 @@
 #' @name islandareas
 #' @docType data
-#' @title islandareas table, bounds info on lat lon of US Island Areas
+#' @title islandareas (DATA) table, bounds info on lat lon of US Island Areas
 #' @description data.frame of info on approximate lat lon bounding boxes around
 #'   American Samoa, Guam, the 
 #'   Commonwealth of the Northern Mariana Islands (Northern Mariana Islands),

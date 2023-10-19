@@ -1,4 +1,4 @@
-#' The application User-Interface
+#' app_ui - The application User-Interface
 #' @noRd
 #' @param request Internal parameter for `{shiny}`.
 #'     DO NOT REMOVE.

@@ -2,7 +2,7 @@
 
 # MODULE UI   
 
-#' latlontypedin UI code
+#' MODULE_UI_latlontypedin - latlontypedin UI code
 #'
 #' @description A shiny Module.
 #' @details Based on example here: 
@@ -27,7 +27,7 @@ MODULE_UI_latlontypedin <- function(id) {
 
 # MODULE SERVER code
 
-#' latlontypedin Server code
+#' MODULE_SERVER_latlontypedin - latlontypedin Server code
 #'
 #' @noRd 
 MODULE_SERVER_latlontypedin <- function(id,

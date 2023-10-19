@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotblocksnearby.R
 \name{plotblocksnearby}
 \alias{plotblocksnearby}
-\title{Map view of Census blocks (their centroids) near one or more sites
+\title{plotblocksnearby - Map view of Census blocks (their centroids) near one or more sites
 Utility to quickly view one or more facility points on map with the blocks found nearby}
 \usage{
 plotblocksnearby(sitepoints, radius = 3, sites2blocks, usemapfast = TRUE, ...)
@@ -28,7 +28,7 @@ If sites2blocks is provided, but sitepoints is not, it could only do a bad appro
 invisibly returns sites2blocks like getblocksnearby() does
 }
 \description{
-Map view of Census blocks (their centroids) near one or more sites
+plotblocksnearby - Map view of Census blocks (their centroids) near one or more sites
 Utility to quickly view one or more facility points on map with the blocks found nearby
 }
 \details{

@@ -3,9 +3,9 @@
 \docType{data}
 \name{SIC}
 \alias{SIC}
-\title{named list of all SIC code numbers and category name for each}
+\title{SIC (DATA) named list of all SIC code numbers and category name for each}
 \description{
-named list of all SIC code numbers and category name for each
+SIC (DATA) named list of all SIC code numbers and category name for each
 }
 \details{
 see \url{https://siccode.com}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils_pctiles_lookup_create.R
 \name{pctiles_lookup_create}
 \alias{pctiles_lookup_create}
-\title{create lookup table of percentiles 0 to 100 and mean for each indicator by State or USA total}
+\title{pctiles_lookup_create - create lookup table of percentiles 0 to 100 and mean for each indicator by State or USA total}
 \usage{
 pctiles_lookup_create(
   x,
@@ -22,7 +22,7 @@ mean,   and percentiles, for each zone}
 \item{wts}{not used in EJScreen percentiles anymore}
 }
 \description{
-create lookup table of percentiles 0 to 100 and mean for each indicator by State or USA total
+pctiles_lookup_create - create lookup table of percentiles 0 to 100 and mean for each indicator by State or USA total
 }
 \details{
 EJScreen assigns each indicator in each block group a percentile value via python script, using

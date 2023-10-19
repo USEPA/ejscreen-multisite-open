@@ -2,7 +2,7 @@
 % Please edit documentation in R/latlon_as.numeric.R
 \name{latlon_as.numeric}
 \alias{latlon_as.numeric}
-\title{Strip non-numeric characters from a vector}
+\title{latlon_as.numeric - Strip non-numeric characters from a vector}
 \usage{
 latlon_as.numeric(x)
 }

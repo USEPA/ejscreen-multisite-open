@@ -1,3 +1,11 @@
+#' count_sites_with_n_high_scores
+#'
+#' @param scores score
+#' @param thresholds thresholds
+#' @param xwide xwide
+#'
+#' @export
+#'
 count_sites_with_n_high_scores <- function(scores, thresholds=c(1.01, 1.50, 2, 3, 5, 10), xwide=c("statewide", "nationwide")[1]) {
   ratiodata <- scores # data.frame
   ratio_benchmarks <- thresholds

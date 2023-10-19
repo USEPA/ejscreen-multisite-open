@@ -4,7 +4,7 @@
 \alias{latlon_from_anything}
 \alias{latlon_any_format}
 \alias{lonlat_any_format}
-\title{Flexibly get lat/lon from file, data.frame, data.table, or lat/lon vectors}
+\title{latlon_from_anything - Flexibly get lat/lon from file, data.frame, data.table, or lat/lon vectors}
 \usage{
 latlon_from_anything(x, y)
 }

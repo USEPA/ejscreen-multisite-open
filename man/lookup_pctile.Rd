@@ -18,7 +18,7 @@ This could be recoded to be more efficient - could use data.table.
 
 The data.frame lookup table must have a field called "PCTILE" that has quantiles/percentiles
 and other column(s) with values that fall at those percentiles.
-\link{usastats} and \link{statstats} are such lookup tables.
+\link{usastats} and \link{statestats} are such lookup tables.
 This function accepts lookup table (or uses one called us if that is in memory), and
 finds the number in the PCTILE column that corresponds to where a specified value
 (in myvector) appears in the column called varname.in.lookup.table.

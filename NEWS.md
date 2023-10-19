@@ -1,3 +1,7 @@
+# EJAM 2.2.1 (10/18/2023)
+
+* Major changes
+
 # EJAM 2.2.0 (8/03/2023)
 
 * Updated to match EJScreen version 2.2

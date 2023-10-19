@@ -1,4 +1,4 @@
-#' Find nearby blocks using Quad Tree data structure for speed, NO PARALLEL PROCESSING
+#' getblocksnearbyviaQuadTree3 - Find nearby blocks using Quad Tree data structure for speed, NO PARALLEL PROCESSING
 #'     DRAFT / WAS WORK IN PROGRESS  
 #' @description Given a set of points and a specified radius (in miles), 
 #'   this function quickly finds all the US Census blocks near each point. 

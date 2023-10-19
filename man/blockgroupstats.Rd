@@ -3,7 +3,7 @@
 \docType{data}
 \name{blockgroupstats}
 \alias{blockgroupstats}
-\title{EJScreen demographic and environmental indicators for Census block groups}
+\title{blockgroupstats (DATA) EJScreen demographic and environmental indicators for Census block groups}
 \description{
 The EJScreen dataset (demographic, environmental indicators).
 

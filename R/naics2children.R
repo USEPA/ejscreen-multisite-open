@@ -1,4 +1,4 @@
-#' See NAICS codes queried plus all children of any of those
+#' naics2children - See NAICS codes queried plus all children of any of those
 #' Used by naics_find()
 #' @details 
 #' start with shortest (highest level) codes. since tied for nchar, these branches have zero overlap, so do each.

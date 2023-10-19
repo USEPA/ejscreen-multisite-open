@@ -2,7 +2,7 @@
 % Please edit documentation in R/getblocksnearby.R
 \name{getblocksnearby}
 \alias{getblocksnearby}
-\title{Fast way to find nearby points - finds distance to each Census block centroid nearby}
+\title{getblocksnearby - Fast way to find nearby points - finds distance to each Census block centroid nearby}
 \usage{
 getblocksnearby(
   sitepoints,

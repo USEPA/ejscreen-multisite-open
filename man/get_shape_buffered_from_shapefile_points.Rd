@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_shape_buffered_from_shapefile_points.R
 \name{get_shape_buffered_from_shapefile_points}
 \alias{get_shape_buffered_from_shapefile_points}
-\title{add buffer around shape (points, here)}
+\title{get_shape_buffered_from_shapefile_points - add buffer around shape (points, here)}
 \usage{
 get_shape_buffered_from_shapefile_points(shapefile_points, radius.miles, ...)
 }
@@ -17,7 +17,7 @@ and to st_crs(x)$units otherwise)}
 \item{...}{passed to st_buffer()}
 }
 \description{
-add buffer around shape (points, here)
+get_shape_buffered_from_shapefile_points - add buffer around shape (points, here)
 }
 \details{
 Just a wrapper for \code{\link[sf:geos_unary]{sf::st_buffer()}}

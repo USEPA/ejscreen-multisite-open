@@ -1,4 +1,4 @@
-#' Get complete EJ analysis numbers (demographic and environmental indicators) near a list of locations
+#' ejamit - Get complete EJ analysis numbers (demographic and environmental indicators) near a list of locations
 #' @description This is the main function in EJAM for users who want to use EJAM from RStudio.
 #'   It does essentially what the webapp does to analyze/summarize near a set of points.
 #'   See help("EJAM")  

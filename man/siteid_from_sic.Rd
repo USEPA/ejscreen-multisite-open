@@ -2,7 +2,7 @@
 % Please edit documentation in R/sic_from_any.R
 \name{siteid_from_sic}
 \alias{siteid_from_sic}
-\title{Find EPA-regulated facilities in FRS by SIC code (industrial category)
+\title{latlon_from_sic - Find EPA-regulated facilities in FRS by SIC code (industrial category)
 Get lat lon, Registry ID, given SIC industry code(s)
 Find all EPA Facility Registry Service (FRS) sites with this exact SIC code (not subcategories)}
 \usage{
@@ -17,7 +17,7 @@ A data.table (not just data.frame) with columns called
 lat, lon, REGISTRY_ID, SIC (but see the id_only parameter)
 }
 \description{
-Find EPA-regulated facilities in FRS by SIC code (industrial category)
+latlon_from_sic - Find EPA-regulated facilities in FRS by SIC code (industrial category)
 Get lat lon, Registry ID, given SIC industry code(s)
 Find all EPA Facility Registry Service (FRS) sites with this exact SIC code (not subcategories)
 }

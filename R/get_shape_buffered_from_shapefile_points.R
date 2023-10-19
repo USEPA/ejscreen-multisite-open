@@ -1,4 +1,4 @@
-#' add buffer around shape (points, here)
+#' get_shape_buffered_from_shapefile_points - add buffer around shape (points, here)
 #' @details Just a wrapper for [sf::st_buffer()]
 #'
 #' @param shapefile_points spatial object like areas at high risk or areas with facilities to be analyzed

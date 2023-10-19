@@ -2,7 +2,7 @@
 % Please edit documentation in R/latlon_df_clean.R
 \name{latlon_df_clean}
 \alias{latlon_df_clean}
-\title{Find and clean up latitude and longitude columns in a data.frame}
+\title{latlon_df_clean - Find and clean up latitude and longitude columns in a data.frame}
 \usage{
 latlon_df_clean(df)
 }

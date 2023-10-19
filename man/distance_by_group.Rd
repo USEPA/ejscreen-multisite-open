@@ -7,25 +7,26 @@ Same as \code{\link[=plot_distance_mean_by_group]{plot_distance_mean_by_group()}
 \usage{
 distance_by_group(
   results_bybg_people,
-  demogvarname = "Demog.Index",
-  demoglabel = demogvarname
-)
-
-distance_by_group(
-  results_bybg_people,
-  demogvarname = "Demog.Index",
-  demoglabel = demogvarname
+  demogvarname = NULL,
+  demoglabel = NULL,
+  returnwhat = "table",
+  graph = FALSE
 )
 }
 \arguments{
 \item{results_bybg_people}{data.table from doaggregate()$results_bybg_people}
 
-\item{demogvarname}{e.g., "pctlowinc"}
+\item{demogvarname}{vector of column names like "pctlowinc" etc.}
 
-\item{demoglabel}{e.g., "Low Income Residents"}
+\item{demoglabel}{vector of labels like "Low Income Residents" etc.}
+
+\item{returnwhat}{If returnwhat is "table", invisibly returns a
+data.frame with group, ratio, avg_distance_for_group, avg_distance_for_nongroup.
+If returnwhat is "plotfilename" then it returns the full path including filename of a .png in a tempdir
+If returnwhat is "plot" then it returns the plot object as needed for xls_formatting2() ?}
 }
 \value{
-list of 2 numbers: avg_distance_for_group and avg_distance_for_nongroup
+see parameter returnwhat
 }
 \description{
 Note ratio shown is ratio of distance among others to distance in group,
@@ -44,26 +45,6 @@ appropriate estimate of the distance, hence this adjustment is made in EJAM getb
 }
 \details{
 see examples in \code{\link[=plot_distance_cdf_by_group]{plot_distance_cdf_by_group()}}
-
-Note on Avg Distance and range of distances in each Demog group, & \%D as function of distance:
-
-We have info on each blockgroup near each site, which means some small \% of those bgs are duplicated in this table:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{results_bybg_people
-}\if{html}{\out{</div>}}
-
-Mostly we want overall (not by site) to know avg and cum distrib of distances in each demog,
-
-(and also \%D as a function of continuous distance),
-
-and for those stats we would want to take only unique blockgroups from here,
-using the shorter distance, so the distribution of distances does not doublecount people.
-
-But we might also want to see that distribution of distances by D for just 1 site?
-
-And we might also want to see the \%D as a function of continuous distance at just 1 site?
-
-So to retain flexibility doaggregate() reports all instances of blockgroup-site pairings.
 }
 \examples{
  y <- ejamit(testpoints_100, radius = 3)
@@ -82,5 +63,7 @@ So to retain flexibility doaggregate() reports all instances of blockgroup-site 
    compared to 18.7\% of Asian who do.
 }
 \seealso{
-\code{\link[=plot_distance_mean_by_group]{plot_distance_mean_by_group()}}  \code{\link[=distance_by_group]{distance_by_group()}}
+\code{\link[=distance_by_group]{distance_by_group()}}
+
+\code{\link[=distance_by_group_plot]{distance_by_group_plot()}}  \code{\link[=plot_distance_cdf_by_group]{plot_distance_cdf_by_group()}}
 }

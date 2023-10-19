@@ -3,7 +3,7 @@
 \docType{data}
 \name{ejampackages}
 \alias{ejampackages}
-\title{list of names of key EJAM-related R packages}
+\title{ejampackages (DATA) list of names of key EJAM-related R packages}
 \description{
-list of names of key EJAM-related R packages
+ejampackages (DATA) list of names of key EJAM-related R packages
 }

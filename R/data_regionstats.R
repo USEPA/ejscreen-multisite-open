@@ -1,6 +1,6 @@
 #' @name regionstats
 #' @docType data
-#' @title (obsolete) data.table of 100 percentiles and means for each EPA Region.
+#' @title regionstats (DATA) (obsolete) data.table of 100 percentiles and means for each EPA Region.
 #' @description data.table of 100 percentiles and means for each EPA Region (> 1,000 rows)
 #'   for all the block groups in that zone (e.g., block groups in [blockgroupstats])
 #'   for a set of indicators such as percent low income.

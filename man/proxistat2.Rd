@@ -2,7 +2,7 @@
 % Please edit documentation in R/proxistat2-DRAFT.R
 \name{proxistat2}
 \alias{proxistat2}
-\title{Calculate a proximity score for every blockgroup - WORK IN PROGRESS
+\title{proxistat2 - Calculate a proximity score for every blockgroup - WORK IN PROGRESS
 Indicator of proximity of each blockgroups to some set of facilities or sites.}
 \usage{
 proxistat2(pts, radius = 8.04672, quadtree)
@@ -20,7 +20,7 @@ built during use of EJAM package. see \link{quaddata}}
 data.table with proximityscore, bgfips, lat, lon, etc.
 }
 \description{
-Calculate a proximity score for every blockgroup - WORK IN PROGRESS
+proxistat2 - Calculate a proximity score for every blockgroup - WORK IN PROGRESS
 Indicator of proximity of each blockgroups to some set of facilities or sites.
 }
 \details{

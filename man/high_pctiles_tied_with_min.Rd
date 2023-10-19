@@ -3,7 +3,7 @@
 \docType{data}
 \name{high_pctiles_tied_with_min}
 \alias{high_pctiles_tied_with_min}
-\title{internal data used to handle cases where multiple places are tied for the lowest indicator score}
+\title{high_pctiles_tied_with_min (DATA) internal data used to handle cases where multiple places are tied for the lowest indicator score}
 \description{
-internal data used to handle cases where multiple places are tied for the lowest indicator score
+high_pctiles_tied_with_min (DATA) internal data used to handle cases where multiple places are tied for the lowest indicator score
 }

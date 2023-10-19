@@ -1,4 +1,4 @@
-#' find nearby blocks using Quad Tree data structure for speed, CLUSTERED FOR PARALLEL PROCESSING
+#' getblocksnearbyviaQuadTree_Clustered - find nearby blocks using Quad Tree data structure for speed, CLUSTERED FOR PARALLEL PROCESSING
 #' @description Uses packages parallel and snow. [parallel::makePSOCKcluster] is an enhanced version of [snow::makeSOCKcluster] in package snow.
 #'     It runs Rscript on the specified host(s) to set up a worker process which listens on a socket for expressions to evaluate, and returns the results (as serialized objects).
 #'
@@ -15,7 +15,7 @@
 #' @seealso   [getblocksnearby()] [getblocksnearbyviaQuadTree()] [getblocksnearbyviaQuadTree_Clustered()] [getblocksnearbyviaQuadTree2()]
 #' @export
 #'
-getblocksnearbyviaQuadTree_Clustered <-function(sitepoints,radius,maxradius, avoidorphans, CountCPU=1, quadtree) {
+getblocksnearbyviaQuadTree_Clustered <- function(sitepoints,radius, maxradius, avoidorphans, CountCPU = 1, quadtree) {
   #pass in a list of uniques and the surface radius distance
   #filter na values
 sitepoints <- sitepoints[!is.na(sitepoints$LAT) & !is.na(sitepoints$LONG), ]
@@ -39,11 +39,11 @@ sitepoints <- sitepoints[!is.na(sitepoints$LAT) & !is.na(sitepoints$LONG), ]
   #set up cluster, splitting up the sitepoints among the available CPUs
   #   but see this on why detectCores() is a bad idea:  https://www.r-bloggers.com/2022/12/please-avoid-detectcores-in-your-r-packages/
   cpuids <- 1:CountCPU
-  sitepoints[,"CPUAFFINITY"] <- rep_len(cpuids, length.out=nrow(sitepoints))
-  percpusitepoints<- vector('list', CountCPU)
-  for(i in 1:CountCPU)  ## for each CPU
+  sitepoints[,"CPUAFFINITY"] <- rep_len(cpuids, length.out = nrow(sitepoints))
+  percpusitepoints <- vector('list', CountCPU)
+  for (i in 1:CountCPU)  ## for each CPU
   {
-    percpusitepoints[[i]] <- subset(sitepoints, CPUAFFINITY==i)
+    percpusitepoints[[i]] <- subset(sitepoints, CPUAFFINITY == i)
   }
 
   # parallel::makePSOCKcluster is an enhanced version of snow::makeSOCKcluster in package snow. It runs Rscript on the specified host(s) to set up a worker process which listens on a socket for expressions to evaluate, and returns the results (as serialized objects).

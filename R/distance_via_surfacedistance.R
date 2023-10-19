@@ -1,4 +1,4 @@
-#' convert surface distance to actual distance
+#' distance_via_surfacedistance - convert surface distance to actual distance
 #'
 #' @description
 #'     \preformatted{

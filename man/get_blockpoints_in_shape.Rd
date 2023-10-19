@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_blockpoints_in_shape.R
 \name{get_blockpoints_in_shape}
 \alias{get_blockpoints_in_shape}
-\title{find blocks that are in a polygon, using internal point of block - WORK IN PROGRESS ****}
+\title{get_blockpoints_in_shape - find blocks that are in a polygon, using internal point of block - WORK IN PROGRESS ****}
 \usage{
 get_blockpoints_in_shape(
   polys,

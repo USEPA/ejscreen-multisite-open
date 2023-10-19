@@ -3,7 +3,7 @@
 \docType{data}
 \name{usastats}
 \alias{usastats}
-\title{data.frame of 100 percentiles and means}
+\title{usastats (DATA) data.frame of 100 percentiles and means}
 \description{
 data.frame of 100 percentiles and means (about 100 rows)
 in the USA overall, across all locations (e.g., block groups in \link{blockgroupstats})

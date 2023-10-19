@@ -1,6 +1,6 @@
 #' @name blockgroupstats
 #' @docType data
-#' @title EJScreen demographic and environmental indicators for Census block groups
+#' @title blockgroupstats (DATA) EJScreen demographic and environmental indicators for Census block groups
 #'
 #' @description 
 #'   The EJScreen dataset (demographic, environmental indicators).

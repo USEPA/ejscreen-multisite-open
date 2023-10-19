@@ -2,7 +2,7 @@
 % Please edit documentation in R/colcounter.R
 \name{colcounter}
 \alias{colcounter}
-\title{Count columns with Value (at or) above (or below) threshold}
+\title{colcounter - Count columns with Value (at or) above (or below) threshold}
 \usage{
 colcounter(
   x,
@@ -31,7 +31,7 @@ If TRUE, specify one threshold per column.}
 vector of counts as long as NROW(x)
 }
 \description{
-Count columns with Value (at or) above (or below) threshold
+colcounter - Count columns with Value (at or) above (or below) threshold
 }
 \examples{
 \dontrun{

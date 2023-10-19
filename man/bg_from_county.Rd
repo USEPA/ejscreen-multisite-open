@@ -2,7 +2,7 @@
 % Please edit documentation in R/counties_as_sites.R
 \name{bg_from_county}
 \alias{bg_from_county}
-\title{Analyze US Counties as if they were sites, to get EJ indicators summary for each county}
+\title{bg_from_county - Analyze US Counties as if they were sites, to get EJ indicators summary for each county}
 \usage{
 bg_from_county(fips)
 }
@@ -13,7 +13,7 @@ bg_from_county(fips)
 data.table with all pairs of county fips - bgid, and a unique siteid assigned to each county
 }
 \description{
-Analyze US Counties as if they were sites, to get EJ indicators summary for each county
+bg_from_county - Analyze US Counties as if they were sites, to get EJ indicators summary for each county
 }
 \examples{
  bg_from_county(c('01001','72153'))

@@ -1,4 +1,4 @@
-#' script to download NAICS file with code and name of sector
+#' naics_download - script to download NAICS file with code and name of sector
 #'
 #' See source code. Mostly just a short script to get the 2017 or 2022 codes and names.
 #' See <'https://www.census.gov/naics/?48967'>
@@ -23,7 +23,7 @@ naics_download <- function(year=2017, urlpattern='https://www.census.gov/naics/Y
     destfile = destfile
   )
   x <- readxl::read_xlsx(path = destfile, skip = 2, col_names = c('n','code','title','b','c','d'))
-  mynames <- paste(x$code, ' - ', x$title,sep='')
+  mynames <- paste(x$code, ' - ', x$title, sep = '')
   mycodes <- as.numeric(as.list(x$code))
   # mynames[(is.na(mycodes))]  # remove the ones that are ranges instead of being a 2-digit or longer code
   # ###  "31-33 - Manufacturing"  "44-45 - Retail Trade"   "48-49 - Transportation and Warehousing"
@@ -33,7 +33,7 @@ naics_download <- function(year=2017, urlpattern='https://www.census.gov/naics/Y
   # head(cbind(NAICS[substr(NAICS,1,2)=='31']))
   
   # save as NAICS dataset for package, but with year attribute indicating vintage:
-  NAICS <- structure(NAICS, year=year)
+  NAICS <- structure(NAICS, year = year)
   # attr(NAICS, 'year')
   # [1] 2017 # for example
   

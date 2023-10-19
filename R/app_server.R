@@ -1,4 +1,4 @@
-#' EJAM app server
+#' app_server - EJAM app server
 #' 
 #' @param input,output,session Internal parameters for {shiny}.
 #'     DO NOT REMOVE.

@@ -1,4 +1,4 @@
-#' utility to load a couple of datasets using data immediately instead of relying on lazy loading 
+#' dataload_from_package - utility to load a couple of datasets using data immediately instead of relying on lazy loading 
 #' @details Default is to load some but not all the datasets into memory immediately.
 #'   blockgroupstats, usastats, statestats, and some others are always essential to EJAM, but 
 #'   frs and frs_by_programid are huge datasets (and frs_by_sic and frs_by_naics)

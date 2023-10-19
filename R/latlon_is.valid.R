@@ -73,7 +73,7 @@ latlon_is.islandareas <- function(lat, lon)  {
 ############################################### # 
 
 
-#' Validate latitudes and longitudes
+#' latlon_is.valid - Validate latitudes and longitudes
 #' @description Check each latitude and longitude value to see if they are valid.
 #' @details  
 #'   NA or outside expected numeric ranges 

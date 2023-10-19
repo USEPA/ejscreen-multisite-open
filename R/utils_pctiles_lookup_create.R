@@ -1,4 +1,4 @@
-#' create lookup table of percentiles 0 to 100 and mean for each indicator by State or USA total
+#' pctiles_lookup_create - create lookup table of percentiles 0 to 100 and mean for each indicator by State or USA total
 #' @details EJScreen assigns each indicator in each block group a percentile value via python script, using 
 #' <https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.percentileofscore.html>
 #' 
@@ -64,14 +64,14 @@ pctiles_lookup_create <- function(x, zone.vector=NULL, zoneOverallName='USA', wt
   mydf <- x
   
   pctiles.exact <- function(x) {
-    cbind(quantile(x, type=1, probs=(1:100)/100, na.rm=TRUE) ) 
+    cbind(quantile(x, type = 1, probs = (1:100)/100, na.rm = TRUE) ) 
     # actually this should be written to assign the floor of exact % of scores that are < given bg score
     # floor(sum(x < thisx)/length(x))
   }
   
   wtd.pctiles.exact <-  function(x, wts=NULL, na.rm=TRUE, type="i/n", probs=(1:100)/100) {
     #  PERCENTILES, WEIGHTED, SO DISTRIBUTION OVER PEOPLE NOT PLACES
-    cbind(Hmisc::wtd.quantile(x, wts, type=type, probs=probs, na.rm=na.rm))
+    cbind(Hmisc::wtd.quantile(x, wts, type = type, probs = probs, na.rm = na.rm))
   }
   
   if (is.null(zone.vector)) {
@@ -91,9 +91,9 @@ pctiles_lookup_create <- function(x, zone.vector=NULL, zoneOverallName='USA', wt
         
         # ZONES BUT NO WEIGHTS ####
         
-        r[[i]] <- data.frame(sapply(mydf[zone.vector==z,  ], function(x) pctiles.exact(x)))
+        r[[i]] <- data.frame(sapply(mydf[zone.vector == z,  ], function(x) pctiles.exact(x)))
         
-        r[[i]] <- rbind(r[[i]], t(data.frame(mean = sapply(mydf[zone.vector==z,  ], function(x) mean(x, na.rm = TRUE)))))
+        r[[i]] <- rbind(r[[i]], t(data.frame(mean = sapply(mydf[zone.vector == z,  ], function(x) mean(x, na.rm = TRUE)))))
         # r[[i]] <- rbind(r[[i]], t(data.frame(std.dev = sapply(mydf[zone.vector==z,  ], function(x) sd(x, na.rm = TRUE)))))
         r[[i]]$REGION <- z
         r[[i]]$PCTILE <- rownames(r[[i]]) # 1:100,'mean','std.dev'
@@ -101,8 +101,8 @@ pctiles_lookup_create <- function(x, zone.vector=NULL, zoneOverallName='USA', wt
         
         # ZONES AND WEIGHTS ####
         
-        r[[i]] = data.frame(sapply(mydf[zone.vector==z, ], function(x) wtd.pctiles.exact(x, wts[zone.vector==z]) ) )
-        r[[i]] = rbind(r[[i]], t(data.frame(mean=sapply(mydf[zone.vector==z,  ], function(x) Hmisc::wtd.mean(x, wts[zone.vector==z], na.rm=TRUE) ) ) ))
+        r[[i]] = data.frame(sapply(mydf[zone.vector == z, ], function(x) wtd.pctiles.exact(x, wts[zone.vector == z]) ) )
+        r[[i]] = rbind(r[[i]], t(data.frame(mean = sapply(mydf[zone.vector == z,  ], function(x) Hmisc::wtd.mean(x, wts[zone.vector == z], na.rm = TRUE) ) ) ))
         # r[[i]] = rbind(r[[i]], t(data.frame(std.dev=sapply(mydf[zone.vector==z,  ], function(x) sqrt(Hmisc::wtd.var(x, wts[zone.vector==z], na.rm=TRUE) ) )) ))
         r[[i]]$REGION <- z
         r[[i]]$PCTILE <- rownames(r[[i]]) # 1:100,'mean','std.dev'

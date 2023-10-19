@@ -8,5 +8,5 @@
 list of environmental indicator names
 }
 \seealso{
-\link[EJAMejscreenapi:map_headernames]{EJAMejscreenapi::map_headernames} \link{names_d} \link{names_e} \link{namez}
+EJAMejscreenapi dataset called map_headernames \link{names_d} \link{names_e} \link{namez}
 }

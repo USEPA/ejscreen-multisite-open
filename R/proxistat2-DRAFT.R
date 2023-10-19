@@ -1,4 +1,4 @@
-#' Calculate a proximity score for every blockgroup - WORK IN PROGRESS
+#' proxistat2 - Calculate a proximity score for every blockgroup - WORK IN PROGRESS
 #' Indicator of proximity of each blockgroups to some set of facilities or sites.
 #' @details  Proximity score is sum of (1/d) where each d is distance of a given site in km, 
 #'   summed over all sites within 5km, as in EJScreen.
@@ -87,7 +87,7 @@ proxistat2 <- function(pts, radius=8.04672, quadtree) {
   # (0.9 / sqrt(pi)) = 0.5077706  # so, min.dist := 0.5077706 * sqrt(area)
   
   # this dataset called blockpoints_area_pop  was in the proxistat package:
-  sites2blocks_dt <- blockpoints_area_pop[sites2blocks_dt, .(blockid, distance, siteid, area), on="blockid"]
+  sites2blocks_dt <- blockpoints_area_pop[sites2blocks_dt, .(blockid, distance, siteid, area), on = "blockid"]
   
   # area was in square meters, so convert   1609.344 meters per mile 
   sites2blocks_dt[ , min.dist.km := 0.0005077706 * sqrt(area)]
@@ -144,16 +144,16 @@ proxistat2 <- function(pts, radius=8.04672, quadtree) {
   
   # create score per BLOCK = sum of sites wtd by 1/d ####
   
-  blockscores <- sites2blocks_dt[ , sum(1 / distance.km, na.rm = TRUE), by=blockid] # result is data.table with blockid, V1
+  blockscores <- sites2blocks_dt[ , sum(1 / distance.km, na.rm = TRUE), by = blockid] # result is data.table with blockid, V1
    # blockscores[is.infinite(V1), V1 := 999]
   
   
   
-  x <- data.table::merge.data.table(blockwts, blockscores, by="blockid", all.x = FALSE, all.y = TRUE)
+  x <- data.table::merge.data.table(blockwts, blockscores, by = "blockid", all.x = FALSE, all.y = TRUE)
   
   # create score per BLOCK GROUP = popwtd mean of block scores ####
   
-  bgscore <- x[, sum(V1 * blockwt, na.rm=TRUE)/sum(blockwt, na.rm=TRUE), by=bgid]
+  bgscore <- x[, sum(V1 * blockwt, na.rm = TRUE)/sum(blockwt, na.rm = TRUE), by = bgid]
   setnames(bgscore, 'V1', "proximityscore")
   bgscore = merge(bgscore, bgpts, by = "bgid", all.x = TRUE, all.y = FALSE)
   

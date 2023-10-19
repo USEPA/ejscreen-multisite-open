@@ -1,6 +1,6 @@
 #' @name usastats
 #' @docType data
-#' @title data.frame of 100 percentiles and means
+#' @title usastats (DATA) data.frame of 100 percentiles and means
 #' @description data.frame of 100 percentiles and means (about 100 rows)
 #'   in the USA overall, across all locations (e.g., block groups in [blockgroupstats])
 #'   for a set of indicators such as percent low income.

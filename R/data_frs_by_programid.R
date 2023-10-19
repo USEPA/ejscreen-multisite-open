@@ -1,6 +1,6 @@
 #' @name frs_by_programid
 #' @docType data
-#' @title data.table of Program System ID code(s) for each EPA-regulated site in 
+#' @title frs_by_programid (DATA) data.table of Program System ID code(s) for each EPA-regulated site in 
 #'   the Facility Registry Service
 #' @seealso frs() frs_by_naics() Created by frs_make_programid_lookup()
 #' @description 

@@ -1,4 +1,4 @@
-#' identical to run_app(), just an alias
+#' app_run_EJAM - identical to run_app(), just an alias
 #' @description launch Shiny web app from RStudio
 #' @aliases run_app
 #' @export

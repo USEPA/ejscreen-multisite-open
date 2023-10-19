@@ -1,4 +1,4 @@
-#' Get State that each site is in, from a table of siteid, blockid, distance
+#' ST_by_site_from_sites2blocks - Get State that each site is in, from a table of siteid, blockid, distance
 #' @description  Find the 2-character State abbreviation for each site. This is for when you need to know
 #'   the state each site is in, to be able to report state percentiles, but you do not have 
 #'   the original list of siteid lat/lon or State info. This can infer the State

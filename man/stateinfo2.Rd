@@ -3,7 +3,7 @@
 \docType{data}
 \name{stateinfo2}
 \alias{stateinfo2}
-\title{data.frame of state abbreviations and state names (50+DC+PR; not AS, GU, MP, VI, UM)}
+\title{stateinfo2 (DATA) data.frame of state abbreviations and state names (50+DC+PR; not AS, GU, MP, VI, UM)}
 \description{
 52 rows and several variables: ST is the 2-letter abbreviation,
 statename is the State name, etc.

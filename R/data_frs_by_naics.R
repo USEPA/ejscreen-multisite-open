@@ -1,6 +1,6 @@
 #' @name frs_by_naics
 #' @docType data
-#' @title data.table of NAICS code(s) for each EPA-regulated site in Facility Registry Service
+#' @title frs_by_naics (DATA) data.table of NAICS code(s) for each EPA-regulated site in Facility Registry Service
 #' @seealso [frs] [frs_from_naics()] [naics_categories()] [frs_by_programid] and see naics_from_any in EJAM pkg.
 #' @description 
 #'    This is the format with one row per site-NAICS pair, 

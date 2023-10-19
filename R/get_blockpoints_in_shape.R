@@ -1,4 +1,4 @@
-#' find blocks that are in a polygon, using internal point of block - WORK IN PROGRESS ****
+#' get_blockpoints_in_shape - find blocks that are in a polygon, using internal point of block - WORK IN PROGRESS ****
 #' @description This is like getblocksnearby() but for a polygonal buffer area instead of 
 #'   a circular buffer.  
 #' @details This uses getblocksnearby() to get a very fast rough/good estimate of 
@@ -67,7 +67,7 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
     rbindlist %>% 
     unique
   
-  blockpoints_sf <- sf::st_as_sf(blockpoints_filt, coords = c('lon', 'lat'), crs= 4269)
+  blockpoints_sf <- sf::st_as_sf(blockpoints_filt, coords = c('lon', 'lat'), crs = 4269)
   
   if (!exists("blockpoints_sf")) {
     stop("requires the blockpoints   called blockpoints_sf  you can make like this: \n blockpoints_sf <-  blockpoints |> sf::st_as_sf(coords = c('lon', 'lat'), crs= 4269) \n # Geodetic CRS:  NAD83 ")
@@ -101,7 +101,7 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
     # get blockid of each nearby census block
     blocksnearby <- getblocksnearby(pts, addedbuffermiles * safety_margin_ratio)  # blockid, distance, siteid # don't care which siteid was how this block got included in the filtered list
     # get lat,lon of nearby blocks
-    blocksnearby <- (blockpoints[blocksnearby, .(lat,lon,blockid), on="blockid"])  # blockid,      lat ,      lon
+    blocksnearby <- (blockpoints[blocksnearby, .(lat,lon,blockid), on = "blockid"])  # blockid,      lat ,      lon
   }
   if (is.null(blocksnearby) & !ARE_POINTS) {
     # must use extremely slow method ?
@@ -111,7 +111,7 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
       # warning("using getblocksnearby() to filter US blocks to those near each site must be done before a dissolve  ")
       polys <- sf::st_union(polys)
     }
-    blocksinside <- sf::st_join(blockpoints_sf, sf::st_transform(polys,4269), join=sf::st_intersects,left='FALSE' )
+    blocksinside <- sf::st_join(blockpoints_sf, sf::st_transform(polys,4269), join = sf::st_intersects, left = 'FALSE' )
     
     
     # OR...  find centroid of each polygon and 
@@ -136,13 +136,13 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
     sf::st_coordinates(blocksinsidef),
     blocksinsidef$siteid,
     blocksinsidef$blockid,
-    distance=0
+    distance = 0
   )
   
   setnames(pts, c("lon","lat","siteid","blockid","distance")) # it is lon then lat due to format of output of st_coordinates() I think
   
   
-  return(list('pts'=pts,'polys'=polys))
+  return(list('pts' = pts, 'polys' = polys))
   
 }
 

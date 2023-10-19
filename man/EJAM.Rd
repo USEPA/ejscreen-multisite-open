@@ -9,7 +9,7 @@
 \alias{blockpoints}
 \alias{blockid2fips}
 \alias{bgid2fips}
-\title{Environmental Justice (EJ) Analysis Multisite tool}
+\title{EJAM - Environmental Justice (EJ) Analysis Multisite tool}
 \description{
 This package provides functions and data for very fast proximity analysis
 for a large number of locations, or "buffers", summarizing conditions at each location.

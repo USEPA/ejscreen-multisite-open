@@ -1,4 +1,4 @@
-#' Access files in the current app
+#' app_sys - Access files in the current app
 #'
 #' NOTE: If you manually change your package name in the DESCRIPTION,
 #' don't forget to change it here too, and in the config file.

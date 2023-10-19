@@ -2,7 +2,7 @@
 % Please edit documentation in R/colcounter_summary.R
 \name{colcounter_summary_pct}
 \alias{colcounter_summary_pct}
-\title{Summarize what percent of rows have N columns at or above (or below) various thresholds}
+\title{colcounter_summary_pct - Summarize what percent of rows have N columns at or above (or below) various thresholds}
 \usage{
 colcounter_summary_pct(x, thresholdlist, ...)
 }
@@ -16,7 +16,7 @@ like percentiles for example.}
 like or.tied=TRUE, na.rm=TRUE, below=FALSE, one.cut.per.col=FALSE}
 }
 \description{
-Summarize what percent of rows have N columns at or above (or below) various thresholds
+colcounter_summary_pct - Summarize what percent of rows have N columns at or above (or below) various thresholds
 }
 \details{
 See examples for colcounter_summary_cum_pct()

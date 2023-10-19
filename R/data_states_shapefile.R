@@ -1,6 +1,6 @@
 #' @name states_shapefile
 #' @docType data
-#' @title US States boundaries 2020 shapefile from TIGER
+#' @title states_shapefile (DATA) US States boundaries 2020 shapefile from TIGER
 #' @description This is used to figure out which state contains each point (facility/site).
 #' @seealso [state_from_latlon()] [get_blockpoints_in_shape()]
 #' @details This is used by [state_from_latlon()] to find which state is associated with each point 

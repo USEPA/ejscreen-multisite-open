@@ -1,4 +1,4 @@
-#' Get lat lon, Registry ID, and NAICS, for given FRS Program System CATEGORY
+#' latlon_from_program - Get lat lon, Registry ID, and NAICS, for given FRS Program System CATEGORY
 #' Find all FRS sites in a program like RCRAINFO, TRIS, or others
 #' @details  For info on FRS program codes in general, see <https://www.epa.gov/frs/frs-program-crosswalks>
 #'   
