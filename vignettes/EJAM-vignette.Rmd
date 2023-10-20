@@ -7,7 +7,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r  include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
@@ -16,7 +16,7 @@ knitr::opts_chunk$set(eval = FALSE)
 # https://r-pkgs.org/vignettes.html
 ```
 
-```{r, echo=FALSE}
+```{r  echo=FALSE}
 #
 #  *>>>>>>>>>> Developer note on updating this vignette <<<<<<<<<<<*
 #
@@ -37,7 +37,7 @@ knitr::opts_chunk$set(eval = FALSE)
 
 ## Trying out the EJAM web app
 
-The complete version of the app is not on a server as of 10/2023, but a working demo of the most basic feature is on a staging server at [EJAM Lite (Demo/Test on Staging Server)](https://rstudio-connect.dmap-stage.aws.epa.gov/content/725e3761-3dc1-4012-b07c-23126063da97/ "https://rstudio-connect.dmap-stage.aws.epa.gov/content/725e3761-3dc1-4012-b07c-23126063da97/"){.uri target="_blank" rel="noreferrer noopener"}.
+If you have not installed the R package, you can try a live demo version -- The complete version of the app is not on a server as of 10/2023, but a working demo of the most basic feature is on a staging server at [EJAM Lite (Demo/Test on Staging Server)](https://rstudio-connect.dmap-stage.aws.epa.gov/content/725e3761-3dc1-4012-b07c-23126063da97/ "https://rstudio-connect.dmap-stage.aws.epa.gov/content/725e3761-3dc1-4012-b07c-23126063da97/"){.uri target="_blank" rel="noreferrer noopener"}.
 
 The EJAM R package and app are in active development. The latest current version can be installed from the github USEPA github repository. It can be installed locally as an R package, and the data or functions can be used even without launching the shiny app interface. This is work in progress, so not everything may be working as changes are made on the staging server or GitHub version.
 
@@ -47,7 +47,48 @@ Note that the demo app takes a long time (up to a full minute perhaps) to start 
 
 ## Trying out the EJAM app or R functions in RStudio
 
-### Install the EJAM R package and related packages
+EJAM is not only a web app built in shiny R, it is also an R package, using the [golem](https://thinkr-open.github.io/golem/ "https://thinkr-open.github.io/golem/") framework.
+
+### To install the EJAM R package and related packages
+
+To install the latest development version of EJAM, you will first need to make sure you have access to the GitHub repositories on EPA's enterprise github site, at [USEPA GitHub](https://github.com/USEPA "https://github.com/USEPA"). You need to use VPN or be inside the EPA LAN at the office.
+
+If you just want to install it but not work with source code, use the following approach to install from internal repositories:
+
+Try to install the packages using `devtools::install_github()`
+
+``` r
+devtools::install_github('USEPA/EJAMejscreenapi')
+devtools::install_github('USEPA/EJAMbatch.summarizer')
+devtools::install_github('USEPA/EJAM')
+```
+
+If that does not work, you need to do the following:
+
+1.  create GitHub personal access token with 'repo scope'
+
+-   Go to <https://github.com/settings/tokens> and select Tokens (classic) on the left-hand side. Then click 'Generate New Token' -\> Generate new token (classic).
+-   Give it a name and select all boxes under repo scope. Scroll down and click 'Generate Token'.
+
+2.  set GitHub credentials in Rstudio
+
+-   one-time login: from the console, run credentials::set_github_pat(). Paste in your PAT to the login popup under 'Token'.
+-   store credentials long-term: run usethis::edit_r\_environ() to open your .Renviron file and and add a line with your PAT in this format: GITHUB_PAT = 'abc'
+    -   You can specify an extra argument scope = 'project' if you only want the PAT to work for a particular Rstudio project.
+
+3.  Install the packages using `devtools::install_github()`
+
+``` r
+devtools::install_github('USEPA/EJAMejscreenapi')
+devtools::install_github('USEPA/EJAMbatch.summarizer')
+devtools::install_github('USEPA/EJAM')
+```
+
+Make sure you also have installed packages listed in the `DESCRIPTION` file of the R package. Then you can use EJAM in RStudio -- either as a web app running locally or as a set of useful functions in the RStudio console.
+
+### To clone/ build/ install from source (for coders)
+
+If you can see the repository and know how to clone and build/install from source, then you should be able to clone from EJAM's code repositories for internal EPA use:
 
 Essential packages only available on the [USEPA github](https://github.com/USEPA/EJAM "github.com/USEPA/EJAM"){.uri target="_blank" rel="noreferrer noopener"} (not CRAN) are:
 
@@ -55,15 +96,21 @@ Essential packages only available on the [USEPA github](https://github.com/USEPA
 -   [EJAMejscreenapi](https://github.com/USEPA/EJAMejscreenapi#readme "github.com/USEPA/EJAMejscreenapi"){.uri target="_blank" rel="noreferrer noopener"}
 -   [EJAMbatch.summarizer](https://github.com/USEPA/EJAMbatch.summarizer#readme "github.com/USEPA/EJAMbatch.summarizer"){.uri target="_blank" rel="noreferrer noopener"}
 
-In R/RStudio, clone and build/ install from source the EJAM package and related ones from the [EJAM GitHub Repository (must be at EPA or using VPN)](https://github.com/USEPA/EJAM/#readme "https://github.com/USEPA/EJAM/#readme"){.uri target="_blank" rel="noreferrer noopener"}, etc.
+Make sure you also have installed packages listed in the `DESCRIPTION` file of the R package. Then you can use EJAM in RStudio -- either as a web app running locally or as a set of useful functions in the RStudio console.
 
-Make sure you have installed EJAM (and packages it relies on, particularly `EJAMejscreenapi` and `EJAMbatch.summarizer` from the [EJAM GitHub Repository (must be at EPA or using VPN](https://github.com/USEPA/EJAM/#readme "https://github.com/USEPA/EJAM/#readme"){.uri target="_blank" rel="noreferrer noopener"}), but also packages listed in the `DESCRIPTION` file of the R package. Then you can use EJAM in RStudio -- either as a web app running locally or as a set of useful functions in the RStudio console.
+### Try the web app in RStudio
+
+**run_app()** lets you launch the web app locally.
+
+```{r eval=FALSE, include=TRUE}
+run_app()
+```
 
 ### Initialize: load/attach package, download block data, build index
 
-To use EJAM in the console you would start like this:
+Once the packages are installed, to use EJAM in the console you would start like this:
 
-```{r, eval=FALSE}
+```{r  eval=FALSE}
 library(EJAM)
 
 dataload_from_aws() 
@@ -77,7 +124,7 @@ You can also save a little time if you first save those datasets locally and in 
 
 Note that the web app (e.g., launched locally) handles loading datasets and indexing blocks, so you would not have to use dataload_from_aws or indexblocks if launching the EJAM app locally.
 
-```{r, eval=FALSE}
+```{r  eval=FALSE}
 help("dataload_from_local")  
 ```
 
@@ -97,7 +144,7 @@ help("mapfast")
 
 From RStudio, you can use EJAM functions to interactively select a file from your folders, to upload a spreadsheet or csv with columns called lat and lon in the first row as the header row, and then one row per point.
 
-```{r, eval=FALSE}
+```{r eval=FALSE}
 y <- read_csv_or_xl()
 names(y)
 head(y)
@@ -117,7 +164,7 @@ head(latlon_from_naics(325510)) # has about 1,000 facilities
 
 ### Specify sites by facility registry ID
 
-```{r, eval=FALSE}
+```{r}
 frs_from_siteid(c(110071293460, 110000333826))
 
 # interactively upload file with table of REGISTRY_ID values
@@ -156,15 +203,98 @@ nrow(latlon_from_mactsubpart("OOOO", include_if_no_latlon = TRUE))
 
 ## See Documentation of Functions and Data
 
-See this vignette and help documentation for the package overall, and individual functions and datasets.
+See the readme for links to more documentation. There is documentation for the package overall, and individual functions and datasets.
 
 ```{r help, eval=FALSE, include=FALSE}
 ?EJAM
 # or 
 help("EJAM", package='EJAM')
+
+?ejamit
+
 ```
 
-## More
+## The EJScreen API module 
+
+The EJAMejscreen package was used to create a shiny module in EJAM that provides access to the EJScreen API in a loop or batch mode. It uses EJScreen to run reports on multiple places one at a time, so it is somewhat slow for more than a handful of places, but exactly replicates EJScreen results.
+
+### Get EJScreen results in RStudio
+
+In RStudio, you can use that code and app module like this:
+
+```{r eval=FALSE}
+
+# To interactively pick your own spreadsheet file from your local drive, that has lat and lon as two column headings and then one row per site:
+
+x <- ejscreenit(radius = 1) # will prompt you for excel file with lat lon in it
+```
+
+```{r eval=FALSE}
+x <- ejscreenit(data.frame(lon = c(-111,-113), lat = c(41,43)), radius = 2)
+names(x)
+x$map
+x$table
+ejscreenit_see_table(x)
+```
+
+### Get EJScreen results running a local web app \*\*\*not tested
+
+```{r eval=FALSE}
+# If you have the local source package EJAMejscreenapi you can do this:
+# setwd("YOUR PATH GOES HERE  EJAMejscreenapi")
+library(EJAMejscreenapi)
+EJAMejscreenapi::run_app()
+```
+
+### Get EJScreen results running a local web app module \*\*\*not tested
+
+```{r eval=FALSE}
+library(EJAMejscreenapi) 
+library(shiny); library(magrittr); library(leaflet)  
+# must attach all of those manually for this to work?
+source(system.file("global.R", package = "EJAMejscreenapi"))
+default_calculate_ratios <- TRUE
+use_ejscreenit_tf <- FALSE
+######################### #
+TEST_UI <- function(request) {
+  
+  shiny::fluidPage(
+    tabsetPanel(
+      tabPanel(title = "api app",
+               shiny::h2('EJScreen API batch tool packaged with EJAM'), 
+               EJAM:::mod_ejscreenapi_ui(
+                 "TESTID", simpleradius_default_for_ui = 2
+               )
+      ),
+      tabPanel(title = "results in overall app",
+               DT::dataTableOutput("results")
+      ),
+      tabPanel("info", renderText("testinfo2"))
+    )
+  )
+}
+######################### #
+TEST_SERVER <- function(input, output, session) {
+  
+  x <- EJAM:::mod_ejscreenapi_server(
+    "TESTID", 
+    default_points_shown_at_startup_react = reactive(testpoints_5[1:2,]), 
+    use_ejscreenit = use_ejscreenit_tf  # 
+  )
+  
+  output$results <- DT::renderDataTable({x()})
+  
+  output$testinfo2 <- renderText(cat(
+    "x names:  ", paste0(names(x()), collapse = ", "), "\n"
+    ))
+  
+}
+######################### #
+shinyApp(ui = TEST_UI, server = TEST_SERVER) # Test module, as mini-app
+
+```
+
+## More ways of picking places to analyze in EJAM
 
 ### Specify points (where you want to center the circular buffers)
 
@@ -180,7 +310,7 @@ You can define circular buffers around a set of EPA-regulated facilities in a fe
 
 Quick map of EPA-regulated facilities in one industrial category, which you can click on to see popup windows about sites.
 
-```{r}
+```{r map1}
 mapfast(frs_from_naics("smelt")) # may be slow the 1st time, if it lazyloads frs dataset
 ```
 
@@ -191,7 +321,7 @@ Table of facilities in an industry, plus links to each facility in ECHO and EJSc
 ```{r}
 industryword <- "chemical manuf"
 #  industryword <- "smelt"
-mysites <- frs_from_naics(industryword, children=FALSE)[,1:5]
+mysites <- frs_from_naics(industryword, children = FALSE)[,1:5]
 regids <- mysites$REGISTRY_ID
 link1 <- url_echo_facility_webpage(regids, as_html = T)
 link2 <- url_ejscreen_report(lat = mysites$lat, lon = mysites$lon, radius = 3, as_html = T)
@@ -204,21 +334,21 @@ mysites <- cbind(`ECHO report` = link1,
                  `EJScreen Report` = link2, `EJScreen Map` = link3, # `ACS Report` = link4,
                  mysites)
  caption = paste0(nrow(mysites), ' sites have NAICS matching "', industryword, '"')
-if (nrow(mysites) > 1500){ mysites <- mysites[1:1500, ]} # >2k rows is too much for client-side DataTables
+if (nrow(mysites) > 1500) {mysites <- mysites[1:1500, ]} # >2k rows is too much for client-side DataTables
  cat(caption,'\n')
 print(
   DT::datatable(
     mysites,
-    escape = FALSE,     rownames=FALSE,
+    escape = FALSE,     rownames = FALSE,
     caption = caption,
     filter = "top"
-  )
+  )[1:10, ]
 )
 ```
 
 Map of facilities in an industry, plus popups with links to each facility in ECHO and EJScreen
 
-```{r}
+```{r map2}
 mapfast(mysites)
 ```
 
@@ -250,7 +380,7 @@ library(data.table)
 data.table::fintersect(a,b)[,.(name,code)] #  a AND b
 data.table::funion(a,b)[,.(name,code)]     #  a OR  b
 naics_subcodes_from_code(funion(a,b)[,code])[,.(name,code)]   #  plus children
-naics_from_any(funion(a,b)[,code], children=T)[,.(name,code)] #  same
+naics_from_any(funion(a,b)[,code], children = T)[,.(name,code)] #  same
 ```
 
 A NAICS code can have many "children" or subcategories under it
@@ -266,11 +396,19 @@ NROW(frs_from_naics(naics_from_any("chem")$code))
 # >10,000
 ```
 
+#### Map of the blocks found near 1 site
+
+```{r}
+plotblocksnearby(testpoints_n(1), radius = 3)
+```
+
 #### Use lat/lon point data
 
 Enter lat and lon to specify points
 
 ```{r}
+
+
 sitepoints2  <- data.frame(
   lon = c(-92.1, -91.8), 
   lat = c(34.8799123, 30.2906971), 
@@ -291,7 +429,7 @@ sitepoints2
 
 Use test points in examples that comes with the package
 
-```{r testpoints, eval=TRUE, include=TRUE}
+```{r testpoints, echo=TRUE}
 testpoints_100 |> head(2) # data.table, in this package
 sitepoints100 <- data.table::copy(testpoints_100)  # [1:5, ]
 head(sitepoints100, 3)
@@ -302,7 +440,7 @@ Create random test data points in States of LA and TX
 ```{r}
 ?testpoints_n
 p1k <- testpoints_n(1000)
-mapfast(p1k)
+# mapfast(p1k)
 
 mapfast(testpoints_n(300, ST_of_blockgroup = c('LA','TX')) )
 ```
@@ -315,13 +453,21 @@ radius <- 3 # radius (in miles).  5 km = 3.1 miles, 10 km = 6.2 miles
 
 ### Key Functions in EJAM
 
+-   **run_app()** to launch the web app locally
+
 -   **ejamit()** provides results in just one function, by using getblocksnearby() and doaggregate():
 
 -   **getblocksnearby()** takes a set of points (e.g., facilities) and finds the Census blocks near each. Sample input is in testpoints_100, and sample output is in testoutput_getblocksnearby_10pts_1miles
 
 -   **doaggregate()** takes the list of blocks near each point, joins it to blockgroup indicators like from EJScreen, and aggregates at each buffered point as well as for the overall set of unique blocks (residents). Sample input is in testoutput_getblocksnearby_10pts_1miles
 
-## SPEED CHECK
+### Speed test
+
+```{r eval=FALSE, echo=TRUE}
+speeds = EJAM::speedtest(n = 100, radii = c(1,3,5,6.2,10))
+```
+
+![](plot_speed_vs_radius.png)
 
 ### Use ejamit( ) to get results in one step
 
@@ -339,7 +485,6 @@ began = Sys.time()
   speedreport(began, Sys.time(),n = NROW(sitepoints))
 # })
 # print(elapsed)
-
 ```
 
 Explore results in map and table
@@ -352,7 +497,7 @@ cbind(overall = as.list( out2$results_overall[ , ..names_d_subgroups]))
 
 ## Site by site results in map or table:
  
-mapfast(out2$results_bysite, radius = radius)
+# mapfast(out2$results_bysite, radius = radius)
 
 DT::datatable(out2$results_bysite, escape = FALSE, rownames = FALSE)
 
@@ -368,7 +513,7 @@ You can upload polygons in a shapefile, and use EJAM to analyze them. See the Sh
 
 You can compare places defined by FIPS code, such as a group of US Counties.
 
-```{r}
+```{r eval=FALSE}
 # Compare all Counties in a State, using EJAM indicators
 
 mystate <- "Delaware"
@@ -415,7 +560,7 @@ fips_counties_from_statename(mystate)
 
 About \< 1 second for 100 sites, but a few seconds for 1,000 sites, or roughly 500k / hour for this step
 
-```{r}
+```{r eval=FALSE}
 sitepoints <- data.table::copy(testpoints_100) 
 # or 
 # sitepoints <- testpoints_n(100,"block") # random points
@@ -432,7 +577,7 @@ print(elapsed)
 sites2blocks
 ```
 
-#### Map of the blocks found nearby
+#### Map of the blocks found near 1 site
 
 ```{r}
 plotblocksnearby(testpoints_n(1), radius = 3)
@@ -468,6 +613,10 @@ s2b_stats <- sites2blocks[ , .(
 setorder(s2b_stats, siteid)
 head(s2b_stats)
 
+```
+
+```{r}
+
 # CDF of how many blocks are nearby a site
 plot(sort(s2b_stats$blocks_within_1mile), 
      main = "How many blocks are near each facility?", 
@@ -476,34 +625,46 @@ plot(sort(s2b_stats$blocks_within_1mile),
 abline(h = quantile(s2b_stats$blocks_within_1mile, probs = (0:4) * 0.25))
 abline(h = mean(s2b_stats$blocks_within_1mile), col = "red")
 
+
+```
+
+```{r}
 # Histogram of how many blocks are nearby a site
 hist(sites2blocks[,.N,by = "siteid"][,N],20, 
      xlab = "How many blocks are nearby?", 
      ylab = "Frequency (# of sites)", 
      main = "A given site may have zero to hundreds of blocks nearby", 
      sub = "A typical site in this example has about 100 blocks nearby")
+```
 
-#  
+```{r}
+
 DT::datatable(s2b_stats,  rownames = FALSE)
 # more summaries showing there may be only 1 block or several hundred blocks within 1 mile
 quantile(s2b_stats$blocks_within_1mile, probs = (0:4) * 0.25)
-t(summary(s2b_stats)) 
+t(summary(s2b_stats))
+```
 
+```{r}
 # map the sites with popups about how many blocks were found near each
 if (!('siteid' %in% names(sitepoints))) {sitepoints$siteid <- seq.int(length.out = NROW(sitepoints))}
 s2b_stats <- merge(sitepoints, s2b_stats, by = "siteid")
 mapfast(s2b_stats, radius = radius)
+```
 
+```{r}
 # A 1 mile radius is huge within a dense urban area
 mapfast(s2b_stats[87:88,], radius = radius)
+```
 
+```{r}
 # Within a 1 mile radius, the blocks found tend to be about 2/3 of a mile from the site at the center.
 summary(s2b_stats$avgDistance)
 ```
 
 #### doaggregate() will summarize indicators within each buffer and overall
 
-```{r}
+```{r eval=FALSE}
 # out <- doaggregate(testoutput_getblocksnearby_10pts_1miles)
 
 elapsed <- system.time({
@@ -568,3 +729,4 @@ cat("----------------\n")
 #  
 # EJ pctiles, etc. might not be provided in EJAM output.   
 ```
+

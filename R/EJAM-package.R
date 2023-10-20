@@ -23,7 +23,9 @@
 #'
 #' @details  # **Vignette** ####################################################################
 #' 
-#' Please see the vignette (development version of vignette can be knit from EJAM/www folder of locally installed package)
+#' Please see the vignette at <EJAM-vignette.html> and web format documentation of functions and data at <EJAM.html>
+#' 
+#' (development version of vignette can be knit from EJAM/www folder of locally installed package)
 #' 
 #' @details  # **Key Functions:** ####################################################################
 #' 
