@@ -5,13 +5,16 @@
 
 testing_ejscreenapi_module <- FALSE # so that installation will not source this and launch the module as a mini app
 if (testing_ejscreenapi_module) {
-  # This test only would work after sourcing this whole file first, or after installing and loading EJAM to have these functions (export them??)
+  # This test maybe only would work after sourcing this whole file first, 
+  # or after installing and loading EJAM to have these functions (but not exported)
   # source this file first if not already loaded along with EJAM package
   
-  library(EJAMejscreenapi) 
-  # library(EJAM) # for testpoints_10, e.g., BUT THAT WOULD REPLACE AN UPDATED MODULE BELOW IF NOT ALREADY REBUILT/RELOADED WITH UPDATE
-  library(shiny); library(magrittr); library(leaflet)  # must attach all of those manually for this to work
+  # library( ## shiny); library( ## magrittr); library( ## leaflet)  # must attach all of those manually for this to work unless EJAM attached already?
+
+  # library( ## EJAMejscreenapi) 
   source(system.file("global.R", package = "EJAMejscreenapi"))
+  
+  # library( ## EJAM) # for testpoints_10, e.g., BUT THAT WOULD REPLACE AN UPDATED MODULE BELOW IF NOT ALREADY REBUILT/RELOADED WITH UPDATE
   
   default_calculate_ratios <- TRUE
   use_ejscreenit_tf <- FALSE
@@ -27,25 +30,26 @@ if (testing_ejscreenapi_module) {
                  # verbatimTextOutput("testinfo_radius"),
                  # shiny::textOutput("testinfo2"),
                  
+                 # EJAM:::mod_ejscreenapi_ui("TESTID", simpleradius_default_for_ui = 2)
                  mod_ejscreenapi_ui("TESTID", simpleradius_default_for_ui = 2)
-                 
                  # doesnt the module's ui already display results table? but this would test have the module server function return a table to overall server/app which itself can then display/output that table or otherwise work with it. 
         ),
         tabPanel(title = "results in overall app",
+                 br(),
                  
                  DT::dataTableOutput("results")
         )
       )
     )
-    
   }
   
   TEST_SERVER <- function(input, output, session) {
-    
+    # browser()
+    # x <- EJAM:::mod_ejscreenapi_server(
     x <- mod_ejscreenapi_server(
       "TESTID", 
-      default_points = testpoints_5[1:2,], 
-      use_ejscreenit = use_ejscreenit_tf  #              F  # , default_points_react= NULL
+      default_points_shown_at_startup_react = reactive(testpoints_5[1:2,]), 
+      use_ejscreenit = use_ejscreenit_tf  # 
     )
     output$testinfo1 <- renderPrint( ("info goes here "))
     # output$testinfo_radius <- renderPrint(paste0("Radius is ", x()$radius.miles, " miles"))
@@ -53,8 +57,18 @@ if (testing_ejscreenapi_module) {
     
     output$results <- DT::renderDataTable({
       x()
-    })
-    
+    }, 
+      options = list(
+        selection = 'multiple',
+        dom = 'rtip', # default table has 5 DOM elements: search box, length menu, info summary, pagination control, table. Display a subset of elements via dom= 
+        scrollX = TRUE, 
+        searchPanes = TRUE  # does not seem to work?
+      ),
+      escape = FALSE
+      ) # *** CAUTION -- MAY NEED TO CHANGE THIS ***   end of output$rendered_results_table <- DT::renderDT
+    # escape=TRUE is better for security reasons (XSS attacks).
+    # escape=FALSE fixes ejscreen pdf URL to be a link, 
+    # but it breaks links from ECHO table download (wont be clickable in table) ***
   }
   
   shinyApp(ui = TEST_UI, server = TEST_SERVER) # Test the module, as a mini-app
@@ -94,13 +108,16 @@ if (testing_ejscreenapi_module) {
 #' @param default_radius_react reactiveVal passed to module UI from EJAM app that is initial radius to show 
 #'   so that it can reflect what user already set as radius in main EJAM app
 #' @noRd 
-#'
+#' 
 #' @importFrom shiny NS tagList 
 #' @import leaflet
-mod_ejscreenapi_ui <- function(id, simpleradius_default_for_ui = 1, default_radius_react = reactiveVal(1)) {
+mod_ejscreenapi_ui <- function(id, simpleradius_default_for_ui = 1, 
+                               default_radius = 1
+                               # default_radius_react = reactive(1)
+                               ) {
   ns <- NS(id)
-  # I think this needs to be here not just in mod_ejscreenapi_server(), so it will be available within this function like specifying default values in UI select/radio buttons/etc.
-  source(system.file("global.R", package = "EJAMejscreenapi"))
+  # I think this needs to be here or in outer app that calls the module, not just in mod_ejscreenapi_server(), so it will be available within this function like specifying default values in UI select/radio buttons/etc.
+  # source(system.file("global.R", package = "EJAMejscreenapi"))
   
   tagList(
     #  from here on within the brackets is directly copied from ejscreenapi pkg app_ui.R code 
@@ -118,31 +135,31 @@ mod_ejscreenapi_ui <- function(id, simpleradius_default_for_ui = 1, default_radi
                           #  would need to fix this link and/or edit its text to be relevant for within this module. and add rel="noreferrer noopener" ***
                           # HTML(paste('<a href=\"', 'README.html', '\", target=\"_blank\">', 'About this app',  '</a>', sep = '')),
                           tags$br(), tags$br(),
-                          verbatimTextOutput(outputId = ns("testinfo_sessionuser") ),
+                          # verbatimTextOutput(outputId = ns("testinfo_sessionuser") ),
                           ##################################################### # 
                           ##################################################### # 
                           
                           ## >>>>>> RADIUS ####
                           
                           # SIMPLIFIED ENTRY OF RADIUS UNTIL MODULE VERSION OF SLIDE VS TEXTBOX IS FIXED ***
-                          # shiny::numericInput(ns("SIMPLERADIUS"), 'Radius in miles', value = simpleradius_default_for_ui, min = 0.2, max = 10, step = 0.1),
-                          shiny::radioButtons(ns("slider_vs_text_radius"),  label = NULL, choices = list(`Type in radius` = "type_in", `Use slider` = "use_slider"), inline = T), #  
+                           shiny::numericInput(ns("SIMPLERADIUS"), 'Radius in miles', value = simpleradius_default_for_ui, min = 0.2, max = 10, step = 0.1),
+                          # shiny::radioButtons(ns("slider_vs_text_radius"),  label = NULL, choices = list(`Type in radius` = "type_in", `Use slider` = "use_slider"), inline = T), #  
                           # 
-                          shiny::conditionalPanel(
-                            condition = "input.slider_vs_text_radius == 'use_slider'",
-                            shiny::uiOutput(ns('radius_slider'))
-                          ),
-                          shiny::conditionalPanel(
-                            condition = "input.slider_vs_text_radius == 'type_in'",
-                            shiny::uiOutput(ns('radius_textbox'))
-                          ),
+                          # shiny::conditionalPanel(
+                            # condition = "input.slider_vs_text_radius == 'use_slider'",
+                            # shiny::uiOutput(ns('radius_slider'))  , 
+                          # ),
+                          # shiny::conditionalPanel(
+                            # condition = "input.slider_vs_text_radius == 'type_in'",
+                            # shiny::uiOutput(ns('radius_textbox'))  ,
+                          # ),
                           
                           ##################################################### # 
                           ##################################################### # 
                           
                           ## search via ECHO ## ##
                           
-                          shiny::actionButton(ns('echobutton'), label = 'Find sites via ECHO'), 
+                          # shiny::actionButton(ns('echobutton'), label = 'Find sites via ECHO'), 
                           
                           ## UPLOAD points ####
                           
@@ -153,9 +170,9 @@ mod_ejscreenapi_ui <- function(id, simpleradius_default_for_ui = 1, default_radi
                                            accept = c('.xls', '.xlsx', ".csv", "text/csv", "text/comma-separated-values,text/plain")),
                           # shiny::textOutput(ns('most_recently_changed_text')), # for testing
                           shiny::textOutput(ns('count')),    # how many were uploaded
-                          shiny::textOutput(ns('max_pts_upload_txt')), # how many allowed for upload - otherwise rejects upload. set in global
-                          shiny::textOutput(ns('max_pts_map_txt')), # how many get mapped (the first n points) - omits any after that cap from map
-                          shiny::textOutput(ns('max_pts_showtable_txt')), # # 
+                          # shiny::textOutput(ns('max_pts_upload_txt')), # how many allowed for upload - otherwise rejects upload. set in global
+                          # shiny::textOutput(ns('max_pts_map_txt')), # how many get mapped (the first n points) - omits any after that cap from map
+                          # shiny::textOutput(ns('max_pts_showtable_txt')), # # 
                           shiny::textOutput(ns('max_pts_run_txt')),     # how many allowed for analysis, max (but not really enforced even though it says there is a cap)
                           
                           ## START button ####
@@ -170,7 +187,7 @@ mod_ejscreenapi_ui <- function(id, simpleradius_default_for_ui = 1, default_radi
                         # RESULTS MAP  (RH column) ####
                         column(
                           8, 
-                          leaflet::leafletOutput(ns('mapout'), height = '800px', width = '100%'),
+                          leaflet::leafletOutput(ns('mapout'), height = '600px', width = '100%'),
                           h6('Red on map indicates overlapping buffers, where residents would be double-counted if aggregating across sites'),
                           shiny::radioButtons(ns('cluster_highlighting_on'), label = 'Highlight overlaps?', choiceNames = c('Y', "N"), choiceValues = c(TRUE, FALSE), inline = TRUE)
                         ) # end map column
@@ -186,8 +203,8 @@ mod_ejscreenapi_ui <- function(id, simpleradius_default_for_ui = 1, default_radi
                           ## DOWNLOAD button ####
                           shiny::uiOutput(ns('downloadButton_ui')),
                           # shiny::selectInput(ns("highlight_color_in"),label = 'color for points matching selected table rows', choices = c('red', 'blue', 'green', 'orange', 'purple', 'darkred', 'darkgreen'),multiple = FALSE),
-                          
-                          shiny::uiOutput(ns('tabletips_button_ui')),
+                          br(),
+                          # shiny::uiOutput(ns('tabletips_button_ui')),
                           ##                                           shiny::actionButton(ns('tabletips_button'), 'Tip on using this table'), ## tips on using table ### # 
                           ## show table ##  ##
                           # #    show uploaded input table after an upload of points OR results once calculated    if that is most recent change
@@ -240,7 +257,7 @@ mod_ejscreenapi_ui <- function(id, simpleradius_default_for_ui = 1, default_radi
         numericInput(ns('default_miles'), label = "Default miles radius",  # this will get ignored here probably, and just set by reactive passed to module
                      min = 0.25, 
                      
-                     value =   default_radius_react(),  # default_radius_react() to be used here would need to be passed to UI of module from outer app !
+                     value = default_radius,  # default_radius_react(),  # default_radius_react() to be used here would need to be passed to UI of module from outer app !
                      # value =    default_default_miles, # default_default_miles was set in module-specific global.R   
                      
                      max   =     max_default_miles),
@@ -290,6 +307,7 @@ mod_ejscreenapi_ui <- function(id, simpleradius_default_for_ui = 1, default_radi
 # ###################   #####################   #####################   #################### # 
 
 #' mod_ejscreenapi_server
+#' 
 #' @noRd 
 mod_ejscreenapi_server <- function(id, 
                                    # default_radius_react,
@@ -518,22 +536,26 @@ mod_ejscreenapi_server <- function(id,
       as.character(x)
     })
     
-    output$radius_textbox <- renderUI({textInput(ns("radius_via_text"), 
-                                                 label = paste0("Radius of ",     input$default_miles, " miles ", 
-                                                                paste0("(", round(input$default_miles            * meters_per_mile / 1000, 3), ' km)')), 
-                                                 value =             as.character(input$default_miles)
+    output$radius_textbox <- renderUI({textInput(
+      "radius_via_text", 
+      label = paste0("Radius of ",     input$default_miles, " miles ", 
+                     paste0("(", round(input$default_miles            * meters_per_mile / 1000, 3), ' km)')), 
+      value =             as.character(input$default_miles)
     ) })
-    shiny::observe({     shiny::updateTextInput(session = session, inputId =  ns('radius_via_text'),
-                                                label = paste0("Radius of ", radius_via_text_validated(), " miles ",  
-                                                               ifelse(minradius           == as.numeric(radius_via_text_validated()), "(min.) ", ""),
-                                                               ifelse(input$default_miles == as.numeric(radius_via_text_validated()), "(default) ", ""),
-                                                               ifelse(input$max_miles     == as.numeric(radius_via_text_validated()), "(max.) ", ""),
-                                                               paste0("(",             round(as.numeric(radius_via_text_validated()) * meters_per_mile / 1000, 3), ' km)'))
+    shiny::observe({ shiny::updateTextInput(
+      session = session, 
+      inputId =  'radius_via_text',
+      label = paste0(
+        "Radius of ", radius_via_text_validated(), " miles ",  
+        ifelse(minradius           == as.numeric(radius_via_text_validated()), "(min.) ", ""),
+        ifelse(input$default_miles == as.numeric(radius_via_text_validated()), "(default) ", ""),
+        ifelse(input$max_miles     == as.numeric(radius_via_text_validated()), "(max.) ", ""),
+        paste0("(",             round(as.numeric(radius_via_text_validated()) * meters_per_mile / 1000, 3), ' km)'))
     ) })
     
     # USE SIMPLIFIED INPUT OF RADIUS UNTIL FIX MODULE USE OF TEXT VS SLIDER INPUTS ***
     # 
-    if ("fixed" == "fixed") {
+    if ("fixed" == "no") {
       # Use typedin radius or slider ####
       #  allow radius to get typed into a text box as an alternative !!! ***
       radius_miles <- reactive({
@@ -559,10 +581,10 @@ mod_ejscreenapi_server <- function(id,
     # is this always identical to number of points in results table, since fills in row even if bad lat/lon? not sure it does!
     # or no blockpoint in circle?
     # and if upload is NAICS etc. then pts() and results_table() will have different counts! 
-    output$max_pts_upload_txt  <- renderText({paste0(format(input$max_pts_upload,big.mark = ',', scientific = FALSE), ' points max. can be uploaded.')})   
-    output$max_pts_map_txt     <- renderText({paste0(format(input$max_pts_map,   big.mark = ',', scientific = FALSE), ' points max. can be shown on a map.')})
-    output$max_pts_showtable_txt <- renderText({paste0(format(input$max_pts_showtable, big.mark = ',', scientific = FALSE), ' points max. can be shown on the interactive table.')})
-    output$max_pts_run_txt       <- renderText({paste0(format(input$max_pts_run   ,big.mark = ',',     scientific = FALSE), ' points max. can be analyzed.')})    
+    # output$max_pts_upload_txt  <- renderText({paste0(format(input$max_pts_upload,big.mark = ',', scientific = FALSE), ' points max. can be uploaded.')})   
+    # output$max_pts_map_txt     <- renderText({paste0(format(input$max_pts_map,   big.mark = ',', scientific = FALSE), ' points max. can be shown on a map.')})
+    # output$max_pts_showtable_txt <- renderText({paste0(format(input$max_pts_showtable, big.mark = ',', scientific = FALSE), ' points max. can be shown on the interactive table.')})
+    # output$max_pts_run_txt       <- renderText({paste0(format(input$max_pts_run   ,big.mark = ',',     scientific = FALSE), ' points max. can be analyzed.')})    
     output$speed <- renderText({speedmessage(NROW(pts()), perhourslow = perhourslow, perhourfast = perhourfast, perhourguess = perhourguess)})  # speedmessage defined as function in R folder, default variables defined in global.R
     ################################################################################################### # 
     
@@ -951,10 +973,10 @@ mod_ejscreenapi_server <- function(id,
     
     
     ### Table tips - show only if results ready ####
-    output$tabletips_button_ui <- renderUI({
-      req(results_table())
-      shiny::actionButton(ns('tabletips_button'), 'Tip on using this table')  ## tips on using table
-    })
+    # output$tabletips_button_ui <- renderUI({
+    #   req(results_table())
+    #   shiny::actionButton(ns('tabletips_button'), 'Tip on using this table')  ## tips on using table
+    # })
     ####################   #####################   #####################   #################### # 
     ### Table tips - text box (about interactive data table) ####
     
