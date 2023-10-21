@@ -1,6 +1,6 @@
 #' bg_from_county - Analyze US Counties as if they were sites, to get EJ indicators summary for each county
 #'
-#' @param fips County FIPS vector as character not numeric values
+#' @param fips County FIPS vector (ideally as character not numeric values)
 #'
 #' @return data.table with all pairs of county fips - bgid, and a unique siteid assigned to each county 
 #' @export
@@ -13,7 +13,10 @@
 #'   CountyPopulation = prettyNum(countypop, big.mark = ","), FIPS, ST)]
 #'  
 bg_from_county <- function(fips) {
-  if (any(is.numeric(fips))) {warning("leading zeroes get dropped etc. - county fips should be passed as character not numeric")}
+  if (any(is.numeric(fips))) {
+    message("leading zeroes being inferred since FIPS was provided as numbers not character class")
+    
+    }
   # accept county fips vector
 # return counties2bgs table of pairs so doaggregate_blockgroups() or whatever can take that and do full EJ stats.
  

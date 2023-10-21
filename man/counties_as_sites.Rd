@@ -7,7 +7,7 @@
 counties_as_sites(fips)
 }
 \arguments{
-\item{fips}{County FIPS vector as character not numeric values}
+\item{fips}{County FIPS vector (ideally as character not numeric values)}
 }
 \value{
 data.table with all pairs of county fips - bgid, and a unique siteid assigned to each county

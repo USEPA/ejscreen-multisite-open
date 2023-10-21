@@ -13,5 +13,5 @@ and lat/lon of Census2020-population-weighted centroid of block group
 also see attributes(bg_cenpop2020) for source URL and date
 }
 \seealso{
-\link{bgpts} \link{blockgroupstats}
+\link{blockgroupstats}
 }

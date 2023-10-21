@@ -36,3 +36,17 @@ the paths of the objects on server
 datawrite_to_aws -  NOT YET WORKING - AccessDenied
 Write object(s) like a dataset to DMAP Data Commons, formatted as .arrow or .rda
 }
+\details{
+mybucket <-  'dmap-data-commons-oa' #
+
+bucket_contents <- data.table::rbindlist(
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{get_bucket(bucket = mybucket, prefix = "EJAM"),
+
+fill = TRUE
+  
+)
+}\if{html}{\out{</div>}}
+
+bucket_contents
+}

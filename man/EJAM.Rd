@@ -27,7 +27,9 @@ This means the tools can provide the same information that an EJScreen standard 
 but for a large number of reports (one for each site).
 }
 \section{\strong{Vignette}}{
-Please see the vignette (development version of vignette can be knit from EJAM/www folder of locally installed package)
+Please see the vignette at <EJAM-vignette.html> and web format documentation of functions and data at <EJAM.html>
+
+(development version of vignette can be knit from EJAM/www folder of locally installed package)
 }
 
 \section{\strong{Key Functions:}}{

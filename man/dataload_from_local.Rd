@@ -7,8 +7,8 @@ utility for R analysts/developers to store large block data locally instead of r
 \usage{
 dataload_from_local(
   varnames = c("bgid2fips", "blockid2fips", "blockpoints", "blockwts", "quaddata"),
-  ext = c(".arrow", ".rda")[2],
-  fun = c("arrow::read_ipc_file", "load")[2],
+  ext = c(".arrow", ".rda")[1],
+  fun = c("arrow::read_ipc_file", "load")[1],
   envir = globalenv(),
   folder_local_source = "~/../Downloads",
   justchecking = FALSE,
@@ -33,4 +33,9 @@ dataload_from_local(
 \description{
 dataload_from_local
 utility for R analysts/developers to store large block data locally instead of redownloading from AWS
+}
+\details{
+rm(bgid2fips, blockid2fips, blockpoints, blockwts, quaddata)
+
+dataload_from_local(folder_local_source = '.')
 }

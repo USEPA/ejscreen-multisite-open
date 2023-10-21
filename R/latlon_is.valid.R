@@ -132,7 +132,7 @@ latlon_is.valid <- function(lat, lon, quiet = TRUE) {
   
   return(!bad)
   
-  # sort(unique(substr(bgpts$bgfips,1,2)))     #  has PR not island areas
+  # sort(unique(substr(bgpts$bgfips,1,2)))     # bgpts has PR not island areas
   # sort(unique(substr(blockid2fips$blockfips,1,2))) #  has PR not island areas
   ## same for bgid2fips
   # sort(unique(substr(blockgroupstats$bgfips,1,2))) # has island areas too: "60" "66" "69" "72" "78" (but not lat,lon)
