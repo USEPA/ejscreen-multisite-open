@@ -27,6 +27,8 @@
 #' @param test_getblocksnearby whether to include this function in timing - not used because always done
 #' @param test_doaggregate  whether to include this function in timing
 #' @param test_batch.summarize  whether to include this function in timing
+#' @param test_ejamit whether to test only ejamit() 
+#'   instead of its subcomponents like getblocksnearby(), doaggregate(), etc
 #' @param logging logical optional, whether to save log file with timings of steps. 
 #'   NOTE this slows it down though.
 #' @param logfolder optional, name of folder for log file
@@ -34,6 +36,8 @@
 #' @param honk_when_ready optional, self-explanatory
 #' @param saveoutput but this slows it down if set to TRUE to save each run as .rda file
 #' @param plot whether to create plot of results
+#' @param avoidorphans see [getblocksnearby()] or [ejamit()] regarding this param
+#' @param getblocks_diagnostics_shown set TRUE to see more details on block counts etc.
 #' @param ... passed to plotting function
 #' @examples \dontrun{ 
 #'   speedseen_few <- speedtest(c(50,500), radii=c(1, 3.106856), logging=FALSE, honk=FALSE)
@@ -49,20 +53,27 @@
 #'     logging=TRUE, honk=TRUE
 #'   )
 #'  }
-#' @return EJAM results similar to as from the web app  [ejamit()] and also creates a plot
+#' @return EJAM results similar to as from the web app or [ejamit()] and also creates a plot
 #' @seealso [speedtest_plot()] 
 #' @export
 #'
 speedtest <- function(n=10, sitepoints=NULL, weighting='frs', 
-                      radii=c(1, 3.106856, 5, 10, 31.06856)[1:3], 
-                      test_getblocksnearby=TRUE, test_doaggregate=TRUE, test_batch.summarize=FALSE, 
+                      radii=c(1, 3.106856, 5, 10, 31.06856)[1:3], avoidorphans=FALSE,
+                      test_ejamit = FALSE, test_getblocksnearby=TRUE, test_doaggregate=TRUE, test_batch.summarize=FALSE, 
                       logging=FALSE, logfolder=getwd(), logfilename="log_n_datetime.txt", honk_when_ready=TRUE, 
-                      saveoutput=FALSE, plot=TRUE, ...) {
+                      saveoutput=FALSE, plot=TRUE, getblocks_diagnostics_shown=FALSE, ...) {
+  
   n <- sort(n, decreasing = TRUE) # just to keep organized
   radii <- sort(radii, decreasing = TRUE) # IT WILL REPORT WRONG NUMBERS / WRONG ORDER OTHERWISE.
   rtextfile <- paste(radii,   collapse = "-")
   ntextfile <- paste(n, collapse = "-")
   
+  if (test_ejamit) {
+    if (any(test_getblocksnearby, test_doaggregate, test_batch.summarize)) {
+      warning("test_ejamit=TRUE, so ignoring test_getblocksnearby, test_doaggregate, test_batch.summarize")
+    }
+    test_getblocksnearby = FALSE; test_doaggregate = FALSE; test_batch.summarize = FALSE
+  }
   if (test_batch.summarize & !test_doaggregate) {  stop("cannot test batch.summarize without doing doaggregate")}
   cat('\nsee profvis::profvis({}) for viewing where the bottlenecks are \n\n')
   
@@ -74,7 +85,7 @@ speedtest <- function(n=10, sitepoints=NULL, weighting='frs',
   # - analyze indicators in circular buffers and overall (find blocks nearby and then calc indicators)
   # - get stats that summarize those indicators
   # - compare times between steps and radii and other approaches or tools
-
+  
   ######################### # 
   
   if (n[1] == 0 & is.null(sitepoints)) {
@@ -128,7 +139,7 @@ speedtest <- function(n=10, sitepoints=NULL, weighting='frs',
       indexblocks()
       quadtree <- localtree
       cat("Finished createTree()\n")
-     
+      
       #time to create quadtree 1.116 seconds
     })
     print(step0)
@@ -143,9 +154,13 @@ speedtest <- function(n=10, sitepoints=NULL, weighting='frs',
   rtext <- paste(paste0(radii, " miles"), collapse = ", ")
   cat("Size(s) of list(s) of points = ", ntext, '\n')
   cat("Radius choice(s)     = ", rtext, '\n')
-  cat("test_getblocksnearby = ", test_getblocksnearby, "\n")
-  cat("test_doaggregate     = ", test_doaggregate, "\n")
-  cat("test_batch.summarize = ", test_batch.summarize, "\n")
+  
+  cat("test_ejamit = ", test_getblocksnearby, "\n")
+  if (!test_ejamit) {
+    cat("test_getblocksnearby = ", test_getblocksnearby, "\n")
+    cat("test_doaggregate     = ", test_doaggregate, "\n")
+    cat("test_batch.summarize = ", test_batch.summarize, "\n")
+  }
   cat("saveoutput = ", saveoutput, "\n")
   
   nlist = n
@@ -170,41 +185,56 @@ speedtest <- function(n=10, sitepoints=NULL, weighting='frs',
       cat("\n  Radius of", radius, "miles (Radius #", which(radius == radii), "of the", length(radii), 'being tested).\n')    
       
       start_time <- Sys.time()
-      mysites2blocks = NA
-      # elapsed <- system.time({
-      # cat('\nStarting getblocksnearby() to find Census blocks (by internal point) near each facility\n')
-      # step1 = system.time({
-      mysites2blocks <-  getblocksnearby(
-        sitepoints = sitepoints[[i]],
-        radius = radius, maxradius = 31.07,
-        avoidorphans = TRUE)
-      # })
-      # cat("Finished getblocksnearby()\n")
-      # print(step1)
-      out <- NA
-      if (test_doaggregate) {
-        # step2 = system.time({
-        cat('\nStarted doaggregate() to calculate each indicator for each site, and overall.\n')
-        out <-  doaggregate(sites2blocks = mysites2blocks, silentinteractive=TRUE)
+      
+      if (!test_ejamit) {
+        
+        mysites2blocks = NA
+        # elapsed <- system.time({
+        # cat('\nStarting getblocksnearby() to find Census blocks (by internal point) near each facility\n')
+        # step1 = system.time({
+        mysites2blocks <-  getblocksnearby(
+          sitepoints = sitepoints[[i]],
+          radius = radius, maxradius = 31.07,
+          avoidorphans = avoidorphans)
         # })
-        # cat("Finished doaggregate()\n")
-        # print(step2)
-      }
-      out <- NA
-      if (test_batch.summarize ) {
-        # step3 = system.time({
-        # cat('Started batch.summarize() to calculate stats that summarize those indicators.\n')
-        out2 <- batch.summarize(   # from EJAMbatch.summarizer package
-          sitestats = data.frame(out$results_bysite),
-          popstats =  data.frame(out$results_bysite),
-          ## user-selected quantiles to use
-          #probs = as.numeric(input$an_list_pctiles),
-          threshold = list(95) # compare variables to 95th %ile
+        # cat("Finished getblocksnearby()\n")
+        # print(step1)
+        out <- NA
+        if (test_doaggregate) {
+          # step2 = system.time({
+          cat('\nStarted doaggregate() to calculate each indicator for each site, and overall.\n')
+          out <-  doaggregate(sites2blocks = mysites2blocks, silentinteractive = TRUE)
+          # })
+          # cat("Finished doaggregate()\n")
+          # print(step2)
+        }
+        out <- NA
+        if (test_batch.summarize ) {
+          # step3 = system.time({
+          # cat('Started batch.summarize() to calculate stats that summarize those indicators.\n')
+          out2 <- batch.summarize(   # from EJAMbatch.summarizer package
+            sitestats = data.frame(out$results_bysite),
+            popstats =  data.frame(out$results_bysite),
+            ## user-selected quantiles to use
+            #probs = as.numeric(input$an_list_pctiles),
+            threshold = list(95) # compare variables to 95th %ile
+          )
+          # })
+          # cat("  Finished batch.summarize()\n")
+          # print(step3)
+        }
+      } else {
+        # doing ejamit()
+        cat('\nStarted ejamit() to calculate each indicator for each site, and overall.\n')
+        out <- ejamit(
+          sitepoints = sitepoints[[i]],
+          radius = radius, maxradius = 31.07,
+          avoidorphans = avoidorphans, silentinteractive = TRUE 
         )
-        # })
-        # cat("  Finished batch.summarize()\n")
-        # print(step3)
-      }
+        
+        
+      } 
+      
       
       # cat(paste0("\nSpeed report for ", n, " points at ", radius, " miles: "))
       # cat("----------------------------------\n")
@@ -213,8 +243,10 @@ speedtest <- function(n=10, sitepoints=NULL, weighting='frs',
       perhour <- EJAMejscreenapi::speedreport(start_time, Sys.time(), n)
       speedtable[[combonumber]] <- list(points = n, miles = radius, perhr = perhour)
       
-      #  show diagnostics here like how many blocks were found nearby
+      #  show diagnostics here like how many blocks were found nearby? this slows it down
+      if (test_getblocksnearby & getblocks_diagnostics_shown) {
       getblocks_diagnostics(mysites2blocks)
+      }
       
     } # NEXT RADIUS 
     # cat("\nFinished analyzing all radius values for this set of", prettyNum(n, big.mark = ","),"points or sites.\n")
@@ -252,10 +284,12 @@ speedtest <- function(n=10, sitepoints=NULL, weighting='frs',
   
   cat("Size(s) of list(s) of points =", ntext, '\n')
   cat("Radius choice(s)     =", rtext, '\n')
+  cat("test_ejamit =", test_ejamit, "\n")
+  if (!test_ejamit) {
   cat("test_getblocksnearby =", test_getblocksnearby, "\n")
   cat("test_doaggregate     =", test_doaggregate, "\n")
   cat("test_batch.summarize =", test_batch.summarize, "\n")
-  
+  }
   if (logging) {sink(NULL)} # stop logging to file.
   if (honk_when_ready) {beepr::beep(8)}
   if (plot) {speedtest_plot(speedtable, ...)}

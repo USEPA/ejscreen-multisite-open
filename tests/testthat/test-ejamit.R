@@ -72,7 +72,15 @@ test_that("ejamit() returns same exact colnames() in both results_bysite and res
 # more tests for ejscreenit go here ? or in EJAMejscreenapi package?
 
 
-# ***
+# # ***
+# 
+# maybe
+# create a test data set that is 
+# testoutput_ejscreenit_10pts_1miles  so 
+# testoutput_ejscreenit_10pts_1miles$table  can be compared to 
+# testoutput_ejamit_10pts_1miles$results_bysite[, 4:ncol(testoutput_ejamit_10pts_1miles$results_bysite)]
+# 
+
 
 ################################ # 
 
