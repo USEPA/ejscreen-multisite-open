@@ -1,4 +1,4 @@
-#' getblocksnearbyviaQuadTree - Find nearby blocks using Quad Tree data structure for speed, NO PARALLEL PROCESSING
+#' getblocksnearbyviaQuadTree - Fast way to find nearby points (distance to each Census block centroid near each site)
 #'
 #' @description Given a set of points and a specified radius in miles, 
 #'   this function quickly finds all the US Census blocks near each point.
@@ -182,7 +182,7 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
     # But note looking past radius is NOT how EJScreen works, for buffer reports - it just fails to provide any result if no blockpoint is inside circle. (For proximity scores, which are different than circular buffer reports, EJScreen does look beyond radius, but not for circular zone report). Also, you would rarely get here even if avoidorphans set TRUE.
     # cat('about to check avoidorphans\n')
     if ( 1 == 0 ) { 
-    # if ( avoidorphans && (NROW(res[[i]])  == 0)) {
+      # if ( avoidorphans && (NROW(res[[i]])  == 0)) {
       if (!quiet) {cat("avoidorphans is TRUE, so avoiding reporting zero blocks nearby at site ", i, " by searching past radius of ", radius, " to maxradius of ", maxradius, "\n")}
       #search neighbors, allow for multiple at equal distance
       
@@ -205,7 +205,7 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
       truemaxdistance <- distance_via_surfacedistance(maxradius)
       data.table::setorder(tmp, distance) # ascending order short to long distance
       res[[i]] <- tmp[distance <= truemaxdistance, .(blockid, distance, siteid)]   
-
+      
     }  
     ### end of if avoidorphans
     ################################# #

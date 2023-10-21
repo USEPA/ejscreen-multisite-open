@@ -1,6 +1,6 @@
-#' getblocks_summarize_blocks_per_site - Get summary stats on counts of blocks near various sites
-#' @description Tells you # of blocks near avg site, 
-#' how many sites have only 1 block nearby, or have <30 nearby, etc.
+#' getblocks_summarize_blocks_per_site - how many blocks are near the sites (pop density affects accuracy)
+#' 
+#' @description # of blocks near avg site, how many sites have only 1 or <30 blocks nearby, etc.
 #' 
 #' @param x The output of getblocksnearby()
 #' @param varname colname of variable in data.table x that is the one to summarize by
@@ -23,7 +23,7 @@ getblocks_summarize_blocks_per_site <- function(x, varname='siteid') {
 ######################################################################################### # 
 
 
-#' getblocks_summarize_sites_per_block - Get summary stats on how many sites are near various blocks (residents)
+#' getblocks_summarize_sites_per_block - how many sites are near the blocks (site density near residents)
 #'
 #' @param x The output of [getblocksnearby()] like testoutput_getblocksnearby_10pts_1miles
 #' @param varname colname of variable in data.table x that is the one to summarize by
@@ -39,7 +39,7 @@ getblocks_summarize_sites_per_block <- function(x, varname='blockid') {
 
 
 
-#' getblocks_diagnostics - Get summary stats on counts of blocks (unique vs doublecounted) near sites
+#' getblocks_diagnostics - Lots of stats about # of blocks, # of sites, etc.
 #'
 #' @param x The output of [getblocksnearby()] like testoutput_getblocksnearby_10pts_1miles
 #' @param detailed if TRUE, also shows in console a long table of frequencies via [getblocks_summarize_blocks_per_site()]
@@ -63,11 +63,11 @@ getblocks_diagnostics <- function(x, detailed=FALSE, see_plot=FALSE) {
   cat("Mean distance: ", mean(x$distance, na.rm = TRUE), "\n")
   cat("\n")
   if (detailed) {
-  # Counts of blocks nearby, frequency of x nearby ####
-  print(getblocks_summarize_blocks_per_site(x))
-  # returns table that gives Range and mean of count of blocks nearby the various sites,
-  #   how many sites have only 1 block nearby, or <30 nearby, etc.
-  cat("\n\n")
+    # Counts of blocks nearby, frequency of x nearby ####
+    print(getblocks_summarize_blocks_per_site(x))
+    # returns table that gives Range and mean of count of blocks nearby the various sites,
+    #   how many sites have only 1 block nearby, or <30 nearby, etc.
+    cat("\n\n")
   }
   # calculate extra stats ####
   
@@ -94,7 +94,7 @@ getblocks_diagnostics <- function(x, detailed=FALSE, see_plot=FALSE) {
     # sites_withany_overlap = as.numeric(getblocks_summarize_sites_per_block(x)['2']),
     # that tells you how many blocks are near 2 sites, but not how many or which sites those were. 
     
-       blockcount_avgsite = blockcount_avgsite, 
+    blockcount_avgsite = blockcount_avgsite, 
     
     blockcount_incl_dupes = blockcount_incl_dupes, 
     blockcount_unique = blockcount_unique, 

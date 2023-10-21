@@ -58,7 +58,7 @@ dataload_from_aws <- function(varnames= c('bgid2fips', 'blockid2fips', 'blockpoi
                               mybucketfolder = "EJAM",
                               folder_local_source = "~/../Downloads", 
                               justchecking = FALSE, check_server_even_if_justchecking=TRUE, testing=FALSE) {
-
+  
   ## how to get bucket contents if you want to explore the bucket ----
   # mybucket <-  'dmap-data-commons-oa' # 
   # bucket_contents <- data.table::rbindlist(
@@ -89,10 +89,10 @@ dataload_from_aws <- function(varnames= c('bgid2fips', 'blockid2fips', 'blockpoi
     cat('checking each like this:  aws.s3::object_exists(object = "', objectnames[1], '", bucket = "',mybucketfolder,'")', '\n')
     cat('\n')
   }
-
+  
   # if (!missing(folder_local_source) ) { # want from local drive
-    dataload_from_local(varnames = varnames, ext = ext, fun = fun, envir = envir, folder_local_source = folder_local_source, justchecking = justchecking)
-    # return(localpaths)
+  dataload_from_local(varnames = varnames, ext = ext, fun = fun, envir = envir, folder_local_source = folder_local_source, justchecking = justchecking)
+  # return(localpaths)
   # } # done getting from local drive
   
   ####################### # 

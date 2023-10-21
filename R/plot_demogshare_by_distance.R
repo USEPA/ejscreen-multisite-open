@@ -17,7 +17,7 @@ plot_demogshare_by_distance <- function(results_bybg_people, demogvarname=names_
                                         show.lowess=F, show.lm=TRUE, show.line=TRUE, ...) {
   #  results_bybg_people <- data.table::copy(testoutput_ejamit_10pts_1miles$results_bybg_people)
   x <- data.table::copy(results_bybg_people)
- myrad = max(x$radius.miles) 
+  myrad = max(x$radius.miles) 
   # SHOULD IT USE distance_avg or distance_min_avgperson ?? ***
   colsneeded <- c("siteid", "distance_min_avgperson", demogvarname)
   x <- x[siteid %in% siteids, ..colsneeded]
@@ -33,7 +33,7 @@ plot_demogshare_by_distance <- function(results_bybg_people, demogvarname=names_
     xlab = "Distance from site in miles",
     ylab = fixcolnames(demogvarname, "r", 'long'),
     xlim = c(0, myrad), ...
-       )
+  )
   
   linefit <- function(x, y, type='b', cex=4, show.lowess=TRUE, show.lm=TRUE, show.line=TRUE) {
     if (show.lowess) { lines(lowess(x, y), type = type, col = "blue", pch = '.', cex = cex) } # lowess line (x, y)

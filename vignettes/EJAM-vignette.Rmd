@@ -30,7 +30,7 @@ library(EJAM)
 #
 #    - Do this...   rmarkdown::render("vignettes/EJAM-vignette.Rmd") 
 #
-#  -   *See <https://docs.ropensci.org/postdoc/> for quick way to make html help on a pkg. Do this...   postdoc::render_package_manual('PKGNAME')*
+#  -    See <https://docs.ropensci.org/postdoc/> for quick way to make html help on a pkg. Do this...   postdoc::render_package_manual('EJAM') 
 #
 #  -   *See <https://r-pkgs.org/vignettes.html#sec-vignettes-how-built>*
 #

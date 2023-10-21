@@ -14,14 +14,14 @@ url_4table <- function(lat, lon, radius, regid=NULL, as_html=TRUE) {
   
   # add error checking
   
-
+  
   
   # Also could add other links such as these:
   #   url_frs_report()
   #   url_enviromapper()   
   #   url_envirofacts_data()  ?
   
-
+  
   
   
   
@@ -59,5 +59,5 @@ url_4table <- function(lat, lon, radius, regid=NULL, as_html=TRUE) {
     results_bysite  = results_bysite,
     results_overall = results_overall,
     newcolnames = newcolnames
-    ))
+  ))
 }

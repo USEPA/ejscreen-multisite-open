@@ -1,4 +1,4 @@
-#' getblocksnearby - Fast way to find nearby points - finds distance to each Census block centroid nearby
+#' getblocksnearby - Fast way to find nearby points (distance to each Census block centroid near each site)
 #' @description 
 #'   Given a set of points and a specified radius, 
 #'   this function quickly finds all the US Census blocks near each point. 
