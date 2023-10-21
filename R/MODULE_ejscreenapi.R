@@ -18,63 +18,63 @@ if (testing_ejscreenapi_module) {
   
   default_calculate_ratios <- TRUE
   use_ejscreenit_tf <- FALSE
-  
+  ######################### #
   TEST_UI <- function(request) {
-    
     shiny::fluidPage(
       tabsetPanel(
-        # sliderInput("outerappradius", label = "Radius default to send to module", min = 1, max = 10, step = 1, value = 1.2),
-        tabPanel(title = "api app",
-                 shiny::h2('EJScreen API batch tool packaged with EJAM'), 
-                 # verbatimTextOutput("testinfo1"),
-                 # verbatimTextOutput("testinfo_radius"),
-                 # shiny::textOutput("testinfo2"),
-                 
-                 # EJAM:::mod_ejscreenapi_ui("TESTID", simpleradius_default_for_ui = 2)
-                 mod_ejscreenapi_ui("TESTID", simpleradius_default_for_ui = 2)
-                 # doesnt the module's ui already display results table? but this would test have the module server function return a table to overall server/app which itself can then display/output that table or otherwise work with it. 
+        tabPanel(
+          title = "api app",
+          shiny::h2('EJScreen API batch tool packaged with EJAM'), 
+          # verbatimTextOutput("testinfo1"), 
+          # verbatimTextOutput("testinfo_radius"),
+          # shiny::textOutput("testinfo2"),
+ # EJAM:::mod_ejscreenapi_ui("TESTID", simpleradius_default_for_ui = 2),
+          mod_ejscreenapi_ui("TESTID", simpleradius_default_for_ui = 2),
+          br()
         ),
-        tabPanel(title = "results in overall app",
-                 br(),
-                 
-                 DT::dataTableOutput("results")
-        )
-      )
-    )
-  }
-  
+        tabPanel(
+          title = "results in overall app", br(),
+          ## redundant since module already shows it, but here as example of module returning a table.
+          ##  module server function returns a table to overall server/app, which itself can then use/display that table. 
+          # DT::dataTableOutput("results"),
+          ## Demo of how you might send radius from outer app to module as starting value of module radius slider:
+          # sliderInput("outerappradius", label = "Radius we could preset", min = 1, max = 10, step = 1, value = 1.2),
+          br()
+        )))
+    }
+  ######################### #
   TEST_SERVER <- function(input, output, session) {
-    # browser()
-    # x <- EJAM:::mod_ejscreenapi_server(
-    x <- mod_ejscreenapi_server(
+  # x <- EJAM:::mod_ejscreenapi_server(
+    x <-        mod_ejscreenapi_server(
       "TESTID", 
       default_points_shown_at_startup_react = reactive(testpoints_5[1:2,]), 
-      use_ejscreenit = use_ejscreenit_tf  # 
+      use_ejscreenit = use_ejscreenit_tf
     )
-    output$testinfo1 <- renderPrint( ("info goes here "))
+    # output$testinfo1 <- renderPrint( ("info can go here "))
     # output$testinfo_radius <- renderPrint(paste0("Radius is ", x()$radius.miles, " miles"))
-    output$testinfo2 <- renderText(   cat("x names:  ", paste0(names(x()), collapse = ", "), "\n") )
+    # output$testinfo2 <- renderText(cat("x names:  ", paste0(names(x()), collapse = ", "), "\n"))
     
-    output$results <- DT::renderDataTable({
-      x()
-    }, 
+    output$results <- DT::renderDataTable({x()}, 
       options = list(
         selection = 'multiple',
-        dom = 'rtip', # default table has 5 DOM elements: search box, length menu, info summary, pagination control, table. Display a subset of elements via dom= 
+        dom = 'rtip', # specify 4 DOM elements: 
+        # processing, table, info, pagination 
+        # per https://datatables.net/examples/basic_init/dom.html
         scrollX = TRUE, 
-        searchPanes = TRUE  # does not seem to work?
+        searchPanes = TRUE  # does this work?
       ),
-      escape = FALSE
-      ) # *** CAUTION -- MAY NEED TO CHANGE THIS ***   end of output$rendered_results_table <- DT::renderDT
+    escape = FALSE
+    )
+    # *** CAUTION ***
     # escape=TRUE is better for security reasons (XSS attacks).
-    # escape=FALSE fixes ejscreen pdf URL to be a link, 
-    # but it breaks links from ECHO table download (wont be clickable in table) ***
+    # escape=FALSE lets ejscreen URL links work, 
+    #   but not links from ECHO table download.
   }
+  ######################### #
   
-  shinyApp(ui = TEST_UI, server = TEST_SERVER) # Test the module, as a mini-app
+  shinyApp(ui = TEST_UI, server = TEST_SERVER) # Try module in mini/test app  
   
-  
-  
+
   # note you cannot wrap ui and server code in a single function when using modules 
   
   ##  in the main app UI
@@ -105,13 +105,15 @@ if (testing_ejscreenapi_module) {
 #'
 #' @param id,input,output,session Internal parameters for {shiny}.
 #' @param simpleradius_default_for_ui miles radius to show as initial default selection - not used if reactive version used now
+#' @param default_radius miles radius to show as initial default selection
 #' @param default_radius_react reactiveVal passed to module UI from EJAM app that is initial radius to show 
 #'   so that it can reflect what user already set as radius in main EJAM app
 #' @noRd 
 #' 
 #' @importFrom shiny NS tagList 
 #' @import leaflet
-mod_ejscreenapi_ui <- function(id, simpleradius_default_for_ui = 1, 
+mod_ejscreenapi_ui <- function(id, 
+                               simpleradius_default_for_ui = 1, 
                                default_radius = 1
                                # default_radius_react = reactive(1)
                                ) {
