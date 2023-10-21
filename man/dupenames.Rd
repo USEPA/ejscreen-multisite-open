@@ -33,5 +33,5 @@ This can help find duplicates/conflicts within source code
 and make sure they are on search path, for when renaming / moving functions/packages
 }
 \seealso{
-\code{\link[=all.equal_functions]{all.equal_functions()}}
+\code{\link[=all_equal_functions]{all_equal_functions()}}
 }

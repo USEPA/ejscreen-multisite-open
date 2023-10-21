@@ -1,27 +1,45 @@
-% EJAM - Environmental Justice Multisite tool
+EJAM Environmental Justice Analysis Multisite tool
+================
+
+<!-- README.md is generated from README.Rmd. Please edit Rmd not md  -->
+<!-- badges: start -->
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 
+<!-- badges: end -->
+
 # Technical Details
 
-  - Technical documentation for R software users
+- Technical documentation for R software users
 
-    - R users vignette that walks through installation and key functions: [Vignette](EJAM-vignette.html "EJAM-vignette.html")
+  - R users vignette that walks through installation and key functions:
+    [Vignette](EJAM-vignette.html "EJAM-vignette.html") (must be on VPN)
 
-    - R developers technical documentation of all R functions and data in web page format: [EJAM R Functions and Data](EJAM.html "EJAM.html")
+  - R developers technical documentation of all R functions and data in
+    web page format: [EJAM R Functions and Data](EJAM.html "EJAM.html")
+    (must be on VPN)
 
-    - GitHub repository of code and data: [USEPA/EJAM](https://github.com/USEPA/EJAM#readme "https://github.com/USEPA/EJAM#readme")
+  - GitHub repository of code and data:
+    [USEPA/EJAM](https://github.com/USEPA/EJAM#readme "https://github.com/USEPA/EJAM#readme")
+    (must be on VPN)
 
-  - EJAM Web App Demo internal to EPA: As of 10/2023 the main app is not on a production server yet. A very minimal portion of the calculation tool is here on a staging server:
+- EJAM Web App Demo internal to EPA: As of 10/2023 the main app is not
+  on a production server yet. A very minimal portion of the calculation
+  tool is here on a staging server:
 
-    - For a demo of EJScreen-like results (some #s are slightly different), for 100 points in under 5 seconds, and 1,000 points in about 10-30 seconds depending on distance [ejamlite demo](https://rstudio-connect.dmap-stage.aws.epa.gov/content/725e3761-3dc1-4012-b07c-23126063da97/ "https://rstudio-connect.dmap-stage.aws.epa.gov/content/725e3761-3dc1-4012-b07c-23126063da97/")
+  - For a demo of EJScreen-like results (some \#s are slightly
+    different), for 100 points in under 5 seconds, and 1,000 points in
+    about 10-30 seconds depending on distance **[ejamlite
+    demo](https://rstudio-connect.dmap-stage.aws.epa.gov/content/725e3761-3dc1-4012-b07c-23126063da97/ "https://rstudio-connect.dmap-stage.aws.epa.gov/content/725e3761-3dc1-4012-b07c-23126063da97/")**
+    (must be on VPN)
 
-    - For a demo of EJScreen results via API, for 100 points in about 60 seconds, and 1,000 points in about 10 minutes [ejscreenapi demo](https://rstudio-connect.dmap-stage.aws.epa.gov/content/725e3761-3dc1-4012-b07c-23126063da97/ "https://rstudio-connect.dmap-stage.aws.epa.gov/content/725e3761-3dc1-4012-b07c-23126063da97/")
-
+  - For a demo of EJScreen results via API, for 100 points in about 60
+    seconds, and 1,000 points in about 10 minutes [ejscreenapi
+    demo](https://rstudio-connect.dmap-stage.aws.epa.gov/content/725e3761-3dc1-4012-b07c-23126063da97/ "https://rstudio-connect.dmap-stage.aws.epa.gov/content/725e3761-3dc1-4012-b07c-23126063da97/")
+    (must be on VPN)
 
 # Non-technical Overview
-
 
 ### EPA’s Environmental Justice Analysis Multi-site tool
 
@@ -68,24 +86,25 @@ analysis or a new regulation being considered, for example.
 
 EJAM provides a ready-to-use summary report, plus more flexibility,
 accuracy, and speed than other tools have. The web-based app quickly
-provides results on the fly -- The circular buffering module was optimized to be extremely
-fast (allowing realtime exploratory work in an app), while still using
-the block-population calculation EJScreen uses, making it more
-consistent with EJScreen and more accurate than other approaches.
+provides results on the fly – The circular buffering module was
+optimized to be extremely fast (allowing realtime exploratory work in an
+app), while still using the block-population calculation EJScreen uses,
+making it more consistent with EJScreen and more accurate than other
+approaches.
 
-EJAM also lets one pick locations through several different approaches, 
-such as specifying points by industry or latitude/longitude, 
-or using shapefiles with polygons rather than just analyzing residents within a fixed distance.
+EJAM also lets one pick locations through several different approaches,
+such as specifying points by industry or latitude/longitude, or using
+shapefiles with polygons rather than just analyzing residents within a
+fixed distance.
 
 The default demographic indicators are [EJScreen’s basic demographic
 indicators](https://www.epa.gov/ejscreen/overview-demographic-indicators-ejscreen "https://www.epa.gov/ejscreen/overview-demographic-indicators-ejscreen"),
 with the addition of race/ethnicity subgroups.
 
-The data and software are shared as reusable,
-well-documented functions or modules in an R package, 
-to allow software developers or analysts to take
-advantage of these resources in running their own analyses or building
-or supplementing their own tools, websites, or mobile apps.
+The data and software are shared as reusable, well-documented functions
+or modules in an R package, to allow software developers or analysts to
+take advantage of these resources in running their own analyses or
+building or supplementing their own tools, websites, or mobile apps.
 
 ### Updates
 
@@ -100,10 +119,10 @@ block group demographics).
 The power of this tool enables faster and more accurate results than
 other tools generally have been able to provide. It also should be much
 more cost-effective as a public tool than the standard buffering
-solution would be. This tool lets any user very quickly see an analysis of a
-very large number of places (which EJScreen was not designed to offer),
-and immediately get a ready-to-use report that provides perspective on
-an entire industrial sector or set of places.
+solution would be. This tool lets any user very quickly see an analysis
+of a very large number of places (which EJScreen was not designed to
+offer), and immediately get a ready-to-use report that provides
+perspective on an entire industrial sector or set of places.
 
 ### Accuracy
 
@@ -135,47 +154,46 @@ facilities. Keeping track of this would also allow an analyst to explore
 how many people are near multiple sites, or ask which sites in
 communities that already have multiple sites nearby.
 
-EJAM was designed so that it can provide a continuous distribution of distances, 
-as distributed across blocks or people 
-for one or all of the nearby facilities. This enables exploration 
-of the complete picture of proximities, rather than
-using an arbitrary single distance defining near versus far. The
-distribution can be sliced later for the summary statistics at any
-distance, and can be summarized as a distribution of distances within
-each demographic group.
+EJAM was designed so that it can provide a continuous distribution of
+distances, as distributed across blocks or people for one or all of the
+nearby facilities. This enables exploration of the complete picture of
+proximities, rather than using an arbitrary single distance defining
+near versus far. The distribution can be sliced later for the summary
+statistics at any distance, and can be summarized as a distribution of
+distances within each demographic group.
 
 ### Future Plans
 
 EJAM will also be able to analyze other demographic indicators, to
-include user-selected EPA-hosted layers, or even user-provided data. 
-In other words, an analysis would be able to include other
-layers on risks or concentrations (at block group resolution), or
-user-provided scores for each block group.
+include user-selected EPA-hosted layers, or even user-provided data. In
+other words, an analysis would be able to include other layers on risks
+or concentrations (at block group resolution), or user-provided scores
+for each block group.
 
 The tool uses a default, standard report, but will allow flexibility
-beyond that. EJAM will provide a standard report (text, graphics, and maps)
-to print, download, share, and use, but that a user could further edit offline
-(e.g., in Word). Users also can download individual graphics and data
-files (for individual sites and summary statistics).
+beyond that. EJAM will provide a standard report (text, graphics, and
+maps) to print, download, share, and use, but that a user could further
+edit offline (e.g., in Word). Users also can download individual
+graphics and data files (for individual sites and summary statistics).
 
-The results can be viewed interactively, where one can adjust
-certain aspects of the analysis and outputs (and that could possibly
-flow into the summary report as well) such as preferred graphics/
-tables, indicator thresholds, reference groups, reference areas,
-metrics, etc.), to make the outputs fit a given user’s needs.
+The results can be viewed interactively, where one can adjust certain
+aspects of the analysis and outputs (and that could possibly flow into
+the summary report as well) such as preferred graphics/ tables,
+indicator thresholds, reference groups, reference areas, metrics, etc.),
+to make the outputs fit a given user’s needs.
 
-To provide further flexibility and help avoid duplication of effort,
-an EJAM API would provide access to services such as fast buffering,
+To provide further flexibility and help avoid duplication of effort, an
+EJAM API would provide access to services such as fast buffering,
 summarization, or data.
 
-EJAM is designed with growth in mind, assuming
-that the specific indicators of interest will expand or change over
-time. It is even possible that multiple resolutions of data will need to
-be analyzed, such as block, block group, and tract data for different
-indicators. A subsequent refinement might even use a high-resolution
-raster grid of population estimates rather than the Census Block counts
-currently used for buffering and weighting block group scores for
-partially included block groups.
+EJAM is designed with growth in mind, assuming that the specific
+indicators of interest will expand or change over time. It is even
+possible that multiple resolutions of data will need to be analyzed,
+such as block, block group, and tract data for different indicators. A
+subsequent refinement might even use a high-resolution raster grid of
+population estimates rather than the Census Block counts currently used
+for buffering and weighting block group scores for partially included
+block groups.
 
 ## Disclaimer
 

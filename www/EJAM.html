@@ -45,11 +45,11 @@
 </tr>
       <tr>
 <th>Version:</th>
-<td class="description-version">2.2.0</td>
+<td class="description-version">2.2.1</td>
 </tr>
       <tr>
 <th>Built:</th>
-<td class="description-date">2023-10-19 01:45:19 UTC</td>
+<td class="description-date">2023-10-21 04:18:36 UTC</td>
 </tr>
       <tr>
 <th>Source:</th>
@@ -61,16 +61,16 @@
     <ul id="help-index-list">
 <li class="help-index-item"><a href="#dot-onAttach">.onAttach - Do slow initialization steps - Download data, load key data into RAM, create index to all US blocks
 Note this duplicates some code in global.R, and see source code here to adjust settings.</a></li>
-<li class="help-index-item"><a href="#all.equal_functions">helper function for checking possibly different versions of a function with same name in 2 packages</a></li>
+<li class="help-index-item"><a href="#all_equal_functions">helper function for checking possibly different versions of a function with same name in 2 packages</a></li>
 <li class="help-index-item"><a href="#app_run_EJAM">app_run_EJAM - identical to run_app(), just an alias</a></li>
 <li class="help-index-item"><a href="#app_server">app_server - EJAM app server</a></li>
-<li class="help-index-item"><a href="#avg.in.us">national averages of key indicators, for convenience</a></li>
-<li class="help-index-item"><a href="#bg_cenpop2020">data.table with all US Census 2020 block groups, Census 2020 population count,
+<li class="help-index-item"><a href="#avg.in.us">avg.in.us (DATA) national averages of key indicators, for convenience</a></li>
+<li class="help-index-item"><a href="#bg_cenpop2020">bg_cenpop2020 (DATA) data.table with all US Census 2020 block groups, Census 2020 population count,
 and lat/lon of Census2020-population-weighted centroid of block group</a></li>
 <li class="help-index-item"><a href="#bg_from_county">bg_from_county - Analyze US Counties as if they were sites, to get EJ indicators summary for each county</a></li>
-<li class="help-index-item"><a href="#bgej">EJScreen EJ Indexes for Census block groups</a></li>
-<li class="help-index-item"><a href="#bgpts">lat lon of popwtd center of blockgroup, and count of blocks per block group</a></li>
-<li class="help-index-item"><a href="#blockgroupstats">EJScreen demographic and environmental indicators for Census block groups</a></li>
+<li class="help-index-item"><a href="#bgej">bgej (DATA) EJScreen EJ Indexes for Census block groups</a></li>
+<li class="help-index-item"><a href="#bgpts">bgpts (DATA) lat lon of popwtd center of blockgroup, and count of blocks per block group</a></li>
+<li class="help-index-item"><a href="#blockgroupstats">blockgroupstats (DATA) EJScreen demographic and environmental indicators for Census block groups</a></li>
 <li class="help-index-item"><a href="#colcounter">colcounter - Count columns with Value (at or) above (or below) threshold</a></li>
 <li class="help-index-item"><a href="#colcounter_summary">colcounter_summary - Summarize how many rows have N columns at or above (or below) various thresholds?
 Like colcounter or cols.above.count
@@ -98,7 +98,7 @@ utility for R analysts/developers to store large block data locally instead of r
 Wrapper for data() and gets memory size of objects and silently returns a data.frame</a></li>
 <li class="help-index-item"><a href="#datawrite_to_aws">datawrite_to_aws -  NOT YET WORKING - AccessDenied
 Write object(s) like a dataset to DMAP Data Commons, formatted as .arrow or .rda</a></li>
-<li class="help-index-item"><a href="#datawrite_to_local">datawrite_to_local -  NOT YET WORKING for .arrow
+<li class="help-index-item"><a href="#datawrite_to_local">datawrite_to_local
 Write large object(s) like EJAM datasets to local disk for convenience during app/pkg development, formatted as .arrow or .rda</a></li>
 <li class="help-index-item"><a href="#distance_by_group">distance_by_group - Avg distance of each demog group (of multiple groups)
 Same as plot_distance_mean_by_group() but no plot by default</a></li>
@@ -120,7 +120,7 @@ whether or not they are packages.</a></li>
 <li class="help-index-item"><a href="#ejam2excel">ejam2excel
 Format the results of ejamit() for excel and optionally save .xlsx file</a></li>
 <li class="help-index-item"><a href="#ejamit">ejamit - Get complete EJ analysis numbers (demographic and environmental indicators) near a list of locations</a></li>
-<li class="help-index-item"><a href="#ejampackages">list of names of key EJAM-related R packages</a></li>
+<li class="help-index-item"><a href="#ejampackages">ejampackages (DATA) list of names of key EJAM-related R packages</a></li>
 <li class="help-index-item"><a href="#ejscreenit_for_ejam">ejscreenit_for_ejam - DRAFT
 Wrapper for ejscreenit() from EJAMejscreenapi package, to use in EJAM app - NOT USED CURRENTLY</a></li>
 <li class="help-index-item"><a href="#fips_counties_from_state_abbrev">fips_counties_from_state_abbrev</a></li>
@@ -141,12 +141,14 @@ among or within or containing those FIPS</a></li>
 <li class="help-index-item"><a href="#format_gt_table">format_gt_table</a></li>
 <li class="help-index-item"><a href="#format_results_overall">format_results_overall
 Format the results_overall part of the output of ejamit() or doaggregate()</a></li>
-<li class="help-index-item"><a href="#frs">EPA Facility Registry Service table of regulated sites</a></li>
-<li class="help-index-item"><a href="#frs_by_mact">MACT NESHAP subpart(s) that each EPA-regulated site is subject to</a></li>
-<li class="help-index-item"><a href="#frs_by_naics">data.table of NAICS code(s) for each EPA-regulated site in Facility Registry Service</a></li>
-<li class="help-index-item"><a href="#frs_by_programid">data.table of Program System ID code(s) for each EPA-regulated site in
+<li class="help-index-item"><a href="#frs">frs (DATA) EPA Facility Registry Service table of regulated sites</a></li>
+<li class="help-index-item"><a href="#frs_by_mact">frs_by_mact (DATA) MACT NESHAP subpart(s) that each EPA-regulated site is subject to</a></li>
+<li class="help-index-item"><a href="#frs_by_naics">frs_by_naics (DATA) data.table of NAICS code(s) for each EPA-regulated site in Facility Registry Service</a></li>
+<li class="help-index-item"><a href="#frs_by_programid">frs_by_programid (DATA) data.table of Program System ID code(s) for each EPA-regulated site in
 the Facility Registry Service</a></li>
-<li class="help-index-item"><a href="#frs_by_sic">data.table of SIC code(s) for each EPA-regulated site in Facility Registry Service</a></li>
+<li class="help-index-item"><a href="#frs_by_sic">frs_by_sic (DATA) data.table of SIC code(s) for each EPA-regulated site in Facility Registry Service</a></li>
+<li class="help-index-item"><a href="#frs_clean">frs_clean - utility to clean Facility Registry Service dataset when updating it
+This is just a helper function used to create the dataset saved as data for use in EJAM</a></li>
 <li class="help-index-item"><a href="#frs_from_naics">frs_from_naics - Use NAICS code or industry title text search to see FRS Facility Registry Service data on those EPA-regulated sites</a></li>
 <li class="help-index-item"><a href="#frs_from_program">frs_from_program - Use EPA Program acronym like TRIS to see FRS Facility Registry Service data on those EPA-regulated sites</a></li>
 <li class="help-index-item"><a href="#frs_from_programid">frs_from_programid - Use EPA Program ID to see FRS Facility Registry Service data on those EPA-regulated sites</a></li>
@@ -156,7 +158,7 @@ the Facility Registry Service</a></li>
 <li class="help-index-item"><a href="#frs_from_sitename">frs_from_sitename - Use site name text search to see FRS Facility Registry Service data on those EPA-regulated sites
 VERY SLOW search within PRIMARY_NAME of facilities for matching text</a></li>
 <li class="help-index-item"><a href="#frs_is_valid">frs_is_valid - Validate FRS Registry ID list uploads</a></li>
-<li class="help-index-item"><a href="#frsprogramcodes">EPA programs listed in Facility Registry Service</a></li>
+<li class="help-index-item"><a href="#frsprogramcodes">frsprogramcodes DATA EPA programs listed in Facility Registry Service</a></li>
 <li class="help-index-item"><a href="#get_blockpoints_in_shape">get_blockpoints_in_shape - find blocks that are in a polygon, using internal point of block - WORK IN PROGRESS ****</a></li>
 <li class="help-index-item"><a href="#get_shape_buffered_from_shapefile_points">get_shape_buffered_from_shapefile_points - add buffer around shape (points, here)</a></li>
 <li class="help-index-item"><a href="#get_shapefile_from_sitepoints">get_shapefile_from_sitepoints - convert table of lat,lon points/sites into sf:: shapefile
@@ -176,14 +178,14 @@ DRAFT / WAS WORK IN PROGRESS</a></li>
 <li class="help-index-item"><a href="#getblocksnearbyviaQuadTree2">getblocksnearbyviaQuadTree2 - Find nearby blocks using Quad Tree data structure for speed, NO PARALLEL PROCESSING - DRAFT / WORK IN PROGRESS</a></li>
 <li class="help-index-item"><a href="#getblocksnearbyviaQuadTree3">getblocksnearbyviaQuadTree3 - Find nearby blocks using Quad Tree data structure for speed, NO PARALLEL PROCESSING
 DRAFT / WAS WORK IN PROGRESS</a></li>
-<li class="help-index-item"><a href="#high_pctiles_tied_with_min">internal data used to handle cases where multiple places are tied for the lowest indicator score</a></li>
+<li class="help-index-item"><a href="#high_pctiles_tied_with_min">high_pctiles_tied_with_min (DATA) internal data used to handle cases where multiple places are tied for the lowest indicator score</a></li>
 <li class="help-index-item"><a href="#indexblocks">indexblocks
 Create localtree (a quadtree index of all US block centroids) in global environment</a></li>
 <li class="help-index-item"><a href="#input_names_listing">input_names_listing
 Utility checking values of input$ that appear in this code
 See appsilon pkg shiny.info now</a></li>
-<li class="help-index-item"><a href="#islandareas">islandareas table, bounds info on lat lon of US Island Areas</a></li>
-<li class="help-index-item"><a href="#lat_alias-lon_alias">Synonyms for lat and lon</a></li>
+<li class="help-index-item"><a href="#islandareas">islandareas (DATA) table, bounds info on lat lon of US Island Areas</a></li>
+<li class="help-index-item"><a href="#lat_alias">lat_alias, lon_alias (DATA) Synonyms for lat and lon</a></li>
 <li class="help-index-item"><a href="#latlon_as.numeric">latlon_as.numeric - Strip non-numeric characters from a vector</a></li>
 <li class="help-index-item"><a href="#latlon_df_clean">latlon_df_clean - Find and clean up latitude and longitude columns in a data.frame</a></li>
 <li class="help-index-item"><a href="#latlon_from_anything">latlon_from_anything - Flexibly get lat/lon from file, data.frame, data.table, or lat/lon vectors</a></li>
@@ -216,12 +218,12 @@ Check lat lon coordinates to see if each is approx. in general area of USA exclu
 <li class="help-index-item"><a href="#latlon_join_on_blockid">latlon_join_on_blockid - get lat,lon of each block internal point via blockid
 get expanded version of sites2blocks data.table, with new lat,lon columns</a></li>
 <li class="help-index-item"><a href="#lookup_pctile">lookup_pctile (synonym for pctile_from_raw_lookup)</a></li>
-<li class="help-index-item"><a href="#mact_table">MACT NESHAP subparts (the code and the description)</a></li>
+<li class="help-index-item"><a href="#mact_table">mact_table (DATA) MACT NESHAP subparts (the code and the description)</a></li>
 <li class="help-index-item"><a href="#map_facilities">map_facilities</a></li>
 <li class="help-index-item"><a href="#map_facilities_proxy">map_facilities_proxy</a></li>
 <li class="help-index-item"><a href="#metadata_add">helper function for package to set attributes of a dataset</a></li>
 <li class="help-index-item"><a href="#metadata_check">helper function in updating the package metadata</a></li>
-<li class="help-index-item"><a href="#NAICS">named list of all NAICS code numbers and industry name for each</a></li>
+<li class="help-index-item"><a href="#NAICS">NAICS (DATA) named list of all NAICS code numbers and industry name for each</a></li>
 <li class="help-index-item"><a href="#naics_categories">naics_categories - See the names of industrial categories and their NAICS code
 Easy way to list the 2-digit NAICS (17 categories), or other level</a></li>
 <li class="help-index-item"><a href="#naics_download">naics_download - script to download NAICS file with code and name of sector</a></li>
@@ -243,7 +245,7 @@ See (https://naics.com) for more information on NAICS codes</a></li>
 <li class="help-index-item"><a href="#naics_validation">naics_validation - Validate NAIC uploads</a></li>
 <li class="help-index-item"><a href="#naics2children">naics2children - See NAICS codes queried plus all children of any of those
 Used by naics_find()</a></li>
-<li class="help-index-item"><a href="#naicstable">data.table of NAICS code(s) and industry names for each EPA-regulated site in Facility Registry Service
+<li class="help-index-item"><a href="#naicstable">naicstable (DATA) data.table of NAICS code(s) and industry names for each EPA-regulated site in Facility Registry Service
 Also has the 2,3,4,5,and 6-digit NAICS that this code falls under, where relevant for given length</a></li>
 <li class="help-index-item"><a href="#names_d">list of demographic indicator names</a></li>
 <li class="help-index-item"><a href="#names_e">list of environmental indicator names</a></li>
@@ -280,7 +282,7 @@ Shows US percentiles if no arguments used</a></li>
 <li class="help-index-item"><a href="#proxistat2">proxistat2 - Calculate a proximity score for every blockgroup - WORK IN PROGRESS
 Indicator of proximity of each blockgroups to some set of facilities or sites.</a></li>
 <li class="help-index-item"><a href="#quaddata">data.table used to create index of all US block point locations</a></li>
-<li class="help-index-item"><a href="#regionstats">(obsolete) data.table of 100 percentiles and means for each EPA Region.</a></li>
+<li class="help-index-item"><a href="#regionstats">regionstats (DATA) (obsolete) data.table of 100 percentiles and means for each EPA Region.</a></li>
 <li class="help-index-item"><a href="#rmost">rmost - utility to rm(list=ls()) but not remove key datasets EJAM uses</a></li>
 <li class="help-index-item"><a href="#rrtable">rrtable
 Calculate risk ratios of avg E in group D / in everyone not in group D</a></li>
@@ -290,7 +292,7 @@ utility just like setdiff except for y,x instead of x,y</a></li>
 <li class="help-index-item"><a href="#setdiff2">setdiff2 aka unshared
 utility just like setdiff except for y,x and also x,y
 Just shows which elements are in one and only one of the sets x and y</a></li>
-<li class="help-index-item"><a href="#SIC">named list of all SIC code numbers and category name for each</a></li>
+<li class="help-index-item"><a href="#SIC">SIC (DATA) named list of all SIC code numbers and category name for each</a></li>
 <li class="help-index-item"><a href="#sic_categories">sic_categories - See the names of SIC industrial categories and their codes
 Easy way to view, in RStudio console, the SIC categories.
 SIC all are 4-digit codes, like 7218 - Industrial launderers</a></li>
@@ -301,7 +303,7 @@ Find industry names and codes by searching for queried code(s) or text</a></li>
 query by parts of words, etc. in the industry name.</a></li>
 <li class="help-index-item"><a href="#sic_subcodes_from_code">sic_subcodes_from_code - find subcategories of the given overall SIC industry code(s)
 Given 3-digit SIC code, for example, get all SIC that start with those digits.</a></li>
-<li class="help-index-item"><a href="#sictable">data.table of SIC code(s) and industry names for each EPA-regulated site in Facility Registry Service
+<li class="help-index-item"><a href="#sictable">sictable (DATA) data.table of SIC code(s) and industry names for each EPA-regulated site in Facility Registry Service
 Also has the 2,3, and 4-digit SIC that this code falls under, where relevant for given length</a></li>
 <li class="help-index-item"><a href="#siteid_from_naics">latlon_from_naics - Find EPA-regulated facilities in FRS by NAICS code (industrial category)
 Get lat lon, Registry ID, given NAICS industry code(s)
@@ -330,19 +332,19 @@ given data.table with blockid column, get state abbreviation of each</a></li>
 Get the State abbreviations of all blockgroups within the input FIPS</a></li>
 <li class="help-index-item"><a href="#state_from_latlon">state_from_latlon - find what state is where each point is located
 Takes 3 seconds to find state for 1k points, so a faster alternative would be useful</a></li>
-<li class="help-index-item"><a href="#stateinfo">data.frame of state abbreviations and state names (50+DC+PR; not AS, GU, MP, VI, UM)</a></li>
-<li class="help-index-item"><a href="#stateinfo2">data.frame of state abbreviations and state names (50+DC+PR; not AS, GU, MP, VI, UM)</a></li>
+<li class="help-index-item"><a href="#stateinfo">stateinfo (DATA) data.frame of state abbreviations and state names (50+DC+PR; not AS, GU, MP, VI, UM)</a></li>
+<li class="help-index-item"><a href="#stateinfo2">stateinfo2 (DATA) data.frame of state abbreviations and state names (50+DC+PR; not AS, GU, MP, VI, UM)</a></li>
 <li class="help-index-item"><a href="#states_infer">states_infer
 Get cleaned table of US State etc. by siteid, from lat/lon, or from FIPS</a></li>
-<li class="help-index-item"><a href="#states_shapefile">US States boundaries 2020 shapefile from TIGER</a></li>
-<li class="help-index-item"><a href="#statestats">data.frame of 100 percentiles and means for each US State and PR and DC.</a></li>
+<li class="help-index-item"><a href="#states_shapefile">states_shapefile (DATA) US States boundaries 2020 shapefile from TIGER</a></li>
+<li class="help-index-item"><a href="#statestats">statestats (DATA) data.frame of 100 percentiles and means for each US State and PR and DC.</a></li>
 <li class="help-index-item"><a href="#statestats_query">statestats_query - convenient way to see mean, pctiles of Env or Demog indicators from lookup table</a></li>
 <li class="help-index-item"><a href="#statestats_queryd">statestats_queryd - convenient way to see mean, pctiles of DEMOG indicators from lookup table</a></li>
 <li class="help-index-item"><a href="#statestats_querye">statestats_querye - convenient way to see mean, pctiles of ENVIRONMENTAL indicators from lookup table</a></li>
 <li class="help-index-item"><a href="#structure.of.output.list">structure.of.output.list - See info about list of results
 Utility to print summary info about the output of ejamit or doaggregate</a></li>
 <li class="help-index-item"><a href="#tablefixed">tablefixed - Table of counts of integer values zero through maxbin</a></li>
-<li class="help-index-item"><a href="#test_regid">test data, vector of EPA FRS Registry ID numbers</a></li>
+<li class="help-index-item"><a href="#test_regid">test_regid (DATA) test data, vector of EPA FRS Registry ID numbers</a></li>
 <li class="help-index-item"><a href="#testoutput_doaggregate_1000pts_1miles">test output of doaggregate()</a></li>
 <li class="help-index-item"><a href="#testoutput_doaggregate_100pts_1miles">test output of doaggregate()</a></li>
 <li class="help-index-item"><a href="#testoutput_doaggregate_10pts_1miles">test output of doaggregate()</a></li>
@@ -376,7 +378,7 @@ URL for 1 bookmarked EJScreen session (map location and indicator)</a></li>
 <li class="help-index-item"><a href="#url_getacs_epaquery_chunked">url_getacs_epaquery_chunked - experimental/ work in progress: in chunks, get ACS data via EPA API</a></li>
 <li class="help-index-item"><a href="#url_naics.com">url_naics.com - Get URL for page with info about industry sectors by text query term
 See (https://naics.com) for more information on NAICS codes</a></li>
-<li class="help-index-item"><a href="#usastats">data.frame of 100 percentiles and means</a></li>
+<li class="help-index-item"><a href="#usastats">usastats (DATA) data.frame of 100 percentiles and means</a></li>
 <li class="help-index-item"><a href="#usastats_means">usastats_means - convenient way to see USA MEANS of ENVIRONMENTAL and DEMOGRAPHIC indicators from lookup table</a></li>
 <li class="help-index-item"><a href="#usastats_query">usastats_query - convenient way to see USA mean, pctiles of Env and Demog indicators from lookup table</a></li>
 <li class="help-index-item"><a href="#usastats_queryd">usastats_queryd - convenient way to see USA mean, pctiles of DEMOGRAPHIC indicators from lookup table</a></li>
@@ -433,9 +435,9 @@ In what order? see app.R too ***
 
 <hr>
 </div>
-<div class="container manual-page" id="all.equal_functions">
+<div class="container manual-page" id="all_equal_functions">
 
-<a href="#all.equal_functions" class="help-page-title"><h2>helper function for checking possibly different versions of a function with same name in 2 packages</h2></a>
+<a href="#all_equal_functions" class="help-page-title"><h2>helper function for checking possibly different versions of a function with same name in 2 packages</h2></a>
 
 <h3>Description</h3>
 
@@ -445,8 +447,11 @@ In what order? see app.R too ***
 
 <h3>Usage</h3>
 
-<pre class="language-r"><code class="language-r"><span class="token comment">## S3 method for class 'equal_functions'</span>
-all<span class="token punctuation">(</span>fun <span class="token operator">=</span> <span class="token string">"latlon_infer"</span><span class="token punctuation">,</span> package1 <span class="token operator">=</span> <span class="token string">"EJAM"</span><span class="token punctuation">,</span> package2 <span class="token operator">=</span> <span class="token string">"EJAMejscreenapi"</span><span class="token punctuation">)</span></code></pre>
+<pre class="language-r"><code class="language-r">all_equal_functions<span class="token punctuation">(</span>
+  fun <span class="token operator">=</span> <span class="token string">"latlon_infer"</span><span class="token punctuation">,</span>
+  package1 <span class="token operator">=</span> <span class="token string">"EJAM"</span><span class="token punctuation">,</span>
+  package2 <span class="token operator">=</span> <span class="token string">"EJAMejscreenapi"</span>
+<span class="token punctuation">)</span></code></pre>
 
 
 <h3>Arguments</h3>
@@ -534,7 +539,7 @@ DO NOT REMOVE.</p>
 </div>
 <div class="container manual-page" id="avg.in.us">
 
-<a href="#avg.in.us" class="help-page-title"><h2>national averages of key indicators, for convenience</h2></a>
+<a href="#avg.in.us" class="help-page-title"><h2>avg.in.us (DATA) national averages of key indicators, for convenience</h2></a>
 
 <h3>Description</h3>
 
@@ -545,12 +550,12 @@ DO NOT REMOVE.</p>
 </div>
 <div class="container manual-page" id="bg_cenpop2020">
 
-<a href="#bg_cenpop2020" class="help-page-title"><h2>data.table with all US Census 2020 block groups, Census 2020 population count,
+<a href="#bg_cenpop2020" class="help-page-title"><h2>bg_cenpop2020 (DATA) data.table with all US Census 2020 block groups, Census 2020 population count,
 and lat/lon of Census2020-population-weighted centroid of block group</h2></a>
 
 <h3>Description</h3>
 
-<p>data.table with all US Census 2020 block groups, Census 2020 population count,
+<p>bg_cenpop2020 (DATA) data.table with all US Census 2020 block groups, Census 2020 population count,
 and lat/lon of Census2020-population-weighted centroid of block group
 </p>
 
@@ -563,7 +568,7 @@ and lat/lon of Census2020-population-weighted centroid of block group
 
 <h3>See Also</h3>
 
-<p><a href="#bgpts">bgpts</a> <a href="#blockgroupstats">blockgroupstats</a>
+<p><a href="#blockgroupstats">blockgroupstats</a>
 </p>
 
 <hr>
@@ -588,7 +593,7 @@ and lat/lon of Census2020-population-weighted centroid of block group
 <table><tr style="vertical-align: top;">
 <td><code>fips</code></td>
 <td>
-<p>County FIPS vector as character not numeric values</p>
+<p>County FIPS vector (ideally as character not numeric values)</p>
 </td>
 </tr></table>
 <h3>Value</h3>
@@ -609,11 +614,11 @@ and lat/lon of Census2020-population-weighted centroid of block group
 </div>
 <div class="container manual-page" id="bgej">
 
-<a href="#bgej" class="help-page-title"><h2>EJScreen EJ Indexes for Census block groups</h2></a>
+<a href="#bgej" class="help-page-title"><h2>bgej (DATA) EJScreen EJ Indexes for Census block groups</h2></a>
 
 <h3>Description</h3>
 
-<p>EJScreen EJ Indexes for Census block groups
+<p>bgej (DATA) EJScreen EJ Indexes for Census block groups
 </p>
 
 
@@ -633,7 +638,7 @@ and lat/lon of Census2020-population-weighted centroid of block group
 </div>
 <div class="container manual-page" id="bgpts">
 
-<a href="#bgpts" class="help-page-title"><h2>lat lon of popwtd center of blockgroup, and count of blocks per block group</h2></a>
+<a href="#bgpts" class="help-page-title"><h2>bgpts (DATA) lat lon of popwtd center of blockgroup, and count of blocks per block group</h2></a>
 
 <h3>Description</h3>
 
@@ -717,7 +722,7 @@ and where each bg is, which is useful for some situations.
 </div>
 <div class="container manual-page" id="blockgroupstats">
 
-<a href="#blockgroupstats" class="help-page-title"><h2>EJScreen demographic and environmental indicators for Census block groups</h2></a>
+<a href="#blockgroupstats" class="help-page-title"><h2>blockgroupstats (DATA) EJScreen demographic and environmental indicators for Census block groups</h2></a>
 
 <h3>Description</h3>
 
@@ -1298,7 +1303,7 @@ like or.tied=TRUE, na.rm=TRUE, below=FALSE, one.cut.per.col=FALSE</p>
 <table><tr style="vertical-align: top;">
 <td><code>fips</code></td>
 <td>
-<p>County FIPS vector as character not numeric values</p>
+<p>County FIPS vector (ideally as character not numeric values)</p>
 </td>
 </tr></table>
 <h3>Value</h3>
@@ -1508,8 +1513,8 @@ utility for R analysts/developers to store large block data locally instead of r
 
 <pre class="language-r"><code class="language-r">dataload_from_local<span class="token punctuation">(</span>
   varnames <span class="token operator">=</span> c<span class="token punctuation">(</span><span class="token string">"bgid2fips"</span><span class="token punctuation">,</span> <span class="token string">"blockid2fips"</span><span class="token punctuation">,</span> <span class="token string">"blockpoints"</span><span class="token punctuation">,</span> <span class="token string">"blockwts"</span><span class="token punctuation">,</span> <span class="token string">"quaddata"</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  ext <span class="token operator">=</span> c<span class="token punctuation">(</span><span class="token string">".arrow"</span><span class="token punctuation">,</span> <span class="token string">".rda"</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-  fun <span class="token operator">=</span> c<span class="token punctuation">(</span><span class="token string">"arrow::read_ipc_file"</span><span class="token punctuation">,</span> <span class="token string">"load"</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  ext <span class="token operator">=</span> c<span class="token punctuation">(</span><span class="token string">".arrow"</span><span class="token punctuation">,</span> <span class="token string">".rda"</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  fun <span class="token operator">=</span> c<span class="token punctuation">(</span><span class="token string">"arrow::read_ipc_file"</span><span class="token punctuation">,</span> <span class="token string">"load"</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
   envir <span class="token operator">=</span> globalenv<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
   folder_local_source <span class="token operator">=</span> <span class="token string">"~/../Downloads"</span><span class="token punctuation">,</span>
   justchecking <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
@@ -1563,6 +1568,13 @@ utility for R analysts/developers to store large block data locally instead of r
 </td>
 </tr>
 </table>
+<h3>Details</h3>
+
+<p>rm(bgid2fips, blockid2fips, blockpoints, blockwts, quaddata)
+</p>
+<p>dataload_from_local(folder_local_source = '.')
+</p>
+
 <hr>
 </div>
 <div class="container manual-page" id="dataload_from_package">
@@ -1765,6 +1777,22 @@ just viewing in console the commands to be used, to test/check this</p>
 </td>
 </tr>
 </table>
+<h3>Details</h3>
+
+<p>mybucket &lt;-  'dmap-data-commons-oa' #
+</p>
+<p>bucket_contents &lt;- data.table::rbindlist(
+</p>
+<div class="sourceCode"><pre>get_bucket(bucket = mybucket, prefix = "EJAM"),
+
+fill = TRUE
+  
+)
+</pre></div>
+<p>bucket_contents
+</p>
+
+
 <h3>Value</h3>
 
 <p>the paths of the objects on server
@@ -1774,12 +1802,12 @@ just viewing in console the commands to be used, to test/check this</p>
 </div>
 <div class="container manual-page" id="datawrite_to_local">
 
-<a href="#datawrite_to_local" class="help-page-title"><h2>datawrite_to_local -  NOT YET WORKING for .arrow
+<a href="#datawrite_to_local" class="help-page-title"><h2>datawrite_to_local
 Write large object(s) like EJAM datasets to local disk for convenience during app/pkg development, formatted as .arrow or .rda</h2></a>
 
 <h3>Description</h3>
 
-<p>datawrite_to_local -  NOT YET WORKING for .arrow
+<p>datawrite_to_local
 Write large object(s) like EJAM datasets to local disk for convenience during app/pkg development, formatted as .arrow or .rda
 </p>
 
@@ -1788,10 +1816,11 @@ Write large object(s) like EJAM datasets to local disk for convenience during ap
 
 <pre class="language-r"><code class="language-r">datawrite_to_local<span class="token punctuation">(</span>
   varnames <span class="token operator">=</span> c<span class="token punctuation">(</span><span class="token string">"bgid2fips"</span><span class="token punctuation">,</span> <span class="token string">"blockid2fips"</span><span class="token punctuation">,</span> <span class="token string">"blockpoints"</span><span class="token punctuation">,</span> <span class="token string">"blockwts"</span><span class="token punctuation">,</span> <span class="token string">"quaddata"</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  ext <span class="token operator">=</span> c<span class="token punctuation">(</span><span class="token string">".arrow"</span><span class="token punctuation">,</span> <span class="token string">".rda"</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  ext <span class="token operator">=</span> c<span class="token punctuation">(</span><span class="token string">".arrow"</span><span class="token punctuation">,</span> <span class="token string">".rda"</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
   folder_local_source <span class="token operator">=</span> <span class="token string">"~/../Downloads"</span><span class="token punctuation">,</span>
-  fun <span class="token operator">=</span> c<span class="token punctuation">(</span><span class="token string">"arrow::write_ipc_file"</span><span class="token punctuation">,</span> <span class="token string">"save"</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-  justchecking <span class="token operator">=</span> <span class="token boolean">TRUE</span>
+  fun <span class="token operator">=</span> c<span class="token punctuation">(</span><span class="token string">"arrow::write_ipc_file"</span><span class="token punctuation">,</span> <span class="token string">"save"</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  justchecking <span class="token operator">=</span> F<span class="token punctuation">,</span>
+  overwrite <span class="token operator">=</span> <span class="token boolean">FALSE</span>
 <span class="token punctuation">)</span></code></pre>
 
 
@@ -1830,6 +1859,12 @@ but fun is ignored if ext=".rda" since it then just uses save()</p>
 just seeing in console info or the commands to be used, to test/check this</p>
 </td>
 </tr>
+<tr style="vertical-align: top;">
+<td><code>overwrite</code></td>
+<td>
+<p>Set to TRUE to overwrite file if it exists already, with new copy.</p>
+</td>
+</tr>
 </table>
 <h3>Value</h3>
 
@@ -1841,6 +1876,11 @@ just seeing in console info or the commands to be used, to test/check this</p>
 
 <p><code><a href="#datawrite_to_aws">datawrite_to_aws()</a></code>  <code><a href="#datawrite_to_local">datawrite_to_local()</a></code> <code><a href="#dataload_from_local">dataload_from_local()</a></code> <code><a href="#dataload_from_aws">dataload_from_aws()</a></code>
 </p>
+
+
+<h3>Examples</h3>
+
+<pre class="language-r"><code class="language-r"><span class="token comment"># datawrite_to_local(ext = ".arrow", folder_local_source = ".", justchecking = F, overwrite = T)</span></code></pre>
 
 <hr>
 </div>
@@ -2648,7 +2688,7 @@ and make sure they are on search path, for when renaming / moving functions/pack
 
 <h3>See Also</h3>
 
-<p><code><a href="#all.equal_functions">all.equal_functions()</a></code>
+<p><code><a href="#all_equal_functions">all_equal_functions()</a></code>
 </p>
 
 <hr>
@@ -3025,11 +3065,11 @@ or possibly "original" or "default" might be added as options</p>
 </div>
 <div class="container manual-page" id="ejampackages">
 
-<a href="#ejampackages" class="help-page-title"><h2>list of names of key EJAM-related R packages</h2></a>
+<a href="#ejampackages" class="help-page-title"><h2>ejampackages (DATA) list of names of key EJAM-related R packages</h2></a>
 
 <h3>Description</h3>
 
-<p>list of names of key EJAM-related R packages
+<p>ejampackages (DATA) list of names of key EJAM-related R packages
 </p>
 
 <hr>
@@ -3523,7 +3563,7 @@ from output of ejamit() or doaggregate()</p>
 </div>
 <div class="container manual-page" id="frs">
 
-<a href="#frs" class="help-page-title"><h2>EPA Facility Registry Service table of regulated sites</h2></a>
+<a href="#frs" class="help-page-title"><h2>frs (DATA) EPA Facility Registry Service table of regulated sites</h2></a>
 
 <h3>Description</h3>
 
@@ -3582,7 +3622,7 @@ frs_by_sic rows:           1,081,742
 </div>
 <div class="container manual-page" id="frs_by_mact">
 
-<a href="#frs_by_mact" class="help-page-title"><h2>MACT NESHAP subpart(s) that each EPA-regulated site is subject to</h2></a>
+<a href="#frs_by_mact" class="help-page-title"><h2>frs_by_mact (DATA) MACT NESHAP subpart(s) that each EPA-regulated site is subject to</h2></a>
 
 <h3>Description</h3>
 
@@ -3634,7 +3674,7 @@ so it has multiple rows for one site if the site is covered by multiple subparts
 </div>
 <div class="container manual-page" id="frs_by_naics">
 
-<a href="#frs_by_naics" class="help-page-title"><h2>data.table of NAICS code(s) for each EPA-regulated site in Facility Registry Service</h2></a>
+<a href="#frs_by_naics" class="help-page-title"><h2>frs_by_naics (DATA) data.table of NAICS code(s) for each EPA-regulated site in Facility Registry Service</h2></a>
 
 <h3>Description</h3>
 
@@ -3709,7 +3749,7 @@ so multiple rows for one site if it is in multiple NAICS.
 </div>
 <div class="container manual-page" id="frs_by_programid">
 
-<a href="#frs_by_programid" class="help-page-title"><h2>data.table of Program System ID code(s) for each EPA-regulated site in
+<a href="#frs_by_programid" class="help-page-title"><h2>frs_by_programid (DATA) data.table of Program System ID code(s) for each EPA-regulated site in
 the Facility Registry Service</h2></a>
 
 <h3>Description</h3>
@@ -3746,12 +3786,58 @@ nn=sample(1:nrow(frs_by_programid), 1); frs_by_programid[REGISTRY_ID == frs_by_p
 </div>
 <div class="container manual-page" id="frs_by_sic">
 
-<a href="#frs_by_sic" class="help-page-title"><h2>data.table of SIC code(s) for each EPA-regulated site in Facility Registry Service</h2></a>
+<a href="#frs_by_sic" class="help-page-title"><h2>frs_by_sic (DATA) data.table of SIC code(s) for each EPA-regulated site in Facility Registry Service</h2></a>
 
 <h3>Description</h3>
 
 <p>This is the format with one row per site-SIC pair,
 so multiple rows for one site if it is in multiple SIC.
+</p>
+
+<hr>
+</div>
+<div class="container manual-page" id="frs_clean">
+
+<a href="#frs_clean" class="help-page-title"><h2>frs_clean - utility to clean Facility Registry Service dataset when updating it
+This is just a helper function used to create the dataset saved as data for use in EJAM</h2></a>
+
+<h3>Description</h3>
+
+<p>frs_clean - utility to clean Facility Registry Service dataset when updating it
+This is just a helper function used to create the dataset saved as data for use in EJAM
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">frs_clean<span class="token punctuation">(</span>
+  frs<span class="token punctuation">,</span>
+  usefulcolumns <span class="token operator">=</span> c<span class="token punctuation">(</span><span class="token string">"LATITUDE83"</span><span class="token punctuation">,</span> <span class="token string">"LONGITUDE83"</span><span class="token punctuation">,</span> <span class="token string">"REGISTRY_ID"</span><span class="token punctuation">,</span> <span class="token string">"PRIMARY_NAME"</span><span class="token punctuation">,</span>
+    <span class="token string">"NAICS_CODES"</span><span class="token punctuation">,</span> <span class="token string">"SIC_CODES"</span><span class="token punctuation">,</span> <span class="token string">"PGM_SYS_ACRNMS"</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr style="vertical-align: top;">
+<td><code>frs</code></td>
+<td>
+<p>data.table that is the output of frs_read()</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>usefulcolumns</code></td>
+<td>
+<p>optional, drops all columns except those in this vector of character colnames</p>
+</td>
+</tr>
+</table>
+<h3>Details</h3>
+
+<p>Used by frs_get()
+This renames some columns (lat, lon, NAICS are new names)
+and it drops rows lacking lat/lon location info in the LATITUDE83 or LONGITUDE83 columns
 </p>
 
 <hr>
@@ -4100,7 +4186,7 @@ VERY SLOW search within PRIMARY_NAME of facilities for matching text
 </div>
 <div class="container manual-page" id="frsprogramcodes">
 
-<a href="#frsprogramcodes" class="help-page-title"><h2>EPA programs listed in Facility Registry Service</h2></a>
+<a href="#frsprogramcodes" class="help-page-title"><h2>frsprogramcodes DATA EPA programs listed in Facility Registry Service</h2></a>
 
 <h3>Description</h3>
 
@@ -5213,11 +5299,11 @@ It is automatically created when the package is attached via the .onAttach() fun
 </div>
 <div class="container manual-page" id="high_pctiles_tied_with_min">
 
-<a href="#high_pctiles_tied_with_min" class="help-page-title"><h2>internal data used to handle cases where multiple places are tied for the lowest indicator score</h2></a>
+<a href="#high_pctiles_tied_with_min" class="help-page-title"><h2>high_pctiles_tied_with_min (DATA) internal data used to handle cases where multiple places are tied for the lowest indicator score</h2></a>
 
 <h3>Description</h3>
 
-<p>internal data used to handle cases where multiple places are tied for the lowest indicator score
+<p>high_pctiles_tied_with_min (DATA) internal data used to handle cases where multiple places are tied for the lowest indicator score
 </p>
 
 <hr>
@@ -5293,7 +5379,7 @@ See appsilon pkg shiny.info now
 </div>
 <div class="container manual-page" id="islandareas">
 
-<a href="#islandareas" class="help-page-title"><h2>islandareas table, bounds info on lat lon of US Island Areas</h2></a>
+<a href="#islandareas" class="help-page-title"><h2>islandareas (DATA) table, bounds info on lat lon of US Island Areas</h2></a>
 
 <h3>Description</h3>
 
@@ -5314,9 +5400,9 @@ They include Midway Islands, etc.
 
 <hr>
 </div>
-<div class="container manual-page" id="lat_alias-lon_alias">
+<div class="container manual-page" id="lat_alias">
 
-<a href="#lat_alias-lon_alias" class="help-page-title"><h2>Synonyms for lat and lon</h2></a>
+<a href="#lat_alias" class="help-page-title"><h2>lat_alias, lon_alias (DATA) Synonyms for lat and lon</h2></a>
 
 <h3>Description</h3>
 
@@ -6334,7 +6420,7 @@ the minimum value, in which case it reports 0 as percentile, not that large perc
 </div>
 <div class="container manual-page" id="mact_table">
 
-<a href="#mact_table" class="help-page-title"><h2>MACT NESHAP subparts (the code and the description)</h2></a>
+<a href="#mact_table" class="help-page-title"><h2>mact_table (DATA) MACT NESHAP subparts (the code and the description)</h2></a>
 
 <h3>Description</h3>
 
@@ -6581,11 +6667,11 @@ Default is some typical ones used in EJAM-related packages currently.</p>
 </div>
 <div class="container manual-page" id="NAICS">
 
-<a href="#NAICS" class="help-page-title"><h2>named list of all NAICS code numbers and industry name for each</h2></a>
+<a href="#NAICS" class="help-page-title"><h2>NAICS (DATA) named list of all NAICS code numbers and industry name for each</h2></a>
 
 <h3>Description</h3>
 
-<p>named list of all NAICS code numbers and industry name for each
+<p>NAICS (DATA) named list of all NAICS code numbers and industry name for each
 </p>
 
 
@@ -7214,7 +7300,7 @@ table(nchar(as.character(NAICS)))
 </div>
 <div class="container manual-page" id="naicstable">
 
-<a href="#naicstable" class="help-page-title"><h2>data.table of NAICS code(s) and industry names for each EPA-regulated site in Facility Registry Service
+<a href="#naicstable" class="help-page-title"><h2>naicstable (DATA) data.table of NAICS code(s) and industry names for each EPA-regulated site in Facility Registry Service
 Also has the 2,3,4,5,and 6-digit NAICS that this code falls under, where relevant for given length</h2></a>
 
 <h3>Description</h3>
@@ -8698,7 +8784,7 @@ This is the largest file used by the package, and is 168 MB as a file, for 2020 
 </div>
 <div class="container manual-page" id="regionstats">
 
-<a href="#regionstats" class="help-page-title"><h2>(obsolete) data.table of 100 percentiles and means for each EPA Region.</h2></a>
+<a href="#regionstats" class="help-page-title"><h2>regionstats (DATA) (obsolete) data.table of 100 percentiles and means for each EPA Region.</h2></a>
 
 <h3>Description</h3>
 
@@ -8878,11 +8964,11 @@ Just shows which elements are in one and only one of the sets x and y
 </div>
 <div class="container manual-page" id="SIC">
 
-<a href="#SIC" class="help-page-title"><h2>named list of all SIC code numbers and category name for each</h2></a>
+<a href="#SIC" class="help-page-title"><h2>SIC (DATA) named list of all SIC code numbers and category name for each</h2></a>
 
 <h3>Description</h3>
 
-<p>named list of all SIC code numbers and category name for each
+<p>SIC (DATA) named list of all SIC code numbers and category name for each
 </p>
 
 
@@ -9164,7 +9250,7 @@ See <code><a href="#sic_from_any">sic_from_any()</a></code> which uses this
 </div>
 <div class="container manual-page" id="sictable">
 
-<a href="#sictable" class="help-page-title"><h2>data.table of SIC code(s) and industry names for each EPA-regulated site in Facility Registry Service
+<a href="#sictable" class="help-page-title"><h2>sictable (DATA) data.table of SIC code(s) and industry names for each EPA-regulated site in Facility Registry Service
 Also has the 2,3, and 4-digit SIC that this code falls under, where relevant for given length</h2></a>
 
 <h3>Description</h3>
@@ -9454,6 +9540,8 @@ recording how long each step takes
   sitepoints <span class="token operator">=</span> <span class="token keyword">NULL</span><span class="token punctuation">,</span>
   weighting <span class="token operator">=</span> <span class="token string">"frs"</span><span class="token punctuation">,</span>
   radii <span class="token operator">=</span> c<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">3.106856</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">,</span> <span class="token number">31.06856</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token operator">:</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  avoidorphans <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
+  test_ejamit <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
   test_getblocksnearby <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span>
   test_doaggregate <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span>
   test_batch.summarize <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
@@ -9463,6 +9551,7 @@ recording how long each step takes
   honk_when_ready <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span>
   saveoutput <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
   plot <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span>
+  getblocks_diagnostics_shown <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
   <span class="token ellipsis">...</span>
 <span class="token punctuation">)</span></code></pre>
 
@@ -9497,6 +9586,19 @@ such as facilities, people, or blockgroups. see <code><a href="#testpoints_n">te
 <p>optional, one or more radius values in miles
 to use in creating circular buffers when findings residents nearby each of sitepoints.
 The default list includes one that is 5km (approx 3.1 miles)</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>avoidorphans</code></td>
+<td>
+<p>see <code><a href="#getblocksnearby">getblocksnearby()</a></code> or <code><a href="#ejamit">ejamit()</a></code> regarding this param</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>test_ejamit</code></td>
+<td>
+<p>whether to test only ejamit()
+instead of its subcomponents like getblocksnearby(), doaggregate(), etc</p>
 </td>
 </tr>
 <tr style="vertical-align: top;">
@@ -9555,6 +9657,12 @@ NOTE this slows it down though.</p>
 </td>
 </tr>
 <tr style="vertical-align: top;">
+<td><code>getblocks_diagnostics_shown</code></td>
+<td>
+<p>set TRUE to see more details on block counts etc.</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
 <td><code>...</code></td>
 <td>
 <p>passed to plotting function</p>
@@ -9594,7 +9702,7 @@ NOTE this slows it down though.</p>
 </ul>
 <h3>Value</h3>
 
-<p>EJAM results similar to as from the web app  <code><a href="#ejamit">ejamit()</a></code> and also creates a plot
+<p>EJAM results similar to as from the web app or <code><a href="#ejamit">ejamit()</a></code> and also creates a plot
 </p>
 
 
@@ -9911,7 +10019,7 @@ as many rows as elements in lat or lon
 </div>
 <div class="container manual-page" id="stateinfo">
 
-<a href="#stateinfo" class="help-page-title"><h2>data.frame of state abbreviations and state names (50+DC+PR; not AS, GU, MP, VI, UM)</h2></a>
+<a href="#stateinfo" class="help-page-title"><h2>stateinfo (DATA) data.frame of state abbreviations and state names (50+DC+PR; not AS, GU, MP, VI, UM)</h2></a>
 
 <h3>Description</h3>
 
@@ -9955,7 +10063,7 @@ statename is the State name, etc.
 </div>
 <div class="container manual-page" id="stateinfo2">
 
-<a href="#stateinfo2" class="help-page-title"><h2>data.frame of state abbreviations and state names (50+DC+PR; not AS, GU, MP, VI, UM)</h2></a>
+<a href="#stateinfo2" class="help-page-title"><h2>stateinfo2 (DATA) data.frame of state abbreviations and state names (50+DC+PR; not AS, GU, MP, VI, UM)</h2></a>
 
 <h3>Description</h3>
 
@@ -10058,7 +10166,7 @@ and optionally a column with siteid or column called n</p>
 </div>
 <div class="container manual-page" id="states_shapefile">
 
-<a href="#states_shapefile" class="help-page-title"><h2>US States boundaries 2020 shapefile from TIGER</h2></a>
+<a href="#states_shapefile" class="help-page-title"><h2>states_shapefile (DATA) US States boundaries 2020 shapefile from TIGER</h2></a>
 
 <h3>Description</h3>
 
@@ -10086,7 +10194,7 @@ which downloads the data from Census Bureau.
 </div>
 <div class="container manual-page" id="statestats">
 
-<a href="#statestats" class="help-page-title"><h2>data.frame of 100 percentiles and means for each US State and PR and DC.</h2></a>
+<a href="#statestats" class="help-page-title"><h2>statestats (DATA) data.frame of 100 percentiles and means for each US State and PR and DC.</h2></a>
 
 <h3>Description</h3>
 
@@ -10436,11 +10544,11 @@ that came up in a given case (for one cutoff).
 </div>
 <div class="container manual-page" id="test_regid">
 
-<a href="#test_regid" class="help-page-title"><h2>test data, vector of EPA FRS Registry ID numbers</h2></a>
+<a href="#test_regid" class="help-page-title"><h2>test_regid (DATA) test data, vector of EPA FRS Registry ID numbers</h2></a>
 
 <h3>Description</h3>
 
-<p>test data, vector of EPA FRS Registry ID numbers
+<p>test_regid (DATA) test data, vector of EPA FRS Registry ID numbers
 </p>
 
 
@@ -10932,7 +11040,7 @@ list(results_bysite = results_bysite, results_overall = results_overall, newcoln
 
 <h3>See Also</h3>
 
-<p><code><a>url_ejscreen_report()</a></code> <code><a>url_ejscreenmap()</a></code> <code><a>url_echo_facility_webpage()</a></code>
+<p>url_ejscreen_report() url_ejscreenmap() url_echo_facility_webpage() from EJAMejscreenapi package
 </p>
 
 <hr>
@@ -11424,7 +11532,7 @@ See (https://naics.com) for more information on NAICS codes
 </div>
 <div class="container manual-page" id="usastats">
 
-<a href="#usastats" class="help-page-title"><h2>data.frame of 100 percentiles and means</h2></a>
+<a href="#usastats" class="help-page-title"><h2>usastats (DATA) data.frame of 100 percentiles and means</h2></a>
 
 <h3>Description</h3>
 

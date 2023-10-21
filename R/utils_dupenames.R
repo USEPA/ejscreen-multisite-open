@@ -28,7 +28,7 @@ unshared <- function(x,y) {setdiff(union(x,y),intersect(x,y))}
 #' @param compare.functions If TRUE, sends to console inf about whether body and formals
 #'   of the functions are identical between functions of same name from different packages.
 #'   Only checks the first 2 copies, not any additional ones (where 3+ pkgs use same name)
-#' @seealso [all.equal_functions()]
+#' @seealso [all_equal_functions()]
 #' @return data.frame with columns Package, Object name (or NA if no dupes)
 #' @export
 #'
@@ -50,7 +50,7 @@ dupenames <- function(pkg = EJAM::ejampackages, sortbypkg=FALSE, compare.functio
     
     findPkgAll <- function(pkg) { # finds path to each installed package of those specified
       unlist(lapply(.libPaths(), function(lib)
-        find.package(pkg, lib, quiet=TRUE, verbose=FALSE)))
+        find.package(pkg, lib, quiet = TRUE, verbose = FALSE)))
     }
     installed.packages.among <- function(pkg) {
       fff <- findPkgAll(pkg) # ok if a pkg is not installed. finds path to installed not source location
@@ -89,11 +89,11 @@ dupenames <- function(pkg = EJAM::ejampackages, sortbypkg=FALSE, compare.functio
   
   if (compare.functions) {
     ddd$problem = "ok"
-    #  use all.equal_functions() here to compare all pairs (but ignores more 2d copy of a function, so misses check of trios)
+    #  use all_equal_functions() here to compare all pairs (but ignores more 2d copy of a function, so misses check of trios)
     #  to see if identical names are actually identical functions 
     # ddd <- dupenames()
     for (var in unique(ddd$variable)) {
-      ok <- all.equal_functions(
+      ok <- all_equal_functions(
         fun = var,
         package1 = ddd$package[ddd$variable == var][1],
         package2 = ddd$package[ddd$variable == var][2]
@@ -120,7 +120,7 @@ dupenames <- function(pkg = EJAM::ejampackages, sortbypkg=FALSE, compare.functio
 #' @seealso [dupenames()] [all.equal.function()]
 #' @export
 #'
-all.equal_functions <- function(fun="latlon_infer", package1="EJAM", package2="EJAMejscreenapi") {
+all_equal_functions <- function(fun="latlon_infer", package1="EJAM", package2="EJAMejscreenapi") {
   
   # not the same as base R all.equal.function() see  ?all.equal.function
   
@@ -133,12 +133,12 @@ all.equal_functions <- function(fun="latlon_infer", package1="EJAM", package2="E
   
   # 2) ### error when checking a package that is loaded but not attached. 
   # eg doing this:
-  # all.equal_functions("get.distance.all", "proxistat", "EJAM") # something odd about proxistat pkg.
+  # all_equal_functions("get.distance.all", "proxistat", "EJAM") # something odd about proxistat pkg.
   ### or 
   # dupenames(c("proxistat", "EJAMejscreenapi"), compare.functions = T)
-  # Error in all.equal_functions(fun = var, package1 = ddd$package[ddd$variable ==  : 
+  # Error in all_equal_functions(fun = var, package1 = ddd$package[ddd$variable ==  : 
   #                                                                  get.distances.all not found in proxistat
-  #                                                                Called from: all.equal_functions(fun = var, package1 = ddd$package[ddd$variable == 
+  #                                                                Called from: all_equal_functions(fun = var, package1 = ddd$package[ddd$variable == 
   
   if (!(is.character(fun) & is.character(package1) & is.character(package2))) {
     stop("all params must be quoted ")
