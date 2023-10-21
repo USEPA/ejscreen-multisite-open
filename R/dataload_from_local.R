@@ -1,5 +1,10 @@
 #' dataload_from_local
 #' utility for R analysts/developers to store large block data locally instead of redownloading from AWS
+#' @details  
+#'   rm(bgid2fips, blockid2fips, blockpoints, blockwts, quaddata)
+#'   
+#'   dataload_from_local(folder_local_source = '.')
+#'   
 #' @param varnames use defaults
 #' @param ext  use defaults
 #' @param fun  use defaults
@@ -11,8 +16,8 @@
 #' @export
 #'
 dataload_from_local <- function(varnames= c('bgid2fips', 'blockid2fips', 'blockpoints', 'blockwts', 'quaddata' ),
-                                ext=c(".arrow", ".rda")[2],
-                                fun=c("arrow::read_ipc_file", "load")[2],  
+                                ext=c(".arrow", ".rda")[1],
+                                fun=c("arrow::read_ipc_file", "load")[1],
                                 envir=globalenv(),  # should it be parent or global or package EJAM envt ??
                                 folder_local_source = "~/../Downloads", 
                                 justchecking = FALSE, 
@@ -20,6 +25,8 @@ dataload_from_local <- function(varnames= c('bgid2fips', 'blockid2fips', 'blockp
   if (interactive()) {
     if (!is.character(fun)) {stop('must specify function in fun parameter as a quoted character string')}
     if (length(ext) > 1)    {stop('must specify only one file extension for all the files')}
+    if (ext == "arrow") ext <- ".arrow"
+    if (ext == "rda")   ext <- ".rda"
     if (ext == '.arrow' & missing(fun)) {fun <- "arrow::read_ipc_file"}
     
     fnames     <- paste0(varnames, ext) # varnames are like bgid2fips, ext is .rda, fnames are like bgid2fips.rda
@@ -38,7 +45,7 @@ dataload_from_local <- function(varnames= c('bgid2fips', 'blockid2fips', 'blockp
             cat("done.\n")
             next
           } else {
-            assign(varnames[i], arrow::read_ipc_file(file = localpaths[i]))
+            assign(varnames[i], arrow::read_ipc_file(file = localpaths[i]), envir = envir)
           }
         } else {
           cat(  varnames[i],spacing[i],

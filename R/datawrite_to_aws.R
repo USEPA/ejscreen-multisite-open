@@ -1,5 +1,18 @@
 #' datawrite_to_aws -  NOT YET WORKING - AccessDenied 
 #' Write object(s) like a dataset to DMAP Data Commons, formatted as .arrow or .rda 
+#' @details 
+#'   mybucket <-  'dmap-data-commons-oa' #
+#'   
+#'   bucket_contents <- data.table::rbindlist(
+#'   
+#'     get_bucket(bucket = mybucket, prefix = "EJAM"),
+#'     
+#'     fill = TRUE
+#'       
+#'     )
+#'       
+#'  bucket_contents
+#'       
 #' @param varnames vector of object names to upload
 #' @param ext file .extension appropriate to the format and fun, like ".rda" or ".arrow"
 #' @param fun function to use, but as a character string, like "arrow::write_ipc_file"
@@ -29,6 +42,8 @@ datawrite_to_aws <- function(varnames= c('bgid2fips',   'blockid2fips', 'blockpo
   
   if (!is.character(fun)) {stop('must specify function in fun parameter as a quoted character string')}
   if (length(ext) > 1) {stop('must specify only one file extension for all the files')}
+  if (ext == 'arrow') ext <- ".arrow"
+  if (ext == 'rda')   ext <- '.rda'
   if (ext == '.arrow' & missing(fun)) {fun <- "arrow::write_ipc_file"} 
   
   fnames <- paste0(varnames, ext)
