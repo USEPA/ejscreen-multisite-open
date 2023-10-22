@@ -22,45 +22,45 @@ dataload_from_local <- function(varnames= c('bgid2fips', 'blockid2fips', 'blockp
                                 folder_local_source = "~/../Downloads", 
                                 justchecking = FALSE, 
                                 testing=FALSE) {
-  if (interactive()) {
-    if (!is.character(fun)) {stop('must specify function in fun parameter as a quoted character string')}
-    if (length(ext) > 1)    {stop('must specify only one file extension for all the files')}
-    if (ext == "arrow") ext <- ".arrow"
-    if (ext == "rda")   ext <- ".rda"
-    if (ext == '.arrow' & missing(fun)) {fun <- "arrow::read_ipc_file"}
-    
-    fnames     <- paste0(varnames, ext) # varnames are like bgid2fips, ext is .rda, fnames are like bgid2fips.rda
-    # objectnames <- paste0(mybucketfolder,      '/', fnames) # EJAM/bgid2fips.rda 
-    localpaths  <- paste0(folder_local_source, '/', fnames)
-    # make output in console easier to read:  
-    spacing <- sapply(1:length(varnames), function(x) paste0(rep(" ", max(nchar(varnames)) - nchar(varnames[x])), collapse = ''))
-    
-    for (i in 1:length(fnames)) {
-      if (!exists(varnames[i], envir = envir) ) { # not already in memory
-        if (file.exists(localpaths[i] )) { # found on local drive
-          if (ext == '.rda') {
-            cat( varnames[i], spacing[i],
-                 'is being loaded from', localpaths[i],'...')
-            load(localpaths[i], envir = envir)
-            cat("done.\n")
-            next
-          } else {
-            assign(varnames[i], arrow::read_ipc_file(file = localpaths[i]), envir = envir)
-          }
-        } else {
-          cat(  varnames[i],spacing[i],
-                'not found at', localpaths[i], '\n')
+  # if (interactive()) {
+  if (!is.character(fun)) {stop('must specify function in fun parameter as a quoted character string')}
+  if (length(ext) > 1)    {stop('must specify only one file extension for all the files')}
+  if (ext == "arrow") ext <- ".arrow"
+  if (ext == "rda")   ext <- ".rda"
+  if (ext == '.arrow' & missing(fun)) {fun <- "arrow::read_ipc_file"}
+  
+  fnames     <- paste0(varnames, ext) # varnames are like bgid2fips, ext is .rda, fnames are like bgid2fips.rda
+  # objectnames <- paste0(mybucketfolder,      '/', fnames) # EJAM/bgid2fips.rda 
+  localpaths  <- paste0(folder_local_source, '/', fnames)
+  # make output in console easier to read:  
+  spacing <- sapply(1:length(varnames), function(x) paste0(rep(" ", max(nchar(varnames)) - nchar(varnames[x])), collapse = ''))
+  
+  for (i in 1:length(fnames)) {
+    if (!exists(varnames[i], envir = envir) ) { # not already in memory
+      if (file.exists(localpaths[i] )) { # found on local drive
+        if (ext == '.rda') {
+          cat( varnames[i], spacing[i],
+               'is being loaded from', localpaths[i],'...')
+          load(localpaths[i], envir = envir)
+          cat("done.\n")
           next
+        } else {
+          assign(varnames[i], arrow::read_ipc_file(file = localpaths[i]), envir = envir)
         }
       } else {
-        # cat( varnames[i],
-        #      'is already in memory, not loaded again\n') # redundant with similar lines in dataload_from_aws()
+        cat(  varnames[i],spacing[i],
+              'not found at', localpaths[i], '\n')
         next
       }
+    } else {
+      # cat( varnames[i],
+      #      'is already in memory, not loaded again\n') # redundant with similar lines in dataload_from_aws()
+      next
     }
-    cat("\n")
-    return(localpaths)
-  } else {
-    message("Must be in interactive mode not on server to load from local disk using dataload_from_local()")
   }
+  cat("\n")
+  return(localpaths)
+  # } else {
+  # message("Must be in interactive mode not on server to load from local disk using dataload_from_local()")
+  # }
 }
