@@ -2,7 +2,7 @@
 % Please edit documentation in R/getblocks_diagnostics.R
 \name{getblocks_diagnostics}
 \alias{getblocks_diagnostics}
-\title{getblocks_diagnostics - Get summary stats on counts of blocks (unique vs doublecounted) near sites}
+\title{getblocks_diagnostics - Lots of stats about # of blocks, # of sites, etc.}
 \usage{
 getblocks_diagnostics(x, detailed = FALSE, see_plot = FALSE)
 }
@@ -17,7 +17,7 @@ getblocks_diagnostics(x, detailed = FALSE, see_plot = FALSE)
 A list of stats
 }
 \description{
-getblocks_diagnostics - Get summary stats on counts of blocks (unique vs doublecounted) near sites
+getblocks_diagnostics - Lots of stats about # of blocks, # of sites, etc.
 }
 \examples{
  getblocks_diagnostics(testoutput_getblocksnearby_10pts_1miles)

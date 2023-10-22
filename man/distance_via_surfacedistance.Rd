@@ -2,7 +2,8 @@
 % Please edit documentation in R/distance_via_surfacedistance.R
 \name{distance_via_surfacedistance}
 \alias{distance_via_surfacedistance}
-\title{distance_via_surfacedistance - convert surface distance to actual distance}
+\title{distance_via_surfacedistance
+Convert surface distance to actual distance}
 \usage{
 distance_via_surfacedistance(x)
 }

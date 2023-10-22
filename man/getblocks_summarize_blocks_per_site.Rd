@@ -2,7 +2,7 @@
 % Please edit documentation in R/getblocks_diagnostics.R
 \name{getblocks_summarize_blocks_per_site}
 \alias{getblocks_summarize_blocks_per_site}
-\title{getblocks_summarize_blocks_per_site - Get summary stats on counts of blocks near various sites}
+\title{getblocks_summarize_blocks_per_site - how many blocks are near the sites (pop density affects accuracy)}
 \usage{
 getblocks_summarize_blocks_per_site(x, varname = "siteid")
 }
@@ -15,8 +15,7 @@ getblocks_summarize_blocks_per_site(x, varname = "siteid")
 invisibly, a list of stats
 }
 \description{
-Tells you # of blocks near avg site,
-how many sites have only 1 block nearby, or have <30 nearby, etc.
+# of blocks near avg site, how many sites have only 1 or <30 blocks nearby, etc.
 }
 \seealso{
 \code{\link[=getblocks_diagnostics]{getblocks_diagnostics()}}
