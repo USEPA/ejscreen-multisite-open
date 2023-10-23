@@ -1146,7 +1146,7 @@ app_server <- function(input, output, session) {
         #countcols = 0, popmeancols = 0, calculatedcols = 0, # *** if using defaults of doaggregate()
         subgroups_type = input$subgroups_type, # nh, alone, or both # or use default of doaggregate() based on whatever subgroups_d etc are now ***   
         testing = input$testing, 
-        include_ejindexes   = input$include_ejindexes, 
+        include_ejindexes   = (input$include_ejindexes == "TRUE"), # it was character not logical because of how input UI done 
         need_proximityscore = input$need_proximityscore, 
         calculate_ratios = input$calculate_ratios, 
         ## pass progress bar function as argument
