@@ -71,7 +71,7 @@ dataload_from_aws <- function(varnames= c('bgid2fips', 'blockid2fips', 'blockpoi
   if (length(ext) > 1) {stop('must specify only one file extension for all the files')}
   if (ext == 'arrow') ext <- ".arrow"
   if (ext == 'rda')   ext <- '.rda'
-  if (ext == '.arrow' & missing(fun)) {fun <- "arrow::read_ipc_file"}
+  if ((ext == '.arrow') & missing(fun)) {fun <- "arrow::read_ipc_file"}
   
   fnames     <- paste0(varnames, ext) # varnames are like bgid2fips, ext is .rda, fnames are like bgid2fips.rda
   objectnames <- paste0(mybucketfolder,      '/', fnames) # EJAM/bgid2fips.rda 
@@ -99,7 +99,7 @@ dataload_from_aws <- function(varnames= c('bgid2fips', 'blockid2fips', 'blockpoi
   
   for (i in 1:length(fnames)) {
     
-    if (!justchecking & ext == ".rda") {
+    if (!justchecking & (ext == ".rda")) {
       
       if (!exists(varnames[i], envir = envir) ) {  # if not already in memory/ global envt, get from AWS 
         cat('loading', varnames[i],spacing[i],  'from', objectnames[i], '\n')
@@ -115,7 +115,7 @@ dataload_from_aws <- function(varnames= c('bgid2fips', 'blockid2fips', 'blockpoi
       }
     }
     
-    if (justchecking & ext == ".rda") {
+    if (justchecking & (ext == ".rda")) {
       # TO SEE COMMAND / CHECK THIS IS WORKING
       # cat('Can download', varnames[i], 'from', objectnames[i], '\n')
       cat(paste0(  'aws.s3::s3load(object = "', objectnames[i],'", ', spacing[i], 'bucket = "', mybucket,'", envir = globalenv()', ')' ), "\n")

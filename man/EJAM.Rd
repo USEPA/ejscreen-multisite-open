@@ -167,7 +167,7 @@ Needs to be updated each time EJScreen is updated.
 \item \strong{\link{bgej}.rda} a data.table like blockgroupstats but for the EJ Index raw scores.
 \item \strong{\link{usastats}.rda} and \strong{\link{statestats}.rda}  data.table lookup of 100 percentiles and means
 (for each indicator in blockgroupstats, and perhaps bgej) in each zone (USA, or a state or DC, PR).
-Need to update each time blockgroupstats is updated. Taken from EJScreen data or ejscreen package file lookupUSA & lookupStates
+Need to update each time blockgroupstats is updated. Taken from EJScreen data or ejscreen package file lookupUSA and lookupStates
 \item \strong{blockwts.rda} see \code{\link[=data_load_from_aws]{data_load_from_aws()}}
 Required by \code{\link[=doaggregate]{doaggregate()}}. A data.table of 6-8m rows
 \itemize{

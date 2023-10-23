@@ -1257,7 +1257,12 @@ app_ui  <- function(request) {
                 #   containing app should pass the input value wrapped in a reactive expression (i.e. reactive(...)):
                 #   myModule("myModule1", reactive(input$checkbox1))
                 
-                uiOutput("mod_ejscreenapi_ui_TO_SHOW_IN_APP_UI")
+                mod_ejscreenapi_ui("x2", 
+                                   
+                                   simpleradius_default_for_ui = 2
+                )
+                
+                # uiOutput("mod_ejscreenapi_ui_TO_SHOW_IN_APP_UI")  # this approach would use the module UI from the outer app server, not here
                 # mod_ejscreenapi_ui_test("x1")
                 
        ),
@@ -1354,8 +1359,84 @@ app_ui  <- function(request) {
                              value = default_max_miles,
                              max        = maxmax_miles),
                 
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
                 ######################################################## # 
-                ##  ------------------------ Options in calculations & what stats to output ## ##
+                
+                ##  ------------------------ Options in calculations and what stats to output ## ##
+                
+                ### calculate and/or include in downloaded outputs
+                
+                checkboxInput('calculate_ratios',
+                              label = "Results in Excel should include ratios to US and State averages",
+                              value = default_calculate_ratios),
+                checkboxInput('include_averages',
+                              label = "Results should include US and State Averages - *** not implemented yet", 
+                              value = default_include_averages),
+                checkboxInput('include_extraindicators',
+                              label = 'Results should include extra indicators from Community Report - *** not implemented yet',
+                              value = default_include_extraindicators),
+                ######################################################## # 
+                
+                ## >Options for viewing results  ####
+                
+                textInput('prefix_filenames', label = "Prefix to use in default file names when downloading [***NOT implemented yet]", value = ""),
+                
+                 ### ------------------------ map colors, weights, opacity ####
+                ### in ejscreenapi:
+                numericInput(inputId = "circleweight_in", label = "weight of circles in maps", value = default_circleweight),
+
+                # opacitymin   <- 0 
+                # opacitymax   <- 0.5
+                # opacitystep  <- 0.025
+                # opacitystart <- 0.5
+                # opacityratio <- 2 / 5
+                # base_color_default      <- "blue"  ;
+                # cluster_color_default   <- "red"   ;
+                # highlight_color_default <- 'orange';        
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                ######################################################## # 
+                
+                ### Excel formatting options   --------------------- #
+                
+                
+                # heatmap column names
+                
+                
+                # heatmap cutoffs for bins
+                
+                
+                # heatmap colors for bins
+                
+                
+                
+                checkboxInput("ok2plot", 
+                              label = "OK to try to plot graphics and include in Excel download",
+                              value = default_ok2plot),
+                
+                ######################################## # 
+                
                 
                 ###  ------------------------ in getblocksnearby()  ------------- #
                 
@@ -1389,23 +1470,7 @@ app_ui  <- function(request) {
                                     label = "Need EJ Indexes",
                                     choices = list(Yes = TRUE, No = FALSE ), 
                                     selected = default_include_ejindexes),
-                
-                # calculate and/or include in downloaded outputs
-                
-                checkboxInput('calculate_ratios',
-                              label = "Results in Excel should include ratios to US and State averages",
-                              value = default_calculate_ratios),
-                checkboxInput('include_averages',
-                              label = "Results should include US and State Averages - *** not implemented yet", 
-                              value = default_include_averages),
-                checkboxInput('include_extraindicators',
-                              label = 'Results should include extra indicators from Community Report - *** not implemented yet',
-                              value = default_include_extraindicators),
-                
-                checkboxInput("ok2plot", 
-                              label = "OK to try to plot graphics and include in Excel download",
-                              value = default_ok2plot),
-                
+                 
                 ### Threshold comparisons options --------------------- #
                 
                 ## input: Name for 1st set of comparisons - where the table counts which scores are above certain cutoffs?
@@ -1432,12 +1497,9 @@ app_ui  <- function(request) {
                              label = 'Threshold value(s) for 2nd set of comparisons (e.g. %ile 1-100):', 
                              value = threshold.default['comp2']
                 ),
-                
                 ######################################################## # 
-                ##  ------------------------ Options in viewing results ## ##
-                
-                textInput('prefix_filenames', label = "Prefix to use in default file names when downloading [***NOT implemented yet]", value = ""),
-                
+                ######################################################## # 
+
                 ### Short report options --------------------- #
                 
                 shiny::textInput("standard_analysis_title",
@@ -1453,18 +1515,6 @@ app_ui  <- function(request) {
                 ## _radio button on format of short report  
                 #                  DISABLED UNTIL PDF KNITTING IS DEBUGGED
                 radioButtons("format1pager", "Format", choices = c(html = "html", html = "pdf"), inline = TRUE),
-                
-                
-                ### Excel formatting options   --------------------- #
-                
-                
-                # heatmap column names
-                
-                
-                # heatmap cutoffs for bins
-                
-                
-                # heatmap colors for bins
                 
                 
                 

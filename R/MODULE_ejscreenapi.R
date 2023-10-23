@@ -9,10 +9,10 @@ if (testing_ejscreenapi_module) {
   # or after installing and loading EJAM to have these functions (but not exported)
   # source this file first if not already loaded along with EJAM package
   
-  # library( ## shiny); library( ## magrittr); library( ## leaflet)  # must attach all of those manually for this to work unless EJAM attached already?
+  # library(   shiny); library(   magrittr); library(   leaflet)  # must attach all of those manually for this to work unless EJAM attached already?
 
-  # library( ## EJAMejscreenapi) 
-  source(system.file("global.R", package = "EJAMejscreenapi"))
+  # library( ## EJAMejscreenapi)
+    source(system.file("global.R", package = "EJAMejscreenapi"))
   
   # library( ## EJAM) # for testpoints_10, e.g., BUT THAT WOULD REPLACE AN UPDATED MODULE BELOW IF NOT ALREADY REBUILT/RELOADED WITH UPDATE
   
@@ -29,11 +29,17 @@ if (testing_ejscreenapi_module) {
           # verbatimTextOutput("testinfo_radius"),
           # shiny::textOutput("testinfo2"),
  # EJAM:::mod_ejscreenapi_ui("TESTID", simpleradius_default_for_ui = 2),
-          mod_ejscreenapi_ui("TESTID", simpleradius_default_for_ui = 2),
+ 
+          mod_ejscreenapi_ui("TESTID", 
+                             
+                             simpleradius_default_for_ui = 2
+                             ),
           br()
         ),
         tabPanel(
           title = "results in overall app", br(),
+          
+          h3("you could show them here"),
           ## redundant since module already shows it, but here as example of module returning a table.
           ##  module server function returns a table to overall server/app, which itself can then use/display that table. 
           # DT::dataTableOutput("results"),
@@ -44,12 +50,15 @@ if (testing_ejscreenapi_module) {
     }
   ######################### #
   TEST_SERVER <- function(input, output, session) {
+    
   # x <- EJAM:::mod_ejscreenapi_server(
     x <-        mod_ejscreenapi_server(
-      "TESTID", 
-      default_points_shown_at_startup_react = reactive(testpoints_5[1:2,]), 
-      use_ejscreenit = use_ejscreenit_tf
+                  "TESTID", 
+                  
+                  default_points_shown_at_startup_react = reactive(testpoints_5[1:2,]), 
+                  use_ejscreenit = use_ejscreenit_tf
     )
+    
     # output$testinfo1 <- renderPrint( ("info can go here "))
     # output$testinfo_radius <- renderPrint(paste0("Radius is ", x()$radius.miles, " miles"))
     # output$testinfo2 <- renderText(cat("x names:  ", paste0(names(x()), collapse = ", "), "\n"))
@@ -113,8 +122,9 @@ if (testing_ejscreenapi_module) {
 #' @importFrom shiny NS tagList 
 #' @import leaflet
 mod_ejscreenapi_ui <- function(id, 
-                               simpleradius_default_for_ui = 1, 
-                               default_radius = 1
+                               simpleradius_default_for_ui = 1 #,
+                               # default_points_shown_at_startup_react = reactive(1),
+                               # default_radius = 1
                                # default_radius_react = reactive(1)
                                ) {
   ns <- NS(id)
@@ -144,7 +154,10 @@ mod_ejscreenapi_ui <- function(id,
                           ## >>>>>> RADIUS ####
                           
                           # SIMPLIFIED ENTRY OF RADIUS UNTIL MODULE VERSION OF SLIDE VS TEXTBOX IS FIXED ***
-                           shiny::numericInput(ns("SIMPLERADIUS"), 'Radius in miles', value = simpleradius_default_for_ui, min = 0.2, max = 10, step = 0.1),
+                           shiny::numericInput(ns("SIMPLERADIUS"), 'Radius in miles', 
+                                               # value = default_radius_react(),
+                                               value = simpleradius_default_for_ui,
+                                               min = 0.2, max = 10, step = 0.1),
                           # shiny::radioButtons(ns("slider_vs_text_radius"),  label = NULL, choices = list(`Type in radius` = "type_in", `Use slider` = "use_slider"), inline = T), #  
                           # 
                           # shiny::conditionalPanel(
@@ -230,23 +243,36 @@ mod_ejscreenapi_ui <- function(id,
       #   shiny::plotOutput(ns('plot1out')),
       #   tags$br()
       # )  ,
-      
+      ######################################################## # 
       # --------------------- ADVANCED settings tab--------------------- ##########
+      ######################################################## # 
       
-      shiny::tabPanel(
-        
-        " ", # semi-hidden tab - if you click on the empty space you can open this tab
+      shiny::tabPanel(title =  " ", # semi-hidden tab - if you click on the empty space you can open this tab
         
         h3("Advanced settings & experimental features for EJScreen API tool - Not all of these are implemented or tested!"),
+        
+        # SET DEFAULTS / OPTIONS  
+        
+        # * Each time a user session is started, the application-level option set is duplicated, for that session. 
+        # * If the options are set from inside the server function, then they will be scoped to the session.
+        
+        ######################################################## # 
+        ##  ------------------------ Options in general & Testing ## ## 
+
+        # checkboxInput(ns('print_uploaded_points_to_log'), label = "Print each new uploaded lat lon table full contents to server log", value = T),
+        
+        ######################################################## # 
+        ## Options in site point uploads, radius  ####
+        
+        ### ------------------------ limits on # of points ####
+        
+        
+        
         
         numericInput(ns('max_pts_upload'), label = "Cap on number of points one can UPLOAD, additional ones in uploaded table get dropped entirely", 
                      min = 1000,  step = 500,
                      value = default_max_pts_upload, 
                      max =        maxmax_pts_upload), 
-        numericInput(ns('max_pts_run'), label = "Cap on number of points one can request RESULTS for in one batch", 
-                     min = 1000,  step = 100,
-                     value = default_max_pts_run,  
-                     max =        maxmax_pts_run),
         numericInput(ns('max_pts_map'), label = "Cap on number of points one can MAP", 
                      min = 500,  step = 100,
                      value = default_max_pts_map,  
@@ -255,31 +281,101 @@ mod_ejscreenapi_ui <- function(id,
                      min = 100, step = 100,
                      value = default_max_pts_showtable, 
                      max =        maxmax_pts_showtable),
-        ## >>> RADIUS INITIAL VALUE ####
+        numericInput(ns('max_pts_run'), label = "Cap on number of points one can request RESULTS for in one batch", 
+                     min = 1000,  step = 100,
+                     value = default_max_pts_run,  
+                     max =        maxmax_pts_run),
+        
+        
+        
+        ### ------------------------ Options for Radius  #####
+        
         numericInput(ns('default_miles'), label = "Default miles radius",  # this will get ignored here probably, and just set by reactive passed to module
                      min = 0.25, 
-                     
-                     value = default_radius,  # default_radius_react(),  # default_radius_react() to be used here would need to be passed to UI of module from outer app !
-                     # value =    default_default_miles, # default_default_miles was set in module-specific global.R   
-                     
+                     value = default_default_miles, # value =    1, # default_default_miles was set in module-specific global.R   
+                     #   default_radius_react(),  # default_radius_react() to be used here would need to be passed to UI of module from outer app !
                      max   =     max_default_miles),
         numericInput(ns('max_miles'), label = "Maximum radius in miles",
                      value = default_max_miles,
                      max        = maxmax_miles),
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        ######################################################## # 
+        
+        ##  ------------------------ Options in calculations & what stats to output ## ##
+    
+        ### calculate and/or include in downloaded outputs
         
         checkboxInput(ns('include_ratios'),
                       label = "Results should include ratios to US and State averages",
                       value = default_calculate_ratios),
         checkboxInput(ns('include_averages'),
                       label = "Results should include US and State Averages - not implemented yet", 
-                      value = TRUE),
+                      value = default_include_averages),
         checkboxInput(ns('include_extraindicators'),
                       label = 'Results should include extra indicators from Community Report - not implemented yet',
-                      value = TRUE),
-        
-        checkboxInput(ns('print_uploaded_points_to_log'), label = "Print each new uploaded lat lon table full contents to server log", value = T),
+                      value = default_include_extraindicators),
+        ######################################################## # 
+
+        ## >Options for viewing results  ####
         
         textInput(ns('prefix_filenames'), label = "Prefix to use in default file names when downloading [NOT implemented yet]", value = ""),
+        
+        ### ------------------------ map colors, weights, opacity ####
+        ### in ejscreenapi global.R:
+        numericInput(inputId = "circleweight_in", label = "weight of circles in maps", value = default_circleweight),
+        
+        # opacitymin   <- 0 
+        # opacitymax   <- 0.5
+        # opacitystep  <- 0.025
+        # opacitystart <- 0.5
+        # opacityratio <- 2 / 5
+        # base_color_default      <- "blue"  ;
+        # cluster_color_default   <- "red"   ;
+        # highlight_color_default <- 'orange';        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        ######################################################## # 
+        
+        ### Excel formatting options ?? ----------------- #
+        
+        
+        # heatmap column names
+        
+        
+        # heatmap cutoffs for bins
+        
+        
+        # heatmap colors for bins
+        
+        
+        # not used:
+        checkboxInput(ns("ok2plot"), 
+                      label = "OK to try to plot graphics and include in Excel download",
+                      value = default_ok2plot)
+
+        ######################################## # 
         
         # ## pick names for columns # 
         # shiny::uiOutput(ns('renameButton_ui'))
@@ -327,14 +423,15 @@ mod_ejscreenapi_server <- function(id,
   # stopifnot(!is.reactive(default_points_shown_at_startup)) # currently this is not supposed to be reactive but would be if we wanted app-controlled default not just passed when calling function
   # stopifnot(!is.reactive(parameter2))
   
+      source(system.file("global.R", package = "EJAMejscreenapi"))  ### IMPORTANTLY THESE WILL STAY WITHIN THE MODULE NAMESPACE, AND NOT BE AVAILABLE TO OR INTERFERE WITH MAIN APP'S DEFAULTS/ETC.
+ 
   
   # moduleServer ####
   
   shiny::moduleServer( id, function(input, output, session) {
     ns <- session$ns
     
-    source(system.file("global.R", package = "EJAMejscreenapi"))  ### IMPORTANTLY THESE WILL STAY WITHIN THE MODULE NAMESPACE, AND NOT BE AVAILABLE TO OR INTERFERE WITH MAIN APP'S DEFAULTS/ETC.
-    
+   
     ## from here on it was initially based on code from ejscreenapi package app_server.R, starting from
     ##   app_server <- function(input, output, session) {
     
@@ -1069,7 +1166,7 @@ mod_ejscreenapi_server <- function(id,
           mymap <- leaflet(mypoints) %>% addTiles()  %>%
             addCircles(lat = ~latitude, lng = ~longitude,
                        radius = radius_miles() * meters_per_mile,
-                       color = base_color(), fillColor = base_color(), fill = TRUE, weight = circleweight, 
+                       color = base_color(), fillColor = base_color(), fill = TRUE, weight = input$circleweight_in, 
                        # opacity = input$opaquecircles, fillOpacity = max(0, opacityratio * input$opaquecircles - opacitystep),
                        popup = popup_to_show() #  already have RESTRICTED NUMBER OF POPUPS BASED ON CAP input$max_pts_map
             )
@@ -1101,7 +1198,7 @@ mod_ejscreenapi_server <- function(id,
         mylivemap <- leaflet::leafletProxy("mapout", data = mypoints) %>% clearShapes() %>%
           addCircles(lat = ~latitude, lng = ~longitude,
                      radius = radius_meters, 
-                     color = base_color(), fillColor = base_color(), fill = TRUE, weight = circleweight, 
+                     color = base_color(), fillColor = base_color(), fill = TRUE, weight = input$circleweight_in, 
                      # opacity = input$opaquecircles, fillOpacity = max(0, opacityratio * input$opaquecircles - opacitystep),
                      popup = popup_to_show() #  already have RESTRICTED NUMBER OF POPUPS BASED ON CAP input$max_pts_map
           )
@@ -1114,7 +1211,7 @@ mod_ejscreenapi_server <- function(id,
           some <- mypoints[is_clustered()[  1:min(input$max_pts_map, NROW(is_clustered()))  ], ]
           addCircles(lat = some$latitude, lng = some$longitude, 
                      map = mylivemap, radius = radius_meters,
-                     color = cluster_color(), fillColor = cluster_color(), fill = TRUE, weight = circleweight ,
+                     color = cluster_color(), fillColor = cluster_color(), fill = TRUE, weight = input$circleweight_in ,
                      # opacity = input$opaquecircles, fillOpacity = max(0, opacityratio * input$opaquecircles - opacitystep),
                      popup = popup_to_show()[ is_clustered()[  1:min(input$max_pts_map, NROW(is_clustered()))  ] ] # must restrict count of is_clustered here but not overall since all kept for table output  #  already have RESTRICTED NUMBER OF POPUPS BASED ON CAP input$max_pts_map
           )
@@ -1141,7 +1238,7 @@ mod_ejscreenapi_server <- function(id,
             map = mylivemap, lat = highlighted$lat , lng = highlighted$lon , radius = radius_meters,
             # color = input$highlight_color_in, fillColor = input$highlight_color_in,  # enable in ui if want to use this option
             color = highlight_color(), fillColor = highlight_color(),
-            opacity = 0.9, fill = TRUE, weight = circleweight, 
+            opacity = 0.9, fill = TRUE, weight = input$circleweight_in, 
             # opacity = input$opaquecircles, fillOpacity = max(0, opacityratio * input$opaquecircles - opacitystep),
             popup = popup_to_show()[ selected_rows ]   #  already have RESTRICTED NUMBER OF POPUPS BASED ON CAP input$max_pts_map, and same for selected_rows
           )

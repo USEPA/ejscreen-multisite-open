@@ -1151,7 +1151,7 @@ app_server <- function(input, output, session) {
         calculate_ratios = input$calculate_ratios, 
         ## pass progress bar function as argument
         updateProgress = updateProgress_doagg
-      ))
+      )  )
     # provide sitepoints table provided by user aka data_uploaded(), (or could pass only lat,lon and ST -if avail- not all cols?)
     # and doaggregate() decides where to pull ST info from - 
     # ideally from ST column, 
@@ -1257,7 +1257,7 @@ app_server <- function(input, output, session) {
   })  # end of observeEvent based on Start analysis button called input$bt_get_results
   
   #############################################################################  # 
-  # if (calculate_ratios) {  # ratios can be dropped from output table of results but are used by summary report, plots, etc. so simplest is to still calculate them
+  # if (calculate_ratios) {  ## ratios can be dropped from output table of results but are used by summary report, plots, etc. so simplest is to still calculate them
   #############################################################################  # 
   # . 4) ratios,  also avail from ejamit()####
   # ______ AVERAGES and RATIOS TO AVG - ALREADY done by doaggregate() and kept in data_processed()
@@ -1518,7 +1518,7 @@ app_server <- function(input, output, session) {
         addCircles(
           radius = 1 * meters_per_mile,
           color = circle_color, fillColor = circle_color, 
-          fill = TRUE, weight = 4,
+          fill = TRUE, weight = input$circleweight_in,
           #group = 'circles',
           popup = popup_from_any(
             data_processed()$results_bysite %>% 
@@ -1652,7 +1652,7 @@ app_server <- function(input, output, session) {
     #     # addCircles(
     #     #   radius = rad,
     #     #   color = circle_color, fillColor = circle_color,
-    #     #   fill = TRUE, weight = 4,
+    #     #   fill = TRUE, weight = circleweight,
     #     #   group = 'circles',
     #     #   # next version should use something like EJAMejscreenapi::popup_from_ejscreen(), but with EJAM column names
     #     #   #popup = EJAMejscreenapi::popup_from_df(data_uploaded() %>% as.data.frame())
@@ -1661,7 +1661,7 @@ app_server <- function(input, output, session) {
     #     # addCircleMarkers(
     #     #   radius = input$bt_rad_buff,
     #     #   color = circle_color, fillColor = circle_color,
-    #     #   fill = TRUE, weight = 4,
+    #     #   fill = TRUE, weight = circleweight,
     #     #   clusterOptions = markerClusterOptions(),
     #     #   group = 'markers',
     #     #   popup = popup_from_any(data_uploaded())
@@ -2729,9 +2729,16 @@ app_server <- function(input, output, session) {
   observe(  
     default_radius_react_passed(input$bt_rad_buff) # update the value of this reactiveVal anytime outer app slider is adjusted
   )
-  output$mod_ejscreenapi_ui_TO_SHOW_IN_APP_UI <- renderUI({
-    mod_ejscreenapi_ui("x2", simpleradius_default_for_ui = 1, default_radius_react = default_radius_react_passed) # reactive object gets passed without parentheses. pass a reactive radius HERE to server not ui.  
-  })
+  
+  
+  # output$mod_ejscreenapi_ui_TO_SHOW_IN_APP_UI <- renderUI({
+  #   mod_ejscreenapi_ui("x2", 
+  #                      simpleradius_default_for_ui = 1 # , 
+  #                      # default_radius_react = default_radius_react_passed
+  #                      ) # reactive object gets passed without parentheses. pass a reactive radius HERE to server not ui.  
+  # })
+  
+
   
   # default_radius_react_passed <- reactiveVal(input$bt_rad_buff) # pass to UI of module not server code of module
   default_points_react_passed <- reactiveVal() # initialize it empty
@@ -2739,11 +2746,18 @@ app_server <- function(input, output, session) {
     default_points_react_passed(  data_uploaded()  ) # update default_points_react_passed when data_uploaded() changes
   )
   table_as_displayed_reactive <- reactive(
-    mod_ejscreenapi_server("x2", 
-                           # default_points = testpoints_5[1:2,],
-                           # default_radius_react = default_radius_react_passed,  
-                           default_points_shown_at_startup_react = default_points_react_passed  #reactive value object gets passed without parentheses
+    
+    mod_ejscreenapi_server(
+      "x2", 
+      default_points_shown_at_startup_react = default_points_react_passed, #reactive(testpoints_5[1:2,]), 
+      use_ejscreenit = T # use_ejscreenit_tf
     )
+    
+    # mod_ejscreenapi_server("x2", 
+    #                        # default_points = testpoints_5[1:2,],
+    #                        default_radius_react = default_radius_react_passed,
+    #                        default_points_shown_at_startup_react = default_points_react_passed  #reactive value object gets passed without parentheses
+    # )
   )
   
   # NOTE:

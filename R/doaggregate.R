@@ -298,7 +298,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   # adds blockwt 
   # and block_radius_miles and use that to adjust short distances there 
   
-  # >>>> A BIT SLOW - CAN WE DO THE FOLLOWING LINE BY REFERENCE INSTEAD OF MAKING A COPY OF sites2blocks? just want to join and add  blockwt & bgid to sites2blocks, from blockwts dt
+  # >>>> A BIT SLOW - CAN WE DO THE FOLLOWING LINE BY REFERENCE INSTEAD OF MAKING A COPY OF sites2blocks? just want to join and add  blockwt andSW bgid to sites2blocks, from blockwts dt
   # if ("block_radius_miles" %in% names(blockwts)) {
   #   sites2blocks <-  blockwts[sites2blocks, .(siteid,blockid,distance,blockwt,bgid, block_radius_miles), on='blockid']
   # } else {
@@ -419,11 +419,11 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   
   ##################################################### #
   
-  # ___AGGREGATE by BG, the Distances & Sitecounts___ ######
+  # ___AGGREGATE by BG, the Distances and Sitecounts___ ######
   
   
   ##################################################### #
-  # How to get Distrib & avg in each Demog group, ####
+  # How to get Distrib and avg in each Demog group, ####
   # * each Demog's DISTRIBUTION OF DISTANCES or ENVT  
   # for
   # - Envt indicators, and for 
@@ -466,7 +466,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   #
   ##################################################### #
   
-  # Distances, Proximity scores, & Site counts nearby ####
+  # Distances, Proximity scores, and Site counts nearby ####
   #  >>>> A *VERY* SLOW STEP TO OPTIMIZE  - sites2bgs_bysite   <- sites2blocks[   ####
   if (need_proximityscore) {
     warning('proximityscore lacks small distance adjustment factor - not yet implemented')
@@ -567,7 +567,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   
   ##################################################### #
   #  *** JOIN  EJScreen indicators ####
-  # joins midsized intermed table of sites & BGs to EJScreen/ blockgroupstats . . . sites2bgs_overall ??  
+  # joins midsized intermed table of sites and BGs to EJScreen/ blockgroupstats . . . sites2bgs_overall ??  
   ##################################################### #
   #
   # DO JOIN  OF **blockgroupstats**   200 columns, on bgid , 
@@ -621,7 +621,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   
   ##################################################### #
   
-  # TOTAL COUNT for each count indicator at EACH SITE & OVERALL ####  
+  # TOTAL COUNT for each count indicator at EACH SITE and OVERALL ####  
   
   ##################################################### #
   
@@ -1122,7 +1122,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
     ####
     
     # The 2023 new EJ index formula: 
-    # 0) The buffer raw EJ Index is probably just the pop wtd mean of the RAW scores of blockgroups in it, (& reported finally as pctile via lookup)
+    # 0) The buffer raw EJ Index is probably just the pop wtd mean of the RAW scores of blockgroups in it, (and reported finally as pctile via lookup)
     #  NOT recalculated via formulas !? It would not make sense to calculate from formula, or would it? Confirm this.
     # 1) IMPORTANT QUESTION FOR OEJ: DOES THE STATE PERCENTILES VERSION OF EJ INDEX USE STATE PERCENTILE IN ITS FORMULA??  YES, seems so, so kept State version of each raw EJ score, to use for calculating State EJ scores in buffers.
     # 2)    also we needed to name these columns carefully - EJ index is always shown as a percentile and variable name that was used for that percentile might have been without the pctile. prefix?
@@ -1153,7 +1153,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
     ######################################################################################### # 
     # percentile of EJ index ####
     
-    # >>> interim & untested - MOSTLY A COPY/PASTE OF CODE ABOVE ####
+    # >>> interim and untested - MOSTLY A COPY/PASTE OF CODE ABOVE ####
     # This for now just is a copy of code used above to get percentiles, except it uses standalone table of raw scores not raw scores already placed into the results tables,
     # since we do not really need to keep or return the raw scores of EJ indexes, unlike all other indicators where we want the raw scores.
     # Ideally should have a function to use to do this, but for other variables server code did this, not a function. 
@@ -1343,7 +1343,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   # longnames will get all the names translated from colnames of results_overall
   
   #***  ###################################### #
-  # LATITUDE & LONGITUDE added to results  ####
+  # LATITUDE and LONGITUDE added to results  ####
   
   if ("lat" %in% names(sites2states)) {
     results_bysite[sites2states, lat := lat, on = "siteid"]

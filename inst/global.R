@@ -1,64 +1,43 @@
 # global.R defines variables needed in global environment
 
-# DO NOT source api module defaults UNTIL INSIDE THE MODULE? ####
-# enable EJAMejscreenapi module that is within EJAM, which needs defaults etc. in this other global.R file:
-# source(system.file("global.R", package = "EJAMejscreenapi"))
-################################################################## # 
+# DO NOT source a modules defaults UNTIL INSIDE THE MODULE ####
+#    EJAMejscreenapi module uses its own global.R file:
+#   source(system.file("global.R", package = "EJAMejscreenapi"))
 
-library(shiny) # should this get removed for golem-style webapp/package?
-
-# ##see also for example
-# print(.packages())
-# golem::detach_all_attached()
-# print(.packages())
-# ##[1] "stats"     "graphics"  "grDevices" "utils"     "datasets"  "methods"   "base"     
-# rm(list = ls()
-# ## debug(doaggregate) # 
-
-################################################################## # 
-# LOAD DATA ####
-## get block data if missing. ####
-# this duplicates code in .onAttach()  
-
+# ------------------------ ____ Get packages, functions, data ---------------------------------  ####
+require(shiny) # remove?
+# LOAD data and INDEX BLOCKS ####
+##         Note this duplicates code in .onAttach()
 # EJAM ::
 dataload_from_aws()  # SLOW STEP !! loads only missing ones # see ?dataload_from_aws for details 
-
-################################################################## # 
-## build localtree index if missing ####
-# this duplicates code in .onAttach()  
-
 # EJAM ::
 indexblocks() # see ?indexblocks() for details. takes several seconds. 
-
-################################################################## # 
-## load bg data now instead of lazyload once/if needed ####
-# this duplicates code in .onAttach() 
-
 # EJAM ::
 # dataload_from_package() # preload the key dataset at least? not essential
 
+
 ################################################################## # 
 
-# SET DEFAULTS / OPTIONS ####
-
+# ------------------------ ____ SET DEFAULTS / OPTIONS for app ------------------------  ####
 # NOTE DEFAULTS HERE ARE UNRELATED TO DEFAULTS IN API module that has its own namespace and is kept separate, like default radius, etc.
-
-# * Each time a user session is started, the application-level option set is duplicated, for that session. 
+# * Note each time a user session is started, the application-level option set is duplicated, for that session. 
 # * If the options are set from inside the server function, then they will be scoped to the session.
+#     LET ADVANCED USERS ADJUST THESE, as INPUTS ON ADVANCED SETTINGS TAB
 
 ######################################################## # 
-## Options in general / Diagnostics #### 
+## >Options in general & Testing #### 
 
-## Raise Memory Limit on file upload to 100Mb  
-options(shiny.maxRequestSize = 100*1024^2) 
+## ------------------------ enable bookmarking? ####
+bookmarking_allowed <- TRUE  # https://mastering-shiny.org/action-bookmark.html
+if (bookmarking_allowed) {enableBookmarking(store = "url")}
 
 default_hide_advanced_settings <- FALSE
 default_testing        <- TRUE
 default_shiny.testmode <- TRUE  # If TRUE, then various features for testing Shiny applications are enabled.
 default_print_uploaded_points_to_log <- TRUE
 
-bookmarking_allowed <- TRUE  # https://mastering-shiny.org/action-bookmark.html
-if (bookmarking_allowed) {enableBookmarking(store = "url")}
+## Raise Memory Limit on file upload to 100Mb  
+options(shiny.maxRequestSize = 100*1024^2) 
 
 ## Loading/wait spinners (color, type) ####
 ## note: was set at type = 1, but this caused screen to "bounce"
@@ -68,9 +47,52 @@ options(spinner.color = "#005ea2", spinner.type = 4)
 # apptitle <- "EJAM v2.2"
 
 ######################################################## # 
+## ------------------------ IP address ####
+# ips <- c('10.147.194.116', 'awsgeopub.epa.gov', '204.47.252.51', 'ejscreen.epa.gov')
+# whichip <- ips[4]
+
+######################################################## # 
 ## Options in site point uploads, radius  ####
 
+## ------------------------ limits on # of points ####
 
+max_points_can_map    <- 15 * 1000  # *** EJAM only not api
+marker_cluster_cutoff  <- 1 * 1000  # *** EJAM only not api; for leaflet markerClusters
+
+
+# input$max_pts_upload
+default_max_pts_upload  <-   5 * 1000 
+maxmax_pts_upload  <-  10 * 1000 #   cap uploaded points 
+
+# input$max_pts_map
+default_max_pts_map       <- 1 * 1000
+maxmax_pts_map       <- 5 * 1000 # max we will show on map 
+
+ # input$max_pts_showtable
+ default_max_pts_showtable <- 1000 # max to show in interactive viewer. It drops the rest.
+ maxmax_pts_showtable  <- 5 * 1000 # 10k is extremely slow. check server side vs client side 
+
+  # input$max_pts_run
+ default_max_pts_run  <-  1 * 1000 # initial cap but can adjust in advanced tab
+ maxmax_pts_run       <- 15 * 1000 # absolute max you can analyze here, even with advanced tab 
+
+ ## use larger cutoff for polygons (FIPS/Shapefiles)
+ max_points_can_map_poly <- 1e10
+ 
+ ## ------------------------ Options for Radius  #####
+ 
+# input$default_miles
+default_default_miles <- 1 
+max_default_miles <- 50 * 1000 / meters_per_mile # 50 km
+# input$max_miles
+default_max_miles  <- 10 # 
+maxmax_miles <- 50 * 1000 / meters_per_mile # 50 km
+#   radius miles for slider input where user specifies radius. Note 5 km is 3.1 miles, 10 km is 6.2 miles ; and 10 miles is 16 kilometers (10 * meters_per_mile/1000). 50 km is too much/ too slow.
+minradius  <- 0.25 # miles
+stepradius <- 0.05 # miles
+## global constant (EJAMejscreenapi has this data loaded by pkg?)
+meters_per_mile <- 1609.344
+######################################################## # 
 ## EPA Programs (to limit NAICS/ facilities query) #### 
 ## used by inputId 'ss_limit_fac1' and 'ss_limit_fac2'
 # see frsprogramcodes data object also
@@ -82,54 +104,74 @@ default_selected <- "CAMDBS" # has only about 739 sites
 # cbind(epa_programs)
 # sort(unique(frs_by_programid$program)) # similar  # EJAM :: frs_by_programid
 
+######################################################################################################## # 
 
-## Limits on how many points ------------------------ #
+## Options in calculations & what stats to output ####
 
-## use larger cutoff for polygons (FIPS/Shapefiles)
-max_points_can_map_poly <- 1e10
+### calculate and/or include in downloaded outputs ------------- #
 
-# input$max_pts_upload
- default_max_pts_upload <- 5 * 1000 
- maxmax_pts_upload    <-  10 * 1000 #   cap uploaded points 
- 
- # input$max_pts_map
- default_max_pts_map    <- 1 * 1000 # initial cap on map
- maxmax_pts_map         <- 5 * 1000 # max possible cap to allow on map 
- max_points_can_map    <- 15 * 1000  # EJAM only not api
- marker_cluster_cutoff  <- 1 * 1000  # EJAM only not api; for leaflet markerClusters
- 
- # input$max_pts_showtable
- default_max_pts_showtable <- 1000 # max to show in interactive viewer. It drops the rest.
- maxmax_pts_showtable  <- 5 * 1000 # 10k is extremely slow. check server side vs client side 
- 
- # input$max_pts_run
- default_max_pts_run  <-  1 * 1000 # initial cap but can adjust in advanced tab
- maxmax_pts_run       <- 15 * 1000 # absolute max you can analyze here, even with advanced tab 
+default_calculate_ratios <- TRUE   # probably need to calculate even if not shown in excel download, since plots and short summary report rely on them/
+default_include_averages <- TRUE
+default_include_extraindicators <- TRUE
 
- 
-# Options for Radius  ------------- #
 
-# input$default_miles
-default_default_miles <- 1 
-max_default_miles <- 50 * 1000 / meters_per_mile # 50 km
 
-# input$max_miles
-default_max_miles  <- 10 # 
-maxmax_miles <- 50 * 1000 / meters_per_mile # 50 km
 
-# miles - for slider input where user specifies radius. Note 5 km is 3.1 miles, 10 km is 6.2 miles ; and 10 miles is 16 kilometers (10 * meters_per_mile/1000). 50 km is too much/ too slow.
-minradius  <- 0.25 # miles
-stepradius <- 0.05 # miles
 
-## global constant (EJAMejscreenapi has this data loaded by pkg?)
-meters_per_mile <- 1609.344
+
+######################################################## #
+
+# >Options for viewing results  ####
+
+
+
+### ------------------------ map colors, weights, opacity ####
+### in ejscreenapi global.R:
+ default_circleweight <- 4
+# opacitymin   <- 0 
+# opacitymax   <- 0.5
+# opacitystep  <- 0.025
+# opacitystart <- 0.5
+# opacityratio <- 2 / 5
+# base_color_default      <- "blue"  ;
+# cluster_color_default   <- "red"   ;
+# highlight_color_default <- 'orange';
+
+# ## ------------------------ predict time to complete ####
+# perhourslow  <- 3000  # to give an estimate of how long it will take
+# perhourguess <- 6000  # seeing 8k if 1 mile, 4.7k if 5 miles, roughly. 207 ECHO run was 2 . 1  minutes, 5.9k/hr.
+# perhourfast <- 12000  # approx 12k RMP sites would take almost 2 hours (1 to 2 hours, or even 4?).
+# report_every_n_default <- 100
+
+## ------------------------ download as excel vs csv ####
+# asExcel <- TRUE # WHETHER TO DOWNLOAD RESULTS AS EXCEL OR CSV
 
 ######################################################## # 
-## Options in calculations & what stats to output ####
+
+### Excel formatting options   --------------------- #
+
+
+# heatmap column names - defaults could be set here and made flexible in advanced tab
+
+
+# heatmap cutoffs for bins - defaults could be set here and made flexible in advanced tab
+
+
+# heatmap colors for bins - defaults could be set here and made flexible in advanced tab
+
+
+
+default_ok2plot <- FALSE # the plots to put in excel tabs via ejam2excel() and xls_formatting2() and the plot functions
+
+
+############################################################################## # # # 
+
+# relevant to EJAM only, not api:
+
+################################ #
 
 ### in getblocksnearby()  ------------- #
 
-# EJAM only, not api:
 default_avoidorphans        <- FALSE # seems like EJScreen itself essentially uses FALSE
 default_maxradius <-  31.06856  # max search dist if no block within radius # 50000 / meters_per_mile #, # 31.06856 miles !!
 # also used as the maxmax allowed
@@ -147,17 +189,28 @@ default_subgroups_type <- 'nh'
 default_need_proximityscore <- FALSE
 default_include_ejindexes   <- FALSE
 
-### calculate and/or include in downloaded outputs ------------- #
+######################################################## # 
+### Short report options --------------------- #
 
-default_calculate_ratios <- TRUE   # probably need to calculate even if not shown in excel download, since plots and short summary report rely on them/
-default_include_averages <- TRUE
-default_include_extraindicators <- TRUE
+default_standard_analysis_title <-  'Summary of EJ Analysis' # Default title to show on each short report
+default_plotkind_1pager <- "bar"  #    Bar = "bar", Box = "box", Ridgeline = "ridgeline"
+   
 
-default_ok2plot <- FALSE # the plots to put in excel tabs via ejam2excel() and xls_formatting2() and the plot functions
 
-################################################################### # 
-# other defaults ####
 
+######################################################## # 
+### Long report options  --------------------- #
+
+# relocate any here from the Full Report tab?? - defaults could be set here and made flexible elsewhere
+
+
+
+
+
+
+
+
+######################################################## # 
 ### Threshold comparisons options --------------------- ####
 #
 ## can be used by inputId 'an_list_pctiles'    #   CHECK IF THESE UNITS SHOULD BE 0-1 OR 0-100 ***
@@ -176,57 +229,6 @@ threshgroup.default <- list(
   'comp1' = "EJ US pctiles",  'comp2' = "EJ State pctiles"
 )
 
-######################################################## # 
-## Options in viewing results ####
-
-### Short report options --------------------- #
-
-default_standard_analysis_title <-  'Summary of EJ Analysis' # Default title to show on each short report
-default_plotkind_1pager <- "bar"  #    Bar = "bar", Box = "box", Ridgeline = "ridgeline"
-   
-
-
-### Excel formatting options   --------------------- #
-
-
-# heatmap column names - defaults could be set here and made flexible in advanced tab
-
-
-# heatmap cutoffs for bins - defaults could be set here and made flexible in advanced tab
-
-
-# heatmap colors for bins - defaults could be set here and made flexible in advanced tab
-
-
-
-
-
-
-### Long report options  --------------------- #
-
-# relocate any here from the Full Report tab?? - defaults could be set here and made flexible elsewhere
-
-
-
-
-
-
-
-###  Map colors, weights, opacity -----------------  #
-
-#   map params  - defaults could be set here and made flexible in advanced tab
-
-### in ejscreenapi:
-#
-# circleweight = 4
-# opacitymin = 0 
-# opacitymax = 0.5
-# opacitystep = 0.025
-# opacitystart = 0.5
-# opacityratio = 2/5
-# base_color_default      <- 'blue'
-#   cluster_color_default   <- 'red'
-#     highlight_color_default <- 'orange'
 
 ######################################################## # 
 

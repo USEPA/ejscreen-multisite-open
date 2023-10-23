@@ -15,7 +15,7 @@ getblocks_summarize_blocks_per_site(x, varname = "siteid")
 invisibly, a list of stats
 }
 \description{
-# of blocks near avg site, how many sites have only 1 or <30 blocks nearby, etc.
+Number of blocks near avg site, how many sites have only 1 or fewer than 30 blocks nearby, etc.
 }
 \seealso{
 \code{\link[=getblocks_diagnostics]{getblocks_diagnostics()}}

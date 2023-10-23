@@ -238,7 +238,7 @@ ejamit <- function(sitepoints,
   ################################################################ # 
   if (interactive() & !silentinteractive) {  
     
-    # Show summary info & tips in RStudio console  #### 
+    # Show summary info and tips in RStudio console  #### 
     # NOTE: SOME OF THIS BELOW SHOULD BE USED IN A VIGNETTE RATHER THAN BEING HERE ***
     
     # Show bysite in DT::datatable view in RStudio ####

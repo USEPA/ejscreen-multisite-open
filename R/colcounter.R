@@ -44,7 +44,7 @@ colcounter <- function(x, threshold, or.tied=TRUE, na.rm=TRUE, below=FALSE, one.
     if (length(threshold) != NCOL(x)) {stop('length of threshold should be same as number of columns in x if one.cut.per.col=T')}
     x <- t(as.matrix(x)) # this allows it to compare vector of N thresholds to N columns
   } else {
-    if (length(threshold) != NROW(x) & length(threshold) != 1) {stop('length of threshold should be 1 or same as number of columns in x, if one.cut.per.col=F')}
+    if ((length(threshold) != NROW(x)) & (length(threshold) != 1)) {stop('length of threshold should be 1 or same as number of columns in x, if one.cut.per.col=F')}
   }
   if (below) {
     if  (or.tied) { y <- ( x <= threshold) }

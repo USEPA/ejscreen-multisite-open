@@ -27,7 +27,7 @@ dataload_from_local <- function(varnames= c('bgid2fips', 'blockid2fips', 'blockp
   if (length(ext) > 1)    {stop('must specify only one file extension for all the files')}
   if (ext == "arrow") ext <- ".arrow"
   if (ext == "rda")   ext <- ".rda"
-  if (ext == '.arrow' & missing(fun)) {fun <- "arrow::read_ipc_file"}
+  if ((ext == '.arrow') & missing(fun)) {fun <- "arrow::read_ipc_file"}
   
   fnames     <- paste0(varnames, ext) # varnames are like bgid2fips, ext is .rda, fnames are like bgid2fips.rda
   # objectnames <- paste0(mybucketfolder,      '/', fnames) # EJAM/bgid2fips.rda 
