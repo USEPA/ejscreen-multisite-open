@@ -805,7 +805,7 @@ app_server <- function(input, output, session) {
       num_notna <- NROW(data_uploaded()) - num_na
       
       ## if invalid data found, set invalid_alert() otherwise closeAlert()
-      cat("num_na:  "); cat(num_na, '\n')
+      cat("Number of invalid points:  "); cat(num_na, '\n')
       if (num_na > 0) {
         #shinyBS::closeAlert(session, alertId = 'alert1')
         # shinyBS::createAlert(session, anchorId = "invalid_sites_alert", alertId = "alert1", 
@@ -1410,8 +1410,8 @@ app_server <- function(input, output, session) {
     tab_data_d$state_pctile <- round(tab_data_d$state_pctile ,0)
     
     ## set colors for table
-    my_cell_color   <- '#dce6f0'
-      my_border_color <- '#aaaaaa' 
+    my_cell_color   <- '#dce6f0';
+    my_border_color <- '#aaaaaa';
         
       ## apply function to format as 'gt' table  
       table_out_d <- format_gt_table(df = tab_data_d, type = 'demog',
@@ -1509,6 +1509,12 @@ app_server <- function(input, output, session) {
       
     } else { #  not shapefile
       
+      # this bit of code defining popup_labels was there sep 10 but deleted Oct 14, probably inadvertently, and being put back in oct 23.
+      popup_labels <- c(data_processed()$longnames, 'State Name')
+      popup_labels[popup_labels == ""] <- map_headernames$names_friendly[match(
+        names(data_processed()$results_bysite)[popup_labels == ""],
+        EJAMejscreenapi::map_headernames$newnames_ejscreenapi)]
+            
       ## similar to previous map but remove controls and only add circles, not circleMarkers
       
       ## switch this to data analyzed in report, not what was uploaded,   in case there are invalid

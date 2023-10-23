@@ -118,7 +118,7 @@ pctile_from_raw_lookup <- function(myvector, varname.in.lookup.table, lookup=usa
     # WARN if all or just some values in myvector_selection are NA,  ####
     #  findInterval(x=myvector_selection, vec=myvector_lookup) returns NA for each is.na(x)
     if (all(is.na(myvector_selection))) {
-      message("All raw scores in myvector are NA, so percentiles will be reported as NA, in zone = ", z, " for ", varname.in.lookup.table, ".")
+      message("Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = ", z, " for ", varname.in.lookup.table, ".")
       percentiles_reported[zone == z] <- NA
       next # go to next zone (for this one indicator)
     }
