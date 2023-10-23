@@ -204,7 +204,7 @@ app_ui  <- function(request) {
                     #   condition = "input.ss_choose_method == 'upload' && input.ss_choose_method_upload == 'latlontypedin'",
                     #   ### input: Type into a table, a few facility lat/longs 
                     #   ## _+++ MODULE_UI_latlontypedin  #### 
-                    #   tags$p("Enter / View / Edit latitude(s) & longitude(s) of point(s) to analyze"),
+                    #   tags$p("Enter / View / Edit latitude(s) and longitude(s) of point(s) to analyze"),
                     #   column(
                     #     6,
                     #     ## on button click, show modal with DT table of lat lon values
@@ -911,7 +911,7 @@ app_ui  <- function(request) {
        
        tabPanel(title = 'Written Report',
                 
-                #  MAKE SURE all parameter names are used (identical names, & all are there) in these 4 places: 
+                #  MAKE SURE all parameter names are used (identical names, and all are there) in these 4 places: 
                 #  1. input$ ids in app_ui.R, from user, to customize the long report
                 #  2. params$ list passed by app_server.R to render the Rmd doc
                 #  3. params: accepted in  .Rmd yaml info header 
@@ -1267,9 +1267,8 @@ app_ui  <- function(request) {
        ######################################################## # 
        
        tabPanel(title = "Advanced Settings",
-                # title = "Advanced EJAM Features and Settings",
-                
-                h3("Advanced settings & experimental features not fully tested"),
+
+                h3("Advanced settings and experimental features not fully tested"),
                 
                 # SET DEFAULTS / OPTIONS  
                 
@@ -1277,7 +1276,7 @@ app_ui  <- function(request) {
                 # * If the options are set from inside the server function, then they will be scoped to the session.
                 
                 ######################################################## # 
-                ##  ------------------------ Options in general / Diagnostics ## ## 
+                ##  ------------------------ Options in general and Testing ## ## 
                 
                 radioButtons("testing", "TESTING APP? testing = ", choices = c(Yes = TRUE, No = FALSE),
                              inline = TRUE,
@@ -1314,14 +1313,17 @@ app_ui  <- function(request) {
                   bookmarkButton()  # https://mastering-shiny.org/action-bookmark.html
                 }),        
                 ######################################################## # 
-                ## ------------------------ app title ### #
+                ### ------------------------ app title ### #
                 # will not be editable here.
                 
                 ######################################################## # 
                 ##  ------------------------ Options in site point uploads, radius  ## ##
                 
-                # Limits on how many points ------------- #
+                ### ------------------------ limits on # of points ####
+              
                 
+                
+                  
                 numericInput('max_pts_upload', label = "Cap on number of points one can UPLOAD, additional ones in uploaded table get dropped entirely", 
                              min = 1000,  step = 500,
                              value = default_max_pts_upload, 
@@ -1339,11 +1341,14 @@ app_ui  <- function(request) {
                              value = default_max_pts_run,  
                              max =        maxmax_pts_run),
                 
-                # Options for Radius  ------------- #
+                
+                
+                ### Options for Radius  ------------- #
                 
                 numericInput('default_miles', label = "Default miles radius", 
                              min = 0.25, 
                              value = default_default_miles, 
+                             
                              max   =     max_default_miles),
                 numericInput('max_miles', label = "Maximum radius in miles",
                              value = default_max_miles,

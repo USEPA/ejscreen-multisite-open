@@ -1,6 +1,6 @@
 #' getblocks_summarize_blocks_per_site - how many blocks are near the sites (pop density affects accuracy)
 #' 
-#' @description # of blocks near avg site, how many sites have only 1 or <30 blocks nearby, etc.
+#' @description Number of blocks near avg site, how many sites have only 1 or fewer than 30 blocks nearby, etc.
 #' 
 #' @param x The output of getblocksnearby()
 #' @param varname colname of variable in data.table x that is the one to summarize by

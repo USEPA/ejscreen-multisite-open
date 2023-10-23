@@ -156,17 +156,22 @@ mapfast(pts, radius = 0.1)
 help("testpoints_n")
 ```
 
-### Analyze and Map 100 Sites
+### Analyze 100 Sites
 
 ```{r eval = TRUE, echo=TRUE}
 x <- ejamit(testpoints_100, radius = 1) # 1 mile radius at 100 random points
 
 # help("ejamit")
+```
 
+### Map Results
+
+```{r eval = TRUE, echo=TRUE}
 mapfastej(x$results_bysite)
 
 # help("mapfast")
 ```
+
 
 ### Interactively select your file with lat,lon coordinates, without shiny web app
 
@@ -216,7 +221,6 @@ latlon_from_programid(c("XJW000012435", "00768SRTRSROAD1"))
 head(cbind(Count.of.facilities = sort(table(frs_by_programid$program), decreasing = T)), 20)
 
 latlon_from_program("CAMDBS")[,1:6]
- 
 ```
 
 ### Specify sites by EPA MACT Subpart in Clean Air Act
@@ -239,7 +243,6 @@ See the readme for links to more documentation. There is documentation for the p
 help("EJAM", package='EJAM')
 
 ?ejamit
-
 ```
 
 ## The EJScreen API module

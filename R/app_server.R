@@ -772,7 +772,7 @@ app_server <- function(input, output, session) {
     
   })
   
-  ## Which points are valid?(& how many; warn if 0) ####
+  ## Which points are valid?(and  how many; warn if 0) ####
   output$an_map_text <- renderUI({
     req(data_uploaded())
     
@@ -1260,7 +1260,7 @@ app_server <- function(input, output, session) {
   # if (calculate_ratios) {  # ratios can be dropped from output table of results but are used by summary report, plots, etc. so simplest is to still calculate them
   #############################################################################  # 
   # . 4) ratios,  also avail from ejamit()####
-  # ______ AVERAGES & RATIOS TO AVG - ALREADY done by doaggregate() and kept in data_processed()
+  # ______ AVERAGES and RATIOS TO AVG - ALREADY done by doaggregate() and kept in data_processed()
   # Also the overall mean and site by site means are in  unlist( data_processed()$results_overall[ , ..names_these_state_avg] )
   # and (avg.in.us) is a constant for convenience with that same info, in data.frame format.
   # but did not bother making a copy of the state averages that are in statestats
@@ -1677,7 +1677,7 @@ app_server <- function(input, output, session) {
   })
   
   #############################################################################  # 
-  ## *BARPLOT for short & long reports (avg person D ratios vs US avg) ####
+  ## *BARPLOT for short and long reports (avg person D ratios vs US avg) ####
   
   # compare / merge with  EJAM/R/plot_barplot_ratios.R *** 
   # https://exts.ggplot2.tidyverse.org/gallery/
@@ -2628,7 +2628,7 @@ app_server <- function(input, output, session) {
       }
       
       # Set up parameters to pass to Rmd document - 
-      #  MAKE SURE all parameter names are used (identical names, & all are there) in these 4 places: 
+      #  MAKE SURE all parameter names are used (identical names, and all are there) in these 4 places: 
       #  1. input$ ids in app_ui.R, from user, to customize the long report
       #  2. params$ list passed by app_server.R to render the Rmd doc
       #  3. params: accepted in  .Rmd yaml info header 
