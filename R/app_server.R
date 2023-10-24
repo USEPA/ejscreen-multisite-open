@@ -1374,54 +1374,19 @@ app_server <- function(input, output, session) {
   #############################################################################  # 
   ## *TABLE DEMOG (for summary report) #### 
   
-  v1_demog_table <- reactive({
+  v1_demog_table <- reactive({    
     
     req(data_processed())
+    # should it check if (input$calculate_ratios) # *** ?
     
-    ## create dataframe  - vars (indicator names), value (raw indicator value),
-    ## state_avg (State Avg indicator value), state_pctile (State Pctile for indicator),
-    ## usa_avg (US Avg indicator value), usa_pctile (US Pctile for indicator)
-    # and ratio_to_us is now included also
-    
-    tab_data_d <- data.frame(
-      # ignore input$calculate_ratios ? ***
-      # *** can we just use reactives ratio.to.us.d() etc. ?? instead of extracting it from data_processed() reactive here:
-      
-      var_names                                            = c(names_d_friendly,       names_d_subgroups_friendly  ),
-      value           = data_processed()$results_overall[, c(..names_d,              ..names_d_subgroups)] %>% t, 
-      
-      'state_avg'    = (data_processed()$results_overall[, c(..names_d_state_avg,    ..names_d_subgroups_state_avg)]    %>% t), 
-      'state_pctile' = (data_processed()$results_overall[, c(..names_d_state_pctile, ..names_d_subgroups_state_pctile)] %>% t), 
-      
-      'usa_avg'  = data.frame(usa_avg = unlist(avg.in.us[, c(  names_d,                names_d_subgroups)])) , # data.frame not data.table
-      'usa_pctile'   = (data_processed()$results_overall[, c(..names_d_pctile,       ..names_d_subgroups_pctile)]  %>% t),
-      
-      # note these have subgroups too already in them:
-      # "state_ratio" = unlist(ratio.to.state.d()),  
-      "state_ratio"  = (data_processed()$results_overall[, c(..names_d_ratio_to_state_avg, ..names_d_subgroups_ratio_to_state_avg)] %>% t),     # xxx
-      # "usa_ratio"   = unlist(ratio.to.us.d() )     
-      "usa_ratio"   =  (data_processed()$results_overall[, c(..names_d_ratio_to_avg,       ..names_d_subgroups_ratio_to_avg)] %>% t )     # xxx
-    )
-    
-    # need to verify percentile should be rounded here or use ceiling() maybe? 
-    # try to replicate EJScreen percentiles as they report them...
-    # *** should update to use sigfigs or rounding info metadata stored in EJAMejscreenapi::map_headernames table
-    tab_data_d$usa_pctile   <- round(tab_data_d$usa_pctile ,0)
-    tab_data_d$state_pctile <- round(tab_data_d$state_pctile ,0)
-    
-    ## set colors for table
-    my_cell_color   <- '#dce6f0';
-    my_border_color <- '#aaaaaa';
-        
-      ## apply function to format as 'gt' table  
-      table_out_d <- format_gt_table(df = tab_data_d, type = 'demog',
-                                     my_cell_color = my_cell_color,
-                                     my_border_color = my_border_color)
-      ## return table
+      table_out_d <- table_gt_format(data_processed()$results_overall,
+                                     type = 'demog',
+                                     )
       table_out_d
   })
   
   ## output: show table of indicators in view 1
+  
   output$view1_demog_table <- gt::render_gt({
     v1_demog_table()
   })
@@ -1429,54 +1394,20 @@ app_server <- function(input, output, session) {
   ## *TABLE ENVT. (for summary report) #### 
   
   v1_envt_table <- reactive({
+    
     req(data_processed())
+    # should it check if (input$calculate_ratios) # *** ?
     
-    ## create dataframe with 6 columns - vars (indicator names), value (raw indicator value),
-    ## state_avg (State Avg indicator value), state_pctile (State Pctile for indicator),
-    ## usa_avg (US Avg indicator value), usa_pctile (US Pctile for indicator)
-    ## and ratios to averages for state then us
-    
-    tab_data_e <- data.frame(
-      
-      var_names        =                                    names_e_friendly,
-      value            = data_processed()$results_overall[, names_e, with = FALSE] %>% t,
-      
-      'state_avg'    = data_processed()$results_overall[, ..names_e_state_avg] %>% t,
-      'state_pctile' = data_processed()$results_overall[, ..names_e_state_pctile] %>% t,   
-      
-      'usa_avg'  = data.frame(usa_avg = unlist(avg.in.us[ , names_e])), # is a constant already 
-      'usa_pctile'   = data_processed()$results_overall[, ..names_e_pctile] %>% t,  # xxx
-      
-      # 'state_ratio' = unlist(ratio.to.state.e()) ,
-      "state_ratio"  = data_processed()$results_overall[, ..names_e_ratio_to_state_avg] %>% t,
-      # 'usa_ratio' = unlist(ratio.to.us.e()) 
-      "usa_ratio"    = data_processed()$results_overall[, ..names_e_ratio_to_avg] %>% t
-    )
-    
-    # NEED TO CONFIRM HOW TO ROUND TO REPLICATE EJSCREEN 
-    # *** should switch to using sigfigs or rounding metadata from EJAMejscreenapi::map_headernames 
-    tab_data_e$usa_pctile   <- round(tab_data_e$usa_pctile,  0)
-    tab_data_e$state_pctile <- round(tab_data_e$state_pctile,0)
-    
-    ## join long indicator names and move them to first column - done already 
-    # tab_data_e <- tab_data_e %>% 
-    #   left_join(long_names_e, by = c('vars') ) %>%   # long_names_e no longer exists. use names_e_friendly, etc.
-    #   relocate(var_names, .before = 1) %>% 
-    #   select(-vars)
-    
-    ## set colors for table
-    my_cell_color   <- '#dce6f0'
-      my_border_color <- '#aaaaaa'
-        
-      ## apply function to format as 'gt' table  
-      tab_out_e <- format_gt_table(df = tab_data_e, type = 'envt',
-                                   my_cell_color = my_cell_color,
-                                   my_border_color = my_border_color)
-      ## return final table
-      tab_out_e
+    tab_out_e <- table_gt_from_overall(data_processed()$results_overall, 
+                                        type = "envt", 
+                                        varnames = names_e )
+    tab_out_e <- table_gt_format(df = tab_out_e,
+                                 type = 'envt')
+    tab_out_e
   })
   
   ## output: show environmental indicator table
+  
   output$view1_envt_table <- gt::render_gt({
     v1_envt_table()
   })
