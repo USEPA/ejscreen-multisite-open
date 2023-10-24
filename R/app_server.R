@@ -2162,7 +2162,7 @@ app_server <- function(input, output, session) {
       } else {
         radius_or_buffer_description <- 'Distance from each site (radius of each circular buffer around a point)'
       }
-      if (!calculate_ratios) {
+      if (!input$calculate_ratios) {
         ratiocols <- names(data_processed()$results_overall) %in% c(names_d_ratio_to_avg, names_d_ratio_to_state_avg, names_e_ratio_to_avg, names_e_ratio_to_state_avg) 
         keepcols <- !ratiocols
         # grepl("ratio.to", names(data_processed()$results_overall))
