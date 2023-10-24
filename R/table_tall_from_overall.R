@@ -1,4 +1,4 @@
-#' format_results_overall
+#' table_tall_from_overall
 #' Format the results_overall part of the output of ejamit() or doaggregate()
 #' @param results_overall data.table of 1 row, from output of ejamit() or doaggregate()
 #' @param longnames vector of names of variables in results_overall, 
@@ -7,7 +7,7 @@
 #' @return data.table that is one row per indicator
 #' @export
 #'
-format_results_overall <- function(results_overall, longnames) {
+table_tall_from_overall <- function(results_overall, longnames) {
   # just a slightly easier to read view of the results
 
   if (is.list(results_overall)) {

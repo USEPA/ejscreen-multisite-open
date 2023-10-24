@@ -27,12 +27,12 @@ rad <- 1
 system.time({out = EJAM::ejamit(
   testpoints_100, 
   radius = rad, ok2plot = FALSE, save_now = FALSE, interactive_console = F)})
-system.time({x = ejam2excel(ejamitout = out, radius_or_buffer_in_miles = rad, ok2plot = FALSE, save_now = FALSE, interactive_console = F)})
+system.time({x = table_xls_from_ejam(ejamitout = out, radius_or_buffer_in_miles = rad, ok2plot = FALSE, save_now = FALSE, interactive_console = F)})
 
 system.time({out = EJAM::ejamit(
   testpoints_1000, radius = rad,
   ok2plot = FALSE, save_now = FALSE, interactive_console = F)})
-system.time({x = ejam2excel(ejamitout = out, radius_or_buffer_in_miles = rad, ok2plot = FALSE, save_now = FALSE, interactive_console = F)})
+system.time({x = table_xls_from_ejam(ejamitout = out, radius_or_buffer_in_miles = rad, ok2plot = FALSE, save_now = FALSE, interactive_console = F)})
 
 ################
 rad <- 3.1
@@ -40,12 +40,12 @@ rad <- 3.1
 system.time({out = EJAM::ejamit(
   testpoints_100,
   radius = rad, ok2plot = FALSE, save_now = FALSE, interactive_console = F)})
-system.time({x = ejam2excel(ejamitout = out, radius_or_buffer_in_miles = rad, ok2plot = FALSE, save_now = FALSE, interactive_console = F)})
+system.time({x = table_xls_from_ejam(ejamitout = out, radius_or_buffer_in_miles = rad, ok2plot = FALSE, save_now = FALSE, interactive_console = F)})
 
 system.time({out = EJAM::ejamit(
   testpoints_1000, 
   radius = rad, ok2plot = FALSE, save_now = FALSE, interactive_console = F)})
-system.time({x = ejam2excel(ejamitout = out, radius_or_buffer_in_miles = rad, ok2plot = FALSE, save_now = FALSE, interactive_console = F)})
+system.time({x = table_xls_from_ejam(ejamitout = out, radius_or_buffer_in_miles = rad, ok2plot = FALSE, save_now = FALSE, interactive_console = F)})
 
 #################
 rad <- 5
@@ -53,12 +53,12 @@ rad <- 5
 system.time({out = EJAM::ejamit(
   testpoints_100, 
   radius = rad, ok2plot = FALSE, save_now = FALSE, interactive_console = F)})
-system.time({x = ejam2excel(ejamitout = out, radius_or_buffer_in_miles = rad, ok2plot = FALSE, save_now = FALSE, interactive_console = F)})
+system.time({x = table_xls_from_ejam(ejamitout = out, radius_or_buffer_in_miles = rad, ok2plot = FALSE, save_now = FALSE, interactive_console = F)})
 
 system.time({out = EJAM::ejamit(
   testpoints_1000, 
   radius = rad, ok2plot = FALSE, save_now = FALSE, interactive_console = F)})
-system.time({x = ejam2excel(ejamitout = out, radius_or_buffer_in_miles = rad, ok2plot = FALSE, save_now = FALSE, interactive_console = F)})
+system.time({x = table_xls_from_ejam(ejamitout = out, radius_or_buffer_in_miles = rad, ok2plot = FALSE, save_now = FALSE, interactive_console = F)})
 
 #################
 rad <- 6.2
@@ -66,12 +66,12 @@ rad <- 6.2
 system.time({out = EJAM::ejamit(
   testpoints_100, 
   radius = rad, ok2plot = FALSE, save_now = FALSE, interactive_console = F)})
-system.time({x = ejam2excel(ejamitout = out, radius_or_buffer_in_miles = rad, ok2plot = FALSE, save_now = FALSE, interactive_console = F)})
+system.time({x = table_xls_from_ejam(ejamitout = out, radius_or_buffer_in_miles = rad, ok2plot = FALSE, save_now = FALSE, interactive_console = F)})
 
 system.time({out = EJAM::ejamit(
   testpoints_1000, 
   radius = rad, ok2plot = FALSE, save_now = FALSE, interactive_console = F)})
-system.time({x = ejam2excel(ejamitout = out, radius_or_buffer_in_miles = rad, ok2plot = FALSE, save_now = FALSE, interactive_console = F)})
+system.time({x = table_xls_from_ejam(ejamitout = out, radius_or_buffer_in_miles = rad, ok2plot = FALSE, save_now = FALSE, interactive_console = F)})
 
 
 #################

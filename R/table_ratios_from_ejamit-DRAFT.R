@@ -1,11 +1,11 @@
-format_ratios <- function(ejamitout,
+table_ratios_from_ejamit <- function(ejamitout,
                           vartypes = c("ratio", "pctile", "pct", "all")[1], 
                           stats = c("Average site", "Average person", "Median site", "Median person", "Min", "Max"), 
                           decimals=1) {
   
   # quick view of summary stats by type of stat, but lacks rounding specific to each type, etc. 
   
-  # format_ratios(testoutput_ejamit_100pts_1miles)
+  # table_ratios_from_ejamit(testoutput_ejamit_100pts_1miles)
   
   xx <- ejamitout$results_summarized$rows
   # drop Percentile of Sites - not useful really and not sure these are correct

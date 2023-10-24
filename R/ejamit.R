@@ -231,7 +231,7 @@ ejamit <- function(sitepoints,
   
   # (doaggregate alone does not provide this)
   
-  out$formatted <- format_results_overall(out$results_overall, out$longnames)
+  out$formatted <- table_tall_from_overall(out$results_overall, out$longnames)
   
   # 5. would be nice to provide the 1pager summary report as html here too
   
@@ -321,7 +321,7 @@ ejamit <- function(sitepoints,
         "     mapfast(out$results_bysite, radius = out$results_overall$radius.miles, column_names = 'ej')", 
         "\n\n")
     
-    cat("To view or save as excel files, see ?ejam2excel e.g., ejam2excel(out, fname = 'out.xlsx')  \n\n")
+    cat("To view or save as excel files, see ?table_xls_from_ejam e.g., table_xls_from_ejam(out, fname = 'out.xlsx')  \n\n")
   }
   ################################################################ # 
   

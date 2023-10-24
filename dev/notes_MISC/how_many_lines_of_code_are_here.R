@@ -39,7 +39,7 @@
 # 16   405      170  235      EJAMejscreenapi   /R/                   golem_utils_ui.R
 # 17   390      102  288                 EJAM   /R/                  utils_speedtest.R
 # 18   379       27  352 EJAMbatch.summarizer   /R/                  batch.summarize.R *** possibly break up
-# 19   366       59  307                 EJAM   /R/                  xls_formatting2.R *** possibly break up
+# 19   366       59  307                 EJAM   /R/                  table_xls_format.R *** possibly break up
 # 22   353       29  324      EJAMejscreenapi   /R/              popup_from_ejscreen.R *** possibly break up
 # 23   333      155  178      EJAMejscreenapi   /R/                       ejscreenit.R
 
@@ -154,7 +154,7 @@
 # 79    141       54   87 EJAMejscreenapi   /R/                    ejscreenapi1.R
 # 94    118       60   58 EJAMejscreenapi   /R/                 boxplots_ratios.R
 # 99    115       40   75 EJAMejscreenapi   /R/                   convert_units.R
-# 100   115       16   99 EJAMejscreenapi   /R/              xls_formatting_api.R
+# 100   115       16   99 EJAMejscreenapi   /R/              table_xls_format_api.R
 
 # 120    96       37   59 EJAMejscreenapi   /R/                     fixcolnames.R
 # 126    89       51   38 EJAMejscreenapi   /R/        latlon_from_anything.api.R
@@ -207,7 +207,7 @@
 
 # 15    408      170  238    EJAM   /R/                                                       golem_utils_ui.R
 # 17    390      102  288    EJAM   /R/                                                      utils_speedtest.R
-# 19    366       59  307    EJAM   /R/                                                      xls_formatting2.R ***
+# 19    366       59  307    EJAM   /R/                                                      table_xls_format.R ***
 
 # 30    260       20  240    EJAM   /R/                                                      mod_ejscreenapi.R
 # 34    239       57  182    EJAM   /R/                                               pctile_from_raw_lookup.R ***
@@ -216,7 +216,7 @@
 # 50    184       48  136    EJAM   /R/                                           plot_distance_cdf_by_group.R
 # 51    184       61  123    EJAM   /R/                                                         url_bookmark.R
 # 52    183       92   91    EJAM   /R/                                                         sic_from_any.R
-# 53    177       10  167    EJAM   /R/                                                      format_gt_table.R
+# 53    177       10  167    EJAM   /R/                                                      table_gt_format.R
 # 56    176      130   46    EJAM   /R/                                                   colcounter_summary.R
 # 57    174       40  134    EJAM   /R/                                                         testpoints_n.R
 # 59    165       42  123    EJAM   /R/                                    getblocksnearbyviaQuadTree3-DRAFT.R
@@ -247,7 +247,7 @@
 # 122    93        0   93    EJAM   /R/        url_to_get_ACS2019_rest_services_ejscreen_ejquery_MapServer_7.R
 # 130    86       47   39    EJAM   /R/                                                   fips_counties_from.R
 # 136    83       49   34    EJAM   /R/                                                 latlon_from_anything.R
-# 138    80       16   64    EJAM   /R/                                                       xls_formatting.R
+# 138    80       16   64    EJAM   /R/                                                       table_xls_format.R
 # 140    77       76    1    EJAM   /R/                                                       data_stateinfo.R
 # 141    77        8   69    EJAM   /R/                                                         states_infer.R
 # 144    75       74    1    EJAM   /R/                                                           data_bgpts.R
@@ -290,7 +290,7 @@
 # 267    31       16   15    EJAM   /R/                                                      mod_save_report.R
 # 268    31       16   15    EJAM   /R/                                                    mod_specify_sites.R
 # 269    31       16   15    EJAM   /R/                                                     mod_view_results.R
-# 272    30        9   21    EJAM   /R/                                               format_results_overall.R
+# 272    30        9   21    EJAM   /R/                                               table_tall_from_overall.R
 # 275    29       28    1    EJAM   /R/                                                data_frs_by_programid.R
 # 277    28        7   21    EJAM   /R/                                             proximity.score.in.miles.R
 # 279    27       17   10    EJAM   /R/                                                    counties_as_sites.R

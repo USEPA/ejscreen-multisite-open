@@ -764,7 +764,7 @@ app_ui  <- function(request) {
                 #h3(id = 'site_by_site', 'Site-by-Site Table'),
          ),
          column(6,
-                ## button to download excel Table of Sites/Results - uses xls_formatting2
+                ## button to download excel Table of Sites/Results - uses table_xls_format
                 downloadButton('download_results_table', 'Download Results Table', class = 'usa-button')
          )
        ),

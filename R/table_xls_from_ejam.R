@@ -1,43 +1,51 @@
-#' ejam2excel
+
+#' ejam2excel - alias for ejam2excel()
+#' @inherit table_xls_from_ejam 
+ejam2excel <- function(...) {
+  table_xls_from_ejam(...)
+}
+
+
+#' table_xls_from_ejam
 #' Format the results of ejamit() for excel and optionally save .xlsx file
 #' @param ejamitout output of [ejamit()] 
 #' @param fname optional name or full path and name of file to save locally, like "out.xlsx" 
 #' @param save_now optional logical, whether to save as a .xlsx file locally or just return workbook object
 #'   that can later be written to .xlsx file using [openxlsx::saveWorkbook()]
 #' @param overwrite optional logical, passed to [openxlsx::saveWorkbook()]
-#' @param launchexcel optional logical, passed to [xls_formatting2()], whether to launch browser to see spreadsheet immediately
+#' @param launchexcel optional logical, passed to [table_xls_format()], whether to launch browser to see spreadsheet immediately
 #' @param interactive_console optional - should set to FALSE when used in code or server. If TRUE,
 #'   prompts RStudio user interactively asking where to save the downloaded file
-#' @param ok2plot optional logical, passed to  [xls_formatting2()], whether safe to try and plot or set FALSE if debugging plot problems
+#' @param ok2plot optional logical, passed to  [table_xls_format()], whether safe to try and plot or set FALSE if debugging plot problems
 #' @param in.testing optional logical
 #' @param radius_or_buffer_in_miles optional radius in miles
 #' @param in.analysis_title optional title as character string
 #' @param react.v1_summary_plot optional - a plot object
 #' @param radius_or_buffer_description optional text phrase describing places analyzed
 #' @param hyperlink_colnames optional names of columns with URLs
-#' @param ... optional additional parameters passed to [xls_formatting2()], such as 
+#' @param ... optional additional parameters passed to [table_xls_format()], such as 
 #'   heatmap_colnames, heatmap_cuts, heatmap_colors, etc.
 #' @examples \dontrun{
-#'   ejam2excel(testoutput_ejamit_10pts_1miles)
+#'   table_xls_from_ejam(testoutput_ejamit_10pts_1miles)
 #'   }
 #' @return returns a workbook object for use by openxlsx::saveWorkbook(wb_out, pathname)
 #'   or returns just the full path/file name of where it was saved if save_now = TRUE
 #' @export
 #'
-ejam2excel <- function(ejamitout, 
-                       fname = NULL, # full path and name, or just name of .xlsx file 
-                       save_now = TRUE, overwrite = TRUE, launchexcel = FALSE,
-                       interactive_console = TRUE, 
-                       ok2plot = TRUE,
-                       in.testing = FALSE,
-                       in.analysis_title =  "EJAM analysis",
-                       react.v1_summary_plot = NULL,
-                       radius_or_buffer_in_miles = NULL,  #  input$bt_rad_buff
-                       buffer_desc = "Selected Locations", 
-                       radius_or_buffer_description = 'Miles radius of circular buffer (or distance used if buffering around polygons)', 
-                       # radius_or_buffer_description =   "Distance from each site (radius of each circular buffer around a point)",
-                       hyperlink_colnames = c("EJScreen Report", "EJScreen Map", "ECHO report"),
-                       ...
+table_xls_from_ejam <- function(ejamitout, 
+                                fname = NULL, # full path and name, or just name of .xlsx file 
+                                save_now = TRUE, overwrite = TRUE, launchexcel = FALSE,
+                                interactive_console = TRUE, 
+                                ok2plot = TRUE,
+                                in.testing = FALSE,
+                                in.analysis_title =  "EJAM analysis",
+                                react.v1_summary_plot = NULL,
+                                radius_or_buffer_in_miles = NULL,  #  input$bt_rad_buff
+                                buffer_desc = "Selected Locations", 
+                                radius_or_buffer_description = 'Miles radius of circular buffer (or distance used if buffering around polygons)', 
+                                # radius_or_buffer_description =   "Distance from each site (radius of each circular buffer around a point)",
+                                hyperlink_colnames = c("EJScreen Report", "EJScreen Map", "ECHO report"),
+                                ...
 ) {
   
   npts <- NROW(ejamitout$results_bysite)
@@ -69,7 +77,7 @@ ejam2excel <- function(ejamitout,
   
   # keepcols <- rep(TRUE, NCOL(ejamitout$results_overall))
   
-  # defaults in xls_formatting2 : 
+  # defaults in table_xls_format : 
   #
   # overall, eachsite, longnames=NULL, bybg=NULL, formatted=NULL,
   # summary_plot = NULL, 
@@ -99,9 +107,9 @@ ejam2excel <- function(ejamitout,
   # testing = input$testing
   
   # these should be data.tables or at least they used to be when coming from ejamit() but not within server code...
-  # so does that cause a problem for xls_formatting2() if they are data.table format???
+  # so does that cause a problem for table_xls_format() if they are data.table format???
   
-  wb_out <- xls_formatting2(
+  wb_out <- table_xls_format(
     
     # ### if we must provide data.frame only, not data.table, here, then we may need to convert them:
     # overall   = as.data.frame(ejamitout$results_overall), # 1 row with overall results aggregated across sites
@@ -158,7 +166,7 @@ ejam2excel <- function(ejamitout,
     # do error checking of pathname here - in case not interactively set and want to warn/ exit more gracefully
     
     cat("Saving as ", pathname, "\n")
-    ## save file and return for downloading - or do this within xls_formatting2( , saveas=fname) ?
+    ## save file and return for downloading - or do this within table_xls_format( , saveas=fname) ?
     openxlsx::saveWorkbook(wb_out, pathname, overwrite = overwrite)
     return(pathname)
   } else {

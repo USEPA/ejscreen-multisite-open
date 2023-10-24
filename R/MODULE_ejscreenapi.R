@@ -1058,7 +1058,7 @@ mod_ejscreenapi_server <- function(id,
             # note despite name of function, write_excel_csv() saves it as a csv, NOT ACTUALLY excel, 
             #  but writes csv faster and indicates it is UTF8 encoding to help import to excel
           } else {
-            wb <- xls_formatting_api(df = table_as_displayed, 
+            wb <- table_xls_format_api(df = table_as_displayed, 
                                      hyperlink_cols = c('EJScreenPDF', 'EJScreenMAP'),
                                      heatmap_colnames = names(table_as_displayed)[pctile_colnums],
                                      heatmap_cuts = c(80, 90, 95),

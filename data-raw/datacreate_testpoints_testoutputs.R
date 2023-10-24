@@ -157,11 +157,11 @@ NULL
     
     # SAVE AS EXCEL FILE  ####
     #
-    junk = xls_formatting2(overall = out_data_doagg$results_overall, 
+    junk = table_xls_format(overall = out_data_doagg$results_overall, 
                            eachsite =       out_data_doagg$results_bysite, 
                            longnames =      out_data_doagg$longnames,
                            bybg =           out_data_doagg$results_bybg_people,
-                           analysis_title = "Example of outputs of doaggregate() being formatted and saved using xls_formatting2()",  
+                           analysis_title = "Example of outputs of doaggregate() being formatted and saved using table_xls_format()",  
                            buffer_desc = paste0("Within ", myrad, " miles"),
                            plotlatest = FALSE, 
                            saveas = paste0("./inst/testdata/examples_of_output/", out_varname_doagg, ".xlsx") 
@@ -210,11 +210,11 @@ NULL
     
     # SAVE AS EXCEL FILE  ####
     #
-    junk = xls_formatting2(overall =        out_data_ejamit$results_overall, 
+    junk = table_xls_format(overall =        out_data_ejamit$results_overall, 
                            eachsite =       out_data_ejamit$results_bysite, 
                            longnames =      out_data_ejamit$longnames,
                            bybg =           out_data_ejamit$results_bybg_people,
-                           analysis_title = "Example of outputs of ejamit() being formatted and saved using xls_formatting2()",  
+                           analysis_title = "Example of outputs of ejamit() being formatted and saved using table_xls_format()",  
                            buffer_desc = paste0("Within ", myrad, " miles"),
                            plotlatest = FALSE, 
                            saveas = paste0("./inst/testdata/examples_of_output/", out_varname_ejamit, ".xlsx") 

@@ -2011,7 +2011,7 @@ app_server <- function(input, output, session) {
   ################################################################ # 
   # just a nicer looking tall version of overall results
   # output$overall_results_tall <- renderDT({
-  #   format_results_overall(results_overall = data_processed()$results_overall, longnames =  data_processed()$longnames)
+  #   table_tall_from_overall(results_overall = data_processed()$results_overall, longnames =  data_processed()$longnames)
   # })
   # output$overall_results_tall <- renderDT({
   #   tallout <- cbind(overall = round(unlist(data_processed()$results_overall), 3))
@@ -2136,7 +2136,7 @@ app_server <- function(input, output, session) {
   
   ## EXCEL DOWNLOAD  ####
   
-  # SEE FUNCTION THAT CAN DO THIS AT ?ejam2excel()
+  # SEE FUNCTION THAT CAN DO THIS AT ?table_xls_from_ejam()
   
   output$download_results_table <- downloadHandler(
     filename = function() {
@@ -2146,13 +2146,13 @@ app_server <- function(input, output, session) {
     content = function(fname) {
       
       if (input$testing) {
-        cat('starting download code and  xls_formatting2() \n') # ; xproc = data_processed(); save(xproc, file = 'table_data_processed-ejam.rda')
+        cat('starting download code and  table_xls_format() \n') # ; xproc = data_processed(); save(xproc, file = 'table_data_processed-ejam.rda')
       }
       
       #  names( data_processed() )  #  "results_overall"  "results_bysite"  "results_bybg_people"  "longnames"  "count_of_blocks_near_multiple_sites"   "results_summarized"  
       
       #  data_processed()$results_bybg_people  # do we need to provide this to xlsx at all? it is huge and for expert users only,
-      #    but useful to create a plot of distance by group, but that could be created here to avoid passing the entire large table to xls_formatting2() just for the plot. ***
+      #    but useful to create a plot of distance by group, but that could be created here to avoid passing the entire large table to table_xls_format() just for the plot. ***
       
       #  Avoid making copies since that slows it down? 
       
@@ -2177,7 +2177,7 @@ app_server <- function(input, output, session) {
         x$results_overall <- x$results_overall[  , keepcols]
         x$results_bysite  <- x$results_bysite[   , keepcols]
         x$longnames <- longnames[keepcols]
-        wb_out <- ejam2excel(
+        wb_out <- table_xls_from_ejam(
           ejamitout = x, save_now = FALSE,
           
           #### *** to be finished
@@ -2185,7 +2185,7 @@ app_server <- function(input, output, session) {
         
       } else {
         
-        wb_out <- xls_formatting2(
+        wb_out <- table_xls_format(
           # note they seem to be data.frames, not data.tables, at this point, unlike how ejamit() had been returning results.
           overall   = data_processed()$results_overall[ , keepcols],  # 1 row with overall results aggregated across sites
           eachsite  = data_processed()$results_bysite[  , keepcols],  # 1 row per site
@@ -2206,7 +2206,7 @@ app_server <- function(input, output, session) {
           testing = input$testing
         )
       }    
-      ## save file and return for downloading - or do this within xls_formatting2( , saveas=fname) ?
+      ## save file and return for downloading - or do this within table_xls_format( , saveas=fname) ?
       openxlsx::saveWorkbook(wb_out, fname)
       
       
@@ -2670,7 +2670,7 @@ app_server <- function(input, output, session) {
           
           total_pop  = prettyNum( total_pop(), big.mark = ","),
           results =  data_processed(),  # do we need to pass the entire table? may want to use it in appendices, etc.
-          results_formatted =  format_results_overall(data_processed()$results_overall, data_processed()$longnames),  
+          results_formatted =  table_tall_from_overall(data_processed()$results_overall, data_processed()$longnames),  
           map =  report_map(),
           # map_placeholder_png=                 "map_placeholder.png",
           envt_table =  v1_envt_table(),

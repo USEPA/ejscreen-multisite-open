@@ -1,6 +1,6 @@
-#' xls_formatting2 - Format EJAM tabular outputs for saving as Excel spreadsheet
+#' table_xls_format - Format EJAM tabular outputs for saving as Excel spreadsheet
 #' 
-#' @details  Already took and put here most or all of code from xls_formatting() or xls_formatting_api() 
+#' @details  Already took and put here most or all of code from table_xls_format() or table_xls_format_api() 
 #' @param overall  table to save in one tab, from ejamit()$overall, EJAM analysis of indicators overall (one row)
 #' @param eachsite table to save in one tab, from ejamit()$overall, EJAM analysis site by site (one row per site)
 #' @param longnames vector of indicator names to display in Excel table
@@ -43,10 +43,10 @@
 #' @export
 #'
 #' @examples \dontrun{
-#'   wb <- xls_formatting2(testoutputs_$results_overall, datasetResults()$results_bysite,
+#'   wb <- table_xls_format(testoutputs_$results_overall, datasetResults()$results_bysite,
 #'     saveas =  "results.xlsx")
 #' }
-xls_formatting2 <- function(overall, eachsite, longnames=NULL, formatted=NULL, bybg=NULL, 
+table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, bybg=NULL, 
                             plot_distance_by_group = TRUE, 
                             summary_plot = NULL, 
                             plotlatest = FALSE, 
@@ -75,14 +75,14 @@ xls_formatting2 <- function(overall, eachsite, longnames=NULL, formatted=NULL, b
   }
   
   if (testing) {
-    cat('in xls_formatting2, names of each site: \n\n'); print(names(eachsite))
+    cat('in table_xls_format, names of each site: \n\n'); print(names(eachsite))
     
   }
   # SHORT REPORT COMBINES THESE reactives:
   #   
   #   summary_title() for top of 1pager (it includes input$analysis_title) 
   # 
-  # v1_demog_table() from format_gt_table(df)
+  # v1_demog_table() from table_gt_format(df)
   # 
   # v1_envt_table()  same
   # 
@@ -346,7 +346,7 @@ xls_formatting2 <- function(overall, eachsite, longnames=NULL, formatted=NULL, b
   # output of ejamit()$results_bysite have a  EJScreen Report  column that has values like this:   
   # <a href="https://ejscreen.epa.gov/mapper/EJscreen_SOE_report.aspx?namestr=&geometry=%7B%22spatialReference%22:%7B%22wkid%22:4326%7D,%22x%22:-122.64108,%22y%22:45.55001%7D&distance=1&unit=9035&areatype=&areaid=&f=report", target="_blank" rel="noreferrer noopener">EJScreen Report</a>
   
-  # output from app_server code, ready to get sent to xls_formatting2(), is like this:
+  # output from app_server code, ready to get sent to table_xls_format(), is like this:
   #   url_ejscreen_report(    lat = d_upload$lat, lon =  d_upload$lon, radius = input$bt_rad_buff, as_html = TRUE)
   # "<a href=\"https://ejscreen.epa.gov/mapper/EJscreen_SOE_report.aspx?namestr=&geometry=%7B%22spatialReference%22:%7B%22wkid%22:4326%7D,%22x%22:-103,%22y%22:42%7D&distance=3&unit=9035&areatype=&areaid=&f=report\", target=\"_blank\" rel=\"noreferrer noopener\">EJScreen Report</a>"
   

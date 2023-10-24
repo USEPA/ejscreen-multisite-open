@@ -172,6 +172,18 @@ mapfastej(x$results_bysite)
 # help("mapfast")
 ```
 
+### View Results as Spreadsheet (Launches Excel)
+
+```{r eval=FALSE}
+ejam2excel(ejamit(testpoints_10, radius = 1), launchexcel = T, save_now = F)
+```
+
+### Save Results as Spreadsheet
+
+```{r eval=FALSE}
+ejam2excel(ejamit(testpoints_10, radius = 1), save_now = T)
+```
+
 
 ### Interactively select your file with lat,lon coordinates, without shiny web app
 

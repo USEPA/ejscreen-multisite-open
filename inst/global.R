@@ -161,7 +161,7 @@ default_include_extraindicators <- TRUE
 
 
 
-default_ok2plot <- FALSE # the plots to put in excel tabs via ejam2excel() and xls_formatting2() and the plot functions
+default_ok2plot <- FALSE # the plots to put in excel tabs via table_xls_from_ejam() and table_xls_format() and the plot functions
 
 
 ############################################################################## # # # 
