@@ -1,4 +1,5 @@
-#' pctile_from_raw_lookup - Find approx wtd percentiles in lookup table that is in memory
+
+#' pctile_from_raw_lookup - Find approx percentiles in lookup table that is in memory
 #' @description This is used with a lookup table to
 #'   convert a raw indicator vector to percentiles in US or States.
 #' @details
@@ -36,6 +37,11 @@
 #' @param varname.in.lookup.table Character element, required.
 #'   Name of column in lookup table to look in
 #'   to find interval where a given element of myvector values is.
+#'   
+#'   *** If vector is provided, then must be same length as myvector, 
+#'   
+#'   but only 1 value for zone can be provided.
+#'   
 #' @param lookup Either lookup must be provided, not quoted,
 #'   or a lookup table called [usastats] must already be in memory. This is the lookup table
 #'   data.frame with a PCTILE column, REGION column, and column whose name is the value of varname.in.lookup.table  
@@ -47,6 +53,14 @@
 #' @aliases lookup_pctile
 #' @return By default, returns numeric vector length of myvector.
 #' @examples \dontrun{
+#' 
+#' eg <- dput(round(as.vector(unlist(testoutput_ejamit_10pts_1miles$results_overall[ , ..names_d] )),3))
+#' 
+#' data.frame(value = eg, pctile = t(testoutput_ejamit_10pts_1miles$results_overall[ , ..names_d_pctile]))
+#' 
+#' data.frame(value = eg, pctile = lookup_pctile(eg, names_d))
+#' 
+#' 
 #'   # compare ejscreen API output percentiles to those from this function:
 #'   for (vname in c(names_d[c(1,3:6,8:10)] )) {
 #'      print(pctile_from_raw_lookup(testoutput_ejscreenapi_plus_100[,vname] / 100, vname, 
@@ -65,12 +79,24 @@ pctile_from_raw_lookup <- function(myvector, varname.in.lookup.table, lookup=usa
   #  similar code in ejanalysis package file was lookup.pctiles()
   
   # CHECK FOR FATAL PROBLEMS  ####
+
   
-  if (length(varname.in.lookup.table) != 1)  {stop("Must specify only one variable (column name) as varname.in.lookup.table, like 'pctlowinc' ")}
   if (missing(lookup) & !exists("usastats")) {stop("lookup default usastats was not found, but should be available as usastats")}
   if (!is.data.frame(lookup))                {stop("lookup must be a data.frame like usastats or statestats, with columns PCTILE, REGION, and the names of indicators like pctlowinc")}
   if (!('PCTILE' %in% names(lookup)))        {stop('lookup must have a field called "PCTILE" that contains quantiles/percentiles')}
   if (missing(zone) & any(lookup$REGION != 'USA')) {stop('If no zone (like "NY") is specified, lookup table must have column called REGION that has "USA" in every row.')}
+  
+  if (length(varname.in.lookup.table) > 1 )  {
+    if (length(zone) == 1 & length(varname.in.lookup.table) == length(myvector) ) {
+      ##   allow multiple indicators at once, for a vector of corresponding values, but only 1 zone, like this:
+      message("checking each value for its corresponding indicator, such as c(12,40)  for  ('pm','o3')  ")
+      return( mapply(FUN = pctile_from_raw_lookup, myvector = myvector, varname.in.lookup.table = varname.in.lookup.table, MoreArgs = list(lookup = lookup, zone = zone)) )
+    } else {
+      stop("Can provide vectors of values and of zones like states, but then must specify only one variable (column name) as varname.in.lookup.table, like 'pctlowinc' - 
+           or can provide vectors of values and corresponding variables but only in 1 zone")
+    }
+  }
+  
   if (length(zone) != length(myvector)) {
     if (length(zone) == 1) {
       # Assume they meant the one zone (e.g. a State) to apply to all the indicator values provided as myvector
@@ -201,9 +227,11 @@ pctile_from_raw_lookup <- function(myvector, varname.in.lookup.table, lookup=usa
   
 }
 
-#' lookup_pctile (synonym for pctile_from_raw_lookup)
-#'
-#' @inherit pctile_from_raw_lookup
+#' lookup_pctile - Find approx percentiles in lookup table that is in memory
+#' @seealso Identical to [pctile_from_raw_lookup()] [usastats] [statestats]
+#' @inheritParams pctile_from_raw_lookup
 #' @export
 #' 
-lookup_pctile  <- function(...) {pctile_from_raw_lookup(...)}
+lookup_pctile  <- function(myvector, varname.in.lookup.table, lookup = usastats, zone = "USA") {
+  pctile_from_raw_lookup(myvector = myvector, varname.in.lookup.table = varname.in.lookup.table, lookup = lookup, zone = zone)
+} #  function(...) {pctile_from_raw_lookup(...)}

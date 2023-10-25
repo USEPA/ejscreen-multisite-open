@@ -2,19 +2,21 @@
 % Please edit documentation in R/statestats_query.R
 \name{usastats_means}
 \alias{usastats_means}
-\title{usastats_means - convenient way to see USA MEANS of ENVIRONMENTAL and DEMOGRAPHIC indicators from lookup table}
+\title{usastats_means - convenient way to see US MEANS of ENVIRONMENTAL and DEMOGRAPHIC indicators}
 \usage{
-usastats_means(...)
+usastats_means(
+  varnames = c(EJAM::names_e, EJAM::names_d, EJAM::names_d_subgroups_nh),
+  PCTILES = NULL,
+  dig = 2
+)
 }
 \arguments{
-\item{...}{
-  Arguments passed on to \code{\link[=usastats_query]{usastats_query}}
-  \describe{
-    \item{\code{varnames}}{names of columns in lookup table, like "proximity.rmp"}
-    \item{\code{PCTILES}}{vector of percentiles 0-100 and/or "mean"}
-    \item{\code{dig}}{how many digits to round to}
-  }}
+\item{varnames}{names of columns in lookup table, like "proximity.rmp"}
+
+\item{PCTILES}{vector of percentiles 0-100 and/or "mean"}
+
+\item{dig}{how many digits to round to}
 }
 \description{
-usastats_means - convenient way to see USA MEANS of ENVIRONMENTAL and DEMOGRAPHIC indicators from lookup table
+usastats_means - convenient way to see US MEANS of ENVIRONMENTAL and DEMOGRAPHIC indicators
 }

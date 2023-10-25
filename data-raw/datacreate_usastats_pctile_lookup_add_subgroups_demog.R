@@ -43,8 +43,8 @@ golem::detach_all_attached() # unattach EJAM:: pkg while doing this to avoid con
       stop('need subgroup data to create lookup percentile info for subgroups')
     } else {print('ok not all zero values')}
   }
-cbind(percent.NA =  round(sapply(bg[,names_d_subgroups_both], function(x) sum(is.na(x) ))/NROW(bg),3) *100) # count is.na values for each indicator
-cbind(percent.zero =  round(sapply(bg[,names_d_subgroups_both], function(x) sum(0 == (x), na.rm = T))/NROW(bg),3) *100) # count zero  values for each indicator
+cbind(percent.NA   =  round(sapply(bg[,names_d_subgroups_both], function(x) sum(is.na(x) )) / NROW(bg), 3) * 100) # count is.na values for each indicator
+cbind(percent.zero =  round(sapply(bg[,names_d_subgroups_both], function(x) sum(0 == (x), na.rm = T)) / NROW(bg), 3) * 100) # count zero  values for each indicator
   
 # need ST column in blockgroupstats to create the statestats lookup table of demog subgroup info,
 # so add FIPS.ST and ST columns to blockgroupstats if not already there
@@ -123,9 +123,9 @@ if (all(usastats2.2[,names_d_subgroups_both] == 0)  | any(!(names_d_subgroups_bo
   morecols = data.frame(as.list(rep(0,length(names_d_subgroups_both))))
   names(morecols) <- names_d_subgroups_both
   zerorowperstate <- data.frame(
-    OBJECTID=0,
-    REGION=unique(statestats_subgroups$REGION),
-    PCTILE=0, 
+    OBJECTID = 0,
+    REGION = unique(statestats_subgroups$REGION),
+    PCTILE = 0, 
     morecols
   )
   statestats_subgroups <- rbind(statestats_subgroups, zerorowperstate)
@@ -139,8 +139,8 @@ if (all(usastats2.2[,names_d_subgroups_both] == 0)  | any(!(names_d_subgroups_bo
     statestats2 <- merge(
       statestats2.2, 
       statestats_subgroups[,  unique(c("PCTILE", "REGION", setdiff(names(statestats_subgroups), names(statestats2.2))))], 
-      all.x=TRUE, all.y=FALSE, 
-      by= c("PCTILE", "REGION")
+      all.x = TRUE, all.y = FALSE, 
+      by = c("PCTILE", "REGION")
     )
     statestats2$OBJECTID.x <- NULL
     statestats2$OBJECTID.y <- NULL

@@ -68,5 +68,5 @@ For HISTOGRAMS, see:
   
 }
 \seealso{
-\code{\link[=xls_formatting2]{xls_formatting2()}} \link{plot_barplot_ratios}
+\code{\link[=table_xls_format]{table_xls_format()}} \link{plot_barplot_ratios}
 }

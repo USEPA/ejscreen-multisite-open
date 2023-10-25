@@ -1,6 +1,9 @@
 
 
 # # drafting some code to try to replace percentiles lookup that is slow in doaggregate()
+
+# but note pctile_from_raw_lookup() now can also handle 1 zone multiple indicators at once, so that should be built in here too if this approach is pursued.
+
 # # assumes we have
 # include_ejindexes  - logical parameter
 # results_bysite, results_overall  - large data.tables as parameters or by reference?

@@ -3,7 +3,7 @@
 \name{pctile_from_raw_lookup}
 \alias{pctile_from_raw_lookup}
 \alias{lookup_pctile}
-\title{pctile_from_raw_lookup - Find approx wtd percentiles in lookup table that is in memory}
+\title{pctile_from_raw_lookup - Find approx percentiles in lookup table that is in memory}
 \usage{
 pctile_from_raw_lookup(
   myvector,
@@ -17,7 +17,11 @@ pctile_from_raw_lookup(
 
 \item{varname.in.lookup.table}{Character element, required.
 Name of column in lookup table to look in
-to find interval where a given element of myvector values is.}
+to find interval where a given element of myvector values is.
+
+*** If vector is provided, then must be same length as myvector,
+
+but only 1 value for zone can be provided.}
 
 \item{lookup}{Either lookup must be provided, not quoted,
 or a lookup table called \link{usastats} must already be in memory. This is the lookup table
@@ -67,6 +71,14 @@ the minimum value, in which case it reports 0 as percentile, not that large perc
 }
 \examples{
 \dontrun{
+
+eg <- dput(round(as.vector(unlist(testoutput_ejamit_10pts_1miles$results_overall[ , ..names_d] )),3))
+
+data.frame(value = eg, pctile = t(testoutput_ejamit_10pts_1miles$results_overall[ , ..names_d_pctile]))
+
+data.frame(value = eg, pctile = lookup_pctile(eg, names_d))
+
+
   # compare ejscreen API output percentiles to those from this function:
   for (vname in c(names_d[c(1,3:6,8:10)] )) {
      print(pctile_from_raw_lookup(testoutput_ejscreenapi_plus_100[,vname] / 100, vname, 

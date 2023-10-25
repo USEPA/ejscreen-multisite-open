@@ -851,6 +851,7 @@ app_server <- function(input, output, session) {
       #)
     ) 
   })
+  ######################################  #
   
   # *TABLE of uploaded points ####
   
@@ -923,6 +924,7 @@ app_server <- function(input, output, session) {
                     
                     escape = FALSE) # escape = FALSE may add security issue but makes links clickable in table
     })
+  ######################################  #
   
   ## use external download buttons for preview data
   ## this allows loading the table on the server-side which improves speed and avoids
@@ -1007,7 +1009,7 @@ app_server <- function(input, output, session) {
           validate(paste0('Too many points (> ', prettyNum(max_pts, big.mark = ','),') uploaded for full map to be displayed - will try to show a subset'))
           
           
-          # add code here to show just a subset not >max points allowed ***
+          # add code here to show just a subset not > max points allowed ***
           
           
           
@@ -1034,29 +1036,11 @@ app_server <- function(input, output, session) {
     } # xxxx
     
   })
+  ######################################  #######################################  #
   
   ## output: draw map of uploaded points
   
   output$an_leaf_map <- leaflet::renderLeaflet({
-    
-    #req(data_uploaded())
-    ## show message until dataset is available for current method
-    # xxxx
-    # cond <- switch(current_upload_method(), 
-    #                'latlon' = input$ss_upload_latlon,
-    #                'FRS' = input$ss_upload_frs, 
-    #                'NAICS' = input$ss_select_naics,#input$submit_naics,
-    #                'SHP' = input$ss_upload_shp,
-    #                #ECHO = input$ss_upload_echo,
-    #                'EPA_PROGRAM' = switch(input$ss_choose_method, 
-    #                                       'dropdown' = input$ss_select_program,
-    #                                       'upload' = input$ss_upload_program), #input$submit_program,
-    #                'SIC' = input$ss_select_sic,#input$submit_sic,
-    #                'FIPS' = input$ss_upload_fips,
-    #                'MACT' = input$ss_select_mact)
-    # validate(
-    #   need(cond, 'Please select a data set.')
-    # )
     
     orig_leaf_map()
   })
@@ -1123,7 +1107,7 @@ app_server <- function(input, output, session) {
     
     ## progress bar update overall  
     progress_all$inc(1/3, message = 'Step 2 of 3', detail = 'Aggregating')
-    ## create progress bar to show doaggregate status
+    ## progress bar to show doaggregate status
     progress_doagg <- shiny::Progress$new(min = 0, max = 1)
     ## function for updating progress bar, to pass in to doaggregate function  
     updateProgress_doagg <- function(value = NULL, message_detail = NULL, message_main = NULL) {
@@ -1163,13 +1147,12 @@ app_server <- function(input, output, session) {
     
     ################################################################ # 
     
-    # add URLs (should be a function)  ####
-    # (to site by site table)
-    
+    # add URLs >>(should be a function)  ####
+    #  
     #  >this should be a function, and is used by both server and ejamit() ###  #
     # duplicated almost exactly in ejamit() but reactives are not reactives there
     # maybe use url_4table() - see ejamit() code
-    
+    #
     #if ("REGISTRY_ID" %in% names(out$results_bysite)) {
     # echolink = url_echo_facility_webpage(out$results_bysite$REGISTRY_ID, as_html = FALSE)
     #} else {
@@ -1213,14 +1196,10 @@ app_server <- function(input, output, session) {
     
     #############################################################################  # 
     
-    ################################################################ # 
-    
     # add radius to results tables (in server and in ejamit() ####
     out$results_bysite[      , radius.miles := input$bt_rad_buff]
     out$results_overall[     , radius.miles := input$bt_rad_buff]
     out$results_bybg_people[ , radius.miles := input$bt_rad_buff] # probably will not export this big table in excel downloads
-    
-    ################################################################ # 
     
     ## assign doaggregate output to data_processed reactive 
     data_processed(out)
@@ -1257,7 +1236,7 @@ app_server <- function(input, output, session) {
   })  # end of observeEvent based on Start analysis button called input$bt_get_results
   
   #############################################################################  # 
-  # if (calculate_ratios) {  ## ratios can be dropped from output table of results but are used by summary report, plots, etc. so simplest is to still calculate them
+  # if (input$calculate_ratios) {  ## ratios can be dropped from output table of results but are used by summary report, plots, etc. so simplest is to still calculate them
   #############################################################################  # 
   # . 4) ratios,  also avail from ejamit()####
   # ______ AVERAGES and RATIOS TO AVG - ALREADY done by doaggregate() and kept in data_processed()
@@ -1368,8 +1347,7 @@ app_server <- function(input, output, session) {
   ### summary header is output as html 
   output$view1_total_pop <- renderUI({
     HTML(summary_title())
-  }) 
-  
+  })
   
   #############################################################################  # 
   ## *TABLE DEMOG (for summary report) #### 
@@ -1377,16 +1355,14 @@ app_server <- function(input, output, session) {
   v1_demog_table <- reactive({    
     
     req(data_processed())
-    # should it check if (input$calculate_ratios) # *** ?
+    # should it check if (input$calculate_ratios) or is it ok to show NA values instead of hiding those columns *** ?
     
-      table_out_d <- table_gt_format(data_processed()$results_overall,
-                                     type = 'demog',
-                                     )
+      table_out_d <- table_gt_from_ejamit_overall(data_processed()$results_overall, 
+                                                  type = 'demog')
       table_out_d
   })
   
-  ## output: show table of indicators in view 1
-  
+  ## output:  gt  view1_demog_table()
   output$view1_demog_table <- gt::render_gt({
     v1_demog_table()
   })
@@ -1398,11 +1374,8 @@ app_server <- function(input, output, session) {
     req(data_processed())
     # should it check if (input$calculate_ratios) # *** ?
     
-    tab_out_e <- table_gt_from_overall(data_processed()$results_overall, 
-                                        type = "envt", 
-                                        varnames = names_e )
-    tab_out_e <- table_gt_format(df = tab_out_e,
-                                 type = 'envt')
+    tab_out_e <- table_gt_from_ejamit_overall(data_processed()$results_overall, 
+                                              type = "envt", varnames = names_e )
     tab_out_e
   })
   
