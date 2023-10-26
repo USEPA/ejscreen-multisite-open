@@ -5,15 +5,13 @@
 \title{table_gt_from_ejamit - Create a gt-format table of results from EJAM
 Uses the list of results of ejamit()}
 \usage{
-table_gt_from_ejamit(ejamitoutput = NULL, type = c("demog", "envt")[1], ...)
+table_gt_from_ejamit(ejamitoutput = NULL, type = c("demog", "envt")[1])
 }
 \arguments{
 \item{ejamitoutput}{list of EJAM results formatted as in testoutput_ejamit_100pts_1miles,
 as would be the output of ejamit()}
 
 \item{type}{Must be "demog" or "envt" -- Creates one of these at a time}
-
-\item{...}{passed to \code{\link[=table_gt_from_ejamit_overall]{table_gt_from_ejamit_overall()}}}
 }
 \value{
 Provides table in gt format from the R package called gt

@@ -7,21 +7,20 @@
 #' @param ejamitoutput list of EJAM results formatted as in testoutput_ejamit_100pts_1miles, 
 #'   as would be the output of ejamit()
 #' @param type Must be "demog" or "envt" -- Creates one of these at a time
-#' @param ... passed to [table_gt_from_ejamit_overall()]
 #' @return Provides table in gt format from the R package called gt 
 #' @export
 #' @examples  table_gt_from_ejamit(testoutput_ejamit_100pts_1miles)
 #' 
-table_gt_from_ejamit <- function(ejamitoutput = NULL, type = c("demog", "envt")[1], ...) {
+table_gt_from_ejamit <- function(ejamitoutput = NULL, type = c("demog", "envt")[1]) {
   
   if (!is.list(ejamitoutput) | !("results_overall" %in% names(ejamitoutput))) {
     warning('RETURNING NA VALUES FOR ALL INDICATORS - Data must be a list of results exactly like the output of ejamit() such as testoutput_ejamit_10pts_1miles')
     return(
-      table_gt_from_ejamit_overall(NULL, type = type, ...)
+      table_gt_from_ejamit_overall(NULL, type = type)
     )
   } else {
     return(
-      table_gt_from_ejamit_overall(ejamitoutput$results_overall, type = type, ...)
+      table_gt_from_ejamit_overall(ejamitoutput$results_overall, type = type)
     )
   } 
 }
@@ -33,19 +32,18 @@ table_gt_from_ejamit <- function(ejamitoutput = NULL, type = c("demog", "envt")[
 #' @param ejamit_results_1row 1-row data.table like testoutput_ejamit_100pts_1miles$results_overall, 
 #'   as would come from ejamit(testpoints_10)$results_overall 
 #' @param type Must be "demog" or "envt" -- Creates one of these at a time
-#' @param ... Passed to [table_gt_format_step2()]
 #' @return Provides table in gt format from the R package called gt 
 #' @export
 #' @examples 
 #'  x <- table_gt_from_ejamit_overall(testoutput_ejamit_100pts_1miles$results_overall)
 #'  
-table_gt_from_ejamit_overall   <- function(ejamit_results_1row = NULL, type = c("demog", "envt")[1], ...) {
+table_gt_from_ejamit_overall   <- function(ejamit_results_1row = NULL, type = c("demog", "envt")[1] ) {
   
   ## for example
   # ejamit_results_1row <-  testoutput_ejamit_100pts_1miles$results_overall
   
   x <- table_gt_format_step1(ejamit_results_1row = ejamit_results_1row, type = type) # returns a data.frame
-  x <- table_gt_format_step2(x, type = type, ...) # returns a gt table
+  x <- table_gt_format_step2(x, type = type) # returns a gt table
   x
 }
 ############################################################################# # 
@@ -214,7 +212,9 @@ table_gt_format_step2 <- function(df, type="demog", my_cell_color =  '#dce6f0', 
   
   # SORT TABLE ####
   #  to show in the same sort order as EJScreen reports use, acc to metadata in map_headernames
-  df <- df[ order(as.numeric(varinfo(df$varnames_r, "reportsort"))), ] # items not found are just "" which is ok
+  df <- df[ order(as.numeric(
+    as.vector(
+      unlist(varinfo(df$varnames_r, "reportsort"))))), ] # items not found are just "" which is ok
   
   # ROUNDING ####
   # get number of decimal places to use as in EJScreen reports, acc to metadata in map_headernames

@@ -18,7 +18,7 @@
 #'
 table_rounding_info <- function(var, varnametype="rname") {
   as.numeric(  # in case it was still stored as character in map_headernames
-    varinfo(var = var, info = "decimals", varnametype = varnametype)
+    as.vector(unlist(varinfo(var = var, info = "decimals", varnametype = varnametype)))
   )
 }
 

@@ -1374,8 +1374,8 @@ app_server <- function(input, output, session) {
     req(data_processed())
     # should it check if (input$calculate_ratios) # *** ?
     
-    tab_out_e <- table_gt_from_ejamit_overall(data_processed()$results_overall, 
-                                              type = "envt", varnames = names_e )
+    tab_out_e <- table_gt_from_ejamit_overall(data_processed()$results_overall,
+                                              type = "envt")
     tab_out_e
   })
   

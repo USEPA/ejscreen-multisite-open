@@ -7,8 +7,7 @@ Uses the results_overall element of ejamit() output}
 \usage{
 table_gt_from_ejamit_overall(
   ejamit_results_1row = NULL,
-  type = c("demog", "envt")[1],
-  ...
+  type = c("demog", "envt")[1]
 )
 }
 \arguments{
@@ -16,8 +15,6 @@ table_gt_from_ejamit_overall(
 as would come from ejamit(testpoints_10)$results_overall}
 
 \item{type}{Must be "demog" or "envt" -- Creates one of these at a time}
-
-\item{...}{Passed to \code{\link[=table_gt_format_step2]{table_gt_format_step2()}}}
 }
 \value{
 Provides table in gt format from the R package called gt
