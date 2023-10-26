@@ -2,27 +2,47 @@
 % Please edit documentation in R/varinfo.R
 \name{varinfo}
 \alias{varinfo}
-\title{varinfo - Get metadata for a variable, like its type, glossary definition, decimal places rounding, etc.}
+\title{varinfo - Get metadata for a variable, like its type, definition, decimalS rounding, etc.
+This is just a way to query map_headernames, which has info about each indicator or
+variable used in EJAM.}
 \usage{
-varinfo(var, info, varnametype = "rname")
+varinfo(
+  var = map_headernames$rname,
+  info = colnames(map_headernames),
+  varnametype = "rname"
+)
 }
 \arguments{
-\item{var}{vector of variable names such as c("pctlowinc", "cancer") or c(names_d, names_d_subgroups)}
+\item{var}{vector of variable names such as c("pctlowinc", "cancer") or c(names_d, names_d_subgroups)
+(and must be found in the column of map_headernames indicated by varnametype parameter below).}
 
-\item{info}{one type of metadata/info needed, such as "decimals" or "long",
-which should be the name of a column in map_headernames, to pass to fixcolnames()
-which is the function that actually looks up the info.
-Or a vector of those, in which case a table is returned, one column for each.}
+\item{info}{types of metadata/info needed, such as "decimals", "long", etc.
+which should be among colnames of map_headernames,
+or alias like "long" as allowed by fixcolnames()}
 
-\item{varnametype}{which column of map_headernames to use when looking for var, like "rname" or "api" or "long"}
+\item{varnametype}{optional. colname of map_headernames to use when looking for var,
+like "rname" or "api" or "long"}
 }
 \value{
-named vector same size as var, with var as names;
-unless info is a vector in which case a table is returned, one col per value of info.
+data.frame of 1 or more rows, 1 or more columns, where
+
+rowsnames are var (indicators like "pctmin")
+
+colnames are info (metadata   like "decimals")
+
+Cells of table are metadata such as what type of indicator is that var, how many
+decimal places of rounding should be displayed for it in tables, etc.
+
 Results can be character, numeric, etc. depending on what info is requested
 }
 \description{
-varinfo - Get metadata for a variable, like its type, glossary definition, decimal places rounding, etc.
+varinfo - Get metadata for a variable, like its type, definition, decimalS rounding, etc.
+This is just a way to query map_headernames, which has info about each indicator or
+variable used in EJAM.
+}
+\details{
+See map_headernames for what kind of information is available there.
+But if a variable appears twice+ in var or in map_headernames, info returned only for the 1st row of those
 }
 \examples{
  

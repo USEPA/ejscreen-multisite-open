@@ -15,7 +15,9 @@
 #'
 #' @export
 #'
-dataload_from_local <- function(varnames= c('bgid2fips', 'blockid2fips', 'blockpoints', 'blockwts', 'quaddata' ),
+dataload_from_local <- function(varnames= c('bgid2fips',
+                                            'blockid2fips', # HUGE IN MEMORY
+                                            'blockpoints', 'blockwts', 'quaddata'),
                                 ext=c(".arrow", ".rda")[1],
                                 fun=c("arrow::read_ipc_file", "load")[1],
                                 envir=globalenv(),  # should it be parent or global or package EJAM envt ??
