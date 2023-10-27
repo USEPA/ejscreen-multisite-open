@@ -121,16 +121,20 @@ Once the packages are installed, to use EJAM in the console you can start by loa
 
 You can then load the datasets that are stored in AWS Data Commons during EJAM development.
 
-```{r dataload_from_aws-indexblocks, eval = TRUE}
-library(EJAM)
-
+```{r libraryejam, eval=TRUE}
+require(EJAM)
+```
+```{r dataload_from_aws, eval = TRUE}
 dataload_from_aws()
 # It takes some time (maybe 30 to 60 seconds) for the large downloads, while EJAM is still in development.
+```
 
+```{r indexblocks, eval=TRUE}
 indexblocks()
 # It takes several seconds
 # (or you can omit typing this since it would be run as needed once you try to use key functions)
 ```
+
 
 You can save a little time if you first save those datasets locally and in later sessions have EJAM read them from your local drive instead of re-downloading from AWS.
 
@@ -381,7 +385,7 @@ NROW(frs_from_naics(naics_from_any("chem")$code))
 
 #### Map of the blocks found near 1 site
 
-```{r plotblocksnearby_1, fig.height=5, fig.width=5}
+```{r plotblocksnearby_1, fig.height=5, fig.width=5, eval = TRUE}
 plotblocksnearby(testpoints_n(1), radius = 3, returnmap = TRUE)
 ```
 

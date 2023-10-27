@@ -5,7 +5,14 @@
 \title{plotblocksnearby - Map view of Census blocks (their centroids) near one or more sites
 Utility to quickly view one or more facility points on map with the blocks found nearby}
 \usage{
-plotblocksnearby(sitepoints, radius = 3, sites2blocks, usemapfast = TRUE, ...)
+plotblocksnearby(
+  sitepoints,
+  radius = 3,
+  sites2blocks,
+  usemapfast = TRUE,
+  returnmap = FALSE,
+  ...
+)
 }
 \arguments{
 \item{sitepoints}{table of points with lat, lon in decimal degrees (data.frame or data.table),
@@ -21,6 +28,8 @@ If sites2blocks not provided, but sitepoints alone is provided, and sitepoints i
 If sites2blocks is provided, but sitepoints is not, it could only do a bad approximation of sitepoints so it will not draw the circle or site at center of the circle.}
 
 \item{usemapfast}{optional. simpler plot if FALSE}
+
+\item{returnmap}{optional. if set TRUE, returns the leaflet map object instead of tabular info.}
 
 \item{...}{passed to mapfast() or plot() depending on usemapfast}
 }
