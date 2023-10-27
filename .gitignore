@@ -44,3 +44,5 @@ packrat/lib*/
 *.dcf
 # such as EJAM/rsconnect/rstudio-connect.dmap-stage.aws.epa.gov/Mark/ejam.dcf  configuration file for deplying to RStudio Connect server
 
+/doc/
+/Meta/

@@ -1,2 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^.*ALL_THIS_GETS_MOVED_TO_ROOT_FOLDER.*
+^doc$
+^Meta$
