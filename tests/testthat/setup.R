@@ -26,22 +26,24 @@ source(system.file("global.R", package = "EJAM"))
 # and building the block index if it was not already built
 
 # NO REAL NEED TO CREATE THIS IN setup.R, since it is fast enough to do repeatedly in tests:
-# if (exists("ejamit") & exists("blockgroupstats")) {
-# ejamoutnow <- try(ejamit(testpoints_10, radius = 1), silent = FALSE)
-# } else {
-#   warning("missing ejamit() or blockgroupstats, so using pre-calculated results in tests")
-#   ejamoutnow <- EJAM::testoutput_ejamit_10pts_1miles
-# }
+if (exists("ejamit") & exists("blockgroupstats")) {
+ejamoutnow <- try(ejamit(testpoints_10, radius = 1), silent = FALSE)
+} else {
+  warning("missing ejamit() or blockgroupstats, so using pre-calculated results in tests")
+  ejamoutnow <- EJAM::testoutput_ejamit_10pts_1miles
+}
 
 # # Run after all tests
-# withr::defer(rm(ejamoutnow), teardown_env())  # is this right??
+
+# withr::defer(cleanup(), teardown_env())  # is that right? it is from the help example but what is cleanup() ?? ***
+ 
 # Setup code is typically best used to create external resources that are needed by many tests. It’s best kept to a minimum because you will have to manually run it before interactively debugging tests.
-##############
+ 
 
 
 #############################################################################  #
 ## to profile parts of the shiny app for performance
-# callModule(profvis_server, "profiler")
+# shiny::callModule(profvis_server, "profiler")
 #
 # also see  /EJAM/tests/testthat/test-ui_and_server.R
 # and see  https://shiny.posit.co/r/articles/improve/debugging/

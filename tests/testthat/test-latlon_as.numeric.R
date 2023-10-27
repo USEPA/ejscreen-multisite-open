@@ -36,15 +36,18 @@ test_that('empty vector returns NA',{
 
 # if it is not a vector, it should give an error
 test_that('data frame gives error',{
-  expect_error(val <- latlon_as.numeric(data.frame("a" = 1:3, "b" = LETTERS[1:3])))
+  expect_error(latlon_as.numeric(data.frame("a" = 1:3, "b" = LETTERS[1:3])))
   
 })
 
-# list is just evaluated multiple times and returned as a vector
-# 1:3 is not getting evaluated and is coming out as 13
-# it gives a warning since list "b" has no numbers
-test_that('list gives error',{
-  expect_error(val <- latlon_as.numeric(list("a" = c(1:3), "b" = LETTERS[1:10])))
+#  
+test_that('list or data.frame, instead of just a vector, gives error',{
+  expect_error( 
+    latlon_as.numeric(list("a" = c(1:3), "b" = LETTERS[1:10]))
+    )
+  expect_error(
+    latlon_as.numeric(data.frame(aaaa = 1:3, bbbb = c("x", 'y', 'z')))
+  )
   
 })
 
