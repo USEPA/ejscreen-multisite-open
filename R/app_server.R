@@ -154,7 +154,7 @@ app_server <- function(input, output, session) {
   
   #############################################################################  # 
   
-  # PLACES, LATLON - Specified How? (radio buttons) ####
+  # SELECT Facility Type vs UPLOAD Latlon/ id/ fips/ shape (radio button) ####
   # keep track of currently used method of site selection
   current_upload_method <- reactive({
     x <- switch(
@@ -237,7 +237,7 @@ app_server <- function(input, output, session) {
   #############################################################################  #   #############################################################################  # 
   #############################################################################  #   #############################################################################  # 
   
-  # # ***   DISABLE UNTIL WORKING RIGHT
+  # # ***   DISABLE UNTIL WORKING RIGHT?
   ####      IDEA IS TO LET USER TYPE FROM SCRATCH LAT LONS, AND 
   ####      ALSO MAYBE EDIT LATLONS ALREADY UPLOADED FROM A FILE!
   
@@ -268,7 +268,7 @@ app_server <- function(input, output, session) {
   # output$test_textout3 = renderText(ifelse(input$testing, paste0(" ss_choose_method_upload input is ", input$ss_choose_method_upload, '\n'), ""))
 
   
-  # DISABLED UNTIL FIXED
+  # DISABLED UNTIL FIXED?
   
   data_typedin_latlon <- reactive({
     #   ## wait for typed in data to be submitted, then return cleaned lat lon table data.frame, as data_typedin_latlon() which eventually becomes data_uploaded()
@@ -276,11 +276,13 @@ app_server <- function(input, output, session) {
     ext <- reactive_data1()  # NEED TO TEST THAT THIS IS ACTUALLY THE USER-EDITED OUTPUT OF THE MODULE   # ss_typedin_latlon()
     #   # ext <- data.frame( siteid=1, lat=0, lon=0) # dummy data for testing
     ###   # another approach, not used:   # ext <- DataEditR::data_edit(latlon_template)
-
+cat("COUNT OF ROWS IN TYPED IN DATA: ", NROW(ext),"\n")
     ## Validate the lat lon values. If column names are found in lat/long alias comparison, clean and return the table of lat lon values
     if (any(tolower(colnames(ext)) %in% lat_alias) & any(tolower(colnames(ext)) %in% lon_alias)) {
-      ext %>%
+      sitepoints <- ext %>%
         EJAM::latlon_df_clean() #%>%   # This does latlon_infer() and latlon_as.numeric() and latlon_is.valid()
+      cat("COUNT OF VALID LAT/LON POINTS IN TYPED IN DATA: ", NROW(sitepoints),"\n")
+      sitepoints
       # returns it here, as the last thing in the reactive
     } else {
       ## if not matched, show this message instead
@@ -303,19 +305,20 @@ app_server <- function(input, output, session) {
     ## check if file extension is appropriate
     ext <- tolower(tools::file_ext(input$ss_upload_latlon$name))
     ## if acceptable file type, read in; if not, send warning text
-    ext <- switch(ext,
+    sitepoints <- switch(ext,
                   csv = data.table::fread(input$ss_upload_latlon$datapath),
                   xls  = readxl::read_excel(input$ss_upload_latlon$datapath) %>% data.table::as.data.table(),
                   xlsx = readxl::read_excel(input$ss_upload_latlon$datapath) %>% data.table::as.data.table(),
                   shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
     )
-    
+    cat("ROW COUNT IN FILE THAT SHOULD provide lat lon: ", NROW(sitepoints), "\n")
     ## if column names are found in lat/long alias comparison, process
-    if (any(tolower(colnames(ext)) %in% lat_alias) & any(tolower(colnames(ext)) %in% lon_alias)) {
-      ext %>% 
+    if (any(tolower(colnames(sitepoints)) %in% lat_alias) & any(tolower(colnames(sitepoints)) %in% lon_alias)) {
+      sitepoints <- sitepoints %>% 
          latlon_df_clean() #%>%   # This does latlon_infer() and latlon_as.numeric() and latlon_is.valid()
       #data.table::as.data.table()
-      
+      cat("ROW COUNT after latlon_df_clean(): ", NROW(sitepoints), "\n")
+      sitepoints
     } else {
       ## if not matched, show this message instead
       shiny::validate('No coordinate columns found.')
@@ -340,6 +343,7 @@ app_server <- function(input, output, session) {
                        xlsx = readxl::read_excel(input$ss_upload_frs$datapath),
                        shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
     ) # returns a data.frame
+    cat("ROW COUNT IN FILE THAT SHOULD provide FRS REGISTRY_ID: ", NROW(read_frs), "\n")
     #include frs_is_valid verification check function, must have colname REGISTRY_ID
     if (frs_is_valid(read_frs)) {
       if ("siteid" %in% colnames(read_frs)) {
@@ -350,15 +354,16 @@ app_server <- function(input, output, session) {
         read_frs$REGISTRY_ID = as.character(read_frs$REGISTRY_ID)
       }
       
-      frs_lat_lon <- dplyr::left_join(read_frs, frs_from_regid(read_frs$REGISTRY_ID))
-      #frs_lat_lon <- frs_from_regid(read_frs$REGISTRY_ID)
+      sitepoints <- dplyr::left_join(read_frs, frs_from_regid(read_frs$REGISTRY_ID))
+      #sitepoints <- frs_from_regid(read_frs$REGISTRY_ID)
       # read_frs_dt <- data.table::as.data.table(read_frs)
-      data.table::setDT(frs_lat_lon) # same but less memory/faster?
+      data.table::setDT(sitepoints) # same but less memory/faster?
     } else {
       shiny::validate('Records with invalid Registry IDs')
     }
     ## return merged dataset
-    frs_lat_lon
+    cat("SITE COUNT VIA FRS frs_is_valid() looking for REGISTRY_ID: ", NROW(sitepoints), "\n")
+    sitepoints
   })
   
   #############################################################################  # 
@@ -406,10 +411,11 @@ app_server <- function(input, output, session) {
       shiny::validate('Invalid NAICS Input')
       
     }
-    cat("SITE COUNT VIA NAICS: ", NROW(sitepoints), "\n")
-    
+    cat("SITE COUNT VIA NAICS from frs_from_naics: ", NROW(sitepoints), "\n")
     ## assign final value to data_up_naics reactive variable
-    return(sitepoints %>% latlon_df_clean())
+    sitepoints <- sitepoints %>% latlon_df_clean()
+    cat("SITE COUNT VIA NAICS after latlon_df_clean: ", NROW(sitepoints), "\n")
+    sitepoints
   })
   
   #############################################################################  # 
@@ -426,19 +432,21 @@ app_server <- function(input, output, session) {
   #   ext <- tools::file_ext(input$ss_upload_echo$name)
   #   
   #   ## if acceptable file type, read in; if not, send warning text
-  #   ext <- switch(ext,
+  #   sitepoints <- switch(ext,
   #                 csv =  data.table::fread(input$ss_upload_echo$datapath),
   #                 xls = readxl::read_excel(input$ss_upload_echo$datapath) %>% data.table::as.data.table(),
   #                 xlsx = readxl::read_excel(input$ss_upload_echo$datapath) %>% data.table::as.data.table(),
   #                 shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
   #   )
-  #   
+  # cat("FILE FROM ECHO HAS COUNT OF: ", NROW(sitepoints), "\n")
   #   ## only process if lats and lon (or aliases) exist in uploaded data  
   #   ## if column names are matched to aliases, process it    
-  #   if (any(tolower(colnames(ext)) %in% lat_alias) & any(tolower(colnames(ext)) %in% lon_alias)) {
-  #     ext %>% 
+  #    if (any(tolower(colnames(sitepoints)) %in% lat_alias) & any(tolower(colnames(sitepoints)) %in% lon_alias)) {
+  #     sitepoints <- sitepoints %>% 
   #       EJAM::latlon_df_clean() #%>% 
   #       #data.table::as.data.table()
+  # cat("FILE FROM ECHO HAS COUNT OF: ", NROW(sitepoints), " with actual lat,lon identified \n")
+  # sitepoints
   #   } else {
   #     ## if not matched, return this message
   #     shiny::validate('No coordinate columns found.')
@@ -466,7 +474,7 @@ app_server <- function(input, output, session) {
                          xlsx = readxl::read_excel(input$ss_upload_program$datapath) %>% data.table::as.data.table(),
                          shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
       ) # returns a data.frame
-      
+      cat("ROW COUNT IN file that should have program, pgm_sys_id: ", NROW(read_pgm), "\n")
       ## error if no columns provided
       if (!any(c('program','pgm_sys_id') %in% tolower(colnames(read_pgm)))) {
         validate('Please add a file with at least these two columns: program, pgm_sys_id \n and possibly these columns as well: REGISTRY_ID,lat,lon')
@@ -511,6 +519,7 @@ app_server <- function(input, output, session) {
         latlon_df_clean()
     }
     ## return output dataset
+    cat("SITE COUNT VIA PROGRAM ID: ", NROW(pgm_out), "\n")
     pgm_out
   })
   
@@ -523,27 +532,25 @@ app_server <- function(input, output, session) {
     #req(shiny::isTruthy(input$ss_enter_sic) || shiny::isTruthy(input$ss_select_sic))
     
     #define inputs
-    
     add_sic_subcategories <- FALSE #input$add_naics_subcategories 
-    # q: IS IT BETTER TO USE THIS IN naics_from_any() OR IN frs_from_naics() BELOW ??
+    # q: IS IT BETTER TO USE THIS IN naics_from_any() OR IN frs_from_naics() BELOW ?? ***
     
     # naics_validation function to check for non empty SIC inputs
     if (naics_validation('', input$ss_select_sic)) {
       inputsic = {}
-      
       # if not empty, assume its pulled using naics_from_any() or older naics_find() above
       if (length(inputsic) == 0 | rlang::is_empty(inputsic)) {
         #construct regex expression and finds sites that align with user-selected SIC codes
         inputsic <- input$ss_select_sic #c(sic_wib_split, input$ss_select_sic)
         inputsic <- unique(inputsic[inputsic != ""])
-        
+        cat("selected SIC:  ")
         print(inputsic)
-        
         #merge user-selected NAICS with FRS facility location information
         #sitepoints <- frs_by_sic[SIC %like% inputsic ,  ]
         
-        #   2. GET FACILITY LAT/LON INFO FROM NAICS CODES  
-        print('testb')
+        #   2. GET FACILITY LAT/LON INFO FROM SIC CODES
+        
+        # print('testb')
         sitepoints <- frs_from_sic(inputsic, children = add_sic_subcategories)[, .(lat,lon,REGISTRY_ID,PRIMARY_NAME,SIC)] # xxx
         # print(sitepoints)
         if (rlang::is_empty(sitepoints) | nrow(sitepoints) == 0) {
@@ -557,10 +564,8 @@ app_server <- function(input, output, session) {
     } else {
       ################ Should output something saying no valid results returned ######## #
       shiny::validate('Invalid SIC Input')
-      
     }
     cat("SITE COUNT VIA SIC: ", NROW(sitepoints), "\n")
-    
     ## assign final value to data_up_naics reactive variable
     return(sitepoints)
   })
@@ -579,12 +584,16 @@ app_server <- function(input, output, session) {
                       xlsx = readxl::read_excel(input$ss_upload_fips$datapath) |>  data.table::as.data.table(),
                       shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
     )
+    cat("COUNT OF ROWS IN FIPS FILE: ", NROW(fips_dt),"\n")
     
     ################################################################################### # 
     if (1 == 1) {
       fips_vec <- fips_from_table(fips_table = fips_dt, addleadzeroes = TRUE, inshiny = TRUE)
-      getblocksnearby_from_fips(fips_vec, inshiny = TRUE)
+      cat("COUNT OF FIPS via fips_from_table(): ", length(fips_vec), '\n')
+      fips_blockpoints <- getblocksnearby_from_fips(fips_vec, inshiny = TRUE) # *** check if this slows it down to make a copy like this, only done so it can print msg about count found
       # returns fips_blockpoints or uses validate() to show error message
+      cat("COUNT OF blocks BASED ON FIPS: ", NROW(fips_blockpoints), '\n')
+      fips_blockpoints
       
     } else {  # OLDER VERSION NOT USING FUNCTIONS
       
@@ -612,6 +621,7 @@ app_server <- function(input, output, session) {
           dplyr::mutate(distance = 0) |>  
           data.table::as.data.table()
         ## remove any invalid latlon values 
+        cat("COUNT OF blocks BASED ON FIPS: ", NROW(fips_blockpoints), '\n')
         return(fips_blockpoints)
       } else {
         ## if not matched, return this message
@@ -629,9 +639,10 @@ app_server <- function(input, output, session) {
     
     ## filter frs_by_mact to currently selected subpart
     mact_out <- frs_by_mact[ subpart == input$ss_select_mact]
+    cat("COUNT OF FACILITIES BY MACT: ", NROW(mact_out), "\n")
     ## remove any facilities with invalid latlons before returning
     mact_out <- mact_out[!is.na(lat) & !is.na(lon),]
-    
+    cat("COUNT OF FACILITIES BY MACT with lat lon values: ", NROW(mact_out), "\n")
     if (all(is.na(mact_out$lat)) & all(is.na(mact_out$lon))) {
       validate('No valid locations found under this MACT subpart')
     } else {
@@ -641,7 +652,7 @@ app_server <- function(input, output, session) {
   }) 
   ##################################################### # 
   
-  # PLACES, LATLON - Ready to Analyze ####
+  # PLACES ARE READY TO ANALYZE ####
   
   ## data_uploaded() reactive holds the points or shapefiles ####
   
@@ -650,21 +661,21 @@ app_server <- function(input, output, session) {
     ## if >1 upload method used, use the one currently indicated by radio button ss_choose_method 
     
     if        (current_upload_method() == 'latlon'        ) {data_up_latlon()
-    } else if (current_upload_method() == 'latlontypedin') {data_typedin_latlon()
+    } else if (current_upload_method() == 'latlontypedin' ) {data_typedin_latlon()
     } else if (current_upload_method() == 'NAICS'         ) {data_up_naics()
     } else if (current_upload_method() == 'FRS'           ) {data_up_frs()
       #} else if (current_upload_method() == 'ECHO'          ) {data_up_echo()
     } else if (current_upload_method() == 'EPA_PROGRAM'   ) {data_up_epa_program()
     } else if (current_upload_method() == 'SIC'           ) {data_up_sic()
-    } else if (current_upload_method() == 'FIPS'          ) {data_up_fips()
+    } else if (current_upload_method() == 'FIPS'          ) {data_up_fips() # blocks nearby, not lat/lon values
     } else if (current_upload_method() == 'MACT'          ) {data_up_mact()
-    } else if (current_upload_method() == 'SHP'           ) {data_up_shp()
+    } else if (current_upload_method() == 'SHP'           ) {data_up_shp()  # shapefiles, not lat/lon values
     }
     
   })
   #############################################################################  # 
   
-  ## disable run and hide preview button until there is data uploaded; then enable and show
+  ## disable run, hide preview button, until an upload. input$ss_upload_latlon or whatever and current_upload_method() say there is data uploaded; then enable and show
   observe({
     
     if        (current_upload_method() == 'latlon') {
@@ -742,6 +753,7 @@ app_server <- function(input, output, session) {
       }
     }
     
+    cat("Enabled/disabled button to get results, and showed/hid data preview based on current_upload_method() ==  ", current_upload_method(), "\n")
   })
   #############################################################################  # 
   #. ####
@@ -802,10 +814,11 @@ app_server <- function(input, output, session) {
       } else {
         num_na <- NROW(data_uploaded()[lat_or_lon.na])   # if uploaded only one row (point) (or does that already have invalid ones removed?)
       }
-      num_notna <- NROW(data_uploaded()) - num_na
+      totalcount <- NROW(data_uploaded())
+      num_notna <- totalcount - num_na
       
       ## if invalid data found, set invalid_alert() otherwise closeAlert()
-      cat("Number of invalid points:  "); cat(num_na, '\n')
+      cat("Number of points:  "); cat(totalcount, 'total,', num_notna, 'valid,', num_na, ' invalid \n')
       if (num_na > 0) {
         #shinyBS::closeAlert(session, alertId = 'alert1')
         # shinyBS::createAlert(session, anchorId = "invalid_sites_alert", alertId = "alert1", 
@@ -829,7 +842,7 @@ app_server <- function(input, output, session) {
       #             "Total site(s) uploaded: <strong>", prettyNum(nrow(data_uploaded()), big.mark=","),"</strong><br>",
       #             "Valid site(s) uploaded: <strong>", prettyNum(num_notna, big.mark=","),"</strong><br>",
       #             "Site(s) with invalid lat/lon values: <strong>", prettyNum(num_na,big.mark=","), "</strong>"))
-    }
+    }  # done counting valid/invalid
     
   })
   
