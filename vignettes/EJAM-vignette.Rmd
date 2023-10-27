@@ -16,11 +16,11 @@ knitr::opts_chunk$set(eval = FALSE)
 # https://r-pkgs.org/vignettes.html
 ```
 
-```{r libraryEJAM, eval=TRUE, echo=FALSE, include=FALSE}
+```{r libraryEJAM, eval = TRUE, echo= FALSE, include= FALSE}
 library(EJAM)
 ```
 
-```{r developernote, echo=FALSE}
+```{r developernote, echo= FALSE}
 #
 #  *>>>>>>>>>> Developer note on updating this vignette <<<<<<<<<<<*
 #
@@ -108,19 +108,20 @@ Make sure you also have installed packages listed in the `DESCRIPTION` file of t
 
 **run_app()** lets you launch the web app locally.
 
-```{r run_app, eval=FALSE, include=TRUE}
+```{r run_app1, eval = FALSE, include= TRUE}
 library(EJAM)
 run_app()
 ```
+
 Note that the web app (e.g., launched locally) handles loading datasets and indexing blocks, so you would not have to use dataload_from_aws or indexblocks if launching the EJAM app locally.
 
 ### Initialize: load/attach package, download block data, build index
 
-Once the packages are installed, to use EJAM in the console you can start by loading and attaching the package, using library or require. 
+Once the packages are installed, to use EJAM in the console you can start by loading and attaching the package, using library or require.
 
-You can then load the datasets that are stored in AWS Data Commons during EJAM development. 
+You can then load the datasets that are stored in AWS Data Commons during EJAM development.
 
-```{r library_dataload, eval=TRUE}
+```{r dataload_from_aws-indexblocks, eval = TRUE}
 library(EJAM)
 
 dataload_from_aws()
@@ -133,24 +134,26 @@ indexblocks()
 
 You can save a little time if you first save those datasets locally and in later sessions have EJAM read them from your local drive instead of re-downloading from AWS.
 
-```{r eval=FALSE}
+```{r eval = FALSE}
 help("dataload_from_local")  
 ```
 
-Once you have loaded and indexed blocks, you can use EJAM. 
+Once you have loaded and indexed blocks, you can use EJAM.
 
 ### Examples of points
 
 EJAM comes with examples of points you can use to try things out, like `testpoints_10`
-```{r eval=TRUE, fig.height=4.83, fig.width=3}
+
+```{r eval = TRUE, fig.height=4.83, fig.width=3}
 testpoints_10
 mapfast(testpoints_100)
 ```
+
 ### Random points
 
 You can create a set of random points with function `testpoints_n()` that can be weighted to represent the average resident, average regulated facility, etc.
 
-```{r eval=TRUE}
+```{r eval = TRUE, fig.height=6, fig.width=6}
 pts <- testpoints_n(1000, weighting = 'blocks', ST_of_blockgroup = "LA")
 mapfast(pts, radius = 0.1)
 help("testpoints_n")
@@ -158,7 +161,7 @@ help("testpoints_n")
 
 ### Analyze 100 Sites
 
-```{r eval = TRUE, echo=TRUE}
+```{r eval = TRUE, echo= TRUE}
 x <- ejamit(testpoints_100, radius = 1) # 1 mile radius at 100 random points
 
 # help("ejamit")
@@ -166,7 +169,7 @@ x <- ejamit(testpoints_100, radius = 1) # 1 mile radius at 100 random points
 
 ### Map Results
 
-```{r eval = TRUE, echo=TRUE}
+```{r eval = TRUE, echo= TRUE, fig.height=8, fig.width=6}
 mapfastej(x$results_bysite)
 
 # help("mapfast")
@@ -174,37 +177,65 @@ mapfastej(x$results_bysite)
 
 ### View Results as Spreadsheet (Launches Excel)
 
-```{r eval=FALSE}
-ejam2excel(ejamit(testpoints_10, radius = 1), launchexcel = T, save_now = F)
+```{r table_xls_from_ejam-launchexcel, eval = FALSE}
+table_xls_from_ejam(ejamit(testpoints_10, radius = 1), launchexcel = T, save_now = F)
 ```
 
 ### Save Results as Spreadsheet
 
-```{r eval=FALSE}
-ejam2excel(ejamit(testpoints_10, radius = 1), save_now = T)
+```{r table_xls_from_ejam-savenow, eval = FALSE}
+table_xls_from_ejam(ejamit(testpoints_10, radius = 1), save_now = T)
 ```
-
 
 ### Interactively select your file with lat,lon coordinates, without shiny web app
 
 From RStudio, you can use EJAM functions to interactively select a file from your folders, to upload a spreadsheet or csv with columns called lat and lon in the first row as the header row, and then one row per point.
 
-```{r eval=FALSE}
+```{r read_csv_or_xl, eval = FALSE}
 y <- read_csv_or_xl()
 names(y)
 head(y)
 x <- ejamit(radius = 2) #  2 mile radius. 
 ```
 
+## See Documentation of Functions and Data
+
+See the readme for links to more documentation. There is documentation for the package overall, and individual functions and datasets.
+
+```{r helpEJAM, eval = FALSE, include= FALSE}
+?EJAM
+# or 
+help("EJAM", package='EJAM')
+
+?ejamit
+```
+
+## More ways of picking places to analyze in EJAM
+
+### Specify points (where you want to center the circular buffers)
+
+You can define locations as all residents within X miles of any one or more of the specified points, and you can define those points in a few ways. One way is to upload a table of coordinates -- latitude and longitude for each point, one row per site, with columns called lat and lon (or some synonyms that work).
+
+The simplest way tfo do that in the RStudio console is to do something like x \<- ejamit(radius=1), and it prompts you to upload a spreadsheet with lat lon columns.
+
+You can also specify a set of facilities by uploading their Registry ID numbers in a table, or using other identifiers. For example, there is a function latlon_from_programid().
+
+You can define circular buffers around a set of EPA-regulated facilities in a few other ways as well, such as by NAICS (or SIC) industry names or codes, EPA program covering the set of facilities (e.g., all greenhouse gas reporters), or a Clean Air Act MACT subpart.
+
+
 ### Specify all sites in 1 industrial sector
 
-```{r eval = TRUE}
+You can specify sites by NAICS, but it is important to note the FRS lacks NAICS info for many regulated facilities!
+
+```{r naics_from_any, eval = TRUE}
 naics_from_any("paint and coating", children = T)
 head(latlon_from_naics(325510)) # has about 1,000 facilities
 
 ## All sectors with this phrase in their NAICS title
 #
 #  x <- ejamit(frs_from_naics("paint and coating"), 1)
+
+
 ```
 
 ### Specify sites by facility registry ID
@@ -223,13 +254,13 @@ y <- ejamit(latlon_from_regid(read_csv_or_xl()$REGISTRY_ID), radius = 1)
 
 ### Specify sites by facility ID (program system ID)
 
-```{r eval = TRUE}
+```{r latlon_from_programid, eval = TRUE}
 latlon_from_programid(c("XJW000012435", "00768SRTRSROAD1"))
 ```
 
 ### Specify sites by EPA regulatory program or EPA database
 
-```{r eval = TRUE}
+```{r latlon_from_program, eval = TRUE}
 head(cbind(Count.of.facilities = sort(table(frs_by_programid$program), decreasing = T)), 20)
 
 latlon_from_program("CAMDBS")[,1:6]
@@ -237,7 +268,7 @@ latlon_from_program("CAMDBS")[,1:6]
 
 ### Specify sites by EPA MACT Subpart in Clean Air Act
 
-```{r eval = TRUE}
+```{r latlon_from_mactsubpart, eval = TRUE}
 latlon_from_mactsubpart("OOOO")
 
 nrow(latlon_from_mactsubpart("OOOO", include_if_no_latlon = FALSE))
@@ -245,121 +276,13 @@ nrow(latlon_from_mactsubpart("OOOO", include_if_no_latlon = FALSE))
 nrow(latlon_from_mactsubpart("OOOO", include_if_no_latlon = TRUE))
 ```
 
-## See Documentation of Functions and Data
-
-See the readme for links to more documentation. There is documentation for the package overall, and individual functions and datasets.
-
-```{r help, eval=FALSE, include=FALSE}
-?EJAM
-# or 
-help("EJAM", package='EJAM')
-
-?ejamit
-```
-
-## The EJScreen API module
-
-The EJAMejscreen package was used to create a shiny module in EJAM that provides access to the EJScreen API in a loop or batch mode. It uses EJScreen to run reports on multiple places one at a time, so it is somewhat slow for more than a handful of places, but exactly replicates EJScreen results.
-
-### Get EJScreen results in RStudio
-
-In RStudio, you can use that code and app module like this:
-
-```{r eval=FALSE}
-
-# To interactively pick your own spreadsheet file from your local drive, that has lat and lon as two column headings and then one row per site:
-
-x <- ejscreenit(radius = 1) # will prompt you for excel file with lat lon in it
-```
-
-```{r eval=FALSE}
-x <- ejscreenit(data.frame(lon = c(-111,-113), lat = c(41,43)), radius = 2)
-names(x)
-x$map
-x$table
-ejscreenit_see_table(x)
-```
-
-### Get EJScreen results running a local web app \*\*\*not tested
-
-```{r eval=FALSE}
-### *** NOT TESTED - MAY NO LONGER WORK AS SHIFT TO USING MODULE VERSION
-# If you have the local source package EJAMejscreenapi you can do this:
-# setwd("YOUR PATH GOES HERE  EJAMejscreenapi")
-library(EJAMejscreenapi)
-EJAMejscreenapi::run_app()
-```
-
-### Get EJScreen results running a local web app module \*\*\*not tested
-
-```{r api_module, eval=FALSE}
-library(EJAMejscreenapi) 
-library(shiny); library(magrittr); library(leaflet)  
-# must attach all of those manually for this to work?
-source(system.file("global.R", package = "EJAMejscreenapi"))
-default_calculate_ratios <- TRUE
-use_ejscreenit_tf <- FALSE
-######################### #
-  TEST_UI <- function(request) {
-    shiny::fluidPage(
-      tabsetPanel(
-        tabPanel(
-          title = "api app",
-          shiny::h2('EJScreen API batch tool packaged with EJAM'), 
- # EJAM:::mod_ejscreenapi_ui("TESTID", simpleradius_default_for_ui = 2),
-          mod_ejscreenapi_ui("TESTID", simpleradius_default_for_ui = 2),
-          br()
-        )))
-    }
-######################### #
-  TEST_SERVER <- function(input, output, session) {
-#x <- EJAM:::mod_ejscreenapi_server(
-    x <-     mod_ejscreenapi_server(
-      "TESTID", 
-      default_points_shown_at_startup_react = reactive(testpoints_5[1:2,]),
-      use_ejscreenit = use_ejscreenit_tf
-    )
-    output$testinfo2 <- renderText(
-      cat("x names:  ", paste0(names(x()), collapse = ", "), "\n")
-      )
-    output$results <- DT::renderDataTable({x()}, 
-      options = list(
-        selection = 'multiple',
-        dom = 'rtip', # specify 4 DOM elements: 
-        # processing, table, info, pagination 
-        # per https://datatables.net/examples/basic_init/dom.html
-        scrollX = TRUE, 
-        searchPanes = TRUE  # does this work?
-      ),
-      escape = FALSE 
-    )
-    # *** CAUTION ***
-    # escape=TRUE is better for security reasons (XSS attacks).
-    # escape=FALSE lets ejscreen URL links work, 
-    #   but not links from ECHO table download.
-  }
-######################### #
-  
-shinyApp(ui = TEST_UI, server = TEST_SERVER) # Try module in mini/test app
-```
-
-## More ways of picking places to analyze in EJAM
-
-### Specify points (where you want to center the circular buffers)
-
-You can define locations as all residents within X miles of any one or more of the specified points, and you can define those points in a few ways. One way is to upload a table of coordinates -- latitude and longitude for each point, one row per site, with columns called lat and lon (or some synonyms that work).
-
-The simplest way to do that in the RStudio console is to do something like x \<- ejamit(radius=1), and it prompts you to upload a spreadsheet with lat lon columns.
-
-You can also specify a set of facilities by uploading their Registry ID numbers in a table, or using other identifiers. For example, there is a function latlon_from_programid().
-
-You can define circular buffers around a set of EPA-regulated facilities in a few other ways as well, such as by NAICS (or SIC) industry names or codes, EPA program covering the set of facilities (e.g., all greenhouse gas reporters), or a Clean Air Act MACT subpart.
+### >>>>MORE ABOUT SELECTING SITES ETC. ####
 
 #### NAICS Codes to Map or Analyze Facilities in one Industrial Sector
 
 Quick map of EPA-regulated facilities in one industrial category, which you can click on to see popup windows about sites.
 
-```{r map1, eval = TRUE}
+```{r mapfast(frs_from_naics), eval = TRUE, fig.height=5, fig.width=5}
 mapfast(frs_from_naics("smelt")) # may be slow the 1st time, if it lazyloads frs dataset
 ```
 
@@ -367,7 +290,7 @@ mapfast(frs_from_naics("smelt")) # may be slow the 1st time, if it lazyloads frs
 
 Table of facilities in an industry, plus links to each facility in ECHO and EJScreen
 
-```{r, eval = FALSE}
+```{r frs_from_naics-chemicalmanuf, eval = FALSE}
 industryword <- "chemical manuf"
 #  industryword <- "smelt"
 
@@ -400,13 +323,13 @@ if (nrow(mysites) > 1500) {mysites <- mysites[1:1500, ]} # >2k rows is too much 
 
 Map of facilities in an industry, plus popups with links to each facility in ECHO and EJScreen
 
-```{r map2, eval = FALSE}
+```{r map2, eval = FALSE, fig.height=5, fig.width=5}
 mapfast(mysites)
 ```
 
 NAICS/industry categories
 
-```{r eval = TRUE}
+```{r pulpindustry, eval = TRUE}
 naics_categories()
 naics_from_any(naics_categories(3))[order(name),.(name,code)][1:10,]
 naics_from_any(naics_categories(3))[order(code),.(code,name)][1:10,]
@@ -418,7 +341,7 @@ head( frs_from_naics(naics_from_any(industryword)$code)[,1:4] )
 
 Search using industry codes or text in industry names
 
-```{r eval = TRUE}
+```{r plastics-and-rubber, eval = TRUE}
 naics_from_any("plastics and rubber") 
 
 naics_from_any(326)
@@ -445,7 +368,7 @@ head(naics_from_any(funion(a,b)[,code], children = T)[,.(name,code)] ) #  same
 
 A NAICS code can have many "children" or subcategories under it
 
-```{r eval = TRUE}
+```{r frs_from_naics-details, eval = TRUE}
 NROW(naics_from_any("chem"))
 # about 20
 NROW(naics_from_any("chem", children = T))
@@ -458,8 +381,8 @@ NROW(frs_from_naics(naics_from_any("chem")$code))
 
 #### Map of the blocks found near 1 site
 
-```{r plotblocksnearby_1, eval = TRUE}
-plotblocksnearby(testpoints_n(1), radius = 3)
+```{r plotblocksnearby_1, fig.height=5, fig.width=5}
+plotblocksnearby(testpoints_n(1), radius = 3, returnmap = TRUE)
 ```
 
 #### Use lat/lon point data
@@ -479,7 +402,7 @@ Use lat/lon coordinates in a table like a spreadsheet - xlsx or csv file
 
 The first row should be column names including lat and lon, or something that can be interpreted as that - see latlon_infer()
 
-```{r writecsv, eval=FALSE, include=TRUE}
+```{r writecsv, eval = FALSE, include= TRUE}
 testjunk <- file.path(tempdir(), 'testjunk.csv')
 write.csv(data.frame(LONG = c(-92.1, -91.8), Latitude = c(34.8, 30.2), siteid = 1:2), file = testjunk, row.names = FALSE)
 sitepoints2 <- latlon_from_anything(testjunk)
@@ -488,7 +411,7 @@ sitepoints2
 
 Use test points in examples that comes with the package
 
-```{r testpoints, eval = TRUE, echo=TRUE}
+```{r testpoints100, eval = TRUE, echo= TRUE}
 testpoints_100 |> head(2) # data.table, in this package
 sitepoints100 <- data.table::copy(testpoints_100)  # [1:5, ]
 head(sitepoints100, 3)
@@ -496,7 +419,7 @@ head(sitepoints100, 3)
 
 Create random test data points in States of LA and TX
 
-```{r mapfast_testpoints_n, eval = TRUE}
+```{r mapfast_testpoints_n, eval = TRUE, fig.height=5, fig.width=5}
 # ?testpoints_n
 # p1k <- testpoints_n(1000)
 # mapfast(p1k)
@@ -506,7 +429,7 @@ mapfast(testpoints_n(300, ST_of_blockgroup = c('LA','TX')) )
 
 ### Specify radius for circular buffer, and other key parameters
 
-```{r eval = TRUE}
+```{r RADIUS, eval = TRUE}
 radius <- 3 # radius (in miles).  5 km = 3.1 miles, 10 km = 6.2 miles
 ```
 
@@ -522,7 +445,7 @@ radius <- 3 # radius (in miles).  5 km = 3.1 miles, 10 km = 6.2 miles
 
 ### Speed test
 
-```{r speedtest, eval=FALSE, echo=TRUE, fig.height=3, fig.width=5}
+```{r speedtest, eval = FALSE, echo= TRUE, fig.height=3, fig.width=5}
 speeds = EJAM::speedtest(n = 100, radii = c(1,3,5,6.2,10))
 ```
 
@@ -532,7 +455,7 @@ speeds = EJAM::speedtest(n = 100, radii = c(1,3,5,6.2,10))
 
 You can use x \<- ejamit(radius=1) with no dataset specified, in an interactive session in RStudio, and it will prompt you to specify a spreadsheet file with columns named lat and lon, for example. Specify the radius parameter in miles.
 
-```{r speedreport, eval = TRUE}
+```{r speedreport1000, eval = TRUE}
 ## ejamit() just combines getblocksnearby() and doaggregate()
 sitepoints <- testpoints_1000
 # elapsed <- system.time({
@@ -546,20 +469,27 @@ began = Sys.time()
 # print(elapsed)
 ```
 
-Explore results in map and table
+## Site by site results in datatable format in RStudio viewer:
 
-```{r seeresults, eval = TRUE}
+```{r datatable30}
+ DT::datatable(out2$results_bysite[1:30,   ], escape = FALSE, rownames = FALSE)
+
+# To see all 1,000 sites in table:
+#DT::datatable(out2$results_bysite[1:1000, ], escape = FALSE, rownames = FALSE)
+```
+
+### Overall results for a few key indicators, as raw output in console:
+
+```{r cbind-overall, eval = TRUE, paged.print= TRUE}
 names(out2)
-cbind(as.list(out2$results_overall))
 cbind(overall = as.list( out2$results_overall[ , ..names_d]))
 cbind(overall = as.list( out2$results_overall[ , ..names_d_subgroups]))
+```
 
-## Site by site results in map or table:
- 
-# mapfast(out2$results_bysite, radius = radius)
+### Overall results for the very long list of all indicators, as raw output in console:
 
-DT::datatable(out2$results_bysite, escape = FALSE, rownames = FALSE)
-
+```{r}
+cbind(as.list(out2$results_overall))
 ```
 
 ### Specify Places or Shapes
@@ -572,7 +502,7 @@ You can upload polygons in a shapefile, and use EJAM to analyze them. See the Sh
 
 You can compare places defined by FIPS code, such as a group of US Counties.
 
-```{r counties_fips, eval=FALSE}
+```{r counties_fips, eval = FALSE}
 # Compare all Counties in a State, using EJAM indicators
 
 mystate <- "Delaware"
@@ -619,7 +549,7 @@ fips_counties_from_statename(mystate)
 
 About \< 1 second for 100 sites, but a few seconds for 1,000 sites, or roughly 500k / hour for this step
 
-```{r getblocksnearby1, eval=FALSE}
+```{r getblocksnearby1, eval = FALSE}
 sitepoints <- data.table::copy(testpoints_100) 
 # or 
 # sitepoints <- testpoints_n(100,"block") # random points
@@ -636,13 +566,15 @@ print(elapsed)
 sites2blocks
 ```
 
-#### Map of the blocks found near 1 site (again)
+#### Info about the blocks found near 1 site
 
-```{r plotblocksnearby, eval = TRUE}
-plotblocksnearby(testpoints_n(1), radius = 3)
+```{r plotblocksnearby2, eval = FALSE, fig.height=5, fig.width=5}
+x = plotblocksnearby(testpoints_n(1), radius = 3, returnmap = FALSE)
+#  returnmap= TRUE is to actually return the leaflet map 
+
 ```
 
-#### View detailed diagnostics or stats on the intermediate result:
+#### View detailed diagnostics or stats on the intermediate result
 
 -   what blocks are near each site
 -   how far are they
@@ -653,6 +585,7 @@ plotblocksnearby(testpoints_n(1), radius = 3)
 ## Also could use this example intermediate step dataset 
 ## of n sites, with thousands of nearby blocks:
 # sites2blocks <- data.table::copy(testoutput_getblocksnearby_10pts_1miles)
+radius <- 3
 sitepoints <- data.table::copy(testpoints_100) 
 sites2blocks <- getblocksnearby(sitepoints, radius, quadtree = localtree)
 names(sites2blocks)
@@ -674,7 +607,7 @@ head(s2b_stats)
 
 ```
 
-```{r plot_count_of_blocks_nearby, eval = TRUE}
+```{r plot_count_of_blocks_nearby, eval=TRUE, fig.height=6, fig.width=5}
 
 # CDF of how many blocks are nearby a site
 plot(sort(s2b_stats$blocks_within_1mile), 
@@ -687,7 +620,7 @@ abline(h = mean(s2b_stats$blocks_within_1mile), col = "red")
 
 ```
 
-```{r histoblocks, eval = TRUE}
+```{r histoblocks, eval=TRUE, fig.height=6, fig.width=7}
 # Histogram of how many blocks are nearby a site
 hist(sites2blocks[,.N,by = "siteid"][,N],20, 
      xlab = "How many blocks are nearby?", 
@@ -704,16 +637,28 @@ quantile(s2b_stats$blocks_within_1mile, probs = (0:4) * 0.25)
 t(summary(s2b_stats))
 ```
 
-```{r s2b_stats, eval = TRUE}
+```{r s2b_stats, eval = TRUE, fig.height=5, fig.width=5}
 # map the sites with popups about how many blocks were found near each
 if (!('siteid' %in% names(sitepoints))) {sitepoints$siteid <- seq.int(length.out = NROW(sitepoints))}
 s2b_stats <- merge(sitepoints, s2b_stats, by = "siteid")
 mapfast(s2b_stats, radius = radius)
 ```
 
-```{r eval = TRUE}
-# A 1 mile radius is huge within a dense urban area
-mapfast(s2b_stats[87:88,], radius = radius)
+#### Site vary widely in how many blocks are nearby, depending on population density
+
+```{r eval = TRUE, fig.height=5, fig.width=5}
+
+# Some places have very few -- if any -- blocks within 1 mile
+
+tail(s2b_stats[order(s2b_stats$blocks_within_1mile, decreasing = T), 
+               c('siteid', 'blocks_within_1mile')], 3) 
+
+# Some places have hundreds nearby: a 1 mile radius is huge within a dense urban area
+
+head(s2b_stats[order(s2b_stats$blocks_within_1mile, decreasing = T), 
+               c('siteid', 'blocks_within_1mile')], 3)
+densest <- s2b_stats$siteid[order(s2b_stats$blocks_within_1mile, decreasing = T)][1]
+plotblocksnearby(sitepoints = sitepoints[sitepoints$siteid == densest, ])
 ```
 
 ```{r eval = TRUE}
@@ -723,7 +668,7 @@ summary(s2b_stats$avgDistance)
 
 #### doaggregate() will summarize indicators within each buffer and overall
 
-```{r doaggregate, eval = TRUE}
+```{r doaggregateX, eval = TRUE}
 # out <- doaggregate(testoutput_getblocksnearby_10pts_1miles)
 
 elapsed <- system.time({
@@ -739,7 +684,7 @@ dim(out$results_bysite)
 
 #### See indicators aggregated over all people across all sites
 
-```{r eval = TRUE}
+```{r cbindagain, eval = TRUE}
 ## view output of batch run aggregation ####
 cbind(overall = as.list( out$results_overall))
 
@@ -761,30 +706,123 @@ hist(out$results_bysite$pctile.traffic.score, 10, xlab = "Local traffic scores (
 abline(h = nrow(out$results_bysite)/10)
 ```
 
-#### Compare to results from EJScreen API
 
-```{r eval = FALSE}
+## The EJScreen API module
+
+The EJAMejscreen package was used to create a shiny module in EJAM that provides access to the EJScreen API in a loop or batch mode. It uses EJScreen to run reports on multiple places one at a time, so it is somewhat slow for more than a handful of places, but exactly replicates EJScreen results.
+
+### Get EJScreen results in RStudio
+
+In RStudio, you can use that code and app module like this:
+
+```{r ejscreenit-interactive, eval = FALSE}
+
+# To interactively pick your own spreadsheet file from your local drive, that has lat and lon as two column headings and then one row per site:
+
+x <- ejscreenit(radius = 1) # will prompt you for excel file with lat lon in it
+```
+
+```{r ejscreenit-2points, eval = FALSE}
+x <- ejscreenit(data.frame(lon = c(-111,-113), lat = c(41,43)), radius = 2)
+names(x)
+x$map
+x$table
+ejscreenit_see_table(x)
+```
+
+### Get EJScreen results running a local web app \*\*\*not tested
+
+```{r run_app_EJAMejscreenapi, eval = FALSE}
+### *** NOT TESTED - MAY NO LONGER WORK AS SHIFT TO USING MODULE VERSION
+# If you have the local source package EJAMejscreenapi you can do this:
+# setwd("YOUR PATH GOES HERE  EJAMejscreenapi")
+library(EJAMejscreenapi)
+EJAMejscreenapi::run_app()
+```
+
+### Get EJScreen results running a local web app module \*\*\*not tested
+
+```{r api_module, eval = FALSE}
+library(EJAMejscreenapi) 
+library(shiny); library(magrittr); library(leaflet)  
+# must attach all of those manually for this to work?
+source(system.file("global.R", package = "EJAMejscreenapi"))
+default_calculate_ratios <- TRUE
+use_ejscreenit_tf <- FALSE
+######################### #
+  TEST_UI <- function(request) {
+    shiny::fluidPage(
+      tabsetPanel(
+        tabPanel(
+          title = "api app",
+          shiny::h2('EJScreen API batch tool packaged with EJAM'), 
+ # EJAM:::mod_ejscreenapi_ui("TESTID", simpleradius_default_for_ui = 2),
+          mod_ejscreenapi_ui("TESTID", simpleradius_default_for_ui = 2),
+          br()
+        )))
+    }
+######################### #
+  TEST_SERVER <- function(input, output, session) {
+#x <- EJAM:::mod_ejscreenapi_server(
+    x <-     mod_ejscreenapi_server(
+      "TESTID", 
+      default_points_shown_at_startup_react = reactive(testpoints_5[1:2,]),
+      use_ejscreenit = use_ejscreenit_tf
+    )
+    output$testinfo2 <- renderText(
+      cat("x names:  ", paste0(names(x()), collapse = ", "), "\n")
+      )
+    output$results <- DT::renderDataTable({x()}, 
+      options = list(
+        selection = 'multiple',
+        dom = 'rtip', # specify 4 DOM elements: 
+        # processing, table, info, pagination 
+        # per https://datatables.net/examples/basic_init/dom.html
+        scrollX = TRUE, 
+        searchPanes = TRUE  # does this work?
+      ),
+      escape = FALSE 
+    )
+    # *** CAUTION ***
+    # escape= TRUE is better for security reasons (XSS attacks).
+    # escape= FALSE lets ejscreen URL links work, 
+    #   but not links from ECHO table download.
+  }
+######################### #
+  
+shinyApp(ui = TEST_UI, server = TEST_SERVER) # Try module in mini/test app
+```
+
+### Compare to results from EJScreen API
+
+```{r ejamit-testpoints_1000, eval = FALSE}
 sitepoints <- testpoints_1000 
 radius <- 1
 
-# outapi2 <- ejscreenapi_plus(sitepoints[1:5, ], radius = radius, on_server_so_dont_save_files = T)
-
-## SLOW
-# outapi <- (ejscreenit(sitepoints[1:5, ], 
-#                      radius = radius, 
-#                      nosave = T, nosee = T, 
-#                      interactiveprompt = F))$table
-#
-#cbind(as.list(outapi[1, ]))
-
 outejam <- ejamit(sitepoints =  sitepoints[1:5, ], radius = radius)
 
-#setdiff( names(outapi), names(outejam$results_overall))
-cat("----------------\n")
-#setdiff_yx( names(outapi), names(outejam$results_overall))
+## SLOW
+
+outapi <- (ejscreenit(sitepoints[1:5, ],
+                     radius = radius,
+                     nosave = T, nosee = T,
+                     interactiveprompt = F))$table
+names(outapi)
+
+cbind(as.list(outapi[1, ]))
+
+# outapi2 <- ejscreenapi_plus(sitepoints[1:5, ], radius = radius, 
+#     on_server_so_dont_save_files = T)
+
+setdiff( names(outapi$table), names(outejam$results_overall))
+
+setdiff( names(outejam$results_overall), names(outapi$table))
+
+# links to report or map also were named differently.
+
+ cat("----------------\n")
 
 
-# links to report or map were named differently.
-#  
-# EJ pctiles, etc. might not be provided in EJAM output.   
+
+#   
 ```

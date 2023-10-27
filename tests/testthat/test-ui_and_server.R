@@ -35,7 +35,7 @@ test_that(
   "app_sys works",
   {
     expect_true(
-      app_sys("golem-config.yml") != ""   # treats EJAM/inst/ as root so looks for  EJAM/inst/golem-config.yml
+      app_sys("golem-config.yml") != ""   #  source/EJAM/inst/golem-config.yml = installed/EJAM/golem-config.yml
     )
   }
 )
@@ -43,7 +43,7 @@ test_that(
 test_that(
   "golem-config works",
   {
-    config_file <- app_sys("golem-config.yml")
+    config_file <- app_sys("golem-config.yml") #  source/EJAM/inst/golem-config.yml = installed/EJAM/golem-config.yml
     skip_if(config_file == "")
 
     expect_true(

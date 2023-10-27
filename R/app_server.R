@@ -1841,7 +1841,7 @@ app_server <- function(input, output, session) {
   # output$rendered_summary_report <- renderUI({
   #  HTML(
   #     includeHTML(
-  #       rmarkdown::render(app_sys('report','brief_summary.Rmd'),  # treats EJAM/inst/ as root # also look at includeRMarkdown() provided by golem?
+  #       rmarkdown::render(app_sys('report/brief_summary.Rmd'),  # # also look at includeRMarkdown() provided by golem?
   #                         output_dir = tempdir(),
   #                         params = summary_report_params())
   #     )
@@ -1857,9 +1857,8 @@ app_server <- function(input, output, session) {
       # can happen when deployed).
       tempReport <- file.path(tempdir(), "brief_summary.Rmd")
       ## copy Rmd from inst/report to temp folder  (note there had been a similar but not identical .Rmd in EJAM/www/)
-      file.copy(from = app_sys('report', 'brief_summary.Rmd'),  # treats EJAM/inst/ as root
+      file.copy(from = app_sys('report/brief_summary.Rmd'),  # treats EJAM/inst/ as root
                 to = tempReport, overwrite = TRUE)
-      #file.copy("../www/test_report1pager.Rmd", tempReport, overwrite = TRUE)
       
       isolate({  # need someone to confirm this is needed/helpful and not a problem, to isolate this.
         ## pass params to customize .Rmd doc  # ###
@@ -2528,11 +2527,11 @@ app_server <- function(input, output, session) {
       # can happen when deployed).
       tempReport <- file.path(tempdir(), "report.Rmd")
       ## copy Rmd from inst/report to temp folder
-      file.copy(from = app_sys('report', 'report.Rmd'),  # treats EJAM/inst/ as root
+      file.copy(from = app_sys('report/report.Rmd'),  # treats EJAM/inst/ as root
                 to = tempReport, overwrite = TRUE)
       ## pass image and bib files needed for knitting to temp directory
-      for (i in list.files(app_sys('report'), pattern = '.png|.bib')) {   # treats EJAM/inst/ as root
-        file.copy(from = app_sys('report', i),    # treats EJAM/inst/ as root
+      for (i in list.files(app_sys('report'), pattern = '.png|.bib')) {   # treats what was in source/EJAM/inst/report/ as installed/EJAM/report/  once pkg is installed
+        file.copy(from = app_sys('report', i),    # source/EJAM/inst/report/ = installed/EJAM/report/
                   to = file.path(tempdir(), i), 
                   overwrite = TRUE)
       }

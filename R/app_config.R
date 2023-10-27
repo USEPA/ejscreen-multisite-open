@@ -1,5 +1,12 @@
 #' app_sys - Access files in the current app
 #'
+#' @details 
+#'   Since R will during installation move all source/EJAM/inst/xyz to installed/EJAM/xyz, 
+#'   we use golem app_sys() to ensure it points to the right folder, 
+#'   which in source pkg is EJAM/inst/app/www/ejam_styling.css 
+#'   but in installed pkg is EJAM/app/www/ejam_styling.css 
+#'   
+#'   
 #' NOTE: If you manually change your package name in the DESCRIPTION,
 #' don't forget to change it here too, and in the config file.
 #' For a safer name change mechanism, use the `golem::set_golem_name()` function.
@@ -9,8 +16,14 @@
 #'
 #' @noRd
 app_sys <- function(...) {
-  # this was set up to treat EJAM/inst/ as root, so app_sys("app/www/ejamhex4.png")  is actually referring to  EJAM/inst/app/www/ejamhex4.png   !! 
-  system.file(..., package = "EJAM")
+ 
+  system.file(..., package = "EJAM")  
+  
+  # system.file() refers to the installed version of the package.
+    # Since R will during installation move all source/EJAM/inst/xyz to installed/EJAM/xyz,
+    # we use golem app_sys() to ensure it points to the right folder,
+    # which in source pkg is EJAM/inst/app/www/ejam_styling.css
+    # but in installed pkg is EJAM/app/www/ejam_styling.css
 }
 
 
@@ -34,7 +47,7 @@ get_golem_config <- function(
   ),
   use_parent = TRUE,
   # Modify this if your config file is somewhere else
-  file = app_sys("golem-config.yml") # this was set up to treat EJAM/inst/ as root, so "golem-config.yml" is in EJAM/inst but can be referred to as just in EJAM/ 
+  file = app_sys("golem-config.yml") #  source/EJAM/inst/filename = installed/EJAM/filename 
 ) {
   config::get(
     value = value,

@@ -1,11 +1,4 @@
 
-#' ejam2excel - alias for ejam2excel()
-#' @inherit table_xls_from_ejam 
-ejam2excel <- function(...) {
-  table_xls_from_ejam(...)
-}
-
-
 #' table_xls_from_ejam
 #' Format the results of ejamit() for excel and optionally save .xlsx file
 #' @param ejamitout output of [ejamit()] 

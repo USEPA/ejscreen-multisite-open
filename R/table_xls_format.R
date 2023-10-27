@@ -913,3 +913,8 @@ varname2varcategory_ejam <- function(varname, varnameinfo) {
   return(cur_matches)
 }
 ################################################################################# # 
+
+#' ejam2excel - alias for ejam2excel()
+#' @inherit table_xls_from_ejam
+#' @export
+ejam2excel <- table_xls_from_ejam

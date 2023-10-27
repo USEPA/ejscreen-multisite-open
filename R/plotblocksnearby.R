@@ -13,6 +13,7 @@
 #'    If sites2blocks is provided, but sitepoints is not, it could only do a bad approximation of sitepoints so it will not draw the circle or site at center of the circle.
 #' @param radius in miles
 #' @param usemapfast optional. simpler plot if FALSE
+#' @param returnmap optional. if set TRUE, returns the leaflet map object instead of tabular info. 
 #' @param ... passed to mapfast() or plot() depending on usemapfast
 #'
 #' @return invisibly returns sites2blocks like getblocksnearby() does
@@ -35,7 +36,7 @@
 #'   # - and this is a bit slow
 #'   plotblocksnearby(testdata_ejamit_output_100pts_1miles$results_bysite[,.(siteid, lat,lon)], radius = 1) 
 #'   }
-plotblocksnearby <- function(sitepoints, radius=3, sites2blocks,  usemapfast=TRUE, ...) {
+plotblocksnearby <- function(sitepoints, radius=3, sites2blocks,  usemapfast=TRUE, returnmap=FALSE, ...) {
   if (radius > 32) {stop("cannot use radius >32 miles here")}
   if (missing(sitepoints) &  missing(sites2blocks)) {stop('must provide either sitepoints or sites2blocks or both')}
   if (missing(sitepoints) & !missing(sites2blocks)) {
@@ -143,6 +144,10 @@ plotblocksnearby <- function(sitepoints, radius=3, sites2blocks,  usemapfast=TRU
     bplot(x, main = "Site and surrounding block centroids", xlab = "", ylab = "" )
     
   }
-  invisible(sites2blocks)
+  if (returnmap) {
+    return(z)
+  } else {
+    invisible(sites2blocks)
+  }
 }
 

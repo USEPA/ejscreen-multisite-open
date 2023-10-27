@@ -22,7 +22,12 @@ app_ui  <- function(request) {
       # For info on using javascript in shiny apps,
       #   see  https://deanattali.com/shinyjs/ and https://connect.thinkr.fr/js4shinyfieldnotes/js-in-shiny.html  
       ## change selected tab color - #005ea2 matches blue on rest of website
-      includeCSS('www/ejam_styling.css'),
+
+      # Since R will during installation move all source/EJAM/inst/xyz to installed/EJAM/xyz, 
+      #  we use golem app_sys() to ensure it points to the right folder, 
+      #  which in source pkg is EJAM/inst/app/www/ejam_styling.css 
+      # but in installed pkg is EJAM/app/www/ejam_styling.css 
+      includeCSS(app_sys('app/www/ejam_styling.css')), # 
       
       # use friendlier message if user gets disconnected from server
       shinydisconnect::disconnectMessage(
@@ -76,7 +81,7 @@ app_ui  <- function(request) {
                           actionButton('ui_hide_advanced_settings','Hide Advanced Settings Tab', class = 'usa-button')
                    ),
                    column(4,
-                          htmltools::img(id = "biglogo", src = "www/ejamhex4.png")
+                          htmltools::img(id = "biglogo", src = app_sys("app/www/ejamhex4.png"))
                    )
                  )
         ), # end About EJAM tab
@@ -543,7 +548,7 @@ app_ui  <- function(request) {
                                br(), 
                                ### summary_report_tab.html  (treats EJAM/inst/ as root) ####
                                htmlTemplate(
-                                 app_sys('report', 'summary_report_tab.html'),  
+                                 app_sys('report/summary_report_tab.html'),  
                                  pop_header = htmlOutput(outputId = 'view1_total_pop'), #### view1_total_pop ####
                                  demog_table = shinycssloaders::withSpinner(
                                    gt::gt_output(outputId = 'view1_demog_table') #### view1_demog_table ####
@@ -583,7 +588,7 @@ app_ui  <- function(request) {
                                {       
                                  htmlTemplate(
                                    
-                                   filename = app_sys('report/community_report', 'communityreport.html'),  
+                                   filename = app_sys('report/community_report/communityreport.html'),  
                                    # document_ = FALSE,
                                    LOCATIONSTR_ht    = textOutput(outputId = "LOCATIONSTR_out", inline = TRUE), # done manually
                                    TOTALPOP_ht       = textOutput(outputId = "TOTALPOP_out",    inline = TRUE), # done manually
@@ -1569,44 +1574,36 @@ app_ui  <- function(request) {
 #' @rawNamespace import(shiny, except=c(dataTableOutput, renderDataTable))
 #' @importFrom golem add_resource_path activate_js favicon bundle_resources
 #' @noRd
-golem_add_external_resources <- function() {   # (adds external Resources to App) ####
+golem_add_external_resources <- function() {   
   golem::add_resource_path(
     "www",
-    app_sys("app/www") #   points to  EJAM/inst/app/www  actually, not EJAM/www nor EJAM/app/www
+    app_sys("app/www") #   points to  installed/EJAM/app/www which is same as   source/EJAM/inst/app/www 
   )
   tags$head(
     
-    ### insert this in head of index.html (or use tags$link() as below) to make all favicon versions work
-    ### using this set of icons for various platforms/sizes: 
-    #
-    # <link rel="shortcut icon"    href="/inst/www/favicon.png"> # this is the only one set up by golem::favicon() and was .ico in the example notes but png is bigger higher res here
-    #
-    # <link rel="apple-touch-icon"                 sizes="180x180" href="/inst/www/apple-touch-icon.png">
-    # <link rel="icon"            type="image/png" sizes="32x32"   href="/inst/www/favicon-32x32.png">
-    # <link rel="icon"            type="image/png" sizes="16x16"   href="/inst/www/favicon-16x16.png">
-    # <link rel="manifest"                                         href="/inst/www/site.webmanifest">
-    # <link rel="mask-icon"                                        href="/inst/www/safari-pinned-tab.svg"  color="#5bbad5">
-    #
-    # <meta name="msapplication-TileColor"  content="#2d89ef">
-    # <meta name="msapplication-config"     content="/inst/www/browserconfig.xml">
-    # <meta name="theme-color"              content="#ffffff">
-    
-    golem::favicon(ext = 'png'), # but see note on favicons set 
-    
-    tags$head(tags$link(rel = "apple-touch-icon",                   sizes = "180x180", href = "/inst/www/apple-touch-icon.png")),
-    tags$head(tags$link(rel = "icon",           type = "image/png", sizes = "32x32" ,  href = "/inst/www/favicon-32x32.png"   )),
-    tags$head(tags$link(rel = "icon",           type = "image/png", sizes = "16x16" ,  href = "/inst/www/favicon-16x16.png"   )),
-    tags$head(tags$link(rel = "manifest",                                              href = "/inst/www/site.webmanifest"    )),
-    tags$head(tags$link(rel = "mask-icon" ,                                            href = "/inst/www/safari-pinned-tab.svg",  color = "#5bbad5")),
-    tags$meta(name = "msapplication-TileColor",  content = "#2d89ef"),
-    tags$meta(name = "msapplication-config",     content = "/inst/www/browserconfig.xml"),
-    tags$meta(name = "theme-color",              content = "#ffffff"),
-    
-    # this specifies app title
+    # app title ####
     golem::bundle_resources(
-      path = app_sys("app/www"),  #   points to  EJAM/inst/app/www  actually, not EJAM/www nor EJAM/app/www
+      path = app_sys("app/www"),   #  points to  installed/EJAM/app/www which is same as   source/EJAM/inst/app/www 
       app_title = "EJAM"
-    )
+    ),
+    
+    # favorites icons ####
+    ### inserted this in head of index.html (or use tags$link() as below) to make all favicon versions work
+    ###   for various platforms/sizes
+    #  favicon.png  is the only one set up by golem::favicon() and was .ico in the example notes but png is bigger higher res here
+    
+    golem::favicon(ext = 'png'), 
+    
+    tags$head(tags$link(rel = "apple-touch-icon",                   sizes = "180x180", href = "apple-touch-icon.png")),
+    tags$head(tags$link(rel = "icon",           type = "image/png", sizes = "32x32" ,  href = "favicon-32x32.png"   )),
+    tags$head(tags$link(rel = "icon",           type = "image/png", sizes = "16x16" ,  href = "favicon-16x16.png"   )),
+    tags$head(tags$link(rel = "manifest",                                              href = "site.webmanifest"    )),
+    tags$head(tags$link(rel = "mask-icon" ,                                            href = "safari-pinned-tab.svg",  color = "#5bbad5")),
+    
+    tags$meta(name = "msapplication-TileColor",  content = "#2d89ef"),
+    tags$meta(name = "msapplication-config",     content = "browserconfig.xml"),
+    tags$meta(name = "theme-color",              content = "#ffffff")
+    
     # Add here other external resources
     # for example, you can add shinyalert::useShinyalert()
     
