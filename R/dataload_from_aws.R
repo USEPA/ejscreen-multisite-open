@@ -91,7 +91,9 @@ dataload_from_aws <- function(varnames= c('bgid2fips', 'blockid2fips', 'blockpoi
   }
   
   # if (!missing(folder_local_source) ) { # want from local drive
-  dataload_from_local(varnames = varnames, ext = ext, fun = fun, envir = envir, folder_local_source = folder_local_source, justchecking = justchecking)
+  dataload_from_local(varnames = varnames, 
+                      # ext = ext, fun = fun,  # disabling this because AWS is currently .rda but local is currently .arrow format ***
+                      envir = envir, folder_local_source = folder_local_source, justchecking = justchecking)
   # return(localpaths)
   # } # done getting from local drive
   
@@ -101,18 +103,30 @@ dataload_from_aws <- function(varnames= c('bgid2fips', 'blockid2fips', 'blockpoi
     
     if (!justchecking & (ext == ".rda")) {
       
-      if (!exists(varnames[i], envir = envir) ) {  # if not already in memory/ global envt, get from AWS 
-        cat('loading', varnames[i],spacing[i],  'from', objectnames[i], '\n')
-        if (try(aws.s3::object_exists(object = objectnames[i], bucket = mybucket))) {
-          
-          aws.s3::s3load(object = objectnames[i], bucket = mybucket, envir = envir) ## * * ############# #  
-          
-        } else {
-          warning('requested object', objectnames[i], spacing[i],  'not found on server')
-        }
-      } else {
+      if (exists(varnames[i], envir = envir) ) {
         cat(varnames[i], spacing[i], 'is already in specified envt and will not be downloaded again\n')
+      } else {
+        
+        # if not already in memory/ global envt, get from AWS 
+        cat('trying to load', varnames[i],spacing[i],  'from', objectnames[i], '\n')
+        
+        x <- try(aws.s3::object_exists(object = objectnames[i], bucket = mybucket))
+        
+        if (!inherits(x, "try-error")) {
+          # no error on try
+          if (x) {
+            #  no error and file exists - load into specified environment
+            # cat('found and trying to load...\n')
+            aws.s3::s3load(object = objectnames[i], bucket = mybucket, envir = envir) ## * * ############# #  
+          } else {
+            warning('requested object', objectnames[i], spacing[i],  'not found on server')
+          }
+        } else {
+          # try-error
+          warning('requested object', objectnames[i], spacing[i],  'may not be on server - error when checking')
+        }
       }
+      
     }
     
     if (justchecking & (ext == ".rda")) {
