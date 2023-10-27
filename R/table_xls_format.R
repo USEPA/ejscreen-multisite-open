@@ -1,5 +1,5 @@
 #' table_xls_format - Format EJAM tabular outputs for saving as Excel spreadsheet
-#' 
+#' Used by table_xls_from_ejam()
 #' @details  Already took and put here most or all of code from table_xls_format() or table_xls_format_api() 
 #' @param overall  table to save in one tab, from ejamit()$overall, EJAM analysis of indicators overall (one row)
 #' @param eachsite table to save in one tab, from ejamit()$overall, EJAM analysis site by site (one row per site)
@@ -39,6 +39,7 @@
 #' @import graphics
 #' @import openxlsx
 #' @import webshot webshot
+#' @seealso [table_xls_from_ejam()] 
 #' @return a workbook, ready to be saved in spreadsheet format, with tabs like "Overall" and "Each Site"
 #' @export
 #'
@@ -913,8 +914,3 @@ varname2varcategory_ejam <- function(varname, varnameinfo) {
   return(cur_matches)
 }
 ################################################################################# # 
-
-#' ejam2excel - alias for ejam2excel()
-#' @inherit table_xls_from_ejam
-#' @export
-ejam2excel <- table_xls_from_ejam

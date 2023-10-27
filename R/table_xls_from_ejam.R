@@ -1,6 +1,7 @@
 
 #' table_xls_from_ejam
 #' Format the results of ejamit() for excel and optionally save .xlsx file
+#' Uses table_xls_format()
 #' @param ejamitout output of [ejamit()] 
 #' @param fname optional name or full path and name of file to save locally, like "out.xlsx" 
 #' @param save_now optional logical, whether to save as a .xlsx file locally or just return workbook object
@@ -21,6 +22,7 @@
 #' @examples \dontrun{
 #'   table_xls_from_ejam(testoutput_ejamit_10pts_1miles)
 #'   }
+#'  @seealso [table_xls_format()]
 #' @return returns a workbook object for use by openxlsx::saveWorkbook(wb_out, pathname)
 #'   or returns just the full path/file name of where it was saved if save_now = TRUE
 #' @export

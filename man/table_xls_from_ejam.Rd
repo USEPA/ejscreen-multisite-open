@@ -3,7 +3,8 @@
 \name{table_xls_from_ejam}
 \alias{table_xls_from_ejam}
 \title{table_xls_from_ejam
-Format the results of ejamit() for excel and optionally save .xlsx file}
+Format the results of ejamit() for excel and optionally save .xlsx file
+Uses table_xls_format()}
 \usage{
 table_xls_from_ejam(
   ejamitout,
@@ -63,9 +64,11 @@ or returns just the full path/file name of where it was saved if save_now = TRUE
 \description{
 table_xls_from_ejam
 Format the results of ejamit() for excel and optionally save .xlsx file
+Uses table_xls_format()
 }
 \examples{
 \dontrun{
   table_xls_from_ejam(testoutput_ejamit_10pts_1miles)
   }
+ @seealso [table_xls_format()]
 }

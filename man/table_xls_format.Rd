@@ -2,7 +2,8 @@
 % Please edit documentation in R/table_xls_format.R
 \name{table_xls_format}
 \alias{table_xls_format}
-\title{table_xls_format - Format EJAM tabular outputs for saving as Excel spreadsheet}
+\title{table_xls_format - Format EJAM tabular outputs for saving as Excel spreadsheet
+Used by table_xls_from_ejam()}
 \usage{
 table_xls_format(
   overall,
@@ -105,6 +106,7 @@ a workbook, ready to be saved in spreadsheet format, with tabs like "Overall" an
 }
 \description{
 table_xls_format - Format EJAM tabular outputs for saving as Excel spreadsheet
+Used by table_xls_from_ejam()
 }
 \details{
 Already took and put here most or all of code from table_xls_format() or table_xls_format_api()
@@ -114,4 +116,7 @@ Already took and put here most or all of code from table_xls_format() or table_x
   wb <- table_xls_format(testoutputs_$results_overall, datasetResults()$results_bysite,
     saveas =  "results.xlsx")
 }
+}
+\seealso{
+\code{\link[=table_xls_from_ejam]{table_xls_from_ejam()}}
 }
