@@ -11,7 +11,7 @@
 #'    If sites2blocks not provided, but sitepoints alone is provided, checks if sitepoints is actually sites2blocks, and uses as such.
 #'    If sites2blocks not provided, but sitepoints alone is provided, and sitepoints is really sitepoints, it runs getblocksnearby() to create sites2blocks.
 #'    If sites2blocks is provided, but sitepoints is not, it could only do a bad approximation of sitepoints so it will not draw the circle or site at center of the circle.
-#' @param radius in miles
+#' @param radius in miles (Max allowed is 32 miles, or just over 50 kilometers since 31.06856 miles is 50 * 1000 / meters_per_mile).
 #' @param usemapfast optional. simpler plot if FALSE
 #' @param returnmap optional. if set TRUE, returns the leaflet map object instead of tabular info. 
 #' @param ... passed to mapfast() or plot() depending on usemapfast
@@ -37,7 +37,7 @@
 #'   plotblocksnearby(testdata_ejamit_output_100pts_1miles$results_bysite[,.(siteid, lat,lon)], radius = 1) 
 #'   }
 plotblocksnearby <- function(sitepoints, radius=3, sites2blocks,  usemapfast=TRUE, returnmap=FALSE, ...) {
-  if (radius > 32) {stop("cannot use radius >32 miles here")}
+  if (radius > 32) {radius <- 32; warning("Cannot use radius above 32 miles (almost 51 km) here - Returning results for 32 miles!")}
   if (missing(sitepoints) &  missing(sites2blocks)) {stop('must provide either sitepoints or sites2blocks or both')}
   if (missing(sitepoints) & !missing(sites2blocks)) {
     warning('sitepoints missing so will not try to guess site at center of circle - drawing surrounding blocks only')
