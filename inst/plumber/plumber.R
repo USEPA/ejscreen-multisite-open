@@ -24,13 +24,20 @@ function(msg="") {
 # ejamit ####
 #
 #* ejamit
-#* @param lat decimal degrees (single point only, for now)
-#* @param lon decimal degrees (single point only, for now)
-#* @param radius in miles
-#* @param attachment NOT ENABLED YET - "true" or "false", whether to return attachment or normal default format (csv-like json)
-#* @param test "true" or "false" if return dummy results ignoring lat, lon, radius
+#* @apiDescription You can request EJAM analysis summary results for all residents within X
+#*   miles of a single point defined by latitude and longitude. Results are in JSON
+#* @param lat decimal degrees (single point only, for now), defaults to an example/ placeholder
+#* @param lon decimal degrees (single point only, for now), defaults to an example/ placeholder
+#* @param radius Radius in miles, default is 1 mile
+#* @param names Default is "long" which returns plain-English long label for each indicator in results. 
+#*   Any other setting will return short variable names such as "pctlowinc"
+#* @param test "true" or "false" If true, returns a pre-calculated result (ignoring lat, lon, radius)
+#* @param attachment NOT USED
 #* @get /ejamit
-function(lat = NULL, lon = NULL, radius = 1, attachment = "false", test = "false") {
+function(lat = 40.81417, lon = -96.69963, radius = 1, names = "long", test = "false", attachment = "false") {
+  lat <- as.numeric(lat); lon <- as.numeric(lon); radius <- as.numeric(radius)
+  if (length(lat) != 1 | length(lon) != 1) {lat <- 40.81417; lon <- -96.69963}
+  if (length(radius) != 1) {radius <- 1}
   
   if (test == "true") {
     out <- as.data.frame(EJAM::testoutput_ejamit_10pts_1miles$results_overall)
@@ -40,13 +47,16 @@ function(lat = NULL, lon = NULL, radius = 1, attachment = "false", test = "false
       sitepoints = data.frame(lat = as.numeric(lat), lon = as.numeric(lon)), 
       radius = as.numeric(radius)
     )$results_overall
+    if (names == "long") {
+    names(out) <- fixcolnames(names(out), 'r', 'long')
+    }
   }
   
   attachment <- FALSE # UNTIL SET UP CORRECTLY
   if (attachment == "true") {
-    as_attachment(
+    plumber::as_attachment(
       value = as.data.frame(out),
-      filename = "ejamit_results.csv"
+      filename = "EJAM_results.csv"
     )
   } else {
     out      
@@ -64,8 +74,11 @@ function(lat = NULL, lon = NULL, radius = 1, attachment = "false", test = "false
 #* @param test "true" or "false" if return dummy results ignoring lat, lon, radius
 #* @serializer csv
 #* @get /ejamit_csv
-function(lat = NULL, lon = NULL, radius = 1, attachment = "true", test = "false") {
+function(lat = 40.81417, lon = -96.69963, radius = 1, attachment = "true", test = "false") {
   
+  lat <- as.numeric(lat); lon <- as.numeric(lon); radius <- as.numeric(radius)
+  if (length(lat) != 1 | length(lon) != 1) {lat <- 40.81417; lon <- -96.69963}
+  if (length(radius) != 1) {radius <- 1}
   
   if (test == "true") {
     out <- as.data.frame(EJAM::testoutput_ejamit_10pts_1miles$results_overall)
@@ -79,9 +92,9 @@ function(lat = NULL, lon = NULL, radius = 1, attachment = "true", test = "false"
   }
   
   if (attachment == "true") {
-  as_attachment(
+    plumber::as_attachment(
     value = as.data.frame(out),
-    filename = "ejamit_results.csv"
+    filename = "EJAM_results.csv"
   )
   } else {
     out      
