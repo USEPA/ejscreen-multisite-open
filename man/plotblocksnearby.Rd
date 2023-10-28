@@ -18,7 +18,7 @@ plotblocksnearby(
 \item{sitepoints}{table of points with lat, lon in decimal degrees (data.frame or data.table),
 but also could just be the output of getblocksnearby() if that has already been done.}
 
-\item{radius}{in miles}
+\item{radius}{in miles (Max allowed is 32 miles, or just over 50 kilometers since 31.06856 miles is 50 * 1000 / meters_per_mile).}
 
 \item{sites2blocks}{If provided, used as sites2blocks like \link{testoutput_getblocksnearby_10pts_1miles}
 If neither sites2blocks nor sitepoints is provided it cannot plot and returns error.

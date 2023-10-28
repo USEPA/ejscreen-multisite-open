@@ -19,6 +19,7 @@ doaggregate(
   silentinteractive = TRUE,
   called_by_ejamit = FALSE,
   subgroups_type = "nh",
+  extra_demog = TRUE,
   infer_sitepoints = FALSE,
   ...
 )
@@ -71,6 +72,8 @@ Set to FALSE to prevent long output showing in console in RStudio when in intera
 "nh" for non-hispanic race subgroups as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh;
 "alone" for EJScreen v2.2 style race subgroups as in    White Alone, wa and others in names_d_subgroups_alone;
 "both" for both versions. Possibly another option is "original" or "default" but work in progress.}
+
+\item{extra_demog}{if should include more indicators from v2.2 report on language etc.}
 
 \item{infer_sitepoints}{set to TRUE to try to infer the lat,lon of each site around which the blocks in sites2blocks were found.
 lat,lon of each site will be approximated as average of nearby blocks, although a more accurate slower way would
