@@ -174,8 +174,11 @@ app_server <- function(input, output, session) {
                           FIPS =             "FIPS")
     )
     cat('current_upload_method reactive is ', x, '\n')
-    cat('current input$ss_choose_method_drop is ', input$ss_choose_method_drop, '\n')
+   
     cat('current input$ss_choose_method      is ', input$ss_choose_method,      '\n')
+    if (input$ss_choose_method == "dropdown") {cat('current input$ss_choose_method_drop is ', input$ss_choose_method_drop, '\n')}
+    if (input$ss_choose_method == "upload") {cat('current input$ss_choose_method_upload is ', input$ss_choose_method_upload, '\n')}
+    ss_choose_method_upload
     x
   })
   # reactive to keep track of data type used in last analysis
@@ -612,6 +615,9 @@ cat("COUNT OF ROWS IN TYPED IN DATA: ", NROW(ext),"\n")
       all_bgs$siteid <- as.character(all_bgs$siteid) # because stack() always creates a factor column. data.table might have a faster reshaping approach? ***
       
       ## only process blockgroups exist for uploaded data
+      
+      # **** find a way to avoid using blockid2fips if possible, since it is so huge in memory 
+      
       if (nrow(all_bgs) > 0) {
         fips_blockpoints <- dplyr::left_join(all_bgs, 
                                              ## create 12-digit column inline (original table not altered)
@@ -753,7 +759,7 @@ cat("COUNT OF ROWS IN TYPED IN DATA: ", NROW(ext),"\n")
       }
     }
     
-    cat("Enabled/disabled button to get results, and showed/hid data preview based on current_upload_method() ==  ", current_upload_method(), "\n")
+    cat("Enabled/disabled button to get results, and showed/hid data preview based on current_upload_method() ==  ", current_upload_method(), "\n\n")
   })
   #############################################################################  # 
   #. ####

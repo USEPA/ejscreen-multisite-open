@@ -155,7 +155,7 @@ testpoints_n <- function(n=10, weighting=c('frs', 'pop', 'area', 'bg', 'block'),
   
   # RANDOM US RESIDENTS
   if (weighting == 'pop') {
-    if (!is.null(ST_of_blockgroup)) {
+    if (!is.null(ST_of_blockgroup)) {  # limited by State
       staterownums <- which(state_from_blockid(blockpoints$blockid) %in% ST_of_blockgroup  )
       
       rownum <- sample.int(length(staterownums), size = n, replace = FALSE, prob = blockwts$blockwt[staterownums])

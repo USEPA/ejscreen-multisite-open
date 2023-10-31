@@ -38,7 +38,7 @@ fips_state_from_statename <- function(statename) {
 
 
 #' fips_counties_from_statefips
-#'
+#' Very similar to list_counties(state) from the tigris package.
 #' @param statefips vector of 2-digit state FIPS codes like c("10", "44", "44") or c(10,44)
 #'
 #' @return vector of 5-digit character string county FIPS of all unique counties in those states

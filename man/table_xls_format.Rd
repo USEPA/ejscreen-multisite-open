@@ -11,7 +11,7 @@ table_xls_format(
   longnames = NULL,
   formatted = NULL,
   bybg = NULL,
-  plot_distance_by_group = TRUE,
+  plot_distance_by_group = FALSE,
   summary_plot = NULL,
   plotlatest = FALSE,
   plotfilename = NULL,

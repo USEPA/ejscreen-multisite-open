@@ -88,8 +88,14 @@ table_validated_ejamit_row <- function(ejamit_results_1row = NULL) {
   } else {
     if (!data.table::is.data.table(ejamit_results_1row)) {data.table::setDT(ejamit_results_1row)}
     if (!setequal(names(ejamit_results_1row), colnames(testoutput_ejamit_10pts_1miles$results_overall))) {
+      # are just the ratios columns missing, because calculate_ratios = FALSE ?
+      if (length(setdiff(setdiff(colnames(testoutput_ejamit_10pts_1miles$results_overall), names(ejamit_results_1row)  ),
+                         c(names_ratio_to_avg_these, names_ratio_to_state_avg_these))) > 0) {
       warning('names(ejamit_results_1row) differs from colnames(testoutput_ejamit_10pts_1miles$results_overall) - THIS MAY CAUSE UNPREDICTABLE PROBLEMS')
-    }
+      } else {
+        message('names do not match the full set of typical names, but it seems to be because ratios were not calculated')
+      }
+      }
   }
   return(ejamit_results_1row)
   # *** if this slows things down at all, one could recode to make more efficient by not returning a copy of the input like this, 
@@ -110,11 +116,22 @@ table_gt_format_step1 <- function(ejamit_results_1row = NULL, type = "demog") {
   
   x <- table_validated_ejamit_row(ejamit_results_1row)
   
- # ignore input$calculate_ratios ? *** 
+  # ignore input$calculate_ratios ? *** 
   ################################### # 
   
   if (type == "envt") {
-
+    
+    if (all(names_e_ratio_to_state_avg %in% names(x))) {
+      state_ratio <- t(x[, ..names_e_ratio_to_state_avg])
+    } else {
+      state_ratio <- NULL
+    }
+    if (all(names_e_ratio_to_avg %in% names(x))) {
+      usa_ratio <- t(x[, ..names_e_ratio_to_avg])
+    } else {
+      usa_ratio <- NULL
+    }
+    
     table4gt <- table4gt_from_scorevectors(
       varnames_r     = names_e, 
       varnames_shown = fixcolnames(names_e, 'r', 'long'), 
@@ -123,12 +140,23 @@ table_gt_format_step1 <- function(ejamit_results_1row = NULL, type = "demog") {
       state_pctile = t(x[, ..names_e_state_pctile]),
       usa_avg      = t(x[, ..names_e_avg]), 
       usa_pctile   = t(x[, ..names_e_pctile]),  
-      state_ratio  = t(x[, ..names_e_ratio_to_state_avg]), 
-      usa_ratio    = t(x[, ..names_e_ratio_to_avg]),
+      state_ratio  = state_ratio, 
+      usa_ratio    = usa_ratio,
       ST = NULL
-    )    
+    )
   } else { # assume  type == "demog" 
-
+    
+    if (all(names_d_ratio_to_state_avg %in% names(x))) {
+      state_ratio <- t(x[, ..names_d_ratio_to_state_avg])
+    } else {
+      state_ratio <- NULL
+    }
+    if (all(names_d_ratio_to_avg %in% names(x))) {
+      usa_ratio <- t(x[, ..names_d_ratio_to_avg]) 
+    } else {
+      usa_ratio <- NULL
+    }
+    
     table4gt <- table4gt_from_scorevectors(
       varnames_r     = names_d, 
       varnames_shown = fixcolnames(names_d, 'r', 'long'), 
@@ -137,8 +165,8 @@ table_gt_format_step1 <- function(ejamit_results_1row = NULL, type = "demog") {
       state_pctile = t(x[, ..names_d_state_pctile]),
       usa_avg      = t(x[, ..names_d_avg]), 
       usa_pctile   = t(x[, ..names_d_pctile]),  
-      state_ratio  = t(x[, ..names_d_ratio_to_state_avg]), 
-      usa_ratio    = t(x[, ..names_d_ratio_to_avg]),
+      state_ratio  = state_ratio, 
+      usa_ratio    = usa_ratio,
       ST = NULL
     )
     ################################### # 
@@ -317,21 +345,21 @@ table_gt_format_step2 <- function(df, type="demog", my_cell_color =  '#dce6f0', 
       gt::fmt_number(columns = rawcols, rows = 13, decimals = df$digits[13])   
   }
   ###################################################################################################### # 
-
+  
   nice_table <- nice_table |> 
     
     # MISC FORMATTING ####
   
-    ## replace NAs with -- ####
-    gt::sub_missing(missing_text = '--') |> 
+  ## replace NAs with -- ####
+  gt::sub_missing(missing_text = '--') |> 
     
     ##  footnote ####
-    gt::tab_footnote(
-      footnote = "Avg. in state means the average indicator value, among all the residents at these sites, using the statewide value in each resident's state. Percentile in state means the same, but using the site-specific value (expressed as a percentile) where each resident lives.", 
-      locations = gt::cells_column_labels(
-        columns = c(state_avg, state_pctile)
-      )
-    )  |> 
+  gt::tab_footnote(
+    footnote = "Avg. in state means the average indicator value, among all the residents at these sites, using the statewide value in each resident's state. Percentile in state means the same, but using the site-specific value (expressed as a percentile) where each resident lives.", 
+    locations = gt::cells_column_labels(
+      columns = c(state_avg, state_pctile)
+    )
+  )  |> 
     ## center values for %ile columns
     gt::cols_align(
       align = 'center', columns = pctilecols

@@ -29,10 +29,15 @@ If returnwhat is "plot" then it returns the plot object as needed for table_xls_
 see parameter returnwhat
 }
 \description{
-Note ratio shown is ratio of distance among others to distance in group,
+distance_mean_by_group - Avg distance of each demog group (of multiple groups)
+Same as \code{\link[=plot_distance_mean_by_group]{plot_distance_mean_by_group()}} but no plot by default
+}
+\details{
+Note that the ratio shown is a ratio of distance among others to distance of a given group,
 so values below 1 mean the given demographic group lives closer to facilities.
-A value of 0.85 would mean the group is only 85\% as far from a site as
-@details Note it is in miles assuming input was in miles, and the distance for each resident is
+A value of 0.85 would mean the group is only 85\% as far from a site as everyone else.
+
+Note it is in miles assuming input was in miles, and the distance for each resident is
 actually the average distance of all residents within their Census block (not block group),
 and when a site is very close to the block internal point (like a centroid)
 relative to the size of the block, the distance to the average resident in the block is

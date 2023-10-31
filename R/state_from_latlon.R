@@ -33,8 +33,8 @@ state_from_latlon <- function(lat, lon, states_shapefile=EJAM::states_shapefile)
 
 state_from_latlon_compiled <- compiler::cmpfun(state_from_latlon)
 
-#' state_from_blocktable
-#' given data.table with blockid column, get state abbreviation of each
+#' state_from_blocktable - was used only in some special cases of using testpoints_n() 
+#' given data.table with blockid column, get state abbreviation of each - not used?
 #' @param dt_with_blockid 
 #'
 #' @return vector of ST info like AK, CA, DE, etc.

@@ -2,7 +2,8 @@
 % Please edit documentation in R/fips_counties_from.R
 \name{fips_counties_from_statefips}
 \alias{fips_counties_from_statefips}
-\title{fips_counties_from_statefips}
+\title{fips_counties_from_statefips
+Very similar to list_counties(state) from the tigris package.}
 \usage{
 fips_counties_from_statefips(statefips)
 }
@@ -14,6 +15,7 @@ vector of 5-digit character string county FIPS of all unique counties in those s
 }
 \description{
 fips_counties_from_statefips
+Very similar to list_counties(state) from the tigris package.
 }
 \examples{
   fips_counties_from_statefips(c(10,44,44))
