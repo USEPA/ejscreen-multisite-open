@@ -178,7 +178,7 @@ app_server <- function(input, output, session) {
     cat('current input$ss_choose_method      is ', input$ss_choose_method,      '\n')
     if (input$ss_choose_method == "dropdown") {cat('current input$ss_choose_method_drop is ', input$ss_choose_method_drop, '\n')}
     if (input$ss_choose_method == "upload") {cat('current input$ss_choose_method_upload is ', input$ss_choose_method_upload, '\n')}
-    ss_choose_method_upload
+    
     x
   })
   # reactive to keep track of data type used in last analysis
