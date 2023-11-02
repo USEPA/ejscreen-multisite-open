@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils_datapack.R
 \name{datapack}
 \alias{datapack}
-\title{See info about the data sets in one or more packages - internal utility function
+\title{datapack - See info about the data sets in one or more packages - internal utility function
 Wrapper for data() and gets memory size of objects and silently returns a data.frame}
 \usage{
 datapack(pkg = ejampackages, len = 30, sortbysize = TRUE)
@@ -19,7 +19,7 @@ number of characters to limit Title to, making it easier to see in the console.}
 data.frame with Item and Title as columns
 }
 \description{
-See info about the data sets in one or more packages - internal utility function
+datapack - See info about the data sets in one or more packages - internal utility function
 Wrapper for data() and gets memory size of objects and silently returns a data.frame
 }
 \details{

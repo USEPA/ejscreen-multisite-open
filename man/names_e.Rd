@@ -3,9 +3,9 @@
 \docType{data}
 \name{names_e}
 \alias{names_e}
-\title{list of environmental indicator names}
+\title{names_e (DATA) list of environmental indicator names}
 \description{
-list of environmental indicator names
+names_e (DATA) list of environmental indicator names
 }
 \seealso{
 EJAMejscreenapi dataset called map_headernames \link{names_d} \link{names_e} \link{namez}

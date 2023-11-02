@@ -1,8 +1,11 @@
-#' fips_from_table
+#' fips_from_table - read and clean FIPS column from a table, after inferring which col it is
 #' Just read the codes in one column of a table obtained from something like read.csv, or excel, etc.
 #' @param fips_table data.frame or data.table of FIPS codes for counties, states, or tracts, 
 #'   for example, in a column whose name can be interpreted as FIPS 
 #'   (is one of the aliases like fips, countyfips, etc.)
+#'   Aliases are: c("FIPS", "fips", "fips_code", "fipscode", "Fips", "statefips", 
+#'   "countyfips", "ST_FIPS", "st_fips", "ST_FIPS", "st_fips", "FIPS.ST", 
+#'   "FIPS.COUNTY", "FIPS.TRACT")
 #' @param addleadzeroes whether to add leading zeroes where needed as for a State whose FIPS starts with "01"
 #' @param inshiny used by server during shiny app
 #'

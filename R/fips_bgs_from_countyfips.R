@@ -29,3 +29,8 @@ bg_from_county <- function(fips) {
 #' @export
 #' @inherit bg_from_county
 counties_as_sites <- bg_from_county
+
+#' fips_bgs_from_countyfips
+#' @export
+#' @inherit bg_from_county
+fips_bgs_from_countyfips <- bg_from_county

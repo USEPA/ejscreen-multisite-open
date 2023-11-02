@@ -3,9 +3,9 @@
 \docType{data}
 \name{namez}
 \alias{namez}
-\title{list of lists of indicator names}
+\title{namez (DATA) list of lists of indicator names (complete list in 1 object)}
 \description{
-list of lists of indicator names
+namez (DATA) list of lists of indicator names (complete list in 1 object)
 }
 \seealso{
 EJAMejscreenapi dataset called map_headernames \link{names_d} \link{names_e}

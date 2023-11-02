@@ -12,8 +12,8 @@
 #'
 #' @examples
 #'   x <- getblocksnearby_from_fips(fips_counties_from_state_abbrev("DE"))
-#'   counties_ej <- doaggregate(x, sites2states_or_latlon = unique(x[ , .(siteid, lat, lon)]))
-#'   mapfast(counties_ej$results_bysite)
+#'   counties_ej <- doaggregate(x)
+#'  # mapfast(counties_ej$results_bysite)
 #'   y =  ejamit(fips=fips_counties_from_statename("Delaware"))
 #'   
 #'   # x=getblocksnearby_from_fips("482011000011") # one blockgroup only
@@ -30,12 +30,8 @@ getblocksnearby_from_fips <- function(fips, inshiny = FALSE, need_blockwt = TRUE
     } else {
       stop('fips must all be same number of characters, like all are 5-digit county fips with leading zeroes counted')
     }}
-  # fipstype <- "notfips"
-  # fipstype[fipslengths == 2] <- "statefips"
-  # fipstype[fipslengths == 5] <- "countyfips"
-  # fipstype[fipslengths == 11] <- "tractfips"
-  # fipstype[fipslengths == 12] <- "bgfips"
-  # fipstype[fipslengths == 15] <- "blockfips"
+  #  see   fipstype() function.
+  # 
   # > length(unique(substr(blockid2fips$blockfips,1,12)))
   # [1] 242335
   # > length(unique(substr(blockid2fips$blockfips,1,11)))

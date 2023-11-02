@@ -1,4 +1,6 @@
-#' popshare_at_top_x_pct
+##################################################################### # 
+
+#' popshare_at_top_x_pct  - top X percent of sites account for what percent of residents?
 #' What fraction of total population is accounted for by the top X percent of places?
 #' @param pop vector of population totals across places,
 #'   like out$results_bysite$pop where out is the output of ejamit()
@@ -36,8 +38,8 @@ popshare_at_top_x_pct = function(pop, x=0.20, astext=FALSE, dig=0) {
 }
 ##################################################################### # 
 
-#' popshare_at_top_n
-#' What fraction of total population is accounted for by the top n places?
+#' popshare_at_top_n  - top N sites account for what percent of residents?
+#' What fraction of total population is accounted for by the top N places?
 #' @param pop vector of population totals across places,
 #'   like out$results_bysite$pop where out is the output of ejamit()
 #' @param n the number of places to consider
@@ -73,7 +75,7 @@ popshare_at_top_n = function(pop, n=10, astext=FALSE, dig=0) {
 ##################################################################### # 
 
 
-#' popshare_p_lives_at_what_n
+#' popshare_p_lives_at_what_n  - how many sites account for P percent of residents?
 #'
 #' @param pop vector of population totals across places,
 #'   like out$results_bysite$pop where out is the output of ejamit()
@@ -124,7 +126,7 @@ popshare_p_lives_at_what_n <- function(pop, p, astext=FALSE, dig=0) {
 ##################################################################### # 
 
 
-#' popshare_p_lives_at_what_pct
+#' popshare_p_lives_at_what_pct  - what percent of sites account for P percent of residents?
 #'
 #' @param pop vector of population totals across places,
 #'   like out$results_bysite$pop where out is the output of ejamit()
@@ -176,4 +178,4 @@ popshare_p_lives_at_what_pct <- function(pop, p, astext=FALSE, dig=0) {
     return(siteshare_low)
   }
 }
-
+##################################################################### # 

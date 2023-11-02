@@ -1,4 +1,4 @@
-#' dupeRfiles
+#' dupeRfiles  -  utility during development, since ejamlite and EJAMejscreenapi had copies of some EJAM files
 #' utility for developer to find similarly named .R files in 2 separate folders of source code,
 #'   whether or not they are packages.
 #' 

@@ -1,4 +1,4 @@
-#' See info about the data sets in one or more packages - internal utility function
+#' datapack - See info about the data sets in one or more packages - internal utility function
 #' Wrapper for data() and gets memory size of objects and silently returns a data.frame
 #' @details do not rely on this much - it was a quick utility. it also creates and leaves in global envt
 #'   objects in packages 
@@ -46,7 +46,7 @@ datapack <- function(pkg=ejampackages, len=30, sortbysize=TRUE) {
   
   if (length(pkg) > 0) {
     
-    zrows <- as.data.frame(data(package=pkg)$results) # this works for multiple packages all at once
+    zrows <- as.data.frame(data(package = pkg)$results) # this works for multiple packages all at once
     
     # THIS PART ONLY WORKS ON ONE PACKAGE AT A TIME I THINK
     

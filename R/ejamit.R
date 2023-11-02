@@ -85,8 +85,27 @@ ejamit <- function(sitepoints,
                    threshold1 = 90, # threshold.default['comp1'],
                    ...
 ) {
-  if (is.null(fips)) {
+  
+  if (!is.null(fips)) {
+    ##   by FIPS not latlons ####
+    # getblocksnearby_from_fips() should include doing something like fips_lead_zero() ? 
+    # but also want to know what type each fips is (probably all should be same like all are tracts or all are county fips)
+
+    radius <- 999 # use this value when analyzing by fips not by circular buffers.
     
+    mysites2blocks <- getblocksnearby_from_fips(fips) # this should have site = each FIPS code (such as each countyfips), and otherwise same outputs as getblocksnearby()
+    
+    out <- doaggregate(
+      mysites2blocks, 
+      subgroups_type = subgroups_type, 
+      # sites2states_or_latlon = unique(mysites2blocks[ , .(siteid, lat, lon)]),   #  
+      radius = radius
+    )
+    
+      } else {
+        
+        ## by lat lon not FIPS ####
+        
     if (missing(radius)) {warning(paste0("Using default radius of ", radius, " miles because not provided as parameter."))}
     if (!missing(quadtree)) {warning("quadtree should not be provided to ejamit() - that is handled by getblocksnearby() ")}
     
@@ -97,7 +116,7 @@ ejamit <- function(sitepoints,
     # select file
     if (missing(sitepoints)) {
       if (interactive()) {
-        sitepoints <- rstudioapi::selectFile(caption = "Select xlsx or csv with lat,lon values", path = '.' )
+        sitepoints <- rstudioapi::selectFile(caption = "Select xlsx or csv with FIPS column of Census fips values", path = '.' )
       } else {
         stop("sitepoints (locations to analyze) is missing but required.")
       }
@@ -106,7 +125,7 @@ ejamit <- function(sitepoints,
     sitepoints <- latlon_from_anything(sitepoints)  
     ################################################################################## #
     
-    # 1. getblocksnearby() ####
+    #  1. getblocksnearby() ####
     
     if (!silentinteractive) {cat('Finding blocks nearby.\n')}
     
@@ -138,24 +157,18 @@ ejamit <- function(sitepoints,
     # second from fips of block with smallest distance to site, 
     # third from lat,lon of sitepoints intersected with shapefile of state bounds
     
-  } else {
-    # fips provided, not latlons
-    mysites2blocks <- getblocksnearby_from_fips(fips) # this should have site = each FIPS code (such as each countyfips), and otherwise same outputs as getblocksnearby()
-    out <- doaggregate(
-      mysites2blocks, 
-      subgroups_type = subgroups_type, 
-      sites2states_or_latlon = unique(mysites2blocks[ , .(siteid, lat, lon)]),   #  
-      radius = 999
-    )
-  }
+    
+      }
+  # end of lat lon vs FIPS
+  
   ################################################################ # 
   
   # 2b. add  HYPERLINKS  to output (to site by site table) ####
   
-  # ( doaggregate does not provide this ? )
+  # ( doaggregate does not provide this   )
   
   #  >this should be a function  and is used by both server and ejamit() ####
-  # duplicated almost exactly in app_server but uses reactives there.
+  # duplicated almost exactly in app_server but uses reactives there. *** except this has been updated here to handle FIPS not just latlon analysis.
   # #  Do maybe something like this:
   # links <- url_4table(lat=out$results_bysite$lat, lon=out$results_bysite$lon, radius = radius, regid=ifelse("REGISTRY_ID" %in% names(out$results_bysite), out$results_bysite$REGISTRY_ID, NULL))
   # out$results_bysite[ , `:=`(links$results_bysite)] # would that work??? how to avoid big cbind step to add the new columns?
@@ -167,20 +180,44 @@ ejamit <- function(sitepoints,
   if ("REGISTRY_ID" %in% names(out$results_bysite)) {
     echolink = url_echo_facility_webpage(REGISTRY_ID, as_html = T)
   } else {
-    echolink = rep(NA,nrow(out$results_bysite))
+    echolink = rep(NA, nrow(out$results_bysite))
   }
-  out$results_bysite[ , `:=`(
-    `EJScreen Report` = url_ejscreen_report(    lat = out$results_bysite$lat, lon = out$results_bysite$lon, radius = radius, as_html = T),
-    `EJScreen Map`    = url_ejscreenmap(        lat = out$results_bysite$lat, lon = out$results_bysite$lon,                  as_html = T),
-    # `ACS Report`      = url_ejscreen_acs_report(lat = out$results_bysite$lat, lon = out$results_bysite$lon, radius = radius, as_html = T),
-    `ECHO report` = echolink
-  )]
-  out$results_overall[ , `:=`(
+  
+  if (!is.null(fips)) {
+    # analyzing by FIPS not lat lon values
+    areatype <- fipstype(fips)
+    if (!(all(fips %in% c("blockgroup", "tract", "city", "county")))) {warning("FIPS must be one of 'blockgroup', 'tract', 'city', 'county' for the EJScreen API")}
+    out$results_bysite[ , `:=`(
+      `EJScreen Report` = url_ejscreen_report(   areaid = fips, areatype = areatype, as_html = T),
+      `EJScreen Map`    = url_ejscreenmap(       wherestr = fips,                 as_html = T),
+      # `ACS Report`      = url_ejscreen_acs_report(lat = out$results_bysite$lat, lon = out$results_bysite$lon, radius = radius, as_html = T),
+      `ECHO report` = echolink
+    )]
+  } else {
+    out$results_bysite[ , `:=`(
+      `EJScreen Report` = url_ejscreen_report(    lat = out$results_bysite$lat, lon = out$results_bysite$lon, radius = radius, as_html = T),
+      `EJScreen Map`    = url_ejscreenmap(        lat = out$results_bysite$lat, lon = out$results_bysite$lon,                  as_html = T),
+      # `ACS Report`      = url_ejscreen_acs_report(lat = out$results_bysite$lat, lon = out$results_bysite$lon, radius = radius, as_html = T),
+      `ECHO report` = echolink
+    )]
+  }
+  if (NROW(out$results_bysite) == 1) {
+    # If we analyzed only 1 place then overall is same as 1 site per row!
+    out$results_overall[ , `:=`(
+      `EJScreen Report` = out$results_bysite$`EJScreen Report`,   #  rep(NA,nrow(out$results_bysite)),
+      `EJScreen Map`    = out$results_bysite$`EJScreen Map`,    # rep(NA,nrow(out$results_bysite)),
+      # `ACS Report`      = out$results_bysite$,   #  rep(NA,nrow(out$results_bysite)),
+      `ECHO report`     = out$results_bysite$`ECHO report`     # rep(NA,nrow(out$results_bysite))
+    )]
+  } else {
+      out$results_overall[ , `:=`(
     `EJScreen Report` = NA,   #  rep(NA,nrow(out$results_bysite)),
     `EJScreen Map`    = NA,    # rep(NA,nrow(out$results_bysite)),
     # `ACS Report`      = NA,   #  rep(NA,nrow(out$results_bysite)),
     `ECHO report`     = NA     # rep(NA,nrow(out$results_bysite))
   )]
+  }
+
   newcolnames <- c(
     "EJScreen Report",
     "EJScreen Map",
@@ -196,7 +233,10 @@ ejamit <- function(sitepoints,
   # 2c. add  RADIUS  to output (in server and in ejamit() ####
   
   # ( doaggregate does not provide this ? )
-  
+  if (!is.null(fips)) {
+    # Analyzed by FIPS so reporting a radius does not make sense here.
+    radius <- NA
+  }
   out$results_bysite[      , radius.miles := radius]
   out$results_overall[     , radius.miles := radius]
   out$results_bybg_people[ , radius.miles := radius] # do not really need to export to excel though, and most users do not need this large table

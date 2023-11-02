@@ -69,7 +69,7 @@ table_gt_from_ejamit_1site <- function(...) {
 #'   
 #'   as would come from ejamit(testpoints_10)$results_overall
 #'    
-#'   or testoutput_ejamit_100pts_1miles$results_bysite[ 1, ]
+#'   or a single row of testoutput_ejamit_100pts_1miles$results_bysite 
 #' @return Returns the input as a 1-row data.table, indicators etc. in the columns. 
 #'   If not a 1 row table, or colnames are not what is expected, it returns correct structure filled with NA values.
 #' @export

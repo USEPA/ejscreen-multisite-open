@@ -3,9 +3,9 @@
 \docType{data}
 \name{names_d}
 \alias{names_d}
-\title{list of demographic indicator names}
+\title{names_d (DATA) list of demographic indicator names}
 \description{
-list of demographic indicator names
+names_d (DATA) list of demographic indicator names
 }
 \seealso{
 map_headernames (in EJAMejscreenapi package) \link{names_d} \link{names_e} \link{namez}

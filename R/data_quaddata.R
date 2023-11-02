@@ -1,6 +1,6 @@
 #' @name quaddata
 #' @docType data
-#' @title data.table used to create index of all US block point locations
+#' @title quaddata (DATA) data.table used to create index of all US block point locations
 #' @details 
 #'    8,174,955 rows when non-populated blocks are kept. 
 #'    5,806,512 rows have Census 2020 population (and blockwt) > 0. 

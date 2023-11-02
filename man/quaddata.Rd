@@ -3,9 +3,9 @@
 \docType{data}
 \name{quaddata}
 \alias{quaddata}
-\title{data.table used to create index of all US block point locations}
+\title{quaddata (DATA) data.table used to create index of all US block point locations}
 \description{
-data.table used to create index of all US block point locations
+quaddata (DATA) data.table used to create index of all US block point locations
 }
 \details{
 8,174,955 rows when non-populated blocks are kept.

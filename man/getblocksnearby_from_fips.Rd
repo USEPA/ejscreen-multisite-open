@@ -27,8 +27,8 @@ Actually finds all blocks within each of the FIPS codes provided
 }
 \examples{
   x <- getblocksnearby_from_fips(fips_counties_from_state_abbrev("DE"))
-  counties_ej <- doaggregate(x, sites2states_or_latlon = unique(x[ , .(siteid, lat, lon)]))
-  mapfast(counties_ej$results_bysite)
+  counties_ej <- doaggregate(x)
+ # mapfast(counties_ej$results_bysite)
   y =  ejamit(fips=fips_counties_from_statename("Delaware"))
   
   # x=getblocksnearby_from_fips("482011000011") # one blockgroup only

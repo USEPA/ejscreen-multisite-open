@@ -18,7 +18,7 @@ setdiff2 <- function(x,y) {setdiff(union(x,y),intersect(x,y))}
 unshared <- function(x,y) {setdiff(union(x,y),intersect(x,y))}
 ##################################################################### #
 
-#' helper function to look at several packages to spot conflicting exported names
+#' dupenames  -  helper to look at several packages to spot conflicting exported names
 #' See what objects (functions or data) are exported by a given (installed) package
 #' @details This can help find duplicates/conflicts within source code 
 #'   and make sure they are on search path, for when renaming / moving functions/packages
@@ -110,7 +110,7 @@ dupenames <- function(pkg = EJAM::ejampackages, sortbypkg=FALSE, compare.functio
 }
 ##################################################################### #
 
-#' helper function for checking possibly different versions of a function with same name in 2 packages
+#' all_equal_functions  -  helper to check different versions of function with same name in 2 packages
 #'
 #' @param fun quoted name of function, like "latlon_infer"
 #' @param package1 quoted name of package, like "EJAM"
@@ -145,7 +145,7 @@ all_equal_functions <- function(fun="latlon_infer", package1="EJAM", package2="E
   }
   # we could attach
   f1 = try(
-    silent=TRUE, 
+    silent = TRUE, 
     expr = getFromNamespace(fun, ns = package1) 
     # get((fun), envir = as.environment(paste0("package:", (package1)) ) ) # this would not work if the package were not already loaded, on search path. see ?getFromNamespace
   )
@@ -156,7 +156,7 @@ all_equal_functions <- function(fun="latlon_infer", package1="EJAM", package2="E
   if (!(is.function(f1))) {warning(package1, "::", fun, " is not a function");return(NA)}
   
   f2 = try(
-    silent=TRUE, 
+    silent = TRUE, 
     expr = getFromNamespace(fun, ns = package2) 
     # get((fun), envir = as.environment(paste0("package:", (package2)) ) )
   )

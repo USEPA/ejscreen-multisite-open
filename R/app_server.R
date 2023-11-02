@@ -1108,6 +1108,13 @@ cat("COUNT OF ROWS IN TYPED IN DATA: ", NROW(ext),"\n")
       d_upload <- data_uploaded()[!is.na(lat) & !is.na(lon),]
       sites2blocks <- d_upload
       
+      
+      
+      # DOES ejamit() latest code for handling FIPS analysis need to get copied here? or can we actually just use ejamit() within the server code?
+      #  ejamit() was updated to handle FIPS better, but this server code was not - not sure it works and there is duplication between those 2 places. ***
+      
+      
+      
       ################################################# # 
     } else {  # LATITUDE AND LONGITUDE (POINTS) 
       
