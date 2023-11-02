@@ -591,12 +591,11 @@ cat("COUNT OF ROWS IN TYPED IN DATA: ", NROW(ext),"\n")
     
     ################################################################################### # 
     if (1 == 1) {
+      
       fips_vec <- fips_from_table(fips_table = fips_dt, addleadzeroes = TRUE, inshiny = TRUE)
       cat("COUNT OF FIPS via fips_from_table(): ", length(fips_vec), '\n')
-      fips_blockpoints <- getblocksnearby_from_fips(fips_vec, inshiny = TRUE) # *** check if this slows it down to make a copy like this, only done so it can print msg about count found
-      # returns fips_blockpoints or uses validate() to show error message
-      cat("COUNT OF blocks BASED ON FIPS: ", NROW(fips_blockpoints), '\n')
-      fips_blockpoints
+      # now let ejamit() do the rest for the FIPS case
+      fips_vec
       
     } else {  # OLDER VERSION NOT USING FUNCTIONS
       
@@ -808,7 +807,7 @@ cat("COUNT OF ROWS IN TYPED IN DATA: ", NROW(ext),"\n")
       
     } else if (current_upload_method() == 'FIPS') {
       num_na <- 0 # we do not keep track of invalid FIPS uploaded
-      num_locs <- length(unique(data_uploaded()$siteid))
+      num_locs <- NROW(data_uploaded())
       HTML(paste0(
         "<span style='border: 1px solid #005ea2; padding: 10px;'>Total location(s) uploaded by FIPS: <strong>", prettyNum(num_locs, big.mark = ","),"</strong></span>"
       ))
@@ -1104,16 +1103,15 @@ cat("COUNT OF ROWS IN TYPED IN DATA: ", NROW(ext),"\n")
       ################################################# # 
     } else if (submitted_upload_method() == 'FIPS') {
       
-      ## remove any invalid latlons before running 
-      d_upload <- data_uploaded()[!is.na(lat) & !is.na(lon),]
-      sites2blocks <- d_upload
-      
-      
-      
-      # DOES ejamit() latest code for handling FIPS analysis need to get copied here? or can we actually just use ejamit() within the server code?
-      #  ejamit() was updated to handle FIPS better, but this server code was not - not sure it works and there is duplication between those 2 places. ***
-      
-      
+      out <- ejamit(fips = data_uploaded(), 
+                    silentinteractive = TRUE,
+                    radius = 999, 
+                    subgroups_type = input$subgroups_type,
+                    calculate_ratios = input$calculate_ratios,
+                    quadtree = localtree,
+                    avoidorphans = input$avoidorphans,
+                    maxradius = input$maxradius
+                    )
       
       ################################################# # 
     } else {  # LATITUDE AND LONGITUDE (POINTS) 
@@ -1129,7 +1127,6 @@ cat("COUNT OF ROWS IN TYPED IN DATA: ", NROW(ext),"\n")
         maxradius = input$maxradius,
         quiet = TRUE
       )
-    }
     
     ## progress bar update overall  
     progress_all$inc(1/3, message = 'Step 2 of 3', detail = 'Aggregating')
@@ -1226,6 +1223,12 @@ cat("COUNT OF ROWS IN TYPED IN DATA: ", NROW(ext),"\n")
     out$results_bysite[      , radius.miles := input$bt_rad_buff]
     out$results_overall[     , radius.miles := input$bt_rad_buff]
     out$results_bybg_people[ , radius.miles := input$bt_rad_buff] # probably will not export this big table in excel downloads
+   
+     # out$longnames <- NA # see ejamit()
+    # out$formatted <- table_tall_from_overall(out$results_overall, out$longnames)
+    #   # see ejamit()
+    
+      } # end non-FIPS
     
     ## assign doaggregate output to data_processed reactive 
     data_processed(out)
@@ -1438,7 +1441,9 @@ cat("COUNT OF ROWS IN TYPED IN DATA: ", NROW(ext),"\n")
       }
       
     } else { #  not shapefile
-      
+   
+      if (submitted_upload_method() != "FIPS") {
+        
       # this bit of code defining popup_labels was there sep 10 but deleted Oct 14, probably inadvertently, and being put back in oct 23.
       popup_labels <- c(data_processed()$longnames, 'State Name')
       popup_labels[popup_labels == ""] <- map_headernames$names_friendly[match(
@@ -1462,7 +1467,10 @@ cat("COUNT OF ROWS IN TYPED IN DATA: ", NROW(ext),"\n")
                 dplyr::where(is.numeric), \(x) round(x, digits = 3))), 
             labels = popup_labels),
           popupOptions = popupOptions(maxHeight = 200)
-        )
+        )} else {
+          # FIPS    *** placeholder blank US map until have time to create FIPS-based map
+          leaflet() %>% addTiles() %>% fitBounds(-115, 37, -65, 48)
+        }
     }
     
   }) # end of report_map 

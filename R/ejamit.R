@@ -3,7 +3,7 @@
 #'   It does essentially what the webapp does to analyze/summarize near a set of points.
 #'   See help("EJAM")  
 #' @inheritParams getblocksnearby
-#' @param silentinteractive Set to FALSE to prevent long output showing in console in RStudio when in interactive mode,
+#' @param silentinteractive   to prevent long output showing in console in RStudio when in interactive mode,
 #'   passed to doaggregate() also. app server sets this to TRUE when calling doaggregate() but 
 #'   ejamit() default is to set this to FALSE when calling doaggregate(). 
 #' @param fips FIPS code vector if using FIPS instead of sitepoints to specify places to analyze,
@@ -249,13 +249,13 @@ ejamit <- function(sitepoints,
   
   # (doaggregate does not provide this)
   
-  # out$results_summarized <- EJAMbatch.summarizer   ::   batch.summarize(   # disabled in ejam lite package ***
-  #   sitestats = data.frame(out$results_bysite),
-  #   popstats =  data.frame(out$results_bysite),
-  #   ## user-selected quantiles to use
-  #   #probs = as.numeric(input$an_list_pctiles),
-  #   threshold = list(threshold1) # compare variables to 90 or other  %ile
-  # )
+  out$results_summarized <- EJAMbatch.summarizer::batch.summarize(   # disabled only in ejam lite package ***
+    sitestats = data.frame(out$results_bysite),
+    popstats =  data.frame(out$results_bysite),
+    ## user-selected quantiles to use
+    #probs = as.numeric(input$an_list_pctiles),
+    threshold = list(threshold1) # compare variables to 90 or other  %ile
+  )
   
   #   The percentiles in these $rows seem wrong as of 10/2023 so far:
   #
