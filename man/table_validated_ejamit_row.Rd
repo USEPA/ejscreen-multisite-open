@@ -12,7 +12,7 @@ table_validated_ejamit_row(ejamit_results_1row = NULL)
 
 as would come from ejamit(testpoints_10)$results_overall
 
-or testoutput_ejamit_100pts_1miles$results_bysite\link{ 1, }}
+or a single row of testoutput_ejamit_100pts_1miles$results_bysite}
 }
 \value{
 Returns the input as a 1-row data.table, indicators etc. in the columns.

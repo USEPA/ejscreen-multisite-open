@@ -498,7 +498,7 @@ html_header_fmt <- tagList(
   #################################################################################################################### #
   
   
-  # WHERE TO FIND THIS template (?) # 
+  # WHERE TO FIND THIS template  # 
   # browseURL("https://github.com/USEPA/webcms/blob/main/utilities/r/OneEPA_template.R")
   
   # START OF ONEEPA SHINY APP WEB UI TEMPLATE to insert within your fluid page  
@@ -543,10 +543,9 @@ html_header_fmt <- tagList(
     tags$meta(name="viewport", content="width=device-width, initial-scale=1.0"),
     tags$meta(`http-equiv`="x-ua-compatible", content="ie=edge"),
     
-    ### (Title was defined here, but now done in golem_add_external_resources() within app_ui.R)   ####
+    ### (Title could be defined here, or if using golem package, in golem_add_external_resources() within app_ui.R) ####
     # 
     # tags$title('EJAM | US EPA'),
-    
     tags$meta(name = "application-name", content = "EJAM"),
     
     ## EPA FAVICONS - but can be specified in (and this would conflict with) golem_add_external_resources() within app_ui.R ####

@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils_dupenames.R
 \name{dupenames}
 \alias{dupenames}
-\title{helper function to look at several packages to spot conflicting exported names
+\title{dupenames  -  helper to look at several packages to spot conflicting exported names
 See what objects (functions or data) are exported by a given (installed) package}
 \usage{
 dupenames(
@@ -25,7 +25,7 @@ Only checks the first 2 copies, not any additional ones (where 3+ pkgs use same 
 data.frame with columns Package, Object name (or NA if no dupes)
 }
 \description{
-helper function to look at several packages to spot conflicting exported names
+dupenames  -  helper to look at several packages to spot conflicting exported names
 See what objects (functions or data) are exported by a given (installed) package
 }
 \details{

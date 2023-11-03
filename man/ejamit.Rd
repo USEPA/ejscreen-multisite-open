@@ -43,7 +43,7 @@ created using indexblocks() which uses the SearchTree package.
 Takes about 2-5 seconds to create this each time it is needed.
 It can be automatically created when the package is attached via the .onAttach() function}
 
-\item{silentinteractive}{Set to FALSE to prevent long output showing in console in RStudio when in interactive mode,
+\item{silentinteractive}{to prevent long output showing in console in RStudio when in interactive mode,
 passed to doaggregate() also. app server sets this to TRUE when calling doaggregate() but
 ejamit() default is to set this to FALSE when calling doaggregate().}
 

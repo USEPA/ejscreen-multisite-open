@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils_dupeRfiles.R
 \name{dupeRfiles}
 \alias{dupeRfiles}
-\title{dupeRfiles
+\title{dupeRfiles  -  utility during development, since ejamlite and EJAMejscreenapi had copies of some EJAM files
 utility for developer to find similarly named .R files in 2 separate folders of source code,
 whether or not they are packages.}
 \usage{
