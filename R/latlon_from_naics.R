@@ -23,7 +23,7 @@
 #'   # mapfast(frs_from_naics(336611)) # simple map
 latlon_from_naics <- function(naics, id_only=FALSE) {
   if (missing(naics)) {return(NULL)}
-  if (is.data.table(naics) & "code" %in% names(naics)) {naics <- naics$code} # flexible in case it was given output of EJAM::naics_from_any() which is a table not just code
+  if (data.table::is.data.table(naics) & "code" %in% names(naics)) {naics <- naics$code} # flexible in case it was given output of EJAM::naics_from_any() which is a table not just code
   
   if (id_only) {
     return(frs_by_naics[NAICS %in% naics, REGISTRY_ID])
