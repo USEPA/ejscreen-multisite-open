@@ -150,8 +150,8 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   
   ###################################################### # 
   
-  ## RADIUS CHECK/ADJUST ####
-
+  ## RADIUS VALIDATE/ CHECK/ ADJUST ####
+  
   #  Try to clean and/or infer and/or limit what the radius was meant to be or will be limited to for reporting here
   # *** revisit this section - if user picks radius < max getblocksnearby() reports, should we also restrict reported and filtered radius to the inferred radius??
   
@@ -173,13 +173,10 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
         warning('Values found in sites2blocks$distance were not but must be numeric - doaggregate() will treat them as zero values')
         radius <- 0
       } else {
-        
         warning('radius passed to doaggregate() must be a single number, in miles, at least 0, but was not, so now 
                 inferring radius based on sites2blocks distances.')
        radius <- radius_inferred(sites2blocks)    
        message('Inferring approximate radius is ', radius, ' miles, based on distances found.')
-        
- 
       }
     }   
 
@@ -207,7 +204,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
     # sites2blocks[distance > radius, .SD := NULL]  #???
   
   }
-  # end of radius adjusments 
+  # end of radius adjustments 
   ###################################################### # 
   
   
@@ -1323,7 +1320,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   # pull averages from statestats table (note using data.frame syntax here not data.table)
   #
   # must be a cleaner way to do this part but did not have time to think about one
-  stinfo <- setDT(statestats[ statestats$PCTILE == "mean" , c("REGION", names_these)])
+  stinfo <- data.table::setDT(statestats[ statestats$PCTILE == "mean" , c("REGION", names_these)])
   setnames(stinfo, "REGION", "ST")
   state.avg.cols_bysite <- stinfo[results_bysite[,.(ST)],  on = "ST"]
   

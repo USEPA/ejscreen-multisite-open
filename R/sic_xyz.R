@@ -20,9 +20,11 @@
 frs_from_sic <- function(sic_code_or_name, ...) {
   frs[REGISTRY_ID %in% siteid_from_sic(sic_from_any(sic_code_or_name, ...)$code, id_only = TRUE) , ]
 }
+############################################################################## # 
+
 
 #' latlon_from_sic - Find EPA-regulated facilities in FRS by SIC code (industrial category)
-#' Get lat lon, Registry ID, given SIC industry code(s)
+#' @description Get lat lon, Registry ID, given SIC industry code(s)
 #' Find all EPA Facility Registry Service (FRS) sites with this exact SIC code (not subcategories)
 #' @details NOTE: many FRS sites lack SIC code! 
 #' 
@@ -46,7 +48,7 @@ frs_from_sic <- function(sic_code_or_name, ...) {
 #'   # mapfast(frs_from_sic('6150')) # simple map
 latlon_from_sic <- function(sic, id_only=FALSE) {
   if (missing(sic)) {return(NULL)}
-  if (is.data.table(sic) & "code" %in% names(sic)) {sic <- sic$code} # flexible in case it was given output of EJAM::sic_from_any() which is a table not just code
+  if (data.table::is.data.table(sic) & "code" %in% names(sic)) {sic <- sic$code} # flexible in case it was given output of EJAM::sic_from_any() which is a table not just code
   
   if (id_only) {
     return(frs_by_sic[SIC %in% sic, REGISTRY_ID])
@@ -54,10 +56,13 @@ latlon_from_sic <- function(sic, id_only=FALSE) {
     return(frs_by_sic[SIC %in% sic, ])
   }
 }
+############################################################################## # 
+
 
 #' @inherit latlon_from_sic
 #' @export
 siteid_from_sic <- latlon_from_sic
+############################################################################## # 
 
 
 
@@ -89,6 +94,8 @@ sic_subcodes_from_code <- function(mycodes) {
   results <- data.table::rbindlist(results)
   return(results)
 }
+############################################################################## # 
+
 
 #' sic_from_code - search for industry names by SIC code(s), 4 digits each
 #' @param mycodes vector of character SIC codes. see <https://siccode.com>
@@ -108,6 +115,8 @@ sic_from_code <- function(mycodes, children=FALSE) {
   }
   return(results)
 }
+############################################################################## # 
+
 
 #' sic_from_name - search for industry names and SIC codes by query string
 #' query by parts of words, etc. in the industry name. 
@@ -135,6 +144,8 @@ sic_from_name <- function(mynames, children = FALSE, ignore.case = TRUE, fixed =
   }
   return(results)
 } 
+############################################################################## # 
+
 
 #' sic_from_any - General way to search for industry names and NAICS codes
 #' Find industry names and codes by searching for queried code(s) or text
@@ -180,4 +191,5 @@ sic_from_any <- function(query, children=FALSE, ignore.case = TRUE, fixed = FALS
   }
   return(results)
 }
+############################################################################## # 
 

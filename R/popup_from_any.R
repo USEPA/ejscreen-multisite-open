@@ -44,7 +44,7 @@ popup_from_any <- function(x, column_names = names(x), labels = column_names, n 
   if (n == "all" | n > NCOL(x)) {
     # nothing
   } else {
-    if (is.data.table(x)) {
+    if (data.table::is.data.table(x)) {
       x <- x[1:n]
     } else {
       x <- x[, 1:n]
@@ -69,7 +69,7 @@ popup_from_any <- function(x, column_names = names(x), labels = column_names, n 
   
   #  If some of names(x) not requested by column_names, they are left out.
   
-  if (is.data.table(x)) {
+  if (data.table::is.data.table(x)) {
     x <- x[, ..column_names]
   } else {
     x <- x[, column_names]
@@ -82,7 +82,7 @@ popup_from_any <- function(x, column_names = names(x), labels = column_names, n 
   }
   
   ## create vector of popups with column labels, length=# of rows of data.table
-  if (is.data.table(x)) {
+  if (data.table::is.data.table(x)) {
     popup_vec <- sapply(1:NROW(x), function(row_num) paste(labels, x[row_num  ], sep = ': ', collapse = '<br>'))
   } else {
     popup_vec <- sapply(1:NROW(x), function(row_num) paste(labels, x[row_num, ], sep = ': ', collapse = '<br>'))

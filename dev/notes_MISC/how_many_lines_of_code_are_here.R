@@ -215,7 +215,7 @@
 # 46    207       49  158    EJAM   /R/                                                  url_getacs_epaquery.R
 # 50    184       48  136    EJAM   /R/                                           plot_distance_cdf_by_group.R
 # 51    184       61  123    EJAM   /R/                                                         url_bookmark.R
-# 52    183       92   91    EJAM   /R/                                                         sic_from_any.R
+# 52    183       92   91    EJAM   /R/                                                         sic_xyz.R
 # 53    177       10  167    EJAM   /R/                                                      table_gt_format.R
 # 56    176      130   46    EJAM   /R/                                                   colcounter_summary.R
 # 57    174       40  134    EJAM   /R/                                                         testpoints_n.R
