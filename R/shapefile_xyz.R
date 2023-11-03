@@ -41,12 +41,18 @@ shapefile_from_folder <- function(folder = NULL) {
 #' @export
 #'
 #' @seealso [shapefile_from_folder()]
-shapefile_filepaths_from_folder <- function(folder) {
+shapefile_filepaths_from_folder <- function(folder = NULL) {
+  if (is.null(folder)) {
+    if (interactive()) {
+      folder <- rstudioapi::selectDirectory(caption = "Select a folder that contains the files (.shp, .shx, .dbf, and .prj)", path = getwd())
+      # and cpg is ok but not essential?
+    } else {
+      stop("need to specify folder where shapefiles are")} #
+  }
   list.files(path = folder, 
              full.names = TRUE, 
-             pattern = ".*[dbf|prj|shp|shx|cpg]$",   # with cpg
-             # pattern = ".*[dbf|prj|shp|shx]$", 
-             ignore.case = TRUE)
+             pattern = ".*(dbf|prj|shp|shx|cpg)$",   # with cpg
+             ignore.case = TRUE, include.dirs = FALSE, recursive = FALSE)
 }
 ############################################################################################## #
 

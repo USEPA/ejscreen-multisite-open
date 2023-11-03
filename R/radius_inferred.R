@@ -35,16 +35,16 @@
 #'
 #' @return a single number such as 1.5 or 3 that is the estimate of the miles distance that was
 #'   originally requested in getblocksnearby()
-#'
+#' @export
 #' @examples  radius_inferred()
 #'   # radius_inferred(getblocksnearby(testpoints_n(100), radius = 3.25))
 radius_inferred <- function(s2b = NULL, decimalsreported = 2, 
                             decimalsforinferring = 3, pctile_of_sites = 0.90, nth_furthest_block = 2) {
-  if (is.null(s2b)) {s2b <- copy( sites2blocks_example1000pts_1miles)}
-  if (!is.data.table(s2b)) {setDT(s2b)}
+  if (is.null(s2b)) {s2b <- data.table::copy( sites2blocks_example1000pts_1miles)}
+  if (!data.table::is.data.table(s2b)) { data.table::setDT(s2b)}
   # setorder(s2b, -distance) # would alter by reference the passed data.table in the calling environment, I think
  
-
+if (NROW(s2b) == 1) {nth_furthest_block <- 1} # or it will return NA since there is only the one row not a 2d furthest, etc.
    x <- s2b[order(-distance), ][ ,  .(distance = 
       round(
         distance[nth_furthest_block],   # use distance to 2d furthest block to avoid an outlier, e.g. 
@@ -55,12 +55,12 @@ radius_inferred <- function(s2b = NULL, decimalsreported = 2,
     # nth_longest_distance = round(distance[nth_furthest_block], decimalsforinferring)
     # ), by="siteid"][ , nth_longest_distance],
    
-   x <- quantile(x$distance, probs = pctile_of_sites, na.rm = TRUE)
+   guesstimate <- quantile(x$distance, probs = pctile_of_sites, na.rm = TRUE)
                  # to avoid small fraction of sites where multiple distances are > actual requested radius
 
   as.vector(
     round(
-      x,
+      guesstimate,
       decimalsreported
     )
   )  

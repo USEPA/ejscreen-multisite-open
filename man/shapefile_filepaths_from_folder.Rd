@@ -4,7 +4,7 @@
 \alias{shapefile_filepaths_from_folder}
 \title{shapefile_filepaths_from_folder  -  get list of valid filenames comprising shapefile including paths}
 \usage{
-shapefile_filepaths_from_folder(folder)
+shapefile_filepaths_from_folder(folder = NULL)
 }
 \arguments{
 \item{folder}{path of folder that contains the files (.shp, .shx, .dbf, and .prj)}
