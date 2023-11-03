@@ -196,17 +196,37 @@ app_server <- function(input, output, session) {
   ## reactive: SHAPEFILES uploaded ####
   
   data_up_shp <- reactive({
-    ## depends on ECHO upload - which may use same file upload as latlon
+    ##
     req(input$ss_upload_shp)
     infiles <- input$ss_upload_shp$datapath # get the location of files
     print(infiles)
     
+    ####### SHOULD REPLACE WITH CODE IN NEW FUNCTIONS that avoid saving uploaded shapefiles locally on server LIKE shapefile_from_filepaths() ***
+    # 
+    if ("working_HERE?" == "working_NOT_IN_SHINY_ONLY") {
+      
+      if (!shapefile_filepaths_valid(filepaths = infiles)) {
+        validate('Not all required file extensions found.')
+      }
+      
+      shp <- shapefile_from_filepaths(infiles, cleanit = FALSE) # cleanit = FALSE allows shiny to handle that with messages
+      
+      ## warn about the invalid rows if any
+      numna <- nrow(shp[!sf::st_is_valid(shp),])
+      invalid_alert(numna) # this updates the value of the reactive invalid_alert()
+      shp <- shapefile_clean(shp) # drops invalid rows or return NULL if none valid
+      if (is.null(shp)) { shiny::validate('No shapes found in file uploaded.')}
+
+          } else {
+            
+            # older way, using renaming files in temp folder because in shiny that works here?  
+            
     infile_ext <- tools::file_ext(infiles)
     if (!all(c('shp','shx','dbf','prj') %in% infile_ext)) {
       validate('Not all required file extensions found.')
     }
     
-    dir <- unique(dirname(infiles)) # get the directory
+    dir <- unique(dirname(infiles)) # get the directory (the real one? or temp one from shiny??)
     outfiles <- file.path(dir, input$ss_upload_shp$name) # create new path name
     name <- strsplit(input$ss_upload_shp$name[1], "\\.")[[1]][1] # strip name 
     purrr::walk2(infiles, outfiles, ~file.rename(.x, .y)) # rename files
@@ -227,6 +247,8 @@ app_server <- function(input, output, session) {
       shiny::validate('No shapes found in file uploaded.')
     }
     shp_proj
+          }
+    
   }) # END OF SHAPEFILE UPLOAD
   
   #############################################################################  # 
@@ -1087,21 +1109,26 @@ cat("COUNT OF ROWS IN TYPED IN DATA: ", NROW(ext),"\n")
     # 1) **EJAM::getblocksnearby()** ####
     
     ################################################# # 
+    ## get blocks inside POLYGONS / SHAPEFILES ####
+    #define blockpoints to process if shapefile exists  d_upload <-{}
+    
     if (submitted_upload_method() == "SHP") {
       
-      #define blockpoints to process if shapefile exists  d_upload <-{}
       d <- get_blockpoints_in_shape(data_uploaded(),input$bt_rad_buff)
+      
       #d_upload[['points']] <- d[['pts']]
       #d_upload[['buffer']] <- d[['polys']]
       #d_upload[['shape']] <- shp
-      #d_upload[['buffer']] <- get_shape_buffered_from_shapefile_points(shp,0)
+      #d_upload[['buffer']] <- shape_buffered_from_shapefile_points(shp,0)
       #d_upload
       #d_upload <- data_uploaded()[['points']]
       sites2blocks <- d[['pts']]
       d_upload     <- d[['pts']]
-      
       ################################################# # 
-    } else if (submitted_upload_method() == 'FIPS') {
+    }
+    ## get blocks inside FIPS   ####
+    
+    if (submitted_upload_method() == 'FIPS') {  # if FIPS, do everything in 1 step right here.
       
       out <- ejamit(fips = data_uploaded(), 
                     silentinteractive = TRUE,
@@ -1111,23 +1138,31 @@ cat("COUNT OF ROWS IN TYPED IN DATA: ", NROW(ext),"\n")
                     quadtree = localtree,
                     avoidorphans = input$avoidorphans,
                     maxradius = input$maxradius
-                    )
+      )
       
       ################################################# # 
-    } else {  # LATITUDE AND LONGITUDE (POINTS) 
+    } else { #  everything other than FIPS code analysis
+      #############################################################################  # 
+      ## get blocks NEAR SITE POINTS  facilities/latlon # ####
       
-      d_upload <- data_uploaded()[!is.na(lat) & !is.na(lon),]
       
-      sites2blocks <- getblocksnearby(
-        ## remove any invalid latlons before running 
-        sitepoints = d_upload,
-        radius = input$bt_rad_buff,
-        quadtree = localtree, 
-        avoidorphans = input$avoidorphans,
-        maxradius = input$maxradius,
+      if (!(submitted_upload_method() %in% c('SHP', 'FIPS'))) {  # if LATITUDE AND LONGITUDE (POINTS), find blocks nearby
+        
+        d_upload <- data_uploaded()[!is.na(lat) & !is.na(lon),]
+        
+        sites2blocks <- getblocksnearby(
+          ## remove any invalid latlons before running 
+          sitepoints = d_upload,
+          radius = input$bt_rad_buff,
+          quadtree = localtree, 
+          avoidorphans = input$avoidorphans,
+          maxradius = input$maxradius,
         quiet = TRUE
       )
     
+      } # end LAT LON finding blocks nearby, now ready for latlon and shapefiles to do aggregation
+      #############################################################################  # 
+      
     ## progress bar update overall  
     progress_all$inc(1/3, message = 'Step 2 of 3', detail = 'Aggregating')
     ## progress bar to show doaggregate status
@@ -1141,6 +1176,10 @@ cat("COUNT OF ROWS IN TYPED IN DATA: ", NROW(ext),"\n")
       }
       progress_doagg$set(value = value, message = message_main, detail = message_detail)
     }
+    #############################################################################  # 
+  
+      
+    if (submitted_upload_method() != "FIPS") {  # if LAT LON or SHAPEFILE, now have blocks nearby and ready to aggregate
     
     #############################################################################  # 
     # 2) **EJAM::doaggregate()** ####
@@ -1228,7 +1267,11 @@ cat("COUNT OF ROWS IN TYPED IN DATA: ", NROW(ext),"\n")
     # out$formatted <- table_tall_from_overall(out$results_overall, out$longnames)
     #   # see ejamit()
     
-      } # end non-FIPS
+    } # end of non fips, ie all latlon or shapefile aggregation 
+    
+     
+      
+    } # done with all ways of analyzing ...  latlon, Shapefiles, and FIPS codes
     
     ## assign doaggregate output to data_processed reactive 
     data_processed(out)
