@@ -12,8 +12,8 @@ mod_get_shape_upload_ui <- function(id){
   tagList(
     ## upload shapefile ####
     shiny::fileInput(inputId = ns('shapefile'),
-                     placeholder = 'test_shapefile.shp', multiple = FALSE,
-                     # accept = c('.xls', '.xlsx', ".csv", "text/csv", "text/comma-separated-values,text/plain"),
+                     placeholder = "test_shapefile.shp", multiple = FALSE,
+                     # placeholder = 'folder that contains files like shapefile.shp', multiple = FALSE, # if from a whole folder
                      label = 'Upload shapefile of areas to analyze',
                      # add hover tips here maybe, or even a button to get examples of valid formats and details on that.
                      )
@@ -33,6 +33,7 @@ mod_get_shape_upload_server <- function(id){
         shapefile_contents <- NULL # default_shapefile_shown_at_startup  # would be defined in global 
       } else {
         shapefile_contents <- sf::st_read(input$shapefile$datapath)
+        # shapefile_contents <- shapefile_from_folder(input$shapefile$datapath) # if from a whole folder
       }
     shapefile_contents
   })

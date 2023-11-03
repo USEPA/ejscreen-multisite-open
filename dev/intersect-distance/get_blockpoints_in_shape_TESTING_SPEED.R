@@ -52,9 +52,9 @@ outfast <- get_blockpoints_in_shape(pts, addedbuffermiles = rad)
 # )
 
 
-polycircles <- get_shape_buffered_from_shapefile_points(get_shapefile_from_sitepoints(pts), rad) # several seconds
+polycircles <- shape_buffered_from_shapefile_points(shapefile_from_sitepoints(pts), rad) # several seconds
 mapview::mapview(outfast, alpha.regions = 0.5, alpha=1, layer="blocks_nearby" ) + 
-  mapview::mapview(get_shapefile_from_sitepoints(pts), layer="Sites", 
+  mapview::mapview(shapefile_from_sitepoints(pts), layer="Sites", 
                    col.regions="black", color="red", alpha=1, alpha.regions = 0.8) + 
   mapview(polycircles, alpha.regions=0, color="black", col.regions="white")  
 

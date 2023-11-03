@@ -299,14 +299,14 @@
 # 287    24       23    1    EJAM   /R/                                                 data_blockgroupstats.R
 # 291    22       15    7    EJAM   /R/                                                   latlon_from_siteid.R
 # 292    22        0   22    EJAM   /R/                                     util_check_urls_in_documentation.R
-# 293    20       13    7    EJAM   /R/                             get_shape_buffered_from_shapefile_points.R
+# 293    20       13    7    EJAM   /R/                             shape_buffered_from_shapefile_points.R
 # 294    20        7   13    EJAM   /R/                                                      url_get_via_url.R
 # 301    18        9    9    EJAM   /R/                                                        url_naics.com.R
 # 303    17       14    3    EJAM   /R/                                         distance_via_surfacedistance.R
 # 307    16        6   10    EJAM   /R/                                                     util_input_names.R
 # 309    15       14    1    EJAM   /R/                                                        data_quaddata.R
 # 310    15        6    9    EJAM   /R/                                                     naics_validation.R
-# 315    14        8    6    EJAM   /R/                                        get_shapefile_from_sitepoints.R
+# 315    14        8    6    EJAM   /R/                                        shapefile_from_sitepoints.R
 # 316    13       12    1    EJAM   /R/                                                data_states_shapefile.R
 # 317    13       12    1    EJAM   /R/                                                      data_statestats.R
 # 321    12       11    1    EJAM   /R/                                                            data_bgej.R

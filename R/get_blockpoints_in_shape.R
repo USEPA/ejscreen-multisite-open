@@ -1,4 +1,14 @@
+
+#' @inheritParams get_blockpoints_in_shape
+#' @export
+#'
+shapefile2blockpoints <- function(...) {
+  get_blockpoints_in_shape(...)  
+}
+
+
 #' get_blockpoints_in_shape - find blocks that are in a polygon, using internal point of block - WORK IN PROGRESS ****
+#' @aliases shapefile2blockpoints
 #' @description This is like getblocksnearby() but for a polygonal buffer area instead of 
 #'   a circular buffer.  
 #' @details This uses getblocksnearby() to get a very fast rough/good estimate of 
@@ -12,7 +22,7 @@
 #'   filter down to which of the millions of US blocks should be examined by the sf:: join / intersect,
 #'   since otherwise it takes forever for sf:: to check all US blocks.
 #' @param polys Spatial data as from sf::st_as_sf(), with a column called siteid, like 
-#'   points as from [get_shapefile_from_sitepoints()],
+#'   points as from [shapefile_from_sitepoints()],
 #'   or a table of points with lat,lon columns that will first be converted here using that function,
 #'   or polygons (not yet tested). 
 #' @param addedbuffermiles width of optional buffering to add to the points (or edges), in miles
@@ -25,9 +35,9 @@
 #'   which is just a circular buffer of specified radius if polys are just points. 
 #'   
 #' @examples  
-#'   x = get_shapefile_from_sitepoints(testpoints_n(2))
+#'   x = shapefile_from_sitepoints(testpoints_n(2))
 #'   # y = get_blockpoints_in_shape(x, 1)  # very very slow
-#' @seealso [get_blockpoints_in_shape()] [get_shapefile_from_sitepoints()] [get_shape_buffered_from_shapefile_points()]
+#' @seealso [get_blockpoints_in_shape()] [shapefile_from_sitepoints()] [shape_buffered_from_shapefile_points()]
 #' @export
 #'
 get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NULL, dissolved=FALSE, safety_margin_ratio=1.10) {
@@ -75,7 +85,7 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
   
   # CHECK FORMAT OF polys - ensure it is spatial object (with data.frame/ attribute table? ) 
   if (!("sf" %in% class(polys))) {
-    polys <-  get_shapefile_from_sitepoints(polys)
+    polys <-  shapefile_from_sitepoints(polys)
   }
   ARE_POINTS <- "POINT" == names(which.max(table(sf::st_geometry_type(polys)))) 
   
@@ -85,7 +95,7 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
   
   if (addedbuffermiles > 0) {
     addedbuffermiles_withunits <- units::set_units(addedbuffermiles, "miles")
-    polys <- get_shape_buffered_from_shapefile_points(polys,  addedbuffermiles_withunits)
+    polys <- shape_buffered_from_shapefile_points(polys,  addedbuffermiles_withunits)
     # addedbuffermiles_withunits  name used since below getblocksnearby( , radius=addedbuffermiles etc ) warns units not expected
   }  
   
