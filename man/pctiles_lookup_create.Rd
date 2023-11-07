@@ -8,7 +8,9 @@ pctiles_lookup_create(
   x,
   zone.vector = NULL,
   zoneOverallName = "USA",
-  wts = NULL
+  wts = NULL,
+  usecollapse = TRUE,
+  type = 1
 )
 }
 \arguments{
@@ -19,7 +21,19 @@ mean,   and percentiles, for each zone}
 
 \item{zoneOverallName}{optional. Default is USA.}
 
-\item{wts}{not used in EJScreen percentiles anymore}
+\item{wts}{leave as default since weighted percentiles of blockgroups are not used for EJScreen percentiles anymore}
+
+\item{usecollapse}{logical, whether to use collapse::fquantile()
+instead of Hmisc package wtd.quantile and stats pkg quantile,
+to test before fully removing dependency on Hmisc and also speed it up.}
+
+\item{type}{DO NOT CHANGE - moot for EJScreen/EJAM - SEE SOURCE CODE - Hmisc pkg wtd.quantile type "1/n" was used here in the past and possibly by EJScreen
+(EJScreen no longer uses weighted percentiles so this is moot for the weighted case)
+but collapse pkg fquantile is now used here to avoid Hmisc dependency
+and fquantile type 4 seems to be the same as Hmisc type "1/n" but that has not been confirmed,
+and this function by default uses fquantile type 1, the inverse of the ECDF however,
+which seems simpler than using type 4 which does linear interpolation between points of the ECDF!
+***  NEED TO CONFIRM IF THAT CREATES A TABLE DIFFERENT THAN WHAT EJSCREEN WOULD CREATE}
 }
 \description{
 pctiles_lookup_create - create lookup table of percentiles 0 to 100 and mean for each indicator by State or USA total

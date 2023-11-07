@@ -1736,10 +1736,10 @@ cat("COUNT OF ROWS IN TYPED IN DATA: ", NROW(ext),"\n")
       
       # https://r-graph-gallery.com/294-basic-ridgeline-plot.html#color
       # https://r-graph-gallery.com/294-basic-ridgeline-plot.html#shape
-      # library(ggplot2)
-      # library(ggridges) # listed in DESCRIPTION file Imports
-      # library(viridis) # listed in DESCRIPTION file Imports
-      # library(hrbrthemes) # listed in DESCRIPTION file Imports
+      #  (ggplot2)
+      #  (ggridges) # listed in DESCRIPTION file Imports
+      #  (viridis) # listed in DESCRIPTION file Imports
+      #  (hrbrthemes) # listed in DESCRIPTION file Imports
       
       ## ratios by site  (demog each site / demog avg in US)
       ratio.to.us.d.bysite <- data_processed()$results_bysite[ ,  c(
