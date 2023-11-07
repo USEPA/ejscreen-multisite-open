@@ -2127,11 +2127,6 @@ cat("COUNT OF ROWS IN TYPED IN DATA: ", NROW(ext),"\n")
       
       #  names( data_processed() )  #  "results_overall"  "results_bysite"  "results_bybg_people"  "longnames"  "count_of_blocks_near_multiple_sites"   "results_summarized"  
       
-      #  data_processed()$results_bybg_people  # do we need to provide this to xlsx at all? it is huge and for expert users only,
-      #    but useful to create a plot of distance by group, but that could be created here to avoid passing the entire large table to table_xls_format() just for the plot. ***
-      
-      #  Avoid making copies since that slows it down? 
-      
       ## note analysis type or overview to 'notes' tab
       if (submitted_upload_method() == "SHP") {
         radius_or_buffer_description <- 'Distance from each shape (buffering around each polygon)'
@@ -2149,24 +2144,31 @@ cat("COUNT OF ROWS IN TYPED IN DATA: ", NROW(ext),"\n")
       
       if ("ready to do this as a function" == "remove this when ready to switch") {
         # having to drop cols via keepcols here is a pain in the neck. is it really useful anyway
-        # x = data_processed() # this copy must slow it down a bit, and waste memory, but can we just pass data_processed() reactive as a parameter without func expecting that or it being altered in this envt?
-        x$results_overall <- x$results_overall[  , keepcols]
-        x$results_bysite  <- x$results_bysite[   , keepcols]
-        x$longnames <- longnames[keepcols]
+        x <- data_processed() # this copy must slow it down a bit, and waste memory, but can we just pass data_processed() reactive as a parameter without func expecting that or it being altered in this envt?
+        x$results_overall <- x$results_overall[  , ..keepcols] # needs ..
+        x$results_bysite  <- x$results_bysite[   , ..keepcols] # needs ..
+        x$longnames       <- x$longnames[            keepcols] # no ..
+        # see note below about extra tab for expert users with bg details
         wb_out <- table_xls_from_ejam(
           ejamitout = x, save_now = FALSE,
           
-          #### *** to be finished
+          #### *** to be finished. see ejamlite
         )
         
       } else {
         
         wb_out <- table_xls_format(
           # note they seem to be data.frames, not data.tables, at this point, unlike how ejamit() had been returning results.
-          overall   = data_processed()$results_overall[ , keepcols],  # 1 row with overall results aggregated across sites
-          eachsite  = data_processed()$results_bysite[  , keepcols],  # 1 row per site
-          longnames = data_processed()$longnames[keepcols],       # 1 row, but full plain English column names.  keepcols here should be selecting cols not rows. 
-          # do not provide bybg tab?
+          overall   = data_processed()$results_overall[ , ..keepcols], # needs ..  # 1 row with overall results aggregated across sites
+          eachsite  = data_processed()$results_bysite[  , ..keepcols], # needs ..  # 1 row per site
+          longnames = data_processed()$longnames[           keepcols], # not need ..       # 1 row, but full plain English column names.  keepcols here should be selecting cols not rows. 
+          
+          # *** NOTE:  data_processed()$results_bybg_people  # Do not provide this to xlsx by default. It is huge and for expert users only,
+          # ***    but useful to create a plot of distance by group. Perhaps that could be created here to avoid passing the entire large table to table_xls_format() just for the plot. ***
+          #  And want to give Option of getting the very large tab full of data_processed()$results_bybg_people  ...only for expert users it is useful
+          #  Avoid making copies since that slows it down, unless an expert user knows they need it. 
+
+          
           hyperlink_colnames = c("EJScreen Report", "EJScreen Map" ),  # need to ensure these get formatted right to work as links in Excel
           # heatmap_colnames=names(table_as_displayed)[pctile_colnums], # can use defaults
           # heatmap_cuts=c(80, 90, 95), # can use defaults
