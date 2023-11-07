@@ -336,7 +336,7 @@ mod_ejscreenapi_ui <- function(id,
         textInput(ns('prefix_filenames'), label = "Prefix to use in default file names when downloading [NOT implemented yet]", value = ""),
         
         ### ------------------------ map colors, weights, opacity ####
-        ### in ejscreenapi global.R:
+        ###  
         numericInput(inputId = "circleweight_in", label = "weight of circles in maps", value = default_circleweight),
         
         # opacitymin   <- 0 

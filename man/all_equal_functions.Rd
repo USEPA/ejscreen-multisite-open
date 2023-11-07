@@ -2,7 +2,8 @@
 % Please edit documentation in R/utils_dupenames.R
 \name{all_equal_functions}
 \alias{all_equal_functions}
-\title{all_equal_functions  -  helper to check different versions of function with same name in 2 packages}
+\title{all_equal_functions - UTILITY - check different versions of function with same name in 2 packages
+used by dupenames() to check different versions of function with same name in 2 packages}
 \usage{
 all_equal_functions(
   fun = "latlon_infer",
@@ -21,7 +22,8 @@ all_equal_functions(
 TRUE or FALSE
 }
 \description{
-all_equal_functions  -  helper to check different versions of function with same name in 2 packages
+all_equal_functions - UTILITY - check different versions of function with same name in 2 packages
+used by dupenames() to check different versions of function with same name in 2 packages
 }
 \seealso{
 \code{\link[=dupenames]{dupenames()}} \code{\link[=all.equal.function]{all.equal.function()}}

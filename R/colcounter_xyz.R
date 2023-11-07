@@ -150,7 +150,7 @@ colcounter_summary_pct <- function(x, thresholdlist, ...)  {
   }
 ######################################## ######################################### #
 
-#' Summarize what percent of rows have AT LEAST N columns at or above (or below) various thresholds
+#' colcounter_summary_cum_pct - Summarize what percent of rows have AT LEAST N columns at or above (or below) various thresholds
 #'
 #' @param x Data.frame or matrix of numbers to be compared to threshold value,
 #'   like percentiles for example.
@@ -167,7 +167,7 @@ colcounter_summary_cum_pct <- function(x, thresholdlist, ...) {
 
 
 #' colcounter_summary_all - Summarize count (and percent) of rows with exactly (and at least) N cols >= various thresholds
-#' A wrapper for 4 functions: Returns four tables,
+#' @description Wraps 4 functions to return 4 tables:
 #'   using colcounter_summary(), colcounter_summary_pct(),
 #'   colcounter_summary_cum(), colcounter_summary_cum_pct()
 #' @param x Data.frame or matrix of numbers to be compared to threshold value,

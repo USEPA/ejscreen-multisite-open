@@ -2,8 +2,7 @@
 % Please edit documentation in R/utils_dupenames.R
 \name{dupenames}
 \alias{dupenames}
-\title{dupenames  -  helper to look at several packages to spot conflicting exported names
-See what objects (functions or data) are exported by a given (installed) package}
+\title{dupenames - UTILITY - check conflicting exported function or data names}
 \usage{
 dupenames(
   pkg = EJAM::ejampackages,
@@ -25,12 +24,11 @@ Only checks the first 2 copies, not any additional ones (where 3+ pkgs use same 
 data.frame with columns Package, Object name (or NA if no dupes)
 }
 \description{
-dupenames  -  helper to look at several packages to spot conflicting exported names
-See what objects (functions or data) are exported by a given (installed) package
+See what same-named objects (functions or data) are exported by some (installed) packages
 }
 \details{
-This can help find duplicates/conflicts within source code
-and make sure they are on search path, for when renaming / moving functions/packages
+utility to find same-named exported objects (functions or datasets) within source code
+of 2+ packages, and see what is on search path, for dev renaming / moving functions/ packages
 }
 \seealso{
 \code{\link[=all_equal_functions]{all_equal_functions()}}

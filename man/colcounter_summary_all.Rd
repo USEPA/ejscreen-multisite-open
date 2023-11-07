@@ -2,10 +2,7 @@
 % Please edit documentation in R/colcounter_xyz.R
 \name{colcounter_summary_all}
 \alias{colcounter_summary_all}
-\title{colcounter_summary_all - Summarize count (and percent) of rows with exactly (and at least) N cols >= various thresholds
-A wrapper for 4 functions: Returns four tables,
-using colcounter_summary(), colcounter_summary_pct(),
-colcounter_summary_cum(), colcounter_summary_cum_pct()}
+\title{colcounter_summary_all - Summarize count (and percent) of rows with exactly (and at least) N cols >= various thresholds}
 \usage{
 colcounter_summary_all(x, thresholdlist, ...)
 }
@@ -19,8 +16,7 @@ like percentiles for example.}
 like or.tied=TRUE, na.rm=TRUE, below=FALSE, one.cut.per.col=FALSE}
 }
 \description{
-colcounter_summary_all - Summarize count (and percent) of rows with exactly (and at least) N cols >= various thresholds
-A wrapper for 4 functions: Returns four tables,
+Wraps 4 functions to return 4 tables:
 using colcounter_summary(), colcounter_summary_pct(),
 colcounter_summary_cum(), colcounter_summary_cum_pct()
 }

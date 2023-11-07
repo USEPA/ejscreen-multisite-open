@@ -1,4 +1,4 @@
-#' ratiostats - not used - depends on ejanalysis package
+#' ratiostats - NOT USED/ DRAFT - depends on ejanalysis package
 #' Comparison of Indicator scores for Average person in each Demog Group
 #' @param results_bybg_people data.table from  doaggregate()[,"results_bybg_people"]
 #' @param pts e.g.,  pts <-  frs[sample(1:nrow( frs), 1e3),]
@@ -7,7 +7,7 @@ ratiostats <- function(results_bybg_people, pts, dig=2 ) {
   
   # Comparison of Indicator scores for Average person in each Demog Group
   
-  stinfo <- data.frame(siteid=1:nrow(pts),  EJAM::state_from_latlon(lat=pts$lat, lon=pts$lon))
+  stinfo <- data.frame(siteid = 1:nrow(pts), state_from_latlon(lat = pts$lat, lon = pts$lon))
   # x <- getblocksnearby(pts, radius = 3.1, quadtree = localtree)
   # y <- doaggregate(x, sites2states_or_latlon = stinfo)
   # z <- y$results_bybg_people
@@ -23,7 +23,7 @@ ratiostats <- function(results_bybg_people, pts, dig=2 ) {
   # r2 <- RR(e=z[ , ..vars], d= z[ ,  c(..names_d, ..names_d_subgroups)] , pop=z$pop)
   #
   warning(
-    "this depended on a package not on CRAN and is not used anyway"
+    "this depended on ejanalysis package not on CRAN and is not used anyway"
   )
   # r2 <- ejanalysis package file RR.means(e=z[ , ..vars], d= z[ ,  c(..names_d, ..names_d_subgroups)] , pop=z$pop) 
   
@@ -32,8 +32,8 @@ ratiostats <- function(results_bybg_people, pts, dig=2 ) {
    #  divided by the same formula for everyone else
  
   
-  r2 <- addmargins(r2, FUN=list(max = function(x) 1.0001 * max(x)) ) # to help sort max row or col 1st before actual max
-  r2 <- r2[order(r2[,"max"],decreasing = T), order(r2["max",],decreasing = T)]
+  r2 <- addmargins(r2, FUN = list(max = function(x) 1.0001 * max(x)) ) # to help sort max row or col 1st before actual max
+  r2 <- r2[order(r2[,"max"], decreasing = T), order(r2["max", ], decreasing = T)]
   r2 <- round(r2,dig)
   return(r2)
   
