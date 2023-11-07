@@ -5,10 +5,12 @@
 \title{shapefile_from_sitepoints - convert table of lat,lon points/sites into sf:: shapefile
 Creates a simple feature (sf) dataframe from points}
 \usage{
-shapefile_from_sitepoints(sitepoints)
+shapefile_from_sitepoints(sitepoints, crs = 4269)
 }
 \arguments{
 \item{sitepoints}{a data.table or data.frame with columns called lat,lon}
+
+\item{crs}{used in st_as_sf() default is crs = 4269 or Geodetic CRS NAD83}
 }
 \value{
 A shapefile via \code{\link[sf:st_as_sf]{sf::st_as_sf()}}

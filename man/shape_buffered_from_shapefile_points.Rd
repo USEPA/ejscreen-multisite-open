@@ -4,7 +4,12 @@
 \alias{shape_buffered_from_shapefile_points}
 \title{shape_buffered_from_shapefile_points - add buffer around shape (points, here)}
 \usage{
-shape_buffered_from_shapefile_points(shapefile_points, radius.miles, ...)
+shape_buffered_from_shapefile_points(
+  shapefile_points,
+  radius.miles,
+  crs = 4269,
+  ...
+)
 }
 \arguments{
 \item{shapefile_points}{spatial object like areas at high risk or areas with facilities to be analyzed}
@@ -13,6 +18,8 @@ shape_buffered_from_shapefile_points(shapefile_points, radius.miles, ...)
 (in case dist is a units object, it should be
 convertible to arc_degree if x has geographic coordinates,
 and to st_crs(x)$units otherwise)}
+
+\item{crs}{used in st_transform()  default is crs = 4269 or Geodetic CRS NAD83}
 
 \item{...}{passed to st_buffer()}
 }

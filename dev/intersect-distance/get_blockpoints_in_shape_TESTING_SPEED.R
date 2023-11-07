@@ -52,7 +52,7 @@ outfast <- get_blockpoints_in_shape(pts, addedbuffermiles = rad)
 # )
 
 
-polycircles <- shape_buffered_from_shapefile_points(shapefile_from_sitepoints(pts), rad) # several seconds
+polycircles <- shape_buffered_from_shapefile_points(shapefile_from_sitepoints(pts), rad) # several seconds. use default crs.
 mapview::mapview(outfast, alpha.regions = 0.5, alpha=1, layer="blocks_nearby" ) + 
   mapview::mapview(shapefile_from_sitepoints(pts), layer="Sites", 
                    col.regions="black", color="red", alpha=1, alpha.regions = 0.8) + 
