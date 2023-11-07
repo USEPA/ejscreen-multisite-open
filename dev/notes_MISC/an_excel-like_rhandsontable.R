@@ -2,10 +2,10 @@ library(shiny)
 library(dplyr)
 
 require(rhandsontable)
-
-### from here: https://stackoverflow.com/questions/75967173/how-do-i-make-a-simple-user-editable-table-in-an-r-shiny-app-using-modular-desig 
-# but also see for a more complete package that helps provide and excel-like interface:  https://dillonhammill.github.io/DataEditR/
-
+### Example is from here:
+#  https://stackoverflow.com/questions/75967173/how-do-i-make-a-simple-user-editable-table-in-an-r-shiny-app-using-modular-desig 
+# but also see for a more complete package that helps provide and excel-like interface:
+#   https://dillonhammill.github.io/DataEditR/
 ######################################################################## # 
 # UI of ediTable module ####
 
@@ -13,8 +13,7 @@ MODULE_UI_latlontypedin <- function(id, ...) {
   ns <- NS(id)
   tagList(
     # Display the table
-    rhandsontable::rHandsontableOutput(outputId = ns("typedin_latlon"), ...),
-    
+    rhandsontable::rHandsontableOutput(outputId = ns("typedin_latlon"), ...)
   )
 }
 ######################################################################## # 
@@ -39,10 +38,14 @@ MODULE_SERVER_latlontypedin <- function(id,
                      tmp,
                      allowRowEdit    = allowRowEdit,
                      allowColumnEdit = allowColumnEdit,
-                     manualRowMove = manualRowMove,
+                     manualRowMove   = manualRowMove,
                      ...
                    )
                    
+                 })
+                 
+                 observeEvent(input$savelatlon, {
+                    cat('here\n')
                  })
                  
                  #Update reactive value for this user-manipulated data to pass back to main environment
@@ -50,9 +53,8 @@ MODULE_SERVER_latlontypedin <- function(id,
                    tmp <- rhandsontable::hot_to_r(input$typedin_latlon)
                    reactdat(tmp)
                  })
-               })
+               }) #end of module server
 }
-
 ######################################################################## # 
 # in UI for the main application 
 
@@ -74,10 +76,16 @@ ui <- fluidPage(
       p("Click or doubleclick on a cell to edit."),
       p("Right-click to undo, add or remove rows, etc."),
       
-      # Display table ready for data entry ####
-      MODULE_UI_latlontypedin(id = "pts_entry_table1"),  # this shows the data entry table on this webpage, not in a popup modal dialog box
-      # actionButton('latlontypedin_submit_button', label='Done entering points', class = 'usa-button usa-button--outline'),
-      
+      shiny::modalDialog(
+        # Display table ready for data entry ####
+        MODULE_UI_latlontypedin(id = "pts_entry_table1"),  # this shows the data entry table on this webpage, not in a popup modal dialog box
+        # actionButton('latlontypedin_submit_button', label='Done entering points', class = 'usa-button usa-button--outline')
+        title = "Enter or edit latitudes and longitudes",
+        footer = tagList(
+          modalButton("Cancel"),
+          actionButton("savelatlon", "Save")
+        )
+        ), # end modalDialog
       ########################## # 
       # to display the edited outputs ####
       h3("Outputting the edited data for lat lon table"),
@@ -87,9 +95,7 @@ ui <- fluidPage(
       # MODULE_UI_latlontypedin(id = "tab2"),   
       # h3("Outputting the edited data  "),
       # tableOutput("data2"),
-      
       br()
-      
     )
   )
 )
@@ -118,3 +124,4 @@ server <- function(input, output) {
 ######################################################################## # 
 # Run the application
 shinyApp(ui = ui, server = server)
+
