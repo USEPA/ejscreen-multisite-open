@@ -9,7 +9,7 @@ cat("Starting setup.R for testing")
 ############################### #
 # Create ejamoutnow here in setup.R, since some tests are using it.
 
-if (exists("ejamit") & exists("blockgroupstats" & exists("testpoints_10"))) {
+if (exists("ejamit") & exists("blockgroupstats") & exists("testpoints_10")) {
   ejamoutnow <- try(ejamit(testpoints_10, radius = 1), silent = FALSE)
 } else {
   warning("missing ejamit() or blockgroupstats, so using pre-calculated results in tests")
