@@ -7,6 +7,14 @@ cat("Starting setup.R for testing")
 # When tests try to test the shiny app, the app should handle doing source(system.file("global.R", package = "EJAM")).
 
 ############################### #
+# Keep track and alert us if any functions in tests have
+#  changed global options, a side effect we probably want functions to avoid
+
+set_state_inspector(function() {
+  list(options = options())
+})
+
+############################### #
 # Create ejamoutnow here in setup.R, since some tests are using it.
 
 if (exists("ejamit") & exists("blockgroupstats") & exists("testpoints_10")) {
