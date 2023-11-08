@@ -126,7 +126,7 @@ shapefile_from_filepaths <- function(filepaths = NULL, cleanit = TRUE, crs = 426
 
 
 #' shapefile_clean  -  drop invalid rows and warn if all invalid
-#' @details
+#'
 #' @param shp a shapefile object using sf::read_sf()
 #' @param crs used in shp <- sf::st_transform(shp, crs = crs), default is crs = 4269 or Geodetic CRS NAD83 
 #'

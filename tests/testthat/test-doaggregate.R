@@ -42,6 +42,37 @@ test_that('doaggregate() returns a correctly named list, with no error', {
 })
  ################# # 
 
+x <- doaggregate(testoutput_getblocksnearby_10pts_1miles, radius = 1)
+
+test_that("still same exact results_overall as previously saved", {
+  expect_equivalent(
+    testoutput_doaggregate_10pts_1miles$results_overall,
+    x$results_overall # use defaults
+  )
+})
+test_that("still same exact results_bysite as previously saved", {
+  expect_equivalent(
+    testoutput_doaggregate_10pts_1miles$results_bysite,
+    x$results_bysite # use defaults 
+  )
+})
+test_that("still same exact results_bybg_people as previously saved", {
+  expect_equivalent(
+    testoutput_doaggregate_10pts_1miles$results_bybg_people,
+    x$results_bybg_people # use defaults 
+  )
+})
+test_that("still same exact longnames as previously saved", {
+  expect_equivalent(
+    testoutput_doaggregate_10pts_1miles$longnames,
+    x$longnames # use defaults 
+  )
+})
+
+rm(x)
+
+############################################################################## # 
+
 # RADIUS 
 
 test_that('warning if ask for radius > 32, and just uses 32 instead', {

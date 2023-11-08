@@ -2684,7 +2684,7 @@ cat("COUNT OF ROWS IN TYPED IN DATA: ", NROW(ext),"\n")
         )
       })
       # [TEMPORARILY SAVE PARAMS FOR TEST ING] ## ##
-      if (input$testing) {saveRDS(params, file = "./inst/testparams.RDS")} ################################ TEMPORARILY SAVE PARAMS FOR TESTING# # 
+      # if (input$testing) {saveRDS(params, file = "./inst/testparams.RDS")} ################################ TEMPORARILY SAVE PARAMS FOR TESTING# # 
       
       # Knit report to Word Doc ## ##
       
