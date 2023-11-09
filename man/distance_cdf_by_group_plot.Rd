@@ -3,11 +3,11 @@
 \name{distance_cdf_by_group_plot}
 \alias{distance_cdf_by_group_plot}
 \title{distance_cdf_by_group_plot - SLOW - needs to be optimized
-Plot a graphic showing cumulative shares of ONE demographic group that are within each distance}
+Plot a graphic showing cumulative shares of ONLY ONE demographic group that are within each distance}
 \usage{
 distance_cdf_by_group_plot(
   results_bybg_people,
-  radius_miles = round(max(x$distance_min_avgperson, na.rm = T), 1),
+  radius_miles = round(max(results_bybg_people$distance_min_avgperson, na.rm = T), 1),
   demogvarname = "Demog.Index",
   demoglabel = demogvarname,
   color1 = "red",
@@ -33,7 +33,23 @@ and cumulative count of everyone else in that block group
 }
 \description{
 distance_cdf_by_group_plot - SLOW - needs to be optimized
-Plot a graphic showing cumulative shares of ONE demographic group that are within each distance
+Plot a graphic showing cumulative shares of ONLY ONE demographic group that are within each distance
+}
+\examples{
+ y <- ejamit(testpoints_100, radius = 3)
+ plot_distance_mean_by_group(y$results_bybg_people) # or distance_mean_by_group() synonym
+ print(distance_by_group(y$results_bybg_people, 
+   demogvarname = 'pctlowinc', demoglabel = 'Low Income'))
+ distance_by_group_plot(y$results_bybg_people, 
+   demogvarname = 'pctlowinc', demoglabel = 'Low Income')
+ xyz = plot_distance_cdf_by_group(y$results_bybg_people) #  
+ tail(round(xyz,3))
+ tail(xyz[xyz$pctwa <= 0.501, ]) #  Median distance to nearest site here 
+   for White Alone is 2.15 miles, but >60\% of Black Alone have a site that close.
+ tail(xyz[xyz$pctba <= 0.501, ]) #  Median distance to nearest site here 
+   for Black Alone is 1.85 miles
+ round(tail(xyz[xyz$dist <=1, ]), 3) #  11\% of White have a site within 1 mile, 
+   compared to 18.7\% of Asian who do.
 }
 \seealso{
 \code{\link[=distance_by_group]{distance_by_group()}} \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} for examples

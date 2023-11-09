@@ -8,13 +8,17 @@ Create localtree (a quadtree index of all US block centroids) in global environm
 indexblocks()
 }
 \value{
-Side effect is it creates the index in memory
+Returns TRUE when done. Side effect is it creates the index in memory.
 }
 \description{
 indexblocks
 Create localtree (a quadtree index of all US block centroids) in global environment
 }
 \details{
-.onLoad() can be edited to create this when the package loads,
+Note this is duplicated code in .onAttach() and also in global.R
+
+.onAttach() can be edited to create this when the package loads,
 but then it takes time each time a developer rebuilds/installs the package or others that load EJAM.
+
+It also has to happen in global.R if it has not already.
 }

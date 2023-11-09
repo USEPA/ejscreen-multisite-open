@@ -2,7 +2,7 @@
 % Please edit documentation in R/doaggregate.R
 \name{doaggregate}
 \alias{doaggregate}
-\title{Summarize indicators in each buffer (given the blocks in each buffer and indicators for each block)}
+\title{doaggregate - Summarize indicators in each buffer (given the blocks in each buffer and indicators for each block)}
 \usage{
 doaggregate(
   sites2blocks,
@@ -15,7 +15,12 @@ doaggregate(
   include_ejindexes = FALSE,
   updateProgress = NULL,
   need_proximityscore = FALSE,
-  silentinteractive = FALSE,
+  calculate_ratios = TRUE,
+  silentinteractive = TRUE,
+  called_by_ejamit = FALSE,
+  subgroups_type = "nh",
+  extra_demog = TRUE,
+  infer_sitepoints = FALSE,
   ...
 )
 }
@@ -23,12 +28,13 @@ doaggregate(
 \item{sites2blocks}{data.table of distances in miles between all sites (facilities) and
 nearby Census block internal points, with columns siteid, blockid, distance,
 created by getblocksnearby  function.
-See sites2blocks_example dataset in package, as input to this function}
+See \link{sites2blocks_example10pts_1miles} aka \link{testoutput_getblocksnearby_10pts_1miles} dataset in package, as input to this function}
 
 \item{sites2states_or_latlon}{data.table or just data.frame, with columns siteid (each unique one in sites2blocks) and ST (2-character State abbreviation) or lat and lon}
 
 \item{radius}{Optional radius in miles to limit analysis to. By default this function uses
-all the distances that were provided in the output of getblocksnearby().
+all the distances that were provided in the output of getblocksnearby(),
+and reports radius estimated as rounded max of distance values in inputs to doaggregate.
 But there may be cases where you want to run getblocksnearby() once for 10 miles, say,
 on a very long list of sites (1,000 or more, say), and then get summary results for
 1, 3, 5, and 10 miles without having to redo the getblocksnearby() part for each radius.
@@ -49,15 +55,44 @@ using formulas that have to be specified.}
 
 \item{testing}{used while testing this function}
 
-\item{include_ejindexes}{not yet implemented}
+\item{include_ejindexes}{whether to calculate EJ Indexes and return that information}
 
 \item{updateProgress}{progress bar function used for shiny app}
 
 \item{need_proximityscore}{whether to calculate proximity scores}
 
-\item{silentinteractive}{Set to FALSE to prevent long output showing in console in RStudio when in interactive mode}
+\item{calculate_ratios}{whether to calculate and return ratio of each indicator to its US and State overall mean}
+
+\item{silentinteractive}{Set to TRUE to see results in RStudio console.
+Set to FALSE to prevent long output showing in console in RStudio when in interactive mode}
+
+\item{called_by_ejamit}{Set to TRUE by ejamit() to suppress some outputs even if ejamit(silentinteractive=F)}
+
+\item{subgroups_type}{Optional (uses default). Set this to
+"nh" for non-hispanic race subgroups as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh;
+"alone" for EJScreen v2.2 style race subgroups as in    White Alone, wa and others in names_d_subgroups_alone;
+"both" for both versions. Possibly another option is "original" or "default" but work in progress.}
+
+\item{extra_demog}{if should include more indicators from v2.2 report on language etc.}
+
+\item{infer_sitepoints}{set to TRUE to try to infer the lat,lon of each site around which the blocks in sites2blocks were found.
+lat,lon of each site will be approximated as average of nearby blocks, although a more accurate slower way would
+be to use reported distance of each of 3 of the furthest block points and triangulate}
 
 \item{...}{more to pass to another function? Not used currently.}
+}
+\value{
+list with named elements:
+\itemize{
+\item \strong{\code{results_overall}}   one row data.table, like results_by_site, but just one row with
+aggregated results for all unique residents.
+\item \strong{\code{results_by_site}}   results for individual sites (buffers) - a data.table of results,
+one row per siteid, one column per indicator
+\item \strong{results_bybg_people}  results for each block group, to allow for showing the distribution of each
+indicator across everyone within each demographic group.
+\item \strong{longnames}  descriptive long names for the indicators in the above outputs
+\item \strong{count_of_blocks_near_multiple_sites}  additional detail
+}
 }
 \description{
 This updated 2023 code takes a set of facilities and the set of blocks that are near each,
@@ -74,7 +109,7 @@ in each buffer (i.e., near each facility):
 \item \strong{SUMS OF COUNTS}: for population count, or number of households or Hispanics, etc.
 \item \strong{POPULATION-WEIGHTED MEANS}: for  Environmental indicators.
 
-\emph{\strong{EJ Indexes}:} These could be in theory recalculated via formula, but the way EJScreen
+\emph{\strong{EJ Indexes}:} The way EJScreen
 does this is apparently finding the pop wtd mean of EJ Index raw scores,
 not the EJ Index formula applied to the summarized demographic score and aggregated envt number.
 \item \strong{CALCULATED BY FORMULA}: Buffer or overall score calculated via formulas using aggregated counts,
@@ -88,7 +123,7 @@ This function requires the following datasets:
 \item blockwts: data.table with these columns: blockid , bgid, blockwt
 \item quaddata data.table used to create localtree, a quad tree index of block points
 (and localtree that is created when package is loaded)
-\item EJAM::blockgroupstats - A data.table (such as EJScreen demographic and environmental data by blockgroup?)
+\item blockgroupstats - A data.table (such as EJScreen demographic and environmental data by blockgroup?)
 }
 }
 \seealso{

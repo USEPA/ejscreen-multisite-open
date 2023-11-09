@@ -1,4 +1,4 @@
-#' find subcategories of the given overall NAICS industry code(s)
+#' naics_subcodes_from_code - find subcategories of the given overall NAICS industry code(s)
 #' Given 3-digit NAICS code, for example, get all NAICS that start with those digits. 
 #' @details  similar idea was naics2children() but this is more robust 
 #' See [naics_from_any()] which uses this
@@ -24,7 +24,7 @@ naics_subcodes_from_code <- function(mycodes) {
   return(results)
 }
 
-#' search for industry names by NAICS code(s), 2-6 digits long each
+#' naics_from_code - search for industry names by NAICS code(s), 2-6 digits long each
 #' See [naics_from_any()] which uses this
 #' @param mycodes vector of numeric NAICS codes. see <https://naics.com>
 #' @param children logical, if TRUE, also return all the subcategories - where NAICS starts with the same digits
@@ -44,7 +44,7 @@ naics_from_code <- function(mycodes, children=FALSE) {
   return(results)
 }
 
-#' search for industry names and NAICS codes by query string
+#' naics_from_name - search for industry names and NAICS codes by query string
 #' query by parts of words, etc. in the industry name. 
 #' See [naics_from_any()] which uses this
 #' @param mynames query string, vector of NAICS industry names or any regular expression or partial words. See <https://naics.com>
@@ -73,7 +73,7 @@ naics_from_name <- function(mynames, children=FALSE, ignore.case = TRUE, fixed =
   return(results)
 } 
 
-#' General way to search for industry names and NAICS codes
+#' naics_from_any - General way to search for industry names and NAICS codes
 #' Find industry names and codes by searching for queried code(s) or text
 #' @param query query string(s) and/or number(s), vector of NAICS codes or industry names or any regular expression or partial words
 #' @param children logical, if TRUE, also return all the subcategories - where NAICS starts with the same digits
@@ -141,13 +141,13 @@ naics_from_any <- function(query, children=FALSE, ignore.case = TRUE, fixed = FA
   
   query_codes <- query[isnum]
   if (length(query_codes) != 0) {
-    via_codes <- naics_from_code(query_codes, children=children)
+    via_codes <- naics_from_code(query_codes, children = children)
   } else {
     via_codes <- NULL
   }
   query_text <- query[!isnum]
   if (length(query_text) != 0) {
-    via_text  <- naics_from_name(query_text,  children=children, ignore.case = ignore.case, fixed = fixed)
+    via_text  <- naics_from_name(query_text,  children = children, ignore.case = ignore.case, fixed = fixed)
   } else {
     via_text <- NULL
   }

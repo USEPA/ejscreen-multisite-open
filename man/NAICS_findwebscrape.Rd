@@ -2,7 +2,7 @@
 % Please edit documentation in R/naics_findwebscrape.R
 \name{naics_findwebscrape}
 \alias{naics_findwebscrape}
-\title{for query term, show list of roughly matching NAICS, scraped from web
+\title{naics_findwebscrape - for query term, show list of roughly matching NAICS, scraped from web
 This finds more than just \code{\link[=naics_from_any]{naics_from_any()}} does, since that needs an exact match
 but this looks at naics.com website which lists various aliases for a sector.}
 \usage{
@@ -15,7 +15,7 @@ naics_findwebscrape(query)
 data.frame of info on what was found, naics and title
 }
 \description{
-for query term, show list of roughly matching NAICS, scraped from web
+naics_findwebscrape - for query term, show list of roughly matching NAICS, scraped from web
 This finds more than just \code{\link[=naics_from_any]{naics_from_any()}} does, since that needs an exact match
 but this looks at naics.com website which lists various aliases for a sector.
 }

@@ -2,32 +2,44 @@
 % Please edit documentation in R/latlon_is.valid.R
 \name{latlon_is.valid}
 \alias{latlon_is.valid}
-\title{Validate latitudes and longitudes}
+\title{latlon_is.valid - Validate latitudes and longitudes}
 \usage{
-latlon_is.valid(lat, lon)
+latlon_is.valid(lat, lon, quiet = TRUE)
 }
 \arguments{
-\item{lat}{vector of latitudes in decimal degrees}
+\item{lat}{vector of latitudes}
 
-\item{lon}{numeric vector of longitudes in decimal degrees, same length}
+\item{lon}{vector of longitudes}
+
+\item{quiet}{optional logical, if TRUE, show list of bad values in console}
 }
 \value{
 logical vector, one element per lat lon pair (location)
 }
 \description{
-Check each latitude and longitude value to see if they are
+Check each latitude and longitude value to see if they are valid.
+}
+\details{
 NA or outside expected numeric ranges
+
 (based on approx ranges of lat lon seen among block internal points dataset)
+
+But note Guam, American Samoa, Northern Mariana Islands, and U.S. Virgin Islands are outside these ranges!
+EJScreen 2.2 does not provide demographic data in those locations anyway, but can map sites there.
+
 lat must be between 17.5 and 71.5, and
-lon must be ( between -180 and -65) OR (between 172 and 180)
+
+lon must be ( between -180 and -64) OR (between 172 and 180)
 }
 \examples{
  \dontrun{
+ # this would only work using the EJAM package datasets frs and blockpoints:
+ table(latlon_is.valid(lat =  frs$lat, lon =  frs$lon))
+ # blockpoints may need to be downloaded using dataload_from_aws()
  table(latlon_is.valid(lat =  blockpoints$lat, lon =  blockpoints$lon))
-  ##      TRUE 
-  ## 8,174,955
   }
 }
 \seealso{
-latlon_df_clean() latlon_infer() latlon_is.valid() latlon_as.numeric()
+\code{\link[=latlon_is.usa]{latlon_is.usa()}} \code{\link[=latlon_is.islandareas]{latlon_is.islandareas()}} \code{\link[=latlon_is.available]{latlon_is.available()}} \code{\link[=latlon_is.possible]{latlon_is.possible()}}
+\code{\link[=latlon_df_clean]{latlon_df_clean()}} \code{\link[=latlon_infer]{latlon_infer()}} \code{\link[=latlon_is.valid]{latlon_is.valid()}} \code{\link[=latlon_as.numeric]{latlon_as.numeric()}}
 }

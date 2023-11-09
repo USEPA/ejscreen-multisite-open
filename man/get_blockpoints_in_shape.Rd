@@ -2,7 +2,8 @@
 % Please edit documentation in R/get_blockpoints_in_shape.R
 \name{get_blockpoints_in_shape}
 \alias{get_blockpoints_in_shape}
-\title{find blocks that are in a polygon, using internal point of block - WORK IN PROGRESS ****}
+\alias{shapefile2blockpoints}
+\title{get_blockpoints_in_shape - find blocks that are in a polygon, using internal point of block - WORK IN PROGRESS ****}
 \usage{
 get_blockpoints_in_shape(
   polys,
@@ -14,7 +15,7 @@ get_blockpoints_in_shape(
 }
 \arguments{
 \item{polys}{Spatial data as from sf::st_as_sf(), with a column called siteid, like
-points as from \code{\link[=get_shapefile_from_sitepoints]{get_shapefile_from_sitepoints()}},
+points as from \code{\link[=shapefile_from_sitepoints]{shapefile_from_sitepoints()}},
 or a table of points with lat,lon columns that will first be converted here using that function,
 or polygons (not yet tested).}
 
@@ -40,16 +41,18 @@ This uses getblocksnearby() to get a very fast rough/good estimate of
 which US block points are nearby (with a safety margin - see param below),
 before then using sf:: to carefully identify which of those candidate blocks are actually
 inside each polygon (e.g., circle) according to sf:: methods.
+
 For circular buffers, just using getblocksnearby() should work and not need this function.
+
 For noncircular polygons, buffered or not, this function will provide a way to very quickly
 filter down to which of the millions of US blocks should be examined by the sf:: join / intersect,
 since otherwise it takes forever for sf:: to check all US blocks.
 }
 \examples{
  
-  x = get_shapefile_from_sitepoints(testpoints_n(2))
+  x = shapefile_from_sitepoints(testpoints_n(2))
   # y = get_blockpoints_in_shape(x, 1)  # very very slow
 }
 \seealso{
-\code{\link[=get_blockpoints_in_shape]{get_blockpoints_in_shape()}} \code{\link[=get_shapefile_from_sitepoints]{get_shapefile_from_sitepoints()}} \code{\link[=get_shape_buffered_from_shapefile_points]{get_shape_buffered_from_shapefile_points()}}
+\code{\link[=get_blockpoints_in_shape]{get_blockpoints_in_shape()}} \code{\link[=shapefile_from_sitepoints]{shapefile_from_sitepoints()}} \code{\link[=shape_buffered_from_shapefile_points]{shape_buffered_from_shapefile_points()}}
 }

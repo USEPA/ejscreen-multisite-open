@@ -8,5 +8,5 @@
 
 library(testthat)
 library(EJAM)
-
+# test_local()
 test_check("EJAM")

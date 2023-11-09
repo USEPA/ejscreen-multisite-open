@@ -2,7 +2,7 @@
 % Please edit documentation in R/naics_download.R
 \name{naics_download}
 \alias{naics_download}
-\title{script to download NAICS file with code and name of sector}
+\title{naics_download - script to download NAICS file with code and name of sector}
 \usage{
 naics_download(
   year = 2017,

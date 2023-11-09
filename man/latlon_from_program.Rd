@@ -2,7 +2,7 @@
 % Please edit documentation in R/latlon_from_program.R
 \name{latlon_from_program}
 \alias{latlon_from_program}
-\title{Get lat lon, Registry ID, and NAICS, for given FRS Program System CATEGORY
+\title{latlon_from_program - Get lat lon, Registry ID, and NAICS, for given FRS Program System CATEGORY
 Find all FRS sites in a program like RCRAINFO, TRIS, or others}
 \usage{
 latlon_from_program(query)
@@ -16,7 +16,7 @@ since there could be duplicates where same REGISTRY_ID has 2 different pgm_sys_i
 in the same program, so results were sometimes longer than if using \code{\link[=frs_from_program]{frs_from_program()}}
 }
 \description{
-Get lat lon, Registry ID, and NAICS, for given FRS Program System CATEGORY
+latlon_from_program - Get lat lon, Registry ID, and NAICS, for given FRS Program System CATEGORY
 Find all FRS sites in a program like RCRAINFO, TRIS, or others
 }
 \details{

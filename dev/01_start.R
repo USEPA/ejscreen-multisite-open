@@ -16,7 +16,7 @@
 ##
 ## /!\ Note: if you want to change the name of your app during development,
 ## either re-run this function, call golem::set_golem_name(), or don't forget
-## to change the name in the app_sys() function in app_config.R /!\
+## to change the name in the app_sys() function in app_config.R /!\    
 ##
 golem::fill_desc(
   pkg_name = "EJAM", # The Name of the package containing the App
@@ -25,7 +25,7 @@ golem::fill_desc(
   author_first_name = "Mark", #
   author_last_name = "Corrales", #
   author_email = "Corrales.mark@epa.gov", #
-  repo_url = NULL # The URL of the GitHub Repo
+  repo_url = "https://github.com/USEPA/EJAM" # The URL of the GitHub Repo
 )
 
 ## Set {golem} options ----

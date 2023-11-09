@@ -2,14 +2,15 @@
 % Please edit documentation in R/plot_distance_mean_by_group.R
 \name{plot_distance_mean_by_group}
 \alias{plot_distance_mean_by_group}
-\title{plot_distance_mean_by_group
-Barplot of Average Proximity to sites, by Demographic Group (vs everyone else)}
+\title{plot_distance_mean_by_group - Barplot Avg. proximity, by group
+Shows proximity to sites, for each demographic group (relative to everyone else)}
 \usage{
 plot_distance_mean_by_group(
   results_bybg_people,
-  demogvarname = c(EJAM::names_d, EJAM::names_d_subgroups),
+  demogvarname = NULL,
   demoglabel = NULL,
-  graph = TRUE
+  graph = TRUE,
+  returnwhat = "table"
 )
 }
 \arguments{
@@ -18,16 +19,53 @@ plot_distance_mean_by_group(
 \item{demogvarname}{vector of column names like "pctlowinc" etc.}
 
 \item{demoglabel}{vector of labels like "Low Income Residents" etc.}
+
+\item{returnwhat}{If returnwhat is "table", invisibly returns a
+data.frame with group, ratio, avg_distance_for_group, avg_distance_for_nongroup.
+If returnwhat is "plotfilename" then it returns the full path including filename of a .png in a tempdir
+If returnwhat is "plot" then it returns the plot object as needed for table_xls_format() ?}
 }
 \value{
-data.frame with group, ratio, avg_distance_for_group, avg_distance_for_nongroup
+see parameter returnwhat
 }
 \description{
-Note ratio shown is ratio of distance among others to distance in group,
+plot_distance_mean_by_group - Barplot Avg. proximity, by group
+Shows proximity to sites, for each demographic group (relative to everyone else)
+}
+\details{
+Note that the ratio shown is a ratio of distance among others to distance of a given group,
 so values below 1 mean the given demographic group lives closer to facilities.
+A value of 0.85 would mean the group is only 85\% as far from a site as everyone else.
+
+Note it is in miles assuming input was in miles, and the distance for each resident is
+actually the average distance of all residents within their Census block (not block group),
+and when a site is very close to the block internal point (like a centroid)
+relative to the size of the block, the distance to the average resident in the block is
+estimated as 90 percent of the effective radius, which is what the radius of the block
+would be if it were the same area in square meters or miles but circular in shape.
+This is the approach used in EJScreen to estimate average proximity of a block resident in
+cases where the block is extremely close to the site or the site may actually be inside the block,
+or exactly on top of the internal point of the block, in which case zero would not be an
+appropriate estimate of the distance, hence this adjustment is made in EJAM getblocksnearby()
+}
+\examples{
+ y <- ejamit(testpoints_100, radius = 3)
+ plot_distance_mean_by_group(y$results_bybg_people) # or distance_mean_by_group() synonym
+ print(distance_by_group(y$results_bybg_people, 
+   demogvarname = 'pctlowinc', demoglabel = 'Low Income'))
+ distance_by_group_plot(y$results_bybg_people, 
+   demogvarname = 'pctlowinc', demoglabel = 'Low Income')
+ xyz = plot_distance_cdf_by_group(y$results_bybg_people) #  
+ tail(round(xyz,3))
+ tail(xyz[xyz$pctwa <= 0.501, ]) #  Median distance to nearest site here 
+   for White Alone is 2.15 miles, but >60\% of Black Alone have a site that close.
+ tail(xyz[xyz$pctba <= 0.501, ]) #  Median distance to nearest site here 
+   for Black Alone is 1.85 miles
+ round(tail(xyz[xyz$dist <=1, ]), 3) #  11\% of White have a site within 1 mile, 
+   compared to 18.7\% of Asian who do.
 }
 \seealso{
 \code{\link[=distance_by_group]{distance_by_group()}}
 
-\code{\link[=distance_by_group_plot]{distance_by_group_plot()}}
+\code{\link[=distance_by_group_plot]{distance_by_group_plot()}}  \code{\link[=plot_distance_cdf_by_group]{plot_distance_cdf_by_group()}}
 }

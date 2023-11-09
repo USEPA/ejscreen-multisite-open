@@ -1,3 +1,11 @@
+#' count_sites_with_n_high_scores
+#'
+#' @param scores score
+#' @param thresholds thresholds
+#' @param xwide xwide
+#'
+#' @export
+#'
 count_sites_with_n_high_scores <- function(scores, thresholds=c(1.01, 1.50, 2, 3, 5, 10), xwide=c("statewide", "nationwide")[1]) {
   ratiodata <- scores # data.frame
   ratio_benchmarks <- thresholds
@@ -6,7 +14,7 @@ count_sites_with_n_high_scores <- function(scores, thresholds=c(1.01, 1.50, 2, 3
   
   # e.g., What % of sites have at least 1 demog indicator >2x state avg? 
   
-  # x <- ejamit(testpoints_50, radius = 1)
+  # x <- ejamit(testpoints_100, radius = 1)
   # out <- x$results_bysite  # $ratio.to.state.avg.Demog.Index
   ## library... need to have data.table pkg
   # out <- setDF(copy(out))
@@ -20,7 +28,7 @@ count_sites_with_n_high_scores <- function(scores, thresholds=c(1.01, 1.50, 2, 3
     ratiodata[is.infinite(ratiodata[,ccc]), ccc] <- NA
   }  
   
-  sitestats <-  colcounter_summary_all(ratiodata, thresholdlist =  ratio_benchmarks, or.tied=TRUE)
+  sitestats <-  colcounter_summary_all(ratiodata, thresholdlist =  ratio_benchmarks, or.tied = TRUE)
   
   cumpcts <-  sitestats[, , "cum_pct"]  
   # sitestats[, , "count"]
@@ -66,5 +74,5 @@ count_sites_with_n_high_scores <- function(scores, thresholds=c(1.01, 1.50, 2, 3
         }
     }
   }
-  return(list(stats=sitestats, text=textout))
+  return(list(stats = sitestats, text = textout))
 }

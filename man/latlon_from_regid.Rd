@@ -2,7 +2,7 @@
 % Please edit documentation in R/latlon_from_siteid.R
 \name{latlon_from_regid}
 \alias{latlon_from_regid}
-\title{Get lat lon (and NAICS) via Facility Registry ID}
+\title{latlon_from_siteid - Get lat lon (and NAICS) via Facility Registry ID}
 \usage{
 latlon_from_regid(siteid)
 }
@@ -14,7 +14,7 @@ data.table with columns
 lat,lon,REGISTRY_ID,PRIMARY_NAME,NAICS,PGM_SYS_ACRNMS
 }
 \description{
-Get lat lon (and NAICS) via Facility Registry ID
+latlon_from_siteid - Get lat lon (and NAICS) via Facility Registry ID
 }
 \examples{
  latlon_from_siteid(110070874073)

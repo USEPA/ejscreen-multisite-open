@@ -2,15 +2,19 @@
 % Please edit documentation in R/ejamit.R
 \name{ejamit}
 \alias{ejamit}
-\title{Get complete EJ analysis numbers (demographic and environmental indicators) near a list of locations}
+\title{ejamit - Get complete EJ analysis (demographic and environmental indicators) near a list of locations}
 \usage{
 ejamit(
   sitepoints,
   radius = 3,
   maxradius = 31.07,
-  avoidorphans = TRUE,
+  avoidorphans = FALSE,
   quadtree = NULL,
   silentinteractive = F,
+  fips = NULL,
+  subgroups_type = "nh",
+  calculate_ratios = TRUE,
+  threshold1 = 90,
   ...
 )
 }
@@ -21,17 +25,42 @@ ejamit(
 
 \item{maxradius}{miles distance (max distance to check if not even 1 block point is within radius)}
 
-\item{avoidorphans}{logical Whether to avoid case where no block points are within radius,
-so if TRUE, it keeps looking past radius to find nearest one within maxradius.}
+\item{avoidorphans}{logical If TRUE, then where not even 1 BLOCK internal point is within radius of a SITE,
+it keeps looking past radius, up to maxradius, to find nearest 1 BLOCK.
+What EJScreen does in that case is report NA, right? So,
+does EJAM really need to report stats on residents presumed to be within radius,
+if no block centroid is within radius?
+Best estimate might be to report indicators from nearest block centroid which is
+probably almost always the one your site is sitting inside of,
+but ideally would adjust total count to be a fraction of blockwt based on
+what is area of circular buffer as fraction of area of block it is apparently inside of.
+Setting this to TRUE can produce unexpected results, which will not match EJScreen numbers.
+
+Note that if creating a proximity score, by contrast, you instead want to find nearest 1 SITE if none within radius of this BLOCK.}
 
 \item{quadtree}{(a pointer to the large quadtree object)
-created from the SearchTree package example:
-SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point")
+created using indexblocks() which uses the SearchTree package.
 Takes about 2-5 seconds to create this each time it is needed.
-It is automatically created when the package is loaded via the \code{\link[=.onLoad]{.onLoad()}} function}
+It can be automatically created when the package is attached via the .onAttach() function}
 
-\item{silentinteractive}{Set to FALSE to prevent long output showing in console in RStudio when in interactive mode,
-passed to doaggregate() also.}
+\item{silentinteractive}{to prevent long output showing in console in RStudio when in interactive mode,
+passed to doaggregate() also. app server sets this to TRUE when calling doaggregate() but
+ejamit() default is to set this to FALSE when calling doaggregate().}
+
+\item{fips}{FIPS code vector if using FIPS instead of sitepoints to specify places to analyze,
+such as a list of US Counties or tracts.}
+
+\item{subgroups_type}{Optional (uses default). Set this to
+"nh" for non-hispanic race subgroups as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh;
+"alone" for EJScreen v2.2 style race subgroups as in    White Alone, wa and others in names_d_subgroups_alone;
+"both" for both versions. Possibly another option is "original" or "default" but work in progress.}
+
+\item{calculate_ratios}{whether to calculate and return ratio of each indicator to US and State overall averages}
+
+\item{threshold1}{percentile like 80 or 90 or 95 to compare percentiles to
+"alone" for groups like white alone (whether or not hispanic),
+"both" may try to include both,
+or possibly "original" or "default" might be added as options}
 
 \item{...}{passed to \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} or other such functions}
 }
@@ -44,8 +73,8 @@ It does essentially what the webapp does to analyze/summarize near a set of poin
 See help("EJAM")
 }
 \examples{
+\dontrun{
  # All in one step, using functions not shiny app:
- \dontrun{
  out <- ejamit(testpoints_100_dt, 2, quadtree=localtree)
 
  # Do not specify sitepoints and it will prompt you for a file,
@@ -68,7 +97,7 @@ See help("EJAM")
   out <- ejamit(testsites, radius)  
   # out <- ejamit("myfile.xlsx", 3.1)  
   
-  # out2 <- EJAMejscreenapi::ejscreenit(testpoints_1000[1:3,])
+  # out2 <- ejscreenit(testpoints_05)
   
   # View results overall
   round(t(out$results_overall), 3.1)
@@ -84,17 +113,19 @@ See help("EJAM")
   t(out$results_bysite[1, ])
   t(out$results_bysite[out$results_bysite$siteid == 2, ])
   
+  
   # if doing just 1st step of ejamit() 
   #  get distance between each site and every nearby Census block
   s2b <- testdata_sites2blocks
   s2b <- getblocksnearby(testsites, radius = radius)
   s2b <- getblocksnearbyviaQuadTree(testsites, radius = radius)
   getblocks_diagnostics(s2b)
-  
+  plotblocksnearby(s2b)
+   
   # if doing just 2d step of ejamit()
   #  get summaries of all indicators based on table of distances
   out <- doaggregate(s2b, testsites) # this works now and is simpler
-  
+
 }
 
 }

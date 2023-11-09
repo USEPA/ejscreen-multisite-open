@@ -39,32 +39,30 @@ names_d_subgroups_ratio_to_avg, names_d_subgroups_ratio_to_state_avg
 # also need to add state average ratios not just US.
 rationames <- grep("ratio\\.to", names(xejam), value = T)
 # "ratio.to"
-
-# Still need to double check naming conventions:  pctile.EJ.DISPARITY...  versus  EJ.DISPARITY...
-# Mostly have added these to EJAM now. 
-ejnames <- grep("EJ\\.DISPARITY", names(xejam), value = T)
+  
+ejnames <- grep("EJ\\.DISPARITY", names(xejam), value = T) # there are 4 types of raw EJ:  x.eo, x.supp, state.x.eo, state.x.supp  
 
 # will not be in api outputs.
-countnames <- c(names_d_count, names_d_subgroups_count )
+countnames <- c(names_d_count, names_d_subgroups_count ) # names_d_other_count  maybe ???
 # > countnames
 # [1] "lowinc"       "lingiso"      "unemployed"   "lths"         "under5"       "over64"       "mins"     
 # "hisp"         "nhba"  "nhaa"         "nhaiana"      "nhnhpia"      "nhotheralone" "nhmulti"      "nhwa"        
-# > names_other
+# > names_d_other_count
 # [1] "pop"            "nonmins"        "povknownratio"  "age25up"        "hhlds"          "unemployedbase" "pre1960"        "builtunits"    
 
 ###############################################################
 # SEE WHAT ELSE BESIDES THOSE DOES NOT MATCH ###############################################################
 
-names(xejam)[!(names(xejam) %in% c(names_other, subnames,  countnames)) & !(names(xejam) %in% names(xapi))]
+names(xejam)[!(names(xejam) %in% c(names_d_other_count, subnames,  countnames)) & !(names(xejam) %in% names(xapi))]
 
-# names(xejam)[!(names(xejam) %in% c(names_other, rationames, subnames, suppnames, ejnames, countnames)) & !(names(xejam) %in% names(xapi))]
+# names(xejam)[!(names(xejam) %in% c(names_d_other_count, rationames, subnames, suppnames, ejnames, countnames)) & !(names(xejam) %in% names(xapi))]
 
 ###############################################################
  
 # names in api vs in ejam were:   Updated to match, by editing map_headernames file.
 # "EJScreenPDF"    `EJScreen Report` 
 # "EJScreenMAP"    `EJScreen Map` 
-# "EJScreenACS"    `ACS Report`
+
 # `ECHO report`   NOT IN API OUTPUT YET
  
 

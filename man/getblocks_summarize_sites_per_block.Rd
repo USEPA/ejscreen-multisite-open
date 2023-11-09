@@ -2,12 +2,12 @@
 % Please edit documentation in R/getblocks_diagnostics.R
 \name{getblocks_summarize_sites_per_block}
 \alias{getblocks_summarize_sites_per_block}
-\title{helper- Get summary stats on how many sites are near various blocks (residents)}
+\title{getblocks_summarize_sites_per_block - how many sites are near the blocks (site density near residents)}
 \usage{
 getblocks_summarize_sites_per_block(x, varname = "blockid")
 }
 \arguments{
-\item{x}{The output of \code{\link[=getblocksnearby]{getblocksnearby()}} like sites2blocks_example}
+\item{x}{The output of \code{\link[=getblocksnearby]{getblocksnearby()}} like testoutput_getblocksnearby_10pts_1miles}
 
 \item{varname}{colname of variable in data.table x that is the one to summarize by}
 }
@@ -15,7 +15,7 @@ getblocks_summarize_sites_per_block(x, varname = "blockid")
 invisibly, a list of stats
 }
 \description{
-helper- Get summary stats on how many sites are near various blocks (residents)
+getblocks_summarize_sites_per_block - how many sites are near the blocks (site density near residents)
 }
 \seealso{
 \code{\link[=getblocks_diagnostics]{getblocks_diagnostics()}}

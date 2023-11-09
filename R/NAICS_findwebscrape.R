@@ -1,4 +1,4 @@
-#' for query term, show list of roughly matching NAICS, scraped from web
+#' naics_findwebscrape - for query term, show list of roughly matching NAICS, scraped from web
 #' This finds more than just [naics_from_any()] does, since that needs an exact match
 #'   but this looks at naics.com website which lists various aliases for a sector.
 #' 
@@ -25,7 +25,7 @@ naics_findwebscrape <- function(query) {
     
   htm <- rvest::read_html(myurl)
   x <- htm |> rvest::html_elements(css = ".first_child a") |> rvest::html_text2()
-  x <- data.frame(matrix(x, ncol=2, byrow = TRUE), stringsAsFactors = FALSE)
+  x <- data.frame(matrix(x, ncol = 2, byrow = TRUE), stringsAsFactors = FALSE)
   names(x) <- c("code", "name")
   x
 }

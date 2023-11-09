@@ -1,96 +1,227 @@
 # global.R defines variables needed in global environment
 
-################################################################## # 
-# get block data if missing. ####
+# DO NOT source a modules defaults UNTIL INSIDE THE MODULE ####
+#    EJAMejscreenapi module uses its own global.R file:
+#   source(system.file("global.R", package = "EJAMejscreenapi"))
 
-fnames <- c('lookup_states.rda', 'bgid2fips.rda', 'blockid2fips.rda', 'blockwts.rda', 'blockpoints.rda', 'quaddata.rda')
-pathnames <- paste0('EJAM/', fnames)
-varnames <- gsub("\\.rda", "", fnames)
-mybucket <- 'dmap-data-commons-oa'
-# if not already in memory/ global envt, get from AWS 
-for (i in 1:length(fnames)) {
-  if (!exists(varnames[i])) {
-    cat('loading', varnames[i], 'from', pathnames[i], '\n')
-    aws.s3::s3load(object = pathnames[i], bucket = mybucket)
-  }
-}
-# BUCKET_CONTENTS <- data.table::rbindlist(aws.s3::get_bucket(bucket = mybucket), fill = TRUE)
-# baseurl <- "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/"
-# urls <- paste0(baseurl, fnames)
-## "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/quaddata.rda"
-## "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/bgid2fips.rda"
-## "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/blockpoints.rda"
-## "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/lookup_states.rda"
-## "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/blockwts.rda"
-## "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/blockid2fips.rda"
+# ------------------------ ____ Get packages, functions, data ---------------------------------  ####
+require(shiny) # remove?
+# LOAD data and INDEX BLOCKS ####
+##         Note this duplicates code in .onAttach()
+# EJAM ::
+dataload_from_aws()  # SLOW STEP !! loads only missing ones # see ?dataload_from_aws for details 
+# EJAM ::
+indexblocks() # see ?indexblocks() for details. takes several seconds. 
+# EJAM ::
+# dataload_from_package() # preload the key dataset at least? not essential
+
+
 ################################################################## # 
 
-# build localtree index if missing ####
-if (!exists("localtree")) {
-  # This assign() below is the same as the function called  indexblocks() 
-  
-  assign(
-    "localtree", 
-    SearchTrees::createTree(quaddata, treeType = "quad", dataType = "point"), 
-    envir = globalenv() 
-    # need to test, but seems to work. 
-    # But takes a couple seconds at every reload of pkg.
-  )
-  cat("  Done building index.\n")
-}
-################################################################## # 
+# ------------------------ ____ SET DEFAULTS / OPTIONS for app ------------------------  ####
+# NOTE DEFAULTS HERE ARE UNRELATED TO DEFAULTS IN API module that has its own namespace and is kept separate, like default radius, etc.
+# * Note each time a user session is started, the application-level option set is duplicated, for that session. 
+# * If the options are set from inside the server function, then they will be scoped to the session.
+#     LET ADVANCED USERS ADJUST THESE, as INPUTS ON ADVANCED SETTINGS TAB
 
-# Raise Memory Limit on file upload to 100Mb ####
+######################################################## # 
+## >Options in general & Testing #### 
+
+## ------------------------ enable bookmarking? ####
+bookmarking_allowed <- TRUE  # https://mastering-shiny.org/action-bookmark.html
+if (bookmarking_allowed) {enableBookmarking(store = "url")}
+
+default_hide_advanced_settings <- FALSE
+default_testing        <- TRUE
+default_shiny.testmode <- TRUE  # If TRUE, then various features for testing Shiny applications are enabled.
+default_print_uploaded_points_to_log <- TRUE
+
+## Raise Memory Limit on file upload to 100Mb  
 options(shiny.maxRequestSize = 100*1024^2) 
-library(shiny)
-# DEFINE SOME VARIABLES (but most are loaded with package as data) ####
-
-# max points can map ####
-max_points_can_map<- 15000
-## use larger cutoff for polygons (FIPS/Shapefiles)
-max_points_can_map_poly <- 1e10
-
-## set points cutoff for using leaflet markerClusters
-marker_cluster_cutoff <- 1000
-
-## global variable for mapping (EJAMejscreenapi had this as data loaded by pkg?)
-meters_per_mile <- 1609.344
-
-## EPA Programs (to limit NAICS/ facilities query) #### 
-## used by inputId 'ss_limit_fac1' and 'ss_limit_fac2'
-# epa_programs <- c(
-#   "TRIS" = "TRIS",
-#   "RCRAINFO" = "RCRAINFO",
-#   "AIRS/AFS" = "AIRS/AFS", 
-#   "E-GGRT" = "E-GGRT",
-#   "NPDES" = "NPDES", 
-#   "RCRAINFO" = "RCRAINFO", 
-#   "RMP" = "RMP"
-# )
-
-## add counts to program acronyms to use in dropdown display
-epa_program_counts <- dplyr::count(EJAM::frs_by_programid, program, name = 'count') 
-epa_program_counts$pgm_text_dropdown <- paste0(epa_program_counts$program, ' (',prettyNum(epa_program_counts$count, big.mark = ','), ')')
-
-epa_programs <- setNames(epa_program_counts$program, epa_program_counts$pgm_text_dropdown)
-
-#epa_programs <- sort(unique(EJAM::frs_by_programid$program))
 
 ## Loading/wait spinners (color, type) ####
 ## note: was set at type = 1, but this caused screen to "bounce"
-options(spinner.color="#005ea2", spinner.type = 4)
+options(spinner.color = "#005ea2", spinner.type = 4)
 
-## Defaults for quantiles summary stats etc. ####
+# ------------------------ app title ####
+# apptitle <- "EJAM v2.2"
+
+######################################################## # 
+## ------------------------ IP address ####
+# ips <- c('10.147.194.116', 'awsgeopub.epa.gov', '204.47.252.51', 'ejscreen.epa.gov')
+# whichip <- ips[4]
+
+######################################################## # 
+## Options in site point uploads, radius  ####
+
+## ------------------------ limits on # of points ####
+
+max_points_can_map    <- 15 * 1000  # *** EJAM only not api
+marker_cluster_cutoff  <- 1 * 1000  # *** EJAM only not api; for leaflet markerClusters
+
+
+# input$max_pts_upload
+default_max_pts_upload  <-   5 * 1000 
+maxmax_pts_upload  <-  10 * 1000 #   cap uploaded points 
+
+# input$max_pts_map
+default_max_pts_map       <- 1 * 1000
+maxmax_pts_map       <- 5 * 1000 # max we will show on map 
+
+ # input$max_pts_showtable
+ default_max_pts_showtable <- 1000 # max to show in interactive viewer. It drops the rest.
+ maxmax_pts_showtable  <- 5 * 1000 # 10k is extremely slow. check server side vs client side 
+
+  # input$max_pts_run
+ default_max_pts_run  <-  1 * 1000 # initial cap but can adjust in advanced tab
+ maxmax_pts_run       <- 15 * 1000 # absolute max you can analyze here, even with advanced tab 
+
+ ## use larger cutoff for polygons (FIPS/Shapefiles)
+ max_points_can_map_poly <- 1e10
+ 
+ ## ------------------------ Options for Radius  #####
+ 
+# input$default_miles
+default_default_miles <- 1 
+max_default_miles <- 50 * 1000 / meters_per_mile # 50 km
+# input$max_miles
+default_max_miles  <- 10 # 
+maxmax_miles <- 50 * 1000 / meters_per_mile # 50 km
+#   radius miles for slider input where user specifies radius. Note 5 km is 3.1 miles, 10 km is 6.2 miles ; and 10 miles is 16 kilometers (10 * meters_per_mile/1000). 50 km is too much/ too slow.
+minradius  <- 0.25 # miles
+stepradius <- 0.05 # miles
+## global constant (EJAMejscreenapi has this data loaded by pkg?)
+meters_per_mile <- 1609.344
+######################################################## # 
+## EPA Programs (to limit NAICS/ facilities query) #### 
+## used by inputId 'ss_limit_fac1' and 'ss_limit_fac2'
+# see frsprogramcodes data object also
+## add counts to program acronyms to use in dropdown display
+epa_program_counts <- dplyr::count(frs_by_programid, program, name = 'count') # EJAM :: frs_by_programid
+epa_program_counts$pgm_text_dropdown <- paste0(epa_program_counts$program, ' (',prettyNum(epa_program_counts$count, big.mark = ','), ')')
+epa_programs <- setNames(epa_program_counts$program, epa_program_counts$pgm_text_dropdown)
+default_selected <- "CAMDBS" # has only about 739 sites
+# cbind(epa_programs)
+# sort(unique(frs_by_programid$program)) # similar  # EJAM :: frs_by_programid
+
+######################################################################################################## # 
+
+## Options in calculations & what stats to output ####
+
+### calculate and/or include in downloaded outputs ------------- #
+
+default_calculate_ratios <- TRUE   # probably need to calculate even if not shown in excel download, since plots and short summary report rely on them/
+default_include_averages <- TRUE
+default_include_extraindicators <- TRUE
+
+
+
+
+
+
+######################################################## #
+
+# >Options for viewing results  ####
+
+
+
+### ------------------------ map colors, weights, opacity ####
+### in ejscreenapi global.R:
+ default_circleweight <- 4
+# opacitymin   <- 0 
+# opacitymax   <- 0.5
+# opacitystep  <- 0.025
+# opacitystart <- 0.5
+# opacityratio <- 2 / 5
+# base_color_default      <- "blue"  ;
+# cluster_color_default   <- "red"   ;
+# highlight_color_default <- 'orange';
+
+# ## ------------------------ predict time to complete ####
+# perhourslow  <- 3000  # to give an estimate of how long it will take
+# perhourguess <- 6000  # seeing 8k if 1 mile, 4.7k if 5 miles, roughly. 207 ECHO run was 2 . 1  minutes, 5.9k/hr.
+# perhourfast <- 12000  # approx 12k RMP sites would take almost 2 hours (1 to 2 hours, or even 4?).
+# report_every_n_default <- 100
+
+## ------------------------ download as excel vs csv ####
+# asExcel <- TRUE # WHETHER TO DOWNLOAD RESULTS AS EXCEL OR CSV
+
+######################################################## # 
+
+### Excel formatting options   --------------------- #
+
+
+# heatmap column names - defaults could be set here and made flexible in advanced tab
+
+
+# heatmap cutoffs for bins - defaults could be set here and made flexible in advanced tab
+
+
+# heatmap colors for bins - defaults could be set here and made flexible in advanced tab
+
+
+
+default_ok2plot <- FALSE # the plots to put in excel tabs via table_xls_from_ejam() and table_xls_format() and the plot functions
+
+
+############################################################################## # # # 
+
+# relevant to EJAM only, not api:
+
+################################ #
+
+### in getblocksnearby()  ------------- #
+
+default_avoidorphans        <- FALSE # seems like EJScreen itself essentially uses FALSE
+default_maxradius <-  31.06856  # max search dist if no block within radius # 50000 / meters_per_mile #, # 31.06856 miles !!
+# also used as the maxmax allowed
+
+### in doaggregate()   ------------- #
+
+## demog subgroups type  
+default_subgroups_type <- 'nh'  
+# this sets the default in the web app only, not in functions doaggregate() and ejamit() and plot_distance_mean_by_group() etc.,
+# if used outside web app app_server and app_ui code, as in using datacreate_testpoints_testoutputs.R  
+# "nh" for non-hispanic race subgroups as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh;
+# "alone" for EJScreen v2.2 style race subgroups as in    White Alone, wa and others in names_d_subgroups_alone;
+# "both" for both versions. Possibly another option is "original" or "default" but work in progress.
+
+default_need_proximityscore <- FALSE
+default_include_ejindexes   <- FALSE
+
+######################################################## # 
+### Short report options --------------------- #
+
+default_standard_analysis_title <-  'Summary of EJ Analysis' # Default title to show on each short report
+default_plotkind_1pager <- "bar"  #    Bar = "bar", Box = "box", Ridgeline = "ridgeline"
+   
+
+
+
+######################################################## # 
+### Long report options  --------------------- #
+
+# relocate any here from the Full Report tab?? - defaults could be set here and made flexible elsewhere
+
+
+
+
+
+
+
+
+######################################################## # 
+### Threshold comparisons options --------------------- ####
 #
-## can be used by inputId 'an_list_pctiles'
-probs.default.selected <- c(   0.25,            0.80,     0.95)
-probs.default.values   <- c(0, 0.25, 0.5, 0.75, 0.8, 0.9, 0.95, 0.99, 1)
-probs.default.names <- formatC(probs.default.values, digits = 2, format='f', zero.print = '0')
-
+## can be used by inputId 'an_list_pctiles'    #   CHECK IF THESE UNITS SHOULD BE 0-1 OR 0-100 ***
+probs.default.selected <- c(   0.25,            0.80,     0.95)   #   CHECK IF THESE UNITS SHOULD BE 0-1 OR 0-100 ***
+probs.default.values   <- c(0, 0.25, 0.5, 0.75, 0.8, 0.9, 0.95, 0.99, 1)  #   CHECK IF THESE UNITS SHOULD BE 0-1 OR 0-100 ***
+probs.default.names <- formatC(probs.default.values, digits = 2, format = 'f', zero.print = '0')
 # a default for threshold in at/above threshold stat summarizing EJ US percentiles
 ## used by inputIds 'an_thresh_comp1' and 'an_thresh_comp2'
-threshold.default <- c('comp1' = 95, 'comp2' = 95)  
-
+threshold.default <- c('comp1' = 90, 'comp2' = 80)    #   CHECK IF THESE UNITS SHOULD BE 0-1 OR 0-100 ***
+# at least threshold.default[1] is used in batch.summarizer() by ejamit() and app_server()
+#
 # which fields to compare to thresholds 
 # EJ US pctiles or EJ State pctiles
 ## used by inputIds 'an_fields_comp1' and 'an_fields_comp2'
@@ -98,24 +229,23 @@ threshgroup.default <- list(
   'comp1' = "EJ US pctiles",  'comp2' = "EJ State pctiles"
 )
 
-## If needed, build index of Census blocks ####
-# (if not already autoloaded when EJAM package loaded) 
-if (!exists("localtree")) {
-  localtree <- SearchTrees::createTree(
-     quaddata, treeType = "quad", dataType = "point"
-  )
-}
+
+######################################################## # 
+
+
 
 
 
 ################################################################# # 
+# END OF DEFAULTS / OPTIONS / SETUP
+################################################################# # 
 
-
-
+######################################################## # 
 # ~ ####
+######################################################## # 
 # HTML OUTLINE FOR FULL REPORT ####
 
-# report is in    /EJAM/www/report.Rmd
+# report is in    /EJAM/www/  ? or maybe /EJAM/inst/app/www/ ?
 
 report_outline <- "
 <div style = 'height: 90vh; overflow-y: auto;'>
@@ -173,25 +303,25 @@ report_outline <- "
 # HELP TEXT ####
 
 ### info text for "About EJAM" tab ####
-
 intro_text <- tagList(
   tags$p("EPA has developed a number of different tools for mapping and analysis of information related to environmental justice (EJ), including EJScreen and EJAM. "),
   tags$p("EJScreen provides a dataset with environmental, demographic, and EJ indicators for each Census block group in the US. \n"),
   tags$p("EJScreen can provide a report summarizing those values for the average resident within some distance (e.g., 1 mile) from a specified point."),
   tags$p("It is often useful to know the nature of the environmental conditions, the demographics, and/or EJ index values near a whole set of the facilities in a particular sector, such as in the context of developing a proposed rule. "),
   tags$p("EJAM allows users to select a set of facilities, defined by NAICs industrial category codes or by uploading a list of locations. EJAM then provides a summary report for all residential locations near the selected facilities."),
-  tags$p("See EJAM user guide or readme document for more about using the app. "),
-  # tags$p("See the R package vignette and documentation for information about using the R functions and data."),
+  tags$p("See in-app info/tips, and the EJAM user guide (forthcoming) for more about using the app."),
+  tags$p("Programmers can see the ", a(href = 'https://github.com/USEPA/EJAM#ejam', "README"), 
+         " document, or the R package ", a(href = 'vignette/EJAM-vignette.html', "Vignette"), " and R package documentation on functions and data."),
   tags$p("Features of this tool include:"),
   tags$ul(
     tags$li("Several methods of selecting a set of facilities for analysis, including industry sector and uploaded of facility locations"),
-    tags$li("User-specified buffer distance;"),
-    tags$li("Very fast analysis of which residents (defined by Census blocks) are nearby, and the distance to each block's internal point.;"),
-    # tags$li("Optional use of the next nearest census block centroid for facilities with no census block centroid within selected buffer distance."),
-    tags$li("At each facility, calculation of demographic, environmental, or other EJ-related statistics;"),
-    tags$li("Overall, for the facilities and residents near any of them as a whole, calculation of the same kinds of statistics, but with no double counting of residents near two or more facilities.;"),
-    tags$li("Interactive views of results in tables, maps, plots, and text;"),
-    tags$li("Downloads of results in tables, maps, plots, and report text;")
+    tags$li("User-specified buffer distance"),
+    tags$li("Very fast analysis of which residents (defined by Census blocks) are nearby, and the distance to each block's internal point"),
+    # tags$li("Optional use of the next nearest census block centroid for facilities with no census block centroid within selected buffer distance"),
+    tags$li("At each facility, calculation of demographic, environmental, or other EJ-related statistics"),
+    tags$li("Overall, for the facilities and residents near any of them as a whole, calculation of the same kinds of statistics, but with no double counting of residents near two or more facilities"),
+    tags$li("Interactive views of results in tables, maps, plots, and text"),
+    tags$li("Downloads of results in tables, maps, plots, and report text")
   )
 )
 
@@ -253,7 +383,7 @@ latlon_help_msg <- '
 
 echo_url <-  'https://echo.epa.gov/facilities/facility-search' # used in server.R and in message below
 echo_message <- shiny::HTML(paste0('To use the ECHO website to search for and specify a list of regulated facilities, 
-                                    <br>1) Go to ', '<a href=\"', echo_url, '\", target=\"_blank\">', echo_url,  '</a>', ' and <br>
+                                    <br>1) Go to ', '<a href=\"', echo_url, '\", target=\"_blank\" rel=\"noreferrer noopener\">', echo_url,  '</a>', ' and <br>
                                     2) Navigate website and select categories to include in data, then <br>  
                                     3) Under Search Criteria Selected-Facility Characteristics-Results View select <b>Data Table</b> and click <b>Search</b>, then <br>
                                     3) click Customize Columns, use checkboxes to include Latitude and Longitude, then <br>
@@ -360,6 +490,79 @@ shp_help_msg <- '
   </div>
   </div>'
 
+epa_program_help_msg <- '
+<div class="row">
+  <div class="col-sm-12">
+  <div class="well">
+  <div id="selectFrom1" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline">
+  <label class="control-label" for="selectFrom1">
+  <p>You may upload a list of EPA Programs and Program IDs.</p> 
+  <p>The file should contain at least these two columns: program and pgm_sys_id. 
+  There can be other columns like an ID column that should be unique (no duplicates), 
+  and each record should be separated by a carriage return.</p>
+  <p>It also will work with additional optional columns such as Facility Registry ID (REGISTRY_ID), latitude (lat), and longitude (lon). </p> 
+  <p>The file could be formatted as follows, for example: </p> 
+  </label>
+  <br>
+  program,	pgm_sys_id<br>
+NC-FITS,	28122<br>
+AIR,	NY0000004432800019<br>
+NPDES,	GAR38F1E2<br>
+TRIS,	7495WCRHMR59SMC<br>
+MN-TEMPO,	17295<br>
+HWTS-DATAMART,	CAR000018374<br>
+IN-FRS,	330015781585<br>
+TX-TCEQ ACR,	RN104404751<br>
+NJ-NJEMS,	353065<br>
+AIR,	IL000031012ACJ<br>
+  </div>
+  </div>
+  </div>
+  </div>'
+
+fips_help_msg <- '
+<div class="row">
+  <div class="col-sm-12">
+  <div class="well">
+  <div id="selectFrom1" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline">
+  <label class="control-label" for="selectFrom1">
+  <p>You may upload a list of FIPS codes specified at the State (2-digit), County (5-digit), Tract (11-digit), or blockgroup (12 digit), or even block (15-digit fips) .</p> 
+  <p>The file should contain at least one column, FIPS, with the fips codes. It will also work with the following aliases: fips, fips_code, fipscode, Fips, statefips, countyfips, ST_FIPS, st_fips
+  There can be other columns like an ID column that should be unique (no duplicates), 
+  and each record should be separated by a carriage return.</p>
+  <p>The file could be formatted as follows, for example: </p> 
+  </label>
+  <br>
+ FIPS<br>
+36001014002<br>
+26163594300<br>
+36029008600<br>
+36061006100<br>
+15003005300<br>
+17031081403<br>
+06037190303<br>
+29031881301<br>
+45091061205<br>
+  </div>
+  </div>
+  </div>
+  </div>'
+
+shp_help_msg <- '
+<div class="row">
+  <div class="col-sm-12">
+  <div class="well">
+  <div id="selectFrom1" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline">
+  <label class="control-label" for="selectFrom1">
+  <p>You may upload a set of shapefiles with polgyons.</p> 
+  <p>The upload should contain at least these four related file extensions: .shp, .shx, .dbf, .prj 
+  There must be an ID column (OBJECTID_1) that should be unique (no duplicates), 
+  and each record should be separated by a carriage return.</p>
+  </div>
+  </div>
+  </div>
+  </div>'
+
 #################################################################################################################### #
 # ~ ####
 # TEMPLATE ONE EPA SHINY APP WEBPAGE _______ ####
@@ -368,13 +571,13 @@ html_header_fmt <- tagList(
   #################################################################################################################### #
   
   
-  # WHERE TO FIND THIS template (?) # 
+  # WHERE TO FIND THIS template  # 
   # browseURL("https://github.com/USEPA/webcms/blob/main/utilities/r/OneEPA_template.R")
   
   # START OF ONEEPA SHINY APP WEB UI TEMPLATE to insert within your fluid page  
   #################################################################################################################### #      
   
-  tags$html(class = "no-js", lang="en"),
+  tags$html(class = "no-js", lang = "en"),
   
   ### head ####
   
@@ -413,11 +616,10 @@ html_header_fmt <- tagList(
     tags$meta(name="viewport", content="width=device-width, initial-scale=1.0"),
     tags$meta(`http-equiv`="x-ua-compatible", content="ie=edge"),
     
-    ### (Title was defined here but now done in golem_add_external_resources() within app_ui.R)   ####
+    ### (Title could be defined here, or if using golem package, in golem_add_external_resources() within app_ui.R) ####
     # 
     # tags$title('EJAM | US EPA'),
-    
-    tags$meta(name="application-name", content="EJAM"),
+    tags$meta(name = "application-name", content = "EJAM"),
     
     ## EPA FAVICONS - but can be specified in (and this would conflict with) golem_add_external_resources() within app_ui.R ####
     
@@ -803,5 +1005,5 @@ html_footer_fmt <- tagList(
       </a>'
   )
 )
- 
+
 

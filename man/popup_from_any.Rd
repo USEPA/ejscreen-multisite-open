@@ -2,28 +2,39 @@
 % Please edit documentation in R/popup_from_any.R
 \name{popup_from_any}
 \alias{popup_from_any}
-\title{Simple map popup from a data.table or data.frame, one point per row
+\title{popup_from_any - Simple map popup from a data.table or data.frame, one point per row
 Creates popup vector that leaflet::addCircles or leaflet::addPopups can use.
 Works similarly to EJAMejscreenapi::popup_from_df, but now extends to data.table}
 \usage{
-popup_from_any(x, column_names = names(x), labels = column_names, n = "all")
+popup_from_any(
+  x,
+  column_names = names(x),
+  labels = column_names,
+  n = "all",
+  testing = FALSE
+)
 }
 \arguments{
 \item{x, }{a data table or data frame}
 
-\item{column_names}{default is all, or a vector of column names from x to use}
+\item{column_names}{default is all, or a vector of column names from x to use.
+If some of column_names requested are not found in names(x),
+a warning is given and NA values returned for those names not in x.
+If some of names(x) not requested by column_names, they are left out.}
 
-\item{labels}{default is colnames(x) - vector used to label
+\item{labels}{default is column_names - vector used to label
 the elements in the popup. Must be same length as column_names}
 
 \item{n}{Show the first n columns of mypoints, in popup. "all" means all of them.}
+
+\item{testing}{can set to TRUE while testing function}
 }
 \value{
 A vector of strings, one per row or map point,
 with a line break separating column elements
 }
 \description{
-Simple map popup from a data.table or data.frame, one point per row
+popup_from_any - Simple map popup from a data.table or data.frame, one point per row
 Creates popup vector that leaflet::addCircles or leaflet::addPopups can use.
 Works similarly to EJAMejscreenapi::popup_from_df, but now extends to data.table
 }

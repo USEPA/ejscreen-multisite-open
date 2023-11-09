@@ -1,20 +1,27 @@
-#' find what state is where each point is located
+#' state_from_latlon - find what state is where each point is located
 #' Takes 3 seconds to find state for 1k points, so a faster alternative would be useful
-#' @param lat latitudes vector
 #' @param lon longitudes vector
+#' @param lat latitudes vector
 #' @param shapefile shapefile of US States, in package already
 #' @seealso [states_shapefile] [get_blockpoints_in_shape()] [states_infer()]
 #' @return Returns data.frame: ST, statename, FIPS.ST, REGION, n
 #'   as many rows as elements in lat or lon
 #' @export
-#'
+#' @examples 
+#'  myprogram <- "CAMDBS" # 739 sites
+#'  pts <- frs_from_program(myprogram)[ , .(lat, lon, REGISTRY_ID,  PRIMARY_NAME)]
+#'  # add a column with State abbreviation
+#'  pts[, ST := state_from_latlon(lat=lat, lon = lon)$ST]
+#'  #map these points
+#'  mapfast(pts[ST == 'TX',], radius = 1) # 1 miles radius circles
+#'  
 state_from_latlon <- function(lat, lon, states_shapefile=EJAM::states_shapefile) {
   # pts[is.na(lat), lat := 0] 
   # pts[is.na(lon), lon := 0] 
   lat[is.na(lat)] <- 0
   lon[is.na(lon)] <- 0 # will ensure NA is returned by the join for those points with missing coordinates
-  pts <- data.frame(lon=lon, lat=lat) |>
-    sf::st_as_sf(coords = c("lon", "lat"), crs = sf::st_crs(states_shapefile))
+  pts <- data.frame(lat = lat, lon = lon) |>
+    sf::st_as_sf(coords = c("lon", "lat"), crs = sf::st_crs(states_shapefile))  # st_as_sf wants lon,lat not lat,lon
   pts <- pts |> sf::st_join(states_shapefile)
   # pts <- as.data.frame(statename = pts$facility_state)  
   pts <- as.data.frame(pts)[,c("STUSPS", "NAME", "STATEFP")]
@@ -26,8 +33,8 @@ state_from_latlon <- function(lat, lon, states_shapefile=EJAM::states_shapefile)
 
 state_from_latlon_compiled <- compiler::cmpfun(state_from_latlon)
 
-#' state_from_blocktable
-#' given data.table with blockid column, get state abbreviation of each
+#' state_from_blocktable - was used only in some special cases of using testpoints_n() 
+#' given data.table with blockid column, get state abbreviation of each - not used?
 #' @param dt_with_blockid 
 #'
 #' @return vector of ST info like AK, CA, DE, etc.
@@ -35,12 +42,12 @@ state_from_latlon_compiled <- compiler::cmpfun(state_from_latlon)
 #'
 #' @examples state_from_blocktable(blockpoints[45:49,])
 state_from_blocktable <- function(dt_with_blockid) {
-  stateinfo$ST[match(blockid2fips[dt_with_blockid, substr(blockfips,1,2), on="blockid"], stateinfo$FIPS.ST)]
+  stateinfo$ST[match(blockid2fips[dt_with_blockid, substr(blockfips,1,2), on = "blockid"], stateinfo$FIPS.ST)]
 }
 
 #' state_from_blockid
 #' given vector of blockids, get state abbreviation of each
-#' @param blockid vector of blockid values as from EJAM::blockpoints
+#' @param blockid vector of blockid values as from EJAM in a table called blockpoints
 #'
 #' @return vector of ST info like AK, CA, DE, etc.
 #' @export
@@ -51,15 +58,21 @@ state_from_blockid <- function(blockid) {
 }
 
 #' state_from_fips
-#'
+#' Get the State abbreviations of all blockgroups within the input FIPS
+#' @details Returns a vector of 2-letter State abbreviations that is 
+#'   one per blockgroup that matches the input FIPS, 
+#'   not necessarily a vector as long as the input vector of FIPS codes!, 
+#'   and not just a short list of unique states!
 #' @param fips Census FIPS codes vector, numeric or char, 2-digit, 5-digit, etc. OK
-#'
-#' @return vector of 2-character state abbreviations like CA,MD,TX,OH
+#' @param uniqueonly If set to TRUE, returns only unique results. 
+#'   This parameter is here mostly to remind user that default is not uniques only.
+#' @return vector of 2-character state abbreviations like CA,CA,CA,MD,MD,TX
 #' @export
 #'
-state_from_fips <- function(fips) {
-  fips <- fipsbg_from_anyfips(fips)
-  stateinfo$ST[match(substr(fips,1,2), stateinfo$FIPS.ST)]
+state_from_fips <- function(fips, uniqueonly=FALSE) {
+  fips <- fipsbg_from_anyfips(fips) # returns all the blockgroups fips codes that match, such as all bg in the state or county
+  x <- stateinfo$ST[match(substr(fips,1,2), stateinfo$FIPS.ST)]
+  if (uniqueonly) {return(unique(x))} else {return(x)}
 }
 
 
@@ -124,7 +137,7 @@ state_from_fips <- function(fips) {
 #   lat=pts$lat; lon=pts$lon
 #   lat[is.na(lat)] <- 0
 #   lon[is.na(lon)] <- 0 # will ensure NA is returned by the join for those points with missing coordinates
-#   pts <- data.frame(lon=lon, lat=lat) |>
+#   pts <- data.frame(lat=lat, lon=lon) |>
 #     sf::st_as_sf(coords = c("lon", "lat"), crs = sf::st_crs(states_shapefile))
 #   pts <- pts |> sf::st_join(states_shapefile)
 #   pts <- as.data.frame(pts)[,c("STUSPS", "NAME", "STATEFP")]

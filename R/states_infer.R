@@ -44,10 +44,10 @@ states_infer <- function(x) {
     } else {
       # is blockgroup FIPS, or even any FIPS there?
       if ("fips" %in% names(sites2states)) {
-        sites2states$ST <- state_from_fips(sites2states$fips)
+        sites2states$ST <- state_from_fips(sites2states$fips) # note this returns 1 state abbrev for each element of supplied vector even if there are many duplicates.
       } else {
         if ("bgfips" %in% names(sites2states)) {
-          sites2states$ST <- state_from_fips(sites2states$bgfips)
+          sites2states$ST <- state_from_fips(sites2states$bgfips)# note this returns 1 state abbrev for each element of supplied vector even if there are many duplicates.
         } else {
           # nothing was found that could provide the ST info
           bad_sites2states <- TRUE
@@ -59,7 +59,7 @@ states_infer <- function(x) {
   }
   # if nothing found to tell us the ST info, fill in NA values
   if (bad_sites2states) {
-    sites2states <- data.frame(siteid=1:length(unique(sites2blocks$siteid)), ST=NA)
+    sites2states <- data.frame(siteid = 1:length(unique(sites2blocks$siteid)), ST = NA)
   }
   # check quality of ST info found or looked up
   if (!all(sites2states$ST %in% EJAM::stateinfo$ST)) {

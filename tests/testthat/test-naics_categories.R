@@ -19,7 +19,7 @@ test_that('the function works for all digits',{
 # how do we limit the response?
 # filter EJAM data going in
 
-test_that('entering filtered dataframe works'){
+test_that('entering filtered dataframe works', {
   df <- EJAM::NAICS %>% as.data.frame 
   df <- df %>% filter(startsWith(as.character(df$.), "11"))
   df <- df$.
@@ -27,3 +27,4 @@ test_that('entering filtered dataframe works'){
   expect_equal(length(val), 1)
   
 }
+)

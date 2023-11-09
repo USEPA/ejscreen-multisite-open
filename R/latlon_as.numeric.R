@@ -1,4 +1,4 @@
-#' Strip non-numeric characters from a vector
+#' latlon_as.numeric - Strip non-numeric characters from a vector
 #' @description Remove all characters other than minus signs, decimal points, and numeric digits
 #' @details Useful if latitude or longitude vector has spaces, tabs, etc. 
 #'   CAUTION - Assumes stripping those out and making it numeric will fix whatever problem there was 
@@ -24,7 +24,7 @@
 #'   latlon_as.numeric(c(Inf, 1))
 #'   
 latlon_as.numeric <- function(x) {
-  if (!is.null(dim(x))) {stop('latlon_as.numeric(x) expects x to be a vector like 1:10 or df$mycol, not a data.frame or anything else.')}
+  if (!is.null(dim(x)) | !is.atomic(x)) {stop('latlon_as.numeric(x) expects x to be a vector like 1:10 or df$mycol, not a data.frame, list, or anything else.')}
   oldx <- x
   x <- (gsub('[^012345678.9-]', '',  x))
   # NOTE THIS does not warn if NA was an input but does warn if other stuff was input (presumably intended as numbers) that gets turned into NA:

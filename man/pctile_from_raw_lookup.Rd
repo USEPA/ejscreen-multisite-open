@@ -3,13 +3,13 @@
 \name{pctile_from_raw_lookup}
 \alias{pctile_from_raw_lookup}
 \alias{lookup_pctile}
-\title{Find approx wtd percentiles in lookup table that is in memory}
+\title{pctile_from_raw_lookup - Find approx percentiles in lookup table that is in memory}
 \usage{
 pctile_from_raw_lookup(
   myvector,
   varname.in.lookup.table,
   lookup = usastats,
-  zone
+  zone = "USA"
 )
 }
 \arguments{
@@ -17,15 +17,21 @@ pctile_from_raw_lookup(
 
 \item{varname.in.lookup.table}{Character element, required.
 Name of column in lookup table to look in
-to find interval where a given element of myvector values is.}
+to find interval where a given element of myvector values is.
 
-\item{lookup}{Either lookup must be specified,
-or a lookup table called us must already be in memory. This is the lookup table
-data.frame with a PCTILE column and column whose name is the value of varname.in.lookup.table}
+*** If vector is provided, then must be same length as myvector,
+
+but only 1 value for zone can be provided.}
+
+\item{lookup}{Either lookup must be provided, not quoted,
+or a lookup table called \link{usastats} must already be in memory. This is the lookup table
+data.frame with a PCTILE column, REGION column, and column whose name is the value of varname.in.lookup.table
+To use state lookups set lookup=statestats}
 
 \item{zone}{Character element (or vector as long as myvector), optional.
-If specified, must appear in a column called REGION within the lookup table.
-For example, it could be 'NY' for New York State.}
+If specified, must appear in a column called REGION within the lookup table,
+or NA returned for each item looked up and warning given.
+For example, it could be "NY" for New York State, "USA" for national percentiles.}
 }
 \value{
 By default, returns numeric vector length of myvector.
@@ -35,10 +41,11 @@ This is used with a lookup table to
 convert a raw indicator vector to percentiles in US or States.
 }
 \details{
-This could be recoded to be more efficient - could use data.table
+This could be recoded to be more efficient - could use data.table.
+
 The data.frame lookup table must have a field called "PCTILE" that has quantiles/percentiles
 and other column(s) with values that fall at those percentiles.
-EJAM::usastats, EJAM::statstats, EJAM::regionstats are such lookup tables.
+\link{usastats} and \link{statestats} are such lookup tables.
 This function accepts lookup table (or uses one called us if that is in memory), and
 finds the number in the PCTILE column that corresponds to where a specified value
 (in myvector) appears in the column called varname.in.lookup.table.
@@ -50,7 +57,7 @@ If the value is exactly equal to the cutpoint listed as percentile 90,
 it returns percentile 90.
 If the value is exactly the same as the minimum in the lookup table and multiple percentiles
 in that lookup are listed as tied for having the same threshold value defining the percentile
-(i.e., a large \% of places have the same score and it is the minimum score),
+(i.e., a large percent of places have the same score and it is the minimum score),
 then the percentile gets reported as 0,
 not the percent of places tied for that minimum score. Note this is true whether they are
 tied at a value of 0 or are tied at some other minimum value than 0.
@@ -58,17 +65,30 @@ If the value is less than the cutpoint listed as percentile 0,
 which should be the minimum value in the dataset,
 it still returns 0 as the percentile, but with a warning that
 the value checked was less than the minimum in the dataset.
+
+It also handles other odd cases, like where a large percent of all raw scores are tied at
+the minimum value, in which case it reports 0 as percentile, not that large percent.
 }
 \examples{
 \dontrun{
+
+eg <- dput(round(as.vector(unlist(testoutput_ejamit_10pts_1miles$results_overall[ , ..names_d] )),3))
+
+data.frame(value = eg, pctile = t(testoutput_ejamit_10pts_1miles$results_overall[ , ..names_d_pctile]))
+
+data.frame(value = eg, pctile = lookup_pctile(eg, names_d))
+
+
   # compare ejscreen API output percentiles to those from this function:
   for (vname in c(names_d[c(1,3:6,8:10)] )) {
-     print(pctile_from_raw_lookup(testoutput_ejscreenapi_plus_50[,vname] / 100, vname, lookup = usastats) 
-       - testoutput_ejscreenapi_plus_50[,paste0("pctile.",vname)] )
+     print(pctile_from_raw_lookup(testoutput_ejscreenapi_plus_100[,vname] / 100, vname, 
+       lookup = usastats) 
+       - testoutput_ejscreenapi_plus_100[,paste0("pctile.",vname)] )
   }
   for (vname in c(names_e )) {
-     print(pctile_from_raw_lookup(testoutput_ejscreenapi_plus_50[,vname], vname, lookup = usastats)
-         - testoutput_ejscreenapi_plus_50[,paste0("pctile.",vname)] )
+     print(pctile_from_raw_lookup(testoutput_ejscreenapi_plus_100[,vname], vname, 
+       lookup = usastats)
+         - testoutput_ejscreenapi_plus_100[,paste0("pctile.",vname)] )
   }
 }
 }

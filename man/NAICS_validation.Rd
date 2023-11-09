@@ -2,7 +2,7 @@
 % Please edit documentation in R/naics_validation.R
 \name{naics_validation}
 \alias{naics_validation}
-\title{Validate NAIC uploads}
+\title{naics_validation - Validate NAIC uploads}
 \usage{
 naics_validation(NAICS_enter, NAIC_select)
 }

@@ -2,19 +2,26 @@
 % Please edit documentation in R/getblocks_diagnostics.R
 \name{getblocks_diagnostics}
 \alias{getblocks_diagnostics}
-\title{Get summary stats on counts of blocks (unique vs doublecounted) near sites}
+\title{getblocks_diagnostics - Lots of stats about # of blocks, # of sites, etc.}
 \usage{
-getblocks_diagnostics(x)
+getblocks_diagnostics(x, detailed = FALSE, see_plot = FALSE)
 }
 \arguments{
-\item{x}{The output of \code{\link[=getblocksnearby]{getblocksnearby()}} like sites2blocks_example}
+\item{x}{The output of \code{\link[=getblocksnearby]{getblocksnearby()}} like testoutput_getblocksnearby_10pts_1miles}
+
+\item{detailed}{if TRUE, also shows in console a long table of frequencies via \code{\link[=getblocks_summarize_blocks_per_site]{getblocks_summarize_blocks_per_site()}}}
+
+\item{see_plot}{set TRUE to draw for each site a boxplot of distances of nearby blocks}
 }
 \value{
 A list of stats
 }
 \description{
-Get summary stats on counts of blocks (unique vs doublecounted) near sites
+getblocks_diagnostics - Lots of stats about # of blocks, # of sites, etc.
 }
 \examples{
- getblocks_diagnostics(sites2blocks_example)
+ getblocks_diagnostics(testoutput_getblocksnearby_10pts_1miles)
+}
+\seealso{
+This relies on  \code{\link[=getblocks_summarize_blocks_per_site]{getblocks_summarize_blocks_per_site()}} and \code{\link[=getblocks_summarize_sites_per_block]{getblocks_summarize_sites_per_block()}}
 }

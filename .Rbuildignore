@@ -1,8 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^LICENSE\.md$
-^app\.R$
-^rsconnect$
+^.*ALL_THIS_GETS_MOVED_TO_ROOT_FOLDER.*
+^doc$
+^Meta$
 ^data-raw$
-^packrat/
-^\.Rprofile$

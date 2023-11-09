@@ -1,4 +1,4 @@
-#' Get URL for page with info about industry sectors by text query term
+#' url_naics.com - Get URL for page with info about industry sectors by text query term
 #' See (https://naics.com) for more information on NAICS codes
 #' 
 #' @param query string query term like "gasoline" or "copper smelting"
@@ -12,7 +12,7 @@ url_naics.com <- function(query, as_html=FALSE, linktext) {
   urlout = paste0("https://www.naics.com/code-search/?trms=", query, "&v=2017&styp=naics")
   if (as_html) {
     if (missing(linktext)) {linktext <- query}  #   paste0("EJScreen Map ", 1:length(lon)) 
-    urlout <- EJAMejscreenapi::url_linkify(urlout, text=linktext)    
+    urlout <- EJAMejscreenapi::url_linkify(urlout, text = linktext)
   }   
   return(urlout)
   }

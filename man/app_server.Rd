@@ -2,7 +2,7 @@
 % Please edit documentation in R/app_server.R
 \name{app_server}
 \alias{app_server}
-\title{EJAM app server}
+\title{app_server - EJAM app server}
 \usage{
 app_server(input, output, session)
 }
@@ -11,5 +11,5 @@ app_server(input, output, session)
 DO NOT REMOVE.}
 }
 \description{
-EJAM app server
+app_server - EJAM app server
 }

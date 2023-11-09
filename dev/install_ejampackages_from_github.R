@@ -34,19 +34,19 @@
 # )
 
 
-rm(list=ls())
+rm(list = ls())
 
 ### make any changes to pkgs, then...
  # document() # in devtools pkg, 
 #  push changes to github, then...
 
-if (is.loaded("EJAM")) {  detach("package:EJAM", unload=TRUE)}
+if (is.loaded("EJAM")) {  detach("package:EJAM", unload = TRUE)}
 # if (is.loaded(
 #  "EJAMfrsdata")) {  detach("package:
 # 
 # EJAMfrsdata", unload=TRUE)}
-if (is.loaded("EJAMbatch.summarizer")) {  detach("package:EJAMbatch.summarizer", unload=TRUE)}
-if (is.loaded("EJAMejscreenapi")) {  detach("package:EJAMejscreenapi", unload=TRUE)}
+if (is.loaded("EJAMbatch.summarizer")) {  detach("package:EJAMbatch.summarizer", unload = TRUE)}
+if (is.loaded("EJAMejscreenapi")) {  detach("package:EJAMejscreenapi", unload = TRUE)}
 
 ################################################# #
 
@@ -55,8 +55,8 @@ if (is.loaded("EJAMejscreenapi")) {  detach("package:EJAMejscreenapi", unload=TR
 
 ### make sure PAT is set up right. 
 set_github_pat() # in credentials pkg
-
-install_github('USEPA/EJAMejscreenapi',      force=TRUE, upgrade="never") # works fine. in devtools pkg.
+library(devtools)
+install_github('USEPA/EJAMejscreenapi',      force = TRUE, upgrade = "never") # works fine. in devtools pkg.
 
 # Using github PAT from envvar GITHUB_PAT
 # Downloading GitHub repo USEPA/EJAMejscreenapi@HEAD
@@ -73,12 +73,12 @@ install_github('USEPA/EJAMejscreenapi',      force=TRUE, upgrade="never") # work
 # ...etc
  
 
-install_github('USEPA/EJAMbatch.summarizer', force=TRUE, upgrade="never") # got these warnings/msgs:
+install_github('USEPA/EJAMbatch.summarizer', force = TRUE, upgrade = "never") # got these warnings/msgs:
 
 # Using github PAT from envvar GITHUB_PAT
 # Downloading GitHub repo USEPA/EJAMbatch.summarizer@HEAD
 # ── R CMD build ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-# ✔  checking for file 'C:\Users\mcorrale\AppData\Local\Temp\RtmpIxpe7O\remotes62c057ae1498\USEPA-EJAMbatch.summarizer-1df55b1a861d37f40b859b3be74a7a2f80bdbaf5/DESCRIPTION' (887ms)
+# ✔  checking for file '.........Temp\RtmpIxpe7O\remotes62c057ae1498\USEPA-EJAMbatch.summarizer-1df55b1a861d37f40b859b3be74a7a2f80bdbaf5/DESCRIPTION' (887ms)
 # ─  preparing 'EJAMbatch.summarizer':
 #   ✔  checking DESCRIPTION meta-information ... 
 # ─  excluding invalid files
@@ -88,7 +88,7 @@ install_github('USEPA/EJAMbatch.summarizer', force=TRUE, upgrade="never") # got 
 # ─  checking for empty or unneeded directories
 # ─  building 'EJAMbatch.summarizer_2.1.0.tar.gz'
 # 
-# Installing package into ‘C:/Users/mcorrale/R/myinstalled’
+# Installing package into ‘~/R/myinstalled’
 # (as ‘lib’ is unspecified)
 # Greetings!
 #   * installing *source* package 'EJAMbatch.summarizer' ...
@@ -118,14 +118,14 @@ install_github('USEPA/EJAMbatch.summarizer', force=TRUE, upgrade="never") # got 
 #   skipping pax global extended headers
 
 
-install_github('USEPA/EJAM',                 force=TRUE, upgrade= "never")  
+install_github('USEPA/EJAM',                 force = TRUE, upgrade = "never")  
 
 
 # stop() 
 
 deployApp(
-  appDir = "C:/Users/mcorrale/R/mysource/EJAM",     
-  #appFileManifest = "C:/Users/mcorrale/AppData/Local/Temp/5f29-617c-01d5-c927",      
+  appDir = "~/../../R/mysource/EJAM",     # 
+  #appFileManifest = "~/AppData/Local/Temp/5f29-617c-01d5-c927",      
   account = "Mark", server = "rstudio-connect.dmap-stage.aws.epa.gov",      
   appName = "ejam", #appId = 153, 
   launch.browser = function(url) { message("Deployment completed: ", url)  }, 
@@ -185,9 +185,9 @@ checkdatafiles <- function(pkg, basefolder=Sys.getenv("R_USER")) {
   datafolder <- file.path(pkgfolder, "data")
   these = list.files(datafolder)
   x = list() # print(these)
-  i=0
+  i = 0
   for (fname in  these) {
-    i=i+1
+    i = i + 1
     # print(
     x[[i]] <- tools::checkRdaFiles(file.path(datafolder, fname))
     # )
@@ -198,10 +198,10 @@ checkdatafiles <- function(pkg, basefolder=Sys.getenv("R_USER")) {
 }
 
 # checkdatafiles("EJAM")
-i=0
-x=list()
-for (z in EJAM::ejampackages) { i=i+1; x[[i]] =  checkdatafiles(z)}
-x=do.call(rbind,x)
+i = 0
+x = list()
+for (z in EJAM::ejampackages) { i = i + 1; x[[i]] =  checkdatafiles(z)}
+x = do.call(rbind,x)
 # print(x)
 
 tail( x[order(x$size), ], 10)

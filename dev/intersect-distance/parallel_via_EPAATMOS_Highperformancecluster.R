@@ -40,7 +40,7 @@
 # type in file folder window,    home/username,   load modules,   then go to   work/username 
 # check your data is on the server.
 #  cd /work/myuserfolderprojectname 
-#  cd /home/mcorrale  
+  
 #  srun --ntasks=32 --partition=debug --time=2:00:00 --xll --pty csh -l # a 2hour debug test session
 #  rstudio  (typed on ssh command line) # to launch remote rstudio session
 #  sbatch myfolder/samplesize_inloop.sh  # to submit job with file you made

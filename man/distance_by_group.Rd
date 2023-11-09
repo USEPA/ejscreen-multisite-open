@@ -2,50 +2,57 @@
 % Please edit documentation in R/plot_distance_mean_by_group.R
 \name{distance_by_group}
 \alias{distance_by_group}
-\title{distance_by_group
-Get average distance for ONE demographic group versus everyone else}
+\title{distance_by_group - Avg distance of each demog group (of multiple groups)
+Same as \code{\link[=plot_distance_mean_by_group]{plot_distance_mean_by_group()}} but no plot by default}
 \usage{
 distance_by_group(
   results_bybg_people,
-  demogvarname = "Demog.Index",
-  demoglabel = demogvarname
+  demogvarname = NULL,
+  demoglabel = NULL,
+  returnwhat = "table",
+  graph = FALSE
 )
 }
 \arguments{
 \item{results_bybg_people}{data.table from doaggregate()$results_bybg_people}
 
-\item{demogvarname}{e.g., "pctlowinc"}
+\item{demogvarname}{vector of column names like "pctlowinc" etc.}
 
-\item{demoglabel}{e.g., "Low Income Residents"}
+\item{demoglabel}{vector of labels like "Low Income Residents" etc.}
+
+\item{returnwhat}{If returnwhat is "table", invisibly returns a
+data.frame with group, ratio, avg_distance_for_group, avg_distance_for_nongroup.
+If returnwhat is "plotfilename" then it returns the full path including filename of a .png in a tempdir
+If returnwhat is "plot" then it returns the plot object as needed for table_xls_format() ?}
 }
 \value{
-list of 2 numbers: avg_distance_for_group and avg_distance_for_nongroup
+see parameter returnwhat
 }
 \description{
-distance_by_group
-Get average distance for ONE demographic group versus everyone else
+distance_by_group - Avg distance of each demog group (of multiple groups)
+Same as \code{\link[=plot_distance_mean_by_group]{plot_distance_mean_by_group()}} but no plot by default
 }
 \details{
-Note on Avg Distance and range of distances in each Demog group, & \%D as function of distance:
-
-We have info on each blockgroup near each site, which means some small \% of those bgs are duplicated in this table:
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{results_bybg_people
-}\if{html}{\out{</div>}}
-
-Mostly we want overall (not by site) to know avg and cum distrib of distances in each demog,
-
-(and also \%D as a function of continuous distance),
-
-and for those stats we would want to take only unique blockgroups from here,
-using the shorter distance, so the distribution of distances does not doublecount people.
-
-But we might also want to see that distribution of distances by D for just 1 site?
-
-And we might also want to see the \%D as a function of continuous distance at just 1 site?
-
-So to retain flexibility doaggregate() reports all instances of blockgroup-site pairings.
+see examples in \code{\link[=plot_distance_cdf_by_group]{plot_distance_cdf_by_group()}}
+}
+\examples{
+ y <- ejamit(testpoints_100, radius = 3)
+ plot_distance_mean_by_group(y$results_bybg_people) # or distance_mean_by_group() synonym
+ print(distance_by_group(y$results_bybg_people, 
+   demogvarname = 'pctlowinc', demoglabel = 'Low Income'))
+ distance_by_group_plot(y$results_bybg_people, 
+   demogvarname = 'pctlowinc', demoglabel = 'Low Income')
+ xyz = plot_distance_cdf_by_group(y$results_bybg_people) #  
+ tail(round(xyz,3))
+ tail(xyz[xyz$pctwa <= 0.501, ]) #  Median distance to nearest site here 
+   for White Alone is 2.15 miles, but >60\% of Black Alone have a site that close.
+ tail(xyz[xyz$pctba <= 0.501, ]) #  Median distance to nearest site here 
+   for Black Alone is 1.85 miles
+ round(tail(xyz[xyz$dist <=1, ]), 3) #  11\% of White have a site within 1 mile, 
+   compared to 18.7\% of Asian who do.
 }
 \seealso{
-\code{\link[=plot_distance_mean_by_group]{plot_distance_mean_by_group()}}
+\code{\link[=distance_by_group]{distance_by_group()}}
+
+\code{\link[=distance_by_group_plot]{distance_by_group_plot()}}  \code{\link[=plot_distance_cdf_by_group]{plot_distance_cdf_by_group()}}
 }

@@ -1,4 +1,4 @@
-#' Get lat lon (and NAICS) via Facility Registry ID
+#' latlon_from_siteid - Get lat lon (and NAICS) via Facility Registry ID
 #' @param siteid Facility Registry Service ID like 110010052520
 #'
 #' @return data.table with columns 

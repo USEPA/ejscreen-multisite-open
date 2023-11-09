@@ -7,11 +7,11 @@
 #'   Subpart of CFR Title 40 Part 63 that covers the source category 
 #'   of interest, such as "FFFF" - see for example, 
 #'   <https://www.ecfr.gov/current/title-40/part-63/subpart-FFFF>
-#'
+#' @param include_if_no_latlon logical - many in the database lack lat lon values but have a MACT code
 #' @return a table of lat, lon, subpart, etc. for US EPA FRS sites with that MACT code
 #' @export
 #'
-latlon_from_mactsubpart <- function(subpart) {
+latlon_from_mactsubpart <- function(subpart, include_if_no_latlon = FALSE) {
   # https://www.ecfr.gov/reader-aids/ecfr-developer-resources
   #  https://www.ecfr.gov/current/title-40/part-63/subpart-FFFF
   #  https://www.ecfr.gov/current/title-40/chapter-I/subchapter-C/part-63/subpart-FFFF
@@ -27,7 +27,12 @@ latlon_from_mactsubpart <- function(subpart) {
   #   Hard Chromium Electroplating .....................................332813 1615
   # Steel Pickling—HCl Process Facilities And Hydrochloric Acid Regeneration Plants NESHAP, Subpart CCC ..... 3311, 3312  0310
 
-    stop("latlon_from_mactsubpart() is not yet available")
-  
-  
+    # stop("latlon_from_mactsubpart() is not yet available")
+  mact_out = frs_by_mact[subpart == subpart, ]
+  if (include_if_no_latlon) {
+    return(mact_out)
+  } else {
+    mact_out = mact_out[!is.na(lat) & !is.na(lon),]
+    mact_out
+  }
 }

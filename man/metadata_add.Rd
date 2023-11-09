@@ -24,12 +24,12 @@ to add new or update existing attributes.
 \examples{
   x <- data.frame(a=1:10,b=1001:1010)
   metadata <- list(
+  ejscreen_version =  '2.2',
+  acs_version =          '2017-2021',
   census_version = 2020,
-  acs_version = '2016-2020',
-  acs_releasedate = '3/17/2022',
-  ejscreen_version = '2.1',
-  ejscreen_releasedate = 'October 2022',
-  ejscreen_pkg_data = 'bg22'
+  ejscreen_releasedate = '2023-06-23',
+  acs_releasedate =      '2022-12-08',
+  ejscreen_pkg_data = NA
   )
   x <- metadata_add(x, metadata)
   attributes(x)

@@ -1,4 +1,4 @@
-#' Find EPA-regulated facilities in FRS by NAICS code (industrial category)
+#' latlon_from_naics - Find EPA-regulated facilities in FRS by NAICS code (industrial category)
 #' Get lat lon, Registry ID, given NAICS industry code(s)
 #' Find all EPA Facility Registry Service (FRS) sites with this exact NAICS code (not subcategories)
 #' @details NOTE: many FRS sites lack NAICS code! 
@@ -23,7 +23,7 @@
 #'   # mapfast(frs_from_naics(336611)) # simple map
 latlon_from_naics <- function(naics, id_only=FALSE) {
   if (missing(naics)) {return(NULL)}
-  if (is.data.table(naics) & "code" %in% names(naics)) {naics <- naics$code} # flexible in case it was given output of EJAM::naics_from_any() which is a table not just code
+  if (data.table::is.data.table(naics) & "code" %in% names(naics)) {naics <- naics$code} # flexible in case it was given output of EJAM::naics_from_any() which is a table not just code
   
   if (id_only) {
     return(frs_by_naics[NAICS %in% naics, REGISTRY_ID])

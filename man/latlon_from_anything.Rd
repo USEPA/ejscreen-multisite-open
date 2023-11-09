@@ -2,10 +2,9 @@
 % Please edit documentation in R/latlon_from_anything.R
 \name{latlon_from_anything}
 \alias{latlon_from_anything}
-\alias{latlon}
 \alias{latlon_any_format}
 \alias{lonlat_any_format}
-\title{Flexibly get lat/lon from file, data.frame, data.table, or lat/lon vectors}
+\title{latlon_from_anything - Flexibly get lat/lon from file, data.frame, data.table, or lat/lon vectors}
 \usage{
 latlon_from_anything(x, y)
 }
@@ -13,8 +12,9 @@ latlon_from_anything(x, y)
 \item{x}{If missing and interactive mode in RStudio, prompts user for file. Otherwise,
 this can be a filename (csv or xlsx, with path), or data.frame/ data.table/ matrix,
 or vector of longitudes (in which case y must be the latitudes).
-Note that even though it is called latlon_etc the lon is x and comes before the lat among parameters x,y
-File or data.frame/data.table/matrix must have columns called lon and lat, or something that can
+Note that even though it is called latlon_etc the
+lon is x and comes before the lat among parameters x,y (unlike in most other functions here using lat,lon)
+File or data.frame/data.table/matrix must have columns called lat and lon, or names that can
 be inferred to be that by latlon_infer()}
 
 \item{y}{If x is a vector of longitudes, y must be the latitudes. Ignored otherwise.}
@@ -26,19 +26,19 @@ A data.frame that has at least columns lon and lat (and others if they were in x
 Try to figure out if user provided latitude / longitude as vectors, data.frame, file, or interactively pick file.
 }
 \details{
-This function, \code{\link[=latlon_from_anything]{latlon_from_anything()}}
+This function
 
 relies on
 
-\code{\link[EJAMbatch.summarizer:read_csv_or_xl]{EJAMbatch.summarizer::read_csv_or_xl()}} = \code{\link[EJAMejscreenapi:read_csv_or_xl]{EJAMejscreenapi::read_csv_or_xl()}} and
+read_csv_or_xl()  and
 
 \code{\link[=latlon_df_clean]{latlon_df_clean()}} which in turn uses \code{\link[=latlon_infer]{latlon_infer()}} \code{\link[=latlon_as.numeric]{latlon_as.numeric()}} \code{\link[=latlon_is.valid]{latlon_is.valid()}}
 
-\code{\link[EJAMejscreenapi:read_and_clean_points]{EJAMejscreenapi::read_and_clean_points()}}
+read_and_clean_points() from EJAMejscreenapi
 
 would be the most general / flexible broadest way to get points, but is still work in progress
 
-is similar to what is done by \code{\link[=latlon_from_anything]{latlon_from_anything()}}
+is similar to what is done by latlon_from_anything()
 
 except it also uses these functions:
 
@@ -51,14 +51,10 @@ except it also uses these functions:
  if (interactive()) {
  pts <- latlon_from_anything()
  }
- latlon_from_anything(system.file("testdata/testpoints_12.xlsx", 
-   package="EJAMejscreenapi"))
- latlon_from_anything(system.file("testdata/testpoints_05.csv", 
-   package="EJAMejscreenapi"))
- latlon_from_anything(testpoints_50[1:6,] )
- latlon_from_anything(testpoints_50[1:6, c('lat','lon')] )
- latlon_from_anything(x=testpoints_50$lon[1:6], y=testpoints_50$lat[1:6] )
+ latlon_from_anything(testpoints_100[1:6,] )
+ latlon_from_anything(testpoints_100[1:6, c('lat','lon')] )
+ latlon_from_anything(x=testpoints_100$lon[1:6], y=testpoints_100$lat[1:6] )
 }
 \seealso{
-\code{\link[EJAMbatch.summarizer:read_csv_or_xl]{EJAMbatch.summarizer::read_csv_or_xl()}} \code{\link[=latlon_df_clean]{latlon_df_clean()}}
+read_csv_or_xl() latlon_df_clean()
 }

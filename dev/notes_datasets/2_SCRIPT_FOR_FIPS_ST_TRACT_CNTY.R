@@ -62,8 +62,8 @@
 stop(' need to load EJAMejscreendata package file called EJSCREEN_Full_with_AS_CNMI_GU_VI')
 bgejam <-  EJSCREEN_Full_with_AS_CNMI_GU_VI
 # fix variable names to be friendlier
-stop('need to load ejscreen package file called change.fieldnames.ejscreen.csv')
-names(bgejam) <- change.fieldnames.ejscreen.csv(names(bgejam))
+# stop('used to use  ejscreen package file called change.fieldnames.ejscreen.csv')
+names(bgejam) <- fixnames(names(bgejam), oldtype = 'csv', newtype = 'r')
 
 
 #   NOTE this census2020 block table has PR but lacks "AS" "GU" "MP" "VI"
@@ -87,7 +87,7 @@ names(bgejam) <- change.fieldnames.ejscreen.csv(names(bgejam))
 # rv <- stringi::stri_reverse
 # bgejam$FIPS[bgejam$ST %in% islandst]
 
-bgejam$FIPS <- lead.zeroes(as.numeric(bgejam$FIPS), 12)
+bgejam$FIPS <- EJAM::fips_lead_zero(as.numeric(bgejam$FIPS) )
 
 # bgejam <- ejanalysis package file addFIPScomponents(bgejam) # not robust to this even if add leading zeroes
 bgejam$FIPS.ST <- substr(bgejam$FIPS,1,2)
@@ -102,8 +102,11 @@ table(nchar(bgejam$ST))
 
 # unique(substr(bgejam$FIPS[bgejam$FIPS.ST %in% c("60" ,"66", "78", "69")],1,7))
 # [1] "0000060" "0000066" "0000069"    "0078010" "0078020" "0078030"
+
 # Available geographies within each island area:
+
 #   https://www.census.gov/programs-surveys/decennial-census/decade/2020/planning-management/release/2020-island-areas-data-products.html 
+
 #   - American Samoa—Districts, counties, and villages.
 # - Commonwealth of the Northern Mariana Islands—Municipalities, districts, and villages. 
 # - Guam—Municipalities and census designated places.

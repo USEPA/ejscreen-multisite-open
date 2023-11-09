@@ -19,14 +19,14 @@ map_facilities_proxy <- function(mymap, rad = 3, highlight = FALSE, clustered = 
   circleweight <- 4
   
   ## if checkbox to highlight clusters is checked
-  if(highlight == TRUE){
+  if (highlight == TRUE) {
     ## compare latlons using is_clustered() reactive
     circle_color <- ifelse(clustered == TRUE, cluster_color, base_color)
   } else {
     circle_color <- base_color
   }
   
-  if(use_marker_clusters == FALSE){
+  if (use_marker_clusters == FALSE) {
     ## add to leafletProxy call from Shiny app
     mymap <- mymap %>%
       clearShapes() %>%

@@ -2,12 +2,12 @@
 % Please edit documentation in R/ST_by_site_from_sites2blocks.R
 \name{ST_by_site_from_sites2blocks}
 \alias{ST_by_site_from_sites2blocks}
-\title{Get State that each site is in, from a table of siteid, blockid, distance}
+\title{ST_by_site_from_sites2blocks - Get State that each site is in, from a table of siteid, blockid, distance}
 \usage{
 ST_by_site_from_sites2blocks(sites2blocks)
 }
 \arguments{
-\item{sites2blocks}{data.table or data.frame, like \link{sites2blocks_example},
+\item{sites2blocks}{data.table or data.frame, like \link{testoutput_getblocksnearby_10pts_1miles},
 from \code{\link[=getblocksnearby]{getblocksnearby()}} that has columns siteid and blockid and distance}
 }
 \value{
@@ -20,13 +20,13 @@ the original list of siteid lat/lon or State info. This can infer the State
 each site is located in, based on the state of the nearest block (and its parent blockgroup).
 }
 \examples{
-  ST_by_site_from_sites2blocks(sites2blocks_example) 
-  \dontrun{
+\dontrun{
   fname = './inst/testdata/testpoints_207_sites_with_signif_violations_NAICS_326_ECHO.csv'
   x = ST_by_site_from_sites2blocks(
     getblocksnearby( latlon_from_anything(fname), quadtree = localtree))
   y = read_csv_or_xl(fname)
   x$ST == y$FacState
   }
+  ST_by_site_from_sites2blocks(testoutput_getblocksnearby_10pts_1miles) 
   
 }

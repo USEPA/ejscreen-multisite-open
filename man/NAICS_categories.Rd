@@ -2,7 +2,7 @@
 % Please edit documentation in R/naics_categories.R
 \name{naics_categories}
 \alias{naics_categories}
-\title{See the names of industrial categories and their NAICS code
+\title{naics_categories - See the names of industrial categories and their NAICS code
 Easy way to list the 2-digit NAICS (17 categories), or other level}
 \usage{
 naics_categories(digits = 2, dataset = EJAM::NAICS)
@@ -14,7 +14,7 @@ naics_categories(digits = 2, dataset = EJAM::NAICS)
 see \link{NAICS}  Check attr(NAICS, 'year')}
 }
 \description{
-See the names of industrial categories and their NAICS code
+naics_categories - See the names of industrial categories and their NAICS code
 Easy way to list the 2-digit NAICS (17 categories), or other level
 }
 \details{

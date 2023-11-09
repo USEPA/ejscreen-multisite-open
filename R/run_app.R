@@ -1,16 +1,15 @@
-#' Launch the Shiny Application in RStudio
+#' run_app - Launch the Shiny Application in RStudio
 #' @description launch Shiny web app from RStudio
 #' @details 
-#' app_run_EJAM()                 is like [EJAM::run_app()]
-#' app_run_EJAMejscreenapi()      is like [EJAMejscreenapi::run_app()]
-#' @param ... arguments to pass to golem_opts. Maybe could be sitepoints="latlondata.xlsx" or sitepoints=[testpoints_50]
+#' app_run_EJAM()                 is like [run_app()] from the EJAM package
+#' @param ... arguments to pass to golem_opts. Maybe could be something like sitepoints="latlondata.xlsx" or sitepoints=[testpoints_100]
 #' See `?golem::get_golem_options` for more details.
 #' @inheritParams shiny::shinyApp
 #'
 #' @export
 #' @importFrom shiny shinyApp
 #' @importFrom golem with_golem_options
-run_app      <- function( ###################################################### #
+run_app      <- function(
     onStart = NULL,
     options = list(),
     
@@ -24,7 +23,11 @@ run_app      <- function( ######################################################
 ) {
   # temporary workaround, see https://github.com/ThinkR-open/golem/issues/6
   source(system.file("global.R", package = "EJAM")) # source('./inst/global1.R') 
-
+  
+  # This with_golem_options()  just does  shinyApp(ui = app_ui, server = app_server)  
+  #   which mean app_ui and app_server() need to have been loaded/attached via loadall
+  #   (but it can show maintenance_page if that option is set.)
+  
   golem::with_golem_options(
     app = shinyApp(
       ui = app_ui,
@@ -36,6 +39,7 @@ run_app      <- function( ######################################################
     ),
     golem_opts = list(...)
   )
+  
   # Normally R Shiny apps are not R packages -
   # The server just sources all .R files found in the /R/ folder,
   # and then runs what is found in app.R (if that is found / it is a one-file Shiny app).

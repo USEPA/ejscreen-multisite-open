@@ -11,6 +11,8 @@ speedtest(
   sitepoints = NULL,
   weighting = "frs",
   radii = c(1, 3.106856, 5, 10, 31.06856)[1:3],
+  avoidorphans = FALSE,
+  test_ejamit = FALSE,
   test_getblocksnearby = TRUE,
   test_doaggregate = TRUE,
   test_batch.summarize = FALSE,
@@ -20,6 +22,7 @@ speedtest(
   honk_when_ready = TRUE,
   saveoutput = FALSE,
   plot = TRUE,
+  getblocks_diagnostics_shown = FALSE,
   ...
 )
 }
@@ -36,6 +39,11 @@ such as facilities, people, or blockgroups. see \code{\link[=testpoints_n]{testp
 \item{radii}{optional, one or more radius values in miles
 to use in creating circular buffers when findings residents nearby each of sitepoints.
 The default list includes one that is 5km (approx 3.1 miles)}
+
+\item{avoidorphans}{see \code{\link[=getblocksnearby]{getblocksnearby()}} or \code{\link[=ejamit]{ejamit()}} regarding this param}
+
+\item{test_ejamit}{whether to test only ejamit()
+instead of its subcomponents like getblocksnearby(), doaggregate(), etc}
 
 \item{test_getblocksnearby}{whether to include this function in timing - not used because always done}
 
@@ -56,10 +64,12 @@ NOTE this slows it down though.}
 
 \item{plot}{whether to create plot of results}
 
+\item{getblocks_diagnostics_shown}{set TRUE to see more details on block counts etc.}
+
 \item{...}{passed to plotting function}
 }
 \value{
-EJAM results similar to as from the web app  \code{\link[=ejamit]{ejamit()}} and also creates a plot
+EJAM results similar to as from the web app or \code{\link[=ejamit]{ejamit()}} and also creates a plot
 }
 \description{
 speedtest

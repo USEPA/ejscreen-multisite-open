@@ -2,14 +2,15 @@
 % Please edit documentation in R/getblocksnearbyviaQuadTree.R
 \name{getblocksnearbyviaQuadTree}
 \alias{getblocksnearbyviaQuadTree}
-\title{Find nearby blocks using Quad Tree data structure for speed, NO PARALLEL PROCESSING}
+\title{getblocksnearbyviaQuadTree - Fast way to find nearby points (distance to each Census block centroid near each site)}
 \usage{
 getblocksnearbyviaQuadTree(
   sitepoints,
   radius = 3,
   maxradius = 31.07,
-  avoidorphans = TRUE,
+  avoidorphans = FALSE,
   report_progress_every_n = 500,
+  quiet = FALSE,
   quadtree
 )
 }
@@ -20,24 +21,43 @@ getblocksnearbyviaQuadTree(
 
 \item{maxradius}{miles distance (max distance to check if not even 1 block point is within radius)}
 
-\item{avoidorphans}{logical Whether to avoid case where no block points are within radius,
-so if TRUE, it keeps looking past radius to find nearest one within maxradius.}
+\item{avoidorphans}{logical If TRUE, then where not even 1 BLOCK internal point is within radius of a SITE,
+it keeps looking past radius, up to maxradius, to find nearest 1 BLOCK.
+What EJScreen does in that case is report NA, right? So,
+does EJAM really need to report stats on residents presumed to be within radius,
+if no block centroid is within radius?
+Best estimate might be to report indicators from nearest block centroid which is
+probably almost always the one your site is sitting inside of,
+but ideally would adjust total count to be a fraction of blockwt based on
+what is area of circular buffer as fraction of area of block it is apparently inside of.
+Setting this to TRUE can produce unexpected results, which will not match EJScreen numbers.
+
+Note that if creating a proximity score, by contrast, you instead want to find nearest 1 SITE if none within radius of this BLOCK.}
 
 \item{report_progress_every_n}{Reports progress to console after every n points,
 mostly for testing, but a progress bar feature might be useful unless this is super fast.}
 
+\item{quiet}{Optional. set to TRUE to avoid message about using getblock_diagnostics(),
+which is relevant only if a user saved the output of this function.}
+
 \item{quadtree}{(a pointer to the large quadtree object)
-created from the SearchTree package example:
-SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point")
+created using indexblocks() which uses the SearchTree package.
 Takes about 2-5 seconds to create this each time it is needed.
-It is automatically created when the package is loaded via the \code{\link[=.onLoad]{.onLoad()}} function}
+It can be automatically created when the package is attached via the .onAttach() function}
 }
 \description{
 Given a set of points and a specified radius in miles,
 this function quickly finds all the US Census blocks near each point.
+}
+\details{
 For each point, it uses the specified search radius and finds the distance to
 every block within the circle defined by the radius.
 Each block is defined by its Census-provided internal point, by latitude and longitude.
+
+Results are the sites2blocks table that would be used by doaggregate(),
+with distance in miles as one output column of data.table.
+Adjusts distance to avg resident in block when it is very small relative to block size,
+the same way EJScreen adjusts distances in creating proximity scores.
 
 Each point can be the location of a regulated facility or other type of site, and
 the blocks are a high-resolution source of information about where
@@ -48,6 +68,10 @@ a way to quickly estimate what fraction of a block group is
 inside the circular buffer more accurately and more quickly than
 areal apportionment of block groups would provide.
 }
+\examples{
+  # indexblocks() # if localtree not available yet, quadtree = localtree
+  x = getblocksnearby(testpoints_1000, radius = 3)
+}
 \seealso{
-\code{\link[=ejamit]{ejamit()}} \code{\link[=getblocksnearby]{getblocksnearby()}} \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} \code{\link[=getblocksnearbyviaQuadTree_Clustered]{getblocksnearbyviaQuadTree_Clustered()}} \code{\link[=getblocksnearbyviaQuadTree2]{getblocksnearbyviaQuadTree2()}}
+\code{\link[=ejamit]{ejamit()}} \code{\link[=getblocksnearby]{getblocksnearby()}}
 }

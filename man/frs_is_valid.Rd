@@ -2,7 +2,7 @@
 % Please edit documentation in R/frs_is_valid.R
 \name{frs_is_valid}
 \alias{frs_is_valid}
-\title{Validate FRS Registry ID list uploads}
+\title{frs_is_valid - Validate FRS Registry ID list uploads}
 \usage{
 frs_is_valid(frs_upload)
 }
