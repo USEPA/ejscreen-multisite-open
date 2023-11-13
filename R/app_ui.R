@@ -79,7 +79,7 @@ app_ui  <- function(request) {
                           actionButton(inputId = 'back_to_site_sel2', label = div(icon('play', style = 'transform: rotate(180deg);'), HTML('&nbsp;'), 'Return to Site Selection'), class = 'usa-button'),
                           br(), br(),
                           actionButton('ui_show_advanced_settings','Show Advanced Settings Tab', class = 'usa-button'),
-                          actionButton('ui_hide_advanced_settings','Hide Advanced Settings Tab', class = 'usa-button')
+                          actionButton('ui_hide_advanced_settings','Hide Advanced Settings Tab', class = 'usa-button'),
                 br(),br(),
                    ),
                    column(4,
@@ -133,12 +133,12 @@ app_ui  <- function(request) {
                 condition = 'input.ss_choose_method == "dropdown"',
                 div(style = 'border: 1px solid #005ea2; padding: 10px;',
                     selectInput(inputId = 'ss_choose_method_drop', 
-                                label = tags$span('How would you like to select categories?'
-                                                       'by Industry (SIC) Code'='SIC',
-                                                       'by EPA Program'='EPA_PROGRAM',
-                                                       'by MACT subpart'='MACT'))
-                           )
-                                ),
+                                label = tags$span('How would you like to select categories?'),
+                                                       # 'by Industry (SIC) Code'='SIC',
+                                                       # 'by EPA Program'='EPA_PROGRAM',
+                                                       # 'by MACT subpart'='MACT')#)
+                           #)
+                                #),
                                 choices = c('by Industry (NAICS) Code' = 'NAICS',
                                             'by Industry (SIC) Code'   = 'SIC',
                                             'by EPA Program'           = 'EPA_PROGRAM',
@@ -154,11 +154,11 @@ app_ui  <- function(request) {
                                 #label = 'What type of data are you uploading?',
                                 label = tags$span(
                                   'What type of data are you uploading?'
-                                                       'EPA Facility ID (FRS Identifiers)'='FRS',
-                                                       'EPA Program IDs'='EPA_PROGRAM',
-                                                       'FIPS Codes'='FIPS',
-                                                       'Shapefile of polygons'='SHP'))
-                           )
+                           #                             'EPA Facility ID (FRS Identifiers)'='FRS',
+                           #                             'EPA Program IDs'='EPA_PROGRAM',
+                           #                             'FIPS Codes'='FIPS',
+                           #                             'Shapefile of polygons'='SHP')#)
+                           #)
                                 ),
                                 choices = c('Latitude/Longitude file upload'               = 'latlon',
                                             'Latitude/Longitude typed in here (on-screen)' = 'latlontypedin',
@@ -233,8 +233,7 @@ app_ui  <- function(request) {
                                    class = 'usa-button usa-button--outline'),
                       #HTML(latlon_help_msg)
                       br()                           
-                                            class = 'usa-button usa-button--outline')
-                               #HTML(latlon_help_msg)
+                          
                     ), # end latlong conditionalPanel                        
                     
                     ################################################################# #
@@ -459,7 +458,7 @@ app_ui  <- function(request) {
                              label = div(icon('play', style = 'transform: rotate(180deg);'), HTML('&nbsp;'), 
                                          'Return to Previous Results'), class = 'usa-button')
               )
-              
+                  )))
             ), # end of upload-methods column
             ################################################################# #
             #. ####

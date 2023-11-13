@@ -656,14 +656,6 @@ cat("COUNT OF ROWS IN TYPED IN DATA: ", NROW(ext),"\n")
     }
   }) # END OF FIPS UPLOAD
   ################################################################################### # 
-    print(infiles)
-    
-    infile_ext <- tools::file_ext(infiles)
-    if(!all(c('shp','shx','dbf','prj') %in% infile_ext)){
-      validate('Not all required file extensions found.')
-    }
-    
-    
     
   
   ## reactive: latlon by MACT subpart ####
