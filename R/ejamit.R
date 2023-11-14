@@ -121,8 +121,8 @@ ejamit <- function(sitepoints,
         stop("sitepoints (locations to analyze) is missing but required.")
       }
     }
-    # if user entered a table, path to a file (csv, xlsx), or whatever, then read it to get the lat lon values from there
-    sitepoints <- latlon_from_anything(sitepoints)  
+    # If user entered a table, path to a file (csv, xlsx), or whatever, then read it to get the lat lon values from there
+    #  by using sitepoints <- latlon_from_anything(sitepoints) which gets done by getblocksnearby() 
     ################################################################################## #
     
     #  1. getblocksnearby() ####
