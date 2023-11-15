@@ -24,23 +24,26 @@ shapefile2blockpoints <- function(...) {
 #' @param polys Spatial data as from sf::st_as_sf(), with a column called siteid, like 
 #'   points as from [shapefile_from_sitepoints()],
 #'   or a table of points with lat,lon columns that will first be converted here using that function,
-#'   or polygons (not yet tested). 
+#'   or polygons 
 #' @param addedbuffermiles width of optional buffering to add to the points (or edges), in miles
 #' @param blocksnearby optional table of blocks with blockid,siteid (from which lat,lon can be looked up in blockpoints dt)
 #' @param dissolved If TRUE, use sf::st_union(polys) to find unique blocks inside any one or more of polys
 #' @param safety_margin_ratio multiplied by addedbuffermiles, how far to search for 
 #'   blocks nearby using getblocksnearby(), before using those found to do the intersection via sf::
+#' @param crs used in st_as_sf() and st_transform() and shape_buffered_from_shapefile_points(), crs = 4269 or Geodetic CRS NAD83 
 #' @import sf
 #' @return Block points table for those blocks whose internal point is inside the buffer 
 #'   which is just a circular buffer of specified radius if polys are just points. 
 #'   
 #' @examples  
-#'   x = shapefile_from_sitepoints(testpoints_n(2))
+#'   # y <- get_blockpoints_in_shape()
+#'   
+#'   # x = shapefile_from_sitepoints(testpoints_n(2))
 #'   # y = get_blockpoints_in_shape(x, 1)  # very very slow
 #' @seealso [get_blockpoints_in_shape()] [shapefile_from_sitepoints()] [shape_buffered_from_shapefile_points()]
 #' @export
 #'
-get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NULL, dissolved=FALSE, safety_margin_ratio=1.10) {
+get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NULL, dissolved=FALSE, safety_margin_ratio=1.10, crs = 4269) {
   
   ############################################################################################################### #
   # NOTE: For comparison or validation one could get the results from the EJScreen API, for a polygon:
@@ -77,7 +80,7 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
     rbindlist %>% 
     unique
   
-  blockpoints_sf <- sf::st_as_sf(blockpoints_filt, coords = c('lon', 'lat'), crs = 4269)
+  blockpoints_sf <- sf::st_as_sf(blockpoints_filt, coords = c('lon', 'lat'), crs = crs)
   
   if (!exists("blockpoints_sf")) {
     stop("requires the blockpoints   called blockpoints_sf  you can make like this: \n blockpoints_sf <-  blockpoints |> sf::st_as_sf(coords = c('lon', 'lat'), crs= 4269) \n # Geodetic CRS:  NAD83 ")
@@ -85,7 +88,7 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
   
   # CHECK FORMAT OF polys - ensure it is spatial object (with data.frame/ attribute table? ) 
   if (!("sf" %in% class(polys))) {
-    polys <-  shapefile_from_sitepoints(polys)
+    polys <-  shapefile_from_sitepoints(polys, crs = crs)
   }
   ARE_POINTS <- "POINT" == names(which.max(table(sf::st_geometry_type(polys)))) 
   
@@ -95,7 +98,7 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
   
   if (addedbuffermiles > 0) {
     addedbuffermiles_withunits <- units::set_units(addedbuffermiles, "miles")
-    polys <- shape_buffered_from_shapefile_points(polys,  addedbuffermiles_withunits)
+    polys <- shape_buffered_from_shapefile_points(polys,  addedbuffermiles_withunits, crs = crs)
     # addedbuffermiles_withunits  name used since below getblocksnearby( , radius=addedbuffermiles etc ) warns units not expected
   }  
   
@@ -121,7 +124,7 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
       # warning("using getblocksnearby() to filter US blocks to those near each site must be done before a dissolve  ")
       polys <- sf::st_union(polys)
     }
-    blocksinside <- sf::st_join(blockpoints_sf, sf::st_transform(polys,4269), join = sf::st_intersects, left = 'FALSE' )
+    blocksinside <- sf::st_join(blockpoints_sf, sf::st_transform(polys, crs = crs), join = sf::st_intersects, left = 'FALSE' )
     
     
     # OR...  find centroid of each polygon and 

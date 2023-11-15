@@ -22,8 +22,10 @@ table_tall_from_overall <- function(results_overall, longnames) {
     if (missing(longnames)) {stop("requires longnames")}
   }
   x <- as.vector(unlist(results_overall))
+  x[var_is_numeric_ish(x)] <- as.numeric(x[var_is_numeric_ish(x)] )
+  x[var_is_numeric_ish(x)] <- prettyNum(round(x[var_is_numeric_ish(x)], 3), big.mark = ",")
   x <- cbind(
-    value = prettyNum(round(x, 3), big.mark = ","), 
+    value = x, 
     indicator = longnames
     )
   return(x)

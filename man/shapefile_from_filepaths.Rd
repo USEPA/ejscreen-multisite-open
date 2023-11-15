@@ -4,12 +4,14 @@
 \alias{shapefile_from_filepaths}
 \title{shapefile_from_filepaths  -  Read shapefile from disk based on the filenames given}
 \usage{
-shapefile_from_filepaths(filepaths = NULL, cleanit = TRUE)
+shapefile_from_filepaths(filepaths = NULL, cleanit = TRUE, crs = 4269)
 }
 \arguments{
 \item{filepaths}{vector of full paths with filenames (types .shp, .shx, .dbf, and .prj) as strings}
 
 \item{cleanit}{set to FALSE if you want to skip validation and dropping invalid rows}
+
+\item{crs}{passed to shapefile_clean() default is crs = 4269 or Geodetic CRS NAD83}
 }
 \value{
 a shapefile object using sf::read_sf()

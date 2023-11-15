@@ -4,10 +4,12 @@
 \alias{shapefile_from_folder}
 \title{shapefile_from_folder  -  read shapefile from a folder}
 \usage{
-shapefile_from_folder(folder = NULL)
+shapefile_from_folder(folder = NULL, crs = 4269)
 }
 \arguments{
 \item{folder}{path of folder that contains the files (.shp, .shx, .dbf, and .prj)}
+
+\item{crs}{passed to shapefile_from_filepaths() default is crs = 4269 or Geodetic CRS NAD83}
 }
 \value{
 a shapefile object using sf::read_sf()
@@ -16,6 +18,7 @@ a shapefile object using sf::read_sf()
 shapefile_from_folder  -  read shapefile from a folder
 }
 \examples{
+\dontrun{
   testfolder <- system.file("testdata/shapes/Portland_neighborhoods", package = "EJAM")
   testshape <- shapefile_from_folder(testfolder)
   
@@ -25,5 +28,11 @@ shapefile_from_folder  -  read shapefile from a folder
   ## if interactive(), R user can point to right folder or select the right set of files:
   # testshape <- shapefile_from_filepaths()
   # testshape <- shapefile_from_folder()
+  
+  x <- get_blockpoints_in_shape(testshape)
+  leaflet(x$polys) \%>\% addTiles() \%>\% addPolygons(color = "blue")
+  DT::datatable(out$results_bysite)
+  
+  }
   
 }
