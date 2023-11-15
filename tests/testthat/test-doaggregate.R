@@ -23,16 +23,52 @@ if (!exists('blockwts')) {
 test_that('doaggregate() returns a correctly named list, with no error', {
   expect_no_error({
     val <- doaggregate(sites2blocks = testoutput_getblocksnearby_10pts_1miles, 
-                                      radius = max(testoutput_getblocksnearby_10pts_1miles$distance))
+                       radius = max(testoutput_getblocksnearby_10pts_1miles$distance))
   })
   expect_true('list' %in% class(val))
-    expect_identical(
+  expect_identical(
     names(val),
     c("results_overall", "results_bysite", "results_bybg_people", 
-    "longnames", "count_of_blocks_near_multiple_sites")
+      "longnames", "count_of_blocks_near_multiple_sites")
   )
 })
 ################# #  ################# #  ################# # 
+
+################# # 
+# DOES IT STILL RETURN WHAT IT USED TO, OR HAS FUNCTION CHANGED SO THAT OUTPUTS NO LONGER MATCH ARCHIVED OUTPUTS? ####
+################# # 
+
+# WHAT IT RETURNS NOW:
+x <- doaggregate(testoutput_getblocksnearby_10pts_1miles, radius = 1)
+
+test_that("still same exact results_overall as previously saved", {
+  expect_equivalent(
+    testoutput_doaggregate_10pts_1miles$results_overall,
+    x$results_overall # use defaults
+  )
+})
+test_that("still same exact results_bysite as previously saved", {
+  expect_equivalent(
+    testoutput_doaggregate_10pts_1miles$results_bysite,
+    x$results_bysite # use defaults 
+  )
+})
+test_that("still same exact results_bybg_people as previously saved", {
+  expect_equivalent(
+    testoutput_doaggregate_10pts_1miles$results_bybg_people,
+    x$results_bybg_people # use defaults 
+  )
+})
+test_that("still same exact longnames as previously saved", {
+  expect_equivalent(
+    testoutput_doaggregate_10pts_1miles$longnames,
+    x$longnames # use defaults 
+  )
+})
+
+rm(x)
+
+
 
 ################# # 
 # WHAT IF TABLE INPUT IS CLEARLY BAD ####
@@ -61,14 +97,16 @@ test_that('error if input has column not named distance', {
   expect_warning({doaggregate(sites2blocks = wrongnames)})
 })
 
+
 # *** WHAT IF OTHER BAD FORMATS FOR TABLE? SEE bad_numbers examples from setup.R, as used in radius tests below. 
 
 cat('still need to test cases where input table is some other invalid format\n')
 
 
 
-# *** WHAT IF TABLE INPUT EXCEEDS SOME SIZE LIMIT? TOO MANY ROWS; TOO MANY COLUMNS; TOO MANY MEGABYTES?
 
+
+# *** WHAT IF TABLE INPUT EXCEEDS SOME SIZE LIMIT? TOO MANY ROWS; TOO MANY COLUMNS; TOO MANY MEGABYTES?
 
 cat('still need to test cases where input table is valid class, type, but too many rows or columns\n')
 
@@ -97,8 +135,8 @@ test_that('warning if ask for radius > 32, and just uses 32 instead', {
   # if (radius > 32) {radius <- 32; warning("Cannot use radius above 32 miles (almost 51 km) here - Returning results for 32 miles!")}
   suppressWarnings(
     expect_warning( 
-    doaggregate(sites2blocks = testoutput_getblocksnearby_10pts_1miles , radius = 32.01, silentinteractive = TRUE)
-   ))
+      doaggregate(sites2blocks = testoutput_getblocksnearby_10pts_1miles , radius = 32.01, silentinteractive = TRUE)
+    ))
 })
 
 testthat::test_that("same result if radius requested is 32 or 50, since >32 gets treated as if 32", {

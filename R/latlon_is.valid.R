@@ -114,7 +114,7 @@ latlon_is.valid <- function(lat, lon, quiet = TRUE) {
   # )
   
   in_islandareas <- latlon_is.islandareas(lat = lat, lon = lon)
-  if (any(in_islandareas)) {
+  if (any(in_islandareas, na.rm = TRUE)) {
     message("Some points appear to be in US Island Areas, which may lack some data such as demographic data here")
   }
   

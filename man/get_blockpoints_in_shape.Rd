@@ -10,14 +10,15 @@ get_blockpoints_in_shape(
   addedbuffermiles = 0,
   blocksnearby = NULL,
   dissolved = FALSE,
-  safety_margin_ratio = 1.1
+  safety_margin_ratio = 1.1,
+  crs = 4269
 )
 }
 \arguments{
 \item{polys}{Spatial data as from sf::st_as_sf(), with a column called siteid, like
 points as from \code{\link[=shapefile_from_sitepoints]{shapefile_from_sitepoints()}},
 or a table of points with lat,lon columns that will first be converted here using that function,
-or polygons (not yet tested).}
+or polygons}
 
 \item{addedbuffermiles}{width of optional buffering to add to the points (or edges), in miles}
 
@@ -27,6 +28,8 @@ or polygons (not yet tested).}
 
 \item{safety_margin_ratio}{multiplied by addedbuffermiles, how far to search for
 blocks nearby using getblocksnearby(), before using those found to do the intersection via sf::}
+
+\item{crs}{used in st_as_sf() and st_transform() and shape_buffered_from_shapefile_points(), crs = 4269 or Geodetic CRS NAD83}
 }
 \value{
 Block points table for those blocks whose internal point is inside the buffer
@@ -50,7 +53,9 @@ since otherwise it takes forever for sf:: to check all US blocks.
 }
 \examples{
  
-  x = shapefile_from_sitepoints(testpoints_n(2))
+  # y <- get_blockpoints_in_shape()
+  
+  # x = shapefile_from_sitepoints(testpoints_n(2))
   # y = get_blockpoints_in_shape(x, 1)  # very very slow
 }
 \seealso{
