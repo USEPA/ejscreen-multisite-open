@@ -40,7 +40,8 @@ test_that('doaggregate() returns a correctly named list, with no error', {
 
 # WHAT IT RETURNS NOW:
 x <- doaggregate(testoutput_getblocksnearby_10pts_1miles, radius = 1)
-
+overall_has_changed <- !all.equal(testoutput_doaggregate_10pts_1miles$results_overall,
+                                  x$results_overall)
 test_that("still same exact results_overall as previously saved", {
   expect_equivalent(
     testoutput_doaggregate_10pts_1miles$results_overall,
@@ -48,18 +49,21 @@ test_that("still same exact results_overall as previously saved", {
   )
 })
 test_that("still same exact results_bysite as previously saved", {
+  skip_if(overall_has_changed, "not testing all outputs of doaggregate against archived since results_overall test failed")  
   expect_equivalent(
     testoutput_doaggregate_10pts_1miles$results_bysite,
     x$results_bysite # use defaults 
   )
 })
 test_that("still same exact results_bybg_people as previously saved", {
+  skip_if(overall_has_changed, "not testing all outputs of doaggregate against archived since results_overall test failed")  
   expect_equivalent(
     testoutput_doaggregate_10pts_1miles$results_bybg_people,
     x$results_bybg_people # use defaults 
   )
 })
 test_that("still same exact longnames as previously saved", {
+  skip_if(overall_has_changed, "not testing all outputs of doaggregate against archived since results_overall test failed")  
   expect_equivalent(
     testoutput_doaggregate_10pts_1miles$longnames,
     x$longnames # use defaults 
@@ -253,7 +257,7 @@ for (i in 1:length(cause_err)) {
 #
 # cause_something_else <- bad_numbers[c("matrix_1x1", "array1", "character1", "df1")]  # ????
 
-
+rm(cause_no_warn_no_err)
 
 
 ################# #  ################# #  ################# # 
