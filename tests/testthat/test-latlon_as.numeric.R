@@ -29,6 +29,7 @@ test_that('logical returns NA',{
 
 # this returns numeric zero and not NA
 # and is not providing a warning
+# added warning and return NA
 test_that('empty vector returns NA',{
   expect_warning(val <- latlon_as.numeric(c()))
   expect_true(is.na(val))
@@ -66,3 +67,4 @@ test_that('when all characters are removed, it returns NA with warning',{
   expect_warning(val <- latlon_as.numeric("#_@!^&*()=+~[]{}<>?/|"))
   expect_true(is.na(val))
 })
+

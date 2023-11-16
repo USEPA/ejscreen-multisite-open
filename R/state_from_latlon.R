@@ -16,6 +16,11 @@
 #'  mapfast(pts[ST == 'TX',], radius = 1) # 1 miles radius circles
 #'  
 state_from_latlon <- function(lat, lon, states_shapefile=EJAM::states_shapefile) {
+  if(is.na(as.numeric(lat)) & is.na(as.numeric(lon))){ stop("Latitude and Longitude could not be coerced to a number.")
+  }else if(is.na(as.numeric(lat))){stop("Latitude could not be coerced to a number")
+    }else if(is.na(as.numeric(lon))){stop("Longitude could not be coerced to a number.")}
+  
+  
   # pts[is.na(lat), lat := 0] 
   # pts[is.na(lon), lon := 0] 
   lat[is.na(lat)] <- 0
@@ -28,6 +33,8 @@ state_from_latlon <- function(lat, lon, states_shapefile=EJAM::states_shapefile)
   colnames(pts) <- c("ST", "statename", "FIPS.ST")
   pts$REGION <- EJAM::stateinfo$REGION[match(pts$statename, stateinfo$statename)]
   pts$n <- 1:NROW(pts)
+  
+  if(is.na(pts$statename )){warning("That latitude and longitude is not in any state")}
   return(pts)
 }
 
@@ -64,6 +71,7 @@ state_from_blockid <- function(blockid) {
 #'   not necessarily a vector as long as the input vector of FIPS codes!, 
 #'   and not just a short list of unique states!
 #' @param fips Census FIPS codes vector, numeric or char, 2-digit, 5-digit, etc. OK
+<<<<<<< HEAD
 #' @param uniqueonly If set to TRUE, returns only unique results. 
 #'   This parameter is here mostly to remind user that default is not uniques only.
 #' @return vector of 2-character state abbreviations like CA,CA,CA,MD,MD,TX
@@ -73,6 +81,20 @@ state_from_fips <- function(fips, uniqueonly=FALSE) {
   fips <- fipsbg_from_anyfips(fips) # returns all the blockgroups fips codes that match, such as all bg in the state or county
   x <- stateinfo$ST[match(substr(fips,1,2), stateinfo$FIPS.ST)]
   if (uniqueonly) {return(unique(x))} else {return(x)}
+=======
+#' @param abbrev Defaults to True, whether to return abbreviated or full names
+#'
+#' @return vector of 2-character state abbreviations like CA,MD,TX,OH
+#' @export
+#'
+state_from_fips <- function(fips, abbrev = T) {
+  fips <- fipsbg_from_anyfips(fips)
+  if(abbrev){stateinfo$ST[match(substr(fips,1,2), stateinfo$FIPS.ST)]
+  }else{
+    stateinfo$statename[match(substr(fips,1,2), stateinfo$FIPS.ST)]
+    }
+  
+>>>>>>> testing
 }
 
 

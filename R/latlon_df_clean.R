@@ -13,14 +13,34 @@
 latlon_df_clean <- function(df) {
   
   # figure out which columns seem to have lat lon values, rename those in the data.frame
+<<<<<<< HEAD
   names(df) <- latlon_infer(names(df)) 
   
   # Clean up lat and lon values (remove extra characters, make numeric)
+=======
+  # $ signifies the end of a string, so only will be removed if at end
+  names(df) <- latlon_infer(gsub(".1$", "", names(df)))
+  
+  # Cleans up lat and lon values (removes extra characters, makes numeric)
+>>>>>>> testing
   if ('lat' %in% names(df) & 'lon' %in% names(df)) {
     df$lon <- latlon_as.numeric(df$lon)
     df$lat <- latlon_as.numeric(df$lat)
   } else {
+<<<<<<< HEAD
     warning('lat or lon column cannot be inferred from colnames of df')
+=======
+    warning("Dataframe does not have both lat and lon columns")
+    # removed since latlon_infer already creates warning
+    #warning('lat or lon column cannot be inferred from colnames of df')
+    }
+  
+  # validate to some extent (are the lat lon plausible values)
+  if (any(!latlon_is.valid(lat = df$lat, lon = df$lon))) {
+    warning('Some lat or lon values seem invalid - NA or number outside expected range')
+    ## convert invalid latlons to NA
+    df[!latlon_is.valid(lat = df$lat, lon = df$lon), c('lat','lon')] <- NA
+>>>>>>> testing
   }
   
   # validate, to some extent -- are the lat lon plausible values?
