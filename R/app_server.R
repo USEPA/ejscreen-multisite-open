@@ -203,51 +203,47 @@ app_server <- function(input, output, session) {
     
     ####### SHOULD REPLACE WITH CODE IN NEW FUNCTIONS that avoid saving uploaded shapefiles locally on server LIKE shapefile_from_filepaths() ***
     # 
-    if ("working_HERE?" == "working_NOT_IN_SHINY_ONLY") {
+    if ("working_HERE?" == "working_NOT_IN_SHINY_ONLY") { # new way. works outside shiny, at least.
       
-      if (!shapefile_filepaths_valid(filepaths = infiles)) {
+      if (!shapefile_filepaths_valid(filepaths = infiles)) { # done by shapefile_from_filepaths() too but this allows shiny validate()
         validate('Not all required file extensions found.')
       }
-      
       shp <- shapefile_from_filepaths(infiles, cleanit = FALSE) # cleanit = FALSE allows shiny to handle that with messages
-      
-      ## warn about the invalid rows if any
       numna <- nrow(shp[!sf::st_is_valid(shp),])
       invalid_alert(numna) # this updates the value of the reactive invalid_alert()
-      shp <- shapefile_clean(shp) # drops invalid rows or return NULL if none valid
-      if (is.null(shp)) { shiny::validate('No shapes found in file uploaded.')}
-
-          } else {
-            
-            # older way, using renaming files in temp folder because in shiny that works here?  
-            
-    infile_ext <- tools::file_ext(infiles)
-    if (!all(c('shp','shx','dbf','prj') %in% infile_ext)) {
-      validate('Not all required file extensions found.')
-    }
-    
-    dir <- unique(dirname(infiles)) # get the directory (the real one? or temp one from shiny??)
-    outfiles <- file.path(dir, input$ss_upload_shp$name) # create new path name
-    name <- strsplit(input$ss_upload_shp$name[1], "\\.")[[1]][1] # strip name 
-    purrr::walk2(infiles, outfiles, ~file.rename(.x, .y)) # rename files
-    
-    shp <- read_sf(file.path(dir, paste0(name, ".shp"))) # read-in shapefile
-    
-    if (nrow(shp) > 0) {
-      numna <- nrow(shp[!sf::st_is_valid(shp),])
-      invalid_alert(numna) # this updates the value of the reactive invalid_alert()
-      shp_valid <- shp[sf::st_is_valid(shp),] #determines valid shapes
-      
-      shp_valid <- dplyr::mutate(shp_valid, siteid = row_number())
-      
-      shp_proj <- sf::st_transform(shp_valid,crs = 4269)
-      
+      shp <- shapefile_clean(shp) # uses default crs=4269;  drops invalid rows or return NULL if none valid  # shp <- sf::st_transform(shp, crs = 4269) # done by shapefile_clean() 
+      if (is.null(shp)) {
+        shiny::validate('No shapes found in file uploaded.')
+      }
+      shp
+      ####### #    #######     ####### #
     } else {
-      ## if not matched, return this message
-      shiny::validate('No shapes found in file uploaded.')
+      
+      # older way, using renaming files in temp folder because in shiny that works here?  
+      
+      infile_ext <- tools::file_ext(infiles)
+      if (!all(c('shp','shx','dbf','prj') %in% infile_ext)) {
+        shiny::validate('Not all required file extensions found.')
+      }
+      dir <- unique(dirname(infiles)) # get the directory (the real one? or temp one from shiny??)
+      outfiles <- file.path(dir, input$ss_upload_shp$name) # create new path name
+      name <- strsplit(input$ss_upload_shp$name[1], "\\.")[[1]][1] # strip name 
+      purrr::walk2(infiles, outfiles, ~file.rename(.x, .y)) # rename files
+      
+      shp <- read_sf(file.path(dir, paste0(name, ".shp"))) # read-in shapefile
+      
+      if (nrow(shp) > 0) {
+        numna <- nrow(shp[!sf::st_is_valid(shp),])
+        invalid_alert(numna) # this updates the value of the reactive invalid_alert()
+        shp_valid <- shp[sf::st_is_valid(shp),] #determines valid shapes
+        shp_valid <- dplyr::mutate(shp_valid, siteid = row_number())
+        shp_proj <- sf::st_transform(shp_valid,crs = 4269)
+      } else {
+        ## if not matched, return this message
+        shiny::validate('No shapes found in file uploaded.')
+      }
+      shp_proj
     }
-    shp_proj
-          }
     
   }) # END OF SHAPEFILE UPLOAD
   
@@ -1116,12 +1112,12 @@ cat("COUNT OF ROWS IN TYPED IN DATA: ", NROW(ext),"\n")
     
     if (submitted_upload_method() == "SHP") {
       
-      d <- get_blockpoints_in_shape(data_uploaded(),input$bt_rad_buff)
+      d <- get_blockpoints_in_shape(data_uploaded(),input$bt_rad_buff) # usea default crs. input needs to be polygons
       
       #d_upload[['points']] <- d[['pts']]
       #d_upload[['buffer']] <- d[['polys']]
       #d_upload[['shape']] <- shp
-      #d_upload[['buffer']] <- shape_buffered_from_shapefile_points(shp,0)
+      #d_upload[['buffer']] <- shape_buffered_from_shapefile_points(shp,0) # usea default crs
       #d_upload
       #d_upload <- data_uploaded()[['points']]
       sites2blocks <- d[['pts']]
@@ -2694,7 +2690,7 @@ cat("COUNT OF ROWS IN TYPED IN DATA: ", NROW(ext),"\n")
         )
       })
       # [TEMPORARILY SAVE PARAMS FOR TEST ING] ## ##
-      if (input$testing) {saveRDS(params, file = "./inst/testparams.RDS")} ################################ TEMPORARILY SAVE PARAMS FOR TESTING# # 
+      # if (input$testing) {saveRDS(params, file = "./inst/testparams.RDS")} ################################ TEMPORARILY SAVE PARAMS FOR TESTING# # 
       
       # Knit report to Word Doc ## ##
       

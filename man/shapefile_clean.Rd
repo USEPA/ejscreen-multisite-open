@@ -4,19 +4,18 @@
 \alias{shapefile_clean}
 \title{shapefile_clean  -  drop invalid rows and warn if all invalid}
 \usage{
-shapefile_clean(shp)
+shapefile_clean(shp, crs = 4269)
 }
 \arguments{
 \item{shp}{a shapefile object using sf::read_sf()}
+
+\item{crs}{used in shp <- sf::st_transform(shp, crs = crs), default is crs = 4269 or Geodetic CRS NAD83}
 }
 \value{
 a shapefile object using sf::read_sf()
 }
 \description{
 shapefile_clean  -  drop invalid rows and warn if all invalid
-}
-\details{
-it assumes crs = 4269 when doing sf::st_transform(shp, crs = 4269)
 }
 \seealso{
 \code{\link[=shapefile_from_folder]{shapefile_from_folder()}}
