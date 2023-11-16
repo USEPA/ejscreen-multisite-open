@@ -71,7 +71,6 @@ state_from_blockid <- function(blockid) {
 #'   not necessarily a vector as long as the input vector of FIPS codes!, 
 #'   and not just a short list of unique states!
 #' @param fips Census FIPS codes vector, numeric or char, 2-digit, 5-digit, etc. OK
-<<<<<<< HEAD
 #' @param uniqueonly If set to TRUE, returns only unique results. 
 #'   This parameter is here mostly to remind user that default is not uniques only.
 #' @return vector of 2-character state abbreviations like CA,CA,CA,MD,MD,TX
@@ -81,22 +80,7 @@ state_from_fips <- function(fips, uniqueonly=FALSE) {
   fips <- fipsbg_from_anyfips(fips) # returns all the blockgroups fips codes that match, such as all bg in the state or county
   x <- stateinfo$ST[match(substr(fips,1,2), stateinfo$FIPS.ST)]
   if (uniqueonly) {return(unique(x))} else {return(x)}
-=======
-#' @param abbrev Defaults to True, whether to return abbreviated or full names
-#'
-#' @return vector of 2-character state abbreviations like CA,MD,TX,OH
-#' @export
-#'
-state_from_fips <- function(fips, abbrev = T) {
-  fips <- fipsbg_from_anyfips(fips)
-  if(abbrev){stateinfo$ST[match(substr(fips,1,2), stateinfo$FIPS.ST)]
-  }else{
-    stateinfo$statename[match(substr(fips,1,2), stateinfo$FIPS.ST)]
-    }
-  
->>>>>>> testing
 }
-
 
 # checking speed
 

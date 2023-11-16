@@ -11,13 +11,9 @@ frs_is_valid <- function(frs_upload) {
     return(TRUE)
   } else {
     if ("regid" %in% colnames(frs_upload)) {
-<<<<<<< HEAD
       colnames(frs_upload) <- gsub("RegistryID", "REGISTRY_ID", colnames(frs_upload)) # ECHO uses this colname
-      if (nrow(frs_from_regid(frs_upload$REGISTRY_ID)) != 0) {
-=======
-      colnames(frs_upload) <- gsub("regid", "REGISTRY_ID", colnames(frs_upload)) # ECHO uses this colname
+     
       if(nrow(frs_from_regid(frs_upload$REGISTRY_ID)) != 0){
->>>>>>> testing
         return(TRUE)
       } else {
         return(FALSE)
