@@ -2715,10 +2715,10 @@ cat("COUNT OF ROWS IN TYPED IN DATA: ", NROW(ext),"\n")
   # create UI part for main EJAM app here rather than in app_ui because we need access to input$ radius of main app to pass that to module that uses it as the initial radius shown on its slider
   # pass from server code of app to server code of module by creating the main radius UI in server of app (cannot access the input$ in UI of app)
   # Not sure if I can pass a reactive or need to pass reactive value so it can get updated by the module without needing to return a list of values from the module?
-  default_radius_react_passed <- reactiveVal() # initialize/create the variable that will store the latest radius set by outer app
-  observe(  
-    default_radius_react_passed(input$bt_rad_buff) # update the value of this reactiveVal anytime outer app slider is adjusted
-  )
+  # default_radius_react_passed <- reactiveVal() # initialize/create the variable that will store the latest radius set by outer app
+  # observe(  
+  #   default_radius_react_passed(input$bt_rad_buff) # update the value of this reactiveVal anytime outer app slider is adjusted
+  # )
   
   
   # output$mod_ejscreenapi_ui_TO_SHOW_IN_APP_UI <- renderUI({
@@ -2731,24 +2731,24 @@ cat("COUNT OF ROWS IN TYPED IN DATA: ", NROW(ext),"\n")
 
   
   # default_radius_react_passed <- reactiveVal(input$bt_rad_buff) # pass to UI of module not server code of module
-  default_points_react_passed <- reactiveVal() # initialize it empty
-  observe(
-    default_points_react_passed(  data_uploaded()  ) # update default_points_react_passed when data_uploaded() changes
-  )
-  table_as_displayed_reactive <- reactive(
-    
-    mod_ejscreenapi_server(
-      "x2", 
-      default_points_shown_at_startup_react = default_points_react_passed, #reactive(testpoints_5[1:2,]), 
-      use_ejscreenit = T # use_ejscreenit_tf
-    )
-    
-    # mod_ejscreenapi_server("x2", 
-    #                        # default_points = testpoints_5[1:2,],
-    #                        default_radius_react = default_radius_react_passed,
-    #                        default_points_shown_at_startup_react = default_points_react_passed  #reactive value object gets passed without parentheses
-    # )
-  )
+  # default_points_react_passed <- reactiveVal() # initialize it empty
+  # observe(
+  #   default_points_react_passed(  data_uploaded()  ) # update default_points_react_passed when data_uploaded() changes
+  # )
+  # table_as_displayed_reactive <- reactive(
+  #   
+  #   mod_ejscreenapi_server(
+  #     "x2", 
+  #     default_points_shown_at_startup_react = default_points_react_passed, #reactive(testpoints_5[1:2,]), 
+  #     use_ejscreenit = T # use_ejscreenit_tf
+  #   )
+  #   
+  #   # mod_ejscreenapi_server("x2", 
+  #   #                        # default_points = testpoints_5[1:2,],
+  #   #                        default_radius_react = default_radius_react_passed,
+  #   #                        default_points_shown_at_startup_react = default_points_react_passed  #reactive value object gets passed without parentheses
+  #   # )
+  # )
   
   # NOTE:
   # If a module needs to use a reactive expression, the outer function should take the reactive expression as a parameter. 

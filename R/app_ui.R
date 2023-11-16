@@ -1285,29 +1285,29 @@ app_ui  <- function(request) {
        ## . ####
        # EJSCREEN API MODULE -  tabPanel(title = 'EJScreen Batch Tool'   ####
        # may move to another tab. or in a conditional UI panel.
-       tabPanel(title = 'EJScreen Batch Tool',
-                
-                h3("Access to EJScreen results via the API"),
-                h4("(slow, fewer features, and cannot aggregate overall, but exactly replicates EJScreen web app)"),
-                br(),
-                
-                # notes  ## ##
-                # If a module needs to use a reactive expression, the outer function should take the reactive expression as a parameter. 
-                # If a module needs to update a reactiveVal that is in the calling envt, it can take it as a param and then just modify it, right?
-                # If a module wants to return reactive expressions to the calling app, then return a list of reactive expressions from the function.
-                # If a module needs to access an input that isn’t part of the module, the 
-                #   containing app should pass the input value wrapped in a reactive expression (i.e. reactive(...)):
-                #   myModule("myModule1", reactive(input$checkbox1))
-                
-                mod_ejscreenapi_ui("x2", 
-                                   
-                                   simpleradius_default_for_ui = 2
-                )
-                
-                # uiOutput("mod_ejscreenapi_ui_TO_SHOW_IN_APP_UI")  # this approach would use the module UI from the outer app server, not here
-                # mod_ejscreenapi_ui_test("x1")
-                
-       ),
+       # tabPanel(title = 'EJScreen Batch Tool',
+       #          
+       #          h3("Access to EJScreen results via the API"),
+       #          h4("(slow, fewer features, and cannot aggregate overall, but exactly replicates EJScreen web app)"),
+       #          br(),
+       #          
+       #          # notes  ## ##
+       #          # If a module needs to use a reactive expression, the outer function should take the reactive expression as a parameter. 
+       #          # If a module needs to update a reactiveVal that is in the calling envt, it can take it as a param and then just modify it, right?
+       #          # If a module wants to return reactive expressions to the calling app, then return a list of reactive expressions from the function.
+       #          # If a module needs to access an input that isn’t part of the module, the 
+       #          #   containing app should pass the input value wrapped in a reactive expression (i.e. reactive(...)):
+       #          #   myModule("myModule1", reactive(input$checkbox1))
+       #          
+       #          mod_ejscreenapi_ui("x2", 
+       #                             
+       #                             simpleradius_default_for_ui = 2
+       #          )
+       #          
+       #          # uiOutput("mod_ejscreenapi_ui_TO_SHOW_IN_APP_UI")  # this approach would use the module UI from the outer app server, not here
+       #          # mod_ejscreenapi_ui_test("x1")
+       #          
+       # ),
        ######################################################## # 
        ## . ####
        # ADVANCED SETTINGS - tabPanel(title = "Advanced Settings"  ####
