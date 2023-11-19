@@ -1,12 +1,14 @@
-#' naics_validation - Validate NAIC uploads
+#' naics_validation - Validate NAICS uploads
 #' @description Validates and prepares echo uploads
 #'
-#' @param NAICS upload validate missing and/or improper inputs
-#' @return boolean value (valid or not valid)
+#' @param naics_enter vector of naics
+#' @param naics_select 
+#' @return boolean value (valid or not valid) - TRUE if 
+#'   length of at least one of the two input vectors is > 0
 #' @export
-naics_validation <- function(NAICS_enter,NAIC_select){
+naics_validation <- function(naics_enter, naics_select){
   
-  if (nchar(NAICS_enter) > 0 | length(NAIC_select) > 0) {
+  if (nchar(naics_enter) > 0 | length(naics_select) > 0) {
     return(TRUE)
   } else {
     return(FALSE)

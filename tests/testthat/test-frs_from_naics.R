@@ -11,12 +11,12 @@
 # the code is stirng instead of numeric, but that doesn't seem to matter to siteid_from_naics (in latlon_from_naics.R)
 
 test_that('website_url and website_scrape cause errors',{
-  expect_error(val <- frs_from_naics(21112, website_url = TRUE)) # "crude petroleum"
+  expect_error(   val <- frs_from_naics(21112, website_url = TRUE)) # "crude petroleum"
   expect_no_error(val <- frs_from_naics(21112, website_scrape = TRUE)) # "crude petroleum"
   })
 
 # however, even using naics_from_any gave an error that the function naics_url_of_query does not exist
-# after renaming this to naics_url_of_code, it worked successfully (in script NAICS_url_of_code.R)
+# after renaming this to naics_url_of_code, it worked successfully (in script naics_url_of_code.R)
 test_that('naics_from_any URL and scrape lookup works', {
   expect_equal(naics_from_any("crude petroleum")$code, c(21112, 211120))
   expect_equal(naics_from_any(21112, website_url = TRUE), "https://www.naics.com/six-digit-naics/?v=2017&code=21112")
@@ -42,7 +42,7 @@ test_that('results of subcategories only output when children = TRUE',{
   expect_no_warning(frs_from_naics(212221)) # "gold mining"
   expect_no_warning(frs_from_naics(212222)) # "silver mining"
   
-  x <-frs_from_naics(21222, children = TRUE) # 373 # all gold and silver mining
+  x <- frs_from_naics(21222, children = TRUE) # 373 # all gold and silver mining
   
   expect_equal(length(which(grepl(212221,x$NAICS))), nrow(frs_from_naics(212221))) # 354 count of gold, matches subset from 21222 w/ children
   expect_equal(length(which(grepl(212222,x$NAICS))), nrow(frs_from_naics(212222))) # 41 count of silver, matches subset from 21222 w/ children
@@ -60,10 +60,10 @@ test_that('string queries function', {
 })
 
 test_that('list of queries returns joined results', {
-  expect_no_warning(x <- frs_from_naics(c("gold ore",  "silver ore")))
+  expect_no_warning( x <- frs_from_naics(c("gold ore", "silver ore")))
   expect_no_warning( y <- frs_from_naics("gold ore"))
   expect_no_warning( z <- frs_from_naics("silver ore"))
-  expect_equal(x %>% arrange(REGISTRY_ID), full_join(y,z) %>% arrange(REGISTRY_ID))
+  expect_equal(x %>% arrange(REGISTRY_ID), full_join(y, z) %>% arrange(REGISTRY_ID))
   
 })
 

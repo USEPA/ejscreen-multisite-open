@@ -399,7 +399,7 @@ cat("COUNT OF ROWS IN TYPED IN DATA: ", NROW(ext),"\n")
     # q: IS IT BETTER TO USE THIS IN naics_from_any() OR IN frs_from_naics() BELOW ??
     
     # naics_validation function to check for non empty NAICS inputs
-    if (naics_validation(NAICS_enter = '',NAIC_select = input$ss_select_naics)) {
+    if (naics_validation(naics_enter = '', naics_select = input$ss_select_naics)) {
       #if (naics_validation(input$ss_enter_naics,input$ss_select_naics)) {
       inputnaics = {}
       

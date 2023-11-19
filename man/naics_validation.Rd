@@ -2,15 +2,18 @@
 % Please edit documentation in R/naics_validation.R
 \name{naics_validation}
 \alias{naics_validation}
-\title{naics_validation - Validate NAIC uploads}
+\title{naics_validation - Validate NAICS uploads}
 \usage{
-naics_validation(NAICS_enter, NAIC_select)
+naics_validation(naics_enter, naics_select)
 }
 \arguments{
-\item{NAICS}{upload validate missing and/or improper inputs}
+\item{naics_enter}{vector of naics}
+
+\item{naics_select}{}
 }
 \value{
-boolean value (valid or not valid)
+boolean value (valid or not valid) - TRUE if
+length of at least one of the two input vectors is > 0
 }
 \description{
 Validates and prepares echo uploads
