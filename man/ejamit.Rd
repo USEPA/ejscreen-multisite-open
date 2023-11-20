@@ -10,12 +10,25 @@ ejamit(
   maxradius = 31.07,
   avoidorphans = FALSE,
   quadtree = NULL,
-  silentinteractive = F,
+  quiet = TRUE,
+  parallel = FALSE,
   fips = NULL,
-  subgroups_type = "nh",
+  in_shiny = FALSE,
+  need_blockwt = TRUE,
+  countcols = NULL,
+  popmeancols = NULL,
+  calculatedcols = NULL,
+  testing = FALSE,
+  include_ejindexes = FALSE,
+  updateProgress = NULL,
+  need_proximityscore = FALSE,
   calculate_ratios = TRUE,
-  threshold1 = 90,
-  ...
+  silentinteractive = FALSE,
+  called_by_ejamit = TRUE,
+  subgroups_type = "nh",
+  extra_demog = TRUE,
+  infer_sitepoints = FALSE,
+  threshold1 = 90
 )
 }
 \arguments{
@@ -27,45 +40,76 @@ ejamit(
 
 \item{avoidorphans}{logical If TRUE, then where not even 1 BLOCK internal point is within radius of a SITE,
 it keeps looking past radius, up to maxradius, to find nearest 1 BLOCK.
-What EJScreen does in that case is report NA, right? So,
-does EJAM really need to report stats on residents presumed to be within radius,
+What EJScreen does in that case is report NA, right?
+So, does EJAM really need to report stats on residents presumed to be within radius,
 if no block centroid is within radius?
-Best estimate might be to report indicators from nearest block centroid which is
-probably almost always the one your site is sitting inside of,
-but ideally would adjust total count to be a fraction of blockwt based on
-what is area of circular buffer as fraction of area of block it is apparently inside of.
+Best estimate might be to report indicators from nearest block centroid
+which is probably almost always the one your site is sitting inside of,
+but ideally would adjust total count to be a fraction of blockwt
+based on what is area of circular buffer as fraction of area of block it is apparently inside of.
 Setting this to TRUE can produce unexpected results, which will not match EJScreen numbers.
 
-Note that if creating a proximity score, by contrast, you instead want to find nearest 1 SITE if none within radius of this BLOCK.}
+Note that if creating a proximity score, by contrast, you
+instead want to find nearest 1 SITE if none within radius of this BLOCK.}
 
-\item{quadtree}{(a pointer to the large quadtree object)
-created using indexblocks() which uses the SearchTree package.
+\item{quadtree}{(a pointer to the large quadtree object) created using indexblocks() which uses the SearchTree package.
 Takes about 2-5 seconds to create this each time it is needed.
 It can be automatically created when the package is attached via the .onAttach() function}
+
+\item{quiet}{Optional. set to TRUE to avoid message about using getblock_diagnostics(),
+which is relevant only if a user saved the output of this function.}
+
+\item{parallel}{whether to use parallel processing in getblocksnearby() but may not be implemented yet.}
+
+\item{fips}{optional FIPS code vector to provide if using FIPS instead of sitepoints to specify places to analyze,
+such as a list of US Counties or tracts. Passed to \code{\link[=getblocksnearby_from_fips]{getblocksnearby_from_fips()}}}
+
+\item{in_shiny}{if fips parameter is used, passed to \code{\link[=getblocksnearby_from_fips]{getblocksnearby_from_fips()}}}
+
+\item{need_blockwt}{if fips parameter is used, passed to \code{\link[=getblocksnearby_from_fips]{getblocksnearby_from_fips()}}}
+
+\item{countcols}{character vector of names of variables to aggregate within a buffer using a sum of counts,
+like, for example, the number of people for whom a poverty ratio is known,
+the count of which is the exact denominator needed to correctly calculate percent low income.}
+
+\item{popmeancols}{character vector of names of variables to aggregate within a buffer using population weighted mean.}
+
+\item{calculatedcols}{character vector of names of variables to aggregate within a buffer using formulas that have to be specified.}
+
+\item{testing}{used while testing this function}
+
+\item{include_ejindexes}{whether to try to include EJ Indexes (assuming dataset is available) - passed to \code{\link[=doaggregate]{doaggregate()}}}
+
+\item{updateProgress}{progress bar function used for shiny app}
+
+\item{need_proximityscore}{whether to calculate proximity scores}
+
+\item{calculate_ratios}{whether to calculate and return ratio of each indicator to US and State overall averages - passed to \code{\link[=doaggregate]{doaggregate()}}}
 
 \item{silentinteractive}{to prevent long output showing in console in RStudio when in interactive mode,
 passed to doaggregate() also. app server sets this to TRUE when calling doaggregate() but
 ejamit() default is to set this to FALSE when calling doaggregate().}
 
-\item{fips}{FIPS code vector if using FIPS instead of sitepoints to specify places to analyze,
-such as a list of US Counties or tracts.}
+\item{called_by_ejamit}{Set to TRUE by ejamit() to suppress some outputs even if ejamit(silentinteractive=F)}
 
-\item{subgroups_type}{Optional (uses default). Set this to
-"nh" for non-hispanic race subgroups as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh;
-"alone" for EJScreen v2.2 style race subgroups as in    White Alone, wa and others in names_d_subgroups_alone;
-"both" for both versions. Possibly another option is "original" or "default" but work in progress.}
+\item{subgroups_type}{Optional (uses default). Set this to "nh" for non-hispanic race subgroups
+as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh;
+"alone" for EJScreen v2.2 style race subgroups as in White Alone, wa and others in names_d_subgroups_alone;
+"both" for both versions. Possibly another option is "original" or "default"}
 
-\item{calculate_ratios}{whether to calculate and return ratio of each indicator to US and State overall averages}
+\item{extra_demog}{if should include more indicators from v2.2 report on language etc.}
+
+\item{infer_sitepoints}{set to TRUE to try to infer the lat,lon of each site around which the blocks in sites2blocks were found.
+lat,lon of each site will be approximated as average of nearby blocks,
+although a more accurate slower way would be to use reported distance of each of 3 of the furthest block points and triangulate}
 
 \item{threshold1}{percentile like 80 or 90 or 95 to compare percentiles to
 "alone" for groups like white alone (whether or not hispanic),
 "both" may try to include both,
-or possibly "original" or "default" might be added as options}
-
-\item{...}{passed to \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} or other such functions}
+or possibly "original" or "default" might be added as options - passed to batch.summarize()}
 }
 \value{
-A list of tables of results.
+A list of tables of results
 }
 \description{
 This is the main function in EJAM for users who want to use EJAM from RStudio.
@@ -127,7 +171,6 @@ See help("EJAM")
   out <- doaggregate(s2b, testsites) # this works now and is simpler
 
 }
-
 }
 \seealso{
 \code{\link[=getblocksnearby]{getblocksnearby()}} \code{\link[=doaggregate]{doaggregate()}}

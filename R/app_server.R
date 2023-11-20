@@ -2321,7 +2321,7 @@ cat("COUNT OF ROWS IN TYPED IN DATA: ", NROW(ext),"\n")
         
         ## average  
       } else {
-        barplot_usa_avg <-usastats %>% 
+        barplot_usa_avg <- usastats %>% 
           dplyr::filter(REGION == 'USA', PCTILE == 'mean') %>% 
           dplyr::mutate(Summary = 'Average person in US') %>% 
           dplyr::select(Summary, dplyr::all_of(mybarvars)) %>% 
