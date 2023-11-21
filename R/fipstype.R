@@ -25,7 +25,7 @@ fipstype <- function(fips) {
   ftype[nchar(fips) == 15] <- "block"
   ftype[nchar(fips) == 12] <- "blockgroup"
   ftype[nchar(fips) == 11] <- "tract"
-  ftype[nchar(fips) ==  7] <- "city"
+  ftype[nchar(fips) ==  7] <- "city"  # e.g, 5560500 is Oshkosh, WI
   ftype[nchar(fips) ==  5] <- "county"
   ftype[nchar(fips) ==  2] <- "state"
   

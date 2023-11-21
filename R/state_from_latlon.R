@@ -57,8 +57,8 @@ state_from_blockid <- function(blockid) {
   stateinfo$ST[match(blockid2fips[blockid, substr(blockfips,1,2)], stateinfo$FIPS.ST)]
 }
 
-#' state_from_fips
-#' Get the State abbreviations of all blockgroups within the input FIPS
+#' state_from_fips - Get FIPS of ALL BLOCKGROUPS in the States or Counties
+#' Get the State abbreviations of ALL blockgroups within the input FIPS
 #' @details Returns a vector of 2-letter State abbreviations that is 
 #'   one per blockgroup that matches the input FIPS, 
 #'   not necessarily a vector as long as the input vector of FIPS codes!, 
