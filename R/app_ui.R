@@ -161,7 +161,7 @@ app_ui  <- function(request) {
                            #)
                                 ),
                                 choices = c('Latitude/Longitude file upload'               = 'latlon',
-                                            'Latitude/Longitude typed in here (on-screen)' = 'latlontypedin',
+                                            #'Latitude/Longitude typed in here (on-screen)' = 'latlontypedin',
                                             'EPA Facility ID (FRS Identifiers)'            = 'FRS',
                                             'EPA Program IDs'                              = 'EPA_PROGRAM',
                                             'FIPS Codes'                                   = 'FIPS',
@@ -238,49 +238,7 @@ app_ui  <- function(request) {
                     
                     ################################################################# #
                     
-                    ## *Latitude Longitude* LOCATIONS TYPED IN (conditional panel)  ------------------------------------- - ####
-                    
-                    # conditionalPanel(
-                    #   condition = "input.ss_choose_method == 'upload' && input.ss_choose_method_upload == 'latlontypedin'",
-                    #   ### input: Type into a table, a few facility lat/longs 
-                    #   ## _+++ MODULE_UI_latlontypedin  #### 
-                    #   tags$p("Enter / View / Edit latitude(s) and longitude(s) of point(s) to analyze"),
-                    #   column(
-                    #     6,
-                    #     ## on button click, show modal with DT table of lat lon values
-                    #     actionButton('show_latlontypedin_module_button', label = "Enter lat lon values on screen", class = 'usa-button usa-button--outline'), 
-                    #     shinyBS::bsModal(
-                    #       trigger = 'show_latlontypedin_module_button',
-                    #       id = 'view_latlontypedin',
-                    #       size = 'large',
-                    #       title = 'Location data', 
-                    #       helpText('Click or double-click a cell to edit. Right-click to add/remove rows or undo. Click-drag to move a row.'),
-                    #       # p("Click or double-click a cell to edit."), p("Right-click to add/remove rows or undo. Click-drag to move a row."),  
-                    #       br(),
-                    #       
-                    #       MODULE_UI_latlontypedin(id = "pts_entry_table1"),  # this shows the data entry table here
-                    #       
-                    #       # actionButton('latlontypedin_submit_button', label = 'Done entering points', class = 'usa-button usa-button--outline'),
-                    #       ## use download buttons for speed and handling larger data
-                    #       # downloadButton('download_preview_data_csv', label = 'CSV',   class = 'usa-button'),
-                    #       # downloadButton('download_preview_data_xl',  label = 'Excel', class = 'usa-button'),
-                    #       # dataTableOutput("distTable"), # for example, you could put outputs here like this
-                    #       # verbatimTextOutput("test_textout"),                          
-                    #       br()
-                    #     ),
-                    #   ),
-                    #   # tags$span(
-                    #   #   tags$ul(
-                    #   #     tags$li('Required Columns: lat, lon'),
-                    #   #     tags$li('Optional Columns: siteid')
-                    #   #   )
-                    #   # ),
-                    #   # actionButton('latlon_help', label='More Info', class = 'usa-button usa-button--outline'),
-                    #   # HTML(latlon_help_msg)
-                    #   br()
-                    # ),     # end   latlontypedin   conditionalPanel
-                    ################################################################# #
-                    
+                   
                     ## *Shapefile* LOCATIONS Uploads (conditional panel)  ------------------------------------- - ####
                     
                     conditionalPanel(

@@ -167,7 +167,7 @@ app_server <- function(input, output, session) {
       'upload'   = switch(input$ss_choose_method_upload,
                           SHP =              "SHP",
                           latlon =           "latlon",    # 'Location (lat/lon)',
-                          latlontypedin =   "latlontypedin",
+                          #latlontypedin =   "latlontypedin",
                           EPA_PROGRAM =      "EPA_PROGRAM",
                           FRS =              "FRS",       # 'FRS (facility ID)',
                           #ECHO =            "ECHO",      # 'ECHO Search Tools',
@@ -264,16 +264,16 @@ app_server <- function(input, output, session) {
   
   # # Use a default initial template of lat lon values table ready for user to type into  
   # # and then the module updates that reactive_data1 object as the user types
-  latlon_template <- data.table(lat = 0, lon = 0, siteid = 1, sitename = "")  # default_points_shown_at_startup[1:2, ] # EJAMejscreenapi::testpoints_5[1:2, ] # could  be put in global.R 
-  reactive_data1 <-  reactiveVal(latlon_template)
-  ## or... try something like this:   Try to pass to module as param the last uploaded pts() ?
-  observe(
-    # if data_up_latlon() gets updated, then also update this reactive for use in the edited module
-    reactive_data1(data_up_latlon())
-  )
-  
-  MODULE_SERVER_latlontypedin(id = "pts_entry_table1", reactdat = reactive_data1) # pass points table that is reactive_data1(), but must pass it with NO parens 
-  
+  # latlon_template <- data.table(lat = 0, lon = 0, siteid = 1, sitename = "")  # default_points_shown_at_startup[1:2, ] # EJAMejscreenapi::testpoints_5[1:2, ] # could  be put in global.R 
+  # reactive_data1 <-  reactiveVal(latlon_template)
+  # ## or... try something like this:   Try to pass to module as param the last uploaded pts() ?
+  # observe(
+  #   # if data_up_latlon() gets updated, then also update this reactive for use in the edited module
+  #   reactive_data1(data_up_latlon())
+  # )
+  # 
+  # MODULE_SERVER_latlontypedin(id = "pts_entry_table1", reactdat = reactive_data1) # pass points table that is reactive_data1(), but must pass it with NO parens 
+  # 
   # If a module needs to use any reactive expressions, the outer function should take the reactive expression as a parameter. 
   # If a module needs to access an input that isn’t part of the module, the 
   #   containing app should pass the input value wrapped in a reactive expression (i.e. reactive(...)):
@@ -291,25 +291,25 @@ app_server <- function(input, output, session) {
   
   # DISABLED UNTIL FIXED?
   
-  data_typedin_latlon <- reactive({
-    #   ## wait for typed in data to be submitted, then return cleaned lat lon table data.frame, as data_typedin_latlon() which eventually becomes data_uploaded()
-      req(reactive_data1() )
-    ext <- reactive_data1()  # NEED TO TEST THAT THIS IS ACTUALLY THE USER-EDITED OUTPUT OF THE MODULE   # ss_typedin_latlon()
-    #   # ext <- data.frame( siteid=1, lat=0, lon=0) # dummy data for testing
-    ###   # another approach, not used:   # ext <- DataEditR::data_edit(latlon_template)
-cat("COUNT OF ROWS IN TYPED IN DATA: ", NROW(ext),"\n")
-    ## Validate the lat lon values. If column names are found in lat/long alias comparison, clean and return the table of lat lon values
-    if (any(tolower(colnames(ext)) %in% lat_alias) & any(tolower(colnames(ext)) %in% lon_alias)) {
-      sitepoints <- ext %>%
-        EJAM::latlon_df_clean() #%>%   # This does latlon_infer() and latlon_as.numeric() and latlon_is.valid()
-      cat("COUNT OF VALID LAT/LON POINTS IN TYPED IN DATA: ", NROW(sitepoints),"\n")
-      sitepoints
-      # returns it here, as the last thing in the reactive
-    } else {
-      ## if not matched, show this message instead
-      shiny::validate('No lat lon coordinate columns found.')
-    }
-  })
+#   data_typedin_latlon <- reactive({
+#     #   ## wait for typed in data to be submitted, then return cleaned lat lon table data.frame, as data_typedin_latlon() which eventually becomes data_uploaded()
+#       req(reactive_data1() )
+#     ext <- reactive_data1()  # NEED TO TEST THAT THIS IS ACTUALLY THE USER-EDITED OUTPUT OF THE MODULE   # ss_typedin_latlon()
+#     #   # ext <- data.frame( siteid=1, lat=0, lon=0) # dummy data for testing
+#     ###   # another approach, not used:   # ext <- DataEditR::data_edit(latlon_template)
+# cat("COUNT OF ROWS IN TYPED IN DATA: ", NROW(ext),"\n")
+#     ## Validate the lat lon values. If column names are found in lat/long alias comparison, clean and return the table of lat lon values
+#     if (any(tolower(colnames(ext)) %in% lat_alias) & any(tolower(colnames(ext)) %in% lon_alias)) {
+#       sitepoints <- ext %>%
+#         EJAM::latlon_df_clean() #%>%   # This does latlon_infer() and latlon_as.numeric() and latlon_is.valid()
+#       cat("COUNT OF VALID LAT/LON POINTS IN TYPED IN DATA: ", NROW(sitepoints),"\n")
+#       sitepoints
+#       # returns it here, as the last thing in the reactive
+#     } else {
+#       ## if not matched, show this message instead
+#       shiny::validate('No lat lon coordinate columns found.')
+#     }
+#   })
   #############################################################################  #   #############################################################################  # 
   #############################################################################  #   #############################################################################  # 
   
@@ -684,7 +684,7 @@ cat("COUNT OF ROWS IN TYPED IN DATA: ", NROW(ext),"\n")
     ## if >1 upload method used, use the one currently indicated by radio button ss_choose_method 
     
     if        (current_upload_method() == 'latlon'        ) {data_up_latlon()
-    } else if (current_upload_method() == 'latlontypedin' ) {data_typedin_latlon()
+    #} else if (current_upload_method() == 'latlontypedin' ) {data_typedin_latlon()
     } else if (current_upload_method() == 'NAICS'         ) {data_up_naics()
     } else if (current_upload_method() == 'FRS'           ) {data_up_frs()
       #} else if (current_upload_method() == 'ECHO'          ) {data_up_echo()
@@ -708,12 +708,12 @@ cat("COUNT OF ROWS IN TYPED IN DATA: ", NROW(ext),"\n")
         shinyjs::enable( id = 'bt_get_results'); shinyjs::show(id = 'show_data_preview')
       }
       
-    } else if (current_upload_method() == 'latlontypedin') {
-      if (!isTruthy(input$ss_typedin_latlon)) {              #  
-        shinyjs::disable(id = 'bt_get_results'); shinyjs::hide(id = 'show_data_preview')
-      } else {
-        shinyjs::enable( id = 'bt_get_results'); shinyjs::show(id = 'show_data_preview')
-      }
+    # } else if (current_upload_method() == 'latlontypedin') {
+    #   if (!isTruthy(input$ss_typedin_latlon)) {              #  
+    #     shinyjs::disable(id = 'bt_get_results'); shinyjs::hide(id = 'show_data_preview')
+    #   } else {
+    #     shinyjs::enable( id = 'bt_get_results'); shinyjs::show(id = 'show_data_preview')
+    #   }
       
     } else if (current_upload_method() == 'FRS') {
       if (!isTruthy(input$ss_upload_frs)) {
