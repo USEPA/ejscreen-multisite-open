@@ -1,4 +1,4 @@
-#' states_infer
+#' states_infer - Get table of info on States (from latlon or FIPS)
 #' Get cleaned table of US State etc. by siteid, from lat/lon, or from FIPS
 #' @param x data.frame or data.table with either ST column or lat and lon columns, or FIPS,
 #'   and optionally a column with siteid or column called n
@@ -44,10 +44,10 @@ states_infer <- function(x) {
     } else {
       # is blockgroup FIPS, or even any FIPS there?
       if ("fips" %in% names(sites2states)) {
-        sites2states$ST <- state_from_fips(sites2states$fips) # note this returns 1 state abbrev for each element of supplied vector even if there are many duplicates.
+        sites2states$ST <- fips2state_fips(sites2states$fips) # *** need to check this  # state_from_fips(sites2states$fips) # check if now returns 1 state abbrev for each element of supplied vector even if there are many duplicates.
       } else {
         if ("bgfips" %in% names(sites2states)) {
-          sites2states$ST <- state_from_fips(sites2states$bgfips)# note this returns 1 state abbrev for each element of supplied vector even if there are many duplicates.
+          sites2states$ST <- fips2state_fips(sites2states$bgfips) # *** check this ! # state_from_fips(sites2states$bgfips) # check if now returns 1 state abbrev for each element of supplied vector even if there are many duplicates.
         } else {
           # nothing was found that could provide the ST info
           bad_sites2states <- TRUE
