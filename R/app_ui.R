@@ -112,10 +112,6 @@ app_ui  <- function(request) {
               4,  # through about line 359
               h4('Specify Locations to Analyze', style = 'text-align: center;'),
               
-              # textOutput('test_textout'),
-              # textOutput('test_textout2'),
-              # textOutput('test_textout3'),
-              
               ## input: use CATEGORIES of sites, or upload LOCATIONS ? ####
               div(style = 'border: 1px solid #005ea2; padding: 10px;',
                   radioButtons(inputId = 'ss_choose_method', 
@@ -134,11 +130,6 @@ app_ui  <- function(request) {
                 div(style = 'border: 1px solid #005ea2; padding: 10px;',
                     selectInput(inputId = 'ss_choose_method_drop', 
                                 label = tags$span('How would you like to select categories?'),
-                                                       # 'by Industry (SIC) Code'='SIC',
-                                                       # 'by EPA Program'='EPA_PROGRAM',
-                                                       # 'by MACT subpart'='MACT')#)
-                           #)
-                                #),
                                 choices = c('by Industry (NAICS) Code' = 'NAICS',
                                             'by Industry (SIC) Code'   = 'SIC',
                                             'by EPA Program'           = 'EPA_PROGRAM',
@@ -154,11 +145,6 @@ app_ui  <- function(request) {
                                 #label = 'What type of data are you uploading?',
                                 label = tags$span(
                                   'What type of data are you uploading?'
-                           #                             'EPA Facility ID (FRS Identifiers)'='FRS',
-                           #                             'EPA Program IDs'='EPA_PROGRAM',
-                           #                             'FIPS Codes'='FIPS',
-                           #                             'Shapefile of polygons'='SHP')#)
-                           #)
                                 ),
                                 choices = c('Latitude/Longitude file upload'               = 'latlon',
                                             #'Latitude/Longitude typed in here (on-screen)' = 'latlontypedin',
@@ -197,20 +183,7 @@ app_ui  <- function(request) {
                          fluidRow(
                            column(
                              12,
-                             ## input: choose among facility dropdown options
-                             conditionalPanel(
-                               condition = "input.ss_choose_method == 'dropdown' && input.ss_choose_method_drop == 'NAICS'",
-                               
-                               div(style='border: 1px solid #005ea2; padding: 10px; background-color: white',
-                                   radioButtons('add_naics_subcategories', "Add all subcategories of NAICS?",
-                                                choiceNames = c("Yes","No"),
-                                                choiceValues = c(TRUE,FALSE),
-                                                selected = TRUE)
-                               ),
-                               br(),
-                             ),
-                             
-                             #offset=3, 
+                    
                     conditionalPanel(
                       condition = "input.ss_choose_method == 'upload' && input.ss_choose_method_upload == 'latlon'",
                       
@@ -349,11 +322,6 @@ app_ui  <- function(request) {
                     
                     conditionalPanel(
                       condition = "input.ss_choose_method == 'dropdown' && input.ss_choose_method_drop == 'SIC'",
-                      
-                      # radioButtons('add_sic_subcategories', "Add all subcategories of SIC?",
-                      #              choiceNames = c("Yes","No"),
-                      #              choiceValues = c(TRUE,FALSE),
-                      #              selected = TRUE),
                       
                       ## input: Select SIC from list
                       selectizeInput(
@@ -497,13 +465,6 @@ app_ui  <- function(request) {
                    
             ) # end of column with map
           ), # end of fluidRow container for upload method (left column) and map (right column)
-          
-          ## not used currently - button to switch units and update slider
-          ## input: switch units to km for radius slider
-          # radioButtons(inputId = 'radius_units',
-          #              label = 'Choose units for radius',
-          #              choices = c('miles','kilometers'),
-          #              selected = 'miles')
           
         ), # end Site Selection tab panel
      
@@ -934,11 +895,6 @@ app_ui  <- function(request) {
                                                  label = 'Download report',
                                                  class = 'usa-button'),
                            
-                           ## button to launch modal with outline of report
-                           ## this could be added throughout the page to show where different text components would be included
-                           ## I DONT THINK THE OUTLINE LOOKS GREAT AND IS HARD TO KEEP IN SYNC WITH ACTUAL RMD DOC OUTLINE
-                           # actionButton(inputId = 'show_outline', label = 'Show Report Outline',
-                           #              style = 'color: #fff; background-color: #005ea2;'),
                     )
                   ), ######################################################### # 
                   
@@ -1359,21 +1315,7 @@ app_ui  <- function(request) {
                              value = default_max_miles,
                              max        = maxmax_miles),
                 
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
+
                 ######################################################## # 
                 
                 ##  ------------------------ Options in calculations and what stats to output ## ##
@@ -1407,14 +1349,7 @@ app_ui  <- function(request) {
                 # base_color_default      <- "blue"  ;
                 # cluster_color_default   <- "red"   ;
                 # highlight_color_default <- 'orange';        
-                
-                
-                
-                
-                
-                
-                
-                
+
                 
                 ######################################################## # 
                 
@@ -1516,24 +1451,11 @@ app_ui  <- function(request) {
                 #                  DISABLED UNTIL PDF KNITTING IS DEBUGGED
                 radioButtons("format1pager", "Format", choices = c(html = "html", html = "pdf"), inline = TRUE),
                 
-                
-                
-                
-                
-                
+     
                 ### Long report options  --------------------- #
                 
                 # relocate any here from the Full Report tab??
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
+
                 br(), ## vertical space
                 
                 shiny::radioButtons(inputId = "more3", 

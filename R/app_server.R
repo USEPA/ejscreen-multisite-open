@@ -284,11 +284,6 @@ app_server <- function(input, output, session) {
   # # }) %>%
   # #   bindEvent(input$latlontypedin_submit_button) # (updates only when the "Done entering points" button is pressed)  
   
-  # output$test_textout <- renderText(ifelse(input$testing, "This is only a test \n", ""))
-  # output$test_textout2 = renderText(ifelse(input$testing, paste0(" ss_choose_method        input is ", input$ss_choose_method,        '\n'), ""))
-  # output$test_textout3 = renderText(ifelse(input$testing, paste0(" ss_choose_method_upload input is ", input$ss_choose_method_upload, '\n'), ""))
-
-  
   # DISABLED UNTIL FIXED?
   
 #   data_typedin_latlon <- reactive({
