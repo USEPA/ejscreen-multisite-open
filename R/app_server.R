@@ -1672,49 +1672,7 @@ app_server <- function(input, output, session) {
     
     if (input$plotkind_1pager == 'bar') { # do BARPLOT NOT BOXPLOT
       
-      # # reactives were already defined this way above:
-      # ratio.to.us.d    <- reactive({unlist(
-      #   data_processed()$results_overall[ , c(..names_d_ratio_to_avg,       ..names_d_subgroups_ratio_to_avg      )]  ) }) # ???
-      # ratio.to.state.d <- reactive({unlist(
-      #   data_processed()$results_overall[ , c(..names_d_ratio_to_state_avg, ..names_d_subgroups_ratio_to_state_avg)]  ) }) # ???
-      
-      ratio.to.us.d.overall <- ratio.to.us.d() # reactive already available
-      
-      #supershortnames <- substr(gsub(" |-|age","",gsub("People of Color","POC", c(names_d_friendly, names_d_subgroups_friendly))),1,6)
-      supershortnames <- gsub(' \\(.*', '', gsub("People of Color","POC", c(names_d_friendly, names_d_subgroups_friendly)))
-      names(ratio.to.us.d.overall) <- supershortnames
-      
-      ratio.to.us.d.overall[is.infinite(ratio.to.us.d.overall)] <- 0
-      # use yellow/orange/red for ratio >= 1x, 2x, 3x  #  work in progress
-      mycolors <- c("gray", "yellow", "orange", "red")[1 + findInterval(ratio.to.us.d.overall, c(1.01, 2, 3))] 
-      
-      # barplot(ratio.to.us.d.overall,
-      #         main = 'Ratio vs. US Average for Demographic Indicators',
-      #         cex.names = 0.7,
-      #         col = mycolors)
-      #abline(h=1, col="gray")
-      
-      data.frame(name = names(ratio.to.us.d.overall),
-                 value = ratio.to.us.d.overall,
-                 color = mycolors) %>%
-        ## drop any indicators with Inf or NaNs
-        dplyr::filter(is.finite(value)) %>% 
-        ggplot2::ggplot(ggplot2::aes(x = name, y = value, fill = color)) +
-        ggplot2::geom_bar(stat = 'identity') +
-        ## way to add legend in future - needs tweaking
-        #ggplot2::scale_fill_identity(guide='legend', labels = c('gray'='0-1','yellow'='1-2', 'orange'='2-3', 'red'='> 3'),) +
-        ggplot2::scale_fill_identity() +
-        ggplot2::theme_bw() +
-        ggplot2::labs(x = NULL, y = 'Ratio vs. US Average', #fill = 'Legend',
-                      title = "Demographics at the Analyzed Locations Compared to US Overall") +
-        #scale_x_discrete(labels = scales::label_wrap(7)) +
-        #scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
-        #scale_x_discrete(guide = guide_axis(n.dodge = 2)) +
-        ggplot2::scale_y_continuous(limits = c(0, NA), expand = ggplot2::expansion(mult = c(0, 0.05), add = c(0, 0))) +
-        ggplot2::theme(plot.margin = ggplot2::unit(c(0,100,0,0), "points"), 
-                       plot.title = ggplot2::element_text(size = 14, hjust = 0.5),
-                       axis.text.x = ggplot2::element_text(size = 10 , angle = -30, hjust = 0, vjust = 1)) + # # try to do that via ggplot...
-        NULL
+      plot_barplot_ratios(unlist(data_processed()$results_overall[ , c(..names_d_ratio_to_avg , ..names_d_subgroups_ratio_to_avg) ]))
       
       # end of BARPLOT section
       
