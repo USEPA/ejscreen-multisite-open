@@ -24,21 +24,8 @@ if (1 == 0) {
   ############# # 
   ############# # 
   ############# # 
-  
-  
-  warning("SOMETHING IS WRONG WITH THE COUNTY AND CO_FIPS COLS OF THE censusplaces dataset? ")
-  
-  
-  # unique(censusplaces[censusplaces$STATE == "DE", 1:5])
-  # EPA_REGION STATE ST_FIPS                         COUNTY CO_FIPS
-  # 4222          3    DE      10              New Castle County   10014
-  # 4223          3    DE      10              New Castle County   10015
-  # 4224          3    DE      10              New Castle County   10016
-  # 4225          3    DE      10              New Castle County   10041
-  # 4226          3    DE      10              New Castle County   10046
-  # 4227          3    DE      10                  Sussex County   10056
-  # 4228          3    DE      10                  Sussex County   10058
-  # 4229          3    DE      10                  Sussex County   10067
+   
+  # SOME CITIES/PLACES OVERLAP WITH 2+ COUNTIES 
   
   
   ############# # 
@@ -252,12 +239,17 @@ if (1 == 0) {
       
       # c("Select Regions, States, Counties, or Cities", "EPA Regions", "States", "Counties", "Cities or Places")
       
+      #################### #
       if (input$type2analyze == "EPA Regions") {
         displaytable(
           regioninfo[regioninfo$REGION %in% input$regionpicker2, ]
         )
+        # bgstable(
+        #   # should use cached results of ejamit(radius = 1,3,5,6.2  eg) for 10 regions, not redo
+        # )
       }
       
+      #################### #
       if (input$type2analyze == "States") {
         if (input$allstatesinregion) {
           shiny::updateSelectizeInput(session, inputId = "statepicker",
@@ -267,8 +259,12 @@ if (1 == 0) {
         displaytable(
           stateinfo2[stateinfo2$ST %in% input$statepicker, varnames]
         )
+        # bgstable(
+          # EJAM::fips_bg_from_anyfips(fips = displaytable()$FIPS.ST)
+        # )
       }
       
+      #################### #
       if (input$type2analyze == "Counties") {
         if (input$allcountiesinstate) {
           shiny::updateSelectizeInput(session, inputId = "countypicker",
@@ -276,11 +272,13 @@ if (1 == 0) {
         }
         displaytable(
           unique(censusplaces[censusplaces$COUNTY %in% input$countypicker, 1:5])
-          # bg_from_county(fips = censusplaces$CO_FIPS[censusplaces$COUNTY %in% input$countypicker])
           )
+        # bgstable(
+        # counties_as_sites(displaytable()$CO_FIPS)
+        # )
       }
       
-      
+      #################### #
       if (input$type2analyze == "Cities or Places") {
         if (input$allplacesincounty) {
           shiny::updateSelectizeInput(session, inputId = "placespicker", 
@@ -291,7 +289,7 @@ if (1 == 0) {
         )
         # bgstable(
         #   # ??? 
-        #   # EJAM::fipsbg_from_anyfips(fips = NA) # NOT SURE PLACES FIPS NEATLY FALL INTO BLOCKGROUPS
+        #   # EJAM::fips_bg_from_anyfips(fips = NA) # NOT SURE PLACES FIPS NEATLY FALL INTO BLOCKGROUPS
         # )
       }
       

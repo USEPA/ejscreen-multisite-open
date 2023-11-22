@@ -627,7 +627,7 @@ cat("COUNT OF ROWS IN TYPED IN DATA: ", NROW(ext),"\n")
         validate(paste0('No FIPS column found. Please use one of the following names: ', paste0(fips_alias, collapse = ', ')))
       }
       ## create two-column dataframe with bgs (values) and original fips (ind)
-      all_bgs <- stack(sapply(fips_vec, fipsbg_from_anyfips))
+      all_bgs <- stack(sapply(fips_vec, fips_bg_from_anyfips))
       names(all_bgs) <- c('bgfips','siteid') 
       all_bgs$siteid <- as.character(all_bgs$siteid) # because stack() always creates a factor column. data.table might have a faster reshaping approach? ***
       

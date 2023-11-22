@@ -41,7 +41,8 @@ table_xls_format(
 )
 }
 \arguments{
-\item{overall}{table to save in one tab, from ejamit()$overall, EJAM analysis of indicators overall (one row)}
+\item{overall}{table to save in one tab, from ejamit()$overall, EJAM analysis of indicators overall (one row),
+but if entire output of ejamit() is passed as if it were overall, function figures out eachsite, etc.}
 
 \item{eachsite}{table to save in one tab, from ejamit()$overall, EJAM analysis site by site (one row per site)}
 
@@ -113,8 +114,13 @@ Already took and put here most or all of code from table_xls_format() or table_x
 }
 \examples{
 \dontrun{
-  wb <- table_xls_format(testoutputs_$results_overall, datasetResults()$results_bysite,
-    saveas =  "results.xlsx")
+  table_xls_format(
+    testoutput_ejamit_100pts_1miles$results_overall, 
+    testoutput_ejamit_100pts_1miles$results_bysite,
+    saveas =  "out1.xlsx")
+ # can just pass the whole results of ejamit(), for convenience
+ wb <- table_xls_format(testoutput_ejamit_100pts_1miles)
+ openxlsx::saveWorkbook(wb, file = "out2.xlsx")
 }
 }
 \seealso{

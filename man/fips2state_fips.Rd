@@ -2,8 +2,8 @@
 % Please edit documentation in R/fips_x_from_y.R
 \name{fips2state_fips}
 \alias{fips2state_fips}
-\title{fips2state_fips  -  get state FIPS codes from any other FIPS codes like County FIPS
-Tells you which State contains each County (or tract or blockgroup or block)}
+\title{fips2state_fips - Get state FIPS codes from any type of FIPS codes
+Get state FIPS codes from any type of FIPS codes}
 \usage{
 fips2state_fips(fips)
 }
@@ -14,7 +14,10 @@ fips2state_fips(fips)
 vector of State FIPS 2 characters each
 }
 \description{
-fips2state_fips  -  get state FIPS codes from any other FIPS codes like County FIPS
+fips2state_fips - Get state FIPS codes from any type of FIPS codes
+Get state FIPS codes from any type of FIPS codes
+}
+\details{
 Tells you which State contains each County (or tract or blockgroup or block)
 }
 \examples{

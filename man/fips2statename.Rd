@@ -2,7 +2,8 @@
 % Please edit documentation in R/fips_x_from_y.R
 \name{fips2statename}
 \alias{fips2statename}
-\title{fips2statename  -  get state names from Census FIPS codes}
+\title{fips2statename - Get state names from any type of FIPS codes
+Get state names from any type of FIPS codes}
 \usage{
 fips2statename(fips)
 }
@@ -10,10 +11,11 @@ fips2statename(fips)
 \item{fips}{vector of FIPS}
 }
 \value{
-vector os state names
+vector of state names
 }
 \description{
-fips2statename  -  get state names from Census FIPS codes
+fips2statename - Get state names from any type of FIPS codes
+Get state names from any type of FIPS codes
 }
 \examples{
   cbind(fips_lead_zero(1:80), fips2state_abbrev(1:80), fips2statename(1:80))

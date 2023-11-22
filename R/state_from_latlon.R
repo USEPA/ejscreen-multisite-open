@@ -70,7 +70,7 @@ state_from_blockid <- function(blockid) {
 #' @export
 #'
 state_from_fips <- function(fips, uniqueonly=FALSE) {
-  fips <- fipsbg_from_anyfips(fips) # returns all the blockgroups fips codes that match, such as all bg in the state or county
+  fips <- fips_bg_from_anyfips(fips) # returns all the blockgroups fips codes that match, such as all bg in the state or county
   x <- stateinfo$ST[match(substr(fips,1,2), stateinfo$FIPS.ST)]
   if (uniqueonly) {return(unique(x))} else {return(x)}
 }
@@ -89,7 +89,7 @@ state_from_fips <- function(fips, uniqueonly=FALSE) {
 # # Which state contains each site
 
 
-# states_shapefile2 <- tigris::states() %>% sf::st_as_sf() %>%
+# states_shapefile2 <- tigris # :: # states() %>% sf::st_as_sf() %>%
 #   sf::st_transform(crs ="ESRI:102005") %>%
 #   dplyr::select('NAME') %>%
 #   dplyr::rename(facility_state = NAME)

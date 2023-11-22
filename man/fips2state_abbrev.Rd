@@ -2,7 +2,8 @@
 % Please edit documentation in R/fips_x_from_y.R
 \name{fips2state_abbrev}
 \alias{fips2state_abbrev}
-\title{fips2state_abbrev - convert Census FIPS to 2-character state abbreviation}
+\title{fips2state_abbrev - Get state abbreviations from any type of FIPS codes
+Get state abbreviations from any type of FIPS codes}
 \usage{
 fips2state_abbrev(fips)
 }
@@ -13,8 +14,13 @@ fips2state_abbrev(fips)
 vector of abbreviations like "NY", "LA", "DE", etc.
 }
 \description{
-fips2state_abbrev - convert Census FIPS to 2-character state abbreviation
+fips2state_abbrev - Get state abbreviations from any type of FIPS codes
+Get state abbreviations from any type of FIPS codes
 }
 \examples{
-  cbind(fips_lead_zero(1:80), fips2state_abbrev(1:80), fips2statename(1:80))
+  cbind(
+    stfips    = fips_lead_zero(1:80), 
+    ST     = fips2state_abbrev(1:80), 
+    statename = fips2statename(1:80)
+  )
 }
