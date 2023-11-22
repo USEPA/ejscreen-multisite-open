@@ -36,10 +36,16 @@ if (1 == 0) {
   
 
   
-  
-  
-  
-  
+  countiesall <- unique(data.frame(
+    countyfips = substr(blockgroupstats$bgfips,1,5), 
+    countyname = blockgroupstats$countyname, 
+    ST = blockgroupstats$ST))
+   
+  regioninfo <- data.frame(
+    REGION = 1:10, 
+    Statecount = as.vector(table(EJAM::stateinfo2$REGION)), 
+    States = sapply(1:10, function(n) paste0( EJAM::stateinfo2$ST[EJAM::stateinfo2$REGION %in% n], collapse = ", "))
+  )
   
   
   
@@ -103,11 +109,7 @@ if (1 == 0) {
   
   server <- function(input, output, session) {
     
-    regioninfo = data.frame(
-      REGION = 1:10, 
-      Statecount = as.vector(table(EJAM::stateinfo2$REGION)), 
-      States = sapply(1:10, function(n) paste0( EJAM::stateinfo2$ST[EJAM::stateinfo2$REGION %in% n], collapse = ", "))
-    )
+
     
     shinyjs::hide("regionpicker2")
     shinyjs::hide("allstatesinregion")
@@ -180,12 +182,20 @@ if (1 == 0) {
                            choices = unique(censusplaces$STATE[censusplaces$EPA_REGION %in% input$regionpicker2]))
     })
     observe({
+      instates = countiesall$ST %in% input$statepicker
+      mychoices <-  countiesall$countyfips[instates]
+      names(mychoices) <- paste(countiesall$countyname[instates], countiesall$ST[instates], sep = ",")
       updateSelectizeInput(session, inputId = "countypicker", server = TRUE, 
-                           choices = unique(censusplaces$COUNTY[censusplaces$STATE %in% input$statepicker]))
+                           choices = mychoices)
+                           # choices = unique(paste(blockgroupstats$countyname, blockgroupstats$ST, sep = ","))[blockgroupstats$ST %in% input$statepicker])
+                            
     })
     observe({
       updateSelectizeInput(session, inputId = "placespicker", server = TRUE, 
-                           choices = censusplaces$PLACE[censusplaces$COUNTY %in% input$countypicker],
+                           
+                           # ********   FIX
+                           
+                           choices = censusplaces$PLACE[tolower(paste(censusplaces$COUNTY, censusplaces$STATE, sep = ",")) %in% tolower(input$countypicker)],
                            selected = character(0))
     })
     
@@ -214,7 +224,7 @@ if (1 == 0) {
           updateSelectizeInput(
             session = session, 
             inputId = "countypicker", 
-            selected = unique(censusplaces$COUNTY[censusplaces$STATE %in% input$statepicker])
+            selected = unique(censusplaces$COUNTY[censusplaces$STATE %in% input$statepicker])  # ********   FIX
           ))
         shinyjs::hideElement("placespicker")
       } else {
@@ -231,7 +241,7 @@ if (1 == 0) {
     # FIGURE OUT WHICH CENSUS UNITS ARE SELECTED  ####
     #  A SET OF FIPS OF ONE TYPE:  REGIONS, STATES, COUNTIES, OR PLACES/CITIES
     
-    selectedrows <- reactiveVal()
+    # selectedrows <- reactiveVal()
     displaytable <- reactiveVal() # to show here
     bgstable <- reactiveVal()  # all the blockgroup fips to analyze and siteid = units to analyze
     
@@ -268,11 +278,14 @@ if (1 == 0) {
       if (input$type2analyze == "Counties") {
         if (input$allcountiesinstate) {
           shiny::updateSelectizeInput(session, inputId = "countypicker",
-                                      selected = unique(censusplaces$COUNTY[censusplaces$STATE %in% input$statepicker]))
+                                      selected = countiesall$countyfips[  countiesall$ST  %in% input$statepicker] )
         }
-        displaytable(
-          unique(censusplaces[censusplaces$COUNTY %in% input$countypicker, 1:5])
-          )
+
+          # unique(censusplaces[censusplaces$COUNTY %in% input$countypicker, 1:5])
+           
+    displaytable(
+      countiesall[countiesall$countyfips  %in% input$countypicker]
+        )
         # bgstable(
         # counties_as_sites(displaytable()$CO_FIPS)
         # )
@@ -282,7 +295,7 @@ if (1 == 0) {
       if (input$type2analyze == "Cities or Places") {
         if (input$allplacesincounty) {
           shiny::updateSelectizeInput(session, inputId = "placespicker", 
-                                      selected = censusplaces$PLACE[censusplaces$COUNTY %in% input$countypicker])
+                                      selected = censusplaces$PLACE[censusplaces$STATE %in% input$statepicker])
         }
         displaytable(
           censusplaces[censusplaces$PLACE %in% input$placespicker, ]
