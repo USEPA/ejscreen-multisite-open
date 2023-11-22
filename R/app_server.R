@@ -1392,8 +1392,14 @@ app_server <- function(input, output, session) {
   ### summary header is stored in a reactive  
   summary_title <- reactiveVal(NULL)
   
-  ### summary header is updated only when 'Start Analysis' button clicked
-  observeEvent(input$bt_get_results,{
+  ### summary header is updated when 'Start Analysis' button clicked
+  ### or when Analysis Title is updated after a run
+  observeEvent(
+    ## allow title to update when either of these inputs change
+    eventExpr = {
+      input$bt_get_results
+      input$analysis_title
+    }, handlerExpr = {
     req(data_processed())
     ## paste header information together
     title_text <- paste0('<div style="font-weight: bold; font-size: 11pt; text-align: center;">',
