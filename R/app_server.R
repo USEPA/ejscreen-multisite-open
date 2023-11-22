@@ -1570,7 +1570,8 @@ app_server <- function(input, output, session) {
         st_zm() %>% as('Spatial') 
       leafletProxy(mapId = 'an_leaf_map', session) %>%
         # addPolygons(data=d_uploadb, color="red") %>% 
-        addPolygons(data = d_uploads)
+        addPolygons(data = d_uploads, 
+                    popup = popup_from_df(d_uploads %>% sf::st_drop_geometry()))
       #leafletProxy(mapId = 'an_leaf_map', session,data=d_uploads) %>% addPolygons()
       
     } else # if (input$circle_type == 'circles') {
