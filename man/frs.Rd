@@ -13,13 +13,13 @@ This dataset can be updated by a package maintainer by using
 frs_update_datasets() (which is not an exported function)
 
 The definitions of active/inactive here are not quite the
-same as used in ECHO, as of 5/2023.
+same as used in ECHO. See attributes(frs) to see date created, etc.
 
 Also, EJScreen has maps of EPA-regulated facilities of a few program types,
 as provided here: \url{https://www.epa.gov/ejscreen/ejscreen-map-descriptions#sites-reporting-to-epa}
 \preformatted{
 
- As of June 2023
+ As of November 2023
  
  Count of    all REGISTRY_ID rows:   7,441,086
  Count of unique REGISTRY_ID values: 4,705,744
@@ -47,5 +47,5 @@ frs_by_sic rows:           1,081,742
    }
 }
 \seealso{
-frs_by_programid  frs_by_naics frs_by_sic
+\link{frs_by_programid}  \link{frs_by_naics} \link{frs_by_sic}
 }
