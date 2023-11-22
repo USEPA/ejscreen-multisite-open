@@ -867,22 +867,22 @@ app_server <- function(input, output, session) {
   
   ## Which points are clustered? (may double-count people) ####
   # note this had been done in EJAMejscreenapi::addlinks_clusters_and_sort_cols() 
-  is_clustered <- shiny::reactive({
-    req(data_uploaded())
-    
-    # which sites have residents that might also be near others sites?
-    # circles overlap if 2 facilities are twice the radius apart  # in miles
-    EJAMejscreenapi::near_eachother(
-      lon = data_uploaded()$lon, 
-      lat = data_uploaded()$lat,
-      distance = 2 * input$bt_rad_buff
-      ## if switching units between miles and km - not currently used
-      # distance = ifelse(input$radius_units == 'miles', 
-      #                   2 * input$bt_rad_buff,
-      #                   2 * input$bt_rad_buff * 0.62137119
-      #)
-    ) 
-  })
+  # is_clustered <- shiny::reactive({
+  #   req(data_uploaded())
+  #   
+  #   # which sites have residents that might also be near others sites?
+  #   # circles overlap if 2 facilities are twice the radius apart  # in miles
+  #   EJAMejscreenapi::near_eachother(
+  #     lon = data_uploaded()$lon, 
+  #     lat = data_uploaded()$lat,
+  #     distance = 2 * input$bt_rad_buff
+  #     ## if switching units between miles and km - not currently used
+  #     # distance = ifelse(input$radius_units == 'miles', 
+  #     #                   2 * input$bt_rad_buff,
+  #     #                   2 * input$bt_rad_buff * 0.62137119
+  #     #)
+  #   ) 
+  # })
   ######################################  #
   
   # *TABLE of uploaded points ####
@@ -1584,13 +1584,13 @@ app_server <- function(input, output, session) {
           
           #if (input$an_map_clusters == TRUE) {
           ## compare latlons using is_clustered() reactive
-          circle_color <- ifelse(is_clustered() == TRUE, cluster_color, base_color)
+          #circle_color <- ifelse(is_clustered() == TRUE, cluster_color, base_color)
           #} else {
           circle_color <- base_color
           #}
           
-          popup_vec = popup_from_any(d_upload)
-          
+          #popup_vec = popup_from_any(d_upload)
+          popup_vec = popup_from_df(d_upload)
       
           suppressMessages(
             leafletProxy(mapId = 'an_leaf_map', session, data = d_upload) %>%
@@ -1598,7 +1598,7 @@ app_server <- function(input, output, session) {
                                    highlight = TRUE, #input$an_map_clusters, 
                                    popup_vec = popup_vec, 
                                    use_marker_clusters = nrow(d_upload) > marker_cluster_cutoff,
-                                   clustered = is_clustered())
+                                   clustered = FALSE)#is_clustered())
           )
       }
     #print(d_upload)
