@@ -1002,11 +1002,6 @@ app_server <- function(input, output, session) {
     #                highlight = input$an_map_clusters,
     #                clustered = is_clustered())
     
-    if ("test" == "test" ) {
-      # >>>>>>>>>>THIS DOES NOT MAKE SENSE - WHY NOT USE CODE BELOW? ***####
-      leaflet() %>% addTiles()
-    } else {
-      
       if (current_upload_method() == "SHP") {
         # ---------------------------------------------- MAPPING SHAPES 
         req(data_uploaded())
@@ -1066,7 +1061,6 @@ app_server <- function(input, output, session) {
         }
       }
       
-    } # xxxx
     
   })
   ######################################  #######################################  #
