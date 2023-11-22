@@ -659,7 +659,7 @@ app_server <- function(input, output, session) {
     mact_out <- frs_by_mact[ subpart == input$ss_select_mact]
     cat("COUNT OF FACILITIES BY MACT: ", NROW(mact_out), "\n")
     ## remove any facilities with invalid latlons before returning
-    mact_out <- mact_out[!is.na(lat) & !is.na(lon),]
+    #mact_out <- mact_out[!is.na(lat) & !is.na(lon),]
     cat("COUNT OF FACILITIES BY MACT with lat lon values: ", NROW(mact_out), "\n")
     if (all(is.na(mact_out$lat)) & all(is.na(mact_out$lon))) {
       validate('No valid locations found under this MACT subpart')
@@ -783,6 +783,23 @@ app_server <- function(input, output, session) {
     req(invalid_alert())
     
     if (invalid_alert() > 0) {
+      if( input$ss_choose_method == 'dropdown'){
+        HTML(paste0(
+          '<section
+  class="usa-site-alert usa-site-alert--emergency usa-site-alert--slim"
+  aria-label="Site alert,,,,,,"
+>
+  <div class="usa-alert">
+    <div class="usa-alert__body">
+      <p class="usa-alert__text">
+        <strong>', 'Warning! ','</strong>', 'There are ', invalid_alert(), ' selected sites without associated lat/lon information.',
+'</p>
+    </div>
+  </div>
+</section>'))
+      } else if( input$ss_choose_method == 'upload'){
+        
+      
       HTML(paste0(
         '<section
   class="usa-site-alert usa-site-alert--emergency usa-site-alert--slim"
@@ -796,6 +813,7 @@ app_server <- function(input, output, session) {
     </div>
   </div>
 </section>'))
+      }
     } else {
       HTML(NULL)
     }
