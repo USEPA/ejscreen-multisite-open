@@ -48,7 +48,7 @@ frs_from_sic <- function(sic_code_or_name, ...) {
 #'   # mapfast(frs_from_sic('6150')) # simple map
 latlon_from_sic <- function(sic, id_only=FALSE) {
   if(length(sic) != 0){
-    if(is.na(as.numeric(sic))){ stop("SIC can not be coerced to a number.")}
+    if(any(is.na(as.numeric(sic)))){ stop("SIC can not be coerced to a number.")}
   }
   if (missing(sic)) {return(NULL)}
   if (data.table::is.data.table(sic) & "code" %in% names(sic)) {sic <- sic$code} # flexible in case it was given output of EJAM::sic_from_any() which is a table not just code
