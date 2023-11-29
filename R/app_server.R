@@ -187,6 +187,15 @@ app_server <- function(input, output, session) {
     submitted_upload_method(current_upload_method())
   })
   
+  observeEvent(input$show_data_preview,
+               {
+                showModal( shiny::modalDialog(title = 'Selected location data', size = 'l', easyClose=TRUE, helpText('View or download data corresponding to your upload/selections.'),
+                                    ## use download buttons for speed and handling larger data
+                                    downloadButton('download_preview_data_csv', label = 'CSV', class = 'usa-button'),
+                                    downloadButton('download_preview_data_xl', label = 'Excel', class = 'usa-button'),
+                                    br(),br(),
+                                    DT::DTOutput('print_test2_dt', width = '100%')))
+               })
   
   #############################################################################  # 
   
