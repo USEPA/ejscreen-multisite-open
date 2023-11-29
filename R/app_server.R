@@ -913,6 +913,8 @@ app_server <- function(input, output, session) {
       #dt <- data_uploaded() # now naics-queried sites format is OK to view, since using different function to get sites by naics
       if (current_upload_method() == "SHP") {
         dt <- data_uploaded()#[['shape']]
+      } else if (current_upload_method() == 'FIPS'){
+        dt <- data.table(FIPS = data_uploaded())[, .(FIPS, type = fipstype(FIPS), name = fips2name(FIPS))]
       } else {
         dt <- data_uploaded()
       }
