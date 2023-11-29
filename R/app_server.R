@@ -222,6 +222,8 @@ app_server <- function(input, output, session) {
       invalid_alert(numna) # this updates the value of the reactive invalid_alert()
       shp <- shapefile_clean(shp) # uses default crs=4269;  drops invalid rows or return NULL if none valid  # shp <- sf::st_transform(shp, crs = 4269) # done by shapefile_clean() 
       if (is.null(shp)) {
+        invalid_alert(NULL) # hides the invalid site warning
+        an_map_text_shp(HTML(NULL)) # hides the count of uploaded shapes
         shiny::validate('No shapes found in file uploaded.')
       }
       shp
@@ -248,6 +250,8 @@ app_server <- function(input, output, session) {
         shp_valid <- dplyr::mutate(shp_valid, siteid = row_number())
         shp_proj <- sf::st_transform(shp_valid,crs = 4269)
       } else {
+        invalid_alert(NULL) # hides the invalid site warning
+        an_map_text_shp(HTML(NULL)) # hides the count of uploaded sites/shapes
         ## if not matched, return this message
         shiny::validate('No shapes found in file uploaded.')
       }
@@ -345,6 +349,8 @@ app_server <- function(input, output, session) {
       cat("ROW COUNT after latlon_df_clean(): ", NROW(sitepoints), "\n")
       sitepoints
     } else {
+      invalid_alert(NULL) # hides the invalid site warning
+      an_map_text_pts(HTML(NULL)) # hides the count of uploaded sites
       ## if not matched, show this message instead
       shiny::validate('No coordinate columns found.')
     }
@@ -384,6 +390,8 @@ app_server <- function(input, output, session) {
       # read_frs_dt <- data.table::as.data.table(read_frs)
       data.table::setDT(sitepoints) # same but less memory/faster?
     } else {
+      invalid_alert(NULL) # hides the invalid site warning
+      an_map_text_pts(HTML(NULL)) # hides the count of uploaded sites
       shiny::validate('Records with invalid Registry IDs')
     }
     ## return merged dataset
@@ -432,6 +440,8 @@ app_server <- function(input, output, session) {
         showNotification('Points submitted successfully!', duration = 1)
       }
     } else {
+      invalid_alert(NULL) # hides the invalid site warning
+      an_map_text_pts(HTML(NULL)) # hides the count of uploaded sites
       ################ Should output something saying no valid results returned ######## #
       shiny::validate('Invalid NAICS Input')
       
@@ -469,6 +479,8 @@ app_server <- function(input, output, session) {
       cat("ROW COUNT IN file that should have program, pgm_sys_id: ", NROW(read_pgm), "\n")
       ## error if no columns provided
       if (!any(c('program','pgm_sys_id') %in% tolower(colnames(read_pgm)))) {
+        invalid_alert(NULL) # hides the invalid site warning
+        an_map_text_pts(HTML(NULL)) # hides the count of uploaded sites
         validate('Please add a file with at least these two columns: program, pgm_sys_id \n and possibly these columns as well: REGISTRY_ID,lat,lon')
       }
       
@@ -546,6 +558,9 @@ app_server <- function(input, output, session) {
         # print(sitepoints)
         if (rlang::is_empty(sitepoints) | nrow(sitepoints) == 0) {
           ################ Should output something saying no valid results returned ######## #
+          
+          invalid_alert(NULL) # hides the invalid site warning
+          an_map_text_pts(HTML(NULL)) # hides the count of uploaded sites
           shiny::validate('No Results Returned')
         }
       } else {
@@ -553,6 +568,8 @@ app_server <- function(input, output, session) {
         showNotification('Points submitted successfully!', duration = 1)
       }
     } else {
+      invalid_alert(NULL) # hides the invalid site warning
+      an_map_text_pts(HTML(NULL)) # hides the count of uploaded sites
       ################ Should output something saying no valid results returned ######## #
       shiny::validate('Invalid SIC Input')
     }
@@ -594,6 +611,8 @@ app_server <- function(input, output, session) {
         fips_vec <- fips_lead_zero(as.character(fips_dt[[firstmatch]]))
         names(fips_vec) <- as.character(fips_vec)
       } else {
+        invalid_alert(NULL) # hides the invalid site warning
+        an_map_text_fips(HTML(NULL)) # hides the count of uploaded sites
         validate(paste0('No FIPS column found. Please use one of the following names: ', paste0(fips_alias, collapse = ', ')))
       }
       ## create two-column dataframe with bgs (values) and original fips (ind)
@@ -617,6 +636,8 @@ app_server <- function(input, output, session) {
         cat("COUNT OF blocks BASED ON FIPS: ", NROW(fips_blockpoints), '\n')
         return(fips_blockpoints)
       } else {
+        invalid_alert(NULL) # hides the invalid site warning
+        an_map_text_fips(HTML(NULL)) # hides the count of uploaded sites
         ## if not matched, return this message
         shiny::validate('No blockgroups found for these FIP codes.')
       }
@@ -638,6 +659,8 @@ app_server <- function(input, output, session) {
     #mact_out <- mact_out[!is.na(lat) & !is.na(lon),]
     cat("COUNT OF FACILITIES BY MACT with lat lon values: ", NROW(mact_out), "\n")
     if (all(is.na(mact_out$lat)) & all(is.na(mact_out$lon))) {
+      invalid_alert(nrow(mact_out))
+      an_map_text_pts(HTML(NULL))
       validate('No valid locations found under this MACT subpart')
     } else {
       ## return output dataset
@@ -746,7 +769,7 @@ app_server <- function(input, output, session) {
   #. ####
   
   output$invalid_sites_alert2 <- renderUI({
-    req(data_uploaded())
+    #req(data_uploaded())
     req(invalid_alert())
     
     if (invalid_alert() > 0) {
@@ -759,7 +782,7 @@ app_server <- function(input, output, session) {
   <div class="usa-alert">
     <div class="usa-alert__body">
       <p class="usa-alert__text">
-        <strong>', 'Warning! ','</strong>', 'There are ', invalid_alert(), ' selected sites without associated lat/lon information.',
+        <strong>', ' Warning! ','</strong>', 'There are ', prettyNum(invalid_alert(),big.mark = ","), ' selected sites without associated lat/lon information.',
 '</p>
     </div>
   </div>
@@ -787,67 +810,89 @@ app_server <- function(input, output, session) {
     
   })
   
-  ## Which points are valid?(and  how many; warn if 0) ####
-  output$an_map_text <- renderUI({
+  ## initialize reactive for count of uploaded shapefiles
+  an_map_text_shp <- reactiveVal(HTML(NULL))
+  
+  ## update count of uploaded shapefiles
+  observe({
     req(data_uploaded())
-    
     if (current_upload_method() == "SHP") {
+      
       shp <- data_uploaded()#[['shape']]
       num_na <- 0 # we do not keep track of invalid shapefile polygons uploaded
       num_notna <- NROW(data_uploaded()) #[['shape']])
-      #num_na_pt <- 0
-      #num_notna_pt <- nrow(data_uploaded()[['points']])
-      HTML(paste0(
-        "<span style='border: 1px solid #005ea2; padding: 10px;'>Total shape(s) uploaded: <strong>", prettyNum(num_na + num_notna, big.mark = ","),"</strong></span>"#,
-        #"Valid shape(s) uploaded: <strong>",   prettyNum(num_notna,                big.mark=","),"</strong>"#,
-        #"Total related blockpoints: <strong>", prettyNum(num_na_pt + num_notna_pt, big.mark=","),"</strong><br>")
+      
+      
+      msg <- HTML(paste0(
+        "<span style='border: 1px solid #005ea2; padding: 10px;'>Total shape(s) uploaded: <strong>", 
+        prettyNum(num_na + num_notna, big.mark = ","),"</strong></span>"
       ))
+      an_map_text_shp(msg)
       
-    } else if (current_upload_method() == 'FIPS') {
-      num_na <- 0 # we do not keep track of invalid FIPS uploaded
-      num_locs <- NROW(data_uploaded())
-      HTML(paste0(
-        "<span style='border: 1px solid #005ea2; padding: 10px;'>Total location(s) uploaded by FIPS: <strong>", prettyNum(num_locs, big.mark = ","),"</strong></span>"
-      ))
-      
-    } else {  #  count latlon points that are valid/invalid
-      lat_or_lon.na <- (is.na(data_uploaded()$lat) | is.na(data_uploaded()$lon))
-      if (nrow(data_uploaded()) > 1) {
-        num_na <- NROW(data_uploaded()[lat_or_lon.na,  ]) # if uploaded multiple rows (points)
-      } else {
-        num_na <- NROW(data_uploaded()[lat_or_lon.na])   # if uploaded only one row (point) (or does that already have invalid ones removed?)
-      }
-      totalcount <- NROW(data_uploaded())
-      num_notna <- totalcount - num_na
-      
-      ## if invalid data found, set invalid_alert() otherwise closeAlert()
-      cat("Number of points:  "); cat(totalcount, 'total,', num_notna, 'valid,', num_na, ' invalid \n')
-      if (num_na > 0) {
-        #shinyBS::closeAlert(session, alertId = 'alert1')
-        # shinyBS::createAlert(session, anchorId = "invalid_sites_alert", alertId = "alert1", 
-        #                      title = "Warning", style = 'danger',
-        #                      content = paste0('There are ', num_na, ' invalid locations in your dataset.'),
-        #                      dismiss = TRUE, 
-        #                      append = FALSE)
-        invalid_alert(num_na)
-        
-        #showModal(modalDialog(title = 'Invalid data found', 'FYI, some of your data was not valid.', size = 's'))
-      } else {
-        invalid_alert(NULL)
-        shinyBS::closeAlert(session, alertId = 'alert1')
-      }
-      
-      HTML(paste0(
-        "<span style='border: 1px solid #005ea2; padding: 10px;'>Total location(s) uploaded: <strong>", prettyNum(num_na + num_notna, big.mark = ","),"</strong></span>"
-        #"Valid site(s) uploaded: <strong>", prettyNum(num_notna, big.mark=","),"</strong>")
-      ))
-      #"Site(s) with invalid lat/lon values: <strong>", prettyNum(num_na,big.mark=","), "</strong>"))
-      # HTML(paste0("Current upload method: <strong>",  current_upload_method(), "</strong><br>", 
-      #             "Total site(s) uploaded: <strong>", prettyNum(nrow(data_uploaded()), big.mark=","),"</strong><br>",
-      #             "Valid site(s) uploaded: <strong>", prettyNum(num_notna, big.mark=","),"</strong><br>",
-      #             "Site(s) with invalid lat/lon values: <strong>", prettyNum(num_na,big.mark=","), "</strong>"))
-    }  # done counting valid/invalid
+    }
+  })
+  
+  ## initialize reactive for count of uploaded FIPS
+  an_map_text_fips <- reactiveVal(HTML(NULL))
+  
+  observe({
+    req(data_uploaded())
     
+    if(current_upload_method() == "FIPS"){
+    
+    num_na <- 0 # we do not keep track of invalid FIPS uploaded
+    num_locs <- NROW(data_uploaded())
+    
+     msg <- HTML(paste0(
+      "<span style='border: 1px solid #005ea2; padding: 10px;'>Total location(s) uploaded by FIPS: <strong>", 
+      prettyNum(num_locs, big.mark = ","),"</strong></span>"
+     ))
+     an_map_text_fips(msg)
+    }
+  })
+  
+  ## initialize reactive for count of uploaded points
+  an_map_text_pts <- reactiveVal(HTML(NULL))
+  
+  observe({
+    req(data_uploaded())
+    if(!current_upload_method() %in% c('FIPS','SHP')){
+    
+    lat_or_lon.na <- (is.na(data_uploaded()$lat) | is.na(data_uploaded()$lon))
+    if (nrow(data_uploaded()) > 1) {
+      num_na <- NROW(data_uploaded()[lat_or_lon.na,  ]) # if uploaded multiple rows (points)
+    } else {
+      num_na <- NROW(data_uploaded()[lat_or_lon.na])   # if uploaded only one row (point) (or does that already have invalid ones removed?)
+    } 
+    totalcount <- NROW(data_uploaded())
+    num_notna <- totalcount - num_na
+    
+    ## if invalid data found, set invalid_alert() otherwise closeAlert()
+    cat("Number of points:  "); cat(totalcount, 'total,', num_notna, 'valid,', num_na, ' invalid \n')
+    if (num_na > 0) {
+      invalid_alert(num_na)
+    } else {
+      invalid_alert(NULL)
+    }
+    
+    msg <- HTML(paste0(
+      "<span style='border: 1px solid #005ea2; padding: 10px;'>Total location(s) uploaded: <strong>", prettyNum(num_na + num_notna, big.mark = ","),"</strong></span>"
+    ))
+    an_map_text_pts(msg)
+    }
+  })
+  
+  ## Which points are valid?(and  how many; warn if 0) ####
+  output$an_map_text <- renderUI({
+
+    if(current_upload_method() == 'SHP'){
+      an_map_text_shp()
+    }else if(current_upload_method() == 'FIPS'){
+      an_map_text_fips()
+    } else {
+      an_map_text_pts()
+    }
+   
   })
   
   ## Which points are clustered? (may double-count people) ####
