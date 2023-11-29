@@ -443,40 +443,7 @@ app_server <- function(input, output, session) {
     sitepoints
   })
   
-  #############################################################################  # 
-  ## reactive: latlon by ECHO ####
-  # 
-  # data_up_echo <- reactive({
-  #   ## depends on ECHO upload - which may use same file upload as latlon
-  #   req(input$ss_upload_echo)
-  #   
-  #   ## >this part could be replaced by  ***
-  #   # ext <- latlon_from_anything(input$ss_upload_echo$datapath)
-  #   
-  #   ## check if file extension is appropriate
-  #   ext <- tools::file_ext(input$ss_upload_echo$name)
-  #   
-  #   ## if acceptable file type, read in; if not, send warning text
-  #   sitepoints <- switch(ext,
-  #                 csv =  data.table::fread(input$ss_upload_echo$datapath),
-  #                 xls = readxl::read_excel(input$ss_upload_echo$datapath) %>% data.table::as.data.table(),
-  #                 xlsx = readxl::read_excel(input$ss_upload_echo$datapath) %>% data.table::as.data.table(),
-  #                 shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
-  #   )
-  # cat("FILE FROM ECHO HAS COUNT OF: ", NROW(sitepoints), "\n")
-  #   ## only process if lats and lon (or aliases) exist in uploaded data  
-  #   ## if column names are matched to aliases, process it    
-  #    if (any(tolower(colnames(sitepoints)) %in% lat_alias) & any(tolower(colnames(sitepoints)) %in% lon_alias)) {
-  #     sitepoints <- sitepoints %>% 
-  #       EJAM::latlon_df_clean() #%>% 
-  #       #data.table::as.data.table()
-  # cat("FILE FROM ECHO HAS COUNT OF: ", NROW(sitepoints), " with actual lat,lon identified \n")
-  # sitepoints
-  #   } else {
-  #     ## if not matched, return this message
-  #     shiny::validate('No coordinate columns found.')
-  #   }
-  # })
+ 
   
   #############################################################################  # 
   ## reactive: latlon by EPA Program IDs ####
@@ -726,13 +693,6 @@ app_server <- function(input, output, session) {
         shinyjs::enable( id = 'bt_get_results'); shinyjs::show(id = 'show_data_preview')
       }
       
-      # } else if (current_upload_method() == 'ECHO') {
-      #   if (!isTruthy(input$ss_upload_echo)) {            #   
-      #     shinyjs::disable(id = 'bt_get_results'); shinyjs::hide(id = 'show_data_preview')
-      #   } else {
-      #     shinyjs::enable( id = 'bt_get_results'); shinyjs::show(id = 'show_data_preview')
-      #   }
-      
     } else if (current_upload_method() == 'NAICS') {
       #if (!isTruthy(input$submit_naics)) {                 # why is that commented out? 
       if (!isTruthy(input$ss_select_naics)) {
@@ -744,7 +704,6 @@ app_server <- function(input, output, session) {
     } else if (current_upload_method() == 'EPA_PROGRAM') {
       if ((input$ss_choose_method == 'upload' & !isTruthy(input$ss_upload_program)) |
           (input$ss_choose_method == 'dropdown' & !isTruthy(input$ss_select_program))) {
-        #if (!isTruthy(input$submit_program)) {             # why is that commented out? 
         shinyjs::disable(id = 'bt_get_results'); shinyjs::hide(id = 'show_data_preview')
       } else {
         shinyjs::enable( id = 'bt_get_results'); shinyjs::show(id = 'show_data_preview')
@@ -752,7 +711,6 @@ app_server <- function(input, output, session) {
       
     } else if (current_upload_method() == 'SIC') {
       if (!isTruthy(input$ss_select_sic)) {
-        #if (!isTruthy(input$submit_sic)) {                 # why is that commented out? 
         shinyjs::disable(id = 'bt_get_results'); shinyjs::hide(id = 'show_data_preview')
       } else {
         shinyjs::enable( id = 'bt_get_results'); shinyjs::show(id = 'show_data_preview')
