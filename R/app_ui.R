@@ -147,7 +147,6 @@ app_ui  <- function(request) {
                                   'What type of data are you uploading?'
                                 ),
                                 choices = c('Latitude/Longitude file upload'               = 'latlon',
-                                            #'Latitude/Longitude typed in here (on-screen)' = 'latlontypedin',
                                             'EPA Facility ID (FRS Identifiers)'            = 'FRS',
                                             'EPA Program IDs'                              = 'EPA_PROGRAM',
                                             'FIPS Codes'                                   = 'FIPS',

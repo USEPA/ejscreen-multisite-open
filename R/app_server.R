@@ -1316,8 +1316,7 @@ app_server <- function(input, output, session) {
     ## close overall progress bar
     progress_all$close()
     
-    ## wait  then switch tabs and jump to top of screen 
-    Sys.sleep(0.2) ### why wait? ### #
+    ## switch tabs and jump to top of screen 
     shinyjs::js$toTop();
     updateTabsetPanel(session, inputId = "all_tabs",     selected = "See Results")
     updateTabsetPanel(session, inputId = 'results_tabs', selected = 'Summary')
@@ -1631,62 +1630,8 @@ app_server <- function(input, output, session) {
                                    clustered = FALSE)#is_clustered())
           )
       }
-    #print(d_upload)
-    # base_color      <- '#000080'
-    # cluster_color   <- 'red'
-    # 
-    # 
-    # #req(input$bt_rad_buff)
-    # ## convert units to miles for circle size
-    # # if (input$radius_units == 'kilometers') {
-    # #   rad <- input$bt_rad_buff * meters_per_mile * 0.62137119
-    # # } else {
-    # rad <- input$bt_rad_buff * meters_per_mile
-    # #}
-    # 
-    # if (input$an_map_clusters == TRUE) {
-    #   ## compare latlons using is_clustered() reactive
-    #   circle_color <- ifelse(is_clustered() == TRUE, cluster_color, base_color)
-    # } else {
-    #   circle_color <- base_color
-    # }
-    # 
-    # popup_vec <- popup_from_any(d_upload)
-    # 
-    # # if (input$circle_type == 'circles') {
-    # suppressMessages(
-    #   leafletProxy(mapId = 'an_leaf_map', session, data = d_upload) %>%
-    #     map_facilities_proxy(rad= input$bt_rad_buff, 
-    #                          highlight = input$an_map_clusters, clustered = is_clustered(),
-    #                          popup_vec = popup_vec)
-    #     # clearShapes() %>%
-    #     # clearMarkerClusters() %>%
-    #     # addCircles(
-    #     #   radius = rad,
-    #     #   color = circle_color, fillColor = circle_color,
-    #     #   fill = TRUE, weight = circleweight,
-    #     #   group = 'circles',
-    #     #   # next version should use something like EJAMejscreenapi::popup_from_ejscreen(), but with EJAM column names
-    #     #   #popup = EJAMejscreenapi::popup_from_df(data_uploaded() %>% as.data.frame())
-    #     #   popup = popup_from_any(data_uploaded())
-    #     # )  %>%
-    #     # addCircleMarkers(
-    #     #   radius = input$bt_rad_buff,
-    #     #   color = circle_color, fillColor = circle_color,
-    #     #   fill = TRUE, weight = circleweight,
-    #     #   clusterOptions = markerClusterOptions(),
-    #     #   group = 'markers',
-    #     #   popup = popup_from_any(data_uploaded())
-    #     #   #popup = EJAMejscreenapi::popup_from_df(data_uploaded())
-    #     # ) %>%
-    #     # ## show circleMarkers (aggregated) at zoom levels 1:6
-    #     # groupOptions(group = 'markers', zoomLevels = 1:6) %>%
-    #     # ## show circles and popups at zoom levels 7:20
-    #     # groupOptions(group = 'circles', zoomLevels = 7:20) %>%
-    #     # ## allow fullscreen map view ([ ] button)
-    #     # leaflet.extras::addFullscreenControl()
-    # )
-  })
+  
+  }) 
   
   
   #############################################################################  # 
@@ -1704,18 +1649,7 @@ app_server <- function(input, output, session) {
       
       plot_barplot_ratios(unlist(data_processed()$results_overall[ , c(..names_d_ratio_to_avg , ..names_d_subgroups_ratio_to_avg) ]))
       
-      # end of BARPLOT section
-      
-      # ggplot2::ggplot(
-      #   ratio.to.us.d.overall,
-      #   aes(x = indicator, y = value)
-      # ) +
-      #   geom_boxplot() + 
-      #   geom_hline(aes(yintercept = 1)) +
-      #   labs(x = "",
-      #        y = "Ratio of Indicator values for avg. person in selected locations\n vs. US average value",
-      #        title = 'Ratio vs. US Average for Demographic Indicators') 
-      
+     
     } else if (input$plotkind_1pager == 'ridgeline') {
       
       ## ratios by site  (demog each site / demog avg in US)
