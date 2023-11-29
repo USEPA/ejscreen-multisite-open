@@ -1006,12 +1006,31 @@ app_server <- function(input, output, session) {
   
   # *MAP of uploaded points ####
   
-  ## update map radius label based on button 
-  
+  ## disable radius slider when FIPS is selected
   observe({
-    if (current_upload_method() == "SHP" & !isTruthy(input$ss_upload_shp)) {
-      updateSliderInput(session, inputId = 'bt_rad_buff', value = 0)
+    if(current_upload_method() == 'FIPS'){
+      shinyjs::disable(id = 'bt_rad_buff')
+    } else {
+      shinyjs::enable(id = 'bt_rad_buff')
     }
+  })
+  
+  ## create different radius values for each site selection type
+  current_slider_val <- reactiveValues('latlon'=1,'NAICS'=1,'SIC'=1,
+                                       'FRS'=1,'EPA_PROGRAM'=1,
+                                       'MACT'=1,'FIPS'=0,'SHP'=0)
+  ## update stored radius when slider changes
+  observeEvent(
+    input$bt_rad_buff,
+    current_slider_val[[current_upload_method()]] <- input$bt_rad_buff
+  )
+  
+  ## restore previous radius value when returning to site selection type
+  observeEvent(eventExpr = {
+    current_upload_method()
+  },{
+    updateSliderInput(session, inputId = 'bt_rad_buff', 
+                      val = current_slider_val[[current_upload_method()]])
   })
   
   ## Create separate radius label to allow line break
@@ -1428,14 +1447,22 @@ app_server <- function(input, output, session) {
     req(data_processed())
     ## paste header information together
     title_text <- paste0('<div style="font-weight: bold; font-size: 11pt; text-align: center;">',
-                         input$analysis_title, '<br>',
-                         'Residents within ',
-                         #input$bt_rad_buff, ' ', input$radius_units, ' of any of the ',
-                         input$bt_rad_buff, ' miles of any of the ',
-                         prettyNum( NROW(data_processed()$results_bysite), big.mark = ","), ' sites analyzed<br>',
+                         input$analysis_title, '<br>')
+    
+    ## exclude radius info from header text when using FIPS
+    if(current_upload_method() != 'FIPS'){
+      title_text <- paste0(title_text,
+                           'Residents within ',
+                           #input$bt_rad_buff, ' ', input$radius_units, ' of any of the ',
+                           input$bt_rad_buff, ' miles of any of the '
+                           )
+    }
+        title_text <- paste0(title_text,
+                             prettyNum( NROW(data_processed()$results_bysite), big.mark = ","), 
+                             ' sites analyzed<br>',
                          #    "in the xxx source category or sector<br>",
                          'Population: ', prettyNum( total_pop(), big.mark = ","), '</div>'
-    )
+                      )
     ### update summary header reactive variable
     summary_title(title_text)
   })
