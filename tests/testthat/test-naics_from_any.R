@@ -7,7 +7,7 @@
 
 # gives an error that the function naics_url_of_query does not exist
 # after renaming this to naics_url_of_code in the naics_from_any function (& sourcing it)
-# it worked successfully (naics_url_of_code is in script NAICS_url_of_code.R)
+# it worked successfully (naics_url_of_code is in script naics_url_of_code.R)
 
 test_that('naics_from_any URL and scrape lookup works', {
   expect_equal(naics_from_any("crude petroleum")$code, c(21112, 211120))

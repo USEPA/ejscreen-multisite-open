@@ -410,7 +410,7 @@ app_server <- function(input, output, session) {
     # q: IS IT BETTER TO USE THIS IN naics_from_any() OR IN frs_from_naics() BELOW ??
     
     # naics_validation function to check for non empty NAICS inputs
-    if (naics_validation(NAICS_enter = '',NAIC_select = input$ss_select_naics)) {
+    if (naics_validation(naics_enter = '', naics_select = input$ss_select_naics)) {
       #if (naics_validation(input$ss_enter_naics,input$ss_select_naics)) {
       inputnaics = {}
       
@@ -2246,7 +2246,7 @@ app_server <- function(input, output, session) {
         
         ## average  
       } else {
-        barplot_usa_avg <-usastats %>% 
+        barplot_usa_avg <- usastats %>% 
           dplyr::filter(REGION == 'USA', PCTILE == 'mean') %>% 
           dplyr::mutate(Summary = 'Average person in US') %>% 
           dplyr::select(Summary, dplyr::all_of(mybarvars)) %>% 

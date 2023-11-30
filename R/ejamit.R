@@ -1,23 +1,64 @@
 #' ejamit - Get complete EJ analysis (demographic and environmental indicators) near a list of locations
 #' @description This is the main function in EJAM for users who want to use EJAM from RStudio.
 #'   It does essentially what the webapp does to analyze/summarize near a set of points.
-#'   See help("EJAM")  
-#' @inheritParams getblocksnearby
+#'   See help("EJAM")
+#' @param sitepoints data.table with columns siteid, lat, lon giving point locations of sites or facilities around which are circular buffers
+#' @param radius in miles, defining circular buffer around a site point
+#' @param maxradius miles distance (max distance to check if not even 1 block point is within radius)
+#' @param avoidorphans logical If TRUE, then where not even 1 BLOCK internal point is within radius of a SITE,
+#'   it keeps looking past radius, up to maxradius, to find nearest 1 BLOCK. 
+#'   What EJScreen does in that case is report NA, right? 
+#'   So, does EJAM really need to report stats on residents presumed to be within radius,
+#'    if no block centroid is within radius? 
+#'    Best estimate might be to report indicators from nearest block centroid 
+#'    which is probably almost always the one your site is sitting inside of, 
+#'    but ideally would adjust total count to be a fraction of blockwt 
+#'    based on what is area of circular buffer as fraction of area of block it is apparently inside of. 
+#'    Setting this to TRUE can produce unexpected results, which will not match EJScreen numbers.
+#'    
+#'    Note that if creating a proximity score, by contrast, you 
+#'    instead want to find nearest 1 SITE if none within radius of this BLOCK.
+#' @param quadtree (a pointer to the large quadtree object) created using indexblocks() which uses the SearchTree package.
+#'   Takes about 2-5 seconds to create this each time it is needed. 
+#'   It can be automatically created when the package is attached via the .onAttach() function
+#' @param quiet Optional. set to TRUE to avoid message about using getblock_diagnostics(),
+#'   which is relevant only if a user saved the output of this function.
+#' @param parallel whether to use parallel processing in getblocksnearby() but may not be implemented yet. 
+#' 
+#' @param fips optional FIPS code vector to provide if using FIPS instead of sitepoints to specify places to analyze,
+#'   such as a list of US Counties or tracts. Passed to [getblocksnearby_from_fips()]
+#' @param in_shiny if fips parameter is used, passed to [getblocksnearby_from_fips()]
+#' @param need_blockwt if fips parameter is used, passed to [getblocksnearby_from_fips()]
+#'
+#' @param countcols character vector of names of variables to aggregate within a buffer using a sum of counts, 
+#'   like, for example, the number of people for whom a poverty ratio is known, 
+#'   the count of which is the exact denominator needed to correctly calculate percent low income.
+#' @param popmeancols character vector of names of variables to aggregate within a buffer using population weighted mean.
+#' @param calculatedcols character vector of names of variables to aggregate within a buffer using formulas that have to be specified.
+#' @param testing used while testing this function
+#' @param include_ejindexes whether to try to include EJ Indexes (assuming dataset is available) - passed to [doaggregate()]
+#' @param updateProgress progress bar function used for shiny app
+#' @param need_proximityscore whether to calculate proximity scores
+#' @param calculate_ratios whether to calculate and return ratio of each indicator to US and State overall averages - passed to [doaggregate()]
 #' @param silentinteractive   to prevent long output showing in console in RStudio when in interactive mode,
 #'   passed to doaggregate() also. app server sets this to TRUE when calling doaggregate() but 
 #'   ejamit() default is to set this to FALSE when calling doaggregate(). 
-#' @param fips FIPS code vector if using FIPS instead of sitepoints to specify places to analyze,
-#'   such as a list of US Counties or tracts.
+#' @param called_by_ejamit Set to TRUE by ejamit() to suppress some outputs even if ejamit(silentinteractive=F)
+#' @param subgroups_type Optional (uses default). Set this to "nh" for non-hispanic race subgroups 
+#'   as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh; 
+#'   "alone" for EJScreen v2.2 style race subgroups as in White Alone, wa and others in names_d_subgroups_alone; 
+#'   "both" for both versions. Possibly another option is "original" or "default"
+#' @param extra_demog if should include more indicators from v2.2 report on language etc.
+#' @param infer_sitepoints set to TRUE to try to infer the lat,lon of each site around which the blocks in sites2blocks were found.
+#'   lat,lon of each site will be approximated as average of nearby blocks, 
+#'   although a more accurate slower way would be to use reported distance of each of 3 of the furthest block points and triangulate
+#'   
 #' @param threshold1 percentile like 80 or 90 or 95 to compare percentiles to
 #'   "alone" for groups like white alone (whether or not hispanic),
-#'    "both" may try to include both,
-#'     or possibly "original" or "default" might be added as options
-#' @param subgroups_type Optional (uses default). Set this to 
-#'   "nh" for non-hispanic race subgroups as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh; 
-#'   "alone" for EJScreen v2.2 style race subgroups as in    White Alone, wa and others in names_d_subgroups_alone; 
-#'   "both" for both versions. Possibly another option is "original" or "default" but work in progress.
-#' @param calculate_ratios whether to calculate and return ratio of each indicator to US and State overall averages
-#' @return A list of tables of results.
+#'   "both" may try to include both,
+#'   or possibly "original" or "default" might be added as options - passed to batch.summarize()
+#' 
+#' @return A list of tables of results
 #' @examples \dontrun{
 #'  # All in one step, using functions not shiny app:
 #'  out <- ejamit(testpoints_100_dt, 2, quadtree=localtree)
@@ -72,20 +113,37 @@
 #'   out <- doaggregate(s2b, testsites) # this works now and is simpler
 #'
 #' }
-#' 
 #' @seealso  [getblocksnearby()] [doaggregate()]
 #' @export
-ejamit <- function(sitepoints, 
-                   radius=3, maxradius=31.07, 
-                   avoidorphans=FALSE,
-                   quadtree=NULL,
-                   silentinteractive=F,
-                   fips=NULL,
-                   subgroups_type = 'nh', calculate_ratios = TRUE,
-                   threshold1 = 90, # threshold.default['comp1'],
-                   ...
+ejamit <- function(sitepoints,
+                   radius = 3,
+                   maxradius = 31.07,
+                   avoidorphans = FALSE,
+                   quadtree = NULL,
+                   quiet = TRUE,
+                   parallel = FALSE,
+                   
+                   fips = NULL,
+                   in_shiny = FALSE,
+                   need_blockwt = TRUE,
+                   
+                   countcols = NULL,
+                   popmeancols = NULL,
+                   calculatedcols = NULL,
+                   testing = FALSE,
+                   include_ejindexes = FALSE,
+                   updateProgress = NULL,
+                   need_proximityscore = FALSE,
+                   calculate_ratios = TRUE,
+                   silentinteractive = FALSE,
+                   called_by_ejamit = TRUE,
+                   subgroups_type = "nh",
+                   extra_demog = TRUE,
+                   infer_sitepoints = FALSE,
+                   
+                   threshold1 = 90 # threshold.default['comp1']
 ) {
-  
+
   if (!is.null(fips)) {
     ##   by FIPS not latlons ####
     # getblocksnearby_from_fips() should include doing something like fips_lead_zero() ? 
@@ -93,22 +151,40 @@ ejamit <- function(sitepoints,
 
     radius <- 999 # use this value when analyzing by fips not by circular buffers.
     
-    mysites2blocks <- getblocksnearby_from_fips(fips) # this should have site = each FIPS code (such as each countyfips), and otherwise same outputs as getblocksnearby()
+    mysites2blocks <- getblocksnearby_from_fips(
+      fips = fips,
+      inshiny = inshiny,
+      need_blockwt = need_blockwt
+      )
+    # this should have site = each FIPS code (such as each countyfips), and otherwise same outputs as getblocksnearby()
     
-    out <- doaggregate(
-      mysites2blocks, 
-      subgroups_type = subgroups_type, 
-      # sites2states_or_latlon = unique(mysites2blocks[ , .(siteid, lat, lon)]),   #  
-      radius = radius
+    out <- suppressWarnings(
+      doaggregate(
+        sites2blocks = mysites2blocks,
+        # sites2states_or_latlon = unique(mysites2blocks[ , .(siteid, lat, lon)]),
+        radius = radius,  # use artificially large value when analyzing by fips 
+        countcols = countcols,
+        popmeancols = popmeancols,
+        calculatedcols = calculatedcols,
+        testing = testing,
+        include_ejindexes = include_ejindexes,
+        updateProgress = updateProgress,
+        need_proximityscore = need_proximityscore,
+        calculate_ratios = calculate_ratios,
+        silentinteractive = silentinteractive,
+        called_by_ejamit = called_by_ejamit,
+        subgroups_type = subgroups_type,
+        extra_demog = extra_demog,
+        infer_sitepoints = FALSE
+      )
     )
-    
       } else {
-        
+
         ## by lat lon not FIPS ####
-        
+
     if (missing(radius)) {warning(paste0("Using default radius of ", radius, " miles because not provided as parameter."))}
     if (!missing(quadtree)) {warning("quadtree should not be provided to ejamit() - that is handled by getblocksnearby() ")}
-    
+
     ################################################################################## #
     # note this overlaps or duplicates code in app_server.R 
     #   for data_up_latlon() around lines 81-110 and data_up_frs() at 116-148
@@ -130,11 +206,15 @@ ejamit <- function(sitepoints,
     if (!silentinteractive) {cat('Finding blocks nearby.\n')}
     
     mysites2blocks <- getblocksnearby(
-      sitepoints = sitepoints, 
-      radius = radius, maxradius = maxradius, 
-      avoidorphans = avoidorphans, 
-      quiet = TRUE,
-      ...)
+      sitepoints = sitepoints,
+      radius = radius, 
+      maxradius = maxradius,
+      avoidorphans = avoidorphans,
+      # quadtree = localtree,
+      quiet = quiet,
+      parallel = parallel
+      # report_progress_every_n = 500  # would be passed through to getblocksnearbyviaQuadTree()
+      )
     ################################################################################## #
     
     # 2. doaggregate() ####
@@ -143,12 +223,22 @@ ejamit <- function(sitepoints,
     
     out <- suppressWarnings(
       doaggregate(
-        sites2blocks = mysites2blocks,  
-        subgroups_type = subgroups_type, 
+        sites2blocks = mysites2blocks,
         sites2states_or_latlon = sitepoints, # sites2states_or_latlon = unique(x[ , .(siteid, lat, lon)]))
-        silentinteractive = silentinteractive, called_by_ejamit = TRUE,
+        radius = radius,
+        countcols = countcols,
+        popmeancols = popmeancols,
+        calculatedcols = calculatedcols,
+        testing = testing,
+        include_ejindexes = include_ejindexes,
+        updateProgress = updateProgress,
+        need_proximityscore = need_proximityscore,
         calculate_ratios = calculate_ratios,
-        radius = radius
+        silentinteractive = silentinteractive,
+        called_by_ejamit = called_by_ejamit,
+        subgroups_type = subgroups_type,
+        extra_demog = extra_demog,
+        infer_sitepoints = infer_sitepoints
       )
     )
     # provide sitepoints table provided by user aka data_uploaded(), (or could pass only lat,lon and ST -if avail- not all cols?)
@@ -274,9 +364,9 @@ ejamit <- function(sitepoints,
   out$formatted <- table_tall_from_overall(out$results_overall, out$longnames)
   
   # 5. would be nice to provide the 1pager summary report as html here too
-  
+ 
   ################################################################ # 
-  if (interactive() & !silentinteractive) {  
+  if (interactive() & !silentinteractive) {
     
     # Show summary info and tips in RStudio console  #### 
     # NOTE: SOME OF THIS BELOW SHOULD BE USED IN A VIGNETTE RATHER THAN BEING HERE ***
@@ -347,13 +437,13 @@ ejamit <- function(sitepoints,
         main="A fraction of these sites are where most of the residents are located")',
         "\n\n")
     
-    cat("To see barplots of average proximity by demog group:\n\n",
-        '     plot_distance_mean_by_group(out$results_bybg_people)',
-        "\n\n")
+    # cat("To see barplots of average proximity by demog group:\n\n",
+    #     '     plot_distance_mean_by_group(out$results_bybg_people)',
+    #     "\n\n")
     
     cat("To see bar or boxplots of ratios of %Demographics vs US averages:\n\n", 
-        "     ?plot_barplot_ratios() in EJAM package # or ",
-        "     ?boxplots_ratios() in EJAMejscreenapi package",
+        "     ?plot_barplot_ratios() in EJAM package # or \n",
+        "     ?boxplots_ratios() in EJAMejscreenapi package\n",
         "     boxplots_ratios(ratios_to_avg(as.data.frame(out$results_bysite))$ratios_d)",
         "\n\n")
     
@@ -362,11 +452,11 @@ ejamit <- function(sitepoints,
         "\n\n")
     
     cat("To view or save as excel files, see ?table_xls_from_ejam e.g., table_xls_from_ejam(out, fname = 'out.xlsx')  \n\n")
+  cat('Output is a list with the following names:\n')
+  print(EJAM:::structure.of.output.list(out) )
   }
   ################################################################ # 
   
-  cat('Output is a list with the following names:\n')
-  print(structure.of.output.list(out) )
   
   invisible(out)
 }
