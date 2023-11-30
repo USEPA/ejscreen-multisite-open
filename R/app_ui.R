@@ -403,17 +403,7 @@ app_ui  <- function(request) {
                             ## add button and modal to show uploaded data interactively
                             actionButton('show_data_preview', label = 'Review selected sites',
                                          class = 'usa-button usa-button--outline'),
-                            ## on button click, show modal with DT table of uploaded
-                            # shinyBS::bsModal(id = 'view_data_modal', 
-                            #                  title = 'Selected location data', 
-                            #                  trigger = 'show_data_preview',
-                            #                  size = 'large',
-                            #                  helpText('View or download data corresponding to your upload/selections.'),
-                            #                  ## use download buttons for speed and handling larger data
-                            #                  downloadButton('download_preview_data_csv', label = 'CSV', class = 'usa-button'),
-                            #                  downloadButton('download_preview_data_xl', label = 'Excel', class = 'usa-button'),
-                            #                  br(),br(),
-                            #                  DT::DTOutput('print_test2_dt', width = '100%'))
+                            
                             
                      )
                    ), # end view data uploads

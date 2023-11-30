@@ -14,7 +14,6 @@
 #' @import readxl
 #' @import RMySQL
 #' @import SearchTrees
-#' @import shinyBS
 #' @import shinycssloaders
 #' @importFrom shinyjs reset
 #' @importFrom shinyjs disable
