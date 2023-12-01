@@ -1993,6 +1993,11 @@ app_server <- function(input, output, session) {
     dt_final <- dt_final %>% 
       dplyr::relocate(c(State, 'EPA Region', '# of indicators above 95% threshold'), .before = 2) # *** this cutoff should be dynamic, set by probs.default.values etc./ inputs
     
+    ## set # of indicators above threshold to NA if population = 0
+    dt_final <- dt_final %>%
+      dplyr::mutate(`# of indicators above 95% threshold` = ifelse(`Est. Population` ==0, 'N/A',
+                                                                   `# of indicators above 95% threshold`))
+    
     n_cols_freeze <- 1
     
     ## format data table of site by site table
