@@ -506,15 +506,19 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
           cat("\n\n")}
         style_cur <- openxlsx::createStyle( bgFill = heatmap_colors[i] )
         
+        ## need to loop over heatmap columns so it skips columns in between
+        for(j in 1:length(heatmap_colnums)){
+          
         openxlsx::conditionalFormatting(wb, "Overall",    rows = 2 , 
-                                        cols = heatmap_colnums,  
+                                        cols = heatmap_colnums[j],  
                                         style = style_cur,  stack = TRUE,
                                         rule = paste0(">=", heatmap_cuts[i]))
         
         openxlsx::conditionalFormatting(wb, "Each Site",  rows = 2:(1 + NROW(eachsite)), #gridExpand = TRUE,
-                                        cols = heatmap_colnums,
+                                        cols = heatmap_colnums[j],
                                         style = style_cur, #stack = TRUE,
                                         rule = paste0(">=", heatmap_cuts[i]))
+        }
       }
     }
     
@@ -529,15 +533,18 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
         cat("\n\n")}
       style_cur <- openxlsx::createStyle( bgFill = heatmap2_colors[i] )
       
+      ## need to loop over heatmap columns so it skips columns in between
+      for(j in 1:length(heatmap2_colnums)){
       openxlsx::conditionalFormatting(wb, "Overall",    rows = 2 ,
-                                      cols = heatmap2_colnums,
+                                      cols = heatmap2_colnums[j],
                                       style = style_cur, stack = TRUE,
                                       rule = paste0(">=", heatmap2_cuts[i]))
       
       openxlsx::conditionalFormatting(wb, "Each Site",  rows = 2:(1 + NROW(eachsite)), #gridExpand = TRUE,
-                                      cols = heatmap2_colnums,
+                                      cols = heatmap2_colnums[j],
                                       style = style_cur, #stack = TRUE,
                                       rule = paste0(">=", heatmap2_cuts[i]))
+      }
     }
     
     
