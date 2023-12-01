@@ -1984,7 +1984,7 @@ app_server <- function(input, output, session) {
       ## sort by Site ID - as numeric index
       dplyr::arrange(siteid) %>% 
       #dplyr::arrange(dplyr::desc(pop)) %>% 
-      dplyr::mutate(pop = prettyNum(pop, big.mark = ',')) %>% 
+      dplyr::mutate(pop = prettyNum(round(pop), big.mark = ',')) %>% 
       dplyr::left_join(stateinfo %>% dplyr::select(ST, statename, REGION), by = 'ST') %>% 
       dplyr::select(-ST, -Max.of.variables)
     
