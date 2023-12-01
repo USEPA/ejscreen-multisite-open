@@ -276,7 +276,7 @@ ejamit <- function(sitepoints,
   if (!is.null(fips)) {
     # analyzing by FIPS not lat lon values
     areatype <- fipstype(fips)
-    if (!(all(fips %in% c("blockgroup", "tract", "city", "county")))) {warning("FIPS must be one of 'blockgroup', 'tract', 'city', 'county' for the EJScreen API")}
+    if (!(all(areatype %in% c("blockgroup", "tract", "city", "county")))) {warning("FIPS must be one of 'blockgroup', 'tract', 'city', 'county' for the EJScreen API")}
     out$results_bysite[ , `:=`(
       `EJScreen Report` = url_ejscreen_report(   areaid = fips, areatype = areatype, as_html = T),
       `EJScreen Map`    = url_ejscreenmap(       wherestr = fips,                 as_html = T),
