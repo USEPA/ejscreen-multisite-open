@@ -754,9 +754,7 @@ app_ui  <- function(request) {
                   
                   fluidRow(
                     column(4,
-                           radioButtons(inputId = 'summ_bar_ind', 
-                                        label = h5('Indicator type'), 
-                                        choices = c('Demographic', 'Environmental', 'EJ'), selected = "Environmental"),
+                          uiOutput('summ_bar_ind'),
                     ),
                     column(4,
                            ## input: Barplot setting - data type

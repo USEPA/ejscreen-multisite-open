@@ -2179,6 +2179,18 @@ app_server <- function(input, output, session) {
   # see notes on
   # https://exts.ggplot2.tidyverse.org/gallery/
   
+  output$summ_bar_ind <- renderUI({
+    if((input$include_ejindexes == "TRUE")){
+      radioButtons(inputId = 'summ_bar_ind', 
+                   label = h5('Indicator type'), 
+                   choices = c('Demographic', 'Environmental', 'EJ'), selected = "Environmental")
+    } else {
+      radioButtons(inputId = 'summ_bar_ind', 
+                   label = h5('Indicator type'), 
+                   choices = c('Demographic', 'Environmental'), 
+                   selected = "Environmental")
+    }
+  })
   
   # output: 
   output$summ_display_bar <- renderPlot({
