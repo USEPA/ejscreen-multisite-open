@@ -199,7 +199,11 @@ app_server <- function(input, output, session) {
   #############################################################################  # 
   
   ## HTML for alert for invalid sites
-  invalid_alert <- reactiveVal(NULL)
+  #invalid_alert <- reactiveVal(NULL)
+  
+  invalid_alert <- reactiveValues('latlon'=0,'NAICS'=0,'SIC'=0,
+                                       'FRS'=0,'EPA_PROGRAM'=0,
+                                       'MACT'=0,'FIPS'=0,'SHP'=0)
   
   ## reactive: SHAPEFILES uploaded ####
   
@@ -218,10 +222,10 @@ app_server <- function(input, output, session) {
       }
       shp <- shapefile_from_filepaths(infiles, cleanit = FALSE) # cleanit = FALSE allows shiny to handle that with messages
       numna <- nrow(shp[!sf::st_is_valid(shp),])
-      invalid_alert(numna) # this updates the value of the reactive invalid_alert()
+      invalid_alert[['SHP']] <- numna # this updates the value of the reactive invalid_alert()
       shp <- shapefile_clean(shp) # uses default crs=4269;  drops invalid rows or return NULL if none valid  # shp <- sf::st_transform(shp, crs = 4269) # done by shapefile_clean() 
       if (is.null(shp)) {
-        invalid_alert(NULL) # hides the invalid site warning
+        invalid_alert[['SHP']] <- 0 # hides the invalid site warning
         an_map_text_shp(HTML(NULL)) # hides the count of uploaded shapes
         shiny::validate('No shapes found in file uploaded.')
       }
@@ -244,12 +248,12 @@ app_server <- function(input, output, session) {
       
       if (nrow(shp) > 0) {
         numna <- nrow(shp[!sf::st_is_valid(shp),])
-        invalid_alert(numna) # this updates the value of the reactive invalid_alert()
+        invalid_alert[['SHP']] <- numna # this updates the value of the reactive invalid_alert()
         shp_valid <- shp[sf::st_is_valid(shp),] #determines valid shapes
         shp_valid <- dplyr::mutate(shp_valid, siteid = row_number())
         shp_proj <- sf::st_transform(shp_valid,crs = 4269)
       } else {
-        invalid_alert(NULL) # hides the invalid site warning
+        invalid_alert[['SHP']] <-0 # hides the invalid site warning
         an_map_text_shp(HTML(NULL)) # hides the count of uploaded sites/shapes
         ## if not matched, return this message
         shiny::validate('No shapes found in file uploaded.')
@@ -348,7 +352,7 @@ app_server <- function(input, output, session) {
       cat("ROW COUNT after latlon_df_clean(): ", NROW(sitepoints), "\n")
       sitepoints
     } else {
-      invalid_alert(NULL) # hides the invalid site warning
+      invalid_alert[['latlon']] <- 0 # hides the invalid site warning
       an_map_text_pts(HTML(NULL)) # hides the count of uploaded sites
       ## if not matched, show this message instead
       shiny::validate('No coordinate columns found.')
@@ -389,7 +393,7 @@ app_server <- function(input, output, session) {
       # read_frs_dt <- data.table::as.data.table(read_frs)
       data.table::setDT(sitepoints) # same but less memory/faster?
     } else {
-      invalid_alert(NULL) # hides the invalid site warning
+      invalid_alert[['FRS']] <- 0 # hides the invalid site warning
       an_map_text_pts(HTML(NULL)) # hides the count of uploaded sites
       shiny::validate('Records with invalid Registry IDs')
     }
@@ -439,7 +443,7 @@ app_server <- function(input, output, session) {
         showNotification('Points submitted successfully!', duration = 1)
       }
     } else {
-      invalid_alert(NULL) # hides the invalid site warning
+      invalid_alert[['NAICS']] <- 0 # hides the invalid site warning
       an_map_text_pts(HTML(NULL)) # hides the count of uploaded sites
       ################ Should output something saying no valid results returned ######## #
       shiny::validate('Invalid NAICS Input')
@@ -478,7 +482,7 @@ app_server <- function(input, output, session) {
       cat("ROW COUNT IN file that should have program, pgm_sys_id: ", NROW(read_pgm), "\n")
       ## error if no columns provided
       if (!any(c('program','pgm_sys_id') %in% tolower(colnames(read_pgm)))) {
-        invalid_alert(NULL) # hides the invalid site warning
+        invalid_alert[['EPA_PROGRAM']] <- 0 # hides the invalid site warning
         an_map_text_pts(HTML(NULL)) # hides the count of uploaded sites
         validate('Please add a file with at least these two columns: program, pgm_sys_id \n and possibly these columns as well: REGISTRY_ID,lat,lon')
       }
@@ -558,7 +562,7 @@ app_server <- function(input, output, session) {
         if (rlang::is_empty(sitepoints) | nrow(sitepoints) == 0) {
           ################ Should output something saying no valid results returned ######## #
           
-          invalid_alert(NULL) # hides the invalid site warning
+          invalid_alert[['SIC']] <- 0 # hides the invalid site warning
           an_map_text_pts(HTML(NULL)) # hides the count of uploaded sites
           shiny::validate('No Results Returned')
         }
@@ -567,7 +571,7 @@ app_server <- function(input, output, session) {
         showNotification('Points submitted successfully!', duration = 1)
       }
     } else {
-      invalid_alert(NULL) # hides the invalid site warning
+      invalid_alert[['SIC']] <- 0 # hides the invalid site warning
       an_map_text_pts(HTML(NULL)) # hides the count of uploaded sites
       ################ Should output something saying no valid results returned ######## #
       shiny::validate('Invalid SIC Input')
@@ -610,7 +614,7 @@ app_server <- function(input, output, session) {
         fips_vec <- fips_lead_zero(as.character(fips_dt[[firstmatch]]))
         names(fips_vec) <- as.character(fips_vec)
       } else {
-        invalid_alert(NULL) # hides the invalid site warning
+        invalid_alert[['FIPS']] <-0  # hides the invalid site warning
         an_map_text_fips(HTML(NULL)) # hides the count of uploaded sites
         validate(paste0('No FIPS column found. Please use one of the following names: ', paste0(fips_alias, collapse = ', ')))
       }
@@ -635,7 +639,7 @@ app_server <- function(input, output, session) {
         cat("COUNT OF blocks BASED ON FIPS: ", NROW(fips_blockpoints), '\n')
         return(fips_blockpoints)
       } else {
-        invalid_alert(NULL) # hides the invalid site warning
+        invalid_alert[['FIPS']] <- 0 # hides the invalid site warning
         an_map_text_fips(HTML(NULL)) # hides the count of uploaded sites
         ## if not matched, return this message
         shiny::validate('No blockgroups found for these FIP codes.')
@@ -658,7 +662,7 @@ app_server <- function(input, output, session) {
     #mact_out <- mact_out[!is.na(lat) & !is.na(lon),]
     cat("COUNT OF FACILITIES BY MACT with lat lon values: ", NROW(mact_out), "\n")
     if (all(is.na(mact_out$lat)) & all(is.na(mact_out$lon))) {
-      invalid_alert(nrow(mact_out))
+      invalid_alert[['MACT']] <- nrow(mact_out)
       an_map_text_pts(HTML(NULL))
       validate('No valid locations found under this MACT subpart')
     } else {
@@ -716,7 +720,6 @@ app_server <- function(input, output, session) {
       }
       
     } else if (current_upload_method() == 'NAICS') {
-      #if (!isTruthy(input$submit_naics)) {                 # why is that commented out? 
       if (!isTruthy(input$ss_select_naics)) {
         shinyjs::disable(id = 'bt_get_results'); shinyjs::hide(id = 'show_data_preview')
       } else {
@@ -768,10 +771,8 @@ app_server <- function(input, output, session) {
   #. ####
   
   output$invalid_sites_alert2 <- renderUI({
-    #req(data_uploaded())
-    req(invalid_alert())
-    
-    if (invalid_alert() > 0) {
+    req(invalid_alert[[current_upload_method()]])
+    if (invalid_alert[[current_upload_method()]] > 0) {
       if( input$ss_choose_method == 'dropdown'){
         HTML(paste0(
           '<section
@@ -781,7 +782,7 @@ app_server <- function(input, output, session) {
   <div class="usa-alert">
     <div class="usa-alert__body">
       <p class="usa-alert__text">
-        <strong>', ' Warning! ','</strong>', 'There are ', prettyNum(invalid_alert(),big.mark = ","), ' selected sites without associated lat/lon information.',
+        <strong>', ' Warning! ','</strong>', 'There are ', prettyNum(invalid_alert[[current_upload_method()]],big.mark = ","), ' selected sites without associated lat/lon information.',
 '</p>
     </div>
   </div>
@@ -797,7 +798,7 @@ app_server <- function(input, output, session) {
   <div class="usa-alert">
     <div class="usa-alert__body">
       <p class="usa-alert__text">
-        <strong>', 'Warning! ','</strong>', 'There are ', invalid_alert(), ' invalid location(s) in your dataset.',
+        <strong>', 'Warning! ','</strong>', 'There are ', invalid_alert[[current_upload_method()]], ' invalid location(s) in your dataset.',
 '</p>
     </div>
   </div>
@@ -869,13 +870,16 @@ app_server <- function(input, output, session) {
     ## if invalid data found, set invalid_alert() otherwise closeAlert()
     cat("Number of points:  "); cat(totalcount, 'total,', num_notna, 'valid,', num_na, ' invalid \n')
     if (num_na > 0) {
-      invalid_alert(num_na)
+      #invalid_alert(num_na)
+      invalid_alert[[current_upload_method()]] <- num_na
     } else {
-      invalid_alert(NULL)
+      #invalid_alert(NULL)
+      invalid_alert[[current_upload_method()]] <- 0
     }
     
     msg <- HTML(paste0(
       "<span style='border: 1px solid #005ea2; padding: 10px;'>Total location(s) uploaded: <strong>", prettyNum(num_na + num_notna, big.mark = ","),"</strong></span>"
+      #"<br>","Site(s) with invalid lat/lon values: <strong>", prettyNum(num_na,big.mark=","), "</strong>","</span>"
     ))
     an_map_text_pts(msg)
     }
