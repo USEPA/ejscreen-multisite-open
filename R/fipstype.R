@@ -10,6 +10,8 @@
 #'  # [1] "09001" "09003" "09005" "09007" "09009" "09011" "09013" "09015" "10001" "10003" "10005"
 #'  fipstype(9001)
 #'  fipstype("10001")
+#'  # note blockid2fips is a large file, but can be obtained via [dataload_from_pins()]
+#'  \dontrun{
 #'  fipsexamples <- c(
 #'    fips_state_from_statename("Alaska"),
 #'    fips_counties_from_state_abbrev("DE")[1],
@@ -18,7 +20,7 @@
 #'     blockid2fips$blockfips[1]
 #'  )
 #'  cbind(fipsexamples, type = fipstype(fipsexamples))
-#' 
+#' }
 fipstype <- function(fips) {
   fips <- fips_lead_zero(fips = fips)
   ftype <- rep(NA, length(fips))

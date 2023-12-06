@@ -4,10 +4,12 @@
 \alias{shapefile_from_folder}
 \title{shapefile_from_folder  -  read shapefile from a folder}
 \usage{
-shapefile_from_folder(folder = NULL, crs = 4269)
+shapefile_from_folder(folder = NULL, cleanit = TRUE, crs = 4269)
 }
 \arguments{
 \item{folder}{path of folder that contains the files (.shp, .shx, .dbf, and .prj)}
+
+\item{cleanit}{set to FALSE if you want to skip validation and dropping invalid rows}
 
 \item{crs}{passed to shapefile_from_filepaths() default is crs = 4269 or Geodetic CRS NAD83}
 }
