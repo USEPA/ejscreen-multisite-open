@@ -1345,7 +1345,7 @@ app_server <- function(input, output, session) {
     ## switch tabs and jump to top of screen 
     shinyjs::js$toTop();
     updateTabsetPanel(session, inputId = "all_tabs",     selected = "See Results")
-    updateTabsetPanel(session, inputId = 'results_tabs', selected = 'Summary')
+    updateTabsetPanel(session, inputId = 'results_tabs', selected = 'Community Report')
   })  # end of observeEvent based on Start analysis button called input$bt_get_results
   
   #############################################################################  # 
@@ -1479,38 +1479,38 @@ app_server <- function(input, output, session) {
   #############################################################################  # 
   ## *TABLE DEMOG (for summary report) #### 
   
-  v1_demog_table <- reactive({    
-    
-    req(data_processed())
-    # should it check if (input$calculate_ratios) or is it ok to show NA values instead of hiding those columns *** ?
-    
-      table_out_d <- table_gt_from_ejamit_overall(data_processed()$results_overall, 
-                                                  type = 'demog')
-      table_out_d
-  })
-  
-  ## output:  gt  view1_demog_table()
-  output$view1_demog_table <- gt::render_gt({
-    v1_demog_table()
-  })
+  # v1_demog_table <- reactive({    
+  #   
+  #   req(data_processed())
+  #   # should it check if (input$calculate_ratios) or is it ok to show NA values instead of hiding those columns *** ?
+  #   
+  #     table_out_d <- table_gt_from_ejamit_overall(data_processed()$results_overall, 
+  #                                                 type = 'demog')
+  #     table_out_d
+  # })
+  # 
+  # ## output:  gt  view1_demog_table()
+  # output$view1_demog_table <- gt::render_gt({
+  #   v1_demog_table()
+  # })
   #############################################################################  # 
   ## *TABLE ENVT. (for summary report) #### 
   
-  v1_envt_table <- reactive({
-    
-    req(data_processed())
-    # should it check if (input$calculate_ratios) # *** ?
-    
-    tab_out_e <- table_gt_from_ejamit_overall(data_processed()$results_overall,
-                                              type = "envt")
-    tab_out_e
-  })
-  
-  ## output: show environmental indicator table
-  
-  output$view1_envt_table <- gt::render_gt({
-    v1_envt_table()
-  })
+  # v1_envt_table <- reactive({
+  #   
+  #   req(data_processed())
+  #   # should it check if (input$calculate_ratios) # *** ?
+  #   
+  #   tab_out_e <- table_gt_from_ejamit_overall(data_processed()$results_overall,
+  #                                             type = "envt")
+  #   tab_out_e
+  # })
+  # 
+  # ## output: show environmental indicator table
+  # 
+  # output$view1_envt_table <- gt::render_gt({
+  #   v1_envt_table()
+  # })
   
   #############################################################################  # 
   
@@ -2549,11 +2549,11 @@ app_server <- function(input, output, session) {
       # can happen when deployed).
       tempReport <- file.path(tempdir(), "report.Rmd")
       ## copy Rmd from inst/report to temp folder
-      file.copy(from = app_sys('report/report.Rmd'),  # treats EJAM/inst/ as root
+      file.copy(from = app_sys('report/written_report/report.Rmd'),  # treats EJAM/inst/ as root
                 to = tempReport, overwrite = TRUE)
       ## pass image and bib files needed for knitting to temp directory
-      for (i in list.files(app_sys('report'), pattern = '.png|.bib')) {   # treats what was in source/EJAM/inst/report/ as installed/EJAM/report/  once pkg is installed
-        file.copy(from = app_sys('report', i),    # source/EJAM/inst/report/ = installed/EJAM/report/
+      for (i in list.files(app_sys('report/written_report'), pattern = '.png|.bib')) {   # treats what was in source/EJAM/inst/report/ as installed/EJAM/report/  once pkg is installed
+        file.copy(from = app_sys('report/written_report', i),    # source/EJAM/inst/report/ = installed/EJAM/report/
                   to = file.path(tempdir(), i), 
                   overwrite = TRUE)
       }
@@ -2646,6 +2646,33 @@ app_server <- function(input, output, session) {
       )
     } # end of download function
   ) # end of long report download handler
+  
+  ## 
+    
+    ## build community report page with HTML
+    output$comm_report_html <- renderUI({
+      req(data_processed())
+      
+      rad <- data_processed()$results_overall$radius.miles # input$radius can be changed by user and would alter the report text but should just show what was run not what slider currently says
+      popstr <- prettyNum(total_pop(), big.mark=',')
+      locationstr <- paste0("Residents within ",
+             rad, " mile", ifelse(rad > 1, "s", ""),
+             " of any of the ", NROW(data_processed()$results_bysite)," selected points")
+        
+      ## generate full HTML using external functions
+      full_page <- build_community_report(
+        output_df = data_processed()$results_overall,
+        analysis_title = input$analysis_title,
+        totalpop = popstr, 
+        locationstr = locationstr,
+        include_ejindexes = (input$include_ejindexes == 'TRUE'), 
+        in_shiny = TRUE
+      )
+      ## return generated HTML
+      full_page
+    })
+     # end of observer that send results of calculation to UI
+  
   
   #. ####
   #############################################################################  # 
