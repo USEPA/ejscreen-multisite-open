@@ -124,6 +124,7 @@ ejamit <- function(sitepoints,
                    parallel = FALSE,
                    
                    fips = NULL,
+                   shapefile_folder = NULL,
                    in_shiny = FALSE,
                    need_blockwt = TRUE,
                    
@@ -143,26 +144,28 @@ ejamit <- function(sitepoints,
                    
                    threshold1 = 90 # threshold.default['comp1']
 ) {
-
-  if (!is.null(fips)) {
-    ##   by FIPS not latlons ####
-    # getblocksnearby_from_fips() should include doing something like fips_lead_zero() ? 
-    # but also want to know what type each fips is (probably all should be same like all are tracts or all are county fips)
-
-    radius <- 999 # use this value when analyzing by fips not by circular buffers.
-    
-    mysites2blocks <- getblocksnearby_from_fips(
-      fips = fips,
-      inshiny = inshiny,
-      need_blockwt = need_blockwt
-      )
-    # this should have site = each FIPS code (such as each countyfips), and otherwise same outputs as getblocksnearby()
-    
+  
+  #  1. getblocksnearby() ####
+  
+  ######################## #
+  
+  ## get blocks in POLYGONS / SHAPEFILES ####
+  
+  if (!is.null(shapefile_folder)) {
+    shp <- shapefile_from_folder(folder = shapefile_folder, cleanit = TRUE)  
+    if (!missing(radius)) {
+      # add buffers around the polygons
+      if (!silentinteractive) {cat('Adding buffer around each polygon.\n')}
+      shp <- shape_buffered_from_shapefile(shapefile = shp, radius.miles = radius) # default crs
+    }
+    if (!silentinteractive) {cat('Finding blocks whose internal points are inside each polygon.\n')}
+    mysites2blocks <- (get_blockpoints_in_shape(shp))$pts
+    if (!silentinteractive) {cat('Aggregating at each polygon and overall.\n')}
     out <- suppressWarnings(
       doaggregate(
         sites2blocks = mysites2blocks,
-        # sites2states_or_latlon = unique(mysites2blocks[ , .(siteid, lat, lon)]),
-        radius = radius,  # use artificially large value when analyzing by fips 
+        # 
+        radius = radius,  #  
         countcols = countcols,
         popmeancols = popmeancols,
         calculatedcols = calculatedcols,
@@ -178,78 +181,119 @@ ejamit <- function(sitepoints,
         infer_sitepoints = FALSE
       )
     )
-      } else {
-
-        ## by lat lon not FIPS ####
-
-    if (missing(radius)) {warning(paste0("Using default radius of ", radius, " miles because not provided as parameter."))}
-    if (!missing(quadtree)) {warning("quadtree should not be provided to ejamit() - that is handled by getblocksnearby() ")}
-
-    ################################################################################## #
-    # note this overlaps or duplicates code in app_server.R 
-    #   for data_up_latlon() around lines 81-110 and data_up_frs() at 116-148
     
-    # select file
-    if (missing(sitepoints)) {
-      if (interactive()) {
-        sitepoints <- rstudioapi::selectFile(caption = "Select xlsx or csv with FIPS column of Census fips values", path = '.' )
-      } else {
-        stop("sitepoints (locations to analyze) is missing but required.")
-      }
+  } else {
+    
+    if (!is.null(fips)) {
+      ######################## #    
+      
+      ##  get blocks in FIPS  ####
+      
+      # getblocksnearby_from_fips() should include doing something like fips_lead_zero() ? 
+      # but also want to know what type each fips is (probably all should be same like all are tracts or all are county fips)
+      
+      radius <- 999 # use this value when analyzing by fips not by circular buffers.
+      if (!silentinteractive) {cat('Finding blocks in each FIPS Census unit.\n')}
+      mysites2blocks <- getblocksnearby_from_fips(
+        fips = fips,
+        inshiny = inshiny,
+        need_blockwt = need_blockwt
+      )
+      # this should have site = each FIPS code (such as each countyfips), and otherwise same outputs as getblocksnearby()
+      if (!silentinteractive) {cat('Aggregating at each FIPS Census unit and overall.\n')}
+      out <- suppressWarnings(
+        doaggregate(
+          sites2blocks = mysites2blocks,
+          # sites2states_or_latlon = unique(mysites2blocks[ , .(siteid, lat, lon)]),
+          radius = radius,  # use artificially large value when analyzing by fips 
+          countcols = countcols,
+          popmeancols = popmeancols,
+          calculatedcols = calculatedcols,
+          testing = testing,
+          include_ejindexes = include_ejindexes,
+          updateProgress = updateProgress,
+          need_proximityscore = need_proximityscore,
+          calculate_ratios = calculate_ratios,
+          silentinteractive = silentinteractive,
+          called_by_ejamit = called_by_ejamit,
+          subgroups_type = subgroups_type,
+          extra_demog = extra_demog,
+          infer_sitepoints = FALSE
+        )
+      )
     }
-    # If user entered a table, path to a file (csv, xlsx), or whatever, then read it to get the lat lon values from there
-    #  by using sitepoints <- latlon_from_anything(sitepoints) which gets done by getblocksnearby() 
-    ################################################################################## #
-    
-    #  1. getblocksnearby() ####
-    
-    if (!silentinteractive) {cat('Finding blocks nearby.\n')}
-    
-    mysites2blocks <- getblocksnearby(
-      sitepoints = sitepoints,
-      radius = radius, 
-      maxradius = maxradius,
-      avoidorphans = avoidorphans,
-      # quadtree = localtree,
-      quiet = quiet,
-      parallel = parallel
-      # report_progress_every_n = 500  # would be passed through to getblocksnearbyviaQuadTree()
-      )
-    ################################################################################## #
-    
-    # 2. doaggregate() ####
-    
-    if (!silentinteractive) {cat('Aggregating at each buffer and overall.\n')}
-    
-    out <- suppressWarnings(
-      doaggregate(
-        sites2blocks = mysites2blocks,
-        sites2states_or_latlon = sitepoints, # sites2states_or_latlon = unique(x[ , .(siteid, lat, lon)]))
-        radius = radius,
-        countcols = countcols,
-        popmeancols = popmeancols,
-        calculatedcols = calculatedcols,
-        testing = testing,
-        include_ejindexes = include_ejindexes,
-        updateProgress = updateProgress,
-        need_proximityscore = need_proximityscore,
-        calculate_ratios = calculate_ratios,
-        silentinteractive = silentinteractive,
-        called_by_ejamit = called_by_ejamit,
-        subgroups_type = subgroups_type,
-        extra_demog = extra_demog,
-        infer_sitepoints = infer_sitepoints
-      )
-    )
-    # provide sitepoints table provided by user aka data_uploaded(), (or could pass only lat,lon and ST -if avail- not all cols?)
-    # and doaggregate() decides where to pull ST info from - 
-    # ideally from ST column, 
-    # second from fips of block with smallest distance to site, 
-    # third from lat,lon of sitepoints intersected with shapefile of state bounds
-    
-    
+    if (is.null(fips)) {
+      ######################## #
+      
+      ## get blocks near LAT/LON POINTS  ####
+      
+      if (missing(radius)) {warning(paste0("Using default radius of ", radius, " miles because not provided as parameter."))}
+      if (!missing(quadtree)) {warning("quadtree should not be provided to ejamit() - that is handled by getblocksnearby() ")}
+      
+      ################################################################################## #
+      # note this overlaps or duplicates code in app_server.R 
+      #   for data_up_latlon() around lines 81-110 and data_up_frs() at 116-148
+      
+      # select file
+      if (missing(sitepoints)) {
+        if (interactive()) {
+          sitepoints <- rstudioapi::selectFile(caption = "Select xlsx or csv with FIPS column of Census fips values", path = '.' )
+        } else {
+          stop("sitepoints (locations to analyze) is missing but required.")
+        }
       }
-  # end of lat lon vs FIPS
+      # If user entered a table, path to a file (csv, xlsx), or whatever, then read it to get the lat lon values from there
+      #  by using sitepoints <- latlon_from_anything(sitepoints) which gets done by getblocksnearby() 
+      ################################################################################## #
+      
+      if (!silentinteractive) {cat('Finding blocks nearby.\n')}
+      
+      mysites2blocks <- getblocksnearby(
+        sitepoints = sitepoints,
+        radius = radius, 
+        maxradius = maxradius,
+        avoidorphans = avoidorphans,
+        # quadtree = localtree,
+        quiet = quiet,
+        parallel = parallel
+        # report_progress_every_n = 500  # would be passed through to getblocksnearbyviaQuadTree()
+      )
+      ################################################################################## #
+      
+      # 2. doaggregate() ####
+      
+      if (!silentinteractive) {cat('Aggregating at each buffer and overall.\n')}
+      
+      out <- suppressWarnings(
+        doaggregate(
+          sites2blocks = mysites2blocks,
+          sites2states_or_latlon = sitepoints, # sites2states_or_latlon = unique(x[ , .(siteid, lat, lon)]))
+          radius = radius,
+          countcols = countcols,
+          popmeancols = popmeancols,
+          calculatedcols = calculatedcols,
+          testing = testing,
+          include_ejindexes = include_ejindexes,
+          updateProgress = updateProgress,
+          need_proximityscore = need_proximityscore,
+          calculate_ratios = calculate_ratios,
+          silentinteractive = silentinteractive,
+          called_by_ejamit = called_by_ejamit,
+          subgroups_type = subgroups_type,
+          extra_demog = extra_demog,
+          infer_sitepoints = infer_sitepoints
+        )
+      )
+      # provide sitepoints table provided by user aka data_uploaded(), (or could pass only lat,lon and ST -if avail- not all cols?)
+      # and doaggregate() decides where to pull ST info from - 
+      # ideally from ST column, 
+      # second from fips of block with smallest distance to site, 
+      # third from lat,lon of sitepoints intersected with shapefile of state bounds
+      
+      
+    }
+  }
+  # end of lat lon vs FIPS vs shapefile
   
   ################################################################ # 
   
@@ -299,14 +343,14 @@ ejamit <- function(sitepoints,
       `ECHO report`     = out$results_bysite$`ECHO report`     # rep(NA,nrow(out$results_bysite))
     )]
   } else {
-      out$results_overall[ , `:=`(
-    `EJScreen Report` = NA,   #  rep(NA,nrow(out$results_bysite)),
-    `EJScreen Map`    = NA,    # rep(NA,nrow(out$results_bysite)),
-    # `ACS Report`      = NA,   #  rep(NA,nrow(out$results_bysite)),
-    `ECHO report`     = NA     # rep(NA,nrow(out$results_bysite))
-  )]
+    out$results_overall[ , `:=`(
+      `EJScreen Report` = NA,   #  rep(NA,nrow(out$results_bysite)),
+      `EJScreen Map`    = NA,    # rep(NA,nrow(out$results_bysite)),
+      # `ACS Report`      = NA,   #  rep(NA,nrow(out$results_bysite)),
+      `ECHO report`     = NA     # rep(NA,nrow(out$results_bysite))
+    )]
   }
-
+  
   newcolnames <- c(
     "EJScreen Report",
     "EJScreen Map",
@@ -363,7 +407,7 @@ ejamit <- function(sitepoints,
   out$formatted <- table_tall_from_overall(out$results_overall, out$longnames)
   
   # 5. would be nice to provide the 1pager summary report as html here too
- 
+  
   ################################################################ # 
   if (interactive() & !silentinteractive) {
     
@@ -451,8 +495,8 @@ ejamit <- function(sitepoints,
         "\n\n")
     
     cat("To view or save as excel files, see ?table_xls_from_ejam e.g., table_xls_from_ejam(out, fname = 'out.xlsx')  \n\n")
-  cat('Output is a list with the following names:\n')
-  print(EJAM:::structure.of.output.list(out) )
+    cat('Output is a list with the following names:\n')
+    print(EJAM:::structure.of.output.list(out) )
   }
   ################################################################ # 
   

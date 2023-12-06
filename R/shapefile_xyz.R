@@ -179,6 +179,27 @@ shapefile_from_sitepoints <- function(sitepoints, crs = 4269) {
 ############################################################################################## #
 
 
+#' shape_buffered_from_shapefile - add buffer around shape
+#' @details Just a wrapper for [sf::st_buffer()]
+#'
+#' @param shapefile spatial object like areas at high risk or areas with facilities to be analyzed
+#' @param radius.miles width of buffer to add to shapefile
+#'   (in case dist is a units object, it should be 
+#'   convertible to arc_degree if x has geographic coordinates, 
+#'   and to st_crs(x)$units otherwise)
+#' @param crs used in st_transform()  default is crs = 4269 or Geodetic CRS NAD83 
+#' @param ... passed to st_buffer()
+#' @import sf
+#' @seealso [get_blockpoints_in_shape()] [shapefile_from_sitepoints()] [shape_buffered_from_shapefile_points]
+#' @export
+#' 
+shape_buffered_from_shapefile <- function(shapefile, radius.miles, crs = 4269, ...) {
+  
+  return(sf::st_buffer(shapefile %>%  sf::st_transform(crs = crs), #  
+                       dist = units::set_units(radius.miles, "mi"), ...))
+}
+############################################################################################## #
+
 #' shape_buffered_from_shapefile_points - add buffer around shape (points, here)
 #' @details Just a wrapper for [sf::st_buffer()]
 #'
