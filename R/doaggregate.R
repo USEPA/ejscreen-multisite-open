@@ -107,8 +107,9 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   # ERROR CHECK/ VALIDATE INPUTS ####
   
   if (include_ejindexes & !exists("bgej")) {
-    warning("include_ejindexes set to TRUE but the (very large) bgej file not found, so EJ Indexes will not be returned")
-    include_ejindexes <- FALSE
+    # warning("include_ejindexes set to TRUE but the (very large) bgej file not found, so EJ Indexes will not be returned")
+    # include_ejindexes <- FALSE
+    dataload_from_pins('bgej') # load it on demand when needed
   }
   # But note that names_d_subgroups and related lists should already be defined in built package
   # as either the nh versions or alone versions by the datacreate_names_of_indicators.R script
@@ -187,11 +188,12 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
         radius <- radius_inferred(sites2blocks)
       }
 
-      if (any(sites2blocks$distance > radius)) {message("Restricting this analysis to blocks (residents) at distances smaller than radius of ", radius, 
-                                                        " as specified in radius parameter passed to doaggregate(), or else inferred from distances reported to doaggregate(),
-                                                        even though some larger distances were found in sites2blocks table passed from getblocksnearby() to doaggregate(), 
-                                                        which sometimes occurs if small radius is used where blocks are very large (low pop density), 
-                                                        so reported distance to avg person was > radius requested for analysis")}
+      if (any(sites2blocks$distance > radius)) {message(paste0(
+        "Restricting this analysis to blocks (residents) at distances smaller than radius of ", radius, "\n",
+"as specified in radius parameter passed to doaggregate(), or else inferred from distances reported to doaggregate()\n",
+"even though some larger distances were found in sites2blocks table passed from getblocksnearby() to doaggregate()\n",
+"which sometimes occurs if small radius is used where blocks are very large (low pop density)\n", 
+"so reported distance to avg person was > radius requested for analysis"))}
      # only reporting results for residents at distances <= that apparent cutoff in distance even if large block led to getblocksnearby() reporting distance > radius!')
     # *** note this may eliminate from analysis a site that is in a very large rural block if there are no other blocks nearby and the block very large 
       # -- see notes elsewhere

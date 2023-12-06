@@ -6,7 +6,6 @@
 #' @return vector of URLs
 #' @export
 #'
-#' @examples
 url_countyhealthrankings <- function(fips, year = 2023) {
   
   statename  <- tolower(EJAM::fips2statename( fips))

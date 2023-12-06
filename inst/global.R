@@ -187,7 +187,7 @@ default_subgroups_type <- 'nh'
 # "both" for both versions. Possibly another option is "original" or "default" but work in progress.
 
 default_need_proximityscore <- FALSE
-default_include_ejindexes   <- FALSE
+default_include_ejindexes   <- TRUE
 
 ######################################################## # 
 ### Short report options --------------------- #
