@@ -1173,7 +1173,8 @@ app_server <- function(input, output, session) {
       
       out <- ejamit(fips = data_uploaded(), 
                     silentinteractive = TRUE,
-                    radius = 999, 
+                    radius = 999,
+                    include_ejindexes = (input$include_ejindexes == "TRUE"),
                     subgroups_type = input$subgroups_type,
                     calculate_ratios = input$calculate_ratios,
                     quadtree = localtree,
