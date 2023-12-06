@@ -13,6 +13,7 @@ ejamit(
   quiet = TRUE,
   parallel = FALSE,
   fips = NULL,
+  shapefile_folder = NULL,
   in_shiny = FALSE,
   need_blockwt = TRUE,
   countcols = NULL,
