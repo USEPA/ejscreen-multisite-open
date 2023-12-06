@@ -21,47 +21,48 @@ board <- board_connect(auth = "auto")   # uses  "rsconnect"
 
 # WRITE data objects ####
 
+#                               note   bgej  was a tibble but replaced 12/5/23 with as.data.frame(bgej) version
 board %>% 
   pin_write(x = bgej, 
             name = "bgej", type = "arrow", 
             title = "bgej data from EJScreen for EJAM", 
             description = "data.frame -- approx 243k blockgroups, like blockgroupstats but for EJ Index raw scores, with bgfips, bgid, etc. - See documentation in EJAM package", 
-            versioned = TRUE, metadata = list(upload_date = "11/17/2023", ejscreen_version = "2.2")
+            versioned = TRUE, metadata = list(upload_date = Sys.Date(), ejscreen_version = "2.2")
   )
 board %>% 
   pin_write(x = bgid2fips, 
             name = "bgid2fips", type = "arrow", 
             title = "bgid2fips data for EJAM", 
             description = "data.table of approx 242k blockgroups with Census FIPS for each blockgroup ID - See documentation in EJAM package", 
-            versioned = TRUE, metadata = list(upload_date = "11/17/2023", ejscreen_version = "2.2")
+            versioned = TRUE, metadata = list(upload_date = Sys.Date(), ejscreen_version = "2.2")
   )
 board %>% 
   pin_write(x = blockid2fips, 
             name = "blockid2fips", type = "arrow", 
             title = "blockid2fips data for EJAM", 
             description = "data.table of approx 8 million Census blocks with Census FIPS for each block ID - See documentation in EJAM package", 
-            versioned = TRUE, metadata = list(upload_date = "11/17/2023", ejscreen_version = "2.2")
+            versioned = TRUE, metadata = list(upload_date = Sys.Date(), ejscreen_version = "2.2")
   )
 board %>% 
   pin_write(x = blockpoints, 
             name = "blockpoints", type = "arrow", 
             title = "blockpoints data for EJAM", 
             description = "data.table of approx 8 million Census blocks with blockid, lat, lon - See documentation in EJAM package", 
-            versioned = TRUE, metadata = list(upload_date = "11/17/2023", ejscreen_version = "2.2")
+            versioned = TRUE, metadata = list(upload_date = Sys.Date(), ejscreen_version = "2.2")
   )
 board %>% 
   pin_write(x = quaddata, 
             name = "quaddata", type = "arrow", 
             title = "quaddata data for EJAM", 
             description = "data.table of approx 8 million Census blocks with BLOCK_X, BLOCK_Z, BLOCK_Y, blockid, used to create index of all US block point locations - See documentation in EJAM package", 
-            versioned = TRUE, metadata = list(upload_date = "11/17/2023", ejscreen_version = "2.2")
+            versioned = TRUE, metadata = list(upload_date = Sys.Date(), ejscreen_version = "2.2")
   ) 
 board %>% 
   pin_write(x = blockwts, 
             name = "blockwts", type = "arrow", 
             title = "blockwts data from EJScreen for EJAM", 
             description = "data.table of approx 8 million Census blocks with blockid, bgid, blockwt, block_radius_miles - See documentation in EJAM package", 
-            versioned = TRUE, metadata = list(upload_date = "11/17/2023", ejscreen_version = "2.2")
+            versioned = TRUE, metadata = list(upload_date = Sys.Date(), ejscreen_version = "2.2")
   )
 
 
@@ -86,6 +87,8 @@ board %>% pin_browse("Mark/blockwts")
 ### via R code  ####
 #
 # library(pins)
-# board <- board_connect(server = "https://rstudio-connect.dmap-stage.aws.epa.gov/connect")
+# board <- board_connect(server = "rstudio-connect.dmap-stage.aws.epa.gov")
 ### board <- board_connect(server = server = Sys.getenv("CONNECT_SERVER")) # ??? 
 # bgej <- pin_read(board, "Mark/bgej") 
+# bgej[bgej$ST == "DE", ]  ### IT IS A TIBBLE NOT DT, NOT DF
+
