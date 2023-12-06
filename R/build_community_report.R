@@ -36,8 +36,8 @@ build_community_report <- function(output_df, analysis_title, totalpop, location
     full_page <- paste0(full_page,
                         generate_ej_header(),
                         fill_tbl_full_ej(output_df_rounded), 
-                        generate_ej_supp_header(),
-                        fill_tbl_full_ej_supp(output_df_rounded),
+                        #generate_ej_supp_header(),
+                        #fill_tbl_full_ej_supp(output_df_rounded),
                         collapse='') 
   }
   
