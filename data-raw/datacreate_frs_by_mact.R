@@ -159,6 +159,12 @@ y <- y %>%
 
 ############### # 
 
+## add site counts for MACT Subparts
+mact_counts <- frs_by_mact[, .N, by='subpart'] # EJAM :: frs_by_programid
+mact_table <- dplyr::left_join(EJAM::mact_table, mact_counts)
+mact_table$dropdown_label <- paste0(mact_table$dropdown_label, ' (',prettyNum(mact_table$N, big.mark = ','), ')')
+
+
 setwd("~")
 
 # save in the package
@@ -171,7 +177,11 @@ mact_table <- types
 usethis::use_data(mact_table, overwrite = TRUE)  # data.frame
 
 
+epa_program_counts <- dplyr::count(frs_by_programid, program, name = 'count') # EJAM :: frs_by_programid
+epa_program_counts$pgm_text_dropdown <- paste0(epa_program_counts$program, ' (',prettyNum(epa_program_counts$count, big.mark = ','), ')')
+epa_programs <- setNames(epa_program_counts$program, epa_program_counts$pgm_text_dropdown)
 
+usethis::use_data(epa_programs, overwrite = TRUE) # data.frame
 
 # save(frs_by_mact, file = "frs_by_mact.rda")
 # save(mact_table, "mact_table.rda")

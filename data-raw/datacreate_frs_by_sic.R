@@ -116,5 +116,46 @@ SIC <- sic_cats4 %>%
   ## turn 2-column df into named list (col1 = names, col2 = values)
   deframe() 
 
+## add counts to SIC code names for shiny dropdown
+sic_counts_nosub <- frs_by_sic[, .N, by='SIC']
+sic_counts_names <- enframe(SIC) %>%
+  dplyr::left_join(sic_counts_nosub, by=c('value'='SIC')) %>%
+  dplyr::mutate(name = ifelse(!is.na(N),
+                              paste0(name, ' (', N, ' sites)'), name)) %>%
+  select(-N) %>%
+  deframe()
+
+names(SIC) <- names(sic_counts_names)
+
 #saveRDS(SIC, file='SIC.rds')
-usethis::use_data(SIC)
+usethis::use_data(SIC, overwrite = TRUE)
+
+
+## add counts to NAICS code names for shiny dropdown
+naics_counts_nosub <- frs_by_naics[, .N, by='NAICS']
+naics_counts_names <- enframe(NAICS) %>%
+  dplyr::left_join(naics_counts_nosub, by=c('value'='NAICS')) %>%
+  dplyr::mutate(name = ifelse(!is.na(N),
+                              paste0(name, ' (', N, ' sites)'), name)) %>%
+  select(-N) %>%
+  deframe()
+
+naics_counts_w_subs <- sapply(NAICS, function(x) {frs_from_naics(x, children=T)[, .N]})
+
+naics_counts <- data.frame(NAICS, count_w_subs = naics_counts_w_subs)
+naics_counts <- enframe(NAICS,value='NAICS') %>% 
+  left_join(naics_counts) %>% 
+  dplyr::left_join(naics_counts_nosub) %>% 
+  rename(count_no_subs= N) %>% 
+  mutate(label_w_subs = ifelse(count_w_subs > 0, paste0(name, ' (', 
+                               prettyNum(count_w_subs, big.mark=','),' sites)'),
+                               name
+                               ),
+         label_no_subs = ifelse(!is.na(count_no_subs) & count_no_subs > 0,
+                                paste0(name, ' (', 
+                                       prettyNum(count_no_subs, big.mark=','),' sites)'),
+                                name)
+         )
+
+usethis::use_data(naics_counts, overwrite = TRUE)
+

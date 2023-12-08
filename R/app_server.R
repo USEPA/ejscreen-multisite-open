@@ -140,13 +140,28 @@ app_server <- function(input, output, session) {
   #. ####
   
   # update ss_select_NAICS input options ###
-  updateSelectizeInput(session, inputId = 'ss_select_naics',
-                       ## use named list version, grouped by first two code numbers
-                       #choices = naics_as_list, # need to keep formatting
-                       choices = NAICS, # named list of codes, data loaded with EJAM package
-                       server = TRUE)
+  observeEvent(input$add_naics_subcategories, {
+    #req(input$add_naics_subcategories)
+    
+    ## switch labels based on subcategory radio button
+    if(input$add_naics_subcategories){
+      naics_choices <- setNames(naics_counts$NAICS,naics_counts$label_w_subs)
+    } else{
+      naics_choices <- setNames(naics_counts$NAICS,naics_counts$label_no_subs)
+    }
+    
+    vals <- input$ss_select_naics
+    # update ss_select_NAICS input options ###
+    updateSelectizeInput(session, inputId = 'ss_select_naics',
+                         ## use named list version, grouped by first two code numbers
+                         choices = naics_choices, # need to keep formatting
+                         selected = vals,
+                         #choices = NAICS, # named list of codes, data loaded with EJAM package
+                         server = TRUE)
+  })
+ 
   
-  # update ss_select_NAICS input options ###
+  # update ss_select_SIC input options ###
   updateSelectizeInput(session, inputId = 'ss_select_sic',
                        choices = SIC, # named list of codes
                        server = TRUE)
