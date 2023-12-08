@@ -39,6 +39,9 @@ default_print_uploaded_points_to_log <- TRUE
 ## Raise Memory Limit on file upload to 100Mb  
 options(shiny.maxRequestSize = 100*1024^2) 
 
+## disable autoloading of .R files
+options(shiny.autoload.r = FALSE)
+
 ## Loading/wait spinners (color, type) ####
 ## note: was set at type = 1, but this caused screen to "bounce"
 options(spinner.color = "#005ea2", spinner.type = 4)
