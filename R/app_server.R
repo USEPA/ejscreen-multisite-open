@@ -175,14 +175,14 @@ app_server <- function(input, output, session) {
       input$ss_choose_method,
       'dropdown' = switch(input$ss_choose_method_drop,
                           NAICS =          "NAICS",     # 'NAICS (industry name or code)'
-                          EPA_PROGRAM =    "EPA_PROGRAM",
+                          EPA_PROGRAM =    "EPA_PROGRAM_sel",
                           SIC =            "SIC" ,
                           MACT =           "MACT"),
       'upload'   = switch(input$ss_choose_method_upload,
                           SHP =              "SHP",
                           latlon =           "latlon",    # 'Location (lat/lon)',
                           #latlontypedin =   "latlontypedin",
-                          EPA_PROGRAM =      "EPA_PROGRAM",
+                          EPA_PROGRAM =      "EPA_PROGRAM_up",
                           FRS =              "FRS",       # 'FRS (facility ID)',
                           #ECHO =            "ECHO",      # 'ECHO Search Tools',
                           FIPS =             "FIPS")
@@ -217,7 +217,8 @@ app_server <- function(input, output, session) {
   #invalid_alert <- reactiveVal(NULL)
   
   invalid_alert <- reactiveValues('latlon'=0,'NAICS'=0,'SIC'=0,
-                                       'FRS'=0,'EPA_PROGRAM'=0,
+                                       'FRS'=0,'EPA_PROGRAM_up'=0,
+                                  'EPA_PROGRAM_sel'=0,
                                        'MACT'=0,'FIPS'=0,'SHP'=0)
   
   ## reactive: SHAPEFILES uploaded ####
@@ -233,6 +234,7 @@ app_server <- function(input, output, session) {
     if ("working_HERE?" == "working_NOT_IN_SHINY_ONLY") { # new way. works outside shiny, at least.
       
       if (!shapefile_filepaths_valid(filepaths = infiles)) { # done by shapefile_from_filepaths() too but this allows shiny validate()
+        disable_buttons[['SHP']] <- TRUE
         validate('Not all required file extensions found.')
       }
       shp <- shapefile_from_filepaths(infiles, cleanit = FALSE) # cleanit = FALSE allows shiny to handle that with messages
@@ -242,8 +244,10 @@ app_server <- function(input, output, session) {
       if (is.null(shp)) {
         invalid_alert[['SHP']] <- 0 # hides the invalid site warning
         an_map_text_shp(HTML(NULL)) # hides the count of uploaded shapes
+        disable_buttons[['SHP']] <- TRUE
         shiny::validate('No shapes found in file uploaded.')
       }
+      disable_buttons[['SHP']] <- FALSE
       shp
       ####### #    #######     ####### #
     } else {
@@ -252,6 +256,7 @@ app_server <- function(input, output, session) {
       
       infile_ext <- tools::file_ext(infiles)
       if (!all(c('shp','shx','dbf','prj') %in% infile_ext)) {
+        disable_buttons[['SHP']] <- TRUE
         shiny::validate('Not all required file extensions found.')
       }
       dir <- unique(dirname(infiles)) # get the directory (the real one? or temp one from shiny??)
@@ -270,9 +275,11 @@ app_server <- function(input, output, session) {
       } else {
         invalid_alert[['SHP']] <-0 # hides the invalid site warning
         an_map_text_shp(HTML(NULL)) # hides the count of uploaded sites/shapes
-        ## if not matched, return this message
+        disable_buttons[['SHP']] <- TRUE
+         ## if not matched, return this message
         shiny::validate('No shapes found in file uploaded.')
       }
+      disable_buttons[['SHP']] <- FALSE
       shp_proj
     }
     
@@ -365,10 +372,12 @@ app_server <- function(input, output, session) {
          latlon_df_clean() #%>%   # This does latlon_infer() and latlon_as.numeric() and latlon_is.valid()
       #data.table::as.data.table()
       cat("ROW COUNT after latlon_df_clean(): ", NROW(sitepoints), "\n")
+      disable_buttons[['latlon']] <- FALSE
       sitepoints
     } else {
       invalid_alert[['latlon']] <- 0 # hides the invalid site warning
-      an_map_text_pts(HTML(NULL)) # hides the count of uploaded sites
+      an_map_text_pts[['latlon']] <- NULL # hides the count of uploaded sites
+      disable_buttons[['latlon']] <- TRUE
       ## if not matched, show this message instead
       shiny::validate('No coordinate columns found.')
     }
@@ -409,11 +418,13 @@ app_server <- function(input, output, session) {
       data.table::setDT(sitepoints) # same but less memory/faster?
     } else {
       invalid_alert[['FRS']] <- 0 # hides the invalid site warning
-      an_map_text_pts(HTML(NULL)) # hides the count of uploaded sites
+      an_map_text_pts[['FRS']] <- NULL # hides the count of uploaded sites
+      disable_buttons[['FRS']] <- TRUE
       shiny::validate('Records with invalid Registry IDs')
     }
     ## return merged dataset
     cat("SITE COUNT VIA FRS frs_is_valid() looking for REGISTRY_ID: ", NROW(sitepoints), "\n")
+    disable_buttons[['FRS']] <- FALSE
     sitepoints
   })
   
@@ -450,6 +461,9 @@ app_server <- function(input, output, session) {
         # print(sitepoints)
         if (rlang::is_empty(sitepoints) | nrow(sitepoints) == 0) {
           ################ Should output something saying no valid results returned ######## #
+          invalid_alert[['NAICS']] <- 0 # hides the invalid site warning
+          an_map_text_pts[['NAICS']] <- NULL # hides the count of uploaded sites
+          disable_buttons[['NAICS']] <- TRUE
           shiny::validate('No Results Returned')
         }
       } else{  
@@ -459,7 +473,8 @@ app_server <- function(input, output, session) {
       }
     } else {
       invalid_alert[['NAICS']] <- 0 # hides the invalid site warning
-      an_map_text_pts(HTML(NULL)) # hides the count of uploaded sites
+      an_map_text_pts[['NAICS']] <- NULL # hides the count of uploaded sites
+      disable_buttons[['NAICS']] <- TRUE
       ################ Should output something saying no valid results returned ######## #
       shiny::validate('Invalid NAICS Input')
       
@@ -468,6 +483,7 @@ app_server <- function(input, output, session) {
     ## assign final value to data_up_naics reactive variable
     sitepoints <- sitepoints %>% latlon_df_clean()
     cat("SITE COUNT VIA NAICS after latlon_df_clean: ", NROW(sitepoints), "\n")
+    disable_buttons[['NAICS']] <- FALSE
     sitepoints
   })
   
@@ -476,12 +492,12 @@ app_server <- function(input, output, session) {
   #############################################################################  # 
   ## reactive: latlon by EPA Program IDs ####
   
-  data_up_epa_program <- reactive({
+  data_up_epa_program_up <- reactive({
     ## wait for file to be uploaded
-    req(isTruthy(input$ss_upload_program) || isTruthy(input$ss_select_program))
+    req(isTruthy(input$ss_upload_program))
     #req(input$submit_program)
     
-    if (input$ss_choose_method_upload == 'EPA_PROGRAM') {
+    #if (input$ss_choose_method_upload == 'EPA_PROGRAM') {
       #if (input$program_ul_type == 'upload') {
       req(input$ss_upload_program)
       
@@ -497,8 +513,9 @@ app_server <- function(input, output, session) {
       cat("ROW COUNT IN file that should have program, pgm_sys_id: ", NROW(read_pgm), "\n")
       ## error if no columns provided
       if (!any(c('program','pgm_sys_id') %in% tolower(colnames(read_pgm)))) {
-        invalid_alert[['EPA_PROGRAM']] <- 0 # hides the invalid site warning
-        an_map_text_pts(HTML(NULL)) # hides the count of uploaded sites
+        invalid_alert[['EPA_PROGRAM_up']] <- 0 # hides the invalid site warning
+        an_map_text_pts[['EPA_PROGRAM_up']] <- NULL# hides the count of uploaded sites
+        disable_buttons[['EPA_PROGRAM_up']] <- TRUE
         validate('Please add a file with at least these two columns: program, pgm_sys_id \n and possibly these columns as well: REGISTRY_ID,lat,lon')
       }
       
@@ -532,16 +549,29 @@ app_server <- function(input, output, session) {
         latlon_df_clean()
       
       #} else if (input$program_ul_type == 'dropdown') {
-    } else if (input$ss_choose_method_drop == 'EPA_PROGRAM') { 
+    #} 
+    ## return output dataset
+    cat("SITE COUNT VIA PROGRAM ID: ", NROW(pgm_out), "\n")
+    disable_buttons[['EPA_PROGRAM_up']] <- FALSE
+    pgm_out
+  })
+  
+  data_up_epa_program_sel <- reactive({
+    ## wait for file to be uploaded
+    #req(isTruthy(input$ss_select_program))
+    #req(input$submit_program)
+    
+   #if (input$ss_choose_method_drop == 'EPA_PROGRAM') { 
       req(isTruthy(input$ss_select_program))
       ## filter frs_by_programid to currently selected program
       pgm_out <- frs_by_programid[ program == input$ss_select_program]
       ## clean so that any invalid latlons become NA
       pgm_out <- pgm_out %>% 
         latlon_df_clean()
-    }
+    #}
     ## return output dataset
     cat("SITE COUNT VIA PROGRAM ID: ", NROW(pgm_out), "\n")
+    disable_buttons[['EPA_PROGRAM_sel']] <- FALSE
     pgm_out
   })
   
@@ -578,7 +608,8 @@ app_server <- function(input, output, session) {
           ################ Should output something saying no valid results returned ######## #
           
           invalid_alert[['SIC']] <- 0 # hides the invalid site warning
-          an_map_text_pts(HTML(NULL)) # hides the count of uploaded sites
+          an_map_text_pts[['SIC']] <- NULL # hides the count of uploaded sites
+          disable_buttons[['SIC']] <- TRUE
           shiny::validate('No Results Returned')
         }
       } else {
@@ -587,12 +618,14 @@ app_server <- function(input, output, session) {
       }
     } else {
       invalid_alert[['SIC']] <- 0 # hides the invalid site warning
-      an_map_text_pts(HTML(NULL)) # hides the count of uploaded sites
+      an_map_text_pts[['SIC']] <- NULL # hides the count of uploaded sites
       ################ Should output something saying no valid results returned ######## #
+      disable_buttons[['SIC']] <- TRUE
       shiny::validate('Invalid SIC Input')
     }
     cat("SITE COUNT VIA SIC: ", NROW(sitepoints), "\n")
     ## assign final value to data_up_naics reactive variable
+    disable_buttons[['SIC']] <- FALSE
     return(sitepoints)
   })
   
@@ -616,10 +649,22 @@ app_server <- function(input, output, session) {
     if (1 == 1) {
       
       fips_vec <- fips_from_table(fips_table = fips_dt, addleadzeroes = TRUE, inshiny = TRUE)
-      cat("COUNT OF FIPS via fips_from_table(): ", length(fips_vec), '\n')
-      # now let ejamit() do the rest for the FIPS case
-      fips_vec
-      
+      #fips_vec <- fips_out$vec
+
+      if(is.null(fips_vec)){
+        disable_buttons[['FIPS']] <- TRUE
+        invalid_alert[['FIPS']] <-0  # hides the invalid site warning
+        an_map_text_fips(HTML(NULL)) # hides the count of uploaded sites
+        fips_alias <- c('FIPS','fips','fips_code','fipscode','Fips','statefips','countyfips', 'ST_FIPS','st_fips','ST_FIPS','st_fips', 'FIPS.ST', 'FIPS.COUNTY', 'FIPS.TRACT')
+        
+        validate(paste0('No FIPS column found. Please use one of the following names: ', paste0(fips_alias, collapse = ', ')))
+      } else{
+        disable_buttons[['FIPS']] <- FALSE
+        cat("COUNT OF FIPS via fips_from_table(): ", length(fips_vec), '\n')
+        # now let ejamit() do the rest for the FIPS case
+        fips_vec
+      }
+     
     } else {  # OLDER VERSION NOT USING FUNCTIONS
       
       ## create named vector of FIPS codes (names used as siteid)
@@ -631,6 +676,7 @@ app_server <- function(input, output, session) {
       } else {
         invalid_alert[['FIPS']] <-0  # hides the invalid site warning
         an_map_text_fips(HTML(NULL)) # hides the count of uploaded sites
+        disable_buttons[['FIPS']] <- TRUE
         validate(paste0('No FIPS column found. Please use one of the following names: ', paste0(fips_alias, collapse = ', ')))
       }
       ## create two-column dataframe with bgs (values) and original fips (ind)
@@ -652,10 +698,14 @@ app_server <- function(input, output, session) {
           data.table::as.data.table()
         ## remove any invalid latlon values 
         cat("COUNT OF blocks BASED ON FIPS: ", NROW(fips_blockpoints), '\n')
-        return(fips_blockpoints)
+        disable_buttons[['FIPS']] <- FALSE
+        
+         return(fips_blockpoints)
       } else {
         invalid_alert[['FIPS']] <- 0 # hides the invalid site warning
         an_map_text_fips(HTML(NULL)) # hides the count of uploaded sites
+        disable_buttons[['FIPS']] <- TRUE
+        
         ## if not matched, return this message
         shiny::validate('No blockgroups found for these FIP codes.')
       }
@@ -678,9 +728,12 @@ app_server <- function(input, output, session) {
     cat("COUNT OF FACILITIES BY MACT with lat lon values: ", NROW(mact_out), "\n")
     if (all(is.na(mact_out$lat)) & all(is.na(mact_out$lon))) {
       invalid_alert[['MACT']] <- nrow(mact_out)
-      an_map_text_pts(HTML(NULL))
+      an_map_text_pts[['MACT']] <- NULL
+      disable_buttons[['MACT']] <- TRUE
       validate('No valid locations found under this MACT subpart')
     } else {
+      disable_buttons[['MACT']] <- FALSE
+      
       ## return output dataset
       mact_out
     }
@@ -700,7 +753,8 @@ app_server <- function(input, output, session) {
     } else if (current_upload_method() == 'NAICS'         ) {data_up_naics()
     } else if (current_upload_method() == 'FRS'           ) {data_up_frs()
       #} else if (current_upload_method() == 'ECHO'          ) {data_up_echo()
-    } else if (current_upload_method() == 'EPA_PROGRAM'   ) {data_up_epa_program()
+    } else if (current_upload_method() == 'EPA_PROGRAM_sel'   ) {data_up_epa_program_sel()
+    } else if (current_upload_method() == 'EPA_PROGRAM_up'   ) {data_up_epa_program_up()
     } else if (current_upload_method() == 'SIC'           ) {data_up_sic()
     } else if (current_upload_method() == 'FIPS'          ) {data_up_fips() # blocks nearby, not lat/lon values
     } else if (current_upload_method() == 'MACT'          ) {data_up_mact()
@@ -710,12 +764,21 @@ app_server <- function(input, output, session) {
   })
   #############################################################################  # 
   
+  disable_buttons <- reactiveValues('FIPS'=TRUE,'SHP'=TRUE,
+                                    'latlon'=TRUE,'FRS'=TRUE,
+                                    'EPA_PROGRAM_up'=TRUE,'EPA_PROGRAM_sel'=TRUE,
+                                    'NAICS'=TRUE,'SIC'=TRUE,
+                                    'MACT'=TRUE)
+  
   ## disable run, hide preview button, until an upload. input$ss_upload_latlon or whatever and current_upload_method() say there is data uploaded; then enable and show
   observe({
     
-    if        (current_upload_method() == 'latlon') {
-      if (!isTruthy(input$ss_upload_latlon)) {
+    if (current_upload_method() == 'latlon') {
+      #if (!isTruthy(input$ss_upload_latlon)) {
+      if(disable_buttons[['latlon']]){
         shinyjs::disable(id = 'bt_get_results'); shinyjs::hide(id = 'show_data_preview')
+        invalid_alert[[current_upload_method()]] <- 0
+        an_map_text_pts[[current_upload_method()]] <- NULL
       } else {
         shinyjs::enable( id = 'bt_get_results'); shinyjs::show(id = 'show_data_preview')
       }
@@ -728,58 +791,91 @@ app_server <- function(input, output, session) {
     #   }
       
     } else if (current_upload_method() == 'FRS') {
-      if (!isTruthy(input$ss_upload_frs)) {
+      #if (!isTruthy(input$ss_upload_frs)) {
+      if(disable_buttons[['FRS']]){
         shinyjs::disable(id = 'bt_get_results'); shinyjs::hide(id = 'show_data_preview')
-      } else {
+        invalid_alert[[current_upload_method()]] <- 0
+        an_map_text_pts[[current_upload_method()]] <- NULL
+        } else {
         shinyjs::enable( id = 'bt_get_results'); shinyjs::show(id = 'show_data_preview')
       }
       
     } else if (current_upload_method() == 'NAICS') {
-      if (!isTruthy(input$ss_select_naics)) {
+      #if (!isTruthy(input$ss_select_naics)) {
+      if(disable_buttons[['NAICS']]){
         shinyjs::disable(id = 'bt_get_results'); shinyjs::hide(id = 'show_data_preview')
-      } else {
+        invalid_alert[[current_upload_method()]] <- 0
+        an_map_text_pts[[current_upload_method()]] <- NULL
+        } else {
         shinyjs::enable( id = 'bt_get_results'); shinyjs::show(id = 'show_data_preview')
       }
       
-    } else if (current_upload_method() == 'EPA_PROGRAM') {
-      if ((input$ss_choose_method == 'upload' & !isTruthy(input$ss_upload_program)) |
-          (input$ss_choose_method == 'dropdown' & !isTruthy(input$ss_select_program))) {
+    } else if (current_upload_method() == 'EPA_PROGRAM_up') {
+      if(disable_buttons[['EPA_PROGRAM_up']]){
+      #if ((input$ss_choose_method == 'upload' & !isTruthy(input$ss_upload_program)) |
+      #    (input$ss_choose_method == 'dropdown' & !isTruthy(input$ss_select_program))) {
         shinyjs::disable(id = 'bt_get_results'); shinyjs::hide(id = 'show_data_preview')
-      } else {
+        invalid_alert[[current_upload_method()]] <- 0
+        an_map_text_pts[[current_upload_method()]] <- NULL
+        } else {
         shinyjs::enable( id = 'bt_get_results'); shinyjs::show(id = 'show_data_preview')
       }
       
+    } else if (current_upload_method() == 'EPA_PROGRAM_sel') {
+      if(disable_buttons[['EPA_PROGRAM_sel']]){
+        #if ((input$ss_choose_method == 'upload' & !isTruthy(input$ss_upload_program)) |
+        #    (input$ss_choose_method == 'dropdown' & !isTruthy(input$ss_select_program))) {
+        shinyjs::disable(id = 'bt_get_results'); shinyjs::hide(id = 'show_data_preview')
+        invalid_alert[[current_upload_method()]] <- 0
+        an_map_text_pts[[current_upload_method()]] <- NULL
+      } else {
+        shinyjs::enable( id = 'bt_get_results'); shinyjs::show(id = 'show_data_preview')
+      }
     } else if (current_upload_method() == 'SIC') {
-      if (!isTruthy(input$ss_select_sic)) {
+      if(disable_buttons[['SIC']]){
+      #if (!isTruthy(input$ss_select_sic)) {
         shinyjs::disable(id = 'bt_get_results'); shinyjs::hide(id = 'show_data_preview')
-      } else {
+        invalid_alert[[current_upload_method()]] <- 0
+        an_map_text_pts[[current_upload_method()]] <- NULL
+         } else {
         shinyjs::enable( id = 'bt_get_results'); shinyjs::show(id = 'show_data_preview')
       }
       
     } else if (current_upload_method() == 'FIPS') {
-      if (!isTruthy(input$ss_upload_fips)) {
+      #if (!isTruthy(input$ss_upload_fips)) {
+       if(disable_buttons[['FIPS']]){
+        #if(isTruthy(data_up_fips())){
         shinyjs::disable(id = 'bt_get_results'); shinyjs::hide(id = 'show_data_preview')
-      } else {
+        invalid_alert[[current_upload_method()]] <- 0
+        an_map_text_fips(HTML(NULL))
+        } else {
         shinyjs::enable( id = 'bt_get_results'); shinyjs::show(id = 'show_data_preview')
       }
       
     } else if (current_upload_method() == 'MACT') {
-      if (!isTruthy(input$ss_select_mact)) {
+      if(disable_buttons[['MACT']]){
+      #if (!isTruthy(input$ss_select_mact)) {
         shinyjs::disable(id = 'bt_get_results'); shinyjs::hide(id = 'show_data_preview')
-      } else {
+        invalid_alert[[current_upload_method()]] <- 0
+        an_map_text_pts[[current_upload_method()]] <- NULL
+        } else {
         shinyjs::enable( id = 'bt_get_results'); shinyjs::show(id = 'show_data_preview')
       }
       
     } else if (current_upload_method() == 'SHP') {
-      if (!isTruthy(input$ss_upload_shp)) {
+      if(disable_buttons[['SHP']]){
+      #if (!isTruthy(input$ss_upload_shp)) {
         shinyjs::disable(id = 'bt_get_results'); shinyjs::hide(id = 'show_data_preview')
-      } else {
+        invalid_alert[[current_upload_method()]] <- 0
+        an_map_text_shp <- NULL
+        } else {
         shinyjs::enable(id = 'bt_get_results'); shinyjs::show(id = 'show_data_preview')
       }
     }
     
     cat("Enabled/disabled button to get results, and showed/hid data preview based on current_upload_method() ==  ", current_upload_method(), "\n\n")
   })
+  
   #############################################################################  # 
   #. ####
   # ______ VIEW SITES (uploaded; not yet processed) ####
@@ -867,7 +963,13 @@ app_server <- function(input, output, session) {
   })
   
   ## initialize reactive for count of uploaded points
-  an_map_text_pts <- reactiveVal(HTML(NULL))
+  #an_map_text_pts <- reactiveVal(NULL)
+  
+  an_map_text_pts <-  reactiveValues('latlon'=NULL,
+                                     'NAICS'=NULL,'SIC'=NULL,
+                                     'FRS'=NULL,'EPA_PROGRAM_up'=NULL,
+                                     'EPA_PROGRAM_sel'=NULL,
+                                     'MACT'=NULL)
   
   observe({
     req(data_uploaded())
@@ -896,19 +998,23 @@ app_server <- function(input, output, session) {
       "<span style='border: 1px solid #005ea2; padding: 10px;'>Total location(s) uploaded: <strong>", prettyNum(num_na + num_notna, big.mark = ","),"</strong></span>"
       #"<br>","Site(s) with invalid lat/lon values: <strong>", prettyNum(num_na,big.mark=","), "</strong>","</span>"
     ))
-    an_map_text_pts(msg)
+    an_map_text_pts[[current_upload_method()]] <- msg
     }
   })
   
   ## Which points are valid?(and  how many; warn if 0) ####
   output$an_map_text <- renderUI({
 
+    req(data_uploaded())
     if(current_upload_method() == 'SHP'){
       an_map_text_shp()
-    }else if(current_upload_method() == 'FIPS'){
+    }else if(current_upload_method() == 'FIPS' ){
       an_map_text_fips()
+    } else if(current_upload_method() %in% c('MACT','latlon','FRS','NAICS','SIC',
+                                             'EPA_PROGRAM_up','EPA_PROGRAM_sel')){
+      an_map_text_pts[[current_upload_method()]]
     } else {
-      an_map_text_pts()
+      HTML(NULL)
     }
    
   })
@@ -1035,7 +1141,8 @@ app_server <- function(input, output, session) {
   
   ## create different radius values for each site selection type
   current_slider_val <- reactiveValues('latlon'=1,'NAICS'=1,'SIC'=1,
-                                       'FRS'=1,'EPA_PROGRAM'=1,
+                                       'FRS'=1,'EPA_PROGRAM_up'=1,
+                                       'EPA_PROGRAM_sel'=1,
                                        'MACT'=1,'FIPS'=0,'SHP'=0)
   ## update stored radius when slider changes
   observeEvent(

@@ -297,7 +297,7 @@ app_ui  <- function(request) {
                                      ## named vector in global.R - values are acronyms, 
                                      ## names include # of rows corresponding to that program
                                      choices = epa_programs, 
-                                     selected = default_selected, # not sure this is a good idea but trying it out
+                                     selected = default_epa_program_selected, # not sure this is a good idea but trying it out
                                      ## add X to remove selected options from list
                                      options = list('plugins' = list('remove_button'))),
                     ), # end conditional panel EPA programs

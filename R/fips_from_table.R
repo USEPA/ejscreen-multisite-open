@@ -26,7 +26,8 @@ fips_from_table <- function(fips_table, addleadzeroes=TRUE, inshiny=FALSE) {
     
   } else {
     if (inshiny) {  # IF IN A SHINY REACTIVE:
-      validate(paste0('No FIPS column found. Please use one of the following names: ', paste0(fips_alias, collapse = ', ')))
+     
+      fips_vec <- NULL
     } else {
       # outside shiny:
       stop(    paste0('No FIPS column found. Please use one of the following names: ', paste0(fips_alias, collapse = ', ')))
