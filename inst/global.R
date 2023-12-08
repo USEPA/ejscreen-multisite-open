@@ -98,12 +98,7 @@ meters_per_mile <- 1609.344
 ######################################################## # 
 ## EPA Programs (to limit NAICS/ facilities query) #### 
 ## used by inputId 'ss_limit_fac1' and 'ss_limit_fac2'
-# see frsprogramcodes data object also
-## add counts to program acronyms to use in dropdown display
-epa_program_counts <- dplyr::count(frs_by_programid, program, name = 'count') # EJAM :: frs_by_programid
-epa_program_counts$pgm_text_dropdown <- paste0(epa_program_counts$program, ' (',prettyNum(epa_program_counts$count, big.mark = ','), ')')
-epa_programs <- setNames(epa_program_counts$program, epa_program_counts$pgm_text_dropdown)
-default_selected <- "CAMDBS" # has only about 739 sites
+default_epa_program_selected <- "CAMDBS" # has only about 739 sites
 # cbind(epa_programs)
 # sort(unique(frs_by_programid$program)) # similar  # EJAM :: frs_by_programid
 
@@ -242,66 +237,6 @@ threshgroup.default <- list(
 ################################################################# # 
 # END OF DEFAULTS / OPTIONS / SETUP
 ################################################################# # 
-
-######################################################## # 
-# ~ ####
-######################################################## # 
-# HTML OUTLINE FOR FULL REPORT ####
-
-# report is in    /EJAM/www/  ? or maybe /EJAM/inst/app/www/ ?
-
-report_outline <- "
-<div style = 'height: 90vh; overflow-y: auto;'>
-    <ol>
-        <li>Executive Summary</li>
-        <ol type='a'>    
-            <li>Broad overview of findings</li>
-            <li>Summary of findings</li>
-            <ol type='i'>
-                <li>Demographics overall</li>
-                <li>Demographics at key sites</li>
-                <li>Environment overall</li>
-                <li>Environment at key sites</li>
-                <li>Cumulative impacts at key sites</li>
-            </ol>
-        </ol>
-        <li>Introduction</li>
-        <li>Methods</li>
-            <ol type='a'>
-                <li>Selection of sites analyzed</li>
-                <li>Estimating locations and population counts of residents</li>
-                <ol type='i'>
-                    <li>Spatial resolution of data</li>
-                    <li>Analytic method for buffering, and tools used to implement that method</li>
-                </ol>
-                <li>Demographic and environmental indicators</li>
-            </ol>
-        <li>Findings</li>
-            <ol type='a'>
-                <li>Text on Findings</li>
-                <li>Data Table 1</li>
-                <li>Data Table 2</li>
-                <li>Data Viz 1 - Barplot</li>
-                <li>Data Viz 2 - Map</li>
-                <li>Data Viz 3 - Boxplots</li>
-            </ol>
-        <li>Notes on creating this document</li>
-            <ol type='a'>
-                <li>Notes on formatting for a manuscript</li>
-                <li>Bibliography styles</li>
-                <li>Equations</li>
-            </ol>
-        <li>Appendices</li>
-            <ol type='a'>
-                <li>Competing interests</li>
-                <li>Author contributions</li>
-                <li>Acknowledgments</li>
-                <li>List of Abbreviations</li>
-            </ol>
-        <li>References</li>
-    </ol>
-</div>"
-# ~ ####
 
 # HELP TEXT ####
 
