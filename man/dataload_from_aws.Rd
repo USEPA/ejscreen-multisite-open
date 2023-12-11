@@ -11,7 +11,7 @@ dataload_from_aws(
   envir = globalenv(),
   mybucket = "dmap-data-commons-oa",
   mybucketfolder = "EJAM",
-  folder_local_source = "~/../Downloads",
+  folder_local_source = "./data/",
   justchecking = FALSE,
   check_server_even_if_justchecking = TRUE,
   testing = FALSE

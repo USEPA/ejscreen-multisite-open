@@ -68,7 +68,7 @@
     
     if (length(try(find.package("EJAM", quiet = T))) == 1) { # if it has been installed. but that function has to have already been added to package namespace once 
       
-      dataload_from_aws() # EJAM function ... but does it have to say EJAM :: here? trying to avoid having packrat see that and presume EJAM pkg must be installed for app to work. ***
+      dataload_from_local(folder_local_source = './data/') # EJAM function ... but does it have to say EJAM :: here? trying to avoid having packrat see that and presume EJAM pkg must be installed for app to work. ***
       
     }
     

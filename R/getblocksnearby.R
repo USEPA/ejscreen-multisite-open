@@ -57,8 +57,9 @@ getblocksnearby  <- function(sitepoints, radius=3, maxradius=31.07,
       if (!exists("quaddata") | !exists("blockwts") | !exists("blockpoints") | !exists("bgid2fips")) {
         # should 
         cat('census block data file(s) not already loaded, so key data will now be downloaded (or loaded from a local copy if possible)...\n')
-        dataload_from_aws() # loads quaddata needed to make localtree index, and several other large files pkg uses.
-      }
+         # loads quaddata needed to make localtree index, and several other large files pkg uses.
+        dataload_from_local(ext='.arrow')
+              }
       # need to pause here?
       # localtree <- SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point")
       indexblocks() # not really tested yet in this context

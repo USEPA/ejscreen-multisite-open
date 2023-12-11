@@ -21,7 +21,7 @@ dataload_from_local <- function(varnames= c('bgid2fips',
                                 ext=c(".arrow", ".rda")[1],
                                 fun=c("arrow::read_ipc_file", "load")[1],
                                 envir=globalenv(),  # should it be parent or global or package EJAM envt ??
-                                folder_local_source = "~/../Downloads", 
+                                folder_local_source = './data/',#"~/../Downloads", 
                                 justchecking = FALSE, 
                                 testing=FALSE) {
   # if (interactive()) {

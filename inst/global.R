@@ -5,11 +5,14 @@
 #   source(system.file("global.R", package = "EJAMejscreenapi"))
 
 # ------------------------ ____ Get packages, functions, data ---------------------------------  ####
-require(shiny) # remove?
+library(shiny) # remove?
 # LOAD data and INDEX BLOCKS ####
 ##         Note this duplicates code in .onAttach()
 # EJAM ::
-dataload_from_aws()  # SLOW STEP !! loads only missing ones # see ?dataload_from_aws for details 
+#dataload_from_aws()  # SLOW STEP !! loads only missing ones # see ?dataload_from_aws for details 
+dataload_from_pins(varnames = c('bgej','bgid2fips', 'blockpoints','blockwts','quaddata'),
+                   folder_local_source = './data/'
+                      )
 # EJAM ::
 indexblocks() # see ?indexblocks() for details. takes several seconds. 
 # EJAM ::

@@ -46,3 +46,6 @@ packrat/lib*/
 
 /doc/
 /Meta/
+
+# large datasets stored as .arrow
+/data/*.arrow
