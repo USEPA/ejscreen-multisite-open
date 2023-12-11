@@ -189,9 +189,10 @@ board %>% pins::pin_browse("Mark/frs")
 #
 # # or generally: 
 #### dataload_from_pins()   
-# # or 
+# # which mostly does something similar to this:
+# b_vars <- c('blockwts', 'quaddata', 'blockpoints', 'blockid2fips', 'bgid2fips', 'bgej')
 # frs_vars <- c('frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact")
-# for (varname in frs_vars) {
+# for (varname in c(frs_vars, b_vars)) {
 #   assign(varname, value = pins::pin_read(board, paste0("Mark/", varname)))
 # }
 

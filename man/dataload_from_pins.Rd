@@ -6,7 +6,7 @@
 \usage{
 dataload_from_pins(
   varnames = c("blockwts", "quaddata", "blockpoints", "blockid2fips", "bgid2fips",
-    "bgej"),
+    "bgej", c("frs", "frs_by_programid", "frs_by_naics", "frs_by_sic", "frs_by_mact")),
   boardfolder = "Mark",
   auth = "auto",
   server = "https://rstudio-connect.dmap-stage.aws.epa.gov",
