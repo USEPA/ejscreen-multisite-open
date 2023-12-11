@@ -2109,7 +2109,7 @@ app_server <- function(input, output, session) {
       #dplyr::bind_rows(dt_avg) %>% 
       #dplyr::bind_rows(dt_overall) %>% 
       ## sort by Site ID - as numeric index
-      dplyr::arrange(siteid) %>% 
+      #dplyr::arrange(siteid) %>% 
       #dplyr::arrange(dplyr::desc(pop)) %>% 
       dplyr::mutate(pop = prettyNum(round(pop), big.mark = ',')) %>% 
       dplyr::left_join(stateinfo %>% dplyr::select(ST, statename, REGION), by = 'ST') %>% 
