@@ -2066,8 +2066,7 @@ app_server <- function(input, output, session) {
     )
     friendly_names <- c('Site ID', 'Est. Population',  'EJScreen Report', 'EJScreen Map', 'ECHO report', #'ACS Report', 
                         names_d_friendly, names_d_subgroups_friendly, 
-                        names_e_friendly, 
-                        '# of indicators above 95% threshold', 'State', 'EPA Region')
+                        names_e_friendly)
     
     ejcols          <- c(names_ej,          names_ej_state,          names_ej_supp,          names_ej_supp_state)
     ejcols_friendly <- c(names_ej_friendly, names_ej_state_friendly, names_ej_supp_friendly, names_ej_supp_state_friendly)
@@ -2075,6 +2074,8 @@ app_server <- function(input, output, session) {
     cols_to_select <- c(cols_to_select, ejcols[         which_ejcols_here] )
     friendly_names <- c(friendly_names, ejcols_friendly[which_ejcols_here])
     
+    friendly_names <- c(friendly_names, 
+                        '# of indicators above 90% threshold', 'State', 'EPA Region')
     # --------------------------------------------------- #
     
     # dt_overall <- data_processed()$results_overall %>% 
@@ -2118,12 +2119,12 @@ app_server <- function(input, output, session) {
     colnames(dt_final) <- friendly_names
     
     dt_final <- dt_final %>% 
-      dplyr::relocate(c(State, 'EPA Region', '# of indicators above 95% threshold'), .before = 2) # *** this cutoff should be dynamic, set by probs.default.values etc./ inputs
+      dplyr::relocate(c(State, 'EPA Region', '# of indicators above 90% threshold'), .before = 2) # *** this cutoff should be dynamic, set by probs.default.values etc./ inputs
     
     ## set # of indicators above threshold to NA if population = 0
     dt_final <- dt_final %>%
-      dplyr::mutate(`# of indicators above 95% threshold` = ifelse(`Est. Population` ==0, 'N/A',
-                                                                   `# of indicators above 95% threshold`))
+      dplyr::mutate(`# of indicators above 90% threshold` = ifelse(`Est. Population` ==0, 'N/A',
+                                                                   `# of indicators above 90% threshold`))
     
     n_cols_freeze <- 1
     
@@ -2135,7 +2136,7 @@ app_server <- function(input, output, session) {
                   ## add column filters (confirm that does work)
                   filter = 'top',
                   ## allow selection of one row at a time (remove to allow multiple)
-                  selection = 'single',
+                  #selection = 'single',
                   ## add-in for freezing columns
                   extensions = c('FixedColumns'),
                   options = list(
