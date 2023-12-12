@@ -2541,6 +2541,44 @@ app_server <- function(input, output, session) {
   # other plot ideas
   # https://exts.ggplot2.tidyverse.org/gallery/
   
+  output$summ_hist_ind <- renderUI({
+    
+    if((input$include_ejindexes == "TRUE")){
+      
+      if(input$summ_hist_data == 'pctile'){
+        nms <-  c(names_d_pctile,
+                  names_d_subgroups_pctile,
+                  names_e_pctile, names_ej_pctile,
+                  names_ej_supp_pctile)
+        
+      } else if(input$summ_hist_data == 'raw'){
+        nms <-  c(names_d,
+                  names_d_subgroups,
+                  names_e, names_ej, names_ej_supp)
+       
+      }
+      friendly_nms <- c(names_d_friendly, names_d_subgroups_friendly, names_e_friendly,
+                        names_ej_friendly, names_ej_supp_friendly)
+    } else {
+      if(input$summ_hist_data == 'pctile'){
+        nms <-  c(names_d_pctile,
+                  names_d_subgroups_pctile,
+                  names_e_pctile) 
+      } else if(input$summ_hist_data == 'raw'){
+        nms <-  c(names_d,
+                  names_d_subgroups,
+                  names_e) 
+      }
+      friendly_nms <- c(names_d_friendly, names_d_subgroups_friendly, names_e_friendly) 
+      
+    }
+  selectInput('summ_hist_ind', label = 'Choose indicator',
+              choices = setNames(
+                object = nms,
+                nm = friendly_nms
+              ) # end setNames
+  ) # end selectInput
+  })
   
   ## output: 
   output$summ_display_hist <- renderPlot({
@@ -2581,7 +2619,9 @@ app_server <- function(input, output, session) {
       } else if (input$summ_hist_data == 'pctile') {
         
         ## subset doaggregate results_bysite to selected indicator
-        hist_input <- data_processed()$results_bysite[, paste0('pctile.',input$summ_hist_ind), with = FALSE]
+        #hist_input <- data_processed()$results_bysite[, paste0('pctile.',input$summ_hist_ind), with = FALSE]
+        hist_input <- data_processed()$results_bysite[, input$summ_hist_ind, with = FALSE]
+        
         names(hist_input)[1] <- 'indicator'
         
         ggplot(hist_input) +
@@ -2619,7 +2659,8 @@ app_server <- function(input, output, session) {
       } else if (input$summ_hist_data == 'pctile') {
         
         ## subset doaggregate results_bysite to selected indicator
-        hist_input <- data_processed()$results_bysite[, c('pop',paste0('pctile.',input$summ_hist_ind)), with = FALSE]
+        #hist_input <- data_processed()$results_bysite[, c('pop',paste0('pctile.',input$summ_hist_ind)), with = FALSE]
+        hist_input <- data_processed()$results_bysite[, c('pop', input$summ_hist_ind), with = FALSE]
         names(hist_input)[2] <- 'indicator'
         
         ## plot population weighted histogram 
