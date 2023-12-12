@@ -12,18 +12,22 @@
 #' @param folder_local_source Your local folder path
 #' @param justchecking  use defaults
 #' @param testing  use defaults
-#'
+#' @return vector of paths to files (as derived from varnames) that were 
+#'   actually found in folder_local_source,
+#'   but only for those not already in memory, so it is 
+#'   just the ones loaded from disk because not already in memory and found on disk locally.
 #' @export
 #'
-dataload_from_local <- function(varnames= c('bgid2fips',
-                                            'blockid2fips', # HUGE IN MEMORY
-                                            'blockpoints', 'blockwts', 'quaddata'),
-                                ext=c(".arrow", ".rda")[1],
-                                fun=c("arrow::read_ipc_file", "load")[1],
-                                envir=globalenv(),  # should it be parent or global or package EJAM envt ??
-                                folder_local_source = "~/../Downloads", 
-                                justchecking = FALSE, 
-                                testing=FALSE) {
+dataload_from_local <- function(varnames = c(
+  c('blockwts', 'quaddata', 'blockpoints', 'blockid2fips', 'bgid2fips', 'bgej'),
+  c('frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact")), 
+  ext = c(".arrow", ".rda")[1],
+  fun = c("arrow::read_ipc_file", "load")[1],
+  envir = globalenv(),  # should it be parent or global or package EJAM envt ??
+  folder_local_source = "~/../Downloads", 
+  justchecking = FALSE, 
+  testing = FALSE) {
+  
   # if (interactive()) {
   if (!is.character(fun)) {stop('must specify function in fun parameter as a quoted character string')}
   if (length(ext) > 1)    {stop('must specify only one file extension for all the files')}
@@ -34,34 +38,72 @@ dataload_from_local <- function(varnames= c('bgid2fips',
   fnames     <- paste0(varnames, ext) # varnames are like bgid2fips, ext is .rda, fnames are like bgid2fips.rda
   # objectnames <- paste0(mybucketfolder,      '/', fnames) # EJAM/bgid2fips.rda 
   localpaths  <- paste0(folder_local_source, '/', fnames)
+  localpaths_found <- NULL
   # make output in console easier to read:  
   spacing <- sapply(1:length(varnames), function(x) paste0(rep(" ", max(nchar(varnames)) - nchar(varnames[x])), collapse = ''))
   
   for (i in 1:length(fnames)) {
-    if (!exists(varnames[i], envir = envir) ) { # not already in memory
-      if (file.exists(localpaths[i] )) { # found on local drive
-        if (ext == '.rda') {
-          cat( varnames[i], spacing[i],
-               'is being loaded from', localpaths[i],'...')
-          load(localpaths[i], envir = envir)
-          cat("done.\n")
-          next
-        } else {
-          assign(varnames[i], arrow::read_ipc_file(file = localpaths[i]), envir = envir)
-        }
-      } else {
+    
+    if (!exists(varnames[i], envir = envir) ) {
+      # NOT in memory  ################################################################ #
+      
+      if (justchecking) {
         cat(  varnames[i],spacing[i],
-              'not found at', localpaths[i], '\n')
+              'NOT in memory\n')
+      }
+      if (file.exists(localpaths[i] )) {
+        #  NOT in memory, but is on local drive ##################### #
+        
+        localpaths_found <- c(localpaths_found, localpaths[i])
+        
+        if (!justchecking) {
+          if (ext == '.rda') {
+            cat( varnames[i], spacing[i],
+                 'is being loaded from', localpaths[i],'...')
+            load(localpaths[i], envir = envir)
+            cat("done.\n")
+            next
+          } else {
+            assign(varnames[i], arrow::read_ipc_file(file = localpaths[i]), envir = envir)
+          }
+        } else {
+          cat(varnames[i],spacing[i],
+              'is found locally on disk at', localpaths[i], '\n')
+        }
+      } else { 
+        # NOT in memory, NOT on local disk ##################### #
+
+        cat(  varnames[i],spacing[i],
+              'NOT found locally at', localpaths[i], '\n')
         next
       }
+      
     } else {
-      # cat( varnames[i],
-      #      'is already in memory, not loaded again\n') # redundant with similar lines in dataload_from_aws()
+      #  in memory  ################################################################ #
+      
+      if (justchecking) {
+        cat( varnames[i],spacing[i],
+             'is already in memory\n') # redundant with similar lines in dataload_from_aws()
+        
+        if (file.exists(localpaths[i] )) {
+          # in memory, AND on local disk ##################### #
+          
+          cat( varnames[i],spacing[i],
+               'is found locally on disk at', localpaths[i], '\n')
+        } else {
+          # in memory, NOT on local disk ##################### #
+          
+          cat( varnames[i],spacing[i],
+               'NOT found locally on disk at', localpaths[i], '\n')
+        }
       next
+      }
+      
     }
-  }
+  } # end of loop
+  
   cat("\n")
-  return(localpaths)
+  return(localpaths_found)
   # } else {
   # message("Must be in interactive mode not on server to load from local disk using dataload_from_local()")
   # }
