@@ -21,6 +21,13 @@
 #' @seealso [fipsbg_from_anyfips()] [fips_lead_zero()] [getblocksnearby_from_fips()] [fips_from_table()]
 #' 
 getblocksnearby_from_fips <- function(fips, inshiny = FALSE, need_blockwt = TRUE) {
+
+  if(!exists('blockid2fips')){
+    dataload_from_pins(varnames = 'blockid2fips')
+  }
+  if(!exists('bgid2fips')){
+    dataload_from_pins(varnames = 'bgid2fips')
+  }
   
   fips.char <- fips_lead_zero( fips)  # adds leading zeroes and returns as character, 5 characters if seems like countyfips, etc. 
   fipslengths <- nchar(fips.char)

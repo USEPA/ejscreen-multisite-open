@@ -8,8 +8,8 @@
 .onAttach <- function(libname, pkgname) {
   
   # These instead could be set in the golem-config.yml file
-  asap_aws   <- FALSE  # download large datasets now?           Set to FALSE while Testing/Building often
-  asap_index <- FALSE  # build index those now?                 Set to FALSE while Testing/Building often 
+  asap_aws   <- TRUE  # download large datasets now?           Set to FALSE while Testing/Building often
+  asap_index <- TRUE  # build index those now?                 Set to FALSE while Testing/Building often 
   asap_bg    <- FALSE  # load now vs lazyload blockgroup data?  Set to FALSE while Testing/Building often
   
   # startup message shown at library(EJAM) or when reinstalling from source ####
@@ -68,7 +68,8 @@
     
     if (length(try(find.package("EJAM", quiet = T))) == 1) { # if it has been installed. but that function has to have already been added to package namespace once 
       
-      dataload_from_local(folder_local_source = './data/') # EJAM function ... but does it have to say EJAM :: here? trying to avoid having packrat see that and presume EJAM pkg must be installed for app to work. ***
+      dataload_from_local(varnames = c("bgej",  "blockpoints", "blockwts", "quaddata"),
+                          folder_local_source = './data/') # EJAM function ... but does it have to say EJAM :: here? trying to avoid having packrat see that and presume EJAM pkg must be installed for app to work. ***
       
     }
     

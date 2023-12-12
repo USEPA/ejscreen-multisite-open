@@ -10,11 +10,11 @@ library(shiny) # remove?
 ##         Note this duplicates code in .onAttach()
 # EJAM ::
 #dataload_from_aws()  # SLOW STEP !! loads only missing ones # see ?dataload_from_aws for details 
-dataload_from_pins(varnames = c('bgej','bgid2fips', 'blockpoints','blockwts','quaddata'),
-                   folder_local_source = './data/'
-                      )
+# dataload_from_pins(varnames = c('bgej','bgid2fips', 'blockpoints','blockwts','quaddata'),
+#                    folder_local_source = './data/'
+#                       )
 # EJAM ::
-indexblocks() # see ?indexblocks() for details. takes several seconds. 
+#indexblocks() # see ?indexblocks() for details. takes several seconds. 
 # EJAM ::
 # dataload_from_package() # preload the key dataset at least? not essential
 
