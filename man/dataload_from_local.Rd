@@ -6,7 +6,8 @@
 utility for R analysts/developers to store large block data locally instead of redownloading from AWS}
 \usage{
 dataload_from_local(
-  varnames = c("bgid2fips", "blockid2fips", "blockpoints", "blockwts", "quaddata"),
+  varnames = c(c("blockwts", "quaddata", "blockpoints", "blockid2fips", "bgid2fips",
+    "bgej"), c("frs", "frs_by_programid", "frs_by_naics", "frs_by_sic", "frs_by_mact")),
   ext = c(".arrow", ".rda")[1],
   fun = c("arrow::read_ipc_file", "load")[1],
   envir = globalenv(),
@@ -29,6 +30,12 @@ dataload_from_local(
 \item{justchecking}{use defaults}
 
 \item{testing}{use defaults}
+}
+\value{
+vector of paths to files (as derived from varnames) that were
+actually found in folder_local_source,
+but only for those not already in memory, so it is
+just the ones loaded from disk because not already in memory and found on disk locally.
 }
 \description{
 dataload_from_local
