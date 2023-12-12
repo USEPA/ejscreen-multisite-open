@@ -194,14 +194,22 @@ table_gt_format_step1 <- function(ejamit_results_1row = NULL, type = "demog") {
 #'    
 #'    Uses gt R package for formatting.
 #'    
-#' @param type, string - must be demog or envt 
-#' @param my_cell_color,   color for table cell fill backgrounds,  can be given as string ('blue') or hex code ('#0070c0')
-#' @param my_border_color, color for table borders and boundaries, can be given as string ('blue') or hex code ('#0070c0')
+#' @param type string - must be demog or envt 
+#' @param my_cell_color   color for table cell fill backgrounds,  can be given as string ('blue') or hex code ('#0070c0')
+#' @param my_border_color color for table borders and boundaries, can be given as string ('blue') or hex code ('#0070c0')
+#' @param digits_default number of digits to round to if not specified for a given indicator
+#' 
+#' @param digits_percentcols number of digits to round to 
+#' @param digits_ratiocols   number of digits to round to 
+#' @param digits_pctilecols  number of digits to round to 
+#' 
 #' @seealso [table_gt_from_ejamit()]
 #' @return a gt-style table with formatting to closely match EJScreen standard report formatting
 #' @export
 #'
-table_gt_format_step2 <- function(df, type="demog", my_cell_color =  '#dce6f0', my_border_color = '#aaaaaa') {
+table_gt_format_step2 <- function(df, type="demog", my_cell_color =  '#dce6f0', my_border_color = '#aaaaaa',
+                                  digits_default = 2, 
+                                  digits_percentcols = 1, digits_ratiocols= 2, digits_pctilecols = 0) {
   
   # nearRcolor('#dce6f0') is "aliceblue"
   # nearRcolor('#aaaaaa') is "darkgray"
@@ -245,14 +253,22 @@ table_gt_format_step2 <- function(df, type="demog", my_cell_color =  '#dce6f0', 
       unlist(varinfo(df$varnames_r, "reportsort"))))), ] # items not found are just "" which is ok
   
   # ROUNDING ####
+  
+  # *** Note there is also the option to specify sigfigs via n_sigfig param, instead of decimals, when using the gt::fmt_number() function!
+  
   # get number of decimal places to use as in EJScreen reports, acc to metadata in map_headernames
   df$digits <- table_rounding_info(df$varnames_r) # returns NA for nonmatches
-  df$digits[is.na(df$digits)] <- 2 # default if no match
-  # rounding for groupings of variables  
-  digits_percentcols <- 1
-  digits_ratiocols   <- 2  # *** but this is specified in map_headernames also, for each indicator
-  digits_pctilecols <- 0
-  # digits_rawcols are row-specific, in df$digits for df$value with df$varnames_r
+  df$digits[is.na(df$digits)] <- digits_default # default if no match
+  
+  # rounding for groupings of variables - see parameters
+  #
+  # digits_rawcols rounding is row-specific, in df$digits for df$value with df$varnames_r
+  # digits_percentcols <- 1
+  # digits_ratiocols   <- 2  # *** but this is specified in map_headernames also, for each indicator
+  # digits_pctilecols  <- 0
+  #
+  # rawcols     names depend on whether type is demog or envt
+  # percentcols names depend on whether type is demog or envt
   ratiocols  <- c(         'state_ratio',  'usa_ratio')
   pctilecols <- c(         'state_pctile', 'usa_pctile')
   
