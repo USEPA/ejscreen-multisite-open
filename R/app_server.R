@@ -2311,7 +2311,7 @@ app_server <- function(input, output, session) {
     if((input$include_ejindexes == "TRUE")){
       radioButtons(inputId = 'summ_bar_ind', 
                    label = h5('Indicator type'), 
-                   choices = c('Demographic', 'Environmental', 'EJ'), selected = "Environmental")
+                   choices = c('Demographic', 'Environmental', 'EJ','EJ Supplemental'), selected = "Environmental")
     } else {
       radioButtons(inputId = 'summ_bar_ind', 
                    label = h5('Indicator type'), 
@@ -2323,19 +2323,21 @@ app_server <- function(input, output, session) {
   # output: 
   output$summ_display_bar <- renderPlot({
     req(data_summarized())
-    
+    req(input$summ_bar_ind)
     ## set indicator group column names
     mybarvars <- switch(input$summ_bar_ind,
                         'Demographic'   = c(names_d, names_d_subgroups),
                         'Environmental' = names_e,
-                        'EJ'            = names_ej 
+                        'EJ'            = names_ej,
+                        'EJ Supplemental'      = names_ej_supp
     )
     
     ## set indicator group friendly names  
     mybarvars.friendly <- switch(input$summ_bar_ind,
                                  'Demographic'   = c(names_d_friendly, names_d_subgroups_friendly),
                                  'Environmental' = names_e_friendly,
-                                 'EJ'            = names_ej_friendly
+                                 'EJ'            = names_ej_friendly, 
+                                 'EJ Supplemental'      = names_ej_supp_friendly
     )
     
     ## only using average for now
