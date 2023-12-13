@@ -176,7 +176,7 @@ sites. Demographic indicators are moderately above average overall.
     -   PLACEHOLDER EXAMPLE The average person's NPL and TSDF scores are
         about 2.5x State averages.
     -   PLACEHOLDER EXAMPLE Most of these sites are \>=80th in State for
-        NATA. Same for RMP.
+        Air Toxics. Same for RMP.
 
 -   PLACEHOLDER EXAMPLE
 
@@ -829,7 +829,6 @@ Residents / conditions ...
 -   NAAQS National Ambient Air Quality Standards (for criteria air
     pollutants, CAA program)
 -   NAICS North American Industry Classification System
--   NATA National Air Toxics Assessment, USEPA
 -   NCEE National Center for Environmental Economics, USEPA
 -   NDZ no discharge zone
 -   NEJAC EPA's National Environmental Justice Advisory Council

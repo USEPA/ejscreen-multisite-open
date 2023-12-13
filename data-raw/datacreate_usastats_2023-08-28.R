@@ -175,7 +175,7 @@ usastats_extra   <- as.data.frame(readr::read_csv( "~/../EJ 2021/EJScreen 2023/F
 # all.equal(statestats_extra$REGION,statestats2.2$REGION)
 # [1] TRUE
 intersect(names(usastats2.2), names(usastats_extra))
-# [1] "PCTILE"     "LIFEEXPPCT" "CANCER"    # problem - drop redundant lowlifex and rename CANCER to clarify extra csv means adult cancer rate, not NATA score
+# [1] "PCTILE"     "LIFEEXPPCT" "CANCER"    # problem - drop redundant lowlifex and rename CANCER to clarify extra csv means adult cancer rate, not air toxics score
 names(usastats_extra)    <- gsub("CANCER", "cancer.rate.adults", names(  usastats_extra) )
 names(statestats_extra)  <- gsub("CANCER", "cancer.rate.adults", names(statestats_extra) )
 

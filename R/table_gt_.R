@@ -194,14 +194,18 @@ table_gt_format_step1 <- function(ejamit_results_1row = NULL, type = "demog") {
 #'    
 #'    Uses gt R package for formatting.
 #'    
-#' @param type, string - must be demog or envt 
-#' @param my_cell_color,   color for table cell fill backgrounds,  can be given as string ('blue') or hex code ('#0070c0')
-#' @param my_border_color, color for table borders and boundaries, can be given as string ('blue') or hex code ('#0070c0')
+#' @param type string - must be demog or envt 
+#' @param my_cell_color   color for table cell fill backgrounds,  can be given as string ('blue') or hex code ('#0070c0')
+#' @param my_border_color color for table borders and boundaries, can be given as string ('blue') or hex code ('#0070c0')
+#' @param digits_default number of digits to round to if not specified for a given indicator
+#'   (rounding info is drawn from map_headernames$decimals)
+#' 
 #' @seealso [table_gt_from_ejamit()]
 #' @return a gt-style table with formatting to closely match EJScreen standard report formatting
 #' @export
 #'
-table_gt_format_step2 <- function(df, type="demog", my_cell_color =  '#dce6f0', my_border_color = '#aaaaaa') {
+table_gt_format_step2 <- function(df, type = c("demog", "envt")[1], my_cell_color =  '#dce6f0', my_border_color = '#aaaaaa',
+                                  digits_default = 2) {
   
   # nearRcolor('#dce6f0') is "aliceblue"
   # nearRcolor('#aaaaaa') is "darkgray"
@@ -245,21 +249,56 @@ table_gt_format_step2 <- function(df, type="demog", my_cell_color =  '#dce6f0', 
       unlist(varinfo(df$varnames_r, "reportsort"))))), ] # items not found are just "" which is ok
   
   # ROUNDING ####
-  # get number of decimal places to use as in EJScreen reports, acc to metadata in map_headernames
-  df$digits <- table_rounding_info(df$varnames_r) # returns NA for nonmatches
-  df$digits[is.na(df$digits)] <- 2 # default if no match
-  # rounding for groupings of variables  
-  digits_percentcols <- 1
-  digits_ratiocols   <- 2  # *** but this is specified in map_headernames also, for each indicator
-  digits_pctilecols <- 0
-  # digits_rawcols are row-specific, in df$digits for df$value with df$varnames_r
-  ratiocols  <- c(         'state_ratio',  'usa_ratio')
+  
+  # *** Note there is also the option to specify sigfigs via n_sigfig param, instead of decimals, when using the gt::fmt_number() function!
+  
+  # digits_rawcols rounding is row-specific, in df$digits_raw for df$value with df$varnames_r
+  # digits_percentcols <- 1
+  # digits_ratiocols   <- 2  # *** but this is specified in map_headernames also, for each indicator
+  # digits_pctilecols  <- 0
+  #
+  # rawcols     names depend on whether type is demog or envt
+  # percentcols names depend on whether type is demog or envt
+  # ratiocols  <- c(         'state_ratio',  'usa_ratio')
   pctilecols <- c(         'state_pctile', 'usa_pctile')
+  
+  # new rounding code rounds each indicator based on digits specified in metadata table:
+  
+  # rounding for RAW values - get number of decimal places to use as in EJScreen reports, acc to metadata in map_headernames
+  df$digits_raw <- table_rounding_info(df$varnames_r) # returns NA for nonmatches
+  df$digits_raw[is.na(df$digits_raw)] <- digits_default # default if no match
+  digits_raw <- df$digits_raw
+    
+  varnames_usa_ratio <- fixcolnames(
+    df$varnames_r, 'topic_root_term', 'r', 
+    mapping_for_names = map_headernames[map_headernames$vartype == 'usratio', ]) # paste0('ratio.to.us.avg.', df$varnames_r)
+  varnames_state_ratio <- fixcolnames(
+    df$varnames_r, 'topic_root_term', 'r', 
+    mapping_for_names = map_headernames[map_headernames$vartype == 'stateratio', ])
+  varnames_usa_pctile <- fixcolnames(
+    df$varnames_r, 'topic_root_term', 'r', 
+    mapping_for_names = map_headernames[map_headernames$vartype == 'uspctile', ])
+  varnames_state_pctile <- fixcolnames(
+    df$varnames_r, 'topic_root_term', 'r', 
+    mapping_for_names = map_headernames[map_headernames$vartype == 'statepctile', ])
+  
+  digits_usa_ratio <- table_rounding_info(varnames_usa_ratio) # returns NA for nonmatches
+  digits_usa_ratio[is.na(digits_usa_ratio)] <- digits_default
+  
+  digits_state_ratio <- table_rounding_info(varnames_state_ratio) # returns NA for nonmatches
+  digits_state_ratio[is.na(digits_state_ratio)] <- digits_default
+  
+  digits_usa_pctile <- table_rounding_info(varnames_usa_pctile) # returns NA for nonmatches
+  digits_usa_pctile[is.na(digits_usa_pctile)] <- digits_default
+  
+  digits_state_pctile <- table_rounding_info(varnames_state_pctile) # returns NA for nonmatches
+  digits_state_pctile[is.na(digits_state_pctile)] <- digits_default
   
   # ENVT or DEMOG ####
   if (type == "demog") {
     ENVT_OR_DEMOG_SECTION_NAME <- '**Socioeconomic Indicators**'
     percentcols <- c("value", "state_avg",    "usa_avg")
+    rawcols    <- c("value", "state_avg",    "usa_avg")
     subgroup_rows <- which(df$varnames_r %in% names_d_subgroups )
   } else {
     percentcols <- NULL
@@ -269,8 +308,8 @@ table_gt_format_step2 <- function(df, type="demog", my_cell_color =  '#dce6f0', 
     ENVT_OR_DEMOG_SECTION_NAME <- '**Pollution and Sources**'
     rawcols    <- c("value", "state_avg",    "usa_avg")
   } else {
-    rawcols <- NULL
-  }
+    rawcols    <- c("value", "state_avg",    "usa_avg")
+    }
   ###################################################################################################### # 
   
   # CREATE gt TABLE ####
@@ -297,11 +336,32 @@ table_gt_format_step2 <- function(df, type="demog", my_cell_color =  '#dce6f0', 
     )  |>
     
     # RATIO COLUMNS
-    gt::fmt_number(columns = ratiocols, rows = dplyr::everything(), decimals = digits_ratiocols) |>
+    
+    # old way
+    # gt::fmt_number(columns = ratiocols, rows = dplyr::everything(), decimals = digits_ratiocols) |>
+    
+    # new way (default is all rows, and each row's rounding is defined by value in the new hidden column)
+    gt::cols_add(digits_state_ratio = digits_state_ratio) |>
+    gt::fmt_number(columns = 'state_ratio', decimals = gt::from_column(column = "digits_state_ratio")) |>
+    gt::cols_hide(columns = digits_state_ratio) |>
+    
+    gt::cols_add(digits_usa_ratio = digits_usa_ratio) |>
+    gt::fmt_number(columns = 'usa_ratio', decimals = gt::from_column(column = "digits_usa_ratio")) |>
+    gt::cols_hide(columns = digits_usa_ratio) |>
     
     # PERCENTILE COLUMNS
-    gt::fmt_number(columns = pctilecols, rows = dplyr::everything(), decimals = digits_pctilecols) 
+    # old way
+    # gt::fmt_number(columns = pctilecols, rows = dplyr::everything(), decimals = digits_pctilecols) 
   
+    # new way (default is all rows, and each row's rounding is defined by value in the new hidden column)
+    gt::cols_add(digits_state_pctile = digits_state_pctile) |>
+    gt::fmt_number(columns = 'state_pctile', decimals = gt::from_column(column = "digits_state_pctile")) |>
+    gt::cols_hide(columns = digits_state_pctile) |>
+    
+    gt::cols_add(digits_usa_pctile = digits_usa_pctile) |>
+    gt::fmt_number(columns = 'usa_pctile', decimals = gt::from_column(column = "digits_usa_pctile")) |>
+    gt::cols_hide(columns = digits_usa_pctile)
+    
   ###################################################################################################### # 
   
   # FORMATTING SPECIFIC TO ENVT VS DEMOG TABLE
@@ -320,29 +380,36 @@ table_gt_format_step2 <- function(df, type="demog", my_cell_color =  '#dce6f0', 
     #   )
     # }
     
-    # RAW DEMOG PERCENT COLUMNS
+    # RAW DEMOG (PERCENT) COLUMNS
     nice_table <- nice_table |> 
-      gt::fmt_percent(columns = percentcols, rows = dplyr::everything(),  decimals = digits_percentcols)
+      # gt::fmt_percent(columns = percentcols, rows = dplyr::everything(),  decimals = digits_percentcols)
+      gt::cols_add(digits_raw = digits_raw) |>
+      gt::fmt_percent(columns = rawcols, decimals = gt::from_column(column = "digits_raw")) |>
+      gt::cols_hide(columns = digits_raw)
+
   }
   
   if (type == "envt") {
     
-    # RAW ENVT SCORE COLUMNS       
-    # *** Need a loop here or some other way to handle a flexible number of rows instead of hard coding it for 13 ! ***
+    # RAW ENVT (SCORE) COLUMNS       
+    # new way, handles a flexible number of rows instead of hard coding it for 13 (default is all rows, and each row's rounding is defined by value in the new hidden column)
     nice_table <- nice_table |> 
-      gt::fmt_number(columns = rawcols, rows = 1,  decimals = df$digits[1]) |>              
-      gt::fmt_number(columns = rawcols, rows = 2,  decimals = df$digits[2]) |> 
-      gt::fmt_number(columns = rawcols, rows = 3,  decimals = df$digits[3]) |> 
-      gt::fmt_number(columns = rawcols, rows = 4,  decimals = df$digits[4]) |> 
-      gt::fmt_number(columns = rawcols, rows = 5,  decimals = df$digits[5]) |> 
-      gt::fmt_number(columns = rawcols, rows = 6,  decimals = df$digits[6]) |> 
-      gt::fmt_number(columns = rawcols, rows = 7,  decimals = df$digits[7]) |> 
-      gt::fmt_number(columns = rawcols, rows = 8,  decimals = df$digits[8]) |> 
-      gt::fmt_number(columns = rawcols, rows = 9,  decimals = df$digits[9]) |> 
-      gt::fmt_number(columns = rawcols, rows = 10, decimals = df$digits[10]) |> 
-      gt::fmt_number(columns = rawcols, rows = 11, decimals = df$digits[11]) |> 
-      gt::fmt_number(columns = rawcols, rows = 12, decimals = df$digits[12]) |> 
-      gt::fmt_number(columns = rawcols, rows = 13, decimals = df$digits[13])   
+      gt::cols_add(digits_raw = digits_raw) |>
+      gt::fmt_number(columns = rawcols, decimals = gt::from_column(column = "digits_raw") ) |>
+      gt::cols_hide(columns = digits_raw)
+      # gt::fmt_number(columns = rawcols, rows = 1,  decimals = df$digits[1]) |>              
+      # gt::fmt_number(columns = rawcols, rows = 2,  decimals = df$digits[2]) |> 
+      # gt::fmt_number(columns = rawcols, rows = 3,  decimals = df$digits[3]) |> 
+      # gt::fmt_number(columns = rawcols, rows = 4,  decimals = df$digits[4]) |> 
+      # gt::fmt_number(columns = rawcols, rows = 5,  decimals = df$digits[5]) |> 
+      # gt::fmt_number(columns = rawcols, rows = 6,  decimals = df$digits[6]) |> 
+      # gt::fmt_number(columns = rawcols, rows = 7,  decimals = df$digits[7]) |> 
+      # gt::fmt_number(columns = rawcols, rows = 8,  decimals = df$digits[8]) |> 
+      # gt::fmt_number(columns = rawcols, rows = 9,  decimals = df$digits[9]) |> 
+      # gt::fmt_number(columns = rawcols, rows = 10, decimals = df$digits[10]) |> 
+      # gt::fmt_number(columns = rawcols, rows = 11, decimals = df$digits[11]) |> 
+      # gt::fmt_number(columns = rawcols, rows = 12, decimals = df$digits[12]) |> 
+      # gt::fmt_number(columns = rawcols, rows = 13, decimals = df$digits[13])   
   }
   ###################################################################################################### # 
   
