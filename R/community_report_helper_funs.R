@@ -224,6 +224,123 @@ fill_tbl_full_ej <- function(output_df){
   return(full_html)
 }
 
+
+#' fill_tbl_row_subgroup - write a demographic subgroup indicator to an html table row
+#'@param output_df, single row of results table from doaggregate - either results_overall or one row of bysite
+#'@param var_value, variable name of indicator to pull from results, such as 'pm', 'pctlowinc', 'Demog.Index'
+#'@param var_name, nicer name of indicator to use in table row; can include HTML sub/superscripts
+#'@export
+fill_tbl_row_subgroups <- function(output_df, var_value, var_name){
+  txt <- '<tr>'
+  
+  id_col <- 'selected-variables'
+  txt <- paste0(txt, '\n','<td headers="data-indicators-table-',
+                id_col,'">',
+                var_name,'</td>')
+  
+  hdr_names <- c('value')
+  
+  var_values <- paste0(c(''), var_value)
+  
+  for(j in 1:length(var_values)){
+    cur_var <-var_values[j]
+    if('data.table' %in% class(output_df)){
+      cur_val <- round(100*output_df[, ..cur_var], 1)#round(output_df[,..cur_var],2)
+    } else {
+      cur_val <- round(100*output_df[, cur_var],1) #round(output_df[,cur_var],2)
+    }
+    txt <- txt <- paste0(txt, '\n','<td headers="data-indicators-table-',
+                         hdr_names[j],'">',
+                         cur_val,'</td>')
+    
+  }
+  txt <- paste0(txt, '\n','</tr>')
+  return(txt)
+}
+
+#' fill_tbl_full - create full demog subgroup HTML table of indicator rows
+#'@param output_df, single row of results table from doaggregate - either results_overall or one row of bysite
+#'@export
+fill_tbl_full_subgroups <- function(output_df){
+  
+  # css_head <-'
+  #    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@500;600" rel="stylesheet">
+  # <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;700&amp;display=swap" rel="stylesheet">
+  # <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&amp;display=swap" rel="stylesheet">
+  # '
+  
+  full_html <- ''
+  
+  tbl_head <- '<table id="data-indicators-table"        class="color-alt-table"  summary="EJScreen environmental and socioeconomic indicators data">
+  <thead id="data-indicators-table-header" class="color-alt-table-header">
+  <tr>
+  <th id="data-indicators-table-selected-variables" scope="col">SELECTED VARIABLES</th>
+  <th id="data-indicators-table-value" scope="col">VALUE</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr class="color-alt-table-subheader">
+  <th colspan="7">Breakdown by Race</th>
+  </tr>'
+  
+  tbl_head2 <- '<tr class="color-alt-table-subheader">
+<th colspan="7">Breakdown by Gender</th>
+  </tr>'
+  
+  tbl_head3 <- '<tr class="color-alt-table-subheader">
+<th colspan="7">Limited English Speaking Breakdown</th>
+  </tr>'
+  
+  full_html <- paste(full_html, tbl_head, sep='\n')
+  
+  var_values_d_race <- c('pctnhwa','pctnhba','pctnhaa','pcthisp',
+                     'pctnhaiana','pctnhnhpia','pctnhotheralone',
+                     'pctnhmulti')
+  var_names_d_race <- c('% White', '% Black','% Asian','% Hispanic',
+                        '% American Indian','% Hawaiian/Pacific Islander',
+                        '% Other Race','% Two or more races')
+  
+  tbl_rows_d_race <- sapply(1:length(var_values_d_race), function(x) fill_tbl_row_subgroups(output_df, 
+                                                                        var_value = var_values_d_race[x], 
+                                                                        var_name=var_names_d_race[x]))
+  full_html <- paste(full_html, 
+                     paste(tbl_rows_d_race , collapse='\n'),
+                     
+                     sep='', collapse='\n')
+  full_html <- paste(full_html, tbl_head2,collapse='\n')
+  
+  
+  var_values_d_gender <- c('pctmale','pctfemale')
+  
+  var_names_d_gender <- c('% Male', '% Female')
+  
+  tbl_rows_d_gender <- sapply(1:length(var_values_d_gender), function(x) fill_tbl_row_subgroups(output_df, 
+                                                                        var_value = var_values_d_gender[x], 
+                                                                        var_name=var_names_d_gender[x]))
+  full_html <- paste(full_html, 
+                     paste(tbl_rows_d_gender, collapse='\n'),
+                     sep='', collapse='\n')
+  
+  #full_html <- paste(full_html, tbl_head3,collapse='\n')
+  
+  # var_values_d_lim <- c('pctmale','pctfemale')
+  # 
+  # var_names_d_lim <- c('% Male', '% Female')
+  # 
+  # tbl_rows_lim <- sapply(1:length(var_values_d_lim), function(x) fill_tbl_row(output_df, 
+  #                                                                              var_value = var_values_d_lim[x], 
+  #                                                                            var_name=var_names_d_lim[x]))
+  # full_html <- paste(full_html, 
+  #                    paste(tbl_rows_d_lim, collapse='\n'),
+  #                    sep='', collapse='\n')
+  
+  
+  full_html <- paste(full_html, '</tbody>
+</table>', collapse='\n')
+  
+  return(full_html)
+}
+
 #' generate_html_header - build HTML header for community report
 #' @param analysis_title, title to use in header of report
 #' @param totalpop, total population included in location(s) analyzed
@@ -242,9 +359,9 @@ generate_html_header <- function( analysis_title, totalpop, locationstr, in_shin
     shift_hbd <- 0
   }
   
-  img_html <- paste0('<img src="',app_sys('report/community_report/EPA_logo_white.png'),
-                     '" alt="EPA logo" width="110" height="35" style="position: absolute; left: 950px; top: ',shift_hbd+90,'px">')
-  
+  # img_html <- paste0('<img src="',app_sys('report/community_report/EPA_logo_white.png'),
+  #                    '" alt="EPA logo" width="110" height="35" style="position: absolute; left: 950px; top: ',shift_hbd+90,'px">')
+  # 
   
   paste0(' 
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@500;600" rel="stylesheet">
@@ -257,7 +374,7 @@ generate_html_header <- function( analysis_title, totalpop, locationstr, in_shin
 <div id="header-primary-background" ', 'style="top: ',shift_hpb,'px;"','></div> 
 <div id="header-background-detail" ', 'style="top: ',shift_hbd,'px;"','></div>',
 
-img_html,
+#img_html,
 '<h1 id="title" tabindex="0" style="white-space: nowrap; position: absolute; color: white;left: 140px; top: ',shift_hbd+80,'px">EJAM Community Report</h1>
 <p style="
             color: white;
