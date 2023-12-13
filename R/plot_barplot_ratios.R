@@ -73,7 +73,9 @@ plot_barplot_ratios <- function(ratio.to.us.d.overall,
     names2plot_friendly <- fixcolnames(names(ratio.to.us.d.overall), oldtype = "r", newtype = "long")
     supershortnames <- gsub(' \\(.*', '', gsub("People of Color","POC", names2plot_friendly))
     names(ratio.to.us.d.overall) <- supershortnames
-  }
+  } 
+    names(ratio.to.us.d.overall) <- names2plot_friendly
+  
     
   ratio.to.us.d.overall[is.infinite(ratio.to.us.d.overall)] <- 0
   # use yellow/orange/red for ratio >= 1x, 2x, 3x  #  work in progress
@@ -85,11 +87,16 @@ plot_barplot_ratios <- function(ratio.to.us.d.overall,
   #         col = mycolors)
   # abline(h=1, col="gray")
   
-thisplot <-  data.frame(name = names(ratio.to.us.d.overall),
+thisdata <-  data.frame(name = names(ratio.to.us.d.overall),
              value = ratio.to.us.d.overall,
              color = mycolors) %>%
     ## drop any indicators with Inf or NaNs
-    dplyr::filter(is.finite(value)) %>% 
+    dplyr::filter(is.finite(value))
+
+thisdata$name <- factor(thisdata$name, levels=thisdata$name)
+
+
+thisplot <- thisdata %>% 
     ggplot2::ggplot(ggplot2::aes(x = name, y = value, fill = color)) +
     ggplot2::geom_bar(stat = 'identity') +
     ## way to add legend in future - needs tweaking
