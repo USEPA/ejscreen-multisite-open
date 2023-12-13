@@ -9,8 +9,8 @@
 #  ######################################################################## #
 
 #    csv/gdb files: Actual full dataset as csv files and geodatabases 
-# not at https://gaftp.epa.gov/EJScreen/2023/  got replaced with fixes 8/2023
-# baseurl = "https://gaftp.epa.gov/EJScreen/2023/2.21_August_UseMe/") # fixed one
+# not at https://gaftp.epa.gov/EJScreen/2023/  got replaced with fixes 8/2023 and then also in september 2023.
+# baseurl = "https://gaftp.epa.gov/EJScreen/2023/2.21_August_UseMe/") # a fixed version that was replaced in sept
 # 
 #    -  EJSCREEN_2023_BG_with_AS_CNMI_GU_VI.csv.zip
 #    -  EJSCREEN_2023_BG_with_AS_CNMI_GU_VI.gdb.zip   full dataset plus the lookup table of US percentiles
@@ -75,14 +75,15 @@ ejscreen_download_gdb <- function(
     folder = tempdir(), 
     gdbzipname = "EJSCREEN_2023_BG_with_AS_CNMI_GU_VI.gdb.zip",    # gdbzipname = "EJSCREEN_2022_with_AS_CNMI_GU_VI.gdb.zip", 
     gdbname =    "EJSCREEN_2023_BG_with_AS_CNMI_GU_VI.gdb",  # gdbname = "EJSCREEN_2022_with_AS_CNMI_GU_VI.gdb", 
-    baseurl = "https://gaftp.epa.gov/EJScreen/2023/2.21_August_UseMe/") { # https://gaftp.epa.gov/EJScreen/2023/2.21_August_UseMe/ # briefly was https://gaftp.epa.gov/EJScreen/2023/  # baseurl = "https://gaftp.epa.gov/EJSCREEN/2022/") {
+    baseurl = "https://gaftp.epa.gov/EJScreen/2023/2.22_September_UseMe/") {
+    # baseurl = "https://gaftp.epa.gov/EJScreen/2023/2.21_August_UseMe/") { # https://gaftp.epa.gov/EJScreen/2023/2.21_August_UseMe/ # briefly was https://gaftp.epa.gov/EJScreen/2023/  # baseurl = "https://gaftp.epa.gov/EJSCREEN/2022/") {
   # get percentile lookup tables ####
   # the percentile lookup tables are in the gdb but not provided as csv.zip files on the ftp site
   cat("downloading gdb.zip\n")
   download.file(file.path(baseurl, gdbzipname), destfile = file.path(folder, gdbzipname))
   return(file.path(folder, gdbzipname))
-  # "https://gaftp.epa.gov/EJScreen/2023/EJSCREEN_2023_BG_with_AS_CNMI_GU_VI.gdb.zip" # has dataset of bg but also lookup tables
-  # "https://gaftp.epa.gov/EJScreen/2023/EJSCREEN_2023_BG_StatePct_with_AS_CNMI_GU_VI.gdb.zip" # do not need this for EJAM
+  # "https://gaftp.epa.gov/EJScreen/2023/     ...       EJSCREEN_2023_BG_with_AS_CNMI_GU_VI.gdb.zip" # has dataset of bg but also lookup tables
+  # "https://gaftp.epa.gov/EJScreen/2023/     ...       EJSCREEN_2023_BG_StatePct_with_AS_CNMI_GU_VI.gdb.zip" # do not need this for EJAM
 }
 ejscreen_unzip_gdb <- function(zipfilepath) {
   cat("unzipping gdb.zip\n")
@@ -104,7 +105,8 @@ ejscreen_read_unzipped_lookups <- function(mypath) {
 ejscreen_pctile_lookups_from_ftp <- function(folder = tempdir(), 
                                              gdbzipname = "EJSCREEN_2023_BG_with_AS_CNMI_GU_VI.gdb.zip", # gdbzipname = "EJSCREEN_2022_with_AS_CNMI_GU_VI.gdb.zip", 
                                              gdbname =    "EJSCREEN_2023_BG_with_AS_CNMI_GU_VI.gdb",  # gdbname = "EJSCREEN_2022_with_AS_CNMI_GU_VI.gdb", 
-                                             baseurl = "https://gaftp.epa.gov/EJScreen/2023/2.21_August_UseMe/") {# baseurl = "https://gaftp.epa.gov/EJSCREEN/2022/") {
+                                             baseurl = "https://gaftp.epa.gov/EJScreen/2023/2.22_September_UseMe/") {
+                                             # baseurl = "https://gaftp.epa.gov/EJScreen/2023/2.21_August_UseMe/") { # baseurl = "https://gaftp.epa.gov/EJSCREEN/2022/") {
   mypath <- ejscreen_download_gdb(folder, gdbzipname, gdbname, baseurl)
   mypath <- ejscreen_unzip_gdb(mypath)
   return(   ejscreen_read_unzipped_lookups(mypath) )
@@ -147,7 +149,7 @@ ls()
 # "EJScreen 2023\FTP 2023 intranet\documents_20230821 (1)\EJSCREEN_2023_BG_with_AS_CNMI_GU_VI_lookup.csv"
 # "EJScreen 2023\FTP 2023 intranet\documents_20230821 (1)\EJSCREEN_2023_BG_StatePct_with_AS_CNMI_GU_VI_lookup.csv"
 #  read those too.
-# LOOKUP TABLE MANUALLY DOWNLOADED
+# LOOKUP TABLE MANUALLY DOWNLOADED - but see september versions ? these actually match the september ones.
 usastats_csv  <-  as.data.frame(readr::read_csv( "~/../EJ 2021/EJScreen 2023/FTP 2023 intranet/documents_20230821 (1)/EJSCREEN_2023_BG_with_AS_CNMI_GU_VI_lookup.csv"))
 statestats_csv <- as.data.frame(readr::read_csv( "~/../EJ 2021/EJScreen 2023/FTP 2023 intranet/documents_20230821 (1)/EJSCREEN_2023_BG_StatePct_with_AS_CNMI_GU_VI_lookup.csv"))
 usastats_csv$OID_ <- NULL
@@ -214,8 +216,8 @@ rownames(statestats2.2) <- paste0(statestats2.2$REGION, statestats2.2$PCTILE) # 
 
 rm(savexl)
 
-save.image(file = "~/../Downloads/work in progress on usastats 2023-08-30.rda")
-
+# save.image(file = "~/../Downloads/work in progress on usastats 2023-08-30.rda")
+save.image(file = "~/../Downloads/work in progress on usastats 2023-12-12.rda")
 
 ##########################################################################################################################################
 

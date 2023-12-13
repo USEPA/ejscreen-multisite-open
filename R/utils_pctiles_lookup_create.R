@@ -70,10 +70,10 @@
 #'
 #' @export
 #'
-pctiles_lookup_create <- function(x, zone.vector = NULL, zoneOverallName = 'USA', wts = NULL, usecollapse = TRUE, type = 1) {
+pctiles_lookup_create <- function(x, zone.vector = NULL, zoneOverallName = 'USA', wts = NULL, usecollapse = TRUE, type = 7) {
   mydf <- x 
   
-  pctiles.exact <- function(x, usecollapse = FALSE, type = 1) {
+  pctiles.exact <- function(x, usecollapse = FALSE, type = 7) {
     if (usecollapse) {
       cbind(collapse::fquantile(x, type = type, probs = (1:100)/100, na.rm = TRUE))
     } else {
@@ -83,7 +83,7 @@ pctiles_lookup_create <- function(x, zone.vector = NULL, zoneOverallName = 'USA'
     # floor(sum(x < thisx)/length(x))
   }
   
-  wtd.pctiles.exact <-  function(x, wts = NULL, na.rm = TRUE, type = 1, probs = (1:100) / 100, usecollapse = FALSE) {
+  wtd.pctiles.exact <-  function(x, wts = NULL, na.rm = TRUE, type = 7, probs = (1:100) / 100, usecollapse = FALSE) {
     #  PERCENTILES, WEIGHTED, SO DISTRIBUTION OVER PEOPLE NOT PLACES, in case you need that
     #    EJScreen does not use weights anymore for that, however.
     if (usecollapse) {
