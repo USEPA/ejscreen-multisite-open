@@ -25,7 +25,10 @@ latlon_df_clean <- function(df) {
     # removed since latlon_infer already creates warning
     #warning('lat or lon column cannot be inferred from colnames of df')
     }
-  
+
+  ## start with assuming all valid and change ones that are not  
+  df$valid <- TRUE
+
   # validate to some extent (are the lat lon plausible values)
   ok <- latlon_is.valid(lat = df$lat, lon = df$lon)
   if (any(!ok)) {
@@ -33,6 +36,8 @@ latlon_df_clean <- function(df) {
     
     ## convert invalid latlons to NA
     df[!ok, c('lat','lon')] <- NA
+    ## change valid column to FALSE
+    df[!ok, 'valid'] <- FALSE
   }
   return(df)
 }

@@ -137,16 +137,18 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
 
   
     
-  
+  if(NROW(sites2blocks) == 0){stop('No blocks found within that radius of your site(s). Try a larger radius')}
   
   # add input validation here - check if sites2blocks is valid format, etc. 
+  #if (any(!(c('siteid', 'blockid' ) %in% names(sites2blocks)))) {stop("sites2blocks must contain columns named siteid, blockid, and should have distance")}
+  if (any(!(c('ejam_uniq_id', 'blockid' ) %in% names(sites2blocks)))) {stop("sites2blocks must contain columns named ejam_uniq_id, blockid, and should have distance")}
   
   if (!data.table::is.data.table(sites2blocks)) {
     message('sites2blocks should be a data.table - converting into one')
-    data.table::setDT(sites2blocks, key = c("blockid", "siteid", "distance"))
+    #data.table::setDT(sites2blocks, key = c("blockid", "siteid", "distance"))
+    data.table::setDT(sites2blocks, key = c("blockid", "ejam_uniq_id", "distance"))
   }
   
-  if (any(!(c('siteid', 'blockid' ) %in% names(sites2blocks)))) {stop("sites2blocks must contain columns named siteid, blockid, and should have distance")}
   
   ###################################################### # 
   
@@ -307,7 +309,8 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   
   # sort rows
   
-  data.table::setorder(sites2blocks, siteid, bgid, blockid) # new
+  #data.table::setorder(sites2blocks, siteid, bgid, blockid) # new
+  data.table::setorder(sites2blocks, ejam_uniq_id, bgid, blockid) # new
   
   
   ################################################################ #
@@ -477,9 +480,11 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
                                                     distance_min_avgperson   = collapse::fmean(distance, w = blockwt), # na.rm = T is default
                                                     sitecount_avg    = collapse::fmean(sitecount, w = blockwt),
                                                     sitecount_max    = collapse::fmax(sitecount ),
-                                                    sitecount_unique = collapse::fnunique(siteid)
-    ), by = .(siteid, bgid)]
-    
+                                                    #sitecount_unique = collapse::fnunique(siteid)
+                                                    sitecount_unique = collapse::fnunique(ejam_uniq_id)
+                                                    
+    #), by = .(siteid, bgid)]
+    ), by = .(ejam_uniq_id, bgid)]
     #  >>>> A SLOW STEP TO OPTIMIZE - starts with sites2bgs_overall  <- sites2blocks_overall[  ####
     # THIS IS REDUNDANT / inefficient   since we have sites2bg_bysite and bgid already, ?! ***
     # and it will get rolled up by siteid only and by bg only, later
@@ -501,8 +506,11 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
                                                     distance_min_avgperson   = collapse::fmean(distance, w = blockwt), # na.rm = T is default
                                                     sitecount_avg    = collapse::fmean(sitecount, w = blockwt),
                                                     sitecount_max    = collapse::fmax(sitecount ),
-                                                    sitecount_unique = collapse::fnunique(siteid)
-    ), by = .(siteid, bgid)]
+                                                    #sitecount_unique = collapse::fnunique(siteid)
+                                                    sitecount_unique = collapse::fnunique(ejam_uniq_id)
+                                                    
+#    ), by = .(siteid, bgid)]
+    ), by = .(ejam_uniq_id, bgid)]
     
     #  >>>> A SLOW STEP TO OPTIMIZE - starts with sites2bgs_overall  <- sites2blocks_overall[  ####
     # is this redundant since we have sites2bg_bysite and bgid already, and it will get rolled up by siteid only and by bg only, later
@@ -637,8 +645,9 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   
   results_bysite <- sites2bgs_plusblockgroupdata_bysite[ ,    lapply(.SD, FUN = function(x) {
     round(sum(x * bgwt, na.rm = TRUE), 1)
-  } ), .SDcols = countcols_inbgstats, by = .(siteid) ]
-  
+  #} ), .SDcols = countcols_inbgstats, by = .(siteid) ]
+  } ), .SDcols = countcols_inbgstats, by = .(ejam_uniq_id) ]
+
   # results_bysite[1:100,1:8]
   # cbind(sum = prettyNum(results_overall,big.mark = ','))
   # versus if you did not remove duplicate places/people:
@@ -656,8 +665,9 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   ## mean by SITE ###
   results_bysite_popmeans <- sites2bgs_plusblockgroupdata_bysite[   ,  lapply(.SD, FUN = function(x) {
     collapse::fmean(x, w = bgwt * pop)   # stats::weighted.mean(x, w = bgwt * pop, na.rm = TRUE)    # 100 msec
-  }), .SDcols = popmeancols_inbgstats, by = .(siteid) ]
-  # redo   in data.table:: style, for speed? this is just by site so only 1 row per site is not that many usually, but is a lot of columns (200?) *********************************
+  #}), .SDcols = popmeancols_inbgstats, by = .(siteid) ]
+   }), .SDcols = popmeancols_inbgstats, by = .(ejam_uniq_id) ]
+# redo   in data.table:: style, for speed? this is just by site so only 1 row per site is not that many usually, but is a lot of columns (200?) *********************************
   results_bysite <- merge(results_bysite, results_bysite_popmeans)
   
   ## mean OVERALL ###
@@ -694,16 +704,20 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
     distance_min = collapse::fmin(distance_min),
     distance_min_avgperson = collapse::fmean(distance_min_avgperson, w = pop),   # distance_min_avgperson = weighted.mean(distance_min_avgperson, w= pop, na.rm=TRUE),
     sitecount_max    = collapse::fmax(sitecount_max ) ,
-    sitecount_unique = collapse::fnunique(siteid), ######## CHECK THIS
+    #sitecount_unique = collapse::fnunique(siteid), ######## CHECK THIS
+    sitecount_unique = collapse::fnunique(ejam_uniq_id), ######## CHECK THIS
     sitecount_avg    = collapse::fmean(sitecount_avg, w = pop)  # sitecount_avg     =weighted.mean(sitecount_avg, w= pop, na.rm=TRUE)
-  ), by = .(siteid) ]
-  results_bysite <- merge(results_bysite, results_bysite_minmax, on = "siteid")
-  
+  #), by = .(siteid) ]
+  ), by = .(ejam_uniq_id) ]
+#results_bysite <- merge(results_bysite, results_bysite_minmax, on = "siteid")
+results_bysite <- merge(results_bysite, results_bysite_minmax, on = "ejam_uniq_id")
+
   results_overall_minmax <- sites2bgs_plusblockgroupdata_bysite[ , .(  
     distance_min = collapse::fmin(distance_min),
     distance_min_avgperson = collapse::fmean(distance_min_avgperson, w = pop),   # distance_min_avgperson = weighted.mean(distance_min_avgperson, w= pop, na.rm=TRUE),
     sitecount_max    = collapse::fmax(sitecount_max ) ,
-    sitecount_unique = collapse::fnunique(siteid), ######## CHECK THIS
+    #sitecount_unique = collapse::fnunique(siteid), ######## CHECK THIS
+    sitecount_unique = collapse::fnunique(ejam_uniq_id), ######## CHECK THIS
     sitecount_avg     = collapse::fmean(sitecount_avg, w = pop)   # sitecount_avg     =weighted.mean(sitecount_avg, w= pop, na.rm=TRUE)
   ) ]  # not by siteid
   results_overall <- cbind(results_overall, results_overall_minmax) # cbind not merge, since only 1 row not by siteid
@@ -722,8 +736,10 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   # 
   # Is that at all useful really??
   # "blockcount_near_site"            "bgcount_near_site"
-  blockcount_by_site <- sites2blocks[, .(blockcount_near_site = .N),         by = siteid] # new----------------------------------------------- -
-  bgcount_by_site    <- sites2blocks[, .(bgcount_near_site = collapse::fnunique(bgid)), by = siteid] # new------------------------------------ -
+  blockcount_by_site <- sites2blocks[, .(blockcount_near_site = .N),         by = ejam_uniq_id] # new----------------------------------------------- -
+  bgcount_by_site    <- sites2blocks[, .(bgcount_near_site = collapse::fnunique(bgid)), by = ejam_uniq_id] # new------------------------------------ -
+  #blockcount_by_site <- sites2blocks[, .(blockcount_near_site = .N),         by = siteid] # new----------------------------------------------- -
+  #bgcount_by_site    <- sites2blocks[, .(bgcount_near_site = collapse::fnunique(bgid)), by = siteid] # new------------------------------------ -
   
   results_bysite <- merge(results_bysite, blockcount_by_site) # on="siteid" new ---------------------------------------------- -
   results_bysite <- merge(results_bysite, bgcount_by_site)    # on="siteid" new ---------------------------------------------- -
@@ -1065,8 +1081,10 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
     # returns a data.table with these columns:  siteid, ST
     if (!missing(sites2states_or_latlon)) {
       # add in the lat,lon columns - this is always available if ejamit() called this since it passes the pts as sites2states_or_latlon
-      if ("siteid" %in% names(sites2states_or_latlon) & "siteid" %in% names(sites2states)) {
-        sites2states <- merge(sites2states, sites2states_or_latlon, by = 'siteid') #  error if  siteid is not there
+      if ("ejam_uniq_id" %in% names(sites2states_or_latlon) & "ejam_uniq_id" %in% names(sites2states)) {
+      #if ("siteid" %in% names(sites2states_or_latlon) & "siteid" %in% names(sites2states)) {
+        sites2states <- merge(sites2states, sites2states_or_latlon, by = 'ejam_uniq_id') #  error if  siteid is not there
+        #sites2states <- merge(sites2states, sites2states_or_latlon, by = 'siteid') #  error if  siteid is not there
       } else {
         sites2states <- cbind(sites2states, sites2states_or_latlon) #   ***xxx  HAVE NOT CHECKED IF THIS WORKS OR IS CORRECT !
       }
@@ -1079,7 +1097,8 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   }
   # sites2states  is df or dt with just 1 row/site, and columns= siteid,ST ; and MIGHT have lat,lon and other info.
   
-  results_bysite[sites2states,  ST := ST,  on = "siteid"] # check this, including when ST is NA 
+  #results_bysite[sites2states,  ST := ST,  on = "siteid"] # check this, including when ST is NA 
+  results_bysite[sites2states,  ST := ST,  on = "ejam_uniq_id"] # check this, including when ST is NA 
   results_overall$ST <- NA
   results_bysite[, statename :=  stateinfo$statename[match(ST, stateinfo$ST)]]
   results_overall$statename <- NA
@@ -1091,7 +1110,8 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   # Infer lat,lon of each siteid if lat,lon not already provided in sites2states_or_latlon ? ####
   # use block lat,lon values to approximate the lat,lon of each site, if we were not given that 
   if (infer_sitepoints & !all(c("lat","lon") %in% names(results_bysite))) {
-    sitepoints <- sites2blocks[ , list(lat = mean(lat), lon = mean(lon)), by = "siteid"]
+    #sitepoints <- sites2blocks[ , list(lat = mean(lat), lon = mean(lon)), by = "siteid"]
+    sitepoints <- sites2blocks[ , list(lat = mean(lat), lon = mean(lon)), by = "ejam_uniq_id"]
     # *** but sitepoints is never used. where should these lat lon values be put, and is this method so inaccurate that it is not worthwhile? trilaterate was not accurate either.
     # sites2states # ??? see 1339 later where lat and lon added to results. 
   }
@@ -1157,7 +1177,8 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   
   # Q: does this convert it from data.table to data.frame? I think not. xxx
   
-  results_overall <- cbind(siteid = NA, results_overall, us.pctile.cols_overall ) # , state.pctile.cols_overall)
+  #results_overall <- cbind(siteid = NA, results_overall, us.pctile.cols_overall ) # , state.pctile.cols_overall)
+  results_overall <- cbind(ejam_uniq_id = NA, results_overall, us.pctile.cols_overall ) # , state.pctile.cols_overall)
   results_bysite  <- cbind(           results_bysite,  us.pctile.cols_bysite,  state.pctile.cols_bysite )
   #  ##################################################### #  ######################################################
   
@@ -1251,7 +1272,8 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
     
     # add EJ index percentiles to results compilation (except for overall state percentile which is created as a weighted average of percentiles further below)
     # Do not provide the raw EJ scores, just the percentiles?
-    results_overall <- cbind(siteid = NA, results_overall, us.pctile.cols_overall ) # , state.pctile.cols_overall)
+   # results_overall <- cbind(siteid = NA, results_overall, us.pctile.cols_overall ) # , state.pctile.cols_overall)
+    results_overall <- cbind(ejam_uniq_id = NA, results_overall, us.pctile.cols_overall ) # , state.pctile.cols_overall)
     results_bysite  <- cbind(           results_bysite,  us.pctile.cols_bysite,  state.pctile.cols_bysite )
     
     #*# Then for overall results as EJ index State percentile, I guess we use the popwtd mean of the site-specific EJ index State PERCENTILES?
@@ -1401,12 +1423,14 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   # LATITUDE and LONGITUDE added to results  ####
   
   if ("lat" %in% names(sites2states)) {
-    results_bysite[sites2states, lat := lat, on = "siteid"]
+    #results_bysite[sites2states, lat := lat, on = "siteid"]
+    results_bysite[sites2states, lat := lat, on = "ejam_uniq_id"]
   } else {
     results_bysite[ , lat := NA]
   }
   if ("lon" %in% names(sites2states)) {
-    results_bysite[sites2states, lon := lon, on = "siteid"]
+    #results_bysite[sites2states, lon := lon, on = "siteid"]
+    results_bysite[sites2states, lon := lon, on = "ejam_uniq_id"]
   } else {
     results_bysite[ , lon := NA]
   }
@@ -1423,7 +1447,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   # Put results columns in a more useful/ convenient order ####
   {
     useful_column_order <- c(
-      'id', 'siteid',
+      'id', 'ejam_uniq_id',#'siteid',
       'pop',           # '[or names_wts]',
       'sitename',
       'lon', 'lat', # do we want to make consistently lat,lon not lon,lat ??? ***

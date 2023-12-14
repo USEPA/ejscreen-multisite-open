@@ -368,6 +368,10 @@ app_server <- function(input, output, session) {
     cat("ROW COUNT IN FILE THAT SHOULD provide lat lon: ", NROW(sitepoints), "\n")
     ## if column names are found in lat/long alias comparison, process
     if (any(tolower(colnames(sitepoints)) %in% lat_alias) & any(tolower(colnames(sitepoints)) %in% lon_alias)) {
+      
+      sitepoints[, ejam_uniq_id := .I]
+      setcolorder(sitepoints, 'ejam_uniq_id')
+      
       sitepoints <- sitepoints %>% 
          latlon_df_clean() #%>%   # This does latlon_infer() and latlon_as.numeric() and latlon_is.valid()
       #data.table::as.data.table()
@@ -416,7 +420,12 @@ app_server <- function(input, output, session) {
       #sitepoints <- frs_from_regid(read_frs$REGISTRY_ID)
       # read_frs_dt <- data.table::as.data.table(read_frs)
       data.table::setDT(sitepoints) # same but less memory/faster?
-    } else {
+   
+      ## add ejam_uniq_id and valid T/F columns
+      sitepoints[, ejam_uniq_id := .I]
+      setcolorder(sitepoints, 'ejam_uniq_id')
+      site_is_invalid(sitepoints, type = 'FRS')
+       } else {
       invalid_alert[['FRS']] <- 0 # hides the invalid site warning
       an_map_text_pts[['FRS']] <- NULL # hides the count of uploaded sites
       disable_buttons[['FRS']] <- TRUE
@@ -543,6 +552,9 @@ app_server <- function(input, output, session) {
           by = c("program", "pgm_sys_id")
         )
       }
+      
+      pgm_out[, ejam_uniq_id := .I]
+      setcolorder(pgm_out, 'ejam_uniq_id')
       
       ## clean so that any invalid latlons become NA
       pgm_out <- pgm_out %>% 
@@ -1427,6 +1439,14 @@ app_server <- function(input, output, session) {
     out$results_overall[     , radius.miles := input$bt_rad_buff]
     out$results_bybg_people[ , radius.miles := input$bt_rad_buff] # probably will not export this big table in excel downloads
    
+    if(submitted_upload_method() %in% c('FRS','latlon','EPA_PROGRAM_up')){
+      #print(names(data_uploaded()))
+      #print(head(names(data_processed()$results_bysite)))
+      out$results_bysite <- merge(data_uploaded()[, .(ejam_uniq_id, valid)],
+                                  out$results_bysite, 
+                                  by='ejam_uniq_id', all=T)
+    }
+    
      # out$longnames <- NA # see ejamit()
     # out$formatted <- table_tall_from_overall(out$results_overall, out$longnames)
     #   # see ejamit()
@@ -2060,12 +2080,15 @@ app_server <- function(input, output, session) {
     # --------------------------------------------------- #
     # cols_to_select <- names(data_processed)
     # friendly_names <- longnames???
-    cols_to_select <- c('siteid',  'pop', 'EJScreen Report', 'EJScreen Map', 'ECHO report', # 'ACS Report', 
+    cols_to_select <- c('ejam_uniq_id', #'siteid', 
+                        'pop', #'Community Report',
+                        'EJScreen Report', 'EJScreen Map', 'ECHO report', # 'ACS Report', 
                         names_d, names_d_subgroups,
                         names_e #, 
                         # no names here corresponding to number above x threshold, state, region ??
     )
-    friendly_names <- c('Site ID', 'Est. Population',  'EJScreen Report', 'EJScreen Map', 'ECHO report', #'ACS Report', 
+    friendly_names <- c('Site ID', 'Est. Population', #'Community Report',
+                        'EJScreen Report', 'EJScreen Map', 'ECHO report', #'ACS Report', 
                         names_d_friendly, names_d_subgroups_friendly, 
                         names_e_friendly)
     
