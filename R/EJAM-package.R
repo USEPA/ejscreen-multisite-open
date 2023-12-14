@@ -156,17 +156,17 @@
 #'   
 #'   - **[doaggregate()]** = function(sites2blocks) This summarizes in each buffer and for all unique residents across all buffers.
 #'     
-#'   - **[blockgroupstats].rda** a data.table with 220k rows (blockgroups) and hundreds of indicator columns.
+#'   - **[blockgroupstats]** a data.table with 220k rows (blockgroups) and hundreds of indicator columns.
 #'      Will need bgid not just bgfips, to join to blockwts$bgid
 #'      Needs to be updated each time EJScreen is updated. 
 #'      
-#'   - **[bgej].rda** a data.table like blockgroupstats but for the EJ Index raw scores. 
+#'   - **[bgej]** a data.table like blockgroupstats but for the EJ Index raw scores. 
 #'
-#'   - **[usastats].rda** and **[statestats].rda**  data.table lookup of 100 percentiles and means 
-#'       (for each indicator in blockgroupstats, and perhaps bgej) in each zone (USA, or a state or DC, PR).
+#'   - **[usastats]** and **[statestats]**  data.table lookup of 100 percentiles and means 
+#'       (for each indicator in blockgroupstats, and bgej) in each zone (USA, or a state or DC, PR).
 #'       Need to update each time blockgroupstats is updated. Taken from EJScreen data or ejscreen package file lookupUSA and lookupStates
 #'  
-#'   - **blockwts.rda** see [data_load_from_aws()]
+#'   - **blockwts** see [data_load_from_aws()]
 #'    Required by [doaggregate()]. A data.table of 6-8m rows 
 #'     - blockwt  The fraction of parent blockgroup decennial pop that is in this one block
 #'     - block_radius_miles squared times pi would equal the land plus water area in square miles

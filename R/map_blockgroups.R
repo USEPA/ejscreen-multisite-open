@@ -15,7 +15,7 @@
 #'
 #' @examples
 #' dontrun{
-#'   #bgs <- fipsbg_from_anyfips(fips_counties_from_state_abbrev("NY")[2])
+#'   #bgs <- fips_bg_from_anyfips(fips_counties_from_state_abbrev("NY")[2])
 #'   # 10 blockgroups in NY with highest score for this indicator 
 #'   bgs <-  blockgroupstats[!is.na(Demog.Index.Supp) &
 #'     ST == "NY", ][order(Demog.Index.Supp), tail(bgfips, 10)]

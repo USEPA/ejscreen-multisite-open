@@ -10,7 +10,7 @@ pctiles_lookup_create(
   zoneOverallName = "USA",
   wts = NULL,
   usecollapse = TRUE,
-  type = 1
+  type = 7
 )
 }
 \arguments{

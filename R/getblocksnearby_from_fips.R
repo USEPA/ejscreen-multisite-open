@@ -18,7 +18,7 @@
 #'   
 #'   # x=getblocksnearby_from_fips("482011000011") # one blockgroup only
 #'   # y=doaggregate(x)
-#' @seealso [fipsbg_from_anyfips()] [fips_lead_zero()] [getblocksnearby_from_fips()] [fips_from_table()]
+#' @seealso [fips_bg_from_anyfips()] [fips_lead_zero()] [getblocksnearby_from_fips()] [fips_from_table()]
 #' 
 getblocksnearby_from_fips <- function(fips, inshiny = FALSE, need_blockwt = TRUE) {
   
@@ -46,10 +46,10 @@ getblocksnearby_from_fips <- function(fips, inshiny = FALSE, need_blockwt = TRUE
   }
   
   ## create two-column dataframe with bgs (values) and original fips (ind)
-  # fipsbg_from_anyfips() returns all blockgroup fips codes contained within each fips provided
-  all_bgs <- stack(sapply(fips_vec, fipsbg_from_anyfips))
+  # fips_bg_from_anyfips() returns all blockgroup fips codes contained within each fips provided
+  all_bgs <- stack(sapply(fips_vec, fips_bg_from_anyfips))
   names(all_bgs) <- c('bgfips', 'siteid')
-  # *** It actually could be more efficient to replace the above fipsbg_from_anyfips() 
+  # *** It actually could be more efficient to replace the above fips_bg_from_anyfips() 
   # or make a new func to provide bgid_from_anyfips() 
   # instead of 1st getting bgfips and then needing to look up bgid by bgfips
   # Get bgid:

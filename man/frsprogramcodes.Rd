@@ -32,6 +32,9 @@
 11                                           Toxic Substances Control Act     TSCA
 }\if{html}{\out{</div>}}
 }
+\details{
+Created by script in /data-raw/
+}
 \examples{
 \dontrun{
   frs_by_programid[program \%in\% frsprogramcodes$code, .N, by=program]

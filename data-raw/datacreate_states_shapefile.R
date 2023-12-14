@@ -20,9 +20,9 @@ usethis::use_data(states_shapefile, overwrite = TRUE)
 
 ################################################################### # 
 ## alternative way, from EJSCREENbatch   (format differs)
-# library(tigris)
+# library # ( # tigris)
 # library(sf)
-# states_shapefile2 <- tigris::states() %>% sf::st_as_sf() %>%
+# states_shapefile2 <- tigris # :: # states() %>% sf::st_as_sf() %>%
 #   sf::st_transform(crs ="ESRI:102005") %>%
 #   dplyr::select('NAME') %>%
 #   dplyr::rename(facility_state = NAME)

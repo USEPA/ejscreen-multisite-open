@@ -27,5 +27,5 @@ fips_from_table - read and clean FIPS column from a table, after inferring which
 Just read the codes in one column of a table obtained from something like read.csv, or excel, etc.
 }
 \seealso{
-\code{\link[=fipsbg_from_anyfips]{fipsbg_from_anyfips()}} \code{\link[=fips_lead_zero]{fips_lead_zero()}} \code{\link[=getblocksnearby_from_fips]{getblocksnearby_from_fips()}} \code{\link[=fips_from_table]{fips_from_table()}}
+\code{\link[=fips_bg_from_anyfips]{fips_bg_from_anyfips()}} \code{\link[=fips_lead_zero]{fips_lead_zero()}} \code{\link[=getblocksnearby_from_fips]{getblocksnearby_from_fips()}} \code{\link[=fips_from_table]{fips_from_table()}}
 }

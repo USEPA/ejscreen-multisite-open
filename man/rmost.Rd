@@ -6,7 +6,7 @@
 \usage{
 rmost(
   notremove = c("rmost", "localtree", "blockgroupstats", "usastats", "statestats",
-    "bgid2fips", "blockid2fips", "blockpoints", "blockwts", "quaddata")
+    "bgid2fips", "blockid2fips", "blockpoints", "blockwts", "quaddata", "bgej")
 )
 }
 \description{

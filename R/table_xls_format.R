@@ -1,7 +1,8 @@
 #' table_xls_format - Format EJAM tabular outputs for saving as Excel spreadsheet
 #' Used by table_xls_from_ejam()
 #' @details  Already took and put here most or all of code from table_xls_format() or table_xls_format_api() 
-#' @param overall  table to save in one tab, from ejamit()$overall, EJAM analysis of indicators overall (one row)
+#' @param overall  table to save in one tab, from ejamit()$overall, EJAM analysis of indicators overall (one row),
+#'   but if entire output of ejamit() is passed as if it were overall, function figures out eachsite, etc.
 #' @param eachsite table to save in one tab, from ejamit()$overall, EJAM analysis site by site (one row per site)
 #' @param longnames vector of indicator names to display in Excel table
 #' @param formatted optional table to save in one tab, from ejamit()$overall, EJAM analysis overall in different format
@@ -44,8 +45,13 @@
 #' @export
 #'
 #' @examples \dontrun{
-#'   wb <- table_xls_format(testoutputs_$results_overall, datasetResults()$results_bysite,
-#'     saveas =  "results.xlsx")
+#'   table_xls_format(
+#'     testoutput_ejamit_100pts_1miles$results_overall, 
+#'     testoutput_ejamit_100pts_1miles$results_bysite,
+#'     saveas =  "out1.xlsx")
+#'  # can just pass the whole results of ejamit(), for convenience
+#'  wb <- table_xls_format(testoutput_ejamit_100pts_1miles)
+#'  openxlsx::saveWorkbook(wb, file = "out2.xlsx")
 #' }
 table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, bybg=NULL, 
                             plot_distance_by_group = FALSE, 
@@ -70,6 +76,44 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
                             testing=FALSE, launchexcel = FALSE, saveas = NULL,
                             
                             ...) {
+  ###################  #   ###################  #   ###################  #   ###################  # 
+  # if user passed the entire output of ejamit() or doaggregate() as the first parameter, 
+  # rather than splitting it up and passing overall, eachsite, longnames, formatted, bybg separately,
+  # notice that and try to use it and split it up for them - it makes the interface much more convenient for use in console:
+  #
+  if (class(overall)[1] == "list" && missing(eachsite)) {
+    # assume user may have passed entire output of ejamit() or doaggregate() as first parameter, so extract the elements of that list
+    if ("longnames"           %in% names(overall) && is.null(longnames)) {longnames <- overall$longnames} # else stays as NULL
+    if ("formatted"           %in% names(overall) && is.null(formatted)) {formatted <- overall$formatted} # else stays as NULL
+    if ("results_bybg_people" %in% names(overall) && is.null(bybg))      {bybg      <- overall$results_bybg_people} # else stays as NULL
+
+    if (!("results_bysite" %in% names(overall))) {
+      eachsite <- NULL # unusual situation we will try to accommodate
+    } else {
+      eachsite <- overall$results_bysite
+    }
+    if (!("results_overall" %in% names(overall))) {
+      overall <- NULL # unusual situation we will try to accommodate
+    }  else {
+      overall <- overall$results_overall
+    }
+    if (is.null(eachsite)[1] && is.null(overall)[1]) {
+      # no data available at all
+      stop("table_xls_format() requires either overall or eachsite data as from results of ejamit() or doaggregate() for example") 
+    }
+    if (is.null(eachsite)[1] && !is.null(overall)[1]) {
+      eachsite <- overall # only 1 of them is available, so use the overall data as the site by site data, enabling the function to still do something useful
+    }
+    if (!is.null(eachsite)[1] && is.null(overall)[1]) {
+      overall <- eachsite[1, ] # only 1 of them is available, so use the eachsite structure but fill in NA values in the data row, hopefully enabling the function to still do something useful 
+      overall[ , ] <- NA
+    }
+  }
+  ###################  #   ###################  #   ###################  #   ###################  # 
+  if (missing(eachsite)[1] && missing(overall)[1]) {
+    # no data available at all
+    stop("table_xls_format() requires either overall or eachsite data as from results of ejamit() or doaggregate() for example") 
+  }
   
   if (is.null(heatmap2_colnames)) {
     heatmap2_colnames <- map_headernames$rname[grepl('ratio', map_headernames$varlist)] # from EJAMejscreenapi ::
@@ -91,7 +135,18 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
   # 
   # report_map()  from leaflet() BUT THAT IS HTML WIDGET NOT A PNG OR GGPLOT OBJECT !
   
-  if (is.null(formatted)) {formatted <- ""}
+  
+  # column names check/ cleanup?? #### 
+  
+  ## if no longnames provided, use existing column names ####
+  if (is.null(longnames)) {
+    longnames <- fixcolnames( names(overall), 'r', 'long')
+  }
+  
+  if (is.null(formatted)) {
+    # formatted <- "" # or could do this here if we assume they omitted it but did not intend to prevent it from appearing on the spreadsheet as a tab:
+    formatted <- table_tall_from_overall(results_overall = overall, longnames = longnames)
+  }
   
   if (length(heatmap_cuts) != length(heatmap_colors)) {
     warning("heatmap_cuts and heatmap_colors should be same length")
@@ -120,13 +175,6 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
   }
   
   # error checking graycolnames is later, below.
-  
-  # column names check/ cleanup?? #### 
-  
-  ## if no longnames provided, use existing column names ####
-  if (is.null(longnames)) {
-    longnames <- fixcolnames( names(overall), 'r', 'long')
-  }
   ## replace missing column headers with friendly names? doubt they are ever missing some
   
   headers_overall  <- names(overall)

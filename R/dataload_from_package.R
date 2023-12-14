@@ -1,7 +1,10 @@
 #' dataload_from_package - utility to load a couple of datasets using data immediately instead of relying on lazy loading 
-#' @details Default is to load some but not all the datasets into memory immediately.
-#'   blockgroupstats, usastats, statestats, and some others are always essential to EJAM, but 
-#'   frs and frs_by_programid are huge datasets (and frs_by_sic and frs_by_naics)
+#' @details
+#'  See also read_builtin() function from the readr package!
+#' 
+#'  Default is to load some but not all the datasets into memory immediately.
+#'   [blockgroupstats], [usastats], [statestats], and some others are always essential to EJAM, but 
+#'   [frs] and [frs_by_programid] are huge datasets (and [frs_by_sic] and [frs_by_naics])
 #'    and not always used - only to find regulated facilities by ID, etc. 
 #'    The frs-related datasets here can be roughly 1.5 GB in RAM, perhaps.
 #' @param olist vector of strings giving names of objects to load using data(). 
@@ -40,7 +43,8 @@ dataload_from_package <- function(olist = c("blockgroupstats", "usastats", "stat
   #   oname <- gsub(".rda", "", f.rda)
   
   # Note:
-  #
+  #  See also read_builtin() function from the readr package!
+  # 
   #   Use of data within a function without an envir argument has the 
   # almost always undesirable side-effect of putting an object in the user's workspace 
   # (and indeed, of replacing any object of that name already there). 

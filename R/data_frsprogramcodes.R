@@ -28,6 +28,8 @@
 #'     10                                             Emissions Inventory System      EIS
 #'     
 #'     11                                           Toxic Substances Control Act     TSCA
+#'     
+#' @details Created by script in /data-raw/
 #' @examples \dontrun{
 #'   frs_by_programid[program %in% frsprogramcodes$code, .N, by=program]
 #'   
