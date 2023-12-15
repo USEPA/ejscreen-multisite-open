@@ -472,6 +472,9 @@ app_server <- function(input, output, session) {
         #   2. GET FACILITY LAT/LON INFO FROM NAICS CODES  
         
         sitepoints <- frs_from_naics(inputnaics, children = add_naics_subcategories)[, .(lat,lon,REGISTRY_ID,PRIMARY_NAME,NAICS)] # xxx
+        
+        sitepoints[, ejam_uniq_id := .I]
+        setcolorder(sitepoints, 'ejam_uniq_id')
         # print(sitepoints)
         if (rlang::is_empty(sitepoints) | nrow(sitepoints) == 0) {
           ################ Should output something saying no valid results returned ######## #
@@ -482,6 +485,9 @@ app_server <- function(input, output, session) {
         }
       } else{  
         sitepoints <- frs_from_naics(inputnaics, children = add_naics_subcategories)[, .(lat,lon,REGISTRY_ID,PRIMARY_NAME,NAICS)] # xxx
+        
+        sitepoints[, ejam_uniq_id := .I]
+        setcolorder(sitepoints, 'ejam_uniq_id')
         # print(sitepoints)
         showNotification('Points submitted successfully!', duration = 1)
       }
@@ -582,6 +588,10 @@ app_server <- function(input, output, session) {
       req(isTruthy(input$ss_select_program))
       ## filter frs_by_programid to currently selected program
       pgm_out <- frs_by_programid[ program == input$ss_select_program]
+      
+      pgm_out[, ejam_uniq_id := .I]
+      setcolorder(pgm_out, 'ejam_uniq_id')
+      
       ## clean so that any invalid latlons become NA
       pgm_out <- pgm_out %>% 
         latlon_df_clean()
@@ -620,6 +630,10 @@ app_server <- function(input, output, session) {
         
         # print('testb')
         sitepoints <- frs_from_sic(inputsic, children = add_sic_subcategories)[, .(lat,lon,REGISTRY_ID,PRIMARY_NAME,SIC)] # xxx
+       
+        sitepoints[, `:=`(ejam_uniq_id = .I, 
+                          valid = !is.na(lon) & !is.na(lat))]
+        setcolorder(sitepoints, 'ejam_uniq_id')
         # print(sitepoints)
         if (rlang::is_empty(sitepoints) | nrow(sitepoints) == 0) {
           ################ Should output something saying no valid results returned ######## #
@@ -631,6 +645,9 @@ app_server <- function(input, output, session) {
         }
       } else {
         sitepoints <- frs_from_sic(inputsic, children = add_sic_subcategories)[, .(lat,lon,REGISTRY_ID,PRIMARY_NAME,SIC)] # xxx
+        sitepoints[, `:=`(ejam_uniq_id = .I, 
+                        valid = !is.na(lon) & !is.na(lat))]
+        setcolorder(sitepoints, 'ejam_uniq_id')
         showNotification('Points submitted successfully!', duration = 1)
       }
     } else {
@@ -751,6 +768,9 @@ app_server <- function(input, output, session) {
     } else {
       disable_buttons[['MACT']] <- FALSE
       
+      mact_out[, `:=`(ejam_uniq_id = .I, 
+                      valid = !is.na(lon) & !is.na(lat))]
+      setcolorder(mact_out, 'ejam_uniq_id')
       ## return output dataset
       mact_out
     }
@@ -1339,7 +1359,11 @@ app_server <- function(input, output, session) {
           maxradius = input$maxradius,
           quiet = TRUE
         )
-        
+
+       # data_uploaded()[!(ejam_uniq_id %in% sites2blocks$ejam_uniq_id),'valid'] <- F
+        dup <- data_uploaded()
+        dup[,valid := ejam_uniq_id %in% sites2blocks$ejam_uniq_id]
+        data_uploaded <- dup
       } # end LAT LON finding blocks nearby, now ready for latlon and shapefiles to do aggregation
       #############################################################################  # 
       
