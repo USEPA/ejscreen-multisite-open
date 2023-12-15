@@ -11,7 +11,7 @@
 #'
 #' @return a vector of fips codes
 #' @export
-#' @seealso [fipsbg_from_anyfips()] [fips_lead_zero()] [getblocksnearby_from_fips()] [fips_from_table()]
+#' @seealso [fips_bg_from_anyfips()] [fips_lead_zero()] [getblocksnearby_from_fips()] [fips_from_table()]
 fips_from_table <- function(fips_table, addleadzeroes=TRUE, inshiny=FALSE) {
   # fips_table can be data.frame or data.table, as long as colnames has one alid fips alias
   ## create named vector of FIPS codes (names used as siteid)

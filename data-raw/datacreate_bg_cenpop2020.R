@@ -52,13 +52,14 @@ x$ST <- EJAM::stateinfo$ST[match(x$FIPS.ST, EJAM::stateinfo$FIPS.ST)]
 rm(x)
 
 #  look up bgid based on join on bgfips
+if (!exists("bgid2fips")) dataload_from_pins("bgid2fips")
 bg_cenpop2020$bgid <- bgid2fips[bg_cenpop2020,  bgid, on = "bgfips"] # bgid2fips is loaded from aws, e.g. by EJAM pkg
   data.table::setkey(bg_cenpop2020, bgid, bgfips)
  
 data.table::setkey(bg_cenpop2020,bgfips)
 data.table::setorder(bg_cenpop2020, bgid, bgfips, lat, lon, pop2020, ST)
 
-EJAMejscreenapi::mapfast(bg_cenpop2020[ST=="LA",], radius = 0.01)
+EJAMejscreenapi::mapfast(bg_cenpop2020[ST == "LA",], radius = 0.01)
 ####################################################### # 
 #### DROP MOST OF THAT INFO ACTUALLY... 
 #  THIS IS 24MB and already have all this in bgpts, except for pop2020 and lat lon of pop2020wtd centroid !
@@ -71,8 +72,8 @@ sum(bg_cenpop2020$pop2020)
 sum(blockgroupstats$pop, na.rm = T)
 ####################################################### # 
 
-bg_cenpop2020 <- EJAM::metadata_add(bg_cenpop2020, metadata = list(download_date=Sys.time(), source=fname,  census_version = 2020)) 
-usethis::use_data(bg_cenpop2020, overwrite=TRUE)
+bg_cenpop2020 <-  metadata_add(bg_cenpop2020, metadata = list(download_date = Sys.time(), source = fname,  census_version = 2020)) 
+usethis::use_data(bg_cenpop2020, overwrite = TRUE)
 
 rm(bg_cenpop2020)
 gc()

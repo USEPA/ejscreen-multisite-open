@@ -75,10 +75,11 @@ dataload_from_pins <- function(varnames = c('blockwts', 'quaddata', 'blockpoints
         if (exists(varname_n, envir = envir)) {
           cat(varname_n, " - an object with this name is already in specified environment, so not downloaded again.\n")
         } else {
+          cat(varname_n, " - not in local folder... ")
           pathpin <- paste0(boardfolder, "/", varname_n)
           if (pins::pin_exists(board, pathpin)) {
             assign(varname_n, pins::pin_read(board, pathpin), envir = envir)
-            cat(varname_n, " - has been read into specified environment.\n")
+            cat(varname_n, " - has been read from pin into specified environment.\n")
             varnames_gotten <- c(varnames_gotten, varname_n)
           } else {
             cat(varname_n, " - was not found at ", server, "/", pathpin, "\n")
@@ -86,8 +87,8 @@ dataload_from_pins <- function(varnames = c('blockwts', 'quaddata', 'blockpoints
           }
         }
       }
-      return(varnames_gotten)
     }
+    return(varnames_gotten)
   }
   # @param envir e.g., globalenv() or parent.frame()
   

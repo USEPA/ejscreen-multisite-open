@@ -20,3 +20,7 @@ data.table that is one row per indicator
 table_tall_from_overall
 Format the results_overall part of the output of ejamit() or doaggregate()
 }
+\examples{
+ table_tall_from_overall(testoutput_ejamit_10pts_1miles$results_overall)
+ table_tall_from_overall(x$results_bysite[1, ])
+}

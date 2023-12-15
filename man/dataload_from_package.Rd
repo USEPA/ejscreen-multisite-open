@@ -23,9 +23,11 @@ Nothing
 dataload_from_package - utility to load a couple of datasets using data immediately instead of relying on lazy loading
 }
 \details{
+See also read_builtin() function from the readr package!
+
 Default is to load some but not all the datasets into memory immediately.
-blockgroupstats, usastats, statestats, and some others are always essential to EJAM, but
-frs and frs_by_programid are huge datasets (and frs_by_sic and frs_by_naics)
+\link{blockgroupstats}, \link{usastats}, \link{statestats}, and some others are always essential to EJAM, but
+\link{frs} and \link{frs_by_programid} are huge datasets (and \link{frs_by_sic} and \link{frs_by_naics})
 and not always used - only to find regulated facilities by ID, etc.
 The frs-related datasets here can be roughly 1.5 GB in RAM, perhaps.
 }

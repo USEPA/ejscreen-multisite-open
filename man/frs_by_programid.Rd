@@ -6,6 +6,12 @@
 \title{frs_by_programid (DATA) data.table of Program System ID code(s) for each EPA-regulated site in
 the Facility Registry Service}
 \description{
+frs_by_programid (DATA) data.table of Program System ID code(s) for each EPA-regulated site in
+the Facility Registry Service
+}
+\details{
+Created by frs_make_programid_lookup()  that was in EJAMfrsdata package
+
 \preformatted{
    This is the format with one row per site-programid pair, 
    so multiple rows for one site if it is in multiple programs.
@@ -29,5 +35,5 @@ nn=sample(1:nrow(frs_by_programid), 1); frs_by_programid[REGISTRY_ID == frs_by_p
   }
 }
 \seealso{
-frs() frs_by_naics() Created by frs_make_programid_lookup()
+frs() frs_by_naics()
 }

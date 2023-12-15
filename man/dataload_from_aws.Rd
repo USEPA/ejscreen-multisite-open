@@ -20,7 +20,7 @@ dataload_from_aws(
 \arguments{
 \item{varnames}{character vector of the quoted names of the data objects like blockwts or quaddata}
 
-\item{envir}{default is parent.frame()}
+\item{envir}{e.g., globalenv() or parent.frame()}
 
 \item{mybucket}{where in AWS, like}
 

@@ -2,8 +2,11 @@
 #' @docType data
 #' @title frs_by_programid (DATA) data.table of Program System ID code(s) for each EPA-regulated site in 
 #'   the Facility Registry Service
-#' @seealso frs() frs_by_naics() Created by frs_make_programid_lookup()
-#' @description 
+#' @seealso frs() frs_by_naics()  
+#' @details 
+#'  
+#'  Created by frs_make_programid_lookup()  that was in EJAMfrsdata package
+#'  
 #'  \preformatted{
 #'    This is the format with one row per site-programid pair, 
 #'    so multiple rows for one site if it is in multiple programs.

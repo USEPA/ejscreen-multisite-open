@@ -11,7 +11,9 @@ shapefile_from_filepaths(filepaths = NULL, cleanit = TRUE, crs = 4269)
 
 \item{cleanit}{set to FALSE if you want to skip validation and dropping invalid rows}
 
-\item{crs}{passed to shapefile_clean() default is crs = 4269 or Geodetic CRS NAD83}
+\item{crs}{if cleanit = TRUE, crs is passed to shapefile_clean()
+default is crs = 4269 or Geodetic CRS NAD83
+Also can check this via x <- sf::st_crs(sf::read_sf()); x$input}
 }
 \value{
 a shapefile object using sf::read_sf()

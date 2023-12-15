@@ -90,9 +90,15 @@ if (("std.dev" %in% (statestats2.2$PCTILE))) {statestats2.2 <- statestats2.2[sta
 ## CREATE USA LOOKUP ####
 ################################################ #
 
-if (all(usastats2.2[,names_d_subgroups_both] == 0)  | any(!(names_d_subgroups_both %in% names(usastats2.2))))  {
+
+ names(usastats2.2)
+
+if (all(usastats2.2[,intersect(names_d_subgroups_both, names(usastats2.2))] == 0)  | 
+    any(!(names_d_subgroups_both %in% names(usastats2.2))))  {
+  # Error in `[.data.frame`(usastats2.2, , names_d_subgroups_both) : 
+  #   undefined columns selected
   
-  usastats_subgroups   <- EJAM::pctiles_lookup_create(data.frame(bg)[ , names_d_subgroups_both])
+  usastats_subgroups   <- pctiles_lookup_create(data.frame(bg)[ , names_d_subgroups_both]) # function from EJAM package
   usastats_subgroups <- rbind(0, usastats_subgroups); usastats_subgroups$PCTILE[1] <- 0
   usastats_subgroups[1, c("OBJECTID", "REGION")] <- c(0, "USA")
 
@@ -117,7 +123,7 @@ if (all(usastats2.2[,names_d_subgroups_both] == 0)  | any(!(names_d_subgroups_bo
 
 # if (all(statestats2.2[,names_d_subgroups_both] == 0)  | any(!(names_d_subgroups_both %in% names(statestats2.2)))) {
   
-  statestats_subgroups <- EJAM::pctiles_lookup_create(data.frame(bg)[ , names_d_subgroups_both], zone.vector = bg$ST)
+  statestats_subgroups <- pctiles_lookup_create(data.frame(bg)[ , names_d_subgroups_both], zone.vector = bg$ST) # from EJAM package
   
   # names(statestats_subgroups)
   morecols = data.frame(as.list(rep(0,length(names_d_subgroups_both))))
@@ -168,6 +174,7 @@ if (all(usastats2.2[,names_d_subgroups_both] == 0)  | any(!(names_d_subgroups_bo
   ########################################################## # 
   # now save these within the EJAM package as datasets
   
+  
   data.table::setDF(usastats2.2) # keep as data.frame actually in the package
   data.table::setDF(statestats2.2) # keep as data.frame actually
   
@@ -181,8 +188,8 @@ if (all(usastats2.2[,names_d_subgroups_both] == 0)  | any(!(names_d_subgroups_bo
   usastats   <- EJAM::metadata_add(usastats)
   statestats <- EJAM::metadata_add(statestats)
   
-  attr(  usastats, 'ejscreen_releasedate') <- "2023-08-21"
-  attr(statestats, 'ejscreen_releasedate') <- "2023-08-21"
+  attr(  usastats, 'ejscreen_releasedate') <- "2023-09"
+  attr(statestats, 'ejscreen_releasedate') <- "2023-09"
   attr(  usastats, 'download_date') <- Sys.time()
   attr(statestats, 'download_date') <- Sys.time()
   
@@ -194,15 +201,38 @@ if (all(usastats2.2[,names_d_subgroups_both] == 0)  | any(!(names_d_subgroups_bo
   statestats$pcthisp.1 <- NULL
   usastats$OBJECTID <- NULL
   statestats$OBJECTID <- NULL
-# fix scaling of percentages of new groups:
-    usastats[, unique(c(names_d_subgroups_alone, names_d_subgroups_nh))] <-   usastats[, unique(c(names_d_subgroups_alone, names_d_subgroups_nh))]  / 100
-  statestats[, unique(c(names_d_subgroups_alone, names_d_subgroups_nh))] <- statestats[, unique(c(names_d_subgroups_alone, names_d_subgroups_nh))]  / 100
   
+# fix scaling of percentages of new groups:
+    usastats[, unique(c(EJAM::names_d_subgroups_alone, EJAM::names_d_subgroups_nh))] <-   usastats[, unique(c(EJAM::names_d_subgroups_alone, EJAM::names_d_subgroups_nh))]  / 100
+  statestats[, unique(c(EJAM::names_d_subgroups_alone, EJAM::names_d_subgroups_nh))] <- statestats[, unique(c(EJAM::names_d_subgroups_alone, EJAM::names_d_subgroups_nh))]  / 100
+  
+  # COMPARE AUGUST AND SEPTEMBER VERSIONS: 
+  # > all.equal(EJAM::usastats, usastats)
+  # [1] "Attributes: < Component “download_date”: Mean absolute difference: 8980007 >" "Attributes: < Component “ejscreen_releasedate”: 1 string mismatch >"         
+  # [3] "Component “pcthisp”: Mean relative difference: 1.067595e-05"                  "Component “pctnhba”: Mean relative difference: 1.589355e-05"                 
+  # [5] "Component “pctnhaa”: Mean relative difference: 1.501667e-05"                  "Component “pctnhaiana”: Mean relative difference: 7.836065e-05"              
+  # [7] "Component “pctnhnhpia”: Mean relative difference: 3.172088e-05"               "Component “pctnhotheralone”: Mean relative difference: 6.434336e-05"         
+  # [9] "Component “pctnhmulti”: Mean relative difference: 2.125638e-05"               "Component “pctnhwa”: Mean relative difference: 2.685011e-06"                 
+  # [11] "Component “pctba”: Mean relative difference: 1.229241e-05"                    "Component “pctaa”: Mean relative difference: 2.621459e-05"                   
+  # [13] "Component “pctaiana”: Mean relative difference: 8.697249e-05"                 "Component “pctnhpia”: Mean relative difference: 0.0002228006"                
+  # [15] "Component “pctotheralone”: Mean relative difference: 1.192427e-05"            "Component “pctmulti”: Mean relative difference: 1.705527e-05"                
+  # [17] "Component “pctwa”: Mean relative difference: 2.403642e-06"                   
+  # > all.equal(EJAM::statestats, statestats)
+  # [1] "Attributes: < Component “download_date”: Mean absolute difference: 8980007 >" "Attributes: < Component “ejscreen_releasedate”: 1 string mismatch >"         
+  # [3] "Component “pcthisp”: Mean relative difference: 0.001028853"                   "Component “pctnhba”: Mean relative difference: 0.000977502"                  
+  # [5] "Component “pctnhaa”: Mean relative difference: 0.001942243"                   "Component “pctnhaiana”: Mean relative difference: 0.008011628"               
+  # [7] "Component “pctnhnhpia”: Mean relative difference: 0.004812776"                "Component “pctnhotheralone”: Mean relative difference: 0.007710334"          
+  # [9] "Component “pctnhmulti”: Mean relative difference: 0.00149952"                 "Component “pctnhwa”: Mean relative difference: 0.000319588"                  
+  # [11] "Component “pctba”: Mean relative difference: 0.0009840309"                    "Component “pctaa”: Mean relative difference: 0.001968099"                    
+  # [13] "Component “pctaiana”: Mean relative difference: 0.007705694"                  "Component “pctnhpia”: Mean relative difference: 0.004470268"                 
+  # [15] "Component “pctotheralone”: Mean relative difference: 0.001997212"             "Component “pctmulti”: Mean relative difference: 0.001217564"                 
+  # [17] "Component “pctwa”: Mean relative difference: 0.0002985361"  
   
   usethis::use_data(  usastats, overwrite = T)
   usethis::use_data(statestats, overwrite = T) 
   rm(bg)
-  save.image(file = 'work on usastats and statestats 2023-08-23 end.rda')
+  # save.image(file = 'work on usastats and statestats 2023-08-23 end.rda')
+  save.image(file = 'work on usastats and statestats 2023-12-12 end.rda')
   
   rm(list = ls())
   

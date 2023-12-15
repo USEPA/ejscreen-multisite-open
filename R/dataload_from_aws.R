@@ -35,7 +35,7 @@
 #'   - bgid2fips (18 MB RAM)
 #'   
 #' @param varnames character vector of the quoted names of the data objects like blockwts or quaddata
-#' @param envir default is parent.frame()
+#' @param envir e.g., globalenv() or parent.frame()
 #' @param mybucket where in AWS, like 
 #' @param mybucketfolder where in AWS, like EJAM
 #' @param justchecking set to TRUE to get object size (and confirm file is accessible/exists)

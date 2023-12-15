@@ -15,7 +15,7 @@
 #'
 #' @examples
 #' dontrun{
-#'   #bgs <- fipsbg_from_anyfips(fips_counties_from_state_abbrev("NY")[2])
+#'   #bgs <- fips_bg_from_anyfips(fips_counties_from_state_abbrev("NY")[2])
 #'   # 10 blockgroups in NY with highest score for this indicator 
 #'   bgs <-  blockgroupstats[!is.na(Demog.Index.Supp) &
 #'     ST == "NY", ][order(Demog.Index.Supp), tail(bgfips, 10)]
@@ -72,6 +72,7 @@ map_blockgroups <- function(bgfips = '010890029222', outFields = "",
 map_blockgroups_over_blocks <- function(y) {
   # y is output of plotblocksnearby()
   bgids <-  unique(as.vector(sapply( y$x$calls[[2]]$args[[7]], function(z)   gsub(   ".*bgid: ([0-9]*)<.*", "\\1", z))))
+  if (!exists("bgid2fips")) dataload_from_pins("bgid2fips")
   bgfips <- bgid2fips[bgid %in% bgids, bgfips] 
   x <- map_blockgroups(bgfips) # but not for 60+ fips!
   # add those FIPS shapes to the leaflet htmlwidget map 

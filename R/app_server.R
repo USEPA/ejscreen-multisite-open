@@ -188,7 +188,7 @@ app_server <- function(input, output, session) {
                           FIPS =             "FIPS")
     )
     cat('current_upload_method reactive is ', x, '\n')
-   
+    
     cat('current input$ss_choose_method      is ', input$ss_choose_method,      '\n')
     if (input$ss_choose_method == "dropdown") {cat('current input$ss_choose_method_drop is ', input$ss_choose_method_drop, '\n')}
     if (input$ss_choose_method == "upload") {cat('current input$ss_choose_method_upload is ', input$ss_choose_method_upload, '\n')}
@@ -226,7 +226,7 @@ app_server <- function(input, output, session) {
   data_up_shp <- reactive({
     ##
     req(input$ss_upload_shp)
-    infiles <- input$ss_upload_shp$datapath # get the location of files
+    infiles <- input$ss_upload_shp$datapath # get path and temp (not original) filename of the uploaded file
     print(infiles)
     
     ####### SHOULD REPLACE WITH CODE IN NEW FUNCTIONS that avoid saving uploaded shapefiles locally on server LIKE shapefile_from_filepaths() ***
@@ -238,9 +238,11 @@ app_server <- function(input, output, session) {
         validate('Not all required file extensions found.')
       }
       shp <- shapefile_from_filepaths(infiles, cleanit = FALSE) # cleanit = FALSE allows shiny to handle that with messages
-      numna <- nrow(shp[!sf::st_is_valid(shp),])
+      # numna <- nrow(shp[!sf::st_is_valid(shp),])
+      numna <- nrow(shp[!sf::st_is_valid(shp) | sf::st_is_empty(shp), ]) # now counts and removes polygons that are not valid but also if "empty"
       invalid_alert[['SHP']] <- numna # this updates the value of the reactive invalid_alert()
       shp <- shapefile_clean(shp) # uses default crs=4269;  drops invalid rows or return NULL if none valid  # shp <- sf::st_transform(shp, crs = 4269) # done by shapefile_clean() 
+      shp <- shp[!sf::st_is_empty(shp), ] # *** remove this if shapefile_clean() will do it
       if (is.null(shp)) {
         invalid_alert[['SHP']] <- 0 # hides the invalid site warning
         an_map_text_shp(HTML(NULL)) # hides the count of uploaded shapes
@@ -252,19 +254,22 @@ app_server <- function(input, output, session) {
       ####### #    #######     ####### #
     } else {
       
-      # older way, using renaming files in temp folder because in shiny that works here?  
+      # older way  
       
       infile_ext <- tools::file_ext(infiles)
       if (!all(c('shp','shx','dbf','prj') %in% infile_ext)) {
         disable_buttons[['SHP']] <- TRUE
         shiny::validate('Not all required file extensions found.')
       }
-      dir <- unique(dirname(infiles)) # get the directory (the real one? or temp one from shiny??)
-      outfiles <- file.path(dir, input$ss_upload_shp$name) # create new path name
-      name <- strsplit(input$ss_upload_shp$name[1], "\\.")[[1]][1] # strip name 
-      purrr::walk2(infiles, outfiles, ~file.rename(.x, .y)) # rename files
       
+      ########################################## #
+      # ---- This renames file from ugly tempfile name to original name as selected on user's drive - but why bother? --- # 
+      dir <- unique(dirname(infiles)) # get folder (a temp one created by shiny for the uploaded file)
+      outfiles <- file.path(dir, input$ss_upload_shp$name) # create new path\name from temp dir plus original filename of file selected by user to upload
+      name <- strsplit(input$ss_upload_shp$name[1], "\\.")[[1]][1] # ??? get filename minus extension, of 1 file selected by user to upload
+      purrr::walk2(infiles, outfiles, ~file.rename(.x, .y)) # rename files from ugly tempfilename to original filename of file selected by user to upload
       shp <- read_sf(file.path(dir, paste0(name, ".shp"))) # read-in shapefile
+      ########################################## # 
       
       if (nrow(shp) > 0) {
         numna <- nrow(shp[!sf::st_is_valid(shp),])
@@ -360,10 +365,10 @@ app_server <- function(input, output, session) {
     ext <- tolower(tools::file_ext(input$ss_upload_latlon$name))
     ## if acceptable file type, read in; if not, send warning text
     sitepoints <- switch(ext,
-                  csv = data.table::fread(input$ss_upload_latlon$datapath),
-                  xls  = readxl::read_excel(input$ss_upload_latlon$datapath) %>% data.table::as.data.table(),
-                  xlsx = readxl::read_excel(input$ss_upload_latlon$datapath) %>% data.table::as.data.table(),
-                  shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
+                         csv = data.table::fread(input$ss_upload_latlon$datapath),
+                         xls  = readxl::read_excel(input$ss_upload_latlon$datapath) %>% data.table::as.data.table(),
+                         xlsx = readxl::read_excel(input$ss_upload_latlon$datapath) %>% data.table::as.data.table(),
+                         shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
     )
     cat("ROW COUNT IN FILE THAT SHOULD provide lat lon: ", NROW(sitepoints), "\n")
     ## if column names are found in lat/long alias comparison, process
@@ -373,7 +378,7 @@ app_server <- function(input, output, session) {
       setcolorder(sitepoints, 'ejam_uniq_id')
       
       sitepoints <- sitepoints %>% 
-         latlon_df_clean() #%>%   # This does latlon_infer() and latlon_as.numeric() and latlon_is.valid()
+        latlon_df_clean() #%>%   # This does latlon_infer() and latlon_as.numeric() and latlon_is.valid()
       #data.table::as.data.table()
       cat("ROW COUNT after latlon_df_clean(): ", NROW(sitepoints), "\n")
       disable_buttons[['latlon']] <- FALSE
@@ -692,7 +697,7 @@ app_server <- function(input, output, session) {
         validate(paste0('No FIPS column found. Please use one of the following names: ', paste0(fips_alias, collapse = ', ')))
       }
       ## create two-column dataframe with bgs (values) and original fips (ind)
-      all_bgs <- stack(sapply(fips_vec, fipsbg_from_anyfips))
+      all_bgs <- stack(sapply(fips_vec, fips_bg_from_anyfips))
       names(all_bgs) <- c('bgfips','siteid') 
       all_bgs$siteid <- as.character(all_bgs$siteid) # because stack() always creates a factor column. data.table might have a faster reshaping approach? ***
       
@@ -1284,24 +1289,8 @@ app_server <- function(input, output, session) {
     # 1) **EJAM::getblocksnearby()** ####
     
     ################################################# # 
-    ## get blocks inside POLYGONS / SHAPEFILES ####
-    #define blockpoints to process if shapefile exists  d_upload <-{}
     
-    if (submitted_upload_method() == "SHP") {
-      
-      d <- get_blockpoints_in_shape(data_uploaded(),input$bt_rad_buff) # usea default crs. input needs to be polygons
-      
-      #d_upload[['points']] <- d[['pts']]
-      #d_upload[['buffer']] <- d[['polys']]
-      #d_upload[['shape']] <- shp
-      #d_upload[['buffer']] <- shape_buffered_from_shapefile_points(shp,0) # usea default crs
-      #d_upload
-      #d_upload <- data_uploaded()[['points']]
-      sites2blocks <- d[['pts']]
-      d_upload     <- d[['pts']]
-      ################################################# # 
-    }
-    ## get blocks inside FIPS   ####
+    ## get blocks in FIPS   ####
     
     if (submitted_upload_method() == 'FIPS') {  # if FIPS, do everything in 1 step right here.
       
@@ -1319,8 +1308,23 @@ app_server <- function(input, output, session) {
       ################################################# # 
     } else { #  everything other than FIPS code analysis
       #############################################################################  # 
-      ## get blocks NEAR SITE POINTS  facilities/latlon # ####
       
+      ## get blocks in POLYGONS / SHAPEFILES ####
+      
+      if (submitted_upload_method() == "SHP") {
+        if (input$bt_rad_buff > 0) {
+          if (!silentinteractive) {cat('Adding buffer around each polygon.\n')}
+          shp <- shape_buffered_from_shapefile(
+            shapefile = data_uploaded(), 
+            radius.miles =  input$bt_rad_buff
+          ) # default crs
+        }
+        sites2blocks <- (get_blockpoints_in_shape(shp))$pts
+        d_upload     <- sites2blocks
+      }
+      ################################################# # 
+      
+      ## get blocks near LAT/LON  POINTS  facilities/latlon # ####
       
       if (!(submitted_upload_method() %in% c('SHP', 'FIPS'))) {  # if LATITUDE AND LONGITUDE (POINTS), find blocks nearby
         
@@ -1333,112 +1337,111 @@ app_server <- function(input, output, session) {
           quadtree = localtree, 
           avoidorphans = input$avoidorphans,
           maxradius = input$maxradius,
-        quiet = TRUE
-      )
-    
+          quiet = TRUE
+        )
+        
       } # end LAT LON finding blocks nearby, now ready for latlon and shapefiles to do aggregation
       #############################################################################  # 
       
-    ## progress bar update overall  
-    progress_all$inc(1/3, message = 'Step 2 of 3', detail = 'Aggregating')
-    ## progress bar to show doaggregate status
-    progress_doagg <- shiny::Progress$new(min = 0, max = 1)
-    ## function for updating progress bar, to pass in to doaggregate function  
-    updateProgress_doagg <- function(value = NULL, message_detail = NULL, message_main = NULL) {
-      # Create a callback function - When called, it sets progress bar to value.
-      if (is.null(value)) { # - If value is NULL, it will move the progress bar 1/5 of the remaining distance.
-        value <- progress_doagg$getValue()
-        value <- value + (progress_doagg$getMax() - value) / 5
+      ## progress bar update overall  
+      progress_all$inc(1/3, message = 'Step 2 of 3', detail = 'Aggregating')
+      ## progress bar to show doaggregate status
+      progress_doagg <- shiny::Progress$new(min = 0, max = 1)
+      ## function for updating progress bar, to pass in to doaggregate function  
+      updateProgress_doagg <- function(value = NULL, message_detail = NULL, message_main = NULL) {
+        # Create a callback function - When called, it sets progress bar to value.
+        if (is.null(value)) { # - If value is NULL, it will move the progress bar 1/5 of the remaining distance.
+          value <- progress_doagg$getValue()
+          value <- value + (progress_doagg$getMax() - value) / 5
+        }
+        progress_doagg$set(value = value, message = message_main, detail = message_detail)
       }
-      progress_doagg$set(value = value, message = message_main, detail = message_detail)
-    }
-    #############################################################################  # 
-  
+      #############################################################################  # 
       
-    if (submitted_upload_method() != "FIPS") {  # if LAT LON or SHAPEFILE, now have blocks nearby and ready to aggregate
-    
-    #############################################################################  # 
-    # 2) **EJAM::doaggregate()** ####
-    
-    out <- suppressWarnings(
-      doaggregate(
-        sites2blocks = sites2blocks, 
-        sites2states_or_latlon = d_upload,
-        radius = input$bt_rad_buff, 
-        #countcols = 0, popmeancols = 0, calculatedcols = 0, # *** if using defaults of doaggregate()
-        subgroups_type = input$subgroups_type, # nh, alone, or both # or use default of doaggregate() based on whatever subgroups_d etc are now ***   
-        testing = input$testing, 
-        include_ejindexes   = (input$include_ejindexes == "TRUE"), # it was character not logical because of how input UI done 
-        need_proximityscore = input$need_proximityscore, 
-        calculate_ratios = input$calculate_ratios, 
-        ## pass progress bar function as argument
-        updateProgress = updateProgress_doagg
-      )  )
-    # provide sitepoints table provided by user aka data_uploaded(), (or could pass only lat,lon and ST -if avail- not all cols?)
-    # and doaggregate() decides where to pull ST info from - 
-    # ideally from ST column, 
-    # second from fips of block with smallest distance to site, 
-    # third from lat,lon of sitepoints intersected with shapefile of state bounds
-    
-    ## close doaggregate progress bar
-    progress_doagg$close()
-    
-    ################################################################ # 
-    
-    # add URLs >>(should be a function)  ####
-    #  
-    #  >this should be a function, and is used by both server and ejamit() ###  #
-    # duplicated almost exactly in ejamit() but reactives are not reactives there
-    # maybe use url_4table() - see ejamit() code
-    #
-    #if ("REGISTRY_ID" %in% names(out$results_bysite)) {
-    # echolink = url_echo_facility_webpage(out$results_bysite$REGISTRY_ID, as_html = FALSE)
-    #} else {
-    # echolink = url_echo_facility_webpage(out$results_bysite$REGISTRY_ID, as_html = FALSE)
-    #}
-    ## the registry ID column is only found in uploaded ECHO/FRS/NAICS data -
-    ## it is not passed to doaggregate output at this point, so pull the column from upload to create URLS
-    if (nrow(d_upload) != nrow(out$results_bysite)) {
-      out$results_bysite[, `:=`(
-        `EJScreen Report` = rep('N/A', nrow(out$results_bysite)),
-        `EJScreen Map`    = rep('N/A', nrow(out$results_bysite)),
-        # `ACS Report`      = rep('N/A', nrow(out$results_bysite)),  # will drop this one
-        `ECHO report`     = rep('N/A', nrow(out$results_bysite))
-      )]
-    } else {
-      
-      if ("REGISTRY_ID" %in% names( d_upload)) {
-        echolink = url_echo_facility_webpage( d_upload$REGISTRY_ID, as_html = TRUE, linktext = 'ECHO Report')
-      } else if ("RegistryID" %in% names(data_uploaded())) {
-        echolink = url_echo_facility_webpage( d_upload$RegistryID, as_html = TRUE, linktext = 'ECHO Report')
-      } else {
-        echolink = rep('N/A',nrow(out$results_bysite))
-      }
-      out$results_bysite[ , `:=`(
-        `EJScreen Report` = url_ejscreen_report(    lat = d_upload$lat, lon =  d_upload$lon, radius = input$bt_rad_buff, as_html = TRUE), 
-        `EJScreen Map`    = url_ejscreenmap(        lat = d_upload$lat, lon =  d_upload$lon,                             as_html = TRUE), 
-        # `ACS Report`      = url_ejscreen_acs_report(lat = d_upload$lat, lon =  d_upload$lon, radius = input$bt_rad_buff, as_html = TRUE),
-        `ECHO report` = echolink
-      )]
-    }
-    newcolnames <- c(
-      "EJScreen Report", 
-      "EJScreen Map", 
-      # "ACS Report", 
-      "ECHO report"
-    )
-    # put those up front as first columns
-    setcolorder(out$results_bysite, neworder = newcolnames)
-    #setcolorder(out$results_bysite, neworder = newcolnames)
-    out$longnames <- c(newcolnames, out$longnames)
-    
-    #############################################################################  # 
-    
-    # add radius to results tables (in server and in ejamit() ####
-    out$results_bysite[      , radius.miles := input$bt_rad_buff]
-    out$results_overall[     , radius.miles := input$bt_rad_buff]
-    out$results_bybg_people[ , radius.miles := input$bt_rad_buff] # probably will not export this big table in excel downloads
-   
+      if (submitted_upload_method() != "FIPS") {  # if LAT LON or SHAPEFILE, now have blocks nearby and ready to aggregate
+        
+        #############################################################################  # 
+        # 2) **EJAM::doaggregate()** ####
+        
+        out <- suppressWarnings(
+          doaggregate(
+            sites2blocks = sites2blocks, 
+            sites2states_or_latlon = d_upload,
+            radius = input$bt_rad_buff, 
+            #countcols = 0, popmeancols = 0, calculatedcols = 0, # *** if using defaults of doaggregate()
+            subgroups_type = input$subgroups_type, # nh, alone, or both # or use default of doaggregate() based on whatever subgroups_d etc are now ***   
+            testing = input$testing, 
+            include_ejindexes   = (input$include_ejindexes == "TRUE"), # it was character not logical because of how input UI done 
+            need_proximityscore = input$need_proximityscore, 
+            calculate_ratios = input$calculate_ratios, 
+            ## pass progress bar function as argument
+            updateProgress = updateProgress_doagg
+          )  )
+        # provide sitepoints table provided by user aka data_uploaded(), (or could pass only lat,lon and ST -if avail- not all cols?)
+        # and doaggregate() decides where to pull ST info from - 
+        # ideally from ST column, 
+        # second from fips of block with smallest distance to site, 
+        # third from lat,lon of sitepoints intersected with shapefile of state bounds
+        
+        ## close doaggregate progress bar
+        progress_doagg$close()
+        
+        ################################################################ # 
+        
+        # add URLs >>(should be a function)  ####
+        #  
+        #  >this should be a function, and is used by both server and ejamit() ###  #
+        # duplicated almost exactly in ejamit() but reactives are not reactives there
+        # maybe use url_4table() - see ejamit() code
+        #
+        #if ("REGISTRY_ID" %in% names(out$results_bysite)) {
+        # echolink = url_echo_facility_webpage(out$results_bysite$REGISTRY_ID, as_html = FALSE)
+        #} else {
+        # echolink = url_echo_facility_webpage(out$results_bysite$REGISTRY_ID, as_html = FALSE)
+        #}
+        ## the registry ID column is only found in uploaded ECHO/FRS/NAICS data -
+        ## it is not passed to doaggregate output at this point, so pull the column from upload to create URLS
+        if (nrow(d_upload) != nrow(out$results_bysite)) {
+          out$results_bysite[, `:=`(
+            `EJScreen Report` = rep('N/A', nrow(out$results_bysite)),
+            `EJScreen Map`    = rep('N/A', nrow(out$results_bysite)),
+            # `ACS Report`      = rep('N/A', nrow(out$results_bysite)),  # will drop this one
+            `ECHO report`     = rep('N/A', nrow(out$results_bysite))
+          )]
+        } else {
+          
+          if ("REGISTRY_ID" %in% names( d_upload)) {
+            echolink = url_echo_facility_webpage( d_upload$REGISTRY_ID, as_html = TRUE, linktext = 'ECHO Report')
+          } else if ("RegistryID" %in% names(data_uploaded())) {
+            echolink = url_echo_facility_webpage( d_upload$RegistryID, as_html = TRUE, linktext = 'ECHO Report')
+          } else {
+            echolink = rep('N/A',nrow(out$results_bysite))
+          }
+          out$results_bysite[ , `:=`(
+            `EJScreen Report` = url_ejscreen_report(    lat = d_upload$lat, lon =  d_upload$lon, radius = input$bt_rad_buff, as_html = TRUE), 
+            `EJScreen Map`    = url_ejscreenmap(        lat = d_upload$lat, lon =  d_upload$lon,                             as_html = TRUE), 
+            # `ACS Report`      = url_ejscreen_acs_report(lat = d_upload$lat, lon =  d_upload$lon, radius = input$bt_rad_buff, as_html = TRUE),
+            `ECHO report` = echolink
+          )]
+        }
+        newcolnames <- c(
+          "EJScreen Report", 
+          "EJScreen Map", 
+          # "ACS Report", 
+          "ECHO report"
+        )
+        # put those up front as first columns
+        setcolorder(out$results_bysite, neworder = newcolnames)
+        #setcolorder(out$results_bysite, neworder = newcolnames)
+        out$longnames <- c(newcolnames, out$longnames)
+        
+        #############################################################################  # 
+        
+        # add radius to results tables (in server and in ejamit() ####
+        out$results_bysite[      , radius.miles := input$bt_rad_buff]
+        out$results_overall[     , radius.miles := input$bt_rad_buff]
+        out$results_bybg_people[ , radius.miles := input$bt_rad_buff] # probably will not export this big table in excel downloads
+        
     if(submitted_upload_method() %in% c('FRS','latlon','EPA_PROGRAM_up')){
       #print(names(data_uploaded()))
       #print(head(names(data_processed()$results_bysite)))
@@ -1447,13 +1450,13 @@ app_server <- function(input, output, session) {
                                   by='ejam_uniq_id', all=T)
     }
     
-     # out$longnames <- NA # see ejamit()
-    # out$formatted <- table_tall_from_overall(out$results_overall, out$longnames)
-    #   # see ejamit()
-    
-    } # end of non fips, ie all latlon or shapefile aggregation 
-    
-     
+        # out$longnames <- NA # see ejamit()
+        # out$formatted <- table_tall_from_overall(out$results_overall, out$longnames)
+        #   # see ejamit()
+        
+      } # end of non fips, ie all latlon or shapefile aggregation 
+      
+      
       
     } # done with all ways of analyzing ...  latlon, Shapefiles, and FIPS codes
     
@@ -1681,36 +1684,36 @@ app_server <- function(input, output, session) {
       }
       
     } else { #  not shapefile
-   
+      
       if (submitted_upload_method() != "FIPS") {
         
-      # this bit of code defining popup_labels was there sep 10 but deleted Oct 14, probably inadvertently, and being put back in oct 23.
-      popup_labels <- c(data_processed()$longnames, 'State Name')
-      popup_labels[popup_labels == ""] <- map_headernames$names_friendly[match(
-        names(data_processed()$results_bysite)[popup_labels == ""],
-        EJAMejscreenapi::map_headernames$newnames_ejscreenapi)]
-            
-      ## similar to previous map but remove controls and only add circles, not circleMarkers
-      
-      ## switch this to data analyzed in report, not what was uploaded,   in case there are invalid
-      leaflet(data_processed()$results_bysite) %>% #,
-        #options = leafletOptions(zoomControl = FALSE, minZoom = 4)) %>% 
-        addTiles()  %>%
-        addCircles(
-          radius = 1 * meters_per_mile,
-          color = circle_color, fillColor = circle_color, 
-          fill = TRUE, weight = input$circleweight_in,
-          #group = 'circles',
-          popup = popup_from_any(
-            data_processed()$results_bysite %>% 
-              dplyr::mutate(dplyr::across(
-                dplyr::where(is.numeric), \(x) round(x, digits = 3))), 
-            labels = popup_labels),
-          popupOptions = popupOptions(maxHeight = 200)
-        )} else {
-          # FIPS    *** placeholder blank US map until have time to create FIPS-based map
-          leaflet() %>% addTiles() %>% fitBounds(-115, 37, -65, 48)
-        }
+        # this bit of code defining popup_labels was there sep 10 but deleted Oct 14, probably inadvertently, and being put back in oct 23.
+        popup_labels <- c(data_processed()$longnames, 'State Name')
+        popup_labels[popup_labels == ""] <- map_headernames$names_friendly[match(
+          names(data_processed()$results_bysite)[popup_labels == ""],
+          EJAMejscreenapi::map_headernames$newnames_ejscreenapi)]
+        
+        ## similar to previous map but remove controls and only add circles, not circleMarkers
+        
+        ## switch this to data analyzed in report, not what was uploaded,   in case there are invalid
+        leaflet(data_processed()$results_bysite) %>% #,
+          #options = leafletOptions(zoomControl = FALSE, minZoom = 4)) %>% 
+          addTiles()  %>%
+          addCircles(
+            radius = 1 * meters_per_mile,
+            color = circle_color, fillColor = circle_color, 
+            fill = TRUE, weight = input$circleweight_in,
+            #group = 'circles',
+            popup = popup_from_any(
+              data_processed()$results_bysite %>% 
+                dplyr::mutate(dplyr::across(
+                  dplyr::where(is.numeric), \(x) round(x, digits = 3))), 
+              labels = popup_labels),
+            popupOptions = popupOptions(maxHeight = 200)
+          )} else {
+            # FIPS    *** placeholder blank US map until have time to create FIPS-based map
+            leaflet() %>% addTiles() %>% fitBounds(-115, 37, -65, 48)
+          }
     }
     
   }) # end of report_map 
@@ -1819,7 +1822,7 @@ app_server <- function(input, output, session) {
   v1_summary_plot <- reactive({
     # req(data_summarized()) # it used to say this is required here but I dont think it actually is used
     req(data_processed())
-     # data_processed() needed for ridgeline or boxplot, and ratio.to.us.d() which is made from data_processed() is needed for boxplots, 
+    # data_processed() needed for ridgeline or boxplot, and ratio.to.us.d() which is made from data_processed() is needed for boxplots, 
     
     if (input$plotkind_1pager == 'bar') { # do BARPLOT NOT BOXPLOT
       
@@ -1901,7 +1904,7 @@ app_server <- function(input, output, session) {
         ratio.to.us.d.bysite  ,
         # mydata, 
         aes(x = indicator, y = value )
-        ) + #, fill = indicator)) +
+      ) + #, fill = indicator)) +
         ## draw boxplots
         geom_boxplot() +
         
@@ -1926,7 +1929,7 @@ app_server <- function(input, output, session) {
              y = "Ratio of Indicator values in selected locations\n vs. US average value",
              subtitle = subtitle,
              title = mymaintext ) +
-             # title = 'Ratio vs. US Average for Demographic Indicators') +
+        # title = 'Ratio vs. US Average for Demographic Indicators') +
         
         ## draw individual dot per site? at least for small datasets?/few facilities - removed as they cover up boxplots with large datasets
         #geom_jitter(color = 'black', size=0.4, alpha=0.9, ) +
@@ -1937,7 +1940,7 @@ app_server <- function(input, output, session) {
         ## alternate color scheme
         # viridis::scale_fill_viridis(discrete = TRUE, alpha = 0.6) +
         
-        ggplot2::theme_bw() +
+      ggplot2::theme_bw() +
         ggplot2::theme(
           ## set font size of text
           text = ggplot2::element_text(size = 14),
@@ -1952,7 +1955,7 @@ app_server <- function(input, output, session) {
           legend.position = 'none'
         )  # end of ggplot section
     }
-      }
+    }
     # box
   })
   
@@ -2248,7 +2251,7 @@ app_server <- function(input, output, session) {
           # ***    but useful to create a plot of distance by group. Perhaps that could be created here to avoid passing the entire large table to table_xls_format() just for the plot. ***
           #  And want to give Option of getting the very large tab full of data_processed()$results_bybg_people  ...only for expert users it is useful
           #  Avoid making copies since that slows it down, unless an expert user knows they need it. 
-
+          
           
           hyperlink_colnames = c("EJScreen Report", "EJScreen Map" ),  # need to ensure these get formatted right to work as links in Excel
           # heatmap_colnames=names(table_as_displayed)[pctile_colnums], # can use defaults
@@ -2478,7 +2481,7 @@ app_server <- function(input, output, session) {
             dplyr::mutate(Summary = 'Average person at these sites') %>%
             dplyr::select(Summary, dplyr::all_of(mybarvars)) %>% 
             tidyr::pivot_longer(-Summary, names_to = 'indicator', values_to = 'usa_value'),
-         usastats %>% 
+          usastats %>% 
             dplyr::filter(REGION == 'USA', PCTILE == 'mean') %>% 
             dplyr::mutate(Summary = 'Average site') %>%
             dplyr::select(Summary, dplyr::all_of(mybarvars)) %>% 
@@ -2886,7 +2889,7 @@ app_server <- function(input, output, session) {
   #                      ) # reactive object gets passed without parentheses. pass a reactive radius HERE to server not ui.  
   # })
   
-
+  
   
   # default_radius_react_passed <- reactiveVal(input$bt_rad_buff) # pass to UI of module not server code of module
   # default_points_react_passed <- reactiveVal() # initialize it empty

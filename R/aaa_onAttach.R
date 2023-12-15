@@ -52,7 +52,7 @@
          and when a coder uses run_app(), either after library( ), or by using EJAM function run_app() 
       
       - once the app or coder actually needs a given dataset that is available for lazyLoad, which 
-        works only for data in EJAM/data/ like frs.rda, frs_by_programid.rda, frs_by_sic.rda, and bgej.rda, etc.
+        works only for data in EJAM/data/ like frs.rda, frs_by_programid.rda, frs_by_sic.rda, etc.
         See utils::data( package = 'EJAM' )
       
       - only if manually obtained by coder via functions noted above.
@@ -70,7 +70,6 @@
       
       dataload_from_local(varnames = c("bgej",  "blockpoints", "blockwts", "quaddata"),
                           folder_local_source = './data/') # EJAM function ... but does it have to say EJAM :: here? trying to avoid having packrat see that and presume EJAM pkg must be installed for app to work. ***
-      
     }
     
     #################### # 

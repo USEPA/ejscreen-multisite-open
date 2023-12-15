@@ -2,7 +2,7 @@
 % Please edit documentation in R/states_infer.R
 \name{states_infer}
 \alias{states_infer}
-\title{states_infer
+\title{states_infer - Get table of info on States (from latlon or FIPS)
 Get cleaned table of US State etc. by siteid, from lat/lon, or from FIPS}
 \usage{
 states_infer(x)
@@ -15,7 +15,7 @@ and optionally a column with siteid or column called n}
 data.frame with unique siteid, ST, etc.
 }
 \description{
-states_infer
+states_infer - Get table of info on States (from latlon or FIPS)
 Get cleaned table of US State etc. by siteid, from lat/lon, or from FIPS
 }
 \seealso{

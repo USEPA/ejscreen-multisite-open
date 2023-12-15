@@ -20,6 +20,8 @@ fipstype  -  identify what type of Census geography is each FIPS code (block, co
  # [1] "09001" "09003" "09005" "09007" "09009" "09011" "09013" "09015" "10001" "10003" "10005"
  fipstype(9001)
  fipstype("10001")
+ # note blockid2fips is a large file, but can be obtained via [dataload_from_pins()]
+ \dontrun{
  fipsexamples <- c(
    fips_state_from_statename("Alaska"),
    fips_counties_from_state_abbrev("DE")[1],
@@ -28,5 +30,5 @@ fipstype  -  identify what type of Census geography is each FIPS code (block, co
     blockid2fips$blockfips[1]
  )
  cbind(fipsexamples, type = fipstype(fipsexamples))
-
+}
 }
