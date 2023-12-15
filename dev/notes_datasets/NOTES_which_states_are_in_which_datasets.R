@@ -209,6 +209,7 @@ datapack('EJAM') # an EJAM function
 # 5      blockwts Decennial Census block weights
 # 6 stateinfo2  basic information about US Sta
 # 7      quaddata quad tree data on locations of
+if (!exists("bgid2fips")) dataload_from_pins("bgid2fips")
 length(unique(substr(unique( bgid2fips[ , bgfips], by = 'bgfips')  ,1,2)) )
 # [1] 52 # has DC and PR.
 # ejanalysis package file get.state.info(setdiff(universe$FIPS.ST, unique(substr(unique( bgid2fips[ , bgfips], by = 'bgfips')  ,1,2))))$ST
