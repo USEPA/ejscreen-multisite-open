@@ -585,7 +585,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL,
   # So, first join blockgroupstats necessary variables to the shorter sites2bgs_bysite:   
   
   if (include_ejindexes) { # was already set to FALSE if bgej not available
-    blockgroupstats <- merge(blockgroupstats, bgej, by=c('OBJECTID','bgfips','ST','pop','bgid'))
+    #blockgroupstats <- merge(blockgroupstats, bgej, by=c('OBJECTID','bgfips','ST','pop','bgid'))
     setDT(bgej)
     blockgroupstats <- merge(blockgroupstats,  bgej[!is.na(bgid), c(
       "bgid", names_ej, names_ej_supp, names_ej_state, names_ej_supp_state

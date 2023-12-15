@@ -1358,97 +1358,131 @@ app_server <- function(input, output, session) {
       }
       #############################################################################  # 
       
-      if (submitted_upload_method() != "FIPS") {  # if LAT LON or SHAPEFILE, now have blocks nearby and ready to aggregate
-        
-        #############################################################################  # 
-        # 2) **EJAM::doaggregate()** ####
-        
-        out <- suppressWarnings(
-          doaggregate(
-            sites2blocks = sites2blocks, 
-            sites2states_or_latlon = d_upload,
-            radius = input$bt_rad_buff, 
-            #countcols = 0, popmeancols = 0, calculatedcols = 0, # *** if using defaults of doaggregate()
-            subgroups_type = input$subgroups_type, # nh, alone, or both # or use default of doaggregate() based on whatever subgroups_d etc are now ***   
-            testing = input$testing, 
-            include_ejindexes   = (input$include_ejindexes == "TRUE"), # it was character not logical because of how input UI done 
-            need_proximityscore = input$need_proximityscore, 
-            calculate_ratios = input$calculate_ratios, 
-            ## pass progress bar function as argument
-            updateProgress = updateProgress_doagg
-          )  )
-        # provide sitepoints table provided by user aka data_uploaded(), (or could pass only lat,lon and ST -if avail- not all cols?)
-        # and doaggregate() decides where to pull ST info from - 
-        # ideally from ST column, 
-        # second from fips of block with smallest distance to site, 
-        # third from lat,lon of sitepoints intersected with shapefile of state bounds
-        
-        ## close doaggregate progress bar
-        progress_doagg$close()
-        
-        ################################################################ # 
-        
-        # add URLs >>(should be a function)  ####
-        #  
-        #  >this should be a function, and is used by both server and ejamit() ###  #
-        # duplicated almost exactly in ejamit() but reactives are not reactives there
-        # maybe use url_4table() - see ejamit() code
-        #
-        #if ("REGISTRY_ID" %in% names(out$results_bysite)) {
-        # echolink = url_echo_facility_webpage(out$results_bysite$REGISTRY_ID, as_html = FALSE)
-        #} else {
-        # echolink = url_echo_facility_webpage(out$results_bysite$REGISTRY_ID, as_html = FALSE)
-        #}
-        ## the registry ID column is only found in uploaded ECHO/FRS/NAICS data -
-        ## it is not passed to doaggregate output at this point, so pull the column from upload to create URLS
-        if (nrow(d_upload) != nrow(out$results_bysite)) {
-          out$results_bysite[, `:=`(
-            `EJScreen Report` = rep('N/A', nrow(out$results_bysite)),
-            `EJScreen Map`    = rep('N/A', nrow(out$results_bysite)),
-            # `ACS Report`      = rep('N/A', nrow(out$results_bysite)),  # will drop this one
-            `ECHO report`     = rep('N/A', nrow(out$results_bysite))
-          )]
-        } else {
-          
-          if ("REGISTRY_ID" %in% names( d_upload)) {
-            echolink = url_echo_facility_webpage( d_upload$REGISTRY_ID, as_html = TRUE, linktext = 'ECHO Report')
-          } else if ("RegistryID" %in% names(data_uploaded())) {
-            echolink = url_echo_facility_webpage( d_upload$RegistryID, as_html = TRUE, linktext = 'ECHO Report')
-          } else {
-            echolink = rep('N/A',nrow(out$results_bysite))
-          }
-          out$results_bysite[ , `:=`(
-            `EJScreen Report` = url_ejscreen_report(    lat = d_upload$lat, lon =  d_upload$lon, radius = input$bt_rad_buff, as_html = TRUE), 
-            `EJScreen Map`    = url_ejscreenmap(        lat = d_upload$lat, lon =  d_upload$lon,                             as_html = TRUE), 
-            # `ACS Report`      = url_ejscreen_acs_report(lat = d_upload$lat, lon =  d_upload$lon, radius = input$bt_rad_buff, as_html = TRUE),
-            `ECHO report` = echolink
-          )]
-        }
-        newcolnames <- c(
-          "EJScreen Report", 
-          "EJScreen Map", 
-          # "ACS Report", 
-          "ECHO report"
-        )
-        # put those up front as first columns
-        setcolorder(out$results_bysite, neworder = newcolnames)
-        #setcolorder(out$results_bysite, neworder = newcolnames)
-        out$longnames <- c(newcolnames, out$longnames)
-        
-        #############################################################################  # 
-        
-        # add radius to results tables (in server and in ejamit() ####
-        out$results_bysite[      , radius.miles := input$bt_rad_buff]
-        out$results_overall[     , radius.miles := input$bt_rad_buff]
-        out$results_bybg_people[ , radius.miles := input$bt_rad_buff] # probably will not export this big table in excel downloads
-        
-    if(submitted_upload_method() %in% c('FRS','latlon','EPA_PROGRAM_up')){
+     
+    if (submitted_upload_method() != "FIPS") {  # if LAT LON or SHAPEFILE, now have blocks nearby and ready to aggregate
+    
+    #############################################################################  # 
+    # 2) **EJAM::doaggregate()** ####
+    
+    out <- suppressWarnings(
+      doaggregate(
+        sites2blocks = sites2blocks, 
+        sites2states_or_latlon = d_upload,
+        radius = input$bt_rad_buff, 
+        #countcols = 0, popmeancols = 0, calculatedcols = 0, # *** if using defaults of doaggregate()
+        subgroups_type = input$subgroups_type, # nh, alone, or both # or use default of doaggregate() based on whatever subgroups_d etc are now ***   
+        testing = input$testing, 
+        include_ejindexes   = (input$include_ejindexes == "TRUE"), # it was character not logical because of how input UI done 
+        need_proximityscore = input$need_proximityscore, 
+        calculate_ratios = input$calculate_ratios, 
+        ## pass progress bar function as argument
+        updateProgress = updateProgress_doagg
+      )  )
+    #data_uploaded()[!(ejam_uniq_id %in% out$results_bysite$ejam_uniq_id),'valid'] <- F
+    dup <- data_uploaded()
+    #dup[,valid := ejam_uniq_id %in% out$results_bysite$ejam_uniq_id]
+    dup$valid <- dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id
+    data_uploaded <- dup
+    # provide sitepoints table provided by user aka data_uploaded(), (or could pass only lat,lon and ST -if avail- not all cols?)
+    # and doaggregate() decides where to pull ST info from - 
+    # ideally from ST column, 
+    # second from fips of block with smallest distance to site, 
+    # third from lat,lon of sitepoints intersected with shapefile of state bounds
+    print('made it here pt. 3')
+    ## close doaggregate progress bar
+    progress_doagg$close()
+    
+    ################################################################ # 
+    
+    # add URLs >>(should be a function)  ####
+    #  
+    #  >this should be a function, and is used by both server and ejamit() ###  #
+    # duplicated almost exactly in ejamit() but reactives are not reactives there
+    # maybe use url_4table() - see ejamit() code
+    #
+    #if ("REGISTRY_ID" %in% names(out$results_bysite)) {
+    # echolink = url_echo_facility_webpage(out$results_bysite$REGISTRY_ID, as_html = FALSE)
+    #} else {
+    # echolink = url_echo_facility_webpage(out$results_bysite$REGISTRY_ID, as_html = FALSE)
+    #}
+    ## the registry ID column is only found in uploaded ECHO/FRS/NAICS data -
+    ## it is not passed to doaggregate output at this point, so pull the column from upload to create URLS
+   
+    if(submitted_upload_method() %in% c('MACT','FRS','latlon','EPA_PROGRAM_up',
+                                        'EPA_PROGRAM_sel','NAICS','SIC')){
       #print(names(data_uploaded()))
       #print(head(names(data_processed()$results_bysite)))
       out$results_bysite <- merge(data_uploaded()[, .(ejam_uniq_id, valid)],
                                   out$results_bysite, 
                                   by='ejam_uniq_id', all=T)
+    } else if(submitted_upload_method() == 'SHP'){
+      out$results_bysite <- merge(data_uploaded()[, c('ejam_uniq_id','valid')],
+                                  #merge(data_uploaded()[, .(ejam_uniq_id, valid)],
+                                  out$results_bysite, 
+                                  by='ejam_uniq_id', all=T) %>% 
+        sf::st_drop_geometry()
     }
+
+
+   # if (nrow(d_upload) != nrow(out$results_bysite)) {
+   #    out$results_bysite[, `:=`(
+   #      `EJScreen Report` = rep('N/A', nrow(out$results_bysite)),
+   #      `EJScreen Map`    = rep('N/A', nrow(out$results_bysite)),
+   #      # `ACS Report`      = rep('N/A', nrow(out$results_bysite)),  # will drop this one
+   #      `ECHO report`     = rep('N/A', nrow(out$results_bysite))
+   #    )]
+   #  } else {
+      
+      #if ("REGISTRY_ID" %in% names( d_upload)) {
+      if("REGISTRY_ID" %in% names(data_uploaded())){
+        #echolink = url_echo_facility_webpage( d_upload$REGISTRY_ID, as_html = TRUE, linktext = 'ECHO Report')
+        echolink = url_echo_facility_webpage( data_uploaded()$REGISTRY_ID, as_html = TRUE, linktext = 'ECHO Report')
+    } else if ("RegistryID" %in% names(data_uploaded())) {
+        #echolink = url_echo_facility_webpage( d_upload$RegistryID, as_html = TRUE, linktext = 'ECHO Report')
+        echolink = url_echo_facility_webpage( data_uploaded()$RegistryID, as_html = TRUE, linktext = 'ECHO Report')
+    } else {
+        echolink = rep('N/A',nrow(out$results_bysite))
+    }
+    
+    if(submitted_upload_method() != 'SHP'){
+      out$results_bysite[ , `:=`(
+        `EJScreen Report` = ifelse(valid == T, url_ejscreen_report(    lat = d_upload$lat, lon =  d_upload$lon, radius = input$bt_rad_buff, as_html = TRUE), 'N/A'),
+        `EJScreen Map`    = ifelse(valid == T, url_ejscreenmap(        lat = d_upload$lat, lon =  d_upload$lon,                             as_html = TRUE),  'N/A'),
+        # `ACS Report`      = url_ejscreen_acs_report(lat = d_upload$lat, lon =  d_upload$lon, radius = input$bt_rad_buff, as_html = TRUE),
+        `ECHO report` = ifelse(valid==T, echolink, 'N/A')
+      )]
+    } else {
+      ## setting shapefile URLs to NA for now
+      out$results_bysite <- out$results_bysite %>% 
+        dplyr::mutate(
+            `EJScreen Report` = 'N/A',#ifelse(valid == T, url_ejscreen_report(    lat = d_upload$lat, lon =  d_upload$lon, radius = input$bt_rad_buff, as_html = TRUE), 'N/A'),
+            `EJScreen Map`    = 'N/A',#ifelse(valid == T, url_ejscreenmap(        lat = d_upload$lat, lon =  d_upload$lon,                             as_html = TRUE),  'N/A'),
+            # `ACS Report`      = url_ejscreen_acs_report(lat = d_upload$lat, lon =  d_upload$lon, radius = input$bt_rad_buff, as_html = TRUE),
+            `ECHO report` = 'N/A'#ifelse(valid==T, echolink, 'N/A')
+        )
+    }
+    #}
+    newcolnames <- c(
+      "EJScreen Report", 
+      "EJScreen Map", 
+      # "ACS Report", 
+      "ECHO report"
+    )
+    # put those up front as first columns
+    setcolorder(out$results_bysite, neworder = newcolnames)
+    #setcolorder(out$results_bysite, neworder = newcolnames)
+    out$longnames <- c(newcolnames, out$longnames)
+    
+    #############################################################################  # 
+    
+    # add radius to results tables (in server and in ejamit() ####
+    # out$results_bysite[      , radius.miles := input$bt_rad_buff]
+    # out$results_overall[     , radius.miles := input$bt_rad_buff]
+    # out$results_bybg_people[ , radius.miles := input$bt_rad_buff] # probably will not export this big table in excel downloads
+    # 
+    out$results_bysite$radius.miles <- input$bt_rad_buff
+    out$results_overall$radius.miles <- input$bt_rad_buff
+    out$results_bybg_people$radius.miles <- input$bt_rad_buff
     
         # out$longnames <- NA # see ejamit()
         # out$formatted <- table_tall_from_overall(out$results_overall, out$longnames)
@@ -1687,33 +1721,35 @@ app_server <- function(input, output, session) {
       
       if (submitted_upload_method() != "FIPS") {
         
-        # this bit of code defining popup_labels was there sep 10 but deleted Oct 14, probably inadvertently, and being put back in oct 23.
-        popup_labels <- c(data_processed()$longnames, 'State Name')
-        popup_labels[popup_labels == ""] <- map_headernames$names_friendly[match(
-          names(data_processed()$results_bysite)[popup_labels == ""],
-          EJAMejscreenapi::map_headernames$newnames_ejscreenapi)]
-        
-        ## similar to previous map but remove controls and only add circles, not circleMarkers
-        
-        ## switch this to data analyzed in report, not what was uploaded,   in case there are invalid
-        leaflet(data_processed()$results_bysite) %>% #,
-          #options = leafletOptions(zoomControl = FALSE, minZoom = 4)) %>% 
-          addTiles()  %>%
-          addCircles(
-            radius = 1 * meters_per_mile,
-            color = circle_color, fillColor = circle_color, 
-            fill = TRUE, weight = input$circleweight_in,
-            #group = 'circles',
-            popup = popup_from_any(
-              data_processed()$results_bysite %>% 
-                dplyr::mutate(dplyr::across(
-                  dplyr::where(is.numeric), \(x) round(x, digits = 3))), 
-              labels = popup_labels),
-            popupOptions = popupOptions(maxHeight = 200)
-          )} else {
-            # FIPS    *** placeholder blank US map until have time to create FIPS-based map
-            leaflet() %>% addTiles() %>% fitBounds(-115, 37, -65, 48)
-          }
+      # this bit of code defining popup_labels was there sep 10 but deleted Oct 14, probably inadvertently, and being put back in oct 23.
+      # popup_labels <- c(data_processed()$longnames, 'State Name')
+      # popup_labels[popup_labels == ""] <- map_headernames$names_friendly[match(
+      #   names(data_processed()$results_bysite)[popup_labels == ""],
+      #   EJAMejscreenapi::map_headernames$newnames_ejscreenapi)]
+      #  
+      popup_labels <- map_headernames$names_friendly[match(names(data_processed()$results_bysite),map_headernames$rname)] 
+      popup_labels[is.na(popup_labels)] <- names(data_processed()$results_bysite)[is.na(popup_labels)]
+      ## similar to previous map but remove controls and only add circles, not circleMarkers
+      
+      ## switch this to data analyzed in report, not what was uploaded,   in case there are invalid
+      leaflet(data_processed()$results_bysite) %>% #,
+        #options = leafletOptions(zoomControl = FALSE, minZoom = 4)) %>% 
+        addTiles()  %>%
+        addCircles(
+          radius = 1 * meters_per_mile,
+          color = circle_color, fillColor = circle_color, 
+          fill = TRUE, weight = input$circleweight_in,
+          #group = 'circles',
+          popup = popup_from_any(
+            data_processed()$results_bysite %>% 
+              dplyr::mutate(dplyr::across(
+                dplyr::where(is.numeric), \(x) round(x, digits = 3))), 
+            labels = popup_labels),
+          popupOptions = popupOptions(maxHeight = 200)
+        )} else {
+          # FIPS    *** placeholder blank US map until have time to create FIPS-based map
+          leaflet() %>% addTiles() %>% fitBounds(-115, 37, -65, 48)
+        }
     }
     
   }) # end of report_map 
