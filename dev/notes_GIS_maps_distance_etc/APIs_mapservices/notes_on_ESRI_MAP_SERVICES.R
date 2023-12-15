@@ -69,6 +69,7 @@ y <- plotblocksnearby(testpoints_10[5,],
   # blockids <-      as.vector(sapply( y$x$calls[[2]]$args[[7]], function(z)   gsub(".*blockid: ([0-9]*)<.*", "\\1", z)))
 }
   bgids <-  unique(as.vector(sapply(y$x$calls[[2]]$args[[7]], function(z) gsub(   ".*bgid: ([0-9]*)<.*", "\\1", z))))
+  if (!exists("bgid2fips")) dataload_from_pins("bgid2fips")
   bgfips <- bgid2fips[bgid %in% bgids, bgfips]
   
   x <- map_blockgroups(bgfips, outFields = "*")

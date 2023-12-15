@@ -68,7 +68,7 @@ bg22 <- bg22plus
 # SAVE DATASET FOR THE PACKAGE ####
 usethis::use_data(bg22, overwrite = TRUE)
 
-# and confirmed that sort is same bgid, bgfips, as in blockwts$bgid or blockdata::bgid2fips
+# and confirmed that sort is same bgid, bgfips, as in blockwts$bgid or   bgid2fips
 
 
 

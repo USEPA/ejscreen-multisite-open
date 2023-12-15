@@ -72,6 +72,7 @@ map_blockgroups <- function(bgfips = '010890029222', outFields = "",
 map_blockgroups_over_blocks <- function(y) {
   # y is output of plotblocksnearby()
   bgids <-  unique(as.vector(sapply( y$x$calls[[2]]$args[[7]], function(z)   gsub(   ".*bgid: ([0-9]*)<.*", "\\1", z))))
+  if (!exists("bgid2fips")) dataload_from_pins("bgid2fips")
   bgfips <- bgid2fips[bgid %in% bgids, bgfips] 
   x <- map_blockgroups(bgfips) # but not for 60+ fips!
   # add those FIPS shapes to the leaflet htmlwidget map 
