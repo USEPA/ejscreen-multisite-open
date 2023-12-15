@@ -22,6 +22,8 @@
 #' 
 getblocksnearby_from_fips <- function(fips, inshiny = FALSE, need_blockwt = TRUE) {
   
+  if (!exists("bgid2fips")) dataload_from_pins("bgid2fips")
+  
   fips.char <- fips_lead_zero( fips)  # adds leading zeroes and returns as character, 5 characters if seems like countyfips, etc. 
   fipslengths <- nchar(fips.char)
   if (!(length(unique(fipslengths)) == 1)) {    # might recode to allow that but it is complicated
