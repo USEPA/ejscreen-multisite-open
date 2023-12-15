@@ -2157,7 +2157,13 @@ app_server <- function(input, output, session) {
   #   tallout
   # })
   
-  
+  shinyInput <- function(FUN, len, id, ...) {
+    inputs <- character(len)
+    for (i in seq_len(len)) {
+      inputs[i] <- as.character(FUN(id, ...))
+    }
+    inputs
+  }
   
   #############################################################################  # 
   #. ## ##
@@ -2171,13 +2177,13 @@ app_server <- function(input, output, session) {
     # cols_to_select <- names(data_processed)
     # friendly_names <- longnames???
     cols_to_select <- c('ejam_uniq_id', #'siteid', 
-                        'pop', #'Community Report',
+                        'pop', 'Community Report',
                         'EJScreen Report', 'EJScreen Map', 'ECHO report', # 'ACS Report', 
                         names_d, names_d_subgroups,
                         names_e #, 
                         # no names here corresponding to number above x threshold, state, region ??
     )
-    friendly_names <- c('Site ID', 'Est. Population', #'Community Report',
+    friendly_names <- c('Site ID', 'Est. Population', 'Community Report',
                         'EJScreen Report', 'EJScreen Map', 'ECHO report', #'ACS Report', 
                         names_d_friendly, names_d_subgroups_friendly, 
                         names_e_friendly)
@@ -2204,6 +2210,15 @@ app_server <- function(input, output, session) {
       dplyr::mutate(dplyr::across(dplyr::where(is.numeric), .fns = function(x) {round(x, digits = 2)})#,  ## *** should follow rounding rules provided via map_headernames$decimals or $sigfigs ?
                     #siteid = as.character(siteid)
       ) %>%
+      dplyr::mutate(index = row_number()) %>%
+      rowwise() %>%
+      dplyr::mutate(
+        `Community Report` = ifelse(valid == T, shinyInput(actionButton, 1, id=paste0('button_', index), label = "Generate", 
+                                        onclick = paste0('Shiny.onInputChange(\"select_button',index,'\",  this.id)' )
+                                        ), '')
+      ) %>% 
+    
+       dplyr::ungroup() %>%
       dplyr::select(dplyr::all_of(cols_to_select), ST)
     
     # dt$`EJScreen Report` <- EJAMejscreenapi::url_linkify(dt$`EJScreen Report`, text = 'EJScreen Report')
@@ -2251,6 +2266,7 @@ app_server <- function(input, output, session) {
                   filter = 'top',
                   ## allow selection of one row at a time (remove to allow multiple)
                   #selection = 'single',
+                  selection='none',
                   ## add-in for freezing columns
                   extensions = c('FixedColumns'),
                   options = list(
@@ -2280,6 +2296,53 @@ app_server <- function(input, output, session) {
     # )
   })
   #############################################################################  # 
+  
+  cur_button <- reactiveVal(NULL)
+  
+  observeEvent(
+    lapply(
+      names(input)[grep("select_button[0-9]+",names(input))],
+      function(name){
+        cur_button(input[[name]])
+        input[[name]]
+        }),  {
+        req(data_processed())
+          req(cur_button())
+        x <- as.numeric(gsub('button_','', cur_button()))
+        if(!(submitted_upload_method() %in% c('FIPS')) & data_processed()$results_bysite$valid[x] == T){
+          popstr <- prettyNum(round(data_processed()$results_bysite$pop[x]), big.mark=',')
+          locationstr <- paste0(data_processed()$results_bysite[x,]$radius.miles, ' Mile Ring Centered at ',
+                                data_processed()$results_bysite[x,]$lat, ', ',
+                                data_processed()$results_bysite[x,]$lon, '<br>', 'Area in Sq. Miles: ',
+                                round(pi* data_processed()$results_bysite[x,]$radius.miles^2,2)
+          )
+          if(!('main.css' %in% list.files(tempdir()))){
+            file.copy(from = app_sys('report/community_report/main.css'),
+                      to = file.path(tempdir(), 'main.css'), overwrite = TRUE)          
+          }
+          if(!('communityreport.css' %in% list.files(tempdir()))){
+            file.copy(from = app_sys('report/community_report/communityreport.css'),
+                      to = file.path(tempdir(), 'community.css'), overwrite = TRUE)          
+          }
+          temp_comm_report <- file.path(tempdir(), paste0("comm_report",x,".html"))
+          
+          build_community_report(
+            output_df = data_processed()$results_bysite[x,],
+            analysis_title = input$analysis_title,
+            totalpop = popstr,
+            locationstr = locationstr,
+            include_ejindexes = T,
+            in_shiny = F,
+            filename = temp_comm_report
+          )
+          browseURL(temp_comm_report)
+        } else {
+          showModal(modalDialog(title='Invalid Site',
+          'This site did not produce valid analysis results.'))
+        }
+       
+        #showModal(modalDialog("Thanks for pushing the button"))
+      }, ignoreInit = TRUE)
   
   ## EXCEL DOWNLOAD  ####
   
