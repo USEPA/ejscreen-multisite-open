@@ -13,6 +13,9 @@
 #' EJAMejscreenapi::mapfast(x)
 latlon_from_siteid <- function(siteid) {
   if (missing(siteid)) {return(NULL)}
+  
+  if (!exists("frs")) dataload_from_pins("frs")
+  
   frs[match(siteid, frs$REGISTRY_ID), ] # slower but retains order
   
 }

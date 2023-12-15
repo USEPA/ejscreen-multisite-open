@@ -437,7 +437,9 @@ nrow(latlon_from_mactsubpart("OOOO", include_if_no_latlon = TRUE))
 Quick map of EPA-regulated facilities in one industrial category, which you can click on to see popup windows about sites.
 
 ```{r mapfast(frs_from_naics), eval = TRUE, fig.height=5, fig.width=5}
-mapfast(frs_from_naics("smelt")) # may be slow the 1st time, if it lazyloads frs dataset
+  if (!exists("frs_from_naics")) dataload_from_pins("frs_from_naics")
+
+mapfast(frs_from_naics("smelt")) # may be slow the 1st time, if it loads frs dataset
 ```
 
 (but note that this FRS dataset lacks NAICS for most facilities!)

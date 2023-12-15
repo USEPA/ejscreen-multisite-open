@@ -33,8 +33,12 @@
 #' @export
 #'
 dataload_from_pins <- function(varnames = c(
-  c('blockwts', 'quaddata', 'blockpoints', 'blockid2fips', 'bgid2fips', 'bgej'),
-  c('frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact")), 
+  c('blockwts', 'blockpoints', 'blockid2fips'), 
+  # , 'bgej',     # load only if /when needed?
+  # 'bgid2fips',  # load only if /when needed?
+  # c('frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact"),  # load only if /when needed?
+  'quaddata'
+  ), 
   boardfolder = "Mark", 
   auth = "auto",
   server = "https://rstudio-connect.dmap-stage.aws.epa.gov",

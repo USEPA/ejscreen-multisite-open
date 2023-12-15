@@ -518,6 +518,8 @@ app_server <- function(input, output, session) {
       
       ## look for program in list from unique(frs_by_programid$program)
       
+      if (!exists("frs_by_programid")) dataload_from_pins("frs_by_programid")
+      
       ## if any of these columns already exist, join by all of them
       if (any(c('REGISTRY_ID','lat','lon') %in% colnames(read_pgm))) {
         pgm_out <- dplyr::left_join(
@@ -664,6 +666,8 @@ app_server <- function(input, output, session) {
   data_up_mact <- reactive({
     
     req(isTruthy(input$ss_select_mact))
+    
+    if (!exists("frs_by_mact")) dataload_from_pins("frs_by_mact")
     
     ## filter frs_by_mact to currently selected subpart
     mact_out <- frs_by_mact[ subpart == input$ss_select_mact]

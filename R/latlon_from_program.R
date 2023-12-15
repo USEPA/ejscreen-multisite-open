@@ -37,6 +37,9 @@
 latlon_from_program <- function(query) {
   if (missing(query)) {return(NULL)}
   
+  if (!exists("frs_by_programid")) dataload_from_pins("frs_by_programid")
+  if (!exists("frs")) dataload_from_pins("frs")
+  
   # NOW USE THIS VERSION THAT MAKES IT IDENTICAL TO frs_from_program() :
   frs[REGISTRY_ID %in% frs_by_programid[program %in% query, REGISTRY_ID], ]
   

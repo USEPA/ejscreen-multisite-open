@@ -65,6 +65,9 @@ testpoints_n <- function(n=10, weighting=c('frs', 'pop', 'area', 'bg', 'block'),
   
   # RANDOM FACILITIES (EPA-regulated facilities in FRS)
   if (weighting == "frs") {
+    
+    if (!exists("frs")) dataload_from_pins("frs")
+    
     if (!is.null(ST_of_blockgroup)) {
       statecount = length(ST_of_blockgroup)
       
