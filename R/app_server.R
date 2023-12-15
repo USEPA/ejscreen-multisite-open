@@ -242,7 +242,11 @@ app_server <- function(input, output, session) {
       numna <- nrow(shp[!sf::st_is_valid(shp) | sf::st_is_empty(shp), ]) # now counts and removes polygons that are not valid but also if "empty"
       invalid_alert[['SHP']] <- numna # this updates the value of the reactive invalid_alert()
       shp <- shapefile_clean(shp) # uses default crs=4269;  drops invalid rows or return NULL if none valid  # shp <- sf::st_transform(shp, crs = 4269) # done by shapefile_clean() 
-      shp <- shp[!sf::st_is_empty(shp), ] # *** remove this if shapefile_clean() will do it
+      shp$valid <- !sf::st_is_empty(shp)
+      
+      #shp[!sf::st_is_empty(shp), ] # *** remove this if shapefile_clean() will do it
+      
+      #shp <- shp[!sf::st_is_empty(shp), ] # *** remove this if shapefile_clean() will do it
       if (is.null(shp)) {
         invalid_alert[['SHP']] <- 0 # hides the invalid site warning
         an_map_text_shp(HTML(NULL)) # hides the count of uploaded shapes
@@ -250,6 +254,9 @@ app_server <- function(input, output, session) {
         shiny::validate('No shapes found in file uploaded.')
       }
       disable_buttons[['SHP']] <- FALSE
+      
+      shp <- cbind(ejam_uniq_id = 1:nrow(shp), shp)
+      class(shp) <- c(class(shp), 'data.table')
       shp
       ####### #    #######     ####### #
     } else {
@@ -285,6 +292,9 @@ app_server <- function(input, output, session) {
         shiny::validate('No shapes found in file uploaded.')
       }
       disable_buttons[['SHP']] <- FALSE
+      shp_proj$valid <- !sf::st_is_empty(shp_proj)
+      shp_proj <- cbind(ejam_uniq_id = 1:nrow(shp_proj), shp_proj)
+      class(shp_proj) <- c(class(shp_proj), 'data.table')
       shp_proj
     }
     
@@ -1333,9 +1343,14 @@ app_server <- function(input, output, session) {
       
       if (submitted_upload_method() == "SHP") {
         if (input$bt_rad_buff > 0) {
-          if (!silentinteractive) {cat('Adding buffer around each polygon.\n')}
+          #if (!silentinteractive) {
+            cat('Adding buffer around each polygon.\n')
+            #}
+          
+          shp_valid <- data_uploaded()[data_uploaded()$valid==T, ] # *** remove this if shapefile_clean() will do it
+
           shp <- shape_buffered_from_shapefile(
-            shapefile = data_uploaded(), 
+            shapefile = shp_valid, 
             radius.miles =  input$bt_rad_buff
           ) # default crs
         }
@@ -1527,7 +1542,17 @@ app_server <- function(input, output, session) {
     #############################################################################  # 
     
     # 3) **batch.summarize()** on already processed data ####
-    
+    if(submitted_upload_method() == 'SHP'){
+      outsum <- EJAMbatch.summarizer::batch.summarize(
+        sitestats = data.frame(data_processed()$results_bysite %>% 
+                                 sf::st_drop_geometry()),
+        popstats =  data.frame(data_processed()$results_bysite %>% 
+                                 sf::st_drop_geometry()),
+        ## user-selected quantiles to use
+        #probs = as.numeric(input$an_list_pctiles),
+        threshold = list(input$an_thresh_comp1) # compare variables to 90th %ile or other percentile, like threshold1 param in ejamit()
+      )
+    } else {
     outsum <- EJAMbatch.summarizer::batch.summarize(
       sitestats = data.frame(data_processed()$results_bysite),
       popstats =  data.frame(data_processed()$results_bysite),
@@ -1535,7 +1560,7 @@ app_server <- function(input, output, session) {
       #probs = as.numeric(input$an_list_pctiles),
       threshold = list(input$an_thresh_comp1) # compare variables to 90th %ile or other percentile, like threshold1 param in ejamit()
     )
-    
+    }
     ## update overall progress bar
     progress_all$inc(1/3, message = 'Done processing! Loading results now', detail = NULL)
     
@@ -1728,8 +1753,10 @@ app_server <- function(input, output, session) {
     #if shapefile, merge geometry and create buffer if nonzero buffer is set
     if (submitted_upload_method() == "SHP") {
       d_up <- data_uploaded()
-      d_up_geo <- d_up[,c("siteid","geometry")]
-      d_merge = merge(d_up_geo,data_processed()$results_bysite, by = "siteid", all.x = FALSE, all.y = TRUE)
+      #d_up_geo <- d_up[,c("siteid","geometry")]
+      #d_merge = merge(d_up_geo,data_processed()$results_bysite, by = "siteid", all.x = FALSE, all.y = TRUE)
+      d_up_geo <- d_up[,c("ejam_uniq_id","geometry")]
+      d_merge = merge(d_up_geo,data_processed()$results_bysite, by = "ejam_uniq_id", all.x = FALSE, all.y = TRUE)
       if (input$bt_rad_buff > 0) {
         d_uploads <- sf::st_buffer(d_merge, # was "ESRI:102005" but want 4269
                                    dist = units::set_units(input$bt_rad_buff, "mi")) 
