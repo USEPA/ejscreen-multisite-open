@@ -40,7 +40,8 @@ dataload_from_local <- function(varnames = c(
   localpaths  <- paste0(folder_local_source, '/', fnames)
   localpaths_found <- NULL
   # make output in console easier to read:  
-  spacing <- sapply(1:length(varnames), function(x) paste0(rep(" ", max(nchar(varnames)) - nchar(varnames[x])), collapse = ''))
+  if (length(varnames) > 1) {widest <- max(nchar(varnames))} else {widest <- max(10, nchar(varnames))}
+  spacing <- sapply(1:length(varnames), function(x) paste0(rep(" ", widest - nchar(varnames[x])), collapse = ''))
   
   for (i in 1:length(fnames)) {
     
@@ -68,13 +69,13 @@ dataload_from_local <- function(varnames = c(
           }
         } else {
           cat(varnames[i],spacing[i],
-              'is found locally on disk at', localpaths[i], '\n')
+              'is available locally on disk at', localpaths[i], '\n')
         }
       } else { 
         # NOT in memory, NOT on local disk ##################### #
 
         cat(  varnames[i],spacing[i],
-              'NOT found locally at', localpaths[i], '\n')
+              'is NOT found locally on disk at', localpaths[i], '\n')
         next
       }
       
@@ -89,12 +90,12 @@ dataload_from_local <- function(varnames = c(
           # in memory, AND on local disk ##################### #
           
           cat( varnames[i],spacing[i],
-               'is found locally on disk at', localpaths[i], '\n')
+               'is available locally on disk at', localpaths[i], '\n')
         } else {
           # in memory, NOT on local disk ##################### #
           
           cat( varnames[i],spacing[i],
-               'NOT found locally on disk at', localpaths[i], '\n')
+               'is NOT found locally on disk at', localpaths[i], '\n')
         }
       next
       }
@@ -102,7 +103,7 @@ dataload_from_local <- function(varnames = c(
     }
   } # end of loop
   
-  cat("\n")
+  # cat("\n")
   return(localpaths_found)
   # } else {
   # message("Must be in interactive mode not on server to load from local disk using dataload_from_local()")

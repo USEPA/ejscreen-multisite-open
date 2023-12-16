@@ -77,7 +77,8 @@ dataload_from_aws <- function(varnames= c('bgid2fips', 'blockid2fips', 'blockpoi
   objectnames <- paste0(mybucketfolder,      '/', fnames) # EJAM/bgid2fips.rda 
   localpaths  <- paste0(folder_local_source, '/', fnames)
   # make output in console easier to read:  
-  spacing <- sapply(1:length(objectnames), function(x) paste0(rep(" ", max(nchar(objectnames)) - nchar(objectnames[x])), collapse = ''))
+  if (length(objectnames) > 1) {widest <- max(nchar(objectnames))} else {widest <- max(10, nchar(objectnames))}
+  spacing <- sapply(1:length(objectnames), function(x) paste0(rep(" ", widest - nchar(objectnames[x])), collapse = ''))
   cat('\n')
   if (testing) {
     cat('varnames are:    ', paste0(varnames,    collapse = ", "), '\n')

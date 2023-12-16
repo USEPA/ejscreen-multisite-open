@@ -38,13 +38,13 @@ dataload_from_pins <- function(varnames = c(
   # 'bgid2fips',  # load only if /when needed?
   # c('frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact"),  # load only if /when needed?
   'quaddata'
-  ), 
-  boardfolder = "Mark", 
-  auth = "auto",
-  server = "https://rstudio-connect.dmap-stage.aws.epa.gov",
-  # server = "rstudio-connect.dmap-stage.aws.epa.gov", 
-  envir = globalenv(), 
-  justchecking = FALSE) {
+), 
+boardfolder = "Mark", 
+auth = "auto",
+server = "https://rstudio-connect.dmap-stage.aws.epa.gov",
+# server = "rstudio-connect.dmap-stage.aws.epa.gov", 
+envir = globalenv(), 
+justchecking = FALSE) {
   
   if (justchecking) {
     dataload_from_local(varnames = varnames, envir = envir, justchecking = TRUE) # this will display in console some info on where vars exist 
@@ -58,36 +58,45 @@ dataload_from_pins <- function(varnames = c(
   }
   if (inherits(board, "try-error")) {
     warning("UNABLE TO CONNECT TO PINS BOARD")
-    return()
+    board_available <- FALSE
+  } else {
+    board_available <- TRUE
   }
   
   varnames_gotten <- NULL
   if (justchecking) {
-    message("Ignoring varnames, since justchecking = TRUE")
-    cat("\nAvailable pins found at ", server,":\n\n")
-    varnames_info <- pins::pin_search(board, boardfolder)
-    print(varnames_info) # view a table of info about the pins
-    cat("\n")
-    varnames_gotten <- gsub(paste0(boardfolder, "/"), "",  varnames_info$name)
-    return( varnames_gotten) # get a vector of just the names of the objects 
+    if (board_available) {
+      message("Ignoring varnames, since justchecking = TRUE")
+      cat("\nAvailable pins found at", server,":\n\n")
+      varnames_info <- pins::pin_search(board, boardfolder)
+      print(varnames_info) # view a table of info about the pins
+      cat("\n")
+      varnames_gotten <- gsub(paste0(boardfolder, "/"), "",  varnames_info$name)
+    } else {   
+      return( varnames_gotten) # get a vector of just the names of the objects
+    }
   } else {
     for (varname_n in varnames) {
       if (exists(varname_n, envir = envir)) {
-        cat(varname_n, " - an object with this name is already in specified environment, so not downloaded again.\n")
+        cat(varname_n, "- an object with this name is already in specified environment, so not downloaded again.\n")
       } else {
         dataload_from_local(varnames = varname_n, envir = envir)
         if (exists(varname_n, envir = envir)) {
-          cat(varname_n, " - was loaded from local folder.\n")
+          cat(varname_n, "- was loaded from local folder.\n")
         } else {
-          cat(varname_n, " - not in local folder... ")
-          pathpin <- paste0(boardfolder, "/", varname_n)
-          if (pins::pin_exists(board, pathpin)) {
-            assign(varname_n, pins::pin_read(board, pathpin), envir = envir)
-            cat(varname_n, " - has been read from pin into specified environment.\n")
-            varnames_gotten <- c(varnames_gotten, varname_n)
+          # cat(varname_n, "- not in local folder... ") # redundant with dataload_from_local() ?
+          if (board_available) {
+            pathpin <- paste0(boardfolder, "/", varname_n)
+            if (pins::pin_exists(board, pathpin)) {
+              assign(varname_n, pins::pin_read(board, pathpin), envir = envir)
+              cat(varname_n, "- has been read from pin into specified environment.\n")
+              varnames_gotten <- c(varnames_gotten, varname_n)
+            } else {
+              cat(varname_n, " - was not found at ", server, "/", pathpin, "\n", sep = "")
+              warning(pathpin, "not found at ", server)
+            }
           } else {
-            cat(varname_n, " - was not found at ", server, "/", pathpin, "\n")
-            warning(pathpin, " not found at ", server)
+            cat(" and could not download ", varname_n, " - cannot connect to ", server, "/", "\n", sep = "")
           }
         }
       }

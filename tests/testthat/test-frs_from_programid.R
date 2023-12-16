@@ -1,4 +1,4 @@
-## unit tests for EJAM::frs_from_programid
+## unit tests for frs_from_programid
 ## Author: Sara Sokolinski
 
 # function is in the script frs_from_siteid.R

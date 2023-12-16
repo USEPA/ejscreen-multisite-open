@@ -10,6 +10,8 @@
 # ::
 # blockpoints_sf_make()
 
+## and may want the mapview package too
+
 # which just does this:
   # blockpoints_sf <-  blockpoints |>
   #  sf::st_as_sf(coords = c("lon", "lat"), crs= 4269) # Geodetic CRS:  NAD83
@@ -23,7 +25,7 @@
 
 n =  200   # how many facilities or sites?
 rad =  1  # miles  or # rad5 <- units::set_units(5,"km")
-pts=testpoints_1000[1:n,]
+pts = testpoints_1000[1:n,]
 
 ##########################################
 # EJAM analysis
@@ -51,12 +53,12 @@ outfast <- get_blockpoints_in_shape(pts, addedbuffermiles = rad)
 
 # )
 
-
+# library( # mapview ) # for the function mapview()
 polycircles <- shape_buffered_from_shapefile_points(shapefile_from_sitepoints(pts), rad) # several seconds. use default crs.
-mapview::mapview(outfast, alpha.regions = 0.5, alpha=1, layer="blocks_nearby" ) + 
-  mapview::mapview(shapefile_from_sitepoints(pts), layer="Sites", 
-                   col.regions="black", color="red", alpha=1, alpha.regions = 0.8) + 
-  mapview(polycircles, alpha.regions=0, color="black", col.regions="white")  
+mapview(outfast, alpha.regions = 0.5, alpha = 1, layer = "blocks_nearby" ) + 
+ mapview(shapefile_from_sitepoints(pts), layer = "Sites", 
+                   col.regions = "black", color = "red", alpha = 1, alpha.regions = 0.8) + 
+  mapview(polycircles, alpha.regions = 0, color = "black", col.regions = "white")  
 
 
 
