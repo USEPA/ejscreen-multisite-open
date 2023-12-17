@@ -1,8 +1,6 @@
 
-
 # Accessing ArcGIS REST services using R
 "https://community.esri.com/t5/gis-life-blog/accessing-arcgis-rest-services-using-r/ba-p/898451"
-
 
 ############ Examples of pulling in WFS (for tribal layer) and WMS with 
 #  sf, mapview, leaflet:
@@ -28,7 +26,7 @@
     url = "https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/USA_Counties/FeatureServer/0"
     ) 
   m
-}
+} # leaflet.extras package
 {  ########################### # ########################### # ########################### # 
 # * Use the esri leaflet plugin:   allows you to add ESRI feature layers to a leaflet map.
   
@@ -40,7 +38,7 @@ library(leaflet)
     url = "https://services.arcgis.com/P3ePLMYs2RVChkJx/arcgis/rest/services/USA_Counties/FeatureServer/0"
     ) 
   m
-}
+} # esri leaflet plugin
 {  ########################### # ########################### # ########################### #
 # * Use the geojsonio package:    
   
@@ -55,7 +53,7 @@ library(leaflet)
   geojson <- geojson_read(url)
   m <- leaflet() %>% addTiles() %>% addGeoJSON(geojson)
   m
-} 
+} # geojsonio package
 
   ########################### # ########################### # ########################### # ########################### # 
   
@@ -64,6 +62,7 @@ library(leaflet)
 y <- plotblocksnearby(testpoints_10[5,], 
                       radius = 3.1,
                       returnmap = TRUE)
+
 
 {# Extract block group fips of those block groups via the parent bgid numbers of those blocks
   # blockids <-      as.vector(sapply( y$x$calls[[2]]$args[[7]], function(z)   gsub(".*blockid: ([0-9]*)<.*", "\\1", z)))

@@ -1267,7 +1267,7 @@ mod_ejscreenapi_server <- function(id,
     #   )
     # )
     
-    # # mapview::mapView() - Another option might be to use mapView function in mapview package, which is easier in general but a bit trickier in shiny apps it seems
+    # # mapview package function  mapView() - Another option might be to use mapView function in mapview package, which is easier in general but a bit trickier in shiny apps it seems
     # projcrs <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0" #  lat / lon
     # try({mapview  ::  mapView(   (sf  ::  st_as_sf(x = (pts()), coords = c("lon", "lat"), crs = projcrs)))@map}, silent = TRUE)
     

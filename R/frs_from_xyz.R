@@ -12,6 +12,9 @@
 #'
 #' @examples frs_from_siteid(testids_registry_id)
 frs_from_siteid <- function(siteid) {
+  
+  if (!exists("frs")) dataload_from_pins("frs")
+  
   frs[REGISTRY_ID %in% siteid, ]
 }
 ########################################## # 
@@ -34,6 +37,8 @@ frs_from_regid = frs_from_siteid
 #' @export
 frs_from_programid <- function(programid) {
   
+  if (!exists("frs")) dataload_from_pins("frs")
+  
   frs[REGISTRY_ID %in% latlon_from_programid(programid)$REGISTRY_ID, ]
 }
 ########################################## # 
@@ -48,6 +53,8 @@ frs_from_programid <- function(programid) {
 #'     
 #' @export
 frs_from_program  <- function(program) {
+  
+  if (!exists("frs")) dataload_from_pins("frs")
   
   frs[REGISTRY_ID %in% latlon_from_program(program)$REGISTRY_ID, ]
 }
@@ -74,6 +81,9 @@ frs_from_program  <- function(program) {
 #'   latlon_from_naics(21222)
 #'   
 frs_from_naics <- function(naics_code_or_name, ...) {
+  
+  if (!exists("frs")) dataload_from_pins("frs")
+  
   frs[REGISTRY_ID %in% siteid_from_naics(naics_from_any(naics_code_or_name, ...)$code, id_only = TRUE) , ]
 }
 ########################################## # 
@@ -95,6 +105,9 @@ frs_from_naics <- function(naics_code_or_name, ...) {
 #'  head(x)
 #' }
 frs_from_sitename <- function(sitenames, ignore.case=TRUE, fixed=FALSE) {
+  
+  if (!exists("frs")) dataload_from_pins("frs")
+  
   results <- list()
   for (i in 1:length(sitenames)) {
     # VERY SLOW WAY:

@@ -97,9 +97,13 @@ meters_per_mile <- 1609.344
 ## used by inputId 'ss_limit_fac1' and 'ss_limit_fac2'
 # see frsprogramcodes data object also
 ## add counts to program acronyms to use in dropdown display
-epa_program_counts <- dplyr::count(frs_by_programid, program, name = 'count') # EJAM :: frs_by_programid
-epa_program_counts$pgm_text_dropdown <- paste0(epa_program_counts$program, ' (',prettyNum(epa_program_counts$count, big.mark = ','), ')')
-epa_programs <- setNames(epa_program_counts$program, epa_program_counts$pgm_text_dropdown)
+
+# *** instead of code below, now created epa_programs as data from frs_by_programid one time then build into package and do not require frs_by_programid here just to do that 
+# epa_program_counts <- dplyr::count(frs_by_programid, program, name = 'count') # EJAM :: frs_by_programid
+# epa_program_counts$pgm_text_dropdown <- paste0(epa_program_counts$program, ' (',prettyNum(epa_program_counts$count, big.mark = ','), ')')
+# epa_programs <- setNames(epa_program_counts$program, epa_program_counts$pgm_text_dropdown)
+# epa_programs is now in EJAM/data/
+
 default_selected <- "CAMDBS" # has only about 739 sites
 # cbind(epa_programs)
 # sort(unique(frs_by_programid$program)) # similar  # EJAM :: frs_by_programid

@@ -11,7 +11,7 @@ testpoints_n(
   n = 10,
   weighting = c("frs", "pop", "area", "bg", "block"),
   dt = TRUE,
-  ST_of_blockgroup = NULL
+  ST_needed = NULL
 )
 }
 \arguments{
@@ -30,7 +30,7 @@ Note the default is frs, but you may want to use pop even though it is slower.
 
 \item{dt}{logical, whether to return a data.table (DEFAULT) instead of normal data.frame}
 
-\item{ST_of_blockgroup}{optional, can be a character vector of 2 letter State abbreviations to pick from only some States.}
+\item{ST_needed}{optional, can be a character vector of 2 letter State abbreviations to pick from only some States.}
 }
 \value{
 data.frame or data.table with columns lat, lon in decimal degrees, and
@@ -44,7 +44,7 @@ facility, blockgroup, block, place on the map, or US resident.
 }
 \examples{
 \dontrun{
-mapfast(testpoints_n(300, ST_of_blockgroup = c('LA','MS')) )
+mapfast(testpoints_n(300, ST_needed = c('LA','MS')) )
 n=2
 for (d in c(TRUE,FALSE)) {
   for (w in c('frs', 'pop', 'area', 'bg', 'block')) {

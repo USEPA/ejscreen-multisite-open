@@ -1,7 +1,6 @@
-
+############################################################################# #
 # Named all fips-related functions to start with "fips..."
-
-################################## #
+############################################################################# #
 
 #   if func RETURNS the fips, named the function  fips_from_xyz()
 # 
@@ -13,11 +12,11 @@
 # fips_counties_from_state_abbrev()
 # fips_counties_from_statename(   )  # should it be statename or state_name
 #       fips_bg_from_anyfips()
-#            bg_from_county()      # inconsistent naming?
-#       fips_bg_from_countyfips()  # inconsistent naming?
+# and 
+#   see   getblocksnearby_from_fips() which uses  fips_bg_from_anyfips()  
 
-#     regions_as_sites()  would be a name that makes sense
-#    counties_as_sites()          # creates table like getblocksnearby() would
+#     regions_as_sites()  would be a name that makes sense?
+#    counties_as_sites()          # creates table like getblocksnearby()   and could get used by EJAM/R/mod_fips_picker-DRAFT.R
 #      states_as_sites()  would be a name that makes sense
 #      cities_as_sites()  would be a name that makes sense
 #    tracts_as_ and blockgroups_as_  maybe useful?
@@ -37,11 +36,9 @@
 
 ################################## #
 
-#   (NOT a naming scheme something like countyname_from_countyfips etc.)
+#   (and we are NOT using a naming scheme something like countyname_from_countyfips etc.)
 
 ############################################################################# #
-
-
 
 
 ############################################################################# #
@@ -160,13 +157,21 @@ fips_counties_from_statename <- function(statename) {
 #' @export
 #'
 #' @examples 
+#' 
 #'   # all blockgroups in one state
+#'   fips_counties_from_state_abbrev("DE")
+#'   fips_bg_from_anyfips( fips_counties_from_state_abbrev("DE") )
+#'   
 #'   blockgroupstats[,.N,by=substr(bgfips,1,2)]
 #'   length(fips_bg_from_anyfips("72"))
+#'   
 #'   # all blockgroups in this one county
 #'   fips_bg_from_anyfips(30001)
-#'   # all blockgroups that contain any of these 6 blocks (just one bg)
+#'   fips_bg_from_anyfips("30001")
+#'   
+#'   # all blockgroups that contain any of these 6 blocks (i.e., just one bg)
 #'   fips_bg_from_anyfips( blockid2fips$blockfips[1:6])
+#'   
 #'   # 2 counties
 #'   fips_bg_from_anyfips(c(36009,36011))
 fips_bg_from_anyfips <- function(fips) {
@@ -198,7 +203,7 @@ fips_bg_from_anyfips <- function(fips) {
 ############################################################################# #
 
 
-#' bg_from_county - Analyze US Counties as if they were sites, to get EJ indicators summary for each county
+#' counties_as_sites - Analyze US Counties as if they were sites, to get EJ indicators summary for each county
 #' @details This function provides one row per blockgroup.
 #'    [getblocksnearby_from_fips()] provides one row per block.
 #' @param fips County FIPS vector (ideally as character not numeric values)
@@ -208,13 +213,13 @@ fips_bg_from_anyfips <- function(fips) {
 #' @export
 #'
 #' @examples 
-#'  bg_from_county(c('01001','72153'))
+#'  counties_as_sites(c('01001','72153'))
 #'  # Largest US Counties by ACS Population Totals:
 #'  blockgroupstats[ , .(ST = ST[1], countypop = sum(pop)),
 #'   by=.(FIPS = substr(bgfips,1,5))][order(-countypop),][1:20, .(
 #'   CountyPopulation = prettyNum(countypop, big.mark = ","), FIPS, ST)]
 #'  
-bg_from_county <- function(fips) {
+counties_as_sites <- function(fips) {
   if (any(is.numeric(fips))) {
     message("leading zeroes being inferred since FIPS was provided as numbers not character class")
     
@@ -228,26 +233,8 @@ bg_from_county <- function(fips) {
 }
 ############################################### #
 
-#' fips_bg_from_countyfips
-#' @export
-#' @inherit bg_from_county
-fips_bg_from_countyfips <- bg_from_county
-############################################################################# #
-
-#' counties_as_sites
-#' @export
-#' @inherit bg_from_county
-counties_as_sites <- bg_from_county
-
-# out put 
 
 ############################################################################# #
-
-# but see   getblocksnearby_from_fips() 
-# which does a related thing for any type of fips
-
-
-
 
 
 ############################################################################# #

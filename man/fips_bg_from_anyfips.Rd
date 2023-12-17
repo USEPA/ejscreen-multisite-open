@@ -32,13 +32,21 @@ that contain any specified blocks, are equal to any specified blockgroup fips,
 or are contained within any provided tract/county/state FIPS.
 }
 \examples{
+
   # all blockgroups in one state
+  fips_counties_from_state_abbrev("DE")
+  fips_bg_from_anyfips( fips_counties_from_state_abbrev("DE") )
+  
   blockgroupstats[,.N,by=substr(bgfips,1,2)]
   length(fips_bg_from_anyfips("72"))
+  
   # all blockgroups in this one county
   fips_bg_from_anyfips(30001)
-  # all blockgroups that contain any of these 6 blocks (just one bg)
+  fips_bg_from_anyfips("30001")
+  
+  # all blockgroups that contain any of these 6 blocks (i.e., just one bg)
   fips_bg_from_anyfips( blockid2fips$blockfips[1:6])
+  
   # 2 counties
   fips_bg_from_anyfips(c(36009,36011))
 }

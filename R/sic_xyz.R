@@ -18,6 +18,9 @@
 #'   latlon_from_sic('0780')
 #'   
 frs_from_sic <- function(sic_code_or_name, ...) {
+  
+  if (!exists("frs")) dataload_from_pins("frs")
+  
   frs[REGISTRY_ID %in% siteid_from_sic(sic_from_any(sic_code_or_name, ...)$code, id_only = TRUE) , ]
 }
 ############################################################################## # 
@@ -48,7 +51,11 @@ frs_from_sic <- function(sic_code_or_name, ...) {
 #'   # mapfast(frs_from_sic('6150')) # simple map
 latlon_from_sic <- function(sic, id_only=FALSE) {
   if (missing(sic)) {return(NULL)}
+  
+  if (!exists("frs_by_sic")) dataload_from_pins("frs_by_sic")
+  
   if (data.table::is.data.table(sic) & "code" %in% names(sic)) {sic <- sic$code} # flexible in case it was given output of EJAM::sic_from_any() which is a table not just code
+  
   
   if (id_only) {
     return(frs_by_sic[SIC %in% sic, REGISTRY_ID])

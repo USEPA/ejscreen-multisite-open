@@ -2,7 +2,8 @@
 % Please edit documentation in R/map_blockgroups.R
 \name{map_blockgroups_over_blocks}
 \alias{map_blockgroups_over_blocks}
-\title{map_blockgroups_over_blocks - Overlay blockgroups near 1 site, after plotblocksnearby()}
+\title{map_blockgroups_over_blocks - Overlay blockgroups near 1 site, after plotblocksnearby()
+Overlay blockgroups near 1 site, after plotblocksnearby()}
 \usage{
 map_blockgroups_over_blocks(y)
 }
@@ -14,6 +15,7 @@ leaflet map widget
 }
 \description{
 map_blockgroups_over_blocks - Overlay blockgroups near 1 site, after plotblocksnearby()
+Overlay blockgroups near 1 site, after plotblocksnearby()
 }
 \examples{
 dontrun{
