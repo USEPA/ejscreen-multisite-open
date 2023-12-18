@@ -26,11 +26,15 @@ table_round - round numbers in a table, each column to appropriate number of dec
 \examples{
  
   table_round(c(12.123456, 9, NA ), 'pm')
-  
-  table_round(data.frame())
-  
-  t( table_round(testoutput_ejamit_10pts_1miles$results_bysite[1:2, c(
-   'lat','lon', 'pop', names_these, names_ratio_to_avg_these, names_e_pctile)]) )
+
+ x <- testoutput_ejamit_10pts_1miles$results_bysite[
+   1:2, c('lat','lon', 'pop', names_these, names_ratio_to_avg_these, names_e_pctile), 
+   with = FALSE
+ ]
+
+ table_rounding_info(names(x))
+
+ table_round(x)
   
 }
 \seealso{

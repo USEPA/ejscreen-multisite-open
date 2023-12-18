@@ -115,7 +115,8 @@ ejscreen_pctile_lookups_from_ftp <- function(folder = tempdir(),
 
 if (downloadnow) {
   cat('THIS DOWNLOAD TAKES A LONG TIME ... see progress bar window that pops up behind this window... \n')
-  x <- ejscreen_pctile_lookups_from_ftp()
+  # x <- ejscreen_pctile_lookups_from_ftp()
+  x <- ejscreen_pctile_lookups_from_ftp(folder = "~/../../OneDrive - Environmental Protection Agency (EPA)/EJ 2021/EJScreen 2023/FTP 2023-12")
   cat('FINISHED WITH DOWNLOAD\n')
 } 
 usastats2.2    <- x$USA_2023    # 

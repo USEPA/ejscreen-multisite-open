@@ -98,7 +98,7 @@ getblocksnearby_from_fips <- function(fips, inshiny = FALSE, need_blockwt = TRUE
     fips_blockpoints[ , lat := NULL]
     fips_blockpoints[ , lon := NULL]
     
-    return(fips_blockpoints)
+    return(fips_blockpoints[])
     
   } else {
     if (inshiny) {

@@ -28,6 +28,9 @@ latlon_from_mactsubpart <- function(subpart, include_if_no_latlon = FALSE) {
   # Steel Pickling—HCl Process Facilities And Hydrochloric Acid Regeneration Plants NESHAP, Subpart CCC ..... 3311, 3312  0310
 
     # stop("latlon_from_mactsubpart() is not yet available")
+  
+  if (!exists("frs_by_mact")) dataload_from_pins("frs_by_mact")
+  
   mact_out = frs_by_mact[subpart == subpart, ]
   if (include_if_no_latlon) {
     return(mact_out)

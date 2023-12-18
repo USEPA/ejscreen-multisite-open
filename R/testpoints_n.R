@@ -21,13 +21,13 @@
 #'
 #' @return data.frame or data.table with columns lat, lon in decimal degrees, and 
 #'   any other columns that are in the table used (based on weighting)
-#' @param ST_of_blockgroup optional, can be a character vector of 2 letter State abbreviations to pick from only some States.
+#' @param ST_needed optional, can be a character vector of 2 letter State abbreviations to pick from only some States.
 #'   
 #' @import data.table
 #' @export
 #'
 #' @examples \dontrun{
-#' mapfast(testpoints_n(300, ST_of_blockgroup = c('LA','MS')) )
+#' mapfast(testpoints_n(300, ST_needed = c('LA','MS')) )
 #' n=2
 #' for (d in c(TRUE,FALSE)) {
 #'   for (w in c('frs', 'pop', 'area', 'bg', 'block')) {
@@ -38,7 +38,7 @@
 #' }
 #' }
 #'  
-testpoints_n <- function(n=10, weighting=c('frs', 'pop', 'area', 'bg', 'block'), dt=TRUE, ST_of_blockgroup=NULL) {
+testpoints_n <- function(n=10, weighting=c('frs', 'pop', 'area', 'bg', 'block'), dt=TRUE, ST_needed=NULL) {
   
   if (NROW(n)  == 1) {
     if (n == 1e6) {warning('a million used to sound like a lot')}
@@ -65,20 +65,23 @@ testpoints_n <- function(n=10, weighting=c('frs', 'pop', 'area', 'bg', 'block'),
   
   # RANDOM FACILITIES (EPA-regulated facilities in FRS)
   if (weighting == "frs") {
-    if (!is.null(ST_of_blockgroup)) {
-      statecount = length(ST_of_blockgroup)
+    
+    if (!exists("frs")) dataload_from_pins("frs")
+    
+    if (!is.null(ST_needed)) {
+      statecount = length(ST_needed)
       
       # this should be written as a recursive function but didnt have time to do that:
       extrasize =  150 * statecount * n # try to find n in 1 state must on avg check on 52n, but check 150n to be very likely to have enough.
       rowtried <- sample.int(frs[,.N], size = extrasize, replace = FALSE)
       
-      rowinstate <- rowtried[state_from_latlon(lat = frs$lat[rowtried], lon = frs$lon[rowtried])$ST %in% ST_of_blockgroup]
+      rowinstate <- rowtried[state_from_latlon(lat = frs$lat[rowtried], lon = frs$lon[rowtried])$ST %in% ST_needed]
       stillneed <- n - length(rowinstate)
       if (stillneed > 0) warning('did not find enough within specified state(s) in this attempt')
       if (stillneed < 0 ) rowinstate <- rowinstate[1:n]
       # extrasize =  70 * statecount * stillneed
       # rowtried2 <- sample.int( frs[-rowtried, .N], size = extrasize, replace = FALSE)
-      # rowinstate2 <- c(rowinstate, rowtried2[state_from_latlon(lat = frs$lat[rowtried2], lon = frs$lon[rowtried2]) %in% ST_of_blockgroup])
+      # rowinstate2 <- c(rowinstate, rowtried2[state_from_latlon(lat = frs$lat[rowtried2], lon = frs$lon[rowtried2]) %in% ST_needed])
       # 
       # rownum <- sample.int( frs[rowinstate,.N], size = n, replace = FALSE)
       if (!dt) {x = data.table::copy(frs[rowinstate,] ); setDF(x); x$siteid <- seq_len(nrow(x)); return(x )}
@@ -93,8 +96,8 @@ testpoints_n <- function(n=10, weighting=c('frs', 'pop', 'area', 'bg', 'block'),
   
   # RANDOM BLOCKGROUPS
   if (weighting == 'bg') {
-    if (!is.null(ST_of_blockgroup)) {
-      stfips <- EJAM::stateinfo$FIPS.ST[match(ST_of_blockgroup, EJAM::stateinfo$ST)]
+    if (!is.null(ST_needed)) {
+      stfips <- EJAM::stateinfo$FIPS.ST[match(ST_needed, EJAM::stateinfo$ST)]
       bg_filtered_by_state <- data.table::copy(EJAM::bgpts[substr(bgfips,1,2) %in% stfips, ])
       rownum <- sample.int(bg_filtered_by_state[,.N], size = n, replace = FALSE)
       if (!dt) {setDF(bg_filtered_by_state); return(bg_filtered_by_state[rownum, ])}
@@ -110,8 +113,8 @@ testpoints_n <- function(n=10, weighting=c('frs', 'pop', 'area', 'bg', 'block'),
   # RANDOM BLOCKS
   if (weighting == 'block') {
     cat('loading blockpoints dataset\n')
-    if (!is.null(ST_of_blockgroup)) {
-      staterownums <- which(state_from_blockid(blockpoints$blockid) %in% ST_of_blockgroup  )
+    if (!is.null(ST_needed)) {
+      staterownums <- which(state_from_blockid(blockpoints$blockid) %in% ST_needed  )
       rownum <- sample.int(length(staterownums), size = n, replace = FALSE)
       if (!dt) {x = data.table::copy(blockpoints[staterownums,][rownum,]); setDF(x); return(x)}
       return(blockpoints[staterownums,][rownum,] )
@@ -126,9 +129,9 @@ testpoints_n <- function(n=10, weighting=c('frs', 'pop', 'area', 'bg', 'block'),
   # RANDOM POINTS ON THE MAP
   if (weighting == 'area') {
     # stop('blockpoints$area needs to be added to blockpoints')
-    if (!is.null(ST_of_blockgroup)) {
-      # stfips <- EJAM::stateinfo$FIPS.ST[match(ST_of_blockgroup, EJAM::stateinfo$ST)]
-      bg_filtered_by_state <- data.table::copy(EJAM::blockgroupstats[ST %in% ST_of_blockgroup, .(bgfips, bgid, ST, pop, area) ])
+    if (!is.null(ST_needed)) {
+      # stfips <- EJAM::stateinfo$FIPS.ST[match(ST_needed, EJAM::stateinfo$ST)]
+      bg_filtered_by_state <- data.table::copy(EJAM::blockgroupstats[ST %in% ST_needed, .(bgfips, bgid, ST, pop, area) ])
       rownum <- sample.int(bg_filtered_by_state[,.N], size = n, replace = FALSE)
       
       if (!dt) {
@@ -155,15 +158,15 @@ testpoints_n <- function(n=10, weighting=c('frs', 'pop', 'area', 'bg', 'block'),
   
   # RANDOM US RESIDENTS
   if (weighting == 'pop') {
-    if (!is.null(ST_of_blockgroup)) {  # limited by State
-      staterownums <- which(state_from_blockid(blockpoints$blockid) %in% ST_of_blockgroup  )
+    if (!is.null(ST_needed)) {  # limited by State
+      staterownums <- which(state_from_blockid(blockpoints$blockid) %in% ST_needed  )
       
       rownum <- sample.int(length(staterownums), size = n, replace = FALSE, prob = blockwts$blockwt[staterownums])
       if (!dt) {x = data.table::copy(blockpoints[staterownums,][rownum,]); setDF(x); x$siteid <- seq_len(nrow(x)); return(x)}
       x <- blockpoints[blockwts[staterownums,][rownum,] , ,on = "blockid"]
       x$siteid <- seq_len(nrow(x))
       return(x)
-      # warning("Ignoring ST_of_blockgroup ! ")
+      # warning("Ignoring ST_needed ! ")
     }
     rownum <- sample.int( blockwts[,.N], size = n, replace = FALSE, prob = blockwts$blockwt)
     if (!dt) {x = data.table::copy(blockpoints[blockwts[rownum,], on = "blockid"]); setDF(x); x$siteid <- seq_len(nrow(x)); return(x)}

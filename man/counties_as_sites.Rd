@@ -2,7 +2,7 @@
 % Please edit documentation in R/fips_x_from_y.R
 \name{counties_as_sites}
 \alias{counties_as_sites}
-\title{counties_as_sites}
+\title{counties_as_sites - Analyze US Counties as if they were sites, to get EJ indicators summary for each county}
 \usage{
 counties_as_sites(fips)
 }
@@ -14,14 +14,14 @@ data.table with one row per blockgroup in these counties, or
 all pairs of county fips - bgid, and a unique siteid assigned to each county
 }
 \description{
-counties_as_sites
+counties_as_sites - Analyze US Counties as if they were sites, to get EJ indicators summary for each county
 }
 \details{
 This function provides one row per blockgroup.
 \code{\link[=getblocksnearby_from_fips]{getblocksnearby_from_fips()}} provides one row per block.
 }
 \examples{
- bg_from_county(c('01001','72153'))
+ counties_as_sites(c('01001','72153'))
  # Largest US Counties by ACS Population Totals:
  blockgroupstats[ , .(ST = ST[1], countypop = sum(pop)),
   by=.(FIPS = substr(bgfips,1,5))][order(-countypop),][1:20, .(

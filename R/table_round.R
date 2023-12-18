@@ -1,6 +1,5 @@
 ############################################################################# #
 
-
 #' table_round - round numbers in a table, each column to appropriate number of decimal places
 #'
 #' @param x data.frame, data.table, or vector with at least some numerical columns, like the results
@@ -15,14 +14,19 @@
 #'
 #' @examples  
 #'   table_round(c(12.123456, 9, NA ), 'pm')
-#'   
-#'   table_round(data.frame())
-#'   
-#'   t( table_round(testoutput_ejamit_10pts_1miles$results_bysite[1:2, c(
-#'    'lat','lon', 'pop', names_these, names_ratio_to_avg_these, names_e_pctile)]) )
+#' 
+#'  x <- testoutput_ejamit_10pts_1miles$results_bysite[
+#'    1:2, c('lat','lon', 'pop', names_these, names_ratio_to_avg_these, names_e_pctile), 
+#'    with = FALSE
+#'  ]
+#' 
+#'  table_rounding_info(names(x))
+#' 
+#'  table_round(x)
 #'   
 table_round <- function(x, var = names(x), varnametype="rname", ...) {
-  
+  warning("Percentages stored as 0 to 1 rather than 0 to 100 will not be shown correctly unless adjusted, 
+          because rounding info says 0 digits when the intent is to show 0 digits after the 0-100 percent number.")
   # treat a vector differently than a matrix/data.frame/data.table
   # even if those nonvectors are just 1 row (multiple indicators) like results_overall,
   # or just 1 column (single indicator) of a table (e.g., subset of df where drop=F)
@@ -31,7 +35,8 @@ table_round <- function(x, var = names(x), varnametype="rname", ...) {
   
   dig <- table_rounding_info(var = var, varnametype = varnametype)
   roundable <- var_is_numeric_ish(x, ...) 
-  
+  roundable[is.na(dig)] <- FALSE # if NA was returned as the number of digits to round to, dont try to round that one
+    
   if (is.vector(x)) {
     #  names were provided using var parameter
     x[roundable] <- round(
@@ -44,7 +49,7 @@ table_round <- function(x, var = names(x), varnametype="rname", ...) {
     if (data.table::is.data.table(x)) {data.table::setDF(x); wasdt <- TRUE} else {wasdt <- FALSE}
     
     for (i in 1:sum(roundable)) {
-      x[ , roundable[i]] <- round(x[ , roundable[i]], dig[roundable][i])
+      x[ , roundable][ , i] <- round(x[ , roundable][ , i], dig[roundable][i])
     }
     if (wasdt) {data.table::setDT(x)}
     return(x)

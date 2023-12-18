@@ -32,6 +32,8 @@ if (any(colnames(quaddata) != expected_columns_quad)) {
 
 #Used to link frs with lat/lons for processing
 
+if (!exists("frs")) warning("NOT SURE WE WANT TO ALWAYS LOAD frs DATASET HERE JUST FOR THIS") # dataload_from_pins("frs")
+
 expected_columns_frs <- c("lat","lon","REGISTRY_ID","PRIMARY_NAME","NAICS","PGM_SYS_ACRNMS")
 
 if (any(colnames(frs) != expected_columns_frs)) {

@@ -49,7 +49,7 @@
 </tr>
       <tr>
 <th>Built:</th>
-<td class="description-date">2023-11-02 04:21:04 UTC</td>
+<td class="description-date">2023-12-16 05:58:18 UTC</td>
 </tr>
       <tr>
 <th>Source:</th>
@@ -61,16 +61,17 @@
     <ul id="help-index-list">
 <li class="help-index-item"><a href="#dot-onAttach">.onAttach - Do slow initialization steps - Download data, load key data into RAM, create index to all US blocks
 Note this duplicates some code in global.R, and see source code here to adjust settings.</a></li>
-<li class="help-index-item"><a href="#all_equal_functions">helper function for checking possibly different versions of a function with same name in 2 packages</a></li>
+<li class="help-index-item"><a href="#all_equal_functions">all_equal_functions - UTILITY - check different versions of function with same name in 2 packages
+used by dupenames() to check different versions of function with same name in 2 packages</a></li>
 <li class="help-index-item"><a href="#app_run_EJAM">app_run_EJAM - identical to run_app(), just an alias</a></li>
 <li class="help-index-item"><a href="#app_server">app_server - EJAM app server</a></li>
 <li class="help-index-item"><a href="#avg.in.us">avg.in.us (DATA) national averages of key indicators, for convenience</a></li>
 <li class="help-index-item"><a href="#bg_cenpop2020">bg_cenpop2020 (DATA) data.table with all US Census 2020 block groups, Census 2020 population count,
 and lat/lon of Census2020-population-weighted centroid of block group</a></li>
-<li class="help-index-item"><a href="#bg_from_county">bg_from_county - Analyze US Counties as if they were sites, to get EJ indicators summary for each county</a></li>
 <li class="help-index-item"><a href="#bgej">bgej (DATA) EJScreen EJ Indexes for Census block groups</a></li>
 <li class="help-index-item"><a href="#bgpts">bgpts (DATA) lat lon of popwtd center of blockgroup, and count of blocks per block group</a></li>
 <li class="help-index-item"><a href="#blockgroupstats">blockgroupstats (DATA) EJScreen demographic and environmental indicators for Census block groups</a></li>
+<li class="help-index-item"><a href="#censusplaces">censusplaces (DATA) Census FIPS and other basic info on 41,414 cities/towns/places</a></li>
 <li class="help-index-item"><a href="#colcounter">colcounter - Count columns with Value (at or) above (or below) threshold</a></li>
 <li class="help-index-item"><a href="#colcounter_summary">colcounter_summary - Summarize how many rows have N columns at or above (or below) various thresholds?
 Like colcounter or cols.above.count
@@ -78,22 +79,20 @@ but will handle multiple thresholds to compare to each indicator, etc.
 Table of counts, percents, cumulative counts, cumulative percents
 of places with N, or at least N, of the indicators
 at or above the benchmark(s)</a></li>
-<li class="help-index-item"><a href="#colcounter_summary_all">colcounter_summary_all - Summarize count (and percent) of rows with exactly (and at least) N cols &gt;= various thresholds
-A wrapper for 4 functions: Returns four tables,
-using colcounter_summary(), colcounter_summary_pct(),
-colcounter_summary_cum(), colcounter_summary_cum_pct()</a></li>
+<li class="help-index-item"><a href="#colcounter_summary_all">colcounter_summary_all - Summarize count (and percent) of rows with exactly (and at least) N cols &gt;= various thresholds</a></li>
 <li class="help-index-item"><a href="#colcounter_summary_cum">colcounter_summary_cum - Summarize how many rows have AT LEAST N columns at or above (or below) various thresholds
 See colcounter_summary() for more info and examples.</a></li>
-<li class="help-index-item"><a href="#colcounter_summary_cum_pct">Summarize what percent of rows have AT LEAST N columns at or above (or below) various thresholds</a></li>
+<li class="help-index-item"><a href="#colcounter_summary_cum_pct">colcounter_summary_cum_pct - Summarize what percent of rows have AT LEAST N columns at or above (or below) various thresholds</a></li>
 <li class="help-index-item"><a href="#colcounter_summary_pct">colcounter_summary_pct - Summarize what percent of rows have N columns at or above (or below) various thresholds</a></li>
 <li class="help-index-item"><a href="#count_sites_with_n_high_scores">count_sites_with_n_high_scores</a></li>
-<li class="help-index-item"><a href="#counties_as_sites">counties_as_sites</a></li>
+<li class="help-index-item"><a href="#counties_as_sites">counties_as_sites - Analyze US Counties as if they were sites, to get EJ indicators summary for each county</a></li>
 <li class="help-index-item"><a href="#dataload_from_aws">dataload_from_aws - utility to load datasets from AWS DMAP Data Commons, into memory</a></li>
 <li class="help-index-item"><a href="#dataload_from_entirefolder">dataload_from_entirefolder
 loads into global environment all .rda files found in specified folder</a></li>
 <li class="help-index-item"><a href="#dataload_from_local">dataload_from_local
 utility for R analysts/developers to store large block data locally instead of redownloading from AWS</a></li>
 <li class="help-index-item"><a href="#dataload_from_package">dataload_from_package - utility to load a couple of datasets using data immediately instead of relying on lazy loading</a></li>
+<li class="help-index-item"><a href="#dataload_from_pins">dataload_from_pins - download / load datasets from pin board</a></li>
 <li class="help-index-item"><a href="#datapack">datapack - See info about the data sets in one or more packages - internal utility function
 Wrapper for data() and gets memory size of objects and silently returns a data.frame</a></li>
 <li class="help-index-item"><a href="#datawrite_to_aws">datawrite_to_aws -  NOT YET WORKING - AccessDenied
@@ -113,21 +112,22 @@ Same as plot_distance_mean_by_group() but no plot by default</a></li>
 <li class="help-index-item"><a href="#distance_via_surfacedistance">distance_via_surfacedistance
 Convert surface distance to actual distance</a></li>
 <li class="help-index-item"><a href="#doaggregate">doaggregate - Summarize indicators in each buffer (given the blocks in each buffer and indicators for each block)</a></li>
-<li class="help-index-item"><a href="#dupenames">helper function to look at several packages to spot conflicting exported names
-See what objects (functions or data) are exported by a given (installed) package</a></li>
-<li class="help-index-item"><a href="#dupeRfiles">dupeRfiles
-utility for developer to find similarly named .R files in 2 separate folders of source code,
-whether or not they are packages.</a></li>
+<li class="help-index-item"><a href="#dupenames">dupenames - UTILITY - check conflicting exported function or data names</a></li>
+<li class="help-index-item"><a href="#dupeRfiles">dupeRfiles - UTILITY - check conflicting sourcefile names</a></li>
 <li class="help-index-item"><a href="#ejam2excel">ejam2excel - alias for table_xls_from_ejam()</a></li>
 <li class="help-index-item"><a href="#ejamit">ejamit - Get complete EJ analysis (demographic and environmental indicators) near a list of locations</a></li>
 <li class="help-index-item"><a href="#ejampackages">ejampackages (DATA) list of names of key EJAM-related R packages</a></li>
 <li class="help-index-item"><a href="#ejscreenit_for_ejam">ejscreenit_for_ejam - DRAFT
 Wrapper for ejscreenit() from EJAMejscreenapi package, to use in EJAM app - NOT USED CURRENTLY</a></li>
-<li class="help-index-item"><a href="#fips_bgs_from_countyfips">fips_bgs_from_countyfips</a></li>
-<li class="help-index-item"><a href="#fips_counties_from_state_abbrev">fips_counties_from_state_abbrev</a></li>
-<li class="help-index-item"><a href="#fips_counties_from_statefips">fips_counties_from_statefips
-Very similar to list_counties(state) from the tigris package.</a></li>
-<li class="help-index-item"><a href="#fips_counties_from_statename">fips_counties_from_statename</a></li>
+<li class="help-index-item"><a href="#fips_bg_from_anyfips">fips_bg_from_anyfips - Get unique blockgroup fips in or containing specified fips of any type
+Convert any FIPS codes to the FIPS of all the blockgroups that are
+among or within or containing those FIPS</a></li>
+<li class="help-index-item"><a href="#fips_counties_from_state_abbrev">fips_counties_from_state_abbrev - Get ALL county fips in specified states
+Get all county fips in specified states</a></li>
+<li class="help-index-item"><a href="#fips_counties_from_statefips">fips_counties_from_statefips - Get ALL county fips in specified states
+Get all county fips in specified states</a></li>
+<li class="help-index-item"><a href="#fips_counties_from_statename">fips_counties_from_statename - Get ALL county fips in specified states
+Get all county fips in specified states</a></li>
 <li class="help-index-item"><a href="#fips_from_table">fips_from_table - read and clean FIPS column from a table, after inferring which col it is
 Just read the codes in one column of a table obtained from something like read.csv, or excel, etc.</a></li>
 <li class="help-index-item"><a href="#fips_lead_zero">fips_lead_zero
@@ -135,18 +135,25 @@ Add leading zeroes to fips codes if missing, replace with NA if length invalid
 Note it does NOT VALIDATE FIPS -
 It does NOT check if FIPS is valid other than checking its length seems OK,
 i.e., it might be a state, county, tract, blockgroup, or block FIPS code.</a></li>
-<li class="help-index-item"><a href="#fips_state_from_state_abbrev">fips_state_from_state_abbrev</a></li>
-<li class="help-index-item"><a href="#fips_state_from_statename">fips_state_from_statename</a></li>
-<li class="help-index-item"><a href="#fips2countyname">fips2countyname  -  Get full name of each county based on its Census FIPS code</a></li>
-<li class="help-index-item"><a href="#fips2name">fips2name</a></li>
-<li class="help-index-item"><a href="#fips2state_abbrev">fips2state_abbrev - convert Census FIPS to 2-character state abbreviation</a></li>
-<li class="help-index-item"><a href="#fips2state_fips">fips2state_fips  -  get state FIPS codes from any other FIPS codes like County FIPS
-Tells you which State contains each County (or tract or blockgroup or block)</a></li>
-<li class="help-index-item"><a href="#fips2statename">fips2statename  -  get state names from Census FIPS codes</a></li>
-<li class="help-index-item"><a href="#fipsbg_from_anyfips">fipsbg_from_anyfips
-convert any FIPS codes to the FIPS of all the blockgroups that are
-among or within or containing those FIPS</a></li>
+<li class="help-index-item"><a href="#fips_st2eparegion">fips_st2eparegion - Get EPA Region number from state FIPS code
+Get EPA Region number from state FIPS code</a></li>
+<li class="help-index-item"><a href="#fips_state_from_state_abbrev">fips_state_from_state_abbrev - Get state fips for each state abbrev
+Get state fips of each state abbrev</a></li>
+<li class="help-index-item"><a href="#fips_state_from_statename">fips_state_from_statename - Get state fips for each state name
+Get state fips for each state name</a></li>
+<li class="help-index-item"><a href="#fips2countyname">fips2countyname - Get county names from county FIPS codes
+Get county names from county FIPS codes</a></li>
+<li class="help-index-item"><a href="#fips2name">fips2name - Get county or state names from county or state FIPS codes
+Get county or state names from county or state FIPS codes</a></li>
+<li class="help-index-item"><a href="#fips2state_abbrev">fips2state_abbrev - Get state abbreviations from any type of FIPS codes
+Get state abbreviations from any type of FIPS codes</a></li>
+<li class="help-index-item"><a href="#fips2state_fips">fips2state_fips - Get state FIPS codes from any type of FIPS codes
+Get state FIPS codes from any type of FIPS codes</a></li>
+<li class="help-index-item"><a href="#fips2statename">fips2statename - Get state names from any type of FIPS codes
+Get state names from any type of FIPS codes</a></li>
 <li class="help-index-item"><a href="#fipstype">fipstype  -  identify what type of Census geography is each FIPS code (block, county, etc.)</a></li>
+<li class="help-index-item"><a href="#fixcolnames2related">fixcolnames2related - get name of related avg, pctile, or ratio variable name
+Given names_d, e.g., returns names_d_ratio_to_state_avg</a></li>
 <li class="help-index-item"><a href="#fixmapheadernamescolname">fixmapheadernamescolname - utility to convert aliases to proper colnames of map_headernames</a></li>
 <li class="help-index-item"><a href="#frs">frs (DATA) EPA Facility Registry Service table of regulated sites</a></li>
 <li class="help-index-item"><a href="#frs_by_mact">frs_by_mact (DATA) MACT NESHAP subpart(s) that each EPA-regulated site is subject to</a></li>
@@ -154,8 +161,6 @@ among or within or containing those FIPS</a></li>
 <li class="help-index-item"><a href="#frs_by_programid">frs_by_programid (DATA) data.table of Program System ID code(s) for each EPA-regulated site in
 the Facility Registry Service</a></li>
 <li class="help-index-item"><a href="#frs_by_sic">frs_by_sic (DATA) data.table of SIC code(s) for each EPA-regulated site in Facility Registry Service</a></li>
-<li class="help-index-item"><a href="#frs_clean">frs_clean - utility to clean Facility Registry Service dataset when updating it
-This is just a helper function used to create the dataset saved as data for use in EJAM</a></li>
 <li class="help-index-item"><a href="#frs_from_naics">frs_from_naics - Use NAICS code or industry title text search to see FRS Facility Registry Service data on those EPA-regulated sites</a></li>
 <li class="help-index-item"><a href="#frs_from_program">frs_from_program - Use EPA Program acronym like TRIS to see FRS Facility Registry Service data on those EPA-regulated sites</a></li>
 <li class="help-index-item"><a href="#frs_from_programid">frs_from_programid - Use EPA Program ID to see FRS Facility Registry Service data on those EPA-regulated sites</a></li>
@@ -167,9 +172,6 @@ VERY SLOW search within PRIMARY_NAME of facilities for matching text</a></li>
 <li class="help-index-item"><a href="#frs_is_valid">frs_is_valid - Validate FRS Registry ID list uploads</a></li>
 <li class="help-index-item"><a href="#frsprogramcodes">frsprogramcodes DATA EPA programs listed in Facility Registry Service</a></li>
 <li class="help-index-item"><a href="#get_blockpoints_in_shape">get_blockpoints_in_shape - find blocks that are in a polygon, using internal point of block - WORK IN PROGRESS ****</a></li>
-<li class="help-index-item"><a href="#get_shape_buffered_from_shapefile_points">get_shape_buffered_from_shapefile_points - add buffer around shape (points, here)</a></li>
-<li class="help-index-item"><a href="#get_shapefile_from_sitepoints">get_shapefile_from_sitepoints - convert table of lat,lon points/sites into sf:: shapefile
-Creates a simple feature (sf) dataframe from points</a></li>
 <li class="help-index-item"><a href="#getblocks_diagnostics">getblocks_diagnostics - Lots of stats about # of blocks, # of sites, etc.</a></li>
 <li class="help-index-item"><a href="#getblocks_summarize_blocks_per_site">getblocks_summarize_blocks_per_site - how many blocks are near the sites (pop density affects accuracy)</a></li>
 <li class="help-index-item"><a href="#getblocks_summarize_sites_per_block">getblocks_summarize_sites_per_block - how many sites are near the blocks (site density near residents)</a></li>
@@ -205,9 +207,7 @@ Find all EPA Facility Registry Service (FRS) sites with this exact NAICS code (n
 Find all FRS sites in a program like RCRAINFO, TRIS, or others</a></li>
 <li class="help-index-item"><a href="#latlon_from_programid">latlon_from_programid - Get lat lon, Registry ID, and NAICS, for given FRS Program System ID</a></li>
 <li class="help-index-item"><a href="#latlon_from_regid">latlon_from_siteid - Get lat lon (and NAICS) via Facility Registry ID</a></li>
-<li class="help-index-item"><a href="#latlon_from_sic">latlon_from_sic - Find EPA-regulated facilities in FRS by SIC code (industrial category)
-Get lat lon, Registry ID, given SIC industry code(s)
-Find all EPA Facility Registry Service (FRS) sites with this exact SIC code (not subcategories)</a></li>
+<li class="help-index-item"><a href="#latlon_from_sic">latlon_from_sic - Find EPA-regulated facilities in FRS by SIC code (industrial category)</a></li>
 <li class="help-index-item"><a href="#latlon_from_siteid">latlon_from_siteid - Get lat lon (and NAICS) via Facility Registry ID</a></li>
 <li class="help-index-item"><a href="#latlon_infer">latlon_infer - guess which columns have lat and lon based on aliases like latitude, FacLat, etc.</a></li>
 <li class="help-index-item"><a href="#latlon_is.available">latlon_is.available
@@ -222,10 +222,18 @@ Check lat lon coordinates to see if each is approx. in general area of USA exclu
 <li class="help-index-item"><a href="#latlon_is.valid">latlon_is.valid - Validate latitudes and longitudes</a></li>
 <li class="help-index-item"><a href="#latlon_join_on_blockid">latlon_join_on_blockid - get lat,lon of each block internal point via blockid
 get expanded version of sites2blocks data.table, with new lat,lon columns</a></li>
+<li class="help-index-item"><a href="#linesofcode2">linesofcode2 - UTILITY - count lines of source code per .R file (not per function) - NOT TESTED</a></li>
 <li class="help-index-item"><a href="#lookup_pctile">lookup_pctile - Find approx percentiles in lookup table that is in memory</a></li>
 <li class="help-index-item"><a href="#mact_table">mact_table (DATA) MACT NESHAP subparts (the code and the description)</a></li>
+<li class="help-index-item"><a href="#map_blockgroups_over_blocks">map_blockgroups_over_blocks - Overlay blockgroups near 1 site, after plotblocksnearby()
+Overlay blockgroups near 1 site, after plotblocksnearby()</a></li>
 <li class="help-index-item"><a href="#map_facilities">map_facilities</a></li>
 <li class="help-index-item"><a href="#map_facilities_proxy">map_facilities_proxy</a></li>
+<li class="help-index-item"><a href="#map_shapes_leaflet">map_shapes_leaflet</a></li>
+<li class="help-index-item"><a href="#map_shapes_mapview">map_shapes_mapview</a></li>
+<li class="help-index-item"><a href="#map_shapes_plot">map_shapes_plot</a></li>
+<li class="help-index-item"><a href="#mapfast_gg">mapfast_gg - A very simple ggplot2 map of points in the USA</a></li>
+<li class="help-index-item"><a href="#mapfastej_counties">mapfastej_counties - Static or HTML/leaflet map of counties</a></li>
 <li class="help-index-item"><a href="#metadata_add">helper function for package to set attributes of a dataset</a></li>
 <li class="help-index-item"><a href="#metadata_check">helper function in updating the package metadata</a></li>
 <li class="help-index-item"><a href="#NAICS">NAICS (DATA) named list of all NAICS code numbers and industry name for each</a></li>
@@ -247,7 +255,7 @@ See naics_from_any() which uses this</a></li>
 Given 3-digit NAICS code, for example, get all NAICS that start with those digits.</a></li>
 <li class="help-index-item"><a href="#naics_url_of_code">naics_url_of_code - Get URL for page with info about industry sector(s) by NAICS
 See (https://naics.com) for more information on NAICS codes</a></li>
-<li class="help-index-item"><a href="#naics_validation">naics_validation - Validate NAIC uploads</a></li>
+<li class="help-index-item"><a href="#naics_validation">naics_validation - Validate NAICS uploads</a></li>
 <li class="help-index-item"><a href="#naics2children">naics2children - See NAICS codes queried plus all children of any of those
 Used by naics_find()</a></li>
 <li class="help-index-item"><a href="#naicstable">naicstable (DATA) data.table of NAICS code(s) and industry names for each EPA-regulated site in Facility Registry Service
@@ -266,6 +274,7 @@ See which key lists of names the given indicator names are in</a></li>
 <li class="help-index-item"><a href="#plot_barplot_ratios">plot_barplot_ratios
 Make barplot of ratios of demographic score to its average</a></li>
 <li class="help-index-item"><a href="#plot_demogshare_by_distance">plot_demogshare_by_distance - work in progress</a></li>
+<li class="help-index-item"><a href="#plot_distance_by_pctd">plot_distance_by_pctd  -  Plot percent demographics within X miles of a site</a></li>
 <li class="help-index-item"><a href="#plot_distance_cdf_by_group">plot_distance_cdf_by_group  - SLOW - needs to be optimized
 CDF Line Plots of cumulative share of each demographic group, within each distance
 Each groups distribution of distances</a></li>
@@ -291,14 +300,23 @@ Indicator of proximity of each blockgroups to some set of facilities or sites.</
 if we only have the outputs of getblocksnearby()</a></li>
 <li class="help-index-item"><a href="#regionstats">regionstats (DATA) (obsolete) data.table of 100 percentiles and means for each EPA Region.</a></li>
 <li class="help-index-item"><a href="#rmost">rmost - utility to rm(list=ls()) but not remove key datasets EJAM uses</a></li>
-<li class="help-index-item"><a href="#rrtable">rrtable
-Calculate risk ratios of avg E in group D / in everyone not in group D</a></li>
 <li class="help-index-item"><a href="#run_app">run_app - Launch the Shiny Application in RStudio</a></li>
-<li class="help-index-item"><a href="#setdiff_yx">setdiff_yx
+<li class="help-index-item"><a href="#setdiff_yx">setdiff_yx - UTILITY - see what is in y not x
 utility just like setdiff except for y,x instead of x,y</a></li>
-<li class="help-index-item"><a href="#setdiff2">setdiff2 aka unshared
+<li class="help-index-item"><a href="#setdiff2">setdiff2 aka unshared - UTILITY - see what is only in x or y but not both
 utility just like setdiff except for y,x and also x,y
 Just shows which elements are in one and only one of the sets x and y</a></li>
+<li class="help-index-item"><a href="#shape_buffered_from_shapefile">shape_buffered_from_shapefile - add buffer around shape</a></li>
+<li class="help-index-item"><a href="#shape_buffered_from_shapefile_points">shape_buffered_from_shapefile_points - add buffer around shape (points, here)</a></li>
+<li class="help-index-item"><a href="#shapefile_clean">shapefile_clean  -  drop invalid rows and warn if all invalid</a></li>
+<li class="help-index-item"><a href="#shapefile_filepaths_from_folder">shapefile_filepaths_from_folder  -  get list of valid filenames comprising shapefile including paths</a></li>
+<li class="help-index-item"><a href="#shapefile_filepaths_valid">shapefile_filepaths_valid  -  confirm files have all the extensions .shp, .shx, .dbf, and .prj</a></li>
+<li class="help-index-item"><a href="#shapefile_from_filepaths">shapefile_from_filepaths  -  Read shapefile from disk based on the filenames given</a></li>
+<li class="help-index-item"><a href="#shapefile_from_folder">shapefile_from_folder  -  read shapefile from a folder</a></li>
+<li class="help-index-item"><a href="#shapefile_from_sitepoints">shapefile_from_sitepoints - convert table of lat,lon points/sites into sf:: shapefile
+Creates a simple feature (sf) dataframe from points</a></li>
+<li class="help-index-item"><a href="#shapes_blockgroups_from_bgfips">use API to get boundaries of blockgroups</a></li>
+<li class="help-index-item"><a href="#shapes_counties_from_countyfips">use API to get boundaries of US Counties to map them</a></li>
 <li class="help-index-item"><a href="#SIC">SIC (DATA) named list of all SIC code numbers and category name for each</a></li>
 <li class="help-index-item"><a href="#sic_categories">sic_categories - See the names of SIC industrial categories and their codes
 Easy way to view, in RStudio console, the SIC categories.
@@ -315,9 +333,7 @@ Also has the 2,3, and 4-digit SIC that this code falls under, where relevant for
 <li class="help-index-item"><a href="#siteid_from_naics">latlon_from_naics - Find EPA-regulated facilities in FRS by NAICS code (industrial category)
 Get lat lon, Registry ID, given NAICS industry code(s)
 Find all EPA Facility Registry Service (FRS) sites with this exact NAICS code (not subcategories)</a></li>
-<li class="help-index-item"><a href="#siteid_from_sic">latlon_from_sic - Find EPA-regulated facilities in FRS by SIC code (industrial category)
-Get lat lon, Registry ID, given SIC industry code(s)
-Find all EPA Facility Registry Service (FRS) sites with this exact SIC code (not subcategories)</a></li>
+<li class="help-index-item"><a href="#siteid_from_sic">latlon_from_sic - Find EPA-regulated facilities in FRS by SIC code (industrial category)</a></li>
 <li class="help-index-item"><a href="#sites2blocks_example1000pts_1miles">test output of getblocksnearby(), and is an input to doaggregate()</a></li>
 <li class="help-index-item"><a href="#sites2blocks_example100pts_1miles">test output of getblocksnearby(), and is an input to doaggregate()</a></li>
 <li class="help-index-item"><a href="#sites2blocks_example10pts_1miles">test output of getblocksnearby(), and is an input to doaggregate()</a></li>
@@ -335,13 +351,13 @@ utility to plot output of speedtest(), rate of points analyzed per hour</a></li>
 given vector of blockids, get state abbreviation of each</a></li>
 <li class="help-index-item"><a href="#state_from_blocktable">state_from_blocktable - was used only in some special cases of using testpoints_n()
 given data.table with blockid column, get state abbreviation of each - not used?</a></li>
-<li class="help-index-item"><a href="#state_from_fips">state_from_fips
-Get the State abbreviations of all blockgroups within the input FIPS</a></li>
+<li class="help-index-item"><a href="#state_from_fips">state_from_fips - Get FIPS of ALL BLOCKGROUPS in the States or Counties
+Get the State abbreviations of ALL blockgroups within the input FIPS</a></li>
 <li class="help-index-item"><a href="#state_from_latlon">state_from_latlon - find what state is where each point is located
 Takes 3 seconds to find state for 1k points, so a faster alternative would be useful</a></li>
 <li class="help-index-item"><a href="#stateinfo">stateinfo (DATA) data.frame of state abbreviations and state names (50+DC+PR; not AS, GU, MP, VI, UM)</a></li>
 <li class="help-index-item"><a href="#stateinfo2">stateinfo2 (DATA) data.frame of state abbreviations and state names (50+DC+PR; not AS, GU, MP, VI, UM)</a></li>
-<li class="help-index-item"><a href="#states_infer">states_infer
+<li class="help-index-item"><a href="#states_infer">states_infer - Get table of info on States (from latlon or FIPS)
 Get cleaned table of US State etc. by siteid, from lat/lon, or from FIPS</a></li>
 <li class="help-index-item"><a href="#states_shapefile">states_shapefile (DATA) US States boundaries 2020 shapefile from TIGER</a></li>
 <li class="help-index-item"><a href="#statestats">statestats (DATA) data.frame of 100 percentiles and means for each US State and PR and DC.</a></li>
@@ -395,7 +411,7 @@ The weighting can be specified so that each point reflects the average EPA-regul
 facility, blockgroup, block, place on the map, or US resident.</a></li>
 <li class="help-index-item"><a href="#trilaterate_sites2blocks">trilaterate_sites2blocks - Estimate lat,lon of each siteid, from outputs of getblocksnearby()
 get data.table with siteid, lat,lon of each site (eg for when you did not save sitepoints info)</a></li>
-<li class="help-index-item"><a href="#unshared">setdiff2 aka unshared
+<li class="help-index-item"><a href="#unshared">unshared aka setdiff2 - UTILITY - see what is only in x or y but not both
 utility just like setdiff except for y,x and also x,y
 Just shows which elements are in one and only one of the sets x and y</a></li>
 <li class="help-index-item"><a href="#url_4table">url_4table - Create URLs in columns</a></li>
@@ -403,6 +419,7 @@ Just shows which elements are in one and only one of the sets x and y</a></li>
 save bookmarked EJScreen session (map location and indicator)</a></li>
 <li class="help-index-item"><a href="#url_bookmark_text">url_bookmark_text
 URL for 1 bookmarked EJScreen session (map location and indicator)</a></li>
+<li class="help-index-item"><a href="#url_countyhealthrankings">url_countyhealthrankings</a></li>
 <li class="help-index-item"><a href="#url_get_eparest_chunked_by_id">url_get_eparest_chunked_by_id - experimental/ work in progress: in chunks, get ACS data or Block weights nearby via EPA API</a></li>
 <li class="help-index-item"><a href="#url_get_via_url">url_get_via_url - helper function work in progress: GET json via url of ejscreen ejquery map services</a></li>
 <li class="help-index-item"><a href="#url_getacs_epaquery">url_getacs_epaquery - experimental/ work in progress: get ACS data via EPA API (for &lt;200 places)</a></li>
@@ -471,11 +488,13 @@ In what order? see app.R too ***
 </div>
 <div class="container manual-page" id="all_equal_functions">
 
-<a href="#all_equal_functions" class="help-page-title"><h2>helper function for checking possibly different versions of a function with same name in 2 packages</h2></a>
+<a href="#all_equal_functions" class="help-page-title"><h2>all_equal_functions - UTILITY - check different versions of function with same name in 2 packages
+used by dupenames() to check different versions of function with same name in 2 packages</h2></a>
 
 <h3>Description</h3>
 
-<p>helper function for checking possibly different versions of a function with same name in 2 packages
+<p>all_equal_functions - UTILITY - check different versions of function with same name in 2 packages
+used by dupenames() to check different versions of function with same name in 2 packages
 </p>
 
 
@@ -604,45 +623,6 @@ and lat/lon of Census2020-population-weighted centroid of block group
 
 <p><a href="#blockgroupstats">blockgroupstats</a>
 </p>
-
-<hr>
-</div>
-<div class="container manual-page" id="bg_from_county">
-
-<a href="#bg_from_county" class="help-page-title"><h2>bg_from_county - Analyze US Counties as if they were sites, to get EJ indicators summary for each county</h2></a>
-
-<h3>Description</h3>
-
-<p>bg_from_county - Analyze US Counties as if they were sites, to get EJ indicators summary for each county
-</p>
-
-
-<h3>Usage</h3>
-
-<pre class="language-r"><code class="language-r">bg_from_county<span class="token punctuation">(</span>fips<span class="token punctuation">)</span></code></pre>
-
-
-<h3>Arguments</h3>
-
-<table><tr style="vertical-align: top;">
-<td><code>fips</code></td>
-<td>
-<p>County FIPS vector (ideally as character not numeric values)</p>
-</td>
-</tr></table>
-<h3>Value</h3>
-
-<p>data.table with all pairs of county fips - bgid, and a unique siteid assigned to each county
-</p>
-
-
-<h3>Examples</h3>
-
-<pre class="language-r"><code class="language-r">bg_from_county<span class="token punctuation">(</span>c<span class="token punctuation">(</span><span class="token string">'01001'</span><span class="token punctuation">,</span><span class="token string">'72153'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
- <span class="token comment"># Largest US Counties by ACS Population Totals:</span>
- blockgroupstats<span class="token punctuation">[</span> <span class="token punctuation">,</span> .<span class="token punctuation">(</span>ST <span class="token operator">=</span> ST<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> countypop <span class="token operator">=</span> sum<span class="token punctuation">(</span>pop<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  by<span class="token operator">=</span>.<span class="token punctuation">(</span>FIPS <span class="token operator">=</span> substr<span class="token punctuation">(</span>bgfips<span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">[</span>order<span class="token punctuation">(</span><span class="token operator">-</span>countypop<span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token operator">:</span><span class="token number">20</span><span class="token punctuation">,</span> .<span class="token punctuation">(</span>
-  CountyPopulation <span class="token operator">=</span> prettyNum<span class="token punctuation">(</span>countypop<span class="token punctuation">,</span> big.mark <span class="token operator">=</span> <span class="token string">","</span><span class="token punctuation">)</span><span class="token punctuation">,</span> FIPS<span class="token punctuation">,</span> ST<span class="token punctuation">)</span><span class="token punctuation">]</span></code></pre>
 
 <hr>
 </div>
@@ -782,6 +762,24 @@ With PR, and Island Areas
 <p>See <a href="https://www.epa.gov/ejscreen" target="_blank">https://www.epa.gov/ejscreen</a>
 </p>
 <p>Column names include bgfips, bgid (for join to blockwt$bgid), pop, pctlowinc, etc.
+</p>
+
+<hr>
+</div>
+<div class="container manual-page" id="censusplaces">
+
+<a href="#censusplaces" class="help-page-title"><h2>censusplaces (DATA) Census FIPS and other basic info on 41,414 cities/towns/places</h2></a>
+
+<h3>Description</h3>
+
+<p>This is just a list of US cities and similar places defined by Census
+</p>
+
+
+<h3>Details</h3>
+
+<p>from (https://www2.census.gov/geo/docs/reference/codes/PLACElist.txt)
+Column names:  "EPA_REGION" "STATE" "ST_FIPS" "COUNTY" "CO_FIPS" "PLACE" "PL_FIPS"
 </p>
 
 <hr>
@@ -997,15 +995,11 @@ cbind<span class="token punctuation">(</span>at80<span class="token operator">=<
 </div>
 <div class="container manual-page" id="colcounter_summary_all">
 
-<a href="#colcounter_summary_all" class="help-page-title"><h2>colcounter_summary_all - Summarize count (and percent) of rows with exactly (and at least) N cols &gt;= various thresholds
-A wrapper for 4 functions: Returns four tables,
-using colcounter_summary(), colcounter_summary_pct(),
-colcounter_summary_cum(), colcounter_summary_cum_pct()</h2></a>
+<a href="#colcounter_summary_all" class="help-page-title"><h2>colcounter_summary_all - Summarize count (and percent) of rows with exactly (and at least) N cols &gt;= various thresholds</h2></a>
 
 <h3>Description</h3>
 
-<p>colcounter_summary_all - Summarize count (and percent) of rows with exactly (and at least) N cols &gt;= various thresholds
-A wrapper for 4 functions: Returns four tables,
+<p>Wraps 4 functions to return 4 tables:
 using colcounter_summary(), colcounter_summary_pct(),
 colcounter_summary_cum(), colcounter_summary_cum_pct()
 </p>
@@ -1178,11 +1172,11 @@ If TRUE, specify one threshold to use for each column.</p>
 </div>
 <div class="container manual-page" id="colcounter_summary_cum_pct">
 
-<a href="#colcounter_summary_cum_pct" class="help-page-title"><h2>Summarize what percent of rows have AT LEAST N columns at or above (or below) various thresholds</h2></a>
+<a href="#colcounter_summary_cum_pct" class="help-page-title"><h2>colcounter_summary_cum_pct - Summarize what percent of rows have AT LEAST N columns at or above (or below) various thresholds</h2></a>
 
 <h3>Description</h3>
 
-<p>Summarize what percent of rows have AT LEAST N columns at or above (or below) various thresholds
+<p>colcounter_summary_cum_pct - Summarize what percent of rows have AT LEAST N columns at or above (or below) various thresholds
 </p>
 
 
@@ -1319,11 +1313,11 @@ like or.tied=TRUE, na.rm=TRUE, below=FALSE, one.cut.per.col=FALSE</p>
 </div>
 <div class="container manual-page" id="counties_as_sites">
 
-<a href="#counties_as_sites" class="help-page-title"><h2>counties_as_sites</h2></a>
+<a href="#counties_as_sites" class="help-page-title"><h2>counties_as_sites - Analyze US Counties as if they were sites, to get EJ indicators summary for each county</h2></a>
 
 <h3>Description</h3>
 
-<p>counties_as_sites
+<p>counties_as_sites - Analyze US Counties as if they were sites, to get EJ indicators summary for each county
 </p>
 
 
@@ -1340,15 +1334,29 @@ like or.tied=TRUE, na.rm=TRUE, below=FALSE, one.cut.per.col=FALSE</p>
 <p>County FIPS vector (ideally as character not numeric values)</p>
 </td>
 </tr></table>
+<h3>Details</h3>
+
+<p>This function provides one row per blockgroup.
+<code><a href="#getblocksnearby_from_fips">getblocksnearby_from_fips()</a></code> provides one row per block.
+</p>
+
+
 <h3>Value</h3>
 
-<p>data.table with all pairs of county fips - bgid, and a unique siteid assigned to each county
+<p>data.table with one row per blockgroup in these counties, or
+all pairs of county fips - bgid, and a unique siteid assigned to each county
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="#getblocksnearby_from_fips">getblocksnearby_from_fips()</a></code>
 </p>
 
 
 <h3>Examples</h3>
 
-<pre class="language-r"><code class="language-r">bg_from_county<span class="token punctuation">(</span>c<span class="token punctuation">(</span><span class="token string">'01001'</span><span class="token punctuation">,</span><span class="token string">'72153'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<pre class="language-r"><code class="language-r">counties_as_sites<span class="token punctuation">(</span>c<span class="token punctuation">(</span><span class="token string">'01001'</span><span class="token punctuation">,</span><span class="token string">'72153'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
  <span class="token comment"># Largest US Counties by ACS Population Totals:</span>
  blockgroupstats<span class="token punctuation">[</span> <span class="token punctuation">,</span> .<span class="token punctuation">(</span>ST <span class="token operator">=</span> ST<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> countypop <span class="token operator">=</span> sum<span class="token punctuation">(</span>pop<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
   by<span class="token operator">=</span>.<span class="token punctuation">(</span>FIPS <span class="token operator">=</span> substr<span class="token punctuation">(</span>bgfips<span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">[</span>order<span class="token punctuation">(</span><span class="token operator">-</span>countypop<span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token operator">:</span><span class="token number">20</span><span class="token punctuation">,</span> .<span class="token punctuation">(</span>
@@ -1394,7 +1402,7 @@ like or.tied=TRUE, na.rm=TRUE, below=FALSE, one.cut.per.col=FALSE</p>
 <tr style="vertical-align: top;">
 <td><code>envir</code></td>
 <td>
-<p>default is parent.frame()</p>
+<p>e.g., globalenv() or parent.frame()</p>
 </td>
 </tr>
 <tr style="vertical-align: top;">
@@ -1547,7 +1555,8 @@ utility for R analysts/developers to store large block data locally instead of r
 <h3>Usage</h3>
 
 <pre class="language-r"><code class="language-r">dataload_from_local<span class="token punctuation">(</span>
-  varnames <span class="token operator">=</span> c<span class="token punctuation">(</span><span class="token string">"bgid2fips"</span><span class="token punctuation">,</span> <span class="token string">"blockid2fips"</span><span class="token punctuation">,</span> <span class="token string">"blockpoints"</span><span class="token punctuation">,</span> <span class="token string">"blockwts"</span><span class="token punctuation">,</span> <span class="token string">"quaddata"</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  varnames <span class="token operator">=</span> c<span class="token punctuation">(</span>c<span class="token punctuation">(</span><span class="token string">"blockwts"</span><span class="token punctuation">,</span> <span class="token string">"quaddata"</span><span class="token punctuation">,</span> <span class="token string">"blockpoints"</span><span class="token punctuation">,</span> <span class="token string">"blockid2fips"</span><span class="token punctuation">,</span> <span class="token string">"bgid2fips"</span><span class="token punctuation">,</span>
+    <span class="token string">"bgej"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> c<span class="token punctuation">(</span><span class="token string">"frs"</span><span class="token punctuation">,</span> <span class="token string">"frs_by_programid"</span><span class="token punctuation">,</span> <span class="token string">"frs_by_naics"</span><span class="token punctuation">,</span> <span class="token string">"frs_by_sic"</span><span class="token punctuation">,</span> <span class="token string">"frs_by_mact"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
   ext <span class="token operator">=</span> c<span class="token punctuation">(</span><span class="token string">".arrow"</span><span class="token punctuation">,</span> <span class="token string">".rda"</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
   fun <span class="token operator">=</span> c<span class="token punctuation">(</span><span class="token string">"arrow::read_ipc_file"</span><span class="token punctuation">,</span> <span class="token string">"load"</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
   envir <span class="token operator">=</span> globalenv<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
@@ -1610,6 +1619,15 @@ utility for R analysts/developers to store large block data locally instead of r
 <p>dataload_from_local(folder_local_source = '.')
 </p>
 
+
+<h3>Value</h3>
+
+<p>vector of paths to files (as derived from varnames) that were
+actually found in folder_local_source,
+but only for those not already in memory, so it is
+just the ones loaded from disk because not already in memory and found on disk locally.
+</p>
+
 <hr>
 </div>
 <div class="container manual-page" id="dataload_from_package">
@@ -1650,9 +1668,11 @@ This could also include other large datasets that are slow to lazyload but not a
 </table>
 <h3>Details</h3>
 
+<p>See also read_builtin() function from the readr package!
+</p>
 <p>Default is to load some but not all the datasets into memory immediately.
-blockgroupstats, usastats, statestats, and some others are always essential to EJAM, but
-frs and frs_by_programid are huge datasets (and frs_by_sic and frs_by_naics)
+<a href="#blockgroupstats">blockgroupstats</a>, <a href="#usastats">usastats</a>, <a href="#statestats">statestats</a>, and some others are always essential to EJAM, but
+<a href="#frs">frs</a> and <a href="#frs_by_programid">frs_by_programid</a> are huge datasets (and <a href="#frs_by_sic">frs_by_sic</a> and <a href="#frs_by_naics">frs_by_naics</a>)
 and not always used - only to find regulated facilities by ID, etc.
 The frs-related datasets here can be roughly 1.5 GB in RAM, perhaps.
 </p>
@@ -1679,6 +1699,100 @@ The frs-related datasets here can be roughly 1.5 GB in RAM, perhaps.
   data<span class="token punctuation">(</span><span class="token string">"avg.in.us"</span><span class="token punctuation">,</span> package<span class="token operator">=</span><span class="token string">"EJAM"</span><span class="token punctuation">)</span> <span class="token comment"># lazy load an object into memory and make it visible to user</span>
   ls<span class="token punctuation">(</span><span class="token punctuation">)</span>
   rm<span class="token punctuation">(</span>avg.<span class="token keyword">in</span>.us<span class="token punctuation">,</span> x<span class="token punctuation">)</span></code></pre>
+
+<hr>
+</div>
+<div class="container manual-page" id="dataload_from_pins">
+
+<a href="#dataload_from_pins" class="help-page-title"><h2>dataload_from_pins - download / load datasets from pin board</h2></a>
+
+<h3>Description</h3>
+
+<p>dataload_from_pins - download / load datasets from pin board
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">dataload_from_pins<span class="token punctuation">(</span>
+  varnames <span class="token operator">=</span> c<span class="token punctuation">(</span>c<span class="token punctuation">(</span><span class="token string">"blockwts"</span><span class="token punctuation">,</span> <span class="token string">"blockpoints"</span><span class="token punctuation">,</span> <span class="token string">"blockid2fips"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"quaddata"</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  boardfolder <span class="token operator">=</span> <span class="token string">"Mark"</span><span class="token punctuation">,</span>
+  auth <span class="token operator">=</span> <span class="token string">"auto"</span><span class="token punctuation">,</span>
+  server <span class="token operator">=</span> <span class="token string">"https://rstudio-connect.dmap-stage.aws.epa.gov"</span><span class="token punctuation">,</span>
+  envir <span class="token operator">=</span> globalenv<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  justchecking <span class="token operator">=</span> <span class="token boolean">FALSE</span>
+<span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr style="vertical-align: top;">
+<td><code>varnames</code></td>
+<td>
+<p>character vector of names of R objects to get from board</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>boardfolder</code></td>
+<td>
+<p>if needed to specify a different folder than default</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>auth</code></td>
+<td>
+<p>See help documentation for <code><a href="https://rstudio.r-universe.dev/pins/doc/manual.html#board_connect">pins::board_connect()</a></code></p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>server</code></td>
+<td>
+<p>if needed to specify a server other than default (which might be
+stored in envt variable CONNECT_SERVER or be registered via the rsconnect package).
+Note if auth = "envvar" then it looks for CONNECT_SERVER to get name of server which
+needs to be the full url starting with https:// - see help for board_connect</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>envir</code></td>
+<td>
+<p>if needed to specify environment other than default</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>justchecking</code></td>
+<td>
+<p>can set to TRUE to just see a list of what pins are stored in that board</p>
+</td>
+</tr>
+</table>
+<h3>Details</h3>
+
+<p>This does work:
+</p>
+<p>board &lt;- pins::board_connect(auth = "rsconnect")
+</p>
+<p>assuming that credentials are set up for the user doing this.
+</p>
+<p>This does work:
+</p>
+<p>board &lt;- pins::board_connect(auth = 'manual', server = Sys.getenv("CONNECT_SERVER"), key = Sys.getenv("CONNECT_API_KEY"))
+</p>
+<p>if   Sys.setenv(CONNECT_SERVER = "https://rstudio-connect.dmap-stage.aws.epa.gov")
+</p>
+<p>and if  CONNECT_API_KEY  was set to the API key created already.
+</p>
+
+
+<h3>Value</h3>
+
+<p>a vector of names of objects downloaded if justchecking = FALSE, which excludes those
+already in environment so not re-downloaded and excludes those not found in pin board.
+If justchecking = TRUE, returns vector of names of ALL objects found in pin board,
+regardless of whether they are already in the environment, and
+regardless of whether they were specified among varnames.
+</p>
 
 <hr>
 </div>
@@ -2669,13 +2783,11 @@ indicator across everyone within each demographic group.
 </div>
 <div class="container manual-page" id="dupenames">
 
-<a href="#dupenames" class="help-page-title"><h2>helper function to look at several packages to spot conflicting exported names
-See what objects (functions or data) are exported by a given (installed) package</h2></a>
+<a href="#dupenames" class="help-page-title"><h2>dupenames - UTILITY - check conflicting exported function or data names</h2></a>
 
 <h3>Description</h3>
 
-<p>helper function to look at several packages to spot conflicting exported names
-See what objects (functions or data) are exported by a given (installed) package
+<p>See what same-named objects (functions or data) are exported by some (installed) packages
 </p>
 
 
@@ -2715,8 +2827,8 @@ Only checks the first 2 copies, not any additional ones (where 3+ pkgs use same 
 </table>
 <h3>Details</h3>
 
-<p>This can help find duplicates/conflicts within source code
-and make sure they are on search path, for when renaming / moving functions/packages
+<p>utility to find same-named exported objects (functions or datasets) within source code
+of 2+ packages, and see what is on search path, for dev renaming / moving functions/ packages
 </p>
 
 
@@ -2735,19 +2847,17 @@ and make sure they are on search path, for when renaming / moving functions/pack
 </div>
 <div class="container manual-page" id="dupeRfiles">
 
-<a href="#dupeRfiles" class="help-page-title"><h2>dupeRfiles
-utility for developer to find similarly named .R files in 2 separate folders of source code,
-whether or not they are packages.</h2></a>
+<a href="#dupeRfiles" class="help-page-title"><h2>dupeRfiles - UTILITY - check conflicting sourcefile names</h2></a>
 
 <h3>Description</h3>
 
-<p>see <code><a href="#dupenames">dupenames()</a></code> for when they are all packages.
+<p>See what same-named .R files are in 2 sourcecode folders
 </p>
 
 
 <h3>Usage</h3>
 
-<pre class="language-r"><code class="language-r">dupeRfiles<span class="token punctuation">(</span>folder1 <span class="token operator">=</span> <span class="token string">"./R"</span><span class="token punctuation">,</span> folder2 <span class="token operator">=</span> <span class="token string">"../EJAM/R"</span><span class="token punctuation">)</span></code></pre>
+<pre class="language-r"><code class="language-r">dupeRfiles<span class="token punctuation">(</span>folder1 <span class="token operator">=</span> <span class="token string">"../EJAM/R"</span><span class="token punctuation">,</span> folder2 <span class="token operator">=</span> <span class="token string">"./R"</span><span class="token punctuation">)</span></code></pre>
 
 
 <h3>Arguments</h3>
@@ -2756,16 +2866,24 @@ whether or not they are packages.</h2></a>
 <tr style="vertical-align: top;">
 <td><code>folder1</code></td>
 <td>
-<p>path</p>
+<p>path to other folder with R source files</p>
 </td>
 </tr>
 <tr style="vertical-align: top;">
 <td><code>folder2</code></td>
 <td>
-<p>path</p>
+<p>path to a folder with R source files, defaults to "./R"</p>
 </td>
 </tr>
 </table>
+<h3>Details</h3>
+
+<p>useful for shiny app that is not a package,
+as ejamlite and EJAMejscreenapi had copies of some EJAM files.
+</p>
+<p>See <code><a href="#dupenames">dupenames()</a></code> for when they are all packages.
+</p>
+
 <hr>
 </div>
 <div class="container manual-page" id="ejam2excel">
@@ -2913,12 +3031,26 @@ See help("EJAM")
   maxradius <span class="token operator">=</span> <span class="token number">31.07</span><span class="token punctuation">,</span>
   avoidorphans <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
   quadtree <span class="token operator">=</span> <span class="token keyword">NULL</span><span class="token punctuation">,</span>
-  silentinteractive <span class="token operator">=</span> F<span class="token punctuation">,</span>
+  quiet <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span>
+  parallel <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
   fips <span class="token operator">=</span> <span class="token keyword">NULL</span><span class="token punctuation">,</span>
-  subgroups_type <span class="token operator">=</span> <span class="token string">"nh"</span><span class="token punctuation">,</span>
+  shapefile_folder <span class="token operator">=</span> <span class="token keyword">NULL</span><span class="token punctuation">,</span>
+  in_shiny <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
+  need_blockwt <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span>
+  countcols <span class="token operator">=</span> <span class="token keyword">NULL</span><span class="token punctuation">,</span>
+  popmeancols <span class="token operator">=</span> <span class="token keyword">NULL</span><span class="token punctuation">,</span>
+  calculatedcols <span class="token operator">=</span> <span class="token keyword">NULL</span><span class="token punctuation">,</span>
+  testing <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
+  include_ejindexes <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
+  updateProgress <span class="token operator">=</span> <span class="token keyword">NULL</span><span class="token punctuation">,</span>
+  need_proximityscore <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
   calculate_ratios <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span>
-  threshold1 <span class="token operator">=</span> <span class="token number">90</span><span class="token punctuation">,</span>
-  <span class="token ellipsis">...</span>
+  silentinteractive <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
+  called_by_ejamit <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span>
+  subgroups_type <span class="token operator">=</span> <span class="token string">"nh"</span><span class="token punctuation">,</span>
+  extra_demog <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span>
+  infer_sitepoints <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
+  threshold1 <span class="token operator">=</span> <span class="token number">90</span>
 <span class="token punctuation">)</span></code></pre>
 
 
@@ -2948,55 +3080,144 @@ See help("EJAM")
 <td>
 <p>logical If TRUE, then where not even 1 BLOCK internal point is within radius of a SITE,
 it keeps looking past radius, up to maxradius, to find nearest 1 BLOCK.
-What EJScreen does in that case is report NA, right? So,
-does EJAM really need to report stats on residents presumed to be within radius,
+What EJScreen does in that case is report NA, right?
+So, does EJAM really need to report stats on residents presumed to be within radius,
 if no block centroid is within radius?
-Best estimate might be to report indicators from nearest block centroid which is
-probably almost always the one your site is sitting inside of,
-but ideally would adjust total count to be a fraction of blockwt based on
-what is area of circular buffer as fraction of area of block it is apparently inside of.
+Best estimate might be to report indicators from nearest block centroid
+which is probably almost always the one your site is sitting inside of,
+but ideally would adjust total count to be a fraction of blockwt
+based on what is area of circular buffer as fraction of area of block it is apparently inside of.
 Setting this to TRUE can produce unexpected results, which will not match EJScreen numbers.
 </p>
-<p>Note that if creating a proximity score, by contrast, you instead want to find nearest 1 SITE if none within radius of this BLOCK.</p>
+<p>Note that if creating a proximity score, by contrast, you
+instead want to find nearest 1 SITE if none within radius of this BLOCK.</p>
 </td>
 </tr>
 <tr style="vertical-align: top;">
 <td><code>quadtree</code></td>
 <td>
-<p>(a pointer to the large quadtree object)
-created using indexblocks() which uses the SearchTree package.
+<p>(a pointer to the large quadtree object) created using indexblocks() which uses the SearchTree package.
 Takes about 2-5 seconds to create this each time it is needed.
 It can be automatically created when the package is attached via the .onAttach() function</p>
 </td>
 </tr>
 <tr style="vertical-align: top;">
-<td><code>silentinteractive</code></td>
+<td><code>quiet</code></td>
 <td>
-<p>Set to FALSE to prevent long output showing in console in RStudio when in interactive mode,
-passed to doaggregate() also. app server sets this to TRUE when calling doaggregate() but
-ejamit() default is to set this to FALSE when calling doaggregate().</p>
+<p>Optional. set to TRUE to avoid message about using getblock_diagnostics(),
+which is relevant only if a user saved the output of this function.</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>parallel</code></td>
+<td>
+<p>whether to use parallel processing in getblocksnearby() but may not be implemented yet.</p>
 </td>
 </tr>
 <tr style="vertical-align: top;">
 <td><code>fips</code></td>
 <td>
-<p>FIPS code vector if using FIPS instead of sitepoints to specify places to analyze,
-such as a list of US Counties or tracts.</p>
+<p>optional FIPS code vector to provide if using FIPS instead of sitepoints to specify places to analyze,
+such as a list of US Counties or tracts. Passed to <code><a href="#getblocksnearby_from_fips">getblocksnearby_from_fips()</a></code></p>
 </td>
 </tr>
 <tr style="vertical-align: top;">
-<td><code>subgroups_type</code></td>
+<td><code>in_shiny</code></td>
 <td>
-<p>Optional (uses default). Set this to
-"nh" for non-hispanic race subgroups as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh;
-"alone" for EJScreen v2.2 style race subgroups as in    White Alone, wa and others in names_d_subgroups_alone;
-"both" for both versions. Possibly another option is "original" or "default" but work in progress.</p>
+<p>if fips parameter is used, passed to <code><a href="#getblocksnearby_from_fips">getblocksnearby_from_fips()</a></code></p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>need_blockwt</code></td>
+<td>
+<p>if fips parameter is used, passed to <code><a href="#getblocksnearby_from_fips">getblocksnearby_from_fips()</a></code></p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>countcols</code></td>
+<td>
+<p>character vector of names of variables to aggregate within a buffer using a sum of counts,
+like, for example, the number of people for whom a poverty ratio is known,
+the count of which is the exact denominator needed to correctly calculate percent low income.</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>popmeancols</code></td>
+<td>
+<p>character vector of names of variables to aggregate within a buffer using population weighted mean.</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>calculatedcols</code></td>
+<td>
+<p>character vector of names of variables to aggregate within a buffer using formulas that have to be specified.</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>testing</code></td>
+<td>
+<p>used while testing this function</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>include_ejindexes</code></td>
+<td>
+<p>whether to try to include EJ Indexes (assuming dataset is available) - passed to <code><a href="#doaggregate">doaggregate()</a></code></p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>updateProgress</code></td>
+<td>
+<p>progress bar function used for shiny app</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>need_proximityscore</code></td>
+<td>
+<p>whether to calculate proximity scores</p>
 </td>
 </tr>
 <tr style="vertical-align: top;">
 <td><code>calculate_ratios</code></td>
 <td>
-<p>whether to calculate and return ratio of each indicator to US and State overall averages</p>
+<p>whether to calculate and return ratio of each indicator to US and State overall averages - passed to <code><a href="#doaggregate">doaggregate()</a></code></p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>silentinteractive</code></td>
+<td>
+<p>to prevent long output showing in console in RStudio when in interactive mode,
+passed to doaggregate() also. app server sets this to TRUE when calling doaggregate() but
+ejamit() default is to set this to FALSE when calling doaggregate().</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>called_by_ejamit</code></td>
+<td>
+<p>Set to TRUE by ejamit() to suppress some outputs even if ejamit(silentinteractive=F)</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>subgroups_type</code></td>
+<td>
+<p>Optional (uses default). Set this to "nh" for non-hispanic race subgroups
+as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh;
+"alone" for EJScreen v2.2 style race subgroups as in White Alone, wa and others in names_d_subgroups_alone;
+"both" for both versions. Possibly another option is "original" or "default"</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>extra_demog</code></td>
+<td>
+<p>if should include more indicators from v2.2 report on language etc.</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>infer_sitepoints</code></td>
+<td>
+<p>set to TRUE to try to infer the lat,lon of each site around which the blocks in sites2blocks were found.
+lat,lon of each site will be approximated as average of nearby blocks,
+although a more accurate slower way would be to use reported distance of each of 3 of the furthest block points and triangulate</p>
 </td>
 </tr>
 <tr style="vertical-align: top;">
@@ -3005,19 +3226,13 @@ such as a list of US Counties or tracts.</p>
 <p>percentile like 80 or 90 or 95 to compare percentiles to
 "alone" for groups like white alone (whether or not hispanic),
 "both" may try to include both,
-or possibly "original" or "default" might be added as options</p>
-</td>
-</tr>
-<tr style="vertical-align: top;">
-<td><code>...</code></td>
-<td>
-<p>passed to <code><a href="#getblocksnearbyviaQuadTree">getblocksnearbyviaQuadTree()</a></code> or other such functions</p>
+or possibly "original" or "default" might be added as options - passed to batch.summarize()</p>
 </td>
 </tr>
 </table>
 <h3>Value</h3>
 
-<p>A list of tables of results.
+<p>A list of tables of results
 </p>
 
 
@@ -3145,19 +3360,23 @@ i.e., list of these: results_bysite (data.table), map, plot, us.ratios
 
 <hr>
 </div>
-<div class="container manual-page" id="fips_bgs_from_countyfips">
+<div class="container manual-page" id="fips_bg_from_anyfips">
 
-<a href="#fips_bgs_from_countyfips" class="help-page-title"><h2>fips_bgs_from_countyfips</h2></a>
+<a href="#fips_bg_from_anyfips" class="help-page-title"><h2>fips_bg_from_anyfips - Get unique blockgroup fips in or containing specified fips of any type
+Convert any FIPS codes to the FIPS of all the blockgroups that are
+among or within or containing those FIPS</h2></a>
 
 <h3>Description</h3>
 
-<p>fips_bgs_from_countyfips
+<p>fips_bg_from_anyfips - Get unique blockgroup fips in or containing specified fips of any type
+Convert any FIPS codes to the FIPS of all the blockgroups that are
+among or within or containing those FIPS
 </p>
 
 
 <h3>Usage</h3>
 
-<pre class="language-r"><code class="language-r">fips_bgs_from_countyfips<span class="token punctuation">(</span>fips<span class="token punctuation">)</span></code></pre>
+<pre class="language-r"><code class="language-r">fips_bg_from_anyfips<span class="token punctuation">(</span>fips<span class="token punctuation">)</span></code></pre>
 
 
 <h3>Arguments</h3>
@@ -3165,32 +3384,66 @@ i.e., list of these: results_bysite (data.table), map, plot, us.ratios
 <table><tr style="vertical-align: top;">
 <td><code>fips</code></td>
 <td>
-<p>County FIPS vector (ideally as character not numeric values)</p>
+<p>vector of US FIPS codes, as character or numeric,
+with or without their leading zeroes, each with as many characters</p>
 </td>
 </tr></table>
+<h3>Details</h3>
+
+<p>This is a way to get a list of blockgroups, specified by state/county/tract or even block.
+</p>
+<p>Takes a vector of one or more FIPS that could be State (2-digit), County (5-digit),
+Tract (11-digit), or blockgroup (12 digit), or even block (15-digit fips).
+</p>
+<p>Returns unique vector of FIPS of all US blockgroups (including DC and Puerto Rico)
+that contain any specified blocks, are equal to any specified blockgroup fips,
+or are contained within any provided tract/county/state FIPS.
+</p>
+
+
 <h3>Value</h3>
 
-<p>data.table with all pairs of county fips - bgid, and a unique siteid assigned to each county
+<p>vector of blockgroup FIPS (or NA values) that may be much longer than the
+vector of fips passed to this function.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="#fips_lead_zero">fips_lead_zero()</a></code>
 </p>
 
 
 <h3>Examples</h3>
 
-<pre class="language-r"><code class="language-r">bg_from_county<span class="token punctuation">(</span>c<span class="token punctuation">(</span><span class="token string">'01001'</span><span class="token punctuation">,</span><span class="token string">'72153'</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
- <span class="token comment"># Largest US Counties by ACS Population Totals:</span>
- blockgroupstats<span class="token punctuation">[</span> <span class="token punctuation">,</span> .<span class="token punctuation">(</span>ST <span class="token operator">=</span> ST<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> countypop <span class="token operator">=</span> sum<span class="token punctuation">(</span>pop<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  by<span class="token operator">=</span>.<span class="token punctuation">(</span>FIPS <span class="token operator">=</span> substr<span class="token punctuation">(</span>bgfips<span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">[</span>order<span class="token punctuation">(</span><span class="token operator">-</span>countypop<span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token operator">:</span><span class="token number">20</span><span class="token punctuation">,</span> .<span class="token punctuation">(</span>
-  CountyPopulation <span class="token operator">=</span> prettyNum<span class="token punctuation">(</span>countypop<span class="token punctuation">,</span> big.mark <span class="token operator">=</span> <span class="token string">","</span><span class="token punctuation">)</span><span class="token punctuation">,</span> FIPS<span class="token punctuation">,</span> ST<span class="token punctuation">)</span><span class="token punctuation">]</span></code></pre>
+<pre class="language-r"><code class="language-r"><span class="token comment"># all blockgroups in one state</span>
+  fips_counties_from_state_abbrev<span class="token punctuation">(</span><span class="token string">"DE"</span><span class="token punctuation">)</span>
+  fips_bg_from_anyfips<span class="token punctuation">(</span> fips_counties_from_state_abbrev<span class="token punctuation">(</span><span class="token string">"DE"</span><span class="token punctuation">)</span> <span class="token punctuation">)</span>
+  
+  blockgroupstats<span class="token punctuation">[</span><span class="token punctuation">,</span>.N<span class="token punctuation">,</span>by<span class="token operator">=</span>substr<span class="token punctuation">(</span>bgfips<span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
+  length<span class="token punctuation">(</span>fips_bg_from_anyfips<span class="token punctuation">(</span><span class="token string">"72"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  
+  <span class="token comment"># all blockgroups in this one county</span>
+  fips_bg_from_anyfips<span class="token punctuation">(</span><span class="token number">30001</span><span class="token punctuation">)</span>
+  fips_bg_from_anyfips<span class="token punctuation">(</span><span class="token string">"30001"</span><span class="token punctuation">)</span>
+  
+  <span class="token comment"># all blockgroups that contain any of these 6 blocks (i.e., just one bg)</span>
+  fips_bg_from_anyfips<span class="token punctuation">(</span> blockid2fips<span class="token operator">$</span>blockfips<span class="token punctuation">[</span><span class="token number">1</span><span class="token operator">:</span><span class="token number">6</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+  
+  <span class="token comment"># 2 counties</span>
+  fips_bg_from_anyfips<span class="token punctuation">(</span>c<span class="token punctuation">(</span><span class="token number">36009</span><span class="token punctuation">,</span><span class="token number">36011</span><span class="token punctuation">)</span><span class="token punctuation">)</span></code></pre>
 
 <hr>
 </div>
 <div class="container manual-page" id="fips_counties_from_state_abbrev">
 
-<a href="#fips_counties_from_state_abbrev" class="help-page-title"><h2>fips_counties_from_state_abbrev</h2></a>
+<a href="#fips_counties_from_state_abbrev" class="help-page-title"><h2>fips_counties_from_state_abbrev - Get ALL county fips in specified states
+Get all county fips in specified states</h2></a>
 
 <h3>Description</h3>
 
-<p>fips_counties_from_state_abbrev
+<p>fips_counties_from_state_abbrev - Get ALL county fips in specified states
+Get all county fips in specified states
 </p>
 
 
@@ -3222,13 +3475,13 @@ i.e., list of these: results_bysite (data.table), map, plot, us.ratios
 </div>
 <div class="container manual-page" id="fips_counties_from_statefips">
 
-<a href="#fips_counties_from_statefips" class="help-page-title"><h2>fips_counties_from_statefips
-Very similar to list_counties(state) from the tigris package.</h2></a>
+<a href="#fips_counties_from_statefips" class="help-page-title"><h2>fips_counties_from_statefips - Get ALL county fips in specified states
+Get all county fips in specified states</h2></a>
 
 <h3>Description</h3>
 
-<p>fips_counties_from_statefips
-Very similar to list_counties(state) from the tigris package.
+<p>fips_counties_from_statefips - Get ALL county fips in specified states
+Get all county fips in specified states
 </p>
 
 
@@ -3245,6 +3498,12 @@ Very similar to list_counties(state) from the tigris package.
 <p>vector of 2-digit state FIPS codes like c("10", "44", "44") or c(10,44)</p>
 </td>
 </tr></table>
+<h3>Details</h3>
+
+<p>Very similar to list_counties(state) from the tigris package.
+</p>
+
+
 <h3>Value</h3>
 
 <p>vector of 5-digit character string county FIPS of all unique counties in those states
@@ -3260,11 +3519,13 @@ Very similar to list_counties(state) from the tigris package.
 </div>
 <div class="container manual-page" id="fips_counties_from_statename">
 
-<a href="#fips_counties_from_statename" class="help-page-title"><h2>fips_counties_from_statename</h2></a>
+<a href="#fips_counties_from_statename" class="help-page-title"><h2>fips_counties_from_statename - Get ALL county fips in specified states
+Get all county fips in specified states</h2></a>
 
 <h3>Description</h3>
 
-<p>fips_counties_from_statename
+<p>fips_counties_from_statename - Get ALL county fips in specified states
+Get all county fips in specified states
 </p>
 
 
@@ -3345,7 +3606,7 @@ Aliases are: c("FIPS", "fips", "fips_code", "fipscode", "Fips", "statefips",
 
 <h3>See Also</h3>
 
-<p><code><a href="#fipsbg_from_anyfips">fipsbg_from_anyfips()</a></code> <code><a href="#fips_lead_zero">fips_lead_zero()</a></code> <code><a href="#getblocksnearby_from_fips">getblocksnearby_from_fips()</a></code> <code><a href="#fips_from_table">fips_from_table()</a></code>
+<p><code><a href="#fips_bg_from_anyfips">fips_bg_from_anyfips()</a></code> <code><a href="#fips_lead_zero">fips_lead_zero()</a></code> <code><a href="#getblocksnearby_from_fips">getblocksnearby_from_fips()</a></code> <code><a href="#fips_from_table">fips_from_table()</a></code>
 </p>
 
 <hr>
@@ -3393,13 +3654,47 @@ i.e., it might be a state, county, tract, blockgroup, or block FIPS code.
 
 <hr>
 </div>
-<div class="container manual-page" id="fips_state_from_state_abbrev">
+<div class="container manual-page" id="fips_st2eparegion">
 
-<a href="#fips_state_from_state_abbrev" class="help-page-title"><h2>fips_state_from_state_abbrev</h2></a>
+<a href="#fips_st2eparegion" class="help-page-title"><h2>fips_st2eparegion - Get EPA Region number from state FIPS code
+Get EPA Region number from state FIPS code</h2></a>
 
 <h3>Description</h3>
 
-<p>fips_state_from_state_abbrev
+<p>fips_st2eparegion - Get EPA Region number from state FIPS code
+Get EPA Region number from state FIPS code
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">fips_st2eparegion<span class="token punctuation">(</span>stfips<span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table><tr style="vertical-align: top;">
+<td><code>stfips</code></td>
+<td>
+<p>vector of one or more state fips codes (numbers or as strings)</p>
+</td>
+</tr></table>
+<h3>Value</h3>
+
+<p>vector of numbers representing US EPA Regions
+</p>
+
+<hr>
+</div>
+<div class="container manual-page" id="fips_state_from_state_abbrev">
+
+<a href="#fips_state_from_state_abbrev" class="help-page-title"><h2>fips_state_from_state_abbrev - Get state fips for each state abbrev
+Get state fips of each state abbrev</h2></a>
+
+<h3>Description</h3>
+
+<p>fips_state_from_state_abbrev - Get state fips for each state abbrev
+Get state fips of each state abbrev
 </p>
 
 
@@ -3431,11 +3726,13 @@ same length as input, so including any duplicates
 </div>
 <div class="container manual-page" id="fips_state_from_statename">
 
-<a href="#fips_state_from_statename" class="help-page-title"><h2>fips_state_from_statename</h2></a>
+<a href="#fips_state_from_statename" class="help-page-title"><h2>fips_state_from_statename - Get state fips for each state name
+Get state fips for each state name</h2></a>
 
 <h3>Description</h3>
 
-<p>fips_state_from_statename
+<p>fips_state_from_statename - Get state fips for each state name
+Get state fips for each state name
 </p>
 
 
@@ -3467,11 +3764,13 @@ same length as input, so including any duplicates
 </div>
 <div class="container manual-page" id="fips2countyname">
 
-<a href="#fips2countyname" class="help-page-title"><h2>fips2countyname  -  Get full name of each county based on its Census FIPS code</h2></a>
+<a href="#fips2countyname" class="help-page-title"><h2>fips2countyname - Get county names from county FIPS codes
+Get county names from county FIPS codes</h2></a>
 
 <h3>Description</h3>
 
-<p>fips2countyname  -  Get full name of each county based on its Census FIPS code
+<p>fips2countyname - Get county names from county FIPS codes
+Get county names from county FIPS codes
 </p>
 
 
@@ -3512,11 +3811,13 @@ same length as input, so including any duplicates
 </div>
 <div class="container manual-page" id="fips2name">
 
-<a href="#fips2name" class="help-page-title"><h2>fips2name</h2></a>
+<a href="#fips2name" class="help-page-title"><h2>fips2name - Get county or state names from county or state FIPS codes
+Get county or state names from county or state FIPS codes</h2></a>
 
 <h3>Description</h3>
 
-<p>fips2name
+<p>fips2name - Get county or state names from county or state FIPS codes
+Get county or state names from county or state FIPS codes
 </p>
 
 
@@ -3559,11 +3860,13 @@ where county names optionally have comma and 2-character abbreviation or full st
 </div>
 <div class="container manual-page" id="fips2state_abbrev">
 
-<a href="#fips2state_abbrev" class="help-page-title"><h2>fips2state_abbrev - convert Census FIPS to 2-character state abbreviation</h2></a>
+<a href="#fips2state_abbrev" class="help-page-title"><h2>fips2state_abbrev - Get state abbreviations from any type of FIPS codes
+Get state abbreviations from any type of FIPS codes</h2></a>
 
 <h3>Description</h3>
 
-<p>fips2state_abbrev - convert Census FIPS to 2-character state abbreviation
+<p>fips2state_abbrev - Get state abbreviations from any type of FIPS codes
+Get state abbreviations from any type of FIPS codes
 </p>
 
 
@@ -3588,19 +3891,23 @@ where county names optionally have comma and 2-character abbreviation or full st
 
 <h3>Examples</h3>
 
-<pre class="language-r"><code class="language-r">cbind<span class="token punctuation">(</span>fips_lead_zero<span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">:</span><span class="token number">80</span><span class="token punctuation">)</span><span class="token punctuation">,</span> fips2state_abbrev<span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">:</span><span class="token number">80</span><span class="token punctuation">)</span><span class="token punctuation">,</span> fips2statename<span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">:</span><span class="token number">80</span><span class="token punctuation">)</span><span class="token punctuation">)</span></code></pre>
+<pre class="language-r"><code class="language-r">cbind<span class="token punctuation">(</span>
+    stfips    <span class="token operator">=</span> fips_lead_zero<span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">:</span><span class="token number">80</span><span class="token punctuation">)</span><span class="token punctuation">,</span> 
+    ST     <span class="token operator">=</span> fips2state_abbrev<span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">:</span><span class="token number">80</span><span class="token punctuation">)</span><span class="token punctuation">,</span> 
+    statename <span class="token operator">=</span> fips2statename<span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">:</span><span class="token number">80</span><span class="token punctuation">)</span>
+  <span class="token punctuation">)</span></code></pre>
 
 <hr>
 </div>
 <div class="container manual-page" id="fips2state_fips">
 
-<a href="#fips2state_fips" class="help-page-title"><h2>fips2state_fips  -  get state FIPS codes from any other FIPS codes like County FIPS
-Tells you which State contains each County (or tract or blockgroup or block)</h2></a>
+<a href="#fips2state_fips" class="help-page-title"><h2>fips2state_fips - Get state FIPS codes from any type of FIPS codes
+Get state FIPS codes from any type of FIPS codes</h2></a>
 
 <h3>Description</h3>
 
-<p>fips2state_fips  -  get state FIPS codes from any other FIPS codes like County FIPS
-Tells you which State contains each County (or tract or blockgroup or block)
+<p>fips2state_fips - Get state FIPS codes from any type of FIPS codes
+Get state FIPS codes from any type of FIPS codes
 </p>
 
 
@@ -3617,6 +3924,12 @@ Tells you which State contains each County (or tract or blockgroup or block)
 <p>vector of FIPS</p>
 </td>
 </tr></table>
+<h3>Details</h3>
+
+<p>Tells you which State contains each County (or tract or blockgroup or block)
+</p>
+
+
 <h3>Value</h3>
 
 <p>vector of State FIPS 2 characters each
@@ -3631,11 +3944,13 @@ Tells you which State contains each County (or tract or blockgroup or block)
 </div>
 <div class="container manual-page" id="fips2statename">
 
-<a href="#fips2statename" class="help-page-title"><h2>fips2statename  -  get state names from Census FIPS codes</h2></a>
+<a href="#fips2statename" class="help-page-title"><h2>fips2statename - Get state names from any type of FIPS codes
+Get state names from any type of FIPS codes</h2></a>
 
 <h3>Description</h3>
 
-<p>fips2statename  -  get state names from Census FIPS codes
+<p>fips2statename - Get state names from any type of FIPS codes
+Get state names from any type of FIPS codes
 </p>
 
 
@@ -3654,81 +3969,13 @@ Tells you which State contains each County (or tract or blockgroup or block)
 </tr></table>
 <h3>Value</h3>
 
-<p>vector os state names
+<p>vector of state names
 </p>
 
 
 <h3>Examples</h3>
 
 <pre class="language-r"><code class="language-r">cbind<span class="token punctuation">(</span>fips_lead_zero<span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">:</span><span class="token number">80</span><span class="token punctuation">)</span><span class="token punctuation">,</span> fips2state_abbrev<span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">:</span><span class="token number">80</span><span class="token punctuation">)</span><span class="token punctuation">,</span> fips2statename<span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">:</span><span class="token number">80</span><span class="token punctuation">)</span><span class="token punctuation">)</span></code></pre>
-
-<hr>
-</div>
-<div class="container manual-page" id="fipsbg_from_anyfips">
-
-<a href="#fipsbg_from_anyfips" class="help-page-title"><h2>fipsbg_from_anyfips
-convert any FIPS codes to the FIPS of all the blockgroups that are
-among or within or containing those FIPS</h2></a>
-
-<h3>Description</h3>
-
-<p>fipsbg_from_anyfips
-convert any FIPS codes to the FIPS of all the blockgroups that are
-among or within or containing those FIPS
-</p>
-
-
-<h3>Usage</h3>
-
-<pre class="language-r"><code class="language-r">fipsbg_from_anyfips<span class="token punctuation">(</span>fips<span class="token punctuation">)</span></code></pre>
-
-
-<h3>Arguments</h3>
-
-<table><tr style="vertical-align: top;">
-<td><code>fips</code></td>
-<td>
-<p>vector of US FIPS codes, as character or numeric,
-with or without their leading zeroes, each with as many characters</p>
-</td>
-</tr></table>
-<h3>Details</h3>
-
-<p>This is a way to get a list of blockgroups, specified by state/county/tract or even block.
-</p>
-<p>Takes a vector of one or more FIPS that could be State (2-digit), County (5-digit),
-Tract (11-digit), or blockgroup (12 digit), or even block (15-digit fips).
-</p>
-<p>Returns unique vector of FIPS of all US blockgroups (including DC and Puerto Rico)
-that contain any specified blocks, are equal to any specified blockgroup fips,
-or are contained within any provided tract/county/state FIPS.
-</p>
-
-
-<h3>Value</h3>
-
-<p>vector of blockgroup FIPS (or NA values) that may be much longer than the
-vector of fips passed to this function.
-</p>
-
-
-<h3>See Also</h3>
-
-<p><code><a href="#fips_lead_zero">fips_lead_zero()</a></code>
-</p>
-
-
-<h3>Examples</h3>
-
-<pre class="language-r"><code class="language-r"><span class="token comment"># all blockgroups in one state</span>
-  blockgroupstats<span class="token punctuation">[</span><span class="token punctuation">,</span>.N<span class="token punctuation">,</span>by<span class="token operator">=</span>substr<span class="token punctuation">(</span>bgfips<span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">]</span>
-  length<span class="token punctuation">(</span>fipsbg_from_anyfips<span class="token punctuation">(</span><span class="token string">"72"</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-  <span class="token comment"># all blockgroups in this one county</span>
-  fipsbg_from_anyfips<span class="token punctuation">(</span><span class="token number">30001</span><span class="token punctuation">)</span>
-  <span class="token comment"># all blockgroups that contain any of these 6 blocks (just one bg)</span>
-  fipsbg_from_anyfips<span class="token punctuation">(</span> blockid2fips<span class="token operator">$</span>blockfips<span class="token punctuation">[</span><span class="token number">1</span><span class="token operator">:</span><span class="token number">6</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
-  <span class="token comment"># 2 counties</span>
-  fipsbg_from_anyfips<span class="token punctuation">(</span>c<span class="token punctuation">(</span><span class="token number">36009</span><span class="token punctuation">,</span><span class="token number">36011</span><span class="token punctuation">)</span><span class="token punctuation">)</span></code></pre>
 
 <hr>
 </div>
@@ -3767,6 +4014,8 @@ vector of fips passed to this function.
  <span class="token comment"># [1] "09001" "09003" "09005" "09007" "09009" "09011" "09013" "09015" "10001" "10003" "10005"</span>
  fipstype<span class="token punctuation">(</span><span class="token number">9001</span><span class="token punctuation">)</span>
  fipstype<span class="token punctuation">(</span><span class="token string">"10001"</span><span class="token punctuation">)</span>
+ <span class="token comment"># note blockid2fips is a large file, but can be obtained via [dataload_from_pins()]</span>
+ <span class="token comment">## Not run: </span>
  fipsexamples <span class="token operator">&lt;-</span> c<span class="token punctuation">(</span>
    fips_state_from_statename<span class="token punctuation">(</span><span class="token string">"Alaska"</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
    fips_counties_from_state_abbrev<span class="token punctuation">(</span><span class="token string">"DE"</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
@@ -3774,7 +4023,82 @@ vector of fips passed to this function.
     blockgroupstats<span class="token operator">$</span>bgfips<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
     blockid2fips<span class="token operator">$</span>blockfips<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>
  <span class="token punctuation">)</span>
- cbind<span class="token punctuation">(</span>fipsexamples<span class="token punctuation">,</span> type <span class="token operator">=</span> fipstype<span class="token punctuation">(</span>fipsexamples<span class="token punctuation">)</span><span class="token punctuation">)</span></code></pre>
+ cbind<span class="token punctuation">(</span>fipsexamples<span class="token punctuation">,</span> type <span class="token operator">=</span> fipstype<span class="token punctuation">(</span>fipsexamples<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+<span class="token comment">## End(Not run)</span></code></pre>
+
+<hr>
+</div>
+<div class="container manual-page" id="fixcolnames2related">
+
+<a href="#fixcolnames2related" class="help-page-title"><h2>fixcolnames2related - get name of related avg, pctile, or ratio variable name
+Given names_d, e.g., returns names_d_ratio_to_state_avg</h2></a>
+
+<h3>Description</h3>
+
+<p>fixcolnames2related - get name of related avg, pctile, or ratio variable name
+Given names_d, e.g., returns names_d_ratio_to_state_avg
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">fixcolnames2related<span class="token punctuation">(</span>
+  namesnow<span class="token punctuation">,</span>
+  relatedtype <span class="token operator">=</span> c<span class="token punctuation">(</span><span class="token string">"usavg"</span><span class="token punctuation">,</span> <span class="token string">"stateavg"</span><span class="token punctuation">,</span> <span class="token string">"uspctile"</span><span class="token punctuation">,</span> <span class="token string">"statepctile"</span><span class="token punctuation">,</span> <span class="token string">"usratio"</span><span class="token punctuation">,</span>
+    <span class="token string">"stateratio"</span><span class="token punctuation">)</span>
+<span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr style="vertical-align: top;">
+<td><code>namesnow</code></td>
+<td>
+<p>vector of one or more basic Envt or Demog indicator variable names
+found in c(names_e, names_d, names_d_subgroups)</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>relatedtype</code></td>
+<td>
+<p>One of "usavg", "stateavg", "uspctile", "statepctile", "usratio", "stateratio"
+(but not any of the other values among
+unique(map_headernames$vartype) since those give ambiguous answers).</p>
+</td>
+</tr>
+</table>
+<h3>Details</h3>
+
+<p>Given basic variable name(s) like "pctlowinc" or names_e,
+see what the related variable names are for storing the
+US or State percentiles, averages, or ratios to averages
+of the given variables.
+</p>
+<p>Only works for variable names among these:
+</p>
+<p>c(names_e, names_d, names_d_subgroups)
+</p>
+
+
+<h3>Value</h3>
+
+<p>vector as long as namesnow (or just returns namesnow if relatedtype is invalid)
+</p>
+
+
+<h3>Examples</h3>
+
+<pre class="language-r"><code class="language-r">names_d
+fixcolnames2related<span class="token punctuation">(</span>names_d<span class="token punctuation">,</span> <span class="token string">'stateratio'</span><span class="token punctuation">)</span>
+names_d_ratio_to_state_avg
+fixcolnames2related<span class="token punctuation">(</span>names_e<span class="token punctuation">,</span> <span class="token string">"stateavg"</span><span class="token punctuation">)</span>
+fixcolnames2related<span class="token punctuation">(</span>names_e<span class="token punctuation">,</span> <span class="token string">"usvag"</span><span class="token punctuation">)</span>
+paste0<span class="token punctuation">(</span><span class="token string">"avg."</span><span class="token punctuation">,</span> names_e<span class="token punctuation">)</span>
+fixcolnames2related<span class="token punctuation">(</span>names_e<span class="token punctuation">,</span> <span class="token string">"usratio"</span><span class="token punctuation">)</span>
+<span class="token comment"># names_ej # does not work with this as input</span>
+<span class="token comment"># fixcolnames2related(names_ej, "uspctile") # does not return names_ej_pctile</span></code></pre>
 
 <hr>
 </div>
@@ -3830,14 +4154,14 @@ You can look up sites by REGISTRY_ID in <a href="#frs">frs</a>, and get their lo
 frs_update_datasets() (which is not an exported function)
 </p>
 <p>The definitions of active/inactive here are not quite the
-same as used in ECHO, as of 5/2023.
+same as used in ECHO. See attributes(frs) to see date created, etc.
 </p>
 <p>Also, EJScreen has maps of EPA-regulated facilities of a few program types,
 as provided here: <a href="https://www.epa.gov/ejscreen/ejscreen-map-descriptions#sites-reporting-to-epa" target="_blank">https://www.epa.gov/ejscreen/ejscreen-map-descriptions#sites-reporting-to-epa</a>
 </p>
 <pre>
 
- As of June 2023
+ As of November 2023
  
  Count of    all REGISTRY_ID rows:   7,441,086
  Count of unique REGISTRY_ID values: 4,705,744
@@ -3867,7 +4191,7 @@ frs_by_sic rows:           1,081,742
 
 <h3>See Also</h3>
 
-<p>frs_by_programid  frs_by_naics frs_by_sic
+<p><a href="#frs_by_programid">frs_by_programid</a>  <a href="#frs_by_naics">frs_by_naics</a> <a href="#frs_by_sic">frs_by_sic</a>
 </p>
 
 <hr>
@@ -4006,6 +4330,15 @@ the Facility Registry Service</h2></a>
 
 <h3>Description</h3>
 
+<p>frs_by_programid (DATA) data.table of Program System ID code(s) for each EPA-regulated site in
+the Facility Registry Service
+</p>
+
+
+<h3>Details</h3>
+
+<p>Created by frs_make_programid_lookup()  that was in EJAMfrsdata package
+</p>
 <pre>
    This is the format with one row per site-programid pair, 
    so multiple rows for one site if it is in multiple programs.
@@ -4031,7 +4364,7 @@ nn=sample(1:nrow(frs_by_programid), 1); frs_by_programid[REGISTRY_ID == frs_by_p
 
 <h3>See Also</h3>
 
-<p>frs() frs_by_naics() Created by frs_make_programid_lookup()
+<p>frs() frs_by_naics()
 </p>
 
 <hr>
@@ -4044,52 +4377,6 @@ nn=sample(1:nrow(frs_by_programid), 1); frs_by_programid[REGISTRY_ID == frs_by_p
 
 <p>This is the format with one row per site-SIC pair,
 so multiple rows for one site if it is in multiple SIC.
-</p>
-
-<hr>
-</div>
-<div class="container manual-page" id="frs_clean">
-
-<a href="#frs_clean" class="help-page-title"><h2>frs_clean - utility to clean Facility Registry Service dataset when updating it
-This is just a helper function used to create the dataset saved as data for use in EJAM</h2></a>
-
-<h3>Description</h3>
-
-<p>frs_clean - utility to clean Facility Registry Service dataset when updating it
-This is just a helper function used to create the dataset saved as data for use in EJAM
-</p>
-
-
-<h3>Usage</h3>
-
-<pre class="language-r"><code class="language-r">frs_clean<span class="token punctuation">(</span>
-  frs<span class="token punctuation">,</span>
-  usefulcolumns <span class="token operator">=</span> c<span class="token punctuation">(</span><span class="token string">"LATITUDE83"</span><span class="token punctuation">,</span> <span class="token string">"LONGITUDE83"</span><span class="token punctuation">,</span> <span class="token string">"REGISTRY_ID"</span><span class="token punctuation">,</span> <span class="token string">"PRIMARY_NAME"</span><span class="token punctuation">,</span>
-    <span class="token string">"NAICS_CODES"</span><span class="token punctuation">,</span> <span class="token string">"SIC_CODES"</span><span class="token punctuation">,</span> <span class="token string">"PGM_SYS_ACRNMS"</span><span class="token punctuation">)</span>
-<span class="token punctuation">)</span></code></pre>
-
-
-<h3>Arguments</h3>
-
-<table>
-<tr style="vertical-align: top;">
-<td><code>frs</code></td>
-<td>
-<p>data.table that is the output of frs_read()</p>
-</td>
-</tr>
-<tr style="vertical-align: top;">
-<td><code>usefulcolumns</code></td>
-<td>
-<p>optional, drops all columns except those in this vector of character colnames</p>
-</td>
-</tr>
-</table>
-<h3>Details</h3>
-
-<p>Used by frs_get()
-This renames some columns (lat, lon, NAICS are new names)
-and it drops rows lacking lat/lon location info in the LATITUDE83 or LONGITUDE83 columns
 </p>
 
 <hr>
@@ -4470,6 +4757,12 @@ VERY SLOW search within PRIMARY_NAME of facilities for matching text
 </pre></div>
 
 
+<h3>Details</h3>
+
+<p>Created by script in /data-raw/
+</p>
+
+
 <h3>See Also</h3>
 
 <p><a href="#frs">frs</a>
@@ -4506,7 +4799,8 @@ a circular buffer.
   addedbuffermiles <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">,</span>
   blocksnearby <span class="token operator">=</span> <span class="token keyword">NULL</span><span class="token punctuation">,</span>
   dissolved <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
-  safety_margin_ratio <span class="token operator">=</span> <span class="token number">1.1</span>
+  safety_margin_ratio <span class="token operator">=</span> <span class="token number">1.1</span><span class="token punctuation">,</span>
+  crs <span class="token operator">=</span> <span class="token number">4269</span>
 <span class="token punctuation">)</span></code></pre>
 
 
@@ -4517,9 +4811,9 @@ a circular buffer.
 <td><code>polys</code></td>
 <td>
 <p>Spatial data as from sf::st_as_sf(), with a column called siteid, like
-points as from <code><a href="#get_shapefile_from_sitepoints">get_shapefile_from_sitepoints()</a></code>,
+points as from <code><a href="#shapefile_from_sitepoints">shapefile_from_sitepoints()</a></code>,
 or a table of points with lat,lon columns that will first be converted here using that function,
-or polygons (not yet tested).</p>
+or polygons</p>
 </td>
 </tr>
 <tr style="vertical-align: top;">
@@ -4547,6 +4841,12 @@ or polygons (not yet tested).</p>
 blocks nearby using getblocksnearby(), before using those found to do the intersection via sf::</p>
 </td>
 </tr>
+<tr style="vertical-align: top;">
+<td><code>crs</code></td>
+<td>
+<p>used in st_as_sf() and st_transform() and shape_buffered_from_shapefile_points(), crs = 4269 or Geodetic CRS NAD83</p>
+</td>
+</tr>
 </table>
 <h3>Details</h3>
 
@@ -4572,105 +4872,16 @@ which is just a circular buffer of specified radius if polys are just points.
 
 <h3>See Also</h3>
 
-<p><code><a href="#get_blockpoints_in_shape">get_blockpoints_in_shape()</a></code> <code><a href="#get_shapefile_from_sitepoints">get_shapefile_from_sitepoints()</a></code> <code><a href="#get_shape_buffered_from_shapefile_points">get_shape_buffered_from_shapefile_points()</a></code>
+<p><code><a href="#get_blockpoints_in_shape">get_blockpoints_in_shape()</a></code> <code><a href="#shapefile_from_sitepoints">shapefile_from_sitepoints()</a></code> <code><a href="#shape_buffered_from_shapefile_points">shape_buffered_from_shapefile_points()</a></code>
 </p>
 
 
 <h3>Examples</h3>
 
-<pre class="language-r"><code class="language-r">x <span class="token operator">=</span> get_shapefile_from_sitepoints<span class="token punctuation">(</span>testpoints_n<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<pre class="language-r"><code class="language-r"><span class="token comment"># y &lt;- get_blockpoints_in_shape()</span>
+  
+  <span class="token comment"># x = shapefile_from_sitepoints(testpoints_n(2))</span>
   <span class="token comment"># y = get_blockpoints_in_shape(x, 1)  # very very slow</span></code></pre>
-
-<hr>
-</div>
-<div class="container manual-page" id="get_shape_buffered_from_shapefile_points">
-
-<a href="#get_shape_buffered_from_shapefile_points" class="help-page-title"><h2>get_shape_buffered_from_shapefile_points - add buffer around shape (points, here)</h2></a>
-
-<h3>Description</h3>
-
-<p>get_shape_buffered_from_shapefile_points - add buffer around shape (points, here)
-</p>
-
-
-<h3>Usage</h3>
-
-<pre class="language-r"><code class="language-r">get_shape_buffered_from_shapefile_points<span class="token punctuation">(</span>shapefile_points<span class="token punctuation">,</span> radius.miles<span class="token punctuation">,</span> <span class="token ellipsis">...</span><span class="token punctuation">)</span></code></pre>
-
-
-<h3>Arguments</h3>
-
-<table>
-<tr style="vertical-align: top;">
-<td><code>shapefile_points</code></td>
-<td>
-<p>spatial object like areas at high risk or areas with facilities to be analyzed</p>
-</td>
-</tr>
-<tr style="vertical-align: top;">
-<td><code>radius.miles</code></td>
-<td>
-<p>width of buffer to add to shapefile_points
-(in case dist is a units object, it should be
-convertible to arc_degree if x has geographic coordinates,
-and to st_crs(x)$units otherwise)</p>
-</td>
-</tr>
-<tr style="vertical-align: top;">
-<td><code>...</code></td>
-<td>
-<p>passed to st_buffer()</p>
-</td>
-</tr>
-</table>
-<h3>Details</h3>
-
-<p>Just a wrapper for <code><a href="https://r-spatial.r-universe.dev/sf/doc/manual.html#geos_unary">sf::st_buffer()</a></code>
-</p>
-
-
-<h3>See Also</h3>
-
-<p><code><a href="#get_blockpoints_in_shape">get_blockpoints_in_shape()</a></code> <code><a href="#get_shapefile_from_sitepoints">get_shapefile_from_sitepoints()</a></code> <a href="#get_shape_buffered_from_shapefile_points">get_shape_buffered_from_shapefile_points</a>
-</p>
-
-<hr>
-</div>
-<div class="container manual-page" id="get_shapefile_from_sitepoints">
-
-<a href="#get_shapefile_from_sitepoints" class="help-page-title"><h2>get_shapefile_from_sitepoints - convert table of lat,lon points/sites into sf:: shapefile
-Creates a simple feature (sf) dataframe from points</h2></a>
-
-<h3>Description</h3>
-
-<p>get_shapefile_from_sitepoints - convert table of lat,lon points/sites into sf:: shapefile
-Creates a simple feature (sf) dataframe from points
-</p>
-
-
-<h3>Usage</h3>
-
-<pre class="language-r"><code class="language-r">get_shapefile_from_sitepoints<span class="token punctuation">(</span>sitepoints<span class="token punctuation">)</span></code></pre>
-
-
-<h3>Arguments</h3>
-
-<table><tr style="vertical-align: top;">
-<td><code>sitepoints</code></td>
-<td>
-<p>a data.table or data.frame with columns called lat,lon</p>
-</td>
-</tr></table>
-<h3>Value</h3>
-
-<p>A shapefile via <code><a href="https://r-spatial.r-universe.dev/sf/doc/manual.html#st_as_sf">sf::st_as_sf()</a></code>
-</p>
-
-
-<h3>See Also</h3>
-
-<p><code><a href="#get_blockpoints_in_shape">get_blockpoints_in_shape()</a></code> <code><a href="#get_shapefile_from_sitepoints">get_shapefile_from_sitepoints()</a></code> <code><a href="#get_shape_buffered_from_shapefile_points">get_shape_buffered_from_shapefile_points()</a></code>
-</p>
 
 <hr>
 </div>
@@ -4984,7 +5195,7 @@ or comparing whole counties to each other, within a State.</p>
 
 <h3>See Also</h3>
 
-<p><code><a href="#fipsbg_from_anyfips">fipsbg_from_anyfips()</a></code> <code><a href="#fips_lead_zero">fips_lead_zero()</a></code> <code><a href="#getblocksnearby_from_fips">getblocksnearby_from_fips()</a></code> <code><a href="#fips_from_table">fips_from_table()</a></code>
+<p><code><a href="#fips_bg_from_anyfips">fips_bg_from_anyfips()</a></code> <code><a href="#fips_lead_zero">fips_lead_zero()</a></code> <code><a href="#getblocksnearby_from_fips">getblocksnearby_from_fips()</a></code> <code><a href="#fips_from_table">fips_from_table()</a></code>
 </p>
 
 
@@ -6077,14 +6288,11 @@ EJAMejscreenapi<span class="token operator">::</span>mapfast<span class="token p
 </div>
 <div class="container manual-page" id="latlon_from_sic">
 
-<a href="#latlon_from_sic" class="help-page-title"><h2>latlon_from_sic - Find EPA-regulated facilities in FRS by SIC code (industrial category)
-Get lat lon, Registry ID, given SIC industry code(s)
-Find all EPA Facility Registry Service (FRS) sites with this exact SIC code (not subcategories)</h2></a>
+<a href="#latlon_from_sic" class="help-page-title"><h2>latlon_from_sic - Find EPA-regulated facilities in FRS by SIC code (industrial category)</h2></a>
 
 <h3>Description</h3>
 
-<p>latlon_from_sic - Find EPA-regulated facilities in FRS by SIC code (industrial category)
-Get lat lon, Registry ID, given SIC industry code(s)
+<p>Get lat lon, Registry ID, given SIC industry code(s)
 Find all EPA Facility Registry Service (FRS) sites with this exact SIC code (not subcategories)
 </p>
 
@@ -6495,6 +6703,7 @@ EJScreen 2.2 does not provide demographic data in those locations anyway, but ca
 
 <pre class="language-r"><code class="language-r"><span class="token comment">## Not run: </span>
  <span class="token comment"># this would only work using the EJAM package datasets frs and blockpoints:</span>
+   <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>exists<span class="token punctuation">(</span><span class="token string">"frs"</span><span class="token punctuation">)</span><span class="token punctuation">)</span> dataload_from_pins<span class="token punctuation">(</span><span class="token string">"frs"</span><span class="token punctuation">)</span>
  table<span class="token punctuation">(</span>latlon_is.valid<span class="token punctuation">(</span>lat <span class="token operator">=</span>  frs<span class="token operator">$</span>lat<span class="token punctuation">,</span> lon <span class="token operator">=</span>  frs<span class="token operator">$</span>lon<span class="token punctuation">)</span><span class="token punctuation">)</span>
  <span class="token comment"># blockpoints may need to be downloaded using dataload_from_aws()</span>
  table<span class="token punctuation">(</span>latlon_is.valid<span class="token punctuation">(</span>lat <span class="token operator">=</span>  blockpoints<span class="token operator">$</span>lat<span class="token punctuation">,</span> lon <span class="token operator">=</span>  blockpoints<span class="token operator">$</span>lon<span class="token punctuation">)</span><span class="token punctuation">)</span>
@@ -6538,6 +6747,89 @@ get expanded version of sites2blocks data.table, with new lat,lon columns
 
 <pre class="language-r"><code class="language-r">s2b <span class="token operator">=</span> copy<span class="token punctuation">(</span>testoutput_getblocksnearby_10pts_1miles<span class="token punctuation">)</span>
  latlon_join_on_blockid<span class="token punctuation">(</span>s2b<span class="token punctuation">)</span> <span class="token comment"># done by trilaterate also</span></code></pre>
+
+<hr>
+</div>
+<div class="container manual-page" id="linesofcode2">
+
+<a href="#linesofcode2" class="help-page-title"><h2>linesofcode2 - UTILITY - count lines of source code per .R file (not per function) - NOT TESTED</h2></a>
+
+<h3>Description</h3>
+
+<p>linesofcode2 - UTILITY - count lines of source code per .R file (not per function) - NOT TESTED
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">linesofcode2<span class="token punctuation">(</span>
+  folder <span class="token operator">=</span> getwd<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  packages<span class="token punctuation">,</span>
+  recursive <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span>
+  sums <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
+  rfolderonly <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
+  cropfilename <span class="token operator">=</span> <span class="token number">40</span><span class="token punctuation">,</span>
+  croppath <span class="token operator">=</span> <span class="token number">20</span><span class="token punctuation">,</span>
+  showrows <span class="token operator">=</span> <span class="token keyword">NULL</span>
+<span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr style="vertical-align: top;">
+<td><code>folder</code></td>
+<td>
+<p>path to folder with .R files</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>packages</code></td>
+<td>
+<p>optional vector of names of packages of source code</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>recursive</code></td>
+<td>
+<p>logical, look in subfolders</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>sums</code></td>
+<td>
+<p>logical, if TRUE, returns sums info, otherwise just prints that to console and returns more info</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>rfolderonly</code></td>
+<td>
+<p>logical</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>cropfilename</code></td>
+<td>
+<p>number of character to truncate filename to for display in console</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>croppath</code></td>
+<td>
+<p>limit path for display</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>showrows</code></td>
+<td>
+<p>optional</p>
+</td>
+</tr>
+</table>
+<h3>Value</h3>
+
+<p>data.frame of info about files
+</p>
 
 <hr>
 </div>
@@ -6618,6 +6910,54 @@ For example, it could be "NY" for New York State, "USA" for national percentiles
 and the title of each category. From the ECHO download of ICIS Air
 @seealso <a href="#frs_by_mact">frs_by_mact</a>
 </p>
+
+<hr>
+</div>
+<div class="container manual-page" id="map_blockgroups_over_blocks">
+
+<a href="#map_blockgroups_over_blocks" class="help-page-title"><h2>map_blockgroups_over_blocks - Overlay blockgroups near 1 site, after plotblocksnearby()
+Overlay blockgroups near 1 site, after plotblocksnearby()</h2></a>
+
+<h3>Description</h3>
+
+<p>map_blockgroups_over_blocks - Overlay blockgroups near 1 site, after plotblocksnearby()
+Overlay blockgroups near 1 site, after plotblocksnearby()
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">map_blockgroups_over_blocks<span class="token punctuation">(</span>y<span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table><tr style="vertical-align: top;">
+<td><code>y</code></td>
+<td>
+<p>output of <code><a href="#plotblocksnearby">plotblocksnearby()</a></code></p>
+</td>
+</tr></table>
+<h3>Value</h3>
+
+<p>leaflet map widget
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code>map_blockgroups()</code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre class="language-r"><code class="language-r">dontrun<span class="token punctuation">{</span>
+ y <span class="token operator">&lt;-</span> plotblocksnearby<span class="token punctuation">(</span>testpoints_10<span class="token punctuation">[</span><span class="token number">5</span><span class="token punctuation">,</span><span class="token punctuation">]</span><span class="token punctuation">,</span> 
+        radius <span class="token operator">=</span> <span class="token number">3</span><span class="token punctuation">,</span>
+        returnmap <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">)</span>
+ map_blockgroups_over_blocks<span class="token punctuation">(</span>y<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span></code></pre>
 
 <hr>
 </div>
@@ -6737,6 +7077,294 @@ and the title of each category. From the ECHO download of ICIS Air
 
 <p>a leaflet map with circles, circleMarkers, and basic popup
 </p>
+
+<hr>
+</div>
+<div class="container manual-page" id="map_shapes_leaflet">
+
+<a href="#map_shapes_leaflet" class="help-page-title"><h2>map_shapes_leaflet</h2></a>
+
+<h3>Description</h3>
+
+<p>map_shapes_leaflet
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">map_shapes_leaflet<span class="token punctuation">(</span>shapes<span class="token punctuation">,</span> color <span class="token operator">=</span> <span class="token string">"green"</span><span class="token punctuation">,</span> popup <span class="token operator">=</span> shapes<span class="token operator">$</span>NAME<span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr style="vertical-align: top;">
+<td><code>shapes</code></td>
+<td>
+<p>like from shapes_counties_from_countyfips()</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>color</code></td>
+<td>
+<p>passed to leaflet::addPolygons()</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>popup</code></td>
+<td>
+<p>passed to leaflet::addPolygons()</p>
+</td>
+</tr>
+</table>
+<h3>Value</h3>
+
+<p>html widget from leaflet::leaflet()
+</p>
+
+<hr>
+</div>
+<div class="container manual-page" id="map_shapes_mapview">
+
+<a href="#map_shapes_mapview" class="help-page-title"><h2>map_shapes_mapview</h2></a>
+
+<h3>Description</h3>
+
+<p>map_shapes_mapview
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">map_shapes_mapview<span class="token punctuation">(</span>shapes<span class="token punctuation">,</span> col.regions <span class="token operator">=</span> <span class="token string">"green"</span><span class="token punctuation">,</span> map.types <span class="token operator">=</span> <span class="token string">"OpenStreetMap"</span><span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr style="vertical-align: top;">
+<td><code>shapes</code></td>
+<td>
+<p>like from shapes_counties_from_countyfips()</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>col.regions</code></td>
+<td>
+<p>passed to mapview() from mapview package</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>map.types</code></td>
+<td>
+<p>passed to mapview() from mapview package</p>
+</td>
+</tr>
+</table>
+<hr>
+</div>
+<div class="container manual-page" id="map_shapes_plot">
+
+<a href="#map_shapes_plot" class="help-page-title"><h2>map_shapes_plot</h2></a>
+
+<h3>Description</h3>
+
+<p>map_shapes_plot
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">map_shapes_plot<span class="token punctuation">(</span>shapes<span class="token punctuation">,</span> main <span class="token operator">=</span> <span class="token string">"Selected Census Units"</span><span class="token punctuation">,</span> <span class="token ellipsis">...</span><span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr style="vertical-align: top;">
+<td><code>shapes</code></td>
+<td>
+<p>like from shapes_counties_from_countyfips()</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>main</code></td>
+<td>
+<p>title for map</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>...</code></td>
+<td>
+<p>passed to plot()</p>
+</td>
+</tr>
+</table>
+<h3>Value</h3>
+
+<p>Just draws map using plot()
+</p>
+
+<hr>
+</div>
+<div class="container manual-page" id="mapfast_gg">
+
+<a href="#mapfast_gg" class="help-page-title"><h2>mapfast_gg - A very simple ggplot2 map of points in the USA</h2></a>
+
+<h3>Description</h3>
+
+<p>mapfast_gg - A very simple ggplot2 map of points in the USA
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">mapfast_gg<span class="token punctuation">(</span>
+  mydf <span class="token operator">=</span> data.frame<span class="token punctuation">(</span>lat <span class="token operator">=</span> <span class="token number">40</span><span class="token punctuation">,</span> lon <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  dotsize <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">,</span>
+  ptcolor <span class="token operator">=</span> <span class="token string">"black"</span><span class="token punctuation">,</span>
+  xlab <span class="token operator">=</span> <span class="token string">"Longitude"</span><span class="token punctuation">,</span>
+  ylab <span class="token operator">=</span> <span class="token string">"Latitude"</span><span class="token punctuation">,</span>
+  <span class="token ellipsis">...</span>
+<span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr style="vertical-align: top;">
+<td><code>mydf</code></td>
+<td>
+<p>data.frame with columns named lat and lon</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>dotsize</code></td>
+<td>
+<p>optional, size of dot representing a point</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>ptcolor</code></td>
+<td>
+<p>optional, color of dot</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>xlab</code></td>
+<td>
+<p>optional, text for x label</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>ylab</code></td>
+<td>
+<p>optional, text for y label</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>...</code></td>
+<td>
+<p>optional, passed to <code><a href="https://tidyverse.r-universe.dev/ggplot2/doc/manual.html#labs">ggplot2::labs()</a></code></p>
+</td>
+</tr>
+</table>
+<h3>Value</h3>
+
+<p>a ggplot() object
+</p>
+
+
+<h3>Examples</h3>
+
+<pre class="language-r"><code class="language-r"><span class="token comment">## Not run: </span>
+  mapfast_gg<span class="token punctuation">(</span>EJAM<span class="token operator">::</span>testpoints_10<span class="token punctuation">)</span>
+  
+  pts <span class="token operator">&lt;-</span> read.table<span class="token punctuation">(</span>textConnection<span class="token punctuation">(</span>
+  "lat lon 
+  <span class="token number">39.5624775</span> <span class="token operator">-</span><span class="token number">119.7410994</span> 
+  <span class="token number">42.38748056</span> <span class="token operator">-</span><span class="token number">94.61803333</span>"
+  <span class="token punctuation">)</span><span class="token punctuation">,</span>
+  header <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span> 
+  as.is <span class="token operator">=</span> <span class="token boolean">TRUE</span>
+  <span class="token punctuation">)</span>
+  mapfast_gg<span class="token punctuation">(</span>pts<span class="token punctuation">)</span>
+  <span class="token comment"># str(pts) # lon, not long</span>
+  
+<span class="token comment">## End(Not run)</span></code></pre>
+
+<hr>
+</div>
+<div class="container manual-page" id="mapfastej_counties">
+
+<a href="#mapfastej_counties" class="help-page-title"><h2>mapfastej_counties - Static or HTML/leaflet map of counties</h2></a>
+
+<h3>Description</h3>
+
+<p>mapfastej_counties - Static or HTML/leaflet map of counties
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">mapfastej_counties<span class="token punctuation">(</span>
+  mydf<span class="token punctuation">,</span>
+  colorvarname <span class="token operator">=</span> <span class="token string">"pctile.Demog.Index.Supp"</span><span class="token punctuation">,</span>
+  static_not_leaflet <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
+  main <span class="token operator">=</span> <span class="token string">"Selected Counties"</span><span class="token punctuation">,</span>
+  <span class="token ellipsis">...</span>
+<span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr style="vertical-align: top;">
+<td><code>mydf</code></td>
+<td>
+<p>something like  ejamit(fips = fips_counties_from_statename("Kentucky"), radius = 0)$results_bysite</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>colorvarname</code></td>
+<td>
+<p>colname of indicator in mydf that drives color-coding</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>static_not_leaflet</code></td>
+<td>
+<p>set TRUE to use <code><a href="#map_shapes_plot">map_shapes_plot()</a></code> instead of <code><a href="#map_shapes_leaflet">map_shapes_leaflet()</a></code></p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>main</code></td>
+<td>
+<p>title for map</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>...</code></td>
+<td>
+<p>passed to map_shapes_plot() if relevant</p>
+</td>
+</tr>
+</table>
+<h3>Value</h3>
+
+<p>leaflet html widget (but if static_not_leaflet=T,
+returns just shapes_counties_from_countyfips(mydf$siteid))
+</p>
+
+
+<h3>Examples</h3>
+
+<pre class="language-r"><code class="language-r"><span class="token comment">## Not run: </span>
+ fips_ky <span class="token operator">&lt;-</span> fips_counties_from_statename<span class="token punctuation">(</span><span class="token string">"Kentucky"</span><span class="token punctuation">)</span>
+ x <span class="token operator">&lt;-</span> ejamit<span class="token punctuation">(</span>fips <span class="token operator">=</span> fips_ky<span class="token punctuation">,</span> radius <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">)</span>
+ mapfastej_counties<span class="token punctuation">(</span>x<span class="token operator">$</span>results_bysite<span class="token punctuation">)</span>
+ 
+<span class="token comment">## End(Not run)</span></code></pre>
 
 <hr>
 </div>
@@ -7389,7 +8017,7 @@ See (https://naics.com) for more information on NAICS codes
 </div>
 <div class="container manual-page" id="naics_validation">
 
-<a href="#naics_validation" class="help-page-title"><h2>naics_validation - Validate NAIC uploads</h2></a>
+<a href="#naics_validation" class="help-page-title"><h2>naics_validation - Validate NAICS uploads</h2></a>
 
 <h3>Description</h3>
 
@@ -7399,20 +8027,28 @@ See (https://naics.com) for more information on NAICS codes
 
 <h3>Usage</h3>
 
-<pre class="language-r"><code class="language-r">naics_validation<span class="token punctuation">(</span>NAICS_enter<span class="token punctuation">,</span> NAIC_select<span class="token punctuation">)</span></code></pre>
+<pre class="language-r"><code class="language-r">naics_validation<span class="token punctuation">(</span>naics_enter<span class="token punctuation">,</span> naics_select<span class="token punctuation">)</span></code></pre>
 
 
 <h3>Arguments</h3>
 
-<table><tr style="vertical-align: top;">
-<td><code>NAICS</code></td>
+<table>
+<tr style="vertical-align: top;">
+<td><code>naics_enter</code></td>
 <td>
-<p>upload validate missing and/or improper inputs</p>
+<p>vector of naics</p>
 </td>
-</tr></table>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>naics_select</code></td>
+<td>
+</td>
+</tr>
+</table>
 <h3>Value</h3>
 
-<p>boolean value (valid or not valid)
+<p>boolean value (valid or not valid) - TRUE if
+length of at least one of the two input vectors is &gt; 0
 </p>
 
 <hr>
@@ -7882,7 +8518,9 @@ data.frame<span class="token punctuation">(</span>value <span class="token opera
   x<span class="token punctuation">,</span>
   zone.vector <span class="token operator">=</span> <span class="token keyword">NULL</span><span class="token punctuation">,</span>
   zoneOverallName <span class="token operator">=</span> <span class="token string">"USA"</span><span class="token punctuation">,</span>
-  wts <span class="token operator">=</span> <span class="token keyword">NULL</span>
+  wts <span class="token operator">=</span> <span class="token keyword">NULL</span><span class="token punctuation">,</span>
+  usecollapse <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span>
+  type <span class="token operator">=</span> <span class="token number">7</span>
 <span class="token punctuation">)</span></code></pre>
 
 
@@ -7911,7 +8549,27 @@ mean,   and percentiles, for each zone</p>
 <tr style="vertical-align: top;">
 <td><code>wts</code></td>
 <td>
-<p>not used in EJScreen percentiles anymore</p>
+<p>leave as default since weighted percentiles of blockgroups are not used for EJScreen percentiles anymore</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>usecollapse</code></td>
+<td>
+<p>logical, whether to use collapse::fquantile()
+instead of Hmisc package wtd.quantile and stats pkg quantile,
+to test before fully removing dependency on Hmisc and also speed it up.</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>type</code></td>
+<td>
+<p>DO NOT CHANGE - moot for EJScreen/EJAM - SEE SOURCE CODE - Hmisc pkg wtd.quantile type "1/n" was used here in the past and possibly by EJScreen
+(EJScreen no longer uses weighted percentiles so this is moot for the weighted case)
+but collapse pkg fquantile is now used here to avoid Hmisc dependency
+and fquantile type 4 seems to be the same as Hmisc type "1/n" but that has not been confirmed,
+and this function by default uses fquantile type 1, the inverse of the ECDF however,
+which seems simpler than using type 4 which does linear interpolation between points of the ECDF!
+***  NEED TO CONFIRM IF THAT CREATES A TABLE DIFFERENT THAN WHAT EJSCREEN WOULD CREATE</p>
 </td>
 </tr>
 </table>
@@ -8182,6 +8840,67 @@ in EJAM server for tab showing barplots in Detailed Results
 </p>
 <p>See notes on plots at <code><a href="#plot_barplot_ratios">plot_barplot_ratios()</a></code>
 </p>
+
+<hr>
+</div>
+<div class="container manual-page" id="plot_distance_by_pctd">
+
+<a href="#plot_distance_by_pctd" class="help-page-title"><h2>plot_distance_by_pctd  -  Plot percent demographics within X miles of a site</h2></a>
+
+<h3>Description</h3>
+
+<p>plot_distance_by_pctd  -  Plot percent demographics within X miles of a site
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">plot_distance_by_pctd<span class="token punctuation">(</span>
+  s2b <span class="token operator">=</span> <span class="token keyword">NULL</span><span class="token punctuation">,</span>
+  mysiteid <span class="token operator">=</span> <span class="token keyword">NULL</span><span class="token punctuation">,</span>
+  myvars <span class="token operator">=</span> c<span class="token punctuation">(</span>names_d_count<span class="token punctuation">,</span> names_d_subgroups_count<span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  dpctvar <span class="token operator">=</span> paste0<span class="token punctuation">(</span><span class="token string">"pct"</span><span class="token punctuation">,</span> myvars<span class="token punctuation">)</span>
+<span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr style="vertical-align: top;">
+<td><code>s2b</code></td>
+<td>
+<p>output of <code><a href="#getblocksnearby">getblocksnearby()</a></code></p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>mysiteid</code></td>
+<td>
+<p>one number that is the siteid to look at in s2b</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>myvars</code></td>
+<td>
+<p>a colname of a population count variable in blockgroupstats indicating which to plot, like "hisp" or "lowinc"
+and only works for one indicator at a time so far.</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>dpctvar</code></td>
+<td>
+<p>a colname of usastats and statestats that is the percentage version of myvars, like "pcthisp" or "pctlowinc"</p>
+</td>
+</tr>
+</table>
+<h3>Value</h3>
+
+<p>returns s2b but with more columns in it, like cumpop, cumdpop, pctdwithin
+</p>
+
+
+<h3>Examples</h3>
+
+<pre class="language-r"><code class="language-r">plot_distance_by_pctd<span class="token punctuation">(</span><span class="token punctuation">)</span></code></pre>
 
 <hr>
 </div>
@@ -9136,40 +9855,8 @@ Each column is one indicator (or specifies the percentile).
 
 <pre class="language-r"><code class="language-r">rmost<span class="token punctuation">(</span>
   notremove <span class="token operator">=</span> c<span class="token punctuation">(</span><span class="token string">"rmost"</span><span class="token punctuation">,</span> <span class="token string">"localtree"</span><span class="token punctuation">,</span> <span class="token string">"blockgroupstats"</span><span class="token punctuation">,</span> <span class="token string">"usastats"</span><span class="token punctuation">,</span> <span class="token string">"statestats"</span><span class="token punctuation">,</span>
-    <span class="token string">"bgid2fips"</span><span class="token punctuation">,</span> <span class="token string">"blockid2fips"</span><span class="token punctuation">,</span> <span class="token string">"blockpoints"</span><span class="token punctuation">,</span> <span class="token string">"blockwts"</span><span class="token punctuation">,</span> <span class="token string">"quaddata"</span><span class="token punctuation">)</span>
+    <span class="token string">"bgid2fips"</span><span class="token punctuation">,</span> <span class="token string">"blockid2fips"</span><span class="token punctuation">,</span> <span class="token string">"blockpoints"</span><span class="token punctuation">,</span> <span class="token string">"blockwts"</span><span class="token punctuation">,</span> <span class="token string">"quaddata"</span><span class="token punctuation">,</span> <span class="token string">"bgej"</span><span class="token punctuation">)</span>
 <span class="token punctuation">)</span></code></pre>
-
-<hr>
-</div>
-<div class="container manual-page" id="rrtable">
-
-<a href="#rrtable" class="help-page-title"><h2>rrtable
-Calculate risk ratios of avg E in group D / in everyone not in group D</h2></a>
-
-<h3>Description</h3>
-
-<p>rrtable
-Calculate risk ratios of avg E in group D / in everyone not in group D
-</p>
-
-
-<h3>Usage</h3>
-
-<pre class="language-r"><code class="language-r">rrtable<span class="token punctuation">(</span>x<span class="token punctuation">)</span></code></pre>
-
-
-<h3>Arguments</h3>
-
-<table><tr style="vertical-align: top;">
-<td><code>x</code></td>
-<td>
-<p>blockgroupstats</p>
-</td>
-</tr></table>
-<h3>Value</h3>
-
-<p>table of ratios and max per row and max per col
-</p>
 
 <hr>
 </div>
@@ -9250,12 +9937,12 @@ See <code>?golem::get_golem_options</code> for more details.</p>
 </div>
 <div class="container manual-page" id="setdiff_yx">
 
-<a href="#setdiff_yx" class="help-page-title"><h2>setdiff_yx
+<a href="#setdiff_yx" class="help-page-title"><h2>setdiff_yx - UTILITY - see what is in y not x
 utility just like setdiff except for y,x instead of x,y</h2></a>
 
 <h3>Description</h3>
 
-<p>setdiff_yx
+<p>setdiff_yx - UTILITY - see what is in y not x
 utility just like setdiff except for y,x instead of x,y
 </p>
 
@@ -9268,13 +9955,13 @@ utility just like setdiff except for y,x instead of x,y
 </div>
 <div class="container manual-page" id="setdiff2">
 
-<a href="#setdiff2" class="help-page-title"><h2>setdiff2 aka unshared
+<a href="#setdiff2" class="help-page-title"><h2>setdiff2 aka unshared - UTILITY - see what is only in x or y but not both
 utility just like setdiff except for y,x and also x,y
 Just shows which elements are in one and only one of the sets x and y</h2></a>
 
 <h3>Description</h3>
 
-<p>setdiff2 aka unshared
+<p>setdiff2 aka unshared - UTILITY - see what is only in x or y but not both
 utility just like setdiff except for y,x and also x,y
 Just shows which elements are in one and only one of the sets x and y
 </p>
@@ -9283,6 +9970,525 @@ Just shows which elements are in one and only one of the sets x and y
 <h3>Usage</h3>
 
 <pre class="language-r"><code class="language-r">setdiff2<span class="token punctuation">(</span>x<span class="token punctuation">,</span> y<span class="token punctuation">)</span></code></pre>
+
+<hr>
+</div>
+<div class="container manual-page" id="shape_buffered_from_shapefile">
+
+<a href="#shape_buffered_from_shapefile" class="help-page-title"><h2>shape_buffered_from_shapefile - add buffer around shape</h2></a>
+
+<h3>Description</h3>
+
+<p>shape_buffered_from_shapefile - add buffer around shape
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">shape_buffered_from_shapefile<span class="token punctuation">(</span>shapefile<span class="token punctuation">,</span> radius.miles<span class="token punctuation">,</span> crs <span class="token operator">=</span> <span class="token number">4269</span><span class="token punctuation">,</span> <span class="token ellipsis">...</span><span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr style="vertical-align: top;">
+<td><code>shapefile</code></td>
+<td>
+<p>spatial object like areas at high risk or areas with facilities to be analyzed</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>radius.miles</code></td>
+<td>
+<p>width of buffer to add to shapefile
+(in case dist is a units object, it should be
+convertible to arc_degree if x has geographic coordinates,
+and to st_crs(x)$units otherwise)</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>crs</code></td>
+<td>
+<p>used in st_transform()  default is crs = 4269 or Geodetic CRS NAD83</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>...</code></td>
+<td>
+<p>passed to st_buffer()</p>
+</td>
+</tr>
+</table>
+<h3>Details</h3>
+
+<p>Just a wrapper for <code><a href="https://r-spatial.r-universe.dev/sf/doc/manual.html#geos_unary">sf::st_buffer()</a></code>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="#get_blockpoints_in_shape">get_blockpoints_in_shape()</a></code> <code><a href="#shapefile_from_sitepoints">shapefile_from_sitepoints()</a></code> <a href="#shape_buffered_from_shapefile_points">shape_buffered_from_shapefile_points</a>
+</p>
+
+<hr>
+</div>
+<div class="container manual-page" id="shape_buffered_from_shapefile_points">
+
+<a href="#shape_buffered_from_shapefile_points" class="help-page-title"><h2>shape_buffered_from_shapefile_points - add buffer around shape (points, here)</h2></a>
+
+<h3>Description</h3>
+
+<p>shape_buffered_from_shapefile_points - add buffer around shape (points, here)
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">shape_buffered_from_shapefile_points<span class="token punctuation">(</span>
+  shapefile_points<span class="token punctuation">,</span>
+  radius.miles<span class="token punctuation">,</span>
+  crs <span class="token operator">=</span> <span class="token number">4269</span><span class="token punctuation">,</span>
+  <span class="token ellipsis">...</span>
+<span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr style="vertical-align: top;">
+<td><code>shapefile_points</code></td>
+<td>
+<p>spatial object like areas at high risk or areas with facilities to be analyzed</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>radius.miles</code></td>
+<td>
+<p>width of buffer to add to shapefile_points
+(in case dist is a units object, it should be
+convertible to arc_degree if x has geographic coordinates,
+and to st_crs(x)$units otherwise)</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>crs</code></td>
+<td>
+<p>used in st_transform()  default is crs = 4269 or Geodetic CRS NAD83</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>...</code></td>
+<td>
+<p>passed to st_buffer()</p>
+</td>
+</tr>
+</table>
+<h3>Details</h3>
+
+<p>Just a wrapper for <code><a href="https://r-spatial.r-universe.dev/sf/doc/manual.html#geos_unary">sf::st_buffer()</a></code>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="#get_blockpoints_in_shape">get_blockpoints_in_shape()</a></code> <code><a href="#shapefile_from_sitepoints">shapefile_from_sitepoints()</a></code> <a href="#shape_buffered_from_shapefile_points">shape_buffered_from_shapefile_points</a>
+</p>
+
+<hr>
+</div>
+<div class="container manual-page" id="shapefile_clean">
+
+<a href="#shapefile_clean" class="help-page-title"><h2>shapefile_clean  -  drop invalid rows and warn if all invalid</h2></a>
+
+<h3>Description</h3>
+
+<p>shapefile_clean  -  drop invalid rows and warn if all invalid
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">shapefile_clean<span class="token punctuation">(</span>shp<span class="token punctuation">,</span> crs <span class="token operator">=</span> <span class="token number">4269</span><span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr style="vertical-align: top;">
+<td><code>shp</code></td>
+<td>
+<p>a shapefile object using sf::read_sf()</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>crs</code></td>
+<td>
+<p>used in shp &lt;- sf::st_transform(shp, crs = crs), default is crs = 4269 or Geodetic CRS NAD83</p>
+</td>
+</tr>
+</table>
+<h3>Value</h3>
+
+<p>a shapefile object using sf::read_sf()
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="#shapefile_from_folder">shapefile_from_folder()</a></code>
+</p>
+
+<hr>
+</div>
+<div class="container manual-page" id="shapefile_filepaths_from_folder">
+
+<a href="#shapefile_filepaths_from_folder" class="help-page-title"><h2>shapefile_filepaths_from_folder  -  get list of valid filenames comprising shapefile including paths</h2></a>
+
+<h3>Description</h3>
+
+<p>shapefile_filepaths_from_folder  -  get list of valid filenames comprising shapefile including paths
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">shapefile_filepaths_from_folder<span class="token punctuation">(</span>folder <span class="token operator">=</span> <span class="token keyword">NULL</span><span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table><tr style="vertical-align: top;">
+<td><code>folder</code></td>
+<td>
+<p>path of folder that contains the files (.shp, .shx, .dbf, and .prj)</p>
+</td>
+</tr></table>
+<h3>Value</h3>
+
+<p>string vector of filenames including full paths
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="#shapefile_from_folder">shapefile_from_folder()</a></code>
+</p>
+
+<hr>
+</div>
+<div class="container manual-page" id="shapefile_filepaths_valid">
+
+<a href="#shapefile_filepaths_valid" class="help-page-title"><h2>shapefile_filepaths_valid  -  confirm files have all the extensions .shp, .shx, .dbf, and .prj</h2></a>
+
+<h3>Description</h3>
+
+<p>shapefile_filepaths_valid  -  confirm files have all the extensions .shp, .shx, .dbf, and .prj
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">shapefile_filepaths_valid<span class="token punctuation">(</span>filepaths<span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table><tr style="vertical-align: top;">
+<td><code>filepaths</code></td>
+<td>
+<p>vector of full paths with filenames (types .shp, .shx, .dbf, and .prj) as strings</p>
+</td>
+</tr></table>
+<h3>Value</h3>
+
+<p>logical, indicating if all 4 extensions are found among the filepaths
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="#shapefile_from_folder">shapefile_from_folder()</a></code>
+</p>
+
+<hr>
+</div>
+<div class="container manual-page" id="shapefile_from_filepaths">
+
+<a href="#shapefile_from_filepaths" class="help-page-title"><h2>shapefile_from_filepaths  -  Read shapefile from disk based on the filenames given</h2></a>
+
+<h3>Description</h3>
+
+<p>shapefile_from_filepaths  -  Read shapefile from disk based on the filenames given
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">shapefile_from_filepaths<span class="token punctuation">(</span>filepaths <span class="token operator">=</span> <span class="token keyword">NULL</span><span class="token punctuation">,</span> cleanit <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span> crs <span class="token operator">=</span> <span class="token number">4269</span><span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr style="vertical-align: top;">
+<td><code>filepaths</code></td>
+<td>
+<p>vector of full paths with filenames (types .shp, .shx, .dbf, and .prj) as strings</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>cleanit</code></td>
+<td>
+<p>set to FALSE if you want to skip validation and dropping invalid rows</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>crs</code></td>
+<td>
+<p>if cleanit = TRUE, crs is passed to shapefile_clean()
+default is crs = 4269 or Geodetic CRS NAD83
+Also can check this via x &lt;- sf::st_crs(sf::read_sf()); x$input</p>
+</td>
+</tr>
+</table>
+<h3>Value</h3>
+
+<p>a shapefile object using sf::read_sf()
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="#shapefile_from_folder">shapefile_from_folder()</a></code>
+</p>
+
+<hr>
+</div>
+<div class="container manual-page" id="shapefile_from_folder">
+
+<a href="#shapefile_from_folder" class="help-page-title"><h2>shapefile_from_folder  -  read shapefile from a folder</h2></a>
+
+<h3>Description</h3>
+
+<p>shapefile_from_folder  -  read shapefile from a folder
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">shapefile_from_folder<span class="token punctuation">(</span>folder <span class="token operator">=</span> <span class="token keyword">NULL</span><span class="token punctuation">,</span> cleanit <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span> crs <span class="token operator">=</span> <span class="token number">4269</span><span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr style="vertical-align: top;">
+<td><code>folder</code></td>
+<td>
+<p>path of folder that contains the files (.shp, .shx, .dbf, and .prj)</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>cleanit</code></td>
+<td>
+<p>set to FALSE if you want to skip validation and dropping invalid rows</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>crs</code></td>
+<td>
+<p>passed to shapefile_from_filepaths() default is crs = 4269 or Geodetic CRS NAD83</p>
+</td>
+</tr>
+</table>
+<h3>Value</h3>
+
+<p>a shapefile object using sf::read_sf()
+</p>
+
+
+<h3>Examples</h3>
+
+<pre class="language-r"><code class="language-r"><span class="token comment">## Not run: </span>
+  testfolder <span class="token operator">&lt;-</span> system.file<span class="token punctuation">(</span><span class="token string">"testdata/shapes/Portland_neighborhoods"</span><span class="token punctuation">,</span> package <span class="token operator">=</span> <span class="token string">"EJAM"</span><span class="token punctuation">)</span>
+  testshape <span class="token operator">&lt;-</span> shapefile_from_folder<span class="token punctuation">(</span>testfolder<span class="token punctuation">)</span>
+  
+  testpaths <span class="token operator">&lt;-</span> shapefile_filepaths_from_folder<span class="token punctuation">(</span>testfolder<span class="token punctuation">)</span>
+  testshape <span class="token operator">&lt;-</span> shapefile_from_filepaths<span class="token punctuation">(</span>testpaths<span class="token punctuation">)</span>
+  
+  <span class="token comment">## if interactive(), R user can point to right folder or select the right set of files:</span>
+  <span class="token comment"># testshape &lt;- shapefile_from_filepaths()</span>
+  <span class="token comment"># testshape &lt;- shapefile_from_folder()</span>
+  
+  x <span class="token operator">&lt;-</span> get_blockpoints_in_shape<span class="token punctuation">(</span>testshape<span class="token punctuation">)</span>
+  leaflet<span class="token punctuation">(</span>x<span class="token operator">$</span>polys<span class="token punctuation">)</span> <span class="token percent-operator operator">%&gt;%</span> addTiles<span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token percent-operator operator">%&gt;%</span> addPolygons<span class="token punctuation">(</span>color <span class="token operator">=</span> <span class="token string">"blue"</span><span class="token punctuation">)</span>
+  DT<span class="token operator">::</span>datatable<span class="token punctuation">(</span>out<span class="token operator">$</span>results_bysite<span class="token punctuation">)</span>
+  
+  
+<span class="token comment">## End(Not run)</span></code></pre>
+
+<hr>
+</div>
+<div class="container manual-page" id="shapefile_from_sitepoints">
+
+<a href="#shapefile_from_sitepoints" class="help-page-title"><h2>shapefile_from_sitepoints - convert table of lat,lon points/sites into sf:: shapefile
+Creates a simple feature (sf) dataframe from points</h2></a>
+
+<h3>Description</h3>
+
+<p>shapefile_from_sitepoints - convert table of lat,lon points/sites into sf:: shapefile
+Creates a simple feature (sf) dataframe from points
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">shapefile_from_sitepoints<span class="token punctuation">(</span>sitepoints<span class="token punctuation">,</span> crs <span class="token operator">=</span> <span class="token number">4269</span><span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr style="vertical-align: top;">
+<td><code>sitepoints</code></td>
+<td>
+<p>a data.table or data.frame with columns called lat,lon</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>crs</code></td>
+<td>
+<p>used in st_as_sf() default is crs = 4269 or Geodetic CRS NAD83</p>
+</td>
+</tr>
+</table>
+<h3>Value</h3>
+
+<p>A shapefile via <code><a href="https://r-spatial.r-universe.dev/sf/doc/manual.html#st_as_sf">sf::st_as_sf()</a></code>
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="#get_blockpoints_in_shape">get_blockpoints_in_shape()</a></code> <code><a href="#shapefile_from_sitepoints">shapefile_from_sitepoints()</a></code> <code><a href="#shape_buffered_from_shapefile_points">shape_buffered_from_shapefile_points()</a></code>
+</p>
+
+<hr>
+</div>
+<div class="container manual-page" id="shapes_blockgroups_from_bgfips">
+
+<a href="#shapes_blockgroups_from_bgfips" class="help-page-title"><h2>use API to get boundaries of blockgroups</h2></a>
+
+<h3>Description</h3>
+
+<p>use API to get boundaries of blockgroups
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">shapes_blockgroups_from_bgfips<span class="token punctuation">(</span>
+  bgfips <span class="token operator">=</span> <span class="token string">"010890029222"</span><span class="token punctuation">,</span>
+  outFields <span class="token operator">=</span> <span class="token string">""</span><span class="token punctuation">,</span>
+  myservice <span class="token operator">=</span>
+    c<span class="token punctuation">(</span><span class="token string">"https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Boundaries_2022/FeatureServer/5/query"</span><span class="token punctuation">,</span>
+    <span class="token string">"https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Block_Groups/FeatureServer/0/query"</span><span class="token punctuation">,</span>
+    <span class="token string">"https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/EJScreen_2_21_US_Percentiles_Block_Groups/FeatureServer/0/query"</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>
+<span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr style="vertical-align: top;">
+<td><code>bgfips</code></td>
+<td>
+<p>one or more block group FIPS codes as 12-character strings in a vector</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>outFields</code></td>
+<td>
+<p>can be "*" for all, or can be
+just some variables like SQMI, POPULATION_2020, etc., or none</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>myservice</code></td>
+<td>
+<p>URL of feature service to get shapes from.
+</p>
+<p>"https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/
+EJScreen_2_21_US_Percentiles_Block_Groups/FeatureServer/0/query"
+</p>
+<p>for example provides EJScreen indicator values, NPL_CNT, TSDF_CNT, EXCEED_COUNT_90, etc.</p>
+</td>
+</tr>
+</table>
+<h3>Details</h3>
+
+<p>This is useful mostly for small numbers of blockgroups.
+The EJScreen map services provide other ways to map blockgroups and see EJScreen data.
+</p>
+
+
+<h3>Value</h3>
+
+<p>spatial object via sf::read_sf()
+</p>
+
+<hr>
+</div>
+<div class="container manual-page" id="shapes_counties_from_countyfips">
+
+<a href="#shapes_counties_from_countyfips" class="help-page-title"><h2>use API to get boundaries of US Counties to map them</h2></a>
+
+<h3>Description</h3>
+
+<p>use API to get boundaries of US Counties to map them
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">shapes_counties_from_countyfips<span class="token punctuation">(</span>
+  countyfips <span class="token operator">=</span> <span class="token string">"10001"</span><span class="token punctuation">,</span>
+  outFields <span class="token operator">=</span> <span class="token string">""</span><span class="token punctuation">,</span>
+  myservice <span class="token operator">=</span>
+    c<span class="token punctuation">(</span><span class="token string">"https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Boundaries_2022/FeatureServer/2/query"</span><span class="token punctuation">,</span>
+    <span class="token string">"https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Counties_and_States_with_PR/FeatureServer/0/query"</span><span class="token punctuation">,</span>
+    <span class="token string">"https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/EJScreen_2_22_US_Percentiles_Tracts/FeatureServer/query"</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>
+<span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr style="vertical-align: top;">
+<td><code>countyfips</code></td>
+<td>
+<p>FIPS codes as 5-character strings (or numbers) in a vector</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>outFields</code></td>
+<td>
+<p>can be "*" for all, or can be
+just some variables like SQMI, POPULATION_2020, etc., or none</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>myservice</code></td>
+<td>
+<p>URL of feature service to get shapes from.
+Only default was tested</p>
+</td>
+</tr>
+</table>
+<h3>Value</h3>
+
+<p>spatial object via sf::read_sf()
+</p>
 
 <hr>
 </div>
@@ -9656,14 +10862,11 @@ lat, lon, REGISTRY_ID, NAICS (but see the id_only parameter)
 </div>
 <div class="container manual-page" id="siteid_from_sic">
 
-<a href="#siteid_from_sic" class="help-page-title"><h2>latlon_from_sic - Find EPA-regulated facilities in FRS by SIC code (industrial category)
-Get lat lon, Registry ID, given SIC industry code(s)
-Find all EPA Facility Registry Service (FRS) sites with this exact SIC code (not subcategories)</h2></a>
+<a href="#siteid_from_sic" class="help-page-title"><h2>latlon_from_sic - Find EPA-regulated facilities in FRS by SIC code (industrial category)</h2></a>
 
 <h3>Description</h3>
 
-<p>latlon_from_sic - Find EPA-regulated facilities in FRS by SIC code (industrial category)
-Get lat lon, Registry ID, given SIC industry code(s)
+<p>Get lat lon, Registry ID, given SIC industry code(s)
 Find all EPA Facility Registry Service (FRS) sites with this exact SIC code (not subcategories)
 </p>
 
@@ -10230,13 +11433,13 @@ given data.table with blockid column, get state abbreviation of each - not used?
 </div>
 <div class="container manual-page" id="state_from_fips">
 
-<a href="#state_from_fips" class="help-page-title"><h2>state_from_fips
-Get the State abbreviations of all blockgroups within the input FIPS</h2></a>
+<a href="#state_from_fips" class="help-page-title"><h2>state_from_fips - Get FIPS of ALL BLOCKGROUPS in the States or Counties
+Get the State abbreviations of ALL blockgroups within the input FIPS</h2></a>
 
 <h3>Description</h3>
 
-<p>state_from_fips
-Get the State abbreviations of all blockgroups within the input FIPS
+<p>state_from_fips - Get FIPS of ALL BLOCKGROUPS in the States or Counties
+Get the State abbreviations of ALL blockgroups within the input FIPS
 </p>
 
 
@@ -10451,12 +11654,12 @@ statename is the State name, etc.
 </div>
 <div class="container manual-page" id="states_infer">
 
-<a href="#states_infer" class="help-page-title"><h2>states_infer
+<a href="#states_infer" class="help-page-title"><h2>states_infer - Get table of info on States (from latlon or FIPS)
 Get cleaned table of US State etc. by siteid, from lat/lon, or from FIPS</h2></a>
 
 <h3>Description</h3>
 
-<p>states_infer
+<p>states_infer - Get table of info on States (from latlon or FIPS)
 Get cleaned table of US State etc. by siteid, from lat/lon, or from FIPS
 </p>
 
@@ -11020,9 +12223,10 @@ from something like ejamit(testpoints_100, radius = 1)$results_overall</p>
 
 <pre class="language-r"><code class="language-r">table_gt_format_step2<span class="token punctuation">(</span>
   df<span class="token punctuation">,</span>
-  type <span class="token operator">=</span> <span class="token string">"demog"</span><span class="token punctuation">,</span>
+  type <span class="token operator">=</span> c<span class="token punctuation">(</span><span class="token string">"demog"</span><span class="token punctuation">,</span> <span class="token string">"envt"</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
   my_cell_color <span class="token operator">=</span> <span class="token string">"#dce6f0"</span><span class="token punctuation">,</span>
-  my_border_color <span class="token operator">=</span> <span class="token string">"#aaaaaa"</span>
+  my_border_color <span class="token operator">=</span> <span class="token string">"#aaaaaa"</span><span class="token punctuation">,</span>
+  digits_default <span class="token operator">=</span> <span class="token number">2</span>
 <span class="token punctuation">)</span></code></pre>
 
 
@@ -11050,21 +12254,28 @@ shown in EJScreen reports, as recorded in map_headernames and checked here via v
 </td>
 </tr>
 <tr style="vertical-align: top;">
-<td><code>type, </code></td>
+<td><code>type</code></td>
 <td>
 <p>string - must be demog or envt</p>
 </td>
 </tr>
 <tr style="vertical-align: top;">
-<td><code>my_cell_color, </code></td>
+<td><code>my_cell_color</code></td>
 <td>
 <p>color for table cell fill backgrounds,  can be given as string ('blue') or hex code ('#0070c0')</p>
 </td>
 </tr>
 <tr style="vertical-align: top;">
-<td><code>my_border_color, </code></td>
+<td><code>my_border_color</code></td>
 <td>
 <p>color for table borders and boundaries, can be given as string ('blue') or hex code ('#0070c0')</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>digits_default</code></td>
+<td>
+<p>number of digits to round to if not specified for a given indicator
+(rounding info is drawn from map_headernames$decimals)</p>
 </td>
 </tr>
 </table>
@@ -11274,11 +12485,15 @@ or names of vector elements, within x</p>
 <h3>Examples</h3>
 
 <pre class="language-r"><code class="language-r">table_round<span class="token punctuation">(</span>c<span class="token punctuation">(</span><span class="token number">12.123456</span><span class="token punctuation">,</span> <span class="token number">9</span><span class="token punctuation">,</span> <span class="token keyword">NA</span> <span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">'pm'</span><span class="token punctuation">)</span>
-  
-  table_round<span class="token punctuation">(</span>data.frame<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
-  
-  t<span class="token punctuation">(</span> table_round<span class="token punctuation">(</span>testoutput_ejamit_10pts_1miles<span class="token operator">$</span>results_bysite<span class="token punctuation">[</span><span class="token number">1</span><span class="token operator">:</span><span class="token number">2</span><span class="token punctuation">,</span> c<span class="token punctuation">(</span>
-   <span class="token string">'lat'</span><span class="token punctuation">,</span><span class="token string">'lon'</span><span class="token punctuation">,</span> <span class="token string">'pop'</span><span class="token punctuation">,</span> names_these<span class="token punctuation">,</span> names_ratio_to_avg_these<span class="token punctuation">,</span> names_e_pctile<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">)</span></code></pre>
+
+ x <span class="token operator">&lt;-</span> testoutput_ejamit_10pts_1miles<span class="token operator">$</span>results_bysite<span class="token punctuation">[</span>
+   <span class="token number">1</span><span class="token operator">:</span><span class="token number">2</span><span class="token punctuation">,</span> c<span class="token punctuation">(</span><span class="token string">'lat'</span><span class="token punctuation">,</span><span class="token string">'lon'</span><span class="token punctuation">,</span> <span class="token string">'pop'</span><span class="token punctuation">,</span> names_these<span class="token punctuation">,</span> names_ratio_to_avg_these<span class="token punctuation">,</span> names_e_pctile<span class="token punctuation">)</span><span class="token punctuation">,</span> 
+   with <span class="token operator">=</span> <span class="token boolean">FALSE</span>
+ <span class="token punctuation">]</span>
+
+ table_rounding_info<span class="token punctuation">(</span>names<span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+ table_round<span class="token punctuation">(</span>x<span class="token punctuation">)</span></code></pre>
 
 <hr>
 </div>
@@ -11374,6 +12589,12 @@ from output of ejamit() or doaggregate()</p>
 <p>data.table that is one row per indicator
 </p>
 
+
+<h3>Examples</h3>
+
+<pre class="language-r"><code class="language-r">table_tall_from_overall<span class="token punctuation">(</span>testoutput_ejamit_10pts_1miles<span class="token operator">$</span>results_overall<span class="token punctuation">)</span>
+ table_tall_from_overall<span class="token punctuation">(</span>x<span class="token operator">$</span>results_bysite<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token punctuation">]</span><span class="token punctuation">)</span></code></pre>
+
 <hr>
 </div>
 <div class="container manual-page" id="table_validated_ejamit_row">
@@ -11402,7 +12623,7 @@ This is a first step in formatting results in nice tables
 </p>
 <p>as would come from ejamit(testpoints_10)$results_overall
 </p>
-<p>or testoutput_ejamit_100pts_1miles$results_bysite 1, </p>
+<p>or a single row of testoutput_ejamit_100pts_1miles$results_bysite</p>
 </td>
 </tr></table>
 <h3>Value</h3>
@@ -11475,7 +12696,8 @@ Used by table_xls_from_ejam()
 <tr style="vertical-align: top;">
 <td><code>overall</code></td>
 <td>
-<p>table to save in one tab, from ejamit()$overall, EJAM analysis of indicators overall (one row)</p>
+<p>table to save in one tab, from ejamit()$overall, EJAM analysis of indicators overall (one row),
+but if entire output of ejamit() is passed as if it were overall, function figures out eachsite, etc.</p>
 </td>
 </tr>
 <tr style="vertical-align: top;">
@@ -11666,8 +12888,13 @@ the workbook will be saved locally at that path and name. Warning: it will overw
 <h3>Examples</h3>
 
 <pre class="language-r"><code class="language-r"><span class="token comment">## Not run: </span>
-  wb <span class="token operator">&lt;-</span> table_xls_format<span class="token punctuation">(</span>testoutputs_<span class="token operator">$</span>results_overall<span class="token punctuation">,</span> datasetResults<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">$</span>results_bysite<span class="token punctuation">,</span>
-    saveas <span class="token operator">=</span>  <span class="token string">"results.xlsx"</span><span class="token punctuation">)</span>
+  table_xls_format<span class="token punctuation">(</span>
+    testoutput_ejamit_100pts_1miles<span class="token operator">$</span>results_overall<span class="token punctuation">,</span> 
+    testoutput_ejamit_100pts_1miles<span class="token operator">$</span>results_bysite<span class="token punctuation">,</span>
+    saveas <span class="token operator">=</span>  <span class="token string">"out1.xlsx"</span><span class="token punctuation">)</span>
+ <span class="token comment"># can just pass the whole results of ejamit(), for convenience</span>
+ wb <span class="token operator">&lt;-</span> table_xls_format<span class="token punctuation">(</span>testoutput_ejamit_100pts_1miles<span class="token punctuation">)</span>
+ openxlsx<span class="token operator">::</span>saveWorkbook<span class="token punctuation">(</span>wb<span class="token punctuation">,</span> file <span class="token operator">=</span> <span class="token string">"out2.xlsx"</span><span class="token punctuation">)</span>
 
 <span class="token comment">## End(Not run)</span></code></pre>
 
@@ -12276,7 +13503,7 @@ facility, blockgroup, block, place on the map, or US resident.
   n <span class="token operator">=</span> <span class="token number">10</span><span class="token punctuation">,</span>
   weighting <span class="token operator">=</span> c<span class="token punctuation">(</span><span class="token string">"frs"</span><span class="token punctuation">,</span> <span class="token string">"pop"</span><span class="token punctuation">,</span> <span class="token string">"area"</span><span class="token punctuation">,</span> <span class="token string">"bg"</span><span class="token punctuation">,</span> <span class="token string">"block"</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
   dt <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span>
-  ST_of_blockgroup <span class="token operator">=</span> <span class="token keyword">NULL</span>
+  ST_needed <span class="token operator">=</span> <span class="token keyword">NULL</span>
 <span class="token punctuation">)</span></code></pre>
 
 
@@ -12328,7 +13555,7 @@ facility, blockgroup, block, place on the map, or US resident.
 </td>
 </tr>
 <tr style="vertical-align: top;">
-<td><code>ST_of_blockgroup</code></td>
+<td><code>ST_needed</code></td>
 <td>
 <p>optional, can be a character vector of 2 letter State abbreviations to pick from only some States.</p>
 </td>
@@ -12344,7 +13571,7 @@ any other columns that are in the table used (based on weighting)
 <h3>Examples</h3>
 
 <pre class="language-r"><code class="language-r"><span class="token comment">## Not run: </span>
-mapfast<span class="token punctuation">(</span>testpoints_n<span class="token punctuation">(</span><span class="token number">300</span><span class="token punctuation">,</span> ST_of_blockgroup <span class="token operator">=</span> c<span class="token punctuation">(</span><span class="token string">'LA'</span><span class="token punctuation">,</span><span class="token string">'MS'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">)</span>
+mapfast<span class="token punctuation">(</span>testpoints_n<span class="token punctuation">(</span><span class="token number">300</span><span class="token punctuation">,</span> ST_needed <span class="token operator">=</span> c<span class="token punctuation">(</span><span class="token string">'LA'</span><span class="token punctuation">,</span><span class="token string">'MS'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">)</span>
 n<span class="token operator">=</span><span class="token number">2</span>
 <span class="token keyword">for</span> <span class="token punctuation">(</span>d <span class="token keyword">in</span> c<span class="token punctuation">(</span><span class="token boolean">TRUE</span><span class="token punctuation">,</span><span class="token boolean">FALSE</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
   <span class="token keyword">for</span> <span class="token punctuation">(</span>w <span class="token keyword">in</span> c<span class="token punctuation">(</span><span class="token string">'frs'</span><span class="token punctuation">,</span> <span class="token string">'pop'</span><span class="token punctuation">,</span> <span class="token string">'area'</span><span class="token punctuation">,</span> <span class="token string">'bg'</span><span class="token punctuation">,</span> <span class="token string">'block'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
@@ -12402,13 +13629,13 @@ plotblocksnearby<span class="token punctuation">(</span>s2b_located<span class="
 </div>
 <div class="container manual-page" id="unshared">
 
-<a href="#unshared" class="help-page-title"><h2>setdiff2 aka unshared
+<a href="#unshared" class="help-page-title"><h2>unshared aka setdiff2 - UTILITY - see what is only in x or y but not both
 utility just like setdiff except for y,x and also x,y
 Just shows which elements are in one and only one of the sets x and y</h2></a>
 
 <h3>Description</h3>
 
-<p>setdiff2 aka unshared
+<p>unshared aka setdiff2 - UTILITY - see what is only in x or y but not both
 utility just like setdiff except for y,x and also x,y
 Just shows which elements are in one and only one of the sets x and y
 </p>
@@ -12680,6 +13907,44 @@ clicking Tools, Save Session, Load from File.
     file<span class="token operator">=</span><span class="token string">"./mysavedejscreensession1.json"</span><span class="token punctuation">)</span>
   
 <span class="token comment">## End(Not run)</span></code></pre>
+
+<hr>
+</div>
+<div class="container manual-page" id="url_countyhealthrankings">
+
+<a href="#url_countyhealthrankings" class="help-page-title"><h2>url_countyhealthrankings</h2></a>
+
+<h3>Description</h3>
+
+<p>url_countyhealthrankings
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">url_countyhealthrankings<span class="token punctuation">(</span>fips<span class="token punctuation">,</span> year <span class="token operator">=</span> <span class="token number">2023</span><span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr style="vertical-align: top;">
+<td><code>fips</code></td>
+<td>
+<p>vector of fips codes of counties, 5 characters each, like "10003"</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>year</code></td>
+<td>
+<p>2023</p>
+</td>
+</tr>
+</table>
+<h3>Value</h3>
+
+<p>vector of URLs
+</p>
 
 <hr>
 </div>

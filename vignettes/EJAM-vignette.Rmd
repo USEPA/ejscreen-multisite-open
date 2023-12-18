@@ -18,6 +18,12 @@ knitr::opts_chunk$set(eval = FALSE)
 
 ```{r libraryEJAM, eval = TRUE, echo= FALSE, include= FALSE}
 library(EJAM)
+# dataload_from_pins(
+#   c('blockwts', 'blockpoints', 'blockid2fips'), 
+#    'bgej',     # normally load only if /when needed 
+#   'bgid2fips',  # normally load only if /when needed 
+#   c('frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact"), # normally load only if /when needed
+#   'quaddata', envir = ?????)
 ```
 
 ```{r developernote, echo= FALSE}
@@ -240,7 +246,7 @@ mapfastej(testoutput_ejamit_100pts_1miles) # output, results of EJAM
 
 You can see a map of random blocks in a single State, for example:
 ```{r eval = TRUE, fig.height=6, fig.width=6}
-pts <- testpoints_n(1000, weighting = 'blocks', ST_of_blockgroup = "LA")
+pts <- testpoints_n(1000, weighting = 'blocks', ST_needed = "LA")
 mapfast(pts, radius = 0.1)
 
 ```
@@ -330,7 +336,9 @@ head(sitepoints100, 3)
 # p1k <- testpoints_n(1000)
 # mapfast(p1k)
 
-mapfast(testpoints_n(300, ST_of_blockgroup = c('LA','TX')) )
+mapfast(testpoints_n(300, ST_needed = c('LA','TX'), weighting = 'bg')) 
+# weighting = "frs" would better represent regulated facilities,
+# but would require loading the frs dataset
 ```
 
 
@@ -377,6 +385,7 @@ You can specify sites by NAICS, but it is important to note the FRS lacks NAICS 
 
 ```{r naics_from_any, eval = TRUE}
 naics_from_any("paint and coating", children = T)
+# note latlon_from_naics() requires the frs_by_naics dataset, which it tries to load on demand.
 head(latlon_from_naics(325510)) # has about 1,000 facilities
 
 ## All sectors with this phrase in their NAICS title
@@ -389,6 +398,8 @@ head(latlon_from_naics(325510)) # has about 1,000 facilities
 ### Specify sites by Facility Registry ID
 
 ```{r frs_from_siteid, eval = FALSE}
+# note frs_from_siteid() and latlon_from_regid() require the frs dataset, which they try to load on demand.
+
 frs_from_siteid(c(110071293460, 110000333826))
 
 ## interactively upload file with table of REGISTRY_ID values
@@ -397,18 +408,21 @@ x <- latlon_from_regid(read_csv_or_xl()$REGISTRY_ID)
 ## and run through EJAM
 y <- ejamit(latlon_from_regid(read_csv_or_xl()$REGISTRY_ID), radius = 1)
 #  # still debugging Island Areas validation here!
-
 ```
 
 ### Specify sites by Facility ID (program system ID)
 
 ```{r latlon_from_programid, eval = TRUE}
+# note latlon_from_programid() requires the frs_by_programid dataset, which it tries to load on demand.
+
 latlon_from_programid(c("XJW000012435", "00768SRTRSROAD1"))
 ```
 
 ### Specify sites by EPA regulatory program or EPA database
 
 ```{r latlon_from_program, eval = TRUE}
+# note latlon_from_programid() requires the frs and frs_by_programid datasets, which it tries to load on demand.
+
 head(cbind(Count.of.facilities = sort(table(frs_by_programid$program), decreasing = T)), 20)
 
 latlon_from_program("CAMDBS")[,1:6]
@@ -417,6 +431,8 @@ latlon_from_program("CAMDBS")[,1:6]
 ### Specify sites by EPA MACT Subpart in Clean Air Act
 
 ```{r latlon_from_mactsubpart, eval = TRUE}
+# note latlon_from_mactsubpart() requires the frs_by_mact dataset, which it tries to load on demand
+
 latlon_from_mactsubpart("OOOO")
 
 nrow(latlon_from_mactsubpart("OOOO", include_if_no_latlon = FALSE))
@@ -437,7 +453,9 @@ nrow(latlon_from_mactsubpart("OOOO", include_if_no_latlon = TRUE))
 Quick map of EPA-regulated facilities in one industrial category, which you can click on to see popup windows about sites.
 
 ```{r mapfast(frs_from_naics), eval = TRUE, fig.height=5, fig.width=5}
-mapfast(frs_from_naics("smelt")) # may be slow the 1st time, if it lazyloads frs dataset
+# note frs_from_naics() requires the frs dataset, which it tries to load on demand.
+
+mapfast(frs_from_naics("smelt")) # may be slow the 1st time, if it loads frs dataset
 ```
 
 (but note that this FRS dataset lacks NAICS for most facilities!)
@@ -607,49 +625,55 @@ cbind(as.list(out2$results_overall))
 
 You can upload polygons in a shapefile, and use EJAM to analyze them. See the Shiny app.
 
-#### Counties as the places to compare - DEBUGGING STILL
+
+#### Counties as the places to compare
 
 You can compare places defined by FIPS code, such as a group of US Counties.
 
+Compare all Counties in a State, using EJAM indicators
 ```{r counties_fips, eval = FALSE}
-# Compare all Counties in a State, using EJAM indicators
 
+# Get FIPS of each county in Delaware
 mystate <- "Delaware"
-fips_counties_from_statename(mystate)
+cfips <- fips_counties_from_statename(mystate)
 
-# debugging still...
-# x <- ejamit(fips = fips_counties_from_statename(mystate)) # radius not used
-
-#round(t(x$results_summarized$rows)[,1:6],2)
-#t(x$results_bysite[ , c(
-#  'siteid', 'pop', names_d_subgroups_ratio_to_state_avg), with = F])
+## You could launch a web browser tab for each of the counties,
+##  to see each of the County reports from EJScreen, like this:
 #
-#mapfast(x$results_bysite, 
-#        column_names = c(
-#  'siteid', 'pop', names_d_subgroups_ratio_to_state_avg), 
-#        labels = c(
-#          'FIPS', 'Pop', names_d_subgroups_ratio_to_state_avg_friendly))
+# sapply(url_ejscreen_report(areaid = cfips), browseURL)
 
-#x$results_bysite$ratio.to.avg.Demog.Index
+## Analyze EJ stats for each county in the State
 
- 
-# cnames <- get.county.info(x$results_bysite$siteid)$countyname
+x <- ejamit(fips = cfips) # radius not used
+DT::datatable(x$results_bysite, escape = F)
+
+table_tall_from_overall(x$results_overall)
+
+t(x$results_bysite[ , c(
+ 'siteid', 'pop', names_d_subgroups_ratio_to_state_avg), with = F])
+
+mapfastej_counties(x$results_bysite)
+
+ cnames <- fips2countyname(x$results_bysite$siteid)
 #cnames <- c("Kent County", "New Castle County", "Sussex County")
 #cnames <- gsub(" County", "", cnames)
 
-#barplot(x$results_bysite$pctlowinc, names.arg = cnames, 
-#        main = paste0('% Low Income by County in ', mystate))
+barplot(x$results_bysite$pctlowinc, names.arg = cnames,
+       main = paste0('% Low Income by County in ', mystate))
 
 # Another example
-#mystate <- "Maryland"
-#vname <- "% low income"
-#xmd <- ejamit(fips = fips_counties_from_statename(mystate))
-#ggblanket::gg_col(data = xmd$results_bysite,
-#                  y = pctlowinc,
-#                  x = siteid, 
-#                  title = paste0(vname, ' by County in ', mystate),
-#                  y_title = vname
-#                  )
+mystate <- "Maryland"
+vname <- "% low income"
+xmd <- ejamit(fips = fips_counties_from_statename(mystate))
+ggblanket::gg_col(data = xmd$results_bysite,
+                 y = pctlowinc,
+                 x = siteid,
+                 title = paste0(vname, ' by County in ', mystate),
+                 y_title = vname
+                 )
+
+mapfastej_counties(xmd$results_bysite, 'state.pctile.pctlowinc')
+
 ```
 
 ### Get granular results step by step, and view details

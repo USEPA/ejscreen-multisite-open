@@ -5,13 +5,11 @@
 \title{dataload_from_pins - download / load datasets from pin board}
 \usage{
 dataload_from_pins(
-  varnames = c("blockwts", "quaddata", "blockpoints", "blockid2fips", "bgid2fips",
-    "bgej"),
+  varnames = c(c("blockwts", "blockpoints", "blockid2fips"), "quaddata"),
   boardfolder = "Mark",
   auth = "auto",
   server = "https://rstudio-connect.dmap-stage.aws.epa.gov",
   envir = globalenv(),
-  folder_local_source = "./data/",
   justchecking = FALSE
 )
 }
@@ -28,9 +26,6 @@ Note if auth = "envvar" then it looks for CONNECT_SERVER to get name of server w
 needs to be the full url starting with https:// - see help for board_connect}
 
 \item{envir}{if needed to specify environment other than default}
-
-\item{folder_local_source}{path of local folder to
-look in for locally saved copies in case pins board is not reachable by user.}
 
 \item{justchecking}{can set to TRUE to just see a list of what pins are stored in that board}
 }

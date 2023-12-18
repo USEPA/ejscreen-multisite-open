@@ -1,4 +1,4 @@
-## unit tests for EJAM::frs_is_valid
+## unit tests for frs_is_valid
 ## Author: Sara Sokolinski
 
 # first I downloaded an FRS EPA query CSV file 
