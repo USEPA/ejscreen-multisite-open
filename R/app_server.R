@@ -2781,6 +2781,9 @@ app_server <- function(input, output, session) {
   
   output$summ_hist_ind <- renderUI({
     
+    req(input$include_ejindexes)
+    req(input$summ_hist_data)
+    
     if((input$include_ejindexes == "TRUE")){
       
       if(input$summ_hist_data == 'pctile'){
@@ -2823,7 +2826,7 @@ app_server <- function(input, output, session) {
     
     # req(data_summarized()) # it used to say this was required here but i dont think it is anymore
     req(data_processed())
-    
+    req(input$summ_hist_ind)
     ## set font sizes
     ggplot_theme_hist <- theme(
       plot.title = ggplot2::element_text(size = 18, hjust = 0.5),
@@ -3059,7 +3062,7 @@ app_server <- function(input, output, session) {
       popstr <- prettyNum(total_pop(), big.mark=',')
       locationstr <- paste0("Residents within ",
              rad, " mile", ifelse(rad > 1, "s", ""),
-             " of any of the ", NROW(data_processed()$results_bysite)," selected points")
+             " of any of the ", NROW(data_processed()$results_bysite[data_processed()$results_bysite$valid == T,])," selected points")
         
       ## generate full HTML using external functions
       full_page <- build_community_report(
