@@ -1851,10 +1851,12 @@ app_server <- function(input, output, session) {
           color = circle_color, fillColor = circle_color, 
           fill = TRUE, weight = input$circleweight_in,
           #group = 'circles',
-          popup = popup_from_any(
+          #popup = popup_from_any(
+          popup = popup_from_df(
             data_processed()$results_bysite %>% 
               dplyr::mutate(dplyr::across(
-                dplyr::where(is.numeric), \(x) round(x, digits = 3))), 
+                dplyr::where(is.numeric), \(x) round(x, digits = 3))) %>% 
+              dplyr::select(-valid, -invalid_msg), 
             labels = popup_labels),
           popupOptions = popupOptions(maxHeight = 200)
         )} else {
@@ -1945,7 +1947,8 @@ app_server <- function(input, output, session) {
           #}
           
           #popup_vec = popup_from_any(d_upload)
-          popup_vec = popup_from_df(d_upload)
+          popup_vec = popup_from_df(d_upload %>% 
+                                      dplyr::select(-valid, -invalid_msg))
       
           suppressMessages(
             leafletProxy(mapId = 'an_leaf_map', session, data = d_upload) %>%
