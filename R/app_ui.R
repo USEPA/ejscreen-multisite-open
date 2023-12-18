@@ -411,13 +411,14 @@ app_ui  <- function(request) {
                    ## MAP of uploaded points ####
                    
                    h4('Selected Location Map'),
-                   helpText('Red circles indicate overlapping sites.'),
+                   #helpText('Red circles indicate overlapping sites.'),
                    
                        ## output: show leaflet map of uploaded points
                    shinycssloaders::withSpinner(
                      leaflet::leafletOutput(outputId = 'an_leaf_map', 
                                             height = '500px', 
-                                            width = '100%')
+                                            width = '100%'
+                                            )
                    ),
                    
                    br(), 
@@ -549,7 +550,12 @@ app_ui  <- function(request) {
                                      plotOutput(outputId = 'view1_summary_plot', width = '100%', height = '400px')  # {{ demog_plot }} goes in .html template
                                    )
                                  )
-                               )
+                               ),
+                              tags$div(
+                                shiny::downloadButton(
+                                  outputId = 'community_download',
+                                  label = 'Download Community Report', class = 'usa-button'), style = 'text-align: center;'
+                              ),
                               ),  # end report tab
                              
             
@@ -595,11 +601,11 @@ app_ui  <- function(request) {
        ### _output: Interactive Table of Sites/Results ## ##
        shinycssloaders::withSpinner(
          DT::DTOutput(outputId = 'view3_table', width = '100%')
-       ),
-       ### _MAP of 1 site clicked in table ####
-       shinycssloaders::withSpinner(
-         leaflet::leafletOutput(outputId = 'v3_sitemap')
-       )
+       )#,
+       # ### _MAP of 1 site clicked in table ####
+       # shinycssloaders::withSpinner(
+       #   leaflet::leafletOutput(outputId = 'v3_sitemap')
+       # )
                                             ), # end site by site table tabPanel
        
        

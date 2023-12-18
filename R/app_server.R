@@ -2489,52 +2489,53 @@ app_server <- function(input, output, session) {
   ## *MAP to find a site clicked in site-by-site table ####
   
   # specify what data will be mapped
-  data_sitemap <- reactiveVal(NULL)
+  # data_sitemap <- reactiveVal(NULL)
+  # 
+  # observeEvent(input$view3_table_rows_selected, {
+  #   req(data_processed())
+  #   #data_sitemap(data_uploaded()[input$view3_table_rows_selected,])
+  #   if (submitted_upload_method() == 'SHP') {
+  #     data_shp <- dplyr::inner_join(data_uploaded()[, c('siteid', 'geometry')], data_processed()$results_bysite[input$view3_table_rows_selected],
+  #                                   by = c('siteid' = 'siteid'))
+  #     print(input$view3_table_rows_selected)
+  #     print(data_shp)
+  #     data_sitemap(data_shp)
+  #   } else {
+  #     ## link selected row to doaggregate by site output for mapping
+  #     data_sitemap(data_processed()$results_bysite[siteid %in% input$view3_table_rows_selected])
+  #     data_sitemap(data_processed()$results_bysite[ejam_uniq_id %in% input$view3_table_rows_selected])
+  #   }
+  #   
+  # })
   
-  observeEvent(input$view3_table_rows_selected, {
-    req(data_processed())
-    #data_sitemap(data_uploaded()[input$view3_table_rows_selected,])
-    if (submitted_upload_method() == 'SHP') {
-      data_shp <- dplyr::inner_join(data_uploaded()[, c('siteid', 'geometry')], data_processed()$results_bysite[input$view3_table_rows_selected],
-                                    by = c('siteid' = 'siteid'))
-      print(input$view3_table_rows_selected)
-      print(data_shp)
-      data_sitemap(data_shp)
-    } else {
-      ## link selected row to doaggregate by site output for mapping
-      data_sitemap(data_processed()$results_bysite[siteid %in% input$view3_table_rows_selected])
-    }
-    
-  })
-  
-  output$v3_sitemap <- leaflet::renderLeaflet({
-    ## wait for row to be selected
-    ## note: summary rows are currently mapped but don't have a point location to map
-    validate( need(!is.null(input$view3_table_rows_selected),
-                   'Select a specific site in the table to see its location') )
-    
-    ## zoom in from original map to show single point (can zoom out and see others)
-    
-    #orig_leaf_map() #%>%
-    # leaflet::setView(lat = data_sitemap()$lat, lng = data_sitemap()$lon, zoom = 8)
-    
-    if (submitted_upload_method() == 'SHP') {
-      ## alternate: plot single point individually on map (cannot zoom out and see others)
-      leaflet(data_sitemap() %>% st_as_sf() %>% st_zm() %>% as('Spatial') ) %>%
-        #setView(lat = data_sitemap()$lat, lng = data_sitemap()$lon, zoom = 13) %>%
-        addTiles() %>%
-        addPolygons(popup = popup_from_any(data_sitemap() %>% sf::st_drop_geometry()),
-                    popupOptions = popupOptions(maxHeight =  200))  
-    } else {
-      ## alternate: plot single point individually on map (cannot zoom out and see others)
-      leaflet(data_sitemap()) %>%
-        setView(lat = data_sitemap()$lat, lng = data_sitemap()$lon, zoom = 13) %>%
-        addTiles() # %>%     ######## *** 
-      # addCircles(radius = 1 *  meters_per_mile, popup = popup_from_any(data_sitemap()), ######## *** 
-      #            popupOptions = popupOptions(maxHeight =  200))    ######## *** 
-    }
-    
-  })
+  # output$v3_sitemap <- leaflet::renderLeaflet({
+  #   ## wait for row to be selected
+  #   ## note: summary rows are currently mapped but don't have a point location to map
+  #   validate( need(!is.null(input$view3_table_rows_selected),
+  #                  'Select a specific site in the table to see its location') )
+  #   
+  #   ## zoom in from original map to show single point (can zoom out and see others)
+  #   
+  #   #orig_leaf_map() #%>%
+  #   # leaflet::setView(lat = data_sitemap()$lat, lng = data_sitemap()$lon, zoom = 8)
+  #   
+  #   if (submitted_upload_method() == 'SHP') {
+  #     ## alternate: plot single point individually on map (cannot zoom out and see others)
+  #     leaflet(data_sitemap() %>% st_as_sf() %>% st_zm() %>% as('Spatial') ) %>%
+  #       #setView(lat = data_sitemap()$lat, lng = data_sitemap()$lon, zoom = 13) %>%
+  #       addTiles() %>%
+  #       addPolygons(popup = popup_from_any(data_sitemap() %>% sf::st_drop_geometry()),
+  #                   popupOptions = popupOptions(maxHeight =  200))  
+  #   } else {
+  #     ## alternate: plot single point individually on map (cannot zoom out and see others)
+  #     leaflet(data_sitemap()) %>%
+  #       setView(lat = data_sitemap()$lat, lng = data_sitemap()$lon, zoom = 13) %>%
+  #       addTiles() # %>%     ######## *** 
+  #     # addCircles(radius = 1 *  meters_per_mile, popup = popup_from_any(data_sitemap()), ######## *** 
+  #     #            popupOptions = popupOptions(maxHeight =  200))    ######## *** 
+  #   }
+  #   
+  # })
   #############################################################################  # 
   #. ## ##
   ## *BARPLOTS interactive   ####
