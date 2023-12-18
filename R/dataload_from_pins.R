@@ -34,10 +34,9 @@
 #'   regardless of whether they were specified among varnames. 
 #' @export
 #'
-dataload_from_pins <- function(varnames = c('blockwts', 'quaddata', 'blockpoints', 'blockid2fips', 'bgid2fips', 'bgej', 
+dataload_from_pins <- function(varnames = c('blockwts', 'quaddata', 'blockpoints', 'bgej'), 
   # 'bgid2fips',  # load only if /when needed?
-  # c('frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact"),  # load only if /when needed?
-  'quaddata'), 
+  # c('frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact"),  # load only if /when needed? 
     boardfolder = "Mark", 
     auth = "auto",
     server = "https://rstudio-connect.dmap-stage.aws.epa.gov",
@@ -47,17 +46,16 @@ dataload_from_pins <- function(varnames = c('blockwts', 'quaddata', 'blockpoints
     justchecking = FALSE) {
   
   if (auth == "rsconnect") {
-    board <- try(
+    board <- tryCatch(
       pins::board_connect(auth = "rsconnect") # ignore server default here. use server and key already configured for rsconnect.
-      )
-    if(inherits(board, 'try-error')){
-    }
+      , error = function(e) e)
+    
     # server <- gsub("https://", "", server)
   } else {
-    board <- try(pins::board_connect(server = server, auth = auth))
+    board <- tryCatch(pins::board_connect(server = server, auth = auth),
+                      error = function(e) e)
   }
-  if (inherits(board, "try-error")) {
-    warning("UNABLE TO CONNECT TO PINS BOARD")
+  if (inherits(board, "error")) {
     board_available <- FALSE
     dataload_from_local(varnames, folder_local_source = folder_local_source, ext='arrow')
     
