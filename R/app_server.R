@@ -2388,7 +2388,7 @@ app_server <- function(input, output, session) {
           }
           if(!('communityreport.css' %in% list.files(tempdir()))){
             file.copy(from = app_sys('report/community_report/communityreport.css'),
-                      to = file.path(tempdir(), 'community.css'), overwrite = TRUE)          
+                      to = file.path(tempdir(), 'communityreport.css'), overwrite = TRUE)          
           }
           temp_comm_report <- file.path(tempdir(), paste0("comm_report",x,".html"))
           
@@ -2408,7 +2408,7 @@ app_server <- function(input, output, session) {
         }
        
         #showModal(modalDialog("Thanks for pushing the button"))
-      }, ignoreInit = TRUE)
+      })
   
   ## EXCEL DOWNLOAD  ####
   
