@@ -294,6 +294,8 @@ app_server <- function(input, output, session) {
       disable_buttons[['SHP']] <- FALSE
       shp_proj$valid <- !sf::st_is_empty(shp_proj)
       shp_proj <- cbind(ejam_uniq_id = 1:nrow(shp_proj), shp_proj)
+      shp_proj$invalid_msg <- NA
+      shp_proj$invalid_msg[is.na(shp_proj$geometry)] <- 'bad geometry'
       class(shp_proj) <- c(class(shp_proj), 'data.table')
       shp_proj
     }
@@ -389,6 +391,10 @@ app_server <- function(input, output, session) {
       
       sitepoints <- sitepoints %>% 
         latlon_df_clean() #%>%   # This does latlon_infer() and latlon_as.numeric() and latlon_is.valid()
+      
+      sitepoints$invalid_msg <- NA
+      
+      sitepoints$invalid_msg[is.na(sitepoints$lon) | is.na(sitepoints$lat)] <- 'bad lat/lon coordinates'
       #data.table::as.data.table()
       cat("ROW COUNT after latlon_df_clean(): ", NROW(sitepoints), "\n")
       disable_buttons[['latlon']] <- FALSE
@@ -439,7 +445,13 @@ app_server <- function(input, output, session) {
       ## add ejam_uniq_id and valid T/F columns
       sitepoints[, ejam_uniq_id := .I]
       setcolorder(sitepoints, 'ejam_uniq_id')
-      site_is_invalid(sitepoints, type = 'FRS')
+      #site_is_invalid(sitepoints, type = 'FRS')
+      sitepoints[,valid := !(REGISTRY_ID == 'NA' | is.na(lon) | is.na(lat))]
+      sitepoints$invalid_msg <- NA
+  
+      sitepoints$invalid[sitepoints$REGISTRY_ID == 'NA'] <- 'bad REGISTRY_ID'
+      sitepoints$invalid_msg[is.na(sitepoints$lon) | is.na(sitepoints$lat)] <- 'bad lat/lon coordinates'
+      sitepoints
        } else {
       invalid_alert[['FRS']] <- 0 # hides the invalid site warning
       an_map_text_pts[['FRS']] <- NULL # hides the count of uploaded sites
@@ -498,6 +510,9 @@ app_server <- function(input, output, session) {
         
         sitepoints[, ejam_uniq_id := .I]
         setcolorder(sitepoints, 'ejam_uniq_id')
+        sitepoints$invalid_msg <- NA
+        sitepoints$invalid[is.na(sitepoints$NAICS)] <- 'bad NAICS Code'
+        sitepoints$invalid_msg[is.na(sitepoints$lon) | is.na(sitepoints$lat)] <- 'bad lat/lon coordinates'
         # print(sitepoints)
         showNotification('Points submitted successfully!', duration = 1)
       }
@@ -512,6 +527,9 @@ app_server <- function(input, output, session) {
     cat("SITE COUNT VIA NAICS from frs_from_naics: ", NROW(sitepoints), "\n")
     ## assign final value to data_up_naics reactive variable
     sitepoints <- sitepoints %>% latlon_df_clean()
+    sitepoints$invalid_msg <- NA
+    sitepoints$invalid[is.na(sitepoints$NAICS)] <- 'bad NAICS Code'
+    sitepoints$invalid_msg[is.na(sitepoints$lon) | is.na(sitepoints$lat)] <- 'bad lat/lon coordinates'
     cat("SITE COUNT VIA NAICS after latlon_df_clean: ", NROW(sitepoints), "\n")
     disable_buttons[['NAICS']] <- FALSE
     sitepoints
@@ -581,6 +599,9 @@ app_server <- function(input, output, session) {
       pgm_out <- pgm_out %>% 
         latlon_df_clean()
       
+      pgm_out$invalid_msg <- NA
+      pgm_out$invalid_msg[pgm_out$REGISTRY_ID == 'NA'] <- 'bad REGISTRY_ID'
+      pgm_out$invalid_msg[is.na(pgm_out$lon) | is.na(pgm_out$lat)] <- 'bad lat/lon coordinates'
       #} else if (input$program_ul_type == 'dropdown') {
     #} 
     ## return output dataset
@@ -605,6 +626,10 @@ app_server <- function(input, output, session) {
       ## clean so that any invalid latlons become NA
       pgm_out <- pgm_out %>% 
         latlon_df_clean()
+      
+      pgm_out$invalid_msg <- NA
+      pgm_out$invalid_msg[pgm_out$REGISTRY_ID == 'NA'] <- 'bad REGISTRY_ID'
+      pgm_out$invalid_msg[is.na(pgm_out$lon) | is.na(pgm_out$lat)] <- 'bad lat/lon coordinates'
     #}
     ## return output dataset
     cat("SITE COUNT VIA PROGRAM ID: ", NROW(pgm_out), "\n")
@@ -644,6 +669,9 @@ app_server <- function(input, output, session) {
         sitepoints[, `:=`(ejam_uniq_id = .I, 
                           valid = !is.na(lon) & !is.na(lat))]
         setcolorder(sitepoints, 'ejam_uniq_id')
+        sitepoints$invalid_msg <- NA
+        sitepoints$invalid[is.na(sitepoints$SIC)] <- 'bad SIC Code'
+        sitepoints$invalid_msg[is.na(sitepoints$lon) | is.na(sitepoints$lat)] <- 'bad lat/lon coordinates'
         # print(sitepoints)
         if (rlang::is_empty(sitepoints) | nrow(sitepoints) == 0) {
           ################ Should output something saying no valid results returned ######## #
@@ -658,6 +686,9 @@ app_server <- function(input, output, session) {
         sitepoints[, `:=`(ejam_uniq_id = .I, 
                         valid = !is.na(lon) & !is.na(lat))]
         setcolorder(sitepoints, 'ejam_uniq_id')
+        sitepoints$invalid_msg <- NA
+        sitepoints$invalid[is.na(sitepoints$SIC)] <- 'bad SIC Code'
+        sitepoints$invalid_msg[is.na(sitepoints$lon) | is.na(sitepoints$lat)] <- 'bad lat/lon coordinates'
         showNotification('Points submitted successfully!', duration = 1)
       }
     } else {
@@ -781,6 +812,9 @@ app_server <- function(input, output, session) {
       mact_out[, `:=`(ejam_uniq_id = .I, 
                       valid = !is.na(lon) & !is.na(lat))]
       setcolorder(mact_out, 'ejam_uniq_id')
+      
+      mact_out$invalid_msg <- NA
+      mact_out$invalid_msg[is.na(lon) | is.na(lat)] <- 'bad lat/lon coordinates'
       ## return output dataset
       mact_out
     }
@@ -1323,8 +1357,15 @@ app_server <- function(input, output, session) {
     ## get blocks in FIPS   ####
     
     if (submitted_upload_method() == 'FIPS') {  # if FIPS, do everything in 1 step right here.
-      
-      out <- ejamit(fips = data_uploaded(), 
+      d_upload <- data_uploaded()
+      fips_valid <- sapply(d_upload, function(x) !all(is.na(fips_bg_from_anyfips(x))))
+      d_upload <- data.table(ejam_uniq_id=d_upload, valid = fips_valid)
+      #d_upload[, ejam_uniq_id := .I]
+      #setcolorder(d_upload, 'ejam_uniq_id')
+      d_upload$invalid_msg <- NA
+      d_upload$invalid_msg[!d_upload$valid] <- 'bad FIPS code'
+      print('final made it here pt. 1')
+      out <- ejamit(fips = d_upload$ejam_uniq_id[fips_valid], 
                     silentinteractive = TRUE,
                     radius = 999,
                     include_ejindexes = (input$include_ejindexes == "TRUE"),
@@ -1334,7 +1375,15 @@ app_server <- function(input, output, session) {
                     avoidorphans = input$avoidorphans,
                     maxradius = input$maxradius
       )
-      
+      if(is.null(out)){
+        validate('No valid blockgroups found matching these FIPS codes.')
+      } else {
+        out$results_bysite <- merge(d_upload[, .(ejam_uniq_id, valid, invalid_msg)],
+                                    out$results_bysite, 
+                                    by='ejam_uniq_id', all=T)
+      }
+      print('final made it here pt. 2')
+     # out
       ################################################# # 
     } else { #  everything other than FIPS code analysis
       #############################################################################  # 
@@ -1378,6 +1427,8 @@ app_server <- function(input, output, session) {
        # data_uploaded()[!(ejam_uniq_id %in% sites2blocks$ejam_uniq_id),'valid'] <- F
         dup <- data_uploaded()
         dup[,valid := ejam_uniq_id %in% sites2blocks$ejam_uniq_id]
+       
+        dup$invalid_msg[!(dup$ejam_uniq_id %in% sites2blocks$ejam_uniq_id)] <- 'no blocks found nearby'
         data_uploaded <- dup
       } # end LAT LON finding blocks nearby, now ready for latlon and shapefiles to do aggregation
       #############################################################################  # 
@@ -1421,6 +1472,8 @@ app_server <- function(input, output, session) {
     dup <- data_uploaded()
     #dup[,valid := ejam_uniq_id %in% out$results_bysite$ejam_uniq_id]
     dup$valid <- dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id
+    dup$invalid_msg[!(dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id)] <- 'dropped from doaggregate'
+    
     data_uploaded <- dup
     # provide sitepoints table provided by user aka data_uploaded(), (or could pass only lat,lon and ST -if avail- not all cols?)
     # and doaggregate() decides where to pull ST info from - 
@@ -1451,11 +1504,11 @@ app_server <- function(input, output, session) {
                                         'EPA_PROGRAM_sel','NAICS','SIC')){
       #print(names(data_uploaded()))
       #print(head(names(data_processed()$results_bysite)))
-      out$results_bysite <- merge(data_uploaded()[, .(ejam_uniq_id, valid)],
+      out$results_bysite <- merge(data_uploaded()[, .(ejam_uniq_id, valid, invalid_msg)],
                                   out$results_bysite, 
                                   by='ejam_uniq_id', all=T)
     } else if(submitted_upload_method() == 'SHP'){
-      out$results_bysite <- merge(data_uploaded()[, c('ejam_uniq_id','valid')],
+      out$results_bysite <- merge(data_uploaded()[, c('ejam_uniq_id','valid','invalid_msg')],
                                   #merge(data_uploaded()[, .(ejam_uniq_id, valid)],
                                   out$results_bysite, 
                                   by='ejam_uniq_id', all=T) %>% 
@@ -2176,14 +2229,14 @@ app_server <- function(input, output, session) {
     # --------------------------------------------------- #
     # cols_to_select <- names(data_processed)
     # friendly_names <- longnames???
-    cols_to_select <- c('ejam_uniq_id', #'siteid', 
+    cols_to_select <- c('ejam_uniq_id', 'invalid_msg',#'siteid', 
                         'pop', 'Community Report',
                         'EJScreen Report', 'EJScreen Map', 'ECHO report', # 'ACS Report', 
                         names_d, names_d_subgroups,
                         names_e #, 
                         # no names here corresponding to number above x threshold, state, region ??
     )
-    friendly_names <- c('Site ID', 'Est. Population', 'Community Report',
+    friendly_names <- c('Site ID', 'Invalid Reason','Est. Population', 'Community Report',
                         'EJScreen Report', 'EJScreen Map', 'ECHO report', #'ACS Report', 
                         names_d_friendly, names_d_subgroups_friendly, 
                         names_e_friendly)
@@ -2213,6 +2266,10 @@ app_server <- function(input, output, session) {
       dplyr::mutate(index = row_number()) %>%
       rowwise() %>%
       dplyr::mutate(
+        pop = ifelse(valid == T, pop, NA),
+        # `EJScreen Report` = ifelse(valid == T, `EJScreen Report`, NA),
+        # `ECHO Report` = ifelse(valid == T, `ECHO Report`, NA),
+        # `EJScreen Map` = ifelse(valid == T, `EJScreen Map`, NA),
         `Community Report` = ifelse(valid == T, shinyInput(actionButton, 1, id=paste0('button_', index), label = "Generate", 
                                         onclick = paste0('Shiny.onInputChange(\"select_button',index,'\",  this.id)' )
                                         ), '')
@@ -2241,14 +2298,16 @@ app_server <- function(input, output, session) {
       ## sort by Site ID - as numeric index
       #dplyr::arrange(siteid) %>% 
       #dplyr::arrange(dplyr::desc(pop)) %>% 
-      dplyr::mutate(pop = prettyNum(round(pop), big.mark = ',')) %>% 
+      dplyr::mutate(Number.of.variables.at.above.threshold.of.90 = ifelse(is.na(pop), NA,
+                                                                          Number.of.variables.at.above.threshold.of.90)) %>% 
+      dplyr::mutate(pop = ifelse(is.na(pop), NA, prettyNum(round(pop), big.mark = ','))) %>% 
       dplyr::left_join(stateinfo %>% dplyr::select(ST, statename, REGION), by = 'ST') %>% 
       dplyr::select(-ST, -Max.of.variables)
     
     colnames(dt_final) <- friendly_names
     
     dt_final <- dt_final %>% 
-      dplyr::relocate(c(State, 'EPA Region', '# of indicators above 90% threshold'), .before = 2) # *** this cutoff should be dynamic, set by probs.default.values etc./ inputs
+      dplyr::relocate(c('Invalid Reason',State, 'EPA Region', '# of indicators above 90% threshold'), .before = 2) # *** this cutoff should be dynamic, set by probs.default.values etc./ inputs
     
     ## set # of indicators above threshold to NA if population = 0
     dt_final <- dt_final %>%

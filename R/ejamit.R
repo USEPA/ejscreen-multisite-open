@@ -199,6 +199,9 @@ ejamit <- function(sitepoints,
         inshiny = inshiny,
         need_blockwt = need_blockwt
       )
+      if(nrow(mysites2blocks) == 0){
+        return(NULL)
+      }
       # this should have site = each FIPS code (such as each countyfips), and otherwise same outputs as getblocksnearby()
       if (!silentinteractive) {cat('Aggregating at each FIPS Census unit and overall.\n')}
       out <- suppressWarnings(
@@ -319,10 +322,10 @@ ejamit <- function(sitepoints,
   
   if (!is.null(fips)) {
     # analyzing by FIPS not lat lon values
-    
+    areatype <- fipstype(fips)
     if (!(all(areatype %in% c("blockgroup", "tract", "city", "county")))) {warning("FIPS must be one of 'blockgroup', 'tract', 'city', 'county' for the EJScreen API")}
     out$results_bysite[ , `:=`(
-      `EJScreen Report` = url_ejscreen_report(   areaid   = fips, as_html = T),
+      `EJScreen Report` = url_ejscreen_report(   areaid   = fips, areatype = areatype, as_html = T),
       `EJScreen Map`    = url_ejscreenmap(       wherestr = fips, as_html = T),
       # `ACS Report`      = url_ejscreen_acs_report(lat = out$results_bysite$lat, lon = out$results_bysite$lon, radius = radius, as_html = T),
       `ECHO report` = echolink
