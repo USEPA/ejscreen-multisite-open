@@ -1555,15 +1555,18 @@ app_server <- function(input, output, session) {
     }
     #}
     newcolnames <- c(
+      'valid','invalid_msg',
       "EJScreen Report", 
       "EJScreen Map", 
       # "ACS Report", 
       "ECHO report"
     )
+
     # put those up front as first columns
-    setcolorder(out$results_bysite, neworder = newcolnames)
+    setcolorder(out$results_bysite, neworder = c('ejam_uniq_id', newcolnames))
     #setcolorder(out$results_bysite, neworder = newcolnames)
-    out$longnames <- c(newcolnames, out$longnames)
+    # move ejam_uniq_id to front of longnames vector
+    out$longnames <- c('ejam_uniq_id',newcolnames, out$longnames[out$longnames != 'ejam_uniq_id'])
     
     #############################################################################  # 
     
@@ -2433,6 +2436,7 @@ app_server <- function(input, output, session) {
         
       } else {
         keepcols <- rep(TRUE, NCOL(data_processed()$results_overall))
+        keepcols2 <- rep(TRUE, NCOL(data_processed()$results_bysite))
       }
       
       if ("ready to do this as a function" == "remove this when ready to switch") {
@@ -2453,28 +2457,30 @@ app_server <- function(input, output, session) {
         wb_out <- table_xls_format(
           # note they seem to be data.frames, not data.tables, at this point, unlike how ejamit() had been returning results.
           overall   = data_processed()$results_overall[ , ..keepcols], # needs ..  # 1 row with overall results aggregated across sites
-          eachsite  = data_processed()$results_bysite[  , ..keepcols], # needs ..  # 1 row per site
-          longnames = data_processed()$longnames[           keepcols], # not need ..       # 1 row, but full plain English column names.  keepcols here should be selecting cols not rows. 
+          eachsite  = data_processed()$results_bysite[  , ..keepcols2], # needs ..  # 1 row per site
+          longnames = data_processed()$longnames[           keepcols2], # not need ..       # 1 row, but full plain English column names.  keepcols here should be selecting cols not rows. 
           
           # *** NOTE:  data_processed()$results_bybg_people  # Do not provide this to xlsx by default. It is huge and for expert users only,
           # ***    but useful to create a plot of distance by group. Perhaps that could be created here to avoid passing the entire large table to table_xls_format() just for the plot. ***
           #  And want to give Option of getting the very large tab full of data_processed()$results_bybg_people  ...only for expert users it is useful
           #  Avoid making copies since that slows it down, unless an expert user knows they need it. 
-          
-          
-          hyperlink_colnames = c("EJScreen Report", "EJScreen Map" ),  # need to ensure these get formatted right to work as links in Excel
+
+
+          #mapadd = TRUE,
+
+          hyperlink_colnames = c("EJScreen Report", "EJScreen Map" ,'ECHO report'),  # need to ensure these get formatted right to work as links in Excel
           # heatmap_colnames=names(table_as_displayed)[pctile_colnums], # can use defaults
           # heatmap_cuts=c(80, 90, 95), # can use defaults
           # heatmap_colors=c('yellow', 'orange', 'red') # can use defaults
           ## optional, shiny-specific arguments to go in 'Plot' and 'Notes' sheets
           summary_plot   = v1_summary_plot(),
-          ok2plot = input$ok2plot,
+          ok2plot = FALSE, #input$ok2plot,
           analysis_title = input$analysis_title,
           buffer_desc    = "Selected Locations", 
           radius_or_buffer_in_miles = input$bt_rad_buff,
           radius_or_buffer_description = radius_or_buffer_description,
           # saveas = fname,
-          testing = input$testing
+          testing = FALSE#input$testing
         )
       }    
       ## save file and return for downloading - or do this within table_xls_format( , saveas=fname) ?
