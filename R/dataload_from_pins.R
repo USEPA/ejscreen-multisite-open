@@ -1,21 +1,26 @@
 #' dataload_from_pins - download / load datasets from pin board
 #' @details 
-#'   This does work:
+#'   This does work if on VPN and if credentials already set up for the user doing this:
 #'   
 #'   board <- pins::board_connect(auth = "rsconnect") 
 #'   
-#'   assuming that credentials are set up for the user doing this.
+#'   This does work if that is true plus the two environment variables were created:
 #'   
-#'   This does work:
+#'   board <- pins::board_connect(auth = 'manual', 
 #'   
-#'   board <- pins::board_connect(auth = 'manual', server = Sys.getenv("CONNECT_SERVER"), key = Sys.getenv("CONNECT_API_KEY")) 
+#'     server = Sys.getenv("CONNECT_SERVER"), 
 #'   
-#'   if   Sys.setenv(CONNECT_SERVER = "https://rstudio-connect.dmap-stage.aws.epa.gov")
+#'     key = Sys.getenv("CONNECT_API_KEY")
+#'     
+#'   ) 
 #'   
-#'   and if  CONNECT_API_KEY  was set to the API key created already.
+#'     after Sys.setenv(CONNECT_SERVER = "https://rstudio-connect.dmap-stage.aws.epa.gov")
+#'   
+#'     and   Sys.setenv(CONNECT_API_KEY =  correct-API-key-goes-here  )
 #'   
 #'   
-#' @param varnames character vector of names of R objects to get from board
+#' @param varnames character vector of names of R objects to get from board, 
+#'   or set this to "all" to load all of them
 #' @param boardfolder if needed to specify a different folder than default
 #' @param auth See help documentation for [pins::board_connect()]
 #' @param server if needed to specify a server other than default (which might be 
@@ -24,27 +29,36 @@
 #'   needs to be the full url starting with https:// - see help for board_connect 
 #' @param envir if needed to specify environment other than default
 #' @param justchecking can set to TRUE to just see a list of what pins are stored in that board
+#' @param getall set to TRUE to get all 
 #'
 #' @return a vector of names of objects downloaded if justchecking = FALSE, which excludes those 
 #'   already in environment so not re-downloaded and excludes those not found in pin board. 
-#'   If justchecking = TRUE, returns vector of names of ALL objects found in pin board,
+#'   If justchecking = TRUE, returns vector of names of ALL objects found in specified pin board,
 #'   regardless of whether they are already in the environment, and 
-#'   regardless of whether they were specified among varnames. 
+#'   regardless of whether they were specified among varnames, or are related to EJAM at all. 
 #' @export
 #'
 dataload_from_pins <- function(varnames = c(
-  c('blockwts', 'blockpoints', 'blockid2fips'), 
-  # , 'bgej',     # load only if /when needed?
-  # 'bgid2fips',  # load only if /when needed?
-  # c('frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact"),  # load only if /when needed?
-  'quaddata'
-), 
+  c('blockwts', 'blockpoints', 'blockid2fips', "quaddata"), 
+  'bgej',      # load only if /when needed
+  'bgid2fips', # load only if /when needed
+  c('frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact")  # load only if /when needed
+)[1:4], 
 boardfolder = "Mark", 
 auth = "auto",
 server = "https://rstudio-connect.dmap-stage.aws.epa.gov",
 # server = "rstudio-connect.dmap-stage.aws.epa.gov", 
 envir = globalenv(), 
 justchecking = FALSE) {
+  
+  if ('all' %in% tolower(varnames)) {
+    varnames <- c(
+      c('blockwts', 'blockpoints', 'blockid2fips', "quaddata"), 
+      'bgej',      
+      'bgid2fips', 
+      c('frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact")
+    )
+  }
   
   if (justchecking) {
     dataload_from_local(varnames = varnames, envir = envir, justchecking = TRUE) # this will display in console some info on where vars exist 
