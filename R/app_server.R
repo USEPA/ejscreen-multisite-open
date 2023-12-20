@@ -2382,7 +2382,7 @@ app_server <- function(input, output, session) {
           popstr <- prettyNum(round(data_processed()$results_bysite$pop[x]), big.mark=',')
           locationstr <- paste0(data_processed()$results_bysite[x,]$radius.miles, ' Mile Ring Centered at ',
                                 data_processed()$results_bysite[x,]$lat, ', ',
-                                data_processed()$results_bysite[x,]$lon, '<br>', 'Area in Sq. Miles: ',
+                                data_processed()$results_bysite[x,]$lon, '<br>', 'Area in Square Miles: ',
                                 round(pi* data_processed()$results_bysite[x,]$radius.miles^2,2)
           )
           if(!('main.css' %in% list.files(tempdir()))){
@@ -2390,8 +2390,14 @@ app_server <- function(input, output, session) {
                       to = file.path(tempdir(), 'main.css'), overwrite = TRUE)          
           }
           if(!('communityreport.css' %in% list.files(tempdir()))){
-            file.copy(from = app_sys('report/community_report/communityreport.css'),
+            file.copy(from = 'inst/report/community_report/communityreport.css',#app_sys('report/community_report/communityreport.css'),
                       to = file.path(tempdir(), 'communityreport.css'), overwrite = TRUE)          
+          }
+          
+          if(!('EPA_logo_white.png') %in% list.files(file.path(tempdir(), 'www'))){
+            dir.create(file.path(tempdir(), 'www'))
+            file.copy(from = 'www/EPA_logo_white.png',
+                      to = file.path(tempdir(), 'www', 'EPA_logo_white.png'), overwrite = TRUE)
           }
           temp_comm_report <- file.path(tempdir(), paste0("comm_report",x,".html"))
           

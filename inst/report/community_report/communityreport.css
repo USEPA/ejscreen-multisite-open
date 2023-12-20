@@ -50,7 +50,8 @@
   
   #header-secondary-background { 
   background-color: #71bf44;
-    width: 1090px;
+  width: 1090px;
+  /*width: 90%;*/
   height: 210px;
   display: inline-block;
   position: absolute;
@@ -62,6 +63,7 @@
   #header-primary-background { 
   background-color: #0e98d7;
   width: 1079px;
+  /*width: 90%;*/
   height: 220px;
   display: inline-block;
   border-radius: 0 0 50px 0;

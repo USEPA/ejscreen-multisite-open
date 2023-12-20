@@ -25,7 +25,7 @@ fill_tbl_row <- function(output_df, var_value, var_name){
     } else {
       cur_val <- output_df[, cur_var] #round(output_df[,cur_var],2)
     }
-    txt <- txt <- paste0(txt, '\n','<td headers="data-indicators-table-',
+    txt <- paste0(txt, '\n','<td headers="data-indicators-table-',
                          hdr_names[j],'">',
                          cur_val,'</td>')
     
@@ -59,7 +59,7 @@ fill_tbl_row_ej <- function(output_df, var_value, var_name){
     } else {
       cur_val <- output_df[, cur_var]#round(output_df[,cur_var],2)
     }
-    txt <- txt <- paste0(txt, '\n','<td headers="data-indicators-table-',
+    txt <- paste0(txt, '\n','<td headers="data-indicators-table-',
                          hdr_names[j],'">',
                          cur_val,'</td>')
     
@@ -106,9 +106,9 @@ fill_tbl_full <- function(output_df){
   var_values_e <- c('pm','o3','dpm','cancer','resp','rsei','traffic.score','pctpre1960',
                   'proximity.npl','proximity.rmp','proximity.tsdf','ust','proximity.npdes')
   
-  var_names_e <- c('Particulate Matter&nbsp;&nbsp;(μg/m<span class="table-superscript"><sup>3</sup></span>)',
+  var_names_e <- c('Particulate Matter&nbsp;&nbsp;(&mu;g/m<span class="table-superscript"><sup>3</sup></span>)',
                  'Ozone&nbsp;&nbsp;(ppb)',
-                 'Diesel Particulate Matter&nbsp;&nbsp;(μg/m<span class="table-superscript"><sup>3</sup></span>)',
+                 'Diesel Particulate Matter&nbsp;&nbsp;(&mu;g/m<span class="table-superscript"><sup>3</sup></span>)',
                  'Air Toxics Cancer Risk*&nbsp;&nbsp;(lifetime risk per million)',
                  'Air Toxics Respiratory HI*',
                  'Toxic Releases to Air',
@@ -249,9 +249,9 @@ fill_tbl_row_subgroups <- function(output_df, var_value, var_name){
     } else {
       cur_val <- round(100*output_df[, cur_var],1) #round(output_df[,cur_var],2)
     }
-    txt <- txt <- paste0(txt, '\n','<td headers="data-indicators-table-',
+    txt <-  paste0(txt, '\n','<td headers="data-indicators-table-',
                          hdr_names[j],'">',
-                         cur_val,'</td>')
+                         cur_val,'%','</td>')
     
   }
   txt <- paste0(txt, '\n','</tr>')
@@ -364,6 +364,9 @@ generate_html_header <- function( analysis_title, totalpop, locationstr, in_shin
   # img_html <- paste0('<img src="',app_sys('report/community_report/EPA_logo_white.png'),
   #                    '" alt="EPA logo" width="110" height="35" style="position: absolute; left: 950px; top: ',shift_hbd+90,'px">')
   # 
+  img_html <- paste0('<img src="', 'www/EPA_logo_white.png',
+                     '" alt="EPA logo" width="110" height="35" style="position: absolute; left: 820px; top: ',shift_hbd+70,'px">')
+
   
   paste0(' 
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@500;600" rel="stylesheet">
@@ -376,7 +379,7 @@ generate_html_header <- function( analysis_title, totalpop, locationstr, in_shin
 <div id="header-primary-background" ', 'style="top: ',shift_hpb,'px;"','></div> 
 <div id="header-background-detail" ', 'style="top: ',shift_hbd,'px;"','></div>',
 
-#img_html,
+img_html,
 '<h1 id="title" tabindex="0" style="white-space: nowrap; position: absolute; color: white;left: 140px; top: ',shift_hbd+80,'px">EJAM Community Report</h1>
 <p style="
             color: white;
@@ -408,7 +411,7 @@ generate_html_header <- function( analysis_title, totalpop, locationstr, in_shin
          <div style="width: 45%; float:left">
   
     <h2 id="placename" style="
-                 font-size: 45px;padding-left: 50px;max-width: 100%;line-height: 1.15em;text-align: center;max-height: 115px;margin: 0;
+                 font-size: 45px;padding-left: 50px;max-width: 1000px;line-height: 1.15em;text-align: center;max-height: 115px;margin: 0;
                  ">', analysis_title , '</h2> 
   </div>',
 '<div style="width: 55%; float:right">
