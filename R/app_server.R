@@ -1395,17 +1395,20 @@ app_server <- function(input, output, session) {
       ## get blocks in POLYGONS / SHAPEFILES ####
       
       if (submitted_upload_method() == "SHP") {
+        shp_valid <- data_uploaded()[data_uploaded()$valid==T, ] # *** remove this if shapefile_clean() will do it
+        
         if (input$bt_rad_buff > 0) {
           #if (!silentinteractive) {
             cat('Adding buffer around each polygon.\n')
             #}
           
-          shp_valid <- data_uploaded()[data_uploaded()$valid==T, ] # *** remove this if shapefile_clean() will do it
 
           shp <- shape_buffered_from_shapefile(
             shapefile = shp_valid, 
             radius.miles =  input$bt_rad_buff
           ) # default crs
+        } else {
+          shp <- shp_valid
         }
         sites2blocks <- (get_blockpoints_in_shape(shp))$pts
         d_upload     <- sites2blocks
