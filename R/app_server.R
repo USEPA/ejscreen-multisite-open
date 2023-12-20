@@ -2479,7 +2479,7 @@ app_server <- function(input, output, session) {
           #  Avoid making copies since that slows it down, unless an expert user knows they need it. 
 
 
-          #mapadd = TRUE,
+          mapadd = TRUE,
 
           hyperlink_colnames = c("EJScreen Report", "EJScreen Map" ,'ECHO report'),  # need to ensure these get formatted right to work as links in Excel
           # heatmap_colnames=names(table_as_displayed)[pctile_colnums], # can use defaults
@@ -2487,7 +2487,9 @@ app_server <- function(input, output, session) {
           # heatmap_colors=c('yellow', 'orange', 'red') # can use defaults
           ## optional, shiny-specific arguments to go in 'Plot' and 'Notes' sheets
           summary_plot   = v1_summary_plot(),
-          ok2plot = FALSE, #input$ok2plot,
+          ok2plot = T, #input$ok2plot,
+          plot_distance_by_group = TRUE,
+          bybg = data_processed()$results_bybg_people,
           analysis_title = input$analysis_title,
           buffer_desc    = "Selected Locations", 
           radius_or_buffer_in_miles = input$bt_rad_buff,
