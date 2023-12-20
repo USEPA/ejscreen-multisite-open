@@ -1,5 +1,9 @@
 ## code to prepare `frsprogramcodes` dataset goes here
 
+# may need to confirm these are still unchanged.
+
+# and may need to update the counts !!!
+
 # Key Media programs ECHO uses to limit queries, and code found in frs dataset for that program:
 #   
 # 1 NPDES (ICIS-NPDES) = NPDES
