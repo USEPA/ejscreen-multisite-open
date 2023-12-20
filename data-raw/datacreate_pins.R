@@ -1,9 +1,7 @@
 #################################################################### #
-
 # create pins board and save large data files there in .arrow format
-
-
 #################################################################### #
+
 # See documentation on pins ####
 # as a way to store data 
 #
@@ -16,6 +14,8 @@
 # GET DATASETS ####
 # 
 # Get them manually from where created. 
+
+##################################### # 
 #  The block datasets were created via  EJAM/data-raw/datacreate_blockwts.R  and other code.
 # and originally were in package called EJAMblockdata 
 # and bgej happens to be here:
@@ -24,40 +24,18 @@
 # load("~/../Downloads/bgej.rda")
 # > object.size(bgej)
 # 123466744 bytes
+
+##################################### # 
+#  frs, and frs_by_programid and 
+# frs_by_sic and frs_by_naics and frs_by_mact  are much smaller files. 
+# Updated/created using  EJAMfrsdata package functions
+#  as used in script in  EJAM/data-raw/datacreate_frs_.R
 #
+# frs datasets once created and in memory, were written to pins board with script below.
 
-# Also need to have frs, and frs_by_programid 
-# which were in EJAM/data/  and created by EJAM package scripts in data-raw and/or code from EJAMfrsdata package.
-# frs_by_sic and frs_by_naics and frs_by_mact  are much smaller files. and frsprogramcodes.rda is tiny and not a table so cannot use .arrow for it
-
-## library(## EJAMfrsdata)
-# mydir <- "~/../Downloads/arrow_frs"
-# if (!dir.exists(mydir)) {dir.create(mydir)}
-# if (!exists("alreadygot")) {alreadygot <- FALSE; mytemp <- tempdir()}
-# frs_update_datasets(folder = mytemp, # default would use a tempdir() but not return its name
-#                     downloaded_and_unzipped_already = alreadygot,
-#                     folder_save_as_arrow = mydir, 
-#                     save_as_arrow_frs              = TRUE,
-#                     save_as_arrow_frs_by_programid = TRUE,
-#                     save_as_arrow_frs_by_mact      = TRUE,
-#                     save_as_arrow_frs_by_naics     = TRUE,
-#                     save_as_arrow_frs_by_sic       = TRUE,
-#                     save_as_data_frs              = FALSE,
-#                     save_as_data_frs_by_mact      = FALSE,
-#                     save_as_data_frs_by_naics     = FALSE,
-#                     save_as_data_frs_by_programid = FALSE,
-#                     save_as_data_frs_by_sic       = FALSE)
-# alreadygot <- TRUE
-# dir(mydir)
-# rm(mydir)
-# 
-# frs_vars <- c('frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact")
-# fold <- mydir
-# for (varname in frs_vars) {
-#   fname <- paste0(varname, ".arrow")
-#   assign(varname, value = arrow::read_ipc_file(file = file.path(fold, fname)))
-# }
-
+##################################### # 
+# (frsprogramcodes.rda is tiny and not a table so cannot use .arrow for it and not in pins board
+#  - see EJAM/data-raw/datacreate_frsprogramcodes.R )
 
 #################################################################### #
 # CREATE/SPECIFY BOARD ####
@@ -65,6 +43,8 @@
 # instead of storing in aws dmap data commons
 library(pins)
 board <- pins::board_connect(auth = "auto")   # uses  "rsconnect"
+# confirm you can see it:
+board %>% pins::pin_browse("Mark")
 
 #################################################################### #
 # WRITE DATA TO BOARD ####

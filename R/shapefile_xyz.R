@@ -1,3 +1,13 @@
+
+# shapefile_from_folder()
+# shapefile_filepaths_from_folder()
+# shapefile_filepaths_valid()
+# shapefile_from_filepaths()
+# shapefile_clean()
+# shapefile_from_sitepoints()
+# shape_buffered_from_shapefile()
+# shape_buffered_from_shapefile_points()
+
 ############################################################################################## #
 
 #' shapefile_from_folder  -  read shapefile from a folder
