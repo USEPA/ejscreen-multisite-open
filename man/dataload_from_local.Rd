@@ -11,7 +11,7 @@ dataload_from_local(
   ext = c(".arrow", ".rda")[1],
   fun = c("arrow::read_ipc_file", "load")[1],
   envir = globalenv(),
-  folder_local_source = "./data/",
+  folder_local_source = NULL,
   justchecking = FALSE,
   testing = FALSE
 )
