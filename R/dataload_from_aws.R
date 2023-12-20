@@ -45,7 +45,7 @@
 #' @param folder_local_source path of folder (not ending in forward slash) to 
 #'   look in for locally saved copies during development 
 #'   to avoid waiting for download from a server. 
-#' @seealso [datapack()] [dataload_from_aws()] [dataload_from_package()] [indexblocks()] [.onAttach()] 
+#' @seealso [datapack()] [dataload_from_pins()] [dataload_from_local()] [dataload_from_package()] [indexblocks()] [.onAttach()] 
 #' @return nothing - just loads data into environment (unless justchecking=T)
 #' 
 #'

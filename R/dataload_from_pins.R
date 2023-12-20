@@ -50,14 +50,9 @@ boardfolder = "Mark",
 auth = "auto",
 server = "https://rstudio-connect.dmap-stage.aws.epa.gov",
 # server = "rstudio-connect.dmap-stage.aws.epa.gov", 
-folder_local_source = './data/', # or "~/../Downloads"
+folder_local_source = NULL, # './data/', # or "~/../Downloads"
 envir = globalenv(), 
 justchecking = FALSE) {
-  
-  if (missing(folder_local_source) & substr(Sys.getenv("COMPUTERNAME"),1,6) == "LZ11MC") {
-    # during development, when on this particular computer, use this particular local folder to look in for datasets:
-    folder_local_source <- "~/../Downloads"
-  }
   
   if ('all' %in% tolower(varnames)) {
     varnames <- c(
@@ -69,7 +64,7 @@ justchecking = FALSE) {
   }
   
   if (justchecking) {
-    dataload_from_local(varnames = varnames, envir = envir, justchecking = TRUE) # this will display in console some info on where vars exist 
+    dataload_from_local(varnames = varnames, envir = envir, justchecking = TRUE, folder_local_source = folder_local_source) # this will display in console some info on where vars exist 
   }
   
   if (auth == "rsconnect") {

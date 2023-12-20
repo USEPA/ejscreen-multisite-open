@@ -160,7 +160,7 @@ require(EJAM)
 
 To work in the RStudio console, you need to load the datasets (which are stored in AWS Data Commons, at least during EJAM development).
 ```{r dataload_from_aws, eval = TRUE}
-dataload_from_aws()
+dataload_from_pins()
 # It takes some time (maybe 30 to 60 seconds) for the large downloads, while EJAM is still in development.
 ```
 
@@ -171,7 +171,7 @@ indexblocks()
 
 You can save a little time if you first save those datasets locally and in later sessions have EJAM read them from your local drive instead of re-downloading from AWS.
 ```{r eval = FALSE}
-dataload_from_aws() # do this once, then save data locally so future sessions start faster
+dataload_from_pins() # do this once, then save data locally so future sessions start faster
 dir.create("~/mydata") # for example
 datawrite_to_local(folder_local_source = "~/mydata")
 
@@ -558,7 +558,7 @@ NROW(frs_from_naics(naics_from_any("chem")$code))
 ### Key Functions underlying EJAM
 
 -   **run_app()** to launch the web app locally
-    - A couple of functions help load data files, like dataload_from_local(), dataload_from_aws(), etc.
+    - A couple of functions help load data files, like dataload_from_local(), dataload_from_pins(), etc.
     - Files with lat/lon data may be imported with latlon_from_anything () or read_csv_or_xl()
     - Several functions help work with lat/lon pairs: latlon_df
 

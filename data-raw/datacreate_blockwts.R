@@ -97,6 +97,9 @@ datawrite_to_aws(justchecking = T, ext = '.rda',   varnames = 'blockwts')
 # block_radius_miles
 # dataload_from_aws(varnames = "blockwts", ext=".rda") 
 # dataload_from_aws()
+
+# or see dataload_from_pins()
+
  ##################
 
 #  

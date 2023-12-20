@@ -15,7 +15,7 @@ plot_distance_by_pctd <- function(s2b = NULL, mysiteid = NULL, myvars = c(names_
   
   # library(data.table)
   # library(EJAM)
-  # dataload_from_aws() # to get blockid2fips, etc.
+  # dataload_from_pins() # to get blockid2fips, etc.
    ####### parameters # 
   
 if (is.null(s2b)) {  

@@ -7,9 +7,9 @@
 # ------------------------ ____ Get packages, functions, data ---------------------------------  ####
 library(shiny) # remove?
 # LOAD data and INDEX BLOCKS ####
-##         Note this duplicates code in .onAttach()
+##         Note this would duplicate code in .onAttach()
 # EJAM ::
-#dataload_from_aws()  # SLOW STEP !! loads only missing ones # see ?dataload_from_aws for details 
+#dataload_from_aws()  # was a SLOW STEP !! loads only missing ones # see ?dataload_from_aws for details 
 # dataload_from_pins(varnames = c('bgej','bgid2fips', 'blockpoints','blockwts','quaddata'),
 #                    folder_local_source = './data/'
 #                       )

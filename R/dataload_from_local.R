@@ -24,9 +24,18 @@ dataload_from_local <- function(varnames = c(
   ext = c(".arrow", ".rda")[1],
   fun = c("arrow::read_ipc_file", "load")[1],
   envir = globalenv(),  # should it be parent or global or package EJAM envt ??
-                                folder_local_source = './data/',#"~/../Downloads", 
+                                folder_local_source = NULL, # './data/', # "~/../Downloads", 
   justchecking = FALSE, 
   testing = FALSE) {
+  
+  if (is.null(folder_local_source) & substr(Sys.getenv("COMPUTERNAME"),1,6) == "LZ11MC") {
+    # during development, when on this particular computer, use this particular local folder to look in for datasets:
+    folder_local_source <- "~/../Downloads"
+  } else {
+    if (is.null(folder_local_source)) {
+      folder_local_source <- "./data/" # default for other development machines
+    }
+  }
   
   # if (interactive()) {
   if (!is.character(fun)) {stop('must specify function in fun parameter as a quoted character string')}

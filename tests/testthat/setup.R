@@ -2,7 +2,7 @@
 cat("Starting setup.R for testing")
 
 # # This script gets run before any test, so fixtures created here will be available to all the tests.
-# The file already does library(EJAM) and that should do .onAttach() and dataload_from_aws() and indexblocks()
+# The file already does library(EJAM) and that should do .onAttach() and dataload_from_pins() and indexblocks()
 
 # When tests try to test the shiny app, the app should handle doing source(system.file("global.R", package = "EJAM")).
 

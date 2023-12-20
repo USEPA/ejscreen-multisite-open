@@ -37,7 +37,7 @@ Please see the vignette at <EJAM-vignette.html> and web format documentation of 
 \item \strong{\code{\link[=run_app]{run_app()}}} Launch the web app (R Shiny interface)
 \item \strong{\code{\link[=ejamit]{ejamit()}}} Get results (tables, maps, plots) without the web app interface, largely by using these key functions:
 \enumerate{
-\item Getting key datasets and indexing blocks, if not yet done, via \code{\link[=dataload_from_aws]{dataload_from_aws()}} and \code{\link[=indexblocks]{indexblocks()}}
+\item Getting key datasets and indexing blocks, if not yet done, via \code{\link[=dataload_from_pins]{dataload_from_pins()}} and \code{\link[=indexblocks]{indexblocks()}}
 \item \strong{\code{\link[=getblocksnearby]{getblocksnearby()}}}  Very fast method to buffer, identifying which blocks are
 within specified distance of point(s) like sites/facilities, and get distance to each.
 \item \strong{\code{\link[=doaggregate]{doaggregate()}}} Summarize demographic and environmental indicators from \strong{\link{blockgroupstats}}.rda (see below)
