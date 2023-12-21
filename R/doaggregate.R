@@ -1651,6 +1651,24 @@ results_bysite <- merge(results_bysite, results_bysite_minmax, on = "ejam_uniq_i
     # blockcount_overall = blockcount_overall, # note already also in results_overall as a column now, so we dont need to duplicate it here
     # bgcount_overall = bgcount_overall        # note already also in results_overall as a column now, so we dont need to duplicate it here
   )
+  
+  
+  if (NROW(results$results_bysite) == 1) {
+    # If we analyzed only 1 place then overall is same as 1 site per row!
+    results$results_overall[ , `:=`(
+      `EJScreen Report` = results$results_bysite$`EJScreen Report`,   #  rep(NA,nrow(out$results_bysite)),
+      `EJScreen Map`    = results$results_bysite$`EJScreen Map`,    # rep(NA,nrow(out$results_bysite)),
+      # `ACS Report`      = out$results_bysite$,   #  rep(NA,nrow(out$results_bysite)),
+      `ECHO report`     = results$results_bysite$`ECHO report`     # rep(NA,nrow(out$results_bysite))
+    )]
+  } else {
+    results$results_overall[ , `:=`(
+      `EJScreen Report` = NA,   #  rep(NA,nrow(out$results_bysite)),
+      `EJScreen Map`    = NA,    # rep(NA,nrow(out$results_bysite)),
+      # `ACS Report`      = NA,   #  rep(NA,nrow(out$results_bysite)),
+      `ECHO report`     = NA     # rep(NA,nrow(out$results_bysite))
+    )]
+  }
   ########################### #
   # }) # finish system.time()
   

@@ -143,9 +143,10 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     longnames <- fixcolnames( names(overall), 'r', 'long')
   }
   
+  longnames_overall <- longnames[!(longnames %in% c("valid","invalid_msg"))]
   if (is.null(formatted)) {
     # formatted <- "" # or could do this here if we assume they omitted it but did not intend to prevent it from appearing on the spreadsheet as a tab:
-    formatted <- table_tall_from_overall(results_overall = overall, longnames = longnames)
+    formatted <- table_tall_from_overall(results_overall = overall, longnames = longnames_overall)
   }
   
   if (length(heatmap_cuts) != length(heatmap_colors)) {
@@ -713,7 +714,7 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     
     # RENAME TOP ROW TO long names ####
     # how to replace the header row but without replacing any formatting! ***
-    openxlsx::writeData(wb, sheet = 'Overall',   x = as.data.frame(rbind(longnames), row.names = NULL), xy = c(1,1), colNames = FALSE)
+    openxlsx::writeData(wb, sheet = 'Overall',   x = as.data.frame(rbind(longnames_overall), row.names = NULL), xy = c(1,1), colNames = FALSE)
     openxlsx::writeData(wb, sheet = 'Each Site', x = as.data.frame(rbind(longnames), row.names = NULL), xy = c(1,1), colNames = FALSE)
     
     # add FILTER ROW 1 in case it did not remain in place

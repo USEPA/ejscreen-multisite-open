@@ -1379,13 +1379,42 @@ app_server <- function(input, output, session) {
                     avoidorphans = input$avoidorphans,
                     maxradius = input$maxradius
       )
+      
+      
       if(is.null(out)){
         validate('No valid blockgroups found matching these FIPS codes.')
       } else {
         out$results_bysite <- merge(d_upload[, .(ejam_uniq_id, valid, invalid_msg)],
                                     out$results_bysite, 
                                     by='ejam_uniq_id', all=T)
+        
+        
+        #incorporate new longnames into FIPS data
+        newcolnames <- c(
+          "valid",
+          "invalid_msg"
+        )
+        
+        newcolnames1 <- c(
+          "EJScreen Report",
+          "EJScreen Map",
+          "ECHO report"
+        )
+        
+        
+       
+        # put those up front as first columns
+        setcolorder(out$results_bysite, neworder = c('ejam_uniq_id', newcolnames))
+        setcolorder(out$results_overall, neworder = c('ejam_uniq_id'))
+        #setcolorder(out$results_bysite, neworder = newcolnames)
+        # move ejam_uniq_id to front of longnames vector
+        
+        out$longnames<- c('ejam_uniq_id',newcolnames, out$longnames[out$longnames != 'ejam_uniq_id'])
+        
+        
+        
       }
+      
       print('final made it here pt. 2')
      # out
       ################################################# # 
@@ -1561,20 +1590,25 @@ app_server <- function(input, output, session) {
         )
     }
     #}
+    
+    
     newcolnames <- c(
       'valid','invalid_msg',
-      "EJScreen Report", 
-      "EJScreen Map", 
-      # "ACS Report", 
+      "EJScreen Report",
+      "EJScreen Map",
+      "ECHO report"
+    )
+    newcolnames_overall <- c(
+      "EJScreen Report",
+      "EJScreen Map",
       "ECHO report"
     )
 
     # put those up front as first columns
     setcolorder(out$results_bysite, neworder = c('ejam_uniq_id', newcolnames))
-    #setcolorder(out$results_bysite, neworder = newcolnames)
+    setcolorder(out$results_overall, neworder = newcolnames_overall)
     # move ejam_uniq_id to front of longnames vector
     out$longnames <- c('ejam_uniq_id',newcolnames, out$longnames[out$longnames != 'ejam_uniq_id'])
-    
     #############################################################################  # 
     
     # add radius to results tables (in server and in ejamit() ####
