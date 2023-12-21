@@ -165,7 +165,8 @@ pctile_from_raw_lookup <- function(myvector, varname.in.lookup.table, lookup=usa
     # 1.) Uses findInterval to bin each percentile vector value into unique percentile vectors; Results are a list of bin values rather than acutal percentiles 
     # 2.) Percentile indices are calculated based on the first nonduplicate values (indices are based on 1-100 percentile location)
     # 3.) Percentile indices are applied to the bin values vector in step 1 to assign the appropriate percentile value to vector selection
-    nondupe_interval <- findInterval(myvector_selection, unique(myvector_lookup))
+    unique_vlookup <- c(unique(myvector_lookup),Inf) #add Inf to coerce N-1 to N
+    nondupe_interval <- findInterval(myvector_selection, unique_vlookup,all.inside=TRUE)
     nondupvec <- which(!duplicated(myvector_lookup))
     whichinterval[zone == z] <- nondupvec[nondupe_interval]
     
