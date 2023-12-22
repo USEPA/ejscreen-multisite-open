@@ -2237,6 +2237,87 @@ app_server <- function(input, output, session) {
     }
   )
   
+  
+  output$community_download <- downloadHandler(
+    filename = ifelse(input$format1pager == "pdf", "community_report.pdf", 'community_report.html') ,
+    content = function(file) {
+      # Copy the report file to a temporary directory before processing it, in
+      # case we don't have write permissions to the current working dir (which
+      # can happen when deployed).
+      #tempReport <- file.path(tempdir(), "community_summary.html")
+      tempReport <- file.path(tempdir(), 'community_report_template.Rmd')
+      
+      if(!('communityreport.css' %in% list.files(tempdir()))){
+        file.copy(from = app_sys('report/community_report/communityreport.css'),
+                  to = file.path(tempdir(), 'communityreport.css'), overwrite = TRUE)          
+      }
+      
+      if(!('EPA_logo_white.png') %in% list.files(file.path(tempdir(), 'www'))){
+        dir.create(file.path(tempdir(), 'www'))
+        file.copy(from = 'www/EPA_logo_white.png',
+                  to = file.path(tempdir(), 'www', 'EPA_logo_white.png'), overwrite = TRUE)
+      }
+      
+      ## copy Rmd from inst/report to temp folder  (note there had been a similar but not identical .Rmd in EJAM/www/)
+      file.copy(from = app_sys('report/community_report/community_report_template.Rmd'),  # treats EJAM/inst/ as root
+                to = tempReport, overwrite = TRUE)
+      
+      # htmltools::save_html(full_html_reactive(),
+      #                      file = tempReport)
+      
+      isolate({  # need someone to confirm this is needed/helpful and not a problem, to isolate this.
+        ## pass params to customize .Rmd doc  # ###
+        # params <- list(html_content = full_html_reactive(),
+        #                map         = report_map(),
+        #                summary_plot = v1_summary_plot())
+        rad <- data_processed()$results_overall$radius.miles # input$radius can be changed by user and would alter the report text but should just show what was run not what slider currently says
+        popstr <- prettyNum(total_pop(), big.mark=',')
+        
+        if(submitted_upload_method() == 'SHP'){
+          location_type <- " selected polygons"
+          radiusstr <- paste0(rad, " mile", 
+                              ifelse(rad > 1, "s", ""), " of ")
+          
+        } else if (submitted_upload_method() == 'FIPS'){
+          location_type <- " selected shapes"
+          radiusstr <- ""
+        } else {
+          location_type <- " selected points"
+          radiusstr <- paste0(rad, " mile", ifelse(rad > 1, "s", ""), " of ")
+                              
+        }
+      
+        locationstr <- paste0("Residents within ",
+                              radiusstr,
+                              "any of the ", NROW(data_processed()$results_bysite[data_processed()$results_bysite$valid == T,]),location_type)
+        
+        params <- list(
+          output_df = data_processed()$results_overall,
+          analysis_title = input$analysis_title,
+          totalpop = popstr, 
+          locationstr = locationstr,
+          include_ejindexes = (input$include_ejindexes == 'TRUE'), 
+          in_shiny = FALSE,
+          filename=NULL,
+          map = report_map(),
+          summary_plot = v1_summary_plot()
+        )
+        
+      })
+      
+      rmarkdown::render(tempReport, 
+                        output_format ='html_document',
+                        output_file = file,
+                        params = params,
+                        envir = new.env(parent = globalenv()),
+                        intermediates_dir = tempdir()
+      )
+      
+      #file.copy(tempReport, file)
+      
+    }
+  )
+  
   #############################################################################  # 
   # .  ## ##
   # ______ DETAILED RESULTS ______ ####
@@ -2415,19 +2496,31 @@ app_server <- function(input, output, session) {
         req(data_processed())
           req(cur_button())
         x <- as.numeric(gsub('button_','', cur_button()))
-        if(!(submitted_upload_method() %in% c('FIPS')) & data_processed()$results_bysite$valid[x] == T){
+        if( data_processed()$results_bysite$valid[x] == T){
+          #!(submitted_upload_method() %in% c('FIPS')) &
           popstr <- prettyNum(round(data_processed()$results_bysite$pop[x]), big.mark=',')
-          locationstr <- paste0(data_processed()$results_bysite[x,]$radius.miles, ' Mile Ring Centered at ',
-                                data_processed()$results_bysite[x,]$lat, ', ',
-                                data_processed()$results_bysite[x,]$lon, '<br>', 'Area in Square Miles: ',
-                                round(pi* data_processed()$results_bysite[x,]$radius.miles^2,2)
-          )
+          
+          if(submitted_upload_method() == 'SHP'){
+            locationstr <- paste0('Polygon ', data_up_shp()[x,]$OBJECTID_1)
+            if(data_processed()$results_bysite[x,]$radius.miles > 0){
+              locationstr <- paste0(locationstr, '<br>with ', data_processed()$results_bysite[x,]$radius.miles, ' mile buffer')
+            }
+          } else if(submitted_upload_method() == 'FIPS'){
+            locationstr <- paste0('FIPS Code ', data_processed()$results_bysite[x,]$ejam_uniq_id)
+          } else {
+            locationstr <- paste0(data_processed()$results_bysite[x,]$radius.miles, ' Mile Ring Centered at ',
+                                  data_processed()$results_bysite[x,]$lat, ', ',
+                                  data_processed()$results_bysite[x,]$lon, '<br>', 'Area in Square Miles: ',
+                                  round(pi* data_processed()$results_bysite[x,]$radius.miles^2,2)
+            )
+          }
+          
           if(!('main.css' %in% list.files(tempdir()))){
             file.copy(from = app_sys('report/community_report/main.css'),
                       to = file.path(tempdir(), 'main.css'), overwrite = TRUE)          
           }
           if(!('communityreport.css' %in% list.files(tempdir()))){
-            file.copy(from = 'inst/report/community_report/communityreport.css',#app_sys('report/community_report/communityreport.css'),
+            file.copy(from = app_sys('report/community_report/communityreport.css'),
                       to = file.path(tempdir(), 'communityreport.css'), overwrite = TRUE)          
           }
           
@@ -2437,6 +2530,12 @@ app_server <- function(input, output, session) {
                       to = file.path(tempdir(), 'www', 'EPA_logo_white.png'), overwrite = TRUE)
           }
           temp_comm_report <- file.path(tempdir(), paste0("comm_report",x,".html"))
+          
+          tempReport <- file.path(tempdir(), 'community_report_template.Rmd')
+          
+          ## copy Rmd from inst/report to temp folder  (note there had been a similar but not identical .Rmd in EJAM/www/)
+          file.copy(from = app_sys('report/community_report/community_report_template.Rmd'),  # treats EJAM/inst/ as root
+                    to = tempReport, overwrite = TRUE)
           
           build_community_report(
             output_df = data_processed()$results_bysite[x,],
@@ -2448,9 +2547,49 @@ app_server <- function(input, output, session) {
             filename = temp_comm_report
           )
           browseURL(temp_comm_report)
+          
+          ## can also generate reports through knitting Rmd template
+          ## this is easier to add in maps and plots but is slower to appear
+          
+          # isolate({  # need someone to confirm this is needed/helpful and not a problem, to isolate this.
+          #   ## pass params to customize .Rmd doc  # ###
+          #   # params <- list(html_content = full_html_reactive(),
+          #   #                map         = report_map(),
+          #   #                summary_plot = v1_summary_plot())
+          #   rad <- data_processed()$results_bysite[x,]$radius.miles # input$radius can be changed by user and would alter the report text but should just show what was run not what slider currently says
+          #   popstr <- prettyNum(round(data_processed()$results_bysite$pop[x]), big.mark=',')
+          #   locationstr <- paste0(data_processed()$results_bysite[x,]$radius.miles, ' Mile Ring Centered at ',
+          #                         data_processed()$results_bysite[x,]$lat, ', ',
+          #                         data_processed()$results_bysite[x,]$lon, '<br>', 'Area in Square Miles: ',
+          #                         round(pi* rad^2,2)
+          #   )
+          #   params <- list(
+          #     output_df = data_processed()$results_bysite[x,],
+          #     analysis_title = input$analysis_title,
+          #     totalpop = popstr,
+          #     locationstr = locationstr,
+          #     include_ejindexes = T,
+          #     in_shiny = F,
+          #     filename = NULL,#temp_comm_report,
+          #     map = report_map(),
+          #     summary_plot = v1_summary_plot()
+          #   )
+          #   
+          # })
+          
+          # rmarkdown::render(tempReport, 
+          #                   output_format ='html_document',
+          #                   output_file = temp_comm_report,
+          #                   params = params,
+          #                   envir = new.env(parent = globalenv()),
+          #                   intermediates_dir = tempdir()
+          # )
+          
+          #browseURL(temp_comm_report)
+          
         } else {
-          showModal(modalDialog(title='Invalid Site',
-          'This site did not produce valid analysis results.'))
+          showModal(modalDialog(title='Report not available',
+          'Individual site reports not yet available.'))
         }
        
         #showModal(modalDialog("Thanks for pushing the button"))
@@ -3119,10 +3258,28 @@ app_server <- function(input, output, session) {
       
       rad <- data_processed()$results_overall$radius.miles # input$radius can be changed by user and would alter the report text but should just show what was run not what slider currently says
       popstr <- prettyNum(total_pop(), big.mark=',')
-      locationstr <- paste0("Residents within ",
-             rad, " mile", ifelse(rad > 1, "s", ""),
-             " of any of the ", NROW(data_processed()$results_bysite[data_processed()$results_bysite$valid == T,])," selected points")
+      
+      if(submitted_upload_method() == 'SHP'){
+        location_type <- " selected polygons"
+        radiusstr <- paste0(rad, " mile", 
+                            ifelse(rad > 1, "s", ""), " of ")
         
+      } else if (submitted_upload_method() == 'FIPS'){
+        location_type <- " selected shapes"
+        radiusstr <- ""
+      } else {
+        location_type <- " selected points"
+        radiusstr <- paste0(rad, " mile", ifelse(rad > 1, "s", ""), " of ")
+                            
+      }
+      
+      locationstr <- paste0("Residents within ",
+                            radiusstr,
+                            "any of the ", NROW(data_processed()$results_bysite[data_processed()$results_bysite$valid == T,]),location_type)
+      
+      
+     
+        print(dim(data_processed()$results_overall))
       ## generate full HTML using external functions
       full_page <- build_community_report(
         output_df = data_processed()$results_overall,

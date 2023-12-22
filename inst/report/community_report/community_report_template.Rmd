@@ -1,0 +1,44 @@
+---
+title: "&#32;"
+output: 
+  html_document:
+    css: ["communityreport.css"]
+params:
+  output_df: NA
+  analysis_title: NA
+  totalpop: NA
+  locationstr: NA
+  include_ejindexes: TRUE
+  in_shiny: FALSE
+  filename: NULL
+  map: NA
+  summary_plot: NA
+---
+
+```{r, echo=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+```{r}
+library(EJAM)
+build_community_report(
+            output_df = params$output_df,
+            analysis_title = params$analysis_title,
+            totalpop = params$totalpop,
+            locationstr = params$locationstr,
+            include_ejindexes = params$include_ejindexes,
+            in_shiny = params$in_shiny,
+            filename = params$filename
+          )
+```
+
+```{r, fig.align='center'}
+
+params$map
+
+```
+
+```{r summary_plot, out.width='90%', fig.align='center'}
+
+ params$summary_plot
+```

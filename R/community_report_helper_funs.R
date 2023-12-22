@@ -9,8 +9,8 @@ fill_tbl_row <- function(output_df, var_value, var_name){
   txt <- '<tr>'
   
   id_col <- 'selected-variables'
-  txt <- paste0(txt, '\n','<td headers="data-indicators-table-',
-                id_col,'">',
+  txt <- paste0(txt, '\n','<td headers=\"data-indicators-table-',
+                id_col,'\">',
                 var_name,'</td>')
   
   hdr_names <- c('value','state-average',
@@ -25,8 +25,8 @@ fill_tbl_row <- function(output_df, var_value, var_name){
     } else {
       cur_val <- output_df[, cur_var] #round(output_df[,cur_var],2)
     }
-    txt <- paste0(txt, '\n','<td headers="data-indicators-table-',
-                         hdr_names[j],'">',
+    txt <- paste0(txt, '\n','<td headers=\"data-indicators-table-',
+                         hdr_names[j],'\">',
                          cur_val,'</td>')
     
   }
@@ -43,8 +43,8 @@ fill_tbl_row_ej <- function(output_df, var_value, var_name){
   txt <- '<tr>'
   
   id_col <- 'selected-variables'
-  txt <- paste0(txt, '\n','<td headers="data-indicators-table-',
-                id_col,'">',
+  txt <- paste0(txt, '\n','<td headers=\"data-indicators-table-',
+                id_col,'\">',
                 var_name,'</td>')
   
   hdr_names <- c('value',
@@ -54,13 +54,16 @@ fill_tbl_row_ej <- function(output_df, var_value, var_name){
   
   for(j in 1:length(var_values)){
     cur_var <-var_values[j]
+    if(!(cur_var) %in% names(output_df)){
+      warning(paste0(cur_var, ' not found in dataset!'))
+    }
     if('data.table' %in% class(output_df)){
       cur_val <- output_df[, ..cur_var] #round(output_df[,..cur_var],2)
     } else {
       cur_val <- output_df[, cur_var]#round(output_df[,cur_var],2)
     }
-    txt <- paste0(txt, '\n','<td headers="data-indicators-table-',
-                         hdr_names[j],'">',
+    txt <- paste0(txt, '\n','<td headers=\"data-indicators-table-',
+                         hdr_names[j],'\">',
                          cur_val,'</td>')
     
   }
@@ -81,24 +84,24 @@ fill_tbl_full <- function(output_df){
   
   full_html <- ''
   
-  tbl_head <- '<table id="data-indicators-table"        class="color-alt-table"  summary="EJScreen environmental and socioeconomic indicators data">
-  <thead id="data-indicators-table-header" class="color-alt-table-header">
+  tbl_head <- '<table id=\"data-indicators-table\"        class=\"color-alt-table\"  summary=\"EJScreen environmental and socioeconomic indicators data\">
+  <thead id=\"data-indicators-table-header\" class=\"color-alt-table-header\">
   <tr>
-  <th id="data-indicators-table-selected-variables" scope="col">SELECTED VARIABLES</th>
-  <th id="data-indicators-table-value" scope="col">VALUE</th>
-  <th id="data-indicators-table-state-average" scope="col">STATE<br> AVERAGE</th>
-  <th id="data-indicators-table-percentile-in-state" scope="col">PERCENTILE<br> IN STATE</th>
-  <th id="data-indicators-table-usa average" scope="col">USA AVERAGE</th>
-  <th id="data-indicators-table-percentile-in-usa" scope="col">PERCENTILE<br> IN USA</th>
+  <th id=\"data-indicators-table-selected-variables\" scope=\"col\">SELECTED VARIABLES</th>
+  <th id=\"data-indicators-table-value\" scope=\"col\">VALUE</th>
+  <th id=\"data-indicators-table-state-average\" scope=\"col\">STATE<br> AVERAGE</th>
+  <th id=\"data-indicators-table-percentile-in-state\" scope=\"col\">PERCENTILE<br> IN STATE</th>
+  <th id=\"data-indicators-table-usa average\" scope=\"col\">USA AVERAGE</th>
+  <th id=\"data-indicators-table-percentile-in-usa\" scope=\"col\">PERCENTILE<br> IN USA</th>
   </tr>
   </thead>
   <tbody>
-  <tr class="color-alt-table-subheader">
-  <th colspan="7">Pollution and Sources</th>
+  <tr class=\"color-alt-table-subheader\">
+  <th colspan=\"7\">Pollution and Sources</th>
   </tr>'
   
-  tbl_head2 <- '<tr class="color-alt-table-subheader">
-<th colspan="7">Socioeconomic Indicators</th>
+  tbl_head2 <- '<tr class=\"color-alt-table-subheader\">
+<th colspan=\"7\">Socioeconomic Indicators</th>
   </tr>'
   
   full_html <- paste(full_html, tbl_head, sep='\n')
@@ -106,9 +109,9 @@ fill_tbl_full <- function(output_df){
   var_values_e <- c('pm','o3','dpm','cancer','resp','rsei','traffic.score','pctpre1960',
                   'proximity.npl','proximity.rmp','proximity.tsdf','ust','proximity.npdes')
   
-  var_names_e <- c('Particulate Matter&nbsp;&nbsp;(&mu;g/m<span class="table-superscript"><sup>3</sup></span>)',
+  var_names_e <- c('Particulate Matter&nbsp;&nbsp;(&mu;g/m<span class=\"table-superscript\"><sup>3</sup></span>)',
                  'Ozone&nbsp;&nbsp;(ppb)',
-                 'Diesel Particulate Matter&nbsp;&nbsp;(&mu;g/m<span class="table-superscript"><sup>3</sup></span>)',
+                 'Diesel Particulate Matter&nbsp;&nbsp;(&mu;g/m<span class=\"table-superscript\"><sup>3</sup></span>)',
                  'Air Toxics Cancer Risk*&nbsp;&nbsp;(lifetime risk per million)',
                  'Air Toxics Respiratory HI*',
                  'Toxic Releases to Air',
@@ -117,7 +120,7 @@ fill_tbl_full <- function(output_df){
                  'Superfund Proximity&nbsp;&nbsp;(site count/km distance)',
                  'RMP Facility Proximity&nbsp;&nbsp;(facility count/km distance)',
                  'Hazardous Waste Proximity&nbsp;&nbsp;(facility count/km distance)',
-                 'Underground Storage Tanks&nbsp;&nbsp;(count/km<span class="table-superscript"><sup>3</sup></span>)',
+                 'Underground Storage Tanks&nbsp;&nbsp;(count/km<span class=\"table-superscript\"><sup>3</sup></span>)',
                  'Wastewater Discharge&nbsp;&nbsp;(toxicity-weighted concentration/m distance)'
                  )
  
@@ -164,22 +167,22 @@ full_html <- paste(full_html, '</tbody>
 #'@export
 fill_tbl_full_ej <- function(output_df){
 
-  tbl_head <- '<table id="data-indicators-table"        class="color-alt-table"  summary="EJScreen environmental and socioeconomic indicators data">
-  <thead id="data-indicators-table-header" class="color-alt-table-header">
+  tbl_head <- '<table id=\"data-indicators-table\"        class=\"color-alt-table\"  summary=\"EJScreen environmental and socioeconomic indicators data\">
+  <thead id=\"data-indicators-table-header\" class=\"color-alt-table-header\">
   <tr>
-  <th id="data-indicators-table-selected-variables" scope="col">SELECTED VARIABLES</th>
-  <th id="data-indicators-table-value" scope="col">VALUE</th>
-  <th id="data-indicators-table-percentile-in-state" scope="col">PERCENTILE<br> IN STATE</th>
-  <th id="data-indicators-table-percentile-in-usa" scope="col">PERCENTILE<br> IN USA</th>
+  <th id=\"data-indicators-table-selected-variables\" scope=\"col\">SELECTED VARIABLES</th>
+  <th id=\"data-indicators-table-value\" scope=\"col\">VALUE</th>
+  <th id=\"data-indicators-table-percentile-in-state\" scope=\"col\">PERCENTILE<br> IN STATE</th>
+  <th id=\"data-indicators-table-percentile-in-usa\" scope=\"col\">PERCENTILE<br> IN USA</th>
   </tr>
   </thead>
   <tbody>
-  <tr class="color-alt-table-subheader">
-  <th colspan="7">EJ Indexes</th>
+  <tr class=\"color-alt-table-subheader\">
+  <th colspan=\"7\">EJ Indexes</th>
   </tr>'
   
-  tbl_head2 <- '<tr class="color-alt-table-subheader">
-<th colspan="7">Supplemental EJ Indexes</th>
+  tbl_head2 <- '<tr class=\"color-alt-table-subheader\">
+<th colspan=\"7\">Supplemental EJ Indexes</th>
   </tr>'
   
   full_html <- tbl_head #paste(full_html, tbl_head, sep='\n')
@@ -234,8 +237,8 @@ fill_tbl_row_subgroups <- function(output_df, var_value, var_name){
   txt <- '<tr>'
   
   id_col <- 'selected-variables'
-  txt <- paste0(txt, '\n','<td headers="data-indicators-table-',
-                id_col,'">',
+  txt <- paste0(txt, '\n','<td headers=\"data-indicators-table-',
+                id_col,'\">',
                 var_name,'</td>')
   
   hdr_names <- c('value')
@@ -249,8 +252,8 @@ fill_tbl_row_subgroups <- function(output_df, var_value, var_name){
     } else {
       cur_val <- round(100*output_df[, cur_var],1) #round(output_df[,cur_var],2)
     }
-    txt <-  paste0(txt, '\n','<td headers="data-indicators-table-',
-                         hdr_names[j],'">',
+    txt <-  paste0(txt, '\n','<td headers=\"data-indicators-table-',
+                         hdr_names[j],'\">',
                          cur_val,'%','</td>')
     
   }
@@ -271,24 +274,24 @@ fill_tbl_full_subgroups <- function(output_df){
   
   full_html <- ''
   
-  tbl_head <- '<table id="data-indicators-table"   style="width: 60%"     class="color-alt-table"  summary="EJScreen environmental and socioeconomic indicators data">
-  <thead id="data-indicators-table-header" class="color-alt-table-header">
+  tbl_head <- '<table id=\"data-indicators-table\"   style=\"width: 60%\"     class=\"color-alt-table\"  summary=\"EJScreen environmental and socioeconomic indicators data\">
+  <thead id=\"data-indicators-table-header\" class=\"color-alt-table-header\">
   <tr>
-  <th id="data-indicators-table-selected-variables" width="65%" scope="col">SELECTED VARIABLES</th>
-  <th id="data-indicators-table-value" width="35%" scope="col">VALUE</th>
+  <th id=\"data-indicators-table-selected-variables\" width=\"65%\" scope=\"col\">SELECTED VARIABLES</th>
+  <th id=\"data-indicators-table-value\" width=\"35%\" scope=\"col\">VALUE</th>
   </tr>
   </thead>
   <tbody>
-  <tr class="color-alt-table-subheader">
-  <th colspan="7">Breakdown by Race</th>
+  <tr class=\"color-alt-table-subheader\">
+  <th colspan=\"7\">Breakdown by Race</th>
   </tr>'
   
-  tbl_head2 <- '<tr class="color-alt-table-subheader">
-<th colspan="7">Breakdown by Gender</th>
+  tbl_head2 <- '<tr class=\"color-alt-table-subheader\">
+<th colspan=\"7\">Breakdown by Gender</th>
   </tr>'
   
-  tbl_head3 <- '<tr class="color-alt-table-subheader">
-<th colspan="7">Limited English Speaking Breakdown</th>
+  tbl_head3 <- '<tr class=\"color-alt-table-subheader\">
+<th colspan=\"7\">Limited English Speaking Breakdown</th>
   </tr>'
   
   full_html <- paste(full_html, tbl_head, sep='\n')
@@ -354,7 +357,7 @@ generate_html_header <- function( analysis_title, totalpop, locationstr, in_shin
   if(in_shiny){
     shift_hsb <- 630
     shift_hpb <- 600
-    shift_hbd <- 560
+    shift_hbd <- 550
   } else {
     shift_hsb <- 70
     shift_hpb <- 40
@@ -364,156 +367,60 @@ generate_html_header <- function( analysis_title, totalpop, locationstr, in_shin
   # img_html <- paste0('<img src="',app_sys('report/community_report/EPA_logo_white.png'),
   #                    '" alt="EPA logo" width="110" height="35" style="position: absolute; left: 950px; top: ',shift_hbd+90,'px">')
   # 
-  img_html <- paste0('<img src="', 'www/EPA_logo_white.png',
-                     '" alt="EPA logo" width="110" height="35" style="position: absolute; left: 820px; top: ',shift_hbd+70,'px">')
+  img_html <- paste0('<img src=\"', 'www/EPA_logo_white.png',
+                     '\" alt=\"EPA logo\" width=\"110\" height=\"35\" style=\"position: absolute; left: 820px; top: ',shift_hbd+50,'px\">')
 
   
   paste0(' 
-  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@500;600" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;700&amp;display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&amp;display=swap" rel="stylesheet">
+  <link href=\"https://fonts.googleapis.com/css2?family=Heebo:wght@500;600\" rel=\"stylesheet\">
+  <link href=\"https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;700&amp;display=swap\" rel=\"stylesheet\">
+  <link href=\"https://fonts.googleapis.com/css2?family=Noto+Sans&amp;display=swap\" rel=\"stylesheet\">
 
- <link rel="stylesheet"  type="text/css" media="all" href="communityreport.css" />  
-   <link rel="stylesheet"  type="text/css" media="all" href="main.css"            /> 
-<div id="header-secondary-background" ','style="top: ',shift_hsb,'px;"', '></div>
-<div id="header-primary-background" ', 'style="top: ',shift_hpb,'px;"','></div> 
-<div id="header-background-detail" ', 'style="top: ',shift_hbd,'px;"','></div>',
-
+ <link rel=\"stylesheet\"  type=\"text/css\" media=\"all\" href=\"communityreport.css\" />  
+<div id=\"header-secondary-background\" ','style=\"top: ',shift_hsb,'px;\"', '></div>
+<div id=\"header-primary-background\" ', 'style=\"top: ',shift_hpb,'px;\"','></div> 
+<div id=\"header-background-detail\" ', 'style=\"top: ',shift_hbd,'px;\"','></div>',
 img_html,
-'<h1 id="title" tabindex="0" style="white-space: nowrap; position: absolute; color: white;left: 140px; top: ',shift_hbd+80,'px">EJAM Community Report</h1>
-<p style="
-            color: white;
-            position: absolute;
-            font-family: heebo, Arial, sans-serif;
-            font-size: 20px;
-            top: ',shift_hbd+170,'px;
-            left: 240px;
-            text-align: center;
-                white-space: nowrap;
-        ">
-            This report provides environmental and socioeconomic information for
-            user-defined areas,<br>
-            and combines that data into environmental justice and supplemental
-            indexes.
-        </p>  
-        <!-- This report provides...  -->
-
-
-       <div class="header" style="
-            margin-top: 302px;
-            width: 100%;
-            font-weight: bold;
-            background-color: #0e98d7;
-            color: white;
-            height: 115px;
-            clear: both;
-            ;">
-         <div style="width: 45%; float:left">
-  
-    <h2 id="placename" style="
-                 font-size: 45px;padding-left: 50px;max-width: 1000px;line-height: 1.15em;text-align: center;max-height: 115px;margin: 0;
-                 ">', analysis_title , '</h2> 
-  </div>',
-'<div style="width: 55%; float:right">
-   <h5 style="
-                  font-family: heebo, Arial, sans-serif;text-align: center;font-size: 22px;line-height: 29px;text-align: center;">',
-'Population: <span id="TOTALPOP">',totalpop,'</span><br>',
-locationstr,'<br>
-                  <!--  Area in square miles: {{inputAreaMiles_ht}}  -->
-                </h5>
+'<h1 id=\"title\" tabindex=\"0\" style=\"white-space: nowrap; position: absolute; color: white;left: 140px; top: ',shift_hbd+80,'px\">EJAM Community Report</h1>
+<p style=\"color: white;position: absolute;font-family: heebo, Arial, sans-serif; font-size: 20px; top: ',shift_hbd+170,'px; left: 240px; text-align: center; white-space: nowrap;\">This report provides environmental and socioeconomic information for user-defined areas,<br> and combines that data into environmental justice and supplemental indexes.</p>  
+<div class=\"header\" style=\"margin-top: 302px; width: 100%; font-weight: bold; background-color: #0e98d7;color: white;height: 115px;clear: both;\">
+<div style=\"width: 45%; float:left\">
+<h2 id=\"placename\" style=\"font-size: 45px;padding-left: 50px;max-width: 1000px;line-height: 1.15em;text-align: center;max-height: 115px;margin: 0;\">', analysis_title , '</h2> 
+</div>',
+'<div style=\"width: 55%; float:right\">
+   <h5 style=\"font-family: heebo, Arial, sans-serif;text-align: center;font-size: 22px;line-height: 29px;text-align: center;\">',locationstr,'<br>','Population: <span id=\"TOTALPOP\">',totalpop,'</span><br>','</h5>
 </div>
 </div>
 ', sep='', collapse='')
-  # Population: <span id="TOTALPOP">',totalpop,'</span><br>',
+  # Population: <span id=\"TOTALPOP\">',totalpop,'</span><br>',
 }
 
 #' generate_demog_header - build header for demog. + envt. tables in community report
 #'@export
 generate_demog_header <- function(){
-  '<div id="page-3-header" class="header" style="
-            background-color: #0e98d7;
-            color: white;
-            height: 85px;
-            clear: both;
-            margin-top: 7px;">
-    <h2 tabindex="12" style="text-align: center; padding-top: 35px; font-size: 32px; padding-left: 20px;">
-      Environmental and Socioeconomic Indicators Data
-    </h2>
-      </div>'
+  '<div id=\"page-3-header\" class=\"header\" style=\"background-color: #0e98d7; color: white; height: 85px; clear: both; margin-top: 7px;\"><h2 tabindex=\"12\" style=\"text-align: center; padding-top: 35px; font-size: 32px; padding-left: 20px;\">Environmental and Socioeconomic Indicators Data</h2></div>'
 }
 
 #' generate_ej_header - build header for EJ index table in community report
 #'@export
 generate_ej_header <- function(){
   '<br>
-
- <div id="page-2-header"
-             class="header"
-             style="
-            background-color: #0e98d7;
-            color: white;
-            text-align: center;
-            padding: 20px 32px 10px 32px;
-            margin: 10px 0 -23px 0;
-        ">
-            <h2 tabindex="8" style="font-size: 30px; margin-bottom: -5px">
-                Environmental Justice & Supplemental Indexes
-            </h2>
-            <p style="font-family: Oswald, Arial, sans-serif; font-size: 15px; padding-left: 20px;">
-                The environmental justice and supplemental indexes are a combination of environmental 
-                and socioeconomic information. There are thirteen EJ indexes and supplemental indexes 
-                in EJScreen reflecting the 13 environmental indicators. The indexes for a selected area 
-                are compared to those for all other locations in the state or nation. For more information 
-                and calculation details on the EJ and supplemental indexes, please visit the 
-                <a tabindex="9" href="https://www.epa.gov/ejscreen" style="color: white">EJScreen website</a>. 
-            </p>
+ <div id=\"page-2-header\" class=\"header\" style=\"background-color: #0e98d7; color: white; text-align: center; padding: 20px 32px 10px 32px; margin: 10px 0 -23px 0;\">
+            <h2 tabindex=\"8\" style=\"font-size: 30px; margin-bottom: -5px\">Environmental Justice & Supplemental Indexes</h2>
+            <p style=\"font-family: Oswald, Arial, sans-serif; font-size: 15px; padding-left: 20px;\">The environmental justice and supplemental indexes are a combination of environmental and socioeconomic information. There are thirteen EJ indexes and supplemental indexes in EJScreen reflecting the 13 environmental indicators. The indexes for a selected area are compared to those for all other locations in the state or nation. For more information and calculation details on the EJ and supplemental indexes, please visit the <a tabindex=\"9\" href=\"https://www.epa.gov/ejscreen\" style=\"color: white\">EJScreen website</a>. </p>
         </div>
-        <div style="
-            background-color: #71bf44;
-            color: white;
-            text-align: center;
-            padding: 0 32px 7px 32px;
-        ">
-            <h3  tabindex="10" style="
-            padding-top: 10px;
-            margin-bottom: -10px;
-            font-family: Arial, sans-serif;
-            font-size: 23px;
-            ">
-                EJ INDEXES
-            </h3>
-            <p style="font-family: Oswald, Arial, sans-serif; font-weight: 300; font-size: 16px; margin: 15px 15% -2px 15%">
-                The EJ indexes help users screen for potential EJ concerns. To do this,
-                the EJ index combines data on low income and people of color populations
-                with a single environmental indicator.
-            </p>
+        <div style=\"background-color: #71bf44; color: white; text-align: center; padding: 0 32px 7px 32px;\">
+            <h3  tabindex=\"10\" style=\"padding-top: 10px; margin-bottom: -10px; font-family: Arial, sans-serif; font-size: 23px;\">EJ INDEXES</h3>
+            <p style=\"font-family: Oswald, Arial, sans-serif; font-weight: 300; font-size: 16px; margin: 15px 15% -2px 15%\">The EJ indexes help users screen for potential EJ concerns. To do this, the EJ index combines data on low income and people of color populations with a single environmental indicator.</p>
         </div>'
 }
 
 #' generate_ej_supp_header - build header for EJ supp indexes in community report
 #'@export
 generate_ej_supp_header <- function(){
-  '<div style="
-                background-color: #71bf44;
-                color: white;
-                text-align: center;
-                padding: 0 32px 7px 32px;
-            ">
-    <h3 tabindex="11" style="
-                padding-top: 10px;
-                margin-bottom: -10px;
-                font-family: Arial, sans-serif;
-                font-size: 23px;
-                ">
-      SUPPLEMENTAL INDEXES
-    </h3>
-      <p style="font-family: Oswald, Arial, sans-serif; font-weight: 300; font-size: 16px; margin-bottom: -2px; padding-left: 20px;">
-        The supplemental indexes offer a different perspective on
-      community-level vulnerability. They combine data on percent low-income,
-      percent linguistically isolated, percent less than high school
-      education, percent unemployed, and low life expectancy with a single
-      environmental indicator.
-      </p>
-        </div>'
+  '<div style=\"background-color: #71bf44; color: white; text-align: center; padding: 0 32px 7px 32px;\">
+    <h3 tabindex=\"11\" style=\"padding-top: 10px; margin-bottom: -10px; font-family: Arial, sans-serif; font-size: 23px;\">SUPPLEMENTAL INDEXES</h3>
+      <p style=\"font-family: Oswald, Arial, sans-serif; font-weight: 300; font-size: 16px; margin-bottom: -2px; padding-left: 20px;\">The supplemental indexes offer a different perspective on community-level vulnerability. They combine data on percent low-income, percent linguistically isolated, percent less than high school education, percent unemployed, and low life expectancy with a single environmental indicator.  </p>
+  </div>'
 }
 
