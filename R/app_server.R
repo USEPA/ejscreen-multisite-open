@@ -449,7 +449,7 @@ app_server <- function(input, output, session) {
       sitepoints[,valid := !(REGISTRY_ID == 'NA' | is.na(lon) | is.na(lat))]
       sitepoints$invalid_msg <- NA
   
-      sitepoints$invalid[sitepoints$REGISTRY_ID == 'NA'] <- 'bad REGISTRY_ID'
+      sitepoints$invalid_msg[sitepoints$REGISTRY_ID == 'NA'] <- 'bad REGISTRY_ID'
       sitepoints$invalid_msg[is.na(sitepoints$lon) | is.na(sitepoints$lat)] <- 'bad lat/lon coordinates'
       sitepoints
        } else {
@@ -813,12 +813,14 @@ app_server <- function(input, output, session) {
     } else {
       disable_buttons[['MACT']] <- FALSE
       
-      mact_out[, `:=`(ejam_uniq_id = .I, 
-                      valid = !is.na(lon) & !is.na(lat))]
+      # mact_out[, `:=`(ejam_uniq_id = .I, 
+      #                 valid = !is.na(lon) & !is.na(lat))]
+      mact_out$ejam_uniq_id <- 1:nrow(mact_out)
+      mact_out$valid <- !is.na(mact_out$lon) & !is.na(mact_out$lat)
       setcolorder(mact_out, 'ejam_uniq_id')
       
       mact_out$invalid_msg <- NA
-      mact_out$invalid_msg[is.na(lon) | is.na(lat)] <- 'bad lat/lon coordinates'
+      mact_out$invalid_msg[is.na(mact_out$lon) | is.na(mact_out$lat)] <- 'bad lat/lon coordinates'
       ## return output dataset
       mact_out
     }
@@ -1605,12 +1607,22 @@ app_server <- function(input, output, session) {
     )
 
     # put those up front as first columns
-    setcolorder(out$results_bysite, neworder = c('ejam_uniq_id', newcolnames))
-    setcolorder(out$results_overall, neworder = newcolnames_overall)
+    if(submitted_upload_method() == 'SHP'){
+      
+      out$results_bysite <- dplyr::relocate(out$results_bysite, c('ejam_uniq_id', newcolnames), .before=1)
+      out$results_overall <- dplyr::relocate(out$results_overall, newcolnames_overall, .before=2)
+    } else {
+      setcolorder(out$results_bysite, neworder = c('ejam_uniq_id', newcolnames))
+      setcolorder(out$results_overall, neworder = c('ejam_uniq_id'))
+      #setcolorder(out$results_bysite, neworder = newcolnames)
+    }
+    
+    #setcolorder(out$results_bysite, neworder = c('ejam_uniq_id', newcolnames))
+    #setcolorder(out$results_overall, neworder = newcolnames_overall)
     # move ejam_uniq_id to front of longnames vector
     out$longnames <- c('ejam_uniq_id',newcolnames, out$longnames[out$longnames != 'ejam_uniq_id'])
     #############################################################################  # 
-    
+    print('got to here for SHP')
     # add radius to results tables (in server and in ejamit() ####
     # out$results_bysite[      , radius.miles := input$bt_rad_buff]
     # out$results_overall[     , radius.miles := input$bt_rad_buff]
@@ -2645,8 +2657,9 @@ app_server <- function(input, output, session) {
         
         wb_out <- table_xls_format(
           # note they seem to be data.frames, not data.tables, at this point, unlike how ejamit() had been returning results.
-          overall   = data_processed()$results_overall[ , ..keepcols], # needs ..  # 1 row with overall results aggregated across sites
-          eachsite  = data_processed()$results_bysite[  , ..keepcols2], # needs ..  # 1 row per site
+          overall = data_processed()$results_overall |> dplyr::select(names( data_processed()$results_overall)[keepcols]),
+         
+          eachsite = data_processed()$results_bysite |> dplyr::select(names( data_processed()$results_bysite)[keepcols2]),# needs ..  # 1 row per site
           longnames = data_processed()$longnames[           keepcols2], # not need ..       # 1 row, but full plain English column names.  keepcols here should be selecting cols not rows. 
           
           # *** NOTE:  data_processed()$results_bybg_people  # Do not provide this to xlsx by default. It is huge and for expert users only,
