@@ -32,7 +32,8 @@
 #'   look in for locally saved copies in case pins board is not reachable by user. 
 #' @param justchecking can set to TRUE to just see a list of what pins are stored in that board
 #' @param getall set to TRUE to get all 
-#'
+#' @import pins
+#' 
 #' @return a vector of names of objects downloaded if justchecking = FALSE, which excludes those 
 #'   already in environment so not re-downloaded and excludes those not found in pin board. 
 #'   If justchecking = TRUE, returns vector of names of ALL objects found in specified pin board,
