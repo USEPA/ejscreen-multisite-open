@@ -351,7 +351,9 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     data.table::setDF(eachsite) # to make syntax below work since it was written assuming data.frame only not data.table
   }
   # REPLACE THE URLS WITH GOOD ONES
-  eachsite[ , hyperlink_colnames] <-  (url_4table(eachsite$lat, eachsite$lon, radius = radius_or_buffer_in_miles, as_html = FALSE))$results_bysite
+  #eachsite[ , hyperlink_colnames] <-  (url_4table(eachsite$lat, eachsite$lon, radius = radius_or_buffer_in_miles, as_html = FALSE))$results_bysite
+  eachsite[eachsite$valid==T , hyperlink_colnames] <-  (url_4table(eachsite$lat[eachsite$valid==T], eachsite$lon[eachsite$valid==T], radius = radius_or_buffer_in_miles, as_html = FALSE))$results_bysite
+  eachsite[eachsite$valid==F , hyperlink_colnames] <-  NA# (url_4table(lat=NULL, lon=NULL, radius = radius_or_buffer_in_miles, as_html = FALSE))$results_bysite
   
   openxlsx::writeData(wb, 
                       sheet = 'Each Site', x = eachsite, 
@@ -421,7 +423,7 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     for (i in 1:length(hyperlink_colnames)) {
       # not sure it has to be in a loop actually but only 2 or 3 columns to loop over
       namedvector <- as.vector(eachsite[ , hyperlink_colnames[i]])
-      namedvector[namedvector <- 'N/A'] <- NA
+      namedvector[namedvector <- 'N/A'] <- ''
       class(namedvector) <- "hyperlink"
       names(namedvector) <- paste(hyperlink_text[i], 1:(NROW(eachsite))) # NOT NROW + 1 HERE !  # to use e.g., "EJScreen Report 1" not "EJScreenPDF 1"
       ## write to the worksheet the revised URL
