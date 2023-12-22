@@ -1464,7 +1464,7 @@ app_server <- function(input, output, session) {
 
        # data_uploaded()[!(ejam_uniq_id %in% sites2blocks$ejam_uniq_id),'valid'] <- F
         dup <- data_uploaded()
-        dup[,valid := ejam_uniq_id %in% sites2blocks$ejam_uniq_id]
+        dup$valid <- dup$ejam_uniq_id %in% sites2blocks$ejam_uniq_id
        
         dup$invalid_msg[!(dup$ejam_uniq_id %in% sites2blocks$ejam_uniq_id)] <- 'no blocks found nearby'
         data_uploaded <- dup
@@ -1581,6 +1581,11 @@ app_server <- function(input, output, session) {
         # `ACS Report`      = url_ejscreen_acs_report(lat = d_upload$lat, lon =  d_upload$lon, radius = input$bt_rad_buff, as_html = TRUE),
         `ECHO report` = ifelse(valid==T, echolink, 'N/A')
       )]
+      out$results_overall[, `:=`(
+        `EJScreen Report` = NA,
+        `EJScreen Map` = NA,
+        `ECHO report` = NA
+      )]
     } else {
       ## setting shapefile URLs to NA for now
       out$results_bysite <- out$results_bysite %>% 
@@ -1589,6 +1594,12 @@ app_server <- function(input, output, session) {
             `EJScreen Map`    = 'N/A',#ifelse(valid == T, url_ejscreenmap(        lat = d_upload$lat, lon =  d_upload$lon,                             as_html = TRUE),  'N/A'),
             # `ACS Report`      = url_ejscreen_acs_report(lat = d_upload$lat, lon =  d_upload$lon, radius = input$bt_rad_buff, as_html = TRUE),
             `ECHO report` = 'N/A'#ifelse(valid==T, echolink, 'N/A')
+        )
+      out$results_overall <- out$results_overall %>% 
+        dplyr::mutate(
+          `EJScreen Report` = NA,
+          `EJScreen Map` = NA,
+          `ECHO report` = NA
         )
     }
     #}
@@ -1607,22 +1618,13 @@ app_server <- function(input, output, session) {
     )
 
     # put those up front as first columns
-    if(submitted_upload_method() == 'SHP'){
-      
-      out$results_bysite <- dplyr::relocate(out$results_bysite, c('ejam_uniq_id', newcolnames), .before=1)
-      out$results_overall <- dplyr::relocate(out$results_overall, newcolnames_overall, .before=2)
-    } else {
-      setcolorder(out$results_bysite, neworder = c('ejam_uniq_id', newcolnames))
-      setcolorder(out$results_overall, neworder = c('ejam_uniq_id'))
-      #setcolorder(out$results_bysite, neworder = newcolnames)
-    }
-    
-    #setcolorder(out$results_bysite, neworder = c('ejam_uniq_id', newcolnames))
-    #setcolorder(out$results_overall, neworder = newcolnames_overall)
+    out$results_bysite <- dplyr::relocate(out$results_bysite, c('ejam_uniq_id', newcolnames), .before=1)
+    out$results_overall <- dplyr::relocate(out$results_overall, newcolnames_overall, .before=2)
+   
     # move ejam_uniq_id to front of longnames vector
     out$longnames <- c('ejam_uniq_id',newcolnames, out$longnames[out$longnames != 'ejam_uniq_id'])
     #############################################################################  # 
-    print('got to here for SHP')
+    
     # add radius to results tables (in server and in ejamit() ####
     # out$results_bysite[      , radius.miles := input$bt_rad_buff]
     # out$results_overall[     , radius.miles := input$bt_rad_buff]
