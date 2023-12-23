@@ -32,7 +32,7 @@
 getblocksnearby  <- function(sitepoints, radius=3, maxradius=31.07, 
                              avoidorphans=FALSE, 
                              # indexgridsize,
-                             quadtree, 
+                             quadtree = NULL, 
                              quiet=FALSE,
                              parallel=FALSE,
                              ...
