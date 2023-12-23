@@ -35,8 +35,6 @@ look in for locally saved copies in case pins board is not reachable by user.}
 \item{envir}{if needed to specify environment other than default, e.g., globalenv() or parent.frame()}
 
 \item{justchecking}{can set to TRUE to just see a list of what pins are stored in that board}
-
-\item{getall}{set to TRUE to get all}
 }
 \value{
 If justchecking = FALSE,

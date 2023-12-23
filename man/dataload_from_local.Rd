@@ -2,7 +2,7 @@
 % Please edit documentation in R/dataload_from_local.R
 \name{dataload_from_local}
 \alias{dataload_from_local}
-\title{dataload_from_local
+\title{dataload_from_local - load datasets from local disk folder
 utility for analysts/developers to store large block/other data locally instead of redownloading}
 \usage{
 dataload_from_local(
@@ -24,11 +24,11 @@ dataload_from_local(
 
 \item{fun}{use defaults}
 
-\item{envir}{use defaults}
+\item{envir}{use defaults. see \code{\link[=dataload_from_pins]{dataload_from_pins()}}}
 
-\item{folder_local_source}{Your local folder path}
+\item{folder_local_source}{Your local folder path. see \code{\link[=dataload_from_pins]{dataload_from_pins()}}}
 
-\item{justchecking}{use defaults}
+\item{justchecking}{use defaults. see \code{\link[=dataload_from_pins]{dataload_from_pins()}}}
 
 \item{testing}{use defaults}
 }
@@ -39,7 +39,7 @@ but only for those not already in memory, so it is
 just the ones loaded from disk because not already in memory and found on disk locally.
 }
 \description{
-dataload_from_local
+dataload_from_local - load datasets from local disk folder
 utility for analysts/developers to store large block/other data locally instead of redownloading
 }
 \details{

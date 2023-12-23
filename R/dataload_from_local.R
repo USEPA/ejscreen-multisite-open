@@ -1,4 +1,4 @@
-#' dataload_from_local
+#' dataload_from_local - load datasets from local disk folder
 #' utility for analysts/developers to store large block/other data locally instead of redownloading
 #' @details  
 #' 
@@ -10,10 +10,10 @@
 #'   
 #' @param varnames use defaults, or vector of names like "bgej" or use "all" to get all available
 #' @param ext  use defaults
-#' @param fun  use defaults
-#' @param envir  use defaults
-#' @param folder_local_source Your local folder path
-#' @param justchecking  use defaults
+#' @param fun  use defaults 
+#' @param envir  use defaults. see [dataload_from_pins()]
+#' @param folder_local_source Your local folder path. see [dataload_from_pins()]
+#' @param justchecking  use defaults. see [dataload_from_pins()]
 #' @param testing  use defaults
 #' @return vector of paths to files (as derived from varnames) that were 
 #'   actually found in folder_local_source,

@@ -31,7 +31,6 @@
 #' @param folder_local_source path of local folder to 
 #'   look in for locally saved copies in case pins board is not reachable by user. 
 #' @param justchecking can set to TRUE to just see a list of what pins are stored in that board
-#' @param getall set to TRUE to get all 
 #' @import pins
 #'
 #' @return If justchecking = FALSE, 
