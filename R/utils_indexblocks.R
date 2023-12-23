@@ -14,6 +14,7 @@ indexblocks <- function() {
   if (!exists("localtree")) {
     cat('The index of Census block groups (localtree) has not been created yet...\n')
     if (!exists("quaddata")) {
+      cat(    "The index of Census block groups (localtree) cannot be created until quaddata is loaded ... Trying dataload_from_pins() before indexblocks() \n")
       message("The index of Census block groups (localtree) cannot be created until quaddata is loaded ... Trying dataload_from_pins() before indexblocks()")
       dataload_from_pins("quaddata")
     } else {

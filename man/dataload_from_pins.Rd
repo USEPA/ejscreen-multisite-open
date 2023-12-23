@@ -32,17 +32,28 @@ needs to be the full url starting with https:// - see help for board_connect}
 \item{folder_local_source}{path of local folder to
 look in for locally saved copies in case pins board is not reachable by user.}
 
-\item{envir}{if needed to specify environment other than default}
+\item{envir}{if needed to specify environment other than default, e.g., globalenv() or parent.frame()}
 
 \item{justchecking}{can set to TRUE to just see a list of what pins are stored in that board}
 
 \item{getall}{set to TRUE to get all}
 }
 \value{
-a vector of names of objects downloaded if justchecking = FALSE, which excludes those
-already in environment so not re-downloaded and excludes those not found in pin board.
-If justchecking = TRUE, returns vector of names of ALL objects found in specified pin board,
+If justchecking = FALSE,
+
+returns vector of names of objects now in memory in specified envir, either because
+\enumerate{
+\item already in memory or
+\item loaded from local disk or
+\item successfully downloaded.
+}
+
+If justchecking = TRUE, however,
+
+returns vector of names of ALL objects found in specified pin board (or NULL if cannot connect)
+
 regardless of whether they are already in the environment, and
+
 regardless of whether they were specified among varnames, or are related to EJAM at all.
 }
 \description{

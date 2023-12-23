@@ -1,11 +1,14 @@
 #' dataload_from_local
-#' utility for R analysts/developers to store large block data locally instead of redownloading from AWS
+#' utility for analysts/developers to store large block/other data locally instead of redownloading
 #' @details  
+#' 
+#'   See [dataload_from_pins()] also. 
+#' 
 #'   rm(bgid2fips, blockid2fips, blockpoints, blockwts, quaddata)
 #'   
 #'   dataload_from_local(folder_local_source = '.')
 #'   
-#' @param varnames use defaults
+#' @param varnames use defaults, or vector of names like "bgej" or use "all" to get all available
 #' @param ext  use defaults
 #' @param fun  use defaults
 #' @param envir  use defaults
@@ -18,15 +21,17 @@
 #'   just the ones loaded from disk because not already in memory and found on disk locally.
 #' @export
 #'
-dataload_from_local <- function(varnames = c(
-  c('blockwts', 'quaddata', 'blockpoints', 'blockid2fips', 'bgid2fips', 'bgej'),
-  c('frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact")), 
-  ext = c(".arrow", ".rda")[1],
-  fun = c("arrow::read_ipc_file", "load")[1],
-  envir = globalenv(),  # should it be parent or global or package EJAM envt ??
+dataload_from_local <- function(varnames = c(c('blockwts', 'blockpoints', 'blockid2fips', "quaddata"), 
+                                             # load only if /when needed:
+                                             'bgej',
+                                             'bgid2fips',
+                                             c('frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact"))[1:4],
+                                ext = c(".arrow", ".rda")[1],
+                                fun = c("arrow::read_ipc_file", "load")[1],
+                                envir = globalenv(),  # should it be parent or global or package EJAM envt ??
                                 folder_local_source = NULL, # './data/', # "~/../Downloads", 
-  justchecking = FALSE, 
-  testing = FALSE) {
+                                justchecking = FALSE, 
+                                testing = FALSE) {
   
   if (is.null(folder_local_source) & substr(Sys.getenv("COMPUTERNAME"),1,6) == "LZ11MC") {
     # during development, when on this particular computer, use this particular local folder to look in for datasets:
@@ -35,6 +40,15 @@ dataload_from_local <- function(varnames = c(
     if (is.null(folder_local_source)) {
       folder_local_source <- "./data/" # default for other development machines
     }
+  }
+  
+  if ('all' %in% tolower(varnames)) {
+    varnames <- c(
+      c('blockwts', 'blockpoints', 'blockid2fips', "quaddata"), 
+      'bgej',      
+      'bgid2fips', 
+      c('frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact")
+    )
   }
   
   # if (interactive()) {
@@ -54,62 +68,94 @@ dataload_from_local <- function(varnames = c(
   
   for (i in 1:length(fnames)) {
     
-    if (!exists(varnames[i], envir = envir) ) {
+    varnames_i <- varnames[i]
+    spacing_i  <-  spacing[i]
+    
+    if (!exists(varnames_i, envir = envir) ) {
+      ################################################################ #
       # NOT in memory  ################################################################ #
       
       if (justchecking) {
-        cat(  varnames[i],spacing[i],
-              'NOT in memory\n')
+        cat(varnames_i, spacing_i,
+            'is NOT in memory\n')
       }
       if (file.exists(localpaths[i] )) {
-        #  NOT in memory, but is on local drive ##################### #
+        ##################### #
+        #  ...FOUND on local drive ##################### #
         
         localpaths_found <- c(localpaths_found, localpaths[i])
         
-        if (!justchecking) {
+        if (justchecking) {
+          cat(varnames_i, spacing_i,
+              'is available locally on disk at', localpaths[i], '\n')
+        } else {  
+          # not justchecking
+          
           if (ext == '.rda') {
-            cat( varnames[i], spacing[i],
+            cat(varnames_i, spacing_i,
                  'is being loaded from', localpaths[i],'...')
             load(localpaths[i], envir = envir)
-            cat("done.\n")
+            if (!exists(varnames_i, envir = envir)) {
+              cat(    "Problem - file found but failed to assign to memory/ envir: ", varnames_i, "\n")
+              warning("Problem - file found but failed to assign to memory/ envir: ", varnames_i)
+            } else {
+              cat("done.\n")
+            }
             next
           } else {
-            assign(varnames[i], arrow::read_ipc_file(file = localpaths[i]), envir = envir)
+            if (ext == '.arrow') {
+              cat(varnames_i, spacing_i,
+                   'is being loaded from', localpaths[i],'...')
+              assign(varnames_i, arrow::read_ipc_file(file = localpaths[i]), envir = envir)
+              if (!exists(varnames_i, envir = envir)) {
+                cat(    "Problem - file found but failed to assign to memory/ envir: ", varnames_i, "\n")
+                warning("Problem - file found but failed to assign to memory/ envir: ", varnames_i)
+              } else {
+                cat("done.\n")
+              }
+            } else {
+              stop('ext must be .arrow or .rda')
+            }
           }
-        } else {
-          cat(varnames[i],spacing[i],
-              'is available locally on disk at', localpaths[i], '\n')
+          
         }
-      } else { 
-        # NOT in memory, NOT on local disk ##################### #
-
-        cat(  varnames[i],spacing[i],
-              'is NOT found locally on disk at', localpaths[i], '\n')
+      } else {
+        ##################### #
+        # ...NOT on local disk ##################### #
+        
+        cat(varnames_i, spacing_i,
+            'is NOT found locally on disk at', localpaths[i], '\n')
         next
       }
       
     } else {
-      #  in memory  ################################################################ #
+      ################################################################ #
+      #  FOUND in memory  ################################################################ #
       
       if (justchecking) {
-        cat( varnames[i],spacing[i],
-             'is already in memory\n') # redundant with similar lines in dataload_from_aws()
+        cat(varnames_i, spacing_i,
+            'was already in memory\n') # redundant with similar lines in dataload_from_aws()
         
         if (file.exists(localpaths[i] )) {
           # in memory, AND on local disk ##################### #
           
-          cat( varnames[i],spacing[i],
-               'is available locally on disk at', localpaths[i], '\n')
+          cat(varnames_i, spacing_i,
+              'was available locally on disk at', localpaths[i], '\n')
         } else {
           # in memory, NOT on local disk ##################### #
           
-          cat( varnames[i],spacing[i],
-               'is NOT found locally on disk at', localpaths[i], '\n')
+          cat(varnames_i, spacing_i,
+              'is NOT found locally on disk at', localpaths[i], '\n')
         }
-      next
+        next
+      } else {
+        cat(varnames_i, spacing_i,
+            'was already in memory\n')
       }
       
     }
+    ################################################################ #
+    ################################################################ #
   } # end of loop
   
   # cat("\n")
