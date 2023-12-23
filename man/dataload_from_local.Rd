@@ -2,32 +2,33 @@
 % Please edit documentation in R/dataload_from_local.R
 \name{dataload_from_local}
 \alias{dataload_from_local}
-\title{dataload_from_local
-utility for R analysts/developers to store large block data locally instead of redownloading from AWS}
+\title{dataload_from_local - load datasets from local disk folder
+utility for analysts/developers to store large block/other data locally instead of redownloading}
 \usage{
 dataload_from_local(
-  varnames = c(c("blockwts", "quaddata", "blockpoints", "blockid2fips", "bgid2fips",
-    "bgej"), c("frs", "frs_by_programid", "frs_by_naics", "frs_by_sic", "frs_by_mact")),
+  varnames = c(c("blockwts", "blockpoints", "blockid2fips", "quaddata"), "bgej",
+    "bgid2fips", c("frs", "frs_by_programid", "frs_by_naics", "frs_by_sic",
+    "frs_by_mact"))[1:4],
   ext = c(".arrow", ".rda")[1],
   fun = c("arrow::read_ipc_file", "load")[1],
   envir = globalenv(),
-  folder_local_source = "~/../Downloads",
+  folder_local_source = NULL,
   justchecking = FALSE,
   testing = FALSE
 )
 }
 \arguments{
-\item{varnames}{use defaults}
+\item{varnames}{use defaults, or vector of names like "bgej" or use "all" to get all available}
 
 \item{ext}{use defaults}
 
 \item{fun}{use defaults}
 
-\item{envir}{use defaults}
+\item{envir}{use defaults. see \code{\link[=dataload_from_pins]{dataload_from_pins()}}}
 
-\item{folder_local_source}{Your local folder path}
+\item{folder_local_source}{Your local folder path. see \code{\link[=dataload_from_pins]{dataload_from_pins()}}}
 
-\item{justchecking}{use defaults}
+\item{justchecking}{use defaults. see \code{\link[=dataload_from_pins]{dataload_from_pins()}}}
 
 \item{testing}{use defaults}
 }
@@ -38,10 +39,12 @@ but only for those not already in memory, so it is
 just the ones loaded from disk because not already in memory and found on disk locally.
 }
 \description{
-dataload_from_local
-utility for R analysts/developers to store large block data locally instead of redownloading from AWS
+dataload_from_local - load datasets from local disk folder
+utility for analysts/developers to store large block/other data locally instead of redownloading
 }
 \details{
+See \code{\link[=dataload_from_pins]{dataload_from_pins()}} also.
+
 rm(bgid2fips, blockid2fips, blockpoints, blockwts, quaddata)
 
 dataload_from_local(folder_local_source = '.')
