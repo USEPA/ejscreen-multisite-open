@@ -272,9 +272,9 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
   
   
   
-  if (interactive() & !quiet) { 
-    cat("You can use  getblocks_diagnostics(sites2blocks)  to see this info on distances found:\n\n")
-    getblocks_diagnostics(sites2blocks)
-  }
+  # if (interactive() & !quiet) { 
+  #   cat("You can use  getblocks_diagnostics(sites2blocks)  to see this info on distances found:\n\n")
+  #   getblocks_diagnostics(sites2blocks)
+  # }
   return(sites2blocks)
 }

@@ -9,7 +9,7 @@
 #' @seealso [getblocks_diagnostics()]
 #' @export
 #'
-getblocks_summarize_blocks_per_site <- function(x, varname='siteid') {
+getblocks_summarize_blocks_per_site <- function(x, varname='ejam_uniq_id') {
   blocks_per_site_histo <- table(table(x[ , ..varname]))
   blocks_per_site_histo <- data.frame(
     blocks_nearby =  as.numeric(names(blocks_per_site_histo)), 
@@ -71,7 +71,7 @@ getblocks_diagnostics <- function(x, detailed=FALSE, see_plot=FALSE) {
   }
   # calculate extra stats ####
   
-  sitecount_unique_out       <- data.table::uniqueN(x, by = 'siteid')
+  sitecount_unique_out       <- data.table::uniqueN(x, by = 'ejam_uniq_id') # used to be siteid
   blockcount_unique          <- data.table::uniqueN(x, by = 'blockid') # how many blocks are there, counting each once, not "how many blocks are unique" ie appear only once
   blockcount_incl_dupes      <- data.table::uniqueN(x)
   ratio_blocks_incl_dupes_to_unique <- blockcount_incl_dupes / blockcount_unique
