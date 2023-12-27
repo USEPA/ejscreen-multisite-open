@@ -423,7 +423,7 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     for (i in 1:length(hyperlink_colnames)) {
       # not sure it has to be in a loop actually but only 2 or 3 columns to loop over
       namedvector <- as.vector(eachsite[ , hyperlink_colnames[i]])
-      namedvector[namedvector <- 'N/A'] <- ''
+      namedvector[namedvector <- 'N/A'] <- NA
       class(namedvector) <- "hyperlink"
       names(namedvector) <- paste(hyperlink_text[i], 1:(NROW(eachsite))) # NOT NROW + 1 HERE !  # to use e.g., "EJScreen Report 1" not "EJScreenPDF 1"
       ## write to the worksheet the revised URL
