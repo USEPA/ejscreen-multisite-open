@@ -472,12 +472,11 @@ regids <- mysites$REGISTRY_ID
 link1 <- url_echo_facility_webpage(regids, as_html = T)
 link2 <- url_ejscreen_report(lat = mysites$lat, lon = mysites$lon, radius = 3, as_html = T)
 link3 <- url_ejscreenmap(lat = mysites$lat, lon = mysites$lon,  as_html = T)
-link4 <- url_ejscreen_acs_report(lat = mysites$lat, lon = mysites$lon, radius = 3, as_html = T)
 # # same:
 # my_industry <- naics_from_any("chemical manuf",children = F)[,.(code,name)]
 # mysites <- frs_from_naics(my_industry$code)[,1:5]
 mysites <- cbind(`ECHO report` = link1, 
-                 `EJScreen Report` = link2, `EJScreen Map` = link3, # `ACS Report` = link4,
+                 `EJScreen Report` = link2, `EJScreen Map` = link3,
                  mysites)
  caption = paste0(nrow(mysites), ' sites have NAICS matching "', industryword, '"')
 if (nrow(mysites) > 1500) {mysites <- mysites[1:1500, ]} # >2k rows is too much for client-side DataTables

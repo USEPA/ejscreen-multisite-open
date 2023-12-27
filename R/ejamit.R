@@ -302,9 +302,10 @@ ejamit <- function(sitepoints,
   # ( doaggregate does not provide this   )
   
   #  >this should be a function  and is used by both server and ejamit() ####
-  # duplicated almost exactly in app_server but uses reactives there. *** except this has been updated here to handle FIPS not just latlon analysis.
+  # duplicated almost exactly in app_server (near line 1217) but uses reactives there. *** except this has been updated here to handle FIPS not just latlon analysis.
   # #  Do maybe something like this:
-  # links <- url_4table(lat=out$results_bysite$lat, lon=out$results_bysite$lon, radius = radius, regid=ifelse("REGISTRY_ID" %in% names(out$results_bysite), out$results_bysite$REGISTRY_ID, NULL))
+  # links <- url_4table(lat=out$results_bysite$lat, lon=out$results_bysite$lon, radius = radius, 
+  #    regid=ifelse("REGISTRY_ID" %in% names(out$results_bysite), out$results_bysite$REGISTRY_ID, NULL))
   # out$results_bysite[ , `:=`(links$results_bysite)] # would that work??? how to avoid big cbind step to add the new columns?
   # out$results_overall <- cbind(out$results_overall, links$results_overall) # 
   # setcolorder(out$results_bysite, neworder = links$newcolnames)
@@ -323,14 +324,12 @@ ejamit <- function(sitepoints,
     out$results_bysite[ , `:=`(
       `EJScreen Report` = url_ejscreen_report(   areaid   = fips, as_html = T),
       `EJScreen Map`    = url_ejscreenmap(       wherestr = fips, as_html = T),
-      # `ACS Report`      = url_ejscreen_acs_report(lat = out$results_bysite$lat, lon = out$results_bysite$lon, radius = radius, as_html = T),
       `ECHO report` = echolink
     )]
   } else {
     out$results_bysite[ , `:=`(
       `EJScreen Report` = url_ejscreen_report(    lat = out$results_bysite$lat, lon = out$results_bysite$lon, radius = radius, as_html = T),
       `EJScreen Map`    = url_ejscreenmap(        lat = out$results_bysite$lat, lon = out$results_bysite$lon,                  as_html = T),
-      # `ACS Report`      = url_ejscreen_acs_report(lat = out$results_bysite$lat, lon = out$results_bysite$lon, radius = radius, as_html = T),
       `ECHO report` = echolink
     )]
   }
@@ -339,14 +338,12 @@ ejamit <- function(sitepoints,
     out$results_overall[ , `:=`(
       `EJScreen Report` = out$results_bysite$`EJScreen Report`,   #  rep(NA,nrow(out$results_bysite)),
       `EJScreen Map`    = out$results_bysite$`EJScreen Map`,    # rep(NA,nrow(out$results_bysite)),
-      # `ACS Report`      = out$results_bysite$,   #  rep(NA,nrow(out$results_bysite)),
       `ECHO report`     = out$results_bysite$`ECHO report`     # rep(NA,nrow(out$results_bysite))
     )]
   } else {
     out$results_overall[ , `:=`(
       `EJScreen Report` = NA,   #  rep(NA,nrow(out$results_bysite)),
       `EJScreen Map`    = NA,    # rep(NA,nrow(out$results_bysite)),
-      # `ACS Report`      = NA,   #  rep(NA,nrow(out$results_bysite)),
       `ECHO report`     = NA     # rep(NA,nrow(out$results_bysite))
     )]
   }
@@ -354,7 +351,6 @@ ejamit <- function(sitepoints,
   newcolnames <- c(
     "EJScreen Report",
     "EJScreen Map",
-    # "ACS Report",
     "ECHO report")
   # put those up front as first columns
   data.table::setcolorder(out$results_bysite,  neworder = newcolnames)

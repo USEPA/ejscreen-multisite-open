@@ -1244,19 +1244,16 @@ app_server <- function(input, output, session) {
           out$results_bysite[ , `:=`(
             `EJScreen Report` = url_ejscreen_report(    lat = d_upload$lat, lon =  d_upload$lon, radius = input$bt_rad_buff, as_html = TRUE), 
             `EJScreen Map`    = url_ejscreenmap(        lat = d_upload$lat, lon =  d_upload$lon,                             as_html = TRUE), 
-            # `ACS Report`      = url_ejscreen_acs_report(lat = d_upload$lat, lon =  d_upload$lon, radius = input$bt_rad_buff, as_html = TRUE),
             `ECHO report` = echolink
           )]
         }
         newcolnames <- c(
           "EJScreen Report", 
           "EJScreen Map", 
-          # "ACS Report", 
           "ECHO report"
         )
         # put those up front as first columns
         setcolorder(out$results_bysite, neworder = newcolnames)
-        #setcolorder(out$results_bysite, neworder = newcolnames)
         out$longnames <- c(newcolnames, out$longnames)
         
         #############################################################################  # 
