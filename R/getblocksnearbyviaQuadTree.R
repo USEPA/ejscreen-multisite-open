@@ -44,6 +44,12 @@
 #'   mostly for testing, but a progress bar feature might be useful unless this is super fast.
 #' @param quiet Optional. set to TRUE to avoid message about using getblock_diagnostics(),
 #'   which is relevant only if a user saved the output of this function.
+#' @param retain_unadjusted_distance set to FALSE to drop it and save memory/storage. If TRUE, 
+#'   the distance_unadjusted column will save the actual distance of site to block internal point
+#'   -- the distance column always represents distance to average resident in the block, which is
+#'   estimated by adjusting the site to block distance in cases where it is small relative to the 
+#'   size of the block, to put a lower limit on it, which can result in a large estimate of distance
+#'   if the block is very large. See EJScreen documentation.
 #' @examples 
 #'   # indexblocks() # if localtree not available yet, quadtree = localtree
 #'   x = getblocksnearby(testpoints_1000, radius = 3)
@@ -53,7 +59,7 @@
 #' @importFrom pdist "pdist"
 #'   
 getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.07, avoidorphans = FALSE, 
-                                        report_progress_every_n = 500, quiet = FALSE,
+                                        report_progress_every_n = 500, quiet = FALSE, retain_unadjusted_distance = TRUE,
                                         quadtree) {
   # indexgridsize was defined at start as say 10 miles in global? could be passed here as a parameter ####
   # and buffer_indexdistance defined here in code but is never used anywhere...  
@@ -222,23 +228,18 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
   
   ########################################################################### ## 
   if (!quiet) {
-    cat('stats BEFORE ADJUSTING FOR SHORT DISTANCES! \n')
-    cat('min distance before adjustment: ', min(sites2blocks$distance, "\n"))
-    cat('max distance before adjustment: ', max(sites2blocks$distance, "\n"))
-    getblocks_diagnostics(sites2blocks)
-    cat("Adjusting for very short distances now.\n ")
+    cat('Stats via getblocks_diagnostics(), but BEFORE ADJUSTING FOR SHORT DISTANCES: \n')
+    cat("min distance before adjustment: ", min(sites2blocks$distance, na.rm = TRUE), "\n")
+    cat("max distance before adjustment: ", max(sites2blocks$distance, na.rm = TRUE), "\n\n")
+    getblocks_diagnostics(sites2blocks) # returns NA if no blocks nearby
+    cat("\n\nAdjusting for very short distances now...\n ")
   }
+  
   # ADJUST THE VERY SHORT DISTANCES ####
   
-  # distance gets adjusted to be the minimum possible value,  0.9 * effective radius of block_radius_miles (see EJScreen Technical Documentation discussion of proximity analysis for rationale)
-  
-  if (!("block_radius_miles" %in% names(blockwts))) {
-    # if missing because not added to dataset yet then use placeholder of 100 / meters_per_mile, or 100 meters
-    # not sure if this updates by reference blockwts for the remainder of this session and all users, or if this happens each time getblocksnearby... is called.
-    message("using temporary approximation of block_radius_miles")
-    blockwts[ , block_radius_miles := block_radius_miles_round_temp] # lazy load this and add it into blockwts
-  }
-  # Add block_radius_miles here, now to be able to correct the distances that are small relative to a block size.
+    # distance gets adjusted to be the minimum possible value,  0.9 * effective radius of block_radius_miles (see EJScreen Technical Documentation discussion of proximity analysis for rationale)
+  #
+  # use block_radius_miles here, to correct the distances that are small relative to a block size.
   # This adjusts distance the way EJScreen does for proximity scores - so distance reflects distance of sitepoint to avg resident in block
   # (rather than sitepoint's distance to the block internal point),
   # including e.g., where distance to block internal point is so small the site is inside the block.
@@ -246,29 +247,34 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
   # 2 ways considered to do join here - may be able to optimize.
   # a) try to do join that updates sites2blocks by reference - not sure it works this way, but goal was to make join faster:
   # sites2blocks[blockwts, .(siteid,blockid,distance,blockwt,bgid, block_radius_miles), on = 'blockid']
-  # b) try to do join that updates sites2blocks by making a copy? This does work:
+  # b) try to do join that updates sites2blocks by making a copy?  
   
-  sites2blocks <-  blockwts[sites2blocks, .(siteid, blockid, distance, blockwt, bgid, block_radius_miles), on = 'blockid'] 
-  
+  if (retain_unadjusted_distance) {
+    sites2blocks[ , distance_unadjusted := distance] # wastes space but for development/ debugging probably useful
+    sites2blocks <-  blockwts[sites2blocks, .(siteid, blockid, distance, blockwt, bgid, block_radius_miles, distance_unadjusted), on = 'blockid'] 
+  } else {
+    sites2blocks <-  blockwts[sites2blocks, .(siteid, blockid, distance, blockwt, bgid, block_radius_miles ), on = 'blockid'] 
+  }
+
   # 2 ways considered here for how exactly to make the adjustment: 
-  
   sites2blocks[distance < block_radius_miles, distance := 0.9 * block_radius_miles]  # assumes distance is in miles
-  # or a more continuous adjustment for when dist is between 0.9 and 1.0 times block_radius_miles: 
+  # or a more continuous but slower (and nonEJScreen way?) adjustment for when dist is between 0.9 and 1.0 times block_radius_miles: 
   # sites2blocks_dt[ , distance  := pmax(block_radius_miles, distance, na.rm = TRUE)] # assumes distance is in miles
   
   # drop that info about area or size of block to save memory. do not need it later in sites2blocks
   sites2blocks[ , block_radius_miles := NULL]
-  ########################################################################### ## 
   
+  if (!quiet) {
+    cat('Stats via getblocks_diagnostics(), AFTER ADJUSTING FOR SHORT DISTANCES: \n')
+    cat("min distance AFTER adjustment: ", min(sites2blocks$distance, na.rm = TRUE), "\n")
+    cat("max distance AFTER adjustment: ", max(sites2blocks$distance, na.rm = TRUE), "\n\n")
+    # getblocks_diagnostics(sites2blocks)  
+   cat("\n")
+  }
+  ########################################################################### ## 
   
   ### and with above idea, cant we subset to keep only distance <=  radius here, instead of inside the loop ? Or do it even later, after adjusting short distances? What would make sense to report as distance to avg resident if the effective radius happends to be > radius specified, as with small radius circle in rural huge block? 
   # sites2blocks <- sites2blocks[distance <= truedistance, ] 
   
-  
-  
-  if (interactive() & !quiet) { 
-    cat("You can use  getblocks_diagnostics(sites2blocks)  to see this info on distances found:\n\n")
-    getblocks_diagnostics(sites2blocks)
-  }
   return(sites2blocks)
 }
