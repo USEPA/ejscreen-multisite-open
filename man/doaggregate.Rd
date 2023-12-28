@@ -11,16 +11,16 @@ doaggregate(
   countcols = NULL,
   popmeancols = NULL,
   calculatedcols = NULL,
-  testing = FALSE,
-  include_ejindexes = FALSE,
-  updateProgress = NULL,
-  need_proximityscore = FALSE,
-  calculate_ratios = TRUE,
-  silentinteractive = TRUE,
-  called_by_ejamit = FALSE,
   subgroups_type = "nh",
+  include_ejindexes = FALSE,
+  calculate_ratios = TRUE,
   extra_demog = TRUE,
+  need_proximityscore = FALSE,
   infer_sitepoints = FALSE,
+  called_by_ejamit = FALSE,
+  updateProgress = NULL,
+  silentinteractive = TRUE,
+  testing = FALSE,
   ...
 )
 }
@@ -53,31 +53,32 @@ using population weighted mean.}
 \item{calculatedcols}{character vector of names of variables to aggregate within a buffer
 using formulas that have to be specified.}
 
-\item{testing}{used while testing this function}
-
-\item{include_ejindexes}{whether to calculate EJ Indexes and return that information}
-
-\item{updateProgress}{progress bar function used for shiny app}
-
-\item{need_proximityscore}{whether to calculate proximity scores}
-
-\item{calculate_ratios}{whether to calculate and return ratio of each indicator to its US and State overall mean}
-
-\item{silentinteractive}{Set to TRUE to see results in RStudio console.
-Set to FALSE to prevent long output showing in console in RStudio when in interactive mode}
-
-\item{called_by_ejamit}{Set to TRUE by ejamit() to suppress some outputs even if ejamit(silentinteractive=F)}
-
 \item{subgroups_type}{Optional (uses default). Set this to
 "nh" for non-hispanic race subgroups as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh;
 "alone" for EJScreen v2.2 style race subgroups as in    White Alone, wa and others in names_d_subgroups_alone;
 "both" for both versions. Possibly another option is "original" or "default" but work in progress.}
 
-\item{extra_demog}{if should include more indicators from v2.2 report on language etc.}
+\item{include_ejindexes}{whether to calculate EJ Indexes and return that information}
+
+\item{calculate_ratios}{whether to calculate and return ratio of each indicator to its US and State overall mean}
+
+\item{extra_demog}{if should include more indicators from EJScreen v2.2 report,
+on language, more age groups, gender, percent with disability, poverty, etc.}
+
+\item{need_proximityscore}{whether to calculate proximity scores}
 
 \item{infer_sitepoints}{set to TRUE to try to infer the lat,lon of each site around which the blocks in sites2blocks were found.
 lat,lon of each site will be approximated as average of nearby blocks, although a more accurate slower way would
 be to use reported distance of each of 3 of the furthest block points and triangulate}
+
+\item{called_by_ejamit}{Set to TRUE by ejamit() to suppress some outputs even if ejamit(silentinteractive=F)}
+
+\item{updateProgress}{progress bar function used for shiny app}
+
+\item{silentinteractive}{Set to TRUE to see results in RStudio console.
+Set to FALSE to prevent long output showing in console in RStudio when in interactive mode}
+
+\item{testing}{used while testing this function}
 
 \item{...}{more to pass to another function? Not used currently.}
 }

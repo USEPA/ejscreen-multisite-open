@@ -21,8 +21,11 @@ getblocks_diagnostics - Lots of stats about # of blocks, # of sites, etc.
 }
 \examples{
   getblocks_diagnostics(testoutput_getblocksnearby_10pts_1miles)
+  # library(data.table)
+  x <- data.table::copy(testpoints_10)
+  setDT(x)
   pts <- rbind(data.table(lat = 40.3, lon = -96.23),
-    testpoints_10[ , .(lat, lon)])
+    x[ , .(lat, lon)])
  z <- getblocksnearbyviaQuadTree(pts, 1, quadtree = localtree, quiet = T)
  z[ , .(blocks = .N) , keyby = 'siteid']
  plotblocksnearby(pts, radius = 1, sites2blocks = z)

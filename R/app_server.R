@@ -1120,13 +1120,28 @@ app_server <- function(input, output, session) {
     if (submitted_upload_method() == 'FIPS') {  # if FIPS, do everything in 1 step right here.
       
       out <- ejamit(fips = data_uploaded(), 
-                    silentinteractive = TRUE,
-                    radius = 999, 
-                    subgroups_type = input$subgroups_type,
-                    calculate_ratios = input$calculate_ratios,
-                    quadtree = localtree,
+                    radius = 999, # because FIPS analysis
+                    maxradius = input$maxradius,
                     avoidorphans = input$avoidorphans,
-                    maxradius = input$maxradius
+                    quadtree = localtree,
+                    # countcols = NULL,
+                    # popmeancols = NULL,
+                    # calculatedcols = NULL,
+                    subgroups_type = input$subgroups_type,
+                    include_ejindexes   = (input$include_ejindexes == "TRUE"), # it was character not logical because of how input UI done 
+                    calculate_ratios = input$calculate_ratios,
+                    extra_demog = input$extra_demog,
+                    need_proximityscore = FALSE, #input$need_proximityscore, # not relevant for FIPS
+                    # infer_sitepoints = FALSE,
+                    # need_blockwt = TRUE,
+                    threshold1 = input$an_thresh_comp1, # list(input$an_thresh_comp1) # not sure this is needed or works here
+                    # updateProgress = ??? , # not sure this is needed or works here
+                    in_shiny = TRUE, # not sure this is needed or works here
+                    # quiet = TRUE,
+                    # parallel = FALSE,
+                    silentinteractive = TRUE,
+                    # called_by_ejamit = TRUE, # not sure this is needed or works here
+                    testing = input$testing 
       )
       
       ################################################# # 
@@ -1167,11 +1182,11 @@ app_server <- function(input, output, session) {
       } # end LAT LON finding blocks nearby, now ready for latlon and shapefiles to do aggregation
       #############################################################################  # 
       
-      ## progress bar update overall  
+      ## progress bar update overall
       progress_all$inc(1/3, message = 'Step 2 of 3', detail = 'Aggregating')
       ## progress bar to show doaggregate status
       progress_doagg <- shiny::Progress$new(min = 0, max = 1)
-      ## function for updating progress bar, to pass in to doaggregate function  
+      ## function for updating progress bar, to pass in to doaggregate function
       updateProgress_doagg <- function(value = NULL, message_detail = NULL, message_main = NULL) {
         # Create a callback function - When called, it sets progress bar to value.
         if (is.null(value)) { # - If value is NULL, it will move the progress bar 1/5 of the remaining distance.
@@ -1180,27 +1195,30 @@ app_server <- function(input, output, session) {
         }
         progress_doagg$set(value = value, message = message_main, detail = message_detail)
       }
-      #############################################################################  # 
+      #############################################################################  #
       
       if (submitted_upload_method() != "FIPS") {  # if LAT LON or SHAPEFILE, now have blocks nearby and ready to aggregate
         
-        #############################################################################  # 
+        #############################################################################  #
         # 2) **EJAM::doaggregate()** ####
         
         out <- suppressWarnings(
           doaggregate(
-            sites2blocks = sites2blocks, 
+            sites2blocks = sites2blocks,
             sites2states_or_latlon = d_upload,
-            radius = input$bt_rad_buff, 
+            radius = input$bt_rad_buff,
             #countcols = 0, popmeancols = 0, calculatedcols = 0, # *** if using defaults of doaggregate()
             subgroups_type = input$subgroups_type, # nh, alone, or both # or use default of doaggregate() based on whatever subgroups_d etc are now ***   
-            testing = input$testing, 
-            include_ejindexes   = (input$include_ejindexes == "TRUE"), # it was character not logical because of how input UI done 
-            need_proximityscore = input$need_proximityscore, 
-            calculate_ratios = input$calculate_ratios, 
-            ## pass progress bar function as argument
-            updateProgress = updateProgress_doagg
-          )  )
+            include_ejindexes = (input$include_ejindexes == "TRUE"), # it was character not logical because of how input UI done 
+            calculate_ratios = input$calculate_ratios,
+            extra_demog = input$extra_demog,
+            need_proximityscore = input$need_proximityscore,
+            infer_sitepoints = FALSE,
+            called_by_ejamit = FALSE,
+            updateProgress = updateProgress_doagg, ## pass progress bar function as argument
+            testing = input$testing
+          )
+        )
         # provide sitepoints table provided by user aka data_uploaded(), (or could pass only lat,lon and ST -if avail- not all cols?)
         # and doaggregate() decides where to pull ST info from - 
         # ideally from ST column, 
@@ -1216,7 +1234,7 @@ app_server <- function(input, output, session) {
         #  
         #  >this should be a function, and is used by both server and ejamit() ###  #
         # duplicated almost exactly in ejamit() but reactives are not reactives there
-        # maybe use url_4table() - see ejamit() code
+        # maybe use url_4table() - see ejamit() code near line 300.
         #
         #if ("REGISTRY_ID" %in% names(out$results_bysite)) {
         # echolink = url_echo_facility_webpage(out$results_bysite$REGISTRY_ID, as_html = FALSE)
@@ -1224,12 +1242,12 @@ app_server <- function(input, output, session) {
         # echolink = url_echo_facility_webpage(out$results_bysite$REGISTRY_ID, as_html = FALSE)
         #}
         ## the registry ID column is only found in uploaded ECHO/FRS/NAICS data -
-        ## it is not passed to doaggregate output at this point, so pull the column from upload to create URLS
+        ## it is not passed to doaggregate output at this point, so pull the column from upload to create URLS.
+        
         if (nrow(d_upload) != nrow(out$results_bysite)) {
           out$results_bysite[, `:=`(
             `EJScreen Report` = rep('N/A', nrow(out$results_bysite)),
             `EJScreen Map`    = rep('N/A', nrow(out$results_bysite)),
-            # `ACS Report`      = rep('N/A', nrow(out$results_bysite)),  # will drop this one
             `ECHO report`     = rep('N/A', nrow(out$results_bysite))
           )]
         } else {
@@ -1239,7 +1257,7 @@ app_server <- function(input, output, session) {
           } else if ("RegistryID" %in% names(data_uploaded())) {
             echolink = url_echo_facility_webpage( d_upload$RegistryID, as_html = TRUE, linktext = 'ECHO Report')
           } else {
-            echolink = rep('N/A',nrow(out$results_bysite))
+            echolink = rep('N/A', nrow(out$results_bysite)) # url_4table() used NA not 'N/A' 
           }
           out$results_bysite[ , `:=`(
             `EJScreen Report` = url_ejscreen_report(    lat = d_upload$lat, lon =  d_upload$lon, radius = input$bt_rad_buff, as_html = TRUE), 

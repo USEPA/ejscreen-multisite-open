@@ -39,18 +39,6 @@
 #'   created by getblocksnearby  function. 
 #'   See [sites2blocks_example10pts_1miles] aka [testoutput_getblocksnearby_10pts_1miles] dataset in package, as input to this function
 #' @param sites2states_or_latlon data.table or just data.frame, with columns siteid (each unique one in sites2blocks) and ST (2-character State abbreviation) or lat and lon 
-#' @param countcols character vector of names of variables  to aggregate within a buffer
-#'   using a sum of counts, like, for example, the number of people for whom a 
-#'   poverty ratio is known, the count of which is the exact denominator needed
-#'   to correctly calculate percent low income. 
-#' @param popmeancols character vector of names of variables to aggregate within a buffer
-#'   using population weighted mean.
-#' @param calculatedcols character vector of names of variables to aggregate within a buffer
-#'   using formulas that have to be specified.
-#' @param updateProgress progress bar function used for shiny app
-#' @param include_ejindexes whether to calculate EJ Indexes and return that information 
-#' @param need_proximityscore whether to calculate proximity scores
-#' @param calculate_ratios whether to calculate and return ratio of each indicator to its US and State overall mean
 #' @param radius Optional radius in miles to limit analysis to. By default this function uses 
 #'   all the distances that were provided in the output of getblocksnearby(),
 #'   and reports radius estimated as rounded max of distance values in inputs to doaggregate.
@@ -60,19 +48,32 @@
 #'   This lets you just run getblocksnearby() once for the largest radius, and then query those
 #'   results to get doaggregate() to summarize at any distance that is less than or equal to the 
 #'   original radius analyzed by getblocksnearby().    
+#' @param countcols character vector of names of variables  to aggregate within a buffer
+#'   using a sum of counts, like, for example, the number of people for whom a 
+#'   poverty ratio is known, the count of which is the exact denominator needed
+#'   to correctly calculate percent low income. 
+#' @param popmeancols character vector of names of variables to aggregate within a buffer
+#'   using population weighted mean.
+#' @param calculatedcols character vector of names of variables to aggregate within a buffer
+#'   using formulas that have to be specified.
 #' @param subgroups_type Optional (uses default). Set this to 
 #'   "nh" for non-hispanic race subgroups as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh; 
 #'   "alone" for EJScreen v2.2 style race subgroups as in    White Alone, wa and others in names_d_subgroups_alone; 
 #'   "both" for both versions. Possibly another option is "original" or "default" but work in progress.
+#' @param include_ejindexes whether to calculate EJ Indexes and return that information 
+#' @param calculate_ratios whether to calculate and return ratio of each indicator to its US and State overall mean
+#' @param extra_demog if should include more indicators from EJScreen v2.2 report,
+#'    on language, more age groups, gender, percent with disability, poverty, etc.
+#' @param need_proximityscore whether to calculate proximity scores
 #' @param infer_sitepoints set to TRUE to try to infer the lat,lon of each site around which the blocks in sites2blocks were found.
 #'   lat,lon of each site will be approximated as average of nearby blocks, although a more accurate slower way would
 #'   be to use reported distance of each of 3 of the furthest block points and triangulate
-#' @param ... more to pass to another function? Not used currently.
-#' @param extra_demog if should include more indicators from v2.2 report on language etc.
-#' @param testing used while testing this function
+#' @param called_by_ejamit Set to TRUE by ejamit() to suppress some outputs even if ejamit(silentinteractive=F)
+#' @param updateProgress progress bar function used for shiny app
 #' @param silentinteractive Set to TRUE to see results in RStudio console. 
 #'   Set to FALSE to prevent long output showing in console in RStudio when in interactive mode
-#' @param called_by_ejamit Set to TRUE by ejamit() to suppress some outputs even if ejamit(silentinteractive=F)
+#' @param testing used while testing this function
+#' @param ... more to pass to another function? Not used currently.
 #' @seealso [ejamit]   [getblocksnearby()]  
 #' 
 #' @return list with named elements: 
@@ -93,14 +94,15 @@
 #' @import data.table
 #' @export
 #' 
-doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, radius=NULL, 
-                        countcols=NULL, popmeancols=NULL, calculatedcols=NULL, 
-                        testing=FALSE, 
-                        include_ejindexes=FALSE, updateProgress = NULL,
-                        need_proximityscore=FALSE, calculate_ratios = TRUE,
-                        silentinteractive=TRUE, called_by_ejamit=FALSE,
-                        subgroups_type='nh', extra_demog=TRUE,
-                        infer_sitepoints=FALSE, ...) {
+doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, 
+                        radius=NULL, 
+                        countcols=NULL, popmeancols=NULL, calculatedcols=NULL, subgroups_type='nh', 
+                        include_ejindexes=FALSE, calculate_ratios = TRUE, 
+                        extra_demog=TRUE, need_proximityscore=FALSE, 
+                        infer_sitepoints=FALSE,
+                        called_by_ejamit=FALSE, updateProgress = NULL, 
+                        silentinteractive=TRUE, testing=FALSE, 
+                         ...) {
   
   ###################################################### # 
   
