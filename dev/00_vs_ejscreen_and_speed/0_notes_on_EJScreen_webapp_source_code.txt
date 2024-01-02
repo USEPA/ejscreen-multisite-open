@@ -1,5 +1,6 @@
 The EJScreen webapp source code is found in these files (and others):
 
+Note however that this is not the code doing the API's calculations (i.e., aggregating to calculate raw score of an EJ index or other indicator for a specified area)
 
 * mapper (at launch)
 First few files of code that get sourced by EJScreen app are these: 

@@ -23,7 +23,7 @@
 #' 
 ejscreenapi_vs_ejam1 <- function(latlon, radius = 3, nadrop = FALSE, ...) {
   
-# compare 1 site for EJAM vs EJScreen results not yet run
+  # compare 1 site for EJAM vs EJScreen results not yet run
   
   api1 <- ejscreenapi_plus(latlon, radius = radius)
   # or api1 <- ejscreenit(latlon, radius = radius)$table
@@ -55,15 +55,15 @@ ejscreenapi_vs_ejam1 <- function(latlon, radius = 3, nadrop = FALSE, ...) {
 #' 
 ejscreenapi_vs_ejam1_alreadyrun <- function(apisite, ejamsite, nadrop = FALSE) {
   
-# compare 1 site for EJAM vs EJScreen results already run  
+  # compare 1 site for EJAM vs EJScreen results already run  
   # example:
   if (1 == 0) {
-  api1 <- ejscreenit(testpoints_100, radius = 3)
-  api1 <- api1$table[5, ]
-  ejam1 <- ejamit(testpoints_100, radius = 3)
-  ejam1 <- ejam1$results_bysite[5, ]
-  
-  ejscreenapi_vs_ejam1_alreadyrun(api1, ejam1)
+    api1 <- ejscreenit(testpoints_100, radius = 3)
+    api1 <- api1$table[5, ]
+    ejam1 <- ejamit(testpoints_100, radius = 3)
+    ejam1 <- ejam1$results_bysite[5, ]
+    
+    ejscreenapi_vs_ejam1_alreadyrun(api1, ejam1)
   }
   
   
@@ -78,16 +78,16 @@ ejscreenapi_vs_ejam1_alreadyrun <- function(apisite, ejamsite, nadrop = FALSE) {
   z <- data.frame(
     EJSCREENAPI = t(apisite[sitenum, -1:-3 ]),
     EJAM = t(ejamsite[sitenum, -1:-3])
-    )
+  )
   cat("\n")
   if (nadrop) {
-  print(z[!is.na(z$EJSCREENAPI), ])
+    print(z[!is.na(z$EJSCREENAPI), ])
   } else {
     print(z)
   }
   print(z[c('blockcount_near_site', 'pop'), ])
-
-    # return
+  
+  # return
   setDF(apisite)
   setDF(ejamsite)
   apisite   <- apisite[ , !(names(apisite) %in% c('ST', 'statename', "REGION", "EJScreen Report", "EJScreen Map", "ECHO report"))]
@@ -150,9 +150,11 @@ ejscreenapi_vs_ejam1_alreadyrun <- function(apisite, ejamsite, nadrop = FALSE) {
 #'   }
 #'   
 ejscreenapi2ejam_format <- function(ejscreenapi_plus_out, fillmissingcolumns = FALSE, ejamcolnames=NULL) {
-  
-  ejamvars <- colnames(testoutput_ejamit_10pts_1miles$results_bysite)
-  
+  if (!is.null(ejamcolnames)) {
+    ejamvars <- ejamcolnames
+  } else { 
+    ejamvars <- colnames(testoutput_ejamit_10pts_1miles$results_bysite)
+  } 
   x <- ejscreenapi_plus_out
   # Should already be rname format, but 
   # just in case, try to convert as if they were long names as in output of ejscreenit()
