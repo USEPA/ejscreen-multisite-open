@@ -8,8 +8,8 @@
 test output of ejamit()
 }
 \details{
-This is the output of ejamit( testpoints_10, radius = 1)
+This is the output of ejamit(testpoints_10, radius = 1, include_ejindexes = TRUE)
 }
 \seealso{
-\code{\link[=doaggregate]{doaggregate()}} \code{\link[=ejamit]{ejamit()}} \link{testoutput_doaggregate_10pts_1miles} \link{testpoints_10}
+\code{\link[=doaggregate]{doaggregate()}} \code{\link[=ejamit]{ejamit()}} \link{testoutput_doaggregate_10pts_1miles} and \link{testpoints_10}
 }
