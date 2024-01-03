@@ -22,6 +22,13 @@ ST_by_site_from_sites2blocks <- function(sites2blocks) {
   setDT(sites2blocks)
   if (!all(c('siteid', 'blockid', 'distance') %in% names(sites2blocks) )) {
     stop("column names must include siteid, blockid, and distance, as in output of getblocksnearby() - see ?testoutput_getblocksnearby_10pts_1miles")}
+  if (!exists("blockwts")) {
+    message('blockwts not found, trying to load it from local or remote sources')
+    dataload_from_pins('blockwts')
+    if (!exists("blockwts")) {
+      stop('blockwts could not be found and is required by ST_by_site_from_sites2blocks()')
+    }
+  }
   nearestbg <- blockwts[sites2blocks[ , .( blockid = blockid[which.min(distance)]) , by = "siteid"], .(siteid, bgid), on = "blockid" ]
   blockgroupstats[nearestbg, .(siteid, ST), on = "bgid"][order(siteid),]
 }

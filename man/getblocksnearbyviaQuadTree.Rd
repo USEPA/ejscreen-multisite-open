@@ -11,6 +11,7 @@ getblocksnearbyviaQuadTree(
   avoidorphans = FALSE,
   report_progress_every_n = 500,
   quiet = FALSE,
+  retain_unadjusted_distance = TRUE,
   quadtree
 )
 }
@@ -39,6 +40,13 @@ mostly for testing, but a progress bar feature might be useful unless this is su
 
 \item{quiet}{Optional. set to TRUE to avoid message about using getblock_diagnostics(),
 which is relevant only if a user saved the output of this function.}
+
+\item{retain_unadjusted_distance}{set to FALSE to drop it and save memory/storage. If TRUE,
+the distance_unadjusted column will save the actual distance of site to block internal point
+-- the distance column always represents distance to average resident in the block, which is
+estimated by adjusting the site to block distance in cases where it is small relative to the
+size of the block, to put a lower limit on it, which can result in a large estimate of distance
+if the block is very large. See EJScreen documentation.}
 
 \item{quadtree}{(a pointer to the large quadtree object)
 created using indexblocks() which uses the SearchTree package.

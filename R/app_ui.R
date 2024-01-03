@@ -1475,7 +1475,13 @@ app_ui  <- function(request) {
                                     label = "Need EJ Indexes",
                                     choices = list(Yes = TRUE, No = FALSE ), 
                                     selected = default_include_ejindexes),
-                 
+                
+                shiny::radioButtons(inputId = "extra_demog", 
+                                    label = "Need extra indicators from EJScreen v2.2 report, on language, age groups, gender, percent with disability, poverty, etc.",
+                                    choices = list(Yes = TRUE, No = FALSE ), 
+                                    selected = default_extra_demog),
+                # 
+                
                 ### Threshold comparisons options --------------------- #
                 
                 ## input: Name for 1st set of comparisons - where the table counts which scores are above certain cutoffs?

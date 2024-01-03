@@ -43,25 +43,66 @@ getblocks_summarize_sites_per_block <- function(x, varname='blockid') {
 #'
 #' @param x The output of [getblocksnearby()] like testoutput_getblocksnearby_10pts_1miles
 #' @param detailed if TRUE, also shows in console a long table of frequencies via [getblocks_summarize_blocks_per_site()]
-#' @param see_plot set TRUE to draw for each site a boxplot of distances of nearby blocks
+#' @param see_pctiles set to TRUE to see 20 percentiles of distance in a table
 #' @return A list of stats 
 #' @seealso This relies on  [getblocks_summarize_blocks_per_site()] and [getblocks_summarize_sites_per_block()]
-#' @examples  getblocks_diagnostics(testoutput_getblocksnearby_10pts_1miles)
+#' @examples 
+#'   getblocks_diagnostics(testoutput_getblocksnearby_10pts_1miles)
+#'   # library(data.table)
+#'   x <- data.table::copy(testpoints_10)
+#'   setDT(x)
+#'   pts <- rbind(data.table(lat = 40.3, lon = -96.23),
+#'     x[ , .(lat, lon)])
+#'  z <- getblocksnearbyviaQuadTree(pts, 1, quadtree = localtree, quiet = T)
+#'  z[ , .(blocks = .N) , keyby = 'siteid']
+#'  plotblocksnearby(pts, radius = 1, sites2blocks = z)
+#'  zz <- getblocks_diagnostics(z, detailed = T, see_pctiles = T)
+#' cbind(stats = zz)
+#' 
 #' @import data.table
 #' @export
 #'
-getblocks_diagnostics <- function(x, detailed=FALSE, see_plot=FALSE) {
+getblocks_diagnostics <- function(x, detailed=FALSE, see_pctiles=FALSE) {
   if (NROW(x) == 0) {warning('no blocks found nearby'); return(NA)}
   
   prit <- function(x) {prettyNum(x, big.mark = ',')}
   
   # Distances ####
   
-  cat("Summary stats on distances reported from any sites to any nearby blocks\n\n")
-  print(cbind(percentiles.of.distance = quantile(x$distance, probs = (0:20)/20)))
+  cat("\n   Summary stats on distances reported from any sites to any nearby blocks\n")
+  if (see_pctiles) {
+    cat("\n")
+    print(cbind(percentiles.of.distance = quantile(x$distance, probs = (0:20)/20)))
+  }
   cat("\n")
-  cat("Mean distance: ", mean(x$distance, na.rm = TRUE), "\n")
+  cat(max(x$distance_unadjusted, na.rm = TRUE), "miles is max. distance to block internal point (distance_unadjusted)  ", "\n")
+  cat(max(x$distance, na.rm = TRUE), "miles is max. distance to average resident in block (distance reported)  ",  "\n")
+  cat(min(x$distance_unadjusted, na.rm = TRUE), "miles is shortest distance to block internal point (distance_unadjusted)  ", "\n")
+  cat(min(x$distance, na.rm = TRUE), "miles is shortest distance to average resident in block (distance reported)  ",  "\n")
+  # cat(round(mean(x$distance, na.rm = TRUE), 2), "miles is mean distance to average resident", "\n")
+  
+  if ("distance_unadjusted" %in% names(x)) {
+    blockcount_distance_adjusted_up  <- x[distance > distance_unadjusted, .N]
+    blockcount_distance_adjusted_down <-  x[distance < distance_unadjusted, .N]
+    blockcount_distance_adjusted <- blockcount_distance_adjusted_up + blockcount_distance_adjusted_down
+    sitecount_distance_adjusted <- data.table::uniqueN(x[distance != distance_unadjusted, siteid])
+  cat(paste0(blockcount_distance_adjusted,
+             " block distances were adjusted (these stats may count some blocks twice if adjusted at 2+ sites)\n"))
+  cat(paste0("  ", blockcount_distance_adjusted_up,
+             " block distances were adjusted up (reported dist to avg resident is > dist to block internal point)\n"))
+  cat(paste0("  ", blockcount_distance_adjusted_down,
+             " block distances were adjusted down (reported < unadjusted)\n"))
+  cat(paste0(sitecount_distance_adjusted,
+             " unique sites had one or more block distances adjusted due to large block and short distance to block point\n"))
+  } else {
+    blockcount_distance_adjusted_up <- NA
+    blockcount_distance_adjusted_down <- NA
+    blockcount_distance_adjusted <- NA
+    sitecount_distance_adjusted <- NA
+  }
+  
   cat("\n")
+  
   if (detailed) {
     # Counts of blocks nearby, frequency of x nearby ####
     print(getblocks_summarize_blocks_per_site(x))
@@ -69,6 +110,7 @@ getblocks_diagnostics <- function(x, detailed=FALSE, see_plot=FALSE) {
     #   how many sites have only 1 block nearby, or <30 nearby, etc.
     cat("\n\n")
   }
+  
   # calculate extra stats ####
   
   sitecount_unique_out       <- data.table::uniqueN(x, by = 'siteid')
@@ -88,6 +130,7 @@ getblocks_diagnostics <- function(x, detailed=FALSE, see_plot=FALSE) {
   
   count_block_site_distances <- blockcount_incl_dupes # number of rows in output table of all block-site pairs with their distance.
   blockcount_avgsite         <- blockcount_incl_dupes / sitecount_unique_out
+
   
   sumstats <- list(
     sitecount_unique_out = sitecount_unique_out, 
@@ -106,7 +149,12 @@ getblocks_diagnostics <- function(x, detailed=FALSE, see_plot=FALSE) {
     pct_of_unique_blocks_in_overlaps = pct_of_unique_blocks_in_overlaps,
     
     count_block_site_distances = count_block_site_distances,
-    uniqueblocks_near_multisite = uniqueblocks_near_multisite
+    uniqueblocks_near_multisite = uniqueblocks_near_multisite, 
+    
+    max_distance_unadjusted = max(x$distance_unadjusted, na.rm = TRUE),
+    max_distance = max(x$distance, na.rm = TRUE),
+    min_distance_unadjusted = min(x$distance_unadjusted, na.rm = TRUE),
+    min_distance = min(x$distance, na.rm = TRUE)
   )
   
   # Print those extra stats to console ####
@@ -128,9 +176,9 @@ getblocks_diagnostics <- function(x, detailed=FALSE, see_plot=FALSE) {
              (assuming they live at the block internal point\n'))
   # cat(prit(count_block_site_distances), ' = count_block_site_distances',  '\n')
   # cat(prit(uniqueblocks_near_multisite),' = uniqueblocks_near_multisite ', '\n')
-  
+
   # PLOT ####
-  ## it is not really useful
+  ## it was not really useful
   # if (see_plot) {
   # boxplot(x$distance ~ x$siteid)
   # }

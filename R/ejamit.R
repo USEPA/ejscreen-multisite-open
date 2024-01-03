@@ -15,48 +15,45 @@
 #'    but ideally would adjust total count to be a fraction of blockwt 
 #'    based on what is area of circular buffer as fraction of area of block it is apparently inside of. 
 #'    Setting this to TRUE can produce unexpected results, which will not match EJScreen numbers.
-#'    
 #'    Note that if creating a proximity score, by contrast, you 
 #'    instead want to find nearest 1 SITE if none within radius of this BLOCK.
 #' @param quadtree (a pointer to the large quadtree object) created using indexblocks() which uses the SearchTree package.
 #'   Takes about 2-5 seconds to create this each time it is needed. 
 #'   It can be automatically created when the package is attached via the .onAttach() function
-#' @param quiet Optional. set to TRUE to avoid message about using getblock_diagnostics(),
-#'   which is relevant only if a user saved the output of this function.
-#' @param parallel whether to use parallel processing in getblocksnearby() but may not be implemented yet. 
-#' 
 #' @param fips optional FIPS code vector to provide if using FIPS instead of sitepoints to specify places to analyze,
 #'   such as a list of US Counties or tracts. Passed to [getblocksnearby_from_fips()]
-#' @param in_shiny if fips parameter is used, passed to [getblocksnearby_from_fips()]
-#' @param need_blockwt if fips parameter is used, passed to [getblocksnearby_from_fips()]
-#'
+#' @param shapefile_folder optional path to folder that has shapefiles to analyze polygons
 #' @param countcols character vector of names of variables to aggregate within a buffer using a sum of counts, 
 #'   like, for example, the number of people for whom a poverty ratio is known, 
 #'   the count of which is the exact denominator needed to correctly calculate percent low income.
 #' @param popmeancols character vector of names of variables to aggregate within a buffer using population weighted mean.
 #' @param calculatedcols character vector of names of variables to aggregate within a buffer using formulas that have to be specified.
-#' @param testing used while testing this function
-#' @param include_ejindexes whether to try to include EJ Indexes (assuming dataset is available) - passed to [doaggregate()]
-#' @param updateProgress progress bar function used for shiny app
-#' @param need_proximityscore whether to calculate proximity scores
-#' @param calculate_ratios whether to calculate and return ratio of each indicator to US and State overall averages - passed to [doaggregate()]
-#' @param silentinteractive   to prevent long output showing in console in RStudio when in interactive mode,
-#'   passed to doaggregate() also. app server sets this to TRUE when calling doaggregate() but 
-#'   ejamit() default is to set this to FALSE when calling doaggregate(). 
-#' @param called_by_ejamit Set to TRUE by ejamit() to suppress some outputs even if ejamit(silentinteractive=F)
 #' @param subgroups_type Optional (uses default). Set this to "nh" for non-hispanic race subgroups 
 #'   as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh; 
 #'   "alone" for EJScreen v2.2 style race subgroups as in White Alone, wa and others in names_d_subgroups_alone; 
 #'   "both" for both versions. Possibly another option is "original" or "default"
+#' @param include_ejindexes whether to try to include EJ Indexes (assuming dataset is available) - passed to [doaggregate()]
+#' @param calculate_ratios whether to calculate and return ratio of each indicator to US and State overall averages - passed to [doaggregate()]
 #' @param extra_demog if should include more indicators from v2.2 report on language etc.
+#' @param need_proximityscore whether to calculate proximity scores
 #' @param infer_sitepoints set to TRUE to try to infer the lat,lon of each site around which the blocks in sites2blocks were found.
 #'   lat,lon of each site will be approximated as average of nearby blocks, 
 #'   although a more accurate slower way would be to use reported distance of each of 3 of the furthest block points and triangulate
-#'   
+#' @param need_blockwt if fips parameter is used, passed to [getblocksnearby_from_fips()]
 #' @param threshold1 percentile like 80 or 90 or 95 to compare percentiles to
 #'   "alone" for groups like white alone (whether or not hispanic),
 #'   "both" may try to include both,
 #'   or possibly "original" or "default" might be added as options - passed to batch.summarize()
+#' @param updateProgress progress bar function used for shiny app
+#' @param in_shiny if fips parameter is used, passed to [getblocksnearby_from_fips()]
+#' @param quiet Optional. set to TRUE to avoid message about using getblock_diagnostics(),
+#'   which is relevant only if a user saved the output of this function.
+#' @param parallel whether to use parallel processing in getblocksnearby() but may not be implemented yet. 
+#' @param silentinteractive   to prevent long output showing in console in RStudio when in interactive mode,
+#'   passed to doaggregate() also. app server sets this to TRUE when calling doaggregate() but 
+#'   ejamit() default is to set this to FALSE when calling doaggregate(). 
+#' @param called_by_ejamit Set to TRUE by ejamit() to suppress some outputs even if ejamit(silentinteractive=F)
+#' @param testing used while testing this function
 #' 
 #' @return A list of tables of results
 #' @examples \dontrun{
@@ -120,29 +117,26 @@ ejamit <- function(sitepoints,
                    maxradius = 31.07,
                    avoidorphans = FALSE,
                    quadtree = NULL,
-                   quiet = TRUE,
-                   parallel = FALSE,
-                   
                    fips = NULL,
-                   shapefile_folder = NULL,
-                   in_shiny = FALSE,
-                   need_blockwt = TRUE,
-                   
+                   shapefile_folder = NULL,                   
                    countcols = NULL,
                    popmeancols = NULL,
                    calculatedcols = NULL,
-                   testing = FALSE,
+                   subgroups_type = "nh",   
                    include_ejindexes = FALSE,
-                   updateProgress = NULL,
-                   need_proximityscore = FALSE,
                    calculate_ratios = TRUE,
+                   extra_demog = TRUE,
+                   need_proximityscore = FALSE,
+                   infer_sitepoints = FALSE,
+                   need_blockwt = TRUE,
+                   threshold1 = 90, # threshold.default['comp1']
+                   updateProgress = NULL,
+                   in_shiny = FALSE,
+                   quiet = TRUE,
+                   parallel = FALSE,
                    silentinteractive = FALSE,
                    called_by_ejamit = TRUE,
-                   subgroups_type = "nh",
-                   extra_demog = TRUE,
-                   infer_sitepoints = FALSE,
-                   
-                   threshold1 = 90 # threshold.default['comp1']
+                   testing = FALSE
 ) {
   
   #  1. getblocksnearby() ####
@@ -164,21 +158,20 @@ ejamit <- function(sitepoints,
     out <- suppressWarnings(
       doaggregate(
         sites2blocks = mysites2blocks,
-        # 
         radius = radius,  #  
         countcols = countcols,
         popmeancols = popmeancols,
         calculatedcols = calculatedcols,
-        testing = testing,
-        include_ejindexes = include_ejindexes,
-        updateProgress = updateProgress,
-        need_proximityscore = need_proximityscore,
-        calculate_ratios = calculate_ratios,
-        silentinteractive = silentinteractive,
-        called_by_ejamit = called_by_ejamit,
         subgroups_type = subgroups_type,
+        include_ejindexes = include_ejindexes,
+        calculate_ratios = calculate_ratios,
         extra_demog = extra_demog,
-        infer_sitepoints = FALSE
+        need_proximityscore = need_proximityscore,
+        infer_sitepoints = FALSE,
+        called_by_ejamit = called_by_ejamit,
+        updateProgress = updateProgress,
+        silentinteractive = silentinteractive,
+        testing = testing
       )
     )
     
@@ -209,16 +202,17 @@ ejamit <- function(sitepoints,
           countcols = countcols,
           popmeancols = popmeancols,
           calculatedcols = calculatedcols,
-          testing = testing,
-          include_ejindexes = include_ejindexes,
-          updateProgress = updateProgress,
-          need_proximityscore = need_proximityscore,
-          calculate_ratios = calculate_ratios,
-          silentinteractive = silentinteractive,
-          called_by_ejamit = called_by_ejamit,
+          
           subgroups_type = subgroups_type,
+          include_ejindexes = include_ejindexes,
+          calculate_ratios = calculate_ratios,
           extra_demog = extra_demog,
-          infer_sitepoints = FALSE
+          need_proximityscore = need_proximityscore,
+          infer_sitepoints = FALSE,
+          called_by_ejamit = called_by_ejamit,
+          updateProgress = updateProgress,
+          silentinteractive = silentinteractive,
+          testing = testing
         )
       )
     }
@@ -272,16 +266,16 @@ ejamit <- function(sitepoints,
           countcols = countcols,
           popmeancols = popmeancols,
           calculatedcols = calculatedcols,
-          testing = testing,
-          include_ejindexes = include_ejindexes,
-          updateProgress = updateProgress,
-          need_proximityscore = need_proximityscore,
-          calculate_ratios = calculate_ratios,
-          silentinteractive = silentinteractive,
-          called_by_ejamit = called_by_ejamit,
           subgroups_type = subgroups_type,
+          include_ejindexes = include_ejindexes,
+          calculate_ratios = calculate_ratios,
           extra_demog = extra_demog,
-          infer_sitepoints = infer_sitepoints
+          need_proximityscore = need_proximityscore,
+          infer_sitepoints = infer_sitepoints,
+          called_by_ejamit = called_by_ejamit,
+          updateProgress = updateProgress,
+          silentinteractive = silentinteractive,
+          testing = testing
         )
       )
       # provide sitepoints table provided by user aka data_uploaded(), (or could pass only lat,lon and ST -if avail- not all cols?)
@@ -302,9 +296,10 @@ ejamit <- function(sitepoints,
   # ( doaggregate does not provide this   )
   
   #  >this should be a function  and is used by both server and ejamit() ####
-  # duplicated almost exactly in app_server but uses reactives there. *** except this has been updated here to handle FIPS not just latlon analysis.
+  # duplicated almost exactly in app_server (near line 1217) but uses reactives there. *** except this has been updated here to handle FIPS not just latlon analysis.
   # #  Do maybe something like this:
-  # links <- url_4table(lat=out$results_bysite$lat, lon=out$results_bysite$lon, radius = radius, regid=ifelse("REGISTRY_ID" %in% names(out$results_bysite), out$results_bysite$REGISTRY_ID, NULL))
+  # links <- url_4table(lat=out$results_bysite$lat, lon=out$results_bysite$lon, radius = radius, 
+  #    regid=ifelse("REGISTRY_ID" %in% names(out$results_bysite), out$results_bysite$REGISTRY_ID, NULL))
   # out$results_bysite[ , `:=`(links$results_bysite)] # would that work??? how to avoid big cbind step to add the new columns?
   # out$results_overall <- cbind(out$results_overall, links$results_overall) # 
   # setcolorder(out$results_bysite, neworder = links$newcolnames)
@@ -323,14 +318,12 @@ ejamit <- function(sitepoints,
     out$results_bysite[ , `:=`(
       `EJScreen Report` = url_ejscreen_report(   areaid   = fips, as_html = T),
       `EJScreen Map`    = url_ejscreenmap(       wherestr = fips, as_html = T),
-      # `ACS Report`      = url_ejscreen_acs_report(lat = out$results_bysite$lat, lon = out$results_bysite$lon, radius = radius, as_html = T),
       `ECHO report` = echolink
     )]
   } else {
     out$results_bysite[ , `:=`(
       `EJScreen Report` = url_ejscreen_report(    lat = out$results_bysite$lat, lon = out$results_bysite$lon, radius = radius, as_html = T),
       `EJScreen Map`    = url_ejscreenmap(        lat = out$results_bysite$lat, lon = out$results_bysite$lon,                  as_html = T),
-      # `ACS Report`      = url_ejscreen_acs_report(lat = out$results_bysite$lat, lon = out$results_bysite$lon, radius = radius, as_html = T),
       `ECHO report` = echolink
     )]
   }
@@ -339,14 +332,12 @@ ejamit <- function(sitepoints,
     out$results_overall[ , `:=`(
       `EJScreen Report` = out$results_bysite$`EJScreen Report`,   #  rep(NA,nrow(out$results_bysite)),
       `EJScreen Map`    = out$results_bysite$`EJScreen Map`,    # rep(NA,nrow(out$results_bysite)),
-      # `ACS Report`      = out$results_bysite$,   #  rep(NA,nrow(out$results_bysite)),
       `ECHO report`     = out$results_bysite$`ECHO report`     # rep(NA,nrow(out$results_bysite))
     )]
   } else {
     out$results_overall[ , `:=`(
       `EJScreen Report` = NA,   #  rep(NA,nrow(out$results_bysite)),
       `EJScreen Map`    = NA,    # rep(NA,nrow(out$results_bysite)),
-      # `ACS Report`      = NA,   #  rep(NA,nrow(out$results_bysite)),
       `ECHO report`     = NA     # rep(NA,nrow(out$results_bysite))
     )]
   }
@@ -354,7 +345,6 @@ ejamit <- function(sitepoints,
   newcolnames <- c(
     "EJScreen Report",
     "EJScreen Map",
-    # "ACS Report",
     "ECHO report")
   # put those up front as first columns
   data.table::setcolorder(out$results_bysite,  neworder = newcolnames)

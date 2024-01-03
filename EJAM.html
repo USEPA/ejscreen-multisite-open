@@ -49,7 +49,7 @@
 </tr>
       <tr>
 <th>Built:</th>
-<td class="description-date">2023-12-16 05:58:18 UTC</td>
+<td class="description-date">2024-01-03 08:23:57 UTC</td>
 </tr>
       <tr>
 <th>Source:</th>
@@ -89,8 +89,8 @@ See colcounter_summary() for more info and examples.</a></li>
 <li class="help-index-item"><a href="#dataload_from_aws">dataload_from_aws - utility to load datasets from AWS DMAP Data Commons, into memory</a></li>
 <li class="help-index-item"><a href="#dataload_from_entirefolder">dataload_from_entirefolder
 loads into global environment all .rda files found in specified folder</a></li>
-<li class="help-index-item"><a href="#dataload_from_local">dataload_from_local
-utility for R analysts/developers to store large block data locally instead of redownloading from AWS</a></li>
+<li class="help-index-item"><a href="#dataload_from_local">dataload_from_local - load datasets from local disk folder
+utility for analysts/developers to store large block/other data locally instead of redownloading</a></li>
 <li class="help-index-item"><a href="#dataload_from_package">dataload_from_package - utility to load a couple of datasets using data immediately instead of relying on lazy loading</a></li>
 <li class="help-index-item"><a href="#dataload_from_pins">dataload_from_pins - download / load datasets from pin board</a></li>
 <li class="help-index-item"><a href="#datapack">datapack - See info about the data sets in one or more packages - internal utility function
@@ -117,8 +117,12 @@ Convert surface distance to actual distance</a></li>
 <li class="help-index-item"><a href="#ejam2excel">ejam2excel - alias for table_xls_from_ejam()</a></li>
 <li class="help-index-item"><a href="#ejamit">ejamit - Get complete EJ analysis (demographic and environmental indicators) near a list of locations</a></li>
 <li class="help-index-item"><a href="#ejampackages">ejampackages (DATA) list of names of key EJAM-related R packages</a></li>
-<li class="help-index-item"><a href="#ejscreenit_for_ejam">ejscreenit_for_ejam - DRAFT
-Wrapper for ejscreenit() from EJAMejscreenapi package, to use in EJAM app - NOT USED CURRENTLY</a></li>
+<li class="help-index-item"><a href="#ejscreenapi_vs_ejam1">compare EJScreen API vs EJAM stats near one site</a></li>
+<li class="help-index-item"><a href="#ejscreenapi_vs_ejam1_alreadyrun">compare EJScreen API vs EJAM stats near one site (if results already run)</a></li>
+<li class="help-index-item"><a href="#ejscreenapi2ejam_format">Convert output of ejscreenapi_plus to format of ejamit table of sites
+Makes it easier to compare EJScreen and EJAM results</a></li>
+<li class="help-index-item"><a href="#ejscreenit_for_ejam">ejscreenit_for_ejam
+Wrapper for ejscreenit() from EJAMejscreenapi package, to use in EJAM app</a></li>
 <li class="help-index-item"><a href="#fips_bg_from_anyfips">fips_bg_from_anyfips - Get unique blockgroup fips in or containing specified fips of any type
 Convert any FIPS codes to the FIPS of all the blockgroups that are
 among or within or containing those FIPS</a></li>
@@ -376,6 +380,7 @@ Uses the list of results of ejamit()</a></li>
 Uses 1 row from the results_bysite part of ejamit() output</a></li>
 <li class="help-index-item"><a href="#table_gt_from_ejamit_overall">table_gt_from_ejamit_overall - Create a formatted table of results from EJAM overall summary stats
 Uses the results_overall element of ejamit() output</a></li>
+<li class="help-index-item"><a href="#table_order_variables">get order of variable names to sort by, as seen in EJScreen Community Report</a></li>
 <li class="help-index-item"><a href="#table_round">table_round - round numbers in a table, each column to appropriate number of decimal places</a></li>
 <li class="help-index-item"><a href="#table_rounding_info">table_rounding_info - how many decimal places to round to for given variable(s)</a></li>
 <li class="help-index-item"><a href="#table_tall_from_overall">table_tall_from_overall
@@ -1542,25 +1547,26 @@ loads into global environment all .rda files found in specified folder
 </div>
 <div class="container manual-page" id="dataload_from_local">
 
-<a href="#dataload_from_local" class="help-page-title"><h2>dataload_from_local
-utility for R analysts/developers to store large block data locally instead of redownloading from AWS</h2></a>
+<a href="#dataload_from_local" class="help-page-title"><h2>dataload_from_local - load datasets from local disk folder
+utility for analysts/developers to store large block/other data locally instead of redownloading</h2></a>
 
 <h3>Description</h3>
 
-<p>dataload_from_local
-utility for R analysts/developers to store large block data locally instead of redownloading from AWS
+<p>dataload_from_local - load datasets from local disk folder
+utility for analysts/developers to store large block/other data locally instead of redownloading
 </p>
 
 
 <h3>Usage</h3>
 
 <pre class="language-r"><code class="language-r">dataload_from_local<span class="token punctuation">(</span>
-  varnames <span class="token operator">=</span> c<span class="token punctuation">(</span>c<span class="token punctuation">(</span><span class="token string">"blockwts"</span><span class="token punctuation">,</span> <span class="token string">"quaddata"</span><span class="token punctuation">,</span> <span class="token string">"blockpoints"</span><span class="token punctuation">,</span> <span class="token string">"blockid2fips"</span><span class="token punctuation">,</span> <span class="token string">"bgid2fips"</span><span class="token punctuation">,</span>
-    <span class="token string">"bgej"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> c<span class="token punctuation">(</span><span class="token string">"frs"</span><span class="token punctuation">,</span> <span class="token string">"frs_by_programid"</span><span class="token punctuation">,</span> <span class="token string">"frs_by_naics"</span><span class="token punctuation">,</span> <span class="token string">"frs_by_sic"</span><span class="token punctuation">,</span> <span class="token string">"frs_by_mact"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  varnames <span class="token operator">=</span> c<span class="token punctuation">(</span>c<span class="token punctuation">(</span><span class="token string">"blockwts"</span><span class="token punctuation">,</span> <span class="token string">"blockpoints"</span><span class="token punctuation">,</span> <span class="token string">"blockid2fips"</span><span class="token punctuation">,</span> <span class="token string">"quaddata"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"bgej"</span><span class="token punctuation">,</span>
+    <span class="token string">"bgid2fips"</span><span class="token punctuation">,</span> c<span class="token punctuation">(</span><span class="token string">"frs"</span><span class="token punctuation">,</span> <span class="token string">"frs_by_programid"</span><span class="token punctuation">,</span> <span class="token string">"frs_by_naics"</span><span class="token punctuation">,</span> <span class="token string">"frs_by_sic"</span><span class="token punctuation">,</span>
+    <span class="token string">"frs_by_mact"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token operator">:</span><span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
   ext <span class="token operator">=</span> c<span class="token punctuation">(</span><span class="token string">".arrow"</span><span class="token punctuation">,</span> <span class="token string">".rda"</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
   fun <span class="token operator">=</span> c<span class="token punctuation">(</span><span class="token string">"arrow::read_ipc_file"</span><span class="token punctuation">,</span> <span class="token string">"load"</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
   envir <span class="token operator">=</span> globalenv<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
-  folder_local_source <span class="token operator">=</span> <span class="token string">"~/../Downloads"</span><span class="token punctuation">,</span>
+  folder_local_source <span class="token operator">=</span> <span class="token keyword">NULL</span><span class="token punctuation">,</span>
   justchecking <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
   testing <span class="token operator">=</span> <span class="token boolean">FALSE</span>
 <span class="token punctuation">)</span></code></pre>
@@ -1572,7 +1578,7 @@ utility for R analysts/developers to store large block data locally instead of r
 <tr style="vertical-align: top;">
 <td><code>varnames</code></td>
 <td>
-<p>use defaults</p>
+<p>use defaults, or vector of names like "bgej" or use "all" to get all available</p>
 </td>
 </tr>
 <tr style="vertical-align: top;">
@@ -1590,19 +1596,19 @@ utility for R analysts/developers to store large block data locally instead of r
 <tr style="vertical-align: top;">
 <td><code>envir</code></td>
 <td>
-<p>use defaults</p>
+<p>use defaults. see <code><a href="#dataload_from_pins">dataload_from_pins()</a></code></p>
 </td>
 </tr>
 <tr style="vertical-align: top;">
 <td><code>folder_local_source</code></td>
 <td>
-<p>Your local folder path</p>
+<p>Your local folder path. see <code><a href="#dataload_from_pins">dataload_from_pins()</a></code></p>
 </td>
 </tr>
 <tr style="vertical-align: top;">
 <td><code>justchecking</code></td>
 <td>
-<p>use defaults</p>
+<p>use defaults. see <code><a href="#dataload_from_pins">dataload_from_pins()</a></code></p>
 </td>
 </tr>
 <tr style="vertical-align: top;">
@@ -1614,6 +1620,8 @@ utility for R analysts/developers to store large block data locally instead of r
 </table>
 <h3>Details</h3>
 
+<p>See <code><a href="#dataload_from_pins">dataload_from_pins()</a></code> also.
+</p>
 <p>rm(bgid2fips, blockid2fips, blockpoints, blockwts, quaddata)
 </p>
 <p>dataload_from_local(folder_local_source = '.')
@@ -1715,10 +1723,13 @@ The frs-related datasets here can be roughly 1.5 GB in RAM, perhaps.
 <h3>Usage</h3>
 
 <pre class="language-r"><code class="language-r">dataload_from_pins<span class="token punctuation">(</span>
-  varnames <span class="token operator">=</span> c<span class="token punctuation">(</span>c<span class="token punctuation">(</span><span class="token string">"blockwts"</span><span class="token punctuation">,</span> <span class="token string">"blockpoints"</span><span class="token punctuation">,</span> <span class="token string">"blockid2fips"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"quaddata"</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+  varnames <span class="token operator">=</span> c<span class="token punctuation">(</span>c<span class="token punctuation">(</span><span class="token string">"blockwts"</span><span class="token punctuation">,</span> <span class="token string">"blockpoints"</span><span class="token punctuation">,</span> <span class="token string">"blockid2fips"</span><span class="token punctuation">,</span> <span class="token string">"quaddata"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token string">"bgej"</span><span class="token punctuation">,</span>
+    <span class="token string">"bgid2fips"</span><span class="token punctuation">,</span> c<span class="token punctuation">(</span><span class="token string">"frs"</span><span class="token punctuation">,</span> <span class="token string">"frs_by_programid"</span><span class="token punctuation">,</span> <span class="token string">"frs_by_naics"</span><span class="token punctuation">,</span> <span class="token string">"frs_by_sic"</span><span class="token punctuation">,</span>
+    <span class="token string">"frs_by_mact"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token operator">:</span><span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
   boardfolder <span class="token operator">=</span> <span class="token string">"Mark"</span><span class="token punctuation">,</span>
   auth <span class="token operator">=</span> <span class="token string">"auto"</span><span class="token punctuation">,</span>
   server <span class="token operator">=</span> <span class="token string">"https://rstudio-connect.dmap-stage.aws.epa.gov"</span><span class="token punctuation">,</span>
+  folder_local_source <span class="token operator">=</span> <span class="token keyword">NULL</span><span class="token punctuation">,</span>
   envir <span class="token operator">=</span> globalenv<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
   justchecking <span class="token operator">=</span> <span class="token boolean">FALSE</span>
 <span class="token punctuation">)</span></code></pre>
@@ -1730,7 +1741,8 @@ The frs-related datasets here can be roughly 1.5 GB in RAM, perhaps.
 <tr style="vertical-align: top;">
 <td><code>varnames</code></td>
 <td>
-<p>character vector of names of R objects to get from board</p>
+<p>character vector of names of R objects to get from board,
+or set this to "all" to load all of them</p>
 </td>
 </tr>
 <tr style="vertical-align: top;">
@@ -1755,9 +1767,16 @@ needs to be the full url starting with https:// - see help for board_connect</p>
 </td>
 </tr>
 <tr style="vertical-align: top;">
+<td><code>folder_local_source</code></td>
+<td>
+<p>path of local folder to
+look in for locally saved copies in case pins board is not reachable by user.</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
 <td><code>envir</code></td>
 <td>
-<p>if needed to specify environment other than default</p>
+<p>if needed to specify environment other than default, e.g., globalenv() or parent.frame()</p>
 </td>
 </tr>
 <tr style="vertical-align: top;">
@@ -1769,29 +1788,54 @@ needs to be the full url starting with https:// - see help for board_connect</p>
 </table>
 <h3>Details</h3>
 
-<p>This does work:
+<p>This does work if on VPN and if credentials already set up for the user doing this:
 </p>
 <p>board &lt;- pins::board_connect(auth = "rsconnect")
 </p>
-<p>assuming that credentials are set up for the user doing this.
+<p>This does work if that is true plus the two environment variables were created:
 </p>
-<p>This does work:
+<p>board &lt;- pins::board_connect(auth = 'manual',
 </p>
-<p>board &lt;- pins::board_connect(auth = 'manual', server = Sys.getenv("CONNECT_SERVER"), key = Sys.getenv("CONNECT_API_KEY"))
+<div class="sourceCode"><pre>server = Sys.getenv("CONNECT_SERVER"), 
+
+key = Sys.getenv("CONNECT_API_KEY")
+</pre></div>
+<p>)
 </p>
-<p>if   Sys.setenv(CONNECT_SERVER = "https://rstudio-connect.dmap-stage.aws.epa.gov")
-</p>
-<p>and if  CONNECT_API_KEY  was set to the API key created already.
-</p>
+<div class="sourceCode"><pre>after Sys.setenv(CONNECT_SERVER = "https://rstudio-connect.dmap-stage.aws.epa.gov")
+
+and   Sys.setenv(CONNECT_API_KEY =  correct-API-key-goes-here  )
+</pre></div>
 
 
 <h3>Value</h3>
 
-<p>a vector of names of objects downloaded if justchecking = FALSE, which excludes those
-already in environment so not re-downloaded and excludes those not found in pin board.
-If justchecking = TRUE, returns vector of names of ALL objects found in pin board,
-regardless of whether they are already in the environment, and
-regardless of whether they were specified among varnames.
+<p>If justchecking = FALSE,
+</p>
+<p>returns vector of names of objects now in memory in specified envir, either because
+</p>
+
+<ol>
+<li>
+<p> already in memory or
+</p>
+</li>
+<li>
+<p> loaded from local disk or
+</p>
+</li>
+<li>
+<p> successfully downloaded.
+</p>
+</li>
+</ol>
+<p>If justchecking = TRUE, however,
+</p>
+<p>returns vector of names of ALL objects found in specified pin board (or NULL if cannot connect)
+</p>
+<p>regardless of whether they are already in the environment, and
+</p>
+<p>regardless of whether they were specified among varnames, or are related to EJAM at all.
 </p>
 
 <hr>
@@ -2560,16 +2604,16 @@ and combines those with indicator scores for block groups.
   countcols <span class="token operator">=</span> <span class="token keyword">NULL</span><span class="token punctuation">,</span>
   popmeancols <span class="token operator">=</span> <span class="token keyword">NULL</span><span class="token punctuation">,</span>
   calculatedcols <span class="token operator">=</span> <span class="token keyword">NULL</span><span class="token punctuation">,</span>
-  testing <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
-  include_ejindexes <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
-  updateProgress <span class="token operator">=</span> <span class="token keyword">NULL</span><span class="token punctuation">,</span>
-  need_proximityscore <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
-  calculate_ratios <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span>
-  silentinteractive <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span>
-  called_by_ejamit <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
   subgroups_type <span class="token operator">=</span> <span class="token string">"nh"</span><span class="token punctuation">,</span>
+  include_ejindexes <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
+  calculate_ratios <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span>
   extra_demog <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span>
+  need_proximityscore <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
   infer_sitepoints <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
+  called_by_ejamit <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
+  updateProgress <span class="token operator">=</span> <span class="token keyword">NULL</span><span class="token punctuation">,</span>
+  silentinteractive <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span>
+  testing <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
   <span class="token ellipsis">...</span>
 <span class="token punctuation">)</span></code></pre>
 
@@ -2630,9 +2674,12 @@ using formulas that have to be specified.</p>
 </td>
 </tr>
 <tr style="vertical-align: top;">
-<td><code>testing</code></td>
+<td><code>subgroups_type</code></td>
 <td>
-<p>used while testing this function</p>
+<p>Optional (uses default). Set this to
+"nh" for non-hispanic race subgroups as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh;
+"alone" for EJScreen v2.2 style race subgroups as in    White Alone, wa and others in names_d_subgroups_alone;
+"both" for both versions. Possibly another option is "original" or "default" but work in progress.</p>
 </td>
 </tr>
 <tr style="vertical-align: top;">
@@ -2642,9 +2689,16 @@ using formulas that have to be specified.</p>
 </td>
 </tr>
 <tr style="vertical-align: top;">
-<td><code>updateProgress</code></td>
+<td><code>calculate_ratios</code></td>
 <td>
-<p>progress bar function used for shiny app</p>
+<p>whether to calculate and return ratio of each indicator to its US and State overall mean</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>extra_demog</code></td>
+<td>
+<p>if should include more indicators from EJScreen v2.2 report,
+on language, more age groups, gender, percent with disability, poverty, etc.</p>
 </td>
 </tr>
 <tr style="vertical-align: top;">
@@ -2654,9 +2708,23 @@ using formulas that have to be specified.</p>
 </td>
 </tr>
 <tr style="vertical-align: top;">
-<td><code>calculate_ratios</code></td>
+<td><code>infer_sitepoints</code></td>
 <td>
-<p>whether to calculate and return ratio of each indicator to its US and State overall mean</p>
+<p>set to TRUE to try to infer the lat,lon of each site around which the blocks in sites2blocks were found.
+lat,lon of each site will be approximated as average of nearby blocks, although a more accurate slower way would
+be to use reported distance of each of 3 of the furthest block points and triangulate</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>called_by_ejamit</code></td>
+<td>
+<p>Set to TRUE by ejamit() to suppress some outputs even if ejamit(silentinteractive=F)</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>updateProgress</code></td>
+<td>
+<p>progress bar function used for shiny app</p>
 </td>
 </tr>
 <tr style="vertical-align: top;">
@@ -2667,32 +2735,9 @@ Set to FALSE to prevent long output showing in console in RStudio when in intera
 </td>
 </tr>
 <tr style="vertical-align: top;">
-<td><code>called_by_ejamit</code></td>
+<td><code>testing</code></td>
 <td>
-<p>Set to TRUE by ejamit() to suppress some outputs even if ejamit(silentinteractive=F)</p>
-</td>
-</tr>
-<tr style="vertical-align: top;">
-<td><code>subgroups_type</code></td>
-<td>
-<p>Optional (uses default). Set this to
-"nh" for non-hispanic race subgroups as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh;
-"alone" for EJScreen v2.2 style race subgroups as in    White Alone, wa and others in names_d_subgroups_alone;
-"both" for both versions. Possibly another option is "original" or "default" but work in progress.</p>
-</td>
-</tr>
-<tr style="vertical-align: top;">
-<td><code>extra_demog</code></td>
-<td>
-<p>if should include more indicators from v2.2 report on language etc.</p>
-</td>
-</tr>
-<tr style="vertical-align: top;">
-<td><code>infer_sitepoints</code></td>
-<td>
-<p>set to TRUE to try to infer the lat,lon of each site around which the blocks in sites2blocks were found.
-lat,lon of each site will be approximated as average of nearby blocks, although a more accurate slower way would
-be to use reported distance of each of 3 of the furthest block points and triangulate</p>
+<p>used while testing this function</p>
 </td>
 </tr>
 <tr style="vertical-align: top;">
@@ -3031,26 +3076,26 @@ See help("EJAM")
   maxradius <span class="token operator">=</span> <span class="token number">31.07</span><span class="token punctuation">,</span>
   avoidorphans <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
   quadtree <span class="token operator">=</span> <span class="token keyword">NULL</span><span class="token punctuation">,</span>
-  quiet <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span>
-  parallel <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
   fips <span class="token operator">=</span> <span class="token keyword">NULL</span><span class="token punctuation">,</span>
   shapefile_folder <span class="token operator">=</span> <span class="token keyword">NULL</span><span class="token punctuation">,</span>
-  in_shiny <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
-  need_blockwt <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span>
   countcols <span class="token operator">=</span> <span class="token keyword">NULL</span><span class="token punctuation">,</span>
   popmeancols <span class="token operator">=</span> <span class="token keyword">NULL</span><span class="token punctuation">,</span>
   calculatedcols <span class="token operator">=</span> <span class="token keyword">NULL</span><span class="token punctuation">,</span>
-  testing <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
+  subgroups_type <span class="token operator">=</span> <span class="token string">"nh"</span><span class="token punctuation">,</span>
   include_ejindexes <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
-  updateProgress <span class="token operator">=</span> <span class="token keyword">NULL</span><span class="token punctuation">,</span>
-  need_proximityscore <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
   calculate_ratios <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span>
+  extra_demog <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span>
+  need_proximityscore <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
+  infer_sitepoints <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
+  need_blockwt <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span>
+  threshold1 <span class="token operator">=</span> <span class="token number">90</span><span class="token punctuation">,</span>
+  updateProgress <span class="token operator">=</span> <span class="token keyword">NULL</span><span class="token punctuation">,</span>
+  in_shiny <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
+  quiet <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span>
+  parallel <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
   silentinteractive <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
   called_by_ejamit <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span>
-  subgroups_type <span class="token operator">=</span> <span class="token string">"nh"</span><span class="token punctuation">,</span>
-  extra_demog <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span>
-  infer_sitepoints <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
-  threshold1 <span class="token operator">=</span> <span class="token number">90</span>
+  testing <span class="token operator">=</span> <span class="token boolean">FALSE</span>
 <span class="token punctuation">)</span></code></pre>
 
 
@@ -3088,8 +3133,7 @@ which is probably almost always the one your site is sitting inside of,
 but ideally would adjust total count to be a fraction of blockwt
 based on what is area of circular buffer as fraction of area of block it is apparently inside of.
 Setting this to TRUE can produce unexpected results, which will not match EJScreen numbers.
-</p>
-<p>Note that if creating a proximity score, by contrast, you
+Note that if creating a proximity score, by contrast, you
 instead want to find nearest 1 SITE if none within radius of this BLOCK.</p>
 </td>
 </tr>
@@ -3102,19 +3146,6 @@ It can be automatically created when the package is attached via the .onAttach()
 </td>
 </tr>
 <tr style="vertical-align: top;">
-<td><code>quiet</code></td>
-<td>
-<p>Optional. set to TRUE to avoid message about using getblock_diagnostics(),
-which is relevant only if a user saved the output of this function.</p>
-</td>
-</tr>
-<tr style="vertical-align: top;">
-<td><code>parallel</code></td>
-<td>
-<p>whether to use parallel processing in getblocksnearby() but may not be implemented yet.</p>
-</td>
-</tr>
-<tr style="vertical-align: top;">
 <td><code>fips</code></td>
 <td>
 <p>optional FIPS code vector to provide if using FIPS instead of sitepoints to specify places to analyze,
@@ -3122,15 +3153,9 @@ such as a list of US Counties or tracts. Passed to <code><a href="#getblocksnear
 </td>
 </tr>
 <tr style="vertical-align: top;">
-<td><code>in_shiny</code></td>
+<td><code>shapefile_folder</code></td>
 <td>
-<p>if fips parameter is used, passed to <code><a href="#getblocksnearby_from_fips">getblocksnearby_from_fips()</a></code></p>
-</td>
-</tr>
-<tr style="vertical-align: top;">
-<td><code>need_blockwt</code></td>
-<td>
-<p>if fips parameter is used, passed to <code><a href="#getblocksnearby_from_fips">getblocksnearby_from_fips()</a></code></p>
+<p>optional path to folder that has shapefiles to analyze polygons</p>
 </td>
 </tr>
 <tr style="vertical-align: top;">
@@ -3154,9 +3179,12 @@ the count of which is the exact denominator needed to correctly calculate percen
 </td>
 </tr>
 <tr style="vertical-align: top;">
-<td><code>testing</code></td>
+<td><code>subgroups_type</code></td>
 <td>
-<p>used while testing this function</p>
+<p>Optional (uses default). Set this to "nh" for non-hispanic race subgroups
+as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh;
+"alone" for EJScreen v2.2 style race subgroups as in White Alone, wa and others in names_d_subgroups_alone;
+"both" for both versions. Possibly another option is "original" or "default"</p>
 </td>
 </tr>
 <tr style="vertical-align: top;">
@@ -3166,9 +3194,15 @@ the count of which is the exact denominator needed to correctly calculate percen
 </td>
 </tr>
 <tr style="vertical-align: top;">
-<td><code>updateProgress</code></td>
+<td><code>calculate_ratios</code></td>
 <td>
-<p>progress bar function used for shiny app</p>
+<p>whether to calculate and return ratio of each indicator to US and State overall averages - passed to <code><a href="#doaggregate">doaggregate()</a></code></p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>extra_demog</code></td>
+<td>
+<p>if should include more indicators from v2.2 report on language etc.</p>
 </td>
 </tr>
 <tr style="vertical-align: top;">
@@ -3178,9 +3212,51 @@ the count of which is the exact denominator needed to correctly calculate percen
 </td>
 </tr>
 <tr style="vertical-align: top;">
-<td><code>calculate_ratios</code></td>
+<td><code>infer_sitepoints</code></td>
 <td>
-<p>whether to calculate and return ratio of each indicator to US and State overall averages - passed to <code><a href="#doaggregate">doaggregate()</a></code></p>
+<p>set to TRUE to try to infer the lat,lon of each site around which the blocks in sites2blocks were found.
+lat,lon of each site will be approximated as average of nearby blocks,
+although a more accurate slower way would be to use reported distance of each of 3 of the furthest block points and triangulate</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>need_blockwt</code></td>
+<td>
+<p>if fips parameter is used, passed to <code><a href="#getblocksnearby_from_fips">getblocksnearby_from_fips()</a></code></p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>threshold1</code></td>
+<td>
+<p>percentile like 80 or 90 or 95 to compare percentiles to
+"alone" for groups like white alone (whether or not hispanic),
+"both" may try to include both,
+or possibly "original" or "default" might be added as options - passed to batch.summarize()</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>updateProgress</code></td>
+<td>
+<p>progress bar function used for shiny app</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>in_shiny</code></td>
+<td>
+<p>if fips parameter is used, passed to <code><a href="#getblocksnearby_from_fips">getblocksnearby_from_fips()</a></code></p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>quiet</code></td>
+<td>
+<p>Optional. set to TRUE to avoid message about using getblock_diagnostics(),
+which is relevant only if a user saved the output of this function.</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>parallel</code></td>
+<td>
+<p>whether to use parallel processing in getblocksnearby() but may not be implemented yet.</p>
 </td>
 </tr>
 <tr style="vertical-align: top;">
@@ -3198,35 +3274,9 @@ ejamit() default is to set this to FALSE when calling doaggregate().</p>
 </td>
 </tr>
 <tr style="vertical-align: top;">
-<td><code>subgroups_type</code></td>
+<td><code>testing</code></td>
 <td>
-<p>Optional (uses default). Set this to "nh" for non-hispanic race subgroups
-as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh;
-"alone" for EJScreen v2.2 style race subgroups as in White Alone, wa and others in names_d_subgroups_alone;
-"both" for both versions. Possibly another option is "original" or "default"</p>
-</td>
-</tr>
-<tr style="vertical-align: top;">
-<td><code>extra_demog</code></td>
-<td>
-<p>if should include more indicators from v2.2 report on language etc.</p>
-</td>
-</tr>
-<tr style="vertical-align: top;">
-<td><code>infer_sitepoints</code></td>
-<td>
-<p>set to TRUE to try to infer the lat,lon of each site around which the blocks in sites2blocks were found.
-lat,lon of each site will be approximated as average of nearby blocks,
-although a more accurate slower way would be to use reported distance of each of 3 of the furthest block points and triangulate</p>
-</td>
-</tr>
-<tr style="vertical-align: top;">
-<td><code>threshold1</code></td>
-<td>
-<p>percentile like 80 or 90 or 95 to compare percentiles to
-"alone" for groups like white alone (whether or not hispanic),
-"both" may try to include both,
-or possibly "original" or "default" might be added as options - passed to batch.summarize()</p>
+<p>used while testing this function</p>
 </td>
 </tr>
 </table>
@@ -3313,21 +3363,298 @@ or possibly "original" or "default" might be added as options - passed to batch.
 
 <hr>
 </div>
-<div class="container manual-page" id="ejscreenit_for_ejam">
+<div class="container manual-page" id="ejscreenapi_vs_ejam1">
 
-<a href="#ejscreenit_for_ejam" class="help-page-title"><h2>ejscreenit_for_ejam - DRAFT
-Wrapper for ejscreenit() from EJAMejscreenapi package, to use in EJAM app - NOT USED CURRENTLY</h2></a>
+<a href="#ejscreenapi_vs_ejam1" class="help-page-title"><h2>compare EJScreen API vs EJAM stats near one site</h2></a>
 
 <h3>Description</h3>
 
-<p>ejscreenit_for_ejam - DRAFT
-Wrapper for ejscreenit() from EJAMejscreenapi package, to use in EJAM app - NOT USED CURRENTLY
+<p>compare EJScreen API vs EJAM stats near one site
 </p>
 
 
 <h3>Usage</h3>
 
-<pre class="language-r"><code class="language-r">ejscreenit_for_ejam<span class="token punctuation">(</span>sitepoints<span class="token punctuation">,</span> radius <span class="token operator">=</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token ellipsis">...</span><span class="token punctuation">)</span></code></pre>
+<pre class="language-r"><code class="language-r">ejscreenapi_vs_ejam1<span class="token punctuation">(</span>latlon<span class="token punctuation">,</span> radius <span class="token operator">=</span> <span class="token number">3</span><span class="token punctuation">,</span> nadrop <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span> x100fix <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span> <span class="token ellipsis">...</span><span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr style="vertical-align: top;">
+<td><code>latlon</code></td>
+<td>
+<p>1-row data.table or data.frame with colnames lat and lon</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>radius</code></td>
+<td>
+<p>in miles, used in ejamit() and ejscreenapi_plus()</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>nadrop</code></td>
+<td>
+<p>whether to drop indicators for which EJScreen API returns NA</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>x100fix</code></td>
+<td>
+<p>whether to multiply x100 the names_d and names_d_subgroups
+indicator scores to convert fractions 0 to 1 into percentages of 0 to 100,
+prior to rounding and reporting EJAM results here.</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>...</code></td>
+<td>
+<p>passed to ejamit() as any additional parameters,
+like include_ejindexes = FALSE</p>
+</td>
+</tr>
+</table>
+<h3>Value</h3>
+
+<p>a data.frame with columns EJSCREEN and EJAM,
+rownames are indicators like pop, blockcount_near_site, etc.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="#ejscreenapi_vs_ejam1_alreadyrun">ejscreenapi_vs_ejam1_alreadyrun()</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre class="language-r"><code class="language-r"><span class="token comment">## Not run: </span>
+   pts <span class="token operator">&lt;-</span> testpoints_100<span class="token punctuation">[</span><span class="token number">1</span><span class="token operator">:</span><span class="token number">5</span><span class="token punctuation">,</span> <span class="token punctuation">]</span>
+  <span class="token comment">#z &lt;- ejscreenapi_vs_ejam1(testpoints_100[27, ], radius = 3, nadrop = T, include_ejindexes = TRUE)</span>
+  z <span class="token operator">&lt;-</span> ejscreenapi_vs_ejam1<span class="token punctuation">(</span>pts<span class="token punctuation">[</span><span class="token number">5</span><span class="token punctuation">,</span> <span class="token punctuation">]</span><span class="token punctuation">,</span> radius <span class="token operator">=</span> <span class="token number">3</span><span class="token punctuation">,</span> include_ejindexes <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">)</span>
+   
+   <span class="token comment"># Reported key indicators - which ones do or don't match</span>
+   <span class="token comment"># when comparing EJSCREEN and EJAM results?</span>
+   keyreportnames <span class="token operator">&lt;-</span> c<span class="token punctuation">(</span><span class="token string">'pop'</span><span class="token punctuation">,</span> names_these<span class="token punctuation">,</span> names_pctile<span class="token punctuation">,</span> names_state_pctile<span class="token punctuation">)</span>
+   z<span class="token punctuation">[</span>z<span class="token operator">$</span>rname <span class="token percent-operator operator">%in%</span> keyreportnames <span class="token operator">&amp;</span>  z<span class="token operator">$</span>same_shown<span class="token punctuation">,</span> <span class="token punctuation">]</span>
+   z<span class="token punctuation">[</span>z<span class="token operator">$</span>rname <span class="token percent-operator operator">%in%</span> keyreportnames <span class="token operator">&amp;</span> <span class="token operator">!</span>z<span class="token operator">$</span>same_shown <span class="token operator">&amp;</span> <span class="token operator">!</span>is.na<span class="token punctuation">(</span>z<span class="token operator">$</span>EJSCREEN<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token punctuation">]</span>
+  
+   <span class="token comment"># Reported (rounded) numbers match:</span>
+   z<span class="token punctuation">[</span>z<span class="token operator">$</span>same_shown <span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span>
+   <span class="token comment"># Reports disagree: </span>
+   <span class="token comment">#  (and not just because of percentages being of 100 vs of 1.00)</span>
+   z<span class="token punctuation">[</span><span class="token operator">!</span>z<span class="token operator">$</span>same_shown <span class="token operator">&amp;</span> <span class="token operator">!</span>is.na<span class="token punctuation">(</span>z<span class="token operator">$</span>EJSCREEN<span class="token punctuation">)</span> <span class="token operator">&amp;</span> z<span class="token operator">$</span>ratio <span class="token operator">!=</span> <span class="token number">0.01</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span> 
+   <span class="token comment"># Reports disagree if percentages reported as 0-100 vs fractions 0-1.00</span>
+   z<span class="token punctuation">[</span>z<span class="token operator">$</span>ratio <span class="token operator">==</span> <span class="token number">0.01</span> <span class="token operator">&amp;</span> <span class="token operator">!</span>is.na<span class="token punctuation">(</span>z<span class="token operator">$</span>ratio<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span>
+   
+  
+<span class="token comment">## End(Not run)</span></code></pre>
+
+<hr>
+</div>
+<div class="container manual-page" id="ejscreenapi_vs_ejam1_alreadyrun">
+
+<a href="#ejscreenapi_vs_ejam1_alreadyrun" class="help-page-title"><h2>compare EJScreen API vs EJAM stats near one site (if results already run)</h2></a>
+
+<h3>Description</h3>
+
+<p>compare EJScreen API vs EJAM stats near one site (if results already run)
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">ejscreenapi_vs_ejam1_alreadyrun<span class="token punctuation">(</span>
+  apisite<span class="token punctuation">,</span>
+  ejamsite<span class="token punctuation">,</span>
+  x100fix <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span>
+  nadrop <span class="token operator">=</span> <span class="token boolean">FALSE</span>
+<span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr style="vertical-align: top;">
+<td><code>apisite</code></td>
+<td>
+<p>1-row table output of ejscreenit()$table,
+or ejscreenapi_plus()</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>ejamsite</code></td>
+<td>
+<p>1-row table output of ejamit()$results_bysite</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>x100fix</code></td>
+<td>
+<p>whether to multiply x100 the names_d and names_d_subgroups
+indicator scores to convert fractions 0 to 1 into percentages of 0 to 100,
+prior to rounding and reporting EJAM results here.</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>nadrop</code></td>
+<td>
+<p>whether to drop indicators for which EJScreen API returns NA</p>
+</td>
+</tr>
+</table>
+<h3>Value</h3>
+
+<p>a data.frame with columns EJSCREEN and EJAM,
+rownames are indicators like pop, blockcount_near_site, etc.
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="#ejscreenapi_vs_ejam1">ejscreenapi_vs_ejam1()</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre class="language-r"><code class="language-r"><span class="token comment">## Not run: </span>
+ 
+ <span class="token comment"># requires data.table</span>
+   pts <span class="token operator">&lt;-</span> testpoints_100<span class="token punctuation">[</span><span class="token number">1</span><span class="token operator">:</span><span class="token number">5</span><span class="token punctuation">,</span> <span class="token punctuation">]</span>
+   api1 <span class="token operator">&lt;-</span> ejscreenit<span class="token punctuation">(</span>pts<span class="token punctuation">,</span> radius <span class="token operator">=</span> <span class="token number">3</span><span class="token punctuation">)</span>
+   api1 <span class="token operator">&lt;-</span> api1<span class="token operator">$</span>table<span class="token punctuation">[</span><span class="token number">5</span><span class="token punctuation">,</span> <span class="token punctuation">]</span>
+   ejam1 <span class="token operator">&lt;-</span> ejamit<span class="token punctuation">(</span>pts<span class="token punctuation">,</span> radius <span class="token operator">=</span> <span class="token number">3</span><span class="token punctuation">,</span> include_ejindexes <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">)</span>
+   ejam1 <span class="token operator">&lt;-</span> ejam1<span class="token operator">$</span>results_bysite<span class="token punctuation">[</span><span class="token number">5</span><span class="token punctuation">,</span> <span class="token punctuation">]</span>
+   z <span class="token operator">&lt;-</span> ejscreenapi_vs_ejam1_alreadyrun<span class="token punctuation">(</span>api1<span class="token punctuation">,</span> ejam1<span class="token punctuation">)</span>
+   
+   <span class="token comment"># Reported key indicators - which ones do or don't match</span>
+   <span class="token comment"># when comparing EJSCREEN and EJAM results?</span>
+   keyreportnames <span class="token operator">&lt;-</span> c<span class="token punctuation">(</span><span class="token string">'pop'</span><span class="token punctuation">,</span> names_these<span class="token punctuation">,</span> names_pctile<span class="token punctuation">,</span> names_state_pctile<span class="token punctuation">)</span>
+   z<span class="token punctuation">[</span>z<span class="token operator">$</span>rname <span class="token percent-operator operator">%in%</span> keyreportnames <span class="token operator">&amp;</span>  z<span class="token operator">$</span>same_shown<span class="token punctuation">,</span> <span class="token punctuation">]</span>
+   z<span class="token punctuation">[</span>z<span class="token operator">$</span>rname <span class="token percent-operator operator">%in%</span> keyreportnames <span class="token operator">&amp;</span> <span class="token operator">!</span>z<span class="token operator">$</span>same_shown <span class="token operator">&amp;</span> <span class="token operator">!</span>is.na<span class="token punctuation">(</span>z<span class="token operator">$</span>EJSCREEN<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token punctuation">]</span>
+   
+   <span class="token comment"># Reported (rounded) numbers match:</span>
+   z<span class="token punctuation">[</span>z<span class="token operator">$</span>same_shown <span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span>
+   <span class="token comment"># Reports disagree: </span>
+   <span class="token comment">#  (and not just because of percentages being of 100 vs of 1.00)</span>
+   z<span class="token punctuation">[</span><span class="token operator">!</span>z<span class="token operator">$</span>same_shown <span class="token operator">&amp;</span> <span class="token operator">!</span>is.na<span class="token punctuation">(</span>z<span class="token operator">$</span>EJSCREEN<span class="token punctuation">)</span> <span class="token operator">&amp;</span> z<span class="token operator">$</span>ratio <span class="token operator">!=</span> <span class="token number">0.01</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span> 
+   <span class="token comment"># Reports disagree if percentages reported as 0-100 vs fractions 0-1.00</span>
+   z<span class="token punctuation">[</span>z<span class="token operator">$</span>ratio <span class="token operator">==</span> <span class="token number">0.01</span> <span class="token operator">&amp;</span> <span class="token operator">!</span>is.na<span class="token punctuation">(</span>z<span class="token operator">$</span>ratio<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span>
+ 
+<span class="token comment">## End(Not run)</span></code></pre>
+
+<hr>
+</div>
+<div class="container manual-page" id="ejscreenapi2ejam_format">
+
+<a href="#ejscreenapi2ejam_format" class="help-page-title"><h2>Convert output of ejscreenapi_plus to format of ejamit table of sites
+Makes it easier to compare EJScreen and EJAM results</h2></a>
+
+<h3>Description</h3>
+
+<p>Convert output of ejscreenapi_plus to format of ejamit table of sites
+Makes it easier to compare EJScreen and EJAM results
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">ejscreenapi2ejam_format<span class="token punctuation">(</span>
+  ejscreenapi_plus_out<span class="token punctuation">,</span>
+  fillmissingcolumns <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
+  ejamcolnames <span class="token operator">=</span> <span class="token keyword">NULL</span>
+<span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr style="vertical-align: top;">
+<td><code>ejscreenapi_plus_out</code></td>
+<td>
+<p>results of ejscreenapi_plus() or also
+could be results of ejscreenit()$table even though the colnames differ,
+because they get converted here in that case.</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>fillmissingcolumns</code></td>
+<td>
+<p>optional. set to TRUE if you want the output
+to have exactly all the same columns as the EJAM table would, and
+fill in with NA values all the columns not provided by EJScreen API.</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>ejamcolnames</code></td>
+<td>
+<p>optional. if specified as vector of colnames, it
+overrides the assumed colnames that would have been taken to be
+colnames(testoutput_ejamit_10pts_1miles$results_bysite).
+Any colnames you specify here will be the colnames of the output
+if fillmissingcolumns = TRUE, or else those not in names(ejscreenapi_plus_out)
+will be omitted.</p>
+</td>
+</tr>
+</table>
+<h3>Value</h3>
+
+<p>A data.table not just data.frame, with some or all of the columns
+found in output of ejamit()$results_bysite
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="#ejscreenapi_vs_ejam1">ejscreenapi_vs_ejam1()</a></code>
+</p>
+
+
+<h3>Examples</h3>
+
+<pre class="language-r"><code class="language-r"><span class="token comment">## Not run: </span>
+   x <span class="token operator">&lt;-</span> ejscreenapi_plus<span class="token punctuation">(</span>testpoints_10<span class="token punctuation">[</span><span class="token number">1</span><span class="token operator">:</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token punctuation">]</span><span class="token punctuation">,</span> radius <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">)</span>
+   y <span class="token operator">&lt;-</span> ejscreenapi2ejam_format<span class="token punctuation">(</span>x<span class="token punctuation">)</span>
+   ejamvars <span class="token operator">&lt;-</span> names<span class="token punctuation">(</span>testoutput_ejamit_10pts_1miles<span class="token operator">$</span>results_bysite<span class="token punctuation">)</span>
+   all.equal<span class="token punctuation">(</span>
+     names<span class="token punctuation">(</span>y<span class="token punctuation">)</span><span class="token punctuation">,</span> 
+     ejamvars<span class="token punctuation">[</span>ejamvars <span class="token percent-operator operator">%in%</span> names<span class="token punctuation">(</span>y<span class="token punctuation">)</span><span class="token punctuation">]</span>
+  <span class="token punctuation">)</span>
+  
+  z <span class="token operator">&lt;-</span> ejscreenapi2ejam_format<span class="token punctuation">(</span>x<span class="token punctuation">,</span> fillmissingcolumns <span class="token operator">=</span> T<span class="token punctuation">)</span>
+  all.equal<span class="token punctuation">(</span>names<span class="token punctuation">(</span>z<span class="token punctuation">)</span><span class="token punctuation">,</span> ejamvars<span class="token punctuation">)</span>
+  
+ y2 <span class="token operator">&lt;-</span> ejamit<span class="token punctuation">(</span>testpoints_10<span class="token punctuation">[</span><span class="token number">1</span><span class="token operator">:</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token punctuation">]</span><span class="token punctuation">,</span> radius <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">)</span>
+ y2 <span class="token operator">&lt;-</span> y2<span class="token operator">$</span>results_bysite
+ ejamvars <span class="token operator">&lt;-</span> names<span class="token punctuation">(</span>y2<span class="token punctuation">)</span>
+ all.equal<span class="token punctuation">(</span>names<span class="token punctuation">(</span>z<span class="token punctuation">)</span><span class="token punctuation">,</span> ejamvars<span class="token punctuation">)</span>
+ sitenum <span class="token operator">&lt;-</span> <span class="token number">1</span>
+ z <span class="token operator">&lt;-</span> data.frame<span class="token punctuation">(</span>EJAM <span class="token operator">=</span> t<span class="token punctuation">(</span>y2<span class="token punctuation">[</span>sitenum<span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">1</span><span class="token operator">:</span><span class="token operator">-</span><span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span> EJSCREEN <span class="token operator">=</span> t<span class="token punctuation">(</span>z<span class="token punctuation">[</span>sitenum<span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">1</span><span class="token operator">:</span><span class="token operator">-</span><span class="token number">3</span> <span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+ z
+ z<span class="token punctuation">[</span><span class="token operator">!</span>is.na<span class="token punctuation">(</span>z<span class="token operator">$</span>EJSCREEN<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token punctuation">]</span>
+  
+<span class="token comment">## End(Not run)</span></code></pre>
+
+<hr>
+</div>
+<div class="container manual-page" id="ejscreenit_for_ejam">
+
+<a href="#ejscreenit_for_ejam" class="help-page-title"><h2>ejscreenit_for_ejam
+Wrapper for ejscreenit() from EJAMejscreenapi package, to use in EJAM app</h2></a>
+
+<h3>Description</h3>
+
+<p>ejscreenit_for_ejam
+Wrapper for ejscreenit() from EJAMejscreenapi package, to use in EJAM app
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">ejscreenit_for_ejam<span class="token punctuation">(</span>sitepoints<span class="token punctuation">,</span> radius <span class="token operator">=</span> <span class="token number">3</span><span class="token punctuation">,</span> fillmissingcolumns <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span> <span class="token ellipsis">...</span><span class="token punctuation">)</span></code></pre>
 
 
 <h3>Arguments</h3>
@@ -3348,14 +3675,19 @@ Wrapper for ejscreenit() from EJAMejscreenapi package, to use in EJAM app - NOT 
 <tr style="vertical-align: top;">
 <td><code>...</code></td>
 <td>
-<p>passed to ejscreenit() but not tested and probably should not use/ not needed</p>
+<p>passed to ejscreenit()</p>
 </td>
 </tr>
 </table>
 <h3>Value</h3>
 
-<p>list of results from ejscreenit()
-i.e., list of these: results_bysite (data.table), map, plot, us.ratios
+<p>a data.table that looks like output of ejamit()$results_bysite
+</p>
+
+
+<h3>See Also</h3>
+
+<p><code><a href="#ejscreenapi_vs_ejam1">ejscreenapi_vs_ejam1()</a></code>
 </p>
 
 <hr>
@@ -4897,7 +5229,7 @@ which is just a circular buffer of specified radius if polys are just points.
 
 <h3>Usage</h3>
 
-<pre class="language-r"><code class="language-r">getblocks_diagnostics<span class="token punctuation">(</span>x<span class="token punctuation">,</span> detailed <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span> see_plot <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">)</span></code></pre>
+<pre class="language-r"><code class="language-r">getblocks_diagnostics<span class="token punctuation">(</span>x<span class="token punctuation">,</span> detailed <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span> see_pctiles <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">)</span></code></pre>
 
 
 <h3>Arguments</h3>
@@ -4916,9 +5248,9 @@ which is just a circular buffer of specified radius if polys are just points.
 </td>
 </tr>
 <tr style="vertical-align: top;">
-<td><code>see_plot</code></td>
+<td><code>see_pctiles</code></td>
 <td>
-<p>set TRUE to draw for each site a boxplot of distances of nearby blocks</p>
+<p>set to TRUE to see 20 percentiles of distance in a table</p>
 </td>
 </tr>
 </table>
@@ -4936,7 +5268,17 @@ which is just a circular buffer of specified radius if polys are just points.
 
 <h3>Examples</h3>
 
-<pre class="language-r"><code class="language-r">getblocks_diagnostics<span class="token punctuation">(</span>testoutput_getblocksnearby_10pts_1miles<span class="token punctuation">)</span></code></pre>
+<pre class="language-r"><code class="language-r">getblocks_diagnostics<span class="token punctuation">(</span>testoutput_getblocksnearby_10pts_1miles<span class="token punctuation">)</span>
+  <span class="token comment"># library(data.table)</span>
+  x <span class="token operator">&lt;-</span> data.table<span class="token operator">::</span>copy<span class="token punctuation">(</span>testpoints_10<span class="token punctuation">)</span>
+  setDT<span class="token punctuation">(</span>x<span class="token punctuation">)</span>
+  pts <span class="token operator">&lt;-</span> rbind<span class="token punctuation">(</span>data.table<span class="token punctuation">(</span>lat <span class="token operator">=</span> <span class="token number">40.3</span><span class="token punctuation">,</span> lon <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">96.23</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    x<span class="token punctuation">[</span> <span class="token punctuation">,</span> .<span class="token punctuation">(</span>lat<span class="token punctuation">,</span> lon<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+ z <span class="token operator">&lt;-</span> getblocksnearbyviaQuadTree<span class="token punctuation">(</span>pts<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> quadtree <span class="token operator">=</span> localtree<span class="token punctuation">,</span> quiet <span class="token operator">=</span> T<span class="token punctuation">)</span>
+ z<span class="token punctuation">[</span> <span class="token punctuation">,</span> .<span class="token punctuation">(</span>blocks <span class="token operator">=</span> .N<span class="token punctuation">)</span> <span class="token punctuation">,</span> keyby <span class="token operator">=</span> <span class="token string">'siteid'</span><span class="token punctuation">]</span>
+ plotblocksnearby<span class="token punctuation">(</span>pts<span class="token punctuation">,</span> radius <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">,</span> sites2blocks <span class="token operator">=</span> z<span class="token punctuation">)</span>
+ zz <span class="token operator">&lt;-</span> getblocks_diagnostics<span class="token punctuation">(</span>z<span class="token punctuation">,</span> detailed <span class="token operator">=</span> T<span class="token punctuation">,</span> see_pctiles <span class="token operator">=</span> T<span class="token punctuation">)</span>
+cbind<span class="token punctuation">(</span>stats <span class="token operator">=</span> zz<span class="token punctuation">)</span></code></pre>
 
 <hr>
 </div>
@@ -5314,6 +5656,7 @@ this function quickly finds all the US Census blocks near each point.
   avoidorphans <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
   report_progress_every_n <span class="token operator">=</span> <span class="token number">500</span><span class="token punctuation">,</span>
   quiet <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
+  retain_unadjusted_distance <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span>
   quadtree
 <span class="token punctuation">)</span></code></pre>
 
@@ -5368,6 +5711,17 @@ mostly for testing, but a progress bar feature might be useful unless this is su
 <td>
 <p>Optional. set to TRUE to avoid message about using getblock_diagnostics(),
 which is relevant only if a user saved the output of this function.</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>retain_unadjusted_distance</code></td>
+<td>
+<p>set to FALSE to drop it and save memory/storage. If TRUE,
+the distance_unadjusted column will save the actual distance of site to block internal point
+– the distance column always represents distance to average resident in the block, which is
+estimated by adjusting the site to block distance in cases where it is small relative to the
+size of the block, to put a lower limit on it, which can result in a large estimate of distance
+if the block is very large. See EJScreen documentation.</p>
 </td>
 </tr>
 <tr style="vertical-align: top;">
@@ -9158,8 +9512,11 @@ Utility to quickly view one or more facility points on map with the blocks found
   sitepoints<span class="token punctuation">,</span>
   radius <span class="token operator">=</span> <span class="token number">3</span><span class="token punctuation">,</span>
   sites2blocks<span class="token punctuation">,</span>
+  siteidvarname <span class="token operator">=</span> <span class="token string">"ejam_uniq_id"</span><span class="token punctuation">,</span>
   usemapfast <span class="token operator">=</span> <span class="token boolean">TRUE</span><span class="token punctuation">,</span>
   returnmap <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
+  maxradius <span class="token operator">=</span> <span class="token number">31.07</span><span class="token punctuation">,</span>
+  avoidorphans <span class="token operator">=</span> <span class="token boolean">FALSE</span><span class="token punctuation">,</span>
   <span class="token ellipsis">...</span>
 <span class="token punctuation">)</span></code></pre>
 
@@ -9177,18 +9534,26 @@ but also could just be the output of getblocksnearby() if that has already been 
 <tr style="vertical-align: top;">
 <td><code>radius</code></td>
 <td>
-<p>in miles (Max allowed is 32 miles, or just over 50 kilometers since 31.06856 miles is 50 * 1000 / meters_per_mile).</p>
+<p>optional. in miles (Max allowed is 32 miles, or just over 50 kilometers since 31.06856 miles is 50 * 1000 / meters_per_mile).</p>
 </td>
 </tr>
 <tr style="vertical-align: top;">
 <td><code>sites2blocks</code></td>
 <td>
-<p>If provided, used as sites2blocks like <a href="#testoutput_getblocksnearby_10pts_1miles">testoutput_getblocksnearby_10pts_1miles</a>
+<p>optional. If provided, used as sites2blocks like <a href="#testoutput_getblocksnearby_10pts_1miles">testoutput_getblocksnearby_10pts_1miles</a>
 If neither sites2blocks nor sitepoints is provided it cannot plot and returns error.
 If sites2blocks and sitepoints are both provided, it uses them both to plot blocks and sites (centers of circles).
 If sites2blocks not provided, but sitepoints alone is provided, checks if sitepoints is actually sites2blocks, and uses as such.
 If sites2blocks not provided, but sitepoints alone is provided, and sitepoints is really sitepoints, it runs getblocksnearby() to create sites2blocks.
 If sites2blocks is provided, but sitepoints is not, it could only do a bad approximation of sitepoints so it will not draw the circle or site at center of the circle.</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>siteidvarname</code></td>
+<td>
+<p>optional. specifies the column name in sites2blocks that is the unique site id, the values of which should
+also be the row numbers of the corresponding sites in sitepoints, with a site appearing once in sitepoints,
+and in sites2blocks appearing once per block that is near that site.</p>
 </td>
 </tr>
 <tr style="vertical-align: top;">
@@ -9204,9 +9569,21 @@ If sites2blocks is provided, but sitepoints is not, it could only do a bad appro
 </td>
 </tr>
 <tr style="vertical-align: top;">
+<td><code>maxradius</code></td>
+<td>
+<p>optional. see <code><a href="#getblocksnearby">getblocksnearby()</a></code></p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>avoidorphans</code></td>
+<td>
+<p>optional. see <code><a href="#getblocksnearby">getblocksnearby()</a></code></p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
 <td><code>...</code></td>
 <td>
-<p>passed to mapfast() or plot() depending on usemapfast</p>
+<p>optional. passed to mapfast() or plot() depending on usemapfast</p>
 </td>
 </tr>
 </table>
@@ -9227,11 +9604,21 @@ and then displays a map of those blocks near the specified point.
 <h3>Examples</h3>
 
 <pre class="language-r"><code class="language-r"><span class="token comment">#  see all Census Blocks within 1 mile of 1 site, if already had run getblocksnearby()</span>
-   z <span class="token operator">=</span>  plotblocksnearby<span class="token punctuation">(</span>sitepoints <span class="token operator">=</span> testpoints_10<span class="token punctuation">,</span> 
-   sites2blocks <span class="token operator">=</span> testoutput_getblocksnearby_10pts_1miles<span class="token punctuation">[</span>siteid <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">,</span><span class="token punctuation">]</span><span class="token punctuation">,</span> radius <span class="token operator">=</span> <span class="token number">1</span>  <span class="token punctuation">)</span>
+  getblocks_output <span class="token operator">&lt;-</span> copy<span class="token punctuation">(</span>testoutput_getblocksnearby_10pts_1miles<span class="token punctuation">)</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token string">"siteid"</span> <span class="token percent-operator operator">%in%</span> names<span class="token punctuation">(</span>getblocks_output<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  siteidvarname <span class="token operator">&lt;-</span> <span class="token string">"siteid"</span> <span class="token comment"># the old default</span>
+  eg <span class="token operator">&lt;-</span> getblocks_output<span class="token punctuation">[</span>siteid <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">,</span><span class="token punctuation">]</span>
+  eg2 <span class="token operator">&lt;-</span> getblocks_output<span class="token punctuation">[</span>siteid <span class="token percent-operator operator">%in%</span> c<span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">]</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+  siteidvarname <span class="token operator">&lt;-</span> <span class="token string">"ejam_uniq_id"</span>
+   eg <span class="token operator">&lt;-</span> getblocks_output<span class="token punctuation">[</span>ejam_uniq_id <span class="token operator">==</span> <span class="token number">1</span><span class="token punctuation">,</span><span class="token punctuation">]</span>
+   eg2 <span class="token operator">&lt;-</span> getblocks_output<span class="token punctuation">[</span>ejam_uniq_id <span class="token percent-operator operator">%in%</span> c<span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">]</span>
+  <span class="token punctuation">}</span>
+   z <span class="token operator">&lt;-</span>  plotblocksnearby<span class="token punctuation">(</span>sitepoints <span class="token operator">=</span> testpoints_10<span class="token punctuation">,</span> 
+     sites2blocks <span class="token operator">=</span> eg<span class="token punctuation">,</span> radius <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">)</span>
    <span class="token comment"># see two sites if already had run getblocksnearby()</span>
-   z <span class="token operator">=</span>  plotblocksnearby<span class="token punctuation">(</span>sitepoints <span class="token operator">=</span> testpoints_10<span class="token punctuation">[</span>c<span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">]</span><span class="token punctuation">,</span> 
-   sites2blocks <span class="token operator">=</span> testoutput_getblocksnearby_10pts_1miles<span class="token punctuation">[</span>siteid <span class="token percent-operator operator">%in%</span> c<span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">]</span><span class="token punctuation">,</span> radius <span class="token operator">=</span> <span class="token number">1</span>  <span class="token punctuation">)</span>
+   z2 <span class="token operator">&lt;-</span>  plotblocksnearby<span class="token punctuation">(</span>sitepoints <span class="token operator">=</span> testpoints_10<span class="token punctuation">[</span>c<span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">]</span><span class="token punctuation">,</span> 
+     sites2blocks <span class="token operator">=</span> eg2<span class="token punctuation">,</span> radius <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">)</span>
   <span class="token comment">## Not run: </span>
   <span class="token comment"># See one randomly selected regulated facility from FRS and all Census Blocks within 2 miles:</span>
     plotblocksnearby<span class="token punctuation">(</span>testpoints_n<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span> 
@@ -9240,7 +9627,8 @@ and then displays a map of those blocks near the specified point.
   <span class="token comment"># See 100 sites and all blocks within 1 mile of each - </span>
   <span class="token comment"># Note you have to specify radius here or it uses default that may not match intent </span>
   <span class="token comment"># - and this is a bit slow</span>
-  plotblocksnearby<span class="token punctuation">(</span>testdata_ejamit_output_100pts_1miles<span class="token operator">$</span>results_bysite<span class="token punctuation">[</span><span class="token punctuation">,</span>.<span class="token punctuation">(</span>siteid<span class="token punctuation">,</span> lat<span class="token punctuation">,</span>lon<span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">,</span> radius <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">)</span> 
+  plotblocksnearby<span class="token punctuation">(</span>testoutput_ejamit_100pts_1miles<span class="token operator">$</span>results_bysite<span class="token punctuation">[</span><span class="token punctuation">,</span> c<span class="token punctuation">(</span>siteidvarname<span class="token punctuation">,</span> <span class="token string">"lat"</span><span class="token punctuation">,</span> <span class="token string">"lon"</span><span class="token punctuation">)</span><span class="token punctuation">,</span> with<span class="token operator">=</span><span class="token boolean">FALSE</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+     radius <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">)</span>
   
 <span class="token comment">## End(Not run)</span></code></pre>
 
@@ -9635,7 +10023,7 @@ Indicator of proximity of each blockgroups to some set of facilities or sites.
 
 <h3>Usage</h3>
 
-<pre class="language-r"><code class="language-r">proxistat2<span class="token punctuation">(</span>pts<span class="token punctuation">,</span> radius <span class="token operator">=</span> <span class="token number">8.04672</span><span class="token punctuation">,</span> quadtree<span class="token punctuation">)</span></code></pre>
+<pre class="language-r"><code class="language-r">proxistat2<span class="token punctuation">(</span>pts<span class="token punctuation">,</span> countradius <span class="token operator">=</span> <span class="token number">8.04672</span><span class="token punctuation">,</span> maxradius <span class="token operator">=</span> <span class="token number">621.3712</span><span class="token punctuation">,</span> quadtree <span class="token operator">=</span> <span class="token keyword">NULL</span><span class="token punctuation">)</span></code></pre>
 
 
 <h3>Arguments</h3>
@@ -9648,10 +10036,21 @@ Indicator of proximity of each blockgroups to some set of facilities or sites.
 </td>
 </tr>
 <tr style="vertical-align: top;">
-<td><code>radius</code></td>
+<td><code>countradius</code></td>
 <td>
-<p>distance max, in miles, default is 5km (8.04672 miles)
-which is the EJScreen max search range for proximity scores</p>
+<p>distance within in which nearby sites are counted to create proximity score.
+In miles, and default is 5km (8.04672 miles)
+which is the EJScreen zone for proximity scores based on counts.</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>maxradius</code></td>
+<td>
+<p>max distance in miles to search for nearest single facility,
+if none found within countradius. EJScreen seems to use 1,000 km as the max to search,
+since the lowest scores for proximity scores of RMP, TSDF, or NPL are around 0.001,
+meaning approx. 1/1000 km and km_per_mile = 1.609344
+so 1000 km is 1000 / 1.609344 = 621.3712 miles</p>
 </td>
 </tr>
 <tr style="vertical-align: top;">
@@ -9667,11 +10066,9 @@ built during use of EJAM package. see <a href="#quaddata">quaddata</a></p>
 <p>Proximity score is sum of (1/d) where each d is distance of a given site in km,
 summed over all sites within 5km, as in EJScreen.
 </p>
-<p>doaggregate() has a bit of code in it to do this same thing that this function does.
+<p>getblocksnearbyviaQuadTree.R() and maybe doaggregate()?
 </p>
-<p>*** Still need area of each block to fix this function -
-the block area should get put into one of these:
-<a href="#EJAM">blockpoints</a> or <a href="#EJAM">blockwts</a>
+<p>has a bit of code in it to do some of what this function does.
 </p>
 
 
@@ -12425,6 +12822,75 @@ as would come from ejamit(testpoints_10)$results_overall</p>
 
 <hr>
 </div>
+<div class="container manual-page" id="table_order_variables">
+
+<a href="#table_order_variables" class="help-page-title"><h2>get order of variable names to sort by, as seen in EJScreen Community Report</h2></a>
+
+<h3>Description</h3>
+
+<p>get order of variable names to sort by, as seen in EJScreen Community Report
+</p>
+
+
+<h3>Usage</h3>
+
+<pre class="language-r"><code class="language-r">table_order_variables<span class="token punctuation">(</span>
+  varnames<span class="token punctuation">,</span>
+  s1 <span class="token operator">=</span> <span class="token string">"ejscreensort"</span><span class="token punctuation">,</span>
+  s2 <span class="token operator">=</span> <span class="token string">"sortvarlistEJSCREENREPORT"</span><span class="token punctuation">,</span>
+  s3 <span class="token operator">=</span> <span class="token string">"sort_within_varlistEJSCREENREPORT"</span>
+<span class="token punctuation">)</span></code></pre>
+
+
+<h3>Arguments</h3>
+
+<table>
+<tr style="vertical-align: top;">
+<td><code>varnames</code></td>
+<td>
+<p>vector of indicator variables names from blockgroupstats, bgej, etc.,
+such as "pm", "pctlowinc", "pctile.EJ.DISPARITY.traffic.score.eo" etc.
+and others as found in names_all_r, or specific subsets of those like
+in c(names_d, names_d_subgroups, names_e) and
+c(names_ej_pctile, names_ej_state_pctile, names_ej_supp_pctile, names_ej_supp_state_pctile)</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>s1</code></td>
+<td>
+<p>name of column in map_headernames to get sort info from</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>s2</code></td>
+<td>
+<p>optional like s1 but secondary to s1</p>
+</td>
+</tr>
+<tr style="vertical-align: top;">
+<td><code>s3</code></td>
+<td>
+<p>optional tertiary</p>
+</td>
+</tr>
+</table>
+<h3>Value</h3>
+
+<p>vector as from order(), to be used in sorting a data.frame for example
+</p>
+
+
+<h3>Examples</h3>
+
+<pre class="language-r"><code class="language-r">cbind<span class="token punctuation">(</span>table_order_variables<span class="token punctuation">(</span>c<span class="token punctuation">(</span>names_d<span class="token punctuation">,</span> names_d_subgroups<span class="token punctuation">,</span> names_e<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+  
+  out <span class="token operator">&lt;-</span> testoutput_ejamit_10pts_1miles
+  vars <span class="token operator">&lt;-</span> out<span class="token operator">$</span>formatted<span class="token punctuation">[</span> <span class="token punctuation">,</span> <span class="token string">'indicator'</span><span class="token punctuation">]</span>
+  vars <span class="token operator">&lt;-</span> fixcolnames<span class="token punctuation">(</span>vars<span class="token punctuation">,</span> <span class="token string">'long'</span><span class="token punctuation">,</span> <span class="token string">'r'</span><span class="token punctuation">)</span>
+  out<span class="token operator">$</span>formatted<span class="token punctuation">[</span>table_order_variables<span class="token punctuation">(</span>vars<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token punctuation">]</span></code></pre>
+
+<hr>
+</div>
 <div class="container manual-page" id="table_round">
 
 <a href="#table_round" class="help-page-title"><h2>table_round - round numbers in a table, each column to appropriate number of decimal places</h2></a>
@@ -13240,7 +13706,7 @@ that came up in a given case (for one cutoff).
 
 <h3>Details</h3>
 
-<p>This is the output of doaggregate(testoutput_getblocksnearby_1000pts_1miles, sites2states_or_latlon = testpoints_1000, radius = 1)
+<p>This is the output of doaggregate(testoutput_getblocksnearby_1000pts_1miles, sites2states_or_latlon = testpoints_1000, radius = 1, include_ejindexes = TRUE)
 </p>
 
 
@@ -13263,7 +13729,7 @@ that came up in a given case (for one cutoff).
 
 <h3>Details</h3>
 
-<p>This is the output of doaggregate(testoutput_getblocksnearby_100pts_1miles, sites2states_or_latlon = testpoints_100, radius = 1)
+<p>This is the output of doaggregate(testoutput_getblocksnearby_100pts_1miles, sites2states_or_latlon = testpoints_100, radius = 1, include_ejindexes = TRUE)
 </p>
 
 
@@ -13286,7 +13752,7 @@ that came up in a given case (for one cutoff).
 
 <h3>Details</h3>
 
-<p>This is the output of doaggregate(testoutput_getblocksnearby_10pts_1miles, sites2states_or_latlon = testpoints_10, radius = 1)
+<p>This is the output of doaggregate(testoutput_getblocksnearby_10pts_1miles, sites2states_or_latlon = testpoints_10, radius = 1, include_ejindexes = TRUE)
 </p>
 
 
@@ -13309,13 +13775,13 @@ that came up in a given case (for one cutoff).
 
 <h3>Details</h3>
 
-<p>This is the output of ejamit(testpoints_1000, radius = 1)
+<p>This is the output of ejamit(testpoints_1000, radius = 1, include_ejindexes = TRUE)
 </p>
 
 
 <h3>See Also</h3>
 
-<p><code><a href="#doaggregate">doaggregate()</a></code> <code><a href="#ejamit">ejamit()</a></code> <a href="#testoutput_doaggregate_1000pts_1miles">testoutput_doaggregate_1000pts_1miles</a> <a href="#testpoints_1000">testpoints_1000</a>
+<p><code><a href="#doaggregate">doaggregate()</a></code> <code><a href="#ejamit">ejamit()</a></code> <a href="#testoutput_doaggregate_1000pts_1miles">testoutput_doaggregate_1000pts_1miles</a> and <a href="#testpoints_1000">testpoints_1000</a>
 </p>
 
 <hr>
@@ -13332,13 +13798,13 @@ that came up in a given case (for one cutoff).
 
 <h3>Details</h3>
 
-<p>This is the output of ejamit( testpoints_100, radius = 1)
+<p>This is the output of ejamit(testpoints_100, radius = 1, include_ejindexes = TRUE)
 </p>
 
 
 <h3>See Also</h3>
 
-<p><code><a href="#doaggregate">doaggregate()</a></code> <code><a href="#ejamit">ejamit()</a></code> <a href="#testoutput_doaggregate_100pts_1miles">testoutput_doaggregate_100pts_1miles</a> <a href="#testpoints_100">testpoints_100</a>
+<p><code><a href="#doaggregate">doaggregate()</a></code> <code><a href="#ejamit">ejamit()</a></code> <a href="#testoutput_doaggregate_100pts_1miles">testoutput_doaggregate_100pts_1miles</a> and <a href="#testpoints_100">testpoints_100</a>
 </p>
 
 <hr>
@@ -13355,13 +13821,13 @@ that came up in a given case (for one cutoff).
 
 <h3>Details</h3>
 
-<p>This is the output of ejamit( testpoints_10, radius = 1)
+<p>This is the output of ejamit(testpoints_10, radius = 1, include_ejindexes = TRUE)
 </p>
 
 
 <h3>See Also</h3>
 
-<p><code><a href="#doaggregate">doaggregate()</a></code> <code><a href="#ejamit">ejamit()</a></code> <a href="#testoutput_doaggregate_10pts_1miles">testoutput_doaggregate_10pts_1miles</a> <a href="#testpoints_10">testpoints_10</a>
+<p><code><a href="#doaggregate">doaggregate()</a></code> <code><a href="#ejamit">ejamit()</a></code> <a href="#testoutput_doaggregate_10pts_1miles">testoutput_doaggregate_10pts_1miles</a> and <a href="#testpoints_10">testpoints_10</a>
 </p>
 
 <hr>
@@ -13686,26 +14152,32 @@ Just shows which elements are in one and only one of the sets x and y
 <tr style="vertical-align: top;">
 <td><code>regid</code></td>
 <td>
-<p>vector of FRS registry IDs if available to use to create links to detailed ECHO facility reports</p>
+<p>optional vector of FRS registry IDs if available to use to create links
+to detailed ECHO facility reports</p>
 </td>
 </tr>
 <tr style="vertical-align: top;">
 <td><code>as_html</code></td>
 <td>
-<p>logical</p>
+<p>logical, optional.
+passed to url_ejscreen_report() and url_ejscreenmap()
+from EJAMejscreenapi package</p>
 </td>
 </tr>
 </table>
 <h3>Value</h3>
 
-<p>list of data.frames to append to the list of data.frames created by ejamit() or doaggregate(),
-list(results_bysite = results_bysite, results_overall = results_overall, newcolnames=newcolnames)
+<p>list of data.frames to append to the list of data.frames created by
+ejamit() or doaggregate(),
+list(results_bysite = results_bysite, results_overall = results_overall,
+newcolnames=newcolnames)
 </p>
 
 
 <h3>See Also</h3>
 
-<p>url_ejscreen_report() url_ejscreenmap() url_echo_facility_webpage() from EJAMejscreenapi package
+<p>url_ejscreen_report() url_ejscreenmap() url_echo_facility_webpage()
+from EJAMejscreenapi package
 </p>
 
 <hr>
