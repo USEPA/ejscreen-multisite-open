@@ -28,7 +28,7 @@ compare EJScreen API vs EJAM stats near one site (if results already run)
    pts <- testpoints_100[1:5, ]
    #api1 <- ejscreenit(pts, radius = 3)
    api1 <- api1$table[5, ]
-   #ejam1 <- ejamit(pts, radius = 3, include_ejindexes = TRUE)
+   ejam1 <- ejamit(pts, radius = 3, include_ejindexes = TRUE)
    ejam1 <- ejam1$results_bysite[5, ]
    z <- ejscreenapi_vs_ejam1_alreadyrun(api1, ejam1)
    

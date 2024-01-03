@@ -66,7 +66,7 @@ ejscreenapi_vs_ejam1 <- function(latlon, radius = 3, nadrop = FALSE, ...) {
 #'  
 #'  # requires data.table
 #'    pts <- testpoints_100[1:5, ]
-#'    #api1 <- ejscreenit(pts, radius = 3)
+#'    api1 <- ejscreenit(pts, radius = 3)
 #'    api1 <- api1$table[5, ]
 #'    ejam1 <- ejamit(pts, radius = 3, include_ejindexes = TRUE)
 #'    ejam1 <- ejam1$results_bysite[5, ]
