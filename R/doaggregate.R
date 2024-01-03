@@ -1122,13 +1122,9 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   
   varsneedpctiles <- c(names_e,  names_d, subs   ) # ONLY IF THESE ARE ALL IN LOOKUP TABLES AND blockgroupstats?
   # varsneedpctiles <- intersect(varsneedpctiles, names(blockgroupstats))
-  if (include_ejindexes) {
-    varsneedpctiles <- c(varsneedpctiles, c(names_ej, names_ej_state, names_ej_supp, names_ej_supp_state))
-    # ** assuming RAW EJ Indexes were aggregated as popwtd means, then convert them here to report as percentiles
-    # (even though previously had thought they would be calculated by formula for each buffer so thought could not do PERCENTILES yet for them.)
-  }
-  varnames.us.pctile    <- paste0(      'pctile.', varsneedpctiles)
-  varnames.state.pctile <- paste0('state.pctile.', varsneedpctiles)
+  varnames.us.pctile    <- paste0(      'pctile.', varsneedpctiles) # but EJ indexes do not follow that naming scheme and are handled with separate code
+  varnames.state.pctile <- paste0('state.pctile.', varsneedpctiles) # but EJ indexes do not follow that naming scheme and are handled with separate code
+
   # set up empty tables to store the percentiles we find
   us.pctile.cols_bysite     <- data.frame(matrix(nrow = NROW(results_bysite),  ncol = length(varsneedpctiles))); colnames(us.pctile.cols_bysite)     <- varnames.us.pctile
   state.pctile.cols_bysite  <- data.frame(matrix(nrow = NROW(results_bysite),  ncol = length(varsneedpctiles))); colnames(state.pctile.cols_bysite)  <- varnames.state.pctile
@@ -1172,20 +1168,17 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   #____________________________________________________  #  ##################################################### #  ######################################################
   
   ############################################################################## #   
+  
   # >>>> EJ INDEXES if needed ####
-  #  EJ Indexes need to be calculated AFTER the envt percentiles are done, 
-  # but then the raw EJ indexes themselves need to be made into percentiles.  
+  
   ###################### # #  
   if (include_ejindexes & "this code is working" == "TRUE") {
-    
-    # not sure this EJ pctile work needs to be done separately here, 
-    # or if it can just happen as all the other pop wtd pctile calculations happened
-    warning("EJ Indexes NOT TESTED HERE YET. Also, need to confirm the use of separate state percentile version of raw EJ score")
+    warning("EJ Indexes NOT TESTED HERE YET.")
     ####
     
     # The 2023 new EJ index formula: 
     # 0) The buffer raw EJ Index is probably just the pop wtd mean of the RAW scores of blockgroups in it, (and reported finally as pctile via lookup)
-    #  NOT recalculated via formulas !? It would not make sense to calculate from formula, or would it? Confirm this.
+    #  NOT recalculated via formulas !? It would not make sense to calculate from formula. (right? Confirm this. *** )
     # 1) IMPORTANT QUESTION FOR OEJ: DOES THE STATE PERCENTILES VERSION OF EJ INDEX USE STATE PERCENTILE IN ITS FORMULA??  YES, seems so, so kept State version of each raw EJ score, to use for calculating State EJ scores in buffers.
     # 2)    also we needed to name these columns carefully - EJ index is always shown as a percentile and variable name that was used for that percentile might have been without the pctile. prefix?
     # 3) For the state percentile,   WE ASSUME THE ENTIRE BUFFER IS MAINLY OR ALL IN ONE STATE (based on point in center of circle) AND 
@@ -1196,9 +1189,16 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
     #  US EO, US SUPP, STATE EO, STATE SUPP
     ## raw EJ Index basic = 2-factor demog index times the envt percentile ####
     # raw EJ index supplemental = 5-factor suppl demog index times the envt percentile  ####
+    
+    # Note that  EJ index pctiles have special naming scheme and are handled with separate code.
+    # for most indicators, each raw indicator gets reported as a US pctile and a State pctile.
+    # for EJ indexes, though, there are US versions and State versions of the raw scores! so 
+    # each US raw EJ gets reported only as US pctile, and
+    # each state raw gets reported only as state pctile.
+    
     ejnames_raw =   c(names_ej, names_ej_supp, names_ej_state, names_ej_supp_state)
     
-    varnames.us.pctile <- c(names_ej_pctile, names_ej_supp_pctile)
+    varnames.us.pctile    <- c(names_ej_pctile,       names_ej_supp_pctile)
     varnames.state.pctile <- c(names_ej_state_pctile, names_ej_supp_state_pctile)
     ejnames_pctile <- c(varnames.us.pctile, varnames.state.pctile)
     
@@ -1221,45 +1221,47 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
     # Ideally should have a function to use to do this, but for other variables server code did this, not a function. 
     
     # set up empty tables to store the percentiles we find
-    us.pctile.cols_bysite     <- data.frame(matrix(nrow = NROW(results_bysite),  ncol = length(varnames.us.pctile))); colnames(us.pctile.cols_bysite)     <- varnames.us.pctile
+    us.pctile.cols_bysite     <- data.frame(matrix(nrow = NROW(results_bysite),  ncol = length(varnames.us.pctile)));    colnames(us.pctile.cols_bysite)     <- varnames.us.pctile
     state.pctile.cols_bysite  <- data.frame(matrix(nrow = NROW(results_bysite),  ncol = length(varnames.state.pctile))); colnames(state.pctile.cols_bysite)  <- varnames.state.pctile
-    us.pctile.cols_overall    <- data.frame(matrix(nrow = NROW(results_overall), ncol = length(varnames.us.pctile))); colnames(us.pctile.cols_overall)    <- varnames.us.pctile
+    us.pctile.cols_overall    <- data.frame(matrix(nrow = NROW(results_overall), ncol = length(varnames.us.pctile)));    colnames(us.pctile.cols_overall)    <- varnames.us.pctile
     # done later: state.pctile.cols_overall 
     
     # SURELY THERE IS A FASTER / VECTORIZED WAY TO DO THIS 
     for (i in seq_along(ejnames_pctile)) {
       myvar <- ejnames_raw[i]  ##   
-      if (myvar %in% names(usastats)) {  # use this function to look in the lookup table to find the percentile that corresponds to each raw score value:
+      if (myvar %in% names(usastats)) { # e.g., "EJ.DISPARITY.proximity.rmp.supp"
+        # look in the lookup table to find the percentile that corresponds to each raw score value:
         
-        us.pctile.cols_bysite[    , varnames.us.pctile[[i]]]    <- pctile_from_raw_lookup(
+        us.pctile.cols_bysite[    , ejnames_pctile[i]]    <- pctile_from_raw_lookup(
           unlist( ej_bysite[  , ..myvar]), 
           varname.in.lookup.table = myvar, lookup = usastats) 
         
-        us.pctile.cols_overall[   , varnames.us.pctile[[i]]]    <- pctile_from_raw_lookup(
+        us.pctile.cols_overall[   , ejnames_pctile[i]]    <- pctile_from_raw_lookup(
           unlist(cbind(ej_overall, ej_supp_overall)[  , ..myvar]), 
           varname.in.lookup.table = myvar, lookup = usastats) 
         # (note it is a bit hard to explain using an average of state percentiles   in the "overall" summary)
       } else { # cannot find that variable in the percentiles lookup table
-        us.pctile.cols_bysite[    , varnames.us.pctile[[i]]] <- NA
-        us.pctile.cols_overall[   , varnames.us.pctile[[i]]] <- NA
+        us.pctile.cols_bysite[    , ejnames_pctile[i]] <- NA
+        us.pctile.cols_overall[   , ejnames_pctile[i]] <- NA
       }
-      if (myvar %in% names(statestats)) {
-        state.pctile.cols_bysite[ , varnames.state.pctile[[i]]] <- pctile_from_raw_lookup(    ### VERY SLOW STEP 289 msec
+      if (myvar %in% names(statestats)) { # e.g., "state.EJ.DISPARITY.proximity.rmp.supp"
+        state.pctile.cols_bysite[ , ejnames_pctile[i]] <- pctile_from_raw_lookup(    ### VERY SLOW STEP 289 msec
           # unlist(results_bysite[  , ..myvar]), 
           unlist(cbind(ej_bysite, ej_supp_bysite)[  , ..myvar]), 
           varname.in.lookup.table = myvar, lookup = statestats, zone =  results_bysite$ST) # should be same count of rows in results_bysite$ST and ej_bysite !
-        ## These must be done later, as avg of sites:
-        # state.pctile.cols_overall[, varnames.state.pctile[[i]]] <- pctile_from_raw_lookup(unlist(results_overall[ , ..myvar]), varname.in.lookup.table = myvar, lookup = statestats, zone =  results_overall$ST)
+        ##  must be done later, as avg of sites:
+        # state.pctile.cols_overall[, ejnames_pctile[i]] <- pctile_from_raw_lookup(unlist(results_overall[ , ..myvar]), varname.in.lookup.table = myvar, lookup = statestats, zone =  results_overall$ST)
       } else {
-        state.pctile.cols_bysite[ , varnames.state.pctile[[i]]] <- NA
-        # state.pctile.cols_overall[, varnames.state.pctile[[i]]] <- NA
+        state.pctile.cols_bysite[ , ejnames_pctile[i]] <- NA
+        ##  must be done later, as avg of sites:
+        # state.pctile.cols_overall[, ejnames_pctile[i]] <- NA
       }
     }
     
     # add EJ index percentiles to results compilation (except for overall state percentile which is created as a weighted average of percentiles further below)
     # Do not provide the raw EJ scores, just the percentiles?
     results_overall <- cbind(siteid = NA, results_overall, us.pctile.cols_overall ) # , state.pctile.cols_overall)
-    results_bysite  <- cbind(           results_bysite,  us.pctile.cols_bysite,  state.pctile.cols_bysite )
+    results_bysite  <- cbind(             results_bysite,  us.pctile.cols_bysite,  state.pctile.cols_bysite )
     
     #*# Then for overall results as EJ index State percentile, I guess we use the popwtd mean of the site-specific EJ index State PERCENTILES?
     #*#   (You cannot look up the average (overall) raw score since the US percentiles table is not applicable really.)
