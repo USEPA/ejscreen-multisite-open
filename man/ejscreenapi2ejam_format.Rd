@@ -53,9 +53,9 @@ Makes it easier to compare EJScreen and EJAM results
  ejamvars <- names(y2)
  all.equal(names(z), ejamvars)
  sitenum <- 1
- z <- data.frame(EJAM = t(y2[sitenum, -1:-3]), EJSCREENAPI = t(z[sitenum, -1:-3 ]))
+ z <- data.frame(EJAM = t(y2[sitenum, -1:-3]), EJSCREEN = t(z[sitenum, -1:-3 ]))
  z
- z[!is.na(z$EJSCREENAPI), ]
+ z[!is.na(z$EJSCREEN), ]
   }
   
 }

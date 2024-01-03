@@ -17,7 +17,7 @@ ejscreenapi_vs_ejam1(latlon, radius = 3, nadrop = FALSE, ...)
 like include_ejindexes = FALSE}
 }
 \value{
-a data.frame with columns EJSCREENAPI and EJAM,
+a data.frame with columns EJSCREEN and EJAM,
 rownames are indicators like pop, blockcount_near_site, etc.
 }
 \description{
@@ -25,10 +25,24 @@ compare EJScreen API vs EJAM stats near one site
 }
 \examples{
  \dontrun{
-  z <- ejscreenapi_vs_ejam1(testpoints_100[5, ], radius = 3)
-  z <- ejscreenapi_vs_ejam1(testpoints_100[27, ], radius = 3, nadrop = T)
-  z$longname <- fixcolnames(rownames(z), 'r', 'long')
-  z[names_these, ]
+   pts <- testpoints_100[1:5, ]
+  #z <- ejscreenapi_vs_ejam1(testpoints_100[27, ], radius = 3, nadrop = T, include_ejindexes = TRUE)
+  z <- ejscreenapi_vs_ejam1(pts[5, ], radius = 3, include_ejindexes = TRUE)
+   
+   # Reported key indicators - which ones do or don't match
+   # when comparing EJSCREEN and EJAM results?
+   keyreportnames <- c('pop', names_these, names_pctile, names_state_pctile)
+   z[z$rname \%in\% keyreportnames &  z$same_shown, ]
+   z[z$rname \%in\% keyreportnames & !z$same_shown & !is.na(z$EJSCREEN), ]
+  
+   # Reported (rounded) numbers match:
+   z[z$same_shown , -1]
+   # Reports disagree: 
+   #  (and not just because of percentages being of 100 vs of 1.00)
+   z[!z$same_shown & !is.na(z$EJSCREEN) & z$ratio != 0.01, -1] 
+   # Reports disagree if percentages reported as 0-100 vs fractions 0-1.00
+   z[z$ratio == 0.01 & !is.na(z$ratio), -1]
+   
   }
 }
 \seealso{

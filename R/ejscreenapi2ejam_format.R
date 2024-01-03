@@ -1,4 +1,8 @@
 
+# ejscreenapi_vs_ejam1()
+# ejscreenapi_vs_ejam1_alreadyrun()
+# ejscreenapi2ejam_format()
+
 
 #' compare EJScreen API vs EJAM stats near one site
 #'
@@ -8,16 +12,30 @@
 #' @param ... passed to ejamit() as any additional parameters,
 #'    like include_ejindexes = FALSE
 #'
-#' @return a data.frame with columns EJSCREENAPI and EJAM, 
+#' @return a data.frame with columns EJSCREEN and EJAM, 
 #'   rownames are indicators like pop, blockcount_near_site, etc.
 #' @export
 #'
 #' @examples
 #'  \dontrun{
-#'   z <- ejscreenapi_vs_ejam1(testpoints_100[5, ], radius = 3)
-#'   z <- ejscreenapi_vs_ejam1(testpoints_100[27, ], radius = 3, nadrop = T)
-#'   z$longname <- fixcolnames(rownames(z), 'r', 'long')
-#'   z[names_these, ]
+#'    pts <- testpoints_100[1:5, ]
+#'   #z <- ejscreenapi_vs_ejam1(testpoints_100[27, ], radius = 3, nadrop = T, include_ejindexes = TRUE)
+#'   z <- ejscreenapi_vs_ejam1(pts[5, ], radius = 3, include_ejindexes = TRUE)
+#'    
+#'    # Reported key indicators - which ones do or don't match
+#'    # when comparing EJSCREEN and EJAM results?
+#'    keyreportnames <- c('pop', names_these, names_pctile, names_state_pctile)
+#'    z[z$rname %in% keyreportnames &  z$same_shown, ]
+#'    z[z$rname %in% keyreportnames & !z$same_shown & !is.na(z$EJSCREEN), ]
+#'   
+#'    # Reported (rounded) numbers match:
+#'    z[z$same_shown , -1]
+#'    # Reports disagree: 
+#'    #  (and not just because of percentages being of 100 vs of 1.00)
+#'    z[!z$same_shown & !is.na(z$EJSCREEN) & z$ratio != 0.01, -1] 
+#'    # Reports disagree if percentages reported as 0-100 vs fractions 0-1.00
+#'    z[z$ratio == 0.01 & !is.na(z$ratio), -1]
+#'    
 #'   }
 #' @seealso [ejscreenapi_vs_ejam1_alreadyrun()]
 #' 
@@ -40,32 +58,42 @@ ejscreenapi_vs_ejam1 <- function(latlon, radius = 3, nadrop = FALSE, ...) {
 #' @param ejamsite 1-row table output of ejamit()$results_bysite
 #' @param nadrop whether to drop indicators for which EJScreen API returns NA
 #'
-#' @return a data.frame with columns EJSCREENAPI and EJAM, 
+#' @return a data.frame with columns EJSCREEN and EJAM, 
 #'   rownames are indicators like pop, blockcount_near_site, etc.
 #' @export
 #' @examples 
 #'  \dontrun{
-#'    api1 <- ejscreenit(testpoints_100, radius = 3)
+#'  
+#'  # requires data.table
+#'    pts <- testpoints_100[1:5, ]
+#'    #api1 <- ejscreenit(pts, radius = 3)
 #'    api1 <- api1$table[5, ]
-#'    ejam1 <- ejamit(testpoints_100, radius = 3)
+#'    #ejam1 <- ejamit(pts, radius = 3, include_ejindexes = TRUE)
 #'    ejam1 <- ejam1$results_bysite[5, ]
-#'    ejscreenapi_vs_ejam1_alreadyrun(api1, ejam1)
+#'    z <- ejscreenapi_vs_ejam1_alreadyrun(api1, ejam1)
+#'    
+#'    # Reported key indicators - which ones do or don't match
+#'    # when comparing EJSCREEN and EJAM results?
+#'    keyreportnames <- c('pop', names_these, names_pctile, names_state_pctile)
+#'    z[z$rname %in% keyreportnames &  z$same_shown, ]
+#'    z[z$rname %in% keyreportnames & !z$same_shown & !is.na(z$EJSCREEN), ]
+#'    
+#'    # Reported (rounded) numbers match:
+#'    z[z$same_shown , -1]
+#'    # Reports disagree: 
+#'    #  (and not just because of percentages being of 100 vs of 1.00)
+#'    z[!z$same_shown & !is.na(z$EJSCREEN) & z$ratio != 0.01, -1] 
+#'    # Reports disagree if percentages reported as 0-100 vs fractions 0-1.00
+#'    z[z$ratio == 0.01 & !is.na(z$ratio), -1]
 #'  }
 #' @seealso [ejscreenapi_vs_ejam1()]
 #' 
 ejscreenapi_vs_ejam1_alreadyrun <- function(apisite, ejamsite, nadrop = FALSE) {
   
-  # compare 1 site for EJAM vs EJScreen results already run  
-  # example:
-  if (1 == 0) {
-    api1 <- ejscreenit(testpoints_100, radius = 3)
-    api1 <- api1$table[5, ]
-    ejam1 <- ejamit(testpoints_100, radius = 3)
-    ejam1 <- ejam1$results_bysite[5, ]
-    
-    ejscreenapi_vs_ejam1_alreadyrun(api1, ejam1)
-  }
+  if (!is.data.frame(apisite) | NROW(apisite) != 1) {stop("apisite must be a data.frame of 1 row")}
+  if (!is.data.frame(ejamsite) | NROW(ejamsite) != 1) {stop("ejamsite must be a data.frame of 1 row")}
   
+  # compare 1 site for EJAM vs EJScreen results already run
   
   apisite <- ejscreenapi2ejam_format(
     apisite, 
@@ -74,33 +102,49 @@ ejscreenapi_vs_ejam1_alreadyrun <- function(apisite, ejamsite, nadrop = FALSE) {
   )
   sitenum <- 1 # input should  be a one row data.table or data.frame
   
-  # view   # just drops report,map,echo but not ST, statename, (and REGION if there)
-  z <- data.frame(
-    EJSCREENAPI = t(apisite[sitenum, -1:-3 ]),
-    EJAM = t(ejamsite[sitenum, -1:-3])
-  )
-  cat("\n")
-  if (nadrop) {
-    print(z[!is.na(z$EJSCREENAPI), ])
-  } else {
-    print(z)
-  }
-  print(z[c('blockcount_near_site', 'pop'), ])
-  
-  # return
+  # return only numeric columns, to simplify comparisons and formatting
   setDF(apisite)
   setDF(ejamsite)
   apisite   <- apisite[ , !(names(apisite) %in% c('ST', 'statename', "REGION", "EJScreen Report", "EJScreen Map", "ECHO report"))]
   ejamsite <- ejamsite[ , !(names(ejamsite) %in% c('ST', 'statename', "REGION", "EJScreen Report", "EJScreen Map", "ECHO report"))]
-  z <- data.frame(t(rbind(
-    EJSCREENAPI = as.vector(apisite[sitenum, ]),
-    EJAM = as.vector(ejamsite[sitenum, ])
-  )))
+  
+  EJSCREEN_shown <- table_round(apisite) 
+  EJAM_shown     <- table_round(ejamsite)
+  
+  apisite <- apisite[sitenum, ]
+  ejamsite <- ejamsite[sitenum, ]
+
+  z <- data.frame(
+    EJSCREEN = as.numeric(unlist(apisite)),
+    EJAM = as.numeric(unlist(ejamsite)),
+    EJSCREEN_shown = as.character(EJSCREEN_shown),
+    EJAM_shown = as.character(EJAM_shown),
+    rname = names(ejamsite),
+    longname = fixcolnames(names(ejamsite), 'r', 'long')
+  )
+  z$same_shown <- z$EJAM_shown == z$EJSCREEN_shown
+  z$ratio <- round(as.numeric(z$EJAM) / as.numeric(z$EJSCREEN), 2)  # prettyNum(z$ratio, digits = 2, format = 'f')
+  z <- z[ , c('longname', 'rname', 'EJSCREEN_shown', 'EJAM_shown', 'same_shown', 'EJSCREEN', 'EJAM', 'ratio')]
+  
   if (nadrop) {
-    z[!is.na(z$EJSCREENAPI), ]
-  } else {
-    z
+    z <- z[!is.na(z$EJSCREEN), ]
   }
+   
+  if (interactive()) {
+    keyreportnames <- c('pop', names_these, names_pctile, names_state_pctile)
+    shortname <- substr(z$longname[z$rname %in% keyreportnames], 1, 40)
+    forprint <- data.frame(shortname = shortname, z[z$rname %in% keyreportnames, -1])
+    forprint$EJSCREEN <- prettyNum(forprint$EJSCREEN, big.mark = ',')
+    forprint$EJAM <- prettyNum(forprint$EJAM, big.mark = ',')
+    cat('\n')
+    print(forprint)
+    cat('\n')
+    print(z[z$rname %in% c('blockcount_near_site', 'pop'), c('longname', 'rname', 'EJSCREEN', 'EJAM')])
+    invisible(z)
+  } else {
+    return(z)
+  }
+  
 }
 ############################################################ #
 
@@ -144,9 +188,9 @@ ejscreenapi_vs_ejam1_alreadyrun <- function(apisite, ejamsite, nadrop = FALSE) {
 #'  ejamvars <- names(y2)
 #'  all.equal(names(z), ejamvars)
 #'  sitenum <- 1
-#'  z <- data.frame(EJAM = t(y2[sitenum, -1:-3]), EJSCREENAPI = t(z[sitenum, -1:-3 ]))
+#'  z <- data.frame(EJAM = t(y2[sitenum, -1:-3]), EJSCREEN = t(z[sitenum, -1:-3 ]))
 #'  z
-#'  z[!is.na(z$EJSCREENAPI), ]
+#'  z[!is.na(z$EJSCREEN), ]
 #'   }
 #'   
 ejscreenapi2ejam_format <- function(ejscreenapi_plus_out, fillmissingcolumns = FALSE, ejamcolnames=NULL) {

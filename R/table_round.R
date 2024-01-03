@@ -36,7 +36,11 @@ table_round <- function(x, var = names(x), varnametype="rname", ...) {
   dig <- table_rounding_info(var = var, varnametype = varnametype)
   roundable <- var_is_numeric_ish(x, ...) 
   roundable[is.na(dig)] <- FALSE # if NA was returned as the number of digits to round to, dont try to round that one
-    
+  if (!any(roundable)) {
+    warning('none of the columns of x = ', deparse1(substitute(x)),' appear to be roundable, so it is being returned unchanged')
+    return(x)
+  }
+  
   if (is.vector(x)) {
     #  names were provided using var parameter
     x[roundable] <- round(
