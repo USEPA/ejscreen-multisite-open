@@ -18,12 +18,12 @@ resaving_getblocksnearby_helpdocs <- FALSE
 recreating_doaggregate_output <- TRUE # eg if other indicators added to outputs
  if (recreating_doaggregate_output) {recreating_getblocksnearby <- TRUE} # needed
 resaving_doaggregate_rda      <- TRUE
-resaving_doaggregate_helpdocs <- TRUE
+resaving_doaggregate_helpdocs <- FALSE
 resaving_doaggregate_excel    <- TRUE
 
 recreating_ejamit_output      <- TRUE # eg if format or list of indicators changes
 resaving_ejamit_rda           <- TRUE
-resaving_ejamit_helpdocs      <- TRUE
+resaving_ejamit_helpdocs      <- FALSE
 resaving_ejamit_excel         <- TRUE
 
 redoing_testpoints_10_files   <- FALSE
