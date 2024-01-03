@@ -109,10 +109,19 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   # ERROR CHECK/ VALIDATE INPUTS ####
   
   if (include_ejindexes & !exists("bgej")) {
-    # warning("include_ejindexes set to TRUE but the (very large) bgej file not found, so EJ Indexes will not be returned")
-    # include_ejindexes <- FALSE
     dataload_from_pins('bgej') # load it on demand when needed
+    # if failed to find it, give up
+    if (!exists("bgej")) {
+      warning("include_ejindexes was set to TRUE but the (very large) bgej file was not found, so EJ Indexes will not be returned")
+      include_ejindexes <- FALSE
+    } else {
+      message('loaded bgej data because include_ejindexes = TRUE')
+    }
   }
+  if (include_ejindexes) {
+    ejnames_raw <- c(names_ej, names_ej_supp, names_ej_state, names_ej_supp_state)
+  }
+  
   # But note that names_d_subgroups and related lists should already be defined in built package
   # as either the nh versions or alone versions by the datacreate_names_of_indicators.R script
   # and or in map_headernames metadata 
@@ -131,11 +140,6 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   
   # timed <- system.time({
   
-  if (testing) {  
-    #sites2blocks <- EJAM :: testoutput_getblocksnearby_10pts_1miles 
-    
-    
-  }
   # check if optional input params, when provided, are all valid *** 
 
   
@@ -266,9 +270,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
         'lifexyears'
     ))
     if (include_ejindexes) {
-      popmeancols <- c(popmeancols, names_ej, names_ej_state, names_ej_supp, names_ej_supp_state)
-      ### but,
-      # ** verify that we want and are using the popwtd mean of PERCENTILES in the case of the EJ Index, unlike Envt or Demog!!
+      popmeancols <- c(popmeancols, ejnames_raw)
     }
   }
   
@@ -562,7 +564,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   #    and then report on proximity scores for prox to these sites just like other proximity scores we report here? eg., avg person within 3 miles of any of these sites has proximity score of x.
   # But really site counts and distance of closest are the best overall summary numbers.
   ################################### # 
-  
+
   
   #____________________________________________________ #  ######################################################
   
@@ -581,7 +583,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   if (include_ejindexes) { # was already set to FALSE if bgej not available
     setDT(bgej)
     blockgroupstats <- merge(blockgroupstats,  bgej[!is.na(bgid), c(
-      "bgid", names_ej, names_ej_supp, names_ej_state, names_ej_supp_state
+      "bgid", ejnames_raw
     ), with = FALSE], by = "bgid")
     rm(bgej)
   }
@@ -597,14 +599,12 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
                                                 blockgroupstats[ , c('bgid', 'ST', ..countcols_inbgstats, ..popmeancols_inbgstats, ..calculatedcols_inbgstats)], 
                                                 all.x = TRUE, all.y = FALSE, by = 'bgid')
   
-  
   # just be aware that this is not saving just unique blockgroups, but saves each bgid-siteid pairing???
   
   sites2bgs_plusblockgroupdata_overall <- merge(sites2bgs_overall, 
                                                 blockgroupstats[ , c('bgid',       ..countcols_inbgstats, ..popmeancols_inbgstats, ..calculatedcols_inbgstats)], 
                                                 all.x = TRUE, all.y = FALSE, by = 'bgid')
   # rm(sites2bgs_overall, sites2bgs_bysite); rm(blockgroupstats)
-  
   
   ##################################################### #  ##################################################### #
   
@@ -625,7 +625,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   
   ##################################################### #
   
-  # TOTAL COUNT for each count indicator at EACH SITE and OVERALL ####  
+  # * SUM OF COUNTS for each count indicator at EACH SITE and OVERALL ####  
   
   ##################################################### #
   
@@ -656,10 +656,10 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   
   
   ##################################################### #
-  # POP WTD MEAN for some indicators ####   
-  # ( ENVT, EJ index. . .. AND MAYBE ALL THE DEMOG TOO???)
+  # * POP WTD MEAN for some indicators ####   
+  # ( ENVT, and if include_ejindexes=TRUE, the EJ indexes too )
   ##################################################### #
-  #  >>>> A bit SLOW - TO OPTIMIZE **WEIGHTED.MEAN   ####
+  #  >    >>> A bit SLOW - TO OPTIMIZE **WEIGHTED.MEAN   ####
   ## mean by SITE ###
   results_bysite_popmeans <- sites2bgs_plusblockgroupdata_bysite[   ,  lapply(.SD, FUN = function(x) {
     collapse::fmean(x, w = bgwt * pop)   # stats::weighted.mean(x, w = bgwt * pop, na.rm = TRUE)    # 100 msec
@@ -676,7 +676,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   results_overall <- cbind(results_overall, results_overall_popmeans) # many columns (the popwtd mean cols)
   
   ##################################################### #
-  # *MIN or MAX distance or sitecount ####
+  # * MIN or MAX distance or sitecount ####
   ##################################################### #
   
   # this is actually not used currently:
@@ -756,14 +756,13 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   #***  ###################################### ##  ###################################### #
   
   ##################################################### #
-  ## ...update progress bar in shiny app ####
+  ## ........update progress bar in shiny app ####
   if (is.function(updateProgress)) {
     boldtext <- paste0('Computing results')
     updateProgress(message_main = boldtext, value = 0.8)
   }
   ##################################################### #
   
-  #____________________________________________________ #  ######################################################
   ##################################################### #
   # CALCULATE PERCENT DEMOGRAPHICS FROM SUMS OF COUNTS, via FORMULAS  [hardcoded here, for now]
   #
@@ -782,15 +781,15 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   #  and the dataset of all US blockgroups (from EJScreen FTP site or in blockgroupstats) stores that as 0 to 1.00
   
   ##################################################### #
-  # CALC via FORMULAS 
-  #  using the Rolled up Counts #### 
+  # * CALCULATE DEMOGRAPHICS using FORMULAS ####
+  #  (using the Rolled up Counts) 
   # this was meant to handle multiple columns (formula for each new one) for many rows (and here in buffer results, one site is a row, not one blockgroup) 
   
   # "nonmins <- nhwa"
   # "mins <- pop - nhwa" 
   
   #################################################### #
-  #  Demog formulas OVERALL #### 
+  ##  Demog formulas OVERALL #### 
   #################################################### #
   
   results_overall[ , `:=`(
@@ -834,6 +833,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
     pctlowinc       = 1 * ifelse(povknownratio  == 0, 0, lowinc                 / povknownratio),
     pctlths         = 1 * ifelse(age25up        == 0, 0, as.numeric(lths)       / age25up), 
     pctlingiso      = 1 * ifelse(hhlds          == 0, 0, lingiso                / hhlds), 
+    # note pre1960 is actually an envt indicator, not demog - does ejscreen use popwtd mean for it or the ratio of sums of counts formula?? ***
     pctpre1960      = 1 * ifelse(builtunits     == 0, 0, pre1960                / builtunits),
     pctunemployed   = 1 * ifelse(unemployedbase == 0, 0, as.numeric(unemployed) / unemployedbase)  
   ) ]
@@ -881,7 +881,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   }
   
   #################################################### #
-  # Demog formulas BYSITE  ####
+  ## Demog formulas BYSITE  ####
   #################################################### #
   
   
@@ -944,7 +944,6 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   
   results_bysite[ , `:=`(
     Demog.Index = (pctlowinc + pctmin) / 2,
-    # *** add this supplemental indicator too, when possible. need lowlifeexpectancy etc. and Demog.Index.Supp needs to be in names_d  and lookup tables for usastats and statestats ####
     Demog.Index.Supp = (pctlowinc + pctunemployed + pctlths + pctlingiso + lowlifex ) / ifelse(is.na(lowlifex), 4, 5)
   )]
   
@@ -1028,15 +1027,6 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   # ), .SDcols = maxneededcols, by = .(siteid) ]
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
   #____________________________________________________  #  ##################################################### #  ######################################################
   
   # PERCENTILES ####
@@ -1091,11 +1081,11 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   results_bysite[, statename :=  stateinfo$statename[match(ST, stateinfo$ST)]]
   results_overall$statename <- NA
   
-  #  ##################################################### #  ######################################################
+  #  ##################################################### #  ##################################################### #
   
   if (missing(radius)) {radius.miles <- round(max(sites2blocks$distance, na.rm = TRUE), 1)}
   
-  # Infer lat,lon of each siteid if lat,lon not already provided in sites2states_or_latlon ? ####
+  ### Infer lat,lon of each siteid if lat,lon not already provided in sites2states_or_latlon ? ####
   # use block lat,lon values to approximate the lat,lon of each site, if we were not given that 
   if (infer_sitepoints & !all(c("lat","lon") %in% names(results_bysite))) {
     sitepoints <- sites2blocks[ , list(lat = mean(lat), lon = mean(lon)), by = "siteid"]
@@ -1103,18 +1093,12 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
     # sites2states # ??? see 1339 later where lat and lon added to results. 
   }
   
-  # could use lat,lon to create URLs links to report on each site   ####
-  #  but that gets done in app_server or in ejamit()  
-  #  "EJScreen Report" "EJScreen Map"   "ECHO report" ###
-  
-  
   ##################################################### #
   ## PERCENTILES - express raw scores (from results_bysite AND  results_overall) in percentile terms #### 
   #  VIA  lookup tables of US/State  percentiles, called usastats   and statestats
   #  note: usastats is  like ejscreen package file lookupUSA , and pctile_from_raw_lookup is like ejanalysis package file lookup.pctile()
   #
   #  *** this should be extracted as a function (but keeping the efficiency of data.table changes by reference using := or set___)
-  #      so that it can be used again later to assign percentiles to EJ indexes once they are calculated from other scores and percentiles.
   #
   ##################################################### #
   # these lines about names of variables should be pulled out of here and defined as params or another way   xxx
@@ -1162,68 +1146,55 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   
   results_overall <- cbind(siteid = NA, results_overall, us.pctile.cols_overall ) # , state.pctile.cols_overall)
   results_bysite  <- cbind(           results_bysite,  us.pctile.cols_bysite,  state.pctile.cols_bysite )
-  #  ##################################################### #  ######################################################
+  #  ##################################################### #  ##################################################### #
   
   
-  #____________________________________________________  #  ##################################################### #  ######################################################
+  ##____________________________________________________  #  ##################################################### #  
   
   ############################################################################## #   
   
-  # >>>> EJ INDEXES if needed ####
-  
+  ## EJ INDEX PERCENTILES ####
+   
   ###################### # #  
-  if (include_ejindexes & "this code is working" == "TRUE") {
+  if (include_ejindexes) {
     warning("EJ Indexes NOT TESTED HERE YET.")
     ####
     
     # The 2023 new EJ index formula: 
-    # 0) The buffer raw EJ Index is probably just the pop wtd mean of the RAW scores of blockgroups in it, (and reported finally as pctile via lookup)
-    #  NOT recalculated via formulas !? It would not make sense to calculate from formula. (right? Confirm this. *** )
+    # 0) The buffer raw EJ Index is probably just the pop wtd mean of the RAW scores of blockgroups in it, (but reported finally as pctile via lookup)
+    #  NOT recalculated via formulas ... It would not make sense to calculate from formula. 
+    #  Note the POP WTD MEAN for EJ INDEXES WAS ALREADY CALCULATED earlier in doaggregate(), along with all OTHER POP WTD MEAN INDICATORS
     # 1) IMPORTANT QUESTION FOR OEJ: DOES THE STATE PERCENTILES VERSION OF EJ INDEX USE STATE PERCENTILE IN ITS FORMULA??  YES, seems so, so kept State version of each raw EJ score, to use for calculating State EJ scores in buffers.
-    # 2)    also we needed to name these columns carefully - EJ index is always shown as a percentile and variable name that was used for that percentile might have been without the pctile. prefix?
+    # 2)    also we needed to name these columns carefully, and calculate each pctile based on correct raw scores:
+    #   Note that  EJ index pctiles have special naming scheme and need to be handled with separate code.
+    #   for most indicators, each raw indicator gets reported as a US pctile and a State pctile.
+    #   for EJ indexes, though, there are US versions and State versions of the raw scores! so 
+    #     each US raw EJ gets reported only as US pctile, and
+    #     each state raw gets reported only as state pctile.    
     # 3) For the state percentile,   WE ASSUME THE ENTIRE BUFFER IS MAINLY OR ALL IN ONE STATE (based on point in center of circle) AND 
-    #   LOOK UP  RAW EJ INDEX IN THAT STATE'S LOOKUP TO ASSIGN THE PERCENTILE. 
-    # 4) NEED TO ADD CODE FOR SUPPLEMENTAL VERSIONS VERSUS EO VERSIONS OF EJ INDEX, IN US AND STATE.
-    
+    #   LOOK UP  RAW EJ INDEX IN statestats based on THAT STATE'S identity TO ASSIGN THE PERCENTILE. 
+    # We have 4 sets of EJ indexes: US EO, US SUPP, STATE EO, STATE SUPP
+    ## EO (executive order) is raw EJ Index basic = 2-factor demog index times the envt percentile
+    #  Supp. is raw EJ index supplemental = 5-factor suppl demog index times the envt percentile
+    # results_bysite already has the raw EJ indexes in it.
+    # results_overall does too.    
+    # Already defined this list of names earlier: 
+    #  ejnames_raw <-   c(names_ej, names_ej_supp, names_ej_state, names_ej_supp_state)
     ######################################################################################### # 
-    #  US EO, US SUPP, STATE EO, STATE SUPP
-    ## raw EJ Index basic = 2-factor demog index times the envt percentile ####
-    # raw EJ index supplemental = 5-factor suppl demog index times the envt percentile  ####
     
-    # Note that  EJ index pctiles have special naming scheme and are handled with separate code.
-    # for most indicators, each raw indicator gets reported as a US pctile and a State pctile.
-    # for EJ indexes, though, there are US versions and State versions of the raw scores! so 
-    # each US raw EJ gets reported only as US pctile, and
-    # each state raw gets reported only as state pctile.
-    
-    ejnames_raw =   c(names_ej, names_ej_supp, names_ej_state, names_ej_supp_state)
-    
-    varnames.us.pctile    <- c(names_ej_pctile,       names_ej_supp_pctile)
-    varnames.state.pctile <- c(names_ej_state_pctile, names_ej_supp_state_pctile)
-    ejnames_pctile <- c(varnames.us.pctile, varnames.state.pctile)
-    
-    ej_bysite <- results_bysite[ , lapply(.SD, FUN = function(x) {
-      x * pop / sum(pop)
-    }), .SDcols = ejnames_raw] 
-    
-    setnames(ej_bysite, ejnames_raw) #  column names of ej raw not percentiles  
-    
-    # do not include raw EJ scores in outputs - just use them to report as percentiles
-    # results_overall <- cbind(results_overall, ej_overall, ej_supp_overall)
-    # results_bysite  <- cbind(results_bysite,  ej_bysite,  ej_supp_bysite )
-    
-    ######################################################################################### # 
-    # percentile of EJ index ####
-    
+    varnames.us.pctile_EJ    <- c(names_ej_pctile,       names_ej_supp_pctile)
+    varnames.state.pctile_EJ <- c(names_ej_state_pctile, names_ej_supp_state_pctile)
+    ejnames_pctile <- c(varnames.us.pctile_EJ, varnames.state.pctile_EJ)
+
     # >>> interim and untested - MOSTLY A COPY/PASTE OF CODE ABOVE ####
     # This for now just is a copy of code used above to get percentiles, except it uses standalone table of raw scores not raw scores already placed into the results tables,
     # since we do not really need to keep or return the raw scores of EJ indexes, unlike all other indicators where we want the raw scores.
     # Ideally should have a function to use to do this, but for other variables server code did this, not a function. 
     
-    # set up empty tables to store the percentiles we find
-    us.pctile.cols_bysite     <- data.frame(matrix(nrow = NROW(results_bysite),  ncol = length(varnames.us.pctile)));    colnames(us.pctile.cols_bysite)     <- varnames.us.pctile
-    state.pctile.cols_bysite  <- data.frame(matrix(nrow = NROW(results_bysite),  ncol = length(varnames.state.pctile))); colnames(state.pctile.cols_bysite)  <- varnames.state.pctile
-    us.pctile.cols_overall    <- data.frame(matrix(nrow = NROW(results_overall), ncol = length(varnames.us.pctile)));    colnames(us.pctile.cols_overall)    <- varnames.us.pctile
+    # set up empty tables to store the percentiles we find, NA values by default to start off.
+    us.pctile.cols_bysite     <- data.frame(matrix(nrow = NROW(results_bysite),  ncol = length(varnames.us.pctile_EJ)));    colnames(us.pctile.cols_bysite)     <- varnames.us.pctile_EJ
+    state.pctile.cols_bysite  <- data.frame(matrix(nrow = NROW(results_bysite),  ncol = length(varnames.state.pctile_EJ))); colnames(state.pctile.cols_bysite)  <- varnames.state.pctile_EJ
+    us.pctile.cols_overall    <- data.frame(matrix(nrow = NROW(results_overall), ncol = length(varnames.us.pctile_EJ)));    colnames(us.pctile.cols_overall)    <- varnames.us.pctile_EJ
     # done later: state.pctile.cols_overall 
     
     # SURELY THERE IS A FASTER / VECTORIZED WAY TO DO THIS 
@@ -1233,26 +1204,26 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
         # look in the lookup table to find the percentile that corresponds to each raw score value:
         
         us.pctile.cols_bysite[    , ejnames_pctile[i]]    <- pctile_from_raw_lookup(
-          unlist( ej_bysite[  , ..myvar]), 
+          unlist( results_bysite[  , ..myvar]), 
           varname.in.lookup.table = myvar, lookup = usastats) 
         
         us.pctile.cols_overall[   , ejnames_pctile[i]]    <- pctile_from_raw_lookup(
-          unlist(cbind(ej_overall, ej_supp_overall)[  , ..myvar]), 
+          unlist(results_overall[  , ..myvar]), 
           varname.in.lookup.table = myvar, lookup = usastats) 
         # (note it is a bit hard to explain using an average of state percentiles   in the "overall" summary)
       } else { # cannot find that variable in the percentiles lookup table
-        us.pctile.cols_bysite[    , ejnames_pctile[i]] <- NA
-        us.pctile.cols_overall[   , ejnames_pctile[i]] <- NA
+        # us.pctile.cols_bysite[    , ejnames_pctile[i]] <- NA
+        # us.pctile.cols_overall[   , ejnames_pctile[i]] <- NA
       }
       if (myvar %in% names(statestats)) { # e.g., "state.EJ.DISPARITY.proximity.rmp.supp"
         state.pctile.cols_bysite[ , ejnames_pctile[i]] <- pctile_from_raw_lookup(    ### VERY SLOW STEP 289 msec
-          # unlist(results_bysite[  , ..myvar]), 
-          unlist(cbind(ej_bysite, ej_supp_bysite)[  , ..myvar]), 
+          unlist(results_bysite[  , ..myvar]),
+          # unlist(cbind(ej_bysite, ej_supp_bysite)[  , ..myvar]), 
           varname.in.lookup.table = myvar, lookup = statestats, zone =  results_bysite$ST) # should be same count of rows in results_bysite$ST and ej_bysite !
         ##  must be done later, as avg of sites:
         # state.pctile.cols_overall[, ejnames_pctile[i]] <- pctile_from_raw_lookup(unlist(results_overall[ , ..myvar]), varname.in.lookup.table = myvar, lookup = statestats, zone =  results_overall$ST)
       } else {
-        state.pctile.cols_bysite[ , ejnames_pctile[i]] <- NA
+        # state.pctile.cols_bysite[ , ejnames_pctile[i]] <- NA # why do this? already NA until filled.
         ##  must be done later, as avg of sites:
         # state.pctile.cols_overall[, ejnames_pctile[i]] <- NA
       }
@@ -1260,20 +1231,20 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
     
     # add EJ index percentiles to results compilation (except for overall state percentile which is created as a weighted average of percentiles further below)
     # Do not provide the raw EJ scores, just the percentiles?
-    results_overall <- cbind(siteid = NA, results_overall, us.pctile.cols_overall ) # , state.pctile.cols_overall)
-    results_bysite  <- cbind(             results_bysite,  us.pctile.cols_bysite,  state.pctile.cols_bysite )
+    results_overall <- cbind(results_overall, us.pctile.cols_overall ) # , state.pctile.cols_overall)
+    results_bysite  <- cbind(results_bysite,  us.pctile.cols_bysite,  state.pctile.cols_bysite )
     
     #*# Then for overall results as EJ index State percentile, I guess we use the popwtd mean of the site-specific EJ index State PERCENTILES?
     #*#   (You cannot look up the average (overall) raw score since the US percentiles table is not applicable really.)
     # add certain variable names to the list of variables for which overall average state percentile will be calculated
-    varnames.state.pctile <- c(varnames.state.pctile, names_ej_state_pctile, names_ej_supp_state_pctile)
+    varnames.state.pctile <- c(varnames.state.pctile, varnames.state.pctile_EJ)
+    
     
   } # done with case where EJ Indexes are needed
-  #____________________________________________________  #  ##################################################### #  ######################################################
   
   ############################################################################## #   
   #
-  # *** OVERALL (AVG) STATE PERCENTILE ####
+  # *** OVERALL AVG of STATE PERCENTILES ####
   #  (as popwtd mean of sites state pctiles - which seems bizarre but not sure how else you would do it)
   # The overall state percentile is either simply the pop wtd mean of state percentiles of each site’s average person’s suppl demog index across all the sites,
   # or, other idea:
@@ -1290,6 +1261,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   
   # redo these in data.table:: style, for speed? but it is just a 1-row result  *********************************
   results_overall <- cbind(results_overall, state.pctile.cols_overall)
+  #____________________________________________________  #  ##################################################### #  ######################################################
   
   ############################################################################## #   
   #
@@ -1429,7 +1401,14 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   
   #***  ###################################### #
   
-  # Put results columns in a more useful/ convenient order ####
+  # COLUMNS REORDERED  ####
+  # Put results columns in a more useful/ convenient order
+  ###  THEY COULD BE SORTED TO MATCH EJSCREEN COMMUNITY REPORT ORDER HERE OR ELSEWHERE
+  ## TO DO SO HERE, COULD BE SORTED ONLY WITHIN EACH GROUP, 
+  ## *** e.g., names_e[table_order_variables(names_e)]
+  ## or overall as well, e.g.:
+   #    useful_column_order[table_order_variables(useful_column_order)]
+  
   {
     useful_column_order <- c(
       'id', 'siteid',
@@ -1452,7 +1431,9 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
       ### D RAW % ##
       # "Demog.Index.Supp", # supplemental demographic indicator now is in names_d
       names_d,   # Demog.Index, percent low income, etc.
-      subs, # names_d_subgroups,   # percent hispanic etc.
+      
+      subs, # e.g., subs <- names_d_subgroups_nh  # or subs <-  names_d_subgroups,  like percent hispanic etc.
+      
       # low life expectancy score 
       # "lowlifex",   # now is in names_d 
       ###  D US RATIOS?  # (above)
@@ -1501,11 +1482,12 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
       ## EJ INDEXES are here only if include_ejindexes=TRUE -----------------
       
       ### EJ PCTILE US ###
-      names_ej_pctile, 
+      names_ej_pctile, names_ej_supp_pctile, #  ejnames_pctile,
       ### EJ PCTILE STATE ###
-      names_ej_state_pctile,  #  
-      ### EJ RAW -NOT NEEDED?  ###
-      names_ej, # raw scores not essential in output 
+      names_ej_state_pctile, names_ej_supp_state_pctile, #  
+      ### EJ RAW - NOT NEEDED?  ###
+      # names_ej, # raw scores not essential in output - keep here during testing/ debugging at least?
+      # Probably should not retain the raw EJ scores in outputs? - just need to report them as percentiles ***
       
       ### D RAW COUNTS? -NOT NEEDED?  ###
       names_d_count,
@@ -1521,8 +1503,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
       ## OTHER DEMOG PERCENT IN NEW REPORT xxx----
       c("PCT_HH_BPOV", "PCT_HLI_SPANISH_LI", "PCT_HLI_IE_LI", "PCT_HLI_API_LI", "PCT_HLI_OTHER_LI",
       "P_OWN_OCCUPIED",  "P_DISABILITY","pctunder18", "pctover17",  "pctmale",   "pctfemale" 
-       ), 
-      
+       ),
       
       ## BG AND BLOCK COUNTS ----
       #  # it will use whichever version of name is found
@@ -1538,6 +1519,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   #  1 and 2  are used because/in case there are differences in how overall and by site refer to a stat like "bgcount_near_site" vs "bgcount_overall"
   
   useful_column_order1 <- c(useful_column_order[useful_column_order %in% names(results_overall)], setdiff(names(results_overall), useful_column_order))
+  # results_overall
   data.table::setcolorder(results_overall, neworder = useful_column_order1)
   
   # useful_column_order2 <- c(useful_column_order[useful_column_order %in% names(results_bysite)], setdiff(names(results_bysite), useful_column_order))
@@ -1642,7 +1624,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
     
     if (!called_by_ejamit) {
       
-      ## Show simple overall stats list in console ####
+      ## show simple overall stats list in console ####
       
       x <- as.list(results$results_overall)
       x <- data.frame(variable = names(x), overall = unlist(x))
@@ -1652,7 +1634,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
       x$overall <- round(x$overall, 3) # only for dispaly in RStudio console
       print(x) # print to console, 125 rows
       # cat("See viewer for datatable view site by site\n")
-      # Show datatable view of each site by site in RStudio ####
+      ## show datatable view of each site by site in RStudio ####
       
       # bysite <- results$results_bysite
       # print(DT::datatable(bysite, options = list(paging=FALSE), colnames=results$longnames , escape=FALSE))
