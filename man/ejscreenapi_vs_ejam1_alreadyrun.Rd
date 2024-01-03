@@ -4,13 +4,22 @@
 \alias{ejscreenapi_vs_ejam1_alreadyrun}
 \title{compare EJScreen API vs EJAM stats near one site (if results already run)}
 \usage{
-ejscreenapi_vs_ejam1_alreadyrun(apisite, ejamsite, nadrop = FALSE)
+ejscreenapi_vs_ejam1_alreadyrun(
+  apisite,
+  ejamsite,
+  x100fix = TRUE,
+  nadrop = FALSE
+)
 }
 \arguments{
 \item{apisite}{1-row table output of ejscreenit()$table,
 or ejscreenapi_plus()}
 
 \item{ejamsite}{1-row table output of ejamit()$results_bysite}
+
+\item{x100fix}{whether to multiply x100 the names_d and names_d_subgroups
+indicator scores to convert fractions 0 to 1 into percentages of 0 to 100,
+prior to rounding and reporting EJAM results here.}
 
 \item{nadrop}{whether to drop indicators for which EJScreen API returns NA}
 }
@@ -26,7 +35,7 @@ compare EJScreen API vs EJAM stats near one site (if results already run)
  
  # requires data.table
    pts <- testpoints_100[1:5, ]
-   #api1 <- ejscreenit(pts, radius = 3)
+   api1 <- ejscreenit(pts, radius = 3)
    api1 <- api1$table[5, ]
    ejam1 <- ejamit(pts, radius = 3, include_ejindexes = TRUE)
    ejam1 <- ejam1$results_bysite[5, ]

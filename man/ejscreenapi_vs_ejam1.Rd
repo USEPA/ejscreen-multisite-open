@@ -4,7 +4,7 @@
 \alias{ejscreenapi_vs_ejam1}
 \title{compare EJScreen API vs EJAM stats near one site}
 \usage{
-ejscreenapi_vs_ejam1(latlon, radius = 3, nadrop = FALSE, ...)
+ejscreenapi_vs_ejam1(latlon, radius = 3, nadrop = FALSE, x100fix = TRUE, ...)
 }
 \arguments{
 \item{latlon}{1-row data.table or data.frame with colnames lat and lon}
@@ -12,6 +12,10 @@ ejscreenapi_vs_ejam1(latlon, radius = 3, nadrop = FALSE, ...)
 \item{radius}{in miles, used in ejamit() and ejscreenapi_plus()}
 
 \item{nadrop}{whether to drop indicators for which EJScreen API returns NA}
+
+\item{x100fix}{whether to multiply x100 the names_d and names_d_subgroups
+indicator scores to convert fractions 0 to 1 into percentages of 0 to 100,
+prior to rounding and reporting EJAM results here.}
 
 \item{...}{passed to ejamit() as any additional parameters,
 like include_ejindexes = FALSE}

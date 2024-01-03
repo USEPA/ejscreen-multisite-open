@@ -9,6 +9,10 @@
 #' @param latlon 1-row data.table or data.frame with colnames lat and lon
 #' @param radius in miles, used in ejamit() and ejscreenapi_plus()
 #' @param nadrop whether to drop indicators for which EJScreen API returns NA
+#' @param x100fix whether to multiply x100 the names_d and names_d_subgroups 
+#'   indicator scores to convert fractions 0 to 1 into percentages of 0 to 100,
+#'   prior to rounding and reporting EJAM results here. 
+#' 
 #' @param ... passed to ejamit() as any additional parameters,
 #'    like include_ejindexes = FALSE
 #'
@@ -39,14 +43,14 @@
 #'   }
 #' @seealso [ejscreenapi_vs_ejam1_alreadyrun()]
 #' 
-ejscreenapi_vs_ejam1 <- function(latlon, radius = 3, nadrop = FALSE, ...) {
+ejscreenapi_vs_ejam1 <- function(latlon, radius = 3, nadrop = FALSE, x100fix = TRUE, ...) {
   
   # compare 1 site for EJAM vs EJScreen results not yet run
   
   api1 <- ejscreenapi_plus(latlon, radius = radius)
   # or api1 <- ejscreenit(latlon, radius = radius)$table
   ejam1 <- ejamit(latlon, radius = radius, ...)$results_bysite
-  ejscreenapi_vs_ejam1_alreadyrun(api1, ejam1, nadrop = nadrop)
+  ejscreenapi_vs_ejam1_alreadyrun(api1, ejam1, nadrop = nadrop, x100fix = x100fix)
 }
 ############################################################ #
 
@@ -57,7 +61,10 @@ ejscreenapi_vs_ejam1 <- function(latlon, radius = 3, nadrop = FALSE, ...) {
 #'   or ejscreenapi_plus()
 #' @param ejamsite 1-row table output of ejamit()$results_bysite
 #' @param nadrop whether to drop indicators for which EJScreen API returns NA
-#'
+#' @param x100fix whether to multiply x100 the names_d and names_d_subgroups 
+#'   indicator scores to convert fractions 0 to 1 into percentages of 0 to 100,
+#'   prior to rounding and reporting EJAM results here. 
+#'   
 #' @return a data.frame with columns EJSCREEN and EJAM, 
 #'   rownames are indicators like pop, blockcount_near_site, etc.
 #' @export
@@ -88,7 +95,7 @@ ejscreenapi_vs_ejam1 <- function(latlon, radius = 3, nadrop = FALSE, ...) {
 #'  }
 #' @seealso [ejscreenapi_vs_ejam1()]
 #' 
-ejscreenapi_vs_ejam1_alreadyrun <- function(apisite, ejamsite, nadrop = FALSE) {
+ejscreenapi_vs_ejam1_alreadyrun <- function(apisite, ejamsite, x100fix = TRUE, nadrop = FALSE) {
   
   if (!is.data.frame(apisite) | NROW(apisite) != 1) {stop("apisite must be a data.frame of 1 row")}
   if (!is.data.frame(ejamsite) | NROW(ejamsite) != 1) {stop("ejamsite must be a data.frame of 1 row")}
@@ -107,6 +114,11 @@ ejscreenapi_vs_ejam1_alreadyrun <- function(apisite, ejamsite, nadrop = FALSE) {
   setDF(ejamsite)
   apisite   <- apisite[ , !(names(apisite) %in% c('ST', 'statename', "REGION", "EJScreen Report", "EJScreen Map", "ECHO report"))]
   ejamsite <- ejamsite[ , !(names(ejamsite) %in% c('ST', 'statename', "REGION", "EJScreen Report", "EJScreen Map", "ECHO report"))]
+  
+  if (x100fix) {
+    x100varnames <- c(names_d, names_d_avg, names_d_state_avg, names_d_subgroups) #, names_d_subgroups_avg, names_d_subgroups_state_avg)
+    ejamsite[ , x100varnames] <- 100 * ejamsite[ , x100varnames]
+  }
   
   EJSCREEN_shown <- table_round(apisite) 
   EJAM_shown     <- table_round(ejamsite)
