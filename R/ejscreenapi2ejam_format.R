@@ -116,7 +116,10 @@ ejscreenapi_vs_ejam1_alreadyrun <- function(apisite, ejamsite, x100fix = TRUE, n
   ejamsite <- ejamsite[ , !(names(ejamsite) %in% c('ST', 'statename', "REGION", "EJScreen Report", "EJScreen Map", "ECHO report"))]
   
   if (x100fix) {
-    x100varnames <- c(names_d, names_d_avg, names_d_state_avg, names_d_subgroups) #, names_d_subgroups_avg, names_d_subgroups_state_avg)
+    x100varnames <- c(names_d, names_d_avg, names_d_state_avg, 
+                      names_d_subgroups, names_d_subgroups_avg, names_d_subgroups_state_avg,
+                      "pctdisability",  "p_own_occupied", 
+                      "pctunder18", "pctover17", "pctmale", "pctfemale")
     ejamsite[ , x100varnames] <- 100 * ejamsite[ , x100varnames]
   }
   
