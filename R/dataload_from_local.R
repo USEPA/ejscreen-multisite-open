@@ -38,7 +38,7 @@ dataload_from_local <- function(varnames = c(c('blockwts', 'blockpoints', 'block
     folder_local_source <- "~/../Downloads"
   } else {
     if (is.null(folder_local_source)) {
-      folder_local_source <- "./data/" # default for other development machines
+      folder_local_source <- app_sys('data') # default for other development machines
     }
   }
   
