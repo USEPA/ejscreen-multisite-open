@@ -1092,7 +1092,7 @@ app_server <- function(input, output, session) {
   ## Which points are valid?(and  how many; warn if 0) ####
   output$an_map_text <- renderUI({
 
-    req(data_uploaded())
+    #req(data_uploaded())
     if(current_upload_method() == 'SHP'){
       an_map_text_shp()
     }else if(current_upload_method() == 'FIPS' ){
