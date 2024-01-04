@@ -257,20 +257,18 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
 
   if (retain_unadjusted_distance) {
     sites2blocks[ , distance_unadjusted := distance] # wastes space but for development/ debugging probably useful
-    sites2blocks <-  blockwts[sites2blocks, .(ejam_uniq_id, blockid, distance, blockwt, bgid, distance_unadjusted), on = 'blockid'] 
-    #sites2blocks <-  blockwts[sites2blocks, .(ejam_uniq_id, blockid, distance, blockwt, bgid, block_radius_miles, distance_unadjusted), on = 'blockid'] 
+    sites2blocks <-  blockwts[sites2blocks, .(ejam_uniq_id, blockid, distance, blockwt, bgid, block_radius_miles, distance_unadjusted), on = 'blockid'] 
   } else {
-    sites2blocks <-  blockwts[sites2blocks, .(ejam_uniq_id, blockid, distance, blockwt, bgid), on = 'blockid'] 
-    #sites2blocks <-  blockwts[sites2blocks, .(ejam_uniq_id, blockid, distance, blockwt, bgid, block_radius_miles ), on = 'blockid'] 
+    sites2blocks <-  blockwts[sites2blocks, .(ejam_uniq_id, blockid, distance, blockwt, bgid, block_radius_miles), on = 'blockid'] 
   }
 
   # 2 ways considered here for how exactly to make the adjustment: 
-  #sites2blocks[distance < block_radius_miles, distance := 0.9 * block_radius_miles]  # assumes distance is in miles
+  sites2blocks[distance < block_radius_miles, distance := 0.9 * block_radius_miles]  # assumes distance is in miles
   # or a more continuous but slower (and nonEJScreen way?) adjustment for when dist is between 0.9 and 1.0 times block_radius_miles: 
   # sites2blocks_dt[ , distance  := pmax(block_radius_miles, distance, na.rm = TRUE)] # assumes distance is in miles
   
   # drop that info about area or size of block to save memory. do not need it later in sites2blocks
-  #sites2blocks[ , block_radius_miles := NULL]
+  sites2blocks[ , block_radius_miles := NULL]
   
   if (!quiet) {
     cat('Stats via getblocks_diagnostics(), AFTER ADJUSTING FOR SHORT DISTANCES: \n')
