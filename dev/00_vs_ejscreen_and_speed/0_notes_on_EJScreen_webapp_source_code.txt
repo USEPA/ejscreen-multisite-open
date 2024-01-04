@@ -1,0 +1,381 @@
+The EJScreen webapp source code is found in these files (and others):
+
+Note however that this is not the code doing the API's calculations (i.e., aggregating to calculate raw score of an EJ index or other indicator for a specified area)
+
+* mapper (at launch)
+First few files of code that get sourced by EJScreen app are these: 
+https://ejscreen.epa.gov/mapper/
+ which first sources setup files including .css files, then javascript like jquery, angular, bootstrap, 
+ then sources these EJScreen-specific files: 
+* config.js and 
+* layout_new.js
+
+* init.js (more setup)
+https://js.arcgis.com/4.19/ which is  https://js.arcgis.com/4.19/init.js  and has >2k lines of ESRI code.
+
+* config.js
+https://ejscreen.epa.gov/mapper/javascript/config.js  
+Defines many, many URLs for numerous services, such as  localRESTurl
+Defines dynamicJSON, ejlayoutJSON, and ejIdentifyJSON variables 
+that will store format of json report output and metadata about indicators??
+(Excerpts are below)
+
+* layout_new.js
+https://ejscreen.epa.gov/mapper/javascript/layout_new.js 
+ (and https://ejscreen.epa.gov/mapper/css/layout_new.css)
+seems to have code for 
+format of new community report, 
+map popups, turning on map layers, adding shapefiles, 
+printing, bookmarking sessions, etc. etc.
+It has 
+ * findloc(searchstr) 
+ * initMap() which does var webmap = new MapEsri({...}), 
+Default map view is set to this:  view.center = [-122.80569076534753, 45.46825733691899]; view.zoom = 12;
+ * createReportMenu, createDataOpts, addSearch, enableIdentify, etc.
+ * findloc, zoomtolatlon, addLocation, getGeocode, 
+ * executeIdentifyTask is another big function
+https://ejscreen.epa.gov/mapper/javascript/layout_new.js
+
+* EJinfoWindow.js
+https://ejscreen.epa.gov/mapper//mapdijit/EJinfoWindow.js  
+seems to be the code that constructs the POST queries that use the EJScreen API
+ to get reports for circular buffer or FIPS or BG, etc.
+It is an anonymous function that returns EJinfoWindow contents, and also does a lot of 
+UI like 
+ * _showCharts  is the function run if user clicks on "Explore Reports..." - shows popup with barplots of results. 
+ * _getEJscreen is the function run if user clicks on "EJScreen Community Report" - launches tab with pdf summary report
+ * _addBuffer2Map will draw the circular buffer on the map around 1 point
+ * getEJReport, postCreate, postBG, postReport: function(url),  and _setValue to specify radius, 
+ * getStateByFIPS, etc.
+
+* EJreport.js
+https://ejscreen.epa.gov/mapper//mapdijit/EJreport.js
+ * _genTabular uses ejdataobj contents to compile,round,format the results. calls "reversePtile" function
+   Its called from the ejindex.js functions "toggleIndex" and "changejchart"
+ * _natamidpoint converts AirToxics percentiles to rounded #s like 85,75,65,92.5, to display midpoint of bin in barchart.
+ * _genChart uses POST to ejchart.aspx to get a Chart (plot)
+ * _ejscreenHTML uses POST to ejscreen_report.aspx to get "chartform"
+
+* ejindex.js
+https://ejscreen.epa.gov/mapper/mapdijit/javascript/ejindex.js
+* reversePtile  reports percentiles as things like "<50th" if low, or "95-100th" if 92.5, etc.
+* reversePtile (gets called by showCharts and by _genTabular)
+
+* MapEJIndexMod.js
+https://ejscreen.epa.gov/mapper//mapdijit/MapEJIndexMod.js
+
+* EJSessions.js
+https://ejscreen.epa.gov/mapper//mapdijit/EJSessions.js
+seems to manage new layers, services, sessions
+
+
+------------------------------------------
+
+
+EXCERPTS FROM https://ejscreen.epa.gov/mapper/javascript/config.js  
+
+
+var localRESTurl = "https://ejscreen.epa.gov/arcgis/rest/services/";
+//var localRESTurl = "https://ejscreen.epa.gov/arcgis/rest/services/";
+var prodRESTurl = "https://geopub.epa.gov/arcgis/rest/services/";
+//main ej service for ej report section
+var ejscreenservice = localRESTurl + "ejscreen/ejscreen_v2023_with_as_cnmi_gu_vi/MapServer";
+//ej extra service for extra indicators in ej report section
+var ejscreenextraservice = localRESTurl + "ejscreen/ejscreen_extra/MapServer";
+//ej demog for demog section of ej report
+var ejscreendemogservice = localRESTurl + "ejscreen/ejquery/MapServer";
+var ejscreenservice_state =  ejscreenservice; //same now
+var ejscreenApiPageUrl =
+	localRESTurl + "ejscreen/ejscreen_v2023_with_as_cnmi_gu_vi/MapServer/exts/EJCensusReports/GetEJScreen";
+var ejscreenservice4SOE = ejscreenservice;
+//to do: needed still?
+  var ejscreenservice4SOE_SUPP = localRESTurl + "ejscreen/ejscreen_v2023_with_as_cnmi_gu_vi/MapServer";
+var ejscreenSOEurl = ejscreenservice4SOE + "/exts/EJCensusReports/GetEJScreen";
+
+var localGeometryService = localRESTurl + "Utilities/Geometry/GeometryServer";
+var localPrintService = "https://map23.epa.gov/arcgis/rest/services/Utilities/PrintingTools/GPServer/Export Web Map Task";
+
+//used by report digest
+var ejscreenindexurl = localRESTurl + "ejscreen/ejscreen_v2023_with_as_cnmi_gu_vi/MapServer/33/query";
+var ejscreenstateurl = localRESTurl + "ejscreen/ejscreen_v2023_with_as_cnmi_gu_vi/MapServer/35/query";
+var ejscreenusaurl = localRESTurl + "ejscreen/ejscreen_v2023_with_as_cnmi_gu_vi/MapServer/36/query";
+
+var ejscreenenvindexnationalurl = localRESTurl+"ejscreen/ejscreen_v2023_with_as_cnmi_gu_vi/MapServer/33";
+var ejscreenenvindexstateurl = localRESTurl+"ejscreen/ejscreen_v2023_with_as_cnmi_gu_vi/MapServer/34";
+
+
+var helpfileurl = "help/ejscreen_help.pdf";
+var glossaryurl = "https://www.epa.gov/ejscreen/glossary-ejscreen-terms";
+var homeappurl = "https://www.epa.gov/ejscreen";
+var v1appurl = "ejscreen_v1/index.html";
+var countybndurl =
+	"//geopub.epa.gov/arcgis/rest/services/EMEF/Boundaries/MapServer/5/query";
+//var homeappurl = "http://ww2.epa.gov/ejscreen"; //(this is for internet production)
+var bingMapsKey =
+	"Ahjoir6USRWLNnqRrFbMoGSbm2Ea-vz30l5-84Ulbji_0HMf9g954NvJJIzeda94";
+var geocoderurl =
+	location.protocol +
+	"//geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer";
+
+var lookuptableindex = 37;
+var ejmapindex = 33; //index of main ej layer in service
+var ejmapindex_state = 34; //index of state ej layer in service
+
+
+...
+	justice40: {
+		description: "Justice40 (CEJST)",
+		mouseover:"Communities identified as disadvantaged by CEQ for purposes of Justice40",
+		type: "portallayer",
+		visible: false,
+		dynamic: true,
+		//for portallayer use id vs url, assumes arcgis portal for now
+		layerurl:
+			"f95344889cab44bd84207052f44cb940",
+		service: "",
+		transparency: "0.8",
+		removable: false,
+		defaultlayer: [-1],
+		position: 5,
+		imageName: "justice40_16x16.png"
+
+	},
+	tribe: {
+		description: "Tribal Lands",
+		mouseover:"American Indian Tribal lands in the lower 48 states and Alaska",
+		type: "agsdynamic",
+		visible: true,
+		dynamic: true,
+		layerurl: localRESTurl,
+		service: "EMEF/Tribal",
+		transparency: "0.8",
+		removable: false,
+		defaultlayer: [-1],
+		position: 1,
+	},
+...
+and 
+...
+
+			epairadisadvantaged: {
+				description: "EPA IRA Disadvantaged Communities",
+				type: "featurelayer",
+				visible: false,
+				dynamic: true,
+				layerurl:
+					//localRESTurl + "ejscreen/EPA_IRA_Disadvantaged_Communities/MapServer/0",
+					localRESTurl + "ejscreen/ejscreen_disadvantaged/MapServer/0",
+				service: "",
+				transparency: "0.25",
+				removable: false,
+				defaultlayer: [-1],
+				position: 6,
+				
+			},
+			ussupplgreater90: {
+				description: "US Supplemental Indexes >= 90",
+				type: "featurelayer",
+				visible: false,
+				dynamic: false,
+				layerurl: localRESTurl + "ejscreen/ejscreen_disadvantaged/MapServer/1",					
+				service: "",
+				transparency: "0.25",
+				// identify: "yes",
+				removable: false,
+				defaultlayer: [-1],
+				position: 6,
+			},
+			
+			statesupplgreater90: {
+				description: "State Supplemental Indexes >= 90",
+				type: "featurelayer",
+				visible: false,
+				dynamic: false,
+				layerurl: localRESTurl + "ejscreen/ejscreen_disadvantaged/MapServer/2",					
+				service: "",
+				transparency: "0.25",
+				// identify: "yes",
+				removable: false,
+				defaultlayer: [-1],
+				position: 6,
+			},
+
+...
+
+
+	iradisadvantaged: {
+		description: "EPA IRA Disadvantaged Communities",
+		mouseover:"EPA IRA Disadvantaged Communities",
+		type: "featurelayer",
+		visible: true,
+		dynamic: true,
+		layerurl:"",
+		service: "",
+		transparency: "0.8",
+		removable: false,
+		defaultlayer: [-1],
+		position: 6,
+		imageName: "crowd_16x16.png",
+        layergroup: {
+			
+			epairadisadvantagedcomm: {
+		description: "EPA IRA Data",
+		mouseover:"EPA IRA Data",
+		type: "agsdynamic",
+		visible: true,
+		dynamic: true,
+		layerurl: localRESTurl,
+		service: "ejscreen/ejscreen_disadvantaged",
+		transparency: "0.25",
+		removable: false,
+		//layers: indigSubLayers,
+		///use listlayer for limiting list, dynamic layers object not implemented in Side by Side
+		//list of id's to show, match what's in indigSubLayers object
+		listlayer: [0, 1, 2],
+		defaultlayer: [-1],
+		position: 6,
+	},
+			justice40ira: {
+				description: "Justice40 (CEJST)",
+				mouseover:"Communities identified as disadvantaged by CEQ for purposes of Justice40",
+				type: "portallayer",
+				visible: false, //does not work, add new below
+				dynamic: true,
+				//for portallayer use id vs url, assumes arcgis portal for now
+				//"f95344889cab44bd84207052f44cb940" //public
+				layerurl:
+					"f95344889cab44bd84207052f44cb940",
+				service: "",
+				transparency: "0.75",
+				removable: false,
+				defaultlayer: [-1],
+				position: 6,
+				definitionExpression : "SN_C = 1", //NOTE RW 7/13/23 - added to remove all but Disadvantaged from IRA,
+				visiblebydefault:false 
+				//imageName: "justice40_16x16.png"
+				
+		
+			},
+			emeftribal: {
+				description: "Tribal Lands",
+				type: "agsdynamic",
+				visible: false,
+				dynamic: false,
+				layerurl: localRESTurl,					
+				service: "EMEF/Tribal",
+				transparency: "0.25",
+				identify: "yes",
+				removable: false,
+				listlayer: [0, 1, 2, 3, 4], //note 7/11/23 RW - removed VA tribes when show IRA layer
+				defaultlayer: [-1],
+				position: 7,
+				layers: [{ id: 0, visible:false },{ id: 1, visible:false },{ id: 2, visible:false },{ id: 3, visible:false },{ id: 4, visible:false },{ id: 5, visible:false }]
+			}
+			
+...
+
+//for sublayers, dynamic=false uses listlayers and array syntax ([1,2,3]), dynamic=true uses layers and json syntax for layer index ([{"id": 0,"title":"Title for TOC"}])
+var otherEnvironmentalDataJSON = {
+	
+	ejrsei: {
+		description: "RSEI",
+		mouseover:"Risk-Screening Environmental Indicators model",
+		type: "agsdynamic",
+		visible: false,
+		dynamic: true,				
+		layerurl: localRESTurl,
+		service: "EMEF/RSEI_Score_2021",
+		transparency: "0.8",
+		removable: true,
+		defaultlayer: [-1],
+		position: 1,
+		layers: [{ id: 0, title: "RSEI Scores" }],
+	},
+	ejnonatt: {
+		description: "Nonattainment Area",
+		mouseover:"Areas that don't meet NAAQS standards",
+		type: "agsdynamic",
+		visible: false,
+		dynamic: true,
+		layerurl: "https://gispub.epa.gov/arcgis/rest/services/",
+		service: "OAR_OAQPS/NonattainmentAreas",
+		transparency: "0.8",
+		removable: false,
+		defaultlayer: [-1],
+		position: 2,		
+		layers: [{ id: 8, title: "PM10 (1987 standard)" },{ id: 7, title: "PM2.5 Annual (2012 standard)" },{ id: 6, title: "PM2.5 Annual (1997 standard)" },{ id: 5, title: "PM2.5 24hr (2006 standard)" },{ id: 4, title: "SO2 1-hr (2010 standard)" },{ id: 3, title: "Lead (2008 standard)" },{ id: 1, title: "Ozone 8-hr (2008 standard)" },{ id: 0, title: "Ozone 8-hr (1997 standard)" }]
+	},
+
+...
+
+
+var boundariesJSON = {
+	ejbnd: {
+		description: "Boundaries",
+		mouseover:"Overlay boundaries",
+		type: "agsdynamic",
+		visible: false,
+		dynamic: true,
+		layerurl: prodRESTurl,
+		service: "NEPAssist/Boundaries",
+		transparency: "0.8",
+		removable: false,
+		defaultlayer: [-1],
+		position: 1,
+		imageName: "apartment_16x16.png",
+	},
+};
+
+...
+
+
+
+EPA Regulated Facilities info
+and 
+var suggestservicesHEALTH = {
+	lifeexpentancy: {
+		title: "Low Life Expectancy",
+		mouseover:"Average limited life expectancy ranked as percentiles",
+		url: localRESTurl + "ejscreen/health/MapServer",
+		type: "agsdynamic",
+		removable: true,
+		opacity: "0.5",
+		layers: [{ id: 0, title: "Low Life Expectancy" }],
+	},
+	heartdisease: {
+		title: "Heart Disease",
+		mouseover:"Heart disease prevalence among adults 18 or older",
+		url: localRESTurl + "ejscreen/health/MapServer",
+		type: "agsdynamic",
+		removable: true,
+		opacity: "0.5",
+		layers: [{ id: 1, title: "Coronary Heart Disease" }],
+	},
+	asthma: {
+		title: "Asthma",
+		mouseover:"Asthma prevalence among adults aged 18 or older",
+		url: localRESTurl + "ejscreen/health/MapServer",
+		type: "agsdynamic",
+		removable: true,
+		opacity: "0.5",
+		layers: [{ id: 2, title: "Current Asthma" }],
+	},
+	cancer: {
+		title: "Cancer",
+		mouseover:"Cancer prevalence among adults aged 18 or older",
+		url: localRESTurl + "ejscreen/health/MapServer",
+		type: "agsdynamic",
+		removable: true,
+		opacity: "0.5",
+		layers: [{ id: 3, title: "Cancer" }],
+	},
+	personswithdisabilities: {
+		title: "Persons with Disabililties",
+		mouseover:"Persons with Disabililties",
+		url: localRESTurl + "ejscreen/health/MapServer",
+		type: "agsdynamic",
+		removable: true,
+		opacity: "0.5",
+		layers: [{ id: 4, title: "Persons with Disabililties" }],
+	}
+};

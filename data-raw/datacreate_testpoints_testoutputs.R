@@ -11,7 +11,7 @@ resaving_testpoints_rda       <- FALSE
 resaving_testpoints_excel     <- FALSE
 resaving_testpoints_helpdocs  <- FALSE
 
-recreating_getblocksnearby    <- FALSE  # eg if block data changed
+recreating_getblocksnearby    <- FALSE  # eg if block data changed, or if recreating_doaggregate_output = TRUE below
 resaving_getblocksnearby_rda  <- FALSE
 resaving_getblocksnearby_helpdocs <- FALSE
 
@@ -26,7 +26,7 @@ resaving_ejamit_rda           <- TRUE
 resaving_ejamit_helpdocs      <- FALSE
 resaving_ejamit_excel         <- TRUE
 
-redoing_testpoints_10_files   <- FALSE 
+redoing_testpoints_10_files   <- FALSE
 
 
 if (basename(getwd()) != "EJAM") {stop('do this from EJAM source package folder')}
@@ -161,7 +161,17 @@ NULL
                                n, "pts_", myrad, "miles") 
     
     if (recreating_doaggregate_output) {
-    out_data_doagg <- doaggregate(out_data_getblocks, sites2states_or_latlon = testpoints_data, radius = myrad) 
+      
+      # DEFAULTS: 
+      #       sites2blocks, sites2states_or_latlon = NA, radius = NULL,
+      #       countcols = NULL, popmeancols = NULL, calculatedcols = NULL,
+      #       testing = FALSE, include_ejindexes = FALSE, updateProgress = NULL,
+      #       need_proximityscore = FALSE, calculate_ratios = TRUE, silentinteractive = TRUE,
+      #       called_by_ejamit = FALSE, subgroups_type = "nh", extra_demog = TRUE,
+      #       infer_sitepoints = FALSE, ...)
+      
+    out_data_doagg <- doaggregate(out_data_getblocks, sites2states_or_latlon = testpoints_data, radius = myrad,
+                                  include_ejindexes = TRUE) # not the default but want to test this way 
     assign(out_varname_doagg, out_data_doagg)
     }
     # SAVE AS DATA IN PACKAGE ####
@@ -175,7 +185,7 @@ NULL
       "#' @name ", out_varname_doagg, " 
 #' @docType data
 #' @title test output of doaggregate()
-#' @details This is the output of doaggregate(", out_varname_getblocks,", sites2states_or_latlon = ", testpoints_name,", radius = ", myrad,")
+#' @details This is the output of doaggregate(", out_varname_getblocks,", sites2states_or_latlon = ", testpoints_name,", radius = ", myrad,", include_ejindexes = TRUE)
 #' @seealso [doaggregate()] [ejamit()] [", out_varname_getblocks,"] [", testpoints_name,"]
 NULL
 "
@@ -184,6 +194,9 @@ NULL
     writeChar(filecontents, con = paste0("./R/data_", out_varname_doagg, ".R"))       ############# #
     }
     # SAVE AS EXCEL FILE  ####
+    
+    #  Q: do we want to redo this using table_xls_from_ejam() as now done below with ejamit() output? ***
+    
     if (resaving_doaggregate_excel) {
     junk = table_xls_format(overall = out_data_doagg$results_overall, 
                            eachsite =       out_data_doagg$results_bysite, 
@@ -210,8 +223,19 @@ namebase <- "testoutput_ejamit_"
     out_varname_ejamit = paste0(namebase,
                                 n, "pts_", myrad, "miles")    
     if (recreating_ejamit_output) {
-      
-    out_data_ejamit <- ejamit(testpoints_data, radius = myrad)
+    
+      # DEFAULTS: 
+      #        sitepoints, radius = 3, maxradius = 31.07, avoidorphans = FALSE,           
+      #        quadtree = NULL, quiet = TRUE, parallel = FALSE, fips = NULL,                    
+      #        shapefile_folder = NULL, in_shiny = FALSE, need_blockwt = TRUE,                  
+      #        countcols = NULL, popmeancols = NULL, calculatedcols = NULL,                     
+      #        testing = FALSE, include_ejindexes = FALSE, updateProgress = NULL,               
+      #        need_proximityscore = FALSE, calculate_ratios = TRUE, silentinteractive = FALSE, 
+      #        called_by_ejamit = TRUE, subgroups_type = "nh", extra_demog = TRUE,              
+      #        infer_sitepoints = FALSE, threshold1 = 90)
+       
+    out_data_ejamit <- ejamit(testpoints_data, radius = myrad, 
+                              include_ejindexes = TRUE) #  # include_ejindexes = FALSE was the default but we want to test with them included
     
     # testdata_ejamit_output_1000pts_1miles
     # testdata_ejamit_output_100pts_1miles
@@ -228,12 +252,12 @@ namebase <- "testoutput_ejamit_"
     if (resaving_ejamit_helpdocs) {
       # SAVE DOCUMENTATION AS A FILE ####
     #
-    filecontents <- paste0( 
+    filecontents <- paste0(
       "#' @name ", out_varname_ejamit, " 
 #' @docType data
 #' @title test output of ejamit()
-#' @details This is the output of ejamit(", testpoints_name,", radius = ", myrad,")
-#' @seealso [doaggregate()] [ejamit()] [", out_varname_doagg,"] [", testpoints_name,"]
+#' @details This is the output of ejamit(", testpoints_name,", radius = ", myrad,", include_ejindexes = TRUE)
+#' @seealso [doaggregate()] [ejamit()] [", out_varname_doagg,"] and [", testpoints_name,"]
 NULL
 "
     )
@@ -245,15 +269,12 @@ NULL
       
     # SAVE AS EXCEL FILE  ####
     #
-    junk = table_xls_format(overall =       out_data_ejamit$results_overall, 
-                           eachsite =       out_data_ejamit$results_bysite, 
-                           longnames =      out_data_ejamit$longnames,
-                           bybg =           out_data_ejamit$results_bybg_people,
-                           analysis_title = "Example of outputs of ejamit() being formatted and saved using table_xls_format()",  
-                           buffer_desc = paste0("Within ", myrad, " miles"),
-                           plotlatest = FALSE, 
-                           saveas = paste0("./inst/testdata/examples_of_output/", out_varname_ejamit, ".xlsx") 
-    )
+      junk = table_xls_from_ejam(out_data_ejamit,
+                                 in.analysis_title = "Example of outputs of ejamit() being formatted and saved using table_xls_from_ejam()",
+                                 radius_or_buffer_in_miles = myrad,
+                                 buffer_desc = paste0("Within ", myrad, " miles"),
+                                 fname = paste0("./inst/testdata/examples_of_output/", out_varname_ejamit, ".xlsx")
+      )
     }
   }
   
@@ -297,3 +318,13 @@ NULL
 writeChar(filecontents, con = paste0("./R/data_", "testoutput_ejscreenit_10pts_1miles", ".R"))       ############# #
 
 }
+
+cat('
+    REMEMBER TO RECREATE PACKAGE DOCUMENTATION: 
+    devtools::document()  # for help files. or Clean and INSTALL package
+    devtools::build_manual()  # for pdf manual
+    postdoc::render_package_manual()  # for html manual
+    \n')
+
+
+

@@ -173,7 +173,7 @@ default_ok2plot <- FALSE # the plots to put in excel tabs via table_xls_from_eja
 
 ### in getblocksnearby()  ------------- #
 
-default_avoidorphans        <- FALSE # seems like EJScreen itself essentially uses FALSE
+default_avoidorphans        <- FALSE # seems like EJScreen itself essentially uses FALSE? not quite clear
 default_maxradius <-  31.06856  # max search dist if no block within radius # 50000 / meters_per_mile #, # 31.06856 miles !!
 # also used as the maxmax allowed
 
@@ -187,8 +187,11 @@ default_subgroups_type <- 'nh'
 # "alone" for EJScreen v2.2 style race subgroups as in    White Alone, wa and others in names_d_subgroups_alone;
 # "both" for both versions. Possibly another option is "original" or "default" but work in progress.
 
-default_need_proximityscore <- FALSE
-default_include_ejindexes   <- TRUE
+default_need_proximityscore <- FALSE # need_proximityscore is a param in doaggregate() or ejamit()
+default_include_ejindexes   <- TRUE # include_ejindexes is a param in doaggregate() or ejamit()
+default_extra_demog <- TRUE # extra_demog is a param in  doaggregate() or ejamit(), 
+  # label = "Need extra indicators from EJScreen v2.2 report, on language, age groups, gender, percent with disability, poverty, etc.",
+
 
 ######################################################## # 
 ### Short report options --------------------- #

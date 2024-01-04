@@ -1370,16 +1370,31 @@ app_server <- function(input, output, session) {
       #setcolorder(d_upload, 'ejam_uniq_id')
       d_upload$invalid_msg <- NA
       d_upload$invalid_msg[!d_upload$valid] <- 'bad FIPS code'
-      print('final made it here pt. 1')
-      out <- ejamit(fips = d_upload$ejam_uniq_id[fips_valid], 
-                    silentinteractive = TRUE,
-                    radius = 999,
-                    include_ejindexes = (input$include_ejindexes == "TRUE"),
-                    subgroups_type = input$subgroups_type,
-                    calculate_ratios = input$calculate_ratios,
-                    quadtree = localtree,
+
+      
+      out <- ejamit(fips = data_uploaded(), 
+                    radius = 999, # because FIPS analysis
+                    maxradius = input$maxradius,
                     avoidorphans = input$avoidorphans,
-                    maxradius = input$maxradius
+                    quadtree = localtree,
+                    # countcols = NULL,
+                    # popmeancols = NULL,
+                    # calculatedcols = NULL,
+                    subgroups_type = input$subgroups_type,
+                    include_ejindexes   = (input$include_ejindexes == "TRUE"), # it was character not logical because of how input UI done 
+                    calculate_ratios = input$calculate_ratios,
+                    extra_demog = input$extra_demog,
+                    need_proximityscore = FALSE, #input$need_proximityscore, # not relevant for FIPS
+                    # infer_sitepoints = FALSE,
+                    # need_blockwt = TRUE,
+                    threshold1 = input$an_thresh_comp1, # list(input$an_thresh_comp1) # not sure this is needed or works here
+                    # updateProgress = ??? , # not sure this is needed or works here
+                    in_shiny = TRUE, # not sure this is needed or works here
+                    # quiet = TRUE,
+                    # parallel = FALSE,
+                    silentinteractive = TRUE,
+                    # called_by_ejamit = TRUE, # not sure this is needed or works here
+                    testing = input$testing 
       )
       
       
@@ -1417,7 +1432,6 @@ app_server <- function(input, output, session) {
         
       }
       
-      print('final made it here pt. 2')
      # out
       ################################################# # 
     } else { #  everything other than FIPS code analysis
@@ -1471,11 +1485,11 @@ app_server <- function(input, output, session) {
       } # end LAT LON finding blocks nearby, now ready for latlon and shapefiles to do aggregation
       #############################################################################  # 
       
-      ## progress bar update overall  
+      ## progress bar update overall
       progress_all$inc(1/3, message = 'Step 2 of 3', detail = 'Aggregating')
       ## progress bar to show doaggregate status
       progress_doagg <- shiny::Progress$new(min = 0, max = 1)
-      ## function for updating progress bar, to pass in to doaggregate function  
+      ## function for updating progress bar, to pass in to doaggregate function
       updateProgress_doagg <- function(value = NULL, message_detail = NULL, message_main = NULL) {
         # Create a callback function - When called, it sets progress bar to value.
         if (is.null(value)) { # - If value is NULL, it will move the progress bar 1/5 of the remaining distance.
@@ -1484,28 +1498,31 @@ app_server <- function(input, output, session) {
         }
         progress_doagg$set(value = value, message = message_main, detail = message_detail)
       }
-      #############################################################################  # 
+      #############################################################################  #
       
-     
     if (submitted_upload_method() != "FIPS") {  # if LAT LON or SHAPEFILE, now have blocks nearby and ready to aggregate
     
     #############################################################################  # 
     # 2) **EJAM::doaggregate()** ####
-    
+
     out <- suppressWarnings(
       doaggregate(
-        sites2blocks = sites2blocks, 
+        sites2blocks = sites2blocks,
         sites2states_or_latlon = d_upload,
-        radius = input$bt_rad_buff, 
+        radius = input$bt_rad_buff,
         #countcols = 0, popmeancols = 0, calculatedcols = 0, # *** if using defaults of doaggregate()
         subgroups_type = input$subgroups_type, # nh, alone, or both # or use default of doaggregate() based on whatever subgroups_d etc are now ***   
-        testing = input$testing, 
-        include_ejindexes   = (input$include_ejindexes == "TRUE"), # it was character not logical because of how input UI done 
-        need_proximityscore = input$need_proximityscore, 
-        calculate_ratios = input$calculate_ratios, 
-        ## pass progress bar function as argument
-        updateProgress = updateProgress_doagg
-      )  )
+        include_ejindexes = (input$include_ejindexes == "TRUE"), # it was character not logical because of how input UI done 
+        calculate_ratios = input$calculate_ratios,
+        extra_demog = input$extra_demog,
+        need_proximityscore = input$need_proximityscore,
+        infer_sitepoints = FALSE,
+        called_by_ejamit = FALSE,
+        updateProgress = updateProgress_doagg, ## pass progress bar function as argument
+        testing = input$testing
+      )
+    )
+
     #data_uploaded()[!(ejam_uniq_id %in% out$results_bysite$ejam_uniq_id),'valid'] <- F
     dup <- data_uploaded()
     #dup[,valid := ejam_uniq_id %in% out$results_bysite$ejam_uniq_id]
@@ -1518,7 +1535,6 @@ app_server <- function(input, output, session) {
     # ideally from ST column, 
     # second from fips of block with smallest distance to site, 
     # third from lat,lon of sitepoints intersected with shapefile of state bounds
-    print('made it here pt. 3')
     ## close doaggregate progress bar
     progress_doagg$close()
     

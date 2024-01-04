@@ -4,14 +4,14 @@
 \alias{getblocks_diagnostics}
 \title{getblocks_diagnostics - Lots of stats about # of blocks, # of sites, etc.}
 \usage{
-getblocks_diagnostics(x, detailed = FALSE, see_plot = FALSE)
+getblocks_diagnostics(x, detailed = FALSE, see_pctiles = FALSE)
 }
 \arguments{
 \item{x}{The output of \code{\link[=getblocksnearby]{getblocksnearby()}} like testoutput_getblocksnearby_10pts_1miles}
 
 \item{detailed}{if TRUE, also shows in console a long table of frequencies via \code{\link[=getblocks_summarize_blocks_per_site]{getblocks_summarize_blocks_per_site()}}}
 
-\item{see_plot}{set TRUE to draw for each site a boxplot of distances of nearby blocks}
+\item{see_pctiles}{set to TRUE to see 20 percentiles of distance in a table}
 }
 \value{
 A list of stats
@@ -20,7 +20,18 @@ A list of stats
 getblocks_diagnostics - Lots of stats about # of blocks, # of sites, etc.
 }
 \examples{
- getblocks_diagnostics(testoutput_getblocksnearby_10pts_1miles)
+  getblocks_diagnostics(testoutput_getblocksnearby_10pts_1miles)
+  # library(data.table)
+  x <- data.table::copy(testpoints_10)
+  setDT(x)
+  pts <- rbind(data.table(lat = 40.3, lon = -96.23),
+    x[ , .(lat, lon)])
+ z <- getblocksnearbyviaQuadTree(pts, 1, quadtree = localtree, quiet = T)
+ z[ , .(blocks = .N) , keyby = 'siteid']
+ plotblocksnearby(pts, radius = 1, sites2blocks = z)
+ zz <- getblocks_diagnostics(z, detailed = T, see_pctiles = T)
+cbind(stats = zz)
+
 }
 \seealso{
 This relies on  \code{\link[=getblocks_summarize_blocks_per_site]{getblocks_summarize_blocks_per_site()}} and \code{\link[=getblocks_summarize_sites_per_block]{getblocks_summarize_sites_per_block()}}
