@@ -275,7 +275,7 @@ app_server <- function(input, output, session) {
       outfiles <- file.path(dir, input$ss_upload_shp$name) # create new path\name from temp dir plus original filename of file selected by user to upload
       name <- strsplit(input$ss_upload_shp$name[1], "\\.")[[1]][1] # ??? get filename minus extension, of 1 file selected by user to upload
       purrr::walk2(infiles, outfiles, ~file.rename(.x, .y)) # rename files from ugly tempfilename to original filename of file selected by user to upload
-      shp <- read_sf(file.path(dir, paste0(name, ".shp"))) # read-in shapefile
+      shp <- sf::read_sf(file.path(dir, paste0(name, ".shp"))) # read-in shapefile
       ########################################## # 
       
       if (nrow(shp) > 0) {
@@ -387,7 +387,7 @@ app_server <- function(input, output, session) {
     if (any(tolower(colnames(sitepoints)) %in% lat_alias) & any(tolower(colnames(sitepoints)) %in% lon_alias)) {
       
       sitepoints[, ejam_uniq_id := .I]
-      setcolorder(sitepoints, 'ejam_uniq_id')
+      data.table::setcolorder(sitepoints, 'ejam_uniq_id')
       
       sitepoints <- sitepoints %>% 
         latlon_df_clean() #%>%   # This does latlon_infer() and latlon_as.numeric() and latlon_is.valid()
@@ -444,7 +444,7 @@ app_server <- function(input, output, session) {
    
       ## add ejam_uniq_id and valid T/F columns
       sitepoints[, ejam_uniq_id := .I]
-      setcolorder(sitepoints, 'ejam_uniq_id')
+      data.table::setcolorder(sitepoints, 'ejam_uniq_id')
       #site_is_invalid(sitepoints, type = 'FRS')
       sitepoints[,valid := !(REGISTRY_ID == 'NA' | is.na(lon) | is.na(lat))]
       sitepoints$invalid_msg <- NA
@@ -496,7 +496,7 @@ app_server <- function(input, output, session) {
         sitepoints <- frs_from_naics(inputnaics, children = add_naics_subcategories)[, .(lat,lon,REGISTRY_ID,PRIMARY_NAME,NAICS)] # xxx
         
         sitepoints[, ejam_uniq_id := .I]
-        setcolorder(sitepoints, 'ejam_uniq_id')
+        data.table::setcolorder(sitepoints, 'ejam_uniq_id')
         # print(sitepoints)
         if (rlang::is_empty(sitepoints) | nrow(sitepoints) == 0) {
           ################ Should output something saying no valid results returned ######## #
@@ -509,7 +509,7 @@ app_server <- function(input, output, session) {
         sitepoints <- frs_from_naics(inputnaics, children = add_naics_subcategories)[, .(lat,lon,REGISTRY_ID,PRIMARY_NAME,NAICS)] # xxx
         
         sitepoints[, ejam_uniq_id := .I]
-        setcolorder(sitepoints, 'ejam_uniq_id')
+        data.table::setcolorder(sitepoints, 'ejam_uniq_id')
         sitepoints$invalid_msg <- NA
         sitepoints$invalid[is.na(sitepoints$NAICS)] <- 'bad NAICS Code'
         sitepoints$invalid_msg[is.na(sitepoints$lon) | is.na(sitepoints$lat)] <- 'bad lat/lon coordinates'
@@ -595,7 +595,7 @@ app_server <- function(input, output, session) {
       }
       
       pgm_out[, ejam_uniq_id := .I]
-      setcolorder(pgm_out, 'ejam_uniq_id')
+      data.table::setcolorder(pgm_out, 'ejam_uniq_id')
       
       ## clean so that any invalid latlons become NA
       pgm_out <- pgm_out %>% 
@@ -623,7 +623,7 @@ app_server <- function(input, output, session) {
       pgm_out <- frs_by_programid[ program == input$ss_select_program]
       
       pgm_out[, ejam_uniq_id := .I]
-      setcolorder(pgm_out, 'ejam_uniq_id')
+      data.table::setcolorder(pgm_out, 'ejam_uniq_id')
       
       ## clean so that any invalid latlons become NA
       pgm_out <- pgm_out %>% 
@@ -670,7 +670,7 @@ app_server <- function(input, output, session) {
        
         sitepoints[, `:=`(ejam_uniq_id = .I, 
                           valid = !is.na(lon) & !is.na(lat))]
-        setcolorder(sitepoints, 'ejam_uniq_id')
+        data.table::setcolorder(sitepoints, 'ejam_uniq_id')
         sitepoints$invalid_msg <- NA
         sitepoints$invalid[is.na(sitepoints$SIC)] <- 'bad SIC Code'
         sitepoints$invalid_msg[is.na(sitepoints$lon) | is.na(sitepoints$lat)] <- 'bad lat/lon coordinates'
@@ -687,7 +687,7 @@ app_server <- function(input, output, session) {
         sitepoints <- frs_from_sic(inputsic, children = add_sic_subcategories)[, .(lat,lon,REGISTRY_ID,PRIMARY_NAME,SIC)] # xxx
         sitepoints[, `:=`(ejam_uniq_id = .I, 
                         valid = !is.na(lon) & !is.na(lat))]
-        setcolorder(sitepoints, 'ejam_uniq_id')
+        data.table::setcolorder(sitepoints, 'ejam_uniq_id')
         sitepoints$invalid_msg <- NA
         sitepoints$invalid[is.na(sitepoints$SIC)] <- 'bad SIC Code'
         sitepoints$invalid_msg[is.na(sitepoints$lon) | is.na(sitepoints$lat)] <- 'bad lat/lon coordinates'
@@ -817,7 +817,7 @@ app_server <- function(input, output, session) {
       #                 valid = !is.na(lon) & !is.na(lat))]
       mact_out$ejam_uniq_id <- 1:nrow(mact_out)
       mact_out$valid <- !is.na(mact_out$lon) & !is.na(mact_out$lat)
-      setcolorder(mact_out, 'ejam_uniq_id')
+      data.table::setcolorder(mact_out, 'ejam_uniq_id')
       
       mact_out$invalid_msg <- NA
       mact_out$invalid_msg[is.na(mact_out$lon) | is.na(mact_out$lat)] <- 'bad lat/lon coordinates'
@@ -1406,8 +1406,8 @@ app_server <- function(input, output, session) {
         
        
         # put those up front as first columns
-        setcolorder(out$results_bysite, neworder = c('ejam_uniq_id', newcolnames))
-        setcolorder(out$results_overall, neworder = c('ejam_uniq_id'))
+        data.table::setcolorder(out$results_bysite, neworder = c('ejam_uniq_id', newcolnames))
+        data.table::setcolorder(out$results_overall, neworder = c('ejam_uniq_id'))
         #setcolorder(out$results_bysite, neworder = newcolnames)
         # move ejam_uniq_id to front of longnames vector
         
@@ -2406,7 +2406,7 @@ app_server <- function(input, output, session) {
                     #siteid = as.character(siteid)
       ) %>%
       dplyr::mutate(index = row_number()) %>%
-      rowwise() %>%
+      dplyr::rowwise() %>%
       dplyr::mutate(
         pop = ifelse(valid == T, pop, NA),
         # `EJScreen Report` = ifelse(valid == T, `EJScreen Report`, NA),
