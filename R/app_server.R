@@ -1245,6 +1245,22 @@ app_server <- function(input, output, session) {
                       val = current_slider_val[[current_upload_method()]])
   })
   
+  ## add warning and disable button if radius is set to 0 for points
+  observe({
+    if(!(current_upload_method() %in% c('FIPS','SHP'))){
+      if(input$bt_rad_buff == 0){
+        
+      shinyjs::disable(id = 'bt_get_results')
+        showNotification(id = 'radius_warning', session=session,
+                         duration=NULL,type='warning',closeButton = F,
+                        'Please use a radius greater than 0 for analyzing points.')
+      } else {
+        shinyjs::enable(id ='bt_get_results')
+        removeNotification(id='radius_warning', session=session)
+      }
+    }
+  })
+  
   ## Create separate radius label to allow line break
   
   output$radius_label <- renderUI({
