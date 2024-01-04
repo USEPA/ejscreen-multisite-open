@@ -1,4 +1,12 @@
 
+
+
+# this file is old.  see newer code now, in ejscreenapi_vs_ejam1() 
+
+
+
+
+############################### ############################### ###############################
 # compare EJAM and ejscreenapi results for the variables that both have, for each site
 
 
