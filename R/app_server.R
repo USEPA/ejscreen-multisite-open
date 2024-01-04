@@ -2710,7 +2710,7 @@ app_server <- function(input, output, session) {
           # heatmap_colors=c('yellow', 'orange', 'red') # can use defaults
           ## optional, shiny-specific arguments to go in 'Plot' and 'Notes' sheets
           summary_plot   = v1_summary_plot(),
-          ok2plot = F, #input$ok2plot,
+          ok2plot = input$ok2plot,
           plot_distance_by_group = TRUE,
           bybg = data_processed()$results_bybg_people,
           analysis_title = input$analysis_title,
