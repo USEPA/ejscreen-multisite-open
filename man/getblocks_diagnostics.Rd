@@ -27,7 +27,7 @@ getblocks_diagnostics - Lots of stats about # of blocks, # of sites, etc.
   pts <- rbind(data.table(lat = 40.3, lon = -96.23),
     x[ , .(lat, lon)])
  z <- getblocksnearbyviaQuadTree(pts, 1, quadtree = localtree, quiet = T)
- z[ , .(blocks = .N) , keyby = 'siteid']
+ z[ , .(blocks = .N) , keyby = 'ejam_uniq_id']
  plotblocksnearby(pts, radius = 1, sites2blocks = z)
  zz <- getblocks_diagnostics(z, detailed = T, see_pctiles = T)
 cbind(stats = zz)
