@@ -1482,6 +1482,17 @@ app_server <- function(input, output, session) {
         
         d_upload <- data_uploaded()[!is.na(lat) & !is.na(lon),]
         
+        ## progress bar to show getblocksnearby status
+        progress_getblocks <- shiny::Progress$new(min = 0, max = 1)
+        updateProgress_getblocks <- function(value = NULL, message_detail=NULL, message_main = '0% done'){
+          if (is.null(value)) { # - If value is NULL, it will move the progress bar 1/10 of the remaining distance.
+            value <- progress_getblocks$getValue()
+            value <- value + (progress_getblocks$getMax() - value) / 10
+            message_main = paste0(value*100, '% done')
+          }
+          progress_getblocks$set(value = value, message = message_main, detail = message_detail)
+        }
+          
         sites2blocks <- getblocksnearby(
           ## remove any invalid latlons before running 
           sitepoints = d_upload,
@@ -1489,9 +1500,12 @@ app_server <- function(input, output, session) {
           quadtree = localtree, 
           avoidorphans = input$avoidorphans,
           maxradius = input$maxradius,
-          quiet = TRUE
+          quiet = TRUE,
+          updateProgress = updateProgress_getblocks
         )
 
+        progress_getblocks$close()
+        
        # data_uploaded()[!(ejam_uniq_id %in% sites2blocks$ejam_uniq_id),'valid'] <- F
         dup <- data_uploaded()
         dup$valid <- dup$ejam_uniq_id %in% sites2blocks$ejam_uniq_id

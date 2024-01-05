@@ -44,7 +44,8 @@
 #'   "alone" for groups like white alone (whether or not hispanic),
 #'   "both" may try to include both,
 #'   or possibly "original" or "default" might be added as options - passed to batch.summarize()
-#' @param updateProgress progress bar function used for shiny app
+#' @param updateProgress progress bar function passed to doaggregate in shiny app
+#' @param updateProgress_getblocks progress bar function passed to getblocksnearby in shiny app
 #' @param in_shiny if fips parameter is used, passed to [getblocksnearby_from_fips()]
 #' @param quiet Optional. set to TRUE to avoid message about using getblock_diagnostics(),
 #'   which is relevant only if a user saved the output of this function.
@@ -131,6 +132,7 @@ ejamit <- function(sitepoints,
                    need_blockwt = TRUE,
                    threshold1 = 90, # threshold.default['comp1']
                    updateProgress = NULL,
+                   updateProgress_getblocks = NULL,
                    in_shiny = FALSE,
                    quiet = TRUE,
                    parallel = FALSE,
@@ -252,7 +254,8 @@ ejamit <- function(sitepoints,
         avoidorphans = avoidorphans,
         # quadtree = localtree,
         quiet = quiet,
-        parallel = parallel
+        parallel = parallel,
+        updateProgress = updateProgress_getblocks
         # report_progress_every_n = 500  # would be passed through to getblocksnearbyviaQuadTree()
       )
       ################################################################################## #
