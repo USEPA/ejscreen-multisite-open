@@ -23,7 +23,12 @@ build_community_report <- function(output_df, analysis_title, totalpop, location
     r2 <- colnames(output_df_rounded) %in% c(names_e, names_e_avg, names_e_state_avg)
   }
   output_df_rounded[, r2] <- round(output_df_rounded[, r2], 2)
-  r0 <-  colnames(output_df_rounded) %in%  c(names_e_pctile, names_d_pctile, names_e_state_pctile, names_d_state_pctile, c(names_d, names_d_avg, names_d_state_avg) )
+  if(include_ejindexes){
+    r0 <-  colnames(output_df_rounded) %in%  c(names_e_pctile, names_d_pctile, names_e_state_pctile, names_d_state_pctile, c(names_d, names_d_avg, names_d_state_avg),
+                                               names_ej_pctile, names_ej_state_pctile, names_ej_supp_pctile, names_ej_supp_state_pctile)
+  } else {
+    r0 <-  colnames(output_df_rounded) %in%  c(names_e_pctile, names_d_pctile, names_e_state_pctile, names_d_state_pctile, c(names_d, names_d_avg, names_d_state_avg) )
+  }
   output_df_rounded[, r0] <- round(output_df_rounded[, r0], 0)
   pctsign <- colnames(output_df_rounded) %in% c(names_d, names_d_avg, names_d_state_avg)
   output_df_rounded[, pctsign] <- paste0(output_df_rounded[, pctsign], "%")
