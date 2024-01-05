@@ -2300,7 +2300,7 @@ app_server <- function(input, output, session) {
       
       if(!('EPA_logo_white.png') %in% list.files(file.path(tempdir(), 'www'))){
         dir.create(file.path(tempdir(), 'www'))
-        file.copy(from = 'www/EPA_logo_white.png',
+        file.copy(from = app_sys('report/community_report/EPA_logo_white.png'),
                   to = file.path(tempdir(), 'www', 'EPA_logo_white.png'), overwrite = TRUE)
       }
       
@@ -2572,7 +2572,7 @@ app_server <- function(input, output, session) {
           
           if(!('EPA_logo_white.png') %in% list.files(file.path(tempdir(), 'www'))){
             dir.create(file.path(tempdir(), 'www'))
-            file.copy(from = 'www/EPA_logo_white.png',
+            file.copy(from = app_sys('report/community_report/EPA_logo_white.png'),
                       to = file.path(tempdir(), 'www', 'EPA_logo_white.png'), overwrite = TRUE)
           }
           temp_comm_report <- file.path(tempdir(), paste0("comm_report",x,".html"))
