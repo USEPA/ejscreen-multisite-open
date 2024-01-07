@@ -46,19 +46,10 @@ Makes it easier to compare EJScreen and EJAM results
   )
   
   z <- ejscreenapi2ejam_format(x, fillmissingcolumns = T)
-  all.equal(names(z), ejamvars)
-  
- y2 <- ejamit(testpoints_10[1:2, ], radius = 1)
- y2 <- y2$results_bysite
- ejamvars <- names(y2)
- all.equal(names(z), ejamvars)
- sitenum <- 1
- z <- data.frame(EJAM = t(y2[sitenum, -1:-3]), EJSCREEN = t(z[sitenum, -1:-3 ]))
- z
- z[!is.na(z$EJSCREEN), ]
+  all.equal(names(z), ejamvars) 
   }
   
 }
 \seealso{
-\code{\link[=ejscreenapi_vs_ejam1]{ejscreenapi_vs_ejam1()}}
+\code{\link[=ejscreenapi_vs_ejam]{ejscreenapi_vs_ejam()}}
 }

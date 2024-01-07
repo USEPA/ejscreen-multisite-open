@@ -3,7 +3,7 @@
 #' @param sitepoints table with lat and lon columns
 #' @param radius in miles
 #' @param ... passed to ejscreenit() 
-#' @seealso [ejscreenapi_vs_ejam1()]
+#' @seealso [ejscreenapi_vs_ejam()]
 #' @return a data.table that looks like output of ejamit()$results_bysite
 #' @export
 #'
