@@ -140,7 +140,7 @@ ejscreenapi_vs_ejam <- function(latlon, radius = 3, nadrop = FALSE, x100fix = TR
   api1 <- ejscreenapi_plus(latlon, radius = radius)
   # or api1 <- ejscreenit(latlon, radius = radius)$table
   ejam1 <- ejamit(latlon, radius = radius, ...)$results_bysite
-  ejscreenapi_vs_ejam1_alreadyrun(api1, ejam1, nadrop = nadrop, x100fix = x100fix)
+  ejscreenapi_vs_ejam_alreadyrun(api1, ejam1, nadrop = nadrop, x100fix = x100fix)
 }
 ############################################################ #
 
