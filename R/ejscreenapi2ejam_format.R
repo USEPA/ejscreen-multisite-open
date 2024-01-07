@@ -1,7 +1,86 @@
-
-# ejscreenapi_vs_ejam1()
-# ejscreenapi_vs_ejam1_alreadyrun()
+# ejscreenapi_vs_ejam()
+# ejscreenapi_vs_ejam_alreadyrun()
 # ejscreenapi2ejam_format()
+# ejscreenapi_vs_ejam_summary
+
+
+#' see summary stats after using ejscreenapi_vs_ejam()
+#'
+#' @param z output of ejscreenapi_vs_ejam()
+#' @param myvars optional to check just a subset of the colnames found in z$EJAM and z$EJSCREEN, 
+#'   such as myvars = c(names_d, names_d_subgroups) or myvars = grep("pctile", colnames(z$EJAM), value = T)
+#' @param tol optional, set this so that results can be said to agree with this tolerance
+#'   if they differ by less than tol percent where tol is expressed as a fraction 0 to 1.
+#' @param na.rm needs testing, optional, but 
+#'
+#' @return A data.frame of summary stats showing counts and percents of analyzed sites (or those with valid data 
+#'   that are found in both EJAM and EJSCREEN outputs), indicating how many of the sites
+#'   agree between EJSCREEN and EJAM estimates, exactly as reported or within some tolerance.
+#'   Columns include 
+#'   
+#'    "indicator" (variable name)
+#'   
+#'    "sites.with.data.neither"
+#'   
+#'    "sites.with.data.both"
+#'   
+#'    "Rounded.Results.Agree"
+#'   
+#'    "Results.within.tol"
+#'   
+#'    "Rounded.Results.Agree.as.pct.of.sites.withdata"
+#'   
+#'    "Results.within.tol.as.pct.of.sites.withdata"
+#'    
+#' @export
+#'
+ejscreenapi_vs_ejam_summary <- function(z, myvars = colnames(z$EJAM), tol = 0.01, na.rm = TRUE) {
+  
+  # tol Set tol so that results are said to agree if they differ by less than tol percent, where tol is a fraction 0 to 1. 
+  # z is output of ejscreenapi_vs_ejam
+  # na.rm <- TRUE # to see 0% etc. instead of NA for indicators that could not be compared in at least some sites that may lack data.
+  ## for a subset of key indicators:
+  # myvars <- c(names_these, names_ej_pctile, names_ej_state_pctile, names_ej_supp_pctile, names_ej_supp_state_pctile)
+  
+  z$EJSCREEN <- z$EJSCREEN[ , myvars]
+  z$EJAM <- z$EJAM[ , myvars]
+  z$EJSCREEN_shown <- z$EJSCREEN_shown[ , myvars]
+  z$EJAM_shown <- z$EJAM_shown[ , myvars]
+  z$same_shown <- z$same_shown[ , myvars]
+  z$ratio <- z$ratio[ , myvars]
+  
+  # calculate each as count of sites that agree (and not NA), over count of sites with data ie that are not NA 
+  # matrixes of valid/not
+  ok_ejscreen <- !is.na(z$EJSCREEN) # dim is 100 x 389, e.g.
+  ok_ejam <- !is.na(z$EJAM)
+  # vector of counts of sites, 1 count per indicator
+  sites.with.data.ejscreen <- colSums(ok_ejscreen)
+  sites.with.data.ejam <- colSums(ok_ejam)
+  sites.with.data.both <- colSums(ok_ejam & ok_ejscreen)
+  sites.with.data.neither <- colSums(!ok_ejam & !ok_ejscreen)
+  
+  Rounded.Results.Agree <- colSums(z$same_shown, na.rm = na.rm) # only counts if valid
+  Results.within.tol <- colSums(abs(1 - z$ratio) < tol, na.rm = TRUE)
+  
+  pct_agree = data.frame(
+    indicator = myvars, 
+    sites.with.data.neither,
+    sites.with.data.both = sites.with.data.both,
+    Rounded.Results.Agree = Rounded.Results.Agree,
+    Results.within.tol,
+    Rounded.Results.Agree.as.pct.of.sites.withdata = round(
+      100 * Rounded.Results.Agree / sites.with.data.both, 
+      6),
+    
+    Results.within.tol.as.pct.of.sites.withdata = round(
+      100 * Results.within.tol / sites.with.data.both, # test/check NA handling here *** 
+      6)
+  )
+  rownames(pct_agree) <- NULL
+  pct_agree <- pct_agree[order(pct_agree$Results.within.tol.as.pct.of.sites.withdata, decreasing = T), ]
+  return(pct_agree)
+}
+############################################################ #
 
 
 #' compare EJScreen API vs EJAM stats near one site
@@ -12,6 +91,9 @@
 #' @param x100fix whether to multiply x100 the names_d and names_d_subgroups 
 #'   indicator scores to convert fractions 0 to 1 into percentages of 0 to 100,
 #'   prior to rounding and reporting EJAM results here. 
+#' @param x100varnames optional, if x100fix=T, a vector of colnames of x$EJAM to convert from 
+#'   being scaled as 0 to 1 into rescaled values of 0 to 100, because some 
+#'   outputs of EJSCREEN were reported as percentages 0 to 100 but as 0 to 1 in EJAM.
 #' 
 #' @param ... passed to ejamit() as any additional parameters,
 #'    like include_ejindexes = FALSE
@@ -23,8 +105,8 @@
 #' @examples
 #'  \dontrun{
 #'    pts <- testpoints_100[1:5, ]
-#'   #z <- ejscreenapi_vs_ejam1(testpoints_100[27, ], radius = 3, nadrop = T, include_ejindexes = TRUE)
-#'   z <- ejscreenapi_vs_ejam1(pts[5, ], radius = 3, include_ejindexes = TRUE)
+#'   #z <- ejscreenapi_vs_ejam(testpoints_100[27, ], radius = 3, nadrop = T, include_ejindexes = TRUE)
+#'   z <- ejscreenapi_vs_ejam(pts[5, ], radius = 3, include_ejindexes = TRUE)
 #'    
 #'    # Reported key indicators - which ones do or don't match
 #'    # when comparing EJSCREEN and EJAM results?
@@ -41,11 +123,14 @@
 #'    z[z$ratio == 0.01 & !is.na(z$ratio), -1]
 #'    
 #'   }
-#' @seealso [ejscreenapi_vs_ejam1_alreadyrun()]
+#' @seealso [ejscreenapi_vs_ejam_alreadyrun()]
 #' 
-ejscreenapi_vs_ejam1 <- function(latlon, radius = 3, nadrop = FALSE, x100fix = TRUE, ...) {
-  
-  # compare 1 site for EJAM vs EJScreen results not yet run
+ejscreenapi_vs_ejam <- function(latlon, radius = 3, nadrop = FALSE, x100fix = TRUE, 
+                                x100varnames = c(
+                                  names_d, names_d_avg, names_d_state_avg,
+                                  names_d_subgroups, names_d_subgroups_avg, names_d_subgroups_state_avg,
+                                  "pctdisability",  "p_own_occupied", 
+                                  "pctunder18", "pctover17", "pctmale", "pctfemale"), ...) {
   
   api1 <- ejscreenapi_plus(latlon, radius = radius)
   # or api1 <- ejscreenit(latlon, radius = radius)$table
@@ -57,14 +142,17 @@ ejscreenapi_vs_ejam1 <- function(latlon, radius = 3, nadrop = FALSE, x100fix = T
 
 #' compare EJScreen API vs EJAM stats near one site (if results already run)
 #'
-#' @param apisite 1-row table output of ejscreenit()$table,
+#' @param apisite table output of ejscreenit()$table,
 #'   or ejscreenapi_plus()
-#' @param ejamsite 1-row table output of ejamit()$results_bysite
-#' @param nadrop whether to drop indicators for which EJScreen API returns NA
-#' @param x100fix whether to multiply x100 the names_d and names_d_subgroups 
+#' @param ejamsite table output of ejamit()$results_bysite
+#' @param nadrop optional, whether to drop indicators for which EJScreen API returns NA
+#' @param x100fix optional, whether to multiply x100 the names_d and names_d_subgroups 
 #'   indicator scores to convert fractions 0 to 1 into percentages of 0 to 100,
 #'   prior to rounding and reporting EJAM results here. 
-#'   
+#' @param x100varnames optional, if x100fix=T, a vector of colnames of x$EJAM to convert from 
+#'   being scaled as 0 to 1 into rescaled values of 0 to 100, because some 
+#'   outputs of EJSCREEN were reported as percentages 0 to 100 but as 0 to 1 in EJAM.
+#'
 #' @return a data.frame with columns EJSCREEN and EJAM, 
 #'   rownames are indicators like pop, blockcount_near_site, etc.
 #' @export
@@ -95,7 +183,12 @@ ejscreenapi_vs_ejam1 <- function(latlon, radius = 3, nadrop = FALSE, x100fix = T
 #'  }
 #' @seealso [ejscreenapi_vs_ejam1()]
 #' 
-ejscreenapi_vs_ejam1_alreadyrun <- function(apisite, ejamsite, x100fix = TRUE, nadrop = FALSE) {
+ejscreenapi_vs_ejam_alreadyrun <- function(apisite, ejamsite, nadrop = FALSE, x100fix = TRUE, 
+                                            x100varnames = c(
+                                              names_d, names_d_avg, names_d_state_avg,
+                                              names_d_subgroups, names_d_subgroups_avg, names_d_subgroups_state_avg,
+                                              "pctdisability",  "p_own_occupied", 
+                                              "pctunder18", "pctover17", "pctmale", "pctfemale")) {
   
   if (!is.data.frame(apisite) | NROW(apisite) != 1) {stop("apisite must be a data.frame of 1 row")}
   if (!is.data.frame(ejamsite) | NROW(ejamsite) != 1) {stop("ejamsite must be a data.frame of 1 row")}
@@ -116,10 +209,6 @@ ejscreenapi_vs_ejam1_alreadyrun <- function(apisite, ejamsite, x100fix = TRUE, n
   ejamsite <- ejamsite[ , !(names(ejamsite) %in% c('ST', 'statename', "REGION", "EJScreen Report", "EJScreen Map", "ECHO report"))]
   
   if (x100fix) {
-    x100varnames <- c(names_d, names_d_avg, names_d_state_avg, 
-                      names_d_subgroups, names_d_subgroups_avg, names_d_subgroups_state_avg,
-                      "pctdisability",  "p_own_occupied", 
-                      "pctunder18", "pctover17", "pctmale", "pctfemale")
     ejamsite[ , x100varnames] <- 100 * ejamsite[ , x100varnames]
   }
   
