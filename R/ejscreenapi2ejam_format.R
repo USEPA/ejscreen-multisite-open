@@ -32,7 +32,23 @@
 #'    "Rounded.Results.Agree.as.pct.of.sites.withdata"
 #'   
 #'    "Results.within.tol.as.pct.of.sites.withdata"
-#'    
+#' 
+#' @examples
+#'   dontrun{
+#'   pts <- testpoints_n(100, weighting = 'frs')
+#'   vs100 <- ejscreenapi_vs_ejam(pts, radius = 3, include_ejindexes = TRUE)
+#'   sum100 <- ejscreenapi_vs_ejam_summary(vs100, tol = 0.01)
+#'   s100 <- sum100[ , c(1, 6:12)]
+#'   
+#'   s100[s100$indicator %in% names_e, ]
+#'   s100[s100$indicator %in% names_d, ]
+#'   s100[s100$indicator %in% names_these, ]
+#'   s100[s100$indicator %in% c(names_ej_pctile, names_ej_state_pctile, names_ej_supp, names_ej_supp_state), ]
+#'   
+#'   sum100_within5pct <- ejscreenapi_vs_ejam_summary(vs100, tol = 0.05)
+#'   sum100_within5pct[sum100_within5pct$indicator %in% names_these, ][ , c(1, 6:12)]
+#'   
+#'   }
 #' @export
 #'
 ejscreenapi_vs_ejam_summary <- function(z, myvars = colnames(z$EJAM), tol = 0.01, na.rm = TRUE) {
@@ -49,6 +65,7 @@ ejscreenapi_vs_ejam_summary <- function(z, myvars = colnames(z$EJAM), tol = 0.01
   z$EJAM_shown <- z$EJAM_shown[ , myvars]
   z$same_shown <- z$same_shown[ , myvars]
   z$ratio <- z$ratio[ , myvars]
+  z$absdiff <- abs(z$EJAM - z$EJSCREEN)[ , myvars]
   
   # calculate each as count of sites that agree (and not NA), over count of sites with data ie that are not NA 
   # matrixes of valid/not
@@ -63,6 +80,7 @@ ejscreenapi_vs_ejam_summary <- function(z, myvars = colnames(z$EJAM), tol = 0.01
   Rounded.Results.Agree <- colSums(z$same_shown, na.rm = na.rm) # only counts if valid
   Results.within.tol <- colSums(abs(1 - z$ratio) < tol, na.rm = TRUE)
   
+  
   pct_agree = data.frame(
     indicator = myvars, 
     sites.with.data.neither,
@@ -75,7 +93,12 @@ ejscreenapi_vs_ejam_summary <- function(z, myvars = colnames(z$EJAM), tol = 0.01
     
     Results.within.tol.as.pct.of.sites.withdata = round(
       100 * Results.within.tol / sites.with.data.both, # test/check NA handling here *** 
-      6)
+      6), 
+    median.abs.diff = sapply(z$absdiff, median, na.rm = TRUE ),
+    max.abs.diff = sapply(z$absdiff,  max, na.rm = TRUE ), 
+    mean.pct.diff = 100 * sapply(abs(z$ratio - 1),  mean, na.rm = TRUE ),
+    median.pct.diff = 100 * sapply(abs(z$ratio - 1),  median, na.rm = TRUE ),
+    max.pct.diff = 100 * sapply(abs(z$ratio - 1),  max, na.rm = TRUE )
   )
   rownames(pct_agree) <- NULL
   pct_agree <- pct_agree[order(pct_agree$Results.within.tol.as.pct.of.sites.withdata, decreasing = T), ]
