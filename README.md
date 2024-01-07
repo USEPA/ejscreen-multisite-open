@@ -84,6 +84,38 @@ analysis or a new regulation being considered, for example.
 
 ### EJAM features and benefits
 
+# Installation
+
+To install the latest version of EJAM, you will first need access to the
+GitHub repositories through EPA. Then use the following steps to install
+from private repositories:
+
+1.  create GitHub personal access token with ‘repo scope’
+
+-   Go to <https://github.com/settings/tokens> and select Tokens
+    (classic) on the left-hand side. Then click ‘Generate New Token’ -\>
+    Generate new token (classic).
+-   Give it a name and select all boxes under repo scope. Scroll down
+    and click ‘Generate Token’.
+
+2.  set GitHub credentials in Rstudio
+
+-   one-time login: from the console, run credentials::set_github_pat().
+    Paste in your PAT to the login popup under ‘Token’.
+-   store credentials long-term: run usethis::edit_r\_environ() to open
+    your .Renviron file and and add a line with your PAT in this format:
+    GITHUB_PAT = ‘abc’
+    -   You can specify an extra argument scope = ‘project’ if you only
+        want the PAT to work for a particular Rstudio project.
+
+3.  Install the packages using `devtools::install_github()`
+
+``` r
+devtools::install_github('USEPA/EJAMejscreenapi')
+devtools::install_github('USEPA/EJAMbatch.summarizer')
+devtools::install_github('USEPA/EJAM')
+```
+
 EJAM provides a ready-to-use summary report, plus more flexibility,
 accuracy, and speed than other tools have. The web-based app quickly
 provides results on the fly – The circular buffering module was

@@ -148,11 +148,11 @@ dataload_from_pins <- function(varnames = c(c('blockwts', 'blockpoints', 'blocki
         
         if (exists(varname_i, envir = envir)) {
           
-          ## done (got from local disk) ####
+         ## done (got from local disk) ####
           
           cat(varname_i, spacing[i], " - was loaded from local folder, so server copy was not sought.\n")
           varnames_gotten <- c(varnames_gotten, varname_i)
-          
+
         } else {
           cat(varname_i, spacing[i], " - is NOT in local folder.\n")
           

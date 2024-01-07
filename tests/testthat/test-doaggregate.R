@@ -10,7 +10,7 @@
 
 if (!exists('blockwts')) {
   stop('tests cannot run without blockwts dataset being loaded')
-  #  dataload_from_aws()
+  #  dataload_from_pins()
 }
 ################# #  ################# #  ################# # 
 

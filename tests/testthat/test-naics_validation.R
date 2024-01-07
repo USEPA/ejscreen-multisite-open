@@ -1,0 +1,39 @@
+## unit tests for EJAM::NAICS_validation
+## Author: Sara Sokolinski
+
+# documentation seems outdated defining the input NAICS but not the distinction between NAICS_enter and NAICS_select
+
+# test with real NAICS
+test_that('real NAICS works',{
+  expect_no_warning(val <- naics_validation(NAICS_enter = "211", NAIC_select = "1"))
+  expect_true(val)
+})
+
+
+# test with fake NAICS
+test_that('fake NAICS fails',{
+  expect_no_warning(val <- naics_validation(NAICS_enter = "LOL", NAIC_select = "1"))
+  expect_false(val)
+})
+
+#  list of NAICS gives error
+test_that('multiple NAICS gives error',{
+  expect_error(val <- naics_validation(NAICS_enter = c("211", "452"), NAIC_select = "1"))
+})
+
+#  numeric selector works
+test_that('numeric selector works',{
+  expect_no_warning(val <- naics_validation(NAICS_enter = "211", NAIC_select = 1))
+  expect_true(val)
+})
+
+#  multiple selectors gives error
+test_that('multiple selectors gives error',{
+  expect_error(val <- naics_validation(NAICS_enter = "211", NAIC_select = c(1,2)))
+})
+
+#  No selector gives error
+test_that('no selectors gives error',{
+  expect_error(val <- naics_validation(NAICS_enter = "211"))
+})
+

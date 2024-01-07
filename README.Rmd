@@ -53,6 +53,29 @@ knitr::opts_chunk$set(
 
 # Non-technical Overview
 
+# Installation
+
+To install the latest version of EJAM, you will first need access to the GitHub repositories through EPA. Then use the following steps to install from private repositories:
+
+1.	create GitHub personal access token with 'repo scope'
+
+- Go to https://github.com/settings/tokens and select Tokens (classic) on the left-hand side. Then click ‘Generate New Token’ -> Generate new token (classic).
+- Give it a name and select all boxes under repo scope. Scroll down and click ‘Generate Token’.
+
+2.	set GitHub credentials in Rstudio 
+- one-time login: from the console, run credentials::set_github_pat(). Paste in your PAT to the login popup under ‘Token’.
+- store credentials long-term: run usethis::edit_r_environ() to open your .Renviron file and and add a line with your PAT in this format: GITHUB_PAT = 'abc'
+    - You can specify an extra argument scope = ‘project’ if you only want the PAT to work for a particular Rstudio project.
+
+3. Install the packages using `devtools::install_github()`
+
+```{r, eval=FALSE}
+devtools::install_github('USEPA/EJAMejscreenapi')
+devtools::install_github('USEPA/EJAMbatch.summarizer')
+devtools::install_github('USEPA/EJAM')
+```
+
+
 
 ### EPA’s Environmental Justice Analysis Multi-site tool
 

@@ -50,7 +50,7 @@ plot_distance_mean_by_group <- function(results_bybg_people,
   
   dlist <- demogvarname
   x <- list()
-  for (i in 1:length(dlist)) {x[[i]] <- distance_by_group(results_bybg_people, dlist[i])}
+  for (i in 1:length(dlist)) {x[[i]] <- distance_by_group1(results_bybg_people, dlist[i])}
   x <- do.call(rbind, x)
   x <- matrix(unlist(x), ncol = 2)
   x <- as.data.frame(x, stringsAsFactors = F)

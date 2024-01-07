@@ -96,7 +96,7 @@ latlon_is.islandareas <- function(lat, lon)  {
 #'  # this would only work using the EJAM package datasets frs and blockpoints:
 #'    if (!exists("frs")) dataload_from_pins("frs")
 #'  table(latlon_is.valid(lat =  frs$lat, lon =  frs$lon))
-#'  # blockpoints may need to be downloaded using dataload_from_aws()
+#'  # blockpoints may need to be downloaded using dataload_from_pins()
 #'  table(latlon_is.valid(lat =  blockpoints$lat, lon =  blockpoints$lon))
 #'   }
 #' @export

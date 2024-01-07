@@ -11,7 +11,7 @@ dataload_from_aws(
   envir = globalenv(),
   mybucket = "dmap-data-commons-oa",
   mybucketfolder = "EJAM",
-  folder_local_source = "~/../Downloads",
+  folder_local_source = "./data/",
   justchecking = FALSE,
   check_server_even_if_justchecking = TRUE,
   testing = FALSE
@@ -77,5 +77,5 @@ List 9/2023 was:
 }
 }
 \seealso{
-\code{\link[=datapack]{datapack()}} \code{\link[=dataload_from_aws]{dataload_from_aws()}} \code{\link[=dataload_from_package]{dataload_from_package()}} \code{\link[=indexblocks]{indexblocks()}} \code{\link[=.onAttach]{.onAttach()}}
+\code{\link[=datapack]{datapack()}} \code{\link[=dataload_from_pins]{dataload_from_pins()}} \code{\link[=dataload_from_local]{dataload_from_local()}} \code{\link[=dataload_from_package]{dataload_from_package()}} \code{\link[=indexblocks]{indexblocks()}} \code{\link[=.onAttach]{.onAttach()}}
 }

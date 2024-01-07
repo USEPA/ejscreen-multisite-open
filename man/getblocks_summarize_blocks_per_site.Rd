@@ -4,7 +4,7 @@
 \alias{getblocks_summarize_blocks_per_site}
 \title{getblocks_summarize_blocks_per_site - how many blocks are near the sites (pop density affects accuracy)}
 \usage{
-getblocks_summarize_blocks_per_site(x, varname = "siteid")
+getblocks_summarize_blocks_per_site(x, varname = "ejam_uniq_id")
 }
 \arguments{
 \item{x}{The output of getblocksnearby()}

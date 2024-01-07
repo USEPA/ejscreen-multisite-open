@@ -115,7 +115,7 @@ function(lat = 40.81417, lon = -96.69963, radius = 1, attachment = "true", test 
 function(lat, lon, radius) {
   
   # require(EJAM)
-  # if (!exists("blockwts"))  dataload_from_aws()
+  # if (!exists("blockwts"))  dataload_from_pins()
   # if (!exists("localtree")) indexblocks()
   
   out <- EJAM::getblocksnearby(data.frame(
@@ -144,7 +144,7 @@ function(lat, lon, radius) {
 # #* @get /doaggregate
 # function(sites2blocks, sites2states_or_latlon, countcols, popmeancols, calculatedcols, ...){
 #   require(EJAM)
-#   if (!exists("blockwts"))  dataload_from_aws()
+#   if (!exists("blockwts"))  dataload_from_pins()
 #   if (!exists("localtree")) indexblocks()
 #   EJAM::doaggregate(sites2blocks = sites2blocks, 
 #                     sites2states_or_latlon = sites2states_or_latlon, 
@@ -165,7 +165,7 @@ function(lat, lon, radius) {
 
 # MULTIPLE POINTS WILL NEED TO BE PASSED USING POST AND REQUEST BODY SO IT IS A BIT MORE COMPLICATED - NOT DONE YET
 
-# if (!exists("blockwts"))  dataload_from_aws()
+# if (!exists("blockwts"))  dataload_from_pins()
 # if (!exists("localtree")) indexblocks() 
 
 

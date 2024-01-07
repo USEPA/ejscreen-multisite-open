@@ -9,7 +9,7 @@
 #' @seealso [getblocks_diagnostics()]
 #' @export
 #'
-getblocks_summarize_blocks_per_site <- function(x, varname='siteid') {
+getblocks_summarize_blocks_per_site <- function(x, varname='ejam_uniq_id') {
   blocks_per_site_histo <- table(table(x[ , ..varname]))
   blocks_per_site_histo <- data.frame(
     blocks_nearby =  as.numeric(names(blocks_per_site_histo)), 
@@ -54,7 +54,7 @@ getblocks_summarize_sites_per_block <- function(x, varname='blockid') {
 #'   pts <- rbind(data.table(lat = 40.3, lon = -96.23),
 #'     x[ , .(lat, lon)])
 #'  z <- getblocksnearbyviaQuadTree(pts, 1, quadtree = localtree, quiet = T)
-#'  z[ , .(blocks = .N) , keyby = 'siteid']
+#'  z[ , .(blocks = .N) , keyby = 'ejam_uniq_id']
 #'  plotblocksnearby(pts, radius = 1, sites2blocks = z)
 #'  zz <- getblocks_diagnostics(z, detailed = T, see_pctiles = T)
 #' cbind(stats = zz)
@@ -85,7 +85,9 @@ getblocks_diagnostics <- function(x, detailed=FALSE, see_pctiles=FALSE) {
     blockcount_distance_adjusted_up  <- x[distance > distance_unadjusted, .N]
     blockcount_distance_adjusted_down <-  x[distance < distance_unadjusted, .N]
     blockcount_distance_adjusted <- blockcount_distance_adjusted_up + blockcount_distance_adjusted_down
-    sitecount_distance_adjusted <- data.table::uniqueN(x[distance != distance_unadjusted, siteid])
+    #sitecount_distance_adjusted <- data.table::uniqueN(x[distance != distance_unadjusted, siteid])
+    sitecount_distance_adjusted <- data.table::uniqueN(x[distance != distance_unadjusted, ejam_uniq_id])
+    
   cat(paste0(blockcount_distance_adjusted,
              " block distances were adjusted (these stats may count some blocks twice if adjusted at 2+ sites)\n"))
   cat(paste0("  ", blockcount_distance_adjusted_up,
@@ -113,7 +115,7 @@ getblocks_diagnostics <- function(x, detailed=FALSE, see_pctiles=FALSE) {
   
   # calculate extra stats ####
   
-  sitecount_unique_out       <- data.table::uniqueN(x, by = 'siteid')
+  sitecount_unique_out       <- data.table::uniqueN(x, by = 'ejam_uniq_id') # used to be siteid
   blockcount_unique          <- data.table::uniqueN(x, by = 'blockid') # how many blocks are there, counting each once, not "how many blocks are unique" ie appear only once
   blockcount_incl_dupes      <- data.table::uniqueN(x)
   ratio_blocks_incl_dupes_to_unique <- blockcount_incl_dupes / blockcount_unique

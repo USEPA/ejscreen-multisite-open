@@ -50,24 +50,26 @@
   
   #header-secondary-background { 
   background-color: #71bf44;
-    width: 1090px;
+  width: 1090px;
+  /*width: 90%;*/
   height: 210px;
   display: inline-block;
   position: absolute;
-  top: 70px;
-  left: 0px;
+  /*top: var(--shift_hsb);630px;*/
+  left: 100px;
   border-radius: 0 0 50px 0;
   }
   
   #header-primary-background { 
   background-color: #0e98d7;
-    width: 1079px;
+  width: 1079px;
+  /*width: 90%;*/
   height: 220px;
   display: inline-block;
   border-radius: 0 0 50px 0;
   position: absolute;
-  top: 40px;
-  left: 0px;
+  /*top: var(--shift_hpb); /*600px;*/
+  left: 100px;
   }
   
   #header-background-detail { 
@@ -75,8 +77,8 @@
   width: 35px;
   height: 30px;
   position: absolute;
-  left: 1079px;
-  top: 0;
+  left: 1179px;
+  /*top: var(--shift_hbd); /*560px;*/
   background-color: white;
   }
   
@@ -346,12 +348,6 @@ margin-top: -30px;
 }
 
 </style> 
-
-/*END of colors, fonts, tables  */ 
-
-
-
-/*    ----------------- apexcharts CSS styling    --------------------   */
 
 <style id="apexcharts-css">
       

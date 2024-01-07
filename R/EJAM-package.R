@@ -33,7 +33,7 @@
 #' 
 #'   - **[ejamit()]** Get results (tables, maps, plots) without the web app interface, largely by using these key functions:
 #'     
-#'     0. Getting key datasets and indexing blocks, if not yet done, via [dataload_from_aws()] and [indexblocks()]
+#'     0. Getting key datasets and indexing blocks, if not yet done, via [dataload_from_pins()] and [indexblocks()]
 #'     
 #'     1. **[getblocksnearby()]**  Very fast method to buffer, identifying which blocks are 
 #'       within specified distance of point(s) like sites/facilities, and get distance to each.

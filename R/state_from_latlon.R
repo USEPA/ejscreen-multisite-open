@@ -16,6 +16,11 @@
 #'  mapfast(pts[ST == 'TX',], radius = 1) # 1 miles radius circles
 #'  
 state_from_latlon <- function(lat, lon, states_shapefile=EJAM::states_shapefile) {
+  if(is.na(as.numeric(lat)) & is.na(as.numeric(lon))){ stop("Latitude and Longitude could not be coerced to a number.")
+  }else if(is.na(as.numeric(lat))){stop("Latitude could not be coerced to a number")
+    }else if(is.na(as.numeric(lon))){stop("Longitude could not be coerced to a number.")}
+  
+  
   # pts[is.na(lat), lat := 0] 
   # pts[is.na(lon), lon := 0] 
   lat[is.na(lat)] <- 0
@@ -28,6 +33,8 @@ state_from_latlon <- function(lat, lon, states_shapefile=EJAM::states_shapefile)
   colnames(pts) <- c("ST", "statename", "FIPS.ST")
   pts$REGION <- EJAM::stateinfo$REGION[match(pts$statename, stateinfo$statename)]
   pts$n <- 1:NROW(pts)
+  
+  if(is.na(pts$statename )){warning("That latitude and longitude is not in any state")}
   return(pts)
 }
 
@@ -74,7 +81,6 @@ state_from_fips <- function(fips, uniqueonly=FALSE) {
   x <- stateinfo$ST[match(substr(fips,1,2), stateinfo$FIPS.ST)]
   if (uniqueonly) {return(unique(x))} else {return(x)}
 }
-
 
 # checking speed
 

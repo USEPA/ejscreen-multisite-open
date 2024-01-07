@@ -143,9 +143,10 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     longnames <- fixcolnames( names(overall), 'r', 'long')
   }
   
+  longnames_overall <- longnames[!(longnames %in% c("valid","invalid_msg"))]
   if (is.null(formatted)) {
     # formatted <- "" # or could do this here if we assume they omitted it but did not intend to prevent it from appearing on the spreadsheet as a tab:
-    formatted <- table_tall_from_overall(results_overall = overall, longnames = longnames)
+    formatted <- table_tall_from_overall(results_overall = overall, longnames = longnames_overall)
   }
   
   if (length(heatmap_cuts) != length(heatmap_colors)) {
@@ -350,7 +351,9 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     data.table::setDF(eachsite) # to make syntax below work since it was written assuming data.frame only not data.table
   }
   # REPLACE THE URLS WITH GOOD ONES
-  eachsite[ , hyperlink_colnames] <-  (url_4table(eachsite$lat, eachsite$lon, radius = radius_or_buffer_in_miles, as_html = FALSE))$results_bysite
+  #eachsite[ , hyperlink_colnames] <-  (url_4table(eachsite$lat, eachsite$lon, radius = radius_or_buffer_in_miles, as_html = FALSE))$results_bysite
+  eachsite[eachsite$valid==T , hyperlink_colnames] <-  (url_4table(eachsite$lat[eachsite$valid==T], eachsite$lon[eachsite$valid==T], radius = radius_or_buffer_in_miles, as_html = FALSE))$results_bysite
+  eachsite[eachsite$valid==F , hyperlink_colnames] <-  NA# (url_4table(lat=NULL, lon=NULL, radius = radius_or_buffer_in_miles, as_html = FALSE))$results_bysite
   
   openxlsx::writeData(wb, 
                       sheet = 'Each Site', x = eachsite, 
@@ -420,6 +423,7 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     for (i in 1:length(hyperlink_colnames)) {
       # not sure it has to be in a loop actually but only 2 or 3 columns to loop over
       namedvector <- as.vector(eachsite[ , hyperlink_colnames[i]])
+      namedvector[namedvector <- 'N/A'] <- NA
       class(namedvector) <- "hyperlink"
       names(namedvector) <- paste(hyperlink_text[i], 1:(NROW(eachsite))) # NOT NROW + 1 HERE !  # to use e.g., "EJScreen Report 1" not "EJScreenPDF 1"
       ## write to the worksheet the revised URL
@@ -515,7 +519,9 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
       
     header_colors_overall[ is.na(header_colors_overall )] <- ("gray")
     header_colors_eachsite[is.na(header_colors_eachsite)] <- ("gray")
-    new_colors <- c(unique(header_colors_overall), unique(header_colors_eachsite))
+    #new_colors <- c(unique(header_colors_overall), unique(header_colors_eachsite))
+    new_colors <- unique(c(header_colors_overall, header_colors_eachsite))
+    
     for (i in new_colors) {
       style_cur <- openxlsx::createStyle(fgFill = i)
       openxlsx::addStyle(wb, 'Overall',   cols = which(header_colors_overall  == i), rows = 1, style = style_cur, stack = TRUE)
@@ -548,21 +554,30 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     heatmap_cuts <- c(heatmap_cuts, Inf)
     if (length(heatmap_colnames) > 0) {
       
+      ## split heatmap columns into sequences of consecutive columns
+      hc_split <- split(heatmap_colnums, cumsum(c(1, diff(heatmap_colnums) != 1)))
+      
+      
       for (i in 1:length(heatmap_colors)) {
         if (testing) {
           cat('heatmap_colnames ', paste0(heatmap_colnames, collapse = ", ") , '\n ... at heatmap_colnums =   \n', paste0(heatmap_colnums, collapse = ", "),' --- for color ', heatmap_colors[i], '\n')
           cat("\n\n")}
         style_cur <- openxlsx::createStyle( bgFill = heatmap_colors[i] )
         
+        
+        ## need to loop over heatmap columns so it skips columns in between
+        #for(j in 1:length(heatmap_colnums)){
+        for(k in 1:length(hc_split)){  
         openxlsx::conditionalFormatting(wb, "Overall",    rows = 2 , 
-                                        cols = heatmap_colnums,  
+                                        cols = hc_split[[k]],#heatmap_colnums[j],  
                                         style = style_cur,  stack = TRUE,
                                         rule = paste0(">=", heatmap_cuts[i]))
         
         openxlsx::conditionalFormatting(wb, "Each Site",  rows = 2:(1 + NROW(eachsite)), #gridExpand = TRUE,
-                                        cols = heatmap_colnums,
+                                        cols = hc_split[[k]],#heatmap_colnums[j],
                                         style = style_cur, #stack = TRUE,
                                         rule = paste0(">=", heatmap_cuts[i]))
+        }
       }
     }
     
@@ -571,21 +586,29 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     heatmap2_colnames <- intersect(heatmap2_colnames, names(eachsite))
     heatmap2_colnums <- match(heatmap2_colnames, names(eachsite))
     heatmap2_cuts <- c(heatmap2_cuts, Inf)
+    
+    ## split heatmap columns into sequences of consecutive columns
+    hc2_split <- split(heatmap2_colnums, cumsum(c(1, diff(heatmap2_colnums) != 1)))
+    
     for (i in 1:length(heatmap2_colors)) {
       if (testing) {
         cat('heatmap2_colnames ', paste0(heatmap2_colnames, collapse = ", ") , '\n ... at heatmap2_colnums =   \n', paste0(heatmap2_colnums, collapse = ", "),' --- for color ', heatmap2_colors[i], '\n')
         cat("\n\n")}
       style_cur <- openxlsx::createStyle( bgFill = heatmap2_colors[i] )
       
+      ## need to loop over heatmap columns so it skips columns in between
+      #for(j in 1:length(heatmap2_colnums)){
+      for(k in 1:length(hc2_split)){
       openxlsx::conditionalFormatting(wb, "Overall",    rows = 2 ,
-                                      cols = heatmap2_colnums,
+                                      cols = hc2_split[[k]],#heatmap2_colnums[j],
                                       style = style_cur, stack = TRUE,
                                       rule = paste0(">=", heatmap2_cuts[i]))
       
       openxlsx::conditionalFormatting(wb, "Each Site",  rows = 2:(1 + NROW(eachsite)), #gridExpand = TRUE,
-                                      cols = heatmap2_colnums,
+                                      cols = hc2_split[[k]],#heatmap2_colnums[j],
                                       style = style_cur, #stack = TRUE,
                                       rule = paste0(">=", heatmap2_cuts[i]))
+      }
     }
     
     
@@ -634,11 +657,17 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     decimals_tosee <- digitstable$decimals[match(decimals_cols, digitstable$rname)]
     dec2format <- function(decimalscount) ifelse(decimalscount == 0, "0", paste0("0.", paste0(rep("0", decimalscount), collapse = '')))
     # dec2formats <- Vectorize(dec2format)
-    for (i in 1:length(decimals_cols)) {
-      style_cur <- openxlsx::createStyle(numFmt = dec2format(decimals_tosee[i]))
-      openxlsx::addStyle(wb, 'Overall',   cols = decimals_colnum[i], rows = 2                    ,  style = style_cur, stack = TRUE)
-      openxlsx::addStyle(wb, 'Each Site', cols = decimals_colnum[i], rows = 2:(1 + NROW(eachsite)), style = style_cur, stack = TRUE, gridExpand = TRUE)
+    ## only loop over unique values
+    for (i in unique(decimals_tosee)) {
+      style_cur <- openxlsx::createStyle(numFmt = dec2format(i))
+      openxlsx::addStyle(wb, 'Overall',   cols = decimals_colnum[decimals_tosee == 'i'], rows = 2                    ,  style = style_cur, stack = TRUE)
+      openxlsx::addStyle(wb, 'Each Site', cols = decimals_colnum[decimals_tosee == 'i'], rows = 2:(1 + NROW(eachsite)), style = style_cur, stack = TRUE, gridExpand = TRUE)
     }
+    # for (i in 1:length(decimals_cols)) {
+    #   style_cur <- openxlsx::createStyle(numFmt = dec2format(decimals_tosee[i]))
+    #   openxlsx::addStyle(wb, 'Overall',   cols = decimals_colnum[i], rows = 2                    ,  style = style_cur, stack = TRUE)
+    #   openxlsx::addStyle(wb, 'Each Site', cols = decimals_colnum[i], rows = 2:(1 + NROW(eachsite)), style = style_cur, stack = TRUE, gridExpand = TRUE)
+    # }
     
     ### distances should only have about 2 decimal places ####
     
@@ -687,7 +716,7 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     
     # RENAME TOP ROW TO long names ####
     # how to replace the header row but without replacing any formatting! ***
-    openxlsx::writeData(wb, sheet = 'Overall',   x = as.data.frame(rbind(longnames), row.names = NULL), xy = c(1,1), colNames = FALSE)
+    openxlsx::writeData(wb, sheet = 'Overall',   x = as.data.frame(rbind(longnames_overall), row.names = NULL), xy = c(1,1), colNames = FALSE)
     openxlsx::writeData(wb, sheet = 'Each Site', x = as.data.frame(rbind(longnames), row.names = NULL), xy = c(1,1), colNames = FALSE)
     
     # add FILTER ROW 1 in case it did not remain in place

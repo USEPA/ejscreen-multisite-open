@@ -147,14 +147,18 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
   
   pts <-  data.table(
     sf::st_coordinates(blocksinsidef),
-    blocksinsidef$siteid,
+    blocksinsidef$ejam_uniq_id,
+    #blocksinsidef$siteid,
     blocksinsidef$blockid,
     distance = 0
   )
   
-  setnames(pts, c("lon","lat","siteid","blockid","distance")) # it is lon then lat due to format of output of st_coordinates() I think
+  #setnames(pts, c("lon","lat","siteid","blockid","distance")) # it is lon then lat due to format of output of st_coordinates() I think
+  #pts[blockwts,  `:=`(bgid = bgid, blockwt = blockwt), on = "blockid"]
+  #data.table::setcolorder(pts, c('siteid', 'blockid', 'distance', 'blockwt', 'bgid', 'lat', 'lon')) # to make it same order as output of getblocksnearby(), plus latlon
+  setnames(pts, c("lon","lat","ejam_uniq_id","blockid","distance")) # it is lon then lat due to format of output of st_coordinates() I think
   pts[blockwts,  `:=`(bgid = bgid, blockwt = blockwt), on = "blockid"]
-  data.table::setcolorder(pts, c('siteid', 'blockid', 'distance', 'blockwt', 'bgid', 'lat', 'lon')) # to make it same order as output of getblocksnearby(), plus latlon
+  data.table::setcolorder(pts, c('ejam_uniq_id', 'blockid', 'distance', 'blockwt', 'bgid', 'lat', 'lon')) # to make it same order as output of getblocksnearby(), plus latlon
   
   return(list('pts' = pts, 'polys' = polys))
   

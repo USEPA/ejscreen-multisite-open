@@ -73,18 +73,21 @@ app_ui  <- function(request) {
                  br(),
                  fluidRow(
                    column(8,
+                    
                           ## html intro text from global.R  
                           intro_text,
                           actionButton(inputId = 'back_to_site_sel2', label = div(icon('play', style = 'transform: rotate(180deg);'), HTML('&nbsp;'), 'Return to Site Selection'), class = 'usa-button'),
                           br(), br(),
                           actionButton('ui_show_advanced_settings','Show Advanced Settings Tab', class = 'usa-button'),
-                          actionButton('ui_hide_advanced_settings','Hide Advanced Settings Tab', class = 'usa-button')
+                          actionButton('ui_hide_advanced_settings','Hide Advanced Settings Tab', class = 'usa-button'),
+                br(),br(),
                    ),
                    column(4,
                           htmltools::img(id = "biglogo", src = app_sys("app/www/ejamhex4.png"))
                    )
                  )
         ), # end About EJAM tab
+        
         ######################################################################################################### #
         # . ## ##
         # 
@@ -109,10 +112,6 @@ app_ui  <- function(request) {
               4,  # through about line 359
               h4('Specify Locations to Analyze', style = 'text-align: center;'),
               
-              # textOutput('test_textout'),
-              # textOutput('test_textout2'),
-              # textOutput('test_textout3'),
-              
               ## input: use CATEGORIES of sites, or upload LOCATIONS ? ####
               div(style = 'border: 1px solid #005ea2; padding: 10px;',
                   radioButtons(inputId = 'ss_choose_method', 
@@ -130,8 +129,7 @@ app_ui  <- function(request) {
                 condition = 'input.ss_choose_method == "dropdown"',
                 div(style = 'border: 1px solid #005ea2; padding: 10px;',
                     selectInput(inputId = 'ss_choose_method_drop', 
-                                label = tags$span('How would you like to select categories?'
-                                ),
+                                label = tags$span('How would you like to select categories?'),
                                 choices = c('by Industry (NAICS) Code' = 'NAICS',
                                             'by Industry (SIC) Code'   = 'SIC',
                                             'by EPA Program'           = 'EPA_PROGRAM',
@@ -149,7 +147,6 @@ app_ui  <- function(request) {
                                   'What type of data are you uploading?'
                                 ),
                                 choices = c('Latitude/Longitude file upload'               = 'latlon',
-                                            'Latitude/Longitude typed in here (on-screen)' = 'latlontypedin',
                                             'EPA Facility ID (FRS Identifiers)'            = 'FRS',
                                             'EPA Program IDs'                              = 'EPA_PROGRAM',
                                             'FIPS Codes'                                   = 'FIPS',
@@ -177,6 +174,15 @@ app_ui  <- function(request) {
                     
                     ## *Latitude Longitude* LOCATIONS Uploads  (conditional panel)  ------------------------------------- - ####
                     
+                       br(),
+                       
+                       wellPanel(
+                         style = 'background-color: #e5f2f5; min-height: 500px',
+                         
+                         fluidRow(
+                           column(
+                             12,
+                    
                     conditionalPanel(
                       condition = "input.ss_choose_method == 'upload' && input.ss_choose_method_upload == 'latlon'",
                       
@@ -199,53 +205,12 @@ app_ui  <- function(request) {
                                    class = 'usa-button usa-button--outline'),
                       #HTML(latlon_help_msg)
                       br()                           
+                          
                     ), # end latlong conditionalPanel                        
                     
                     ################################################################# #
                     
-                    ## *Latitude Longitude* LOCATIONS TYPED IN (conditional panel)  ------------------------------------- - ####
-                    
-                    # conditionalPanel(
-                    #   condition = "input.ss_choose_method == 'upload' && input.ss_choose_method_upload == 'latlontypedin'",
-                    #   ### input: Type into a table, a few facility lat/longs 
-                    #   ## _+++ MODULE_UI_latlontypedin  #### 
-                    #   tags$p("Enter / View / Edit latitude(s) and longitude(s) of point(s) to analyze"),
-                    #   column(
-                    #     6,
-                    #     ## on button click, show modal with DT table of lat lon values
-                    #     actionButton('show_latlontypedin_module_button', label = "Enter lat lon values on screen", class = 'usa-button usa-button--outline'), 
-                    #     shinyBS::bsModal(
-                    #       trigger = 'show_latlontypedin_module_button',
-                    #       id = 'view_latlontypedin',
-                    #       size = 'large',
-                    #       title = 'Location data', 
-                    #       helpText('Click or double-click a cell to edit. Right-click to add/remove rows or undo. Click-drag to move a row.'),
-                    #       # p("Click or double-click a cell to edit."), p("Right-click to add/remove rows or undo. Click-drag to move a row."),  
-                    #       br(),
-                    #       
-                    #       MODULE_UI_latlontypedin(id = "pts_entry_table1"),  # this shows the data entry table here
-                    #       
-                    #       # actionButton('latlontypedin_submit_button', label = 'Done entering points', class = 'usa-button usa-button--outline'),
-                    #       ## use download buttons for speed and handling larger data
-                    #       # downloadButton('download_preview_data_csv', label = 'CSV',   class = 'usa-button'),
-                    #       # downloadButton('download_preview_data_xl',  label = 'Excel', class = 'usa-button'),
-                    #       # dataTableOutput("distTable"), # for example, you could put outputs here like this
-                    #       # verbatimTextOutput("test_textout"),                          
-                    #       br()
-                    #     ),
-                    #   ),
-                    #   # tags$span(
-                    #   #   tags$ul(
-                    #   #     tags$li('Required Columns: lat, lon'),
-                    #   #     tags$li('Optional Columns: siteid')
-                    #   #   )
-                    #   # ),
-                    #   # actionButton('latlon_help', label='More Info', class = 'usa-button usa-button--outline'),
-                    #   # HTML(latlon_help_msg)
-                    #   br()
-                    # ),     # end   latlontypedin   conditionalPanel
-                    ################################################################# #
-                    
+                   
                     ## *Shapefile* LOCATIONS Uploads (conditional panel)  ------------------------------------- - ####
                     
                     conditionalPanel(
@@ -332,7 +297,7 @@ app_ui  <- function(request) {
                                      ## named vector in global.R - values are acronyms, 
                                      ## names include # of rows corresponding to that program
                                      choices = epa_programs, 
-                                     selected = default_selected, # not sure this is a good idea but trying it out
+                                     selected = default_epa_program_selected, # not sure this is a good idea but trying it out
                                      ## add X to remove selected options from list
                                      options = list('plugins' = list('remove_button'))),
                     ), # end conditional panel EPA programs
@@ -356,11 +321,6 @@ app_ui  <- function(request) {
                     
                     conditionalPanel(
                       condition = "input.ss_choose_method == 'dropdown' && input.ss_choose_method_drop == 'SIC'",
-                      
-                      # radioButtons('add_sic_subcategories', "Add all subcategories of SIC?",
-                      #              choiceNames = c("Yes","No"),
-                      #              choiceValues = c(TRUE,FALSE),
-                      #              selected = TRUE),
                       
                       ## input: Select SIC from list
                       selectizeInput(
@@ -423,7 +383,7 @@ app_ui  <- function(request) {
                              label = div(icon('play', style = 'transform: rotate(180deg);'), HTML('&nbsp;'), 
                                          'Return to Previous Results'), class = 'usa-button')
               )
-              
+                  )))
             ), # end of upload-methods column
             ################################################################# #
             #. ####
@@ -443,29 +403,22 @@ app_ui  <- function(request) {
                             ## add button and modal to show uploaded data interactively
                             actionButton('show_data_preview', label = 'Review selected sites',
                                          class = 'usa-button usa-button--outline'),
-                            ## on button click, show modal with DT table of uploaded
-                            shinyBS::bsModal(id = 'view_data_modal', 
-                                             title = 'Selected location data', 
-                                             trigger = 'show_data_preview',
-                                             size = 'large',
-                                             helpText('View or download data corresponding to your upload/selections.'),
-                                             ## use download buttons for speed and handling larger data
-                                             downloadButton('download_preview_data_csv', label = 'CSV', class = 'usa-button'),
-                                             downloadButton('download_preview_data_xl', label = 'Excel', class = 'usa-button'),
-                                             br(),br(),
-                                             DT::DTOutput('print_test2_dt', width = '100%'))
+                            
+                            
                      )
                    ), # end view data uploads
                    
                    ## MAP of uploaded points ####
                    
                    h4('Selected Location Map'),
-                   helpText('Red circles indicate overlapping sites.'),
+                   #helpText('Red circles indicate overlapping sites.'),
                    
+                       ## output: show leaflet map of uploaded points
                    shinycssloaders::withSpinner(
                      leaflet::leafletOutput(outputId = 'an_leaf_map', 
                                             height = '500px', 
-                                            width = '100%')
+                                            width = '100%'
+                                            )
                    ),
                    
                    br(), 
@@ -486,7 +439,7 @@ app_ui  <- function(request) {
                                                value = 1.0, step = 0.25,
                                                min = 0, max = 10,
                                                post = ' miles'
-                            ),
+                                ),
                      ),
                      column(6,
                             ## input: Name of analysis (goes in report header) ####
@@ -503,13 +456,6 @@ app_ui  <- function(request) {
                    
             ) # end of column with map
           ), # end of fluidRow container for upload method (left column) and map (right column)
-          
-          ## not used currently - button to switch units and update slider
-          ## input: switch units to km for radius slider
-          # radioButtons(inputId = 'radius_units',
-          #              label = 'Choose units for radius',
-          #              choices = c('miles','kilometers'),
-          #              selected = 'miles')
           
         ), # end Site Selection tab panel
      
@@ -543,197 +489,74 @@ app_ui  <- function(request) {
                              ##  tabPanel(title = 'Summary' ####
                              
                              
-                             tabPanel(
-                               title = 'Summary',
-                               br(), 
+                             # tabPanel(
+                             #   title = 'Summary',
+                             #   br(), 
                                ### summary_report_tab.html  (treats EJAM/inst/ as root) ####
-                               htmlTemplate(
-                                 app_sys('report/summary_report_tab.html'),  
-                                 pop_header = htmlOutput(outputId = 'view1_total_pop'), #### view1_total_pop ####
-                                 demog_table = shinycssloaders::withSpinner(
-                                   gt::gt_output(outputId = 'view1_demog_table') #### view1_demog_table ####
-                                 ),
+                               # htmlTemplate(
+                               #   app_sys('report/summary_report_tab.html'),  
+                               #   pop_header = htmlOutput(outputId = 'view1_total_pop'), #### view1_total_pop ####
+                                 # demog_table = shinycssloaders::withSpinner(
+                                 #   gt::gt_output(outputId = 'view1_demog_table') #### view1_demog_table ####
+                                 # ),
                                  #### view1_summary_plot ####
-                                 demog_plot = fluidRow(
-                                   column(
-                                     12, align = 'center',
-                                     shinycssloaders::withSpinner(
-                                       plotOutput(outputId = 'view1_summary_plot', width = '100%', height = '400px')  # {{ demog_plot }} goes in .html template
-                                     )
-                                   )
-                                 ),
-                                 #### quick_view_map ####
-                                 map = shinycssloaders::withSpinner(
-                                   leaflet::leafletOutput('quick_view_map', width = '1170px', height = '627px')
-                                 ), 
+                                 # demog_plot = fluidRow(
+                                 #   column(
+                                 #     12, align = 'center',
+                                 #     shinycssloaders::withSpinner(
+                                 #       plotOutput(outputId = 'view1_summary_plot', width = '100%', height = '400px')  # {{ demog_plot }} goes in .html template
+                                 #     )
+                                 #   )
+                                 # ),
+                                 
                                  #### view1_envt_table ####
-                                 env_table = shinycssloaders::withSpinner(
-                                   gt::gt_output(outputId = 'view1_envt_table')
-                                 ),
+                                 # env_table = shinycssloaders::withSpinner(
+                                 #   gt::gt_output(outputId = 'view1_envt_table')
+                                 # ),
                                  #### download button ####
-                                 dl_button = tags$div(
-                                   shiny::downloadButton(
-                                     outputId = 'summary_download',
-                                     label = 'Download Summary Report', class = 'usa-button'), style = 'text-align: center;'
-                                 ),
-                                 format_button = NULL
-                               )
-                             ), # end of Summary tab
+                               #   dl_button = tags$div(
+                               #     shiny::downloadButton(
+                               #       outputId = 'summary_download',
+                               #       label = 'Download Summary Report', class = 'usa-button'), style = 'text-align: center;'
+                               #   ),
+                               #   format_button = NULL
+                               # )
+                             #), # end of Summary tab
                              ######################################################################################################### #
                              # COMMUNITY REPORT VIEW ####
                              tabPanel(
-                               title = "Community Report",
+                                title = "Community Report",
+
+                               includeCSS(app_sys('report/community_report/communityreport.css')),
+                               includeCSS(app_sys('report/community_report/main.css')),
+                               #includeCSS('inst/report/community_report/communityreport.css'),
+                               #includeCSS('inst/report/community_report/main.css'),
+                                
+                               ## build HTML for community report
+                               uiOutput('comm_report_html'),
                                
-                               # provide html template with a long list of results (indicator stats) to insert in summary report page 
-                               {       
-                                 htmlTemplate(
-                                   
-                                   filename = app_sys('report/community_report/communityreport.html'),  
-                                   # document_ = FALSE,
-                                   LOCATIONSTR_ht    = textOutput(outputId = "LOCATIONSTR_out", inline = TRUE), # done manually
-                                   TOTALPOP_ht       = textOutput(outputId = "TOTALPOP_out",    inline = TRUE), # done manually
-                                   
-                                   inputAreaMiles_ht     = textOutput('inputAreaMiles_out',     inline = TRUE),
-                                   RAW_E_PM25_ht         = textOutput('RAW_E_PM25_out',         inline = TRUE),
-                                   S_E_PM25_ht           = textOutput('S_E_PM25_out',           inline = TRUE),
-                                   S_E_PM25_PER_ht       = textOutput('S_E_PM25_PER_out',       inline = TRUE),
-                                   N_E_PM25_ht           = textOutput('N_E_PM25_out',           inline = TRUE),
-                                   N_E_PM25_PER_ht       = textOutput('N_E_PM25_PER_out',       inline = TRUE),
-                                   RAW_E_O3_ht           = textOutput('RAW_E_O3_out',           inline = TRUE),
-                                   S_E_O3_ht             = textOutput('S_E_O3_out',             inline = TRUE),
-                                   S_E_O3_PER_ht         = textOutput('S_E_O3_PER_out',         inline = TRUE),
-                                   N_E_O3_ht             = textOutput('N_E_O3_out',             inline = TRUE),
-                                   N_E_O3_PER_ht         = textOutput('N_E_O3_PER_out',         inline = TRUE),
-                                   RAW_E_DIESEL_ht       = textOutput('RAW_E_DIESEL_out',       inline = TRUE),
-                                   S_E_DIESEL_ht         = textOutput('S_E_DIESEL_out',         inline = TRUE),
-                                   S_E_DIESEL_PER_ht     = textOutput('S_E_DIESEL_PER_out',     inline = TRUE),
-                                   N_E_DIESEL_ht         = textOutput('N_E_DIESEL_out',         inline = TRUE),
-                                   N_E_DIESEL_PER_ht     = textOutput('N_E_DIESEL_PER_out',     inline = TRUE),
-                                   RAW_E_CANCER_ht       = textOutput('RAW_E_CANCER_out',       inline = TRUE),
-                                   S_E_CANCER_ht         = textOutput('S_E_CANCER_out',         inline = TRUE),
-                                   S_E_CANCER_PER_ht     = textOutput('S_E_CANCER_PER_out',     inline = TRUE),
-                                   N_E_CANCER_ht         = textOutput('N_E_CANCER_out',         inline = TRUE),
-                                   N_E_CANCER_PER_ht     = textOutput('N_E_CANCER_PER_out',     inline = TRUE),
-                                   RAW_E_RESP_ht         = textOutput('RAW_E_RESP_out',         inline = TRUE),
-                                   S_E_RESP_ht           = textOutput('S_E_RESP_out',           inline = TRUE),
-                                   S_E_RESP_PER_ht       = textOutput('S_E_RESP_PER_out',       inline = TRUE),
-                                   N_E_RESP_ht           = textOutput('N_E_RESP_out',           inline = TRUE),
-                                   N_E_RESP_PER_ht       = textOutput('N_E_RESP_PER_out',       inline = TRUE),
-                                   RAW_E_RSEI_AIR_ht     = textOutput('RAW_E_RSEI_AIR_out',     inline = TRUE),
-                                   S_E_RSEI_AIR_ht       = textOutput('S_E_RSEI_AIR_out',       inline = TRUE),
-                                   S_E_RSEI_AIR_PER_ht   = textOutput('S_E_RSEI_AIR_PER_out',   inline = TRUE),
-                                   N_E_RSEI_AIR_ht       = textOutput('N_E_RSEI_AIR_out',       inline = TRUE),
-                                   N_E_RSEI_AIR_PER_ht   = textOutput('N_E_RSEI_AIR_PER_out',   inline = TRUE),
-                                   RAW_E_TRAFFIC_ht      = textOutput('RAW_E_TRAFFIC_out',      inline = TRUE),
-                                   S_E_TRAFFIC_ht        = textOutput('S_E_TRAFFIC_out',        inline = TRUE),
-                                   S_E_TRAFFIC_PER_ht    = textOutput('S_E_TRAFFIC_PER_out',    inline = TRUE),
-                                   N_E_TRAFFIC_ht        = textOutput('N_E_TRAFFIC_out',        inline = TRUE),
-                                   N_E_TRAFFIC_PER_ht    = textOutput('N_E_TRAFFIC_PER_out',    inline = TRUE),
-                                   RAW_E_LEAD_ht         = textOutput('RAW_E_LEAD_out',         inline = TRUE),
-                                   S_E_LEAD_ht           = textOutput('S_E_LEAD_out',           inline = TRUE),
-                                   S_E_LEAD_PER_ht       = textOutput('S_E_LEAD_PER_out',       inline = TRUE),
-                                   N_E_LEAD_ht           = textOutput('N_E_LEAD_out',           inline = TRUE),
-                                   N_E_LEAD_PER_ht       = textOutput('N_E_LEAD_PER_out',       inline = TRUE),
-                                   RAW_E_NPL_ht          = textOutput('RAW_E_NPL_out',          inline = TRUE),
-                                   S_E_NPL_ht            = textOutput('S_E_NPL_out',            inline = TRUE),
-                                   S_E_NPL_PER_ht        = textOutput('S_E_NPL_PER_out',        inline = TRUE),
-                                   N_E_NPL_ht            = textOutput('N_E_NPL_out',            inline = TRUE),
-                                   N_E_NPL_PER_ht        = textOutput('N_E_NPL_PER_out',        inline = TRUE),
-                                   RAW_E_RMP_ht          = textOutput('RAW_E_RMP_out',          inline = TRUE),
-                                   S_E_RMP_ht            = textOutput('S_E_RMP_out',            inline = TRUE),
-                                   S_E_RMP_PER_ht        = textOutput('S_E_RMP_PER_out',        inline = TRUE),
-                                   N_E_RMP_ht            = textOutput('N_E_RMP_out',            inline = TRUE),
-                                   N_E_RMP_PER_ht        = textOutput('N_E_RMP_PER_out',        inline = TRUE),
-                                   RAW_E_TSDF_ht         = textOutput('RAW_E_TSDF_out',         inline = TRUE),
-                                   S_E_TSDF_ht           = textOutput('S_E_TSDF_out',           inline = TRUE),
-                                   S_E_TSDF_PER_ht       = textOutput('S_E_TSDF_PER_out',       inline = TRUE),
-                                   N_E_TSDF_ht           = textOutput('N_E_TSDF_out',           inline = TRUE),
-                                   N_E_TSDF_PER_ht       = textOutput('N_E_TSDF_PER_out',       inline = TRUE),
-                                   RAW_E_UST_ht          = textOutput('RAW_E_UST_out',          inline = TRUE),
-                                   S_E_UST_ht            = textOutput('S_E_UST_out',            inline = TRUE),
-                                   S_E_UST_PER_ht        = textOutput('S_E_UST_PER_out',        inline = TRUE),
-                                   N_E_UST_ht            = textOutput('N_E_UST_out',            inline = TRUE),
-                                   N_E_UST_PER_ht        = textOutput('N_E_UST_PER_out',        inline = TRUE),
-                                   RAW_E_NPDES_ht        = textOutput('RAW_E_NPDES_out',        inline = TRUE),
-                                   S_E_NPDES_ht          = textOutput('S_E_NPDES_out',          inline = TRUE),
-                                   S_E_NPDES_PER_ht      = textOutput('S_E_NPDES_PER_out',      inline = TRUE),
-                                   N_E_NPDES_ht          = textOutput('N_E_NPDES_out',          inline = TRUE),
-                                   N_E_NPDES_PER_ht      = textOutput('N_E_NPDES_PER_out',      inline = TRUE),
-                                   RAW_D_DEMOGIDX2_ht    = textOutput('RAW_D_DEMOGIDX2_out',    inline = TRUE),
-                                   S_D_DEMOGIDX2_ht      = textOutput('S_D_DEMOGIDX2_out',      inline = TRUE),
-                                   S_D_DEMOGIDX2_PER_ht  = textOutput('S_D_DEMOGIDX2_PER_out',  inline = TRUE),
-                                   N_D_DEMOGIDX2_ht      = textOutput('N_D_DEMOGIDX2_out',      inline = TRUE),
-                                   N_D_DEMOGIDX2_PER_ht  = textOutput('N_D_DEMOGIDX2_PER_out',  inline = TRUE),
-                                   RAW_D_DEMOGIDX5_ht    = textOutput('RAW_D_DEMOGIDX5_out',    inline = TRUE),
-                                   S_D_DEMOGIDX5_ht      = textOutput('S_D_DEMOGIDX5_out',      inline = TRUE),
-                                   S_D_DEMOGIDX5_PER_ht  = textOutput('S_D_DEMOGIDX5_PER_out',  inline = TRUE),
-                                   N_D_DEMOGIDX5_ht      = textOutput('N_D_DEMOGIDX5_out',      inline = TRUE),
-                                   N_D_DEMOGIDX5_PER_ht  = textOutput('N_D_DEMOGIDX5_PER_out',  inline = TRUE),
-                                   RAW_D_PEOPCOLOR_ht    = textOutput('RAW_D_PEOPCOLOR_out',    inline = TRUE),
-                                   S_D_PEOPCOLOR_ht      = textOutput('S_D_PEOPCOLOR_out',      inline = TRUE),
-                                   S_D_PEOPCOLOR_PER_ht  = textOutput('S_D_PEOPCOLOR_PER_out',  inline = TRUE),
-                                   N_D_PEOPCOLOR_ht      = textOutput('N_D_PEOPCOLOR_out',      inline = TRUE),
-                                   N_D_PEOPCOLOR_PER_ht  = textOutput('N_D_PEOPCOLOR_PER_out',  inline = TRUE),
-                                   RAW_D_INCOME_ht       = textOutput('RAW_D_INCOME_out',       inline = TRUE),
-                                   S_D_INCOME_ht         = textOutput('S_D_INCOME_out',         inline = TRUE),
-                                   S_D_INCOME_PER_ht     = textOutput('S_D_INCOME_PER_out',     inline = TRUE),
-                                   N_D_INCOME_ht         = textOutput('N_D_INCOME_out',         inline = TRUE),
-                                   N_D_INCOME_PER_ht     = textOutput('N_D_INCOME_PER_out',     inline = TRUE),
-                                   RAW_D_UNEMPLOYED_ht   = textOutput('RAW_D_UNEMPLOYED_out',   inline = TRUE),
-                                   S_D_UNEMPLOYED_ht     = textOutput('S_D_UNEMPLOYED_out',     inline = TRUE),
-                                   S_D_UNEMPLOYED_PER_ht = textOutput('S_D_UNEMPLOYED_PER_out', inline = TRUE),
-                                   N_D_UNEMPLOYED_ht     = textOutput('N_D_UNEMPLOYED_out',     inline = TRUE),
-                                   N_D_UNEMPLOYED_PER_ht = textOutput('N_D_UNEMPLOYED_PER_out', inline = TRUE),
-                                   RAW_D_LING_ht         = textOutput('RAW_D_LING_out',         inline = TRUE),
-                                   S_D_LING_ht           = textOutput('S_D_LING_out',           inline = TRUE),
-                                   S_D_LING_PER_ht       = textOutput('S_D_LING_PER_out',       inline = TRUE),
-                                   N_D_LING_ht           = textOutput('N_D_LING_out',           inline = TRUE),
-                                   N_D_LING_PER_ht       = textOutput('N_D_LING_PER_out',       inline = TRUE),
-                                   RAW_D_LESSHS_ht       = textOutput('RAW_D_LESSHS_out',       inline = TRUE),
-                                   S_D_LESSHS_ht         = textOutput('S_D_LESSHS_out',         inline = TRUE),
-                                   S_D_LESSHS_PER_ht     = textOutput('S_D_LESSHS_PER_out',     inline = TRUE),
-                                   N_D_LESSHS_ht         = textOutput('N_D_LESSHS_out',         inline = TRUE),
-                                   N_D_LESSHS_PER_ht     = textOutput('N_D_LESSHS_PER_out',     inline = TRUE),
-                                   RAW_D_UNDER5_ht       = textOutput('RAW_D_UNDER5_out',       inline = TRUE),
-                                   S_D_UNDER5_ht         = textOutput('S_D_UNDER5_out',         inline = TRUE),
-                                   S_D_UNDER5_PER_ht     = textOutput('S_D_UNDER5_PER_out',     inline = TRUE),
-                                   N_D_UNDER5_ht         = textOutput('N_D_UNDER5_out',         inline = TRUE),
-                                   N_D_UNDER5_PER_ht     = textOutput('N_D_UNDER5_PER_out',     inline = TRUE),
-                                   RAW_D_OVER64_ht       = textOutput('RAW_D_OVER64_out',       inline = TRUE),
-                                   S_D_OVER64_ht         = textOutput('S_D_OVER64_out',         inline = TRUE),
-                                   S_D_OVER64_PER_ht     = textOutput('S_D_OVER64_PER_out',     inline = TRUE),
-                                   N_D_OVER64_ht         = textOutput('N_D_OVER64_out',         inline = TRUE),
-                                   N_D_OVER64_PER_ht     = textOutput('N_D_OVER64_PER_out',     inline = TRUE),
-                                   RAW_D_LIFEEXP_ht      = textOutput('RAW_D_LIFEEXP_out',      inline = TRUE),
-                                   S_D_LIFEEXP_ht        = textOutput('S_D_LIFEEXP_out',        inline = TRUE),
-                                   S_D_LIFEEXP_PER_ht    = textOutput('S_D_LIFEEXP_PER_out',    inline = TRUE),
-                                   N_D_LIFEEXP_ht        = textOutput('N_D_LIFEEXP_out',        inline = TRUE),
-                                   N_D_LIFEEXP_PER_ht    = textOutput('N_D_LIFEEXP_PER_out',    inline = TRUE),
-                                   NUM_NPL_ht            = textOutput('NUM_NPL_out',            inline = TRUE),
-                                   NUM_TSDF_ht           = textOutput('NUM_TSDF_out',           inline = TRUE),
-                                   NUM_WATERDIS_ht       = textOutput('NUM_WATERDIS_out',       inline = TRUE),
-                                   NUM_AIRPOLL_ht        = textOutput('NUM_AIRPOLL_out',        inline = TRUE),
-                                   NUM_BROWNFIELD_ht     = textOutput('NUM_BROWNFIELD_out',     inline = TRUE),
-                                   NUM_TRI_ht            = textOutput('NUM_TRI_out',            inline = TRUE),
-                                   NUM_SCHOOL_ht         = textOutput('NUM_SCHOOL_out',         inline = TRUE),
-                                   NUM_HOSPITAL_ht       = textOutput('NUM_HOSPITAL_out',       inline = TRUE),
-                                   NUM_CHURCH_ht         = textOutput('NUM_CHURCH_out',         inline = TRUE),
-                                   YESNO_AIRNONATT_ht    = textOutput('YESNO_AIRNONATT_out',    inline = TRUE),
-                                   YESNO_IMPWATERS_ht    = textOutput('YESNO_IMPWATERS_out',    inline = TRUE),
-                                   YESNO_TRIBAL_ht       = textOutput('YESNO_TRIBAL_out',       inline = TRUE),
-                                   YESNO_CEJSTDIS_ht     = textOutput('YESNO_CEJSTDIS_out',     inline = TRUE),
-                                   YESNO_IRADIS_ht       = textOutput('YESNO_IRADIS_out',       inline = TRUE)
-                                 )} ## end of html template 
-                               ,
-                               demog_plot = fluidRow(
+                              br(),
+                               
+                               #### quick_view_map ####
+                               shinycssloaders::withSpinner(
+                                 leaflet::leafletOutput('quick_view_map')#, width = '1170px', height = '627px')
+                               ), 
+                               br(),
+                               fluidRow(
                                  column(
                                    12, align = 'center',
+                                   br(),br(),
                                    shinycssloaders::withSpinner(
                                      plotOutput(outputId = 'view1_summary_plot', width = '100%', height = '400px')  # {{ demog_plot }} goes in .html template
                                    )
                                  )
-                               )
-                             ),  # end report tab
+                               ),
+                              tags$div(
+                                shiny::downloadButton(
+                                  outputId = 'community_download',
+                                  label = 'Download Community Report', class = 'usa-button'), style = 'text-align: center;'
+                              ),
+                              ),  # end report tab
                              
             
                              ######################################################################################################### #
@@ -778,11 +601,11 @@ app_ui  <- function(request) {
        ### _output: Interactive Table of Sites/Results ## ##
        shinycssloaders::withSpinner(
          DT::DTOutput(outputId = 'view3_table', width = '100%')
-       ),
-       ### _MAP of 1 site clicked in table ####
-       shinycssloaders::withSpinner(
-         leaflet::leafletOutput(outputId = 'v3_sitemap')
-       )
+       )#,
+       # ### _MAP of 1 site clicked in table ####
+       # shinycssloaders::withSpinner(
+       #   leaflet::leafletOutput(outputId = 'v3_sitemap')
+       # )
                                             ), # end site by site table tabPanel
        
        
@@ -809,9 +632,7 @@ app_ui  <- function(request) {
                   
                   fluidRow(
                     column(4,
-                           radioButtons(inputId = 'summ_bar_ind', 
-                                        label = h5('Indicator type'), 
-                                        choices = c('Demographic', 'Environmental', 'EJ'), selected = "Environmental"),
+                          uiOutput('summ_bar_ind'),
                     ),
                     column(4,
                            ## input: Barplot setting - data type
@@ -875,32 +696,12 @@ app_ui  <- function(request) {
                            fluidRow(
                              column(6, offset = 3,
                                     ## input: indicator dropdown for histogram
-                                    selectInput('summ_hist_ind', label = 'Choose indicator',
-                                                choices = setNames(
-                                                  object = c(
-                                                    c(names_d,
-                                                      names_d_subgroups),
-                                                    
-                                                    c(names_e), 
-                                                    
-                                                    c(names_ej_pctile, names_ej_supp_pctile, 
-                                                      names_ej_state_pctile, names_ej_supp_state_pctile) 
-                                                  ),
-                                                  nm = c(                                                     
-                                                    c(names_d_friendly,
-                                                      names_d_subgroups_pctile_friendly), 
-                                                    
-                                                    c(names_e_friendly), 
-                                                    
-                                                    c(names_ej_friendly,              names_ej_supp_pctile_friendly,
-                                                      names_ej_state_pctile_friendly, names_ej_supp_state_pctile_friendly)
-                                                  )
-                                                ) # end setNames
-                                    ) # end selectInput
+                                    uiOutput('summ_hist_ind'),
                              ) # column with indicator selections
                            ) # row with indicator selections
                     ) #end column with hist 
                   ) #end fluidrow
+                                
                 ) # end wellpanel
        ) # end tab panel for histograms
                                           )
@@ -939,11 +740,6 @@ app_ui  <- function(request) {
                                                  label = 'Download report',
                                                  class = 'usa-button'),
                            
-                           ## button to launch modal with outline of report
-                           ## this could be added throughout the page to show where different text components would be included
-                           ## I DONT THINK THE OUTLINE LOOKS GREAT AND IS HARD TO KEEP IN SYNC WITH ACTUAL RMD DOC OUTLINE
-                           # actionButton(inputId = 'show_outline', label = 'Show Report Outline',
-                           #              style = 'color: #fff; background-color: #005ea2;'),
                     )
                   ), ######################################################### # 
                   
@@ -1248,29 +1044,29 @@ app_ui  <- function(request) {
        ## . ####
        # EJSCREEN API MODULE -  tabPanel(title = 'EJScreen Batch Tool'   ####
        # may move to another tab. or in a conditional UI panel.
-       tabPanel(title = 'EJScreen Batch Tool',
-                
-                h3("Access to EJScreen results via the API"),
-                h4("(slow, fewer features, and cannot aggregate overall, but exactly replicates EJScreen web app)"),
-                br(),
-                
-                # notes  ## ##
-                # If a module needs to use a reactive expression, the outer function should take the reactive expression as a parameter. 
-                # If a module needs to update a reactiveVal that is in the calling envt, it can take it as a param and then just modify it, right?
-                # If a module wants to return reactive expressions to the calling app, then return a list of reactive expressions from the function.
-                # If a module needs to access an input that isn’t part of the module, the 
-                #   containing app should pass the input value wrapped in a reactive expression (i.e. reactive(...)):
-                #   myModule("myModule1", reactive(input$checkbox1))
-                
-                mod_ejscreenapi_ui("x2", 
-                                   
-                                   simpleradius_default_for_ui = 2
-                )
-                
-                # uiOutput("mod_ejscreenapi_ui_TO_SHOW_IN_APP_UI")  # this approach would use the module UI from the outer app server, not here
-                # mod_ejscreenapi_ui_test("x1")
-                
-       ),
+       # tabPanel(title = 'EJScreen Batch Tool',
+       #          
+       #          h3("Access to EJScreen results via the API"),
+       #          h4("(slow, fewer features, and cannot aggregate overall, but exactly replicates EJScreen web app)"),
+       #          br(),
+       #          
+       #          # notes  ## ##
+       #          # If a module needs to use a reactive expression, the outer function should take the reactive expression as a parameter. 
+       #          # If a module needs to update a reactiveVal that is in the calling envt, it can take it as a param and then just modify it, right?
+       #          # If a module wants to return reactive expressions to the calling app, then return a list of reactive expressions from the function.
+       #          # If a module needs to access an input that isn’t part of the module, the 
+       #          #   containing app should pass the input value wrapped in a reactive expression (i.e. reactive(...)):
+       #          #   myModule("myModule1", reactive(input$checkbox1))
+       #          
+       #          mod_ejscreenapi_ui("x2", 
+       #                             
+       #                             simpleradius_default_for_ui = 2
+       #          )
+       #          
+       #          # uiOutput("mod_ejscreenapi_ui_TO_SHOW_IN_APP_UI")  # this approach would use the module UI from the outer app server, not here
+       #          # mod_ejscreenapi_ui_test("x1")
+       #          
+       # ),
        ######################################################## # 
        ## . ####
        # ADVANCED SETTINGS - tabPanel(title = "Advanced Settings"  ####
@@ -1321,241 +1117,206 @@ app_ui  <- function(request) {
                               value = default_print_uploaded_points_to_log),
                 conditionalPanel(condition = bookmarking_allowed, {
                   bookmarkButton()  # https://mastering-shiny.org/action-bookmark.html
-                }),        
-                ######################################################## # 
-                ### ------------------------ app title ### #
-                # will not be editable here.
-                
-                ######################################################## # 
-                ##  ------------------------ Options in site point uploads, radius  ## ##
-                
-                ### ------------------------ limits on # of points ####
-              
-                
-                
-                  
-                numericInput('max_pts_upload', label = "Cap on number of points one can UPLOAD, additional ones in uploaded table get dropped entirely", 
-                             min = 1000,  step = 500,
-                             value = default_max_pts_upload, 
-                             max =        maxmax_pts_upload), 
-                numericInput('max_pts_map', label = "Cap on number of points one can MAP", 
-                             min = 500,  step = 100,
-                             value = default_max_pts_map,  
-                             max =        maxmax_pts_map), 
-                numericInput('max_pts_showtable', label = "Cap on number of points to be rendered for display in DT interactive TABLE (uploads or results)",
-                             min = 100, step = 100,
-                             value = default_max_pts_showtable, 
-                             max =        maxmax_pts_showtable),
-                numericInput('max_pts_run', label = "Cap on number of points one can request RESULTS for in one batch", 
-                             min = 1000,  step = 100,
-                             value = default_max_pts_run,  
-                             max =        maxmax_pts_run),
-                
-                
-                
-                ### Options for Radius  ------------- #
-                
-                numericInput('default_miles', label = "Default miles radius", 
-                             min = 0.25, 
-                             value = default_default_miles, 
-                             
-                             max   =     max_default_miles),
-                numericInput('max_miles', label = "Maximum radius in miles",
-                             value = default_max_miles,
-                             max        = maxmax_miles),
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                ######################################################## # 
-                
-                ##  ------------------------ Options in calculations and what stats to output ## ##
-                
-                ### calculate and/or include in downloaded outputs
-                
-                checkboxInput('calculate_ratios',
-                              label = "Results in Excel should include ratios to US and State averages",
-                              value = default_calculate_ratios),
-                checkboxInput('include_averages',
-                              label = "Results should include US and State Averages - *** not implemented yet", 
-                              value = default_include_averages),
-                checkboxInput('include_extraindicators',
-                              label = 'Results should include extra indicators from Community Report - *** not implemented yet',
-                              value = default_include_extraindicators),
-                ######################################################## # 
-                
-                ## >Options for viewing results  ####
-                
-                textInput('prefix_filenames', label = "Prefix to use in default file names when downloading [***NOT implemented yet]", value = ""),
-                
-                 ### ------------------------ map colors, weights, opacity ####
-                ### in ejscreenapi:
-                numericInput(inputId = "circleweight_in", label = "weight of circles in maps", value = default_circleweight),
+                }),
+         ######################################################## #
+         ### ------------------------ app title ### #
+         # will not be editable here.
 
-                # opacitymin   <- 0 
-                # opacitymax   <- 0.5
-                # opacitystep  <- 0.025
-                # opacitystart <- 0.5
-                # opacityratio <- 2 / 5
-                # base_color_default      <- "blue"  ;
-                # cluster_color_default   <- "red"   ;
-                # highlight_color_default <- 'orange';        
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                ######################################################## # 
-                
-                ### Excel formatting options   --------------------- #
-                
-                
-                # heatmap column names
-                
-                
-                # heatmap cutoffs for bins
-                
-                
-                # heatmap colors for bins
-                
-                
-                
-                checkboxInput("ok2plot", 
-                              label = "OK to try to plot graphics and include in Excel download",
-                              value = default_ok2plot),
-                
-                ######################################## # 
-                
-                
-                ###  ------------------------ in getblocksnearby()  ------------- #
-                
-                radioButtons(inputId = "avoidorphans", 
-                             label =  "Avoid orphans (by searching for nearest one out to maxradius, instead of reporting NA when no block is within radius)", 
-                             choices = c(Yes = TRUE, No = FALSE), 
-                             inline = TRUE,
-                             selected = default_avoidorphans),
-                
-                numericInput(inputId = 'maxradius', # THIS IS NOT THE MAX RADIUS USERS CAN PICK - THIS IS THE MAX TO WHICH IT COULD SEARCH IF avoidorphans=T
-                             label = 'If avoid orphans=T, Max distance in miles to search for closest single block if site has none within normal radius',
-                             value =  default_maxradius,  # 50000 / meters_per_mile, # 31.06856 miles !!
-                             min = 0, max = default_maxradius, step = 1), 
-                
-                ###  ------------------------ in doaggregate()   ------------- #
-                
-                shiny::selectInput('subgroups_type', 
-                                   #    "nh" for non-hispanic race subgroups as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh; 
-                                   #    "alone" for EJScreen v2.2 style race subgroups as in    White Alone, wa and others in names_d_subgroups_alone; 
-                                   #    "both" for both versions. 
-                                   label = "Which definition of demographic race ethnicity subgroups to include?",
-                                   choices = list(NonHispanicAlone = 'nh', Alone = 'alone', Both = 'both'),
-                                   selected = default_subgroups_type),
-                
-                shiny::radioButtons(inputId = "need_proximityscore", 
-                                    label = "Results should include proximity score?",
-                                    choices = list(Yes = TRUE, No = FALSE ), 
-                                    selected = default_need_proximityscore),
-                
-                shiny::radioButtons(inputId = "include_ejindexes", 
-                                    label = "Need EJ Indexes",
-                                    choices = list(Yes = TRUE, No = FALSE ), 
-                                    selected = default_include_ejindexes),
-                
-                shiny::radioButtons(inputId = "extra_demog", 
-                                    label = "Need extra indicators from EJScreen v2.2 report, on language, age groups, gender, percent with disability, poverty, etc.",
-                                    choices = list(Yes = TRUE, No = FALSE ), 
-                                    selected = default_extra_demog),
-                # 
-                
-                ### Threshold comparisons options --------------------- #
-                
-                ## input: Name for 1st set of comparisons - where the table counts which scores are above certain cutoffs?
-                shiny::textInput(inputId = 'an_name_comp1', 
-                                 label = 'Name for 1st set of comparisons',
-                                 ## this will need to be changed later
-                                 value = '',
-                                 placeholder = threshgroup.default['comp1']
-                ),
-                ## input: Threshold value(s) for 1st set of comparisons
-                numericInput(inputId = 'an_thresh_comp1', 
-                             label = 'Threshold value(s) for 1st set of comparisons (e.g. %ile 1-100):', 
-                             value = threshold.default['comp1']
-                ),
-                ## input: Name for 1st set of comparisons
-                shiny::textInput(inputId = 'an_name_comp2', 
-                                 label = 'Name for 2nd set of comparisons',
-                                 ## this will need to be changed later
-                                 value = '',
-                                 placeholder = threshgroup.default['comp2']
-                ),
-                ## input: Threshold value(s) for 2nd set of comparisons
-                numericInput(inputId = 'an_thresh_comp2', 
-                             label = 'Threshold value(s) for 2nd set of comparisons (e.g. %ile 1-100):', 
-                             value = threshold.default['comp2']
-                ),
-                ######################################################## # 
-                ######################################################## # 
+         ######################################################## #
+         ##  ------------------------ Options in site point uploads, radius  ## ##
 
-                ### Short report options --------------------- #
-                
-                shiny::textInput("standard_analysis_title",
-                                 label = "Default title to show on each short report",
-                                 value = default_standard_analysis_title),
-                
-                ## input: Type of plot for 1page report
-                shiny::radioButtons(inputId = "plotkind_1pager", 
-                                    label = "Type of plot for 1page report",
-                                    choices = list(Bar = "bar", Box = "box", Ridgeline = "ridgeline"), 
-                                    selected = default_plotkind_1pager),
-                
-                ## _radio button on format of short report  
-                #                  DISABLED UNTIL PDF KNITTING IS DEBUGGED
-                radioButtons("format1pager", "Format", choices = c(html = "html", html = "pdf"), inline = TRUE),
-                
-                
-                
-                
-                
-                
-                ### Long report options  --------------------- #
-                
-                # relocate any here from the Full Report tab??
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                br(), ## vertical space
-                
-                shiny::radioButtons(inputId = "more3", 
-                                    label = "more3 PLACEHOLDER",
-                                    choices = list(A = "a", B = "b", C = "c"), 
-                                    selected = "a")  # ,
-                
-                # ) # end advanced features and settings subtab
-                ##################################################################### # 
-                
-       ), # end Advanced Settings + API tab ## ##
+         ### ------------------------ limits on # of points ####
+
+
+
+
+         numericInput('max_pts_upload', label = "Cap on number of points one can UPLOAD, additional ones in uploaded table get dropped entirely",
+                      min = 1000,  step = 500,
+                      value = default_max_pts_upload,
+                      max =        maxmax_pts_upload),
+         numericInput('max_pts_map', label = "Cap on number of points one can MAP",
+                      min = 500,  step = 100,
+                      value = default_max_pts_map,
+                      max =        maxmax_pts_map),
+         numericInput('max_pts_showtable', label = "Cap on number of points to be rendered for display in DT interactive TABLE (uploads or results)",
+                      min = 100, step = 100,
+                      value = default_max_pts_showtable,
+                      max =        maxmax_pts_showtable),
+         numericInput('max_pts_run', label = "Cap on number of points one can request RESULTS for in one batch",
+                      min = 1000,  step = 100,
+                      value = default_max_pts_run,
+                      max =        maxmax_pts_run),
+
+
+
+         ### Options for Radius  ------------- #
+
+         numericInput('default_miles', label = "Default miles radius",
+                      min = 0.25,
+                      value = default_default_miles,
+
+                      max   =     max_default_miles),
+         numericInput('max_miles', label = "Maximum radius in miles",
+                      value = default_max_miles,
+                      max        = maxmax_miles),
+
+
+         ######################################################## #
+
+         ##  ------------------------ Options in calculations and what stats to output ## ##
+
+         ### calculate and/or include in downloaded outputs
+
+         checkboxInput('calculate_ratios',
+                       label = "Results in Excel should include ratios to US and State averages",
+                       value = default_calculate_ratios),
+         checkboxInput('include_averages',
+                       label = "Results should include US and State Averages - *** not implemented yet",
+                       value = default_include_averages),
+         checkboxInput('include_extraindicators',
+                       label = 'Results should include extra indicators from Community Report - *** not implemented yet',
+                       value = default_include_extraindicators),
+         ######################################################## #
+
+         ## >Options for viewing results  ####
+
+         textInput('prefix_filenames', label = "Prefix to use in default file names when downloading [***NOT implemented yet]", value = ""),
+
+          ### ------------------------ map colors, weights, opacity ####
+         ### in ejscreenapi:
+         numericInput(inputId = "circleweight_in", label = "weight of circles in maps", value = default_circleweight),
+
+         # opacitymin   <- 0
+         # opacitymax   <- 0.5
+         # opacitystep  <- 0.025
+         # opacitystart <- 0.5
+         # opacityratio <- 2 / 5
+         # base_color_default      <- "blue"  ;
+         # cluster_color_default   <- "red"   ;
+         # highlight_color_default <- 'orange';
+
+
+         ######################################################## #
+
+         ### Excel formatting options   --------------------- #
+
+
+         # heatmap column names
+
+
+         # heatmap cutoffs for bins
+
+
+         # heatmap colors for bins
+
+
+
+         checkboxInput("ok2plot",
+                       label = "OK to try to plot graphics and include in Excel download",
+                       value = default_ok2plot),
+
+         ######################################## #
+
+
+         ###  ------------------------ in getblocksnearby()  ------------- #
+
+         radioButtons(inputId = "avoidorphans",
+                      label =  "Avoid orphans (by searching for nearest one out to maxradius, instead of reporting NA when no block is within radius)",
+                      choices = c(Yes = TRUE, No = FALSE),
+                      inline = TRUE,
+                      selected = default_avoidorphans),
+
+         numericInput(inputId = 'maxradius', # THIS IS NOT THE MAX RADIUS USERS CAN PICK - THIS IS THE MAX TO WHICH IT COULD SEARCH IF avoidorphans=T
+                      label = 'If avoid orphans=T, Max distance in miles to search for closest single block if site has none within normal radius',
+                      value =  default_maxradius,  # 50000 / meters_per_mile, # 31.06856 miles !!
+                      min = 0, max = default_maxradius, step = 1),
+
+         ###  ------------------------ in doaggregate()   ------------- #
+
+         shiny::selectInput('subgroups_type',
+                            #    "nh" for non-hispanic race subgroups as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh;
+                            #    "alone" for EJScreen v2.2 style race subgroups as in    White Alone, wa and others in names_d_subgroups_alone;
+                            #    "both" for both versions.
+                            label = "Which definition of demographic race ethnicity subgroups to include?",
+                            choices = list(NonHispanicAlone = 'nh', Alone = 'alone', Both = 'both'),
+                            selected = default_subgroups_type),
+
+         shiny::radioButtons(inputId = "need_proximityscore",
+                             label = "Results should include proximity score?",
+                             choices = list(Yes = TRUE, No = FALSE ),
+                             selected = default_need_proximityscore),
+
+         shiny::radioButtons(inputId = "include_ejindexes",
+                             label = "Need EJ Indexes",
+                             choices = list(Yes = TRUE, No = FALSE ),
+                             selected = default_include_ejindexes),
+         
+         shiny::radioButtons(inputId = "extra_demog", 
+                             label = "Need extra indicators from EJScreen v2.2 report, on language, age groups, gender, percent with disability, poverty, etc.",
+                             choices = list(Yes = TRUE, No = FALSE ), 
+                             selected = default_extra_demog),
+
+         ### Threshold comparisons options --------------------- #
+
+         ## input: Name for 1st set of comparisons - where the table counts which scores are above certain cutoffs?
+         shiny::textInput(inputId = 'an_name_comp1',
+                          label = 'Name for 1st set of comparisons',
+                          ## this will need to be changed later
+                          value = '',
+                          placeholder = threshgroup.default['comp1']
+         ),
+         ## input: Threshold value(s) for 1st set of comparisons
+         numericInput(inputId = 'an_thresh_comp1',
+                      label = 'Threshold value(s) for 1st set of comparisons (e.g. %ile 1-100):',
+                      value = threshold.default['comp1']
+         ),
+         ## input: Name for 1st set of comparisons
+         shiny::textInput(inputId = 'an_name_comp2',
+                          label = 'Name for 2nd set of comparisons',
+                          ## this will need to be changed later
+                          value = '',
+                          placeholder = threshgroup.default['comp2']
+         ),
+         ## input: Threshold value(s) for 2nd set of comparisons
+         numericInput(inputId = 'an_thresh_comp2',
+                      label = 'Threshold value(s) for 2nd set of comparisons (e.g. %ile 1-100):',
+                      value = threshold.default['comp2']
+         ),
+         ######################################################## #
+         ######################################################## #
+
+         ### Short report options --------------------- #
+
+         shiny::textInput("standard_analysis_title",
+                          label = "Default title to show on each short report",
+                          value = default_standard_analysis_title),
+
+         ## input: Type of plot for 1page report
+         shiny::radioButtons(inputId = "plotkind_1pager",
+                             label = "Type of plot for 1page report",
+                             choices = list(Bar = "bar", Box = "box", Ridgeline = "ridgeline"),
+                             selected = default_plotkind_1pager),
+
+         ## _radio button on format of short report
+         #                  DISABLED UNTIL PDF KNITTING IS DEBUGGED
+         radioButtons("format1pager", "Format", choices = c(html = "html", html = "pdf"), inline = TRUE),
+
+
+         ### Long report options  --------------------- #
+
+         # relocate any here from the Full Report tab??
+
+         br(), ## vertical space
+
+         shiny::radioButtons(inputId = "more3",
+                             label = "more3 PLACEHOLDER",
+                             choices = list(A = "a", B = "b", C = "c"),
+                             selected = "a")  # ,
+
+         # ) # end advanced features and settings subtab
+         ##################################################################### #
+
+       ) # end Advanced Settings + API tab ## ##
        ################################################################################ #
       ## . ####  
   

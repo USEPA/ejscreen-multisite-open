@@ -70,7 +70,8 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
   }
   if (!data.table::is.data.table(sitepoints)) {data.table::setDT(sitepoints)} # should we set a key or index here, like ? ***
   
-  if (!('siteid' %in% names(sitepoints))) {sitepoints$siteid <- seq.int(length.out = NROW(sitepoints))}
+  #if (!('siteid' %in% names(sitepoints))) {sitepoints$siteid <- seq.int(length.out = NROW(sitepoints))}
+  if (!('ejam_uniq_id' %in% names(sitepoints))) {sitepoints$ejam_uniq_id <- seq.int(length.out = NROW(sitepoints))}
   
   # pass in a list of uniques and the surface radius distance
   
@@ -165,14 +166,15 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
     
     # add the distances and siteid to the table of nearby blocks
     tmp[ , distance := distances[ , c(1)]]      # converts distances dt into a vector that becomes a column of tmp
-    tmp[ , siteid := sitepoints[i, .(siteid)]]  # the similar clustered function differs, why?
-    
+    #tmp[ , siteid := sitepoints[i, .(siteid)]]  # the similar clustered function differs, why?
+    tmp[, ejam_uniq_id := sitepoints[i, .(ejam_uniq_id)]]
     #### LIMIT RESULTS SO FAR TO THE RADIUS REQUESTED  
     
     #filter actual distance, exclude blocks that are roughly nearby (according to index and bounding boxes) but are just beyond the radius you specified
     # e.g., 805 blocks roughly nearby, but only 457 truly within radius.
     
-    res[[i]] <- tmp[distance <= truedistance, .(blockid, distance, siteid)]  #   *** SLOW STEP TO OPTIMIZE  #  1 OF SLOWEST LINES *** - cant we do this outside the loop just once??
+    #res[[i]] <- tmp[distance <= truedistance, .(blockid, distance, siteid)]  #   *** SLOW STEP TO OPTIMIZE  #  1 OF SLOWEST LINES *** - cant we do this outside the loop just once??
+    res[[i]] <- tmp[distance <= truedistance, .(blockid, distance, ejam_uniq_id)]
     #
     # }
     
@@ -206,11 +208,13 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
       distances <- as.matrix(pdist::pdist(x, y))
       
       tmp[ , distance := distances[ , c(1)]]
-      tmp[ , siteid := sitepoints[i, .(siteid)]]
+      #tmp[ , siteid := sitepoints[i, .(siteid)]]
+      tmp[ , siteid := sitepoints[i, .(ejam_uniq_id)]]
       # keep only the 1 block that is closest to this site (that is > radius but < maxradius) -- NEED TO CONFIRM/TEST THIS !!
       truemaxdistance <- distance_via_surfacedistance(maxradius)
       data.table::setorder(tmp, distance) # ascending order short to long distance
-      res[[i]] <- tmp[distance <= truemaxdistance, .(blockid, distance, siteid)]   
+      #res[[i]] <- tmp[distance <= truemaxdistance, .(blockid, distance, siteid)]   
+      res[[i]] <- tmp[distance <= truemaxdistance, .(blockid, distance, ejam_uniq_id)]   
       
     }  
     ### end of if avoidorphans
@@ -224,7 +228,8 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
   ###################################################################################################################### # 
   
   sites2blocks <- data.table::rbindlist(res)
-  data.table::setkey(sites2blocks, blockid, siteid, distance)
+  #data.table::setkey(sites2blocks, blockid, siteid, distance)
+  data.table::setkey(sites2blocks, blockid, ejam_uniq_id, distance)
   
   ########################################################################### ## 
   if (!quiet) {
@@ -247,13 +252,14 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
   # 2 ways considered to do join here - may be able to optimize.
   # a) try to do join that updates sites2blocks by reference - not sure it works this way, but goal was to make join faster:
   # sites2blocks[blockwts, .(siteid,blockid,distance,blockwt,bgid, block_radius_miles), on = 'blockid']
+
   # b) try to do join that updates sites2blocks by making a copy?  
-  
+
   if (retain_unadjusted_distance) {
     sites2blocks[ , distance_unadjusted := distance] # wastes space but for development/ debugging probably useful
-    sites2blocks <-  blockwts[sites2blocks, .(siteid, blockid, distance, blockwt, bgid, block_radius_miles, distance_unadjusted), on = 'blockid'] 
+    sites2blocks <-  blockwts[sites2blocks, .(ejam_uniq_id, blockid, distance, blockwt, bgid, block_radius_miles, distance_unadjusted), on = 'blockid'] 
   } else {
-    sites2blocks <-  blockwts[sites2blocks, .(siteid, blockid, distance, blockwt, bgid, block_radius_miles ), on = 'blockid'] 
+    sites2blocks <-  blockwts[sites2blocks, .(ejam_uniq_id, blockid, distance, blockwt, bgid, block_radius_miles), on = 'blockid'] 
   }
 
   # 2 ways considered here for how exactly to make the adjustment: 
@@ -276,5 +282,11 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
   ### and with above idea, cant we subset to keep only distance <=  radius here, instead of inside the loop ? Or do it even later, after adjusting short distances? What would make sense to report as distance to avg resident if the effective radius happends to be > radius specified, as with small radius circle in rural huge block? 
   # sites2blocks <- sites2blocks[distance <= truedistance, ] 
   
+  
+  # if (interactive() & !quiet) { 
+  #   cat("You can use  getblocks_diagnostics(sites2blocks)  to see this info on distances found:\n\n")
+  #   getblocks_diagnostics(sites2blocks)
+  # }
+
   return(sites2blocks)
 }

@@ -45,10 +45,9 @@
 #' @param folder_local_source path of folder (not ending in forward slash) to 
 #'   look in for locally saved copies during development 
 #'   to avoid waiting for download from a server. 
-#' @seealso [datapack()] [dataload_from_aws()] [dataload_from_package()] [indexblocks()] [.onAttach()] 
+#' @seealso [datapack()] [dataload_from_pins()] [dataload_from_local()] [dataload_from_package()] [indexblocks()] [.onAttach()] 
 #' @return nothing - just loads data into environment (unless justchecking=T)
 #' 
-#' @export
 #'
 dataload_from_aws <- function(varnames= c('bgid2fips', 'blockid2fips', 'blockpoints', 'blockwts', 'quaddata' ),
                               ext=c(".arrow", ".rda")[2],
@@ -56,7 +55,7 @@ dataload_from_aws <- function(varnames= c('bgid2fips', 'blockid2fips', 'blockpoi
                               envir=globalenv(),  # should it be parent or global or package EJAM envt ??
                               mybucket =  'dmap-data-commons-oa',
                               mybucketfolder = "EJAM",
-                              folder_local_source = "~/../Downloads", 
+                              folder_local_source = "./data/", 
                               justchecking = FALSE, check_server_even_if_justchecking=TRUE, testing=FALSE) {
   
   ## how to get bucket contents if you want to explore the bucket ----

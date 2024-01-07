@@ -10,7 +10,7 @@
 #'   The data.frame lookup table must have a field called "PCTILE" that has quantiles/percentiles
 #'   and other column(s) with values that fall at those percentiles.
 #'   [usastats] and [statestats] are such lookup tables.
-#'   This function accepts lookup table (or uses one called us if that is in memory), and
+#'   This function uses a lookup table and
 #'   finds the number in the PCTILE column that corresponds to where a specified value
 #'   (in myvector) appears in the column called varname.in.lookup.table.
 #'   The function just looks for where the specified value fits between values in the lookup table
@@ -127,10 +127,10 @@ pctile_from_raw_lookup <- function(myvector, varname.in.lookup.table, lookup=usa
   ######################################################################### # 
   
   whichinterval        <- vector(length = NROW(myvector)) # empty, will store results zone by zone
+  match        <- vector(length = NROW(myvector)) # empty, will store results zone by zone
   percentiles_reported <- vector(length = NROW(myvector)) # empty, will store results zone by zone
   
   for (z in unique(zone)) {
-    
     ## WARN if zone does not exist in lookup table ####
     if (!(z %in% lookup$REGION)) {
       warning("zone = ", z, "was not found in the percentile lookup table column called REGION, so percentiles will be reported as NA, in zone = ", z, " for all indicators.") # but this msg will appear every single time you do this function on 1 indicator!!
@@ -161,7 +161,14 @@ pctile_from_raw_lookup <- function(myvector, varname.in.lookup.table, lookup=usa
     }  
     
     # findInterval ####
-    whichinterval[zone == z] <- findInterval(myvector_selection, myvector_lookup)
+    
+    # 1.) Uses findInterval to bin each percentile vector value into unique percentile vectors; Results are a list of bin values rather than acutal percentiles 
+    # 2.) Percentile indices are calculated based on the first nonduplicate values (indices are based on 1-100 percentile location)
+    # 3.) Percentile indices are applied to the bin values vector in step 1 to assign the appropriate percentile value to vector selection
+    unique_vlookup <- c(unique(myvector_lookup),Inf) #add Inf to coerce N-1 to N
+    nondupe_interval <- findInterval(myvector_selection, unique_vlookup,all.inside=TRUE)
+    nondupvec <- which(!duplicated(myvector_lookup))
+    whichinterval[zone == z] <- nondupvec[nondupe_interval]
     
     # WARN if raw score < PCTILE 0, in lookup ! ####
     # WARN if a raw value < minimum raw value listed in lookup table (which should be percentile zero). Why would that table lack the actual minimum? when created it should have recorded the min of each indic in each zone as the 0 pctile for that indic in that zone.
@@ -171,6 +178,9 @@ pctile_from_raw_lookup <- function(myvector, varname.in.lookup.table, lookup=usa
       whichinterval[zone == z][!is.na(belowmin) & belowmin]  <- 1 # which means 0th percentile
       warning("Some raw values were < min (0th PCTILE) seen in the percentile lookup table (you should confirm myvector and lookup are in same units, like percents reported as 0.00 to 1.00 versus as 0 to 100!), so percentile will be reported as 0, in zone = ", z, " for ", varname.in.lookup.table, ".")
     }
+    
+    #print(zone)
+    #print(z)
     whichinterval[zone == z][is.na(belowmin)] <- 1 # will not be used but wont cause error. pctile reported will be NA in this case.
     percentiles_reported[zone == z] <- as.numeric(lookup$PCTILE[lookup$REGION == z][whichinterval[zone == z]]) # this is just in case each zone has a different number of or set of PCTILE values.
     # returns NA if belowmin is NA
@@ -180,7 +190,6 @@ pctile_from_raw_lookup <- function(myvector, varname.in.lookup.table, lookup=usa
     # ...  report zero as the percentile.
     percentiles_reported[zone == z][percentiles_reported[zone == z] == unlist(high_pctiles_tied_with_min[[z]][ , varname.in.lookup.table, with = FALSE]) ] <- 0
     # --------------------------------------------------------------------------- -
-    
   } # end of loop over zones ####
   
   return(percentiles_reported)

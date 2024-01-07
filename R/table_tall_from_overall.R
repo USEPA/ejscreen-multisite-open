@@ -32,7 +32,6 @@ table_tall_from_overall <- function(results_overall, longnames) {
   # a vector has to be numeric or not, cannot have just some elements numeric some char.
   # x[var_is_numeric_ish(x)] <- as.numeric(x[var_is_numeric_ish(x)] )
   x  <- as.numeric(x  )
-  x[var_is_numeric_ish(x)] <- prettyNum(round(x[var_is_numeric_ish(x)], 3), big.mark = ",")
   x <- cbind(
     value = x, 
     indicator = longnames

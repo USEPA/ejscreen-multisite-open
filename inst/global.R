@@ -5,13 +5,16 @@
 #   source(system.file("global.R", package = "EJAMejscreenapi"))
 
 # ------------------------ ____ Get packages, functions, data ---------------------------------  ####
-require(shiny) # remove?
+library(shiny) # remove?
 # LOAD data and INDEX BLOCKS ####
-##         Note this duplicates code in .onAttach()
+##         Note this would duplicate code in .onAttach()
 # EJAM ::
-dataload_from_aws()  # SLOW STEP !! loads only missing ones # see ?dataload_from_aws for details 
+#dataload_from_aws()  # was a SLOW STEP !! loads only missing ones # see ?dataload_from_aws for details 
+# dataload_from_pins(varnames = c('bgej','bgid2fips', 'blockpoints','blockwts','quaddata'),
+#                    folder_local_source = './data/'
+#                       )
 # EJAM ::
-indexblocks() # see ?indexblocks() for details. takes several seconds. 
+#indexblocks() # see ?indexblocks() for details. takes several seconds. 
 # EJAM ::
 # dataload_from_package() # preload the key dataset at least? not essential
 
@@ -31,13 +34,16 @@ indexblocks() # see ?indexblocks() for details. takes several seconds.
 bookmarking_allowed <- TRUE  # https://mastering-shiny.org/action-bookmark.html
 if (bookmarking_allowed) {enableBookmarking(store = "url")}
 
-default_hide_advanced_settings <- FALSE
+default_hide_advanced_settings <- TRUE
 default_testing        <- TRUE
 default_shiny.testmode <- TRUE  # If TRUE, then various features for testing Shiny applications are enabled.
 default_print_uploaded_points_to_log <- TRUE
 
 ## Raise Memory Limit on file upload to 100Mb  
 options(shiny.maxRequestSize = 100*1024^2) 
+
+## disable autoloading of .R files
+options(shiny.autoload.r = FALSE)
 
 ## Loading/wait spinners (color, type) ####
 ## note: was set at type = 1, but this caused screen to "bounce"
@@ -95,16 +101,7 @@ meters_per_mile <- 1609.344
 ######################################################## # 
 ## EPA Programs (to limit NAICS/ facilities query) #### 
 ## used by inputId 'ss_limit_fac1' and 'ss_limit_fac2'
-# see frsprogramcodes data object also
-## add counts to program acronyms to use in dropdown display
-
-# *** instead of code below, now created epa_programs as data from frs_by_programid one time then build into package and do not require frs_by_programid here just to do that 
-# epa_program_counts <- dplyr::count(frs_by_programid, program, name = 'count') # EJAM :: frs_by_programid
-# epa_program_counts$pgm_text_dropdown <- paste0(epa_program_counts$program, ' (',prettyNum(epa_program_counts$count, big.mark = ','), ')')
-# epa_programs <- setNames(epa_program_counts$program, epa_program_counts$pgm_text_dropdown)
-# epa_programs is now in EJAM/data/
-
-default_selected <- "CAMDBS" # has only about 739 sites
+default_epa_program_selected <- "CAMDBS" # has only about 739 sites
 # cbind(epa_programs)
 # sort(unique(frs_by_programid$program)) # similar  # EJAM :: frs_by_programid
 
@@ -247,66 +244,6 @@ threshgroup.default <- list(
 # END OF DEFAULTS / OPTIONS / SETUP
 ################################################################# # 
 
-######################################################## # 
-# ~ ####
-######################################################## # 
-# HTML OUTLINE FOR FULL REPORT ####
-
-# report is in    /EJAM/www/  ? or maybe /EJAM/inst/app/www/ ?
-
-report_outline <- "
-<div style = 'height: 90vh; overflow-y: auto;'>
-    <ol>
-        <li>Executive Summary</li>
-        <ol type='a'>    
-            <li>Broad overview of findings</li>
-            <li>Summary of findings</li>
-            <ol type='i'>
-                <li>Demographics overall</li>
-                <li>Demographics at key sites</li>
-                <li>Environment overall</li>
-                <li>Environment at key sites</li>
-                <li>Cumulative impacts at key sites</li>
-            </ol>
-        </ol>
-        <li>Introduction</li>
-        <li>Methods</li>
-            <ol type='a'>
-                <li>Selection of sites analyzed</li>
-                <li>Estimating locations and population counts of residents</li>
-                <ol type='i'>
-                    <li>Spatial resolution of data</li>
-                    <li>Analytic method for buffering, and tools used to implement that method</li>
-                </ol>
-                <li>Demographic and environmental indicators</li>
-            </ol>
-        <li>Findings</li>
-            <ol type='a'>
-                <li>Text on Findings</li>
-                <li>Data Table 1</li>
-                <li>Data Table 2</li>
-                <li>Data Viz 1 - Barplot</li>
-                <li>Data Viz 2 - Map</li>
-                <li>Data Viz 3 - Boxplots</li>
-            </ol>
-        <li>Notes on creating this document</li>
-            <ol type='a'>
-                <li>Notes on formatting for a manuscript</li>
-                <li>Bibliography styles</li>
-                <li>Equations</li>
-            </ol>
-        <li>Appendices</li>
-            <ol type='a'>
-                <li>Competing interests</li>
-                <li>Author contributions</li>
-                <li>Acknowledgments</li>
-                <li>List of Abbreviations</li>
-            </ol>
-        <li>References</li>
-    </ol>
-</div>"
-# ~ ####
-
 # HELP TEXT ####
 
 ### info text for "About EJAM" tab ####
@@ -423,6 +360,79 @@ frs_help_msg <- HTML('  <div class="row">
     </div>
   </div>')
 
+
+epa_program_help_msg <- '
+<div class="row">
+  <div class="col-sm-12">
+  <div class="well">
+  <div id="selectFrom1" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline">
+  <label class="control-label" for="selectFrom1">
+  <p>You may upload a list of EPA Programs and Program IDs.</p> 
+  <p>The file should contain at least these two columns: program and pgm_sys_id. 
+  There can be other columns like an ID column that should be unique (no duplicates), 
+  and each record should be separated by a carriage return.</p>
+  <p>It also will work with additional optional columns such as Facility Registry ID (REGISTRY_ID), latitude (lat), and longitude (lon). </p> 
+  <p>The file could be formatted as follows, for example: </p> 
+  </label>
+  <br>
+  program,	pgm_sys_id<br>
+NC-FITS,	28122<br>
+AIR,	NY0000004432800019<br>
+NPDES,	GAR38F1E2<br>
+TRIS,	7495WCRHMR59SMC<br>
+MN-TEMPO,	17295<br>
+HWTS-DATAMART,	CAR000018374<br>
+IN-FRS,	330015781585<br>
+TX-TCEQ ACR,	RN104404751<br>
+NJ-NJEMS,	353065<br>
+AIR,	IL000031012ACJ<br>
+  </div>
+  </div>
+  </div>
+  </div>'
+
+fips_help_msg <- '
+<div class="row">
+  <div class="col-sm-12">
+  <div class="well">
+  <div id="selectFrom1" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline">
+  <label class="control-label" for="selectFrom1">
+  <p>You may upload a list of FIPS codes specified at the State (2-digit), County (5-digit), Tract (11-digit), or blockgroup (12 digit), or even block (15-digit fips) .</p> 
+  <p>The file should contain at least one column, FIPS, with the fips codes. It will also work with the following aliases: fips, fips_code, fipscode, Fips, statefips, countyfips, ST_FIPS, st_fips
+  There can be other columns like an ID column that should be unique (no duplicates), 
+  and each record should be separated by a carriage return.</p>
+  <p>The file could be formatted as follows, for example: </p> 
+  </label>
+  <br>
+ FIPS<br>
+36001014002<br>
+26163594300<br>
+36029008600<br>
+36061006100<br>
+15003005300<br>
+17031081403<br>
+06037190303<br>
+29031881301<br>
+45091061205<br>
+  </div>
+  </div>
+  </div>
+  </div>'
+
+shp_help_msg <- '
+<div class="row">
+  <div class="col-sm-12">
+  <div class="well">
+  <div id="selectFrom1" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline">
+  <label class="control-label" for="selectFrom1">
+  <p>You may upload a set of shapefiles with polgyons.</p> 
+  <p>The upload should contain at least these four related file extensions: .shp, .shx, .dbf, .prj 
+  There must be an ID column (OBJECTID_1) that should be unique (no duplicates), 
+  and each record should be separated by a carriage return.</p>
+  </div>
+  </div>
+  </div>
+  </div>'
 
 epa_program_help_msg <- '
 <div class="row">

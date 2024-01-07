@@ -8,8 +8,8 @@
 .onAttach <- function(libname, pkgname) {
   
   # These instead could be set in the golem-config.yml file
-  asap_aws   <- FALSE  # download large datasets now?           Set to FALSE while Testing/Building often
-  asap_index <- FALSE  # build index those now?                 Set to FALSE while Testing/Building often 
+  asap_aws   <- TRUE  # download large datasets now?           Set to FALSE while Testing/Building often
+  asap_index <- TRUE  # build index those now?                 Set to FALSE while Testing/Building often 
   asap_bg    <- FALSE  # load now vs lazyload blockgroup data?  Set to FALSE while Testing/Building often
   
   # startup message shown at library(EJAM) or when reinstalling from source ####
@@ -27,8 +27,8 @@
       
       These are the slow steps as EJAM starts:
       
-      1- Download the large datasets stored in AWS (quaddata, blockpoints, etc.) 
-         EJAM function dataload_from_aws() does this - see ?dataload_from_aws 
+      1- Download the large datasets stored online (quaddata, blockpoints, frs, etc.) 
+         EJAM uses dataload_from_pins() for this. Also see dataload_from_local() or dataload_from_aws()
          quaddata is >150 MB on disk and >200 MB RAM, while all others are smaller on disk.
          blockid2fips is roughly 600 MB in RAM because it stores 8 million block FIPS as text.
       
@@ -36,7 +36,7 @@
          EJAM function indexblocks() does this, using quaddata - see ?indexblocks
       
       3- Load into memory some datasets installed with EJAM (blockgroupstats, usastats, etc.)
-         EJAM function dataload_from_package() does this - see ?dataload_from_package and ?datapack()  
+         EJAM function dataload_from_package() can do this - see ?dataload_from_package and ?datapack()  
          Otherwise these are only lazyloaded at the moment they are needed, making a user wait.
          blockgroupstats (>60 MB on disk, >200 MB in RAM) and usastats, statestats are essential.
          frs-related tables are huge and not always required - needed to look up regulated sites by ID. 
@@ -68,8 +68,9 @@
     
     if (length(try(find.package("EJAM", quiet = T))) == 1) { # if it has been installed. but that function has to have already been added to package namespace once 
       
-      # EJAM::dataload_from_aws() # EJAM function ... but does it have to say EJAM :: here? trying to avoid having packrat see that and presume EJAM pkg must be installed for app to work. ***
-      EJAM::dataload_from_pins() # if/when needed only, in doaggregate()
+      dataload_from_pins(varnames = c("blockpoints", "blockwts", "quaddata"), 
+                         folder_local_source = app_sys('data')) # use default local folder when trying dataload_from_local()
+      # EJAM function ... but does it have to say EJAM :: here? trying to avoid having packrat see that and presume EJAM pkg must be installed for app to work. ***
     }
     
     #################### # 
@@ -110,7 +111,7 @@
     # cat("Building index of Census Blocks (localtree)...\n")
     # if (!exists("localtree")) {
     #   if (!exists("quaddata")) {stop("requires quaddata to be loaded - cannot build localtree without it.")}
-    #   # It is obtained from AWS currently, via  dataload_from_aws()
+    #   # It was obtained from AWS at one time, via  dataload_from_aws()
     #   
     #   # This assign() below is the same as the function called  indexblocks() 
     #   # indexblocks() # this creates  localtree object
