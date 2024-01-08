@@ -12,7 +12,10 @@
 #'   such as myvars = c(names_d, names_d_subgroups) or myvars = grep("pctile", colnames(z$EJAM), value = T)
 #' @param tol optional, set this so that results can be said to agree with this tolerance
 #'   if they differ by less than tol percent where tol is expressed as a fraction 0 to 1.
-#' @param na.rm needs testing, optional, but 
+#' @param prob optional fraction of 1 representing percentile p to check for absolute percentage differences.
+#'   See within.x.pct.at.p.pct.of.sites value that is returned.
+#' @param na.rm needs testing, optional
+#' 
 #'
 #' @return A data.frame of summary stats showing counts and percents of analyzed sites (or those with valid data 
 #'   that are found in both EJAM and EJSCREEN outputs), indicating how many of the sites
@@ -20,19 +23,38 @@
 #'   Columns include 
 #'   
 #'    "indicator" (variable name)
-#'   
-#'    "sites.with.data.neither"
+#'    
+#'    "sites.with.data.ejam" How many of the sites had a value from EJAM for the given indicator?
+#'    
+#'    "sites.with.data.neither" How many sites had NA from both EJAM and EJSCREEN?
 #'   
 #'    "sites.with.data.both"
 #'   
-#'    "Rounded.Results.Agree"
+#'    "sites.agree.rounded" How many sites agree (EJSCREEN vs EJAM) in the value shown on reports?
+#'      i.e., the reported, rounded value.
 #'   
-#'    "Results.within.tol"
-#'   
-#'    "Rounded.Results.Agree.as.pct.of.sites.withdata"
-#'   
-#'    "Results.within.tol.as.pct.of.sites.withdata"
-#' 
+#'    "sites.agree.within.tol" How many sites agree within tol? (i.e., with tol x 100 percent)
+#'    
+#'    "pct.of.sites.agree.rounded"  as a percent of sites with data
+#'    
+#'    "pct.of.sites.agree.within.tol"  as a percent of sites with data
+#'    
+#'    "median.abs.diff" Median over sites with data, of the absolute differences, EJAM - EJSCREEN
+#'    
+#'    "max.abs.diff"
+#'    
+#'    "mean.pct.diff" Percent difference is absolute value of (ratio - 1), and ratio is EJAM/EJSCREEN
+#'    
+#'    "median.pct.diff"
+#'    
+#'    "max.pct.diff"
+#'    
+#'    "within.x.pct.at.p.pct.of.sites"  Quantile, where EJAM and EJSCREEN agree with X percent or better
+#'      at prob percent of sites. Quantile as used in this last stat should mean prob (e.g. 0.95) percent of sites have 
+#'      an absolute percentage difference in estimated indicator values that is less than or equal to x 
+#'      where x is one of the actual values of abspctdiff found. 
+#'      It uses quantile(y, probs = prob, type = 1)
+#'    
 #' @examples
 #'   dontrun{
 #'   pts <- testpoints_n(100, weighting = 'frs')
@@ -43,15 +65,20 @@
 #'   s100[s100$indicator %in% names_e, ]
 #'   s100[s100$indicator %in% names_d, ]
 #'   s100[s100$indicator %in% names_these, ]
-#'   s100[s100$indicator %in% c(names_ej_pctile, names_ej_state_pctile, names_ej_supp, names_ej_supp_state), ]
+#'   s100[s100$indicator %in% c(names_ej_pctile, names_ej_state_pctile, names_ej_supp_pctile, names_ej_supp_state_pctile), ]
 #'   
 #'   sum100_within5pct <- ejscreenapi_vs_ejam_summary(vs100, tol = 0.05)
 #'   sum100_within5pct[sum100_within5pct$indicator %in% names_these, ][ , c(1, 6:12)]
 #'   
+#'   ## longer analysis (45 minutes perhaps)
+#'   # pts <- testpoints_n(1000, weighting = 'frs')
+#'   # vs1000pts3miles <- ejscreenapi_vs_ejam(pts, radius = 3, include_ejindexes = TRUE)
+#'   # sum_vs1000pts3miles <- ejscreenapi_vs_ejam_summary(vs1000pts3miles)
+#'   
 #'   }
 #' @export
 #'
-ejscreenapi_vs_ejam_summary <- function(z, myvars = colnames(z$EJAM), tol = 0.01, na.rm = TRUE) {
+ejscreenapi_vs_ejam_summary <- function(z = ejscreenapi_vs_ejam(), myvars = colnames(z$EJAM), tol = 0.01, prob = 0.95, na.rm = TRUE) {
   
   # tol Set tol so that results are said to agree if they differ by less than tol percent, where tol is a fraction 0 to 1. 
   # z is output of ejscreenapi_vs_ejam
@@ -59,50 +86,73 @@ ejscreenapi_vs_ejam_summary <- function(z, myvars = colnames(z$EJAM), tol = 0.01
   ## for a subset of key indicators:
   # myvars <- c(names_these, names_ej_pctile, names_ej_state_pctile, names_ej_supp_pctile, names_ej_supp_state_pctile)
   
-  z$EJSCREEN <- z$EJSCREEN[ , myvars]
-  z$EJAM <- z$EJAM[ , myvars]
+  z$EJSCREEN             <- z$EJSCREEN[ , myvars]
+  z$EJAM                     <- z$EJAM[ , myvars]
   z$EJSCREEN_shown <- z$EJSCREEN_shown[ , myvars]
-  z$EJAM_shown <- z$EJAM_shown[ , myvars]
-  z$same_shown <- z$same_shown[ , myvars]
-  z$ratio <- z$ratio[ , myvars]
-  z$absdiff <- abs(z$EJAM - z$EJSCREEN)[ , myvars]
+  z$EJAM_shown         <- z$EJAM_shown[ , myvars]
+  z$same_shown         <- z$same_shown[ , myvars]
+  z$ratio                   <- z$ratio[ , myvars]
+  # not yet in z:
+  z$absdiff    <- abs(z$EJAM - z$EJSCREEN) # already did [ , myvars]
+  z$abspctdiff <- abs(z$ratio - 1)         # already did [ , myvars]
   
   # calculate each as count of sites that agree (and not NA), over count of sites with data ie that are not NA 
   # matrixes of valid/not
   ok_ejscreen <- !is.na(z$EJSCREEN) # dim is 100 x 389, e.g.
-  ok_ejam <- !is.na(z$EJAM)
+  ok_ejam     <- !is.na(z$EJAM)
   # vector of counts of sites, 1 count per indicator
   sites.with.data.ejscreen <- colSums(ok_ejscreen)
-  sites.with.data.ejam <- colSums(ok_ejam)
-  sites.with.data.both <- colSums(ok_ejam & ok_ejscreen)
-  sites.with.data.neither <- colSums(!ok_ejam & !ok_ejscreen)
+  sites.with.data.ejam     <- colSums(ok_ejam)
+  sites.with.data.neither  <- colSums(!ok_ejam & !ok_ejscreen)
+  sites.with.data.both     <- colSums(ok_ejam & ok_ejscreen)
   
-  Rounded.Results.Agree <- colSums(z$same_shown, na.rm = na.rm) # only counts if valid
-  Results.within.tol <- colSums(abs(1 - z$ratio) < tol, na.rm = TRUE)
-  
+  sites.agree.rounded      <- colSums(z$same_shown, na.rm = na.rm) # only counts if valid
+  sites.agree.within.tol   <- colSums(z$abspctdiff < tol, na.rm = TRUE)
   
   pct_agree = data.frame(
-    indicator = myvars, 
-    sites.with.data.neither,
-    sites.with.data.both = sites.with.data.both,
-    Rounded.Results.Agree = Rounded.Results.Agree,
-    Results.within.tol,
-    Rounded.Results.Agree.as.pct.of.sites.withdata = round(
-      100 * Rounded.Results.Agree / sites.with.data.both, 
-      6),
     
-    Results.within.tol.as.pct.of.sites.withdata = round(
-      100 * Results.within.tol / sites.with.data.both, # test/check NA handling here *** 
-      6), 
-    median.abs.diff = sapply(z$absdiff, median, na.rm = TRUE ),
-    max.abs.diff = sapply(z$absdiff,  max, na.rm = TRUE ), 
-    mean.pct.diff = 100 * sapply(abs(z$ratio - 1),  mean, na.rm = TRUE ),
-    median.pct.diff = 100 * sapply(abs(z$ratio - 1),  median, na.rm = TRUE ),
-    max.pct.diff = 100 * sapply(abs(z$ratio - 1),  max, na.rm = TRUE )
+    indicator = myvars, 
+    
+    sites.with.data.ejscreen = sites.with.data.ejam,
+    sites.with.data.neither = sites.with.data.neither,
+    sites.with.data.both    = sites.with.data.both,
+    
+    sites.agree.rounded    = sites.agree.rounded,
+    sites.agree.within.tol = sites.agree.within.tol,
+    
+    pct.of.sites.agree.rounded    = round(100 * sites.agree.rounded    / sites.with.data.both, 6),
+    pct.of.sites.agree.within.tol = round(100 * sites.agree.within.tol / sites.with.data.both, 6), 
+    # test/check NA handling there ***
+    
+    median.abs.diff       = sapply(z$absdiff,     median, na.rm = TRUE),
+    max.abs.diff          = sapply(z$absdiff,     max,    na.rm = TRUE), 
+    
+    mean.pct.diff   = 100 * sapply(z$abspctdiff,  mean,   na.rm = TRUE),
+    median.pct.diff = 100 * sapply(z$abspctdiff,  median, na.rm = TRUE),
+    max.pct.diff    = 100 * sapply(z$abspctdiff,  max,    na.rm = TRUE),
+    
+    within.x.pct.at.p.pct.of.sites = 100 * sapply(z$abspctdiff, quantile, type = 1, probs = prob, na.rm = TRUE)
   )
+  pct_agree$median.pct.diff <- round(pct_agree$median.pct.diff, 2)
+  pct_agree$within.x.pct.at.p.pct.of.sites <- round(pct_agree$within.x.pct.at.p.pct.of.sites, 2)
+  pct_agree$max.pct.diff <- round(pct_agree$max.pct.diff, 2)
   rownames(pct_agree) <- NULL
-  pct_agree <- pct_agree[order(pct_agree$Results.within.tol.as.pct.of.sites.withdata, decreasing = T), ]
-  return(pct_agree)
+  pct_agree <- pct_agree[order(pct_agree$pct.of.sites.agree.rounded, -pct_agree$within.x.pct.at.p.pct.of.sites, decreasing = T), ]
+  
+  # if (!missing(z)) {
+  usefulvars <- c(names_e, names_d,
+    names_ej_pctile, names_ej_state_pctile, names_ej_supp_pctile, names_ej_supp_state_pctile)
+  usefulstats <- c('indicator',
+                   # 'sites.with.data.both',
+                   #'sites.agree.rounded', 'sites.agree.within.tol',
+                   'pct.of.sites.agree.rounded', 'pct.of.sites.agree.within.tol',
+                   'median.pct.diff', 'max.pct.diff', 'within.x.pct.at.p.pct.of.sites')
+  print(pct_agree[pct_agree$indicator %in% usefulvars, usefulstats])
+  cat(paste0("\n\n Tolerance of ", tol, " was used, so difference of <", tol * 100, "% is within tolerance.\n\n"))
+  cat(paste0("Probs (p) used was ", prob, ", so ", prob * 100, "% of sites are within absolute percentage difference reported in output of this function.\n\n" ))
+  # }
+  
+  invisible(pct_agree)
 }
 ############################################################ #
 
@@ -118,7 +168,9 @@ ejscreenapi_vs_ejam_summary <- function(z, myvars = colnames(z$EJAM), tol = 0.01
 #' @param x100varnames optional, if x100fix=T, a vector of colnames of x$EJAM to convert from 
 #'   being scaled as 0 to 1 into rescaled values of 0 to 100, because some 
 #'   outputs of EJSCREEN were reported as percentages 0 to 100 but as 0 to 1 in EJAM.
-#' 
+#' @param save_when_report see ejscreenapi_plus()
+#' @param report_every_n see ejscreenapi_plus()
+#' @param calculate_ratios passed to ejscreenapi_plus() and [ejamit()]
 #' @param ... passed to ejamit() as any additional parameters,
 #'    like include_ejindexes = FALSE
 #'
@@ -153,19 +205,26 @@ ejscreenapi_vs_ejam_summary <- function(z, myvars = colnames(z$EJAM), tol = 0.01
 #'   }
 #' @seealso [ejscreenapi_vs_ejam_alreadyrun()]
 #' 
-ejscreenapi_vs_ejam <- function(latlon, radius = 3, nadrop = FALSE, x100fix = TRUE, 
+ejscreenapi_vs_ejam <- function(latlon, radius = 3, nadrop = FALSE,
+                                save_when_report = TRUE, report_every_n = 250, # save every 10 minutes or so
+                                calculate_ratios = FALSE, include_ejindexes = TRUE,
+                                x100fix = TRUE, 
                                 x100varnames = c(
                                   names_d, names_d_avg, names_d_state_avg,
                                   names_d_subgroups, names_d_subgroups_avg, names_d_subgroups_state_avg,
                                   "pctdisability",  "p_own_occupied", 
                                   "pctunder18", "pctover17", "pctmale", "pctfemale"), ...) {
   
-  api1 <- ejscreenapi_plus(latlon, radius = radius)
+  api1 <- ejscreenapi_plus(latlon, radius = radius, 
+                           save_when_report = save_when_report, report_every_n = report_every_n, 
+                           calculate_ratios = calculate_ratios)
   # or api1 <- ejscreenit(latlon, radius = radius)$table
-  ejam1 <- ejamit(latlon, radius = radius, ...)$results_bysite
+  if (missing(latlon)) {latlon <- api1[ , c('id', 'lat', 'lon')]} # in case provided interactively above
+  ejam1 <- ejamit(latlon, radius = radius, calculate_ratios = calculate_ratios, include_ejindexes = include_ejindexes, ...)$results_bysite
   ejscreenapi_vs_ejam_alreadyrun(api1, ejam1, nadrop = nadrop, x100fix = x100fix)
 }
 ############################################################ #
+
 
 #' compare EJScreen API vs EJAM stats near site(s) (if results already run)
 #'
@@ -329,7 +388,7 @@ ejscreenapi_vs_ejam_alreadyrun <- function(apisite, ejamsite, nadrop = FALSE,
   )
   
   z$same_shown <- data.frame(z$EJAM_shown == z$EJSCREEN_shown)
-  z$ratio <- round(z$EJAM / z$EJSCREEN, 2)  # prettyNum(z$ratio, digits = 2, format = 'f')
+  z$ratio <- z$EJAM / z$EJSCREEN   # prettyNum(z$ratio, digits = 2, format = 'f')
   
   # rname <- colnames(ejamsite) # same as colnames(z$EJAM) OR  names(z$EJAM)
   # longname <- fixcolnames(colnames(ejamsite), 'r', 'long')
@@ -337,7 +396,6 @@ ejscreenapi_vs_ejam_alreadyrun <- function(apisite, ejamsite, nadrop = FALSE,
   return(z)
 }
 ############################################################ #
-
 
 
 
