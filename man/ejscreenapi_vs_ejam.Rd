@@ -8,6 +8,10 @@ ejscreenapi_vs_ejam(
   latlon,
   radius = 3,
   nadrop = FALSE,
+  save_when_report = TRUE,
+  report_every_n = 250,
+  calculate_ratios = FALSE,
+  include_ejindexes = TRUE,
   x100fix = TRUE,
   x100varnames = c(names_d, names_d_avg, names_d_state_avg, names_d_subgroups,
     names_d_subgroups_avg, names_d_subgroups_state_avg, "pctdisability",
@@ -20,6 +24,12 @@ ejscreenapi_vs_ejam(
 and one row per site}
 
 \item{radius}{in miles, used in ejamit() and ejscreenapi_plus()}
+
+\item{save_when_report}{see ejscreenapi_plus()}
+
+\item{report_every_n}{see ejscreenapi_plus()}
+
+\item{calculate_ratios}{passed to ejscreenapi_plus() and \code{\link[=ejamit]{ejamit()}}}
 
 \item{x100fix}{whether to multiply x100 the names_d and names_d_subgroups
 indicator scores to convert fractions 0 to 1 into percentages of 0 to 100,

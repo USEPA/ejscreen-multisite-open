@@ -5,9 +5,10 @@
 \title{see summary stats after using ejscreenapi_vs_ejam()}
 \usage{
 ejscreenapi_vs_ejam_summary(
-  z,
+  z = ejscreenapi_vs_ejam(),
   myvars = colnames(z$EJAM),
   tol = 0.01,
+  prob = 0.95,
   na.rm = TRUE
 )
 }
@@ -20,7 +21,10 @@ such as myvars = c(names_d, names_d_subgroups) or myvars = grep("pctile", colnam
 \item{tol}{optional, set this so that results can be said to agree with this tolerance
 if they differ by less than tol percent where tol is expressed as a fraction 0 to 1.}
 
-\item{na.rm}{needs testing, optional, but}
+\item{prob}{optional fraction of 1 representing percentile p to check for absolute percentage differences.
+See within.x.pct.at.p.pct.of.sites value that is returned.}
+
+\item{na.rm}{needs testing, optional}
 }
 \value{
 A data.frame of summary stats showing counts and percents of analyzed sites (or those with valid data
@@ -30,17 +34,36 @@ Columns include
 
 "indicator" (variable name)
 
-"sites.with.data.neither"
+"sites.with.data.ejam" How many of the sites had a value from EJAM for the given indicator?
+
+"sites.with.data.neither" How many sites had NA from both EJAM and EJSCREEN?
 
 "sites.with.data.both"
 
-"Rounded.Results.Agree"
+"sites.agree.rounded" How many sites agree (EJSCREEN vs EJAM) in the value shown on reports?
+i.e., the reported, rounded value.
 
-"Results.within.tol"
+"sites.agree.within.tol" How many sites agree within tol? (i.e., with tol x 100 percent)
 
-"Rounded.Results.Agree.as.pct.of.sites.withdata"
+"pct.of.sites.agree.rounded"  as a percent of sites with data
 
-"Results.within.tol.as.pct.of.sites.withdata"
+"pct.of.sites.agree.within.tol"  as a percent of sites with data
+
+"median.abs.diff" Median over sites with data, of the absolute differences, EJAM - EJSCREEN
+
+"max.abs.diff"
+
+"mean.pct.diff" Percent difference is absolute value of (ratio - 1), and ratio is EJAM/EJSCREEN
+
+"median.pct.diff"
+
+"max.pct.diff"
+
+"within.x.pct.at.p.pct.of.sites"  Quantile, where EJAM and EJSCREEN agree with X percent or better
+at prob percent of sites. Quantile as used in this last stat should mean prob (e.g. 0.95) percent of sites have
+an absolute percentage difference in estimated indicator values that is less than or equal to x
+where x is one of the actual values of abspctdiff found.
+It uses quantile(y, probs = prob, type = 1)
 }
 \description{
 see summary stats after using ejscreenapi_vs_ejam()
@@ -55,10 +78,15 @@ see summary stats after using ejscreenapi_vs_ejam()
   s100[s100$indicator \%in\% names_e, ]
   s100[s100$indicator \%in\% names_d, ]
   s100[s100$indicator \%in\% names_these, ]
-  s100[s100$indicator \%in\% c(names_ej_pctile, names_ej_state_pctile, names_ej_supp, names_ej_supp_state), ]
+  s100[s100$indicator \%in\% c(names_ej_pctile, names_ej_state_pctile, names_ej_supp_pctile, names_ej_supp_state_pctile), ]
   
   sum100_within5pct <- ejscreenapi_vs_ejam_summary(vs100, tol = 0.05)
   sum100_within5pct[sum100_within5pct$indicator \%in\% names_these, ][ , c(1, 6:12)]
+  
+  ## longer analysis (45 minutes perhaps)
+  # pts <- testpoints_n(1000, weighting = 'frs')
+  # vs1000pts3miles <- ejscreenapi_vs_ejam(pts, radius = 3, include_ejindexes = TRUE)
+  # sum_vs1000pts3miles <- ejscreenapi_vs_ejam_summary(vs1000pts3miles)
   
   }
 }

@@ -2,7 +2,43 @@
 # ejscreenapi_vs_ejam()
 # ejscreenapi_vs_ejam_alreadyrun()
 # ejscreenapi2ejam_format()
-# ejscreenapi_vs_ejam_summary
+# ejscreenapi_vs_ejam_summary()
+# ejscreenapi_vs_ejam_see1()
+
+
+#'  see EJAM and EJSCREEN results for 1 site after using ejscreenapi_vs_ejam()
+#'
+#' @param z output of ejscreenapi_vs_ejam()
+#' @param myvars optional to check just a subset of the colnames found in z$EJAM and z$EJSCREEN, 
+#'   such as 
+#'   
+#'   myvars = colnames(z$EJAM) or 
+#'   
+#'   myvars = c(names_d, names_d_subgroups) or 
+#'   
+#'   myvars = grep("pctile", colnames(z$EJAM), value = T)
+#'   
+#' @param mysite rownumber corresponding to site of interest, among 1:nrow(z$EJAM)
+#'
+#' @return a table showing one row per indicator, and columns like EJSCREEN, EJAM, ratio, etc.
+#' @export
+#'
+#' @examples 
+#'   dontrun{
+#'   z <- ejscreenapi_vs_ejam(testpoints_10, radius = 3)
+#'   mysite <- 9
+#'   ejscreenapi_vs_ejam_see1(z, mysite = mysite, myvars = colnames(z$EJAM))[!is.na(z$EJSCREEN[mysite, ]) , 1:2]
+#'   }
+#'   
+ejscreenapi_vs_ejam_see1 <- function(z, myvars = names_d, mysite = 1) {
+  if (!is.list(z) | !("EJAM" %in% names(z))) {stop('z must be output of ejscreenapi_vs_ejam() or ejscreenapi_vs_ejam_alreadyrun()')}
+  if (length(mysite) > 1 | mysite > NROW(z$EJAM)) stop('mysite must be the row number of 1 site in the table z$EJAM')
+  if (!all(myvars %in% colnames(z$EJAM))) {stop('myvars must be among colnames of z$EJAM')}
+  
+  sapply(z, function(x) x[mysite, ])[myvars, ]
+  
+}
+######################################################################### # 
 
 
 #' see summary stats after using ejscreenapi_vs_ejam()
@@ -143,8 +179,8 @@ ejscreenapi_vs_ejam_summary <- function(z = ejscreenapi_vs_ejam(), myvars = coln
   usefulvars <- c(names_e, names_d,
     names_ej_pctile, names_ej_state_pctile, names_ej_supp_pctile, names_ej_supp_state_pctile)
   usefulstats <- c('indicator',
-                   # 'sites.with.data.both',
-                   #'sites.agree.rounded', 'sites.agree.within.tol',
+                   #  "sites.with.data.both",
+                   #  "sites.agree.rounded", "sites.agree.within.tol",
                    'pct.of.sites.agree.rounded', 'pct.of.sites.agree.within.tol',
                    'median.pct.diff', 'max.pct.diff', 'within.x.pct.at.p.pct.of.sites')
   print(pct_agree[pct_agree$indicator %in% usefulvars, usefulstats])
