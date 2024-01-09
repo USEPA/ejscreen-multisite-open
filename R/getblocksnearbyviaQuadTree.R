@@ -298,7 +298,8 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
   # }
 
   if (!is.null(ejam_uniq_id_as_submitted_to_getblocks)) {
-    sites2blocks$ejam_uniq_id_as_submitted_to_getblocks <- ejam_uniq_id_as_submitted_to_getblocks
+    # disabled until fixed:  need to join or merge so 1 site matches many block-site pairs here: ***
+    # sites2blocks$ejam_uniq_id_as_submitted_to_getblocks <- ejam_uniq_id_as_submitted_to_getblocks
   }
   
   return(sites2blocks)
