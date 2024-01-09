@@ -2718,7 +2718,7 @@ app_server <- function(input, output, session) {
           radius_or_buffer_in_miles = input$bt_rad_buff,
           radius_or_buffer_description = radius_or_buffer_description,
           # saveas = fname,
-          testing = FALSE#input$testing
+          testing = input$testing
         )
       }    
       ## save file and return for downloading - or do this within table_xls_format( , saveas=fname) ?
