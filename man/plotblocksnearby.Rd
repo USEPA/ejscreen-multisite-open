@@ -12,6 +12,7 @@ plotblocksnearby(
   siteidvarname = "ejam_uniq_id",
   usemapfast = TRUE,
   returnmap = FALSE,
+  overlay_blockgroups = FALSE,
   maxradius = 31.07,
   avoidorphans = FALSE,
   ...
@@ -36,7 +37,10 @@ and in sites2blocks appearing once per block that is near that site.}
 
 \item{usemapfast}{optional. simpler plot if FALSE}
 
-\item{returnmap}{optional. if set TRUE, returns the leaflet map object instead of tabular info.}
+\item{returnmap}{optional. if set TRUE, returns the leaflet map object instead of tabular info.
+That  is needed to pass results to map_blockgroups_over_blocks() for example.}
+
+\item{overlay_blockgroups}{optional. if set TRUE, also plots overlay of blockgroup boundaries.}
 
 \item{maxradius}{optional. see \code{\link[=getblocksnearby]{getblocksnearby()}}}
 

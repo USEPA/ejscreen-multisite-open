@@ -2,20 +2,20 @@
 % Please edit documentation in R/map_blockgroups.R
 \name{map_blockgroups_over_blocks}
 \alias{map_blockgroups_over_blocks}
-\title{map_blockgroups_over_blocks - Overlay blockgroups near 1 site, after plotblocksnearby()
-Overlay blockgroups near 1 site, after plotblocksnearby()}
+\title{map_blockgroups_over_blocks - Overlay blockgroups near 1 site, after plotblocksnearby
+Overlay blockgroups near 1 site, after plotblocksnearby(returnmap = TRUE)}
 \usage{
 map_blockgroups_over_blocks(y)
 }
 \arguments{
-\item{y}{output of \code{\link[=plotblocksnearby]{plotblocksnearby()}}}
+\item{y}{output of \code{\link[=plotblocksnearby]{plotblocksnearby()}} but with returnmap = TRUE}
 }
 \value{
 leaflet map widget
 }
 \description{
-map_blockgroups_over_blocks - Overlay blockgroups near 1 site, after plotblocksnearby()
-Overlay blockgroups near 1 site, after plotblocksnearby()
+map_blockgroups_over_blocks - Overlay blockgroups near 1 site, after plotblocksnearby
+Overlay blockgroups near 1 site, after plotblocksnearby(returnmap = TRUE)
 }
 \examples{
 dontrun{
@@ -26,5 +26,5 @@ dontrun{
   }
 }
 \seealso{
-\code{\link[=map_blockgroups]{map_blockgroups()}}
+\code{\link[=map_shapes_mapview]{map_shapes_mapview()}}  \code{\link[=map_shapes_leaflet]{map_shapes_leaflet()}}  \code{\link[=map_shapes_plot]{map_shapes_plot()}}
 }
