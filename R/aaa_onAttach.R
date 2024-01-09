@@ -10,7 +10,7 @@
   # These instead could be set in the golem-config.yml file
   asap_aws   <- TRUE  # download large datasets now?           Set to FALSE while Testing/Building often
   asap_index <- TRUE  # build index those now?                 Set to FALSE while Testing/Building often 
-  asap_bg    <- FALSE  # load now vs lazyload blockgroup data?  Set to FALSE while Testing/Building often
+  asap_bg    <- TRUE  # load now vs lazyload blockgroup data?  Set to FALSE while Testing/Building often
   
   # startup message shown at library(EJAM) or when reinstalling from source ####
   packageStartupMessage("Now running .onAttach(), as part of attaching the EJAM package.")
