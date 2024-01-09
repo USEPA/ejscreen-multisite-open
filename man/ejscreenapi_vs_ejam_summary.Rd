@@ -45,25 +45,25 @@ i.e., the reported, rounded value.
 
 "sites.agree.within.tol" How many sites agree within tol? (i.e., with tol x 100 percent)
 
-"pct.of.sites.agree.rounded"  as a percent of sites with data
+"pct.of.sites.agree.rounded"  as a percent 0-100\% of sites with data
 
-"pct.of.sites.agree.within.tol"  as a percent of sites with data
+"pct.of.sites.agree.within.tol"  as a percent 0-100\% of sites with data
 
 "median.abs.diff" Median over sites with data, of the absolute differences, EJAM - EJSCREEN
 
 "max.abs.diff"
 
-"mean.pct.diff" Percent difference is absolute value of (ratio - 1), and ratio is EJAM/EJSCREEN
+"mean.pct.diff" Percent difference 0-100\% is absolute value of 100*(ratio - 1), and ratio is EJAM/EJSCREEN
 
-"median.pct.diff"
+"median.pct.diff" 0-100\%
 
-"max.pct.diff"
+"max.pct.diff" 0-100\%
 
-"within.x.pct.at.p.pct.of.sites"  Quantile, where EJAM and EJSCREEN agree with X percent or better
-at prob percent of sites. Quantile as used in this last stat should mean prob (e.g. 0.95) percent of sites have
+"within.x.pct.at.p.pct.of.sites"  X, where EJAM and EJSCREEN agree within X percent 0-100\% or better
+at prob share of sites. Prob share as used in this last stat should mean prob (e.g. 0.95) share of sites have
 an absolute percentage difference in estimated indicator values that is less than or equal to x
-where x is one of the actual values of abspctdiff found.
-It uses quantile(y, probs = prob, type = 1)
+where x is one of the actual values of abspctdiff found * 100.
+It uses 100 * quantile(y, probs = prob, type = 1)
 }
 \description{
 see summary stats after using ejscreenapi_vs_ejam()
@@ -71,7 +71,12 @@ see summary stats after using ejscreenapi_vs_ejam()
 \examples{
   dontrun{
   pts <- testpoints_n(100, weighting = 'frs')
+  
+  # This step can take a long time, almost 1 minute per 20 points, as it uses the EJScreen API:
   vs100 <- ejscreenapi_vs_ejam(pts, radius = 3, include_ejindexes = TRUE)
+  
+  ejscreenapi_vs_ejam_see1(vs100, mysite = 1)
+  vs100$diff$blockcount_near_site
   sum100 <- ejscreenapi_vs_ejam_summary(vs100, tol = 0.01)
   s100 <- sum100[ , c(1, 6:12)]
   
@@ -84,6 +89,7 @@ see summary stats after using ejscreenapi_vs_ejam()
   sum100_within5pct[sum100_within5pct$indicator \%in\% names_these, ][ , c(1, 6:12)]
   
   ## longer analysis (45 minutes perhaps)
+  # This step can take a long time, almost 1 minute per 20 points, as it uses the EJScreen API:
   # pts <- testpoints_n(1000, weighting = 'frs')
   # vs1000pts3miles <- ejscreenapi_vs_ejam(pts, radius = 3, include_ejindexes = TRUE)
   # sum_vs1000pts3miles <- ejscreenapi_vs_ejam_summary(vs1000pts3miles)

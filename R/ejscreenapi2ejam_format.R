@@ -32,11 +32,34 @@
 #'   
 ejscreenapi_vs_ejam_see1 <- function(z, myvars = names_d, mysite = 1) {
   if (!is.list(z) | !("EJAM" %in% names(z))) {stop('z must be output of ejscreenapi_vs_ejam() or ejscreenapi_vs_ejam_alreadyrun()')}
-  if (length(mysite) > 1 | mysite > NROW(z$EJAM)) stop('mysite must be the row number of 1 site in the table z$EJAM')
+  if (length(mysite) > 1 | mysite > NROW(z$EJAM)) {stop('mysite must be the row number of 1 site in the table z$EJAM')}
   if (!all(myvars %in% colnames(z$EJAM))) {stop('myvars must be among colnames of z$EJAM')}
   
   sapply(z, function(x) x[mysite, ])[myvars, ]
   
+}
+######################################################################### # 
+
+
+
+#' see quantiles over tested sites, of a stat like ratio of EJAM/EJSCREEN estimates
+#'
+#' @param z output of ejscreenapi_vs_ejam()
+#' @param mystat just one (not more than 1) of these: "ratio", "diff", "absdiff", "pctdiff", "abspctdiff"
+#' @param myvars optional vector of indicators, to check just a subset of the colnames found in z$EJAM and z$EJSCREEN, 
+#'   such as myvars = c(names_d, names_d_subgroups) 
+#'   or myvars = grep("pctile", colnames(z$EJAM), value = T)
+#' @param probs optional vector of probabilities 0 to 1 to pass to quantile()
+#' @param na.rm optional, leave it as default TRUE
+#'
+#' @return table of percentiles across analyzed locations, of a stat like the ratio of 
+#'   EJAM estimates over EJSCREEN estimates, for specified list of indicators like in names_d
+#' @export
+#'
+ejscreenapi_vs_ejam_summary_quantiles <- function(z, 
+                                                  mystat = c("ratio", "diff", "absdiff", "pctdiff", "abspctdiff")[1], 
+                                                  myvars = c('pop', '', names_these), probs = (0:20) / 20, na.rm = TRUE) {
+  t(sapply(data.frame(z[[mystat]])[ , myvars], quantile, probs = probs, na.rm = na.rm))
 }
 ######################################################################### # 
 
@@ -71,30 +94,35 @@ ejscreenapi_vs_ejam_see1 <- function(z, myvars = names_d, mysite = 1) {
 #'   
 #'    "sites.agree.within.tol" How many sites agree within tol? (i.e., with tol x 100 percent)
 #'    
-#'    "pct.of.sites.agree.rounded"  as a percent of sites with data
+#'    "pct.of.sites.agree.rounded"  as a percent 0-100% of sites with data
 #'    
-#'    "pct.of.sites.agree.within.tol"  as a percent of sites with data
+#'    "pct.of.sites.agree.within.tol"  as a percent 0-100% of sites with data
 #'    
 #'    "median.abs.diff" Median over sites with data, of the absolute differences, EJAM - EJSCREEN
 #'    
 #'    "max.abs.diff"
 #'    
-#'    "mean.pct.diff" Percent difference is absolute value of (ratio - 1), and ratio is EJAM/EJSCREEN
+#'    "mean.pct.diff" Percent difference 0-100% is absolute value of 100*(ratio - 1), and ratio is EJAM/EJSCREEN
 #'    
-#'    "median.pct.diff"
+#'    "median.pct.diff" 0-100%
 #'    
-#'    "max.pct.diff"
+#'    "max.pct.diff" 0-100%
 #'    
-#'    "within.x.pct.at.p.pct.of.sites"  Quantile, where EJAM and EJSCREEN agree with X percent or better
-#'      at prob percent of sites. Quantile as used in this last stat should mean prob (e.g. 0.95) percent of sites have 
+#'    "within.x.pct.at.p.pct.of.sites"  X, where EJAM and EJSCREEN agree within X percent 0-100% or better
+#'      at prob share of sites. Prob share as used in this last stat should mean prob (e.g. 0.95) share of sites have 
 #'      an absolute percentage difference in estimated indicator values that is less than or equal to x 
-#'      where x is one of the actual values of abspctdiff found. 
-#'      It uses quantile(y, probs = prob, type = 1)
+#'      where x is one of the actual values of abspctdiff found * 100. 
+#'      It uses 100 * quantile(y, probs = prob, type = 1)
 #'    
 #' @examples
 #'   dontrun{
 #'   pts <- testpoints_n(100, weighting = 'frs')
+#'   
+#'   # This step can take a long time, almost 1 minute per 20 points, as it uses the EJScreen API:
 #'   vs100 <- ejscreenapi_vs_ejam(pts, radius = 3, include_ejindexes = TRUE)
+#'   
+#'   ejscreenapi_vs_ejam_see1(vs100, mysite = 1)
+#'   vs100$diff$blockcount_near_site
 #'   sum100 <- ejscreenapi_vs_ejam_summary(vs100, tol = 0.01)
 #'   s100 <- sum100[ , c(1, 6:12)]
 #'   
@@ -107,6 +135,7 @@ ejscreenapi_vs_ejam_see1 <- function(z, myvars = names_d, mysite = 1) {
 #'   sum100_within5pct[sum100_within5pct$indicator %in% names_these, ][ , c(1, 6:12)]
 #'   
 #'   ## longer analysis (45 minutes perhaps)
+#'   # This step can take a long time, almost 1 minute per 20 points, as it uses the EJScreen API:
 #'   # pts <- testpoints_n(1000, weighting = 'frs')
 #'   # vs1000pts3miles <- ejscreenapi_vs_ejam(pts, radius = 3, include_ejindexes = TRUE)
 #'   # sum_vs1000pts3miles <- ejscreenapi_vs_ejam_summary(vs1000pts3miles)
@@ -128,9 +157,11 @@ ejscreenapi_vs_ejam_summary <- function(z = ejscreenapi_vs_ejam(), myvars = coln
   z$EJAM_shown         <- z$EJAM_shown[ , myvars]
   z$same_shown         <- z$same_shown[ , myvars]
   z$ratio                   <- z$ratio[ , myvars]
-  # not yet in z:
-  z$absdiff    <- abs(z$EJAM - z$EJSCREEN) # already did [ , myvars]
-  z$abspctdiff <- abs(z$ratio - 1)         # already did [ , myvars]
+  
+  z$diff             <- z$diff[ , myvars]
+  z$absdiff       <- z$absdiff[ , myvars]
+  z$pctdiff       <- z$pctdiff[ , myvars]
+  z$abspctdiff <- z$abspctdiff[ , myvars]
   
   # calculate each as count of sites that agree (and not NA), over count of sites with data ie that are not NA 
   # matrixes of valid/not
@@ -176,13 +207,14 @@ ejscreenapi_vs_ejam_summary <- function(z = ejscreenapi_vs_ejam(), myvars = coln
   pct_agree <- pct_agree[order(pct_agree$pct.of.sites.agree.rounded, -pct_agree$within.x.pct.at.p.pct.of.sites, decreasing = T), ]
   
   # if (!missing(z)) {
-  usefulvars <- c(names_e, names_d,
-    names_ej_pctile, names_ej_state_pctile, names_ej_supp_pctile, names_ej_supp_state_pctile)
+  usefulvars <- c('blockcount_near_site', 'pop', names_e, names_d,
+                  names_ej_pctile, names_ej_state_pctile, names_ej_supp_pctile, names_ej_supp_state_pctile)
   usefulstats <- c('indicator',
                    #  "sites.with.data.both",
                    #  "sites.agree.rounded", "sites.agree.within.tol",
                    'pct.of.sites.agree.rounded', 'pct.of.sites.agree.within.tol',
                    'median.pct.diff', 'max.pct.diff', 'within.x.pct.at.p.pct.of.sites')
+  cat("\n\n")
   print(pct_agree[pct_agree$indicator %in% usefulvars, usefulstats])
   cat(paste0("\n\n Tolerance of ", tol, " was used, so difference of <", tol * 100, "% is within tolerance.\n\n"))
   cat(paste0("Probs (p) used was ", prob, ", so ", prob * 100, "% of sites are within absolute percentage difference reported in output of this function.\n\n" ))
@@ -211,7 +243,16 @@ ejscreenapi_vs_ejam_summary <- function(z = ejscreenapi_vs_ejam(), myvars = coln
 #'    like include_ejindexes = FALSE
 #'
 #' @return a list of data frames, with names 
-#'   EJSCREEN, EJAM, EJSCREEN_shown, EJAM_shown, same_shown, ratio, etc.
+#'   EJSCREEN, EJAM, EJSCREEN_shown, EJAM_shown, same_shown, 
+#'   ratio, diff, absdiff, pctdiff, abspctdiff
+#'   
+#'   diff is EJAM - EJSCREEN
+#'   
+#'   ratio is EJAM / EJSCREEN
+#'   
+#'   pctdiff is ratio - 1
+#'   
+#'   abs is absolute value
 #'   
 #'   For each data.frame, colnames are indicators like pop, blockcount_near_site, etc.
 #'   and rows represent sites analyzed.
@@ -221,13 +262,19 @@ ejscreenapi_vs_ejam_summary <- function(z = ejscreenapi_vs_ejam(), myvars = coln
 #' @examples
 #'  \dontrun{
 #'    pts <- testpoints_100[1:5, ]
-#'   #z <- ejscreenapi_vs_ejam(testpoints_100[27, ], radius = 3, nadrop = T, include_ejindexes = TRUE)
-#'   z <- ejscreenapi_vs_ejam(pts[5, ], radius = 3, include_ejindexes = TRUE)
 #'    
+#'   # This step can take a long time, almost 1 minute / 20 points, as it uses the EJScreen API:
+#'   #z <- ejscreenapi_vs_ejam(
+#'     testpoints_100[27, ], radius = 3, nadrop = T, include_ejindexes = TRUE)
+#'   z <- ejscreenapi_vs_ejam(pts, radius = 3, include_ejindexes = TRUE)
+#'   
+#'   # see one site
+#'   ejscreenapi_vs_ejam_see1(z, mysite = 1)
+#'   
 #'    # Reported key indicators - which ones do or don't match
 #'    # when comparing EJSCREEN and EJAM results?
 #'    keyreportnames <- c('pop', names_these, names_pctile, names_state_pctile)
-#'    z[z$rname %in% keyreportnames &  z$same_shown, ]
+#'    z$EJAM[z$EJAM$rname %in% keyreportnames &  z$same_shown, ]
 #'    z[z$rname %in% keyreportnames & !z$same_shown & !is.na(z$EJSCREEN), ]
 #'   
 #'    # Reported (rounded) numbers match:
@@ -237,6 +284,8 @@ ejscreenapi_vs_ejam_summary <- function(z = ejscreenapi_vs_ejam(), myvars = coln
 #'    z[!z$same_shown & !is.na(z$EJSCREEN) & z$ratio != 0.01, -1] 
 #'    # Reports disagree if percentages reported as 0-100 vs fractions 0-1.00
 #'    z[z$ratio == 0.01 & !is.na(z$ratio), -1]
+#'    
+#'    
 #'    
 #'   }
 #' @seealso [ejscreenapi_vs_ejam_alreadyrun()]
@@ -257,7 +306,8 @@ ejscreenapi_vs_ejam <- function(latlon, radius = 3, nadrop = FALSE,
   # or api1 <- ejscreenit(latlon, radius = radius)$table
   if (missing(latlon)) {latlon <- api1[ , c('id', 'lat', 'lon')]} # in case provided interactively above
   ejam1 <- ejamit(latlon, radius = radius, calculate_ratios = calculate_ratios, include_ejindexes = include_ejindexes, ...)$results_bysite
-  ejscreenapi_vs_ejam_alreadyrun(api1, ejam1, nadrop = nadrop, x100fix = x100fix)
+  z <- ejscreenapi_vs_ejam_alreadyrun(api1, ejam1, nadrop = nadrop, x100fix = x100fix)
+  invisible(z)
 }
 ############################################################ #
 
@@ -277,7 +327,7 @@ ejscreenapi_vs_ejam <- function(latlon, radius = 3, nadrop = FALSE,
 #'   being scaled as 0 to 1 into rescaled values of 0 to 100, because some 
 #'   outputs of EJSCREEN were reported as percentages 0 to 100 but as 0 to 1 in EJAM.
 #'
-#' @return a list of data frames, with names 
+#' @return prints summary to console, but returns invisible a list of data frames, with names 
 #'   EJSCREEN, EJAM, EJSCREEN_shown, EJAM_shown, same_shown, ratio, etc.
 #'   
 #'   For each data.frame, colnames are indicators like pop, blockcount_near_site, etc.
@@ -285,6 +335,10 @@ ejscreenapi_vs_ejam <- function(latlon, radius = 3, nadrop = FALSE,
 #'   
 #' @export
 #' @examples 
+#'   blah = ejscreenapi_vs_ejam_alreadyrun(
+#'     apisite = testoutput_ejscreenapi_plus_5,
+#'     ejamsite = ejamit(testpoints_5, radius = 1, include_ejindexes = TRUE)$results_bysite)
+#'   ejscreenapi_vs_ejam_see1(blah, mysite = 1)
 #'  \dontrun{
 #'  
 #'  # requires data.table
@@ -295,7 +349,9 @@ ejscreenapi_vs_ejam <- function(latlon, radius = 3, nadrop = FALSE,
 #'   
 #'   # just 1 point
 #'   # z <- ejscreenapi_vs_ejam(pts[5, ], radius = 3, include_ejindexes = TRUE)
-#'   # multiple poitns
+#'   
+#'   # multiple points
+#'   # This step can take a long time, almost 1 minute per 20 points, as it uses the EJScreen API:
 #'   z <- ejscreenapi_vs_ejam(pts, radius = 3, include_ejindexes = TRUE)
 #'     
 #'    # same thing but step by step
@@ -366,11 +422,11 @@ ejscreenapi_vs_ejam <- function(latlon, radius = 3, nadrop = FALSE,
 ejscreenapi_vs_ejam_alreadyrun <- function(apisite, ejamsite, nadrop = FALSE, 
                                            x100fix = TRUE, 
                                            x100varnames = c(
-                                              names_d, names_d_avg, names_d_state_avg,
-                                              names_d_subgroups, names_d_subgroups_avg, names_d_subgroups_state_avg,
-                                              "pctdisability",  "p_own_occupied", 
-                                              "pctunder18", "pctover17", "pctmale", "pctfemale")) {
-
+                                             names_d, names_d_avg, names_d_state_avg,
+                                             names_d_subgroups, names_d_subgroups_avg, names_d_subgroups_state_avg,
+                                             "pctdisability",  "p_own_occupied", 
+                                             "pctunder18", "pctover17", "pctmale", "pctfemale")) {
+  
   # requires data.table
   # radius <- 1
   # pts <- testpoints_100[1:5, ]
@@ -424,12 +480,19 @@ ejscreenapi_vs_ejam_alreadyrun <- function(apisite, ejamsite, nadrop = FALSE,
   )
   
   z$same_shown <- data.frame(z$EJAM_shown == z$EJSCREEN_shown)
+  
   z$ratio <- z$EJAM / z$EJSCREEN   # prettyNum(z$ratio, digits = 2, format = 'f')
+  z$diff <- z$EJAM - z$EJSCREEN
+  z$absdiff <- abs(z$diff)
+  z$pctdiff <- z$ratio - 1
+  z$abspctdiff <- abs(z$pctdiff)   
   
   # rname <- colnames(ejamsite) # same as colnames(z$EJAM) OR  names(z$EJAM)
   # longname <- fixcolnames(colnames(ejamsite), 'r', 'long')
   
-  return(z)
+  ejscreenapi_vs_ejam_summary(z)
+  
+  invisible(z) 
 }
 ############################################################ #
 

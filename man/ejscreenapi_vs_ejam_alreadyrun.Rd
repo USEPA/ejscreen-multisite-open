@@ -31,7 +31,7 @@ being scaled as 0 to 1 into rescaled values of 0 to 100, because some
 outputs of EJSCREEN were reported as percentages 0 to 100 but as 0 to 1 in EJAM.}
 }
 \value{
-a list of data frames, with names
+prints summary to console, but returns invisible a list of data frames, with names
 EJSCREEN, EJAM, EJSCREEN_shown, EJAM_shown, same_shown, ratio, etc.
 
 For each data.frame, colnames are indicators like pop, blockcount_near_site, etc.
@@ -41,6 +41,10 @@ and rows represent sites analyzed.
 compare EJScreen API vs EJAM stats near site(s) (if results already run)
 }
 \examples{
+  blah = ejscreenapi_vs_ejam_alreadyrun(
+    apisite = testoutput_ejscreenapi_plus_5,
+    ejamsite = ejamit(testpoints_5, radius = 1, include_ejindexes = TRUE)$results_bysite)
+  ejscreenapi_vs_ejam_see1(blah, mysite = 1)
  \dontrun{
  
  # requires data.table
@@ -51,7 +55,9 @@ compare EJScreen API vs EJAM stats near site(s) (if results already run)
   
   # just 1 point
   # z <- ejscreenapi_vs_ejam(pts[5, ], radius = 3, include_ejindexes = TRUE)
-  # multiple poitns
+  
+  # multiple points
+  # This step can take a long time, almost 1 minute per 20 points, as it uses the EJScreen API:
   z <- ejscreenapi_vs_ejam(pts, radius = 3, include_ejindexes = TRUE)
     
    # same thing but step by step

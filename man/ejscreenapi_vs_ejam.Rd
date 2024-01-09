@@ -44,7 +44,16 @@ like include_ejindexes = FALSE}
 }
 \value{
 a list of data frames, with names
-EJSCREEN, EJAM, EJSCREEN_shown, EJAM_shown, same_shown, ratio, etc.
+EJSCREEN, EJAM, EJSCREEN_shown, EJAM_shown, same_shown,
+ratio, diff, absdiff, pctdiff, abspctdiff
+
+diff is EJAM - EJSCREEN
+
+ratio is EJAM / EJSCREEN
+
+pctdiff is ratio - 1
+
+abs is absolute value
 
 For each data.frame, colnames are indicators like pop, blockcount_near_site, etc.
 and rows represent sites analyzed.
@@ -55,13 +64,19 @@ compare EJScreen API vs EJAM stats near site(s)
 \examples{
  \dontrun{
    pts <- testpoints_100[1:5, ]
-  #z <- ejscreenapi_vs_ejam(testpoints_100[27, ], radius = 3, nadrop = T, include_ejindexes = TRUE)
-  z <- ejscreenapi_vs_ejam(pts[5, ], radius = 3, include_ejindexes = TRUE)
    
+  # This step can take a long time, almost 1 minute / 20 points, as it uses the EJScreen API:
+  #z <- ejscreenapi_vs_ejam(
+    testpoints_100[27, ], radius = 3, nadrop = T, include_ejindexes = TRUE)
+  z <- ejscreenapi_vs_ejam(pts, radius = 3, include_ejindexes = TRUE)
+  
+  # see one site
+  ejscreenapi_vs_ejam_see1(z, mysite = 1)
+  
    # Reported key indicators - which ones do or don't match
    # when comparing EJSCREEN and EJAM results?
    keyreportnames <- c('pop', names_these, names_pctile, names_state_pctile)
-   z[z$rname \%in\% keyreportnames &  z$same_shown, ]
+   z$EJAM[z$EJAM$rname \%in\% keyreportnames &  z$same_shown, ]
    z[z$rname \%in\% keyreportnames & !z$same_shown & !is.na(z$EJSCREEN), ]
   
    # Reported (rounded) numbers match:
@@ -71,6 +86,8 @@ compare EJScreen API vs EJAM stats near site(s)
    z[!z$same_shown & !is.na(z$EJSCREEN) & z$ratio != 0.01, -1] 
    # Reports disagree if percentages reported as 0-100 vs fractions 0-1.00
    z[z$ratio == 0.01 & !is.na(z$ratio), -1]
+   
+   
    
   }
 }
