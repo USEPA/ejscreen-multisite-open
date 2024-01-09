@@ -46,7 +46,8 @@ That  is needed to pass results to map_blockgroups_over_blocks() for example.}
 
 \item{avoidorphans}{optional. see \code{\link[=getblocksnearby]{getblocksnearby()}}}
 
-\item{...}{optional. passed to mapfast() or plot() depending on usemapfast}
+\item{...}{optional. passed to mapfast() or plot() depending on usemapfast,
+like column_names = "ej" for better map popups on block points}
 }
 \value{
 invisibly returns sites2blocks like getblocksnearby() does

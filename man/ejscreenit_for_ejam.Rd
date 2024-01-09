@@ -22,5 +22,5 @@ ejscreenit_for_ejam
 Wrapper for ejscreenit() from EJAMejscreenapi package, to use in EJAM app
 }
 \seealso{
-\code{\link[=ejscreenapi_vs_ejam]{ejscreenapi_vs_ejam()}}
+\code{\link[=ejscreen_vs_ejam]{ejscreen_vs_ejam()}}
 }

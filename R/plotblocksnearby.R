@@ -21,7 +21,8 @@
 #' @param overlay_blockgroups optional. if set TRUE, also plots overlay of blockgroup boundaries.
 #' @param maxradius optional. see [getblocksnearby()]
 #' @param avoidorphans optional. see [getblocksnearby()]
-#' @param ... optional. passed to mapfast() or plot() depending on usemapfast
+#' @param ... optional. passed to mapfast() or plot() depending on usemapfast, 
+#'   like column_names = "ej" for better map popups on block points
 #'
 #' @return invisibly returns sites2blocks like getblocksnearby() does
 #' @export
@@ -97,7 +98,8 @@ plotblocksnearby <- function(sitepoints, radius=3, sites2blocks, siteidvarname =
       sites2blocks <- getblocksnearby(sitepoints = sitepoints, radius = radius, maxradius = maxradius, avoidorphans = avoidorphans)
       if ("ejam_uniq_id_as_submitted_to_getblocks" %in% names(sites2blocks)) {
         # try to make siteidvarname hold the original information that was submitted by caller as sitepoints$ejam_uniq_id and might not be 1:NROW
-        sites2blocks[ , ..siteidvarname] <- sites2blocks$ejam_uniq_id_as_submitted_to_getblocks
+        sites2blocks[ , ejam_uniq_id := ejam_uniq_id_as_submitted_to_getblocks]
+        ## *** what if ejam_uniq_id was not the siteidvarname ??
       }
     }
   }
@@ -197,6 +199,13 @@ plotblocksnearby <- function(sitepoints, radius=3, sites2blocks, siteidvarname =
     } else {
       mapinfo <- xb
     }
+    if ("blockid" %in% names(mapinfo)) {
+      mapinfo[blockid2fips, blockfips := blockfips, on = "blockid"]
+      mapinfo[ , bgfips := substr(blockfips, 1, 12)]
+      mapinfo[blockgroupstats, bgpop := pop, on = 'bgid']
+      mapinfo[ , blockpop := round(blockwt * bgpop, 1)]
+      mapinfo[ , pop_nearby := sum(blockpop, na.rm = TRUE), by = siteidvarname] # ?
+    }
     
     z <- mapfast(mapinfo, radius = 0.005, ...) #  %>% 
     
@@ -208,13 +217,21 @@ plotblocksnearby <- function(sitepoints, radius=3, sites2blocks, siteidvarname =
       z <- leaflet::addCircleMarkers( z, lat = xpt$lat, lng = xpt$lon, radius = 10, color = "red", opacity = 0.75) # %>%  # in pixels for center of circle=point 
     }
     # Map popup info for each site (if available) and blocks surrounding the site
+    vnames <- c('blockfips', 'blockid', 'blocklat', 'blocklon', 
+                'distance', 'distance_unadjusted', 'radius.miles', 'block_radius_miles',
+                'blockwt', 'blockpop', 'pop_nearby',
+                 'bgpop', 'bgfips', 'bgid',   #, names_d, names_d_subgroups, names_e,   # for blockgroup
+                 'ejam_uniq_id', 'blockcount_near_site'       # for site
+                )
+    vnames <- intersect(vnames, colnames(mapinfo))
     z <- leaflet::addCircles(z, lat = mapinfo$lat, lng = mapinfo$lon, fillOpacity = 0.1, 
-                             popup = popup_from_df(setDF(mapinfo)), radius = 10)
-    print(z)
+                             popup = popup_from_df(setDF(mapinfo), column_names = vnames), radius = 10)
+    
     if (overlay_blockgroups) {
-      map_blockgroups_over_blocks(z)
-      # return(z) # ??? do we want to return the original normal map or the one that also has overlay??
+      z <- map_blockgroups_over_blocks(z)
     }
+    print(z)
+    
   } else {
     
     bplot <- function(x,   ... ) {
