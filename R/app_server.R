@@ -617,6 +617,8 @@ app_server <- function(input, output, session) {
     #req(isTruthy(input$ss_select_program))
     #req(input$submit_program)
     
+    if (!exists("frs_by_programid")) dataload_from_pins("frs_by_programid")
+    
    #if (input$ss_choose_method_drop == 'EPA_PROGRAM') { 
       req(isTruthy(input$ss_select_program))
       ## filter frs_by_programid to currently selected program
