@@ -1092,7 +1092,7 @@ app_server <- function(input, output, session) {
   ## Which points are valid?(and  how many; warn if 0) ####
   output$an_map_text <- renderUI({
 
-    #req(data_uploaded())
+    req(data_uploaded())
     if(current_upload_method() == 'SHP'){
       an_map_text_shp()
     }else if(current_upload_method() == 'FIPS' ){
@@ -1347,8 +1347,22 @@ app_server <- function(input, output, session) {
   ## output: draw map of uploaded points
   
   output$an_leaf_map <- leaflet::renderLeaflet({
-    
-    orig_leaf_map()
+    ## check if map of uploaded points exists
+    tryCatch({
+      if(current_upload_method() == 'FIPS'){
+        validate('Mapping for FIPS codes not yet available') # ***
+        
+      } else {
+      orig_leaf_map()
+      }
+    },
+    shiny.silent.error = function(e) {
+      
+        ## if does not exist, use blank map of US
+        leaflet() %>% addTiles() %>% setView(lat = 39.8283, lng = -98.5795, zoom = 4)
+     
+    }
+    )
   })
   #############################################################################  # 
   # . --------------------------------------------------------------- # ###       
