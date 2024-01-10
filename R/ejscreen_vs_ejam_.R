@@ -600,23 +600,29 @@ ejscreen_vs_ejam_see1 <- function(z, myvars = names_d, mysite = 1) {
 #'
 #' @param n row number in x$EJAM of site to check
 #' @param x results from  x <- ejscreen_vs_ejam(testpoints_10, radius =3, include_ejindexes = TRUE)
-#'
-#' @return map, tables are shown
+#' @param overlay_blockgroups optional, set TRUE to see overlay of boundaries of parent blockgroups,
+#'   noting that you have to click to turn off the layer for block point info popups to work
+#' @param ... passed to [plotblocksnearby()]
+#' @return Just draws map and shows tables and returns output of ejscreen_vs_ejam_see1()
 #' @export
-#'
-ejscreen_vs_ejam_see1map <- function(n, x) {
+#' @examples dontrun{
+#'   z <- ejscreen_vs_ejam(testpoints_10, radius = 3, include_ejindexes = TRUE)
+#'   ejscreen_vs_ejam_see1map(3, z, overlay_blockgroups = TRUE)
+#'  }
+#'  
+ejscreen_vs_ejam_see1map <- function(n = 1, x, overlay_blockgroups = FALSE, ...) {
   # function to help explain discrepancy in pop and blocks  
   # n is the rownumber of the site analyzed, row of x$EJAM
   # x is from x <- ejscreen_vs_ejam(pts, radius = radius, include_ejindexes = TRUE)
   
-  px <- plotblocksnearby(x$EJAM[n, 1:10], radius = radius, overlay_blockgroups = F)
+  px <- plotblocksnearby(x$EJAM[n, 1:10], radius = radius, overlay_blockgroups = overlay_blockgroups, ...)
   px[blockgroupstats, bgpop := pop, on = 'bgid']
   px[, blockpop := bgpop * blockwt]
-  these <- tail(px[order(distance), .(blockid, distance, blockpop)], 10)
-  these$cumpop = round(rev(cumsum(rev(these$blockpop))), 1)
+  these <- tail(px[order(distance), .(blockid, distance, blockpop)], 10) # see the 10 furthest sites
+  these$cumpop = round(rev(cumsum(rev(these$blockpop))), 1) # cumulative starting from furthest site
   print(these)
   
-  ejscreen_vs_ejam_see1(x, 
+  ejscreen_vs_ejam_see1(x,
                         mysite = n, 
                         myvars = c('pop', 'blockcount_near_site'))[ , c('EJSCREEN', 'EJAM', 'diff')]
 }

@@ -4,16 +4,28 @@
 \alias{ejscreen_vs_ejam_see1map}
 \title{EJAM/EJSCREEN comparisons - see map and tables of blocks near a site to explain discrepancy in pop and blocks}
 \usage{
-ejscreen_vs_ejam_see1map(n, x)
+ejscreen_vs_ejam_see1map(n = 1, x, overlay_blockgroups = FALSE, ...)
 }
 \arguments{
 \item{n}{row number in x$EJAM of site to check}
 
 \item{x}{results from  x <- ejscreen_vs_ejam(testpoints_10, radius =3, include_ejindexes = TRUE)}
+
+\item{overlay_blockgroups}{optional, set TRUE to see overlay of boundaries of parent blockgroups,
+noting that you have to click to turn off the layer for block point info popups to work}
+
+\item{...}{passed to \code{\link[=plotblocksnearby]{plotblocksnearby()}}}
 }
 \value{
-map, tables are shown
+Just draws map and shows tables and returns output of ejscreen_vs_ejam_see1()
 }
 \description{
 EJAM/EJSCREEN comparisons - see map and tables of blocks near a site to explain discrepancy in pop and blocks
+}
+\examples{
+dontrun{
+  z <- ejscreen_vs_ejam(testpoints_10, radius = 3, include_ejindexes = TRUE)
+  ejscreen_vs_ejam_see1map(3, z, overlay_blockgroups = TRUE)
+ }
+ 
 }

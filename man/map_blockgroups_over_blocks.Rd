@@ -26,5 +26,5 @@ dontrun{
   }
 }
 \seealso{
-\code{\link[=map_shapes_mapview]{map_shapes_mapview()}}  \code{\link[=map_shapes_leaflet]{map_shapes_leaflet()}}  \code{\link[=map_shapes_plot]{map_shapes_plot()}}
+\code{\link[=plotblocksnearby]{plotblocksnearby()}}  \code{\link[=map_shapes_mapview]{map_shapes_mapview()}}  \code{\link[=map_shapes_leaflet]{map_shapes_leaflet()}}  \code{\link[=map_shapes_plot]{map_shapes_plot()}}
 }

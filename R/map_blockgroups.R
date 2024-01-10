@@ -189,7 +189,7 @@ mapfastej_counties <- function(mydf, colorvarname = "pctile.Demog.Index.Supp",
 #'
 #' @return leaflet map widget
 #' @export
-#' @seealso [map_shapes_mapview()]  [map_shapes_leaflet()]  [map_shapes_plot()]
+#' @seealso [plotblocksnearby()]  [map_shapes_mapview()]  [map_shapes_leaflet()]  [map_shapes_plot()]
 #' @examples dontrun{
 #'  y <- plotblocksnearby(testpoints_10[5,], 
 #'         radius = 3,
@@ -215,6 +215,7 @@ map_blockgroups_over_blocks <- function(y) {
   mymap <-   y %>% 
     leaflet::addGeoJSON(geojsonio::geojson_json(x), color = "green", group = "Blockgroups", data = x) %>% 
     leaflet::addLayersControl(overlayGroups = "Blockgroups")
+  cat("Turn off the blockgroup boundaries layer using the map layer control button, to enable popup info for each block point.\n")
   return(mymap)
 }
 ########################### # ########################### # ########################### # ########################### # 

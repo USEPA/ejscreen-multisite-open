@@ -70,15 +70,16 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
   }
   if (!data.table::is.data.table(sitepoints)) {data.table::setDT(sitepoints)} # should we set a key or index here, like ? ***
   
-  ejam_uniq_id_as_submitted_to_getblocks <- NULL
+  saving_ejam_uniq_id_as_submitted_to_getblocks <- FALSE
   if (!('ejam_uniq_id' %in% names(sitepoints))) {
     sitepoints$ejam_uniq_id <- seq.int(length.out = NROW(sitepoints))
   } else {
     if (!identical(sitepoints$ejam_uniq_id, seq.int(length.out = NROW(sitepoints)))) {
-    warning('ejam_uniq_id was already a column in sitepoints, but was not the same as the rownum, which would cause problems for other code assuming it is 1 through N, 
+      saving_ejam_uniq_id_as_submitted_to_getblocks <- TRUE
+      message('ejam_uniq_id was already a column in sitepoints, but was not the same as the rownum, which would cause problems for other code assuming it is 1 through N, 
             so ejam_uniq_id_as_submitted_to_getblocks now contains the original values and ejam_uniq_id was changed to 1:NROW(sitepoints)')
-    ejam_uniq_id_as_submitted_to_getblocks <- sitepoints$ejam_uniq_id
-    sitepoints[ , ejam_uniq_id := .I] # .I just means  1:NROW(sitepoints)
+      idtable <- data.table(ejam_uniq_id = 1:NROW(sitepoints), ejam_uniq_id_as_submitted_to_getblocks = sitepoints$ejam_uniq_id)
+      sitepoints[ , ejam_uniq_id := .I] # .I just means  1:NROW(sitepoints)  
     }
   }
   
@@ -297,9 +298,8 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
   #   getblocks_diagnostics(sites2blocks)
   # }
 
-  if (!is.null(ejam_uniq_id_as_submitted_to_getblocks)) {
-    # disabled until fixed:  need to join or merge so 1 site matches many block-site pairs here: ***
-    # sites2blocks$ejam_uniq_id_as_submitted_to_getblocks <- ejam_uniq_id_as_submitted_to_getblocks
+  if (saving_ejam_uniq_id_as_submitted_to_getblocks) {
+    sites2blocks[idtable, ejam_uniq_id_as_submitted_to_getblocks := ejam_uniq_id_as_submitted_to_getblocks, on = "ejam_uniq_id"]
   }
   
   return(sites2blocks)
