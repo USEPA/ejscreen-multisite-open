@@ -43,7 +43,13 @@ shapefile_from_folder <- function(folder = NULL, cleanit = TRUE, crs = 4269) {
       folder <- rstudioapi::selectDirectory(caption = "Select a folder that contains the files (.shp, .shx, .dbf, and .prj)", path = getwd())
       # and cpg is ok but not essential?
     } else {
-      stop("need to specify folder where shapefiles are")} #
+      if(shiny::isRunning()){
+        warning("need to specify folder where shapefiles are") #
+        return(NULL)
+      } else {
+        stop("need to specify folder where shapefiles are")
+      } #
+    }
   }
   
   shapefile_from_filepaths(filepaths = shapefile_filepaths_from_folder(folder), cleanit = cleanit, crs = crs)
@@ -65,7 +71,13 @@ shapefile_filepaths_from_folder <- function(folder = NULL) {
       folder <- rstudioapi::selectDirectory(caption = "Select a folder that contains the files (.shp, .shx, .dbf, and .prj)", path = getwd())
       # and cpg is ok but not essential?
     } else {
-      stop("need to specify folder where shapefiles are")} #
+      if(shiny::isRunning()){
+        warning("need to specify folder where shapefiles are") #
+        return(NULL)
+      } else {
+        stop("need to specify folder where shapefiles are")
+      } #
+    }
   }
   list.files(path = folder, 
              full.names = TRUE, 
@@ -88,7 +100,8 @@ shapefile_filepaths_valid <- function(filepaths) {
   # does not need .cpg ?
   ok <- all(c('shp','shx','dbf','prj') %in% tolower(infile_ext)) # note it ignores case here now
   if (ok) {
-    return(TRUE) } else {
+    return(TRUE) 
+  } else {
       warning("need vector of full paths and filenames that must include all these extensions .shp, .shx, .dbf, and .prj ")
       # and cpg is ok but not essential?
       return(FALSE)
@@ -114,7 +127,13 @@ shapefile_from_filepaths <- function(filepaths = NULL, cleanit = TRUE, crs = 426
       filepaths <- shapefile_filepaths_from_folder() # must select multiple files, which selectFile() will not do # rstudioapi::selectFile(caption = "Select all the files at once (.shp, .shx, .dbf, and .prj) to upload", path = getwd())
       # and cpg is ok but not essential?
     } else {
-      stop("need vector of full paths and filenames that must include all these extensions .shp, .shx, .dbf, and .prj ")} # and cpg is ok but not essential?
+      if(shiny::isRunning()){
+        warning("need vector of full paths and filenames that must include all these extensions .shp, .shx, .dbf, and .prj ") # and cpg is ok but not essential?
+         return(NULL)
+      } else {
+        stop("need vector of full paths and filenames that must include all these extensions .shp, .shx, .dbf, and .prj ")
+      } # and cpg is ok but not essential?
+    }
   }
   
   if (shapefile_filepaths_valid(filepaths = filepaths)) {
