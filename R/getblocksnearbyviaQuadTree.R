@@ -66,7 +66,12 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
   # buffer_indexdistance <- ceiling(radius / indexgridsize)
   
   if (class(quadtree) != "QuadTree") {
-    stop('quadtree must be an object created with indexblocks(), from SearchTrees package with treeType = "quad" and dataType = "point"')  
+    if(shiny::isRunning()){
+      warning('quadtree must be an object created with indexblocks(), from SearchTrees package with treeType = "quad" and dataType = "point"')  
+      return(NULL)
+    } else {
+      stop('quadtree must be an object created with indexblocks(), from SearchTrees package with treeType = "quad" and dataType = "point"')  
+    }
   }
   if (!data.table::is.data.table(sitepoints)) {data.table::setDT(sitepoints)} # should we set a key or index here, like ? ***
   
