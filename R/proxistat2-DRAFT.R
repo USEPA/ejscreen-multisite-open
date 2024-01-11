@@ -30,11 +30,14 @@
 #'  
 proxistat2 <- function(pts, radius=8.04672, quadtree) {
   
-  stop("this does not work without proxistat package dataset 
+  if(!('proxistat' %in% installed.packages())){
+    warning("this does not work without proxistat package dataset 
        OR having block area 
        or at least effective radius 
        in blockpoints or blockwts table.
        ")
+    return(NULL)
+  }
   
   warning("temporarily uses block areas from another dataset for most but not all blocks -
           PR and Island Area lacked block area data in source used as of 9/23 for EJAM")

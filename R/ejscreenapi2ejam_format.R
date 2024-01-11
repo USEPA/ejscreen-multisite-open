@@ -293,8 +293,14 @@ ejscreenapi_vs_ejam_alreadyrun <- function(apisite, ejamsite, nadrop = FALSE,
   
   n <- NROW(apisite)
   
-  if (!is.data.frame(apisite) | NROW(apisite) != n) {stop("apisite must be a data.frame of ", n, " rows")}
-  if (!is.data.frame(ejamsite) | NROW(ejamsite) != n) {stop("ejamsite must be a data.frame of ", n, " rows")}
+  if (!is.data.frame(apisite) | NROW(apisite) != n) {
+    warning("apisite must be a data.frame of ", n, " rows")
+    return(NULL)  
+  }
+  if (!is.data.frame(ejamsite) | NROW(ejamsite) != n) {
+    warning("ejamsite must be a data.frame of ", n, " rows")
+    return(NULL)
+  }
   
   apisite <- ejscreenapi2ejam_format(
     apisite, 

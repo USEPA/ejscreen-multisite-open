@@ -55,7 +55,10 @@
 plotblocksnearby <- function(sitepoints, radius=3, sites2blocks, siteidvarname = "ejam_uniq_id", usemapfast=TRUE, returnmap=FALSE, 
                              maxradius = 31.07, avoidorphans = FALSE, ...) {
   if (radius > 32) {radius <- 32; warning("Cannot use radius above 32 miles (almost 51 km) here - Returning results for 32 miles!")}
-  if (missing(sitepoints) &  missing(sites2blocks)) {stop('must provide either sitepoints or sites2blocks or both')}
+  if (missing(sitepoints) &  missing(sites2blocks)) {
+    warning('must provide either sitepoints or sites2blocks or both')
+    return(NULL)
+  }
   if (missing(sitepoints) & !missing(sites2blocks)) {
     warning('sitepoints missing so will not try to guess site at center of circle - drawing surrounding blocks only')
   }

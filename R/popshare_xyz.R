@@ -18,7 +18,10 @@
 #' @export
 #'
 popshare_at_top_x_pct = function(pop, x=0.20, astext=FALSE, dig=0) {
-  if (!is.vector(pop)) {stop('pop must be a vector')}
+  if (!is.vector(pop)) {
+    warning('pop must be a vector')
+    return(NULL)
+  }
   
   pop = sort(pop,decreasing = T)
   frac = cumsum(pop) / sum(pop)
@@ -55,7 +58,10 @@ popshare_at_top_x_pct = function(pop, x=0.20, astext=FALSE, dig=0) {
 #' @export
 #'
 popshare_at_top_n = function(pop, n=10, astext=FALSE, dig=0) {
-  if (!is.vector(pop)) {stop('pop must be a vector')}
+  if (!is.vector(pop)) {
+    warning('pop must be a vector')
+    return(NULL)
+  }
   pop = sort(pop, decreasing = T)
   frac = cumsum(pop) / sum(pop)
   share = frac[n]
@@ -94,7 +100,10 @@ popshare_at_top_n = function(pop, n=10, astext=FALSE, dig=0) {
 #'
 popshare_p_lives_at_what_n <- function(pop, p, astext=FALSE, dig=0) {
   
-  if (!is.vector(pop)) {stop('pop must be a vector')}
+  if (!is.vector(pop)) {
+    warning('pop must be a vector')
+    return(NULL)
+  }
   
   pop = sort(pop, decreasing = T)
   frac = cumsum(pop) / sum(pop)
@@ -145,7 +154,10 @@ popshare_p_lives_at_what_n <- function(pop, p, astext=FALSE, dig=0) {
 #' @export
 #'
 popshare_p_lives_at_what_pct <- function(pop, p, astext=FALSE, dig=0) {
-  if (!is.vector(pop)) {stop('pop must be a vector')}
+  if (!is.vector(pop)) {
+    warning('pop must be a vector')
+    return(NULL)
+  }
   
   pop = sort(pop, decreasing = T)
   frac = cumsum(pop) / sum(pop)

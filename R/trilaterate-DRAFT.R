@@ -48,7 +48,8 @@ trilaterate_sites2blocks <- function(s2b) {
   ######################################################################### #
   trilaterate_dt <- function(dt) {
     
-    stop("This formula does not provide a good estimate, or maybe the distance estimates are wrong.")
+    warning("This formula does not provide a good estimate, or maybe the distance estimates are wrong.")
+    return(NULL)
     
     # dt table has one row per siteid - it gets modified by reference here, new cols added - altered in parent env?
     # for which we want to estimate lat,lon 

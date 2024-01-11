@@ -49,19 +49,26 @@ testpoints_n <- function(n=10, weighting=c('frs', 'pop', 'area', 'bg', 'block'),
   }
   is.wholenumber <- function(x, tol = .Machine$double.eps^0.5)  abs(x - round(x)) < tol
   if ( NROW(n) > 1  || !is.numeric(n) || is.na(n) || !is.wholenumber(n) || is.infinite(n) || n < 0 || n > 5e7) {
-    stop('n must be a single whole number, where <0 is unfathomable and >50 million is too hard to keep track of')
+    warning('n must be a single whole number, where <0 is unfathomable and >50 million is too hard to keep track of')
+    return(NULL)
   }
   
   # Handle weighting synonyms and default
   if (missing(weighting)) weighting <- 'frs'  # faster than most other options
-  if (any( length(weighting) != 1, class(weighting) != "character")) {stop("invalid weighting parameter for testpoints_n")}
+  if (any( length(weighting) != 1, class(weighting) != "character")) {
+    warning("invalid weighting parameter for testpoints_n")
+    return(NULL)
+  }
   weighting <- tolower(weighting)
   if (weighting %in% c('frs', 'facility', 'facilities', 'facil', 'fac', 'frsid', 'regid')) weighting <- "frs"
   if (weighting %in% c('blockgroup', 'blockgroups', 'bg', 'bgs', 'block group', 'block groups', 'bgid', 'bgfips', "FIPS")) {weighting <- "bg"}
   if (weighting %in% c('block', 'blocks', 'blockpoints', 'blockid', 'blockfips')) {weighting <- 'block'}
   if (weighting %in% c('area', 'map', 'square meters', 'square meter', 'square mile', 'place')) {weighting <- "area"}
   if (weighting %in% c('person', 'pop', 'people', 'resident', 'population', 'residents'))  weighting <- 'pop'
-  if (!(weighting %in% c('frs', 'pop', 'area', 'bg', 'block'))) {stop("invalid weighting parameter for testpoints_n")} 
+  if (!(weighting %in% c('frs', 'pop', 'area', 'bg', 'block'))) {
+    warning("invalid weighting parameter for testpoints_n")
+    return(NULL)
+  } 
   
   # RANDOM FACILITIES (EPA-regulated facilities in FRS)
   if (weighting == "frs") {
