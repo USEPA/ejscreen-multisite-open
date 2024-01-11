@@ -45,7 +45,8 @@ Rfilenames <- dir2('*.R', path = folder, recursive = recursive)
   
   if (!missing(packages)) {
     # remove files not within packages trees
-    if (!any(packages %in% pkgname.allfound)) {stop(   'None of specified packages were found under specified folder')}
+    if (!any(packages %in% pkgname.allfound)) {warning(   'None of specified packages were found under specified folder')
+      return(NULL)}
     if (!all(packages %in% pkgname.allfound)) {warning('Not all specified packages were found under specified folder')}
     packages <- packages[packages %in% pkgname.allfound]
   } else {
