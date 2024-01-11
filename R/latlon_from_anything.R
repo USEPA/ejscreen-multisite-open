@@ -47,7 +47,12 @@
 latlon_from_anything <- function(x,y) {
   if (missing(x)) {
     if (interactive()) { x <- rstudioapi::selectFile(caption = "Select xlsx or csv with lat,lon values", path = '.' ) } else {
-      stop("file path/name needed but not provided")
+      if(shiny::isRunning()){
+        warning("file path/name needed but not provided")
+        return(NULL)
+      } else{
+        stop("file path/name needed but not provided")
+      }
     }}
   
   # figure out if x is a filename or data.table or data.frame 
@@ -59,11 +64,21 @@ latlon_from_anything <- function(x,y) {
   if (!is.data.frame(x)) { # also TRUE if data.table type is data.frame not just regular data.frame (or possibly a matrix that is not a data.frame?)
     if (is.character(x) & length(x) == 1) {
       # seems to be a file name with path, so read it
-      if (!file.exists(x)) {stop(paste0(x, ' is not a filepath/name that exists, and otherwise must be a vector of longitudes or a table of points'))}
+      if (!file.exists(x)) {
+        if(shiny::isRunning()){
+          warning(paste0(x, ' is not a filepath/name that exists, and otherwise must be a vector of longitudes or a table of points'))
+          return(NULL)
+        } else{
+          stop(paste0(x, ' is not a filepath/name that exists, and otherwise must be a vector of longitudes or a table of points'))
+        }
+      }
       pts <- read_csv_or_xl(x) # from EJAMejscreenapi :: 
     } else {
       # Not a file, not a data.frame, so x,y should be lon,lat vectors
-      if (missing(y)) {stop("if x is not a data.frame or file, then x and y must be longitude and latitude vectors respectively")}
+      if (missing(y)) {
+        
+        warning("if x is not a data.frame or file, then x and y must be longitude and latitude vectors respectively. Using x as lon and y as lat")
+      }
       pts <- data.frame(lon = x, lat = y)
     }
   } else {
