@@ -23,7 +23,10 @@ tablefixed <- function(x, maxbin=NULL) {
   # returns a table of counts of integer values zero through maxbin
   maxvalue_or_1 <- max(1, x, na.rm = TRUE)
   if (is.null(maxbin)) {maxbin <- maxvalue_or_1}
-  if (maxbin < maxvalue_or_1) stop('invalid maxbin - some values are larger')
+  if (maxbin < maxvalue_or_1){
+    warning('invalid maxbin - some values are larger')
+    return(NULL)
+  }
   mycounts <- tabulate(x, nbins = maxvalue_or_1)
   
   zerocount <- sum(x == 0, na.rm = T)

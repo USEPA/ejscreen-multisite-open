@@ -99,7 +99,8 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     }
     if (is.null(eachsite)[1] && is.null(overall)[1]) {
       # no data available at all
-      stop("table_xls_format() requires either overall or eachsite data as from results of ejamit() or doaggregate() for example") 
+      warning("table_xls_format() requires either overall or eachsite data as from results of ejamit() or doaggregate() for example") 
+      return(NULL)
     }
     if (is.null(eachsite)[1] && !is.null(overall)[1]) {
       eachsite <- overall # only 1 of them is available, so use the overall data as the site by site data, enabling the function to still do something useful
@@ -112,7 +113,8 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
   ###################  #   ###################  #   ###################  #   ###################  # 
   if (missing(eachsite)[1] && missing(overall)[1]) {
     # no data available at all
-    stop("table_xls_format() requires either overall or eachsite data as from results of ejamit() or doaggregate() for example") 
+    warning("table_xls_format() requires either overall or eachsite data as from results of ejamit() or doaggregate() for example") 
+    return(NULL)
   }
   
   if (is.null(heatmap2_colnames)) {
