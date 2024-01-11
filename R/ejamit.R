@@ -236,7 +236,13 @@ ejamit <- function(sitepoints,
         if (interactive()) {
           sitepoints <- rstudioapi::selectFile(caption = "Select xlsx or csv with FIPS column of Census fips values", path = '.' )
         } else {
-          stop("sitepoints (locations to analyze) is missing but required.")
+          if(shiny::isRunning()){
+            warning("sitepoints (locations to analyze) is missing but required.")
+            return(NULL)
+            
+          } else {
+            stop("sitepoints (locations to analyze) is missing but required.")
+          }
         }
       }
       # If user entered a table, path to a file (csv, xlsx), or whatever, then read it to get the lat lon values from there
