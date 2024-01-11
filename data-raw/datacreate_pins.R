@@ -2,7 +2,7 @@
 # create pins board and save large data files there in .arrow format
 #################################################################### #
 
-# See documentation on pins ####
+# documentation on pins ####
 # as a way to store data 
 #
 # https://docs.posit.co/connect/user/content-settings/
@@ -11,14 +11,21 @@
 # https://docs.posit.co/connect/how-to/pins/
 # ~ ####
 #################################################################### #
+
 # GET DATASETS ####
 # 
 # Get them manually from where created. 
 
 ##################################### # 
-#  The block datasets were created via  EJAM/data-raw/datacreate_blockwts.R  and other code.
-# and originally were in package called EJAMblockdata 
-# and bgej happens to be here:
+
+# blockwts etc.####
+
+#  The block datasets were created as explained in
+#  EJAM/data-raw/datacreate_blockwts.R  and other code.
+
+# bgej ####
+#
+#  bgej as rda was here but now is .arrow in pins board
 # https://github.com/USEPA/EJAM/blob/8b156cc867b8d2f59aa81891113e61af8db2a7bb/data/bgej.rda
 # https://github.com/USEPA/EJAM/raw/8b156cc867b8d2f59aa81891113e61af8db2a7bb/data/bgej.rda
 # load("~/../Downloads/bgej.rda")
@@ -26,6 +33,7 @@
 # 123466744 bytes
 
 ##################################### # 
+# frs etc. ####
 #  frs, and frs_by_programid and 
 # frs_by_sic and frs_by_naics and frs_by_mact  are much smaller files. 
 # Updated/created using  EJAMfrsdata package functions
@@ -37,7 +45,9 @@
 # (frsprogramcodes.rda is tiny and not a table so cannot use .arrow for it and not in pins board
 #  - see EJAM/data-raw/datacreate_frsprogramcodes.R )
 
+
 #################################################################### #
+
 # CREATE/SPECIFY BOARD ####
 
 # instead of storing in aws dmap data commons
