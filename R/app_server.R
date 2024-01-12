@@ -1348,22 +1348,28 @@ app_server <- function(input, output, session) {
   
   output$an_leaf_map <- leaflet::renderLeaflet({
     ## check if map of uploaded points exists
-    tryCatch({
-      if(current_upload_method() == 'FIPS'){
-        validate('Mapping for FIPS codes not yet available') # ***
-        
-      } else {
-      orig_leaf_map()
-      }
-    },
-    shiny.silent.error = function(e) {
-      
+    
+      tryCatch({
+        orig_leaf_map()
+      },
+        shiny.silent.error = function(e) {
+          
         ## if does not exist, use blank map of US
         leaflet() %>% addTiles() %>% setView(lat = 39.8283, lng = -98.5795, zoom = 4)
-     
-    }
-    )
+          
+      })
+
   })
+  
+  ## add FIPS placeholder text - remove when FIPS mapping is made available
+  output$fips_placeholder <- renderUI({
+    if(current_upload_method() == 'FIPS'){
+      helpText('Mapping for FIPS codes not yet available')
+    } else {
+      HTML(NULL)
+    }
+  })
+  
   #############################################################################  # 
   # . --------------------------------------------------------------- # ###       
   
