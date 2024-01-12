@@ -1485,9 +1485,9 @@ app_server <- function(input, output, session) {
         ## progress bar to show getblocksnearby status
         progress_getblocks <- shiny::Progress$new(min = 0, max = 1)
         updateProgress_getblocks <- function(value = NULL, message_detail=NULL, message_main = '0% done'){
-          if (is.null(value)) { # - If value is NULL, it will move the progress bar 1/10 of the remaining distance.
+          if (is.null(value)) { # - If value is NULL, it will move the progress bar 1/20 of the remaining distance.
             value <- progress_getblocks$getValue()
-            value <- value + (progress_getblocks$getMax() - value) / 10
+            value <- value + (progress_getblocks$getMax() - value) / 20
             message_main = paste0(value*100, '% done')
           }
           progress_getblocks$set(value = value, message = message_main, detail = message_detail)

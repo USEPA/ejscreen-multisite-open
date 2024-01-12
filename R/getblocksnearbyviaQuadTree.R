@@ -220,11 +220,12 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
     
     if (((i %% report_progress_every_n) == 0) & interactive()) {cat(paste("Finished finding blocks near ",i ," of ", nRowsDf),"\n" ) }   # i %% report_progress_every_n indicates i mod report_progress_every_n (“i modulo report_progress_every_n”) 
     
-    ## update progress bar at 10% intervals
-    if(is.function(updateProgress) & (i %% round(nRowsDf/10) < 1)){
-      boldtext <- paste0(10*round(10*i/nRowsDf), '% done')
+    ## update progress bar at 5% intervals
+    pct_inc <- 5
+    if(is.function(updateProgress) & (i %% round(nRowsDf/(100/pct_inc)) < 1)){
+      boldtext <- paste0((pct_inc)*round((100/pct_inc*i/nRowsDf)), '% done')
       updateProgress(message_main = boldtext, 
-                     value = round(10*i/nRowsDf)/10)
+                     value = round((pct_inc)*i/nRowsDf,2)/(pct_inc))
     }
     
   } # do next site in loop, etc., until end of this loop.
