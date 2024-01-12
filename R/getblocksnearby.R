@@ -58,7 +58,7 @@ getblocksnearby  <- function(sitepoints, radius=3, maxradius=31.07,
         # should 
         cat('census block data file(s) not already loaded, so key data will now be downloaded (or loaded from a local copy if possible)...\n')
          # loads quaddata needed to make localtree index, and several other large files pkg uses.
-        dataload_from_local(ext='.arrow')
+        dataload_from_pins(ext='.arrow')
               }
       # need to pause here?
       # localtree <- SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point")
