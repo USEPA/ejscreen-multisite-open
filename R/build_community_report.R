@@ -11,6 +11,14 @@
 build_community_report <- function(output_df, analysis_title, totalpop, locationstr, 
                                    include_ejindexes=FALSE, in_shiny = FALSE, filename = NULL){
   
+  ## check that analysis was run with EJ columns; if not, don't add them
+  if(include_ejindexes){
+    ejcols <-c(names_ej,names_ej_state, names_ej_supp,names_ej_supp_state)
+    if(!(all(ejcols %in% names(output_df)))){
+      include_ejindexes <- FALSE
+    } 
+  }
+  
   output_df_rounded <-   as.data.frame( output_df) 
   
   #  basic rounding and units

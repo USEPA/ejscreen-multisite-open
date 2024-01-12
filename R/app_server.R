@@ -2621,7 +2621,7 @@ app_server <- function(input, output, session) {
             analysis_title = input$analysis_title,
             totalpop = popstr,
             locationstr = locationstr,
-            include_ejindexes = T,
+            include_ejindexes = input$include_ejindexes,
             in_shiny = F,
             filename = temp_comm_report
           )
