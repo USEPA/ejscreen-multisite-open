@@ -33,7 +33,7 @@ dataload_from_local <- function(varnames = c(c('blockwts', 'blockpoints', 'block
                                 justchecking = FALSE, 
                                 testing = FALSE) {
   
-  if (is.null(folder_local_source) & substr(Sys.getenv("COMPUTERNAME"),1,6) == "LZ11MC") {
+  if (substr(Sys.getenv("COMPUTERNAME"),1,6) == "LZ11MC") {
     # during development, when on this particular computer, use this particular local folder to look in for datasets:
     folder_local_source <- "~/../Downloads/EJAMbigfiles"
   } else {

@@ -16,10 +16,13 @@
 #'   also be the row numbers of the corresponding sites in sitepoints, with a site appearing once in sitepoints, 
 #'   and in sites2blocks appearing once per block that is near that site.
 #' @param usemapfast optional. simpler plot if FALSE
-#' @param returnmap optional. if set TRUE, returns the leaflet map object instead of tabular info. 
+#' @param returnmap optional. if set TRUE, returns the leaflet map object instead of tabular info.
+#'   That  is needed to pass results to map_blockgroups_over_blocks() for example. 
+#' @param overlay_blockgroups optional. if set TRUE, also plots overlay of blockgroup boundaries.
 #' @param maxradius optional. see [getblocksnearby()]
 #' @param avoidorphans optional. see [getblocksnearby()]
-#' @param ... optional. passed to mapfast() or plot() depending on usemapfast
+#' @param ... optional. passed to mapfast() or plot() depending on usemapfast, 
+#'   like column_names = "ej" for better map popups on block points
 #'
 #' @return invisibly returns sites2blocks like getblocksnearby() does
 #' @export
@@ -52,7 +55,8 @@
 #'   plotblocksnearby(testoutput_ejamit_100pts_1miles$results_bysite[, c(siteidvarname, "lat", "lon"), with=FALSE],
 #'      radius = 1)
 #'   }
-plotblocksnearby <- function(sitepoints, radius=3, sites2blocks, siteidvarname = "ejam_uniq_id", usemapfast=TRUE, returnmap=FALSE, 
+plotblocksnearby <- function(sitepoints, radius=3, sites2blocks, siteidvarname = "ejam_uniq_id", 
+                             usemapfast=TRUE, returnmap=FALSE, overlay_blockgroups=FALSE,
                              maxradius = 31.07, avoidorphans = FALSE, ...) {
   if (radius > 32) {radius <- 32; warning("Cannot use radius above 32 miles (almost 51 km) here - Returning results for 32 miles!")}
   if (missing(sitepoints) &  missing(sites2blocks)) {stop('must provide either sitepoints or sites2blocks or both')}
@@ -82,8 +86,21 @@ plotblocksnearby <- function(sitepoints, radius=3, sites2blocks, siteidvarname =
     }
     if (missing(sites2blocks)) {
       # Use getblocksnearby() since   user only provided a list of lat,lon points.
-      # and it now automatically creates (in the output) a column ejam_uniq_id that is 1:N to number the list of input points
+      
+      # # and it now automatically creates (in the output) a column ejam_uniq_id that is 1:N to number the list of input points
+      # if ('ejam_uniq_id' %in% colnames(sitepoints)) {
+      #   if (!identical(sitepoints$ejam_uniq_id, 1:NROW(sitepoints))) {
+      #     # problem... input file has ejam_uniq_id but not as numbering sites 1:N, 
+      #     # and getblocksnearby() is about to create a column by that name using 1:N 
+      #     # but now handles that sort of, by creating a new ejam_uniq_id and saving the one submitted...
+      #   }
+      # }
       sites2blocks <- getblocksnearby(sitepoints = sitepoints, radius = radius, maxradius = maxradius, avoidorphans = avoidorphans)
+      if ("ejam_uniq_id_as_submitted_to_getblocks" %in% names(sites2blocks)) {
+        # try to make siteidvarname hold the original information that was submitted by caller as sitepoints$ejam_uniq_id and might not be 1:NROW
+        sites2blocks[ , ejam_uniq_id := ejam_uniq_id_as_submitted_to_getblocks]
+        ## *** what if ejam_uniq_id was not the siteidvarname ??
+      }
     }
   }
   
@@ -182,6 +199,13 @@ plotblocksnearby <- function(sitepoints, radius=3, sites2blocks, siteidvarname =
     } else {
       mapinfo <- xb
     }
+    if ("blockid" %in% names(mapinfo)) {
+      mapinfo[blockid2fips, blockfips := blockfips, on = "blockid"]
+      mapinfo[ , bgfips := substr(blockfips, 1, 12)]
+      mapinfo[blockgroupstats, bgpop := pop, on = 'bgid']
+      mapinfo[ , blockpop := round(blockwt * bgpop, 1)]
+      mapinfo[ , pop_nearby := sum(blockpop, na.rm = TRUE), by = siteidvarname] # ?
+    }
     
     z <- mapfast(mapinfo, radius = 0.005, ...) #  %>% 
     
@@ -193,8 +217,19 @@ plotblocksnearby <- function(sitepoints, radius=3, sites2blocks, siteidvarname =
       z <- leaflet::addCircleMarkers( z, lat = xpt$lat, lng = xpt$lon, radius = 10, color = "red", opacity = 0.75) # %>%  # in pixels for center of circle=point 
     }
     # Map popup info for each site (if available) and blocks surrounding the site
+    vnames <- c('blockfips', 'blockid', 'blocklat', 'blocklon', 
+                'distance', 'distance_unadjusted', 'radius.miles', 'block_radius_miles',
+                'blockwt', 'blockpop', 'pop_nearby',
+                 'bgpop', 'bgfips', 'bgid',   #, names_d, names_d_subgroups, names_e,   # for blockgroup
+                 'ejam_uniq_id', 'blockcount_near_site'       # for site
+                )
+    vnames <- intersect(vnames, colnames(mapinfo))
     z <- leaflet::addCircles(z, lat = mapinfo$lat, lng = mapinfo$lon, fillOpacity = 0.1, 
-                             popup = popup_from_df(setDF(mapinfo)), radius = 10)
+                             popup = popup_from_df(setDF(mapinfo), column_names = vnames), radius = 10)
+    
+    if (overlay_blockgroups) {
+      z <- map_blockgroups_over_blocks(z)
+    }
     print(z)
     
   } else {

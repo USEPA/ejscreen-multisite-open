@@ -1,15 +1,36 @@
 
-### *** also see extensive notes in  EJAM/dev/notes_GIS_maps_distance_etc/sf_for_shapefiles-NOTES.R
-
-
-### Various ways to get census unit boundaries and then view maps of Counties, tracts, or blockgroups:
-## (but EJScreen map services are probably a better way to do this at least for blockgroups).
+# SEVERAL FUNCTIONS & EXAMPLES ARE IN THIS FILE ####
 #
-########################## #
-# EXAMPLES 
+## + see extensive notes in sf_for_shapefiles-NOTES.R ####
+# at  EJAM/dev/notes_GIS_maps_distance_etc/sf_for_shapefiles-NOTES.R 
+
+########################## # ########################## #   ########################## # ########################## # 
+
+# Functions here: 
+#
+# mapfastej_counties()
+# map_blockgroups_over_blocks()
+# map_shapes_plot()
+# map_shapes_leaflet()
+# map_shapes_mapview()
+# shapes_counties_from_countyfips()
+# shapes_blockgroups_from_bgfips()
+
+########################## # ########################## #   ########################## # ########################## # 
+
+
+# ~ ####
+### Examples here show various ways to 
+# 1) get census unit boundaries and then 
+# 2) view maps of Counties, tracts, or blockgroups.
+# 
+## (but EJScreen map services are probably a better way to do this at least for blockgroups).
+
+# EXAMPLES ####
+
 if ("example" == "script to run now") {
   
-  #    GET ALL FIPS CODES WITHIN SOME ZONE ####
+  ##    GET ALL FIPS CODES WITHIN SOME ZONE ####
   #
   # fips_de <- fips_counties_from_state_abbrev("DE")
   fips_ky <- fips_counties_from_statename("Kentucky")
@@ -28,8 +49,9 @@ if ("example" == "script to run now") {
   
   #    DRAW STATIC MAPS using map_shapes_plot(), based on plot() ####
   #
-  ## see color-coding of one percentile variable:
-  pal <- colorBin(palette = c("yellow","yellow", "orange", "red"), bins = 80:100)
+  ## see color-coding of a percentile variable:
+  
+  pal <- leaflet::colorBin(palette = c("yellow","yellow", "orange", "red"), bins = 80:100)
   shading <- pal(x$results_bysite$pctile.Demog.Index.Supp)
   map_shapes_plot(mymapdata, main = "Selected Counties") # or just # plot(mymapdata)
   plot(mymapdata, col = shading, add = TRUE)
@@ -51,16 +73,18 @@ if ("example" == "script to run now") {
   # Popups with Countynames, decimal rounding, friendly labels,
   #  and Color-coded map:
   
+  ## see color-coding of a percentile variable:
+  
   myindicators <- c("pctile.Demog.Index.Supp", names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg)
   myindicators <- c(names(x$results_bysite)[1:9], myindicators)
   popindicators <- x$results_bysite[ , ..myindicators]
   popindicators <- table_round(popindicators) # decimal places set
-  countynames <- fips2countyname(x$results_bysite$siteid)
-  popindicators <- cbind(County = countynames, popindicators)
+  countynames <- fips2countyname(x$results_bysite$ejam_uniq_id)
+  popindicators <- cbind(County = countynames, popindicators) 
   poplabels <- fixcolnames(names(popindicators), 'r', 'long') # friendly labels for indicators
   popup2 <- popup_from_any(popindicators, labels = poplabels)
   ## see color-coding of one percentile variable:
-  pal <- colorBin(palette = c("yellow","yellow", "orange", "red"), bins = 80:100)
+  pal <- leaflet::colorBin(palette = c("yellow","yellow", "orange", "red"), bins = 80:100)
   shading <- pal(x$results_bysite$pctile.Demog.Index.Supp)
   
   mymap <- map_shapes_leaflet(mymapdata, popup = popup2, color = shading)
@@ -79,6 +103,18 @@ if ("example" == "script to run now") {
   ## map_shapes_mapview(mymapdata)  # requires the mapview package
 }
 ########################### # ########################### # ########################### # ########################### # 
+# ~ ####
+
+# FUNCTIONS DEFINED ####
+
+# mapfastej_counties()
+# map_blockgroups_over_blocks()
+# map_shapes_plot()
+# map_shapes_leaflet()
+# map_shapes_mapview()
+# shapes_counties_from_countyfips()
+# shapes_blockgroups_from_bgfips()
+
 
 
 #' mapfastej_counties - Static or HTML/leaflet map of counties
@@ -145,6 +181,45 @@ mapfastej_counties <- function(mydf, colorvarname = "pctile.Demog.Index.Supp",
   return(mymap)
 }
 ########################### # ########################### # ########################### # ########################### # 
+
+
+#' map_blockgroups_over_blocks - Overlay blockgroups near 1 site, after plotblocksnearby
+#' Overlay blockgroups near 1 site, after plotblocksnearby(returnmap = TRUE)
+#' @param y  output of [plotblocksnearby()] but with returnmap = TRUE
+#'
+#' @return leaflet map widget
+#' @export
+#' @seealso [plotblocksnearby()]  [map_shapes_mapview()]  [map_shapes_leaflet()]  [map_shapes_plot()]
+#' @examples dontrun{
+#'  y <- plotblocksnearby(testpoints_10[5,], 
+#'         radius = 3,
+#'         returnmap = TRUE)
+#'  map_blockgroups_over_blocks(y)
+#'   }
+map_blockgroups_over_blocks <- function(y) {
+  # y is output of plotblocksnearby(returnmap = TRUE)
+  if ("leaflet" %in% class(y)) {
+  # This is to extract bgids from the output of the leaflet htmlwidget map object y, 
+  #   as from  y = plotblocksnearby(testpoints_10[1,], returnmap = TRUE)
+  bgids <-  unique(as.vector(sapply( y$x$calls[[2]]$args[[7]], function(z)   gsub(   ".*bgid: ([0-9]*)<.*", "\\1", z))))
+  } else {
+    # can we still work with y if it was created with returnmap = FALSE ? 
+    # bgids <- unique(y$bgid)
+    stop('y must be output of something like plotblocksnearby(testpoints_10[1,], returnmap = TRUE)')
+  }
+  
+  if (!exists("bgid2fips")) dataload_from_pins("bgid2fips")
+  bgfips <- bgid2fips[bgid %in% bgids, bgfips] 
+  x <- shapes_blockgroups_from_bgfips(bgfips) # but not for 60+ fips!  SLOW
+  # add those FIPS shapes to the leaflet htmlwidget map 
+  mymap <-   y %>% 
+    leaflet::addGeoJSON(geojsonio::geojson_json(x), color = "green", group = "Blockgroups", data = x) %>% 
+    leaflet::addLayersControl(overlayGroups = "Blockgroups")
+  cat("Turn off the blockgroup boundaries layer using the map layer control button, to enable popup info for each block point.\n")
+  return(mymap)
+}
+########################### # ########################### # ########################### # ########################### # 
+
 
 #' map_shapes_plot
 #'
@@ -292,32 +367,9 @@ shapes_blockgroups_from_bgfips <- function(bgfips = '010890029222', outFields = 
 ########################### # ########################### # ########################### # ########################### # 
 
 
-#' map_blockgroups_over_blocks - Overlay blockgroups near 1 site, after plotblocksnearby()
-#' Overlay blockgroups near 1 site, after plotblocksnearby()
-#' @param y  output of [plotblocksnearby()]
-#'
-#' @return leaflet map widget
-#' @export
-#' @seealso [map_blockgroups()]
-#' @examples dontrun{
-#'  y <- plotblocksnearby(testpoints_10[5,], 
-#'         radius = 3,
-#'         returnmap = TRUE)
-#'  map_blockgroups_over_blocks(y)
-#'   }
-map_blockgroups_over_blocks <- function(y) {
-  # y is output of plotblocksnearby()
-  bgids <-  unique(as.vector(sapply( y$x$calls[[2]]$args[[7]], function(z)   gsub(   ".*bgid: ([0-9]*)<.*", "\\1", z))))
-  if (!exists("bgid2fips")) dataload_from_pins("bgid2fips")
-  bgfips <- bgid2fips[bgid %in% bgids, bgfips] 
-  x <- map_blockgroups(bgfips) # but not for 60+ fips!
-  # add those FIPS shapes to the leaflet htmlwidget map 
-  mymap <-   y %>% 
-    leaflet::addGeoJSON(geojsonio::geojson_json(x), color = "green", group = "Blockgroups", data = x) %>% 
-    addLayersControl(overlayGroups = "Blockgroups")
-  return(mymap)
-}
-########################### # ########################### # ########################### # ########################### # 
+# ~ ####
+
+# NOTES on map services ####
 
 #################### #
 
