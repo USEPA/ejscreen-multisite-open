@@ -503,7 +503,7 @@ app_server <- function(input, output, session) {
           invalid_alert[['NAICS']] <- 0 # hides the invalid site warning
           an_map_text_pts[['NAICS']] <- NULL # hides the count of uploaded sites
           disable_buttons[['NAICS']] <- TRUE
-          shiny::validate('No Results Returned')
+          shiny::validate('No valid locations found under this NAICS code.')
         }
       } else{  
         sitepoints <- frs_from_naics(inputnaics, children = add_naics_subcategories)[, .(lat,lon,REGISTRY_ID,PRIMARY_NAME,NAICS)] # xxx
@@ -622,6 +622,9 @@ app_server <- function(input, output, session) {
       ## filter frs_by_programid to currently selected program
       pgm_out <- frs_by_programid[ program == input$ss_select_program]
       
+      if(nrow(pgm_out) > 0){
+        
+      
       pgm_out[, ejam_uniq_id := .I]
       data.table::setcolorder(pgm_out, 'ejam_uniq_id')
       
@@ -637,6 +640,12 @@ app_server <- function(input, output, session) {
     cat("SITE COUNT VIA PROGRAM ID: ", NROW(pgm_out), "\n")
     disable_buttons[['EPA_PROGRAM_sel']] <- FALSE
     pgm_out
+    } else {
+      invalid_alert[['EPA_PROGRAM_sel']] <- 0
+      an_map_text_pts[['EPA_PROGRAM_sel']] <- NULL
+      disable_buttons[['EPA_PROGRAM_sel']] <- TRUE
+      validate('No valid locations found under this EPA program.')
+    }
   })
   
   #############################################################################  # 
@@ -681,7 +690,7 @@ app_server <- function(input, output, session) {
           invalid_alert[['SIC']] <- 0 # hides the invalid site warning
           an_map_text_pts[['SIC']] <- NULL # hides the count of uploaded sites
           disable_buttons[['SIC']] <- TRUE
-          shiny::validate('No Results Returned')
+          shiny::validate('No valid locations found under this SIC code.')
         }
       } else {
         sitepoints <- frs_from_sic(inputsic, children = add_sic_subcategories)[, .(lat,lon,REGISTRY_ID,PRIMARY_NAME,SIC)] # xxx
