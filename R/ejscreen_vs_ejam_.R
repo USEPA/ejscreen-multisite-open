@@ -552,7 +552,7 @@ ejscreen_vs_ejam_summary <- function(z = ejscreen_vs_ejam(), myvars = colnames(z
 #'
 ejscreen_vs_ejam_summary_quantiles <- function(z, 
                                                mystat = c("ratio", "diff", "absdiff", "pctdiff", "abspctdiff")[1], 
-                                               myvars = c('pop', '', names_these), probs = (0:20) / 20, na.rm = TRUE, digits = 4) {
+                                               myvars = c('pop', names_these), probs = (0:20) / 20, na.rm = TRUE, digits = 4) {
   round(t(sapply(data.frame(z[[mystat]])[ , myvars, drop = FALSE], quantile, probs = probs, na.rm = na.rm)), digits)
 }
 ######################################################################### # 

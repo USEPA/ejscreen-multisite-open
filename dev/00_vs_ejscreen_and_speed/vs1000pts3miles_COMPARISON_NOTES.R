@@ -9,6 +9,14 @@ library(EJAM)
 dataload_from_pins()
 indexblocks()
 
+# # a small set of points can be analyzed like this: 
+pts <- testpoints_n(5, weighting = 'frs')
+vs5pts3miles <- ejscreen_vs_ejam(pts, radius = 3, include_ejindexes = TRUE)
+sum_vs5pts3miles <- ejscreen_vs_ejam_summary(vs5pts3miles)  
+q <- ejscreen_vs_ejam_summary_quantiles(vs5pts3miles, mystat = 'ratio', myvars = c(names_these, 'pop'), digits = 2)
+q[order(q[, "95%"], decreasing = F), c("50%", "95%")]
+ejscreen_vs_ejam_see1(vs5pts3miles, myvars = c('pop', names_these))
+ejscreen_vs_ejam_see1(vs5pts3miles, myvars = c('lowlifex', "Demog.Index.Supp"))
 
 ######################################################################################### # 
 

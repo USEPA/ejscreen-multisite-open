@@ -7,7 +7,7 @@
 ejscreen_vs_ejam_summary_quantiles(
   z,
   mystat = c("ratio", "diff", "absdiff", "pctdiff", "abspctdiff")[1],
-  myvars = c("pop", "", names_these),
+  myvars = c("pop", names_these),
   probs = (0:20)/20,
   na.rm = TRUE,
   digits = 4
