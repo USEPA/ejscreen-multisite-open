@@ -1259,8 +1259,7 @@ app_server <- function(input, output, session) {
   ## add warning and disable button if radius is set to 0 for points
   observe({
     if(!(current_upload_method() %in% c('FIPS','SHP'))){
-      if(input$bt_rad_buff == 0){
-        
+      if(current_slider_val[[current_upload_method()]] == 0){  
       shinyjs::disable(id = 'bt_get_results')
         showNotification(id = 'radius_warning', session=session,
                          duration=NULL,type='warning',closeButton = F,
@@ -1269,6 +1268,9 @@ app_server <- function(input, output, session) {
         shinyjs::enable(id ='bt_get_results')
         removeNotification(id='radius_warning', session=session)
       }
+    } else {
+      shinyjs::enable(id ='bt_get_results')
+      removeNotification(id='radius_warning', session=session)
     }
   })
   
