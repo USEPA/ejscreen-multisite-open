@@ -126,7 +126,7 @@ if ("example" == "script to run now") {
 #' @param ... passed to map_shapes_plot() if relevant
 #'
 #' @return leaflet html widget (but if static_not_leaflet=T, 
-#'   returns just shapes_counties_from_countyfips(mydf$siteid)) 
+#'   returns just shapes_counties_from_countyfips(mydf$ejam_uniq_id)) 
 #' @export
 #'
 #' @examples \dontrun{
@@ -143,7 +143,7 @@ mapfastej_counties <- function(mydf, colorvarname = "pctile.Demog.Index.Supp",
   # x <- ejamit(fips = fips_ky, radius = 0)
   # mydf <- x$results_bysite
   
-  mymapdata <- shapes_counties_from_countyfips(mydf$siteid)
+  mymapdata <- shapes_counties_from_countyfips(mydf$ejam_uniq_id)
   
   ## see color-coding of one percentile variable:
   pal <- colorBin(palette = c("yellow","yellow", "orange", "red"), bins = 80:100)
@@ -165,7 +165,7 @@ mapfastej_counties <- function(mydf, colorvarname = "pctile.Demog.Index.Supp",
     myindicators <- c(names(mydf)[1:9], myindicators)
     popindicators <- mydf[ , ..myindicators]
     popindicators <- table_round(popindicators) # decimal places set
-    countynames <- fips2countyname(mydf$siteid)
+    countynames <- fips2countyname(mydf$ejam_uniq_id)
     popindicators <- cbind(County = countynames, popindicators)
     poplabels <- fixcolnames(names(popindicators), 'r', 'long') # friendly labels for indicators
     popup2 <- popup_from_any(popindicators, labels = poplabels)

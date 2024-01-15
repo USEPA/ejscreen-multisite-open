@@ -21,12 +21,12 @@ shapefile2blockpoints <- function(...) {
 #'   For noncircular polygons, buffered or not, this function will provide a way to very quickly
 #'   filter down to which of the millions of US blocks should be examined by the sf:: join / intersect,
 #'   since otherwise it takes forever for sf:: to check all US blocks.
-#' @param polys Spatial data as from sf::st_as_sf(), with a column called siteid, like 
+#' @param polys Spatial data as from sf::st_as_sf(), with 
 #'   points as from [shapefile_from_sitepoints()],
 #'   or a table of points with lat,lon columns that will first be converted here using that function,
 #'   or polygons 
 #' @param addedbuffermiles width of optional buffering to add to the points (or edges), in miles
-#' @param blocksnearby optional table of blocks with blockid,siteid (from which lat,lon can be looked up in blockpoints dt)
+#' @param blocksnearby optional table of blocks with blockid, etc (from which lat,lon can be looked up in blockpoints dt)
 #' @param dissolved If TRUE, use sf::st_union(polys) to find unique blocks inside any one or more of polys
 #' @param safety_margin_ratio multiplied by addedbuffermiles, how far to search for 
 #'   blocks nearby using getblocksnearby(), before using those found to do the intersection via sf::
@@ -92,7 +92,7 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
   }
   ARE_POINTS <- "POINT" == names(which.max(table(sf::st_geometry_type(polys)))) 
   
-  # ensure it has unique IDs called siteid column, or else add that column? getblocksnearby() adds it  
+  #   getblocksnearby() adds a unique id column  
   
   
   
@@ -112,7 +112,7 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
     pts <-  data.table(sf::st_coordinates(polys))  # this is wasteful if they provided a data.frame or data.table and we convert it to sf and then here go backwards
     setnames(pts, c("lon","lat")) # I think in this case it must be lon first then lat, due to how st_coordinates() output is provided?
     # get blockid of each nearby census block
-    blocksnearby <- getblocksnearby(pts, addedbuffermiles * safety_margin_ratio)  # blockid, distance, siteid # don't care which siteid was how this block got included in the filtered list
+    blocksnearby <- getblocksnearby(pts, addedbuffermiles * safety_margin_ratio)  # blockid, distance, ejam_uniq_id # don't care which site  was how this block got included in the filtered list
     # get lat,lon of nearby blocks
     blocksnearby <- (blockpoints[blocksnearby, .(lat,lon,blockid), on = "blockid"])  # blockid,      lat ,      lon
   }
@@ -148,14 +148,10 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
   pts <-  data.table(
     sf::st_coordinates(blocksinsidef),
     blocksinsidef$ejam_uniq_id,
-    #blocksinsidef$siteid,
     blocksinsidef$blockid,
     distance = 0
   )
   
-  #setnames(pts, c("lon","lat","siteid","blockid","distance")) # it is lon then lat due to format of output of st_coordinates() I think
-  #pts[blockwts,  `:=`(bgid = bgid, blockwt = blockwt), on = "blockid"]
-  #data.table::setcolorder(pts, c('siteid', 'blockid', 'distance', 'blockwt', 'bgid', 'lat', 'lon')) # to make it same order as output of getblocksnearby(), plus latlon
   setnames(pts, c("lon","lat","ejam_uniq_id","blockid","distance")) # it is lon then lat due to format of output of st_coordinates() I think
   pts[blockwts,  `:=`(bgid = bgid, blockwt = blockwt), on = "blockid"]
   data.table::setcolorder(pts, c('ejam_uniq_id', 'blockid', 'distance', 'blockwt', 'bgid', 'lat', 'lon')) # to make it same order as output of getblocksnearby(), plus latlon

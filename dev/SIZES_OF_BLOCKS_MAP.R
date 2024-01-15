@@ -49,8 +49,8 @@ this_id <-  (x[1640826, ejam_uniq_id])
 y <- x[ejam_uniq_id == this_id, ]
 
 setorder(y, "distance")
-x[, siteid := ejam_uniq_id]
-y[, siteid := ejam_uniq_id]
+x[, id := ejam_uniq_id]  # ??
+y[, id := ejam_uniq_id]  # ?? ***
 
 
 

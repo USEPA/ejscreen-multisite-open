@@ -282,10 +282,10 @@ app_server <- function(input, output, session) {
         numna <- nrow(shp[!sf::st_is_valid(shp),])
         invalid_alert[['SHP']] <- numna # this updates the value of the reactive invalid_alert()
         shp_valid <- shp[sf::st_is_valid(shp),] #determines valid shapes
-        shp_valid <- dplyr::mutate(shp_valid, siteid = row_number())
+        shp_valid <- dplyr::mutate(shp_valid, ejam_uniq_id = row_number())
         shp_proj <- sf::st_transform(shp_valid,crs = 4269)
       } else {
-        invalid_alert[['SHP']] <-0 # hides the invalid site warning
+        invalid_alert[['SHP']] <- 0 # hides the invalid site warning
         an_map_text_shp(HTML(NULL)) # hides the count of uploaded sites/shapes
         disable_buttons[['SHP']] <- TRUE
          ## if not matched, return this message
@@ -319,7 +319,7 @@ app_server <- function(input, output, session) {
   
   # # Use a default initial template of lat lon values table ready for user to type into  
   # # and then the module updates that reactive_data1 object as the user types
-  # latlon_template <- data.table(lat = 0, lon = 0, siteid = 1, sitename = "")  # default_points_shown_at_startup[1:2, ] # EJAMejscreenapi::testpoints_5[1:2, ] # could  be put in global.R 
+  # latlon_template <- data.table(lat = 0, lon = 0, sitenumber = 1, sitename = "")  # default_points_shown_at_startup[1:2, ] # EJAMejscreenapi::testpoints_5[1:2, ] # could  be put in global.R 
   # reactive_data1 <-  reactiveVal(latlon_template)
   # ## or... try something like this:   Try to pass to module as param the last uploaded pts() ?
   # observe(
@@ -345,7 +345,7 @@ app_server <- function(input, output, session) {
 #     #   ## wait for typed in data to be submitted, then return cleaned lat lon table data.frame, as data_typedin_latlon() which eventually becomes data_uploaded()
 #       req(reactive_data1() )
 #     ext <- reactive_data1()  # NEED TO TEST THAT THIS IS ACTUALLY THE USER-EDITED OUTPUT OF THE MODULE   # ss_typedin_latlon()
-#     #   # ext <- data.frame( siteid=1, lat=0, lon=0) # dummy data for testing
+#     #   # ext <- data.frame( sitenumber=1, lat=0, lon=0) # dummy data for testing
 #     ###   # another approach, not used:   # ext <- DataEditR::data_edit(latlon_template)
 # cat("COUNT OF ROWS IN TYPED IN DATA: ", NROW(ext),"\n")
 #     ## Validate the lat lon values. If column names are found in lat/long alias comparison, clean and return the table of lat lon values
@@ -405,7 +405,7 @@ app_server <- function(input, output, session) {
       disable_buttons[['latlon']] <- TRUE
       ## if not matched, show this message instead
       shiny::validate('No coordinate columns found.')
-    }
+    }}
   })
   
   #############################################################################  # 
@@ -429,8 +429,8 @@ app_server <- function(input, output, session) {
     cat("ROW COUNT IN FILE THAT SHOULD provide FRS REGISTRY_ID: ", NROW(read_frs), "\n")
     #include frs_is_valid verification check function, must have colname REGISTRY_ID
     if (frs_is_valid(read_frs)) {
-      if ("siteid" %in% colnames(read_frs)) {
-        colnames(read_frs) <- gsub("siteid", "REGISTRY_ID", colnames(read_frs))
+      if ("regid" %in% colnames(read_frs)) {
+        colnames(read_frs) <- gsub("regid", "REGISTRY_ID", colnames(read_frs))
       }
       #converts registry id to character if not already in that class ( frs registry ids are character)
       if (('REGISTRY_ID' %in% colnames(read_frs)) & (class(read_frs$REGISTRY_ID) != "character")) {
@@ -1896,8 +1896,6 @@ app_server <- function(input, output, session) {
     #if shapefile, merge geometry and create buffer if nonzero buffer is set
     if (submitted_upload_method() == "SHP") {
       d_up <- data_uploaded()
-      #d_up_geo <- d_up[,c("siteid","geometry")]
-      #d_merge = merge(d_up_geo,data_processed()$results_bysite, by = "siteid", all.x = FALSE, all.y = TRUE)
       d_up_geo <- d_up[,c("ejam_uniq_id","geometry")]
       d_merge = merge(d_up_geo,data_processed()$results_bysite, by = "ejam_uniq_id", all.x = FALSE, all.y = TRUE)
       if (input$bt_rad_buff > 0) {
@@ -1999,10 +1997,10 @@ app_server <- function(input, output, session) {
     } else # if (input$circle_type == 'circles') {
       
       if (current_upload_method() == 'FIPS') {
-        
+        # see 
         ## initial map code - this plots convex hull polygons of blockpoints, not actual shapes though
         # fips_sf <- sf::st_as_sf(data_uploaded(), coords=c('lon','lat')) %>%
-        #   dplyr::group_by(siteid) %>%
+        #   dplyr::group_by(ejam_uniq_id) %>%
         #   dplyr::summarize(geometry = sf::st_combine(geometry)) %>%
         #   sf::st_convex_hull() %>%
         #   sf::st_cast('POLYGON')  %>% as('Spatial')
@@ -2404,7 +2402,7 @@ app_server <- function(input, output, session) {
     # --------------------------------------------------- #
     # cols_to_select <- names(data_processed)
     # friendly_names <- longnames???
-    cols_to_select <- c('ejam_uniq_id', 'invalid_msg',#'siteid', 
+    cols_to_select <- c('ejam_uniq_id', 'invalid_msg',
                         'pop', 'Community Report',
                         'EJScreen Report', 'EJScreen Map', 'ECHO report', # 'ACS Report', 
                         names_d, names_d_subgroups,
@@ -2426,17 +2424,17 @@ app_server <- function(input, output, session) {
                         '# of indicators above 90% threshold', 'State', 'EPA Region')
     # --------------------------------------------------- #
     
-    # dt_overall <- data_processed()$results_overall %>% 
-    #   as.data.frame() %>% 
-    #   dplyr::mutate(siteid = 'All sites', ST = NA,
-    #          across(where(is.numeric), .fns = function(x) {round(x, digits=2)})) %>% 
-    #   dplyr::select(dplyr::all_of(cols_to_select), ST)
+    # 
+    # 
+    # 
+    # 
+    # 
     
     # use data_processed()  
     dt <- data_processed()$results_bysite %>% 
       as.data.frame() %>%
       dplyr::mutate(dplyr::across(dplyr::where(is.numeric), .fns = function(x) {round(x, digits = 2)})#,  ## *** should follow rounding rules provided via map_headernames$decimals or $sigfigs ?
-                    #siteid = as.character(siteid)
+                    #
       ) %>%
       dplyr::mutate(index = row_number()) %>%
       dplyr::rowwise() %>%
@@ -2445,7 +2443,7 @@ app_server <- function(input, output, session) {
         # `EJScreen Report` = ifelse(valid == T, `EJScreen Report`, NA),
         # `ECHO Report` = ifelse(valid == T, `ECHO Report`, NA),
         # `EJScreen Map` = ifelse(valid == T, `EJScreen Map`, NA),
-        `Community Report` = ifelse(valid == T, shinyInput(actionButton, 1, id=paste0('button_', index), label = "Generate", 
+        `Community Report` = ifelse(valid == T, shinyInput(actionButton, 1, id = paste0('button_', index), label = "Generate", 
                                         onclick = paste0('Shiny.onInputChange(\"select_button',index,'\",  this.id)' )
                                         ), '')
       ) %>% 
@@ -2459,9 +2457,9 @@ app_server <- function(input, output, session) {
     # dt$`ECHO report` <- ifelse(!is.na(dt$`ECHO report`), EJAMejscreenapi::url_linkify(dt$`ECHO report`, text = 'ECHO Report'), 'N/A')
     
     # dt_avg <- data_summarized()$rows[c('Average person','Average site'),] %>% 
-    #   dplyr::mutate(siteid = c('Average person', 'Average site'), ST = NA,
+    #   dplyr::mutate(ejam_uniq_id = c('Average person', 'Average site'), ST = NA,
     #                 dplyr::across(dplyr::where(is.numeric), .fns = function(x) {round(x, digits=2)}),
-    #          siteid = as.character(siteid)) %>%
+    #          ejam_uniq_id = as.character(ejam_uniq_id)) %>%
     #   dplyr::select(dplyr::all_of(cols_to_select), ST)
     
     # use data_summarized()
@@ -2471,7 +2469,7 @@ app_server <- function(input, output, session) {
       #dplyr::bind_rows(dt_avg) %>% 
       #dplyr::bind_rows(dt_overall) %>% 
       ## sort by Site ID - as numeric index
-      #dplyr::arrange(siteid) %>% 
+      #dplyr::arrange(ejam_uniq_id) %>% 
       #dplyr::arrange(dplyr::desc(pop)) %>% 
       dplyr::mutate(Number.of.variables.at.above.threshold.of.90 = ifelse(is.na(pop), NA,
                                                                           Number.of.variables.at.above.threshold.of.90)) %>% 
@@ -2486,7 +2484,7 @@ app_server <- function(input, output, session) {
     
     ## set # of indicators above threshold to NA if population = 0
     dt_final <- dt_final %>%
-      dplyr::mutate(`# of indicators above 90% threshold` = ifelse(`Est. Population` ==0, 'N/A',
+      dplyr::mutate(`# of indicators above 90% threshold` = ifelse(`Est. Population` == 0, 'N/A',
                                                                    `# of indicators above 90% threshold`))
     
     n_cols_freeze <- 1
@@ -2740,14 +2738,13 @@ app_server <- function(input, output, session) {
   #   req(data_processed())
   #   #data_sitemap(data_uploaded()[input$view3_table_rows_selected,])
   #   if (submitted_upload_method() == 'SHP') {
-  #     data_shp <- dplyr::inner_join(data_uploaded()[, c('siteid', 'geometry')], data_processed()$results_bysite[input$view3_table_rows_selected],
-  #                                   by = c('siteid' = 'siteid'))
+  #     data_shp <- dplyr::inner_join(data_uploaded()[, c('ejam_uniq_id', 'geometry')], data_processed()$results_bysite[input$view3_table_rows_selected],
+  #                                   by = c('ejam_uniq_id' = 'ejam_uniq_id'))
   #     print(input$view3_table_rows_selected)
   #     print(data_shp)
   #     data_sitemap(data_shp)
   #   } else {
   #     ## link selected row to doaggregate by site output for mapping
-  #     data_sitemap(data_processed()$results_bysite[siteid %in% input$view3_table_rows_selected])
   #     data_sitemap(data_processed()$results_bysite[ejam_uniq_id %in% input$view3_table_rows_selected])
   #   }
   #   

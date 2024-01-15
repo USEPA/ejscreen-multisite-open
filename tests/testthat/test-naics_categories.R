@@ -1,7 +1,7 @@
 ## unit tests for EJAM::naics_categories
 ## Author: Sara Sokolinski
 
-# function is in the script frs_from_siteid.R
+# function is in the script frs_from_xyz.R
 # my frequency table has more 2 digit naics (24) than the script documents (17)
 # higher digit naics all have the same counts
 table(nchar(NAICS))

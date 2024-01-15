@@ -1,9 +1,9 @@
 
-#' trilaterate_sites2blocks - Estimate lat,lon of each siteid, from outputs of getblocksnearby()
-#' get data.table with siteid, lat,lon of each site (eg for when you did not save sitepoints info)
+#' trilaterate_sites2blocks - Estimate lat,lon of each ejam_uniq_id, from outputs of getblocksnearby()
+#' get data.table with ejam_uniq_id, lat,lon of each site (eg for when you did not save sitepoints info)
 #' @param s2b like [testoutput_getblocksnearby_10pts_1miles]
 #'
-#' @return a data.table with one row per unique siteid from input dt, 
+#' @return a data.table with one row per unique ejam_uniq_id from input dt, 
 #'   plus lat,lon columns  
 #' @export
 #'
@@ -31,12 +31,12 @@ trilaterate_sites2blocks <- function(s2b) {
     
     stop("This formula does not provide a good estimate, or maybe the distance estimates are wrong.")
     
-    # dt table has one row per siteid - it gets modified by reference here, new cols added - altered in parent env?
+    # dt table has one row per ejam_uniq_id - it gets modified by reference here, new cols added - altered in parent env?
     # for which we want to estimate lat,lon 
     # y1 y2 y3 vectors are the latitudes of the 3 most distant blocks, 
     # x1 x2 x3 vectors are the longitudes of the 3 most distant blocks
     # d1, d2, d3 vectors are distance values of the 3 most distant blocks
-    #   # returns a dt with one row per sitepoint lon=x and lat=y for each siteid surrounded by many blocks in sites2blocks
+    #   # returns a dt with one row per sitepoint lon=x and lat=y for each ejam_uniq_id surrounded by many blocks in sites2blocks
     
     # *** THIS FORMULA HAS A PROBLEM - WRONG ANSWER IS BEING PRODUCED. 
     # Trilateration requires good distance approximations to function properly.
@@ -62,7 +62,7 @@ trilaterate_sites2blocks <- function(s2b) {
     # dt[,lon := (CC * EE - FF * BB) / (EE * AA - BB * DD)]
     # dt[,lat := (CC * DD - AA * FF) / (BB * DD - AA * EE)]
     
-    return(dt[ , .(siteid, lat, lon)])
+    return(dt[ , .(ejam_uniq_id, lat, lon)])
   }
   ######################################################################### #
   
@@ -74,12 +74,12 @@ trilaterate_sites2blocks <- function(s2b) {
     # s2b <- merge(s2b, blockpoints , on = "blockid")
     s2b <- latlon_join_on_blockid(s2b) # messes up sort order
   }
-  setorder(s2b, siteid, -distance) # descending distance order 
+  setorder(s2b, ejam_uniq_id, -distance) # descending distance order 
   
   far3block_bysite <- s2b[ ,  .(d1 = distance[1], d2 = distance[2], d3 = distance[3], 
                                 x1 = lon[1], x2 = lon[2], x3 = lon[3],
                                 y1 = lat[1], y2 = lat[2], y3 = lat[3]
-  ), by = "siteid"]
+  ), by = "ejam_uniq_id"]
   # DT[, .SD[2], by=x]                    # get 2nd row of each group
   # DT[, tail(.SD,3), by=x]               # last 3 rows of each group
   

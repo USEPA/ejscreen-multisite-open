@@ -21,7 +21,7 @@
 #'   inside the circular buffer more accurately and more quickly than
 #'   areal apportionment of block groups would provide. 
 #'   
-#' @param sitepoints data.table with columns siteid, lat, lon giving point locations of sites or facilities around which are circular buffers
+#' @param sitepoints data.table with columns lat, lon giving point locations of sites or facilities around which are circular buffers
 #' @param radius in miles, defining circular buffer around a site point 
 #' @param maxradius miles distance (max distance to check if not even 1 block point is within radius)
 #' @param avoidorphans logical If TRUE, then where not even 1 BLOCK internal point is within radius of a SITE, 
@@ -114,7 +114,7 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
   
   # allocate memory for result list
   nRowsDf <- NROW(sitepoints)
-  res <- vector('list', nRowsDf)  # list of data.tables   cols will be blockid, distance, siteid    
+  res <- vector('list', nRowsDf)  # list of data.tables   cols will be blockid, distance, ejam_uniq_id    
   
   if (!quiet) {
     cat("Finding Census blocks with internal point within ", radius," miles of the site (point), for each of", nRowsDf," sites (points)...\n")
@@ -152,7 +152,7 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
     # res[[i]][ , `:=`( distance = (pdist::pdist(res[[i]][ , .(BLOCK_X, BLOCK_Y, BLOCK_Z)], sitepoints[i, c('FAC_X', 'FAC_Y', 'FAC_Z')]))@dist,
     #                   BLOCK_X = NULL, BLOCK_Z = NULL, BLOCK_Y = NULL)]
     # ## pdist computes a n by p distance matrix using two separate matrices
-    # res[[i]][ , siteid := sitepoints[i, .(siteid)]] 
+    # res[[i]][ , ejam_uniq_id := sitepoints[i, .(ejam_uniq_id)]] 
     # }
     
     ## instead of  
@@ -174,22 +174,21 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
     # distances is now just a 1 column data.table of hundreds of distance values. Some may be 5.08 miles even though specified radius of 3 miles even though distance to corner of bounding box should be 1.4142*r= 4.2426, not 5 ? 
     # pdist computes a n by p distance matrix using two separate matrices
     
-    # add the distances and siteid to the table of nearby blocks
+    # add the distances and ejam_uniq_id to the table of nearby blocks
     tmp[ , distance := distances[ , c(1)]]      # converts distances dt into a vector that becomes a column of tmp
-    #tmp[ , siteid := sitepoints[i, .(siteid)]]  # the similar clustered function differs, why?
     tmp[, ejam_uniq_id := sitepoints[i, .(ejam_uniq_id)]]
     #### LIMIT RESULTS SO FAR TO THE RADIUS REQUESTED  
     
     #filter actual distance, exclude blocks that are roughly nearby (according to index and bounding boxes) but are just beyond the radius you specified
     # e.g., 805 blocks roughly nearby, but only 457 truly within radius.
     
-    #res[[i]] <- tmp[distance <= truedistance, .(blockid, distance, siteid)]  #   *** SLOW STEP TO OPTIMIZE  #  1 OF SLOWEST LINES *** - cant we do this outside the loop just once??
+      #   *** SLOW STEP TO OPTIMIZE  #  1 OF SLOWEST LINES *** - cant we do this outside the loop just once??
     res[[i]] <- tmp[distance <= truedistance, .(blockid, distance, ejam_uniq_id)]
     #
     # }
     
     # tmp
-    #      BLOCK_X  BLOCK_Z   BLOCK_Y blockid  distance siteid
+    #      BLOCK_X  BLOCK_Z   BLOCK_Y blockid  distance ejam_uniq_id
     # 1: -198.8586 1985.476 -3419.360 3041513 0.4734989      1
     # 2: -199.8715 1984.961 -3419.600 3041514 0.6885808      1
     
@@ -218,12 +217,12 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
       distances <- as.matrix(pdist::pdist(x, y))
       
       tmp[ , distance := distances[ , c(1)]]
-      #tmp[ , siteid := sitepoints[i, .(siteid)]]
-      tmp[ , siteid := sitepoints[i, .(ejam_uniq_id)]]
+      #
+      tmp[ , ejam_uniq_id := sitepoints[i, .(ejam_uniq_id)]]
       # keep only the 1 block that is closest to this site (that is > radius but < maxradius) -- NEED TO CONFIRM/TEST THIS !!
       truemaxdistance <- distance_via_surfacedistance(maxradius)
       data.table::setorder(tmp, distance) # ascending order short to long distance
-      #res[[i]] <- tmp[distance <= truemaxdistance, .(blockid, distance, siteid)]   
+      #  
       res[[i]] <- tmp[distance <= truemaxdistance, .(blockid, distance, ejam_uniq_id)]   
       
     }  
@@ -238,7 +237,7 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
   ###################################################################################################################### # 
   
   sites2blocks <- data.table::rbindlist(res)
-  #data.table::setkey(sites2blocks, blockid, siteid, distance)
+  # 
   data.table::setkey(sites2blocks, blockid, ejam_uniq_id, distance)
   
   ########################################################################### ## 
@@ -261,7 +260,7 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
   # This also avoids infinitely small or zero distances.
   # 2 ways considered to do join here - may be able to optimize.
   # a) try to do join that updates sites2blocks by reference - not sure it works this way, but goal was to make join faster:
-  # sites2blocks[blockwts, .(siteid,blockid,distance,blockwt,bgid, block_radius_miles), on = 'blockid']
+  # sites2blocks[blockwts, .(ejam_uniq_id,blockid,distance,blockwt,bgid, block_radius_miles), on = 'blockid']
 
   # b) try to do join that updates sites2blocks by making a copy?  
 

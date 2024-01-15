@@ -85,7 +85,6 @@ getblocks_diagnostics <- function(x, detailed=FALSE, see_pctiles=FALSE) {
     blockcount_distance_adjusted_up  <- x[distance > distance_unadjusted, .N]
     blockcount_distance_adjusted_down <-  x[distance < distance_unadjusted, .N]
     blockcount_distance_adjusted <- blockcount_distance_adjusted_up + blockcount_distance_adjusted_down
-    #sitecount_distance_adjusted <- data.table::uniqueN(x[distance != distance_unadjusted, siteid])
     sitecount_distance_adjusted <- data.table::uniqueN(x[distance != distance_unadjusted, ejam_uniq_id])
     
   cat(paste0(blockcount_distance_adjusted,
@@ -115,7 +114,7 @@ getblocks_diagnostics <- function(x, detailed=FALSE, see_pctiles=FALSE) {
   
   # calculate extra stats ####
   
-  sitecount_unique_out       <- data.table::uniqueN(x, by = 'ejam_uniq_id') # used to be siteid
+  sitecount_unique_out       <- data.table::uniqueN(x, by = 'ejam_uniq_id')
   blockcount_unique          <- data.table::uniqueN(x, by = 'blockid') # how many blocks are there, counting each once, not "how many blocks are unique" ie appear only once
   blockcount_incl_dupes      <- data.table::uniqueN(x)
   ratio_blocks_incl_dupes_to_unique <- blockcount_incl_dupes / blockcount_unique
@@ -182,7 +181,7 @@ getblocks_diagnostics <- function(x, detailed=FALSE, see_pctiles=FALSE) {
   # PLOT ####
   ## it was not really useful
   # if (see_plot) {
-  # boxplot(x$distance ~ x$siteid)
+  # boxplot(x$distance ~ x$ejam_uniq_id)
   # }
   invisible(sumstats)
 }

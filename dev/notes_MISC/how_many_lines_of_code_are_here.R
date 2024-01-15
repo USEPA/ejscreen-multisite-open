@@ -238,7 +238,7 @@
 # 96    116       38   78    EJAM   /R/                                        pctiles_from_raw_lookup_DRAFT.R
 # 102   113       31   82    EJAM   /R/                                                getblocks_diagnostics.R
 # 109   104       50   54    EJAM   /R/                                          plot_distance_mean_by_group.R
-# 110   103       70   33    EJAM   /R/                                                      frs_from_siteid.R
+# 110   103       70   33    EJAM   /R/                                                      frs_from_   renamed to frs_from_regid
 # 114   100       31   69    EJAM   /R/                                                      getblocksnearby.R
 
 # 115    99       37   62    EJAM   /R/                                                       popup_from_any.R
@@ -297,7 +297,7 @@
 # 280    27       22    5    EJAM   /R/                                                latlon_from_programid.R
 # 282    26       20    6    EJAM   /R/                                         ST_by_site_from_sites2blocks.R
 # 287    24       23    1    EJAM   /R/                                                 data_blockgroupstats.R
-# 291    22       15    7    EJAM   /R/                                                   latlon_from_siteid.R
+# 291    22       15    7    EJAM   /R/                                                   latlon_from_regid.R
 # 292    22        0   22    EJAM   /R/                                     util_check_urls_in_documentation.R
 # 293    20       13    7    EJAM   /R/                             shape_buffered_from_shapefile_points.R
 # 294    20        7   13    EJAM   /R/                                                      url_get_via_url.R

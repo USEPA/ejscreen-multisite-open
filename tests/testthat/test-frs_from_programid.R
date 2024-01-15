@@ -1,8 +1,7 @@
 ## unit tests for frs_from_programid
 ## Author: Sara Sokolinski
 
-# function is in the script frs_from_siteid.R
-# however, it is really testing subfuntion latlon_from_programid which has it's own script
+# function is in the script frs_from_xyz.R
 
 # not much to test here
 

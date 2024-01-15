@@ -1,9 +1,9 @@
 #' states_infer - Get table of info on States (from latlon or FIPS)
-#' Get cleaned table of US State etc. by siteid, from lat/lon, or from FIPS
+#' Get cleaned table of US State etc. by ejam_uniq_id, from lat/lon, or from FIPS
 #' @param x data.frame or data.table with either ST column or lat and lon columns, or FIPS,
-#'   and optionally a column with siteid or column called n
+#'   and optionally a column like  id or n
 #' @seealso [state_from_latlon()] [state_from_fips()]
-#' @return data.frame with unique siteid, ST, etc.
+#' @return data.frame with unique id, ST, etc.
 #' @export
 #'
 states_infer <- function(x) {
@@ -15,24 +15,24 @@ states_infer <- function(x) {
   if (missing(x)) {
     bad_sites2states <- TRUE
   }
-  ### overly inflexible to require identical lists of siteid values -- 
+  ### overly inflexible to require identical lists of ejam_uniq_id values -- 
   # might want to get state pctiles for all where possible even if 1 site lacks ST, 
   # and ignore extra info too not found in sites2blocks
-  # if (!all(unique(sites2blocks$siteid) %in% sites2states$siteid)) {
-  #   warning("cannot provide state percentiles unless all siteid values in sites2blocks are also in sites2stats")
+  # if (!all(unique(sites2blocks$ejam_uniq_id) %in% sites2states$ejam_uniq_id)) {
+  #   warning("cannot provide state percentiles unless all ejam_uniq_id values in sites2blocks are also in sites2stats")
   #   bad_sites2states <- TRUE
   # }
-  # if (!all(unique(sites2states$siteid) %in% sites2blocks$siteid)) {
-  #   warning("cannot provide state percentiles unless all siteid values in sites2stats are also in sites2blocks")
+  # if (!all(unique(sites2states$ejam_uniq_id) %in% sites2blocks$ejam_uniq_id)) {
+  #   warning("cannot provide state percentiles unless all ejam_uniq_id values in sites2stats are also in sites2blocks")
   #   bad_sites2states <- TRUE
   # }
   
-  # create siteid column if cannot find one
-  if (!("siteid" %in% names(sites2states))) {
-    if ("n" %in% names(sites2states)) {  # use n or rownumber as siteid if not explicitly provided as siteid column
-      sites2states$siteid <- sites2states$n
+  # create ejam_uniq_id column if cannot find one
+  if (!("ejam_uniq_id" %in% names(sites2states))) {
+    if ("n" %in% names(sites2states)) {  # use n or rownumber as ejam_uniq_id if not explicitly provided as ejam_uniq_id column
+      sites2states$ejam_uniq_id <- sites2states$n
     } else {
-      sites2states$siteid <- 1:NROW(sites2states)
+      sites2states$ejam_uniq_id <- 1:NROW(sites2states)
     }
   }
   # is ST already there?
@@ -59,7 +59,7 @@ states_infer <- function(x) {
   }
   # if nothing found to tell us the ST info, fill in NA values
   if (bad_sites2states) {
-    sites2states <- data.frame(siteid = 1:length(unique(sites2blocks$siteid)), ST = NA)
+    sites2states <- data.frame(ejam_uniq_id = 1:length(unique(sites2blocks$ejam_uniq_id)), ST = NA)
   }
   # check quality of ST info found or looked up
   if (!all(sites2states$ST %in% EJAM::stateinfo$ST)) {

@@ -209,7 +209,7 @@ fips_bg_from_anyfips <- function(fips) {
 #' @param fips County FIPS vector (ideally as character not numeric values)
 #' @seealso [getblocksnearby_from_fips()]
 #' @return data.table with one row per blockgroup in these counties, or
-#'   all pairs of county fips - bgid, and a unique siteid assigned to each county 
+#'   all pairs of county fips - bgid, and ejam_uniq_id (1 through N) assigned to each county 
 #' @export
 #'
 #' @examples 
@@ -228,8 +228,8 @@ counties_as_sites <- function(fips) {
   # return counties2bgs table of pairs so doaggregate_blockgroups() or whatever can take that and do full EJ stats.
   
   county2bg <- bgpts[substr(bgfips,1,5) %in% fips, .(countyfips = substr(bgfips,1,5), bgid) ]
-  county2bg[, siteid := .GRP , by = "countyfips"]
-  county2bg[, .(siteid, countyfips, bgid)]
+  county2bg[, ejam_uniq_id := .GRP , by = "countyfips"]
+  county2bg[, .(ejam_uniq_id, countyfips, bgid)]
 }
 ############################################### #
 

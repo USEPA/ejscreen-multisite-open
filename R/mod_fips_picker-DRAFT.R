@@ -243,7 +243,7 @@ if (1 == 0) {
     
     # selectedrows <- reactiveVal()
     displaytable <- reactiveVal() # to show here
-    bgstable <- reactiveVal()  # all the blockgroup fips to analyze and siteid = units to analyze
+    bgstable <- reactiveVal()  # all the blockgroup fips to analyze and ejam_uniq_id = units to analyze
     
     observe({
       

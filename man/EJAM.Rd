@@ -50,7 +50,7 @@ or in each shapefile or FIPS-defined location).
 \section{\strong{Data files available as examples:}}{
 \itemize{
 \item \strong{Excel files to read into ejamit()} or getblocksnearby() are in the local source package files in EJAM/inst/testdata/latlon
-\item \link{testpoints_10}.rda  and larger datasets each provide a random test points data.frame with columns lat lon siteid
+\item \link{testpoints_10}.rda  and larger datasets each provide a random test points data.frame with columns lat lon (and a unique site id)
 \item \code{\link[=testpoints_n]{testpoints_n()}} can generate random test points at places weighted by population, FRS facilities, blockgroup, area, block
 \item \link{testoutput_getblocksnearby_10pts_1miles}.rda and larger datasets are sample outputs of getblocksnearbyviaQuadTree or just getblocksnearby(),
 to try as inputs to doaggregate()
@@ -60,7 +60,7 @@ to try as inputs to doaggregate()
 \section{\strong{Specifying buffer sites / facilities:}}{
 A user can specify locations, via an interface, and that shiny app returns
 \itemize{
-\item \emph{\code{sitepoints}}, a data.table with fields siteid, lat, lon.
+\item \emph{\code{sitepoints}}, a data.table with fields lat, lon, and can have a unique site id.
 A user-specified table with maybe 100, 1k, 10k+ points (centers of circular buffers).
 Examples of test data are
 }
@@ -106,7 +106,7 @@ NAICS codes also can be selected by text search of industry names or by categori
     to be converted to sitepoints.
 }\if{html}{\out{</div>}}
 \itemize{
-\item \strong{\code{\link[=frs_from_siteid]{frs_from_siteid()}}} takes REGISTRY_ID values and returns a data.table of site points.
+\item \strong{\code{\link[=frs_from_regid]{frs_from_regid()}}} takes REGISTRY_ID values and returns a data.table of site points.
 Relies on \strong{frs} data.table with columns REGISTRY_ID, lat, lon, etc.
 \item \strong{\code{\link[=frs_from_programid]{frs_from_programid()}}} takes EPA program-specific site ID values and returns a data.table of site points.
 Relies on \strong{\link{frs_by_programid}} data.table with columns program, pgm_sys_id, REGISTRY_ID, lat, lon
@@ -114,26 +114,26 @@ Relies on \strong{\link{frs_by_programid}} data.table with columns program, pgm_
 
 \strong{- BY LAT/LON POINT:}
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{    Interface so user can specify or upload latitude longitude siteid (and optionally others like sitename),
+\if{html}{\out{<div class="sourceCode">}}\preformatted{    Interface so user can specify or upload latitude longitude (and optionally a unique site id and other columns like sitename),
     when using [ejamit()] which in turn uses [latlon_from_anything()].
     
-    Interface returns sitepoints data.table with siteid, lat, lon (here, siteid may be just the row number)
+    The app keeps track of the sitepoints data.table with an assigned ejam_uniq_id that is just the row number.
 }\if{html}{\out{</div>}}
 }
 
 \section{\strong{Buffering to find site-block-distances:}}{
 Input: \strong{\code{sitepoints}} data.table from user picking points
 
-Columns are siteid, lat, lon; maybe 100 to 10k points
+Columns are lat, lon
 \itemize{
 \item \strong{\code{\link[=getblocksnearby]{getblocksnearby()}}} which by default uses \emph{\code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}}}
 Returns \code{sites2blocks}
 Requires index called localtree that is build from dataset \link{quaddata}
 \item \strong{sites2blocks}   Created by \code{\link[=getblocksnearby]{getblocksnearby()}} to be passed to  \code{\link[=doaggregate]{doaggregate()}}
 This is a data table with maybe 100k to 1m rows (assume 1k blocks within 3 miles of each site, or 100 blocks within 1 mile),
-\verb{sites2blocks[ , .(siteid, blockid, distance or dist)]}
+\verb{sites2blocks[ , .(ejam_uniq_id, blockid, distance or dist)]}
 \itemize{
-\item siteid    (site with circular buffer to group by)
+\item ejam_uniq_id    (the row number 1 through N of the site)
 \item blockid     for join to blockwts
 \item distance  (in miles, from block to site) (0 or irrelevant for noncircular buffers,
 since a block is only in this table if in one or more buffers,
@@ -186,7 +186,7 @@ bgid is more efficient than bgfips. bgfips is not here but is in a bgid2fips dat
 \item \strong{results_overall}   one row data.table, like results_by_site, but just one row with
 aggregated results for all unique residents.
 \item \strong{results_by_site}   results for individual sites (buffers) - a data.table of results,
-one row per siteid, one column per indicator
+one row per ejam_uniq_id (i.e., each site analyzed), one column per indicator
 \item \strong{results_bybg_people}  results for each block group, to allow for showing the distribution of each
 indicator across everyone within each demographic group.
 \item \strong{longnames}  descriptive long names for the indicators in the above outputs

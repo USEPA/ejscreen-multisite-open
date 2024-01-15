@@ -90,7 +90,7 @@ mapview(outfast, alpha.regions = 0.5, alpha = 1, layer = "blocks_nearby" ) +
 # Geodetic CRS:  NAD83
 # First 10 features:
 
-#         blockid siteid     sitename                   geometry   # this has blockid
+#         blockid    id     sitename                   geometry   # this has blockid
 
 # 1238865 1238865      1 Pulaski site POINT (-77.01352 38.90157)
 # 1238866 1238866      1 Pulaski site POINT (-77.01261 38.90081)
@@ -112,7 +112,7 @@ mapview(outfast, alpha.regions = 0.5, alpha = 1, layer = "blocks_nearby" ) +
 # Geodetic CRS:  NAD83
 # First 10 features:
 
-#    siteid_fromgetblocksnearby siteid     sitename                   geometry  # this lacks blockid
+#        id from getblocksnearby  id     sitename                   geometry  # this lacks blockid
 
 # 4                           1      1 Pulaski site POINT (-77.01352 38.90157)
 # 5                           1      1 Pulaski site POINT (-77.01261 38.90081)

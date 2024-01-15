@@ -1,14 +1,14 @@
 ## unit tests for frs_from_naics
 ## Author: Sara Sokolinski
 
-# function is in the script frs_from_siteid.R
-# however, it is really testing subfuntion naics_from_any which has it's own script
+# function is defined in the file frs_from_xyz.R
+# however, it is really testing naics_from_any
 # all inputs get passed to that function
 
 # first option is for website_url = TRUE which gives error. it cannot be used in frs_from naics
-# since the response would not be a NAICS code to enter into siteid_from_naics
+# since the response would not be a NAICS code to enter into regid_from_naics
 # website_scrape = TRUE does work however, since it grabs a data frame with the column 'code'
-# the code is stirng instead of numeric, but that doesn't seem to matter to siteid_from_naics (in latlon_from_naics.R)
+# the code is stirng instead of numeric, but that doesn't seem to matter to regid_from_naics (in latlon_from_naics.R)
 
 test_that('website_url and website_scrape cause errors',{
   expect_error(   val <- frs_from_naics(21112, website_url = TRUE)) # "crude petroleum"

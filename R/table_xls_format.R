@@ -513,7 +513,7 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
   header_colors_overall  <- varname2color_ejam(headers_overall,  map_headernames)
   header_colors_eachsite <- varname2color_ejam(headers_eachsite, map_headernames)
   
-  force_to_be_plain <- c("siteid", "pop", "lon", "lat", "ST", "statename")
+  force_to_be_plain <- c("ejam_uniq_id", "pop", "lon", "lat", "ST", "statename")
   header_colors_overall[ headers_overall  %in% force_to_be_plain] <- "white"
     header_colors_eachsite[headers_eachsite %in% force_to_be_plain] <- "white"  
       

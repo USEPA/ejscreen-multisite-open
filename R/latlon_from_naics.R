@@ -16,7 +16,7 @@
 #' @export
 #'
 #' @examples 
-#'   siteid_from_naics(321114)
+#'   regid_from_naics(321114)
 #'   latlon_from_naics(321114)
 #'   latlon_from_naics(EJAM::naics_from_any("cheese")[,code] )
 #'   head(latlon_from_naics(c(3366, 33661, 336611), id_only=TRUE))
@@ -36,4 +36,4 @@ latlon_from_naics <- function(naics, id_only=FALSE) {
 
 #' @inherit latlon_from_naics
 #' @export
-siteid_from_naics <- latlon_from_naics
+regid_from_naics <- latlon_from_naics

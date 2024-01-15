@@ -280,7 +280,7 @@ app_ui  <- function(request) {
                         tags$ul(
                           tags$li('Required filetype: .csv, .xls, or .xlsx'),
                           tags$li('Required Columns: REGISTRY_ID'),
-                          tags$li('Optional Columns: siteid, lat, lon')
+                          tags$li('Optional Columns: id, lat, lon')
                         )
                       ),
                       actionButton('frs_help', label = 'More Info', class = 'usa-button usa-button--outline')
@@ -312,7 +312,7 @@ app_ui  <- function(request) {
                       tags$ul(
                         tags$li('Required filetype: .csv, .xls, or .xlsx'),
                         tags$li('Required columns: program, pgm_sys_id'),
-                        tags$li('Optional columns: siteid, REGISTRY_ID, lat, lon')
+                        tags$li('Optional columns: id, REGISTRY_ID, lat, lon')
                       ),
                       actionButton('epa_program_help', label = 'More Info', class = 'usa-button usa-button--outline')
                     ), #end EPA program upload conditional panel
@@ -353,7 +353,7 @@ app_ui  <- function(request) {
                       tags$ul(
                         tags$li('Required filetype: .csv, .xls, or .xlsx'),
                         tags$li('Required columns: FIPS or alias'),
-                        tags$li('Optional columns: siteid')
+                        tags$li('Optional columns: id')
                       ),
                       actionButton('fips_help', label = 'More Info', class = 'usa-button usa-button--outline')
                     ), # end FIPS conditionalPanel

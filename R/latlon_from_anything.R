@@ -19,7 +19,7 @@
 #'   
 #'   except it also uses these functions:
 #'   
-#'   [latlon_from_siteid()]  
+#'   [latlon_from_regid()]  
 #'   
 #'   [latlon_from_programid()]   but not  _from_naics() ?
 #' 

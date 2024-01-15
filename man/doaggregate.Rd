@@ -26,11 +26,11 @@ doaggregate(
 }
 \arguments{
 \item{sites2blocks}{data.table of distances in miles between all sites (facilities) and
-nearby Census block internal points, with columns siteid, blockid, distance,
+nearby Census block internal points, with columns ejam_uniq_id, blockid, distance,
 created by getblocksnearby  function.
 See \link{sites2blocks_example10pts_1miles} aka \link{testoutput_getblocksnearby_10pts_1miles} dataset in package, as input to this function}
 
-\item{sites2states_or_latlon}{data.table or just data.frame, with columns siteid (each unique one in sites2blocks) and ST (2-character State abbreviation) or lat and lon}
+\item{sites2states_or_latlon}{data.table or just data.frame, with columns ejam_uniq_id (each unique one in sites2blocks) and ST (2-character State abbreviation) or lat and lon}
 
 \item{radius}{Optional radius in miles to limit analysis to. By default this function uses
 all the distances that were provided in the output of getblocksnearby(),
@@ -88,7 +88,7 @@ list with named elements:
 \item \strong{\code{results_overall}}   one row data.table, like results_by_site, but just one row with
 aggregated results for all unique residents.
 \item \strong{\code{results_by_site}}   results for individual sites (buffers) - a data.table of results,
-one row per siteid, one column per indicator
+one row per ejam_uniq_id, one column per indicator
 \item \strong{results_bybg_people}  results for each block group, to allow for showing the distribution of each
 indicator across everyone within each demographic group.
 \item \strong{longnames}  descriptive long names for the indicators in the above outputs

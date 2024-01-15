@@ -11,7 +11,7 @@ counties_as_sites(fips)
 }
 \value{
 data.table with one row per blockgroup in these counties, or
-all pairs of county fips - bgid, and a unique siteid assigned to each county
+all pairs of county fips - bgid, and ejam_uniq_id (1 through N) assigned to each county
 }
 \description{
 counties_as_sites - Analyze US Counties as if they were sites, to get EJ indicators summary for each county
