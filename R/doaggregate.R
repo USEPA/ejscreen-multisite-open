@@ -869,11 +869,11 @@ results_bysite <- merge(results_bysite, results_bysite_minmax, by = "ejam_uniq_i
   
   results_overall[ , `:=`(
     Demog.Index = (pctlowinc + pctmin) / 2,
-    # *** add supplemental indicator too, when possible. need lowlifeexpectancy etc. and 
-    # Demog.Index.Supp needs to be in names_d  and lookup tables for usastats and statestats ## ##
-    Demog.Index.Supp  = (pctlowinc + pctunemployed + pctlths + pctlingiso + lowlifex ) / ifelse(is.na(lowlifex), 4, 5)
-    # *** add supplemental indicator too, when possible. need lowlifeexpectancy etc. and
-    # Demog.Index.Supp needs to be in names_d  and lookup tables for usastats and statestats ## ##
+    # *** add supplemental indicator 
+    # 
+    Demog.Index.Supp  = (pctlowinc + pctunemployed + pctlths + pctlingiso + ifelse(is.na(lowlifex), 0, lowlifex) ) / ifelse(is.na(lowlifex), 4, 5)
+    # *** add supplemental indicator too
+    # 
     
     # # supplemental demographic index = (% low-income + % unemployed + % less than high school education + % limited English speaking + low life expectancy) / 5 
     # For block groups where low life expectancy data is missing (NA), the formula will average the other four factors! 
