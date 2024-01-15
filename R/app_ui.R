@@ -1147,7 +1147,10 @@ app_ui  <- function(request) {
                       value = default_max_pts_run,
                       max =        maxmax_pts_run),
 
-
+         numericInput('max_shapes_map', label = "Cap on number of shapes (polygons) one can MAP",
+                      min = 10,  step = 10,
+                      value = default_max_shapes_map,
+                      max =        maxmax_shapes_map),
 
          ### Options for Radius  ------------- #
 
