@@ -17,13 +17,13 @@ knitr::opts_chunk$set(eval = FALSE)
 ```
 
 ```{r libraryEJAM, eval = TRUE, echo= FALSE, include= FALSE}
+# rm(list = ls())
+# golem::detach_all_attached()
+# 
 library(EJAM)
-# dataload_from_pins(
-#   c('blockwts', 'blockpoints', 'blockid2fips'), 
-#    'bgej',     # normally load only if /when needed 
-#   'bgid2fips',  # normally load only if /when needed 
-#   c('frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact"), # normally load only if /when needed
-#   'quaddata', envir = ?????)
+ dataload_from_pins('all'); dataload_from_pins("blockid2fips")
+ indexblocks()
+
 ```
 
 ```{r developernote, echo= FALSE}
@@ -954,32 +954,42 @@ shinyApp(ui = TEST_UI, server = TEST_SERVER) # Try module in mini/test app
 ### Compare to results from EJScreen API
 
 ```{r ejamit-testpoints_1000, eval = FALSE}
-sitepoints <- testpoints_1000 
-radius <- 1
 
-outejam <- ejamit(sitepoints =  sitepoints[1:5, ], radius = radius)
+# Pick sample of randomly selected EPA-regulated facilities in the FRS:
+n <- 30 # or 1,000 sites, e.g.
+pts <- testpoints_n(n, weighting = 'frs')
+radius <- 3
 
-## SLOW
+# Run (potentially long) analysis in EJScreen, 
+# (approx 40 minutes for 1,000 points, maybe )
+# and also in EJAM
+## vs <- ejscreen_vs_ejam(pts, radius = radius, include_ejindexes = TRUE)
+# or to save time, 
 
-outapi <- (ejscreenit(sitepoints[1:5, ],
-                     radius = radius,
-                     nosave = T, nosee = T,
-                     interactiveprompt = F))$table
-names(outapi)
+out1 = testoutput_ejscreenit_500$table
+out1 = out1[!is.na(out1$pm), ]
+out1$id = 1:NROW(out1)
+ejamsite = ejamit(
+    sitepoints = out1[ , c("lat", "lon")], radius = 1)$results_bysite
+ejamsite$id <- ejamsite$ejam_uniq_id
+missingdatarows <- setdiff(1:NROW(out1), ejamsite$ejam_uniq_id)
+out1 <- out1[!(1:NROW(out1) %in% missingdatarows), ]
 
-cbind(as.list(outapi[1, ]))
+  
+# see summary stats on comparisons
+sum_vs <- ejscreen_vs_ejam_summary(vs)  
+q <- ejscreen_vs_ejam_summary_quantiles(
+  vs, mystat = 'ratio', 
+  myvars = c('pop',  "blockcount_near_site", names_these), digits = 2)
+q[order(q[, "95%"], decreasing = F), c("50%", "95%")]
 
-# outapi2 <- ejscreenapi_plus(sitepoints[1:5, ], radius = radius, 
-#     on_server_so_dont_save_files = T)
-
-setdiff( names(outapi$table), names(outejam$results_overall))
-
-setdiff( names(outejam$results_overall), names(outapi$table))
-
-# links to report or map also were named differently.
-
- cat("----------------\n")
-
+## examine one site closely
+ejscreen_vs_ejam_see1(
+  vs, mysite = 1, 
+  myvars = c('pop', "blockcount_near_site"))
+ejscreen_vs_ejam_see1(vs, mysite = 1, 
+                      myvars = c('lowlifex', "Demog.Index.Supp"))
+ejscreen_vs_ejam_see1map(1, x = vs)
 
 
 ```
