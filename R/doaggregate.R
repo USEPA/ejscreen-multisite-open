@@ -804,6 +804,15 @@ results_bysite <- merge(results_bysite, results_bysite_minmax, on = "ejam_uniq_i
   #  (using the Rolled up Counts) 
   # this was meant to handle multiple columns (formula for each new one) for many rows (and here in buffer results, one site is a row, not one blockgroup) 
   
+  
+  #### possible way to pull formulas out of doaggregate() is this:
+  ## it would not be as fast as data.table approach though, and is not tested.
+  # dcalculated_overall <- calc_ejam(results_overall, keep.old = "", formulas = formulas_d)
+  # results_overall <- cbind(results_overall, dcalculated_overall)
+  # dcalculated_bysite <- calc_ejam(results_bysite, keep.old = "", formulas = formulas_d)
+  # results_bysite <- cbind(results_bysite, dcalculated_bysite)
+  
+  
   # "nonmins <- nhwa"
   # "mins <- pop - nhwa" 
   
