@@ -13,14 +13,14 @@ ask_number(
 )
 }
 \arguments{
-\item{default}{default value}
+\item{default}{default value for the number to be provided and returned}
 
-\item{title}{question}
+\item{title}{title of popup dialog box, like "Radius"}
 
-\item{message}{title of popup dialog box}
+\item{message}{question, like, "Within how many miles of each point?"}
 }
 \value{
-a number
+a single number
 }
 \description{
 utility - interactive prompt in RStudio to ask user to specify number like radius
