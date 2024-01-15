@@ -29,7 +29,7 @@ Also note the FRS API:
  latlon_from_programid(c("XJW000012435", "00768SRTRSROAD1"))
  pids <- c("7-0540-00003", "354362", "1513529", "485659", "LAG750956", 
    "CAC002995519", "3601252181", "3601439158")
- latlon_from_siteid(latlon_from_programid(pids)[,REGISTRY_ID])
+ latlon_from_regid(latlon_from_programid(pids)[,REGISTRY_ID])
  latlon_from_programid(c("XJW000012435", "00768SRTRSROAD1", "asdfsdf"))[,.(lat,lon)]
  
 }

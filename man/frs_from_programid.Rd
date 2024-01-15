@@ -7,7 +7,7 @@
 frs_from_programid(programid)
 }
 \arguments{
-\item{siteid}{vector of one or more EPA Program ID codes used by FRS}
+\item{programid}{vector of one or more EPA Program ID codes used by FRS}
 }
 \value{
 relevant rows of the data.table called frs, which has column names that are

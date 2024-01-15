@@ -25,10 +25,10 @@ frs_from_sic - Use SIC code or industry title text search to see FRS Facility Re
   sic_from_name("silver")
   sic_from_any('0780')
   frs_from_sic('0780')
-  siteid_from_sic('0780')
+  regid_from_sic('0780')
   latlon_from_sic('0780')
   
 }
 \seealso{
-\code{\link[=siteid_from_sic]{siteid_from_sic()}} \code{\link[=sic_from_any]{sic_from_any()}}
+\code{\link[=regid_from_sic]{regid_from_sic()}} \code{\link[=sic_from_any]{sic_from_any()}}
 }

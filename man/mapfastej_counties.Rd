@@ -25,7 +25,7 @@ mapfastej_counties(
 }
 \value{
 leaflet html widget (but if static_not_leaflet=T,
-returns just shapes_counties_from_countyfips(mydf$siteid))
+returns just shapes_counties_from_countyfips(mydf$ejam_uniq_id))
 }
 \description{
 mapfastej_counties - Static or HTML/leaflet map of counties

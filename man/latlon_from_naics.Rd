@@ -32,7 +32,7 @@ Relies on  frs_by_naics (a data.table)
 See info about NAICS industry codes at \url{https://www.naics.com/search}
 }
 \examples{
-  siteid_from_naics(321114)
+  regid_from_naics(321114)
   latlon_from_naics(321114)
   latlon_from_naics(EJAM::naics_from_any("cheese")[,code] )
   head(latlon_from_naics(c(3366, 33661, 336611), id_only=TRUE))
