@@ -55,7 +55,7 @@ for (i in 1:length(alist)) {
   cat('\n\n', alist[i], '\n\n')
   aa_namez =  as.vector( unlist(namez[gsub('names_','', alist_friendly[i])]) )
   rownames(inamez) <- NULL
-  bb_fr <- map_headernames[map_headernames$varlist == alist[i], c( "names_friendly")]
+  bb_fr <- map_headernames[map_headernames$varlist == alist[i], c( "shortlabel")] # these are shorter versions than long...
   cc_long = map_headernames[map_headernames$varlist == alist[i], c(  "longname_tableheader")]
   print(cbind(
     aa_namez = as.vector(unlist(aa_namez)) ,
@@ -72,13 +72,12 @@ for (i in 1:length(alist)) {
 
 # need to choose which of 3 versions to use for each varlist - 
 # sometimes namez is best for the friendly versions
-# sometimes map_headernames$names_friendly is best
-# often "long" is the same as map_headernames$names_friendly, but often not. not on d except ratios, 
-# match on subgroups, etc. 
+# sometimes map_headernames$names_friendly == $shortlabel  is best
+#   "long" is much longer.  
 
-# Differ on envt ones. maphead friendly is shortest. namez is medium. long is very very long. 
+# Differ on envt ones. maphead shortlabel is shortest. namez is medium. long is very very long. 
 
-# vary a lot on EJ friendly names - namez and maphead each sometimes best.
+# vary a lot on EJ shortlabel names - namez and maphead each sometimes best but shortlabel are shortest.
 
 
 

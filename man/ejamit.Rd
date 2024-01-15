@@ -143,7 +143,7 @@ See help("EJAM")
   out <- ejamit(testsites, radius)  
   # out <- ejamit("myfile.xlsx", 3.1)  
   
-  # out2 <- ejscreenit(testpoints_05)
+  # out2 <- ejscreenit(testpoints_5)
   
   # View results overall
   round(t(out$results_overall), 3.1)
