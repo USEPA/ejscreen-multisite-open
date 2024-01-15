@@ -6,27 +6,54 @@
 # - sites2blocks data objects, and 
 # - documentation files for all those
 
-creatingnew_testpoints_data   <- FALSE  # TO REPLACE THE ACTUAL TEST POINTS (can be false and still do other steps below)
-resaving_testpoints_rda       <- FALSE
-resaving_testpoints_excel     <- FALSE
-resaving_testpoints_helpdocs  <- FALSE
+## one-time swap to rename column siteid to sitenumber
+# ttt = grep("test", datapack("EJAM")$Item, value = T) 
+# for (this in ttt) {cat('is siteid in names(', this, ')? ')
+#   cat("siteid" %in% names(get(this)), '\n')}
+# is siteid in names( testoutput_getblocksnearby_1000pts_1miles )? TRUE 
+# is siteid in names( testoutput_getblocksnearby_100pts_1miles )? TRUE 
+# is siteid in names( testoutput_getblocksnearby_10pts_1miles )? TRUE 
+# is siteid in names( testpoints_10 )? TRUE 
+# is siteid in names( testpoints_100 )? TRUE 
+# is siteid in names( testpoints_1000 )? TRUE 
+# is siteid in names( testpoints_10000 )? TRUE 
+# is siteid in names( testpoints_100_dt )? TRUE 
+# is siteid in names( testpoints_conus5 )? TRUE
+# names(testpoints_10) <- gsub('siteid', 'sitenumber', names(testpoints_10))
+# names(testpoints_100) <- gsub('siteid', 'sitenumber', names(testpoints_100))
+# names(testpoints_1000) <- gsub('siteid', 'sitenumber', names(testpoints_1000))
+# names(testpoints_10000) <- gsub('siteid', 'sitenumber', names(testpoints_10000))
+# names(testpoints_100_dt) <- gsub('siteid', 'sitenumber', names(testpoints_100_dt))
+# names(testpoints_conus5) <- gsub('siteid', 'sitenumber', names(testpoints_conus5))
+# usethis::use_data(testpoints_10 , overwrite = TRUE)
+# usethis::use_data(testpoints_100 , overwrite = TRUE)
+# usethis::use_data(testpoints_1000 , overwrite = TRUE)
+# usethis::use_data(testpoints_10000 , overwrite = TRUE)
+# usethis::use_data(testpoints_100_dt , overwrite = TRUE)
+# usethis::use_data(testpoints_conus5 , overwrite = TRUE)
 
-recreating_getblocksnearby    <- FALSE  # eg if block data changed, or if recreating_doaggregate_output = TRUE below
-resaving_getblocksnearby_rda  <- FALSE
-resaving_getblocksnearby_helpdocs <- FALSE
+
+creatingnew_testpoints_data   <- FALSE  #done. TO REPLACE THE ACTUAL TEST POINTS (can be false and still do other steps below)
+resaving_testpoints_rda       <- FALSE
+resaving_testpoints_excel     <- TRUE
+resaving_testpoints_helpdocs  <- TRUE
+
+recreating_getblocksnearby    <- TRUE  # eg if block data changed, or if recreating_doaggregate_output = TRUE below
+resaving_getblocksnearby_rda  <- TRUE
+resaving_getblocksnearby_helpdocs <- TRUE
 
 recreating_doaggregate_output <- TRUE # eg if other indicators added to outputs
  if (recreating_doaggregate_output) {recreating_getblocksnearby <- TRUE} # needed
 resaving_doaggregate_rda      <- TRUE
-resaving_doaggregate_helpdocs <- FALSE
+resaving_doaggregate_helpdocs <- TRUE # just in case
 resaving_doaggregate_excel    <- TRUE
 
 recreating_ejamit_output      <- TRUE # eg if format or list of indicators changes
 resaving_ejamit_rda           <- TRUE
-resaving_ejamit_helpdocs      <- FALSE
+resaving_ejamit_helpdocs      <- TRUE
 resaving_ejamit_excel         <- TRUE
 
-redoing_testpoints_10_files   <- FALSE
+redoing_testpoints_10_files   <- FALSE # there are these:  5, 50, 500  ## or should it be _10_ ? doesnt EJAMejscreenapi create those?
 
 
 if (basename(getwd()) != "EJAM") {stop('do this from EJAM source package folder')}
@@ -50,9 +77,9 @@ for (n in nvalues) {
     testpoints_data <- EJAM::testpoints_n(n = n, weighting = "frs", dt = FALSE)               ############# #
     # WITH DUMMY VALUES FOR MOST COLUMNS ####
     testpoints_data$sitename = paste0("Example Site ", 1:n)
-    # Drop other columns to just use lat lon siteid sitename
+    # Drop other columns to just use lat lon sitenumber sitename
     # testpoints_data$NAICS = NULL # 722410# testpoints_data$SIC = NULL # 5992  # testpoints_data$REGISTRY_ID = NULL # c(EJAM::test_xtrac, rep(NA,n))[1:n] #  # testpoints_data$PGM_SYS_ACRNMS = NULL
-    testpoints_data  <- testpoints_data[ , c("lat", "lon", "siteid", "sitename")]   
+    testpoints_data  <- testpoints_data[ , c("lat", "lon", "sitenumber", "sitename")]   
     assign(testpoints_name, testpoints_data)    #        put the data into an object of the right name
   }
   
@@ -77,7 +104,7 @@ for (n in nvalues) {
   filecontents <- paste0(
     "#' @name ", testpoints_name, " 
 #' @docType data
-#' @title test points data.frame with columns siteid, lat, lon
+#' @title test points data.frame with columns sitenumber, lat, lon
 NULL
 "
   )
@@ -285,7 +312,7 @@ NULL
 ############################################# # 
 if (redoing_testpoints_10_files) {
 # for the API that EJScreen provides, for comparison:
-testpoints_name <- "testpoints_10"
+testpoints_name <- "testpoints_5"
 myrad = 1
 testoutput_ejscreenit_10pts_1miles <- EJAMejscreenapi::ejscreenit(testpoints_10, radius = 1, nosave = T, nosee = T, interactiveprompt = F, calculate_ratios = T)
 usethis::use_data(testoutput_ejscreenit_10pts_1miles, overwrite = TRUE)
@@ -307,7 +334,7 @@ filecontents <- paste0(
 #' 
 #'  testoutput_ejscreenit_10pts_1miles$table
 #'  
-#'  should be very similar to
+#'  Also see
 #'  
 #'  testoutput_ejamit_10pts_1miles$results_bysite
 #' 

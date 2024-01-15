@@ -4,9 +4,9 @@
 \docType{data}
 \name{testpoints_10}
 \alias{testpoints_10}
-\title{test points data.frame with columns siteid, lat, lon}
+\title{test points data.frame with columns sitenumber, lat, lon}
 \description{
-test points data.frame with columns siteid, lat, lon
+test points data.frame with columns sitenumber, lat, lon
 
 test points data.frame with columns siteid, lat, lon
 }
