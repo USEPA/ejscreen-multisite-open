@@ -376,12 +376,26 @@ app_server <- function(input, output, session) {
     ## check if file extension is appropriate
     ext <- tolower(tools::file_ext(input$ss_upload_latlon$name))
     ## if acceptable file type, read in; if not, send warning text
+    
+    # ideally would quickly check file size here before actually trying to read the entire file in case it is > cap.
+    
     sitepoints <- switch(ext,
                          csv = data.table::fread(input$ss_upload_latlon$datapath),
                          xls  = readxl::read_excel(input$ss_upload_latlon$datapath) %>% data.table::as.data.table(),
                          xlsx = readxl::read_excel(input$ss_upload_latlon$datapath) %>% data.table::as.data.table(),
                          shiny::validate('Invalid file; Please upload a .csv, .xls, or .xlsx file')
     )
+    
+    # DO NOT USE THE UPLOAD IF IT HAS MORE THAN MAX POINTS ALLOWED FOR UPLOAD
+    #
+    if (NROW(sitepoints) > input$max_pts_upload) {
+      cat("ROW COUNT TOO HIGH IN FILE THAT SHOULD provide lat lon: ", NROW(sitepoints), "\n")
+      invalid_alert[['latlon']] <- 0 # hides the invalid site warning
+      an_map_text_pts[['latlon']] <- NULL # hides the count of uploaded sites
+      disable_buttons[['latlon']] <- TRUE
+      validate(paste0('Max allowed upload of points is ', as.character(input$max_pts_upload)))
+    } else {
+    
     cat("ROW COUNT IN FILE THAT SHOULD provide lat lon: ", NROW(sitepoints), "\n")
     ## if column names are found in lat/long alias comparison, process
     if (any(tolower(colnames(sitepoints)) %in% lat_alias) & any(tolower(colnames(sitepoints)) %in% lon_alias)) {
