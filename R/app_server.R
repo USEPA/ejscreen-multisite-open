@@ -1921,7 +1921,8 @@ app_server <- function(input, output, session) {
       #   names(data_processed()$results_bysite)[popup_labels == ""],
       #   EJAMejscreenapi::map_headernames$newnames_ejscreenapi)]
       #  
-      popup_labels <- map_headernames$names_friendly[match(names(data_processed()$results_bysite),map_headernames$rname)] 
+      # popup_labels <- map_headernames$names_friendly[match(names(data_processed()$results_bysite),map_headernames$rname)] # fixcolnames() is easier to read
+      popup_labels <- fixcolnames(namesnow = names(data_processed()$results_bysite), oldtype = 'r', newtype = 'shortlabel')
       popup_labels[is.na(popup_labels)] <- names(data_processed()$results_bysite)[is.na(popup_labels)]
       ## similar to previous map but remove controls and only add circles, not circleMarkers
       
