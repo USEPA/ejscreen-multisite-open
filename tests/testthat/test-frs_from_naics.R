@@ -85,7 +85,8 @@ test_that('case of query text only matters, if ignore.case = FALSE', {
 })
 
 # test input fixed; default = FALSE
-# passed with query text, children and ignore.case to naics_from_name
+# passed with query text, children 
+#   and ignore.case to naics_from_name ?
 # default in naics_from_name is also false
 # by default the grepl function allows the search string to be modifed by other parameters (like ignore.case)
 # by setting fixed = TRUE and using capital letters in the query, ignore.case = TRUE should be ignored and the string will be searched for exactly
