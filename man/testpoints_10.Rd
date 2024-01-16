@@ -8,5 +8,5 @@
 \description{
 test points data.frame with columns sitenumber, lat, lon
 
-test points data.frame with columns siteid, lat, lon
+test points data.frame with columns sitenumber, lat, lon
 }

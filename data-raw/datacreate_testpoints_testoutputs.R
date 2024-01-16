@@ -33,8 +33,8 @@
 # usethis::use_data(testpoints_conus5 , overwrite = TRUE)
 
 
-creatingnew_testpoints_data   <- FALSE  #done. TO REPLACE THE ACTUAL TEST POINTS (can be false and still do other steps below)
-resaving_testpoints_rda       <- FALSE
+creatingnew_testpoints_data   <- TRUE  #done. TO REPLACE THE ACTUAL TEST POINTS (can be false and still do other steps below)
+resaving_testpoints_rda       <- TRUE
 resaving_testpoints_excel     <- TRUE
 resaving_testpoints_helpdocs  <- TRUE
 
@@ -53,7 +53,8 @@ resaving_ejamit_rda           <- TRUE
 resaving_ejamit_helpdocs      <- TRUE
 resaving_ejamit_excel         <- TRUE
 
-redoing_testpoints_10_files   <- FALSE # there are these:  5, 50, 500  ## or should it be _10_ ? doesnt EJAMejscreenapi create those?
+redoing_ejscreenit_10_for_ejam_to_have  <- TRUE 
+# and  there are these:  5, 50, 500  ##  
 
 
 if (basename(getwd()) != "EJAM") {stop('do this from EJAM source package folder')}
@@ -68,7 +69,10 @@ for (n in nvalues) {
   # CREATE TESTPOINTS DATA #### 
   
   testpoints_name  <- paste0("testpoints_", n)  
-  if (file.exists(paste0("/data/", testpoints_name, ".rda")) & !creatingnew_testpoints_data) {
+  if (
+    exists(testpoints_name)
+    # file.exists(paste0("/data/", testpoints_name, ".rda"))
+                & !creatingnew_testpoints_data) {
     cat("Found and will not recreate", paste0("/data/", testpoints_name, ".rda"))
     load(paste0("/data/", testpoints_name, ".rda")) # in case not in global env right now, such as pkg not rebuilt or not attached yet
     if (!exists(testpoints_name)) {stop('missing', testpoints_name)}
@@ -80,7 +84,13 @@ for (n in nvalues) {
     # Drop other columns to just use lat lon sitenumber sitename
     # testpoints_data$NAICS = NULL # 722410# testpoints_data$SIC = NULL # 5992  # testpoints_data$REGISTRY_ID = NULL # c(EJAM::test_xtrac, rep(NA,n))[1:n] #  # testpoints_data$PGM_SYS_ACRNMS = NULL
     testpoints_data  <- testpoints_data[ , c("lat", "lon", "sitenumber", "sitename")]   
-    assign(testpoints_name, testpoints_data)    #        put the data into an object of the right name
+    assign(testpoints_name, testpoints_data)    #        put the data into an object of the right name 
+    if (n == 100) {
+      testpoints_100_dt <- data.table(testpoints_100)
+      if (resaving_testpoints_rda) {
+        usethis::use_data(testpoints_100_dt , overwrite = TRUE)
+      }
+    }
   }
   
   # SAVE AS DATA IN PACKAGE ####
@@ -109,6 +119,9 @@ NULL
 "
   )
   writeChar(filecontents, con = paste0("./R/data_", testpoints_name, ".R"))             ############# #
+  if (n == 100) {
+    writeChar(gsub("testpoints_100", "testpoints_100_dt", filecontents), con = paste0("./R/data_", "testpoints_100_dt", ".R"))   
+  }
   }
   
   ################################## #   ################################## #   ################################## #   
@@ -310,11 +323,12 @@ NULL
 } # end of loop over point counts
 
 ############################################# # 
-if (redoing_testpoints_10_files) {
-# for the API that EJScreen provides, for comparison:
-testpoints_name <- "testpoints_5"
+if (redoing_ejscreenit_10_for_ejam_to_have) {
+# using the API that EJScreen provides, for comparison, to have available as data saved in EJAM pkg:
+testpoints_name <- "testpoints_10"
 myrad = 1
 testoutput_ejscreenit_10pts_1miles <- EJAMejscreenapi::ejscreenit(testpoints_10, radius = 1, nosave = T, nosee = T, interactiveprompt = F, calculate_ratios = T)
+
 usethis::use_data(testoutput_ejscreenit_10pts_1miles, overwrite = TRUE)
 
 # SAVE DOCUMENTATION AS A FILE ####
