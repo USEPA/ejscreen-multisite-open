@@ -22,7 +22,9 @@ ST_by_site_from_sites2blocks <- function(sites2blocks) {
   setDT(sites2blocks)
   #if (!all(c('siteid', 'blockid', 'distance') %in% names(sites2blocks) )) {
   if (!all(c('ejam_uniq_id', 'blockid', 'distance') %in% names(sites2blocks) )) {
-      stop("column names must include siteid, blockid, and distance, as in output of getblocksnearby() - see ?testoutput_getblocksnearby_10pts_1miles")}
+      warning("column names must include siteid, blockid, and distance, as in output of getblocksnearby() - see ?testoutput_getblocksnearby_10pts_1miles")
+      return(NULL)
+  }
   nearestbg <- blockwts[sites2blocks[ , .( blockid = blockid[which.min(distance)]) , by = "ejam_uniq_id"], .(ejam_uniq_id, bgid), on = "blockid" ]
   blockgroupstats[nearestbg, .(ejam_uniq_id, ST), on = "bgid"][order(ejam_uniq_id),]
  # nearestbg <- blockwts[sites2blocks[ , .( blockid = blockid[which.min(distance)]) , by = "siteid"], .(siteid, bgid), on = "blockid" ]

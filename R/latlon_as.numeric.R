@@ -24,7 +24,15 @@
 #'   latlon_as.numeric(c(Inf, 1))
 #'   
 latlon_as.numeric <- function(x) {
-  if (!is.null(dim(x)) | !is.atomic(x)) {stop('latlon_as.numeric(x) expects x to be a vector like 1:10 or df$mycol, not a data.frame, list, or anything else.')}
+  if (!is.null(dim(x)) | !is.atomic(x)) {
+    if(shiny::isRunning()){
+      warning('latlon_as.numeric(x) expects x to be a vector like 1:10 or df$mycol, not a data.frame, list, or anything else.')
+      return(NA)
+    } else {
+      stop('latlon_as.numeric(x) expects x to be a vector like 1:10 or df$mycol, not a data.frame, list, or anything else.')
+      
+    }
+  }
   if(is.null(x)){warning("No values provided to latlon_as.numeric()"); return(NA)}
   if (!is.null(dim(x)) | is.list(x)) {stop('latlon_as.numeric(x) expects x to be a vector like 1:10 or df$mycol, not a data.frame or anything else.')}
   oldx <- x

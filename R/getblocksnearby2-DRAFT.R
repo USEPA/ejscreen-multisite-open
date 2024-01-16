@@ -39,7 +39,13 @@ getblocksnearby2 <- function(sitepoints, radius=3, maxradius=31.07,
                                    ...)
       )
     } else {
-      stop('requires quadtree')
+      if(shiny::isRunning()){
+        warning('requires quadtree argument')
+        return(NULL)
+      } else {
+        stop('requires quadtree argument')
+        
+      }
     }
   }
   

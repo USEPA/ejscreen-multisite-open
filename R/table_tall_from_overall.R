@@ -21,10 +21,15 @@ table_tall_from_overall <- function(results_overall, longnames) {
       if ("results_overall" %in% names(results_overall) & "longnames" %in% names(results_overall)) {
         longnames <- results_overall$longnames
         results_overall <- results_overall$results_overall
-      } else {stop("requires results_overall and longnames, such as from output of ejamit() or doaggregate() ")}
+      } else {
+        warning("requires results_overall and longnames, such as from output of ejamit() or doaggregate() ")
+        return(NULL)
+      }
     }
   } else {
-    if (missing(longnames)) {stop("requires longnames")}
+    if (missing(longnames)) {
+      warning("requires longnames")
+    }
   }
  
   x <- as.vector(unlist(results_overall))

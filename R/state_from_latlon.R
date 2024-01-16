@@ -16,9 +16,16 @@
 #'  mapfast(pts[ST == 'TX',], radius = 1) # 1 miles radius circles
 #'  
 state_from_latlon <- function(lat, lon, states_shapefile=EJAM::states_shapefile) {
-  if(is.na(as.numeric(lat)) & is.na(as.numeric(lon))){ stop("Latitude and Longitude could not be coerced to a number.")
-  }else if(is.na(as.numeric(lat))){stop("Latitude could not be coerced to a number")
-    }else if(is.na(as.numeric(lon))){stop("Longitude could not be coerced to a number.")}
+  if(is.na(as.numeric(lat)) & is.na(as.numeric(lon))){ 
+    warning("Latitude and Longitude could not be coerced to a number.")
+    return(NULL)
+  } else if(is.na(as.numeric(lat))){
+    warning("Latitude could not be coerced to a number")
+    return(NULL)
+  } else if(is.na(as.numeric(lon))){
+    warning("Longitude could not be coerced to a number.")
+    return(NULL)
+  }
   
   
   # pts[is.na(lat), lat := 0] 
