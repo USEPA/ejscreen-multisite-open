@@ -281,8 +281,8 @@ app_server <- function(input, output, session) {
       if (nrow(shp) > 0) {
         numna <- nrow(shp[!sf::st_is_valid(shp),])
         invalid_alert[['SHP']] <- numna # this updates the value of the reactive invalid_alert()
-        shp_valid <- shp[sf::st_is_valid(shp),] #determines valid shapes
-        shp_valid <- dplyr::mutate(shp_valid, siteid = row_number())
+        #shp_valid <- shp[sf::st_is_valid(shp),] #determines valid shapes
+        shp_valid <- dplyr::mutate(shp, siteid = row_number())
         shp_proj <- sf::st_transform(shp_valid,crs = 4269)
       } else {
         invalid_alert[['SHP']] <-0 # hides the invalid site warning
@@ -292,9 +292,10 @@ app_server <- function(input, output, session) {
         shiny::validate('No shapes found in file uploaded.')
       }
       disable_buttons[['SHP']] <- FALSE
-      shp_proj$valid <- !sf::st_is_empty(shp_proj)
+      shp_proj$valid <- sf::st_is_valid(shp_proj)#!sf::st_is_empty(shp_proj)
       shp_proj <- cbind(ejam_uniq_id = 1:nrow(shp_proj), shp_proj)
       shp_proj$invalid_msg <- NA
+      shp_proj$invalid_msg[shp_proj$valid==F] <- sf::st_is_valid(shp_proj[shp_proj$valid==F,], reason = TRUE)
       shp_proj$invalid_msg[is.na(shp_proj$geometry)] <- 'bad geometry'
       class(shp_proj) <- c(class(shp_proj), 'data.table')
       shp_proj
