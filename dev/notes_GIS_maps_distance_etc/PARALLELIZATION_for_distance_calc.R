@@ -71,12 +71,13 @@ sampleSize <- c(10, 100) # seq(1000,101000,10000) #
 
 oldfolder <- getwd()
 setwd("~/../Downloads")
-mydata <-  data.table::setDF(data.table::copy(EJAM::testpoints_1000_dt[-1, ])) # first row is NA, not allowed in st_as_sf.data.frame() 
+pts <- testpoints_1000
+mydata <-  data.table::setDF(data.table::copy(pts )) #   row   NA  not allowed in st_as_sf.data.frame() 
 ## convert to geo format for sf package ####
 sf_all <- mydata %>% 
   # vroom("/work/projectname/mydata.csv") %>% 
   # dplyr::filter(year > 2015 & year < 2019) %>%
-  dplyr::select(siteid, lat, lon) %>%
+  dplyr::select(sitenumber, lat, lon) %>%
   dplyr::distinct() %>%
   sf::st_as_sf(coords = c("lon", "lat"), crs = 4269, remove = FALSE) %>% 
   sf::st_transform(3747)  # to use UTM 17N 
@@ -121,7 +122,7 @@ for (i in 1:length(sampleSize)) {
         distance <- as.numeric(sf::st_distance(start.pt,end.pts))
         # saves only summary stats for this frompoint, not distance to each topoint:
         newrow <- data.frame(
-          siteid = start.pt$siteid, # only one here in this loop
+          sitenumber = start.pt$sitenumber, # only one here in this loop
           min_distance = min(distance),
           mean_distance = mean(distance),
           count_near = sum(distance <= radius)
@@ -129,7 +130,7 @@ for (i in 1:length(sampleSize)) {
       } else {
         # points are just others in the sample:
         end.pts  <- sf  %>% 
-          dplyr::filter(!siteid == start.pt$siteid)  # get points to measure TO
+          dplyr::filter(!sitenumber == start.pt$sitenumber)  # get points to measure TO
         end.pts$distance <- as.numeric(sf::st_distance(start.pt,end.pts) )
         # cat("\n units are ", attr(st_distance(start.pt,end.pts), "units"), '\n')
         # https://r-spatial.github.io/sf/articles/sf1.html#units
@@ -148,7 +149,7 @@ for (i in 1:length(sampleSize)) {
         # first.five <- order[1:5,]  #   if selecting only the 5 closest points
         #################### #
         newrow <- data.frame(
-          siteid = start.pt$siteid, # only one here in this loop
+          sitenumber = start.pt$sitenumber, # only one here in this loop
           min_distance = min(end.pts$distance),
           # mean_distance = mean(first.five$distance),
           count_near = sum(end.pts$distance <= radius)
@@ -165,7 +166,7 @@ for (i in 1:length(sampleSize)) {
       distances_newrow <- list()
       start.pt <- sf[n,]  # get point to measure FROM
       end.pts  <- sf  %>% 
-        dplyr::filter(!siteid == start.pt$siteid)  # get points to measure TO
+        dplyr::filter(!sitenumber == start.pt$sitenumber)  # get points to measure TO
       end.pts$distance <- as.numeric( sf::st_distance(start.pt,end.pts) )
       ####################### # 
       # JUST SAVE THE AVERAGE OF THE 5 SHORTEST DISTANCES 
@@ -174,7 +175,7 @@ for (i in 1:length(sampleSize)) {
       # first.five <- order[1:5,]  # ? is that syntax ok???  if selecting only the 5 closest points
       #################### #
       distances_newrow[[n]] <- data.frame(
-        siteid = start.pt$siteid, # only one here in this loop
+        sitenumber = start.pt$sitenumber, # only one here in this loop
         min_distance = min(end.pts$distance),
         # mean_distance = mean(first.five$distance),
         count_near = sum(end.pts$distance <= radius)

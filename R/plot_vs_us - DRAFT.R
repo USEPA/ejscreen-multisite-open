@@ -50,9 +50,9 @@ plot_vs_us <- function(bysite = ejamit()$results_bysite, varname = "Demog.Index"
   setnames(both.sample, varname, 'literalvarname')
   
   bothmeans <- both[ , .(mean(literalvarname, na.rm = T)), by = "Locations"]$V1
-  both75 <- both[ , .(quantile(literalvarname, na.rm = T, probs = 0.75, type = 1))]$V1
-  both25 <- both[ , .(quantile(literalvarname, na.rm = T, probs = 0.25, type = 1))]$V1
-  
+  # both75 <- both[ , .(quantile(literalvarname, na.rm = T, probs = 0.75, type = 1))]$V1
+  # both25 <- both[ , .(quantile(literalvarname, na.rm = T, probs = 0.25, type = 1))]$V1
+  # 
   varlabel <- fixcolnames(varname, 'r', 'long')
   maintitle <- paste0("Comparison of ", varlabel, " among residents near these sites versus nationwide")
   
@@ -70,27 +70,27 @@ plot_vs_us <- function(bysite = ejamit()$results_bysite, varname = "Demog.Index"
     if (type == 'plotly') {
       
       setnames(both.sample, "literalvarname", "Indicator")
-      d <- highlight_key(both.sample)
+      d <- plotly::highlight_key(both.sample)
       # scatt <- plot_ly(d, x = ~Locations, y = ~Indicator) %>%
       #   add_markers(color = I("black"))
       
       # 'statistical trace types'
-      # hist <- plot_ly(d, x = ~factor(Locations)) %>% 
-      #   add_histogram(color = I("black"))
-      # box <- plot_ly(d, x = ~Locations, y = ~Indicator, color = I("black")) %>% 
-      #   add_boxplot(name = " ")
-      violin <- plot_ly(d, x = ~Locations, y = ~Indicator, color = I("blue")) %>%
-        add_trace(type = "violin", name = " ")
-      subplot(
+      # hist <- plotly::plot_ly(d, x = ~factor(Locations)) %>% 
+      #   plotly::add_histogram(color = I("black"))
+      # box <- plotly::plot_ly(d, x = ~Locations, y = ~Indicator, color = I("black")) %>% 
+      #   plotly::add_boxplot(name = " ")
+      violin <- plotly::plot_ly(d, x = ~Locations, y = ~Indicator, color = I("blue")) %>%
+        plotly::add_trace(type = "violin", name = " ")
+      plotly::subplot(
         # scatt, box, 
         violin, shareY = TRUE, titleX = TRUE, titleY = TRUE) %>%
         # subplot(hist, widths = c(.75, .25), titleX = TRUE, titleY = TRUE) %>%
-        layout(
+        plotly::layout(
           barmode = "overlay", 
           title = maintitle,
           showlegend = FALSE
         ) %>%
-        highlight("plotly_selected")
+        plotly::highlight("plotly_selected")
       
     } else {
       

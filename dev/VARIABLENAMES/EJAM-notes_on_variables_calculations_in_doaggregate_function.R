@@ -13,7 +13,7 @@
    
     ###################################################################################################
     
-    # These must be calculated after aggregating count variables and using those at siteid level. 
+    # These must be calculated after aggregating count variables and using those at site id level. 
     # e.g. Use ejscreen package file ejscreenformulas$formula to calculate these.
   
 

@@ -175,7 +175,17 @@ proxistat2 <- function(pts, countradius = 8.04672, maxradius = 621.3712, quadtre
   
   
   #     TO BE ADDED HERE 
-   
+  
+  
+  
+  # see also older notes:
+  
+  #  frsdensity/SCRIPT_how_many_blocks_near_FRS.R
+  # 
+  # frsdensity/FACILITY_DENSITY_PROXIMITY_SCORE.R
+  
+  
+  
   
   #  ADJUST DISTANCE USING A MINIMUM DISTANCE ####
   # see code in getblocksnearby() now
