@@ -742,9 +742,9 @@ app_server <- function(input, output, session) {
       fips_vec <- fips_from_table(fips_table = fips_dt, addleadzeroes = TRUE, inshiny = TRUE)
       #fips_vec <- fips_out$vec
 
-      if(is.null(fips_vec)){
+      if (is.null(fips_vec)) {
         disable_buttons[['FIPS']] <- TRUE
-        invalid_alert[['FIPS']] <-0  # hides the invalid site warning
+        invalid_alert[['FIPS']] <- 0  # hides the invalid site warning
         an_map_text_fips(HTML(NULL)) # hides the count of uploaded sites
         fips_alias <- c('FIPS','fips','fips_code','fipscode','Fips','statefips','countyfips', 'ST_FIPS','st_fips','ST_FIPS','st_fips', 'FIPS.ST', 'FIPS.COUNTY', 'FIPS.TRACT')
         
@@ -758,48 +758,51 @@ app_server <- function(input, output, session) {
      
     } else {  # OLDER VERSION NOT USING FUNCTIONS
       
-      ## create named vector of FIPS codes (names used as siteid)
-      fips_alias <- c('FIPS','fips','fips_code','fipscode','Fips','statefips','countyfips', 'ST_FIPS','st_fips','ST_FIPS','st_fips', 'FIPS.ST', 'FIPS.COUNTY', 'FIPS.TRACT')
-      if (any(tolower(colnames(fips_dt)) %in% fips_alias)) {
-        firstmatch <- intersect(fips_alias, colnames(fips_dt))[1]
-        fips_vec <- fips_lead_zero(as.character(fips_dt[[firstmatch]]))
-        names(fips_vec) <- as.character(fips_vec)
-      } else {
-        invalid_alert[['FIPS']] <-0  # hides the invalid site warning
-        an_map_text_fips(HTML(NULL)) # hides the count of uploaded sites
-        disable_buttons[['FIPS']] <- TRUE
-        validate(paste0('No FIPS column found. Please use one of the following names: ', paste0(fips_alias, collapse = ', ')))
-      }
-      ## create two-column dataframe with bgs (values) and original fips (ind)
-      all_bgs <- stack(sapply(fips_vec, fips_bg_from_anyfips))
-      names(all_bgs) <- c('bgfips','siteid') 
-      all_bgs$siteid <- as.character(all_bgs$siteid) # because stack() always creates a factor column. data.table might have a faster reshaping approach? ***
-      
-      ## only process blockgroups exist for uploaded data
-      
-      # **** find a way to avoid using blockid2fips if possible, since it is so huge in memory 
-      
-      if (nrow(all_bgs) > 0) {
-        fips_blockpoints <- dplyr::left_join(all_bgs, 
-                                             ## create 12-digit column inline (original table not altered)
-                                             blockid2fips[, .(blockid, blockfips, blockfips12 = substr(blockfips,1,12))], 
-                                             by = c('bgfips' = 'blockfips12'), multiple = 'all') |> 
-          dplyr::left_join(blockpoints) |>  
-          dplyr::mutate(distance = 0) |>  
-          data.table::as.data.table()
-        ## remove any invalid latlon values 
-        cat("COUNT OF blocks BASED ON FIPS: ", NROW(fips_blockpoints), '\n')
-        disable_buttons[['FIPS']] <- FALSE
-        
-         return(fips_blockpoints)
-      } else {
-        invalid_alert[['FIPS']] <- 0 # hides the invalid site warning
-        an_map_text_fips(HTML(NULL)) # hides the count of uploaded sites
-        disable_buttons[['FIPS']] <- TRUE
-        
-        ## if not matched, return this message
-        shiny::validate('No blockgroups found for these FIP codes.')
-      }
+      # ## create named vector of FIPS codes 
+      # #  *** (names used as unique id ...  
+      # # note some code assumes ejam_uniq_id is 1:N)
+      # 
+      # fips_alias <- c('FIPS','fips','fips_code','fipscode','Fips','statefips','countyfips', 'ST_FIPS','st_fips','ST_FIPS','st_fips', 'FIPS.ST', 'FIPS.COUNTY', 'FIPS.TRACT')
+      # if (any(tolower(colnames(fips_dt)) %in% fips_alias)) {
+      #   firstmatch <- intersect(fips_alias, colnames(fips_dt))[1]
+      #   fips_vec <- fips_lead_zero(as.character(fips_dt[[firstmatch]]))
+      #   names(fips_vec) <- as.character(fips_vec)
+      # } else {
+      #   invalid_alert[['FIPS']] <- 0  # hides the invalid site warning
+      #   an_map_text_fips(HTML(NULL)) # hides the count of uploaded sites
+      #   disable_buttons[['FIPS']] <- TRUE
+      #   validate(paste0('No FIPS column found. Please use one of the following names: ', paste0(fips_alias, collapse = ', ')))
+      # }
+      # ## create two-column dataframe with bgs (values) and original fips (ind)
+      # all_bgs <- stack(sapply(fips_vec, fips_bg_from_anyfips))
+      # names(all_bgs) <- c('bgfips', firstmatch) ### is that right??? not sure
+      # all_bgs$ejam_uniq_id <- as.character(all_bgs$ejam_uniq_id) # because stack() always creates a factor column. data.table might have a faster reshaping approach? ***
+      # 
+      # ## only process blockgroups exist for uploaded data
+      # 
+      # # **** find a way to avoid using blockid2fips if possible, since it is so huge in memory 
+      # 
+      # if (nrow(all_bgs) > 0) {
+      #   fips_blockpoints <- dplyr::left_join(all_bgs, 
+      #                                        ## create 12-digit column inline (original table not altered)
+      #                                        blockid2fips[, .(blockid, blockfips, blockfips12 = substr(blockfips,1,12))], 
+      #                                        by = c('bgfips' = 'blockfips12'), multiple = 'all') |> 
+      #     dplyr::left_join(blockpoints) |>  
+      #     dplyr::mutate(distance = 0) |>  
+      #     data.table::as.data.table()
+      #   ## remove any invalid latlon values 
+      #   cat("COUNT OF blocks BASED ON FIPS: ", NROW(fips_blockpoints), '\n')
+      #   disable_buttons[['FIPS']] <- FALSE
+      #   
+      #    return(fips_blockpoints)
+      # } else {
+      #   invalid_alert[['FIPS']] <- 0 # hides the invalid site warning
+      #   an_map_text_fips(HTML(NULL)) # hides the count of uploaded sites
+      #   disable_buttons[['FIPS']] <- TRUE
+      #   
+      #   ## if not matched, return this message
+      #   shiny::validate('No blockgroups found for these FIP codes.')
+      # }
     }
   }) # END OF FIPS UPLOAD
   ################################################################################### # 
@@ -1050,7 +1053,7 @@ app_server <- function(input, output, session) {
   observe({
     req(data_uploaded())
     
-    if(current_upload_method() == "FIPS"){
+    if (current_upload_method() == "FIPS") {
     
     num_na <- 0 # we do not keep track of invalid FIPS uploaded
     num_locs <- NROW(data_uploaded())
@@ -1074,7 +1077,7 @@ app_server <- function(input, output, session) {
   
   observe({
     req(data_uploaded())
-    if(!current_upload_method() %in% c('FIPS','SHP')){
+    if (!current_upload_method() %in% c('FIPS','SHP')) {
     
     lat_or_lon.na <- (is.na(data_uploaded()$lat) | is.na(data_uploaded()$lon))
     if (nrow(data_uploaded()) > 1) {
@@ -1107,12 +1110,12 @@ app_server <- function(input, output, session) {
   output$an_map_text <- renderUI({
 
     #req(data_uploaded())
-    if(current_upload_method() == 'SHP'){
+    if (current_upload_method() == 'SHP') {
       an_map_text_shp()
-    }else if(current_upload_method() == 'FIPS' ){
+    } else if (current_upload_method() == 'FIPS' ) {
       an_map_text_fips()
-    } else if(current_upload_method() %in% c('MACT','latlon','FRS','NAICS','SIC',
-                                             'EPA_PROGRAM_up','EPA_PROGRAM_sel')){
+    } else if (current_upload_method() %in% c('MACT','latlon','FRS','NAICS','SIC',
+                                             'EPA_PROGRAM_up','EPA_PROGRAM_sel')) {
       an_map_text_pts[[current_upload_method()]]
     } else {
       HTML(NULL)
@@ -1150,7 +1153,7 @@ app_server <- function(input, output, session) {
       #dt <- data_uploaded() # now naics-queried sites format is OK to view, since using different function to get sites by naics
       if (current_upload_method() == "SHP") {
         dt <- data_uploaded()#[['shape']]
-      } else if (current_upload_method() == 'FIPS'){
+      } else if (current_upload_method() == 'FIPS') {
         dt <- data.table(FIPS = data_uploaded())[, .(FIPS, type = fipstype(FIPS), name = fips2name(FIPS))]
       } else {
         dt <- data_uploaded()
@@ -1233,7 +1236,7 @@ app_server <- function(input, output, session) {
   
   ## disable radius slider when FIPS is selected
   observe({
-    if(current_upload_method() == 'FIPS'){
+    if (current_upload_method() == 'FIPS') {
       shinyjs::disable(id = 'bt_rad_buff')
     } else {
       shinyjs::enable(id = 'bt_rad_buff')
@@ -1241,10 +1244,10 @@ app_server <- function(input, output, session) {
   })
   
   ## create different radius values for each site selection type
-  current_slider_val <- reactiveValues('latlon'=1,'NAICS'=1,'SIC'=1,
-                                       'FRS'=1,'EPA_PROGRAM_up'=1,
-                                       'EPA_PROGRAM_sel'=1,
-                                       'MACT'=1,'FIPS'=0,'SHP'=0)
+  current_slider_val <- reactiveValues('latlon' = 1,'NAICS' = 1,'SIC' = 1,
+                                       'FRS' = 1,'EPA_PROGRAM_up' = 1,
+                                       'EPA_PROGRAM_sel' = 1,
+                                       'MACT' = 1,'FIPS' = 0,'SHP' = 0)
   ## update stored radius when slider changes
   observeEvent(
     input$bt_rad_buff,
@@ -1261,16 +1264,16 @@ app_server <- function(input, output, session) {
   
   ## add warning and disable button if radius is set to 0 for points
   observe({
-    if(!(current_upload_method() %in% c('FIPS','SHP'))){
-      if(input$bt_rad_buff == 0){
+    if (!(current_upload_method() %in% c('FIPS','SHP'))) {
+      if (input$bt_rad_buff == 0) {
         
       shinyjs::disable(id = 'bt_get_results')
-        showNotification(id = 'radius_warning', session=session,
-                         duration=NULL,type='warning',closeButton = F,
+        showNotification(id = 'radius_warning', session = session,
+                         duration = NULL,type = 'warning', closeButton = F,
                         'Please use a radius greater than 0 for analyzing points.')
       } else {
-        shinyjs::enable(id ='bt_get_results')
-        removeNotification(id='radius_warning', session=session)
+        shinyjs::enable(id = 'bt_get_results')
+        removeNotification(id = 'radius_warning', session = session)
       }
     }
   })
@@ -1298,36 +1301,71 @@ app_server <- function(input, output, session) {
       if (current_upload_method() == "SHP") {
         # ---------------------------------------------- MAPPING SHAPES 
         req(data_uploaded())
-        ## start map zoomed to the bbox / bounding box that encompasses all the points to be shown
-      
-        bbox <- sf::st_bbox(data_uploaded())
-        leaflet() %>% addTiles() %>%
-          fitBounds(
-            lng1 = as.numeric(bbox[1]), lng2 = as.numeric(bbox[3]),
-            lat1 = as.numeric(bbox[2]), lat2 = as.numeric(bbox[4])
-          )
-        #d_upload <- data_uploaded()[['points']]
-        #max_pts <- max_points_can_map_poly
+        
+        # validate('Mapping for polygons not yet available') # ***
+        
+        canmap <- TRUE
+        max_pts <- input$max_shapes_map
+        if (nrow(data_uploaded()) > max_pts) {
+          warning(paste0('Too many uploaded polygons (> ', prettyNum(max_pts, big.mark = ','),') for map to show'))
+          validate(paste0('Too many uploaded polygons (> ', prettyNum(max_pts, big.mark = ','),') for map to show'))
+          canmap <- FALSE
+        } else {
+          if (canmap) {
+            try(map_shapes_leaflet(shapes = data_uploaded())) # popups = data.frame info from there?
+          }
+        }
         
       } else if (current_upload_method() == 'FIPS') {
-        # ---------------------------------------------- MAPPING FIPS CENSUS UNITS ?
-        #req(data_uploaded())
-        max_pts <- max_points_can_map_poly
-        validate('Mapping for FIPS codes not yet available') # ***
-        # leaflet() %>% addTiles() %>% 
-        #   fitBounds(lng1 = min(data_uploaded()$lon, na.rm=T),
-        #             lng2 = max(data_uploaded()$lon, na.rm=T),
-        #             lat1 = min(data_uploaded()$lat, na.rm=T),
-        #             lat2 = max(data_uploaded()$lat, na.rm=T))
+        # ---------------------------------------------- MAPPING FIPS CENSUS UNITS
+        req(data_uploaded())
+        
+        # validate('Mapping for polygons not yet available') # ***
+        
+        canmap <- TRUE
+        max_pts <- input$max_shapes_map
+        if (nrow(data_uploaded()) > max_pts) {
+          warning(paste0('Too many FIPS polygons (> ', prettyNum(max_pts, big.mark = ','),') for map to show'))
+          validate(paste0('Too many FIPS polygons (> ', prettyNum(max_pts, big.mark = ','),') for map to show'))
+          canmap <- FALSE
+        } else {
+          
+          ## DOWNLOAD BOUNDARIES via API ####
+          
+          FTYPES <- fipstype(data_uploaded())
+          if (all(FTYPES %in% "blockgroup")) {
+            shps <- try(shapes_blockgroups_from_bgfips(data_uploaded()))
+            if (inherits(shps, "try-error")) {
+              warning("could not obtain boundaries to map blockgroups")
+              validate("could not obtain boundaries to map blockgroups")
+              canmap <- FALSE
+              }
+          } else {
+          if (all(FTYPES %in% "county")) {
+            shps <- try(shapes_counties_from_countyfips(data_uploaded()))
+            if (inherits(shps, "try-error")) {
+              warning("could not obtain boundaries to map counties")
+              validate("could not obtain boundaries to map counties")
+              canmap <- FALSE
+            }
+          } else {
+            warning('cannot map FIPS types other than counties or blockgroups currently')
+            canmap <- FALSE
+          }
+            }
+          if (canmap) {
+            try(map_shapes_leaflet(shps))
+          }
+        }
         
       } else {
         # ---------------------------------------------- MAPPING LAT LON POINTS 
         d_upload <- data_uploaded()
-        max_pts <- max_points_can_map # at some point, this will be edited so it is set by global in a way that allows advanced tab to modify it (like ejscreenapi module handled it)
-        
+        max_pts <- input$max_pts_map # was the fixed max_pts_map 
+
         if (nrow(data_uploaded()) > max_pts) {
           ## Max allowed points was exceeded! see code in ejscreenapi that handled that case using  input$max_pts_map 
-          validate(paste0('Too many points (> ', prettyNum(max_pts, big.mark = ','),') uploaded for full map to be displayed - will try to show a subset'))
+          validate(paste0('Too many points (> ', prettyNum(max_pts, big.mark = ','),') uploaded for map to be displayed'))
           
           
           # add code here to show just a subset not > max points allowed ***
@@ -2021,6 +2059,12 @@ app_server <- function(input, output, session) {
         # 
         # leafletProxy(mapId = 'an_leaf_map', session, data=fips_sf) %>% addPolygons()
         
+        map_shapes_leaflet(
+          shapes_counties_from_countyfips(
+          countyfips = data_uploaded()
+            )
+          )
+        
       } else {
         
         d_upload <- data_uploaded()
@@ -2306,12 +2350,12 @@ app_server <- function(input, output, session) {
       #tempReport <- file.path(tempdir(), "community_summary.html")
       tempReport <- file.path(tempdir(), 'community_report_template.Rmd')
       
-      if(!('communityreport.css' %in% list.files(tempdir()))){
+      if (!('communityreport.css' %in% list.files(tempdir()))) {
         file.copy(from = app_sys('report/community_report/communityreport.css'),
                   to = file.path(tempdir(), 'communityreport.css'), overwrite = TRUE)          
       }
       
-      if(!('EPA_logo_white.png') %in% list.files(file.path(tempdir(), 'www'))){
+      if (!('EPA_logo_white.png') %in% list.files(file.path(tempdir(), 'www'))) {
         dir.create(file.path(tempdir(), 'www'))
         file.copy(from = app_sys('report/community_report/EPA_logo_white.png'),
                   to = file.path(tempdir(), 'www', 'EPA_logo_white.png'), overwrite = TRUE)
@@ -2330,14 +2374,14 @@ app_server <- function(input, output, session) {
         #                map         = report_map(),
         #                summary_plot = v1_summary_plot())
         rad <- data_processed()$results_overall$radius.miles # input$radius can be changed by user and would alter the report text but should just show what was run not what slider currently says
-        popstr <- prettyNum(total_pop(), big.mark=',')
+        popstr <- prettyNum(total_pop(), big.mark = ',')
         
-        if(submitted_upload_method() == 'SHP'){
+        if (submitted_upload_method() == 'SHP') {
           location_type <- " selected polygons"
           radiusstr <- paste0(rad, " mile", 
                               ifelse(rad > 1, "s", ""), " of ")
           
-        } else if (submitted_upload_method() == 'FIPS'){
+        } else if (submitted_upload_method() == 'FIPS') {
           location_type <- " selected shapes"
           radiusstr <- ""
         } else {
@@ -2357,7 +2401,7 @@ app_server <- function(input, output, session) {
           locationstr = locationstr,
           include_ejindexes = (input$include_ejindexes == 'TRUE'), 
           in_shiny = FALSE,
-          filename=NULL,
+          filename = NULL,
           map = report_map(),
           summary_plot = v1_summary_plot()
         )
