@@ -12,7 +12,8 @@ getblocksnearbyviaQuadTree(
   report_progress_every_n = 500,
   quiet = FALSE,
   retain_unadjusted_distance = TRUE,
-  quadtree
+  quadtree,
+  updateProgress = NULL
 )
 }
 \arguments{
@@ -52,6 +53,8 @@ if the block is very large. See EJScreen documentation.}
 created using indexblocks() which uses the SearchTree package.
 Takes about 2-5 seconds to create this each time it is needed.
 It can be automatically created when the package is attached via the .onAttach() function}
+
+\item{updateProgress, }{optional function to update Shiny progress bar}
 }
 \description{
 Given a set of points and a specified radius in miles,

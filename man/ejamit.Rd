@@ -24,6 +24,7 @@ ejamit(
   need_blockwt = TRUE,
   threshold1 = 90,
   updateProgress = NULL,
+  updateProgress_getblocks = NULL,
   in_shiny = FALSE,
   quiet = TRUE,
   parallel = FALSE,
@@ -93,7 +94,9 @@ although a more accurate slower way would be to use reported distance of each of
 "both" may try to include both,
 or possibly "original" or "default" might be added as options - passed to batch.summarize()}
 
-\item{updateProgress}{progress bar function used for shiny app}
+\item{updateProgress}{progress bar function passed to doaggregate in shiny app}
+
+\item{updateProgress_getblocks}{progress bar function passed to getblocksnearby in shiny app}
 
 \item{in_shiny}{if fips parameter is used, passed to \code{\link[=getblocksnearby_from_fips]{getblocksnearby_from_fips()}}}
 

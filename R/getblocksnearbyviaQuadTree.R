@@ -50,6 +50,8 @@
 #'   estimated by adjusting the site to block distance in cases where it is small relative to the 
 #'   size of the block, to put a lower limit on it, which can result in a large estimate of distance
 #'   if the block is very large. See EJScreen documentation.
+#' @param updateProgress, optional function to update Shiny progress bar
+#'   
 #' @examples 
 #'   # indexblocks() # if localtree not available yet, quadtree = localtree
 #'   x = getblocksnearby(testpoints_1000, radius = 3)
@@ -60,7 +62,7 @@
 #'   
 getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.07, avoidorphans = FALSE, 
                                         report_progress_every_n = 500, quiet = FALSE, retain_unadjusted_distance = TRUE,
-                                        quadtree) {
+                                        quadtree, updateProgress = NULL) {
   # indexgridsize was defined at start as say 10 miles in global? could be passed here as a parameter ####
   # and buffer_indexdistance defined here in code but is never used anywhere...  
   # buffer_indexdistance <- ceiling(radius / indexgridsize)
@@ -156,11 +158,7 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
       tmp[ , .(BLOCK_X, BLOCK_Y, BLOCK_Z)], 
       sitepoints[i, c('FAC_X','FAC_Y','FAC_Z')])
     )   
-    
-    
-    
-    
-    
+
     # distances is now just a 1 column data.table of hundreds of distance values. Some may be 5.08 miles even though specified radius of 3 miles even though distance to corner of bounding box should be 1.4142*r= 4.2426, not 5 ? 
     # pdist computes a n by p distance matrix using two separate matrices
     
@@ -221,6 +219,14 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
     ################################# #
     
     if (((i %% report_progress_every_n) == 0) & interactive()) {cat(paste("Finished finding blocks near ",i ," of ", nRowsDf),"\n" ) }   # i %% report_progress_every_n indicates i mod report_progress_every_n (“i modulo report_progress_every_n”) 
+    
+    ## update progress bar at 5% intervals
+    pct_inc <- 5
+    if(is.function(updateProgress) & (i %% round(nRowsDf/(100/pct_inc)) < 1)){
+      boldtext <- paste0((pct_inc)*round((100/pct_inc*i/nRowsDf)), '% done')
+      updateProgress(message_main = boldtext, 
+                     value = round((pct_inc)*i/nRowsDf,2)/(pct_inc))
+    }
     
   } # do next site in loop, etc., until end of this loop.
   # end loop over sites ################################################################################################ # 
