@@ -194,7 +194,7 @@ ejamit <- function(sitepoints,
         inshiny = inshiny,
         need_blockwt = need_blockwt
       )
-      if(nrow(mysites2blocks) == 0){
+      if (nrow(mysites2blocks) == 0) {
         return(NULL)
       }
       # this should have site = each FIPS code (such as each countyfips), and otherwise same outputs as getblocksnearby()
@@ -235,8 +235,12 @@ ejamit <- function(sitepoints,
       
       # select file
       if (missing(sitepoints)) {
-        if (interactive()) {
+        if (interactive() & !silentinteractive & !in_shiny) {
           sitepoints <- rstudioapi::selectFile(caption = "Select xlsx or csv with FIPS column of Census fips values", path = '.' )
+          if (missing(radius)) {
+            radius <- askradius(default = radius) # also see  askYesNo()
+            # radius <- as.numeric(rstudioapi::showPrompt("Radius", "Within how many miles of each point?", 3))
+          }
         } else {
           if(shiny::isRunning()){
             warning("sitepoints (locations to analyze) is missing but required.")
@@ -412,7 +416,7 @@ ejamit <- function(sitepoints,
   # 5. would be nice to provide the 1pager summary report as html here too
   
   ################################################################ # 
-  if (interactive() & !silentinteractive) {
+  if (interactive() & !silentinteractive & !in_shiny) {
     
     # Show summary info and tips in RStudio console  #### 
     # NOTE: SOME OF THIS BELOW SHOULD BE USED IN A VIGNETTE RATHER THAN BEING HERE ***

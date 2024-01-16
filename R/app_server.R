@@ -1897,15 +1897,15 @@ app_server <- function(input, output, session) {
   #############################################################################  # 
   ## *TABLE DEMOG (for summary report) #### 
   
-  # v1_demog_table <- reactive({    
-  #   
-  #   req(data_processed())
-  #   # should it check if (input$calculate_ratios) or is it ok to show NA values instead of hiding those columns *** ?
-  #   
-  #     table_out_d <- table_gt_from_ejamit_overall(data_processed()$results_overall, 
-  #                                                 type = 'demog')
-  #     table_out_d
-  # })
+  v1_demog_table <- reactive({
+
+    req(data_processed())
+    # should it check if (input$calculate_ratios) or is it ok to show NA values instead of hiding those columns *** ?
+
+      table_out_d <- table_gt_from_ejamit_overall(data_processed()$results_overall,
+                                                  type = 'demog')
+      table_out_d
+  })
   # 
   # ## output:  gt  view1_demog_table()
   # output$view1_demog_table <- gt::render_gt({
@@ -1914,15 +1914,15 @@ app_server <- function(input, output, session) {
   #############################################################################  # 
   ## *TABLE ENVT. (for summary report) #### 
   
-  # v1_envt_table <- reactive({
-  #   
-  #   req(data_processed())
-  #   # should it check if (input$calculate_ratios) # *** ?
-  #   
-  #   tab_out_e <- table_gt_from_ejamit_overall(data_processed()$results_overall,
-  #                                             type = "envt")
-  #   tab_out_e
-  # })
+  v1_envt_table <- reactive({
+
+    req(data_processed())
+    # should it check if (input$calculate_ratios) # *** ?
+
+    tab_out_e <- table_gt_from_ejamit_overall(data_processed()$results_overall,
+                                              type = "envt")
+    tab_out_e
+  })
   # 
   # ## output: show environmental indicator table
   # 

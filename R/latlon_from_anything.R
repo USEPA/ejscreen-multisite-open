@@ -61,7 +61,7 @@ latlon_from_anything <- function(x,y) {
   if (data.table::is.data.table(x)) data.table::setDF(x) # syntax is easier here this way. note that a data.table is also a list and data.frame
   if (is.list(x) & !is.data.frame(x)) {x <- as.data.frame(x)} # like if x <- list(lon = 1:5, lat = 1:5)
   if (is.matrix(x) | is.array(x) ) {x <- as.data.frame(x)}
-  if (!is.data.frame(x)) { # also TRUE if data.table type is data.frame not just regular data.frame (or possibly a matrix that is not a data.frame?)
+  if (!is.data.frame(x)) { # also TRUE if data.table not just regular data.frame (or possibly a matrix that is not a data.frame?)
     if (is.character(x) & length(x) == 1) {
       # seems to be a file name with path, so read it
       if (!file.exists(x)) {

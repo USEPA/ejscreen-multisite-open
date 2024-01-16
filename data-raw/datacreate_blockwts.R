@@ -1,47 +1,25 @@
-
-#################################################################################### # 
-# blockwts was originally created using a non-CRAN package called 
-# census2020download, functions were something like this:
-# listoftables = census2020_get_data()  # does download/unzip/clean
-# census2020_save_datasets()
-#
-# used 
-# block area and
-# added precalculated block_radius_miles 
-# to the blockwts data.table 
-#
-# to recreate them using code from the census2020download package:
-# x <- census2020download  :: census2020_get_data()
-# xlist <- census2020download  ::  census2020_save_datasets(x, save_as_data_for_package = FALSE)
-# rm(x)
-# names(xlist)
-#
-## To load once, after the new version were saved as data sets in local source package census2020download
-# pkg = "census2020download"
-# data(bgid2fips,blockid2fips, blockpoints, blockwts, quaddata, 
-#      package = pkg)
-# ***  but those took up > quota of space so then LFS disabled and need to delete those files in that package
-### or else...
-# load(file = "~/../../R/mysource/census2020download/data/blockwts.rda") # etc.
 #################################################################################### # 
 
-
-##############################################################
-
-
-
-# In 2023, we Updated the code, so that when getblocksnearby() code is run, 
-# it does a join to get block_radius_miles value for each relevant block,
+# Census 2020 block data.table tables 
+# blockpoints, blockwts, quaddata, blockid2fips
 # 
-# in getblocksnearby() so you can directly use those distances as adjusted already,  
-# not in doaggregate() which is where you would almost always use the results of getblocksnearby()? 
-#  ***  as you join blockwts to sites2blocks, grab block_radius_miles as well, not just wts -
-# -- will now try to do this join in getblocksnearby() not in doaggregate() !
+# were created using a non-CRAN package (in github) called census2020download:
+
+# devtools::install_github("ejanalysis/census2020download")
+# require # (census2020download)
+# ?census2020download
 #
-# Also updated same code so it will use that to modify the distance of site to block.
+# blocks <- census2020_get_data()
+# xlist  <- census2020_save_datasets(blocks, save_as_data_for_package = FALSE)
+#
+# rm(blocks)
+# names(xlist)
 
+# Those block data.table objecs were then saved via pins board, 
+# explained in EJAM/data-raw/datacreate_pins.R
 
-############ #
+#################################################################################### # 
+
 # Excerpt from 2017 tech doc on using min dist to create proximity scores
 #  but the same idea applies if EJAM is
 #  calculating and reporting distance from each site to avg resident in each block and then bg) ---
@@ -64,3 +42,4 @@
 #  2005-2009 ACS data.
 #  ########### #
 #    HOWEVER, about 8% of blocks have effective radius of at least 1 square mile !
+#################################################################################### # 

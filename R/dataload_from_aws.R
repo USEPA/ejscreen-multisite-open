@@ -1,8 +1,8 @@
 #' dataload_from_aws - utility to load datasets from AWS DMAP Data Commons, into memory
 #' @details See source code for details. 
 #'  
-#'  *** IF in interactive() mode, tries dataload_from_local() first 
-#'    during development to avoid slow downloads.
+#'  ***  tries dataload_from_local() first 
+#'    (at least during development) to avoid slow downloads.
 #' 
 #'  Also see <https://shiny.posit.co/r/articles/improve/scoping/>
 #' 

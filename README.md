@@ -41,6 +41,38 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 
 # Non-technical Overview
 
+# Installation
+
+To install the latest version of EJAM, you will first need access to the
+GitHub repositories through EPA. Then use the following steps to install
+from private repositories:
+
+1.  create GitHub personal access token with ‘repo scope’
+
+- Go to <https://github.com/settings/tokens> and select Tokens (classic)
+  on the left-hand side. Then click ‘Generate New Token’ -\> Generate
+  new token (classic).
+- Give it a name and select all boxes under repo scope. Scroll down and
+  click ‘Generate Token’.
+
+2.  set GitHub credentials in Rstudio
+
+- one-time login: from the console, run credentials::set_github_pat().
+  Paste in your PAT to the login popup under ‘Token’.
+- store credentials long-term: run usethis::edit_r\_environ() to open
+  your .Renviron file and and add a line with your PAT in this format:
+  GITHUB_PAT = ‘abc’
+  - You can specify an extra argument scope = ‘project’ if you only want
+    the PAT to work for a particular Rstudio project.
+
+3.  Install the packages using `devtools::install_github()`
+
+``` r
+devtools::install_github('USEPA/EJAMejscreenapi')
+devtools::install_github('USEPA/EJAMbatch.summarizer')
+devtools::install_github('USEPA/EJAM')
+```
+
 ### EPA’s Environmental Justice Analysis Multi-site tool
 
 EJAM is a user-friendly web app, provided by the US EPA, that can
@@ -83,38 +115,6 @@ conditions near a whole set of facilities that is the focus of a risk
 analysis or a new regulation being considered, for example.
 
 ### EJAM features and benefits
-
-# Installation
-
-To install the latest version of EJAM, you will first need access to the
-GitHub repositories through EPA. Then use the following steps to install
-from private repositories:
-
-1.  create GitHub personal access token with ‘repo scope’
-
--   Go to <https://github.com/settings/tokens> and select Tokens
-    (classic) on the left-hand side. Then click ‘Generate New Token’ -\>
-    Generate new token (classic).
--   Give it a name and select all boxes under repo scope. Scroll down
-    and click ‘Generate Token’.
-
-2.  set GitHub credentials in Rstudio
-
--   one-time login: from the console, run credentials::set_github_pat().
-    Paste in your PAT to the login popup under ‘Token’.
--   store credentials long-term: run usethis::edit_r\_environ() to open
-    your .Renviron file and and add a line with your PAT in this format:
-    GITHUB_PAT = ‘abc’
-    -   You can specify an extra argument scope = ‘project’ if you only
-        want the PAT to work for a particular Rstudio project.
-
-3.  Install the packages using `devtools::install_github()`
-
-``` r
-devtools::install_github('USEPA/EJAMejscreenapi')
-devtools::install_github('USEPA/EJAMbatch.summarizer')
-devtools::install_github('USEPA/EJAM')
-```
 
 EJAM provides a ready-to-use summary report, plus more flexibility,
 accuracy, and speed than other tools have. The web-based app quickly
@@ -227,7 +227,20 @@ population estimates rather than the Census Block counts currently used
 for buffering and weighting block group scores for partially included
 block groups.
 
-## Disclaimer
+## Disclaimer for App
+
+This software/application has been approved for release by the U.S.
+Environmental Protection Agency (USEPA). Although the software has been
+subjected to rigorous review, the USEPA reserves the right to update the
+software as needed pursuant to further analysis and review. No warranty,
+expressed or implied, is made by the USEPA or the U.S. Government as to
+the functionality of the software and related material nor shall the
+fact of release constitute any such warranty. Furthermore, the software
+is released on condition that neither the USEPA nor the U.S. Government
+shall be held liable for any damages resulting from its authorized or
+unauthorized use.
+
+## Disclaimer for GitHub Repository Content
 
 The United States Environmental Protection Agency (EPA) GitHub project
 code is provided on an “as is” basis and the user assumes responsibility
