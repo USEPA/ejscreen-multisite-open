@@ -237,7 +237,9 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
     
     ## update progress bar at 5% intervals
     pct_inc <- 5
-    if(is.function(updateProgress) & (i %% round(nRowsDf/(100/pct_inc)) < 1)){
+    ## add check that data has enough points to show increments with rounding
+    ## i.e. if 5% increments, need at least 20 points or %% will return NaN
+    if(is.function(updateProgress) & (nRowsDf >= (100/pct_inc)) & (i %% round(nRowsDf/(100/pct_inc)) < 1)){
       boldtext <- paste0((pct_inc)*round((100/pct_inc*i/nRowsDf)), '% done')
       updateProgress(message_main = boldtext, 
                      value = round((pct_inc)*i/nRowsDf,2)/(pct_inc))

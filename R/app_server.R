@@ -1518,6 +1518,7 @@ app_server <- function(input, output, session) {
         
         ## progress bar to show getblocksnearby status
         progress_getblocks <- shiny::Progress$new(min = 0, max = 1)
+        progress_getblocks$set(value = 0, message = '0% done')
         updateProgress_getblocks <- function(value = NULL, message_detail=NULL, message_main = '0% done'){
           if (is.null(value)) { # - If value is NULL, it will move the progress bar 1/20 of the remaining distance.
             value <- progress_getblocks$getValue()
@@ -1553,6 +1554,7 @@ app_server <- function(input, output, session) {
       progress_all$inc(1/3, message = 'Step 2 of 3', detail = 'Aggregating')
       ## progress bar to show doaggregate status
       progress_doagg <- shiny::Progress$new(min = 0, max = 1)
+      progress_doagg$set(value=0, message='Initiating aggregation')
       ## function for updating progress bar, to pass in to doaggregate function
       updateProgress_doagg <- function(value = NULL, message_detail = NULL, message_main = NULL) {
         # Create a callback function - When called, it sets progress bar to value.
