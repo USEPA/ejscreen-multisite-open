@@ -1,3 +1,11 @@
+getblocks_predict_blocks_per_site <- function(nsites, radius) {
+  # rough estimate of how many rows sites2blocks might be after
+  # sites2blocks <- getblocksnearby(radius = radius) 
+  #  
+  round(  nsites * (radius^1.54 * 200 - 0.15 * radius^3) / 1000 , 0)
+}
+######################################################################################### # 
+
 #' getblocks_summarize_blocks_per_site - how many blocks are near the sites (pop density affects accuracy)
 #' 
 #' @description Number of blocks near avg site, how many sites have only 1 or fewer than 30 blocks nearby, etc.
