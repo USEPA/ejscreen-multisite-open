@@ -26,8 +26,17 @@ utility to multiply certain percentage columns by 100 to convert 0-1.00 into 0-1
 multiple some data to rescale percentages stored as 0 to 1, into 0-100
 }
 \examples{
-    y <- testoutput_ejamit_10pts_1miles$results_bysite
-    y1 <- fix_pctcols_x100(y)
-    y2 <- fix_pctcols_x100(y,  names_pct_as_fraction_ejscreenit)
-    
+ y = data.frame(pctlowinc = 1:2, pctpre1960 = 1:2, avg.pctunemployed = 1:2, avg.pctpre1960 = 1:2)
+ fix_pctcols_x100(y)
+ fix_pctcols_x100(y, names_pct_as_fraction_blockgroupstats)
+ fix_pctcols_x100(y, names_pct_as_fraction_ejamit)
+ cat("\n\n")
+ ytable = data.table(pctlowinc = 1:2, pctpre1960 = 1:2, avg.pctunemployed = 1:2, avg.pctpre1960 = 1:2)
+ fix_pctcols_x100(ytable)
+ fix_pctcols_x100(ytable, names_pct_as_fraction_blockgroupstats) 
+ fix_pctcols_x100(ytable, names_pct_as_fraction_ejamit)
+ cat("\n\n")
+ y
+ ytable
+ 
 }
