@@ -28,7 +28,7 @@ fix_pctcols_x100 <- function(df, cnames = NULL) {
   tofix <- which(names(df) %in% cnames)
   
   if (is.data.table(df)) {
-    df[ , ..tofix] <- df[ , ..tofix] * tofix
+    df[ , ..tofix] <- df[ , ..tofix] * 100
   } else {
     df[ , tofix] <- df[ , tofix] * 100
     return(df)
