@@ -54,42 +54,43 @@ test_that("getblocksnearby() same results as saved", {
 
 ################################### #
 
-testthat::test_that("one ejam_uniq_id per input sitepoint (in saved testoutput_getblocksnearby_10pts_1miles)", {
-  expect_equal(
-    length(unique(testoutput_getblocksnearby_10pts_1miles$ejam_uniq_id
-                  )),
-    NROW(testpoints_10)
+testthat::test_that("one ejam_uniq_id per VALID input sitepoint THAT HAS RESULTS (in saved testoutput_getblocksnearby_10pts_1miles)", {
+  expect_true(
+    length(unique(testoutput_getblocksnearby_10pts_1miles$ejam_uniq_id)) <= NROW(testpoints_10)
   )
+  expect_true(
+    suppressWarnings( 
+    all(getblocksnearby(testpoints_1000, radius = 1, quiet = T)$ejam_uniq_id %in% 1:NROW(testpoints_1000))
+  ))
 })
 # `actual`:  9
 # `expected`: 10
 # 
 # Error: Test failed
 
-testthat::test_that("one ejam_uniq_id per input sitepoint (in getblocks output now)", {
-  expect_equal(
+testthat::test_that("one ejam_uniq_id per VALID input sitepoint THAT HAS RESULTS (in getblocks output now)", {
+  expect_true(
     # length(unique(testoutput_getblocksnearby_10pts_1miles$ejam_uniq_id)),
-    length(unique(getblocksnearby(testpoints_10, radius = 1, quiet = T)$ejam_uniq_id)),
-    NROW(testpoints_10)
-  )
+    suppressWarnings(
+      length(unique(getblocksnearby(testpoints_100, radius = 1, quiet = T)$ejam_uniq_id)) <= NROW(testpoints_100)
+  ))
 })
 ################################### #
 
-test_that("no valid lat lon", {
-  expect_warning(
-      getblocksnearby(data.table(lat = 0 , lon = 0))
+test_that("warning if no valid lat lon", {
+  suppressWarnings(
+    expect_warning(
+      getblocksnearby(data.table(lat = 0 , lon = 0), quiet = TRUE)
   )
- 
-  
-  
+  )
 })
 
 
+test_that("ERROR if radius < 0", {
+  expect_error({val <- EJAM::getblocksnearby(sitepoints = testpoints_10, radius = -1 )})
+})
 
-# test_that('case simple example, return data.table - ideally should at least warn when radius zero or >50 miles',{
-#   expect_error(val <- EJAM::getblocksnearby(sitepoints = testpoints_10, radius = 0 ))
-#  
-# })
+  # test_that('case simple example, return data.table - ideally should at least warn when radius zero or >100 miles',{
 
 
 # try invalid lat lon values

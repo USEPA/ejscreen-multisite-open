@@ -1,5 +1,8 @@
-# create some points ####
-# to use for mapping whole continental united states range as in data entry module example
+###################################################### # 
+
+# create testpoints_conus5  ####
+# to use for mapping whole continental united states range 
+# as in data entry module example
 
 CONUS5 <- data.frame( rbind(
   c(47,      -123, 1,	'Site in upper northwest'),
@@ -27,8 +30,7 @@ CONUS5$sitenumber <- as.numeric(CONUS5$sitenumber)
 testpoints_conus5 <- CONUS5
 usethis::use_data(testpoints_conus5, overwrite = TRUE)
 
-
-# Document it ####
+# Document the dataset ####
 
 filecontents <- "
 #' @name testpoints_10 
@@ -39,8 +41,8 @@ NULL"
 # prefix documentation file names with "data_" 
 writeChar(filecontents, con = paste0("./R/data_", "testpoints_conus5", ".R"))       ############# #
 
-
 # SAVE AS EXCEL FILE  ####
 #
 writexl::write_xlsx(list(testpoints = testpoints_conus5), 
                     path = paste0("./inst/testdata/latlon/", "testpoints_conus5", ".xlsx"))    ############# #
+###################################################### # 

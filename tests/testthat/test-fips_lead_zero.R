@@ -114,8 +114,9 @@ test_that('6 digit',{
   expect_true(is.na(val))
 })
 
-16options(scipen = 999)
-
+#16
+options(scipen = 999)
+on.exit({options(scipen = 0)})
 test_that('7 digit',{
   expect_no_warning(val <- fips_lead_zero("0000001")) # leading zero 
   expect_true(is.na(val))
