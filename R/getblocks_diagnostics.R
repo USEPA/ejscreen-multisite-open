@@ -51,6 +51,7 @@ getblocks_summarize_sites_per_block <- function(x, varname='blockid') {
 #'
 #' @param x The output of [getblocksnearby()] like testoutput_getblocksnearby_10pts_1miles
 #' @param detailed if TRUE, also shows in console a long table of frequencies via [getblocks_summarize_blocks_per_site()]
+#' @param see_distanceplot if TRUE, also draws scatter plot of adjusted vs unadj distances
 #' @param see_pctiles set to TRUE to see 20 percentiles of distance in a table
 #' @return A list of stats 
 #' @seealso This relies on  [getblocks_summarize_blocks_per_site()] and [getblocks_summarize_sites_per_block()]
@@ -67,10 +68,12 @@ getblocks_summarize_sites_per_block <- function(x, varname='blockid') {
 #'  zz <- getblocks_diagnostics(z, detailed = T, see_pctiles = T)
 #' cbind(stats = zz)
 #' 
+#'   getblocks_diagostics(testoutput_getblocksnearby_1000pts_1miles, see_distanceplot = TRUE)
+#'   
 #' @import data.table
 #' @export
 #'
-getblocks_diagnostics <- function(x, detailed=FALSE, see_pctiles=FALSE) {
+getblocks_diagnostics <- function(x, detailed=FALSE, see_pctiles=FALSE, see_distanceplot = FALSE) {
   if (NROW(x) == 0) {warning('no blocks found nearby'); return(NA)}
   
   prit <- function(x) {prettyNum(x, big.mark = ',')}
@@ -95,14 +98,14 @@ getblocks_diagnostics <- function(x, detailed=FALSE, see_pctiles=FALSE) {
     blockcount_distance_adjusted <- blockcount_distance_adjusted_up + blockcount_distance_adjusted_down
     sitecount_distance_adjusted <- data.table::uniqueN(x[distance != distance_unadjusted, ejam_uniq_id])
     
-  cat(paste0(blockcount_distance_adjusted,
-             " block distances were adjusted (these stats may count some blocks twice if adjusted at 2+ sites)\n"))
-  cat(paste0("  ", blockcount_distance_adjusted_up,
-             " block distances were adjusted up (reported dist to avg resident is > dist to block internal point)\n"))
-  cat(paste0("  ", blockcount_distance_adjusted_down,
-             " block distances were adjusted down (reported < unadjusted)\n"))
-  cat(paste0(sitecount_distance_adjusted,
-             " unique sites had one or more block distances adjusted due to large block and short distance to block point\n"))
+    cat(paste0(blockcount_distance_adjusted,
+               " block distances were adjusted (these stats may count some blocks twice if adjusted at 2+ sites)\n"))
+    cat(paste0("  ", blockcount_distance_adjusted_up,
+               " block distances were adjusted up (reported dist to avg resident is > dist to block internal point)\n"))
+    cat(paste0("  ", blockcount_distance_adjusted_down,
+               " block distances were adjusted down (reported < unadjusted)\n"))
+    cat(paste0(sitecount_distance_adjusted,
+               " unique sites had one or more block distances adjusted due to large block and short distance to block point\n"))
   } else {
     blockcount_distance_adjusted_up <- NA
     blockcount_distance_adjusted_down <- NA
@@ -117,6 +120,7 @@ getblocks_diagnostics <- function(x, detailed=FALSE, see_pctiles=FALSE) {
     print(getblocks_summarize_blocks_per_site(x))
     # returns table that gives Range and mean of count of blocks nearby the various sites,
     #   how many sites have only 1 block nearby, or <30 nearby, etc.
+    cat("Also see  getblocks_predict_blocks_per_site() \n")
     cat("\n\n")
   }
   
@@ -139,7 +143,7 @@ getblocks_diagnostics <- function(x, detailed=FALSE, see_pctiles=FALSE) {
   
   count_block_site_distances <- blockcount_incl_dupes # number of rows in output table of all block-site pairs with their distance.
   blockcount_avgsite         <- blockcount_incl_dupes / sitecount_unique_out
-
+  
   
   sumstats <- list(
     sitecount_unique_out = sitecount_unique_out, 
@@ -185,12 +189,21 @@ getblocks_diagnostics <- function(x, detailed=FALSE, see_pctiles=FALSE) {
              (assuming they live at the block internal point\n'))
   # cat(prit(count_block_site_distances), ' = count_block_site_distances',  '\n')
   # cat(prit(uniqueblocks_near_multisite),' = uniqueblocks_near_multisite ', '\n')
-
+  
   # PLOT ####
-  ## it was not really useful
-  # if (see_plot) {
-  # boxplot(x$distance ~ x$ejam_uniq_id)
-  # }
+  if (see_distanceplot) {
+    # x = getblocksnearby(testpoints_1000, radius = 1, quiet = T)
+    if (NROW(x) > 10000) {
+      cat("plotting a sample of blocks since too many to easily plot them all\n")
+      x <- x[sample(1:NROW(x), 10000), .(distance, distance_unadjusted)]
+    }
+    plot(x$distance, x$distance_unadjusted, 
+         xlab = "Adjusted Distance to avoid unrealistic short distances", 
+         ylab = "Distance as calculated (unadjusted for short distances, but should be < radius if avoidorphans=F ?)", 
+         xlim = c(0,max(x$distance, x$distance_unadjusted, na.rm = T)), 
+         ylim = c(0,max(x$distance, x$distance_unadjusted, na.rm = T)))
+    # boxplot(x$distance ~ x$ejam_uniq_id)
+  }
   invisible(sumstats)
 }
 ######################################################################################### # 
