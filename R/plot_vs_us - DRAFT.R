@@ -16,7 +16,10 @@
 #'   plot_vs_us(testoutput_ejamit_1000pts_1miles$results_bysite, varname = "pctnhaa", type =  'ggplot')
 #'   plot_vs_us(testoutput_ejamit_1000pts_1miles$results_bysite, varname = "pctnhaa", type = 'box', ylim = c(0,20))
 #'   }
-plot_vs_us <- function(bysite = ejamit()$results_bysite, varname = "Demog.Index", refdt = blockgroupstats[ , c("pop", varname), with = FALSE], type = "box", colorfills = c("lightblue", "orange"), ...) {
+plot_vs_us <- function(bysite = ejamit()$results_bysite, varname = "Demog.Index", refdt = NULL, type = "box", colorfills = c("lightblue", "orange"), ...) {
+  if (is.null(refdt)) {
+    refdt <- copy(blockgroupstats[ , c("pop", varname), with = FALSE])
+  }
   nsample <- 5000
   # bysite <- testoutput_ejamit_1000pts_1miles$results_bysite
   ## or
@@ -24,21 +27,24 @@ plot_vs_us <- function(bysite = ejamit()$results_bysite, varname = "Demog.Index"
   # bysite <- bysite$results_bysite
   
   # correct for different 0-1 or 0-100 scaling in blockgroupstats and ejamit()$results_bysite
-  x100_in_blockgroupstats <- names_d
-  setDF(blockgroupstats)
-  blockgroupstats[ , x100_in_blockgroupstats] <- 100 * blockgroupstats[ , x100_in_blockgroupstats]
-  setDT(blockgroupstats)
+  refdt <- fix_pctcols_x100(refdt)
+  # x100_in_blockgroupstats <- names_pct_as_fraction_blockgroupstats
+  # setDF(refdt)
+  # refdt[ , x100_in_blockgroupstats] <- 100 * refdt[ , x100_in_blockgroupstats]
+  # setDT(refdt)
+  
   # correct for different scaling in blockgroupstats and ejamit()$results_bysite
-  x100varnames = c(
-    names_d, names_d_avg, names_d_state_avg,
-    names_d_subgroups, names_d_subgroups_avg, names_d_subgroups_state_avg,
-    "pctdisability",  "p_own_occupied", 
-    "pctunder18", "pctover17", "pctmale", "pctfemale")
-  if (varname %in% x100varnames) {
-    setDF(bysite)
-    bysite[ , varname] <- 100 * bysite[ , varname]
-    setDT(bysite)
-    }
+  bysite <- fix_pctcols_x100(bysite)
+  # x100varnames = c(
+  #   names_d, names_d_avg, names_d_state_avg,
+  #   names_d_subgroups, names_d_subgroups_avg, names_d_subgroups_state_avg,
+  #   "pctdisability",  "p_own_occupied", 
+  #   "pctunder18", "pctover17", "pctmale", "pctfemale")
+  # if (varname %in% x100varnames) {
+  #   setDF(bysite)
+  #   bysite[ , varname] <- 100 * bysite[ , varname]
+  #   setDT(bysite)
+  #   }
   
   sites <- cbind(bysite[ , c("pop", varname), with = FALSE], Locations = "Near these sites")
 
