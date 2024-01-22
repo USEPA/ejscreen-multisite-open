@@ -30,9 +30,9 @@ test_that('error for query string', {
 
 
 test_that('list of queries returns joined results', {
-  expect_no_warning(x <-naics2children(c("211",  "452")))
-  expect_no_warning( y <- naics2children("211"))
-  expect_no_warning( z <- naics2children("452"))
+  expect_no_warning(x <- naics2children(c("211",  "452")))
+  expect_no_warning(y <- naics2children("211"))
+  expect_no_warning(z <- naics2children("452"))
   expect_equal(x, c(y,z))
   
 })

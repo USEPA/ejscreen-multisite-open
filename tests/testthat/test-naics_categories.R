@@ -8,12 +8,12 @@ table(nchar(NAICS))
 
 # should digits = 1 give a warning? since it's empty
 test_that('the function works for all digits',{
-  expect_no_warning(val <- naics_categories(digits = 1))
-  expect_no_warning(val <- naics_categories(digits = 2))
-  expect_no_warning(val <- naics_categories(digits = 3))
-  expect_no_warning(val <- naics_categories(digits = 4))
-  expect_no_warning(val <- naics_categories(digits = 5))
-  expect_no_warning(val <- naics_categories(digits = 6))
+  expect_no_warning({val <- naics_categories(digits = 1)})
+  expect_no_warning({val <- naics_categories(digits = 2)})
+  expect_no_warning({val <- naics_categories(digits = 3)})
+  expect_no_warning({val <- naics_categories(digits = 4)})
+  expect_no_warning({val <- naics_categories(digits = 5)})
+  expect_no_warning({val <- naics_categories(digits = 6)})
 })
 
 # how do we limit the response?
@@ -21,9 +21,9 @@ test_that('the function works for all digits',{
 
 test_that('entering filtered dataframe works', {
   df <- EJAM::NAICS %>% as.data.frame 
-  df <- df %>% filter(startsWith(as.character(df$.), "11"))
+  df <- df %>% filter(startsWith(as.character(df$.), "11")) # ?? fails
   df <- df$.
-  expect_no_warning(val <- naics_categories(digits = 2, dataset = df))
+  expect_no_warning({val <- naics_categories(digits = 2, dataset = df)})
   expect_equal(length(val), 1)
   
 }

@@ -26,7 +26,12 @@ test_that('lookup works correctly',{
 # add warnings to the sic_from_any function inside not here
 
 test_that('warning for empty df / invalid SIC',{
-  expect_error(val <- frs_from_sic("blue"))
+  expect_error({
+    suppressWarnings(
+  {    val <- frs_from_sic("blue")
+}      
+    )
+  })
   expect_true(is.na(val$lat[1]))
   expect_warning(val <- frs_from_sic("7"))
   expect_true(is.na(val$lat[1]))

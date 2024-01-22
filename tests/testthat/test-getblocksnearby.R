@@ -1,7 +1,7 @@
 # no crash for basic example
 test_that('case simple example, return data.table',{
   suppressWarnings({
-    expect_no_error(val <- getblocksnearby(sitepoints = EJAM::testpoints_10, quiet = TRUE))
+    expect_no_error({val <- getblocksnearby(sitepoints = EJAM::testpoints_10, quiet = TRUE)})
   })
   expect_true('data.table' %in% class(val))
 })
