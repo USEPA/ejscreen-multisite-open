@@ -233,8 +233,12 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   ##################################################### #   
   
   ## Specify Which vars are SUM OF COUNTS, vs WTD AVG, vs via FORMULA (usually ratio of sums of counts) ####
-  # That info is sort of stored already in map_headernames$calculation_type
-
+  # That info is sort of stored already as one of unique(map_headernames$calculation_type)
+  # map_headernames[map_headernames$calculation_type == "popwtd mean",     c('varlist', "rname") ]
+  # map_headernames[map_headernames$calculation_type == "percent formula", c('varlist', "rname") ]
+  # map_headernames$rname[grepl("denom", map_headernames$names_friendly, ignore.case = TRUE)] # [1] "unemployedbase" "builtunits" 
+  #
+  # see pdf documenting denominator (weights) for each indicator aggregated via weighted average.
   
   if (is.null(countcols)) {
     countcols <- unique(c(
@@ -1311,8 +1315,8 @@ results_bysite <- merge(results_bysite, results_bysite_minmax, by = "ejam_uniq_i
   #  us and state percentile lookup tables, and in results_bysite
   perfectnames <- function(x) intersect(intersect(intersect(x, names(usastats)), names(statestats)), names(results_bysite))
   
-  ## >>>Do we want to include EJ Indexes and supplementary ones here?? ####
-  
+  ## (dont need avg of raw EJ indexes)  ####
+  ## (we dont want to show a ratio to avg for raw EJ indexes, and no other reason to find those averages, since those raw scores are harder to interpret than Demog or Envt raw scores)
   
   ######################################### #
   # **** names_these and related lists are defined by EJAM already,
