@@ -45,7 +45,6 @@ library(EJAM)
 
 # EJAM web app
 
-
 ## EJAM web app (easiest way to use EJAM)
 
 You can try a live demo version of the basics of EJAM with just a web browser. You must be inside EPA's network (e.g. using VPN) to access EJAM (the app and code are all internal to EPA's network as of 10/2023).
@@ -56,17 +55,17 @@ EJAM is in active development, not yet launched as of 10/2023. This is work in p
 
 Note that the demo app takes a long time (maybe 10 seconds, but maybe up 30 seconds, even - this is in flux) to start up and load all the datasets and packages and then build an index. The analysis can be started only after the blue bar lights up to show that the spreadsheet with lat lon values has been uploaded.
 
-
 ## EJAM web app running locally (for R users)
 
 If you use R/RStudio, you can run the web app on your own computer (without internet access, etc.). You first need to install the EJAM R package and related packages, and download related data (or let the app do that for you when it launches). For installation see below.
 
-Once EJAM is installed, you can launch the app from RStudio as follows: 
+Once EJAM is installed, you can launch the app from RStudio as follows:
 
 ```{r run_app1, eval = FALSE, include= TRUE}
 library(EJAM)
 run_app()
 ```
+
 Note this is different than running a simple shiny app that is not also a package via golem. You should use EJAM::run_app() not shiny::runApp().
 
 Note that the web app (e.g., launched locally) handles loading datasets and indexing blocks, so you would not have to download datasets manually or do indexing manually if launching the EJAM app locally. You just need the packages installed that EJAM relies on (see below).
@@ -74,7 +73,6 @@ Note that the web app (e.g., launched locally) handles loading datasets and inde
 The EJAM R package and app are in active development, not yet launched as of 10/2023. EJAM is in active development, not yet launched as of 10/2023. This is work in progress, so not everything is working and changes are being made!
 
 Use of the web app is documented elsewhere, not in this vignette.
-
 
 # EJAM Setup for R users
 
@@ -124,6 +122,7 @@ devtools::install_github('USEPA/EJAMejscreenapi')
 devtools::install_github('USEPA/EJAMbatch.summarizer')
 devtools::install_github('USEPA/EJAM')
 ```
+
 ### if you need the full source code and want to build/install in RStudio on your own
 
 There are 3 EJAM-specific packages as of 10/2023 that EJAM needs, all of which are in EPA-internal repositories:
@@ -146,30 +145,33 @@ Regardless of how you got the full source code, you would then need to build/ins
 
 #### CRAN packages needed
 
-EJAM needs a few other packages that are available from CRAN. Trying to load/attach EJAM with require(EJAM) or library(EJAM) will alert you to those other packages you need to install if you don't already have them. 
+EJAM needs a few other packages that are available from CRAN. Trying to load/attach EJAM with require(EJAM) or library(EJAM) will alert you to those other packages you need to install if you don't already have them.
 
 You could also see the list of CRAN packages needed by looking at the `DESCRIPTION` file in the R package.
- 
 
 ## Initialize: load/attach package, download block data, build index
 
 Once the right R packages are installed, to use EJAM in the console you can start by loading and attaching the package, using library or require.
+
 ```{r libraryejam, eval=TRUE}
 require(EJAM)
 ```
 
 To work in the RStudio console, you need to load the datasets (which are stored in AWS Data Commons, at least during EJAM development).
+
 ```{r dataload_from_aws, eval = TRUE}
 dataload_from_pins()
 # It takes some time (maybe 30 to 60 seconds) for the large downloads, while EJAM is still in development.
 ```
 
-You also need to build the index of millions of US block locations, which takes a few seconds. Or you could just try to use some functions like ejamit() which will do the indexing if not already done. 
+You also need to build the index of millions of US block locations, which takes a few seconds. Or you could just try to use some functions like ejamit() which will do the indexing if not already done.
+
 ```{r indexblocks, eval=TRUE}
 indexblocks()
 ```
 
 You can save a little time if you first save those datasets locally and in later sessions have EJAM read them from your local drive instead of re-downloading from AWS.
+
 ```{r eval = FALSE}
 dataload_from_pins() # do this once, then save data locally so future sessions start faster
 dir.create("~/mydata") # for example
@@ -179,7 +181,6 @@ help("dataload_from_local")
 
 help("datawrite_to_local")
 ```
-
 
 # EJAM Analysis in R
 
@@ -206,22 +207,24 @@ wb <- ejam2excel(x, launchexcel = T, save_now = F)
 mapfastej(x$results_bysite)
 ```
 
-
 ## Specify Points to Analyze
 
 ### Use points already included with EJAM as examples
 
 EJAM comes with examples of points you can use to try things out, like `testpoints_10`
+
 ```{r eval = TRUE, fig.height=4.83, fig.width=3}
 testpoints_10
 ```
 
 ### Use one point
+
 ```{r one point, eval=FALSE}
 pts <- data.frame(lon = -92.380556, lat = 31.316944)
 ```
 
 ### Use a few points
+
 ```{r sitepoints2, eval = TRUE}
 sitepoints2  <- data.frame(
   lon = c(-92.1,      -91.8), 
@@ -233,6 +236,7 @@ sitepoints2  <- data.frame(
 ### Use a random sample of points that can represent the average facility, average resident, or average location
 
 You can create a set of random points with function `testpoints_n()` that can be weighted to represent the average resident, average regulated facility, average point on a map weighted by square meters, etc. See more details in the documentation of the function testpoints_n().
+
 ```{r help_testpoints, eval = FALSE}
 ?testpoints_n
 ```
@@ -245,6 +249,7 @@ mapfastej(testoutput_ejamit_100pts_1miles) # output, results of EJAM
 ```
 
 You can see a map of random blocks in a single State, for example:
+
 ```{r eval = TRUE, fig.height=6, fig.width=6}
 pts <- testpoints_n(1000, weighting = 'blocks', ST_needed = "LA")
 mapfast(pts, radius = 0.1)
@@ -261,7 +266,8 @@ radius <- 3 # radius (in miles).  5 km = 3.1 miles, 10 km = 6.2 miles
 
 ##### Convert between miles and kilometers
 
-If you know you want to analyze for 5 kilometers, you can turn it into miles with something like 
+If you know you want to analyze for 5 kilometers, you can turn it into miles with something like
+
 ```{r convert units, eval=TRUE}
 convert_units(5, 'km', 'miles')
 ```
@@ -277,6 +283,7 @@ x <- ejamit(testpoints_100, radius = 1) # 1 mile radius around each of 100 test/
 ### Interactively select your own file of lat,lon coordinates, without shiny web app
 
 From RStudio, you can use EJAM functions to interactively select a file from your folders, to upload a spreadsheet (.xlsx or .csv) with columns called lat and lon in the first row as the header row, and then one row per point.
+
 ```{r read_csv_or_xl, eval = FALSE}
 y <- read_csv_or_xl()
 names(y)
@@ -290,6 +297,7 @@ x <- ejamit(radius = 2) #  2 mile radius, and prompts you to select spreadsheet 
 ### Map the EJAM Results
 
 Popups in the map show key stats for residents near each site.
+
 ```{r eval = TRUE, echo= TRUE, fig.height=8, fig.width=6}
 mapfastej(x$results_bysite)
 # help("mapfast")
@@ -309,7 +317,7 @@ ejam2excel(ejamit(testpoints_10, radius = 1), save_now = T)
 ```
 
 =============
-  
+
 ##### Use lat/lon coordinates in a table like a spreadsheet - xlsx or csv file
 
 The first row should be column names including lat and lon, or something that can be interpreted as that - see latlon_infer()
@@ -341,12 +349,7 @@ mapfast(testpoints_n(300, ST_needed = c('LA','TX'), weighting = 'bg'))
 # but would require loading the frs dataset
 ```
 
-
 ============
-
-
-
-
 
 ## See Documentation of Functions and Data
 
@@ -360,14 +363,9 @@ help("EJAM", package='EJAM')
 ?ejamit
 ```
 
-
-
-
-
-----------------
+------------------------------------------------------------------------
 
 ## More about picking places to analyze in EJAM
-
 
 ### Specify points (where you want to center the circular buffers)
 
@@ -440,13 +438,7 @@ nrow(latlon_from_mactsubpart("OOOO", include_if_no_latlon = FALSE))
 nrow(latlon_from_mactsubpart("OOOO", include_if_no_latlon = TRUE))
 ```
 
-
-
-
 ### MORE EXAMPLES OF SELECTING SITES BY NAICS
-
-
-
 
 #### NAICS Codes to Map or Analyze Facilities in one Industrial Sector
 
@@ -550,26 +542,21 @@ NROW(frs_from_naics(naics_from_any("chem")$code))
 # >10,000
 ```
 
-
-
-
-
 ### Key Functions underlying EJAM
 
 -   **run_app()** to launch the web app locally
-    - A couple of functions help load data files, like dataload_from_local(), dataload_from_pins(), etc.
-    - Files with lat/lon data may be imported with latlon_from_anything () or read_csv_or_xl()
-    - Several functions help work with lat/lon pairs: latlon_df
+
+    -   A couple of functions help load data files, like dataload_from_local(), dataload_from_pins(), etc.
+    -   Files with lat/lon data may be imported with latlon_from_anything () or read_csv_or_xl()
+    -   Several functions help work with lat/lon pairs: latlon_df
 
 -   **ejamit()** provides most results in just one function, by using getblocksnearby() and doaggregate():
 
     -   **getblocksnearby()** takes a set of points (e.g., facilities) and finds the Census blocks near each. Sample input is in testpoints_100, and sample output is in testoutput_getblocksnearby_10pts_1miles
 
     -   **doaggregate()** takes the list of blocks near each point, joins it to blockgroup indicators like from EJScreen, and aggregates at each buffered point as well as for the overall set of unique blocks (residents). Sample input is in testoutput_getblocksnearby_10pts_1miles
-        * 
 
-
-
+        -   
 
 ### Speed tests for EJAM analysis
 
@@ -624,12 +611,12 @@ cbind(as.list(out2$results_overall))
 
 You can upload polygons in a shapefile, and use EJAM to analyze them. See the Shiny app.
 
-
 #### Counties as the places to compare
 
 You can compare places defined by FIPS code, such as a group of US Counties.
 
 Compare all Counties in a State, using EJAM indicators
+
 ```{r counties_fips, eval = FALSE}
 
 # Get FIPS of each county in Delaware
@@ -838,13 +825,14 @@ hist(out$results_bysite$pctile.traffic.score, 10, xlab = "Local traffic scores (
 abline(h = nrow(out$results_bysite)/10)
 ```
 
-
 # The EJScreen API module
 
 The EJAMejscreen package was used to create a shiny module in EJAM that provides access to the EJScreen API in a loop or batch mode. It uses EJScreen to run reports on multiple places one at a time, so it is somewhat slow for more than a handful of places, but exactly replicates EJScreen results.
 
 ### Just see the EJScreen report for one site
+
 This works best for one site at a time, and does not provide results in a table, just a formatted web page EJScreen Community Report directly from EJScreen.
+
 ```{r browseURL, eval=FALSE}
 
 # Browser opens to view one site report
@@ -875,6 +863,7 @@ for (i in 1:2) {
 ### Get EJScreen results for a batch of sites, from RStudio
 
 In RStudio, you can use EJAM's EJScreen API code like this:
+
 ```{r ejscreenit-interactive, eval = FALSE}
 
 # To interactively pick your own spreadsheet file from your local drive, that has lat and lon as two column headings and then one row per site:
