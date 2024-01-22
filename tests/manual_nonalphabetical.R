@@ -37,8 +37,8 @@ if (testing_in_logical_order) {
   test_fips <- c(
     "test-fips_lead_zero.R",   # 2/150
     "test-fips_bg_from_anyfips.R",  ##### # 6/43 
-    "test-state_from_fips.R",   #3/7
-    "test-state_from_latlon.R"  #0/13
+    "test-state_from_fips.R",   # 3/7
+    "test-state_from_latlon.R"  # 0/13
   )
   test_shape <- c(
     "test-shapefile_xyz.R"  # 0/12
