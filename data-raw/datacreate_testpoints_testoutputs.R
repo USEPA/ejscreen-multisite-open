@@ -227,7 +227,7 @@ NULL"
                                           n, "pts_", myrad, "miles")
     
     if (recreating_getblocksnearby) {
-      out_data_getblocks <- EJAM::getblocksnearby(testpoints_data, radius = myrad)                     ############# #
+      out_data_getblocks <- EJAM::getblocksnearby(testpoints_data, radius = myrad, quiet = TRUE)                     ############# #
       assign(out_varname_getblocks, out_data_getblocks)
       ################################## #  
       # __out_varname_getblocks ALIAS TOO ####
@@ -301,7 +301,7 @@ NULL
       #       called_by_ejamit = FALSE, subgroups_type = "nh", extra_demog = TRUE,
       #       infer_sitepoints = FALSE, ...)
       
-      out_data_doagg <- doaggregate(out_data_getblocks, sites2states_or_latlon = testpoints_data, radius = myrad,
+      out_data_doagg <- doaggregate(out_data_getblocks, sites2states_or_latlon = testpoints_data, radius = myrad, silentinteractive = TRUE,
                                     include_ejindexes = TRUE) # not the default but want to test this way 
       assign(out_varname_doagg, out_data_doagg)
     }
@@ -382,7 +382,7 @@ NULL
       #        called_by_ejamit = TRUE, subgroups_type = "nh", extra_demog = TRUE,              
       #        infer_sitepoints = FALSE, threshold1 = 90)
       
-      out_data_ejamit <- ejamit(testpoints_data, radius = myrad, 
+      out_data_ejamit <- ejamit(testpoints_data, radius = myrad, silentinteractive = TRUE, quiet = TRUE,
                                 include_ejindexes = TRUE) #  # include_ejindexes = FALSE was the default but we want to test with them included
       
       # testdata_ejamit_output_1000pts_1miles
@@ -437,7 +437,9 @@ if (redoing_ejscreenit_10_for_ejam_to_have) {
   # using the API that EJScreen provides, for comparison, to have available as data saved in EJAM pkg:
   testpoints_name <- "testpoints_10"
   myrad = 1
-  testoutput_ejscreenit_10pts_1miles <- EJAMejscreenapi::ejscreenit(testpoints_10, radius = 1, nosave = T, nosee = T, interactiveprompt = F, calculate_ratios = T)
+  testoutput_ejscreenit_10pts_1miles <- EJAMejscreenapi::ejscreenit(testpoints_10, radius = 1, calculate_ratios = TRUE, 
+                                                                    nosave = TRUE, nosee = TRUE, 
+                                                                    interactiveprompt = FALSE, verbose = TRUE)
   
   usethis::use_data(testoutput_ejscreenit_10pts_1miles, overwrite = TRUE)
   

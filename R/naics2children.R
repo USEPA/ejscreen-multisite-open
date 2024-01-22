@@ -14,7 +14,7 @@
 #' 
 #' @param codes vector of numerical or character
 #' @param allcodes Optional (already loaded with package) - dataset with all the codes
-#'
+#' @param quiet whether to avoid printing results to console
 #' @return vector of codes and their names
 #' @seealso naics_find() NAICS
 #' @export
@@ -26,7 +26,7 @@
 #'   NAICS[211][1:3] # wrong
 #'   NAICS[NAICS == 211]
 #'   NAICS["211 - Oil and Gas Extraction"]
-naics2children <- function(codes, allcodes=EJAM::NAICS) {
+naics2children <- function(codes, allcodes=EJAM::NAICS, quiet = FALSE) {
   # if (missing(allcodes)) {allcodes <- NAICS} # data from this package
   codes <- as.character(codes)
   kidrows <- NULL
@@ -38,6 +38,6 @@ naics2children <- function(codes, allcodes=EJAM::NAICS) {
   x <- c(codes, allcodes[kidrows])
   x <- x[!duplicated(x)]
   x <- allcodes[allcodes %in% x] # cannot use %chin% unless using as.character(allcodes). fast enough anyway.
-  cat(paste0('\n', names(x)), '\n')
+  if (!quiet) {cat(paste0('\n', names(x)), '\n')}
   invisible(x)
 }
