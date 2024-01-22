@@ -4,13 +4,14 @@
 # also see  EJAM/data-raw/datacreate_names_pct_as_fraction_.R
 
 ########################################################################################################## #
-# *** This was updated for the 2023 ver 2.2 
-# and to be reconciled with or replaced with map_headernames approach.
-## see EJAMejscreenapi::map_headernames$varlist which now has most or all of these in a table 
-## see   EJAMejscreenapi/data-raw/update_to_ejscreenv2.2.R
+# ***
+#   to be reconciled with or replaced with map_headernames approach.
+## see EJAMejscreenapi::map_headernames$varlist which now has most or all of these in a table  
 
-
-#  friendly names differ somewhat -  compare them: 
+########################################################################################################## #
+########################################################################################################## #
+if ( 1 == 0 ) {
+#  friendly names differ -  script to compare them: 
 
 vvv <- function(vlist = "names_r_all") {
   vars =  get(vlist) # same as names_d
@@ -87,8 +88,8 @@ out[maphead.names_friendly != names_x_friendly , .(vlist, names_x_friendly, maph
 # see out df above  to see the careful names from this file and namez etc.
 ## and maybe put them into mapheadernames longnames and namesfriendly columns where better?
 
-
-
+}
+########################################################################################################## #
 ########################################################################################################## #
 
 
@@ -204,7 +205,7 @@ names_d <- c(
 
 # friendly raw percents
 # > dput(fixcolnames(names_d, 'r', 'long'))
-c("Demographic Index", "Supplemental Demographic Index", "% Low Income", 
+names_d_friendly <-  c("Demographic Index", "Supplemental Demographic Index", "% Low Income", 
   "% in limited English-speaking Households", "% Unemployed", "% with Less Than High School Education", 
   "Low life expectancy", "% under Age 5", "% over Age 64", "% People of Color"
 )

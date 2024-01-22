@@ -9,7 +9,7 @@
 ######################################################## #
 
 ## See the test data stored in each package 
-{
+if ("ready to do this and have loaded latest update" == "???") {
   ############################################### #
   # 
   # x = data(package = "EJAMejscreenapi")
@@ -64,7 +64,7 @@
   ######################################################## #
 }
 # Specify which data to rebuild  ####
-{
+if (TRUE) {
   nvalues <-   c(10, 100, 1000, 10000) # numbers of point locations, picked from FRS points.
   myrad <- 1 # radius in miles. Larger would create MUCH larger versions of sites2blocks example objects
   
@@ -73,9 +73,9 @@
   resaving_testpoints_excel     <- FALSE
   resaving_testpoints_helpdocs  <- FALSE
   
-  recreating_getblocksnearby    <- TRUE  # eg if block data changed, or if recreating_doaggregate_output = TRUE below
-  resaving_getblocksnearby_rda  <- TRUE
-  resaving_getblocksnearby_helpdocs <- TRUE
+  recreating_getblocksnearby    <- FALSE  # eg if block data changed, or if recreating_doaggregate_output = TRUE below
+  resaving_getblocksnearby_rda  <- FALSE
+  resaving_getblocksnearby_helpdocs <- FALSE
   
   recreating_doaggregate_output <- TRUE # eg if other indicators added to outputs
   if (recreating_doaggregate_output) {recreating_getblocksnearby <- TRUE} # needed
@@ -96,6 +96,7 @@
   #  EJAM package must be loaded or at least the functions available 
 }
 # Create and save datasets  ####
+
 for (n in nvalues) {
   
   # >_____testpoints_   _____________________#### 
@@ -110,9 +111,12 @@ for (n in nvalues) {
   if (xist & !creatingnew_testpoints_data) {
     # exists(testpoints_name)
     # file.exists(paste0("./data/", testpoints_name, ".rda"))
-    cat("Found and will not recreate", paste0("./data/", testpoints_name, ".rda"))
+    cat("Found and will not recreate", paste0("./data/", testpoints_name, ".rda \n"))
     load(paste0("./data/", testpoints_name, ".rda")) # in case not in global env right now, such as pkg not rebuilt or not attached yet
     if (!xist) {stop('missing', testpoints_name)}
+
+    assign("testpoints_data", get(  testpoints_name ))
+    
   } else {
     cat("creating ", n, "new random points\n")
     
@@ -123,7 +127,9 @@ for (n in nvalues) {
     # Drop other columns to just use lat lon sitenumber sitename
     # testpoints_data$NAICS = NULL # 722410# testpoints_data$SIC = NULL # 5992  # testpoints_data$REGISTRY_ID = NULL # c(EJAM::test_xtrac, rep(NA,n))[1:n] #  # testpoints_data$PGM_SYS_ACRNMS = NULL
     testpoints_data  <- testpoints_data[ , c("lat", "lon", "sitenumber", "sitename")]   
+    
     assign(testpoints_name, testpoints_data)    #        put the data into an object of the right name 
+    
     if (n == 100) {
       testpoints_100_dt <- data.table(testpoints_100)
       if (resaving_testpoints_rda) {
@@ -131,6 +137,7 @@ for (n in nvalues) {
       }
     }
   }
+  
   ## save as DATASET ####
   if (resaving_testpoints_rda) {
     text_to_do <- paste0("usethis::use_data(", testpoints_name, ", overwrite=TRUE)")
@@ -196,9 +203,9 @@ NULL
   ## save as DOCUMENTATION ####
   
   filecontents <- "
-#' @name testpoints_10 
+#' @name testpoints_conus5 
 #' @docType data
-#' @title test points data.frame with columns sitenumber, lat, lon
+#' @title test points data.frame with columns lat, lon, sitenumber, sitename
 NULL"
   
   # prefix documentation file names with "data_" 
@@ -271,7 +278,7 @@ NULL
       
     } # end of if n <
     
-  } # end of the if n == 
+  } # end of the if n  <
   
   
   ################################## #   ################################## #   ################################## #   
