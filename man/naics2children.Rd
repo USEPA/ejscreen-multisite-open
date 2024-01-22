@@ -5,12 +5,14 @@
 \title{naics2children - See NAICS codes queried plus all children of any of those
 Used by naics_find()}
 \usage{
-naics2children(codes, allcodes = EJAM::NAICS)
+naics2children(codes, allcodes = EJAM::NAICS, quiet = FALSE)
 }
 \arguments{
 \item{codes}{vector of numerical or character}
 
 \item{allcodes}{Optional (already loaded with package) - dataset with all the codes}
+
+\item{quiet}{whether to avoid printing results to console}
 }
 \value{
 vector of codes and their names
