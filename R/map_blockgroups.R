@@ -119,7 +119,7 @@ map_blockgroups_over_blocks <- function(y) {
 
 #' map_shapes_plot
 #'
-#' @param shapes like from shapes_counties_from_countyfips()
+#' @param shapes like from shapes_counties_from_countyfips(fips_counties_from_state_abbrev("DE"))
 #' @param main title for map
 #' @param ... passed to plot()
 #'
@@ -164,20 +164,38 @@ map_shapes_leaflet_proxy <- function(mymap, shapes, color = "green", popup = sha
   }
 ########################### # ########################### # ########################### # ########################### # 
 
+#' map_shapes_mapview
+#' Use mapview from the mapview package if available
+#' @param shapes like from shapes_counties_from_countyfips(fips_counties_from_state_abbrev("DE"))
 #' @param col.regions passed to mapview() from mapview package
 #' @param map.types  passed to mapview() from mapview package
-#'
+#' @examples \dontrun{
+#'   map_shapes_mapview(
+#'     shapes_counties_from_countyfips(fips_counties_from_state_abbrev("DE"))
+#'   )
+#' }
 #' @export
 #'
 map_shapes_mapview <- function(shapes, col.regions = "green", map.types = "OpenStreetMap") {
-  message("this function is a nice way to map counties etc. but requires the mapview package, which EJAM does not load")
-  mapview(shapes, col.regions = col.regions, map.types = map.types)
+  if (!"package:mapview" %in% search()) {
+    message("this function is a nice way to map counties etc. but requires the mapview package, which EJAM does not load")
+    warning("mapview package would be needed and is not attached - checking if installed")
+    junk <- try(find.package("ggplot2"), silent = TRUE)
+    if (inherits(junk, "try-error")) {
+      stop("mapview package is not available")
+    } else {
+      stop("mapview package appears to be available but not attached. You may want to try loading and attaching it via library() or require()")
+    }
+  } else {
+    mapview(shapes, col.regions = col.regions, map.types = map.types)
+  }
 }
 ########################### # ########################### # ########################### # ########################### # 
 
 #' use API to get boundaries of US Counties to map them
 #'
-#' @param countyfips FIPS codes as 5-character strings (or numbers) in a vector 
+#' @param countyfips FIPS codes as 5-character strings (or numbers) in a vector
+#'   as from fips_counties_from_state_abbrev("DE")
 #' @param outFields can be "*" for all, or can be 
 #'   just some variables like SQMI, POPULATION_2020, etc., or none
 #' @param myservice URL of feature service to get shapes from.

@@ -84,7 +84,7 @@ getblocksnearby_from_fips <- function(fips, inshiny = FALSE, need_blockwt = TRUE
       fips_blockpoints <- merge(fips_blockpoints, blockwts[,.(blockid, blockwt)], on = "blockid")
     }
     
-    ## remove any invalid latlon values 
+    ## remove any invalid  values 
     fips_blockpoints <- na.omit(fips_blockpoints)
     
     # Emulate the normal output of  getblocksnearby() which is a data.table with  

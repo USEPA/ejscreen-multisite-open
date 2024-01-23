@@ -1,3 +1,13 @@
+
+# state_from_latlon()
+# state_from_blocktable()
+# state_from_blockid()
+# state_from_fips()
+## and see elsewhere states_as_sites()
+
+
+########################################### # 
+
 #' state_from_latlon - find what state is where each point is located
 #' Takes 3 seconds to find state for 1k points, so a faster alternative would be useful
 #' @param lon longitudes vector
