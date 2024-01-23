@@ -1325,7 +1325,7 @@ app_server <- function(input, output, session) {
       
       canmap <- TRUE
       max_pts <- input$max_shapes_map
-      if (nrow(data_uploaded()) > max_pts) {
+      if (NROW(data_uploaded()) > max_pts) {
         warning(paste0('Too many FIPS polygons (> ', prettyNum(max_pts, big.mark = ','),') for map to show'))
         validate(paste0('Too many FIPS polygons (> ', prettyNum(max_pts, big.mark = ','),') for map to show'))
         
@@ -1354,6 +1354,7 @@ app_server <- function(input, output, session) {
             }
           } else {
             warning('cannot map FIPS types other than counties or blockgroups currently')
+            validate("cannot map FIPS types other than counties or blockgroups currently")
             canmap <- FALSE
           }
         }
@@ -1879,7 +1880,7 @@ app_server <- function(input, output, session) {
                            input$analysis_title, '<br>')
       
       ## exclude radius info from header text when using FIPS
-      if(current_upload_method() != 'FIPS'){
+      if(current_upload_method() != 'FIPS') {
         title_text <- paste0(title_text,
                              'Residents within ',
                              #input$bt_rad_buff, ' ', input$radius_units, ' of any of the ',
@@ -2061,17 +2062,14 @@ app_server <- function(input, output, session) {
         # 
         # leafletProxy(mapId = 'an_leaf_map', session, data=fips_sf) %>% addPolygons()
         
-        map_shapes_leaflet(
-          shapes_counties_from_countyfips(
-            countyfips = data_uploaded()
-          )
-        )
+        leafletProxy(mapId = 'an_leaf_map', session) %>% 
+          map_shapes_leaflet_proxy(shapes = shapes_counties_from_countyfips(countyfips = data_uploaded()))
         
       } else {
         
         d_upload <- data_uploaded()
         base_color      <- '#000080'
-          cluster_color   <- 'red'
+          # cluster_color   <- 'red'
             #req(input$bt_rad_buff)
           
           ## convert units to miles for circle size

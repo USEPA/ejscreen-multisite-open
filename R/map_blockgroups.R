@@ -132,8 +132,8 @@ map_shapes_plot <- function(shapes, main = "Selected Census Units", ...) {
 ########################### # ########################### # ########################### # ########################### # 
 
 #' map_shapes_leaflet
-#'
-#' @param shapes like from shapes_counties_from_countyfips()
+#' Create a new leaflet map from shapefile data
+#' @param shapes like from shapes_counties_from_countyfips(fips_counties_from_state_abbrev("DE"))
 #' @param color passed to leaflet::addPolygons()
 #' @param popup  passed to leaflet::addPolygons()
 #'
@@ -146,9 +146,24 @@ map_shapes_leaflet <- function(shapes, color = "green", popup = shapes$NAME) {
 }
 ########################### # ########################### # ########################### # ########################### # 
 
-#' map_shapes_mapview
+#' map_shapes_leaflet_proxy
+#' update existing leaflet map by adding shapefile data
+#' @param mymap map like from leafletProxy()
+#' @param shapes like from shapes_counties_from_countyfips(fips_counties_from_state_abbrev("DE"))
+#' @param color passed to leaflet::addPolygons()
+#' @param popup passed to leaflet::addPolygons()
 #'
-#' @param shapes like from shapes_counties_from_countyfips()
+#' @return html widget like from leaflet::leafletProxy()
+#' @export
+#'
+map_shapes_leaflet_proxy <- function(mymap, shapes, color = "green", popup = shapes$NAME)  {
+  mymap <- mymap %>% 
+    addPolygons(data = shapes, color = color,  popup = popup) %>% 
+    addTiles() 
+  return(mymap)
+  }
+########################### # ########################### # ########################### # ########################### # 
+
 #' @param col.regions passed to mapview() from mapview package
 #' @param map.types  passed to mapview() from mapview package
 #'
