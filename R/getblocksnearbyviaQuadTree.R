@@ -75,9 +75,23 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
       stop('quadtree must be an object created with indexblocks(), from SearchTrees package with treeType = "quad" and dataType = "point"')  
     }
   }
-  if (missing(sitepoints)) {stop("sitepoints missing - see getblocksnearby()")}
+  if (missing(sitepoints)) {
+    if(shiny::isRunning()){
+      warning("sitepoints missing - see getblocksnearby()")
+      return(NULL)
+    } else {
+      stop("sitepoints missing - see getblocksnearby()")
+    }
+  }
   stopifnot(is.data.frame(sitepoints), "lat" %in% colnames(sitepoints), "lon" %in% colnames(sitepoints), NROW(sitepoints) >= 1, is.numeric(sitepoints$lat))
-  if (missing(quadtree)) {stop("quadtree=localtree is missing - see getblocksnearby() and indexblocks()")}
+  if (missing(quadtree)) {
+    if(shiny::isRunning()){
+      warning("quadtree=localtree is missing - see getblocksnearby() and indexblocks()")
+      return(NULL)
+    } else {
+      stop("quadtree=localtree is missing - see getblocksnearby() and indexblocks()")
+    }
+  }
   if (class(quadtree) != "QuadTree") {stop('quadtree=localtree is not class quadtree.  - see getblocksnearby() and indexblocks()')}
   stopifnot(is.numeric(radius), radius <= 100, radius >= 0, length(radius) == 1)
   if (missing(radius)) {warning("radius missing so using default radius of 3 miles")}
