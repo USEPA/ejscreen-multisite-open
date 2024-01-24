@@ -1433,14 +1433,6 @@ app_server <- function(input, output, session) {
 
   })
   
-  ## add FIPS placeholder text - remove when FIPS mapping is made available
-  output$fips_placeholder <- renderUI({
-    if(current_upload_method() == 'FIPS'){
-      helpText('Mapping for FIPS codes not yet available')
-    } else {
-      HTML(NULL)
-    }
-  })
   
   #############################################################################  # 
   # . --------------------------------------------------------------- # ###       

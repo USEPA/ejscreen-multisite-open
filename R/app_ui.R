@@ -412,7 +412,6 @@ app_ui  <- function(request) {
                    
                    h4('Selected Location Map'),
                    #helpText('Red circles indicate overlapping sites.'),
-                   uiOutput('fips_placeholder'),
                        ## output: show leaflet map of uploaded points
                    shinycssloaders::withSpinner(
                      leaflet::leafletOutput(outputId = 'an_leaf_map', 
