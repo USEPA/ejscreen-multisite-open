@@ -467,8 +467,10 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
   
   ## define PERCENTAGE columns
   
-  is.percentage  <- 1 == fixcolnames(headers_eachsite, oldtype = "r", newtype = "percentage")
-  percentage_colnums <- which(is.percentage)
+  is.percentage_overall  <- 1 == fixcolnames(headers_overall, oldtype = "r", newtype = "percentage")
+  percentage_colnums_overall <- which(is.percentage_overall)
+  is.percentage_eachsite  <- 1 == fixcolnames(headers_eachsite, oldtype = "r", newtype = "percentage")
+  percentage_colnums_eachsite <- which(is.percentage_eachsite)
   # vlist          <-      fixcolnames(headers_eachsite, oldtype = "r", newtype = "varlist")
   # percentage_colnums_check <-  which(headers_eachsite %in% c("pctpre1960", "avg.pctpre1960", "state.avg.pctpre1960")  |  vlist %in% c(
   #   "names_d", "names_d_avg", "names_d_state_avg", 
@@ -687,8 +689,8 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     
     percentage_style <- openxlsx::createStyle(numFmt = "PERCENTAGE")   # specify 0 decimal places plus percentage style
     percentage_style <- openxlsx::createStyle(numFmt = "0%")   # specify 0 decimal places plus percentage style
-    openxlsx::addStyle(wb, sheet = 'Overall',   rows = 2,                      cols = percentage_colnums, style = percentage_style, stack = TRUE)
-    openxlsx::addStyle(wb, sheet = 'Each Site', rows = 2:(1 + NROW(eachsite)), cols = percentage_colnums, style = percentage_style, stack = TRUE, gridExpand = TRUE)
+    openxlsx::addStyle(wb, sheet = 'Overall',   rows = 2,                      cols = percentage_colnums_overall, style = percentage_style, stack = TRUE)
+    openxlsx::addStyle(wb, sheet = 'Each Site', rows = 2:(1 + NROW(eachsite)), cols = percentage_colnums_eachsite, style = percentage_style, stack = TRUE, gridExpand = TRUE)
     # openxlsx::addStyle(wb, sheet = 'Overall',   rows = 2,                      cols = percentage_colnums, style=openxlsx::createStyle(numFmt = '#0'), stack = TRUE)
     # openxlsx::addStyle(wb, sheet = 'Each Site', rows = 2:((1 + NROW(eachsite)), cols = percentage_colnums, style=openxlsx::createStyle(numFmt = '#0'), stack = TRUE, gridExpand = TRUE)  
     
