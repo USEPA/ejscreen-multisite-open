@@ -15,14 +15,14 @@ get_blockpoints_in_shape(
 )
 }
 \arguments{
-\item{polys}{Spatial data as from sf::st_as_sf(), with a column called siteid, like
+\item{polys}{Spatial data as from sf::st_as_sf(), with
 points as from \code{\link[=shapefile_from_sitepoints]{shapefile_from_sitepoints()}},
 or a table of points with lat,lon columns that will first be converted here using that function,
 or polygons}
 
 \item{addedbuffermiles}{width of optional buffering to add to the points (or edges), in miles}
 
-\item{blocksnearby}{optional table of blocks with blockid,siteid (from which lat,lon can be looked up in blockpoints dt)}
+\item{blocksnearby}{optional table of blocks with blockid, etc (from which lat,lon can be looked up in blockpoints dt)}
 
 \item{dissolved}{If TRUE, use sf::st_union(polys) to find unique blocks inside any one or more of polys}
 

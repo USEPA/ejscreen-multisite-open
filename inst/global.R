@@ -62,28 +62,30 @@ options(spinner.color = "#005ea2", spinner.type = 4)
 
 ## ------------------------ limits on # of points ####
 
-max_points_can_map    <- 15 * 1000  # *** EJAM only not api
-marker_cluster_cutoff  <- 1 * 1000  # *** EJAM only not api; for leaflet markerClusters
-
-
 # input$max_pts_upload
 default_max_pts_upload  <-   5 * 1000 
 maxmax_pts_upload  <-  10 * 1000 #   cap uploaded points 
 
-# input$max_pts_map
-default_max_pts_map       <- 1 * 1000
-maxmax_pts_map       <- 5 * 1000 # max we will show on map 
+### THESE 2 ARE NOT USED ANYMORE I THINK:
+max_points_can_map    <- 15 * 1000  # *** EJAM only not api
+marker_cluster_cutoff  <- 1 * 1000  # *** EJAM only not api; for leaflet markerClusters
 
- # input$max_pts_showtable
+# input$max_pts_map uses these as its starting value and max allowed value
+default_max_pts_map   <- 5 * 1000
+maxmax_pts_map       <- 15 * 1000 # max we will show on map 
+
+
+ # input$max_pts_showtable uses these as its starting value and max allowed value
  default_max_pts_showtable <- 1000 # max to show in interactive viewer. It drops the rest.
  maxmax_pts_showtable  <- 5 * 1000 # 10k is extremely slow. check server side vs client side 
 
-  # input$max_pts_run
+  # input$max_pts_run uses these as its starting value and max allowed value
  default_max_pts_run  <-  1 * 1000 # initial cap but can adjust in advanced tab
  maxmax_pts_run       <- 15 * 1000 # absolute max you can analyze here, even with advanced tab 
 
- ## use larger cutoff for polygons (FIPS/Shapefiles)
- max_points_can_map_poly <- 1e10
+ # input$max_shapes_map uses these as its starting value and max allowed value
+  default_max_shapes_map <- 159 # TX has 254 counties, but no other state exceeds 159. EJAM::blockgroupstats[ , data.table::uniqueN(substr(bgfips, 1,5)), by = ST][order(V1), ]
+ maxmax_shapes_map <- 254  # TX has 254 counties
  
  ## ------------------------ Options for Radius  #####
  

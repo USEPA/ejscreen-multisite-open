@@ -14,7 +14,8 @@ shapes_counties_from_countyfips(
 )
 }
 \arguments{
-\item{countyfips}{FIPS codes as 5-character strings (or numbers) in a vector}
+\item{countyfips}{FIPS codes as 5-character strings (or numbers) in a vector
+as from fips_counties_from_state_abbrev("DE")}
 
 \item{outFields}{can be "*" for all, or can be
 just some variables like SQMI, POPULATION_2020, etc., or none}

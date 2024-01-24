@@ -33,7 +33,7 @@ ejamit(
 )
 }
 \arguments{
-\item{sitepoints}{data.table with columns siteid, lat, lon giving point locations of sites or facilities around which are circular buffers}
+\item{sitepoints}{data.table with columns lat, lon giving point locations of sites or facilities around which are circular buffers}
 
 \item{radius}{in miles, defining circular buffer around a site point}
 
@@ -143,7 +143,7 @@ See help("EJAM")
   out <- ejamit(testsites, radius)  
   # out <- ejamit("myfile.xlsx", 3.1)  
   
-  # out2 <- ejscreenit(testpoints_05)
+  # out2 <- ejscreenit(testpoints_5)
   
   # View results overall
   round(t(out$results_overall), 3.1)
@@ -157,7 +157,7 @@ See help("EJAM")
   
   # view results at a single site
   t(out$results_bysite[1, ])
-  t(out$results_bysite[out$results_bysite$siteid == 2, ])
+  t(out$results_bysite[out$results_bysite$ejam_uniq_id == 2, ])
   
   
   # if doing just 1st step of ejamit() 

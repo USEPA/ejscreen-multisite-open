@@ -2,8 +2,8 @@
 % Please edit documentation in R/trilaterate-DRAFT.R
 \name{trilaterate_sites2blocks}
 \alias{trilaterate_sites2blocks}
-\title{trilaterate_sites2blocks - Estimate lat,lon of each siteid, from outputs of getblocksnearby()
-get data.table with siteid, lat,lon of each site (eg for when you did not save sitepoints info)}
+\title{trilaterate_sites2blocks - Estimate lat,lon of each ejam_uniq_id, from outputs of getblocksnearby()
+get data.table with ejam_uniq_id, lat,lon of each site (eg for when you did not save sitepoints info)}
 \usage{
 trilaterate_sites2blocks(s2b)
 }
@@ -11,12 +11,12 @@ trilaterate_sites2blocks(s2b)
 \item{s2b}{like \link{testoutput_getblocksnearby_10pts_1miles}}
 }
 \value{
-a data.table with one row per unique siteid from input dt,
+a data.table with one row per unique ejam_uniq_id from input dt,
 plus lat,lon columns
 }
 \description{
-trilaterate_sites2blocks - Estimate lat,lon of each siteid, from outputs of getblocksnearby()
-get data.table with siteid, lat,lon of each site (eg for when you did not save sitepoints info)
+trilaterate_sites2blocks - Estimate lat,lon of each ejam_uniq_id, from outputs of getblocksnearby()
+get data.table with ejam_uniq_id, lat,lon of each site (eg for when you did not save sitepoints info)
 }
 \examples{
 s2b = copy(testoutput_getblocksnearby_10pts_1miles)

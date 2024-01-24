@@ -30,5 +30,5 @@ shape_buffered_from_shapefile_points - add buffer around shape (points, here)
 Just a wrapper for \code{\link[sf:geos_unary]{sf::st_buffer()}}
 }
 \seealso{
-\code{\link[=get_blockpoints_in_shape]{get_blockpoints_in_shape()}} \code{\link[=shapefile_from_sitepoints]{shapefile_from_sitepoints()}} \link{shape_buffered_from_shapefile_points}
+\code{\link[=get_blockpoints_in_shape]{get_blockpoints_in_shape()}} \code{\link[=shapefile_from_sitepoints]{shapefile_from_sitepoints()}} \code{\link[=shape_buffered_from_shapefile_points]{shape_buffered_from_shapefile_points()}}
 }

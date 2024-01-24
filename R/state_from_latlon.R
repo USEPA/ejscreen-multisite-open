@@ -1,3 +1,13 @@
+
+# state_from_latlon()
+# state_from_blocktable()
+# state_from_blockid()
+# state_from_fips()
+## and see elsewhere states_as_sites()
+
+
+########################################### # 
+
 #' state_from_latlon - find what state is where each point is located
 #' Takes 3 seconds to find state for 1k points, so a faster alternative would be useful
 #' @param lon longitudes vector
@@ -86,8 +96,8 @@ state_from_fips <- function(fips, uniqueonly=FALSE) {
 
 
 # pts <- EJAMejscreenapi::testpoints_1000
-
-# # pts <- testpoints_100_dt[ , .(lat,lon, siteid)]
+library(data.table)
+# # pts <- data.table(testpoints_100)[ , .(lat,lon, sitenumber)]
 # # n=100
 # # pts <- frs[sample(1:nrow(frs), n), .(lat,lon, REGISTRY_ID)]
 # pts$idn <- 1:nrow(pts)
@@ -123,12 +133,12 @@ state_from_fips <- function(fips, uniqueonly=FALSE) {
 # 
 # ptsf <- pts |>
 #   st_as_sf(coords = c("lon", "lat"), crs =st_crs(states_shapefile))
-# # plot(ptsf[ , "siteid"])
+# # plot(ptsf[ , "sitenumber"])
 # 
 # # maybe the best? 
 # system.time({
 #   ptsf2  <- ptsf |> st_join(states_shapefile)
-#   x1 = as.data.frame(ptsf2)[ , c("siteid", "sitename", "REGION", "STATEFP", "NAME")]
+#   x1 = as.data.frame(ptsf2)[ , c("sitenumber", "sitename", "REGION", "STATEFP", "NAME")]
 # })
 # # x1
 # 

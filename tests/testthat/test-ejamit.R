@@ -1,14 +1,18 @@
 test_that('ejamit() returns a list, with no error, for very simple example', {
   # no crash for basic example
   expect_no_error({
-    v10 <- ejamit(testpoints_10, radius = 1, silentinteractive = T) # same as  ejamoutnow <- ejamit(testpoints_10, radius = 1) done in  setup.R, but tested here. - takes roughly 5-10 seconds 
+    suppressMessages({
+    v10 <- ejamit(testpoints_10, radius = 1, quiet = T, silentinteractive = T) # same as  ejamoutnow <- ejamit(testpoints_10, radius = 1) done in  setup.R, but tested here. - takes roughly 5-10 seconds 
+      })
   })
   expect_true('list' %in% class(v10))
 })
 
 test_that("ejamit() returns no distances greater than radius - even if maxradius parameter not specified", {
   max_specified <- 3
-  v10 <- ejamit(sitepoints = testpoints_10, radius = max_specified, silentinteractive = T)
+  suppressMessages({
+  v10 <- ejamit(sitepoints = testpoints_10, radius = max_specified, quiet = T, silentinteractive = T)
+  })
   max_found <- max(v10$results_bysite$radius.miles)
   expect_lte(
     max_found,
@@ -20,9 +24,9 @@ test_that("ejamit() returns no distances greater than radius - even if maxradius
 ### only if update ejamit to return blank rows where latlon invalid or no blocks so no results for that point
 
 test_that('ejamit() output has names the same as it used to return, i.e. names(testoutput_ejamit_10pts_1miles)', {
-  
-  v10 <- ejamit(sitepoints = testpoints_10, radius = 1, silentinteractive = T)
-  
+  suppressMessages({
+  v10 <- ejamit(sitepoints = testpoints_10, radius = 1, quiet = T, silentinteractive = T)
+  })
   expect_identical(
     names(v10),
     names(testoutput_ejamit_10pts_1miles)
@@ -32,17 +36,19 @@ test_that('ejamit() output has names the same as it used to return, i.e. names(t
 })
 
 test_that("ejamit() still returns results_overall identical to what it used to return (saved as testoutput_ejamit_10pts_1miles$results_overall)", {
-  # ejamoutnow <- ejamit(testpoints_10, radius = 1)  - takes roughly 5-10 seconds 
+  # ejamoutnow <- ejamit(testpoints_10, radius = 1, quiet = T, silentinteractive = T)  - takes roughly 5-10 seconds
+  suppressMessages(
   expect_identical(
     ejamoutnow$results_overall, 
     testoutput_ejamit_10pts_1miles$results_overall
+  )
   )
   # all.equal(ejamoutnow$results_overall, 
   #           testoutput_ejamit_10pts_1miles$results_overall)
 })
 
 test_that("ejamit() still returns results_bysite identical to expected numbers it used to return (saved as testoutput_ejamit_10pts_1miles$results_bysite)", {
-  # ejamoutnow <- ejamit(testpoints_10, radius = 1) # see setup.R - takes roughly 5-10 seconds  
+  # ejamoutnow <- ejamit(testpoints_10, radius = 1, quiet = T, silentinteractive = T) # see setup.R - takes roughly 5-10 seconds  
   expect_identical(
     ejamoutnow$results_bysite, 
     testoutput_ejamit_10pts_1miles$results_bysite
@@ -52,7 +58,7 @@ test_that("ejamit() still returns results_bysite identical to expected numbers i
 })
 
 test_that("ejamit() returns same exact colnames() in both results_bysite and results_overall", {
-  # ejamoutnow <- ejamit(testpoints_10, radius = 1) # see setup.R - takes roughly 5-10 seconds 
+  # ejamoutnow <- ejamit(testpoints_10, radius = 1, quiet = T, silentinteractive = T) # see setup.R - takes roughly 5-10 seconds 
   expect_identical(
     colnames(ejamoutnow$results_bysite), 
     colnames(ejamoutnow$results_overall)
@@ -61,7 +67,13 @@ test_that("ejamit() returns same exact colnames() in both results_bysite and res
 
 # more tests for ejamit go here
 
-
+testthat::test_that("ejamit can use fips=fips_counties_from_statename()", {
+  testthat::expect_no_error({
+  suppressWarnings({
+    y <- ejamit(fips = fips_counties_from_statename("Delaware"), quiet = TRUE, silentinteractive = T, in_shiny = F)
+  })
+  })
+})
 
 # ***
 

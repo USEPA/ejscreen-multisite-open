@@ -8,14 +8,14 @@
 #' 
 distance_by_group_by_site <- function(bybg) {
 
-  # out = ejamit(testpoints_100[1:10,], radius = 6.2)
-  # bybg = out$results_bybg_people[siteid < 11,]
+  # out = ejamit(testpoints_100[1:10, ], radius = 6.2)
+  # bybg = out$results_bybg_people[ejam_uniq_id < 11, ]
   
-  ids <- bybg[ , unique(siteid)]
+  ids <- bybg[ , unique(ejam_uniq_id)]
   x = list()
   for (i  in 1:length(ids)) {
     
-    y = plot_distance_mean_by_group(bybg[siteid ==  ids[i]], graph = FALSE)
+    y = plot_distance_mean_by_group(bybg[ejam_uniq_id ==  ids[i]], graph = FALSE)
     
     # print(x[[i]])  # > str(x[[1]])
     # 'data.frame':	18 obs. of  6 variables:

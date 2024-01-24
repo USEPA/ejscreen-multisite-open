@@ -8,7 +8,7 @@ Not yet population weighted}
 plot_vs_us(
   bysite = ejamit()$results_bysite,
   varname = "Demog.Index",
-  refdt = blockgroupstats[, c("pop", varname), with = FALSE],
+  refdt = NULL,
   type = "box",
   colorfills = c("lightblue", "orange"),
   ...

@@ -2,33 +2,33 @@
 
 
 
-#' frs_from_siteid - Use registry ID to see FRS Facility Registry Service data on those EPA-regulated sites
+#' frs_from_regid - Use registry ID to see FRS Facility Registry Service data on those EPA-regulated sites
 #' 
-#' @param siteid vector of one or more EPA Registry ID codes used by FRS 
-#' @aliases frs_from_regid()
+#' @param regid vector of one or more EPA Registry ID codes used by FRS
 #' @return relevant rows of the data.table called frs, which has column names that are
 #'   "lat" "lon" "REGISTRY_ID" "PRIMARY_NAME" "NAICS" "PGM_SYS_ACRNMS"
 #' @export
 #'
-#' @examples frs_from_siteid(testids_registry_id)
-frs_from_siteid <- function(siteid) {
+#' @examples 
+#'   frs_from_regid(testids_registry_id)
+#'   frs_from_regid(110000307695)
+#'   frs_from_regid("110000307695")
+#'   
+frs_from_regid <- function(regid) {
   
   if (!exists("frs")) dataload_from_pins("frs")
   
-  frs[REGISTRY_ID %in% siteid, ]
+  frs[REGISTRY_ID %in% regid, ]
 }
 ########################################## # 
 
-#' @inherit frs_from_siteid
-#' @aliases frs_from_siteid()
-#' @export
-frs_from_regid = frs_from_siteid
+# got rid of frs_from_  site  id  () since the name was confusing as a site id might be 1:n or whatever
 
 ########################################## # 
 
 #' frs_from_programid - Use EPA Program ID to see FRS Facility Registry Service data on those EPA-regulated sites
 #' 
-#' @param siteid vector of one or more EPA Program ID codes used by FRS 
+#' @param programid vector of one or more EPA Program ID codes used by FRS 
 #' @return relevant rows of the data.table called frs, which has column names that are
 #'   "lat" "lon" "REGISTRY_ID" "PRIMARY_NAME" "NAICS" "PGM_SYS_ACRNMS"
 #' @examples x=frs_from_programid(testids_program_sys_id)
@@ -67,7 +67,7 @@ frs_from_program  <- function(program) {
 #' @param ... passed to [naics_from_any()]
 #' @return relevant rows of the data.table called frs, which has column names that are
 #'   "lat" "lon" "REGISTRY_ID" "PRIMARY_NAME" "NAICS" "PGM_SYS_ACRNMS"
-#' @seealso [siteid_from_naics()] [naics_from_any()]
+#' @seealso [regid_from_naics()] [naics_from_any()]
 #' @export
 #'
 #' @examples 
@@ -77,14 +77,14 @@ frs_from_program  <- function(program) {
 #'   naics_from_name("silver")
 #'   naics_from_any(212222 )
 #'   frs_from_naics(21222)
-#'   siteid_from_naics(21222)
+#'   regid_from_naics(21222)
 #'   latlon_from_naics(21222)
 #'   
 frs_from_naics <- function(naics_code_or_name, ...) {
   
   if (!exists("frs")) dataload_from_pins("frs")
   
-  frs[REGISTRY_ID %in% siteid_from_naics(naics_from_any(naics_code_or_name, ...)$code, id_only = TRUE) , ]
+  frs[REGISTRY_ID %in% regid_from_naics(naics_from_any(naics_code_or_name, ...)$code, id_only = TRUE) , ]
 }
 ########################################## # 
 

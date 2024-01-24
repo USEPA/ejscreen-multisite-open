@@ -22,8 +22,10 @@ if (!exists('blockwts')) {
 # no crash when aggregate basic example of sites2blocks
 test_that('doaggregate() returns a correctly named list, with no error', {
   expect_no_error({
-    val <- doaggregate(sites2blocks = testoutput_getblocksnearby_10pts_1miles, 
-                       radius = max(testoutput_getblocksnearby_10pts_1miles$distance))
+    suppressWarnings({
+      val <- doaggregate(sites2blocks = testoutput_getblocksnearby_10pts_1miles, 
+                         radius = max(testoutput_getblocksnearby_10pts_1miles$distance), include_ejindexes = TRUE)
+    })
   })
   expect_true('list' %in% class(val))
   expect_identical(
@@ -38,33 +40,41 @@ test_that('doaggregate() returns a correctly named list, with no error', {
 # DOES IT STILL RETURN WHAT IT USED TO, OR HAS FUNCTION CHANGED SO THAT OUTPUTS NO LONGER MATCH ARCHIVED OUTPUTS? ####
 ################# # 
 
+# # data created/saved was this:
+# out_data_doagg <- doaggregate(out_data_getblocks, sites2states_or_latlon = testpoints_data, radius = myrad, include_ejindexes = TRUE) # not the default but want to test this way 
+
+suppressWarnings({
 # WHAT IT RETURNS NOW:
-x <- doaggregate(testoutput_getblocksnearby_10pts_1miles, radius = 1)
+x <- doaggregate(testoutput_getblocksnearby_10pts_1miles,  sites2states_or_latlon = testpoints_10,  radius = 1, include_ejindexes = TRUE)
 overall_has_changed <- !all.equal(testoutput_doaggregate_10pts_1miles$results_overall,
                                   x$results_overall)
+})
+overall_has_changed
+
 test_that("still same exact results_overall as previously saved", {
-  expect_equivalent(
+  expect_equal(
     testoutput_doaggregate_10pts_1miles$results_overall,
     x$results_overall # use defaults
   )
 })
 test_that("still same exact results_bysite as previously saved", {
   skip_if(overall_has_changed, "not testing all outputs of doaggregate against archived since results_overall test failed")  
-  expect_equivalent(
+  expect_equal(
     testoutput_doaggregate_10pts_1miles$results_bysite,
     x$results_bysite # use defaults 
   )
 })
 test_that("still same exact results_bybg_people as previously saved", {
   skip_if(overall_has_changed, "not testing all outputs of doaggregate against archived since results_overall test failed")  
-  expect_equivalent(
+  expect_equal(
     testoutput_doaggregate_10pts_1miles$results_bybg_people,
     x$results_bybg_people # use defaults 
   )
 })
+
 test_that("still same exact longnames as previously saved", {
   skip_if(overall_has_changed, "not testing all outputs of doaggregate against archived since results_overall test failed")  
-  expect_equivalent(
+  expect_equal(
     testoutput_doaggregate_10pts_1miles$longnames,
     x$longnames # use defaults 
   )

@@ -1,10 +1,16 @@
+
+
+
+
+
+
 ############################################################################# #
 # Named all fips-related functions to start with "fips..."
 ############################################################################# #
 
 #   if func RETURNS the fips, named the function  fips_from_xyz()
 # 
-#   fips <- fips_from_xyz(xyz)  functions
+#          fips_from_   functions are as follows:
 
 #    fips_state_from_state_abbrev()
 #    fips_state_from_statename()     # should it be statename or state_name
@@ -168,6 +174,7 @@ fips_counties_from_statename <- function(statename) {
 #'   # all blockgroups in this one county
 #'   fips_bg_from_anyfips(30001)
 #'   fips_bg_from_anyfips("30001")
+#'   fips_bg_from_anyfips(fips_counties_from_statename("Rhode Island")[1])
 #'   
 #'   # all blockgroups that contain any of these 6 blocks (i.e., just one bg)
 #'   fips_bg_from_anyfips( blockid2fips$blockfips[1:6])
@@ -206,10 +213,14 @@ fips_bg_from_anyfips <- function(fips) {
 #' counties_as_sites - Analyze US Counties as if they were sites, to get EJ indicators summary for each county
 #' @details This function provides one row per blockgroup.
 #'    [getblocksnearby_from_fips()] provides one row per block.
-#' @param fips County FIPS vector (ideally as character not numeric values)
+#'    See more below under "Value" 
+#' @param fips County FIPS vector (ideally as character not numeric values), 
+#'   like fips_counties_from_state_abbrev("DE")
 #' @seealso [getblocksnearby_from_fips()]
-#' @return data.table with one row per blockgroup in these counties, or
-#'   all pairs of county fips - bgid, and a unique siteid assigned to each county 
+#' @return provides table similar to the output of getblocksnearby(), 
+#'   data.table with one row per blockgroup in these counties, or
+#'   all pairs of county fips - bgid, and ejam_uniq_id (1 through N) assigned to each county 
+#'   but missing blockid and distance so not ready for doaggregate(). 
 #' @export
 #'
 #' @examples 
@@ -222,14 +233,48 @@ fips_bg_from_anyfips <- function(fips) {
 counties_as_sites <- function(fips) {
   if (any(is.numeric(fips))) {
     message("leading zeroes being inferred since FIPS was provided as numbers not character class")
-    
+    fips <- fips_lead_zero(fips)
   }
   # accept county fips vector
   # return counties2bgs table of pairs so doaggregate_blockgroups() or whatever can take that and do full EJ stats.
   
   county2bg <- bgpts[substr(bgfips,1,5) %in% fips, .(countyfips = substr(bgfips,1,5), bgid) ]
-  county2bg[, siteid := .GRP , by = "countyfips"]
-  county2bg[, .(siteid, countyfips, bgid)]
+  county2bg[, ejam_uniq_id := .GRP , by = "countyfips"]
+  county2bg[, .(ejam_uniq_id, countyfips, bgid)]
+}
+############################################### #
+
+
+#' states_as_sites - Analyze US States as if they were sites, to get EJ indicators summary
+#' @details This function provides one row per blockgroup.
+#'    [getblocksnearby_from_fips()] provides one row per block.
+#'    See more below under "Value" 
+#' @param fips State FIPS vector, like c("01", "02") or 
+#'   fips_state_from_state_abbrev(c("DE", "RI"))
+#'
+#' @return provides table similar to the output of getblocksnearby(),  
+#'   data.table with one row per blockgroup in these states, or
+#'   all pairs of states fips - bgid, and ejam_uniq_id (1 through N) assigned to each state 
+#'   but missing blockid and distance so not ready for doaggregate(). 
+#' @export
+#'
+#' @examples 
+#'   s2b <- states_as_sites(fips_state_from_state_abbrev(c("DE", "RI")))
+states_as_sites <- function(fips) {
+  if (any(is.numeric(fips))) {
+    message("leading zeroes being inferred since FIPS was provided as numbers not character class")
+    fips <- fips_lead_zero(fips)
+  }
+  valids <- stateinfo2$FIPS.ST[!is.na(stateinfo2$FIPS.ST)]
+  if (!all(fips %in% valids)) {stop('some fips provided are not valid state fips')}
+  # if (!all(fipstype(fips) == 'state')) {stop('some fips provided are not valid state fips')} # that only checks if 2 characters() with leading zeroes) 
+  
+  # accept state fips vector
+  # return counties2bgs table of pairs so doaggregate_blockgroups() or whatever can take that and do full EJ stats.
+  
+  state2bg <- bgpts[substr(bgfips,1,2) %in% fips, .(statefips = substr(bgfips,1,2), bgid) ]
+  state2bg[, ejam_uniq_id := .GRP , by = "statefips"]
+  state2bg[, .(ejam_uniq_id, statefips, bgid)]
 }
 ############################################### #
 

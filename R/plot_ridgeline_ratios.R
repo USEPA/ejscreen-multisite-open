@@ -1,10 +1,13 @@
 #' plot_ridgeline_ratios
 #' Make ridgeline plot of ratios of demographic score to its average
-#' @param ratio.to.us.d.overall named list of a few ratios to plot
+#' @param ratio.to.us.d.overall named list of a few ratios to plot (data.frame)
 #' @param names2plot_friendly names to use for plot - should be same length as named list ratio.to.us.d.overall
 #' 
 plot_ridgeline_ratios <- function(ratio.to.us.d.bysite, names2plot_friendly=NULL){
-  
+  # if (is.null(dim(ratio.to.us.d.bysite))) {
+  #   # seems like only 1 variable as vector ?
+  #   ratio.to.us.d.bysite <- data.frame(Indicator = ratio.to.us.d.bysite)
+  # }
   if (is.null(names2plot_friendly)) {
     names2plot_friendly <- fixcolnames(names(ratio.to.us.d.bysite), oldtype = "r", newtype = "long")
     supershortnames <- gsub(' \\(.*', '', gsub("People of Color","POC", names2plot_friendly))
@@ -27,10 +30,10 @@ ratio.to.us.d.bysite <- ratio.to.us.d.bysite %>%
 
 # ridgeline Plot - need to adjust xlim so max is about a ratio of 3.0 (or less if none are >=3x)
 ggplot(ratio.to.us.d.bysite, aes(x = `value`, y = `indicator`, fill = ..x..)) +
-  geom_density_ridges_gradient(scale = 3, rel_min_height = 0.01) +
-  scale_fill_viridis(name = "Ratio to US Overall Value", option = "C") +
+  ggridges::geom_density_ridges_gradient(scale = 3, rel_min_height = 0.01) +
+  viridis::scale_fill_viridis(name = "Ratio to US Overall Value", option = "C") +
   labs(title = 'Ratio to US Overall for each Demographic Indicator across these Sites') +
-  theme_ipsum() +
+  hrbrthemes::theme_ipsum() +
   theme(
     legend.position = "none",
     panel.spacing = unit(0.1, "lines"),

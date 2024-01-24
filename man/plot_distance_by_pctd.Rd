@@ -6,7 +6,7 @@
 \usage{
 plot_distance_by_pctd(
   s2b = NULL,
-  mysiteid = NULL,
+  sitenum = NULL,
   myvars = c(names_d_count, names_d_subgroups_count)[1],
   dpctvar = paste0("pct", myvars)
 )
@@ -14,7 +14,7 @@ plot_distance_by_pctd(
 \arguments{
 \item{s2b}{output of \code{\link[=getblocksnearby]{getblocksnearby()}}}
 
-\item{mysiteid}{one number that is the siteid to look at in s2b}
+\item{sitenum}{one number that is the unique ID (the row number of original list of points) to look at in s2b}
 
 \item{myvars}{a colname of a population count variable in blockgroupstats indicating which to plot, like "hisp" or "lowinc"
 and only works for one indicator at a time so far.}

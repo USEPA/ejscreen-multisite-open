@@ -8,7 +8,7 @@ test_that('lookup works correctly',{
   expect_equal(val[1], "SC")
 })
 
-# it uses fipsbg_from_anyfips to check if it's valid.
+# it uses fips_bg_from_anyfips to check if it's valid.
 # any warnings should be added there not to this function
 test_that('warns for invalid fips',{
   expect_warning(val <- state_from_fips("452"))

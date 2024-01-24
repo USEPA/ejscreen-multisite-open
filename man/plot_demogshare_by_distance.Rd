@@ -7,7 +7,7 @@
 plot_demogshare_by_distance(
   results_bybg_people,
   demogvarname = names_d[1],
-  siteids = unique(results_bybg_people$siteid),
+  myids = unique(results_bybg_people$ejam_uniq_id),
   show.lowess = F,
   show.lm = TRUE,
   show.line = TRUE,
@@ -19,8 +19,6 @@ plot_demogshare_by_distance(
 
 \item{demogvarname}{}
 
-\item{siteids}{}
-
 \item{show.lowess}{F}
 
 \item{show.lm}{linefit}
@@ -28,6 +26,8 @@ plot_demogshare_by_distance(
 \item{show.line}{linefit}
 
 \item{...}{passed to plot}
+
+\item{ejam_uniq_id}{}
 }
 \description{
 plot_demogshare_by_distance - work in progress

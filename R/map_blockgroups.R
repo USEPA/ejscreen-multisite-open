@@ -22,7 +22,7 @@
 #' @param ... passed to map_shapes_plot() if relevant
 #'
 #' @return leaflet html widget (but if static_not_leaflet=T, 
-#'   returns just shapes_counties_from_countyfips(mydf$siteid)) 
+#'   returns just shapes_counties_from_countyfips(mydf$ejam_uniq_id)) 
 #' @export
 #'
 #' @examples \dontrun{
@@ -39,7 +39,7 @@ mapfastej_counties <- function(mydf, colorvarname = "pctile.Demog.Index.Supp",
   # x <- ejamit(fips = fips_ky, radius = 0)
   # mydf <- x$results_bysite
   
-  mymapdata <- shapes_counties_from_countyfips(mydf$siteid)
+  mymapdata <- shapes_counties_from_countyfips(mydf$ejam_uniq_id)
   
   ## see color-coding of one percentile variable:
   pal <- colorBin(palette = c("yellow","yellow", "orange", "red"), bins = 80:100)
@@ -61,7 +61,7 @@ mapfastej_counties <- function(mydf, colorvarname = "pctile.Demog.Index.Supp",
     myindicators <- c(names(mydf)[1:9], myindicators)
     popindicators <- mydf[ , ..myindicators]
     popindicators <- table_round(popindicators) # decimal places set
-    countynames <- fips2countyname(mydf$siteid)
+    countynames <- fips2countyname(mydf$ejam_uniq_id)
     popindicators <- cbind(County = countynames, popindicators)
     poplabels <- fixcolnames(names(popindicators), 'r', 'long') # friendly labels for indicators
     popup2 <- popup_from_any(popindicators, labels = poplabels)
@@ -119,7 +119,7 @@ map_blockgroups_over_blocks <- function(y) {
 
 #' map_shapes_plot
 #'
-#' @param shapes like from shapes_counties_from_countyfips()
+#' @param shapes like from shapes_counties_from_countyfips(fips_counties_from_state_abbrev("DE"))
 #' @param main title for map
 #' @param ... passed to plot()
 #'
@@ -132,8 +132,8 @@ map_shapes_plot <- function(shapes, main = "Selected Census Units", ...) {
 ########################### # ########################### # ########################### # ########################### # 
 
 #' map_shapes_leaflet
-#'
-#' @param shapes like from shapes_counties_from_countyfips()
+#' Create a new leaflet map from shapefile data
+#' @param shapes like from shapes_counties_from_countyfips(fips_counties_from_state_abbrev("DE"))
 #' @param color passed to leaflet::addPolygons()
 #' @param popup  passed to leaflet::addPolygons()
 #'
@@ -146,23 +146,56 @@ map_shapes_leaflet <- function(shapes, color = "green", popup = shapes$NAME) {
 }
 ########################### # ########################### # ########################### # ########################### # 
 
-#' map_shapes_mapview
+#' map_shapes_leaflet_proxy
+#' update existing leaflet map by adding shapefile data
+#' @param mymap map like from leafletProxy()
+#' @param shapes like from shapes_counties_from_countyfips(fips_counties_from_state_abbrev("DE"))
+#' @param color passed to leaflet::addPolygons()
+#' @param popup passed to leaflet::addPolygons()
 #'
-#' @param shapes like from shapes_counties_from_countyfips()
+#' @return html widget like from leaflet::leafletProxy()
+#' @export
+#'
+map_shapes_leaflet_proxy <- function(mymap, shapes, color = "green", popup = shapes$NAME)  {
+  mymap <- mymap %>% 
+    addPolygons(data = shapes, color = color,  popup = popup) %>% 
+    addTiles() 
+  return(mymap)
+  }
+########################### # ########################### # ########################### # ########################### # 
+
+#' map_shapes_mapview
+#' Use mapview from the mapview package if available
+#' @param shapes like from shapes_counties_from_countyfips(fips_counties_from_state_abbrev("DE"))
 #' @param col.regions passed to mapview() from mapview package
 #' @param map.types  passed to mapview() from mapview package
-#'
+#' @examples \dontrun{
+#'   map_shapes_mapview(
+#'     shapes_counties_from_countyfips(fips_counties_from_state_abbrev("DE"))
+#'   )
+#' }
 #' @export
 #'
 map_shapes_mapview <- function(shapes, col.regions = "green", map.types = "OpenStreetMap") {
-  message("this function is a nice way to map counties etc. but requires the mapview package, which EJAM does not load")
-  mapview(shapes, col.regions = col.regions, map.types = map.types)
+  if (!"package:mapview" %in% search()) {
+    message("this function is a nice way to map counties etc. but requires the mapview package, which EJAM does not load")
+    warning("mapview package would be needed and is not attached - checking if installed")
+    junk <- try(find.package("ggplot2"), silent = TRUE)
+    if (inherits(junk, "try-error")) {
+      stop("mapview package is not available")
+    } else {
+      stop("mapview package appears to be available but not attached. You may want to try loading and attaching it via library() or require()")
+    }
+  } else {
+    mapview(shapes, col.regions = col.regions, map.types = map.types)
+  }
 }
 ########################### # ########################### # ########################### # ########################### # 
 
 #' use API to get boundaries of US Counties to map them
 #'
-#' @param countyfips FIPS codes as 5-character strings (or numbers) in a vector 
+#' @param countyfips FIPS codes as 5-character strings (or numbers) in a vector
+#'   as from fips_counties_from_state_abbrev("DE")
 #' @param outFields can be "*" for all, or can be 
 #'   just some variables like SQMI, POPULATION_2020, etc., or none
 #' @param myservice URL of feature service to get shapes from.

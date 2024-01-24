@@ -42,7 +42,7 @@ is similar to what is done by latlon_from_anything()
 
 except it also uses these functions:
 
-\code{\link[=latlon_from_siteid]{latlon_from_siteid()}}
+\code{\link[=latlon_from_regid]{latlon_from_regid()}}
 
 \code{\link[=latlon_from_programid]{latlon_from_programid()}}   but not  _from_naics() ?
 }

@@ -16,7 +16,6 @@ test_that('naics_from_any URL and scrape lookup works', {
                data.frame("code" = "211120", "name" = "Crude Petroleum Extraction"))
   })
 
-
 # there is no warning when a NAICS has subcategories that are not being output
 # while it works as detailed, this lack of warning could confuse some users who don't know to enter children = TRUE
 # perhaps default children = TRUE or provide some type of message 
@@ -27,34 +26,32 @@ test_that('results of subcategories only output when children = TRUE',{
   expect_no_warning(naics_from_any(212221)) # "gold mining"
   expect_no_warning(naics_from_any(212222)) # "silver mining"
   
-  x <-naics_from_any(21222, children = TRUE) # 3 (gold, silver, & silver+gold)
+  x <- naics_from_any(21222, children = TRUE) # 3 (gold, silver, & silver+gold)
   
   expect_equal(length(which(grepl(212221,x$n6))), nrow(naics_from_any(212221))) # 1 gold mining naics
   expect_equal(length(which(grepl(212222,x$n6))), nrow(naics_from_any(212222))) # 1 silver mining naics
   expect_equal(nrow(naics_from_any(21222)), sum(!grepl(212221,x$n6 ) & !grepl(212222, x$n6))) # 1 gold and silver mining
-  
 })
 
 # string queries I believe are based on longest common string. For example "gold ore"
 # finds NAICS 21222 & 212221 "gold ore mining" but "gold mining" returns empty
 test_that('string queries function', {
-  expect_no_warning(val <- naics_from_any("gold ore"))
+  expect_no_warning({val <- naics_from_any("gold ore")})
   expect_true(nrow(val) > 0)
-  expect_no_warning(val <- naics_from_any("gold mining"))
+  expect_no_warning({val <- naics_from_any("gold mining")})
   expect_true(nrow(val) > 0)
 })
 
 test_that('list of queries returns joined results', {
-  expect_no_warning(x <- naics_from_any(c("gold ore",  "silver ore")))
-  expect_no_warning( y <- naics_from_any("gold ore"))
-  expect_no_warning( z <- naics_from_any("silver ore"))
+  expect_no_warning({x <- naics_from_any(c("gold ore",  "silver ore"))})
+  expect_no_warning({ y <- naics_from_any("gold ore")})
+  expect_no_warning({ z <- naics_from_any("silver ore")})
   expect_equal(x %>% arrange(code), full_join(y,z) %>% arrange(code))
-  
 })
 
 test_that('list of queries can mix numbers and strings', {
-  expect_no_warning(x <- naics_from_any(c("212221",  "silver ore")))
-  expect_no_warning(y <- naics_from_any(c(212221,  "silver ore")))
+  expect_no_warning({x <- naics_from_any(c("212221",  "silver ore"))})
+  expect_no_warning({y <- naics_from_any(c(212221,  "silver ore"))})
   expect_equal(x,y)
 })
 
@@ -68,7 +65,6 @@ test_that('case of query text only matters, if ignore.case = FALSE', {
                nrow(naics_from_any(c( "Silver Ore"), ignore.case = FALSE)))
   expect_false(nrow(naics_from_any(c("silver ore"), ignore.case = FALSE)) ==
                  nrow(naics_from_any(c("Silver Ore"), ignore.case = FALSE)))
-  
 })
 
 # test input fixed; default = FALSE
@@ -78,8 +74,8 @@ test_that('case of query text only matters, if ignore.case = FALSE', {
 # by setting fixed = TRUE and using capital letters in the query, ignore.case = TRUE should be ignored and the string will be searched for exactly
 # this gives a warning
 test_that('fixed = TRUE makes case matter, even if ignore.case = TRUE',{
-  expect_warning(x <- naics_from_any(c("Silver Ore"), fixed = TRUE))
-  expect_warning(y <- naics_from_any(c("silver ore"), fixed = TRUE))
+  expect_warning({x <- naics_from_any(c("Silver Ore"), fixed = TRUE)})
+  expect_warning({y <- naics_from_any(c("silver ore"), fixed = TRUE)})
   
   expect_equal(nrow(y), 0)
   expect_equal(nrow(x), 

@@ -29,6 +29,12 @@ unshared <- function(x,y) {setdiff(union(x,y),intersect(x,y))}
 #' @export
 #'
 dupeRfiles <- function(folder1 = '../EJAM/R', folder2 = './R') {
+  if (!dir.exists(folder1)) {
+    #try to interpret as name of source package without path
+    # assuming wd is one pkg and other is in parallel place
+    folder1 <- paste0("../", folder1, "/R")
+    if (!dir.exists(folder1)) {stop('folder1 does not exist nor does ', folder1)}
+  }
   cat("Comparing .R files in ", folder1, ", to the files in ", folder2, "\n\n")
   docs1 <- list.files(folder1)
   docs2 <- list.files(folder2)

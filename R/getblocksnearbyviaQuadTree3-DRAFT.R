@@ -19,7 +19,7 @@
 #'   inside the circular buffer more accurately and more quickly than
 #'   areal apportionment of block groups would provide. 
 #'   
-#' @param sitepoints data.table with columns siteid, lat, lon giving point locations of sites or facilities around which are circular buffers
+#' @param sitepoints data.table with columns ejam_uniq_id, lat, lon giving point locations of sites or facilities around which are circular buffers
 #' @param radius in miles, defining circular buffer around site point 
 #' @param maxradius miles distance (max distance to check if not even 1 block point is within radius)
 #' @param avoidorphans logical Whether to avoid case where no block points are within radius, 
@@ -48,7 +48,7 @@ getblocksnearbyviaQuadTree3 <- function(sitepoints, radius=3, maxradius=31.07,
   }
   if (!data.table::is.data.table(sitepoints)) {data.table::setDT(sitepoints)}
   
-  if (!('siteid' %in% names(sitepoints))) {sitepoints$siteid <- seq.int(length.out = NROW(sitepoints))}
+  if (!('ejam_uniq_id' %in% names(sitepoints))) {sitepoints$ejam_uniq_id <- seq.int(length.out = NROW(sitepoints))}
   
   #pass in a list of uniques and the surface radius distance
   
@@ -80,7 +80,7 @@ getblocksnearbyviaQuadTree3 <- function(sitepoints, radius=3, maxradius=31.07,
   
   # allocate memory for result list
   nRowsDf <- NROW(sitepoints)
-  res <- vector('list', nRowsDf)  # list of data.tables   cols will be blockid, distance, siteid    
+  res <- vector('list', nRowsDf)  # list of data.tables   cols will be blockid, distance, ejam_uniq_id    
   
   # **** getblocksnearbyviaQuadTree2.R is different here
   
@@ -124,11 +124,11 @@ getblocksnearbyviaQuadTree3 <- function(sitepoints, radius=3, maxradius=31.07,
     
     #clean up fields
     tmp[ , distance := distances[ , c(1)]]
-    tmp[ , siteid := sitepoints[i, .(siteid)]]  # the similar clustered function differs, why?
+    tmp[ , ejam_uniq_id := sitepoints[i, .(ejam_uniq_id)]]  # the similar clustered function differs, why?
     
     #filter actual distance
     ########################################################################### ## ** SLOW STEP TO OPTIMIZE 
-    res[[i]] <- tmp[distance <= truedistance, .(blockid, distance, siteid)]  # ** SLOW STEP TO OPTIMIZE  #  1 OF SLOWEST LINES  
+    res[[i]] <- tmp[distance <= truedistance, .(blockid, distance, ejam_uniq_id)]  # ** SLOW STEP TO OPTIMIZE  #  1 OF SLOWEST LINES  
     
     # hold your horses, what if there are no blocks and you are supposed to avoid that
     if ( avoidorphans && (nrow(res[[i]])) == 0) { # rarely get here so not critical to optimize
@@ -145,11 +145,11 @@ getblocksnearbyviaQuadTree3 <- function(sitepoints, radius=3, maxradius=31.07,
       
       #clean up fields
       tmp[ , distance := distances[ , c(1)]]
-      tmp[ , siteid := sitepoints[i, .(siteid)]]
+      tmp[ , ejam_uniq_id := sitepoints[i, .(ejam_uniq_id)]]
       
       #filter to max distance
       truemaxdistance <- distance_via_surfacedistance(maxradius)
-      res[[i]] <- tmp[distance <= truemaxdistance, .(blockid, distance, siteid)]
+      res[[i]] <- tmp[distance <= truemaxdistance, .(blockid, distance, ejam_uniq_id)]
       # saving results as a list of tables to rbind after loop; old code did rbind for each table, inside loop 
     } else {
       #?
@@ -158,7 +158,7 @@ getblocksnearbyviaQuadTree3 <- function(sitepoints, radius=3, maxradius=31.07,
   }
   result <- data.table::rbindlist(res)  
   
-  data.table::setkey(result, blockid, siteid, distance)
+  data.table::setkey(result, blockid, ejam_uniq_id, distance)
   # print(summary_of_blockcount(result))
   
   return(result)

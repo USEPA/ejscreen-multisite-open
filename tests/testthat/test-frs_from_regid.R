@@ -1,10 +1,10 @@
 ## unit tests for EJAM::frs_from_regid
 ## Author: Sara Sokolinski
 
-# function is in the script frs_from_siteid.R
+# function is in the file frs_from_xyz.R
 # not much to test here
 
-# does it work with a propoer reg id
+# does it work with a proper reg id
 test_that('lookup works correctly',{
   expect_no_warning(val <- frs_from_regid("110000307695"))
 })

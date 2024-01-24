@@ -8,10 +8,19 @@
 #'   of interest, such as "FFFF" - see for example, 
 #'   <https://www.ecfr.gov/current/title-40/part-63/subpart-FFFF>
 #' @param include_if_no_latlon logical - many in the database lack lat lon values but have a MACT code
-#' @return a table of lat, lon, subpart, etc. for US EPA FRS sites with that MACT code
+#' @return a data.table with columns named 
+#' 
+#' programid, subpart, title, lat, lon, REGISTRY_ID, program 
+#' 
+#'   for US EPA FRS sites with that MACT code.
+#'   Or NA if none found. 
+#' @examples 
+#'   mact_table
+#'   latlon_from_mactsubpart("OOOO", include_if_no_latlon = FALSE) # default
+#'   latlon_from_mactsubpart("OOOO", include_if_no_latlon = TRUE)
 #' @export
 #'
-latlon_from_mactsubpart <- function(subpart, include_if_no_latlon = FALSE) {
+latlon_from_mactsubpart <- function(subpart = "JJJ", include_if_no_latlon = FALSE) {
   # https://www.ecfr.gov/reader-aids/ecfr-developer-resources
   #  https://www.ecfr.gov/current/title-40/part-63/subpart-FFFF
   #  https://www.ecfr.gov/current/title-40/chapter-I/subchapter-C/part-63/subpart-FFFF
@@ -20,22 +29,25 @@ latlon_from_mactsubpart <- function(subpart, include_if_no_latlon = FALSE) {
   
   # see e.g.,  https://www.govinfo.gov/content/pkg/FR-2012-09-19/pdf/2012-20642.pdf#page=1 
   #   which showed NAICS 332813 (and 3311 and 3312) for MACT subpart N (and subpart C) 
-     # as being MACT codes 1607, 1610, 1615 (and 0310).
+  # as being MACT codes 1607, 1610, 1615 (and 0310).
   # Chromium Electroplating NESHAP, Subpart N  
   #   Chromium Anodizing Tanks .........................................332813 1607
   #   Decorative Chromium Electroplating ............................   332813 1610
   #   Hard Chromium Electroplating .....................................332813 1615
   # Steel Pickling—HCl Process Facilities And Hydrochloric Acid Regeneration Plants NESHAP, Subpart CCC ..... 3311, 3312  0310
-
-    # stop("latlon_from_mactsubpart() is not yet available")
+  
+  # stop("latlon_from_mactsubpart() is not yet available")
   
   if (!exists("frs_by_mact")) dataload_from_pins("frs_by_mact")
-  
-  mact_out = frs_by_mact[subpart == subpart, ]
-  if (include_if_no_latlon) {
-    return(mact_out)
-  } else {
-    mact_out = mact_out[!is.na(lat) & !is.na(lon),]
-    mact_out
+  query <- subpart
+  if (missing(subpart) || !is.atomic(query) || length(query) != 1 || class(query) !=  "character") {
+    warning("subpart must be a single character string like 'AAAA' ")
+    query <- ""
+    }
+  query <- toupper(query)
+  mact_out = frs_by_mact[subpart == query, ] # could use %in% not == but groups are already large so not sure it makes sense to allow multiple
+  if (!include_if_no_latlon) {
+    mact_out = mact_out[!is.na(lat) & !is.na(lon), ]
   }
+  if (NROW(mact_out) == 0) {return(NA)} else {return(mact_out)}
 }

@@ -7,7 +7,7 @@
 map_shapes_plot(shapes, main = "Selected Census Units", ...)
 }
 \arguments{
-\item{shapes}{like from shapes_counties_from_countyfips()}
+\item{shapes}{like from shapes_counties_from_countyfips(fips_counties_from_state_abbrev("DE"))}
 
 \item{main}{title for map}
 

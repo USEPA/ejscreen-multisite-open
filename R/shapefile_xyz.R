@@ -122,7 +122,7 @@ shapefile_from_filepaths <- function(filepaths = NULL, cleanit = TRUE, crs = 426
     if (cleanit) {
       shpfilepath <- filepaths[grepl(".*shp$", filepaths, ignore.case = TRUE)]  # one (not more) files that end in .shp 
       if (length(shpfilepath) > 1) {warning("using only ", shpfilepath[1], ", the first of more than one .shp file found"); shpfilepath <- shpfilepath[1] }
-      # note this will add  siteid =  row_number()  
+      # note this will add  ejam_uniq_id =  row_number() 
       return(
         shapefile_clean(
           sf::read_sf(shpfilepath), # , crs = crs  should be left out here ?
@@ -135,7 +135,7 @@ shapefile_from_filepaths <- function(filepaths = NULL, cleanit = TRUE, crs = 426
       shpfilepath <- filepaths[grepl(".*shp$", filepaths, ignore.case = TRUE)] # one or more files that end in .shp 
       shp <- sf::read_sf(shpfilepath)  # , crs = crs  should be left out here ?
       return(
-        dplyr::mutate(shp, siteid = dplyr::row_number()) # number them
+        dplyr::mutate(shp, ejam_uniq_id = dplyr::row_number()) # number them
       )
     }
   } else {
@@ -157,7 +157,7 @@ shapefile_from_filepaths <- function(filepaths = NULL, cleanit = TRUE, crs = 426
 #' @seealso [shapefile_from_folder()]
 shapefile_clean <- function(shp, crs = 4269) {
   if (nrow(shp) > 0) {
-    shp <- dplyr::mutate(shp, siteid = dplyr::row_number()) # number them before dropping invalid ones, 
+    shp <- dplyr::mutate(shp, ejam_uniq_id = dplyr::row_number()) # number them before dropping invalid ones, 
     #   so that original list can be mapped to results list more easily
     shp <- shp[sf::st_is_valid(shp),]          # determines valid shapes, to use those and drop the others
     shp <- sf::st_transform(shp, crs = crs)  # NEED TO DOCUMENT THE ASSUMPTION IT USES THIS CRS ***
@@ -200,7 +200,7 @@ shapefile_from_sitepoints <- function(sitepoints, crs = 4269) {
 #' @param crs used in st_transform()  default is crs = 4269 or Geodetic CRS NAD83 
 #' @param ... passed to st_buffer()
 #' @import sf
-#' @seealso [get_blockpoints_in_shape()] [shapefile_from_sitepoints()] [shape_buffered_from_shapefile_points]
+#' @seealso [get_blockpoints_in_shape()] [shapefile_from_sitepoints()] [shape_buffered_from_shapefile_points()]
 #' @export
 #' 
 shape_buffered_from_shapefile <- function(shapefile, radius.miles, crs = 4269, ...) {
@@ -221,7 +221,7 @@ shape_buffered_from_shapefile <- function(shapefile, radius.miles, crs = 4269, .
 #' @param crs used in st_transform()  default is crs = 4269 or Geodetic CRS NAD83 
 #' @param ... passed to st_buffer()
 #' @import sf
-#' @seealso [get_blockpoints_in_shape()] [shapefile_from_sitepoints()] [shape_buffered_from_shapefile_points]
+#' @seealso [get_blockpoints_in_shape()] [shapefile_from_sitepoints()] [shape_buffered_from_shapefile_points()]
 #' @export
 #' 
 shape_buffered_from_shapefile_points <- function(shapefile_points, radius.miles, crs = 4269, ...) {
