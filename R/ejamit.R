@@ -2,7 +2,7 @@
 #' @description This is the main function in EJAM for users who want to use EJAM from RStudio.
 #'   It does essentially what the webapp does to analyze/summarize near a set of points.
 #'   See help("EJAM")
-#' @param sitepoints data.table with columns siteid, lat, lon giving point locations of sites or facilities around which are circular buffers
+#' @param sitepoints data.table with columns lat, lon giving point locations of sites or facilities around which are circular buffers
 #' @param radius in miles, defining circular buffer around a site point
 #' @param maxradius miles distance (max distance to check if not even 1 block point is within radius)
 #' @param avoidorphans logical If TRUE, then where not even 1 BLOCK internal point is within radius of a SITE,
@@ -81,7 +81,7 @@
 #'   out <- ejamit(testsites, radius)  
 #'   # out <- ejamit("myfile.xlsx", 3.1)  
 #'   
-#'   # out2 <- ejscreenit(testpoints_05)
+#'   # out2 <- ejscreenit(testpoints_5)
 #'   
 #'   # View results overall
 #'   round(t(out$results_overall), 3.1)
@@ -95,7 +95,7 @@
 #'   
 #'   # view results at a single site
 #'   t(out$results_bysite[1, ])
-#'   t(out$results_bysite[out$results_bysite$siteid == 2, ])
+#'   t(out$results_bysite[out$results_bysite$ejam_uniq_id == 2, ])
 #'   
 #'   
 #'   # if doing just 1st step of ejamit() 
@@ -202,7 +202,7 @@ ejamit <- function(sitepoints,
       out <- suppressWarnings(
         doaggregate(
           sites2blocks = mysites2blocks,
-          # sites2states_or_latlon = unique(mysites2blocks[ , .(siteid, lat, lon)]),
+          # sites2states_or_latlon = unique(mysites2blocks[ , .(ejam_uniq_id, lat, lon)]),
           radius = radius,  # use artificially large value when analyzing by fips 
           countcols = countcols,
           popmeancols = popmeancols,
@@ -277,7 +277,7 @@ ejamit <- function(sitepoints,
       out <- suppressWarnings(
         doaggregate(
           sites2blocks = mysites2blocks,
-          sites2states_or_latlon = sitepoints, # sites2states_or_latlon = unique(x[ , .(siteid, lat, lon)]))
+          sites2states_or_latlon = sitepoints, # sites2states_or_latlon = unique(x[ , .(ejam_uniq_id, lat, lon)]))
           radius = radius,
           countcols = countcols,
           popmeancols = popmeancols,

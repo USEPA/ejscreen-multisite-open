@@ -27,7 +27,7 @@
 #'  This function is based largely on a practical algorithm that is accurate to within 0.01 miles
 #'   the vast majority of the time for a radius of 1 to 3 miles.
 #'  
-#' @param s2b data.table of siteid, distance, etc. that is the output of getblocksnearby()
+#' @param s2b data.table of ejam_uniq_id, distance, etc. that is the output of getblocksnearby()
 #' @param decimalsreported parameter to fine tune estimates - generally should not be changed
 #' @param decimalsforinferring  parameter to fine tune estimates - generally should not be changed
 #' @param pctile_of_sites  parameter to fine tune estimates - generally should not be changed
@@ -50,10 +50,10 @@ if (NROW(s2b) == 1) {nth_furthest_block <- 1} # or it will return NA since there
         distance[nth_furthest_block],   # use distance to 2d furthest block to avoid an outlier, e.g. 
         decimalsforinferring           # round here so that top few distances are nearly identical to requested radius, at most sites (where block is not too large)
       )
-    ), by = "siteid"] 
+    ), by = "ejam_uniq_id"] 
     
     # nth_longest_distance = round(distance[nth_furthest_block], decimalsforinferring)
-    # ), by="siteid"][ , nth_longest_distance],
+    # ), by="ejam_uniq_id"][ , nth_longest_distance],
    
    guesstimate <- quantile(x$distance, probs = pctile_of_sites, na.rm = TRUE)
                  # to avoid small fraction of sites where multiple distances are > actual requested radius

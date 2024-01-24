@@ -2,21 +2,21 @@
 % Please edit documentation in R/ST_by_site_from_sites2blocks.R
 \name{ST_by_site_from_sites2blocks}
 \alias{ST_by_site_from_sites2blocks}
-\title{ST_by_site_from_sites2blocks - Get State that each site is in, from a table of siteid, blockid, distance}
+\title{ST_by_site_from_sites2blocks - Get State that each site is in, from a table of ejam_uniq_id, blockid, distance}
 \usage{
 ST_by_site_from_sites2blocks(sites2blocks)
 }
 \arguments{
 \item{sites2blocks}{data.table or data.frame, like \link{testoutput_getblocksnearby_10pts_1miles},
-from \code{\link[=getblocksnearby]{getblocksnearby()}} that has columns siteid and blockid and distance}
+from \code{\link[=getblocksnearby]{getblocksnearby()}} that has columns ejam_uniq_id and blockid and distance}
 }
 \value{
-data.table with columns  siteid, ST
+data.table with columns  ejam_uniq_id, ST
 }
 \description{
 Find the 2-character State abbreviation for each site. This is for when you need to know
 the state each site is in, to be able to report state percentiles, but you do not have
-the original list of siteid lat/lon or State info. This can infer the State
+the original list of ejam_uniq_id lat/lon or State info. This can infer the State
 each site is located in, based on the state of the nearest block (and its parent blockgroup).
 }
 \examples{

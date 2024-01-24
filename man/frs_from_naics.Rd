@@ -25,10 +25,10 @@ frs_from_naics - Use NAICS code or industry title text search to see FRS Facilit
   naics_from_name("silver")
   naics_from_any(212222 )
   frs_from_naics(21222)
-  siteid_from_naics(21222)
+  regid_from_naics(21222)
   latlon_from_naics(21222)
   
 }
 \seealso{
-\code{\link[=siteid_from_naics]{siteid_from_naics()}} \code{\link[=naics_from_any]{naics_from_any()}}
+\code{\link[=regid_from_naics]{regid_from_naics()}} \code{\link[=naics_from_any]{naics_from_any()}}
 }

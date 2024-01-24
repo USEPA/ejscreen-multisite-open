@@ -1,22 +1,48 @@
-#' datapack - See info about the data sets in one or more packages - internal utility function
-#' Wrapper for data() and gets memory size of objects and silently returns a data.frame
-#' @details do not rely on this much - it was a quick utility. it also creates and leaves in global envt
-#'   objects in packages 
+#' datapack - utility - See names and size of data sets in package(s) - internal utility function
+#' Wrapper for data() and can get memory size of objects
+#' @details do not rely on this much - it was a quick utility. 
+#'   It may create and leave objects in global envt - not careful about that.
 #' @param pkg a character vector giving the package(s) to look in for data sets
 #' @param len Only affects what is printed to console - specifies the
 #'   number of characters to limit Title to, making it easier to see in the console.
-#' @param sortbysize if TRUE, sort by increasing size of object, within each package, not alpha.
-#' @return data.frame with Item and Title as columns
+#' @param sortbysize if TRUE (and simple=F), 
+#'   sort by increasing size of object, within each package, not alpha.
+#' @param simple FALSE to get object sizes, etc., or
+#'    TRUE to just get names in each package, like 
+#'    data(package = "EJAM")$results[, c("Package", 'Item')]
+#' @return If simple = TRUE, data.frame with colnames Package and Item. 
+#' 
+#'   If simple = FALSE, data.frame with colnames Package, Item, size, Title.Short
 #' @examples 
-#'  datapack("datasets")
-#'  datapack("MASS")
-#'  y = datapack("EJAM")
-#'  x = datapack(c("EJAM", "EJAMejscreenapi", "EJAMbatch.summarizer"))
-#'  x[order(x$Package, x$Item), 1:3]
-#'  tail(x[ , 1:3], 20)
+#'  # see just a vector of the data object names
+#'  data(package = "EJAM")$results[, 'Item']
+#'  
+#'  # not actually sorted within each pkg by default
+#'  datapack()
+#'  # not actually sorted by default
+#'  datapack("EJAM")$Item
+#'  ##datapack("MASS", simple=T)
+#'  
+#'  # sorted by size if simple=F
+#'  ##datapack("datasets", simple=F)
+#'  x <- datapack(simple = F)
+#'  # sorted by size already, to see largest ones among all these pkgs:
+#'  tail(x[, 1:3], 20)
+#'  
+#'  # sorted alphabetically within each pkg
+#'  x[order(x$Package, x$Item), 1:2]
+#'  # sorted alphabetically across all the pkgs
+#'  x[order(x$Item), 1:2]
+#'  
 #' @export
 #'
-datapack <- function(pkg=ejampackages, len=30, sortbysize=TRUE) {
+datapack <- function(pkg=ejampackages, len=30, sortbysize=TRUE, simple = TRUE) {
+  
+  if (simple) {
+    cat('Get more info with datapack(simple = FALSE)\n\n')
+    out <- data.frame(data(package = pkg)$results[, c('Package', 'Item')])
+    return(out)
+  }
   
   n <- length(pkg)
   ok <- rep(FALSE, n)
@@ -33,7 +59,7 @@ datapack <- function(pkg=ejampackages, len=30, sortbysize=TRUE) {
     wasnotherebefore <- setdiff(.packages(), were_attached)
     for (this in wasnotherebefore) {
       # for (this in pkg[!(pkg %in% were_attached)]) {
-      detach(paste0("package:", this), unload  = FALSE, force=TRUE, character.only = TRUE)
+      detach(paste0("package:", this), unload  = FALSE, force = TRUE, character.only = TRUE)
     }
     wasnotloadedbefore <- setdiff(loadedNamespaces(), were_loaded)
     for (this in wasnotloadedbefore) {
@@ -60,14 +86,14 @@ datapack <- function(pkg=ejampackages, len=30, sortbysize=TRUE) {
       #objects(envir = as.environment( paste0("package:", pkg) )), 
       zrows$Item,
       function(x) {
-
-           # for each item in any package: 
+        
+        # for each item in any package: 
         thispkg <- zrows$Package[match(x, zrows$Item)]
         if (!exists(x, envir = as.environment( paste0("package:", thispkg) ) )) {
           cat('cannot find ', x, ' in ', thispkg, ' via exists() so trying to use data() \n')
           #return(0)
           data(x, envir = as.environment( paste0("package:", thispkg) ) )
-          } # in case supposedly data but not lazy loaded per DESCRIPTION
+        } # in case supposedly data but not lazy loaded per DESCRIPTION
         if (!exists(x,envir = as.environment( paste0("package:", thispkg) ) )) {
           cat('tried loading  ', x,' via data() but failed \n')
           subpart = gsub(' .*', '', x)
@@ -76,7 +102,7 @@ datapack <- function(pkg=ejampackages, len=30, sortbysize=TRUE) {
           data(bigpart,  envir = as.environment( paste0("package:", thispkg) ))
           x = subpart
           #return(0)
-          }
+        }
         format(object.size(
           try(get(x, envir = as.environment( paste0("package:", thispkg) ) ))),
           # maybe since already attached do not need to do all this to specify where it is
@@ -84,11 +110,13 @@ datapack <- function(pkg=ejampackages, len=30, sortbysize=TRUE) {
       }
     )
     cat('\n\n')
-     
+    
     
     zrows <- zrows[ , c("Package", "Item", "size", "Title")]
+    sizenumeric =   as.numeric(gsub("(.*) MB", "\\1", zrows$size))
+    zrows$sizen <- sizenumeric
+    
     if (sortbysize) {
-      sizenumeric =   as.numeric(gsub("(.*) MB", "\\1", zrows$size))  
       zrows <- zrows[order(sizenumeric), ]
       rownames(zrows) <- NULL
     }
@@ -107,12 +135,12 @@ datapack <- function(pkg=ejampackages, len=30, sortbysize=TRUE) {
       zrows_narrow <- (zrows_narrow[sizenumeric >= 1, ])
       rounding = 0
     }
-      sizenumeric =   as.numeric(gsub("(.*) MB", "\\1", zrows_narrow$size))
-      zrows_narrow$size <-  paste0(round(sizenumeric, rounding), ' MB')
-      print(zrows_narrow)
- 
+    sizenumeric =   as.numeric(gsub("(.*) MB", "\\1", zrows_narrow$size))
+    zrows_narrow$size <-  paste0(round(sizenumeric, rounding), ' MB')
+    print(zrows_narrow)
+    
     ############################## #
-
+    
     invisible(zrows)
     
   } else {

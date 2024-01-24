@@ -2,21 +2,23 @@
 % Please edit documentation in R/frs_from_xyz.R
 \name{frs_from_regid}
 \alias{frs_from_regid}
-\alias{frs_from_siteid()}
-\title{frs_from_siteid - Use registry ID to see FRS Facility Registry Service data on those EPA-regulated sites}
+\title{frs_from_regid - Use registry ID to see FRS Facility Registry Service data on those EPA-regulated sites}
 \usage{
-frs_from_regid(siteid)
+frs_from_regid(regid)
 }
 \arguments{
-\item{siteid}{vector of one or more EPA Registry ID codes used by FRS}
+\item{regid}{vector of one or more EPA Registry ID codes used by FRS}
 }
 \value{
 relevant rows of the data.table called frs, which has column names that are
 "lat" "lon" "REGISTRY_ID" "PRIMARY_NAME" "NAICS" "PGM_SYS_ACRNMS"
 }
 \description{
-frs_from_siteid - Use registry ID to see FRS Facility Registry Service data on those EPA-regulated sites
+frs_from_regid - Use registry ID to see FRS Facility Registry Service data on those EPA-regulated sites
 }
 \examples{
-frs_from_siteid(testids_registry_id)
+  frs_from_regid(testids_registry_id)
+  frs_from_regid(110000307695)
+  frs_from_regid("110000307695")
+  
 }

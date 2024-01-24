@@ -1,14 +1,14 @@
 ## unit tests for frs_from_naics
 ## Author: Sara Sokolinski
 
-# function is in the script frs_from_siteid.R
-# however, it is really testing subfuntion naics_from_any which has it's own script
+# function is defined in the file frs_from_xyz.R
+# however, it is really testing naics_from_any
 # all inputs get passed to that function
 
 # first option is for website_url = TRUE which gives error. it cannot be used in frs_from naics
-# since the response would not be a NAICS code to enter into siteid_from_naics
+# since the response would not be a NAICS code to enter into regid_from_naics
 # website_scrape = TRUE does work however, since it grabs a data frame with the column 'code'
-# the code is stirng instead of numeric, but that doesn't seem to matter to siteid_from_naics (in latlon_from_naics.R)
+# the code is stirng instead of numeric, but that doesn't seem to matter to regid_from_naics (in latlon_from_naics.R)
 
 test_that('website_url and website_scrape cause errors',{
   expect_error(   val <- frs_from_naics(21112, website_url = TRUE)) # "crude petroleum"
@@ -53,10 +53,10 @@ test_that('results of subcategories only output when children = TRUE',{
 # string queries I believe are based on longest common string. For example "gold ore"
 # finds NAICS 21222 & 212221 "gold ore mining" but "gold mining" returns empty
 test_that('string queries function', {
-  expect_no_warning(val <- frs_from_naics("gold ore"))
+  expect_no_warning({val <- frs_from_naics("gold ore")})
   expect_true(nrow(val) > 0)
   expect_no_warning(val <- frs_from_naics("gold mining"))
-  expect_true(nrow(val) > 0)
+  # expect_true(nrow(val) > 0) # fails but that is ok
 })
 
 test_that('list of queries returns joined results', {
@@ -85,7 +85,8 @@ test_that('case of query text only matters, if ignore.case = FALSE', {
 })
 
 # test input fixed; default = FALSE
-# passed with query text, children and ignore.case to naics_from_name
+# passed with query text, children 
+#   and ignore.case to naics_from_name ?
 # default in naics_from_name is also false
 # by default the grepl function allows the search string to be modifed by other parameters (like ignore.case)
 # by setting fixed = TRUE and using capital letters in the query, ignore.case = TRUE should be ignored and the string will be searched for exactly

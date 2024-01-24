@@ -1,12 +1,97 @@
 
 #  EJAM/data-raw/datacreate_names_of_indicators.R
 
-# *** This was updated for the 2023 ver 2.2 
-# and to be reconciled with or replaced with map_headernames approach.
-## see EJAMejscreenapi::map_headernames$varlist which now has most or all of these in a table 
-## see   EJAMejscreenapi/data-raw/update_to_ejscreenv2.2.R
+# also see  EJAM/data-raw/datacreate_names_pct_as_fraction_.R
 
-# - friendly names differ somewhat
+########################################################################################################## #
+# ***
+#   to be reconciled with or replaced with map_headernames approach.
+## see EJAMejscreenapi::map_headernames$varlist which now has most or all of these in a table  
+
+########################################################################################################## #
+########################################################################################################## #
+if ( 1 == 0 ) {
+#  friendly names differ -  script to compare them: 
+
+vvv <- function(vlist = "names_r_all") {
+  vars =  get(vlist) # same as names_d
+  fr = paste0(vlist, "_friendly")
+  if (exists(fr)) {
+    vars_f = get(fr) # same as  names_d_friendly  
+  } else {
+    vars_f = rep(NA, length(vlist))
+  }
+  # print(
+  data.frame(
+    vlist = vlist,
+    names_x = vars,
+    maphead.names_friendly = fixcolnames(vars, 'r', 'names_friendly'),
+    shortlabel             = fixcolnames(vars, 'r', 'shortlabel'),
+    long                   = fixcolnames(vars, 'r', 'long'),
+    names_x_friendly = vars_f
+  )
+  # )
+}
+lists_to_check <- paste0("names_", grep("friendly|these|all_r|wts|subgroups_alone|subgroups_nh", invert = T, names(namez), value = T))
+# vvv("names_d")
+# vvv(lists_to_check[1])
+out <- list()
+for (i in 1:length(lists_to_check)) {
+  out[[i]] <- vvv(lists_to_check[i])
+}
+out <- data.table::rbindlist(out)
+# print(out)
+
+# confirmed that 2 are identical but others differ:
+## shortlabel == out$maphead.names_friendly 
+# versus  long,  
+# versus  names_x_friendly 
+
+# the same:
+# table(out$shortlabel == out$maphead.names_friendly, useNA = "always")  # 458 TRUE
+
+# not matching:
+# table(out$shortlabel == out$long,               useNA = "always")  # F (but True 69 times)
+# table(out$shortlabel == out$names_x_friendly,   useNA = "always")  # F (or na 122 times)
+# table(out$long       == out$names_x_friendly,   useNA = "always")  #  F (or na 122 times, or 9 times true)
+
+# which are shortest?
+# table(nchar(out$shortlabel) > nchar(out$long), useNA = 'always') # long is almost always longer
+# table(nchar(out$shortlabel) > nchar(out$names_x_friendly), useNA = 'always') # in 63 indicators, names_x_friendly is shorter/better,
+# so we should id those and use the shorter name, from names_x_friendly for those 63 or so.
+# which lists of names are those 63 in?
+# out[nchar(out$shortlabel) > nchar(out$names_x_friendly), 
+#     .( vlist, names_x, shortlabel, names_x_friendly) ] 
+# See which lists of names for which we should replace shortlabel with the shorter one that is in 
+# actually, just do this:
+# for raw EJ scores: fix names_ej rows, $shortlabel column, to say "(raw)" at the end not "EJ Index", and prefix with "EJ: "
+# life expectancy: OK as is. shortlabel is good enough. 
+# "Toxic Releases to Air" is long but ok, for names_ej_pctile and related, and names_ej etc.
+# "Air toxics " is long but ok.
+
+# bottom line is we can leave map_headernames alone and use shortlabel column for plots, etc.
+
+# should we make identical the names_x_friendly and the maphead.names_friendly??
+# when do they disagree? 
+out[maphead.names_friendly != names_x_friendly , .(vlist, names_x_friendly, maphead.names_friendly)]
+out[maphead.names_friendly != names_x_friendly , .(vlist, names_x_friendly, maphead.names_friendly )][1:100, ]
+
+# i think maphead.names_friendly in xlsx should be replaced to be identical to names_x_friendly and get those 
+# from long, since map_headernames$longname_tableheader is the longest and most accurate full description.
+# So just keep the very short name in shortlabel and the very long one in longnames_tableheader,
+# but change maphead.names_friendly, names_x_friendly by 
+#copying the map_headernames$longname_tableheader column and 
+ #pasting it onto (replacing) map_headernames$names_friendly column
+# AND manually replace in EJAM/data-raw/datacreate_names_of_indicators.R,
+#  all the names_xyz_friendly lists with what is in map_headernames$longname_tableheader somehow.
+
+# see out df above  to see the careful names from this file and namez etc.
+## and maybe put them into mapheadernames longnames and namesfriendly columns where better?
+
+}
+########################################################################################################## #
+########################################################################################################## #
+
 
 # ** change when ready to switch to using subgroups_alone like white alone not nonhispanic white alone:
 
@@ -119,33 +204,44 @@ names_d <- c(
 )
 
 # friendly raw percents
-names_d_friendly <- c(
-  "Demog.Ind.",   "Suppl Demog Index", 
-  
-  "% Low-inc.", 
-  "% Limited English",
-  "% Unemployed",
-  "% < High School", 
-  "Low life expectancy",    # note this is not a percent, actually?
-  "% < age 5", "% > age 64", 
-  
-  "% People of Color"
+# > dput(fixcolnames(names_d, 'r', 'long'))
+names_d_friendly <-  c("Demographic Index", "Supplemental Demographic Index", "% Low Income", 
+  "% in limited English-speaking Households", "% Unemployed", "% with Less Than High School Education", 
+  "Low life expectancy", "% under Age 5", "% over Age 64", "% People of Color"
 )
+# names_d_friendly <- c(
+#   "Demog.Ind.",   "Suppl Demog Index", 
+#   
+#   "% Low-inc.", 
+#   "% Limited English",
+#   "% Unemployed",
+#   "% < High School", 
+#   "Low life expectancy",    # note this is not a percent, actually?
+#   "% < age 5", "% > age 64", 
+#   
+#   "% People of Color"
+# )
 
-# no friendly version of counts?  e.g.,  
-names_d_count_friendly <- paste0("Count of ", gsub("% ", "", names_d_friendly))
+# no friendly version of counts?  e.g., 
+# dput(fixcolnames(names_d_count, 'r', 'long'))
+names_d_count_friendly <- c("Low income resident count", "Limited English-speaking Households", 
+  "Unemployed resident count", "Less Than High School Education resident count", 
+  "Under Age 5  resident count", "Over Age 64  resident count", 
+  "People of Color resident count")
+# names_d_count_friendly <- paste0("Count of ", gsub("% ", "", names_d_friendly))
 
 # counts with exceptions, and other counts
 names_d_count <- gsub('pct', '', names_d); names_d_count <- gsub('min', 'mins', names_d_count)
 dontuse = names_d_count %in% c('Demog.Index',  'Demog.Index.Supp', 'lowlifex') # there is no count for these
 names_d_count <- names_d_count[!dontuse]
-names_d_count_friendly <- names_d_count_friendly[!dontuse]
+# names_d_count_friendly <- names_d_count_friendly[!dontuse]
 rm(dontuse)
 
 
 names_d_other_count <- c("pop", "nonmins", "povknownratio", "age25up", "hhlds", "unemployedbase", "pre1960", "builtunits")
 
 # this was not being used:
+# dput(fixcolnames(names_d_other_count, 'r', 'long'))
 names_d_other_count_friendly <- c('Population', 
                                   'Count of non-POC', 
                                   'Count of hhlds with known poverty ratio (denominator for % low income)', 
@@ -179,7 +275,7 @@ names_d_subgroups_nh_count    <- c(   "hisp",    "nhba",    "nhaa",    "nhaiana"
 # or  names_d_subgroups_count <-  gsub("pct", "", names_d_subgroups)
 
 # friendly raw percents
-
+# dput(fixcolnames(names_d_subgroups_alone, 'r', 'long'))
 names_d_subgroups_alone_friendly <- c(
   "% Hispanic or Latino (any race)", 
   "% Black or African American, single race", 
@@ -190,6 +286,7 @@ names_d_subgroups_alone_friendly <- c(
   "% Multirace (two or more races)",
   "% White (single race, includes White Hispanic)"
 )
+# dput(fixcolnames(names_d_subgroups_nh, 'r', 'long'))
 names_d_subgroups_nh_friendly <- c(   # , non-Hispanic
   "% Hispanic or Latino (any race)", 
   "% Black or African American, single race, non-Hispanic", 
@@ -213,6 +310,11 @@ if ('alone' %in% subgroups_type) {
 }
 
 #   friendly version of counts 
+
+# dput(fixcolnames(names_d_subgroups_count, 'r', 'long'))
+# dput(fixcolnames(names_d_subgroups_alone_count, 'r', 'long'))
+# dput(fixcolnames(names_d_subgroups_nh_count, 'r', 'long'))
+
 names_d_subgroups_count_friendly       <-  gsub("% ", "Count of ", names_d_subgroups_friendly)
 names_d_subgroups_alone_count_friendly <-  gsub("% ", "Count of ", names_d_subgroups_alone_friendly)
 names_d_subgroups_nh_count_friendly    <-  gsub("% ", "Count of ", names_d_subgroups_nh_friendly)
@@ -228,6 +330,8 @@ names_e <- c(
   "pctpre1960", "traffic.score",  "proximity.npl", "proximity.rmp", 
   "proximity.tsdf", "proximity.npdes", "ust",
   "rsei")
+
+# dput(fixcolnames(names_e, 'r', 'long'))
 
 names_e_friendly  <- c(
   "PM2.5", "Ozone", "Cancer risk", "Respiratory", "Diesel PM", 
@@ -253,6 +357,8 @@ names_e_friendly  <- c(
 names_ej <- paste0('EJ.DISPARITY.', names_e, '.eo')
 # either drop the .eo or make sure .supp is replacing the .eo not just tacking onto it ***
 
+# dput(fixcolnames(names_ej, 'r', 'long'))
+
 names_ej_friendly <- c( # FRIENDLY (RAW) SCORE BUT CAN USE FOR PCTILE SINCE THAT IS THE ONLY THING REPORTED
   "EJ: PM2.5", 
   "EJ: Ozone", 
@@ -270,12 +376,15 @@ names_ej_friendly <- c( # FRIENDLY (RAW) SCORE BUT CAN USE FOR PCTILE SINCE THAT
 
 names_ej_state          <- paste0('state.', names_ej)
 names_ej_state_friendly <- paste0('State ', names_ej_friendly)
+# dput(fixcolnames(names_ej_state, 'r', 'long'))
 
 names_ej_supp       <- gsub("\\.eo$", ".supp", names_ej) # not just this: # paste0(          names_ej, '.supp')
 names_ej_supp_friendly <- gsub("EJ", "Supp. EJ", names_ej_friendly)
+# dput(fixcolnames(names_ej_supp, 'r', 'long'))
 
 names_ej_supp_state <- paste0('state.', names_ej_supp)
 names_ej_supp_state_friendly <- gsub("EJ", "Supp. EJ", names_ej_state_friendly)
+# dput(fixcolnames(names_ej_supp_state, 'r', 'long'))
 
 ############################################################################## #
 
@@ -322,13 +431,18 @@ names_ej_supp_state_pctile     <- paste0('state.pctile.', names_ej_supp) # most 
 
 names_d_pctile_friendly                 <- paste0(   'US percentile for ', names_d_friendly)
 names_d_state_pctile_friendly           <- paste0('State percentile for ', names_d_friendly)
-
+# dput(fixcolnames(names_d_pctile, 'r', 'long'))
+# dput(fixcolnames(names_d_state_pctile, 'r', 'long'))
 
 names_d_subgroups_alone_pctile_friendly       <- paste0(   'US percentile for ', names_d_subgroups_alone_friendly) # newer 
 names_d_subgroups_alone_state_pctile_friendly <- paste0('State percentile for ', names_d_subgroups_alone_friendly) # newer  
+# dput(fixcolnames(names_d_subgroups_alone_pctile, 'r', 'long'))
+# dput(fixcolnames(names_d_subgroups_alone_state_pctile, 'r', 'long'))
 
 names_d_subgroups_nh_pctile_friendly          <- paste0(   'US percentile for ', names_d_subgroups_nh_friendly) # newer 
 names_d_subgroups_nh_state_pctile_friendly    <- paste0('State percentile for ', names_d_subgroups_nh_friendly) # newer 
+# dput(fixcolnames(names_d_subgroups_nh_pctile, 'r', 'long'))
+# dput(fixcolnames(names_d_subgroups_nh_state_pctile, 'r', 'long'))
 
 if ('alone' %in% subgroups_type) {
   names_d_subgroups_pctile_friendly             <- names_d_subgroups_alone_pctile_friendly
@@ -341,6 +455,8 @@ if ('alone' %in% subgroups_type) {
 
 names_e_pctile_friendly                 <- paste0(  'US percentile for ',  names_e_friendly)
 names_e_state_pctile_friendly           <- paste0('State percentile for ', names_e_friendly)
+# dput(fixcolnames(names_e_pctile, 'r', 'long'))
+# dput(fixcolnames(names_e_state_pctile, 'r', 'long'))
 
 
 #  *** EJScreen refers to EJ indexes without mentioning they are percentiles, since that is the only way they are reported.
@@ -360,6 +476,11 @@ names_ej_pctile_friendly                <- paste0(   'US percentile for ', names
 names_ej_state_pctile_friendly          <- paste0('State percentile for ', names_ej_friendly)
 names_ej_supp_pctile_friendly           <- paste0(   'US percentile for ', names_ej_supp_friendly) # most recently added
 names_ej_supp_state_pctile_friendly     <- paste0('State percentile for ', names_ej_supp_friendly) # most recently added
+# dput(fixcolnames(names_ej_pctile, 'r', 'long'))
+# dput(fixcolnames(names_ej_state_pctile, 'r', 'long'))
+# dput(fixcolnames(names_ej_supp_pctile, 'r', 'long'))
+# dput(fixcolnames(names_ej_supp_state_pctile, 'r', 'long'))
+
 
 ################################# ############ #
 
@@ -427,19 +548,29 @@ names_e_state_avg <- paste0("state.avg.", names_e)
 
 names_d_avg_friendly       <- paste0("US Avg ",    names_d_friendly)
 names_d_state_avg_friendly <- paste0("State Avg ", names_d_friendly) 
+# dput(fixcolnames(names_d_avg, 'r', 'long'))
+# dput(fixcolnames(names_d_state_avg, 'r', 'long'))
 
 
 names_d_subgroups_nh_avg_friendly       <- paste0("US average ",    names_d_subgroups_nh_friendly)
 names_d_subgroups_nh_state_avg_friendly <- paste0("State average ", names_d_subgroups_nh_friendly)
+# dput(fixcolnames(names_d_subgroups_nh_avg, 'r', 'long'))
+# dput(fixcolnames(names_d_subgroups_nh_state_avg, 'r', 'long'))
 
 names_d_subgroups_alone_avg_friendly       <- paste0("US average ",    names_d_subgroups_alone_friendly)
 names_d_subgroups_alone_state_avg_friendly <- paste0("State average ", names_d_subgroups_alone_friendly)
+# dput(fixcolnames(names_d_subgroups_alone_avg, 'r', 'long'))
+# dput(fixcolnames(names_d_subgroups_alone_state_avg, 'r', 'long'))
 
 names_d_subgroups_avg_friendly       <- paste0("US average ",    names_d_subgroups_friendly)  #  
 names_d_subgroups_state_avg_friendly <- paste0("State average ", names_d_subgroups_friendly)  # 
+# dput(fixcolnames(names_d_subgroups_avg, 'r', 'long'))
+# dput(fixcolnames(names_d_subgroups_state_avg, 'r', 'long'))
 
 names_e_avg_friendly       <- paste0("US Avg ",    names_e_friendly)
 names_e_state_avg_friendly <- paste0("State Avg ", names_e_friendly)
+# dput(fixcolnames(names_e_avg, 'r', 'long'))
+# dput(fixcolnames(names_e_state_avg, 'r', 'long'))
 
 # no ratios used for raw EJ indexes ?
 
@@ -468,20 +599,30 @@ names_e_ratio_to_state_avg <- paste0("ratio.to.", names_e_state_avg)
 
 names_d_ratio_to_avg_friendly       <- paste0("Ratio to ", names_d_avg_friendly)
 names_d_ratio_to_state_avg_friendly <- paste0("Ratio to ", names_d_state_avg_friendly) 
+# dput(fixcolnames(names_d_ratio_to_avg, 'r', 'long'))
+# dput(fixcolnames(names_d_ratio_to_state_avg, 'r', 'long'))
 
 
 names_d_subgroups_nh_ratio_to_avg_friendly          <- paste0("Ratio to ", names_d_subgroups_nh_avg_friendly)
 names_d_subgroups_nh_ratio_to_state_avg_friendly    <- paste0("Ratio to ", names_d_subgroups_nh_state_avg_friendly)
+# dput(fixcolnames(names_d_subgroups_nh_ratio_to_avg, 'r', 'long'))
+# dput(fixcolnames(names_d_subgroups_nh_ratio_to_state_avg, 'r', 'long'))
 
 names_d_subgroups_alone_ratio_to_avg_friendly       <- paste0("Ratio to ", names_d_subgroups_alone_avg_friendly)
 names_d_subgroups_alone_ratio_to_state_avg_friendly <- paste0("Ratio to ", names_d_subgroups_alone_state_avg_friendly)
+# dput(fixcolnames(names_d_subgroups_alone_ratio_to_avg, 'r', 'long'))
+# dput(fixcolnames(names_d_subgroups_alone_ratio_to_state_avg, 'r', 'long'))
 
 names_d_subgroups_ratio_to_avg_friendly             <- paste0("Ratio to ", names_d_subgroups_avg_friendly)      
 names_d_subgroups_ratio_to_state_avg_friendly       <- paste0("Ratio to ", names_d_subgroups_state_avg_friendly)  
+# dput(fixcolnames(names_d_subgroups_ratio_to_avg, 'r', 'long'))
+# dput(fixcolnames(names_d_subgroups_ratio_to_state_avg, 'r', 'long'))
 
 
 names_e_ratio_to_avg_friendly       <- paste0("Ratio to ", names_e_avg_friendly)
 names_e_ratio_to_state_avg_friendly <- paste0("Ratio to ", names_e_state_avg_friendly)
+# dput(fixcolnames(names_e_ratio_to_avg, 'r', 'long'))
+# dput(fixcolnames(names_e_ratio_to_state_avg, 'r', 'long'))
 
 ############################################################################## #
 # these ####
@@ -741,6 +882,10 @@ names_all <- as.vector(unlist(namez))
 names_all <- unique(names_all) # pop would appear twice
 
 namesoflistsofnames <- c('names_all', namesoflistsofnames)
+############################################################################## #
+
+# could double check to see if fixcolnames and map_headernames give same answers as the lists here. 
+
 
 ############################################################################## #
 #   USE_DATA ####

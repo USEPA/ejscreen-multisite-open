@@ -1,5 +1,5 @@
 ############################### #
-cat("Starting setup.R for testing")
+cat("Starting setup.R for testing \n")
 
 # # This script gets run before any test, so fixtures created here will be available to all the tests.
 # The file already does library(EJAM) and that should do .onAttach() and dataload_from_pins() and indexblocks()
@@ -14,19 +14,41 @@ set_state_inspector(function() {
   list(options = options())
 })
 
+################################## #
+# GET DATA AND BUILD INDEX JUST IN CASE
+# to run tests interactively, you also need to do 
+# require(testthat)
+# require(data.table)
+# require(magrittr)
+# require(EJAM)
+
+dataload_from_pins("all") # needs frs, etc.
+if (!exists("frs")) {stop('needs frs etc.')}
+indexblocks()
+
+## needs these? from global?
+# default_hide_advanced_settings
+# html_header_fmt
+
 ############################### #
 # Create ejamoutnow here in setup.R, since some tests are using it.
 
 if (exists("ejamit") & exists("blockgroupstats") & exists("testpoints_10")) {
-  ejamoutnow <- try(ejamit(testpoints_10, radius = 1, 
-                           include_ejindexes = TRUE)) # include_ejindexes = FALSE was the default but we want to test with them included
-  
+  if (!exists("ejamoutnow")) {
+  suppressMessages(  suppressWarnings({  ejamoutnow <- try(
+    ejamit(testpoints_10, radius = 1, 
+           quiet = TRUE, silentinteractive = TRUE,
+           include_ejindexes = TRUE)) # include_ejindexes = FALSE was the default but we want to test with them included
+  }))
+  }
   # DEFAULTS: 
   #        sitepoints, radius = 3, maxradius = 31.07, avoidorphans = FALSE,           
   #        quadtree = NULL, quiet = TRUE, parallel = FALSE, fips = NULL,                    
   #        shapefile_folder = NULL, in_shiny = FALSE, need_blockwt = TRUE,                  
   #        countcols = NULL, popmeancols = NULL, calculatedcols = NULL,                     
-  #        testing = FALSE, include_ejindexes = FALSE, updateProgress = NULL,               
+  #        testing = FALSE, 
+  # include_ejindexes = FALSE, 
+  # updateProgress = NULL,               
   #        need_proximityscore = FALSE, calculate_ratios = TRUE, silentinteractive = FALSE, 
   #        called_by_ejamit = TRUE, subgroups_type = "nh", extra_demog = TRUE,              
   #        infer_sitepoints = FALSE, threshold1 = 90)

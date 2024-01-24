@@ -34,7 +34,8 @@ latlon_as.numeric <- function(x) {
     }
   }
   if(is.null(x)){warning("No values provided to latlon_as.numeric()"); return(NA)}
-  if (!is.null(dim(x)) | is.list(x)) {stop('latlon_as.numeric(x) expects x to be a vector like 1:10 or df$mycol, not a data.frame or anything else.')}
+ 
+  if (!is.null(dim(x)) | !is.atomic(x) | is.list(x)) {stop('latlon_as.numeric(x) expects x to be a vector like 1:10 or df$mycol, not a data.frame, list, or anything else.')}
   oldx <- x
   x <- (gsub('[^012345678.9-]', '',  x))
   # NOTE THIS does not warn if NA was an input but does warn if other stuff was input (presumably intended as numbers) that gets turned into NA:

@@ -10,7 +10,7 @@ plot_ridgeline_ratios(ratio.to.us.d.bysite, names2plot_friendly = NULL)
 \arguments{
 \item{names2plot_friendly}{names to use for plot - should be same length as named list ratio.to.us.d.overall}
 
-\item{ratio.to.us.d.overall}{named list of a few ratios to plot}
+\item{ratio.to.us.d.overall}{named list of a few ratios to plot (data.frame)}
 }
 \description{
 plot_ridgeline_ratios

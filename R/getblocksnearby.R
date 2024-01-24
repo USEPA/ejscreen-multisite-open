@@ -54,6 +54,11 @@ getblocksnearby  <- function(sitepoints, radius=3, maxradius=31.07,
   }
   # if user entered a table, path to a file (csv, xlsx), or whatever, then read it to get the lat lon values from there
   sitepoints <- latlon_from_anything(sitepoints)
+  stopifnot(is.data.frame(sitepoints), "lat" %in% colnames(sitepoints), "lon" %in% colnames(sitepoints), NROW(sitepoints) >= 1, is.numeric(sitepoints$lat))
+  ## that handles problems here in sitepoints.
+  # Probably need stopifnot above since unclear what you should return otherwise.
+  # But ok if any/orall lat and/or lon are NA values
+  
   ################################################################################## #
   # timed <- system.time({
   if (missing(quadtree)) {
@@ -64,9 +69,10 @@ getblocksnearby  <- function(sitepoints, radius=3, maxradius=31.07,
         # should 
         cat('census block data file(s) not already loaded, so key data will now be downloaded (or loaded from a local copy if possible)...\n')
          # loads quaddata needed to make localtree index, and several other large files pkg uses.
-        dataload_from_pins(ext='.arrow')
+
+        dataload_from_pins(varnames = c('quaddata', 'blockwts', 'blockpoints')) # and blockid2fips and bgid2fips and bgej are available
               }
-      # need to pause here?
+      #
       # localtree <- SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point")
       indexblocks() # not really tested yet in this context
       quadtree <- localtree 
@@ -76,6 +82,7 @@ getblocksnearby  <- function(sitepoints, radius=3, maxradius=31.07,
       # ))
     }
   }
+  
   cat("Analyzing", NROW(sitepoints), "points, radius of", radius, "miles around each.\n")
   
   ################################################################################## #

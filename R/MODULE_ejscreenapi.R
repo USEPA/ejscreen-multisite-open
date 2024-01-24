@@ -179,7 +179,7 @@ mod_ejscreenapi_ui <- function(id,
                           ## UPLOAD points ####
                           
                           shiny::fileInput(ns('pointsfile'),
-                                           placeholder = 'testpoints_05.xlsx', multiple = FALSE,
+                                           placeholder = 'testpoints_5.xlsx', multiple = FALSE,
                                            label = 'Upload file (.csv, .xls, or .xlsx) with lat & lon as column headers in row 1',
                                            # add hover tips here maybe, or even a button to view examples of valid formats and details on that.
                                            accept = c('.xls', '.xlsx', ".csv", "text/csv", "text/comma-separated-values,text/plain")),
@@ -1000,7 +1000,7 @@ mod_ejscreenapi_server <- function(id,
         ),
         choiceValues = list(
           'long',
-          'friendly',
+          'r',
           'original'
         ),
         selected = 'long'
@@ -1031,8 +1031,8 @@ mod_ejscreenapi_server <- function(id,
           table_as_displayed <- table_as_displayed_reactive()
           
           # already renamed to whatever was requested via input$usewhichnames
-          # if (input$usewhichnames == 'friendly') { # friendly here actually means rname 
-          #   names(table_as_displayed) <- fixcolnames(names(table_as_displayed), oldtype = 'api', newtype = 'friendly', mapping_for_names = map_headernames) }
+          # if (input$usewhichnames == 'r') { # friendly here actually means rname 
+          #   names(table_as_displayed) <- fixcolnames(names(table_as_displayed), oldtype = 'api', newtype = 'r', mapping_for_names = map_headernames) }
           # if (input$usewhichnames == 'long') {
           #   names(table_as_displayed) <- fixcolnames(names(table_as_displayed), oldtype = 'api', newtype = 'long', mapping_for_names = map_longnames)
           #   # map_longnames <- data.frame(oldnames = map_headernames$oldnames, newnames_ejscreenapi = map_headernames$longname_tableheader, stringsAsFactors = FALSE)
@@ -1047,19 +1047,19 @@ mod_ejscreenapi_server <- function(id,
           # pctile_colnums <- union(pctile_colnums, which('pctile' == map_headernames$jsondoc_shortvartype[match(names(table_as_displayed), map_headernames$longname_tableheader)]))
           
           # fix URLs to work in csv pulled into Excel or in Excel files (as opposed to datatable shown in web brwsr)
-          table_as_displayed$EJScreenPDF <- gsub('.*(http.*)\", target=.*', '\\1', table_as_displayed$EJScreenPDF) 
-          table_as_displayed$EJScreenMAP <- gsub('.*(http.*)\", target=.*', '\\1', table_as_displayed$EJScreenMAP)
+          table_as_displayed$`EJScreen Report` <- gsub('.*(http.*)\", target=.*', '\\1', table_as_displayed$`EJScreen Report`) 
+          table_as_displayed$`EJScreen Map` <- gsub('.*(http.*)\", target=.*', '\\1', table_as_displayed$`EJScreen Map`)
           
           if (!asExcel) {
-            table_as_displayed$EJScreenPDF <- paste0('=HYPERLINK("', table_as_displayed$EJScreenPDF,'", "EJScreen Report ', rownames(table_as_displayed), '")')
-            table_as_displayed$EJScreenMAP <- paste0('=HYPERLINK("', table_as_displayed$EJScreenMAP,'", "EJScreen Map ',    rownames(table_as_displayed), '")')
+            table_as_displayed$`EJScreen Report` <- paste0('=HYPERLINK("', table_as_displayed$`EJScreen Report`,'", "EJScreen Report ', rownames(table_as_displayed), '")')
+            table_as_displayed$`EJScreen Map`    <- paste0('=HYPERLINK("', table_as_displayed$`EJScreen Map`,'", "EJScreen Map ',    rownames(table_as_displayed), '")')
             readr::write_excel_csv(table_as_displayed, file) 
             # write.csv(table_as_displayed, file, row.names = FALSE) # simplest
             # note despite name of function, write_excel_csv() saves it as a csv, NOT ACTUALLY excel, 
             #  but writes csv faster and indicates it is UTF8 encoding to help import to excel
           } else {
             wb <- table_xls_format_api(df = table_as_displayed, 
-                                     hyperlink_cols = c('EJScreenPDF', 'EJScreenMAP'),
+                                     hyperlink_cols = c('EJScreen Map', 'EJScreen Report'),
                                      heatmap_colnames = names(table_as_displayed)[pctile_colnums],
                                      heatmap_cuts = c(80, 90, 95),
                                      heatmap_colors = c('yellow', 'orange', 'red'))

@@ -4,7 +4,12 @@
 \alias{getblocks_diagnostics}
 \title{getblocks_diagnostics - Lots of stats about # of blocks, # of sites, etc.}
 \usage{
-getblocks_diagnostics(x, detailed = FALSE, see_pctiles = FALSE)
+getblocks_diagnostics(
+  x,
+  detailed = FALSE,
+  see_pctiles = FALSE,
+  see_distanceplot = FALSE
+)
 }
 \arguments{
 \item{x}{The output of \code{\link[=getblocksnearby]{getblocksnearby()}} like testoutput_getblocksnearby_10pts_1miles}
@@ -12,6 +17,8 @@ getblocks_diagnostics(x, detailed = FALSE, see_pctiles = FALSE)
 \item{detailed}{if TRUE, also shows in console a long table of frequencies via \code{\link[=getblocks_summarize_blocks_per_site]{getblocks_summarize_blocks_per_site()}}}
 
 \item{see_pctiles}{set to TRUE to see 20 percentiles of distance in a table}
+
+\item{see_distanceplot}{if TRUE, also draws scatter plot of adjusted vs unadj distances}
 }
 \value{
 A list of stats
@@ -32,6 +39,8 @@ getblocks_diagnostics - Lots of stats about # of blocks, # of sites, etc.
  zz <- getblocks_diagnostics(z, detailed = T, see_pctiles = T)
 cbind(stats = zz)
 
+  getblocks_diagostics(testoutput_getblocksnearby_1000pts_1miles, see_distanceplot = TRUE)
+  
 }
 \seealso{
 This relies on  \code{\link[=getblocks_summarize_blocks_per_site]{getblocks_summarize_blocks_per_site()}} and \code{\link[=getblocks_summarize_sites_per_block]{getblocks_summarize_sites_per_block()}}

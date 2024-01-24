@@ -24,11 +24,11 @@ latlon_df_clean <- function(df) {
     warning("Dataframe does not have both lat and lon columns")
     # removed since latlon_infer already creates warning
     #warning('lat or lon column cannot be inferred from colnames of df')
-    }
-
+  }
+  
   ## start with assuming all valid and change ones that are not  
   df$valid <- TRUE
-
+  
   # validate to some extent (are the lat lon plausible values)
   ok <- latlon_is.valid(lat = df$lat, lon = df$lon)
   if (any(!ok)) {

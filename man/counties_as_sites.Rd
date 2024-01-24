@@ -7,11 +7,14 @@
 counties_as_sites(fips)
 }
 \arguments{
-\item{fips}{County FIPS vector (ideally as character not numeric values)}
+\item{fips}{County FIPS vector (ideally as character not numeric values),
+like fips_counties_from_state_abbrev("DE")}
 }
 \value{
+provides table similar to the output of getblocksnearby(),
 data.table with one row per blockgroup in these counties, or
-all pairs of county fips - bgid, and a unique siteid assigned to each county
+all pairs of county fips - bgid, and ejam_uniq_id (1 through N) assigned to each county
+but missing blockid and distance so not ready for doaggregate().
 }
 \description{
 counties_as_sites - Analyze US Counties as if they were sites, to get EJ indicators summary for each county
@@ -19,6 +22,7 @@ counties_as_sites - Analyze US Counties as if they were sites, to get EJ indicat
 \details{
 This function provides one row per blockgroup.
 \code{\link[=getblocksnearby_from_fips]{getblocksnearby_from_fips()}} provides one row per block.
+See more below under "Value"
 }
 \examples{
  counties_as_sites(c('01001','72153'))

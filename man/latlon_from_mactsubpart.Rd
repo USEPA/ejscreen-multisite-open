@@ -7,7 +7,7 @@ Get point locations for US EPA-regulated facilities that have
 sources subject to Maximum Achievable Control Technology (MACT) standards
 under the Clean Air Act.}
 \usage{
-latlon_from_mactsubpart(subpart, include_if_no_latlon = FALSE)
+latlon_from_mactsubpart(subpart = "JJJ", include_if_no_latlon = FALSE)
 }
 \arguments{
 \item{subpart}{vector of one or more strings indicating the
@@ -18,7 +18,12 @@ of interest, such as "FFFF" - see for example,
 \item{include_if_no_latlon}{logical - many in the database lack lat lon values but have a MACT code}
 }
 \value{
-a table of lat, lon, subpart, etc. for US EPA FRS sites with that MACT code
+a data.table with columns named
+
+programid, subpart, title, lat, lon, REGISTRY_ID, program
+
+for US EPA FRS sites with that MACT code.
+Or NA if none found.
 }
 \description{
 latlon_from_mactsubpart
@@ -28,4 +33,9 @@ under the Clean Air Act.
 }
 \details{
 See \url{https://www.epa.gov/stationary-sources-air-pollution/national-emission-standards-hazardous-air-pollutants-neshap-8}
+}
+\examples{
+  mact_table
+  latlon_from_mactsubpart("OOOO", include_if_no_latlon = FALSE) # default
+  latlon_from_mactsubpart("OOOO", include_if_no_latlon = TRUE)
 }

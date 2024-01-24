@@ -31,8 +31,12 @@ table_tall_from_overall <- function(results_overall, longnames) {
       warning("requires longnames")
     }
   }
- 
-  x <- as.vector(unlist(results_overall))
+  
+  x <- copy(results_overall)
+  x <- fix_pctcols_x100(x)
+  x <- table_round(x)
+  
+  x <- as.vector(unlist(x))
   x[!var_is_numeric_ish(x)] <- NA # easier to just drop the info like state name/abbrev.
   # a vector has to be numeric or not, cannot have just some elements numeric some char.
   # x[var_is_numeric_ish(x)] <- as.numeric(x[var_is_numeric_ish(x)] )
@@ -41,5 +45,8 @@ table_tall_from_overall <- function(results_overall, longnames) {
     value = x, 
     indicator = longnames
   )
+  x <- data.frame(x)
   return(x)
+  # data.frame(table_tall_from_overall( table_round( ejamit_a$results_overall) ))
+  
 }

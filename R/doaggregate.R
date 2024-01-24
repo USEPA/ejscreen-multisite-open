@@ -35,10 +35,10 @@
 #'    - blockgroupstats - A data.table (such as EJScreen demographic and environmental data by blockgroup?)
 #'
 #' @param sites2blocks data.table of distances in miles between all sites (facilities) and 
-#'   nearby Census block internal points, with columns siteid, blockid, distance,
+#'   nearby Census block internal points, with columns ejam_uniq_id, blockid, distance,
 #'   created by getblocksnearby  function. 
 #'   See [sites2blocks_example10pts_1miles] aka [testoutput_getblocksnearby_10pts_1miles] dataset in package, as input to this function
-#' @param sites2states_or_latlon data.table or just data.frame, with columns siteid (each unique one in sites2blocks) and ST (2-character State abbreviation) or lat and lon 
+#' @param sites2states_or_latlon data.table or just data.frame, with columns ejam_uniq_id (each unique one in sites2blocks) and ST (2-character State abbreviation) or lat and lon 
 #' @param radius Optional radius in miles to limit analysis to. By default this function uses 
 #'   all the distances that were provided in the output of getblocksnearby(),
 #'   and reports radius estimated as rounded max of distance values in inputs to doaggregate.
@@ -82,7 +82,7 @@
 #'     aggregated results for all unique residents. 
 #' 
 #'   * **`results_by_site`**   results for individual sites (buffers) - a data.table of results, 
-#'     one row per siteid, one column per indicator
+#'     one row per ejam_uniq_id, one column per indicator
 #' 
 #'   * **results_bybg_people**  results for each block group, to allow for showing the distribution of each 
 #'      indicator across everyone within each demographic group.
@@ -248,8 +248,12 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   ##################################################### #   
   
   ## Specify Which vars are SUM OF COUNTS, vs WTD AVG, vs via FORMULA (usually ratio of sums of counts) ####
-  # That info is sort of stored already in map_headernames$calculation_type
-
+  # That info is sort of stored already as one of unique(map_headernames$calculation_type)
+  # map_headernames[map_headernames$calculation_type == "popwtd mean",     c('varlist', "rname") ]
+  # map_headernames[map_headernames$calculation_type == "percent formula", c('varlist', "rname") ]
+  # map_headernames$rname[grepl("denom", map_headernames$names_friendly, ignore.case = TRUE)] # [1] "unemployedbase" "builtunits" 
+  #
+  # see pdf documenting denominator (weights) for each indicator aggregated via weighted average.
   
   if (is.null(countcols)) {
     countcols <- unique(c(
@@ -693,7 +697,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   #}), .SDcols = popmeancols_inbgstats, by = .(siteid) ]
    }), .SDcols = popmeancols_inbgstats, by = .(ejam_uniq_id) ]
 # redo   in data.table:: style, for speed? this is just by site so only 1 row per site is not that many usually, but is a lot of columns (200?) *********************************
-  results_bysite <- merge(results_bysite, results_bysite_popmeans)
+  results_bysite <- merge(results_bysite, results_bysite_popmeans, by = "ejam_uniq_id") # dont we need by = "ejam_uniq_id" or just to be clear?  It defaults to merging by the shared key columns between the two tables. If y has no key columns, this defaults to the key of x.
   
   ## mean OVERALL ###
   ## later, for results_overall, will calc state pctiles once we have them for each site 
@@ -734,8 +738,8 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
     sitecount_avg    = collapse::fmean(sitecount_avg, w = pop)  # sitecount_avg     =weighted.mean(sitecount_avg, w= pop, na.rm=TRUE)
   #), by = .(siteid) ]
   ), by = .(ejam_uniq_id) ]
-#results_bysite <- merge(results_bysite, results_bysite_minmax, on = "siteid")
-results_bysite <- merge(results_bysite, results_bysite_minmax, on = "ejam_uniq_id")
+#
+results_bysite <- merge(results_bysite, results_bysite_minmax, by = "ejam_uniq_id") # data.table uses by=, not on=, for merge() or groupingby, and uses on=  for JOINS!
 
   results_overall_minmax <- sites2bgs_plusblockgroupdata_bysite[ , .(  
     distance_min = collapse::fmin(distance_min),
@@ -744,8 +748,8 @@ results_bysite <- merge(results_bysite, results_bysite_minmax, on = "ejam_uniq_i
     #sitecount_unique = collapse::fnunique(siteid), ######## CHECK THIS
     sitecount_unique = collapse::fnunique(ejam_uniq_id), ######## CHECK THIS
     sitecount_avg     = collapse::fmean(sitecount_avg, w = pop)   # sitecount_avg     =weighted.mean(sitecount_avg, w= pop, na.rm=TRUE)
-  ) ]  # not by siteid
-  results_overall <- cbind(results_overall, results_overall_minmax) # cbind not merge, since only 1 row not by siteid
+  ) ]
+  results_overall <- cbind(results_overall, results_overall_minmax) # cbind not merge, since only 1 row 
   
   # note that max E or D score of any bg near a given site must be calculated later, 
   # outside of doaggregate(), using results_bybg_people table 
@@ -761,13 +765,13 @@ results_bysite <- merge(results_bysite, results_bysite_minmax, on = "ejam_uniq_i
   # 
   # Is that at all useful really??
   # "blockcount_near_site"            "bgcount_near_site"
-  blockcount_by_site <- sites2blocks[, .(blockcount_near_site = .N),         by = ejam_uniq_id] # new----------------------------------------------- -
-  bgcount_by_site    <- sites2blocks[, .(bgcount_near_site = collapse::fnunique(bgid)), by = ejam_uniq_id] # new------------------------------------ -
-  #blockcount_by_site <- sites2blocks[, .(blockcount_near_site = .N),         by = siteid] # new----------------------------------------------- -
-  #bgcount_by_site    <- sites2blocks[, .(bgcount_near_site = collapse::fnunique(bgid)), by = siteid] # new------------------------------------ -
+  blockcount_by_site <- sites2blocks[, .(blockcount_near_site = .N),         by = ejam_uniq_id]
+  bgcount_by_site    <- sites2blocks[, .(bgcount_near_site = collapse::fnunique(bgid)), by = ejam_uniq_id]
+  #blockcount_by_site <- sites2blocks[, .(blockcount_near_site = .N),         by = siteid]
+  #bgcount_by_site    <- sites2blocks[, .(bgcount_near_site = collapse::fnunique(bgid)), by = siteid]
   
-  results_bysite <- merge(results_bysite, blockcount_by_site) # on="siteid" new ---------------------------------------------- -
-  results_bysite <- merge(results_bysite, bgcount_by_site)    # on="siteid" new ---------------------------------------------- -
+  results_bysite <- merge(results_bysite, blockcount_by_site, by = "ejam_uniq_id")
+  results_bysite <- merge(results_bysite, bgcount_by_site, by = "ejam_uniq_id")
   
   ##################################################### # 
   
@@ -819,6 +823,15 @@ results_bysite <- merge(results_bysite, results_bysite_minmax, on = "ejam_uniq_i
   #  (using the Rolled up Counts) 
   # this was meant to handle multiple columns (formula for each new one) for many rows (and here in buffer results, one site is a row, not one blockgroup) 
   
+  
+  #### possible way to pull formulas out of doaggregate() is this:
+  ## it would not be as fast as data.table approach though, and is not tested.
+  # dcalculated_overall <- calc_ejam(results_overall, keep.old = "", formulas = formulas_d)
+  # results_overall <- cbind(results_overall, dcalculated_overall)
+  # dcalculated_bysite <- calc_ejam(results_bysite, keep.old = "", formulas = formulas_d)
+  # results_bysite <- cbind(results_bysite, dcalculated_bysite)
+  
+  
   # "nonmins <- nhwa"
   # "mins <- pop - nhwa" 
   
@@ -833,8 +846,8 @@ results_bysite <- merge(results_bysite, results_bysite_minmax, on = "ejam_uniq_i
   ##################################### #   
   
   if ("nh" %in% subgroups_type | "both" %in% subgroups_type) {
-    # original versions of demog subgroups, as in names_d_subgroups_nh or names_d_subgroups
-    #  where they are all NONHISPANIC - MIGHT GET phased out - EJScreen 2.2 does NOT use this version of subgroups
+    #  as in names_d_subgroups_nh or names_d_subgroups
+    #  where they are all NONHISPANIC 
     results_overall[ , `:=`(
       pcthisp         = 1 * ifelse(pop == 0, 0, as.numeric(hisp )        / pop),
       pctnhba         = 1 * ifelse(pop == 0, 0, as.numeric(nhba )        / pop),
@@ -847,7 +860,7 @@ results_bysite <- merge(results_bysite, results_bysite_minmax, on = "ejam_uniq_i
     )]
   }
   if ("alone" %in% subgroups_type | "both" %in% subgroups_type) {
-    # new versions of subgroups - as used by EJScreen 2.2 - as in names_d_alone
+    # as in names_d_alone
     #   they include hispanic within each racial subgroup here, so it is black alone (whether or not hispanic) not just non-hispanic black alone.
     results_overall[ , `:=`(
       pcthisp       = 1 * ifelse(pop == 0, 0, as.numeric(hisp )      / pop),
@@ -875,11 +888,11 @@ results_bysite <- merge(results_bysite, results_bysite_minmax, on = "ejam_uniq_i
   
   results_overall[ , `:=`(
     Demog.Index = (pctlowinc + pctmin) / 2,
-    # *** add supplemental indicator too, when possible. need lowlifeexpectancy etc. and 
-    # Demog.Index.Supp needs to be in names_d  and lookup tables for usastats and statestats ## ##
-    Demog.Index.Supp  = (pctlowinc + pctunemployed + pctlths + pctlingiso + lowlifex ) / ifelse(is.na(lowlifex), 4, 5)
-    # *** add supplemental indicator too, when possible. need lowlifeexpectancy etc. and
-    # Demog.Index.Supp needs to be in names_d  and lookup tables for usastats and statestats ## ##
+    # *** add supplemental indicator 
+    # 
+    Demog.Index.Supp  = (pctlowinc + pctunemployed + pctlths + pctlingiso + ifelse(is.na(lowlifex), 0, lowlifex) ) / ifelse(is.na(lowlifex), 4, 5)
+    # *** add supplemental indicator too
+    # 
     
     # # supplemental demographic index = (% low-income + % unemployed + % less than high school education + % limited English speaking + low life expectancy) / 5 
     # For block groups where low life expectancy data is missing (NA), the formula will average the other four factors! 
@@ -1097,7 +1110,7 @@ results_bysite <- merge(results_bysite, results_bysite_minmax, on = "ejam_uniq_i
       # add in the lat,lon columns - this is always available if ejamit() called this since it passes the pts as sites2states_or_latlon
       if ("ejam_uniq_id" %in% names(sites2states_or_latlon) & "ejam_uniq_id" %in% names(sites2states)) {
       #if ("siteid" %in% names(sites2states_or_latlon) & "siteid" %in% names(sites2states)) {
-        sites2states <- merge(sites2states, sites2states_or_latlon, by = 'ejam_uniq_id') #  error if  siteid is not there
+        sites2states <- merge(sites2states, sites2states_or_latlon, by = 'ejam_uniq_id') #  error if  ejam_uniq_id is not there
         #sites2states <- merge(sites2states, sites2states_or_latlon, by = 'siteid') #  error if  siteid is not there
       } else {
         sites2states <- cbind(sites2states, sites2states_or_latlon) #   ***xxx  HAVE NOT CHECKED IF THIS WORKS OR IS CORRECT !
@@ -1317,8 +1330,8 @@ results_bysite <- merge(results_bysite, results_bysite_minmax, on = "ejam_uniq_i
   #  us and state percentile lookup tables, and in results_bysite
   perfectnames <- function(x) intersect(intersect(intersect(x, names(usastats)), names(statestats)), names(results_bysite))
   
-  ## >>>Do we want to include EJ Indexes and supplementary ones here?? ####
-  
+  ## (dont need avg of raw EJ indexes)  ####
+  ## (we dont want to show a ratio to avg for raw EJ indexes, and no other reason to find those averages, since those raw scores are harder to interpret than Demog or Envt raw scores)
   
   ######################################### #
   # **** names_these and related lists are defined by EJAM already,
@@ -1453,7 +1466,7 @@ results_bysite <- merge(results_bysite, results_bysite_minmax, on = "ejam_uniq_i
   
   {
     useful_column_order <- c(
-      'id', 'ejam_uniq_id',#'siteid',
+      'id', 'ejam_uniq_id',
       'pop',           # '[or names_wts]',
       'sitename',
       'lon', 'lat', # do we want to make consistently lat,lon not lon,lat ??? ***

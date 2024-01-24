@@ -45,7 +45,7 @@ RCRAINFO (over 500k sites), NPDES, ICIS, AIR, FIS, EIS, and AIRS/AFS.
  x = latlon_from_program(program)
  # to get the facility name as well:
  x = frs[grepl("RCRAINFO", PGM_SYS_ACRNMS), ] # fast
- ## x = latlon_from_siteid(latlon_from_program(program)[,REGISTRY_ID])  # slower!
+ ## x = latlon_from_regid(latlon_from_program(program)[,REGISTRY_ID])  # slower!
  EJAMejscreenapi::mapfast(x[sample(1:nrow(x), 1000), ])
 }
  

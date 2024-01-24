@@ -2,12 +2,13 @@
 % Please edit documentation in R/map_blockgroups.R
 \name{map_shapes_leaflet}
 \alias{map_shapes_leaflet}
-\title{map_shapes_leaflet}
+\title{map_shapes_leaflet
+Create a new leaflet map from shapefile data}
 \usage{
 map_shapes_leaflet(shapes, color = "green", popup = shapes$NAME)
 }
 \arguments{
-\item{shapes}{like from shapes_counties_from_countyfips()}
+\item{shapes}{like from shapes_counties_from_countyfips(fips_counties_from_state_abbrev("DE"))}
 
 \item{color}{passed to leaflet::addPolygons()}
 
@@ -18,4 +19,5 @@ html widget from leaflet::leaflet()
 }
 \description{
 map_shapes_leaflet
+Create a new leaflet map from shapefile data
 }

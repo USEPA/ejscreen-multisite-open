@@ -112,8 +112,8 @@ for (i in seq_along(varsneedpctiles)) {
 
 # Q: does this convert it from data.table to data.frame? I think not. xxx
 
-results_overall <- cbind(siteid=NA, results_overall, us.pctile.cols_overall ) # , state.pctile.cols_overall)
-results_bysite  <- cbind(           results_bysite,  us.pctile.cols_bysite,  state.pctile.cols_bysite )
+results_overall <- cbind(ejam_uniq_id = NA, results_overall, us.pctile.cols_overall ) # , state.pctile.cols_overall)
+results_bysite  <- cbind(                   results_bysite,  us.pctile.cols_bysite,  state.pctile.cols_bysite )
 
 }
 

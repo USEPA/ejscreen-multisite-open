@@ -340,8 +340,8 @@ ejscreenapi2ejam_format <- function(ejscreenapi_plus_out, fillmissingcolumns = F
   # just in case, try to convert as if they were long names as in output of ejscreenit()
   colnames(x) <- fixcolnames(colnames(x), "long", "r")
   #manually fix a couple we know differ
-  colnames(x) <- gsub("EJScreenPDF", "EJScreen Report", colnames(x)) 
-  colnames(x) <- gsub("EJScreenMAP", "EJScreen Map", colnames(x))
+  # colnames(x) <- gsub("EJScreenPDF", "EJScreen Report", colnames(x)) # should be obsolete / fixed now
+  # colnames(x) <- gsub("EJScreenMAP", "EJScreen Map", colnames(x)) # should be obsolete / fixed now
   
   # Remove columns from API output that are not in the EJAM output format 
   
@@ -655,7 +655,7 @@ if (1 == 0) {
   
   # all.equal(names(testoutput_ejscreenit_5$table), names(testoutput_ejscreenapi_plus_5))
   # api_table1 = ejscreenapi_plus(testpoints_10)  # provides as rnames
-  api_all <- ejscreenit(testpoints_10, radius = 3) # provides as LONG NAMES for convenience, including  "EJScreenPDF" "EJScreenMAP" "Buffer distance (miles)" "% Low Income" etc.   
+  api_all <- ejscreenit(testpoints_10, radius = 3) # provides as LONG NAMES for convenience, including  "EJScreen Report" "EJScreen Map" "Buffer distance (miles)" "% Low Income" etc.   
   api_table <- api_all$table
   # setdiff2(fixcolnames(names(api_table), 'long', 'r'), names(api_table1))
   ### These names are identical once converted from long to r type names.
@@ -715,7 +715,7 @@ if (1 == 0) {
   
   # ejscreenapi() outputs now differ from those names in testoutput_ejscreenapi_1pts_1miles - rebuild examples in EJAMejscreenapi pkg
   setdiff2(names(x), names(testoutput_ejscreenapi_1pts_1miles))
-  
+  # ok in map_headernames
   # [1] "P_NHWHITE"      "P_NHBLACK"      "P_NHASIAN"      "P_NHAMERIND"    "P_NHHAWPAC"     "P_NHOTHER_RACE" "P_NHTWOMORE"    "TOTALPOP"      
   # [9] "P_WHITE"        "P_BLACK"        "P_ASIAN"        "P_AMERIND"      "P_HAWPAC"       "P_OTHER_RACE"   "P_TWOMORE"  
   ################################################################## #
@@ -730,10 +730,6 @@ if (1 == 0) {
   
   setdiff(onlyejam, okmissing) 
   
-  ## need to rename api outputs 
-  #   "EJScreenPDF"     "EJScreenMAP"  
-  # to
-  #  "EJScreen Report"  "EJScreen Map"         
   
   ## but do not have, for some reason, these in API outputs: Some problem with renaming to/from r format, done or not in outputs
   # testoutput_ejscreenapi_1pts_1miles  has percentage but not counts like P_AGE_LT18 

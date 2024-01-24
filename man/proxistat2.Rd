@@ -5,13 +5,20 @@
 \title{proxistat2 - Calculate a proximity score for every blockgroup - WORK IN PROGRESS
 Indicator of proximity of each blockgroups to some set of facilities or sites.}
 \usage{
-proxistat2(pts, radius = 8.04672, quadtree)
+proxistat2(pts, countradius = 8.04672, maxradius = 621.3712, quadtree = NULL)
 }
 \arguments{
 \item{pts}{data.table of lat lon}
 
-\item{radius}{distance max, in miles, default is 5km (8.04672 miles)
-which is the EJScreen max search range for proximity scores}
+\item{countradius}{distance within in which nearby sites are counted to create proximity score.
+In miles, and default is 5km (8.04672 miles)
+which is the EJScreen zone for proximity scores based on counts.}
+
+\item{maxradius}{max distance in miles to search for nearest single facility,
+if none found within countradius. EJScreen seems to use 1,000 km as the max to search,
+since the lowest scores for proximity scores of RMP, TSDF, or NPL are around 0.001,
+meaning approx. 1/1000 km and km_per_mile = 1.609344
+so 1000 km is 1000 / 1.609344 = 621.3712 miles}
 
 \item{quadtree}{must be called localtree, an index of block locations,
 built during use of EJAM package. see \link{quaddata}}
@@ -27,11 +34,9 @@ Indicator of proximity of each blockgroups to some set of facilities or sites.
 Proximity score is sum of (1/d) where each d is distance of a given site in km,
 summed over all sites within 5km, as in EJScreen.
 
-doaggregate() has a bit of code in it to do this same thing that this function does.
+getblocksnearbyviaQuadTree.R() and maybe doaggregate()?
 
-*** Still need area of each block to fix this function -
-the block area should get put into one of these:
-\link{blockpoints} or \link{blockwts}
+has a bit of code in it to do some of what this function does.
 }
 \examples{
  # pts <- testpoints_100

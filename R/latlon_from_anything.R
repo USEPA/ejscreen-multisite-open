@@ -19,7 +19,7 @@
 #'   
 #'   except it also uses these functions:
 #'   
-#'   [latlon_from_siteid()]  
+#'   [latlon_from_regid()]  
 #'   
 #'   [latlon_from_programid()]   but not  _from_naics() ?
 #' 
@@ -61,7 +61,7 @@ latlon_from_anything <- function(x,y) {
   if (data.table::is.data.table(x)) data.table::setDF(x) # syntax is easier here this way. note that a data.table is also a list and data.frame
   if (is.list(x) & !is.data.frame(x)) {x <- as.data.frame(x)} # like if x <- list(lon = 1:5, lat = 1:5)
   if (is.matrix(x) | is.array(x) ) {x <- as.data.frame(x)}
-  if (!is.data.frame(x)) { # also TRUE if data.table not just regular data.frame (or possibly a matrix that is not a data.frame?)
+  if (!is.data.frame(x)) { # also if data.table (but not if a matrix or a non-df-list or array or vector)
     if (is.character(x) & length(x) == 1) {
       # seems to be a file name with path, so read it
       if (!file.exists(x)) {
@@ -75,10 +75,12 @@ latlon_from_anything <- function(x,y) {
       pts <- read_csv_or_xl(x) # from EJAMejscreenapi :: 
     } else {
       # Not a file, not a data.frame, so x,y should be lon,lat vectors
+
       if (missing(y)) {
         
         warning("if x is not a data.frame or file, then x and y must be longitude and latitude vectors respectively. Using x as lon and y as lat")
       }
+      # SHOULD CHECK HERE THAT x is a numeric vector !
       pts <- data.frame(lon = x, lat = y)
     }
   } else {
@@ -86,7 +88,8 @@ latlon_from_anything <- function(x,y) {
     pts <- try(data.frame(x)) # in case it was also a data.table, make it a simple data.frame only??
   }
   pts <- latlon_df_clean(pts) # This does latlon_infer() and latlon_as.numeric() and latlon_is.valid()
-  
+  ## WHAT SHOULD BE RETURNED IF COLUMNS lat lon EXIST now but NO VALID coordinates AT ALL? all lat and all lon can be set to NA and that should work down the line?
+  ## WHAT SHOULD BE RETURNED IF NO COLUMNS CAN BE INTERPRETED AS lat lon ? Need to check for that where this function is used!
   return(pts)
 }
 

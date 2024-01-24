@@ -15,7 +15,7 @@ getblocksnearbyviaQuadTree2(
 )
 }
 \arguments{
-\item{sitepoints}{data.table with columns siteid, lat, lon giving point locations of sites or facilities around which are circular buffers}
+\item{sitepoints}{data.table with columns ejam_uniq_id, lat, lon giving point locations of sites or facilities around which are circular buffers}
 
 \item{radius}{in miles, defining circular buffer around a site point}
 

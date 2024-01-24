@@ -5,7 +5,7 @@
 #'   
 #' @param results_bybg_people 
 #' @param demogvarname 
-#' @param siteids 
+#' @param ejam_uniq_id  
 #' @param show.lowess F
 #' @param show.lm linefit
 #' @param show.line linefit
@@ -13,14 +13,14 @@
 
 #' @export
 
-plot_demogshare_by_distance <- function(results_bybg_people, demogvarname=names_d[1], siteids=unique(results_bybg_people$siteid),
+plot_demogshare_by_distance <- function(results_bybg_people, demogvarname=names_d[1], myids = unique(results_bybg_people$ejam_uniq_id),
                                         show.lowess=F, show.lm=TRUE, show.line=TRUE, ...) {
   #  results_bybg_people <- data.table::copy(testoutput_ejamit_10pts_1miles$results_bybg_people)
   x <- data.table::copy(results_bybg_people)
   myrad = max(x$radius.miles) 
   # SHOULD IT USE distance_avg or distance_min_avgperson ?? ***
-  colsneeded <- c("siteid", "distance_min_avgperson", demogvarname)
-  x <- x[siteid %in% siteids, ..colsneeded]
+  colsneeded <- c("ejam_uniq_id", "distance_min_avgperson", demogvarname)
+  x <- x[ejam_uniq_id %in% myids, ..colsneeded]
   
   data.table::setorder(x, distance_min_avgperson)
   xvals <- x$distance_min_avgperson

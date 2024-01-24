@@ -2,12 +2,13 @@
 % Please edit documentation in R/map_blockgroups.R
 \name{map_shapes_mapview}
 \alias{map_shapes_mapview}
-\title{map_shapes_mapview}
+\title{map_shapes_mapview
+Use mapview from the mapview package if available}
 \usage{
 map_shapes_mapview(shapes, col.regions = "green", map.types = "OpenStreetMap")
 }
 \arguments{
-\item{shapes}{like from shapes_counties_from_countyfips()}
+\item{shapes}{like from shapes_counties_from_countyfips(fips_counties_from_state_abbrev("DE"))}
 
 \item{col.regions}{passed to mapview() from mapview package}
 
@@ -15,4 +16,12 @@ map_shapes_mapview(shapes, col.regions = "green", map.types = "OpenStreetMap")
 }
 \description{
 map_shapes_mapview
+Use mapview from the mapview package if available
+}
+\examples{
+\dontrun{
+  map_shapes_mapview(
+    shapes_counties_from_countyfips(fips_counties_from_state_abbrev("DE"))
+  )
+}
 }

@@ -1,7 +1,7 @@
 #' plot_distance_by_pctd  -  Plot percent demographics within X miles of a site
 #'
 #' @param s2b output of [getblocksnearby()]
-#' @param mysiteid one number that is the siteid to look at in s2b
+#' @param sitenum one number that is the unique ID (the row number of original list of points) to look at in s2b
 #' @param myvars a colname of a population count variable in blockgroupstats indicating which to plot, like "hisp" or "lowinc"
 #'   and only works for one indicator at a time so far. 
 #' @param dpctvar a colname of usastats and statestats that is the percentage version of myvars, like "pcthisp" or "pctlowinc"
@@ -11,7 +11,7 @@
 #'
 #' @examples 
 #'   plot_distance_by_pctd()
-plot_distance_by_pctd <- function(s2b = NULL, mysiteid = NULL, myvars = c(names_d_count, names_d_subgroups_count)[1], dpctvar = paste0("pct", myvars)) {
+plot_distance_by_pctd <- function(s2b = NULL, sitenum = NULL, myvars = c(names_d_count, names_d_subgroups_count)[1], dpctvar = paste0("pct", myvars)) {
   
   # library(data.table)
   # library(EJAM)
@@ -21,21 +21,21 @@ plot_distance_by_pctd <- function(s2b = NULL, mysiteid = NULL, myvars = c(names_
 if (is.null(s2b)) {  
   s2b <- copy(
     getblocksnearby(testpoints_n(2), radius = 6.2)
-    # sites2blocks_example1000pts_1miles[siteid == sample(unique(sites2blocks_example1000pts_1miles$siteid), 1), ]
+    #  
     )
 }
-  if (is.null(mysiteid)) {
-   mysiteid <- s2b$siteid[1]
+  if (is.null(sitenum)) {
+   sitenum <- s2b$ejam_uniq_id[1]
   }
   # browser()
   # s2b_example <- getblocksnearby(testpoints_n(2), radius = 3.2)
   # s2b <- copy(s2b_example)
-  # mysiteid <- sample(unique(s2b$siteid), 1)
+  # sitenum <- sample(unique(s2b$ejam_uniq_id), 1)
 # myvars <- sample(c(names_d_count, names_d_subgroups_count), 1)
   
-myST <- EJAM::state_from_blockid(as.vector(unlist(s2b[siteid == mysiteid, blockid[1]])))
+myST <- EJAM::state_from_blockid(as.vector(unlist(s2b[ejam_uniq_id == sitenum, blockid[1]])))
 myvarsall <- c(myvars, "pop", "bgid")
-s2b <- data.table::copy(s2b[siteid == mysiteid & blockwt > 0, ])
+s2b <- data.table::copy(s2b[ejam_uniq_id == sitenum & blockwt > 0, ])
 s2b <- merge(s2b, blockgroupstats[pop > 0, ..myvarsall], all.x = TRUE, all.y = FALSE, by = "bgid")
 
 # FORMULAS GO HERE:
@@ -56,7 +56,7 @@ plot(s2b$distance, s2b$pctdwithin, type = "b",
      xlab = "Distance (miles)", ylab = "Percent Demographics within X miles",
      xlim = c(0, max(s2b$distance)), 
      ylim = c(0, usastats[usastats$PCTILE == 100, dpctvar]),
-     main = paste0(fixcolnames(dpctvar, "r", "long"), " as a function of distance from site number ", mysiteid))
+     main = paste0(fixcolnames(dpctvar, "r", "long"), " as a function of distance from site number ", sitenum))
 
 abline( h = statestats[statestats$PCTILE == "mean" & statestats$REGION == myST, dpctvar], col = "red")
 abline( h = statestats[statestats$PCTILE == "75"   & statestats$REGION == myST, dpctvar], col = "red",  lty = 4, lwd = 0.5)

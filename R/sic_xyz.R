@@ -4,7 +4,7 @@
 #' @param ... passed to [naics_from_any()]
 #' @return relevant rows of the data.table called frs, which has column names that are
 #'   "lat" "lon" "REGISTRY_ID" "PRIMARY_NAME" "NAICS" "SIC" "PGM_SYS_ACRNMS"
-#' @seealso [siteid_from_sic()] [sic_from_any()]
+#' @seealso [regid_from_sic()] [sic_from_any()]
 #' @export
 #'
 #' @examples 
@@ -14,14 +14,14 @@
 #'   sic_from_name("silver")
 #'   sic_from_any('0780')
 #'   frs_from_sic('0780')
-#'   siteid_from_sic('0780')
+#'   regid_from_sic('0780')
 #'   latlon_from_sic('0780')
 #'   
 frs_from_sic <- function(sic_code_or_name, ...) {
   
   if (!exists("frs")) dataload_from_pins("frs")
   
-  frs[REGISTRY_ID %in% siteid_from_sic(sic_from_any(sic_code_or_name, ...)$code, id_only = TRUE) , ]
+  frs[REGISTRY_ID %in% regid_from_sic(sic_from_any(sic_code_or_name, ...)$code, id_only = TRUE) , ]
 }
 ############################################################################## # 
 
@@ -44,7 +44,7 @@ frs_from_sic <- function(sic_code_or_name, ...) {
 #' @export
 #'
 #' @examples 
-#'   siteid_from_sic('7300')
+#'   regid_from_sic('7300')
 #'   latlon_from_sic('7300')
 #'   latlon_from_sic(sic_from_any("cheese")[,code] )
 #'   head(latlon_from_sic(c('6150', '6300', '5995'), id_only=TRUE))
@@ -73,7 +73,7 @@ latlon_from_sic <- function(sic, id_only=FALSE) {
 
 #' @inherit latlon_from_sic
 #' @export
-siteid_from_sic <- latlon_from_sic
+regid_from_sic <- latlon_from_sic
 ############################################################################## # 
 
 
