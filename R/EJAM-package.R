@@ -1,5 +1,5 @@
 #' @docType package
-#' @title EJAM - Environmental Justice (EJ) Analysis Multisite tool
+#' @title EJAM - Environmental Justice Analysis Multisite tool
 #' @name EJAM
 #' @aliases EJAM-package blockwts blockpoints blockid2fips  bgid2fips 
 #'
@@ -142,7 +142,7 @@
 #'   - ** quaddata.rda** data.table with point location of internal point for each of 8 million Census blocks
 #'     is used prior to or during startup of EJAM to create an index stored in memory, called localtree.
 #'   
-#'     quaddata can be obtained using [data_load_from_aws()]
+#'     quaddata can be obtained using [dataload_from_pins()]
 #'     
 #'     localtree is the index made from quaddata via [indexblocks()] (using the SearchTrees package)
 #' 
@@ -166,7 +166,7 @@
 #'       (for each indicator in blockgroupstats, and bgej) in each zone (USA, or a state or DC, PR).
 #'       Need to update each time blockgroupstats is updated. Taken from EJScreen data or ejscreen package file lookupUSA and lookupStates
 #'  
-#'   - **blockwts** see [data_load_from_aws()]
+#'   - **blockwts** see [dataload_from_pins()]
 #'    Required by [doaggregate()]. A data.table of 6-8m rows 
 #'     - blockwt  The fraction of parent blockgroup decennial pop that is in this one block
 #'     - block_radius_miles squared times pi would equal the land plus water area in square miles
