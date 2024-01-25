@@ -2001,15 +2001,24 @@ app_server <- function(input, output, session) {
       d_up <- shp_valid
       d_up_geo <- d_up[,c("ejam_uniq_id","geometry")]
       d_merge = merge(d_up_geo,data_processed()$results_bysite, by = "ejam_uniq_id", all.x = FALSE, all.y = TRUE)
+      
+      popup_labels <- fixcolnames(namesnow = setdiff(names(d_merge),'geometry'), oldtype = 'r', newtype = 'shortlabel')
+      
       if (input$bt_rad_buff > 0) {
         d_uploads <- sf::st_buffer(d_merge[d_merge$valid==T, ] , # was "ESRI:102005" but want 4269
+
                                    dist = units::set_units(input$bt_rad_buff, "mi")) 
         leaflet(d_uploads) %>%  addTiles()  %>%
-          addPolygons(color = circle_color) 
+          addPolygons(data=d_uploads, color = circle_color,
+                      popup = popup_from_df(d_uploads %>% sf::st_drop_geometry(), labels = popup_labels),
+                      popupOptions = popupOptions(maxHeight = 200)) #%>% 
       } else {
         data_spatial_convert <- d_merge[d_merge$valid==T, ]  %>% st_zm() %>% as('Spatial')
         leaflet(data_spatial_convert) %>% addTiles()  %>%
-          addPolygons(color = circle_color)
+          addPolygons(color = circle_color,
+                      popup = popup_from_df(data_spatial_convert %>% sf::st_drop_geometry(),
+                                            labels=popup_labels),
+                      popupOptions = popupOptions(maxHeight = 200))
       }
       
     } else { #  not shapefile
@@ -2095,7 +2104,8 @@ app_server <- function(input, output, session) {
       leafletProxy(mapId = 'an_leaf_map', session) %>%
         # addPolygons(data=d_uploadb, color="red") %>% 
         addPolygons(data = d_uploads, 
-                    popup = popup_from_df(d_uploads %>% sf::st_drop_geometry()))
+                    popup = popup_from_df(d_uploads %>% sf::st_drop_geometry()),
+                    popupOptions = popupOptions(maxHeight = 200))
       #leafletProxy(mapId = 'an_leaf_map', session,data=d_uploads) %>% addPolygons()
       
     } else # if (input$circle_type == 'circles') {
