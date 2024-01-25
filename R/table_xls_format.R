@@ -13,6 +13,7 @@
 #' @param plotlatest optional logical. If TRUE, the most recently displayed plot (prior to this function being called) will be inserted into a tab called plot2
 #' @param plotfilename the full path including name of .png file to insert
 #' @param mapadd logical optional - try to include a map of the points 
+#' @param report_map leaflet map object passed from Shiny app to display in 'Map' sheet
 #' @param ok2plot can set to FALSE to prevent plots from being attempted, while debugging
 #' @param analysis_title optional title passed from Shiny app to 'Notes' sheet
 #' @param buffer_desc optional description of buffer used in analysis, passed to 'Notes' sheet
