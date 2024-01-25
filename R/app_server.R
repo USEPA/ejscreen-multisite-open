@@ -1945,18 +1945,19 @@ app_server <- function(input, output, session) {
       
     #if shapefile, merge geometry and create buffer if nonzero buffer is set
     if (submitted_upload_method() == "SHP") {
-      d_up <- data_uploaded()
+      shp_valid <- data_uploaded()[data_uploaded()$valid==T, ] 
+      d_up <- shp_valid
       #d_up_geo <- d_up[,c("siteid","geometry")]
       #d_merge = merge(d_up_geo,data_processed()$results_bysite, by = "siteid", all.x = FALSE, all.y = TRUE)
       d_up_geo <- d_up[,c("ejam_uniq_id","geometry")]
       d_merge = merge(d_up_geo,data_processed()$results_bysite, by = "ejam_uniq_id", all.x = FALSE, all.y = TRUE)
       if (input$bt_rad_buff > 0) {
-        d_uploads <- sf::st_buffer(d_merge, # was "ESRI:102005" but want 4269
+        d_uploads <- sf::st_buffer(d_merge[d_merge$valid==T, ] , # was "ESRI:102005" but want 4269
                                    dist = units::set_units(input$bt_rad_buff, "mi")) 
         leaflet(d_uploads) %>%  addTiles()  %>%
           addPolygons(color = circle_color) 
       } else {
-        data_spatial_convert <- d_merge %>% st_zm() %>% as('Spatial')
+        data_spatial_convert <- d_merge[d_merge$valid==T, ]  %>% st_zm() %>% as('Spatial')
         leaflet(data_spatial_convert) %>% addTiles()  %>%
           addPolygons(color = circle_color)
       }
