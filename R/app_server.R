@@ -2031,7 +2031,9 @@ app_server <- function(input, output, session) {
   
     if (current_upload_method() == "SHP") {
       if (input$bt_rad_buff > 0) {
-        d_uploads <- sf::st_buffer(data_uploaded(), # was "ESRI:102005" but want 4269
+        shp_valid <- data_uploaded()[data_uploaded()$valid==T, ] # *** remove this if shapefile_clean() will do it
+        
+        d_uploads <- sf::st_buffer(shp_valid, # was "ESRI:102005" but want 4269
                                    dist = units::set_units(input$bt_rad_buff, "mi")) 
         leafletProxy(mapId = 'an_leaf_map', session) %>%
           addPolygons(data = d_uploads, color = "red") 
