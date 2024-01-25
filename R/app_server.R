@@ -2808,7 +2808,8 @@ app_server <- function(input, output, session) {
           #  Avoid making copies since that slows it down, unless an expert user knows they need it. 
           
           
-          #mapadd = TRUE,
+          mapadd = TRUE,
+          report_map = report_map(),
           
           hyperlink_colnames = c("EJScreen Report", "EJScreen Map" ,'ECHO report'),  # need to ensure these get formatted right to work as links in Excel
           # heatmap_colnames=names(table_as_displayed)[pctile_colnums], # can use defaults

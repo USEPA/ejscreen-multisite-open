@@ -59,6 +59,7 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
                             plotlatest = FALSE, 
                             plotfilename = NULL, 
                             mapadd = FALSE,
+                            report_map=NULL,
                             ok2plot = TRUE,
                             analysis_title = "EJAM analysis",
                             buffer_desc = "Selected Locations", 
@@ -289,8 +290,13 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     mytempdir <- tempdir()
     mypath <- file.path(mytempdir, "temp.html")
     cat("drawing map\n")
-    z <- mapfast(eachsite, radius = radius_or_buffer_in_miles, column_names = 'ej')
-    htmlwidgets::saveWidget(z, mypath, selfcontained = FALSE)
+    ## add map from Shiny app if applicable
+    if(!is.null(report_map)){
+      htmlwidgets::saveWidget(report_map, mypath, selfcontained = FALSE)
+    } else {
+      z <- mapfast(eachsite, radius = radius_or_buffer_in_miles, column_names = 'ej')
+      htmlwidgets::saveWidget(z, mypath, selfcontained = FALSE)
+    }
     webshot::webshot(mypath, file = file.path(mytempdir, "map1.png"), cliprect = "viewport")
     if (testing) cat(file.path(mytempdir, "map1.png"), '\n')
     openxlsx::insertImage(wb, sheet = 'map', file = file.path(mytempdir, 'map1.png'),
