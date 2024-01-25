@@ -1332,8 +1332,13 @@ app_server <- function(input, output, session) {
         
         canmap <- FALSE
       } else {
-
-          try(map_shapes_leaflet(shapes = data_uploaded())) # popups?
+        bbox <- sf::st_bbox(data_uploaded())
+        leaflet() %>% addTiles() %>%
+          fitBounds(
+            lng1 = as.numeric(bbox[1]), lng2 = as.numeric(bbox[3]),
+            lat1 = as.numeric(bbox[2]), lat2 = as.numeric(bbox[4])
+          )
+          #try(map_shapes_leaflet(shapes = data_uploaded() %>% st_zm())) # popups?
       }
       
     } else if (current_upload_method() == 'FIPS') {
