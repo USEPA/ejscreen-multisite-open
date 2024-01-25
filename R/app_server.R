@@ -1419,17 +1419,26 @@ app_server <- function(input, output, session) {
   ## output: draw map of uploaded places
   
   output$an_leaf_map <- leaflet::renderLeaflet({
-    ## check if map of uploaded points exists
     
+    ## check if map of uploaded points exists
       tryCatch({
         orig_leaf_map()
       },
-        shiny.silent.error = function(e) {
+        ## if it throws an error
+        error = function(e){
+          if(e == ""){
+            ## if does not exist, use blank map of US
+            leaflet() %>% addTiles() %>% setView(lat = 39.8283, lng = -98.5795, zoom = 4)
+            
+          } else {
+            ## otherwise, show validate error
+            validate(conditionMessage(e))
+            
+          }
           
-        ## if does not exist, use blank map of US
-        leaflet() %>% addTiles() %>% setView(lat = 39.8283, lng = -98.5795, zoom = 4)
-          
-      })
+        }
+       
+      )
 
   })
   
