@@ -2040,8 +2040,7 @@ app_server <- function(input, output, session) {
             popup = popup_from_df(
               data_processed()$results_bysite %>% 
                 dplyr::mutate(dplyr::across(
-                  dplyr::where(is.numeric), \(x) round(x, digits = 3))) %>% 
-                dplyr::select(-valid, -invalid_msg), 
+                  dplyr::where(is.numeric), \(x) round(x, digits = 3))), 
               labels = popup_labels),
             popupOptions = popupOptions(maxHeight = 200)
           )} else {
