@@ -2586,9 +2586,9 @@ app_server <- function(input, output, session) {
     # )
   })
   #############################################################################  # 
-  
+  ## SUMMARY REPORT ON 1 SITE (via Button on Table of Sites) ####
   cur_button <- reactiveVal(NULL)
-  
+  # also see  ejam2report() which mirrors the code below but as a function outside shiny
   observeEvent(
     lapply(
       names(input)[grep("select_button[0-9]+",names(input))],
