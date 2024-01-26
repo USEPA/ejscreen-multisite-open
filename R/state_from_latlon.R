@@ -78,6 +78,10 @@ state_from_blocktable <- function(dt_with_blockid) {
 #'
 #' @examples state_from_blockid(c(8174952, blockpoints$blockid[5:6]))
 state_from_blockid <- function(blockid) {
+  if (!exists('blockid2fips')) {
+    dataload_from_pins(varnames = 'blockid2fips')
+  }
+  if (!exists('blockid2fips')) {return(rep(NA, length(blockid)))}
   stateinfo$ST[match(blockid2fips[blockid, substr(blockfips,1,2)], stateinfo$FIPS.ST)]
 }
 

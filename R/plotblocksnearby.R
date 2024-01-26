@@ -203,6 +203,13 @@ plotblocksnearby <- function(sitepoints, radius=3, sites2blocks, siteidvarname =
       mapinfo <- xb
     }
     if ("blockid" %in% names(mapinfo)) {
+      if (!exists('blockid2fips')) {
+        dataload_from_pins("blockid2fips")
+        if (!exists('blockid2fips')) {
+          warning("cannot find blockid2fips")
+          blockid2fips <- data.table(blockid = NA, blockfips = NA)
+        }
+        }
       mapinfo[blockid2fips, blockfips := blockfips, on = "blockid"]
       mapinfo[ , bgfips := substr(blockfips, 1, 12)]
       mapinfo[blockgroupstats, bgpop := pop, on = 'bgid']
