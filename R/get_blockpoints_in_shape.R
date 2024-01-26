@@ -83,7 +83,8 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
   blockpoints_sf <- sf::st_as_sf(blockpoints_filt, coords = c('lon', 'lat'), crs = crs)
   
   if (!exists("blockpoints_sf")) {
-    stop("requires the blockpoints   called blockpoints_sf  you can make like this: \n blockpoints_sf <-  blockpoints |> sf::st_as_sf(coords = c('lon', 'lat'), crs= 4269) \n # Geodetic CRS:  NAD83 ")
+    warning("requires the blockpoints   called blockpoints_sf  you can make like this: \n blockpoints_sf <-  blockpoints |> sf::st_as_sf(coords = c('lon', 'lat'), crs= 4269) \n # Geodetic CRS:  NAD83 ")
+    return(NULL)
   }
   
   # CHECK FORMAT OF polys - ensure it is spatial object (with data.frame/ attribute table? ) 

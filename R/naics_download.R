@@ -12,7 +12,9 @@
 naics_download <- function(year=2017, urlpattern='https://www.census.gov/naics/YYYYNAICS/2-6%20digit_YYYY_Codes.xlsx', destfile= paste0('~/Downloads/', year, 'NAICS.xlsx')) {
   # this can be used to create the NAICS dataset as for this package
   # See \url{https://www.census.gov/naics/}
-  if (!(year %in% c(2012, 2017, 2020))) {stop('only works for 2012, 2017, 2020')}
+  if (!(year %in% c(2012, 2017, 2020))) {warning('only works for 2012, 2017, 2020')
+    return(NULL)  
+  }
   url <- gsub('YYYY',year, urlpattern)
   if (year == 2012) {url <- gsub('6%20', '', url)} 
   # 'https://www.census.gov/naics/2022NAICS/2-6%20digit_2022_Codes.xlsx'

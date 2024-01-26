@@ -74,7 +74,10 @@ speedtest <- function(n=10, sitepoints=NULL, weighting='frs',
     }
     test_getblocksnearby = FALSE; test_doaggregate = FALSE; test_batch.summarize = FALSE
   }
-  if (test_batch.summarize & !test_doaggregate) {  stop("cannot test batch.summarize without doing doaggregate")}
+  if (test_batch.summarize & !test_doaggregate) {  
+    warning("cannot test batch.summarize without doing doaggregate")
+    return(NULL)
+  }
   cat('\nsee profvis::profvis({}) for viewing where the bottlenecks are \n\n')
   
   # Test script that times each step of EJAM for a large dataset

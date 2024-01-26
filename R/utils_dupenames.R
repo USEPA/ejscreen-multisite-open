@@ -178,7 +178,8 @@ all_equal_functions <- function(fun="latlon_infer", package1="EJAM", package2="E
   #                                                                Called from: all_equal_functions(fun = var, package1 = ddd$package[ddd$variable == 
   
   if (!(is.character(fun) & is.character(package1) & is.character(package2))) {
-    stop("all params must be quoted ")
+    warning("all params must be quoted ")
+    return(NA)
   }
   # we could attach
   f1 = try(
@@ -188,7 +189,8 @@ all_equal_functions <- function(fun="latlon_infer", package1="EJAM", package2="E
   )
   if (class(f1) == "try-error"  ) {
     # warning("fails when checking a package that is loaded but not attached - library func allows it to work. ")
-    stop(fun, " not found in ", package1 )
+    warning(fun, " not found in ", package1 )
+    return(NA)
   }
   if (!(is.function(f1))) {warning(package1, "::", fun, " is not a function");return(NA)}
   
@@ -200,7 +202,8 @@ all_equal_functions <- function(fun="latlon_infer", package1="EJAM", package2="E
   
   if (class(f2) == "try-error") {
     # warning("fails when checking a package that is loaded but not attached - library func allows it to work. ")
-    stop(fun, " not found in ",  package2)
+    warning(fun, " not found in ",  package2)
+    return(NA)
   }
   if (!(is.function(f2))) {warning(package2, "::", fun, " is not a function");return(NA)}
   

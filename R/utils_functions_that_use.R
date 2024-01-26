@@ -43,7 +43,12 @@ functions_that_use <- function(text = "stop\\(", pkg = "EJAM", ignore_comments =
       }
       
     } else {
+      if(shiny::isRunning()){
+        warning('pkg must be the name of an installed package or a path to root of source package with R subfolder that has .R files')
+        return(NULL)
+      } else {
       stop('pkg must be the name of an installed package or a path to root of source package with R subfolder that has .R files')
+      }
     }
   } else {
     # it is an installed package
