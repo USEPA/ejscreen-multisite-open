@@ -2,7 +2,7 @@
 % Please edit documentation in R/dataload_from_pins.R
 \name{dataload_from_pins}
 \alias{dataload_from_pins}
-\title{dataload_from_pins - download / load datasets from pin board}
+\title{Utility to download / load datasets from pin board}
 \usage{
 dataload_from_pins(
   varnames = c(c("blockwts", "blockpoints", "blockid2fips", "quaddata"), "bgej",
@@ -55,7 +55,7 @@ regardless of whether they are already in the environment, and
 regardless of whether they were specified among varnames, or are related to EJAM at all.
 }
 \description{
-dataload_from_pins - download / load datasets from pin board
+Utility to download / load datasets from pin board
 }
 \details{
 This does work if on VPN and if credentials already set up for the user doing this:

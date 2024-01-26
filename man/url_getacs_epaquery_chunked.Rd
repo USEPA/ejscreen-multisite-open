@@ -2,7 +2,7 @@
 % Please edit documentation in R/url_getacs_epaquery-DRAFT.R
 \name{url_getacs_epaquery_chunked}
 \alias{url_getacs_epaquery_chunked}
-\title{url_getacs_epaquery_chunked - experimental/ work in progress: in chunks, get ACS data via EPA API}
+\title{experimental/ work in progress: in chunks, get ACS data via EPA API}
 \usage{
 url_getacs_epaquery_chunked(
   objectIds = 1:3,
@@ -33,7 +33,7 @@ url_getacs_epaquery_chunked(
 table
 }
 \description{
-url_getacs_epaquery_chunked - experimental/ work in progress: in chunks, get ACS data via EPA API
+experimental/ work in progress: in chunks, get ACS data via EPA API
 }
 \examples{
 \dontrun{

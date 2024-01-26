@@ -2,7 +2,7 @@
 % Please edit documentation in R/getblocks_diagnostics.R
 \name{getblocks_diagnostics}
 \alias{getblocks_diagnostics}
-\title{getblocks_diagnostics - Lots of stats about # of blocks, # of sites, etc.}
+\title{utility - How many blocks and many other stats about blocks and sites}
 \usage{
 getblocks_diagnostics(
   x,
@@ -24,7 +24,7 @@ getblocks_diagnostics(
 A list of stats
 }
 \description{
-getblocks_diagnostics - Lots of stats about # of blocks, # of sites, etc.
+utility - How many blocks and many other stats about blocks and sites
 }
 \examples{
   getblocks_diagnostics(testoutput_getblocksnearby_10pts_1miles)

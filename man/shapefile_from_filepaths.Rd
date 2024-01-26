@@ -2,7 +2,7 @@
 % Please edit documentation in R/shapefile_xyz.R
 \name{shapefile_from_filepaths}
 \alias{shapefile_from_filepaths}
-\title{shapefile_from_filepaths  -  Read shapefile from disk based on the filenames given}
+\title{Read shapefile from disk based on the filenames given}
 \usage{
 shapefile_from_filepaths(filepaths = NULL, cleanit = TRUE, crs = 4269)
 }
@@ -19,7 +19,7 @@ Also can check this via x <- sf::st_crs(sf::read_sf()); x$input}
 a shapefile object using sf::read_sf()
 }
 \description{
-shapefile_from_filepaths  -  Read shapefile from disk based on the filenames given
+Read shapefile from disk based on the filenames given
 }
 \seealso{
 \code{\link[=shapefile_from_folder]{shapefile_from_folder()}}

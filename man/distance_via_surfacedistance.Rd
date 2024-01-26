@@ -2,8 +2,7 @@
 % Please edit documentation in R/distance_via_surfacedistance.R
 \name{distance_via_surfacedistance}
 \alias{distance_via_surfacedistance}
-\title{distance_via_surfacedistance
-Convert surface distance to actual distance}
+\title{distance_via_surfacedistance}
 \usage{
 distance_via_surfacedistance(x)
 }
@@ -19,4 +18,7 @@ distance_via_surfacedistance(x)
    return( earthRadius_miles * 2*sin(angle_rad/2) )
    }
 }\if{html}{\out{</div>}}
+}
+\details{
+Convert surface distance to actual distance
 }

@@ -11,7 +11,7 @@
 \alias{bgid2fips}
 \title{EJAM - Environmental Justice (EJ) Analysis Multisite tool}
 \description{
-This package provides functions and data for very fast proximity analysis
+EJAM provides functions and data for very fast proximity analysis
 for a large number of locations, or "buffers", summarizing conditions at each location.
 It summarizes conditions as the conditions for the average resident in the buffer at that location.
 A buffer or location here is defined as the area within a specified distance of a specified site.
@@ -27,9 +27,9 @@ This means the tools can provide the same information that an EJScreen standard 
 but for a large number of reports (one for each site).
 }
 \section{\strong{Vignette}}{
-Please see the vignette at <EJAM-vignette.html> and web format documentation of functions and data at <EJAM.html>
-
-(development version of vignette can be knit from EJAM/www folder of locally installed package)
+Walk-through guides will be available via \code{vignette(package = "EJAM")} or <EJAM-vignette.html> and
+pdf or html format documentation of functions and data will be at <EJAM.pdf> or <EJAM.html>
+Also see the README file.
 }
 
 \section{\strong{Key Functions:}}{

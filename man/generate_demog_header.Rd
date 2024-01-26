@@ -2,10 +2,10 @@
 % Please edit documentation in R/community_report_helper_funs.R
 \name{generate_demog_header}
 \alias{generate_demog_header}
-\title{generate_demog_header - build header for demog. + envt. tables in community report}
+\title{Build header for demog. + envt. tables in community report}
 \usage{
 generate_demog_header()
 }
 \description{
-generate_demog_header - build header for demog. + envt. tables in community report
+Build header for demog. + envt. tables in community report
 }

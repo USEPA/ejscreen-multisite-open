@@ -2,8 +2,7 @@
 % Please edit documentation in R/table_tall_from_overall.R
 \name{table_tall_from_overall}
 \alias{table_tall_from_overall}
-\title{table_tall_from_overall
-Format the results_overall part of the output of ejamit() or doaggregate()}
+\title{Format the results_overall part of the output of ejamit() or doaggregate()}
 \usage{
 table_tall_from_overall(results_overall, longnames)
 }
@@ -17,8 +16,7 @@ from output of ejamit() or doaggregate()}
 data.table that is one row per indicator
 }
 \description{
-table_tall_from_overall
-Format the results_overall part of the output of ejamit() or doaggregate()
+Take a quick look at results in the RStudio console
 }
 \examples{
  table_tall_from_overall(testoutput_ejamit_10pts_1miles$results_overall)

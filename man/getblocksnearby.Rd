@@ -2,7 +2,7 @@
 % Please edit documentation in R/getblocksnearby.R
 \name{getblocksnearby}
 \alias{getblocksnearby}
-\title{getblocksnearby - Fast way to find nearby points (distance to each Census block centroid near each site)}
+\title{Very fast way to distances to all nearby Census blocks}
 \usage{
 getblocksnearby(
   sitepoints,
@@ -62,6 +62,9 @@ inside the circular buffer more accurately and more quickly than
 areal apportionment of block groups would provide.
 }
 \details{
+Get distance from each site (e.g., facility) to each
+Census block centroid within some radius
+
 See \code{\link[=ejamit]{ejamit()}} for examples.
 
 getblocksnearby() is a wrapper redirecting to the right version, like \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}}

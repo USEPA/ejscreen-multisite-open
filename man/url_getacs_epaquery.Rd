@@ -2,7 +2,7 @@
 % Please edit documentation in R/url_getacs_epaquery-DRAFT.R
 \name{url_getacs_epaquery}
 \alias{url_getacs_epaquery}
-\title{url_getacs_epaquery - experimental/ work in progress: get ACS data via EPA API (for <200 places)}
+\title{experimental/ work in progress: get ACS data via EPA API (for <200 places)}
 \usage{
 url_getacs_epaquery(
   objectIds = 1:3,
@@ -31,7 +31,8 @@ table
 }
 \description{
 uses ACS2019 rest services ejscreen ejquery MapServer 7
-
+}
+\details{
 Documentation of format and examples of input parameters:
 
 \url{https://geopub.epa.gov/arcgis/sdk/rest/index.html#/Query_Map_Service_Layer/02ss0000000r000000/}

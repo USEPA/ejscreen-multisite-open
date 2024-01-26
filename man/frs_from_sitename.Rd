@@ -2,8 +2,7 @@
 % Please edit documentation in R/frs_from_xyz.R
 \name{frs_from_sitename}
 \alias{frs_from_sitename}
-\title{frs_from_sitename - Use site name text search to see FRS Facility Registry Service data on those EPA-regulated sites
-VERY SLOW search within PRIMARY_NAME of facilities for matching text}
+\title{Use site name text search to see FRS Facility Registry Service data on those EPA-regulated sites}
 \usage{
 frs_from_sitename(sitenames, ignore.case = TRUE, fixed = FALSE)
 }
@@ -19,7 +18,6 @@ relevant rows of the data.table called frs, which has column names that are
 "lat" "lon" "REGISTRY_ID" "PRIMARY_NAME" "NAICS" "PGM_SYS_ACRNMS"
 }
 \description{
-frs_from_sitename - Use site name text search to see FRS Facility Registry Service data on those EPA-regulated sites
 VERY SLOW search within PRIMARY_NAME of facilities for matching text
 }
 \examples{

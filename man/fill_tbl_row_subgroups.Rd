@@ -2,7 +2,7 @@
 % Please edit documentation in R/community_report_helper_funs.R
 \name{fill_tbl_row_subgroups}
 \alias{fill_tbl_row_subgroups}
-\title{fill_tbl_row_subgroup - write a demographic subgroup indicator to an html table row}
+\title{Write a demographic subgroup indicator to an html table row}
 \usage{
 fill_tbl_row_subgroups(output_df, var_value, var_name)
 }
@@ -14,5 +14,5 @@ fill_tbl_row_subgroups(output_df, var_value, var_name)
 \item{var_name, }{nicer name of indicator to use in table row; can include HTML sub/superscripts}
 }
 \description{
-fill_tbl_row_subgroup - write a demographic subgroup indicator to an html table row
+Write a demographic subgroup indicator to an html table row
 }

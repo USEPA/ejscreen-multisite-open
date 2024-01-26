@@ -2,7 +2,7 @@
 % Please edit documentation in R/fips_x_from_y.R
 \name{counties_as_sites}
 \alias{counties_as_sites}
-\title{counties_as_sites - Analyze US Counties as if they were sites, to get EJ indicators summary for each county}
+\title{Analyze US Counties as if they were sites, to get EJ indicators summary for each county}
 \usage{
 counties_as_sites(fips)
 }
@@ -17,7 +17,7 @@ all pairs of county fips - bgid, and ejam_uniq_id (1 through N) assigned to each
 but missing blockid and distance so not ready for doaggregate().
 }
 \description{
-counties_as_sites - Analyze US Counties as if they were sites, to get EJ indicators summary for each county
+Analyze US Counties as if they were sites, to get EJ indicators summary for each county
 }
 \details{
 This function provides one row per blockgroup.

@@ -2,8 +2,7 @@
 % Please edit documentation in R/fips_from_table.R
 \name{fips_from_table}
 \alias{fips_from_table}
-\title{fips_from_table - read and clean FIPS column from a table, after inferring which col it is
-Just read the codes in one column of a table obtained from something like read.csv, or excel, etc.}
+\title{Read and clean FIPS column from a table, after inferring which col it is}
 \usage{
 fips_from_table(fips_table, addleadzeroes = TRUE, inshiny = FALSE)
 }
@@ -23,7 +22,6 @@ Aliases are: c("FIPS", "fips", "fips_code", "fipscode", "Fips", "statefips",
 a vector of fips codes
 }
 \description{
-fips_from_table - read and clean FIPS column from a table, after inferring which col it is
 Just read the codes in one column of a table obtained from something like read.csv, or excel, etc.
 }
 \seealso{

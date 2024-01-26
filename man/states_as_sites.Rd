@@ -2,7 +2,7 @@
 % Please edit documentation in R/fips_x_from_y.R
 \name{states_as_sites}
 \alias{states_as_sites}
-\title{states_as_sites - Analyze US States as if they were sites, to get EJ indicators summary}
+\title{Analyze US States as if they were sites, to get EJ indicators summary}
 \usage{
 states_as_sites(fips)
 }
@@ -17,7 +17,7 @@ all pairs of states fips - bgid, and ejam_uniq_id (1 through N) assigned to each
 but missing blockid and distance so not ready for doaggregate().
 }
 \description{
-states_as_sites - Analyze US States as if they were sites, to get EJ indicators summary
+Analyze US States as if they were sites, to get EJ indicators summary
 }
 \details{
 This function provides one row per blockgroup.

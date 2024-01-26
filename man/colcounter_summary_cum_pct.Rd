@@ -2,7 +2,7 @@
 % Please edit documentation in R/colcounter_xyz.R
 \name{colcounter_summary_cum_pct}
 \alias{colcounter_summary_cum_pct}
-\title{colcounter_summary_cum_pct - Summarize what percent of rows have AT LEAST N columns at or above (or below) various thresholds}
+\title{Summarize what percent of rows have AT LEAST N columns at or above (or below) various thresholds}
 \usage{
 colcounter_summary_cum_pct(x, thresholdlist, ...)
 }
@@ -16,8 +16,8 @@ like percentiles for example.}
 like or.tied=TRUE, na.rm=TRUE, below=FALSE, one.cut.per.col=FALSE}
 }
 \description{
-colcounter_summary_cum_pct - Summarize what percent of rows have AT LEAST N columns at or above (or below) various thresholds
+Summarize what percent of rows have AT LEAST N columns at or above (or below) various thresholds
 }
 \seealso{
-colcounter_summary_all() colcounter_summary() colcounter_summary_cum() colcounter_summary_pct() colcounter_summary_cum_pct()
+\code{\link[=colcounter_summary_all]{colcounter_summary_all()}} \code{\link[=colcounter_summary]{colcounter_summary()}} \code{\link[=colcounter_summary_cum]{colcounter_summary_cum()}} \code{\link[=colcounter_summary_pct]{colcounter_summary_pct()}} \code{\link[=colcounter_summary_cum_pct]{colcounter_summary_cum_pct()}}
 }

@@ -2,8 +2,7 @@
 % Please edit documentation in R/dataload_from_local.R
 \name{dataload_from_local}
 \alias{dataload_from_local}
-\title{dataload_from_local - load datasets from local disk folder
-utility for analysts/developers to store large block/other data locally instead of redownloading}
+\title{Load datasets from local disk folder}
 \usage{
 dataload_from_local(
   varnames = c(c("blockwts", "blockpoints", "blockid2fips", "quaddata"), "bgej",
@@ -39,8 +38,8 @@ but only for those not already in memory, so it is
 just the ones loaded from disk because not already in memory and found on disk locally.
 }
 \description{
-dataload_from_local - load datasets from local disk folder
-utility for analysts/developers to store large block/other data locally instead of redownloading
+Utility for analysts / developers to store large block /
+other data locally instead of redownloading
 }
 \details{
 See \code{\link[=dataload_from_pins]{dataload_from_pins()}} also.

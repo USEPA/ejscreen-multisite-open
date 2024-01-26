@@ -2,8 +2,7 @@
 % Please edit documentation in R/fips_x_from_y.R
 \name{fips2name}
 \alias{fips2name}
-\title{fips2name - Get county or state names from county or state FIPS codes
-Get county or state names from county or state FIPS codes}
+\title{Get county or state names from county or state FIPS codes}
 \usage{
 fips2name(fips, ...)
 }
@@ -19,7 +18,6 @@ vector of state and/or county names,
 where county names optionally have comma and 2-character abbreviation or full state name.
 }
 \description{
-fips2name - Get county or state names from county or state FIPS codes
 Get county or state names from county or state FIPS codes
 }
 \examples{

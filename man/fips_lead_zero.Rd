@@ -2,11 +2,7 @@
 % Please edit documentation in R/fips_lead_zero.R
 \name{fips_lead_zero}
 \alias{fips_lead_zero}
-\title{fips_lead_zero
-Add leading zeroes to fips codes if missing, replace with NA if length invalid
-Note it does NOT VALIDATE FIPS -
-It does NOT check if FIPS is valid other than checking its length seems OK,
-i.e., it might be a state, county, tract, blockgroup, or block FIPS code.}
+\title{Add leading zeroes to fips codes if missing, replace with NA if length invalid}
 \usage{
 fips_lead_zero(fips)
 }
@@ -17,11 +13,9 @@ fips_lead_zero(fips)
 vector of same length
 }
 \description{
-fips_lead_zero
-Add leading zeroes to fips codes if missing, replace with NA if length invalid
-Note it does NOT VALIDATE FIPS -
-It does NOT check if FIPS is valid other than checking its length seems OK,
-i.e., it might be a state, county, tract, blockgroup, or block FIPS code.
+Ensures FIPS has the leading zero, but does NOT VALIDATE FIPS -
+It does NOT check if FIPS is valid other than checking its length.
+fips could be a state, county, tract, blockgroup, or block FIPS code.
 }
 \examples{
 fips_lead_zero(c(1,"01",1234,"1234","12345",123456))

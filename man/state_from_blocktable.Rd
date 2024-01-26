@@ -2,8 +2,7 @@
 % Please edit documentation in R/state_from_latlon.R
 \name{state_from_blocktable}
 \alias{state_from_blocktable}
-\title{state_from_blocktable - was used only in some special cases of using testpoints_n()
-given data.table with blockid column, get state abbreviation of each - not used?}
+\title{was used only in some special cases of using testpoints_n()}
 \usage{
 state_from_blocktable(dt_with_blockid)
 }
@@ -14,7 +13,6 @@ state_from_blocktable(dt_with_blockid)
 vector of ST info like AK, CA, DE, etc.
 }
 \description{
-state_from_blocktable - was used only in some special cases of using testpoints_n()
 given data.table with blockid column, get state abbreviation of each - not used?
 }
 \examples{

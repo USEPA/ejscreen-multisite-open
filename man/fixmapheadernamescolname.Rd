@@ -2,7 +2,7 @@
 % Please edit documentation in R/fixmapheadernamescolname.R
 \name{fixmapheadernamescolname}
 \alias{fixmapheadernamescolname}
-\title{fixmapheadernamescolname - utility to convert aliases to proper colnames of map_headernames}
+\title{utility to convert aliases to proper colnames of map_headernames}
 \usage{
 fixmapheadernamescolname(x)
 }
@@ -13,7 +13,7 @@ fixmapheadernamescolname(x)
 vector where aliases are replaced with actual colnames and unmatched ones left as-is
 }
 \description{
-fixmapheadernamescolname - utility to convert aliases to proper colnames of map_headernames
+utility to convert aliases to proper colnames of map_headernames
 }
 \examples{
   fixmapheadernamescolname(c('long', 'csv', 'api', 'r'))

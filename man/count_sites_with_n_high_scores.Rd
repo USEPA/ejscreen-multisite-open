@@ -11,12 +11,29 @@ count_sites_with_n_high_scores(
 )
 }
 \arguments{
-\item{scores}{score}
+\item{scores}{scores}
 
 \item{thresholds}{thresholds}
 
 \item{xwide}{xwide}
 }
 \description{
-count_sites_with_n_high_scores
+Answers questions like What \verb{\%} of sites have at least 1 demog. indicator \verb{>2x} state avg?
+}
+\details{
+Helps provide stat summaries such as:
+
+(x\%) of these (sites) have
+
+at least (N) of these (YTYPE )indicators
+
+at least (R) times the (State/National average)
+}
+\examples{
+x <- ejamit(testpoints_100, radius = 1)
+out <- x$results_bysite
+out <- setDF(copy(out))
+ratio_benchmarks <- c(1.01, 1.50, 2, 3, 5, 10)
+`ratiodata <- out[, names_d_ratio_to_state_avg]`
+
 }

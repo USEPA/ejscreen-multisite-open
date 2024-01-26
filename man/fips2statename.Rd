@@ -2,8 +2,7 @@
 % Please edit documentation in R/fips_x_from_y.R
 \name{fips2statename}
 \alias{fips2statename}
-\title{fips2statename - Get state names from any type of FIPS codes
-Get state names from any type of FIPS codes}
+\title{Get state names from any type of FIPS codes}
 \usage{
 fips2statename(fips)
 }
@@ -14,7 +13,6 @@ fips2statename(fips)
 vector of state names
 }
 \description{
-fips2statename - Get state names from any type of FIPS codes
 Get state names from any type of FIPS codes
 }
 \examples{

@@ -2,7 +2,7 @@
 % Please edit documentation in R/frs_from_xyz.R
 \name{frs_from_naics}
 \alias{frs_from_naics}
-\title{frs_from_naics - Use NAICS code or industry title text search to see FRS Facility Registry Service data on those EPA-regulated sites}
+\title{Use NAICS code or industry title text search to see FRS Facility Registry Service data on those EPA-regulated sites}
 \usage{
 frs_from_naics(naics_code_or_name, ...)
 }
@@ -16,7 +16,7 @@ relevant rows of the data.table called frs, which has column names that are
 "lat" "lon" "REGISTRY_ID" "PRIMARY_NAME" "NAICS" "PGM_SYS_ACRNMS"
 }
 \description{
-frs_from_naics - Use NAICS code or industry title text search to see FRS Facility Registry Service data on those EPA-regulated sites
+Use NAICS code or industry title text search to see FRS Facility Registry Service data on those EPA-regulated sites
 }
 \examples{
   frs_from_naics("uranium")

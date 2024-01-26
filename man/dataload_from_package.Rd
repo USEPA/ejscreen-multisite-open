@@ -2,7 +2,7 @@
 % Please edit documentation in R/dataload_from_package.R
 \name{dataload_from_package}
 \alias{dataload_from_package}
-\title{dataload_from_package - utility to load a couple of datasets using data immediately instead of relying on lazy loading}
+\title{Utility to load a couple of datasets using data immediately instead of relying on lazy loading}
 \usage{
 dataload_from_package(
   olist = c("blockgroupstats", "usastats", "statestats"),
@@ -20,7 +20,7 @@ This could also include other large datasets that are slow to lazyload but not a
 Nothing
 }
 \description{
-dataload_from_package - utility to load a couple of datasets using data immediately instead of relying on lazy loading
+Utility to load a couple of datasets using data immediately instead of relying on lazy loading
 }
 \details{
 See also read_builtin() function from the readr package!

@@ -2,8 +2,7 @@
 % Please edit documentation in R/fips_x_from_y.R
 \name{fips_st2eparegion}
 \alias{fips_st2eparegion}
-\title{fips_st2eparegion - Get EPA Region number from state FIPS code
-Get EPA Region number from state FIPS code}
+\title{Get EPA Region number from state FIPS code}
 \usage{
 fips_st2eparegion(stfips)
 }
@@ -14,6 +13,5 @@ fips_st2eparegion(stfips)
 vector of numbers representing US EPA Regions
 }
 \description{
-fips_st2eparegion - Get EPA Region number from state FIPS code
 Get EPA Region number from state FIPS code
 }

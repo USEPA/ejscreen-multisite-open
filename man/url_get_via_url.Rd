@@ -2,7 +2,7 @@
 % Please edit documentation in R/url_get_via_url-DRAFT.R
 \name{url_get_via_url}
 \alias{url_get_via_url}
-\title{url_get_via_url - helper function work in progress: GET json via url of ejscreen ejquery map services}
+\title{helper function work in progress: GET json via url of ejscreen ejquery map services}
 \usage{
 url_get_via_url(url)
 }
@@ -13,5 +13,5 @@ url_get_via_url(url)
 json
 }
 \description{
-url_get_via_url - helper function work in progress: GET json via url of ejscreen ejquery map services
+helper function work in progress: GET json via url of ejscreen ejquery map services
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/dataload_from_aws.R
 \name{dataload_from_aws}
 \alias{dataload_from_aws}
-\title{dataload_from_aws - utility to load datasets from AWS DMAP Data Commons, into memory}
+\title{Utility to load datasets from AWS DMAP Data Commons, into memory}
 \usage{
 dataload_from_aws(
   varnames = c("bgid2fips", "blockid2fips", "blockpoints", "blockwts", "quaddata"),
@@ -41,7 +41,7 @@ when justchecking = TRUE. But server is always checked if justchecking = FALSE.}
 nothing - just loads data into environment (unless justchecking=T)
 }
 \description{
-dataload_from_aws - utility to load datasets from AWS DMAP Data Commons, into memory
+Utility to load datasets from AWS DMAP Data Commons, into memory
 }
 \details{
 See source code for details.

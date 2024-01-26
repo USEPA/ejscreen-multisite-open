@@ -2,8 +2,7 @@
 % Please edit documentation in R/url_bookmark-DRAFT.R
 \name{url_bookmark_save}
 \alias{url_bookmark_save}
-\title{url_bookmark_save
-save bookmarked EJScreen session (map location and indicator)}
+\title{save bookmarked EJScreen session (map location and indicator)}
 \usage{
 url_bookmark_save(..., file = "ejscreenbookmark.json")
 }
@@ -16,7 +15,6 @@ url_bookmark_save(..., file = "ejscreenbookmark.json")
 URL for 1 bookmarked EJScreen map location and variable displayed on map
 }
 \description{
-url_bookmark_save
 save bookmarked EJScreen session (map location and indicator)
 }
 \details{

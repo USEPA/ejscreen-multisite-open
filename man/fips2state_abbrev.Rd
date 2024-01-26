@@ -2,8 +2,7 @@
 % Please edit documentation in R/fips_x_from_y.R
 \name{fips2state_abbrev}
 \alias{fips2state_abbrev}
-\title{fips2state_abbrev - Get state abbreviations from any type of FIPS codes
-Get state abbreviations from any type of FIPS codes}
+\title{Get state abbreviations from any type of FIPS codes}
 \usage{
 fips2state_abbrev(fips)
 }
@@ -14,7 +13,6 @@ fips2state_abbrev(fips)
 vector of abbreviations like "NY", "LA", "DE", etc.
 }
 \description{
-fips2state_abbrev - Get state abbreviations from any type of FIPS codes
 Get state abbreviations from any type of FIPS codes
 }
 \examples{

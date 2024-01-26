@@ -2,7 +2,7 @@
 % Please edit documentation in R/doaggregate.R
 \name{doaggregate}
 \alias{doaggregate}
-\title{doaggregate - Summarize indicators in each buffer (given the blocks in each buffer and indicators for each block)}
+\title{Summarize environmental and demographic indicators at each location and overall}
 \usage{
 doaggregate(
   sites2blocks,
@@ -96,14 +96,19 @@ indicator across everyone within each demographic group.
 }
 }
 \description{
-This updated 2023 code takes a set of facilities and the set of blocks that are near each,
-(as identified previously, in other code that has identified which blocks are nearby)
-and combines those with indicator scores for block groups.
+getblocksnearby() and doaggregate() are the two key functions that run ejamit().
+\code{doaggregate()} takes a set of sites like facilities and the
+set of blocks that are near each,
+combines those with indicator scores for block groups, and
+aggregates the numbes within each place and across all overall.
 }
 \details{
 For all examples, see \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}}
 
-This function aggregates the blockgroup scores to create a summary of each indicator,
+\code{doaggregate()} is the code run after \code{\link[=getblocksnearby]{getblocksnearby()}} (or a related function for
+polygons or FIPS Census units) has identified which blocks are nearby.
+
+\code{doaggregate()} aggregates the blockgroup scores to create a summary of each indicator,
 as a raw score and US percentile and State percentile,
 in each buffer (i.e., near each facility):
 \itemize{

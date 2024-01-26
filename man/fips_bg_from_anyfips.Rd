@@ -2,9 +2,7 @@
 % Please edit documentation in R/fips_x_from_y.R
 \name{fips_bg_from_anyfips}
 \alias{fips_bg_from_anyfips}
-\title{fips_bg_from_anyfips - Get unique blockgroup fips in or containing specified fips of any type
-Convert any FIPS codes to the FIPS of all the blockgroups that are
-among or within or containing those FIPS}
+\title{Get unique blockgroup fips in or containing specified fips of any type}
 \usage{
 fips_bg_from_anyfips(fips)
 }
@@ -17,7 +15,6 @@ vector of blockgroup FIPS (or NA values) that may be much longer than the
 vector of fips passed to this function.
 }
 \description{
-fips_bg_from_anyfips - Get unique blockgroup fips in or containing specified fips of any type
 Convert any FIPS codes to the FIPS of all the blockgroups that are
 among or within or containing those FIPS
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/colcounter_xyz.R
 \name{colcounter_summary_all}
 \alias{colcounter_summary_all}
-\title{colcounter_summary_all - Summarize count (and percent) of rows with exactly (and at least) N cols >= various thresholds}
+\title{Summarize count (and percent) of rows with exactly (and at least) N cols >= various thresholds}
 \usage{
 colcounter_summary_all(x, thresholdlist, ...)
 }
@@ -17,11 +17,10 @@ like or.tied=TRUE, na.rm=TRUE, below=FALSE, one.cut.per.col=FALSE}
 }
 \description{
 Wraps 4 functions to return 4 tables:
-using colcounter_summary(), colcounter_summary_pct(),
-colcounter_summary_cum(), colcounter_summary_cum_pct()
+using \code{\link[=colcounter_summary]{colcounter_summary()}}, \code{\link[=colcounter_summary_pct]{colcounter_summary_pct()}},
+\code{\link[=colcounter_summary_cum]{colcounter_summary_cum()}}, \code{\link[=colcounter_summary_cum_pct]{colcounter_summary_cum_pct()}}
 }
 \examples{
-\dontrun{
     # df <-  bg22[ , names.ej.pctile]
  df <- data.frame(a=rep(80,4),b=rep(93,4), col3=c(49,98,100,100))
  bench <- 5 * (0:20)
@@ -31,7 +30,8 @@ colcounter_summary_cum(), colcounter_summary_cum_pct()
  a3['0',,]; a3[1,,]
  a3[dim(a3)[1],,]
  # a3['12',,]; a3[13,,]
-
+ 
+ \dontrun{
  barplot(colcounter_summary_cum_pct(pdata, pcuts)[ , '80'],
     ylab='\% of places', xlab='# of indicators at/above threshold',
     main='\% of places with at least N/12 indicators >=80th percentile')
@@ -69,5 +69,5 @@ colcounter_summary_cum(), colcounter_summary_cum_pct()
 
 }
 \seealso{
-colcounter_summary_all() colcounter_summary() colcounter_summary_cum() colcounter_summary_pct() colcounter_summary_cum_pct()
+\code{\link[=colcounter_summary_all]{colcounter_summary_all()}} \code{\link[=colcounter_summary]{colcounter_summary()}} \code{\link[=colcounter_summary_cum]{colcounter_summary_cum()}} \code{\link[=colcounter_summary_pct]{colcounter_summary_pct()}} \code{\link[=colcounter_summary_cum_pct]{colcounter_summary_cum_pct()}}
 }

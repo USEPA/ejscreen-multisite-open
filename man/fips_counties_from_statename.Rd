@@ -2,8 +2,7 @@
 % Please edit documentation in R/fips_x_from_y.R
 \name{fips_counties_from_statename}
 \alias{fips_counties_from_statename}
-\title{fips_counties_from_statename - Get ALL county fips in specified states
-Get all county fips in specified states}
+\title{Get ALL county fips in specified states}
 \usage{
 fips_counties_from_statename(statename)
 }
@@ -14,8 +13,7 @@ fips_counties_from_statename(statename)
 vector of 5-digit character string county FIPS of all unique counties in those states
 }
 \description{
-fips_counties_from_statename - Get ALL county fips in specified states
-Get all county fips in specified states
+Get ALL county fips in specified states
 }
 \examples{
 fips_counties_from_statename("Delaware")

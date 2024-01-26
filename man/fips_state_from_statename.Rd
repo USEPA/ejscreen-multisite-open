@@ -2,8 +2,7 @@
 % Please edit documentation in R/fips_x_from_y.R
 \name{fips_state_from_statename}
 \alias{fips_state_from_statename}
-\title{fips_state_from_statename - Get state fips for each state name
-Get state fips for each state name}
+\title{Get state fips for each state name}
 \usage{
 fips_state_from_statename(statename)
 }
@@ -15,7 +14,6 @@ vector of 2-digit state FIPS codes like c("10", "44", "44"),
 same length as input, so including any duplicates
 }
 \description{
-fips_state_from_statename - Get state fips for each state name
 Get state fips for each state name
 }
 \examples{

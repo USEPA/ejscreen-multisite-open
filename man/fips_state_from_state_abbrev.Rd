@@ -2,8 +2,7 @@
 % Please edit documentation in R/fips_x_from_y.R
 \name{fips_state_from_state_abbrev}
 \alias{fips_state_from_state_abbrev}
-\title{fips_state_from_state_abbrev - Get state fips for each state abbrev
-Get state fips of each state abbrev}
+\title{Get state fips for each state abbrev}
 \usage{
 fips_state_from_state_abbrev(ST)
 }
@@ -15,8 +14,7 @@ vector of 2-digit state FIPS codes like c("10", "44", "44"),
 same length as input, so including any duplicates
 }
 \description{
-fips_state_from_state_abbrev - Get state fips for each state abbrev
-Get state fips of each state abbrev
+Get state fips for each state abbrev
 }
 \examples{
 fips_state_from_state_abbrev("DE", "DE", "RI")

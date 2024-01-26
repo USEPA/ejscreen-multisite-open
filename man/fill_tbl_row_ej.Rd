@@ -2,7 +2,7 @@
 % Please edit documentation in R/community_report_helper_funs.R
 \name{fill_tbl_row_ej}
 \alias{fill_tbl_row_ej}
-\title{fill_tbl_row_ej - write an EJ or EJ supp index to an html table row}
+\title{Write an EJ or EJ supp index to an html table row}
 \usage{
 fill_tbl_row_ej(output_df, var_value, var_name)
 }
@@ -14,5 +14,5 @@ fill_tbl_row_ej(output_df, var_value, var_name)
 \item{var_name, }{nicer name of indicator to use in table row; can include HTML sub/superscripts}
 }
 \description{
-fill_tbl_row_ej - write an EJ or EJ supp index to an html table row
+Write an EJ or EJ supp index to an html table row
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/sic_xyz.R
 \name{latlon_from_sic}
 \alias{latlon_from_sic}
-\title{latlon_from_sic - Find EPA-regulated facilities in FRS by SIC code (industrial category)}
+\title{Find EPA-regulated facilities in FRS by SIC code (industrial category)}
 \usage{
 latlon_from_sic(sic, id_only = FALSE)
 }

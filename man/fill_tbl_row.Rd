@@ -2,7 +2,7 @@
 % Please edit documentation in R/community_report_helper_funs.R
 \name{fill_tbl_row}
 \alias{fill_tbl_row}
-\title{fill_tbl_row - write a demog. or envt. indicator to an html table row}
+\title{Write a demog. or envt. indicator to an html table row}
 \usage{
 fill_tbl_row(output_df, var_value, var_name)
 }
@@ -14,5 +14,5 @@ fill_tbl_row(output_df, var_value, var_name)
 \item{var_name, }{nicer name of indicator to use in table row; can include HTML sub/superscripts}
 }
 \description{
-fill_tbl_row - write a demog. or envt. indicator to an html table row
+Write a demog. or envt. indicator to an html table row
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/frs_from_xyz.R
 \name{frs_from_program}
 \alias{frs_from_program}
-\title{frs_from_program - Use EPA Program acronym like TRIS to see FRS Facility Registry Service data on those EPA-regulated sites}
+\title{Use EPA Program acronym like TRIS to see FRS Facility Registry Service data on those EPA-regulated sites}
 \usage{
 frs_from_program(program)
 }

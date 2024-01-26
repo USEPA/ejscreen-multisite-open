@@ -2,7 +2,7 @@
 % Please edit documentation in R/getblocksnearbyviaQuadTree.R
 \name{getblocksnearbyviaQuadTree}
 \alias{getblocksnearbyviaQuadTree}
-\title{getblocksnearbyviaQuadTree - Fast way to find nearby points (distance to each Census block centroid near each site)}
+\title{Fast way to find nearby points (distance to each Census block centroid near each site)}
 \usage{
 getblocksnearbyviaQuadTree(
   sitepoints,
@@ -59,6 +59,7 @@ It can be automatically created when the package is attached via the .onAttach()
 \description{
 Given a set of points and a specified radius in miles,
 this function quickly finds all the US Census blocks near each point.
+This does the work actually supporting getblocksnearby()
 }
 \details{
 For each point, it uses the specified search radius and finds the distance to

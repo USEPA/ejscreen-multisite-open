@@ -2,7 +2,7 @@
 % Please edit documentation in R/community_report_helper_funs.R
 \name{generate_html_header}
 \alias{generate_html_header}
-\title{generate_html_header - build HTML header for community report}
+\title{Build HTML header for community report}
 \usage{
 generate_html_header(analysis_title, totalpop, locationstr, in_shiny = FALSE)
 }
@@ -16,5 +16,5 @@ generate_html_header(analysis_title, totalpop, locationstr, in_shiny = FALSE)
 \item{in_shiny, }{whether the function is being called in or outside of shiny - affects location of header}
 }
 \description{
-generate_html_header - build HTML header for community report
+Build HTML header for community report
 }

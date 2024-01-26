@@ -2,8 +2,7 @@
 % Please edit documentation in R/table_xls_format.R
 \name{table_xls_format}
 \alias{table_xls_format}
-\title{table_xls_format - Format EJAM tabular outputs for saving as Excel spreadsheet
-Used by table_xls_from_ejam()}
+\title{Format EJAM tabular outputs for saving as Excel spreadsheet}
 \usage{
 table_xls_format(
   overall,
@@ -106,7 +105,6 @@ the workbook will be saved locally at that path and name. Warning: it will overw
 a workbook, ready to be saved in spreadsheet format, with tabs like "Overall" and "Each Site"
 }
 \description{
-table_xls_format - Format EJAM tabular outputs for saving as Excel spreadsheet
 Used by table_xls_from_ejam()
 }
 \details{

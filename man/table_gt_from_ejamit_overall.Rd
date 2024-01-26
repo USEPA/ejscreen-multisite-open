@@ -2,8 +2,7 @@
 % Please edit documentation in R/table_gt_.R
 \name{table_gt_from_ejamit_overall}
 \alias{table_gt_from_ejamit_overall}
-\title{table_gt_from_ejamit_overall - Create a formatted table of results from EJAM overall summary stats
-Uses the results_overall element of ejamit() output}
+\title{Create a formatted table of results from EJAM overall summary stats}
 \usage{
 table_gt_from_ejamit_overall(
   ejamit_results_1row = NULL,
@@ -20,7 +19,6 @@ as would come from ejamit(testpoints_10)$results_overall}
 Provides table in gt format from the R package called gt
 }
 \description{
-table_gt_from_ejamit_overall - Create a formatted table of results from EJAM overall summary stats
 Uses the results_overall element of ejamit() output
 }
 \examples{

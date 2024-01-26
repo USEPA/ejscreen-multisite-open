@@ -2,7 +2,7 @@
 % Please edit documentation in R/url_countyhealthrankings.R
 \name{url_countyhealthrankings}
 \alias{url_countyhealthrankings}
-\title{url_countyhealthrankings}
+\title{url_countyhealthrankings gets data from countyhealthrankings.org}
 \usage{
 url_countyhealthrankings(fips, year = 2023)
 }
@@ -15,5 +15,5 @@ url_countyhealthrankings(fips, year = 2023)
 vector of URLs
 }
 \description{
-url_countyhealthrankings
+url_countyhealthrankings gets data from countyhealthrankings.org
 }

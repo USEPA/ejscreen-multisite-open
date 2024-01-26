@@ -2,9 +2,7 @@
 % Please edit documentation in R/table_gt_.R
 \name{table4gt_from_scorevectors}
 \alias{table4gt_from_scorevectors}
-\title{table4gt_from_scorevectors - DRAFT EXPERIMENTAL - attempt to make table more flexible / any indicators
-Based on just indicator names and a value for each, it tries to fill in the rest of a summary table's data.
-and formats this as a data.frame ready for the next step}
+\title{DRAFT EXPERIMENTAL - attempt to make table more flexible / any indicators}
 \usage{
 table4gt_from_scorevectors(
   varnames_r = names_e,
@@ -42,7 +40,6 @@ table4gt_from_scorevectors(
 data.frame ready for table_gt_format_step2 ???
 }
 \description{
-table4gt_from_scorevectors - DRAFT EXPERIMENTAL - attempt to make table more flexible / any indicators
 Based on just indicator names and a value for each, it tries to fill in the rest of a summary table's data.
 and formats this as a data.frame ready for the next step
 }

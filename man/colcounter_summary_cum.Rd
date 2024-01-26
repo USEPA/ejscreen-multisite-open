@@ -2,8 +2,7 @@
 % Please edit documentation in R/colcounter_xyz.R
 \name{colcounter_summary_cum}
 \alias{colcounter_summary_cum}
-\title{colcounter_summary_cum - Summarize how many rows have AT LEAST N columns at or above (or below) various thresholds
-See colcounter_summary() for more info and examples.}
+\title{Summarize how many rows have AT LEAST N columns at or above (or below) various thresholds}
 \usage{
 colcounter_summary_cum(
   x,
@@ -33,9 +32,8 @@ If TRUE, specify one threshold to use for each column.}
 A table of cumulative frequency counts
 }
 \description{
-colcounter_summary_cum - Summarize how many rows have AT LEAST N columns at or above (or below) various thresholds
-See colcounter_summary() for more info and examples.
+See colcounter_summary() for details and examples
 }
 \seealso{
-colcounter_summary_all() colcounter_summary() colcounter_summary_cum() colcounter_summary_pct() colcounter_summary_cum_pct()
+\code{\link[=colcounter_summary_all]{colcounter_summary_all()}} \code{\link[=colcounter_summary]{colcounter_summary()}} \code{\link[=colcounter_summary_cum]{colcounter_summary_cum()}} \code{\link[=colcounter_summary_pct]{colcounter_summary_pct()}} \code{\link[=colcounter_summary_cum_pct]{colcounter_summary_cum_pct()}}
 }

@@ -2,8 +2,7 @@
 % Please edit documentation in R/plot_ridgeline_ratios.R
 \name{plot_ridgeline_ratios}
 \alias{plot_ridgeline_ratios}
-\title{plot_ridgeline_ratios
-Make ridgeline plot of ratios of demographic score to its average}
+\title{Make ridgeline plot of ratios of demographic score to its average}
 \usage{
 plot_ridgeline_ratios(ratio.to.us.d.bysite, names2plot_friendly = NULL)
 }
@@ -13,6 +12,5 @@ plot_ridgeline_ratios(ratio.to.us.d.bysite, names2plot_friendly = NULL)
 \item{ratio.to.us.d.overall}{named list of a few ratios to plot (data.frame)}
 }
 \description{
-plot_ridgeline_ratios
 Make ridgeline plot of ratios of demographic score to its average
 }

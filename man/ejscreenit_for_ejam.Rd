@@ -2,8 +2,7 @@
 % Please edit documentation in R/ejscreenit_for_ejam.R
 \name{ejscreenit_for_ejam}
 \alias{ejscreenit_for_ejam}
-\title{ejscreenit_for_ejam
-Wrapper for ejscreenit() from EJAMejscreenapi package, to use in EJAM app}
+\title{Get EJScreen results directly from EJScreen servers via their API}
 \usage{
 ejscreenit_for_ejam(sitepoints, radius = 3, fillmissingcolumns = TRUE, ...)
 }
@@ -18,8 +17,7 @@ ejscreenit_for_ejam(sitepoints, radius = 3, fillmissingcolumns = TRUE, ...)
 a data.table that looks like output of ejamit()$results_bysite
 }
 \description{
-ejscreenit_for_ejam
-Wrapper for ejscreenit() from EJAMejscreenapi package, to use in EJAM app
+A wrapper for EJAM to use ejscreenit() from the EJAMejscreenapi package
 }
 \seealso{
 \code{\link[=ejscreen_vs_ejam]{ejscreen_vs_ejam()}}

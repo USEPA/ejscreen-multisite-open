@@ -2,7 +2,7 @@
 % Please edit documentation in R/var_is_numeric_ish.R
 \name{var_is_numeric_ish}
 \alias{var_is_numeric_ish}
-\title{var_is_numeric_ish - see which columns seem numeric and could be rounded, e.g. - DRAFT NOT FULLY TESTED}
+\title{see which columns seem numeric and could be rounded, e.g. - DRAFT NOT FULLY TESTED}
 \usage{
 var_is_numeric_ish(
   x,
@@ -21,7 +21,7 @@ var_is_numeric_ish(
 logical vector as long as NCOL(x) i.e., is length(x), if x is table, or length(x) if vector
 }
 \description{
-var_is_numeric_ish - see which columns seem numeric and could be rounded, e.g. - DRAFT NOT FULLY TESTED
+see which columns seem numeric and could be rounded, e.g. - DRAFT NOT FULLY TESTED
 }
 \seealso{
 \code{\link[=table_round]{table_round()}}

@@ -2,8 +2,7 @@
 % Please edit documentation in R/state_from_latlon.R
 \name{state_from_blockid}
 \alias{state_from_blockid}
-\title{state_from_blockid
-given vector of blockids, get state abbreviation of each}
+\title{given vector of blockids, get state abbreviation of each}
 \usage{
 state_from_blockid(blockid)
 }
@@ -14,7 +13,6 @@ state_from_blockid(blockid)
 vector of ST info like AK, CA, DE, etc.
 }
 \description{
-state_from_blockid
 given vector of blockids, get state abbreviation of each
 }
 \examples{

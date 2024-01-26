@@ -2,7 +2,7 @@
 % Please edit documentation in R/fipstype.R
 \name{fipstype}
 \alias{fipstype}
-\title{fipstype  -  identify what type of Census geography is each FIPS code (block, county, etc.)}
+\title{Identify what type of Census geography is each FIPS code (block, county, etc.)}
 \usage{
 fipstype(fips)
 }
@@ -13,7 +13,7 @@ fipstype(fips)
 vector of types: "block", "blockgroup", "tract", "county", or "state"
 }
 \description{
-fipstype  -  identify what type of Census geography is each FIPS code (block, county, etc.)
+Identify what type of Census geography is each FIPS code (block, county, etc.)
 }
 \examples{
  fips_counties_from_statename(c("Connecticut", "Delaware") )

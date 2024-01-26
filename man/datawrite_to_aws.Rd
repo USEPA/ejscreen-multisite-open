@@ -2,8 +2,7 @@
 % Please edit documentation in R/datawrite_to_aws.R
 \name{datawrite_to_aws}
 \alias{datawrite_to_aws}
-\title{datawrite_to_aws -  NOT YET WORKING - AccessDenied
-Write object(s) like a dataset to DMAP Data Commons, formatted as .arrow or .rda}
+\title{Utility NOT YET WORKING - AccessDenied}
 \usage{
 datawrite_to_aws(
   varnames = c("bgid2fips", "blockid2fips", "blockpoints", "blockwts", "quaddata"),
@@ -33,8 +32,7 @@ just viewing in console the commands to be used, to test/check this}
 the paths of the objects on server
 }
 \description{
-datawrite_to_aws -  NOT YET WORKING - AccessDenied
-Write object(s) like a dataset to DMAP Data Commons, formatted as .arrow or .rda
+Utility to write object(s) like a dataset to DMAP Data Commons, formatted as .arrow or .rda
 }
 \details{
 mybucket <-  'dmap-data-commons-oa' #

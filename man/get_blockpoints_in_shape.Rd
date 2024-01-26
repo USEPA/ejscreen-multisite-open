@@ -3,7 +3,7 @@
 \name{get_blockpoints_in_shape}
 \alias{get_blockpoints_in_shape}
 \alias{shapefile2blockpoints}
-\title{get_blockpoints_in_shape - find blocks that are in a polygon, using internal point of block - WORK IN PROGRESS ****}
+\title{Find all Census blocks in a polygon, using internal point of block}
 \usage{
 get_blockpoints_in_shape(
   polys,
@@ -40,6 +40,10 @@ This is like getblocksnearby() but for a polygonal buffer area instead of
 a circular buffer.
 }
 \details{
+Like getblocksnearby(), but for blocks in each polygon rather than
+blocks near each facility. For analyzing all residents in certain zones
+such as places at elevated risk, redlined areas, watersheds, etc.
+
 This uses getblocksnearby() to get a very fast rough/good estimate of
 which US block points are nearby (with a safety margin - see param below),
 before then using sf:: to carefully identify which of those candidate blocks are actually
