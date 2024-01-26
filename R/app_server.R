@@ -3120,7 +3120,14 @@ app_server <- function(input, output, session) {
       if (input$summ_hist_data == 'raw') {
         
         ## subset doaggregate results_bysite to selected indicator
-        hist_input <- as.data.frame(data_processed()$results_bysite[, input$summ_hist_ind])
+        if(submitted_upload_method() == 'SHP'){
+          hist_input <- as.data.frame(data_processed()$results_bysite[, input$summ_hist_ind])
+          
+        } else {
+          hist_input <- data_processed()$results_bysite[, input$summ_hist_ind, with=F]
+          
+        }
+        
         names(hist_input)[1] <- 'indicator'
         
         ## plot histogram
@@ -3140,9 +3147,14 @@ app_server <- function(input, output, session) {
       } else if (input$summ_hist_data == 'pctile') {
         
         ## subset doaggregate results_bysite to selected indicator
-        #hist_input <- data_processed()$results_bysite[, paste0('pctile.',input$summ_hist_ind), with = FALSE]
-        hist_input <- as.data.frame(data_processed()$results_bysite[, input$summ_hist_ind])
-        
+        if(submitted_upload_method() == 'SHP'){
+          hist_input <- as.data.frame(data_processed()$results_bysite[, input$summ_hist_ind])
+          
+        } else {
+          hist_input <- data_processed()$results_bysite[, input$summ_hist_ind, with=F]
+          
+        }
+     
         names(hist_input)[1] <- 'indicator'
         
         ggplot(hist_input) +
@@ -3160,7 +3172,14 @@ app_server <- function(input, output, session) {
       if (input$summ_hist_data == 'raw') {
         
         ## subset doaggregate results_bysite to selected indicator
-        hist_input <- as.data.frame(data_processed()$results_bysite[, c('pop', input$summ_hist_ind)])
+        if(submitted_upload_method() == 'SHP'){
+          hist_input <- as.data.frame(data_processed()$results_bysite[, c('pop',input$summ_hist_ind)])
+          
+        } else {
+          hist_input <- data_processed()$results_bysite[, c('pop',input$summ_hist_ind), with=F]
+          
+        }
+       
         names(hist_input)[2] <- 'indicator'
         
         ## plot population weighted histogram
@@ -3180,8 +3199,14 @@ app_server <- function(input, output, session) {
       } else if (input$summ_hist_data == 'pctile') {
         
         ## subset doaggregate results_bysite to selected indicator
-        #hist_input <- data_processed()$results_bysite[, c('pop',paste0('pctile.',input$summ_hist_ind)), with = FALSE]
-        hist_input <-as.data.frame(data_processed()$results_bysite[, c('pop', input$summ_hist_ind)])
+        if(submitted_upload_method() == 'SHP'){
+          hist_input <- as.data.frame(data_processed()$results_bysite[, c('pop',input$summ_hist_ind)])
+          
+        } else {
+          hist_input <- data_processed()$results_bysite[, c('pop',input$summ_hist_ind), with=F]
+          
+        }
+      
         names(hist_input)[2] <- 'indicator'
         
         ## plot population weighted histogram 
