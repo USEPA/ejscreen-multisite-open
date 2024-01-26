@@ -15,7 +15,8 @@ url_get_eparest_chunked_by_id <- function(objectIds, chunksize=200, ...) {
   ############################################################## #
 
     if (missing(objectIds)) {
-    stop('this only works for objectIds so far, breaking up into groups of 200 or so objectIds.')
+    warning('this only works for objectIds so far, breaking up into groups of 200 or so objectIds.')
+      return(NULL)
     # could write it to check if >1000 would be returned and then request in chunks in that case.
     }
   x <- list()
@@ -65,7 +66,8 @@ url_getacs_epaquery_chunked <- function(objectIds=1:3,
   ############################################################## #
   
   if (missing(objectIds)) {
-    stop('this only works for objectIds so far, breaking up into groups of 200 or so objectIds.')
+    warning('this only works for objectIds so far, breaking up into groups of 200 or so objectIds.')
+    return(NULL)
     # could write it to check if >1000 would be returned and then request in chunks in that case.
   }
   
@@ -123,7 +125,10 @@ url_getacs_epaquery <- function(objectIds=1:3,
   
   
   # if (length(objectIds) < 1 | !all(is.numeric(objectIds))) {stop('no objectIds specified or some are not numbers')}
-  if (any(objectIds == '*')) {stop('Trying to specify all objectIds will not work')}
+  if (any(objectIds == '*')) {
+    warning('Trying to specify all objectIds will not work')
+    return(NULL)
+  }
   if (length(objectIds) > 200) {
     warning('seems to crash if more than about 211 requested per query - chunked version not yet tested')
     

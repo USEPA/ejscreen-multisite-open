@@ -144,11 +144,26 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
 
   
     
-  if (NROW(sites2blocks) == 0) {stop('No blocks found within that radius of your site(s). Try a larger radius')}
+  if(NROW(sites2blocks) == 0){
+    #if(shiny::isRunning()){
+      warning('No blocks found within that radius of your site(s). Try a larger radius')
+      return(NULL) 
+    #} else{
+    #  stop('No blocks found within that radius of your site(s). Try a larger radius')
+      
+    #}
+    }
   
   # add input validation here - check if sites2blocks is valid format, etc. 
   #if (any(!(c('siteid', 'blockid' ) %in% names(sites2blocks)))) {stop("sites2blocks must contain columns named siteid, blockid, and should have distance")}
-  if (any(!(c('ejam_uniq_id', 'blockid' ) %in% names(sites2blocks)))) {stop("sites2blocks must contain columns named ejam_uniq_id, blockid, and should have distance")}
+  if (any(!(c('ejam_uniq_id', 'blockid' ) %in% names(sites2blocks)))) {
+    #if(shiny::isRunning()){
+      warning("sites2blocks must contain columns named ejam_uniq_id, blockid, and should have distance")
+      return(NULL)
+    #} else {
+    #  stop("sites2blocks must contain columns named ejam_uniq_id, blockid, and should have distance")
+    #}
+  }
   
   if (!data.table::is.data.table(sites2blocks)) {
     message('sites2blocks should be a data.table - converting into one')

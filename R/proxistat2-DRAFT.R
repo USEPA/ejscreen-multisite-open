@@ -34,7 +34,15 @@
 #'  
 proxistat2 <- function(pts, countradius = 8.04672, maxradius = 621.3712, quadtree = NULL) {
   
-  
+  if(!('proxistat' %in% installed.packages())){
+    warning("this does not work without proxistat package dataset 
+       OR having block area 
+       or at least effective radius 
+       in blockpoints or blockwts table.
+       ")
+    return(NULL)
+  }
+
   if (is.null(quadtree)) {
     if (!exists(localtree)) {
       indexblocks() # will load data as needed

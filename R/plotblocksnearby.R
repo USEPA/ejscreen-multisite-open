@@ -59,7 +59,10 @@ plotblocksnearby <- function(sitepoints, radius=3, sites2blocks, siteidvarname =
                              usemapfast=TRUE, returnmap=FALSE, overlay_blockgroups=FALSE,
                              maxradius = 31.07, avoidorphans = FALSE, ...) {
   if (radius > 32) {radius <- 32; warning("Cannot use radius above 32 miles (almost 51 km) here - Returning results for 32 miles!")}
-  if (missing(sitepoints) &  missing(sites2blocks)) {stop('must provide either sitepoints or sites2blocks or both')}
+  if (missing(sitepoints) &  missing(sites2blocks)) {
+    warning('must provide either sitepoints or sites2blocks or both')
+    return(NULL)
+  }
   if (missing(sitepoints) & !missing(sites2blocks)) {
     warning('sitepoints missing so will not try to guess site at center of circle - drawing surrounding blocks only')
   }
@@ -200,6 +203,13 @@ plotblocksnearby <- function(sitepoints, radius=3, sites2blocks, siteidvarname =
       mapinfo <- xb
     }
     if ("blockid" %in% names(mapinfo)) {
+      if (!exists('blockid2fips')) {
+        dataload_from_pins("blockid2fips")
+        if (!exists('blockid2fips')) {
+          warning("cannot find blockid2fips")
+          blockid2fips <- data.table(blockid = NA, blockfips = NA)
+        }
+        }
       mapinfo[blockid2fips, blockfips := blockfips, on = "blockid"]
       mapinfo[ , bgfips := substr(blockfips, 1, 12)]
       mapinfo[blockgroupstats, bgpop := pop, on = 'bgid']

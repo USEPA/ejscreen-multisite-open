@@ -40,7 +40,8 @@ metadata_add <- function(x, metadata) {
     warning("metadata not specified, so used defaults from source code of this function: ", txt, "\n")
     print(cbind(attributes = metadata))
   }
-  if (!is.list(metadata)) {stop('metadata has to be a named list')}
+  if (!is.list(metadata)) {warning('metadata has to be a named list')
+    return(NULL)}
   for (i in seq_along(metadata)) {
     attr(x, which = names(metadata)[i]) <- metadata[[i]]
   }

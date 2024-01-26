@@ -26,9 +26,16 @@
 #'  mapfast(pts[ST == 'TX',], radius = 1) # 1 miles radius circles
 #'  
 state_from_latlon <- function(lat, lon, states_shapefile=EJAM::states_shapefile) {
-  if(is.na(as.numeric(lat)) & is.na(as.numeric(lon))){ stop("Latitude and Longitude could not be coerced to a number.")
-  }else if(is.na(as.numeric(lat))){stop("Latitude could not be coerced to a number")
-    }else if(is.na(as.numeric(lon))){stop("Longitude could not be coerced to a number.")}
+  if(is.na(as.numeric(lat)) & is.na(as.numeric(lon))){ 
+    warning("Latitude and Longitude could not be coerced to a number.")
+    return(NULL)
+  } else if(is.na(as.numeric(lat))){
+    warning("Latitude could not be coerced to a number")
+    return(NULL)
+  } else if(is.na(as.numeric(lon))){
+    warning("Longitude could not be coerced to a number.")
+    return(NULL)
+  }
   
   
   # pts[is.na(lat), lat := 0] 
@@ -71,6 +78,10 @@ state_from_blocktable <- function(dt_with_blockid) {
 #'
 #' @examples state_from_blockid(c(8174952, blockpoints$blockid[5:6]))
 state_from_blockid <- function(blockid) {
+  if (!exists('blockid2fips')) {
+    dataload_from_pins(varnames = 'blockid2fips')
+  }
+  if (!exists('blockid2fips')) {return(rep(NA, length(blockid)))}
   stateinfo$ST[match(blockid2fips[blockid, substr(blockfips,1,2)], stateinfo$FIPS.ST)]
 }
 

@@ -43,7 +43,13 @@ getblocksnearby  <- function(sitepoints, radius=3, maxradius=31.07,
     if (interactive()) {
       sitepoints <- rstudioapi::selectFile()
     } else {
-      stop("sitepoints (locations to analyze) is missing but required.")
+      if(shiny::isRunning()){
+        warning("sitepoints (locations to analyze) is missing but required.")
+        return(NULL)
+        
+      } else {
+        stop("sitepoints (locations to analyze) is missing but required.")
+      }
     }
   }
   # if user entered a table, path to a file (csv, xlsx), or whatever, then read it to get the lat lon values from there
@@ -63,6 +69,7 @@ getblocksnearby  <- function(sitepoints, radius=3, maxradius=31.07,
         # should 
         cat('census block data file(s) not already loaded, so key data will now be downloaded (or loaded from a local copy if possible)...\n')
          # loads quaddata needed to make localtree index, and several other large files pkg uses.
+
         dataload_from_pins(varnames = c('quaddata', 'blockwts', 'blockpoints')) # and blockid2fips and bgid2fips and bgej are available
               }
       #
@@ -88,7 +95,13 @@ getblocksnearby  <- function(sitepoints, radius=3, maxradius=31.07,
                                     quadtree = quadtree, quiet = quiet,
                                     ...)
   } else {
-    stop('parallel processing version not implemented yet')
+    if(shiny::isRunning()){
+      warning('parallel processing version not implemented yet')
+      return(NULL)
+      
+    } else {
+      stop('parallel processing version not implemented yet')
+    }
     x <- getblocksnearbyviaQuadTree_Clustered(sitepoints = sitepoints, radius = radius, maxradius = maxradius,
                                               avoidorphans = avoidorphans,
                                               # indexgridsize = indexgridsize,

@@ -32,7 +32,17 @@ colcounter <- function(x, threshold, or.tied=TRUE, na.rm=TRUE, below=FALSE, one.
   # Function to count SCORES ABOVE BENCHMARK(S) at each place, returns list as long as NROW(x).
   #
   
-  if (is.null(dim(x))) {numcols <- 1; stop('expected data.frame as x but has only 1 dimension')} else {numcols <- dim(x)[2]}
+  if (is.null(dim(x))) {
+    numcols <- 1
+    if(shiny::isRunning()){
+      warning('expected data.frame as x but has only 1 dimension')
+      return(rep(NA, length(x)))
+    } else {
+      stop('expected data.frame as x but has only 1 dimension')
+    }
+  } else {
+    numcols <- dim(x)[2]
+  }
   if (missing(threshold)) {
     if (one.cut.per.col) {
       threshold <- colMeans(x, na.rm = na.rm)
@@ -41,10 +51,24 @@ colcounter <- function(x, threshold, or.tied=TRUE, na.rm=TRUE, below=FALSE, one.
     }
   }
   if (one.cut.per.col) {
-    if (length(threshold) != NCOL(x)) {stop('length of threshold should be same as number of columns in x if one.cut.per.col=T')}
+    if (length(threshold) != NCOL(x)) {
+      if(shiny::isRunning()){
+        warning('length of threshold should be same as number of columns in x if one.cut.per.col=T')
+        return(rep(NA, length(x)))
+      } else {
+        stop('length of threshold should be same as number of columns in x if one.cut.per.col=T')
+      }
+    }
     x <- t(as.matrix(x)) # this allows it to compare vector of N thresholds to N columns
   } else {
-    if ((length(threshold) != NROW(x)) & (length(threshold) != 1)) {stop('length of threshold should be 1 or same as number of columns in x, if one.cut.per.col=F')}
+    if ((length(threshold) != NROW(x)) & (length(threshold) != 1)) {
+      if(shiny::isRunning()){
+        warning('length of threshold should be 1 or same as number of columns in x, if one.cut.per.col=F')
+        return(rep(NA, length(x)))
+      } else {
+        stop('length of threshold should be 1 or same as number of columns in x, if one.cut.per.col=F')
+      }
+    }
   }
   if (below) {
     if  (or.tied) { y <- ( x <= threshold) }

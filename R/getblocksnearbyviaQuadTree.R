@@ -50,6 +50,8 @@
 #'   estimated by adjusting the site to block distance in cases where it is small relative to the 
 #'   size of the block, to put a lower limit on it, which can result in a large estimate of distance
 #'   if the block is very large. See EJScreen documentation.
+#' @param updateProgress, optional function to update Shiny progress bar
+#'   
 #' @examples 
 #'   # indexblocks() # if localtree not available yet, quadtree = localtree
 #'   x = getblocksnearby(testpoints_1000, radius = 3)
@@ -60,32 +62,54 @@
 #'   
 getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.07, avoidorphans = FALSE, 
                                         report_progress_every_n = 500, quiet = FALSE, retain_unadjusted_distance = TRUE,
-                                        quadtree) {
+                                        quadtree, updateProgress = NULL) {
   # indexgridsize was defined at start as say 10 miles in global? could be passed here as a parameter ####
   # and buffer_indexdistance defined here in code but is never used anywhere...  
   # buffer_indexdistance <- ceiling(radius / indexgridsize)
   
-  if (missing(sitepoints)) {stop("sitepoints missing - see getblocksnearby()")}
+  if (class(quadtree) != "QuadTree") {
+    if(shiny::isRunning()){
+      warning('quadtree must be an object created with indexblocks(), from SearchTrees package with treeType = "quad" and dataType = "point"')  
+      return(NULL)
+    } else {
+      stop('quadtree must be an object created with indexblocks(), from SearchTrees package with treeType = "quad" and dataType = "point"')  
+    }
+  }
+  if (missing(sitepoints)) {
+    if(shiny::isRunning()){
+      warning("sitepoints missing - see getblocksnearby()")
+      return(NULL)
+    } else {
+      stop("sitepoints missing - see getblocksnearby()")
+    }
+  }
   stopifnot(is.data.frame(sitepoints), "lat" %in% colnames(sitepoints), "lon" %in% colnames(sitepoints), NROW(sitepoints) >= 1, is.numeric(sitepoints$lat))
-  if (missing(quadtree)) {stop("quadtree=localtree is missing - see getblocksnearby() and indexblocks()")}
+  if (missing(quadtree)) {
+    if(shiny::isRunning()){
+      warning("quadtree=localtree is missing - see getblocksnearby() and indexblocks()")
+      return(NULL)
+    } else {
+      stop("quadtree=localtree is missing - see getblocksnearby() and indexblocks()")
+    }
+  }
   if (class(quadtree) != "QuadTree") {stop('quadtree=localtree is not class quadtree.  - see getblocksnearby() and indexblocks()')}
   stopifnot(is.numeric(radius), radius <= 100, radius >= 0, length(radius) == 1)
   if (missing(radius)) {warning("radius missing so using default radius of 3 miles")}
   
   if (!data.table::is.data.table(sitepoints)) {data.table::setDT(sitepoints)} # should we set a key or index here, like ? ***
   
-  saving_ejam_uniq_id_as_submitted_to_getblocks <- FALSE
+  #saving_ejam_uniq_id_as_submitted_to_getblocks <- FALSE
   if (!('ejam_uniq_id' %in% names(sitepoints))) {
     sitepoints$ejam_uniq_id <- seq.int(length.out = NROW(sitepoints))
-  } else {
-    if (!identical(sitepoints$ejam_uniq_id, seq.int(length.out = NROW(sitepoints)))) {
-      saving_ejam_uniq_id_as_submitted_to_getblocks <- TRUE
-      message('ejam_uniq_id was already a column in sitepoints, but was not the same as the rownum, which would cause problems for other code assuming it is 1 through N, 
-            so ejam_uniq_id_as_submitted_to_getblocks now contains the original values and ejam_uniq_id was changed to 1:NROW(sitepoints)')
-      idtable <- data.table(ejam_uniq_id = 1:NROW(sitepoints), ejam_uniq_id_as_submitted_to_getblocks = sitepoints$ejam_uniq_id)
-      sitepoints[ , ejam_uniq_id := .I] # .I just means  1:NROW(sitepoints)  
-    }
-  }
+  } #else {
+  #   if (!identical(sitepoints$ejam_uniq_id, seq.int(length.out = NROW(sitepoints)))) {
+  #     saving_ejam_uniq_id_as_submitted_to_getblocks <- TRUE
+  #     message('ejam_uniq_id was already a column in sitepoints, but was not the same as the rownum, which would cause problems for other code assuming it is 1 through N, 
+  #           so ejam_uniq_id_as_submitted_to_getblocks now contains the original values and ejam_uniq_id was changed to 1:NROW(sitepoints)')
+  #     idtable <- data.table(ejam_uniq_id = 1:NROW(sitepoints), ejam_uniq_id_as_submitted_to_getblocks = sitepoints$ejam_uniq_id)
+  #     sitepoints[ , ejam_uniq_id := .I] # .I just means  1:NROW(sitepoints)  
+  #   }
+  # }
   
   # pass in a list of uniques and the surface radius distance
   
@@ -170,11 +194,7 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
       tmp[ , .(BLOCK_X, BLOCK_Y, BLOCK_Z)], 
       sitepoints[i, c('FAC_X','FAC_Y','FAC_Z')])
     )   
-    
-    
-    
-    
-    
+
     # distances is now just a 1 column data.table of hundreds of distance values. Some may be 5.08 miles even though specified radius of 3 miles even though distance to corner of bounding box should be 1.4142*r= 4.2426, not 5 ? 
     # pdist computes a n by p distance matrix using two separate matrices
     
@@ -234,6 +254,16 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
     ################################# #
     
     if (((i %% report_progress_every_n) == 0) & interactive()) {cat(paste("Finished finding blocks near ",i ," of ", nRowsDf),"\n" ) }   # i %% report_progress_every_n indicates i mod report_progress_every_n (“i modulo report_progress_every_n”) 
+    
+    ## update progress bar at 5% intervals
+    pct_inc <- 5
+    ## add check that data has enough points to show increments with rounding
+    ## i.e. if 5% increments, need at least 20 points or %% will return NaN
+    if(is.function(updateProgress) & (nRowsDf >= (100/pct_inc)) & (i %% round(nRowsDf/(100/pct_inc)) < 1)){
+      boldtext <- paste0((pct_inc)*round((100/pct_inc*i/nRowsDf)), '% done')
+      updateProgress(message_main = boldtext, 
+                     value = round((pct_inc)*i/nRowsDf,2)/(pct_inc))
+    }
     
   } # do next site in loop, etc., until end of this loop.
   # end loop over sites ################################################################################################ # 
@@ -301,9 +331,9 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
   #   getblocks_diagnostics(sites2blocks)
   # }
 
-  if (saving_ejam_uniq_id_as_submitted_to_getblocks) {
-    sites2blocks[idtable, ejam_uniq_id_as_submitted_to_getblocks := ejam_uniq_id_as_submitted_to_getblocks, on = "ejam_uniq_id"]
-  }
+  # if (saving_ejam_uniq_id_as_submitted_to_getblocks) {
+  #   sites2blocks[idtable, ejam_uniq_id_as_submitted_to_getblocks := ejam_uniq_id_as_submitted_to_getblocks, on = "ejam_uniq_id"]
+  # }
   
   return(sites2blocks)
 }

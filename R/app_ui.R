@@ -412,7 +412,6 @@ app_ui  <- function(request) {
                    
                    h4('Selected Location Map'),
                    #helpText('Red circles indicate overlapping sites.'),
-                   
                        ## output: show leaflet map of uploaded points
                    shinycssloaders::withSpinner(
                      leaflet::leafletOutput(outputId = 'an_leaf_map', 
@@ -481,47 +480,7 @@ app_ui  <- function(request) {
                  tabsetPanel(id = 'results_tabs',
                              #type = 'pills',
                              
-                             ######################################################################################################### #
-                             #. ####
-                             # ______ SUMMARY REPORT_________ ####
-                             #. ## ##
-                    
-                             ##  tabPanel(title = 'Summary' ####
-                             
-                             
-                             # tabPanel(
-                             #   title = 'Summary',
-                             #   br(), 
-                               ### summary_report_tab.html  (treats EJAM/inst/ as root) ####
-                               # htmlTemplate(
-                               #   app_sys('report/summary_report_tab.html'),  
-                               #   pop_header = htmlOutput(outputId = 'view1_total_pop'), #### view1_total_pop ####
-                                 # demog_table = shinycssloaders::withSpinner(
-                                 #   gt::gt_output(outputId = 'view1_demog_table') #### view1_demog_table ####
-                                 # ),
-                                 #### view1_summary_plot ####
-                                 # demog_plot = fluidRow(
-                                 #   column(
-                                 #     12, align = 'center',
-                                 #     shinycssloaders::withSpinner(
-                                 #       plotOutput(outputId = 'view1_summary_plot', width = '100%', height = '400px')  # {{ demog_plot }} goes in .html template
-                                 #     )
-                                 #   )
-                                 # ),
-                                 
-                                 #### view1_envt_table ####
-                                 # env_table = shinycssloaders::withSpinner(
-                                 #   gt::gt_output(outputId = 'view1_envt_table')
-                                 # ),
-                                 #### download button ####
-                               #   dl_button = tags$div(
-                               #     shiny::downloadButton(
-                               #       outputId = 'summary_download',
-                               #       label = 'Download Summary Report', class = 'usa-button'), style = 'text-align: center;'
-                               #   ),
-                               #   format_button = NULL
-                               # )
-                             #), # end of Summary tab
+                        
                              ######################################################################################################### #
                              # COMMUNITY REPORT VIEW ####
                              tabPanel(
