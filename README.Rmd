@@ -38,13 +38,13 @@ knitr::opts_chunk$set(
 
   - Technical documentation for R software users
 
-    - R users vignette that walks through installation and key functions: [Vignette](EJAM-vignette.html "EJAM-vignette.html") (must be on VPN)
+    - R users vignette that walks through installation and key functions: See `vignette(package="EJAM")` or [Vignette](EJAM-vignette.html "EJAM-vignette.html") (must be on VPN)
 
     - R developers technical documentation of all R functions and data in web page format: [EJAM R Functions and Data](EJAM.html "EJAM.html") (must be on VPN)
 
     - GitHub repository of code and data: [USEPA/EJAM](https://github.com/USEPA/EJAM#readme "https://github.com/USEPA/EJAM#readme") (must be on VPN)
 
-  - EJAM Web App Demo internal to EPA: As of 10/2023 the main app is not on a production server yet. A very minimal portion of the calculation tool is here on a staging server:
+  - EJAM Web App Demo internal to EPA: As of 1/2024 the main app is not on a production server yet. A very minimal portion of the calculation tool is here on a staging server:
 
     - For a demo of EJScreen-like results (some #s are slightly different), for 100 points in under 5 seconds, and 1,000 points in about 10-30 seconds depending on distance **[ejamlite demo](https://rstudio-connect.dmap-stage.aws.epa.gov/content/725e3761-3dc1-4012-b07c-23126063da97/ "https://rstudio-connect.dmap-stage.aws.epa.gov/content/725e3761-3dc1-4012-b07c-23126063da97/")** (must be on VPN)
 

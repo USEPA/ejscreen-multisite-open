@@ -1,5 +1,7 @@
-#' ejscreenit_for_ejam
-#' Wrapper for ejscreenit() from EJAMejscreenapi package, to use in EJAM app
+#' Get EJScreen results directly from EJScreen servers via their API
+#' 
+#' A wrapper for EJAM to use ejscreenit() from the EJAMejscreenapi package
+#' 
 #' @param sitepoints table with lat and lon columns
 #' @param radius in miles
 #' @param ... passed to ejscreenit() 

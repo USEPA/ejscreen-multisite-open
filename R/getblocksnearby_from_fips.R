@@ -1,5 +1,7 @@
-#' getblocksnearby_from_fips
-#' Actually finds all blocks within each of the FIPS codes provided
+#' Find all blocks within each of the FIPS codes provided
+#' 
+#' Allows EJAM to analyze and compare Counties, for example
+#' 
 #' @param fips vector of FIPS codes identifying blockgroups, tracts, counties, or states.
 #'   This is useful if -- instead of gettings stats on and comparing circular buffers or polygons --
 #'    one will be getting stats on one or more tracts, 

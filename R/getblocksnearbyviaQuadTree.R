@@ -1,7 +1,9 @@
-#' getblocksnearbyviaQuadTree - Fast way to find nearby points (distance to each Census block centroid near each site)
+#' Fast way to find nearby points (distance to each Census block centroid near each site)
 #'
 #' @description Given a set of points and a specified radius in miles, 
 #'   this function quickly finds all the US Census blocks near each point.
+#'   This does the work actually supporting getblocksnearby()
+#'
 #' @details  
 #'   For each point, it uses the specified search radius and finds the distance to 
 #'   every block within the circle defined by the radius. 
@@ -68,7 +70,7 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
   # buffer_indexdistance <- ceiling(radius / indexgridsize)
   
   if (class(quadtree) != "QuadTree") {
-    if(shiny::isRunning()){
+    if (shiny::isRunning()) {
       warning('quadtree must be an object created with indexblocks(), from SearchTrees package with treeType = "quad" and dataType = "point"')  
       return(NULL)
     } else {
@@ -76,7 +78,7 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
     }
   }
   if (missing(sitepoints)) {
-    if(shiny::isRunning()){
+    if (shiny::isRunning()) {
       warning("sitepoints missing - see getblocksnearby()")
       return(NULL)
     } else {
@@ -85,7 +87,7 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
   }
   stopifnot(is.data.frame(sitepoints), "lat" %in% colnames(sitepoints), "lon" %in% colnames(sitepoints), NROW(sitepoints) >= 1, is.numeric(sitepoints$lat))
   if (missing(quadtree)) {
-    if(shiny::isRunning()){
+    if (shiny::isRunning()) {
       warning("quadtree=localtree is missing - see getblocksnearby() and indexblocks()")
       return(NULL)
     } else {
@@ -259,7 +261,7 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
     pct_inc <- 5
     ## add check that data has enough points to show increments with rounding
     ## i.e. if 5% increments, need at least 20 points or %% will return NaN
-    if(is.function(updateProgress) & (nRowsDf >= (100/pct_inc)) & (i %% round(nRowsDf/(100/pct_inc)) < 1)){
+    if (is.function(updateProgress) & (nRowsDf >= (100/pct_inc)) & (i %% round(nRowsDf/(100/pct_inc)) < 1)){
       boldtext <- paste0((pct_inc)*round((100/pct_inc*i/nRowsDf)), '% done')
       updateProgress(message_main = boldtext, 
                      value = round((pct_inc)*i/nRowsDf,2)/(pct_inc))

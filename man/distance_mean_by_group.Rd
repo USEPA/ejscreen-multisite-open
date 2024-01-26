@@ -29,8 +29,7 @@ If returnwhat is "plot" then it returns the plot object as needed for table_xls_
 see parameter returnwhat
 }
 \description{
-distance_mean_by_group - Avg distance of each demog group (of multiple groups)
-Same as \code{\link[=plot_distance_mean_by_group]{plot_distance_mean_by_group()}} but no plot by default
+Shows distance to sites, for residents in each demographic group (vs everyone else)
 }
 \details{
 Note that the ratio shown is a ratio of distance among others to distance of a given group,
@@ -43,6 +42,7 @@ and when a site is very close to the block internal point (like a centroid)
 relative to the size of the block, the distance to the average resident in the block is
 estimated as 90 percent of the effective radius, which is what the radius of the block
 would be if it were the same area in square meters or miles but circular in shape.
+
 This is the approach used in EJScreen to estimate average proximity of a block resident in
 cases where the block is extremely close to the site or the site may actually be inside the block,
 or exactly on top of the internal point of the block, in which case zero would not be an

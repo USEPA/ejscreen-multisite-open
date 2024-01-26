@@ -1,4 +1,6 @@
+
 url_to_get_ACS2019_rest_services_ejscreen_ejquery_MapServer_7 <- function(
+    
   ## function to make URL for map service 7 (ACS 2019 BLOCKGROUPS) ### #
   #   to get ACS data from EPA server via API  ###   #
   

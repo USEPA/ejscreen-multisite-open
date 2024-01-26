@@ -1,4 +1,5 @@
-#' dataload_from_pins - download / load datasets from pin board
+#' Utility to download / load datasets from pin board
+#' 
 #' @details 
 #'   This does work if on VPN and if credentials already set up for the user doing this:
 #'   

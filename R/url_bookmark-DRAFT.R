@@ -1,7 +1,7 @@
-#' url_bookmark_save
+
 #' save bookmarked EJScreen session (map location and indicator)
-#' @details 
-#' WORK IN PROGRESS - NOT USED AS OF EARLY 2023. 
+#' 
+#' @details  WORK IN PROGRESS - NOT USED AS OF EARLY 2023. 
 #' You can use this function to create and save a json file that is a bookmark 
 #' for a specific place/ map view/ data layer in EJScreen. 
 #' You can later pull up that exact map in EJScreen by launching EJScreen, 

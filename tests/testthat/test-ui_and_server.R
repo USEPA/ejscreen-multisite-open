@@ -47,7 +47,7 @@ test_that(
   "golem-config works",
   {
     config_file <- EJAM:::app_sys("golem-config.yml") #  source/EJAM/inst/golem-config.yml = installed/EJAM/golem-config.yml
-    skip_if(config_file == "")
+    skip_if (config_file == "")
 
     expect_true(
       EJAM:::get_golem_config(

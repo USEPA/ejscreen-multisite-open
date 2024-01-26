@@ -1,5 +1,7 @@
 #' utility to multiply certain percentage columns by 100 to convert 0-1.00 into 0-100
-#' multiple some data to rescale percentages stored as 0 to 1, into 0-100
+#' 
+#' multiplies some data to rescale percentages stored as 0 to 1, into 0-100
+#' 
 #' @param df data.frame but can be data.table
 #' @param cnames colnames in df of indicators to multiply by 100, like those in
 #'

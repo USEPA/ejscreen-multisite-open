@@ -1,4 +1,5 @@
-#' url_naics.com - Get URL for page with info about industry sectors by text query term
+#' Get URL for page with info about industry sectors by text query term
+#' 
 #' See (https://naics.com) for more information on NAICS codes
 #' 
 #' @param query string query term like "gasoline" or "copper smelting"

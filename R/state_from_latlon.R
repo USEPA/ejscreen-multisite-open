@@ -8,7 +8,8 @@
 
 ########################################### # 
 
-#' state_from_latlon - find what state is where each point is located
+#' Find what state is where each point is located
+#' 
 #' Takes 3 seconds to find state for 1k points, so a faster alternative would be useful
 #' @param lon longitudes vector
 #' @param lat latitudes vector
@@ -26,13 +27,13 @@
 #'  mapfast(pts[ST == 'TX',], radius = 1) # 1 miles radius circles
 #'  
 state_from_latlon <- function(lat, lon, states_shapefile=EJAM::states_shapefile) {
-  if(is.na(as.numeric(lat)) & is.na(as.numeric(lon))){ 
+  if (is.na(as.numeric(lat)) & is.na(as.numeric(lon))) { 
     warning("Latitude and Longitude could not be coerced to a number.")
     return(NULL)
-  } else if(is.na(as.numeric(lat))){
+  } else if (is.na(as.numeric(lat))) {
     warning("Latitude could not be coerced to a number")
     return(NULL)
-  } else if(is.na(as.numeric(lon))){
+  } else if (is.na(as.numeric(lon))) {
     warning("Longitude could not be coerced to a number.")
     return(NULL)
   }
@@ -51,13 +52,19 @@ state_from_latlon <- function(lat, lon, states_shapefile=EJAM::states_shapefile)
   pts$REGION <- EJAM::stateinfo$REGION[match(pts$statename, stateinfo$statename)]
   pts$n <- 1:NROW(pts)
   
-  if(is.na(pts$statename )){warning("That latitude and longitude is not in any state")}
+  if (is.na(pts$statename )) {warning("That latitude and longitude is not in any state")}
   return(pts)
 }
+#################################################################### #
+
 
 state_from_latlon_compiled <- compiler::cmpfun(state_from_latlon)
 
-#' state_from_blocktable - was used only in some special cases of using testpoints_n() 
+#################################################################### #
+
+
+#' was used only in some special cases of using testpoints_n()
+#' 
 #' given data.table with blockid column, get state abbreviation of each - not used?
 #' @param dt_with_blockid 
 #'
@@ -68,9 +75,12 @@ state_from_latlon_compiled <- compiler::cmpfun(state_from_latlon)
 state_from_blocktable <- function(dt_with_blockid) {
   stateinfo$ST[match(blockid2fips[dt_with_blockid, substr(blockfips,1,2), on = "blockid"], stateinfo$FIPS.ST)]
 }
+#################################################################### #
 
-#' state_from_blockid
+
+
 #' given vector of blockids, get state abbreviation of each
+#' 
 #' @param blockid vector of blockid values as from EJAM in a table called blockpoints
 #'
 #' @return vector of ST info like AK, CA, DE, etc.
@@ -84,9 +94,13 @@ state_from_blockid <- function(blockid) {
   if (!exists('blockid2fips')) {return(rep(NA, length(blockid)))}
   stateinfo$ST[match(blockid2fips[blockid, substr(blockfips,1,2)], stateinfo$FIPS.ST)]
 }
+#################################################################### #
 
-#' state_from_fips - Get FIPS of ALL BLOCKGROUPS in the States or Counties
+
+#' Get FIPS of ALL BLOCKGROUPS in the States or Counties
+#' 
 #' Get the State abbreviations of ALL blockgroups within the input FIPS
+#' 
 #' @details Returns a vector of 2-letter State abbreviations that is 
 #'   one per blockgroup that matches the input FIPS, 
 #'   not necessarily a vector as long as the input vector of FIPS codes!, 
@@ -102,12 +116,14 @@ state_from_fips <- function(fips, uniqueonly=FALSE) {
   x <- stateinfo$ST[match(substr(fips,1,2), stateinfo$FIPS.ST)]
   if (uniqueonly) {return(unique(x))} else {return(x)}
 }
+#################################################################### #
+
 
 # checking speed
 
 
 # pts <- EJAMejscreenapi::testpoints_1000
-library(data.table)
+# library(data.table)
 # # pts <- data.table(testpoints_100)[ , .(lat,lon, sitenumber)]
 # # n=100
 # # pts <- frs[sample(1:nrow(frs), n), .(lat,lon, REGISTRY_ID)]

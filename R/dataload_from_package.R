@@ -1,4 +1,5 @@
-#' dataload_from_package - utility to load a couple of datasets using data immediately instead of relying on lazy loading 
+#' Utility to load a couple of datasets using data immediately instead of relying on lazy loading 
+#' 
 #' @details
 #'  See also read_builtin() function from the readr package!
 #' 

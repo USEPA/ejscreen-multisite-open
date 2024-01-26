@@ -1,5 +1,6 @@
 
-#' trilaterate_sites2blocks - Estimate lat,lon of each ejam_uniq_id, from outputs of getblocksnearby()
+#' DRAFT - Estimate lat,lon of each ejam_uniq_id, from outputs of getblocksnearby()
+#' 
 #' get data.table with ejam_uniq_id, lat,lon of each site (eg for when you did not save sitepoints info)
 #' @param s2b like [testoutput_getblocksnearby_10pts_1miles]
 #'

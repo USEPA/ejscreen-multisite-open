@@ -1,8 +1,8 @@
-#' getblocksnearby2 - Key buffering function - wrapper redirecting to the right version of getblocksnearby()
-#'     DRAFT / WAS WORK IN PROGRESS  
-#' @details  For all examples, see [ejamit()]
+#' DRAFT / WAS WORK IN PROGRESS  Key buffering function - wrapper redirecting to the right version of getblocksnearby()
+#'
+#' @details  For all examples, see [ejamit()] 
 #' 
-#'   Like getblocksnearby() but tries to handle localtree and quadtree parameter differently 
+#' Like getblocksnearby() but tries to handle localtree and quadtree parameter differently 
 #'   - not sure how to check if they are in the right environment.
 #'  
 #' @param sitepoints   see [getblocksnearbyviaQuadTree()] or other such functions
@@ -39,7 +39,7 @@ getblocksnearby2 <- function(sitepoints, radius=3, maxradius=31.07,
                                    ...)
       )
     } else {
-      if(shiny::isRunning()){
+      if (shiny::isRunning()) {
         warning('requires quadtree argument')
         return(NULL)
       } else {

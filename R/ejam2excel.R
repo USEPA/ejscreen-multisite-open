@@ -1,4 +1,7 @@
-#' ejam2excel - alias for table_xls_from_ejam()
+#' Save EJAM results in a spreadsheet
+#' 
+#' ejam2excel() is an alias for table_xls_from_ejam()
+#' 
 #' @inheritParams table_xls_from_ejam
 #' @export
 ejam2excel <- function(ejamitout, 

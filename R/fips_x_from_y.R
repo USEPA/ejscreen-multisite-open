@@ -1,9 +1,5 @@
 
 
-
-
-
-
 ############################################################################# #
 # Named all fips-related functions to start with "fips..."
 ############################################################################# #
@@ -52,8 +48,8 @@
 ############################################################################# #
 
 
-#' fips_state_from_state_abbrev - Get state fips for each state abbrev
-#' Get state fips of each state abbrev
+#' Get state fips for each state abbrev
+#' 
 #' @param ST vector of state abbreviations like c("NY","GA")
 #'
 #' @return vector of 2-digit state FIPS codes like c("10", "44", "44"),
@@ -72,8 +68,8 @@ fips_state_from_state_abbrev <- function(ST) {
 }
 ############################################################################# #
 
-#' fips_state_from_statename - Get state fips for each state name
 #' Get state fips for each state name
+#' 
 #' @param statename vector of state names like c("New York","Georgia")
 #'
 #' @return vector of 2-digit state FIPS codes like c("10", "44", "44"), 
@@ -90,8 +86,8 @@ fips_state_from_statename <- function(statename) {
 }
 ############################################################################# #
 
-#' fips_counties_from_statefips - Get ALL county fips in specified states
-#' Get all county fips in specified states
+#' Get ALL county fips in specified states
+#' 
 #' @details Very similar to list_counties(state) from the tigris package.
 #' @param statefips vector of 2-digit state FIPS codes like c("10", "44", "44") or c(10,44)
 #'
@@ -109,8 +105,8 @@ fips_counties_from_statefips <- function(statefips) {
 }
 ############################################################################# #
 
-#' fips_counties_from_state_abbrev - Get ALL county fips in specified states
-#' Get all county fips in specified states
+#' Get ALL county fips in specified states
+#' 
 #' @param ST vector of state abbreviations like c("NY","GA")
 #'
 #' @return vector of 5-digit character string county FIPS of all unique counties in those states
@@ -128,8 +124,8 @@ fips_counties_from_state_abbrev <- function(ST) {
 }
 ############################################################################# #
 
-#' fips_counties_from_statename - Get ALL county fips in specified states
-#' Get all county fips in specified states
+#' Get ALL county fips in specified states
+#' 
 #' @param statename vector of state names like c("New York","Georgia")
 #'
 #' @return vector of 5-digit character string county FIPS of all unique counties in those states
@@ -143,9 +139,11 @@ fips_counties_from_statename <- function(statename) {
 ############################################################################# #
 
 
-#' fips_bg_from_anyfips - Get unique blockgroup fips in or containing specified fips of any type
+#' Get unique blockgroup fips in or containing specified fips of any type
+#' 
 #' Convert any FIPS codes to the FIPS of all the blockgroups that are
 #'   among or within or containing those FIPS
+#'   
 #' @details  This is a way to get a list of blockgroups, specified by state/county/tract or even block.
 #' 
 #' Takes a vector of one or more FIPS that could be State (2-digit), County (5-digit),
@@ -210,7 +208,8 @@ fips_bg_from_anyfips <- function(fips) {
 ############################################################################# #
 
 
-#' counties_as_sites - Analyze US Counties as if they were sites, to get EJ indicators summary for each county
+#' Analyze US Counties as if they were sites, to get EJ indicators summary for each county
+#' 
 #' @details This function provides one row per blockgroup.
 #'    [getblocksnearby_from_fips()] provides one row per block.
 #'    See more below under "Value" 
@@ -245,7 +244,8 @@ counties_as_sites <- function(fips) {
 ############################################### #
 
 
-#' states_as_sites - Analyze US States as if they were sites, to get EJ indicators summary
+#' Analyze US States as if they were sites, to get EJ indicators summary
+#' 
 #' @details This function provides one row per blockgroup.
 #'    [getblocksnearby_from_fips()] provides one row per block.
 #'    See more below under "Value" 
@@ -294,8 +294,8 @@ states_as_sites <- function(fips) {
 # fips2name()
 ############################################################################# #
 
-#' fips_st2eparegion - Get EPA Region number from state FIPS code
 #' Get EPA Region number from state FIPS code
+#' 
 #' @param stfips vector of one or more state fips codes (numbers or as strings)
 #'
 #' @return vector of numbers representing US EPA Regions
@@ -306,8 +306,8 @@ fips_st2eparegion <- function(stfips) {
 }
 ############################################################################# #
 
-#' fips2state_abbrev - Get state abbreviations from any type of FIPS codes
 #' Get state abbreviations from any type of FIPS codes
+#' 
 #' @param fips vector of FIPS
 #'
 #' @return vector of abbreviations like "NY", "LA", "DE", etc.
@@ -325,8 +325,9 @@ fips2state_abbrev <- function(fips) {
 }
 ############################################################################# #
 
-#' fips2state_fips - Get state FIPS codes from any type of FIPS codes
+#' 
 #' Get state FIPS codes from any type of FIPS codes
+#' 
 #' @details Tells you which State contains each County (or tract or blockgroup or block)
 #' @param fips vector of FIPS
 #'
@@ -341,8 +342,8 @@ fips2state_fips <- function(fips) {
 ############################################################################# #
 
 
-#' fips2statename - Get state names from any type of FIPS codes
 #' Get state names from any type of FIPS codes
+#' 
 #' @param fips vector of FIPS
 #'
 #' @return vector of state names
@@ -356,8 +357,8 @@ fips2statename <- function(fips) {
 ############################################################################# #
 
 
-#' fips2countyname - Get county names from county FIPS codes
 #' Get county names from county FIPS codes
+#' 
 #' @param fips vector of US Census FIPS codes for Counties (5 digits each). can be string or numeric, with or without leading zeroes.
 #' @param includestate can be ST, Statename, "", or TRUE to specify what if anything comes after county name and comma
 #' 
@@ -394,8 +395,8 @@ fips2countyname <- function(fips, includestate = c("ST", "Statename", "")[1]) {
 } 
 ############################################################################# #
 
-#' fips2name - Get county or state names from county or state FIPS codes
 #' Get county or state names from county or state FIPS codes
+#' 
 #' @param fips vector of US Census FIPS codes for Counties (5 digits each) or States (2 digits).
 #'   Can be string or numeric, with or without leading zeroes.
 #' @param ... passed to fips2countyname() to control whether it appends something like , NY or , New York

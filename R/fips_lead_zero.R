@@ -1,8 +1,9 @@
-#' fips_lead_zero
 #' Add leading zeroes to fips codes if missing, replace with NA if length invalid
-#' Note it does NOT VALIDATE FIPS - 
-#'   It does NOT check if FIPS is valid other than checking its length seems OK, 
-#'   i.e., it might be a state, county, tract, blockgroup, or block FIPS code.
+#' 
+#' Ensures FIPS has the leading zero, but does NOT VALIDATE FIPS - 
+#' It does NOT check if FIPS is valid other than checking its length.
+#' fips could be a state, county, tract, blockgroup, or block FIPS code.
+#' 
 #' @param fips vector of numeric or character US FIPS codes
 #'
 #' @return vector of same length 

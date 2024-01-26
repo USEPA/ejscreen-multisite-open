@@ -14,6 +14,7 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 - Technical documentation for R software users
 
   - R users vignette that walks through installation and key functions:
+    See `vignette(package="EJAM")` or
     [Vignette](EJAM-vignette.html "EJAM-vignette.html") (must be on VPN)
 
   - R developers technical documentation of all R functions and data in

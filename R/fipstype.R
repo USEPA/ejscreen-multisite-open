@@ -1,4 +1,4 @@
-#' fipstype  -  identify what type of Census geography is each FIPS code (block, county, etc.)
+#' Identify what type of Census geography is each FIPS code (block, county, etc.)
 #'
 #' @param fips vector of one or more Census FIPS with or without leading zeroes, as strings or numeric
 #' 

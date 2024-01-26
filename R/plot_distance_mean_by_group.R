@@ -1,7 +1,8 @@
-#' plot_distance_mean_by_group - Barplot Avg. proximity, by group
-#'  Shows proximity to sites, for each demographic group (relative to everyone else)
+#' Barplot of Average Proximity, by Group
+#' 
+#' Shows distance to sites, for residents in each demographic group (vs everyone else)
 #'  
-#' @details   Note that the ratio shown is a ratio of distance among others to distance of a given group,
+#' @details Note that the ratio shown is a ratio of distance among others to distance of a given group,
 #'   so values below 1 mean the given demographic group lives closer to facilities.
 #'   A value of 0.85 would mean the group is only 85% as far from a site as everyone else.
 #'   
@@ -11,6 +12,7 @@
 #'    relative to the size of the block, the distance to the average resident in the block is 
 #'    estimated as 90 percent of the effective radius, which is what the radius of the block
 #'    would be if it were the same area in square meters or miles but circular in shape. 
+#'    
 #'    This is the approach used in EJScreen to estimate average proximity of a block resident in 
 #'    cases where the block is extremely close to the site or the site may actually be inside the block,
 #'    or exactly on top of the internal point of the block, in which case zero would not be an 

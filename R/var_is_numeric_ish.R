@@ -1,4 +1,4 @@
-#' var_is_numeric_ish - see which columns seem numeric and could be rounded, e.g. - DRAFT NOT FULLY TESTED
+#' see which columns seem numeric and could be rounded, e.g. - DRAFT NOT FULLY TESTED
 #' 
 #' @param x data.table, data.frame, or vector
 #' @param only.if.already.numeric logical, if TRUE, only reports TRUE for a column (or element) if  is.numeric() is TRUE for that one 

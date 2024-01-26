@@ -1,4 +1,4 @@
-#' url_4table - Create URLs in columns
+#' Create URLs in columns
 #'
 #' @param lat vector of latitudes
 #' @param lon vector of longitudes

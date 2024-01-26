@@ -1,5 +1,5 @@
 
-#' fixmapheadernamescolname - utility to convert aliases to proper colnames of map_headernames
+#' utility to convert aliases to proper colnames of map_headernames
 #'
 #' @param x character vector of colnames of map_headernames, or aliases like "long"
 #'

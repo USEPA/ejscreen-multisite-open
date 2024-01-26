@@ -3,9 +3,9 @@
 #   SPEEDTEST   #########################################################################
 
 
-#' speedtest
-#' Run EJAM analysis for several radii and numbers of sitepoints, 
-#'   recording how long each step takes 
+
+#' Run EJAM analysis for several radii and numbers of sitepoints, recording how long each step takes
+#' 
 #' @details   
 #'   This is essentially a test script that times each step of EJAM for a large dataset
 #'    - pick a sample size (n) (or enter sitepoints, or set n=0 to interactively pick file of points in RStudio)
@@ -304,8 +304,8 @@ speedtest <- function(n=10, sitepoints=NULL, weighting='frs',
 ######################################################################### #
 
 
-#' speedtest_plot
 #' utility to plot output of speedtest(), rate of points analyzed per hour
+#' 
 #' @param x table from speedtest()
 #' @param ltype optional type of line for plot
 #' @param plotfile optional path and filename of .png image file to save
@@ -316,7 +316,7 @@ speedtest <- function(n=10, sitepoints=NULL, weighting='frs',
 speedtest_plot = function(x, ltype="b", plotfile=NULL, secondsperthousand=FALSE) { 
   radii <- unique(x$miles)
   nlist  <- unique(x$points)
-  mycolors <- runif(length(radii), 1, 600)
+  mycolors <- runif (length(radii), 1, 600)
   if (secondsperthousand) {
     yvals = x$secondsper1000
     ylab = "Seconds per 1,000 sites"
@@ -358,8 +358,8 @@ speedtest_plot = function(x, ltype="b", plotfile=NULL, secondsperthousand=FALSE)
 
 ######################################################################### #
 
-#' speedtable_summarize
 #' utility used by speedtest()
+#' 
 #' @param speedtable from speedtest(), with columns named points and perhr
 #' @seealso [speedtest()]
 #' @export
@@ -375,8 +375,9 @@ speedtable_summarize <- function(speedtable) {
 
 ######################################################################### #
 
-#' speedtable_expand
+
 #' Utility used by speedtest() and speedtable_summarize()
+#' 
 #' @param speedtable must have columns called  points, miles, and perhr 
 #'
 #' @export

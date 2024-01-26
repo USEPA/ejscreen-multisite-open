@@ -1,5 +1,7 @@
 #' distance_via_surfacedistance
+#' 
 #' Convert surface distance to actual distance
+#' 
 #' @description
 #'     \preformatted{
 #'     Just a simple formula:

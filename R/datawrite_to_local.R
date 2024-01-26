@@ -1,5 +1,8 @@
-#' datawrite_to_local
-#' Write large object(s) like EJAM datasets to local disk for convenience during app/pkg development, formatted as .arrow or .rda 
+#' Save datasets during package development
+#' 
+#' Utility to write large object(s) like EJAM datasets to local disk for convenience during app/pkg development, 
+#' formatted as .arrow or .rda
+#' 
 #' @param varnames vector of object names
 #' @param ext file .extension appropriate to the format, ".rda" or ".arrow"
 #' @param fun function to use, but as a character string, like "arrow::write_ipc_file"

@@ -1,4 +1,4 @@
-#' url_get_via_url - helper function work in progress: GET json via url of ejscreen ejquery map services
+#' helper function work in progress: GET json via url of ejscreen ejquery map services
 #'
 #' @param url the url for an EJScreen ejquery request
 #'

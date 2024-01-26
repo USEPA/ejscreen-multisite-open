@@ -1,13 +1,18 @@
-#' doaggregate - Summarize indicators in each buffer (given the blocks in each buffer and indicators for each block)
+#' Summarize environmental and demographic indicators at each location and overall
 #'
-#' @description This updated 2023 code takes a set of facilities and the set of blocks that are near each,
-#'   (as identified previously, in other code that has identified which blocks are nearby)
-#'   and combines those with indicator scores for block groups.
+#' @description getblocksnearby() and doaggregate() are the two key functions that run ejamit().
+#'   `doaggregate()` takes a set of sites like facilities and the 
+#'   set of blocks that are near each, 
+#'   combines those with indicator scores for block groups, and
+#'   aggregates the numbes within each place and across all overall.
 #'
 #' @details
 #'   For all examples, see [getblocksnearbyviaQuadTree()]
+#' 
+#'   `doaggregate()` is the code run after [getblocksnearby()] (or a related function for 
+#'   polygons or FIPS Census units) has identified which blocks are nearby.
 #'   
-#'   This function aggregates the blockgroup scores to create a summary of each indicator,
+#'   `doaggregate()` aggregates the blockgroup scores to create a summary of each indicator,
 #'    as a raw score and US percentile and State percentile,
 #'    in each buffer (i.e., near each facility):
 #'    
@@ -90,7 +95,7 @@
 #'   * **longnames**  descriptive long names for the indicators in the above outputs
 #'   
 #'   * **count_of_blocks_near_multiple_sites**  additional detail 
-#'   
+#' 
 #' @import data.table
 #' @export
 #' 
@@ -144,8 +149,8 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
 
   
     
-  if(NROW(sites2blocks) == 0){
-    #if(shiny::isRunning()){
+  if (NROW(sites2blocks) == 0){
+    #if (shiny::isRunning()) {
       warning('No blocks found within that radius of your site(s). Try a larger radius')
       return(NULL) 
     #} else{
@@ -157,7 +162,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   # add input validation here - check if sites2blocks is valid format, etc. 
   #if (any(!(c('siteid', 'blockid' ) %in% names(sites2blocks)))) {stop("sites2blocks must contain columns named siteid, blockid, and should have distance")}
   if (any(!(c('ejam_uniq_id', 'blockid' ) %in% names(sites2blocks)))) {
-    #if(shiny::isRunning()){
+    #if (shiny::isRunning()) {
       warning("sites2blocks must contain columns named ejam_uniq_id, blockid, and should have distance")
       return(NULL)
     #} else {

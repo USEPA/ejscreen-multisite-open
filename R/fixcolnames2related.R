@@ -1,5 +1,7 @@
-#' fixcolnames2related - get name of related avg, pctile, or ratio variable name
+#' Get name of related avg, pctile, or ratio variable name
+#' 
 #' Given names_d, e.g., returns names_d_ratio_to_state_avg
+#' 
 #' @details Given basic variable name(s) like "pctlowinc" or names_e,
 #'   see what the related variable names are for storing the 
 #'   US or State percentiles, averages, or ratios to averages 

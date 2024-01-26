@@ -47,7 +47,7 @@
 latlon_from_anything <- function(x,y) {
   if (missing(x)) {
     if (interactive()) { x <- rstudioapi::selectFile(caption = "Select xlsx or csv with lat,lon values", path = '.' ) } else {
-      if(shiny::isRunning()){
+      if (shiny::isRunning()) {
         warning("file path/name needed but not provided")
         return(NULL)
       } else{
@@ -65,7 +65,7 @@ latlon_from_anything <- function(x,y) {
     if (is.character(x) & length(x) == 1) {
       # seems to be a file name with path, so read it
       if (!file.exists(x)) {
-        if(shiny::isRunning()){
+        if (shiny::isRunning()) {
           warning(paste0(x, ' is not a filepath/name that exists, and otherwise must be a vector of longitudes or a table of points'))
           return(NULL)
         } else{

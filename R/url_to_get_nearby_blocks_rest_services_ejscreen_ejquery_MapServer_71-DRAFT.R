@@ -1,4 +1,9 @@
-url_to_get_nearby_blocks_rest_services_ejscreen_ejquery_MapServer_71 <- function(lat, lon, miles, outFields='GEOID10,OBJECTID,POP_WEIGHT', returnCountOnly='false') {
+url_to_get_nearby_blocks_rest_services_ejscreen_ejquery_MapServer_71 <- function(
+    lat, lon, 
+    miles, 
+    outFields='GEOID10,OBJECTID,POP_WEIGHT', 
+    returnCountOnly='false') {
+  
   # function for service 71, nearby blockweights ####
   ## notes - examples #### 
   if (1 == 0) {
@@ -14,7 +19,7 @@ url_to_get_nearby_blocks_rest_services_ejscreen_ejquery_MapServer_71 <- function
   # https://geopub.epa.gov/arcgis/sdk/rest/index.html#/Query_Map_Service_Layer/02ss0000000r000000/
   
   
-
+  
   baseurl <- "https://geopub.epa.gov/arcgis/rest/services/ejscreen/ejquery/MapServer/71/query?"
   params <- paste0( 
     'outFields=', outFields,

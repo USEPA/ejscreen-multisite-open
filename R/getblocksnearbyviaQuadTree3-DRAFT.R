@@ -1,5 +1,5 @@
-#' getblocksnearbyviaQuadTree3 - Find nearby blocks using Quad Tree data structure for speed, NO PARALLEL PROCESSING
-#'     DRAFT / WAS WORK IN PROGRESS  
+#' DRAFT / WAS WORK IN PROGRESS  Find nearby blocks using Quad Tree data structure for speed, NO PARALLEL PROCESSING
+#'
 #' @description Given a set of points and a specified radius (in miles), 
 #'   this function quickly finds all the US Census blocks near each point. 
 #'   For each point, it uses the specified search radius and finds the distance to 
@@ -44,7 +44,7 @@ getblocksnearbyviaQuadTree3 <- function(sitepoints, radius=3, maxradius=31.07,
                                         avoidorphans=TRUE, report_progress_every_n=500, 
                                         quadtree) {
   if (class(quadtree) != "QuadTree") {
-    if(shiny::isRunning()){
+    if (shiny::isRunning()) {
       warning('quadtree must be an object created with indexblocks(), from SearchTrees package with treeType = "quad" and dataType = "point"')  
       return(NULL)
     } else {

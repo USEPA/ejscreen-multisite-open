@@ -1,4 +1,5 @@
 #' map_facilities
+#' 
 #' @description make a leaflet map of uploaded points
 #' @param mypoints, data frame of uploaded points
 #' @param rad, a size for drawing each circle (buffer search radius)
@@ -33,7 +34,7 @@ map_facilities <- function(mypoints, rad = 3, highlight = FALSE, clustered) {#, 
   if (length(mypoints) != 0) {
     #isolate({ # do not redraw entire map and zoom out and reset location viewed just because radius changed?
       
-      #if(circle_type == 'circles'){
+      #if (circle_type == 'circles'){
       mymap <- leaflet::leaflet(mypoints) %>% 
         addTiles()  %>%
         addCircles(

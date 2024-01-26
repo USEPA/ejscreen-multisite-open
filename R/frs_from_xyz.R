@@ -2,7 +2,7 @@
 
 
 
-#' frs_from_regid - Use registry ID to see FRS Facility Registry Service data on those EPA-regulated sites
+#' Use registry ID to see FRS Facility Registry Service data on those EPA-regulated sites
 #' 
 #' @param regid vector of one or more EPA Registry ID codes used by FRS
 #' @return relevant rows of the data.table called frs, which has column names that are
@@ -26,7 +26,7 @@ frs_from_regid <- function(regid) {
 
 ########################################## # 
 
-#' frs_from_programid - Use EPA Program ID to see FRS Facility Registry Service data on those EPA-regulated sites
+#' Use EPA Program ID to see FRS Facility Registry Service data on those EPA-regulated sites
 #' 
 #' @param programid vector of one or more EPA Program ID codes used by FRS 
 #' @return relevant rows of the data.table called frs, which has column names that are
@@ -44,7 +44,8 @@ frs_from_programid <- function(programid) {
 ########################################## # 
 
 
-#' frs_from_program - Use EPA Program acronym like TRIS to see FRS Facility Registry Service data on those EPA-regulated sites
+#' Use EPA Program acronym like TRIS to see FRS Facility Registry Service data on those EPA-regulated sites
+#' 
 #' @description Get data.table based on given FRS Program System CATEGORY.
 #'   Find all FRS sites in a program like RCRAINFO, TRIS, or others.
 #' @param program vector of one or more EPA Program names used by FRS 
@@ -61,7 +62,7 @@ frs_from_program  <- function(program) {
 ########################################## # 
 
 
-#' frs_from_naics - Use NAICS code or industry title text search to see FRS Facility Registry Service data on those EPA-regulated sites
+#' Use NAICS code or industry title text search to see FRS Facility Registry Service data on those EPA-regulated sites
 #'
 #' @param naics_code_or_name 
 #' @param ... passed to [naics_from_any()]
@@ -88,7 +89,8 @@ frs_from_naics <- function(naics_code_or_name, ...) {
 }
 ########################################## # 
 
-#' frs_from_sitename - Use site name text search to see FRS Facility Registry Service data on those EPA-regulated sites
+#' Use site name text search to see FRS Facility Registry Service data on those EPA-regulated sites
+#' 
 #' VERY SLOW search within PRIMARY_NAME of facilities for matching text
 #' @param sitenames one or more strings in a vector, which can be regular expressions or query for exact match using fixed=TRUE
 #' @param ignore.case logical, search is not case sensitive by default (unlike [grepl()] default)

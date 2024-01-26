@@ -5,9 +5,15 @@
 shapefile2blockpoints <- function(...) {
   get_blockpoints_in_shape(...)  
 }
+############################################################# #
 
 
-#' get_blockpoints_in_shape - find blocks that are in a polygon, using internal point of block - WORK IN PROGRESS ****
+#' Find all Census blocks in a polygon, using internal point of block
+#' 
+#' Like getblocksnearby(), but for blocks in each polygon rather than 
+#' blocks near each facility. For analyzing all residents in certain zones 
+#' such as places at elevated risk, redlined areas, watersheds, etc.
+#' 
 #' @aliases shapefile2blockpoints
 #' @description This is like getblocksnearby() but for a polygonal buffer area instead of 
 #'   a circular buffer.  

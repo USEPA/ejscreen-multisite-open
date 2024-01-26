@@ -1,6 +1,6 @@
 #' View HTML Report on EJAM Results (Overall or at 1 Site)
 #'
-#' Get URL for and view in browser a 2-page summary report similar to the 
+#' @description Get URL for and view in browser a 2-page summary report similar to the 
 #' EJScreen Community Report
 #' 
 #' @details This relies on [build_community_report()] as used in web app

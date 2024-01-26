@@ -1,5 +1,7 @@
-#' datawrite_to_aws -  NOT YET WORKING - AccessDenied 
-#' Write object(s) like a dataset to DMAP Data Commons, formatted as .arrow or .rda 
+#' Utility NOT YET WORKING - AccessDenied
+#' 
+#' Utility to write object(s) like a dataset to DMAP Data Commons, formatted as .arrow or .rda
+#' 
 #' @details 
 #'   mybucket <-  'dmap-data-commons-oa' #
 #'   

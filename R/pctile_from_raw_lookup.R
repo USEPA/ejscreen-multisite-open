@@ -81,7 +81,7 @@ pctile_from_raw_lookup <- function(myvector, varname.in.lookup.table, lookup=usa
   # CHECK FOR FATAL PROBLEMS  ####
   
   if (missing(lookup) & !exists("usastats")) {
-    if(shiny::isRunning()){
+    if (shiny::isRunning()) {
       warning("lookup default usastats was not found, but should be available as usastats")
       return(rep(NA, length(myvector)))
     } else {
@@ -89,7 +89,7 @@ pctile_from_raw_lookup <- function(myvector, varname.in.lookup.table, lookup=usa
     }
     }
   if (!is.data.frame(lookup)){
-    if(shiny::isRunning()){
+    if (shiny::isRunning()) {
       
       warning("lookup must be a data.frame like usastats or statestats, with columns PCTILE, REGION, and the names of indicators like pctlowinc")
       return(rep(NA, length(myvector)))
@@ -99,7 +99,7 @@ pctile_from_raw_lookup <- function(myvector, varname.in.lookup.table, lookup=usa
     }
   }
   if (!('PCTILE' %in% names(lookup))) {
-    if(shiny::isRunning()){
+    if (shiny::isRunning()) {
       warning('lookup must have a field called "PCTILE" that contains quantiles/percentiles')
       return(rep(NA, length(myvector)))
     } else {
@@ -108,7 +108,7 @@ pctile_from_raw_lookup <- function(myvector, varname.in.lookup.table, lookup=usa
     }
     }
   if (missing(zone) & any(lookup$REGION != 'USA')) {
-    if(shiny::isRunning()){
+    if (shiny::isRunning()) {
       warning('If no zone (like "NY") is specified, lookup table must have column called REGION that has "USA" in every row.')
       return(rep(NA, length(myvector)))
       
@@ -125,7 +125,7 @@ pctile_from_raw_lookup <- function(myvector, varname.in.lookup.table, lookup=usa
       return( mapply(FUN = pctile_from_raw_lookup, myvector = myvector, varname.in.lookup.table = varname.in.lookup.table, MoreArgs = list(lookup = lookup, zone = zone)) )
     } else {
       ## check if being used in a running shiny app
-      if(shiny::isRunning()){
+      if (shiny::isRunning()) {
         warning("Can provide vectors of values and of zones like states, but then must specify only one variable (column name) as varname.in.lookup.table, like 'pctlowinc' - 
            or can provide vectors of values and corresponding variables but only in 1 zone")
         
@@ -145,7 +145,7 @@ pctile_from_raw_lookup <- function(myvector, varname.in.lookup.table, lookup=usa
       # Assume they meant the one zone (e.g. a State) to apply to all the indicator values provided as myvector
       zone <- rep(zone, length(myvector))
     } else {
-      if(shiny::isRunning()){
+      if (shiny::isRunning()) {
         warning('Number of raw score values and number of zone values provided must be the same (except if only one zone value is provided, like a single state, it is assumed to apply for all)')
         
         ## return vector of all NAs, match length of input vector

@@ -1,20 +1,32 @@
-#' .onAttach - Do slow initialization steps - Download data, load key data into RAM, create index to all US blocks
-#' Note this duplicates some code in global.R, and see source code here to adjust settings.
-#' @details Does this even happen if connect server runs app as a regular shiny app without loading all?
-#'   In what order? see app.R too ***
+#' Set up EJAM (do slow initialization steps when package is attached)
+#' 
+#' Download datasets, load to memory, index block locations
+#' 
+#' @details This uses [dataload_from_pins()] and [indexblocks()]
+#' 
+#' This function `.onAttach()` gets run when the package EJAM is attached, 
+#' which happens when library(EJAM) or require(EJAM) is used.
+#' 
+#' This code would not get run if a server ran app.R as a regular shiny app
+#' and just used dataload or source to read the /R/*.R source files
+#' rather than loading and attaching the EJAM package. see app.R   ***
+#' Note this duplicates some code in global.R, 
+#' see source code here to adjust settings.
+#' 
 #' @param libname na
 #' @param pkgname na
 #' 
 .onAttach <- function(libname, pkgname) {
   
   # These instead could be set in the golem-config.yml file
+
   asap_aws   <- TRUE  # download large datasets now?           Set to FALSE while Testing/Building often
   asap_index <- TRUE  # build index those now?                 Set to FALSE while Testing/Building often 
   asap_bg    <- TRUE  # load now vs lazyload blockgroup data?  Set to FALSE while Testing/Building often
   
-  # startup message shown at library(EJAM) or when reinstalling from source ####
+  # startup msg shown at library(EJAM) or when reinstalling from source ####
   packageStartupMessage("Now running .onAttach(), as part of attaching the EJAM package.")
-  # packageStartupMessage('The leaflet package is what requires the sp package\n')
+  # packageStartupMessage('The leaflet package is what requires sp\n')
   
   packageStartupMessage(
     
@@ -60,6 +72,7 @@
     # )
   )
   
+  
   # download BLOCK (not blockgroup) data, etc, from EPA AWS Data Commons ####
   
   if (asap_aws) {
@@ -74,13 +87,10 @@
     }
     
     #################### # 
-    # see ?dataload_from_aws  
-    # loads quaddata needed to make localtree index, etc.   
-    # 
     #   blockid2fips is used only in state_from_blocktable() and state_from_blockid(), which are not necessarily used, 
-    #   so maybe should not load this unless/until needed?
-    #     but, then we would need to be sure to track when it is used and load from aws on the fly
-    
+    #   so maybe should not load this unless/until needed
+    #     but, then we would need to be sure to track when it is used and load on the fly
+    # Alternative to pins board was DMAP data commons / AWS: 
     # BUCKET_CONTENTS <- data.table::rbindlist(aws.s3::get_bucket(bucket = mybucket), fill = TRUE)
     # baseurl <- "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/"
     # urls <- paste0(baseurl, fnames)
@@ -138,11 +148,16 @@
       
     }
     
-    # load to memory  BLOCKGROUP (not block) data (EJScreen indicators), etc. from the installed package
+    # load BLOCKGROUP (not block) data (EJScreen data), etc. from package
     # see ?dataload_from_package()
     # This loads some key data, while others get lazy loaded if/when needed.
-    # data(list=c("blockgroupstats", "usastats", "statestats"), package="EJAM") # would work after package is installed
-    # data(list=c("frs", "frs_by_programid ", "frs_by_naics"),  package="EJAM") # would be to preload some very large ones not always needed. 
+    # data(list=c("blockgroupstats", "usastats", "statestats"), package="EJAM")
+    # # would work after package is installed
+    # data(list=c("frs", "frs_by_programid ", "frs_by_naics"),  package="EJAM")
+    # # would be to preload some very large ones not always needed.
     
-  } 
+  }
+  
+  packageStartupMessage('For help using the EJAM package, try ?EJAM or `vignette(package = "EJAM")` ')
+  
 }

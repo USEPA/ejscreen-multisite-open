@@ -1,4 +1,4 @@
-#' url_get_eparest_chunked_by_id - experimental/ work in progress: in chunks, get ACS data or Block weights nearby via EPA API
+#' experimental/ work in progress: in chunks, get ACS data or Block weights nearby via EPA API
 #'
 #' @param objectIds see API
 #' @param chunksize see API
@@ -36,7 +36,7 @@ url_get_eparest_chunked_by_id <- function(objectIds, chunksize=200, ...) {
 
 
 
-#' url_getacs_epaquery_chunked - experimental/ work in progress: in chunks, get ACS data via EPA API
+#' experimental/ work in progress: in chunks, get ACS data via EPA API
 #'
 #' @param servicenumber see API
 #' @param objectIds see API
@@ -92,12 +92,10 @@ url_getacs_epaquery_chunked <- function(objectIds=1:3,
 
 
 
-#' url_getacs_epaquery - experimental/ work in progress: get ACS data via EPA API (for <200 places)
+#' experimental/ work in progress: get ACS data via EPA API (for <200 places)
 #'
-#'
-#'  uses ACS2019 rest services ejscreen ejquery MapServer 7
-#'  
-#'   Documentation of format and examples of input parameters:
+#' uses ACS2019 rest services ejscreen ejquery MapServer 7
+#' @details  Documentation of format and examples of input parameters:
 #'   
 #'   <https://geopub.epa.gov/arcgis/sdk/rest/index.html#/Query_Map_Service_Layer/02ss0000000r000000/>
 #' 

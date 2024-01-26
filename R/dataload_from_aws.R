@@ -1,4 +1,5 @@
-#' dataload_from_aws - utility to load datasets from AWS DMAP Data Commons, into memory
+#'Utility to load datasets from AWS DMAP Data Commons, into memory
+#'
 #' @details See source code for details. 
 #'  
 #'  ***  tries dataload_from_local() first 

@@ -1,4 +1,5 @@
-#' frs_is_valid - Validate FRS Registry ID table uploaded (just checks colname, mostly)
+#' Validate FRS Registry ID table uploaded (just checks colname, mostly)
+#' 
 #' @description Check for proper colname (or what seems to be a valid alias)
 #' @details note it checks aliases (REGISTRY_ID, RegistryID, regid, siteid) in that order 
 #'   and once a valid name is found then even if it fails to actually 

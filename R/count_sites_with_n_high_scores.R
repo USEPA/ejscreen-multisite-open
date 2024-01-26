@@ -1,9 +1,25 @@
 #' count_sites_with_n_high_scores
-#'
-#' @param scores score
+#' 
+#' Answers questions like What `%` of sites have at least 1 demog. indicator `>2x` state avg?
+#' 
+#' @details Helps provide stat summaries such as: 
+#' 
+#'  (x%) of these (sites) have 
+#'  
+#'  at least (N) of these (YTYPE )indicators
+#' 
+#'  at least (R) times the (State/National average)
+#'  
+#' @param scores scores
 #' @param thresholds thresholds
 #' @param xwide xwide
-#'
+#' @examples 
+#' x <- ejamit(testpoints_100, radius = 1)
+#' out <- x$results_bysite
+#' out <- setDF(copy(out))
+#' ratio_benchmarks <- c(1.01, 1.50, 2, 3, 5, 10)
+#' `ratiodata <- out[, names_d_ratio_to_state_avg]`
+#' 
 #' @export
 #'
 count_sites_with_n_high_scores <- function(scores, thresholds=c(1.01, 1.50, 2, 3, 5, 10), xwide=c("statewide", "nationwide")[1]) {

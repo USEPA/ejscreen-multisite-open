@@ -2,8 +2,7 @@
 % Please edit documentation in R/aaa_onAttach.R
 \name{.onAttach}
 \alias{.onAttach}
-\title{.onAttach - Do slow initialization steps - Download data, load key data into RAM, create index to all US blocks
-Note this duplicates some code in global.R, and see source code here to adjust settings.}
+\title{Set up EJAM (do slow initialization steps when package is attached)}
 \usage{
 .onAttach(libname, pkgname)
 }
@@ -13,10 +12,17 @@ Note this duplicates some code in global.R, and see source code here to adjust s
 \item{pkgname}{na}
 }
 \description{
-.onAttach - Do slow initialization steps - Download data, load key data into RAM, create index to all US blocks
-Note this duplicates some code in global.R, and see source code here to adjust settings.
+Download datasets, load to memory, index block locations
 }
 \details{
-Does this even happen if connect server runs app as a regular shiny app without loading all?
-In what order? see app.R too ***
+This uses \code{\link[=dataload_from_pins]{dataload_from_pins()}} and \code{\link[=indexblocks]{indexblocks()}}
+
+This function \code{.onAttach()} gets run when the package EJAM is attached,
+which happens when library(EJAM) or require(EJAM) is used.
+
+This code would not get run if a server ran app.R as a regular shiny app
+and just used dataload or source to read the /R/*.R source files
+rather than loading and attaching the EJAM package. see app.R   ***
+Note this duplicates some code in global.R,
+see source code here to adjust settings.
 }

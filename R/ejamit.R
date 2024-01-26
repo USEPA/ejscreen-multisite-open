@@ -1,7 +1,9 @@
-#' ejamit - Get complete EJ analysis (demographic and environmental indicators) near a list of locations
-#' @description This is the main function in EJAM for users who want to use EJAM from RStudio.
-#'   It does essentially what the webapp does to analyze/summarize near a set of points.
-#'   See help("EJAM")
+#' Get an EJ analysis (demographic and environmental indicators) in or near a list of locations
+#' 
+#' @description This is the main function in EJAM that runs the analysis. 
+#'   It does essentially what the web app does, to analyze/summarize near a set of points,
+#'   or in a set of polygons from a shapefile, or in a list of Census Units like Counties.
+#'   
 #' @param sitepoints data.table with columns lat, lon giving point locations of sites or facilities around which are circular buffers
 #' @param radius in miles, defining circular buffer around a site point
 #' @param maxradius miles distance (max distance to check if not even 1 block point is within radius)
@@ -57,10 +59,12 @@
 #' @param testing used while testing this function
 #' 
 #' @return A list of tables of results
-#' @examples \dontrun{
-#'  # All in one step, using functions not shiny app:
-#'  out <- ejamit(testpoints_100_dt, 2, quadtree=localtree)
 #' 
+#' @examples 
+#'  # All in one step, using functions not shiny app:
+#'  out <- ejamit(testpoints_100_dt, 2)
+#'  
+#'  \dontrun{
 #'  # Do not specify sitepoints and it will prompt you for a file,
 #'  # if in RStudio in interactive mode!
 #'  out <- ejamit(radius = 3)
@@ -242,7 +246,7 @@ ejamit <- function(sitepoints,
             # radius <- as.numeric(rstudioapi::showPrompt("Radius", "Within how many miles of each point?", 3))
           }
         } else {
-          if(shiny::isRunning()){
+          if (shiny::isRunning()) {
             warning("sitepoints (locations to analyze) is missing but required.")
             return(NULL)
             

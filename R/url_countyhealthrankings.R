@@ -1,4 +1,4 @@
-#' url_countyhealthrankings
+#' url_countyhealthrankings gets data from countyhealthrankings.org
 #'
 #' @param fips vector of fips codes of counties, 5 characters each, like "10003"
 #' @param year 2023

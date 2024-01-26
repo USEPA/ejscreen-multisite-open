@@ -29,8 +29,7 @@ If returnwhat is "plot" then it returns the plot object as needed for table_xls_
 see parameter returnwhat
 }
 \description{
-distance_by_group - Avg distance of each demog group (of multiple groups)
-Same as \code{\link[=plot_distance_mean_by_group]{plot_distance_mean_by_group()}} but no plot by default
+Shows distance to sites, for residents in each demographic group (vs everyone else)
 }
 \details{
 see examples in \code{\link[=plot_distance_cdf_by_group]{plot_distance_cdf_by_group()}}
