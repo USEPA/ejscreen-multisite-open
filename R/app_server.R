@@ -144,7 +144,7 @@ app_server <- function(input, output, session) {
     #req(input$add_naics_subcategories)
     
     ## switch labels based on subcategory radio button
-    if(input$add_naics_subcategories){
+    if (input$add_naics_subcategories) {
       naics_choices <- setNames(naics_counts$NAICS,naics_counts$label_w_subs)
     } else{
       naics_choices <- setNames(naics_counts$NAICS,naics_counts$label_no_subs)
@@ -639,7 +639,7 @@ app_server <- function(input, output, session) {
       ## filter frs_by_programid to currently selected program
       pgm_out <- frs_by_programid[ program == input$ss_select_program]
       
-      if(nrow(pgm_out) > 0){
+      if (nrow(pgm_out) > 0) {
         
       
       pgm_out[, ejam_uniq_id := .I]
@@ -892,7 +892,7 @@ app_server <- function(input, output, session) {
     
     if (current_upload_method() == 'latlon') {
       #if (!isTruthy(input$ss_upload_latlon)) {
-      if(disable_buttons[['latlon']]){
+      if (disable_buttons[['latlon']]) {
         shinyjs::disable(id = 'bt_get_results'); shinyjs::hide(id = 'show_data_preview')
         invalid_alert[[current_upload_method()]] <- 0
         an_map_text_pts[[current_upload_method()]] <- NULL
@@ -909,7 +909,7 @@ app_server <- function(input, output, session) {
       
     } else if (current_upload_method() == 'FRS') {
       #if (!isTruthy(input$ss_upload_frs)) {
-      if(disable_buttons[['FRS']]){
+      if (disable_buttons[['FRS']]) {
         shinyjs::disable(id = 'bt_get_results'); shinyjs::hide(id = 'show_data_preview')
         invalid_alert[[current_upload_method()]] <- 0
         an_map_text_pts[[current_upload_method()]] <- NULL
@@ -919,7 +919,7 @@ app_server <- function(input, output, session) {
       
     } else if (current_upload_method() == 'NAICS') {
       #if (!isTruthy(input$ss_select_naics)) {
-      if(disable_buttons[['NAICS']]){
+      if (disable_buttons[['NAICS']]) {
         shinyjs::disable(id = 'bt_get_results'); shinyjs::hide(id = 'show_data_preview')
         invalid_alert[[current_upload_method()]] <- 0
         an_map_text_pts[[current_upload_method()]] <- NULL
@@ -928,7 +928,7 @@ app_server <- function(input, output, session) {
       }
       
     } else if (current_upload_method() == 'EPA_PROGRAM_up') {
-      if(disable_buttons[['EPA_PROGRAM_up']]){
+      if (disable_buttons[['EPA_PROGRAM_up']]) {
         #if ((input$ss_choose_method == 'upload' & !isTruthy(input$ss_upload_program)) |
         #    (input$ss_choose_method == 'dropdown' & !isTruthy(input$ss_select_program))) {
         shinyjs::disable(id = 'bt_get_results'); shinyjs::hide(id = 'show_data_preview')
@@ -939,7 +939,7 @@ app_server <- function(input, output, session) {
       }
       
     } else if (current_upload_method() == 'EPA_PROGRAM_sel') {
-      if(disable_buttons[['EPA_PROGRAM_sel']]){
+      if (disable_buttons[['EPA_PROGRAM_sel']]) {
         #if ((input$ss_choose_method == 'upload' & !isTruthy(input$ss_upload_program)) |
         #    (input$ss_choose_method == 'dropdown' & !isTruthy(input$ss_select_program))) {
         shinyjs::disable(id = 'bt_get_results'); shinyjs::hide(id = 'show_data_preview')
@@ -949,7 +949,7 @@ app_server <- function(input, output, session) {
         shinyjs::enable( id = 'bt_get_results'); shinyjs::show(id = 'show_data_preview')
       }
     } else if (current_upload_method() == 'SIC') {
-      if(disable_buttons[['SIC']]){
+      if (disable_buttons[['SIC']]) {
         #if (!isTruthy(input$ss_select_sic)) {
         shinyjs::disable(id = 'bt_get_results'); shinyjs::hide(id = 'show_data_preview')
         invalid_alert[[current_upload_method()]] <- 0
@@ -960,8 +960,8 @@ app_server <- function(input, output, session) {
       
     } else if (current_upload_method() == 'FIPS') {
       #if (!isTruthy(input$ss_upload_fips)) {
-      if(disable_buttons[['FIPS']]){
-        #if(isTruthy(data_up_fips())){
+      if (disable_buttons[['FIPS']]) {
+        #if (isTruthy(data_up_fips())) {
         shinyjs::disable(id = 'bt_get_results'); shinyjs::hide(id = 'show_data_preview')
         invalid_alert[[current_upload_method()]] <- 0
         an_map_text_fips(HTML(NULL))
@@ -970,7 +970,7 @@ app_server <- function(input, output, session) {
       }
       
     } else if (current_upload_method() == 'MACT') {
-      if(disable_buttons[['MACT']]){
+      if (disable_buttons[['MACT']]) {
         #if (!isTruthy(input$ss_select_mact)) {
         shinyjs::disable(id = 'bt_get_results'); shinyjs::hide(id = 'show_data_preview')
         invalid_alert[[current_upload_method()]] <- 0
@@ -980,7 +980,7 @@ app_server <- function(input, output, session) {
       }
       
     } else if (current_upload_method() == 'SHP') {
-      if(disable_buttons[['SHP']]){
+      if (disable_buttons[['SHP']]) {
         #if (!isTruthy(input$ss_upload_shp)) {
         shinyjs::disable(id = 'bt_get_results'); shinyjs::hide(id = 'show_data_preview')
         invalid_alert[[current_upload_method()]] <- 0
@@ -1001,7 +1001,7 @@ app_server <- function(input, output, session) {
   output$invalid_sites_alert2 <- renderUI({
     req(invalid_alert[[current_upload_method()]])
     if (invalid_alert[[current_upload_method()]] > 0) {
-      if( input$ss_choose_method == 'dropdown'){
+      if ( input$ss_choose_method == 'dropdown') {
         HTML(paste0(
           '<section
   class="usa-site-alert usa-site-alert--emergency usa-site-alert--slim"
@@ -1015,7 +1015,7 @@ app_server <- function(input, output, session) {
     </div>
   </div>
 </section>'))
-      } else if( input$ss_choose_method == 'upload'){
+      } else if ( input$ss_choose_method == 'upload') {
         
         
         HTML(paste0(
@@ -1123,7 +1123,7 @@ app_server <- function(input, output, session) {
   output$an_map_text <- renderUI({
 
     req(data_uploaded())
-    if(current_upload_method() == 'SHP'){
+    if (current_upload_method() == 'SHP') {
 
       an_map_text_shp()
     } else if (current_upload_method() == 'FIPS' ) {
@@ -1278,8 +1278,8 @@ app_server <- function(input, output, session) {
   
   ## add warning and disable button if radius is set to 0 for points
   observe({
-    if(!(current_upload_method() %in% c('FIPS','SHP'))){
-      if(current_slider_val[[current_upload_method()]] == 0){  
+    if (!(current_upload_method() %in% c('FIPS','SHP'))) {
+      if (current_slider_val[[current_upload_method()]] == 0) {  
       shinyjs::disable(id = 'bt_get_results')
         showNotification(id = 'radius_warning', session=session,
                          duration=NULL,type='warning',closeButton = F,
@@ -1430,8 +1430,8 @@ app_server <- function(input, output, session) {
         orig_leaf_map()
       },
         ## if it throws an error
-        error = function(e){
-          if(e == ""){
+        error = function(e) {
+          if (e == "") {
             ## if does not exist, use blank map of US
             leaflet() %>% addTiles() %>% setView(lat = 39.8283, lng = -98.5795, zoom = 4)
             
@@ -1512,7 +1512,7 @@ app_server <- function(input, output, session) {
       )
       
       
-      if(is.null(out)){
+      if (is.null(out)) {
         validate('No valid blockgroups found matching these FIPS codes.')
       } else {
         out$results_bysite <- merge(d_upload[, .(ejam_uniq_id, valid, invalid_msg)],
@@ -1583,7 +1583,7 @@ app_server <- function(input, output, session) {
         ## progress bar to show getblocksnearby status
         progress_getblocks <- shiny::Progress$new(min = 0, max = 1)
         progress_getblocks$set(value = 0, message = '0% done')
-        updateProgress_getblocks <- function(value = NULL, message_detail=NULL, message_main = '0% done'){
+        updateProgress_getblocks <- function(value = NULL, message_detail=NULL, message_main = '0% done') {
           if (is.null(value)) { # - If value is NULL, it will move the progress bar 1/20 of the remaining distance.
             value <- progress_getblocks$getValue()
             value <- value + (progress_getblocks$getMax() - value) / 20
@@ -1685,14 +1685,14 @@ app_server <- function(input, output, session) {
         ## the registry ID column is only found in uploaded ECHO/FRS/NAICS data -
         ## it is not passed to doaggregate output at this point, so pull the column from upload to create URLS
         
-        if(submitted_upload_method() %in% c('MACT','FRS','latlon','EPA_PROGRAM_up',
-                                            'EPA_PROGRAM_sel','NAICS','SIC')){
+        if (submitted_upload_method() %in% c('MACT','FRS','latlon','EPA_PROGRAM_up',
+                                            'EPA_PROGRAM_sel','NAICS','SIC')) {
           #print(names(data_uploaded()))
           #print(head(names(data_processed()$results_bysite)))
           out$results_bysite <- merge(data_uploaded()[, .(ejam_uniq_id, valid, invalid_msg)],
                                       out$results_bysite, 
                                       by='ejam_uniq_id', all=T)
-        } else if(submitted_upload_method() == 'SHP'){
+        } else if (submitted_upload_method() == 'SHP') {
           out$results_bysite <- merge(data_uploaded()[, c('ejam_uniq_id','valid','invalid_msg')],
                                       #merge(data_uploaded()[, .(ejam_uniq_id, valid)],
                                       out$results_bysite, 
@@ -1711,7 +1711,7 @@ app_server <- function(input, output, session) {
         #  } else {
         
         #if ("REGISTRY_ID" %in% names( d_upload)) {
-        if("REGISTRY_ID" %in% names(data_uploaded())){
+        if ("REGISTRY_ID" %in% names(data_uploaded())) {
           #echolink = url_echo_facility_webpage( d_upload$REGISTRY_ID, as_html = TRUE, linktext = 'ECHO Report')
           echolink = url_echo_facility_webpage( data_uploaded()$REGISTRY_ID, as_html = TRUE, linktext = 'ECHO Report')
         } else if ("RegistryID" %in% names(data_uploaded())) {
@@ -1721,7 +1721,7 @@ app_server <- function(input, output, session) {
           echolink = rep('N/A',nrow(out$results_bysite))
         }
         
-        if(submitted_upload_method() != 'SHP'){
+        if (submitted_upload_method() != 'SHP') {
           out$results_bysite[ , `:=`(
             `EJScreen Report` = ifelse(valid == T, url_ejscreen_report(    lat = d_upload$lat, lon =  d_upload$lon, radius = input$bt_rad_buff, as_html = TRUE), 'N/A'),
             `EJScreen Map`    = ifelse(valid == T, url_ejscreenmap(        lat = d_upload$lat, lon =  d_upload$lon,                             as_html = TRUE),  'N/A'),
@@ -1800,7 +1800,7 @@ app_server <- function(input, output, session) {
     #############################################################################  # 
     
     # 3) **batch.summarize()** on already processed data ####
-    if(submitted_upload_method() == 'SHP'){
+    if (submitted_upload_method() == 'SHP') {
       outsum <- EJAMbatch.summarizer::batch.summarize(
         sitestats = data.frame(data_processed()$results_bysite %>% 
                                  sf::st_drop_geometry()),
@@ -1940,7 +1940,7 @@ app_server <- function(input, output, session) {
                            input$analysis_title, '<br>')
       
       ## exclude radius info from header text when using FIPS
-      if(current_upload_method() != 'FIPS') {
+      if (current_upload_method() != 'FIPS') {
         title_text <- paste0(title_text,
                              'Residents within ',
                              #input$bt_rad_buff, ' ', input$radius_units, ' of any of the ',
@@ -2216,7 +2216,7 @@ app_server <- function(input, output, session) {
       ratio.to.us.d.bysite <- ratio.to.us.d.bysite %>% 
         tidyr::pivot_longer(cols = dplyr::everything(), names_to = 'indicator') %>% 
         ## replace Infs with NAs - these happen when indicator at a site is equal to zero
-        dplyr::mutate(value = dplyr::na_if(value, Inf)) #%>% 
+        dplyr::mutate(value = dplyr::na_if (value, Inf)) #%>% 
       # NOTE NOW ratio.to.us.d.bysite IS A tibble, not data.frame, and is in LONG format now. !!!
       
       ## find max of ratios 
@@ -2571,23 +2571,23 @@ app_server <- function(input, output, session) {
   observeEvent(
     lapply(
       names(input)[grep("select_button[0-9]+",names(input))],
-      function(name){
+      function(name) {
         cur_button(input[[name]])
         input[[name]]
       }),  {
         req(data_processed())
         req(cur_button())
         x <- as.numeric(gsub('button_','', cur_button()))
-        if( data_processed()$results_bysite$valid[x] == T){
+        if ( data_processed()$results_bysite$valid[x] == T) {
           #!(submitted_upload_method() %in% c('FIPS')) &
           popstr <- prettyNum(round(data_processed()$results_bysite$pop[x]), big.mark=',')
           
-          if(submitted_upload_method() == 'SHP'){
+          if (submitted_upload_method() == 'SHP') {
             locationstr <- paste0('Polygon ', data_up_shp()[x,]$OBJECTID_1)
-            if(data_processed()$results_bysite[x,]$radius.miles > 0){
+            if (data_processed()$results_bysite[x,]$radius.miles > 0) {
               locationstr <- paste0(locationstr, '<br>with ', data_processed()$results_bysite[x,]$radius.miles, ' mile buffer')
             }
-          } else if(submitted_upload_method() == 'FIPS'){
+          } else if (submitted_upload_method() == 'FIPS') {
             locationstr <- paste0('FIPS Code ', data_processed()$results_bysite[x,]$ejam_uniq_id)
           } else {
             locationstr <- paste0(data_processed()$results_bysite[x,]$radius.miles, ' Mile Ring Centered at ',
@@ -2597,16 +2597,16 @@ app_server <- function(input, output, session) {
             )
           }
           
-          if(!('main.css' %in% list.files(tempdir()))){
+          if (!('main.css' %in% list.files(tempdir()))) {
             file.copy(from = app_sys('report/community_report/main.css'),
                       to = file.path(tempdir(), 'main.css'), overwrite = TRUE)          
           }
-          if(!('communityreport.css' %in% list.files(tempdir()))){
+          if (!('communityreport.css' %in% list.files(tempdir()))) {
             file.copy(from = app_sys('report/community_report/communityreport.css'),
                       to = file.path(tempdir(), 'communityreport.css'), overwrite = TRUE)          
           }
           
-          if(!('EPA_logo_white.png') %in% list.files(file.path(tempdir(), 'www'))){
+          if (!('EPA_logo_white.png') %in% list.files(file.path(tempdir(), 'www'))) {
             dir.create(file.path(tempdir(), 'www'))
             file.copy(from = app_sys('report/community_report/EPA_logo_white.png'),
                       to = file.path(tempdir(), 'www', 'EPA_logo_white.png'), overwrite = TRUE)
@@ -2824,7 +2824,7 @@ app_server <- function(input, output, session) {
   # https://exts.ggplot2.tidyverse.org/gallery/
   
   output$summ_bar_ind <- renderUI({
-    if((input$include_ejindexes == "TRUE")){
+    if ((input$include_ejindexes == "TRUE")) {
       radioButtons(inputId = 'summ_bar_ind', 
                    label = h5('Indicator type'), 
                    choices = c('Demographic', 'Environmental', 'EJ','EJ Supplemental'), selected = "Environmental")
@@ -3064,15 +3064,15 @@ app_server <- function(input, output, session) {
     req(input$include_ejindexes)
     req(input$summ_hist_data)
     
-    if((input$include_ejindexes == "TRUE")){
+    if ((input$include_ejindexes == "TRUE")) {
       
-      if(input$summ_hist_data == 'pctile'){
+      if (input$summ_hist_data == 'pctile') {
         nms <-  c(names_d_pctile,
                   names_d_subgroups_pctile,
                   names_e_pctile, names_ej_pctile,
                   names_ej_supp_pctile)
         
-      } else if(input$summ_hist_data == 'raw'){
+      } else if (input$summ_hist_data == 'raw') {
         nms <-  c(names_d,
                   names_d_subgroups,
                   names_e, names_ej, names_ej_supp)
@@ -3081,11 +3081,11 @@ app_server <- function(input, output, session) {
       friendly_nms <- c(names_d_friendly, names_d_subgroups_friendly, names_e_friendly,
                         names_ej_friendly, names_ej_supp_friendly)
     } else {
-      if(input$summ_hist_data == 'pctile'){
+      if (input$summ_hist_data == 'pctile') {
         nms <-  c(names_d_pctile,
                   names_d_subgroups_pctile,
                   names_e_pctile) 
-      } else if(input$summ_hist_data == 'raw'){
+      } else if (input$summ_hist_data == 'raw') {
         nms <-  c(names_d,
                   names_d_subgroups,
                   names_e) 
@@ -3120,7 +3120,14 @@ app_server <- function(input, output, session) {
       if (input$summ_hist_data == 'raw') {
         
         ## subset doaggregate results_bysite to selected indicator
-        hist_input <- as.data.frame(data_processed()$results_bysite[, input$summ_hist_ind])
+        if (submitted_upload_method() == 'SHP') {
+          hist_input <- as.data.frame(data_processed()$results_bysite[, input$summ_hist_ind])
+          
+        } else {
+          hist_input <- data_processed()$results_bysite[, input$summ_hist_ind, with=F]
+          
+        }
+        
         names(hist_input)[1] <- 'indicator'
         
         ## plot histogram
@@ -3140,9 +3147,14 @@ app_server <- function(input, output, session) {
       } else if (input$summ_hist_data == 'pctile') {
         
         ## subset doaggregate results_bysite to selected indicator
-        #hist_input <- data_processed()$results_bysite[, paste0('pctile.',input$summ_hist_ind), with = FALSE]
-        hist_input <- as.data.frame(data_processed()$results_bysite[, input$summ_hist_ind])
-        
+        if (submitted_upload_method() == 'SHP') {
+          hist_input <- as.data.frame(data_processed()$results_bysite[, input$summ_hist_ind])
+          
+        } else {
+          hist_input <- data_processed()$results_bysite[, input$summ_hist_ind, with=F]
+          
+        }
+     
         names(hist_input)[1] <- 'indicator'
         
         ggplot(hist_input) +
@@ -3160,7 +3172,14 @@ app_server <- function(input, output, session) {
       if (input$summ_hist_data == 'raw') {
         
         ## subset doaggregate results_bysite to selected indicator
-        hist_input <- as.data.frame(data_processed()$results_bysite[, c('pop', input$summ_hist_ind)])
+        if (submitted_upload_method() == 'SHP') {
+          hist_input <- as.data.frame(data_processed()$results_bysite[, c('pop',input$summ_hist_ind)])
+          
+        } else {
+          hist_input <- data_processed()$results_bysite[, c('pop',input$summ_hist_ind), with=F]
+          
+        }
+       
         names(hist_input)[2] <- 'indicator'
         
         ## plot population weighted histogram
@@ -3180,8 +3199,14 @@ app_server <- function(input, output, session) {
       } else if (input$summ_hist_data == 'pctile') {
         
         ## subset doaggregate results_bysite to selected indicator
-        #hist_input <- data_processed()$results_bysite[, c('pop',paste0('pctile.',input$summ_hist_ind)), with = FALSE]
-        hist_input <-as.data.frame(data_processed()$results_bysite[, c('pop', input$summ_hist_ind)])
+        if (submitted_upload_method() == 'SHP') {
+          hist_input <- as.data.frame(data_processed()$results_bysite[, c('pop',input$summ_hist_ind)])
+          
+        } else {
+          hist_input <- data_processed()$results_bysite[, c('pop',input$summ_hist_ind), with=F]
+          
+        }
+      
         names(hist_input)[2] <- 'indicator'
         
         ## plot population weighted histogram 
@@ -3341,12 +3366,12 @@ app_server <- function(input, output, session) {
     rad <- data_processed()$results_overall$radius.miles # input$radius can be changed by user and would alter the report text but should just show what was run not what slider currently says
     popstr <- prettyNum(total_pop(), big.mark=',')
     
-    if(submitted_upload_method() == 'SHP'){
+    if (submitted_upload_method() == 'SHP') {
       location_type <- " selected polygons"
       radiusstr <- paste0(rad, " mile", 
                           ifelse(rad > 1, "s", ""), " of ")
       
-    } else if (submitted_upload_method() == 'FIPS'){
+    } else if (submitted_upload_method() == 'FIPS') {
       location_type <- " selected shapes"
       radiusstr <- ""
     } else {
