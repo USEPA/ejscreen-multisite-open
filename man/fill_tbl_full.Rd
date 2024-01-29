@@ -12,3 +12,4 @@ fill_tbl_full(output_df)
 \description{
 Create full demog. or envt. HTML table of indicator rows
 }
+\keyword{internal}

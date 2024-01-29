@@ -9,3 +9,4 @@ generate_demog_header()
 \description{
 Build header for demog. + envt. tables in community report
 }
+\keyword{internal}

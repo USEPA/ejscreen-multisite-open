@@ -18,3 +18,4 @@ generate_html_header(analysis_title, totalpop, locationstr, in_shiny = FALSE)
 \description{
 Build HTML header for community report
 }
+\keyword{internal}

@@ -12,3 +12,4 @@ fill_tbl_full_ej(output_df)
 \description{
 Create full EJ + EJ supp index HTML table of indicator rows
 }
+\keyword{internal}

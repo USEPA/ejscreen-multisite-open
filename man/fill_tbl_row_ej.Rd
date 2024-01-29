@@ -16,3 +16,4 @@ fill_tbl_row_ej(output_df, var_value, var_name)
 \description{
 Write an EJ or EJ supp index to an html table row
 }
+\keyword{internal}

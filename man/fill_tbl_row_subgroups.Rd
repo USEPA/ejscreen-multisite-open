@@ -16,3 +16,4 @@ fill_tbl_row_subgroups(output_df, var_value, var_name)
 \description{
 Write a demographic subgroup indicator to an html table row
 }
+\keyword{internal}

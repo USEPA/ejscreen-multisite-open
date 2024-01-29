@@ -16,3 +16,4 @@ fill_tbl_row(output_df, var_value, var_name)
 \description{
 Write a demog. or envt. indicator to an html table row
 }
+\keyword{internal}

@@ -9,3 +9,4 @@ generate_ej_supp_header()
 \description{
 Build header for EJ supp indexes in community report
 }
+\keyword{internal}

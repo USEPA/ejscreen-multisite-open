@@ -9,3 +9,4 @@ generate_ej_header()
 \description{
 Build header for EJ index table in community report
 }
+\keyword{internal}

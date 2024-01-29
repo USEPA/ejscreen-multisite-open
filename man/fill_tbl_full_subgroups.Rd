@@ -13,3 +13,4 @@ either results_overall or one row of bysite}
 \description{
 Create full demog subgroup HTML table of indicator rows
 }
+\keyword{internal}
