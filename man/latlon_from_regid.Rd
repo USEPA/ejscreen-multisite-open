@@ -2,7 +2,7 @@
 % Please edit documentation in R/latlon_from_regid.R
 \name{latlon_from_regid}
 \alias{latlon_from_regid}
-\title{latlon_from_regid - Get lat lon (and NAICS) via Facility Registry ID}
+\title{Get lat lon (and NAICS) via Facility Registry ID}
 \usage{
 latlon_from_regid(regid)
 }
@@ -14,7 +14,7 @@ data.table with columns
 lat,lon,REGISTRY_ID,PRIMARY_NAME,NAICS,PGM_SYS_ACRNMS
 }
 \description{
-latlon_from_regid - Get lat lon (and NAICS) via Facility Registry ID
+Get lat lon (and NAICS) via Facility Registry ID
 }
 \examples{
  latlon_from_regid(110070874073)
@@ -23,4 +23,5 @@ x = latlon_from_regid(
        110030509215, 110019033810, 110056111559, 110056982323)
         )
 EJAMejscreenapi::mapfast(x)
+
 }

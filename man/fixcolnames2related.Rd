@@ -44,4 +44,6 @@ paste0("avg.", names_e)
 fixcolnames2related(names_e, "usratio")
 # names_ej # does not work with this as input
 # fixcolnames2related(names_ej, "uspctile") # does not return names_ej_pctile
+  
 }
+\keyword{internal}

@@ -20,3 +20,4 @@ utility - How many sites are near the blocks (site density near residents)
 \seealso{
 \code{\link[=getblocks_diagnostics]{getblocks_diagnostics()}}
 }
+\keyword{internal}

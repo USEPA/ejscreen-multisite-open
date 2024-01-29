@@ -38,3 +38,4 @@ Uses indexgridsize and quaddata  variables that come from global environment (bu
 \seealso{
 \code{\link[=getblocksnearby]{getblocksnearby()}} \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} \code{\link[=getblocksnearbyviaQuadTree_Clustered]{getblocksnearbyviaQuadTree_Clustered()}} \code{\link[=getblocksnearbyviaQuadTree2]{getblocksnearbyviaQuadTree2()}}
 }
+\keyword{internal}

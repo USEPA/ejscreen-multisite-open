@@ -2,8 +2,7 @@
 % Please edit documentation in R/latlon_from_mactsubpart.R
 \name{latlon_from_mactsubpart}
 \alias{latlon_from_mactsubpart}
-\title{latlon_from_mactsubpart
-Get point locations for US EPA-regulated facilities that have
+\title{Get point locations for US EPA-regulated facilities that have
 sources subject to Maximum Achievable Control Technology (MACT) standards
 under the Clean Air Act.}
 \usage{
@@ -26,7 +25,6 @@ for US EPA FRS sites with that MACT code.
 Or NA if none found.
 }
 \description{
-latlon_from_mactsubpart
 Get point locations for US EPA-regulated facilities that have
 sources subject to Maximum Achievable Control Technology (MACT) standards
 under the Clean Air Act.
@@ -38,4 +36,5 @@ See \url{https://www.epa.gov/stationary-sources-air-pollution/national-emission-
   mact_table
   latlon_from_mactsubpart("OOOO", include_if_no_latlon = FALSE) # default
   latlon_from_mactsubpart("OOOO", include_if_no_latlon = TRUE)
+  
 }

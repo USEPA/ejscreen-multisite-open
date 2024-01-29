@@ -22,7 +22,9 @@ Cleans up lat and lon values (removes extra characters, makes numeric)
 }
 \examples{
 #  x <- latlon_df_clean(x)
+
 }
 \seealso{
 Used by \code{\link[=latlon_from_anything]{latlon_from_anything()}}. Uses \code{\link[=latlon_infer]{latlon_infer()}} \code{\link[=latlon_is.valid]{latlon_is.valid()}} \code{\link[=latlon_as.numeric]{latlon_as.numeric()}}
 }
+\keyword{internal}

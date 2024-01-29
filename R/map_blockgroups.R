@@ -13,7 +13,7 @@
 
 
 
-#' mapfastej_counties - Static or HTML/leaflet map of counties
+#' Static or HTML/leaflet map of counties
 #'
 #' @param mydf something like  ejamit(fips = fips_counties_from_statename("Kentucky"), radius = 0)$results_bysite
 #' @param colorvarname colname of indicator in mydf that drives color-coding
@@ -23,13 +23,14 @@
 #'
 #' @return leaflet html widget (but if static_not_leaflet=T, 
 #'   returns just shapes_counties_from_countyfips(mydf$ejam_uniq_id)) 
-#' @export
-#'
 #' @examples \dontrun{
 #'  fips_ky <- fips_counties_from_statename("Kentucky")
 #'  x <- ejamit(fips = fips_ky, radius = 0)
 #'  mapfastej_counties(x$results_bysite)
 #'  }
+#'
+#' @export
+#'
 mapfastej_counties <- function(mydf, colorvarname = "pctile.Demog.Index.Supp", 
                                static_not_leaflet = FALSE, main = "Selected Counties", ...) {
   
@@ -79,12 +80,12 @@ mapfastej_counties <- function(mydf, colorvarname = "pctile.Demog.Index.Supp",
 ########################### # ########################### # ########################### # ########################### # 
 
 
-#' map_blockgroups_over_blocks - Overlay blockgroups near 1 site, after plotblocksnearby
+#' Overlay blockgroups near 1 site, after plotblocksnearby
+#' 
 #' Overlay blockgroups near 1 site, after plotblocksnearby(returnmap = TRUE)
 #' @param y  output of [plotblocksnearby()] but with returnmap = TRUE
 #'
 #' @return leaflet map widget
-#' @export
 #' @seealso [plotblocksnearby()]  [map_shapes_mapview()]  [map_shapes_leaflet()]  [map_shapes_plot()]
 #' @examples dontrun{
 #'  y <- plotblocksnearby(testpoints_10[5,], 
@@ -92,7 +93,11 @@ mapfastej_counties <- function(mydf, colorvarname = "pctile.Demog.Index.Supp",
 #'         returnmap = TRUE)
 #'  map_blockgroups_over_blocks(y)
 #'   }
+#'
+#' @export
+#'
 map_blockgroups_over_blocks <- function(y) {
+  
   # y is output of plotblocksnearby(returnmap = TRUE)
   if ("leaflet" %in% class(y)) {
   # This is to extract bgids from the output of the leaflet htmlwidget map object y, 
@@ -117,46 +122,52 @@ map_blockgroups_over_blocks <- function(y) {
 ########################### # ########################### # ########################### # ########################### # 
 
 
-#' map_shapes_plot
+#' Map drawn using base R plot()
 #'
 #' @param shapes like from shapes_counties_from_countyfips(fips_counties_from_state_abbrev("DE"))
 #' @param main title for map
 #' @param ... passed to plot()
 #'
 #' @return Just draws map using plot()
-#' @export
+#'
 #'
 map_shapes_plot <- function(shapes, main = "Selected Census Units", ...) {
+  
   plot(sf::st_combine(shapes), main = main, ...)
 }
 ########################### # ########################### # ########################### # ########################### # 
 
-#' map_shapes_leaflet
+
 #' Create a new leaflet map from shapefile data
+#' 
 #' @param shapes like from shapes_counties_from_countyfips(fips_counties_from_state_abbrev("DE"))
 #' @param color passed to leaflet::addPolygons()
 #' @param popup  passed to leaflet::addPolygons()
 #'
 #' @return html widget from leaflet::leaflet()
+#' 
 #' @export
 #'
 map_shapes_leaflet <- function(shapes, color = "green", popup = shapes$NAME) {
+  
   mymap <- leaflet(shapes) %>% addPolygons(color = color, popup = popup) %>% addTiles()
   return(mymap)
 }
 ########################### # ########################### # ########################### # ########################### # 
 
-#' map_shapes_leaflet_proxy
 #' update existing leaflet map by adding shapefile data
+#' 
 #' @param mymap map like from leafletProxy()
 #' @param shapes like from shapes_counties_from_countyfips(fips_counties_from_state_abbrev("DE"))
 #' @param color passed to leaflet::addPolygons()
 #' @param popup passed to leaflet::addPolygons()
 #'
 #' @return html widget like from leaflet::leafletProxy()
+#' 
 #' @export
 #'
 map_shapes_leaflet_proxy <- function(mymap, shapes, color = "green", popup = shapes$NAME)  {
+  
   mymap <- mymap %>% 
     addPolygons(data = shapes, color = color,  popup = popup) %>% 
     addTiles() 
@@ -164,8 +175,9 @@ map_shapes_leaflet_proxy <- function(mymap, shapes, color = "green", popup = sha
   }
 ########################### # ########################### # ########################### # ########################### # 
 
-#' map_shapes_mapview
+
 #' Use mapview from the mapview package if available
+#' 
 #' @param shapes like from shapes_counties_from_countyfips(fips_counties_from_state_abbrev("DE"))
 #' @param col.regions passed to mapview() from mapview package
 #' @param map.types  passed to mapview() from mapview package
@@ -174,9 +186,11 @@ map_shapes_leaflet_proxy <- function(mymap, shapes, color = "green", popup = sha
 #'     shapes_counties_from_countyfips(fips_counties_from_state_abbrev("DE"))
 #'   )
 #' }
+#' 
 #' @export
 #'
 map_shapes_mapview <- function(shapes, col.regions = "green", map.types = "OpenStreetMap") {
+  
   if (!"package:mapview" %in% search()) {
     message("this function is a nice way to map counties etc. but requires the mapview package, which EJAM does not load")
     warning("mapview package would be needed and is not attached - checking if installed")
@@ -192,6 +206,7 @@ map_shapes_mapview <- function(shapes, col.regions = "green", map.types = "OpenS
 }
 ########################### # ########################### # ########################### # ########################### # 
 
+
 #' use API to get boundaries of US Counties to map them
 #'
 #' @param countyfips FIPS codes as 5-character strings (or numbers) in a vector
@@ -202,6 +217,7 @@ map_shapes_mapview <- function(shapes, col.regions = "green", map.types = "OpenS
 #'   Only default was tested
 #'
 #' @return spatial object via sf::read_sf()
+#' 
 #' @export
 #'
 shapes_counties_from_countyfips <- function(countyfips = '10001', outFields = "",
@@ -240,7 +256,9 @@ shapes_counties_from_countyfips <- function(countyfips = '10001', outFields = ""
 }
 ########################### # ########################### # ########################### # ########################### # 
 
+
 #' use API to get boundaries of blockgroups
+#' 
 #' @details This is useful mostly for small numbers of blockgroups.  
 #'   The EJScreen map services provide other ways to map blockgroups and see EJScreen data.
 #' @param bgfips one or more block group FIPS codes as 12-character strings in a vector
@@ -254,6 +272,7 @@ shapes_counties_from_countyfips <- function(countyfips = '10001', outFields = ""
 #'   for example provides EJScreen indicator values, NPL_CNT, TSDF_CNT, EXCEED_COUNT_90, etc.
 #'   
 #' @return spatial object via sf::read_sf()
+#' 
 #' @export
 #'
 shapes_blockgroups_from_bgfips <- function(bgfips = '010890029222', outFields = "",
@@ -262,6 +281,7 @@ shapes_blockgroups_from_bgfips <- function(bgfips = '010890029222', outFields = 
                                              "https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/USA_Block_Groups/FeatureServer/0/query",
                                              "https://services.arcgis.com/cJ9YHowT8TU7DUyn/ArcGIS/rest/services/EJScreen_2_21_US_Percentiles_Block_Groups/FeatureServer/0/query")[1]
 ) {
+  
   # for a vector of blockgroup FIPS, use arcgis API to obtain map boundaries of just those blockgroups
   
   if (length(bgfips) > 50) {

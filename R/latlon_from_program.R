@@ -1,5 +1,8 @@
-#' latlon_from_program - Get lat lon, Registry ID, and NAICS, for given FRS Program System CATEGORY
+
+#'  Get lat lon, Registry ID, and NAICS, for given FRS Program System CATEGORY
+#'  
 #' Find all FRS sites in a program like RCRAINFO, TRIS, or others
+#' 
 #' @details  For info on FRS program codes in general, see <https://www.epa.gov/frs/frs-program-crosswalks>
 #'   
 #'   Also see information at <https://echo.epa.gov/tools/data-downloads/frs-download-summary>
@@ -22,7 +25,6 @@
 #' @return data.table with lat  lon  REGISTRY_ID  program -- but not pgm_sys_id 
 #'   since there could be duplicates where same REGISTRY_ID has 2 different pgm_sys_id values 
 #'   in the same program, so results were sometimes longer than if using [frs_from_program()] 
-#' @export
 #' @examples \dontrun{
 #'  x = latlon_from_program("CAMDBS")
 #'  EJAMejscreenapi::mapfast(x)
@@ -34,7 +36,11 @@
 #'  EJAMejscreenapi::mapfast(x[sample(1:nrow(x), 1000), ])
 #' }
 #'  
+#'
+#' @export
+#'
 latlon_from_program <- function(query) {
+  
   if (missing(query)) {return(NULL)}
   
   if (!exists("frs_by_programid")) dataload_from_pins("frs_by_programid")

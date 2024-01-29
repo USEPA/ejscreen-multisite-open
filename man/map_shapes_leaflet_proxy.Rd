@@ -2,8 +2,7 @@
 % Please edit documentation in R/map_blockgroups.R
 \name{map_shapes_leaflet_proxy}
 \alias{map_shapes_leaflet_proxy}
-\title{map_shapes_leaflet_proxy
-update existing leaflet map by adding shapefile data}
+\title{update existing leaflet map by adding shapefile data}
 \usage{
 map_shapes_leaflet_proxy(mymap, shapes, color = "green", popup = shapes$NAME)
 }
@@ -20,6 +19,5 @@ map_shapes_leaflet_proxy(mymap, shapes, color = "green", popup = shapes$NAME)
 html widget like from leaflet::leafletProxy()
 }
 \description{
-map_shapes_leaflet_proxy
 update existing leaflet map by adding shapefile data
 }

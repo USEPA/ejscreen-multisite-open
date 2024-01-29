@@ -20,5 +20,6 @@ Get county names from county FIPS codes
 \examples{
   # names of all counties in ME and NY
   fips2countyname(fips_counties_from_state_abbrev(c("ME", "NY")), includestate = "ST")
-   fips_counties_from_state_abbrev(c("AK", "LA"))  
+   fips_counties_from_state_abbrev(c("AK", "LA"))
+   
 }

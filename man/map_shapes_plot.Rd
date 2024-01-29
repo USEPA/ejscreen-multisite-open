@@ -2,7 +2,7 @@
 % Please edit documentation in R/map_blockgroups.R
 \name{map_shapes_plot}
 \alias{map_shapes_plot}
-\title{map_shapes_plot}
+\title{Map drawn using base R plot()}
 \usage{
 map_shapes_plot(shapes, main = "Selected Census Units", ...)
 }
@@ -17,5 +17,5 @@ map_shapes_plot(shapes, main = "Selected Census Units", ...)
 Just draws map using plot()
 }
 \description{
-map_shapes_plot
+Map drawn using base R plot()
 }

@@ -15,3 +15,4 @@ nothing. just loads to global envt
 \description{
 Loads into global environment all .rda files found in specified folder
 }
+\keyword{internal}

@@ -2,8 +2,7 @@
 % Please edit documentation in R/ejscreen_vs_ejam_.R
 \name{ejscreenapi2ejam_format}
 \alias{ejscreenapi2ejam_format}
-\title{EJAM/EJSCREEN comparisons - Convert output of ejscreenapi_plus to format of ejamit table of sites
-Makes it easier to compare EJScreen and EJAM results}
+\title{EJAM/EJSCREEN comparisons - Convert output of ejscreenapi_plus to format of ejamit table of sites}
 \usage{
 ejscreenapi2ejam_format(
   ejscreenapi_plus_out,
@@ -32,7 +31,6 @@ A data.table not just data.frame, with some or all of the columns
 found in output of ejamit()$results_bysite
 }
 \description{
-EJAM/EJSCREEN comparisons - Convert output of ejscreenapi_plus to format of ejamit table of sites
 Makes it easier to compare EJScreen and EJAM results
 }
 \examples{
@@ -53,3 +51,4 @@ Makes it easier to compare EJScreen and EJAM results
 \seealso{
 \code{\link[=ejscreen_vs_ejam]{ejscreen_vs_ejam()}}
 }
+\keyword{internal}

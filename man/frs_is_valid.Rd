@@ -25,3 +25,4 @@ contain valid ids, the func does not go back and try the rest of the possible al
 so if the two cols were regid and siteid and only siteid had valid registry ID values,
 this func would fail to figure that out and would say they were invalid.
 }
+\keyword{internal}

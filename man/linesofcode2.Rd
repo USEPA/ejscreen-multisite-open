@@ -38,3 +38,4 @@ data.frame of info about files
 \description{
 linesofcode2 - UTILITY - count lines of source code per .R file (not per function) - NOT TESTED
 }
+\keyword{internal}

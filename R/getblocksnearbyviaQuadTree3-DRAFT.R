@@ -1,3 +1,4 @@
+
 #' DRAFT / WAS WORK IN PROGRESS  Find nearby blocks using Quad Tree data structure for speed, NO PARALLEL PROCESSING
 #'
 #' @description Given a set of points and a specified radius (in miles), 
@@ -32,17 +33,16 @@
 #' @param report_progress_every_n Reports progress to console after every n points,
 #'   mostly for testing, but a progress bar feature might be useful unless this is super fast.
 #'
-#'
-#'
 #' @seealso [ejamit()] [getblocksnearby()] [getblocksnearbyviaQuadTree()] [getblocksnearbyviaQuadTree_Clustered()] [getblocksnearbyviaQuadTree2()]
-#' 
-#' @export
 #' @import data.table
 #' @importFrom pdist "pdist"
-#'   
+#'
+#' @noRd
+#' 
 getblocksnearbyviaQuadTree3 <- function(sitepoints, radius=3, maxradius=31.07, 
                                         avoidorphans=TRUE, report_progress_every_n=500, 
                                         quadtree) {
+  
   if (class(quadtree) != "QuadTree") {
     if (shiny::isRunning()) {
       warning('quadtree must be an object created with indexblocks(), from SearchTrees package with treeType = "quad" and dataType = "point"')  

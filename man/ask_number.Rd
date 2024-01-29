@@ -3,8 +3,7 @@
 \name{ask_number}
 \alias{ask_number}
 \alias{askradius}
-\title{utility - interactive prompt in RStudio to ask user to specify number like radius
-same as askradius()}
+\title{utility - interactive prompt in RStudio to ask user to specify number like radius}
 \usage{
 ask_number(
   default = 3,
@@ -23,7 +22,6 @@ ask_number(
 a single number
 }
 \description{
-utility - interactive prompt in RStudio to ask user to specify number like radius
 same as askradius()
 }
 \seealso{

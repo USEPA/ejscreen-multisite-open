@@ -13,7 +13,8 @@
 #'    SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point")
 #' @param ...          see [getblocksnearbyviaQuadTree_Clustered()] or other such functions
 #' @seealso [getblocksnearby()] 
-#' @export
+#' 
+#' @keywords internal
 #'
 getblocksnearby2 <- function(sitepoints, radius=3, maxradius=31.07, 
                              avoidorphans=FALSE, 

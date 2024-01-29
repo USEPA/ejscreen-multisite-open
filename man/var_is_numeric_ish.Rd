@@ -26,3 +26,4 @@ see which columns seem numeric and could be rounded, e.g. - DRAFT NOT FULLY TEST
 \seealso{
 \code{\link[=table_round]{table_round()}}
 }
+\keyword{internal}

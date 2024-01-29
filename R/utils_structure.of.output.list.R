@@ -1,4 +1,6 @@
+
 #' structure.of.output.list - See info about list of results
+#' 
 #' Utility to print summary info about the output of ejamit or doaggregate
 #' @param x the output of ejamit() or of doaggregate(),
 #'   a list of objects holding results of analysis
@@ -13,7 +15,10 @@
 #'   structure.of.output.list(testoutput_ejscreenapi_plus_5)
 #'   structure.of.output.list(testoutput_ejscreenit_5)
 #'   
+#' @keywords internal
+#' 
 structure.of.output.list <- function(x, maxshown=10) {
+  
   nameofx  <- deparse1(substitute(x))
   cat("\n", nameofx, "is a", paste0(class(x), collapse = " and "), '\n\n')
   if (is.data.frame(x) | is.atomic(x)) {x <- list(x); names(x) <- nameofx } 

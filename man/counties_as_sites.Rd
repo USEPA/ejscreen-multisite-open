@@ -30,7 +30,7 @@ See more below under "Value"
  blockgroupstats[ , .(ST = ST[1], countypop = sum(pop)),
   by=.(FIPS = substr(bgfips,1,5))][order(-countypop),][1:20, .(
   CountyPopulation = prettyNum(countypop, big.mark = ","), FIPS, ST)]
- 
+  
 }
 \seealso{
 \code{\link[=getblocksnearby_from_fips]{getblocksnearby_from_fips()}}

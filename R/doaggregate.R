@@ -97,6 +97,7 @@
 #'   * **count_of_blocks_near_multiple_sites**  additional detail 
 #' 
 #' @import data.table
+#' 
 #' @export
 #' 
 doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, 

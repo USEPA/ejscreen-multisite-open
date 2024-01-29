@@ -5,8 +5,7 @@
 #' @param s2b like [testoutput_getblocksnearby_10pts_1miles]
 #'
 #' @return a data.table with one row per unique ejam_uniq_id from input dt, 
-#'   plus lat,lon columns  
-#' @export
+#'   plus lat,lon columns 
 #'
 #' @examples 
 #' s2b = copy(testoutput_getblocksnearby_10pts_1miles)
@@ -14,6 +13,8 @@
 #' inferred_sites = trilaterate_sites2blocks(s2b)
 #' inferred_sites
 #' plotblocksnearby(s2b_located)
+#' 
+#' @keywords internal
 #' 
 trilaterate_sites2blocks <- function(s2b) {
   s2b = copy(s2b) # otherwise it modifies s2b in parent env by reference

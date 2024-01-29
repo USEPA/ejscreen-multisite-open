@@ -7,6 +7,7 @@
 #' @param ... passed to ejscreenit() 
 #' @seealso [ejscreen_vs_ejam()]
 #' @return a data.table that looks like output of ejamit()$results_bysite
+#' 
 #' @export
 #'
 ejscreenit_for_ejam <- function(sitepoints, radius=3, fillmissingcolumns = TRUE, ...) {

@@ -1,3 +1,4 @@
+
 #' Create URLs in columns
 #'
 #' @param lat vector of latitudes
@@ -14,7 +15,8 @@
 #'   ejamit() or doaggregate(),
 #'   list(results_bysite = results_bysite, results_overall = results_overall,
 #'   newcolnames=newcolnames)
-#' @export
+#'   
+#' @keywords internal
 #'
 url_4table <- function(lat, lon, radius, regid = NULL, as_html = TRUE) {
 

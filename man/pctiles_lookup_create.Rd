@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils_pctiles_lookup_create.R
 \name{pctiles_lookup_create}
 \alias{pctiles_lookup_create}
-\title{pctiles_lookup_create - create lookup table of percentiles 0 to 100 and mean for each indicator by State or USA total}
+\title{Utility to create lookup table of percentiles 0 to 100 and mean for each indicator by State or USA total}
 \usage{
 pctiles_lookup_create(
   x,
@@ -36,7 +36,7 @@ which seems simpler than using type 4 which does linear interpolation between po
 ***  NEED TO CONFIRM IF THAT CREATES A TABLE DIFFERENT THAN WHAT EJSCREEN WOULD CREATE}
 }
 \description{
-pctiles_lookup_create - create lookup table of percentiles 0 to 100 and mean for each indicator by State or USA total
+Utility to create lookup table of percentiles 0 to 100 and mean for each indicator by State or USA total
 }
 \details{
 EJScreen assigns each indicator in each block group a percentile value via python script, using
@@ -92,3 +92,4 @@ return 2
 else:
 return 1
 }
+\keyword{internal}

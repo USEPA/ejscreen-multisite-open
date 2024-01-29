@@ -31,4 +31,5 @@ Identify what type of Census geography is each FIPS code (block, county, etc.)
  )
  cbind(fipsexamples, type = fipstype(fipsexamples))
 }
+
 }

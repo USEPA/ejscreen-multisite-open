@@ -17,7 +17,10 @@
 ############################################################ #
 
 
-#' EJAM/EJSCREEN comparisons - compare EJScreen API vs EJAM stats near site(s)
+#' EJAM/EJSCREEN comparisons
+#' 
+#' This is the main function that facilitates comparing
+#' EJScreen API vs EJAM stats near site(s)
 #' 
 #' @details 
 #'   Note that the EJAM tool/ function called [ejamit()]
@@ -71,8 +74,6 @@
 #'   
 #'   For each data.frame, colnames are indicators like pop, blockcount_near_site, etc.
 #'   and rows represent sites analyzed.
-#'   
-#' @export
 #'
 #' @examples
 #'  \dontrun{
@@ -101,10 +102,10 @@
 #'    # Reports disagree if percentages reported as 0-100 vs fractions 0-1.00
 #'    z[z$ratio == 0.01 & !is.na(z$ratio), -1]
 #'    
-#'    
-#'    
 #'   }
 #' @seealso [ejscreen_vs_ejam_alreadyrun()]
+#' 
+#' @keywords internal
 #' 
 ejscreen_vs_ejam <- function(latlon, radius = 3, nadrop = FALSE,
                                 save_when_report = TRUE, report_every_n = 250, # save every 10 minutes or so
@@ -128,7 +129,9 @@ ejscreen_vs_ejam <- function(latlon, radius = 3, nadrop = FALSE,
 ############################################################ #
 
 
-#' EJAM/EJSCREEN comparisons - compare EJScreen API vs EJAM stats near site(s) (if results already run)
+#' EJAM/EJSCREEN comparisons
+#' 
+#' Compare EJScreen API vs EJAM stats near site(s) (after results already run)
 #'
 #' @param apisite table output of ejscreenit()$table,
 #'   or ejscreenapi_plus()
@@ -149,7 +152,6 @@ ejscreen_vs_ejam <- function(latlon, radius = 3, nadrop = FALSE,
 #'   For each data.frame, colnames are indicators like pop, blockcount_near_site, etc.
 #'   and rows represent sites analyzed.
 #'   
-#' @export
 #' @examples 
 #'   blah = ejscreen_vs_ejam_alreadyrun(
 #'     apisite = testoutput_ejscreenapi_plus_5,
@@ -234,6 +236,8 @@ ejscreen_vs_ejam <- function(latlon, radius = 3, nadrop = FALSE,
 #'   }
 #'    
 #' @seealso [ejscreen_vs_ejam()]
+#' 
+#' @keywords internal
 #' 
 ejscreen_vs_ejam_alreadyrun <- function(apisite, ejamsite, nadrop = FALSE, 
                                            x100fix = TRUE, 
@@ -321,7 +325,9 @@ ejscreen_vs_ejam_alreadyrun <- function(apisite, ejamsite, nadrop = FALSE,
 
 
 #' EJAM/EJSCREEN comparisons - Convert output of ejscreenapi_plus to format of ejamit table of sites
+#' 
 #' Makes it easier to compare EJScreen and EJAM results
+#' 
 #' @param ejscreenapi_plus_out results of ejscreenapi_plus() or also 
 #'   could be results of ejscreenit()$table even though the colnames differ,
 #'   because they get converted here in that case.
@@ -337,7 +343,6 @@ ejscreen_vs_ejam_alreadyrun <- function(apisite, ejamsite, nadrop = FALSE,
 #' @return A data.table not just data.frame, with some or all of the columns
 #'   found in output of ejamit()$results_bysite
 #' @seealso [ejscreen_vs_ejam()]
-#' @export
 #'
 #' @examples
 #' \dontrun{
@@ -353,7 +358,11 @@ ejscreen_vs_ejam_alreadyrun <- function(apisite, ejamsite, nadrop = FALSE,
 #'   all.equal(names(z), ejamvars) 
 #'   }
 #'   
-ejscreenapi2ejam_format <- function(ejscreenapi_plus_out, fillmissingcolumns = FALSE, ejamcolnames=NULL) {
+#' @keywords internal
+#'   
+ejscreenapi2ejam_format <- function(ejscreenapi_plus_out, 
+                                    fillmissingcolumns = FALSE, ejamcolnames=NULL) {
+  
   if (!is.null(ejamcolnames)) {
     ejamvars <- ejamcolnames
   } else { 
@@ -479,9 +488,12 @@ ejscreenapi2ejam_format <- function(ejscreenapi_plus_out, fillmissingcolumns = F
 #'   # sum_vs1000pts3miles <- ejscreen_vs_ejam_summary(vs1000pts3miles)
 #'   
 #'   }
-#' @export
+#'   
+#' @keywords internal
 #'
-ejscreen_vs_ejam_summary <- function(z = ejscreen_vs_ejam(), myvars = colnames(z$EJAM), tol = 0.01, prob = 0.95, na.rm = TRUE) {
+ejscreen_vs_ejam_summary <- function(z = ejscreen_vs_ejam(), 
+                                     myvars = colnames(z$EJAM), tol = 0.01, 
+                                     prob = 0.95, na.rm = TRUE) {
   
   # tol Set tol so that results are said to agree if they differ by less than tol percent, where tol is a fraction 0 to 1. 
   # z is output of ejscreen_vs_ejam
@@ -578,16 +590,25 @@ ejscreen_vs_ejam_summary <- function(z = ejscreen_vs_ejam(), myvars = colnames(z
 #'
 #' @return table of percentiles across analyzed locations, of a stat like the ratio of 
 #'   EJAM estimates over EJSCREEN estimates, for specified list of indicators like in names_d
-#' @export
 #'
+#' @keywords internal
+#' 
 ejscreen_vs_ejam_summary_quantiles <- function(z, 
                                                mystat = c("ratio", "diff", "absdiff", "pctdiff", "abspctdiff")[1], 
-                                               myvars = c('pop', names_these), probs = (0:20) / 20, na.rm = TRUE, digits = 4) {
-  round(t(sapply(data.frame(z[[mystat]])[ , myvars, drop = FALSE], quantile, probs = probs, na.rm = na.rm)), digits)
+                                               myvars = c('pop', names_these), 
+                                               probs = (0:20) / 20, na.rm = TRUE, digits = 4) {
+  
+  round(
+    t(
+      sapply(
+        data.frame(z[[mystat]])[ , myvars, drop = FALSE], 
+        quantile, probs = probs, na.rm = na.rm
+      )
+    ), 
+    digits
+  )
 }
 ######################################################################### # 
-
-
 
 
 #'  EJAM/EJSCREEN comparisons - see results for 1 site after using ejscreen_vs_ejam()
@@ -605,7 +626,6 @@ ejscreen_vs_ejam_summary_quantiles <- function(z,
 #' @param mysite rownumber corresponding to site of interest, among 1:nrow(z$EJAM)
 #'
 #' @return a table showing one row per indicator, and columns like EJSCREEN, EJAM, ratio, etc.
-#' @export
 #'
 #' @examples 
 #'   dontrun{
@@ -613,17 +633,18 @@ ejscreen_vs_ejam_summary_quantiles <- function(z,
 #'   mysite <- 9
 #'   ejscreen_vs_ejam_see1(z, mysite = mysite, myvars = colnames(z$EJAM))[!is.na(z$EJSCREEN[mysite, ]) , 1:2]
 #'   }
-#'   
+#'
+#' @keywords internal
+#' 
 ejscreen_vs_ejam_see1 <- function(z, myvars = names_d, mysite = 1) {
+  
   if (!is.list(z) | !("EJAM" %in% names(z))) {stop('z must be output of ejscreen_vs_ejam() or ejscreen_vs_ejam_alreadyrun()')}
   if (length(mysite) > 1 | mysite > NROW(z$EJAM)) {stop('mysite must be the row number of 1 site in the table z$EJAM')}
   if (!all(myvars %in% colnames(z$EJAM))) {stop('myvars must be among colnames of z$EJAM')}
   
   sapply(z, function(x) x[mysite, ])[myvars, ]
-  
 }
 ######################################################################### # 
-
 
 
 #' EJAM/EJSCREEN comparisons - see map and tables of blocks near a site to explain discrepancy in pop and blocks
@@ -634,13 +655,15 @@ ejscreen_vs_ejam_see1 <- function(z, myvars = names_d, mysite = 1) {
 #'   noting that you have to click to turn off the layer for block point info popups to work
 #' @param ... passed to [plotblocksnearby()]
 #' @return Just draws map and shows tables and returns output of ejscreen_vs_ejam_see1()
-#' @export
 #' @examples dontrun{
 #'   z <- ejscreen_vs_ejam(testpoints_10, radius = 3, include_ejindexes = TRUE)
 #'   ejscreen_vs_ejam_see1map(3, z, overlay_blockgroups = TRUE)
 #'  }
-#'  
+#'
+#' @keywords internal
+#' 
 ejscreen_vs_ejam_see1map <- function(n = 1, x, overlay_blockgroups = FALSE, ...) {
+  
   # function to help explain discrepancy in pop and blocks  
   # n is the rownumber of the site analyzed, row of x$EJAM
   # x is from x <- ejscreen_vs_ejam(pts, radius = radius, include_ejindexes = TRUE)

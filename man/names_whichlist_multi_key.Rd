@@ -2,8 +2,7 @@
 % Please edit documentation in R/utils_names_whichlist.R
 \name{names_whichlist_multi_key}
 \alias{names_whichlist_multi_key}
-\title{names_whichlist_multi_key
-See which key lists of names the given indicator names are in}
+\title{See which key lists of names the given indicator names are in}
 \usage{
 names_whichlist_multi_key(x, ...)
 }
@@ -16,6 +15,6 @@ names_whichlist_multi_key(x, ...)
 vector maybe
 }
 \description{
-names_whichlist_multi_key
 See which key lists of names the given indicator names are in
 }
+\keyword{internal}

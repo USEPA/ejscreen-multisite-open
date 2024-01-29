@@ -1,3 +1,4 @@
+
 #' DRAFT / WAS WORK IN PROGRESS  - find nearby blocks using Quad Tree data structure for speed, CLUSTERED FOR PARALLEL PROCESSING
 #' 
 #' @description Uses packages parallel and snow. [parallel::makePSOCKcluster] is an enhanced version of [snow::makeSOCKcluster] in package snow.
@@ -14,9 +15,11 @@
 #' @param CountCPU for parallel processing via makeCluster() and [doSNOW::registerDoSNOW()]
 #' @param quadtree index of all US blocks like localtree
 #' @seealso   [getblocksnearby()] [getblocksnearbyviaQuadTree()] [getblocksnearbyviaQuadTree_Clustered()] [getblocksnearbyviaQuadTree2()]
-#' @export
+#' 
+#' @keywords internal
 #'
 getblocksnearbyviaQuadTree_Clustered <- function(sitepoints,radius, maxradius, avoidorphans, CountCPU = 1, quadtree) {
+  
   #pass in a list of uniques and the surface radius distance
   #filter na values
 sitepoints <- sitepoints[!is.na(sitepoints$LAT) & !is.na(sitepoints$LONG), ]

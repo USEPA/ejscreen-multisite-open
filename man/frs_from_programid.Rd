@@ -17,7 +17,8 @@ relevant rows of the data.table called frs, which has column names that are
 Use EPA Program ID to see FRS Facility Registry Service data on those EPA-regulated sites
 }
 \examples{
-x=frs_from_programid(testids_program_sys_id)
-  x
-  mapfast(x)
+ x = frs_from_programid(testids_program_sys_id)
+ x
+ mapfast(x)
+
 }

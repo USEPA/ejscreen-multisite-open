@@ -2,8 +2,7 @@
 % Please edit documentation in R/utils_structure.of.output.list.R
 \name{structure.of.output.list}
 \alias{structure.of.output.list}
-\title{structure.of.output.list - See info about list of results
-Utility to print summary info about the output of ejamit or doaggregate}
+\title{structure.of.output.list - See info about list of results}
 \usage{
 structure.of.output.list(x, maxshown = 10)
 }
@@ -18,7 +17,6 @@ data.frame summarizing names of list, whether each element is a
 data.table, data.frame, or vector, and rows/cols/length info
 }
 \description{
-structure.of.output.list - See info about list of results
 Utility to print summary info about the output of ejamit or doaggregate
 }
 \examples{
@@ -31,3 +29,4 @@ Utility to print summary info about the output of ejamit or doaggregate
   structure.of.output.list(testoutput_ejscreenit_5)
   
 }
+\keyword{internal}

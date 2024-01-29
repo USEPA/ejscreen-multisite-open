@@ -102,3 +102,4 @@ This is essentially a test script that times each step of EJAM for a large datas
 \seealso{
 \code{\link[=speedtest_plot]{speedtest_plot()}}
 }
+\keyword{internal}

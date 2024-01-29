@@ -48,10 +48,11 @@
 #'   # indexblocks() # if localtree not available yet, quadtree = localtree
 #'   x = getblocksnearby2(testpoints_1000, radius = 3)
 #' @seealso [ejamit()] [getblocksnearby()] 
-#' @export
 #' @import data.table
 #' @importFrom pdist "pdist"
 #'
+#' @noRd
+#' 
 getblocksnearbyviaQuadTree2 <- function(sitepoints, radius = 3, maxradius = 31.07, avoidorphans = FALSE, 
                                         report_progress_every_n = 500, quiet = FALSE,
                                         quadtree) {

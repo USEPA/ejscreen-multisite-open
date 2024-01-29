@@ -5,7 +5,9 @@
 #' @param output_df, single row of results table from doaggregate - either results_overall or one row of bysite
 #' @param var_value, variable name of indicator to pull from results, such as 'pm', 'pctlowinc', 'Demog.Index'
 #' @param var_name, nicer name of indicator to use in table row; can include HTML sub/superscripts
-#' @export
+#' 
+#' @keywords internal
+#' 
 fill_tbl_row <- function(output_df, var_value, var_name) {
   txt <- '<tr>'
   
@@ -42,7 +44,9 @@ fill_tbl_row <- function(output_df, var_value, var_name) {
 #'@param output_df, single row of results table from doaggregate - either results_overall or one row of bysite
 #'@param var_value, variable name of indicator to pull from results, such as 'pm', 'pctlowinc', 'Demog.Index'
 #'@param var_name, nicer name of indicator to use in table row; can include HTML sub/superscripts
-#'@export
+#' 
+#' @keywords internal
+#' 
 fill_tbl_row_ej <- function(output_df, var_value, var_name) {
   txt <- '<tr>'
   
@@ -80,7 +84,9 @@ fill_tbl_row_ej <- function(output_df, var_value, var_name) {
 #' Create full demog. or envt. HTML table of indicator rows
 #' 
 #' @param output_df, single row of results table from doaggregate - either results_overall or one row of bysite
-#' @export
+#' 
+#' @keywords internal
+#' 
 fill_tbl_full <- function(output_df) {
   
   # css_head <-'
@@ -176,7 +182,9 @@ fill_tbl_full <- function(output_df) {
 #' Create full EJ + EJ supp index HTML table of indicator rows
 #' 
 #'@param output_df, single row of results table from doaggregate - either results_overall or one row of bysite
-#'@export
+#' 
+#' @keywords internal
+#' 
 fill_tbl_full_ej <- function(output_df) {
   
   tbl_head <- '<table id=\"data-indicators-table\"        class=\"color-alt-table\"  summary=\"EJScreen environmental and socioeconomic indicators data\">
@@ -246,8 +254,10 @@ fill_tbl_full_ej <- function(output_df) {
 #'@param output_df, single row of results table from doaggregate - either results_overall or one row of bysite
 #'@param var_value, variable name of indicator to pull from results, such as 'pm', 'pctlowinc', 'Demog.Index'
 #'@param var_name, nicer name of indicator to use in table row; can include HTML sub/superscripts
-#'@export
-fill_tbl_row_subgroups <- function(output_df, var_value, var_name){
+#' 
+#' @keywords internal
+#' 
+fill_tbl_row_subgroups <- function(output_df, var_value, var_name) {
   txt <- '<tr>'
   
   id_col <- 'selected-variables'
@@ -281,7 +291,9 @@ fill_tbl_row_subgroups <- function(output_df, var_value, var_name){
 #' 
 #'@param output_df, single row of results table from doaggregate - 
 #'  either results_overall or one row of bysite
-#'@export
+#' 
+#' @keywords internal
+#' 
 fill_tbl_full_subgroups <- function(output_df) {
   
   # css_head <-'
@@ -372,7 +384,9 @@ fill_tbl_full_subgroups <- function(output_df) {
 #' @param totalpop, total population included in location(s) analyzed
 #' @param locationstr, description of the location(s) analyzed
 #' @param in_shiny, whether the function is being called in or outside of shiny - affects location of header
-#' @export
+#' 
+#' @keywords internal
+#' 
 generate_html_header <- function(analysis_title, totalpop, locationstr, in_shiny = FALSE) {
   
   if (in_shiny) {
@@ -419,8 +433,10 @@ img_html,
 
 #' Build header for demog. + envt. tables in community report
 #'
-#' @export
-generate_demog_header <- function(){
+#' 
+#' @keywords internal
+#' 
+generate_demog_header <- function() {
   '<div id=\"page-3-header\" class=\"header\" style=\"background-color: #0e98d7; color: white; height: 85px; clear: both; margin-top: 7px;\"><h2 tabindex=\"12\" style=\"text-align: center; padding-top: 35px; font-size: 32px; padding-left: 20px;\">Environmental and Socioeconomic Indicators Data</h2></div>'
 }
 ################################################################### #
@@ -428,8 +444,10 @@ generate_demog_header <- function(){
 
 #' Build header for EJ index table in community report
 #'
-#' @export
-generate_ej_header <- function(){
+#'
+#' @keywords internal
+#' 
+generate_ej_header <- function() {
   '<br>
  <div id=\"page-2-header\" class=\"header\" style=\"background-color: #0e98d7; color: white; text-align: center; padding: 20px 32px 10px 32px; margin: 10px 0 -23px 0;\">
             <h2 tabindex=\"8\" style=\"font-size: 30px; margin-bottom: -5px\">Environmental Justice & Supplemental Indexes</h2>
@@ -445,7 +463,9 @@ generate_ej_header <- function(){
 
 #' Build header for EJ supp indexes in community report
 #'
-#' @export
+#' 
+#' @keywords internal
+#' 
 generate_ej_supp_header <- function() {
   '<div style=\"background-color: #71bf44; color: white; text-align: center; padding: 0 32px 7px 32px;\">
     <h3 tabindex=\"11\" style=\"padding-top: 10px; margin-bottom: -10px; font-family: Arial, sans-serif; font-size: 23px;\">SUPPLEMENTAL INDEXES</h3>

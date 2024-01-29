@@ -21,3 +21,4 @@ See colcounter_summary() for details and examples
 \seealso{
 \code{\link[=colcounter_summary_all]{colcounter_summary_all()}} \code{\link[=colcounter_summary]{colcounter_summary()}} \code{\link[=colcounter_summary_cum]{colcounter_summary_cum()}} \code{\link[=colcounter_summary_pct]{colcounter_summary_pct()}} \code{\link[=colcounter_summary_cum_pct]{colcounter_summary_cum_pct()}}
 }
+\keyword{internal}

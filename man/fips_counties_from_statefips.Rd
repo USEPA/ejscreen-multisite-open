@@ -21,4 +21,5 @@ Very similar to list_counties(state) from the tigris package.
 \examples{
   fips_counties_from_statefips(c(10,44,44))
   fips_counties_from_statefips("10")
+  
 }

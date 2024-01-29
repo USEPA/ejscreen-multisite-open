@@ -47,6 +47,7 @@ or are contained within any provided tract/county/state FIPS.
   
   # 2 counties
   fips_bg_from_anyfips(c(36009,36011))
+  
 }
 \seealso{
 \code{\link[=fips_lead_zero]{fips_lead_zero()}}

@@ -1,19 +1,17 @@
-########################################## # 
-
-
 
 #' Use registry ID to see FRS Facility Registry Service data on those EPA-regulated sites
 #' 
 #' @param regid vector of one or more EPA Registry ID codes used by FRS
 #' @return relevant rows of the data.table called frs, which has column names that are
 #'   "lat" "lon" "REGISTRY_ID" "PRIMARY_NAME" "NAICS" "PGM_SYS_ACRNMS"
-#' @export
 #'
 #' @examples 
 #'   frs_from_regid(testids_registry_id)
 #'   frs_from_regid(110000307695)
 #'   frs_from_regid("110000307695")
-#'   
+#'
+#' @export
+#' 
 frs_from_regid <- function(regid) {
   
   if (!exists("frs")) dataload_from_pins("frs")
@@ -26,15 +24,19 @@ frs_from_regid <- function(regid) {
 
 ########################################## # 
 
+
 #' Use EPA Program ID to see FRS Facility Registry Service data on those EPA-regulated sites
 #' 
 #' @param programid vector of one or more EPA Program ID codes used by FRS 
 #' @return relevant rows of the data.table called frs, which has column names that are
-#'   "lat" "lon" "REGISTRY_ID" "PRIMARY_NAME" "NAICS" "PGM_SYS_ACRNMS"
-#' @examples x=frs_from_programid(testids_program_sys_id)
-#'   x
-#'   mapfast(x)
+#'    "lat" "lon" "REGISTRY_ID" "PRIMARY_NAME" "NAICS" "PGM_SYS_ACRNMS"
+#' @examples
+#'  x = frs_from_programid(testids_program_sys_id)
+#'  x
+#'  mapfast(x)
+#' 
 #' @export
+#' 
 frs_from_programid <- function(programid) {
   
   if (!exists("frs")) dataload_from_pins("frs")
@@ -53,6 +55,7 @@ frs_from_programid <- function(programid) {
 #'   "lat" "lon" "REGISTRY_ID" "PRIMARY_NAME" "NAICS" "PGM_SYS_ACRNMS"
 #'     
 #' @export
+#' 
 frs_from_program  <- function(program) {
   
   if (!exists("frs")) dataload_from_pins("frs")
@@ -69,7 +72,6 @@ frs_from_program  <- function(program) {
 #' @return relevant rows of the data.table called frs, which has column names that are
 #'   "lat" "lon" "REGISTRY_ID" "PRIMARY_NAME" "NAICS" "PGM_SYS_ACRNMS"
 #' @seealso [regid_from_naics()] [naics_from_any()]
-#' @export
 #'
 #' @examples 
 #'   frs_from_naics("uranium")
@@ -81,6 +83,8 @@ frs_from_program  <- function(program) {
 #'   regid_from_naics(21222)
 #'   latlon_from_naics(21222)
 #'   
+#' @export
+#'
 frs_from_naics <- function(naics_code_or_name, ...) {
   
   if (!exists("frs")) dataload_from_pins("frs")
@@ -88,6 +92,7 @@ frs_from_naics <- function(naics_code_or_name, ...) {
   frs[REGISTRY_ID %in% regid_from_naics(naics_from_any(naics_code_or_name, ...)$code, id_only = TRUE) , ]
 }
 ########################################## # 
+
 
 #' Use site name text search to see FRS Facility Registry Service data on those EPA-regulated sites
 #' 
@@ -98,7 +103,6 @@ frs_from_naics <- function(naics_code_or_name, ...) {
 #'
 #' @return relevant rows of the data.table called frs, which has column names that are
 #'   "lat" "lon" "REGISTRY_ID" "PRIMARY_NAME" "NAICS" "PGM_SYS_ACRNMS"
-#' @export
 #'
 #' @examples \dontrun{
 #'  # very slow
@@ -106,6 +110,9 @@ frs_from_naics <- function(naics_code_or_name, ...) {
 #'  nrow(x)
 #'  head(x)
 #' }
+#'   
+#' @export
+#'
 frs_from_sitename <- function(sitenames, ignore.case=TRUE, fixed=FALSE) {
   
   if (!exists("frs")) dataload_from_pins("frs")
@@ -119,4 +126,3 @@ frs_from_sitename <- function(sitenames, ignore.case=TRUE, fixed=FALSE) {
   return(results)
 }
 ########################################## # 
-

@@ -64,14 +64,11 @@ board <- pins::board_connect(auth = "rsconnect")
 
 This does work if that is true plus the two environment variables were created:
 
-board <- pins::board_connect(auth = 'manual',
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{server = Sys.getenv("CONNECT_SERVER"), 
-
-key = Sys.getenv("CONNECT_API_KEY")
+\if{html}{\out{<div class="sourceCode">}}\preformatted{board <- pins::board_connect(auth = 'manual', 
+  server = Sys.getenv("CONNECT_SERVER"), 
+  key = Sys.getenv("CONNECT_API_KEY")
+) 
 }\if{html}{\out{</div>}}
-
-)
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{after Sys.setenv(CONNECT_SERVER = "https://rstudio-connect.dmap-stage.aws.epa.gov")
 

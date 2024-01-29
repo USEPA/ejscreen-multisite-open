@@ -1,9 +1,9 @@
+
 #' Identify what type of Census geography is each FIPS code (block, county, etc.)
 #'
 #' @param fips vector of one or more Census FIPS with or without leading zeroes, as strings or numeric
 #' 
 #' @return vector of types: "block", "blockgroup", "tract", "county", or "state"
-#' @export
 #'
 #' @examples
 #'  fips_counties_from_statename(c("Connecticut", "Delaware") )
@@ -21,7 +21,11 @@
 #'  )
 #'  cbind(fipsexamples, type = fipstype(fipsexamples))
 #' }
+#' 
+#' @export
+#' 
 fipstype <- function(fips) {
+  
   fips <- fips_lead_zero(fips = fips)
   ftype <- rep(NA, length(fips))
   ftype[nchar(fips) == 15] <- "block"

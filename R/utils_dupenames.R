@@ -1,24 +1,36 @@
-#' setdiff_yx - UTILITY - see what is in y not x
+#' UTILITY - see what is in y not x
+#' 
 #' utility just like setdiff except for y,x instead of x,y
-#' @export
+#' 
+#' @keywords internal
+#' 
 setdiff_yx = function(x,y) setdiff(y,x)
 ##################################################################### #
 
-#' setdiff2 aka unshared - UTILITY - see what is only in x or y but not both
-#' utility just like setdiff except for y,x and also x,y
-#' Just shows which elements are in one and only one of the sets x and y
-#' @export
+
+#' UTILITY - see what is only in x or y but not both - just like setdiff except for y,x and also x,y
+#' 
+#' setdiff2 aka unshared just shows which elements are in one and only one of the sets x and y
+#' 
+#' @keywords internal
+#' 
 setdiff2 <- function(x,y) {setdiff(union(x,y),intersect(x,y))}
 ##################################################################### #
 
-#' unshared aka setdiff2 - UTILITY - see what is only in x or y but not both
+
+#' UTILITY - see what is only in x or y but not both
+#' 
 #' utility just like setdiff except for y,x and also x,y
 #' Just shows which elements are in one and only one of the sets x and y
-#' @export
+#' 
+#' @keywords internal
+#' 
 unshared <- function(x,y) {setdiff(union(x,y),intersect(x,y))}
 ##################################################################### #
 
-#' dupeRfiles - UTILITY - check conflicting sourcefile names
+
+#' UTILITY - check conflicting sourcefile names
+#' 
 #' @description See what same-named .R files are in 2 sourcecode folders
 #' @details useful for shiny app that is not a package, 
 #'   as ejamlite and EJAMejscreenapi had copies of some EJAM files.
@@ -26,8 +38,9 @@ unshared <- function(x,y) {setdiff(union(x,y),intersect(x,y))}
 #'   See [dupenames()] for when they are all packages.
 #' @param folder1 path to other folder with R source files
 #' @param folder2 path to a folder with R source files, defaults to "./R"
-#' @export
-#'
+#' 
+#' @keywords internal
+#' 
 dupeRfiles <- function(folder1 = '../EJAM/R', folder2 = './R') {
   if (!dir.exists(folder1)) {
     #try to interpret as name of source package without path
@@ -55,7 +68,8 @@ dupeRfiles <- function(folder1 = '../EJAM/R', folder2 = './R') {
 ##################################################################### #
 
 
-#' dupenames - UTILITY - check conflicting exported function or data names
+#' UTILITY - check conflicting exported function or data names
+#' 
 #' @description See what same-named objects (functions or data) are exported by some (installed) packages
 #' @details utility to find same-named exported objects (functions or datasets) within source code 
 #'   of 2+ packages, and see what is on search path, for dev renaming / moving functions/ packages
@@ -67,8 +81,9 @@ dupeRfiles <- function(folder1 = '../EJAM/R', folder2 = './R') {
 #'   Only checks the first 2 copies, not any additional ones (where 3+ pkgs use same name)
 #' @seealso [all_equal_functions()]
 #' @return data.frame with columns Package, Object name (or NA if no dupes)
-#' @export
-#'
+#' 
+#' @keywords internal
+#' 
 dupenames <- function(pkg = EJAM::ejampackages, sortbypkg=FALSE, compare.functions=TRUE) {
   
   # Get list of exported names in package1, then look in package1 to
@@ -147,7 +162,9 @@ dupenames <- function(pkg = EJAM::ejampackages, sortbypkg=FALSE, compare.functio
 }
 ##################################################################### #
 
-#' all_equal_functions - UTILITY - check different versions of function with same name in 2 packages
+
+#' UTILITY - check different versions of function with same name in 2 packages
+#' 
 #' used by dupenames() to check different versions of function with same name in 2 packages
 #' @param fun quoted name of function, like "latlon_infer"
 #' @param package1 quoted name of package, like "EJAM"
@@ -155,8 +172,9 @@ dupenames <- function(pkg = EJAM::ejampackages, sortbypkg=FALSE, compare.functio
 #'
 #' @return TRUE or FALSE
 #' @seealso [dupenames()] [all.equal.function()]
-#' @export
-#'
+#' 
+#' @keywords internal
+#' 
 all_equal_functions <- function(fun="latlon_infer", package1="EJAM", package2="EJAMejscreenapi") {
   
   # not the same as base R all.equal.function() see  ?all.equal.function

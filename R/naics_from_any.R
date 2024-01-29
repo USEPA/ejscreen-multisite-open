@@ -1,5 +1,8 @@
-#' naics_subcodes_from_code - find subcategories of the given overall NAICS industry code(s)
+
+#' find subcategories of the given overall NAICS industry code(s)
+#' 
 #' Given 3-digit NAICS code, for example, get all NAICS that start with those digits. 
+#' 
 #' @details  similar idea was naics2children() but this is more robust 
 #' See [naics_from_any()] which uses this
 #' @param mycodes NAICS codes vector, of 2 to 6 digits each. See <https://naics.com>
@@ -8,9 +11,11 @@
 #' @seealso [naics_subcodes_from_code()] [naics_from_code()]  [naics_from_name()]  [naics_from_any()]
 #' @examples 
 #'   naics_categories()
-#' @export
+#'   
+#' @keywords internal
 #'
 naics_subcodes_from_code <- function(mycodes) {
+  
   len <- nchar(mycodes)
   cnames  <- paste0("n", 1:6)
   results <- list()
@@ -23,17 +28,23 @@ naics_subcodes_from_code <- function(mycodes) {
   results <- data.table::rbindlist(results)
   return(results)
 }
+################################################################## #
 
-#' naics_from_code - search for industry names by NAICS code(s), 2-6 digits long each
+
+#' search for industry names by NAICS code(s), 2-6 digits long each
+#' 
 #' See [naics_from_any()] which uses this
+#' 
 #' @param mycodes vector of numeric NAICS codes. see <https://naics.com>
 #' @param children logical, if TRUE, also return all the subcategories - where NAICS starts with the same digits
 #' @seealso [naics_subcodes_from_code()] [naics_from_code()]  [naics_from_name()]  [naics_from_any()]
 #'
 #' @return a subset of the [naicstable] data.table (not just the codes column)
-#' @export
+#' 
+#' @keywords internal
 #'
 naics_from_code <- function(mycodes, children=FALSE) {
+  
   # find naicstable data.table rows by exact matches on numeric NAICS codes vector
   results <- NULL
   results <- naicstable[code %in% mycodes, ]
@@ -43,9 +54,13 @@ naics_from_code <- function(mycodes, children=FALSE) {
   }
   return(results)
 }
+################################################################## #
 
-#' naics_from_name - search for industry names and NAICS codes by query string
+
+#' search for industry names and NAICS codes by query string
+#' 
 #' query by parts of words, etc. in the industry name. 
+#' 
 #' See [naics_from_any()] which uses this
 #' @param mynames query string, vector of NAICS industry names or any regular expression or partial words. See <https://naics.com>
 #' @param children logical, if TRUE, also return all the subcategories - where NAICS starts with the same digits
@@ -56,9 +71,11 @@ naics_from_code <- function(mycodes, children=FALSE) {
 #' @examples 
 #'  data.table::fintersect(naics_from_any( "manufac"), naics_from_any("chem"))
 #' @return a subset of the [naicstable] data.table (not just the codes column)
-#' @export
+#' 
+#' @keywords internal
 #'
 naics_from_name <- function(mynames, children=FALSE, ignore.case = TRUE, fixed = FALSE) {
+  
   # find naicstable data.table rows by text search in NAICS industry names via grepl()
   hits <- vector()
   results <- NULL
@@ -72,9 +89,13 @@ naics_from_name <- function(mynames, children=FALSE, ignore.case = TRUE, fixed =
   }
   return(results)
 } 
+################################################################## #
 
-#' naics_from_any - General way to search for industry names and NAICS codes
+
+#' General way to search for industry names and NAICS codes
+#' 
 #' Find industry names and codes by searching for queried code(s) or text
+#' 
 #' @param query query string(s) and/or number(s), vector of NAICS codes or industry names or any regular expression or partial words
 #' @param children logical, if TRUE, also return all the subcategories - where NAICS starts with the same digits
 #' @param ignore.case see [grepl()]
@@ -84,8 +105,6 @@ naics_from_name <- function(mynames, children=FALSE, ignore.case = TRUE, fixed =
 #' @seealso [naics_subcodes_from_code()] [naics_from_code()]  [naics_from_name()]  [naics_from_any()]
 #'
 #' @return a subset of the [naicstable] data.table (not just the codes column)
-#' @export
-#'
 #' @examples # Also see vignette for examples
 #'   naics_categories()
 #'   naics_from_any(naics_categories(3))[order(name),.(name,code)][1:10,] 
@@ -126,8 +145,11 @@ naics_from_name <- function(mynames, children=FALSE, ignore.case = TRUE, fixed =
 #'  NROW(naics_from_any("chem", children = T))
 #' [1] 104
 #' 
-#' 
-naics_from_any <- function(query, children=FALSE, ignore.case = TRUE, fixed = FALSE, website_scrape=FALSE, website_url=FALSE) {
+#' @export
+#'
+naics_from_any <- function(query, children=FALSE, ignore.case = TRUE, fixed = FALSE, 
+                           website_scrape=FALSE, website_url=FALSE) {
+  
   # find naicstable data.table rows by vector of text queries and/or numeric NAICS codes
   # returns subset of naicstable, not in any particular order and number of rows may be longer than number of query terms
   isnum <- suppressWarnings( !is.na(as.numeric(query)) )

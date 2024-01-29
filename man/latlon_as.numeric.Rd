@@ -35,8 +35,9 @@ returns NA for those and offers a warning.
   latlon_as.numeric(c('aword', '$b'))
   latlon_as.numeric(c('-10.5\%', '<5', '$100'))
   latlon_as.numeric(c(Inf, 1))
-  
+
 }
 \seealso{
 latlon_df_clean() latlon_infer() latlon_is.valid() latlon_as.numeric()
 }
+\keyword{internal}

@@ -1,3 +1,4 @@
+
 #' Find all blocks within each of the FIPS codes provided
 #' 
 #' Allows EJAM to analyze and compare Counties, for example
@@ -10,7 +11,6 @@
 #' @param inshiny used by shiny app server code to handle errors via validate() instead of stop()
 #' @param need_blockwt set to FALSE to speed it up if you do not need blockwt
 #' @return same as for [getblocksnearby] but one row per FIPS, and the distance column is irrelevant
-#' @export
 #'
 #' @examples
 #'   x <- getblocksnearby_from_fips(fips_counties_from_state_abbrev("DE"))
@@ -22,6 +22,8 @@
 #'   # y=doaggregate(x)
 #' @seealso [fips_bg_from_anyfips()] [fips_lead_zero()] [getblocksnearby_from_fips()] [fips_from_table()]
 #' 
+#' @export
+#'
 getblocksnearby_from_fips <- function(fips, inshiny = FALSE, need_blockwt = TRUE) {
 
   if (!exists('blockid2fips')) {

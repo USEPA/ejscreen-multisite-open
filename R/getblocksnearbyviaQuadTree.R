@@ -1,6 +1,8 @@
+
 #' Fast way to find nearby points (distance to each Census block centroid near each site)
 #'
-#' @description Given a set of points and a specified radius in miles, 
+#' @description This is what [getblocksnearby()] uses to do the work.
+#'   Given a set of points and a specified radius in miles, 
 #'   this function quickly finds all the US Census blocks near each point.
 #'   This does the work actually supporting getblocksnearby()
 #'
@@ -57,14 +59,17 @@
 #' @examples 
 #'   # indexblocks() # if localtree not available yet, quadtree = localtree
 #'   x = getblocksnearby(testpoints_1000, radius = 3)
-#' @seealso [ejamit()] [getblocksnearby()] 
-#' @export
+#' @seealso [ejamit()] [getblocksnearby()]
 #' @import data.table
 #' @importFrom pdist "pdist"
+#' 
+#' @export
+#' @keywords internal
 #'   
 getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.07, avoidorphans = FALSE, 
                                         report_progress_every_n = 500, quiet = FALSE, retain_unadjusted_distance = TRUE,
                                         quadtree, updateProgress = NULL) {
+  
   # indexgridsize was defined at start as say 10 miles in global? could be passed here as a parameter ####
   # and buffer_indexdistance defined here in code but is never used anywhere...  
   # buffer_indexdistance <- ceiling(radius / indexgridsize)

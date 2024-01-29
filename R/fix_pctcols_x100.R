@@ -1,3 +1,4 @@
+
 #' utility to multiply certain percentage columns by 100 to convert 0-1.00 into 0-100
 #' 
 #' multiplies some data to rescale percentages stored as 0 to 1, into 0-100
@@ -12,7 +13,6 @@
 #'   names_pct_as_fraction_ejscreenit
 #'
 #' @return df with data in specified columns multiplied by 100
-#' @export
 #'
 #' @examples 
 #'  y = data.frame(pctlowinc = 1:2, pctpre1960 = 1:2, avg.pctunemployed = 1:2, avg.pctpre1960 = 1:2)
@@ -33,6 +33,8 @@
 #'  y
 #'  ytable
 #'  
+#' @keywords internal
+#'
 fix_pctcols_x100 <- function(df, cnames = NULL) {
 
   ## which percentage indicators are stored as 0-1.00 not 0-100 ?

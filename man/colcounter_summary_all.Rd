@@ -15,10 +15,16 @@ like percentiles for example.}
 \item{...}{passed to the 4 functions
 like or.tied=TRUE, na.rm=TRUE, below=FALSE, one.cut.per.col=FALSE}
 }
+\value{
+A table of cumulative frequency counts etc., including
+count, cum, pct, cum_pct
+}
 \description{
-Wraps 4 functions to return 4 tables:
+This wraps 4 functions to return 4 tables:
 using \code{\link[=colcounter_summary]{colcounter_summary()}}, \code{\link[=colcounter_summary_pct]{colcounter_summary_pct()}},
 \code{\link[=colcounter_summary_cum]{colcounter_summary_cum()}}, \code{\link[=colcounter_summary_cum_pct]{colcounter_summary_cum_pct()}}
+For another view and text explanations of the findings, see
+\code{\link[=count_sites_with_n_high_scores]{count_sites_with_n_high_scores()}}
 }
 \examples{
     # df <-  bg22[ , names.ej.pctile]

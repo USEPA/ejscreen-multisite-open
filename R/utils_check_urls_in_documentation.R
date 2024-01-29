@@ -1,4 +1,8 @@
+
+#' @noRd
+#' 
 util_check_urls_in_documentation <- function() {
+  
   cat(' search in each .R file, or use ctrl-shift-f, to search for this: \n\n')
   cat(paste0(" grep(", '"',  "^#", "'", '.*[^<]http", x) ',  "\n "))
   cat('\n\n')

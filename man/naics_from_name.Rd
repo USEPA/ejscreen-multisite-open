@@ -2,9 +2,7 @@
 % Please edit documentation in R/naics_from_any.R
 \name{naics_from_name}
 \alias{naics_from_name}
-\title{naics_from_name - search for industry names and NAICS codes by query string
-query by parts of words, etc. in the industry name.
-See \code{\link[=naics_from_any]{naics_from_any()}} which uses this}
+\title{search for industry names and NAICS codes by query string}
 \usage{
 naics_from_name(mynames, children = FALSE, ignore.case = TRUE, fixed = FALSE)
 }
@@ -23,8 +21,9 @@ naics_from_name(mynames, children = FALSE, ignore.case = TRUE, fixed = FALSE)
 a subset of the \link{naicstable} data.table (not just the codes column)
 }
 \description{
-naics_from_name - search for industry names and NAICS codes by query string
 query by parts of words, etc. in the industry name.
+}
+\details{
 See \code{\link[=naics_from_any]{naics_from_any()}} which uses this
 }
 \examples{
@@ -33,3 +32,4 @@ See \code{\link[=naics_from_any]{naics_from_any()}} which uses this
 \seealso{
 \code{\link[=naics_subcodes_from_code]{naics_subcodes_from_code()}} \code{\link[=naics_from_code]{naics_from_code()}}  \code{\link[=naics_from_name]{naics_from_name()}}  \code{\link[=naics_from_any]{naics_from_any()}}
 }
+\keyword{internal}

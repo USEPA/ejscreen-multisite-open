@@ -2,8 +2,7 @@
 % Please edit documentation in R/utils_names_whichlist.R
 \name{names_whichlist_multi}
 \alias{names_whichlist_multi}
-\title{names_whichlist_multi
-See which lists of names the given indicator names are in}
+\title{See which lists of names the given indicator names are in}
 \usage{
 names_whichlist_multi(x, ...)
 }
@@ -16,6 +15,6 @@ names_whichlist_multi(x, ...)
 a list of sets of names
 }
 \description{
-names_whichlist_multi
 See which lists of names the given indicator names are in
 }
+\keyword{internal}

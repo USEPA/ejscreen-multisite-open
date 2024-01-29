@@ -4,11 +4,12 @@
 #' @param x character vector of colnames of map_headernames, or aliases like "long"
 #'
 #' @return vector where aliases are replaced with actual colnames and unmatched ones left as-is
-#' @export
 #'
 #' @examples 
 #'   fixmapheadernamescolname(c('long', 'csv', 'api', 'r'))
 #' 
+#' @keywords internal
+#'
 fixmapheadernamescolname <- function(x) {
   # interpret shorthand/aliases for column names of map_headernames
   akas <- list(api = 'apiname',

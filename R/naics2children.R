@@ -1,4 +1,6 @@
-#' naics2children - See NAICS codes queried plus all children of any of those
+
+#' See NAICS codes queried plus all children of any of those
+#' 
 #' Used by naics_find()
 #' @details 
 #' start with shortest (highest level) codes. since tied for nchar, these branches have zero overlap, so do each.
@@ -17,8 +19,6 @@
 #' @param quiet whether to avoid printing results to console
 #' @return vector of codes and their names
 #' @seealso naics_find() NAICS
-#' @export
-#'
 #' @examples 
 #'   naics2children(211)
 #'   naics_find(211, exactnumber=TRUE)
@@ -26,7 +26,11 @@
 #'   NAICS[211][1:3] # wrong
 #'   NAICS[NAICS == 211]
 #'   NAICS["211 - Oil and Gas Extraction"]
+#' 
+#' @export
+#'
 naics2children <- function(codes, allcodes=EJAM::NAICS, quiet = FALSE) {
+  
   # if (missing(allcodes)) {allcodes <- NAICS} # data from this package
   codes <- as.character(codes)
   kidrows <- NULL

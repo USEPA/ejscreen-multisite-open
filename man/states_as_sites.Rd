@@ -26,4 +26,5 @@ See more below under "Value"
 }
 \examples{
   s2b <- states_as_sites(fips_state_from_state_abbrev(c("DE", "RI")))
+  
 }

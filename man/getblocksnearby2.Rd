@@ -41,3 +41,4 @@ Like getblocksnearby() but tries to handle localtree and quadtree parameter diff
 \seealso{
 \code{\link[=getblocksnearby]{getblocksnearby()}}
 }
+\keyword{internal}

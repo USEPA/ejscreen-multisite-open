@@ -44,3 +44,4 @@ The frs-related datasets here can be roughly 1.5 GB in RAM, perhaps.
 \seealso{
 \code{\link[=datapack]{datapack()}} \code{\link[=dataload_from_aws]{dataload_from_aws()}} \code{\link[=dataload_from_pins]{dataload_from_pins()}} \code{\link[=dataload_from_local]{dataload_from_local()}} \code{\link[=indexblocks]{indexblocks()}} \code{\link[=.onAttach]{.onAttach()}}
 }
+\keyword{internal}

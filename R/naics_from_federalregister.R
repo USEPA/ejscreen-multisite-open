@@ -1,8 +1,11 @@
-#' naics_from_federalregister - DRAFT WORK IN PROGRESS
+
+#' Try to extract which NAICS could be affected by a rule published in the Federal Register
+#' by reading the NAICS listed near the top of the preamble - DRAFT WORK IN PROGRESS
 #'
 #' @param naics_text_copy_from_fr 
 #'
-#' @export
+#' @keywords internal
+#' 
 naics_from_federalregister <- function(naics_text_copy_from_fr) {
   
   

@@ -24,7 +24,8 @@ getblocks_predict_blocks_per_site <- function(nsites, radius) {
 #' @return invisibly, a list of stats
 #' @import data.table
 #' @seealso [getblocks_diagnostics()]
-#' @export
+#' 
+#' @keywords internal
 #'
 getblocks_summarize_blocks_per_site <- function(x, varname='ejam_uniq_id') {
   blocks_per_site_histo <- table(table(x[ , ..varname]))
@@ -45,15 +46,15 @@ getblocks_summarize_blocks_per_site <- function(x, varname='ejam_uniq_id') {
 #' @param x The output of [getblocksnearby()] like testoutput_getblocksnearby_10pts_1miles
 #' @param varname colname of variable in data.table x that is the one to summarize by
 #' @return invisibly, a list of stats
-#' @export
 #' @import data.table
 #' @seealso [getblocks_diagnostics()]
+#'
+#' @keywords internal
 #'
 getblocks_summarize_sites_per_block <- function(x, varname='blockid') {
   table(table(x[ , ..varname]))
 }
 ######################################################################################### # 
-
 
 
 #' utility - How many blocks and many other stats about blocks and sites
@@ -80,6 +81,7 @@ getblocks_summarize_sites_per_block <- function(x, varname='blockid') {
 #'   getblocks_diagostics(testoutput_getblocksnearby_1000pts_1miles, see_distanceplot = TRUE)
 #'   
 #' @import data.table
+#'
 #' @export
 #'
 getblocks_diagnostics <- function(x, detailed=FALSE, see_pctiles=FALSE, see_distanceplot = FALSE) {

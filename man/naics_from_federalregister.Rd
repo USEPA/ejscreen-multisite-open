@@ -2,7 +2,8 @@
 % Please edit documentation in R/naics_from_federalregister.R
 \name{naics_from_federalregister}
 \alias{naics_from_federalregister}
-\title{naics_from_federalregister - DRAFT WORK IN PROGRESS}
+\title{Try to extract which NAICS could be affected by a rule published in the Federal Register
+by reading the NAICS listed near the top of the preamble - DRAFT WORK IN PROGRESS}
 \usage{
 naics_from_federalregister(naics_text_copy_from_fr)
 }
@@ -10,5 +11,7 @@ naics_from_federalregister(naics_text_copy_from_fr)
 \item{naics_text_copy_from_fr}{}
 }
 \description{
-naics_from_federalregister - DRAFT WORK IN PROGRESS
+Try to extract which NAICS could be affected by a rule published in the Federal Register
+by reading the NAICS listed near the top of the preamble - DRAFT WORK IN PROGRESS
 }
+\keyword{internal}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/map_blockgroups.R
 \name{mapfastej_counties}
 \alias{mapfastej_counties}
-\title{mapfastej_counties - Static or HTML/leaflet map of counties}
+\title{Static or HTML/leaflet map of counties}
 \usage{
 mapfastej_counties(
   mydf,
@@ -28,7 +28,7 @@ leaflet html widget (but if static_not_leaflet=T,
 returns just shapes_counties_from_countyfips(mydf$ejam_uniq_id))
 }
 \description{
-mapfastej_counties - Static or HTML/leaflet map of counties
+Static or HTML/leaflet map of counties
 }
 \examples{
 \dontrun{
@@ -36,4 +36,5 @@ mapfastej_counties - Static or HTML/leaflet map of counties
  x <- ejamit(fips = fips_ky, radius = 0)
  mapfastej_counties(x$results_bysite)
  }
+
 }

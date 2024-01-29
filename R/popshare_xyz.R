@@ -1,6 +1,7 @@
 ##################################################################### # 
 
-#' popshare_at_top_x_pct  - top X percent of sites account for what percent of residents?
+#' top X percent of sites account for what percent of residents?
+#' 
 #' What fraction of total population is accounted for by the top X percent of places?
 #' @param pop vector of population totals across places,
 #'   like out$results_bysite$pop where out is the output of ejamit()
@@ -18,6 +19,7 @@
 #' @export
 #'
 popshare_at_top_x_pct = function(pop, x=0.20, astext=FALSE, dig=0) {
+  
   if (!is.vector(pop)) {
     warning('pop must be a vector')
     return(NULL)
@@ -41,7 +43,9 @@ popshare_at_top_x_pct = function(pop, x=0.20, astext=FALSE, dig=0) {
 }
 ##################################################################### # 
 
-#' popshare_at_top_n  - top N sites account for what percent of residents?
+
+#' top N sites account for what percent of residents?
+#' 
 #' What fraction of total population is accounted for by the top N places?
 #' @param pop vector of population totals across places,
 #'   like out$results_bysite$pop where out is the output of ejamit()
@@ -55,9 +59,11 @@ popshare_at_top_x_pct = function(pop, x=0.20, astext=FALSE, dig=0) {
 #'  popshare_p_lives_at_what_n(  x$pop, p = c(0.50, 0.67, 0.80, 0.95))
 #'  popshare_at_top_x_pct(       x$pop, x = c(0.25, 0.50, .90))
 #'  popshare_at_top_n(           x$pop, n = c(1, 5, 10))
+#'  
 #' @export
 #'
 popshare_at_top_n = function(pop, n=10, astext=FALSE, dig=0) {
+  
   if (!is.vector(pop)) {
     warning('pop must be a vector')
     return(NULL)
@@ -81,7 +87,7 @@ popshare_at_top_n = function(pop, n=10, astext=FALSE, dig=0) {
 ##################################################################### # 
 
 
-#' popshare_p_lives_at_what_n  - how many sites account for P percent of residents?
+#' how many sites account for P percent of residents?
 #'
 #' @param pop vector of population totals across places,
 #'   like out$results_bysite$pop where out is the output of ejamit()
@@ -96,6 +102,7 @@ popshare_at_top_n = function(pop, n=10, astext=FALSE, dig=0) {
 #'  popshare_p_lives_at_what_n(  x$pop, p = c(0.50, 0.67, 0.80, 0.95))
 #'  popshare_at_top_x_pct(       x$pop, x = c(0.25, 0.50, .90))
 #'  popshare_at_top_n(           x$pop, n = c(1, 5, 10))
+#'  
 #' @export
 #'
 popshare_p_lives_at_what_n <- function(pop, p, astext=FALSE, dig=0) {
@@ -135,7 +142,7 @@ popshare_p_lives_at_what_n <- function(pop, p, astext=FALSE, dig=0) {
 ##################################################################### # 
 
 
-#' popshare_p_lives_at_what_pct  - what percent of sites account for P percent of residents?
+#' what percent of sites account for P percent of residents?
 #'
 #' @param pop vector of population totals across places,
 #'   like out$results_bysite$pop where out is the output of ejamit()
@@ -154,6 +161,7 @@ popshare_p_lives_at_what_n <- function(pop, p, astext=FALSE, dig=0) {
 #' @export
 #'
 popshare_p_lives_at_what_pct <- function(pop, p, astext=FALSE, dig=0) {
+  
   if (!is.vector(pop)) {
     warning('pop must be a vector')
     return(NULL)

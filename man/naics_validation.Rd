@@ -2,7 +2,7 @@
 % Please edit documentation in R/NAICS_validation.R
 \name{naics_validation}
 \alias{naics_validation}
-\title{naics_validation - Validate NAICS uploads}
+\title{Validate NAICS uploads}
 \usage{
 naics_validation(naics_enter, naics_select)
 }
@@ -18,3 +18,4 @@ length of at least one of the two input vectors is > 0
 \description{
 Validates and prepares echo uploads
 }
+\keyword{internal}

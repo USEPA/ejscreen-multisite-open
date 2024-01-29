@@ -18,4 +18,5 @@ Get state fips for each state abbrev
 }
 \examples{
 fips_state_from_state_abbrev("DE", "DE", "RI")
+
 }

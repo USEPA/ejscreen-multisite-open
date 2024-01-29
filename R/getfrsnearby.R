@@ -7,9 +7,11 @@
 #' @param quadtree quadtree
 #'
 #' @return table
-#' @export
+#' 
+#' 
 #'
 getfrsnearby <- function(sitepoints, frspoints, radius = 1, quadtree = NULL) {
+  
  stop('not implemented yet - also see proxistat2')
   # INSTEAD OF INDEXING 1.5 MILL FRS POINTS TO ENABLE THIS,
   # WE MIGHT AS WELL USE getblocksnearby() once on all 1.5 mill FRS points, for 1 miles?,

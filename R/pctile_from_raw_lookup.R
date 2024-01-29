@@ -1,5 +1,6 @@
 
-#' pctile_from_raw_lookup - Find approx percentiles in lookup table that is in memory
+#' Find approx percentiles in lookup table that is in memory
+#' 
 #' @description This is used with a lookup table to
 #'   convert a raw indicator vector to percentiles in US or States.
 #' @details
@@ -73,9 +74,11 @@
 #'          - testoutput_ejscreenapi_plus_100[,paste0("pctile.",vname)] )
 #'   }
 #' }
+#' 
 #' @export
 #' 
 pctile_from_raw_lookup <- function(myvector, varname.in.lookup.table, lookup=usastats, zone = "USA") {
+  
   #  similar code in ejanalysis package file was lookup.pctiles()
   
   # CHECK FOR FATAL PROBLEMS  ####
@@ -88,7 +91,7 @@ pctile_from_raw_lookup <- function(myvector, varname.in.lookup.table, lookup=usa
       stop("lookup default usastats was not found, but should be available as usastats")
     }
     }
-  if (!is.data.frame(lookup)){
+  if (!is.data.frame(lookup)) {
     if (shiny::isRunning()) {
       
       warning("lookup must be a data.frame like usastats or statestats, with columns PCTILE, REGION, and the names of indicators like pctlowinc")
@@ -286,12 +289,18 @@ pctile_from_raw_lookup <- function(myvector, varname.in.lookup.table, lookup=usa
   # pctile <- lookup[myvector >= ..varname.in.lookup.table, PCTILE[1]] # but also, if none where >= true, pctile <- lookup$PCTILE[1]
   
 }
+########################################################################### #
 
-#' lookup_pctile - Find approx percentiles in lookup table that is in memory
+
+#' Find approx percentiles in lookup table that is in memory
+#' 
 #' @seealso Identical to [pctile_from_raw_lookup()] [usastats] [statestats]
 #' @inheritParams pctile_from_raw_lookup
+#' 
 #' @export
 #' 
 lookup_pctile  <- function(myvector, varname.in.lookup.table, lookup = usastats, zone = "USA") {
+  
   pctile_from_raw_lookup(myvector = myvector, varname.in.lookup.table = varname.in.lookup.table, lookup = lookup, zone = zone)
 } #  function(...) {pctile_from_raw_lookup(...)}
+######################################################################### #

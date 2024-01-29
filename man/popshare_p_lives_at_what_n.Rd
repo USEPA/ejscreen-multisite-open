@@ -2,7 +2,7 @@
 % Please edit documentation in R/popshare_xyz.R
 \name{popshare_p_lives_at_what_n}
 \alias{popshare_p_lives_at_what_n}
-\title{popshare_p_lives_at_what_n  - how many sites account for P percent of residents?}
+\title{how many sites account for P percent of residents?}
 \usage{
 popshare_p_lives_at_what_n(pop, p, astext = FALSE, dig = 0)
 }
@@ -20,7 +20,7 @@ like out$results_bysite$pop where out is the output of ejamit()}
 vector of numbers of sites, or text about that
 }
 \description{
-popshare_p_lives_at_what_n  - how many sites account for P percent of residents?
+how many sites account for P percent of residents?
 }
 \examples{
  x <- testdata_ejamit_output_100pts_1miles$results_bysite
@@ -28,4 +28,5 @@ popshare_p_lives_at_what_n  - how many sites account for P percent of residents?
  popshare_p_lives_at_what_n(  x$pop, p = c(0.50, 0.67, 0.80, 0.95))
  popshare_at_top_x_pct(       x$pop, x = c(0.25, 0.50, .90))
  popshare_at_top_n(           x$pop, n = c(1, 5, 10))
+ 
 }

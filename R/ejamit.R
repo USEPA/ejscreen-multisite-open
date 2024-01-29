@@ -1,3 +1,4 @@
+
 #' Get an EJ analysis (demographic and environmental indicators) in or near a list of locations
 #' 
 #' @description This is the main function in EJAM that runs the analysis. 
@@ -116,7 +117,9 @@
 #'
 #' }
 #' @seealso  [getblocksnearby()] [doaggregate()]
+#' 
 #' @export
+#' 
 ejamit <- function(sitepoints,
                    radius = 3,
                    maxradius = 31.07,

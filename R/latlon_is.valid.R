@@ -1,25 +1,31 @@
-#' latlon_is.available
-#' check if not NA using !is.na()
+
+#' check if lat lon not NA using !is.na()
+#' 
 #' @param lat vector of latitudes
 #' @param lon vector of longitudes
 #' @return logical vector, one element per lat lon pair (location)
-#' @export
 #' @seealso   [latlon_is.usa()] [latlon_is.islandareas()] [latlon_is.available()] [latlon_is.possible()]
+#'
+#' @keywords internal
+#'
 latlon_is.available  <- function(lat, lon) {
   !is.na(lat) & !is.na(lon)
 }
 ############################################### # 
 
-#' latlon_is.usa
+
 #' Check lat lon coordinates to see if each is approx. in general area of USA excluding Island Areas
+#' 
 #' @param lat vector of latitudes
 #' @param lon vector of longitudes
 #' @return logical vector, one element per lat lon pair (location)
 #'   Indicates the point is approximately in one of the 
 #'   rough bounding boxes that includes the USA without 
 #'   the Island Areas Guam, American Samoa, USVI, N Marianas Islands.
-#' @export
 #' @seealso   [latlon_is.usa()] [latlon_is.islandareas()] [latlon_is.available()] [latlon_is.possible()]
+#'
+#' @keywords internal
+#'
 latlon_is.usa <- function(lat, lon) {
   !(
     (lat < 17.5 | lat > 71.5) |   (lon > -64 & lon < 172) |  (lon > 180 | lon < -180)
@@ -27,26 +33,29 @@ latlon_is.usa <- function(lat, lon) {
 }
 ############################################### # 
 
-#' latlon_is.possible
-#' check if between -180 and +180
+
+#' check if lat lon between -180 and +180
+#' 
 #' @param lat vector of latitudes
 #' @param lon vector of longitudes
 #' @return logical vector, one element per lat lon pair (location)
-#' @export
 #' @seealso   [latlon_is.usa()] [latlon_is.islandareas()] [latlon_is.available()] [latlon_is.possible()]
+#'
+#' @keywords internal
+#'
 latlon_is.possible   <- function(lat, lon) {
   (lat < 180 & lat > -180  &  lon < 180 & lon > -180)
 }
 ############################################### # 
 
-#' latlon_is.islandareas
+
 #' Check lat lon coordinates to see if each is approx. in general area of US Island Areas Guam, USVI, Amer Samoa or N Marianas
+#' 
 #' See [islandareas]
 #' @param lat vector of latitudes
 #' @param lon vector of longitudes
 #' @return vector of TRUE / FALSE values indicating a given lat lon pair
 #'   is approximately in one of the rough bounding boxes that includes the 4 Island Areas.
-#' @export
 #' @seealso   [latlon_is.usa()] [latlon_is.islandareas()] [latlon_is.available()] [latlon_is.possible()]
 #' @examples
 #' \dontrun{
@@ -56,7 +65,11 @@ latlon_is.possible   <- function(lat, lon) {
 #'   which(!(latlon_is.usa(lat = testpoints_1000$lat, lon = testpoints_1000$lon)))
 #' }
 #'   
+#'
+#' @keywords internal
+#'
 latlon_is.islandareas <- function(lat, lon)  {
+  
   x <- islandareas
   states <- unique(x$ST)
   # ok <- rep(TRUE, length(states))
@@ -73,7 +86,8 @@ latlon_is.islandareas <- function(lat, lon)  {
 ############################################### # 
 
 
-#' latlon_is.valid - Validate latitudes and longitudes
+#' Validate latitudes and longitudes
+#' 
 #' @description Check each latitude and longitude value to see if they are valid.
 #' @details  
 #'   NA or outside expected numeric ranges 
@@ -99,9 +113,11 @@ latlon_is.islandareas <- function(lat, lon)  {
 #'  # blockpoints may need to be downloaded using dataload_from_pins()
 #'  table(latlon_is.valid(lat =  blockpoints$lat, lon =  blockpoints$lon))
 #'   }
-#' @export
+#'
+#' @keywords internal
 #'
 latlon_is.valid <- function(lat, lon, quiet = TRUE) {
+  
   # assume none bad until proven otherwise
   bad         <- rep(FALSE, length(lat))
   

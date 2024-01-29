@@ -2,7 +2,7 @@
 % Please edit documentation in R/latlon_infer.R
 \name{latlon_infer}
 \alias{latlon_infer}
-\title{latlon_infer - guess which columns have lat and lon based on aliases like latitude, FacLat, etc.}
+\title{guess which columns have lat and lon based on aliases like latitude, FacLat, etc.}
 \usage{
 latlon_infer(mycolnames)
 }
@@ -13,7 +13,7 @@ latlon_infer(mycolnames)
 returns all of mycolnames except replacing the best candidates with lat and lon
 }
 \description{
-latlon_infer - guess which columns have lat and lon based on aliases like latitude, FacLat, etc.
+guess which columns have lat and lon based on aliases like latitude, FacLat, etc.
 }
 \examples{
   latlon_infer(c('trilat', 'belong', 'belong')) # warns if no alias found, 
@@ -26,8 +26,9 @@ latlon_infer - guess which columns have lat and lon based on aliases like latitu
       # converted to preferred word (if pref not found), creating dupes!  warn!
   latlon_infer(c('LONG', 'LONG')) # dupes of an alias are renamed and still are dupes! warn!
   latlon_infer(c('lat', 'lat', 'Lon')) # dupes left as dupes but warn!
-  
+
 }
 \seealso{
 latlon_df_clean() latlon_infer() latlon_is.valid() latlon_as.numeric()
 }
+\keyword{internal}

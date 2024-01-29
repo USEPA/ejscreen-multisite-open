@@ -22,3 +22,4 @@ distance_via_surfacedistance(x)
 \details{
 Convert surface distance to actual distance
 }
+\keyword{internal}

@@ -1,8 +1,10 @@
 
 #' @inheritParams get_blockpoints_in_shape
+#' 
 #' @export
 #'
 shapefile2blockpoints <- function(...) {
+  
   get_blockpoints_in_shape(...)  
 }
 ############################################################# #
@@ -47,9 +49,11 @@ shapefile2blockpoints <- function(...) {
 #'   # x = shapefile_from_sitepoints(testpoints_n(2))
 #'   # y = get_blockpoints_in_shape(x, 1)  # very very slow
 #' @seealso [get_blockpoints_in_shape()] [shapefile_from_sitepoints()] [shape_buffered_from_shapefile_points()]
+#' 
 #' @export
 #'
-get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NULL, dissolved=FALSE, safety_margin_ratio=1.10, crs = 4269) {
+get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NULL, 
+                                     dissolved=FALSE, safety_margin_ratio=1.10, crs = 4269) {
   
   ############################################################################################################### #
   # NOTE: For comparison or validation one could get the results from the EJScreen API, for a polygon:

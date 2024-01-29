@@ -1,3 +1,4 @@
+
 #' View HTML Report on EJAM Results (Overall or at 1 Site)
 #'
 #' @description Get URL for and view in browser a 2-page summary report similar to the 
@@ -16,7 +17,6 @@
 #'
 #' @return URL of temp html file and has side effect of 
 #' launching browser to view it
-#' @export
 #'
 #' @examples
 #' #out <- ejamit(testpoints_10, radius = 3, include_ejindexes = T)
@@ -30,18 +30,21 @@
 #' table_gt_from_ejamit_1site(out$results_bysite[1, ])
 #' browseURL(x)
 #' 
+#' @export
+#' 
 ejam2report <- function(ejamout = testoutput_ejamit_10pts_1miles, sitenumber = NULL,  
-                                    analysis_title = "EJAM Report", 
-                                    submitted_upload_method = c("latlon", "SHP", "FIPS")[1],
-                                    data_up_shp = NA) {
-if (is.null(sitenumber)) {
-ejamout1 <- ejamout$results_overall
-} else {
-  ejamout1 <- ejamout$results_bysite[sitenumber, ]
-}
-include_ejindexes <- any(names_ej_pctile %in% colnames(ejamout1))
+                        analysis_title = "EJAM Report", 
+                        submitted_upload_method = c("latlon", "SHP", "FIPS")[1],
+                        data_up_shp = NA) {
   
-if (!("valid" %in% names(ejamout1))) {ejamout1$valid <- TRUE}
+  if (is.null(sitenumber)) {
+    ejamout1 <- ejamout$results_overall
+  } else {
+    ejamout1 <- ejamout$results_bysite[sitenumber, ]
+  }
+  include_ejindexes <- any(names_ej_pctile %in% colnames(ejamout1))
+  
+  if (!("valid" %in% names(ejamout1))) {ejamout1$valid <- TRUE}
   
   x <- as.numeric(sitenumber)
   if (ejamout1$valid == T) {

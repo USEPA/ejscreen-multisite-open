@@ -2,8 +2,7 @@
 % Please edit documentation in R/utils_datapack.R
 \name{datapack}
 \alias{datapack}
-\title{datapack - utility - See names and size of data sets in package(s) - internal utility function
-Wrapper for data() and can get memory size of objects}
+\title{UTILITY - See names and size of data sets in package(s) - internal utility function}
 \usage{
 datapack(pkg = ejampackages, len = 30, sortbysize = TRUE, simple = TRUE)
 }
@@ -26,7 +25,6 @@ If simple = TRUE, data.frame with colnames Package and Item.
 If simple = FALSE, data.frame with colnames Package, Item, size, Title.Short
 }
 \description{
-datapack - utility - See names and size of data sets in package(s) - internal utility function
 Wrapper for data() and can get memory size of objects
 }
 \details{
@@ -53,5 +51,6 @@ It may create and leave objects in global envt - not careful about that.
  x[order(x$Package, x$Item), 1:2]
  # sorted alphabetically across all the pkgs
  x[order(x$Item), 1:2]
- 
+
 }
+\keyword{internal}

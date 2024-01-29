@@ -1,4 +1,5 @@
 #' utility for developing package - searches for text in each function exported by pkg (or each .R source file in pkg/R)
+#' 
 #' @details Searches the body and parameter defaults of exported functions.  
 #' @param text something like "EJAM::" or "stop\\(" or "library\\(" or "***"
 #' @param pkg name of package or path to source package root folder - this 
@@ -17,8 +18,9 @@
 #'    Note it will fail to ignore comments in .R files that are at the end of the line of actual code like  print(1) # that prints 1
 #'
 #' @return vector of names of functions or paths to .R files
-#' @export
-#'
+#' 
+#' @keywords internal
+#' 
 functions_that_use <- function(text = "stop\\(", pkg = "EJAM", ignore_comments = TRUE) {
   
   

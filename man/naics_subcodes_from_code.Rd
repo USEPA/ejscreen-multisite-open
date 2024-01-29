@@ -2,8 +2,7 @@
 % Please edit documentation in R/naics_from_any.R
 \name{naics_subcodes_from_code}
 \alias{naics_subcodes_from_code}
-\title{naics_subcodes_from_code - find subcategories of the given overall NAICS industry code(s)
-Given 3-digit NAICS code, for example, get all NAICS that start with those digits.}
+\title{find subcategories of the given overall NAICS industry code(s)}
 \usage{
 naics_subcodes_from_code(mycodes)
 }
@@ -14,7 +13,6 @@ naics_subcodes_from_code(mycodes)
 a subset of the \link{naicstable} data.table (not just the codes column)
 }
 \description{
-naics_subcodes_from_code - find subcategories of the given overall NAICS industry code(s)
 Given 3-digit NAICS code, for example, get all NAICS that start with those digits.
 }
 \details{
@@ -23,7 +21,9 @@ See \code{\link[=naics_from_any]{naics_from_any()}} which uses this
 }
 \examples{
   naics_categories()
+  
 }
 \seealso{
 \code{\link[=naics_subcodes_from_code]{naics_subcodes_from_code()}} \code{\link[=naics_from_code]{naics_from_code()}}  \code{\link[=naics_from_name]{naics_from_name()}}  \code{\link[=naics_from_any]{naics_from_any()}}
 }
+\keyword{internal}

@@ -2,8 +2,7 @@
 % Please edit documentation in R/naics_from_any.R
 \name{naics_from_any}
 \alias{naics_from_any}
-\title{naics_from_any - General way to search for industry names and NAICS codes
-Find industry names and codes by searching for queried code(s) or text}
+\title{General way to search for industry names and NAICS codes}
 \usage{
 naics_from_any(
   query,
@@ -31,7 +30,6 @@ naics_from_any(
 a subset of the \link{naicstable} data.table (not just the codes column)
 }
 \description{
-naics_from_any - General way to search for industry names and NAICS codes
 Find industry names and codes by searching for queried code(s) or text
 }
 \examples{
@@ -74,7 +72,6 @@ Find industry names and codes by searching for queried code(s) or text
 #[1] 20
  NROW(naics_from_any("chem", children = T))
 [1] 104
-
 
 }
 \seealso{

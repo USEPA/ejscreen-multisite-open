@@ -17,7 +17,6 @@
 #' @seealso [states_shapefile] [get_blockpoints_in_shape()] [states_infer()]
 #' @return Returns data.frame: ST, statename, FIPS.ST, REGION, n
 #'   as many rows as elements in lat or lon
-#' @export
 #' @examples 
 #'  myprogram <- "CAMDBS" # 739 sites
 #'  pts <- frs_from_program(myprogram)[ , .(lat, lon, REGISTRY_ID,  PRIMARY_NAME)]
@@ -26,7 +25,10 @@
 #'  #map these points
 #'  mapfast(pts[ST == 'TX',], radius = 1) # 1 miles radius circles
 #'  
+#' @export
+#'  
 state_from_latlon <- function(lat, lon, states_shapefile=EJAM::states_shapefile) {
+  
   if (is.na(as.numeric(lat)) & is.na(as.numeric(lon))) { 
     warning("Latitude and Longitude could not be coerced to a number.")
     return(NULL)
@@ -63,20 +65,21 @@ state_from_latlon_compiled <- compiler::cmpfun(state_from_latlon)
 #################################################################### #
 
 
-#' was used only in some special cases of using testpoints_n()
+#' state_from_blocktable was used only in some special cases of using testpoints_n()
 #' 
 #' given data.table with blockid column, get state abbreviation of each - not used?
 #' @param dt_with_blockid 
 #'
 #' @return vector of ST info like AK, CA, DE, etc.
-#' @export
 #'
 #' @examples state_from_blocktable(blockpoints[45:49,])
+#' 
+#' @keywords internal
+#' 
 state_from_blocktable <- function(dt_with_blockid) {
   stateinfo$ST[match(blockid2fips[dt_with_blockid, substr(blockfips,1,2), on = "blockid"], stateinfo$FIPS.ST)]
 }
 #################################################################### #
-
 
 
 #' given vector of blockids, get state abbreviation of each
@@ -84,10 +87,13 @@ state_from_blocktable <- function(dt_with_blockid) {
 #' @param blockid vector of blockid values as from EJAM in a table called blockpoints
 #'
 #' @return vector of ST info like AK, CA, DE, etc.
-#' @export
 #'
 #' @examples state_from_blockid(c(8174952, blockpoints$blockid[5:6]))
+#' 
+#' @keywords internal
+#' 
 state_from_blockid <- function(blockid) {
+  
   if (!exists('blockid2fips')) {
     dataload_from_pins(varnames = 'blockid2fips')
   }
@@ -109,9 +115,11 @@ state_from_blockid <- function(blockid) {
 #' @param uniqueonly If set to TRUE, returns only unique results. 
 #'   This parameter is here mostly to remind user that default is not uniques only.
 #' @return vector of 2-character state abbreviations like CA,CA,CA,MD,MD,TX
-#' @export
+#' 
+#' @keywords internal
 #'
 state_from_fips <- function(fips, uniqueonly=FALSE) {
+  
   fips <- fips_bg_from_anyfips(fips) # returns all the blockgroups fips codes that match, such as all bg in the state or county
   x <- stateinfo$ST[match(substr(fips,1,2), stateinfo$FIPS.ST)]
   if (uniqueonly) {return(unique(x))} else {return(x)}

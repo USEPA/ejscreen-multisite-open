@@ -1,4 +1,5 @@
-#' naics_download - script to download NAICS file with code and name of sector
+
+#' Script to download NAICS file with code and name of sector
 #'
 #' See source code. Mostly just a short script to get the 2017 or 2022 codes and names.
 #' See <'https://www.census.gov/naics/?48967'>
@@ -7,7 +8,8 @@
 #' @param destfile full path and name of file to save as locally
 #'
 #' @return names list with year as an attribute
-#' @export
+#' 
+#' @keywords internal
 #'
 naics_download <- function(year=2017, urlpattern='https://www.census.gov/naics/YYYYNAICS/2-6%20digit_YYYY_Codes.xlsx', destfile= paste0('~/Downloads/', year, 'NAICS.xlsx')) {
   # this can be used to create the NAICS dataset as for this package

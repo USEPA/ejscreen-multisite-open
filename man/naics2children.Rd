@@ -2,8 +2,7 @@
 % Please edit documentation in R/naics2children.R
 \name{naics2children}
 \alias{naics2children}
-\title{naics2children - See NAICS codes queried plus all children of any of those
-Used by naics_find()}
+\title{See NAICS codes queried plus all children of any of those}
 \usage{
 naics2children(codes, allcodes = EJAM::NAICS, quiet = FALSE)
 }
@@ -18,7 +17,6 @@ naics2children(codes, allcodes = EJAM::NAICS, quiet = FALSE)
 vector of codes and their names
 }
 \description{
-naics2children - See NAICS codes queried plus all children of any of those
 Used by naics_find()
 }
 \details{
@@ -40,6 +38,7 @@ table(nchar(as.character(NAICS)))
   NAICS[211][1:3] # wrong
   NAICS[NAICS == 211]
   NAICS["211 - Oil and Gas Extraction"]
+
 }
 \seealso{
 naics_find() NAICS

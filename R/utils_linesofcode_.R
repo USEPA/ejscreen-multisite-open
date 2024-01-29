@@ -3,16 +3,16 @@
 
 # BUT SEE https://pharmar.github.io/riskmetric/  too for assess_size_codebase()
 
-linesofcode_per_section <- function(folder, ...) {
-  
-  
-  x <- linesofcode2(folder, ...)
-  
-  # to be continued
-  
-  
-}
-
+# linesofcode_per_section <- function(folder, ...) {
+#   
+#   
+#   x <- linesofcode2(folder, ...)
+#   
+#   # to be continued
+#   
+#   
+# }
+# 
 
 
 
@@ -30,8 +30,9 @@ linesofcode_per_section <- function(folder, ...) {
 #' @param showrows optional
 #'
 #' @return data.frame of info about files
-#' @export
-#'
+#' 
+#' @keywords internal
+#' 
 linesofcode2 <- function(folder=getwd(), packages, recursive=TRUE, sums=FALSE, rfolderonly=FALSE, cropfilename=40, croppath=20, showrows=NULL) {
 
   dir2 <- function(x, ignore.case = TRUE, ...) {

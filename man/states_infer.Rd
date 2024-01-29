@@ -2,8 +2,7 @@
 % Please edit documentation in R/states_infer.R
 \name{states_infer}
 \alias{states_infer}
-\title{states_infer - Get table of info on States (from latlon or FIPS)
-Get cleaned table of US State etc. by ejam_uniq_id, from lat/lon, or from FIPS}
+\title{states_infer - Get table of info on States (from latlon or FIPS)}
 \usage{
 states_infer(x)
 }
@@ -15,7 +14,6 @@ and optionally a column like  id or n}
 data.frame with unique id, ST, etc.
 }
 \description{
-states_infer - Get table of info on States (from latlon or FIPS)
 Get cleaned table of US State etc. by ejam_uniq_id, from lat/lon, or from FIPS
 }
 \seealso{
