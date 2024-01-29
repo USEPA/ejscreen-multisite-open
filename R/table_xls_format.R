@@ -44,8 +44,6 @@
 #' @import webshot webshot
 #' @seealso [table_xls_from_ejam()] 
 #' @return a workbook, ready to be saved in spreadsheet format, with tabs like "Overall" and "Each Site"
-#' @export
-#'
 #' @examples \dontrun{
 #'   table_xls_format(
 #'     testoutput_ejamit_100pts_1miles$results_overall, 
@@ -55,6 +53,9 @@
 #'  wb <- table_xls_format(testoutput_ejamit_100pts_1miles)
 #'  openxlsx::saveWorkbook(wb, file = "out2.xlsx")
 #' }
+#' 
+#' @keywords internal
+#'
 table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, bybg=NULL, 
                             plot_distance_by_group = FALSE, 
                             summary_plot = NULL, 
@@ -69,15 +70,14 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
                             notes=NULL,
                             
                             heatmap_colnames = NULL,   heatmap_cuts = c(80, 90, 95),  heatmap_colors  = c("yellow", "orange", "red"),
-                            
                             heatmap2_colnames = NULL, heatmap2_cuts = c(1.009, 2, 3), heatmap2_colors = c("yellow", "orange", "red"),
                             
                             hyperlink_colnames = c("EJScreen Report", "EJScreen Map", "ECHO report"), 
                             graycolnames=NULL, narrowcolnames=NULL, graycolor='gray', narrow6=6,
                             
                             testing=FALSE, launchexcel = FALSE, saveas = NULL,
-                            
                             ...) {
+  
   ###################  #   ###################  #   ###################  #   ###################  # 
   # if user passed the entire output of ejamit() or doaggregate() as the first parameter, 
   # rather than splitting it up and passing overall, eachsite, longnames, formatted, bybg separately,

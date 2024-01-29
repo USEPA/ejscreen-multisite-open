@@ -1,3 +1,4 @@
+
 #' Load datasets from local disk folder
 #' 
 #' Utility for analysts / developers to store large block /
@@ -22,6 +23,7 @@
 #'   actually found in folder_local_source,
 #'   but only for those not already in memory, so it is 
 #'   just the ones loaded from disk because not already in memory and found on disk locally.
+#'   
 #' @export
 #'
 dataload_from_local <- function(varnames = c(c('blockwts', 'blockpoints', 'blockid2fips', "quaddata"), 

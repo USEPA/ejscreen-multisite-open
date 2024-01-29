@@ -1,3 +1,4 @@
+
 #' Utility to load a couple of datasets using data immediately instead of relying on lazy loading 
 #' 
 #' @details
@@ -23,7 +24,7 @@
 #'   ls()
 #'   rm(avg.in.us, x)
 #'   
-#' @export
+#' @keywords internal
 #' 
 dataload_from_package <- function(olist = c("blockgroupstats", "usastats", "statestats"), envir=globalenv()) {
   

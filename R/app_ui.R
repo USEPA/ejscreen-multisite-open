@@ -1,11 +1,13 @@
+
 #' app_ui - The application User-Interface
-#' @noRd
+#' 
 #' @param request Internal parameter for `{shiny}`.
 #'     DO NOT REMOVE.
 #' @rawNamespace import(shiny, except=c(dataTableOutput, renderDataTable))
 #' @importFrom shinyjs useShinyjs extendShinyjs
 #' 
 app_ui  <- function(request) {
+  
   tagList(
     # golem_add_external_resources() ####
     # Leave this function for adding external resources, specifying title of app, see end of this source file.
@@ -1302,8 +1304,11 @@ app_ui  <- function(request) {
 #'
 #' @rawNamespace import(shiny, except=c(dataTableOutput, renderDataTable))
 #' @importFrom golem add_resource_path activate_js favicon bundle_resources
+#' 
 #' @noRd
-golem_add_external_resources <- function() {   
+#' 
+golem_add_external_resources <- function() {
+  
   golem::add_resource_path(
     "www",
     app_sys("app/www") #   points to  installed/EJAM/app/www which is same as   source/EJAM/inst/app/www 
@@ -1335,7 +1340,6 @@ golem_add_external_resources <- function() {
     
     # Add here other external resources
     # for example, you can add shinyalert::useShinyalert()
-    
   )
 }
 ########################################################################### #

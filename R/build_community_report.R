@@ -1,8 +1,10 @@
 
-#' Generate EJAM Summary Report in HTML
+#' Generate EJAM Summary Report in HTML within shiny app
 #' 
 #' Creates a 2 page report on overall results or for one site, with 
-#' demographic and environmental indicators, and EJ Indexes if needed
+#' demographic and environmental indicators, and EJ Indexes if needed.
+#' For the same function for use in RStudio, 
+#' see [ejam2report()] which relies on `build_community_report()`
 #' 
 #' @param output_df, single row of results table from doaggregate - either results_overall or one row of bysite
 #' @param analysis_title, title to use in header of report
@@ -11,7 +13,9 @@
 #' @param include_ejindexes, whether to build tables for EJ and EJ supp. indexes
 #' @param in_shiny, whether the function is being called in or outside of shiny - affects location of header
 #' @param filename, path to file to save HTML content to; if null, returns as string (used in Shiny app)
-#' @export
+#' 
+#' @keywords internal
+#' 
 build_community_report <- function(output_df, analysis_title, totalpop, locationstr, 
                                    include_ejindexes=FALSE, in_shiny = FALSE, filename = NULL){
   

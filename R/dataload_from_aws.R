@@ -1,4 +1,5 @@
-#'Utility to load datasets from AWS DMAP Data Commons, into memory
+
+#' Utility to load datasets from AWS DMAP Data Commons, into memory
 #'
 #' @details See source code for details. 
 #'  
@@ -49,6 +50,7 @@
 #' @seealso [datapack()] [dataload_from_pins()] [dataload_from_local()] [dataload_from_package()] [indexblocks()] [.onAttach()] 
 #' @return nothing - just loads data into environment (unless justchecking=T)
 #' 
+#' @noRd
 #'
 dataload_from_aws <- function(varnames= c('bgid2fips', 'blockid2fips', 'blockpoints', 'blockwts', 'quaddata' ),
                               ext=c(".arrow", ".rda")[2],

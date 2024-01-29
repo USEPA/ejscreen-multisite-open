@@ -9,8 +9,7 @@
 #'   If TRUE, specify one threshold per column.
 #' @return vector of counts as long as NROW(x)
 #' @seealso [colcounter_summary_all()] [colcounter_summary()] [colcounter_summary_cum()] [colcounter_summary_pct()] [colcounter_summary_cum_pct()]
-#' @export
-#'
+#' 
 #' @examples \dontrun{
 #'  pdata <- data.frame(a=rep(80,4),b=rep(93,4), col3=c(49,98,100,100))
 #'   ### pdata <- EJAM::blockgroupstats[ , names_e_pctile]
@@ -28,6 +27,8 @@
 #' tablefixed(x95, NCOL(pdata))
 #' cbind(at80=tablefixed(x80, NCOL(pdata)), at95=tablefixed(x95, NCOL(pdata)))
 #'   }
+#'
+#' @keywords internal
 #'
 colcounter <- function(x, threshold, or.tied=TRUE, na.rm=TRUE, below=FALSE, one.cut.per.col=FALSE) {
   # Function to count SCORES ABOVE BENCHMARK(S) at each place, returns list as long as NROW(x).
@@ -106,7 +107,6 @@ colcounter <- function(x, threshold, or.tied=TRUE, na.rm=TRUE, below=FALSE, one.
 #' @seealso [colcounter_summary_all()] [colcounter_summary()] [colcounter_summary_cum()] [colcounter_summary_pct()] [colcounter_summary_cum_pct()]
 #'    [tablefixed()]
 #' @return A table of frequency counts
-#' @export
 #'
 #' @examples
 #'  pdata <- data.frame(a=rep(80,4),b=rep(93,4), col3=c(49,98,100,100))
@@ -125,6 +125,7 @@ colcounter <- function(x, threshold, or.tied=TRUE, na.rm=TRUE, below=FALSE, one.
 #' tablefixed(x95, NCOL(pdata))
 #' cbind(at80=tablefixed(x80, NCOL(pdata)), at95=tablefixed(x95, NCOL(pdata)))
 #' 
+#' @keywords internal
 #'
 colcounter_summary <- function(x, thresholdlist, or.tied=TRUE, na.rm=TRUE, below=FALSE, one.cut.per.col=FALSE) {
 
@@ -159,8 +160,8 @@ colcounter_summary <- function(x, thresholdlist, or.tied=TRUE, na.rm=TRUE, below
 #' @param one.cut.per.col if FALSE, compare each threshold to all of x.
 #'   If TRUE, specify one threshold to use for each column.
 #' @seealso [colcounter_summary_all()] [colcounter_summary()] [colcounter_summary_cum()] [colcounter_summary_pct()] [colcounter_summary_cum_pct()]
-#' @return A table of cumulative frequency counts
-#' @export
+#'
+#' @keywords internal
 #'
 colcounter_summary_cum <- function(x, thresholdlist, or.tied=TRUE, na.rm=TRUE, below=FALSE, one.cut.per.col=FALSE) {
   apply(colcounter_summary(x, thresholdlist = thresholdlist, or.tied = or.tied, na.rm = na.rm,below = below,one.cut.per.col = one.cut.per.col),
@@ -179,7 +180,8 @@ colcounter_summary_cum <- function(x, thresholdlist, or.tied=TRUE, na.rm=TRUE, b
 #' @param ... passed to colcounter_summary()
 #'   like or.tied=TRUE, na.rm=TRUE, below=FALSE, one.cut.per.col=FALSE
 #' @seealso [colcounter_summary_all()] [colcounter_summary()] [colcounter_summary_cum()] [colcounter_summary_pct()] [colcounter_summary_cum_pct()]
-#' @export
+#'
+#' @keywords internal
 #'
 colcounter_summary_pct <- function(x, thresholdlist, ...)  {
   100 * round(colcounter_summary(x, thresholdlist = thresholdlist, ...) / NROW(x), 2)
@@ -195,7 +197,8 @@ colcounter_summary_pct <- function(x, thresholdlist, ...)  {
 #' @param ... passed to colcounter_summary_cum()
 #'   like or.tied=TRUE, na.rm=TRUE, below=FALSE, one.cut.per.col=FALSE
 #' @seealso [colcounter_summary_all()] [colcounter_summary()] [colcounter_summary_cum()] [colcounter_summary_pct()] [colcounter_summary_cum_pct()]
-#' @export
+#'
+#' @keywords internal
 #'
 colcounter_summary_cum_pct <- function(x, thresholdlist, ...) {
   100 * round(colcounter_summary_cum(x, thresholdlist = thresholdlist, ...) / NROW(x), 2)
@@ -205,9 +208,11 @@ colcounter_summary_cum_pct <- function(x, thresholdlist, ...) {
 
 #' Summarize count (and percent) of rows with exactly (and at least) N cols >= various thresholds
 #' 
-#' @description Wraps 4 functions to return 4 tables:
+#' @description This wraps 4 functions to return 4 tables:
 #'   using [colcounter_summary()], [colcounter_summary_pct()],
 #'   [colcounter_summary_cum()], [colcounter_summary_cum_pct()]
+#'   For another view and text explanations of the findings, see
+#'   [count_sites_with_n_high_scores()]
 #'   
 #' @param x Data.frame or matrix of numbers to be compared to threshold value,
 #'   like percentiles for example.
@@ -216,6 +221,9 @@ colcounter_summary_cum_pct <- function(x, thresholdlist, ...) {
 #'   like or.tied=TRUE, na.rm=TRUE, below=FALSE, one.cut.per.col=FALSE
 #' @seealso [colcounter_summary_all()] [colcounter_summary()] [colcounter_summary_cum()] [colcounter_summary_pct()] [colcounter_summary_cum_pct()]
 #' 
+#' @return A table of cumulative frequency counts etc., including
+#'   count, cum, pct, cum_pct 
+#'   
 #' @examples
 #'     # df <-  bg22[ , names.ej.pctile]
 #'  df <- data.frame(a=rep(80,4),b=rep(93,4), col3=c(49,98,100,100))
@@ -266,6 +274,7 @@ colcounter_summary_cum_pct <- function(x, thresholdlist, ...) {
 #' @export
 #'
 colcounter_summary_all <- function(x, thresholdlist, ...) {
+  
   listall <- list(
     counts =  colcounter_summary(        x, thresholdlist = thresholdlist, ...),
     cum =     colcounter_summary_cum(    x, thresholdlist = thresholdlist, ...),
@@ -275,7 +284,8 @@ colcounter_summary_all <- function(x, thresholdlist, ...) {
   bincount <- length(0:NCOL(x))
   arrayall <- array(NA, dim = c(bincount, length(thresholdlist), 4))
   for (i in 1:4) {arrayall[ ,, i] <- listall[[i]]}
-  dimnames(arrayall) <- list(count = 0:NCOL(x), cut = thresholdlist, stat = c('count', 'cum', 'pct', 'cum_pct'))
+  dimnames(arrayall) <- list(count = 0:NCOL(x), cut = thresholdlist, 
+                             stat = c('count', 'cum', 'pct', 'cum_pct'))
   arrayall
 }
 ######################################## ######################################### #

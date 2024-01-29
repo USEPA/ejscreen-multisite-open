@@ -18,7 +18,30 @@
 
 
 #' EJAM/EJSCREEN comparisons - compare EJScreen API vs EJAM stats near site(s)
-#'
+#' 
+#' @details 
+#'   Note that the EJAM tool/ function called [ejamit()]
+#'   does not rely on EJScreen to do the calculations
+#'   and instead tries to replicate what EJScreen would do. 
+#'   As a result, as of early 2024 at least, while 
+#'   - *[ejamit()] is much, much faster than [ejscreenit()]* and
+#'   - *provides additional information* (distribution of distances by group, etc.) 
+#'   - *features* (histograms, spreadsheet with heatmaps, etc.)
+#'   - *flexibility* (easy for analysts using R to customize analysis, etc.),
+#'   *[ejamit()] does not always exactly replicate EJScreen* -- 
+#'   does not provide 100% identical results (percentiles, etc.) for 
+#'   every indicator in every analysis at every location.
+#'   This is due to slight variations in 
+#'   - details of the spatial calculations (which blocks are nearby,
+#'   sometimes counting 1 extra block as 2.99 miles away while 
+#'   EJScreen counts it as outside the 3 mile radius, e.g.)
+#'   - rounding (how many digits are retained during calculations,
+#'   and how many are shown in final reports) 
+#'   - percentile assignment method (how percentile lookup tables are used,
+#'   how ties are treated in percentile lookup tables, etc.), or 
+#'   - weighted averages or other formulas used for aggregation of blockgroup scores
+#'   (being updated in 2024 to more precisely match the formulas EJScreen uses)
+#' 
 #' @param latlon data.table or data.frame with colnames lat and lon, 
 #'   and one row per site
 #' @param radius in miles, used in ejamit() and ejscreenapi_plus()
@@ -55,7 +78,8 @@
 #'  \dontrun{
 #'    pts <- testpoints_100[1:5, ]
 #'    
-#'   # This step can take a long time, almost 1 minute / 20 points, as it uses the EJScreen API:
+#'   # This step can take a long time, 
+#'   # almost 1 minute / 20 points, as it uses the EJScreen API:
 #'   #z <- ejscreen_vs_ejam(
 #'     testpoints_100[27, ], radius = 3, nadrop = T, include_ejindexes = TRUE)
 #'   z <- ejscreen_vs_ejam(pts, radius = 3, include_ejindexes = TRUE)

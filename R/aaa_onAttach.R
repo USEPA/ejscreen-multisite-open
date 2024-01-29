@@ -1,3 +1,4 @@
+
 #' Set up EJAM (do slow initialization steps when package is attached)
 #' 
 #' Download datasets, load to memory, index block locations
@@ -15,6 +16,8 @@
 #' 
 #' @param libname na
 #' @param pkgname na
+#' 
+#' @noRd
 #' 
 .onAttach <- function(libname, pkgname) {
   
