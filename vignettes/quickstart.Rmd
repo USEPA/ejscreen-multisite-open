@@ -72,67 +72,81 @@ indexblocks()
 #  -   *Vignette is in EJAM\vignettes\INSERTNAMEHERE.Rmd.html*
 ```
 
-# EJAM Analysis in R
-
-## Quick Start
+# EJAM Analysis in R - Quick Start Guide
 
 Here's how you can run an EJAM analysis and view results right away (once EJAM has been set up)
 
-### Load EJAM (code and data)
+## Install EJAM
+
+See the separate vignette on how to install the R package from https://github.com/USEPA/EJAM 
+
+## Load EJAM (code and data)
 
 ```{r library, eval=TRUE}
 library(EJAM)
 ```
 
-### Analyze 100 Places
+## Analyze a List of Places
 
+If you already have a spreadsheet with columns called lat and lon, you can just do this and EJAM will prompt you to navigate to and select the file and set the radius (from RStudio):
+```{r notevaluated, eval=FALSE}
+out <- ejamit()
+```
+
+If you want to try some test data first:
 ```{r ejamit100, message=FALSE, warning=FALSE, include=FALSE}
 # EJAM analysis of 100 places, for everyone within 3 miles
-x <- ejamit(testpoints_100, radius = 3, 
+out <- ejamit(testpoints_100, radius = 3, 
             silentinteractive = F, include_ejindexes = T)
 ```
 
-### Map of Results
+## Map of Results
 
 ```{r map100, eval = TRUE}
-mapfastej(x$results_bysite)
+mapfastej(out$results_bysite)
 
-# Click a point on the map to see details about people near that point
+# Click a point on the map to see a popup with details about people near that point.
 ```
 
-### Table Summary
+##  Report (interactive html file)
 
-```{r table_gt, eval=TRUE}
-# Summary of demographics
-table_gt_from_ejamit(x) 
+```{r eval=FALSE, include=FALSE}
+# will add HTML output in vignette below for ejam2report() example
 ```
 
-### Barplot Summary
+```{r}
+ejam2report(out)
+```
+
+##  Barplot
 
 ```{r plot_barplot_ratios, eval=TRUE}
-# Plot of demographics (will use simpler syntax in the future)
-plot_barplot_ratios(unlist(
-  x$results_overall[ , c(
-    ..names_d_ratio_to_avg , 
-    ..names_d_subgroups_ratio_to_avg
-  )]))
+# Plot of demographics is default
+plot_barplot_ratios(out)
+plot_barplot_ratios(out, reference = "State")
+# see examples at ?plot_barplot_ratios
 ```
 
-### Spreadsheet Download
+## Spreadsheet 
 
 ```{r ejam2excel, eval=FALSE, message=FALSE, warning=FALSE}
-ejam2excel(x, launchexcel = T, save_now = F)
+ejam2excel(out, launchexcel = T, save_now = F)
 ```
 
-## How to Select Places to Analyze
+
+
+# More Examples of Using these Functions in EJAM
+
+
+
+## Select Places to Analyze
+
+
+
+
 
 ### Use points already included with EJAM as examples
 
-EJAM comes with examples of points you can use to try things out, like `testpoints_10`
-
-```{r eval = TRUE, fig.height=4.83, fig.width=3}
-testpoints_10
-```
 
 ### Use one point
 
@@ -146,11 +160,24 @@ pts <- data.frame(lon = -92.380556, lat = 31.316944)
 sitepoints2  <- data.frame(
   lon = c(-92.1,      -91.8), 
   lat = c(34.8799123, 30.2906971), 
-  ejam_uniq_id = 1:2
+  sitenumber = 1:2
 )
 ```
 
-### Use a random sample of points that can represent the average facility, average resident, or average location
+### Use test points in examples that comes with the package
+
+EJAM comes with examples of points you can use to try things out:
+```{r eval = TRUE, fig.height=4.83, fig.width=3}
+testpoints_10
+```
+
+```{r testpoints100, eval = TRUE, echo= TRUE}
+testpoints_100 |> head(2) # data.table, in this package
+sitepoints100 <- data.table::copy(testpoints_100)  # [1:5, ]
+head(sitepoints100, 3)
+```
+
+### Create a random sample of points representative of the average facility, average resident, or average area
 
 You can create a set of random points with function `testpoints_n()` that can be weighted to represent the average resident, average regulated facility, average point on a map weighted by square meters, etc. See more details in the documentation of the function testpoints_n().
 
@@ -158,47 +185,29 @@ You can create a set of random points with function `testpoints_n()` that can be
 ?testpoints_n
 ```
 
-### Map your sites before analyzing them
+#### Create random test data points in States of LA and TX
 
-```{r eval = FALSE}
-mapfast(  testpoints_100)                  # input to EJAM
-mapfastej(testoutput_ejamit_100pts_1miles) # output, results of EJAM
+```{r mapfast_testpoints_n, eval = TRUE, fig.height=5, fig.width=5}
+# p1k <- testpoints_n(1000)
+# mapfast(p1k)
+
+mapfast(testpoints_n(300, ST_needed = c('LA','TX'), weighting = 'bg')) 
+# weighting = "frs" better represents regulated facilities,
+# but requires loading the (large) frs dataset
 ```
 
-You can see a map of random blocks in a single State, for example:
+### Use a table of lat/lon coordinates from a spreadsheet xlsx or csv file
 
-```{r eval = TRUE, fig.height=6, fig.width=6}
-if (exists("blockid2fips")) {
-  pts <- testpoints_n(1000, weighting = 'blocks', ST_needed = "LA")
-  mapfast(pts, radius = 0.1)
-}
+The first row should be column names including lat and lon, or something that can be interpreted as that - see latlon_infer()
+
+```{r writecsv, eval = FALSE, include= TRUE}
+testjunk <- file.path(tempdir(), 'testjunk.csv')
+write.csv(data.frame(LONG = c(-92.1, -91.8), Latitude = c(34.8, 30.2), ejam_uniq_id = 1:2), file = testjunk, row.names = FALSE)
+sitepoints2 <- latlon_from_anything(testjunk)
+sitepoints2
 ```
 
-### Pick a Radius
-
-You can specify the radius in miles. EJAM will analyze all residents within that many miles of each point (site).
-
-```{r RADIUS, eval = TRUE}
-radius <- 3 # radius (in miles).  5 km = 3.1 miles, 10 km = 6.2 miles
-```
-
-##### Convert between miles and kilometers
-
-If you know you want to analyze for 5 kilometers, you can turn it into miles with something like
-
-```{r convert units, eval=TRUE}
-convert_units(5, 'km', 'miles')
-```
-
-## Analyze your Sites in 1 step with ejamit()
-
-```{r eval=TRUE, echo=, message=FALSE, warning=FALSE}
-x <- ejamit(testpoints_100, radius = 1) # 1 mile radius around each of 100 test/example points
-
-# help("ejamit")
-```
-
-### Interactively select your own file of lat,lon coordinates, without shiny web app
+### Interactively select your own file of lat,lon coordinates, without typing the file name
 
 From RStudio, you can use EJAM functions to interactively select a file from your folders, to upload a spreadsheet (.xlsx or .csv) with columns called lat and lon in the first row as the header row, and then one row per point.
 
@@ -214,73 +223,102 @@ head(y)
 # prompts you to select spreadsheet with lat,lon values of points
 ```
 
-### Map the EJAM Results
+
+
+## Map your sites before analyzing them
+
+```{r eval = FALSE}
+mapfast(  testpoints_100)                  # input to EJAM
+mapfastej(testoutput_ejamit_100pts_1miles) # output, results of EJAM
+```
+
+You can see a map of random blocks in a single State, for example:
+
+```{r eval = TRUE, fig.height=6, fig.width=6}
+if (exists("blockid2fips")) {
+  pts <- testpoints_n(1000, weighting = 'blocks', ST_needed = "LA")
+  mapfast(pts, radius = 0.1)
+}
+```
+
+
+## Pick a Radius
+
+You can specify the radius in miles. EJAM will analyze all residents within that many miles of each point (site).
+
+```{r RADIUS, eval = TRUE}
+radius <- 3 # radius (in miles).  5 km = 3.1 miles, 10 km = 6.2 miles
+```
+
+#### Convert between miles and kilometers
+
+If you know you want to analyze for 5 kilometers, you can turn it into miles with something like
+
+```{r convert units, eval=TRUE}
+convert_units(5, 'km', 'miles')
+```
+
+
+
+## Analyze your Sites in 1 step with ejamit()
+
+```{r eval=TRUE, echo=, message=FALSE, warning=FALSE}
+x <- ejamit(testpoints_100, radius = 1) # 1 mile radius around each of 100 test/example points
+
+# help("ejamit")
+```
+
+
+
+## Map the EJAM Results
 
 Popups in the map show key stats for residents near each site.
 
 ```{r eval = TRUE, echo= TRUE, fig.height=8, fig.width=6}
-x <- testoutput_ejamit_100pts_1miles
-mapfastej(x$results_bysite)
+out <- testoutput_ejamit_100pts_1miles
+mapfastej(out$results_bysite)
 # help("mapfast")
 ```
 
-### Open Results as a Spreadsheet (this Launches Excel)
+## See the Summary Report (interactive html file)
+
+```{r eval=FALSE, include=FALSE}
+# will add HTML output in vignette below for ejam2report() example 
+```
+
+```{r ejam2report, include=FALSE, eval=TRUE}
+out <- testoutput_ejamit_100pts_1miles
+x <- ejam2report(out)
+y <- ejam2report(out, sitenumber = 1, analysis_title = "EJAM Report on Site Number 1")
+```
+
+## See Results as a Spreadsheet (this Launches Excel)
 
 ```{r table_xls_from_ejam-launchexcel, eval = FALSE}
 ejam2excel(ejamit(testpoints_10, radius = 1), launchexcel = T, save_now = F)
 # table_xls_from_ejam()  is another name for  ejam2excel() 
 ```
 
-### Save Results as Spreadsheet file
+### Save Results as a Spreadsheet file
 
 ```{r table_xls_from_ejam-savenow, eval = FALSE}
 ejam2excel(ejamit(testpoints_10, radius = 1), save_now = T)
 ```
 
-=============
 
-##### Use lat/lon coordinates in a table like a spreadsheet - xlsx or csv file
 
-The first row should be column names including lat and lon, or something that can be interpreted as that - see latlon_infer()
 
-```{r writecsv, eval = FALSE, include= TRUE}
-testjunk <- file.path(tempdir(), 'testjunk.csv')
-write.csv(data.frame(LONG = c(-92.1, -91.8), Latitude = c(34.8, 30.2), ejam_uniq_id = 1:2), file = testjunk, row.names = FALSE)
-sitepoints2 <- latlon_from_anything(testjunk)
-sitepoints2
-```
+# Documentation of Functions and Data
 
-##### Use test points in examples that comes with the package
-
-```{r testpoints100, eval = TRUE, echo= TRUE}
-testpoints_100 |> head(2) # data.table, in this package
-sitepoints100 <- data.table::copy(testpoints_100)  # [1:5, ]
-head(sitepoints100, 3)
-```
-
-##### Create random test data points in States of LA and TX
-
-```{r mapfast_testpoints_n, eval = TRUE, fig.height=5, fig.width=5}
-# ?testpoints_n
-# p1k <- testpoints_n(1000)
-# mapfast(p1k)
-
-mapfast(testpoints_n(300, ST_needed = c('LA','TX'), weighting = 'bg')) 
-# weighting = "frs" would better represent regulated facilities,
-# but would require loading the frs dataset
-```
-
-## Documentation of Functions and Data
-
--   For the RStudio view of the package documentation, try `?EJAM`
+-   In general, see the readme for links to documentation: <https://github.com/USEPA/EJAM/tree/main?tab=readme-ov-file#readme>
 
 -   For vignettes that walk through basics of using EJAM functions, try `vignette(package = "EJAM")`
 
--   A pdf version of documentation might be provided, possibly here: <https://github.com/USEPA/EJAM/tree/main/www>
+-   For the RStudio view of the package documentation, try `?EJAM`
 
--   An HTML version of documentation might be provided, possibly here: <https://github.com/USEPA/EJAM/tree/main/www>
+-   A pdf version of documentation will be provided, possibly here: <https://github.com/USEPA/EJAM/tree/main/www>
 
--   In general, see the readme for links to documentation: <https://github.com/USEPA/EJAM/tree/main?tab=readme-ov-file#readme>
+-   An HTML version of documentation will be provided, possibly here: <https://github.com/USEPA/EJAM/tree/main/www>
 
 ```{r helpEJAM, eval = FALSE, include= FALSE}
 ?EJAM
