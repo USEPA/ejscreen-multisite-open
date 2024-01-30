@@ -2179,7 +2179,7 @@ app_server <- function(input, output, session) {
     
     if (input$plotkind_1pager == 'bar') { # do BARPLOT NOT BOXPLOT
     
-      plot_barplot_ratios(unlist(data_processed()$results_overall[ , c(..names_d_ratio_to_avg , ..names_d_subgroups_ratio_to_avg) ])
+      plot_barplot_ratios(unlist(data_processed()$results_overall[ , c(..names_d_ratio_to_avg , ..names_d_subgroups_ratio_to_avg) ]),
                           names2plot_friendly = fixcolnames(c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg), oldtype = 'r', newtype = 'shortlabel'))
       
     } else if (input$plotkind_1pager == 'ridgeline') {
