@@ -8,7 +8,7 @@ statestats_means(
   ST = unique(EJAM::statestats$REGION),
   varnames = c(EJAM::names_e, EJAM::names_d, EJAM::names_d_subgroups_nh),
   PCTILES = "mean",
-  dig = 2
+  dig = 4
 )
 }
 \arguments{
