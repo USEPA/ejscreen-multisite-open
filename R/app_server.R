@@ -2178,10 +2178,9 @@ app_server <- function(input, output, session) {
     # data_processed() needed for ridgeline or boxplot, and ratio.to.us.d() which is made from data_processed() is needed for boxplots, 
     
     if (input$plotkind_1pager == 'bar') { # do BARPLOT NOT BOXPLOT
-      
-      plot_barplot_ratios(unlist(data_processed()$results_overall[ , c(..names_d_ratio_to_avg , ..names_d_subgroups_ratio_to_avg) ]),
-                          names2plot_friendly = data_processed()$longnames[2 + which(names(data_processed()$results_overall) %in% c(names_d, names_d_subgroups))])
-      
+    
+      plot_barplot_ratios(unlist(data_processed()$results_overall[ , c(..names_d_ratio_to_avg , ..names_d_subgroups_ratio_to_avg) ])
+                          names2plot_friendly = fixcolnames(c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg), oldtype = 'r', newtype = 'shortlabel'))
       
     } else if (input$plotkind_1pager == 'ridgeline') {
       
@@ -2848,14 +2847,9 @@ app_server <- function(input, output, session) {
                         'EJ Supplemental'      = names_ej_supp
     )
     
-    ## set indicator group friendly names  
-    mybarvars.friendly <- switch(input$summ_bar_ind,
-                                 'Demographic'   = c(names_d_friendly, names_d_subgroups_friendly),
-                                 'Environmental' = names_e_friendly,
-                                 'EJ'            = names_ej_friendly, 
-                                 'EJ Supplemental'      = names_ej_supp_friendly
-    )
-    
+    ## set indicator group friendly names - use shortlabel
+    mybarvars.friendly <- fixcolnames(mybarvars, oldtype = 'r', newtype = 'shortlabel')
+      
     ## only using average for now
     mybarvars.stat <- 'avg' #"med"
     
@@ -3078,8 +3072,8 @@ app_server <- function(input, output, session) {
                   names_e, names_ej, names_ej_supp)
         
       }
-      friendly_nms <- c(names_d_friendly, names_d_subgroups_friendly, names_e_friendly,
-                        names_ej_friendly, names_ej_supp_friendly)
+      friendly_nms <- fixcolnames(nms, oldtype='r', newtype = 'shortlabel')
+      
     } else {
       if (input$summ_hist_data == 'pctile') {
         nms <-  c(names_d_pctile,
@@ -3090,8 +3084,8 @@ app_server <- function(input, output, session) {
                   names_d_subgroups,
                   names_e) 
       }
-      friendly_nms <- c(names_d_friendly, names_d_subgroups_friendly, names_e_friendly) 
-      
+      friendly_nms <- fixcolnames(nms, oldtype ='r', newtype = 'shortlabel')
+
     }
     selectInput('summ_hist_ind', label = 'Choose indicator',
                 choices = setNames(

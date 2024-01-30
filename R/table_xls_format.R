@@ -225,9 +225,11 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
       # example: plot_barplot_ratios( unlist( testoutput_ejamit_1000pts_1miles$results_overall[ , c(..names_d_ratio_to_avg , ..names_d_subgroups_ratio_to_avg) ]))
       cat('plotting ratios to avg by group\n')
       if (data.table::is.data.table(overall)) {
-        summary_plot <- try( plot_barplot_ratios(unlist( overall[ , c(..names_d_ratio_to_avg , ..names_d_subgroups_ratio_to_avg) ])) )
+        summary_plot <- try( plot_barplot_ratios(unlist( overall[ , c(..names_d_ratio_to_avg , ..names_d_subgroups_ratio_to_avg) ]),
+                                                 names2plot_friendly = fixcolnames(c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg), oldtype = 'r', newtype = 'shortlabel')) )
       } else {
-        summary_plot <- try( plot_barplot_ratios(unlist(as.data.frame(overall[ , c(names_d_ratio_to_avg , names_d_subgroups_ratio_to_avg) ])) ))
+        summary_plot <- try( plot_barplot_ratios(unlist(as.data.frame(overall[ , c(names_d_ratio_to_avg , names_d_subgroups_ratio_to_avg) ])),
+                                                 names2plot_friendly = fixcolnames(c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg), oldtype = 'r', newtype = 'shortlabel')) )
       }
       if (inherits(summary_plot, "try-error")) {
         warning('cannot create plot_barplot_ratios() output')
@@ -254,7 +256,11 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
       cat('plotting mean distance by group\n')
       fname  <- try(
         suppressWarnings(
-          plot_distance_mean_by_group(bybg, returnwhat = "plotfilename", graph = TRUE)
+          plot_distance_mean_by_group(bybg, 
+                                      demogvarname = c(names_d, names_d_subgroups), 
+                                      demoglabel = fixcolnames(c(names_d, names_d_subgroups), 
+                                                               oldtype = 'r', newtype = 'shortlabel'),
+                                      returnwhat = "plotfilename", graph = TRUE)
         )
       )
       if (inherits(fname, "try-error")) {
