@@ -366,7 +366,8 @@ app_ui  <- function(request) {
                       selectInput(inputId = 'ss_select_mact',
                                   label = 'Choose a MACT subpart',
                                   choices = setNames(mact_table$subpart,
-                                                     mact_table$dropdown_label)
+                                                     mact_table$dropdown_label),
+                                  selected = 'AA'
                       )
                     )  # end MACT conditionalPanel
                     ################################################################# #
