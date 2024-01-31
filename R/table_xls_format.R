@@ -13,6 +13,7 @@
 #' @param plotlatest optional logical. If TRUE, the most recently displayed plot (prior to this function being called) will be inserted into a tab called plot2
 #' @param plotfilename the full path including name of .png file to insert
 #' @param mapadd logical optional - try to include a map of the points 
+#' @param report_map leaflet map object passed from Shiny app to display in 'Map' sheet
 #' @param ok2plot can set to FALSE to prevent plots from being attempted, while debugging
 #' @param analysis_title optional title passed from Shiny app to 'Notes' sheet
 #' @param buffer_desc optional description of buffer used in analysis, passed to 'Notes' sheet
@@ -59,6 +60,7 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
                             plotlatest = FALSE, 
                             plotfilename = NULL, 
                             mapadd = FALSE,
+                            report_map=NULL,
                             ok2plot = TRUE,
                             analysis_title = "EJAM analysis",
                             buffer_desc = "Selected Locations", 
@@ -295,8 +297,13 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     mytempdir <- tempdir()
     mypath <- file.path(mytempdir, "temp.html")
     cat("drawing map\n")
-    z <- mapfast(eachsite, radius = radius_or_buffer_in_miles, column_names = 'ej')
-    htmlwidgets::saveWidget(z, mypath, selfcontained = FALSE)
+    ## add map from Shiny app if applicable
+    if(!is.null(report_map)){
+      htmlwidgets::saveWidget(report_map, mypath, selfcontained = FALSE)
+    } else {
+      z <- mapfast(eachsite, radius = radius_or_buffer_in_miles, column_names = 'ej')
+      htmlwidgets::saveWidget(z, mypath, selfcontained = FALSE)
+    }
     webshot::webshot(mypath, file = file.path(mytempdir, "map1.png"), cliprect = "viewport")
     if (testing) cat(file.path(mytempdir, "map1.png"), '\n')
     openxlsx::insertImage(wb, sheet = 'map', file = file.path(mytempdir, 'map1.png'),
