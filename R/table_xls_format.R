@@ -461,6 +461,11 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
   vartypes_eachsite <- varname2vartype_ejam(headers_eachsite, map_headernames)
   # but note varname2color_ejam() can return a color appropriate to each variable name
   
+  ## ratio colnums
+  ratio_colnums_overall  <- which(vartypes_overall  %in% c('usratio', 'stateratio')) 
+  ratio_colnums_eachsite <- which(vartypes_eachsite %in% c('usratio', 'stateratio')) 
+  
+  
   ## define percentile columns
   
   pctile_colnums_overall  <- which(vartypes_overall  %in% c('uspctile', 'statepctile')) #'percentile')
@@ -684,6 +689,12 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     distance_colnums <- which(grepl("distance_", names(eachsite)))
     openxlsx::addStyle(wb, sheet = 'Overall',   rows = 2,                      cols = distance_colnums, style = openxlsx::createStyle(numFmt = '#,##0.00'), stack = TRUE)
     openxlsx::addStyle(wb, sheet = 'Each Site', rows = 2:(1 + NROW(eachsite)), cols = distance_colnums, style = openxlsx::createStyle(numFmt = '#,##0.00'), stack = TRUE, gridExpand = TRUE)
+    
+    ### RATIO - rounded to one decimal place    ####
+    ratio_var_style <- openxlsx::createStyle(numFmt = '#,##0.0')
+    openxlsx::addStyle(wb, sheet = 'Overall',   rows = 2,                      cols = ratio_colnums_overall,  style = ratio_var_style, stack = TRUE)
+    openxlsx::addStyle(wb, sheet = 'Each Site', rows = 2:(1 + NROW(eachsite)), cols = ratio_colnums_eachsite, style = ratio_var_style, stack = TRUE, gridExpand = TRUE)
+    
     
     ### PERCENTILE - rounded, integer 0-100 format    ####
     
