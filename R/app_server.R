@@ -1425,25 +1425,25 @@ app_server <- function(input, output, session) {
   
   output$an_leaf_map <- leaflet::renderLeaflet({
     
-    ## check if map of uploaded points exists
+   
+    ## check if data has been uploaded yet
+    m <- try(data_uploaded())
+    
+    ## if not, show empty map
+    if(inherits(m, 'try-error')){
+      leaflet() %>% addTiles() %>% setView(lat = 39.8283, lng = -98.5795, zoom = 4)
+    } else {
       tryCatch({
-        orig_leaf_map()
-      },
-        ## if it throws an error
-        error = function(e) {
-          if (e == "") {
-            ## if does not exist, use blank map of US
-            leaflet() %>% addTiles() %>% setView(lat = 39.8283, lng = -98.5795, zoom = 4)
-            
-          } else {
-            ## otherwise, show validate error
-            validate(conditionMessage(e))
-            
-          }
+        ## if so, try to load map
+        orig_leaf_map()},
+        
+        error = function(e){
           
+          ## otherwise, show validate error
+          validate(conditionMessage(e))
         }
-       
       )
+    }
 
   })
   
