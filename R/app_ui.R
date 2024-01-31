@@ -510,6 +510,7 @@ app_ui  <- function(request) {
                                    )
                                  )
                                ),
+                              br(),
                               tags$div(
                                 shiny::downloadButton(
                                   outputId = 'community_download',
