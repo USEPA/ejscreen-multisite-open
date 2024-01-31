@@ -282,7 +282,7 @@ app_server <- function(input, output, session) {
         numna <- nrow(shp[!sf::st_is_valid(shp),])
         invalid_alert[['SHP']] <- numna # this updates the value of the reactive invalid_alert()
         #shp_valid <- shp[sf::st_is_valid(shp),] #determines valid shapes
-        shp_valid <- dplyr::mutate(shp, siteid = row_number())
+        shp_valid <- dplyr::mutate(shp, siteid = dplyr::row_number())
         shp_proj <- sf::st_transform(shp_valid,crs = 4269)
       } else {
         invalid_alert[['SHP']] <- 0 # hides the invalid site warning
@@ -1685,19 +1685,28 @@ app_server <- function(input, output, session) {
         ## the registry ID column is only found in uploaded ECHO/FRS/NAICS data -
         ## it is not passed to doaggregate output at this point, so pull the column from upload to create URLS
         
+        
+        ## add messages for sites dropped during getblocksnearby or doaggregate steps
+        dup <- data_uploaded()
+        dup$invalid_msg[is.na(dup$invalid_msg) & !(dup$ejam_uniq_id %in% sites2blocks$ejam_uniq_id)] <- 'no blocks found nearby'
+        dup$valid <- dup$ejam_uniq_id %in% sites2blocks$ejam_uniq_id
+        dup$invalid_msg[is.na(dup$invalid_msg) & !(dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id)] <- 'unable to aggregate'
+        dup$valid <- dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id
+        
         if (submitted_upload_method() %in% c('MACT','FRS','latlon','EPA_PROGRAM_up',
                                             'EPA_PROGRAM_sel','NAICS','SIC')) {
-          #print(names(data_uploaded()))
-          #print(head(names(data_processed()$results_bysite)))
-          out$results_bysite <- merge(data_uploaded()[, .(ejam_uniq_id, valid, invalid_msg)],
+         
+          out$results_bysite <- merge(dup[, .(ejam_uniq_id, valid, invalid_msg)],
                                       out$results_bysite, 
                                       by='ejam_uniq_id', all=T)
-        } else if (submitted_upload_method() == 'SHP') {
-          out$results_bysite <- merge(data_uploaded()[, c('ejam_uniq_id','valid','invalid_msg')],
-                                      #merge(data_uploaded()[, .(ejam_uniq_id, valid)],
+
+        } else if(submitted_upload_method() == 'SHP'){
+          
+          out$results_bysite <- merge(dup[, c('ejam_uniq_id','valid','invalid_msg')],
                                       out$results_bysite, 
                                       by='ejam_uniq_id', all=T) %>% 
             sf::st_drop_geometry()
+         
         }
         
         
@@ -3380,7 +3389,6 @@ app_server <- function(input, output, session) {
     
     
     
-    print(dim(data_processed()$results_overall))
     ## generate full HTML using external functions
     full_page <- build_community_report(
       output_df = data_processed()$results_overall,
