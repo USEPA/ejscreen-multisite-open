@@ -282,7 +282,7 @@ app_server <- function(input, output, session) {
         numna <- nrow(shp[!sf::st_is_valid(shp),])
         invalid_alert[['SHP']] <- numna # this updates the value of the reactive invalid_alert()
         #shp_valid <- shp[sf::st_is_valid(shp),] #determines valid shapes
-        shp_valid <- dplyr::mutate(shp, siteid = row_number())
+        shp_valid <- dplyr::mutate(shp, siteid = dplyr::row_number())
         shp_proj <- sf::st_transform(shp_valid,crs = 4269)
       } else {
         invalid_alert[['SHP']] <- 0 # hides the invalid site warning
@@ -1425,25 +1425,25 @@ app_server <- function(input, output, session) {
   
   output$an_leaf_map <- leaflet::renderLeaflet({
     
-    ## check if map of uploaded points exists
+   
+    ## check if data has been uploaded yet
+    m <- try(data_uploaded())
+    
+    ## if not, show empty map
+    if(inherits(m, 'try-error')){
+      leaflet() %>% addTiles() %>% setView(lat = 39.8283, lng = -98.5795, zoom = 4)
+    } else {
       tryCatch({
-        orig_leaf_map()
-      },
-        ## if it throws an error
-        error = function(e) {
-          if (e == "") {
-            ## if does not exist, use blank map of US
-            leaflet() %>% addTiles() %>% setView(lat = 39.8283, lng = -98.5795, zoom = 4)
-            
-          } else {
-            ## otherwise, show validate error
-            validate(conditionMessage(e))
-            
-          }
+        ## if so, try to load map
+        orig_leaf_map()},
+        
+        error = function(e){
           
+          ## otherwise, show validate error
+          validate(conditionMessage(e))
         }
-       
       )
+    }
 
   })
   
@@ -1685,19 +1685,28 @@ app_server <- function(input, output, session) {
         ## the registry ID column is only found in uploaded ECHO/FRS/NAICS data -
         ## it is not passed to doaggregate output at this point, so pull the column from upload to create URLS
         
+        
+        ## add messages for sites dropped during getblocksnearby or doaggregate steps
+        dup <- data_uploaded()
+        dup$invalid_msg[is.na(dup$invalid_msg) & !(dup$ejam_uniq_id %in% sites2blocks$ejam_uniq_id)] <- 'no blocks found nearby'
+        dup$valid <- dup$ejam_uniq_id %in% sites2blocks$ejam_uniq_id
+        dup$invalid_msg[is.na(dup$invalid_msg) & !(dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id)] <- 'unable to aggregate'
+        dup$valid <- dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id
+        
         if (submitted_upload_method() %in% c('MACT','FRS','latlon','EPA_PROGRAM_up',
                                             'EPA_PROGRAM_sel','NAICS','SIC')) {
-          #print(names(data_uploaded()))
-          #print(head(names(data_processed()$results_bysite)))
-          out$results_bysite <- merge(data_uploaded()[, .(ejam_uniq_id, valid, invalid_msg)],
+         
+          out$results_bysite <- merge(dup[, .(ejam_uniq_id, valid, invalid_msg)],
                                       out$results_bysite, 
                                       by='ejam_uniq_id', all=T)
-        } else if (submitted_upload_method() == 'SHP') {
-          out$results_bysite <- merge(data_uploaded()[, c('ejam_uniq_id','valid','invalid_msg')],
-                                      #merge(data_uploaded()[, .(ejam_uniq_id, valid)],
+
+        } else if(submitted_upload_method() == 'SHP'){
+          
+          out$results_bysite <- merge(dup[, c('ejam_uniq_id','valid','invalid_msg')],
                                       out$results_bysite, 
                                       by='ejam_uniq_id', all=T) %>% 
             sf::st_drop_geometry()
+         
         }
         
         
@@ -2015,15 +2024,26 @@ app_server <- function(input, output, session) {
       d_up <- shp_valid
       d_up_geo <- d_up[,c("ejam_uniq_id","geometry")]
       d_merge = merge(d_up_geo,data_processed()$results_bysite, by = "ejam_uniq_id", all.x = FALSE, all.y = TRUE)
+      
+      popup_labels <- fixcolnames(namesnow = setdiff(names(d_merge),c('geometry', 'valid', 'invalid_msg')), oldtype = 'r', newtype = 'shortlabel')
+      
       if (input$bt_rad_buff > 0) {
         d_uploads <- sf::st_buffer(d_merge[d_merge$valid==T, ] , # was "ESRI:102005" but want 4269
+
                                    dist = units::set_units(input$bt_rad_buff, "mi")) 
         leaflet(d_uploads) %>%  addTiles()  %>%
-          addPolygons(color = circle_color) 
+          addPolygons(data=d_uploads, color = circle_color,
+                      popup = popup_from_df(d_uploads %>% sf::st_drop_geometry() %>% dplyr::select(-valid, -invalid_msg), labels = popup_labels),
+                      popupOptions = popupOptions(maxHeight = 200)) #%>% 
       } else {
-        data_spatial_convert <- d_merge[d_merge$valid==T, ]  %>% st_zm() %>% as('Spatial')
+        data_spatial_convert <- d_merge[d_merge$valid==T, ] %>% 
+          dplyr::select(-valid, -invalid_msg) %>% 
+         st_zm() %>% as('Spatial')
         leaflet(data_spatial_convert) %>% addTiles()  %>%
-          addPolygons(color = circle_color)
+          addPolygons(color = circle_color,
+                      popup = popup_from_df(data_spatial_convert %>% sf::st_drop_geometry(),
+                                            labels=popup_labels),
+                      popupOptions = popupOptions(maxHeight = 200))
       }
       
     } else { #  not shapefile
@@ -2104,12 +2124,14 @@ app_server <- function(input, output, session) {
           addPolygons(data = d_uploads, color = "red") 
       }
       #d_uploadb <- data_uploaded()[['buffer']]  %>% st_zm() %>% as('Spatial') 
-      d_uploads <- data_uploaded() %>% #[['shape']]  
+      d_uploads <- data_uploaded() %>% 
+        dplyr::select(-SHAPE_Leng, -valid, -invalid_msg) %>% 
         st_zm() %>% as('Spatial') 
       leafletProxy(mapId = 'an_leaf_map', session) %>%
         # addPolygons(data=d_uploadb, color="red") %>% 
         addPolygons(data = d_uploads, 
-                    popup = popup_from_df(d_uploads %>% sf::st_drop_geometry()))
+                    popup = popup_from_df(d_uploads %>% sf::st_drop_geometry()),
+                    popupOptions = popupOptions(maxHeight = 200))
       #leafletProxy(mapId = 'an_leaf_map', session,data=d_uploads) %>% addPolygons()
       
     } else # if (input$circle_type == 'circles') {
@@ -2178,10 +2200,9 @@ app_server <- function(input, output, session) {
     # data_processed() needed for ridgeline or boxplot, and ratio.to.us.d() which is made from data_processed() is needed for boxplots, 
     
     if (input$plotkind_1pager == 'bar') { # do BARPLOT NOT BOXPLOT
-      
+    
       plot_barplot_ratios(unlist(data_processed()$results_overall[ , c(..names_d_ratio_to_avg , ..names_d_subgroups_ratio_to_avg) ]),
-                          names2plot_friendly = data_processed()$longnames[2 + which(names(data_processed()$results_overall) %in% c(names_d, names_d_subgroups))])
-      
+                          names2plot_friendly = fixcolnames(c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg), oldtype = 'r', newtype = 'shortlabel'))
       
     } else if (input$plotkind_1pager == 'ridgeline') {
       
@@ -2470,7 +2491,8 @@ app_server <- function(input, output, session) {
     # use data_processed()  
     dt <- data_processed()$results_bysite %>% 
       as.data.frame() %>%
-      dplyr::mutate(dplyr::across(dplyr::where(is.numeric), .fns = function(x) {round(x, digits = 2)})#,  ## *** should follow rounding rules provided via map_headernames$decimals or $sigfigs ?
+      dplyr::mutate(dplyr::across(dplyr::where(is.numeric), .fns = function(x) {round(x, digits = 2)})
+  # *** This should not be hard coded to 2 digits - instead should follow rounding rules provided via table_round() and table_rounding_info() that use map_headernames$decimals  !
                     #
       ) %>%
       dplyr::mutate(index = row_number()) %>%
@@ -2738,7 +2760,8 @@ app_server <- function(input, output, session) {
           #  Avoid making copies since that slows it down, unless an expert user knows they need it. 
           
           
-          #mapadd = TRUE,
+          mapadd = TRUE,
+          report_map = report_map(),
           
           hyperlink_colnames = c("EJScreen Report", "EJScreen Map" ,'ECHO report'),  # need to ensure these get formatted right to work as links in Excel
           # heatmap_colnames=names(table_as_displayed)[pctile_colnums], # can use defaults
@@ -2848,14 +2871,9 @@ app_server <- function(input, output, session) {
                         'EJ Supplemental'      = names_ej_supp
     )
     
-    ## set indicator group friendly names  
-    mybarvars.friendly <- switch(input$summ_bar_ind,
-                                 'Demographic'   = c(names_d_friendly, names_d_subgroups_friendly),
-                                 'Environmental' = names_e_friendly,
-                                 'EJ'            = names_ej_friendly, 
-                                 'EJ Supplemental'      = names_ej_supp_friendly
-    )
-    
+    ## set indicator group friendly names - use shortlabel
+    mybarvars.friendly <- fixcolnames(mybarvars, oldtype = 'r', newtype = 'shortlabel')
+      
     ## only using average for now
     mybarvars.stat <- 'avg' #"med"
     
@@ -3078,8 +3096,8 @@ app_server <- function(input, output, session) {
                   names_e, names_ej, names_ej_supp)
         
       }
-      friendly_nms <- c(names_d_friendly, names_d_subgroups_friendly, names_e_friendly,
-                        names_ej_friendly, names_ej_supp_friendly)
+      friendly_nms <- fixcolnames(nms, oldtype='r', newtype = 'shortlabel')
+      
     } else {
       if (input$summ_hist_data == 'pctile') {
         nms <-  c(names_d_pctile,
@@ -3090,8 +3108,8 @@ app_server <- function(input, output, session) {
                   names_d_subgroups,
                   names_e) 
       }
-      friendly_nms <- c(names_d_friendly, names_d_subgroups_friendly, names_e_friendly) 
-      
+      friendly_nms <- fixcolnames(nms, oldtype ='r', newtype = 'shortlabel')
+
     }
     selectInput('summ_hist_ind', label = 'Choose indicator',
                 choices = setNames(
@@ -3386,7 +3404,6 @@ app_server <- function(input, output, session) {
     
     
     
-    print(dim(data_processed()$results_overall))
     ## generate full HTML using external functions
     full_page <- build_community_report(
       output_df = data_processed()$results_overall,
