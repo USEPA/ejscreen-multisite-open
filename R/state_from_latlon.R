@@ -26,15 +26,16 @@
 #'  mapfast(pts[ST == 'TX',], radius = 1) # 1 miles radius circles
 #'  
 state_from_latlon <- function(lat, lon, states_shapefile=EJAM::states_shapefile) {
-  if(is.na(as.numeric(lat)) & is.na(as.numeric(lon))){ 
-    warning("Latitude and Longitude could not be coerced to a number.")
-    return(NULL)
-  } else if(is.na(as.numeric(lat))){
-    warning("Latitude could not be coerced to a number")
-    return(NULL)
-  } else if(is.na(as.numeric(lon))){
-    warning("Longitude could not be coerced to a number.")
-    return(NULL)
+  
+  if (any(is.na(as.numeric(lat)) & is.na(as.numeric(lon)))) { 
+    warning("Some Latitude and Longitude could not be coerced to a number.")
+    # return(NULL)
+  } else if (any(is.na(as.numeric(lat)))) {
+    warning("Some Latitude could not be coerced to a number")
+    # return(NULL)
+  } else if (any(is.na(as.numeric(lon)))) {
+    warning("Some Longitude could not be coerced to a number.")
+    # return(NULL)
   }
   
   
@@ -51,7 +52,7 @@ state_from_latlon <- function(lat, lon, states_shapefile=EJAM::states_shapefile)
   pts$REGION <- EJAM::stateinfo$REGION[match(pts$statename, stateinfo$statename)]
   pts$n <- 1:NROW(pts)
   
-  if(is.na(pts$statename )){warning("That latitude and longitude is not in any state")}
+  if (any(is.na(pts$statename ))) {warning("Some latitude / longitude were provided that are not found in any state")}
   return(pts)
 }
 
