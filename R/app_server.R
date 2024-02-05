@@ -2491,7 +2491,8 @@ app_server <- function(input, output, session) {
     # use data_processed()  
     dt <- data_processed()$results_bysite %>% 
       as.data.frame() %>%
-      dplyr::mutate(dplyr::across(dplyr::where(is.numeric), .fns = function(x) {round(x, digits = 2)})#,  ## *** should follow rounding rules provided via map_headernames$decimals or $sigfigs ?
+      dplyr::mutate(dplyr::across(dplyr::where(is.numeric), .fns = function(x) {round(x, digits = 2)})
+  # *** This should not be hard coded to 2 digits - instead should follow rounding rules provided via table_round() and table_rounding_info() that use map_headernames$decimals  !
                     #
       ) %>%
       dplyr::mutate(index = row_number()) %>%

@@ -659,7 +659,7 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     
     ###   decimal places / rounding  ####
     
-    ### Number format default for raw indicator columns - should get replaced though by info from map_headernames in most or all cases  ####
+    ### Number format default for raw indicator columns - should get replaced though by table_round() or table_rounding_info() in most or all cases  ####
     
     raw_colnums_overall   <- which(vartypes_overall  == 'raw data for indicator')
     raw_colnums_eachsite  <- which(vartypes_eachsite == 'raw data for indicator')
