@@ -1,53 +1,40 @@
-#' plot_barplot_ratios
-#' Make barplot of ratios of demographic score to its average
-#' @details 
+
+#' Barplot of ratios of demographic (or other) scores to averages (or other references)
 #' 
-#' 
+#' @details
+#'   
+#'   **SOME GENERAL NOTES, DURING EJAM DEVELOPMENT**
+#'   
 #'   For plots in general, see:
 #'   
 #'   - <https://echarts4r.john-coene.com/articles/themes.html>
-#'   
 #'   - <https://exts.ggplot2.tidyverse.org/gallery>
 #'   
 #'   
-#'   For BARPLOTS, see/ merge/consolidate:  
+#'   **For BARPLOTS, see/ merge/consolidate:**  
 #'   
 #'   - output$view1_summary_plot <- renderPlot({v1_summary_plot()}) and v1_summary_plot <- reactive({ })
 #'     in EJAM server for Short Report if  bar type
-#'   
 #'   - output$summ_display_bar <- renderPlot({  }) contains its own plot code not a reactive
-#'     in EJAM server for tab showing barplots in Detailed Results  
-#'      
+#'     in EJAM server for tab showing barplots in Detailed Results
 #'   - plot_barplot_ratios() drafted function in EJAM
 #'   
 #'   
-#'   For BOXPLOTS, see: 
+#'   **For BOXPLOTS, see:** 
 #'   
 #'   - v1_summary_plot <- reactive({ })     and output$view1_summary_plot <- renderPlot({v1_summary_plot()})
-#'     
-#'     in EJAM server for SHORT report if box type, and 
-#'     
-#'     in EJAM server for LONG report passed as a parameter
-#'     
+#'      - in EJAM server for SHORT report if box type, and 
+#'      - in EJAM server for LONG report passed as a parameter
 #'   - boxplots_ratios()   in EJAMejscreenapi
-#'   
-#'     (NOT in EJAM server for Detailed Results interactive views)
-#'     
-#'   
-#'   - ejscreenapi_script() code also relevant? in EJAMejscreenapi  
-#'   
+#'      (NOT in EJAM server for Detailed Results interactive views)
+#'   - ejscreenapi_script() code also relevant? in EJAMejscreenapi
 #'   - box/scatter examples in ggplot, <https://r-graph-gallery.com/89-box-and-scatter-plot-with-ggplot2.html>
-#'   
 #'   - boxplots in base R, <https://www.r-bloggers.com/2023/09/how-to-reorder-boxplots-in-r-a-comprehensive-guide>
 #'   
-#'   
-#'   For HISTOGRAMS, see: 
+#'   **For HISTOGRAMS, see:**
 #'   
 #'   - output$summ_display_hist <- renderPlot   in EJAM server for interactive views
-#'   
-#'   - the histograms code and discussion in EJAMbatch.summarizer package 
-#'   
-#'   
+#'   - the histograms code and discussion  in EJAMbatch.summarizer package   
 #'   
 #'   
 #' @param ratio.to.us.d.overall named list of a few ratios to plot
