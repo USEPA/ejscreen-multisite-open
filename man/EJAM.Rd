@@ -9,7 +9,7 @@
 \alias{blockpoints}
 \alias{blockid2fips}
 \alias{bgid2fips}
-\title{EJAM - Environmental Justice (EJ) Analysis Multisite tool}
+\title{EJAM - Environmental Justice Analysis Multisite tool}
 \description{
 This package provides functions and data for very fast proximity analysis
 for a large number of locations, or "buffers", summarizing conditions at each location.
@@ -147,7 +147,7 @@ unless analysis is for residents within x miles of the edges of some shapes, lik
 \item ** quaddata.rda** data.table with point location of internal point for each of 8 million Census blocks
 is used prior to or during startup of EJAM to create an index stored in memory, called localtree.
 
-quaddata can be obtained using \code{\link[=data_load_from_aws]{data_load_from_aws()}}
+quaddata can be obtained using \code{\link[=dataload_from_pins]{dataload_from_pins()}}
 
 localtree is the index made from quaddata via \code{\link[=indexblocks]{indexblocks()}} (using the SearchTrees package)
 }
@@ -168,7 +168,7 @@ Needs to be updated each time EJScreen is updated.
 \item \strong{\link{usastats}} and \strong{\link{statestats}}  data.table lookup of 100 percentiles and means
 (for each indicator in blockgroupstats, and bgej) in each zone (USA, or a state or DC, PR).
 Need to update each time blockgroupstats is updated. Taken from EJScreen data or ejscreen package file lookupUSA and lookupStates
-\item \strong{blockwts} see \code{\link[=data_load_from_aws]{data_load_from_aws()}}
+\item \strong{blockwts} see \code{\link[=dataload_from_pins]{dataload_from_pins()}}
 Required by \code{\link[=doaggregate]{doaggregate()}}. A data.table of 6-8m rows
 \itemize{
 \item blockwt  The fraction of parent blockgroup decennial pop that is in this one block

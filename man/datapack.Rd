@@ -18,7 +18,7 @@ sort by increasing size of object, within each package, not alpha.}
 
 \item{simple}{FALSE to get object sizes, etc., or
 TRUE to just get names in each package, like
-data(package = "EJAM")$results\link{, c("Package", 'Item')}}
+\code{data(package = "EJAM")$results[, c("Package", 'Item')]}}
 }
 \value{
 If simple = TRUE, data.frame with colnames Package and Item.

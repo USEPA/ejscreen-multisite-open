@@ -9,7 +9,7 @@
 #'   sort by increasing size of object, within each package, not alpha.
 #' @param simple FALSE to get object sizes, etc., or
 #'    TRUE to just get names in each package, like 
-#'    data(package = "EJAM")$results[, c("Package", 'Item')]
+#'    `data(package = "EJAM")$results[, c("Package", 'Item')]`
 #' @return If simple = TRUE, data.frame with colnames Package and Item. 
 #' 
 #'   If simple = FALSE, data.frame with colnames Package, Item, size, Title.Short
