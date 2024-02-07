@@ -2709,6 +2709,14 @@ app_server <- function(input, output, session) {
     },
     content = function(fname) {
       
+     
+      
+      showModal(
+        modalDialog(title = 'Downloading',
+                    'Downloading Excel file of results... Please wait.',
+                  
+                     easyClose = FALSE)
+      )
       if (input$testing) {
         cat('starting download code and  table_xls_format() \n') # ; xproc = data_processed(); save(xproc, file = 'table_data_processed-ejam.rda')
       }
@@ -2779,6 +2787,7 @@ app_server <- function(input, output, session) {
           testing = input$testing
         )
       }    
+      removeModal()
       ## save file and return for downloading - or do this within table_xls_format( , saveas=fname) ?
       openxlsx::saveWorkbook(wb_out, fname)
       
