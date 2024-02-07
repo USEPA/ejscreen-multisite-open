@@ -2133,7 +2133,7 @@ app_server <- function(input, output, session) {
       }
       #d_uploadb <- data_uploaded()[['buffer']]  %>% st_zm() %>% as('Spatial') 
       d_uploads <- data_uploaded() %>% 
-        dplyr::select(-SHAPE_Leng, -valid, -invalid_msg) %>% 
+        dplyr::select( -valid, -invalid_msg) %>% 
         st_zm() %>% as('Spatial') 
       leafletProxy(mapId = 'an_leaf_map', session) %>%
         # addPolygons(data=d_uploadb, color="red") %>% 
