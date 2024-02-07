@@ -1168,7 +1168,9 @@ app_server <- function(input, output, session) {
       if (current_upload_method() == "SHP") {
         dt <- data_uploaded()#[['shape']]
       } else if (current_upload_method() == 'FIPS') {
-        dt <- data.table(FIPS = data_uploaded())[, .(FIPS, type = fipstype(FIPS), name = fips2name(FIPS))]
+        #dt <- data.table(FIPS = data_uploaded())[, .(FIPS, type = fipstype(FIPS), name = fips2name(FIPS))]
+        dt <- data.frame(FIPS = data_uploaded()) %>% 
+          dplyr::mutate(type = fipstype(FIPS), name = fips2name(FIPS))
       } else {
         dt <- data_uploaded()
       }
@@ -1241,7 +1243,13 @@ app_server <- function(input, output, session) {
                                                        writexl::write_xlsx(dt, file)})
   output$download_preview_data_csv <- downloadHandler(filename = 'epa_raw_data_download.csv',
                                                       content = function(file) {
-                                                        dt <- data_uploaded()
+                                                        if(current_upload_method() == 'FIPS'){
+                                                          dt <- data.frame(FIPS = data_uploaded()) %>% 
+                                                            dplyr::mutate(type = fipstype(FIPS), name = fips2name(FIPS))
+                                                        } else{
+                                                          dt <-data_uploaded()
+                                                                          
+                                                        }
                                                         data.table::fwrite(dt, file, append = F)})
   
   #############################################################################  # 
