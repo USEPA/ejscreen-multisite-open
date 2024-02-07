@@ -1491,6 +1491,22 @@ results_bysite <- merge(results_bysite, results_bysite_minmax, by = "ejam_uniq_i
       
       # low life expectancy score 
       # "lowlifex",   # now is in names_d 
+      
+      ## OTHER DEMOG (mostly PERCENT) IN NEW REPORT xxx----
+      c("lifexyears", 
+        "P_DISABILITY",
+        "PCT_HH_BPOV",
+        "percapincome",
+        "P_OWN_OCCUPIED", 
+        "pctunder18", "pctover17",  "pctmale",   "pctfemale" ,
+        "PCT_HLI_SPANISH_LI", "PCT_HLI_IE_LI", "PCT_HLI_API_LI", "PCT_HLI_OTHER_LI"),
+      
+      c("DISAB_UNIVERSE", "DISABILITY", 
+        "HH_BPOV",
+        'OWNHU', "OCCHU", "OWNHU",
+        'AGE_LT18', 'AGE_GT17', 'MALES', 'FEMALES', 
+        'LAN_UNIVERSE', 'LAN_SPANISH', 'LAN_ENG_NA', 'LAN_IE', 'LAN_API',
+        'HLI_SPANISH_LI', 'HLI_IE_LI',  'HLI_API_LI', 'HLI_OTHER_LI'),
       ###  D US RATIOS?  # (above)
       ### D US PCTILE ###
       # "pctile.Demog.Index", #now in names_d_pctile
@@ -1550,20 +1566,16 @@ results_bysite <- merge(results_bysite, results_bysite_minmax, by = "ejam_uniq_i
       names_d_other_count,  # were in EJAM output but NOT ESSENTIAL IN OUTPUT # denominator counts but also pop which is already above
       
       ## OTHER DEMOG COUNTS IN NEW REPORT ----
-      c('LAN_UNIVERSE', 'LAN_SPANISH', 'LAN_ENG_NA', 'LAN_IE', 'LAN_API',
-        'HLI_SPANISH_LI', 'HLI_IE_LI',  'HLI_API_LI', 'HLI_OTHER_LI',
-        'AGE_LT18', 'AGE_GT17', 'MALES', 'FEMALES', 'OWNHU',  'OCCHU',
-        "OCCHU", "OWNHU", "DISAB_UNIVERSE", "DISABILITY"),
-      "lifexyears",  "percapincome",
-      ## OTHER DEMOG PERCENT IN NEW REPORT xxx----
-      c("PCT_HH_BPOV", "PCT_HLI_SPANISH_LI", "PCT_HLI_IE_LI", "PCT_HLI_API_LI", "PCT_HLI_OTHER_LI",
-      "P_OWN_OCCUPIED",  "P_DISABILITY","pctunder18", "pctover17",  "pctmale",   "pctfemale" 
-       ),
+
+
       
       ## BG AND BLOCK COUNTS ----
       #  # it will use whichever version of name is found
       'statLayerCount',      "bgcount_near_site", "bgcount_overall",    # count of blockgroups, as named in API vs in EJAM outputs
       'weightLayerCount', "blockcount_near_site", "blockcount_overall",  # count of blocks, as named in API vs in EJAM outputs     
+      
+      "distance_min", "distance_min_avgperson",
+      "sitecount_max", "sitecount_unique", "sitecount_avg",
       
       'radius', 'radius.miles' # it will use whichever version of name is found
       
