@@ -3,7 +3,7 @@
 #' 
 #' @param request Internal parameter for `{shiny}`.
 #'     DO NOT REMOVE.
-#' @rawNamespace import(shiny, except=c(dataTableOutput, renderDataTable))
+#' @rawNamespace import(shiny, except = c(dataTableOutput, renderDataTable))
 #' @importFrom shinyjs useShinyjs extendShinyjs
 #' 
 app_ui  <- function(request) {
@@ -75,7 +75,7 @@ app_ui  <- function(request) {
                  br(),
                  fluidRow(
                    column(8,
-                    
+                          
                           ## html intro text from global.R  
                           intro_text,
                           actionButton(inputId = 'back_to_site_sel2', label = div(icon('play', style = 'transform: rotate(180deg);'), HTML('&nbsp;'), 'Return to Site Selection'), class = 'usa-button'),
@@ -1304,7 +1304,7 @@ app_ui  <- function(request) {
 #' This function is internally used to add external
 #' resources inside the Shiny application.
 #'
-#' @rawNamespace import(shiny, except=c(dataTableOutput, renderDataTable))
+#' @rawNamespace import(shiny, except = c(dataTableOutput, renderDataTable))
 #' @importFrom golem add_resource_path activate_js favicon bundle_resources
 #' 
 #' @noRd

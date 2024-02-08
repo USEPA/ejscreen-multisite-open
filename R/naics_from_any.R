@@ -12,7 +12,7 @@
 #' @examples 
 #'   naics_categories()
 #'   
-#' @keywords internal
+#' @export
 #'
 naics_subcodes_from_code <- function(mycodes) {
   

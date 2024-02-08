@@ -26,4 +26,3 @@ See \code{\link[=naics_from_any]{naics_from_any()}} which uses this
 \seealso{
 \code{\link[=naics_subcodes_from_code]{naics_subcodes_from_code()}} \code{\link[=naics_from_code]{naics_from_code()}}  \code{\link[=naics_from_name]{naics_from_name()}}  \code{\link[=naics_from_any]{naics_from_any()}}
 }
-\keyword{internal}

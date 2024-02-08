@@ -1,8 +1,8 @@
 #' app_server - EJAM app server
-#' 
+#'
 #' @param input,output,session Internal parameters for {shiny}.
 #'     DO NOT REMOVE.
-#' @rawNamespace import(shiny, except=c(dataTableOutput, renderDataTable))
+#' @rawNamespace import(shiny, except = c(dataTableOutput, renderDataTable))
 #' @import DT
 #' @import data.table
 #' @importFrom data.table ":="
