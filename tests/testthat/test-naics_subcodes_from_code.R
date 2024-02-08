@@ -15,18 +15,18 @@ test_that('no warning for standard code lookup', {
   
   })
 
-# error if passed text string or invalid number string
+# warn if passed text string or invalid number string
 # no errors but returns empty dataframe
 test_that('error for query string', {
-  expect_error(val <- naics_subcodes_from_code("gold ore"))
-  expect_error(val <- naics_subcodes_from_code("$100,0"))
+  expect_warning({val <- naics_subcodes_from_code("gold ore")})
+  expect_warning({val <- naics_subcodes_from_code("$100,0")})
   
 })
 
 test_that('list of queries returns joined results', {
-  expect_no_warning(x <- naics_subcodes_from_code(c("211",  "452")))
-  expect_no_warning( y <- naics_subcodes_from_code("211"))
-  expect_no_warning( z <- naics_subcodes_from_code("452"))
+  expect_no_warning({x <- naics_subcodes_from_code(c("211",  "452"))})
+  expect_no_warning({ y <- naics_subcodes_from_code("211")})
+  expect_no_warning({ z <- naics_subcodes_from_code("452")})
   expect_equal(x %>% arrange(code), full_join(y,z) %>% arrange(code))
   
 })
@@ -34,6 +34,6 @@ test_that('list of queries returns joined results', {
 # error if passed text string or invalid number string
 # no errors but returns empty dataframe
 test_that('1 digit gives error', {
-  expect_error(naics_subcodes_from_code(c("1",  "4")))
+  expect_warning(  naics_subcodes_from_code(c("1",  "4"))  )
   
 })
