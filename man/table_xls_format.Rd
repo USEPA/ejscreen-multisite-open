@@ -15,6 +15,7 @@ table_xls_format(
   plotlatest = FALSE,
   plotfilename = NULL,
   mapadd = FALSE,
+  report_map = NULL,
   ok2plot = TRUE,
   analysis_title = "EJAM analysis",
   buffer_desc = "Selected Locations",
@@ -61,6 +62,8 @@ This requires that bybg be provided as a parameter input to this function.}
 \item{plotfilename}{the full path including name of .png file to insert}
 
 \item{mapadd}{logical optional - try to include a map of the points}
+
+\item{report_map}{leaflet map object passed from Shiny app to display in 'Map' sheet}
 
 \item{ok2plot}{can set to FALSE to prevent plots from being attempted, while debugging}
 

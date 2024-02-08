@@ -4,7 +4,7 @@
 \alias{usastats_querye}
 \title{usastats_querye - convenient way to see US mean, pctiles of ENVIRONMENTAL indicators in lookup table}
 \usage{
-usastats_querye(varnames = EJAM::names_e, PCTILES = NULL, dig = 2)
+usastats_querye(varnames = EJAM::names_e, PCTILES = NULL, dig = 4)
 }
 \arguments{
 \item{varnames}{names of columns in lookup table, like "proximity.rmp"}

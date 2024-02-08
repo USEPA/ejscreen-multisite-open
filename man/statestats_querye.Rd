@@ -8,7 +8,7 @@ statestats_querye(
   ST = sort(unique(EJAM::statestats$REGION)),
   varnames = EJAM::names_e,
   PCTILES = NULL,
-  dig = 2
+  dig = 4
 )
 }
 \arguments{

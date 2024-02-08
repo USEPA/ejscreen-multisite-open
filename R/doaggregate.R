@@ -18,7 +18,8 @@
 #'    
 #'    - **SUMS OF COUNTS**: for population count, or number of households or Hispanics, etc.
 #'      
-#'    - **POPULATION-WEIGHTED MEANS**: for  Environmental indicators.
+#'    - **POPULATION-WEIGHTED MEANS**: for  Environmental indicators, but also any percentage indicator
+#'      for which the universe (denominator) is population count (rather than households, persons age 25up, etc.)
 #'      
 #'        ***EJ Indexes**:* The way EJScreen 
 #'          does this is apparently finding the pop wtd mean of EJ Index raw scores,
@@ -26,7 +27,9 @@
 #'          
 #'    - **CALCULATED BY FORMULA**: Buffer or overall score calculated via formulas using aggregated counts, 
 #'          such as percent low income = sum of counts low income / sum of counts of denominator, 
-#'          which in this case is the count of those for whom the poverty ratio is known.
+#'          which in this case is the count of those for whom the poverty ratio is known. Assuming no rounding errors,
+#'          this method should give the same result as using a weighted mean of percentages, where the weights are
+#'          the correct denominator like count of those for whom the poverty ratio is known.
 #'          
 #'    - **LOOKED UP**: Aggregated scores are converted into percentile terms via lookup tables (US or State version).
 #'

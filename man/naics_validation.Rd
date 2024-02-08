@@ -9,11 +9,10 @@ naics_validation(naics_enter, naics_select)
 \arguments{
 \item{naics_enter}{vector of naics}
 
-\item{naics_select}{}
+\item{naics_select}{single value}
 }
 \value{
-boolean value (valid or not valid) - TRUE if
-length of at least one of the two input vectors is > 0
+boolean value
 }
 \description{
 Validates and prepares echo uploads

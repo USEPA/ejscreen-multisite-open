@@ -31,6 +31,10 @@
 #'
 naics2children <- function(codes, allcodes=EJAM::NAICS, quiet = FALSE) {
   
+  codes <- suppressWarnings( { as.numeric(codes)}) # becomes NA if text that cannot be coerced into number
+  if (any(is.na(codes))) {warning("codes should be numeric NAICS codes or text that can be interpreted as numeric, but some are NA values or character that cannot be coerced to numeric")}
+  if (any(nchar(codes[!is.na(codes)]) < 2 | nchar(codes[!is.na(codes)]) > 6)) warning("codes should be 2-digit to 6-digit NAICS code(s)")
+  
   # if (missing(allcodes)) {allcodes <- NAICS} # data from this package
   codes <- as.character(codes)
   kidrows <- NULL

@@ -15,6 +15,7 @@
 #' @param plotlatest optional logical. If TRUE, the most recently displayed plot (prior to this function being called) will be inserted into a tab called plot2
 #' @param plotfilename the full path including name of .png file to insert
 #' @param mapadd logical optional - try to include a map of the points 
+#' @param report_map leaflet map object passed from Shiny app to display in 'Map' sheet
 #' @param ok2plot can set to FALSE to prevent plots from being attempted, while debugging
 #' @param analysis_title optional title passed from Shiny app to 'Notes' sheet
 #' @param buffer_desc optional description of buffer used in analysis, passed to 'Notes' sheet
@@ -62,6 +63,7 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
                             plotlatest = FALSE, 
                             plotfilename = NULL, 
                             mapadd = FALSE,
+                            report_map=NULL,
                             ok2plot = TRUE,
                             analysis_title = "EJAM analysis",
                             buffer_desc = "Selected Locations", 
@@ -227,9 +229,11 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
       # example: plot_barplot_ratios( unlist( testoutput_ejamit_1000pts_1miles$results_overall[ , c(..names_d_ratio_to_avg , ..names_d_subgroups_ratio_to_avg) ]))
       cat('plotting ratios to avg by group\n')
       if (data.table::is.data.table(overall)) {
-        summary_plot <- try( plot_barplot_ratios(unlist( overall[ , c(..names_d_ratio_to_avg , ..names_d_subgroups_ratio_to_avg) ])) )
+        summary_plot <- try( plot_barplot_ratios(unlist( overall[ , c(..names_d_ratio_to_avg , ..names_d_subgroups_ratio_to_avg) ]),
+                                                 names2plot_friendly = fixcolnames(c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg), oldtype = 'r', newtype = 'shortlabel')) )
       } else {
-        summary_plot <- try( plot_barplot_ratios(unlist(as.data.frame(overall[ , c(names_d_ratio_to_avg , names_d_subgroups_ratio_to_avg) ])) ))
+        summary_plot <- try( plot_barplot_ratios(unlist(as.data.frame(overall[ , c(names_d_ratio_to_avg , names_d_subgroups_ratio_to_avg) ])),
+                                                 names2plot_friendly = fixcolnames(c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg), oldtype = 'r', newtype = 'shortlabel')) )
       }
       if (inherits(summary_plot, "try-error")) {
         warning('cannot create plot_barplot_ratios() output')
@@ -256,7 +260,11 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
       cat('plotting mean distance by group\n')
       fname  <- try(
         suppressWarnings(
-          plot_distance_mean_by_group(bybg, returnwhat = "plotfilename", graph = TRUE)
+          plot_distance_mean_by_group(bybg, 
+                                      demogvarname = c(names_d, names_d_subgroups), 
+                                      demoglabel = fixcolnames(c(names_d, names_d_subgroups), 
+                                                               oldtype = 'r', newtype = 'shortlabel'),
+                                      returnwhat = "plotfilename", graph = TRUE)
         )
       )
       if (inherits(fname, "try-error")) {
@@ -291,8 +299,13 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     mytempdir <- tempdir()
     mypath <- file.path(mytempdir, "temp.html")
     cat("drawing map\n")
-    z <- mapfast(eachsite, radius = radius_or_buffer_in_miles, column_names = 'ej')
-    htmlwidgets::saveWidget(z, mypath, selfcontained = FALSE)
+    ## add map from Shiny app if applicable
+    if(!is.null(report_map)){
+      htmlwidgets::saveWidget(report_map, mypath, selfcontained = FALSE)
+    } else {
+      z <- mapfast(eachsite, radius = radius_or_buffer_in_miles, column_names = 'ej')
+      htmlwidgets::saveWidget(z, mypath, selfcontained = FALSE)
+    }
     webshot::webshot(mypath, file = file.path(mytempdir, "map1.png"), cliprect = "viewport")
     if (testing) cat(file.path(mytempdir, "map1.png"), '\n')
     openxlsx::insertImage(wb, sheet = 'map', file = file.path(mytempdir, 'map1.png'),
@@ -456,6 +469,11 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
   vartypes_overall  <- varname2vartype_ejam(headers_overall,  map_headernames)
   vartypes_eachsite <- varname2vartype_ejam(headers_eachsite, map_headernames)
   # but note varname2color_ejam() can return a color appropriate to each variable name
+  
+  ## ratio colnums
+  ratio_colnums_overall  <- which(vartypes_overall  %in% c('usratio', 'stateratio')) 
+  ratio_colnums_eachsite <- which(vartypes_eachsite %in% c('usratio', 'stateratio')) 
+  
   
   ## define percentile columns
   
@@ -643,7 +661,7 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     
     ###   decimal places / rounding  ####
     
-    ### Number format default for raw indicator columns - should get replaced though by info from map_headernames in most or all cases  ####
+    ### Number format default for raw indicator columns - should get replaced though by table_round() or table_rounding_info() in most or all cases  ####
     
     raw_colnums_overall   <- which(vartypes_overall  == 'raw data for indicator')
     raw_colnums_eachsite  <- which(vartypes_eachsite == 'raw data for indicator')
@@ -680,6 +698,12 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     distance_colnums <- which(grepl("distance_", names(eachsite)))
     openxlsx::addStyle(wb, sheet = 'Overall',   rows = 2,                      cols = distance_colnums, style = openxlsx::createStyle(numFmt = '#,##0.00'), stack = TRUE)
     openxlsx::addStyle(wb, sheet = 'Each Site', rows = 2:(1 + NROW(eachsite)), cols = distance_colnums, style = openxlsx::createStyle(numFmt = '#,##0.00'), stack = TRUE, gridExpand = TRUE)
+    
+    ### RATIO - rounded to one decimal place    ####
+    ratio_var_style <- openxlsx::createStyle(numFmt = '#,##0.0')
+    openxlsx::addStyle(wb, sheet = 'Overall',   rows = 2,                      cols = ratio_colnums_overall,  style = ratio_var_style, stack = TRUE)
+    openxlsx::addStyle(wb, sheet = 'Each Site', rows = 2:(1 + NROW(eachsite)), cols = ratio_colnums_eachsite, style = ratio_var_style, stack = TRUE, gridExpand = TRUE)
+    
     
     ### PERCENTILE - rounded, integer 0-100 format    ####
     

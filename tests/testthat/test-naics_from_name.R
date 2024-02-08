@@ -29,18 +29,18 @@ test_that('results of subcategories only output when children = TRUE',{
   
 })
 
-# error if passed numeric
+# warn if expect name but passed numeric
 # no errors but returns empty dataframe
-test_that('error for query string', {
-  expect_error(val <- naics_from_name(11))
-  expect_error(val <- naics_from_name("11"))
+test_that('warn for query string', {
+  expect_warning({val <- naics_from_name(11)})
+  expect_warning({val <- naics_from_name("11")})
   
 })
 
 test_that('list of queries returns joined results', {
-  expect_no_warning(x <- naics_from_name(c("gold ore",  "silver ore")))
-  expect_no_warning( y <- naics_from_name("gold ore"))
-  expect_no_warning( z <- naics_from_name("silver ore"))
+  expect_no_warning({ x <- naics_from_name(c("gold ore",  "silver ore"))  })
+  expect_no_warning({ y <- naics_from_name("gold ore")  })
+  expect_no_warning({ z <- naics_from_name("silver ore")  })
   expect_equal(x %>% arrange(name), full_join(y,z) %>% arrange(name))
   
 })
