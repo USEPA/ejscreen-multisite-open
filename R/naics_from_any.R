@@ -11,13 +11,17 @@
 #' @export
 #'
 naics_subcodes_from_code <- function(mycodes) {
+  
+  mycodes <- suppressWarnings( { as.numeric(mycodes)}) # becomes NA if text that cannot be coerced into number
+  if (any(is.na(mycodes))) {warning("mycodes should be numeric NAICS codes or text that can be interpreted as numeric, but some are NA values or character that cannot be coerced to numeric")}
+  if (any(nchar(mycodes[!is.na(mycodes)]) < 2 | nchar(mycodes[!is.na(mycodes)]) > 6)) warning("mycodes should be 2-digit to 6-digit NAICS code(s)")
   len <- nchar(mycodes)
   cnames  <- paste0("n", 1:6)
   results <- list()
   results[[1]] <- NULL
   for (digits in 2:6) {
     mycolname = cnames[digits]
-    myvalues = unlist(as.vector(naicstable[ , ..mycolname])) # this seems like a crazy workaround, but can't see how to subset data.table by specifying mycolname = 1123 when the column name is stored in mycolname
+    myvalues = unlist(as.vector(naicstable[ , ..mycolname])) # this seems like a crazy workaround, but can't see how to subset data.table by specifying mycolname == 1123 when the column name is stored in mycolname
     results[[digits]] <-  naicstable[ myvalues %in% mycodes[len == digits] ,] # subset(naicstable, mycolname %in% mycodes[len == digits] )
   }
   results <- data.table::rbindlist(results)
@@ -34,6 +38,10 @@ naics_subcodes_from_code <- function(mycodes) {
 #' @export
 #'
 naics_from_code <- function(mycodes, children=FALSE) {
+  
+  mycodes <- suppressWarnings( { as.numeric(mycodes)}) # becomes NA if text that cannot be coerced into number
+  if (any(is.na(mycodes))) {warning("mycodes should be numeric NAICS codes or text that can be interpreted as numeric, but some are NA values or character that cannot be coerced to numeric")}
+  
   # find naicstable data.table rows by exact matches on numeric NAICS codes vector
   results <- NULL
   results <- naicstable[code %in% mycodes, ]
@@ -60,6 +68,7 @@ naics_from_code <- function(mycodes, children=FALSE) {
 #'
 naics_from_name <- function(mynames, children=FALSE, ignore.case = TRUE, fixed = FALSE) {
   # find naicstable data.table rows by text search in NAICS industry names via grepl()
+  if (any(is.na(mynames) | !(is.character(mynames)) | is.numeric(as.numeric(mynames)))) {warning( 'mynames should be non-NA character vector of text to look for in industry title(s) like "concrete"')}
   hits <- vector()
   results <- NULL
   for (i in 1:length(mynames)) {
@@ -130,6 +139,9 @@ naics_from_name <- function(mynames, children=FALSE, ignore.case = TRUE, fixed =
 naics_from_any <- function(query, children=FALSE, ignore.case = TRUE, fixed = FALSE, website_scrape=FALSE, website_url=FALSE) {
   # find naicstable data.table rows by vector of text queries and/or numeric NAICS codes
   # returns subset of naicstable, not in any particular order and number of rows may be longer than number of query terms
+  
+  if (any(is.na(query))) {warning( 'query contains NA value(s)')}
+  
   isnum <- suppressWarnings( !is.na(as.numeric(query)) )
   
   if (website_url) {
@@ -158,4 +170,4 @@ naics_from_any <- function(query, children=FALSE, ignore.case = TRUE, fixed = FA
   # }
   return(results)
 }
- 
+
