@@ -1562,8 +1562,22 @@ app_server <- function(input, output, session) {
         } else {
           shp <- shp_valid
         }
-        sites2blocks <- (get_blockpoints_in_shape(shp))$pts
+        ## progress bar to show getblocksnearby status
+        progress_getblocks_shp <- shiny::Progress$new(min = 0, max = 1)
+        progress_getblocks_shp$set(value = 0, message = '0% done')
+        updateProgress_getblocks_shp <- function(value = NULL, message_detail=NULL, message_main = '0% done') {
+          if (is.null(value)) { # - If value is NULL, it will move the progress bar 1/20 of the remaining distance.
+            value <- progress_getblocks_shp$getValue()
+            value <- value + (progress_getblocks_shp$getMax() - value) / 10
+            message_main = paste0(value*100, '% done')
+          }
+          progress_getblocks_shp$set(value = value, message = message_main, detail = message_detail)
+        }
+        
+        sites2blocks <- (get_blockpoints_in_shape(shp, updateProgress = updateProgress_getblocks_shp))$pts
         d_upload     <- sites2blocks
+        
+        progress_getblocks_shp$close()
       }
       ################################################# # 
       

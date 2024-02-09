@@ -31,6 +31,7 @@ shapefile2blockpoints <- function(...) {
 #' @param safety_margin_ratio multiplied by addedbuffermiles, how far to search for 
 #'   blocks nearby using getblocksnearby(), before using those found to do the intersection via sf::
 #' @param crs used in st_as_sf() and st_transform() and shape_buffered_from_shapefile_points(), crs = 4269 or Geodetic CRS NAD83 
+#' @param updateProgress optional Shiny progress bar to update 
 #' @import sf
 #' @return Block points table for those blocks whose internal point is inside the buffer 
 #'   which is just a circular buffer of specified radius if polys are just points. 
@@ -43,7 +44,7 @@ shapefile2blockpoints <- function(...) {
 #' @seealso [get_blockpoints_in_shape()] [shapefile_from_sitepoints()] [shape_buffered_from_shapefile_points()]
 #' @export
 #'
-get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NULL, dissolved=FALSE, safety_margin_ratio=1.10, crs = 4269) {
+get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NULL, dissolved=FALSE, safety_margin_ratio=1.10, crs = 4269, updateProgress = NULL) {
   
   ############################################################################################################### #
   # NOTE: For comparison or validation one could get the results from the EJScreen API, for a polygon:
@@ -59,6 +60,11 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
   #   f=pjson
   ############################################################################################################ #
   
+  if(is.function(updateProgress)){
+    boldtext <- 'Computing bounding boxes'
+    updateProgress(message_main = boldtext, value = 0.1)
+  }
+  
   ## overall bbox
   bbox <- sf::st_bbox(polys)
   
@@ -73,6 +79,11 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
   
   ## individual bbox per polygon
   bbox_polys <- lapply(polys$geometry, sf::st_bbox)
+  
+  if(is.function(updateProgress)){
+    boldtext <- 'Clipping to bounding boxes'
+    updateProgress(message_main = boldtext, value = 0.2)
+  }
   
   ## filter blockpoints again to individual bboxes, keep unique points
   blockpoints_filt <- lapply(bbox_polys, function(a) blockpoints_filt[between(lon, a[1], a[3]) & 
@@ -98,6 +109,10 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
   
   
   if (addedbuffermiles > 0) {
+    if(is.function(updateProgress)){
+      boldtext <- 'Adding buffered polygons'
+      updateProgress(message_main = boldtext, value = 0.3)
+    }
     addedbuffermiles_withunits <- units::set_units(addedbuffermiles, "miles")
     polys <- shape_buffered_from_shapefile_points(polys,  addedbuffermiles_withunits, crs = crs)
     # addedbuffermiles_withunits  name used since below getblocksnearby( , radius=addedbuffermiles etc ) warns units not expected
@@ -106,6 +121,11 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
   
   
   # use   sf::st_intersects() or st_join(, join=intersects) 
+  
+  if(is.function(updateProgress)){
+    boldtext <- 'Finding blocks nearby'
+    updateProgress(message_main = boldtext, value = 0.4)
+  }
   
   if (is.null(blocksnearby) & ARE_POINTS) {
     #  calculate it here since not provided
@@ -117,6 +137,12 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
     # get lat,lon of nearby blocks
     blocksnearby <- (blockpoints[blocksnearby, .(lat,lon,blockid), on = "blockid"])  # blockid,      lat ,      lon
   }
+  
+  if(is.function(updateProgress)){
+    boldtext <- 'Joining blocks to polygons'
+    updateProgress(message_main = boldtext, value = 0.6)
+  }
+  
   if (is.null(blocksnearby) & !ARE_POINTS) {
     # must use extremely slow method ?
     #stop("noncircular buffers not working yet - too slow to find all US blocks in each via simple sf::st_join   ")
@@ -146,6 +172,11 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
   
   #standardize input shapes for doaggregate
   
+  if(is.function(updateProgress)){
+    boldtext <- 'Standardizing shapes'
+    updateProgress(message_main = boldtext, value = 0.8)
+  }
+  
   pts <-  data.table(
     sf::st_coordinates(blocksinsidef),
     blocksinsidef$ejam_uniq_id,
@@ -156,6 +187,11 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
   setnames(pts, c("lon","lat","ejam_uniq_id","blockid","distance")) # it is lon then lat due to format of output of st_coordinates() I think
   pts[blockwts,  `:=`(bgid = bgid, blockwt = blockwt), on = "blockid"]
   data.table::setcolorder(pts, c('ejam_uniq_id', 'blockid', 'distance', 'blockwt', 'bgid', 'lat', 'lon')) # to make it same order as output of getblocksnearby(), plus latlon
+  
+  if(is.function(updateProgress)){
+    boldtext <- 'Completing'
+    updateProgress(message_main = boldtext, value = 1)
+  }
   
   return(list('pts' = pts, 'polys' = polys))
   
