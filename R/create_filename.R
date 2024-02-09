@@ -6,10 +6,16 @@
 #' @param buffer_dist buffer distance
 #' @param site_method site selection method, such as NAICS, FRS, SHP, latlon
 #' @param with_datetime boolean to include date and time
-#' @return
+#' @param ext optional file extension. will check for '.' and add if not provided
+#' @return Returns string of pasted filename with specified components
 #' @export
 #'
-#' @examples
+#' @examples 
+#' # specify all arguments
+#' create_filename(file_desc = 'results_table', title = 'My Title', buffer_dist = 1, site_method = 'NAICS', with_datetime=TRUE, ext = '.xlsx')
+#' # specify title only
+#' create_filename(title = 'Summary of EJ Analysis')
+#'
 create_filename <- function(file_desc = '', title = '', 
                             buffer_dist = 0, site_method = '',
                             with_datetime = TRUE,

@@ -11,7 +11,8 @@ get_blockpoints_in_shape(
   blocksnearby = NULL,
   dissolved = FALSE,
   safety_margin_ratio = 1.1,
-  crs = 4269
+  crs = 4269,
+  updateProgress = NULL
 )
 }
 \arguments{
@@ -30,6 +31,8 @@ or polygons}
 blocks nearby using getblocksnearby(), before using those found to do the intersection via sf::}
 
 \item{crs}{used in st_as_sf() and st_transform() and shape_buffered_from_shapefile_points(), crs = 4269 or Geodetic CRS NAD83}
+
+\item{updateProgress}{optional Shiny progress bar to update}
 }
 \value{
 Block points table for those blocks whose internal point is inside the buffer

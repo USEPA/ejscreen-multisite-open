@@ -36,6 +36,7 @@ table_xls_format(
   graycolor = "gray",
   narrow6 = 6,
   testing = FALSE,
+  updateProgress = NULL,
   launchexcel = FALSE,
   saveas = NULL,
   ...
@@ -95,6 +96,8 @@ second color is for those >=2d cutpoint but <3d, etc.}
 \item{narrow6}{how narrow}
 
 \item{testing}{optional for testing only}
+
+\item{updateProgress}{optional Shiny progress bar to update during formatting}
 
 \item{launchexcel}{Set to TRUE to have this function launch Excel immediately, showing the final workbook created here.}
 
