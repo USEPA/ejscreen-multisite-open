@@ -6,6 +6,9 @@
 #'
 #' @return a number
 #'
+#' @export
+#' @keywords internal
+#' 
 getblocks_predict_blocks_per_site <- function(nsites, radius) {
   # rough estimate of how many rows sites2blocks might be after
   # sites2blocks <- getblocksnearby(radius = radius) 
@@ -25,6 +28,7 @@ getblocks_predict_blocks_per_site <- function(nsites, radius) {
 #' @import data.table
 #' @seealso [getblocks_diagnostics()]
 #' 
+#' @export
 #' @keywords internal
 #'
 getblocks_summarize_blocks_per_site <- function(x, varname='ejam_uniq_id') {

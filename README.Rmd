@@ -38,17 +38,22 @@ knitr::opts_chunk$set(
 
   - Technical documentation for R software users
 
-    - R users vignette that walks through installation and key functions: See `vignette(package="EJAM")` or [Vignette](EJAM-vignette.html "EJAM-vignette.html") (must be on VPN)
-
+  - R users vignettes that will walk through installation and key functions:
+    See `vignette(package="EJAM")` or (must be on VPN)
+    - [0. Using EJAM as a Web App](0_webapp.html "0_webapp.html")
+    - [1. Installing the EJAM package](1_installing.html "1_installing.html")
+    - [2. Quick Start Guide](2_quickstart.html "2_quickstart.html")
+    - [3. Basics of Using EJAM for Analysis in RStudio](3_analyzing.html "3_analyzing.html")
+    - [4. Advanced Features](4_advanced.html "4_advanced.html")
+    - [5. Using the EJScreen API via EJAM](5_ejscreenapi.html "5_ejscreenapi.html")
+    
     - R developers technical documentation of all R functions and data in web page format: [EJAM R Functions and Data](EJAM.html "EJAM.html") (must be on VPN)
 
     - GitHub repository of code and data: [USEPA/EJAM](https://github.com/USEPA/EJAM#readme "https://github.com/USEPA/EJAM#readme") (must be on VPN)
 
-  - EJAM Web App Demo internal to EPA: As of 1/2024 the main app is not on a production server yet. A very minimal portion of the calculation tool is here on a staging server:
+  - EJAM Web App beta internal to EPA: As of 1/2024 the main app is on a staging server for beta testing:
 
-    - For a demo of EJScreen-like results (some #s are slightly different), for 100 points in under 5 seconds, and 1,000 points in about 10-30 seconds depending on distance **[ejamlite demo](https://rstudio-connect.dmap-stage.aws.epa.gov/content/725e3761-3dc1-4012-b07c-23126063da97/ "https://rstudio-connect.dmap-stage.aws.epa.gov/content/725e3761-3dc1-4012-b07c-23126063da97/")** (must be on VPN)
-
-    - For a demo of EJScreen results via API, for 100 points in about 60 seconds, and 1,000 points in about 10 minutes [ejscreenapi demo](https://rstudio-connect.dmap-stage.aws.epa.gov/content/725e3761-3dc1-4012-b07c-23126063da97/ "https://rstudio-connect.dmap-stage.aws.epa.gov/content/725e3761-3dc1-4012-b07c-23126063da97/") (must be on VPN)
+    - [EJAM beta test version](https://rstudio-connect.dmap-stage.aws.epa.gov/content/cb2bc9cf-75c3-4db1-ad28-e92940fe4438/ "https://rstudio-connect.dmap-stage.aws.epa.gov/content/cb2bc9cf-75c3-4db1-ad28-e92940fe4438/")** (must be on VPN)
 
 
 # Non-technical Overview

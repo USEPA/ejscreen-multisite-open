@@ -17,3 +17,4 @@ a number
 \description{
 utility - estimate how large table might be that will be output of getblocksnearby()
 }
+\keyword{internal}
