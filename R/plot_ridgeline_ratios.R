@@ -9,7 +9,7 @@ plot_ridgeline_ratios <- function(ratio.to.us.d.bysite, names2plot_friendly=NULL
   #   ratio.to.us.d.bysite <- data.frame(Indicator = ratio.to.us.d.bysite)
   # }
   if (is.null(names2plot_friendly)) {
-    names2plot_friendly <- fixcolnames(names(ratio.to.us.d.bysite), oldtype = "r", newtype = "long")
+    names2plot_friendly <- fixcolnames(names(ratio.to.us.d.bysite), oldtype = "r", newtype = "shortlabel")
     supershortnames <- gsub(' \\(.*', '', gsub("People of Color","POC", names2plot_friendly))
     names(ratio.to.us.d.bysite) <- supershortnames
   }

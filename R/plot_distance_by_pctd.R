@@ -56,7 +56,7 @@ plot(s2b$distance, s2b$pctdwithin, type = "b",
      xlab = "Distance (miles)", ylab = "Percent Demographics within X miles",
      xlim = c(0, max(s2b$distance)), 
      ylim = c(0, usastats[usastats$PCTILE == 100, dpctvar]),
-     main = paste0(fixcolnames(dpctvar, "r", "long"), " as a function of distance from site number ", sitenum))
+     main = paste0(fixcolnames(dpctvar, "r", "shortlabel"), " as a function of distance from site number ", sitenum))
 
 abline( h = statestats[statestats$PCTILE == "mean" & statestats$REGION == myST, dpctvar], col = "red")
 abline( h = statestats[statestats$PCTILE == "75"   & statestats$REGION == myST, dpctvar], col = "red",  lty = 4, lwd = 0.5)
