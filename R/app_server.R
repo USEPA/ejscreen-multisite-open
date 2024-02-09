@@ -2340,20 +2340,16 @@ app_server <- function(input, output, session) {
   
   #############################################################################  # 
   
-  ## reactive for creating download filenames
-  ## e.g. EJAM_My_Title_X_Miles_from_places_by_NAICS_YYYY-MM-DD_HHMMSS.ext
-  download_fname <- reactive({
-    paste0('EJAM_',gsub(' ', '_',input$analysis_title), '_',
-           ifelse(current_slider_val[[submitted_upload_method()]] > 0,
-                  paste0(current_slider_val[[submitted_upload_method()]], '_Miles_from'),''),
-           '_places_by_',submitted_upload_method(),format(Sys.time(),'_%Y%m%d_%H%M%S'))
-  })
-  
   ## Community report download ##
   output$community_download <- downloadHandler(
-    filename = ifelse(input$format1pager == 'pdf',
-                      paste0(download_fname(), '.pdf'), paste0(download_fname(),'.html')),
-    #filename = ifelse(input$format1pager == "pdf", "community_report.pdf", 'community_report.html') ,
+    filename = 
+      create_filename(file_desc = 'community report', 
+                      title = input$analysis_title,
+                      buffer_dist = current_slider_val[[submitted_upload_method()]], 
+                      site_method = submitted_upload_method(),
+                      with_datetime = TRUE,
+                      ext = ifelse(input$format1pager == 'pdf', '.pdf','.html')
+      ),
     content = function(file) {
       # Copy the report file to a temporary directory before processing it, in
       # case we don't have write permissions to the current working dir (which
@@ -2715,8 +2711,14 @@ app_server <- function(input, output, session) {
   
   output$download_results_table <- downloadHandler(
     filename = function() {
-      paste0(download_fname(),'.xlsx')
-      #'results_table.xlsx'
+     
+        create_filename(file_desc = 'results table', 
+                      title = input$analysis_title,
+                      buffer_dist = current_slider_val[[submitted_upload_method()]], 
+                      site_method = submitted_upload_method(),
+                      with_datetime = TRUE,
+                      ext = '.xlsx')
+
     },
     content = function(fname) {
       
@@ -3280,8 +3282,14 @@ app_server <- function(input, output, session) {
   
   ## Create and download FULL static report 
   output$rg_download <- downloadHandler(
-   # filename = 'report.doc',
-    filename = paste0(download_fname(), '.doc'),
+    filename = 
+      create_filename(file_desc = 'full report', 
+                      title = input$analysis_title,
+                      buffer_dist = current_slider_val[[submitted_upload_method()]], 
+                      site_method = submitted_upload_method(),
+                      with_datetime = TRUE,
+                      ext = '.doc'),
+    
     content = function(file) {
       # Copy the report file to a temporary directory before processing it, in
       # case we don't have write permissions to the current working dir (which
