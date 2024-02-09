@@ -2717,6 +2717,14 @@ app_server <- function(input, output, session) {
     },
     content = function(fname) {
       
+     
+      
+      showModal(
+        modalDialog(title = 'Downloading',
+                    'Downloading Excel file of results... Please wait.',
+                  
+                     easyClose = FALSE)
+      )
       if (input$testing) {
         cat('starting download code and  table_xls_format() \n') # ; xproc = data_processed(); save(xproc, file = 'table_data_processed-ejam.rda')
       }
@@ -2753,7 +2761,16 @@ app_server <- function(input, output, session) {
         )
         
       } else {
-        
+        progress_xl <-shiny::Progress$new(min = 0, max = 1)
+        progress_xl$set(value = 0, message = 'Downloading', detail = 'Starting')
+        updateProgress_xl <- function(value = NULL, message_detail=NULL, message_main = 'Preparing') {
+          if (is.null(value)) { # - If value is NULL, it will move the progress bar 1/5 of the remaining distance.
+            value <- progress_xl$getValue()
+            value <- value + (progress_xl$getMax() - value) / 5
+            message_main = paste0(value*100, '% done')
+          }
+          progress_xl$set(value = value, message = message_main, detail = message_detail)
+        }
         wb_out <- table_xls_format(
           # note they seem to be data.frames, not data.tables, at this point, unlike how ejamit() had been returning results.
           overall = data_processed()$results_overall |> dplyr::select(names( data_processed()$results_overall)[keepcols]),
@@ -2784,9 +2801,12 @@ app_server <- function(input, output, session) {
           radius_or_buffer_in_miles = input$bt_rad_buff,
           radius_or_buffer_description = radius_or_buffer_description,
           # saveas = fname,
-          testing = input$testing
+          testing = input$testing,
+          updateProgress = updateProgress_xl
         )
       }    
+      progress_xl$close()
+      removeModal()
       ## save file and return for downloading - or do this within table_xls_format( , saveas=fname) ?
       openxlsx::saveWorkbook(wb_out, fname)
       
