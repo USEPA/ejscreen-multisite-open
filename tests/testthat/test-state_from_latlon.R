@@ -21,12 +21,14 @@ test_that('warns for invalid latlon',{
   
 })
 
-test_that('error for invalid strings',{
+test_that('warn for invalid strings',{
   # hitting error from st_as_sf.data.frame()
   # added error message for invalid strings to give simple error messages
+suppressWarnings({
   expect_warning(
-  expect_warning(
-    expect_error(val <- state_from_latlon("blue", "fox"))))
+   state_from_latlon("blue", "fox")
+   )
+})
 })
 
 test_that('error for invalid syntax',{
@@ -34,7 +36,9 @@ test_that('error for invalid syntax',{
   expect_error(val <- state_from_latlon(c("18", "-66")))
 })
 
-test_that('test a list',{
+test_that('latlon as string vectors are ok', {
   # can't handle it, generic condition length error
-  expect_error(val <- state_from_latlon(lat = c("18.5", "20"), lon = c("66", "80")))
+  expect_no_condition(
+    state_from_latlon(lat = c("33", "40"), lon = c("-90", "-110"))
+    )
 })

@@ -170,7 +170,8 @@ all_equal_functions <- function(fun="latlon_infer", package1="EJAM", package2="E
   
   # 2) ### error when checking a package that is loaded but not attached. 
   # eg doing this:
-  # all_equal_functions("get.distance.all", "proxistat", "EJAM") # something odd about proxistat pkg.
+  # all_equal_functions("get.distance.all", "proxistat", "EJAM") # something odd about proxistat pkg
+  #   and note there is now a function called proxistat()
   ### or 
   # dupenames(c("proxistat", "EJAMejscreenapi"), compare.functions = T)
   # Error in all_equal_functions(fun = var, package1 = ddd$package[ddd$variable ==  : 

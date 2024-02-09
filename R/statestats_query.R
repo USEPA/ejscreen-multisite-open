@@ -7,7 +7,7 @@
 #' 
 #' @export
 #'
-statestats_means <- function(ST=unique(EJAM::statestats$REGION), varnames=c(EJAM::names_e, EJAM::names_d, EJAM::names_d_subgroups_nh), PCTILES="mean", dig=2) {
+statestats_means <- function(ST=unique(EJAM::statestats$REGION), varnames=c(EJAM::names_e, EJAM::names_d, EJAM::names_d_subgroups_nh), PCTILES="mean", dig=4) {
   x = statestats_query(ST = ST, varnames = varnames, PCTILES = PCTILES,  dig = dig)
   # x$REGION = NULL; 
   x$PCTILE = NULL # so t(x) wont make everything into character class
@@ -92,7 +92,7 @@ statestats_means <- function(ST=unique(EJAM::statestats$REGION), varnames=c(EJAM
 #' 
 statestats_query <- function(ST=sort(unique(EJAM::statestats$REGION)), 
                              varnames=c(EJAM::names_e, EJAM::names_d), 
-                             PCTILES=NULL, dig=2) {
+                             PCTILES=NULL, dig=3) {
   if (length(ST) == 1) {
     if ( substr(tolower(ST),1,2) == "us") {
       if (is.null(PCTILES)) {PCTILES <- c("mean", 0,5,50,80,90,95,99,100)}
@@ -126,7 +126,7 @@ statestats_query <- function(ST=sort(unique(EJAM::statestats$REGION)),
 #'
 statestats_queryd <- function(ST=sort(unique(EJAM::statestats$REGION)), 
                               varnames= c(EJAM::names_d, EJAM::names_d_subgroups_nh), 
-                              PCTILES=NULL, dig=2) { 
+                              PCTILES=NULL, dig=4) { 
   if (is.null(PCTILES))  {
     statestats_query(ST = ST, varnames = varnames, PCTILES = NULL, dig = dig)
   } else {
@@ -142,7 +142,7 @@ statestats_queryd <- function(ST=sort(unique(EJAM::statestats$REGION)),
 #' @export
 #'
 statestats_querye <- function(ST=sort(unique(EJAM::statestats$REGION)), varnames=  EJAM::names_e , 
-                              PCTILES=NULL, dig=2) { 
+                              PCTILES=NULL, dig=4) { 
   if (is.null(PCTILES))  {
     statestats_query(ST = ST, varnames = varnames, PCTILES = NULL, dig = dig)
   } else {
@@ -163,7 +163,8 @@ statestats_querye <- function(ST=sort(unique(EJAM::statestats$REGION)), varnames
 #' @param dig how many digits to round to
 #' @export
 #'
-usastats_query   <- function(varnames = c(EJAM::names_e, EJAM::names_d, EJAM::names_d_subgroups_nh), PCTILES=NULL, dig=2) {
+usastats_query   <- function(varnames = c(EJAM::names_e, EJAM::names_d, EJAM::names_d_subgroups_nh),
+                             PCTILES=NULL, dig=4) {
   statestats_query(ST = "us", varnames = varnames, PCTILES = PCTILES, dig = dig)
   ## see all total counts too not just US means for just demographics not envt, including subgroups:
   # t(round( ustotals2(bg = blockgroupstats),2))
@@ -182,7 +183,7 @@ usastats_query   <- function(varnames = c(EJAM::names_e, EJAM::names_d, EJAM::na
 #' @param dig how many digits to round to
 #' @export
 #'
-usastats_querye  <- function(varnames=EJAM::names_e, PCTILES=NULL, dig=2) {
+usastats_querye  <- function(varnames=EJAM::names_e, PCTILES=NULL, dig=4) {
    statestats_query(ST = "us", varnames = varnames, PCTILES = PCTILES, dig = dig)
 }
 ################################################################################ #
@@ -195,7 +196,7 @@ usastats_querye  <- function(varnames=EJAM::names_e, PCTILES=NULL, dig=2) {
 #' @param dig how many digits to round to
 #' @export
 #'
-usastats_queryd  <- function(varnames=c(EJAM::names_d, EJAM::names_d_subgroups_nh), PCTILES=NULL, dig=2) {
+usastats_queryd  <- function(varnames=c(EJAM::names_d, EJAM::names_d_subgroups_nh), PCTILES=NULL, dig=4) {
   statestats_query(ST = "us", varnames = varnames, PCTILES = PCTILES, dig = dig)
 }
 ################################################################################ #
@@ -206,7 +207,7 @@ usastats_queryd  <- function(varnames=c(EJAM::names_d, EJAM::names_d_subgroups_n
 #' 
 #' @export
 #'
-usastats_means <- function(varnames=c(EJAM::names_e, EJAM::names_d, EJAM::names_d_subgroups_nh), PCTILES=NULL, dig=2) {
+usastats_means <- function(varnames=c(EJAM::names_e, EJAM::names_d, EJAM::names_d_subgroups_nh), PCTILES=NULL, dig=4) {
   x = usastats_query(PCTILES = "mean", varnames = varnames, dig = dig)
   x$REGION = NULL; x$PCTILE = NULL # so t(x) wont make everything into character class
   x = t(x)

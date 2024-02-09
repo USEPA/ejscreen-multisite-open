@@ -26,36 +26,41 @@
 #'  mapfast(pts[ST == 'TX',], radius = 1) # 1 miles radius circles
 #'  
 state_from_latlon <- function(lat, lon, states_shapefile=EJAM::states_shapefile) {
-  if(is.na(as.numeric(lat)) & is.na(as.numeric(lon))){ 
-    warning("Latitude and Longitude could not be coerced to a number.")
-    return(NULL)
-  } else if(is.na(as.numeric(lat))){
-    warning("Latitude could not be coerced to a number")
-    return(NULL)
-  } else if(is.na(as.numeric(lon))){
-    warning("Longitude could not be coerced to a number.")
-    return(NULL)
+  
+  if (suppressWarnings({
+      any(is.na(as.numeric(lat)) & is.na(as.numeric(lon))) }) ) {
+    warning("Some Latitude and Longitude could not be coerced to a number.")
+  } else {
+    if (suppressWarnings({
+      any(is.na(as.numeric(lat))) })) {
+      warning("Some Latitude could not be coerced to a number")
+    }
+    if (suppressWarnings({  
+      any(is.na(as.numeric(lon))) }) ) {
+      warning("Some Longitude could not be coerced to a number.")
+    }
   }
+  lat[is.na(as.numeric(lat))] <- NA
+  lon[is.na(as.numeric(lon))] <- NA
   
-  
-  # pts[is.na(lat), lat := 0] 
-  # pts[is.na(lon), lon := 0] 
   lat[is.na(lat)] <- 0
   lon[is.na(lon)] <- 0 # will ensure NA is returned by the join for those points with missing coordinates
   pts <- data.frame(lat = lat, lon = lon) |>
     sf::st_as_sf(coords = c("lon", "lat"), crs = sf::st_crs(states_shapefile))  # st_as_sf wants lon,lat not lat,lon
   pts <- pts |> sf::st_join(states_shapefile)
-  # pts <- as.data.frame(statename = pts$facility_state)  
+  
   pts <- as.data.frame(pts)[,c("STUSPS", "NAME", "STATEFP")]
   colnames(pts) <- c("ST", "statename", "FIPS.ST")
   pts$REGION <- EJAM::stateinfo$REGION[match(pts$statename, stateinfo$statename)]
   pts$n <- 1:NROW(pts)
   
-  if(is.na(pts$statename )){warning("That latitude and longitude is not in any state")}
+  if (suppressWarnings({
+    any(is.na(pts$statename ))})
+    ) {warning("Some latitude / longitude were provided that are not found in any state")}
   return(pts)
 }
+##################################################################################################### #
 
-state_from_latlon_compiled <- compiler::cmpfun(state_from_latlon)
 
 #' state_from_blocktable - was used only in some special cases of using testpoints_n() 
 #' given data.table with blockid column, get state abbreviation of each - not used?
@@ -68,6 +73,8 @@ state_from_latlon_compiled <- compiler::cmpfun(state_from_latlon)
 state_from_blocktable <- function(dt_with_blockid) {
   stateinfo$ST[match(blockid2fips[dt_with_blockid, substr(blockfips,1,2), on = "blockid"], stateinfo$FIPS.ST)]
 }
+##################################################################################################### #
+
 
 #' state_from_blockid
 #' given vector of blockids, get state abbreviation of each
@@ -84,6 +91,8 @@ state_from_blockid <- function(blockid) {
   if (!exists('blockid2fips')) {return(rep(NA, length(blockid)))}
   stateinfo$ST[match(blockid2fips[blockid, substr(blockfips,1,2)], stateinfo$FIPS.ST)]
 }
+##################################################################################################### #
+
 
 #' state_from_fips - Get FIPS of ALL BLOCKGROUPS in the States or Counties
 #' Get the State abbreviations of ALL blockgroups within the input FIPS
@@ -102,12 +111,14 @@ state_from_fips <- function(fips, uniqueonly=FALSE) {
   x <- stateinfo$ST[match(substr(fips,1,2), stateinfo$FIPS.ST)]
   if (uniqueonly) {return(unique(x))} else {return(x)}
 }
+##################################################################################################### #
+
 
 # checking speed
 
 
 # pts <- EJAMejscreenapi::testpoints_1000
-library(data.table)
+# library(data.table)
 # # pts <- data.table(testpoints_100)[ , .(lat,lon, sitenumber)]
 # # n=100
 # # pts <- frs[sample(1:nrow(frs), n), .(lat,lon, REGISTRY_ID)]

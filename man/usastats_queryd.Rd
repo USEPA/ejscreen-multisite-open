@@ -7,7 +7,7 @@
 usastats_queryd(
   varnames = c(EJAM::names_d, EJAM::names_d_subgroups_nh),
   PCTILES = NULL,
-  dig = 2
+  dig = 4
 )
 }
 \arguments{

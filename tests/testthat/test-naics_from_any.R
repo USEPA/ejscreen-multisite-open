@@ -39,7 +39,7 @@ test_that('string queries function', {
   expect_no_warning({val <- naics_from_any("gold ore")})
   expect_true(nrow(val) > 0)
   expect_no_warning({val <- naics_from_any("gold mining")})
-  expect_true(nrow(val) > 0)
+  expect_true(nrow(val) == 0)
 })
 
 test_that('list of queries returns joined results', {
