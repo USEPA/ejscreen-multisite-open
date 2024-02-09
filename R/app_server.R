@@ -1159,35 +1159,28 @@ app_server <- function(input, output, session) {
   
   # *TABLE of uploaded points ####
   
+  ## reactive for data shown in preview data table
+  ## can be adjusted from data_uploaded(), like for FIPS
+  data_preview <- reactive({
+    req(data_uploaded())
+    
+    if (current_upload_method() == "SHP") {
+      dt <- data_uploaded()
+    } else if (current_upload_method() == 'FIPS') {
+      dt <- data.frame(FIPS = data_uploaded()) %>% 
+        dplyr::mutate(type = fipstype(FIPS), name = fips2name(FIPS))
+    } else {
+      dt <- data_uploaded()
+    }
+    
+    dt
+  })
+  
   output$print_test2_dt <- DT::renderDT(
     ## server = FALSE forces download to include all rows, not just visible ones
     server = TRUE, {
-      req(data_uploaded())
       
-      #dt <- data_uploaded() # now naics-queried sites format is OK to view, since using different function to get sites by naics
-      if (current_upload_method() == "SHP") {
-        dt <- data_uploaded()#[['shape']]
-      } else if (current_upload_method() == 'FIPS') {
-        dt <- data.table(FIPS = data_uploaded())[, .(FIPS, type = fipstype(FIPS), name = fips2name(FIPS))]
-      } else {
-        dt <- data_uploaded()
-      }
-      # if (current_upload_method() == 'NAICS') {
-      
-      ###takes NAICS codes selected, finds NAICS descriptions, and presents them  
-      # dt_result_by_naic = data_uploaded()[, .(Count = .N), by = NAICS]
-      # naics_desc = EJAM::NAICS[EJAM::NAICS %in% dt_result_by_naic$NAICS]
-      # dt_names = data.frame("NAICS"=naics_desc,"Description"=names(naics_desc))
-      # naicsdt = merge(x = dt_result_by_naic, y = dt_names, by='NAICS')
-      # naics_reorder = data.frame(naicsdt$Description,naicsdt$Count)
-      # colnames(naics_reorder) = c("NAICS Code","Facility Count")
-      # dt <- naics_reorder
-      ###print(naics_reorder,row.names = FALSE)
-      # } else {
-      # dt <- data_uploaded()
-      # }
-      
-      DT::datatable(dt, 
+      DT::datatable(data_preview(), 
                     ## to add download buttons
                     #extensions = 'Buttons',
                     
@@ -1237,12 +1230,12 @@ app_server <- function(input, output, session) {
   ## crashes with larger datasets
   output$download_preview_data_xl <- downloadHandler(filename = 'epa_raw_data_download.xlsx',
                                                      content = function(file) {
-                                                       dt <- data_uploaded()
-                                                       writexl::write_xlsx(dt, file)})
+                                                     
+                                                       writexl::write_xlsx(data_preview(), file)})
   output$download_preview_data_csv <- downloadHandler(filename = 'epa_raw_data_download.csv',
                                                       content = function(file) {
-                                                        dt <- data_uploaded()
-                                                        data.table::fwrite(dt, file, append = F)})
+                                                       
+                                                        data.table::fwrite(data_preview(), file, append = F)})
   
   #############################################################################  # 
   
