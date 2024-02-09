@@ -82,7 +82,7 @@ app_ui  <- function(request) {
                           br(), br(),
                           actionButton('ui_show_advanced_settings','Show Advanced Settings Tab', class = 'usa-button'),
                           actionButton('ui_hide_advanced_settings','Hide Advanced Settings Tab', class = 'usa-button'),
-                br(),br(),
+                          br(),br(),
                    ),
                    column(4,
                           htmltools::img(id = "biglogo", src = app_sys("app/www/ejamhex4.png"))

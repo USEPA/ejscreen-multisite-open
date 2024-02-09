@@ -9,7 +9,9 @@ ejam2report(
   sitenumber = NULL,
   analysis_title = "EJAM Report",
   submitted_upload_method = c("latlon", "SHP", "FIPS")[1],
-  data_up_shp = NA
+  data_up_shp = NA,
+  return_html = FALSE,
+  launch_browser = TRUE
 )
 }
 \arguments{
@@ -25,10 +27,14 @@ then the report is about \code{ejamout$results_overall}}
 \item{submitted_upload_method}{\code{"latlon"} is the default and other options are not implemented yet.}
 
 \item{data_up_shp}{not implemented yet, for upload method SHP}
+
+\item{return_html}{set TRUE to have function return HTML object instead of URL of local file}
+
+\item{launch_browser}{set TRUE to have it launch browser and show report.}
 }
 \value{
-URL of temp html file and has side effect of
-launching browser to view it
+URL of temp html file or object depending on return_html,
+and has side effect of launching browser to view it depending on return_html
 }
 \description{
 Get URL for and view in browser a 2-page summary report similar to the

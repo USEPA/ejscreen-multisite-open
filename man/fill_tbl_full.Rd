@@ -7,7 +7,8 @@
 fill_tbl_full(output_df)
 }
 \arguments{
-\item{output_df, }{single row of results table from doaggregate - either results_overall or one row of bysite}
+\item{output_df, }{single row of results table from doaggregate -
+either results_overall or one row of bysite}
 }
 \description{
 Create full demog. or envt. HTML table of indicator rows
