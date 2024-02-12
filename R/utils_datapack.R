@@ -1,4 +1,6 @@
-#' datapack - utility - See names and size of data sets in package(s) - internal utility function
+
+#' UTILITY - See names and size of data sets in package(s) - internal utility function
+#' 
 #' Wrapper for data() and can get memory size of objects
 #' @details do not rely on this much - it was a quick utility. 
 #'   It may create and leave objects in global envt - not careful about that.
@@ -33,9 +35,9 @@
 #'  x[order(x$Package, x$Item), 1:2]
 #'  # sorted alphabetically across all the pkgs
 #'  x[order(x$Item), 1:2]
-#'  
-#' @export
-#'
+#' 
+#' @keywords internal
+#' 
 datapack <- function(pkg=ejampackages, len=30, sortbysize=TRUE, simple = TRUE) {
   
   if (simple) {

@@ -10,7 +10,7 @@
 
 ############################################################################################## #
 
-#' shapefile_from_folder  -  read shapefile from a folder
+#' Read shapefile from a folder
 #'
 #' @param folder path of folder that contains the files (.shp, .shx, .dbf, and .prj)
 #' @param cleanit set to FALSE if you want to skip validation and dropping invalid rows
@@ -43,7 +43,7 @@ shapefile_from_folder <- function(folder = NULL, cleanit = TRUE, crs = 4269) {
       folder <- rstudioapi::selectDirectory(caption = "Select a folder that contains the files (.shp, .shx, .dbf, and .prj)", path = getwd())
       # and cpg is ok but not essential?
     } else {
-      if(shiny::isRunning()){
+      if (shiny::isRunning()) {
         warning("need to specify folder where shapefiles are") #
         return(NULL)
       } else {
@@ -57,7 +57,7 @@ shapefile_from_folder <- function(folder = NULL, cleanit = TRUE, crs = 4269) {
 ############################################################################################## #
 
 
-#' shapefile_filepaths_from_folder  -  get list of valid filenames comprising shapefile including paths
+#' Get list of valid filenames comprising shapefile including paths
 #'
 #' @param folder path of folder that contains the files (.shp, .shx, .dbf, and .prj)
 #'
@@ -71,7 +71,7 @@ shapefile_filepaths_from_folder <- function(folder = NULL) {
       folder <- rstudioapi::selectDirectory(caption = "Select a folder that contains the files (.shp, .shx, .dbf, and .prj)", path = getwd())
       # and cpg is ok but not essential?
     } else {
-      if(shiny::isRunning()){
+      if (shiny::isRunning()) {
         warning("need to specify folder where shapefiles are") #
         return(NULL)
       } else {
@@ -87,7 +87,7 @@ shapefile_filepaths_from_folder <- function(folder = NULL) {
 ############################################################################################## #
 
 
-#' shapefile_filepaths_valid  -  confirm files have all the extensions .shp, .shx, .dbf, and .prj
+#' Confirm files have all the extensions .shp, .shx, .dbf, and .prj
 #'
 #' @param filepaths vector of full paths with filenames (types .shp, .shx, .dbf, and .prj) as strings
 #' 
@@ -109,7 +109,7 @@ shapefile_filepaths_valid <- function(filepaths) {
 }
 ############################################################################################## #
 
-#' shapefile_from_filepaths  -  Read shapefile from disk based on the filenames given
+#' Read shapefile from disk based on the filenames given
 #'
 #' @param filepaths vector of full paths with filenames (types .shp, .shx, .dbf, and .prj) as strings
 #' @param cleanit set to FALSE if you want to skip validation and dropping invalid rows
@@ -127,7 +127,7 @@ shapefile_from_filepaths <- function(filepaths = NULL, cleanit = TRUE, crs = 426
       filepaths <- shapefile_filepaths_from_folder() # must select multiple files, which selectFile() will not do # rstudioapi::selectFile(caption = "Select all the files at once (.shp, .shx, .dbf, and .prj) to upload", path = getwd())
       # and cpg is ok but not essential?
     } else {
-      if(shiny::isRunning()){
+      if (shiny::isRunning()) {
         warning("need vector of full paths and filenames that must include all these extensions .shp, .shx, .dbf, and .prj ") # and cpg is ok but not essential?
          return(NULL)
       } else {
@@ -165,7 +165,7 @@ shapefile_from_filepaths <- function(filepaths = NULL, cleanit = TRUE, crs = 426
 ############################################################################################## #
 
 
-#' shapefile_clean  -  drop invalid rows and warn if all invalid
+#' Drop invalid rows and warn if all invalid
 #'
 #' @param shp a shapefile object using sf::read_sf()
 #' @param crs used in shp <- sf::st_transform(shp, crs = crs), default is crs = 4269 or Geodetic CRS NAD83 
@@ -191,7 +191,8 @@ shapefile_clean <- function(shp, crs = 4269) {
 ############################################################################################## #
 
 
-#' shapefile_from_sitepoints - convert table of lat,lon points/sites into sf:: shapefile
+#' Convert table of lat,lon points/sites into sf:: shapefile
+#' 
 #' Creates a simple feature (sf) dataframe from points
 #' @param sitepoints a data.table or data.frame with columns called lat,lon
 #' @param crs used in st_as_sf() default is crs = 4269 or Geodetic CRS NAD83 

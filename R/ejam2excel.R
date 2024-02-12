@@ -1,6 +1,15 @@
-#' ejam2excel - alias for table_xls_from_ejam()
+
+#' Save EJAM results in a spreadsheet
+#' 
+#' @description ejam2excel() takes the output of something like ejamit() and
+#' creates a spreadsheet with an overall summary tab, a site by site table tab,
+#' as well as other tabs such as map, plot, notes, etc.
+#' It is an alias for table_xls_from_ejam()
+#' 
 #' @inheritParams table_xls_from_ejam
+#' 
 #' @export
+#' 
 ejam2excel <- function(ejamitout, 
                        fname = NULL, # full path and name, or just name of .xlsx file 
                        save_now = TRUE, overwrite = TRUE, launchexcel = FALSE,
@@ -16,6 +25,7 @@ ejam2excel <- function(ejamitout,
                        hyperlink_colnames = c("EJScreen Report", "EJScreen Map", "ECHO report"),
                        ...
 ) {
+  
   table_xls_from_ejam(
     ejamitout, 
     fname,
@@ -34,5 +44,3 @@ ejam2excel <- function(ejamitout,
     ...
   ) 
 }
-
-

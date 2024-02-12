@@ -22,8 +22,20 @@
 
 ################################################################ #
 
-# used by doaggregate_custom() 
+# 
 
+#' DRAFT utility to use formulas provided as text, to calculate indicators
+#'
+#' @details may be used by doaggregate_custom() 
+#' @param bg data.frame//table of indicators or variables to use
+#' @param keep.old names of columns (variables) to retain from among those provided in bg
+#' @param keep.new names of calculated variables to retain in output
+#' @param formulas text strings of formulas
+#'
+#' @return data.frame of calculated variables one row per bg row
+#' 
+#' @export
+#'
 calc_ejam <- function(bg,
                       # folder = getwd(),
                       keep.old = c("bgid", "pop"),
@@ -86,6 +98,13 @@ calc_ejam <- function(bg,
 ################################################################ #
 
 
+#' DRAFT utility to use formulas provided as text, to calculate indicators
+#'
+#' @param mydf data.frame//table of indicators or variables to use
+#' @param formulas text strings of formulas
+#' @param keep etc.
+#'
+#'
 calc_byformula <- function(mydf, formulas = NULL, keep = formula_varname(formulas)) {
   
   
@@ -170,6 +189,11 @@ calc_byformula <- function(mydf, formulas = NULL, keep = formula_varname(formula
 ################################################################ #
 
 
+#' utility to check formulas and extract variable names they calculate values for
+#'
+#' @param myforms see calc_byformula()
+#'
+#'
 formula_varname <- function(myforms) {
   
   return(
@@ -184,3 +208,4 @@ formula_varname <- function(myforms) {
   # [1] 40
   
 }
+################################################################ #

@@ -1,4 +1,4 @@
-#' get order of variable names to sort by, as seen in EJScreen Community Report
+#' Get order of variable names to sort by, as seen in EJScreen Community Report
 #'
 #' @param varnames vector of indicator variables names from blockgroupstats, bgej, etc., 
 #'   such as "pm", "pctlowinc", "pctile.EJ.DISPARITY.traffic.score.eo" etc.

@@ -2,7 +2,7 @@
 % Please edit documentation in R/getblocks_diagnostics.R
 \name{getblocks_summarize_sites_per_block}
 \alias{getblocks_summarize_sites_per_block}
-\title{getblocks_summarize_sites_per_block - how many sites are near the blocks (site density near residents)}
+\title{utility - How many sites are near the blocks (site density near residents)}
 \usage{
 getblocks_summarize_sites_per_block(x, varname = "blockid")
 }
@@ -15,8 +15,9 @@ getblocks_summarize_sites_per_block(x, varname = "blockid")
 invisibly, a list of stats
 }
 \description{
-getblocks_summarize_sites_per_block - how many sites are near the blocks (site density near residents)
+utility - How many sites are near the blocks (site density near residents)
 }
 \seealso{
 \code{\link[=getblocks_diagnostics]{getblocks_diagnostics()}}
 }
+\keyword{internal}

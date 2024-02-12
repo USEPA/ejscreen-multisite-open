@@ -2,8 +2,7 @@
 % Please edit documentation in R/datawrite_to_local.R
 \name{datawrite_to_local}
 \alias{datawrite_to_local}
-\title{datawrite_to_local
-Write large object(s) like EJAM datasets to local disk for convenience during app/pkg development, formatted as .arrow or .rda}
+\title{Save datasets during package development}
 \usage{
 datawrite_to_local(
   varnames = c("bgid2fips", "blockid2fips", "blockpoints", "blockwts", "quaddata"),
@@ -33,11 +32,12 @@ just seeing in console info or the commands to be used, to test/check this}
 the paths of the objects as requested to be saved whether or not actually done
 }
 \description{
-datawrite_to_local
-Write large object(s) like EJAM datasets to local disk for convenience during app/pkg development, formatted as .arrow or .rda
+Utility to write large object(s) like EJAM datasets to local disk for convenience during app/pkg development,
+formatted as .arrow or .rda
 }
 \examples{
   # datawrite_to_local(ext = ".arrow", folder_local_source = ".", justchecking = F, overwrite = T) 
+  
 }
 \seealso{
 \code{\link[=datawrite_to_aws]{datawrite_to_aws()}}  \code{\link[=datawrite_to_local]{datawrite_to_local()}} \code{\link[=dataload_from_local]{dataload_from_local()}} \code{\link[=dataload_from_aws]{dataload_from_aws()}}

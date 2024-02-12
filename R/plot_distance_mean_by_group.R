@@ -1,7 +1,11 @@
-#' plot_distance_mean_by_group - Barplot Avg. proximity, by group
-#'  Shows proximity to sites, for each demographic group (relative to everyone else)
+
+
+#' Barplot of Average Proximity, by Group
+#' 
+#' Shows distance to sites, for residents in each demographic group (vs everyone else).
+#'   plot_distance_mean_by_group() and plot_distance_by_group() are synonymous.
 #'  
-#' @details   Note that the ratio shown is a ratio of distance among others to distance of a given group,
+#' @details Note that the ratio shown is a ratio of distance among others to distance of a given group,
 #'   so values below 1 mean the given demographic group lives closer to facilities.
 #'   A value of 0.85 would mean the group is only 85% as far from a site as everyone else.
 #'   
@@ -11,25 +15,31 @@
 #'    relative to the size of the block, the distance to the average resident in the block is 
 #'    estimated as 90 percent of the effective radius, which is what the radius of the block
 #'    would be if it were the same area in square meters or miles but circular in shape. 
+#'    
 #'    This is the approach used in EJScreen to estimate average proximity of a block resident in 
 #'    cases where the block is extremely close to the site or the site may actually be inside the block,
 #'    or exactly on top of the internal point of the block, in which case zero would not be an 
-#'    appropriate estimate of the distance, hence this adjustment is made in EJAM getblocksnearby()
-#' @seealso [distance_by_group()]
-#' @param results_bybg_people data.table from doaggregate()$results_bybg_people
+#'    appropriate estimate of the distance, hence this adjustment is made in EJAM [getblocksnearby()]
+#'    
+#' @param results_bybg_people data.table from `doaggregate()$results_bybg_people`
 #' @param demogvarname vector of column names like "pctlowinc" etc.
 #' @param demoglabel vector of labels like "Low Income Residents" etc.
 #' @param returnwhat If returnwhat is "table", invisibly returns a 
 #'    data.frame with group, ratio, avg_distance_for_group, avg_distance_for_nongroup.
 #'   If returnwhat is "plotfilename" then it returns the full path including filename of a .png in a tempdir
 #'   If returnwhat is "plot" then it returns the plot object as needed for table_xls_format() ?
-#' @seealso [distance_by_group_plot()]  [plot_distance_cdf_by_group()]
+#' @seealso [distance_by_group()] [distance_by_group_plot()]  [plot_distance_cdf_by_group()]
 #' @return see parameter returnwhat
-#' @inherit plot_distance_cdf_by_group examples 
+#' @inherit plot_distance_cdf_by_group examples
+#' 
+#' @aliases plot_distance_by_group
 #' @export
+#' 
 plot_distance_mean_by_group <- function(results_bybg_people, 
                                         demogvarname=NULL, # namez$d, namez$d_subgroups),  
-                                        demoglabel=NULL, graph=TRUE, returnwhat="table") {
+                                        demoglabel=fixcolnames(demogvarname,"r","shortlabel"),
+                                        graph=TRUE, returnwhat="table") {
+  
   if (is.null(demoglabel) & is.null(demogvarname)) {
     demoglabel <- c(names_d_friendly, names_d_subgroups_friendly)
     # demoglabel <- c(namez$d_friendly, namez$d_subgroups_friendly)
@@ -109,48 +119,68 @@ plot_distance_mean_by_group <- function(results_bybg_people,
     x <- x[ , c('group', 'nearest', 'nearer', 'ratio', 'avg_distance_for_group', 'avg_distance_for_nongroup')]
     return(x)
   }
-  
 }
 ################################################################################# # 
 
-#' distance_mean_by_group - Avg distance of each demog group (of multiple groups)
-#' Same as [plot_distance_mean_by_group()] but no plot by default
-#' @inherit plot_distance_mean_by_group
-#' @inherit plot_distance_cdf_by_group examples 
+
 #' @export
+#' 
+plot_distance_by_group <- plot_distance_mean_by_group
+######################################################### # 
+
+
+#' Avg distance of each demog group (of multiple groups) - Table or Plot
+#' 
+#' distance_mean_by_group() and distance_mean_by_group() are synonymous, and are like
+#'   [plot_distance_mean_by_group()], but show a table not plot, by default.
+#' 
+#' @details see examples in [plot_distance_cdf_by_group()]
+#' @inherit plot_distance_mean_by_group
+#' @inherit plot_distance_cdf_by_group examples
+#' 
+#' @aliases distance_by_group
+#' 
+#' @export
+#' 
 distance_mean_by_group <- function(results_bybg_people, 
-                                   demogvarname=NULL, # namez$d, namez$d_subgroups),  
-                                   demoglabel=NULL, returnwhat="table", graph=FALSE) {
-  if (is.null(demogvarname)) {demogvarname <- c(names_d, names_d_subgroups)} # available from EJAM package. cannot safely put this info in the defaults of the functions without referring to pkg name but want to avoid doing that so this code will work even pkg not installed and just loaded data files and sourced code 
+                                   demogvarname=NULL, 
+                                   demoglabel=fixcolnames(demogvarname,"r","shortlabel"), 
+                                   returnwhat="table", graph=FALSE) {
+  
+  if (is.null(demogvarname)) {
+    demogvarname <- c(names_d, names_d_subgroups)
+  } # available from EJAM package. cannot safely put this info in the defaults of the functions without referring to pkg name but want to avoid doing that so this code will work even pkg not installed and just loaded data files and sourced code 
   
   plot_distance_mean_by_group(
     results_bybg_people = results_bybg_people, 
     demogvarname = demogvarname,
     # namez$d, namez$d_subgroups),  
-    demoglabel = demoglabel, returnwhat = returnwhat,
+    demoglabel = demoglabel,
+    returnwhat = returnwhat,
     graph = graph)
 }
 ################################################################################# # 
 
-#' distance_by_group - Avg distance of each demog group (of multiple groups)
-#' Same as [plot_distance_mean_by_group()] but no plot by default
-#' @details see examples in [plot_distance_cdf_by_group()]
-#' @inherit plot_distance_mean_by_group
+
 #' @export
+#'
 distance_by_group     <- function(results_bybg_people, 
-                                  demogvarname=NULL, # namez$d, namez$d_subgroups),  
-                                  demoglabel=NULL, returnwhat="table", graph=FALSE) {
+                                  demogvarname=NULL, 
+                                  demoglabel=fixcolnames(demogvarname,"r","shortlabel"),  
+                                  returnwhat="table", graph=FALSE) {
   if (is.null(demogvarname)) {demogvarname <- c(names_d, names_d_subgroups)} # available from EJAM package. cannot safely put this info in the defaults of the functions without referring to pkg name but want to avoid doing that so this code will work even pkg not installed and just loaded data files and sourced code 
   
   plot_distance_mean_by_group(
     results_bybg_people = results_bybg_people, 
     demogvarname = demogvarname,
     # namez$d, namez$d_subgroups),  
-    demoglabel = demoglabel,  returnwhat = returnwhat, graph = graph)
+    demoglabel = demoglabel,
+    returnwhat = returnwhat,
+    graph = graph)
 }
 ################################################################################# # 
 
-#' distance_by_group1  -  JUST ONE GROUP
+
 #' Get average distance for ONE demographic group versus everyone else
 #' 
 #' @details  
@@ -179,8 +209,12 @@ distance_by_group     <- function(results_bybg_people,
 #' @seealso [plot_distance_mean_by_group()]  [distance_by_group()]
 #' @inherit plot_distance_cdf_by_group examples 
 #' @return list of 2 numbers: avg_distance_for_group and avg_distance_for_nongroup
+#' 
+#' @keywords internal
 #'
-distance_by_group1 <- function(results_bybg_people, demogvarname="Demog.Index", demoglabel=demogvarname) {
+distance_by_group1 <- function(results_bybg_people, 
+                               demogvarname="Demog.Index", 
+                               demoglabel=fixcolnames(demogvarname, "r", "shortlabel")) {
   
   if (is.list(results_bybg_people) & ("results_bybg_people" %in% names(results_bybg_people))) {
     # assume it was a mistake and they meant to provide out$results_bybg_people not out itself
@@ -211,4 +245,3 @@ distance_by_group1 <- function(results_bybg_people, demogvarname="Demog.Index", 
     avg_distance_for_nongroup = distance_avg_nond))
 }
 ################################################################################# # 
-

@@ -3,9 +3,9 @@
 #   SPEEDTEST   #########################################################################
 
 
-#' speedtest
-#' Run EJAM analysis for several radii and numbers of sitepoints, 
-#'   recording how long each step takes 
+
+#' Run EJAM analysis for several radii and numbers of sitepoints, recording how long each step takes
+#' 
 #' @details   
 #'   This is essentially a test script that times each step of EJAM for a large dataset
 #'    - pick a sample size (n) (or enter sitepoints, or set n=0 to interactively pick file of points in RStudio)
@@ -55,8 +55,9 @@
 #'  }
 #' @return EJAM results similar to as from the web app or [ejamit()] and also creates a plot
 #' @seealso [speedtest_plot()] 
-#' @export
-#'
+#' 
+#' @keywords internal
+#' 
 speedtest <- function(n=10, sitepoints=NULL, weighting='frs', 
                       radii=c(1, 3.106856, 5, 10, 31.06856)[1:3], avoidorphans=FALSE,
                       test_ejamit = FALSE, test_getblocksnearby=TRUE, test_doaggregate=TRUE, test_batch.summarize=FALSE, 
@@ -304,16 +305,18 @@ speedtest <- function(n=10, sitepoints=NULL, weighting='frs',
 ######################################################################### #
 
 
-#' speedtest_plot
 #' utility to plot output of speedtest(), rate of points analyzed per hour
+#' 
 #' @param x table from speedtest()
 #' @param ltype optional type of line for plot
 #' @param plotfile optional path and filename of .png image file to save
 #' @return side effect is a plot. returns x but with seconds column added to it
 #' @seealso [speedtest()]
-#' @export
+#' 
+#' @keywords internal
 #'
-speedtest_plot = function(x, ltype="b", plotfile=NULL, secondsperthousand=FALSE) { 
+speedtest_plot = function(x, ltype="b", plotfile=NULL, secondsperthousand=FALSE) {
+  
   radii <- unique(x$miles)
   nlist  <- unique(x$points)
   mycolors <- runif(length(radii), 1, 600)
@@ -354,17 +357,18 @@ speedtest_plot = function(x, ltype="b", plotfile=NULL, secondsperthousand=FALSE)
   }
   return(x)
 }
-
-
 ######################################################################### #
 
-#' speedtable_summarize
+
 #' utility used by speedtest()
+#' 
 #' @param speedtable from speedtest(), with columns named points and perhr
 #' @seealso [speedtest()]
-#' @export
+#' 
+#' @keywords internal
 #'
 speedtable_summarize <- function(speedtable) {
+  
   # used by speedtest()
   runs <- sum(speedtable$points)
   total_hours <- sum(speedtable$points / speedtable$perhr)
@@ -372,14 +376,14 @@ speedtable_summarize <- function(speedtable) {
   mysummary <- data.frame(points = runs, miles = NA, perhr = perhr)
   return(speedtable_expand(mysummary))
 }
-
 ######################################################################### #
 
-#' speedtable_expand
+
 #' Utility used by speedtest() and speedtable_summarize()
+#' 
 #' @param speedtable must have columns called  points, miles, and perhr 
 #'
-#' @export
+#' @keywords internal
 #'
 speedtable_expand <- function(speedtable) {
   # used by speedtest() and by speedtable_summarize()
@@ -391,7 +395,6 @@ speedtable_expand <- function(speedtable) {
   speedtable$secondsper1000 <- round((1000/speedtable$points) * speedtable$points / (speedtable$perhr / 3600), 0)
   return(speedtable)
 }
-
 ######################################################################### #
 
 

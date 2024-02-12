@@ -2,7 +2,7 @@
 % Please edit documentation in R/getblocksnearbyviaQuadTree_Clustered-DRAFT.R
 \name{getblocksnearbyviaQuadTree_Clustered}
 \alias{getblocksnearbyviaQuadTree_Clustered}
-\title{getblocksnearbyviaQuadTree_Clustered - find nearby blocks using Quad Tree data structure for speed, CLUSTERED FOR PARALLEL PROCESSING}
+\title{DRAFT / WAS WORK IN PROGRESS  - find nearby blocks using Quad Tree data structure for speed, CLUSTERED FOR PARALLEL PROCESSING}
 \usage{
 getblocksnearbyviaQuadTree_Clustered(
   sitepoints,
@@ -38,3 +38,4 @@ Uses indexgridsize and quaddata  variables that come from global environment (bu
 \seealso{
 \code{\link[=getblocksnearby]{getblocksnearby()}} \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} \code{\link[=getblocksnearbyviaQuadTree_Clustered]{getblocksnearbyviaQuadTree_Clustered()}} \code{\link[=getblocksnearbyviaQuadTree2]{getblocksnearbyviaQuadTree2()}}
 }
+\keyword{internal}

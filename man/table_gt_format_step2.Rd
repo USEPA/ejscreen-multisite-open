@@ -2,7 +2,7 @@
 % Please edit documentation in R/table_gt_.R
 \name{table_gt_format_step2}
 \alias{table_gt_format_step2}
-\title{table_gt_format_step2 - Format a table of demog or envt scores, percentiles, etc. to look similar to EJScreen report tables}
+\title{Format a table of demog or envt scores, percentiles, etc. to look similar to EJScreen report tables}
 \usage{
 table_gt_format_step2(
   df,
@@ -42,7 +42,7 @@ Uses gt R package for formatting.}
 a gt-style table with formatting to closely match EJScreen standard report formatting
 }
 \description{
-table_gt_format_step2 - Format a table of demog or envt scores, percentiles, etc. to look similar to EJScreen report tables
+Format a table of demog or envt scores, percentiles, etc. to look similar to EJScreen report tables
 }
 \seealso{
 \code{\link[=table_gt_from_ejamit]{table_gt_from_ejamit()}}

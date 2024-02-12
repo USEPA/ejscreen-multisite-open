@@ -12,11 +12,14 @@
 #'   but also see for a more complete package that helps provide and excel-like interface:
 #'     https://dillonhammill.github.io/DataEditR/
 #' @param id,input,output,session Internal parameters for {shiny}.
-#' @importFrom rhandsontable rhandsontable hot_to_r rHandsontableOutput renderRHandsontable 
+#' @importFrom rhandsontable rhandsontable hot_to_r rHandsontableOutput renderRHandsontable
+#' 
 #' @noRd 
 #'
 #' @importFrom shiny NS tagList 
+#' 
 MODULE_UI_latlontypedin <- function(id) {
+  
   ns <- NS(id)
   tagList(
     rhandsontable::rHandsontableOutput(outputId = ns("TYPED_IN_DATA")), # if you want to display the table output ?
@@ -30,6 +33,7 @@ MODULE_UI_latlontypedin <- function(id) {
 #' MODULE_SERVER_latlontypedin - latlontypedin Server code
 #'
 #' @noRd 
+#' 
 MODULE_SERVER_latlontypedin <- function(id,
                                         reactdat,
                                         allowColumnEdit = FALSE,

@@ -12,9 +12,9 @@
 #'   with those ids in a column whose name is among allowed aliases that get tried here:
 #'   the colname with the FRS regids must be one of REGISTRY_ID, RegistryID, regid, siteid,
 #'   checked in that order of preference.
-#'   
 #' @return boolean value (valid or not valid)
-#' @export
+#'   
+#' @keywords internal
 #'
 frs_is_valid <- function(frs_upload) {
   

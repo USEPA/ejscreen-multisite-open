@@ -2,7 +2,7 @@
 % Please edit documentation in R/dataload_from_pins.R
 \name{dataload_from_pins}
 \alias{dataload_from_pins}
-\title{dataload_from_pins - download / load datasets from pin board}
+\title{Utility to download / load datasets from pin board}
 \usage{
 dataload_from_pins(
   varnames = c(c("blockwts", "blockpoints", "blockid2fips", "quaddata"), "bgej",
@@ -55,7 +55,7 @@ regardless of whether they are already in the environment, and
 regardless of whether they were specified among varnames, or are related to EJAM at all.
 }
 \description{
-dataload_from_pins - download / load datasets from pin board
+Utility to download / load datasets from pin board
 }
 \details{
 This does work if on VPN and if credentials already set up for the user doing this:
@@ -64,14 +64,11 @@ board <- pins::board_connect(auth = "rsconnect")
 
 This does work if that is true plus the two environment variables were created:
 
-board <- pins::board_connect(auth = 'manual',
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{server = Sys.getenv("CONNECT_SERVER"), 
-
-key = Sys.getenv("CONNECT_API_KEY")
+\if{html}{\out{<div class="sourceCode">}}\preformatted{board <- pins::board_connect(auth = 'manual', 
+  server = Sys.getenv("CONNECT_SERVER"), 
+  key = Sys.getenv("CONNECT_API_KEY")
+) 
 }\if{html}{\out{</div>}}
-
-)
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{after Sys.setenv(CONNECT_SERVER = "https://rstudio-connect.dmap-stage.aws.epa.gov")
 

@@ -2,8 +2,7 @@
 % Please edit documentation in R/utils_indexblocks.R
 \name{indexblocks}
 \alias{indexblocks}
-\title{indexblocks
-Create localtree (a quadtree index of all US block centroids) in global environment}
+\title{Create localtree (a quadtree index of all US block centroids) in global environment}
 \usage{
 indexblocks()
 }
@@ -11,7 +10,6 @@ indexblocks()
 Returns TRUE when done. Side effect is it creates the index in memory.
 }
 \description{
-indexblocks
 Create localtree (a quadtree index of all US block centroids) in global environment
 }
 \details{

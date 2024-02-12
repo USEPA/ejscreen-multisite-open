@@ -33,3 +33,4 @@ utility for developing package - searches for text in each function exported by 
 \details{
 Searches the body and parameter defaults of exported functions.
 }
+\keyword{internal}

@@ -1,3 +1,14 @@
+
+#' utility - estimate how large table might be that will be output of getblocksnearby()
+#'
+#' @param nsites count of sites
+#' @param radius radius in miles
+#'
+#' @return a number
+#'
+#' @export
+#' @keywords internal
+#' 
 getblocks_predict_blocks_per_site <- function(nsites, radius) {
   # rough estimate of how many rows sites2blocks might be after
   # sites2blocks <- getblocksnearby(radius = radius) 
@@ -6,7 +17,8 @@ getblocks_predict_blocks_per_site <- function(nsites, radius) {
 }
 ######################################################################################### # 
 
-#' getblocks_summarize_blocks_per_site - how many blocks are near the sites (pop density affects accuracy)
+
+#' utility - How many blocks are near the sites (pop density affects accuracy)
 #' 
 #' @description Number of blocks near avg site, how many sites have only 1 or fewer than 30 blocks nearby, etc.
 #' 
@@ -15,7 +27,9 @@ getblocks_predict_blocks_per_site <- function(nsites, radius) {
 #' @return invisibly, a list of stats
 #' @import data.table
 #' @seealso [getblocks_diagnostics()]
+#' 
 #' @export
+#' @keywords internal
 #'
 getblocks_summarize_blocks_per_site <- function(x, varname='ejam_uniq_id') {
   blocks_per_site_histo <- table(table(x[ , ..varname]))
@@ -31,14 +45,15 @@ getblocks_summarize_blocks_per_site <- function(x, varname='ejam_uniq_id') {
 ######################################################################################### # 
 
 
-#' getblocks_summarize_sites_per_block - how many sites are near the blocks (site density near residents)
+#' utility - How many sites are near the blocks (site density near residents)
 #'
 #' @param x The output of [getblocksnearby()] like testoutput_getblocksnearby_10pts_1miles
 #' @param varname colname of variable in data.table x that is the one to summarize by
 #' @return invisibly, a list of stats
-#' @export
 #' @import data.table
 #' @seealso [getblocks_diagnostics()]
+#'
+#' @keywords internal
 #'
 getblocks_summarize_sites_per_block <- function(x, varname='blockid') {
   table(table(x[ , ..varname]))
@@ -46,8 +61,7 @@ getblocks_summarize_sites_per_block <- function(x, varname='blockid') {
 ######################################################################################### # 
 
 
-
-#' getblocks_diagnostics - Lots of stats about # of blocks, # of sites, etc.
+#' utility - How many blocks and many other stats about blocks and sites
 #'
 #' @param x The output of [getblocksnearby()] like testoutput_getblocksnearby_10pts_1miles
 #' @param detailed if TRUE, also shows in console a long table of frequencies via [getblocks_summarize_blocks_per_site()]
@@ -71,6 +85,7 @@ getblocks_summarize_sites_per_block <- function(x, varname='blockid') {
 #'   getblocks_diagostics(testoutput_getblocksnearby_1000pts_1miles, see_distanceplot = TRUE)
 #'   
 #' @import data.table
+#'
 #' @export
 #'
 getblocks_diagnostics <- function(x, detailed=FALSE, see_pctiles=FALSE, see_distanceplot = FALSE) {
@@ -143,7 +158,6 @@ getblocks_diagnostics <- function(x, detailed=FALSE, see_pctiles=FALSE, see_dist
   
   count_block_site_distances <- blockcount_incl_dupes # number of rows in output table of all block-site pairs with their distance.
   blockcount_avgsite         <- blockcount_incl_dupes / sitecount_unique_out
-  
   
   sumstats <- list(
     sitecount_unique_out = sitecount_unique_out, 

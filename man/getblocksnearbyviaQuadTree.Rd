@@ -57,8 +57,10 @@ It can be automatically created when the package is attached via the .onAttach()
 \item{updateProgress, }{optional function to update Shiny progress bar}
 }
 \description{
+This is what \code{\link[=getblocksnearby]{getblocksnearby()}} uses to do the work.
 Given a set of points and a specified radius in miles,
 this function quickly finds all the US Census blocks near each point.
+This does the work actually supporting getblocksnearby()
 }
 \details{
 For each point, it uses the specified search radius and finds the distance to
@@ -86,3 +88,4 @@ areal apportionment of block groups would provide.
 \seealso{
 \code{\link[=ejamit]{ejamit()}} \code{\link[=getblocksnearby]{getblocksnearby()}}
 }
+\keyword{internal}

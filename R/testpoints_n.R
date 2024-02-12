@@ -1,7 +1,9 @@
-#' testpoints_n - Random points in USA - average resident, facility, BG, block, or square mile
+#' Random points in USA - average resident, facility, BG, block, or square mile
+#' 
 #' Get data.table of Random Points (lat lon) for Testing/ Benchmarking/ Demos, weighted in various ways. 
 #'   The weighting can be specified so that each point reflects the average EPA-regulated 
 #'   facility, blockgroup, block, place on the map, or US resident.
+#'   
 #' @param n Number of points needed (sample size)
 #' @param weighting word indicating how to weight the random points (some synonyms are allowed, in addition to those shown here): 
 #'   
@@ -25,9 +27,9 @@
 #'   
 #' @import data.table
 #' @export
-#'
-#' @examples \dontrun{
+#' @examples 
 #' mapfast(testpoints_n(300, ST_needed = c('LA','MS')) )
+#' \dontrun{
 #' n=2
 #' for (d in c(TRUE,FALSE)) {
 #'   for (w in c('frs', 'pop', 'area', 'bg', 'block')) {

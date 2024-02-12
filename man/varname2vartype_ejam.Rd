@@ -2,7 +2,7 @@
 % Please edit documentation in R/table_xls_format.R
 \name{varname2vartype_ejam}
 \alias{varname2vartype_ejam}
-\title{varname2vartype_ejam - helper function - given indicator names, look up what type each is}
+\title{helper function - given indicator names, look up what type each is}
 \usage{
 varname2vartype_ejam(varname, varnameinfo)
 }
@@ -15,7 +15,7 @@ varname2vartype_ejam(varname, varnameinfo)
 vector same size as varname
 }
 \description{
-varname2vartype_ejam - helper function - given indicator names, look up what type each is
+helper function - given indicator names, look up what type each is
 }
 \details{
 The types are things like raw data count for indicator, average, percentile, etc.

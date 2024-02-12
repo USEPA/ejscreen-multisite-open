@@ -2,10 +2,7 @@
 % Please edit documentation in R/testpoints_n.R
 \name{testpoints_n}
 \alias{testpoints_n}
-\title{testpoints_n - Random points in USA - average resident, facility, BG, block, or square mile
-Get data.table of Random Points (lat lon) for Testing/ Benchmarking/ Demos, weighted in various ways.
-The weighting can be specified so that each point reflects the average EPA-regulated
-facility, blockgroup, block, place on the map, or US resident.}
+\title{Random points in USA - average resident, facility, BG, block, or square mile}
 \usage{
 testpoints_n(
   n = 10,
@@ -37,14 +34,13 @@ data.frame or data.table with columns lat, lon in decimal degrees, and
 any other columns that are in the table used (based on weighting)
 }
 \description{
-testpoints_n - Random points in USA - average resident, facility, BG, block, or square mile
 Get data.table of Random Points (lat lon) for Testing/ Benchmarking/ Demos, weighted in various ways.
 The weighting can be specified so that each point reflects the average EPA-regulated
 facility, blockgroup, block, place on the map, or US resident.
 }
 \examples{
-\dontrun{
 mapfast(testpoints_n(300, ST_needed = c('LA','MS')) )
+\dontrun{
 n=2
 for (d in c(TRUE,FALSE)) {
   for (w in c('frs', 'pop', 'area', 'bg', 'block')) {

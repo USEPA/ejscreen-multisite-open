@@ -2,7 +2,7 @@
 % Please edit documentation in R/shapefile_xyz.R
 \name{shapefile_clean}
 \alias{shapefile_clean}
-\title{shapefile_clean  -  drop invalid rows and warn if all invalid}
+\title{Drop invalid rows and warn if all invalid}
 \usage{
 shapefile_clean(shp, crs = 4269)
 }
@@ -15,7 +15,7 @@ shapefile_clean(shp, crs = 4269)
 a shapefile object using sf::read_sf()
 }
 \description{
-shapefile_clean  -  drop invalid rows and warn if all invalid
+Drop invalid rows and warn if all invalid
 }
 \seealso{
 \code{\link[=shapefile_from_folder]{shapefile_from_folder()}}

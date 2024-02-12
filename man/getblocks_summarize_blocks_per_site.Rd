@@ -2,7 +2,7 @@
 % Please edit documentation in R/getblocks_diagnostics.R
 \name{getblocks_summarize_blocks_per_site}
 \alias{getblocks_summarize_blocks_per_site}
-\title{getblocks_summarize_blocks_per_site - how many blocks are near the sites (pop density affects accuracy)}
+\title{utility - How many blocks are near the sites (pop density affects accuracy)}
 \usage{
 getblocks_summarize_blocks_per_site(x, varname = "ejam_uniq_id")
 }
@@ -20,3 +20,4 @@ Number of blocks near avg site, how many sites have only 1 or fewer than 30 bloc
 \seealso{
 \code{\link[=getblocks_diagnostics]{getblocks_diagnostics()}}
 }
+\keyword{internal}

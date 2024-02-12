@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils_dupenames.R
 \name{dupenames}
 \alias{dupenames}
-\title{dupenames - UTILITY - check conflicting exported function or data names}
+\title{UTILITY - check conflicting exported function or data names}
 \usage{
 dupenames(
   pkg = EJAM::ejampackages,
@@ -33,3 +33,4 @@ of 2+ packages, and see what is on search path, for dev renaming / moving functi
 \seealso{
 \code{\link[=all_equal_functions]{all_equal_functions()}}
 }
+\keyword{internal}

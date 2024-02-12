@@ -2,7 +2,7 @@
 % Please edit documentation in R/ejam2excel.R
 \name{ejam2excel}
 \alias{ejam2excel}
-\title{ejam2excel - alias for table_xls_from_ejam()}
+\title{Save EJAM results in a spreadsheet}
 \usage{
 ejam2excel(
   ejamitout,
@@ -56,5 +56,8 @@ prompts RStudio user interactively asking where to save the downloaded file}
 heatmap_colnames, heatmap_cuts, heatmap_colors, etc.}
 }
 \description{
-ejam2excel - alias for table_xls_from_ejam()
+ejam2excel() takes the output of something like ejamit() and
+creates a spreadsheet with an overall summary tab, a site by site table tab,
+as well as other tabs such as map, plot, notes, etc.
+It is an alias for table_xls_from_ejam()
 }

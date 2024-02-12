@@ -2,7 +2,7 @@
 % Please edit documentation in R/latlon_df_clean.R
 \name{latlon_df_clean}
 \alias{latlon_df_clean}
-\title{latlon_df_clean - Find and clean up latitude and longitude columns in a data.frame}
+\title{Get lat lon columns and clean up those latitude and longitude columns in a data.frame}
 \usage{
 latlon_df_clean(df)
 }
@@ -22,7 +22,9 @@ Cleans up lat and lon values (removes extra characters, makes numeric)
 }
 \examples{
 #  x <- latlon_df_clean(x)
+
 }
 \seealso{
 Used by \code{\link[=latlon_from_anything]{latlon_from_anything()}}. Uses \code{\link[=latlon_infer]{latlon_infer()}} \code{\link[=latlon_is.valid]{latlon_is.valid()}} \code{\link[=latlon_as.numeric]{latlon_as.numeric()}}
 }
+\keyword{internal}

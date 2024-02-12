@@ -16,7 +16,7 @@ testthat::test_that("Estimate of radius, inferred from reported distances from g
     
     for (i in 1:trials) {
       
-      actual <- runif(1, 
+      actual <- runif (1, 
                       min = 0.5, 
                       max = convert_units(5, from = "km", towhat = "miles"))
       actual <- round(actual, DECIMALS_USED_FOR_ACTUAL_RADIUS)

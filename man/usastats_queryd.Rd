@@ -47,8 +47,10 @@ statestats_query(varnames = names_e)
 statestats_query(varnames = names_d_subgroups)
 head(statestats_query(varnames = longlist))
 
-## in USA overall, see mean and key percentiles for all demog and envt indicators
-usastats_query() # or statestats_query('us') # can say us or US or USA or usa etc.
+## in USA overall, see mean and key percentiles
+# for all demog and envt indicators
+usastats_query() # or statestats_query('us') 
+# can say us or US or USA or usa etc.
 usastats_query(PCTILES = 'mean')
 usastats_means() # same but nicer looking format in console
 usastats_means(dig=4)
@@ -73,12 +75,14 @@ statestats_query('MD','proximity.tsdf')
 statestats_query(varnames = 'proximity.tsdf')
 
 ## using full blockgroup dataset, not lookup tables of percentiles, 
-blockgroupstats[, lapply(.SD, function(x) mean(x, na.rm=T)),  .SDcols= c(names_d, names_e)]
+blockgroupstats[, lapply(.SD, function(x) mean(x, na.rm=T)),
+   .SDcols= c(names_d, names_e)]
 
 ##   see all total counts (not just US means), 
 ##   demographics including subgroups, 
 ##   but not environmental indicators.
-t(round(ustotals2(bg = blockgroupstats),2)) #  ustotals2 is from EJAMbatch.summarizer package
+t(round(ustotals2(bg = blockgroupstats),2)) 
+ #  ustotals2 is from EJAMbatch.summarizer package
 t(blockgroupstats[, lapply(.SD, function(x) mean(x, na.rm=T)),
     .SDcols= c(names_e, names_d)])
 

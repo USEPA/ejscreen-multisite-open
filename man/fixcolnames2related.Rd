@@ -2,8 +2,7 @@
 % Please edit documentation in R/fixcolnames2related.R
 \name{fixcolnames2related}
 \alias{fixcolnames2related}
-\title{fixcolnames2related - get name of related avg, pctile, or ratio variable name
-Given names_d, e.g., returns names_d_ratio_to_state_avg}
+\title{Get name of related avg, pctile, or ratio variable name}
 \usage{
 fixcolnames2related(
   namesnow,
@@ -23,7 +22,6 @@ unique(map_headernames$vartype) since those give ambiguous answers).}
 vector as long as namesnow (or just returns namesnow if relatedtype is invalid)
 }
 \description{
-fixcolnames2related - get name of related avg, pctile, or ratio variable name
 Given names_d, e.g., returns names_d_ratio_to_state_avg
 }
 \details{
@@ -46,4 +44,6 @@ paste0("avg.", names_e)
 fixcolnames2related(names_e, "usratio")
 # names_ej # does not work with this as input
 # fixcolnames2related(names_ej, "uspctile") # does not return names_ej_pctile
+  
 }
+\keyword{internal}

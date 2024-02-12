@@ -1,23 +1,21 @@
-#' dataload_from_pins - download / load datasets from pin board
+
+#' Utility to download / load datasets from pin board
+#' 
 #' @details 
 #'   This does work if on VPN and if credentials already set up for the user doing this:
 #'   
 #'   board <- pins::board_connect(auth = "rsconnect") 
 #'   
 #'   This does work if that is true plus the two environment variables were created:
-#'   
+#'   ```
 #'   board <- pins::board_connect(auth = 'manual', 
-#'   
 #'     server = Sys.getenv("CONNECT_SERVER"), 
-#'   
 #'     key = Sys.getenv("CONNECT_API_KEY")
-#'     
 #'   ) 
-#'   
+#'   ```
 #'     after Sys.setenv(CONNECT_SERVER = "https://rstudio-connect.dmap-stage.aws.epa.gov")
 #'   
 #'     and   Sys.setenv(CONNECT_API_KEY =  correct-API-key-goes-here  )
-#'   
 #'   
 #' @param varnames character vector of names of R objects to get from board, 
 #'   or set this to "all" to load all of them

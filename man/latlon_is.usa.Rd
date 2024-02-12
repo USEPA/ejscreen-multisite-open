@@ -2,8 +2,7 @@
 % Please edit documentation in R/latlon_is.valid.R
 \name{latlon_is.usa}
 \alias{latlon_is.usa}
-\title{latlon_is.usa
-Check lat lon coordinates to see if each is approx. in general area of USA excluding Island Areas}
+\title{Check lat lon coordinates to see if each is approx. in general area of USA excluding Island Areas}
 \usage{
 latlon_is.usa(lat, lon)
 }
@@ -19,9 +18,9 @@ rough bounding boxes that includes the USA without
 the Island Areas Guam, American Samoa, USVI, N Marianas Islands.
 }
 \description{
-latlon_is.usa
 Check lat lon coordinates to see if each is approx. in general area of USA excluding Island Areas
 }
 \seealso{
 \code{\link[=latlon_is.usa]{latlon_is.usa()}} \code{\link[=latlon_is.islandareas]{latlon_is.islandareas()}} \code{\link[=latlon_is.available]{latlon_is.available()}} \code{\link[=latlon_is.possible]{latlon_is.possible()}}
 }
+\keyword{internal}

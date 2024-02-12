@@ -1,5 +1,9 @@
-#' getblocksnearby - Fast way to find nearby points (distance to each Census block centroid near each site)
-#' @description 
+#' Very fast way to distances to all nearby Census blocks
+#' 
+#' @description
+#'   Get distance from each site (e.g., facility) to each 
+#'   Census block centroid within some radius
+#' 
 #'   Given a set of points and a specified radius, 
 #'   this function quickly finds all the US Census blocks near each point. 
 #'   For each point, it uses the specified radius distance and finds the distance to 
@@ -27,6 +31,7 @@
 #' @param ...  passed to [getblocksnearbyviaQuadTree()] or other such functions
 #' 
 #' @seealso [ejamit()]  [getblocksnearbyviaQuadTree()] [getblocksnearbyviaQuadTree_Clustered()] [getblocksnearbyviaQuadTree2()]
+#' 
 #' @export
 #'
 getblocksnearby  <- function(sitepoints, radius=3, maxradius=31.07, 
@@ -43,7 +48,7 @@ getblocksnearby  <- function(sitepoints, radius=3, maxradius=31.07,
     if (interactive()) {
       sitepoints <- rstudioapi::selectFile()
     } else {
-      if(shiny::isRunning()){
+      if (shiny::isRunning()) {
         warning("sitepoints (locations to analyze) is missing but required.")
         return(NULL)
         
@@ -95,7 +100,7 @@ getblocksnearby  <- function(sitepoints, radius=3, maxradius=31.07,
                                     quadtree = quadtree, quiet = quiet,
                                     ...)
   } else {
-    if(shiny::isRunning()){
+    if (shiny::isRunning()) {
       warning('parallel processing version not implemented yet')
       return(NULL)
       

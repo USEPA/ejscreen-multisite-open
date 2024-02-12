@@ -2,7 +2,7 @@
 % Please edit documentation in R/pctile_from_raw_lookup.R
 \name{lookup_pctile}
 \alias{lookup_pctile}
-\title{lookup_pctile - Find approx percentiles in lookup table that is in memory}
+\title{Find approx percentiles in lookup table that is in memory}
 \usage{
 lookup_pctile(
   myvector,
@@ -33,7 +33,7 @@ or NA returned for each item looked up and warning given.
 For example, it could be "NY" for New York State, "USA" for national percentiles.}
 }
 \description{
-lookup_pctile - Find approx percentiles in lookup table that is in memory
+Find approx percentiles in lookup table that is in memory
 }
 \seealso{
 Identical to \code{\link[=pctile_from_raw_lookup]{pctile_from_raw_lookup()}} \link{usastats} \link{statestats}

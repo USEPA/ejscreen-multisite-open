@@ -2,9 +2,7 @@
 % Please edit documentation in R/utils_speedtest.R
 \name{speedtest}
 \alias{speedtest}
-\title{speedtest
-Run EJAM analysis for several radii and numbers of sitepoints,
-recording how long each step takes}
+\title{Run EJAM analysis for several radii and numbers of sitepoints, recording how long each step takes}
 \usage{
 speedtest(
   n = 10,
@@ -72,9 +70,7 @@ NOTE this slows it down though.}
 EJAM results similar to as from the web app or \code{\link[=ejamit]{ejamit()}} and also creates a plot
 }
 \description{
-speedtest
-Run EJAM analysis for several radii and numbers of sitepoints,
-recording how long each step takes
+Run EJAM analysis for several radii and numbers of sitepoints, recording how long each step takes
 }
 \details{
 This is essentially a test script that times each step of EJAM for a large dataset
@@ -106,3 +102,4 @@ This is essentially a test script that times each step of EJAM for a large datas
 \seealso{
 \code{\link[=speedtest_plot]{speedtest_plot()}}
 }
+\keyword{internal}

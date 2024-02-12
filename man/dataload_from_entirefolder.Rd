@@ -2,8 +2,7 @@
 % Please edit documentation in R/dataload_from_entirefolder.R
 \name{dataload_from_entirefolder}
 \alias{dataload_from_entirefolder}
-\title{dataload_from_entirefolder
-loads into global environment all .rda files found in specified folder}
+\title{dataload_from_entirefolder}
 \usage{
 dataload_from_entirefolder(folder = "./data")
 }
@@ -14,6 +13,6 @@ dataload_from_entirefolder(folder = "./data")
 nothing. just loads to global envt
 }
 \description{
-dataload_from_entirefolder
-loads into global environment all .rda files found in specified folder
+Loads into global environment all .rda files found in specified folder
 }
+\keyword{internal}

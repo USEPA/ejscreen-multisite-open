@@ -21,8 +21,9 @@ lint_misc <- function(x) {
   
   # use  <-  not  =  for assignment (this has many false positives due to multi-line lists of parameters in functions)
   ### x <- gsub("^([^(]*)=", "\1<-", x)
-  
 }
+################################################################### #
+
 
 lint_equals <- function(x) {
   cat('see lintr package and see the RStudio add-in that can be assigned e.g., ctrl-option-L  \n')
@@ -71,3 +72,4 @@ lint_equals <- function(x) {
   #   cat(lint_equals(testjunk), '\n')
   # 
 }
+################################################################### #

@@ -1,5 +1,7 @@
-#' table_xls_format - Format EJAM tabular outputs for saving as Excel spreadsheet
+#' Format EJAM tabular outputs for saving as Excel spreadsheet
+#' 
 #' Used by table_xls_from_ejam()
+#' 
 #' @details  Already took and put here most or all of code from table_xls_format() or table_xls_format_api() 
 #' @param overall  table to save in one tab, from ejamit()$overall, EJAM analysis of indicators overall (one row),
 #'   but if entire output of ejamit() is passed as if it were overall, function figures out eachsite, etc.
@@ -43,8 +45,6 @@
 #' @import webshot webshot
 #' @seealso [table_xls_from_ejam()] 
 #' @return a workbook, ready to be saved in spreadsheet format, with tabs like "Overall" and "Each Site"
-#' @export
-#'
 #' @examples \dontrun{
 #'   table_xls_format(
 #'     testoutput_ejamit_100pts_1miles$results_overall, 
@@ -54,6 +54,9 @@
 #'  wb <- table_xls_format(testoutput_ejamit_100pts_1miles)
 #'  openxlsx::saveWorkbook(wb, file = "out2.xlsx")
 #' }
+#' 
+#' @keywords internal
+#'
 table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, bybg=NULL, 
                             plot_distance_by_group = FALSE, 
                             summary_plot = NULL, 
@@ -69,15 +72,14 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
                             notes=NULL,
                             
                             heatmap_colnames = NULL,   heatmap_cuts = c(80, 90, 95),  heatmap_colors  = c("yellow", "orange", "red"),
-                            
                             heatmap2_colnames = NULL, heatmap2_cuts = c(1.009, 2, 3), heatmap2_colors = c("yellow", "orange", "red"),
                             
                             hyperlink_colnames = c("EJScreen Report", "EJScreen Map", "ECHO report"), 
                             graycolnames=NULL, narrowcolnames=NULL, graycolor='gray', narrow6=6,
                             
                             testing=FALSE, launchexcel = FALSE, saveas = NULL,
-                            
                             ...) {
+  
   ###################  #   ###################  #   ###################  #   ###################  # 
   # if user passed the entire output of ejamit() or doaggregate() as the first parameter, 
   # rather than splitting it up and passing overall, eachsite, longnames, formatted, bybg separately,
@@ -797,7 +799,8 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
 
 
 
-#' vartype_cat2color_ejam - helper function - assign fill color to shade excel cells by indicator type and category
+#' helper function - assign fill color to shade excel cells by indicator type and category
+#' 
 #' Use color shading to make spreadsheet easier to use, grouping the indicators
 #'
 #' @param vartype must be one found in dput(unique(map_headernames$vartype)) 
@@ -929,7 +932,8 @@ vartype_cat2color_ejam <- function(vartype=raw, varcategory="other") {
 ################################################################################# # 
 
 
-#' varname2color_ejam - helper function - for color coding excel sheet columns
+#' helper function - for color coding excel sheet columns
+#' 
 #' Convert R variable name of indicator to appropriate color for header row in Excel
 #' @param varname things like us.avg.pctlowinc 
 #'
@@ -953,7 +957,8 @@ varname2color_ejam <- function(varname, varnameinfo) {
 ################################################################################# # 
 
 
-#' varname2vartype_ejam - helper function - given indicator names, look up what type each is
+#' helper function - given indicator names, look up what type each is
+#' 
 #' @details  
 #'   The types are things like raw data count for indicator, average, percentile, etc.
 #' @param varname vector of 1 or more names
@@ -991,7 +996,9 @@ varname2vartype_ejam <- function(varname, varnameinfo) {
 }
 ################################################################################# # 
 
-#' varname2varcategory_ejam - helper function - given indicator names, look up what category each is
+
+#' helper function - given indicator names, look up what category each is
+#' 
 #' @details  
 #' tells if variable is "Demographic" "Environmental" "EJ Index" or "other"
 #'   as from dput(unique(map_headernames$varcategory))

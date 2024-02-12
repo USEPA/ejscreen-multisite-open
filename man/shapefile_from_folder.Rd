@@ -2,7 +2,7 @@
 % Please edit documentation in R/shapefile_xyz.R
 \name{shapefile_from_folder}
 \alias{shapefile_from_folder}
-\title{shapefile_from_folder  -  read shapefile from a folder}
+\title{Read shapefile from a folder}
 \usage{
 shapefile_from_folder(folder = NULL, cleanit = TRUE, crs = 4269)
 }
@@ -17,7 +17,7 @@ shapefile_from_folder(folder = NULL, cleanit = TRUE, crs = 4269)
 a shapefile object using sf::read_sf()
 }
 \description{
-shapefile_from_folder  -  read shapefile from a folder
+Read shapefile from a folder
 }
 \examples{
 \dontrun{

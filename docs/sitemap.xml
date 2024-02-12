@@ -73,6 +73,9 @@
     <loc>/reference/blockgroupstats.html</loc>
   </url>
   <url>
+    <loc>/reference/boxplots_ratios.html</loc>
+  </url>
+  <url>
     <loc>/reference/build_community_report.html</loc>
   </url>
   <url>
@@ -101,6 +104,9 @@
   </url>
   <url>
     <loc>/reference/colcounter_summary_pct.html</loc>
+  </url>
+  <url>
+    <loc>/reference/convert_units.html</loc>
   </url>
   <url>
     <loc>/reference/counties_as_sites.html</loc>
@@ -263,6 +269,9 @@
   </url>
   <url>
     <loc>/reference/fips_state_from_state_abbrev.html</loc>
+  </url>
+  <url>
+    <loc>/reference/fixcolnames.html</loc>
   </url>
   <url>
     <loc>/reference/fixcolnames2related.html</loc>
@@ -442,6 +451,12 @@
     <loc>/reference/mact_table.html</loc>
   </url>
   <url>
+    <loc>/reference/mapfast.html</loc>
+  </url>
+  <url>
+    <loc>/reference/mapfastej.html</loc>
+  </url>
+  <url>
     <loc>/reference/mapfastej_counties.html</loc>
   </url>
   <url>
@@ -512,6 +527,9 @@
   </url>
   <url>
     <loc>/reference/naics_validation.html</loc>
+  </url>
+  <url>
+    <loc>/reference/namesbyvarlist.html</loc>
   </url>
   <url>
     <loc>/reference/names_d.html</loc>
@@ -841,6 +859,9 @@
     <loc>/reference/unshared.html</loc>
   </url>
   <url>
+    <loc>/reference/urls_clusters_and_sort_cols.html</loc>
+  </url>
+  <url>
     <loc>/reference/url_4table.html</loc>
   </url>
   <url>
@@ -853,6 +874,27 @@
     <loc>/reference/url_countyhealthrankings.html</loc>
   </url>
   <url>
+    <loc>/reference/url_echo_facility_webpage.html</loc>
+  </url>
+  <url>
+    <loc>/reference/url_ejscreenmap.html</loc>
+  </url>
+  <url>
+    <loc>/reference/url_ejscreen_acs_report.html</loc>
+  </url>
+  <url>
+    <loc>/reference/url_ejscreen_report.html</loc>
+  </url>
+  <url>
+    <loc>/reference/url_envirofacts_data.html</loc>
+  </url>
+  <url>
+    <loc>/reference/url_enviromapper.html</loc>
+  </url>
+  <url>
+    <loc>/reference/url_frs_report.html</loc>
+  </url>
+  <url>
     <loc>/reference/url_getacs_epaquery.html</loc>
   </url>
   <url>
@@ -863,6 +905,9 @@
   </url>
   <url>
     <loc>/reference/url_get_via_url.html</loc>
+  </url>
+  <url>
+    <loc>/reference/url_linkify.html</loc>
   </url>
   <url>
     <loc>/reference/url_naics.com.html</loc>

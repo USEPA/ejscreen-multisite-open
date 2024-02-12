@@ -2,7 +2,7 @@
 % Please edit documentation in R/table_round.R
 \name{table_round}
 \alias{table_round}
-\title{table_round - round numbers in a table, each column to appropriate number of decimal places}
+\title{Round numbers in a table, each column to appropriate number of decimal places}
 \usage{
 table_round(x, var = names(x), varnametype = "rname", ...)
 }
@@ -21,7 +21,7 @@ or names of vector elements, within x}
 Returns the original x but with appropriate cells rounded off.
 }
 \description{
-table_round - round numbers in a table, each column to appropriate number of decimal places
+Round numbers in a table, each column to appropriate number of decimal places
 }
 \examples{
  

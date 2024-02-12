@@ -2,8 +2,7 @@
 % Please edit documentation in R/fix_pctcols_x100.R
 \name{fix_pctcols_x100}
 \alias{fix_pctcols_x100}
-\title{utility to multiply certain percentage columns by 100 to convert 0-1.00 into 0-100
-multiple some data to rescale percentages stored as 0 to 1, into 0-100}
+\title{utility to multiply certain percentage columns by 100 to convert 0-1.00 into 0-100}
 \usage{
 fix_pctcols_x100(df, cnames = NULL)
 }
@@ -22,8 +21,7 @@ names_pct_as_fraction_ejscreenit}
 df with data in specified columns multiplied by 100
 }
 \description{
-utility to multiply certain percentage columns by 100 to convert 0-1.00 into 0-100
-multiple some data to rescale percentages stored as 0 to 1, into 0-100
+multiplies some data to rescale percentages stored as 0 to 1, into 0-100
 }
 \examples{
  y = data.frame(pctlowinc = 1:2, pctpre1960 = 1:2, avg.pctunemployed = 1:2, avg.pctpre1960 = 1:2)
@@ -45,3 +43,4 @@ multiple some data to rescale percentages stored as 0 to 1, into 0-100
  ytable
  
 }
+\keyword{internal}

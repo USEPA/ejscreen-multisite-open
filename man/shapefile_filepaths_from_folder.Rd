@@ -2,7 +2,7 @@
 % Please edit documentation in R/shapefile_xyz.R
 \name{shapefile_filepaths_from_folder}
 \alias{shapefile_filepaths_from_folder}
-\title{shapefile_filepaths_from_folder  -  get list of valid filenames comprising shapefile including paths}
+\title{Get list of valid filenames comprising shapefile including paths}
 \usage{
 shapefile_filepaths_from_folder(folder = NULL)
 }
@@ -13,7 +13,7 @@ shapefile_filepaths_from_folder(folder = NULL)
 string vector of filenames including full paths
 }
 \description{
-shapefile_filepaths_from_folder  -  get list of valid filenames comprising shapefile including paths
+Get list of valid filenames comprising shapefile including paths
 }
 \seealso{
 \code{\link[=shapefile_from_folder]{shapefile_from_folder()}}

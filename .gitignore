@@ -49,3 +49,4 @@ packrat/lib*/
 
 # large datasets stored as .arrow
 /data/*.arrow
+docs

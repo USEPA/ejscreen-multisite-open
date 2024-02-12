@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils_rmost.R
 \name{rmost}
 \alias{rmost}
-\title{rmost - utility to rm(list=ls()) but not remove key datasets EJAM uses}
+\title{utility to rm(list=ls()) but not remove key datasets EJAM uses}
 \usage{
 rmost(
   notremove = c("rmost", "localtree", "blockgroupstats", "usastats", "statestats",
@@ -10,5 +10,5 @@ rmost(
 )
 }
 \description{
-rmost - utility to rm(list=ls()) but not remove key datasets EJAM uses
+utility to rm(list=ls()) but not remove key datasets EJAM uses
 }

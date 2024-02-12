@@ -1,6 +1,18 @@
 
+#' DRAFTING A FUNCTION TO COUNT NEARBY SITES OF A CERTAIN TYPE
+#'
+#' @param sitepoints sitepoints
+#' @param frspoints frspoints
+#' @param radius radius
+#' @param quadtree quadtree
+#'
+#' @return table
+#' 
+#' 
+#'
 getfrsnearby <- function(sitepoints, frspoints, radius = 1, quadtree = NULL) {
- 
+  
+ stop('not implemented yet - also see proxistat2')
   # INSTEAD OF INDEXING 1.5 MILL FRS POINTS TO ENABLE THIS,
   # WE MIGHT AS WELL USE getblocksnearby() once on all 1.5 mill FRS points, for 1 miles?,
   # and aggregate by block not site, to save those distance pairs (perhaps 1.5m * 1k)
