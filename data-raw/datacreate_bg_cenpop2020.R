@@ -59,7 +59,7 @@ bg_cenpop2020$bgid <- bgid2fips[bg_cenpop2020,  bgid, on = "bgfips"] # bgid2fips
 data.table::setkey(bg_cenpop2020,bgfips)
 data.table::setorder(bg_cenpop2020, bgid, bgfips, lat, lon, pop2020, ST)
 
-EJAMejscreenapi::mapfast(bg_cenpop2020[ST == "LA",], radius = 0.01)
+mapfast(bg_cenpop2020[ST == "LA",], radius = 0.01)
 ####################################################### # 
 #### DROP MOST OF THAT INFO ACTUALLY... 
 #  THIS IS 24MB and already have all this in bgpts, except for pop2020 and lat lon of pop2020wtd centroid !

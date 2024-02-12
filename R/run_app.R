@@ -1,4 +1,7 @@
-#' run_app - Launch the Shiny Application in RStudio
+
+
+#' Launch the Shiny Application in RStudio
+#' 
 #' @description launch Shiny web app from RStudio
 #' @details 
 #' app_run_EJAM()                 is like [run_app()] from the EJAM package
@@ -7,8 +10,10 @@
 #' @inheritParams shiny::shinyApp
 #'
 #' @export
+#' 
 #' @importFrom shiny shinyApp
 #' @importFrom golem with_golem_options
+#' 
 run_app      <- function(
     onStart = NULL,
     options = list(),

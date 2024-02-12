@@ -1138,7 +1138,7 @@ app_server <- function(input, output, session) {
   })
   
   ## Which points are clustered? (may double-count people) ####
-  # note this had been done in EJAMejscreenapi::addlinks_clusters_and_sort_cols() 
+  # note this had been done in addlinks_clusters_and_sort_cols() 
   # is_clustered <- shiny::reactive({
   #   req(data_uploaded())
   #   
@@ -2219,7 +2219,7 @@ app_server <- function(input, output, session) {
       
       ## *BOXPLOTS for short report (all sites D ratios vs US avg) ####
       
-      # compare / merge with  EJAMejscreenapi::boxplots_ratios  *** 
+      # compare / merge with  boxplots_ratios()  *** 
       
       # ****************************************************************************
       
@@ -2272,7 +2272,7 @@ app_server <- function(input, output, session) {
       mymaintext <- paste0("Ratios to ", towhat_nicename, ", as distributed across these sites")
       
       ##################################################################################### #
-      ## much of this is plotting code is based on EJAMejscreenapi::boxplots_ratios - should consolidate
+      ## much of this is plotting code is based on boxplots_ratios() - should consolidate
       
       ggplot2::ggplot(
         ratio.to.us.d.bysite  ,
@@ -2510,10 +2510,10 @@ app_server <- function(input, output, session) {
       dplyr::ungroup() %>%
       dplyr::select(dplyr::all_of(cols_to_select), ST)
     
-    # dt$`EJScreen Report` <- EJAMejscreenapi::url_linkify(dt$`EJScreen Report`, text = 'EJScreen Report')
-    # dt$`EJScreen Map` <- EJAMejscreenapi::url_linkify(dt$`EJScreen Map`, text = 'EJScreen Map')
-    #    #### dt$`ACS Report` <- EJAMejscreenapi::url_linkify(dt$`ACS Report`, text = 'ACS Report')
-    # dt$`ECHO report` <- ifelse(!is.na(dt$`ECHO report`), EJAMejscreenapi::url_linkify(dt$`ECHO report`, text = 'ECHO Report'), 'N/A')
+    # dt$`EJScreen Report` <- url_linkify(dt$`EJScreen Report`, text = 'EJScreen Report')
+    # dt$`EJScreen Map` <-  url_linkify(dt$`EJScreen Map`, text = 'EJScreen Map')
+    #    #### dt$`ACS Report` <-  url_linkify(dt$`ACS Report`, text = 'ACS Report')
+    # dt$`ECHO report` <- ifelse(!is.na(dt$`ECHO report`),  url_linkify(dt$`ECHO report`, text = 'ECHO Report'), 'N/A')
     
     # dt_avg <- data_summarized()$rows[c('Average person','Average site'),] %>% 
     #   dplyr::mutate(ejam_uniq_id = c('Average person', 'Average site'), ST = NA,

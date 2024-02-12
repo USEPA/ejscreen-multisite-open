@@ -10,7 +10,7 @@
 #'     c(110071293460, 110070874073, 110070538057, 110044340807,
 #'        110030509215, 110019033810, 110056111559, 110056982323)
 #'         )
-#' EJAMejscreenapi::mapfast(x)
+#'  mapfast(x)
 latlon_from_regid <- function(regid) {
   if (missing(regid)) {return(NULL)}
   

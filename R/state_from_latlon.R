@@ -117,7 +117,7 @@ state_from_fips <- function(fips, uniqueonly=FALSE) {
 # checking speed
 
 
-# pts <- EJAMejscreenapi::testpoints_1000
+# pts <- testpoints_1000
 # library(data.table)
 # # pts <- data.table(testpoints_100)[ , .(lat,lon, sitenumber)]
 # # n=100

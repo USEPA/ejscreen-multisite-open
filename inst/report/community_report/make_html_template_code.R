@@ -146,7 +146,7 @@
   }  # long list of variables as named in EJScreen website code
 
 ##################################################################################################################### # 
-rnames <- EJAMejscreenapi::fixcolnames(vars, 'api', 'r')
+rnames <- fixcolnames(vars, 'api', 'r')
 # DISABLE THESE UNTIL AVAILABLE IN EJAM:
 setdiff(rnames, names(EJAM::testoutput_ejamit_10pts_1miles$results_overall))
 # "inputAreaMiles"  "count.NPL"       "count.TSDF"     
@@ -168,7 +168,7 @@ cat(paste(for_htmlTemplate(vars), collapse = ",\n")) ; cat("\n\n")
 ##################################################################################################################### # 
 # for SERVER
 for_server <- function(apiname) {
-  rnames <- EJAMejscreenapi::fixcolnames(vars, 'api', 'r')
+  rnames <- fixcolnames(vars, 'api', 'r')
   spacer <- sapply(apiname, function(thisone) paste0(rep(" ", max(nchar(apiname)) - nchar(thisone)), collapse = ""))
   paste0("output$", apiname, "_out ", spacer, "<- renderText(overall$", rnames, ")")
 }

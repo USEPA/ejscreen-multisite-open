@@ -43,7 +43,6 @@ map_facilities <- function(mypoints, rad = 3, highlight = FALSE, clustered) {#, 
           fill = TRUE, weight = circleweight,
           group = 'circles',
           popup = popup_from_any(mypoints)
-          #popup = EJAMejscreenapi::popup_from_df(mypoints)
         ) %>% 
         addCircleMarkers(
           #radius = input$radius * meters_per_mile,
