@@ -1441,7 +1441,7 @@ app_server <- function(input, output, session) {
     m <- try(data_uploaded())
 
     ## if not, show empty map
-    if(inherits(m, 'try-error')){
+    if (inherits(m, 'try-error')) {
       leaflet() %>% addTiles() %>% setView(lat = 39.8283, lng = -98.5795, zoom = 4)
     } else {
       tryCatch({
@@ -1696,7 +1696,7 @@ app_server <- function(input, output, session) {
                                       out$results_bysite,
                                       by = 'ejam_uniq_id', all = T)
 
-        } else if (submitted_upload_method() == 'SHP'){
+        } else if (submitted_upload_method() == 'SHP') {
 
           out$results_bysite <- merge(dup[, c('ejam_uniq_id','valid','invalid_msg')],
                                       out$results_bysite,
@@ -2119,10 +2119,12 @@ app_server <- function(input, output, session) {
         leafletProxy(mapId = 'an_leaf_map', session) %>%
           addPolygons(data = d_uploads, color = "red")
       }
+
       #d_uploadb <- data_uploaded()[['buffer']]  %>% st_zm() %>% as('Spatial')
       d_uploads <- data_uploaded() %>%
         dplyr::select(-SHAPE_Leng, -valid, -invalid_msg) %>%
         st_zm() %>% as('Spatial')
+
       leafletProxy(mapId = 'an_leaf_map', session) %>%
         # addPolygons(data = d_uploadb, color = "red") %>%
         addPolygons(data = d_uploads,
@@ -2233,7 +2235,7 @@ app_server <- function(input, output, session) {
       ratio.to.us.d.bysite <- ratio.to.us.d.bysite %>%
         tidyr::pivot_longer(cols = dplyr::everything(), names_to = 'indicator') %>%
         ## replace Infs with NAs - these happen when indicator at a site is equal to zero
-        dplyr::mutate(value = dplyr::na_if (value, Inf)) #%>%
+        dplyr::mutate(value = dplyr::na_if(value, Inf)) #%>%
       # NOTE NOW ratio.to.us.d.bysite IS A tibble, not data.frame, and is in LONG format now. !!!
 
       ## find max of ratios
