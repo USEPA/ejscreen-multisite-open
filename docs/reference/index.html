@@ -110,6 +110,11 @@ and lat/lon of Census2020-population-weighted centroid of block group</dd>
         <dd>blockgroupstats (DATA) EJScreen demographic and environmental indicators for Census block groups</dd>
       </dl><dl><dt>
           
+          <code><a href="boxplots_ratios.html">boxplots_ratios()</a></code> 
+        </dt>
+        <dd>quick boxplots of demographics across sites as ratios to US means</dd>
+      </dl><dl><dt>
+          
           <code><a href="calc_byformula.html">calc_byformula()</a></code> 
         </dt>
         <dd>DRAFT utility to use formulas provided as text, to calculate indicators</dd>
@@ -128,6 +133,11 @@ and lat/lon of Census2020-population-weighted centroid of block group</dd>
           <code><a href="colcounter_summary_all.html">colcounter_summary_all()</a></code> 
         </dt>
         <dd>Summarize count (and percent) of rows with exactly (and at least) N cols &gt;= various thresholds</dd>
+      </dl><dl><dt>
+          
+          <code><a href="convert_units.html">convert_units()</a></code> 
+        </dt>
+        <dd>Convert units of distance or area</dd>
       </dl><dl><dt>
           
           <code><a href="counties_as_sites.html">counties_as_sites()</a></code> 
@@ -198,6 +208,11 @@ and lat/lon of Census2020-population-weighted centroid of block group</dd>
           <code><a href="ejampackages.html">ejampackages</a></code> 
         </dt>
         <dd>ejampackages (DATA) list of names of key EJAM-related R packages</dd>
+      </dl><dl><dt>
+          
+          <code><a href="ejscreenapi2ejam_format.html">ejscreenapi2ejam_format()</a></code> 
+        </dt>
+        <dd>EJAM/EJSCREEN comparisons - Convert output of ejscreenapi_plus to format of ejamit table of sites</dd>
       </dl><dl><dt>
           
           <code><a href="ejscreenit_for_ejam.html">ejscreenit_for_ejam()</a></code> 
@@ -278,6 +293,11 @@ and lat/lon of Census2020-population-weighted centroid of block group</dd>
           <code><a href="fips_state_from_state_abbrev.html">fips_state_from_state_abbrev()</a></code> 
         </dt>
         <dd>FIPS - Get state fips for each state abbrev</dd>
+      </dl><dl><dt>
+          
+          <code><a href="fixcolnames.html">fixcolnames()</a></code> 
+        </dt>
+        <dd>helper function to rename variables that are colnames of data.frame</dd>
       </dl><dl><dt>
           
           <code><a href="formula_varname.html">formula_varname()</a></code> 
@@ -443,6 +463,18 @@ Find all FRS sites in a program like RCRAINFO, TRIS, or others</dd>
           <code><a href="mact_table.html">mact_table</a></code> 
         </dt>
         <dd>mact_table (DATA) MACT NESHAP subparts (the code and the description)</dd>
+      </dl><dl><dt>
+          
+          <code><a href="mapfast.html">mapfast()</a></code> 
+        </dt>
+        <dd>Get a leaflet html widget map of data.frame with lat lon</dd>
+      </dl><dl><dt>
+          
+          <code><a href="mapfastej.html">mapfastej()</a></code> 
+        </dt>
+        <dd>Get a leaflet html widget map of data.frame with lat lon
+
+Like <code><a href="../reference/mapfast.html">mapfast()</a></code> but with column_names = "ej"</dd>
       </dl><dl><dt>
           
           <code><a href="mapfastej_counties.html">mapfastej_counties()</a></code> 
@@ -678,7 +710,7 @@ if we only have the outputs of getblocksnearby()</dd>
           
           <code><a href="run_app.html">run_app()</a></code> 
         </dt>
-        <dd>run_app - Launch the Shiny Application in RStudio</dd>
+        <dd>Launch the Shiny Application in RStudio</dd>
       </dl><dl><dt>
           
           <code><a href="shapefile_clean.html">shapefile_clean()</a></code> 
@@ -830,6 +862,11 @@ Also has the 2,3, and 4-digit SIC that this code falls under, where relevant for
           <code><a href="states_shapefile.html">states_shapefile</a></code> 
         </dt>
         <dd>states_shapefile (DATA) US States boundaries 2020 shapefile from TIGER</dd>
+      </dl><dl><dt>
+          
+          <code><a href="state_from_fips.html">state_from_fips()</a></code> 
+        </dt>
+        <dd>Get FIPS of ALL BLOCKGROUPS in the States or Counties</dd>
       </dl><dl><dt>
           
           <code><a href="state_from_latlon.html">state_from_latlon()</a></code> 
@@ -1004,32 +1041,52 @@ Also has the 2,3, and 4-digit SIC that this code falls under, where relevant for
           
           <code><a href="url_countyhealthrankings.html">url_countyhealthrankings()</a></code> 
         </dt>
-        <dd>Get data from countyhealthrankings.org</dd>
+        <dd>URL functions - Get URLs of useful report(s) on Counties from countyhealthrankings.org</dd>
       </dl><dl><dt>
           
-          <code><a href="url_getacs_epaquery.html">url_getacs_epaquery()</a></code> 
+          <code><a href="url_echo_facility_webpage.html">url_echo_facility_webpage()</a></code> 
         </dt>
-        <dd>experimental/ work in progress: get ACS data via EPA API (for &lt;200 places)</dd>
+        <dd>Get URLs of ECHO reports</dd>
+      </dl><dl><dt>
+          
+          <code><a href="url_ejscreenmap.html">url_ejscreenmap()</a></code> 
+        </dt>
+        <dd>Get URL(s) for EJScreen map centered at given point(s)</dd>
+      </dl><dl><dt>
+          
+          <code><a href="url_ejscreen_report.html">url_ejscreen_report()</a></code> 
+        </dt>
+        <dd>Get URLs of EJScreen reports</dd>
+      </dl><dl><dt>
+          
+          <code><a href="url_enviromapper.html">url_enviromapper()</a></code> 
+        </dt>
+        <dd>Get URLs of EnviroMapper reports</dd>
+      </dl><dl><dt>
+          
+          <code><a href="url_frs_report.html">url_frs_report()</a></code> 
+        </dt>
+        <dd>Get URLs of FRS reports</dd>
       </dl><dl><dt>
           
           <code><a href="url_getacs_epaquery_chunked.html">url_getacs_epaquery_chunked()</a></code> 
         </dt>
-        <dd>experimental/ work in progress: in chunks, get ACS data via EPA API</dd>
+        <dd>URL functions - url_getacs_epaquery_chunked - experimental/ work in progress: in chunks, get ACS data via EPA API</dd>
       </dl><dl><dt>
           
           <code><a href="url_get_eparest_chunked_by_id.html">url_get_eparest_chunked_by_id()</a></code> 
         </dt>
-        <dd>experimental/ work in progress: in chunks, get ACS data or Block weights nearby via EPA API</dd>
+        <dd>URL functions - url_get_eparest_chunked_by_id - experimental/ work in progress: in chunks, get ACS data or Block weights nearby via EPA API</dd>
       </dl><dl><dt>
           
           <code><a href="url_get_via_url.html">url_get_via_url()</a></code> 
         </dt>
-        <dd>utility - work in progress: GET query of ejscreen ejquery map services</dd>
+        <dd>URL functions - url_get_via_url - helper function work in progress: GET json via url of ejscreen ejquery map services</dd>
       </dl><dl><dt>
           
           <code><a href="url_naics.com.html">url_naics.com()</a></code> 
         </dt>
-        <dd>Get URL for page with info about industry sectors by text query term</dd>
+        <dd>URL functions - url_naics.com - Get URL for page with info about industry sectors by text query term</dd>
       </dl><dl><dt>
           
           <code><a href="usastats.html">usastats</a></code> 

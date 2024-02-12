@@ -127,7 +127,7 @@ from EJScreen.</p>
 <code class="sourceCode R"><span></span>
 <span><span class="co"># Browser opens to view one site report</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/browseURL.html" class="external-link">browseURL</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/pkg/EJAMejscreenapi/man/url_ejscreen_report.html" class="external-link">url_ejscreen_report</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="../reference/url_ejscreen_report.html">url_ejscreen_report</a></span><span class="op">(</span></span>
 <span>    lon <span class="op">=</span> <span class="op">-</span><span class="fl">92.380556</span>, </span>
 <span>    lat <span class="op">=</span> <span class="fl">31.316944</span>, </span>
 <span>    radius <span class="op">=</span> <span class="fl">3</span></span>
@@ -135,7 +135,7 @@ from EJScreen.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Get the URL for each site report</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/EJAMejscreenapi/man/url_ejscreen_report.html" class="external-link">url_ejscreen_report</a></span><span class="op">(</span></span>
+<span><span class="fu"><a href="../reference/url_ejscreen_report.html">url_ejscreen_report</a></span><span class="op">(</span></span>
 <span>  lon <span class="op">=</span> <span class="va">testpoints_10</span><span class="op">$</span><span class="va">lon</span>, </span>
 <span>  lat <span class="op">=</span> <span class="va">testpoints_10</span><span class="op">$</span><span class="va">lat</span>, </span>
 <span>  radius <span class="op">=</span> <span class="fl">3</span></span>
@@ -143,7 +143,7 @@ from EJScreen.</p>
 <span></span>
 <span><span class="co"># Open each webpage in a browser</span></span>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/utils/browseURL.html" class="external-link">browseURL</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/EJAMejscreenapi/man/url_ejscreen_report.html" class="external-link">url_ejscreen_report</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/browseURL.html" class="external-link">browseURL</a></span><span class="op">(</span><span class="fu"><a href="../reference/url_ejscreen_report.html">url_ejscreen_report</a></span><span class="op">(</span></span>
 <span>    lon <span class="op">=</span> <span class="va">testpoints_10</span><span class="op">$</span><span class="va">lon</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span>, </span>
 <span>    lat <span class="op">=</span> <span class="va">testpoints_10</span><span class="op">$</span><span class="va">lat</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span>, </span>
 <span>    radius <span class="op">=</span> <span class="fl">3</span><span class="op">)</span><span class="op">[</span><span class="va">i</span><span class="op">]</span><span class="op">)</span></span>
@@ -165,7 +165,7 @@ sites)<a class="anchor" aria-label="anchor" href="#get-ejscreen-results-tables-i
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span><span class="va">x</span><span class="op">$</span><span class="va">map</span></span>
 <span><span class="va">x</span><span class="op">$</span><span class="va">table</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/EJAMejscreenapi/man/ejscreenit_see_table.html" class="external-link">ejscreenit_see_table</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># ejscreenit_see_table(x) </span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="get-ejscreen-results-tables-in-a-local-web-app-not-tested">Get EJScreen results tables in a local web app ***not tested<a class="anchor" aria-label="anchor" href="#get-ejscreen-results-tables-in-a-local-web-app-not-tested"></a>
@@ -175,7 +175,7 @@ sites)<a class="anchor" aria-label="anchor" href="#get-ejscreen-results-tables-i
 <span><span class="co"># If you have the local source package EJAMejscreenapi you can do this:</span></span>
 <span><span class="co"># setwd("YOUR PATH GOES HERE  EJAMejscreenapi")</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/USEPA/EJAMejscreenapi" class="external-link">EJAMejscreenapi</a></span><span class="op">)</span></span>
-<span><span class="fu">EJAMejscreenapi</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/EJAMejscreenapi/man/run_app.html" class="external-link">run_app</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">EJAMejscreenapi</span><span class="fu">::</span><span class="fu">run_app</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="get-ejscreen-results-tables-in-a-local-web-app-module-not-tested">Get EJScreen results tables in a local web app module ***not
