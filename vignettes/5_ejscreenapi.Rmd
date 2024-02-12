@@ -32,7 +32,7 @@ dataload_from_pins(
 if (!exists("blockid2fips")) {
   cat("warning: blockid2fips not available\n")
   # *** temporary workaround if building vignette on 1 particular machine
-  here <- "C:/Users/mcorrale/OneDrive - Environmental Protection Agency (EPA)/Downloads/EJAMbigfiles" # "~/../../Downloads/EJAMbigfiles"
+  here <- "~/../../Downloads/EJAMbigfiles"
   varnames <- c('blockwts', 'blockpoints', 'blockid2fips', "quaddata",
                 'bgej','bgid2fips', 
                 'frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact")
