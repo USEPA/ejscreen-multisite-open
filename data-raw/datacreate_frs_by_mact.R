@@ -260,7 +260,7 @@ stop("stopped here")
  
 subpart = 'FFFF'
 
-x <- EJAMejscreenapi::get_facility_info_via_ECHO(
+x <- get_facility_info_via_ECHO(
   qcolumns = c(2,8,22,23,25,26), url_not_query = T, otherparameters = "&registry_id=110015778176")
 
 x <- httr::GET(x)  # seems to get stuck for a VERY long wait

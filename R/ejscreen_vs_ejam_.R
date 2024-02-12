@@ -3,7 +3,9 @@
 
 # ejscreen_vs_ejam()
 # ejscreen_vs_ejam_alreadyrun()
-# ejscreenapi2ejam_format()
+
+# ejscreenapi2ejam_format()  - moved to other source file to be with ejscreenit_for_ejam
+
 # ejscreen_vs_ejam_summary()
 # ejscreen_vs_ejam_summary_quantiles()
 # ejscreen_vs_ejam_see1()
@@ -321,94 +323,6 @@ ejscreen_vs_ejam_alreadyrun <- function(apisite, ejamsite, nadrop = FALSE,
   invisible(z) 
 }
 ############################################################ #
-
-
-
-#' EJAM/EJSCREEN comparisons - Convert output of ejscreenapi_plus to format of ejamit table of sites
-#' 
-#' Makes it easier to compare EJScreen and EJAM results
-#' 
-#' @param ejscreenapi_plus_out results of ejscreenapi_plus() or also 
-#'   could be results of ejscreenit()$table even though the colnames differ,
-#'   because they get converted here in that case.
-#' @param fillmissingcolumns optional. set to TRUE if you want the output
-#'   to have exactly all the same columns as the EJAM table would, and
-#'   fill in with NA values all the columns not provided by EJScreen API.
-#' @param ejamcolnames optional. if specified as vector of colnames, it 
-#'   overrides the assumed colnames that would have been taken to be
-#'   colnames(testoutput_ejamit_10pts_1miles$results_bysite). 
-#'   Any colnames you specify here will be the colnames of the output
-#'   if fillmissingcolumns = TRUE, or else those not in names(ejscreenapi_plus_out)
-#'   will be omitted.
-#' @return A data.table not just data.frame, with some or all of the columns
-#'   found in output of ejamit()$results_bysite
-#' @seealso [ejscreen_vs_ejam()]
-#'
-#' @examples
-#' \dontrun{
-#'    x <- ejscreenapi_plus(testpoints_10[1:2, ], radius = 1)
-#'    y <- ejscreenapi2ejam_format(x)
-#'    ejamvars <- names(testoutput_ejamit_10pts_1miles$results_bysite)
-#'    all.equal(
-#'      names(y), 
-#'      ejamvars[ejamvars %in% names(y)]
-#'   )
-#'   
-#'   z <- ejscreenapi2ejam_format(x, fillmissingcolumns = T)
-#'   all.equal(names(z), ejamvars) 
-#'   }
-#'   
-#' @keywords internal
-#'   
-ejscreenapi2ejam_format <- function(ejscreenapi_plus_out, 
-                                    fillmissingcolumns = FALSE, ejamcolnames=NULL) {
-  
-  if (!is.null(ejamcolnames)) {
-    ejamvars <- ejamcolnames
-  } else { 
-    ejamvars <- colnames(testoutput_ejamit_10pts_1miles$results_bysite)
-  } 
-  x <- ejscreenapi_plus_out
-  # Should already be rname format, but 
-  # just in case, try to convert as if they were long names as in output of ejscreenit()
-  colnames(x) <- fixcolnames(colnames(x), "long", "r")
-  #manually fix a couple we know differ
-  # colnames(x) <- gsub("EJScreenPDF", "EJScreen Report", colnames(x)) # should be obsolete / fixed now
-  # colnames(x) <- gsub("EJScreenMAP", "EJScreen Map", colnames(x)) # should be obsolete / fixed now
-  
-  # Remove columns from API output that are not in the EJAM output format 
-  
-  keepthese <- which(colnames(x) %in% ejamvars)
-  setDF(x) # but should already be a data.frame not data.table if coming from ejscreenapi_plus() 
-  x <- x[ , keepthese]
-  
-  if (fillmissingcolumns) {
-    # could be done more efficiently - this was drafted quickly
-    y <- data.frame(matrix(NA_integer_, nrow = NROW(x), ncol = length(ejamvars)))
-    colnames(y) <- ejamvars
-    sharednames <- intersect(colnames(x) , ejamvars)
-    y[ , sharednames] <- x[ , sharednames]
-    x <- y
-    setDT(x)
-  } else {
-    sharednames_in_ejam_order <- ejamvars[ejamvars %in% names(x)]
-    setDT(x)
-    setcolorder(x, sharednames_in_ejam_order)
-  }
-  return(x)
-  
-  ### test it:
-  # x <- ejscreenapi_plus(testpoints_10[1:2, ], radius = 1)
-  # y <- ejscreenapi2ejam_format(x)
-  # ejamvars <- names(testoutput_ejamit_10pts_1miles$results_bysite)
-  # all.equal(
-  #   names(y), 
-  #   ejamvars[ejamvars %in% names(y)]
-  # )
-  
-}
-############################################################ #
-
 
 
 #' EJAM/EJSCREEN comparisons - see summary stats after using ejscreen_vs_ejam()
