@@ -2,7 +2,7 @@
 % Please edit documentation in R/url_bookmark-DRAFT.R
 \name{url_bookmark_save}
 \alias{url_bookmark_save}
-\title{save bookmarked EJScreen session (map location and indicator)}
+\title{utility - save bookmarked EJScreen session (map location and indicator)}
 \usage{
 url_bookmark_save(..., file = "ejscreenbookmark.json")
 }
@@ -15,7 +15,7 @@ url_bookmark_save(..., file = "ejscreenbookmark.json")
 URL for 1 bookmarked EJScreen map location and variable displayed on map
 }
 \description{
-save bookmarked EJScreen session (map location and indicator)
+utility - save bookmarked EJScreen session (map location and indicator)
 }
 \details{
 WORK IN PROGRESS - NOT USED AS OF EARLY 2023.
@@ -31,3 +31,4 @@ Note:
 (2) Session files, if saved, are available from the default Downloads folder on your computer.
 (3) Users should exercise caution when saving sessions that may contain sensitive or confidential data.
 }
+\keyword{internal}

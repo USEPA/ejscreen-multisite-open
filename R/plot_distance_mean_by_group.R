@@ -1,11 +1,5 @@
 
 
-#' @export
-#' 
-plot_distance_by_group <- plot_distance_mean_by_group
-######################################################### # 
-
-
 #' Barplot of Average Proximity, by Group
 #' 
 #' Shows distance to sites, for residents in each demographic group (vs everyone else).
@@ -27,7 +21,6 @@ plot_distance_by_group <- plot_distance_mean_by_group
 #'    or exactly on top of the internal point of the block, in which case zero would not be an 
 #'    appropriate estimate of the distance, hence this adjustment is made in EJAM [getblocksnearby()]
 #'    
-#' @seealso [distance_by_group()]
 #' @param results_bybg_people data.table from `doaggregate()$results_bybg_people`
 #' @param demogvarname vector of column names like "pctlowinc" etc.
 #' @param demoglabel vector of labels like "Low Income Residents" etc.
@@ -35,7 +28,7 @@ plot_distance_by_group <- plot_distance_mean_by_group
 #'    data.frame with group, ratio, avg_distance_for_group, avg_distance_for_nongroup.
 #'   If returnwhat is "plotfilename" then it returns the full path including filename of a .png in a tempdir
 #'   If returnwhat is "plot" then it returns the plot object as needed for table_xls_format() ?
-#' @seealso [distance_by_group_plot()]  [plot_distance_cdf_by_group()]
+#' @seealso [distance_by_group()] [distance_by_group_plot()]  [plot_distance_cdf_by_group()]
 #' @return see parameter returnwhat
 #' @inherit plot_distance_cdf_by_group examples
 #' 
@@ -130,6 +123,12 @@ plot_distance_mean_by_group <- function(results_bybg_people,
 ################################################################################# # 
 
 
+#' @export
+#' 
+plot_distance_by_group <- plot_distance_mean_by_group
+######################################################### # 
+
+
 #' Avg distance of each demog group (of multiple groups) - Table or Plot
 #' 
 #' distance_mean_by_group() and distance_mean_by_group() are synonymous, and are like
@@ -161,6 +160,7 @@ distance_mean_by_group <- function(results_bybg_people,
     graph = graph)
 }
 ################################################################################# # 
+
 
 #' @export
 #'

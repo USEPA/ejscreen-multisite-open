@@ -15,3 +15,4 @@ utility used by speedtest()
 \seealso{
 \code{\link[=speedtest]{speedtest()}}
 }
+\keyword{internal}

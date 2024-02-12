@@ -12,3 +12,4 @@ speedtable_expand(speedtable)
 \description{
 Utility used by speedtest() and speedtable_summarize()
 }
+\keyword{internal}

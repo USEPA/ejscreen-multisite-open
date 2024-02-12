@@ -2,8 +2,7 @@
 % Please edit documentation in R/url_bookmark-DRAFT.R
 \name{url_bookmark_text}
 \alias{url_bookmark_text}
-\title{url_bookmark_text
-URL for 1 bookmarked EJScreen session (map location and indicator)}
+\title{utility - URL for 1 bookmarked EJScreen session (map location and indicator)}
 \usage{
 url_bookmark_text(
   x = c(-13232599.1784247, -13085305.0249191),
@@ -50,8 +49,7 @@ or B_PTRAF for traffic indicator}
 URL for 1 bookmarked EJScreen map location and variable displayed on map
 }
 \description{
-url_bookmark_text
-URL for 1 bookmarked EJScreen session (map location and indicator)
+utility - URL for 1 bookmarked EJScreen session (map location and indicator)
 }
 \details{
 WORK IN PROGRESS - NOT USED AS OF EARLY 2023.
@@ -73,7 +71,9 @@ Note:
     y=c(3548990.034736070,3579297.316451102), 
     file="./mysavedejscreensession1.json")
   }
+
 }
 \seealso{
 \code{\link[=url_bookmark_save]{url_bookmark_save()}}
 }
+\keyword{internal}

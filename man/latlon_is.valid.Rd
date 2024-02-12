@@ -2,7 +2,7 @@
 % Please edit documentation in R/latlon_is.valid.R
 \name{latlon_is.valid}
 \alias{latlon_is.valid}
-\title{Validate latitudes and longitudes}
+\title{Check if lat lon are OK -- validate latitudes and longitudes}
 \usage{
 latlon_is.valid(lat, lon, quiet = TRUE)
 }
@@ -45,4 +45,3 @@ lon must be ( between -180 and -64) OR (between 172 and 180)
 \code{\link[=latlon_is.usa]{latlon_is.usa()}} \code{\link[=latlon_is.islandareas]{latlon_is.islandareas()}} \code{\link[=latlon_is.available]{latlon_is.available()}} \code{\link[=latlon_is.possible]{latlon_is.possible()}}
 \code{\link[=latlon_df_clean]{latlon_df_clean()}} \code{\link[=latlon_infer]{latlon_infer()}} \code{\link[=latlon_is.valid]{latlon_is.valid()}} \code{\link[=latlon_as.numeric]{latlon_as.numeric()}}
 }
-\keyword{internal}

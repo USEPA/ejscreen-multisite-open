@@ -22,3 +22,4 @@ utility to plot output of speedtest(), rate of points analyzed per hour
 \seealso{
 \code{\link[=speedtest]{speedtest()}}
 }
+\keyword{internal}
