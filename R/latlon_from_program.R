@@ -1,5 +1,5 @@
 
-#'  Get lat lon, Registry ID, and NAICS, for given FRS Program System CATEGORY
+#' Get lat lon, Registry ID, and NAICS, for given FRS Program System CATEGORY
 #'  
 #' Find all FRS sites in a program like RCRAINFO, TRIS, or others
 #' 
@@ -35,7 +35,6 @@
 #'  ## x = latlon_from_regid(latlon_from_program(program)[,REGISTRY_ID])  # slower!
 #'  EJAMejscreenapi::mapfast(x[sample(1:nrow(x), 1000), ])
 #' }
-#'  
 #'
 #' @export
 #'

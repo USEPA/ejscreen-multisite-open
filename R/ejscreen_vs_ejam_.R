@@ -592,6 +592,7 @@ ejscreen_vs_ejam_summary <- function(z = ejscreen_vs_ejam(),
 #'   EJAM estimates over EJSCREEN estimates, for specified list of indicators like in names_d
 #'
 #' @keywords internal
+#' @export
 #' 
 ejscreen_vs_ejam_summary_quantiles <- function(z, 
                                                mystat = c("ratio", "diff", "absdiff", "pctdiff", "abspctdiff")[1], 
@@ -635,6 +636,7 @@ ejscreen_vs_ejam_summary_quantiles <- function(z,
 #'   }
 #'
 #' @keywords internal
+#' @export
 #' 
 ejscreen_vs_ejam_see1 <- function(z, myvars = names_d, mysite = 1) {
   
@@ -661,6 +663,7 @@ ejscreen_vs_ejam_see1 <- function(z, myvars = names_d, mysite = 1) {
 #'  }
 #'
 #' @keywords internal
+#' @export
 #' 
 ejscreen_vs_ejam_see1map <- function(n = 1, x, overlay_blockgroups = FALSE, ...) {
   

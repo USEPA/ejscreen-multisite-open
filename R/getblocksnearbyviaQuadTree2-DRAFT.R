@@ -1,3 +1,4 @@
+
 #' DRAFT / WAS WORK IN PROGRESS - Find nearby blocks using Quad Tree data structure for speed, NO PARALLEL PROCESSING - DRAFT / WORK IN PROGRESS
 #'       
 #' @description Given a set of points and a specified radius in miles, 
@@ -56,6 +57,7 @@
 getblocksnearbyviaQuadTree2 <- function(sitepoints, radius = 3, maxradius = 31.07, avoidorphans = FALSE, 
                                         report_progress_every_n = 500, quiet = FALSE,
                                         quadtree) {
+  
   # indexgridsize was defined at start as say 10 miles in global? could be passed here as a parameter ####
   # and buffer_indexdistance defined here in code but is never used anywhere...  
   # buffer_indexdistance <- ceiling(radius / indexgridsize)

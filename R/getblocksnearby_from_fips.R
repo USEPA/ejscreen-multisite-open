@@ -20,7 +20,7 @@
 #'   
 #'   # x=getblocksnearby_from_fips("482011000011") # one blockgroup only
 #'   # y=doaggregate(x)
-#' @seealso [fips_bg_from_anyfips()] [fips_lead_zero()] [getblocksnearby_from_fips()] [fips_from_table()]
+#' @seealso [getblocksnearby()] [fips_bg_from_anyfips()] [fips_lead_zero()] [getblocksnearby_from_fips()] [fips_from_table()]
 #' 
 #' @export
 #'

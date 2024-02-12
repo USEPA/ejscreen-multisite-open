@@ -1,3 +1,4 @@
+
 #' Get URL for page with info about industry sectors by text query term
 #' 
 #' See (https://naics.com) for more information on NAICS codes
@@ -6,6 +7,7 @@
 #' @param as_html Whether to return as just the urls or as html hyperlinks to use in a DT::datatable() for example
 #' @param linktext used as text for hyperlinks, if supplied and as_html=TRUE
 #' @return URL as string
+#' 
 #' @export
 #' 
 url_naics.com <- function(query, as_html=FALSE, linktext) {
@@ -16,4 +18,4 @@ url_naics.com <- function(query, as_html=FALSE, linktext) {
     urlout <- EJAMejscreenapi::url_linkify(urlout, text = linktext)
   }   
   return(urlout)
-  }
+}

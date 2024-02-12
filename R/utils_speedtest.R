@@ -312,12 +312,14 @@ speedtest <- function(n=10, sitepoints=NULL, weighting='frs',
 #' @param plotfile optional path and filename of .png image file to save
 #' @return side effect is a plot. returns x but with seconds column added to it
 #' @seealso [speedtest()]
-#' @export
+#' 
+#' @keywords internal
 #'
-speedtest_plot = function(x, ltype="b", plotfile=NULL, secondsperthousand=FALSE) { 
+speedtest_plot = function(x, ltype="b", plotfile=NULL, secondsperthousand=FALSE) {
+  
   radii <- unique(x$miles)
   nlist  <- unique(x$points)
-  mycolors <- runif (length(radii), 1, 600)
+  mycolors <- runif(length(radii), 1, 600)
   if (secondsperthousand) {
     yvals = x$secondsper1000
     ylab = "Seconds per 1,000 sites"
@@ -355,17 +357,18 @@ speedtest_plot = function(x, ltype="b", plotfile=NULL, secondsperthousand=FALSE)
   }
   return(x)
 }
-
-
 ######################################################################### #
+
 
 #' utility used by speedtest()
 #' 
 #' @param speedtable from speedtest(), with columns named points and perhr
 #' @seealso [speedtest()]
-#' @export
+#' 
+#' @keywords internal
 #'
 speedtable_summarize <- function(speedtable) {
+  
   # used by speedtest()
   runs <- sum(speedtable$points)
   total_hours <- sum(speedtable$points / speedtable$perhr)
@@ -373,7 +376,6 @@ speedtable_summarize <- function(speedtable) {
   mysummary <- data.frame(points = runs, miles = NA, perhr = perhr)
   return(speedtable_expand(mysummary))
 }
-
 ######################################################################### #
 
 
@@ -381,7 +383,7 @@ speedtable_summarize <- function(speedtable) {
 #' 
 #' @param speedtable must have columns called  points, miles, and perhr 
 #'
-#' @export
+#' @keywords internal
 #'
 speedtable_expand <- function(speedtable) {
   # used by speedtest() and by speedtable_summarize()
@@ -393,7 +395,6 @@ speedtable_expand <- function(speedtable) {
   speedtable$secondsper1000 <- round((1000/speedtable$points) * speedtable$points / (speedtable$perhr / 3600), 0)
   return(speedtable)
 }
-
 ######################################################################### #
 
 

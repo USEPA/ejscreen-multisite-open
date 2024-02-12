@@ -16,80 +16,41 @@ knitr::opts_chunk$set(eval = FALSE)
 # https://r-pkgs.org/vignettes.html
 ```
 
-```{r libraryEJAM, eval = TRUE, echo= FALSE, include= FALSE}
-# rm(list = ls())
-# golem::detach_all_attached()
+```{r developernote, eval=FALSE, echo= FALSE, include = FALSE}
+#
+#  *>>>>>>>>>> Developer note: vignettes need to be tested/edited/rebuilt regularly <<<<<<<<<<<*
+#
+#    - **See ?pkgdown::build_site** - EJAM now uses the pkgdown R package to build help and vignettes as web pages
 # 
-library(EJAM)
-# dataload_from_pins('all') # varnames = all  currently means all these:
-dataload_from_pins(
-  c("blockwts", "blockpoints", "blockid2fips", "quaddata", 
-    "bgej", "bgid2fips",
-    "frs", "frs_by_programid", "frs_by_naics", "frs_by_sic", "frs_by_mact")
-)
-
-##################################### #
-if (!exists("blockid2fips")) {
-  cat("warning: blockid2fips not available\n")
-  # *** temporary workaround if building vignette on 1 particular machine
-  here <- "~/../Downloads/EJAMbigfiles"
-  varnames <- c('blockwts', 'blockpoints', 'blockid2fips', "quaddata",
-                'bgej','bgid2fips', 
-                'frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact")
-  fnames <- paste0(varnames, ".arrow")
-  localpaths  <- paste0(here, '/', fnames)
-  for (i in 1:length(varnames)) {assign(varnames[i], arrow::read_ipc_file(file = localpaths[i]))}
-  rm(here, varnames, fnames, localpaths)
-}
-##################################### #
-
-indexblocks()
+#     - It previously used some of these methods also:
+#       - rmarkdown::render("vignettes/INSERTNAMEHERE.Rmd", encoding = 'UTF-8')
+#       - The "render button" in RStudio that shows more detailed progress during render
+#       - devtools::build_vignettes(), but that failed on dataload_from_pins() or _local() trying to get blockid2fips
 ```
 
-```{r developernote, echo= FALSE}
-#
-#  *>>>>>>>>>> Developer note on updating this vignette <<<<<<<<<<<*
-#
-#  -   *TO UPDATE THIS VIGNETTE:* 
-#
-#    - *This vignette must be regularly tested/edited*
-#
-#    -  rmarkdown::render("vignettes/INSERTNAMEHERE.Rmd", encoding = 'UTF-8') 
-#     but the render button in RStudio shows more detailed progress during render.
-#
-#    -  possibly also devtools::build_vignettes() but that fails on dataload_from_pins() or _local() trying to get blockid2fips
-#
-#  -    See <https://docs.ropensci.org/postdoc/> for quick way to make html help on a pkg. Do this...   postdoc::render_package_manual('EJAM') 
-#
-#  -   *See <https://r-pkgs.org/vignettes.html>*
-#
-#  -   *See <https://r-pkgs.org/vignettes.html#sec-vignettes-how-built>*
-#
-#  -   *Vignette is in EJAM\vignettes\INSERTNAMEHERE.Rmd.html*
-```
+# Using the EJAM web app
 
+As of February 2024, EPA staff can try a live beta test version of EJAM. You must be inside EPA's network (e.g. using VPN) to access the EJAM web app, currently. EJAM is still in active development, and is a work in progress, so not everything is bug-free yet and changes are being made, so we are seeking feedback and input on bugs, usability issues, performance, clarity, and ideas for enhancements with possible new features and functionality.
 
-# EJAM web app
+-   The first complete version of EJAM is being beta tested on a staging server, accessible only by EPA staff members using VPN/in-LAN and after signing in. [**EJAM beta test**](https://rstudio-connect.dmap-stage.aws.epa.gov/content/cb2bc9cf-75c3-4db1-ad28-e92940fe4438)
 
-## EJAM as a hosted web app (easiest way to use EJAM)
+Information about how to use the web app may be provided elsewhere at some point, but the app is meant to be relatively easy for an analyst to use without any training or user guide.
 
-EPA staff can try a live demo version of EJAM with just a web browser. You must be inside EPA's network (e.g. using VPN) to access the EJAM web app as of 1/2024. EJAM is in active development, not yet launched as of 1/2023. This is work in progress, so not everything is working and changes are being made!
+# Running the EJAM web app in R/RStudio on your own computer (for analysts or developers)
 
-* A full development version of EJAM is being tested on a staging server, accessible only by EPA staff members who have been given individual access (contact us for access) and requires VPN/in-LAN and sign-in https://rstudio-connect.dmap-stage.aws.epa.gov/content/cb2bc9cf-75c3-4db1-ad28-e92940fe4438 
+If you use R/RStudio, you can run the web app on your own computer. You first need to install the EJAM R package as explained in the article/vignette on installing EJAM.
 
-* A basic version of only a few features -- called "ejam lite" -- is on a staging server at [EJAM Lite (Demo/Test on Staging Server)](https://rstudio-connect.dmap-stage.aws.epa.gov/content/725e3761-3dc1-4012-b07c-23126063da97/ "https://rstudio-connect.dmap-stage.aws.epa.gov/content/725e3761-3dc1-4012-b07c-23126063da97/"){.uri target="_blank" rel="noreferrer noopener"}. Note that the demo app takes time to start up and load all the datasets and packages and then build an index. The analysis can be started only after the blue bar lights up to show that the spreadsheet with lat lon values has been uploaded.
+Once EJAM is installed (and you have access to the datasets needed), you can launch the local web app from RStudio as follows:
 
-## EJAM as a web app running locally (for R users)
-
-If you use R/RStudio, you can run the web app on your own computer. You first need to install the EJAM R package as explained in the vignette on installing EJAM.
-
-Once EJAM is installed, you can launch the local web app from RStudio as follows:
 ```{r run_app1, eval = FALSE, include= TRUE}
 library(EJAM)
 run_app()
 ```
-Note this is different than running a simple shiny app that is not also a package via golem. You should use EJAM::run_app() not shiny::runApp().
 
-Note that the web app (e.g., launched locally) handles loading datasets and indexing blocks, so you would not have to download datasets manually or do indexing manually if launching the EJAM app locally. You just need the packages installed that EJAM relies on (see below).
+Note this is different than running a simple shiny app that is not also a package via golem. You should use the EJAM package function `run_app()` not `shiny::runApp()`.
 
-Note that information about how to use the web app will be provided elsewhere, not in this vignette.
+Note that the web app (e.g., launched locally) handles loading datasets and indexing blocks, assuming you have access to the server that stores those datasets as a pins board, so you would not have to download datasets manually or do indexing manually if launching the EJAM app locally. You just need the packages installed that EJAM relies on (see below).
+
+# Using EJAM tools in R/RStudio, outside the web app
+
+For those wanting to go beyond the web app, to use EJAM functions directly in R/RStudio, see the [Quick Start Guide](docs/articles/2_quickstart.html "docs/articles/2_quickstart.html").

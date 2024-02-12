@@ -16,60 +16,44 @@ knitr::opts_chunk$set(eval = FALSE)
 # https://r-pkgs.org/vignettes.html
 ```
 
-```{r echo=TRUE}
-print(path.expand("~/../Downloads/EJAMbigfiles"))
-```
-
 ```{r libraryEJAM, eval = TRUE, echo= FALSE, include= FALSE}
 # rm(list = ls())
 # golem::detach_all_attached()
 # 
 library(EJAM)
-# dataload_from_pins('all') # varnames = all  currently means all these:
-dataload_from_pins(
-  c("blockwts", "blockpoints", "blockid2fips", "quaddata", 
-    "bgej", "bgid2fips",
-    "frs", "frs_by_programid", "frs_by_naics", "frs_by_sic", "frs_by_mact")
-)
+dataload_from_pins('all') # varnames = all  currently means all these:
+# dataload_from_pins(
+#   c("blockwts", "blockpoints", "blockid2fips", "quaddata", 
+#     "bgej", "bgid2fips",
+#     "frs", "frs_by_programid", "frs_by_naics", "frs_by_sic", "frs_by_mact")
+# )
 
 ##################################### #
-if (!exists("blockid2fips")) {
-  cat("warning: blockid2fips not available\n")
-  # *** temporary workaround if building vignette on 1 particular machine
-  here <- "~/../Downloads/EJAMbigfiles"
-  varnames <- c('blockwts', 'blockpoints', 'blockid2fips', "quaddata",
-                'bgej','bgid2fips', 
-                'frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact")
-  fnames <- paste0(varnames, ".arrow")
-  localpaths  <- paste0(here, '/', fnames)
-  for (i in 1:length(varnames)) {assign(varnames[i], arrow::read_ipc_file(file = localpaths[i]))}
-  rm(here, varnames, fnames, localpaths)
-}
+# if (!exists("blockid2fips")) {
+#   cat("warning: blockid2fips not available\n")
+#   # *** temporary workaround if building vignette on 1 particular machine
+#   here <- "~/../Downloads/EJAMbigfiles"
+#   varnames <- c('blockwts', 'blockpoints', 'blockid2fips', "quaddata",
+#                 'bgej','bgid2fips',
+#                 'frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact")
+#   fnames <- paste0(varnames, ".arrow")
+#   localpaths  <- paste0(here, '/', fnames)
+#   for (i in 1:length(varnames)) {
+#     if (!exists(varnames[i])) {
+#     assign(varnames[i], arrow::read_ipc_file(file = localpaths[i]))
+#     }}
+#   rm(here, varnames, fnames, localpaths)
+# }
 ##################################### #
 
 indexblocks()
+
 ```
 
-```{r developernote, echo= FALSE}
+```{r developernote, eval=FALSE, echo= FALSE, include = FALSE}
+#  *>>>>>>>>>> Developer note: vignettes need to be tested/edited/rebuilt regularly <<<<<<<<<<<*
 #
-#  *>>>>>>>>>> Developer note on updating this vignette <<<<<<<<<<<*
-#
-#  -   *TO UPDATE THIS VIGNETTE:* 
-#
-#    - *This vignette must be regularly tested/edited*
-#
-#    -  rmarkdown::render("vignettes/INSERTNAMEHERE.Rmd", encoding = 'UTF-8') 
-#     but the render button in RStudio shows more detailed progress during render.
-#
-#    -  possibly also devtools::build_vignettes() but that fails on dataload_from_pins() or _local() trying to get blockid2fips ... but maybe the problem is needing to be on VPN for the pins() to be available.
-#
-#  -    See <https://docs.ropensci.org/postdoc/> for quick way to make html help on a pkg. Do this...   postdoc::render_package_manual('EJAM') 
-#
-#  -   *See <https://r-pkgs.org/vignettes.html>*
-#
-#  -   *See <https://r-pkgs.org/vignettes.html#sec-vignettes-how-built>*
-#
-#  -   *Vignette is in EJAM\vignettes\INSERTNAMEHERE.Rmd.html*
+#    - **See ?pkgdown::build_site** - EJAM now uses the pkgdown R package to build help and vignettes as web pages
 ```
 
 # EJAM Analysis in R - Quick Start Guide
@@ -78,22 +62,24 @@ Here's how you can run an EJAM analysis and view results right away (once EJAM h
 
 ## Install EJAM
 
-See the separate vignette on how to install the R package from https://github.com/USEPA/EJAM 
+See the separate article/ vignette on how to install the R package.
 
 ## Load EJAM (code and data)
 
-```{r library, eval=TRUE}
+```{r library, eval=FALSE}
 library(EJAM)
 ```
 
 ## Analyze a List of Places
 
 If you already have a spreadsheet with columns called lat and lon, you can just do this and EJAM will prompt you to navigate to and select the file and set the radius (from RStudio):
+
 ```{r notevaluated, eval=FALSE}
 out <- ejamit()
 ```
 
 If you want to try some test data first:
+
 ```{r ejamit100, message=FALSE, warning=FALSE, include=FALSE}
 # EJAM analysis of 100 places, for everyone within 3 miles
 out <- ejamit(testpoints_100, radius = 3, 
@@ -111,10 +97,10 @@ mapfastej(out$results_bysite)
 # Click a point on the map to see a popup with details about people near that point.
 ```
 
-##  Report (interactive html file)
+## Report (interactive html file)/
 
 ```{r eval=FALSE, include=FALSE}
-# will add HTML output in vignette below for ejam2report() example
+# we should add HTML output in vignette, below, for ejam2report() example
 ```
 
 ```{r ejam2report1, eval=FALSE}
@@ -122,7 +108,13 @@ out <- testoutput_ejamit_100pts_1miles
 ejam2report(out)
 ```
 
-##  Barplot
+![](images/image-1622322729.png)
+
+![](images/image-214067959.png)
+
+![](images/image-1254961740.png)
+
+## Barplot
 
 ```{r plot_barplot_ratios, eval=TRUE}
 ## Plot of demographics is default
@@ -133,27 +125,18 @@ ejam2report(out)
 # see examples at ?plot_barplot_ratios
 ```
 
-## Spreadsheet 
+## Spreadsheet
 
 ```{r ejam2excel, eval=FALSE, message=FALSE, warning=FALSE}
 ejam2excel(out, launchexcel = T, save_now = F)
 
 ```
 
-
-
 # More Examples of Using these Functions in EJAM
-
-
 
 ## Select Places to Analyze
 
-
-
-
-
 ### Use points already included with EJAM as examples
-
 
 ### Use one point
 
@@ -174,6 +157,7 @@ sitepoints2  <- data.frame(
 ### Use test points in examples that comes with the package
 
 EJAM comes with examples of points you can use to try things out:
+
 ```{r eval = TRUE, fig.height=4.83, fig.width=3}
 testpoints_10
 ```
@@ -230,8 +214,6 @@ head(y)
 # prompts you to select spreadsheet with lat,lon values of points
 ```
 
-
-
 ## Map your sites before analyzing them
 
 ```{r eval = FALSE}
@@ -247,7 +229,6 @@ if (exists("blockid2fips")) {
   mapfast(pts, radius = 0.1)
 }
 ```
-
 
 ## Pick a Radius
 
@@ -265,23 +246,19 @@ If you know you want to analyze for 5 kilometers, you can turn it into miles wit
 convert_units(5, 'km', 'miles')
 ```
 
-
-
 ## Analyze your Sites in 1 step with ejamit()
 
-```{r ejamit_testpoints_100, eval=TRUE, message=FALSE, warning=FALSE}
-x <- ejamit(testpoints_100, radius = 1) # 1 mile radius around each of 100 test/example points
+```{r ejamit_testpoints_100, eval=FALSE, message=FALSE, warning=FALSE}
+out <- ejamit(testpoints_100, radius = 1) # 1 mile radius around each of 100 test/example points
 
 # help("ejamit")
 ```
-
-
 
 ## Map the EJAM Results
 
 Popups in the map show key stats for residents near each site.
 
-```{r map, eval = TRUE, echo= TRUE, fig.height=8, fig.width=6}
+```{r mapfastej_out_results_bysite, eval = TRUE, echo= TRUE, fig.height=8, fig.width=6}
 out <- testoutput_ejamit_100pts_1miles
 mapfastej(out$results_bysite)
 # help("mapfast")
@@ -312,27 +289,16 @@ ejam2excel(ejamit(testpoints_10, radius = 1), launchexcel = T, save_now = F)
 ejam2excel(ejamit(testpoints_10, radius = 1), save_now = T)
 ```
 
-
-
-
 # Documentation of Functions and Data
 
--   In general, see the readme for links to documentation: <https://github.com/USEPA/EJAM/tree/main?tab=readme-ov-file#readme>
-
--   For vignettes that walk through basics of using EJAM functions, try `vignette(package = "EJAM")`
-
--   For the RStudio view of the package documentation, try `?EJAM`
-
--   A pdf version of documentation will be provided, possibly here: <https://github.com/USEPA/EJAM/tree/main/www>
-
--   An HTML version of documentation will be provided, possibly here: <https://github.com/USEPA/EJAM/tree/main/www>
+-   See the [README for links to documentation](articles/index.html) or [README on GitHub](https://github.com/USEPA/EJAM/tree/main?tab=readme-ov-file#readme)
 
 ```{r helpEJAM, eval = FALSE, include= FALSE}
 ?EJAM
 # or 
 help("EJAM", package='EJAM')
 
-?ejamit
+?ejamit()
 
 vignette(package = "EJAM")
 ```

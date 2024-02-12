@@ -11,6 +11,7 @@
 #' @keywords internal
 #'
 fixmapheadernamescolname <- function(x) {
+  
   # interpret shorthand/aliases for column names of map_headernames
   akas <- list(api = 'apiname',
                csv = 'csvname2.2',

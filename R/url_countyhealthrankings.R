@@ -1,9 +1,10 @@
-#' url_countyhealthrankings gets data from countyhealthrankings.org
+#' Get data from countyhealthrankings.org
 #'
 #' @param fips vector of fips codes of counties, 5 characters each, like "10003"
 #' @param year 2023
 #'
 #' @return vector of URLs
+#' 
 #' @export
 #'
 url_countyhealthrankings <- function(fips, year = 2023) {

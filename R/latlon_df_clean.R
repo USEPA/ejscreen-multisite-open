@@ -1,6 +1,7 @@
-#' latlon_df_clean - Find and clean up latitude and longitude columns in a data.frame
+#' Get lat lon columns and clean up those latitude and longitude columns in a data.frame
 #' 
 #' @description Utility to identify lat and lon columns, renaming and cleaning them up.
+#' 
 #' @details Tries to figure out which columns seem to have lat lon values, renames those in the data.frame. 
 #'   Cleans up lat and lon values (removes extra characters, makes numeric)
 #' @param df data.frame With columns lat and lon or names that can be interpreted as such

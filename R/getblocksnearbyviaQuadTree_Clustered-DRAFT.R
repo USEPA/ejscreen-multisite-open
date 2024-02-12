@@ -51,15 +51,15 @@ sitepoints <- sitepoints[!is.na(sitepoints$LAT) & !is.na(sitepoints$LONG), ]
   }
 
   # parallel::makePSOCKcluster is an enhanced version of snow::makeSOCKcluster in package snow. It runs Rscript on the specified host(s) to set up a worker process which listens on a socket for expressions to evaluate, and returns the results (as serialized objects).
-  cl <- parallel::makeCluster(CountCPU, outfile="")
+  cl <- parallel::makeCluster(CountCPU, outfile =  "")
   doSNOW::registerDoSNOW(cl)
   #foreach::registerDoSEQ()
 
   # main reason for using foreach::foreach() is that it supports parallel execution,
   # that is, it can execute those repeated operations on multiple processors/cores on your computer (and there are other advantages as well)
-  cpuIndex <- 1 ; FAC_X<-0; FAC_Z<-0 # this just stops the warning about undefined variable since IDE does not understand it being defined in foreach()
+  cpuIndex <- 1 ; FAC_X <- 0; FAC_Z <- 0 # this just stops the warning about undefined variable since IDE does not understand it being defined in foreach()
   #### LOOP OVER THE CPUs ##############################################################################################
-  parref <- foreach::foreach(cpuIndex=1:CountCPU, .export = c("distance_via_surfacedistance","earthRadius_miles","crd","quaddata"), .packages = c("SearchTrees","data.table","pdist"), .errorhandling = 'pass', .verbose = TRUE) %dopar% {
+  parref <- foreach::foreach(cpuIndex = 1:CountCPU, .export = c("distance_via_surfacedistance","earthRadius_miles","crd","quaddata"), .packages = c("SearchTrees","data.table","pdist"), .errorhandling = 'pass', .verbose = TRUE) %dopar% {
 
     # print(.packages())
     #2 seconds overhead to create the quad tree
@@ -72,7 +72,7 @@ sitepoints <- sitepoints[!is.na(sitepoints$LAT) & !is.na(sitepoints$LONG), ]
 
     #### LOOP OVER THE sitepoints STARTS HERE, within loop over CPUs ##################################################################
 
-    for(i in 1:subnRowsDf)  { ## for each row
+    for (i in 1:subnRowsDf) { ## for each row
 
 
 
@@ -80,10 +80,10 @@ sitepoints <- sitepoints[!is.na(sitepoints$LAT) & !is.na(sitepoints$LONG), ]
 
 
       coords <- sitepoints2use[i, .(FAC_X,FAC_Z)]
-      x_low <- coords[,FAC_X]-truedistance;
-      x_hi  <-  coords[,FAC_X]+truedistance
-      z_low <- coords[,FAC_Z]-truedistance;
-      z_hi  <-  coords[,FAC_Z]+truedistance
+      x_low <- coords[,FAC_X] - truedistance;
+      x_hi  <-  coords[,FAC_X] + truedistance
+      z_low <- coords[,FAC_Z] - truedistance;
+      z_hi  <-  coords[,FAC_Z] + truedistance
 
       # if ((i %% 100)==0) {print(paste("Cells currently processing: ",i," of ",nRowsDf) ) }
       print("did we even do anything?")
@@ -133,12 +133,12 @@ sitepoints <- sitepoints[!is.na(sitepoints$LAT) & !is.na(sitepoints$LONG), ]
         print("inbefore knn")
         # This should have been done in server.R 
         # quadtree <- SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point")
-        vec <- SearchTrees::knnLookup(quadtree, c(coords[,FAC_X]), c(coords[,FAC_Z]), k=10)
+        vec <- SearchTrees::knnLookup(quadtree, c(coords[,FAC_X]), c(coords[,FAC_Z]), k = 10)
         print("did we knn? ")
         tmp <- quaddata[vec[1,],]
 
-        x <-tmp[, .(BLOCK_X,BLOCK_Y,BLOCK_Z)]
-        y <-sitepoints2use[i, .(FAC_X,FAC_Y,FAC_Z)]
+        x <- tmp[, .(BLOCK_X,BLOCK_Y,BLOCK_Z)]
+        y <- sitepoints2use[i, .(FAC_X,FAC_Y,FAC_Z)]
         distances <- as.matrix(pdist(x,y))
 
         #clean up fields
@@ -147,7 +147,7 @@ sitepoints <- sitepoints[!is.na(sitepoints$LAT) & !is.na(sitepoints$LONG), ]
 
         #filter to max distance
         truemaxdistance <- distance_via_surfacedistance(maxradius)
-        tmp <- tmp[distance<=truemaxdistance, .(blockid, distance,ID)]
+        tmp <- tmp[distance <= truemaxdistance, .(blockid, distance,ID)]
         partialres[[i]] <- tmp
       } else {
         partialres[[i]] <- tmp

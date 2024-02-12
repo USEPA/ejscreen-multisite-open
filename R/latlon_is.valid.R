@@ -1,5 +1,5 @@
 
-#' check if lat lon not NA using !is.na()
+#' Check if lat lon not NA using !is.na()
 #' 
 #' @param lat vector of latitudes
 #' @param lon vector of longitudes
@@ -34,7 +34,7 @@ latlon_is.usa <- function(lat, lon) {
 ############################################### # 
 
 
-#' check if lat lon between -180 and +180
+#' Check if lat lon between -180 and +180
 #' 
 #' @param lat vector of latitudes
 #' @param lon vector of longitudes
@@ -64,7 +64,6 @@ latlon_is.possible   <- function(lat, lon) {
 #'   mapfast(testpoints_1000[isles, ]) # c(213,785) 
 #'   which(!(latlon_is.usa(lat = testpoints_1000$lat, lon = testpoints_1000$lon)))
 #' }
-#'   
 #'
 #' @keywords internal
 #'
@@ -86,7 +85,7 @@ latlon_is.islandareas <- function(lat, lon)  {
 ############################################### # 
 
 
-#' Validate latitudes and longitudes
+#' Check if lat lon are OK -- validate latitudes and longitudes
 #' 
 #' @description Check each latitude and longitude value to see if they are valid.
 #' @details  
@@ -114,7 +113,7 @@ latlon_is.islandareas <- function(lat, lon)  {
 #'  table(latlon_is.valid(lat =  blockpoints$lat, lon =  blockpoints$lon))
 #'   }
 #'
-#' @keywords internal
+#' @export
 #'
 latlon_is.valid <- function(lat, lon, quiet = TRUE) {
   

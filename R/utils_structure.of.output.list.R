@@ -1,8 +1,8 @@
 
-#' structure.of.output.list - See info about list of results
+
+#' Utility to print summary info about the output of ejamit() or doaggregate()
 #' 
-#' Utility to print summary info about the output of ejamit or doaggregate
-#' @param x the output of ejamit() or of doaggregate(),
+#' @param x the output of [ejamit()] or of [doaggregate()],
 #'   a list of objects holding results of analysis
 #' @param maxshown shows only first 10 elements of list by default
 #' @return data.frame summarizing names of list, whether each element is a 

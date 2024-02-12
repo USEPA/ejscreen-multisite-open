@@ -36,7 +36,6 @@ dataload_from_package <- function(olist = c("blockgroupstats", "usastats", "stat
   
   # data(list=c("frs", "frs_by_programid ", "frs_by_naics"), package="EJAM") # would be to preload some very large ones not always needed. 
   
-  
   # get full path and name for data file in locally installed package?
   # system.file("/data/blockgroupstats.rda", package="EJAM")
   # this works on a local source package, only:
@@ -61,7 +60,4 @@ dataload_from_package <- function(olist = c("blockgroupstats", "usastats", "stat
   # 
   # A sometimes important distinction is that the second approach places objects in the namespace but the first does not. 
   # So if it is important that the function sees mytable as an object from the package, it is system data and the second approach should be used.
-  
 }
-
-

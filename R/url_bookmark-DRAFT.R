@@ -1,5 +1,5 @@
 
-#' save bookmarked EJScreen session (map location and indicator)
+#' utility - save bookmarked EJScreen session (map location and indicator)
 #' 
 #' @details  WORK IN PROGRESS - NOT USED AS OF EARLY 2023. 
 #' You can use this function to create and save a json file that is a bookmark 
@@ -18,9 +18,11 @@
 #' @param file path and name of .json file you want to save locally
 #'
 #' @return URL for 1 bookmarked EJScreen map location and variable displayed on map
-#' @export
+#' 
+#' @keywords internal
 #'
 url_bookmark_save <- function(..., file="ejscreenbookmark.json") {
+  
   mytext <- url_bookmark_text(...)
   write(mytext, file = file)
   return(mytext)
@@ -51,11 +53,11 @@ url_bookmark_save <- function(..., file="ejscreenbookmark.json") {
   # }]
   
 }
+################################################################## #
 
 
-
-#' url_bookmark_text
-#' URL for 1 bookmarked EJScreen session (map location and indicator)
+#' utility - URL for 1 bookmarked EJScreen session (map location and indicator)
+#' 
 #' @details 
 #' WORK IN PROGRESS - NOT USED AS OF EARLY 2023. 
 #' You can use this function to create and save a json file that is a bookmark 
@@ -84,8 +86,6 @@ url_bookmark_save <- function(..., file="ejscreenbookmark.json") {
 #' @param urlrest Just use the default but it changes each year
 #' @seealso [url_bookmark_save()]
 #' @return URL for 1 bookmarked EJScreen map location and variable displayed on map
-#' @export
-#'
 #' @examples \dontrun{
 #'   url_bookmark_text()
 #'   url_bookmark_save(
@@ -93,6 +93,9 @@ url_bookmark_save <- function(..., file="ejscreenbookmark.json") {
 #'     y=c(3548990.034736070,3579297.316451102), 
 #'     file="./mysavedejscreensession1.json")
 #'   }
+#' 
+#' @keywords internal
+#'
 url_bookmark_text <- function(
     x=c(-13232599.178424664, -13085305.024919074),
     y=c(3970069.245971938, 4067373.5829790044),
@@ -141,7 +144,6 @@ url_bookmark_text <- function(
   # old urlrest was         "https://v18ovhrtay722.aa.ad.epa.gov/arcgis/rest/services/ejscreen/ejscreen_v2021/MapServer"  
   
   
-  
   urltext <- paste0(
     '[{"extent":{"spatialReference":{"latestWkid":3857,"wkid":102100},',
     
@@ -156,7 +158,7 @@ url_bookmark_text <- function(
     
     '},"basemap":"Streets","layers":[{"id":"digitizelayer","type":"graphics","title":"digitize graphics","visible":true,"graphics":[]},{"id":',
     '"', 
-    'ejindex_map',  ###########  ???????????? #############
+    'ejindex_map',  ###########  ???????????? ############ #
     '",',   
     '"title":"',
     title,                     ###########   PARAMETER ################ #
@@ -181,4 +183,7 @@ url_bookmark_text <- function(
     '"',
     '}]'
   )
-  return(urltext)}
+  return(urltext)
+}
+################################################################## #
+

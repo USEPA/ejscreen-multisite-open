@@ -25,7 +25,8 @@
 #'   just viewing in console the commands to be used, to test/check this
 #'
 #' @return the paths of the objects on server
-#' @export
+#' 
+#' @keywords internal
 #'
 datawrite_to_aws <- function(varnames= c('bgid2fips',   'blockid2fips', 'blockpoints', 'blockwts' , 'quaddata' ), 
                              ext=c(".arrow", ".rda")[2],

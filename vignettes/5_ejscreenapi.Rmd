@@ -32,7 +32,7 @@ dataload_from_pins(
 if (!exists("blockid2fips")) {
   cat("warning: blockid2fips not available\n")
   # *** temporary workaround if building vignette on 1 particular machine
-  here <- "~/../Downloads/EJAMbigfiles"
+  here <-   "~/../../Downloads/EJAMbigfiles"
   varnames <- c('blockwts', 'blockpoints', 'blockid2fips', "quaddata",
                 'bgej','bgid2fips', 
                 'frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact")
@@ -46,26 +46,10 @@ if (!exists("blockid2fips")) {
 indexblocks()
 ```
 
-```{r developernote, echo= FALSE}
+```{r developernote, eval=FALSE, echo= FALSE, include = FALSE}
+#  *>>>>>>>>>> Developer note: vignettes need to be tested/edited/rebuilt regularly <<<<<<<<<<<*
 #
-#  *>>>>>>>>>> Developer note on updating this vignette <<<<<<<<<<<*
-#
-#  -   *TO UPDATE THIS VIGNETTE:* 
-#
-#    - *This vignette must be regularly tested/edited*
-#
-#    -  rmarkdown::render("vignettes/INSERTNAMEHERE.Rmd", encoding = 'UTF-8') 
-#     but the render button in RStudio shows more detailed progress during render.
-#
-#    -  possibly also devtools::build_vignettes() but that fails on dataload_from_pins() or _local() trying to get blockid2fips
-#
-#  -    See <https://docs.ropensci.org/postdoc/> for quick way to make html help on a pkg. Do this...   postdoc::render_package_manual('EJAM') 
-#
-#  -   *See <https://r-pkgs.org/vignettes.html>*
-#
-#  -   *See <https://r-pkgs.org/vignettes.html#sec-vignettes-how-built>*
-#
-#  -   *Vignette is in EJAM\vignettes\INSERTNAMEHERE.Rmd.html*
+#    - **See ?pkgdown::build_site** - EJAM now uses the pkgdown R package to build help and vignettes as web pages
 ```
 
 # EJAM's tools for using the EJScreen API
@@ -238,7 +222,7 @@ ejscreen_vs_ejam_see1map(1, x = vs)
 
 EJAM is designed to provide results for large numbers of sites very quickly, so it can analyze well over 100,000 sites per hour, and can analyze 1,000 sites in something like 10 to 20 seconds (assuming it has already been initialized with loaded data and indexing, which needs to be done once up front and can take a minute).
 
-See EJAM and EJAMejscreenapi functions:
+There are some internal (not exported) EJAM and EJAMejscreenapi functions:
 
 -   speedreport()
 
@@ -253,7 +237,7 @@ See EJAM and EJAMejscreenapi functions:
 -   speedtable_expand()
 
 ```{r speedtest, eval = FALSE, echo= TRUE, fig.height=3, fig.width=5}
-speeds = EJAM::speedtest(n = 100, radii = c(1,3,5,6.2,10))
+speeds = EJAM:::speedtest(n = 100, radii = c(1,3,5,6.2,10))
 ```
 
 ![](plot_speed_vs_radius.png){width="5in"}
@@ -268,7 +252,7 @@ out2 <- ejamit(
   sitepoints =  sitepoints  ,
   radius = radius
 )
-speedreport(began, Sys.time(), n = NROW(sitepoints))
+EJAM:::speedreport(began, Sys.time(), n = NROW(sitepoints))
 # })
 # print(elapsed)
 ```

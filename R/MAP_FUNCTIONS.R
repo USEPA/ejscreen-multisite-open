@@ -3,6 +3,8 @@
 #
 # FUNCTIONS DEFINED ####
 
+# map_facilities()
+# map_facilities_proxy()
 # mapfastej_counties()
 # map_blockgroups_over_blocks()
 # map_shapes_plot()
@@ -10,10 +12,165 @@
 # map_shapes_mapview()
 # shapes_counties_from_countyfips()
 # shapes_blockgroups_from_bgfips()
+# mapfast_gg()
+
+########################### # ########################### # ########################### # ########################### # 
 
 
+#' Map - Create leaflet map within EJAM shiny app
+#' 
+#' @description make a leaflet map of uploaded points
+#' @param mypoints, data frame of uploaded points
+#' @param rad, a size for drawing each circle (buffer search radius)
+#' @param highlight, a logicial for whether to highlight overlapping points (defaults to FALSE)
+#' @param clustered, a vector of T/F values for each point, indicating if they overlap with another 
+#'
+#' @return a leaflet map with circles, circleMarkers, and basic popup
+#' @seealso [map_facilities_proxy()]
+#'  
+#' @export
+#'
+map_facilities <- function(mypoints, rad = 3, highlight = FALSE, clustered) { 
+  
+  #, map_units = 'miles'){
+  
+  ## map settings
+  base_color      <- '#000080'
+    cluster_color   <- 'red'
+      highlight_color <- 'orange'   #  NOT USED YET
+        circleweight <- 4
+        
+        ## convert units to miles for circle size
+        # if (map_units == 'kilometers'){
+        #   rad = rad * 0.62137119
+        # }
+        
+        ## if checkbox to highlight clusters is checked
+        if (highlight == TRUE) {
+          ## compare latlons using is_clustered() reactive
+          circle_color <- ifelse(clustered == TRUE, cluster_color, base_color)
+        } else {
+          circle_color <- base_color
+        }
+        # print(head(mypoints))
+        
+        if (length(mypoints) != 0) {
+          #isolate({ # do not redraw entire map and zoom out and reset location viewed just because radius changed?
+          
+          #if (circle_type == 'circles'){
+          mymap <- leaflet::leaflet(mypoints) %>% 
+            addTiles()  %>%
+            addCircles(
+              #radius = input$radius * meters_per_mile,
+              radius = rad * meters_per_mile,
+              color = circle_color, fillColor = circle_color, 
+              fill = TRUE, weight = circleweight,
+              group = 'circles',
+              popup = popup_from_any(mypoints)
+              #popup = EJAMejscreenapi::popup_from_df(mypoints)
+            ) %>% 
+            addCircleMarkers(
+              #radius = input$radius * meters_per_mile,
+              radius = rad,
+              color = circle_color, fillColor = circle_color, 
+              fill = TRUE, weight = circleweight,
+              clusterOptions = markerClusterOptions(),
+              popup = popup_from_any(mypoints)
+              ## possible way to use circleMarkers - need conversion of meters to pixels so they scale properly
+              #meters_per_px <- 156543.03392 * cos(mean(m$x$limits$lat) * pi/180) / m$x$options
+            ) %>% 
+            groupOptions(group = 'markers', zoomLevels = 1:6) %>% 
+            groupOptions(group = 'circles', zoomLevels = 6:20) %>% 
+            leaflet.extras::addFullscreenControl()
+          
+          ## return map
+          mymap
+          
+          #})
+        } else {  # length(mypoints) == 0
+          mymap <- leaflet() %>% 
+            addTiles() %>% 
+            setView(-110, 46, zoom = 3)
+          mymap
+        }
+        ### Button to print map ####
+        leaflet.extras2::addEasyprint(map = mymap, options = leaflet.extras2::easyprintOptions(exportOnly = TRUE, title = 'Save Map Snapshot'))
+}
+########################### # ########################### # ########################### # ########################### # 
 
-#' Static or HTML/leaflet map of counties
+
+#' Map - Update leaflet map within EJAM shiny app
+#' 
+#' @description update a leaflet map within the EJAM shiny app with uploaded points.
+#' @param mymap, leafletProxy map object to be added to
+#' @param rad, a size for drawing each circle (buffer search radius)
+#' @param highlight, a logicial for whether to highlight overlapping points (defaults to FALSE)
+#' @param clustered, a vector of T/F values for each point, indicating if they overlap with another 
+#' @param popup_vec, a vector of popup values to display when points are clicked. Length should match number of rows in the dataset.
+#' @param use_marker_clusters, boolean for whether to group points into markerClusters. Uses logic from shiny app to only implement when n > 1000.
+#' @seealso [map_facilities()]
+#' @return a leaflet map with circles, circleMarkers, and basic popup
+#' 
+#' @export
+#'
+map_facilities_proxy <- function(mymap, rad = 3, highlight = FALSE, clustered = FALSE,
+                                 popup_vec = NULL, use_marker_clusters = FALSE) {
+  
+  ## map settings
+  base_color      <- '#000080'
+    cluster_color   <- 'red'
+      circleweight <- 4
+      
+      ## if checkbox to highlight clusters is checked
+      if (highlight == TRUE) {
+        ## compare latlons using is_clustered() reactive
+        circle_color <- ifelse(clustered == TRUE, cluster_color, base_color)
+      } else {
+        circle_color <- base_color
+      }
+      
+      if (use_marker_clusters == FALSE) {
+        ## add to leafletProxy call from Shiny app
+        mymap <- mymap %>%
+          clearShapes() %>%
+          addCircles(
+            radius = rad * meters_per_mile,
+            color = circle_color, fillColor = circle_color, 
+            fill = TRUE, weight = circleweight,
+            group = 'circles',
+            popup = popup_vec
+          ) %>% 
+          leaflet.extras::addFullscreenControl()
+      } else {
+        ## add to leafletProxy call from Shiny app
+        mymap <- mymap %>%
+          clearShapes() %>%
+          clearMarkerClusters() %>%
+          addCircles(
+            radius = rad * meters_per_mile,
+            color = circle_color, fillColor = circle_color, 
+            fill = TRUE, weight = circleweight,
+            group = 'circles',
+            popup = popup_vec
+          ) %>% 
+          addCircleMarkers(
+            radius = 0,
+            color = circle_color, fillColor = circle_color, 
+            fill = TRUE, weight = circleweight,
+            clusterOptions = markerClusterOptions(),
+            popup = popup_vec
+          ) %>% 
+          groupOptions(group = 'markers', zoomLevels = 1:6) %>% 
+          groupOptions(group = 'circles', zoomLevels = 7:20) %>% 
+          leaflet.extras::addFullscreenControl()
+      }
+      ## return map
+      mymap
+}
+########################### # ########################### # ########################### # ########################### # 
+
+
+#' Map Counties - Create static or HTML/leaflet map of counties
 #'
 #' @param mydf something like  ejamit(fips = fips_counties_from_statename("Kentucky"), radius = 0)$results_bysite
 #' @param colorvarname colname of indicator in mydf that drives color-coding
@@ -80,9 +237,10 @@ mapfastej_counties <- function(mydf, colorvarname = "pctile.Demog.Index.Supp",
 ########################### # ########################### # ########################### # ########################### # 
 
 
-#' Overlay blockgroups near 1 site, after plotblocksnearby
+#' Map blockgroup boundaries near 1 site, after plotblocksnearby()
 #' 
 #' Overlay blockgroups near 1 site, after plotblocksnearby(returnmap = TRUE)
+#' 
 #' @param y  output of [plotblocksnearby()] but with returnmap = TRUE
 #'
 #' @return leaflet map widget
@@ -122,7 +280,7 @@ map_blockgroups_over_blocks <- function(y) {
 ########################### # ########################### # ########################### # ########################### # 
 
 
-#' Map drawn using base R plot()
+#' Map using base R plot()
 #'
 #' @param shapes like from shapes_counties_from_countyfips(fips_counties_from_state_abbrev("DE"))
 #' @param main title for map
@@ -138,7 +296,7 @@ map_shapes_plot <- function(shapes, main = "Selected Census Units", ...) {
 ########################### # ########################### # ########################### # ########################### # 
 
 
-#' Create a new leaflet map from shapefile data
+#' Map - Create a new leaflet map from shapefile data, in shiny app
 #' 
 #' @param shapes like from shapes_counties_from_countyfips(fips_counties_from_state_abbrev("DE"))
 #' @param color passed to leaflet::addPolygons()
@@ -155,7 +313,7 @@ map_shapes_leaflet <- function(shapes, color = "green", popup = shapes$NAME) {
 }
 ########################### # ########################### # ########################### # ########################### # 
 
-#' update existing leaflet map by adding shapefile data
+#' Map - Update existing leaflet map by adding shapefile data, in shiny app
 #' 
 #' @param mymap map like from leafletProxy()
 #' @param shapes like from shapes_counties_from_countyfips(fips_counties_from_state_abbrev("DE"))
@@ -176,7 +334,7 @@ map_shapes_leaflet_proxy <- function(mymap, shapes, color = "green", popup = sha
 ########################### # ########################### # ########################### # ########################### # 
 
 
-#' Use mapview from the mapview package if available
+#' Map - Use mapview from the mapview package if available
 #' 
 #' @param shapes like from shapes_counties_from_countyfips(fips_counties_from_state_abbrev("DE"))
 #' @param col.regions passed to mapview() from mapview package
@@ -207,7 +365,7 @@ map_shapes_mapview <- function(shapes, col.regions = "green", map.types = "OpenS
 ########################### # ########################### # ########################### # ########################### # 
 
 
-#' use API to get boundaries of US Counties to map them
+#' Get boundaries of US Counties via API, to map them
 #'
 #' @param countyfips FIPS codes as 5-character strings (or numbers) in a vector
 #'   as from fips_counties_from_state_abbrev("DE")
@@ -257,7 +415,7 @@ shapes_counties_from_countyfips <- function(countyfips = '10001', outFields = ""
 ########################### # ########################### # ########################### # ########################### # 
 
 
-#' use API to get boundaries of blockgroups
+#' Get boundaries of blockgroups, via API, to map them
 #' 
 #' @details This is useful mostly for small numbers of blockgroups.  
 #'   The EJScreen map services provide other ways to map blockgroups and see EJScreen data.
@@ -315,4 +473,61 @@ shapes_blockgroups_from_bgfips <- function(bgfips = '010890029222', outFields = 
 }
 ########################### # ########################### # ########################### # ########################### # 
 
+
+#' Map - ggplot2 map of points in the USA - very basic map
+#'
+#' @param mydf data.frame with columns named lat and lon 
+#' @param dotsize optional, size of dot representing a point
+#' @param ptcolor optional, color of dot 
+#' @param xlab optional, text for x label
+#' @param ylab optional, text for y label
+#' @param ... optional, passed to [ggplot2::labs()]
+#'
+#' @return a ggplot() object
+#'
+#' @examples \dontrun{
+#'   mapfast_gg(EJAM::testpoints_10)
+#'   
+#'   pts <- read.table(textConnection(
+#'   "lat lon 
+#'   39.5624775 -119.7410994 
+#'   42.38748056 -94.61803333"
+#'   ),
+#'   header = TRUE, 
+#'   as.is = TRUE
+#'   )
+#'   mapfast_gg(pts)
+#'   # str(pts) # lon, not long
+#'   }
+#'
+#' @export
+#'
+mapfast_gg <- function(mydf=data.frame(lat = 40, lon = -100)[0,], 
+                       dotsize = 1, ptcolor = "black", 
+                       xlab = "Longitude", ylab = "Latitude", ...) {
+  
+  plotout <- ggplot2::ggplot() +
+    # The usa data.frame has cols long, lat, group, etc.
+    ggplot2::geom_polygon(data = ggplot2::map_data("usa"), ggplot2::aes(x = long, y = lat, group = group), fill = "gray", alpha = 0.75) + 
+    ggplot2::geom_point(  data = mydf, ggplot2::aes(lon, lat), color = ptcolor, size = dotsize) + 
+    ggplot2::labs(x = xlab, y = ylab, ...)
+  return(plotout)
+}
+############################ #
+
+
+# color coded map by FIPS code
+# 
+# state resolution map example is from  https://leafletjs.com/examples/choropleth/
+# 
+# var map = L.map('map').setView([37.8, -96], 4);
+# 
+# var tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+#   maxZoom: 19,
+#   attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+# }).addTo(map);
+# 
+# L.geoJson(statesData).addTo(map);
+# 
+############################ #
 

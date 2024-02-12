@@ -1,8 +1,10 @@
-#' helper function work in progress: GET json via url of ejscreen ejquery map services
+
+#' utility - work in progress: GET query of ejscreen ejquery map services
 #'
 #' @param url the url for an EJScreen ejquery request
 #'
-#' @return json
+#' @return json format results
+#' 
 #' @export
 #'
 url_get_via_url <- function(url) { 

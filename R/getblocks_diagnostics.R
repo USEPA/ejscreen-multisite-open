@@ -159,7 +159,6 @@ getblocks_diagnostics <- function(x, detailed=FALSE, see_pctiles=FALSE, see_dist
   count_block_site_distances <- blockcount_incl_dupes # number of rows in output table of all block-site pairs with their distance.
   blockcount_avgsite         <- blockcount_incl_dupes / sitecount_unique_out
   
-  
   sumstats <- list(
     sitecount_unique_out = sitecount_unique_out, 
     # sites_withany_overlap = as.numeric(getblocks_summarize_sites_per_block(x)['2']),

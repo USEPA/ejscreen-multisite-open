@@ -1,5 +1,5 @@
 
-#' guess which columns have lat and lon based on aliases like latitude, FacLat, etc.
+#' Guess which columns have lat and lon based on aliases like latitude, FacLat, etc.
 #'
 #' @param mycolnames e.g., colnames(x) where x is a data.frame from read.csv
 #'
@@ -21,6 +21,7 @@
 #' @keywords internal
 #'
 latlon_infer <- function(mycolnames) {
+  
   x <- mycolnames
   
   # Latitude, Lat, latitude, long, longitude, Longitude, Long, LONG, LAT, etc. 
@@ -53,7 +54,8 @@ latlon_infer <- function(mycolnames) {
   
   x <- infer('lat', x)
   x <- infer('lon', x)
-  if (!isTRUE(all.equal(x, mycolnames))) {warning("Replaced column names that were inferred to be and therefore renamed as the lat and/or lon columns!")}
-  x
-  
+  if (!isTRUE(all.equal(x, mycolnames))) {
+    warning("Replaced column names that were inferred to be and therefore renamed as the lat and/or lon columns!")
+  }
+  return(x)
 }

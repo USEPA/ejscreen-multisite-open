@@ -12,13 +12,13 @@ shapefile2blockpoints <- function(...) {
 
 #' Find all Census blocks in a polygon, using internal point of block
 #' 
-#' Like getblocksnearby(), but for blocks in each polygon rather than 
+#' @description Like [getblocksnearby()], but for blocks in each polygon rather than 
 #' blocks near each facility. For analyzing all residents in certain zones 
 #' such as places at elevated risk, redlined areas, watersheds, etc.
 #' 
+#'   
 #' @aliases shapefile2blockpoints
-#' @description This is like getblocksnearby() but for a polygonal buffer area instead of 
-#'   a circular buffer.  
+#' 
 #' @details This uses getblocksnearby() to get a very fast rough/good estimate of 
 #'   which US block points are nearby (with a safety margin - see param below),
 #'   before then using sf:: to carefully identify which of those candidate blocks are actually 
@@ -168,6 +168,4 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
   data.table::setcolorder(pts, c('ejam_uniq_id', 'blockid', 'distance', 'blockwt', 'bgid', 'lat', 'lon')) # to make it same order as output of getblocksnearby(), plus latlon
   
   return(list('pts' = pts, 'polys' = polys))
-  
 }
-

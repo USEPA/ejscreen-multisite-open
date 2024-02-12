@@ -1,9 +1,9 @@
 #' Very fast way to distances to all nearby Census blocks
 #' 
-#' Get distance from each site (e.g., facility) to each 
-#' Census block centroid within some radius
+#' @description
+#'   Get distance from each site (e.g., facility) to each 
+#'   Census block centroid within some radius
 #' 
-#' @description 
 #'   Given a set of points and a specified radius, 
 #'   this function quickly finds all the US Census blocks near each point. 
 #'   For each point, it uses the specified radius distance and finds the distance to 
@@ -31,6 +31,7 @@
 #' @param ...  passed to [getblocksnearbyviaQuadTree()] or other such functions
 #' 
 #' @seealso [ejamit()]  [getblocksnearbyviaQuadTree()] [getblocksnearbyviaQuadTree_Clustered()] [getblocksnearbyviaQuadTree2()]
+#' 
 #' @export
 #'
 getblocksnearby  <- function(sitepoints, radius=3, maxradius=31.07, 

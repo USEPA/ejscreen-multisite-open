@@ -7,6 +7,8 @@
 #' @param message question, like, "Within how many miles of each point?"
 #' @seealso askYesNo()
 #' @return a single number
+#' 
+#' @keywords internal
 #'
 ask_number <- function(default = 3, title = "Radius", message = "Within how many miles of each point?") {
   radius <- NA
@@ -18,5 +20,6 @@ ask_number <- function(default = 3, title = "Radius", message = "Within how many
   cat("Specified value is", radius, units_text, '\n')
   return(radius)
 }
+
 
 askradius <- ask_number

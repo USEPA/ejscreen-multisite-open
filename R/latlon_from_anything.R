@@ -1,19 +1,17 @@
 
-#' latlon_from_anything - Flexibly get lat/lon from file, data.frame, data.table, or lat/lon vectors
+#' Get lat/lon flexibly - from file, data.frame, data.table, or lat/lon vectors
 #' 
-#' @description Try to figure out if user provided latitude / longitude as vectors, data.frame, file, or interactively pick file.
-#' @details 
+#' @description Try to figure out if user provided latitude / longitude
+#'   as vectors, data.frame, file, or interactively pick file.
+#'
+#' @details This function relies on
 #' 
-#' This function
-#' 
-#' relies on
-#' 
-#'   read_csv_or_xl()  and
+#'  [read_csv_or_xl()]  and
 #'   
-#'   [latlon_df_clean()] which in turn uses [latlon_infer()] [latlon_as.numeric()] [latlon_is.valid()]
+#'  [latlon_df_clean()] which in turn uses [latlon_infer()] [latlon_as.numeric()] [latlon_is.valid()]
 #' 
 #' 
-#' read_and_clean_points() from EJAMejscreenapi
+#'  [read_and_clean_points()] from EJAMejscreenapi
 #' 
 #'   would be the most general / flexible broadest way to get points, but is still work in progress 
 #' 
@@ -43,7 +41,7 @@
 #'  latlon_from_anything(testpoints_100[1:6,] )
 #'  latlon_from_anything(testpoints_100[1:6, c('lat','lon')] )
 #'  latlon_from_anything(x=testpoints_100$lon[1:6], y=testpoints_100$lat[1:6] )
-#' @aliases latlon_any_format lonlat_any_format
+#' @aliases latlon_any_format
 #' 
 #' @export
 #'
@@ -96,7 +94,11 @@ latlon_from_anything <- function(x,y) {
   ## WHAT SHOULD BE RETURNED IF NO COLUMNS CAN BE INTERPRETED AS lat lon ? Need to check for that where this function is used!
   return(pts)
 }
+########################################################### #
 
+#' 
+#' @export
+#'
 latlon_any_format <- latlon_from_anything
 
-lonlat_any_format <- latlon_any_format
+########################################################### #

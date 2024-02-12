@@ -1,3 +1,4 @@
+
 #' varinfo gets metadata for a variable, like its type, definition, decimalS rounding, etc.
 #' 
 #' This is just a way to query map_headernames, which has info about each indicator or 

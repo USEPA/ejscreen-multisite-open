@@ -1,3 +1,4 @@
+
 #' DRAFT / WAS WORK IN PROGRESS  Key buffering function - wrapper redirecting to the right version of getblocksnearby()
 #'
 #' @details  For all examples, see [ejamit()] 

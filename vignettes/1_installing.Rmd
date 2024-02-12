@@ -16,7 +16,7 @@ knitr::opts_chunk$set(eval = FALSE)
 # https://r-pkgs.org/vignettes.html
 ```
 
-```{r libraryEJAM, eval = TRUE, echo= FALSE, include= FALSE}
+```{r libraryEJAM, eval = FALSE, echo= FALSE, include= FALSE}
 # rm(list = ls())
 # golem::detach_all_attached()
 # 
@@ -46,26 +46,10 @@ if (!exists("blockid2fips")) {
 indexblocks()
 ```
 
-```{r developernote, echo = FALSE}
+```{r developernote, eval=FALSE, echo= FALSE, include = FALSE}
+#  *>>>>>>>>>> Developer note: vignettes need to be tested/edited/rebuilt regularly <<<<<<<<<<<*
 #
-#  *>>>>>>>>>> Developer note on updating this vignette <<<<<<<<<<<*
-#
-#  -   *TO UPDATE THIS VIGNETTE:* 
-#
-#    - *This vignette must be regularly tested/edited*
-#
-#    -  rmarkdown::render("vignettes/INSERTNAMEHERE.Rmd", encoding = 'UTF-8') 
-#     but the render button in RStudio shows more detailed progress during render.
-#
-#    -  possibly also devtools::build_vignettes() but that fails on dataload_from_pins() or _local() trying to get blockid2fips
-#
-#  -    See <https://docs.ropensci.org/postdoc/> for quick way to make html help on a pkg. Do this...   postdoc::render_package_manual('EJAM') 
-#
-#  -   *See <https://r-pkgs.org/vignettes.html>*
-#
-#  -   *See <https://r-pkgs.org/vignettes.html#sec-vignettes-how-built>*
-#
-#  -   *Vignette is in EJAM\vignettes\INSERTNAMEHERE.Rmd.html*
+#    - **See ?pkgdown::build_site** - EJAM now uses the pkgdown R package to build help and vignettes as web pages
 ```
 
 # EJAM Setup for R users
@@ -147,7 +131,7 @@ You could also see the list of CRAN packages needed by looking at the `DESCRIPTI
 
 Once the right R packages are installed, to use EJAM in the console you can start by loading and attaching the package, using library or require. It should automatically download some data and build an index.
 
-```{r libraryejam, eval=TRUE}
+```{r libraryejam, eval=FALSE}
 require(EJAM)
 # or library(EJAM)
 ```
@@ -172,6 +156,6 @@ Attaching the package actually checks for copies in memory first (e.g., `exists(
 
 EJAM also needs to build the index of about 8 million US block locations (one internal point for each block), which takes a few seconds. EJAM does this automatically when attached via `require(EJAM)` or `library(EJAM)`, by creating an object called `localtree` based on the `quaddata` object obtained as mentioned above. Some functions check for it and try to build the index on the fly if it is missing. You can also (re)build it manually:
 
-```{r indexblocks, eval=TRUE}
+```{r indexblocks, eval=FALSE}
 indexblocks()
 ```

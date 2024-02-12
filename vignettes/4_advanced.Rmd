@@ -20,52 +20,36 @@ knitr::opts_chunk$set(eval = FALSE)
 # rm(list = ls())
 # golem::detach_all_attached()
 # 
-library(EJAM)
-# dataload_from_pins('all') # varnames = all  currently means all these:
-dataload_from_pins(
-  c("blockwts", "blockpoints", "blockid2fips", "quaddata", 
-    "bgej", "bgid2fips",
-    "frs", "frs_by_programid", "frs_by_naics", "frs_by_sic", "frs_by_mact")
-)
-
-##################################### #
-if (!exists("blockid2fips")) {
-  cat("warning: blockid2fips not available\n")
-  # *** temporary workaround if building vignette on 1 particular machine
-  here <- "~/../Downloads/EJAMbigfiles"
-  varnames <- c('blockwts', 'blockpoints', 'blockid2fips', "quaddata",
-                'bgej','bgid2fips', 
-                'frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact")
-  fnames <- paste0(varnames, ".arrow")
-  localpaths  <- paste0(here, '/', fnames)
-  for (i in 1:length(varnames)) {assign(varnames[i], arrow::read_ipc_file(file = localpaths[i]))}
-  rm(here, varnames, fnames, localpaths)
-}
-##################################### #
-
-indexblocks()
+# library(EJAM)
+# # dataload_from_pins('all') # varnames = all  currently means all these:
+# dataload_from_pins(
+#   c("blockwts", "blockpoints", "blockid2fips", "quaddata", 
+#     "bgej", "bgid2fips",
+#     "frs", "frs_by_programid", "frs_by_naics", "frs_by_sic", "frs_by_mact")
+# )
+# 
+# ##################################### #
+# if (!exists("blockid2fips")) {
+#   cat("warning: blockid2fips not available\n")
+#   # *** temporary workaround if building vignette on 1 particular machine
+#   here <- "~/../../Downloads/EJAMbigfiles"
+#   varnames <- c('blockwts', 'blockpoints', 'blockid2fips', "quaddata",
+#                 'bgej','bgid2fips', 
+#                 'frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact")
+#   fnames <- paste0(varnames, ".arrow")
+#   localpaths  <- paste0(here, '/', fnames)
+#   for (i in 1:length(varnames)) {assign(varnames[i], arrow::read_ipc_file(file = localpaths[i]))}
+#   rm(here, varnames, fnames, localpaths)
+# }
+# ##################################### #
+# 
+# indexblocks()
 ```
 
-```{r developernote, echo= FALSE}
+```{r developernote, eval=FALSE, echo= FALSE, include = FALSE}
+#  *>>>>>>>>>> Developer note: vignettes need to be tested/edited/rebuilt regularly <<<<<<<<<<<*
 #
-#  *>>>>>>>>>> Developer note on updating this vignette <<<<<<<<<<<*
-#
-#  -   *TO UPDATE THIS VIGNETTE:* 
-#
-#    - *This vignette must be regularly tested/edited*
-#
-#    -  rmarkdown::render("vignettes/INSERTNAMEHERE.Rmd", encoding = 'UTF-8') 
-#     but the render button in RStudio shows more detailed progress during render.
-#
-#    -  possibly also devtools::build_vignettes() but that fails on dataload_from_pins() or _local() trying to get blockid2fips
-#
-#  -    See <https://docs.ropensci.org/postdoc/> for quick way to make html help on a pkg. Do this...   postdoc::render_package_manual('EJAM') 
-#
-#  -   *See <https://r-pkgs.org/vignettes.html>*
-#
-#  -   *See <https://r-pkgs.org/vignettes.html#sec-vignettes-how-built>*
-#
-#  -   *Vignette is in EJAM\vignettes\INSERTNAMEHERE.Rmd.html*
+#    - **See ?pkgdown::build_site** - EJAM now uses the pkgdown R package to build help and vignettes as web pages
 ```
 
 

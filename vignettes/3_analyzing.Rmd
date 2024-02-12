@@ -21,51 +21,32 @@ knitr::opts_chunk$set(eval = FALSE)
 # golem::detach_all_attached()
 # 
 library(EJAM)
-# dataload_from_pins('all') # varnames = all  currently means all these:
-dataload_from_pins(
-  c("blockwts", "blockpoints", "blockid2fips", "quaddata", 
-    "bgej", "bgid2fips",
-    "frs", "frs_by_programid", "frs_by_naics", "frs_by_sic", "frs_by_mact")
-)
+dataload_from_pins('all') # varnames = all  currently means all these:
+# dataload_from_pins(
+#   c("blockwts", "blockpoints", "blockid2fips", "quaddata", 
+#     "bgej", "bgid2fips",
+#     "frs", "frs_by_programid", "frs_by_naics", "frs_by_sic", "frs_by_mact")
+# )
 
 ##################################### #
 if (!exists("blockid2fips")) {
   cat("warning: blockid2fips not available\n")
   # *** temporary workaround if building vignette on 1 particular machine
-  here <- "~/../Downloads/EJAMbigfiles"
+  here <-  "~/../../Downloads/EJAMbigfiles"
   varnames <- c('blockwts', 'blockpoints', 'blockid2fips', "quaddata",
                 'bgej','bgid2fips', 
                 'frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact")
   fnames <- paste0(varnames, ".arrow")
   localpaths  <- paste0(here, '/', fnames)
-  for (i in 1:length(varnames)) {assign(varnames[i], arrow::read_ipc_file(file = localpaths[i]))}
+  for (i in 1:length(varnames)) {
+    if (!exists(varnames[i]) & file.exists(localpaths[i])) {
+    assign(varnames[i], arrow::read_ipc_file(file = localpaths[i]))
+    }}
   rm(here, varnames, fnames, localpaths)
 }
 ##################################### #
 
 indexblocks()
-```
-
-```{r developernote, echo= FALSE}
-#
-#  *>>>>>>>>>> Developer note on updating this vignette <<<<<<<<<<<*
-#
-#  -   *TO UPDATE THIS VIGNETTE:* 
-#
-#    - *This vignette must be regularly tested/edited*
-#
-#    -  rmarkdown::render("vignettes/INSERTNAMEHERE.Rmd", encoding = 'UTF-8') 
-#     but the render button in RStudio shows more detailed progress during render.
-#
-#    -  possibly also devtools::build_vignettes() but that fails on dataload_from_pins() or _local() trying to get blockid2fips
-#
-#  -    See <https://docs.ropensci.org/postdoc/> for quick way to make html help on a pkg. Do this...   postdoc::render_package_manual('EJAM') 
-#
-#  -   *See <https://r-pkgs.org/vignettes.html>*
-#
-#  -   *See <https://r-pkgs.org/vignettes.html#sec-vignettes-how-built>*
-#
-#  -   *Vignette is in EJAM\vignettes\INSERTNAMEHERE.Rmd.html*
 ```
 
 # Key Functions underlying EJAM
@@ -78,20 +59,11 @@ indexblocks()
 
 -   **doaggregate()** takes the list of blocks near each point, joins it to blockgroup indicators like from EJScreen, and aggregates at each buffered point as well as for the overall set of unique blocks (residents). Sample input is in testoutput_getblocksnearby_10pts_1miles
 
-# Other key functions
-
-See the package documentation for a list of functions and what each does. Try ?EJAM for example.
-
--   ejscreenit()
--   fips_lead_zero()
-
 # Key groups of functions
 
--   and ejscreen... in general
+The EJAM package reference manual has a complete list of documented functions. There are several groups of functions that may be useful to know about:
 
-Important groups of functions include:
-
--   distance...
+-   distance... such as distance_by_group()
 
 -   ejscreen... such as ejscreenit()
 
@@ -123,9 +95,8 @@ Important groups of functions include:
 
 DATA names\_... see ?dataload_from_pins() usastats, statestats
 
-# ------------------------------------------
 
-# SPECIFYING LOCATIONS
+# POINTS & NEARBY RESIDENTS
 
 EJAM offers a variety of ways to specify the places to be analyzed and compared. Once you specify some list of places, EJAM will analyze them as a whole (overall), and also individually so that you can compare places to each other.
 
@@ -144,7 +115,6 @@ To analyze points and the circular areas around each one, you can specify the po
     -   EPA Program (e.g., all greenhouse gas reporting facilities)
     -   Industry type, based on NAICS code (e.g., )
 
-## Specify a List of Points such as Facilities
 
 ## Compare all Points in a Category
 
@@ -233,8 +203,6 @@ nrow(latlon_from_mactsubpart("A", include_if_no_latlon = FALSE))
 
 head(latlon_from_mactsubpart("OOOO"), 2)
 ```
-
-# ------------------------------------------------------------------------
 
 ## Working with NAICS Codes (Industry Codes)
 
@@ -340,45 +308,20 @@ NROW(frs_from_naics(naics_from_any("chem", children = T)$code))
 # >10,000
 ```
 
-# ---------------------------------------
 
-# EXPLORING RESULTS
 
-## Site by site results in datatable format in RStudio viewer:
+# SHAPEFILES
 
-```{r datatable30}
-out2 <- testoutput_ejamit_100pts_1miles
-DT::datatable(out2$results_bysite[1:30,   ], escape = FALSE, rownames = FALSE)
-
-# To see all 1,000 sites in table:
-#DT::datatable(out2$results_bysite[1:1000, ], escape = FALSE, rownames = FALSE)
-```
-
-### Overall results for a few key indicators, as raw output in console:
-
-```{r cbind-overall, eval = TRUE, paged.print= TRUE}
-out2 <- testoutput_ejamit_100pts_1miles
-names(out2)
-cbind(overall = as.list( out2$results_overall[ , ..names_d]))
-cbind(overall = as.list( out2$results_overall[ , ..names_d_subgroups]))
-```
-
-### Overall results for the very long list of all indicators, as raw output in console:
-
-```{r}
-out2 <- testoutput_ejamit_100pts_1miles
-cbind(as.list(out2$results_overall))
-```
-
-# -----------------
-
-### Shapefiles or FIPS Units
-
-#### Polygons in shapefiles as the places to compare
+### Polygons in shapefiles as the places to compare
 
 You can upload polygons in a shapefile, and use EJAM to analyze them. See the Shiny app.
 
-#### Counties as the places to compare
+See shapefile_from_folder() and related functions.
+
+
+# FIPS CODES
+
+### Counties as the places to compare
 
 You can compare places defined by FIPS code, such as a group of US Counties.
 
@@ -429,9 +372,57 @@ mapfastej_counties(xmd$results_bysite, 'state.pctile.pctlowinc')
 
 ```
 
-# -----------------
 
-# Detailed views, diagnostics, granular results
+# EXPLORING RESULTS
+
+## Site by site results in datatable format in RStudio viewer:
+
+```{r datatable30}
+out2 <- testoutput_ejamit_100pts_1miles
+DT::datatable(out2$results_bysite[1:30,   ], escape = FALSE, rownames = FALSE)
+
+# To see all 1,000 sites in table:
+#DT::datatable(out2$results_bysite[1:1000, ], escape = FALSE, rownames = FALSE)
+```
+
+### Overall results for a few key indicators, as raw output in console:
+
+```{r cbind-overall, eval = TRUE, paged.print= TRUE}
+out2 <- testoutput_ejamit_100pts_1miles
+names(out2)
+cbind(overall = as.list( out2$results_overall[ , ..names_d]))
+cbind(overall = as.list( out2$results_overall[ , ..names_d_subgroups]))
+```
+
+### Overall results for the very long list of all indicators, as raw output in console:
+
+```{r}
+out2 <- testoutput_ejamit_100pts_1miles
+cbind(as.list(out2$results_overall))
+```
+
+ 
+```{r count_sites_with_n_high, eval=TRUE}
+x <- testoutput_ejamit_1000pts_1miles 
+out <- x$results_bysite
+out <- setDF(copy(out))
+ratio_benchmarks <- c(1.01, 1.50, 2, 3, 5, 10)
+ratiodata <- out[, names_d_ratio_to_state_avg]
+
+findings <- count_sites_with_n_high_scores(out)  # long output to console !
+dimnames(findings)
+findings$text[2]
+head(findings$stats[ , , 1], 15)
+head(findings$stats[ , 1, ], 21)
+x = findings$stats[ , 1, ] 
+x[x[, "cum_pct"] >= 50 & x[, "cum_pct"] <= 80, ]
+findings$stats[ 1, , ]
+```
+
+ 
+
+
+# DETAILS OF BLOCKS NEAR ONE SITE
 
 ### Detailed diagnostics or stats on intermediate results
 
@@ -456,7 +447,73 @@ print(elapsed)
 sites2blocks
 ```
 
-### Details on blocks near 1 site
+
+#### doaggregate() will summarize indicators within each buffer and overall
+
+```{r doaggregateX, eval = TRUE}
+# out <- doaggregate(testoutput_getblocksnearby_10pts_1miles)
+sites2blocks <- data.table::copy(testoutput_getblocksnearby_10pts_1miles)
+elapsed <- system.time({
+  out <- suppressWarnings( 
+    doaggregate(sites2blocks = sites2blocks) 
+  )
+}) 
+print(elapsed)
+
+names(out)
+dim(out$results_bysite)
+```
+
+#### See indicators aggregated over all people across all sites
+
+```{r cbindagain, eval = TRUE}
+## view output of batch run aggregation ####
+head(cbind(overall = as.list( out$results_overall)))
+
+## To see just some subset of indicators, like Environmental only:
+cbind(overall = as.list( out$results_overall[ , ..names_e]))
+cbind(overall = as.list( out$results_overall[ , ..names_d]))
+cbind(overall = as.list( out$results_overall[ , ..names_d_subgroups]))
+cbind(overall = as.list( out$results_overall[ , ..names_e_pctile]))
+cbind(overall = as.list( out$results_overall[ , ..names_d_pctile]))
+# cbind(overall = as.list( out$results_overall[ , ..names_ej_pctile]))
+```
+
+
+# VISUALIZATION OF FINDINGS
+
+#### Histogram of indicators distribution over all people across all sites
+
+```{r histo, eval = TRUE}
+hist(out$results_bysite$pctile.traffic.score, 10, xlab = "Local traffic scores (expressed as a percentile)", 
+     ylab = "count of sites in each bin, out of 1,000 sites", freq = TRUE, 
+     main = "Actual distribution of scores nearby, as percentiles, 
+     vs flat line = USA overall")
+abline(h = nrow(out$results_bysite)/10)
+```
+
+## Distance plots
+
+### Mean distance of each group
+
+```{r}
+# plot_distance_mean_by_group(testoutput_ejamit_1000pts_1miles$results_bybg_people)
+
+# larger radius reveals more information
+y <- ejamit(testpoints_100, radius = 3)
+
+plot_distance_mean_by_group(y$results_bybg_people) # or distance_mean_by_group() is a synonym
+print(distance_by_group(
+  y$results_bybg_people, 
+  demogvarname = 'pctlowinc', demoglabel = 'Low Income'))
+distance_by_group_plot(
+  y$results_bybg_people,
+  demogvarname = 'pctlowinc', demoglabel = 'Low Income')
+```
+
+
+
+### Map blocks near 1 site
 
 ```{r plotblocksnearby2, eval = TRUE, fig.height=5, fig.width=5}
 x = plotblocksnearby(testpoints_n(1), radius = 3, returnmap = FALSE)
@@ -464,12 +521,24 @@ x = plotblocksnearby(testpoints_n(1), radius = 3, returnmap = FALSE)
 
 ```
 
-### Site vary widely in count of blocks nearby, depending on population density
+
+# POPULATION DENSITY - AVG SITE VS AVG RESIDENT
+
+## Sites vary widely in count of blocks nearby, depending on population density
 
 -   what blocks are near each site
 -   how far are they
 -   how many blocks are typically near a given site (population density varies)
 -   how many sites are near a block (residents with \> 1 site nearby)
+
+```{r popshare_at, eval=TRUE}
+out <- testoutput_ejamit_100pts_1miles
+cat("  ", popshare_p_lives_at_what_pct(out$results_bysite$pop, p = 0.50, astext = TRUE), "\n")
+cat("  ", popshare_at_top_n(out$results_bysite$pop, c(1, 5, 10), astext = TRUE), "\n\n")
+
+```
+
+
 
 ```{r getblocksnearby2, eval = TRUE}
 ## Also could use this example intermediate step dataset 
@@ -558,68 +627,4 @@ plotblocksnearby(sitepoints = sitepoints[sitepoints$ejam_uniq_id == densest, ])
 summary(s2b_stats$avgDistance)
 ```
 
-# -----------------
-
-#### doaggregate() will summarize indicators within each buffer and overall
-
-```{r doaggregateX, eval = TRUE}
-# out <- doaggregate(testoutput_getblocksnearby_10pts_1miles)
-
-elapsed <- system.time({
-  out <- suppressWarnings( 
-    doaggregate(sites2blocks = sites2blocks) 
-  )
-}) 
-print(elapsed)
-
-names(out)
-dim(out$results_bysite)
-```
-
-#### See indicators aggregated over all people across all sites
-
-```{r cbindagain, eval = TRUE}
-## view output of batch run aggregation ####
-head(cbind(overall = as.list( out$results_overall)))
-
-## To see just some subset of indicators, like Environmental only:
-cbind(overall = as.list( out$results_overall[ , ..names_e]))
-cbind(overall = as.list( out$results_overall[ , ..names_d]))
-cbind(overall = as.list( out$results_overall[ , ..names_d_subgroups]))
-cbind(overall = as.list( out$results_overall[ , ..names_e_pctile]))
-cbind(overall = as.list( out$results_overall[ , ..names_d_pctile]))
-# cbind(overall = as.list( out$results_overall[ , ..names_ej_pctile]))
-```
-
-# -----------------
-
-# VISUALIZATION OF FINDINGS
-
-#### Histogram of indicators distribution over all people across all sites
-
-```{r histo, eval = TRUE}
-hist(out$results_bysite$pctile.traffic.score, 10, xlab = "Local traffic scores (expressed as a percentile)", 
-     ylab = "count of sites in each bin, out of 1,000 sites", freq = TRUE, 
-     main = "Actual distribution of scores nearby, as percentiles, 
-     vs flat line = USA overall")
-abline(h = nrow(out$results_bysite)/10)
-```
-
-## Distance plots
-
-### Mean distance of each group
-
-```{r}
-# plot_distance_mean_by_group(testoutput_ejamit_1000pts_1miles$results_bybg_people)
-
-# larger radius reveals more information
-y <- ejamit(testpoints_100, radius = 3)
-
-plot_distance_mean_by_group(y$results_bybg_people) # or distance_mean_by_group() is a synonym
-print(distance_by_group(
-  y$results_bybg_people, 
-  demogvarname = 'pctlowinc', demoglabel = 'Low Income'))
-distance_by_group_plot(
-  y$results_bybg_people,
-  demogvarname = 'pctlowinc', demoglabel = 'Low Income')
-```
+ 

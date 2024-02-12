@@ -1,4 +1,5 @@
-#' latlon_as.numeric - Strip non-numeric characters from a vector
+#' Strip non-numeric characters from a vector
+#' 
 #' @description Remove all characters other than minus signs, decimal points, and numeric digits
 #' @details Useful if latitude or longitude vector has spaces, tabs, etc. 
 #'   CAUTION - Assumes stripping those out and making it numeric will fix whatever problem there was 
