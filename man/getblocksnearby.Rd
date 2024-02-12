@@ -46,6 +46,9 @@ which is relevant only if a user saved the output of this function.}
 \item{...}{passed to \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} or other such functions}
 }
 \description{
+Get distance from each site (e.g., facility) to each
+Census block centroid within some radius
+
 Given a set of points and a specified radius,
 this function quickly finds all the US Census blocks near each point.
 For each point, it uses the specified radius distance and finds the distance to
@@ -62,9 +65,6 @@ inside the circular buffer more accurately and more quickly than
 areal apportionment of block groups would provide.
 }
 \details{
-Get distance from each site (e.g., facility) to each
-Census block centroid within some radius
-
 See \code{\link[=ejamit]{ejamit()}} for examples.
 
 getblocksnearby() is a wrapper redirecting to the right version, like \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}}

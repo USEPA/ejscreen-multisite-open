@@ -109,7 +109,7 @@ x <- ejscreenit(data.frame(lon = c(-111,-113), lat = c(41,43)), radius = 2)
 names(x)
 x$map
 x$table
-ejscreenit_see_table(x)
+# ejscreenit_see_table(x) 
 ```
 
 ### Get EJScreen results tables in a local web app \*\*\*not tested

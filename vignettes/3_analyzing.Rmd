@@ -51,49 +51,45 @@ indexblocks()
 
 # Key Functions underlying EJAM
 
--   **run_app()** to launch the web app locally
+-   **run_app()** to launch the web app locally (to run in RStudio on a single computer rather than on a server)
 
--   **ejamit()** provides most results in just one function, by using getblocksnearby() and doaggregate():
+-   **ejamit()** provides most results in just one function. Sample input is in testpoints_10 and sample output is in testoutput_ejamit_10pts_1miles. ejamit() especially relies on getblocksnearby() and doaggregate():
 
--   **getblocksnearby()** takes a set of points (e.g., facilities) and finds the Census blocks near each. Sample input is in testpoints_100, and sample output is in testoutput_getblocksnearby_10pts_1miles
+  -   getblocksnearby() takes a set of points (e.g., facilities) and finds the Census blocks near each. Sample input is in testpoints_100, and sample output is in testoutput_getblocksnearby_10pts_1miles
 
--   **doaggregate()** takes the list of blocks near each point, joins it to blockgroup indicators like from EJScreen, and aggregates at each buffered point as well as for the overall set of unique blocks (residents). Sample input is in testoutput_getblocksnearby_10pts_1miles
+  -   doaggregate() takes the list of blocks near each point, joins it to blockgroup indicators like from EJScreen, and aggregates at each buffered point as well as for the overall set of unique blocks (residents). Sample input is in testoutput_getblocksnearby_10pts_1miles and sample output is in testoutput_doaggregate_10pts_1miles
 
 # Key groups of functions
 
 The EJAM package reference manual has a complete list of documented functions. There are several groups of functions that may be useful to know about:
 
--   distance... such as distance_by_group()
+-   ejam overall functions like ejamit(), ejam2report(), ejam2excel()
 
--   ejscreen... such as ejscreenit()
+-   latlon functions like latlon_from_regid(), latlon_from_naics(), latlon_df_clean(), latlon_is.valid(), etc.
 
--   fips2... and fips\_...
+-   frs functions and data like frs, frs_from_regid(), frs_from_programid(), frs_from_sitename(), frs_from_sitename()
 
--   fix... such as fixcolnames()
+-   naics functions and data like naics_categories(), naics_counts, naicstable, NAICS, naics_from_any(), frs_from_naics(), latlon_from_naics(), naics_url_of_code(), etc.
 
--   frs\_... such as frs_from\_...
+-   shapefile functions like state_from_ shapes_blockgroups_from_bgfips(), shapefile_from_folder(), shapes_counties_from_countyfips() and get_blockpoints_in_shape()
 
--   getblocks... such as getblocksnearby(), getblocksnearby_from_fips(), get_blockpoints_in_shape(), getblocks_diagnostics()
+-   fips functions like fipstype(), EJAM::fips_lead_zero(), fips2name(), fips_counties_from_state_abbrev(), getblocksnearby_from_fips(), fips_bg_from_anyfips(), state_from_latlon(), stateinfo, stateinfo2, states_as_sites()
 
--   latlon_from\_... such as latlon_from_regid(), latlon_from_naics(), etc.
+-   getblocks functions like getblocksnearby(), getblocksnearby_from_fips(), get_blockpoints_in_shape(), getblocks_diagnostics()
 
--   latlon... such as latlon_df_clean() and latlon_is.valid()
+-   map functions like mapfast(), mapfastej(), mapfastej_counties(), map_blockgroups_over_blocks(), map_shapes_leaflet() map_shapes_mapview(), mapfast_gg(),  etc.
 
--   mapfast... and map\_... such as mapfast(), mapfastej()
+-   plot functions like plot_barplot_ratios(), plot_distance_by_pctd(), etc. (work in progress)
 
--   naics_from...
+-   percentile functions like lookup_pctile(), pctile_from_raw_lookup()
 
--   get.distances.all()
+-   distance functions such as plot_distance_by_pctd(), distance_by_group() for calculating or plotting how distance varies by group
 
--   plot... popshare...
+-   variable-names lists and renaming and metadata functions such as names_e, names_d, names_d_subgroups, fixcolnames(), table_rounding_info(), varinfo(), varname2vartype_ejam(), varname2varcategory_ejam(), fixcolnames2related(), namesbyvarlist()
 
--   shape... and shapefile\_... state_from\_... and state... usastats...
+-   ejscreen functions like ejscreenit_for_ejam() to use the EJScreen API to obtain exact EJScreen results directly
 
--   lookup_pctile(), pctile_from_raw_lookup()
-
--   table_gt\_... and table\_... url\_... var... like varinfo()
-
-DATA names\_... see ?dataload_from_pins() usastats, statestats
+-   Also see data("EJAM") and see ?dataload_from_pins() and usastats, statestats
 
 
 # POINTS & NEARBY RESIDENTS

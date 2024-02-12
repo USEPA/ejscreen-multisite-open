@@ -99,19 +99,51 @@ The frs-related datasets here can be roughly 1.5 GB in RAM, perhaps.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="datapack.html">datapack()</a></code> <code>dataload_from_aws()</code> <code><a href="dataload_from_pins.html">dataload_from_pins()</a></code> <code><a href="dataload_from_local.html">dataload_from_local()</a></code> <code><a href="indexblocks.html">indexblocks()</a></code> <code><a href="https://rdrr.io/r/base/ns-hooks.html" class="external-link">.onAttach()</a></code></p></div>
+    <div class="dont-index"><p><code><a href="datapack.html">datapack()</a></code> <code><a href="https://rdrr.io/pkg/EJAM/man/dataload_from_aws.html" class="external-link">dataload_from_aws()</a></code> <code><a href="dataload_from_pins.html">dataload_from_pins()</a></code> <code><a href="dataload_from_local.html">dataload_from_local()</a></code> <code><a href="indexblocks.html">indexblocks()</a></code> <code><a href="https://rdrr.io/pkg/EJAM/man/dot-onAttach.html" class="external-link">.onAttach()</a></code></p></div>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span>  <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="datapack.html">datapack</a></span><span class="op">(</span><span class="st">"EJAM"</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">x</span><span class="op">$</span><span class="va">size</span> <span class="op">&gt;=</span> <span class="fl">0.1</span><span class="op">)</span> <span class="co"># at least 100 KB</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"names_"</span>, <span class="va">x</span><span class="op">$</span><span class="va">Item</span>, value <span class="op">=</span> <span class="cn">T</span>, ignore.case <span class="op">=</span> <span class="cn">T</span>, invert <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="co"># most were like names_d, etc.</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/ls.html" class="external-link">ls</a></span><span class="op">(</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"avg.in.us"</span>, package<span class="op">=</span><span class="st">"EJAM"</span><span class="op">)</span> <span class="co"># lazy load an object into memory and make it visible to user</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/ls.html" class="external-link">ls</a></span><span class="op">(</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">avg.in.us</span>, <span class="va">x</span><span class="op">)</span></span>
-<span>  </span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span>  <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="datapack.html">datapack</a></span><span class="op">(</span><span class="st">"EJAM"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Get more info with datapack(simple = FALSE)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">x</span><span class="op">$</span><span class="va">size</span> <span class="op">&gt;=</span> <span class="fl">0.1</span><span class="op">)</span> <span class="co"># at least 100 KB</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] Package Item   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;0 rows&gt; (or 0-length row.names)</span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"names_"</span>, <span class="va">x</span><span class="op">$</span><span class="va">Item</span>, value <span class="op">=</span> <span class="cn">T</span>, ignore.case <span class="op">=</span> <span class="cn">T</span>, invert <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="co"># most were like names_d, etc.</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "NAICS"                                     "SIC"                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "avg.in.us"                                 "bg_cenpop2020"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "bgpts"                                     "blockgroupstats"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "censusplaces"                              "ejampackages"                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "epa_programs"                              "formulas_d"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "frsprogramcodes"                           "high_pctiles_tied_with_min"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "islandareas"                               "lat_alias"                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15] "lon_alias"                                 "mact_table"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [17] "naics_counts"                              "naicstable"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "namez"                                     "regionstats"                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [21] "sictable"                                  "sites2blocks_example1000pts_1miles"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [23] "sites2blocks_example100pts_1miles"         "sites2blocks_example10pts_1miles"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [25] "stateinfo"                                 "stateinfo2"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [27] "states_shapefile"                          "statestats"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [29] "test_regid"                                "test_xtrac"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [31] "testoutput_doaggregate_1000pts_1miles"     "testoutput_doaggregate_100pts_1miles"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [33] "testoutput_doaggregate_10pts_1miles"       "testoutput_ejamit_1000pts_1miles"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [35] "testoutput_ejamit_100pts_1miles"           "testoutput_ejamit_10pts_1miles"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [37] "testoutput_ejscreenit_10pts_1miles"        "testoutput_getblocksnearby_1000pts_1miles"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [39] "testoutput_getblocksnearby_100pts_1miles"  "testoutput_getblocksnearby_10pts_1miles"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [41] "testpoints_10"                             "testpoints_100"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [43] "testpoints_1000"                           "testpoints_10000"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [45] "testpoints_100_dt"                         "testpoints_conus5"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [47] "usastats"                                 </span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/ls.html" class="external-link">ls</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "x"</span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"avg.in.us"</span>, package<span class="op">=</span><span class="st">"EJAM"</span><span class="op">)</span> <span class="co"># lazy load an object into memory and make it visible to user</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/ls.html" class="external-link">ls</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "x"</span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">avg.in.us</span>, <span class="va">x</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>object 'avg.in.us' not found</span>
+<span class="r-in"><span>  </span></span>
+</code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>

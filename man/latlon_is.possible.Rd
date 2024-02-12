@@ -2,7 +2,7 @@
 % Please edit documentation in R/latlon_is.valid.R
 \name{latlon_is.possible}
 \alias{latlon_is.possible}
-\title{check if lat lon between -180 and +180}
+\title{Check if lat lon between -180 and +180}
 \usage{
 latlon_is.possible(lat, lon)
 }
@@ -15,7 +15,7 @@ latlon_is.possible(lat, lon)
 logical vector, one element per lat lon pair (location)
 }
 \description{
-check if lat lon between -180 and +180
+Check if lat lon between -180 and +180
 }
 \seealso{
 \code{\link[=latlon_is.usa]{latlon_is.usa()}} \code{\link[=latlon_is.islandareas]{latlon_is.islandareas()}} \code{\link[=latlon_is.available]{latlon_is.available()}} \code{\link[=latlon_is.possible]{latlon_is.possible()}}

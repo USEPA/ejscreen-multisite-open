@@ -2,7 +2,7 @@
 % Please edit documentation in R/url_get_via_url-DRAFT.R
 \name{url_get_via_url}
 \alias{url_get_via_url}
-\title{helper function work in progress: GET json via url of ejscreen ejquery map services}
+\title{utility - work in progress: GET query of ejscreen ejquery map services}
 \usage{
 url_get_via_url(url)
 }
@@ -10,8 +10,8 @@ url_get_via_url(url)
 \item{url}{the url for an EJScreen ejquery request}
 }
 \value{
-json
+json format results
 }
 \description{
-helper function work in progress: GET json via url of ejscreen ejquery map services
+utility - work in progress: GET query of ejscreen ejquery map services
 }

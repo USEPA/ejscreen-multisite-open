@@ -25,7 +25,6 @@ See \link{islandareas}
   mapfast(testpoints_1000[isles, ]) # c(213,785) 
   which(!(latlon_is.usa(lat = testpoints_1000$lat, lon = testpoints_1000$lon)))
 }
-  
 
 }
 \seealso{

@@ -36,14 +36,11 @@ Block points table for those blocks whose internal point is inside the buffer
 which is just a circular buffer of specified radius if polys are just points.
 }
 \description{
-This is like getblocksnearby() but for a polygonal buffer area instead of
-a circular buffer.
-}
-\details{
-Like getblocksnearby(), but for blocks in each polygon rather than
+Like \code{\link[=getblocksnearby]{getblocksnearby()}}, but for blocks in each polygon rather than
 blocks near each facility. For analyzing all residents in certain zones
 such as places at elevated risk, redlined areas, watersheds, etc.
-
+}
+\details{
 This uses getblocksnearby() to get a very fast rough/good estimate of
 which US block points are nearby (with a safety margin - see param below),
 before then using sf:: to carefully identify which of those candidate blocks are actually

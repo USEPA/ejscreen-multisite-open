@@ -50,6 +50,5 @@ RCRAINFO (over 500k sites), NPDES, ICIS, AIR, FIS, EIS, and AIRS/AFS.
  ## x = latlon_from_regid(latlon_from_program(program)[,REGISTRY_ID])  # slower!
  EJAMejscreenapi::mapfast(x[sample(1:nrow(x), 1000), ])
 }
- 
 
 }

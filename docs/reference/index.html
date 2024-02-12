@@ -84,11 +84,6 @@
         <dd>app_ui - The application User-Interface</dd>
       </dl><dl><dt>
           
-          <code><a href="ask_number.html">ask_number()</a></code> 
-        </dt>
-        <dd>utility - interactive prompt in RStudio to ask user to specify number like radius</dd>
-      </dl><dl><dt>
-          
           <code><a href="avg.in.us.html">avg.in.us</a></code> 
         </dt>
         <dd>avg.in.us (DATA) national averages of key indicators, for convenience</dd>
@@ -115,6 +110,16 @@ and lat/lon of Census2020-population-weighted centroid of block group</dd>
         <dd>blockgroupstats (DATA) EJScreen demographic and environmental indicators for Census block groups</dd>
       </dl><dl><dt>
           
+          <code><a href="calc_byformula.html">calc_byformula()</a></code> 
+        </dt>
+        <dd>DRAFT utility to use formulas provided as text, to calculate indicators</dd>
+      </dl><dl><dt>
+          
+          <code><a href="calc_ejam.html">calc_ejam()</a></code> 
+        </dt>
+        <dd>DRAFT utility to use formulas provided as text, to calculate indicators</dd>
+      </dl><dl><dt>
+          
           <code><a href="censusplaces.html">censusplaces</a></code> 
         </dt>
         <dd>censusplaces (DATA) Census FIPS and other basic info on 41,414 cities/towns/places</dd>
@@ -127,7 +132,7 @@ and lat/lon of Census2020-population-weighted centroid of block group</dd>
           
           <code><a href="counties_as_sites.html">counties_as_sites()</a></code> 
         </dt>
-        <dd>Analyze US Counties as if they were sites, to get EJ indicators summary for each county</dd>
+        <dd>FIPS - Analyze US Counties as if they were sites, to get EJ indicators summary for each county</dd>
       </dl><dl><dt>
           
           <code><a href="count_sites_with_n_high_scores.html">count_sites_with_n_high_scores()</a></code> 
@@ -145,31 +150,14 @@ and lat/lon of Census2020-population-weighted centroid of block group</dd>
         <dd>Utility to download / load datasets from pin board</dd>
       </dl><dl><dt>
           
-          <code><a href="datawrite_to_aws.html">datawrite_to_aws()</a></code> 
-        </dt>
-        <dd>Utility NOT YET WORKING - AccessDenied</dd>
-      </dl><dl><dt>
-          
           <code><a href="datawrite_to_local.html">datawrite_to_local()</a></code> 
         </dt>
         <dd>Save datasets during package development</dd>
       </dl><dl><dt>
           
-          <code><a href="distance_by_group.html">distance_by_group()</a></code> 
-        </dt>
-        <dd>distance_by_group - Avg distance of each demog group (of multiple groups)
-Same as <code><a href="../reference/plot_distance_mean_by_group.html">plot_distance_mean_by_group()</a></code> but no plot by default</dd>
-      </dl><dl><dt>
-          
-          <code><a href="distance_by_group1.html">distance_by_group1()</a></code> 
-        </dt>
-        <dd>distance_by_group1  -  JUST ONE GROUP
-Get average distance for ONE demographic group versus everyone else</dd>
-      </dl><dl><dt>
-          
           <code><a href="distance_by_group_by_site.html">distance_by_group_by_site()</a></code> 
         </dt>
-        <dd>distance_by_group_by_site - DRAFT FUNCTION</dd>
+        <dd>Ratios at each site, of avg dist of group / avg dist of everyone else near site</dd>
       </dl><dl><dt>
           
           <code><a href="distance_by_group_plot.html">distance_by_group_plot()</a></code> 
@@ -179,14 +167,12 @@ Get average distance for ONE demographic group versus everyone else</dd>
           
           <code><a href="distance_cdf_by_group_plot.html">distance_cdf_by_group_plot()</a></code> 
         </dt>
-        <dd>distance_cdf_by_group_plot - SLOW - needs to be optimized
-Plot a graphic showing cumulative shares of ONLY ONE demographic group that are within each distance</dd>
+        <dd>What percentage of this demographic group's population lives less than X miles from a site?</dd>
       </dl><dl><dt>
           
           <code><a href="distance_mean_by_group.html">distance_mean_by_group()</a></code> 
         </dt>
-        <dd>distance_mean_by_group - Avg distance of each demog group (of multiple groups)
-Same as <code><a href="../reference/plot_distance_mean_by_group.html">plot_distance_mean_by_group()</a></code> but no plot by default</dd>
+        <dd>Avg distance of each demog group (of multiple groups) - Table or Plot</dd>
       </dl><dl><dt>
           
           <code><a href="doaggregate.html">doaggregate()</a></code> 
@@ -226,72 +212,77 @@ Same as <code><a href="../reference/plot_distance_mean_by_group.html">plot_dista
           
           <code><a href="fips2countyname.html">fips2countyname()</a></code> 
         </dt>
-        <dd>Get county names from county FIPS codes</dd>
+        <dd>FIPS - Get county names from county FIPS codes</dd>
       </dl><dl><dt>
           
           <code><a href="fips2name.html">fips2name()</a></code> 
         </dt>
-        <dd>Get county or state names from county or state FIPS codes</dd>
+        <dd>FIPS - Get county or state names from county or state FIPS codes</dd>
       </dl><dl><dt>
           
           <code><a href="fips2statename.html">fips2statename()</a></code> 
         </dt>
-        <dd>Get state names from any type of FIPS codes</dd>
+        <dd>FIPS - Get state names from any type of FIPS codes</dd>
       </dl><dl><dt>
           
           <code><a href="fips2state_abbrev.html">fips2state_abbrev()</a></code> 
         </dt>
-        <dd>Get state abbreviations from any type of FIPS codes</dd>
+        <dd>FIPS - Get state abbreviations from any type of FIPS codes</dd>
       </dl><dl><dt>
           
           <code><a href="fips2state_fips.html">fips2state_fips()</a></code> 
         </dt>
-        <dd>Get state FIPS codes from any type of FIPS codes</dd>
+        <dd>FIPS - Get state FIPS codes from any type of FIPS codes</dd>
       </dl><dl><dt>
           
           <code><a href="fipstype.html">fipstype()</a></code> 
         </dt>
-        <dd>Identify what type of Census geography is each FIPS code (block, county, etc.)</dd>
+        <dd>FIPS - Identify what type of Census geography is each FIPS code (block, county, etc.)</dd>
       </dl><dl><dt>
           
           <code><a href="fips_bg_from_anyfips.html">fips_bg_from_anyfips()</a></code> 
         </dt>
-        <dd>Get unique blockgroup fips in or containing specified fips of any type</dd>
+        <dd>FIPS - Get unique blockgroup fips in or containing specified fips of any type</dd>
       </dl><dl><dt>
           
           <code><a href="fips_counties_from_statefips.html">fips_counties_from_statefips()</a></code> 
         </dt>
-        <dd>Get ALL county fips in specified states</dd>
+        <dd>FIPS - Get ALL county fips in specified states</dd>
       </dl><dl><dt>
           
           <code><a href="fips_counties_from_statename.html">fips_counties_from_statename()</a></code> 
         </dt>
-        <dd>Get ALL county fips in specified states</dd>
+        <dd>FIPS - Get ALL county fips in specified states</dd>
       </dl><dl><dt>
           
           <code><a href="fips_counties_from_state_abbrev.html">fips_counties_from_state_abbrev()</a></code> 
         </dt>
-        <dd>Get ALL county fips in specified states</dd>
+        <dd>FIPS - Get ALL county fips in specified states</dd>
       </dl><dl><dt>
           
           <code><a href="fips_lead_zero.html">fips_lead_zero()</a></code> 
         </dt>
-        <dd>Add leading zeroes to fips codes if missing, replace with NA if length invalid</dd>
+        <dd>FIPS - Add leading zeroes to fips codes if missing, replace with NA if length invalid</dd>
       </dl><dl><dt>
           
           <code><a href="fips_st2eparegion.html">fips_st2eparegion()</a></code> 
         </dt>
-        <dd>Get EPA Region number from state FIPS code</dd>
+        <dd>FIPS - Get EPA Region number from state FIPS code</dd>
       </dl><dl><dt>
           
           <code><a href="fips_state_from_statename.html">fips_state_from_statename()</a></code> 
         </dt>
-        <dd>Get state fips for each state name</dd>
+        <dd>FIPS - Get state fips for each state name</dd>
       </dl><dl><dt>
           
           <code><a href="fips_state_from_state_abbrev.html">fips_state_from_state_abbrev()</a></code> 
         </dt>
-        <dd>Get state fips for each state abbrev</dd>
+        <dd>FIPS - Get state fips for each state abbrev</dd>
+      </dl><dl><dt>
+          
+          <code><a href="formula_varname.html">formula_varname()</a></code> 
+        </dt>
+        <dd>utility to check formulas and extract variable names they calculate values for</dd>
       </dl><dl><dt>
           
           <code><a href="frs.html">frs</a></code> 
@@ -397,7 +388,7 @@ the Facility Registry Service</dd>
           
           <code><a href="latlon_from_anything.html">latlon_from_anything()</a></code> 
         </dt>
-        <dd>latlon_from_anything - Flexibly get lat/lon from file, data.frame, data.table, or lat/lon vectors</dd>
+        <dd>Get lat/lon flexibly - from file, data.frame, data.table, or lat/lon vectors</dd>
       </dl><dl><dt>
           
           <code><a href="latlon_from_mactsubpart.html">latlon_from_mactsubpart()</a></code> 
@@ -434,6 +425,11 @@ Find all FRS sites in a program like RCRAINFO, TRIS, or others</dd>
         <dd>Find EPA-regulated facilities in FRS by SIC code (industrial category)</dd>
       </dl><dl><dt>
           
+          <code><a href="latlon_is.valid.html">latlon_is.valid()</a></code> 
+        </dt>
+        <dd>Check if lat lon are OK -- validate latitudes and longitudes</dd>
+      </dl><dl><dt>
+          
           <code><a href="lat_alias.html">lat_alias</a></code> <code><a href="lat_alias.html">lon_alias</a></code> 
         </dt>
         <dd>lat_alias, lon_alias (DATA) Synonyms for lat and lon</dd>
@@ -451,47 +447,47 @@ Find all FRS sites in a program like RCRAINFO, TRIS, or others</dd>
           
           <code><a href="mapfastej_counties.html">mapfastej_counties()</a></code> 
         </dt>
-        <dd>Static or HTML/leaflet map of counties</dd>
+        <dd>Map Counties - Create static or HTML/leaflet map of counties</dd>
       </dl><dl><dt>
           
           <code><a href="mapfast_gg.html">mapfast_gg()</a></code> 
         </dt>
-        <dd>mapfast_gg - A very simple ggplot2 map of points in the USA</dd>
+        <dd>Map - ggplot2 map of points in the USA - very basic map</dd>
       </dl><dl><dt>
           
           <code><a href="map_blockgroups_over_blocks.html">map_blockgroups_over_blocks()</a></code> 
         </dt>
-        <dd>Overlay blockgroups near 1 site, after plotblocksnearby</dd>
+        <dd>Map blockgroup boundaries near 1 site, after plotblocksnearby()</dd>
       </dl><dl><dt>
           
           <code><a href="map_facilities.html">map_facilities()</a></code> 
         </dt>
-        <dd>map_facilities</dd>
+        <dd>Map - Create leaflet map within EJAM shiny app</dd>
       </dl><dl><dt>
           
           <code><a href="map_facilities_proxy.html">map_facilities_proxy()</a></code> 
         </dt>
-        <dd>map_facilities_proxy</dd>
+        <dd>Map - Update leaflet map within EJAM shiny app</dd>
       </dl><dl><dt>
           
           <code><a href="map_shapes_leaflet.html">map_shapes_leaflet()</a></code> 
         </dt>
-        <dd>Create a new leaflet map from shapefile data</dd>
+        <dd>Map - Create a new leaflet map from shapefile data, in shiny app</dd>
       </dl><dl><dt>
           
           <code><a href="map_shapes_leaflet_proxy.html">map_shapes_leaflet_proxy()</a></code> 
         </dt>
-        <dd>update existing leaflet map by adding shapefile data</dd>
+        <dd>Map - Update existing leaflet map by adding shapefile data, in shiny app</dd>
       </dl><dl><dt>
           
           <code><a href="map_shapes_mapview.html">map_shapes_mapview()</a></code> 
         </dt>
-        <dd>Use mapview from the mapview package if available</dd>
+        <dd>Map - Use mapview from the mapview package if available</dd>
       </dl><dl><dt>
           
           <code><a href="map_shapes_plot.html">map_shapes_plot()</a></code> 
         </dt>
-        <dd>Map drawn using base R plot()</dd>
+        <dd>Map using base R plot()</dd>
       </dl><dl><dt>
           
           <code><a href="NAICS.html">NAICS</a></code> 
@@ -501,7 +497,7 @@ Find all FRS sites in a program like RCRAINFO, TRIS, or others</dd>
           
           <code><a href="naics2children.html">naics2children()</a></code> 
         </dt>
-        <dd>See NAICS codes queried plus all children of any of those</dd>
+        <dd>NAICS - query NAICS codes and also see all children (subcategories) of any of those</dd>
       </dl><dl><dt>
           
           <code><a href="naicstable.html">naicstable</a></code> 
@@ -512,7 +508,7 @@ Also has the 2,3,4,5,and 6-digit NAICS that this code falls under, where relevan
           
           <code><a href="naics_categories.html">naics_categories()</a></code> 
         </dt>
-        <dd>naics_categories - See the names of industrial categories and their NAICS code</dd>
+        <dd>NAICS - See the names of industrial categories and their NAICS code</dd>
       </dl><dl><dt>
           
           <code><a href="naics_counts.html">naics_counts</a></code> 
@@ -520,24 +516,19 @@ Also has the 2,3,4,5,and 6-digit NAICS that this code falls under, where relevan
         <dd>naics_counts (DATA) data.frame with counts for each NAICS code, with and without subcodes, and labels that include the site counts</dd>
       </dl><dl><dt>
           
-          <code><a href="naics_findwebscrape.html">naics_findwebscrape()</a></code> 
-        </dt>
-        <dd>for query term, show list of roughly matching NAICS, scraped from web</dd>
-      </dl><dl><dt>
-          
           <code><a href="naics_from_any.html">naics_from_any()</a></code> 
         </dt>
-        <dd>General way to search for industry names and NAICS codes</dd>
+        <dd>NAICS - General way to search for industry names and NAICS codes</dd>
       </dl><dl><dt>
           
           <code><a href="naics_subcodes_from_code.html">naics_subcodes_from_code()</a></code> 
         </dt>
-        <dd>find subcategories of the given overall NAICS industry code(s)</dd>
+        <dd>NAICS - find subcategories of the given overall NAICS industry code(s)</dd>
       </dl><dl><dt>
           
           <code><a href="naics_url_of_code.html">naics_url_of_code()</a></code> 
         </dt>
-        <dd>Get URL for page with info about industry sector(s) by NAICS</dd>
+        <dd>NAICS - Get URL for page with info about industry sector(s) by NAICS</dd>
       </dl><dl><dt>
           
           <code><a href="names_d.html">names_d</a></code> 
@@ -578,7 +569,7 @@ Utility to quickly view one or more facility points on map with the blocks found
           
           <code><a href="plot_distance_by_pctd.html">plot_distance_by_pctd()</a></code> 
         </dt>
-        <dd>plot_distance_by_pctd  -  Plot percent demographics within X miles of a site</dd>
+        <dd>What percentage of this demographic group's population lives less than X miles from a site?</dd>
       </dl><dl><dt>
           
           <code><a href="plot_distance_cdf_by_group.html">plot_distance_cdf_by_group()</a></code> 
@@ -722,12 +713,12 @@ if we only have the outputs of getblocksnearby()</dd>
           
           <code><a href="shapes_blockgroups_from_bgfips.html">shapes_blockgroups_from_bgfips()</a></code> 
         </dt>
-        <dd>use API to get boundaries of blockgroups</dd>
+        <dd>Get boundaries of blockgroups, via API, to map them</dd>
       </dl><dl><dt>
           
           <code><a href="shapes_counties_from_countyfips.html">shapes_counties_from_countyfips()</a></code> 
         </dt>
-        <dd>use API to get boundaries of US Counties to map them</dd>
+        <dd>Get boundaries of US Counties via API, to map them</dd>
       </dl><dl><dt>
           
           <code><a href="shape_buffered_from_shapefile.html">shape_buffered_from_shapefile()</a></code> 
@@ -791,21 +782,6 @@ Also has the 2,3, and 4-digit SIC that this code falls under, where relevant for
         <dd>test output of getblocksnearby(), and is an input to doaggregate()</dd>
       </dl><dl><dt>
           
-          <code><a href="speedtable_expand.html">speedtable_expand()</a></code> 
-        </dt>
-        <dd>Utility used by speedtest() and speedtable_summarize()</dd>
-      </dl><dl><dt>
-          
-          <code><a href="speedtable_summarize.html">speedtable_summarize()</a></code> 
-        </dt>
-        <dd>utility used by speedtest()</dd>
-      </dl><dl><dt>
-          
-          <code><a href="speedtest_plot.html">speedtest_plot()</a></code> 
-        </dt>
-        <dd>utility to plot output of speedtest(), rate of points analyzed per hour</dd>
-      </dl><dl><dt>
-          
           <code><a href="stateinfo.html">stateinfo</a></code> 
         </dt>
         <dd>stateinfo (DATA) data.frame of state abbreviations and state names (50+DC+PR; not AS, GU, MP, VI, UM)</dd>
@@ -843,7 +819,7 @@ Also has the 2,3, and 4-digit SIC that this code falls under, where relevant for
           
           <code><a href="states_as_sites.html">states_as_sites()</a></code> 
         </dt>
-        <dd>Analyze US States as if they were sites, to get EJ indicators summary</dd>
+        <dd>FIPS - Analyze US States as if they were sites, to get EJ indicators summary</dd>
       </dl><dl><dt>
           
           <code><a href="states_infer.html">states_infer()</a></code> 
@@ -1026,20 +1002,9 @@ Also has the 2,3, and 4-digit SIC that this code falls under, where relevant for
         <dd>test_regid (DATA) test data, vector of EPA FRS Registry ID numbers</dd>
       </dl><dl><dt>
           
-          <code><a href="url_bookmark_save.html">url_bookmark_save()</a></code> 
-        </dt>
-        <dd>save bookmarked EJScreen session (map location and indicator)</dd>
-      </dl><dl><dt>
-          
-          <code><a href="url_bookmark_text.html">url_bookmark_text()</a></code> 
-        </dt>
-        <dd>url_bookmark_text
-URL for 1 bookmarked EJScreen session (map location and indicator)</dd>
-      </dl><dl><dt>
-          
           <code><a href="url_countyhealthrankings.html">url_countyhealthrankings()</a></code> 
         </dt>
-        <dd>url_countyhealthrankings gets data from countyhealthrankings.org</dd>
+        <dd>Get data from countyhealthrankings.org</dd>
       </dl><dl><dt>
           
           <code><a href="url_getacs_epaquery.html">url_getacs_epaquery()</a></code> 
@@ -1059,7 +1024,7 @@ URL for 1 bookmarked EJScreen session (map location and indicator)</dd>
           
           <code><a href="url_get_via_url.html">url_get_via_url()</a></code> 
         </dt>
-        <dd>helper function work in progress: GET json via url of ejscreen ejquery map services</dd>
+        <dd>utility - work in progress: GET query of ejscreen ejquery map services</dd>
       </dl><dl><dt>
           
           <code><a href="url_naics.com.html">url_naics.com()</a></code> 

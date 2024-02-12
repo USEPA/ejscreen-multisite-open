@@ -2,13 +2,12 @@
 % Please edit documentation in R/plot_distance_mean_by_group.R
 \name{distance_by_group1}
 \alias{distance_by_group1}
-\title{distance_by_group1  -  JUST ONE GROUP
-Get average distance for ONE demographic group versus everyone else}
+\title{Get average distance for ONE demographic group versus everyone else}
 \usage{
 distance_by_group1(
   results_bybg_people,
   demogvarname = "Demog.Index",
-  demoglabel = demogvarname
+  demoglabel = fixcolnames(demogvarname, "r", "shortlabel")
 )
 }
 \arguments{
@@ -22,7 +21,6 @@ distance_by_group1(
 list of 2 numbers: avg_distance_for_group and avg_distance_for_nongroup
 }
 \description{
-distance_by_group1  -  JUST ONE GROUP
 Get average distance for ONE demographic group versus everyone else
 }
 \details{
@@ -65,3 +63,4 @@ So to retain flexibility doaggregate() reports all instances of blockgroup-site 
 \seealso{
 \code{\link[=plot_distance_mean_by_group]{plot_distance_mean_by_group()}}  \code{\link[=distance_by_group]{distance_by_group()}}
 }
+\keyword{internal}

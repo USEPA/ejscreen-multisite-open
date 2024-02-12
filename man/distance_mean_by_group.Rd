@@ -2,19 +2,19 @@
 % Please edit documentation in R/plot_distance_mean_by_group.R
 \name{distance_mean_by_group}
 \alias{distance_mean_by_group}
-\title{distance_mean_by_group - Avg distance of each demog group (of multiple groups)
-Same as \code{\link[=plot_distance_mean_by_group]{plot_distance_mean_by_group()}} but no plot by default}
+\alias{distance_by_group}
+\title{Avg distance of each demog group (of multiple groups) - Table or Plot}
 \usage{
 distance_mean_by_group(
   results_bybg_people,
   demogvarname = NULL,
-  demoglabel = NULL,
+  demoglabel = fixcolnames(demogvarname, "r", "shortlabel"),
   returnwhat = "table",
   graph = FALSE
 )
 }
 \arguments{
-\item{results_bybg_people}{data.table from doaggregate()$results_bybg_people}
+\item{results_bybg_people}{data.table from \code{doaggregate()$results_bybg_people}}
 
 \item{demogvarname}{vector of column names like "pctlowinc" etc.}
 
@@ -29,24 +29,11 @@ If returnwhat is "plot" then it returns the plot object as needed for table_xls_
 see parameter returnwhat
 }
 \description{
-Shows distance to sites, for residents in each demographic group (vs everyone else)
+distance_mean_by_group() and distance_mean_by_group() are synonymous, and are like
+\code{\link[=plot_distance_mean_by_group]{plot_distance_mean_by_group()}}, but show a table not plot, by default.
 }
 \details{
-Note that the ratio shown is a ratio of distance among others to distance of a given group,
-so values below 1 mean the given demographic group lives closer to facilities.
-A value of 0.85 would mean the group is only 85\% as far from a site as everyone else.
-
-Note it is in miles assuming input was in miles, and the distance for each resident is
-actually the average distance of all residents within their Census block (not block group),
-and when a site is very close to the block internal point (like a centroid)
-relative to the size of the block, the distance to the average resident in the block is
-estimated as 90 percent of the effective radius, which is what the radius of the block
-would be if it were the same area in square meters or miles but circular in shape.
-
-This is the approach used in EJScreen to estimate average proximity of a block resident in
-cases where the block is extremely close to the site or the site may actually be inside the block,
-or exactly on top of the internal point of the block, in which case zero would not be an
-appropriate estimate of the distance, hence this adjustment is made in EJAM getblocksnearby()
+see examples in \code{\link[=plot_distance_cdf_by_group]{plot_distance_cdf_by_group()}}
 }
 \examples{
  y <- ejamit(testpoints_100, radius = 3)
@@ -65,7 +52,5 @@ appropriate estimate of the distance, hence this adjustment is made in EJAM getb
    compared to 18.7\% of Asian who do.
 }
 \seealso{
-\code{\link[=distance_by_group]{distance_by_group()}}
-
-\code{\link[=distance_by_group_plot]{distance_by_group_plot()}}  \code{\link[=plot_distance_cdf_by_group]{plot_distance_cdf_by_group()}}
+\code{\link[=distance_by_group]{distance_by_group()}} \code{\link[=distance_by_group_plot]{distance_by_group_plot()}}  \code{\link[=plot_distance_cdf_by_group]{plot_distance_cdf_by_group()}}
 }

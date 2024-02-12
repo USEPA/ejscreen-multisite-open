@@ -37,6 +37,7 @@ formatted as .arrow or .rda
 }
 \examples{
   # datawrite_to_local(ext = ".arrow", folder_local_source = ".", justchecking = F, overwrite = T) 
+  
 }
 \seealso{
 \code{\link[=datawrite_to_aws]{datawrite_to_aws()}}  \code{\link[=datawrite_to_local]{datawrite_to_local()}} \code{\link[=dataload_from_local]{dataload_from_local()}} \code{\link[=dataload_from_aws]{dataload_from_aws()}}

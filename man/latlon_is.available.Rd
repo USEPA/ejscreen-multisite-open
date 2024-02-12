@@ -2,7 +2,7 @@
 % Please edit documentation in R/latlon_is.valid.R
 \name{latlon_is.available}
 \alias{latlon_is.available}
-\title{check if lat lon not NA using !is.na()}
+\title{Check if lat lon not NA using !is.na()}
 \usage{
 latlon_is.available(lat, lon)
 }
@@ -15,7 +15,7 @@ latlon_is.available(lat, lon)
 logical vector, one element per lat lon pair (location)
 }
 \description{
-check if lat lon not NA using !is.na()
+Check if lat lon not NA using !is.na()
 }
 \seealso{
 \code{\link[=latlon_is.usa]{latlon_is.usa()}} \code{\link[=latlon_is.islandareas]{latlon_is.islandareas()}} \code{\link[=latlon_is.available]{latlon_is.available()}} \code{\link[=latlon_is.possible]{latlon_is.possible()}}
