@@ -24,4 +24,3 @@ one per blockgroup that matches the input FIPS,
 not necessarily a vector as long as the input vector of FIPS codes!,
 and not just a short list of unique states!
 }
-\keyword{internal}

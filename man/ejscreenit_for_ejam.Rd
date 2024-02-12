@@ -20,5 +20,5 @@ a data.table that looks like output of ejamit()$results_bysite
 A wrapper for EJAM to use ejscreenit() from the EJAMejscreenapi package
 }
 \seealso{
-\code{\link[=ejscreen_vs_ejam]{ejscreen_vs_ejam()}}
+\code{\link[=ejscreen_vs_ejam]{ejscreen_vs_ejam()}} \code{\link[=ejscreenapi2ejam_format]{ejscreenapi2ejam_format()}} which it uses.
 }
