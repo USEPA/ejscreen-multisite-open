@@ -100,7 +100,7 @@ as many rows as elements in lat or lon</p>
 <span> <span class="co"># add a column with State abbreviation</span></span>
 <span> <span class="va">pts</span><span class="op">[</span>, <span class="va">ST</span> <span class="op">:=</span> <span class="fu">state_from_latlon</span><span class="op">(</span>lat<span class="op">=</span><span class="va">lat</span>, lon <span class="op">=</span> <span class="va">lon</span><span class="op">)</span><span class="op">$</span><span class="va">ST</span><span class="op">]</span></span>
 <span> <span class="co">#map these points</span></span>
-<span> <span class="fu"><a href="https://rdrr.io/pkg/EJAMejscreenapi/man/mapfast.html" class="external-link">mapfast</a></span><span class="op">(</span><span class="va">pts</span><span class="op">[</span><span class="va">ST</span> <span class="op">==</span> <span class="st">'TX'</span>,<span class="op">]</span>, radius <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="co"># 1 miles radius circles</span></span>
+<span> <span class="fu">mapfast</span><span class="op">(</span><span class="va">pts</span><span class="op">[</span><span class="va">ST</span> <span class="op">==</span> <span class="st">'TX'</span>,<span class="op">]</span>, radius <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="co"># 1 miles radius circles</span></span>
 <span> </span></code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

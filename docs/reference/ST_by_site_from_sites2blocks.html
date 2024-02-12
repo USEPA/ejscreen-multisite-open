@@ -96,7 +96,7 @@ from <code><a href="getblocksnearby.html">getblocksnearby()</a></code> that has 
 <span>  <span class="va">fname</span> <span class="op">=</span> <span class="st">'./inst/testdata/testpoints_207_sites_with_signif_violations_NAICS_326_ECHO.csv'</span></span>
 <span>  <span class="va">x</span> <span class="op">=</span> <span class="fu">ST_by_site_from_sites2blocks</span><span class="op">(</span></span>
 <span>    <span class="fu"><a href="getblocksnearby.html">getblocksnearby</a></span><span class="op">(</span> <span class="fu"><a href="latlon_from_anything.html">latlon_from_anything</a></span><span class="op">(</span><span class="va">fname</span><span class="op">)</span>, quadtree <span class="op">=</span> <span class="va">localtree</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="va">y</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/EJAMejscreenapi/man/read_csv_or_xl.html" class="external-link">read_csv_or_xl</a></span><span class="op">(</span><span class="va">fname</span><span class="op">)</span></span>
+<span>  <span class="va">y</span> <span class="op">=</span> <span class="fu">read_csv_or_xl</span><span class="op">(</span><span class="va">fname</span><span class="op">)</span></span>
 <span>  <span class="va">x</span><span class="op">$</span><span class="va">ST</span> <span class="op">==</span> <span class="va">y</span><span class="op">$</span><span class="va">FacState</span></span>
 <span>  <span class="op">}</span></span>
 <span>  <span class="fu">ST_by_site_from_sites2blocks</span><span class="op">(</span><span class="va">testoutput_getblocksnearby_10pts_1miles</span><span class="op">)</span> </span>

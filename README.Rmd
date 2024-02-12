@@ -72,7 +72,7 @@ EJAM is provided by the US Environmental Protection Agency (US EPA).
 
 -   [6. Future Plans for EJAM](articles/6_future_plans.html "6_future_plans.html")
 
--   [Reference Manual Documenting all EJAM Package Functions and Data](articles/index.html "index.html")
+-   [Reference Manual Documenting all EJAM Package Functions and Data](reference/index.html "index.html")
 
 -   [GitHub Repository - Code and Data, at USEPA/EJAM](https://github.com/USEPA/EJAM#readme "https://github.com/USEPA/EJAM#readme") (via EPA VPN or LAN in-office)
 

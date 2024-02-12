@@ -83,7 +83,7 @@ plus lat,lon columns</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="va">s2b</span> <span class="op">=</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/copy.html" class="external-link">copy</a></span><span class="op">(</span><span class="va">testoutput_getblocksnearby_10pts_1miles</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="va">s2b</span> <span class="op">=</span> <span class="fu">copy</span><span class="op">(</span><span class="va">testoutput_getblocksnearby_10pts_1miles</span><span class="op">)</span></span>
 <span><span class="va">s2b_located</span> <span class="op">=</span> <span class="fu"><a href="latlon_join_on_blockid.html">latlon_join_on_blockid</a></span><span class="op">(</span><span class="va">s2b</span><span class="op">)</span> <span class="co"># done by trilaterate also</span></span>
 <span><span class="va">inferred_sites</span> <span class="op">=</span> <span class="fu">trilaterate_sites2blocks</span><span class="op">(</span><span class="va">s2b</span><span class="op">)</span></span>
 <span><span class="va">inferred_sites</span></span>

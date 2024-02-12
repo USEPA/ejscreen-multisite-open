@@ -55,13 +55,12 @@ knitr::opts_chunk$set(eval = FALSE)
 
 # TO BE WRITTEN
 
-# FINDING TECHNICAL DOCUMENTATION AND REFERENCE MATERIALS AND SOURCE CODE
+## FINDING TECHNICAL DOCUMENTATION AND REFERENCE MATERIALS AND SOURCE CODE
 
-# INFO FOR DEVELOPERS
+## INFO FOR DEVELOPERS
 
-# etc.
-
-# --------------
+## etc.
+ 
 ### Speed tests for EJAM analysis
 
 EJAM is designed to provide results for large numbers of sites very quickly, so it can analyze well over 100,000 sites per hour, and can analyze 1,000 sites in something like 10 to 20 seconds (assuming it has already been initialized with loaded data and indexing, which needs to be done once up front and can take a minute).
