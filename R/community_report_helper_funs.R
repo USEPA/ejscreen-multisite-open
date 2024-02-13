@@ -25,7 +25,7 @@ fill_tbl_row <- function(output_df, var_value, var_name) {
   var_values <- paste0('', 'state.avg.', 'state.pctile.', 'avg.', 'pctile.',
                        var_value)
   
-  for (j in 1:seq_along(var_values)) {
+  for (j in seq_along(var_values)) {
     cur_var <- var_values[j]
     if ('data.table' %in% class(output_df)) {
       cur_val <- output_df[, ..cur_var]
@@ -67,7 +67,7 @@ fill_tbl_row_ej <- function(output_df, var_value, var_name) {
   
   var_values <- paste0(c('','state.pctile.','pctile.'), var_value)
   
-  for (j in 1:seq_along(var_values)) {
+  for (j in seq_along(var_values)) {
     cur_var <- var_values[j]
     if (!(cur_var) %in% names(output_df)) {
       warning(paste0(cur_var, ' not found in dataset!'))
@@ -140,7 +140,7 @@ fill_tbl_full <- function(output_df) {
     'Wastewater Discharge&nbsp;&nbsp;(toxicity-weighted concentration/m distance)'
   )
   
-  tbl_rows_e <- sapply(1:seq_along(var_values_e), function(x) {
+  tbl_rows_e <- sapply(seq_along(var_values_e), function(x) {
     fill_tbl_row(output_df,
                  var_value = var_values_e[x],
                  var_name = var_names_e[x])
@@ -168,7 +168,7 @@ fill_tbl_full <- function(output_df) {
                    'Low Life Expectancy'
   )
   
-  tbl_rows_d <- sapply(1:seq_along(var_values_d),
+  tbl_rows_d <- sapply(seq_along(var_values_d),
                        function(x) {
                          fill_tbl_row(output_df,
                                       var_value = var_values_d[x],
@@ -275,7 +275,7 @@ fill_tbl_row_subgroups <- function(output_df, var_value, var_name) {
   
   var_values <- paste0(c(''), var_value)
   
-  for (j in 1:seq_along(var_values)) {
+  for (j in seq_along(var_values)) {
     cur_var <- var_values[j]
     if ('data.table' %in% class(output_df)) {
       cur_val <- round(100*output_df[, ..cur_var], 1)#round(output_df[,..cur_var],2)
@@ -339,7 +339,7 @@ fill_tbl_full_subgroups <- function(output_df) {
                         '% American Indian','% Hawaiian/Pacific Islander',
                         '% Other Race','% Two or more races')
   
-  tbl_rows_d_race <- sapply(1:seq_along(var_values_d_race), function(x) {
+  tbl_rows_d_race <- sapply(seq_along(var_values_d_race), function(x) {
     fill_tbl_row_subgroups(output_df,
                            var_value = var_values_d_race[x],
                            var_name=var_names_d_race[x])
@@ -355,7 +355,7 @@ fill_tbl_full_subgroups <- function(output_df) {
   
   var_names_d_gender <- c('% Male', '% Female')
   
-  tbl_rows_d_gender <- sapply(1:seq_along(var_values_d_gender), function(x) {
+  tbl_rows_d_gender <- sapply(seq_along(var_values_d_gender), function(x) {
     fill_tbl_row_subgroups(output_df,
                            var_value = var_values_d_gender[x],
                            var_name = var_names_d_gender[x])
@@ -373,7 +373,7 @@ fill_tbl_full_subgroups <- function(output_df) {
   var_names_d_lim <- c('Speak Spanish', 'Speak Other Indo-European Languages',
                        'Speak Asian-Pacific Island Languages', 'Speak Other Languages')
   
-  tbl_rows_d_lim <- sapply(1:seq_along(var_values_d_lim), function(x) {
+  tbl_rows_d_lim <- sapply(seq_along(var_values_d_lim), function(x) {
     fill_tbl_row_subgroups(output_df,
                            var_value = var_values_d_lim[x],
                            var_name = var_names_d_lim[x])
