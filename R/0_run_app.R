@@ -1,5 +1,4 @@
 
-
 #' Launch the Shiny Application in RStudio
 #' 
 #' @description launch Shiny web app from RStudio
