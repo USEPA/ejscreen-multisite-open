@@ -1292,7 +1292,7 @@ app_server <- function(input, output, session) {
   
   output$radius_label <- renderUI({
     val <- input$bt_rad_buff
-    lab <- paste0('<b>Radius of circular buffer: <br/>', val, ' miles ','(',round(val / 0.62137119, 2), ' km)</b>')
+    lab <- paste0('<b>Buffer Distance: <br/>', val, ' miles ','(',round(val / 0.62137119, 2), ' km)</b>')
     
     HTML(lab)
   })
@@ -2745,7 +2745,7 @@ app_server <- function(input, output, session) {
       #  names( data_processed() )  #  "results_overall"  "results_bysite"  "results_bybg_people"  "longnames"  "count_of_blocks_near_multiple_sites"   "results_summarized"  
       
       ## note analysis type or overview to 'notes' tab
-      if (submitted_upload_method() == "SHP") {
+      if (submitted_upload_method() %in% c("SHP","FIPS")) {
         radius_or_buffer_description <- 'Distance from each shape (buffering around each polygon)'
       } else {
         radius_or_buffer_description <- 'Distance from each site (radius of each circular buffer around a point)'
