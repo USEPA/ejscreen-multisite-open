@@ -323,7 +323,7 @@ app_server <- function(input, output, session) {
 
   # # Use a default initial template of lat lon values table ready for user to type into
   # # and then the module updates that reactive_data1 object as the user types
-  # latlon_template <- data.table(lat = 0, lon = 0, sitenumber = 1, sitename = "")  # default_points_shown_at_startup[1:2, ] # EJAMejscreenapi::testpoints_5[1:2, ] # could  be put in global.R
+  # latlon_template <- data.table(lat = 0, lon = 0, sitenumber = 1, sitename = "")  # default_points_shown_at_startup[1:2, ] # EJAMejscreenapi :: testpoints_5[1:2, ] # could  be put in global.R
   # reactive_data1 <-  reactiveVal(latlon_template)
   # ## or... try something like this:   Try to pass to module as param the last uploaded pts() ?
   # observe(
@@ -1154,7 +1154,7 @@ app_server <- function(input, output, session) {
   #
   #   # which sites have residents that might also be near others sites?
   #   # circles overlap if 2 facilities are twice the radius apart  # in miles
-  #   EJAMejscreenapi::near_eachother(
+  #   EJAMejscreenapi :: near_eachother(
   #     lon = data_uploaded()$lon,
   #     lat = data_uploaded()$lat,
   #     distance = 2 * input$bt_rad_buff
@@ -2052,7 +2052,7 @@ app_server <- function(input, output, session) {
         # popup_labels <- c(data_processed()$longnames, 'State Name')
         # popup_labels[popup_labels == ""] <- map_headernames$names_friendly[match(
         #   names(data_processed()$results_bysite)[popup_labels == ""],
-        #   EJAMejscreenapi::map_headernames$newnames_ejscreenapi)]
+        #   EJAMejscreenapi :: map_headernames$newnames_ejscreenapi)]
         #
         # popup_labels <- map_headernames$names_friendly[match(names(data_processed()$results_bysite),map_headernames$rname)] # fixcolnames() is easier to read
         popup_labels <- fixcolnames(namesnow = names(data_processed()$results_bysite), oldtype = 'r', newtype = 'shortlabel')

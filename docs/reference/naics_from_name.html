@@ -40,13 +40,7 @@
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
-      <ul class="navbar-nav"><li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/USEPA/EJAM/" aria-label="github">
-    <span class="fab fa fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
-      </ul></div>
+      <ul class="navbar-nav"></ul></div>
 
     
   </div>
@@ -54,7 +48,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>NAICS - Search for industry names and NAICS codes by query string</h1>
-      <small class="dont-index">Source: <a href="https://github.com/USEPA/EJAM/blob/HEAD/R/NAICS_FUNCTIONS.R" class="external-link"><code>R/NAICS_FUNCTIONS.R</code></a></small>
+      
       <div class="d-none name"><code>naics_from_name.Rd</code></div>
     </div>
 
@@ -106,7 +100,46 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/setops.html" class="external-link">fintersect</a></span><span class="op">(</span><span class="fu"><a href="naics_from_any.html">naics_from_any</a></span><span class="op">(</span> <span class="st">"manufac"</span><span class="op">)</span>, <span class="fu"><a href="naics_from_any.html">naics_from_any</a></span><span class="op">(</span><span class="st">"chem"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/setops.html" class="external-link">fintersect</a></span><span class="op">(</span><span class="fu"><a href="naics_from_any.html">naics_from_any</a></span><span class="op">(</span> <span class="st">"manufac"</span><span class="op">)</span>, <span class="fu"><a href="naics_from_any.html">naics_from_any</a></span><span class="op">(</span><span class="st">"chem"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>mynames should be non-NA character vector of text to look for in industry title(s) like "concrete"</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>NAs introduced by coercion</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>mynames should be non-NA character vector of text to look for in industry title(s) like "concrete"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       code n2  n3   n4    n5     n6                                                                   name</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  1:    325 32 325  325   325    325                                                 Chemical Manufacturing</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  2:   3251 32 325 3251  3251   3251                                           Basic Chemical Manufacturing</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  3:  32511 32 325 3251 32511  32511                                            Petrochemical Manufacturing</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  4: 325110 32 325 3251 32511 325110                                            Petrochemical Manufacturing</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  5:  32518 32 325 3251 32518  32518                           Other Basic Inorganic Chemical Manufacturing</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  6: 325180 32 325 3251 32518 325180                           Other Basic Inorganic Chemical Manufacturing</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  7:  32519 32 325 3251 32519  32519                             Other Basic Organic Chemical Manufacturing</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  8: 325194 32 325 3251 32519 325194    Cyclic Crude, Intermediate, and Gum and Wood Chemical Manufacturing</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  9: 325199 32 325 3251 32519 325199                         All Other Basic Organic Chemical Manufacturing</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10:   3253 32 325 3253  3253   3253   Pesticide, Fertilizer, and Other Agricultural Chemical Manufacturing</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11:  32532 32 325 3253 32532  32532                Pesticide and Other Agricultural Chemical Manufacturing</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12: 325320 32 325 3253 32532 325320                Pesticide and Other Agricultural Chemical Manufacturing</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13:   3259 32 325 3259  3259   3259                   Other Chemical Product and Preparation Manufacturing</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14:  32599 32 325 3259 32599  32599               All Other Chemical Product and Preparation Manufacturing</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15: 325992 32 325 3259 32599 325992            Photographic Film, Paper, Plate, and Chemical Manufacturing</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16: 325998 32 325 3259 32599 325998 All Other Miscellaneous Chemical Product and Preparation Manufacturing</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                            num_name</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  1:                                                    325 - Chemical Manufacturing</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  2:                                             3251 - Basic Chemical Manufacturing</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  3:                                             32511 - Petrochemical Manufacturing</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  4:                                            325110 - Petrochemical Manufacturing</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  5:                            32518 - Other Basic Inorganic Chemical Manufacturing</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  6:                           325180 - Other Basic Inorganic Chemical Manufacturing</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  7:                              32519 - Other Basic Organic Chemical Manufacturing</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  8:    325194 - Cyclic Crude, Intermediate, and Gum and Wood Chemical Manufacturing</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  9:                         325199 - All Other Basic Organic Chemical Manufacturing</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10:     3253 - Pesticide, Fertilizer, and Other Agricultural Chemical Manufacturing</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11:                 32532 - Pesticide and Other Agricultural Chemical Manufacturing</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12:                325320 - Pesticide and Other Agricultural Chemical Manufacturing</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13:                     3259 - Other Chemical Product and Preparation Manufacturing</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14:                32599 - All Other Chemical Product and Preparation Manufacturing</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15:            325992 - Photographic Film, Paper, Plate, and Chemical Manufacturing</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16: 325998 - All Other Miscellaneous Chemical Product and Preparation Manufacturing</span>
+</code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>

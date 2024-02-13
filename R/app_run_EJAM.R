@@ -5,7 +5,7 @@
 #' @description launch Shiny web app from RStudio
 #' @aliases run_app
 #' @seealso [run_app()]
-#' 
+#' @inheritParams run_app
 #' @export
 #' 
 app_run_EJAM <- run_app

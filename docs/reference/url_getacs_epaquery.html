@@ -44,13 +44,7 @@ https://geopub.epa.gov/arcgis/sdk/rest/index.html#/Query_Map_Service_Layer/02ss0
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
-      <ul class="navbar-nav"><li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/USEPA/EJAM/" aria-label="github">
-    <span class="fab fa fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
-      </ul></div>
+      <ul class="navbar-nav"></ul></div>
 
     
   </div>
@@ -58,7 +52,7 @@ https://geopub.epa.gov/arcgis/sdk/rest/index.html#/Query_Map_Service_Layer/02ss0
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>URL functions - url_getacs_epaquery - experimental/ work in progress: get ACS data via EPA API (for &lt;200 places)</h1>
-      <small class="dont-index">Source: <a href="https://github.com/USEPA/EJAM/blob/HEAD/R/URL_FUNCTIONS_part2.R" class="external-link"><code>R/URL_FUNCTIONS_part2.R</code></a></small>
+      
       <div class="d-none name"><code>url_getacs_epaquery.Rd</code></div>
     </div>
 
@@ -115,8 +109,11 @@ https://geopub.epa.gov/arcgis/sdk/rest/index.html#/Query_Map_Service_Layer/02ss0
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span> <span class="fu">url_getacs_epaquery</span><span class="op">(</span>justurl<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span> <span class="fu">url_getacs_epaquery</span><span class="op">(</span>justurl<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "this uses ACS2019 rest services ejscreen ejquery MapServer 7"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "https://geopub.epa.gov/arcgis/rest/services/ejscreen/ejquery/MapServer/7/query?objectIds=1,2,3&amp;sqlFormat=none&amp;text=&amp;where=&amp;havingClause=&amp;outFields=OBJECTID,STCNTRBG,AREALAND,AREAWATER,TOTALPOP,LOWINC,POV_UNIVERSE_FRT,PCT_LOWINC,HH_BPOV,HSHOLDS,PCT_HH_BPOV,EDU_LTHS,EDU_UNIVERSE,PCT_EDU_LTHS,LINGISO,PCT_LINGISO,EMP_STAT_UNEMPLOYED,EMP_STAT_UNIVERSE,PCT_EMP_STAT_UNEMPLOYED,AGE_LT5,PCT_AGE_LT5,AGE_GT64,PCT_AGE_GT64,NUM_MINORITY,PCT_MINORITY,WHITE,PCT_WHITE,BLACK,PCT_BLACK,HISP,PCT_HISP,ASIAN,PCT_ASIAN,AMERIND,PCT_AMERIND,HAWPAC,PCT_HAWPAC,OTHER_RACE,PCT_OTHER_RACE,TWOMORE,PCT_TWOMORE,NHWHITE,PCT_NHWHITE,NHBLACK,PCT_NHBLACK,NHASIAN,PCT_NHASIAN,NHAMERIND,PCT_NHAMERIND,NHHAWPAC,PCT_NHHAWPAC,NHOTHER_RACE,PCT_NHOTHER_RACE,NHTWOMORE,PCT_NHTWOMORE,HOME_PRE60,HSUNITS,PCT_HOME_PRE60&amp;orderByFields=&amp;groupByFieldsForStatistics=&amp;outStatistics=&amp;f=pjson&amp;returnGeometry=FALSE&amp;returnIdsOnly=false&amp;returnCountOnly=false&amp;returnExtentOnly=false&amp;returnDistinctValues=false&amp;returnTrueCurves=false&amp;returnZ=false&amp;returnM=false&amp;geometry=&amp;geometryType=esriGeometryEnvelope&amp;featureEncoding=esriDefault&amp;spatialRel=esriSpatialRelIntersects&amp;units=esriSRUnit_Foot&amp;distance=&amp;inSR=&amp;outSR=&amp;relationParam=&amp;geometryPrecision=&amp;gdbVersion=&amp;datumTransformation=&amp;parameterValues=&amp;rangeValues=&amp;quantizationParameters=&amp;maxAllowableOffset=&amp;resultOffset=&amp;resultRecordCount=&amp;historicMoment=&amp;time=&amp;timeRelation=esriTimeRelationOverlaps"</span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>

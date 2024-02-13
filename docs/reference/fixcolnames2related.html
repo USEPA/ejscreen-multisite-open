@@ -40,13 +40,7 @@
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
-      <ul class="navbar-nav"><li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/USEPA/EJAM/" aria-label="github">
-    <span class="fab fa fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
-      </ul></div>
+      <ul class="navbar-nav"></ul></div>
 
     
   </div>
@@ -54,7 +48,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Get name of related avg, pctile, or ratio variable name</h1>
-      <small class="dont-index">Source: <a href="https://github.com/USEPA/EJAM/blob/HEAD/R/fixcolnames2related.R" class="external-link"><code>R/fixcolnames2related.R</code></a></small>
+      
       <div class="d-none name"><code>fixcolnames2related.Rd</code></div>
     </div>
 
@@ -102,16 +96,28 @@ of the given variables.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="va">names_d</span></span>
-<span><span class="fu">fixcolnames2related</span><span class="op">(</span><span class="va">names_d</span>, <span class="st">'stateratio'</span><span class="op">)</span></span>
-<span><span class="va">names_d_ratio_to_state_avg</span></span>
-<span><span class="fu">fixcolnames2related</span><span class="op">(</span><span class="va">names_e</span>, <span class="st">"stateavg"</span><span class="op">)</span></span>
-<span><span class="fu">fixcolnames2related</span><span class="op">(</span><span class="va">names_e</span>, <span class="st">"usvag"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"avg."</span>, <span class="va">names_e</span><span class="op">)</span></span>
-<span><span class="fu">fixcolnames2related</span><span class="op">(</span><span class="va">names_e</span>, <span class="st">"usratio"</span><span class="op">)</span></span>
-<span><span class="co"># names_ej # does not work with this as input</span></span>
-<span><span class="co"># fixcolnames2related(names_ej, "uspctile") # does not return names_ej_pctile</span></span>
-<span>  </span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">names_d</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "Demog.Index"      "Demog.Index.Supp" "pctlowinc"        "pctlingiso"       "pctunemployed"    "pctlths"          "lowlifex"         "pctunder5"        "pctover64"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10] "pctmin"          </span>
+<span class="r-in"><span><span class="fu">fixcolnames2related</span><span class="op">(</span><span class="va">names_d</span>, <span class="st">'stateratio'</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fixcolnames2related(names_d, "stateratio"):</span> could not find function "fixcolnames2related"</span>
+<span class="r-in"><span><span class="va">names_d_ratio_to_state_avg</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "ratio.to.state.avg.Demog.Index"      "ratio.to.state.avg.Demog.Index.Supp" "ratio.to.state.avg.pctlowinc"        "ratio.to.state.avg.pctlingiso"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "ratio.to.state.avg.pctunemployed"    "ratio.to.state.avg.pctlths"          "ratio.to.state.avg.lowlifex"         "ratio.to.state.avg.pctunder5"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "ratio.to.state.avg.pctover64"        "ratio.to.state.avg.pctmin"          </span>
+<span class="r-in"><span><span class="fu">fixcolnames2related</span><span class="op">(</span><span class="va">names_e</span>, <span class="st">"stateavg"</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fixcolnames2related(names_e, "stateavg"):</span> could not find function "fixcolnames2related"</span>
+<span class="r-in"><span><span class="fu">fixcolnames2related</span><span class="op">(</span><span class="va">names_e</span>, <span class="st">"usvag"</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fixcolnames2related(names_e, "usvag"):</span> could not find function "fixcolnames2related"</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"avg."</span>, <span class="va">names_e</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "avg.pm"              "avg.o3"              "avg.cancer"          "avg.resp"            "avg.dpm"             "avg.pctpre1960"      "avg.traffic.score"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] "avg.proximity.npl"   "avg.proximity.rmp"   "avg.proximity.tsdf"  "avg.proximity.npdes" "avg.ust"             "avg.rsei"           </span>
+<span class="r-in"><span><span class="fu">fixcolnames2related</span><span class="op">(</span><span class="va">names_e</span>, <span class="st">"usratio"</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fixcolnames2related(names_e, "usratio"):</span> could not find function "fixcolnames2related"</span>
+<span class="r-in"><span><span class="co"># names_ej # does not work with this as input</span></span></span>
+<span class="r-in"><span><span class="co"># fixcolnames2related(names_ej, "uspctile") # does not return names_ej_pctile</span></span></span>
+<span class="r-in"><span>  </span></span>
+</code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>

@@ -44,13 +44,7 @@ such as places at elevated risk, redlined areas, watersheds, etc."><meta propert
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
-      <ul class="navbar-nav"><li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/USEPA/EJAM/" aria-label="github">
-    <span class="fab fa fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
-      </ul></div>
+      <ul class="navbar-nav"></ul></div>
 
     
   </div>
@@ -58,7 +52,7 @@ such as places at elevated risk, redlined areas, watersheds, etc."><meta propert
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Find all Census blocks in a polygon, using internal point of block</h1>
-      <small class="dont-index">Source: <a href="https://github.com/USEPA/EJAM/blob/HEAD/R/get_blockpoints_in_shape.R" class="external-link"><code>R/get_blockpoints_in_shape.R</code></a></small>
+      
       <div class="d-none name"><code>get_blockpoints_in_shape.Rd</code></div>
     </div>
 
@@ -135,11 +129,13 @@ since otherwise it takes forever for sf:: to check all US blocks.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span> </span>
-<span>  <span class="co"># y &lt;- get_blockpoints_in_shape()</span></span>
-<span>  </span>
-<span>  <span class="co"># x = shapefile_from_sitepoints(testpoints_n(2))</span></span>
-<span>  <span class="co"># y = get_blockpoints_in_shape(x, 1)  # very very slow</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span> </span></span>
+<span class="r-in"><span>  <span class="co"># y &lt;- get_blockpoints_in_shape()</span></span></span>
+<span class="r-in"><span>  </span></span>
+<span class="r-in"><span>  <span class="co"># x = shapefile_from_sitepoints(testpoints_n(2))</span></span></span>
+<span class="r-in"><span>  <span class="co"># y = get_blockpoints_in_shape(x, 1)  # very very slow</span></span></span>
+<span class="r-in"></span>
+</code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>

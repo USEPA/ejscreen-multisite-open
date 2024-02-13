@@ -40,13 +40,7 @@
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
-      <ul class="navbar-nav"><li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/USEPA/EJAM/" aria-label="github">
-    <span class="fab fa fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
-      </ul></div>
+      <ul class="navbar-nav"></ul></div>
 
     
   </div>
@@ -54,7 +48,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Utility to load a couple of datasets using data immediately instead of relying on lazy loading</h1>
-      <small class="dont-index">Source: <a href="https://github.com/USEPA/EJAM/blob/HEAD/R/dataload_from_package.R" class="external-link"><code>R/dataload_from_package.R</code></a></small>
+      
       <div class="d-none name"><code>dataload_from_package.Rd</code></div>
     </div>
 
@@ -104,14 +98,22 @@ The frs-related datasets here can be roughly 1.5 GB in RAM, perhaps.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span>  <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="datapack.html">datapack</a></span><span class="op">(</span><span class="st">"EJAM"</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">x</span><span class="op">$</span><span class="va">size</span> <span class="op">&gt;=</span> <span class="fl">0.1</span><span class="op">)</span> <span class="co"># at least 100 KB</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"names_"</span>, <span class="va">x</span><span class="op">$</span><span class="va">Item</span>, value <span class="op">=</span> <span class="cn">T</span>, ignore.case <span class="op">=</span> <span class="cn">T</span>, invert <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="co"># most were like names_d, etc.</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/ls.html" class="external-link">ls</a></span><span class="op">(</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"avg.in.us"</span>, package<span class="op">=</span><span class="st">"EJAM"</span><span class="op">)</span> <span class="co"># lazy load an object into memory and make it visible to user</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/ls.html" class="external-link">ls</a></span><span class="op">(</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">avg.in.us</span>, <span class="va">x</span><span class="op">)</span></span>
-<span>  </span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span>  <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="datapack.html">datapack</a></span><span class="op">(</span><span class="st">"EJAM"</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in datapack("EJAM"):</span> could not find function "datapack"</span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">x</span><span class="op">$</span><span class="va">size</span> <span class="op">&gt;=</span> <span class="fl">0.1</span><span class="op">)</span> <span class="co"># at least 100 KB</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in subset(x, x$size &gt;= 0.1):</span> object 'x' not found</span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"names_"</span>, <span class="va">x</span><span class="op">$</span><span class="va">Item</span>, value <span class="op">=</span> <span class="cn">T</span>, ignore.case <span class="op">=</span> <span class="cn">T</span>, invert <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="co"># most were like names_d, etc.</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is.factor(x):</span> object 'x' not found</span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/ls.html" class="external-link">ls</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> character(0)</span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"avg.in.us"</span>, package<span class="op">=</span><span class="st">"EJAM"</span><span class="op">)</span> <span class="co"># lazy load an object into memory and make it visible to user</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/ls.html" class="external-link">ls</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> character(0)</span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">avg.in.us</span>, <span class="va">x</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>object 'avg.in.us' not found</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>object 'x' not found</span>
+<span class="r-in"><span>  </span></span>
+</code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>

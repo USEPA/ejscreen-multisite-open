@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 #
 #    - **See ?pkgdown::build_site** - EJAM now uses the pkgdown R package to build help and vignettes as web pages
 ```
-p
+
 # Future Plans and Ideas for EJAM as of 2024
 
 ## Public Access

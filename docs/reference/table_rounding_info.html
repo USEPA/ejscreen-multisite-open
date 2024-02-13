@@ -40,13 +40,7 @@
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
-      <ul class="navbar-nav"><li class="nav-item">
-  <a class="external-link nav-link" href="https://github.com/USEPA/EJAM/" aria-label="github">
-    <span class="fab fa fab fa-github fa-lg"></span>
-     
-  </a>
-</li>
-      </ul></div>
+      <ul class="navbar-nav"></ul></div>
 
     
   </div>
@@ -54,7 +48,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>How many decimal places to round to for given variable(s)</h1>
-      <small class="dont-index">Source: <a href="https://github.com/USEPA/EJAM/blob/HEAD/R/table_rounding_info.R" class="external-link"><code>R/table_rounding_info.R</code></a></small>
+      
       <div class="d-none name"><code>table_rounding_info.Rd</code></div>
     </div>
 
@@ -90,12 +84,365 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span>  <span class="fu">table_rounding_info</span><span class="op">(</span><span class="st">"pm"</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="table_round.html">table_round</a></span><span class="op">(</span><span class="fl">8.252345</span>, <span class="st">"pm"</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="table_round.html">table_round</a></span><span class="op">(</span><span class="fl">8</span>, <span class="st">"pm"</span><span class="op">)</span></span>
-<span>  </span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu">table_rounding_info</span><span class="op">(</span><span class="va">names_all_r</span><span class="op">)</span>, <span class="fu"><a href="fixcolnames.html">fixcolnames</a></span><span class="op">(</span><span class="va">names_all_r</span>, <span class="st">"r"</span>, <span class="st">"long"</span><span class="op">)</span><span class="op">)</span></span>
-<span> </span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span>  <span class="fu">table_rounding_info</span><span class="op">(</span><span class="st">"pm"</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2</span>
+<span class="r-in"><span>  <span class="fu"><a href="table_round.html">table_round</a></span><span class="op">(</span><span class="fl">8.252345</span>, <span class="st">"pm"</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Percentages stored as 0 to 1 rather than 0 to 100 will not be shown correctly unless adjusted, </span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>           because rounding info says 0 digits when the intent is to show 0 digits after the 0-100 percent number.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 8.25</span>
+<span class="r-in"><span>  <span class="fu"><a href="table_round.html">table_round</a></span><span class="op">(</span><span class="fl">8</span>, <span class="st">"pm"</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Percentages stored as 0 to 1 rather than 0 to 100 will not be shown correctly unless adjusted, </span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>           because rounding info says 0 digits when the intent is to show 0 digits after the 0-100 percent number.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 8</span>
+<span class="r-in"><span>  </span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu">table_rounding_info</span><span class="op">(</span><span class="va">names_all_r</span><span class="op">)</span>, <span class="fu"><a href="fixcolnames.html">fixcolnames</a></span><span class="op">(</span><span class="va">names_all_r</span>, <span class="st">"r"</span>, <span class="st">"long"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        [,1] [,2]                                                                                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [1,] "0"  "Total Population"                                                                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [2,] "0"  "Non-POC resident count"                                                                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [3,] "0"  "Count of Population for whom Poverty Status is Determined"                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [4,] "0"  "Count of Population Age 25 up"                                                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [5,] "0"  "Count of Households"                                                                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [6,] "0"  "Universe for percent unemployed (denominator, count)"                                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [7,] "0"  "Count of Housing Units Built Pre 1960"                                                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [8,] "0"  "Built housing units count (denominator for percent pre 1960)"                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [9,] "0"  "Low income resident count"                                                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [10,] "0"  "Limited English-speaking Households"                                                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [11,] "0"  "Unemployed resident count"                                                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [12,] "0"  "Less Than High School Education resident count"                                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [13,] "0"  "Under Age 5 resident count"                                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [14,] "0"  "Over Age 64 resident count"                                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [15,] "0"  "People of Color resident count"                                                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [16,] "0"  "Demographic Index"                                                                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [17,] "0"  "Supplemental Demographic Index"                                                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [18,] "0"  "% Low Income"                                                                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [19,] "0"  "% in limited English-speaking Households"                                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [20,] "0"  "% Unemployed"                                                                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [21,] "0"  "% with Less Than High School Education"                                                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [22,] "0"  "Low life expectancy"                                                                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [23,] "0"  "% under Age 5"                                                                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [24,] "0"  "% over Age 64"                                                                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [25,] "0"  "% People of Color"                                                                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [26,] "0"  "US Average of Demographic Index"                                                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [27,] "0"  "US Average of Supplemental Demographic Index"                                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [28,] "0"  "US average for % Low Income"                                                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [29,] "0"  "US average for % in limited English-speaking Households"                                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [30,] "0"  "US average for % Unemployed"                                                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [31,] "0"  "US average for % with Less Than High School Education"                                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [32,] "0"  "US average for Low life expectancy"                                                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [33,] "0"  "US average for % under Age 5"                                                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [34,] "0"  "US average for % over Age 64"                                                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [35,] "0"  "US average for % People of Color"                                                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [36,] "0"  "State Average of Demographic Index"                                                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [37,] "0"  "State Average of Supplemental Demographic Index"                                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [38,] "0"  "State average for % Low Income"                                                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [39,] "0"  "State average for % in limited English-speaking Households"                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [40,] "0"  "State average for % Unemployed"                                                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [41,] "0"  "State average for % with Less Than High School Education"                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [42,] "0"  "State average for Low life expectancy"                                                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [43,] "0"  "State average for % under Age 5"                                                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [44,] "0"  "State average for % over Age 64"                                                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [45,] "0"  "State average for % People of Color"                                                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [46,] "0"  "US percentile for Demographic Index"                                                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [47,] "0"  "US percentile for Supplemental Demographic Index"                                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [48,] "0"  "US percentile for % Low Income"                                                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [49,] "0"  "US percentile for % in limited English-speaking Households"                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [50,] "0"  "US percentile for % Unemployed"                                                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [51,] "0"  "US percentile for % with Less Than High School Education"                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [52,] "0"  "US percentile for Low life expectancy"                                                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [53,] "0"  "US percentile for % under Age 5"                                                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [54,] "0"  "US percentile for % over Age 64"                                                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [55,] "0"  "US percentile for % People of Color"                                                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [56,] "0"  "State percentile for Demographic Index"                                                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [57,] "0"  "State percentile for Supplemental Demographic Index"                                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [58,] "0"  "State percentile for % Low Income"                                                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [59,] "0"  "State percentile for % in limited English-speaking Households"                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [60,] "0"  "State percentile for % Unemployed"                                                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [61,] "0"  "State percentile for % with Less Than High School Education"                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [62,] "0"  "State percentile for Low life expectancy"                                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [63,] "0"  "State percentile for % under Age 5"                                                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [64,] "0"  "State percentile for % over Age 64"                                                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [65,] "0"  "State percentile for % People of Color"                                                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [66,] "1"  "Ratio to US avg Demog Index"                                                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [67,] "1"  "Ratio to US avg Suppl Demog Index"                                                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [68,] "1"  "Ratio to US avg % Low-inc."                                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [69,] "1"  "Ratio to US avg % Limited English"                                                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [70,] "1"  "Ratio to US avg % Unemployed"                                                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [71,] "1"  "Ratio to US avg % &lt; High School"                                                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [72,] "1"  "Ratio to US avg Low life expectancy"                                                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [73,] "1"  "Ratio to US avg % &lt; age 5"                                                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [74,] "1"  "Ratio to US avg % &gt; age 64"                                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [75,] "1"  "Ratio to US avg % People of Color"                                                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [76,] "1"  "Ratio to State avg Demog.Ind."                                                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [77,] "1"  "Ratio to State avg Suppl Demog Index"                                                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [78,] "1"  "Ratio to State avg % Low-inc."                                                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [79,] "1"  "Ratio to State avg % Limited English"                                                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [80,] "1"  "Ratio to State avg % Unemployed"                                                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [81,] "1"  "Ratio to State avg % &lt; High School"                                                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [82,] "1"  "Ratio to State avg Low life expectancy"                                                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [83,] "1"  "Ratio to State avg % &lt; age 5"                                                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [84,] "1"  "Ratio to State avg % &gt; age 64"                                                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [85,] "1"  "Ratio to State avg % People of Color"                                                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [86,] "0"  "% Hispanic or Latino"                                                                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [87,] "0"  "% Black or African American (non-Hispanic, single race)"                                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [88,] "0"  "% Asian (non-Hispanic, single race)"                                                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [89,] "0"  "% American Indian and Alaska Native (non-Hispanic, single race)"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [90,] "0"  "% Native Hawaiian and Other Pacific Islander (non-Hispanic, single race)"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [91,] "0"  "% Other race (non-Hispanic, single race)"                                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [92,] "0"  "% Two or more races (non-Hispanic)"                                                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [93,] "0"  "% White (non-Hispanic, single race)"                                                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [94,] "0"  "US avg % Hispanic or Latino"                                                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [95,] "0"  "US avg % Black or African American (non-Hispanic, single race)"                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [96,] "0"  "US avg % Asian (non-Hispanic, single race)"                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [97,] "0"  "US avg % American Indian and Alaska Native (non-Hispanic, single race)"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [98,] "0"  "US avg % Native Hawaiian and Other Pacific Islander (non-Hispanic, single race)"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [99,] "0"  "US avg % Other race (non-Hispanic, single race)"                                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [100,] "0"  "US avg % Two or more races (non-Hispanic)"                                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [101,] "0"  "US avg % White (non-Hispanic, single race)"                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [102,] "0"  "State avg % Hispanic or Latino"                                                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [103,] "0"  "State avg % Black or African American (non-Hispanic, single race)"                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [104,] "0"  "State avg % Asian (non-Hispanic, single race)"                                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [105,] "0"  "State avg % American Indian and Alaska Native (non-Hispanic, single race)"                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [106,] "0"  "State avg % Native Hawaiian and Other Pacific Islander (non-Hispanic, single race)"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [107,] "0"  "State avg % Other race (non-Hispanic, single race)"                                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [108,] "0"  "State avg % Two or more races (non-Hispanic)"                                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [109,] "0"  "State avg % White (non-Hispanic, single race)"                                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [110,] "0"  "US percentile for % Hispanic or Latino"                                                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [111,] "0"  "US percentile for % Black or African American (non-Hispanic, single race)"                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [112,] "0"  "US percentile for % Asian (non-Hispanic, single race)"                                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [113,] "0"  "US percentile for % American Indian and Alaska Native (non-Hispanic, single race)"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [114,] "0"  "US percentile for % Native Hawaiian and Other Pacific Islander (non-Hispanic, single race)"    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [115,] "0"  "US percentile for % Other race (non-Hispanic, single race)"                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [116,] "0"  "US percentile for % Two or more races (non-Hispanic)"                                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [117,] "0"  "US percentile for % White (non-Hispanic, single race)"                                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [118,] "0"  "State percentile for % Hispanic or Latino"                                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [119,] "0"  "State percentile for % Black or African American (non-Hispanic, single race)"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [120,] "0"  "State percentile for % Asian (non-Hispanic, single race)"                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [121,] "0"  "State percentile for % American Indian and Alaska Native (non-Hispanic, single race)"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [122,] "0"  "State percentile for % Native Hawaiian and Other Pacific Islander (non-Hispanic, single race)" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [123,] "0"  "State percentile for % Other race (non-Hispanic, single race)"                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [124,] "0"  "State percentile for % Two or more races (non-Hispanic)"                                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [125,] "0"  "State percentile for % White (non-Hispanic, single race)"                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [126,] "1"  "Ratio to US avg % Hispanic"                                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [127,] "1"  "Ratio to US avg % Black (NHA)"                                                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [128,] "1"  "Ratio to US avg % Asian (NHA)"                                                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [129,] "1"  "Ratio to US avg % American Indian Alaska Native (NHA)"                                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [130,] "1"  "Ratio to US avg % Native Hawaiian Pacific Islander (NHA)"                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [131,] "1"  "Ratio to US avg % Other single race (NHA)"                                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [132,] "1"  "Ratio to US avg % Two or more race (NH)"                                                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [133,] "1"  "Ratio to US avg % White nonHispanic single race (NHA)"                                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [134,] "1"  "Ratio to State avg % Hispanic"                                                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [135,] "1"  "Ratio to State avg % American Indian Alaska Native (NHA)"                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [136,] "1"  "Ratio to State avg % Black (NHA)"                                                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [137,] "1"  "Ratio to State avg % Asian (NHA)"                                                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [138,] "1"  "Ratio to State avg % Other single race (NHA)"                                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [139,] "1"  "Ratio to State avg % Two or more race (NH)"                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [140,] "1"  "Ratio to State avg % Native Hawaiian Pacific Islander (NHA)"                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [141,] "1"  "Ratio to State avg % White nonHispanic single race"                                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [142,] "0"  "Count of Hispanic or Latino"                                                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [143,] "0"  "Count of Black or African American (non-Hispanic, single race)"                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [144,] "0"  "Count of Asian (non-Hispanic, single race)"                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [145,] "0"  "Count of American Indian and Alaska Native (non-Hispanic, single race)"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [146,] "0"  "Count of Native Hawaiian and Other Pacific Islander (non-Hispanic, single race)"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [147,] "0"  "Count of Other race (non-Hispanic, single race)"                                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [148,] "0"  "Count of Two or more races (non-Hispanic)"                                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [149,] "0"  "Count of White (non-Hispanic, single race)"                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [150,] "2"  "Particulate Matter (PM 2.5 in ug/m3)"                                                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [151,] "1"  "Ozone (ppb)"                                                                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [152,] "0"  "Air Toxics Cancer Risk (risk per million)"                                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [153,] "2"  "Air Toxics Respiratory Hazard Index"                                                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [154,] "2"  "Air Toxics Diesel Particulate Matter (ug/m3)"                                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [155,] "1"  "Lead Paint Indicator (% pre-1960s housing)"                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [156,] "0"  "Traffic Proximity and Volume (daily traffic count/distance to road)"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [157,] "2"  "Superfund Proximity (site count/km distance)"                                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [158,] "2"  "RMP Proximity (facility count/km distance)"                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [159,] "1"  "Indicator for Hazardous Waste Proximity (facility count/km distance)"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [160,] "0"  "Wastewater Discharge Indicator (toxicity-weighted concentration/distance)"                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [161,] "1"  "Underground Storage Tanks (UST) indicator"                                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [162,] "0"  "Toxic Releases to Air"                                                                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [163,] "2"  "US average for Particulate Matter (PM 2.5 in ug/m3)"                                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [164,] "1"  "US average for Ozone (ppb)"                                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [165,] "0"  "US average for Air Toxics Cancer Risk (risk per million)"                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [166,] "2"  "US average for Air Toxics Respiratory Hazard Index"                                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [167,] "2"  "US average for Air Toxics Diesel Particulate Matter (ug/m3)"                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [168,] "1"  "US average for Lead Paint Indicator (% pre-1960s housing)"                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [169,] "0"  "US average for Traffic Proximity and Volume (daily traffic count/distance to road)"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [170,] "2"  "US average for Superfund Proximity (site count/km distance)"                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [171,] "2"  "US average for RMP Proximity (facility count/km distance)"                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [172,] "1"  "US average for Hazardous Waste Proximity (facility count/km distance)"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [173,] "0"  "US average for Wastewater Discharge Indicator (toxicity-weighted concentration/distance)"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [174,] "1"  "US average for Underground Storage Tanks (UST) indicator"                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [175,] "0"  "US avg Toxic Releases to Air"                                                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [176,] "2"  "State average for Particulate Matter (PM 2.5 in ug/m3)"                                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [177,] "1"  "State average for Ozone (ppb)"                                                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [178,] "0"  "State average for Air Toxics Cancer Risk (risk per million)"                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [179,] "2"  "State average for Air Toxics Respiratory Hazard Index"                                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [180,] "2"  "State average for Air Toxics Diesel Particulate Matter (ug/m3)"                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [181,] "1"  "State average for Lead Paint Indicator (% pre-1960s housing)"                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [182,] "0"  "State average for Traffic Proximity and Volume (daily traffic count/distance to road)"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [183,] "2"  "State average for Superfund Proximity (site count/km distance)"                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [184,] "2"  "State average for RMP Proximity (facility count/km distance)"                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [185,] "1"  "State average for Hazardous Waste Proximity (facility count/km distance)"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [186,] "0"  "State average for Wastewater Discharge Indicator (toxicity-weighted concentration/distance)"   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [187,] "1"  "State average for Underground Storage Tanks (UST) indicator"                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [188,] "0"  "State avg Toxic Releases to Air"                                                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [189,] "0"  "US percentile for Particulate Matter (PM 2.5 in ug/m3)"                                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [190,] "0"  "US percentile for Ozone (ppb)"                                                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [191,] "0"  "US percentile for Air Toxics Cancer Risk (risk per million)"                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [192,] "0"  "US percentile for Air Toxics Respiratory Hazard Index"                                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [193,] "0"  "US percentile for Air Toxics Diesel Particulate Matter (ug/m3)"                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [194,] "0"  "US percentile for Lead Paint Indicator (% pre-1960s housing)"                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [195,] "0"  "US percentile for Traffic Proximity and Volume (daily traffic count/distance to road)"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [196,] "0"  "US percentile for Superfund Proximity (site count/km distance)"                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [197,] "0"  "US percentile for RMP Proximity (facility count/km distance)"                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [198,] "0"  "US percentile for Hazardous Waste Proximity (facility count/km distance)"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [199,] "0"  "US percentile for Wastewater Discharge Indicator (toxicity-weighted concentration/distance)"   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [200,] "0"  "US percentile for Underground Storage Tanks (UST) indicator"                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [201,] "0"  "US percentile for Toxic Releases to Air"                                                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [202,] "0"  "State percentile for Particulate Matter (PM 2.5 in ug/m3)"                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [203,] "0"  "State percentile for Ozone (ppb)"                                                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [204,] "0"  "State percentile for Air Toxics Cancer Risk (risk per million)"                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [205,] "0"  "State percentile for Air Toxics Respiratory Hazard Index"                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [206,] "0"  "State percentile for Air Toxics Diesel Particulate Matter (ug/m3)"                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [207,] "0"  "State percentile for Lead Paint Indicator (% pre-1960s housing)"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [208,] "0"  "State percentile for Traffic Proximity and Volume (daily traffic count/distance to road)"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [209,] "0"  "State percentile for Superfund Proximity (site count/km distance)"                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [210,] "0"  "State percentile for RMP Proximity (facility count/km distance)"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [211,] "0"  "State percentile for Hazardous Waste Proximity (facility count/km distance)"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [212,] "0"  "State percentile for Wastewater Discharge Indicator (toxicity-weighted concentration/distance)"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [213,] "0"  "State percentile for Underground Storage Tanks (UST) indicator"                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [214,] "0"  "State percentile for Toxic Releases to Air"                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [215,] "1"  "Ratio to US avg PM2.5"                                                                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [216,] "1"  "Ratio to US avg Ozone"                                                                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [217,] "1"  "Ratio to US avg Cancer risk"                                                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [218,] "1"  "Ratio to US avg Respiratory"                                                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [219,] "1"  "Ratio to US avg Diesel PM"                                                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [220,] "1"  "Ratio to US avg % built pre-1960"                                                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [221,] "1"  "Ratio to US avg Traffic"                                                                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [222,] "1"  "Ratio to US avg NPL"                                                                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [223,] "1"  "Ratio to US avg RMP"                                                                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [224,] "1"  "Ratio to US avg TSDF"                                                                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [225,] "1"  "Ratio to US avg NPDES"                                                                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [226,] "1"  "Ratio to US avg UST"                                                                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [227,] "1"  "Ratio to US avg Toxic Releases to Air"                                                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [228,] "1"  "Ratio to State avg PM2.5"                                                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [229,] "1"  "Ratio to State avg Ozone"                                                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [230,] "1"  "Ratio to State avg Cancer risk"                                                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [231,] "1"  "Ratio to State avg Respiratory"                                                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [232,] "1"  "Ratio to State avg Diesel PM"                                                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [233,] "1"  "Ratio to State avg % built pre-1960"                                                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [234,] "1"  "Ratio to State avg Traffic"                                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [235,] "1"  "Ratio to State avg NPL"                                                                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [236,] "1"  "Ratio to State avg RMP"                                                                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [237,] "1"  "Ratio to State avg TSDF"                                                                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [238,] "1"  "Ratio to State avg NPDES"                                                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [239,] "1"  "Ratio to State avg UST"                                                                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [240,] "1"  "Ratio to State avg Toxic Releases to Air"                                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [241,] "3"  "Particulate Matter 2.5 EJ Index"                                                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [242,] "3"  "Ozone EJ Index"                                                                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [243,] "3"  "Air toxics cancer risk EJ Index"                                                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [244,] "3"  "Air toxics respiratory HI EJ Index"                                                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [245,] "3"  "Diesel particulate matter EJ Index"                                                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [246,] "3"  "Lead paint EJ Index"                                                                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [247,] "3"  "US raw Traffic proximity EJ Index"                                                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [248,] "3"  "US raw Superfund Proximity EJ Index"                                                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [249,] "3"  "RMP Facility Proximity EJ Index"                                                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [250,] "3"  "Hazardous waste proximity EJ Index"                                                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [251,] "3"  "US raw Wastewater discharge EJ Index"                                                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [252,] "3"  "US raw Underground storage tanks EJ Index"                                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [253,] "3"  "Toxic Releases to Air EJ Index"                                                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [254,] "3"  "State raw Particulate Matter 2.5 EJ Index"                                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [255,] "3"  "State raw Ozone EJ Index"                                                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [256,] "3"  "State Air toxics cancer risk EJ Index"                                                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [257,] "3"  "State Air toxics respiratory HI EJ Index"                                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [258,] "3"  "State Diesel particulate matter EJ Index"                                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [259,] "3"  "State Lead paint EJ Index"                                                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [260,] "3"  "State raw Traffic proximity EJ Index"                                                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [261,] "3"  "State raw Superfund Proximity EJ Index"                                                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [262,] "3"  "State raw RMP Facility Proximity EJ Index"                                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [263,] "3"  "State Hazardous waste proximity EJ Index"                                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [264,] "3"  "State raw Wastewater discharge EJ Index"                                                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [265,] "3"  "State raw Underground storage tanks EJ Index"                                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [266,] "3"  "State Toxic Releases to Air EJ Index"                                                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [267,] "3"  "Particulate Matter 2.5 Supplemental Index"                                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [268,] "3"  "Ozone Supplemental Index"                                                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [269,] "3"  "Air Toxics Cancer Risk Supplemental Index"                                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [270,] "3"  "Air Toxics Respiratory HI Supplemental Index"                                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [271,] "3"  "Diesel Particulate Matter Supplemental Index"                                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [272,] "3"  "Lead Paint Supplemental Index"                                                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [273,] "3"  "Traffic Proximity Supplemental Index"                                                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [274,] "3"  "Superfund Proximity Supplemental Index"                                                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [275,] "3"  "RMP Facility Proximity Supplemental Index"                                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [276,] "3"  "Hazardous Waste Proximity Supplemental Index"                                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [277,] "3"  "Wastewater Discharge Supplemental Index"                                                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [278,] "3"  "Underground Storage Tanks Supplemental Index"                                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [279,] "3"  "EJ Supp: Toxic Releases to Air (raw)"                                                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [280,] "3"  "State raw Particulate Matter 2.5 Supplemental Index"                                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [281,] "3"  "State raw Ozone Supplemental Index"                                                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [282,] "3"  "State Air toxics cancer risk Supplemental Index"                                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [283,] "3"  "State Air toxics respiratory HI Supplemental Index"                                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [284,] "3"  "State Diesel particulate matter Supplemental Index"                                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [285,] "3"  "State Lead paint Supplemental Index"                                                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [286,] "3"  "State raw Traffic proximity Supplemental Index"                                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [287,] "3"  "State raw Superfund Proximity Supplemental Index"                                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [288,] "3"  "State raw RMP Facility Proximity Supplemental Index"                                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [289,] "3"  "State Hazardous waste proximity Supplemental Index"                                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [290,] "3"  "State raw Wastewater discharge Supplemental Index"                                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [291,] "3"  "State raw Underground storage tanks Supplemental Index"                                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [292,] "3"  "State Toxic Releases to Air Supplemental Index"                                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [293,] "0"  "US percentile for EJ Index for Particulate Matter (PM 2.5)"                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [294,] "0"  "US percentile for EJ Index for Ozone"                                                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [295,] "0"  "US percentile for EJ Index for Air Toxics Cancer Risk"                                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [296,] "0"  "US percentile for EJ Index for Air Toxics Respiratory Hazard Index"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [297,] "0"  "US percentile for EJ Index for Air Toxics Diesel Particulate Matter"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [298,] "0"  "US percentile for EJ Index for Lead Paint Indicator"                                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [299,] "0"  "US percentile for EJ Index for Traffic Proximity and Volume"                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [300,] "0"  "US percentile for EJ Index for Superfund Proximity"                                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [301,] "0"  "US percentile for EJ Index for RMP Proximity"                                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [302,] "0"  "US percentile for EJ Index for Hazardous Waste Proximity"                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [303,] "0"  "US percentile for EJ Index for Wastewater Discharge Indicator"                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [304,] "0"  "US percentile for EJ Index for Underground Storage Tanks (UST) indicator"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [305,] "0"  "US percentile for EJ Index for Toxic Releases to Air"                                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [306,] "0"  "State percentile for EJ Index for Particulate Matter (PM 2.5)"                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [307,] "0"  "State percentile for EJ Index for Ozone"                                                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [308,] "0"  "State percentile for EJ Index for Air Toxics Cancer Risk"                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [309,] "0"  "State percentile for EJ Index for Air Toxics Respiratory Hazard Index"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [310,] "0"  "State percentile for EJ Index for Air Toxics Diesel Particulate Matter"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [311,] "0"  "State percentile for EJ Index for Lead Paint Indicator"                                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [312,] "0"  "State percentile for EJ Index for Traffic Proximity and Volume"                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [313,] "0"  "State percentile for EJ Index for Superfund Proximity"                                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [314,] "0"  "State percentile for EJ Index for RMP Proximity"                                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [315,] "0"  "State percentile for EJ Index for Hazardous Waste Proximity"                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [316,] "0"  "State percentile for EJ Index for Wastewater Discharge Indicator"                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [317,] "0"  "State percentile for EJ Index for Underground Storage Tanks (UST) indicator"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [318,] "0"  "State percentile for EJ Index for Toxic Releases to Air"                                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [319,] "0"  "US percentile for EJ Supplemental Index for Particulate Matter (PM 2.5)"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [320,] "0"  "US percentile for EJ Supplemental Index for Ozone"                                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [321,] "0"  "US percentile for EJ Supplemental Index for Air Toxics Cancer Risk"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [322,] "0"  "US percentile for EJ Supplemental Index for Air Toxics Respiratory Hazard Index"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [323,] "0"  "US percentile for EJ Supplemental Index for Air Toxics Diesel Particulate Matter"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [324,] "0"  "US percentile for EJ Supplemental Index for Lead Paint Indicator"                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [325,] "0"  "US percentile for EJ Supplemental Index for Traffic Proximity and Volume"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [326,] "0"  "US percentile for EJ Supplemental Index for Superfund Proximity"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [327,] "0"  "US percentile for EJ Supplemental Index for RMP Proximity"                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [328,] "0"  "US percentile for EJ Supplemental Index for Hazardous Waste Proximity"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [329,] "0"  "US percentile for EJ Supplemental Index for Wastewater Discharge Indicator"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [330,] "0"  "US percentile for EJ Supplemental Index for Underground Storage Tanks (UST) indicator"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [331,] "0"  "US Percentile for Toxic Releases to Air Supplemental Index"                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [332,] "0"  "State percentile for EJ Supplemental Index for Particulate Matter (PM 2.5)"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [333,] "0"  "State percentile for EJ Supplemental Index for Ozone"                                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [334,] "0"  "State percentile for EJ Supplemental Index for Air Toxics Cancer Risk"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [335,] "0"  "State percentile for EJ Supplemental Index for Air Toxics Respiratory Hazard Index"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [336,] "0"  "State percentile for EJ Supplemental Index for Air Toxics Diesel Particulate Matter"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [337,] "0"  "State percentile for EJ Supplemental Index for Lead Paint Indicator"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [338,] "0"  "State percentile for EJ Supplemental Index for Traffic Proximity and Volume"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [339,] "0"  "State percentile for EJ Supplemental Index for Superfund Proximity"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [340,] "0"  "State percentile for EJ Supplemental Index for RMP Proximity"                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [341,] "0"  "State percentile for EJ Supplemental Index for Hazardous Waste Proximity"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [342,] "0"  "State percentile for EJ Supplemental Index for Wastewater Discharge Indicator"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [343,] "0"  "State percentile for EJ Supplemental Index for Underground Storage Tanks (UST) indicator"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [344,] "0"  "State Percentile for Toxic Releases to Air Supplemental Index"                                 </span>
+<span class="r-in"><span> </span></span>
+</code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>

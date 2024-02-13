@@ -1,4 +1,20 @@
-url: ~
+url: https://bookish-disco-p8oe8wq.pages.github.io/
 template:
   bootstrap: 5
-
+deploy:
+  install_metadata: true
+articles:
+- title: The EJAM Web App
+  desc: Overview for EJAM Users
+  contents:
+  - what_is_ejam
+  - 0_webapp
+- title: The EJAM R Package
+  desc: For analysts using R
+  contents:
+  - 1_installing
+  - 2_quickstart
+  - 3_analyzing
+  - 4_advanced
+  - 5_ejscreenapi
+  - 6_future_plans
