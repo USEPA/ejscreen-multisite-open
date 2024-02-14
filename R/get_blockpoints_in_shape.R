@@ -86,8 +86,8 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
   }
   
   ## filter blockpoints again to individual bboxes, keep unique points
-  blockpoints_filt <- lapply(bbox_polys, function(a) blockpoints_filt[between(lon, a[1], a[3]) & 
-                                                                        between(lat, a[2], a[4]), ]) %>% 
+  blockpoints_filt <- lapply(bbox_polys, function(a) blockpoints_filt[data.table::between(lon, a[1], a[3]) & 
+                                                                        data.table::between(lat, a[2], a[4]), ]) %>% 
     rbindlist %>% 
     unique
   
