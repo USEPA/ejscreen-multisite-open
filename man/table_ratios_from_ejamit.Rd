@@ -2,7 +2,7 @@
 % Please edit documentation in R/table_ratios_from_ejamit-DRAFT.R
 \name{table_ratios_from_ejamit}
 \alias{table_ratios_from_ejamit}
-\title{DRAFT - uick view of summary stats by type of stat, but lacks rounding specific to each type, etc.}
+\title{DRAFT - Quick view of summary stats by type of stat, but lacks rounding specific to each type, etc.}
 \usage{
 table_ratios_from_ejamit(
   ejamitout,
@@ -25,5 +25,5 @@ table_ratios_from_ejamit(
 na
 }
 \description{
-DRAFT - uick view of summary stats by type of stat, but lacks rounding specific to each type, etc.
+DRAFT - Quick view of summary stats by type of stat, but lacks rounding specific to each type, etc.
 }
