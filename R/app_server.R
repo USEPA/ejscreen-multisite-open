@@ -1301,7 +1301,7 @@ app_server <- function(input, output, session) {
   
   output$radius_label <- renderUI({
     val <- input$bt_rad_buff
-    lab <- paste0('<b>Buffer Distance: <br/>', val, ' miles ','(',round(val / 0.62137119, 2), ' km)</b>')
+    lab <- paste0('<b>Distance from Site: <br/>', val, ' miles ','(',round(val / 0.62137119, 2), ' km)</b>')
     
     HTML(lab)
   })
@@ -2760,7 +2760,7 @@ app_server <- function(input, output, session) {
       if (submitted_upload_method() %in% c("SHP","FIPS")) {
         radius_or_buffer_description <- 'Distance from each shape (buffering around each polygon)'
       } else {
-        radius_or_buffer_description <- 'Distance from each site (radius of each circular buffer around a point)'
+        radius_or_buffer_description <- 'Distance from each site (radius of circle around a point/site)'
       }
       if (!input$calculate_ratios) {
         ratiocols <- names(data_processed()$results_overall) %in% c(names_d_ratio_to_avg, names_d_ratio_to_state_avg, names_e_ratio_to_avg, names_e_ratio_to_state_avg) 
