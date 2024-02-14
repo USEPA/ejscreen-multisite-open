@@ -205,7 +205,7 @@ app_server <- function(input, output, session) {
   
   observeEvent(input$show_data_preview,
                {
-                 showModal( shiny::modalDialog(title = 'Selected location data', size = 'l', easyClos = TRUE,
+                 showModal( shiny::modalDialog(title = 'Selected location data', size = 'l', easyClose = TRUE,
                                                helpText('View or download data corresponding to your upload/selections.'),
                                                ## use download buttons for speed and handling larger data
                                                downloadButton('download_preview_data_csv', label = 'CSV', class = 'usa-button'),
