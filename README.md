@@ -26,7 +26,7 @@ EJAM is provided by the US Environmental Protection Agency (US EPA).
 
 ## The EJAM Web App
 
-- [What is EJAM?](articles/what_is_ejam.html "what_is_ejam.html")
+- [What is EJAM?](articles/0_what_is_ejam.html "0_what_is_ejam.html")
 
 - [Using EJAM as a Web App](articles/0_webapp.html "0_webapp.html")
 

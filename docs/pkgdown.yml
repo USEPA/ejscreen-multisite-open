@@ -2,7 +2,7 @@ pandoc: 2.19.2
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
-  what_is_ejam: what_is_ejam.html
+  0_what_is_ejam: 0_what_is_ejam.html
   0_webapp: 0_webapp.html
   1_installing: 1_installing.html
   2_quickstart: 2_quickstart.html

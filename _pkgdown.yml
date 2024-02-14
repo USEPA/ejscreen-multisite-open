@@ -7,7 +7,7 @@ articles:
 - title: The EJAM Web App
   desc: Overview for EJAM Users
   contents:
-  - what_is_ejam
+  - 0_what_is_ejam
   - 0_webapp
 - title: The EJAM R Package
   desc: For analysts using R
