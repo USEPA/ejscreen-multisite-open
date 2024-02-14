@@ -1283,7 +1283,7 @@ app_server <- function(input, output, session) {
     current_upload_method()
   },{
     updateSliderInput(session, inputId = 'bt_rad_buff',
-                      val = current_slider_val[[current_upload_method()]])
+                      value = current_slider_val[[current_upload_method()]])
   })
 
   ## add warning and disable button if radius is set to 0 for points
