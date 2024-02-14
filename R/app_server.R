@@ -223,6 +223,8 @@ app_server <- function(input, output, session) {
   
   ## reactive: SHAPEFILES uploaded ####
   
+  num_valid_pts_uploaded <- reactiveValues('SHP'=0)
+  
   data_up_shp <- reactive({
     ##
     req(input$ss_upload_shp)
@@ -277,9 +279,15 @@ app_server <- function(input, output, session) {
       purrr::walk2(infiles, outfiles, ~file.rename(.x, .y)) # rename files from ugly tempfilename to original filename of file selected by user to upload
       shp <- sf::read_sf(file.path(dir, paste0(name, ".shp"))) # read-in shapefile
       ########################################## # 
+      shp <- sf::st_zm(shp)
       
       if (nrow(shp) > 0) {
-        numna <- nrow(shp[!sf::st_is_valid(shp),])
+        #shp_valid_reason <- st_is_valid(shp, reason=TRUE) 
+        shp_valid_reason <- rgeos::gIsValid(sf::as_Spatial(shp),byid = T,reason=T)
+        shp_is_valid <- shp_valid_reason == 'Valid Geometry'
+        numna <- sum(!shp_is_valid) #nrow(shp[!shp_is_valid,])
+        #numna <- nrow(shp[!sf::st_is_valid(shp),])
+        num_valid_pts_uploaded[['SHP']] <- length(shp_is_valid) - sum(!shp_is_valid)
         invalid_alert[['SHP']] <- numna # this updates the value of the reactive invalid_alert()
         #shp_valid <- shp[sf::st_is_valid(shp),] #determines valid shapes
         shp_valid <- dplyr::mutate(shp, siteid = dplyr::row_number())
@@ -292,10 +300,11 @@ app_server <- function(input, output, session) {
         shiny::validate('No shapes found in file uploaded.')
       }
       disable_buttons[['SHP']] <- FALSE
-      shp_proj$valid <- sf::st_is_valid(shp_proj)#!sf::st_is_empty(shp_proj)
+      #shp_proj$valid <- sf::st_is_valid(shp_proj)#!sf::st_is_empty(shp_proj)
+      shp_proj$valid <- shp_is_valid
       shp_proj <- cbind(ejam_uniq_id = 1:nrow(shp_proj), shp_proj)
       shp_proj$invalid_msg <- NA
-      shp_proj$invalid_msg[shp_proj$valid==F] <- sf::st_is_valid(shp_proj[shp_proj$valid==F,], reason = TRUE)
+      shp_proj$invalid_msg[shp_proj$valid==F] <- shp_valid_reason[shp_proj$valid==F] #sf::st_is_valid(shp_proj[shp_proj$valid==F,], reason = TRUE)
       shp_proj$invalid_msg[is.na(shp_proj$geometry)] <- 'bad geometry'
       class(shp_proj) <- c(class(shp_proj), 'data.table')
       shp_proj
@@ -1313,11 +1322,12 @@ app_server <- function(input, output, session) {
     
     if (current_upload_method() == "SHP") {
       ## ---------------------------------------------- __MAP SHAPES uploaded ####
-      req(data_uploaded())
       
       canmap <- TRUE
       max_pts <- input$max_shapes_map
-      if (nrow(data_uploaded()) > max_pts) {
+
+      if(num_valid_pts_uploaded[['SHP']] > max_pts){
+      #if (nrow(data_uploaded()) > max_pts) {
         warning(paste0('Too many uploaded polygons (> ', prettyNum(max_pts, big.mark = ','),') for map to show'))
         validate(paste0('Too many uploaded polygons (> ', prettyNum(max_pts, big.mark = ','),') for map to show'))
         
@@ -1325,6 +1335,8 @@ app_server <- function(input, output, session) {
         
         canmap <- FALSE
       } else {
+        req(data_uploaded())
+        
         bbox <- sf::st_bbox(data_uploaded())
         leaflet() %>% addTiles() %>%
           fitBounds(

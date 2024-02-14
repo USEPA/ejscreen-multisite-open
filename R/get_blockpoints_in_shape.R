@@ -61,7 +61,7 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
   ############################################################################################################ #
   
   if(is.function(updateProgress)){
-    boldtext <- 'Computing bounding boxes'
+    boldtext <- 'Computing overall bounding box'
     updateProgress(message_main = boldtext, value = 0.1)
   }
   
@@ -77,6 +77,11 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
       lat < bbox['ymax']
     ) 
   
+  if(is.function(updateProgress)){
+    boldtext <- 'Computing individual bounding boxes'
+    updateProgress(message_main = boldtext, value = 0.15)
+  }
+  
   ## individual bbox per polygon
   bbox_polys <- lapply(polys$geometry, sf::st_bbox)
   
@@ -86,10 +91,15 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
   }
   
   ## filter blockpoints again to individual bboxes, keep unique points
-  blockpoints_filt <- lapply(bbox_polys, function(a) blockpoints_filt[between(lon, a[1], a[3]) & 
-                                                                        between(lat, a[2], a[4]), ]) %>% 
+  blockpoints_filt <- lapply(bbox_polys, function(a) blockpoints_filt[data.table::between(lon, a[1], a[3]) & 
+                                                                        data.table::between(lat, a[2], a[4]), ]) %>% 
     rbindlist %>% 
     unique
+  
+  if(is.function(updateProgress)){
+    boldtext <- 'Transforming blockpoints'
+    updateProgress(message_main = boldtext, value = 0.25)
+  }
   
   blockpoints_sf <- sf::st_as_sf(blockpoints_filt, coords = c('lon', 'lat'), crs = crs)
   
@@ -168,14 +178,14 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
     polys <- sf::st_union(polys)
   }
   
-  blocksinsidef <- unique(blocksinside)
-  
-  #standardize input shapes for doaggregate
-  
   if(is.function(updateProgress)){
     boldtext <- 'Standardizing shapes'
     updateProgress(message_main = boldtext, value = 0.8)
   }
+  
+  blocksinsidef <- unique(blocksinside)
+  
+  #standardize input shapes for doaggregate
   
   pts <-  data.table(
     sf::st_coordinates(blocksinsidef),
@@ -183,6 +193,11 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
     blocksinsidef$blockid,
     distance = 0
   )
+  
+  if(is.function(updateProgress)){
+    boldtext <- 'Standardizing output'
+    updateProgress(message_main = boldtext, value = 0.9)
+  }
   
   setnames(pts, c("lon","lat","ejam_uniq_id","blockid","distance")) # it is lon then lat due to format of output of st_coordinates() I think
   pts[blockwts,  `:=`(bgid = bgid, blockwt = blockwt), on = "blockid"]
