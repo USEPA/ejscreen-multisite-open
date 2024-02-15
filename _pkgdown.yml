@@ -218,6 +218,7 @@ reference:
 - subtitle: "Map Popups"
   contents:
   - popup_from_any
+  - popup_from_df
 - subtitle: "Plots"
   contents:
   - boxplots_ratios

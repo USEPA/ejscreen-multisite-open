@@ -48,9 +48,6 @@
 <li class="active nav-item">
   <a class="nav-link" href="../articles/index.html">Articles</a>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="../news/index.html">Changelog</a>
-</li>
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
@@ -84,9 +81,6 @@
 
     
     
-<div class="section level2">
-<h2 id="ejams-tools-for-using-the-ejscreen-api">EJAM’s tools for using the EJScreen API<a class="anchor" aria-label="anchor" href="#ejams-tools-for-using-the-ejscreen-api"></a>
-</h2>
 <p>EJAM includes the EJAMejscreen package, a set of functions and data
 that facilitate access to EJScreen data and reports, using the API
 provided by EJScreen. It does a few things:</p>
@@ -221,36 +215,38 @@ tested<a class="anchor" aria-label="anchor" href="#get-ejscreen-results-tables-i
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html" class="external-link">shinyApp</a></span><span class="op">(</span>ui <span class="op">=</span> <span class="va">TEST_UI</span>, server <span class="op">=</span> <span class="va">TEST_SERVER</span><span class="op">)</span> <span class="co"># Try module in mini/test app</span></span></code></pre></div>
 </div>
-</div>
 <div class="section level2">
 <h2 id="compare-numbers-provided-by-ejam-and-ejscreen-api-comparing-estimated-population-indicator-scores-etc-">Compare numbers provided by EJAM and EJScreen API (comparing
 estimated population, indicator scores, etc.)<a class="anchor" aria-label="anchor" href="#compare-numbers-provided-by-ejam-and-ejscreen-api-comparing-estimated-population-indicator-scores-etc-"></a>
 </h2>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="co"># Pick sample of randomly selected EPA-regulated facilities in the FRS:</span></span>
-<span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">30</span> <span class="co"># or 1,000 sites, e.g.</span></span>
-<span><span class="va">pts</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/testpoints_n.html">testpoints_n</a></span><span class="op">(</span><span class="va">n</span>, weighting <span class="op">=</span> <span class="st">'frs'</span><span class="op">)</span></span>
-<span><span class="va">radius</span> <span class="op">&lt;-</span> <span class="fl">3</span></span>
-<span></span>
+<span><span class="co">################# # </span></span>
 <span><span class="co"># Run (potentially long) analysis in EJScreen, </span></span>
+<span><span class="co"># Pick sample of randomly selected EPA-regulated facilities in the FRS:</span></span>
+<span><span class="co"># n &lt;- 30 # or 1,000 sites, e.g.</span></span>
+<span><span class="co"># pts &lt;- testpoints_n(n, weighting = 'frs')</span></span>
+<span><span class="co"># radius &lt;- 3</span></span>
 <span><span class="co"># (approx 40 minutes for 1,000 points, maybe )</span></span>
 <span><span class="co"># and also in EJAM</span></span>
 <span><span class="co">## vs &lt;- ejscreen_vs_ejam(pts, radius = radius, include_ejindexes = TRUE)</span></span>
-<span><span class="co"># or to save time, </span></span>
+<span><span class="co">################# # </span></span>
+<span><span class="co"># or to save time, look at just 500 sites and </span></span>
+<span><span class="co"># just 1 mile radius, already run in ejscreenit()</span></span>
+<span><span class="co"># About 10-15 seconds in EJAM:</span></span>
+<span><span class="va">testoutput_ejamit_500_1miles</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ejamit.html">ejamit</a></span><span class="op">(</span><span class="va">testpoints_500</span>, radius <span class="op">=</span> <span class="fl">1</span>, </span>
+<span>                                         include_ejindexes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co"># setdiff(1:500, testoutput_ejamit_500_1miles$results_bysite$ejam_uniq_id )</span></span>
+<span><span class="co"># all.equal(1:500, testoutput_ejscreenit_500$table$sitenumber )</span></span>
+<span><span class="va">vs</span> <span class="op">&lt;-</span> <span class="fu">EJAM</span><span class="fu">:::</span><span class="fu"><a href="../reference/ejscreen_vs_ejam_alreadyrun.html">ejscreen_vs_ejam_alreadyrun</a></span><span class="op">(</span></span>
+<span>  apisite <span class="op">=</span> <span class="va">testoutput_ejscreenit_500</span><span class="op">$</span><span class="va">table</span>, </span>
+<span>  ejamsite <span class="op">=</span> <span class="va">testoutput_ejamit_500_1miles</span><span class="op">$</span><span class="va">results_bysite</span></span>
+<span><span class="op">)</span></span>
+<span><span class="co">################# # </span></span>
 <span></span>
-<span><span class="va">out1</span> <span class="op">=</span> <span class="va">testoutput_ejscreenit_500</span><span class="op">$</span><span class="va">table</span></span>
-<span><span class="va">out1</span> <span class="op">=</span> <span class="va">out1</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">out1</span><span class="op">$</span><span class="va">pm</span><span class="op">)</span>, <span class="op">]</span></span>
-<span><span class="va">out1</span><span class="op">$</span><span class="va">id</span> <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">NROW</a></span><span class="op">(</span><span class="va">out1</span><span class="op">)</span></span>
-<span><span class="va">ejamsite</span> <span class="op">=</span> <span class="fu"><a href="../reference/ejamit.html">ejamit</a></span><span class="op">(</span></span>
-<span>  sitepoints <span class="op">=</span> <span class="va">out1</span><span class="op">[</span> , <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lat"</span>, <span class="st">"lon"</span><span class="op">)</span><span class="op">]</span>, radius <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">$</span><span class="va">results_bysite</span></span>
-<span><span class="va">ejamsite</span><span class="op">$</span><span class="va">id</span> <span class="op">&lt;-</span> <span class="va">ejamsite</span><span class="op">$</span><span class="va">ejam_uniq_id</span></span>
-<span><span class="va">missingdatarows</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">NROW</a></span><span class="op">(</span><span class="va">out1</span><span class="op">)</span>, <span class="va">ejamsite</span><span class="op">$</span><span class="va">ejam_uniq_id</span><span class="op">)</span></span>
-<span><span class="va">out1</span> <span class="op">&lt;-</span> <span class="va">out1</span><span class="op">[</span><span class="op">!</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">NROW</a></span><span class="op">(</span><span class="va">out1</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">missingdatarows</span><span class="op">)</span>, <span class="op">]</span></span>
+<span><span class="co"># See summary stats on the comparison</span></span>
 <span></span>
-<span></span>
-<span><span class="co"># see summary stats on comparisons</span></span>
-<span><span class="va">sum_vs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ejscreen_vs_ejam_summary.html">ejscreen_vs_ejam_summary</a></span><span class="op">(</span><span class="va">vs</span><span class="op">)</span>  </span>
+<span><span class="va">sum_vs</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ejscreen_vs_ejam_summary.html">ejscreen_vs_ejam_summary</a></span><span class="op">(</span><span class="va">vs</span><span class="op">)</span></span>
 <span><span class="va">q</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ejscreen_vs_ejam_summary_quantiles.html">ejscreen_vs_ejam_summary_quantiles</a></span><span class="op">(</span></span>
 <span>  <span class="va">vs</span>, mystat <span class="op">=</span> <span class="st">'ratio'</span>, </span>
 <span>  myvars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'pop'</span>,  <span class="st">"blockcount_near_site"</span>, <span class="va">names_these</span><span class="op">)</span>, digits <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
@@ -262,7 +258,18 @@ estimated population, indicator scores, etc.)<a class="anchor" aria-label="ancho
 <span>  myvars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'pop'</span>, <span class="st">"blockcount_near_site"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/ejscreen_vs_ejam_see1.html">ejscreen_vs_ejam_see1</a></span><span class="op">(</span><span class="va">vs</span>, mysite <span class="op">=</span> <span class="fl">1</span>, </span>
 <span>                      myvars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'lowlifex'</span>, <span class="st">"Demog.Index.Supp"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/ejscreen_vs_ejam_see1map.html">ejscreen_vs_ejam_see1map</a></span><span class="op">(</span><span class="fl">1</span>, x <span class="op">=</span> <span class="va">vs</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/ejscreen_vs_ejam_see1map.html">ejscreen_vs_ejam_see1map</a></span><span class="op">(</span><span class="fl">1</span>, x <span class="op">=</span> <span class="va">vs</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="co"># or to see some related info:</span></span>
+<span><span class="va">out1</span> <span class="op">=</span> <span class="va">testoutput_ejscreenit_500</span><span class="op">$</span><span class="va">table</span></span>
+<span><span class="va">out1</span> <span class="op">=</span> <span class="va">out1</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">out1</span><span class="op">$</span><span class="va">pm</span><span class="op">)</span>, <span class="op">]</span></span>
+<span><span class="va">out1</span><span class="op">$</span><span class="va">id</span> <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">NROW</a></span><span class="op">(</span><span class="va">out1</span><span class="op">)</span></span>
+<span><span class="va">ejamsite</span> <span class="op">=</span> <span class="fu"><a href="../reference/ejamit.html">ejamit</a></span><span class="op">(</span></span>
+<span>  sitepoints <span class="op">=</span> <span class="va">out1</span><span class="op">[</span> , <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"lat"</span>, <span class="st">"lon"</span><span class="op">)</span><span class="op">]</span>, radius <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">$</span><span class="va">results_bysite</span></span>
+<span><span class="va">ejamsite</span><span class="op">$</span><span class="va">id</span> <span class="op">&lt;-</span> <span class="va">ejamsite</span><span class="op">$</span><span class="va">ejam_uniq_id</span></span>
+<span><span class="va">missingdatarows</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sets.html" class="external-link">setdiff</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">NROW</a></span><span class="op">(</span><span class="va">out1</span><span class="op">)</span>, <span class="va">ejamsite</span><span class="op">$</span><span class="va">ejam_uniq_id</span><span class="op">)</span></span>
+<span><span class="va">out1</span> <span class="op">&lt;-</span> <span class="va">out1</span><span class="op">[</span><span class="op">!</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">NROW</a></span><span class="op">(</span><span class="va">out1</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">missingdatarows</span><span class="op">)</span>, <span class="op">]</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="compare-speeds-for-ejam-and-ejscreen-api">Compare Speeds for EJAM and EJScreen API<a class="anchor" aria-label="anchor" href="#compare-speeds-for-ejam-and-ejscreen-api"></a>
@@ -327,12 +334,12 @@ functions:</p>
 
     <footer><div class="pkgdown-footer-left">
   <p></p>
-<p>Developed by Mark Corrales.</p>
+<p>NULL</p>
 </div>
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+<p>NULL</p>
 </div>
 
     </footer>

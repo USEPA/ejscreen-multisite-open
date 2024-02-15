@@ -24,9 +24,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../articles/index.html">Articles</a>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="../news/index.html">Changelog</a>
-</li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -92,43 +89,27 @@ of the given variables.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">names_d</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "Demog.Index"      "Demog.Index.Supp" "pctlowinc"        "pctlingiso"       "pctunemployed"   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [6] "pctlths"          "lowlifex"         "pctunder5"        "pctover64"        "pctmin"          </span>
-<span class="r-in"><span><span class="fu">fixcolnames2related</span><span class="op">(</span><span class="va">names_d</span>, <span class="st">'stateratio'</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fixcolnames2related(names_d, "stateratio"):</span> could not find function "fixcolnames2related"</span>
-<span class="r-in"><span><span class="va">names_d_ratio_to_state_avg</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "ratio.to.state.avg.Demog.Index"      "ratio.to.state.avg.Demog.Index.Supp"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "ratio.to.state.avg.pctlowinc"        "ratio.to.state.avg.pctlingiso"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "ratio.to.state.avg.pctunemployed"    "ratio.to.state.avg.pctlths"         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "ratio.to.state.avg.lowlifex"         "ratio.to.state.avg.pctunder5"       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "ratio.to.state.avg.pctover64"        "ratio.to.state.avg.pctmin"          </span>
-<span class="r-in"><span><span class="fu">fixcolnames2related</span><span class="op">(</span><span class="va">names_e</span>, <span class="st">"stateavg"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fixcolnames2related(names_e, "stateavg"):</span> could not find function "fixcolnames2related"</span>
-<span class="r-in"><span><span class="fu">fixcolnames2related</span><span class="op">(</span><span class="va">names_e</span>, <span class="st">"usvag"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fixcolnames2related(names_e, "usvag"):</span> could not find function "fixcolnames2related"</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"avg."</span>, <span class="va">names_e</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "avg.pm"              "avg.o3"              "avg.cancer"          "avg.resp"           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "avg.dpm"             "avg.pctpre1960"      "avg.traffic.score"   "avg.proximity.npl"  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "avg.proximity.rmp"   "avg.proximity.tsdf"  "avg.proximity.npdes" "avg.ust"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "avg.rsei"           </span>
-<span class="r-in"><span><span class="fu">fixcolnames2related</span><span class="op">(</span><span class="va">names_e</span>, <span class="st">"usratio"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fixcolnames2related(names_e, "usratio"):</span> could not find function "fixcolnames2related"</span>
-<span class="r-in"><span><span class="co"># names_ej # does not work with this as input</span></span></span>
-<span class="r-in"><span><span class="co"># fixcolnames2related(names_ej, "uspctile") # does not return names_ej_pctile</span></span></span>
-<span class="r-in"><span>  </span></span>
-</code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="va">names_d</span></span>
+<span><span class="fu">fixcolnames2related</span><span class="op">(</span><span class="va">names_d</span>, <span class="st">'stateratio'</span><span class="op">)</span></span>
+<span><span class="va">names_d_ratio_to_state_avg</span></span>
+<span><span class="fu">fixcolnames2related</span><span class="op">(</span><span class="va">names_e</span>, <span class="st">"stateavg"</span><span class="op">)</span></span>
+<span><span class="fu">fixcolnames2related</span><span class="op">(</span><span class="va">names_e</span>, <span class="st">"usvag"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"avg."</span>, <span class="va">names_e</span><span class="op">)</span></span>
+<span><span class="fu">fixcolnames2related</span><span class="op">(</span><span class="va">names_e</span>, <span class="st">"usratio"</span><span class="op">)</span></span>
+<span><span class="co"># names_ej # does not work with this as input</span></span>
+<span><span class="co"># fixcolnames2related(names_ej, "uspctile") # does not return names_ej_pctile</span></span>
+<span>  </span></code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Mark Corrales.</p>
+  <p></p><p>NULL</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p></p><p>NULL</p>
 </div>
 
     </footer></div>

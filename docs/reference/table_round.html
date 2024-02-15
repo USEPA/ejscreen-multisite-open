@@ -24,9 +24,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../articles/index.html">Articles</a>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="../news/index.html">Changelog</a>
-</li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -90,77 +87,29 @@ or names of vector elements, within x</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span> </span></span>
-<span class="r-in"><span>  <span class="fu">table_round</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">12.123456</span>, <span class="fl">9</span>, <span class="cn">NA</span> <span class="op">)</span>, <span class="st">'pm'</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Percentages stored as 0 to 1 rather than 0 to 100 will not be shown correctly unless adjusted, </span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>           because rounding info says 0 digits when the intent is to show 0 digits after the 0-100 percent number.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 12.12  9.00    NA</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span> <span class="va">x</span> <span class="op">&lt;-</span> <span class="va">testoutput_ejamit_10pts_1miles</span><span class="op">$</span><span class="va">results_bysite</span><span class="op">[</span></span></span>
-<span class="r-in"><span>   <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'lat'</span>,<span class="st">'lon'</span>, <span class="st">'pop'</span>, <span class="va">names_these</span>, <span class="va">names_ratio_to_avg_these</span>, <span class="va">names_e_pctile</span><span class="op">)</span>, </span></span>
-<span class="r-in"><span>   with <span class="op">=</span> <span class="cn">FALSE</span></span></span>
-<span class="r-in"><span> <span class="op">]</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span> <span class="fu"><a href="table_rounding_info.html">table_rounding_info</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] NA NA  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  2  1  0  2  2  1  0  2  2  1  0  1  0  1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [36]  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  0  0  0  0  0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [71]  0  0  0  0  0  0  0  0</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span> <span class="fu">table_round</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Percentages stored as 0 to 1 rather than 0 to 100 will not be shown correctly unless adjusted, </span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>           because rounding info says 0 digits when the intent is to show 0 digits after the 0-100 percent number.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        lat       lon  pop Demog.Index Demog.Index.Supp pctlowinc pctlingiso pctunemployed pctlths lowlifex</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 36.77649 -114.0379  747           0                0         0          0             0       0        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2 39.78107 -104.9129 1941           1                0         0          0             0       0        0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   pctunder5 pctover64 pctmin pcthisp pctnhba pctnhaa pctnhaiana pctnhnhpia pctnhotheralone pctnhmulti</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1         0         0      0       0       0       0          0          0               0          0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2         0         0      1       0       0       0          0          0               0          0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   pctnhwa   pm   o3 cancer resp  dpm pctpre1960 traffic.score proximity.npl proximity.rmp proximity.tsdf</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1       1 6.65 61.6     20 0.20 0.15        0.1            38          0.05          0.03            0.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2       0 8.61 65.9     36 0.39 0.53        0.6           157          0.30          4.32            2.9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   proximity.npdes ust rsei ratio.to.avg.Demog.Index ratio.to.avg.Demog.Index.Supp ratio.to.avg.pctlowinc</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1               0 2.0    0                      0.7                           1.1                    1.4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2               0 3.6 2503                      1.5                           1.3                    1.3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ratio.to.avg.pctlingiso ratio.to.avg.pctunemployed ratio.to.avg.pctlths ratio.to.avg.lowlifex</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                     0.0                        1.9                  0.3                     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2                     1.3                        1.8                  1.4                     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ratio.to.avg.pctunder5 ratio.to.avg.pctover64 ratio.to.avg.pctmin ratio.to.avg.pcthisp</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                    0.0                    1.0                 0.1                  0.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2                    1.2                    0.7                 1.6                  1.7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ratio.to.avg.pctnhba ratio.to.avg.pctnhaa ratio.to.avg.pctnhaiana ratio.to.avg.pctnhnhpia</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                  0.1                  0.0                       0                     0.7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2                  2.1                  0.4                       0                     0.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ratio.to.avg.pctnhotheralone ratio.to.avg.pctnhmulti ratio.to.avg.pctnhwa ratio.to.avg.pm ratio.to.avg.o3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                          0.0                     0.0                  1.6             0.8             1.0</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2                          1.6                     1.4                  0.6             1.1             1.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ratio.to.avg.cancer ratio.to.avg.resp ratio.to.avg.dpm ratio.to.avg.pctpre1960 ratio.to.avg.traffic.score</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                 0.8               0.7              0.6                     0.4                        0.2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2                 1.4               1.3              2.0                     1.9                        0.7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ratio.to.avg.proximity.npl ratio.to.avg.proximity.rmp ratio.to.avg.proximity.tsdf</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                        0.3                        0.1                         0.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2                        2.2                       10.1                         1.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   ratio.to.avg.proximity.npdes ratio.to.avg.ust ratio.to.avg.rsei pctile.pm pctile.o3 pctile.cancer</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                            0              0.5               0.0        14        54             5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2                            0              0.9               0.5        62        80            52</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   pctile.resp pctile.dpm pctile.pctpre1960 pctile.traffic.score pctile.proximity.npl pctile.proximity.rmp</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1           4         31                38                   34                   41                    4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2          31         92                78                   68                   91                   99</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   pctile.proximity.tsdf pctile.proximity.npdes pctile.ust pctile.rsei</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                    40                     57         59           3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2                    80                     52         70          76</span>
-<span class="r-in"><span>  </span></span>
-</code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span> </span>
+<span>  <span class="fu">table_round</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">12.123456</span>, <span class="fl">9</span>, <span class="cn">NA</span> <span class="op">)</span>, <span class="st">'pm'</span><span class="op">)</span></span>
+<span></span>
+<span> <span class="va">x</span> <span class="op">&lt;-</span> <span class="va">testoutput_ejamit_10pts_1miles</span><span class="op">$</span><span class="va">results_bysite</span><span class="op">[</span></span>
+<span>   <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'lat'</span>,<span class="st">'lon'</span>, <span class="st">'pop'</span>, <span class="va">names_these</span>, <span class="va">names_ratio_to_avg_these</span>, <span class="va">names_e_pctile</span><span class="op">)</span>, </span>
+<span>   with <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span> <span class="op">]</span></span>
+<span></span>
+<span> <span class="fu"><a href="table_rounding_info.html">table_rounding_info</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span> <span class="fu">table_round</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span>  </span></code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Mark Corrales.</p>
+  <p></p><p>NULL</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p></p><p>NULL</p>
 </div>
 
     </footer></div>

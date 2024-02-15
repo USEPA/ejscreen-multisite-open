@@ -52,8 +52,6 @@ indexblocks()
 #    - **See ?pkgdown::build_site** - EJAM now uses the pkgdown R package to build help and vignettes as web pages
 ```
 
-# EJAM's tools for using the EJScreen API
-
 EJAM includes the EJAMejscreen package, a set of functions and data that facilitate access to EJScreen data and reports, using the API provided by EJScreen. It does a few things:
 
 -   **API wrapper:** Makes it easier to use the EJScreen API from R

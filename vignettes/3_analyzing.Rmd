@@ -49,48 +49,34 @@ if (!exists("blockid2fips")) {
 indexblocks()
 ```
 
-# Key Functions underlying EJAM
+# Key Functions
 
 -   **run_app()** to launch the web app locally (to run in RStudio on a single computer rather than on a server)
 
--   **ejamit()** provides most results in just one function. Sample input is in testpoints_10 and sample output is in testoutput_ejamit_10pts_1miles. ejamit() especially relies on getblocksnearby() and doaggregate():
+-   **ejamit()** provides most results in just one function, and they can be viewed using ejam2report() and ejam2excel(). Sample input to ejamit() is in testpoints_10 and sample output is in testoutput_ejamit_10pts_1miles. ejamit() especially relies on getblocksnearby() and doaggregate():
 
-  -   getblocksnearby() takes a set of points (e.g., facilities) and finds the Census blocks near each. Sample input is in testpoints_100, and sample output is in testoutput_getblocksnearby_10pts_1miles
+-   getblocksnearby() takes a set of points (e.g., facilities) and finds the Census blocks near each. Sample input is in testpoints_100, and sample output is in testoutput_getblocksnearby_10pts_1miles
 
-  -   doaggregate() takes the list of blocks near each point, joins it to blockgroup indicators like from EJScreen, and aggregates at each buffered point as well as for the overall set of unique blocks (residents). Sample input is in testoutput_getblocksnearby_10pts_1miles and sample output is in testoutput_doaggregate_10pts_1miles
+-   doaggregate() takes the list of blocks near each point, joins it to blockgroup indicators like from EJScreen, and aggregates at each buffered point as well as for the overall set of unique blocks (residents). Sample input is in testoutput_getblocksnearby_10pts_1miles and sample output is in testoutput_doaggregate_10pts_1miles
 
 # Key groups of functions
 
-The EJAM package reference manual has a complete list of documented functions. There are several groups of functions that may be useful to know about:
+The [EJAM package reference manual](https://bookish-disco-p8oe8wq.pages.github.io/reference/index.html) has a complete list of documented functions, grouped by category. There are several categories of functions listed there:
 
--   ejam overall functions like ejamit(), ejam2report(), ejam2excel()
+-   The overall functions ejamit(), ejam2report(), ejam2excel()
+-   Specify Points by Lat/Lon
+-   Specify Facilities by ID
+-   Specify Facility Type
+-   Specify Places by Shapefile
+-   Specify Counties, etc./FIPS tools
+-   Blocks, Distances, Residents - e.g., getblocksnearby()
+-   Calculating and Aggregating
+-   Viewing Results
+-   Test Data
+-   Utilities for finding URL or API info
+-   etc.
 
--   latlon functions like latlon_from_regid(), latlon_from_naics(), latlon_df_clean(), latlon_is.valid(), etc.
-
--   frs functions and data like frs, frs_from_regid(), frs_from_programid(), frs_from_sitename(), frs_from_sitename()
-
--   naics functions and data like naics_categories(), naics_counts, naicstable, NAICS, naics_from_any(), frs_from_naics(), latlon_from_naics(), naics_url_of_code(), etc.
-
--   shapefile functions like state_from_ shapes_blockgroups_from_bgfips(), shapefile_from_folder(), shapes_counties_from_countyfips() and get_blockpoints_in_shape()
-
--   fips functions like fipstype(), EJAM::fips_lead_zero(), fips2name(), fips_counties_from_state_abbrev(), getblocksnearby_from_fips(), fips_bg_from_anyfips(), state_from_latlon(), stateinfo, stateinfo2, states_as_sites()
-
--   getblocks functions like getblocksnearby(), getblocksnearby_from_fips(), get_blockpoints_in_shape(), getblocks_diagnostics()
-
--   map functions like mapfast(), mapfastej(), mapfastej_counties(), map_blockgroups_over_blocks(), map_shapes_leaflet() map_shapes_mapview(), mapfast_gg(),  etc.
-
--   plot functions like plot_barplot_ratios(), plot_distance_by_pctd(), etc. (work in progress)
-
--   percentile functions like lookup_pctile(), pctile_from_raw_lookup()
-
--   distance functions such as plot_distance_by_pctd(), distance_by_group() for calculating or plotting how distance varies by group
-
--   variable-names lists and renaming and metadata functions such as names_e, names_d, names_d_subgroups, fixcolnames(), table_rounding_info(), varinfo(), varname2vartype_ejam(), varname2varcategory_ejam(), fixcolnames2related(), namesbyvarlist()
-
--   ejscreen functions like ejscreenit_for_ejam() to use the EJScreen API to obtain exact EJScreen results directly
-
--   Also see data("EJAM") and see ?dataload_from_pins() and usastats, statestats
-
+Also see data("EJAM") and see ?dataload_from_pins() and usastats, statestats
 
 # POINTS & NEARBY RESIDENTS
 
@@ -110,7 +96,6 @@ To analyze points and the circular areas around each one, you can specify the po
 -   All points that are the locations of EPA-regulated facilities of a certain type. The categories that can be used include the following:
     -   EPA Program (e.g., all greenhouse gas reporting facilities)
     -   Industry type, based on NAICS code (e.g., )
-
 
 ## Compare all Points in a Category
 
@@ -304,8 +289,6 @@ NROW(frs_from_naics(naics_from_any("chem", children = T)$code))
 # >10,000
 ```
 
-
-
 # SHAPEFILES
 
 ### Polygons in shapefiles as the places to compare
@@ -313,7 +296,6 @@ NROW(frs_from_naics(naics_from_any("chem", children = T)$code))
 You can upload polygons in a shapefile, and use EJAM to analyze them. See the Shiny app.
 
 See shapefile_from_folder() and related functions.
-
 
 # FIPS CODES
 
@@ -368,7 +350,6 @@ mapfastej_counties(xmd$results_bysite, 'state.pctile.pctlowinc')
 
 ```
 
-
 # EXPLORING RESULTS
 
 ## Site by site results in datatable format in RStudio viewer:
@@ -397,7 +378,6 @@ out2 <- testoutput_ejamit_100pts_1miles
 cbind(as.list(out2$results_overall))
 ```
 
- 
 ```{r count_sites_with_n_high, eval=TRUE}
 x <- testoutput_ejamit_1000pts_1miles 
 out <- x$results_bysite
@@ -414,9 +394,6 @@ x = findings$stats[ , 1, ]
 x[x[, "cum_pct"] >= 50 & x[, "cum_pct"] <= 80, ]
 findings$stats[ 1, , ]
 ```
-
- 
-
 
 # DETAILS OF BLOCKS NEAR ONE SITE
 
@@ -442,7 +419,6 @@ elapsed <- system.time({
 print(elapsed)
 sites2blocks
 ```
-
 
 #### doaggregate() will summarize indicators within each buffer and overall
 
@@ -475,7 +451,6 @@ cbind(overall = as.list( out$results_overall[ , ..names_d_pctile]))
 # cbind(overall = as.list( out$results_overall[ , ..names_ej_pctile]))
 ```
 
-
 # VISUALIZATION OF FINDINGS
 
 #### Histogram of indicators distribution over all people across all sites
@@ -507,8 +482,6 @@ distance_by_group_plot(
   demogvarname = 'pctlowinc', demoglabel = 'Low Income')
 ```
 
-
-
 ### Map blocks near 1 site
 
 ```{r plotblocksnearby2, eval = TRUE, fig.height=5, fig.width=5}
@@ -516,7 +489,6 @@ x = plotblocksnearby(testpoints_n(1), radius = 3, returnmap = FALSE)
 #  returnmap= TRUE is to actually return the leaflet map 
 
 ```
-
 
 # POPULATION DENSITY - AVG SITE VS AVG RESIDENT
 
@@ -533,8 +505,6 @@ cat("  ", popshare_p_lives_at_what_pct(out$results_bysite$pop, p = 0.50, astext 
 cat("  ", popshare_at_top_n(out$results_bysite$pop, c(1, 5, 10), astext = TRUE), "\n\n")
 
 ```
-
-
 
 ```{r getblocksnearby2, eval = TRUE}
 ## Also could use this example intermediate step dataset 
@@ -622,5 +592,3 @@ plotblocksnearby(sitepoints = sitepoints[sitepoints$ejam_uniq_id == densest, ])
 # Within a 1 mile radius, the blocks found tend to be about 2/3 of a mile from the site at the center.
 summary(s2b_stats$avgDistance)
 ```
-
- 

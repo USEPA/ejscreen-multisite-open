@@ -24,9 +24,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../articles/index.html">Articles</a>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="../news/index.html">Changelog</a>
-</li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -93,65 +90,31 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span>  <span class="fu">getblocks_diagnostics</span><span class="op">(</span><span class="va">testoutput_getblocksnearby_10pts_1miles</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    Summary stats on distances reported from any sites to any nearby blocks</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.9998549 miles is max. distance to block internal point (distance_unadjusted)   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.9998549 miles is max. distance to average resident in block (distance reported)   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.008486795 miles is shortest distance to block internal point (distance_unadjusted)   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.018 miles is shortest distance to average resident in block (distance reported)   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7 block distances were adjusted (these stats may count some blocks twice if adjusted at 2+ sites)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   6 block distances were adjusted up (reported dist to avg resident is &gt; dist to block internal point)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1 block distances were adjusted down (reported &lt; unadjusted)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6 unique sites had one or more block distances adjusted due to large block and short distance to block point</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 9 unique output sites</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 128 blocks are near the avg site or in avg buffer</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              (based on their block internal point, like a centroid)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1,152 blocks including doublecounting in overlaps, </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              in final row count (block-to-site pairs table)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1,152 actual unique blocks total</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1,152 blocks (and their residents) have exactly 1 site nearby </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0 blocks (and their residents) have exactly 2 sites nearby </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0 blocks (and their residents) have exactly 3 sites nearby </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1 is ratio of blocks including multicounting / actual count of unique blocks</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0% of unique blocks could get counted more than once </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              because those residents are near two or more sites </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>              (assuming they live at the block internal point</span>
-<span class="r-in"><span>  <span class="co"># library(data.table)</span></span></span>
-<span class="r-in"><span>  <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/copy.html" class="external-link">copy</a></span><span class="op">(</span><span class="va">testpoints_10</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="fu">setDT</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in setDT(x):</span> could not find function "setDT"</span>
-<span class="r-in"><span>  <span class="va">pts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="fu">data.table</span><span class="op">(</span>lat <span class="op">=</span> <span class="fl">40.3</span>, lon <span class="op">=</span> <span class="op">-</span><span class="fl">96.23</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>    <span class="va">x</span><span class="op">[</span> , <span class="fu">.</span><span class="op">(</span><span class="va">lat</span>, <span class="va">lon</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in data.table(lat = 40.3, lon = -96.23):</span> could not find function "data.table"</span>
-<span class="r-in"><span> <span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="getblocksnearbyviaQuadTree.html">getblocksnearbyviaQuadTree</a></span><span class="op">(</span><span class="va">pts</span>, <span class="fl">1</span>, quadtree <span class="op">=</span> <span class="va">localtree</span>, quiet <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in is.data.frame(sitepoints):</span> object 'pts' not found</span>
-<span class="r-in"><span> <span class="va">z</span><span class="op">[</span> , <span class="fu">.</span><span class="op">(</span>blocks <span class="op">=</span> <span class="va">.N</span><span class="op">)</span> , keyby <span class="op">=</span> <span class="st">'ejam_uniq_id'</span><span class="op">]</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'z' not found</span>
-<span class="r-in"><span> <span class="fu"><a href="plotblocksnearby.html">plotblocksnearby</a></span><span class="op">(</span><span class="va">pts</span>, radius <span class="op">=</span> <span class="fl">1</span>, sites2blocks <span class="op">=</span> <span class="va">z</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in c("blockid", "distance", siteidvarname) %in% names(sitepoints):</span> object 'pts' not found</span>
-<span class="r-in"><span> <span class="va">zz</span> <span class="op">&lt;-</span> <span class="fu">getblocks_diagnostics</span><span class="op">(</span><span class="va">z</span>, detailed <span class="op">=</span> <span class="cn">T</span>, see_pctiles <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in NROW(x):</span> object 'z' not found</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span>stats <span class="op">=</span> <span class="va">zz</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in cbind(stats = zz):</span> object 'zz' not found</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span>  <span class="fu">getblocks_diagostics</span><span class="op">(</span><span class="va">testoutput_getblocksnearby_1000pts_1miles</span>, see_distanceplot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in getblocks_diagostics(testoutput_getblocksnearby_1000pts_1miles,     see_distanceplot = TRUE):</span> could not find function "getblocks_diagostics"</span>
-<span class="r-in"><span>  </span></span>
-</code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span>  <span class="fu">getblocks_diagnostics</span><span class="op">(</span><span class="va">testoutput_getblocksnearby_10pts_1miles</span><span class="op">)</span></span>
+<span>  <span class="co"># library(data.table)</span></span>
+<span>  <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/copy.html" class="external-link">copy</a></span><span class="op">(</span><span class="va">testpoints_10</span><span class="op">)</span></span>
+<span>  <span class="fu">setDT</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span>  <span class="va">pts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="fu">data.table</span><span class="op">(</span>lat <span class="op">=</span> <span class="fl">40.3</span>, lon <span class="op">=</span> <span class="op">-</span><span class="fl">96.23</span><span class="op">)</span>,</span>
+<span>    <span class="va">x</span><span class="op">[</span> , <span class="fu">.</span><span class="op">(</span><span class="va">lat</span>, <span class="va">lon</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span>
+<span> <span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="getblocksnearbyviaQuadTree.html">getblocksnearbyviaQuadTree</a></span><span class="op">(</span><span class="va">pts</span>, <span class="fl">1</span>, quadtree <span class="op">=</span> <span class="va">localtree</span>, quiet <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
+<span> <span class="va">z</span><span class="op">[</span> , <span class="fu">.</span><span class="op">(</span>blocks <span class="op">=</span> <span class="va">.N</span><span class="op">)</span> , keyby <span class="op">=</span> <span class="st">'ejam_uniq_id'</span><span class="op">]</span></span>
+<span> <span class="fu"><a href="plotblocksnearby.html">plotblocksnearby</a></span><span class="op">(</span><span class="va">pts</span>, radius <span class="op">=</span> <span class="fl">1</span>, sites2blocks <span class="op">=</span> <span class="va">z</span><span class="op">)</span></span>
+<span> <span class="va">zz</span> <span class="op">&lt;-</span> <span class="fu">getblocks_diagnostics</span><span class="op">(</span><span class="va">z</span>, detailed <span class="op">=</span> <span class="cn">T</span>, see_pctiles <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span>stats <span class="op">=</span> <span class="va">zz</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="fu">getblocks_diagostics</span><span class="op">(</span><span class="va">testoutput_getblocksnearby_1000pts_1miles</span>, see_distanceplot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  </span></code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Mark Corrales.</p>
+  <p></p><p>NULL</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p></p><p>NULL</p>
 </div>
 
     </footer></div>

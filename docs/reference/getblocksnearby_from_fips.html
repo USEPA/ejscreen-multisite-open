@@ -24,9 +24,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../articles/index.html">Articles</a>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="../news/index.html">Changelog</a>
-</li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -88,90 +85,24 @@ or comparing whole counties to each other, within a State.</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span>  <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">getblocksnearby_from_fips</span><span class="op">(</span><span class="fu"><a href="fips_counties_from_state_abbrev.html">fips_counties_from_state_abbrev</a></span><span class="op">(</span><span class="st">"DE"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Connecting to Posit Connect ??? at &lt;https://rstudio-connect.dmap-stage.aws.epa.gov&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Failed trying to connect to pins board server.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> blockid2fips   - is NOT in memory. Checking local disk... blockid2fips  is loading from ~/../Downloads/EJAMbigfiles/blockid2fips.arrow ...done.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> blockid2fips   - was loaded from local folder, so server copy was not sought.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Connecting to Posit Connect ??? at &lt;https://rstudio-connect.dmap-stage.aws.epa.gov&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Failed trying to connect to pins board server.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> bgid2fips    - is NOT in memory. Checking local disk... bgid2fips   is loading from ~/../Downloads/EJAMbigfiles/bgid2fips.arrow ...done.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> bgid2fips    - was loaded from local folder, so server copy was not sought.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(blockid)`</span>
-<span class="r-in"><span>  <span class="va">counties_ej</span> <span class="op">&lt;-</span> <span class="fu"><a href="doaggregate.html">doaggregate</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="co">#cannot use mapfast(counties_ej$results_bysite) since no lat lon.  mapfastej_counties() should work...</span></span></span>
-<span class="r-in"><span>  <span class="va">y</span> <span class="op">=</span>  <span class="fu"><a href="ejamit.html">ejamit</a></span><span class="op">(</span>fips<span class="op">=</span><span class="fu"><a href="fips_counties_from_statename.html">fips_counties_from_statename</a></span><span class="op">(</span><span class="st">"Delaware"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Finding blocks in each FIPS Census unit.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(blockid)`</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Aggregating at each FIPS Census unit and overall.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Percentages stored as 0 to 1 rather than 0 to 100 will not be shown correctly unless adjusted, </span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>           because rounding info says 0 digits when the intent is to show 0 digits after the 0-100 percent number.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Population Density:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    0% of places account for 50% of the total population (approx.) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    1, 5, 10 places account for 58%, NA%, NA% of the total population </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> For example, </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  out &lt;- ejamit(testpoints_1000, radius = 1) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  # or</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  out &lt;- testoutput_ejamit_1000pts_1miles </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> To see a histogram of population counts nearby: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       hist(out$results_bysite$pop/1000, 100, </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         xlab = "Residents nearby (in thousands)", </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         ylab = "Number of sites", </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         main =  "Population Counts within NA miles of Various Sites") </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> To see cumulative distribution of population nearby:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       plot(ecdf(out$results_bysite$pop/1000), </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         ylab="Fraction of total population living any one or more of these sites", </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         xlab="# of residents (in thousands) near a site, showing one dot for each site", </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         main="A fraction of these sites are where most of the residents are located") </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> To see bar or boxplots of ratios of %Demographics vs US averages:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       ?plot_barplot_ratios() in EJAM package # or </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       ?boxplots_ratios() in EJAMejscreenapi package</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       boxplots_ratios(ratios_to_avg(as.data.frame(out$results_bysite))$ratios_d) </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> To see a map in RStudio: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       mapfast(out$results_bysite, radius = out$results_overall$radius.miles, column_names = 'ej') </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> To view or save as excel files, see ?table_xls_from_ejam e.g., table_xls_from_ejam(out, fname = 'out.xlsx')  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Output is a list with the following names:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  out is a list </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                  Name     format rows cols vectorlength</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                     results_overall data.table    1  289           NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2                      results_bysite data.table    3  290           NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3                 results_bybg_people data.table  706   85           NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4                           longnames     vector   NA   NA          289</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 count_of_blocks_near_multiple_sites     vector   NA   NA            1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6                  results_summarized     vector   NA   NA            2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7                           formatted data.frame  289    2           NA</span>
-<span class="r-in"><span>  </span></span>
-<span class="r-in"><span>  <span class="co"># x=getblocksnearby_from_fips("482011000011") # one blockgroup only</span></span></span>
-<span class="r-in"><span>  <span class="co"># y=doaggregate(x)</span></span></span>
-</code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span>  <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">getblocksnearby_from_fips</span><span class="op">(</span><span class="fu"><a href="fips_counties_from_state_abbrev.html">fips_counties_from_state_abbrev</a></span><span class="op">(</span><span class="st">"DE"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">counties_ej</span> <span class="op">&lt;-</span> <span class="fu"><a href="doaggregate.html">doaggregate</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span>  <span class="co">#cannot use mapfast(counties_ej$results_bysite) since no lat lon.  mapfastej_counties() should work...</span></span>
+<span>  <span class="va">y</span> <span class="op">=</span>  <span class="fu"><a href="ejamit.html">ejamit</a></span><span class="op">(</span>fips<span class="op">=</span><span class="fu"><a href="fips_counties_from_statename.html">fips_counties_from_statename</a></span><span class="op">(</span><span class="st">"Delaware"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="co"># x=getblocksnearby_from_fips("482011000011") # one blockgroup only</span></span>
+<span>  <span class="co"># y=doaggregate(x)</span></span></code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Mark Corrales.</p>
+  <p></p><p>NULL</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p></p><p>NULL</p>
 </div>
 
     </footer></div>

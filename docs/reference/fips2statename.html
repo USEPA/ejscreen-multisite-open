@@ -24,9 +24,6 @@
 <li class="nav-item">
   <a class="nav-link" href="../articles/index.html">Articles</a>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="../news/index.html">Changelog</a>
-</li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -72,101 +69,19 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu"><a href="fips_lead_zero.html">fips_lead_zero</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">80</span><span class="op">)</span>, <span class="fu"><a href="fips2state_abbrev.html">fips2state_abbrev</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">80</span><span class="op">)</span>, <span class="fu">fips2statename</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">80</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       [,1] [,2] [,3]                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1,] "01" "AL" "Alabama"             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,] "02" "AK" "Alaska"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,] "03" NA   NA                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,] "04" "AZ" "Arizona"             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [5,] "05" "AR" "Arkansas"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,] "06" "CA" "California"          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [7,] "07" NA   NA                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8,] "08" "CO" "Colorado"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [9,] "09" "CT" "Connecticut"         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [10,] "10" "DE" "Delaware"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [11,] "11" "DC" "District of Columbia"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [12,] "12" "FL" "Florida"             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13,] "13" "GA" "Georgia"             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [14,] "14" NA   NA                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [15,] "15" "HI" "Hawaii"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [16,] "16" "ID" "Idaho"               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [17,] "17" "IL" "Illinois"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [18,] "18" "IN" "Indiana"             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [19,] "19" "IA" "Iowa"                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [20,] "20" "KS" "Kansas"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [21,] "21" "KY" "Kentucky"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [22,] "22" "LA" "Louisiana"           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [23,] "23" "ME" "Maine"               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [24,] "24" "MD" "Maryland"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [25,] "25" "MA" "Massachusetts"       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [26,] "26" "MI" "Michigan"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [27,] "27" "MN" "Minnesota"           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [28,] "28" "MS" "Mississippi"         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [29,] "29" "MO" "Missouri"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [30,] "30" "MT" "Montana"             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [31,] "31" "NE" "Nebraska"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [32,] "32" "NV" "Nevada"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [33,] "33" "NH" "New Hampshire"       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [34,] "34" "NJ" "New Jersey"          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [35,] "35" "NM" "New Mexico"          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [36,] "36" "NY" "New York"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [37,] "37" "NC" "North Carolina"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [38,] "38" "ND" "North Dakota"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [39,] "39" "OH" "Ohio"                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [40,] "40" "OK" "Oklahoma"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [41,] "41" "OR" "Oregon"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [42,] "42" "PA" "Pennsylvania"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [43,] "43" NA   NA                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [44,] "44" "RI" "Rhode Island"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [45,] "45" "SC" "South Carolina"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [46,] "46" "SD" "South Dakota"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [47,] "47" "TN" "Tennessee"           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [48,] "48" "TX" "Texas"               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [49,] "49" "UT" "Utah"                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [50,] "50" "VT" "Vermont"             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [51,] "51" "VA" "Virginia"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [52,] "52" NA   NA                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [53,] "53" "WA" "Washington"          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [54,] "54" "WV" "West Virginia"       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [55,] "55" "WI" "Wisconsin"           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [56,] "56" "WY" "Wyoming"             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [57,] "57" NA   NA                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [58,] "58" NA   NA                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [59,] "59" NA   NA                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [60,] "60" NA   NA                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [61,] "61" NA   NA                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [62,] "62" NA   NA                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [63,] "63" NA   NA                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [64,] "64" NA   NA                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [65,] "65" NA   NA                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [66,] "66" NA   NA                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [67,] "67" NA   NA                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [68,] "68" NA   NA                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [69,] "69" NA   NA                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [70,] "70" NA   NA                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [71,] "71" NA   NA                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [72,] "72" "PR" "Puerto Rico"         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [73,] "73" NA   NA                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [74,] "74" NA   NA                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [75,] "75" NA   NA                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [76,] "76" NA   NA                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [77,] "77" NA   NA                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [78,] "78" NA   NA                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [79,] "79" NA   NA                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [80,] "80" NA   NA                    </span>
-<span class="r-in"><span>  </span></span>
-</code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu"><a href="fips_lead_zero.html">fips_lead_zero</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">80</span><span class="op">)</span>, <span class="fu"><a href="fips2state_abbrev.html">fips2state_abbrev</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">80</span><span class="op">)</span>, <span class="fu">fips2statename</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">80</span><span class="op">)</span><span class="op">)</span></span>
+<span>  </span></code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Mark Corrales.</p>
+  <p></p><p>NULL</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p></p><p>NULL</p>
 </div>
 
     </footer></div>
