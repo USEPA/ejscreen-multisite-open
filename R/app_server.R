@@ -282,11 +282,10 @@ app_server <- function(input, output, session) {
       shp <- sf::st_zm(shp)
       
       if (nrow(shp) > 0) {
-        #shp_valid_reason <- st_is_valid(shp, reason=TRUE) 
-        shp_valid_reason <- rgeos::gIsValid(sf::as_Spatial(shp),byid = T,reason=T)
-        shp_is_valid <- shp_valid_reason == 'Valid Geometry'
-        numna <- sum(!shp_is_valid) #nrow(shp[!shp_is_valid,])
-        #numna <- nrow(shp[!sf::st_is_valid(shp),])
+        ## terra provides faster valid check than sf
+        shp_valid_check <- terra::is.valid(terra::vect(shp), messages = T)
+        shp_is_valid <- shp_valid_check$valid 
+        numna <- sum(!shp_is_valid) 
         num_valid_pts_uploaded[['SHP']] <- length(shp_is_valid) - sum(!shp_is_valid)
         invalid_alert[['SHP']] <- numna # this updates the value of the reactive invalid_alert()
         #shp_valid <- shp[sf::st_is_valid(shp),] #determines valid shapes
@@ -300,11 +299,10 @@ app_server <- function(input, output, session) {
         shiny::validate('No shapes found in file uploaded.')
       }
       disable_buttons[['SHP']] <- FALSE
-      #shp_proj$valid <- sf::st_is_valid(shp_proj)#!sf::st_is_empty(shp_proj)
       shp_proj$valid <- shp_is_valid
       shp_proj <- cbind(ejam_uniq_id = 1:nrow(shp_proj), shp_proj)
       shp_proj$invalid_msg <- NA
-      shp_proj$invalid_msg[shp_proj$valid==F] <- shp_valid_reason[shp_proj$valid==F] #sf::st_is_valid(shp_proj[shp_proj$valid==F,], reason = TRUE)
+      shp_proj$invalid_msg[shp_proj$valid==F] <- shp_valid_check$reason[shp_proj$valid==F]
       shp_proj$invalid_msg[is.na(shp_proj$geometry)] <- 'bad geometry'
       class(shp_proj) <- c(class(shp_proj), 'data.table')
       shp_proj
@@ -1432,10 +1430,16 @@ app_server <- function(input, output, session) {
     
    
     ## check if data has been uploaded yet
-    m <- try(data_uploaded())
+    ## make errors silent by default; print below
+    m <- try(data_uploaded(),silent = T)
     
     ## if not, show empty map
     if(inherits(m, 'try-error')){
+      ## only print non-empty error messages
+      error_msg <- attr(m,'condition')$message
+      if(error_msg != ""){
+        print(paste0("Error: ", error_msg))
+      }
       leaflet() %>% addTiles() %>% setView(lat = 39.8283, lng = -98.5795, zoom = 4)
     } else {
       tryCatch({
