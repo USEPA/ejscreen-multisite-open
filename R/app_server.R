@@ -997,6 +997,26 @@ app_server <- function(input, output, session) {
       }
     }
     
+    ## add warning and disable button if radius is set to 0 for points
+    if (!(current_upload_method() %in% c('FIPS','SHP'))) {
+      if (current_slider_val[[current_upload_method()]] == 0) {
+        shinyjs::disable(id = 'bt_get_results')
+        showNotification(id = 'radius_warning', session=session,
+                         duration=NULL,type='warning',closeButton = F,
+                         'Please use a radius greater than 0 for analyzing points.')
+
+      } else if (current_slider_val[[current_upload_method()]] >0 &
+                 disable_buttons[[current_upload_method()]] == FALSE){
+        shinyjs::enable(id = 'bt_get_results')
+        removeNotification(id = 'radius_warning', session = session)
+      } else {
+        removeNotification(id = 'radius_warning', session = session)
+      }
+    } else {#else if(disable_buttons[[current_upload_method()]]==FALSE){
+      
+      removeNotification(id='radius_warning', session=session)
+    }
+    
     cat("Enabled/disabled button to get results, and showed/hid data preview based on current_upload_method() ==  ", current_upload_method(), "\n\n")
   })
   
@@ -1274,25 +1294,6 @@ app_server <- function(input, output, session) {
   },{
     updateSliderInput(session, inputId = 'bt_rad_buff', 
                       val = current_slider_val[[current_upload_method()]])
-  })
-  
-  ## add warning and disable button if radius is set to 0 for points
-  observe({
-    if (!(current_upload_method() %in% c('FIPS','SHP'))) {
-      if (current_slider_val[[current_upload_method()]] == 0) {  
-      shinyjs::disable(id = 'bt_get_results')
-        showNotification(id = 'radius_warning', session=session,
-                         duration=NULL,type='warning',closeButton = F,
-                        'Please use a radius greater than 0 for analyzing points.')
-
-      } else {
-        shinyjs::enable(id = 'bt_get_results')
-        removeNotification(id = 'radius_warning', session = session)
-      }
-    } else {
-      shinyjs::enable(id ='bt_get_results')
-      removeNotification(id='radius_warning', session=session)
-    }
   })
   
   ## Create separate radius label to allow line break
