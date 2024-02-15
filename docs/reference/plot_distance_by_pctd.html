@@ -33,8 +33,21 @@ which provides only block group resolution information about distance."><meta pr
       <ul class="navbar-nav me-auto"><li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="../articles/index.html">Articles</a>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <h6 class="dropdown-header" data-toc-skip>Overview for EJAM Users</h6>
+    <a class="dropdown-item" href="../articles/0_what_is_ejam.html">What is EJAM?</a>
+    <a class="dropdown-item" href="../articles/0_webapp.html">Using EJAM</a>
+    <div class="dropdown-divider"></div>
+    <h6 class="dropdown-header" data-toc-skip>For analysts using R</h6>
+    <a class="dropdown-item" href="../articles/1_installing.html">1. Installing the EJAM R package</a>
+    <a class="dropdown-item" href="../articles/2_quickstart.html">2. Quick Start Guide</a>
+    <a class="dropdown-item" href="../articles/3_analyzing.html">3. Basics of Using EJAM for Analysis in RStudio</a>
+    <a class="dropdown-item" href="../articles/4_advanced.html">4. Advanced Features</a>
+    <a class="dropdown-item" href="../articles/5_ejscreenapi.html">5. Using the EJScreen API via EJAM</a>
+    <a class="dropdown-item" href="../articles/6_future_plans.html">6. Future Plans and Ideas for EJAM</a>
+  </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
@@ -106,19 +119,60 @@ and only works for one indicator at a time so far.</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span>  <span class="fu">plot_distance_by_pctd</span><span class="op">(</span><span class="op">)</span></span>
-<span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span>  <span class="fu">plot_distance_by_pctd</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Analyzing 2 points, radius of 6.2 miles around each.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Finding Census blocks with internal point within  6.2  miles of the site (point), for each of 2  sites (points)...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Stats via getblocks_diagnostics(), but BEFORE ADJUSTING UP FOR VERY SHORT DISTANCES: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> min distance before adjustment:  0.03885213 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> max distance before adjustment:  6.199996 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    Summary stats on distances reported from any sites to any nearby blocks</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -Inf miles is max. distance to block internal point (distance_unadjusted)   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6.199996 miles is max. distance to average resident in block (distance reported)   </span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to min; returning Inf</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Inf miles is shortest distance to block internal point (distance_unadjusted)   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.03885213 miles is shortest distance to average resident in block (distance reported)   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to min; returning Inf</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2 unique output sites</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3,880 blocks are near the avg site or in avg buffer</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              (based on their block internal point, like a centroid)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7,760 blocks including doublecounting in overlaps, </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              in final row count (block-to-site pairs table)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7,760 actual unique blocks total</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7,760 blocks (and their residents) have exactly 1 site nearby </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0 blocks (and their residents) have exactly 2 sites nearby </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0 blocks (and their residents) have exactly 3 sites nearby </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 is ratio of blocks including multicounting / actual count of unique blocks</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0% of unique blocks could get counted more than once </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              because those residents are near two or more sites </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              (assuming they live at the block internal point</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Adjusting upwards the very short distances now...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Stats via getblocks_diagnostics(), AFTER ADJUSTING up FOR SHORT DISTANCES: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> min distance AFTER adjustment:  0.1491939 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> max distance AFTER adjustment:  6.199996 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> 'state_from_blockid' is not an exported object from 'namespace:EJAM'</span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>NULL</p>
+  <p></p><p>DRAFT</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>NULL</p>
+  <p></p><p>EJAM Version 2.2.1 beta</p>
 </div>
 
     </footer></div>

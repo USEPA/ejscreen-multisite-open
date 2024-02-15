@@ -45,8 +45,21 @@
 <li class="nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
-<li class="active nav-item">
-  <a class="nav-link" href="../articles/index.html">Articles</a>
+<li class="active nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <h6 class="dropdown-header" data-toc-skip>Overview for EJAM Users</h6>
+    <a class="dropdown-item" href="../articles/0_what_is_ejam.html">What is EJAM?</a>
+    <a class="dropdown-item" href="../articles/0_webapp.html">Using EJAM</a>
+    <div class="dropdown-divider"></div>
+    <h6 class="dropdown-header" data-toc-skip>For analysts using R</h6>
+    <a class="dropdown-item" href="../articles/1_installing.html">1. Installing the EJAM R package</a>
+    <a class="dropdown-item" href="../articles/2_quickstart.html">2. Quick Start Guide</a>
+    <a class="dropdown-item" href="../articles/3_analyzing.html">3. Basics of Using EJAM for Analysis in RStudio</a>
+    <a class="dropdown-item" href="../articles/4_advanced.html">4. Advanced Features</a>
+    <a class="dropdown-item" href="../articles/5_ejscreenapi.html">5. Using the EJScreen API via EJAM</a>
+    <a class="dropdown-item" href="../articles/6_future_plans.html">6. Future Plans and Ideas for EJAM</a>
+  </div>
 </li>
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
@@ -199,7 +212,7 @@ you can start by loading and attaching the package, using library or
 require. It should automatically download some data and build an
 index.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://github.com/USEPA/EJAM" class="external-link">EJAM</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://bookish-disco-p8oe8wq.pages.github.io/">EJAM</a></span><span class="op">)</span></span>
 <span><span class="co"># or library(EJAM)</span></span></code></pre></div>
 <p>That should be all you need to do.</p>
 <p>Just in case you need more details on how that works, the following
@@ -211,7 +224,7 @@ index.</p>
 <p>To work in the RStudio console, EJAM needs some datasets not stored
 as part of the package. However, they already should be downloaded and
 loaded into memory automatically as soon as you use
-<code><a href="https://github.com/USEPA/EJAM" class="external-link">require(EJAM)</a></code> assuming that the current version of
+<code><a href="https://bookish-disco-p8oe8wq.pages.github.io/">require(EJAM)</a></code> assuming that the current version of
 [EJAM:::on.Attach()] source code uses
 <code>asap_aws &lt;- TRUE; asap_index &lt;- TRUE; asap_bg</code>. If you
 want to be sure or if something is missing, you can do this
@@ -232,7 +245,7 @@ needed, using <code><a href="../reference/dataload_from_pins.html">dataload_from
 <p>EJAM also needs to build the index of about 8 million US block
 locations (one internal point for each block), which takes a few
 seconds. EJAM does this automatically when attached via
-<code><a href="https://github.com/USEPA/EJAM" class="external-link">require(EJAM)</a></code> or <code><a href="https://github.com/USEPA/EJAM" class="external-link">library(EJAM)</a></code>, by creating an
+<code><a href="https://bookish-disco-p8oe8wq.pages.github.io/">require(EJAM)</a></code> or <code><a href="https://bookish-disco-p8oe8wq.pages.github.io/">library(EJAM)</a></code>, by creating an
 object called <code>localtree</code> based on the <code>quaddata</code>
 object obtained as mentioned above. Some functions check for it and try
 to build the index on the fly if it is missing. You can also (re)build
@@ -249,12 +262,12 @@ it manually:</p>
 
     <footer><div class="pkgdown-footer-left">
   <p></p>
-<p>NULL</p>
+<p>DRAFT</p>
 </div>
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>NULL</p>
+<p>EJAM Version 2.2.1 beta</p>
 </div>
 
     </footer>

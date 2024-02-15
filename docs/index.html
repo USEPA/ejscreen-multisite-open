@@ -53,8 +53,21 @@
 <li class="nav-item">
   <a class="nav-link" href="reference/index.html">Reference</a>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="articles/index.html">Articles</a>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <h6 class="dropdown-header" data-toc-skip>Overview for EJAM Users</h6>
+    <a class="dropdown-item" href="articles/0_what_is_ejam.html">What is EJAM?</a>
+    <a class="dropdown-item" href="articles/0_webapp.html">Using EJAM</a>
+    <div class="dropdown-divider"></div>
+    <h6 class="dropdown-header" data-toc-skip>For analysts using R</h6>
+    <a class="dropdown-item" href="articles/1_installing.html">1. Installing the EJAM R package</a>
+    <a class="dropdown-item" href="articles/2_quickstart.html">2. Quick Start Guide</a>
+    <a class="dropdown-item" href="articles/3_analyzing.html">3. Basics of Using EJAM for Analysis in RStudio</a>
+    <a class="dropdown-item" href="articles/4_advanced.html">4. Advanced Features</a>
+    <a class="dropdown-item" href="articles/5_ejscreenapi.html">5. Using the EJScreen API via EJAM</a>
+    <a class="dropdown-item" href="articles/6_future_plans.html">6. Future Plans and Ideas for EJAM</a>
+  </div>
 </li>
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
@@ -80,9 +93,14 @@
 <img src="logo.svg" class="logo" alt=""><h1 id="ejam-environmental-justice-analysis-multisite-tool">EJAM Environmental Justice Analysis Multisite tool<a class="anchor" aria-label="anchor" href="#ejam-environmental-justice-analysis-multisite-tool"></a>
 </h1>
 </div>
+</div>
+<div class="section level1">
+<h1 id="section"><a class="anchor" aria-label="anchor" href="#section"></a></h1>
 <!-- README.md is generated from README.Rmd. Please edit Rmd not md  -->
 <!-- badges: start -->
-<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></p>
+<!-- comment out the badge for now
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+ -->
 <!-- badges: end -->
 <p><a href="#the-ejam-web-app">The EJAM Web App</a> makes it easy to see demographic and environmental information summarized in and across any list of places in the nation. Using EJAM is like running an EJScreen report, but for hundreds or thousands of places, all at the same time. The web app lets you quickly check a summary report, explore interactive maps, tables, and plots, and download a summary or detailed spreadsheet.</p>
 <p><a href="#the-ejam-r-package-for-analysts-and-developers">The EJAM R Package for Analysts and Developers</a> written in the R programming language, with source code on GitHub. It provides functions to help work with block group data, points, and polygons, to very quickly aggregate and compare large numbers of locations.</p>
@@ -121,18 +139,45 @@
 <p>The United States Environmental Protection Agency (EPA) GitHub project code is provided on an “as is” basis and the user assumes responsibility for its use. EPA has relinquished control of the information and no longer has responsibility to protect the integrity, confidentiality, or availability of the information. Any reference to specific commercial products, processes, or services by service mark, trademark, manufacturer, or otherwise, does not constitute or imply their endorsement, recommendation or favoring by EPA. The EPA seal and logo shall not be used in any manner to imply endorsement of any commercial product or activity by EPA or the United States Government.</p>
 </div>
 </div>
-  </main><aside class="col-md-3"></aside>
+
+  </main><aside class="col-md-3">
+
+<div class="links">
+<h2 data-toc-skip>Links</h2>
+<ul class="list-unstyled">
+<li><a href="https://github.com/USEPA/EJAM/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/USEPA/EJAM/issues/" class="external-link">Report a bug</a></li>
+</ul>
+</div>
+
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html#citation">Citing EJAM</a></li>
+</ul>
+</div>
+
+<div class="license">
+<h2 data-toc-skip>License</h2>
+<ul class="list-unstyled">
+<li><a href="LICENSE.html">Full license</a></li>
+<li><small><a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a>.md</small></li>
+</ul>
+</div>
+
+
+  </aside>
 </div>
 
 
     <footer><div class="pkgdown-footer-left">
   <p></p>
-<p>NULL</p>
+<p>DRAFT</p>
 </div>
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>NULL</p>
+<p>EJAM Version 2.2.1 beta</p>
 </div>
 
     </footer>

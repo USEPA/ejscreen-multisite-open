@@ -2,6 +2,7 @@
 output: github_document
 title: EJAM Environmental Justice Analysis Multisite tool
 ---
+# <img src="man/figures/logosmall.png" align="right" width="170" height="190"/>
 
 <!-- README.md is generated from README.Rmd. Please edit Rmd not md  -->
 
@@ -39,9 +40,9 @@ knitr::opts_chunk$set(
 ```
 
 <!-- badges: start -->
-
+<!-- comment out the badge for now
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-
+ -->
 <!-- badges: end -->
 
 [The EJAM Web App] makes it easy to see demographic and environmental information summarized in and across any list of places in the nation. Using EJAM is like running an EJScreen report, but for hundreds or thousands of places, all at the same time. The web app lets you quickly check a summary report, explore interactive maps, tables, and plots, and download a summary or detailed spreadsheet.

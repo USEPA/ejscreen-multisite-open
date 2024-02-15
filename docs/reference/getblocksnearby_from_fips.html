@@ -21,8 +21,21 @@
       <ul class="navbar-nav me-auto"><li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="../articles/index.html">Articles</a>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <h6 class="dropdown-header" data-toc-skip>Overview for EJAM Users</h6>
+    <a class="dropdown-item" href="../articles/0_what_is_ejam.html">What is EJAM?</a>
+    <a class="dropdown-item" href="../articles/0_webapp.html">Using EJAM</a>
+    <div class="dropdown-divider"></div>
+    <h6 class="dropdown-header" data-toc-skip>For analysts using R</h6>
+    <a class="dropdown-item" href="../articles/1_installing.html">1. Installing the EJAM R package</a>
+    <a class="dropdown-item" href="../articles/2_quickstart.html">2. Quick Start Guide</a>
+    <a class="dropdown-item" href="../articles/3_analyzing.html">3. Basics of Using EJAM for Analysis in RStudio</a>
+    <a class="dropdown-item" href="../articles/4_advanced.html">4. Advanced Features</a>
+    <a class="dropdown-item" href="../articles/5_ejscreenapi.html">5. Using the EJScreen API via EJAM</a>
+    <a class="dropdown-item" href="../articles/6_future_plans.html">6. Future Plans and Ideas for EJAM</a>
+  </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
@@ -85,24 +98,47 @@ or comparing whole counties to each other, within a State.</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span>  <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">getblocksnearby_from_fips</span><span class="op">(</span><span class="fu"><a href="fips_counties_from_state_abbrev.html">fips_counties_from_state_abbrev</a></span><span class="op">(</span><span class="st">"DE"</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="va">counties_ej</span> <span class="op">&lt;-</span> <span class="fu"><a href="doaggregate.html">doaggregate</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span>  <span class="co">#cannot use mapfast(counties_ej$results_bysite) since no lat lon.  mapfastej_counties() should work...</span></span>
-<span>  <span class="va">y</span> <span class="op">=</span>  <span class="fu"><a href="ejamit.html">ejamit</a></span><span class="op">(</span>fips<span class="op">=</span><span class="fu"><a href="fips_counties_from_statename.html">fips_counties_from_statename</a></span><span class="op">(</span><span class="st">"Delaware"</span><span class="op">)</span><span class="op">)</span></span>
-<span>  </span>
-<span>  <span class="co"># x=getblocksnearby_from_fips("482011000011") # one blockgroup only</span></span>
-<span>  <span class="co"># y=doaggregate(x)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span>  <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">getblocksnearby_from_fips</span><span class="op">(</span><span class="fu"><a href="fips_counties_from_state_abbrev.html">fips_counties_from_state_abbrev</a></span><span class="op">(</span><span class="st">"DE"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Connecting to Posit Connect 2024.01.0 at</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> &lt;https://rstudio-connect.dmap-stage.aws.epa.gov&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Successfully connected to Posit Connect pins board.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> blockid2fips   - is NOT in memory. Checking local disk... blockid2fips  is NOT found locally on disk at ~/../Downloads/EJAMbigfiles/blockid2fips.arrow </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> blockid2fips   - is NOT in local folder.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> blockid2fips  - was read from pins board server, into memory (to specified envir).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Connecting to Posit Connect 2024.01.0 at</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> &lt;https://rstudio-connect.dmap-stage.aws.epa.gov&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Successfully connected to Posit Connect pins board.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> bgid2fips    - is NOT in memory. Checking local disk... bgid2fips   is NOT found locally on disk at ~/../Downloads/EJAMbigfiles/bgid2fips.arrow </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> bgid2fips    - is NOT in local folder.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> bgid2fips   - was read from pins board server, into memory (to specified envir).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(blockid)`</span>
+<span class="r-in"><span>  <span class="va">counties_ej</span> <span class="op">&lt;-</span> <span class="fu"><a href="doaggregate.html">doaggregate</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="co">#cannot use mapfast(counties_ej$results_bysite) since no lat lon.  mapfastej_counties() should work...</span></span></span>
+<span class="r-in"><span>  <span class="va">y</span> <span class="op">=</span>  <span class="fu"><a href="ejamit.html">ejamit</a></span><span class="op">(</span>fips<span class="op">=</span><span class="fu"><a href="fips_counties_from_statename.html">fips_counties_from_statename</a></span><span class="op">(</span><span class="st">"Delaware"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Finding blocks in each FIPS Census unit.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(blockid)`</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Aggregating at each FIPS Census unit and overall.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Percentages stored as 0 to 1 rather than 0 to 100 will not be shown correctly unless adjusted, </span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>           because rounding info says 0 digits when the intent is to show 0 digits after the 0-100 percent number.</span>
+<span class="r-in"><span>  </span></span>
+<span class="r-in"><span>  <span class="co"># x=getblocksnearby_from_fips("482011000011") # one blockgroup only</span></span></span>
+<span class="r-in"><span>  <span class="co"># y=doaggregate(x)</span></span></span>
+</code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>NULL</p>
+  <p></p><p>DRAFT</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>NULL</p>
+  <p></p><p>EJAM Version 2.2.1 beta</p>
 </div>
 
     </footer></div>

@@ -1,7 +1,7 @@
 Package: EJAM
 Title: EJAM Environmental Justice Analysis Multisite tool
 Version: 2.2.1
-Author: USEPA
+Author:  USEPA
 Maintainer: Mark Corrales <corrales.mark@epa.gov>
 License: MIT + file LICENSE.md
 Description: Tools for summarizing environmental and demographic indicators 
@@ -10,6 +10,7 @@ Description: Tools for summarizing environmental and demographic indicators
     aggregation of indicators within each distance.
     It can be uses as a web app, with the user interface provided by R shiny.
 URL: https://bookish-disco-p8oe8wq.pages.github.io/, https://github.com/USEPA/EJAM
+BugReports: https://github.com/USEPA/EJAM/issues/
 Depends: 
     R (>= 2.10),
     EJAMbatch.summarizer,

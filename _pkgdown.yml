@@ -3,31 +3,37 @@ template:
   bootstrap: 5
 deploy:
   install_metadata: true
-home:
-  sidebar: FALSE
 navbar:
   structure:
     left:  [intro, reference, articles, search]
     right: [github]
 footer:
   structure: 
-    left: "DRAFT"
-    right: ""
+    left: [draftmsg]
+    right: [package, versionmsg]
+  components:
+    draftmsg: DRAFT
+    versionmsg: Version 2.2.1 beta
+home:
+  sidebar:
+    structure: [dev, links, citation, license, community]
 articles:
 - title: The EJAM Web App
   desc: Overview for EJAM Users
+  navbar: Overview for EJAM Users
   contents:
-  - 0_what_is_ejam
-  - 0_webapp
+  - '`0_what_is_ejam`'
+  - '`0_webapp`'
 - title: The EJAM R Package
   desc: For analysts using R
+  navbar: For analysts using R
   contents:
-  - 1_installing
-  - 2_quickstart
-  - 3_analyzing
-  - 4_advanced
-  - 5_ejscreenapi
-  - 6_future_plans
+  - '`1_installing`'
+  - '`2_quickstart`'
+  - '`3_analyzing`'
+  - '`4_advanced`'
+  - '`5_ejscreenapi`'
+  - '`6_future_plans`'
 reference:
 - title: "Key Functions"
   desc: "The Main High-Level Functions in EJAM"

@@ -25,8 +25,21 @@ https://geopub.epa.gov/arcgis/sdk/rest/index.html#/Query_Map_Service_Layer/02ss0
       <ul class="navbar-nav me-auto"><li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="../articles/index.html">Articles</a>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <h6 class="dropdown-header" data-toc-skip>Overview for EJAM Users</h6>
+    <a class="dropdown-item" href="../articles/0_what_is_ejam.html">What is EJAM?</a>
+    <a class="dropdown-item" href="../articles/0_webapp.html">Using EJAM</a>
+    <div class="dropdown-divider"></div>
+    <h6 class="dropdown-header" data-toc-skip>For analysts using R</h6>
+    <a class="dropdown-item" href="../articles/1_installing.html">1. Installing the EJAM R package</a>
+    <a class="dropdown-item" href="../articles/2_quickstart.html">2. Quick Start Guide</a>
+    <a class="dropdown-item" href="../articles/3_analyzing.html">3. Basics of Using EJAM for Analysis in RStudio</a>
+    <a class="dropdown-item" href="../articles/4_advanced.html">4. Advanced Features</a>
+    <a class="dropdown-item" href="../articles/5_ejscreenapi.html">5. Using the EJScreen API via EJAM</a>
+    <a class="dropdown-item" href="../articles/6_future_plans.html">6. Future Plans and Ideas for EJAM</a>
+  </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
@@ -102,19 +115,22 @@ https://geopub.epa.gov/arcgis/sdk/rest/index.html#/Query_Map_Service_Layer/02ss0
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span> <span class="fu">url_getacs_epaquery</span><span class="op">(</span>justurl<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
-<span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span> <span class="fu">url_getacs_epaquery</span><span class="op">(</span>justurl<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "this uses ACS2019 rest services ejscreen ejquery MapServer 7"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "https://geopub.epa.gov/arcgis/rest/services/ejscreen/ejquery/MapServer/7/query?objectIds=1,2,3&amp;sqlFormat=none&amp;text=&amp;where=&amp;havingClause=&amp;outFields=OBJECTID,STCNTRBG,AREALAND,AREAWATER,TOTALPOP,LOWINC,POV_UNIVERSE_FRT,PCT_LOWINC,HH_BPOV,HSHOLDS,PCT_HH_BPOV,EDU_LTHS,EDU_UNIVERSE,PCT_EDU_LTHS,LINGISO,PCT_LINGISO,EMP_STAT_UNEMPLOYED,EMP_STAT_UNIVERSE,PCT_EMP_STAT_UNEMPLOYED,AGE_LT5,PCT_AGE_LT5,AGE_GT64,PCT_AGE_GT64,NUM_MINORITY,PCT_MINORITY,WHITE,PCT_WHITE,BLACK,PCT_BLACK,HISP,PCT_HISP,ASIAN,PCT_ASIAN,AMERIND,PCT_AMERIND,HAWPAC,PCT_HAWPAC,OTHER_RACE,PCT_OTHER_RACE,TWOMORE,PCT_TWOMORE,NHWHITE,PCT_NHWHITE,NHBLACK,PCT_NHBLACK,NHASIAN,PCT_NHASIAN,NHAMERIND,PCT_NHAMERIND,NHHAWPAC,PCT_NHHAWPAC,NHOTHER_RACE,PCT_NHOTHER_RACE,NHTWOMORE,PCT_NHTWOMORE,HOME_PRE60,HSUNITS,PCT_HOME_PRE60&amp;orderByFields=&amp;groupByFieldsForStatistics=&amp;outStatistics=&amp;f=pjson&amp;returnGeometry=FALSE&amp;returnIdsOnly=false&amp;returnCountOnly=false&amp;returnExtentOnly=false&amp;returnDistinctValues=false&amp;returnTrueCurves=false&amp;returnZ=false&amp;returnM=false&amp;geometry=&amp;geometryType=esriGeometryEnvelope&amp;featureEncoding=esriDefault&amp;spatialRel=esriSpatialRelIntersects&amp;units=esriSRUnit_Foot&amp;distance=&amp;inSR=&amp;outSR=&amp;relationParam=&amp;geometryPrecision=&amp;gdbVersion=&amp;datumTransformation=&amp;parameterValues=&amp;rangeValues=&amp;quantizationParameters=&amp;maxAllowableOffset=&amp;resultOffset=&amp;resultRecordCount=&amp;historicMoment=&amp;time=&amp;timeRelation=esriTimeRelationOverlaps"</span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>NULL</p>
+  <p></p><p>DRAFT</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>NULL</p>
+  <p></p><p>EJAM Version 2.2.1 beta</p>
 </div>
 
     </footer></div>

@@ -21,8 +21,21 @@
       <ul class="navbar-nav me-auto"><li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="../articles/index.html">Articles</a>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <h6 class="dropdown-header" data-toc-skip>Overview for EJAM Users</h6>
+    <a class="dropdown-item" href="../articles/0_what_is_ejam.html">What is EJAM?</a>
+    <a class="dropdown-item" href="../articles/0_webapp.html">Using EJAM</a>
+    <div class="dropdown-divider"></div>
+    <h6 class="dropdown-header" data-toc-skip>For analysts using R</h6>
+    <a class="dropdown-item" href="../articles/1_installing.html">1. Installing the EJAM R package</a>
+    <a class="dropdown-item" href="../articles/2_quickstart.html">2. Quick Start Guide</a>
+    <a class="dropdown-item" href="../articles/3_analyzing.html">3. Basics of Using EJAM for Analysis in RStudio</a>
+    <a class="dropdown-item" href="../articles/4_advanced.html">4. Advanced Features</a>
+    <a class="dropdown-item" href="../articles/5_ejscreenapi.html">5. Using the EJScreen API via EJAM</a>
+    <a class="dropdown-item" href="../articles/6_future_plans.html">6. Future Plans and Ideas for EJAM</a>
+  </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
@@ -93,37 +106,205 @@ It may create and leave objects in global envt - not careful about that.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span> <span class="co"># see just a vector of the data object names</span></span>
-<span> <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span>package <span class="op">=</span> <span class="st">"EJAM"</span><span class="op">)</span><span class="op">$</span><span class="va">results</span><span class="op">[</span>, <span class="st">'Item'</span><span class="op">]</span></span>
-<span> </span>
-<span> <span class="co"># not actually sorted within each pkg by default</span></span>
-<span> <span class="fu">datapack</span><span class="op">(</span><span class="op">)</span></span>
-<span> <span class="co"># not actually sorted by default</span></span>
-<span> <span class="fu">datapack</span><span class="op">(</span><span class="st">"EJAM"</span><span class="op">)</span><span class="op">$</span><span class="va">Item</span></span>
-<span> <span class="co">##datapack("MASS", simple=T)</span></span>
-<span> </span>
-<span> <span class="co"># sorted by size if simple=F</span></span>
-<span> <span class="co">##datapack("datasets", simple=F)</span></span>
-<span> <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">datapack</span><span class="op">(</span>simple <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span>
-<span> <span class="co"># sorted by size already, to see largest ones among all these pkgs:</span></span>
-<span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span>, <span class="fl">20</span><span class="op">)</span></span>
-<span> </span>
-<span> <span class="co"># sorted alphabetically within each pkg</span></span>
-<span> <span class="va">x</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">Package</span>, <span class="va">x</span><span class="op">$</span><span class="va">Item</span><span class="op">)</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span></span>
-<span> <span class="co"># sorted alphabetically across all the pkgs</span></span>
-<span> <span class="va">x</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">Item</span><span class="op">)</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span></span>
-<span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span> <span class="co"># see just a vector of the data object names</span></span></span>
+<span class="r-in"><span> <span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span>package <span class="op">=</span> <span class="st">"EJAM"</span><span class="op">)</span><span class="op">$</span><span class="va">results</span><span class="op">[</span>, <span class="st">'Item'</span><span class="op">]</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] "NAICS"                                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [2] "SIC"                                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [3] "avg.in.us"                                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [4] "bg_cenpop2020"                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [5] "bgpts"                                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [6] "blockgroupstats"                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [7] "censusplaces"                                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [8] "ejampackages"                                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   [9] "epa_programs"                                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [10] "formulas_d"                                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [11] "frsprogramcodes"                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [12] "high_pctiles_tied_with_min"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [13] "islandareas"                                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [14] "lat_alias"                                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [15] "lon_alias"                                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [16] "mact_table"                                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [17] "meters_per_mile"                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [18] "naics_counts"                                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [19] "naicstable"                                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [20] "names_all"                                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [21] "names_all_r"                                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [22] "names_avg_these"                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [23] "names_d"                                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [24] "names_d_avg"                                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [25] "names_d_avg_friendly"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [26] "names_d_count"                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [27] "names_d_count_friendly"                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [28] "names_d_friendly"                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [29] "names_d_other_count"                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [30] "names_d_other_count_friendly"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [31] "names_d_pctile"                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [32] "names_d_pctile_friendly"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [33] "names_d_ratio_to_avg"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [34] "names_d_ratio_to_avg_friendly"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [35] "names_d_ratio_to_state_avg"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [36] "names_d_ratio_to_state_avg_friendly"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [37] "names_d_state_avg"                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [38] "names_d_state_avg_friendly"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [39] "names_d_state_pctile"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [40] "names_d_state_pctile_friendly"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [41] "names_d_subgroups"                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [42] "names_d_subgroups_alone"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [43] "names_d_subgroups_alone_avg"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [44] "names_d_subgroups_alone_avg_friendly"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [45] "names_d_subgroups_alone_count"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [46] "names_d_subgroups_alone_friendly"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [47] "names_d_subgroups_alone_pctile"                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [48] "names_d_subgroups_alone_pctile_friendly"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [49] "names_d_subgroups_alone_ratio_to_avg"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [50] "names_d_subgroups_alone_ratio_to_avg_friendly"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [51] "names_d_subgroups_alone_ratio_to_state_avg"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [52] "names_d_subgroups_alone_ratio_to_state_avg_friendly"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [53] "names_d_subgroups_alone_state_avg"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [54] "names_d_subgroups_alone_state_avg_friendly"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [55] "names_d_subgroups_alone_state_pctile"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [56] "names_d_subgroups_alone_state_pctile_friendly"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [57] "names_d_subgroups_avg"                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [58] "names_d_subgroups_avg_friendly"                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [59] "names_d_subgroups_count"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [60] "names_d_subgroups_friendly"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [61] "names_d_subgroups_nh"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [62] "names_d_subgroups_nh_avg"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [63] "names_d_subgroups_nh_avg_friendly"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [64] "names_d_subgroups_nh_count"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [65] "names_d_subgroups_nh_friendly"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [66] "names_d_subgroups_nh_pctile"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [67] "names_d_subgroups_nh_pctile_friendly"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [68] "names_d_subgroups_nh_ratio_to_avg"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [69] "names_d_subgroups_nh_ratio_to_avg_friendly"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [70] "names_d_subgroups_nh_ratio_to_state_avg"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [71] "names_d_subgroups_nh_ratio_to_state_avg_friendly"   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [72] "names_d_subgroups_nh_state_avg"                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [73] "names_d_subgroups_nh_state_avg_friendly"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [74] "names_d_subgroups_nh_state_pctile"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [75] "names_d_subgroups_nh_state_pctile_friendly"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [76] "names_d_subgroups_pctile"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [77] "names_d_subgroups_pctile_friendly"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [78] "names_d_subgroups_ratio_to_avg"                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [79] "names_d_subgroups_ratio_to_avg_friendly"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [80] "names_d_subgroups_ratio_to_state_avg"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [81] "names_d_subgroups_ratio_to_state_avg_friendly"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [82] "names_d_subgroups_state_avg"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [83] "names_d_subgroups_state_avg_friendly"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [84] "names_d_subgroups_state_pctile"                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [85] "names_d_subgroups_state_pctile_friendly"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [86] "names_e"                                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [87] "names_e_avg"                                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [88] "names_e_avg_friendly"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [89] "names_e_friendly"                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [90] "names_e_pctile"                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [91] "names_e_pctile_friendly"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [92] "names_e_ratio_to_avg"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [93] "names_e_ratio_to_avg_friendly"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [94] "names_e_ratio_to_state_avg"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [95] "names_e_ratio_to_state_avg_friendly"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [96] "names_e_state_avg"                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [97] "names_e_state_avg_friendly"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [98] "names_e_state_pctile"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [99] "names_e_state_pctile_friendly"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [100] "names_ej"                                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [101] "names_ej_friendly"                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [102] "names_ej_pctile"                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [103] "names_ej_pctile_friendly"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [104] "names_ej_state"                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [105] "names_ej_state_friendly"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [106] "names_ej_state_pctile"                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [107] "names_ej_state_pctile_friendly"                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [108] "names_ej_supp"                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [109] "names_ej_supp_friendly"                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [110] "names_ej_supp_pctile"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [111] "names_ej_supp_pctile_friendly"                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [112] "names_ej_supp_state"                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [113] "names_ej_supp_state_friendly"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [114] "names_ej_supp_state_pctile"                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [115] "names_ej_supp_state_pctile_friendly"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [116] "names_need_pctile"                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [117] "names_need_state_pctile"                            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [118] "names_other"                                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [119] "names_pct_as_fraction_blockgroupstats"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [120] "names_pct_as_fraction_ejamit"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [121] "names_pct_as_fraction_ejscreenit"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [122] "names_pctile"                                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [123] "names_ratio_to_avg_these"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [124] "names_ratio_to_state_avg_these"                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [125] "names_state_avg_these"                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [126] "names_state_pctile"                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [127] "names_these"                                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [128] "names_these_avg"                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [129] "names_these_ratio_to_avg"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [130] "names_these_ratio_to_state_avg"                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [131] "names_these_state_avg"                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [132] "names_wts"                                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [133] "namez"                                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [134] "regionstats"                                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [135] "sictable"                                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [136] "sites2blocks_example1000pts_1miles"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [137] "sites2blocks_example100pts_1miles"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [138] "sites2blocks_example10pts_1miles"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [139] "stateinfo"                                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [140] "stateinfo2"                                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [141] "states_shapefile"                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [142] "statestats"                                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [143] "test_regid"                                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [144] "test_xtrac"                                         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [145] "testoutput_doaggregate_1000pts_1miles"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [146] "testoutput_doaggregate_100pts_1miles"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [147] "testoutput_doaggregate_10pts_1miles"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [148] "testoutput_ejamit_1000pts_1miles"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [149] "testoutput_ejamit_100pts_1miles"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [150] "testoutput_ejamit_10pts_1miles"                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [151] "testoutput_ejscreenit_10pts_1miles"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [152] "testoutput_getblocksnearby_1000pts_1miles"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [153] "testoutput_getblocksnearby_100pts_1miles"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [154] "testoutput_getblocksnearby_10pts_1miles"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [155] "testpoints_10"                                      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [156] "testpoints_100"                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [157] "testpoints_1000"                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [158] "testpoints_10000"                                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [159] "testpoints_100_dt"                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [160] "testpoints_conus5"                                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [161] "usastats"                                           </span>
+<span class="r-in"><span> </span></span>
+<span class="r-in"><span> <span class="co"># not actually sorted within each pkg by default</span></span></span>
+<span class="r-in"><span> <span class="fu">datapack</span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in datapack():</span> could not find function "datapack"</span>
+<span class="r-in"><span> <span class="co"># not actually sorted by default</span></span></span>
+<span class="r-in"><span> <span class="fu">datapack</span><span class="op">(</span><span class="st">"EJAM"</span><span class="op">)</span><span class="op">$</span><span class="va">Item</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in datapack("EJAM"):</span> could not find function "datapack"</span>
+<span class="r-in"><span> <span class="co">##datapack("MASS", simple=T)</span></span></span>
+<span class="r-in"><span> </span></span>
+<span class="r-in"><span> <span class="co"># sorted by size if simple=F</span></span></span>
+<span class="r-in"><span> <span class="co">##datapack("datasets", simple=F)</span></span></span>
+<span class="r-in"><span> <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">datapack</span><span class="op">(</span>simple <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in datapack(simple = F):</span> could not find function "datapack"</span>
+<span class="r-in"><span> <span class="co"># sorted by size already, to see largest ones among all these pkgs:</span></span></span>
+<span class="r-in"><span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span>, <span class="fl">20</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in tail(x[, 1:3], 20):</span> object 'x' not found</span>
+<span class="r-in"><span> </span></span>
+<span class="r-in"><span> <span class="co"># sorted alphabetically within each pkg</span></span></span>
+<span class="r-in"><span> <span class="va">x</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">Package</span>, <span class="va">x</span><span class="op">$</span><span class="va">Item</span><span class="op">)</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'x' not found</span>
+<span class="r-in"><span> <span class="co"># sorted alphabetically across all the pkgs</span></span></span>
+<span class="r-in"><span> <span class="va">x</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">Item</span><span class="op">)</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'x' not found</span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>NULL</p>
+  <p></p><p>DRAFT</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>NULL</p>
+  <p></p><p>EJAM Version 2.2.1 beta</p>
 </div>
 
     </footer></div>

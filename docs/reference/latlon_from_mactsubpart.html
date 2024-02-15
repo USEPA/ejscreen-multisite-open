@@ -29,8 +29,21 @@ under the Clean Air Act."><meta property="og:image" content="https://bookish-dis
       <ul class="navbar-nav me-auto"><li class="active nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
-<li class="nav-item">
-  <a class="nav-link" href="../articles/index.html">Articles</a>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <h6 class="dropdown-header" data-toc-skip>Overview for EJAM Users</h6>
+    <a class="dropdown-item" href="../articles/0_what_is_ejam.html">What is EJAM?</a>
+    <a class="dropdown-item" href="../articles/0_webapp.html">Using EJAM</a>
+    <div class="dropdown-divider"></div>
+    <h6 class="dropdown-header" data-toc-skip>For analysts using R</h6>
+    <a class="dropdown-item" href="../articles/1_installing.html">1. Installing the EJAM R package</a>
+    <a class="dropdown-item" href="../articles/2_quickstart.html">2. Quick Start Guide</a>
+    <a class="dropdown-item" href="../articles/3_analyzing.html">3. Basics of Using EJAM for Analysis in RStudio</a>
+    <a class="dropdown-item" href="../articles/4_advanced.html">4. Advanced Features</a>
+    <a class="dropdown-item" href="../articles/5_ejscreenapi.html">5. Using the EJScreen API via EJAM</a>
+    <a class="dropdown-item" href="../articles/6_future_plans.html">6. Future Plans and Ideas for EJAM</a>
+  </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
@@ -99,21 +112,716 @@ Or NA if none found.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span>  <span class="va">mact_table</span></span>
-<span>  <span class="fu">latlon_from_mactsubpart</span><span class="op">(</span><span class="st">"OOOO"</span>, include_if_no_latlon <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="co"># default</span></span>
-<span>  <span class="fu">latlon_from_mactsubpart</span><span class="op">(</span><span class="st">"OOOO"</span>, include_if_no_latlon <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span>  </span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span>  <span class="va">mact_table</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     subpart</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1         A</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2        AA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3      AAAA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4     AAAAA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   AAAAAAA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6         B</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7        BB</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8     BBBBB</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9    BBBBBB</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10  BBBBBBB</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11        C</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12       CC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13      CCC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14     CCCC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15    CCCCC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16   CCCCCC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17  CCCCCCC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18        D</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19       DD</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20      DDD</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21     DDDD</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22    DDDDD</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23   DDDDDD</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24  DDDDDDD</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25        E</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26       EE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27      EEE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28     EEEE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29    EEEEE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30  EEEEEEE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31        F</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32     FFFF</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33    FFFFF</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34   FFFFFF</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35        G</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36       GG</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37      GGG</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38     GGGG</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39    GGGGG</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40        H</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41       HH</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 42      HHH</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 43     HHHH</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 44    HHHHH</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 45   HHHHHH</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 46  HHHHHHH</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 47        I</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 48       II</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 49      III</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 50     IIII</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 51    IIIII</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 52        J</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 53       JJ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 54      JJJ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 55     JJJJ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 56    JJJJJ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 57   JJJJJJ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 58       KK</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 59     KKKK</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 60    KKKKK</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 61        L</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 62       LL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 63      LLL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 64    LLLLL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 65   LLLLLL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 66        M</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 67       MM</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 68      MMM</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 69     MMMM</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 70    MMMMM</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 71   MMMMMM</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 72        N</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 73      NNN</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 74     NNNN</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 75    NNNNN</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 76   NNNNNN</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 77        O</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 78       OO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 79      OOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 80     OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 81   OOOOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 82       PP</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 83      PPP</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 84     PPPP</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 85    PPPPP</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 86   PPPPPP</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 87        Q</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 88       QQ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 89     QQQQ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 90    QQQQQ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 91   QQQQQQ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 92        R</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 93       RR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 94      RRR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 95     RRRR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 96    RRRRR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 97   RRRRRR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 98        S</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 99       SS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 100    SSSS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 101   SSSSS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 102  SSSSSS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 103       T</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 104      TT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 105     TTT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 106    TTTT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 107   TTTTT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 108  TTTTTT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 109       U</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 110      UU</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 111     UUU</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 112    UUUU</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 113   UUUUU</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 114      VV</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 115     VVV</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 116    VVVV</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 117  VVVVVV</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 118       W</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 119      WW</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 120    WWWW</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 121   WWWWW</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 122  WWWWWW</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 123       X</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 124      XX</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 125     XXX</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 126    XXXX</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 127  XXXXXX</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 128       Y</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 129      YY</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 130    YYYY</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 131   YYYYY</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 132  YYYYYY</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 133     ZZZ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 134    ZZZZ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 135   ZZZZZ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 136  ZZZZZZ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                            title</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                                                             GENERAL PROVISIONS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                                            PHOSPERIC ACID MANUFACTURING PLANTS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                                                MUNICIPAL SOLID WASTE LANDFILLS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4                                                      LIME MANUFACTURING PLANTS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5              AREA SOURCE: ASPHALT PROCESSING AND ASPHALT ROOFING MANUFACTURING</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6                    REQ FOR CONTROL TECHNOLOGY DETERMINATIONS FOR MAJOR SOURCES</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7                                                          PHOSPHATE FERTILIZERS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8                                                    SEMICONDUCTOR MANUFACTURING</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9     GASOLINE DISTRIBUTION BULK TERMINALS, BULK PLANTS, AND PIPELINE FACILITIES</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10                                   AREA SOURCE: CHEMICAL PREPARATIONS INDUSTRY</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11                                                            DELISTINGS OF HAPS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12                                                          PETROLEUM REFINERIES</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13                      STEEL PICKLING-HCI PROCESS FACILITIES AND HCI REG PLANTS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14                                            MANUFACTURING OF NUTRITIONAL YEAST</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15                             COKE OVENS: PUSHING, QUENCHING AND BATTERY STACKS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16                                                GASOLINE DISPENSING FACILITIES</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17                          AREA SOURCE: PAINT AND ALLIED PRODUCTS MANUFACTURING</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18                                       COMPLIANCE EXTENSION, EARLY HAP REDUCTN</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19                                        OFF-SITE WASTE AND RECOVERY OPERATIONS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20                                                       MINERAL WOOL PRODUCTION</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21                                           PLYWOOD AND COMPOSITE WOOD PRODUCTS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22   MAJOR SOURCES: INDUSTRIAL/COMMERCIAL/INSTITUTIONAL BOILERS &amp; PROCESS HEATER</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23                     POLYVINYL CHLORIDE AND COPOLYMERS PRODUCTION AREA SOURCES</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24                                               AREA SOURCE: PREPARED FEEDS MFG</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25                         APPROVAL OF STATE PROGRAMS &amp;  DELEGATION OF AUTHORITY</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26                                                 MAGNETIC TAPE MFG. OPERATIONS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27                                                    HAZARDOUS WASTE COMBUSTORS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28                                   ORGANIC LIQUIDS DISTRIBUTION (NON-GASOLINE)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29                                                      IRON AND STEEL FOUNDRIES</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30                          AREA SOURCE: GOLD MINE ORE PROCESSING AND PRODUCTION</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31                                SYNTHETIC HAZARDOUS ORGANICS (SOCMI) STANDARDS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32                            MISCELLANEOUS ORGANIC CHEMICAL MANUFACTURING (MON)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33                            INTEGRATED IRON AND STEEL MANUFACTURING FACILITIES</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34                                        SECONDARY COPPER SMELTING AREA SOURCES</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35         SOCMI PROCESS VENTS, STORAGE VESSELS, TRANSFER OPERATIONS, WASTEWATER</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36                                                       AEROSPACE MFG. &amp; REWORK</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37                                                  PHARMACEUTICAL MANUFACTURING</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38                               SOLVENT EXTRACTION FOR VEGETABLE OIL PRODUCTION</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39                                                              SITE REMEDIATION</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40                                         EQUIPMENT LEAKS OF HAZARDOUS ORGANICS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41                                     OIL AND NATURAL GAS PRODUCTION FACILITIES</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 42                                 NATURAL GAS TRANSMISSION &amp; STORAGE FACILITIES</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 43                                          WET FORMED FIBERGLASS MAT PRODUCTION</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 44                                           MISCELLANEOUS COATING MANUFACTURING</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 45                 PAINT STRIP &amp; MISC SURFACE COATING OPERATIONS AT AREA SOURCES</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 46                                  POLYVINYL CHLORIDE AND COPOLYMERS PRODUCTION</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 47                                      NEGOTIATED REGS: EQUIP LEAKS, HAZ-ORGNCS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 48                                                    SHIPBUILDING &amp; SHIP REPAIR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 49                                         FLEXIBLE POLYURETHANE FOAM PRODUCTION</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 50                                 SURFACE COATING OF AUTO AND LIGHT DUTY TRUCKS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 51                       MERCURY EMISSIONS FROM MERCURY CELL CHLOR-ALKALI PLANTS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 52                                  POLYVINYL CHLORIDE AND COPOLYMERS PRODUCTION</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 53                                       WOOD FURNITURE MANUFACTURING OPERATIONS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 54                                                  GROUP IV POLYMERS AND RESINS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 55                                                    PAPER &amp; OTHER WEB COATINGS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 56                                BRICK &amp; STRUCTURAL CLAY PRODUCTS MANUFACTURING</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 57                INDUSTRIAL, COMMERCIAL, AND INSTITUTIONAL BOILERS AREA SOURCES</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 58                                                         PRINTING &amp; PUBLISHING</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 59                                                 SURFACE COATING OF METAL CANS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 60                                                   CLAY CERAMICS MANUFACTURING</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 61                                                           COKE OVEN BATTERIES</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 62                                             PRIMARY ALUMINUM REDUCTION PLANTS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 63                                                        PORTLAND CEMENT PLANTS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 64                          ASPHALT PROCESSING AND ASPHALT ROOFING MANUFACTURING</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 65                         ACRYLIC AND MODACRYLIC FIBERS PRODUCTION AREA SOURCES</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 66                                                DRY CLEANERS PERCHLOROETHYLENE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 67                            CHEMICAL RECOVERY COMBUSTION SOURCES AT PULP MILLS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 68                                        PESTICIDE ACTIVE INGREDIENT PRODUCTION</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 69                             SURFACE COATING OF MISC. METAL PARTS AND PRODUCTS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 70                             FLEXIBLE POLYURETHANE FOAM FABRICATION OPERATIONS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 71                                          CARBON BLACK PRODUCTION AREA SOURCES</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 72                                                       CHROMIUM ELECTROPLATING</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 73                                                 WOOL FIBERGLASS MANUFACTURING</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 74                                           SURFACE COATING OF LARGE APPLIANCES</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 75                                                  HYDROCHLORIC ACID PRODUCTION</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 76                       CHEMICAL MANUFACTURING AREA SOURCES: CHROMIUM COMPOUNDS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 77                                                    ETHYLENE OXIDE STERILIZERS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 78                                                      TANK STANDARDS - LEVEL 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 79                                          MANUFACTURE OF AMINO/PHENOLIC RESINS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 80                    PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 81                            FLEXIBLE POLYURETHANE FOAM PROD &amp; FAB AREA SOURCES</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 82                                                           CONTAINER STANDARDS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 83                                                  POLYETHER POLYOLS PRODUCTION</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 84                                 SURFACE COATING OF PLASTIC PARTS AND PRODUCTS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 85                                                      ENGINE TEST CELLS/STANDS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 86                                  LEAD ACID BATTERY MANUFACTURING AREA SOURCES</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 87                                             INDUSTRIAL PROCESS COOLING TOWERS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 88                                                           SURFACE IMPOUNDMENT</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 89                                     SURFACE COATING OF WOOD BUILDING PRODUCTS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 90                                   FRICTION MATERIALS MANUFACTURING FACILITIES</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 91                                                  WOOD PERSERVING AREA SOURCES</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 92                                                         GASOLINE DISTRIBUTION</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 93                                                      INDIVIDUAL DRAIN SYSTEMS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 94                                                 SECONDARY ALUMINUM PRODUCTION</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 95                                            SURFACE COATING OF METAL FURNITURE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 96                                                  TACONITE IRON ORE PROCESSING</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 97                                                CLAY CERAMICS MFG AREA SOURCES</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 98                                                                PULP AND PAPER</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 99  CLOSED VENT SYS/CTRL DEVICES, RECOVERY DEVICES, ROUTING TO FUEL GAS SYS/PROC</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 100                                                SURFACE COATING OF METAL COIL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 101                                            REFRACTORY PRODUCTS MANUFACTURING</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 102                                                       GLASS MFG AREA SOURCES</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 103                                                 HALOGENATED SOLVENT CLEANING</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 104                                            EQUIPMENT LEAKS - CONTROL LEVEL 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 105                                                        PRIMARY LEAD SMELTING</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 106                                                 LEATHER FINISHING OPERATIONS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 107                                                   PRIMARY MAGNESIUM REFINING</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 108                          SECONDARY NONFERROUS METALS PROCESSING AREA SOURCES</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 109                                                  GROUP 1 POLYMERS AND RESINS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 110                                                  EQUIP LEAKS-CONTROL LEVEL 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 111                                   PETROLEUM REFINERIES: CCU'S, CRU'S &amp; SRU'S</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 112                                              CELLULOSE PRODUCT MANUFACTURING</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 113                                                     COAL &amp; OIL-FIRED EUSGU'S</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 114                                         OIL-WATER &amp; ORGANIC-WATER SEPARATORS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 115                                               PUBLICLY OWNED TREATMENT WORKS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 116                                                           BOAT MANUFACTURING</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 117                                          CHEMICAL MANUFACTURING AREA SOURCES</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 118                               EPOXY RESINS &amp; NON-NYLON POLYAMIDES PRODUCTION</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 119                                     STORAGE VESSELS (TANKS)- CONTROL LEVEL 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 120                                     REINFORCED PLASTIC COMPOSITES PRODUCTION</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 121                                          HOSPITAL ETHYLENE OXIDE STERILIZERS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 122                                AREA SOURCE: PLATING AND POLISHING OPERATIONS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 123                                                      SECONDARY LEAD SMELTERS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 124                       ETHYLENE MPF: HEAT EXCHANGE SYSTEMS &amp; WASTE OPERATIONS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 125                                                        FERROALLOY PRODUCTION</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 126                                                    RUBBER TIRE MANUFACTURING</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 127          AREA SOURCE: NINE METAL FABRICATION AND FINISHING SOURCE CATEGORIES</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 128                            MARINE TANK VESSEL LOADING &amp; UNLOADING OPERATIONS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 129                                                       GENERIC MACT STANDARDS</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 130                                               STATIONARY COMBUSTION TURBINES</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 131                     AREA SOURCE: ELECTRIC ARC FURNACE STEELMAKING FACILITIES</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 132                               AREA SOURCE: FERROALLOYS PRODUCTION FACILITIES</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 133                                                         CHEMICAL SECTOR RULE</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 134                  STATIONARY RECIPROCATING INTERNAL COMBUSTION ENGINES (RICE)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 135                                        IRON AND STEEL FOUNDRIES AREA SOURCES</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 136                   AREA SOURCE: ALUMINUM, COPPER &amp; OTHER NONFERROUS FOUNDRIES</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                                  dropdown_label</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                                                                A - General Provisions (5,052)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                                                 AA - Phosperic Acid Manufacturing Plants (15)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                                                  AAAA - Municipal Solid Waste Landfills (711)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4                                                        AAAAA - Lime Manufacturing Plants (45)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5              AAAAAAA - Area Source: Asphalt Processing And Asphalt Roofing Manufacturing (34)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6                          B - Req For Control Technology Determinations For Major Sources (81)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7                                                               BB - Phosphate Fertilizers (15)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8                                                      BBBBB - Semiconductor Manufacturing (45)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9     BBBBBB - Gasoline Distribution Bulk Terminals, Bulk Plants, And Pipeline Facilities (943)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10                                    BBBBBBB - Area Source: Chemical Preparations Industry (3)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11                                                                   C - Delistings Of Haps (1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12                                                              CC - Petroleum Refineries (186)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13                          CCC - Steel Pickling-Hci Process Facilities And Hci Reg Plants (51)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14                                                CCCC - Manufacturing Of Nutritional Yeast (6)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15                               CCCCC - Coke Ovens: Pushing, Quenching And Battery Stacks (27)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16                                              CCCCCC - Gasoline Dispensing Facilities (1,700)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17                          CCCCCCC - Area Source: Paint And Allied Products Manufacturing (40)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18                                              D - Compliance Extension, Early Hap Reductn (5)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19                                             DD - Off-Site Waste And Recovery Operations (97)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20                                                           DDD - Mineral Wool Production (13)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21                                             DDDD - Plywood And Composite Wood Products (392)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22  DDDDD - Major Sources: Industrial/Commercial/Institutional Boilers &amp; Process Heater (2,737)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23                       DDDDDD - Polyvinyl Chloride And Copolymers Production Area Sources (7)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24                                              DDDDDDD - Area Source: Prepared Feeds Mfg (123)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25                                E - Approval Of State Programs &amp;  Delegation Of Authority (1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26                                                      EE - Magnetic Tape Mfg. Operations (11)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27                                                       EEE - Hazardous Waste Combustors (139)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28                                     EEEE - Organic Liquids Distribution (Non-Gasoline) (322)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29                                                        EEEEE - Iron And Steel Foundries (92)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30                           EEEEEEE - Area Source: Gold Mine Ore Processing And Production (3)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31                                     F - Synthetic Hazardous Organics (Socmi) Standards (269)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32                              FFFF - Miscellaneous Organic Chemical Manufacturing (Mon) (394)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33                              FFFFF - Integrated Iron And Steel Manufacturing Facilities (19)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34                                          FFFFFF - Secondary Copper Smelting Area Sources (1)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35              G - Socmi Process Vents, Storage Vessels, Transfer Operations, Wastewater (304)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36                                                           GG - Aerospace Mfg. &amp; Rework (159)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37                                                      GGG - Pharmaceutical Manufacturing (76)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38                                 GGGG - Solvent Extraction For Vegetable Oil Production (102)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39                                                               GGGGG - Site Remediation (146)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40                                              H - Equipment Leaks Of Hazardous Organics (342)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41                                       HH - Oil And Natural Gas Production Facilities (3,656)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 42                                    HHH - Natural Gas Transmission &amp; Storage Facilities (107)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 43                                              HHHH - Wet Formed Fiberglass Mat Production (8)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 44                                            HHHHH - Miscellaneous Coating Manufacturing (182)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 45               HHHHHH - Paint Strip &amp; Misc Surface Coating Operations At Area Sources (3,169)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 46                                  HHHHHHH - Polyvinyl Chloride And Copolymers Production (21)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 47                                            I - Negotiated Regs: Equip Leaks, Haz-Orgncs (47)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 48                                                         II - Shipbuilding &amp; Ship Repair (96)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 49                                             III - Flexible Polyurethane Foam Production (42)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 50                                   IIII - Surface Coating Of Auto And Light Duty Trucks (116)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 51                         IIIII - Mercury Emissions From Mercury Cell Chlor-Alkali Plants (12)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 52                                         J - Polyvinyl Chloride And Copolymers Production (9)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 53                                           JJ - Wood Furniture Manufacturing Operations (522)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 54                                                      JJJ - Group Iv Polymers And Resins (63)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 55                                                      JJJJ - Paper &amp; Other Web Coatings (311)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 56                                  JJJJJ - Brick &amp; Structural Clay Products Manufacturing (98)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 57                JJJJJJ - Industrial, Commercial, And Institutional Boilers Area Sources (740)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 58                                                             KK - Printing &amp; Publishing (395)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 59                                                    KKKK - Surface Coating Of Metal Cans (60)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 60                                                      KKKKK - Clay Ceramics Manufacturing (7)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 61                                                                 L - Coke Oven Batteries (28)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 62                                                  LL - Primary Aluminum Reduction Plants (16)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 63                                                           LLL - Portland Cement Plants (121)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 64                            LLLLL - Asphalt Processing And Asphalt Roofing Manufacturing (19)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 65                           LLLLLL - Acrylic And Modacrylic Fibers Production Area Sources (2)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 66                                                   M - Dry Cleaners Perchloroethylene (8,763)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 67                                MM - Chemical Recovery Combustion Sources At Pulp Mills (117)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 68                                            MMM - Pesticide Active Ingredient Production (30)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 69                               MMMM - Surface Coating Of Misc. Metal Parts And Products (775)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 70                                MMMMM - Flexible Polyurethane Foam Fabrication Operations (9)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 71                                            MMMMMM - Carbon Black Production Area Sources (4)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 72                                                          N - Chromium Electroplating (1,185)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 73                                                     NNN - Wool Fiberglass Manufacturing (24)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 74                                              NNNN - Surface Coating Of Large Appliances (20)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 75                                                    NNNNN - Hydrochloric Acid Production (29)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 76                         NNNNNN - Chemical Manufacturing Area Sources: Chromium Compounds (3)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 77                                                         O - Ethylene Oxide Sterilizers (111)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 78                                                           OO - Tank Standards - Level 1 (16)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 79                                              OOO - Manufacture Of Amino/Phenolic Resins (39)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 80                      OOOO - Printing, Coating And Dyeing Of Fabrics And Other Textiles (101)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 81                             OOOOOO - Flexible Polyurethane Foam Prod &amp; Fab Area Sources (43)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 82                                                                PP - Container Standards (16)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 83                                                      PPP - Polyether Polyols Production (31)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 84                                   PPPP - Surface Coating Of Plastic Parts And Products (396)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 85                                                        PPPPP - Engine Test Cells/Stands (30)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 86                                   PPPPPP - Lead Acid Battery Manufacturing Area Sources (29)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 87                                                  Q - Industrial Process Cooling Towers (115)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 88                                                                 QQ - Surface Impoundment (2)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 89                                        QQQQ - Surface Coating Of Wood Building Products (80)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 90                                      QQQQQ - Friction Materials Manufacturing Facilities (3)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 91                                                   QQQQQQ - Wood Perserving Area Sources (37)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 92                                                              R - Gasoline Distribution (562)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 93                                                           RR - Individual Drain Systems (18)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 94                                                    RRR - Secondary Aluminum Production (340)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 95                                               RRRR - Surface Coating Of Metal Furniture (31)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 96                                                     RRRRR - Taconite Iron Ore Processing (6)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 97                                                  RRRRRR - Clay Ceramics Mfg Area Sources (4)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 98                                                                     S - Pulp And Paper (134)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 99       SS - Closed Vent Sys/Ctrl Devices, Recovery Devices, Routing To Fuel Gas Sys/Proc (94)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 100                                                   SSSS - Surface Coating Of Metal Coil (66)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 101                                               SSSSS - Refractory Products Manufacturing (4)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 102                                                        SSSSSS - Glass Mfg Area Sources (16)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 103                                                    T - Halogenated Solvent Cleaning (1,255)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 104                                                 TT - Equipment Leaks - Control Level 1 (13)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 105                                                             TTT - Primary Lead Smelting (2)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 106                                                    TTTT - Leather Finishing Operations (14)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 107                                                      TTTTT - Primary Magnesium Refining (5)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 108                           TTTTTT - Secondary Nonferrous Metals Processing Area Sources (10)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 109                                                        U - Group 1 Polymers And Resins (28)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 110                                                       UU - Equip Leaks-Control Level 2 (86)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 111                                      UUU - Petroleum Refineries: Ccu's, Cru's &amp; Sru's (126)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 112                                                 UUUU - Cellulose Product Manufacturing (15)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 113                                                      UUUUU - Coal &amp; Oil-Fired Eusgu's (249)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 114                                              VV - Oil-Water &amp; Organic-Water Separators (16)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 115                                                   VVV - Publicly Owned Treatment Works (18)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 116                                                             VVVV - Boat Manufacturing (237)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 117                                          VVVVVV -  Chemical Manufacturing Area Sources (81)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 118                                     W - Epoxy Resins &amp; Non-Nylon Polyamides Production (10)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 119                                          WW - Storage Vessels (Tanks)- Control Level 2 (54)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 120                                       WWWW - Reinforced Plastic Composites Production (729)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 121                                           WWWWW - Hospital Ethylene Oxide Sterilizers (111)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 122                                WWWWWW - Area Source: Plating And Polishing Operations (222)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 123                                                            X - Secondary Lead Smelters (22)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 124                            XX - Ethylene Mpf: Heat Exchange Systems &amp; Waste Operations (23)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 125                                                             XXX - Ferroalloy Production (4)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 126                                                       XXXX - Rubber Tire Manufacturing (33)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 127          XXXXXX - Area Source: Nine Metal Fabrication And Finishing Source Categories (228)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 128                                 Y - Marine Tank Vessel Loading &amp; Unloading Operations (185)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 129                                                            YY - Generic Mact Standards (90)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 130                                                 YYYY - Stationary Combustion Turbines (248)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 131                       YYYYY - Area Source: Electric Arc Furnace Steelmaking Facilities (48)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 132                                 YYYYYY - Area Source: Ferroalloys Production Facilities (6)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 133                                                              ZZZ - Chemical Sector Rule (4)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 134                 ZZZZ - Stationary Reciprocating Internal Combustion Engines (Rice) (25,996)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 135                                         ZZZZZ - Iron And Steel Foundries Area Sources (149)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 136                    ZZZZZZ - Area Source: Aluminum, Copper &amp; Other Nonferrous Foundries (29)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         N</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1    5052</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2      15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3     711</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4      45</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5      34</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6      81</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7      15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8      45</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9     943</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10      3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12    186</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13     51</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15     27</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16   1700</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17     40</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18      5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19     97</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20     13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21    392</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22   2737</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23      7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24    123</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26     11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27    139</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28    322</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29     92</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30      3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31    269</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32    394</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33     19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35    304</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36    159</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37     76</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38    102</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39    146</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40    342</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41   3656</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 42    107</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 43      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 44    182</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 45   3169</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 46     21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 47     47</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 48     96</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 49     42</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 50    116</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 51     12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 52      9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 53    522</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 54     63</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 55    311</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 56     98</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 57    740</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 58    395</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 59     60</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 60      7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 61     28</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 62     16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 63    121</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 64     19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 65      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 66   8763</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 67    117</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 68     30</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 69    775</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 70      9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 71      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 72   1185</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 73     24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 74     20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 75     29</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 76      3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 77    111</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 78     16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 79     39</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 80    101</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 81     43</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 82     16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 83     31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 84    396</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 85     30</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 86     29</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 87    115</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 88      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 89     80</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 90      3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 91     37</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 92    562</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 93     18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 94    340</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 95     31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 96      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 97      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 98    134</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 99     94</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 100    66</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 101     4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 102    16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 103  1255</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 104    13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 105     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 106    14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 107     5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 108    10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 109    28</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 110    86</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 111   126</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 112    15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 113   249</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 114    16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 115    18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 116   237</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 117    81</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 118    10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 119    54</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 120   729</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 121   111</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 122   222</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 123    22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 124    23</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 125     4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 126    33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 127   228</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 128   185</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 129    90</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 130   248</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 131    48</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 132     6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 133     4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 134 25996</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 135   149</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 136    29</span>
+<span class="r-in"><span>  <span class="fu">latlon_from_mactsubpart</span><span class="op">(</span><span class="st">"OOOO"</span>, include_if_no_latlon <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="co"># default</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Connecting to Posit Connect 2024.01.0 at</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> &lt;https://rstudio-connect.dmap-stage.aws.epa.gov&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Successfully connected to Posit Connect pins board.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> frs_by_mact   - is NOT in memory. Checking local disk... frs_by_mact  is NOT found locally on disk at ~/../Downloads/EJAMbigfiles/frs_by_mact.arrow </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> frs_by_mact   - is NOT in local folder.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> frs_by_mact  - was read from pins board server, into memory (to specified envir).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              programid subpart</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  1: 080000003800500001    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  2: 0900000006111R9011    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  3: AR0000000500100022    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  4: CO0000000812300098    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  5: CT0000000900500003    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  6: CT0000000901501138    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  7: GA0000001318900002    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  8: KS0000002013300027    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  9: MA0000002512000290    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10: MA0000002512100102    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11: MI00000000000P0634    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12: MO0000002918901012    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13: MS0000002808100088    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14: MT0000003007500005    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15: NC0000003701800493    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16: NC0000003705100014    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17: NC0000003708100164    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18: NH0000003301100129    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19: NY0000005532600004    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20: NY0000006301300065    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21: OH0000000616010036    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22: OH0000001667060088    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23:        PA000492043    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24: RI0000004400900010    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25:      SC00000800027    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26:      SC00002000032    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27:      SC00012000029    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28:      SC00018800040    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29: TN0000004706300275    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30: TN0000004716300007    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31: VA0000005115500016    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32: WI0000005502500072    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              programid subpart</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                          title      lat</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  1: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 47.97940</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  2: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 34.22082</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  3: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 34.27496</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  4: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 40.27542</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  5: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 41.61256</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  6: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 41.66805</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  7: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 33.44801</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  8: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 37.68370</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  9: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 41.60689</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 42.72361</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 42.88929</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 38.76637</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 34.27973</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 45.11306</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 35.72438</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 35.36954</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 35.25610</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 42.75050</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 43.11147</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 43.21786</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 40.26201</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 41.16331</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 40.20903</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 41.44594</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 33.56057</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 34.61164</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 35.01979</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 34.78693</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 36.16847</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 36.56050</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 37.04957</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 43.11747</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                          title      lat</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            lon  REGISTRY_ID program</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  1:  -99.02064 110000825867     AIR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  2: -119.02272 110043415578     AIR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  3:  -91.34179 110025082924     AIR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  4: -104.80199 110001718053     AIR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  5:  -73.08986 110039211064     AIR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  6:  -71.91848 110001732554     AIR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  7:  -82.53785 110000359406     AIR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  8:  -95.46628 110000445938     AIR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  9:  -70.90407 110000739675     AIR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10:  -70.96296 110000309773     AIR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11:  -85.63853 110067012878     AIR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12:  -90.47491 110000440381     AIR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13:  -88.76446 110013841432     AIR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14: -105.08569 110046594146     AIR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15:  -81.37813 110000350584     AIR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16:  -78.55103 110001478730     AIR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17:  -81.77920 110013792921     AIR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18:  -71.82836 110001522184     AIR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19:  -73.56985 110000582619     AIR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20:  -75.46524 110000325871     AIR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21:  -81.86949 110000384753     AIR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22:  -81.25312 110000766644     AIR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23:  -77.02432 110012697812     AIR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24:  -71.62625 110000312117     AIR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25:  -81.80997 110031367036     AIR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26:  -82.47996 110001664823     AIR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27:  -82.56309 110041625989     AIR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28:  -82.68964 110001667802     AIR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29:  -83.39178 110038045139     AIR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30:  -82.17101 110000913548     AIR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31:  -80.75514 110000343469     AIR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32:  -89.50733 110000419878     AIR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            lon  REGISTRY_ID program</span>
+<span class="r-in"><span>  <span class="fu">latlon_from_mactsubpart</span><span class="op">(</span><span class="st">"OOOO"</span>, include_if_no_latlon <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               programid subpart</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1: 080000003800500001    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2: 0900000006111R9011    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3: AR0000000500100022    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4: AZMCA004013X138761    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5: CO0000000812300098    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  97: VA0000005115500016    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  98: VA0000005116300001    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  99: VA0000005159000002    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 100: VA0000005170000091    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 101: WI0000005502500072    OOOO</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                           title      lat</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 47.97940</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 34.22082</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 34.27496</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES       NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 40.27542</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  97: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 37.04957</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  98: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES       NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  99: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES       NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 100: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES       NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 101: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 43.11747</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             lon  REGISTRY_ID program</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   1:  -99.02064 110000825867     AIR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   2: -119.02272 110043415578     AIR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   3:  -91.34179 110025082924     AIR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   4:         NA         &lt;NA&gt;    &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   5: -104.80199 110001718053     AIR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  97:  -80.75514 110000343469     AIR</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  98:         NA         &lt;NA&gt;    &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  99:         NA         &lt;NA&gt;    &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 100:         NA         &lt;NA&gt;    &lt;NA&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 101:  -89.50733 110000419878     AIR</span>
+<span class="r-in"><span>  </span></span>
+</code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>NULL</p>
+  <p></p><p>DRAFT</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>NULL</p>
+  <p></p><p>EJAM Version 2.2.1 beta</p>
 </div>
 
     </footer></div>

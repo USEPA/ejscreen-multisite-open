@@ -1,12 +1,13 @@
 EJAM Environmental Justice Analysis Multisite tool
 ================
 
+# <img src="man/figures/logosmall.png" align="right" width="170" height="190"/>
+
 <!-- README.md is generated from README.Rmd. Please edit Rmd not md  -->
 <!-- badges: start -->
-
-[![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-
+<!-- comment out the badge for now
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+ -->
 <!-- badges: end -->
 
 [The EJAM Web App](#the-ejam-web-app) makes it easy to see demographic

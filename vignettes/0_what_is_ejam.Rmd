@@ -86,7 +86,7 @@ to allow software developers or analysts to take advantage of
 these resources in running their own analyses or building or
 supplementing their own tools, websites, or mobile apps.
 
-### Updates
+## Updates
 
 EJAM data updates are meant to match EJScreen scheduled updates and main version numbers,
 so EJAM 2.2 uses the same basic data as EJScreen 2.2.
@@ -94,7 +94,7 @@ The 2.2 version of EJScreen (released July 2023, with some revisions in late 202
 had up-to-date demographic data
 (e.g., Census 2020 block weights and ACS 2017-2021 block group demographics).
 
-### Speed
+## Speed
 
 The power of this tool enables faster and more accurate results than
 other tools generally have been able to provide.
@@ -104,7 +104,7 @@ This tool lets any user very quickly see an analysis of a very large number of p
 and immediately get a ready-to-use report that provides
 perspective on an entire industrial sector or set of places.
 
-### Accuracy
+## Accuracy
 
 Compared to other often-used approaches,
 EJAM high-resolution buffering provides more accurate information about which populations live inside a buffer,
