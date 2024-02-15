@@ -3,6 +3,16 @@ template:
   bootstrap: 5
 deploy:
   install_metadata: true
+home:
+  sidebar: FALSE
+navbar:
+  structure:
+    left:  [intro, reference, articles, search]
+    right: [github]
+footer:
+  structure: 
+    left: "DRAFT"
+    right: ""
 articles:
 - title: The EJAM Web App
   desc: Overview for EJAM Users
