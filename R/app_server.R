@@ -1437,10 +1437,16 @@ app_server <- function(input, output, session) {
     
    
     ## check if data has been uploaded yet
-    m <- try(data_uploaded())
+    ## make errors silent by default; print below
+    m <- try(data_uploaded(),silent = T)
     
     ## if not, show empty map
     if(inherits(m, 'try-error')){
+      ## only print non-empty error messages
+      error_msg <- attr(m,'condition')$message
+      if(error_msg != ""){
+        print(paste0("Error: ", error_msg))
+      }
       leaflet() %>% addTiles() %>% setView(lat = 39.8283, lng = -98.5795, zoom = 4)
     } else {
       tryCatch({
