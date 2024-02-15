@@ -45,10 +45,10 @@ except it also uses these functions:
 \code{\link[=latlon_from_programid]{latlon_from_programid()}}   but not  _from_naics() ?
 }
 \examples{
- 
+  \dontrun{
  if (interactive()) {
  pts <- latlon_from_anything()
- }
+ }}
  latlon_from_anything(testpoints_100[1:6,] )
  latlon_from_anything(testpoints_100[1:6, c('lat','lon')] )
  latlon_from_anything(x=testpoints_100$lon[1:6], y=testpoints_100$lat[1:6] )

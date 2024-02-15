@@ -56,7 +56,7 @@ appropriate estimate of the distance, hence this adjustment is made in EJAM \cod
    demogvarname = 'pctlowinc', demoglabel = 'Low Income'))
  distance_by_group_plot(y$results_bybg_people, 
    demogvarname = 'pctlowinc', demoglabel = 'Low Income')
- xyz = plot_distance_cdf_by_group(y$results_bybg_people) #  
+ xyz = distance_by_group_plot(y$results_bybg_people) #  
  tail(round(xyz,3))
  tail(xyz[xyz$pctwa <= 0.501, ]) #  Median distance to nearest site here 
    for White Alone is 2.15 miles, but >60\% of Black Alone have a site that close.
@@ -64,7 +64,8 @@ appropriate estimate of the distance, hence this adjustment is made in EJAM \cod
    for Black Alone is 1.85 miles
  round(tail(xyz[xyz$dist <=1, ]), 3) #  11\% of White have a site within 1 mile, 
    compared to 18.7\% of Asian who do.
+   
 }
 \seealso{
-\code{\link[=distance_by_group]{distance_by_group()}} \code{\link[=distance_by_group_plot]{distance_by_group_plot()}}  \code{\link[=plot_distance_cdf_by_group]{plot_distance_cdf_by_group()}}
+\code{\link[=distance_by_group]{distance_by_group()}} \code{\link[=distance_by_group_plot]{distance_by_group_plot()}}
 }
