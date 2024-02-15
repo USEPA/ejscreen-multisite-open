@@ -2958,8 +2958,8 @@ app_server <- function(input, output, session) {
                      axis.title = ggplot2::element_text(size = 16),
                      legend.title = ggplot2::element_text(size = 16),
                      legend.text = ggplot2::element_text(size = 16),
-                     strip.text = element_blank(),
-                     strip.background = element_blank()
+                     strip.text = ggplot2::element_blank(),
+                     strip.background = ggplot2::element_blank()
       )
     
     ## raw data 
@@ -3183,7 +3183,7 @@ app_server <- function(input, output, session) {
     req(data_processed())
     req(input$summ_hist_ind)
     ## set font sizes
-    ggplot_theme_hist <- theme(
+    ggplot_theme_hist <- ggplot2::theme(
       plot.title = ggplot2::element_text(size = 18, hjust = 0.5),
       axis.text  = ggplot2::element_text(size = 16),
       axis.title = ggplot2::element_text(size = 16)
