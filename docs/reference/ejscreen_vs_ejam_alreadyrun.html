@@ -123,9 +123,677 @@ and rows represent sites analyzed.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span>  <span class="va">blah</span> <span class="op">=</span> <span class="fu">ejscreen_vs_ejam_alreadyrun</span><span class="op">(</span></span></span>
 <span class="r-in"><span>    apisite <span class="op">=</span> <span class="va">testoutput_ejscreenapi_plus_5</span>,</span></span>
 <span class="r-in"><span>    ejamsite <span class="op">=</span> <span class="fu"><a href="ejamit.html">ejamit</a></span><span class="op">(</span><span class="va">testpoints_5</span>, radius <span class="op">=</span> <span class="fl">1</span>, include_ejindexes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">results_bysite</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in ejscreen_vs_ejam_alreadyrun(apisite = testoutput_ejscreenapi_plus_5,     ejamsite = ejamit(testpoints_5, radius = 1, include_ejindexes = TRUE)$results_bysite):</span> could not find function "ejscreen_vs_ejam_alreadyrun"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Finding blocks nearby.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Analyzing 5 points, radius of 1 miles around each.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Aggregating at each buffer and overall.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Connecting to Posit Connect 2024.01.0 at</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> &lt;https://rstudio-connect.dmap-stage.aws.epa.gov&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Successfully connected to Posit Connect pins board.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> bgej         - is NOT in memory. Checking local disk... bgej        is NOT found locally on disk at ~/../Downloads/EJAMbigfiles/bgej.arrow </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> bgej         - is NOT in local folder.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> bgej        - was read from pins board server, into memory (to specified envir).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> loaded bgej data because include_ejindexes = TRUE</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for pm.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for pm.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for o3.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for o3.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for cancer.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for cancer.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for resp.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for resp.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for dpm.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for dpm.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for traffic.score.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for traffic.score.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for proximity.npl.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for proximity.npl.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for proximity.rmp.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for proximity.rmp.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for proximity.tsdf.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for proximity.tsdf.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for proximity.npdes.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for proximity.npdes.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for ust.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for ust.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for rsei.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for rsei.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for Demog.Index.Supp.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for Demog.Index.Supp.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for lowlifex.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for lowlifex.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for state.EJ.DISPARITY.pm.eo.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for state.EJ.DISPARITY.pm.eo.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for state.EJ.DISPARITY.o3.eo.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for state.EJ.DISPARITY.o3.eo.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for state.EJ.DISPARITY.cancer.eo.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for state.EJ.DISPARITY.cancer.eo.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for state.EJ.DISPARITY.resp.eo.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for state.EJ.DISPARITY.resp.eo.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for state.EJ.DISPARITY.dpm.eo.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for state.EJ.DISPARITY.dpm.eo.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for state.EJ.DISPARITY.pctpre1960.eo.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for state.EJ.DISPARITY.pctpre1960.eo.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for state.EJ.DISPARITY.traffic.score.eo.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for state.EJ.DISPARITY.traffic.score.eo.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for state.EJ.DISPARITY.proximity.npl.eo.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for state.EJ.DISPARITY.proximity.npl.eo.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for state.EJ.DISPARITY.proximity.rmp.eo.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for state.EJ.DISPARITY.proximity.rmp.eo.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for state.EJ.DISPARITY.proximity.tsdf.eo.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for state.EJ.DISPARITY.proximity.tsdf.eo.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for state.EJ.DISPARITY.proximity.npdes.eo.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for state.EJ.DISPARITY.proximity.npdes.eo.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for state.EJ.DISPARITY.ust.eo.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for state.EJ.DISPARITY.ust.eo.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for state.EJ.DISPARITY.rsei.eo.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for state.EJ.DISPARITY.rsei.eo.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for state.EJ.DISPARITY.pm.supp.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for state.EJ.DISPARITY.pm.supp.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for state.EJ.DISPARITY.o3.supp.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for state.EJ.DISPARITY.o3.supp.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for state.EJ.DISPARITY.cancer.supp.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for state.EJ.DISPARITY.cancer.supp.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for state.EJ.DISPARITY.resp.supp.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for state.EJ.DISPARITY.resp.supp.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for state.EJ.DISPARITY.dpm.supp.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for state.EJ.DISPARITY.dpm.supp.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for state.EJ.DISPARITY.pctpre1960.supp.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for state.EJ.DISPARITY.pctpre1960.supp.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for state.EJ.DISPARITY.traffic.score.supp.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for state.EJ.DISPARITY.traffic.score.supp.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for state.EJ.DISPARITY.proximity.npl.supp.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for state.EJ.DISPARITY.proximity.npl.supp.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for state.EJ.DISPARITY.proximity.rmp.supp.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for state.EJ.DISPARITY.proximity.rmp.supp.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for state.EJ.DISPARITY.proximity.tsdf.supp.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for state.EJ.DISPARITY.proximity.tsdf.supp.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for state.EJ.DISPARITY.proximity.npdes.supp.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for state.EJ.DISPARITY.proximity.npdes.supp.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for state.EJ.DISPARITY.ust.supp.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for state.EJ.DISPARITY.ust.supp.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TX for state.EJ.DISPARITY.rsei.supp.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = CA for state.EJ.DISPARITY.rsei.supp.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Percentages stored as 0 to 1 rather than 0 to 100 will not be shown correctly unless adjusted, </span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>           because rounding info says 0 digits when the intent is to show 0 digits after the 0-100 percent number.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Percentages stored as 0 to 1 rather than 0 to 100 will not be shown correctly unless adjusted, </span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>           because rounding info says 0 digits when the intent is to show 0 digits after the 0-100 percent number.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Percentages stored as 0 to 1 rather than 0 to 100 will not be shown correctly unless adjusted, </span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span>           because rounding info says 0 digits when the intent is to show 0 digits after the 0-100 percent number.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                          indicator pct.of.sites.agree.rounded</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 160                                           resp                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 222                      pctile.EJ.DISPARITY.pm.eo                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 223                      pctile.EJ.DISPARITY.o3.eo                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 224                  pctile.EJ.DISPARITY.cancer.eo                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 225                    pctile.EJ.DISPARITY.resp.eo                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 226                     pctile.EJ.DISPARITY.dpm.eo                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 228           pctile.EJ.DISPARITY.traffic.score.eo                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 229           pctile.EJ.DISPARITY.proximity.npl.eo                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 230           pctile.EJ.DISPARITY.proximity.rmp.eo                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 231          pctile.EJ.DISPARITY.proximity.tsdf.eo                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 232         pctile.EJ.DISPARITY.proximity.npdes.eo                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 233                     pctile.EJ.DISPARITY.ust.eo                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 234                    pctile.EJ.DISPARITY.rsei.eo                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 235                    pctile.EJ.DISPARITY.pm.supp                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 236                    pctile.EJ.DISPARITY.o3.supp                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 237                pctile.EJ.DISPARITY.cancer.supp                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 238                  pctile.EJ.DISPARITY.resp.supp                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 239                   pctile.EJ.DISPARITY.dpm.supp                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 241         pctile.EJ.DISPARITY.traffic.score.supp                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 242         pctile.EJ.DISPARITY.proximity.npl.supp                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 243         pctile.EJ.DISPARITY.proximity.rmp.supp                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 244        pctile.EJ.DISPARITY.proximity.tsdf.supp                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 245       pctile.EJ.DISPARITY.proximity.npdes.supp                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 247                  pctile.EJ.DISPARITY.rsei.supp                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 248                state.pctile.EJ.DISPARITY.pm.eo                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 250            state.pctile.EJ.DISPARITY.cancer.eo                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 251              state.pctile.EJ.DISPARITY.resp.eo                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 252               state.pctile.EJ.DISPARITY.dpm.eo                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 253        state.pctile.EJ.DISPARITY.pctpre1960.eo                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 254     state.pctile.EJ.DISPARITY.traffic.score.eo                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 255     state.pctile.EJ.DISPARITY.proximity.npl.eo                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 259               state.pctile.EJ.DISPARITY.ust.eo                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 260              state.pctile.EJ.DISPARITY.rsei.eo                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 262              state.pctile.EJ.DISPARITY.o3.supp                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 263          state.pctile.EJ.DISPARITY.cancer.supp                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 264            state.pctile.EJ.DISPARITY.resp.supp                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 265             state.pctile.EJ.DISPARITY.dpm.supp                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 266      state.pctile.EJ.DISPARITY.pctpre1960.supp                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 268   state.pctile.EJ.DISPARITY.proximity.npl.supp                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 269   state.pctile.EJ.DISPARITY.proximity.rmp.supp                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 270  state.pctile.EJ.DISPARITY.proximity.tsdf.supp                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 271 state.pctile.EJ.DISPARITY.proximity.npdes.supp                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 273            state.pctile.EJ.DISPARITY.rsei.supp                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 157                                             pm                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 158                                             o3                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 161                                            dpm                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 76                                          pctmin                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 159                                         cancer                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 166                                 proximity.tsdf                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 162                                     pctpre1960                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 67                                     Demog.Index                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 164                                  proximity.npl                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 167                                proximity.npdes                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 75                                       pctover64                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 69                                       pctlowinc                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 165                                  proximity.rmp                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 71                                   pctunemployed                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 70                                      pctlingiso                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 72                                         pctlths                  100.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 324                           blockcount_near_site                   80.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 240            pctile.EJ.DISPARITY.pctpre1960.supp                   66.66667</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 256     state.pctile.EJ.DISPARITY.proximity.rmp.eo                   66.66667</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 249                state.pctile.EJ.DISPARITY.o3.eo                   66.66667</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 261              state.pctile.EJ.DISPARITY.pm.supp                   66.66667</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 257    state.pctile.EJ.DISPARITY.proximity.tsdf.eo                   66.66667</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 267   state.pctile.EJ.DISPARITY.traffic.score.supp                   66.66667</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 168                                            ust                   66.66667</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 258   state.pctile.EJ.DISPARITY.proximity.npdes.eo                   66.66667</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 246                   pctile.EJ.DISPARITY.ust.supp                   66.66667</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 68                                Demog.Index.Supp                   66.66667</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 272             state.pctile.EJ.DISPARITY.ust.supp                   66.66667</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 74                                       pctunder5                   66.66667</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                                              pop                   60.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 169                                           rsei                   33.33333</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 73                                        lowlifex                   33.33333</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 227              pctile.EJ.DISPARITY.pctpre1960.eo                   33.33333</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 163                                  traffic.score                    0.00000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     pct.of.sites.agree.within.tol median.pct.diff max.pct.diff</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 160                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 222                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 223                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 224                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 225                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 226                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 228                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 229                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 230                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 231                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 232                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 233                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 234                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 235                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 236                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 237                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 238                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 239                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 241                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 242                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 243                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 244                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 245                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 247                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 248                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 250                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 251                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 252                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 253                      66.66667            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 254                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 255                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 259                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 260                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 262                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 263                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 264                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 265                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 266                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 268                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 269                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 270                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 271                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 273                     100.00000            0.00         0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 157                     100.00000            0.04         0.05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 158                     100.00000            0.03         0.05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 161                     100.00000            0.13         0.37</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 76                      100.00000            0.42         0.52</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 159                     100.00000            0.00         0.69</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 166                     100.00000            0.66         0.73</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 162                      66.66667            0.78         1.07</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 67                       66.66667            0.46         1.45</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 164                      66.66667            0.44         1.82</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 167                      66.66667            0.51         2.08</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 75                       66.66667            0.72         2.48</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 69                       66.66667            0.22         2.49</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 165                      66.66667            0.84         3.27</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 71                       33.33333            1.34         3.75</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 70                       33.33333            1.78        23.36</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 72                       66.66667            0.63        42.58</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 324                      80.00000            0.00         1.41</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 240                      33.33333            0.53         1.06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 256                      66.66667            0.00         1.20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 249                      66.66667            0.00         1.28</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 261                      66.66667            0.00         1.49</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 257                      66.66667            0.00         1.79</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 267                      66.66667            0.00         1.85</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 168                       0.00000            2.13         2.20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 258                      66.66667            0.00         2.22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 246                      66.66667            0.00         4.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 68                        0.00000            3.99         4.93</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 272                      66.66667            0.00         5.26</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 74                        0.00000            6.81        10.36</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                        40.00000            0.07         2.63</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 169                     100.00000            0.37         0.69</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 73                       33.33333            3.25        67.80</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 227                      33.33333            1.32       100.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 163                      33.33333            1.23        12.44</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     within.x.pct.at.p.pct.of.sites</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 160                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 222                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 223                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 224                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 225                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 226                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 228                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 229                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 230                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 231                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 232                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 233                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 234                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 235                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 236                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 237                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 238                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 239                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 241                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 242                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 243                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 244                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 245                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 247                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 248                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 250                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 251                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 252                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 253                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 254                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 255                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 259                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 260                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 262                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 263                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 264                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 265                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 266                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 268                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 269                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 270                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 271                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 273                           0.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 157                           0.05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 158                           0.05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 161                           0.37</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 76                            0.52</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 159                           0.69</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 166                           0.73</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 162                           1.07</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 67                            1.45</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 164                           1.82</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 167                           2.08</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 75                            2.48</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 69                            2.49</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 165                           3.27</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 71                            3.75</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 70                           23.36</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 72                           42.58</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 324                           1.41</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 240                           1.06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 256                           1.20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 249                           1.28</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 261                           1.49</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 257                           1.79</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 267                           1.85</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 168                           2.20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 258                           2.22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 246                           4.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 68                            4.93</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 272                           5.26</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 74                           10.36</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                             2.63</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 169                           0.69</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 73                           67.80</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 227                         100.00</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 163                          12.44</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Tolerance of 0.01 was used, so difference of &lt;1% is within tolerance.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Probs (p) used was 0.95, so 95% of sites are within absolute percentage difference reported in output of this function.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span>  <span class="fu"><a href="ejscreen_vs_ejam_see1.html">ejscreen_vs_ejam_see1</a></span><span class="op">(</span><span class="va">blah</span>, mysite <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in ejscreen_vs_ejam_see1(blah, mysite = 1):</span> object 'blah' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  EJSCREEN EJAM      EJSCREEN_shown EJAM_shown same_shown</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Demog.Index      18       17.73886  "18"           "18"       TRUE      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Demog.Index.Supp 8        8.319381  "8"            "8"        TRUE      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctlowinc        19       18.52749  "19"           "19"       TRUE      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctlingiso       1        0.7664381 "1"            "1"        TRUE      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctunemployed    6        5.774969  "6"            "6"        TRUE      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctlths          1        1.42578   "1"            "1"        TRUE      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> lowlifex         9        15.10223  "9"            "15"       FALSE     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctunder5        3        2.795675  "3"            "3"        TRUE      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctover64        30       30.15342  "30"           "30"       TRUE      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctmin           17       16.95023  "17"           "17"       TRUE      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  ratio     diff        absdiff    pctdiff      abspctdiff </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Demog.Index      0.9854922 -0.2611395  0.2611395  -0.01450775  0.01450775 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Demog.Index.Supp 1.039923  0.3193813   0.3193813  0.03992266   0.03992266 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctlowinc        0.9751312 -0.4725066  0.4725066  -0.02486877  0.02486877 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctlingiso       0.7664381 -0.2335619  0.2335619  -0.2335619   0.2335619  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctunemployed    0.9624948 -0.2250315  0.2250315  -0.03750525  0.03750525 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctlths          1.42578   0.4257802   0.4257802  0.4257802    0.4257802  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> lowlifex         1.678025  6.102226    6.102226   0.6780252    0.6780252  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctunder5        0.9318917 -0.2043249  0.2043249  -0.0681083   0.0681083  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctover64        1.005114  0.1534249   0.1534249  0.005114163  0.005114163</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctmin           0.9970722 -0.04977248 0.04977248 -0.002927793 0.002927793</span>
 <span class="r-in"><span> <span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span> </span></span>
 <span class="r-in"><span> <span class="co"># requires data.table</span></span></span>

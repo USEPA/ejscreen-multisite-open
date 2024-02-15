@@ -122,7 +122,7 @@ and only works for one indicator at a time so far.</p></dd>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span>  <span class="fu">plot_distance_by_pctd</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Analyzing 2 points, radius of 6.2 miles around each.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Finding Census blocks with internal point within  6.2  miles of the site (point), for each of 2  sites (points)...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Stats via getblocks_diagnostics(), but BEFORE ADJUSTING UP FOR VERY SHORT DISTANCES: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Stats via getblocks_diagnostics(), but BEFORE ADJUSTING FOR SHORT DISTANCES: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> min distance before adjustment:  0.03885213 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> max distance before adjustment:  6.199996 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -153,13 +153,37 @@ and only works for one indicator at a time so far.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              (assuming they live at the block internal point</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Adjusting upwards the very short distances now...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  Stats via getblocks_diagnostics(), AFTER ADJUSTING up FOR SHORT DISTANCES: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Adjusting for very short distances now...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Stats via getblocks_diagnostics(), AFTER ADJUSTING FOR SHORT DISTANCES: </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> min distance AFTER adjustment:  0.1491939 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> max distance AFTER adjustment:  6.199996 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> 'state_from_blockid' is not an exported object from 'namespace:EJAM'</span>
+<span class="r-plt img"><img src="plot_distance_by_pctd-1.png" alt="" width="700" height="433"></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        bgid ejam_uniq_id blockid  distance     blockwt distance_unadjusted</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    1: 19696            2  668226 0.4034501 0.333333333           0.4034501</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    2: 19696            2  668223 0.5502334 0.666666667           0.5502334</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    3: 20484            2  678898 0.6910273 0.243735763           0.6910273</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    4: 20484            2  678902 0.8307847 0.111617312           0.8307847</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    5: 20484            2  678903 0.8386391 0.241457859           0.8386391</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ---                                                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6177: 20393            2  677846 6.1968389 0.065493646           6.1968389</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6178: 24572            2  762701 6.1975889 0.076544560           6.1975889</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6179: 24566            2  762611 6.1988072 0.001677852           6.1988072</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6180: 23246            2  745383 6.1992426 0.044809228           6.1992426</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6181: 24665            2  763465 6.1995325 0.112367021           6.1995325</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>       lowinc  pop dpop   blockpop  blockdpop cumpop cumdpop pctdwithin</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    1:     NA   NA   NA         NA         NA     NA      NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    2:     NA   NA   NA         NA         NA     NA      NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    3:     76 1215   76 296.138952 18.5239180     NA      NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    4:     76 1215   76 135.615034  8.4829157     NA      NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    5:     76 1215   76 293.371298 18.3507973     NA      NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ---                                                                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6177:     75 1282   75  83.962854  4.9120235     NA      NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6178:    510 1692  510 129.513395 39.0377255     NA      NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6179:    502 1685  502   2.827181  0.8422819     NA      NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6180:    511 1772  511  79.401952 22.8975155     NA      NA         NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6181:    551 1354  551 152.144947 61.9142287     NA      NA         NA</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

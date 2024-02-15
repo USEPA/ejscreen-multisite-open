@@ -122,15 +122,522 @@ namez$d_friendly which is a vector of terms like
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span> </span></span>
 <span class="r-in"><span>   <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">names_whichlist</span><span class="op">(</span><span class="st">"rsei"</span>, ignore.case.exact <span class="op">=</span> <span class="cn">T</span>, ignore.case.grep <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in names_whichlist("rsei", ignore.case.exact = T, ignore.case.grep = T):</span> could not find function "names_whichlist"</span>
 <span class="r-in"><span>   <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">x</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"friendly"</span>, <span class="va">x</span><span class="op">$</span><span class="va">whichlist</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in subset(x, !grepl("friendly", x$whichlist)):</span> object 'x' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                whichlist exactmatch grepmatch</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                                  all_r        yes       yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                                    wts                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                                      d                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5                                  d_avg                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6                            d_state_avg                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9                               d_pctile                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10                        d_state_pctile                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13                        d_ratio_to_avg                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14                  d_ratio_to_state_avg                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17                               d_count                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19                         d_other_count                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21                           d_subgroups                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23                       d_subgroups_avg                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24                 d_subgroups_state_avg                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27                    d_subgroups_pctile                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28              d_subgroups_state_pctile                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31              d_subgroups_ratio_to_avg                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32        d_subgroups_ratio_to_state_avg                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35                     d_subgroups_count                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36                        d_subgroups_nh                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38                    d_subgroups_nh_avg                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39              d_subgroups_nh_state_avg                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 42                 d_subgroups_nh_pctile                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 43           d_subgroups_nh_state_pctile                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 46           d_subgroups_nh_ratio_to_avg                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 47     d_subgroups_nh_ratio_to_state_avg                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 50                  d_subgroups_nh_count                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 51                     d_subgroups_alone                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 53                 d_subgroups_alone_avg                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 54           d_subgroups_alone_state_avg                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 57              d_subgroups_alone_pctile                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 58        d_subgroups_alone_state_pctile                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 61        d_subgroups_alone_ratio_to_avg                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 62  d_subgroups_alone_ratio_to_state_avg                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 65               d_subgroups_alone_count                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 66                                     e        yes       yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 68                                 e_avg                  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 69                           e_state_avg                  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 72                              e_pctile                  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 73                        e_state_pctile                  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 76                        e_ratio_to_avg                  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 77                  e_ratio_to_state_avg                  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 80                                    ej                  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 81                              ej_state                  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 84                               ej_supp                  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 85                         ej_supp_state                  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 88                             ej_pctile                  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 89                       ej_state_pctile                  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 92                        ej_supp_pctile                  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 93                  ej_supp_state_pctile                  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 96                           need_pctile        yes       yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 97                     need_state_pctile        yes       yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 98                                 these        yes       yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 99                             these_avg                  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 100                      these_state_avg                  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 101                   these_ratio_to_avg                  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 102             these_ratio_to_state_avg                  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                               grephits</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                 rsei, avg.rsei, state.avg.rsei, etc.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5                                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6                                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9                                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 42                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 43                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 46                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 47                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 50                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 51                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 53                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 54                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 57                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 58                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 61                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 62                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 65                                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 66                                                rsei</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 68                                            avg.rsei</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 69                                      state.avg.rsei</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 72                                         pctile.rsei</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 73                                   state.pctile.rsei</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 76                                   ratio.to.avg.rsei</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 77                             ratio.to.state.avg.rsei</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 80                                EJ.DISPARITY.rsei.eo</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 81                          state.EJ.DISPARITY.rsei.eo</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 84                              EJ.DISPARITY.rsei.supp</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 85                        state.EJ.DISPARITY.rsei.supp</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 88                         pctile.EJ.DISPARITY.rsei.eo</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 89                   state.pctile.EJ.DISPARITY.rsei.eo</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 92                       pctile.EJ.DISPARITY.rsei.supp</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 93                 state.pctile.EJ.DISPARITY.rsei.supp</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 96  rsei, EJ.DISPARITY.rsei.eo, EJ.DISPARITY.rsei.supp</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 97  rsei, EJ.DISPARITY.rsei.eo, EJ.DISPARITY.rsei.supp</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 98                                                rsei</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 99                                            avg.rsei</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 100                                     state.avg.rsei</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 101                                  ratio.to.avg.rsei</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 102                            ratio.to.state.avg.rsei</span>
 <span class="r-in"><span>   </span></span>
 <span class="r-in"><span>   <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">x</span>,  <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"friendly"</span>, <span class="va">x</span><span class="op">$</span><span class="va">whichlist</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in subset(x, grepl("friendly", x$whichlist)):</span> object 'x' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                        whichlist exactmatch grepmatch</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4                                     d_friendly                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7                                 d_avg_friendly                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8                           d_state_avg_friendly                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11                             d_pctile_friendly                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12                       d_state_pctile_friendly                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15                       d_ratio_to_avg_friendly                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16                 d_ratio_to_state_avg_friendly                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18                              d_count_friendly                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20                        d_other_count_friendly                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22                          d_subgroups_friendly                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25                      d_subgroups_avg_friendly                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26                d_subgroups_state_avg_friendly                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29                   d_subgroups_pctile_friendly                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30             d_subgroups_state_pctile_friendly                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33             d_subgroups_ratio_to_avg_friendly                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34       d_subgroups_ratio_to_state_avg_friendly                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37                       d_subgroups_nh_friendly                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40                   d_subgroups_nh_avg_friendly                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41             d_subgroups_nh_state_avg_friendly                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 44                d_subgroups_nh_pctile_friendly                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 45          d_subgroups_nh_state_pctile_friendly                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 48          d_subgroups_nh_ratio_to_avg_friendly                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 49    d_subgroups_nh_ratio_to_state_avg_friendly                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 52                    d_subgroups_alone_friendly                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 55                d_subgroups_alone_avg_friendly                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 56          d_subgroups_alone_state_avg_friendly                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 59             d_subgroups_alone_pctile_friendly                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 60       d_subgroups_alone_state_pctile_friendly                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 63       d_subgroups_alone_ratio_to_avg_friendly                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 64 d_subgroups_alone_ratio_to_state_avg_friendly                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 67                                    e_friendly                  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 70                                e_avg_friendly                  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 71                          e_state_avg_friendly                  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 74                             e_pctile_friendly                  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 75                       e_state_pctile_friendly                  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 78                       e_ratio_to_avg_friendly                  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 79                 e_ratio_to_state_avg_friendly                  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 82                                   ej_friendly                  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 83                             ej_state_friendly                  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 86                              ej_supp_friendly                  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 87                        ej_supp_state_friendly                  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 90                            ej_pctile_friendly                  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 91                      ej_state_pctile_friendly                  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 94                       ej_supp_pctile_friendly                  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 95                 ej_supp_state_pctile_friendly                  yes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                               grephits</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8                                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 44                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 45                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 48                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 49                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 52                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 55                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 56                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 59                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 60                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 63                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 64                                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 67                            RSEI Air</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 70                     US Avg RSEI Air</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 71                  State Avg RSEI Air</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 74          US percentile for RSEI Air</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 75       State percentile for RSEI Air</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 78            Ratio to US Avg RSEI Air</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 79         Ratio to State Avg RSEI Air</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 82                            EJ: RSEI</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 83                      State EJ: RSEI</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 86                      Supp. EJ: RSEI</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 87                State Supp. EJ: RSEI</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 90          US percentile for EJ: RSEI</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 91       State percentile for EJ: RSEI</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 94    US percentile for Supp. EJ: RSEI</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 95 State percentile for Supp. EJ: RSEI</span>
 <span class="r-in"><span>   <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">namez</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">namez</span><span class="op">)</span> <span class="op">!=</span> <span class="st">"all_r"</span> <span class="op">&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">namez</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span></span></span>
 <span class="r-in"><span>      <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">x</span><span class="op">$</span><span class="va">grepmatch</span> <span class="op">==</span> <span class="st">"yes"</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"friendly"</span>, <span class="va">x</span><span class="op">$</span><span class="va">whichlist</span><span class="op">)</span><span class="op">)</span><span class="op">$</span><span class="va">whichlist</span>  <span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in subset(x, x$grepmatch == "yes" &amp; !grepl("friendly", x$whichlist)):</span> object 'x' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $e</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "pm"              "o3"              "cancer"          "resp"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "dpm"             "pctpre1960"      "traffic.score"   "proximity.npl"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "proximity.rmp"   "proximity.tsdf"  "proximity.npdes" "ust"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "rsei"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $e_avg</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "avg.pm"              "avg.o3"              "avg.cancer"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4] "avg.resp"            "avg.dpm"             "avg.pctpre1960"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "avg.traffic.score"   "avg.proximity.npl"   "avg.proximity.rmp"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10] "avg.proximity.tsdf"  "avg.proximity.npdes" "avg.ust"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "avg.rsei"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $e_state_avg</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "state.avg.pm"              "state.avg.o3"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "state.avg.cancer"          "state.avg.resp"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "state.avg.dpm"             "state.avg.pctpre1960"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "state.avg.traffic.score"   "state.avg.proximity.npl"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "state.avg.proximity.rmp"   "state.avg.proximity.tsdf" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "state.avg.proximity.npdes" "state.avg.ust"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "state.avg.rsei"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $e_pctile</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "pctile.pm"              "pctile.o3"              "pctile.cancer"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4] "pctile.resp"            "pctile.dpm"             "pctile.pctpre1960"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "pctile.traffic.score"   "pctile.proximity.npl"   "pctile.proximity.rmp"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10] "pctile.proximity.tsdf"  "pctile.proximity.npdes" "pctile.ust"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "pctile.rsei"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $e_state_pctile</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "state.pctile.pm"              "state.pctile.o3"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "state.pctile.cancer"          "state.pctile.resp"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "state.pctile.dpm"             "state.pctile.pctpre1960"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "state.pctile.traffic.score"   "state.pctile.proximity.npl"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "state.pctile.proximity.rmp"   "state.pctile.proximity.tsdf" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "state.pctile.proximity.npdes" "state.pctile.ust"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "state.pctile.rsei"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $e_ratio_to_avg</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "ratio.to.avg.pm"              "ratio.to.avg.o3"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "ratio.to.avg.cancer"          "ratio.to.avg.resp"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "ratio.to.avg.dpm"             "ratio.to.avg.pctpre1960"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "ratio.to.avg.traffic.score"   "ratio.to.avg.proximity.npl"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "ratio.to.avg.proximity.rmp"   "ratio.to.avg.proximity.tsdf" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "ratio.to.avg.proximity.npdes" "ratio.to.avg.ust"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "ratio.to.avg.rsei"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $e_ratio_to_state_avg</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "ratio.to.state.avg.pm"              "ratio.to.state.avg.o3"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "ratio.to.state.avg.cancer"          "ratio.to.state.avg.resp"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "ratio.to.state.avg.dpm"             "ratio.to.state.avg.pctpre1960"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "ratio.to.state.avg.traffic.score"   "ratio.to.state.avg.proximity.npl"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "ratio.to.state.avg.proximity.rmp"   "ratio.to.state.avg.proximity.tsdf" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "ratio.to.state.avg.proximity.npdes" "ratio.to.state.avg.ust"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "ratio.to.state.avg.rsei"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ej</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "EJ.DISPARITY.pm.eo"              "EJ.DISPARITY.o3.eo"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "EJ.DISPARITY.cancer.eo"          "EJ.DISPARITY.resp.eo"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "EJ.DISPARITY.dpm.eo"             "EJ.DISPARITY.pctpre1960.eo"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "EJ.DISPARITY.traffic.score.eo"   "EJ.DISPARITY.proximity.npl.eo"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "EJ.DISPARITY.proximity.rmp.eo"   "EJ.DISPARITY.proximity.tsdf.eo" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "EJ.DISPARITY.proximity.npdes.eo" "EJ.DISPARITY.ust.eo"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "EJ.DISPARITY.rsei.eo"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ej_state</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "state.EJ.DISPARITY.pm.eo"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2] "state.EJ.DISPARITY.o3.eo"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "state.EJ.DISPARITY.cancer.eo"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4] "state.EJ.DISPARITY.resp.eo"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "state.EJ.DISPARITY.dpm.eo"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6] "state.EJ.DISPARITY.pctpre1960.eo"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "state.EJ.DISPARITY.traffic.score.eo"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] "state.EJ.DISPARITY.proximity.npl.eo"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "state.EJ.DISPARITY.proximity.rmp.eo"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10] "state.EJ.DISPARITY.proximity.tsdf.eo" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "state.EJ.DISPARITY.proximity.npdes.eo"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [12] "state.EJ.DISPARITY.ust.eo"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "state.EJ.DISPARITY.rsei.eo"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ej_supp</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "EJ.DISPARITY.pm.supp"              "EJ.DISPARITY.o3.supp"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "EJ.DISPARITY.cancer.supp"          "EJ.DISPARITY.resp.supp"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "EJ.DISPARITY.dpm.supp"             "EJ.DISPARITY.pctpre1960.supp"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "EJ.DISPARITY.traffic.score.supp"   "EJ.DISPARITY.proximity.npl.supp"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "EJ.DISPARITY.proximity.rmp.supp"   "EJ.DISPARITY.proximity.tsdf.supp" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "EJ.DISPARITY.proximity.npdes.supp" "EJ.DISPARITY.ust.supp"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "EJ.DISPARITY.rsei.supp"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ej_supp_state</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "state.EJ.DISPARITY.pm.supp"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2] "state.EJ.DISPARITY.o3.supp"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "state.EJ.DISPARITY.cancer.supp"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4] "state.EJ.DISPARITY.resp.supp"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "state.EJ.DISPARITY.dpm.supp"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6] "state.EJ.DISPARITY.pctpre1960.supp"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "state.EJ.DISPARITY.traffic.score.supp"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] "state.EJ.DISPARITY.proximity.npl.supp"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "state.EJ.DISPARITY.proximity.rmp.supp"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10] "state.EJ.DISPARITY.proximity.tsdf.supp" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "state.EJ.DISPARITY.proximity.npdes.supp"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [12] "state.EJ.DISPARITY.ust.supp"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "state.EJ.DISPARITY.rsei.supp"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ej_pctile</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "pctile.EJ.DISPARITY.pm.eo"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2] "pctile.EJ.DISPARITY.o3.eo"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "pctile.EJ.DISPARITY.cancer.eo"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4] "pctile.EJ.DISPARITY.resp.eo"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "pctile.EJ.DISPARITY.dpm.eo"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6] "pctile.EJ.DISPARITY.pctpre1960.eo"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "pctile.EJ.DISPARITY.traffic.score.eo"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] "pctile.EJ.DISPARITY.proximity.npl.eo"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "pctile.EJ.DISPARITY.proximity.rmp.eo"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10] "pctile.EJ.DISPARITY.proximity.tsdf.eo" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "pctile.EJ.DISPARITY.proximity.npdes.eo"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [12] "pctile.EJ.DISPARITY.ust.eo"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "pctile.EJ.DISPARITY.rsei.eo"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ej_state_pctile</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "state.pctile.EJ.DISPARITY.pm.eo"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2] "state.pctile.EJ.DISPARITY.o3.eo"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "state.pctile.EJ.DISPARITY.cancer.eo"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4] "state.pctile.EJ.DISPARITY.resp.eo"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "state.pctile.EJ.DISPARITY.dpm.eo"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6] "state.pctile.EJ.DISPARITY.pctpre1960.eo"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "state.pctile.EJ.DISPARITY.traffic.score.eo"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] "state.pctile.EJ.DISPARITY.proximity.npl.eo"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "state.pctile.EJ.DISPARITY.proximity.rmp.eo"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10] "state.pctile.EJ.DISPARITY.proximity.tsdf.eo" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "state.pctile.EJ.DISPARITY.proximity.npdes.eo"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [12] "state.pctile.EJ.DISPARITY.ust.eo"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "state.pctile.EJ.DISPARITY.rsei.eo"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ej_supp_pctile</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "pctile.EJ.DISPARITY.pm.supp"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2] "pctile.EJ.DISPARITY.o3.supp"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "pctile.EJ.DISPARITY.cancer.supp"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4] "pctile.EJ.DISPARITY.resp.supp"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "pctile.EJ.DISPARITY.dpm.supp"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6] "pctile.EJ.DISPARITY.pctpre1960.supp"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "pctile.EJ.DISPARITY.traffic.score.supp"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] "pctile.EJ.DISPARITY.proximity.npl.supp"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "pctile.EJ.DISPARITY.proximity.rmp.supp"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10] "pctile.EJ.DISPARITY.proximity.tsdf.supp" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "pctile.EJ.DISPARITY.proximity.npdes.supp"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [12] "pctile.EJ.DISPARITY.ust.supp"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "pctile.EJ.DISPARITY.rsei.supp"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $ej_supp_state_pctile</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "state.pctile.EJ.DISPARITY.pm.supp"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2] "state.pctile.EJ.DISPARITY.o3.supp"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "state.pctile.EJ.DISPARITY.cancer.supp"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4] "state.pctile.EJ.DISPARITY.resp.supp"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "state.pctile.EJ.DISPARITY.dpm.supp"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6] "state.pctile.EJ.DISPARITY.pctpre1960.supp"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "state.pctile.EJ.DISPARITY.traffic.score.supp"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] "state.pctile.EJ.DISPARITY.proximity.npl.supp"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "state.pctile.EJ.DISPARITY.proximity.rmp.supp"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10] "state.pctile.EJ.DISPARITY.proximity.tsdf.supp" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "state.pctile.EJ.DISPARITY.proximity.npdes.supp"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [12] "state.pctile.EJ.DISPARITY.ust.supp"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "state.pctile.EJ.DISPARITY.rsei.supp"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $need_pctile</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "Demog.Index"                       "Demog.Index.Supp"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "pctlowinc"                         "pctlingiso"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "pctunemployed"                     "pctlths"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "lowlifex"                          "pctunder5"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "pctover64"                         "pctmin"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "pcthisp"                           "pctnhba"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "pctnhaa"                           "pctnhaiana"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15] "pctnhnhpia"                        "pctnhotheralone"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [17] "pctnhmulti"                        "pctnhwa"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "pm"                                "o3"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [21] "cancer"                            "resp"                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [23] "dpm"                               "pctpre1960"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [25] "traffic.score"                     "proximity.npl"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [27] "proximity.rmp"                     "proximity.tsdf"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [29] "proximity.npdes"                   "ust"                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [31] "rsei"                              "EJ.DISPARITY.pm.eo"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [33] "EJ.DISPARITY.o3.eo"                "EJ.DISPARITY.cancer.eo"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [35] "EJ.DISPARITY.resp.eo"              "EJ.DISPARITY.dpm.eo"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [37] "EJ.DISPARITY.pctpre1960.eo"        "EJ.DISPARITY.traffic.score.eo"    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [39] "EJ.DISPARITY.proximity.npl.eo"     "EJ.DISPARITY.proximity.rmp.eo"    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [41] "EJ.DISPARITY.proximity.tsdf.eo"    "EJ.DISPARITY.proximity.npdes.eo"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [43] "EJ.DISPARITY.ust.eo"               "EJ.DISPARITY.rsei.eo"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [45] "EJ.DISPARITY.pm.supp"              "EJ.DISPARITY.o3.supp"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [47] "EJ.DISPARITY.cancer.supp"          "EJ.DISPARITY.resp.supp"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [49] "EJ.DISPARITY.dpm.supp"             "EJ.DISPARITY.pctpre1960.supp"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [51] "EJ.DISPARITY.traffic.score.supp"   "EJ.DISPARITY.proximity.npl.supp"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [53] "EJ.DISPARITY.proximity.rmp.supp"   "EJ.DISPARITY.proximity.tsdf.supp" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [55] "EJ.DISPARITY.proximity.npdes.supp" "EJ.DISPARITY.ust.supp"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [57] "EJ.DISPARITY.rsei.supp"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $need_state_pctile</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "Demog.Index"                       "Demog.Index.Supp"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "pctlowinc"                         "pctlingiso"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "pctunemployed"                     "pctlths"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "lowlifex"                          "pctunder5"                        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "pctover64"                         "pctmin"                           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "pcthisp"                           "pctnhba"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "pctnhaa"                           "pctnhaiana"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15] "pctnhnhpia"                        "pctnhotheralone"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [17] "pctnhmulti"                        "pctnhwa"                          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "pm"                                "o3"                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [21] "cancer"                            "resp"                             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [23] "dpm"                               "pctpre1960"                       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [25] "traffic.score"                     "proximity.npl"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [27] "proximity.rmp"                     "proximity.tsdf"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [29] "proximity.npdes"                   "ust"                              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [31] "rsei"                              "EJ.DISPARITY.pm.eo"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [33] "EJ.DISPARITY.o3.eo"                "EJ.DISPARITY.cancer.eo"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [35] "EJ.DISPARITY.resp.eo"              "EJ.DISPARITY.dpm.eo"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [37] "EJ.DISPARITY.pctpre1960.eo"        "EJ.DISPARITY.traffic.score.eo"    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [39] "EJ.DISPARITY.proximity.npl.eo"     "EJ.DISPARITY.proximity.rmp.eo"    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [41] "EJ.DISPARITY.proximity.tsdf.eo"    "EJ.DISPARITY.proximity.npdes.eo"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [43] "EJ.DISPARITY.ust.eo"               "EJ.DISPARITY.rsei.eo"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [45] "EJ.DISPARITY.pm.supp"              "EJ.DISPARITY.o3.supp"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [47] "EJ.DISPARITY.cancer.supp"          "EJ.DISPARITY.resp.supp"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [49] "EJ.DISPARITY.dpm.supp"             "EJ.DISPARITY.pctpre1960.supp"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [51] "EJ.DISPARITY.traffic.score.supp"   "EJ.DISPARITY.proximity.npl.supp"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [53] "EJ.DISPARITY.proximity.rmp.supp"   "EJ.DISPARITY.proximity.tsdf.supp" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [55] "EJ.DISPARITY.proximity.npdes.supp" "EJ.DISPARITY.ust.supp"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [57] "EJ.DISPARITY.rsei.supp"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $these</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "Demog.Index"      "Demog.Index.Supp" "pctlowinc"        "pctlingiso"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "pctunemployed"    "pctlths"          "lowlifex"         "pctunder5"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "pctover64"        "pctmin"           "pcthisp"          "pctnhba"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "pctnhaa"          "pctnhaiana"       "pctnhnhpia"       "pctnhotheralone" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [17] "pctnhmulti"       "pctnhwa"          "pm"               "o3"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [21] "cancer"           "resp"             "dpm"              "pctpre1960"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [25] "traffic.score"    "proximity.npl"    "proximity.rmp"    "proximity.tsdf"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [29] "proximity.npdes"  "ust"              "rsei"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $these_avg</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "avg.Demog.Index"      "avg.Demog.Index.Supp" "avg.pctlowinc"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4] "avg.pctlingiso"       "avg.pctunemployed"    "avg.pctlths"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "avg.lowlifex"         "avg.pctunder5"        "avg.pctover64"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10] "avg.pctmin"           "avg.pcthisp"          "avg.pctnhba"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "avg.pctnhaa"          "avg.pctnhaiana"       "avg.pctnhnhpia"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [16] "avg.pctnhotheralone"  "avg.pctnhmulti"       "avg.pctnhwa"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "avg.pm"               "avg.o3"               "avg.cancer"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [22] "avg.resp"             "avg.dpm"              "avg.pctpre1960"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [25] "avg.traffic.score"    "avg.proximity.npl"    "avg.proximity.rmp"   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [28] "avg.proximity.tsdf"   "avg.proximity.npdes"  "avg.ust"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [31] "avg.rsei"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $these_state_avg</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "state.avg.Demog.Index"      "state.avg.Demog.Index.Supp"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "state.avg.pctlowinc"        "state.avg.pctlingiso"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "state.avg.pctunemployed"    "state.avg.pctlths"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "state.avg.lowlifex"         "state.avg.pctunder5"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "state.avg.pctover64"        "state.avg.pctmin"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "state.avg.pcthisp"          "state.avg.pctnhba"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "state.avg.pctnhaa"          "state.avg.pctnhaiana"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15] "state.avg.pctnhnhpia"       "state.avg.pctnhotheralone" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [17] "state.avg.pctnhmulti"       "state.avg.pctnhwa"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "state.avg.pm"               "state.avg.o3"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [21] "state.avg.cancer"           "state.avg.resp"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [23] "state.avg.dpm"              "state.avg.pctpre1960"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [25] "state.avg.traffic.score"    "state.avg.proximity.npl"   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [27] "state.avg.proximity.rmp"    "state.avg.proximity.tsdf"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [29] "state.avg.proximity.npdes"  "state.avg.ust"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [31] "state.avg.rsei"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $these_ratio_to_avg</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "ratio.to.avg.Demog.Index"      "ratio.to.avg.Demog.Index.Supp"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "ratio.to.avg.pctlowinc"        "ratio.to.avg.pctlingiso"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "ratio.to.avg.pctunemployed"    "ratio.to.avg.pctlths"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "ratio.to.avg.lowlifex"         "ratio.to.avg.pctunder5"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "ratio.to.avg.pctover64"        "ratio.to.avg.pctmin"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "ratio.to.avg.pcthisp"          "ratio.to.avg.pctnhba"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "ratio.to.avg.pctnhaa"          "ratio.to.avg.pctnhaiana"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15] "ratio.to.avg.pctnhnhpia"       "ratio.to.avg.pctnhotheralone" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [17] "ratio.to.avg.pctnhmulti"       "ratio.to.avg.pctnhwa"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "ratio.to.avg.pm"               "ratio.to.avg.o3"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [21] "ratio.to.avg.cancer"           "ratio.to.avg.resp"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [23] "ratio.to.avg.dpm"              "ratio.to.avg.pctpre1960"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [25] "ratio.to.avg.traffic.score"    "ratio.to.avg.proximity.npl"   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [27] "ratio.to.avg.proximity.rmp"    "ratio.to.avg.proximity.tsdf"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [29] "ratio.to.avg.proximity.npdes"  "ratio.to.avg.ust"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [31] "ratio.to.avg.rsei"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $these_ratio_to_state_avg</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "ratio.to.state.avg.Demog.Index"      "ratio.to.state.avg.Demog.Index.Supp"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "ratio.to.state.avg.pctlowinc"        "ratio.to.state.avg.pctlingiso"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "ratio.to.state.avg.pctunemployed"    "ratio.to.state.avg.pctlths"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "ratio.to.state.avg.lowlifex"         "ratio.to.state.avg.pctunder5"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "ratio.to.state.avg.pctover64"        "ratio.to.state.avg.pctmin"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "ratio.to.state.avg.pcthisp"          "ratio.to.state.avg.pctnhba"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "ratio.to.state.avg.pctnhaa"          "ratio.to.state.avg.pctnhaiana"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15] "ratio.to.state.avg.pctnhnhpia"       "ratio.to.state.avg.pctnhotheralone" </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [17] "ratio.to.state.avg.pctnhmulti"       "ratio.to.state.avg.pctnhwa"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "ratio.to.state.avg.pm"               "ratio.to.state.avg.o3"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [21] "ratio.to.state.avg.cancer"           "ratio.to.state.avg.resp"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [23] "ratio.to.state.avg.dpm"              "ratio.to.state.avg.pctpre1960"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [25] "ratio.to.state.avg.traffic.score"    "ratio.to.state.avg.proximity.npl"   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [27] "ratio.to.state.avg.proximity.rmp"    "ratio.to.state.avg.proximity.tsdf"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [29] "ratio.to.state.avg.proximity.npdes"  "ratio.to.state.avg.ust"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [31] "ratio.to.state.avg.rsei"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-in"><span>   <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"\\.eo$"</span>, <span class="va">namez</span><span class="op">$</span><span class="va">ej</span>, value <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "EJ.DISPARITY.pm.eo"              "EJ.DISPARITY.o3.eo"             </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "EJ.DISPARITY.cancer.eo"          "EJ.DISPARITY.resp.eo"           </span>

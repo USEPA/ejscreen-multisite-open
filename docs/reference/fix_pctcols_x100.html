@@ -91,13 +91,21 @@
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span> <span class="va">y</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>pctlowinc <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, pctpre1960 <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, avg.pctunemployed <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, avg.pctpre1960 <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-in"><span> <span class="fu">fix_pctcols_x100</span><span class="op">(</span><span class="va">y</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fix_pctcols_x100(y):</span> could not find function "fix_pctcols_x100"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   pctlowinc pctpre1960 avg.pctunemployed avg.pctpre1960</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1         1        100                 1            100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2         2        200                 2            200</span>
 <span class="r-in"><span> <span class="fu">fix_pctcols_x100</span><span class="op">(</span><span class="va">y</span>, <span class="va">names_pct_as_fraction_ejscreenit</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fix_pctcols_x100(y, names_pct_as_fraction_ejscreenit):</span> could not find function "fix_pctcols_x100"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   pctlowinc pctpre1960 avg.pctunemployed avg.pctpre1960</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1         1        100                 1            100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2         2        200                 2            200</span>
 <span class="r-in"><span> <span class="fu">fix_pctcols_x100</span><span class="op">(</span><span class="va">y</span>, <span class="va">names_pct_as_fraction_blockgroupstats</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fix_pctcols_x100(y, names_pct_as_fraction_blockgroupstats):</span> could not find function "fix_pctcols_x100"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   pctlowinc pctpre1960 avg.pctunemployed avg.pctpre1960</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1       100          1                 1              1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2       200          2                 2              2</span>
 <span class="r-in"><span> <span class="fu">fix_pctcols_x100</span><span class="op">(</span><span class="va">y</span>, <span class="va">names_pct_as_fraction_ejamit</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fix_pctcols_x100(y, names_pct_as_fraction_ejamit):</span> could not find function "fix_pctcols_x100"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   pctlowinc pctpre1960 avg.pctunemployed avg.pctpre1960</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1       100          1               100              1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2       200          2               200              2</span>
 <span class="r-in"><span> <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\n\n"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -168,11 +176,11 @@
 <span class="r-in"><span> <span class="va">ytable</span> <span class="op">=</span> <span class="fu">data.table</span><span class="op">(</span>pctlowinc <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, pctpre1960 <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, avg.pctunemployed <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, avg.pctpre1960 <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in data.table(pctlowinc = 1:2, pctpre1960 = 1:2, avg.pctunemployed = 1:2,     avg.pctpre1960 = 1:2):</span> could not find function "data.table"</span>
 <span class="r-in"><span> <span class="fu">fix_pctcols_x100</span><span class="op">(</span><span class="va">ytable</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fix_pctcols_x100(ytable):</span> could not find function "fix_pctcols_x100"</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fix_pctcols_x100(ytable):</span> object 'ytable' not found</span>
 <span class="r-in"><span> <span class="fu">fix_pctcols_x100</span><span class="op">(</span><span class="va">ytable</span>, <span class="va">names_pct_as_fraction_blockgroupstats</span><span class="op">)</span> </span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fix_pctcols_x100(ytable, names_pct_as_fraction_blockgroupstats):</span> could not find function "fix_pctcols_x100"</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fix_pctcols_x100(ytable, names_pct_as_fraction_blockgroupstats):</span> object 'ytable' not found</span>
 <span class="r-in"><span> <span class="fu">fix_pctcols_x100</span><span class="op">(</span><span class="va">ytable</span>, <span class="va">names_pct_as_fraction_ejamit</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fix_pctcols_x100(ytable, names_pct_as_fraction_ejamit):</span> could not find function "fix_pctcols_x100"</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fix_pctcols_x100(ytable, names_pct_as_fraction_ejamit):</span> object 'ytable' not found</span>
 <span class="r-in"><span> <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\n\n"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
