@@ -7,7 +7,10 @@
 #'
 #' @return table of ratios, one col per site, one row per indicator
 #' @seealso [distance_by_group_plot()] [plot_distance_mean_by_group()] [distance_by_group()] [distance_mean_by_group()]
-#' @example # distance_by_group_by_site(testoutput_ejamit_10pts_1miles$results_bybg_people)
+#' @examples 
+#'   # distance_by_group_by_site(
+#'   #   testoutput_ejamit_10pts_1miles$results_bybg_people
+#'   # )
 #' 
 #' @export
 #' 
