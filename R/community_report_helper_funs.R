@@ -22,7 +22,7 @@ fill_tbl_row <- function(output_df, var_value, var_name) {
   hdr_names <- c('value','state-average',
                  'percentile-in-state','usa average','percentile-in-usa')
   
-  var_values <- paste0('', 'state.avg.', 'state.pctile.', 'avg.', 'pctile.',
+  var_values <- paste0(c('', 'state.avg.', 'state.pctile.', 'avg.', 'pctile.'),
                        var_value)
   
   for (j in seq_along(var_values)) {
