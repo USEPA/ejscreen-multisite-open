@@ -258,7 +258,7 @@ app_server <- function(input, output, session) {
       }
       disable_buttons[['SHP']] <- FALSE
       
-      shp <- cbind(ejam_uniq_id = seq_along(shp), shp)
+      shp <- cbind(ejam_uniq_id = 1:nrow(shp), shp)
       class(shp) <- c(class(shp), 'data.table')
       shp
       ####### #    #######     ####### #
@@ -296,7 +296,7 @@ app_server <- function(input, output, session) {
       }
       disable_buttons[['SHP']] <- FALSE
       shp_proj$valid <- sf::st_is_valid(shp_proj)#!sf::st_is_empty(shp_proj)
-      shp_proj <- cbind(ejam_uniq_id = seq_along(shp_proj), shp_proj)
+      shp_proj <- cbind(ejam_uniq_id = 1:nrow(shp_proj), shp_proj)
       shp_proj$invalid_msg <- NA
       shp_proj$invalid_msg[shp_proj$valid == F] <- sf::st_is_valid(shp_proj[shp_proj$valid == F,], reason = TRUE)
       shp_proj$invalid_msg[is.na(shp_proj$geometry)] <- 'bad geometry'
@@ -850,7 +850,7 @@ app_server <- function(input, output, session) {
       
       # mact_out[, `:=`(ejam_uniq_id = .I,
       #                 valid = !is.na(lon) & !is.na(lat))]
-      mact_out$ejam_uniq_id <- seq_along(mact_out)
+      mact_out$ejam_uniq_id <- 1:nrow(mact_out)
       mact_out$valid <- !is.na(mact_out$lon) & !is.na(mact_out$lat)
       data.table::setcolorder(mact_out, 'ejam_uniq_id')
       
