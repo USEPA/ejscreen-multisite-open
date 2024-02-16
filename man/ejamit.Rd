@@ -153,7 +153,7 @@ or in a set of polygons from a shapefile, or in a list of Census Units like Coun
   
   # View plots
   # plot_distance_avg_by_group(out)  
-  # plot_distance_cdf_by_group(out)
+  # distance_by_group_plot(out)
   
   # View maps
   mapfast(out$results_bysite, radius = 3.1)

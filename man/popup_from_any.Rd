@@ -2,9 +2,7 @@
 % Please edit documentation in R/popup_from_any.R
 \name{popup_from_any}
 \alias{popup_from_any}
-\title{popup_from_any - Simple map popup from a data.table or data.frame, one point per row
-Creates popup vector that leaflet::addCircles or leaflet::addPopups can use.
-Works similarly to EJAMejscreenapi::popup_from_df, but now extends to data.table}
+\title{Map popups - Simple map popup from a data.table or data.frame, one point per row}
 \usage{
 popup_from_any(
   x,
@@ -34,9 +32,8 @@ A vector of strings, one per row or map point,
 with a line break separating column elements
 }
 \description{
-popup_from_any - Simple map popup from a data.table or data.frame, one point per row
 Creates popup vector that leaflet::addCircles or leaflet::addPopups can use.
-Works similarly to EJAMejscreenapi::popup_from_df, but now extends to data.table
+Works similarly to popup_from_df, but now extends to data.table
 }
 \details{
 Each popup is made from one row of the data.frame.
@@ -65,4 +62,5 @@ Each popup has one row of text per column of the data.frame
  ## convert to data frame, works the same way 
  dat_df <- as.data.frame(dat_df)
  leaflet::leaflet(dat) |> leaflet::addTiles() |> leaflet::addCircles(popup = popup_from_any(dat))
+  
 }

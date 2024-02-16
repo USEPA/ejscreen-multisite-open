@@ -1,15 +1,19 @@
 Package: EJAM
 Title: EJAM Environmental Justice Analysis Multisite tool
 Version: 2.2.1
-Author: US EPA (Mark Corrales, et al.)
+Author:  USEPA
 Maintainer: Mark Corrales <corrales.mark@epa.gov>
 License: MIT + file LICENSE.md
-Description: Tools for summarizing environmental and demographic indicators 
-    (such as those in EJScreen) for residents living near any one of a number of 
-    specific sites. It uses quad tree search/indexing of block locations, data.table, etc.
-    to provide very fast identification of nearby blocks, distances, and 
-    aggregation of indicators within each distance. It can be uses as a web app, with the user interface provided by R shiny.
-URL: https://github.com/USEPA/EJAM
+Description: Web app and R tools to easily summarize
+    demographics and environmental indicators
+    for residents in or near a large number of areas or specific sites.
+    Sites can be specified in a variety of ways: coordinates, facility IDs,
+    type of facility, shapefile, or Census areas.
+    Very fast identification of nearby blocks and distances, and 
+    aggregation of indicators within each distance by site and overall.
+    EJScreen indicators are included.
+URL: https://bookish-disco-p8oe8wq.pages.github.io/, https://github.com/USEPA/EJAM
+BugReports: https://github.com/USEPA/EJAM/issues/
 Depends: 
     R (>= 2.10),
     EJAMbatch.summarizer,

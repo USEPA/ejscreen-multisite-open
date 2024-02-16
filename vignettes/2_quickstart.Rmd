@@ -56,21 +56,17 @@ indexblocks()
 #    - **See ?pkgdown::build_site** - EJAM now uses the pkgdown R package to build help and vignettes as web pages
 ```
 
-# EJAM Analysis in R - Quick Start Guide
+# Intro to EJAM Analysis in R
 
-Here's how you can run an EJAM analysis and view results right away (once EJAM has been set up)
+After EJAM has been installed, here's how you can run an EJAM analysis and view results right away:
 
-## Install EJAM
-
-See the separate article/ vignette on how to install the R package.
-
-## Load EJAM (code and data)
+## Load EJAM
 
 ```{r library, eval=FALSE}
 library(EJAM)
 ```
 
-## Analyze a List of Places
+## Analyze a List of Places: ejamit()
 
 If you already have a spreadsheet with columns called lat and lon, you can just do this and EJAM will prompt you to navigate to and select the file and set the radius (from RStudio):
 
@@ -86,18 +82,17 @@ out <- ejamit(testpoints_100, radius = 3,
             silentinteractive = F, include_ejindexes = T)
 ```
 
-## Map of Results
+## Map of Results: mapfastej()
+
+This creates an interactive map. Click a point on the map to see a popup with details about people near that point.
 
 ```{r map100, eval = TRUE}
-# out <- ejamit(testpoints_100, radius = 3, 
-#   silentinteractive = F, include_ejindexes = T)
 out <- testoutput_ejamit_100pts_1miles
-mapfastej(out$results_bysite)
 
-# Click a point on the map to see a popup with details about people near that point.
+mapfastej(out$results_bysite)
 ```
 
-## Report (interactive html file)/
+## Report: ejam2report()
 
 ```{r eval=FALSE, include=FALSE}
 # we should add HTML output in vignette, below, for ejam2report() example
@@ -105,6 +100,7 @@ mapfastej(out$results_bysite)
 
 ```{r ejam2report1, eval=FALSE}
 out <- testoutput_ejamit_100pts_1miles
+
 ejam2report(out)
 ```
 
@@ -116,23 +112,31 @@ ejam2report(out)
 
 ## Barplot
 
-```{r plot_barplot_ratios, eval=TRUE}
-## Plot of demographics is default
-## Updated version of this function will be able to handle output of ejamit() as input:
-# out <- testoutput_ejamit_100pts_1miles
-# plot_barplot_ratios(out)
-#plot_barplot_ratios(out, reference = "State")
+```{r}
 # see examples at ?plot_barplot_ratios
 ```
 
-## Spreadsheet
-
-```{r ejam2excel, eval=FALSE, message=FALSE, warning=FALSE}
-ejam2excel(out, launchexcel = T, save_now = F)
-
+```{r plot_barplot_ratios, echo=FALSE}
+## Plot of demographics is default
+out <- testoutput_ejamit_100pts_1miles
+plot_barplot_ratios(unlist(testoutput_ejamit_1000pts_1miles$results_overall[ , c(..names_d_ratio_to_avg , ..names_d_subgroups_ratio_to_avg) ]))
+## Forthcoming version syntax is simpler! 
+## it will accept ejamit() output directly, as its input.
 ```
 
-# More Examples of Using these Functions in EJAM
+## Spreadsheet: ejam2excel()
+
+```{r ejam2excel, eval=FALSE, message=FALSE, warning=FALSE}
+out <- testoutput_ejamit_100pts_1miles
+
+ejam2excel(out, launchexcel = T, save_now = F)
+```
+
+![Excel output](images/xlsx.png)
+
+------------------------------------------------------------------------
+
+# More Examples
 
 ## Select Places to Analyze
 
@@ -214,6 +218,8 @@ head(y)
 # prompts you to select spreadsheet with lat,lon values of points
 ```
 
+------------------------------------------------------------------------
+
 ## Map your sites before analyzing them
 
 ```{r eval = FALSE}
@@ -229,6 +235,8 @@ if (exists("blockid2fips")) {
   mapfast(pts, radius = 0.1)
 }
 ```
+
+------------------------------------------------------------------------
 
 ## Pick a Radius
 
@@ -246,6 +254,8 @@ If you know you want to analyze for 5 kilometers, you can turn it into miles wit
 convert_units(5, 'km', 'miles')
 ```
 
+------------------------------------------------------------------------
+
 ## Analyze your Sites in 1 step with ejamit()
 
 ```{r ejamit_testpoints_100, eval=FALSE, message=FALSE, warning=FALSE}
@@ -260,6 +270,7 @@ Popups in the map show key stats for residents near each site.
 
 ```{r mapfastej_out_results_bysite, eval = TRUE, echo= TRUE, fig.height=8, fig.width=6}
 out <- testoutput_ejamit_100pts_1miles
+
 mapfastej(out$results_bysite)
 # help("mapfast")
 ```
@@ -291,7 +302,7 @@ ejam2excel(ejamit(testpoints_10, radius = 1), save_now = T)
 
 # Documentation of Functions and Data
 
--   See the [README for links to documentation](articles/index.html) or [README on GitHub](https://github.com/USEPA/EJAM/tree/main?tab=readme-ov-file#readme)
+-   See the [README for links to documentation](https://bookish-disco-p8oe8wq.pages.github.io/reference/index.html) or [README on GitHub](https://github.com/USEPA/EJAM/tree/gh-pages?tab=readme-ov-file#readme)
 
 ```{r helpEJAM, eval = FALSE, include= FALSE}
 ?EJAM

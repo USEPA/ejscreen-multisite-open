@@ -1,4 +1,4 @@
-#' DRAFT - uick view of summary stats by type of stat, but lacks rounding specific to each type, etc.
+#' DRAFT - Quick view of summary stats by type of stat, but lacks rounding specific to each type, etc.
 #'
 #' @param ejamitout na
 #' @param vartypes na

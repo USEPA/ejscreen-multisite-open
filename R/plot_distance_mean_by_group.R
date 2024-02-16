@@ -28,9 +28,9 @@
 #'    data.frame with group, ratio, avg_distance_for_group, avg_distance_for_nongroup.
 #'   If returnwhat is "plotfilename" then it returns the full path including filename of a .png in a tempdir
 #'   If returnwhat is "plot" then it returns the plot object as needed for table_xls_format() ?
-#' @seealso [distance_by_group()] [distance_by_group_plot()]  [plot_distance_cdf_by_group()]
+#' @seealso [distance_by_group()] [distance_by_group_plot()] 
 #' @return see parameter returnwhat
-#' @inherit plot_distance_cdf_by_group examples
+#' @inherit distance_by_group_plot examples
 #' 
 #' @aliases plot_distance_by_group
 #' @export
@@ -134,9 +134,8 @@ plot_distance_by_group <- plot_distance_mean_by_group
 #' distance_mean_by_group() and distance_mean_by_group() are synonymous, and are like
 #'   [plot_distance_mean_by_group()], but show a table not plot, by default.
 #' 
-#' @details see examples in [plot_distance_cdf_by_group()]
 #' @inherit plot_distance_mean_by_group
-#' @inherit plot_distance_cdf_by_group examples
+#' @inherit distance_by_group_plot examples
 #' 
 #' @aliases distance_by_group
 #' 
@@ -207,7 +206,7 @@ distance_by_group     <- function(results_bybg_people,
 #' @param demogvarname e.g., "pctlowinc"
 #' @param demoglabel e.g., "Low Income Residents"
 #' @seealso [plot_distance_mean_by_group()]  [distance_by_group()]
-#' @inherit plot_distance_cdf_by_group examples 
+#' @inherit distance_by_group_plot examples 
 #' @return list of 2 numbers: avg_distance_for_group and avg_distance_for_nongroup
 #' 
 #' @keywords internal

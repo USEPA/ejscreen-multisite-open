@@ -1,6 +1,9 @@
-#' popup_from_any - Simple map popup from a data.table or data.frame, one point per row
+
+
+#' Map popups - Simple map popup from a data.table or data.frame, one point per row
+#' 
 #' Creates popup vector that leaflet::addCircles or leaflet::addPopups can use.
-#' Works similarly to EJAMejscreenapi::popup_from_df, but now extends to data.table
+#' Works similarly to popup_from_df, but now extends to data.table
 #' @details Each popup is made from one row of the data.frame. 
 #'   Each popup has one row of text per column of the data.frame
 #' @param x, a data table or data frame
@@ -14,8 +17,6 @@
 #' @param testing can set to TRUE while testing function
 #' @return A vector of strings, one per row or map point, 
 #'   with a line break separating column elements
-#' @export
-#'
 #' @examples  
 #'  dat <- data.table(
 #'    RegistryId = c("110071102551", "110015787683"),
@@ -38,7 +39,9 @@
 #'  ## convert to data frame, works the same way 
 #'  dat_df <- as.data.frame(dat_df)
 #'  leaflet::leaflet(dat) |> leaflet::addTiles() |> leaflet::addCircles(popup = popup_from_any(dat))
-
+#'   
+#' @export
+#'
 popup_from_any <- function(x, column_names = names(x), labels = column_names, n = "all", testing=FALSE) {
   if (testing) {print('popup_from_any'); print(names(x)); print(labels); print(n)}
   if (n == "all" | n > NCOL(x)) {
@@ -90,3 +93,4 @@ popup_from_any <- function(x, column_names = names(x), labels = column_names, n 
   
   return(popup_vec)
 }
+############################################################################## #

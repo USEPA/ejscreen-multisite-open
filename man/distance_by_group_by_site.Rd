@@ -16,5 +16,5 @@ table of ratios, one col per site, one row per indicator
 Like \code{\link[=distance_by_group]{distance_by_group()}} but for multiple sites - DRAFT FUNCTION
 }
 \seealso{
-\code{\link[=plot_distance_cdf_by_group]{plot_distance_cdf_by_group()}} \code{\link[=plot_distance_mean_by_group]{plot_distance_mean_by_group()}} \code{\link[=distance_by_group]{distance_by_group()}} \code{\link[=distance_mean_by_group]{distance_mean_by_group()}}
+\code{\link[=distance_by_group_plot]{distance_by_group_plot()}} \code{\link[=plot_distance_mean_by_group]{plot_distance_mean_by_group()}} \code{\link[=distance_by_group]{distance_by_group()}} \code{\link[=distance_mean_by_group]{distance_mean_by_group()}}
 }
