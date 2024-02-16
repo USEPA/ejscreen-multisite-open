@@ -15,6 +15,7 @@
 #' @param filename, path to file to save HTML content to; if null, returns as string (used in Shiny app)
 #' 
 #' @keywords internal
+#' @export
 #' 
 build_community_report <- function(output_df, analysis_title, totalpop, locationstr, 
                                    include_ejindexes=FALSE, in_shiny = FALSE, filename = NULL){
