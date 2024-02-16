@@ -1276,8 +1276,15 @@ app_server <- function(input, output, session) {
                                                        writexl::write_xlsx(data_preview(), file)})
   output$download_preview_data_csv <- downloadHandler(filename = 'epa_raw_data_download.csv',
                                                       content = function(file) {
-                                                       
-                                                        data.table::fwrite(data_preview(), file, append = F)})
+                                                        ## shapefile is not of type data.table
+                                                       if(current_upload_method() == 'SHP'){
+                                                         readr::write_csv(data_preview(), file, append = F)
+                                                         
+                                                       } else {
+                                                         data.table::fwrite(data_preview(), file, append = F)
+                                                         
+                                                       }
+                                                        })
   
   #############################################################################  #
   
