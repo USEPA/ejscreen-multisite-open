@@ -22,7 +22,7 @@
 .Rproj.user/
 
 # produced vignettes - but be sure these actually should be ignored ****
-#vignettes/*.html
+vignettes/*.html
 vignettes/*.pdf
 
 # OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3

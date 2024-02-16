@@ -46,6 +46,7 @@ knitr::opts_chunk$set(
 <!-- badges: end -->
 
 [The EJAM Web App] makes it easy to see demographic and environmental information summarized in and across any list of places in the nation. Using EJAM is like running an EJScreen report, but for hundreds or thousands of places, all at the same time. The web app lets you quickly check a summary report, explore interactive maps, tables, and plots, and download a summary or detailed spreadsheet.
+The GIS methods are as accurate as what EJScreen uses but highly optimized to be very fast.
 
 [The EJAM R Package for Analysts and Developers] written in the R programming language, with source code on GitHub. It provides functions to help work with block group data, points, and polygons, to very quickly aggregate and compare large numbers of locations.
 
@@ -57,7 +58,7 @@ EJAM is provided by the US Environmental Protection Agency (US EPA).
 
 -   [Using EJAM as a Web App](articles/0_webapp.html "0_webapp.html")
 
--   [EJAM live beta test](https://rstudio-connect.dmap-stage.aws.epa.gov/content/cb2bc9cf-75c3-4db1-ad28-e92940fe4438/ "https://rstudio-connect.dmap-stage.aws.epa.gov/content/cb2bc9cf-75c3-4db1-ad28-e92940fe4438/")\*\* (must be at EPA offices or on VPN)
+-   [EJAM live beta test](https://rstudio-connect.dmap-stage.aws.epa.gov/content/cb2bc9cf-75c3-4db1-ad28-e92940fe4438/ "https://rstudio-connect.dmap-stage.aws.epa.gov/content/cb2bc9cf-75c3-4db1-ad28-e92940fe4438/") (must be at EPA offices or on VPN)
 
 ## The EJAM R Package for Analysts and Developers
 
