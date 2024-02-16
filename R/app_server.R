@@ -2074,7 +2074,7 @@ app_server <- function(input, output, session) {
       } else {
         data_spatial_convert <- d_merge[d_merge$valid == T, ] %>%
           dplyr::select(-valid, -invalid_msg) %>%
-          st_zm() %>% as('Spatial')
+          sf::st_zm() %>% as('Spatial')
         leaflet(data_spatial_convert) %>% addTiles()  %>%
           addPolygons(color = circle_color,
                       popup = popup_from_df(data_spatial_convert %>% sf::st_drop_geometry(),
@@ -2162,7 +2162,7 @@ app_server <- function(input, output, session) {
       #d_uploadb <- data_uploaded()[['buffer']]  %>% st_zm() %>% as('Spatial') 
       d_uploads <- data_uploaded() %>% 
         dplyr::select(-valid, -invalid_msg) %>% 
-        st_zm() %>% as('Spatial') 
+        sf::st_zm() %>% as('Spatial') 
 
       leafletProxy(mapId = 'an_leaf_map', session) %>%
         # addPolygons(data = d_uploadb, color = "red") %>%
