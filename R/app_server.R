@@ -2505,13 +2505,13 @@ app_server <- function(input, output, session) {
     # cols_to_select <- names(data_processed)
     # friendly_names <- longnames???
     cols_to_select <- c('ejam_uniq_id', 'invalid_msg',
-                        'pop', 'Community Report',
+                        'pop', #'Community Report',
                         'EJScreen Report', 'EJScreen Map', 'ECHO report', # 'ACS Report',
                         names_d, names_d_subgroups,
                         names_e #,
                         # no names here corresponding to number above x threshold, state, region ??
     )
-    friendly_names <- c('Site ID', 'Invalid Reason','Est. Population', 'Community Report',
+    friendly_names <- c('Site ID', 'Invalid Reason','Est. Population', #'Community Report',
                         'EJScreen Report', 'EJScreen Map', 'ECHO report', #'ACS Report',
                         names_d_friendly, names_d_subgroups_friendly,
                         names_e_friendly)
@@ -2542,13 +2542,13 @@ app_server <- function(input, output, session) {
       dplyr::mutate(index = row_number()) %>%
       dplyr::rowwise() %>%
       dplyr::mutate(
-        pop = ifelse(valid == T, pop, NA),
+        pop = ifelse(valid == T, pop, NA)#,
         # `EJScreen Report` = ifelse(valid == T, `EJScreen Report`, NA),
         # `ECHO Report` = ifelse(valid == T, `ECHO Report`, NA),
         # `EJScreen Map` = ifelse(valid == T, `EJScreen Map`, NA),
-        `Community Report` = ifelse(valid == T, shinyInput(actionButton, 1, id = paste0('button_', index), label = "Generate",
-                                                           onclick = paste0('Shiny.onInputChange(\"select_button',index,'\",  this.id)' )
-        ), '')
+        # `Community Report` = ifelse(valid == T, shinyInput(actionButton, 1, id = paste0('button_', index), label = "Generate",
+        #                                                    onclick = paste0('Shiny.onInputChange(\"select_button',index,'\",  this.id)' )
+        # ), '')
       ) %>%
       
       dplyr::ungroup() %>%
