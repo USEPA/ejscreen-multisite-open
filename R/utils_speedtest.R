@@ -244,7 +244,7 @@ speedtest <- function(n=10, sitepoints=NULL, weighting='frs',
       # cat("----------------------------------\n")
       #write time elapsed to csv?
       # write.csv(t(data.matrix(elapsed)),file=paste0("./inst/time_radius_",myradius,"_100k.csv"))
-      perhour <- EJAMejscreenapi::speedreport(start_time, Sys.time(), n)
+      perhour <- speedreport(start_time, Sys.time(), n)
       speedtable[[combonumber]] <- list(points = n, miles = radius, perhr = perhour)
       
       #  show diagnostics here like how many blocks were found nearby? this slows it down
@@ -273,7 +273,7 @@ speedtest <- function(n=10, sitepoints=NULL, weighting='frs',
   CIRCLESDONE <- sum(nlist) * length(radii)
   cat("Finished with all sets of sites,", length(radii),"radius values, each for a total of", 
       prettyNum(sum(nlist), big.mark = ",") ,"sites =", prettyNum(CIRCLESDONE, big.mark = ","), "circles total.\n")
-  EJAMejscreenapi::speedreport(overall_start_time, endtime, CIRCLESDONE)
+  speedreport(overall_start_time, endtime, CIRCLESDONE)
   
   speedtable <- as.data.frame(do.call(rbind, speedtable))  # could fix this to be simpler
   speedtable <- as.data.frame(sapply(speedtable, unlist))  # could fix this to be simpler

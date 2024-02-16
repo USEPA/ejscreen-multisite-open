@@ -34,10 +34,10 @@
 #' @param y If x is a vector of longitudes, y must be the latitudes. Ignored otherwise.
 #' @seealso read_csv_or_xl() latlon_df_clean()
 #' @return A data.frame that has at least columns lon and lat (and others if they were in x)
-#' @examples  
+#' @examples   \dontrun{
 #'  if (interactive()) {
 #'  pts <- latlon_from_anything()
-#'  }
+#'  }}
 #'  latlon_from_anything(testpoints_100[1:6,] )
 #'  latlon_from_anything(testpoints_100[1:6, c('lat','lon')] )
 #'  latlon_from_anything(x=testpoints_100$lon[1:6], y=testpoints_100$lat[1:6] )

@@ -1,12 +1,13 @@
 EJAM Environmental Justice Analysis Multisite tool
 ================
 
+# <img src="man/figures/logosmall.png" align="right" width="170" height="190"/>
+
 <!-- README.md is generated from README.Rmd. Please edit Rmd not md  -->
 <!-- badges: start -->
-
-[![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-
+<!-- comment out the badge for now
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+ -->
 <!-- badges: end -->
 
 [The EJAM Web App](#the-ejam-web-app) makes it easy to see demographic
@@ -14,7 +15,9 @@ and environmental information summarized in and across any list of
 places in the nation. Using EJAM is like running an EJScreen report, but
 for hundreds or thousands of places, all at the same time. The web app
 lets you quickly check a summary report, explore interactive maps,
-tables, and plots, and download a summary or detailed spreadsheet.
+tables, and plots, and download a summary or detailed spreadsheet. The
+GIS methods are as accurate as what EJScreen uses but highly optimized
+to be very fast.
 
 [The EJAM R Package for Analysts and
 Developers](#the-ejam-r-package-for-analysts-and-developers) written in
@@ -26,12 +29,12 @@ EJAM is provided by the US Environmental Protection Agency (US EPA).
 
 ## The EJAM Web App
 
-- [What is EJAM?](articles/what_is_ejam.html "what_is_ejam.html")
+- [What is EJAM?](articles/0_what_is_ejam.html "0_what_is_ejam.html")
 
 - [Using EJAM as a Web App](articles/0_webapp.html "0_webapp.html")
 
 - [EJAM live beta
-  test](https://rstudio-connect.dmap-stage.aws.epa.gov/content/cb2bc9cf-75c3-4db1-ad28-e92940fe4438/ "https://rstudio-connect.dmap-stage.aws.epa.gov/content/cb2bc9cf-75c3-4db1-ad28-e92940fe4438/")\*\*
+  test](https://rstudio-connect.dmap-stage.aws.epa.gov/content/cb2bc9cf-75c3-4db1-ad28-e92940fe4438/ "https://rstudio-connect.dmap-stage.aws.epa.gov/content/cb2bc9cf-75c3-4db1-ad28-e92940fe4438/")
   (must be at EPA offices or on VPN)
 
 ## The EJAM R Package for Analysts and Developers

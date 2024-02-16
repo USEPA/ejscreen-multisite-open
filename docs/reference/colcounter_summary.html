@@ -7,7 +7,7 @@ at or above the benchmark(s)"><title>Summarize how many rows have N columns at o
 but will handle multiple thresholds to compare to each indicator, etc.
 Table of counts, percents, cumulative counts, cumulative percents
 of places with N, or at least N, of the indicators
-at or above the benchmark(s)"><meta property="og:image" content="/logo.svg"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
+at or above the benchmark(s)"><meta property="og:image" content="https://bookish-disco-p8oe8wq.pages.github.io/logo.svg"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]--></head><body>
@@ -32,18 +32,18 @@ at or above the benchmark(s)"><meta property="og:image" content="/logo.svg"><!--
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/0_webapp.html">0. Using EJAM as a Web App</a>
-    <a class="dropdown-item" href="../articles/1_installing.html">1. Installing the EJAM package</a>
+    <h6 class="dropdown-header" data-toc-skip>Overview for EJAM Users</h6>
+    <a class="dropdown-item" href="../articles/0_what_is_ejam.html">What is EJAM?</a>
+    <a class="dropdown-item" href="../articles/0_webapp.html">Using EJAM</a>
+    <div class="dropdown-divider"></div>
+    <h6 class="dropdown-header" data-toc-skip>For analysts using R</h6>
+    <a class="dropdown-item" href="../articles/1_installing.html">1. Installing the EJAM R package</a>
     <a class="dropdown-item" href="../articles/2_quickstart.html">2. Quick Start Guide</a>
     <a class="dropdown-item" href="../articles/3_analyzing.html">3. Basics of Using EJAM for Analysis in RStudio</a>
     <a class="dropdown-item" href="../articles/4_advanced.html">4. Advanced Features</a>
     <a class="dropdown-item" href="../articles/5_ejscreenapi.html">5. Using the EJScreen API via EJAM</a>
     <a class="dropdown-item" href="../articles/6_future_plans.html">6. Future Plans and Ideas for EJAM</a>
-    <a class="dropdown-item" href="../articles/what_is_ejam.html">What is EJAM?</a>
   </div>
-</li>
-<li class="nav-item">
-  <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
@@ -128,33 +128,86 @@ If TRUE, specify one threshold to use for each column.</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span> <span class="va">pdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>a<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">80</span>,<span class="fl">4</span><span class="op">)</span>,b<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">93</span>,<span class="fl">4</span><span class="op">)</span>, col3<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">49</span>,<span class="fl">98</span>,<span class="fl">100</span>,<span class="fl">100</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="co">### pdata &lt;- EJAM::blockgroupstats[ , names_e_pctile]</span></span>
-<span> <span class="va">pcuts</span> <span class="op">&lt;-</span>  <span class="fl">5</span> <span class="op">*</span> <span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">20</span><span class="op">)</span>  <span class="co"># &lt;- as.vector(keystats_e['highcut', ])</span></span>
-<span><span class="fu">colcounter_summary</span><span class="op">(</span>        <span class="va">pdata</span>, <span class="va">pcuts</span><span class="op">)</span></span>
-<span><span class="fu"><a href="colcounter_summary_pct.html">colcounter_summary_pct</a></span><span class="op">(</span>    <span class="va">pdata</span>, <span class="va">pcuts</span><span class="op">)</span></span>
-<span><span class="fu"><a href="colcounter_summary_cum.html">colcounter_summary_cum</a></span><span class="op">(</span>    <span class="va">pdata</span>, <span class="va">pcuts</span><span class="op">)</span></span>
-<span><span class="fu"><a href="colcounter_summary_cum_pct.html">colcounter_summary_cum_pct</a></span><span class="op">(</span><span class="va">pdata</span>, <span class="va">pcuts</span><span class="op">)</span></span>
-<span><span class="fu"><a href="colcounter_summary_cum_pct.html">colcounter_summary_cum_pct</a></span><span class="op">(</span><span class="va">pdata</span>, <span class="fl">5</span> <span class="op">*</span> <span class="op">(</span><span class="fl">10</span><span class="op">:</span><span class="fl">20</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">a3</span> <span class="op">&lt;-</span> <span class="fu"><a href="colcounter_summary_all.html">colcounter_summary_all</a></span><span class="op">(</span>    <span class="va">pdata</span>, <span class="va">pcuts</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">x80</span> <span class="op">&lt;-</span> <span class="fu"><a href="colcounter.html">colcounter</a></span><span class="op">(</span><span class="va">pdata</span>, threshold <span class="op">=</span> <span class="fl">80</span>, or.tied <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
-<span><span class="va">x95</span> <span class="op">&lt;-</span> <span class="fu"><a href="colcounter.html">colcounter</a></span><span class="op">(</span><span class="va">pdata</span>, threshold <span class="op">=</span> <span class="fl">95</span>, or.tied <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">x95</span><span class="op">)</span></span>
-<span><span class="fu"><a href="tablefixed.html">tablefixed</a></span><span class="op">(</span><span class="va">x95</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">NCOL</a></span><span class="op">(</span><span class="va">pdata</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span>at80<span class="op">=</span><span class="fu"><a href="tablefixed.html">tablefixed</a></span><span class="op">(</span><span class="va">x80</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">NCOL</a></span><span class="op">(</span><span class="va">pdata</span><span class="op">)</span><span class="op">)</span>, at95<span class="op">=</span><span class="fu"><a href="tablefixed.html">tablefixed</a></span><span class="op">(</span><span class="va">x95</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">NCOL</a></span><span class="op">(</span><span class="va">pdata</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span> <span class="va">pdata</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>a<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">80</span>,<span class="fl">4</span><span class="op">)</span>,b<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">93</span>,<span class="fl">4</span><span class="op">)</span>, col3<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">49</span>,<span class="fl">98</span>,<span class="fl">100</span>,<span class="fl">100</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="co">### pdata &lt;- EJAM::blockgroupstats[ , names_e_pctile]</span></span></span>
+<span class="r-in"><span> <span class="va">pcuts</span> <span class="op">&lt;-</span>  <span class="fl">5</span> <span class="op">*</span> <span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">20</span><span class="op">)</span>  <span class="co"># &lt;- as.vector(keystats_e['highcut', ])</span></span></span>
+<span class="r-in"><span><span class="fu">colcounter_summary</span><span class="op">(</span>        <span class="va">pdata</span>, <span class="va">pcuts</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              threshold</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> count.of.cols 0 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             0 0 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1   2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             1 0 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  1  3   2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             2 0 0  0  0  0  0  0  0  0  0  1  1  1  1  1  1  1  3  3  0   0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             3 4 4  4  4  4  4  4  4  4  4  3  3  3  3  3  3  3  0  0  0   0</span>
+<span class="r-in"><span><span class="fu"><a href="colcounter_summary_pct.html">colcounter_summary_pct</a></span><span class="op">(</span>    <span class="va">pdata</span>, <span class="va">pcuts</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              threshold</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> count.of.cols   0   5  10  15  20  25  30  35  40  45 50 55 60 65 70 75 80 85</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             0   0   0   0   0   0   0   0   0   0   0  0  0  0  0  0  0  0  0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             1   0   0   0   0   0   0   0   0   0   0  0  0  0  0  0  0  0 25</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             2   0   0   0   0   0   0   0   0   0   0 25 25 25 25 25 25 25 75</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             3 100 100 100 100 100 100 100 100 100 100 75 75 75 75 75 75 75  0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              threshold</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> count.of.cols 90 95 100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             0  0 25  50</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             1 25 75  50</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             2 75  0   0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             3  0  0   0</span>
+<span class="r-in"><span><span class="fu"><a href="colcounter_summary_cum.html">colcounter_summary_cum</a></span><span class="op">(</span>    <span class="va">pdata</span>, <span class="va">pcuts</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              threshold</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> count.of.cols 0 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             0 4 4  4  4  4  4  4  4  4  4  4  4  4  4  4  4  4  4  4  4   4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             1 4 4  4  4  4  4  4  4  4  4  4  4  4  4  4  4  4  4  4  3   2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             2 4 4  4  4  4  4  4  4  4  4  4  4  4  4  4  4  4  3  3  0   0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             3 4 4  4  4  4  4  4  4  4  4  3  3  3  3  3  3  3  0  0  0   0</span>
+<span class="r-in"><span><span class="fu"><a href="colcounter_summary_cum_pct.html">colcounter_summary_cum_pct</a></span><span class="op">(</span><span class="va">pdata</span>, <span class="va">pcuts</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              threshold</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> count.of.cols   0   5  10  15  20  25  30  35  40  45  50  55  60  65  70  75</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             0 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             1 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             2 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100 100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             3 100 100 100 100 100 100 100 100 100 100  75  75  75  75  75  75</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              threshold</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> count.of.cols  80  85  90  95 100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             0 100 100 100 100 100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             1 100 100 100  75  50</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             2 100  75  75   0   0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             3  75   0   0   0   0</span>
+<span class="r-in"><span><span class="fu"><a href="colcounter_summary_cum_pct.html">colcounter_summary_cum_pct</a></span><span class="op">(</span><span class="va">pdata</span>, <span class="fl">5</span> <span class="op">*</span> <span class="op">(</span><span class="fl">10</span><span class="op">:</span><span class="fl">20</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>              threshold</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> count.of.cols  50  55  60  65  70  75  80  85  90  95 100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             0 100 100 100 100 100 100 100 100 100 100 100</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             1 100 100 100 100 100 100 100 100 100  75  50</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             2 100 100 100 100 100 100 100  75  75   0   0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             3  75  75  75  75  75  75  75   0   0   0   0</span>
+<span class="r-in"><span><span class="va">a3</span> <span class="op">&lt;-</span> <span class="fu"><a href="colcounter_summary_all.html">colcounter_summary_all</a></span><span class="op">(</span>    <span class="va">pdata</span>, <span class="va">pcuts</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">x80</span> <span class="op">&lt;-</span> <span class="fu"><a href="colcounter.html">colcounter</a></span><span class="op">(</span><span class="va">pdata</span>, threshold <span class="op">=</span> <span class="fl">80</span>, or.tied <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">x95</span> <span class="op">&lt;-</span> <span class="fu"><a href="colcounter.html">colcounter</a></span><span class="op">(</span><span class="va">pdata</span>, threshold <span class="op">=</span> <span class="fl">95</span>, or.tied <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">x95</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> x95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0 1 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 3 </span>
+<span class="r-in"><span><span class="fu"><a href="tablefixed.html">tablefixed</a></span><span class="op">(</span><span class="va">x95</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">NCOL</a></span><span class="op">(</span><span class="va">pdata</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0 1 2 3 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 3 0 0 </span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span>at80<span class="op">=</span><span class="fu"><a href="tablefixed.html">tablefixed</a></span><span class="op">(</span><span class="va">x80</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">NCOL</a></span><span class="op">(</span><span class="va">pdata</span><span class="op">)</span><span class="op">)</span>, at95<span class="op">=</span><span class="fu"><a href="tablefixed.html">tablefixed</a></span><span class="op">(</span><span class="va">x95</span>, <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">NCOL</a></span><span class="op">(</span><span class="va">pdata</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   at80 at95</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0    0    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1    0    3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2    1    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3    3    0</span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p></p><p>Developed by Mark Corrales.</p>
+  <p></p><p>DRAFT</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p></p><p>EJAM Version 2.2.1 beta</p>
 </div>
 
     </footer></div>

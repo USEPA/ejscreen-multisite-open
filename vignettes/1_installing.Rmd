@@ -1,8 +1,8 @@
 ---
-title: "1. Installing the EJAM package"
+title: "1. Installing the EJAM R package"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{1. Installing the EJAM package}
+  %\VignetteIndexEntry{1. Installing the EJAM R package}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -52,21 +52,20 @@ indexblocks()
 #    - **See ?pkgdown::build_site** - EJAM now uses the pkgdown R package to build help and vignettes as web pages
 ```
 
-# EJAM Setup for R users
-
 EJAM is not only a web app built in shiny R, it is also an R package, using the [golem](https://thinkr-open.github.io/golem/ "https://thinkr-open.github.io/golem/"){.uri target="_blank" rel="noreferrer noopener"} framework.
 
 The development version of the app can be installed from the github USEPA github repository. It can be installed locally as an R package, and the data or functions can be used outside of the shiny app interface, if you want to reuse data or code, or want to do customized analysis or explore the data in R.
 
-## Install the EJAM R package (and related packages)
+## How to install
+
+To install EJAM, you will need to have access to the GitHub repositories on EPA's enterprise github site, at [USEPA GitHub](https://github.com/USEPA "https://github.com/USEPA"){.uri target="_blank" rel="noreferrer noopener"}. Unless/ until those repositories related to EJAM are public, you would need to be signed in on EPA's network, and for internal-only repositories, may need to use VPN.
 
 ### to install directly from GitHub, starting from RStudio
 
 If you know how to clone and build from source in RStudio, feel free to skip ahead to that topic.
 
-If you just want to install EJAM but not work with source code, you can try this approach:
-
-Try to install the packages like this (which will download and build from source, automatically):
+If you just want to install EJAM but not work with source code, you can try this approach
+(which will download and build from source, automatically):
 
 ``` r
 if (!require(devtools)) {install.packages("devtools")}
@@ -74,8 +73,6 @@ devtools::install_github('USEPA/EJAMejscreenapi')
 devtools::install_github('USEPA/EJAMbatch.summarizer')
 devtools::install_github('USEPA/EJAM')
 ```
-
-Note that to install EJAM this way, you will need to have access to the GitHub repositories on EPA's enterprise github site, at [USEPA GitHub](https://github.com/USEPA "https://github.com/USEPA"){.uri target="_blank" rel="noreferrer noopener"}. Unless/ until those repositories related to EJAM are public, you would need to be signed in on EPA's network, and for internal-only repositories, may need to use VPN.
 
 If installing that way does not work, you might need to do the following:
 

@@ -29,7 +29,7 @@
 #'   does not rely on EJScreen to do the calculations
 #'   and instead tries to replicate what EJScreen would do. 
 #'   As a result, as of early 2024 at least, while 
-#'   - *[ejamit()] is much, much faster than [ejscreenit()]* and
+#'   - *[ejamit()] is much, much faster than [ejscreenit_for_ejam()]* and
 #'   - *provides additional information* (distribution of distances by group, etc.) 
 #'   - *features* (histograms, spreadsheet with heatmaps, etc.)
 #'   - *flexibility* (easy for analysts using R to customize analysis, etc.),
@@ -136,7 +136,7 @@ ejscreen_vs_ejam <- function(latlon, radius = 3, nadrop = FALSE,
 #' Compare EJScreen API vs EJAM stats near site(s) (after results already run)
 #'
 #' @param apisite table output of ejscreenit()$table,
-#'   or ejscreenapi_plus()
+#'   or ejscreenapi_plus(), and also see [ejscreenit_for_ejam()]
 #' @param ejamsite table output of ejamit()$results_bysite
 #' @param nadrop optional, whether to drop indicators for which EJScreen API returns NA
 #' 

@@ -38,10 +38,12 @@ Get a leaflet html widget map of data.frame with lat lon
    mydf <-  frs[sample(1:NROW( frs), 1000), 1:5]
    mapfast(mydf)
  }
- 
- mapfastej(testoutput_ejscreenapi_plus_50)
- mapfast(testoutput_ejscreenapi_plus_50, column_names = 'ej')
- mapfast(testoutput_ejscreenapi_plus_50)
+ # out <- EJAMejscreenapi::testoutput_ejscreenit_50$table
+ # names(out) <- fixcolnames(names(out), 'long', 'r')
+ out <- testoutput_ejscreenapi_plus_50
+ mapfastej(out)
+ mapfast(out, column_names = 'ej')
+ mapfast(out)
  
  # Save .html file and view it in your browser
   

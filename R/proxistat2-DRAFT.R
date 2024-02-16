@@ -95,7 +95,7 @@ proxistat2 <- function(pts, countradius = 8.04672, maxradius = 621.3712, quadtre
   # [1] 8174955       3
   # blockwts$block_radius_miles  has the info in miles effective radius
   
-  km_per_mile <- EJAMejscreenapi::meters_per_mile / 1000  # km_per_mile = 1.609344  # meters_per_mile #   [1] 1609.344
+  km_per_mile <- meters_per_mile / 1000  # km_per_mile = 1.609344  # meters_per_mile #   [1] 1609.344
 
   # block_radius_miles  is the distance at which we start to adjust
   # min.dist <- 0.9 * block_radius_miles

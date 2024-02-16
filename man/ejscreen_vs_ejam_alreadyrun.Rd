@@ -16,7 +16,7 @@ ejscreen_vs_ejam_alreadyrun(
 }
 \arguments{
 \item{apisite}{table output of ejscreenit()$table,
-or ejscreenapi_plus()}
+or ejscreenapi_plus(), and also see \code{\link[=ejscreenit_for_ejam]{ejscreenit_for_ejam()}}}
 
 \item{ejamsite}{table output of ejamit()$results_bysite}
 

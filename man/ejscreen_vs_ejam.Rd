@@ -68,7 +68,7 @@ does not rely on EJScreen to do the calculations
 and instead tries to replicate what EJScreen would do.
 As a result, as of early 2024 at least, while
 \itemize{
-\item \emph{\code{\link[=ejamit]{ejamit()}} is much, much faster than \code{\link[=ejscreenit]{ejscreenit()}}} and
+\item \emph{\code{\link[=ejamit]{ejamit()}} is much, much faster than \code{\link[=ejscreenit_for_ejam]{ejscreenit_for_ejam()}}} and
 \item \emph{provides additional information} (distribution of distances by group, etc.)
 \item \emph{features} (histograms, spreadsheet with heatmaps, etc.)
 \item \emph{flexibility} (easy for analysts using R to customize analysis, etc.),
