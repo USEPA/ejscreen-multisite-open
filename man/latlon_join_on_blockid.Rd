@@ -2,8 +2,7 @@
 % Please edit documentation in R/latlon_join_on_blockid.R
 \name{latlon_join_on_blockid}
 \alias{latlon_join_on_blockid}
-\title{latlon_join_on_blockid - get lat,lon of each block internal point via blockid
-get expanded version of sites2blocks data.table, with new lat,lon columns}
+\title{get lat,lon of each block internal point via blockid}
 \usage{
 latlon_join_on_blockid(s2b)
 }
@@ -14,11 +13,11 @@ latlon_join_on_blockid(s2b)
 returns the input data.table but with lat,lon columns added as block coordinates
 }
 \description{
-latlon_join_on_blockid - get lat,lon of each block internal point via blockid
 get expanded version of sites2blocks data.table, with new lat,lon columns
 }
 \examples{
  s2b = copy(testoutput_getblocksnearby_10pts_1miles)
  latlon_join_on_blockid(s2b) # done by trilaterate also
- 
+
 }
+\keyword{internal}

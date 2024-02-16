@@ -49,3 +49,6 @@ packrat/lib*/
 
 # large datasets stored as .arrow
 /data/*.arrow
+
+# pkgdown folders are here
+docs

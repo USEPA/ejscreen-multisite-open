@@ -3,7 +3,7 @@
 \name{pctile_from_raw_lookup}
 \alias{pctile_from_raw_lookup}
 \alias{lookup_pctile}
-\title{pctile_from_raw_lookup - Find approx percentiles in lookup table that is in memory}
+\title{Find approx percentiles in lookup table that is in memory}
 \usage{
 pctile_from_raw_lookup(
   myvector,
@@ -91,4 +91,5 @@ data.frame(value = eg, pctile = lookup_pctile(eg, names_d))
          - testoutput_ejscreenapi_plus_100[,paste0("pctile.",vname)] )
   }
 }
+
 }

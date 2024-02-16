@@ -2,13 +2,12 @@
 % Please edit documentation in R/plot_distance_mean_by_group.R
 \name{distance_by_group1}
 \alias{distance_by_group1}
-\title{distance_by_group1  -  JUST ONE GROUP
-Get average distance for ONE demographic group versus everyone else}
+\title{Get average distance for ONE demographic group versus everyone else}
 \usage{
 distance_by_group1(
   results_bybg_people,
   demogvarname = "Demog.Index",
-  demoglabel = demogvarname
+  demoglabel = fixcolnames(demogvarname, "r", "shortlabel")
 )
 }
 \arguments{
@@ -22,7 +21,6 @@ distance_by_group1(
 list of 2 numbers: avg_distance_for_group and avg_distance_for_nongroup
 }
 \description{
-distance_by_group1  -  JUST ONE GROUP
 Get average distance for ONE demographic group versus everyone else
 }
 \details{
@@ -53,7 +51,7 @@ So to retain flexibility doaggregate() reports all instances of blockgroup-site 
    demogvarname = 'pctlowinc', demoglabel = 'Low Income'))
  distance_by_group_plot(y$results_bybg_people, 
    demogvarname = 'pctlowinc', demoglabel = 'Low Income')
- xyz = plot_distance_cdf_by_group(y$results_bybg_people) #  
+ xyz = distance_by_group_plot(y$results_bybg_people) #  
  tail(round(xyz,3))
  tail(xyz[xyz$pctwa <= 0.501, ]) #  Median distance to nearest site here 
    for White Alone is 2.15 miles, but >60\% of Black Alone have a site that close.
@@ -61,7 +59,9 @@ So to retain flexibility doaggregate() reports all instances of blockgroup-site 
    for Black Alone is 1.85 miles
  round(tail(xyz[xyz$dist <=1, ]), 3) #  11\% of White have a site within 1 mile, 
    compared to 18.7\% of Asian who do.
+   
 }
 \seealso{
 \code{\link[=plot_distance_mean_by_group]{plot_distance_mean_by_group()}}  \code{\link[=distance_by_group]{distance_by_group()}}
 }
+\keyword{internal}

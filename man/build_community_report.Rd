@@ -2,7 +2,7 @@
 % Please edit documentation in R/build_community_report.R
 \name{build_community_report}
 \alias{build_community_report}
-\title{build_community_report}
+\title{Generate EJAM Summary Report in HTML within shiny app}
 \usage{
 build_community_report(
   output_df,
@@ -30,5 +30,9 @@ build_community_report(
 \item{filename, }{path to file to save HTML content to; if null, returns as string (used in Shiny app)}
 }
 \description{
-build_community_report
+Creates a 2 page report on overall results or for one site, with
+demographic and environmental indicators, and EJ Indexes if needed.
+For the same function for use in RStudio,
+see \code{\link[=ejam2report]{ejam2report()}} which relies on \code{build_community_report()}
 }
+\keyword{internal}

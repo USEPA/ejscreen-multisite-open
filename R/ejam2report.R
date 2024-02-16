@@ -1,6 +1,7 @@
+
 #' View HTML Report on EJAM Results (Overall or at 1 Site)
 #'
-#' Get URL for and view in browser a 2-page summary report similar to the 
+#' @description Get URL for and view in browser a 2-page summary report similar to the 
 #' EJScreen Community Report
 #' 
 #' @details This relies on [build_community_report()] as used in web app
@@ -13,10 +14,10 @@
 #' @param analysis_title optional title of analysis
 #' @param submitted_upload_method `"latlon"` is the default and other options are not implemented yet.
 #' @param data_up_shp not implemented yet, for upload method SHP
-#'
-#' @return URL of temp html file and has side effect of 
-#' launching browser to view it
-#' @export
+#' @param launch_browser set TRUE to have it launch browser and show report.
+#' @param return_html set TRUE to have function return HTML object instead of URL of local file
+#' @return URL of temp html file or object depending on return_html,
+#'    and has side effect of launching browser to view it depending on return_html
 #'
 #' @examples
 #' #out <- ejamit(testpoints_10, radius = 3, include_ejindexes = T)
@@ -30,18 +31,24 @@
 #' table_gt_from_ejamit_1site(out$results_bysite[1, ])
 #' browseURL(x)
 #' 
+#' @export
+#' 
 ejam2report <- function(ejamout = testoutput_ejamit_10pts_1miles, sitenumber = NULL,  
-                                    analysis_title = "EJAM Report", 
-                                    submitted_upload_method = c("latlon", "SHP", "FIPS")[1],
-                                    data_up_shp = NA) {
-if (is.null(sitenumber)) {
-ejamout1 <- ejamout$results_overall
-} else {
-  ejamout1 <- ejamout$results_bysite[sitenumber, ]
-}
-include_ejindexes <- any(names_ej_pctile %in% colnames(ejamout1))
+                        analysis_title = "EJAM Report", 
+                        submitted_upload_method = c("latlon", "SHP", "FIPS")[1],
+                        data_up_shp = NA,
+                        return_html = FALSE, 
+                        launch_browser = TRUE) {
   
-if (!("valid" %in% names(ejamout1))) {ejamout1$valid <- TRUE}
+  if (!interactive()) {launch_browser <- FALSE}
+  if (is.null(sitenumber)) {
+    ejamout1 <- ejamout$results_overall
+  } else {
+    ejamout1 <- ejamout$results_bysite[sitenumber, ]
+  }
+  include_ejindexes <- any(names_ej_pctile %in% colnames(ejamout1))
+  
+  if (!("valid" %in% names(ejamout1))) {ejamout1$valid <- TRUE}
   
   x <- as.numeric(sitenumber)
   if (ejamout1$valid == T) {
@@ -77,6 +84,7 @@ if (!("valid" %in% names(ejamout1))) {ejamout1$valid <- TRUE}
       file.copy(from = app_sys('report/community_report/EPA_logo_white.png'),
                 to = file.path(tempdir(), 'www', 'EPA_logo_white.png'), overwrite = TRUE)
     }
+    
     temp_comm_report <- file.path(tempdir(), paste0("comm_report",x,".html"))
     
     tempReport <- file.path(tempdir(), 'community_report_template.Rmd')
@@ -84,18 +92,29 @@ if (!("valid" %in% names(ejamout1))) {ejamout1$valid <- TRUE}
     ## copy Rmd from inst/report to temp folder  (note there had been a similar but not identical .Rmd in EJAM/www/)
     file.copy(from = app_sys('report/community_report/community_report_template.Rmd'),  # treats EJAM/inst/ as root
               to = tempReport, overwrite = TRUE)
+    if (return_html) {
+      temp_comm_report_or_null <- NULL
+    } else {
+    temp_comm_report_or_null <- temp_comm_report
+}
     
-    build_community_report(
+    x <- build_community_report(
       output_df = ejamout1,
       analysis_title = analysis_title,
       totalpop = popstr,
       locationstr = locationstr,
       include_ejindexes = include_ejindexes,
       in_shiny = F,
-      filename = temp_comm_report
+      filename = temp_comm_report_or_null # passing NULL should make it return the html object
     )
-    browseURL(temp_comm_report)
-    return(temp_comm_report)
+    if (launch_browser) {
+      browseURL(temp_comm_report)
+    }
+    if (return_html) {
+      return(x)
+    } else {
+      return(temp_comm_report)
+    }
     ########################################################################################### #
     ## can also generate reports through knitting Rmd template
     ## this is easier to add in maps and plots but is slower to appear

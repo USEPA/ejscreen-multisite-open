@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils_dupenames.R
 \name{dupeRfiles}
 \alias{dupeRfiles}
-\title{dupeRfiles - UTILITY - check conflicting sourcefile names}
+\title{UTILITY - check conflicting sourcefile names}
 \usage{
 dupeRfiles(folder1 = "../EJAM/R", folder2 = "./R")
 }
@@ -20,3 +20,4 @@ as ejamlite and EJAMejscreenapi had copies of some EJAM files.
 
 See \code{\link[=dupenames]{dupenames()}} for when they are all packages.
 }
+\keyword{internal}

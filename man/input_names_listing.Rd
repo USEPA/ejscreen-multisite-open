@@ -2,9 +2,7 @@
 % Please edit documentation in R/utils_input_names.R
 \name{input_names_listing}
 \alias{input_names_listing}
-\title{input_names_listing
-Utility checking values of input$ that appear in this code
-See appsilon pkg shiny.info now}
+\title{Utility checking values of input$ that appear in this code}
 \usage{
 input_names_listing(file = "./R/app_server.R")
 }
@@ -15,7 +13,6 @@ input_names_listing(file = "./R/app_server.R")
 character vector of ids of inputs like x,y,z if it found input$x input$y input$z
 }
 \description{
-input_names_listing
-Utility checking values of input$ that appear in this code
 See appsilon pkg shiny.info now
 }
+\keyword{internal}

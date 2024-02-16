@@ -2,8 +2,7 @@
 % Please edit documentation in R/plot_distance_cdf_by_group.R
 \name{distance_cdf_by_group_plot}
 \alias{distance_cdf_by_group_plot}
-\title{distance_cdf_by_group_plot - SLOW - needs to be optimized
-Plot a graphic showing cumulative shares of ONLY ONE demographic group that are within each distance}
+\title{What percentage of this demographic group's population lives less than X miles from a site?}
 \usage{
 distance_cdf_by_group_plot(
   results_bybg_people,
@@ -32,8 +31,15 @@ invisibly returns full table of sorted distances of blockgroups, cumulative coun
 and cumulative count of everyone else in that block group
 }
 \description{
-distance_cdf_by_group_plot - SLOW - needs to be optimized
-Plot a graphic showing cumulative shares of ONLY ONE demographic group that are within each distance
+This plots the cumulative share of residents found within each distance,
+for a single demographic group.
+
+This function, distance_cdf_by_group_plot(), is based on ejamit()$results_bybg_people,
+which provides only block group resolution information about distance.
+For block resolution analysis of distance by group, see \code{\link[=plot_distance_by_pctd]{plot_distance_by_pctd()}}.
+}
+\details{
+The function distance_cdf_by_group_plot is SLOW - ***needs to be optimized
 }
 \examples{
  y <- ejamit(testpoints_100, radius = 3)
@@ -42,7 +48,7 @@ Plot a graphic showing cumulative shares of ONLY ONE demographic group that are 
    demogvarname = 'pctlowinc', demoglabel = 'Low Income'))
  distance_by_group_plot(y$results_bybg_people, 
    demogvarname = 'pctlowinc', demoglabel = 'Low Income')
- xyz = plot_distance_cdf_by_group(y$results_bybg_people) #  
+ xyz = distance_by_group_plot(y$results_bybg_people) #  
  tail(round(xyz,3))
  tail(xyz[xyz$pctwa <= 0.501, ]) #  Median distance to nearest site here 
    for White Alone is 2.15 miles, but >60\% of Black Alone have a site that close.
@@ -50,6 +56,7 @@ Plot a graphic showing cumulative shares of ONLY ONE demographic group that are 
    for Black Alone is 1.85 miles
  round(tail(xyz[xyz$dist <=1, ]), 3) #  11\% of White have a site within 1 mile, 
    compared to 18.7\% of Asian who do.
+   
 }
 \seealso{
 \code{\link[=distance_by_group]{distance_by_group()}} \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} for examples

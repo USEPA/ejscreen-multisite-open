@@ -3,8 +3,7 @@
 \name{latlon_from_anything}
 \alias{latlon_from_anything}
 \alias{latlon_any_format}
-\alias{lonlat_any_format}
-\title{latlon_from_anything - Flexibly get lat/lon from file, data.frame, data.table, or lat/lon vectors}
+\title{Get lat/lon flexibly - from file, data.frame, data.table, or lat/lon vectors}
 \usage{
 latlon_from_anything(x, y)
 }
@@ -23,18 +22,17 @@ be inferred to be that by latlon_infer()}
 A data.frame that has at least columns lon and lat (and others if they were in x)
 }
 \description{
-Try to figure out if user provided latitude / longitude as vectors, data.frame, file, or interactively pick file.
+Try to figure out if user provided latitude / longitude
+as vectors, data.frame, file, or interactively pick file.
 }
 \details{
-This function
+This function relies on
 
-relies on
-
-read_csv_or_xl()  and
+\code{\link[=read_csv_or_xl]{read_csv_or_xl()}}  and
 
 \code{\link[=latlon_df_clean]{latlon_df_clean()}} which in turn uses \code{\link[=latlon_infer]{latlon_infer()}} \code{\link[=latlon_as.numeric]{latlon_as.numeric()}} \code{\link[=latlon_is.valid]{latlon_is.valid()}}
 
-read_and_clean_points() from EJAMejscreenapi
+\code{\link[=read_and_clean_points]{read_and_clean_points()}} from EJAMejscreenapi
 
 would be the most general / flexible broadest way to get points, but is still work in progress
 
@@ -47,10 +45,10 @@ except it also uses these functions:
 \code{\link[=latlon_from_programid]{latlon_from_programid()}}   but not  _from_naics() ?
 }
 \examples{
- 
+  \dontrun{
  if (interactive()) {
  pts <- latlon_from_anything()
- }
+ }}
  latlon_from_anything(testpoints_100[1:6,] )
  latlon_from_anything(testpoints_100[1:6, c('lat','lon')] )
  latlon_from_anything(x=testpoints_100$lon[1:6], y=testpoints_100$lat[1:6] )

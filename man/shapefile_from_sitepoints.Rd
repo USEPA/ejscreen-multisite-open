@@ -2,8 +2,7 @@
 % Please edit documentation in R/shapefile_xyz.R
 \name{shapefile_from_sitepoints}
 \alias{shapefile_from_sitepoints}
-\title{shapefile_from_sitepoints - convert table of lat,lon points/sites into sf:: shapefile
-Creates a simple feature (sf) dataframe from points}
+\title{Convert table of lat,lon points/sites into sf:: shapefile}
 \usage{
 shapefile_from_sitepoints(sitepoints, crs = 4269)
 }
@@ -16,7 +15,6 @@ shapefile_from_sitepoints(sitepoints, crs = 4269)
 A shapefile via \code{\link[sf:st_as_sf]{sf::st_as_sf()}}
 }
 \description{
-shapefile_from_sitepoints - convert table of lat,lon points/sites into sf:: shapefile
 Creates a simple feature (sf) dataframe from points
 }
 \seealso{

@@ -1,29 +1,49 @@
-#' plot_distance_by_pctd  -  Plot percent demographics within X miles of a site
+
+
+#' What percentage of this demographic group's population lives less than X miles from a site?
+#' 
+#' @description This plots the cumulative share of residents found within each distance,
+#'   for a single demographic group.
+#'   
+#'   This function uses the distance of each Census block from the site in conjunction with
+#'   the block group demographics, to provide a relatively detailed picture of
+#'   how far away residents in each group live. In contrast, the function
+#'   [distance_cdf_by_group_plot()] is based on ejamit()$results_bybg_people,
+#'   which provides only block group resolution information about distance.
 #'
-#' @param s2b output of [getblocksnearby()]
+#' @param s2b output of [getblocksnearby()], a data.table of distance from each block centroid to each site.
+#'   If NULL (not provided as a parameter to the function), the function will just show an example using a random point.
 #' @param sitenum one number that is the unique ID (the row number of original list of points) to look at in s2b
 #' @param myvars a colname of a population count variable in blockgroupstats indicating which to plot, like "hisp" or "lowinc"
 #'   and only works for one indicator at a time so far. 
 #' @param dpctvar a colname of usastats and statestats that is the percentage version of myvars, like "pcthisp" or "pctlowinc"
 #'
 #' @return returns s2b but with more columns in it, like cumpop, cumdpop, pctdwithin
-#' @export
-#'
 #' @examples 
 #'   plot_distance_by_pctd()
-plot_distance_by_pctd <- function(s2b = NULL, sitenum = NULL, myvars = c(names_d_count, names_d_subgroups_count)[1], dpctvar = paste0("pct", myvars)) {
+#' 
+#' @export
+#'
+plot_distance_by_pctd <- function(s2b = NULL, sitenum = NULL, 
+                                  myvars = c(names_d_count, names_d_subgroups_count)[1], 
+                                  demoglabel=fixcolnames(myvars,"r","shortlabel")
+                                  ) {
   
-  # library(data.table)
-  # library(EJAM)
-  # dataload_from_pins() # to get blockid2fips, etc.
-   ####### parameters # 
+if (is.null(s2b)) {
   
-if (is.null(s2b)) {  
   s2b <- copy(
     getblocksnearby(testpoints_n(2), radius = 6.2)
     #  
     )
 }
+  if (!("blockid" %in% names(s2b))) {
+    # maybe they provide just latlon table
+    s2b <- latlon_from_anything(s2b)
+    if (all("lat" %in% names(s2b), "lon" %in% names(s2b))) {
+      s2b <- getblocksnearby(s2b, 10) # 10 miles arbitrarily just to include more
+    }
+  }
+  
   if (is.null(sitenum)) {
    sitenum <- s2b$ejam_uniq_id[1]
   }

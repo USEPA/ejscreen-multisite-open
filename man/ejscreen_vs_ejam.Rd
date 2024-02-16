@@ -2,7 +2,7 @@
 % Please edit documentation in R/ejscreen_vs_ejam_.R
 \name{ejscreen_vs_ejam}
 \alias{ejscreen_vs_ejam}
-\title{EJAM/EJSCREEN comparisons - compare EJScreen API vs EJAM stats near site(s)}
+\title{EJAM/EJSCREEN comparisons}
 \usage{
 ejscreen_vs_ejam(
   latlon,
@@ -59,13 +59,40 @@ For each data.frame, colnames are indicators like pop, blockcount_near_site, etc
 and rows represent sites analyzed.
 }
 \description{
-EJAM/EJSCREEN comparisons - compare EJScreen API vs EJAM stats near site(s)
+This is the main function that facilitates comparing
+EJScreen API vs EJAM stats near site(s)
+}
+\details{
+Note that the EJAM tool/ function called \code{\link[=ejamit]{ejamit()}}
+does not rely on EJScreen to do the calculations
+and instead tries to replicate what EJScreen would do.
+As a result, as of early 2024 at least, while
+\itemize{
+\item \emph{\code{\link[=ejamit]{ejamit()}} is much, much faster than \code{\link[=ejscreenit_for_ejam]{ejscreenit_for_ejam()}}} and
+\item \emph{provides additional information} (distribution of distances by group, etc.)
+\item \emph{features} (histograms, spreadsheet with heatmaps, etc.)
+\item \emph{flexibility} (easy for analysts using R to customize analysis, etc.),
+\emph{\code{\link[=ejamit]{ejamit()}} does not always exactly replicate EJScreen} --
+does not provide 100\% identical results (percentiles, etc.) for
+every indicator in every analysis at every location.
+This is due to slight variations in
+\item details of the spatial calculations (which blocks are nearby,
+sometimes counting 1 extra block as 2.99 miles away while
+EJScreen counts it as outside the 3 mile radius, e.g.)
+\item rounding (how many digits are retained during calculations,
+and how many are shown in final reports)
+\item percentile assignment method (how percentile lookup tables are used,
+how ties are treated in percentile lookup tables, etc.), or
+\item weighted averages or other formulas used for aggregation of blockgroup scores
+(being updated in 2024 to more precisely match the formulas EJScreen uses)
+}
 }
 \examples{
  \dontrun{
    pts <- testpoints_100[1:5, ]
    
-  # This step can take a long time, almost 1 minute / 20 points, as it uses the EJScreen API:
+  # This step can take a long time, 
+  # almost 1 minute / 20 points, as it uses the EJScreen API:
   #z <- ejscreen_vs_ejam(
     testpoints_100[27, ], radius = 3, nadrop = T, include_ejindexes = TRUE)
   z <- ejscreen_vs_ejam(pts, radius = 3, include_ejindexes = TRUE)
@@ -87,10 +114,9 @@ EJAM/EJSCREEN comparisons - compare EJScreen API vs EJAM stats near site(s)
    # Reports disagree if percentages reported as 0-100 vs fractions 0-1.00
    z[z$ratio == 0.01 & !is.na(z$ratio), -1]
    
-   
-   
   }
 }
 \seealso{
 \code{\link[=ejscreen_vs_ejam_alreadyrun]{ejscreen_vs_ejam_alreadyrun()}}
 }
+\keyword{internal}

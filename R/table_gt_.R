@@ -1,7 +1,9 @@
 
 
-#' table_gt_from_ejamit - Create a gt-format table of results from EJAM 
+#' Create a gt-format table of results from EJAM
+#' 
 #' Uses the list of results of ejamit()
+#' 
 #' @details See the R package called gt. Also see code that creates html tables from html template
 #'   and code that creates formatted spreadsheets like [table_xls_format()] 
 #' @param ejamitoutput list of EJAM results formatted as in testoutput_ejamit_100pts_1miles, 
@@ -27,7 +29,8 @@ table_gt_from_ejamit <- function(ejamitoutput = NULL, type = c("demog", "envt")[
 ############################################################################# # 
 
 
-#' table_gt_from_ejamit_overall - Create a formatted table of results from EJAM overall summary stats
+#' Create a formatted table of results from EJAM overall summary stats
+#' 
 #' Uses the results_overall element of ejamit() output
 #' @param ejamit_results_1row 1-row data.table like testoutput_ejamit_100pts_1miles$results_overall, 
 #'   as would come from ejamit(testpoints_10)$results_overall 
@@ -48,7 +51,8 @@ table_gt_from_ejamit_overall   <- function(ejamit_results_1row = NULL, type = c(
 }
 ############################################################################# # 
 
-#' table_gt_from_ejamit_1site - Create a formatted table of results for 1 site from EJAM
+#' Create a formatted table of results for 1 site from EJAM
+#' 
 #' Uses 1 row from the results_bysite part of ejamit() output
 #' @param ... passed to [table_gt_from_ejamit_overall()]
 #' @examples 
@@ -63,7 +67,8 @@ table_gt_from_ejamit_1site <- function(...) {
 ############################################################################# # 
 
 
-#' table_validated_ejamit_row - Cleans/validates EJAM results for 1 place or overall
+#' Cleans/validates EJAM results for 1 place or overall
+#' 
 #' This is a first step in formatting results in nice tables
 #' @param ejamit_results_1row 1-row data.table like testoutput_ejamit_100pts_1miles$results_overall, 
 #'   
@@ -104,8 +109,9 @@ table_validated_ejamit_row <- function(ejamit_results_1row = NULL) {
 ############################################################################# # 
 
 
-#' table_gt_format_step1 - validate and reshape 1 row of ejamit results to prep for formatting as gt table/report
-#'  reshapes a few columns of a 1 row data.table into a tall multirow data.frame.
+#' Validate and reshape 1 row of ejamit results to prep for formatting as gt table/report
+#' 
+#' Reshapes a few columns of a 1 row data.table into a tall multirow data.frame.
 #' @param ejamit_results_1row data.table (or data.frame) like testoutput_ejamit_100pts_1miles$results_overall
 #'    from something like ejamit(testpoints_100, radius = 1)$results_overall
 #' @param type demog or envt to specify which type of table
@@ -176,7 +182,7 @@ table_gt_format_step1 <- function(ejamit_results_1row = NULL, type = "demog") {
 ############################################################################# # 
 
 
-#' table_gt_format_step2 - Format a table of demog or envt scores, percentiles, etc. to look similar to EJScreen report tables
+#' Format a table of demog or envt scores, percentiles, etc. to look similar to EJScreen report tables
 #' 
 #' @param df A data frame from table_gt_format_step1
 #'   
@@ -494,7 +500,8 @@ table_gt_format_step2 <- function(df, type = c("demog", "envt")[1], my_cell_colo
 
 
 
-#' table4gt_from_scorevectors - DRAFT EXPERIMENTAL - attempt to make table more flexible / any indicators
+#' DRAFT EXPERIMENTAL - attempt to make table more flexible / any indicators
+#' 
 #' Based on just indicator names and a value for each, it tries to fill in the rest of a summary table's data.
 #'   and formats this as a data.frame ready for the next step
 #' @param varnames_r vector of variable names like names_d

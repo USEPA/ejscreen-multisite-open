@@ -2,8 +2,7 @@
 % Please edit documentation in R/getblocksnearby_from_fips.R
 \name{getblocksnearby_from_fips}
 \alias{getblocksnearby_from_fips}
-\title{getblocksnearby_from_fips
-Actually finds all blocks within each of the FIPS codes provided}
+\title{Find all blocks within each of the FIPS codes provided}
 \usage{
 getblocksnearby_from_fips(fips, inshiny = FALSE, need_blockwt = TRUE)
 }
@@ -22,8 +21,7 @@ or comparing whole counties to each other, within a State.}
 same as for \link{getblocksnearby} but one row per FIPS, and the distance column is irrelevant
 }
 \description{
-getblocksnearby_from_fips
-Actually finds all blocks within each of the FIPS codes provided
+Allows EJAM to analyze and compare Counties, for example
 }
 \examples{
   x <- getblocksnearby_from_fips(fips_counties_from_state_abbrev("DE"))
@@ -35,5 +33,5 @@ Actually finds all blocks within each of the FIPS codes provided
   # y=doaggregate(x)
 }
 \seealso{
-\code{\link[=fips_bg_from_anyfips]{fips_bg_from_anyfips()}} \code{\link[=fips_lead_zero]{fips_lead_zero()}} \code{\link[=getblocksnearby_from_fips]{getblocksnearby_from_fips()}} \code{\link[=fips_from_table]{fips_from_table()}}
+\code{\link[=getblocksnearby]{getblocksnearby()}} \code{\link[=fips_bg_from_anyfips]{fips_bg_from_anyfips()}} \code{\link[=fips_lead_zero]{fips_lead_zero()}} \code{\link[=getblocksnearby_from_fips]{getblocksnearby_from_fips()}} \code{\link[=fips_from_table]{fips_from_table()}}
 }

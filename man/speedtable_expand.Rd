@@ -2,8 +2,7 @@
 % Please edit documentation in R/utils_speedtest.R
 \name{speedtable_expand}
 \alias{speedtable_expand}
-\title{speedtable_expand
-Utility used by speedtest() and speedtable_summarize()}
+\title{Utility used by speedtest() and speedtable_summarize()}
 \usage{
 speedtable_expand(speedtable)
 }
@@ -11,6 +10,6 @@ speedtable_expand(speedtable)
 \item{speedtable}{must have columns called  points, miles, and perhr}
 }
 \description{
-speedtable_expand
 Utility used by speedtest() and speedtable_summarize()
 }
+\keyword{internal}

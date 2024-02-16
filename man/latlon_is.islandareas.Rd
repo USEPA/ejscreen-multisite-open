@@ -2,9 +2,7 @@
 % Please edit documentation in R/latlon_is.valid.R
 \name{latlon_is.islandareas}
 \alias{latlon_is.islandareas}
-\title{latlon_is.islandareas
-Check lat lon coordinates to see if each is approx. in general area of US Island Areas Guam, USVI, Amer Samoa or N Marianas
-See \link{islandareas}}
+\title{Check lat lon coordinates to see if each is approx. in general area of US Island Areas Guam, USVI, Amer Samoa or N Marianas}
 \usage{
 latlon_is.islandareas(lat, lon)
 }
@@ -18,8 +16,6 @@ vector of TRUE / FALSE values indicating a given lat lon pair
 is approximately in one of the rough bounding boxes that includes the 4 Island Areas.
 }
 \description{
-latlon_is.islandareas
-Check lat lon coordinates to see if each is approx. in general area of US Island Areas Guam, USVI, Amer Samoa or N Marianas
 See \link{islandareas}
 }
 \examples{
@@ -29,8 +25,9 @@ See \link{islandareas}
   mapfast(testpoints_1000[isles, ]) # c(213,785) 
   which(!(latlon_is.usa(lat = testpoints_1000$lat, lon = testpoints_1000$lon)))
 }
-  
+
 }
 \seealso{
 \code{\link[=latlon_is.usa]{latlon_is.usa()}} \code{\link[=latlon_is.islandareas]{latlon_is.islandareas()}} \code{\link[=latlon_is.available]{latlon_is.available()}} \code{\link[=latlon_is.possible]{latlon_is.possible()}}
 }
+\keyword{internal}

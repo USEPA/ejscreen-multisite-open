@@ -1,0 +1,56 @@
+---
+title: "Using EJAM"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using EJAM}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r SETUP_default_eval_or_not, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+knitr::opts_chunk$set(eval = FALSE)
+# https://r-pkgs.org/vignettes.html
+```
+
+```{r developernote, eval=FALSE, echo= FALSE, include = FALSE}
+#
+#  *>>>>>>>>>> Developer note: vignettes need to be tested/edited/rebuilt regularly <<<<<<<<<<<*
+#
+#    - **See ?pkgdown::build_site** - EJAM now uses the pkgdown R package to build help and vignettes as web pages
+# 
+#     - It previously used some of these methods also:
+#       - rmarkdown::render("vignettes/INSERTNAMEHERE.Rmd", encoding = 'UTF-8')
+#       - The "render button" in RStudio that shows more detailed progress during render
+#       - devtools::build_vignettes(), but that failed on dataload_from_pins() or _local() trying to get blockid2fips
+```
+
+# Beta test website
+
+As of February 2024, EPA staff can try a live beta test version of the EJAM web app - The beta test is accessible only at EPA offices or via VPN:
+
+- [**EJAM beta test**](https://rstudio-connect.dmap-stage.aws.epa.gov/content/cb2bc9cf-75c3-4db1-ad28-e92940fe4438)
+
+You must be inside EPA's network (e.g. using VPN) to access the EJAM web app, and need to authenticate with PIV card, currently.
+
+EJAM is still in active development, and is a work in progress, so not everything is bug-free yet and changes are being made, so we are seeking feedback and input on bugs, usability issues, performance, clarity, and ideas for enhancements with possible new features and functionality.
+
+Information about how to use the web app may be provided elsewhere at some point, but the app is meant to be relatively easy for an analyst to use without any training or user guide.
+
+# R/RStudio users
+
+If you use R/RStudio, you can run the web app on your own computer. You first need to install the EJAM R package as explained in the article/vignette on installing EJAM.
+
+Once EJAM is installed (and you have access to the datasets needed), you can launch the local web app from RStudio as follows:
+
+```{r run_app1, eval = FALSE, include= TRUE}
+library(EJAM)
+run_app()
+```
+
+Note this is different than running a simple shiny app that is not also a package via golem. You should use the EJAM package function `run_app()` not `shiny::runApp()`.
+
+Note that the web app (e.g., launched locally) handles loading datasets and indexing blocks, assuming you have access to the server that stores those datasets as a pins board, so you would not have to download datasets manually or do indexing manually if launching the EJAM app locally. You just need the packages installed that EJAM relies on (see below).

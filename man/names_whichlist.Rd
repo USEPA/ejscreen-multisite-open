@@ -2,8 +2,7 @@
 % Please edit documentation in R/utils_names_whichlist.R
 \name{names_whichlist}
 \alias{names_whichlist}
-\title{names_whichlist
-See which of the lists of names a single term appears in}
+\title{See which of the lists of names a single term appears in}
 \usage{
 names_whichlist(
   x,
@@ -34,7 +33,6 @@ names_whichlist(
 a data.frame of whichlist, exactmatch, grepmatch, and grephits (examples)
 }
 \description{
-names_whichlist
 See which of the lists of names a single term appears in
 }
 \details{
@@ -51,5 +49,6 @@ namez$d_friendly which is a vector of terms like
    subset(namez, names(namez) != "all_r" & names(namez) \%in\%
       subset(x, x$grepmatch == "yes" & !grepl("friendly", x$whichlist))$whichlist  )
    grep("\\\\.eo$", namez$ej, value = T)
-   
+
 }
+\keyword{internal}

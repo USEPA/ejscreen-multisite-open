@@ -2,19 +2,19 @@
 % Please edit documentation in R/plot_distance_mean_by_group.R
 \name{distance_mean_by_group}
 \alias{distance_mean_by_group}
-\title{distance_mean_by_group - Avg distance of each demog group (of multiple groups)
-Same as \code{\link[=plot_distance_mean_by_group]{plot_distance_mean_by_group()}} but no plot by default}
+\alias{distance_by_group}
+\title{Avg distance of each demog group (of multiple groups) - Table or Plot}
 \usage{
 distance_mean_by_group(
   results_bybg_people,
   demogvarname = NULL,
-  demoglabel = NULL,
+  demoglabel = fixcolnames(demogvarname, "r", "shortlabel"),
   returnwhat = "table",
   graph = FALSE
 )
 }
 \arguments{
-\item{results_bybg_people}{data.table from doaggregate()$results_bybg_people}
+\item{results_bybg_people}{data.table from \code{doaggregate()$results_bybg_people}}
 
 \item{demogvarname}{vector of column names like "pctlowinc" etc.}
 
@@ -29,8 +29,8 @@ If returnwhat is "plot" then it returns the plot object as needed for table_xls_
 see parameter returnwhat
 }
 \description{
-distance_mean_by_group - Avg distance of each demog group (of multiple groups)
-Same as \code{\link[=plot_distance_mean_by_group]{plot_distance_mean_by_group()}} but no plot by default
+distance_mean_by_group() and distance_mean_by_group() are synonymous, and are like
+\code{\link[=plot_distance_mean_by_group]{plot_distance_mean_by_group()}}, but show a table not plot, by default.
 }
 \details{
 Note that the ratio shown is a ratio of distance among others to distance of a given group,
@@ -43,10 +43,11 @@ and when a site is very close to the block internal point (like a centroid)
 relative to the size of the block, the distance to the average resident in the block is
 estimated as 90 percent of the effective radius, which is what the radius of the block
 would be if it were the same area in square meters or miles but circular in shape.
+
 This is the approach used in EJScreen to estimate average proximity of a block resident in
 cases where the block is extremely close to the site or the site may actually be inside the block,
 or exactly on top of the internal point of the block, in which case zero would not be an
-appropriate estimate of the distance, hence this adjustment is made in EJAM getblocksnearby()
+appropriate estimate of the distance, hence this adjustment is made in EJAM \code{\link[=getblocksnearby]{getblocksnearby()}}
 }
 \examples{
  y <- ejamit(testpoints_100, radius = 3)
@@ -55,7 +56,7 @@ appropriate estimate of the distance, hence this adjustment is made in EJAM getb
    demogvarname = 'pctlowinc', demoglabel = 'Low Income'))
  distance_by_group_plot(y$results_bybg_people, 
    demogvarname = 'pctlowinc', demoglabel = 'Low Income')
- xyz = plot_distance_cdf_by_group(y$results_bybg_people) #  
+ xyz = distance_by_group_plot(y$results_bybg_people) #  
  tail(round(xyz,3))
  tail(xyz[xyz$pctwa <= 0.501, ]) #  Median distance to nearest site here 
    for White Alone is 2.15 miles, but >60\% of Black Alone have a site that close.
@@ -63,9 +64,8 @@ appropriate estimate of the distance, hence this adjustment is made in EJAM getb
    for Black Alone is 1.85 miles
  round(tail(xyz[xyz$dist <=1, ]), 3) #  11\% of White have a site within 1 mile, 
    compared to 18.7\% of Asian who do.
+   
 }
 \seealso{
-\code{\link[=distance_by_group]{distance_by_group()}}
-
-\code{\link[=distance_by_group_plot]{distance_by_group_plot()}}  \code{\link[=plot_distance_cdf_by_group]{plot_distance_cdf_by_group()}}
+\code{\link[=distance_by_group]{distance_by_group()}} \code{\link[=distance_by_group_plot]{distance_by_group_plot()}}
 }

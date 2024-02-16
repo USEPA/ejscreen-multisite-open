@@ -1,6 +1,9 @@
-#' plot_distance_cdf_by_group  - SLOW - needs to be optimized
-#' CDF Line Plots of cumulative share of each demographic group, within each distance
+
 #' Each groups distribution of distances
+#' 
+#' @description SLOW / needs to be optimized.
+#'   CDF Line Plots of cumulative share of each demographic group, within each distance
+#' 
 #' @param results_bybg_people data.table from doaggregate()$results_bybg_people
 #' @param radius_miles miles radius that was max distance analyzed
 #' @param subgroups_type optional, can be set to "nh" or "alone". 
@@ -34,7 +37,7 @@
 #'    demogvarname = 'pctlowinc', demoglabel = 'Low Income'))
 #'  distance_by_group_plot(y$results_bybg_people, 
 #'    demogvarname = 'pctlowinc', demoglabel = 'Low Income')
-#'  xyz = plot_distance_cdf_by_group(y$results_bybg_people) #  
+#'  xyz = distance_by_group_plot(y$results_bybg_people) #  
 #'  tail(round(xyz,3))
 #'  tail(xyz[xyz$pctwa <= 0.501, ]) #  Median distance to nearest site here 
 #'    for White Alone is 2.15 miles, but >60% of Black Alone have a site that close.
@@ -42,10 +45,10 @@
 #'    for Black Alone is 1.85 miles
 #'  round(tail(xyz[xyz$dist <=1, ]), 3) #  11% of White have a site within 1 mile, 
 #'    compared to 18.7% of Asian who do.
+#'    
 #' @export
 #'
-#'
-plot_distance_cdf_by_group <- function(
+distance_by_group_plot <- function(
     results_bybg_people = NULL, 
     radius_miles=round(max(
       results_bybg_people$distance_min_avgperson[!is.infinite(
@@ -185,7 +188,7 @@ plot_distance_cdf_by_group <- function(
     # distance_cdf_by_group_plot  is not written in a way that makes it easy to vectorize, so this could be rewritten
     
     data.table::setDF(cumdata)
-    points(cumdata$dist, 100 *  cumdata[ , demogvarname[i], with=FALSE], 
+    points(cumdata$dist, 100 *  cumdata[ , demogvarname[i], with = FALSE], 
            col = colorlist[i - 1],
            pch = c(0:6,15:25, 7:14)[i], # various base R shapes for the points
            ...)
@@ -229,13 +232,17 @@ plot_distance_cdf_by_group <- function(
 }
 ############################################################################################################# # 
 
-
-
-
-
-
-#' distance_cdf_by_group_plot - SLOW - needs to be optimized
-#' Plot a graphic showing cumulative shares of ONLY ONE demographic group that are within each distance
+#' What percentage of this demographic group's population lives less than X miles from a site?
+#' 
+#' @description This plots the cumulative share of residents found within each distance,
+#'   for a single demographic group.
+#'   
+#'   This function, distance_cdf_by_group_plot(), is based on ejamit()$results_bybg_people,
+#'   which provides only block group resolution information about distance.
+#'   For block resolution analysis of distance by group, see [plot_distance_by_pctd()].
+#'   
+#' @details The function distance_cdf_by_group_plot is SLOW - ***needs to be optimized
+#' 
 #' @param results_bybg_people data.table from doaggregate()$results_bybg_people
 #' @param radius_miles miles radius that was max distance analyzed
 #' @param demogvarname name of column in results_bybg_people, e.g., "pctlowinc"
@@ -243,14 +250,17 @@ plot_distance_cdf_by_group <- function(
 #' @param color1 color like "red" for demographic group of interest
 #' @param color2 color like "gray" for everyone else
 #' @seealso [distance_by_group()] [getblocksnearbyviaQuadTree()] for examples
-#' @inherit plot_distance_cdf_by_group examples 
-#' @export
+#' @inherit distance_by_group_plot examples
 #' @return invisibly returns full table of sorted distances of blockgroups, cumulative count of demog group at that block group's distance, 
 #' and cumulative count of everyone else in that block group
-#'
-distance_cdf_by_group_plot <- function(results_bybg_people, radius_miles=round(max(results_bybg_people$distance_min_avgperson, na.rm = T), 1), 
+#' 
+#' @export
+#' 
+distance_cdf_by_group_plot <- function(results_bybg_people, 
+                                       radius_miles=round(max(results_bybg_people$distance_min_avgperson, na.rm = T), 1), 
                                        demogvarname="Demog.Index", demoglabel=demogvarname,
                                        color1="red", color2="black") {
+  
   if (is.list(results_bybg_people) & ("results_bybg_people" %in% names(results_bybg_people))) {
     # assume it was a mistake and they meant to provide out$results_bybg_people not out itself
     results_bybg_people <- results_bybg_people$results_bybg_people
@@ -301,9 +311,12 @@ distance_cdf_by_group_plot <- function(results_bybg_people, radius_miles=round(m
 ############################################################################################################# # 
 
 
-#' distance_by_group_plot or plot_distance_cdf_by_group
+#' 
 #' @export
-#' @inherit plot_distance_cdf_by_group
-distance_by_group_plot <- function(...) {plot_distance_cdf_by_group(...)}
+#' 
+#' @inherit distance_by_group_plot
+#' 
+plot_distance_cdf_by_group <- distance_by_group_plot    # function(...) {distance_by_group_plot(...)}
 
+# distance_by_group_plot is a synonym for plot_distance_cdf_by_group
 

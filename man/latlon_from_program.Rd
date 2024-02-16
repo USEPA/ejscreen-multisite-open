@@ -2,7 +2,8 @@
 % Please edit documentation in R/latlon_from_program.R
 \name{latlon_from_program}
 \alias{latlon_from_program}
-\title{latlon_from_program - Get lat lon, Registry ID, and NAICS, for given FRS Program System CATEGORY
+\title{Get lat lon, Registry ID, and NAICS, for given FRS Program System CATEGORY
+
 Find all FRS sites in a program like RCRAINFO, TRIS, or others}
 \usage{
 latlon_from_program(query)
@@ -16,7 +17,8 @@ since there could be duplicates where same REGISTRY_ID has 2 different pgm_sys_i
 in the same program, so results were sometimes longer than if using \code{\link[=frs_from_program]{frs_from_program()}}
 }
 \description{
-latlon_from_program - Get lat lon, Registry ID, and NAICS, for given FRS Program System CATEGORY
+Get lat lon, Registry ID, and NAICS, for given FRS Program System CATEGORY
+
 Find all FRS sites in a program like RCRAINFO, TRIS, or others
 }
 \details{
@@ -40,13 +42,13 @@ RCRAINFO (over 500k sites), NPDES, ICIS, AIR, FIS, EIS, and AIRS/AFS.
 \examples{
 \dontrun{
  x = latlon_from_program("CAMDBS")
- EJAMejscreenapi::mapfast(x)
+  mapfast(x)
  program <- c("EIS", "UST")
  x = latlon_from_program(program)
  # to get the facility name as well:
  x = frs[grepl("RCRAINFO", PGM_SYS_ACRNMS), ] # fast
  ## x = latlon_from_regid(latlon_from_program(program)[,REGISTRY_ID])  # slower!
- EJAMejscreenapi::mapfast(x[sample(1:nrow(x), 1000), ])
+ mapfast(x[sample(1:nrow(x), 1000), ])
 }
- 
+
 }

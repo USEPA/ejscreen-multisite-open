@@ -2,8 +2,7 @@
 % Please edit documentation in R/state_from_latlon.R
 \name{state_from_fips}
 \alias{state_from_fips}
-\title{state_from_fips - Get FIPS of ALL BLOCKGROUPS in the States or Counties
-Get the State abbreviations of ALL blockgroups within the input FIPS}
+\title{Get FIPS of ALL BLOCKGROUPS in the States or Counties}
 \usage{
 state_from_fips(fips, uniqueonly = FALSE)
 }
@@ -17,7 +16,6 @@ This parameter is here mostly to remind user that default is not uniques only.}
 vector of 2-character state abbreviations like CA,CA,CA,MD,MD,TX
 }
 \description{
-state_from_fips - Get FIPS of ALL BLOCKGROUPS in the States or Counties
 Get the State abbreviations of ALL blockgroups within the input FIPS
 }
 \details{

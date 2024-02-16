@@ -2,7 +2,7 @@
 % Please edit documentation in R/latlon_as.numeric.R
 \name{latlon_as.numeric}
 \alias{latlon_as.numeric}
-\title{latlon_as.numeric - Strip non-numeric characters from a vector}
+\title{Strip non-numeric characters from a vector}
 \usage{
 latlon_as.numeric(x)
 }
@@ -35,8 +35,9 @@ returns NA for those and offers a warning.
   latlon_as.numeric(c('aword', '$b'))
   latlon_as.numeric(c('-10.5\%', '<5', '$100'))
   latlon_as.numeric(c(Inf, 1))
-  
+
 }
 \seealso{
 latlon_df_clean() latlon_infer() latlon_is.valid() latlon_as.numeric()
 }
+\keyword{internal}

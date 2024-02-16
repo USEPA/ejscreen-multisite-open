@@ -2,9 +2,7 @@
 % Please edit documentation in R/varinfo.R
 \name{varinfo}
 \alias{varinfo}
-\title{varinfo - Get metadata for a variable, like its type, definition, decimalS rounding, etc.
-This is just a way to query map_headernames, which has info about each indicator or
-variable used in EJAM.}
+\title{varinfo gets metadata for a variable, like its type, definition, decimalS rounding, etc.}
 \usage{
 varinfo(
   var = map_headernames$rname,
@@ -36,7 +34,6 @@ decimal places of rounding should be displayed for it in tables, etc.
 Results can be character, numeric, etc. depending on what info is requested
 }
 \description{
-varinfo - Get metadata for a variable, like its type, definition, decimalS rounding, etc.
 This is just a way to query map_headernames, which has info about each indicator or
 variable used in EJAM.
 }
@@ -64,7 +61,9 @@ varinfo(
 
 varinfo(names_all_r, c("varcategory", "varlist", "in_api", "in_bgcsv"))
 
+
 }
 \seealso{
 fixcolnames() \code{\link[=table_rounding_info]{table_rounding_info()}}
 }
+\keyword{internal}

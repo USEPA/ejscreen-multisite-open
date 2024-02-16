@@ -1,4 +1,4 @@
-#' frs_from_sic - Use SIC code or industry title text search to see FRS Facility Registry Service data on those EPA-regulated sites
+#' Use SIC code or industry title text search to see FRS Facility Registry Service data on those EPA-regulated sites
 #'
 #' @param naics_code_or_name 
 #' @param ... passed to [naics_from_any()]
@@ -26,7 +26,8 @@ frs_from_sic <- function(sic_code_or_name, ...) {
 ############################################################################## # 
 
 
-#' latlon_from_sic - Find EPA-regulated facilities in FRS by SIC code (industrial category)
+#' Find EPA-regulated facilities in FRS by SIC code (industrial category)
+#' 
 #' @description Get lat lon, Registry ID, given SIC industry code(s)
 #' Find all EPA Facility Registry Service (FRS) sites with this exact SIC code (not subcategories)
 #' @details NOTE: many FRS sites lack SIC code! 
@@ -50,8 +51,8 @@ frs_from_sic <- function(sic_code_or_name, ...) {
 #'   head(latlon_from_sic(c('6150', '6300', '5995'), id_only=TRUE))
 #'   # mapfast(frs_from_sic('6150')) # simple map
 latlon_from_sic <- function(sic, id_only=FALSE) {
-  if(length(sic) != 0){
-    if(any(is.na(as.numeric(sic)))){ 
+  if (length(sic) != 0){
+    if (any(is.na(as.numeric(sic)))){ 
       warning("SIC can not be coerced to a number.")
       return(NULL)
       }
@@ -64,7 +65,7 @@ latlon_from_sic <- function(sic, id_only=FALSE) {
   
   
   df <- frs_by_sic[SIC %in% sic]
-  if(nrow(df) == 0){warning("There are no sites with that SIC.")}
+  if (nrow(df) == 0){warning("There are no sites with that SIC.")}
   if (id_only) {return(df$REGISTRY_ID)
   } else { return(df)}
 }
@@ -78,7 +79,8 @@ regid_from_sic <- latlon_from_sic
 
 
 
-#' sic_subcodes_from_code - find subcategories of the given overall SIC industry code(s)
+#' Find subcategories of the given overall SIC industry code(s)
+#' 
 #' Given 3-digit SIC code, for example, get all SIC that start with those digits. 
 #' @details  similar idea was naics2children() but this is more robust 
 #' See [sic_from_any()] which uses this
@@ -109,7 +111,8 @@ sic_subcodes_from_code <- function(mycodes) {
 ############################################################################## # 
 
 
-#' sic_from_code - search for industry names by SIC code(s), 4 digits each
+#' Search for industry names by SIC code(s), 4 digits each
+#' 
 #' @param mycodes vector of character SIC codes. see <https://siccode.com>
 #' @param children logical, if TRUE, also return all the subcategories - where SIC starts with the same digits
 #' @seealso [sic_subcodes_from_code()] [sic_from_code()]  [sic_from_name()]
@@ -130,7 +133,8 @@ sic_from_code <- function(mycodes, children=FALSE) {
 ############################################################################## # 
 
 
-#' sic_from_name - search for industry names and SIC codes by query string
+#' Search for industry names and SIC codes by query string
+#' 
 #' query by parts of words, etc. in the industry name. 
 #' @param mynames query string, vector of SIC industry names or any regular expression or partial words. See <https://siccode.com>
 #' @param children logical, if TRUE, also return all the subcategories - where SIC starts with the same digits
@@ -159,7 +163,8 @@ sic_from_name <- function(mynames, children = FALSE, ignore.case = TRUE, fixed =
 ############################################################################## # 
 
 
-#' sic_from_any - General way to search for industry names and NAICS codes
+#' General way to search for industry names and NAICS codes
+#' 
 #' Find industry names and codes by searching for queried code(s) or text
 #' @param query query string(s) and/or number(s), vector of NAICS codes or industry names or any regular expression or partial words
 #' @param children logical, if TRUE, also return all the subcategories - where NAICS starts with the same digits

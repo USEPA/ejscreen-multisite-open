@@ -2,8 +2,7 @@
 % Please edit documentation in R/table_gt_.R
 \name{table_gt_from_ejamit_1site}
 \alias{table_gt_from_ejamit_1site}
-\title{table_gt_from_ejamit_1site - Create a formatted table of results for 1 site from EJAM
-Uses 1 row from the results_bysite part of ejamit() output}
+\title{Create a formatted table of results for 1 site from EJAM}
 \usage{
 table_gt_from_ejamit_1site(...)
 }
@@ -11,7 +10,6 @@ table_gt_from_ejamit_1site(...)
 \item{...}{passed to \code{\link[=table_gt_from_ejamit_overall]{table_gt_from_ejamit_overall()}}}
 }
 \description{
-table_gt_from_ejamit_1site - Create a formatted table of results for 1 site from EJAM
 Uses 1 row from the results_bysite part of ejamit() output
 }
 \examples{

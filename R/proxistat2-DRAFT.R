@@ -1,5 +1,8 @@
-#' proxistat2 - Calculate a proximity score for every blockgroup - WORK IN PROGRESS
-#' Indicator of proximity of each blockgroups to some set of facilities or sites.
+#' Calculate a proximity score for every blockgroup - DRAFT WORK IN PROGRESS
+#' 
+#' Indicator of proximity of each blockgroups to some set of facilities or sites. 
+#' also see getfrsnearby()
+#' 
 #' @details  Proximity score is sum of (1/d) where each d is distance of a given site in km, 
 #'   summed over all sites within 5km, as in EJScreen.
 #'   
@@ -34,7 +37,7 @@
 #'  
 proxistat2 <- function(pts, countradius = 8.04672, maxradius = 621.3712, quadtree = NULL) {
   
-  if(!('proxistat' %in% installed.packages())){
+  if (!('proxistat' %in% installed.packages())) {
     warning("this does not work without proxistat package dataset 
        OR having block area 
        or at least effective radius 
@@ -92,7 +95,7 @@ proxistat2 <- function(pts, countradius = 8.04672, maxradius = 621.3712, quadtre
   # [1] 8174955       3
   # blockwts$block_radius_miles  has the info in miles effective radius
   
-  km_per_mile <- EJAMejscreenapi::meters_per_mile / 1000  # km_per_mile = 1.609344  # meters_per_mile #   [1] 1609.344
+  km_per_mile <- meters_per_mile / 1000  # km_per_mile = 1.609344  # meters_per_mile #   [1] 1609.344
 
   # block_radius_miles  is the distance at which we start to adjust
   # min.dist <- 0.9 * block_radius_miles

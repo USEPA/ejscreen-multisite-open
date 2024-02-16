@@ -1,7 +1,12 @@
-#' getblocksnearbyviaQuadTree - Fast way to find nearby points (distance to each Census block centroid near each site)
+
+
+#' Fast way to find nearby points (distance to each Census block centroid near each site)
 #'
-#' @description Given a set of points and a specified radius in miles, 
+#' @description This is what [getblocksnearby()] uses to do the work.
+#'   Given a set of points and a specified radius in miles, 
 #'   this function quickly finds all the US Census blocks near each point.
+#'   This does the work actually supporting getblocksnearby()
+#'
 #' @details  
 #'   For each point, it uses the specified search radius and finds the distance to 
 #'   every block within the circle defined by the radius. 
@@ -55,28 +60,31 @@
 #' @examples 
 #'   # indexblocks() # if localtree not available yet, quadtree = localtree
 #'   x = getblocksnearby(testpoints_1000, radius = 3)
-#' @seealso [ejamit()] [getblocksnearby()] 
-#' @export
+#' @seealso [ejamit()] [getblocksnearby()]
 #' @import data.table
 #' @importFrom pdist "pdist"
+#' 
+#' @export
+#' @keywords internal
 #'   
 getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.07, avoidorphans = FALSE, 
                                         report_progress_every_n = 500, quiet = FALSE, retain_unadjusted_distance = TRUE,
                                         quadtree, updateProgress = NULL) {
+  
   # indexgridsize was defined at start as say 10 miles in global? could be passed here as a parameter ####
   # and buffer_indexdistance defined here in code but is never used anywhere...  
   # buffer_indexdistance <- ceiling(radius / indexgridsize)
   
   if (class(quadtree) != "QuadTree") {
-    if(shiny::isRunning()){
-      warning('quadtree must be an object created with indexblocks(), from SearchTrees package with treeType = "quad" and dataType = "point"')  
+    if (shiny::isRunning()) {
+      warning('quadtree must be an index created with indexblocks() or indexpoints(pts), from SearchTrees package with treeType = "quad" and dataType = "point"')
       return(NULL)
     } else {
-      stop('quadtree must be an object created with indexblocks(), from SearchTrees package with treeType = "quad" and dataType = "point"')  
+      stop('quadtree must be an index created with indexblocks() or indexpoints(pts), from SearchTrees package with treeType = "quad" and dataType = "point"')
     }
   }
   if (missing(sitepoints)) {
-    if(shiny::isRunning()){
+    if (shiny::isRunning()) {
       warning("sitepoints missing - see getblocksnearby()")
       return(NULL)
     } else {
@@ -85,7 +93,7 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
   }
   stopifnot(is.data.frame(sitepoints), "lat" %in% colnames(sitepoints), "lon" %in% colnames(sitepoints), NROW(sitepoints) >= 1, is.numeric(sitepoints$lat))
   if (missing(quadtree)) {
-    if(shiny::isRunning()){
+    if (shiny::isRunning()) {
       warning("quadtree=localtree is missing - see getblocksnearby() and indexblocks()")
       return(NULL)
     } else {
@@ -93,13 +101,12 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
     }
   }
   if (class(quadtree) != "QuadTree") {stop('quadtree=localtree is not class quadtree.  - see getblocksnearby() and indexblocks()')}
-  stopifnot(is.numeric(radius), radius <= 100, radius >= 0, length(radius) == 1)
   if (missing(radius)) {warning("radius missing so using default radius of 3 miles")}
-  
+  stopifnot(is.numeric(radius), radius <= 100, radius >= 0, length(radius) == 1)
   if (!data.table::is.data.table(sitepoints)) {data.table::setDT(sitepoints)} # should we set a key or index here, like ? ***
   
   #saving_ejam_uniq_id_as_submitted_to_getblocks <- FALSE
-  if (!('ejam_uniq_id' %in% names(sitepoints))) {
+  if (!("ejam_uniq_id" %in% names(sitepoints))) {
     sitepoints$ejam_uniq_id <- seq.int(length.out = NROW(sitepoints))
   } #else {
   #   if (!identical(sitepoints$ejam_uniq_id, seq.int(length.out = NROW(sitepoints)))) {
@@ -120,13 +127,13 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
   earthRadius_miles <- 3959 # in case it is not already in global envt
   radians_per_degree <- pi / 180
   
-  sitepoints <- data.table::copy(sitepoints) # make a copy?
-  sitepoints[ , lat_RAD := lat * radians_per_degree]   # PROBLEM? - this alters sitepoints in the calling envt bc of how data.table works
-  sitepoints[ , lon_RAD := lon * radians_per_degree]
+  sitepoints <- data.table::copy(sitepoints) # make a copy to avoid next line altering sitepoints in the calling envt by reference bc of how data.table works
+  sitepoints[, lat_RAD := lat * radians_per_degree]
+  sitepoints[, lon_RAD := lon * radians_per_degree]
   cos_lat <- cos(sitepoints[ , lat_RAD])    # or maybe # sitepoints[ , cos_lat := cos(lat_RAD)]
-  sitepoints[ , FAC_X := earthRadius_miles * cos_lat * cos(lon_RAD)]
-  sitepoints[ , FAC_Y := earthRadius_miles * cos_lat * sin(lon_RAD)]
-  sitepoints[ , FAC_Z := earthRadius_miles *           sin(lat_RAD)]
+  sitepoints[, FAC_X := earthRadius_miles * cos_lat * cos(lon_RAD)]
+  sitepoints[, FAC_Y := earthRadius_miles * cos_lat * sin(lon_RAD)]
+  sitepoints[, FAC_Z := earthRadius_miles *           sin(lat_RAD)]
   
   truedistance <- distance_via_surfacedistance(radius)   # simply 7918*sin(radius/7918) which is nearly identical to unadjusted distances, like 9.999997 vs. 10.000000 miles ! even 29.999928 vs 30 miles
   
@@ -194,21 +201,21 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
       tmp[ , .(BLOCK_X, BLOCK_Y, BLOCK_Z)], 
       sitepoints[i, c('FAC_X','FAC_Y','FAC_Z')])
     )   
-
+    
     # distances is now just a 1 column data.table of hundreds of distance values. Some may be 5.08 miles even though specified radius of 3 miles even though distance to corner of bounding box should be 1.4142*r= 4.2426, not 5 ? 
     # pdist computes a n by p distance matrix using two separate matrices
     
     # add the distances and ejam_uniq_id to the table of nearby blocks
     tmp[ , distance := distances[ , c(1)]]      # converts distances dt into a vector that becomes a column of tmp
     tmp[, ejam_uniq_id := sitepoints[i, .(ejam_uniq_id)]]
-    #### LIMIT RESULTS SO FAR TO THE RADIUS REQUESTED  
-    
+    #### LIMIT RESULTS SO FAR TO THE RADIUS REQUESTED later? takes more memory to save the ones > radius while looping, but then filter only once at end of loop
     #filter actual distance, exclude blocks that are roughly nearby (according to index and bounding boxes) but are just beyond the radius you specified
     # e.g., 805 blocks roughly nearby, but only 457 truly within radius.
     
-      #   *** SLOW STEP TO OPTIMIZE  #  1 OF SLOWEST LINES *** - cant we do this outside the loop just once??
     res[[i]] <- tmp[distance <= truedistance, .(blockid, distance, ejam_uniq_id)]
     #
+    #   *** SLOW STEP TO OPTIMIZE  #  1 OF SLOWEST LINES *** - cant we do this outside the loop just once? 
+    # *** but if moved out of loop then if using avoidorphans below (not used for normal ejam calc), it will not have removed where d > true and thus failed to create some orphans?
     # }
     
     # tmp
@@ -247,8 +254,7 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
       truemaxdistance <- distance_via_surfacedistance(maxradius)
       data.table::setorder(tmp, distance) # ascending order short to long distance
       #  
-      res[[i]] <- tmp[distance <= truemaxdistance, .(blockid, distance, ejam_uniq_id)]   
-      
+      res[[i]] <- tmp[distance <= truemaxdistance, .(blockid, distance, ejam_uniq_id)]
     }  
     ### end of if avoidorphans
     ################################# #
@@ -259,7 +265,7 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
     pct_inc <- 5
     ## add check that data has enough points to show increments with rounding
     ## i.e. if 5% increments, need at least 20 points or %% will return NaN
-    if(is.function(updateProgress) & (nRowsDf >= (100/pct_inc)) & (i %% round(nRowsDf/(100/pct_inc)) < 1)){
+    if (is.function(updateProgress) & (nRowsDf >= (100/pct_inc)) & (i %% round(nRowsDf/(100/pct_inc)) < 1)) {
       boldtext <- paste0((pct_inc)*round((100/pct_inc*i/nRowsDf)), '% done')
       updateProgress(message_main = boldtext, 
                      value = round((pct_inc)*i/nRowsDf,2)/(pct_inc))
@@ -276,61 +282,56 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
   
   ########################################################################### ## 
   if (!quiet) {
-    cat('Stats via getblocks_diagnostics(), but BEFORE ADJUSTING FOR SHORT DISTANCES: \n')
+    cat('Stats via getblocks_diagnostics(), but BEFORE ADJUSTING UP FOR VERY SHORT DISTANCES: \n')
     cat("min distance before adjustment: ", min(sites2blocks$distance, na.rm = TRUE), "\n")
     cat("max distance before adjustment: ", max(sites2blocks$distance, na.rm = TRUE), "\n\n")
     getblocks_diagnostics(sites2blocks) # returns NA if no blocks nearby
-    cat("\n\nAdjusting for very short distances now...\n ")
+    cat("\n\nAdjusting upwards the very short distances now...\n ")
   }
   
   # ADJUST THE VERY SHORT DISTANCES ####
   
-    # distance gets adjusted to be the minimum possible value,  0.9 * effective radius of block_radius_miles (see EJScreen Technical Documentation discussion of proximity analysis for rationale)
+  # distance gets adjusted to be the minimum possible value,  0.9 * effective radius of block_radius_miles (see EJScreen Technical Documentation discussion of proximity analysis for rationale)
   #
   # use block_radius_miles here, to correct the distances that are small relative to a block size.
   # This adjusts distance the way EJScreen does for proximity scores - so distance reflects distance of sitepoint to avg resident in block
   # (rather than sitepoint's distance to the block internal point),
   # including e.g., where distance to block internal point is so small the site is inside the block.
   # This also avoids infinitely small or zero distances.
-  # 2 ways considered to do join here - may be able to optimize.
-  # a) try to do join that updates sites2blocks by reference - not sure it works this way, but goal was to make join faster:
-  # sites2blocks[blockwts, .(ejam_uniq_id,blockid,distance,blockwt,bgid, block_radius_miles), on = 'blockid']
-
-  # b) try to do join that updates sites2blocks by making a copy?  
-
+  
   if (retain_unadjusted_distance) {
     sites2blocks[ , distance_unadjusted := distance] # wastes space but for development/ debugging probably useful
     sites2blocks <-  blockwts[sites2blocks, .(ejam_uniq_id, blockid, distance, blockwt, bgid, block_radius_miles, distance_unadjusted), on = 'blockid'] 
+    
   } else {
     sites2blocks <-  blockwts[sites2blocks, .(ejam_uniq_id, blockid, distance, blockwt, bgid, block_radius_miles), on = 'blockid'] 
   }
-
+  
   # 2 ways considered here for how exactly to make the adjustment: 
   sites2blocks[distance < block_radius_miles, distance := 0.9 * block_radius_miles]  # assumes distance is in miles
   # or a more continuous but slower (and nonEJScreen way?) adjustment for when dist is between 0.9 and 1.0 times block_radius_miles: 
   # sites2blocks_dt[ , distance  := pmax(block_radius_miles, distance, na.rm = TRUE)] # assumes distance is in miles
   
-  # drop that info about area or size of block to save memory. do not need it later in sites2blocks
+  # now drop that info about area or size of block to save memory. do not need it later in sites2blocks
   sites2blocks[ , block_radius_miles := NULL]
   
   if (!quiet) {
-    cat('Stats via getblocks_diagnostics(), AFTER ADJUSTING FOR SHORT DISTANCES: \n')
+    cat('Stats via getblocks_diagnostics(), AFTER ADJUSTING up FOR SHORT DISTANCES: \n')
     cat("min distance AFTER adjustment: ", min(sites2blocks$distance, na.rm = TRUE), "\n")
     cat("max distance AFTER adjustment: ", max(sites2blocks$distance, na.rm = TRUE), "\n\n")
     # getblocks_diagnostics(sites2blocks)  
-   cat("\n")
+    cat("\n")
   }
   ########################################################################### ## 
   
   ### and with above idea, cant we subset to keep only distance <=  radius here, instead of inside the loop ? Or do it even later, after adjusting short distances? What would make sense to report as distance to avg resident if the effective radius happends to be > radius specified, as with small radius circle in rural huge block? 
   # sites2blocks <- sites2blocks[distance <= truedistance, ] 
   
-  
   # if (interactive() & !quiet) { 
   #   cat("You can use  getblocks_diagnostics(sites2blocks)  to see this info on distances found:\n\n")
   #   getblocks_diagnostics(sites2blocks)
   # }
-
+  
   # if (saving_ejam_uniq_id_as_submitted_to_getblocks) {
   #   sites2blocks[idtable, ejam_uniq_id_as_submitted_to_getblocks := ejam_uniq_id_as_submitted_to_getblocks, on = "ejam_uniq_id"]
   # }

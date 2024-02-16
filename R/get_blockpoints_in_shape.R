@@ -1,16 +1,24 @@
 
 #' @inheritParams get_blockpoints_in_shape
+#' 
 #' @export
 #'
 shapefile2blockpoints <- function(...) {
+  
   get_blockpoints_in_shape(...)  
 }
+############################################################# #
 
 
-#' get_blockpoints_in_shape - find blocks that are in a polygon, using internal point of block - WORK IN PROGRESS ****
+#' Find all Census blocks in a polygon, using internal point of block
+#' 
+#' @description Like [getblocksnearby()], but for blocks in each polygon rather than 
+#' blocks near each facility. For analyzing all residents in certain zones 
+#' such as places at elevated risk, redlined areas, watersheds, etc.
+#' 
+#'   
 #' @aliases shapefile2blockpoints
-#' @description This is like getblocksnearby() but for a polygonal buffer area instead of 
-#'   a circular buffer.  
+#' 
 #' @details This uses getblocksnearby() to get a very fast rough/good estimate of 
 #'   which US block points are nearby (with a safety margin - see param below),
 #'   before then using sf:: to carefully identify which of those candidate blocks are actually 
@@ -42,10 +50,14 @@ shapefile2blockpoints <- function(...) {
 #'   # x = shapefile_from_sitepoints(testpoints_n(2))
 #'   # y = get_blockpoints_in_shape(x, 1)  # very very slow
 #' @seealso [get_blockpoints_in_shape()] [shapefile_from_sitepoints()] [shape_buffered_from_shapefile_points()]
+#' 
 #' @export
 #'
-get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NULL, dissolved=FALSE, safety_margin_ratio=1.10, crs = 4269, updateProgress = NULL) {
-  
+
+get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NULL, 
+                                     dissolved=FALSE, safety_margin_ratio=1.10, crs = 4269,
+                                     updateProgress = NULL) {
+
   ############################################################################################################### #
   # NOTE: For comparison or validation one could get the results from the EJScreen API, for a polygon:
   #      Example of how the API could be used to analyze a polygon, which must use POST not GET:
@@ -209,6 +221,4 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
   }
   
   return(list('pts' = pts, 'polys' = polys))
-  
 }
-

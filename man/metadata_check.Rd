@@ -27,3 +27,4 @@ attributes of all the data files in relevant packages.
 It loads unloaded packages as needed, which you might not want it to do,
 but it is not coded to be able to check attributes without doing that.
 }
+\keyword{internal}

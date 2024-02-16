@@ -2,7 +2,7 @@
 % Please edit documentation in R/ejamit.R
 \name{ejamit}
 \alias{ejamit}
-\title{ejamit - Get complete EJ analysis (demographic and environmental indicators) near a list of locations}
+\title{Get an EJ analysis (demographic and environmental indicators) in or near a list of locations}
 \usage{
 ejamit(
   sitepoints,
@@ -117,15 +117,15 @@ ejamit() default is to set this to FALSE when calling doaggregate().}
 A list of tables of results
 }
 \description{
-This is the main function in EJAM for users who want to use EJAM from RStudio.
-It does essentially what the webapp does to analyze/summarize near a set of points.
-See help("EJAM")
+This is the main function in EJAM that runs the analysis.
+It does essentially what the web app does, to analyze/summarize near a set of points,
+or in a set of polygons from a shapefile, or in a list of Census Units like Counties.
 }
 \examples{
-\dontrun{
  # All in one step, using functions not shiny app:
- out <- ejamit(testpoints_100_dt, 2, quadtree=localtree)
-
+ out <- ejamit(testpoints_100_dt, 2)
+ 
+ \dontrun{
  # Do not specify sitepoints and it will prompt you for a file,
  # if in RStudio in interactive mode!
  out <- ejamit(radius = 3)
@@ -153,7 +153,7 @@ See help("EJAM")
   
   # View plots
   # plot_distance_avg_by_group(out)  
-  # plot_distance_cdf_by_group(out)
+  # distance_by_group_plot(out)
   
   # View maps
   mapfast(out$results_bysite, radius = 3.1)

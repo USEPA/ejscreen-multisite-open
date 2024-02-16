@@ -1,5 +1,7 @@
-#' distance_via_surfacedistance
+
+ 
 #' Convert surface distance to actual distance
+#' 
 #' @description
 #'     \preformatted{
 #'     Just a simple formula:
@@ -10,8 +12,9 @@
 #'    }
 #' @param x surface distance in miles
 #'
-#' @export
+#' @keywords internal
 #'
 distance_via_surfacedistance <- function(x){
+  
   return( 7918*sin(x/7918) )
 }

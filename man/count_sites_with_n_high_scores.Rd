@@ -2,7 +2,7 @@
 % Please edit documentation in R/count_sites_with_n_high_scores.R
 \name{count_sites_with_n_high_scores}
 \alias{count_sites_with_n_high_scores}
-\title{count_sites_with_n_high_scores}
+\title{Answers questions like What \verb{\%} of sites have at least 1 demog. indicator \verb{>2x} state avg?}
 \usage{
 count_sites_with_n_high_scores(
   scores,
@@ -11,12 +11,45 @@ count_sites_with_n_high_scores(
 )
 }
 \arguments{
-\item{scores}{score}
+\item{scores}{scores in a table with one row per place and one column per indicator}
 
-\item{thresholds}{thresholds}
+\item{thresholds}{thresholds vector of numbers as benchmarks. Assuming the indicators
+in the scores table are ratios to the average, then the thresholds could be
+for example, 1.50, 2, etc. which would represent ratios that are 1.5x or 2x etc.}
 
-\item{xwide}{xwide}
+\item{xwide}{must be "statewide" or "nationwide" -- used only in the text output
+that describes the findings.}
+}
+\value{
+Returns a list with two named elements, "stats" and "text" where
+stats is a 3-dimensional array of numbers. See dimnames(output$stats).
 }
 \description{
-count_sites_with_n_high_scores
+This function provides tables of summary stats but also text
+that explains those findings in plain English. It relies on \code{\link[=colcounter_summary_all]{colcounter_summary_all()}}
+}
+\details{
+Helps provide stat summaries such as:
+
+(x\%) of these (sites) have
+
+at least (N) of these (YTYPE )indicators
+
+at least (R) times the (State/National average)
+}
+\examples{
+# x <- ejamit(testpoints_100, radius = 1)
+x <- testoutput_ejamit_1000pts_1miles 
+out <- x$results_bysite
+out <- setDF(copy(out))
+ratio_benchmarks <- c(1.01, 1.50, 2, 3, 5, 10)
+ratiodata <- out[, names_d_ratio_to_state_avg]
+
+findings = count_sites_with_n_high_scores(out)
+dimnames(findings)
+findings$text[2]
+findings$stats[ , , 1]
+findings$stats[ , 1, ]
+findings$stats[ 1, , ]
+
 }

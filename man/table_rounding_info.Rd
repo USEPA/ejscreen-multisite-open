@@ -2,7 +2,7 @@
 % Please edit documentation in R/table_rounding_info.R
 \name{table_rounding_info}
 \alias{table_rounding_info}
-\title{table_rounding_info - how many decimal places to round to for given variable(s)}
+\title{How many decimal places to round to for given variable(s)}
 \usage{
 table_rounding_info(var, varnametype = "rname")
 }
@@ -15,7 +15,7 @@ table_rounding_info(var, varnametype = "rname")
 named vector same size as var, with var as names.
 }
 \description{
-table_rounding_info - how many decimal places to round to for given variable(s)
+How many decimal places to round to for given variable(s)
 }
 \examples{
   table_rounding_info("pm")

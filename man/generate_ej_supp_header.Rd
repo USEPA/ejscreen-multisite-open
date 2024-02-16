@@ -2,10 +2,11 @@
 % Please edit documentation in R/community_report_helper_funs.R
 \name{generate_ej_supp_header}
 \alias{generate_ej_supp_header}
-\title{generate_ej_supp_header - build header for EJ supp indexes in community report}
+\title{Build header for EJ supp indexes in community report}
 \usage{
 generate_ej_supp_header()
 }
 \description{
-generate_ej_supp_header - build header for EJ supp indexes in community report
+Build header for EJ supp indexes in community report
 }
+\keyword{internal}

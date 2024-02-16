@@ -2,9 +2,7 @@
 % Please edit documentation in R/latlon_from_naics.R
 \name{regid_from_naics}
 \alias{regid_from_naics}
-\title{latlon_from_naics - Find EPA-regulated facilities in FRS by NAICS code (industrial category)
-Get lat lon, Registry ID, given NAICS industry code(s)
-Find all EPA Facility Registry Service (FRS) sites with this exact NAICS code (not subcategories)}
+\title{Find EPA-regulated facilities in FRS by NAICS code (industrial category)}
 \usage{
 regid_from_naics(naics, id_only = FALSE)
 }
@@ -17,7 +15,6 @@ A data.table (not just data.frame) with columns called
 lat, lon, REGISTRY_ID, NAICS (but see the id_only parameter)
 }
 \description{
-latlon_from_naics - Find EPA-regulated facilities in FRS by NAICS code (industrial category)
 Get lat lon, Registry ID, given NAICS industry code(s)
 Find all EPA Facility Registry Service (FRS) sites with this exact NAICS code (not subcategories)
 }
@@ -37,4 +34,5 @@ See info about NAICS industry codes at \url{https://www.naics.com/search}
   latlon_from_naics(EJAM::naics_from_any("cheese")[,code] )
   head(latlon_from_naics(c(3366, 33661, 336611), id_only=TRUE))
   # mapfast(frs_from_naics(336611)) # simple map
+
 }

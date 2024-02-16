@@ -1,9 +1,12 @@
+
 #' states_infer - Get table of info on States (from latlon or FIPS)
+#' 
 #' Get cleaned table of US State etc. by ejam_uniq_id, from lat/lon, or from FIPS
 #' @param x data.frame or data.table with either ST column or lat and lon columns, or FIPS,
 #'   and optionally a column like  id or n
 #' @seealso [state_from_latlon()] [state_from_fips()]
 #' @return data.frame with unique id, ST, etc.
+#' 
 #' @export
 #'
 states_infer <- function(x) {

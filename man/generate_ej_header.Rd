@@ -2,10 +2,11 @@
 % Please edit documentation in R/community_report_helper_funs.R
 \name{generate_ej_header}
 \alias{generate_ej_header}
-\title{generate_ej_header - build header for EJ index table in community report}
+\title{Build header for EJ index table in community report}
 \usage{
 generate_ej_header()
 }
 \description{
-generate_ej_header - build header for EJ index table in community report
+Build header for EJ index table in community report
 }
+\keyword{internal}

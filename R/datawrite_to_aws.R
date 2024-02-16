@@ -1,5 +1,7 @@
-#' datawrite_to_aws -  NOT YET WORKING - AccessDenied 
-#' Write object(s) like a dataset to DMAP Data Commons, formatted as .arrow or .rda 
+#' Utility NOT YET WORKING - AccessDenied
+#' 
+#' Utility to write object(s) like a dataset to DMAP Data Commons, formatted as .arrow or .rda
+#' 
 #' @details 
 #'   mybucket <-  'dmap-data-commons-oa' #
 #'   
@@ -23,7 +25,8 @@
 #'   just viewing in console the commands to be used, to test/check this
 #'
 #' @return the paths of the objects on server
-#' @export
+#' 
+#' @keywords internal
 #'
 datawrite_to_aws <- function(varnames= c('bgid2fips',   'blockid2fips', 'blockpoints', 'blockwts' , 'quaddata' ), 
                              ext=c(".arrow", ".rda")[2],

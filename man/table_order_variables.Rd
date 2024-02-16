@@ -2,7 +2,7 @@
 % Please edit documentation in R/table_order_variables.R
 \name{table_order_variables}
 \alias{table_order_variables}
-\title{get order of variable names to sort by, as seen in EJScreen Community Report}
+\title{Get order of variable names to sort by, as seen in EJScreen Community Report}
 \usage{
 table_order_variables(
   varnames,
@@ -28,7 +28,7 @@ c(names_ej_pctile, names_ej_state_pctile, names_ej_supp_pctile, names_ej_supp_st
 vector as from order(), to be used in sorting a data.frame for example
 }
 \description{
-get order of variable names to sort by, as seen in EJScreen Community Report
+Get order of variable names to sort by, as seen in EJScreen Community Report
 }
 \examples{
   cbind(table_order_variables(c(names_d, names_d_subgroups, names_e)))
