@@ -2,8 +2,7 @@
 % Please edit documentation in R/getblocksnearby2-DRAFT.R
 \name{getblocksnearby2}
 \alias{getblocksnearby2}
-\title{getblocksnearby2 - Key buffering function - wrapper redirecting to the right version of getblocksnearby()
-DRAFT / WAS WORK IN PROGRESS}
+\title{DRAFT / WAS WORK IN PROGRESS  Key buffering function - wrapper redirecting to the right version of getblocksnearby()}
 \usage{
 getblocksnearby2(
   sitepoints,
@@ -29,8 +28,7 @@ SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point")}
 \item{...}{see \code{\link[=getblocksnearbyviaQuadTree_Clustered]{getblocksnearbyviaQuadTree_Clustered()}} or other such functions}
 }
 \description{
-getblocksnearby2 - Key buffering function - wrapper redirecting to the right version of getblocksnearby()
-DRAFT / WAS WORK IN PROGRESS
+DRAFT / WAS WORK IN PROGRESS  Key buffering function - wrapper redirecting to the right version of getblocksnearby()
 }
 \details{
 For all examples, see \code{\link[=ejamit]{ejamit()}}
@@ -43,3 +41,4 @@ Like getblocksnearby() but tries to handle localtree and quadtree parameter diff
 \seealso{
 \code{\link[=getblocksnearby]{getblocksnearby()}}
 }
+\keyword{internal}

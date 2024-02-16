@@ -58,14 +58,14 @@ test_that("still same exact results_overall as previously saved", {
   )
 })
 test_that("still same exact results_bysite as previously saved", {
-  skip_if(overall_has_changed, "not testing all outputs of doaggregate against archived since results_overall test failed")  
+  skip_if (overall_has_changed, "not testing all outputs of doaggregate against archived since results_overall test failed")  
   expect_equal(
     testoutput_doaggregate_10pts_1miles$results_bysite,
     x$results_bysite # use defaults 
   )
 })
 test_that("still same exact results_bybg_people as previously saved", {
-  skip_if(overall_has_changed, "not testing all outputs of doaggregate against archived since results_overall test failed")  
+  skip_if (overall_has_changed, "not testing all outputs of doaggregate against archived since results_overall test failed")  
   expect_equal(
     testoutput_doaggregate_10pts_1miles$results_bybg_people,
     x$results_bybg_people # use defaults 
@@ -73,7 +73,7 @@ test_that("still same exact results_bybg_people as previously saved", {
 })
 
 test_that("still same exact longnames as previously saved", {
-  skip_if(overall_has_changed, "not testing all outputs of doaggregate against archived since results_overall test failed")  
+  skip_if (overall_has_changed, "not testing all outputs of doaggregate against archived since results_overall test failed")  
   expect_equal(
     testoutput_doaggregate_10pts_1miles$longnames,
     x$longnames # use defaults 

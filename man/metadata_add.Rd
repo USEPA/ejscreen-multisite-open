@@ -35,7 +35,10 @@ to add new or update existing attributes.
   attributes(x)
   x <- metadata_add(x, list(status='final'))
   attr(x,'status')
+  
+
 }
 \seealso{
 metadata_check()
 }
+\keyword{internal}

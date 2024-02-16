@@ -1,5 +1,8 @@
-#' datawrite_to_local
-#' Write large object(s) like EJAM datasets to local disk for convenience during app/pkg development, formatted as .arrow or .rda 
+#' Save datasets during package development
+#' 
+#' Utility to write large object(s) like EJAM datasets to local disk for convenience during app/pkg development, 
+#' formatted as .arrow or .rda
+#' 
 #' @param varnames vector of object names
 #' @param ext file .extension appropriate to the format, ".rda" or ".arrow"
 #' @param fun function to use, but as a character string, like "arrow::write_ipc_file"
@@ -12,6 +15,7 @@
 #' @seealso [datawrite_to_aws()]  [datawrite_to_local()] [dataload_from_local()] [dataload_from_aws()] 
 #' @examples 
 #'   # datawrite_to_local(ext = ".arrow", folder_local_source = ".", justchecking = F, overwrite = T) 
+#'   
 #' @export
 #'
 datawrite_to_local <- function(varnames= c('bgid2fips',   'blockid2fips', 'blockpoints', 'blockwts' , 'quaddata' ), 
@@ -19,6 +23,7 @@ datawrite_to_local <- function(varnames= c('bgid2fips',   'blockid2fips', 'block
                                folder_local_source = "~/../Downloads", 
                                fun=c("arrow::write_ipc_file", "save")[1], # not sure save would work here. 
                                justchecking = F, overwrite = FALSE) {
+  
   if (!is.character(fun)) {warning('must specify function in fun parameter as a quoted character string')
     return(NULL)
   }

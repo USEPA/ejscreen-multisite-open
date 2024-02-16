@@ -35,3 +35,4 @@ EJAM estimates over EJSCREEN estimates, for specified list of indicators like in
 \description{
 EJAM/EJSCREEN comparisons - see quantiles over tested sites, of a stat like ratio of EJAM/EJSCREEN
 }
+\keyword{internal}

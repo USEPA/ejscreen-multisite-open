@@ -2,7 +2,7 @@
 % Please edit documentation in R/sic_xyz.R
 \name{sic_from_code}
 \alias{sic_from_code}
-\title{sic_from_code - search for industry names by SIC code(s), 4 digits each}
+\title{Search for industry names by SIC code(s), 4 digits each}
 \usage{
 sic_from_code(mycodes, children = FALSE)
 }
@@ -15,7 +15,7 @@ sic_from_code(mycodes, children = FALSE)
 a subset of the \link{sictable} data.table (not just the codes column)
 }
 \description{
-sic_from_code - search for industry names by SIC code(s), 4 digits each
+Search for industry names by SIC code(s), 4 digits each
 }
 \seealso{
 \code{\link[=sic_subcodes_from_code]{sic_subcodes_from_code()}} \code{\link[=sic_from_code]{sic_from_code()}}  \code{\link[=sic_from_name]{sic_from_name()}}

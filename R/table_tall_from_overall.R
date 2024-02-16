@@ -1,5 +1,7 @@
-#' table_tall_from_overall
 #' Format the results_overall part of the output of ejamit() or doaggregate()
+#' 
+#' Take a quick look at results in the RStudio console
+#' 
 #' @param results_overall data.table of 1 row, from output of ejamit() or doaggregate()
 #' @param longnames vector of names of variables in results_overall, 
 #'   from output of ejamit() or doaggregate()

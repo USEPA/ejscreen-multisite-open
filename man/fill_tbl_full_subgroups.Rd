@@ -2,13 +2,15 @@
 % Please edit documentation in R/community_report_helper_funs.R
 \name{fill_tbl_full_subgroups}
 \alias{fill_tbl_full_subgroups}
-\title{fill_tbl_full - create full demog subgroup HTML table of indicator rows}
+\title{Create full demog subgroup HTML table of indicator rows}
 \usage{
 fill_tbl_full_subgroups(output_df)
 }
 \arguments{
-\item{output_df, }{single row of results table from doaggregate - either results_overall or one row of bysite}
+\item{output_df, }{single row of results table from doaggregate -
+either results_overall or one row of bysite}
 }
 \description{
-fill_tbl_full - create full demog subgroup HTML table of indicator rows
+Create full demog subgroup HTML table of indicator rows
 }
+\keyword{internal}

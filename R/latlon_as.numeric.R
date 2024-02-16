@@ -1,4 +1,5 @@
-#' latlon_as.numeric - Strip non-numeric characters from a vector
+#' Strip non-numeric characters from a vector
+#' 
 #' @description Remove all characters other than minus signs, decimal points, and numeric digits
 #' @details Useful if latitude or longitude vector has spaces, tabs, etc. 
 #'   CAUTION - Assumes stripping those out and making it numeric will fix whatever problem there was 
@@ -10,7 +11,6 @@
 #'   and may be a character vector because there were some other characters like tab or space or percent sign or dollar sign 
 #' @seealso latlon_df_clean() latlon_infer() latlon_is.valid() latlon_as.numeric()
 #' @return numeric vector same length as x
-#' @export
 #'
 #' @examples   
 #'   latlon_as.numeric(c("-97.179167000000007", " -94.0533", "-95.152083000000005"))
@@ -22,10 +22,12 @@
 #'   latlon_as.numeric(c('aword', '$b'))
 #'   latlon_as.numeric(c('-10.5%', '<5', '$100'))
 #'   latlon_as.numeric(c(Inf, 1))
-#'   
+#'
+#' @keywords internal
+#'
 latlon_as.numeric <- function(x) {
   if (!is.null(dim(x)) | !is.atomic(x)) {
-    if(shiny::isRunning()){
+    if (shiny::isRunning()) {
       warning('latlon_as.numeric(x) expects x to be a vector like 1:10 or df$mycol, not a data.frame, list, or anything else.')
       return(NA)
     } else {
@@ -33,7 +35,7 @@ latlon_as.numeric <- function(x) {
       
     }
   }
-  if(is.null(x)){warning("No values provided to latlon_as.numeric()"); return(NA)}
+  if (is.null(x)) {warning("No values provided to latlon_as.numeric()"); return(NA)}
  
   if (!is.null(dim(x)) | !is.atomic(x) | is.list(x)) {stop('latlon_as.numeric(x) expects x to be a vector like 1:10 or df$mycol, not a data.frame, list, or anything else.')}
   oldx <- x

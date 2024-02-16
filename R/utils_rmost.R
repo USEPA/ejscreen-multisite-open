@@ -1,4 +1,4 @@
-#' rmost - utility to rm(list=ls()) but not remove key datasets EJAM uses 
+#' utility to rm(list=ls()) but not remove key datasets EJAM uses 
 #'
 #' @export
 #'

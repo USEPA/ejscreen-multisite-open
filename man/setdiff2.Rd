@@ -2,14 +2,11 @@
 % Please edit documentation in R/utils_dupenames.R
 \name{setdiff2}
 \alias{setdiff2}
-\title{setdiff2 aka unshared - UTILITY - see what is only in x or y but not both
-utility just like setdiff except for y,x and also x,y
-Just shows which elements are in one and only one of the sets x and y}
+\title{UTILITY - see what is only in x or y but not both - just like setdiff except for y,x and also x,y}
 \usage{
 setdiff2(x, y)
 }
 \description{
-setdiff2 aka unshared - UTILITY - see what is only in x or y but not both
-utility just like setdiff except for y,x and also x,y
-Just shows which elements are in one and only one of the sets x and y
+setdiff2 aka unshared just shows which elements are in one and only one of the sets x and y
 }
+\keyword{internal}

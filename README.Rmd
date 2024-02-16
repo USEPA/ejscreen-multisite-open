@@ -5,21 +5,31 @@ title: EJAM Environmental Justice Analysis Multisite tool
 
 <!-- README.md is generated from README.Rmd. Please edit Rmd not md  -->
 
-```{r, include = FALSE}
-
-# 1) Edit your README.Rmd file
-# 2) Build your README.md file by running devtools::build_readme()  
+```{r, echo=FALSE, eval=FALSE}
+# Developer note: 
+# If you use index.Rmd or README.Rmd it is your responsibility to 
+# knit the document to create the corresponding .md. 
+# pkgdown does not do this for you because it only touches 
+# files in the ⁠doc/⁠ directory.
+#
+# 1) Edit your README.Rmd file (the .Rmd NOT the .md file)
+# 2) Build your README.md file from the README.Rmd file, by running 
+# 
+#
+#        devtools::build_readme()
+#
+#
 # 3) Commit both your README.Rmd and README.md
-
-# NOTE: developers need to render `README.Rmd` regularly, to keep `README.md` up-to-date.
-# `devtools::build_readme()` is handy for this. You could also use GitHub Actions to re-render
+#
+# NOTE: developers need to render `README.Rmd` regularly, to keep `README.md` up-to-date. You could also use GitHub Actions to re-render
 # `README.Rmd` every time you push. An example workflow can be found here:
 # <https://github.com/r-lib/actions/tree/v1/examples>.
+#
+# Then... 
+#    - **See ?pkgdown::build_site** - EJAM now uses the pkgdown R package to build help and vignettes as web pages, and it uses the README.md (not .Rmd) to help build the documentation.
+```
 
-# also note simple html version of package documentation can be made via
-# func in pkg postdoc : 
-# htmlfile <- render_package_manual(package = 'MASS')
-
+```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -34,202 +44,37 @@ knitr::opts_chunk$set(
 
 <!-- badges: end -->
 
-# Technical Details
+[The EJAM Web App] makes it easy to see demographic and environmental information summarized in and across any list of places in the nation. Using EJAM is like running an EJScreen report, but for hundreds or thousands of places, all at the same time. The web app lets you quickly check a summary report, explore interactive maps, tables, and plots, and download a summary or detailed spreadsheet.
 
-  - Technical documentation for R software users
+[The EJAM R Package for Analysts and Developers] written in the R programming language, with source code on GitHub. It provides functions to help work with block group data, points, and polygons, to very quickly aggregate and compare large numbers of locations.
 
-    - R users vignette that walks through installation and key functions: [Vignette](EJAM-vignette.html "EJAM-vignette.html") (must be on VPN)
+EJAM is provided by the US Environmental Protection Agency (US EPA).
 
-    - R developers technical documentation of all R functions and data in web page format: [EJAM R Functions and Data](EJAM.html "EJAM.html") (must be on VPN)
+## The EJAM Web App
 
-    - GitHub repository of code and data: [USEPA/EJAM](https://github.com/USEPA/EJAM#readme "https://github.com/USEPA/EJAM#readme") (must be on VPN)
+-   [What is EJAM?](articles/what_is_ejam.html "what_is_ejam.html")
 
-  - EJAM Web App Demo internal to EPA: As of 10/2023 the main app is not on a production server yet. A very minimal portion of the calculation tool is here on a staging server:
+-   [Using EJAM as a Web App](articles/0_webapp.html "0_webapp.html")
 
-    - For a demo of EJScreen-like results (some #s are slightly different), for 100 points in under 5 seconds, and 1,000 points in about 10-30 seconds depending on distance **[ejamlite demo](https://rstudio-connect.dmap-stage.aws.epa.gov/content/725e3761-3dc1-4012-b07c-23126063da97/ "https://rstudio-connect.dmap-stage.aws.epa.gov/content/725e3761-3dc1-4012-b07c-23126063da97/")** (must be on VPN)
+-   [EJAM live beta test](https://rstudio-connect.dmap-stage.aws.epa.gov/content/cb2bc9cf-75c3-4db1-ad28-e92940fe4438/ "https://rstudio-connect.dmap-stage.aws.epa.gov/content/cb2bc9cf-75c3-4db1-ad28-e92940fe4438/")\*\* (must be at EPA offices or on VPN)
 
-    - For a demo of EJScreen results via API, for 100 points in about 60 seconds, and 1,000 points in about 10 minutes [ejscreenapi demo](https://rstudio-connect.dmap-stage.aws.epa.gov/content/725e3761-3dc1-4012-b07c-23126063da97/ "https://rstudio-connect.dmap-stage.aws.epa.gov/content/725e3761-3dc1-4012-b07c-23126063da97/") (must be on VPN)
+## The EJAM R Package for Analysts and Developers
 
+-   [1. Installing the EJAM R package](articles/1_installing.html "1_installing.html")
 
-# Non-technical Overview
+-   [2. Quick Start Guide to the EJAM R package](articles/2_quickstart.html "2_quickstart.html")
 
-# Installation
+-   [3. Basics of Using EJAM for Analysis in RStudio](articles/3_analyzing.html "3_analyzing.html")
 
-To install the latest version of EJAM, you will first need access to the GitHub repositories through EPA. Then use the following steps to install from private repositories:
+-   [4. Advanced Features in the EJAM R package](articles/4_advanced.html "4_advanced.html")
 
-1.	create GitHub personal access token with 'repo scope'
+-   [5. Accessing a Batch of EJScreen Reports via EJAM](articles/5_ejscreenapi.html "5_ejscreenapi.html")
 
-- Go to https://github.com/settings/tokens and select Tokens (classic) on the left-hand side. Then click ‘Generate New Token’ -> Generate new token (classic).
-- Give it a name and select all boxes under repo scope. Scroll down and click ‘Generate Token’.
+-   [6. Future Plans for EJAM](articles/6_future_plans.html "6_future_plans.html")
 
-2.	set GitHub credentials in Rstudio 
-- one-time login: from the console, run credentials::set_github_pat(). Paste in your PAT to the login popup under ‘Token’.
-- store credentials long-term: run usethis::edit_r_environ() to open your .Renviron file and and add a line with your PAT in this format: GITHUB_PAT = 'abc'
-    - You can specify an extra argument scope = ‘project’ if you only want the PAT to work for a particular Rstudio project.
+-   [Reference Manual Documenting all EJAM Package Functions and Data](reference/index.html "index.html")
 
-3. Install the packages using `devtools::install_github()`
-
-```{r, eval=FALSE}
-devtools::install_github('USEPA/EJAMejscreenapi')
-devtools::install_github('USEPA/EJAMbatch.summarizer')
-devtools::install_github('USEPA/EJAM')
-```
-
-
-
-### EPA’s Environmental Justice Analysis Multi-site tool
-
-EJAM is a user-friendly web app, provided by the US EPA, that can
-summarize demographics and environmental conditions for any list of
-places in the nation. It provides interactive results and a formatted,
-ready-to-share report with written explanations of the results, tables,
-and graphics. The report can provide EJ-related information about people
-who live in communities near any of the industrial facilities on a list,
-for example.
-
-### What is EJAM?
-
-EJAM is a user-friendly web app, provided by the US EPA, that can
-summarize demographics and environmental conditions for any list of
-places in the nation. It provides interactive results and a formatted,
-ready-to-share report with written explanations of the results, tables,
-and graphics. The report can provide EJ-related information about people
-who live in communities near any of the industrial facilities on a list,
-for example.
-
-To use the tool, one first selects the places to be analyzed. This could
-be, for example, everyone within 2 miles of any EPA-regulated facility
-in a specific NAICS code (industrial sector). The tool runs a fast
-“buffer” or proximity analysis at each location, similar to how EJScreen
-provides a standard report for a single location, except EJAM does this
-for each of a large number of locations very quickly. Then, most
-importantly, EJAM provides a complete overview report, to summarize
-environmental conditions and demographics across all the populations and
-all of the locations. The results can be explored interactively or
-downloaded as a written report with text, tables, and graphics.
-
-An EJAM report can quickly and easily show which demographic groups live
-near the selected facilities. It also provides new insights into which
-environmental stressors may affect certain demographic subgroups
-disproportionately, to varying degrees, near a regulated sector overall
-and at individual sites. This allows EJ analysis to move beyond looking
-at a small number of indicators for a few demographic groups, at one
-site in a single permitting decision, to a more complete picture of
-conditions near a whole set of facilities that is the focus of a risk
-analysis or a new regulation being considered, for example.
-
-### EJAM features and benefits
-
-EJAM provides a ready-to-use summary report, plus more flexibility,
-accuracy, and speed than other tools have. The web-based app quickly
-provides results on the fly -- The circular buffering module was optimized to be extremely
-fast (allowing realtime exploratory work in an app), while still using
-the block-population calculation EJScreen uses, making it more
-consistent with EJScreen and more accurate than other approaches.
-
-EJAM also lets one pick locations through several different approaches, 
-such as specifying points by industry or latitude/longitude, 
-or using shapefiles with polygons rather than just analyzing residents within a fixed distance.
-
-The default demographic indicators are [EJScreen’s basic demographic
-indicators](https://www.epa.gov/ejscreen/overview-demographic-indicators-ejscreen "https://www.epa.gov/ejscreen/overview-demographic-indicators-ejscreen"),
-with the addition of race/ethnicity subgroups.
-
-The data and software are shared as reusable,
-well-documented functions or modules in an R package, 
-to allow software developers or analysts to take
-advantage of these resources in running their own analyses or building
-or supplementing their own tools, websites, or mobile apps.
-
-### Updates
-
-EJAM data updates are meant to match EJScreen’s scheduled updates and
-main version numbers, so EJAM 2.2 uses the same basic data as EJScreen
-2.2. The 2.2 version of EJScreen (released July 2023) had up-to-date
-demographic data (e.g., Census 2020 block weights and ACS 2017-2021
-block group demographics).
-
-### Speed
-
-The power of this tool enables faster and more accurate results than
-other tools generally have been able to provide. It also should be much
-more cost-effective as a public tool than the standard buffering
-solution would be. This tool lets any user very quickly see an analysis of a
-very large number of places (which EJScreen was not designed to offer),
-and immediately get a ready-to-use report that provides perspective on
-an entire industrial sector or set of places.
-
-### Accuracy
-
-Compared to other approaches, EJAM’s high-resolution buffering provides
-more accurate information about which populations live inside a buffer,
-which is important in rural areas where a single blockgroup can cover a
-very large area. For circular buffers, EJAM 2.2 uses the locations of
-internal points of Census 2020 blocks, not areal apportionment of block
-groups, to estimate where residents live within each block group. This
-essentially assumes people are evenly spread out within each block, not
-each block group, and treats the block population as if they were all
-located at the block’s internal point. There are several million blocks
-in the US. The only more accurate approaches are to use areal
-apportionment of blocks (not block groups), but that is very slow, or to
-use a 30x30 meter grid based on dasymetric estimates of where people
-live at even higher resolution than a block, but that requires large
-amounts of storage and computer time. Any analysis ideally should
-closely replicate EJScreen’s results for a single location, such as
-total population count within 1 mile, to avoid public confusion and
-inconsistency.
-
-EJAM also takes note of which residences are near which sites, to avoid
-double-counting people in the summary statistics but still allow a user
-to view results for one site at a time. This is something other tools
-and analyses often cannot provide - when they aggregate across sites
-they typically do not retain the statistics on individual sites, and
-rarely if ever keep track of which communities are near multiple
-facilities. Keeping track of this would also allow an analyst to explore
-how many people are near multiple sites, or ask which sites in
-communities that already have multiple sites nearby.
-
-EJAM was designed so that it can provide a continuous distribution of distances, 
-as distributed across blocks or people 
-for one or all of the nearby facilities. This enables exploration 
-of the complete picture of proximities, rather than
-using an arbitrary single distance defining near versus far. The
-distribution can be sliced later for the summary statistics at any
-distance, and can be summarized as a distribution of distances within
-each demographic group.
-
-### Future Plans
-
-EJAM will also be able to analyze other demographic indicators, to
-include user-selected EPA-hosted layers, or even user-provided data. 
-In other words, an analysis would be able to include other
-layers on risks or concentrations (at block group resolution), or
-user-provided scores for each block group.
-
-The tool uses a default, standard report, but will allow flexibility
-beyond that. EJAM will provide a standard report (text, graphics, and maps)
-to print, download, share, and use, but that a user could further edit offline
-(e.g., in Word). Users also can download individual graphics and data
-files (for individual sites and summary statistics).
-
-The results can be viewed interactively, where one can adjust
-certain aspects of the analysis and outputs (and that could possibly
-flow into the summary report as well) such as preferred graphics/
-tables, indicator thresholds, reference groups, reference areas,
-metrics, etc.), to make the outputs fit a given user’s needs.
-
-To provide further flexibility and help avoid duplication of effort,
-an EJAM API would provide access to services such as fast buffering,
-summarization, or data.
-
-EJAM is designed with growth in mind, assuming
-that the specific indicators of interest will expand or change over
-time. It is even possible that multiple resolutions of data will need to
-be analyzed, such as block, block group, and tract data for different
-indicators. A subsequent refinement might even use a high-resolution
-raster grid of population estimates rather than the Census Block counts
-currently used for buffering and weighting block group scores for
-partially included block groups.
+-   [GitHub Repository - Code and Data, at USEPA/EJAM](https://github.com/USEPA/EJAM#readme "https://github.com/USEPA/EJAM#readme") (via EPA VPN or LAN in-office)
 
 ## Disclaimer for App
 
@@ -237,14 +82,4 @@ This software/application has been approved for release by the U.S. Environmenta
 
 ## Disclaimer for GitHub Repository Content
 
-The United States Environmental Protection Agency (EPA) GitHub project
-code is provided on an “as is” basis and the user assumes responsibility
-for its use. EPA has relinquished control of the information and no
-longer has responsibility to protect the integrity, confidentiality, or
-availability of the information. Any reference to specific commercial
-products, processes, or services by service mark, trademark,
-manufacturer, or otherwise, does not constitute or imply their
-endorsement, recommendation or favoring by EPA. The EPA seal and logo
-shall not be used in any manner to imply endorsement of any commercial
-product or activity by EPA or the United States Government.
-
+The United States Environmental Protection Agency (EPA) GitHub project code is provided on an "as is" basis and the user assumes responsibility for its use. EPA has relinquished control of the information and no longer has responsibility to protect the integrity, confidentiality, or availability of the information. Any reference to specific commercial products, processes, or services by service mark, trademark, manufacturer, or otherwise, does not constitute or imply their endorsement, recommendation or favoring by EPA. The EPA seal and logo shall not be used in any manner to imply endorsement of any commercial product or activity by EPA or the United States Government.

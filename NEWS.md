@@ -1,3 +1,9 @@
+# EJAM 2.2.1 (1/31/2024)
+
+* Major changes
+
+* Deployed to Posit Connect server as web app
+
 # EJAM 2.2.1 (10/18/2023)
 
 * Major changes

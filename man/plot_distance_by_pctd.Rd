@@ -2,17 +2,18 @@
 % Please edit documentation in R/plot_distance_by_pctd.R
 \name{plot_distance_by_pctd}
 \alias{plot_distance_by_pctd}
-\title{plot_distance_by_pctd  -  Plot percent demographics within X miles of a site}
+\title{What percentage of this demographic group's population lives less than X miles from a site?}
 \usage{
 plot_distance_by_pctd(
   s2b = NULL,
   sitenum = NULL,
   myvars = c(names_d_count, names_d_subgroups_count)[1],
-  dpctvar = paste0("pct", myvars)
+  demoglabel = fixcolnames(myvars, "r", "shortlabel")
 )
 }
 \arguments{
-\item{s2b}{output of \code{\link[=getblocksnearby]{getblocksnearby()}}}
+\item{s2b}{output of \code{\link[=getblocksnearby]{getblocksnearby()}}, a data.table of distance from each block centroid to each site.
+If NULL (not provided as a parameter to the function), the function will just show an example using a random point.}
 
 \item{sitenum}{one number that is the unique ID (the row number of original list of points) to look at in s2b}
 
@@ -25,8 +26,16 @@ and only works for one indicator at a time so far.}
 returns s2b but with more columns in it, like cumpop, cumdpop, pctdwithin
 }
 \description{
-plot_distance_by_pctd  -  Plot percent demographics within X miles of a site
+This plots the cumulative share of residents found within each distance,
+for a single demographic group.
+
+This function uses the distance of each Census block from the site in conjunction with
+the block group demographics, to provide a relatively detailed picture of
+how far away residents in each group live. In contrast, the function
+\code{\link[=distance_cdf_by_group_plot]{distance_cdf_by_group_plot()}} is based on ejamit()$results_bybg_people,
+which provides only block group resolution information about distance.
 }
 \examples{
   plot_distance_by_pctd()
+
 }

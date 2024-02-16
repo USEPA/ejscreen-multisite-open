@@ -117,10 +117,12 @@ if (testing_ejscreenapi_module) {
 #' @param default_radius miles radius to show as initial default selection
 #' @param default_radius_react reactiveVal passed to module UI from EJAM app that is initial radius to show 
 #'   so that it can reflect what user already set as radius in main EJAM app
+#'   
 #' @noRd 
 #' 
 #' @importFrom shiny NS tagList 
 #' @import leaflet
+#' 
 mod_ejscreenapi_ui <- function(id, 
                                simpleradius_default_for_ui = 1 #,
                                # default_points_shown_at_startup_react = reactive(1),

@@ -2,7 +2,7 @@
 % Please edit documentation in R/distance_by_groups_by_site-DRAFT.R
 \name{distance_by_group_by_site}
 \alias{distance_by_group_by_site}
-\title{distance_by_group_by_site - DRAFT FUNCTION}
+\title{Ratios at each site, of avg dist of group / avg dist of everyone else near site}
 \usage{
 distance_by_group_by_site(bybg)
 }
@@ -13,7 +13,7 @@ distance_by_group_by_site(bybg)
 table of ratios, one col per site, one row per indicator
 }
 \description{
-distance_by_group_by_site - DRAFT FUNCTION
+Like \code{\link[=distance_by_group]{distance_by_group()}} but for multiple sites - DRAFT FUNCTION
 }
 \seealso{
 \code{\link[=plot_distance_cdf_by_group]{plot_distance_cdf_by_group()}} \code{\link[=plot_distance_mean_by_group]{plot_distance_mean_by_group()}} \code{\link[=distance_by_group]{distance_by_group()}} \code{\link[=distance_mean_by_group]{distance_mean_by_group()}}

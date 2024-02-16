@@ -2,12 +2,11 @@
 % Please edit documentation in R/utils_dupenames.R
 \name{setdiff_yx}
 \alias{setdiff_yx}
-\title{setdiff_yx - UTILITY - see what is in y not x
-utility just like setdiff except for y,x instead of x,y}
+\title{UTILITY - see what is in y not x}
 \usage{
 setdiff_yx(x, y)
 }
 \description{
-setdiff_yx - UTILITY - see what is in y not x
 utility just like setdiff except for y,x instead of x,y
 }
+\keyword{internal}

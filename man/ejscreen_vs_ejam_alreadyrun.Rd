@@ -2,7 +2,7 @@
 % Please edit documentation in R/ejscreen_vs_ejam_.R
 \name{ejscreen_vs_ejam_alreadyrun}
 \alias{ejscreen_vs_ejam_alreadyrun}
-\title{EJAM/EJSCREEN comparisons - compare EJScreen API vs EJAM stats near site(s) (if results already run)}
+\title{EJAM/EJSCREEN comparisons}
 \usage{
 ejscreen_vs_ejam_alreadyrun(
   apisite,
@@ -38,7 +38,7 @@ For each data.frame, colnames are indicators like pop, blockcount_near_site, etc
 and rows represent sites analyzed.
 }
 \description{
-EJAM/EJSCREEN comparisons - compare EJScreen API vs EJAM stats near site(s) (if results already run)
+Compare EJScreen API vs EJAM stats near site(s) (after results already run)
 }
 \examples{
   blah = ejscreen_vs_ejam_alreadyrun(
@@ -127,3 +127,4 @@ EJAM/EJSCREEN comparisons - compare EJScreen API vs EJAM stats near site(s) (if 
 \seealso{
 \code{\link[=ejscreen_vs_ejam]{ejscreen_vs_ejam()}}
 }
+\keyword{internal}

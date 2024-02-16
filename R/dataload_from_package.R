@@ -1,4 +1,6 @@
-#' dataload_from_package - utility to load a couple of datasets using data immediately instead of relying on lazy loading 
+
+#' Utility to load a couple of datasets using data immediately instead of relying on lazy loading 
+#' 
 #' @details
 #'  See also read_builtin() function from the readr package!
 #' 
@@ -22,7 +24,7 @@
 #'   ls()
 #'   rm(avg.in.us, x)
 #'   
-#' @export
+#' @keywords internal
 #' 
 dataload_from_package <- function(olist = c("blockgroupstats", "usastats", "statestats"), envir=globalenv()) {
   
@@ -33,7 +35,6 @@ dataload_from_package <- function(olist = c("blockgroupstats", "usastats", "stat
   )
   
   # data(list=c("frs", "frs_by_programid ", "frs_by_naics"), package="EJAM") # would be to preload some very large ones not always needed. 
-  
   
   # get full path and name for data file in locally installed package?
   # system.file("/data/blockgroupstats.rda", package="EJAM")
@@ -59,7 +60,4 @@ dataload_from_package <- function(olist = c("blockgroupstats", "usastats", "stat
   # 
   # A sometimes important distinction is that the second approach places objects in the namespace but the first does not. 
   # So if it is important that the function sees mytable as an object from the package, it is system data and the second approach should be used.
-  
 }
-
-

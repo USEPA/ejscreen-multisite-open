@@ -1,13 +1,16 @@
-#' var_is_numeric_ish - see which columns seem numeric and could be rounded, e.g. - DRAFT NOT FULLY TESTED
+
+#' see which columns seem numeric and could be rounded, e.g. - DRAFT NOT FULLY TESTED
 #' 
 #' @param x data.table, data.frame, or vector
 #' @param only.if.already.numeric logical, if TRUE, only reports TRUE for a column (or element) if  is.numeric() is TRUE for that one 
 #' @param strip.characters.before.coerce logical, if TRUE, tries to remove spaces and percentage signs before trying to coerce to numeric
 #' @seealso [table_round()] 
 #' @return logical vector as long as NCOL(x) i.e., is length(x), if x is table, or length(x) if vector
-#' @export
-#'
+#' 
+#' @keywords internal
+#' 
 var_is_numeric_ish <- function(
+    
     x, only.if.already.numeric=FALSE, strip.characters.before.coerce=FALSE) {
   # treat a vector differently than a matrix/data.frame/data.table
   # even if those nonvectors are just 1 row (multiple indicators) like results_overall,

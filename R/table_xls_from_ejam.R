@@ -1,7 +1,9 @@
 
-#' table_xls_from_ejam
+
 #' Format the results of ejamit() for excel and optionally save .xlsx file
-#' Uses table_xls_format()
+#' 
+#' Uses table_xls_format() to format and save results
+#' 
 #' @param ejamitout output of [ejamit()] 
 #' @param fname optional name or full path and name of file to save locally, like "out.xlsx" 
 #' @param save_now optional logical, whether to save as a .xlsx file locally or just return workbook object

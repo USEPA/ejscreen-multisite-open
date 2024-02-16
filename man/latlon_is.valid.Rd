@@ -2,7 +2,7 @@
 % Please edit documentation in R/latlon_is.valid.R
 \name{latlon_is.valid}
 \alias{latlon_is.valid}
-\title{latlon_is.valid - Validate latitudes and longitudes}
+\title{Check if lat lon are OK -- validate latitudes and longitudes}
 \usage{
 latlon_is.valid(lat, lon, quiet = TRUE)
 }
@@ -39,6 +39,7 @@ lon must be ( between -180 and -64) OR (between 172 and 180)
  # blockpoints may need to be downloaded using dataload_from_pins()
  table(latlon_is.valid(lat =  blockpoints$lat, lon =  blockpoints$lon))
   }
+
 }
 \seealso{
 \code{\link[=latlon_is.usa]{latlon_is.usa()}} \code{\link[=latlon_is.islandareas]{latlon_is.islandareas()}} \code{\link[=latlon_is.available]{latlon_is.available()}} \code{\link[=latlon_is.possible]{latlon_is.possible()}}

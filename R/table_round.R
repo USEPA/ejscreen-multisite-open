@@ -1,6 +1,6 @@
 ############################################################################# #
 
-#' table_round - round numbers in a table, each column to appropriate number of decimal places
+#' Round numbers in a table, each column to appropriate number of decimal places
 #'
 #' @param x data.frame, data.table, or vector with at least some numerical columns, like the results
 #'   of ejamit()$results_bysite

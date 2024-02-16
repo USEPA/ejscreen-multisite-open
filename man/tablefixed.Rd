@@ -2,7 +2,7 @@
 % Please edit documentation in R/tablefixed.R
 \name{tablefixed}
 \alias{tablefixed}
-\title{tablefixed - Table of counts of integer values zero through maxbin}
+\title{Table of counts of integer values zero through maxbin}
 \usage{
 tablefixed(x, maxbin = NULL)
 }

@@ -1,4 +1,5 @@
-#' tablefixed - Table of counts of integer values zero through maxbin
+#' Table of counts of integer values zero through maxbin
+#' 
 #' @description Like tabulate or table, sort of, but includes zero unlike tabulate,
 #'   and lets you ensure results include every integer 0 through maxbin,
 #'   so you can, for example, easily combine tables of counts where some

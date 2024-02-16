@@ -2,7 +2,7 @@
 % Please edit documentation in R/colcounter_xyz.R
 \name{colcounter}
 \alias{colcounter}
-\title{colcounter - Count columns with Value (at or) above (or below) threshold}
+\title{Count columns with Value (at or) above (or below) threshold}
 \usage{
 colcounter(
   x,
@@ -31,7 +31,7 @@ If TRUE, specify one threshold per column.}
 vector of counts as long as NROW(x)
 }
 \description{
-colcounter - Count columns with Value (at or) above (or below) threshold
+Count columns with Value (at or) above (or below) threshold
 }
 \examples{
 \dontrun{
@@ -54,5 +54,6 @@ cbind(at80=tablefixed(x80, NCOL(pdata)), at95=tablefixed(x95, NCOL(pdata)))
 
 }
 \seealso{
-colcounter_summary_all() colcounter_summary() colcounter_summary_cum() colcounter_summary_pct() colcounter_summary_cum_pct() tablefixed()
+\code{\link[=colcounter_summary_all]{colcounter_summary_all()}} \code{\link[=colcounter_summary]{colcounter_summary()}} \code{\link[=colcounter_summary_cum]{colcounter_summary_cum()}} \code{\link[=colcounter_summary_pct]{colcounter_summary_pct()}} \code{\link[=colcounter_summary_cum_pct]{colcounter_summary_cum_pct()}}
 }
+\keyword{internal}

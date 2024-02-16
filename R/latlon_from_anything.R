@@ -1,17 +1,17 @@
-#' latlon_from_anything - Flexibly get lat/lon from file, data.frame, data.table, or lat/lon vectors
-#' @description Try to figure out if user provided latitude / longitude as vectors, data.frame, file, or interactively pick file.
-#' @details 
+
+#' Get lat/lon flexibly - from file, data.frame, data.table, or lat/lon vectors
 #' 
-#' This function
+#' @description Try to figure out if user provided latitude / longitude
+#'   as vectors, data.frame, file, or interactively pick file.
+#'
+#' @details This function relies on
 #' 
-#' relies on
-#' 
-#'   read_csv_or_xl()  and
+#'  [read_csv_or_xl()]  and
 #'   
-#'   [latlon_df_clean()] which in turn uses [latlon_infer()] [latlon_as.numeric()] [latlon_is.valid()]
+#'  [latlon_df_clean()] which in turn uses [latlon_infer()] [latlon_as.numeric()] [latlon_is.valid()]
 #' 
 #' 
-#' read_and_clean_points() from EJAMejscreenapi
+#'  [read_and_clean_points()] from EJAMejscreenapi
 #' 
 #'   would be the most general / flexible broadest way to get points, but is still work in progress 
 #' 
@@ -41,13 +41,15 @@
 #'  latlon_from_anything(testpoints_100[1:6,] )
 #'  latlon_from_anything(testpoints_100[1:6, c('lat','lon')] )
 #'  latlon_from_anything(x=testpoints_100$lon[1:6], y=testpoints_100$lat[1:6] )
-#' @aliases latlon_any_format lonlat_any_format
+#' @aliases latlon_any_format
+#' 
 #' @export
 #'
 latlon_from_anything <- function(x,y) {
+  
   if (missing(x)) {
     if (interactive()) { x <- rstudioapi::selectFile(caption = "Select xlsx or csv with lat,lon values", path = '.' ) } else {
-      if(shiny::isRunning()){
+      if (shiny::isRunning()) {
         warning("file path/name needed but not provided")
         return(NULL)
       } else{
@@ -65,7 +67,7 @@ latlon_from_anything <- function(x,y) {
     if (is.character(x) & length(x) == 1) {
       # seems to be a file name with path, so read it
       if (!file.exists(x)) {
-        if(shiny::isRunning()){
+        if (shiny::isRunning()) {
           warning(paste0(x, ' is not a filepath/name that exists, and otherwise must be a vector of longitudes or a table of points'))
           return(NULL)
         } else{
@@ -92,7 +94,11 @@ latlon_from_anything <- function(x,y) {
   ## WHAT SHOULD BE RETURNED IF NO COLUMNS CAN BE INTERPRETED AS lat lon ? Need to check for that where this function is used!
   return(pts)
 }
+########################################################### #
 
+#' 
+#' @export
+#'
 latlon_any_format <- latlon_from_anything
 
-lonlat_any_format <- latlon_any_format
+########################################################### #

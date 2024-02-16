@@ -2,8 +2,7 @@
 % Please edit documentation in R/table_xls_format.R
 \name{vartype_cat2color_ejam}
 \alias{vartype_cat2color_ejam}
-\title{vartype_cat2color_ejam - helper function - assign fill color to shade excel cells by indicator type and category
-Use color shading to make spreadsheet easier to use, grouping the indicators}
+\title{helper function - assign fill color to shade excel cells by indicator type and category}
 \usage{
 vartype_cat2color_ejam(vartype = raw, varcategory = "other")
 }
@@ -20,7 +19,6 @@ as from dput(unique(map_headernames$varcategory))}
 vector of colors like c('lightblue', 'gray') matching length of vartype
 }
 \description{
-vartype_cat2color_ejam - helper function - assign fill color to shade excel cells by indicator type and category
 Use color shading to make spreadsheet easier to use, grouping the indicators
 }
 \seealso{

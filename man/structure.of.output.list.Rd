@@ -2,13 +2,12 @@
 % Please edit documentation in R/utils_structure.of.output.list.R
 \name{structure.of.output.list}
 \alias{structure.of.output.list}
-\title{structure.of.output.list - See info about list of results
-Utility to print summary info about the output of ejamit or doaggregate}
+\title{Utility to print summary info about the output of ejamit() or doaggregate()}
 \usage{
 structure.of.output.list(x, maxshown = 10)
 }
 \arguments{
-\item{x}{the output of ejamit() or of doaggregate(),
+\item{x}{the output of \code{\link[=ejamit]{ejamit()}} or of \code{\link[=doaggregate]{doaggregate()}},
 a list of objects holding results of analysis}
 
 \item{maxshown}{shows only first 10 elements of list by default}
@@ -18,8 +17,7 @@ data.frame summarizing names of list, whether each element is a
 data.table, data.frame, or vector, and rows/cols/length info
 }
 \description{
-structure.of.output.list - See info about list of results
-Utility to print summary info about the output of ejamit or doaggregate
+Utility to print summary info about the output of ejamit() or doaggregate()
 }
 \examples{
  
@@ -31,3 +29,4 @@ Utility to print summary info about the output of ejamit or doaggregate
   structure.of.output.list(testoutput_ejscreenit_5)
   
 }
+\keyword{internal}

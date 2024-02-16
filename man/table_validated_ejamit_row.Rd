@@ -2,8 +2,7 @@
 % Please edit documentation in R/table_gt_.R
 \name{table_validated_ejamit_row}
 \alias{table_validated_ejamit_row}
-\title{table_validated_ejamit_row - Cleans/validates EJAM results for 1 place or overall
-This is a first step in formatting results in nice tables}
+\title{Cleans/validates EJAM results for 1 place or overall}
 \usage{
 table_validated_ejamit_row(ejamit_results_1row = NULL)
 }
@@ -19,7 +18,6 @@ Returns the input as a 1-row data.table, indicators etc. in the columns.
 If not a 1 row table, or colnames are not what is expected, it returns correct structure filled with NA values.
 }
 \description{
-table_validated_ejamit_row - Cleans/validates EJAM results for 1 place or overall
 This is a first step in formatting results in nice tables
 }
 \examples{

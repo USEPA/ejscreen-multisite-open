@@ -32,5 +32,6 @@ EJAM/EJSCREEN comparisons - see results for 1 site after using ejscreen_vs_ejam(
   mysite <- 9
   ejscreen_vs_ejam_see1(z, mysite = mysite, myvars = colnames(z$EJAM))[!is.na(z$EJSCREEN[mysite, ]) , 1:2]
   }
-  
+
 }
+\keyword{internal}

@@ -1,10 +1,10 @@
-#' latlon_infer - guess which columns have lat and lon based on aliases like latitude, FacLat, etc.
+
+#' Guess which columns have lat and lon based on aliases like latitude, FacLat, etc.
 #'
 #' @param mycolnames e.g., colnames(x) where x is a data.frame from read.csv
 #'
 #' @return returns all of mycolnames except replacing the best candidates with lat and lon
 #' @seealso latlon_df_clean() latlon_infer() latlon_is.valid() latlon_as.numeric()
-#' @export
 #'
 #' @examples 
 #'   latlon_infer(c('trilat', 'belong', 'belong')) # warns if no alias found, 
@@ -17,8 +17,11 @@
 #'       # converted to preferred word (if pref not found), creating dupes!  warn!
 #'   latlon_infer(c('LONG', 'LONG')) # dupes of an alias are renamed and still are dupes! warn!
 #'   latlon_infer(c('lat', 'lat', 'Lon')) # dupes left as dupes but warn!
-#'   
+#'
+#' @keywords internal
+#'
 latlon_infer <- function(mycolnames) {
+  
   x <- mycolnames
   
   # Latitude, Lat, latitude, long, longitude, Longitude, Long, LONG, LAT, etc. 
@@ -51,7 +54,8 @@ latlon_infer <- function(mycolnames) {
   
   x <- infer('lat', x)
   x <- infer('lon', x)
-  if (!isTRUE(all.equal(x, mycolnames))) {warning("Replaced column names that were inferred to be and therefore renamed as the lat and/or lon columns!")}
-  x
-  
+  if (!isTRUE(all.equal(x, mycolnames))) {
+    warning("Replaced column names that were inferred to be and therefore renamed as the lat and/or lon columns!")
+  }
+  return(x)
 }

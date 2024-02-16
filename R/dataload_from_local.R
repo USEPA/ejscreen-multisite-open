@@ -1,5 +1,9 @@
-#' dataload_from_local - load datasets from local disk folder
-#' utility for analysts/developers to store large block/other data locally instead of redownloading
+
+#' Load datasets from local disk folder
+#' 
+#' Utility for analysts / developers to store large block /
+#' other data locally instead of redownloading
+#' 
 #' @details  
 #' 
 #'   See [dataload_from_pins()] also. 
@@ -19,6 +23,7 @@
 #'   actually found in folder_local_source,
 #'   but only for those not already in memory, so it is 
 #'   just the ones loaded from disk because not already in memory and found on disk locally.
+#'   
 #' @export
 #'
 dataload_from_local <- function(varnames = c(c('blockwts', 'blockpoints', 'blockid2fips', "quaddata"), 
@@ -99,7 +104,7 @@ dataload_from_local <- function(varnames = c(c('blockwts', 'blockpoints', 'block
           
           if (ext == '.rda') {
             cat(varnames_i, spacing_i,
-                 'is being loaded from', localpaths[i],'...')
+                 'is loading from', localpaths[i],'...')
             load(localpaths[i], envir = envir)
             if (!exists(varnames_i, envir = envir)) {
               cat(    "Problem - file found but failed to assign to memory/ envir: ", varnames_i, "\n")
@@ -111,7 +116,7 @@ dataload_from_local <- function(varnames = c(c('blockwts', 'blockpoints', 'block
           } else {
             if (ext == '.arrow') {
               cat(varnames_i, spacing_i,
-                   'is being loaded from', localpaths[i],'...')
+                   'is loading from', localpaths[i],'...')
               assign(varnames_i, arrow::read_ipc_file(file = localpaths[i]), envir = envir)
               if (!exists(varnames_i, envir = envir)) {
                 cat(    "Problem - file found but failed to assign to memory/ envir: ", varnames_i, "\n")

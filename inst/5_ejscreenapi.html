@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>5. Using the EJScreen API via EJAM</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">5. Using the EJScreen API via EJAM</h1>
+
+
+
+<div id="ejams-tools-for-using-the-ejscreen-api" class="section level1">
+<h1>EJAM’s tools for using the EJScreen API</h1>
+<p>EJAM includes the EJAMejscreen package, a set of functions and data
+that facilitate access to EJScreen data and reports, using the API
+provided by EJScreen. It does a few things:</p>
+<ul>
+<li><strong>API wrapper:</strong> Makes it easier to use the EJScreen
+API from R</li>
+<li><strong>Batch processor:</strong> Includes a function that lets you
+obtain a batch of EJScreen results via API, assembled in a table.</li>
+<li><strong>Web App:</strong> Provides a shiny R web app interface that
+helps you use the batch tool. This provides access to the EJScreen API
+in a loop or batch mode. It uses EJScreen to run reports on multiple
+places one at a time, so it is somewhat slow for more than a handful of
+places, but exactly replicates EJScreen results.</li>
+<li><strong>Web Module:</strong> EJAM will include a shiny module within
+EJAM’s web app UI, that provides access to both in one place.</li>
+</ul>
+<div id="get-one-ejscreen-report-in-your-web-browser" class="section level3">
+<h3>Get one EJScreen report in your web browser</h3>
+<p>This works best for one site at a time, and does not provide results
+in a table, just a formatted web page EJScreen Community Report directly
+from EJScreen.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Browser opens to view one site report</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">browseURL</span>(</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">url_ejscreen_report</span>(</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">lon =</span> <span class="sc">-</span><span class="fl">92.380556</span>, </span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">lat =</span> <span class="fl">31.316944</span>, </span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">radius =</span> <span class="dv">3</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the URL for each site report</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">url_ejscreen_report</span>(</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">lon =</span> testpoints_10<span class="sc">$</span>lon, </span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">lat =</span> testpoints_10<span class="sc">$</span>lat, </span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">radius =</span> <span class="dv">3</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Open each webpage in a browser</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>) {</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">browseURL</span>(<span class="fu">url_ejscreen_report</span>(</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">lon =</span> testpoints_10<span class="sc">$</span>lon[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>], </span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">lat =</span> testpoints_10<span class="sc">$</span>lat[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>], </span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">radius =</span> <span class="dv">3</span>)[i])</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="get-ejscreen-results-tables-in-rstudio-in-tables-for-a-list-of-sites" class="section level3">
+<h3>Get EJScreen results tables in RStudio (in tables, for a list of
+sites)</h3>
+<p>In RStudio, you can use EJAM’s EJScreen API code like this:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># To interactively pick your own spreadsheet file from your local drive, </span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># that has lat and lon as two column headings and then one row per site:</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">ejscreenit</span>(<span class="at">radius =</span> <span class="dv">1</span>) <span class="co"># will prompt you for excel file with lat lon in it</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">ejscreenit</span>(<span class="fu">data.frame</span>(<span class="at">lon =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">111</span>,<span class="sc">-</span><span class="dv">113</span>), <span class="at">lat =</span> <span class="fu">c</span>(<span class="dv">41</span>,<span class="dv">43</span>)), <span class="at">radius =</span> <span class="dv">2</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(x)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>x<span class="sc">$</span>map</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>x<span class="sc">$</span>table</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ejscreenit_see_table</span>(x)</span></code></pre></div>
+</div>
+<div id="get-ejscreen-results-tables-in-a-local-web-app-not-tested" class="section level3">
+<h3>Get EJScreen results tables in a local web app ***not tested</h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="do">### *** NOT TESTED - MAY NO LONGER WORK AS SHIFT TO USING MODULE VERSION</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># If you have the local source package EJAMejscreenapi you can do this:</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># setwd(&quot;YOUR PATH GOES HERE  EJAMejscreenapi&quot;)</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(EJAMejscreenapi)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>EJAMejscreenapi<span class="sc">::</span><span class="fu">run_app</span>()</span></code></pre></div>
+</div>
+<div id="get-ejscreen-results-tables-in-a-local-web-app-module-not-tested" class="section level3">
+<h3>Get EJScreen results tables in a local web app module ***not
+tested</h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(EJAMejscreenapi) </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(shiny); <span class="fu">library</span>(magrittr); <span class="fu">library</span>(leaflet)  </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># must attach all of those manually for this to work?</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">system.file</span>(<span class="st">&quot;global.R&quot;</span>, <span class="at">package =</span> <span class="st">&quot;EJAMejscreenapi&quot;</span>))</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>default_calculate_ratios <span class="ot">&lt;-</span> <span class="cn">TRUE</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>use_ejscreenit_tf <span class="ot">&lt;-</span> <span class="cn">FALSE</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="do">######################### #</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>TEST_UI <span class="ot">&lt;-</span> <span class="cf">function</span>(request) {</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  shiny<span class="sc">::</span><span class="fu">fluidPage</span>(</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tabsetPanel</span>(</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">tabPanel</span>(</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>        <span class="at">title =</span> <span class="st">&quot;api app&quot;</span>,</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>        shiny<span class="sc">::</span><span class="fu">h2</span>(<span class="st">&#39;EJScreen API batch tool packaged with EJAM&#39;</span>), </span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>        <span class="co"># EJAM:::mod_ejscreenapi_ui(&quot;TESTID&quot;, simpleradius_default_for_ui = 2),</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mod_ejscreenapi_ui</span>(<span class="st">&quot;TESTID&quot;</span>, <span class="at">simpleradius_default_for_ui =</span> <span class="dv">2</span>),</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>        <span class="fu">br</span>()</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>      )))</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="do">######################### #</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>TEST_SERVER <span class="ot">&lt;-</span> <span class="cf">function</span>(input, output, session) {</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  <span class="co">#x &lt;- EJAM:::mod_ejscreenapi_server(</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span>     <span class="fu">mod_ejscreenapi_server</span>(</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;TESTID&quot;</span>, </span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">default_points_shown_at_startup_react =</span> <span class="fu">reactive</span>(testpoints_5[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>,]),</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">use_ejscreenit =</span> use_ejscreenit_tf</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>  output<span class="sc">$</span>testinfo2 <span class="ot">&lt;-</span> <span class="fu">renderText</span>(</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">&quot;x names:  &quot;</span>, <span class="fu">paste0</span>(<span class="fu">names</span>(<span class="fu">x</span>()), <span class="at">collapse =</span> <span class="st">&quot;, &quot;</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>  output<span class="sc">$</span>results <span class="ot">&lt;-</span> DT<span class="sc">::</span><span class="fu">renderDataTable</span>({<span class="fu">x</span>()}, </span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">options =</span> <span class="fu">list</span>(</span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">selection =</span> <span class="st">&#39;multiple&#39;</span>,</span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">dom =</span> <span class="st">&#39;rtip&#39;</span>, <span class="co"># specify 4 DOM elements: </span></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>                                          <span class="co"># processing, table, info, pagination </span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>                                          <span class="co"># per https://datatables.net/examples/basic_init/dom.html</span></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">scrollX =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">searchPanes =</span> <span class="cn">TRUE</span>  <span class="co"># does this work?</span></span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>                                        ),</span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">escape =</span> <span class="cn">FALSE</span> </span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>  <span class="co"># *** </span><span class="al">CAUTION</span><span class="co"> ***</span></span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>  <span class="co"># escape= TRUE is better for security reasons (XSS attacks).</span></span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>  <span class="co"># escape= FALSE lets ejscreen URL links work, </span></span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   but not links from ECHO table download.</span></span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a><span class="do">######################### #</span></span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a><span class="fu">shinyApp</span>(<span class="at">ui =</span> TEST_UI, <span class="at">server =</span> TEST_SERVER) <span class="co"># Try module in mini/test app</span></span></code></pre></div>
+</div>
+</div>
+<div id="compare-numbers-provided-by-ejam-and-ejscreen-api-comparing-estimated-population-indicator-scores-etc." class="section level1">
+<h1>Compare numbers provided by EJAM and EJScreen API (comparing
+estimated population, indicator scores, etc.)</h1>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Pick sample of randomly selected EPA-regulated facilities in the FRS:</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">30</span> <span class="co"># or 1,000 sites, e.g.</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>pts <span class="ot">&lt;-</span> <span class="fu">testpoints_n</span>(n, <span class="at">weighting =</span> <span class="st">&#39;frs&#39;</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>radius <span class="ot">&lt;-</span> <span class="dv">3</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Run (potentially long) analysis in EJScreen, </span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># (approx 40 minutes for 1,000 points, maybe )</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># and also in EJAM</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="do">## vs &lt;- ejscreen_vs_ejam(pts, radius = radius, include_ejindexes = TRUE)</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co"># or to save time, </span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>out1 <span class="ot">=</span> testoutput_ejscreenit_500<span class="sc">$</span>table</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>out1 <span class="ot">=</span> out1[<span class="sc">!</span><span class="fu">is.na</span>(out1<span class="sc">$</span>pm), ]</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>out1<span class="sc">$</span>id <span class="ot">=</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">NROW</span>(out1)</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>ejamsite <span class="ot">=</span> <span class="fu">ejamit</span>(</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">sitepoints =</span> out1[ , <span class="fu">c</span>(<span class="st">&quot;lat&quot;</span>, <span class="st">&quot;lon&quot;</span>)], <span class="at">radius =</span> <span class="dv">1</span>)<span class="sc">$</span>results_bysite</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>ejamsite<span class="sc">$</span>id <span class="ot">&lt;-</span> ejamsite<span class="sc">$</span>ejam_uniq_id</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>missingdatarows <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">NROW</span>(out1), ejamsite<span class="sc">$</span>ejam_uniq_id)</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>out1 <span class="ot">&lt;-</span> out1[<span class="sc">!</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">NROW</span>(out1) <span class="sc">%in%</span> missingdatarows), ]</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="co"># see summary stats on comparisons</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>sum_vs <span class="ot">&lt;-</span> <span class="fu">ejscreen_vs_ejam_summary</span>(vs)  </span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>q <span class="ot">&lt;-</span> <span class="fu">ejscreen_vs_ejam_summary_quantiles</span>(</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>  vs, <span class="at">mystat =</span> <span class="st">&#39;ratio&#39;</span>, </span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">myvars =</span> <span class="fu">c</span>(<span class="st">&#39;pop&#39;</span>,  <span class="st">&quot;blockcount_near_site&quot;</span>, names_these), <span class="at">digits =</span> <span class="dv">2</span>)</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>q[<span class="fu">order</span>(q[, <span class="st">&quot;95%&quot;</span>], <span class="at">decreasing =</span> F), <span class="fu">c</span>(<span class="st">&quot;50%&quot;</span>, <span class="st">&quot;95%&quot;</span>)]</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a><span class="do">## examine one site closely</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a><span class="fu">ejscreen_vs_ejam_see1</span>(</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>  vs, <span class="at">mysite =</span> <span class="dv">1</span>, </span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">myvars =</span> <span class="fu">c</span>(<span class="st">&#39;pop&#39;</span>, <span class="st">&quot;blockcount_near_site&quot;</span>))</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a><span class="fu">ejscreen_vs_ejam_see1</span>(vs, <span class="at">mysite =</span> <span class="dv">1</span>, </span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>                      <span class="at">myvars =</span> <span class="fu">c</span>(<span class="st">&#39;lowlifex&#39;</span>, <span class="st">&quot;Demog.Index.Supp&quot;</span>))</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a><span class="fu">ejscreen_vs_ejam_see1map</span>(<span class="dv">1</span>, <span class="at">x =</span> vs)</span></code></pre></div>
+</div>
+<div id="compare-speeds-for-ejam-and-ejscreen-api" class="section level1">
+<h1>Compare Speeds for EJAM and EJScreen API</h1>
+<p>EJAM is designed to provide results for large numbers of sites very
+quickly, so it can analyze well over 100,000 sites per hour, and can
+analyze 1,000 sites in something like 10 to 20 seconds (assuming it has
+already been initialized with loaded data and indexing, which needs to
+be done once up front and can take a minute).</p>
+<p>See EJAM and EJAMejscreenapi functions:</p>
+<ul>
+<li><p>speedreport()</p></li>
+<li><p>speedmessage()</p></li>
+<li><p>speedtest()</p></li>
+<li><p>speedtest_plot()</p></li>
+<li><p>speedtable_summarize()</p></li>
+<li><p>speedtable_expand()</p></li>
+</ul>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>speeds <span class="ot">=</span> EJAM<span class="sc">::</span><span class="fu">speedtest</span>(<span class="at">n =</span> <span class="dv">100</span>, <span class="at">radii =</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>,<span class="dv">5</span>,<span class="fl">6.2</span>,<span class="dv">10</span>))</span></code></pre></div>
+<p><img src="data:image/png;base64,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" style="width:5in" /></p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="do">## ejamit() just combines getblocksnearby() and doaggregate()</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>sitepoints <span class="ot">&lt;-</span> testpoints_1000</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>radius <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># elapsed &lt;- system.time({</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>began <span class="ot">=</span> <span class="fu">Sys.time</span>()</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>out2 <span class="ot">&lt;-</span> <span class="fu">ejamit</span>(</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">sitepoints =</span>  sitepoints  ,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">radius =</span> radius</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Finding blocks nearby.</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Analyzing 1000 points, radius of 1 miles around each.</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Aggregating at each buffer and overall.</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Restricting this analysis to blocks (residents) at distances smaller than radius of 1</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; as specified in radius parameter passed to doaggregate(), or else inferred from distances reported to doaggregate()</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; even though some larger distances were found in sites2blocks table passed from getblocksnearby() to doaggregate()</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; which sometimes occurs if small radius is used where blocks are very large (low pop density)</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; so reported distance to avg person was &gt; radius requested for analysis</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = AK for pm.</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = PR for pm.</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = HI for pm.</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = AK for o3.</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = PR for o3.</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = HI for o3.</span></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = AK for traffic.score.</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = AK for proximity.npdes.</span></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = PR for Demog.Index.Supp.</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = PR for lowlifex.</span></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning in table_round(x): Percentages stored as 0 to 1 rather than 0 to 100 will not be shown correctly unless adjusted, </span></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;           because rounding info says 0 digits when the intent is to show 0 digits after the 0-100 percent number.</span></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a><span class="fu">speedreport</span>(began, <span class="fu">Sys.time</span>(), <span class="at">n =</span> <span class="fu">NROW</span>(sitepoints))</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Rate of 293,048 buffers per hour: 1,000 lat/long pairs took 12 seconds</span></span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a><span class="co"># })</span></span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a><span class="co"># print(elapsed)</span></span></code></pre></div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

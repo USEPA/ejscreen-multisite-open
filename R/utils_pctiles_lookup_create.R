@@ -1,4 +1,5 @@
-#' pctiles_lookup_create - create lookup table of percentiles 0 to 100 and mean for each indicator by State or USA total
+#' Utility to create lookup table of percentiles 0 to 100 and mean for each indicator by State or USA total
+#' 
 #' @details EJScreen assigns each indicator in each block group a percentile value via python script, using 
 #' <https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.percentileofscore.html>
 #' 
@@ -67,10 +68,11 @@
 #' @param usecollapse logical, whether to use collapse::fquantile() 
 #'   instead of Hmisc package wtd.quantile and stats pkg quantile, 
 #'   to test before fully removing dependency on Hmisc and also speed it up.
-#'
-#' @export
-#'
-pctiles_lookup_create <- function(x, zone.vector = NULL, zoneOverallName = 'USA', wts = NULL, usecollapse = TRUE, type = 7) {
+#' 
+#' @keywords internal
+#' 
+pctiles_lookup_create <- function(x, zone.vector = NULL, zoneOverallName = 'USA',
+                                  wts = NULL, usecollapse = TRUE, type = 7) {
   mydf <- x 
   
   pctiles.exact <- function(x, usecollapse = FALSE, type = 7) {

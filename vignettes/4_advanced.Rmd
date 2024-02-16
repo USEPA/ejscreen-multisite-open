@@ -1,0 +1,67 @@
+---
+title: "4. Advanced Features"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{4. Advanced Features}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r SETUP_default_eval_or_not, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+knitr::opts_chunk$set(eval = FALSE)
+# https://r-pkgs.org/vignettes.html
+```
+
+```{r libraryEJAM, eval = TRUE, echo= FALSE, include= FALSE}
+# rm(list = ls())
+# golem::detach_all_attached()
+# 
+# library(EJAM)
+# # dataload_from_pins('all') # varnames = all  currently means all these:
+# dataload_from_pins(
+#   c("blockwts", "blockpoints", "blockid2fips", "quaddata", 
+#     "bgej", "bgid2fips",
+#     "frs", "frs_by_programid", "frs_by_naics", "frs_by_sic", "frs_by_mact")
+# )
+# 
+# ##################################### #
+# if (!exists("blockid2fips")) {
+#   cat("warning: blockid2fips not available\n")
+#   # *** temporary workaround if building vignette on 1 particular machine
+#   here <- "~/../../Downloads/EJAMbigfiles"
+#   varnames <- c('blockwts', 'blockpoints', 'blockid2fips', "quaddata",
+#                 'bgej','bgid2fips', 
+#                 'frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact")
+#   fnames <- paste0(varnames, ".arrow")
+#   localpaths  <- paste0(here, '/', fnames)
+#   for (i in 1:length(varnames)) {assign(varnames[i], arrow::read_ipc_file(file = localpaths[i]))}
+#   rm(here, varnames, fnames, localpaths)
+# }
+# ##################################### #
+# 
+# indexblocks()
+```
+
+```{r developernote, eval=FALSE, echo= FALSE, include = FALSE}
+#  *>>>>>>>>>> Developer note: vignettes need to be tested/edited/rebuilt regularly <<<<<<<<<<<*
+#
+#    - **See ?pkgdown::build_site** - EJAM now uses the pkgdown R package to build help and vignettes as web pages
+```
+
+
+# TO BE WRITTEN
+
+## FINDING TECHNICAL DOCUMENTATION AND REFERENCE MATERIALS AND SOURCE CODE
+
+## INFO FOR DEVELOPERS
+
+## etc.
+ 
+### Speed tests for EJAM analysis
+
+EJAM is designed to provide results for large numbers of sites very quickly, so it can analyze well over 100,000 sites per hour, and can analyze 1,000 sites in something like 10 to 20 seconds (assuming it has already been initialized with loaded data and indexing, which needs to be done once up front and can take a minute).
+

@@ -1,4 +1,5 @@
 #' helper function for package to set attributes of a dataset
+#' 
 #' @description This can be used annually to update some datasets in a package.
 #'  It just makes it easier to set a few metadata attributes similarly
 #'  for a number of data elements, for example,
@@ -9,8 +10,6 @@
 #' @seealso metadata_check()
 #'
 #' @return returns x but with new or altered attributes
-#' @export
-#'
 #' @examples
 #'   x <- data.frame(a=1:10,b=1001:1010)
 #'   metadata <- list(
@@ -25,6 +24,10 @@
 #'   attributes(x)
 #'   x <- metadata_add(x, list(status='final'))
 #'   attr(x,'status')
+#'   
+#' 
+#' @keywords internal
+#' 
 metadata_add <- function(x, metadata) {
 
   if (missing(metadata)) {
@@ -47,8 +50,11 @@ metadata_add <- function(x, metadata) {
   }
   invisible(x)
 }
+#################################################### #
+
 
 #' helper function in updating the package metadata
+#' 
 #' @description Quick and dirty helper during development, to check all the 
 #'   attributes of all the data files in relevant packages. 
 #'   It loads unloaded packages as needed, which you might not want it to do, 
@@ -60,9 +66,9 @@ metadata_add <- function(x, metadata) {
 #' @param which Optional vector (not list) of strings, the attributes. 
 #'   Default is some typical ones used in EJAM-related packages currently.
 #' @param loadifnotloaded Optional to control if func should temporarily attach packages not already loaded.
-#'
-#' @export
-#'
+#' 
+#' @keywords internal
+#' 
 metadata_check <- function(packages=EJAM::ejampackages, which=c(
   'census_version', 
   'acs_version', 'acs_releasedate', 'ACS', 
@@ -111,7 +117,7 @@ metadata_check <- function(packages=EJAM::ejampackages, which=c(
       next
     }
     
-    rdafiles <- data(package=pkg)
+    rdafiles <- data(package = pkg)
     rdafiles <- rdafiles$results[ , 'Item']
     
     if (!isNamespaceLoaded(pkg) & loadifnotloaded) {

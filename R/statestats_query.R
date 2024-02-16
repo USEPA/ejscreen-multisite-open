@@ -3,6 +3,7 @@
 
 
 #' statestats_means - convenient way to see STATE MEANS of ENVIRONMENTAL and DEMOGRAPHIC indicators
+#' 
 #' @inheritParams statestats_query
 #' 
 #' @export
@@ -15,7 +16,7 @@ statestats_means <- function(ST=unique(EJAM::statestats$REGION), varnames=c(EJAM
   colnames(x) = "st.avg"
   return(x)
 }
-
+################################################################ #
 
 
 #' statestats_query - convenient way to see mean, pctiles of Env or Demog indicators from lookup table
@@ -24,8 +25,6 @@ statestats_means <- function(ST=unique(EJAM::statestats$REGION), varnames=c(EJAM
 #' @param varnames names of columns in lookup table, like "proximity.rmp"
 #' @param PCTILES vector of percentiles 0-100 and/or "mean"
 #' @param dig digits to round to
-#'
-#' @export
 #'
 #' @examples \dontrun{
 #' 
@@ -53,8 +52,10 @@ statestats_means <- function(ST=unique(EJAM::statestats$REGION), varnames=c(EJAM
 #' statestats_query(varnames = names_d_subgroups)
 #' head(statestats_query(varnames = longlist))
 #' 
-#' ## in USA overall, see mean and key percentiles for all demog and envt indicators
-#' usastats_query() # or statestats_query('us') # can say us or US or USA or usa etc.
+#' ## in USA overall, see mean and key percentiles
+#' # for all demog and envt indicators
+#' usastats_query() # or statestats_query('us') 
+#' # can say us or US or USA or usa etc.
 #' usastats_query(PCTILES = 'mean')
 #' usastats_means() # same but nicer looking format in console
 #' usastats_means(dig=4)
@@ -79,16 +80,20 @@ statestats_means <- function(ST=unique(EJAM::statestats$REGION), varnames=c(EJAM
 #' statestats_query(varnames = 'proximity.tsdf')
 #' 
 #' ## using full blockgroup dataset, not lookup tables of percentiles, 
-#' blockgroupstats[, lapply(.SD, function(x) mean(x, na.rm=T)),  .SDcols= c(names_d, names_e)]
+#' blockgroupstats[, lapply(.SD, function(x) mean(x, na.rm=T)),
+#'    .SDcols= c(names_d, names_e)]
 #' 
 #' ##   see all total counts (not just US means), 
 #' ##   demographics including subgroups, 
 #' ##   but not environmental indicators.
-#' t(round(ustotals2(bg = blockgroupstats),2)) #  ustotals2 is from EJAMbatch.summarizer package
+#' t(round(ustotals2(bg = blockgroupstats),2)) 
+#'  #  ustotals2 is from EJAMbatch.summarizer package
 #' t(blockgroupstats[, lapply(.SD, function(x) mean(x, na.rm=T)),
 #'     .SDcols= c(names_e, names_d)])
 #' 
 #' }
+#' 
+#' @export
 #' 
 statestats_query <- function(ST=sort(unique(EJAM::statestats$REGION)), 
                              varnames=c(EJAM::names_e, EJAM::names_d), 
@@ -121,7 +126,9 @@ statestats_query <- function(ST=sort(unique(EJAM::statestats$REGION)),
 
 
 #' statestats_queryd - convenient way to see mean, pctiles of DEMOG indicators from lookup table
+#' 
 #' @inherit statestats_query params return description details seealso examples
+#' 
 #' @export
 #'
 statestats_queryd <- function(ST=sort(unique(EJAM::statestats$REGION)), 
@@ -137,8 +144,10 @@ statestats_queryd <- function(ST=sort(unique(EJAM::statestats$REGION)),
 
 
 #' statestats_querye - convenient way to see mean, pctiles of ENVIRONMENTAL indicators from lookup table
+#' 
 #' @inherit statestats_query return description details seealso examples
 #' @param dig how many digits to round to
+#' 
 #' @export
 #'
 statestats_querye <- function(ST=sort(unique(EJAM::statestats$REGION)), varnames=  EJAM::names_e , 
@@ -156,15 +165,18 @@ statestats_querye <- function(ST=sort(unique(EJAM::statestats$REGION)), varnames
 
 
 #' usastats_query - convenient way to see US mean, pctiles of Envt and Demog indicators in lookup table
+#' 
 #' @details A long list of variables: usastats_query(intersect(EJAM::names_all_r,  names(EJAM::usastats)))
 #' @inherit statestats_query return description details seealso examples
 #' @param varnames names of columns in lookup table, like "proximity.rmp"
 #' @param PCTILES vector of percentiles 0-100 and/or "mean"
 #' @param dig how many digits to round to
+#' 
 #' @export
 #'
 usastats_query   <- function(varnames = c(EJAM::names_e, EJAM::names_d, EJAM::names_d_subgroups_nh),
-                             PCTILES=NULL, dig=4) {
+                             PCTILES = NULL, 
+                             dig = 4) {
   statestats_query(ST = "us", varnames = varnames, PCTILES = PCTILES, dig = dig)
   ## see all total counts too not just US means for just demographics not envt, including subgroups:
   # t(round( ustotals2(bg = blockgroupstats),2))
@@ -177,10 +189,12 @@ usastats_query   <- function(varnames = c(EJAM::names_e, EJAM::names_d, EJAM::na
 
 
 #' usastats_querye - convenient way to see US mean, pctiles of ENVIRONMENTAL indicators in lookup table
+#' 
 #' @inherit statestats_query return description details seealso examples
 #' @param varnames names of columns in lookup table, like "proximity.rmp"
 #' @param PCTILES vector of percentiles 0-100 and/or "mean"
 #' @param dig how many digits to round to
+#' 
 #' @export
 #'
 usastats_querye  <- function(varnames=EJAM::names_e, PCTILES=NULL, dig=4) {
@@ -190,10 +204,12 @@ usastats_querye  <- function(varnames=EJAM::names_e, PCTILES=NULL, dig=4) {
 
 
 #' usastats_queryd - convenient way to see US mean, pctiles of DEMOGRAPHIC indicators in lookup table
+#' 
 #' @inherit statestats_query return description details seealso examples
 #' @param varnames names of columns in lookup table, like "proximity.rmp"
 #' @param PCTILES vector of percentiles 0-100 and/or "mean"
 #' @param dig how many digits to round to
+#' 
 #' @export
 #'
 usastats_queryd  <- function(varnames=c(EJAM::names_d, EJAM::names_d_subgroups_nh), PCTILES=NULL, dig=4) {
@@ -203,6 +219,7 @@ usastats_queryd  <- function(varnames=c(EJAM::names_d, EJAM::names_d_subgroups_n
 
 
 #' usastats_means - convenient way to see US MEANS of ENVIRONMENTAL and DEMOGRAPHIC indicators
+#' 
 #' @inheritParams usastats_query
 #' 
 #' @export

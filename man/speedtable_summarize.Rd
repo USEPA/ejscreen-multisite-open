@@ -2,8 +2,7 @@
 % Please edit documentation in R/utils_speedtest.R
 \name{speedtable_summarize}
 \alias{speedtable_summarize}
-\title{speedtable_summarize
-utility used by speedtest()}
+\title{utility used by speedtest()}
 \usage{
 speedtable_summarize(speedtable)
 }
@@ -11,9 +10,9 @@ speedtable_summarize(speedtable)
 \item{speedtable}{from speedtest(), with columns named points and perhr}
 }
 \description{
-speedtable_summarize
 utility used by speedtest()
 }
 \seealso{
 \code{\link[=speedtest]{speedtest()}}
 }
+\keyword{internal}

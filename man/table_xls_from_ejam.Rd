@@ -2,9 +2,7 @@
 % Please edit documentation in R/table_xls_from_ejam.R
 \name{table_xls_from_ejam}
 \alias{table_xls_from_ejam}
-\title{table_xls_from_ejam
-Format the results of ejamit() for excel and optionally save .xlsx file
-Uses table_xls_format()}
+\title{Format the results of ejamit() for excel and optionally save .xlsx file}
 \usage{
 table_xls_from_ejam(
   ejamitout,
@@ -62,9 +60,7 @@ returns a workbook object for use by openxlsx::saveWorkbook(wb_out, pathname)
 or returns just the full path/file name of where it was saved if save_now = TRUE
 }
 \description{
-table_xls_from_ejam
-Format the results of ejamit() for excel and optionally save .xlsx file
-Uses table_xls_format()
+Uses table_xls_format() to format and save results
 }
 \examples{
 \dontrun{

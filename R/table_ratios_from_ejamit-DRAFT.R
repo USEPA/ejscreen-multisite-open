@@ -1,3 +1,13 @@
+#' DRAFT - uick view of summary stats by type of stat, but lacks rounding specific to each type, etc.
+#'
+#' @param ejamitout na
+#' @param vartypes na
+#' @param stats na
+#' @param decimals na
+#'
+#' @return na
+#' @export
+#'
 table_ratios_from_ejamit <- function(ejamitout,
                           vartypes = c("ratio", "pctile", "pct", "all")[1], 
                           stats = c("Average site", "Average person", "Median site", "Median person", "Min", "Max"), 

@@ -2,8 +2,7 @@
 % Please edit documentation in R/utils_speedtest.R
 \name{speedtest_plot}
 \alias{speedtest_plot}
-\title{speedtest_plot
-utility to plot output of speedtest(), rate of points analyzed per hour}
+\title{utility to plot output of speedtest(), rate of points analyzed per hour}
 \usage{
 speedtest_plot(x, ltype = "b", plotfile = NULL, secondsperthousand = FALSE)
 }
@@ -18,9 +17,9 @@ speedtest_plot(x, ltype = "b", plotfile = NULL, secondsperthousand = FALSE)
 side effect is a plot. returns x but with seconds column added to it
 }
 \description{
-speedtest_plot
 utility to plot output of speedtest(), rate of points analyzed per hour
 }
 \seealso{
 \code{\link[=speedtest]{speedtest()}}
 }
+\keyword{internal}

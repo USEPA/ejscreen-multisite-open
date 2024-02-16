@@ -1,4 +1,7 @@
-#' frs_is_valid - Validate FRS Registry ID table uploaded (just checks colname, mostly)
+
+
+#' Validate FRS Registry ID table uploaded (just checks colname, mostly)
+#' 
 #' @description Check for proper colname (or what seems to be a valid alias)
 #' @details note it checks aliases (REGISTRY_ID, RegistryID, regid, siteid) in that order 
 #'   and once a valid name is found then even if it fails to actually 
@@ -9,9 +12,9 @@
 #'   with those ids in a column whose name is among allowed aliases that get tried here:
 #'   the colname with the FRS regids must be one of REGISTRY_ID, RegistryID, regid, siteid,
 #'   checked in that order of preference.
-#'   
 #' @return boolean value (valid or not valid)
-#' @export
+#'   
+#' @keywords internal
 #'
 frs_is_valid <- function(frs_upload) {
   

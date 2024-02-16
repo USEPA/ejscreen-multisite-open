@@ -2,8 +2,7 @@
 % Please edit documentation in R/table_gt_.R
 \name{table_gt_from_ejamit}
 \alias{table_gt_from_ejamit}
-\title{table_gt_from_ejamit - Create a gt-format table of results from EJAM
-Uses the list of results of ejamit()}
+\title{Create a gt-format table of results from EJAM}
 \usage{
 table_gt_from_ejamit(ejamitoutput = NULL, type = c("demog", "envt")[1])
 }
@@ -17,7 +16,6 @@ as would be the output of ejamit()}
 Provides table in gt format from the R package called gt
 }
 \description{
-table_gt_from_ejamit - Create a gt-format table of results from EJAM
 Uses the list of results of ejamit()
 }
 \details{

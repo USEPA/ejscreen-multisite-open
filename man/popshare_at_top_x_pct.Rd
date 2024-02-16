@@ -2,8 +2,7 @@
 % Please edit documentation in R/popshare_xyz.R
 \name{popshare_at_top_x_pct}
 \alias{popshare_at_top_x_pct}
-\title{popshare_at_top_x_pct  - top X percent of sites account for what percent of residents?
-What fraction of total population is accounted for by the top X percent of places?}
+\title{top X percent of sites account for what percent of residents?}
 \usage{
 popshare_at_top_x_pct(pop, x = 0.2, astext = FALSE, dig = 0)
 }
@@ -21,7 +20,6 @@ like out$results_bysite$pop where out is the output of ejamit()}
 A fraction of 1 (or a vector of results) or text
 }
 \description{
-popshare_at_top_x_pct  - top X percent of sites account for what percent of residents?
 What fraction of total population is accounted for by the top X percent of places?
 }
 \examples{

@@ -3,7 +3,7 @@
 \name{app_run_EJAM}
 \alias{app_run_EJAM}
 \alias{run_app}
-\title{app_run_EJAM - identical to run_app(), just an alias}
+\title{Launch EJAM as shiny web app}
 \usage{
 app_run_EJAM(
   onStart = NULL,
@@ -15,4 +15,10 @@ app_run_EJAM(
 }
 \description{
 launch Shiny web app from RStudio
+}
+\details{
+An alias for run_app()
+}
+\seealso{
+\code{\link[=run_app]{run_app()}}
 }

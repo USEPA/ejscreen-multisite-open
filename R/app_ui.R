@@ -1,11 +1,13 @@
+
 #' app_ui - The application User-Interface
-#' @noRd
+#' 
 #' @param request Internal parameter for `{shiny}`.
 #'     DO NOT REMOVE.
-#' @rawNamespace import(shiny, except=c(dataTableOutput, renderDataTable))
+#' @rawNamespace import(shiny, except = c(dataTableOutput, renderDataTable))
 #' @importFrom shinyjs useShinyjs extendShinyjs
 #' 
 app_ui  <- function(request) {
+  
   tagList(
     # golem_add_external_resources() ####
     # Leave this function for adding external resources, specifying title of app, see end of this source file.
@@ -73,14 +75,14 @@ app_ui  <- function(request) {
                  br(),
                  fluidRow(
                    column(8,
-                    
+                          
                           ## html intro text from global.R  
                           intro_text,
                           actionButton(inputId = 'back_to_site_sel2', label = div(icon('play', style = 'transform: rotate(180deg);'), HTML('&nbsp;'), 'Return to Site Selection'), class = 'usa-button'),
                           br(), br(),
                           actionButton('ui_show_advanced_settings','Show Advanced Settings Tab', class = 'usa-button'),
                           actionButton('ui_hide_advanced_settings','Hide Advanced Settings Tab', class = 'usa-button'),
-                br(),br(),
+                          br(),br(),
                    ),
                    column(4,
                           htmltools::img(id = "biglogo", src = app_sys("app/www/ejamhex4.png"))
@@ -1302,10 +1304,13 @@ app_ui  <- function(request) {
 #' This function is internally used to add external
 #' resources inside the Shiny application.
 #'
-#' @rawNamespace import(shiny, except=c(dataTableOutput, renderDataTable))
+#' @rawNamespace import(shiny, except = c(dataTableOutput, renderDataTable))
 #' @importFrom golem add_resource_path activate_js favicon bundle_resources
+#' 
 #' @noRd
-golem_add_external_resources <- function() {   
+#' 
+golem_add_external_resources <- function() {
+  
   golem::add_resource_path(
     "www",
     app_sys("app/www") #   points to  installed/EJAM/app/www which is same as   source/EJAM/inst/app/www 
@@ -1337,7 +1342,6 @@ golem_add_external_resources <- function() {
     
     # Add here other external resources
     # for example, you can add shinyalert::useShinyalert()
-    
   )
 }
 ########################################################################### #

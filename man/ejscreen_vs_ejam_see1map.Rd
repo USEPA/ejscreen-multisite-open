@@ -27,5 +27,6 @@ dontrun{
   z <- ejscreen_vs_ejam(testpoints_10, radius = 3, include_ejindexes = TRUE)
   ejscreen_vs_ejam_see1map(3, z, overlay_blockgroups = TRUE)
  }
- 
+
 }
+\keyword{internal}
