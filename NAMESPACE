@@ -3,6 +3,7 @@
 export(ST_by_site_from_sites2blocks)
 export(app_run_EJAM)
 export(boxplots_ratios)
+export(build_community_report)
 export(calc_ejam)
 export(colcounter_summary_all)
 export(convert_units)
