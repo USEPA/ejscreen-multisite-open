@@ -1206,7 +1206,8 @@ app_server <- function(input, output, session) {
     req(data_uploaded())
     
     if (current_upload_method() == "SHP") {
-      dt <- data_uploaded()
+      dt <- data_uploaded() %>% 
+        sf::st_drop_geometry()
     } else if (current_upload_method() == 'FIPS') {
       dt <- data.frame(FIPS = data_uploaded()) %>% 
         dplyr::mutate(type = fipstype(FIPS), name = fips2name(FIPS))
