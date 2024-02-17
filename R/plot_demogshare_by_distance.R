@@ -31,7 +31,7 @@ plot_demogshare_by_distance <- function(results_bybg_people, demogvarname=names_
     y = yvals, 
     main = "Demographic share at each distance, by block group",
     xlab = "Distance from site in miles",
-    ylab = fixcolnames(demogvarname, "r", 'long'),
+    ylab = fixcolnames(demogvarname, "r", 'shortlabel'),
     xlim = c(0, myrad), ...
   )
   

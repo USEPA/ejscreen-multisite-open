@@ -211,7 +211,7 @@ mapfastej_counties <- function(mydf, colorvarname = "pctile.Demog.Index.Supp",
     # flagged <- which.max(df[ , ..colorvarname])
     # plot(mymapdata[flagged, ], col = "purple", add = TRUE)
     mymap <- mymapdata # if ggplot, youd return the plot object but with plot() you cannot I think do that
-    legend("topright", legend = c(80, 90, 100), fill = c("yellow", "orange", "red"), title = fixcolnames(colorvarname, 'rname', 'long'))
+    legend("topright", legend = c(80, 90, 100), fill = c("yellow", "orange", "red"), title = fixcolnames(colorvarname, 'rname', 'shortlabel'))
     
   } else {
     
@@ -221,7 +221,7 @@ mapfastej_counties <- function(mydf, colorvarname = "pctile.Demog.Index.Supp",
     popindicators <- table_round(popindicators) # decimal places set
     countynames <- fips2countyname(mydf$ejam_uniq_id)
     popindicators <- cbind(County = countynames, popindicators)
-    poplabels <- fixcolnames(names(popindicators), 'r', 'long') # friendly labels for indicators
+    poplabels <- fixcolnames(names(popindicators), 'r', 'shortlabel') # friendly labels for indicators
     popup2 <- popup_from_any(popindicators, labels = poplabels)
     
     
@@ -229,7 +229,7 @@ mapfastej_counties <- function(mydf, colorvarname = "pctile.Demog.Index.Supp",
     mymap <- mymap %>% leaflet::addLegend(
       colors = c("yellow", "orange", "red"), 
       labels = c(80, 90, 100), 
-      title = fixcolnames(colorvarname, 'rname', 'long'))
+      title = fixcolnames(colorvarname, 'rname', 'shortlabel'))
   }
   
   return(mymap)

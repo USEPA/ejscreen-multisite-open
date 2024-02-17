@@ -117,6 +117,11 @@ latlon_is.islandareas <- function(lat, lon)  {
 #'
 latlon_is.valid <- function(lat, lon, quiet = TRUE) {
   
+  if(is.null(lat) | is.null(lon)){
+    warning('No lat or lon column found')
+    return(FALSE)
+  }
+
   # assume none bad until proven otherwise
   bad         <- rep(FALSE, length(lat))
   
