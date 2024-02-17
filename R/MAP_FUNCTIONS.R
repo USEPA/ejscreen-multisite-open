@@ -211,7 +211,7 @@ mapfastej_counties <- function(mydf, colorvarname = "pctile.Demog.Index.Supp",
     # flagged <- which.max(df[ , ..colorvarname])
     # plot(mymapdata[flagged, ], col = "purple", add = TRUE)
     mymap <- mymapdata # if ggplot, youd return the plot object but with plot() you cannot I think do that
-    legend("topright", legend = c(80, 90, 100), fill = c("yellow", "orange", "red"), title = fixcolnames(colorvarname, 'rname', 'long'))
+    legend("topright", legend = c(80, 90, 100), fill = c("yellow", "orange", "red"), title = fixcolnames(colorvarname, 'rname', 'shortlabel'))
     
   } else {
     
