@@ -59,7 +59,7 @@ plot_vs_us <- function(bysite = ejamit()$results_bysite, varname = "Demog.Index"
   # both75 <- both[ , .(quantile(literalvarname, na.rm = T, probs = 0.75, type = 1))]$V1
   # both25 <- both[ , .(quantile(literalvarname, na.rm = T, probs = 0.25, type = 1))]$V1
   # 
-  varlabel <- fixcolnames(varname, 'r', 'long')
+  varlabel <- fixcolnames(varname, 'r', 'shortlabel')
   maintitle <- paste0("Comparison of ", varlabel, " among residents near these sites versus nationwide")
   
   if (type == 'box') {

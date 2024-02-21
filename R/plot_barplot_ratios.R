@@ -57,7 +57,7 @@ plot_barplot_ratios <- function(ratio.to.us.d.overall,
 
   # }
   if (is.null(names2plot_friendly)) {
-    names2plot_friendly <- fixcolnames(names(ratio.to.us.d.overall), oldtype = "r", newtype = "long")
+    names2plot_friendly <- fixcolnames(names(ratio.to.us.d.overall), oldtype = "r", newtype = "shortlabel")
     supershortnames <- gsub(' \\(.*', '', gsub("People of Color","POC", names2plot_friendly))
     names(ratio.to.us.d.overall) <- supershortnames
   } 

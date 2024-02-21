@@ -96,11 +96,11 @@ distance_by_group_plot <- function(
   
   # Figure out what labels to use for those demog variables
   if (!is.null(demoglabel)) {
-    demoglabel <- fixcolnames(demogvarname, 'r', 'long') # renames those it is able to, using an EJAMejscreenapi function fixcolnames
+    demoglabel <- fixcolnames(demogvarname, 'r', 'shortlabel') # renames those it is able to, using an EJAMejscreenapi function fixcolnames
   }
   if (length(demoglabel) != length(demogvarname)) {
     warning("length of demoglabel and demogvarname must be the same - trying to use defaults for labels instead")
-    demoglabel <- fixcolnames(demogvarname, 'r', 'long') # renames those it is able to, using an EJAMejscreenapi function fixcolnames
+    demoglabel <- fixcolnames(demogvarname, 'r', 'shortlabel') # renames those it is able to, using an EJAMejscreenapi function fixcolnames
   }
   
   if (is.list(results_bybg_people) & ("results_bybg_people" %in% names(results_bybg_people))) {

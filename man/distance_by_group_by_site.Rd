@@ -15,6 +15,12 @@ table of ratios, one col per site, one row per indicator
 \description{
 Like \code{\link[=distance_by_group]{distance_by_group()}} but for multiple sites - DRAFT FUNCTION
 }
+\examples{
+  # distance_by_group_by_site(
+  #   testoutput_ejamit_10pts_1miles$results_bybg_people
+  # )
+
+}
 \seealso{
 \code{\link[=distance_by_group_plot]{distance_by_group_plot()}} \code{\link[=plot_distance_mean_by_group]{plot_distance_mean_by_group()}} \code{\link[=distance_by_group]{distance_by_group()}} \code{\link[=distance_mean_by_group]{distance_mean_by_group()}}
 }

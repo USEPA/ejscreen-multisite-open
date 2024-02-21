@@ -226,6 +226,8 @@ app_server <- function(input, output, session) {
   
   ## reactive: SHAPEFILES uploaded ####
   
+  num_valid_pts_uploaded <- reactiveValues('SHP'=0)
+  
   data_up_shp <- reactive({
     ##
     req(input$ss_upload_shp)
@@ -280,10 +282,17 @@ app_server <- function(input, output, session) {
       name <- strsplit(input$ss_upload_shp$name[1], "\\.")[[1]][1] # ??? get filename minus extension, of 1 file selected by user to upload
       purrr::walk2(infiles, outfiles, ~file.rename(.x, .y)) # rename files from ugly tempfilename to original filename of file selected by user to upload
       shp <- sf::read_sf(file.path(dir, paste0(name, ".shp"))) # read-in shapefile
-      ########################################## #
+      ########################################## # 
+
+      shp <- sf::st_zm(shp)
+
       
       if (nrow(shp) > 0) {
-        numna <- nrow(shp[!sf::st_is_valid(shp),])
+        ## terra provides faster valid check than sf
+        shp_valid_check <- terra::is.valid(terra::vect(shp), messages = T)
+        shp_is_valid <- shp_valid_check$valid 
+        numna <- sum(!shp_is_valid) 
+        num_valid_pts_uploaded[['SHP']] <- length(shp_is_valid) - sum(!shp_is_valid)
         invalid_alert[['SHP']] <- numna # this updates the value of the reactive invalid_alert()
         #shp_valid <- shp[sf::st_is_valid(shp),] #determines valid shapes
         shp_valid <- dplyr::mutate(shp, siteid = dplyr::row_number())
@@ -296,10 +305,11 @@ app_server <- function(input, output, session) {
         shiny::validate('No shapes found in file uploaded.')
       }
       disable_buttons[['SHP']] <- FALSE
-      shp_proj$valid <- sf::st_is_valid(shp_proj)#!sf::st_is_empty(shp_proj)
+      shp_proj$valid <- shp_is_valid
       shp_proj <- cbind(ejam_uniq_id = 1:nrow(shp_proj), shp_proj)
       shp_proj$invalid_msg <- NA
-      shp_proj$invalid_msg[shp_proj$valid == F] <- sf::st_is_valid(shp_proj[shp_proj$valid == F,], reason = TRUE)
+      shp_proj$invalid_msg[shp_proj$valid==F] <- shp_valid_check$reason[shp_proj$valid==F]
+
       shp_proj$invalid_msg[is.na(shp_proj$geometry)] <- 'bad geometry'
       class(shp_proj) <- c(class(shp_proj), 'data.table')
       shp_proj
@@ -997,6 +1007,26 @@ app_server <- function(input, output, session) {
       }
     }
     
+    ## add warning and disable button if radius is set to 0 for points
+    if (!(current_upload_method() %in% c('FIPS','SHP'))) {
+      if (current_slider_val[[current_upload_method()]] == 0) {
+        shinyjs::disable(id = 'bt_get_results')
+        showNotification(id = 'radius_warning', session=session,
+                         duration=NULL,type='warning',closeButton = F,
+                         'Please use a radius greater than 0 for analyzing points.')
+
+      } else if (current_slider_val[[current_upload_method()]] >0 &
+                 disable_buttons[[current_upload_method()]] == FALSE){
+        shinyjs::enable(id = 'bt_get_results')
+        removeNotification(id = 'radius_warning', session = session)
+      } else {
+        removeNotification(id = 'radius_warning', session = session)
+      }
+    } else {#else if(disable_buttons[[current_upload_method()]]==FALSE){
+      
+      removeNotification(id='radius_warning', session=session)
+    }
+    
     cat("Enabled/disabled button to get results, and showed/hid data preview based on current_upload_method() ==  ", current_upload_method(), "\n\n")
   })
   
@@ -1170,35 +1200,30 @@ app_server <- function(input, output, session) {
   
   # *TABLE of uploaded points ####
   
+  ## reactive for data shown in preview data table
+  ## can be adjusted from data_uploaded(), like for FIPS
+  data_preview <- reactive({
+    req(data_uploaded())
+    
+    if (current_upload_method() == "SHP") {
+      dt <- data_uploaded() %>% 
+        sf::st_drop_geometry()
+    } else if (current_upload_method() == 'FIPS') {
+      dt <- data.frame(FIPS = data_uploaded()) %>% 
+        dplyr::mutate(type = fipstype(FIPS), name = fips2name(FIPS))
+    } else {
+      dt <- data_uploaded()
+    }
+    
+    dt
+  })
+  
   output$print_test2_dt <- DT::renderDT(
     ## server = FALSE forces download to include all rows, not just visible ones
     server = TRUE, {
-      req(data_uploaded())
       
-      #dt <- data_uploaded() # now naics-queried sites format is OK to view, since using different function to get sites by naics
-      if (current_upload_method() == "SHP") {
-        dt <- data_uploaded()#[['shape']]
-      } else if (current_upload_method() == 'FIPS') {
-        dt <- data.table(FIPS = data_uploaded())[, .(FIPS, type = fipstype(FIPS), name = fips2name(FIPS))]
-      } else {
-        dt <- data_uploaded()
-      }
-      # if (current_upload_method() == 'NAICS') {
-      
-      ###takes NAICS codes selected, finds NAICS descriptions, and presents them
-      # dt_result_by_naic = data_uploaded()[, .(Count = .N), by = NAICS]
-      # naics_desc = EJAM::NAICS[EJAM::NAICS %in% dt_result_by_naic$NAICS]
-      # dt_names = data.frame("NAICS" = naics_desc,"Description" = names(naics_desc))
-      # naicsdt = merge(x = dt_result_by_naic, y = dt_names, by = 'NAICS')
-      # naics_reorder = data.frame(naicsdt$Description,naicsdt$Count)
-      # colnames(naics_reorder) = c("NAICS Code","Facility Count")
-      # dt <- naics_reorder
-      ###print(naics_reorder,row.names = FALSE)
-      # } else {
-      # dt <- data_uploaded()
-      # }
-      
-      DT::datatable(dt,
+      DT::datatable(data_preview(), 
+
                     ## to add download buttons
                     #extensions = 'Buttons',
                     
@@ -1248,12 +1273,19 @@ app_server <- function(input, output, session) {
   ## crashes with larger datasets
   output$download_preview_data_xl <- downloadHandler(filename = 'epa_raw_data_download.xlsx',
                                                      content = function(file) {
-                                                       dt <- data_uploaded()
-                                                       writexl::write_xlsx(dt, file)})
+                                                     
+                                                       writexl::write_xlsx(data_preview(), file)})
   output$download_preview_data_csv <- downloadHandler(filename = 'epa_raw_data_download.csv',
                                                       content = function(file) {
-                                                        dt <- data_uploaded()
-                                                        data.table::fwrite(dt, file, append = F)})
+                                                        ## shapefile is not of type data.table
+                                                       if(current_upload_method() == 'SHP'){
+                                                         readr::write_csv(data_preview(), file, append = F)
+                                                         
+                                                       } else {
+                                                         data.table::fwrite(data_preview(), file, append = F)
+                                                         
+                                                       }
+                                                        })
   
   #############################################################################  #
   
@@ -1287,30 +1319,12 @@ app_server <- function(input, output, session) {
                       value = current_slider_val[[current_upload_method()]])
   })
   
-  ## add warning and disable button if radius is set to 0 for points
-  observe({
-    if (!(current_upload_method() %in% c('FIPS','SHP'))) {
-      if (current_slider_val[[current_upload_method()]] == 0) {
-        shinyjs::disable(id = 'bt_get_results')
-        showNotification(id = 'radius_warning', session = session,
-                         duration = NULL, type = 'warning', closeButton = F,
-                         'Please use a radius greater than 0 for analyzing points.')
-        
-      } else {
-        shinyjs::enable(id = 'bt_get_results')
-        removeNotification(id = 'radius_warning', session = session)
-      }
-    } else {
-      shinyjs::enable(id = 'bt_get_results')
-      removeNotification(id = 'radius_warning', session = session)
-    }
-  })
-  
+
   ## Create separate radius label to allow line break
   
   output$radius_label <- renderUI({
     val <- input$bt_rad_buff
-    lab <- paste0('<b>Radius of circular buffer: <br/>', val, ' miles ','(',round(val / 0.62137119, 2), ' km)</b>')
+    lab <- paste0('<b>Distance from Site: <br/>', val, ' miles ','(',round(val / 0.62137119, 2), ' km)</b>')
     
     HTML(lab)
   })
@@ -1331,11 +1345,12 @@ app_server <- function(input, output, session) {
     
     if (current_upload_method() == "SHP") {
       ## ---------------------------------------------- __MAP SHAPES uploaded ####
-      req(data_uploaded())
       
       canmap <- TRUE
       max_pts <- input$max_shapes_map
-      if (nrow(data_uploaded()) > max_pts) {
+
+      if(num_valid_pts_uploaded[['SHP']] > max_pts){
+      #if (nrow(data_uploaded()) > max_pts) {
         warning(paste0('Too many uploaded polygons (> ', prettyNum(max_pts, big.mark = ','),') for map to show'))
         validate(paste0('Too many uploaded polygons (> ', prettyNum(max_pts, big.mark = ','),') for map to show'))
         
@@ -1343,6 +1358,8 @@ app_server <- function(input, output, session) {
         
         canmap <- FALSE
       } else {
+        req(data_uploaded())
+        
         bbox <- sf::st_bbox(data_uploaded())
         leaflet() %>%
           addTiles() %>%
@@ -1441,10 +1458,16 @@ app_server <- function(input, output, session) {
     
     
     ## check if data has been uploaded yet
-    m <- try(data_uploaded())
+    ## make errors silent by default; print below
+    m <- try(data_uploaded(),silent = T)
     
     ## if not, show empty map
-    if (inherits(m, 'try-error')) {
+    if(inherits(m, 'try-error')){
+      ## only print non-empty error messages
+      error_msg <- attr(m,'condition')$message
+      if(error_msg != ""){
+        print(paste0("Error: ", error_msg))
+      }
       leaflet() %>% addTiles() %>% setView(lat = 39.8283, lng = -98.5795, zoom = 4)
     } else {
       tryCatch({
@@ -1568,8 +1591,22 @@ app_server <- function(input, output, session) {
         } else {
           shp <- shp_valid
         }
-        sites2blocks <- (get_blockpoints_in_shape(shp))$pts
+        ## progress bar to show getblocksnearby status
+        progress_getblocks_shp <- shiny::Progress$new(min = 0, max = 1)
+        progress_getblocks_shp$set(value = 0, message = '0% done')
+        updateProgress_getblocks_shp <- function(value = NULL, message_detail=NULL, message_main = '0% done') {
+          if (is.null(value)) { # - If value is NULL, it will move the progress bar 1/20 of the remaining distance.
+            value <- progress_getblocks_shp$getValue()
+            value <- value + (progress_getblocks_shp$getMax() - value) / 10
+            message_main = paste0(value*100, '% done')
+          }
+          progress_getblocks_shp$set(value = value, message = message_main, detail = message_detail)
+        }
+        
+        sites2blocks <- (get_blockpoints_in_shape(shp, updateProgress = updateProgress_getblocks_shp))$pts
         d_upload     <- sites2blocks
+        
+        progress_getblocks_shp$close()
       }
       ################################################# #
       
@@ -2037,7 +2074,7 @@ app_server <- function(input, output, session) {
       } else {
         data_spatial_convert <- d_merge[d_merge$valid == T, ] %>%
           dplyr::select(-valid, -invalid_msg) %>%
-          st_zm() %>% as('Spatial')
+          sf::st_zm() %>% as('Spatial')
         leaflet(data_spatial_convert) %>% addTiles()  %>%
           addPolygons(color = circle_color,
                       popup = popup_from_df(data_spatial_convert %>% sf::st_drop_geometry(),
@@ -2122,12 +2159,11 @@ app_server <- function(input, output, session) {
         leafletProxy(mapId = 'an_leaf_map', session) %>%
           addPolygons(data = d_uploads, color = "red")
       }
-      
-      #d_uploadb <- data_uploaded()[['buffer']]  %>% st_zm() %>% as('Spatial')
-      d_uploads <- data_uploaded() %>%
-        dplyr::select(-SHAPE_Leng, -valid, -invalid_msg) %>%
-        st_zm() %>% as('Spatial')
-      
+      #d_uploadb <- data_uploaded()[['buffer']]  %>% st_zm() %>% as('Spatial') 
+      d_uploads <- data_uploaded() %>% 
+        dplyr::select(-valid, -invalid_msg) %>% 
+        sf::st_zm() %>% as('Spatial') 
+
       leafletProxy(mapId = 'an_leaf_map', session) %>%
         # addPolygons(data = d_uploadb, color = "red") %>%
         addPolygons(data = d_uploads,
@@ -2344,7 +2380,14 @@ app_server <- function(input, output, session) {
   
   ## Community report download ##
   output$community_download <- downloadHandler(
-    filename = ifelse(input$format1pager == "pdf", "community_report.pdf", 'community_report.html') ,
+    filename = 
+      create_filename(file_desc = 'community report', 
+                      title = input$analysis_title,
+                      buffer_dist = current_slider_val[[submitted_upload_method()]], 
+                      site_method = submitted_upload_method(),
+                      with_datetime = TRUE,
+                      ext = ifelse(input$format1pager == 'pdf', '.pdf','.html')
+      ),
     content = function(file) {
       # Copy the report file to a temporary directory before processing it, in
       # case we don't have write permissions to the current working dir (which
@@ -2463,13 +2506,13 @@ app_server <- function(input, output, session) {
     # cols_to_select <- names(data_processed)
     # friendly_names <- longnames???
     cols_to_select <- c('ejam_uniq_id', 'invalid_msg',
-                        'pop', 'Community Report',
+                        'pop', #'Community Report',
                         'EJScreen Report', 'EJScreen Map', 'ECHO report', # 'ACS Report',
                         names_d, names_d_subgroups,
                         names_e #,
                         # no names here corresponding to number above x threshold, state, region ??
     )
-    friendly_names <- c('Site ID', 'Invalid Reason','Est. Population', 'Community Report',
+    friendly_names <- c('Site ID', 'Invalid Reason','Est. Population', #'Community Report',
                         'EJScreen Report', 'EJScreen Map', 'ECHO report', #'ACS Report',
                         names_d_friendly, names_d_subgroups_friendly,
                         names_e_friendly)
@@ -2500,13 +2543,13 @@ app_server <- function(input, output, session) {
       dplyr::mutate(index = row_number()) %>%
       dplyr::rowwise() %>%
       dplyr::mutate(
-        pop = ifelse(valid == T, pop, NA),
+        pop = ifelse(valid == T, pop, NA)#,
         # `EJScreen Report` = ifelse(valid == T, `EJScreen Report`, NA),
         # `ECHO Report` = ifelse(valid == T, `ECHO Report`, NA),
         # `EJScreen Map` = ifelse(valid == T, `EJScreen Map`, NA),
-        `Community Report` = ifelse(valid == T, shinyInput(actionButton, 1, id = paste0('button_', index), label = "Generate",
-                                                           onclick = paste0('Shiny.onInputChange(\"select_button',index,'\",  this.id)' )
-        ), '')
+        # `Community Report` = ifelse(valid == T, shinyInput(actionButton, 1, id = paste0('button_', index), label = "Generate",
+        #                                                    onclick = paste0('Shiny.onInputChange(\"select_button',index,'\",  this.id)' )
+        # ), '')
       ) %>%
       
       dplyr::ungroup() %>%
@@ -2706,11 +2749,25 @@ app_server <- function(input, output, session) {
   
   output$download_results_table <- downloadHandler(
     filename = function() {
-      
-      'results_table.xlsx'
+     
+        create_filename(file_desc = 'results table', 
+                      title = input$analysis_title,
+                      buffer_dist = current_slider_val[[submitted_upload_method()]], 
+                      site_method = submitted_upload_method(),
+                      with_datetime = TRUE,
+                      ext = '.xlsx')
+
     },
     content = function(fname) {
       
+     
+      
+      showModal(
+        modalDialog(title = 'Downloading',
+                    'Downloading Excel file of results... Please wait.',
+                  
+                     easyClose = FALSE)
+      )
       if (input$testing) {
         cat('starting download code and  table_xls_format() \n') # ; xproc = data_processed(); save(xproc, file = 'table_data_processed-ejam.rda')
       }
@@ -2718,10 +2775,10 @@ app_server <- function(input, output, session) {
       #  names( data_processed() )  #  "results_overall"  "results_bysite"  "results_bybg_people"  "longnames"  "count_of_blocks_near_multiple_sites"   "results_summarized"
       
       ## note analysis type or overview to 'notes' tab
-      if (submitted_upload_method() == "SHP") {
+      if (submitted_upload_method() %in% c("SHP","FIPS")) {
         radius_or_buffer_description <- 'Distance from each shape (buffering around each polygon)'
       } else {
-        radius_or_buffer_description <- 'Distance from each site (radius of each circular buffer around a point)'
+        radius_or_buffer_description <- 'Distance from each site (radius of circle around a point/site)'
       }
       if (!input$calculate_ratios) {
         ratiocols <- names(data_processed()$results_overall) %in% c(names_d_ratio_to_avg, names_d_ratio_to_state_avg, names_e_ratio_to_avg, names_e_ratio_to_state_avg)
@@ -2747,7 +2804,16 @@ app_server <- function(input, output, session) {
         )
         
       } else {
-        
+        progress_xl <-shiny::Progress$new(min = 0, max = 1)
+        progress_xl$set(value = 0, message = 'Downloading', detail = 'Starting')
+        updateProgress_xl <- function(value = NULL, message_detail=NULL, message_main = 'Preparing') {
+          if (is.null(value)) { # - If value is NULL, it will move the progress bar 1/5 of the remaining distance.
+            value <- progress_xl$getValue()
+            value <- value + (progress_xl$getMax() - value) / 5
+            message_main = paste0(value*100, '% done')
+          }
+          progress_xl$set(value = value, message = message_main, detail = message_detail)
+        }
         wb_out <- table_xls_format(
           # note they seem to be data.frames, not data.tables, at this point, unlike how ejamit() had been returning results.
           overall = data_processed()$results_overall |> dplyr::select(names( data_processed()$results_overall)[keepcols]),
@@ -2778,10 +2844,14 @@ app_server <- function(input, output, session) {
           radius_or_buffer_in_miles = input$bt_rad_buff,
           radius_or_buffer_description = radius_or_buffer_description,
           # saveas = fname,
-          testing = input$testing
+          testing = input$testing,
+          updateProgress = updateProgress_xl
         )
-      }
-      ## save file and return for downloading - or do this within table_xls_format( , saveas = fname) ?
+      }    
+      progress_xl$close()
+      removeModal()
+      ## save file and return for downloading - or do this within table_xls_format( , saveas=fname) ?
+
       openxlsx::saveWorkbook(wb_out, fname)
       
       
@@ -2902,8 +2972,8 @@ app_server <- function(input, output, session) {
                      axis.title = ggplot2::element_text(size = 16),
                      legend.title = ggplot2::element_text(size = 16),
                      legend.text = ggplot2::element_text(size = 16),
-                     strip.text = element_blank(),
-                     strip.background = element_blank()
+                     strip.text = ggplot2::element_blank(),
+                     strip.background = ggplot2::element_blank()
       )
     
     ## raw data
@@ -3127,7 +3197,7 @@ app_server <- function(input, output, session) {
     req(data_processed())
     req(input$summ_hist_ind)
     ## set font sizes
-    ggplot_theme_hist <- theme(
+    ggplot_theme_hist <- ggplot2::theme(
       plot.title = ggplot2::element_text(size = 18, hjust = 0.5),
       axis.text  = ggplot2::element_text(size = 16),
       axis.title = ggplot2::element_text(size = 16)
@@ -3271,7 +3341,14 @@ app_server <- function(input, output, session) {
   
   ## Create and download FULL static report
   output$rg_download <- downloadHandler(
-    filename = 'report.doc',
+    filename = 
+      create_filename(file_desc = 'full report', 
+                      title = input$analysis_title,
+                      buffer_dist = current_slider_val[[submitted_upload_method()]], 
+                      site_method = submitted_upload_method(),
+                      with_datetime = TRUE,
+                      ext = '.doc'),
+    
     content = function(file) {
       # Copy the report file to a temporary directory before processing it, in
       # case we don't have write permissions to the current working dir (which

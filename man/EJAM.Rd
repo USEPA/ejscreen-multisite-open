@@ -228,6 +228,7 @@ Useful links:
 \itemize{
   \item \url{https://bookish-disco-p8oe8wq.pages.github.io/}
   \item \url{https://github.com/USEPA/EJAM}
+  \item Report bugs at \url{https://github.com/USEPA/EJAM/issues/}
 }
 
 }

@@ -38,6 +38,7 @@
 #'    the workbook will be saved locally at that path and name. Warning: it will overwrite an existing file.
 #' 
 #' @param testing optional for testing only
+#' @param updateProgress optional Shiny progress bar to update during formatting
 #' @param ... other params passed along to [openxlsx::writeData()]
 #' 
 #' @import graphics
@@ -77,7 +78,9 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
                             hyperlink_colnames = c("EJScreen Report", "EJScreen Map", "ECHO report"), 
                             graycolnames=NULL, narrowcolnames=NULL, graycolor='gray', narrow6=6,
                             
-                            testing=FALSE, launchexcel = FALSE, saveas = NULL,
+                            testing=FALSE, updateProgress = NULL,
+                            launchexcel = FALSE, saveas = NULL,
+                            
                             ...) {
   
   ###################  #   ###################  #   ###################  #   ###################  # 
@@ -198,6 +201,12 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
   ############################################## # 
   # NAME EACH WORKBOOK SHEET ####
   
+  ##
+  if(is.function(updateProgress)){
+    boldtext <- 'Creating workbook sheets'
+    updateProgress(message_main = boldtext, value = 0.1)
+  }
+  
   wb <- openxlsx::createWorkbook()
   
   ## Overall sheet and Each Site sheet ####
@@ -212,6 +221,11 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
   # the plot sheets and notes sheet are created below
   
   ######################################################################## #
+  
+  if(is.function(updateProgress)){
+    boldtext <- 'Adding plots'
+    updateProgress(message_main = boldtext, value = 0.2)
+  }
   
   ## write to PLOT sheets ####
   if (ok2plot)  {
@@ -292,7 +306,10 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
   ######################################################################## #
   ## write to map sheet ####
   
-  
+  if(is.function(updateProgress)){
+    boldtext <- 'Adding map'
+    updateProgress(message_main = boldtext, value = 0.3)
+  }
   
   ## save html to png   -    THIS IS VERY SLOW HOWEVER. THERE ARE FASTER WAYS THAN CREATING A WIDGET AND THEN TURNING IT INTO A SIMPLE PNG
   if (mapadd) {
@@ -355,6 +372,11 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
   ######################################################################## #
   # Write Tables to Data sheets ####
   ######################################################################## #
+  
+  if(is.function(updateProgress)){
+    boldtext <- 'Writing data to sheets'
+    updateProgress(message_main = boldtext, value = 0.4)
+  }
   
   openxlsx::writeData(wb, 
                       sheet = 'Overall', x = overall, 
@@ -420,6 +442,11 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
   # "<a href=\"https://ejscreen.epa.gov/mapper/EJscreen_SOE_report.aspx?namestr=&geometry=%7B%22spatialReference%22:%7B%22wkid%22:4326%7D,%22x%22:-103,%22y%22:42%7D&distance=3&unit=9035&areatype=&areaid=&f=report\", target=\"_blank\" rel=\"noreferrer noopener\">EJScreen Report</a>"
   
   # ### code from ejscreenapi that was to make these columns work, somewhat generic naming possible
+  
+  if(is.function(updateProgress)){
+    boldtext <- 'Formatting hyperlinks'
+    updateProgress(message_main = boldtext, value = 0.6)
+  }
   
   if (!is.null(hyperlink_colnames)) {
     
@@ -499,6 +526,11 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
   #   "names_d_subgroups_alone", "names_d_subgroups_alone_avg", "names_d_subgroups_alone_state_avg"))
   #   print(setdiff2(percentage_colnums_check, percentage_colnums))
   ######################################################################## #
+  
+  if(is.function(updateProgress)){
+    boldtext <- 'Applying formatting'
+    updateProgress(message_main = boldtext, value = 0.7)
+  }
   
   # ROW 1 STYLE ####
   
@@ -765,6 +797,10 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     
     # put overall 2 as 2d tab
     
+    if(is.function(updateProgress)){
+      boldtext <- 'Saving file'
+      updateProgress(message_main = boldtext, value = 1)
+    }
     
     # Launch in Excel before saving file ####
     if (launchexcel) {
