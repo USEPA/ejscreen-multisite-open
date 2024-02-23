@@ -1,4 +1,4 @@
-## example unit tests for EJAM::latlon_infer
+## example unit tests for EJAM:::latlon_infer
 # Author: Marschall Furman
 ## these examples are designed to produce warnings - for now, they only check for any
 ## warning but can be made more specific to make sure it the correct warning is reported
@@ -8,45 +8,49 @@
 
 # warns if no alias found. Does not warn of dupes in other terms, just preferred term. PM-pushtest
 test_that('warns if no alias found',{
-  expect_warning(val <- latlon_infer(c('trilat', 'belong', 'belong'))) 
+  suppressWarnings(expect_warning({val <- latlon_infer(c('trilat', 'belong', 'belong'))}))
   expect_equal(val, c('trilat','belong','belong'))
 })
 
 # only the best alias is converted/used
 test_that('only the best alias #1',{
-            expect_warning(val <- latlon_infer(c('a', 'LONG', 'Longitude', 'lat')))
+  suppressWarnings(
+            expect_warning({val <- latlon_infer(c('a', 'LONG', 'Longitude', 'lat'))})
+            )
             expect_equal(val, c('a', 'LONG', 'lon', 'lat'))
 })
 
 # only the best alias is converted/used
 test_that('only the best alias #2', {
-  expect_warning(val <- latlon_infer(c('a', 'LONGITUDE', 'Long', 'Lat')))
+  suppressWarnings(
+  expect_warning({val <- latlon_infer(c('a', 'LONGITUDE', 'Long', 'Lat'))})
+  )
   expect_equal(val, c('a', 'lon', 'Long', 'lat'))
 })
 
 # case variants of preferred are left alone only if lowercase one is found
 test_that('case variants left alone',{
-  expect_warning(val <- latlon_infer(c('a', 'longing', 'Lat', 'lat', 'LAT')))
+  suppressWarnings(expect_warning(val <- latlon_infer(c('a', 'longing', 'Lat', 'lat', 'LAT'))))
   expect_equal(val, c('a', 'longing','Lat', 'lat','LAT'))
 })
 
 # case variants of a single alias are converted to preferred word (if pref not found), creating dupes!  warn!
 test_that('case variants converted',{
-  expect_warning(val <- latlon_infer(c('LONG', 'long', 'lat')))
+  suppressWarnings(expect_warning(val <- latlon_infer(c('LONG', 'long', 'lat'))))
   expect_equal(val, c('lon','lon','lat'))
 })
 
 # dupes of an alias are renamed and still are dupes! warn!
 test_that('dupes renamed and warn',{
-  expect_warning(val <- latlon_infer(c('LONG', 'LONG')))
+  suppressWarnings(expect_warning(val <- latlon_infer(c('LONG', 'LONG'))))
   expect_equal(val, c('lon','lon'))
 })
 
 # dupes left as dupes but warn!
 test_that('dupes left as dupes',{
-  expect_warning(val <- latlon_infer(c('lat', 'lat', 'Lon')))
+  suppressWarnings(expect_warning(val <- latlon_infer(c('lat', 'lat', 'Lon'))))
   expect_equal(val, c('lat','lat','lon'))
-}) 
+})
 
 #   latlon_infer(c('trilat', 'belong', 'belong')) # warns if no alias found. Does not warn of dupes in other terms, just preferred term.
 #   latlon_infer(c('a', 'LONG', 'Longitude', 'lat')) # only the best alias is converted/used

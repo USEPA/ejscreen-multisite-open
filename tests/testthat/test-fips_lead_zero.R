@@ -2,12 +2,12 @@
 ## Author: Sara Sokolinski
 
 #' Add leading zeroes to fips codes if missing, replace with NA if length invalid
-#' Note it does NOT VALIDATE FIPS - 
-#'   It does NOT check if FIPS is valid other than checking its length seems OK, 
+#' Note it does NOT VALIDATE FIPS -
+#'   It does NOT check if FIPS is valid other than checking its length seems OK,
 #'   i.e., it might be a state, county, tract, blockgroup, or block FIPS code.
 #' @param fips vector of numeric or character US FIPS codes
 #'
-#' @return vector of same length 
+#' @return vector of same length
 #' @export
 #'
 #' @examples fips_lead_zero(c(1,"01",1234,"1234","12345",123456))
@@ -19,14 +19,14 @@
 # i think it's meant to only add one zero, to create state-codes
 # should it warn if the  value == 0 ? or >50 (check for territory codes)
 test_that('1 digit',{
-  expect_no_warning(val <- fips_lead_zero("1"))
+  expect_no_warning({val <- fips_lead_zero("1")})
   expect_equal(val, "01")
-  expect_no_warning(val <- fips_lead_zero(1))
+  expect_no_warning({val <- fips_lead_zero(1)})
   expect_equal(val, "01")
-  
-  expect_no_warning(val <- fips_lead_zero("0"))
+
+  expect_no_warning({val <- fips_lead_zero("0")})
   expect_equal(val, "00")
-  expect_no_warning(val <- fips_lead_zero(0))
+  expect_no_warning({val <- fips_lead_zero(0)})
   expect_equal(val, "00")
 })
 
@@ -34,14 +34,14 @@ test_that('1 digit',{
 # test with 2 digit
 # it doesn't add any zeros since it infers this to be a state-code
 test_that('2 digit',{
-  expect_no_warning(val <- fips_lead_zero("01")) # leading zero 
+  expect_no_warning({val <- fips_lead_zero("01")}) # leading zero
   expect_equal(val, "01")
-  expect_no_warning(val <- fips_lead_zero(10)) # numeric
+  expect_no_warning({val <- fips_lead_zero(10)}) # numeric
   expect_equal(val, "10")
-  expect_no_warning(val <- fips_lead_zero(01)) #leading zero in numeric
+  expect_no_warning({val <- fips_lead_zero(01)}) #leading zero in numeric
   expect_equal(val, "01")
-  
-  expect_no_warning(val <- fips_lead_zero("00")) # zero string
+
+  expect_no_warning({val <- fips_lead_zero("00")}) # zero string
   expect_equal(val, "00")
 })
 
@@ -51,29 +51,29 @@ test_that('2 digit',{
 # could add 2 zeros to create county-code
 
 test_that('3 digit',{
-  expect_no_warning(val <- fips_lead_zero("001")) # leading zero 
+  expect_no_warning(val <- fips_lead_zero("001")) # leading zero
   #expect_equal(val, "011")
   expect_true(is.na(val))
   expect_no_warning(val <- fips_lead_zero(100)) # numeric
   #expect_equal(val, "100")
   expect_true(is.na(val))
-  
+
   expect_no_warning(val <- fips_lead_zero(001)) #leading zero in numeric
   expect_equal(val, "01")
   expect_no_warning(val <- fips_lead_zero("000")) # zero string
   #expect_equal(val, "00")
-  
+
 })
 
 # adds leading zero to create 5-digit county-code
 test_that('4 digit',{
-  expect_no_warning(val <- fips_lead_zero("0001")) # leading zero 
+  expect_no_warning(val <- fips_lead_zero("0001")) # leading zero
   expect_equal(val, "00001")
   #expect_true(is.na(val))
   expect_no_warning(val <- fips_lead_zero(1000)) # numeric
   expect_equal(val, "01000")
   #expect_true(is.na(val))
-  
+
   expect_no_warning(val <- fips_lead_zero(0001)) #leading zero in numeric
   expect_equal(val, "01")
   expect_no_warning(val <- fips_lead_zero("0000")) # zero string
@@ -83,13 +83,13 @@ test_that('4 digit',{
 
 # adds no leading zero since it is inferred to be 5 digit county-code
 test_that('5 digit',{
-  expect_no_warning(val <- fips_lead_zero("00001")) # leading zero 
+  expect_no_warning(val <- fips_lead_zero("00001")) # leading zero
   expect_equal(val, "00001")
   #expect_true(is.na(val))
   expect_no_warning(val <- fips_lead_zero(10000)) # numeric
   expect_equal(val, "10000")
   #expect_true(is.na(val))
-  
+
   expect_no_warning(val <- fips_lead_zero(00001)) #leading zero in numeric
   expect_equal(val, "01")
   expect_no_warning(val <- fips_lead_zero("00000")) # zero string
@@ -101,13 +101,13 @@ test_that('5 digit',{
 # raise threshold with options(scipen = 999) and the test passes
 # should add options(scipen = 0) to return back to default
 test_that('6 digit',{
-  expect_no_warning(val <- fips_lead_zero("000001")) # leading zero 
+  expect_no_warning(val <- fips_lead_zero("000001")) # leading zero
   expect_true(is.na(val))
   expect_no_warning(val <- fips_lead_zero(100000)) # numeric
   expect_true(is.na(val))
   expect_no_warning(val <- fips_lead_zero(100001)) # numeric
   expect_true(is.na(val))
-  
+
   expect_no_warning(val <- fips_lead_zero(000001)) #leading zero in numeric
   expect_equal(val, "01")
   expect_no_warning(val <- fips_lead_zero("000000")) # zero string
@@ -118,59 +118,59 @@ test_that('6 digit',{
 options(scipen = 999)
 on.exit({options(scipen = 0)})
 test_that('7 digit',{
-  expect_no_warning(val <- fips_lead_zero("0000001")) # leading zero 
+  expect_no_warning(val <- fips_lead_zero("0000001")) # leading zero
   expect_true(is.na(val))
   expect_no_warning(val <- fips_lead_zero(1000000)) # numeric
   expect_true(is.na(val))
   expect_no_warning(val <- fips_lead_zero(1000001)) # numeric
   expect_true(is.na(val))
-  
+
   expect_no_warning(val <- fips_lead_zero(0000001)) #leading zero in numeric
   expect_equal(val, "01")
   expect_no_warning(val <- fips_lead_zero("0000000")) # zero string
   expect_true(is.na(val))
-  
+
 })
 
 test_that('8 digit',{
-  expect_no_warning(val <- fips_lead_zero("00000001")) # leading zero 
+  expect_no_warning(val <- fips_lead_zero("00000001")) # leading zero
   expect_true(is.na(val))
   expect_no_warning(val <- fips_lead_zero(10000000)) # numeric
   expect_true(is.na(val))
   expect_no_warning(val <- fips_lead_zero(10000001)) # numeric
   expect_true(is.na(val))
-  
+
   expect_no_warning(val <- fips_lead_zero(00000001)) #leading zero in numeric
   expect_equal(val, "01")
   expect_no_warning(val <- fips_lead_zero("00000000")) # zero string
   expect_true(is.na(val))
-  
+
 })
 
 test_that('9 digit',{
-  expect_no_warning(val <- fips_lead_zero("000000001")) # leading zero 
+  expect_no_warning(val <- fips_lead_zero("000000001")) # leading zero
   expect_true(is.na(val))
   expect_no_warning(val <- fips_lead_zero(100000000)) # numeric
   expect_true(is.na(val))
   expect_no_warning(val <- fips_lead_zero(100000001)) # numeric
   expect_true(is.na(val))
-  
+
   expect_no_warning(val <- fips_lead_zero(000000001)) #leading zero in numeric
   expect_equal(val, "01")
   expect_no_warning(val <- fips_lead_zero("000000000")) # zero string
   expect_true(is.na(val))
-  
+
 })
 
 # adds a leading zero to create 11 digit census-tract-code
 test_that('10 digit',{
-  expect_no_warning(val <- fips_lead_zero("0000000001")) # leading zero 
+  expect_no_warning(val <- fips_lead_zero("0000000001")) # leading zero
   expect_equal(val, "00000000001")
   expect_no_warning(val <- fips_lead_zero(1000000000)) # numeric
   expect_equal(val, "01000000000")
   expect_no_warning(val <- fips_lead_zero(1000000001)) # numeric
   expect_equal(val, "01000000001")
-  
+
   expect_no_warning(val <- fips_lead_zero(0000000001)) #leading zero in numeric
   expect_equal(val, "01")
   expect_no_warning(val <- fips_lead_zero("0000000000")) # zero string
@@ -179,59 +179,59 @@ test_that('10 digit',{
 
 # adds no leading zero since it is inferred as a 11 digit census-tract-code
 test_that('11 digit',{
-  expect_no_warning(val <- fips_lead_zero("00000000001")) # leading zero 
+  expect_no_warning(val <- fips_lead_zero("00000000001")) # leading zero
   expect_equal(val, "00000000001")
   expect_no_warning(val <- fips_lead_zero(10000000000)) # numeric
   expect_equal(val, "10000000000")
   expect_no_warning(val <- fips_lead_zero(10000000001)) # numeric
   expect_equal(val, "10000000001")
-  
+
   expect_no_warning(val <- fips_lead_zero(00000000001)) #leading zero in numeric
   expect_equal(val, "01")
-  expect_no_warning(val <- fips_lead_zero("00000000000")) # zero string
+  expect_no_warning({val <- fips_lead_zero("00000000000")}) # zero string
   expect_equal(val, "00000000000")
 })
 
 
 # adds no leading zero since it is inferred as a 12 digit block-group-code
 test_that('12 digit',{
-  expect_no_warning(val <- fips_lead_zero("000000000001")) # leading zero 
+  expect_no_warning({val <- fips_lead_zero("000000000001")}) # leading zero
   expect_equal(val, "000000000001")
-  expect_no_warning(val <- fips_lead_zero(100000000000)) # numeric
+  expect_no_warning({val <- fips_lead_zero(100000000000)}) # numeric
   expect_equal(val, "100000000000")
-  expect_no_warning(val <- fips_lead_zero(100000000001)) # numeric
+  expect_no_warning({val <- fips_lead_zero(100000000001)}) # numeric
   expect_equal(val, "100000000001")
-  
-  expect_no_warning(val <- fips_lead_zero(000000000001)) #leading zero in numeric
+
+  expect_no_warning({val <- fips_lead_zero(000000000001)}) #leading zero in numeric
   expect_equal(val, "01")
-  expect_no_warning(val <- fips_lead_zero("000000000000")) # zero string
+  expect_no_warning({val <- fips_lead_zero("000000000000")}) # zero string
   expect_equal(val, "000000000000")
 })
 
 
 test_that('13 digit',{
-  expect_no_warning(val <- fips_lead_zero("0000000000001")) # leading zero 
+  expect_no_warning({val <- fips_lead_zero("0000000000001")}) # leading zero
   expect_true(is.na(val))
-  expect_no_warning(val <- fips_lead_zero(1000000000000)) # numeric
+  expect_no_warning({val <- fips_lead_zero(1000000000000)}) # numeric
   expect_true(is.na(val))
-  expect_no_warning(val <- fips_lead_zero(1000000000001)) # numeric
+  expect_no_warning({val <- fips_lead_zero(1000000000001)}) # numeric
   expect_true(is.na(val))
-  
-  expect_no_warning(val <- fips_lead_zero(0000000000001)) #leading zero in numeric
+
+  expect_no_warning({val <- fips_lead_zero(0000000000001)}) #leading zero in numeric
   expect_equal(val, "01")
-  expect_no_warning(val <- fips_lead_zero("0000000000000")) # zero string
+  expect_no_warning({val <- fips_lead_zero("0000000000000")}) # zero string
   expect_true(is.na(val))
 })
 
 # add leading zero to create 15-digit block-code
 test_that('14 digit',{
-  expect_no_warning(val <- fips_lead_zero("00000000000001")) # leading zero 
+  expect_no_warning({val <- fips_lead_zero("00000000000001")}) # leading zero
   expect_equal(val, "000000000000001")
   expect_no_warning(val <- fips_lead_zero(10000000000000)) # numeric
   expect_equal(val, "010000000000000")
   expect_no_warning(val <- fips_lead_zero(10000000000001)) # numeric
   expect_equal(val, "010000000000001")
-  
+
   expect_no_warning(val <- fips_lead_zero(00000000000001)) #leading zero in numeric
   expect_equal(val, "01")
   expect_no_warning(val <- fips_lead_zero("00000000000000")) # zero string
@@ -240,13 +240,13 @@ test_that('14 digit',{
 
 # add no leading zero since it is inferred to be a 15-digit block-code
 test_that('15 digit',{
-  expect_no_warning(val <- fips_lead_zero("000000000000001")) # leading zero 
+  expect_no_warning(val <- fips_lead_zero("000000000000001")) # leading zero
   expect_equal(val, "000000000000001")
   expect_no_warning(val <- fips_lead_zero(100000000000000)) # numeric
   expect_equal(val, "100000000000000")
   expect_no_warning(val <- fips_lead_zero(100000000000001)) # numeric
   expect_equal(val, "100000000000001")
-  
+
   expect_no_warning(val <- fips_lead_zero(000000000000001)) #leading zero in numeric
   expect_equal(val, "01")
   expect_no_warning(val <- fips_lead_zero("000000000000000")) # zero string
@@ -254,21 +254,21 @@ test_that('15 digit',{
 })
 
 test_that('16 digit +',{
-  expect_no_warning(val <- fips_lead_zero("0000000000000001")) # leading zero 
+  expect_no_warning(val <- fips_lead_zero("0000000000000001")) # leading zero
   expect_true(is.na(val))
   expect_no_warning(val <- fips_lead_zero(1000000000000000)) # numeric
   expect_true(is.na(val))
   expect_no_warning(val <- fips_lead_zero(1000000000000001)) # numeric
   expect_true(is.na(val))
-  
+
   expect_no_warning(val <- fips_lead_zero(0000000000000001)) #leading zero in numeric
   expect_equal(val, "01")
   expect_no_warning(val <- fips_lead_zero("0000000000000000")) # zero string
   expect_true(is.na(val))
 })
 
-options(scipen = 0) 
+options(scipen = 0)
 
 test_that('warning for text that cant be coerced into numeric',{
-  expect_warning(val <- fips_lead_zero("blue")) # leading zero 
+  expect_warning(val <- fips_lead_zero("blue")) # leading zero
 })
