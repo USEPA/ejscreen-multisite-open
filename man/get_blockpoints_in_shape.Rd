@@ -56,9 +56,8 @@ filter down to which of the millions of US blocks should be examined by the sf::
 since otherwise it takes forever for sf:: to check all US blocks.
 }
 \examples{
- 
   # y <- get_blockpoints_in_shape()
-  
+
   # x = shapefile_from_sitepoints(testpoints_n(2))
   # y = get_blockpoints_in_shape(x, 1)  # very very slow
 }

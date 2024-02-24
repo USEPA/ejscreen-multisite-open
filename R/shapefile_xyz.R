@@ -191,8 +191,9 @@ shapefile_from_gdbzip <- function(fname) {
   td <- tempdir()
   gname <- unzip(fname, list = TRUE)
   gname <- gname$Name
+  gname <- unique(dirname(gname))
   if (length(gname) != 1) {
-    stop("zip file contains more than one file in it")
+    stop("zip file does not seem to have a .gdb file in it")
   }
   unzip(fname, exdir = td)
   shp <- shapefile_from_gdb(file.path(td, gname))

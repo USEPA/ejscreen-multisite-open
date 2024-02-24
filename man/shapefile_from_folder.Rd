@@ -23,18 +23,18 @@ Read shapefile from a folder
 \dontrun{
   testfolder <- system.file("testdata/shapes/Portland_neighborhoods", package = "EJAM")
   testshape <- shapefile_from_folder(testfolder)
-  
+
   testpaths <- shapefile_filepaths_from_folder(testfolder)
   testshape <- shapefile_from_filepaths(testpaths)
-  
+
   ## if interactive(), R user can point to right folder or select the right set of files:
   # testshape <- shapefile_from_filepaths()
   # testshape <- shapefile_from_folder()
-  
+
   x <- get_blockpoints_in_shape(testshape)
   leaflet(x$polys) \%>\% addTiles() \%>\% addPolygons(color = "blue")
   DT::datatable(out$results_bysite)
-  
+
   }
-  
+
 }
