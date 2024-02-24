@@ -21,10 +21,17 @@ set_state_inspector(function() {
 # require(data.table)
 # require(magrittr)
 #   require(EJAM)
-
-dataload_from_pins("all") # needs frs, etc.
+suppressPackageStartupMessages({
+  library(EJAM)
+})
+suppressMessages({suppressWarnings({
+  dataload_from_pins("all", silent = TRUE) # needs frs, etc.
+})})
 if (!exists("frs")) {stop('needs frs etc.')}
-indexblocks()
+suppressMessages({suppressWarnings({
+  indexblocks()
+})})
+
 
 ## needs these? from global?
 # default_hide_advanced_settings
@@ -100,57 +107,7 @@ bad_numbers <- list(
 # rm(x)
 ############################### #
 
-# which test to run first? alpha is default
-# a line in DESCRIPTION can control order the package tests happen
- # see https://testthat.r-lib.org/articles/parallel.html
-#
-# # devtools::load_all()
-# sdir = mysource()
-# source(file = file.path(sdir, "tests/testthat/setup.R"))
-# for (fname in list.files(path = file.path(sdir, "tests/testthat"), full.names = TRUE, pattern = "test-")) {
-#   print(fname)
-# test_file(fname)
-# }
-
-# test-ui_and_server.R          [ FAIL 0 | WARN 1 | SKIP 0 | PASS 11 ]
-# test-ejamit.R                 [ FAIL 2 | WARN 2 | SKIP 0 | PASS 7 ]
-# test-doaggregate.R            [ FAIL 1 | WARN 0 | SKIP 0 | PASS 3 ]
-# test-getblocksnearby.R        [ FAIL 0 | WARN 0 | SKIP 0 | PASS 16 ]
-# test-getblocksnearbyviaQuadTree.R #    -------------- NEEDS MORE TESTS ***
-# test-getblocksnearby_from_fips.R
-# test-getblocks_summarize_blocks_per_site.R
-# test-pctile_from_raw_lookup.R
-# test-state_from_fips.R
-# test-state_from_latlon.R
-# test-shapefile_xyz.R                     [ FAIL 2 | WARN 0 | SKIP 0 | PASS 14 ]
-# test-naics_from_name.R #  -------------  [ FAIL 11 | WARN 2 | SKIP 0 | PASS 11 ]
-# test-naics_from_any.R  #  -------------  [ FAIL 9 | WARN 16 | SKIP 0 | PASS 22 ]
-# test-naics_categories.R # not useful tests
-# test-naics_subcodes_from_code.R
-# test-naics2children.R
-# test-naics_validation.R         [ FAIL 3 | WARN 0 | SKIP 0 | PASS 6 ]
-# test-naics_from_code.R
-# test-naics_findwebscrape.R
-# test-frs_is_valid.R           # [ FAIL 0 | WARN 7 | SKIP 0 | PASS 8 ]
-# test-frs_from_regid.R
-# test-frs_from_programid.R
-# test-frs_from_naics.R
-# test-frs_from_sic.R
-# test-regid_from_naics.R
-# test-latlon_infer.R
-# test-latlon_from_sic.R
-# test-latlon_is.valid.R
-# test-latlon_as.numeric.R
-# test-latlon_df_clean.R
-# test-latlon_from_anything.R
-# test-fips_lead_zero.R
-# test-fips_bg_from_anyfips.R
-# test-varinfo.R
-# test-radius_inferred.R    # this is SLOW THOUGH
-# test-mod_save_report.R
-# test-mod_view_results.R
-# test-mod_specify_sites.R
-# test-golem_utils_server #  not used
+# See
 
 ############################### #
 # # Run after all tests

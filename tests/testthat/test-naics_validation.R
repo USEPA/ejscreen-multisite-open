@@ -14,7 +14,7 @@ test_that('real NAICS works',{
 test_that('is multiple NAICS supposed to give error? does it need to for shiny app??', {
   expect_error({
     val <- naics_validation(naics_enter = c("211", "452"), naics_select = "1")
-    })
+  })
 
 })
 
@@ -25,8 +25,8 @@ test_that('is multiple NAICS supposed to give error? does it need to for shiny a
 
 test_that('fake NAICS should report that valid is FALSE but ???', {
   expect_no_warning({
-val <- naics_validation(naics_enter = "LOL", naics_select = "1")
-}) ## ??
+    val <- naics_validation(naics_enter = "LOL", naics_select = "1")
+  }) ## ??
   expect_false(val)
 })
 
