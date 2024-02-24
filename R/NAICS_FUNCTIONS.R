@@ -307,7 +307,7 @@ naics_from_code <- function(mycodes, children=FALSE) {
 naics_from_name <- function(mynames, children=FALSE, ignore.case = TRUE, fixed = FALSE) {
 
   # find naicstable data.table rows by text search in NAICS industry names via grepl()
-  if (any(is.na(mynames) | !(is.character(mynames)) | is.numeric(as.numeric(mynames)))) {warning( 'mynames should be non-NA character vector of text to look for in industry title(s) like "concrete"')}
+  if (any(is.na(mynames) | !(is.character(mynames)) | is.numeric((mynames)))) {warning( 'mynames should be non-NA character vector of text to look for in industry title(s) like "concrete"')}
   hits <- vector()
   results <- NULL
   for (i in 1:length(mynames)) {
