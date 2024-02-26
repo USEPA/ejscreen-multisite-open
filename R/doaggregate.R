@@ -1132,15 +1132,6 @@ results_bysite <- merge(results_bysite, results_bysite_minmax, by = "ejam_uniq_i
   
   if (missing(radius)) {radius.miles <- round(max(sites2blocks$distance, na.rm = TRUE), 1)}
   
-  ### Infer lat,lon of each ejam_uniq_id if lat,lon not already provided in sites2states_or_latlon ? ####
-  # use block lat,lon values to approximate the lat,lon of each site, if we were not given that 
-  if (infer_sitepoints & !all(c("lat","lon") %in% names(results_bysite))) {
-    
-    sitepoints <- sites2blocks[ , list(lat = mean(lat), lon = mean(lon)), by = "ejam_uniq_id"]
-    # *** but sitepoints is never used. where should these lat lon values be put, and is this method so inaccurate that it is not worthwhile? trilaterate was not accurate either.
-    # sites2states # ??? see 1339 later where lat and lon added to results. 
-  }
-  
   ##################################################### #
   ## PERCENTILES - express raw scores (from results_bysite AND  results_overall) in percentile terms #### 
   #  VIA  lookup tables of US/State  percentiles, called usastats   and statestats
