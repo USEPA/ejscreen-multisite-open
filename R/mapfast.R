@@ -74,6 +74,12 @@ mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names)
   }
   
   if (column_names[1] == 'ej') {
+    
+    ejcols <- c(names_ej, names_ej_state, names_ej_supp, names_ej_supp_state)
+    if(!all(ejcols %in% names(mydf))){
+      warning('Not all EJ columns found. Please provide a different dataset.')
+      return(NA)
+    }
     # popup_from_ejscreen() code was written to assume rnames (as from ejscreenapi_plus) not longnames (as from ejscreenit),
     # so try to accomodate that here if user provided output of ejscreenit() or long names in general
     # popup_from_ejscreen() needs to flexibly allow long format names as input.
