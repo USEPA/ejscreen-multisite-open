@@ -16,15 +16,22 @@ set_state_inspector(function() {
 
 ################################## #
 # GET DATA AND BUILD INDEX JUST IN CASE
-# to run tests interactively, you also need to do 
+# to run tests interactively, you also need to do
 # require(testthat)
 # require(data.table)
 # require(magrittr)
-# require(EJAM)
-
-dataload_from_pins("all") # needs frs, etc.
+#   require(EJAM)
+suppressPackageStartupMessages({
+  library(EJAM)
+})
+suppressMessages({suppressWarnings({
+  dataload_from_pins("all", silent = TRUE) # needs frs, etc.
+})})
 if (!exists("frs")) {stop('needs frs etc.')}
-indexblocks()
+suppressMessages({suppressWarnings({
+  indexblocks()
+})})
+
 
 ## needs these? from global?
 # default_hide_advanced_settings
@@ -36,23 +43,23 @@ indexblocks()
 if (exists("ejamit") & exists("blockgroupstats") & exists("testpoints_10")) {
   if (!exists("ejamoutnow")) {
   suppressMessages(  suppressWarnings({  ejamoutnow <- try(
-    ejamit(testpoints_10, radius = 1, 
+    ejamit(testpoints_10, radius = 1,
            quiet = TRUE, silentinteractive = TRUE,
            include_ejindexes = TRUE)) # include_ejindexes = FALSE was the default but we want to test with them included
   }))
   }
-  # DEFAULTS: 
-  #        sitepoints, radius = 3, maxradius = 31.07, avoidorphans = FALSE,           
-  #        quadtree = NULL, quiet = TRUE, parallel = FALSE, fips = NULL,                    
-  #        shapefile_folder = NULL, in_shiny = FALSE, need_blockwt = TRUE,                  
-  #        countcols = NULL, popmeancols = NULL, calculatedcols = NULL,                     
-  #        testing = FALSE, 
-  # include_ejindexes = FALSE, 
-  # updateProgress = NULL,               
-  #        need_proximityscore = FALSE, calculate_ratios = TRUE, silentinteractive = FALSE, 
-  #        called_by_ejamit = TRUE, subgroups_type = "nh", extra_demog = TRUE,              
+  # DEFAULTS:
+  #        sitepoints, radius = 3, maxradius = 31.07, avoidorphans = FALSE,
+  #        quadtree = NULL, quiet = TRUE, parallel = FALSE, fips = NULL,
+  #        shapefile_folder = NULL, in_shiny = FALSE, need_blockwt = TRUE,
+  #        countcols = NULL, popmeancols = NULL, calculatedcols = NULL,
+  #        testing = FALSE,
+  # include_ejindexes = FALSE,
+  # updateProgress = NULL,
+  #        need_proximityscore = FALSE, calculate_ratios = TRUE, silentinteractive = FALSE,
+  #        called_by_ejamit = TRUE, subgroups_type = "nh", extra_demog = TRUE,
   #        infer_sitepoints = FALSE, threshold1 = 90)
-  
+
 } else {
   warning("missing ejamit() or blockgroupstats, so using pre-calculated results in tests")
   if (exists("testoutput_ejamit_10pts_1miles")) {
@@ -66,21 +73,21 @@ if (exists("ejamit") & exists("blockgroupstats") & exists("testpoints_10")) {
 ## Create some test cases we can use for inputs error checking:
 
 bad_numbers <- list(
-  num0len          = numeric(0L),  # these might be OK 
+  num0len          = numeric(0L),  # these might be OK
   matrix_1x1       = matrix(1),    #
   array1           = array(1),     #
   NA1              = NA,
-  NULL1            = NULL, 
-  TRUE1            = TRUE, # these  might be acceptable if you need a single number, for some functions, since can do math/ they could be coerced  
-  text1            = "1", 
-  character1       = "A", 
-  list1            = list(1), 
-  listempty        = list(), 
+  NULL1            = NULL,
+  TRUE1            = TRUE, # these  might be acceptable if you need a single number, for some functions, since can do math/ they could be coerced
+  text1            = "1",
+  character1       = "A",
+  list1            = list(1),
+  listempty        = list(),
   df1              = data.frame(1),
-  vector2          = 1:2, 
+  vector2          = 1:2,
   array2           = array(1:2),
   matrix_1row_4col = matrix(1:4, nrow = 1),
-  matrix_4row_1col = matrix(1:4, nrow = 4), 
+  matrix_4row_1col = matrix(1:4, nrow = 4),
   matrix_2x2       = matrix(1:4, nrow = 2)
 )
 
@@ -91,15 +98,16 @@ bad_numbers <- list(
 ## to look at which ones are length >1, numeric, atomic, or ok to use in math:
 
 # x <- data.frame(
-#   length0or1 = sapply(bad_numbers, function(z) try(length(z) < 2)), 
-#   isnumeric  = sapply(bad_numbers, function(z) try(is.numeric(z))),   
-#   isatomic   = sapply(bad_numbers, function(z) try(is.atomic( z))), 
+#   length0or1 = sapply(bad_numbers, function(z) try(length(z) < 2)),
+#   isnumeric  = sapply(bad_numbers, function(z) try(is.numeric(z))),
+#   isatomic   = sapply(bad_numbers, function(z) try(is.atomic( z))),
 #   canadd     = sapply(bad_numbers, function(z) try(is.numeric(z + 9)))
 #   )
 # x
 # rm(x)
+############################### #
 
-
+# See
 
 ############################### #
 # # Run after all tests

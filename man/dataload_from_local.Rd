@@ -13,7 +13,8 @@ dataload_from_local(
   envir = globalenv(),
   folder_local_source = NULL,
   justchecking = FALSE,
-  testing = FALSE
+  testing = FALSE,
+  silent = FALSE
 )
 }
 \arguments{
@@ -30,6 +31,8 @@ dataload_from_local(
 \item{justchecking}{use defaults. see \code{\link[=dataload_from_pins]{dataload_from_pins()}}}
 
 \item{testing}{use defaults}
+
+\item{silent}{set to TRUE to stop cat() printing to console like when running tests}
 }
 \value{
 vector of paths to files (as derived from varnames) that were

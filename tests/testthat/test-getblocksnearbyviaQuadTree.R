@@ -1,21 +1,18 @@
-# test_that("multiplication works", {
-#   expect_equal(2 * 2, 4)
-# })
 
-#  
-# if radius = 0 was requested, 
+
+# if radius = 0 was requested,
 # adjusted distance is always less than unadjusted,
 # except when they both are 0.
 
 set.seed(999)
-samp <- sample(1:NROW(blockpoints), 1000) 
-pts <- data.frame(lat = blockpoints$lat[samp], 
+samp <- sample(1:NROW(blockpoints), 1000)
+pts <- data.frame(lat = blockpoints$lat[samp],
                   lon = blockpoints$lon[samp])
 
 testthat::test_that("distance gets adjusted up if radius zero", {
   # zero radius so distance always has to get adjusted
   radius <- 0
-  x <- getblocksnearbyviaQuadTree(sitepoints = pts, radius = radius, 
+  x <- getblocksnearbyviaQuadTree(sitepoints = pts, radius = radius,
                                   quadtree = localtree, quiet = T, report_progress_every_n = 2000)
   testthat::expect_true(all(x$distance >= x$distance_unadjusted))
   testthat::expect_true(all(x$distance > x$distance_unadjusted | x$distance == 0))
@@ -25,10 +22,10 @@ testthat::test_that("distance gets adjusted up if radius zero", {
 
 
 
-# work in progress ! needs to be continued...
+cat(  "work in progress ! needs to be continued...\n\n")
 
 
-### typical distance, so original unadj distance <= dist, 
+### typical distance, so original unadj distance <= dist,
 ### and distance (adj or unadj) always <= radius
 # test_that("unadjusted distance <= distance adjusted, and unadj d < radius", {
 #
@@ -42,6 +39,8 @@ testthat::test_that("distance gets adjusted up if radius zero", {
 # testthat::expect_true(all(x$distance <= radius) ) # ?? it can get adjusted to be >radius, ***but then still may want to filter out to report 0 within radius?
 #})
 
+
+
 # testthat::test_that("avoidorphans does as expected", {
 ### avoidorphans  TRUE
 ###
@@ -54,12 +53,15 @@ testthat::test_that("distance gets adjusted up if radius zero", {
 # testthat::expect_true( ? all(x$distance <= radius))
 # }
 
-########## # 
+
+
+########## #
+
 
 ### one point, invalid
 ###
 # pts <- data.frame(
-#   lat = 200, 
+#   lat = 200,
 #   lon = 200
 # )
 # radius <- 3

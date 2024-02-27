@@ -42,7 +42,6 @@ See map_headernames for what kind of information is available there.
 But if a variable appears twice+ in var or in map_headernames, info returned only for the 1st row of those
 }
 \examples{
- 
 varinfo("traffic.score", "decimals")
 varinfo(names_d, "long")
 myvars <- c(names_d, names_d_subgroups, names_e)
@@ -52,7 +51,7 @@ cbind(varinfo(names_all_r, "pctile."))
 myinfo <- "long"
 cbind(varinfo(myvars, myinfo) )
 table_rounding_info(names_e)
- 
+
 varinfo(
  var = c(names_these, names_d_pctile),
  info = c(
@@ -60,7 +59,6 @@ varinfo(
 ))
 
 varinfo(names_all_r, c("varcategory", "varlist", "in_api", "in_bgcsv"))
-
 
 }
 \seealso{

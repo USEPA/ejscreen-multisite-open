@@ -13,7 +13,8 @@ dataload_from_pins(
   server = "https://rstudio-connect.dmap-stage.aws.epa.gov",
   folder_local_source = NULL,
   envir = globalenv(),
-  justchecking = FALSE
+  justchecking = FALSE,
+  silent = FALSE
 )
 }
 \arguments{
@@ -35,6 +36,8 @@ look in for locally saved copies in case pins board is not reachable by user.}
 \item{envir}{if needed to specify environment other than default, e.g., globalenv() or parent.frame()}
 
 \item{justchecking}{can set to TRUE to just see a list of what pins are stored in that board}
+
+\item{silent}{set to TRUE to suppress cat() msgs to console}
 }
 \value{
 If justchecking = FALSE,
@@ -64,10 +67,10 @@ board <- pins::board_connect(auth = "rsconnect")
 
 This does work if that is true plus the two environment variables were created:
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{board <- pins::board_connect(auth = 'manual', 
-  server = Sys.getenv("CONNECT_SERVER"), 
+\if{html}{\out{<div class="sourceCode">}}\preformatted{board <- pins::board_connect(auth = 'manual',
+  server = Sys.getenv("CONNECT_SERVER"),
   key = Sys.getenv("CONNECT_API_KEY")
-) 
+)
 }\if{html}{\out{</div>}}
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{after Sys.setenv(CONNECT_SERVER = "https://rstudio-connect.dmap-stage.aws.epa.gov")

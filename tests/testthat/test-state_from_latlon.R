@@ -4,7 +4,7 @@
 
 # does it work?
 test_that('lookup works correctly',{
-  expect_no_warning(val <- state_from_latlon("18", "-66"))
+  expect_no_warning({val <- state_from_latlon("18", "-66")})
   expect_equal(val$statename, "Puerto Rico")
   expect_no_warning(val <- state_from_latlon(18, -66))
   expect_equal(val$statename, "Puerto Rico")
@@ -13,12 +13,12 @@ test_that('lookup works correctly',{
 # add warning that lat long are not in the states (empty dataframe)
 # could turn into an error
 test_that('warns for invalid latlon',{
-  expect_warning(val <- state_from_latlon("45", "-7"))
+  expect_warning({val <- state_from_latlon("45", "-7")})
   expect_true(is.na(val$statename))
-  
-  expect_warning(val <- state_from_latlon(45, -7))
+
+  expect_warning({val <- state_from_latlon(45, -7)})
   expect_true(is.na(val$statename))
-  
+
 })
 
 test_that('warn for invalid strings',{
@@ -33,7 +33,7 @@ suppressWarnings({
 
 test_that('error for invalid syntax',{
   # just no default for "lon" error, ok
-  expect_error(val <- state_from_latlon(c("18", "-66")))
+  expect_error({val <- state_from_latlon(c("18", "-66"))})
 })
 
 test_that('latlon as string vectors are ok', {

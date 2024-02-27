@@ -1,5 +1,11 @@
+
+
+# these are not exported functions in EJAM pkg, just internal
+# test passes but
+# can run this test only if source those functions or load_all() or if testing whole pkg maybe testthat can use internal functions
+
 testServer(
-  mod_save_report_server,
+   mod_save_report_server,
   # Add here your module params
   args = list()
   , {
@@ -25,14 +31,14 @@ testServer(
     # - Testing output
     # expect_true(inherits(output$tbl$html, "html"))
 })
- 
+
 test_that("module ui works", {
-  ui <- mod_save_report_ui(id = "test")
+  ui <-  mod_save_report_ui(id = "test")
   golem::expect_shinytaglist(ui)
   # Check that formals have not been removed
   fmls <- formals(mod_save_report_ui)
-  for (i in c("id")){
+  for (i in c("id")) {
     expect_true(i %in% names(fmls))
   }
 })
- 
+

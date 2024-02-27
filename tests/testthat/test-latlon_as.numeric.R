@@ -1,13 +1,14 @@
 ## unit tests for EJAM::latlon_as.numeric
 ## Author: Sara Sokolinski
 
+# latlon_as.numeric() is not exported
 
 # Remove all characters other than minus signs, decimal points, and numeric digits
-# Useful if latitude or longitude vector has spaces, tabs, etc. 
-#   CAUTION - Assumes stripping those out and making it numeric will fix whatever problem there was 
+# Useful if latitude or longitude vector has spaces, tabs, etc.
+#   CAUTION - Assumes stripping those out and making it numeric will fix whatever problem there was
 #   and end result is a valid set of numbers. Inf etc. are turned into NA values.
 #   Empty zero length string is turned into NA without warning. NA is left as NA.
-#   If anything other than empty or NA could not be interpreted as a number, it 
+#   If anything other than empty or NA could not be interpreted as a number, it
 #   returns NA for those and offers a warning.
 
 test_that('NA returns NA without warning',{
@@ -38,18 +39,18 @@ test_that('empty vector returns NA',{
 # if it is not a vector, it should give an error
 test_that('data frame gives error',{
   expect_error(latlon_as.numeric(data.frame("a" = 1:3, "b" = LETTERS[1:3])))
-  
+
 })
 
-#  
+#
 test_that('list or data.frame, instead of just a vector, gives error',{
-  expect_error( 
+  expect_error(
     latlon_as.numeric(list("a" = c(1:3), "b" = LETTERS[1:10]))
     )
   expect_error(
     latlon_as.numeric(data.frame(aaaa = 1:3, bbbb = c("x", 'y', 'z')))
   )
-  
+
 })
 
 # test the removals work as expected

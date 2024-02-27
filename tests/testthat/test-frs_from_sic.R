@@ -1,8 +1,6 @@
 ## unit tests for EJAM::frs_from_sic
 ## Author: Sara Sokolinski
 
-# in sic_from_any.R
-
 
 # does it work?
 test_that('lookup works correctly',{
@@ -20,22 +18,25 @@ test_that('lookup works correctly',{
   expect_true(!is.na(val$lat[1]))
   expect_no_warning(val <- frs_from_sic(3229))
   expect_true(!is.na(val$lat[1]))
- 
+
 })
 
 # add warnings to the sic_from_any function inside not here
 
 test_that('warning for empty df / invalid SIC',{
-  expect_error({
-    suppressWarnings(
-  {    val <- frs_from_sic("blue")
-}      
-    )
+  expect_no_error({
+    suppressWarnings({
+      val <- frs_from_sic("blue")
+    })
   })
   expect_true(is.na(val$lat[1]))
-  expect_warning(val <- frs_from_sic("7"))
+  suppressWarnings({
+    expect_warning({val <- frs_from_sic("7")})
+  })
   expect_true(is.na(val$lat[1]))
-  expect_warning(val <- frs_from_sic("70"))
+  suppressWarnings({
+  expect_warning({val <- frs_from_sic("70")})
+})
   expect_true(is.na(val$lat[1]))
-  
+
 })
