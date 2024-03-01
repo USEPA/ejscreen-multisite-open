@@ -292,7 +292,7 @@ app_server <- function(input, output, session) {
       outfiles <- file.path(dir, input$ss_upload_shp$name) # create new path\name from temp dir plus original filename of file selected by user to upload
       name <- strsplit(input$ss_upload_shp$name[1], "\\.")[[1]][1] # ??? get filename minus extension, of 1 file selected by user to upload
       purrr::walk2(infiles, outfiles, ~file.rename(.x, .y)) # rename files from ugly tempfilename to original filename of file selected by user to upload
-      shp <- sf::read_sf(file.path(dir, paste0(name, ".shp"))) # read-in shapefile
+      shp <- sf::read_sf(file.path(dir, paste0(name, ".shp"))) # read-in shapefile as tibble. note sf::st_read() versus sf::read_sf() !
       ########################################## #
 
       shp <- sf::st_zm(shp)
