@@ -2581,8 +2581,12 @@ app_server <- function(input, output, session) {
       #dplyr::arrange(dplyr::desc(pop)) %>%
       dplyr::mutate(Number.of.variables.at.above.threshold.of.90 = ifelse(is.na(pop), NA,
                                                                           Number.of.variables.at.above.threshold.of.90)) %>%
-      dplyr::mutate(pop = ifelse(is.na(pop), NA, prettyNum(round(pop), big.mark = ','))) %>%
+      dplyr::mutate(pop = ifelse(is.na(pop), NA, pop)) %>% #prettyNum(round(pop), big.mark = ','))) %>%
       dplyr::left_join(stateinfo %>% dplyr::select(ST, statename, REGION), by = 'ST') %>%
+      dplyr::mutate(
+        REGION = factor(REGION, levels = 1:10),
+        statename = factor(statename)
+      ) %>% 
       dplyr::select(-ST, -Max.of.variables)
     
     colnames(dt_final) <- friendly_names
@@ -2612,6 +2616,8 @@ app_server <- function(input, output, session) {
                   options = list(
                     ## column width
                     autoWidth = TRUE,
+                    ## remove global search box
+                    dom = 'lrtip',
                     ## freeze header row when scrolling down
                     fixedHeader = TRUE,
                     fixedColumns = list(leftColumns = n_cols_freeze),
@@ -2625,7 +2631,8 @@ app_server <- function(input, output, session) {
                   height = 1500,
                   escape = FALSE  # *** escape = FALSE may add security issue but makes links clickable in table
     ) %>%
-      DT::formatStyle(names(dt_final), 'white-space' = 'nowrap')
+      DT::formatStyle(names(dt_final), 'white-space' = 'nowrap') %>% 
+      DT::formatRound('Est. Population', digits = 0, interval = 3, mark = ',')
     #DT::formatStyle(names(dt_final), lineHeight = '80%')
     ## code for bolding certain rows - not currently used
     #           ) %>%
