@@ -121,6 +121,11 @@ app_server <- function(input, output, session) {
   observeEvent(input$ui_hide_advanced_settings,
                {hideTab(inputId = 'all_tabs', target = 'Advanced Settings')})
   
+  ## hide vs show (full) Written Report tab
+  if(default_hide_written_report){
+    hideTab(inputId = 'results_tabs', target = 'Written Report')
+  }
+  
   ## buttons to see help info  ---------------------- #
   
   observeEvent(input$latlon_help, {

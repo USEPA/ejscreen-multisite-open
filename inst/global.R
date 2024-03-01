@@ -35,6 +35,7 @@ bookmarking_allowed <- TRUE  # https://mastering-shiny.org/action-bookmark.html
 if (bookmarking_allowed) {enableBookmarking(store = "url")}
 
 default_hide_advanced_settings <- TRUE
+default_hide_written_report <- TRUE
 default_testing        <- TRUE
 default_shiny.testmode <- TRUE  # If TRUE, then various features for testing Shiny applications are enabled.
 default_print_uploaded_points_to_log <- TRUE
