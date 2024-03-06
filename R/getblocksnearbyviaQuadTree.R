@@ -169,10 +169,12 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
         updateProgress(message_main = boldtext,
                        value = round((pct_inc)*a/nRowsDf,2)/(pct_inc))
       }
-      return(tmp[distance <= truedistance, .(blockid, distance, ejam_uniq_id)])
+  
+      return(tmp[, .(blockid, distance, ejam_uniq_id)])
   })
   
   sites2blocks <- data.table::rbindlist(res)
+  sites2blocks <- sites2blocks[distance <= truedistance, ] # had been inside the loop.
   
   ######################################################################################################################## # 
   ######################################################################################################################## # 
