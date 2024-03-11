@@ -6,6 +6,10 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+```{r developernote, eval=FALSE, echo= FALSE, include = FALSE}
+#  *>>>>>>>>>> Developer note: vignettes need to be tested/edited/rebuilt regularly <<<<<<<<<<<*
+#    - **See ?pkgdown::build_site** - EJAM uses the pkgdown R package to build help and articles/ vignettes as web pages
+```
 
 ```{r SETUP_default_eval_or_not, include = FALSE}
 knitr::opts_chunk$set(
@@ -48,12 +52,6 @@ dataload_from_pins('all') # varnames = all  currently means all these:
 
 indexblocks()
 
-```
-
-```{r developernote, eval=FALSE, echo= FALSE, include = FALSE}
-#  *>>>>>>>>>> Developer note: vignettes need to be tested/edited/rebuilt regularly <<<<<<<<<<<*
-#
-#    - **See ?pkgdown::build_site** - EJAM now uses the pkgdown R package to build help and vignettes as web pages
 ```
 
 # Intro to EJAM Analysis in R

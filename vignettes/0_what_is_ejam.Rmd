@@ -6,6 +6,10 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+```{r developernote, eval=FALSE, echo= FALSE, include = FALSE}
+#  *>>>>>>>>>> Developer note: vignettes need to be tested/edited/rebuilt regularly <<<<<<<<<<<*
+#    - **See ?pkgdown::build_site** - EJAM uses the pkgdown R package to build help and articles/ vignettes as web pages
+```
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -14,22 +18,17 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r developernote, eval=FALSE, echo= FALSE, include = FALSE}
-# Developer note: vignettes need to be tested/edited/rebuilt regularly
-#
-#    - See ?pkgdown::build_site - EJAM now uses the pkgdown R package to build help and vignettes as web pages
-```
-
 ## EPA's EJ Analysis Multi-site (EJAM) tool
 
-EJAM is a user-friendly web app, developed by the
+EJAM is a user-friendly tool, developed by the
 United States Environmental Protection Agency (US EPA)
 that makes it easy to see demographic and environmental information 
 summarized in and across any list of places in the nation. 
 Using EJAM is like running an EJScreen report, 
 but for hundreds or thousands of places, 
 all at the same time. 
-The web app lets you quickly check a summary report, 
+
+A web app will let you quickly check a summary report, 
 explore interactive maps, tables, and plots, and 
 download a summary or detailed spreadsheet.
 
@@ -89,10 +88,10 @@ supplementing their own tools, websites, or mobile apps.
 ## Updates
 
 EJAM data updates are meant to match EJScreen scheduled updates and main version numbers,
-so EJAM 2.2 uses the same basic data as EJScreen 2.2.
-The 2.2 version of EJScreen (released July 2023, with some revisions in late 2023)
-had up-to-date demographic data
-(e.g., Census 2020 block weights and ACS 2017-2021 block group demographics).
+so EJAM 2.2 uses the same basic data as EJScreen 2.2 (the version used from mid-2023
+through early 2024). Version 2.2 had ACS 2017-2021 block group demographics
+and Census 2020 block weights. The mid-2024 versions of EJScreen
+and EJAM likewise use the same data, including ACS 2018-2022.
 
 ## Speed
 
@@ -109,7 +108,7 @@ perspective on an entire industrial sector or set of places.
 Compared to other often-used approaches,
 EJAM high-resolution buffering provides more accurate information about which populations live inside a buffer,
 which is important in rural areas where a single blockgroup can cover a very large area.
-For circular buffers, EJAM 2.2 uses the locations of internal points of Census 2020 blocks,
+For circular buffers, EJAM uses the locations of internal points of Census 2020 blocks,
 not areal apportionment of block groups, to estimate where residents live within each block group.
 This avoids the simplistic assumption that people are evenly spread out within each block group.
 Instead, it uses blocks to get information about which part of a block group is where residents actually live.

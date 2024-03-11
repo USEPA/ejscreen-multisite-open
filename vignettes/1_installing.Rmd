@@ -6,6 +6,10 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+```{r developernote, eval=FALSE, echo= FALSE, include = FALSE}
+#  *>>>>>>>>>> Developer note: vignettes need to be tested/edited/rebuilt regularly <<<<<<<<<<<*
+#    - **See ?pkgdown::build_site** - EJAM uses the pkgdown R package to build help and articles/ vignettes as web pages
+```
 
 ```{r SETUP_default_eval_or_not, include = FALSE}
 knitr::opts_chunk$set(
@@ -44,12 +48,6 @@ if (!exists("blockid2fips")) {
 ##################################### #
 
 indexblocks()
-```
-
-```{r developernote, eval=FALSE, echo= FALSE, include = FALSE}
-#  *>>>>>>>>>> Developer note: vignettes need to be tested/edited/rebuilt regularly <<<<<<<<<<<*
-#
-#    - **See ?pkgdown::build_site** - EJAM now uses the pkgdown R package to build help and vignettes as web pages
 ```
 
 EJAM is not only a web app built in shiny R, it is also an R package, using the [golem](https://thinkr-open.github.io/golem/ "https://thinkr-open.github.io/golem/"){.uri target="_blank" rel="noreferrer noopener"} framework.

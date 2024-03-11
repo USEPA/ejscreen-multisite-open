@@ -72,8 +72,9 @@ the count of which is the exact denominator needed to correctly calculate percen
 
 \item{subgroups_type}{Optional (uses default). Set this to "nh" for non-hispanic race subgroups
 as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh;
-"alone" for EJScreen v2.2 style race subgroups as in White Alone, wa and others in names_d_subgroups_alone;
-"both" for both versions. Possibly another option is "original" or "default"}
+"alone" for race subgroups like White Alone, wa and others in names_d_subgroups_alone;
+"both" for both versions. Possibly another option is "original" or "default"
+Alone means single race.}
 
 \item{include_ejindexes}{whether to try to include EJ Indexes (assuming dataset is available) - passed to \code{\link[=doaggregate]{doaggregate()}}}
 
@@ -124,53 +125,53 @@ or in a set of polygons from a shapefile, or in a list of Census Units like Coun
 \examples{
  # All in one step, using functions not shiny app:
  out <- ejamit(testpoints_100_dt, 2)
- 
+
  \dontrun{
  # Do not specify sitepoints and it will prompt you for a file,
  # if in RStudio in interactive mode!
  out <- ejamit(radius = 3)
- 
-  # Specify facilities or sites as points for test data, 
-  # use 1000 test facility points from the R package 
+
+  # Specify facilities or sites as points for test data,
+  # use 1000 test facility points from the R package
   testsites <- testpoints_1000_dt
   # use facility points in an excel or csv file
   testsites <- latlon_from_anything(
    "./inst/testdata/testpoints_207_sites_with_signif_violations_NAICS_326_ECHO.csv")
   # use facility points from a random sample of EPA-regulated facilities
-  testsites <- testpoints_n(1e3)  
-  
+  testsites <- testpoints_n(1e3)
+
   # Specify max distance from sites to look at (residents within X miles of site point)
   radius <- 3.1 # miles
-  
-  # Get summaries of all indicators near a set of points 
-  out <- ejamit(testsites, radius)  
-  # out <- ejamit("myfile.xlsx", 3.1)  
-  
+
+  # Get summaries of all indicators near a set of points
+  out <- ejamit(testsites, radius)
+  # out <- ejamit("myfile.xlsx", 3.1)
+
   # out2 <- ejscreenit(testpoints_5)
-  
+
   # View results overall
   round(t(out$results_overall), 3.1)
-  
+
   # View plots
-  # plot_distance_avg_by_group(out)  
+  # plot_distance_avg_by_group(out)
   # distance_by_group_plot(out)
-  
+
   # View maps
   mapfast(out$results_bysite, radius = 3.1)
-  
+
   # view results at a single site
   t(out$results_bysite[1, ])
   t(out$results_bysite[out$results_bysite$ejam_uniq_id == 2, ])
-  
-  
-  # if doing just 1st step of ejamit() 
+
+
+  # if doing just 1st step of ejamit()
   #  get distance between each site and every nearby Census block
   s2b <- testdata_sites2blocks
   s2b <- getblocksnearby(testsites, radius = radius)
   s2b <- getblocksnearbyviaQuadTree(testsites, radius = radius)
   getblocks_diagnostics(s2b)
   plotblocksnearby(s2b)
-   
+
   # if doing just 2d step of ejamit()
   #  get summaries of all indicators based on table of distances
   out <- doaggregate(s2b, testsites) # this works now and is simpler

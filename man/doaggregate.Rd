@@ -55,8 +55,9 @@ using formulas that have to be specified.}
 
 \item{subgroups_type}{Optional (uses default). Set this to
 "nh" for non-hispanic race subgroups as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh;
-"alone" for EJScreen v2.2 style race subgroups as in    White Alone, wa and others in names_d_subgroups_alone;
-"both" for both versions. Possibly another option is "original" or "default" but work in progress.}
+"alone" for race subgroups like White Alone, wa and others in names_d_subgroups_alone;
+"both" for both versions.
+"Alone" means single race.}
 
 \item{include_ejindexes}{whether to calculate EJ Indexes and return that information}
 

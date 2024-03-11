@@ -25,7 +25,7 @@ NA or outside expected numeric ranges
 (based on approx ranges of lat lon seen among block internal points dataset)
 
 But note Guam, American Samoa, Northern Mariana Islands, and U.S. Virgin Islands are outside these ranges!
-EJScreen 2.2 does not provide demographic data in those locations anyway, but can map sites there.
+EJScreen 2.2 did not provide demographic data in those locations anyway, but can map sites there.
 
 lat must be between 17.5 and 71.5, and
 
