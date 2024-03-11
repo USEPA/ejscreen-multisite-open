@@ -12,23 +12,13 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 
 <!-- badges: end -->
 
-[EJAM as a Web App](#ejam-as-a-web-app) makes it easy to see demographic
-and environmental information summarized in and across any list of
-places in the nation. Using EJAM is like running an EJScreen report, but
-for hundreds or thousands of places, all at the same time. EJAM lets you
-quickly check a summary report, explore interactive maps, tables, and
-plots, and download a summary or detailed spreadsheet. The GIS methods
-are as accurate as what EJScreen uses but highly optimized to be very
-fast.
-
-EJAM is not yet available to the general public on a website. A web app
-was being tested for internal use at EPA as of early 2024, for use
-internally in 2024, and a user-friendly version is intended to be made
-available to the public in the future.
-
-EJAM is provided by the US Environmental Protection Agency (US EPA), and
-is being actively developed so that new versions will continue to be
-tested and released over time.
+EJAM makes it easy to see demographic and environmental information
+summarized in and across any list of places in the nation. Using EJAM is
+like running an EJScreen report, but for hundreds or thousands of
+places, all at the same time. EJAM lets you quickly check a summary
+report, explore interactive maps, tables, and plots, and download a
+summary or detailed spreadsheet. The GIS methods are as accurate as what
+EJScreen uses but highly optimized to be very fast.
 
 [The EJAM R Package for Analysts and
 Developers](#the-ejam-r-package-for-analysts-and-developers) written in
@@ -39,9 +29,18 @@ compare large numbers of locations. Note that EJAM also can be used as a
 web app by R/RStudio users if the package is installed and the shiny app
 is launched locally on a user’s own computer.
 
-## EJAM as a Web App
+EJAM is not yet available to the general public on a website. A web app
+was being tested for internal use at EPA as of early 2024, for use
+internally in 2024, and a user-friendly version is intended to be made
+available to the public in the future.
+
+EJAM is provided by the US Environmental Protection Agency (US EPA), and
+is being actively developed so that new versions will continue to be
+tested and released over time.
 
 - [What is EJAM?](articles/0_what_is_ejam.html "0_what_is_ejam.html")
+
+## EJAM as a Web App
 
 - [Using EJAM as a Web App](articles/0_webapp.html "0_webapp.html")
   <!-- 

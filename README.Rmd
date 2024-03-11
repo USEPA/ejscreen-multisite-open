@@ -45,17 +45,17 @@ knitr::opts_chunk$set(
 
 <!-- badges: end -->
 
-[EJAM as a Web App] makes it easy to see demographic and environmental information summarized in and across any list of places in the nation. Using EJAM is like running an EJScreen report, but for hundreds or thousands of places, all at the same time. EJAM lets you quickly check a summary report, explore interactive maps, tables, and plots, and download a summary or detailed spreadsheet. The GIS methods are as accurate as what EJScreen uses but highly optimized to be very fast.
+EJAM makes it easy to see demographic and environmental information summarized in and across any list of places in the nation. Using EJAM is like running an EJScreen report, but for hundreds or thousands of places, all at the same time. EJAM lets you quickly check a summary report, explore interactive maps, tables, and plots, and download a summary or detailed spreadsheet. The GIS methods are as accurate as what EJScreen uses but highly optimized to be very fast.
+
+[The EJAM R Package for Analysts and Developers] written in the R programming language, with source code on GitHub. When used in RStudio, the EJAM package provides functions to help analysts work with block group data, points, and polygons, to very quickly aggregate and compare large numbers of locations. Note that EJAM also can be used as a web app by R/RStudio users if the package is installed and the shiny app is launched locally on a user's own computer.
 
 EJAM is not yet available to the general public on a website. A web app was being tested for internal use at EPA as of early 2024, for use internally in 2024, and a user-friendly version is intended to be made available to the public in the future.
 
 EJAM is provided by the US Environmental Protection Agency (US EPA), and is being actively developed so that new versions will continue to be tested and released over time.
 
-[The EJAM R Package for Analysts and Developers] written in the R programming language, with source code on GitHub. When used in RStudio, the EJAM package provides functions to help analysts work with block group data, points, and polygons, to very quickly aggregate and compare large numbers of locations. Note that EJAM also can be used as a web app by R/RStudio users if the package is installed and the shiny app is launched locally on a user's own computer.
+-   [What is EJAM?](articles/0_what_is_ejam.html "0_what_is_ejam.html")
 
 ## EJAM as a Web App
-
--   [What is EJAM?](articles/0_what_is_ejam.html "0_what_is_ejam.html")
 
 -   [Using EJAM as a Web App](articles/0_webapp.html "0_webapp.html")
 <!-- 
