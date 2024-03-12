@@ -19,7 +19,7 @@ Aliases are: c("FIPS", "fips", "fips_code", "fipscode", "Fips", "statefips",
 \item{inshiny}{used by server during shiny app}
 }
 \value{
-a vector of fips codes
+vector of fips codes
 }
 \description{
 Just read the codes in one column of a table obtained from something like read.csv, or excel, etc.
@@ -27,4 +27,3 @@ Just read the codes in one column of a table obtained from something like read.c
 \seealso{
 \code{\link[=fips_bg_from_anyfips]{fips_bg_from_anyfips()}} \code{\link[=fips_lead_zero]{fips_lead_zero()}} \code{\link[=getblocksnearby_from_fips]{getblocksnearby_from_fips()}} \code{\link[=fips_from_table]{fips_from_table()}}
 }
-\keyword{internal}

@@ -36,6 +36,9 @@ expression in order for the match to be considered successful.}
 \item{...}{arguments to pass to golem_opts. Maybe could be something like sitepoints="latlondata.xlsx" or sitepoints=\link{testpoints_100}
 See \code{?golem::get_golem_options} for more details.}
 }
+\value{
+An object that represents the app. Printing the object or passing it to runApp() will run the app.
+}
 \description{
 launch Shiny web app from RStudio
 }

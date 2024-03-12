@@ -44,7 +44,7 @@
 #'
 #' @param sites2blocks data.table of distances in miles between all sites (facilities) and
 #'   nearby Census block internal points, with columns ejam_uniq_id, blockid, distance,
-#'   created by getblocksnearby  function.
+#'   created by [getblocksnearby()]  functions.
 #'   See [sites2blocks_example10pts_1miles] aka [testoutput_getblocksnearby_10pts_1miles] dataset in package, as input to this function
 #' @param sites2states_or_latlon data.table or just data.frame, with columns ejam_uniq_id (each unique one in sites2blocks) and ST (2-character State abbreviation) or lat and lon
 #' @param radius Optional radius in miles to limit analysis to. By default this function uses

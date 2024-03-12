@@ -134,6 +134,7 @@ reference:
   - fips_lead_zero
   - fips2name
   - fips_bg_from_anyfips
+  - fips_from_table
 - subtitle: "Counties"
   contents:
   - counties_as_sites

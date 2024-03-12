@@ -48,16 +48,16 @@
 #'   "alone" for groups like white alone (whether or not hispanic),
 #'   "both" may try to include both,
 #'   or possibly "original" or "default" might be added as options - passed to batch.summarize()
-#' @param updateProgress progress bar function passed to doaggregate in shiny app
-#' @param updateProgress_getblocks progress bar function passed to getblocksnearby in shiny app
+#' @param updateProgress progress bar function passed to [doaggregate()] in shiny app
+#' @param updateProgress_getblocks progress bar function passed to [getblocksnearby()] in shiny app
 #' @param in_shiny if fips parameter is used, passed to [getblocksnearby_from_fips()]
-#' @param quiet Optional. set to TRUE to avoid message about using getblock_diagnostics(),
+#' @param quiet Optional. set to TRUE to avoid message about using [getblocks_diagnostics()],
 #'   which is relevant only if a user saved the output of this function.
-#' @param parallel whether to use parallel processing in getblocksnearby() but may not be implemented yet.
+#' @param parallel whether to use parallel processing in [getblocksnearby()], but not implemented yet.
 #' @param silentinteractive   to prevent long output showing in console in RStudio when in interactive mode,
-#'   passed to doaggregate() also. app server sets this to TRUE when calling doaggregate() but
-#'   ejamit() default is to set this to FALSE when calling doaggregate().
-#' @param called_by_ejamit Set to TRUE by ejamit() to suppress some outputs even if ejamit(silentinteractive=F)
+#'   passed to [doaggregate()] also. app server sets this to TRUE when calling doaggregate() but
+#'   [ejamit()] default is to set this to FALSE when calling [doaggregate()].
+#' @param called_by_ejamit Set to TRUE by [ejamit()] to suppress some outputs even if ejamit(silentinteractive=F)
 #' @param testing used while testing this function
 #'
 #' @return A list of tables of results

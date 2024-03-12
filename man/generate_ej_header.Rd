@@ -4,7 +4,15 @@
 \alias{generate_ej_header}
 \title{Build header for EJ index table in community report}
 \usage{
-generate_ej_header()
+generate_ej_header(
+  header_text = "Environmental Justice & Supplemental Indexes"
+)
+}
+\arguments{
+\item{header_text}{actual text like "Environmental Justice & Supplemental Indexes"}
+}
+\value{
+text string that is a fragment of HTML
 }
 \description{
 Build header for EJ index table in community report

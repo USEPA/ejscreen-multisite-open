@@ -39,7 +39,7 @@ Note that if creating a proximity score, by contrast, you instead want to find n
 \item{report_progress_every_n}{Reports progress to console after every n points,
 mostly for testing, but a progress bar feature might be useful unless this is super fast.}
 
-\item{quiet}{Optional. set to TRUE to avoid message about using getblock_diagnostics(),
+\item{quiet}{Optional. set to TRUE to avoid message about using \code{\link[=getblocks_diagnostics]{getblocks_diagnostics()}},
 which is relevant only if a user saved the output of this function.}
 
 \item{retain_unadjusted_distance}{set to FALSE to drop it and save memory/storage. If TRUE,
@@ -55,6 +55,10 @@ Takes about 2-5 seconds to create this each time it is needed.
 It can be automatically created when the package is attached via the .onAttach() function}
 
 \item{updateProgress, }{optional function to update Shiny progress bar}
+}
+\value{
+data.table like testoutput_getblocksnearby_10pts_1miles, with
+columns named "ejam_uniq_id", "blockid", "distance", etc.
 }
 \description{
 This is what \code{\link[=getblocksnearby]{getblocksnearby()}} uses to do the work.

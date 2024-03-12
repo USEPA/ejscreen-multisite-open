@@ -95,22 +95,22 @@ although a more accurate slower way would be to use reported distance of each of
 "both" may try to include both,
 or possibly "original" or "default" might be added as options - passed to batch.summarize()}
 
-\item{updateProgress}{progress bar function passed to doaggregate in shiny app}
+\item{updateProgress}{progress bar function passed to \code{\link[=doaggregate]{doaggregate()}} in shiny app}
 
-\item{updateProgress_getblocks}{progress bar function passed to getblocksnearby in shiny app}
+\item{updateProgress_getblocks}{progress bar function passed to \code{\link[=getblocksnearby]{getblocksnearby()}} in shiny app}
 
 \item{in_shiny}{if fips parameter is used, passed to \code{\link[=getblocksnearby_from_fips]{getblocksnearby_from_fips()}}}
 
-\item{quiet}{Optional. set to TRUE to avoid message about using getblock_diagnostics(),
+\item{quiet}{Optional. set to TRUE to avoid message about using \code{\link[=getblocks_diagnostics]{getblocks_diagnostics()}},
 which is relevant only if a user saved the output of this function.}
 
-\item{parallel}{whether to use parallel processing in getblocksnearby() but may not be implemented yet.}
+\item{parallel}{whether to use parallel processing in \code{\link[=getblocksnearby]{getblocksnearby()}}, but not implemented yet.}
 
 \item{silentinteractive}{to prevent long output showing in console in RStudio when in interactive mode,
-passed to doaggregate() also. app server sets this to TRUE when calling doaggregate() but
-ejamit() default is to set this to FALSE when calling doaggregate().}
+passed to \code{\link[=doaggregate]{doaggregate()}} also. app server sets this to TRUE when calling doaggregate() but
+\code{\link[=ejamit]{ejamit()}} default is to set this to FALSE when calling \code{\link[=doaggregate]{doaggregate()}}.}
 
-\item{called_by_ejamit}{Set to TRUE by ejamit() to suppress some outputs even if ejamit(silentinteractive=F)}
+\item{called_by_ejamit}{Set to TRUE by \code{\link[=ejamit]{ejamit()}} to suppress some outputs even if ejamit(silentinteractive=F)}
 
 \item{testing}{used while testing this function}
 }

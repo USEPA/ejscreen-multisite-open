@@ -17,9 +17,9 @@ FIPS - Get state abbreviations from any type of FIPS codes
 }
 \examples{
   cbind(
-    stfips    = fips_lead_zero(1:80), 
-    ST     = fips2state_abbrev(1:80), 
+    stfips    = fips_lead_zero(1:80),
+    ST     = fips2state_abbrev(1:80),
     statename = fips2statename(1:80)
   )
-  
+
 }
