@@ -17,5 +17,5 @@ FIPS - Get ALL county fips in specified states
 }
 \examples{
 fips_counties_from_statename("Delaware")
-  
+
 }

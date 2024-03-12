@@ -9,9 +9,14 @@ map_shapes_mapview(shapes, col.regions = "green", map.types = "OpenStreetMap")
 \arguments{
 \item{shapes}{like from shapes_counties_from_countyfips(fips_counties_from_state_abbrev("DE"))}
 
-\item{col.regions}{passed to mapview() from mapview package}
+\item{col.regions}{passed to \code{\link[mapview:mapView]{mapview::mapview()}}}
 
-\item{map.types}{passed to mapview() from mapview package}
+\item{map.types}{passed to  \code{\link[mapview:mapView]{mapview::mapview()}}}
+}
+\value{
+like output of mapview function \code{\link[mapview:mapView]{mapview::mapview()}},
+if mapview package is installed,
+when used with an input that is a spatial object as via \code{\link[sf:st_read]{sf::read_sf()}}
 }
 \description{
 Map - Use mapview from the mapview package if available

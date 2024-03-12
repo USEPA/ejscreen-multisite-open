@@ -7,6 +7,11 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r developernote, eval=FALSE, echo= FALSE, include = FALSE}
+#  *>>>>>>>>>> Developer note: vignettes need to be tested/edited/rebuilt regularly <<<<<<<<<<<*
+#    - **See ?pkgdown::build_site** - EJAM uses the pkgdown R package to build help and articles/ vignettes as web pages
+```
+
 ```{r SETUP_default_eval_or_not, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -46,11 +51,7 @@ if (!exists("blockid2fips")) {
 indexblocks()
 ```
 
-```{r developernote, eval=FALSE, echo= FALSE, include = FALSE}
-#  *>>>>>>>>>> Developer note: vignettes need to be tested/edited/rebuilt regularly <<<<<<<<<<<*
-#
-#    - **See ?pkgdown::build_site** - EJAM now uses the pkgdown R package to build help and vignettes as web pages
-```
+## **NOTE: These features may still be in development and untested for use outside EPA's network.**
 
 EJAM includes the EJAMejscreen package, a set of functions and data that facilitate access to EJScreen data and reports, using the API provided by EJScreen. It does a few things:
 

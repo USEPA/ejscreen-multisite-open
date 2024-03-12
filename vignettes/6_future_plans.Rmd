@@ -6,6 +6,10 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+```{r developernote, eval=FALSE, echo= FALSE, include = FALSE}
+#  *>>>>>>>>>> Developer note: vignettes need to be tested/edited/rebuilt regularly <<<<<<<<<<<*
+#    - **See ?pkgdown::build_site** - EJAM uses the pkgdown R package to build help and articles/ vignettes as web pages
+```
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -14,29 +18,14 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r developernote, eval=FALSE, echo= FALSE, include = FALSE}
-#  *>>>>>>>>>> Developer note: vignettes need to be tested/edited/rebuilt regularly <<<<<<<<<<<*
-#
-#    - **See ?pkgdown::build_site** - EJAM now uses the pkgdown R package to build help and vignettes as web pages
-```
-
 # Future Plans and Ideas for EJAM as of 2024
 
 ## Public Access
 
-Ultimately, a version of EJAM will be made available to the public, but it will initially be tested and used within EPA, just as EJScreen was launched internally in 2012 and went public in 2015. A public version will have to be carefully designed to balance user-friendliness, relevance to what the public would find useful, and support that includes appropriate documentation and user support. During 2024, EJAM will be tested and launch internally within EPA, as we explore what works and what is still needed, including some of the ideas and plans listed below.
+Ultimately, a version of EJAM will be made available to the public, but it will initially be tested and used within EPA, just as EJScreen was launched internally in 2012 and went public in 2015. A public version will have to be carefully designed to balance user-friendliness of the visual interface and features,
+relevance to what the public would find useful, and support that includes appropriate documentation and user support.
 
-## Written Report
-
-EJAM is designed to provide a default, standard written report, and this feature is still in active development as of early 2024. EJAM will provide a written report with text, graphics, and maps, ready for a user to print, download, share, and use. Because the report is a Word document, one can further edit it offline as needed. Users also can choose to use just selected tables or graphics or data files (such as for individual sites and summary statistics).
-
-## Methods for Identifying and Focusing on Key Findings
-
-Communicating key findings is challenging when such a large number of metrics are available across multiple locations with multiple demographic groups. Some simple tools may be able to help with initial filtering of results, to suggest what might be highlighted. These will be explored for the written report, particularly for ways to provide an Executive Summary. 
-
-## Visualization Tools
-
-A variety of plots and maps will be explored as ways to communicate the rich data results calculated by EJAM. For example, EJAM R functions can calculate and display detailed estimates of the range of residential distances to facilities within each demographic subgroup - this type of visualization could be incorporated into the web app if there appears to be interest in it. Another possibility is that plots, maps, and tables could be made to interact in sync with each other, where that supports useful data exploration.
+During 2024, EJAM will be tested and launch internally within EPA, as we explore what works and what is still needed, including some of the ideas and plans listed below.
 
 ## Counts of nearby points of interest
 
@@ -50,15 +39,27 @@ A facility density indicator may be explored and pre-calculated, that would summ
 
 A feature is planned that will be able to quickly calculate a new proximity indicator for every block group in the US, to represent counts of and distances to user-specified points such as facilities. This would be similar to the existing proximity indicators such as the RMP score in EJScreen, but would be calculated on the fly for any user-specified set of points.
 
+## Written Report
+
+EJAM is designed to provide a default, standard written report, and this feature is still in active development as of early 2024. EJAM will provide a written report with text, graphics, and maps, ready for a user to print, download, share, and use. Because the report is a Word document, one can further edit it offline as needed. Users also can choose to use just selected tables or graphics or data files (such as for individual sites and summary statistics).
+
+## Methods for Identifying and Focusing on Key Findings
+
+Communicating key findings is challenging when such a large number of metrics are available across multiple locations with multiple demographic groups. Some simple tools may be able to help with initial filtering of results, to suggest what might be highlighted. These will be explored for the written report, particularly for ways to provide an Executive Summary. 
+
+## Visualization Tools
+
+A variety of plots and maps will be explored as ways to communicate the rich data results calculated by EJAM. For example, EJAM R functions can calculate and display detailed estimates of the range of residential distances to facilities within each demographic subgroup - this type of visualization could be incorporated into the web app if there appears to be interest in it. Another possibility is that plots, maps, and tables could be made to interact in sync with each other, where that supports useful data exploration.
+
 ## User-specified Indicators
 
 EJAM in the future will also be able to analyze, aggregate, and report on other demographic indicators (e.g., other Census ACS variables), to include user-selected EPA-hosted layers, or even user-provided data. In other words, an analysis would be able to include other layers on risks or concentrations (at block group resolution), or user-provided scores for each block group.
 
 ## API
 
-To provide further flexibility and help avoid duplication of effort, an EJAM API is planned, and will provide access to services such as fast buffering, summarization, or data.
+To provide further flexibility and help avoid duplication of effort, an EJAM API is planned, and will provide access to services such as fast identification of
+nearby blocks or other points, summarization (aggregation over blocks or block groups), or data.
 
 ## Resolution
 
 EJAM is designed with growth in mind, assuming that the specific indicators of interest will expand or change over time. It is even possible that multiple resolutions of data will need to be analyzed, such as block, block group, and tract data for different indicators. A subsequent refinement might even use a high-resolution raster grid of population estimates rather than the Census Block counts currently used for buffering and weighting block group scores for partially included block groups.
-

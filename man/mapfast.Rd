@@ -27,7 +27,6 @@ and returns html widget
 Get a leaflet html widget map of data.frame with lat lon
 }
 \examples{
- 
  mapfast(testpoints_500)
  \dontrun{
  # see random sample of 1k FRS facilities
@@ -44,9 +43,9 @@ Get a leaflet html widget map of data.frame with lat lon
  mapfastej(out)
  mapfast(out, column_names = 'ej')
  mapfast(out)
- 
+
  # Save .html file and view it in your browser
-  
+
  mytable <- testoutput_ejscreenit_5$table
  # names(mytable) <- fixcolnames(names(mytable), 'long', 'r')
  ## now, that renaming is done by mapfast function
@@ -55,7 +54,7 @@ Get a leaflet html widget map of data.frame with lat lon
  htmltools::save_html(mymap, file = tfile)
  browseURL(tfile)
   }
-  
+
 }
 \seealso{
 \code{\link[=popup_from_df]{popup_from_df()}} \code{\link[=mapfastej]{mapfastej()}}

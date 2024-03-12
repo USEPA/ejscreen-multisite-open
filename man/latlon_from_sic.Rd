@@ -2,6 +2,7 @@
 % Please edit documentation in R/sic_xyz.R
 \name{latlon_from_sic}
 \alias{latlon_from_sic}
+\alias{regid_from_sic}
 \title{Find EPA-regulated facilities in FRS by SIC code (industrial category)}
 \usage{
 latlon_from_sic(sic, id_only = FALSE)
@@ -34,4 +35,5 @@ See info about SIC industry codes at \url{https://www.naics.com/search}
   latlon_from_sic(sic_from_any("cheese")[,code] )
   head(latlon_from_sic(c('6150', '6300', '5995'), id_only=TRUE))
   # mapfast(frs_from_sic('6150')) # simple map
+
 }

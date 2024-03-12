@@ -28,6 +28,9 @@ x <- testoutput_ejscreenapi_plus_50
 \item{wheretext}{Use in plot subtitle. Default is "Near" but could be "Within 5km of" for example.
 If it is a number, n, it will set wheretext to "Within n miles of"}
 }
+\value{
+same format as output of \code{\link[ggplot2:ggplot]{ggplot2::ggplot()}}
+}
 \description{
 boxplots show range of scores here vs range in US overall
 }

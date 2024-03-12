@@ -4,11 +4,26 @@
 \alias{fill_tbl_full_subgroups}
 \title{Create full demog subgroup HTML table of indicator rows}
 \usage{
-fill_tbl_full_subgroups(output_df)
+fill_tbl_full_subgroups(
+  output_df,
+  header_text = "Environmental and socioeconomic indicators data",
+  header_text2 = "Breakdown by Gender",
+  header_text3 = "Limited English Speaking Breakdown"
+)
 }
 \arguments{
-\item{output_df, }{single row of results table from doaggregate -
-either results_overall or one row of bysite}
+\item{output_df}{single row of results table from \code{\link[=ejamit]{ejamit()}} or
+\code{\link[=doaggregate]{doaggregate()}} such as x$results_overall or one row like
+x$results_bysite\link{1, }, where x is the result of x <- ejamit()}
+
+\item{header_text}{text like "Environmental and socioeconomic indicators data"}
+
+\item{header_text2}{text}
+
+\item{header_text3}{text}
+}
+\value{
+text string that is a fragment of HTML
 }
 \description{
 Create full demog subgroup HTML table of indicator rows

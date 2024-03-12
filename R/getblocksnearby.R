@@ -1,43 +1,44 @@
 #' Very fast way to distances to all nearby Census blocks
-#' 
+#'
 #' @description
-#'   Get distance from each site (e.g., facility) to each 
+#'   Get distance from each site (e.g., facility) to each
 #'   Census block centroid within some radius
-#' 
-#'   Given a set of points and a specified radius, 
-#'   this function quickly finds all the US Census blocks near each point. 
-#'   For each point, it uses the specified radius distance and finds the distance to 
-#'   every block within the circle defined by the radius. 
+#'
+#'   Given a set of points and a specified radius,
+#'   this function quickly finds all the US Census blocks near each point.
+#'   For each point, it uses the specified radius distance and finds the distance to
+#'   every block within the circle defined by the radius.
 #'   Each block is defined by its Census-provided internal point, by latitude and longitude.
-#'   
-#'   Each point can be the location of a regulated facility or other type of site, and 
+#'
+#'   Each point can be the location of a regulated facility or other type of site, and
 #'   the blocks are a high-resolution source of information about where
-#'   residents live. 
-#'   
-#'   Finding which blocks have their internal points in a circle provides 
-#'   a way to quickly estimate what fraction of a block group is 
+#'   residents live.
+#'
+#'   Finding which blocks have their internal points in a circle provides
+#'   a way to quickly estimate what fraction of a block group is
 #'   inside the circular buffer more accurately and more quickly than
-#'   areal apportionment of block groups would provide. 
-#'   
-#' @details 
+#'   areal apportionment of block groups would provide.
+#'
+#' @details
 #'  See [ejamit()] for examples.
-#'  
+#'
 #'  getblocksnearby() is a wrapper redirecting to the right version, like [getblocksnearbyviaQuadTree()]
-#'    Census block "internal points" (defined by Census Bureau) are actually what it looks for, 
-#'    and they are like centroids. 
+#'    Census block "internal points" (defined by Census Bureau) are actually what it looks for,
+#'    and they are like centroids.
 #'    The blocks are pre-indexed for the whole USA, via the data object quadtree aka localtree
 #'
 #' @inheritParams getblocksnearbyviaQuadTree
 #' @param ...  passed to [getblocksnearbyviaQuadTree()] or other such functions
-#' 
-#' @seealso [ejamit()]  [getblocksnearbyviaQuadTree()] [getblocksnearbyviaQuadTree_Clustered()] [getblocksnearbyviaQuadTree2()]
-#' 
+#' @return data.table like testoutput_getblocksnearby_10pts_1miles, with
+#'   columns named "ejam_uniq_id", "blockid", "distance", etc.
+#' @seealso [ejamit()]  [getblocksnearbyviaQuadTree()]
+#'
 #' @export
 #'
-getblocksnearby  <- function(sitepoints, radius=3, maxradius=31.07, 
-                             avoidorphans=FALSE, 
+getblocksnearby  <- function(sitepoints, radius=3, maxradius=31.07,
+                             avoidorphans=FALSE,
                              # indexgridsize,
-                             quadtree = NULL, 
+                             quadtree = NULL,
                              quiet=FALSE,
                              parallel=FALSE,
                              ...
@@ -51,7 +52,7 @@ getblocksnearby  <- function(sitepoints, radius=3, maxradius=31.07,
       if (shiny::isRunning()) {
         warning("sitepoints (locations to analyze) is missing but required.")
         return(NULL)
-        
+
       } else {
         stop("sitepoints (locations to analyze) is missing but required.")
       }
@@ -63,15 +64,15 @@ getblocksnearby  <- function(sitepoints, radius=3, maxradius=31.07,
   ## that handles problems here in sitepoints.
   # Probably need stopifnot above since unclear what you should return otherwise.
   # But ok if any/orall lat and/or lon are NA values
-  
+
   ################################################################################## #
   # timed <- system.time({
   if (missing(quadtree)) {
     if (exists("localtree")) {
-      quadtree <- localtree 
+      quadtree <- localtree
     } else {    #  SEE IF WE EVER NEED TO OR EVEN CAN CREATE THIS ON THE FLY HERE FOR SOME INTERACTIVE USERS, BUT SHOULD NOT BE AN ISSUE IF PKG LOADED
       if (!exists("quaddata") | !exists("blockwts") | !exists("blockpoints") ) {  #| !exists("bgid2fips")
-        # should 
+        # should
         cat('census block data file(s) not already loaded, so key data will now be downloaded (or loaded from a local copy if possible)...\n')
          # loads quaddata needed to make localtree index, and several other large files pkg uses.
 
@@ -80,22 +81,22 @@ getblocksnearby  <- function(sitepoints, radius=3, maxradius=31.07,
       #
       # localtree <- SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point")
       indexblocks() # not really tested yet in this context
-      quadtree <- localtree 
+      quadtree <- localtree
       # stop(paste0("Nationwide index of block locations is required but missing (quadtree parameter default is called localtree but was not found). ",
       #             'Try this: \n\n',
       #             'localtree <- SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point") \n\n'
       # ))
     }
   }
-  
+
   cat("Analyzing", NROW(sitepoints), "points, radius of", radius, "miles around each.\n")
-  
+
   ################################################################################## #
   # wrapper to make it simple to (later?) switch between functions to use for this, clustered vs not, etc.
-  
+
   if (!parallel) {
-    x <- getblocksnearbyviaQuadTree(sitepoints = sitepoints, radius = radius, maxradius = maxradius, 
-                                    avoidorphans = avoidorphans, 
+    x <- getblocksnearbyviaQuadTree(sitepoints = sitepoints, radius = radius, maxradius = maxradius,
+                                    avoidorphans = avoidorphans,
                                     # indexgridsize = indexgridsize,
                                     quadtree = quadtree, quiet = quiet,
                                     ...)
@@ -103,7 +104,7 @@ getblocksnearby  <- function(sitepoints, radius=3, maxradius=31.07,
     if (shiny::isRunning()) {
       warning('parallel processing version not implemented yet')
       return(NULL)
-      
+
     } else {
       stop('parallel processing version not implemented yet')
     }
@@ -113,16 +114,11 @@ getblocksnearby  <- function(sitepoints, radius=3, maxradius=31.07,
                                               quadtree = quadtree,
                                               ...)
   }
-  
-  #  DRAFT / WAS WORK IN PROGRESS: 
-  # getblocksnearbyviaQuadTree2(sitepoints = sitepoints, radius = radius, maxradius = maxradius, 
-  #                               avoidorphans = avoidorphans, 
-  #                             # indexgridsize = indexgridsize,
-  #                             quadtree = quadtree,
-  #                             ...)
-  
+
+
+
   # })
   # print(timed)
-  
+
   return(x)
 }

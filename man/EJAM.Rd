@@ -226,9 +226,7 @@ the Decennial census blocks can provide, such as a dasymetric map approach.
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://bookish-disco-p8oe8wq.pages.github.io/}
-  \item \url{https://github.com/USEPA/EJAM}
-  \item Report bugs at \url{https://github.com/USEPA/EJAM/issues/}
+  \item \url{https://usepa.github.io/EJAM/}
 }
 
 }

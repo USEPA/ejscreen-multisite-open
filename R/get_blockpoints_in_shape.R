@@ -1,5 +1,7 @@
 
+#' Find all Census blocks in a polygon, using internal point of block
 #' @inheritParams get_blockpoints_in_shape
+#' @return same as [get_blockpoints_in_shape()]
 #'
 #' @export
 #'
@@ -53,7 +55,6 @@ shapefile2blockpoints <- function(...) {
 #'
 #' @export
 #'
-
 get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NULL,
                                      dissolved=FALSE, safety_margin_ratio=1.10, crs = 4269,
                                      updateProgress = NULL) {

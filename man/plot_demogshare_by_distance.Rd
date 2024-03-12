@@ -15,19 +15,26 @@ plot_demogshare_by_distance(
 )
 }
 \arguments{
-\item{results_bybg_people}{}
+\item{results_bybg_people}{table as from ejamit()$results_results_bybg_people,
+like testoutput_ejamit_10pts_1miles$results_bybg_people}
 
-\item{demogvarname}{}
+\item{demogvarname}{one of the column names of results_bybg_people, such as
+one of names_d like "Demog.Index.Supp"}
 
-\item{show.lowess}{F}
+\item{myids}{optional vector of ejam_uniq_id values}
 
-\item{show.lm}{linefit}
+\item{show.lowess}{whether to show curve fitted via lines(lowess(x,y))
+using \code{\link[stats:lowess]{stats::lowess()}}}
 
-\item{show.line}{linefit}
+\item{show.lm}{whether to show straight line fitted via \code{\link[=lm]{lm()}}}
 
-\item{...}{passed to plot}
+\item{show.line}{whether to show straight line fitted via coef(line(x,y))
+using \code{\link[stats:coef]{stats::coef()}} and \code{\link[stats:line]{stats::line()}}}
 
-\item{ejam_uniq_id}{}
+\item{...}{passed to \code{\link[=plot]{plot()}}}
+}
+\value{
+just used to create plot as side effect
 }
 \description{
 plot_demogshare_by_distance - work in progress
