@@ -136,9 +136,11 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
   }
   
   ## compute vectors of facility coordinates
-  FAC_X <- earthRadius_miles * cos(sitepoints$lat * radians_per_degree) * cos(sitepoints$lon * radians_per_degree)
-  FAC_Y <- earthRadius_miles * cos(sitepoints$lat * radians_per_degree) * sin(sitepoints$lon * radians_per_degree)
-  FAC_Z <- earthRadius_miles * sin(sitepoints$lat * radians_per_degree)
+  lat_rad <- sitepoints$lat * radians_per_degree
+  lon_rad <- sitepoints$lon * radians_per_degree
+  FAC_X <- earthRadius_miles * cos(lat_rad) * cos(lon_rad)
+  FAC_Y <- earthRadius_miles * cos(lat_rad) * sin(lon_rad)
+  FAC_Z <- earthRadius_miles * sin(lat_rad)
   
   ## LOOP OVER SITES 
   res <- lapply(1:nRowsDf, FUN = function(a){
@@ -174,7 +176,7 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
   })
   
   sites2blocks <- data.table::rbindlist(res)
-  sites2blocks <- sites2blocks[distance <= truedistance, ] # had been inside the loop.
+  # sites2blocks <- sites2blocks[distance <= truedistance, ] # had been inside the loop.
   
   ######################################################################################################################## # 
   ######################################################################################################################## # 
@@ -337,6 +339,7 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
   
   # now drop that info about area or size of block to save memory. do not need it later in sites2blocks
   sites2blocks[ , block_radius_miles := NULL]
+  sites2blocks <- sites2blocks[distance <= truedistance, ] # had been inside the loop.
   
   if (!quiet) {
     cat('Stats via getblocks_diagnostics(), AFTER ADJUSTING up FOR SHORT DISTANCES: \n')

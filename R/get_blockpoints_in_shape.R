@@ -81,7 +81,7 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
   }
 
   ## overall bbox ########################### #
-  bbox <- sf::st_bbox(polys)
+  #bbox <- sf::st_bbox(polys)
 
   #### consider using rectLookup()
   # would need to convert results of st_bbox(), ie bbox_polys, xy coordinates into format used by blockindex and quaddata
