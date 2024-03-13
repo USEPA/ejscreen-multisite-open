@@ -82,7 +82,7 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
   }
 
   ## overall bbox ########################### #
-  bbox <- sf::st_bbox(polys)
+  #bbox <- sf::st_bbox(polys)
 
   #### consider using rectLookup()
   # would need to convert results of st_bbox(), ie bbox_polys, xy coordinates into format used by blockindex and quaddata
@@ -94,13 +94,6 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
 
 
   ## filter blockpoints to overall bbox
-  blockpoints_filt <-  blockpoints %>%
-    dplyr::filter(
-      lon > bbox['xmin'],
-      lon < bbox['xmax'],
-      lat > bbox['ymin'],
-      lat < bbox['ymax']
-    )
 
   if (is.function(updateProgress)) {
     boldtext <- 'Computing individual bounding boxes'
@@ -124,18 +117,31 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
   #   ylims = sitepoints[i, c(z_low, z_hi)]
   # )
   # res[[i]] <- quaddatatable[vec, ]  # all the pts (like blocks) near this 1 site.
+  
+  
+  ## filter blockpoints using lat/lon, NOT polar coordinates/radians
+  
+  # would run this line only once
+  # blockpointstree <- SearchTrees::createTree(blockpoints[, .(lon, lat, blockid)])
+  # blockpoints_filt <- lapply(bbox_polys, function(a){
+  #   SearchTrees::rectLookup(blockpointstree,
+  #                           xlims = c(a$xmin,a$xmax),
+  #                           ylims = c(a$ymin,a$ymax)
+  #   
+  # }) %>% unlist(use.names=FALSE) %>% unique
+  
+  
+  earthRadius_miles <- 3959 # in case it is not already in global envt
+  radians_per_degree <- pi / 180
 
+  ## filter blockpoints using individual bboxes and quadtree
+  blockpoints_filt <- lapply(bbox_polys, function(a){
+    SearchTrees::rectLookup(localtree,
+                            xlims = c(earthRadius_miles * cos(a$ymin * radians_per_degree) * cos(a$xmin * radians_per_degree),
+                                      earthRadius_miles * cos(a$ymax * radians_per_degree) * cos(a$xmax * radians_per_degree)),
+                            ylims = c(earthRadius_miles * sin(a$ymin * radians_per_degree), earthRadius_miles * sin(a$ymax * radians_per_degree)))
 
-  ## filter blockpoints again to individual bboxes, keep unique points
-  blockpoints_filt <- lapply(
-    bbox_polys,
-    function(a) {
-      blockpoints_filt[data.table::between(lon, a[1], a[3]) &
-                         data.table::between(lat, a[2], a[4]), ]
-    }
-  ) %>%
-    rbindlist %>%
-    unique
+  }) %>% unlist(use.names=FALSE) %>% unique
   ########################### #
 
 
@@ -144,8 +150,7 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
     updateProgress(message_main = boldtext, value = 0.25)
   }
 
-  blockpoints_sf <- sf::st_as_sf(blockpoints_filt, coords = c('lon', 'lat'), crs = crs)
-
+  blockpoints_sf <- sf::st_as_sf(blockpoints[blockpoints_filt,], coords=c('lon','lat'), crs=crs)
   if (!exists("blockpoints_sf")) {
     warning("requires the blockpoints   called blockpoints_sf  you can make like this: \n blockpoints_sf <-  blockpoints |> sf::st_as_sf(coords = c('lon', 'lat'), crs= 4269) \n # Geodetic CRS:  NAD83 ")
     return(NULL)
