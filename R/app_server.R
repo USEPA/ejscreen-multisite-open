@@ -2610,6 +2610,10 @@ app_server <- function(input, output, session) {
       dplyr::mutate(`# of indicators above 90% threshold` = ifelse(`Est. Population` == 0, 'N/A',
                                                                    `# of indicators above 90% threshold`))
 
+    ## drop indicator column until corrected
+    dt_final <- dt_final %>% 
+      select(-`# of indicators above 90% threshold`)
+    
     n_cols_freeze <- 1
 
     ## format data table of site by site table
