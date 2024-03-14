@@ -102,7 +102,7 @@ Guidance](https://www.epa.gov/developers/open-source-software-and-epa-code-repos
 ## Contributing
 
 - [How to
-  Contribute](https://usepa.github.io/EJAM/articles/CONTRIBUTING.html)
+  Contribute](https://github.com/USEPA/EJAM/blob/master/CONTRIBUTING.md)
 
   - We encourage analysts and developers to test the EJAM R package and
     the EJAM shiny app, and provide feedback, or to share code, and we
@@ -110,9 +110,8 @@ Guidance](https://www.epa.gov/developers/open-source-software-and-epa-code-repos
 
 ## License
 
-All contributions to this project will be released under the CCO-1.0
-license file dedication. By submitting a pull request or issue, you are
-agreeing to comply with this waiver of copyright interest.
+By submitting a pull request or issue, you are agreeing to comply with a
+waiver of copyright interest.
 
 ## Disclaimer for App
 
