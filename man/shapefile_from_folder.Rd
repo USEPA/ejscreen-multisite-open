@@ -36,5 +36,7 @@ Read shapefile from a folder
   DT::datatable(out$results_bysite)
 
   }
-
+}
+\seealso{
+\code{\link[=shapefile_from_folder]{shapefile_from_folder()}}
 }
