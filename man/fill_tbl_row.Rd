@@ -2,21 +2,25 @@
 % Please edit documentation in R/community_report_helper_funs.R
 \name{fill_tbl_row}
 \alias{fill_tbl_row}
-\title{Write a demog. or envt. indicator to an html table row}
+\title{Write 1 demog. or envt. indicator to JUST 1 HTML table row}
 \usage{
 fill_tbl_row(output_df, var_value, var_name)
 }
 \arguments{
-\item{output_df, }{single row of results table from doaggregate -
-either results_overall or one row of bysite}
+\item{output_df}{single row of results table from \code{\link[=ejamit]{ejamit()}} or
+\code{\link[=doaggregate]{doaggregate()}} such as x$results_overall or one row like
+x$results_bysite\link{1, }, where x is the result of x <- ejamit()}
 
-\item{var_value, }{variable name of indicator to pull from results,
+\item{var_value}{variable name of indicator to pull from results,
 such as 'pm', 'pctlowinc', 'Demog.Index'}
 
-\item{var_name, }{nicer name of indicator to use in table row;
+\item{var_name}{nicer name of indicator to use in table row;
 can include HTML sub/superscripts}
 }
+\value{
+text string that is a fragment of HTML
+}
 \description{
-Write a demog. or envt. indicator to an html table row
+Write 1 demog. or envt. indicator to JUST 1 HTML table row
 }
 \keyword{internal}

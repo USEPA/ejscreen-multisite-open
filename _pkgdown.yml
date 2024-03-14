@@ -1,4 +1,4 @@
-url: https://bookish-disco-p8oe8wq.pages.github.io/
+url: https://usepa.github.io/EJAM/
 template:
   bootstrap: 5
 deploy:
@@ -8,12 +8,12 @@ navbar:
     left:  [intro, reference, articles, search]
     right: [github]
 footer:
-  structure: 
+  structure:
     left: [draftmsg]
     right: [package, versionmsg]
   components:
-    draftmsg: DRAFT
-    versionmsg: Version 2.2.1 beta
+    draftmsg: DRAFT/beta
+    versionmsg: Version 2.2.2 beta
 home:
   title: EJAM Environmental Justice Analysis Multisite
   description: Webapp and tools summarizing demographic and environmental data for hundreds of places quickly and accurately
@@ -39,7 +39,7 @@ articles:
 reference:
 - title: "Key Functions"
   desc: "The Main High-Level Functions in EJAM"
-  contents: 
+  contents:
   - app_run_EJAM
   - ejamit
   - ejam2report
@@ -47,14 +47,15 @@ reference:
   - ejscreenit_for_ejam
 - title: "Specify Points by Lat/Lon"
   desc: "Utilities for working with latitude and longitude"
-  contents: 
+  contents:
   - latlon_from_anything
   - latlon_is.valid
   - lat_alias
   - lon_alias
   - islandareas
+  - latlon_from_address
 - title: "Specify Facilities by ID"
-  contents: 
+  contents:
   - latlon_from_regid
   - frs_from_regid
   - latlon_from_programid
@@ -75,6 +76,7 @@ reference:
   - NAICS
   - frs_by_naics
   - naics_url_of_code
+  - naics_findwebscrape
 - subtitle: "Using NAICS Industry Codes"
   contents:
   - latlon_from_naics
@@ -102,12 +104,12 @@ reference:
   - frs_by_sic
   - frs_from_sic
 - subtitle: "MACT Categories"
-  contents: 
+  contents:
   - mact_table
   - latlon_from_mactsubpart
   - frs_by_mact
 - title: "Specify Places by Shapefile"
-  contents: 
+  contents:
   - shapefile_clean
   - shapefile_filepaths_from_folder
   - shapefile_filepaths_valid
@@ -118,6 +120,8 @@ reference:
   - shapes_counties_from_countyfips
   - shape_buffered_from_shapefile
   - shape_buffered_from_shapefile_points
+  - shapefile_from_gdb
+  - shapefile_from_gdbzip
 - title: "Specify Counties etc."
   desc: >
     Tools to work with Census units and FIPS codes
@@ -130,6 +134,7 @@ reference:
   - fips_lead_zero
   - fips2name
   - fips_bg_from_anyfips
+  - fips_from_table
 - subtitle: "Counties"
   contents:
   - counties_as_sites
@@ -138,6 +143,8 @@ reference:
   - fips_counties_from_statename
   - fips2countyname
   - shapes_counties_from_countyfips
+  - acs_bycounty
+  - plot_bycounty
 - subtitle: "States"
   contents:
   - states_shapefile
@@ -327,3 +334,4 @@ reference:
   - url_get_eparest_chunked_by_id
   - url_get_via_url
   - formula_varname
+  - create_filename

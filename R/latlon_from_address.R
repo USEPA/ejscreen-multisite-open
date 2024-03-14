@@ -1,4 +1,5 @@
 
+
 ####################################################################### #
   #  library(AOI) # needs tidygeocoder, fipio, and others not otherwise in EJAM:
   ### Imports: datasets, dplyr, fipio, htmlwidgets, jsonlite, leaflet,
@@ -275,6 +276,7 @@ latlon_from_address <- function(address, xy=FALSE, pt = FALSE, aoimap=FALSE, ...
   if (inherits(x, "try-error")) {
     warning("AOI package not available")
     x <- NULL
+
     ############################################## #
   } else {
     cat('for this to work you would need to use library(', 'AOI', ') first\n')
@@ -306,3 +308,4 @@ latlon_from_address <- function(address, xy=FALSE, pt = FALSE, aoimap=FALSE, ...
   return(x)
 }
 ####################################################################### #
+

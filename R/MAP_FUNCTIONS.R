@@ -337,8 +337,11 @@ map_shapes_leaflet_proxy <- function(mymap, shapes, color = "green", popup = sha
 #' Map - Use mapview from the mapview package if available
 #'
 #' @param shapes like from shapes_counties_from_countyfips(fips_counties_from_state_abbrev("DE"))
-#' @param col.regions passed to mapview() from mapview package
-#' @param map.types  passed to mapview() from mapview package
+#' @param col.regions passed to [mapview::mapview()]
+#' @param map.types  passed to  [mapview::mapview()]
+#' @return like output of mapview function [mapview::mapview()],
+#'   if mapview package is installed,
+#'   when used with an input that is a spatial object as via [sf::read_sf()]
 #' @examples \dontrun{
 #'   map_shapes_mapview(
 #'     shapes_counties_from_countyfips(fips_counties_from_state_abbrev("DE"))

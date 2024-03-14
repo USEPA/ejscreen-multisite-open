@@ -527,6 +527,7 @@ shapefile_clean <- function(shp, crs = 4269) {
 #'   and to st_crs(x)$units otherwise)
 #' @param crs used in st_transform()  default is crs = 4269 or Geodetic CRS NAD83
 #' @param ... passed to st_buffer()
+#' @return same format as [sf::st_buffer()] returns
 #' @import sf
 #' @seealso [get_blockpoints_in_shape()] [shapefile_from_sitepoints()] [shape_buffered_from_shapefile_points()]
 #'
@@ -551,6 +552,7 @@ shape_buffered_from_shapefile <- function(shapefile, radius.miles, crs = 4269, .
 #'   and to st_crs(x)$units otherwise)
 #' @param crs used in st_transform()  default is crs = 4269 or Geodetic CRS NAD83
 #' @param ... passed to st_buffer()
+#' @return same format as [sf::st_buffer()] returns
 #' @import sf
 #' @seealso [get_blockpoints_in_shape()] [shapefile_from_sitepoints()] [shape_buffered_from_shapefile_points()]
 #'

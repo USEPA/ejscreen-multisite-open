@@ -1,11 +1,11 @@
 
 #' DRAFT / WAS WORK IN PROGRESS  - find nearby blocks using Quad Tree data structure for speed, CLUSTERED FOR PARALLEL PROCESSING
-#' 
+#'
 #' @description Uses packages parallel and snow. [parallel::makePSOCKcluster] is an enhanced version of [snow::makeSOCKcluster] in package snow.
 #'     It runs Rscript on the specified host(s) to set up a worker process which listens on a socket for expressions to evaluate, and returns the results (as serialized objects).
 #'
 #' @details  For all examples, see [getblocksnearbyviaQuadTree()]
-#' 
+#'
 #'  Uses indexgridsize and quaddata  variables that come from global environment (but should pass to this function rather than assume in global env?)
 #'
 #' @param sitepoints data.table with columns LAT, LONG
@@ -14,12 +14,12 @@
 #' @param avoidorphans logical
 #' @param CountCPU for parallel processing via makeCluster() and [doSNOW::registerDoSNOW()]
 #' @param quadtree index of all US blocks like localtree
-#' @seealso   [getblocksnearby()] [getblocksnearbyviaQuadTree()] [getblocksnearbyviaQuadTree_Clustered()] [getblocksnearbyviaQuadTree2()]
-#' 
+#' @seealso   [getblocksnearby()] [getblocksnearbyviaQuadTree()]
+#'
 #' @keywords internal
 #'
 getblocksnearbyviaQuadTree_Clustered <- function(sitepoints,radius, maxradius, avoidorphans, CountCPU = 1, quadtree) {
-  
+
   #pass in a list of uniques and the surface radius distance
   #filter na values
 sitepoints <- sitepoints[!is.na(sitepoints$LAT) & !is.na(sitepoints$LONG), ]
@@ -131,7 +131,7 @@ sitepoints <- sitepoints[!is.na(sitepoints$LAT) & !is.na(sitepoints$LONG), ]
       if ( avoidorphans) {
         #search neighbors, allow for multiple at equal distance
         print("inbefore knn")
-        # This should have been done in server.R 
+        # This should have been done in server.R
         # quadtree <- SearchTrees::createTree( quaddata, treeType = "quad", dataType = "point")
         vec <- SearchTrees::knnLookup(quadtree, c(coords[,FAC_X]), c(coords[,FAC_Z]), k = 10)
         print("did we knn? ")
@@ -160,7 +160,7 @@ sitepoints <- sitepoints[!is.na(sitepoints$LAT) & !is.na(sitepoints$LONG), ]
   bound <- do.call('rbind', parref)
 
   print(paste("Total Rowcount: ",nrow(bound)) )
- 
+
   print(paste("Final Rowcount: ",nrow(bound)) )
   # is this from parallel or snow package?
   parallel::stopCluster(cl)

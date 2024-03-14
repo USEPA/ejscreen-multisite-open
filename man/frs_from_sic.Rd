@@ -7,9 +7,9 @@
 frs_from_sic(sic_code_or_name, ...)
 }
 \arguments{
-\item{...}{passed to \code{\link[=naics_from_any]{naics_from_any()}}}
+\item{sic_code_or_name}{passed to \code{\link[=sic_from_any]{sic_from_any()}}}
 
-\item{naics_code_or_name}{}
+\item{...}{passed to \code{\link[=sic_from_any]{sic_from_any()}}}
 }
 \value{
 relevant rows of the data.table called frs, which has column names that are
@@ -27,7 +27,7 @@ Use SIC code or industry title text search to see FRS Facility Registry Service 
   frs_from_sic('0780')
   regid_from_sic('0780')
   latlon_from_sic('0780')
-  
+
 }
 \seealso{
 \code{\link[=regid_from_sic]{regid_from_sic()}} \code{\link[=sic_from_any]{sic_from_any()}}

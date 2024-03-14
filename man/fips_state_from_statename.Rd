@@ -18,5 +18,5 @@ FIPS - Get state fips for each state name
 }
 \examples{
   fips_state_from_statename("Delaware")
-  
+
 }

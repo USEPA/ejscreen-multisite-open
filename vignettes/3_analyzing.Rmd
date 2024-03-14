@@ -6,6 +6,10 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+```{r developernote, eval=FALSE, echo= FALSE, include = FALSE}
+#  *>>>>>>>>>> Developer note: vignettes need to be tested/edited/rebuilt regularly <<<<<<<<<<<*
+#    - **See ?pkgdown::build_site** - EJAM uses the pkgdown R package to build help and articles/ vignettes as web pages
+```
 
 ```{r SETUP_default_eval_or_not, include = FALSE}
 knitr::opts_chunk$set(
@@ -40,7 +44,7 @@ if (!exists("blockid2fips")) {
   localpaths  <- paste0(here, '/', fnames)
   for (i in 1:length(varnames)) {
     if (!exists(varnames[i]) & file.exists(localpaths[i])) {
-    assign(varnames[i], arrow::read_ipc_file(file = localpaths[i]))
+      assign(varnames[i], arrow::read_ipc_file(file = localpaths[i]))
     }}
   rm(here, varnames, fnames, localpaths)
 }
@@ -61,7 +65,7 @@ indexblocks()
 
 # Key groups of functions
 
-The [EJAM package reference manual](https://bookish-disco-p8oe8wq.pages.github.io/reference/index.html) has a complete list of documented functions, grouped by category. There are several categories of functions listed there:
+The EJAM package reference manual has a complete list of documented functions, grouped by category. There are several categories of functions listed there:
 
 -   The overall functions ejamit(), ejam2report(), ejam2excel()
 -   Specify Points by Lat/Lon
@@ -94,8 +98,8 @@ To analyze points and the circular areas around each one, you can specify the po
 
 -   A list of points defined by coordinates or by EPA ID numbers for each point
 -   All points that are the locations of EPA-regulated facilities of a certain type. The categories that can be used include the following:
-    -   EPA Program (e.g., all greenhouse gas reporting facilities)
-    -   Industry type, based on NAICS code (e.g., )
+-   EPA Program (e.g., all greenhouse gas reporting facilities)
+-   Industry type, based on NAICS code (e.g., )
 
 ## Compare all Points in a Category
 
@@ -115,8 +119,8 @@ You can specify sites by NAICS, but it is important to note the FRS lacks NAICS 
 
 ```{r naics_from_any, eval = TRUE}
 naics_from_any("paint and coating", children = T)
-# note latlon_from_naics() requires the frs_by_naics dataset, which it tries to load on demand.
-head(latlon_from_naics(325510)) # has about 1,000 facilities
+## note latlon_from_naics() requires the frs_by_naics dataset, which it tries to load on demand.
+# head(latlon_from_naics(325510)) # has about 1,000 facilities
 
 ## All sectors with this phrase in their NAICS title
 #
@@ -143,46 +147,54 @@ y <- ejamit(latlon_from_regid(read_csv_or_xl()$REGISTRY_ID), radius = 1)
 ### by Facility, using EPA Program System ID
 
 ```{r latlon_from_programid, eval = TRUE}
-# note latlon_from_programid() requires the frs_by_programid dataset, which it tries to load on demand.
-
-latlon_from_programid(c("XJW000012435", "00768SRTRSROAD1"))
+# note latlon_from_programid() requires access to the frs_by_programid dataset, which it tries to load on demand.
+dataload_from_pins("frs_by_programid")
+if (exists("frs_by_programid")) {
+  latlon_from_programid(c("XJW000012435", "00768SRTRSROAD1"))
+}
 ```
 
 ### by EPA Regulatory Program
 
 ```{r latlon_from_program, eval = TRUE}
 # note latlon_from_programid() requires the frs and frs_by_programid datasets, which it tries to load on demand.
+dataload_from_pins("frs_by_programid")
+if (exists("frs_by_programid")) {
+  head(cbind(Count.of.facilities = sort(table(frs_by_programid$program), decreasing = T)), 20)
+  latlon_from_program("CAMDBS")[,1:6]
+}
 
-head(cbind(Count.of.facilities = sort(table(frs_by_programid$program), decreasing = T)), 20)
-
-latlon_from_program("CAMDBS")[,1:6]
 ```
 
 ### by MACT Subpart (hazardous air pollutant source category)
 
 ```{r latlon_from_mactsubpart, eval = TRUE}
 # note latlon_from_mactsubpart() requires the frs_by_mact dataset, which it tries to load on demand
-
-# Search by name of category
-mact_table[grepl("ethylene", mact_table$title, ignore.case = T), ]
-eto <- rbind(
-  latlon_from_mactsubpart("O" ), 
-  latlon_from_mactsubpart("WWWWW")
-)
-#  Map the category
-mapfast(eto)
-
-# Browse the full list of categories
-# mact_table[ , c("N", "subpart", "title")]
-
-# The 10 largest categories
-tail(mact_table[order(mact_table$N), c("N", "subpart", "title")], 10)
-
-# Many facilities lack latitude longitude information in this database
-nrow(latlon_from_mactsubpart("A", include_if_no_latlon = TRUE))
-nrow(latlon_from_mactsubpart("A", include_if_no_latlon = FALSE))
-
-head(latlon_from_mactsubpart("OOOO"), 2)
+dataload_from_pins("frs_by_mact")
+if (exists("frs_by_mact")) {
+  
+  # Search by name of category
+  mact_table[grepl("ethylene", mact_table$title, ignore.case = T), ]
+  eto <- rbind(
+    latlon_from_mactsubpart("O" ), 
+    latlon_from_mactsubpart("WWWWW")
+  )
+  #  Map the category
+  mapfast(eto)
+  
+  
+  # Browse the full list of categories
+  # mact_table[ , c("N", "subpart", "title")]
+  
+  # The 10 largest categories
+  tail(mact_table[order(mact_table$N), c("N", "subpart", "title")], 10)
+  
+  # Many facilities lack latitude longitude information in this database
+  nrow(latlon_from_mactsubpart("A", include_if_no_latlon = TRUE))
+  nrow(latlon_from_mactsubpart("A", include_if_no_latlon = FALSE))
+  
+  head(latlon_from_mactsubpart("OOOO"), 2)
+}
 ```
 
 ## Working with NAICS Codes (Industry Codes)
@@ -198,15 +210,19 @@ naics_from_any(naics_categories(3))[order(code),.(code,name)][1:10,]
 
 # See a data table of facilities in one industry
 industryword <- "pulp"
+
 head( frs_from_naics(naics_from_any(industryword)$code)[,1:4] )
+
 ```
 
 Quick map of EPA-regulated facilities in one industrial category, which you can click on to see popup windows about sites.
 
 ```{r mapfast(frs_from_naics), eval = TRUE, fig.height=5, fig.width=5}
 # note frs_from_naics() requires the frs dataset, which it tries to load on demand.
-
+dataload_from_pins("frs")
+if (exists("frs")) {
 mapfast(frs_from_naics("smelt")) # may be slow the 1st time, if it loads frs dataset
+}
 ```
 
 (but note that this FRS dataset lacks NAICS for most facilities!)
@@ -216,7 +232,7 @@ Table of facilities in an industry, plus links to each facility in ECHO and EJSc
 ```{r frs_from_naics-chemicalmanuf, eval = FALSE}
 industryword <- "chemical manuf"
 #  industryword <- "smelt"
-
+if (exists("frs")) {
 mysites <- frs_from_naics(industryword, children = FALSE)[,1:5]
 
 regids <- mysites$REGISTRY_ID
@@ -241,6 +257,7 @@ print(
     filter = "top"
   )[1:10, ]
 )
+}
 ```
 
 Map of facilities in an industry, plus popups with links to each facility in ECHO and EJScreen

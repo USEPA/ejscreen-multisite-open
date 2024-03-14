@@ -11,8 +11,7 @@ regid_from_naics(naics, id_only = FALSE)
 a data.table with column named code, as with output of \code{\link[=naics_from_any]{naics_from_any()}}}
 }
 \value{
-A data.table (not just data.frame) with columns called
-lat, lon, REGISTRY_ID, NAICS (but see the id_only parameter)
+see  \code{\link[=latlon_from_naics]{latlon_from_naics()}}
 }
 \description{
 Get lat lon, Registry ID, given NAICS industry code(s)

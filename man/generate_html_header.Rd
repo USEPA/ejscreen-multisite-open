@@ -4,16 +4,27 @@
 \alias{generate_html_header}
 \title{Build HTML header for community report}
 \usage{
-generate_html_header(analysis_title, totalpop, locationstr, in_shiny = FALSE)
+generate_html_header(
+  analysis_title = "Analyzed Locations",
+  totalpop,
+  locationstr,
+  in_shiny = FALSE,
+  header_text = "EJAM Summary Report"
+)
 }
 \arguments{
-\item{analysis_title, }{title to use in header of report}
+\item{analysis_title}{title to use in header of report}
 
-\item{totalpop, }{total population included in location(s) analyzed}
+\item{totalpop}{total population included in location(s) analyzed}
 
-\item{locationstr, }{description of the location(s) analyzed}
+\item{locationstr}{description of the location(s) analyzed}
 
-\item{in_shiny, }{whether the function is being called in or outside of shiny - affects location of header}
+\item{in_shiny}{whether the function is being called in or outside of shiny - affects location of header}
+
+\item{header_text}{text like "EJAM Summary Report"}
+}
+\value{
+text string that is a fragment of HTML
 }
 \description{
 Build HTML header for community report

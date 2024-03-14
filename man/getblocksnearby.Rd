@@ -40,10 +40,14 @@ created using indexblocks() which uses the SearchTree package.
 Takes about 2-5 seconds to create this each time it is needed.
 It can be automatically created when the package is attached via the .onAttach() function}
 
-\item{quiet}{Optional. set to TRUE to avoid message about using getblock_diagnostics(),
+\item{quiet}{Optional. set to TRUE to avoid message about using \code{\link[=getblocks_diagnostics]{getblocks_diagnostics()}},
 which is relevant only if a user saved the output of this function.}
 
 \item{...}{passed to \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} or other such functions}
+}
+\value{
+data.table like testoutput_getblocksnearby_10pts_1miles, with
+columns named "ejam_uniq_id", "blockid", "distance", etc.
 }
 \description{
 Get distance from each site (e.g., facility) to each
@@ -73,5 +77,5 @@ and they are like centroids.
 The blocks are pre-indexed for the whole USA, via the data object quadtree aka localtree
 }
 \seealso{
-\code{\link[=ejamit]{ejamit()}}  \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} \code{\link[=getblocksnearbyviaQuadTree_Clustered]{getblocksnearbyviaQuadTree_Clustered()}} \code{\link[=getblocksnearbyviaQuadTree2]{getblocksnearbyviaQuadTree2()}}
+\code{\link[=ejamit]{ejamit()}}  \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}}
 }

@@ -113,6 +113,8 @@ naics_from_any <- function(query, children=FALSE, ignore.case = TRUE, fixed = FA
 #' @param digits default is 2, for 2-digits NAICS, the top level, but could be up to 6.
 #' @param dataset Should default to the dataset called NAICS, installed with this package.
 #'   see [NAICS]  Check attr(NAICS, 'year')
+#' @return matrix with 1 column of 2-digit codes and rownames that look like
+#'    "22 - Utilities" etc.
 #' @examples  naics_categories()
 #' @seealso [naics_from_any]  [NAICS]
 #'

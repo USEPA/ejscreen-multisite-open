@@ -11,28 +11,79 @@ build_community_report(
   locationstr,
   include_ejindexes = FALSE,
   in_shiny = FALSE,
-  filename = NULL
+  filename = NULL,
+  header_text = "EJScreen environmental and socioeconomic indicators data",
+  header_text1 = "Pollution and Sources",
+  header_text2 = "Socioeconomic Indicators",
+  raw_names_e = names_e,
+  long_names_e = NULL,
+  raw_names_d = names_d,
+  long_names_d = fixcolnames(raw_names_d, "r", "long"),
+  hardcoded = TRUE,
+  header_text_ej = "EJScreen environmental and socioeconomic indicators data",
+  header_text1_ej = "EJ Indexes",
+  header_text2_ej = "Supplemental EJ Indexes",
+  raw_names_ej = names_ej,
+  raw_names_ej_supp = names_ej_supp,
+  raw_names_e_ej = names_e,
+  hardcoded_ej = TRUE
 )
 }
 \arguments{
-\item{output_df, }{single row of results table from doaggregate - either results_overall or one row of bysite}
+\item{output_df}{single row of results table from doaggregate - either results_overall or one row of bysite}
 
-\item{analysis_title, }{title to use in header of report}
+\item{analysis_title}{title to use in header of report}
 
-\item{totalpop, }{total population included in location(s) analyzed}
+\item{totalpop}{total population included in location(s) analyzed}
 
-\item{locationstr, }{description of the location(s) analyzed}
+\item{locationstr}{description of the location(s) analyzed}
 
-\item{include_ejindexes, }{whether to build tables for EJ and EJ supp. indexes}
+\item{include_ejindexes}{whether to build tables for EJ and EJ supp. indexes}
 
-\item{in_shiny, }{whether the function is being called in or outside of shiny - affects location of header}
+\item{in_shiny}{whether the function is being called in or outside of shiny - affects location of header}
 
-\item{filename, }{path to file to save HTML content to; if null, returns as string (used in Shiny app)}
+\item{filename}{path to file to save HTML content to; if null, returns as string (used in Shiny app)}
+
+\item{header_text}{text like "EJScreen environmental and socioeconomic indicators data"}
+
+\item{header_text1}{text}
+
+\item{header_text2}{text}
+
+\item{raw_names_e}{something like names_e, must be among colnames of output_df, unless hardcoded}
+
+\item{long_names_e}{longer, friendly names for raw_names_e, unless hardcoded}
+
+\item{raw_names_d}{something like names_d, must be among colnames of output_df, unless hardcoded}
+
+\item{long_names_d}{longer, friendly names for raw_names_d, unless hardcoded}
+
+\item{hardcoded}{passed to fill_tbl_full() and
+if TRUE, ignores most parameters here and uses hard-coded info
+found in source code of fill_tbl_full() and related helper functions.
+If FALSE, uses the parameters provided here.}
+
+\item{header_text_ej}{text like "EJScreen environmental and socioeconomic indicators data"}
+
+\item{header_text1_ej}{text}
+
+\item{header_text2_ej}{text}
+
+\item{raw_names_ej}{optional vector of colnames in output_df that are the
+raw EJ index values, but it assumes the percentile values are those names
+plus state.pctile. or something like that (see source code)}
+
+\item{raw_names_ej_supp}{optional vector of colnames in output_df}
+
+\item{raw_names_e_ej}{optional vector of colnames in output_df}
+
+\item{hardcoded_ej}{If TRUE, ignores most parameters here and uses hard-coded info
+found in source code of fill_tbl_full_ej() and related helper functions.
+If FALSE, uses the parameters provided here.}
 }
 \description{
 Creates a 2 page report on overall results or for one site, with
 demographic and environmental indicators, and EJ Indexes if needed.
-For the same function for use in RStudio,
-see \code{\link[=ejam2report]{ejam2report()}} which relies on \code{build_community_report()}
+For use in RStudio, see \code{\link[=ejam2report]{ejam2report()}} which wraps this.
 }
 \keyword{internal}

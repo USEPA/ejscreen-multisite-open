@@ -34,6 +34,7 @@ color: #005ea2;
 .selectize-dropdown-content { 
   max-height: 400px; 
   overflow-y: auto; 
+  white-space: pre-wrap;
 }
         
 .navbar1 .navbar{ background-color: transparent;

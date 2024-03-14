@@ -39,5 +39,4 @@ and what it imports like tidygeocoder etc.
 #x3 <- latlon_from_anything(fname)
 #names(x1)
 #names(x2)
-
 }

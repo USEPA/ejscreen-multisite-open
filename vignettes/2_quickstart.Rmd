@@ -7,6 +7,11 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r developernote, eval=FALSE, echo= FALSE, include = FALSE}
+#  *>>>>>>>>>> Developer note: vignettes need to be tested/edited/rebuilt regularly <<<<<<<<<<<*
+#    - **See ?pkgdown::build_site** - EJAM uses the pkgdown R package to build help and articles/ vignettes as web pages
+```
+
 ```{r SETUP_default_eval_or_not, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -48,12 +53,6 @@ dataload_from_pins('all') # varnames = all  currently means all these:
 
 indexblocks()
 
-```
-
-```{r developernote, eval=FALSE, echo= FALSE, include = FALSE}
-#  *>>>>>>>>>> Developer note: vignettes need to be tested/edited/rebuilt regularly <<<<<<<<<<<*
-#
-#    - **See ?pkgdown::build_site** - EJAM now uses the pkgdown R package to build help and vignettes as web pages
 ```
 
 # Intro to EJAM Analysis in R
@@ -104,11 +103,12 @@ out <- testoutput_ejamit_100pts_1miles
 ejam2report(out)
 ```
 
-![](images/image-1622322729.png)
+![Summary table of environmental and demographic indicators as raw value, average and percentile (in State and in US overall)](images/image-report_top_example.png)
 
-![](images/image-214067959.png)
+![Summary table of EJ Indexes, race-ethnicity subgroups, gender, and language indicators](images/image-report_EJ_table_example.png)
+![US map showing analyzed points](images/image-map_example.png)
 
-![](images/image-1254961740.png)
+![Barplot comparing demographic indicators as ratios to US average](images/image-barplot_example.png)
 
 ## Barplot
 
@@ -132,7 +132,7 @@ out <- testoutput_ejamit_100pts_1miles
 ejam2excel(out, launchexcel = T, save_now = F)
 ```
 
-![Excel output](images/xlsx.png)
+![Excel output showing 1 row per site and 1 column per indicator such as total population nearby](images/image-xlsx.png)
 
 ------------------------------------------------------------------------
 
@@ -302,7 +302,7 @@ ejam2excel(ejamit(testpoints_10, radius = 1), save_now = T)
 
 # Documentation of Functions and Data
 
--   See the [README for links to documentation](https://bookish-disco-p8oe8wq.pages.github.io/reference/index.html) or [README on GitHub](https://github.com/USEPA/EJAM/tree/gh-pages?tab=readme-ov-file#readme)
+-   See the [README on GitHub](https://github.com/USEPA/EJAM/tree/gh-pages?tab=readme-ov-file#readme)
 
 ```{r helpEJAM, eval = FALSE, include= FALSE}
 ?EJAM
