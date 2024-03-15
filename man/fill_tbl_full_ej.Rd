@@ -4,10 +4,40 @@
 \alias{fill_tbl_full_ej}
 \title{Create full EJ + EJ supp index HTML table of indicator rows}
 \usage{
-fill_tbl_full_ej(output_df)
+fill_tbl_full_ej(
+  output_df,
+  header_text = "EJScreen environmental and socioeconomic indicators data",
+  header_text1 = "EJ Indexes",
+  header_text2 = "Supplemental EJ Indexes",
+  raw_names_ej = names_ej,
+  raw_names_ej_supp = names_ej_supp,
+  raw_names_e = names_e,
+  hardcoded = TRUE
+)
 }
 \arguments{
-\item{output_df, }{single row of results table from doaggregate - either results_overall or one row of bysite}
+\item{output_df}{single row of results table from \code{\link[=ejamit]{ejamit()}} or
+\code{\link[=doaggregate]{doaggregate()}} such as x$results_overall or one row like
+x$results_bysite\link{1, }, where x is the result of x <- ejamit()}
+
+\item{header_text}{text like "EJScreen environmental and socioeconomic indicators data"}
+
+\item{header_text1}{text}
+
+\item{header_text2}{text}
+
+\item{raw_names_ej}{optional vector of colnames in output_df that are the
+raw EJ index values, but it assumes the percentile values are those names
+plus state.pctile. or something like that (see source code)}
+
+\item{raw_names_ej_supp}{optional vector of colnames in output_df}
+
+\item{raw_names_e}{optional vector of colnames in output_df}
+
+\item{hardcoded}{temporary param while coding more flexible version}
+}
+\value{
+text string that is a fragment of HTML
 }
 \description{
 Create full EJ + EJ supp index HTML table of indicator rows

@@ -4,11 +4,41 @@
 \alias{fill_tbl_full}
 \title{Create full demog. or envt. HTML table of indicator rows}
 \usage{
-fill_tbl_full(output_df)
+fill_tbl_full(
+  output_df,
+  header_text = "EJScreen environmental and socioeconomic indicators data",
+  header_text1 = "Pollution and Sources",
+  header_text2 = "Socioeconomic Indicators",
+  raw_names_e = names_e,
+  long_names_e = NULL,
+  raw_names_d = names_d,
+  long_names_d = fixcolnames(raw_names_d, "r", "long"),
+  hardcoded = TRUE
+)
 }
 \arguments{
-\item{output_df, }{single row of results table from doaggregate -
-either results_overall or one row of bysite}
+\item{output_df}{single row of results table from \code{\link[=ejamit]{ejamit()}} or
+\code{\link[=doaggregate]{doaggregate()}} such as x$results_overall or one row like
+x$results_bysite\link{1, }, where x is the result of x <- ejamit()}
+
+\item{header_text}{text}
+
+\item{header_text1}{text}
+
+\item{header_text2}{text}
+
+\item{raw_names_e}{something like names_e, must be among colnames of output_df, unless hardcoded}
+
+\item{long_names_e}{longer, friendly names for raw_names_e, unless hardcoded}
+
+\item{raw_names_d}{something like names_d, must be among colnames of output_df, unless hardcoded}
+
+\item{long_names_d}{longer, friendly names for raw_names_d, unless hardcoded}
+
+\item{hardcoded}{temporary param while coding more flexible version}
+}
+\value{
+text string that is a fragment of HTML
 }
 \description{
 Create full demog. or envt. HTML table of indicator rows

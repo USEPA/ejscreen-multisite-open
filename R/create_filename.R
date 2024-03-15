@@ -8,7 +8,6 @@
 #' @param with_datetime boolean to include date and time
 #' @param ext optional file extension. will check for '.' and add if not provided
 #' @return Returns string of pasted filename with specified components
-#' @export
 #'
 #' @examples 
 #' # specify all arguments

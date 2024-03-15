@@ -2,21 +2,27 @@
 % Please edit documentation in R/community_report_helper_funs.R
 \name{fill_tbl_row_ej}
 \alias{fill_tbl_row_ej}
-\title{Write an EJ or EJ supp index to an html table row}
+\title{Write an EJ or EJ supp index (ONE) to an HTML table row}
 \usage{
 fill_tbl_row_ej(output_df, var_value, var_name)
 }
 \arguments{
-\item{output_df, }{single row of results table from doaggregate -
-either results_overall or one row of bysite}
+\item{output_df}{single row of results table from \code{\link[=ejamit]{ejamit()}} or
+\code{\link[=doaggregate]{doaggregate()}} such as x$results_overall or one row like
+x$results_bysite\link{1, }, where x is the result of x <- ejamit()}
 
-\item{var_value, }{variable name of indicator to pull from results,
-such as 'pm', 'pctlowinc', 'Demog.Index'}
+\item{var_value}{raw EJ index variable name, such as one of \link{names_ej}}
 
-\item{var_name, }{nicer name of indicator to use in table row;
-can include HTML sub/superscripts}
+\item{var_name}{optional nicer name of environmental (as a way to refer to EJ index)
+indicator to use in table row. Can include HTML sub/superscripts.}
+}
+\value{
+text string that is a fragment of HTML
 }
 \description{
-Write an EJ or EJ supp index to an html table row
+Write an EJ or EJ supp index (ONE) to an HTML table row
+}
+\seealso{
+fill_tbl_rowset_ej()
 }
 \keyword{internal}

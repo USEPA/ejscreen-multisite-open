@@ -36,6 +36,6 @@ For all examples, see \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyvi
 Uses indexgridsize and quaddata  variables that come from global environment (but should pass to this function rather than assume in global env?)
 }
 \seealso{
-\code{\link[=getblocksnearby]{getblocksnearby()}} \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} \code{\link[=getblocksnearbyviaQuadTree_Clustered]{getblocksnearbyviaQuadTree_Clustered()}} \code{\link[=getblocksnearbyviaQuadTree2]{getblocksnearbyviaQuadTree2()}}
+\code{\link[=getblocksnearby]{getblocksnearby()}} \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}}
 }
 \keyword{internal}
