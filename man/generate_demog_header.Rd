@@ -4,15 +4,7 @@
 \alias{generate_demog_header}
 \title{Build header for demog. + envt. tables in community report}
 \usage{
-generate_demog_header(
-  header_text = "Environmental and Socioeconomic Indicators Data"
-)
-}
-\arguments{
-\item{header_text}{actual text}
-}
-\value{
-text string that is a fragment of HTML
+generate_demog_header()
 }
 \description{
 Build header for demog. + envt. tables in community report
