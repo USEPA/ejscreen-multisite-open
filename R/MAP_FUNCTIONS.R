@@ -355,11 +355,11 @@ map_shapes_mapview <- function(shapes, col.regions = "green", map.types = "OpenS
   if (!"package:mapview" %in% search()) {
     message("this function is a nice way to map counties etc. but requires the mapview package, which EJAM does not load")
     warning("mapview package would be needed and is not attached - checking if installed")
-    junk <- try(find.package("ggplot2"), silent = TRUE)
+    junk <- try(find.package("mapview"), silent = TRUE)
     if (inherits(junk, "try-error")) {
       stop("mapview package is not available")
     } else {
-      stop("mapview package appears to be available but not attached. You may want to try loading and attaching it via library() or require()")
+      stop("mapview package appears to be installed but not attached. Try using library() or require()")
     }
   } else {
     mapview(shapes, col.regions = col.regions, map.types = map.types)

@@ -11,6 +11,9 @@
 # shapefile_from_filepaths()
 # shapefile_filepaths_from_folder()
 # shapefile_filepaths_valid()
+# shapefile_from_filepaths()
+# shapefile_from_gdbzip()
+# shapefile_from_gdb()
 # shapefile_clean()
 
 # shape_buffered_from_shapefile()
