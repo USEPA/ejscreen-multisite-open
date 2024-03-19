@@ -1,10 +1,12 @@
 # FORMULAS THAT WERE BEING USED IN EJAM::doaggregate()
 
+## examples showing how it works are in ?calc_ejam()
+
 
 formulas_d <- c(
   "pctover64       = 1 * ifelse(pop == 0, 0,            over64        / pop)",
   "pctunder5       = 1 * ifelse(pop == 0, 0,            under5        / pop)",
-  
+
   "pcthisp         = 1 * ifelse(pop == 0, 0, as.numeric(hisp )        / pop)",
   "pctnhba         = 1 * ifelse(pop == 0, 0, as.numeric(nhba )        / pop)",
   "pctnhaiana      = 1 * ifelse(pop == 0, 0, as.numeric(nhaiana)      / pop)",
@@ -21,18 +23,18 @@ formulas_d <- c(
   "pctotheralone = 1 * ifelse(pop == 0, 0, as.numeric(otheralone) / pop)",
   "pctmulti      = 1 * ifelse(pop == 0, 0, as.numeric(multi )     / pop)",
   "pctwa         = 1 * ifelse(pop == 0, 0, as.numeric(wa )        / pop)",
-  
+
   "pctmin          = 1 * ifelse(pop == 0, 0, as.numeric(mins)         / pop)",
   "pctlowinc       = 1 * ifelse(povknownratio  == 0, 0, lowinc                 / povknownratio)",
   "pctlths         = 1 * ifelse(age25up        == 0, 0, as.numeric(lths)       / age25up)",
   "pctlingiso      = 1 * ifelse(hhlds          == 0, 0, lingiso                / hhlds)",
   "pctpre1960      = 1 * ifelse(builtunits     == 0, 0, pre1960                / builtunits)",
   "pctunemployed   = 1 * ifelse(unemployedbase == 0, 0, as.numeric(unemployed) / unemployedbase)",
-  
+
   "Demog.Index = (pctlowinc + pctmin) / 2",
   # "Demog.Index.Supp  = (pctlowinc + pctunemployed + pctlths + pctlingiso + lowlifex ) / ifelse(is.na(lowlifex), 4, 5)",
   "Demog.Index.Supp  = (pctlowinc + pctunemployed + pctlths + pctlingiso + ifelse(is.na(lowlifex), 0, lowlifex) ) / ifelse(is.na(lowlifex), 4, 5)",
-  
+
   "pctdisability  = ifelse(DISAB_UNIVERSE == 0, 0, DISABILITY / DISAB_UNIVERSE)",
   "pctunder18 =  ifelse(pop == 0, 0, AGE_LT18 / pop)",
   "pctover17  =  ifelse(pop == 0, 0, AGE_GT17 / pop)",
@@ -52,24 +54,4 @@ formulas_d <- c(
 
 usethis::use_data(formulas_d, overwrite = TRUE)
 
-################################################ # 
-# 
-## example showing how it works
-#
-# formula_varname(formulas_d)
-
-# bgdf <- data.frame(blockgroupstats)
-# newdf <- ejscreen::ejscreen.acs.calc(bgdf,
-#                                      keep.old = c('bgid', 'pop', 'hisp'),
-#                                      keep.new = "all",
-#                                      formulas = formulas_d
-#                                      )
-# round(t(newdf[1001:1002, ]), 3)
-# cbind(
-#   newdf[1001:1031, c('hisp', 'pop', 'pcthisp')], 
-#   check = (newdf$hisp[1001:1031] / newdf$pop[1001:1031])
-#   )
-# ## note the 0-100 percentages in blockgroupstats versus the 0-1 calculated percentages
-# 
-# # rm(bgdf)
-#  
+################################################ #
