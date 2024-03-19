@@ -2,7 +2,8 @@
 % Please edit documentation in R/latlon_from_address.R
 \name{latlon_from_address}
 \alias{latlon_from_address}
-\title{geocode, but only if AOI package is already installed and loaded and attached}
+\title{geocode, but only if AOI package is installed and attached
+and what it imports like tidygeocoder etc.}
 \usage{
 latlon_from_address(address, xy = FALSE, pt = FALSE, aoimap = FALSE, ...)
 }
@@ -23,11 +24,20 @@ returns tibble table of x,y or lat,lon values or geometries.
 see helpf for AOI pkg
 }
 \description{
-geocode, but only if AOI package is already installed and loaded and attached
+geocode, but only if AOI package is installed and attached
+and what it imports like tidygeocoder etc.
 }
 \examples{
   # only works if AOI package installed already and attached too
-  # x <- geocode(c("1200 Pennsylvania Ave, NW Washington DC", "Research Triangle Park"))
+  # #test_addresses2b <- c("1200 Pennsylvania Ave, NW Washington DC", "Research Triangle Park")
+  # #x <- geocode(test_addresses2b)
   # out <- ejamit(x, radius = 3)
+  # fname = system.file("testdata/address/street_address_9.xlsx", package="EJAM")
+
+#x1 <- EJAMejscreenapi::read_csv_or_xl(fname)
+#x2 <- latlon_any_format(fname)
+#x3 <- latlon_from_anything(fname)
+#names(x1)
+#names(x2)
 
 }

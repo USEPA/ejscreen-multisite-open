@@ -370,6 +370,11 @@ map_shapes_mapview <- function(shapes, col.regions = "green", map.types = "OpenS
 
 #' Get boundaries of US Counties via API, to map them
 #'
+#' @details Used [sf::read_sf()], which is an alias for [sf::st_read()]
+#'   but with some modified default arguments.
+#'   read_sf is quiet by default/ does not print info about data source, and
+#'   read_sf returns an sf-tibble rather than an sf-data.frame
+#'
 #' @param countyfips FIPS codes as 5-character strings (or numbers) in a vector
 #'   as from fips_counties_from_state_abbrev("DE")
 #' @param outFields can be "*" for all, or can be
@@ -377,7 +382,7 @@ map_shapes_mapview <- function(shapes, col.regions = "green", map.types = "OpenS
 #' @param myservice URL of feature service to get shapes from.
 #'   Only default was tested
 #'
-#' @return spatial object via sf::read_sf()
+#' @return spatial object via [sf::st_read()]
 #'
 #' @export
 #'
@@ -412,7 +417,7 @@ shapes_counties_from_countyfips <- function(countyfips = '10001', outFields = ""
     returnGeometry = "true",
     f = "geojson")
   request <- httr2::url_build(myurl)
-  mymapdata <- sf::read_sf(request)
+  mymapdata <- sf::st_read(request) # st_read returns data.frame, read_sf returns tibble
   return(mymapdata)
 }
 ########################### # ########################### # ########################### # ########################### #
@@ -432,7 +437,7 @@ shapes_counties_from_countyfips <- function(countyfips = '10001', outFields = ""
 #'
 #'   for example provides EJScreen indicator values, NPL_CNT, TSDF_CNT, EXCEED_COUNT_90, etc.
 #'
-#' @return spatial object via sf::read_sf()
+#' @return spatial object via [sf::st_read()] # sf-data.frame, not sf-tibble like [sf::read_sf()]
 #'
 #' @export
 #'
@@ -471,7 +476,7 @@ shapes_blockgroups_from_bgfips <- function(bgfips = '010890029222', outFields = 
     returnGeometry = "true",
     f = "geojson")
   request <- httr2::url_build(myurl)
-  mymapdata <- sf::read_sf(request)
+  mymapdata <- sf::st_read(request) # data.frame not tibble
   return(mymapdata)
 }
 ########################### # ########################### # ########################### # ########################### #
