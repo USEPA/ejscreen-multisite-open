@@ -4,13 +4,7 @@
 \alias{generate_ej_supp_header}
 \title{Build header for EJ supp indexes in community report}
 \usage{
-generate_ej_supp_header(header_text = "SUPPLEMENTAL INDEXES")
-}
-\arguments{
-\item{header_text}{actual text}
-}
-\value{
-text string that is a fragment of HTML
+generate_ej_supp_header()
 }
 \description{
 Build header for EJ supp indexes in community report
