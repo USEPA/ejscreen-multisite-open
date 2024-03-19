@@ -73,7 +73,7 @@ get_blockpoints_in_shape <- function(polys, addedbuffermiles=0, blocksnearby=NUL
   #   f=pjson
   ############################################################################################################ #
   if (!("ejam_uniq_id" %in% names(polys))) {
-    polys$ejam_uniq_id <- 1:NROW(polys) # added by functions like shapefile_from_folder() but not here if user directly used read_sf or sf_read
+    polys$ejam_uniq_id <- 1:NROW(polys) # added by functions like shapefile_from_folder() but not here if user directly used read_sf or st_read
   }
 
   if (is.function(updateProgress)) {

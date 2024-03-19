@@ -27,7 +27,7 @@ EJScreen_2_21_US_Percentiles_Block_Groups/FeatureServer/0/query"
 for example provides EJScreen indicator values, NPL_CNT, TSDF_CNT, EXCEED_COUNT_90, etc.}
 }
 \value{
-spatial object via sf::read_sf()
+spatial object via \code{\link[sf:st_read]{sf::st_read()}} # sf-data.frame, not sf-tibble like \code{\link[sf:st_read]{sf::read_sf()}}
 }
 \description{
 Get boundaries of blockgroups, via API, to map them

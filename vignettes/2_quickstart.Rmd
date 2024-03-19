@@ -55,9 +55,9 @@ indexblocks()
 
 ```
 
-# Intro to EJAM Analysis in R
+# A Brief Intro to Using EJAM in RStudio
 
-After EJAM has been installed, here's how you can run an EJAM analysis and view results right away:
+After EJAM has been installed (and can access the datasets), here's how you can run an EJAM analysis and view results right away:
 
 ## Load EJAM
 
@@ -65,7 +65,7 @@ After EJAM has been installed, here's how you can run an EJAM analysis and view 
 library(EJAM)
 ```
 
-## Analyze a List of Places: ejamit()
+## Analyze Places with `ejamit()`
 
 If you already have a spreadsheet with columns called lat and lon, you can just do this and EJAM will prompt you to navigate to and select the file and set the radius (from RStudio):
 
@@ -81,7 +81,7 @@ out <- ejamit(testpoints_100, radius = 3,
             silentinteractive = F, include_ejindexes = T)
 ```
 
-## Map of Results: mapfastej()
+## Map with `mapfastej()`
 
 This creates an interactive map. Click a point on the map to see a popup with details about people near that point.
 
@@ -91,7 +91,7 @@ out <- testoutput_ejamit_100pts_1miles
 mapfastej(out$results_bysite)
 ```
 
-## Report: ejam2report()
+## Report via `ejam2report()`
 
 ```{r eval=FALSE, include=FALSE}
 # we should add HTML output in vignette, below, for ejam2report() example
@@ -103,12 +103,11 @@ out <- testoutput_ejamit_100pts_1miles
 ejam2report(out)
 ```
 
-![Summary table of environmental and demographic indicators as raw value, average and percentile (in State and in US overall)](images/image-report_top_example.png)
+![Summary table of environmental and demographic indicators as raw value, average and percentile (in State and in US overall)](images/image-report_top_example.png){width="100%"}
 
-![Summary table of EJ Indexes, race-ethnicity subgroups, gender, and language indicators](images/image-report_EJ_table_example.png)
-![US map showing analyzed points](images/image-map_example.png)
+![Summary table of EJ Indexes, race-ethnicity subgroups, gender, and language indicators](images/image-report_EJ_table_example.png){width="100%"} ![US map showing analyzed points](images/image-map_example.png){width="100%"}
 
-![Barplot comparing demographic indicators as ratios to US average](images/image-barplot_example.png)
+![Barplot comparing demographic indicators as ratios to US average](images/image-barplot_example.png){width="100%"}
 
 ## Barplot
 
@@ -117,22 +116,28 @@ ejam2report(out)
 ```
 
 ```{r plot_barplot_ratios, echo=FALSE}
-## Plot of demographics is default
+## Demographics by default
+
 out <- testoutput_ejamit_100pts_1miles
 plot_barplot_ratios(unlist(testoutput_ejamit_1000pts_1miles$results_overall[ , c(..names_d_ratio_to_avg , ..names_d_subgroups_ratio_to_avg) ]))
+
+## Environmental indicators
+
+plot_barplot_ratios(unlist(testoutput_ejamit_1000pts_1miles$results_overall[ , c(..names_d_ratio_to_avg , ..names_d_subgroups_ratio_to_avg) ]))
+
 ## Forthcoming version syntax is simpler! 
 ## it will accept ejamit() output directly, as its input.
 ```
 
-## Spreadsheet: ejam2excel()
+## Spreadsheet from `ejam2excel()`
 
-```{r ejam2excel, eval=FALSE, message=FALSE, warning=FALSE}
+```{r ejam2excel, eval=FALSE, fig.width=5, message=FALSE, warning=FALSE}
 out <- testoutput_ejamit_100pts_1miles
 
 ejam2excel(out, launchexcel = T, save_now = F)
 ```
 
-![Excel output showing 1 row per site and 1 column per indicator such as total population nearby](images/image-xlsx.png)
+![Excel output showing 1 row per site and 1 column per indicator such as total population nearby](images/image-xlsx.png){width="100%"}
 
 ------------------------------------------------------------------------
 
@@ -302,7 +307,7 @@ ejam2excel(ejamit(testpoints_10, radius = 1), save_now = T)
 
 # Documentation of Functions and Data
 
--   See the [README on GitHub](https://github.com/USEPA/EJAM/tree/gh-pages?tab=readme-ov-file#readme)
+-   See the [README on GitHub](https://github.com/USEPA/EJAM/tree/main?tab=readme-ov-file#readme)
 
 ```{r helpEJAM, eval = FALSE, include= FALSE}
 ?EJAM
