@@ -8,15 +8,17 @@
 This is a named vector of EPA programs that lists the programs and has names with programs and program counts. Used by EJAM shiny app for dropdown menu.
 }
 \details{
-For a table sorted by how many facilities from FRS are listed for each program:
+\subsection{For a table sorted by how many facilities from FRS are listed for each program:}{
 
 \code{epa_programs_counts <- frs_by_programid[, .N, by="program"][order(N), ]}
 }
-\section{Top 25 Federal ones (by trying to exclude State databases from the list)}{
+
+\subsection{Top 25 Federal ones (by trying to exclude State databases from the list)}{
+
 \code{epa_programs_counts$fed = !grepl("^[A-Z]{2}[-]", as.vector(epa_programs_counts$program),1,3)}
 
 \code{epa_programs_counts[fed == TRUE, ][order(-N), ][1:25, ]}
 
-@seealso \link{frs_by_programid}
+Also see \link{frs_by_programid}
 }
-
+}
