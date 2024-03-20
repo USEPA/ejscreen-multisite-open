@@ -1,9 +1,53 @@
 
+
+
 #' Make ridgeline plot of ratios of demographic score to its average
-#' 
+#'
+#' @param out like from ejamit()
+#' @param varnames vector of colnames in out$results_bysite, the ratio variables
+#' @examples
+#'  out <- testoutput_ejamit_1000pts_1miles
+#'  plot_ridgeline_ratios_ez(out)
+#'
+#' @export
+#'
+plot_ridgeline_ratios_ez <- function(out, varnames = c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg), maxratio = 5) {
+
+  ratio.to.us.d.bysite <- out$results_bysite[, varnames, with = FALSE]
+
+  # cap the ratio, for better plot
+  x <- as.matrix(ratio.to.us.d.bysite)
+  x[x > maxratio] <- maxratio
+  x <- data.table::data.table(x)
+
+  # ratio.to.us.d.bysite <- out$results_bysite[ ,  c(
+  #   ..names_d_ratio_to_avg,
+  #   ..names_d_subgroups_ratio_to_avg
+  # )]
+  # x <- ratio.to.us.d.bysite
+
+  plot_ridgeline_ratios(x)
+}
+############################################################################################# #
+
+
+#' Make ridgeline plot of ratios of demographic score to its average
+#'
 #' @param ratio.to.us.d.overall named list of a few ratios to plot (data.frame)
 #' @param names2plot_friendly names to use for plot - should be same length as named list ratio.to.us.d.overall
-#' 
+#' @examples
+#'  out <- testoutput_ejamit_1000pts_1miles
+#'  ratio.to.us.d.bysite <- out$results_bysite[ ,  c(
+#'    ..names_d_ratio_to_avg, ..names_d_subgroups_ratio_to_avg
+#'    )]
+#'  # plot_ridgeline_ratios(ratio.to.us.d.bysite)
+#'  # cap the ratio, for better plot
+#'  x <- as.matrix(ratio.to.us.d.bysite)
+#'  x[x > 5] <- 5
+#'  plot_ridgeline_ratios(data.table::data.table(x))
+#'
+#' @export
+#'
 plot_ridgeline_ratios <- function(ratio.to.us.d.bysite, names2plot_friendly = NULL) {
   # if (is.null(dim(ratio.to.us.d.bysite))) {
   #   # seems like only 1 variable as vector ?
@@ -14,17 +58,16 @@ plot_ridgeline_ratios <- function(ratio.to.us.d.bysite, names2plot_friendly = NU
     supershortnames <- gsub(' \\(.*', '', gsub("People of Color","POC", names2plot_friendly))
     names(ratio.to.us.d.bysite) <- supershortnames
   }
-  
+
   ## assign column names (could use left_join like elsewhere)
   # names(ratio.to.us.d.bysite) <-  c(
-  #   names_d_friendly, 
+  #   names_d_friendly,
   #   names_d_subgroups_friendly
   # ) # long_names_d$var_names[match( names_d_fixed, long_names_d$vars)] #names_d_fixed and long_names_d no longer exist. use names_d_friendly, etc.
-  
-  
-## pivot data from wide to long - now one row per indicator 
-ratio.to.us.d.bysite <- ratio.to.us.d.bysite %>% 
-  tidyr::pivot_longer(cols = dplyr::everything(), names_to = 'indicator') %>% 
+
+## pivot data from wide to long - now one row per indicator
+ratio.to.us.d.bysite <- ratio.to.us.d.bysite %>%
+  tidyr::pivot_longer(cols = dplyr::everything(), names_to = 'indicator') %>%
   ## replace Infs with NAs - these happen when indicator at a site is equal to zero
   dplyr::mutate(value = dplyr::na_if(value, Inf)) #%>%
 # NOTE NOW ratio.to.us.d.bysite IS A tibble, not data.frame, and is in LONG format now. !!!
@@ -40,7 +83,6 @@ ggplot(ratio.to.us.d.bysite, aes(x = `value`, y = `indicator`, fill = ..x..)) +
     panel.spacing = unit(0.1, "lines"),
     strip.text.x = element_text(size = 8)
   )
-
 }
 
 # https://r-graph-gallery.com/294-basic-ridgeline-plot.html#color

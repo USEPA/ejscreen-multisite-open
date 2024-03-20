@@ -32,6 +32,35 @@ ejamit(
   called_by_ejamit = TRUE,
   testing = FALSE
 )
+
+ejamit(
+  sitepoints,
+  radius = 3,
+  maxradius = 31.07,
+  avoidorphans = FALSE,
+  quadtree = NULL,
+  fips = NULL,
+  shapefile_folder = NULL,
+  countcols = NULL,
+  popmeancols = NULL,
+  calculatedcols = NULL,
+  subgroups_type = "nh",
+  include_ejindexes = FALSE,
+  calculate_ratios = TRUE,
+  extra_demog = TRUE,
+  need_proximityscore = FALSE,
+  infer_sitepoints = FALSE,
+  need_blockwt = TRUE,
+  threshold1 = 90,
+  updateProgress = NULL,
+  updateProgress_getblocks = NULL,
+  in_shiny = FALSE,
+  quiet = TRUE,
+  parallel = FALSE,
+  silentinteractive = FALSE,
+  called_by_ejamit = TRUE,
+  testing = FALSE
+)
 }
 \arguments{
 \item{sitepoints}{data.table with columns lat, lon giving point locations of sites or facilities around which are circular buffers}
@@ -116,8 +145,14 @@ passed to \code{\link[=doaggregate]{doaggregate()}} also. app server sets this t
 }
 \value{
 A list of tables of results
+
+A list of tables of results
 }
 \description{
+This is the main function in EJAM that runs the analysis.
+It does essentially what the web app does, to analyze/summarize near a set of points,
+or in a set of polygons from a shapefile, or in a list of Census Units like Counties.
+
 This is the main function in EJAM that runs the analysis.
 It does essentially what the web app does, to analyze/summarize near a set of points,
 or in a set of polygons from a shapefile, or in a list of Census Units like Counties.
@@ -133,10 +168,14 @@ or in a set of polygons from a shapefile, or in a list of Census Units like Coun
 
   # Specify facilities or sites as points for test data,
   # use 1000 test facility points from the R package
-  testsites <- testpoints_1000_dt
+  testsites <- testpoints_1000
   # use facility points in an excel or csv file
-  testsites <- latlon_from_anything(
-   "./inst/testdata/testpoints_207_sites_with_signif_violations_NAICS_326_ECHO.csv")
+   testsites <- latlon_from_anything(
+     system.file(paste0("testdata/latlon/",
+      "testpoints_207_sites_with_signif_violations_NAICS_326_ECHO.csv"),
+    package = "EJAM")
+    )
+   # head(testsites)
   # use facility points from a random sample of EPA-regulated facilities
   testsites <- testpoints_n(1e3)
 
@@ -153,22 +192,86 @@ or in a set of polygons from a shapefile, or in a list of Census Units like Coun
   round(t(out$results_overall), 3.1)
 
   # View plots
-  # plot_distance_avg_by_group(out)
-  # distance_by_group_plot(out)
+   plot_distance_by_group(results_bybg_people = out$results_bybg_people)
+   distance_by_group(out$results_bybg_people)
 
   # View maps
   mapfast(out$results_bysite, radius = 3.1)
 
   # view results at a single site
+  mapfast(out$results_bysite, radius = 3.1)
+  # all the raw numbers at one site
   t(out$results_bysite[1, ])
-  t(out$results_bysite[out$results_bysite$ejam_uniq_id == 2, ])
-
 
   # if doing just 1st step of ejamit()
   #  get distance between each site and every nearby Census block
-  s2b <- testdata_sites2blocks
-  s2b <- getblocksnearby(testsites, radius = radius)
-  s2b <- getblocksnearbyviaQuadTree(testsites, radius = radius)
+
+  s2b <- testoutput_getblocksnearby_100pts_1miles
+  getblocks_diagnostics(s2b)
+
+  testsites <- testpoints_10[2,]
+  s2b <- getblocksnearby(testsites, radius = 3.1)
+  getblocks_diagnostics(s2b)
+  plotblocksnearby(s2b)
+
+  # if doing just 2d step of ejamit()
+  #  get summaries of all indicators based on table of distances
+  out <- doaggregate(s2b, testsites) # this works now and is simpler
+
+}
+ # All in one step, using functions not shiny app:
+ out <- ejamit(testpoints_100_dt, 2)
+
+ \dontrun{
+ # Do not specify sitepoints and it will prompt you for a file,
+ # if in RStudio in interactive mode!
+ out <- ejamit(radius = 3)
+
+  # Specify facilities or sites as points for test data,
+  # use 1000 test facility points from the R package
+  testsites <- testpoints_1000
+  # use facility points in an excel or csv file
+   testsites <- latlon_from_anything(
+     system.file(paste0("testdata/latlon/",
+      "testpoints_207_sites_with_signif_violations_NAICS_326_ECHO.csv"),
+    package = "EJAM")
+    )
+   # head(testsites)
+  # use facility points from a random sample of EPA-regulated facilities
+  testsites <- testpoints_n(1e3)
+
+  # Specify max distance from sites to look at (residents within X miles of site point)
+  radius <- 3.1 # miles
+
+  # Get summaries of all indicators near a set of points
+  out <- ejamit(testsites, radius)
+  # out <- ejamit("myfile.xlsx", 3.1)
+
+  # out2 <- ejscreenit(testpoints_5)
+
+  # View results overall
+  round(t(out$results_overall), 3.1)
+
+  # View plots
+   plot_distance_by_group(results_bybg_people = out$results_bybg_people)
+   distance_by_group(out$results_bybg_people)
+
+  # View maps
+  mapfast(out$results_bysite, radius = 3.1)
+
+  # view results at a single site
+  mapfast(out$results_bysite, radius = 3.1)
+  # all the raw numbers at one site
+  t(out$results_bysite[1, ])
+
+  # if doing just 1st step of ejamit()
+  #  get distance between each site and every nearby Census block
+
+  s2b <- testoutput_getblocksnearby_100pts_1miles
+  getblocks_diagnostics(s2b)
+
+  testsites <- testpoints_10[2,]
+  s2b <- getblocksnearby(testsites, radius = 3.1)
   getblocks_diagnostics(s2b)
   plotblocksnearby(s2b)
 
@@ -179,5 +282,7 @@ or in a set of polygons from a shapefile, or in a list of Census Units like Coun
 }
 }
 \seealso{
+\code{\link[=getblocksnearby]{getblocksnearby()}} \code{\link[=doaggregate]{doaggregate()}}
+
 \code{\link[=getblocksnearby]{getblocksnearby()}} \code{\link[=doaggregate]{doaggregate()}}
 }
