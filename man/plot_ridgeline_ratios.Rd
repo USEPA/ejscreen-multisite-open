@@ -14,3 +14,15 @@ plot_ridgeline_ratios(ratio.to.us.d.bysite, names2plot_friendly = NULL)
 \description{
 Make ridgeline plot of ratios of demographic score to its average
 }
+\examples{
+ out <- testoutput_ejamit_1000pts_1miles
+ ratio.to.us.d.bysite <- out$results_bysite[ ,  c(
+   ..names_d_ratio_to_avg, ..names_d_subgroups_ratio_to_avg
+   )]
+ # plot_ridgeline_ratios(ratio.to.us.d.bysite)
+ # cap the ratio, for better plot
+ x <- as.matrix(ratio.to.us.d.bysite)
+ x[x > 5] <- 5
+ plot_ridgeline_ratios(data.table::data.table(x))
+
+}

@@ -3,7 +3,7 @@
 #' @details EJScreen assigns each indicator in each block group a percentile value via python script, using
 #' <https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.percentileofscore.html>
 #'
-#' \formatted{
+#' \preformatted{
 #'   The way the python function is used as of 2023 is that percentileofscore is 80% if
 #'   80% of all indicator values (statewide or nationwide, depending on the type being calculated)
 #'   are less than (NOT equal to) the indicator value

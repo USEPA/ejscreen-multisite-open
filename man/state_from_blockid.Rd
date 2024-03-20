@@ -16,7 +16,7 @@ vector of ST info like AK, CA, DE, etc.
 given vector of blockids, get state abbreviation of each
 }
 \examples{
-state_from_blockid(c(8174952, blockpoints$blockid[5:6]))
+EJAM:::state_from_blockid(c(8174952, blockpoints$blockid[5:6]))
 
 }
 \keyword{internal}

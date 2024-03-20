@@ -42,49 +42,49 @@ Utility to create lookup table of percentiles 0 to 100 and mean for each indicat
 EJScreen assigns each indicator in each block group a percentile value via python script, using
 \url{https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.percentileofscore.html}
 
-\formatted{
-The way the python function is used as of 2023 is that percentileofscore is 80\% if
-80\% of all indicator values (statewide or nationwide, depending on the type being calculated)
-are less than (NOT equal to) the indicator value
-in the specified block group (since kind="strict").
-The percentile recorded in the EJScreen dataset is the floor of that,
-meaning if the 81.9\% of values are less than x, the percentile is reported as 81.
-The EJScreen python script used to create percentile lookup tables is in a file
-called cal_statepctile_0222.py and the key lines of code and functions it uses are
+\preformatted{
+  The way the python function is used as of 2023 is that percentileofscore is 80% if
+  80% of all indicator values (statewide or nationwide, depending on the type being calculated)
+  are less than (NOT equal to) the indicator value
+  in the specified block group (since kind="strict").
+  The percentile recorded in the EJScreen dataset is the floor of that,
+  meaning if the 81.9% of values are less than x, the percentile is reported as 81.
+  The EJScreen python script used to create percentile lookup tables is in a file
+  called cal_statepctile_0222.py and the key lines of code and functions it uses are
 
-pctile = math.floor(stats.percentileofscore(barray, indicatorscore, kind="strict"))
+  pctile = math.floor(stats.percentileofscore(barray, indicatorscore, kind="strict"))
 
-binvalue = getBinvalue(pctile)
+  binvalue = getBinvalue(pctile)
 
-and
+  and
 
-def getBinvalue(pct):
+  def getBinvalue(pct):
 
 if pct is None:
-return 0
+  return 0
 else:
-if pct >= 95:
-return 11
+    if pct >= 95:
+    return 11
 elif pct >= 90 and pct < 95:
-return 10
+  return 10
 elif pct >= 80 and pct < 90:
-return 9
+  return 9
 elif pct >= 70 and pct < 80:
-return 8
+  return 8
 elif pct >= 60 and pct < 70:
-return 7
+  return 7
 elif pct >= 50 and pct < 60:
-return 6
+  return 6
 elif pct >= 40 and pct < 50:
-return 5
+  return 5
 elif pct >= 30 and pct < 40:
-return 4
+  return 4
 elif pct >= 20 and pct < 30:
-return 3
+  return 3
 elif pct >= 10 and pct < 20:
-return 2
+  return 2
 else:
-return 1
-}
+  return 1
+  }
 }
 \keyword{internal}
