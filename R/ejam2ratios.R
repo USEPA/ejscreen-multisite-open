@@ -87,6 +87,6 @@ stop()
 
 #' @export
 #'
-table_ratios_from_ejamit <- table_ratios_from_ejamit
+table_ratios_from_ejamit <- ejam2ratios
 
 ####################################################################### #
