@@ -450,73 +450,32 @@ ejamit <- function(sitepoints,
       )
     )
     ###################################### #
-    #  *** THE results_summarized$rows percentiles info needs debugging - numbers may be wrong
-    # cat("\nWhich Demog groups or Envt stressors are highest (relative to States overall): \n\n")
-    #
-    # if (subgroups_type == 'nh')    { subratvarnames <- names_d_subgroups_nh_ratio_to_state_avg}
-    # if (subgroups_type == 'alone') { subratvarnames <- names_d_subgroups_alone_ratio_to_state_avg}
-    # if (subgroups_type == 'both')  { subratvarnames <- c(names_d_subgroups_nh_ratio_to_state_avg, names_d_subgroups_alone_ratio_to_state_avg)}
-    #
-    # grps <- list(
-    #   names_d_ratio_to_state_avg,
-    #   subratvarnames, #names_d_subgroups_ratio_to_state_avg,   #   edited to flexibly use nh, alone, or both types
-    #   names_e_ratio_to_state_avg
-    # )
-    # for (somenames in grps) {
-    #   # somenames <- grep("ratio.to.state", names(out$results_summarized$rows), value = TRUE)
-    #   # cat("Score as Ratio to State Average:\n")
-    #   someinfo <- t(out$results_summarized$rows[ , somenames])[ , c(1,2,6)]         # disabled in ejam lite package ***
-    #   someinfo <- data.frame(someinfo)
-    #   rownames(someinfo) <- fixcolnames(somenames, 'rname', 'long')
-    #   colnames(someinfo) <- c("Avg resident overall", "at site with max ratio", "Avg site")
-    #   print(
-    #     round(someinfo[order(someinfo[,"Avg resident overall"], decreasing = TRUE), ], 1)
-    #   )
-    #   cat("\n\n")
-    # }
-    ###################################### #
-    # site counts and distance minima
-    # print(  round(tail(t(out$results_summarized$rows)[ ,1:7],7),1)  )
-    # cat("\n\n")
+
+    # x <- cat(rtips(out = out, radius = radius, topic = 'pop density', andcat = F))
+    ## show some actual results on pop density, not how to get them.
+    cat(
+      paste0("Population Density: \n\n"),
+      paste0("  ", popshare_p_lives_at_what_pct(out$results_bysite$pop, p = 0.50, astext = TRUE), "\n"),
+      paste0("  ", popshare_at_top_n(out$results_bysite$pop, c(1, 5, 10), astext = TRUE), "\n\n")
+    )
 
     ###################################### #
-    cat("Population Density:\n")
-    cat("  ", popshare_p_lives_at_what_pct(out$results_bysite$pop, p = 0.50, astext = TRUE), "\n")
-    cat("  ", popshare_at_top_n(out$results_bysite$pop, c(1, 5, 10), astext = TRUE), "\n\n")
-
-    ###################################### #
-
-    cat("For example, \n out <- ejamit(testpoints_1000, radius = 1) \n # or\n out <- testoutput_ejamit_1000pts_1miles \n\n")
-
-    cat("To see a histogram of population counts nearby: \n\n",
-        '     hist(out$results_bysite$pop/1000, 100,
-        xlab = "Residents nearby (in thousands)",
-        ylab = "Number of sites",
-        main =  "Population Counts within', radius, 'miles of Various Sites")',
-        "\n\n")
-
-    cat("To see cumulative distribution of population nearby:\n\n",
-        '     plot(ecdf(out$results_bysite$pop/1000),
-        ylab="Fraction of total population living any one or more of these sites",
-        xlab="# of residents (in thousands) near a site, showing one dot for each site",
-        main="A fraction of these sites are where most of the residents are located")',
-        "\n\n")
-
     # cat("To see barplots of average proximity by demog group:\n\n",
     #     '     plot_distance_mean_by_group(out$results_bybg_people)',
     #     "\n\n")
 
-    cat("To see bar or boxplots of ratios of %Demographics vs US averages:\n\n",
-        "     ?plot_barplot_ratios() in EJAM package # or \n",
-        "     ?boxplots_ratios() in EJAMejscreenapi package\n",
-        "     boxplots_ratios(ratios_to_avg(as.data.frame(out$results_bysite))$ratios_d)",
-        "\n\n")
+    # cat("To see bar or boxplots of ratios of %Demographics vs US averages:\n\n",
+    #     "     ?plot_barplot_ratios() in EJAM package # or \n",
+    #     "     ?boxplots_ratios() in EJAMejscreenapi package\n",
+    #     "     boxplots_ratios(ratios_to_avg(as.data.frame(out$results_bysite))$ratios_d)",
+    #     "\n\n")
+#
+#     cat("To see a map in RStudio: \n\n",
+#         "     mapfastej(out$results_bysite, radius = out$results_overall$radius.miles)",
+#         "\n\n")
 
-    cat("To see a map in RStudio: \n\n",
-        "     mapfast(out$results_bysite, radius = out$results_overall$radius.miles, column_names = 'ej')",
-        "\n\n")
+    # cat("To view or save as excel files, see ?table_xls_from_ejam e.g., table_xls_from_ejam(out, fname = 'out.xlsx')  \n\n")
 
-    cat("To view or save as excel files, see ?table_xls_from_ejam e.g., table_xls_from_ejam(out, fname = 'out.xlsx')  \n\n")
     cat('Output is a list with the following names:\n')
     print(EJAM:::structure.of.output.list(out) )
   }
