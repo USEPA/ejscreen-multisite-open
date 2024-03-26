@@ -272,6 +272,12 @@ ejamit <- function(sitepoints,
 
       if (!silentinteractive) {cat('Finding blocks nearby.\n')}
 
+      ## check for ejam_uniq_id column; warn and add if not present
+      if(!c('ejam_uniq_id') %in% names(sitepoints)){
+        warning('sitepoints did not contain a column named ejam_uniq_id, so one was added')
+        sitepoints$ejam_uniq_id <- seq.int(length.out = NROW(sitepoints))
+      }
+      
       mysites2blocks <- getblocksnearby(
         sitepoints = sitepoints,
         radius = radius,

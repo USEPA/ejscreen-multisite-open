@@ -1127,7 +1127,8 @@ results_bysite <- merge(results_bysite, results_bysite_minmax, by = "ejam_uniq_i
   results_overall$ST <- NA
   results_bysite[, statename :=  stateinfo$statename[match(ST, stateinfo$ST)]]
   results_overall$statename <- NA
-
+  ## add blank ejam_uniq_id column to results_overall (no longer tied to include_ejindexes)
+  results_overall$ejam_uniq_id <- NA
   #  ##################################################### #  ##################################################### #
 
   if (missing(radius)) {radius.miles <- round(max(sites2blocks$distance, na.rm = TRUE), 1)}
@@ -1270,7 +1271,7 @@ results_bysite <- merge(results_bysite, results_bysite_minmax, by = "ejam_uniq_i
     # add EJ index percentiles to results compilation (except for overall state percentile which is created as a weighted average of percentiles further below)
     # Do not provide the raw EJ scores, just the percentiles?
 
-    results_overall <- cbind(ejam_uniq_id = NA, results_overall, us.pctile.cols_overall ) # , state.pctile.cols_overall)
+    results_overall <- cbind( results_overall, us.pctile.cols_overall ) # , state.pctile.cols_overall)
     results_bysite  <- cbind(           results_bysite,  us.pctile.cols_bysite,  state.pctile.cols_bysite )
 
 
@@ -1668,22 +1669,22 @@ results_bysite <- merge(results_bysite, results_bysite_minmax, by = "ejam_uniq_i
   )
 
 
-  if (NROW(results$results_bysite) == 1) {
-    # If we analyzed only 1 place then overall is same as 1 site per row!
-    results$results_overall[ , `:=`(
-      `EJScreen Report` = results$results_bysite$`EJScreen Report`,   #  rep(NA,nrow(out$results_bysite)),
-      `EJScreen Map`    = results$results_bysite$`EJScreen Map`,    # rep(NA,nrow(out$results_bysite)),
-      # `ACS Report`      = out$results_bysite$,   #  rep(NA,nrow(out$results_bysite)),
-      `ECHO report`     = results$results_bysite$`ECHO report`     # rep(NA,nrow(out$results_bysite))
-    )]
-  } else {
-    results$results_overall[ , `:=`(
-      `EJScreen Report` = NA,   #  rep(NA,nrow(out$results_bysite)),
-      `EJScreen Map`    = NA,    # rep(NA,nrow(out$results_bysite)),
-      # `ACS Report`      = NA,   #  rep(NA,nrow(out$results_bysite)),
-      `ECHO report`     = NA     # rep(NA,nrow(out$results_bysite))
-    )]
-  }
+  # if (NROW(results$results_bysite) == 1) {
+  #   # If we analyzed only 1 place then overall is same as 1 site per row!
+  #   results$results_overall[ , `:=`(
+  #     `EJScreen Report` = results$results_bysite$`EJScreen Report`,   #  rep(NA,nrow(out$results_bysite)),
+  #     `EJScreen Map`    = results$results_bysite$`EJScreen Map`,    # rep(NA,nrow(out$results_bysite)),
+  #     # `ACS Report`      = out$results_bysite$,   #  rep(NA,nrow(out$results_bysite)),
+  #     `ECHO report`     = results$results_bysite$`ECHO report`     # rep(NA,nrow(out$results_bysite))
+  #   )]
+  # } else {
+  #   results$results_overall[ , `:=`(
+  #     `EJScreen Report` = NA,   #  rep(NA,nrow(out$results_bysite)),
+  #     `EJScreen Map`    = NA,    # rep(NA,nrow(out$results_bysite)),
+  #     # `ACS Report`      = NA,   #  rep(NA,nrow(out$results_bysite)),
+  #     `ECHO report`     = NA     # rep(NA,nrow(out$results_bysite))
+  #   )]
+  # }
   ########################### #
   # }) # finish system.time()
 
