@@ -153,7 +153,7 @@ TEST_SERVER <- function(input, output, session) {
   output$testinfo2 <- renderText(
     cat("x names:  ", paste0(names(x()), collapse = ", "), "\n")
   )
-  output$results <- DT::renderDataTable({x()}, 
+  output$results <- DT::renderDT({x()}, 
                                         options = list(
                                           selection = 'multiple',
                                           dom = 'rtip', # specify 4 DOM elements: 
