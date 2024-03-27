@@ -2187,7 +2187,6 @@ app_server <- function(input, output, session) {
     #clear shapes from map so buffers don't show twice
     leafletProxy(mapId = 'an_leaf_map', session) %>% clearShapes()
 
-browser()
     if (current_upload_method() == "SHP") {
       if (input$bt_rad_buff > 0) {
         shp_valid <- data_uploaded()[data_uploaded()$valid == T, ] # *** remove this if shapefile_clean() will do it
