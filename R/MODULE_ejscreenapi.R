@@ -42,7 +42,7 @@ if (testing_ejscreenapi_module) {
           h3("you could show them here"),
           ## redundant since module already shows it, but here as example of module returning a table.
           ##  module server function returns a table to overall server/app, which itself can then use/display that table.
-          # DT::dataTableOutput("results"),
+          # DT::DTOutput("results"),
           ## Demo of how you might send radius from outer app to module as starting value of module radius slider:
           # sliderInput("outerappradius", label = "Radius we could preset", min = 1, max = 10, step = 1, value = 1.2),
           br()
@@ -63,7 +63,7 @@ if (testing_ejscreenapi_module) {
     # output$testinfo_radius <- renderPrint(paste0("Radius is ", x()$radius.miles, " miles"))
     # output$testinfo2 <- renderText(cat("x names:  ", paste0(names(x()), collapse = ", "), "\n"))
 
-    output$results <- DT::renderDataTable({x()},
+    output$results <- DT::renderDT({x()},
       options = list(
         selection = 'multiple',
         dom = 'rtip', # specify 4 DOM elements:
@@ -226,7 +226,7 @@ mod_ejscreenapi_ui <- function(id,
                           ##                                           shiny::actionButton(ns('tabletips_button'), 'Tip on using this table'), ## tips on using table ### #
                           ## show table ##  ##
                           # #    show uploaded input table after an upload of points OR results once calculated    if that is most recent change
-                          #                                DT::DTOutput(ns('rendered_results_table')) # DT::dataTableOutput(ns('rendered_results_table'))
+                          #                                DT::DTOutput(ns('rendered_results_table'))
                           shiny::uiOutput(ns('table_ui')),
 
                           ## pick style for names for columns ##  ##
@@ -934,7 +934,7 @@ mod_ejscreenapi_server <- function(id,
       ############################################################## #
       # TRICKY SETTING OPTIONS FOR TABLE VIEW (filter per col, fixed header, etc.)
       #
-      # DT::renderDT aka DT::renderDataTable() is used here.
+      # DT::renderDT is used here.
       #   If instead use DT::datatable(), easier to set some options like filter,
       #   like this      DT::datatable(table_as_displayed, filter = 'top')
       #   but then DT::renderDT() ignores options set below!
@@ -950,7 +950,7 @@ mod_ejscreenapi_server <- function(id,
     ),
     # filter='top', orderCellsTop = TRUE),  # does not seem to work.
     # filter=list(position='top')           # does not seem to work.  is this how?
-    # server = TRUE, # should already be the default for DT::renderDataTable, and is better if table is large
+    # server = TRUE, # should already be the default for DT::renderDT, and is better if table is large
 
     escape = FALSE
     ) # *** CAUTION -- MAY NEED TO CHANGE THIS ***   end of output$rendered_results_table <- DT::renderDT
