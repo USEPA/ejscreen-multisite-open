@@ -88,7 +88,7 @@ if (testing_this_module) {
           h3("you could show them here"),
           ## redundant since module already shows it, but here as example of module returning a table.
           ##  module server function returns a table to overall server/app, which itself can then use/display that table.
-          # DT::dataTableOutput("results"),
+          # DT::DTOutput("results"),
           ## Demo of how you might send radius from outer app to module as starting value of module radius slider:
           # sliderInput("outerappradius", label = "Radius we could preset", min = 1, max = 10, step = 1, value = 1.2),
           br()
@@ -109,7 +109,7 @@ if (testing_this_module) {
     # output$testinfo_radius <- renderPrint(paste0("Radius is ", x()$radius.miles, " miles"))
     # output$testinfo2 <- renderText(cat("x names:  ", paste0(names(x()), collapse = ", "), "\n"))
 
-    output$results <- DT::renderDataTable({x()},
+    output$results <- DT::renderDT({x()},
                                           options = list(
                                             selection = 'multiple',
                                             dom = 'rtip', # specify 4 DOM elements:
