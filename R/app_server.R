@@ -133,9 +133,32 @@ app_server <- function(input, output, session) {
                {hideTab(inputId = 'all_tabs', target = 'Advanced Settings')})
 
   ## hide vs show (full) Written Report tab
-  if(default_hide_written_report){
+  if (default_hide_written_report) {
     hideTab(inputId = 'results_tabs', target = 'Written Report')
   }
+
+  ## advanced tab size cap on file uploads  ---------------------- #
+
+  max_mb_upload_react <- reactive({
+    x <- as.numeric((input$max_mb_upload))
+    if (is.null(x) || is.na(x) || length(x) == 0) {
+      x <- default_max_mb_upload
+      shiny::updateNumericInput(inputId = "max_mb_upload", value = x)
+    } else {
+      if (x > maxmax_mb_upload) {x <- maxmax_mb_upload}
+      if (x < minmax_mb_upload) {x <- minmax_mb_upload}
+      shiny::updateNumericInput(inputId = "max_mb_upload", value = x)
+    }
+    x
+  })
+  observe({
+    # Adjusts cap on file size user can upload, and resets file inputs in case
+    #   last attempt failed due to size, so you can retry with new cap.
+    options(shiny.maxRequestSize = max_mb_upload_react() * 1024^2)
+    ids_of_fileInput_lines <- c("ss_upload_latlon", "ss_upload_shp", "ss_upload_frs", "ss_upload_program","ss_upload_fips")
+    for (idx in ids_of_fileInput_lines) {shinyjs::reset(idx)}
+    # *** and also note   ns("pointsfile") and  ns("shapefile")  in  modules should be added and handled if those modules get used
+  })
 
   ## buttons to see help info  ---------------------- #
 
@@ -242,7 +265,7 @@ app_server <- function(input, output, session) {
 
   ## reactive: SHAPEFILES uploaded ####
 
-  num_valid_pts_uploaded <- reactiveValues('SHP'=0)
+  num_valid_pts_uploaded <- reactiveValues('SHP' = 0)
 
   data_up_shp <- reactive({
     ##
@@ -1364,7 +1387,7 @@ app_server <- function(input, output, session) {
       canmap <- TRUE
       max_pts <- input$max_shapes_map
 
-      if(num_valid_pts_uploaded[['SHP']] > max_pts){
+      if (num_valid_pts_uploaded[['SHP']] > max_pts) {
       #if (nrow(data_uploaded()) > max_pts) {
         warning(paste0('Too many uploaded polygons (> ', prettyNum(max_pts, big.mark = ','),') for map to show'))
         validate(paste0('Too many uploaded polygons (> ', prettyNum(max_pts, big.mark = ','),') for map to show'))
@@ -2164,7 +2187,6 @@ app_server <- function(input, output, session) {
     #clear shapes from map so buffers don't show twice
     leafletProxy(mapId = 'an_leaf_map', session) %>% clearShapes()
 
-
     if (current_upload_method() == "SHP") {
       if (input$bt_rad_buff > 0) {
         shp_valid <- data_uploaded()[data_uploaded()$valid == T, ] # *** remove this if shapefile_clean() will do it
@@ -2580,7 +2602,7 @@ app_server <- function(input, output, session) {
     #          ejam_uniq_id = as.character(ejam_uniq_id)) %>%
     #   dplyr::select(dplyr::all_of(cols_to_select), ST)
 
-    # use data_summarized()
+    # use data_summarized() that is from EJAMbatch.summarizer::batch.summarize()
     dt_final <- dt %>%
       dplyr::bind_cols(data_summarized()$cols) %>%
       ## hide summary rows from table
