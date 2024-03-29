@@ -133,10 +133,14 @@ or in a set of polygons from a shapefile, or in a list of Census Units like Coun
 
   # Specify facilities or sites as points for test data,
   # use 1000 test facility points from the R package
-  testsites <- testpoints_1000_dt
+  testsites <- testpoints_1000
   # use facility points in an excel or csv file
-  testsites <- latlon_from_anything(
-   "./inst/testdata/testpoints_207_sites_with_signif_violations_NAICS_326_ECHO.csv")
+   testsites <- latlon_from_anything(
+     system.file(paste0("testdata/latlon/",
+      "testpoints_207_sites_with_signif_violations_NAICS_326_ECHO.csv"),
+    package = "EJAM")
+    )
+   # head(testsites)
   # use facility points from a random sample of EPA-regulated facilities
   testsites <- testpoints_n(1e3)
 
@@ -153,22 +157,25 @@ or in a set of polygons from a shapefile, or in a list of Census Units like Coun
   round(t(out$results_overall), 3.1)
 
   # View plots
-  # plot_distance_avg_by_group(out)
-  # distance_by_group_plot(out)
+   plot_distance_by_group(results_bybg_people = out$results_bybg_people)
+   distance_by_group(out$results_bybg_people)
 
   # View maps
   mapfast(out$results_bysite, radius = 3.1)
 
   # view results at a single site
+  mapfast(out$results_bysite, radius = 3.1)
+  # all the raw numbers at one site
   t(out$results_bysite[1, ])
-  t(out$results_bysite[out$results_bysite$ejam_uniq_id == 2, ])
-
 
   # if doing just 1st step of ejamit()
   #  get distance between each site and every nearby Census block
-  s2b <- testdata_sites2blocks
-  s2b <- getblocksnearby(testsites, radius = radius)
-  s2b <- getblocksnearbyviaQuadTree(testsites, radius = radius)
+
+  s2b <- testoutput_getblocksnearby_100pts_1miles
+  getblocks_diagnostics(s2b)
+
+  testsites <- testpoints_10[2,]
+  s2b <- getblocksnearby(testsites, radius = 3.1)
   getblocks_diagnostics(s2b)
   plotblocksnearby(s2b)
 

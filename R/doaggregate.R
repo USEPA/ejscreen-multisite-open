@@ -1,74 +1,74 @@
 #' Summarize environmental and demographic indicators at each location and overall
 #'
 #' @description getblocksnearby() and doaggregate() are the two key functions that run ejamit().
-#'   `doaggregate()` takes a set of sites like facilities and the 
-#'   set of blocks that are near each, 
+#'   `doaggregate()` takes a set of sites like facilities and the
+#'   set of blocks that are near each,
 #'   combines those with indicator scores for block groups, and
 #'   aggregates the numbes within each place and across all overall.
 #'
 #' @details
 #'   For all examples, see [getblocksnearbyviaQuadTree()]
-#' 
-#'   `doaggregate()` is the code run after [getblocksnearby()] (or a related function for 
+#'
+#'   `doaggregate()` is the code run after [getblocksnearby()] (or a related function for
 #'   polygons or FIPS Census units) has identified which blocks are nearby.
-#'   
+#'
 #'   `doaggregate()` aggregates the blockgroup scores to create a summary of each indicator,
 #'    as a raw score and US percentile and State percentile,
 #'    in each buffer (i.e., near each facility):
-#'    
+#'
 #'    - **SUMS OF COUNTS**: for population count, or number of households or Hispanics, etc.
-#'      
+#'
 #'    - **POPULATION-WEIGHTED MEANS**: for  Environmental indicators, but also any percentage indicator
 #'      for which the universe (denominator) is population count (rather than households, persons age 25up, etc.)
-#'      
-#'        ***EJ Indexes**:* The way EJScreen 
+#'
+#'        ***EJ Indexes**:* The way EJScreen
 #'          does this is apparently finding the pop wtd mean of EJ Index raw scores,
 #'          not the EJ Index formula applied to the summarized demographic score and aggregated envt number.
-#'          
-#'    - **CALCULATED BY FORMULA**: Buffer or overall score calculated via formulas using aggregated counts, 
-#'          such as percent low income = sum of counts low income / sum of counts of denominator, 
+#'
+#'    - **CALCULATED BY FORMULA**: Buffer or overall score calculated via formulas using aggregated counts,
+#'          such as percent low income = sum of counts low income / sum of counts of denominator,
 #'          which in this case is the count of those for whom the poverty ratio is known. Assuming no rounding errors,
 #'          this method should give the same result as using a weighted mean of percentages, where the weights are
 #'          the correct denominator like count of those for whom the poverty ratio is known.
-#'          
+#'
 #'    - **LOOKED UP**: Aggregated scores are converted into percentile terms via lookup tables (US or State version).
 #'
 #'   This function requires the following datasets:
-#'   
+#'
 #'    - blockwts: data.table with these columns: blockid , bgid, blockwt
-#'    
+#'
 #'    - quaddata data.table used to create localtree, a quad tree index of block points
 #'      (and localtree that is created when package is loaded)
-#'    
+#'
 #'    - blockgroupstats - A data.table (such as EJScreen demographic and environmental data by blockgroup?)
 #'
-#' @param sites2blocks data.table of distances in miles between all sites (facilities) and 
+#' @param sites2blocks data.table of distances in miles between all sites (facilities) and
 #'   nearby Census block internal points, with columns ejam_uniq_id, blockid, distance,
-#'   created by getblocksnearby  function. 
+#'   created by getblocksnearby  function.
 #'   See [sites2blocks_example10pts_1miles] aka [testoutput_getblocksnearby_10pts_1miles] dataset in package, as input to this function
-#' @param sites2states_or_latlon data.table or just data.frame, with columns ejam_uniq_id (each unique one in sites2blocks) and ST (2-character State abbreviation) or lat and lon 
-#' @param radius Optional radius in miles to limit analysis to. By default this function uses 
+#' @param sites2states_or_latlon data.table or just data.frame, with columns ejam_uniq_id (each unique one in sites2blocks) and ST (2-character State abbreviation) or lat and lon
+#' @param radius Optional radius in miles to limit analysis to. By default this function uses
 #'   all the distances that were provided in the output of getblocksnearby(),
 #'   and reports radius estimated as rounded max of distance values in inputs to doaggregate.
-#'   But there may be cases where you want to run getblocksnearby() once for 10 miles, say, 
-#'   on a very long list of sites (1,000 or more, say), and then get summary results for 
+#'   But there may be cases where you want to run getblocksnearby() once for 10 miles, say,
+#'   on a very long list of sites (1,000 or more, say), and then get summary results for
 #'   1, 3, 5, and 10 miles without having to redo the getblocksnearby() part for each radius.
 #'   This lets you just run getblocksnearby() once for the largest radius, and then query those
-#'   results to get doaggregate() to summarize at any distance that is less than or equal to the 
-#'   original radius analyzed by getblocksnearby().    
+#'   results to get doaggregate() to summarize at any distance that is less than or equal to the
+#'   original radius analyzed by getblocksnearby().
 #' @param countcols character vector of names of variables  to aggregate within a buffer
-#'   using a sum of counts, like, for example, the number of people for whom a 
+#'   using a sum of counts, like, for example, the number of people for whom a
 #'   poverty ratio is known, the count of which is the exact denominator needed
-#'   to correctly calculate percent low income. 
+#'   to correctly calculate percent low income.
 #' @param popmeancols character vector of names of variables to aggregate within a buffer
 #'   using population weighted mean.
 #' @param calculatedcols character vector of names of variables to aggregate within a buffer
 #'   using formulas that have to be specified.
-#' @param subgroups_type Optional (uses default). Set this to 
-#'   "nh" for non-hispanic race subgroups as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh; 
-#'   "alone" for EJScreen v2.2 style race subgroups as in    White Alone, wa and others in names_d_subgroups_alone; 
+#' @param subgroups_type Optional (uses default). Set this to
+#'   "nh" for non-hispanic race subgroups as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh;
+#'   "alone" for EJScreen v2.2 style race subgroups as in    White Alone, wa and others in names_d_subgroups_alone;
 #'   "both" for both versions. Possibly another option is "original" or "default" but work in progress.
-#' @param include_ejindexes whether to calculate EJ Indexes and return that information 
+#' @param include_ejindexes whether to calculate EJ Indexes and return that information
 #' @param calculate_ratios whether to calculate and return ratio of each indicator to its US and State overall mean
 #' @param extra_demog if should include more indicators from EJScreen v2.2 report,
 #'    on language, more age groups, gender, percent with disability, poverty, etc.
@@ -78,45 +78,45 @@
 #'   be to use reported distance of each of 3 of the furthest block points and triangulate
 #' @param called_by_ejamit Set to TRUE by ejamit() to suppress some outputs even if ejamit(silentinteractive=F)
 #' @param updateProgress progress bar function used for shiny app
-#' @param silentinteractive Set to TRUE to see results in RStudio console. 
+#' @param silentinteractive Set to TRUE to see results in RStudio console.
 #'   Set to FALSE to prevent long output showing in console in RStudio when in interactive mode
 #' @param testing used while testing this function
 #' @param ... more to pass to another function? Not used currently.
-#' @seealso [ejamit]   [getblocksnearby()]  
-#' 
-#' @return list with named elements: 
-#' 
-#'   * **`results_overall`**   one row data.table, like results_by_site, but just one row with 
-#'     aggregated results for all unique residents. 
-#' 
-#'   * **`results_by_site`**   results for individual sites (buffers) - a data.table of results, 
+#' @seealso [ejamit]   [getblocksnearby()]
+#'
+#' @return list with named elements:
+#'
+#'   * **`results_overall`**   one row data.table, like results_by_site, but just one row with
+#'     aggregated results for all unique residents.
+#'
+#'   * **`results_by_site`**   results for individual sites (buffers) - a data.table of results,
 #'     one row per ejam_uniq_id, one column per indicator
-#' 
-#'   * **results_bybg_people**  results for each block group, to allow for showing the distribution of each 
+#'
+#'   * **results_bybg_people**  results for each block group, to allow for showing the distribution of each
 #'      indicator across everyone within each demographic group.
-#'      
+#'
 #'   * **longnames**  descriptive long names for the indicators in the above outputs
-#'   
-#'   * **count_of_blocks_near_multiple_sites**  additional detail 
-#' 
+#'
+#'   * **count_of_blocks_near_multiple_sites**  additional detail
+#'
 #' @import data.table
-#' 
+#'
 #' @export
-#' 
-doaggregate <- function(sites2blocks, sites2states_or_latlon=NA, 
-                        radius=NULL, 
-                        countcols=NULL, popmeancols=NULL, calculatedcols=NULL, subgroups_type='nh', 
-                        include_ejindexes=FALSE, calculate_ratios = TRUE, 
-                        extra_demog=TRUE, need_proximityscore=FALSE, 
+#'
+doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
+                        radius=NULL,
+                        countcols=NULL, popmeancols=NULL, calculatedcols=NULL, subgroups_type='nh',
+                        include_ejindexes=FALSE, calculate_ratios = TRUE,
+                        extra_demog=TRUE, need_proximityscore=FALSE,
                         infer_sitepoints=FALSE,
-                        called_by_ejamit=FALSE, updateProgress = NULL, 
-                        silentinteractive=TRUE, testing=FALSE, 
+                        called_by_ejamit=FALSE, updateProgress = NULL,
+                        silentinteractive=TRUE, testing=FALSE,
                          ...) {
-  
-  ###################################################### # 
-  
+
+  ###################################################### #
+
   # ERROR CHECK/ VALIDATE INPUTS ####
-  
+
   if (include_ejindexes & !exists("bgej")) {
     dataload_from_pins('bgej') # load it on demand when needed
     # if failed to find it, give up
@@ -1127,7 +1127,8 @@ results_bysite <- merge(results_bysite, results_bysite_minmax, by = "ejam_uniq_i
   results_overall$ST <- NA
   results_bysite[, statename :=  stateinfo$statename[match(ST, stateinfo$ST)]]
   results_overall$statename <- NA
-
+  ## add blank ejam_uniq_id column to results_overall (no longer tied to include_ejindexes)
+  results_overall$ejam_uniq_id <- NA
   #  ##################################################### #  ##################################################### #
 
   if (missing(radius)) {radius.miles <- round(max(sites2blocks$distance, na.rm = TRUE), 1)}
@@ -1197,10 +1198,8 @@ results_bysite <- merge(results_bysite, results_bysite_minmax, by = "ejam_uniq_i
 
   ###################### # #
   if (include_ejindexes) {
-    warning("EJ Indexes NOT TESTED HERE YET.")
-    ####
 
-    # The 2023 new EJ index formula:
+    # The 2023/early 2024 EJ index formula:
     # 0) The buffer raw EJ Index is probably just the pop wtd mean of the RAW scores of blockgroups in it, (but reported finally as pctile via lookup)
     #  NOT recalculated via formulas ... It would not make sense to calculate from formula.
     #  Note the POP WTD MEAN for EJ INDEXES WAS ALREADY CALCULATED earlier in doaggregate(), along with all OTHER POP WTD MEAN INDICATORS
@@ -1272,7 +1271,7 @@ results_bysite <- merge(results_bysite, results_bysite_minmax, by = "ejam_uniq_i
     # add EJ index percentiles to results compilation (except for overall state percentile which is created as a weighted average of percentiles further below)
     # Do not provide the raw EJ scores, just the percentiles?
 
-    results_overall <- cbind(ejam_uniq_id = NA, results_overall, us.pctile.cols_overall ) # , state.pctile.cols_overall)
+    results_overall <- cbind( results_overall, us.pctile.cols_overall ) # , state.pctile.cols_overall)
     results_bysite  <- cbind(           results_bysite,  us.pctile.cols_bysite,  state.pctile.cols_bysite )
 
 
@@ -1670,22 +1669,22 @@ results_bysite <- merge(results_bysite, results_bysite_minmax, by = "ejam_uniq_i
   )
 
 
-  if (NROW(results$results_bysite) == 1) {
-    # If we analyzed only 1 place then overall is same as 1 site per row!
-    results$results_overall[ , `:=`(
-      `EJScreen Report` = results$results_bysite$`EJScreen Report`,   #  rep(NA,nrow(out$results_bysite)),
-      `EJScreen Map`    = results$results_bysite$`EJScreen Map`,    # rep(NA,nrow(out$results_bysite)),
-      # `ACS Report`      = out$results_bysite$,   #  rep(NA,nrow(out$results_bysite)),
-      `ECHO report`     = results$results_bysite$`ECHO report`     # rep(NA,nrow(out$results_bysite))
-    )]
-  } else {
-    results$results_overall[ , `:=`(
-      `EJScreen Report` = NA,   #  rep(NA,nrow(out$results_bysite)),
-      `EJScreen Map`    = NA,    # rep(NA,nrow(out$results_bysite)),
-      # `ACS Report`      = NA,   #  rep(NA,nrow(out$results_bysite)),
-      `ECHO report`     = NA     # rep(NA,nrow(out$results_bysite))
-    )]
-  }
+  # if (NROW(results$results_bysite) == 1) {
+  #   # If we analyzed only 1 place then overall is same as 1 site per row!
+  #   results$results_overall[ , `:=`(
+  #     `EJScreen Report` = results$results_bysite$`EJScreen Report`,   #  rep(NA,nrow(out$results_bysite)),
+  #     `EJScreen Map`    = results$results_bysite$`EJScreen Map`,    # rep(NA,nrow(out$results_bysite)),
+  #     # `ACS Report`      = out$results_bysite$,   #  rep(NA,nrow(out$results_bysite)),
+  #     `ECHO report`     = results$results_bysite$`ECHO report`     # rep(NA,nrow(out$results_bysite))
+  #   )]
+  # } else {
+  #   results$results_overall[ , `:=`(
+  #     `EJScreen Report` = NA,   #  rep(NA,nrow(out$results_bysite)),
+  #     `EJScreen Map`    = NA,    # rep(NA,nrow(out$results_bysite)),
+  #     # `ACS Report`      = NA,   #  rep(NA,nrow(out$results_bysite)),
+  #     `ECHO report`     = NA     # rep(NA,nrow(out$results_bysite))
+  #   )]
+  # }
   ########################### #
   # }) # finish system.time()
 

@@ -62,9 +62,8 @@ in EJAM server for tab showing barplots in Detailed Results
 }
 }
 \examples{
- 
   plot_barplot_ratios(unlist(testoutput_ejamit_1000pts_1miles$results_overall[ , c(..names_d_ratio_to_avg , ..names_d_subgroups_ratio_to_avg) ]))
-  
+
 }
 \seealso{
 \code{\link[=table_xls_format]{table_xls_format()}} \link{plot_barplot_ratios}
