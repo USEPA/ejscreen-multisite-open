@@ -277,7 +277,7 @@ ejamit <- function(sitepoints,
         warning('sitepoints did not contain a column named ejam_uniq_id, so one was added')
         sitepoints$ejam_uniq_id <- seq.int(length.out = NROW(sitepoints))
       }
-      
+
       mysites2blocks <- getblocksnearby(
         sitepoints = sitepoints,
         radius = radius,
@@ -346,7 +346,7 @@ ejamit <- function(sitepoints,
   if ("REGISTRY_ID" %in% names(out$results_bysite)) {
     echolink = url_echo_facility_webpage(REGISTRY_ID, as_html = T)
   } else {
-    echolink = rep(NA, nrow(out$results_bysite))
+    echolink = rep(NA, NROW(out$results_bysite))
   }
 
   if (!is.null(fips)) {
