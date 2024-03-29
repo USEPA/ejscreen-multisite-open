@@ -1252,7 +1252,6 @@ app_server <- function(input, output, session) {
     } else {
       dt <- data_uploaded()
     }
-
     dt
   })
 
@@ -1552,16 +1551,16 @@ app_server <- function(input, output, session) {
     ## get blocks in FIPS   ####
 
     if (submitted_upload_method() == 'FIPS') {  # if FIPS, do everything in 1 step right here.
+
       d_upload <- data_uploaded()
       fips_valid <- sapply(d_upload, function(x) !all(is.na(fips_bg_from_anyfips(x))))
-      d_upload <- data.table(ejam_uniq_id = d_upload, valid = fips_valid)
+      d_upload <- data.table(ejam_uniq_id = d_upload, valid = fips_valid)  # NOTE ejam_uniq_id is FIPS not 1:N here
       #d_upload[, ejam_uniq_id := .I]
       #setcolorder(d_upload, 'ejam_uniq_id')
       d_upload$invalid_msg <- NA
       d_upload$invalid_msg[!d_upload$valid] <- 'bad FIPS code'
 
-
-      out <- ejamit(fips = data_uploaded(),
+      out <- ejamit(fips = data_uploaded(),              # unlike for SHP or latlon cases, this could include invalid FIPS!
                     radius = 999, # because FIPS analysis
                     maxradius = input$maxradius,
                     avoidorphans = input$avoidorphans,
@@ -1586,6 +1585,8 @@ app_server <- function(input, output, session) {
                     testing = input$testing
       )
 
+      ## note which FIPS dropped by ejamit() (i.e., in getting step or doagg step) as invalid,
+      ## and add those back into results as mostly empty rows (which non-FIPS cases do later)
       if (is.null(out)) {
         validate('No valid blockgroups found matching these FIPS codes.')
       } else {
@@ -1598,13 +1599,11 @@ app_server <- function(input, output, session) {
           "valid",
           "invalid_msg"
         )
-
         # put those up front as first columns
         data.table::setcolorder(out$results_bysite, neworder = c('ejam_uniq_id', newcolnames))
         data.table::setcolorder(out$results_overall, neworder = c('ejam_uniq_id'))
         #setcolorder(out$results_bysite, neworder = newcolnames)
         # move ejam_uniq_id to front of longnames vector
-
         out$longnames <- c('ejam_uniq_id', newcolnames, out$longnames[out$longnames != 'ejam_uniq_id'])
       }
 
@@ -1615,13 +1614,13 @@ app_server <- function(input, output, session) {
       ## get blocks in POLYGONS / SHAPEFILES ####
 
       if (submitted_upload_method() == "SHP") {
-        shp_valid <- data_uploaded()[data_uploaded()$valid == T, ] # *** remove this if shapefile_clean() will do it
+
+        shp_valid <- data_uploaded()[data_uploaded()$valid == T, ] # *** remove this if shapefile_clean() will do it?
 
         if (input$bt_rad_buff > 0) {
           #if (!silentinteractive) {
           cat('Adding buffer around each polygon.\n')
           #}
-
           shp <- shape_buffered_from_shapefile(
             shapefile = shp_valid,
             radius.miles =  input$bt_rad_buff
@@ -1641,9 +1640,16 @@ app_server <- function(input, output, session) {
           progress_getblocks_shp$set(value = value, message = message_main, detail = message_detail)
         }
 
-        sites2blocks <- (get_blockpoints_in_shape(shp, updateProgress = updateProgress_getblocks_shp))$pts
-        d_upload     <- sites2blocks
+        sites2blocks <- get_blockpoints_in_shape(
+          shp,                                              ## already removed invalid ones
+          updateProgress = updateProgress_getblocks_shp
+          )$pts
+        d_upload <- sites2blocks
 
+        ## note which places dropped by get_blockpoints_in_shape() as invalid? none?
+
+
+        ## close getblocks progress bar
         progress_getblocks_shp$close()
       }
       ################################################# #
@@ -1667,8 +1673,7 @@ app_server <- function(input, output, session) {
         }
 
         sites2blocks <- getblocksnearby(
-          ## remove any invalid latlons before running
-          sitepoints = d_upload,
+          sitepoints = d_upload,                         ## already removed invalid latlons from d_upload
           radius = input$bt_rad_buff,
           quadtree = localtree,
           avoidorphans = input$avoidorphans,
@@ -1677,15 +1682,15 @@ app_server <- function(input, output, session) {
           updateProgress = updateProgress_getblocks
         )
 
-        progress_getblocks$close()
-
-        # data_uploaded()[!(ejam_uniq_id %in% sites2blocks$ejam_uniq_id),'valid'] <- F
-
-        dup <- data_uploaded()
+        ## note which places dropped by getblocksnearby() as invalid
+        dup <- data_uploaded() # includes invalid ones too
         dup$valid <- dup$ejam_uniq_id %in% sites2blocks$ejam_uniq_id
-
         dup$invalid_msg[!(dup$ejam_uniq_id %in% sites2blocks$ejam_uniq_id)] <- 'no blocks found nearby'
         data_uploaded <- dup
+
+        ## close doaggregate progress bar
+        progress_getblocks$close()
+
       } # end LAT LON finding blocks nearby, now ready for latlon and shapefiles to do aggregation
       #############################################################################  #
 
@@ -1713,7 +1718,7 @@ app_server <- function(input, output, session) {
         out <- suppressWarnings(
           doaggregate(
             sites2blocks = sites2blocks,
-            sites2states_or_latlon = d_upload,
+            sites2states_or_latlon = d_upload,                        # already removed invalids
             radius = input$bt_rad_buff,
             #countcols = 0, popmeancols = 0, calculatedcols = 0, # *** if using defaults of doaggregate()
             subgroups_type = input$subgroups_type, # nh, alone, or both # or use default of doaggregate() based on whatever subgroups_d etc are now ***
@@ -1728,21 +1733,46 @@ app_server <- function(input, output, session) {
           )
         )
 
-        #data_uploaded()[!(ejam_uniq_id %in% out$results_bysite$ejam_uniq_id),'valid'] <- F
-        dup <- data_uploaded()
-        #dup[,valid := ejam_uniq_id %in% out$results_bysite$ejam_uniq_id]
+        ## note which places dropped by doaggregate() as invalid
+        dup <- data_uploaded() # includes invalid ones too
         dup$valid <- dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id
         dup$invalid_msg[!(dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id)] <- 'dropped from doaggregate'
-
         data_uploaded <- dup
+
         # provide sitepoints table provided by user aka data_uploaded(), (or could pass only lat,lon and ST -if avail- not all cols?)
         # and doaggregate() decides where to pull ST info from -
         # ideally from ST column,
         # second from fips of block with smallest distance to site,
         # third from lat,lon of sitepoints intersected with shapefile of state bounds
+
         ## close doaggregate progress bar
         progress_doagg$close()
 
+        ################################################################ #
+
+        ## Handle sites dropped during getblocksnearby or doaggregate steps
+        dup <- data_uploaded()
+        dup$invalid_msg[is.na(dup$invalid_msg) & !(dup$ejam_uniq_id %in% sites2blocks$ejam_uniq_id)] <- 'no blocks found nearby'
+        dup$valid <- dup$ejam_uniq_id %in% sites2blocks$ejam_uniq_id
+        dup$invalid_msg[is.na(dup$invalid_msg) & !(dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id)] <- 'unable to aggregate'
+        dup$valid <- dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id
+
+        if (submitted_upload_method() %in% c('MACT','FRS','latlon','EPA_PROGRAM_up',
+                                             'EPA_PROGRAM_sel','NAICS','SIC')) {
+
+          ## merge valid and invalid places (to add those back into results, as mostly empty rows; but already done above for FIPS case)
+
+          out$results_bysite <- merge(dup[, .(ejam_uniq_id, valid, invalid_msg)],
+                                      out$results_bysite,
+                                      by = 'ejam_uniq_id', all = T)
+
+        } else if (submitted_upload_method() == 'SHP') {
+
+          out$results_bysite <- merge(dup[, c('ejam_uniq_id','valid','invalid_msg')],
+                                      out$results_bysite,
+                                      by = 'ejam_uniq_id', all = T) %>%
+            sf::st_drop_geometry()
+        }
         ################################################################ #
 
         # add URLs >>(should be a function)  ####
@@ -1759,46 +1789,9 @@ app_server <- function(input, output, session) {
         ## the registry ID column is only found in uploaded ECHO/FRS/NAICS data -
         ## it is not passed to doaggregate output at this point, so pull the column from upload to create URLS
 
-
-        ## add messages for sites dropped during getblocksnearby or doaggregate steps
-        dup <- data_uploaded()
-        dup$invalid_msg[is.na(dup$invalid_msg) & !(dup$ejam_uniq_id %in% sites2blocks$ejam_uniq_id)] <- 'no blocks found nearby'
-        dup$valid <- dup$ejam_uniq_id %in% sites2blocks$ejam_uniq_id
-        dup$invalid_msg[is.na(dup$invalid_msg) & !(dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id)] <- 'unable to aggregate'
-        dup$valid <- dup$ejam_uniq_id %in% out$results_bysite$ejam_uniq_id
-
-        if (submitted_upload_method() %in% c('MACT','FRS','latlon','EPA_PROGRAM_up',
-                                             'EPA_PROGRAM_sel','NAICS','SIC')) {
-
-          out$results_bysite <- merge(dup[, .(ejam_uniq_id, valid, invalid_msg)],
-                                      out$results_bysite,
-                                      by = 'ejam_uniq_id', all = T)
-
-        } else if (submitted_upload_method() == 'SHP') {
-
-          out$results_bysite <- merge(dup[, c('ejam_uniq_id','valid','invalid_msg')],
-                                      out$results_bysite,
-                                      by = 'ejam_uniq_id', all = T) %>%
-            sf::st_drop_geometry()
-
-        }
-
-
-        # if (nrow(d_upload) != nrow(out$results_bysite)) {
-        #    out$results_bysite[, `:=`(
-        #      `EJScreen Report` = rep('N/A', nrow(out$results_bysite)),
-        #      `EJScreen Map`    = rep('N/A', nrow(out$results_bysite)),
-        #      # `ACS Report`      = rep('N/A', nrow(out$results_bysite)),  # will drop this one
-        #      `ECHO report`     = rep('N/A', nrow(out$results_bysite))
-        #    )]
-        #  } else {
-
-        #if ("REGISTRY_ID" %in% names( d_upload)) {
         if ("REGISTRY_ID" %in% names(data_uploaded())) {
-          #echolink = url_echo_facility_webpage( d_upload$REGISTRY_ID, as_html = TRUE, linktext = 'ECHO Report')
           echolink = url_echo_facility_webpage( data_uploaded()$REGISTRY_ID, as_html = TRUE, linktext = 'ECHO Report')
         } else if ("RegistryID" %in% names(data_uploaded())) {
-          #echolink = url_echo_facility_webpage( d_upload$RegistryID, as_html = TRUE, linktext = 'ECHO Report')
           echolink = url_echo_facility_webpage( data_uploaded()$RegistryID, as_html = TRUE, linktext = 'ECHO Report')
         } else {
           echolink = rep('N/A',nrow(out$results_bysite))
@@ -1832,9 +1825,6 @@ app_server <- function(input, output, session) {
               `ECHO report` = NA
             )
         }
-        #}
-
-
         newcolnames <- c(
           'valid','invalid_msg',
           "EJScreen Report",
@@ -1846,7 +1836,6 @@ app_server <- function(input, output, session) {
           "EJScreen Map",
           "ECHO report"
         )
-
         # put those up front as first columns
         out$results_bysite <- dplyr::relocate(out$results_bysite, c('ejam_uniq_id', newcolnames), .before = 1)
         out$results_overall <- dplyr::relocate(out$results_overall, newcolnames_overall, .before = 2)
@@ -1856,21 +1845,18 @@ app_server <- function(input, output, session) {
         #############################################################################  #
 
         # add radius to results tables (in server and in ejamit() ####
-        # out$results_bysite[      , radius.miles := input$bt_rad_buff]
+        # out$results_bysite[      , radius.miles := input$bt_rad_buff]   # *** why not use data.table modify by reference, like this?
         # out$results_overall[     , radius.miles := input$bt_rad_buff]
-        # out$results_bybg_people[ , radius.miles := input$bt_rad_buff] # probably will not export this big table in excel downloads
+        # out$results_bybg_people[ , radius.miles := input$bt_rad_buff]
         #
         out$results_bysite$radius.miles <- input$bt_rad_buff
         out$results_overall$radius.miles <- input$bt_rad_buff
         out$results_bybg_people$radius.miles <- input$bt_rad_buff
 
         # out$longnames <- NA # see ejamit()
-        # out$formatted <- table_tall_from_overall(out$results_overall, out$longnames)
-        #   # see ejamit()
+        # out$formatted <- table_tall_from_overall(out$results_overall, out$longnames) # see ejamit()
 
       } # end of non fips, ie all latlon or shapefile aggregation
-
-
 
     } # done with all ways of analyzing ...  latlon, Shapefiles, and FIPS codes
 
@@ -1883,6 +1869,7 @@ app_server <- function(input, output, session) {
     #############################################################################  #
 
     # 3) **batch.summarize()** on already processed data ####
+
     if (submitted_upload_method() == 'SHP') {
       outsum <- EJAMbatch.summarizer::batch.summarize(
         sitestats = data.frame(data_processed()$results_bysite %>%
@@ -1920,7 +1907,7 @@ app_server <- function(input, output, session) {
   #############################################################################  #
   # if (input$calculate_ratios) {  ## ratios can be dropped from output table of results but are used by summary report, plots, etc. so simplest is to still calculate them
   #############################################################################  #
-  # . 4) ratios,  also avail from ejamit()####
+  # . 4) ratios ####
   # ______ AVERAGES and RATIOS TO AVG - ALREADY done by doaggregate() and kept in data_processed()
   # Also the overall mean and site by site means are in  unlist( data_processed()$results_overall[ , ..names_these_state_avg] )
   # and (avg.in.us) is a constant for convenience with that same info, in data.frame format.
@@ -1928,7 +1915,7 @@ app_server <- function(input, output, session) {
   # EJAM::statestats[ EJAM::statestats$PCTILE == "mean", ]
   # and averages were used create ratios in doaggregate()
   ############################# #
-  ##   d RATIOS of overall scores to US or state D AVG ####
+  ##   demog RATIOS of overall scores to US or state D AVG ####
   #  *****************   but these are now already calculated in doaggregate()
   ## as (doaggregate output results_overall ) / (EJAM::usastats mean in USA)
   ## or (batch.summarize 'Average person' / EJAM::usastats mean in USA   )
@@ -1940,12 +1927,9 @@ app_server <- function(input, output, session) {
   ratio.to.state.d <- reactive({unlist(
     data_processed()$results_overall[ , c(..names_d_ratio_to_state_avg, ..names_d_subgroups_ratio_to_state_avg)]
   ) }) # ???
-  # ratio.to.us.d_TEST <- reactive({
-  #   unlist(data_processed()$results_overall[1, ]) /
-  #     avg.in.us[, c(names_d, names_d_subgroups)]
-  # })
+
   ############################# #
-  ##   e RATIOS of overall scores to US or state E AVG  ####
+  ##   enviro RATIOS of overall scores to US or state E AVG  ####
   #  *****************   but these are now already calculated in doaggregate()  as
   ## (batch.summarize 'Average person' / EJAM::usastats mean in USA   )
   ## this needs further verification
@@ -1957,13 +1941,6 @@ app_server <- function(input, output, session) {
   # })
   ratio.to.state.e <- reactive({unlist(data_processed()$results_overall[ , ..names_e_ratio_to_state_avg]) })                     # ???
 
-  #   in plots for ejscreenapi, it may do this:
-  # out <- results_table()
-  # names(out) <- fixnames(names(out), mapping_for_names = map_headernames)
-  # us.ratios    <- ratios_to_avg(out)
-  # c(EJAM::names_d_avg, EJAM::names_d_subgroups_avg)
-  #
-  # names_d_us_ratio
   #############################################################################  #
   # }
   #############################################################################  #
@@ -1974,19 +1951,7 @@ app_server <- function(input, output, session) {
 
   # #############################################################################  #
 
-  # ________ COMMUNITY REPORT VIEW __________ ####
-
-  # output$LOCATIONSTR <- renderText(
-  #   paste0(input$bt_rad_buff, " mile Rings Centered at Selected Points")
-  #     # <span id="LOCATIONSTR">{{LOCATIONSTR}} mile Rings Centered at Selected Points</span>
-  # )
-  # output$TOTALPOP <- renderText(
-  #   prettyNum(total_pop(), big.mark = ",")
-  # )
-
-
-
-  # ______ SUMMARY REPORT ______ ####
+  # ________ SUMMARY REPORT  __________ ####
 
   ## Header ####
 
@@ -2178,8 +2143,8 @@ app_server <- function(input, output, session) {
   #   is_clustered()
   #   #input$radius_units
   # }, {
-  observe({
 
+  observe({
     # req(data_uploaded())
     ## This statement needed to ensure map stops if too many points uploaded
     req(isTruthy(orig_leaf_map()))
@@ -2258,9 +2223,7 @@ app_server <- function(input, output, session) {
                                  clustered = FALSE)#is_clustered())
         )
       }
-
   })
-
 
   #############################################################################  #
   ## *BARPLOT for short and long reports (avg person D ratios vs US avg) ####
@@ -2285,9 +2248,7 @@ app_server <- function(input, output, session) {
         ..names_d_ratio_to_avg,
         ..names_d_subgroups_ratio_to_avg
       )]
-
       plot_ridgeline_ratios(ratio.to.us.d.bysite)
-
 
     } else {if (input$plotkind_1pager == "box") {
 

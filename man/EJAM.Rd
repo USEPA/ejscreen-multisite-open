@@ -3,7 +3,6 @@
 \docType{package}
 \name{EJAM}
 \alias{EJAM}
-\alias{_PACKAGE}
 \alias{EJAM-package}
 \alias{blockwts}
 \alias{blockpoints}
@@ -86,7 +85,7 @@ Some additional details on some of these:
 
 \strong{- BY INDUSTRIAL SECTOR/ NAICS:}
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{    Interface lets user select NAICS from pulldown, or type in NAICS 
+\if{html}{\out{<div class="sourceCode">}}\preformatted{    Interface lets user select NAICS from pulldown, or type in NAICS
     Interface returns a vector of one or more naics codes,
     to be converted to sitepoints.
 }\if{html}{\out{</div>}}
@@ -101,8 +100,8 @@ NAICS codes also can be selected by text search of industry names or by categori
 
 \strong{- BY FACILITY ID or PROGRAM ID:}
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{    Interface so user can upload FRS REGISTRY_ID or PROGRAM ID csv/xls file, 
-    Interface returns a list of REGISTRY_ID values from a copy of the EPA facility registry service (FRS) data  
+\if{html}{\out{<div class="sourceCode">}}\preformatted{    Interface so user can upload FRS REGISTRY_ID or PROGRAM ID csv/xls file,
+    Interface returns a list of REGISTRY_ID values from a copy of the EPA facility registry service (FRS) data
     to be converted to sitepoints.
 }\if{html}{\out{</div>}}
 \itemize{
@@ -116,7 +115,7 @@ Relies on \strong{\link{frs_by_programid}} data.table with columns program, pgm_
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{    Interface so user can specify or upload latitude longitude (and optionally a unique site id and other columns like sitename),
     when using [ejamit()] which in turn uses [latlon_from_anything()].
-    
+
     The app keeps track of the sitepoints data.table with an assigned ejam_uniq_id that is just the row number.
 }\if{html}{\out{</div>}}
 }
@@ -156,7 +155,7 @@ Those are used in getblocksnearby with some sitepoints to create a temporary obj
 }
 
 \section{\strong{Summarizing indicators in buffers:}}{
-\if{html}{\out{<div class="sourceCode">}}\preformatted{  INPUT IS  `sites2blocks`, 
+\if{html}{\out{<div class="sourceCode">}}\preformatted{  INPUT IS  `sites2blocks`,
   OUTPUT IS results_overall, results_bysite, and other summary stats  ####
 }\if{html}{\out{</div>}}
 \itemize{
