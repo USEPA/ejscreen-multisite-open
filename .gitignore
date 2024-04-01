@@ -20,6 +20,8 @@
 
 # RStudio files
 .Rproj.user/
+/.Rproj.user
+*.pper
 
 # produced vignettes - but be sure these actually should be ignored ****
 vignettes/*.html
@@ -52,3 +54,5 @@ packrat/lib*/
 
 # pkgdown folders are here
 docs
+
+
