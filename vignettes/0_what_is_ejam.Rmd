@@ -1,8 +1,8 @@
 ---
-title: "What is EJAM?"
+title: "What is EJAM"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{What is EJAM?}
+  %\VignetteIndexEntry{What is EJAM}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
