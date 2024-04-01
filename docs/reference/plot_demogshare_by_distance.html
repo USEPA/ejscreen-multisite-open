@@ -72,33 +72,43 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>results_bybg_people</dt>
-<dd></dd>
+<dd><p>table as from ejamit()$results_results_bybg_people,
+like testoutput_ejamit_10pts_1miles$results_bybg_people</p></dd>
 
 
 <dt>demogvarname</dt>
-<dd></dd>
+<dd><p>one of the column names of results_bybg_people, such as
+one of names_d like "Demog.Index.Supp"</p></dd>
+
+
+<dt>myids</dt>
+<dd><p>optional vector of ejam_uniq_id values</p></dd>
 
 
 <dt>show.lowess</dt>
-<dd><p>F</p></dd>
+<dd><p>whether to show curve fitted via lines(lowess(x,y))
+using <code><a href="https://rdrr.io/r/stats/lowess.html" class="external-link">stats::lowess()</a></code></p></dd>
 
 
 <dt>show.lm</dt>
-<dd><p>linefit</p></dd>
+<dd><p>whether to show straight line fitted via <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code></p></dd>
 
 
 <dt>show.line</dt>
-<dd><p>linefit</p></dd>
+<dd><p>whether to show straight line fitted via coef(line(x,y))
+using <code><a href="https://rdrr.io/r/stats/coef.html" class="external-link">stats::coef()</a></code> and <code><a href="https://rdrr.io/r/stats/line.html" class="external-link">stats::line()</a></code></p></dd>
 
 
 <dt>...</dt>
-<dd><p>passed to plot</p></dd>
-
-
-<dt>ejam_uniq_id</dt>
-<dd></dd>
+<dd><p>passed to <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code></p></dd>
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    
+
+<p>just used to create plot as side effect</p>
+    </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>Could also consider plotting something like boxplot(demogvar ~ round(distance, 1))</p>

@@ -65,7 +65,8 @@ convert a raw indicator vector to percentiles in US or States.</p>
 <span>  <span class="va">myvector</span>,</span>
 <span>  <span class="va">varname.in.lookup.table</span>,</span>
 <span>  lookup <span class="op">=</span> <span class="va">usastats</span>,</span>
-<span>  zone <span class="op">=</span> <span class="st">"USA"</span></span>
+<span>  zone <span class="op">=</span> <span class="st">"USA"</span>,</span>
+<span>  quiet <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -95,6 +96,10 @@ To use state lookups set lookup=statestats</p></dd>
 If specified, must appear in a column called REGION within the lookup table,
 or NA returned for each item looked up and warning given.
 For example, it could be "NY" for New York State, "USA" for national percentiles.</p></dd>
+
+
+<dt>quiet</dt>
+<dd><p>set to FALSE to see details on where certain scores were all NA values like in 1 state</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -140,17 +145,17 @@ the minimum value, in which case it reports 0 as percentile, not that large perc
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>value <span class="op">=</span> <span class="va">eg</span>, pctile <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">testoutput_ejamit_10pts_1miles</span><span class="op">$</span><span class="va">results_overall</span><span class="op">[</span> , <span class="va">..names_d_pctile</span><span class="op">]</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>value <span class="op">=</span> <span class="va">eg</span>, pctile <span class="op">=</span> <span class="fu"><a href="https://bookish-disco-p8oe8wq.pages.github.io/reference/lookup_pctile.html" class="external-link">lookup_pctile</a></span><span class="op">(</span><span class="va">eg</span>, <span class="va">names_d</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>value <span class="op">=</span> <span class="va">eg</span>, pctile <span class="op">=</span> <span class="fu"><a href="https://usepa.github.io/EJAM/reference/lookup_pctile.html">lookup_pctile</a></span><span class="op">(</span><span class="va">eg</span>, <span class="va">names_d</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span>  <span class="co"># compare ejscreen API output percentiles to those from this function:</span></span></span>
 <span class="r-in"><span>  <span class="kw">for</span> <span class="op">(</span><span class="va">vname</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">names_d</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">:</span><span class="fl">6</span>,<span class="fl">8</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span><span class="op">]</span> <span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>     <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">pctile_from_raw_lookup</span><span class="op">(</span><span class="va">testoutput_ejscreenapi_plus_100</span><span class="op">[</span>,<span class="va">vname</span><span class="op">]</span> <span class="op">/</span> <span class="fl">100</span>, <span class="va">vname</span>, </span></span>
-<span class="r-in"><span>       lookup <span class="op">=</span> <span class="va">usastats</span><span class="op">)</span> </span></span>
+<span class="r-in"><span>     <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">pctile_from_raw_lookup</span><span class="op">(</span><span class="va">testoutput_ejscreenapi_plus_100</span><span class="op">[</span>,<span class="va">vname</span><span class="op">]</span> <span class="op">/</span> <span class="fl">100</span>, <span class="va">vname</span>,</span></span>
+<span class="r-in"><span>       lookup <span class="op">=</span> <span class="va">usastats</span><span class="op">)</span></span></span>
 <span class="r-in"><span>       <span class="op">-</span> <span class="va">testoutput_ejscreenapi_plus_100</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"pctile."</span>,<span class="va">vname</span><span class="op">)</span><span class="op">]</span> <span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">}</span></span></span>
 <span class="r-in"><span>  <span class="kw">for</span> <span class="op">(</span><span class="va">vname</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">names_e</span> <span class="op">)</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>     <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">pctile_from_raw_lookup</span><span class="op">(</span><span class="va">testoutput_ejscreenapi_plus_100</span><span class="op">[</span>,<span class="va">vname</span><span class="op">]</span>, <span class="va">vname</span>, </span></span>
+<span class="r-in"><span>     <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">pctile_from_raw_lookup</span><span class="op">(</span><span class="va">testoutput_ejscreenapi_plus_100</span><span class="op">[</span>,<span class="va">vname</span><span class="op">]</span>, <span class="va">vname</span>,</span></span>
 <span class="r-in"><span>       lookup <span class="op">=</span> <span class="va">usastats</span><span class="op">)</span></span></span>
 <span class="r-in"><span>         <span class="op">-</span> <span class="va">testoutput_ejscreenapi_plus_100</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"pctile."</span>,<span class="va">vname</span><span class="op">)</span><span class="op">]</span> <span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="op">}</span></span></span>

@@ -34,6 +34,9 @@
     <loc>https://usepa.github.io/EJAM/authors.html</loc>
   </url>
   <url>
+    <loc>https://usepa.github.io/EJAM/CONTRIBUTING.html</loc>
+  </url>
+  <url>
     <loc>https://usepa.github.io/EJAM/index.html</loc>
   </url>
   <url>
@@ -44,6 +47,12 @@
   </url>
   <url>
     <loc>https://usepa.github.io/EJAM/reference/acs_bycounty.html</loc>
+  </url>
+  <url>
+    <loc>https://usepa.github.io/EJAM/reference/address_from_table.html</loc>
+  </url>
+  <url>
+    <loc>https://usepa.github.io/EJAM/reference/address_from_table_goodnames.html</loc>
   </url>
   <url>
     <loc>https://usepa.github.io/EJAM/reference/all_equal_functions.html</loc>
@@ -142,6 +151,9 @@
     <loc>https://usepa.github.io/EJAM/reference/datawrite_to_local.html</loc>
   </url>
   <url>
+    <loc>https://usepa.github.io/EJAM/reference/distance_by_group.html</loc>
+  </url>
+  <url>
     <loc>https://usepa.github.io/EJAM/reference/distance_by_group1.html</loc>
   </url>
   <url>
@@ -173,6 +185,9 @@
   </url>
   <url>
     <loc>https://usepa.github.io/EJAM/reference/ejam2excel.html</loc>
+  </url>
+  <url>
+    <loc>https://usepa.github.io/EJAM/reference/ejam2ratios.html</loc>
   </url>
   <url>
     <loc>https://usepa.github.io/EJAM/reference/ejam2report.html</loc>
@@ -278,6 +293,9 @@
   </url>
   <url>
     <loc>https://usepa.github.io/EJAM/reference/fixcolnames2related.html</loc>
+  </url>
+  <url>
+    <loc>https://usepa.github.io/EJAM/reference/fixcolnames_infer.html</loc>
   </url>
   <url>
     <loc>https://usepa.github.io/EJAM/reference/fixmapheadernamescolname.html</loc>
@@ -394,6 +412,9 @@
     <loc>https://usepa.github.io/EJAM/reference/islandareas.html</loc>
   </url>
   <url>
+    <loc>https://usepa.github.io/EJAM/reference/latlon_any_format.html</loc>
+  </url>
+  <url>
     <loc>https://usepa.github.io/EJAM/reference/latlon_as.numeric.html</loc>
   </url>
   <url>
@@ -401,6 +422,9 @@
   </url>
   <url>
     <loc>https://usepa.github.io/EJAM/reference/latlon_from_address.html</loc>
+  </url>
+  <url>
+    <loc>https://usepa.github.io/EJAM/reference/latlon_from_address_table.html</loc>
   </url>
   <url>
     <loc>https://usepa.github.io/EJAM/reference/latlon_from_anything.html</loc>
@@ -571,10 +595,16 @@
     <loc>https://usepa.github.io/EJAM/reference/plot_barplot_ratios.html</loc>
   </url>
   <url>
+    <loc>https://usepa.github.io/EJAM/reference/plot_barplot_ratios_ez.html</loc>
+  </url>
+  <url>
     <loc>https://usepa.github.io/EJAM/reference/plot_bycounty.html</loc>
   </url>
   <url>
     <loc>https://usepa.github.io/EJAM/reference/plot_demogshare_by_distance.html</loc>
+  </url>
+  <url>
+    <loc>https://usepa.github.io/EJAM/reference/plot_distance_by_group.html</loc>
   </url>
   <url>
     <loc>https://usepa.github.io/EJAM/reference/plot_distance_by_pctd.html</loc>
@@ -593,6 +623,9 @@
   </url>
   <url>
     <loc>https://usepa.github.io/EJAM/reference/plot_ridgeline_ratios.html</loc>
+  </url>
+  <url>
+    <loc>https://usepa.github.io/EJAM/reference/plot_ridgeline_ratios_ez.html</loc>
   </url>
   <url>
     <loc>https://usepa.github.io/EJAM/reference/plot_vs_us.html</loc>
@@ -658,6 +691,12 @@
     <loc>https://usepa.github.io/EJAM/reference/setdiff_yx.html</loc>
   </url>
   <url>
+    <loc>https://usepa.github.io/EJAM/reference/shapefile2blockpoints.html</loc>
+  </url>
+  <url>
+    <loc>https://usepa.github.io/EJAM/reference/shapefile2latlon.html</loc>
+  </url>
+  <url>
     <loc>https://usepa.github.io/EJAM/reference/shapefile_clean.html</loc>
   </url>
   <url>
@@ -665,6 +704,9 @@
   </url>
   <url>
     <loc>https://usepa.github.io/EJAM/reference/shapefile_filepaths_valid.html</loc>
+  </url>
+  <url>
+    <loc>https://usepa.github.io/EJAM/reference/shapefile_from_any.html</loc>
   </url>
   <url>
     <loc>https://usepa.github.io/EJAM/reference/shapefile_from_filepaths.html</loc>
@@ -680,6 +722,9 @@
   </url>
   <url>
     <loc>https://usepa.github.io/EJAM/reference/shapefile_from_sitepoints.html</loc>
+  </url>
+  <url>
+    <loc>https://usepa.github.io/EJAM/reference/shapefile_from_zip.html</loc>
   </url>
   <url>
     <loc>https://usepa.github.io/EJAM/reference/shapes_blockgroups_from_bgfips.html</loc>

@@ -241,9 +241,10 @@ or are contained within any provided tract/county/state FIPS.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [696] "100050518012" "100050518013" "100050518014" "100050518021" "100050518022"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [701] "100050518023" "100050519001" "100050519002" "100050519003" "100059800001"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [706] "100059900000"</span>
-<span class="r-in"><span>  </span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span>  <span class="va">blockgroupstats</span><span class="op">[</span>,<span class="va">.N</span>,by<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/substr.html" class="external-link">substr</a></span><span class="op">(</span><span class="va">bgfips</span>,<span class="fl">1</span>,<span class="fl">2</span><span class="op">)</span><span class="op">]</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     substr     N</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     &lt;char&gt; &lt;int&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  1:     60    77</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  2:     66    58</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  3:     69   135</span>
@@ -303,7 +304,7 @@ or are contained within any provided tract/county/state FIPS.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     substr     N</span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="fu">fips_bg_from_anyfips</span><span class="op">(</span><span class="st">"72"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2555</span>
-<span class="r-in"><span>  </span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span>  <span class="co"># all blockgroups in this one county</span></span></span>
 <span class="r-in"><span>  <span class="fu">fips_bg_from_anyfips</span><span class="op">(</span><span class="fl">30001</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "300010001001" "300010001002" "300010002001" "300010002002" "300010002003"</span>
@@ -320,11 +321,11 @@ or are contained within any provided tract/county/state FIPS.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [26] "440010307003" "440010307004" "440010308001" "440010308002" "440010308003"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [31] "440010309011" "440010309012" "440010309013" "440010309021" "440010309022"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [36] "440010309023" "440010309024"</span>
-<span class="r-in"><span>  </span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span>  <span class="co"># all blockgroups that contain any of these 6 blocks (i.e., just one bg)</span></span></span>
 <span class="r-in"><span>  <span class="fu">fips_bg_from_anyfips</span><span class="op">(</span> <span class="va">blockid2fips</span><span class="op">$</span><span class="va">blockfips</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fips_lead_zero(fips):</span> object 'blockid2fips' not found</span>
-<span class="r-in"><span>  </span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span>  <span class="co"># 2 counties</span></span></span>
 <span class="r-in"><span>  <span class="fu">fips_bg_from_anyfips</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">36009</span>,<span class="fl">36011</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   [1] "360099400001" "360099400002" "360099402001" "360099403011" "360099403012"</span>
@@ -359,7 +360,7 @@ or are contained within any provided tract/county/state FIPS.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [146] "360110416003" "360110417001" "360110417002" "360110417003" "360110417004"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [151] "360110417005" "360110418001" "360110418002" "360110418003" "360110418004"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [156] "360110418005" "360110421001" "360110421002" "360110421003" "360119902000"</span>
-<span class="r-in"><span>  </span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

@@ -90,6 +90,480 @@
     <p>may be used by doaggregate_custom()</p>
     </div>
 
+    <div class="section level2">
+    <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">### example using just 10 block groups from 1 county in Delaware</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span> <span class="va">c1</span> <span class="op">&lt;-</span> <span class="fu"><a href="fips2countyname.html">fips2countyname</a></span><span class="op">(</span><span class="fu"><a href="fips_counties_from_state_abbrev.html">fips_counties_from_state_abbrev</a></span><span class="op">(</span><span class="st">'DE'</span><span class="op">)</span>, includestate <span class="op">=</span> <span class="cn">F</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span></span>
+<span class="r-in"><span> <span class="va">bgdf</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="fu">EJAM</span><span class="fu">::</span><span class="va"><a href="blockgroupstats.html">blockgroupstats</a></span><span class="op">[</span><span class="va">ST</span> <span class="op">==</span> <span class="st">"DE"</span> <span class="op">&amp;</span> <span class="va">countyname</span> <span class="op">==</span> <span class="va">c1</span>, <span class="op">]</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="op">]</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span> <span class="va">newdf</span> <span class="op">&lt;-</span> <span class="fu">calc_ejam</span><span class="op">(</span><span class="va">bgdf</span>, keep.old <span class="op">=</span> <span class="st">""</span>,</span></span>
+<span class="r-in"><span>   formulas <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>     <span class="st">"my_custom_recalc_demog &lt;- (pctlowinc + pctmin)/2"</span>,</span></span>
+<span class="r-in"><span>     <span class="st">"mystat2  = 100 * pctlowinc"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using my_custom_recalc_demog &lt;- (pctlowinc + pctmin)/2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using mystat2  = 100 * pctlowinc</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span>Demog.Index <span class="op">=</span> <span class="va">bgdf</span><span class="op">$</span><span class="va">Demog.Index</span>, <span class="va">newdf</span>, pctlowinc <span class="op">=</span> <span class="va">bgdf</span><span class="op">$</span><span class="va">pctlowinc</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    Demog.Index my_custom_recalc_demog  mystat2 pctlowinc</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1    0.1940667              0.1940667 29.11001 0.2911001</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2    0.3370933              0.3370933 38.52495 0.3852495</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3    0.2584242              0.2584242 27.67429 0.2767429</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4    0.2446518              0.2446518 32.89556 0.3289556</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5    0.2869502              0.2869502 25.75381 0.2575381</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6    0.4123246              0.4123246 34.16834 0.3416834</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7    0.3338674              0.3338674 21.48273 0.2148273</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8    0.3228216              0.3228216 29.51482 0.2951482</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9    0.3140747              0.3140747 27.01998 0.2701998</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10   0.5700036              0.5700036 37.93979 0.3793979</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">newdf</span> <span class="op">&lt;-</span> <span class="fu">calc_ejam</span><span class="op">(</span><span class="va">bgdf</span>, formulas <span class="op">=</span> <span class="va">formulas_d</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctover64       = 1 * ifelse(pop == 0, 0,            over64        / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctunder5       = 1 * ifelse(pop == 0, 0,            under5        / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pcthisp         = 1 * ifelse(pop == 0, 0, as.numeric(hisp )        / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctnhba         = 1 * ifelse(pop == 0, 0, as.numeric(nhba )        / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctnhaiana      = 1 * ifelse(pop == 0, 0, as.numeric(nhaiana)      / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctnhaa         = 1 * ifelse(pop == 0, 0, as.numeric(nhaa )        / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctnhnhpia      = 1 * ifelse(pop == 0, 0, as.numeric(nhnhpia )     / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctnhotheralone = 1 * ifelse(pop == 0, 0, as.numeric(nhotheralone) / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctnhmulti      = 1 * ifelse(pop == 0, 0, as.numeric(nhmulti )     / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctnhwa         = 1 * ifelse(pop == 0, 0, as.numeric(nhwa )        / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctba         = 1 * ifelse(pop == 0, 0, as.numeric(ba )        / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctaiana      = 1 * ifelse(pop == 0, 0, as.numeric(aiana)      / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctaa         = 1 * ifelse(pop == 0, 0, as.numeric(aa )        / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctnhpia      = 1 * ifelse(pop == 0, 0, as.numeric(nhpia )     / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctotheralone = 1 * ifelse(pop == 0, 0, as.numeric(otheralone) / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctmulti      = 1 * ifelse(pop == 0, 0, as.numeric(multi )     / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctwa         = 1 * ifelse(pop == 0, 0, as.numeric(wa )        / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctmin          = 1 * ifelse(pop == 0, 0, as.numeric(mins)         / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctlowinc       = 1 * ifelse(povknownratio  == 0, 0, lowinc                 / povknownratio)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctlths         = 1 * ifelse(age25up        == 0, 0, as.numeric(lths)       / age25up)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctlingiso      = 1 * ifelse(hhlds          == 0, 0, lingiso                / hhlds)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctpre1960      = 1 * ifelse(builtunits     == 0, 0, pre1960                / builtunits)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctunemployed   = 1 * ifelse(unemployedbase == 0, 0, as.numeric(unemployed) / unemployedbase)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using Demog.Index = (pctlowinc + pctmin) / 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using Demog.Index.Supp  = (pctlowinc + pctunemployed + pctlths + pctlingiso + ifelse(is.na(lowlifex), 0, lowlifex) ) / ifelse(is.na(lowlifex), 4, 5)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctdisability  = ifelse(DISAB_UNIVERSE == 0, 0, DISABILITY / DISAB_UNIVERSE)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctunder18 =  ifelse(pop == 0, 0, AGE_LT18 / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctover17  =  ifelse(pop == 0, 0, AGE_GT17 / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctmale    =  ifelse(pop == 0, 0, MALES    / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctfemale  =  ifelse(pop == 0, 0, FEMALES  / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using p_own_occupied =  ifelse(OCCHU == 0, 0, OWNHU / OCCHU)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using PCT_HH_BPOV  =  ifelse(hhlds == 0, 0, HH_BPOV / hhlds)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pct_lan_eng     = ifelse(LAN_UNIVERSE == 0, 0, LAN_ENG_NA   / LAN_UNIVERSE)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pct_lan_spanish = ifelse(LAN_UNIVERSE == 0, 0, LAN_SPANISH  / LAN_UNIVERSE)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pct_lan_ie      = ifelse(LAN_UNIVERSE == 0, 0, LAN_IE       / LAN_UNIVERSE)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pct_lan_api     = ifelse(LAN_UNIVERSE == 0, 0, LAN_API      / LAN_UNIVERSE)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using PCT_HLI_SPANISH_LI = ifelse(lingiso == 0, 0, HLI_SPANISH_LI  /  lingiso)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using PCT_HLI_IE_LI      = ifelse(lingiso == 0, 0, HLI_IE_LI       /  lingiso)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using PCT_HLI_API_LI     = ifelse(lingiso == 0, 0, HLI_API_LI      /  lingiso)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using PCT_HLI_OTHER_LI   = ifelse(lingiso == 0, 0, HLI_OTHER_LI    /  lingiso)</span>
+<span class="r-in"><span><span class="va">newdf</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     bgid  pop  pctover64  pctunder5   pcthisp   pctnhba pctnhaiana   pctnhaa</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  43878 1618 0.13226205 0.01297899  5.871446  1.668727  0.0000000 0.9888752</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  43879 2305 0.17006508 0.04078091 12.277657 13.796095  1.0412148 1.3015184</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  43880 1895 0.15831135 0.04485488  6.649077  1.424802  0.0000000 2.0052770</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  43881 1609 0.11187073 0.04164077  4.972032  8.452455  0.0000000 2.6103170</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  43882 2848 0.10919944 0.03967697  4.389045 22.050562  0.0000000 2.3876404</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  43883  998 0.11923848 0.08517034  0.000000 41.382766  0.0000000 1.1022044</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  43884 1221 0.09746110 0.04013104  0.000000 39.475839  0.4095004 0.4095004</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  43885 1515 0.09306931 0.04488449  4.224422 27.458746  0.0000000 0.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  43886 1151 0.42311034 0.08166811  7.645526 18.245004  0.0000000 3.6490009</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 43887 2757 0.18389554 0.04969169 15.632934 57.925281  0.0000000 0.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    pctnhnhpia pctnhotheralone pctnhmulti  pctnhwa     pctba  pctaiana     pctaa</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1           0       0.4944376  0.6798517 90.29666  1.668727 0.0000000 0.9888752</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2           0       0.1301518  0.3470716 71.10629 14.273319 1.0412148 1.3015184</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3           0       0.0000000 13.9313984 75.98945  1.424802 0.0000000 2.0052770</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4           0       0.0000000  0.0000000 83.96520  8.452455 0.0000000 2.6103170</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5           0       1.2991573  1.5098315 68.36376 22.085674 0.0000000 2.3876404</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6           0       0.0000000  5.8116232 51.70341 41.382766 0.0000000 1.1022044</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7           0       0.0000000  4.9959050 54.70925 39.475839 0.4095004 0.4095004</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8           0       0.0000000  3.3663366 64.95050 27.458746 0.0000000 0.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9           0       0.0000000  6.2554301 64.20504 18.245004 0.0000000 3.6490009</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10          0       0.0000000  2.5027203 23.93906 57.925281 0.0000000 0.0000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    pctnhpia pctotheralone   pctmulti    pctwa     pctmin pctlowinc    pctlths</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1         0     3.4610630  3.2756489 90.60569 0.09703338 0.2911001 0.06472197</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2         0     0.1301518 12.1475054 71.10629 0.28893709 0.3852495 0.16714532</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3         0     0.0000000 13.9313984 82.63852 0.24010554 0.2767429 0.15372425</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4         0     3.1075202  0.1864512 85.64326 0.16034804 0.3289556 0.11721612</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5         0     2.6334270  3.4058989 69.48736 0.31636236 0.2575381 0.07286288</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6         0     0.0000000  5.8116232 51.70341 0.48296593 0.3416834 0.04113924</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7         0     0.0000000  4.9959050 54.70925 0.45290745 0.2148273 0.06707317</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8         0     0.0000000  3.3663366 69.17492 0.35049505 0.2951482 0.05459057</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9         0     4.3440487  6.2554301 67.50652 0.35794961 0.2701998 0.03433476</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10        0     0.0000000 10.5549510 31.51977 0.76060936 0.3793979 0.03424658</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     pctlingiso pctpre1960 pctunemployed Demog.Index Demog.Index.Supp pctunder18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1  0.009917355 0.07949126    0.07397959   0.1940667        0.1099298   24.66007</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2  0.018726592 0.09239654    0.08716944   0.3370933        0.1645727   19.69631</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  0.092987805 0.01524390    0.05758583   0.2584242        0.1452602   26.12137</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4  0.000000000 0.00000000    0.16985646   0.2446518        0.1540070   37.16594</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5  0.000000000 0.24819028    0.06000000   0.2869502        0.1172597   30.37219</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6  0.000000000 0.60579065    0.05039788   0.4123246        0.1258236   35.57114</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7  0.000000000 0.09018987    0.03137790   0.3338674        0.1018352   26.04423</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8  0.000000000 0.11397059    0.00000000   0.3228216        0.1140503   40.46205</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9  0.000000000 0.00000000    0.03322259   0.3140747        0.1116540   18.85317</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 0.000000000 0.09677419    0.06630944   0.5700036        0.1400933   20.34820</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    pctover17  pctmale pctfemale PCT_HH_BPOV PCT_HLI_SPANISH_LI PCT_HLI_IE_LI</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1   75.33993 51.73053  48.26947    8.760331          0.9917355      0.000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2   80.30369 54.88069  45.11931   11.360799          0.0000000      1.872659</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3   73.87863 54.93404  45.06596    7.926829          9.2987805      0.000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4   62.83406 54.94096  45.05904    3.073286          0.0000000      0.000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   69.62781 53.89747  46.10253   10.292524          0.0000000      0.000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6   64.42886 62.02405  37.97595    8.206687          0.0000000      0.000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7   73.95577 53.39885  46.60115   11.413043          0.0000000      0.000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8   59.53795 57.55776  42.44224   10.294118          0.0000000      0.000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9   81.14683 52.12858  47.87142   10.088496          0.0000000      0.000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10  79.65180 50.16322  49.83678   27.504726          0.0000000      0.000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    PCT_HLI_API_LI PCT_HLI_OTHER_LI pctdisability p_own_occupied pct_lan_eng</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1               0                0     0.1726214      0.9322314 0.000000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2               0                0     0.1728061      0.6741573 0.000000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3               0                0     0.1727575      0.7865854 0.000000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4               0                0     0.1724794      0.8179669 0.000000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5               0                0     0.1478228      0.7952329 0.000000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6               0                0     0.1478953      0.5106383 0.000000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7               0                0     0.1479821      0.5652174 0.000000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8               0                0     0.1018084      0.8308824 0.000000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9               0                0     0.1019763      1.0000000 0.006622517</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10              0                0     0.1020716      0.5708885 0.000000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    pct_lan_spanish  pct_lan_ie pct_lan_api</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1       0.03506575 0.012523482 0.000000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2       0.13975577 0.021709634 0.020805066</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3       0.06961326 0.000000000 0.124861878</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4       0.01750973 0.006485084 0.036964981</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5       0.01718464 0.002193784 0.019744059</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6       0.00000000 0.000000000 0.000000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7       0.00000000 0.000000000 0.004266212</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 8       0.00000000 0.006910850 0.000000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9       0.08325449 0.043519395 0.022705771</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10      0.06641221 0.000000000 0.000000000</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">##  example of entire US</span></span></span>
+<span class="r-in"><span><span class="co">#</span></span></span>
+<span class="r-in"><span><span class="va">newdf1</span>  <span class="op">&lt;-</span> <span class="fu">calc_ejam</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">bgdf</span><span class="op">)</span>, formulas <span class="op">=</span> <span class="va">formulas_d</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctover64       = 1 * ifelse(pop == 0, 0,            over64        / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctunder5       = 1 * ifelse(pop == 0, 0,            under5        / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pcthisp         = 1 * ifelse(pop == 0, 0, as.numeric(hisp )        / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctnhba         = 1 * ifelse(pop == 0, 0, as.numeric(nhba )        / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctnhaiana      = 1 * ifelse(pop == 0, 0, as.numeric(nhaiana)      / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctnhaa         = 1 * ifelse(pop == 0, 0, as.numeric(nhaa )        / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctnhnhpia      = 1 * ifelse(pop == 0, 0, as.numeric(nhnhpia )     / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctnhotheralone = 1 * ifelse(pop == 0, 0, as.numeric(nhotheralone) / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctnhmulti      = 1 * ifelse(pop == 0, 0, as.numeric(nhmulti )     / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctnhwa         = 1 * ifelse(pop == 0, 0, as.numeric(nhwa )        / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctba         = 1 * ifelse(pop == 0, 0, as.numeric(ba )        / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctaiana      = 1 * ifelse(pop == 0, 0, as.numeric(aiana)      / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctaa         = 1 * ifelse(pop == 0, 0, as.numeric(aa )        / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctnhpia      = 1 * ifelse(pop == 0, 0, as.numeric(nhpia )     / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctotheralone = 1 * ifelse(pop == 0, 0, as.numeric(otheralone) / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctmulti      = 1 * ifelse(pop == 0, 0, as.numeric(multi )     / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctwa         = 1 * ifelse(pop == 0, 0, as.numeric(wa )        / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctmin          = 1 * ifelse(pop == 0, 0, as.numeric(mins)         / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctlowinc       = 1 * ifelse(povknownratio  == 0, 0, lowinc                 / povknownratio)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctlths         = 1 * ifelse(age25up        == 0, 0, as.numeric(lths)       / age25up)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctlingiso      = 1 * ifelse(hhlds          == 0, 0, lingiso                / hhlds)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctpre1960      = 1 * ifelse(builtunits     == 0, 0, pre1960                / builtunits)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctunemployed   = 1 * ifelse(unemployedbase == 0, 0, as.numeric(unemployed) / unemployedbase)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using Demog.Index = (pctlowinc + pctmin) / 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using Demog.Index.Supp  = (pctlowinc + pctunemployed + pctlths + pctlingiso + ifelse(is.na(lowlifex), 0, lowlifex) ) / ifelse(is.na(lowlifex), 4, 5)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctdisability  = ifelse(DISAB_UNIVERSE == 0, 0, DISABILITY / DISAB_UNIVERSE)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctunder18 =  ifelse(pop == 0, 0, AGE_LT18 / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctover17  =  ifelse(pop == 0, 0, AGE_GT17 / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctmale    =  ifelse(pop == 0, 0, MALES    / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctfemale  =  ifelse(pop == 0, 0, FEMALES  / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using p_own_occupied =  ifelse(OCCHU == 0, 0, OWNHU / OCCHU)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using PCT_HH_BPOV  =  ifelse(hhlds == 0, 0, HH_BPOV / hhlds)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pct_lan_eng     = ifelse(LAN_UNIVERSE == 0, 0, LAN_ENG_NA   / LAN_UNIVERSE)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pct_lan_spanish = ifelse(LAN_UNIVERSE == 0, 0, LAN_SPANISH  / LAN_UNIVERSE)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pct_lan_ie      = ifelse(LAN_UNIVERSE == 0, 0, LAN_IE       / LAN_UNIVERSE)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pct_lan_api     = ifelse(LAN_UNIVERSE == 0, 0, LAN_API      / LAN_UNIVERSE)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using PCT_HLI_SPANISH_LI = ifelse(lingiso == 0, 0, HLI_SPANISH_LI  /  lingiso)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using PCT_HLI_IE_LI      = ifelse(lingiso == 0, 0, HLI_IE_LI       /  lingiso)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using PCT_HLI_API_LI     = ifelse(lingiso == 0, 0, HLI_API_LI      /  lingiso)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using PCT_HLI_OTHER_LI   = ifelse(lingiso == 0, 0, HLI_OTHER_LI    /  lingiso)</span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">newdf1</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      bgid          Min.   :43878       1st Qu.:43880       Median :43883      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      pop           Min.   : 998        1st Qu.:1294        Median :1614       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   pctover64        Min.   :0.09307     1st Qu.:0.10987     Median :0.12575    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   pctunder5        Min.   :0.01298     1st Qu.:0.04029     Median :0.04325    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    pcthisp         Min.   : 0.000      1st Qu.: 4.266      Median : 5.422     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    pctnhba         Min.   : 1.425      1st Qu.: 9.788      Median :20.148     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   pctnhaiana       Min.   :0.0000      1st Qu.:0.0000      Median :0.0000     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    pctnhaa         Min.   :0.0000      1st Qu.:0.5543      Median :1.2019     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   pctnhnhpia       Min.   :0           1st Qu.:0           Median :0          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctnhotheralone    Min.   :0.00000     1st Qu.:0.00000     Median :0.00000    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   pctnhmulti       Min.   : 0.0000     1st Qu.: 0.8873     Median : 2.9345    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    pctnhwa         Min.   :23.94       1st Qu.:57.08       Median :66.66      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     pctba          Min.   : 1.425      1st Qu.: 9.908      Median :20.165     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    pctaiana        Min.   :0.0000      1st Qu.:0.0000      Median :0.0000     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     pctaa          Min.   :0.0000      1st Qu.:0.5543      Median :1.2019     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    pctnhpia        Min.   :0           1st Qu.:0           Median :0          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctotheralone      Min.   :0.00000     1st Qu.:0.00000     Median :0.06508    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    pctmulti        Min.   : 0.1865     1st Qu.: 3.3762     Median : 5.4038    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     pctwa          Min.   :31.52       1st Qu.:57.91       Median :69.33      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     pctmin         Min.   :0.09703     1st Qu.:0.25231     Median :0.33343    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   pctlowinc        Min.   :0.2148      1st Qu.:0.2718      Median :0.2931     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    pctlths         Min.   :0.03425     1st Qu.:0.04450     Median :0.06590    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   pctlingiso       Min.   :0.000000    1st Qu.:0.000000    Median :0.000000   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   pctpre1960       Min.   :0.00000     1st Qu.:0.03131     Median :0.09129    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctunemployed      Min.   :0.00000     1st Qu.:0.03752     Median :0.05879    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Demog.Index       Min.   :0.1941      1st Qu.:0.2656      Median :0.3184     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Demog.Index.Supp   Min.   :0.1018      1st Qu.:0.1123      Median :0.1215     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   pctunder18       Min.   :18.85       1st Qu.:21.43       Median :26.08      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   pctover17        Min.   :59.54       1st Qu.:65.73       Median :73.92      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    pctmale         Min.   :50.16       1st Qu.:52.45       Median :54.39      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   pctfemale        Min.   :37.98       1st Qu.:45.06       Median :45.61      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  PCT_HH_BPOV       Min.   : 3.073      1st Qu.: 8.345      Median :10.191     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PCT_HLI_SPANISH_LI Min.   :0.000       1st Qu.:0.000       Median :0.000      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PCT_HLI_IE_LI      Min.   :0.0000      1st Qu.:0.0000      Median :0.0000     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PCT_HLI_API_LI     Min.   :0           1st Qu.:0           Median :0          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PCT_HLI_OTHER_LI   Min.   :0           1st Qu.:0           Median :0          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctdisability      Min.   :0.1018      1st Qu.:0.1135      Median :0.1479     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> p_own_occupied     Min.   :0.5106      1st Qu.:0.5967      Median :0.7909     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  pct_lan_eng       Min.   :0.0000000   1st Qu.:0.0000000   Median :0.0000000  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pct_lan_spanish    Min.   :0.000000    1st Qu.:0.004296    Median :0.026288   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   pct_lan_ie       Min.   :0.000000    1st Qu.:0.000000    Median :0.004339   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  pct_lan_api       Min.   :0.00000     1st Qu.:0.00000     Median :0.01201    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                                                               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      bgid          Mean   :43883       3rd Qu.:43885       Max.   :43887      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      pop           Mean   :1792        3rd Qu.:2202        Max.   :2848       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   pctover64        Mean   :0.15985     3rd Qu.:0.16713     Max.   :0.42311    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   pctunder5        Mean   :0.04815     3rd Qu.:0.04849     Max.   :0.08517    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    pcthisp         Mean   : 6.166      3rd Qu.: 7.396      Max.   :15.633     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    pctnhba         Mean   :23.188      3rd Qu.:36.472      Max.   :57.925     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   pctnhaiana       Mean   :0.1451      3rd Qu.:0.0000      Max.   :1.0412     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    pctnhaa         Mean   :1.4454      3rd Qu.:2.2921      Max.   :3.6490     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   pctnhnhpia       Mean   :0           3rd Qu.:0           Max.   :0          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctnhotheralone    Mean   :0.19237     3rd Qu.:0.09761     Max.   :1.29916    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   pctnhmulti       Mean   : 3.9400     3rd Qu.: 5.6077     Max.   :13.9314    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    pctnhwa         Mean   :64.92       3rd Qu.:74.77       Max.   :90.30      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     pctba          Mean   :23.239      3rd Qu.:36.472      Max.   :57.925     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    pctaiana        Mean   :0.1451      3rd Qu.:0.0000      Max.   :1.0412     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     pctaa          Mean   :1.4454      3rd Qu.:2.2921      Max.   :3.6490     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    pctnhpia        Mean   :0           3rd Qu.:0           Max.   :0          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctotheralone      Mean   :1.36762     3rd Qu.:2.98900     Max.   :4.34405    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    pctmulti        Mean   : 6.3931     3rd Qu.: 9.4801     Max.   :13.9314    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     pctwa          Mean   :67.41       3rd Qu.:79.76       Max.   :90.61      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     pctmin         Mean   :0.35077     3rd Qu.:0.42917     Max.   :0.76061    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   pctlowinc        Mean   :0.3041      3rd Qu.:0.3385      Max.   :0.3852     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    pctlths         Mean   :0.08071     3rd Qu.:0.10613     Max.   :0.16715    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   pctlingiso       Mean   :0.012163    3rd Qu.:0.007438    Max.   :0.092988   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   pctpre1960       Mean   :0.13420     3rd Qu.:0.10967     Max.   :0.60579    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctunemployed      Mean   :0.06299     3rd Qu.:0.07206     Max.   :0.16986    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  Demog.Index       Mean   :0.3274      3rd Qu.:0.3363      Max.   :0.5700     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Demog.Index.Supp   Mean   :0.1284      3rd Qu.:0.1440      Max.   :0.1646     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   pctunder18       Mean   :27.93       3rd Qu.:34.27       Max.   :40.46      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   pctover17        Mean   :72.07       3rd Qu.:78.57       Max.   :81.15      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    pctmale         Mean   :54.57       3rd Qu.:54.94       Max.   :62.02      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   pctfemale        Mean   :45.43       3rd Qu.:47.55       Max.   :49.84      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  PCT_HH_BPOV       Mean   :10.892      3rd Qu.:11.094      Max.   :27.505     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PCT_HLI_SPANISH_LI Mean   :1.029       3rd Qu.:0.000       Max.   :9.299      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PCT_HLI_IE_LI      Mean   :0.1873      3rd Qu.:0.0000      Max.   :1.8727     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PCT_HLI_API_LI     Mean   :0           3rd Qu.:0           Max.   :0          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PCT_HLI_OTHER_LI   Mean   :0           3rd Qu.:0           Max.   :0          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctdisability      Mean   :0.1440      3rd Qu.:0.1726      Max.   :0.1728     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> p_own_occupied     Mean   :0.7484      3rd Qu.:0.8277      Max.   :1.0000     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  pct_lan_eng       Mean   :0.0006623   3rd Qu.:0.0000000   Max.   :0.0066225  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pct_lan_spanish    Mean   :0.042880    3rd Qu.:0.068813    Max.   :0.139756   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   pct_lan_ie       Mean   :0.009334    3rd Qu.:0.011120    Max.   :0.043519   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  pct_lan_api       Mean   :0.02293     3rd Qu.:0.02223     Max.   :0.12486    </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">bgdf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">blockgroupstats</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">newdf</span> <span class="op">&lt;-</span> <span class="fu">calc_ejam</span><span class="op">(</span><span class="va">bgdf</span>,</span></span>
+<span class="r-in"><span>                   keep.old <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'bgid'</span>, <span class="st">'pop'</span>, <span class="st">'hisp'</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                   keep.new <span class="op">=</span> <span class="st">"all"</span>,</span></span>
+<span class="r-in"><span>                   formulas <span class="op">=</span> <span class="va">formulas_d</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctover64       = 1 * ifelse(pop == 0, 0,            over64        / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctunder5       = 1 * ifelse(pop == 0, 0,            under5        / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pcthisp         = 1 * ifelse(pop == 0, 0, as.numeric(hisp )        / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctnhba         = 1 * ifelse(pop == 0, 0, as.numeric(nhba )        / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctnhaiana      = 1 * ifelse(pop == 0, 0, as.numeric(nhaiana)      / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctnhaa         = 1 * ifelse(pop == 0, 0, as.numeric(nhaa )        / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctnhnhpia      = 1 * ifelse(pop == 0, 0, as.numeric(nhnhpia )     / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctnhotheralone = 1 * ifelse(pop == 0, 0, as.numeric(nhotheralone) / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctnhmulti      = 1 * ifelse(pop == 0, 0, as.numeric(nhmulti )     / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctnhwa         = 1 * ifelse(pop == 0, 0, as.numeric(nhwa )        / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctba         = 1 * ifelse(pop == 0, 0, as.numeric(ba )        / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctaiana      = 1 * ifelse(pop == 0, 0, as.numeric(aiana)      / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctaa         = 1 * ifelse(pop == 0, 0, as.numeric(aa )        / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctnhpia      = 1 * ifelse(pop == 0, 0, as.numeric(nhpia )     / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctotheralone = 1 * ifelse(pop == 0, 0, as.numeric(otheralone) / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctmulti      = 1 * ifelse(pop == 0, 0, as.numeric(multi )     / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctwa         = 1 * ifelse(pop == 0, 0, as.numeric(wa )        / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctmin          = 1 * ifelse(pop == 0, 0, as.numeric(mins)         / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctlowinc       = 1 * ifelse(povknownratio  == 0, 0, lowinc                 / povknownratio)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctlths         = 1 * ifelse(age25up        == 0, 0, as.numeric(lths)       / age25up)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctlingiso      = 1 * ifelse(hhlds          == 0, 0, lingiso                / hhlds)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctpre1960      = 1 * ifelse(builtunits     == 0, 0, pre1960                / builtunits)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctunemployed   = 1 * ifelse(unemployedbase == 0, 0, as.numeric(unemployed) / unemployedbase)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using Demog.Index = (pctlowinc + pctmin) / 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using Demog.Index.Supp  = (pctlowinc + pctunemployed + pctlths + pctlingiso + ifelse(is.na(lowlifex), 0, lowlifex) ) / ifelse(is.na(lowlifex), 4, 5)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctdisability  = ifelse(DISAB_UNIVERSE == 0, 0, DISABILITY / DISAB_UNIVERSE)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctunder18 =  ifelse(pop == 0, 0, AGE_LT18 / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctover17  =  ifelse(pop == 0, 0, AGE_GT17 / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctmale    =  ifelse(pop == 0, 0, MALES    / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pctfemale  =  ifelse(pop == 0, 0, FEMALES  / pop)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using p_own_occupied =  ifelse(OCCHU == 0, 0, OWNHU / OCCHU)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using PCT_HH_BPOV  =  ifelse(hhlds == 0, 0, HH_BPOV / hhlds)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pct_lan_eng     = ifelse(LAN_UNIVERSE == 0, 0, LAN_ENG_NA   / LAN_UNIVERSE)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pct_lan_spanish = ifelse(LAN_UNIVERSE == 0, 0, LAN_SPANISH  / LAN_UNIVERSE)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pct_lan_ie      = ifelse(LAN_UNIVERSE == 0, 0, LAN_IE       / LAN_UNIVERSE)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using pct_lan_api     = ifelse(LAN_UNIVERSE == 0, 0, LAN_API      / LAN_UNIVERSE)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using PCT_HLI_SPANISH_LI = ifelse(lingiso == 0, 0, HLI_SPANISH_LI  /  lingiso)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using PCT_HLI_IE_LI      = ifelse(lingiso == 0, 0, HLI_IE_LI       /  lingiso)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using PCT_HLI_API_LI     = ifelse(lingiso == 0, 0, HLI_API_LI      /  lingiso)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Using PCT_HLI_OTHER_LI   = ifelse(lingiso == 0, 0, HLI_OTHER_LI    /  lingiso)</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">newdf</span><span class="op">[</span><span class="fl">1001</span><span class="op">:</span><span class="fl">1002</span>, <span class="op">]</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                        1001    1002</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> bgid                315.000 316.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pop                1180.000 869.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> hisp                  0.000   0.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctover64             0.219   0.122</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctunder5             0.031   0.025</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pcthisp               0.000   0.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctnhba              12.288  31.530</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctnhaiana            0.000   0.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctnhaa               0.000   0.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctnhnhpia            0.000   0.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctnhotheralone       0.000   0.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctnhmulti            0.000   0.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctnhwa              87.712  68.470</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctba                12.288  31.530</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctaiana              0.000   0.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctaa                 0.000   0.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctnhpia              0.000   0.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctotheralone         0.000   0.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctmulti              0.000   0.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctwa                87.712  68.470</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctmin                0.123   0.315</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctlowinc             0.428   0.314</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctlths               0.164   0.234</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctlingiso            0.000   0.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctpre1960            0.309   0.191</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctunemployed         0.000   0.218</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Demog.Index           0.275   0.315</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Demog.Index.Supp      0.170   0.205</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctunder18           17.966  14.960</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctover17            82.034  85.040</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctmale              56.017  46.605</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctfemale            43.983  53.395</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PCT_HH_BPOV          18.621  33.249</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PCT_HLI_SPANISH_LI    0.000   0.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PCT_HLI_IE_LI         0.000   0.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PCT_HLI_API_LI        0.000   0.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PCT_HLI_OTHER_LI      0.000   0.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctdisability         0.210   0.210</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> p_own_occupied        0.876   0.713</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pct_lan_eng           0.000   0.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pct_lan_spanish       0.000   0.000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pct_lan_ie            0.000   0.015</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pct_lan_api           0.000   0.000</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>  <span class="va">newdf</span><span class="op">[</span><span class="fl">1001</span><span class="op">:</span><span class="fl">1031</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'hisp'</span>, <span class="st">'pop'</span>, <span class="st">'pcthisp'</span><span class="op">)</span><span class="op">]</span>,</span></span>
+<span class="r-in"><span>  check <span class="op">=</span> <span class="op">(</span><span class="va">newdf</span><span class="op">$</span><span class="va">hisp</span><span class="op">[</span><span class="fl">1001</span><span class="op">:</span><span class="fl">1031</span><span class="op">]</span> <span class="op">/</span> <span class="va">newdf</span><span class="op">$</span><span class="va">pop</span><span class="op">[</span><span class="fl">1001</span><span class="op">:</span><span class="fl">1031</span><span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      hisp  pop    pcthisp       check</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1001    0 1180  0.0000000 0.000000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1002    0  869  0.0000000 0.000000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1003    0 1598  0.0000000 0.000000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1004   26 1171  2.2203245 0.022203245</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1005    0  662  0.0000000 0.000000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1006   13 1407  0.9239517 0.009239517</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1007    0  415  0.0000000 0.000000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1008   63  572 11.0139860 0.110139860</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1009   70 1012  6.9169960 0.069169960</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1010    0 1306  0.0000000 0.000000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1011    0  672  0.0000000 0.000000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1012    0 2177  0.0000000 0.000000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1013    0 2694  0.0000000 0.000000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1014   88  886  9.9322799 0.099322799</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1015   10  435  2.2988506 0.022988506</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1016   95 1791  5.3042993 0.053042993</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1017   18  754  2.3872679 0.023872679</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1018   79 1145  6.8995633 0.068995633</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1019   15 1484  1.0107817 0.010107817</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1020   57 1615  3.5294118 0.035294118</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1021    0 1042  0.0000000 0.000000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1022  152 1578  9.6324461 0.096324461</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1023    0 1178  0.0000000 0.000000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1024    0 1769  0.0000000 0.000000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1025    0 1171  0.0000000 0.000000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1026    0 1511  0.0000000 0.000000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1027   38 1520  2.5000000 0.025000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1028    0  678  0.0000000 0.000000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1029   18  564  3.1914894 0.031914894</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1030    0  602  0.0000000 0.000000000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1031   79 1891  4.1776838 0.041776838</span>
+<span class="r-in"><span><span class="co">## note the 0-100 percentages in blockgroupstats versus the 0-1 calculated percentages</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">newdf</span>, <span class="va">max</span>, na.rm<span class="op">=</span><span class="cn">T</span><span class="op">)</span>,<span class="fl">2</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">newdf</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">names_pct_as_fraction_blockgroupstats</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                         [,1] [,2]</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> bgid               242335.00    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pop                 38223.00    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> hisp                12448.00    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctover64               1.00    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctunder5               0.55    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pcthisp               100.00    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctnhba               100.00    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctnhaiana            100.00    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctnhaa               100.00    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctnhnhpia             76.42    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctnhotheralone        69.53    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctnhmulti            100.00    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctnhwa               100.00    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctba                 100.00    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctaiana              100.00    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctaa                 100.00    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctnhpia               76.42    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctotheralone         100.00    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctmulti              100.00    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctwa                 100.00    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctmin                  1.00    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctlowinc               1.00    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctlths                 1.00    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctlingiso              1.00    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctpre1960              1.00    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctunemployed           1.00    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Demog.Index             1.00    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Demog.Index.Supp        0.84    1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctunder18            100.00    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctover17             100.00    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctmale               100.00    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctfemale             100.00    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PCT_HH_BPOV           100.00    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PCT_HLI_SPANISH_LI    100.00    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PCT_HLI_IE_LI         100.00    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PCT_HLI_API_LI        100.00    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> PCT_HLI_OTHER_LI       85.00    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pctdisability           1.00    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> p_own_occupied          1.00    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pct_lan_eng             1.00    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pct_lan_spanish         1.00    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pct_lan_ie              1.00    0</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> pct_lan_api             1.00    0</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">EJAM</span><span class="fu">:::</span><span class="fu"><a href="formula_varname.html">formula_varname</a></span><span class="op">(</span><span class="va">formulas_d</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "pctover64"          "pctunder5"          "pcthisp"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4] "pctnhba"            "pctnhaiana"         "pctnhaa"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "pctnhnhpia"         "pctnhotheralone"    "pctnhmulti"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10] "pctnhwa"            "pctba"              "pctaiana"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "pctaa"              "pctnhpia"           "pctotheralone"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [16] "pctmulti"           "pctwa"              "pctmin"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "pctlowinc"          "pctlths"            "pctlingiso"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [22] "pctpre1960"         "pctunemployed"      "Demog.Index"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [25] "Demog.Index.Supp"   "pctdisability"      "pctunder18"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [28] "pctover17"          "pctmale"            "pctfemale"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [31] "p_own_occupied"     "PCT_HH_BPOV"        "pct_lan_eng"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [34] "pct_lan_spanish"    "pct_lan_ie"         "pct_lan_api"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [37] "PCT_HLI_SPANISH_LI" "PCT_HLI_IE_LI"      "PCT_HLI_API_LI"    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [40] "PCT_HLI_OTHER_LI"  </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">bgdf</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
+    </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
 

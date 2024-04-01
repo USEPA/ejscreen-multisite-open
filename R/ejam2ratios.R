@@ -84,9 +84,20 @@ stop()
 ####################################################################### #
 
 
-
+#' Quick view of summary stats by type of stat, but lacks rounding specific to each type, etc.
+#'
+#' @param ejamitout list as from ejamit() that includes results_overall
+#' @param decimals optional number of decimal places to round to
+#'
+#' @return prints to console and returns a simple data.frame
+#'
 #' @export
 #'
-table_ratios_from_ejamit <- ejam2ratios
+table_ratios_from_ejamit <- function(ejamitout,
+                                     # vartypes = c("ratio", "pctile", "pct", "all")[1],
+                                     # stats = c("Average site", "Average person", "Median site", "Median person", "Min", "Max"),
+                                     decimals = 1) {
+  ejam2ratios(ejamitout = ejamitout, decimals = decimals)
+}
 
 ####################################################################### #

@@ -194,11 +194,11 @@ or possibly "original" or "default" might be added as options - passed to batch.
 
 
 <dt>updateProgress</dt>
-<dd><p>progress bar function passed to doaggregate in shiny app</p></dd>
+<dd><p>progress bar function passed to <code><a href="doaggregate.html">doaggregate()</a></code> in shiny app</p></dd>
 
 
 <dt>updateProgress_getblocks</dt>
-<dd><p>progress bar function passed to getblocksnearby in shiny app</p></dd>
+<dd><p>progress bar function passed to <code><a href="getblocksnearby.html">getblocksnearby()</a></code> in shiny app</p></dd>
 
 
 <dt>in_shiny</dt>
@@ -206,22 +206,22 @@ or possibly "original" or "default" might be added as options - passed to batch.
 
 
 <dt>quiet</dt>
-<dd><p>Optional. set to TRUE to avoid message about using getblock_diagnostics(),
+<dd><p>Optional. set to TRUE to avoid message about using <code><a href="getblocks_diagnostics.html">getblocks_diagnostics()</a></code>,
 which is relevant only if a user saved the output of this function.</p></dd>
 
 
 <dt>parallel</dt>
-<dd><p>whether to use parallel processing in getblocksnearby() but may not be implemented yet.</p></dd>
+<dd><p>whether to use parallel processing in <code><a href="getblocksnearby.html">getblocksnearby()</a></code>, but not implemented yet.</p></dd>
 
 
 <dt>silentinteractive</dt>
 <dd><p>to prevent long output showing in console in RStudio when in interactive mode,
-passed to doaggregate() also. app server sets this to TRUE when calling doaggregate() but
-ejamit() default is to set this to FALSE when calling doaggregate().</p></dd>
+passed to <code><a href="doaggregate.html">doaggregate()</a></code> also. app server sets this to TRUE when calling doaggregate() but
+<code>ejamit()</code> default is to set this to FALSE when calling <code><a href="doaggregate.html">doaggregate()</a></code>.</p></dd>
 
 
 <dt>called_by_ejamit</dt>
-<dd><p>Set to TRUE by ejamit() to suppress some outputs even if ejamit(silentinteractive=F)</p></dd>
+<dd><p>Set to TRUE by <code>ejamit()</code> to suppress some outputs even if ejamit(silentinteractive=F)</p></dd>
 
 
 <dt>testing</dt>
@@ -244,41 +244,9 @@ ejamit() default is to set this to FALSE when calling doaggregate().</p></dd>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span> <span class="co"># All in one step, using functions not shiny app:</span></span></span>
 <span class="r-in"><span> <span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">ejamit</span><span class="op">(</span><span class="va">testpoints_100_dt</span>, <span class="fl">2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Finding blocks nearby.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> census block data file(s) not already loaded, so key data will now be downloaded (or loaded from a local copy if possible)...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Connecting to Posit Connect 2024.01.0 at</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> &lt;https://rstudio-connect.dmap-stage.aws.epa.gov&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Successfully connected to Posit Connect pins board.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> quaddata      - is NOT in memory. Checking local disk... quaddata    is NOT found locally on disk at ~/../Downloads/EJAMbigfiles/quaddata.arrow </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> quaddata      - is NOT in local folder.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> quaddata     - was read from pins board server, into memory (to specified envir).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> blockwts      - is NOT in memory. Checking local disk... blockwts    is NOT found locally on disk at ~/../Downloads/EJAMbigfiles/blockwts.arrow </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> blockwts      - is NOT in local folder.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> blockwts     - was read from pins board server, into memory (to specified envir).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> blockpoints   - is NOT in memory. Checking local disk... blockpoints  is NOT found locally on disk at ~/../Downloads/EJAMbigfiles/blockpoints.arrow </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> blockpoints   - is NOT in local folder.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> blockpoints  - was read from pins board server, into memory (to specified envir).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Checking for index of Census blocks (localtree)...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> The index of Census block groups (localtree) has not been created yet...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Building index of Census Blocks (localtree)...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Done building index.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>sitepoints did not contain a column named ejam_uniq_id, so one was added</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Analyzing 100 points, radius of 2 miles around each.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Aggregating at each buffer and overall.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TN for pm.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TN for o3.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TN for cancer.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TN for resp.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TN for dpm.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TN for traffic.score.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TN for proximity.npl.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TN for proximity.rmp.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TN for proximity.tsdf.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TN for proximity.npdes.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TN for ust.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TN for rsei.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TN for Demog.Index.Supp.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Among these results, all raw scores were NA (so percentiles will be reported as NA) in zone = TN for lowlifex.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Percentages stored as 0 to 1 rather than 0 to 100 will not be shown correctly unless adjusted, </span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span>           because rounding info says 0 digits when the intent is to show 0 digits after the 0-100 percent number.</span>
 <span class="r-in"><span></span></span>
@@ -289,10 +257,14 @@ ejamit() default is to set this to FALSE when calling doaggregate().</p></dd>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span>  <span class="co"># Specify facilities or sites as points for test data,</span></span></span>
 <span class="r-in"><span>  <span class="co"># use 1000 test facility points from the R package</span></span></span>
-<span class="r-in"><span>  <span class="va">testsites</span> <span class="op">&lt;-</span> <span class="va">testpoints_1000_dt</span></span></span>
+<span class="r-in"><span>  <span class="va">testsites</span> <span class="op">&lt;-</span> <span class="va">testpoints_1000</span></span></span>
 <span class="r-in"><span>  <span class="co"># use facility points in an excel or csv file</span></span></span>
-<span class="r-in"><span>  <span class="va">testsites</span> <span class="op">&lt;-</span> <span class="fu"><a href="latlon_from_anything.html">latlon_from_anything</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>   <span class="st">"./inst/testdata/testpoints_207_sites_with_signif_violations_NAICS_326_ECHO.csv"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>   <span class="va">testsites</span> <span class="op">&lt;-</span> <span class="fu"><a href="latlon_from_anything.html">latlon_from_anything</a></span><span class="op">(</span></span></span>
+<span class="r-in"><span>     <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"testdata/latlon/"</span>,</span></span>
+<span class="r-in"><span>      <span class="st">"testpoints_207_sites_with_signif_violations_NAICS_326_ECHO.csv"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>    package <span class="op">=</span> <span class="st">"EJAM"</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    <span class="op">)</span></span></span>
+<span class="r-in"><span>   <span class="co"># head(testsites)</span></span></span>
 <span class="r-in"><span>  <span class="co"># use facility points from a random sample of EPA-regulated facilities</span></span></span>
 <span class="r-in"><span>  <span class="va">testsites</span> <span class="op">&lt;-</span> <span class="fu"><a href="testpoints_n.html">testpoints_n</a></span><span class="op">(</span><span class="fl">1e3</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
@@ -309,22 +281,25 @@ ejamit() default is to set this to FALSE when calling doaggregate().</p></dd>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">out</span><span class="op">$</span><span class="va">results_overall</span><span class="op">)</span>, <span class="fl">3.1</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span>  <span class="co"># View plots</span></span></span>
-<span class="r-in"><span>  <span class="co"># plot_distance_avg_by_group(out)</span></span></span>
-<span class="r-in"><span>  <span class="co"># distance_by_group_plot(out)</span></span></span>
+<span class="r-in"><span>   <span class="fu">plot_distance_by_group</span><span class="op">(</span>results_bybg_people <span class="op">=</span> <span class="va">out</span><span class="op">$</span><span class="va">results_bybg_people</span><span class="op">)</span></span></span>
+<span class="r-in"><span>   <span class="fu">distance_by_group</span><span class="op">(</span><span class="va">out</span><span class="op">$</span><span class="va">results_bybg_people</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span>  <span class="co"># View maps</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="mapfast.html">mapfast</a></span><span class="op">(</span><span class="va">out</span><span class="op">$</span><span class="va">results_bysite</span>, radius <span class="op">=</span> <span class="fl">3.1</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span>  <span class="co"># view results at a single site</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="mapfast.html">mapfast</a></span><span class="op">(</span><span class="va">out</span><span class="op">$</span><span class="va">results_bysite</span>, radius <span class="op">=</span> <span class="fl">3.1</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="co"># all the raw numbers at one site</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">out</span><span class="op">$</span><span class="va">results_bysite</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">out</span><span class="op">$</span><span class="va">results_bysite</span><span class="op">[</span><span class="va">out</span><span class="op">$</span><span class="va">results_bysite</span><span class="op">$</span><span class="va">ejam_uniq_id</span> <span class="op">==</span> <span class="fl">2</span>, <span class="op">]</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span>  <span class="co"># if doing just 1st step of ejamit()</span></span></span>
 <span class="r-in"><span>  <span class="co">#  get distance between each site and every nearby Census block</span></span></span>
-<span class="r-in"><span>  <span class="va">s2b</span> <span class="op">&lt;-</span> <span class="va">testdata_sites2blocks</span></span></span>
-<span class="r-in"><span>  <span class="va">s2b</span> <span class="op">&lt;-</span> <span class="fu"><a href="getblocksnearby.html">getblocksnearby</a></span><span class="op">(</span><span class="va">testsites</span>, radius <span class="op">=</span> <span class="va">radius</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="va">s2b</span> <span class="op">&lt;-</span> <span class="fu"><a href="getblocksnearbyviaQuadTree.html">getblocksnearbyviaQuadTree</a></span><span class="op">(</span><span class="va">testsites</span>, radius <span class="op">=</span> <span class="va">radius</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="va">s2b</span> <span class="op">&lt;-</span> <span class="va">testoutput_getblocksnearby_100pts_1miles</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="getblocks_diagnostics.html">getblocks_diagnostics</a></span><span class="op">(</span><span class="va">s2b</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span>  <span class="va">testsites</span> <span class="op">&lt;-</span> <span class="va">testpoints_10</span><span class="op">[</span><span class="fl">2</span>,<span class="op">]</span></span></span>
+<span class="r-in"><span>  <span class="va">s2b</span> <span class="op">&lt;-</span> <span class="fu"><a href="getblocksnearby.html">getblocksnearby</a></span><span class="op">(</span><span class="va">testsites</span>, radius <span class="op">=</span> <span class="fl">3.1</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="getblocks_diagnostics.html">getblocks_diagnostics</a></span><span class="op">(</span><span class="va">s2b</span><span class="op">)</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="plotblocksnearby.html">plotblocksnearby</a></span><span class="op">(</span><span class="va">s2b</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>

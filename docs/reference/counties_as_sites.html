@@ -92,6 +92,7 @@ See more below under "Value"</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span> <span class="fu">counties_as_sites</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'01001'</span>,<span class="st">'72153'</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     ejam_uniq_id countyfips   bgid</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            &lt;int&gt;     &lt;char&gt;  &lt;int&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  1:            1      01001      1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  2:            1      01001      2</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  3:            1      01001      3</span>
@@ -167,28 +168,30 @@ See more below under "Value"</p>
 <span class="r-in"><span> <span class="va">blockgroupstats</span><span class="op">[</span> , <span class="fu">.</span><span class="op">(</span>ST <span class="op">=</span> <span class="va">ST</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, countypop <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">pop</span><span class="op">)</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>  by<span class="op">=</span><span class="fu">.</span><span class="op">(</span>FIPS <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substr.html" class="external-link">substr</a></span><span class="op">(</span><span class="va">bgfips</span>,<span class="fl">1</span>,<span class="fl">5</span><span class="op">)</span><span class="op">)</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="op">-</span><span class="va">countypop</span><span class="op">)</span>,<span class="op">]</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">20</span>, <span class="fu">.</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  CountyPopulation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/formatc.html" class="external-link">prettyNum</a></span><span class="op">(</span><span class="va">countypop</span>, big.mark <span class="op">=</span> <span class="st">","</span><span class="op">)</span>, <span class="va">FIPS</span>, <span class="va">ST</span><span class="op">)</span><span class="op">]</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     CountyPopulation  FIPS ST</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  1:       10,019,635 06037 CA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  2:        5,265,398 17031 IL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  3:        4,697,957 48201 TX</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  4:        4,367,186 04013 AZ</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  5:        3,296,317 06073 CA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  6:        3,182,923 06059 CA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  7:        2,712,360 36047 NY</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  8:        2,690,113 12086 FL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  9:        2,604,722 48113 TX</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 10:        2,409,331 06065 CA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11:        2,393,104 36081 NY</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 12:        2,240,876 53033 WA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13:        2,231,147 32003 NV</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 14:        2,171,071 06071 CA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 15:        2,091,953 48439 TX</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 16:        1,990,522 48029 TX</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 17:        1,934,551 12011 FL</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 18:        1,932,022 06085 CA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 19:        1,789,781 26163 MI</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 20:        1,673,133 06001 CA</span>
-<span class="r-in"><span>  </span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     CountyPopulation   FIPS     ST</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               &lt;char&gt; &lt;char&gt; &lt;char&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  1:       10,019,635  06037     CA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  2:        5,265,398  17031     IL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  3:        4,697,957  48201     TX</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  4:        4,367,186  04013     AZ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  5:        3,296,317  06073     CA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  6:        3,182,923  06059     CA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  7:        2,712,360  36047     NY</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  8:        2,690,113  12086     FL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  9:        2,604,722  48113     TX</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10:        2,409,331  06065     CA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11:        2,393,104  36081     NY</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12:        2,240,876  53033     WA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13:        2,231,147  32003     NV</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14:        2,171,071  06071     CA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15:        2,091,953  48439     TX</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16:        1,990,522  48029     TX</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17:        1,934,551  12011     FL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18:        1,932,022  06085     CA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19:        1,789,781  26163     MI</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20:        1,673,133  06001     CA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     CountyPopulation   FIPS     ST</span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

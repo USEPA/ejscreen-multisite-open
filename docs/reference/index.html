@@ -83,13 +83,18 @@
         <dd>Save EJAM results in a spreadsheet</dd>
       </dl><dl><dt>
           
+          <code><a href="ejam2ratios.html">ejam2ratios()</a></code> 
+        </dt>
+        <dd>Quick view of summary stats by type of stat, but lacks rounding specific to each type, etc.</dd>
+      </dl><dl><dt>
+          
           <code><a href="ejscreenit_for_ejam.html">ejscreenit_for_ejam()</a></code> 
         </dt>
         <dd>Get EJScreen results directly from EJScreen servers via their API</dd>
       </dl></div><div class="section level2">
       <h2 id="specify-points-by-lat-lon">Specify Points by Lat/Lon<a class="anchor" aria-label="anchor" href="#specify-points-by-lat-lon"></a></h2>
       
-      <p class="section-desc"></p><p>Utilities for working with latitude and longitude</p>
+      <p class="section-desc"></p><p>Utilities for working with latitude/ longitude or address</p>
 
       
     </div><div id="" class="section level2">
@@ -100,6 +105,22 @@
       <dl><dt>
           
           <code><a href="latlon_from_anything.html">latlon_from_anything()</a></code> 
+        </dt>
+        <dd>Get lat/lon flexibly - from file, data.frame, data.table, or lat/lon vectors</dd>
+      </dl><dl><dt>
+          
+          <code><a href="latlon_from_address_table.html">latlon_from_address_table()</a></code> 
+        </dt>
+        <dd>get lat,lon from table that contains USPS addresses</dd>
+      </dl><dl><dt>
+          
+          <code><a href="latlon_from_address.html">latlon_from_address()</a></code> 
+        </dt>
+        <dd>geocode, but only if AOI package is installed and attached
+and what it imports like tidygeocoder etc.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="latlon_any_format.html">latlon_any_format()</a></code> 
         </dt>
         <dd>Get lat/lon flexibly - from file, data.frame, data.table, or lat/lon vectors</dd>
       </dl><dl><dt>
@@ -119,9 +140,9 @@
         <dd>islandareas (DATA) table, bounds info on lat lon of US Island Areas</dd>
       </dl><dl><dt>
           
-          <code><a href="latlon_from_address.html">latlon_from_address()</a></code> 
+          <code><a href="address_from_table.html">address_from_table()</a></code> 
         </dt>
-        <dd>geocode, but only if AOI package is already installed and loaded and attached</dd>
+        <dd>get USPS addresses from a table of that info</dd>
       </dl></div><div class="section level2">
       <h2 id="specify-facilities-by-id">Specify Facilities by ID<a class="anchor" aria-label="anchor" href="#specify-facilities-by-id"></a></h2>
       
@@ -361,11 +382,6 @@ Also has the 2,3, and 4-digit SIC that this code falls under, where relevant for
         <dd>Find EPA-regulated facilities in FRS by SIC code (industrial category)</dd>
       </dl><dl><dt>
           
-          <code><a href="regid_from_sic.html">regid_from_sic()</a></code> 
-        </dt>
-        <dd>Find EPA-regulated facilities in FRS by SIC code (industrial category)</dd>
-      </dl><dl><dt>
-          
           <code><a href="frs_by_sic.html">frs_by_sic</a></code> 
         </dt>
         <dd>frs_by_sic (DATA) data.table of SIC code(s) for each EPA-regulated site in Facility Registry Service</dd>
@@ -415,9 +431,44 @@ under the Clean Air Act.</dd>
 
       <dl><dt>
           
-          <code><a href="shapefile_clean.html">shapefile_clean()</a></code> 
+          <code><a href="shapes_blockgroups_from_bgfips.html">shapes_blockgroups_from_bgfips()</a></code> 
         </dt>
-        <dd>Drop invalid rows and warn if all invalid</dd>
+        <dd>Get boundaries of blockgroups, via API, to map them</dd>
+      </dl><dl><dt>
+          
+          <code><a href="shapes_counties_from_countyfips.html">shapes_counties_from_countyfips()</a></code> 
+        </dt>
+        <dd>Get boundaries of US Counties via API, to map them</dd>
+      </dl><dl><dt>
+          
+          <code><a href="shapefile_from_any.html">shapefile_from_any()</a></code> 
+        </dt>
+        <dd>Read shapefile from any file or folder (trying to infer the format)</dd>
+      </dl><dl><dt>
+          
+          <code><a href="shapefile_from_folder.html">shapefile_from_folder()</a></code> 
+        </dt>
+        <dd>Read shapefile from a folder</dd>
+      </dl><dl><dt>
+          
+          <code><a href="shapefile_from_filepaths.html">shapefile_from_filepaths()</a></code> 
+        </dt>
+        <dd>Read shapefile from disk based on the filenames given</dd>
+      </dl><dl><dt>
+          
+          <code><a href="shapefile_from_zip.html">shapefile_from_zip()</a></code> 
+        </dt>
+        <dd>read zipped .zip that may contain a geodatabase file or .shp file etc.</dd>
+      </dl><dl><dt>
+          
+          <code><a href="shapefile_from_gdb.html">shapefile_from_gdb()</a></code> 
+        </dt>
+        <dd>read .gdb geodatabase file via sf::st_read()</dd>
+      </dl><dl><dt>
+          
+          <code><a href="shapefile_from_gdbzip.html">shapefile_from_gdbzip()</a></code> 
+        </dt>
+        <dd>read .zip that contains geodatabase file via unzip and st_read</dd>
       </dl><dl><dt>
           
           <code><a href="shapefile_filepaths_from_folder.html">shapefile_filepaths_from_folder()</a></code> 
@@ -430,29 +481,14 @@ under the Clean Air Act.</dd>
         <dd>Confirm files have all the extensions .shp, .shx, .dbf, and .prj</dd>
       </dl><dl><dt>
           
-          <code><a href="shapefile_from_filepaths.html">shapefile_from_filepaths()</a></code> 
+          <code><a href="shapefile_clean.html">shapefile_clean()</a></code> 
         </dt>
-        <dd>Read shapefile from disk based on the filenames given</dd>
-      </dl><dl><dt>
-          
-          <code><a href="shapefile_from_folder.html">shapefile_from_folder()</a></code> 
-        </dt>
-        <dd>Read shapefile from a folder</dd>
+        <dd>Drop invalid rows and warn if all invalid and add unique ID</dd>
       </dl><dl><dt>
           
           <code><a href="shapefile_from_sitepoints.html">shapefile_from_sitepoints()</a></code> 
         </dt>
         <dd>Convert table of lat,lon points/sites into sf:: shapefile</dd>
-      </dl><dl><dt>
-          
-          <code><a href="shapes_blockgroups_from_bgfips.html">shapes_blockgroups_from_bgfips()</a></code> 
-        </dt>
-        <dd>Get boundaries of blockgroups, via API, to map them</dd>
-      </dl><dl><dt>
-          
-          <code><a href="shapes_counties_from_countyfips.html">shapes_counties_from_countyfips()</a></code> 
-        </dt>
-        <dd>Get boundaries of US Counties via API, to map them</dd>
       </dl><dl><dt>
           
           <code><a href="shape_buffered_from_shapefile.html">shape_buffered_from_shapefile()</a></code> 
@@ -465,14 +501,14 @@ under the Clean Air Act.</dd>
         <dd>shape_buffered_from_shapefile_points - add buffer around shape (points, here)</dd>
       </dl><dl><dt>
           
-          <code><a href="shapefile_from_gdb.html">shapefile_from_gdb()</a></code> 
+          <code><a href="shapefile2blockpoints.html">shapefile2blockpoints()</a></code> 
         </dt>
-        <dd>read .gdb geodatabase file via st_read</dd>
+        <dd>Find all Census blocks in a polygon, using internal point of block</dd>
       </dl><dl><dt>
           
-          <code><a href="shapefile_from_gdbzip.html">shapefile_from_gdbzip()</a></code> 
+          <code><a href="shapefile2latlon.html">shapefile2latlon()</a></code> 
         </dt>
-        <dd>read .zip that contains geodatabase file via unzip and st_read</dd>
+        <dd>Convert shapefile (class sf) of points to data.table of lat, lon columns</dd>
       </dl></div><div class="section level2">
       <h2 id="specify-counties-etc-">Specify Counties etc.<a class="anchor" aria-label="anchor" href="#specify-counties-etc-"></a></h2>
       
@@ -515,6 +551,11 @@ under the Clean Air Act.</dd>
           <code><a href="fips_bg_from_anyfips.html">fips_bg_from_anyfips()</a></code> 
         </dt>
         <dd>FIPS - Get unique blockgroup fips in or containing specified fips of any type</dd>
+      </dl><dl><dt>
+          
+          <code><a href="fips_from_table.html">fips_from_table()</a></code> 
+        </dt>
+        <dd>FIPS - Read and clean FIPS column from a table, after inferring which col it is</dd>
       </dl></div><div class="section level2">
       
       <h3 id="counties">Counties<a class="anchor" aria-label="anchor" href="#counties"></a></h3>
@@ -870,6 +911,11 @@ and lat/lon of Census2020-population-weighted centroid of block group</dd>
         <dd>Avg distance of each demog group (of multiple groups) - Table or Plot</dd>
       </dl><dl><dt>
           
+          <code><a href="distance_by_group.html">distance_by_group()</a></code> 
+        </dt>
+        <dd>See plot_distance_mean_by_group()</dd>
+      </dl><dl><dt>
+          
           <code><a href="popshare_at_top_n.html">popshare_at_top_n()</a></code> 
         </dt>
         <dd>top N sites account for what percent of residents?</dd>
@@ -914,9 +960,7 @@ and lat/lon of Census2020-population-weighted centroid of block group</dd>
           
           <code><a href="mapfastej.html">mapfastej()</a></code> 
         </dt>
-        <dd>Get a leaflet html widget map of data.frame with lat lon
-
-Like <code><a href="../reference/mapfast.html">mapfast()</a></code> but with column_names = "ej"</dd>
+        <dd>Get a leaflet html widget map of data.frame with lat lon</dd>
       </dl><dl><dt>
           
           <code><a href="mapfast_gg.html">mapfast_gg()</a></code> 
@@ -1003,14 +1047,35 @@ Utility to quickly view one or more facility points on map with the blocks found
 
       <dl><dt>
           
-          <code><a href="boxplots_ratios.html">boxplots_ratios()</a></code> 
+          <code><a href="plot_barplot_ratios_ez.html">plot_barplot_ratios_ez()</a></code> 
         </dt>
-        <dd>quick boxplots of demographics across sites as ratios to US means</dd>
+        <dd>Barplot of ratios of demographic (or other) scores to averages - simpler syntax</dd>
       </dl><dl><dt>
           
           <code><a href="plot_barplot_ratios.html">plot_barplot_ratios()</a></code> 
         </dt>
         <dd>Barplot of ratios of demographic (or other) scores to averages (or other references)</dd>
+      </dl><dl><dt>
+          
+          <code><a href="plot_ridgeline_ratios_ez.html">plot_ridgeline_ratios_ez()</a></code> 
+        </dt>
+        <dd>Make ridgeline plot of ratios of demographic score to its average</dd>
+      </dl><dl><dt>
+          
+          <code><a href="plot_ridgeline_ratios.html">plot_ridgeline_ratios()</a></code> 
+        </dt>
+        <dd>Make ridgeline plot of ratios of demographic score to its average</dd>
+      </dl><dl><dt>
+          
+          <code><a href="plot_vs_us.html">plot_vs_us()</a></code> 
+        </dt>
+        <dd>draft code to plot distribution of a variable among residents near set of sites vs nationwide
+Not yet population weighted</dd>
+      </dl><dl><dt>
+          
+          <code><a href="boxplots_ratios.html">boxplots_ratios()</a></code> 
+        </dt>
+        <dd>quick boxplots of demographics across sites as ratios to US means</dd>
       </dl><dl><dt>
           
           <code><a href="plot_demogshare_by_distance.html">plot_demogshare_by_distance()</a></code> 
@@ -1023,9 +1088,14 @@ Utility to quickly view one or more facility points on map with the blocks found
         <dd>What percentage of this demographic group's population lives less than X miles from a site?</dd>
       </dl><dl><dt>
           
+          <code><a href="plot_distance_by_group.html">plot_distance_by_group()</a></code> 
+        </dt>
+        <dd>Avg distance of each demog group (of multiple groups) - Table or Plot</dd>
+      </dl><dl><dt>
+          
           <code><a href="plot_distance_cdf_by_group.html">plot_distance_cdf_by_group()</a></code> 
         </dt>
-        <dd>Each groups distribution of distances</dd>
+        <dd>alias for distance_by_group_plot</dd>
       </dl><dl><dt>
           
           <code><a href="plot_distance_mean_by_group.html">plot_distance_mean_by_group()</a></code> 
@@ -1043,17 +1113,6 @@ COUNT OF SITES (or PEOPLE?) BY BIN</dd>
         </dt>
         <dd>lorenz plot bysite (cumulative share of x vs cum share of y) - DRAFT/EXPERIMENTAL
 COMPARES TWO subsets OF SITES (or people??)</dd>
-      </dl><dl><dt>
-          
-          <code><a href="plot_ridgeline_ratios.html">plot_ridgeline_ratios()</a></code> 
-        </dt>
-        <dd>Make ridgeline plot of ratios of demographic score to its average</dd>
-      </dl><dl><dt>
-          
-          <code><a href="plot_vs_us.html">plot_vs_us()</a></code> 
-        </dt>
-        <dd>draft code to plot distribution of a variable among residents near set of sites vs nationwide
-Not yet population weighted</dd>
       </dl></div><div class="section level2">
       
       <h3 id="tables">Tables<a class="anchor" aria-label="anchor" href="#tables"></a></h3>
@@ -1089,7 +1148,7 @@ Not yet population weighted</dd>
           
           <code><a href="table_ratios_from_ejamit.html">table_ratios_from_ejamit()</a></code> 
         </dt>
-        <dd>DRAFT - Quick view of summary stats by type of stat, but lacks rounding specific to each type, etc.</dd>
+        <dd>Quick view of summary stats by type of stat, but lacks rounding specific to each type, etc.</dd>
       </dl><dl><dt>
           
           <code><a href="table_gt_from_ejamit.html">table_gt_from_ejamit()</a></code> 
@@ -1280,6 +1339,11 @@ Not yet population weighted</dd>
           <code><a href="fixcolnames.html">fixcolnames()</a></code> 
         </dt>
         <dd>helper function to rename variables that are colnames of data.frame</dd>
+      </dl><dl><dt>
+          
+          <code><a href="fixcolnames_infer.html">fixcolnames_infer()</a></code> 
+        </dt>
+        <dd>convert colnames to standardized names based on aliases</dd>
       </dl><dl><dt>
           
           <code><a href="names_d.html">names_d</a></code> 

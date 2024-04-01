@@ -58,7 +58,12 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">shapefile_from_filepaths</span><span class="op">(</span>filepaths <span class="op">=</span> <span class="cn">NULL</span>, cleanit <span class="op">=</span> <span class="cn">TRUE</span>, crs <span class="op">=</span> <span class="fl">4269</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">shapefile_from_filepaths</span><span class="op">(</span></span>
+<span>  filepaths <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  cleanit <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  crs <span class="op">=</span> <span class="fl">4269</span>,</span>
+<span>  layer <span class="op">=</span> <span class="cn">NULL</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -74,14 +79,18 @@
 <dt>crs</dt>
 <dd><p>if cleanit = TRUE, crs is passed to shapefile_clean()
 default is crs = 4269 or Geodetic CRS NAD83
-Also can check this via x &lt;- sf::st_crs(sf::read_sf()); x$input</p></dd>
+Also can check this via x &lt;- sf::st_crs(sf::st_read()); x$input</p></dd>
+
+
+<dt>layer</dt>
+<dd><p>optional name of layer to read</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>a shapefile object using sf::read_sf()</p>
+<p>a shapefile object using sf::st_read()</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>

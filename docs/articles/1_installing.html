@@ -205,7 +205,7 @@ you can start by loading and attaching the package, using library or
 require. It should automatically download some data and build an
 index.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://bookish-disco-p8oe8wq.pages.github.io/" class="external-link">EJAM</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://usepa.github.io/EJAM/">EJAM</a></span><span class="op">)</span></span>
 <span><span class="co"># or library(EJAM)</span></span></code></pre></div>
 <p>That should be all you need to do.</p>
 <p>Just in case you need more details on how that works, the following
@@ -217,7 +217,7 @@ index.</p>
 <p>To work in the RStudio console, EJAM needs some datasets not stored
 as part of the package. However, they already should be downloaded and
 loaded into memory automatically as soon as you use
-<code><a href="https://bookish-disco-p8oe8wq.pages.github.io/" class="external-link">require(EJAM)</a></code> assuming that the current version of
+<code><a href="https://usepa.github.io/EJAM/">require(EJAM)</a></code> assuming that the current version of
 [EJAM:::on.Attach()] source code uses
 <code>asap_aws &lt;- TRUE; asap_index &lt;- TRUE; asap_bg</code>. If you
 want to be sure or if something is missing, you can do this
@@ -238,7 +238,7 @@ needed, using <code><a href="../reference/dataload_from_pins.html">dataload_from
 <p>EJAM also needs to build the index of about 8 million US block
 locations (one internal point for each block), which takes a few
 seconds. EJAM does this automatically when attached via
-<code><a href="https://bookish-disco-p8oe8wq.pages.github.io/" class="external-link">require(EJAM)</a></code> or <code><a href="https://bookish-disco-p8oe8wq.pages.github.io/" class="external-link">library(EJAM)</a></code>, by creating an
+<code><a href="https://usepa.github.io/EJAM/">require(EJAM)</a></code> or <code><a href="https://usepa.github.io/EJAM/">library(EJAM)</a></code>, by creating an
 object called <code>localtree</code> based on the <code>quaddata</code>
 object obtained as mentioned above. Some functions check for it and try
 to build the index on the fly if it is missing. You can also (re)build
