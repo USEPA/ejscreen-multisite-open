@@ -27,7 +27,7 @@ EJScreen Community Report"><meta property="og:image" content="https://usepa.gith
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <h6 class="dropdown-header" data-toc-skip>Overview for EJAM Users</h6>
-    <a class="dropdown-item" href="../articles/0_what_is_ejam.html">What is EJAM?</a>
+    <a class="dropdown-item" href="../articles/0_what_is_ejam.html">What is EJAM</a>
     <a class="dropdown-item" href="../articles/0_webapp.html">Using EJAM</a>
     <div class="dropdown-divider"></div>
     <h6 class="dropdown-header" data-toc-skip>For analysts using R</h6>
@@ -42,7 +42,13 @@ EJScreen Community Report"><meta property="og:image" content="https://usepa.gith
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
-      <ul class="navbar-nav"></ul></div>
+      <ul class="navbar-nav"><li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/USEPA/EJAM/" aria-label="github">
+    <span class="fab fa fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul></div>
 
     
   </div>
@@ -50,7 +56,7 @@ EJScreen Community Report"><meta property="og:image" content="https://usepa.gith
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>View HTML Report on EJAM Results (Overall or at 1 Site)</h1>
-      
+      <small class="dont-index">Source: <a href="https://github.com/USEPA/EJAM/blob/HEAD/R/ejam2report.R" class="external-link"><code>R/ejam2report.R</code></a></small>
       <div class="d-none name"><code>ejam2report.Rd</code></div>
     </div>
 
@@ -124,7 +130,7 @@ for viewing report on 1 site from a list of sites.</p>
 <span class="r-in"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="va">testoutput_ejamit_10pts_1miles</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">ejam2report</span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "C:\\Users\\mcorrale\\AppData\\Local\\Temp\\RtmpCwneeP/comm_report.html"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "C:\\Users\\mcorrale\\AppData\\Local\\Temp\\Rtmp6Z941l/comm_report.html"</span>
 <span class="r-in"><span><span class="fu"><a href="table_gt_from_ejamit_overall.html">table_gt_from_ejamit_overall</a></span><span class="op">(</span><span class="va">out</span><span class="op">$</span><span class="va">results_overall</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;div id="lefoodfiee" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;"&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   &lt;style&gt;#lefoodfiee table {</span>
