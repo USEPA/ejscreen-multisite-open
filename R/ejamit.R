@@ -252,10 +252,12 @@ ejamit <- function(sitepoints,
       if (missing(sitepoints)) {
         if (interactive() & !silentinteractive & !in_shiny) {
           sitepoints <- rstudioapi::selectFile(caption = "Select xlsx or csv with FIPS column of Census fips values", path = '.' )
+          # that returns the path to the file
           if (missing(radius)) {
             radius <- askradius(default = radius) # also see  askYesNo()
             # radius <- as.numeric(rstudioapi::showPrompt("Radius", "Within how many miles of each point?", 3))
           }
+          sitepoints <- latlon_any_format(sitepoints) # read file and infer colnames with lat lon
         } else {
           if (shiny::isRunning()) {
             warning("sitepoints (locations to analyze) is missing but required.")
@@ -273,7 +275,7 @@ ejamit <- function(sitepoints,
       if (!silentinteractive) {cat('Finding blocks nearby.\n')}
 
       ## check for ejam_uniq_id column; warn and add if not present
-      if(!c('ejam_uniq_id') %in% names(sitepoints)){
+      if (!c('ejam_uniq_id') %in% names(sitepoints)) {
         warning('sitepoints did not contain a column named ejam_uniq_id, so one was added')
         sitepoints$ejam_uniq_id <- seq.int(length.out = NROW(sitepoints))
       }
