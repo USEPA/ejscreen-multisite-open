@@ -98,39 +98,13 @@ or comparing whole counties to each other, within a State.</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span>  <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">getblocksnearby_from_fips</span><span class="op">(</span><span class="fu"><a href="fips_counties_from_state_abbrev.html">fips_counties_from_state_abbrev</a></span><span class="op">(</span><span class="st">"DE"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(blockid)`</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Unknown argument 'on' has been passed.</span>
-<span class="r-in"><span>  <span class="va">counties_ej</span> <span class="op">&lt;-</span> <span class="fu"><a href="doaggregate.html">doaggregate</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="co">#cannot use mapfast(counties_ej$results_bysite) since no lat lon.  mapfastej_counties() should work...</span></span></span>
-<span class="r-in"><span>  <span class="va">y</span> <span class="op">=</span>  <span class="fu"><a href="ejamit.html">ejamit</a></span><span class="op">(</span>fips<span class="op">=</span><span class="fu"><a href="fips_counties_from_statename.html">fips_counties_from_statename</a></span><span class="op">(</span><span class="st">"Delaware"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Finding blocks in each FIPS Census unit.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(blockid)`</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Unknown argument 'on' has been passed.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Aggregating at each FIPS Census unit and overall.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Percentages stored as 0 to 1 rather than 0 to 100 will not be shown correctly unless adjusted, </span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>           because rounding info says 0 digits when the intent is to show 0 digits after the 0-100 percent number.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Population Density: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    0% of places account for 50% of the total population (approx.)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    1, 5, 10 places account for 58%, NA%, NA% of the total population</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Output is a list with the following names:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  out is a list </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                  Name     format rows cols vectorlength</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1                     results_overall data.table    1  290           NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2                      results_bysite data.table    3  290           NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3                 results_bybg_people data.table  706   85           NA</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4                           longnames     vector   NA   NA          290</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5 count_of_blocks_near_multiple_sites     vector   NA   NA            1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6                  results_summarized     vector   NA   NA            2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7                           formatted data.frame  290    2           NA</span>
-<span class="r-in"><span>  </span></span>
-<span class="r-in"><span>  <span class="co"># x=getblocksnearby_from_fips("482011000011") # one blockgroup only</span></span></span>
-<span class="r-in"><span>  <span class="co"># y=doaggregate(x)</span></span></span>
-</code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span>  <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">getblocksnearby_from_fips</span><span class="op">(</span><span class="fu"><a href="fips_counties_from_state_abbrev.html">fips_counties_from_state_abbrev</a></span><span class="op">(</span><span class="st">"DE"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">counties_ej</span> <span class="op">&lt;-</span> <span class="fu"><a href="doaggregate.html">doaggregate</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span>  <span class="co">#cannot use mapfast(counties_ej$results_bysite) since no lat lon.  mapfastej_counties() should work...</span></span>
+<span>  <span class="va">y</span> <span class="op">=</span>  <span class="fu"><a href="ejamit.html">ejamit</a></span><span class="op">(</span>fips<span class="op">=</span><span class="fu"><a href="fips_counties_from_statename.html">fips_counties_from_statename</a></span><span class="op">(</span><span class="st">"Delaware"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="co"># x=getblocksnearby_from_fips("482011000011") # one blockgroup only</span></span>
+<span>  <span class="co"># y=doaggregate(x)</span></span></code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>

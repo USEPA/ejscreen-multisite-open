@@ -92,32 +92,12 @@ Environmental Information System.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span> <span class="fu">latlon_from_programid</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"XJW000012435"</span>, <span class="st">"00768SRTRSROAD1"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         lat        lon  REGISTRY_ID  program      pgm_sys_id</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       &lt;num&gt;      &lt;num&gt;       &lt;char&gt;   &lt;char&gt;          &lt;char&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1: 48.39008 -122.50088 110071133925 RCRAINFO    XJW000012435</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2: 18.06229  -66.85967 110000307855     TRIS 00768SRTRSROAD1</span>
-<span class="r-in"><span> <span class="va">pids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"7-0540-00003"</span>, <span class="st">"354362"</span>, <span class="st">"1513529"</span>, <span class="st">"485659"</span>, <span class="st">"LAG750956"</span>, </span></span>
-<span class="r-in"><span>   <span class="st">"CAC002995519"</span>, <span class="st">"3601252181"</span>, <span class="st">"3601439158"</span><span class="op">)</span></span></span>
-<span class="r-in"><span> <span class="fu"><a href="latlon_from_regid.html">latlon_from_regid</a></span><span class="op">(</span><span class="fu">latlon_from_programid</span><span class="op">(</span><span class="va">pids</span><span class="op">)</span><span class="op">[</span>,<span class="va">REGISTRY_ID</span><span class="op">]</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         lat        lon  REGISTRY_ID                  PRIMARY_NAME  NAICS    SIC        PGM_SYS_ACRNMS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       &lt;num&gt;      &lt;num&gt;       &lt;char&gt;                        &lt;char&gt; &lt;char&gt; &lt;char&gt;                &lt;char&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1: 43.00028  -76.69323 110019033810 HEJAMADA CAMPGROUND &amp; RV PARK          8999      FIS:7-0540-00003</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2: 38.22678 -121.02361 110066714951      CAMANCHE DAM POWER HOUSE          4911  CA-ENVIROVIEW:354362</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3: 41.38786  -73.43935 110044340807            NEJAME &amp; SONS INC.                        SIMS:1513529</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 4: 40.77499  -74.15929 110056111559      LA VEJAMA DISCOUNT STORE                     NJ-NJEMS:485659</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 5: 30.25468  -90.94284 110056982323           GRACEJAMES ENT, LLC          7542       NPDES:LAG750956</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6: 32.80406 -117.02753 110070538057             BEJAMIN HAFERTEPE               RCRAINFO:CAC002995519</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 7: 33.66110 -117.86959 110070874073                     EJAM INC.                     ICIS:3601252181</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8: 33.70369 -117.86675 110071293460                      EJAM INC                     ICIS:3601439158</span>
-<span class="r-in"><span> <span class="fu">latlon_from_programid</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"XJW000012435"</span>, <span class="st">"00768SRTRSROAD1"</span>, <span class="st">"asdfsdf"</span><span class="op">)</span><span class="op">)</span><span class="op">[</span>,<span class="fu">.</span><span class="op">(</span><span class="va">lat</span>,<span class="va">lon</span><span class="op">)</span><span class="op">]</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         lat        lon</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>       &lt;num&gt;      &lt;num&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1: 48.39008 -122.50088</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2: 18.06229  -66.85967</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 3:       NA         NA</span>
-<span class="r-in"><span></span></span>
-</code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span> <span class="fu">latlon_from_programid</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"XJW000012435"</span>, <span class="st">"00768SRTRSROAD1"</span><span class="op">)</span><span class="op">)</span></span>
+<span> <span class="va">pids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"7-0540-00003"</span>, <span class="st">"354362"</span>, <span class="st">"1513529"</span>, <span class="st">"485659"</span>, <span class="st">"LAG750956"</span>, </span>
+<span>   <span class="st">"CAC002995519"</span>, <span class="st">"3601252181"</span>, <span class="st">"3601439158"</span><span class="op">)</span></span>
+<span> <span class="fu"><a href="latlon_from_regid.html">latlon_from_regid</a></span><span class="op">(</span><span class="fu">latlon_from_programid</span><span class="op">(</span><span class="va">pids</span><span class="op">)</span><span class="op">[</span>,<span class="va">REGISTRY_ID</span><span class="op">]</span><span class="op">)</span></span>
+<span> <span class="fu">latlon_from_programid</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"XJW000012435"</span>, <span class="st">"00768SRTRSROAD1"</span>, <span class="st">"asdfsdf"</span><span class="op">)</span><span class="op">)</span><span class="op">[</span>,<span class="fu">.</span><span class="op">(</span><span class="va">lat</span>,<span class="va">lon</span><span class="op">)</span><span class="op">]</span></span>
+<span></span></code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>

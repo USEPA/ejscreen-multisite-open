@@ -110,28 +110,27 @@ found in output of ejamit()$results_bysite</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>  <span class="va">y1</span> <span class="op">&lt;-</span> <span class="fu"><a href="ejscreenit_for_ejam.html">ejscreenit_for_ejam</a></span><span class="op">(</span><span class="va">testpoints_10</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="op">]</span>, radius <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span>   <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/EJAMejscreenapi/man/ejscreenapi_plus.html" class="external-link">ejscreenapi_plus</a></span><span class="op">(</span><span class="va">testpoints_10</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="op">]</span>, radius <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
-<span class="r-in"><span>   <span class="va">y</span> <span class="op">&lt;-</span> <span class="fu">ejscreenapi2ejam_format</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
-<span class="r-in"><span>   <span class="va">ejamvars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">testoutput_ejamit_10pts_1miles</span><span class="op">$</span><span class="va">results_bysite</span><span class="op">)</span></span></span>
-<span class="r-in"><span>   <span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>     <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span>, </span></span>
-<span class="r-in"><span>     <span class="va">ejamvars</span><span class="op">[</span><span class="va">ejamvars</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span><span class="op">]</span></span></span>
-<span class="r-in"><span>  <span class="op">)</span></span></span>
-<span class="r-in"><span>  </span></span>
-<span class="r-in"><span>  <span class="va">z</span> <span class="op">&lt;-</span> <span class="fu">ejscreenapi2ejam_format</span><span class="op">(</span><span class="va">x</span>, fillmissingcolumns <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">z</span><span class="op">)</span>, <span class="va">ejamvars</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  </span></span>
-<span class="r-in"><span>  <span class="co"># for convenience also can do this:</span></span></span>
-<span class="r-in"><span>  <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">ejscreenapi2ejam_format</span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  </span></span>
-<span class="r-in"><span>  <span class="op">}</span></span></span>
-<span class="r-in"><span>  </span></span>
-<span class="r-in"><span>  </span></span>
-<span class="r-in"><span>  </span></span>
-</code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">y1</span> <span class="op">&lt;-</span> <span class="fu"><a href="ejscreenit_for_ejam.html">ejscreenit_for_ejam</a></span><span class="op">(</span><span class="va">testpoints_10</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="op">]</span>, radius <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span></span>
+<span>   <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">ejscreenapi_plus</span><span class="op">(</span><span class="va">testpoints_10</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, <span class="op">]</span>, radius <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span>   <span class="va">y</span> <span class="op">&lt;-</span> <span class="fu">ejscreenapi2ejam_format</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span>   <span class="va">ejamvars</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">testoutput_ejamit_10pts_1miles</span><span class="op">$</span><span class="va">results_bysite</span><span class="op">)</span></span>
+<span>   <span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span></span>
+<span>     <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span>, </span>
+<span>     <span class="va">ejamvars</span><span class="op">[</span><span class="va">ejamvars</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">y</span><span class="op">)</span><span class="op">]</span></span>
+<span>  <span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="va">z</span> <span class="op">&lt;-</span> <span class="fu">ejscreenapi2ejam_format</span><span class="op">(</span><span class="va">x</span>, fillmissingcolumns <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/all.equal.html" class="external-link">all.equal</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">z</span><span class="op">)</span>, <span class="va">ejamvars</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="co"># for convenience also can do this:</span></span>
+<span>  <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">ejscreenapi2ejam_format</span><span class="op">(</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="op">}</span></span>
+<span>  </span>
+<span>  </span>
+<span>  </span></code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>

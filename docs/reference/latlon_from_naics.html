@@ -95,56 +95,12 @@ identified by FRS data as being in a child NAICS (subcategory of your exact quer
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span>  <span class="fu"><a href="regid_from_naics.html">regid_from_naics</a></span><span class="op">(</span><span class="fl">321114</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Key: &lt;NAICS, REGISTRY_ID&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           lat        lon  REGISTRY_ID  NAICS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         &lt;num&gt;      &lt;num&gt;       &lt;char&gt;  &lt;num&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1: 18.41565  -66.20266 110000307837 321114</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2: 42.69898  -73.82309 110000324505 321114</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3: 41.71228  -73.93705 110000324809 321114</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4: 40.08626  -76.18172 110000333826 321114</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5: 40.18434  -74.79960 110000336253 321114</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 493: 35.59275  -84.46818 110071307905 321114</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 494: 35.42391  -87.28222 110071334308 321114</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 495: 37.50455 -122.21792 110071380069 321114</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 496: 39.79828 -104.99275 110071414306 321114</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 497: 35.89974  -88.75981 110071434078 321114</span>
-<span class="r-in"><span>  <span class="fu">latlon_from_naics</span><span class="op">(</span><span class="fl">321114</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Key: &lt;NAICS, REGISTRY_ID&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           lat        lon  REGISTRY_ID  NAICS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         &lt;num&gt;      &lt;num&gt;       &lt;char&gt;  &lt;num&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1: 18.41565  -66.20266 110000307837 321114</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2: 42.69898  -73.82309 110000324505 321114</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3: 41.71228  -73.93705 110000324809 321114</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4: 40.08626  -76.18172 110000333826 321114</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5: 40.18434  -74.79960 110000336253 321114</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 493: 35.59275  -84.46818 110071307905 321114</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 494: 35.42391  -87.28222 110071334308 321114</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 495: 37.50455 -122.21792 110071380069 321114</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 496: 39.79828 -104.99275 110071414306 321114</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 497: 35.89974  -88.75981 110071434078 321114</span>
-<span class="r-in"><span>  <span class="fu">latlon_from_naics</span><span class="op">(</span><span class="fu">EJAM</span><span class="fu">::</span><span class="fu"><a href="naics_from_any.html">naics_from_any</a></span><span class="op">(</span><span class="st">"cheese"</span><span class="op">)</span><span class="op">[</span>,<span class="va">code</span><span class="op">]</span> <span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Key: &lt;NAICS, REGISTRY_ID&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           lat        lon  REGISTRY_ID  NAICS</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         &lt;num&gt;      &lt;num&gt;       &lt;char&gt;  &lt;num&gt;</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   1: 44.18750  -75.95694 110000326102 311513</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   2: 42.87593  -78.86949 110000326825 311513</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   3: 42.83404  -78.82388 110000327183 311513</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   4: 41.47924  -81.07851 110000385798 311513</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   5: 43.59796  -85.14557 110000410207 311513</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  ---                                        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 397: 44.91011  -72.79787 110071292784 311513</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 398: 42.84509  -90.69292 110071433364 311513</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 399: 42.84416  -73.98835 110071433604 311513</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 400: 32.87831 -111.78364 110071434204 311513</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 401: 44.75453  -90.29649 110071498797 311513</span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">latlon_from_naics</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3366</span>, <span class="fl">33661</span>, <span class="fl">336611</span><span class="op">)</span>, id_only<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "110000897290" "110000332621" "110000360564" "110000369869" "110000377333" "110000448962"</span>
-<span class="r-in"><span>  <span class="co"># mapfast(frs_from_naics(336611)) # simple map</span></span></span>
-<span class="r-in"><span></span></span>
-</code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span>  <span class="fu"><a href="regid_from_naics.html">regid_from_naics</a></span><span class="op">(</span><span class="fl">321114</span><span class="op">)</span></span>
+<span>  <span class="fu">latlon_from_naics</span><span class="op">(</span><span class="fl">321114</span><span class="op">)</span></span>
+<span>  <span class="fu">latlon_from_naics</span><span class="op">(</span><span class="fu">EJAM</span><span class="fu">::</span><span class="fu"><a href="naics_from_any.html">naics_from_any</a></span><span class="op">(</span><span class="st">"cheese"</span><span class="op">)</span><span class="op">[</span>,<span class="va">code</span><span class="op">]</span> <span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu">latlon_from_naics</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3366</span>, <span class="fl">33661</span>, <span class="fl">336611</span><span class="op">)</span>, id_only<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="co"># mapfast(frs_from_naics(336611)) # simple map</span></span>
+<span></span></code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>

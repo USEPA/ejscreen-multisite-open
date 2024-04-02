@@ -90,7 +90,7 @@ or a colname of map_headernames, used if one of those known types was not specif
 
 <dt>mapping_for_names</dt>
 <dd><p>default is a dataset already in the package.
-A data.frame passed to <code><a href="https://rdrr.io/pkg/EJAMejscreenapi/man/fixnames.html" class="external-link">fixnames()</a></code> to do the work
+A data.frame passed to <code>fixnames()</code> to do the work
 with columns oldnames (original), longname_tableheader (long), newnames_ejscreenapi (friendly)</p></dd>
 
 </dl></div>
@@ -115,41 +115,26 @@ if you are really seeking metadata like what category it is in, it returns a bla
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p>varinfo() from EJAM pkg, and <code><a href="https://rdrr.io/pkg/EJAMejscreenapi/man/fixnames_to_type.html" class="external-link">fixnames_to_type()</a></code> <code>fixcolnames()</code> <code><a href="https://rdrr.io/pkg/EJAMejscreenapi/man/fixnames.html" class="external-link">fixnames()</a></code></p></div>
+    <div class="dont-index"><p>varinfo() from EJAM pkg, and <code>fixnames_to_type()</code> <code>fixcolnames()</code> <code>fixnames()</code></p></div>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span> <span class="co"># see package tests</span></span></span>
-<span class="r-in"><span>  <span class="fu">fixcolnames</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"RAW_D_INCOME"</span>, <span class="st">"S_D_LIFEEXP"</span><span class="op">)</span><span class="op">)</span> <span class="co"># assumes it was in original format as API outputs</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "pctlowinc"          "state.avg.lowlifex"</span>
-<span class="r-in"><span>  <span class="fu">fixcolnames</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"RAW_D_INCOME"</span>, <span class="st">"S_D_LIFEEXP"</span><span class="op">)</span>, newtype <span class="op">=</span> <span class="st">"long"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "% Low Income"                          "State average for Low life expectancy"</span>
-<span class="r-in"><span>  <span class="fu">fixcolnames</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"resp"</span>,<span class="st">"rsei"</span><span class="op">)</span>,  oldtype <span class="op">=</span> <span class="st">"r"</span>, newtype <span class="op">=</span> <span class="st">"long"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Air Toxics Respiratory Hazard Index" "Toxic Releases to Air"              </span>
-<span class="r-in"><span>  <span class="fu">fixcolnames</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"resp"</span>,<span class="st">"rsei"</span><span class="op">)</span>,  oldtype <span class="op">=</span> <span class="st">"r"</span>, newtype <span class="op">=</span> <span class="st">"api"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "RAW_E_RESP"     "RAW_E_RSEI_AIR"</span>
-<span class="r-in"><span>  <span class="fu">fixcolnames</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"resp"</span>,<span class="st">"pctlowinc"</span><span class="op">)</span>, oldtype <span class="op">=</span> <span class="st">"r"</span>, newtype <span class="op">=</span> <span class="st">"varlist"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "names_e" "names_d"</span>
-<span class="r-in"><span>  </span></span>
-<span class="r-in"><span>  <span class="co"># the columns "newsort" and "reportsort" provide useful sort orders</span></span></span>
-<span class="r-in"><span>  <span class="va">x</span> <span class="op">&lt;-</span> <span class="va">map_headernames</span><span class="op">$</span><span class="va">rname</span><span class="op">[</span><span class="va">map_headernames</span><span class="op">$</span><span class="va">varlist</span> <span class="op">==</span> <span class="st">"names_d"</span><span class="op">]</span> <span class="co"># EJAM package has names_d</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"original order"</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> </span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "original order"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "Demog.Index"      "Demog.Index.Supp" "pctlowinc"        "pctlingiso"       "pctunemployed"    "pctlths"          "lowlifex"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] "pctunder5"        "pctover64"        "pctmin"          </span>
-<span class="r-in"><span>  <span class="va">x</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">x</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, replace <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>   </span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"out of order"</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "out of order"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "pctlths"          "pctlingiso"       "Demog.Index.Supp" "Demog.Index"      "pctmin"           "pctlowinc"        "lowlifex"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] "pctunder5"        "pctunemployed"    "pctover64"       </span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"fixed order"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "fixed order"</span>
-<span class="r-in"><span>  <span class="va">x</span><span class="op">[</span> <span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="fu">fixcolnames</span><span class="op">(</span><span class="va">x</span>, oldtype <span class="op">=</span> <span class="st">"r"</span>, newtype <span class="op">=</span> <span class="st">"newsort"</span><span class="op">)</span><span class="op">)</span> <span class="op">]</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "Demog.Index"      "Demog.Index.Supp" "pctlowinc"        "pctlingiso"       "pctunemployed"    "pctlths"          "lowlifex"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] "pctunder5"        "pctover64"        "pctmin"          </span>
-<span class="r-in"><span></span></span>
-</code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span> <span class="co"># see package tests</span></span>
+<span>  <span class="fu">fixcolnames</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"RAW_D_INCOME"</span>, <span class="st">"S_D_LIFEEXP"</span><span class="op">)</span><span class="op">)</span> <span class="co"># assumes it was in original format as API outputs</span></span>
+<span>  <span class="fu">fixcolnames</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"RAW_D_INCOME"</span>, <span class="st">"S_D_LIFEEXP"</span><span class="op">)</span>, newtype <span class="op">=</span> <span class="st">"long"</span><span class="op">)</span></span>
+<span>  <span class="fu">fixcolnames</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"resp"</span>,<span class="st">"rsei"</span><span class="op">)</span>,  oldtype <span class="op">=</span> <span class="st">"r"</span>, newtype <span class="op">=</span> <span class="st">"long"</span><span class="op">)</span></span>
+<span>  <span class="fu">fixcolnames</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"resp"</span>,<span class="st">"rsei"</span><span class="op">)</span>,  oldtype <span class="op">=</span> <span class="st">"r"</span>, newtype <span class="op">=</span> <span class="st">"api"</span><span class="op">)</span></span>
+<span>  <span class="fu">fixcolnames</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"resp"</span>,<span class="st">"pctlowinc"</span><span class="op">)</span>, oldtype <span class="op">=</span> <span class="st">"r"</span>, newtype <span class="op">=</span> <span class="st">"varlist"</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="co"># the columns "newsort" and "reportsort" provide useful sort orders</span></span>
+<span>  <span class="va">x</span> <span class="op">&lt;-</span> <span class="va">map_headernames</span><span class="op">$</span><span class="va">rname</span><span class="op">[</span><span class="va">map_headernames</span><span class="op">$</span><span class="va">varlist</span> <span class="op">==</span> <span class="st">"names_d"</span><span class="op">]</span> <span class="co"># EJAM package has names_d</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"original order"</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> </span>
+<span>  <span class="va">x</span> <span class="op">&lt;-</span>  <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">x</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, replace <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>   </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"out of order"</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="st">"fixed order"</span><span class="op">)</span></span>
+<span>  <span class="va">x</span><span class="op">[</span> <span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="fu">fixcolnames</span><span class="op">(</span><span class="va">x</span>, oldtype <span class="op">=</span> <span class="st">"r"</span>, newtype <span class="op">=</span> <span class="st">"newsort"</span><span class="op">)</span><span class="op">)</span> <span class="op">]</span></span>
+<span></span></code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
