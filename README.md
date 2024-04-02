@@ -40,37 +40,38 @@ EJAM is provided by the US Environmental Protection Agency (US EPA), and
 is being actively developed so that new versions will continue to be
 tested and released over time.
 
-- [What is EJAM?](articles/0_what_is_ejam.html "0_what_is_ejam.html")
+- [What is
+  EJAM?](https://usepa.github.io/EJAM/articles/0_what_is_ejam.html)
 
 ## EJAM as a Web App
 
-- [Using EJAM as a Web App](articles/0_webapp.html "0_webapp.html")
-  <!-- 
+- [Using EJAM as a Web
+  App](https://usepa.github.io/EJAM/articles/0_webapp.html) <!-- 
       -   [EJAM beta test](https://rstudio-connect.dmap-stage.aws.epa.gov/content/cb2bc9cf-75c3-4db1-ad28-e92940fe4438/ "https://rstudio-connect.dmap-stage.aws.epa.gov/content/cb2bc9cf-75c3-4db1-ad28-e92940fe4438/") (accessible only if at EPA offices or on VPN)
   -->
 
 ## The EJAM R Package for Analysts and Developers
 
 - [1. Installing the EJAM R
-  package](articles/1_installing.html "1_installing.html")
+  package](https://usepa.github.io/EJAM/articles/1_installing.html)
 
 - [2. Quick Start Guide to the EJAM R
-  package](articles/2_quickstart.html "2_quickstart.html")
+  package](https://usepa.github.io/EJAM/articles/2_quickstart.html)
 
 - [3. Basics of Using EJAM for Analysis in
-  RStudio](articles/3_analyzing.html "3_analyzing.html")
+  RStudio](https://usepa.github.io/EJAM/articles/3_analyzing.html)
 
 - [4. Advanced Features in the EJAM R
-  package](articles/4_advanced.html "4_advanced.html")
+  package](https://usepa.github.io/EJAM/articles/4_advanced.html)
 
 - [5. Accessing a Batch of EJScreen Reports via
-  EJAM](articles/5_ejscreenapi.html "5_ejscreenapi.html")
+  EJAM](https://usepa.github.io/EJAM/articles/5_ejscreenapi.html)
 
 - [6. Future Plans for
-  EJAM](articles/6_future_plans.html "6_future_plans.html")
+  EJAM](https://usepa.github.io/EJAM/articles/6_future_plans.html)
 
 - [Reference Manual Documenting all EJAM Package Functions and
-  Data](reference/index.html "index.html")
+  Data](https://usepa.github.io/EJAM/articles/index.html)
 
 - [GitHub Repository - Code and Data, at
   USEPA/EJAM](https://github.com/USEPA/EJAM#readme "https://github.com/USEPA/EJAM#readme")
