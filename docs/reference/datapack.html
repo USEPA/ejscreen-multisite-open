@@ -291,14 +291,14 @@ It may create and leave objects in global envt - not careful about that.</p>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in datapack(simple = F):</span> could not find function "datapack"</span>
 <span class="r-in"><span> <span class="co"># sorted by size already, to see largest ones among all these pkgs:</span></span></span>
 <span class="r-in"><span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span>, <span class="fl">20</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in tail(x[, 1:3], 20):</span> object 'x' not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in x[, 1:3]:</span> incorrect number of dimensions</span>
 <span class="r-in"><span> </span></span>
 <span class="r-in"><span> <span class="co"># sorted alphabetically within each pkg</span></span></span>
 <span class="r-in"><span> <span class="va">x</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">Package</span>, <span class="va">x</span><span class="op">$</span><span class="va">Item</span><span class="op">)</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'x' not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in order(x$Package, x$Item):</span> argument 1 is not a vector</span>
 <span class="r-in"><span> <span class="co"># sorted alphabetically across all the pkgs</span></span></span>
 <span class="r-in"><span> <span class="va">x</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">Item</span><span class="op">)</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'x' not found</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in order(x$Item):</span> argument 1 is not a vector</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

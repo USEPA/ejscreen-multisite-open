@@ -255,6 +255,23 @@ passed to <code><a href="doaggregate.html">doaggregate()</a></code> also. app se
 <span class="r-out co"><span class="r-pr">#&gt;</span> Aggregating at each buffer and overall.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Percentages stored as 0 to 1 rather than 0 to 100 will not be shown correctly unless adjusted, </span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span>           because rounding info says 0 digits when the intent is to show 0 digits after the 0-100 percent number.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Population Density: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    8% of places account for 50% of the total population (approx.)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    1, 5, 10 places account for 14%, 41%, 54% of the total population</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Output is a list with the following names:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  out is a list </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                  Name     format rows cols vectorlength</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                     results_overall data.table    1  290           NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                      results_bysite data.table  100  290           NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                 results_bybg_people data.table 4057   85           NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4                           longnames     vector   NA   NA          290</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 count_of_blocks_near_multiple_sites     vector   NA   NA            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6                  results_summarized     vector   NA   NA            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7                           formatted data.frame  290    2           NA</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span> <span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span> <span class="co"># Do not specify sitepoints and it will prompt you for a file,</span></span></span>

@@ -103,17 +103,15 @@ or comparing whole counties to each other, within a State.</p></dd>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> &lt;https://rstudio-connect.dmap-stage.aws.epa.gov&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Successfully connected to Posit Connect pins board.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> blockid2fips   - is NOT in memory. Checking local disk... blockid2fips  is NOT found locally on disk at ~/../Downloads/EJAMbigfiles/blockid2fips.arrow </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> blockid2fips   - is NOT in local folder.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> blockid2fips  - was read from pins board server, into memory (to specified envir).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> blockid2fips   - is NOT in memory. Checking local disk... blockid2fips  is loading from ~/../Downloads/EJAMbigfiles/blockid2fips.arrow ...done.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> blockid2fips   - was loaded from local folder, so server copy was not sought.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Connecting to Posit Connect 2024.01.0 at</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> &lt;https://rstudio-connect.dmap-stage.aws.epa.gov&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Successfully connected to Posit Connect pins board.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> bgid2fips    - is NOT in memory. Checking local disk... bgid2fips   is NOT found locally on disk at ~/../Downloads/EJAMbigfiles/bgid2fips.arrow </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> bgid2fips    - is NOT in local folder.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> bgid2fips   - was read from pins board server, into memory (to specified envir).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> bgid2fips    - is NOT in memory. Checking local disk... bgid2fips   is loading from ~/../Downloads/EJAMbigfiles/bgid2fips.arrow ...done.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> bgid2fips    - was loaded from local folder, so server copy was not sought.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Joining with `by = join_by(blockid)`</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Unknown argument 'on' has been passed.</span>
@@ -126,6 +124,23 @@ or comparing whole counties to each other, within a State.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Aggregating at each FIPS Census unit and overall.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Percentages stored as 0 to 1 rather than 0 to 100 will not be shown correctly unless adjusted, </span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span>           because rounding info says 0 digits when the intent is to show 0 digits after the 0-100 percent number.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Population Density: </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    0% of places account for 50% of the total population (approx.)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    1, 5, 10 places account for 58%, NA%, NA% of the total population</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Output is a list with the following names:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  out is a list </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                                  Name     format rows cols vectorlength</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1                     results_overall data.table    1  290           NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2                      results_bysite data.table    3  290           NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3                 results_bybg_people data.table  706   85           NA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4                           longnames     vector   NA   NA          290</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5 count_of_blocks_near_multiple_sites     vector   NA   NA            1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6                  results_summarized     vector   NA   NA            2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7                           formatted data.frame  290    2           NA</span>
 <span class="r-in"><span>  </span></span>
 <span class="r-in"><span>  <span class="co"># x=getblocksnearby_from_fips("482011000011") # one blockgroup only</span></span></span>
 <span class="r-in"><span>  <span class="co"># y=doaggregate(x)</span></span></span>
