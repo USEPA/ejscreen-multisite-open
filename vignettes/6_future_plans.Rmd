@@ -22,8 +22,7 @@ knitr::opts_chunk$set(
 
 ## Public Access
 
-Ultimately, a version of EJAM will be made available to the public, but it will initially be tested and used within EPA, just as EJScreen was launched internally in 2012 and went public in 2015. A public version will have to be carefully designed to balance user-friendliness of the visual interface and features,
-relevance to what the public would find useful, and support that includes appropriate documentation and user support.
+Ultimately, EJScreen features based on EJAM (or a version of EJAM) will be made available to the public. EJAM itself will initially be tested and used within EPA, just as EJScreen was launched internally in 2012 and went public in 2015. A public version would have to be carefully designed to balance user-friendliness of the visual interface and features, relevance to what the public would find useful, and support that includes appropriate documentation and user support.
 
 During 2024, EJAM will be tested and launch internally within EPA, as we explore what works and what is still needed, including some of the ideas and plans listed below.
 

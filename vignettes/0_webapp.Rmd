@@ -20,9 +20,9 @@ knitr::opts_chunk$set(eval = FALSE)
 # https://r-pkgs.org/vignettes.html
 ```
 
-# EJAM website
+# EJAM and EJScreen websites
 
-EJAM is not yet available to the general public on a website. A web app was being tested for internal use at EPA as of early 2024, for use internally in 2024, and a user-friendly version is intended to be made available to the public in the future.
+EJScreen will be able to leverage EJAM's technology to provide public access to batches of reports. EJAM itself is not an app running on a public website. A user-friendly web app will be made available to the public in the future, either as part of EJScreen (based on EJAM code) or as a separate EJAM app. A web app was being tested for internal use at EPA as of early 2024.
 
 <!--
 As of February 2024, EPA staff can try a live beta test version of the EJAM web app - The beta test is accessible only at EPA offices or via VPN:

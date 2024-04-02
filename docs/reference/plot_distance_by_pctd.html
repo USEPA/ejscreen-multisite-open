@@ -11,7 +11,7 @@ This function uses the distance of each Census block from the site in conjunctio
 the block group demographics, to provide a relatively detailed picture of
 how far away residents in each group live. In contrast, the function
 distance_cdf_by_group_plot() is based on ejamit()$results_bybg_people,
-which provides only block group resolution information about distance."><meta property="og:image" content="https://usepa.github.io/EJAM/logo.svg"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
+which provides only block group resolution information about distance."><meta property="og:image" content="usepa.github.io/EJAM/logo.svg"><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]--></head><body>
@@ -123,28 +123,28 @@ and only works for one indicator at a time so far.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Analyzing 2 points, radius of 6.2 miles around each.</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Finding Census blocks with internal point within  6.2  miles of the site (point), for each of 2  sites (points)...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Stats via getblocks_diagnostics(), but BEFORE ADJUSTING UP FOR VERY SHORT DISTANCES: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> min distance before adjustment:  0.03885213 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> max distance before adjustment:  11.85171 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> min distance before adjustment:  0.2155406 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> max distance before adjustment:  9.661639 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    Summary stats on distances reported from any sites to any nearby blocks</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -Inf miles is max. distance to block internal point (distance_unadjusted)   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 11.85171 miles is max. distance to average resident in block (distance reported)   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 9.661639 miles is max. distance to average resident in block (distance reported)   </span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to min; returning Inf</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Inf miles is shortest distance to block internal point (distance_unadjusted)   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 0.03885213 miles is shortest distance to average resident in block (distance reported)   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 0.2155406 miles is shortest distance to average resident in block (distance reported)   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to max; returning -Inf</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>no non-missing arguments to min; returning Inf</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 2 unique output sites</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 6,682 blocks are near the avg site or in avg buffer</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3,574 blocks are near the avg site or in avg buffer</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              (based on their block internal point, like a centroid)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13,364 blocks including doublecounting in overlaps, </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7,148 blocks including doublecounting in overlaps, </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>              in final row count (block-to-site pairs table)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13,364 actual unique blocks total</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 13,364 blocks (and their residents) have exactly 1 site nearby </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7,148 actual unique blocks total</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 7,148 blocks (and their residents) have exactly 1 site nearby </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 0 blocks (and their residents) have exactly 2 sites nearby </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 0 blocks (and their residents) have exactly 3 sites nearby </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 1 is ratio of blocks including multicounting / actual count of unique blocks</span>
@@ -155,8 +155,8 @@ and only works for one indicator at a time so far.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Adjusting upwards the very short distances now...</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  Stats via getblocks_diagnostics(), AFTER ADJUSTING up FOR SHORT DISTANCES: </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> min distance AFTER adjustment:  0.1491939 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> max distance AFTER adjustment:  6.199996 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> min distance AFTER adjustment:  0.2221275 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> max distance AFTER adjustment:  6.199497 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in `[.data.frame`(usastats, usastats$PCTILE == 100, dpctvar):</span> object 'dpctvar' not found</span>
