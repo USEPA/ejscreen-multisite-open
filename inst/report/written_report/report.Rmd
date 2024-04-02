@@ -265,7 +265,7 @@ if (params$testmode) {
 
 EPA's EJAM (Environmental Justice Analysis Multisite) tool was used to
 develop this analysis. EPA's [EJAM
-tool](https://rstudio-connect.dmap-stage.aws.epa.gov/content/163e7ff5-1a1b-4db4-ad9e-e9aa5d764002/ "Environmental Justice Analysis Multisite (EJAM) tool")
+tool](https://usepa.github.io/EJAM/index.html "Environmental Justice Analysis Multisite (EJAM) tool")
 is a user-friendly web app that can summarize demographics and
 environmental conditions for any list of places in the nation. 
 
@@ -317,7 +317,7 @@ The only notable differences between the EJScreen and EJAM calculations of proxi
 
 ## Demographic and environmental indicators
 
-PLACEHOLDER - The demographics included here are those in EJScreen and
+The demographics included here are those in EJScreen and
 also race/ethnicity subgroups that comprise the total count of people of
 color. POC are defined as all other than those self-identifying in ACS
 survey data as white, single race, not Hispanic or Latino - i.e.,

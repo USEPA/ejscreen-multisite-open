@@ -67,14 +67,16 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">plot_barplot_ratios</span><span class="op">(</span></span>
 <span>  <span class="va">ratio.to.us.d.overall</span>,</span>
 <span>  names2plot_friendly <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  mycolorsavailable <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gray"</span>, <span class="st">"yellow"</span>, <span class="st">"orange"</span>, <span class="st">"red"</span><span class="op">)</span></span>
+<span>  mycolorsavailable <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gray"</span>, <span class="st">"yellow"</span>, <span class="st">"orange"</span>, <span class="st">"red"</span><span class="op">)</span>,</span>
+<span>  main <span class="op">=</span> <span class="st">"Demographics at the Analyzed Locations Compared to US Overall"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>ratio.to.us.d.overall</dt>
-<dd><p>named list of a few ratios to plot</p></dd>
+<dd><p>named list of a few ratios to plot, but see <code><a href="plot_barplot_ratios_ez.html">plot_barplot_ratios_ez()</a></code>
+for an easier way to specify which indicator to show.</p></dd>
 
 
 <dt>names2plot_friendly</dt>
@@ -83,6 +85,10 @@
 
 <dt>mycolorsavailable</dt>
 <dd><p>leave as default</p></dd>
+
+
+<dt>main</dt>
+<dd><p>title for plot, like "Demographics at the Analyzed Locations Compared to US Overall"</p></dd>
 
 </dl></div>
     <div class="section level2">

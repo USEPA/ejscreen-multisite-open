@@ -7,15 +7,20 @@
 plot_barplot_ratios_ez(
   out,
   varnames = c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg),
+  main = "Demographics at the Analyzed Locations Compared to US Overall",
   ...
 )
 }
 \arguments{
-\item{out}{like from ejamit()}
+\item{out}{like from \code{\link[=ejamit]{ejamit()}}}
 
-\item{varnames}{vector of indicator names that are ratios to avg}
+\item{varnames}{vector of indicator names that are ratios to avg, like
+c(names_d_ratio_to_avg , names_d_subgroups_ratio_to_avg)
+but could be c(names_d_ratio_to_state_avg , names_d_subgroups_ratio_to_state_avg)}
 
-\item{...}{passed to plot_barplot_ratios()}
+\item{main}{title of plot - must change to note it vs. State if not comparing to US avg.}
+
+\item{...}{passed to \code{\link[=plot_barplot_ratios]{plot_barplot_ratios()}}}
 }
 \value{
 ggplot

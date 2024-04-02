@@ -164,7 +164,7 @@ board %>% pins::pin_browse("Mark/frs")
 # Note user needs own Posit Connect API key if not accessible by all on network, but should be accessible by all on network as configured as of 12/2023 
 
 ### via URL ####
-# if Mark is logged in and has api key etc already, 
+# if logged in and have api key etc already, 
 # this does work to download it: 
 # https://rstudio-connect.dmap-stage.aws.epa.gov/content/343456d8-d580-47e1-87f2-1ec95ad7f792/_rev1116/bgej.arrow
 

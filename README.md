@@ -47,7 +47,7 @@ tested and released over time.
 
 - [Using EJAM as a Web
   App](https://usepa.github.io/EJAM/articles/0_webapp.html) <!-- 
-      -   [EJAM beta test](https://rstudio-connect.dmap-stage.aws.epa.gov/content/cb2bc9cf-75c3-4db1-ad28-e92940fe4438/ "https://rstudio-connect.dmap-stage.aws.epa.gov/content/cb2bc9cf-75c3-4db1-ad28-e92940fe4438/") (accessible only if at EPA offices or on VPN)
+      -   EJAM beta test is accessible only if at EPA offices or on VPN
   -->
 
 ## The EJAM R Package for Analysts and Developers

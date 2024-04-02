@@ -11,11 +11,13 @@ vignette: >
 #    - **See ?pkgdown::build_site** - EJAM uses the pkgdown R package to build help and articles/ vignettes as web pages
 ```
 
-```{r, include = FALSE}
+```{r SETUP_default_eval_or_not, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+knitr::opts_chunk$set(eval = FALSE)
+# https://r-pkgs.org/vignettes.html
 ```
 
 ## EPA's EJ Analysis Multi-site (EJAM) tool
