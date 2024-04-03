@@ -30,6 +30,7 @@
 #'   look in for locally saved copies in case pins board is not reachable by user.
 #' @param justchecking can set to TRUE to just see a list of what pins are stored in that board
 #' @param silent set to TRUE to suppress cat() msgs to console
+#' @param ignorelocal set it to TRUE to avoid 1st checking local disk for copies of files
 #' @import pins
 #'
 #' @return If justchecking = FALSE,
@@ -64,8 +65,9 @@ dataload_from_pins <- function(varnames = c(c('blockwts', 'blockpoints', 'blocki
                                folder_local_source = NULL, # './data/', # or "~/../Downloads"
                                envir = globalenv(),
                                justchecking = FALSE,
+                               ignorelocal = FALSE,
                                silent = FALSE) {
-
+  
   if ('all' %in% tolower(varnames)) {
     varnames <- c(
       c('blockwts', 'blockpoints', 'blockid2fips', "quaddata"),
@@ -74,13 +76,14 @@ dataload_from_pins <- function(varnames = c(c('blockwts', 'blockpoints', 'blocki
       c('frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact")
     )
   }
-
+  
   if (justchecking) {
-    #  display in console some info on where these objects are
-    dataload_from_local(varnames = varnames, envir = envir,
-                        justchecking = TRUE, folder_local_source = folder_local_source)
+    if (!ignorelocal) {
+      #  display in console some info on where these objects are
+      dataload_from_local(varnames = varnames, envir = envir,
+                          justchecking = TRUE, folder_local_source = folder_local_source)
+    }
   }
-
   ####################################################### #
   # Check access to pins board server ####
   #
@@ -88,7 +91,7 @@ dataload_from_pins <- function(varnames = c(c('blockwts', 'blockpoints', 'blocki
     board <- tryCatch(
       pins::board_connect(auth = "rsconnect") # ignore server default here. use server and key already configured for rsconnect.
       , error = function(e) e)
-
+    
     # server <- gsub("https://", "", server)
   } else {
     board <- tryCatch(pins::board_connect(server = server, auth = auth),
@@ -101,14 +104,14 @@ dataload_from_pins <- function(varnames = c(c('blockwts', 'blockpoints', 'blocki
     board_available <- TRUE
     if (!silent) {cat("Successfully connected to Posit Connect pins board.\n\n")}
   }
-
+  
   ####################################################### #
   # make output in console easier to read:
   if (length(varnames) > 1) {widest <- max(nchar(varnames))} else {widest <- max(10, nchar(varnames))}
   spacing <- sapply(1:length(varnames), function(x) paste0(rep(" ", widest - nchar(varnames[x])), collapse = ''))
-
+  
   varnames_gotten <- NULL
-
+  
   # justchecking, just report availability ####
   if (justchecking) {
     if (board_available) {
@@ -122,18 +125,18 @@ dataload_from_pins <- function(varnames = c(c('blockwts', 'blockpoints', 'blocki
       if (!silent) {cat("\n")}
       return(varnames_gotten) # get a vector of just the names of the objects
     }
-
+    
   } else {
-
+    
     # not justchecking, so loop over varnames and get each ####
-
+    
     for (i in 1:length(varnames)) {
-
+      
       varname_i <- varnames[i]
-
+      
       # 1. TRY MEMORY ####
       if (exists(varname_i, envir = envir)) {
-
+        
         ## done (was already in memory) ####
         if (!silent) {
           cat(varname_i, spacing[i],
@@ -141,39 +144,40 @@ dataload_from_pins <- function(varnames = c(c('blockwts', 'blockpoints', 'blocki
         }
         varnames_gotten <- c(varnames_gotten, varname_i)
       } else {
-
-        # 2. TRY LOCAL DISK next ####
-        # (before bothering with pins board server)
-
-        if (!silent) {cat(varname_i, spacing[i], " - is NOT in memory. Checking local disk... ")}
-        dataload_from_local(varname_i, folder_local_source = folder_local_source, ext = 'arrow', envir = envir)
-
-        if (exists(varname_i, envir = envir)) {
-
-          ## done (got from local disk) ####
-
-          if (!silent) {cat(varname_i, spacing[i], " - was loaded from local folder, so server copy was not sought.\n")}
-          varnames_gotten <- c(varnames_gotten, varname_i)
-
+        
+        if (!ignorelocal) {
+          # 2. TRY LOCAL DISK next ####
+          # (before bothering with pins board server)
+          
+          if (!silent) {cat(varname_i, spacing[i], " - is NOT in memory. Checking local disk... ")}
+          dataload_from_local(varname_i, folder_local_source = folder_local_source, ext = 'arrow', envir = envir)
+          
+          if (exists(varname_i, envir = envir)) {
+            
+            ## done (got from local disk) ####
+            
+            if (!silent) {cat(varname_i, spacing[i], " - was loaded from local folder, so server copy was not sought.\n")}
+            varnames_gotten <- c(varnames_gotten, varname_i)
+          }
         } else {
-          if (!silent) {cat(varname_i, spacing[i], " - is NOT in local folder.\n")}
-
+          if (!silent && !ignorelocal) {cat(varname_i, spacing[i], " - is NOT in local folder.\n")}
+          
           # 3. TRY PINS SERVER last ####
-
+          
           if (board_available) {
             pathpin <- paste0(boardfolder, "/", varname_i)
             if (pins::pin_exists(board, pathpin)) {
               assign(varname_i, pins::pin_read(board, pathpin), envir = envir)
               if (exists(varname_i, envir = envir)) {
-
+                
                 ## done (got from pins) ####
-
+                
                 if (!silent) {cat(varname_i, spacing[i], "- was read from pins board server, into memory (to specified envir).\n")}
                 varnames_gotten <- c(varnames_gotten, varname_i)
               } else {
-
+                
                 # FAIL: problem using pins? ####
-
+                
                 warning("Error with ", varname_i,"- pins board accessed and board has it but failed anyway to obtain or assign to envir!")
               }
             } else {
@@ -181,19 +185,27 @@ dataload_from_pins <- function(varnames = c(c('blockwts', 'blockpoints', 'blocki
               warning(pathpin, "not found at ", server)
             }
           } else {
-
+            
             # FAIL: not in RAM or local + cant reach pins server ####
-
+            
             if (!silent) {cat(" and could NOT download ", varname_i, " - cannot connect to ", server, "/", "\n", sep = "")}
           }
         }
       }
-
+      
+      if (exists(varname_i, envir = envir)) {
+        # try DMAP data commons AWS here as last resort location to check 
+        dataload_from_aws(varname_i, envir = envir, folder_local_source = "NOTCHECKINGLOCAL" ) # use default function and extension params. use a nonworking local folder to avoid local
+        if (exists(varname_i, envir = envir)) {
+          if (!silent) {cat(" and could NOT download ", varname_i, " from DMAP AWS data commons \n", sep = "")}
+        }
+      }
+      
     } # end of loop
   }
   if (!silent) {cat("\n")}
   return(varnames_gotten)
-
+  
   #  board <- pins::board_connect(server = "rstudio-connect.dmap-stage.aws.epa.gov")
   ## board <- pins::board_connect(server = server = Sys.getenv("CONNECT_SERVER"))
   #  bgej  <- pins::pin_read(board, "Mark/bgej") ### IT IS A TIBBLE NOT DT, NOT DF
