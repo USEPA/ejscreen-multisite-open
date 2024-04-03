@@ -53,6 +53,6 @@ packrat/lib*/
 /data/*.arrow
 
 # pkgdown folders are here
-docs
+# docs
 
 
