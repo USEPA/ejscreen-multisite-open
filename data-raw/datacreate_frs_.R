@@ -10,9 +10,11 @@
 ################################################################################ # 
 #
 ## library(## EJAMfrsdata)
-mydir <- "~/../Downloads/arrow_frs"
+mydir <- "~/../Downloads/arrow_frs" # or where you want to save them locally once updated
+
 if (!dir.exists(mydir)) {dir.create(mydir)}
 if (!exists("alreadygot")) {alreadygot <- FALSE; mytemp <- tempdir()}
+
 frs_update_datasets(folder = mytemp, # default would use a tempdir() but not return its name
                     downloaded_and_unzipped_already = alreadygot,
                     folder_save_as_arrow = mydir,
@@ -57,3 +59,4 @@ for (varname in frs_vars) {
 # THAT IS DONE BY SCRIPT  IN  
 # EJAM/data-raw/datacreate_pins.R 
  
+# and copy to any local folder being used to cache them, e.g., EJAM/data folder
