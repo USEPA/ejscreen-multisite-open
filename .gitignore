@@ -52,7 +52,10 @@ packrat/lib*/
 # large datasets stored as .arrow
 /data/*.arrow
 
-# pkgdown folders are here
+# pkgdown folders are here. I think if publishing from docs folder
+# we do not want to ignore changes in it, despite default in what 
+# use_pkgdown(): creates a pkgdown config file and adds relevant files or directories to .Rbuildignore and .gitignore
+
 # docs
 
 
