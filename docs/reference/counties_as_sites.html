@@ -96,12 +96,109 @@ See more below under "Value"</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span> <span class="fu">counties_as_sites</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'01001'</span>,<span class="st">'72153'</span><span class="op">)</span><span class="op">)</span></span>
-<span> <span class="co"># Largest US Counties by ACS Population Totals:</span></span>
-<span> <span class="va">blockgroupstats</span><span class="op">[</span> , <span class="fu">.</span><span class="op">(</span>ST <span class="op">=</span> <span class="va">ST</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, countypop <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">pop</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>  by<span class="op">=</span><span class="fu">.</span><span class="op">(</span>FIPS <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substr.html" class="external-link">substr</a></span><span class="op">(</span><span class="va">bgfips</span>,<span class="fl">1</span>,<span class="fl">5</span><span class="op">)</span><span class="op">)</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="op">-</span><span class="va">countypop</span><span class="op">)</span>,<span class="op">]</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">20</span>, <span class="fu">.</span><span class="op">(</span></span>
-<span>  CountyPopulation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/formatc.html" class="external-link">prettyNum</a></span><span class="op">(</span><span class="va">countypop</span>, big.mark <span class="op">=</span> <span class="st">","</span><span class="op">)</span>, <span class="va">FIPS</span>, <span class="va">ST</span><span class="op">)</span><span class="op">]</span></span>
-<span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span> <span class="fu">counties_as_sites</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'01001'</span>,<span class="st">'72153'</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     ejam_uniq_id countyfips   bgid</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            &lt;int&gt;     &lt;char&gt;  &lt;int&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  1:            1      01001      1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  2:            1      01001      2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  3:            1      01001      3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  4:            1      01001      4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  5:            1      01001      5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  6:            1      01001      6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  7:            1      01001      7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  8:            1      01001      8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  9:            1      01001      9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10:            1      01001     10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11:            1      01001     11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12:            1      01001     12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13:            1      01001     13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14:            1      01001     14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15:            1      01001     15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16:            1      01001     16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17:            1      01001     17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18:            1      01001     18</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19:            1      01001     19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20:            1      01001     20</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 21:            1      01001     21</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 22:            1      01001     22</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 23:            1      01001     23</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 24:            1      01001     24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 25:            1      01001     25</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 26:            1      01001     26</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 27:            1      01001     27</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 28:            1      01001     28</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 29:            1      01001     29</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 30:            1      01001     30</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 31:            1      01001     31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 32:            1      01001     32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 33:            1      01001     33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 34:            1      01001     34</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 35:            1      01001     35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 36:            1      01001     36</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 37:            1      01001     37</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 38:            1      01001     38</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 39:            1      01001     39</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 40:            1      01001     40</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 41:            1      01001     41</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 42:            1      01001     42</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 43:            1      01001     43</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 44:            1      01001     44</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 45:            1      01001     45</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 46:            2      72153 242311</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 47:            2      72153 242312</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 48:            2      72153 242313</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 49:            2      72153 242314</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 50:            2      72153 242315</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 51:            2      72153 242316</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 52:            2      72153 242317</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 53:            2      72153 242318</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 54:            2      72153 242319</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 55:            2      72153 242320</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 56:            2      72153 242321</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 57:            2      72153 242322</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 58:            2      72153 242323</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 59:            2      72153 242324</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 60:            2      72153 242325</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 61:            2      72153 242326</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 62:            2      72153 242327</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 63:            2      72153 242328</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 64:            2      72153 242329</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 65:            2      72153 242330</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 66:            2      72153 242331</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 67:            2      72153 242332</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 68:            2      72153 242333</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 69:            2      72153 242334</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 70:            2      72153 242335</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     ejam_uniq_id countyfips   bgid</span>
+<span class="r-in"><span> <span class="co"># Largest US Counties by ACS Population Totals:</span></span></span>
+<span class="r-in"><span> <span class="va">blockgroupstats</span><span class="op">[</span> , <span class="fu">.</span><span class="op">(</span>ST <span class="op">=</span> <span class="va">ST</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, countypop <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">pop</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  by<span class="op">=</span><span class="fu">.</span><span class="op">(</span>FIPS <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/substr.html" class="external-link">substr</a></span><span class="op">(</span><span class="va">bgfips</span>,<span class="fl">1</span>,<span class="fl">5</span><span class="op">)</span><span class="op">)</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="op">-</span><span class="va">countypop</span><span class="op">)</span>,<span class="op">]</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">20</span>, <span class="fu">.</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  CountyPopulation <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/formatc.html" class="external-link">prettyNum</a></span><span class="op">(</span><span class="va">countypop</span>, big.mark <span class="op">=</span> <span class="st">","</span><span class="op">)</span>, <span class="va">FIPS</span>, <span class="va">ST</span><span class="op">)</span><span class="op">]</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     CountyPopulation   FIPS     ST</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               &lt;char&gt; &lt;char&gt; &lt;char&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  1:       10,019,635  06037     CA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  2:        5,265,398  17031     IL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  3:        4,697,957  48201     TX</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  4:        4,367,186  04013     AZ</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  5:        3,296,317  06073     CA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  6:        3,182,923  06059     CA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  7:        2,712,360  36047     NY</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  8:        2,690,113  12086     FL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  9:        2,604,722  48113     TX</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10:        2,409,331  06065     CA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 11:        2,393,104  36081     NY</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 12:        2,240,876  53033     WA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 13:        2,231,147  32003     NV</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 14:        2,171,071  06071     CA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 15:        2,091,953  48439     TX</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 16:        1,990,522  48029     TX</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 17:        1,934,551  12011     FL</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 18:        1,932,022  06085     CA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 19:        1,789,781  26163     MI</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 20:        1,673,133  06001     CA</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     CountyPopulation   FIPS     ST</span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>

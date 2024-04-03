@@ -120,88 +120,91 @@ and rows represent sites analyzed.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span>  <span class="va">blah</span> <span class="op">=</span> <span class="fu">ejscreen_vs_ejam_alreadyrun</span><span class="op">(</span></span>
-<span>    apisite <span class="op">=</span> <span class="va">testoutput_ejscreenapi_plus_5</span>,</span>
-<span>    ejamsite <span class="op">=</span> <span class="fu"><a href="ejamit.html">ejamit</a></span><span class="op">(</span><span class="va">testpoints_5</span>, radius <span class="op">=</span> <span class="fl">1</span>, include_ejindexes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">results_bysite</span><span class="op">)</span></span>
-<span>  <span class="fu"><a href="ejscreen_vs_ejam_see1.html">ejscreen_vs_ejam_see1</a></span><span class="op">(</span><span class="va">blah</span>, mysite <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
-<span> <span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
-<span> </span>
-<span> <span class="co"># requires data.table</span></span>
-<span> </span>
-<span> <span class="co"># analyze point(s) in both EJScreen and EJAM</span></span>
-<span>  <span class="va">pts</span> <span class="op">&lt;-</span> <span class="va">testpoints_100</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="op">]</span></span>
-<span>  <span class="co">#z &lt;- ejscreen_vs_ejam(testpoints_100[27, ], radius = 3, include_ejindexes = TRUE)</span></span>
-<span>  </span>
-<span>  <span class="co"># just 1 point</span></span>
-<span>  <span class="co"># z &lt;- ejscreen_vs_ejam(pts[5, ], radius = 3, include_ejindexes = TRUE)</span></span>
-<span>  </span>
-<span>  <span class="co"># multiple points</span></span>
-<span>  <span class="co"># This step can take a long time, almost 1 minute per 20 points, as it uses the EJScreen API:</span></span>
-<span>  <span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="ejscreen_vs_ejam.html">ejscreen_vs_ejam</a></span><span class="op">(</span><span class="va">pts</span>, radius <span class="op">=</span> <span class="fl">3</span>, include_ejindexes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span>    </span>
-<span>   <span class="co"># same thing but step by step</span></span>
-<span>   <span class="va">api1</span> <span class="op">&lt;-</span> <span class="fu">ejscreenit</span><span class="op">(</span><span class="va">pts</span>, radius <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
-<span>   <span class="va">api1</span> <span class="op">&lt;-</span> <span class="va">api1</span><span class="op">$</span><span class="va">table</span><span class="op">[</span><span class="fl">5</span>, <span class="op">]</span></span>
-<span>   <span class="va">ejam1</span> <span class="op">&lt;-</span> <span class="fu"><a href="ejamit.html">ejamit</a></span><span class="op">(</span><span class="va">pts</span>, radius <span class="op">=</span> <span class="fl">3</span>, include_ejindexes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span>   <span class="va">ejam1</span> <span class="op">&lt;-</span> <span class="va">ejam1</span><span class="op">$</span><span class="va">results_bysite</span><span class="op">[</span><span class="fl">5</span>, <span class="op">]</span></span>
-<span>   <span class="va">zzz</span> <span class="op">&lt;-</span> <span class="fu">ejscreen_vs_ejam_alreadyrun</span><span class="op">(</span><span class="va">api1</span>, <span class="va">ejam1</span><span class="op">)</span></span>
-<span>   </span>
-<span>   <span class="co"># to keep it as a list of data.frames but just 1 row each now:</span></span>
-<span>   <span class="va">zlist1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">z</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">[</span><span class="va">myrow</span>, <span class="op">]</span><span class="op">)</span></span>
-<span>   <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">zlist1</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">zlist1</span>, <span class="va">dim</span><span class="op">)</span></span>
-<span>   </span>
-<span>   <span class="co"># look at a table about just 1 site among those analyzed, e.g., the first one:</span></span>
-<span>   <span class="va">myrow</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
-<span>   <span class="va">z1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">z</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">[</span><span class="va">myrow</span>, <span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
-<span>   <span class="co"># but that creates a data.frame where each column is a list... </span></span>
-<span>   </span>
-<span>   </span>
-<span>   </span>
-<span>   </span>
-<span>   <span class="co"># **** WORK IN PROGRESS ... *** !!!!!  </span></span>
-<span>   </span>
-<span>   </span>
-<span>   </span>
-<span>   </span>
-<span>   </span>
-<span>   <span class="co"># Reported key indicators - which ones do or don't match</span></span>
-<span>   <span class="co"># when comparing EJSCREEN and EJAM results?</span></span>
-<span>   <span class="va">keyreportnames</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'pop'</span>, <span class="va">names_these</span>, <span class="va">names_pctile</span>, <span class="va">names_state_pctile</span><span class="op">)</span></span>
-<span>   <span class="va">rname</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">z</span><span class="op">$</span><span class="va">EJAM</span><span class="op">)</span></span>
-<span>   <span class="va">z1</span><span class="op">[</span><span class="va">rname</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">keyreportnames</span> <span class="op">&amp;</span>  <span class="va">z1</span><span class="op">$</span><span class="va">same_shown</span>, <span class="op">]</span></span>
-<span>   <span class="va">z1</span><span class="op">[</span><span class="va">rname</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">keyreportnames</span> <span class="op">&amp;</span> <span class="op">!</span><span class="va">z1</span><span class="op">$</span><span class="va">same_shown</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">z1</span><span class="op">$</span><span class="va">EJSCREEN</span><span class="op">)</span>, <span class="op">]</span></span>
-<span>  </span>
-<span>   <span class="co"># Reported (rounded) numbers match:</span></span>
-<span>   <span class="va">z</span><span class="op">[</span><span class="va">z</span><span class="op">$</span><span class="va">same_shown</span> , <span class="op">]</span></span>
-<span>   <span class="co"># Reports disagree: </span></span>
-<span>   <span class="co">#  (and not just because of percentages being of 100 vs of 1.00)</span></span>
-<span>   <span class="va">z</span><span class="op">[</span><span class="op">!</span><span class="va">z</span><span class="op">$</span><span class="va">same_shown</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">z</span><span class="op">$</span><span class="va">EJSCREEN</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">z</span><span class="op">$</span><span class="va">ratio</span> <span class="op">!=</span> <span class="fl">0.01</span>, <span class="op">]</span> </span>
-<span>   <span class="co"># Reports disagree if percentages reported as 0-100 vs fractions 0-1.00</span></span>
-<span>   <span class="va">z</span><span class="op">[</span><span class="va">z</span><span class="op">$</span><span class="va">ratio</span> <span class="op">==</span> <span class="fl">0.01</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">z</span><span class="op">$</span><span class="va">ratio</span><span class="op">)</span>, <span class="op">]</span></span>
-<span>   </span>
-<span>   </span>
-<span>   <span class="co"># site number 1</span></span>
-<span>   <span class="va">z1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">z</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
-<span>   <span class="co"># Reported key indicators - which ones do or don't match</span></span>
-<span>   <span class="co"># when comparing EJSCREEN and EJAM results?</span></span>
-<span>   <span class="va">keyreportnames</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'pop'</span>, <span class="va">names_these</span>, <span class="va">names_pctile</span>, <span class="va">names_state_pctile</span><span class="op">)</span></span>
-<span>   <span class="va">z1</span><span class="op">[</span><span class="va">z1</span><span class="op">$</span><span class="va">rname</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">keyreportnames</span> <span class="op">&amp;</span>  <span class="va">z1</span><span class="op">$</span><span class="va">same_shown</span>, <span class="op">]</span></span>
-<span>   <span class="va">z1</span><span class="op">[</span><span class="va">z1</span><span class="op">$</span><span class="va">rname</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">keyreportnames</span> <span class="op">&amp;</span> <span class="op">!</span><span class="va">z1</span><span class="op">$</span><span class="va">same_shown</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">z1</span><span class="op">$</span><span class="va">EJSCREEN</span><span class="op">)</span>, <span class="op">]</span></span>
-<span>   </span>
-<span>   <span class="co"># Reported (rounded) numbers match:</span></span>
-<span>   <span class="va">z1</span><span class="op">[</span><span class="va">z1</span><span class="op">$</span><span class="va">same_shown</span> , <span class="op">]</span></span>
-<span>   <span class="co"># Reports disagree: </span></span>
-<span>   <span class="co">#  (and not just because of percentages being of 100 vs of 1.00)</span></span>
-<span>   <span class="va">z1</span><span class="op">[</span><span class="op">!</span><span class="va">z1</span><span class="op">$</span><span class="va">same_shown</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">z1</span><span class="op">$</span><span class="va">EJSCREEN</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">z1</span><span class="op">$</span><span class="va">ratio</span> <span class="op">!=</span> <span class="fl">0.01</span>, <span class="op">]</span> </span>
-<span>   <span class="co"># Reports disagree if percentages reported as 0-100 vs fractions 0-1.00</span></span>
-<span>   <span class="va">z1</span><span class="op">[</span><span class="va">z1</span><span class="op">$</span><span class="va">ratio</span> <span class="op">==</span> <span class="fl">0.01</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">z1</span><span class="op">$</span><span class="va">ratio</span><span class="op">)</span>, <span class="op">]</span></span>
-<span>   </span>
-<span>   <span class="co"># Comparing across sites:</span></span>
-<span>   </span>
-<span>   <span class="co"># .... to be continued ...</span></span>
-<span>   </span>
-<span>  <span class="op">}</span></span>
-<span>   </span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span>  <span class="va">blah</span> <span class="op">=</span> <span class="fu">ejscreen_vs_ejam_alreadyrun</span><span class="op">(</span></span></span>
+<span class="r-in"><span>    apisite <span class="op">=</span> <span class="va">testoutput_ejscreenapi_plus_5</span>,</span></span>
+<span class="r-in"><span>    ejamsite <span class="op">=</span> <span class="fu"><a href="ejamit.html">ejamit</a></span><span class="op">(</span><span class="va">testpoints_5</span>, radius <span class="op">=</span> <span class="fl">1</span>, include_ejindexes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">$</span><span class="va">results_bysite</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in ejscreen_vs_ejam_alreadyrun(apisite = testoutput_ejscreenapi_plus_5,     ejamsite = ejamit(testpoints_5, radius = 1, include_ejindexes = TRUE)$results_bysite):</span> could not find function "ejscreen_vs_ejam_alreadyrun"</span>
+<span class="r-in"><span>  <span class="fu"><a href="ejscreen_vs_ejam_see1.html">ejscreen_vs_ejam_see1</a></span><span class="op">(</span><span class="va">blah</span>, mysite <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in ejscreen_vs_ejam_see1(blah, mysite = 1):</span> object 'blah' not found</span>
+<span class="r-in"><span> <span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span> </span></span>
+<span class="r-in"><span> <span class="co"># requires data.table</span></span></span>
+<span class="r-in"><span> </span></span>
+<span class="r-in"><span> <span class="co"># analyze point(s) in both EJScreen and EJAM</span></span></span>
+<span class="r-in"><span>  <span class="va">pts</span> <span class="op">&lt;-</span> <span class="va">testpoints_100</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>, <span class="op">]</span></span></span>
+<span class="r-in"><span>  <span class="co">#z &lt;- ejscreen_vs_ejam(testpoints_100[27, ], radius = 3, include_ejindexes = TRUE)</span></span></span>
+<span class="r-in"><span>  </span></span>
+<span class="r-in"><span>  <span class="co"># just 1 point</span></span></span>
+<span class="r-in"><span>  <span class="co"># z &lt;- ejscreen_vs_ejam(pts[5, ], radius = 3, include_ejindexes = TRUE)</span></span></span>
+<span class="r-in"><span>  </span></span>
+<span class="r-in"><span>  <span class="co"># multiple points</span></span></span>
+<span class="r-in"><span>  <span class="co"># This step can take a long time, almost 1 minute per 20 points, as it uses the EJScreen API:</span></span></span>
+<span class="r-in"><span>  <span class="va">z</span> <span class="op">&lt;-</span> <span class="fu"><a href="ejscreen_vs_ejam.html">ejscreen_vs_ejam</a></span><span class="op">(</span><span class="va">pts</span>, radius <span class="op">=</span> <span class="fl">3</span>, include_ejindexes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>    </span></span>
+<span class="r-in"><span>   <span class="co"># same thing but step by step</span></span></span>
+<span class="r-in"><span>   <span class="va">api1</span> <span class="op">&lt;-</span> <span class="fu">ejscreenit</span><span class="op">(</span><span class="va">pts</span>, radius <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
+<span class="r-in"><span>   <span class="va">api1</span> <span class="op">&lt;-</span> <span class="va">api1</span><span class="op">$</span><span class="va">table</span><span class="op">[</span><span class="fl">5</span>, <span class="op">]</span></span></span>
+<span class="r-in"><span>   <span class="va">ejam1</span> <span class="op">&lt;-</span> <span class="fu"><a href="ejamit.html">ejamit</a></span><span class="op">(</span><span class="va">pts</span>, radius <span class="op">=</span> <span class="fl">3</span>, include_ejindexes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span>   <span class="va">ejam1</span> <span class="op">&lt;-</span> <span class="va">ejam1</span><span class="op">$</span><span class="va">results_bysite</span><span class="op">[</span><span class="fl">5</span>, <span class="op">]</span></span></span>
+<span class="r-in"><span>   <span class="va">zzz</span> <span class="op">&lt;-</span> <span class="fu">ejscreen_vs_ejam_alreadyrun</span><span class="op">(</span><span class="va">api1</span>, <span class="va">ejam1</span><span class="op">)</span></span></span>
+<span class="r-in"><span>   </span></span>
+<span class="r-in"><span>   <span class="co"># to keep it as a list of data.frames but just 1 row each now:</span></span></span>
+<span class="r-in"><span>   <span class="va">zlist1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">z</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">[</span><span class="va">myrow</span>, <span class="op">]</span><span class="op">)</span></span></span>
+<span class="r-in"><span>   <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">zlist1</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">zlist1</span>, <span class="va">dim</span><span class="op">)</span></span></span>
+<span class="r-in"><span>   </span></span>
+<span class="r-in"><span>   <span class="co"># look at a table about just 1 site among those analyzed, e.g., the first one:</span></span></span>
+<span class="r-in"><span>   <span class="va">myrow</span> <span class="op">&lt;-</span> <span class="fl">1</span></span></span>
+<span class="r-in"><span>   <span class="va">z1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">z</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="va">x</span><span class="op">[</span><span class="va">myrow</span>, <span class="op">]</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>   <span class="co"># but that creates a data.frame where each column is a list... </span></span></span>
+<span class="r-in"><span>   </span></span>
+<span class="r-in"><span>   </span></span>
+<span class="r-in"><span>   </span></span>
+<span class="r-in"><span>   </span></span>
+<span class="r-in"><span>   <span class="co"># **** WORK IN PROGRESS ... *** !!!!!  </span></span></span>
+<span class="r-in"><span>   </span></span>
+<span class="r-in"><span>   </span></span>
+<span class="r-in"><span>   </span></span>
+<span class="r-in"><span>   </span></span>
+<span class="r-in"><span>   </span></span>
+<span class="r-in"><span>   <span class="co"># Reported key indicators - which ones do or don't match</span></span></span>
+<span class="r-in"><span>   <span class="co"># when comparing EJSCREEN and EJAM results?</span></span></span>
+<span class="r-in"><span>   <span class="va">keyreportnames</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'pop'</span>, <span class="va">names_these</span>, <span class="va">names_pctile</span>, <span class="va">names_state_pctile</span><span class="op">)</span></span></span>
+<span class="r-in"><span>   <span class="va">rname</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">z</span><span class="op">$</span><span class="va">EJAM</span><span class="op">)</span></span></span>
+<span class="r-in"><span>   <span class="va">z1</span><span class="op">[</span><span class="va">rname</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">keyreportnames</span> <span class="op">&amp;</span>  <span class="va">z1</span><span class="op">$</span><span class="va">same_shown</span>, <span class="op">]</span></span></span>
+<span class="r-in"><span>   <span class="va">z1</span><span class="op">[</span><span class="va">rname</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">keyreportnames</span> <span class="op">&amp;</span> <span class="op">!</span><span class="va">z1</span><span class="op">$</span><span class="va">same_shown</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">z1</span><span class="op">$</span><span class="va">EJSCREEN</span><span class="op">)</span>, <span class="op">]</span></span></span>
+<span class="r-in"><span>  </span></span>
+<span class="r-in"><span>   <span class="co"># Reported (rounded) numbers match:</span></span></span>
+<span class="r-in"><span>   <span class="va">z</span><span class="op">[</span><span class="va">z</span><span class="op">$</span><span class="va">same_shown</span> , <span class="op">]</span></span></span>
+<span class="r-in"><span>   <span class="co"># Reports disagree: </span></span></span>
+<span class="r-in"><span>   <span class="co">#  (and not just because of percentages being of 100 vs of 1.00)</span></span></span>
+<span class="r-in"><span>   <span class="va">z</span><span class="op">[</span><span class="op">!</span><span class="va">z</span><span class="op">$</span><span class="va">same_shown</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">z</span><span class="op">$</span><span class="va">EJSCREEN</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">z</span><span class="op">$</span><span class="va">ratio</span> <span class="op">!=</span> <span class="fl">0.01</span>, <span class="op">]</span> </span></span>
+<span class="r-in"><span>   <span class="co"># Reports disagree if percentages reported as 0-100 vs fractions 0-1.00</span></span></span>
+<span class="r-in"><span>   <span class="va">z</span><span class="op">[</span><span class="va">z</span><span class="op">$</span><span class="va">ratio</span> <span class="op">==</span> <span class="fl">0.01</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">z</span><span class="op">$</span><span class="va">ratio</span><span class="op">)</span>, <span class="op">]</span></span></span>
+<span class="r-in"><span>   </span></span>
+<span class="r-in"><span>   </span></span>
+<span class="r-in"><span>   <span class="co"># site number 1</span></span></span>
+<span class="r-in"><span>   <span class="va">z1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">z</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>   <span class="co"># Reported key indicators - which ones do or don't match</span></span></span>
+<span class="r-in"><span>   <span class="co"># when comparing EJSCREEN and EJAM results?</span></span></span>
+<span class="r-in"><span>   <span class="va">keyreportnames</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'pop'</span>, <span class="va">names_these</span>, <span class="va">names_pctile</span>, <span class="va">names_state_pctile</span><span class="op">)</span></span></span>
+<span class="r-in"><span>   <span class="va">z1</span><span class="op">[</span><span class="va">z1</span><span class="op">$</span><span class="va">rname</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">keyreportnames</span> <span class="op">&amp;</span>  <span class="va">z1</span><span class="op">$</span><span class="va">same_shown</span>, <span class="op">]</span></span></span>
+<span class="r-in"><span>   <span class="va">z1</span><span class="op">[</span><span class="va">z1</span><span class="op">$</span><span class="va">rname</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">keyreportnames</span> <span class="op">&amp;</span> <span class="op">!</span><span class="va">z1</span><span class="op">$</span><span class="va">same_shown</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">z1</span><span class="op">$</span><span class="va">EJSCREEN</span><span class="op">)</span>, <span class="op">]</span></span></span>
+<span class="r-in"><span>   </span></span>
+<span class="r-in"><span>   <span class="co"># Reported (rounded) numbers match:</span></span></span>
+<span class="r-in"><span>   <span class="va">z1</span><span class="op">[</span><span class="va">z1</span><span class="op">$</span><span class="va">same_shown</span> , <span class="op">]</span></span></span>
+<span class="r-in"><span>   <span class="co"># Reports disagree: </span></span></span>
+<span class="r-in"><span>   <span class="co">#  (and not just because of percentages being of 100 vs of 1.00)</span></span></span>
+<span class="r-in"><span>   <span class="va">z1</span><span class="op">[</span><span class="op">!</span><span class="va">z1</span><span class="op">$</span><span class="va">same_shown</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">z1</span><span class="op">$</span><span class="va">EJSCREEN</span><span class="op">)</span> <span class="op">&amp;</span> <span class="va">z1</span><span class="op">$</span><span class="va">ratio</span> <span class="op">!=</span> <span class="fl">0.01</span>, <span class="op">]</span> </span></span>
+<span class="r-in"><span>   <span class="co"># Reports disagree if percentages reported as 0-100 vs fractions 0-1.00</span></span></span>
+<span class="r-in"><span>   <span class="va">z1</span><span class="op">[</span><span class="va">z1</span><span class="op">$</span><span class="va">ratio</span> <span class="op">==</span> <span class="fl">0.01</span> <span class="op">&amp;</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">z1</span><span class="op">$</span><span class="va">ratio</span><span class="op">)</span>, <span class="op">]</span></span></span>
+<span class="r-in"><span>   </span></span>
+<span class="r-in"><span>   <span class="co"># Comparing across sites:</span></span></span>
+<span class="r-in"><span>   </span></span>
+<span class="r-in"><span>   <span class="co"># .... to be continued ...</span></span></span>
+<span class="r-in"><span>   </span></span>
+<span class="r-in"><span>  <span class="op">}</span></span></span>
+<span class="r-in"><span>   </span></span>
+</code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>

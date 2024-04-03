@@ -108,20 +108,29 @@ stats is a 3-dimensional array of numbers. See dimnames(output$stats).</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># x &lt;- ejamit(testpoints_100, radius = 1)</span></span>
-<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">testoutput_ejamit_1000pts_1miles</span> </span>
-<span><span class="va">out</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">$</span><span class="va">results_bysite</span></span>
-<span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">setDF</span><span class="op">(</span><span class="fu">copy</span><span class="op">(</span><span class="va">out</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">ratio_benchmarks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.01</span>, <span class="fl">1.50</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">10</span><span class="op">)</span></span>
-<span><span class="va">ratiodata</span> <span class="op">&lt;-</span> <span class="va">out</span><span class="op">[</span>, <span class="va">names_d_ratio_to_state_avg</span><span class="op">]</span></span>
-<span></span>
-<span><span class="va">findings</span> <span class="op">=</span> <span class="fu">count_sites_with_n_high_scores</span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/dimnames.html" class="external-link">dimnames</a></span><span class="op">(</span><span class="va">findings</span><span class="op">)</span></span>
-<span><span class="va">findings</span><span class="op">$</span><span class="va">text</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span></span>
-<span><span class="va">findings</span><span class="op">$</span><span class="va">stats</span><span class="op">[</span> , , <span class="fl">1</span><span class="op">]</span></span>
-<span><span class="va">findings</span><span class="op">$</span><span class="va">stats</span><span class="op">[</span> , <span class="fl">1</span>, <span class="op">]</span></span>
-<span><span class="va">findings</span><span class="op">$</span><span class="va">stats</span><span class="op">[</span> <span class="fl">1</span>, , <span class="op">]</span></span>
-<span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># x &lt;- ejamit(testpoints_100, radius = 1)</span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">testoutput_ejamit_1000pts_1miles</span> </span></span>
+<span class="r-in"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">$</span><span class="va">results_bysite</span></span></span>
+<span class="r-in"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">setDF</span><span class="op">(</span><span class="fu">copy</span><span class="op">(</span><span class="va">out</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in setDF(copy(out)):</span> could not find function "setDF"</span>
+<span class="r-in"><span><span class="va">ratio_benchmarks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.01</span>, <span class="fl">1.50</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">10</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">ratiodata</span> <span class="op">&lt;-</span> <span class="va">out</span><span class="op">[</span>, <span class="va">names_d_ratio_to_state_avg</span><span class="op">]</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> j (the 2nd argument inside [...]) is a single symbol but column name 'names_d_ratio_to_state_avg' is not found. If you intended to select columns using a variable in calling scope, please try DT[, ..names_d_ratio_to_state_avg]. The .. prefix conveys one-level-up similar to a file system path.</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">findings</span> <span class="op">=</span> <span class="fu">count_sites_with_n_high_scores</span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> j (the 2nd argument inside [...]) is a single symbol but column name 'ccc' is not found. If you intended to select columns using a variable in calling scope, please try DT[, ..ccc]. The .. prefix conveys one-level-up similar to a file system path.</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/dimnames.html" class="external-link">dimnames</a></span><span class="op">(</span><span class="va">findings</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'findings' not found</span>
+<span class="r-in"><span><span class="va">findings</span><span class="op">$</span><span class="va">text</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'findings' not found</span>
+<span class="r-in"><span><span class="va">findings</span><span class="op">$</span><span class="va">stats</span><span class="op">[</span> , , <span class="fl">1</span><span class="op">]</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'findings' not found</span>
+<span class="r-in"><span><span class="va">findings</span><span class="op">$</span><span class="va">stats</span><span class="op">[</span> , <span class="fl">1</span>, <span class="op">]</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'findings' not found</span>
+<span class="r-in"><span><span class="va">findings</span><span class="op">$</span><span class="va">stats</span><span class="op">[</span> <span class="fl">1</span>, , <span class="op">]</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'findings' not found</span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>

@@ -20,7 +20,7 @@ knitr::opts_chunk$set(eval = FALSE)
 # https://r-pkgs.org/vignettes.html
 ```
 
-## EPA's EJ Analysis Multi-site (EJAM) tool
+# EPA's EJ Analysis Multi-site (EJAM) tool
 
 EJAM is a tool, developed by the
 United States Environmental Protection Agency (US EPA)

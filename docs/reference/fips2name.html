@@ -89,9 +89,105 @@ where county names optionally have comma and 2-character abbreviation or full st
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span>  <span class="fu">fips2name</span><span class="op">(</span><span class="fu"><a href="fips_counties_from_state_abbrev.html">fips_counties_from_state_abbrev</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AK"</span>, <span class="st">"LA"</span><span class="op">)</span><span class="op">)</span>  <span class="op">)</span></span>
-<span>  <span class="fu">fips2name</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">22</span>, <span class="fl">02013</span><span class="op">)</span><span class="op">)</span>  <span class="co"># can have mix where some are a whole state and others are a county.</span></span>
-<span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span>  <span class="fu">fips2name</span><span class="op">(</span><span class="fu"><a href="fips_counties_from_state_abbrev.html">fips_counties_from_state_abbrev</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AK"</span>, <span class="st">"LA"</span><span class="op">)</span><span class="op">)</span>  <span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "Aleutians East Borough, AK"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2] "Aleutians West Census Area, AK"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "Anchorage Municipality, AK"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4] "Bethel Census Area, AK"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "Bristol Bay Borough, AK"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6] "Chugach Census Area, AK"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "Copper River Census Area, AK"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8] "Denali Borough, AK"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "Dillingham Census Area, AK"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10] "Fairbanks North Star Borough, AK"     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "Haines Borough, AK"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [12] "Hoonah-Angoon Census Area, AK"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "Juneau City and Borough, AK"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [14] "Kenai Peninsula Borough, AK"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [15] "Ketchikan Gateway Borough, AK"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [16] "Kodiak Island Borough, AK"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [17] "Kusilvak Census Area, AK"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [18] "Lake and Peninsula Borough, AK"       </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "Matanuska-Susitna Borough, AK"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [20] "Nome Census Area, AK"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [21] "North Slope Borough, AK"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [22] "Northwest Arctic Borough, AK"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [23] "Petersburg Borough, AK"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [24] "Prince of Wales-Hyder Census Area, AK"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [25] "Sitka City and Borough, AK"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [26] "Skagway Municipality, AK"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [27] "Southeast Fairbanks Census Area, AK"  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [28] "Wrangell City and Borough, AK"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [29] "Yakutat City and Borough, AK"         </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [30] "Yukon-Koyukuk Census Area, AK"        </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [31] "Acadia Parish, LA"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [32] "Allen Parish, LA"                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [33] "Ascension Parish, LA"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [34] "Assumption Parish, LA"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [35] "Avoyelles Parish, LA"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [36] "Beauregard Parish, LA"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [37] "Bienville Parish, LA"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [38] "Bossier Parish, LA"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [39] "Caddo Parish, LA"                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [40] "Calcasieu Parish, LA"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [41] "Caldwell Parish, LA"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [42] "Cameron Parish, LA"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [43] "Catahoula Parish, LA"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [44] "Claiborne Parish, LA"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [45] "Concordia Parish, LA"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [46] "De Soto Parish, LA"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [47] "East Baton Rouge Parish, LA"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [48] "East Carroll Parish, LA"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [49] "East Feliciana Parish, LA"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [50] "Evangeline Parish, LA"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [51] "Franklin Parish, LA"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [52] "Grant Parish, LA"                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [53] "Iberia Parish, LA"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [54] "Iberville Parish, LA"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [55] "Jackson Parish, LA"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [56] "Jefferson Parish, LA"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [57] "Jefferson Davis Parish, LA"           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [58] "Lafayette Parish, LA"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [59] "Lafourche Parish, LA"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [60] "LaSalle Parish, LA"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [61] "Lincoln Parish, LA"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [62] "Livingston Parish, LA"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [63] "Madison Parish, LA"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [64] "Morehouse Parish, LA"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [65] "Natchitoches Parish, LA"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [66] "Orleans Parish, LA"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [67] "Ouachita Parish, LA"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [68] "Plaquemines Parish, LA"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [69] "Pointe Coupee Parish, LA"             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [70] "Rapides Parish, LA"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [71] "Red River Parish, LA"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [72] "Richland Parish, LA"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [73] "Sabine Parish, LA"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [74] "St. Bernard Parish, LA"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [75] "St. Charles Parish, LA"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [76] "St. Helena Parish, LA"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [77] "St. James Parish, LA"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [78] "St. John the Baptist Parish, LA"      </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [79] "St. Landry Parish, LA"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [80] "St. Martin Parish, LA"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [81] "St. Mary Parish, LA"                  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [82] "St. Tammany Parish, LA"               </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [83] "Tangipahoa Parish, LA"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [84] "Tensas Parish, LA"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [85] "Terrebonne Parish, LA"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [86] "Union Parish, LA"                     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [87] "Vermilion Parish, LA"                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [88] "Vernon Parish, LA"                    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [89] "Washington Parish, LA"                </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [90] "Webster Parish, LA"                   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [91] "West Baton Rouge Parish, LA"          </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [92] "West Carroll Parish, LA"              </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [93] "West Feliciana Parish, LA"            </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [94] "Winn Parish, LA"                      </span>
+<span class="r-in"><span>  <span class="fu">fips2name</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">22</span>, <span class="fl">02013</span><span class="op">)</span><span class="op">)</span>  <span class="co"># can have mix where some are a whole state and others are a county.</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Louisiana"                  "Aleutians East Borough, AK"</span>
+<span class="r-in"><span></span></span>
+</code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
