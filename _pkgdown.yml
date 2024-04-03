@@ -24,7 +24,7 @@ articles:
   desc: Overview for EJAM Users
   navbar: Overview for EJAM Users
   contents:
-  - '`0_what_is_ejam`'
+  - "0_whatis"
   - '`0_webapp`'
 - title: The EJAM R Package
   desc: For analysts using R

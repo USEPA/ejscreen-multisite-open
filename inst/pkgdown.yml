@@ -3,14 +3,14 @@ pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   0_webapp: 0_webapp.html
-  0_what_is_ejam: 0_what_is_ejam.html
+  0_whatis: 0_whatis.html
   1_installing: 1_installing.html
   2_quickstart: 2_quickstart.html
   3_analyzing: 3_analyzing.html
   4_advanced: 4_advanced.html
   5_ejscreenapi: 5_ejscreenapi.html
   6_future_plans: 6_future_plans.html
-last_built: 2024-04-02T21:40Z
+last_built: 2024-04-02T23:12Z
 urls:
   reference: usepa.github.io/EJAM/reference
   article: usepa.github.io/EJAM/articles

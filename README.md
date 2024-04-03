@@ -40,8 +40,7 @@ EJAM is provided by the US Environmental Protection Agency (US EPA), and
 is being actively developed so that new versions will continue to be
 tested and released over time.
 
-- [What is
-  EJAM?](https://usepa.github.io/EJAM/articles/0_what_is_ejam.html)
+- [What is EJAM?](https://usepa.github.io/EJAM/articles/0_whatis.html)
 
 ## EJAM as a Web App
 
