@@ -1,14 +1,15 @@
 
 #' Launch the Shiny Application in RStudio
-#'
-#' @description launch Shiny web app from RStudio
-#' @details
-#' app_run_EJAM()                 is like [run_app()] from the EJAM package
-#' @param ... arguments to pass to golem_opts. Maybe could be something like sitepoints="latlondata.xlsx" or sitepoints=[testpoints_100]
+#' @description Launches shiny web app from RStudio - [app_run_EJAM()] and [run_app()] are the same
+#' @param ... arguments to pass to golem_opts.
+#'   When implemented, this parameter could be used to pass something like
+#'   sitepoints="latlondata.xlsx" or sitepoints=[testpoints_100]
 #' See `?golem::get_golem_options` for more details.
 #' @inheritParams shiny::shinyApp
 #' @return An object that represents the app. Printing the object or passing it to runApp() will run the app.
-#'
+#' @seealso [app_run_EJAM()]
+#' @aliases app_run_EJAM
+#' 
 #' @export
 #'
 #' @importFrom shiny shinyApp
