@@ -254,16 +254,29 @@ threshgroup.default <- list(
 
 ### info text for "About EJAM" tab ####
 intro_text <- tagList(
-  tags$p("EPA has developed a number of different tools for mapping and analysis of information related to environmental justice (EJ), including EJScreen and EJAM. "),
-  tags$p("EJScreen provides a dataset with environmental, demographic, and EJ indicators for each Census block group in the US. \n"),
-  tags$p("EJScreen can provide a report summarizing those values for the average resident within some distance (e.g., 1 mile) from a specified point."),
-  tags$p("It is often useful to know the nature of the environmental conditions, the demographics, and/or EJ index values near a whole set of the facilities in a particular sector, such as in the context of developing a proposed rule. "),
-  tags$p("EJAM allows users to select a set of areas (e.g., via shapefiles) or the areas near facilities defined by NAICs industrial category codes or by uploading a list of point locations."),
-  tags$p("EJAM then provides a summary report for all residential locations near the selected facilities."),
-  tags$p("See in-app info/tips, and the EJAM and EJScreen documentation for more about the tools and datasets (indicators)."),
-  tags$p("Programmers can see the ", a(href = 'https://github.com/USEPA/EJAM?tab=readme-ov-file#readme', "Github repository and README"),
-         " document, or the R package ", a(href = 'https://usepa.github.io/EJAM/index.html', "EJAM documentation"), " including walkthroughs and reference on functions and data.")
+  # tags$p("For more information about EJAM:"),
+  br(),
+  br(),
+  h2( a(href = "https://usepa.github.io/EJAM/articles/0_whatis.html", "What is EJAM?", target = '_blank', rel = 'noreferrer noopener') ),
+  br(),
+  br(),
+  h2( a(href = "https://usepa.github.io/EJAM/index.html", "EJAM software tools for programmers or analysts using R", target = '_blank', rel = 'noreferrer noopener')),
+  br(),
+  br(),
+  br(),
+  br()
 )
+# intro_text <- tagList(
+#   tags$p("EPA has developed a number of different tools for mapping and analysis of information related to environmental justice (EJ), including EJScreen and EJAM. "),
+#   tags$p("EJScreen provides a dataset with environmental, demographic, and EJ indicators for each Census block group in the US. \n"),
+#   tags$p("EJScreen can provide a report summarizing those values for the average resident within some distance (e.g., 1 mile) from a specified point."),
+#   tags$p("It is often useful to know the nature of the environmental conditions, the demographics, and/or EJ index values near a whole set of the facilities in a particular sector, such as in the context of developing a proposed rule. "),
+#   tags$p("EJAM allows users to select a set of areas (e.g., via shapefiles) or the areas near facilities defined by NAICs industrial category codes or by uploading a list of point locations."),
+#   tags$p("EJAM then provides a summary report for all residential locations near the selected facilities."),
+#   tags$p("See in-app info/tips, and the EJAM and EJScreen documentation for more about the tools and datasets (indicators)."),
+#   tags$p("Programmers can see the ", a(href = 'https://github.com/USEPA/EJAM?tab=readme-ov-file#readme', "Github repository and README"),
+#          " document, or the R package ", a(href = 'https://usepa.github.io/EJAM/index.html', "EJAM documentation"), " including walkthroughs and reference on functions and data.")
+# )
 
 ### help text for latlon upload ####
 
