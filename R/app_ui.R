@@ -1296,9 +1296,16 @@ app_ui  <- function(request) {
                 shiny::radioButtons(inputId = "more3",
                                     label = "more3 PLACEHOLDER",
                                     choices = list(A = "a", B = "b", C = "c"),
-                                    selected = "a")  # ,
+                                    selected = "a"),
 
-                # ) # end advanced features and settings subtab
+                # ),
+                
+                span('EJAM tool for batch use of the EJScreen API: ',
+                     a('ejscreenapi tool',
+                       href = 'https://rstudio-connect.dmap-stage.aws.epa.gov/content/163e7ff5-1a1b-4db4-ad9e-e9aa5d764002/',
+                       target = '_blank', rel = 'noreferrer noopener'))
+                
+                # end advanced features and settings subtab
                 ##################################################################### #
 
        ) # end Advanced Settings + API tab ## ##
