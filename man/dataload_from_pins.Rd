@@ -14,6 +14,7 @@ dataload_from_pins(
   folder_local_source = NULL,
   envir = globalenv(),
   justchecking = FALSE,
+  ignorelocal = FALSE,
   silent = FALSE
 )
 }
@@ -36,6 +37,8 @@ look in for locally saved copies in case pins board is not reachable by user.}
 \item{envir}{if needed to specify environment other than default, e.g., globalenv() or parent.frame()}
 
 \item{justchecking}{can set to TRUE to just see a list of what pins are stored in that board}
+
+\item{ignorelocal}{set it to TRUE to avoid 1st checking local disk for copies of files}
 
 \item{silent}{set to TRUE to suppress cat() msgs to console}
 }

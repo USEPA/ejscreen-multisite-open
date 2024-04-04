@@ -193,10 +193,10 @@ dataload_from_pins <- function(varnames = c(c('blockwts', 'blockpoints', 'blocki
         }
       }
       
-      if (exists(varname_i, envir = envir)) {
+      if (!exists(varname_i, envir = envir)) {
         # try DMAP data commons AWS here as last resort location to check 
         dataload_from_aws(varname_i, envir = envir, folder_local_source = "NOTCHECKINGLOCAL" ) # use default function and extension params. use a nonworking local folder to avoid local
-        if (exists(varname_i, envir = envir)) {
+        if (!exists(varname_i, envir = envir)) {
           if (!silent) {cat(" and could NOT download ", varname_i, " from DMAP AWS data commons \n", sep = "")}
         }
       }
