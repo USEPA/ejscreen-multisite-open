@@ -410,6 +410,10 @@ shapefile_from_filepaths <- function(filepaths = NULL, cleanit = TRUE, crs = 426
       shpfilepath <- filepaths[grepl(".*shp$", filepaths, ignore.case = TRUE)]  # one (not more) files that end in .shp
       if (length(shpfilepath) > 1) {warning("using only ", shpfilepath[1], ", the first of more than one .shp file found"); shpfilepath <- shpfilepath[1] }
       # note this will add  ejam_uniq_id =  row_number()
+      ## add filename as layer name if NULL, e.g. 'Neighborhood_Regions'
+      if(is.null(layer)){
+        layer <- gsub('.shp','',gsub('/','',gsub(dirname(shpfilepath), '', shpfilepath)))
+      }
       return(
         shapefile_clean(
           sf::st_read(shpfilepath, layer = layer), # , crs = crs  should be left out here ?
@@ -420,6 +424,10 @@ shapefile_from_filepaths <- function(filepaths = NULL, cleanit = TRUE, crs = 426
     } else {
       # for shiny, do cleaning/check in server so it can offer messages
       shpfilepath <- filepaths[grepl(".*shp$", filepaths, ignore.case = TRUE)] # one or more files that end in .shp
+      ## add filename as layer name if NULL
+      if(is.null(layer)){
+        layer <- gsub('.shp','',gsub('/','',gsub(dirname(shpfilepath), '', shpfilepath)))
+      }
       shp <- sf::st_read(shpfilepath, layer = layer)  # , crs = crs  should be left out here ?
       return(
         dplyr::mutate(shp, ejam_uniq_id = dplyr::row_number()) # number them
