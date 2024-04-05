@@ -5,7 +5,14 @@
 \title{geocode, but only if AOI package is installed and attached
 and what it imports like tidygeocoder etc.}
 \usage{
-latlon_from_address(address, xy = FALSE, pt = FALSE, aoimap = FALSE, ...)
+latlon_from_address(
+  address,
+  xy = FALSE,
+  pt = FALSE,
+  aoimap = FALSE,
+  batchsize = 25,
+  ...
+)
 }
 \arguments{
 \item{address}{vector of addresses, but tested only for 1}
@@ -17,6 +24,8 @@ param as provided is ignored and set to TRUE if aoimap=TRUE}
 
 \item{aoimap}{see help for AOI pkg, create map if set to TRUE}
 
+\item{batchsize}{how many to request per geocode query, done in batches if necessary}
+
 \item{...}{passed to geocode() see help for AOI pkg}
 }
 \value{
@@ -26,6 +35,9 @@ see helpf for AOI pkg
 \description{
 geocode, but only if AOI package is installed and attached
 and what it imports like tidygeocoder etc.
+}
+\details{
+slow? about 100 per minute?
 }
 \examples{
   # only works if AOI package installed already and attached too

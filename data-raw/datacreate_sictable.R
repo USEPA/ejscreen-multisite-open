@@ -4,7 +4,7 @@
 # library(data.table)
 # EJAM::NAICS is where NAICS was
 
-sictable <- data.table(code=as.vector(SIC), name=names(SIC))
+sictable <- data.table(code = as.vector(SIC), name = names(SIC))
 sictable[ , num_name := trimws(name)]
 sictable[ , name := trimws(gsub(".* - ", "", name))]
 

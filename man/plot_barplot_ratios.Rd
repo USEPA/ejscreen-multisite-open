@@ -7,15 +7,19 @@
 plot_barplot_ratios(
   ratio.to.us.d.overall,
   names2plot_friendly = NULL,
-  mycolorsavailable = c("gray", "yellow", "orange", "red")
+  mycolorsavailable = c("gray", "yellow", "orange", "red"),
+  main = "Demographics at the Analyzed Locations Compared to US Overall"
 )
 }
 \arguments{
-\item{ratio.to.us.d.overall}{named list of a few ratios to plot}
+\item{ratio.to.us.d.overall}{named list of a few ratios to plot, but see \code{\link[=plot_barplot_ratios_ez]{plot_barplot_ratios_ez()}}
+for an easier way to specify which indicator to show.}
 
 \item{names2plot_friendly}{names to use for plot - should be same length as named list ratio.to.us.d.overall}
 
 \item{mycolorsavailable}{leave as default}
+
+\item{main}{title for plot, like "Demographics at the Analyzed Locations Compared to US Overall"}
 }
 \value{
 ggplot should be returned

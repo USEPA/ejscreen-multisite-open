@@ -436,9 +436,19 @@ app_ui  <- function(request) {
                             shiny::sliderInput(inputId = 'bt_rad_buff',
                                                ## label is updated in server
                                                label = "", # htmltools::h5('Within what distance of a site?'),
-                                               #label = htmltools::h5("Radius of circular buffer in miles"),
-                                               value = 1.0, step = 0.25,
-                                               min = 0, max = 10,
+                                               min = 0, 
+                                               
+                                               max = default_max_miles,
+                                               # max = input$max_miles,  ## but cannot use input$ in ui, only server
+                                               
+                                               # value = default_default_miles, # simplest but fails to listen to advanced tab or param passed in run_app()
+                                               # value = input$default_miles, ## ideal, but would have to do in server-- cannot use input$ in ui, only in server
+                                               value = ifelse(  ## a way to listen to param passed to run_app() but still fails to respond to advanced tab
+                                                 length(get_golem_options("default_default_miles")) > 0,
+                                                 get_golem_options("default_default_miles"),
+                                                 default_default_miles),
+                                               
+                                               step = 0.25, # *** if 0.1, would enable more flexibility but not allow quarter mile increment
                                                post = ' miles'
                             ),
                      ),
@@ -1119,15 +1129,21 @@ app_ui  <- function(request) {
                              step = minmax_mb_upload),
 
                 ### Options for Radius  ------------- #
-
-                numericInput('default_miles', label = "Default miles radius",
+                
+                numericInput('default_miles', label = "Default miles radius",  # what is shown at app startup 
                              min = 0.25,
-                             value = default_default_miles,
-
-                             max   =     max_default_miles),
+                             # value = default_default_miles, # how it was done before allowed it as a parameter in run_app()
+                             value = ifelse(
+                               ### also see server code where this is checked and modified as well
+                               ### and note default is different for each upload type (zero if shape or fips)
+                               ### check if param was passed to run_app() like run_app(default_default_miles = 3.1)
+                               length(get_golem_options("default_default_miles")) > 0, 
+                               get_golem_options("default_default_miles"), 
+                               default_default_miles),
+                             max   =     max_default_miles), # highest initial value that can be shown 
                 numericInput('max_miles', label = "Maximum radius in miles",
-                             value = default_max_miles,
-                             max        = maxmax_miles),
+                             value = default_max_miles, # initial cap that advanced tab lets you increase here
+                             max        = maxmax_miles), # i.e., even in the advanced tab one cannot exceed this cap
 
 
                 ######################################################## #
@@ -1280,9 +1296,16 @@ app_ui  <- function(request) {
                 shiny::radioButtons(inputId = "more3",
                                     label = "more3 PLACEHOLDER",
                                     choices = list(A = "a", B = "b", C = "c"),
-                                    selected = "a")  # ,
+                                    selected = "a"),
 
-                # ) # end advanced features and settings subtab
+                # ),
+                
+                span('EJAM tool for batch use of the EJScreen API: ',
+                     a('ejscreenapi tool',
+                       href = 'https://rstudio-connect.dmap-stage.aws.epa.gov/content/163e7ff5-1a1b-4db4-ad9e-e9aa5d764002/',
+                       target = '_blank', rel = 'noreferrer noopener'))
+                
+                # end advanced features and settings subtab
                 ##################################################################### #
 
        ) # end Advanced Settings + API tab ## ##

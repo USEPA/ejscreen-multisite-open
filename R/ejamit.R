@@ -252,10 +252,12 @@ ejamit <- function(sitepoints,
       if (missing(sitepoints)) {
         if (interactive() & !silentinteractive & !in_shiny) {
           sitepoints <- rstudioapi::selectFile(caption = "Select xlsx or csv with FIPS column of Census fips values", path = '.' )
+          # that returns the path to the file
           if (missing(radius)) {
             radius <- askradius(default = radius) # also see  askYesNo()
             # radius <- as.numeric(rstudioapi::showPrompt("Radius", "Within how many miles of each point?", 3))
           }
+          sitepoints <- latlon_any_format(sitepoints) # read file and infer colnames with lat lon
         } else {
           if (shiny::isRunning()) {
             warning("sitepoints (locations to analyze) is missing but required.")
@@ -350,7 +352,7 @@ ejamit <- function(sitepoints,
   if ("REGISTRY_ID" %in% names(out$results_bysite)) {
     echolink = url_echo_facility_webpage(REGISTRY_ID, as_html = T)
   } else {
-    echolink = rep(NA, nrow(out$results_bysite))
+    echolink = rep(NA, NROW(out$results_bysite))
   }
 
   if (!is.null(fips)) {

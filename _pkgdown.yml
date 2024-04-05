@@ -1,4 +1,4 @@
-url: https://usepa.github.io/EJAM/
+url: "usepa.github.io/EJAM/"
 template:
   bootstrap: 5
 deploy:
@@ -24,7 +24,7 @@ articles:
   desc: Overview for EJAM Users
   navbar: Overview for EJAM Users
   contents:
-  - '`0_what_is_ejam`'
+  - "0_whatis"
   - '`0_webapp`'
 - title: The EJAM R Package
   desc: For analysts using R
@@ -44,16 +44,20 @@ reference:
   - ejamit
   - ejam2report
   - ejam2excel
+  - ejam2ratios
   - ejscreenit_for_ejam
 - title: "Specify Points by Lat/Lon"
-  desc: "Utilities for working with latitude and longitude"
+  desc: "Utilities for working with latitude/ longitude or address"
   contents:
   - latlon_from_anything
+  - latlon_from_address_table
+  - latlon_from_address
+  - latlon_any_format
   - latlon_is.valid
   - lat_alias
   - lon_alias
   - islandareas
-  - latlon_from_address
+  - address_from_table
 - title: "Specify Facilities by ID"
   contents:
   - latlon_from_regid
@@ -110,18 +114,22 @@ reference:
   - frs_by_mact
 - title: "Specify Places by Shapefile"
   contents:
-  - shapefile_clean
-  - shapefile_filepaths_from_folder
-  - shapefile_filepaths_valid
-  - shapefile_from_filepaths
-  - shapefile_from_folder
-  - shapefile_from_sitepoints
   - shapes_blockgroups_from_bgfips
   - shapes_counties_from_countyfips
-  - shape_buffered_from_shapefile
-  - shape_buffered_from_shapefile_points
+  - shapefile_from_any
+  - shapefile_from_folder
+  - shapefile_from_filepaths
+  - shapefile_from_zip
   - shapefile_from_gdb
   - shapefile_from_gdbzip
+  - shapefile_filepaths_from_folder
+  - shapefile_filepaths_valid
+  - shapefile_clean
+  - shapefile_from_sitepoints
+  - shape_buffered_from_shapefile
+  - shape_buffered_from_shapefile_points
+  - shapefile2blockpoints
+  - shapefile2latlon
 - title: "Specify Counties etc."
   desc: >
     Tools to work with Census units and FIPS codes
@@ -211,6 +219,7 @@ reference:
   - distance_by_group_plot
   - distance_cdf_by_group_plot
   - distance_mean_by_group
+  - distance_by_group
   - popshare_at_top_n
   - popshare_at_top_x_pct
   - popshare_p_lives_at_what_n
@@ -236,16 +245,19 @@ reference:
   - popup_from_df
 - subtitle: "Plots"
   contents:
-  - boxplots_ratios
+  - plot_barplot_ratios_ez
   - plot_barplot_ratios
+  - plot_ridgeline_ratios_ez
+  - plot_ridgeline_ratios
+  - plot_vs_us
+  - boxplots_ratios
   - plot_demogshare_by_distance
   - plot_distance_by_pctd
+  - plot_distance_by_group
   - plot_distance_cdf_by_group
   - plot_distance_mean_by_group
   - plot_lorenz_distance_by_dcount
   - plot_lorenz_popcount_by_site
-  - plot_ridgeline_ratios
-  - plot_vs_us
 - subtitle: "Tables"
   contents:
   - table_tall_from_overall
@@ -291,6 +303,7 @@ reference:
   desc: "Utilities to handle variable names, indicator metadata, formulas, etc."
   contents:
   - fixcolnames
+  - fixcolnames_infer
   - names_d
   - names_e
   - namez

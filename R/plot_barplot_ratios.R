@@ -2,17 +2,21 @@
 
 #' Barplot of ratios of demographic (or other) scores to averages - simpler syntax
 #'
-#' @param out like from ejamit()
-#' @param varnames vector of indicator names that are ratios to avg
-#' @param ... passed to plot_barplot_ratios()
+#' @param out like from [ejamit()]
+#' @param varnames vector of indicator names that are ratios to avg, like 
+#'   c(names_d_ratio_to_avg , names_d_subgroups_ratio_to_avg)
+#'   but could be c(names_d_ratio_to_state_avg , names_d_subgroups_ratio_to_state_avg)
+#' @param main title of plot - must change to note it vs. State if not comparing to US avg.
+#' @param ... passed to [plot_barplot_ratios()]
 #' @examples plot_barplot_ratios_ez(testoutput_ejamit_100pts_1miles)
 #' @return ggplot
 #'
 #' @export
 #'
-plot_barplot_ratios_ez = function(out, varnames = c(names_d_ratio_to_avg , names_d_subgroups_ratio_to_avg), ...) {
+plot_barplot_ratios_ez = function(out, varnames = c(names_d_ratio_to_avg , names_d_subgroups_ratio_to_avg),
+                                  main = "Demographics at the Analyzed Locations Compared to US Overall", ...) {
 
-  plot_barplot_ratios(unlist(out$results_overall[ , varnames, with = FALSE]), ...)
+  plot_barplot_ratios(unlist(out$results_overall[ , varnames, with = FALSE]), main = main, ...)
   # plot_barplot_ratios(unlist(out$results_overall[ , c(..names_d_ratio_to_avg , ..names_d_subgroups_ratio_to_avg) ]))
   }
 ############################################################################################# #
@@ -56,9 +60,11 @@ plot_barplot_ratios_ez = function(out, varnames = c(names_d_ratio_to_avg , names
 #'   - the histograms code and discussion  in EJAMbatch.summarizer package
 #'
 #'
-#' @param ratio.to.us.d.overall named list of a few ratios to plot
+#' @param ratio.to.us.d.overall named list of a few ratios to plot, but see [plot_barplot_ratios_ez()]
+#'   for an easier way to specify which indicator to show.
 #' @param names2plot_friendly names to use for plot - should be same length as named list ratio.to.us.d.overall
 #' @param mycolorsavailable leave as default
+#' @param main title for plot, like "Demographics at the Analyzed Locations Compared to US Overall"
 #' @examples
 #'   plot_barplot_ratios(unlist(testoutput_ejamit_1000pts_1miles$results_overall[ , c(..names_d_ratio_to_avg , ..names_d_subgroups_ratio_to_avg) ]))
 #'
@@ -67,7 +73,11 @@ plot_barplot_ratios_ez = function(out, varnames = c(names_d_ratio_to_avg , names
 #' @export
 plot_barplot_ratios <- function(ratio.to.us.d.overall,
                                 names2plot_friendly = NULL,
-                                mycolorsavailable=c("gray", "yellow", "orange", "red")) {
+                                mycolorsavailable=c("gray", "yellow", "orange", "red"),
+                                main = "Demographics at the Analyzed Locations Compared to US Overall") {
+  
+  
+
   # ratio.to.us.d.overall <-   unlist(  out$results_overall[ , c(..names_d_ratio_to_avg, ..names_d_subgroups_ratio_to_avg )]  )
     # ratio.to.us.d.overall <- ratio.to.us.d()  # reactive already available
   # if ( all.equal(  names(ratio.to.us.d.overall), c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg))) {
@@ -109,8 +119,8 @@ thisplot <- thisdata %>%
     #ggplot2::scale_fill_identity(guide='legend', labels = c('gray'='0-1','yellow'='1-2', 'orange'='2-3', 'red'='> 3'),) +
     ggplot2::scale_fill_identity() +
     ggplot2::theme_bw() +
-    ggplot2::labs(x = NULL, y = 'Ratio vs. US Average', #fill = 'Legend',
-                  title = "Demographics at the Analyzed Locations Compared to US Overall") +
+    ggplot2::labs(x = NULL, y = 'Ratio vs. Average', #fill = 'Legend',
+                  title = main) +
     #scale_x_discrete(labels = scales::label_wrap(7)) +
     #scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
     #scale_x_discrete(guide = guide_axis(n.dodge = 2)) +

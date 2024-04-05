@@ -2,26 +2,28 @@
 library(magrittr)
 
 ## compute counts without subcodes 
-naics_counts_nosub <- frs_by_naics[, .N, by='NAICS']
+naics_counts_nosub <- frs_by_naics[, .N, by = 'NAICS']
 
 ## compute counts with subcodes
-naics_counts_w_subs <- sapply(NAICS, function(x) {frs_from_naics(x, children=T)[, .N]})
+naics_counts_w_subs <- sapply(NAICS, function(x) {frs_from_naics(x, children = T)[, .N]})
 
 ## make counts data.frame
 naics_counts <- data.frame(NAICS, count_w_subs = naics_counts_w_subs)
 
 ## join and add counts to labels
-naics_counts <- tibble::enframe(NAICS,value='NAICS') %>% 
+naics_counts <- tibble::enframe(NAICS,value = 'NAICS') %>% 
   dplyr::left_join(naics_counts) %>% 
   dplyr::left_join(naics_counts_nosub) %>% 
-  dplyr::rename(count_no_subs= N) %>% 
-  dplyr::mutate(label_w_subs = ifelse(count_w_subs > 0, paste0(name, ' (', 
-                                                        prettyNum(count_w_subs, big.mark=','),' sites)'),
-                               name
+  dplyr::rename(count_no_subs = N) %>% 
+  dplyr::mutate(label_w_subs = ifelse(count_w_subs > 0, 
+                                      paste0(name, ' (', 
+                                             prettyNum(count_w_subs, big.mark = ','),' sites)'
+                                      ),
+                                      name
   ),
   label_no_subs = ifelse(!is.na(count_no_subs) & count_no_subs > 0,
                          paste0(name, ' (', 
-                                prettyNum(count_no_subs, big.mark=','),' sites)'),
+                                prettyNum(count_no_subs, big.mark = ','),' sites)'),
                          name)
   )
 

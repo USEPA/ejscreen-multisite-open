@@ -38,10 +38,21 @@ datawrite_to_aws <- function(varnames= c('bgid2fips',   'blockid2fips', 'blockpo
   ## Get bucket contents if you want to explore the bucket ----
   # mybucket <-  'dmap-data-commons-oa' # 
   # bucket_contents <- data.table::rbindlist(
-  #   get_bucket(bucket = mybucket, prefix = "EJAM"), 
+  #   aws.s3::get_bucket(bucket = mybucket, prefix = "EJAM"), 
   #   fill = TRUE
   # )
   # bucket_contents
+  
+  # ID: 62098739-3989-4af1-994d-bd55819452f9
+  # Title: census 2020 block data for EJAM
+  # Description: census 2020 block data for EJAM
+  # Metadata Link: https://catalog.data.gov/dataset/census-block-internal-point-coordinates-and-weights-formatted-specifically-for-use-in-r-co
+  # Organization: OA
+  # Folder Name: EJAM
+  # Geographic Extent: National
+  # Registry Date: 6/20/2023 7:00:00 AM
+  # Keyword: Boundaries and Base Data, Environmental Justice
+  # S3 Bucket: dmap-data-commons-oa
   
   if (!is.character(fun)) {
     warning('must specify function in fun parameter as a quoted character string')
@@ -66,6 +77,10 @@ datawrite_to_aws <- function(varnames= c('bgid2fips',   'blockid2fips', 'blockpo
                            "bucket = '",mybucket,"', opts = list(show_progress = TRUE))")
       ## e.g.,  # access denied: 
       # aws.s3::s3save(bgid2fips, object = 'EJAM/bgid2fips.rda',  bucket = 'dmap-data-commons-oa', opts = list(show_progress = TRUE))
+      
+      # EJAM:::datawrite_to_aws("bgid2fips", justchecking = T)
+      
+      # arrow::write_ipc_file(bgid2fips, "bgid2fips.arrow")
       
     } else {
       

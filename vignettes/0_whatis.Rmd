@@ -1,8 +1,8 @@
 ---
-title: "What is EJAM?"
+title: "What is EJAM"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{What is EJAM?}
+  %\VignetteIndexEntry{What is EJAM}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -11,16 +11,18 @@ vignette: >
 #    - **See ?pkgdown::build_site** - EJAM uses the pkgdown R package to build help and articles/ vignettes as web pages
 ```
 
-```{r, include = FALSE}
+```{r SETUP_default_eval_or_not, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+knitr::opts_chunk$set(eval = FALSE)
+# https://r-pkgs.org/vignettes.html
 ```
 
-## EPA's EJ Analysis Multi-site (EJAM) tool
+# EPA's EJ Analysis Multi-site (EJAM) tool
 
-EJAM is a user-friendly tool, developed by the
+EJAM is a tool, developed by the
 United States Environmental Protection Agency (US EPA)
 that makes it easy to see demographic and environmental information 
 summarized in and across any list of places in the nation. 
@@ -28,11 +30,12 @@ Using EJAM is like running an EJScreen report,
 but for hundreds or thousands of places, 
 all at the same time. 
 
-A web app will let you quickly check a summary report, 
+EJScreen will be able to leverage EJAM's technology to 
+let you quickly check a summary report, 
 explore interactive maps, tables, and plots, and 
 download a summary or detailed spreadsheet.
 
-It provides interactive results and a formatted, ready-to-share report with written explanations of the results, tables, and graphics. 
+This provides interactive results and a formatted, ready-to-share report with written explanations of the results, tables, and graphics. 
 The report can provide EJ-related information about people who live in communities near any of the industrial facilities on a list, for example.
 
 ## Overview

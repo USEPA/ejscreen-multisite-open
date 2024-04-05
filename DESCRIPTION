@@ -12,7 +12,7 @@ Description: Web app and R tools to easily summarize
     Very fast identification of nearby blocks and distances, and 
     aggregation of indicators within each distance by site and overall.
     EJScreen indicators are included.
-URL: https://usepa.github.io/EJAM/
+URL: https://usepa.github.io/EJAM/, https://github.com/USEPA/EJAM
 Depends: 
     R (>= 2.10),
     EJAMbatch.summarizer,
@@ -64,6 +64,6 @@ Encoding: UTF-8
 LazyData: true
 Language: en-US
 VignetteBuilder: knitr, rmarkdown
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 Roxygen: list(markdown = TRUE)
 Config/testthat/parallel: true
