@@ -25,7 +25,7 @@ knitr::opts_chunk$set(eval = FALSE)
 # golem::detach_all_attached()
 # 
 library(EJAM)
-dataload_from_pins('all') # varnames = all  currently means all these:
+dataload_from_pins('all', envir = as.environment(-1)) # varnames = all  currently means all these:
 # dataload_from_pins(
 #   c("blockwts", "blockpoints", "blockid2fips", "quaddata", 
 #     "bgej", "bgid2fips",
@@ -33,7 +33,7 @@ dataload_from_pins('all') # varnames = all  currently means all these:
 # )
 
 ##################################### #
-if (!exists("blockid2fips")) {
+if (!exists("blockid2fips") || !exists("frs")) {
   cat("warning: blockid2fips not available\n")
   # *** temporary workaround if building vignette on 1 particular machine
   here <-   "~/../../Downloads/EJAMbigfiles"
@@ -220,15 +220,18 @@ if (exists("frs_by_mact")) {
 NAICS/industry categories
 
 ```{r pulpindustry, eval = TRUE}
+
 naics_categories()
 naics_from_any(naics_categories(3))[order(name),.(name,code)][1:10,]
 naics_from_any(naics_categories(3))[order(code),.(code,name)][1:10,]
 
 # See a data table of facilities in one industry
+dataload_from_pins("frs")
+if (exists("frs")) {
 industryword <- "pulp"
 
 head( frs_from_naics(naics_from_any(industryword)$code)[,1:4] )
-
+}
 ```
 
 Quick map of EPA-regulated facilities in one industrial category, which you can click on to see popup windows about sites.
@@ -312,6 +315,9 @@ head(naics_from_any(funion(a,b)[,code], children = T)[,.(name,code)] ) #  same
 A NAICS code can have many "children" or subcategories under it
 
 ```{r frs_from_naics-details, eval = TRUE}
+dataload_from_pins("frs")
+if (exists("frs")) {
+
 NROW(naics_from_any("chem"))
 # about 20
 NROW(naics_from_any("chem", children = T))
@@ -320,6 +326,7 @@ NROW(frs_from_naics(naics_from_any("chem")$code))
 # a few thousand
 NROW(frs_from_naics(naics_from_any("chem", children = T)$code))
 # >10,000
+}
 ```
 
 # SHAPEFILES
@@ -328,7 +335,7 @@ NROW(frs_from_naics(naics_from_any("chem", children = T)$code))
 
 You can upload polygons in a shapefile, and use EJAM to analyze them. See the Shiny app.
 
-See shapefile_from_folder() and related functions.
+See shapefile_from_any() and shapefile_from_folder() and related functions.
 
 ```{r}
 # shp1 <- shapefile_from_gdbzip(system.file("testdata/shapes/portland.gdb.zip", package = "EJAM"))
@@ -533,9 +540,10 @@ distance_by_group_plot(
 ### Map blocks near 1 site
 
 ```{r plotblocksnearby2, eval = TRUE, fig.height=5, fig.width=5}
-x = plotblocksnearby(testpoints_n(1), radius = 3, returnmap = FALSE)
+x = plotblocksnearby(testpoints_n(1, weighting = "block"), radius = 3,
+                     returnmap = FALSE)
 #  returnmap= TRUE is to actually return the leaflet map 
-
+# Use weighting="frs" in testpoints_n() to pick a random FRS facility's block
 ```
 
 # POPULATION DENSITY - AVG SITE VS AVG RESIDENT
