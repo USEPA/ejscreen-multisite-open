@@ -3251,7 +3251,7 @@ app_server <- function(input, output, session) {
           ## set y axis limits to (0, max value) but allow 5% higher on upper end
           scale_y_continuous(limits = c(0, NA), expand = expansion(mult = c(0, 0.05))) +
           labs(
-            x = 'Percentile',
+            x = '',
             y = 'Number of sites',
             title = 'Histogram of Raw Indicator Values Across Sites'
           ) +
@@ -3275,7 +3275,7 @@ app_server <- function(input, output, session) {
           geom_histogram(aes(x = indicator), fill = '#005ea2',
                          bins = input$summ_hist_bins) +
           labs(
-            x = 'Percentile',
+            x = '',
             y = 'Number of Sites',
             title = 'Histogram of US Percentile Indicator Values Across Sites'
           ) +
