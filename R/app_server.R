@@ -239,9 +239,9 @@ app_server <- function(input, output, session) {
   })
   # reactive to keep track of data type used in last analysis
   submitted_upload_method <- reactiveVal(NULL)
-  observeEvent(input$bt_get_results, {
-    submitted_upload_method(current_upload_method())
-  })
+  # observeEvent(input$bt_get_results, {
+  #   submitted_upload_method(current_upload_method())
+  # })
   
   observeEvent(input$show_data_preview,
                {
@@ -1552,7 +1552,7 @@ app_server <- function(input, output, session) {
   # >this part could be replaced by ejamit() or something like that ####
   
   observeEvent(input$bt_get_results, {  # (button is pressed)
-    
+    submitted_upload_method(current_upload_method())
     showNotification('Processing sites now!', type = 'message', duration = 1)
     
     ## progress bar setup overall for 3 operations  (getblocksnearby, doaggregate, batch.summarize)
