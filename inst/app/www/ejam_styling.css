@@ -84,3 +84,14 @@ background-color: #1a4480 !important;
     float: none;
     vertical-align: top;
 }
+
+ .irs--shiny .irs-from, .irs--shiny .irs-to, .irs--shiny .irs-single {
+   background-color: #005ea2;
+}
+
+.irs--shiny .irs-bar {
+    border-top: 1px solid #005ea2;
+    border-bottom: 1px solid #005ea2;
+    background: #005ea2;
+}
+
