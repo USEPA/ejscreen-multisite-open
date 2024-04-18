@@ -94,4 +94,11 @@ background-color: #1a4480 !important;
     border-bottom: 1px solid #005ea2;
     background: #005ea2;
 }
+.menu--main .menu__link{
+  color: #fff;
+}
+
+.menu--main .menu__link:visited {
+   color: #fff;
+}
 
