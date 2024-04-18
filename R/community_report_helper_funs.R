@@ -417,7 +417,7 @@ generate_html_header <- function(analysis_title, totalpop, locationstr, in_shiny
   #                    '" alt="EPA logo" width="110" height="35" style="position: absolute; left: 950px; top: ',shift_hbd+90,'px">')
   #
   img_html <- paste0('<img src=\"', 'www/EPA_logo_white.png',
-                     '\" alt=\"EPA logo\" width=\"110\" height=\"35\" style=\"position: absolute; left: 820px; top: ', shift_hbd + 50, 'px\">')
+                     '\" alt=\"EPA logo\" width=\"110\" height=\"35\">')
   
   paste0('
   <link href=\"https://fonts.googleapis.com/css2?family=Heebo:wght@500;600\" rel=\"stylesheet\">
@@ -425,20 +425,24 @@ generate_html_header <- function(analysis_title, totalpop, locationstr, in_shiny
   <link href=\"https://fonts.googleapis.com/css2?family=Noto+Sans&amp;display=swap\" rel=\"stylesheet\">
 
  <link rel=\"stylesheet\"  type=\"text/css\" media=\"all\" href=\"communityreport.css\" />
-<div id=\"header-secondary-background\" ', 'style=\"top: ', shift_hsb, 'px;\"', '></div>
-<div id=\"header-primary-background\" ', 'style=\"top: ', shift_hpb, 'px;\"','></div>
-<div id=\"header-background-detail\" ', 'style=\"top: ', shift_hbd, 'px;\"','></div>',
-img_html,
-'<h1 id=\"title\" tabindex=\"0\" style=\"white-space: nowrap; position: absolute; color: white;left: 140px; top: ',shift_hbd + 80,'px\">EJAM Community Report</h1>
-<p style=\"color: white;position: absolute;font-family: heebo, Arial, sans-serif; font-size: 20px; top: ',shift_hbd + 170,'px; left: 240px; text-align: center; white-space: nowrap;\">This report provides environmental and socioeconomic information for user-defined areas,<br> and combines that data into environmental justice and supplemental indexes.</p>
-<div class=\"header\" style=\"margin-top: 302px; width: 100%; font-weight: bold; background-color: #0e98d7;color: white;height: 115px;clear: both;\">
-<div style=\"width: 45%; float:left\">
-<h2 id=\"placename\" style=\"font-size: 45px;padding-left: 50px;max-width: 1000px;line-height: 1.15em;text-align: center;max-height: 115px;margin: 0;\">', analysis_title , '</h2>
-</div>',
-'<div style=\"width: 55%; float:right\">
-   <h5 style=\"font-family: heebo, Arial, sans-serif;text-align: center;font-size: 22px;line-height: 29px;text-align: center;\">',locationstr,'<br>','Population: <span id=\"TOTALPOP\">',totalpop,'</span><br>','</h5>
+<div id=\"header-primary-background\">
+<div id=\"header-primary-background-inner\">
+<div id=\"header-background-detail\"></div>',
+         img_html,
+         '<h1 id="title" tabindex="0">EJAM Community Report</h1>
+<p>This report provides environmental and socioeconomic information for user-defined areas,<br> and combines that data into environmental justice and supplemental indexes.</p>
 </div>
 </div>
+
+<div class="header">
+    <div style="width: 45%;">
+        <h2 id="placename" style="font-size: 3vw; padding-left: 2vw; max-width: 1000px; line-height: 1.15em; text-align: center; margin: 0;">', analysis_title , '</h2>
+    </div>
+    <div style="width: 55%;">
+        <h5 style="font-family: heebo, Arial, sans-serif; text-align: center; font-size: 1.5vw; line-height: 2vw; text-align: center;">', locationstr, '<br>Population: <span id="TOTALPOP">', totalpop, '</span><br></h5>
+    </div>
+</div>
+
 ', sep = '', collapse = '')
   # Population: <span id=\"TOTALPOP\">',totalpop,'</span><br>',
 }
@@ -450,7 +454,7 @@ img_html,
 #' @keywords internal
 #'
 generate_demog_header <- function() {
-  '<div id=\"page-3-header\" class=\"header\" style=\"background-color: #0e98d7; color: white; height: 85px; clear: both; margin-top: 7px;\"><h2 tabindex=\"12\" style=\"text-align: center; padding-top: 35px; font-size: 32px; padding-left: 20px;\">Environmental and Socioeconomic Indicators Data</h2></div>'
+  '<div id=\"page-3-header\"<h2 tabindex=\"12\">Environmental and Socioeconomic Indicators Data</h2></div>'
 }
 ################################################################### #
 
