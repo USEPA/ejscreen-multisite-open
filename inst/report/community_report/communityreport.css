@@ -176,6 +176,14 @@ left: 60%;
     border: 2px solid black;
   }
   
+    .color-alt-table tbody tr:nth-child(odd) td {
+      background-color: rgba(76,76,76,0.1)
+    }
+    
+    .color-alt-table tbody tr:nth-child(even) td {
+      background-color: rgba(76,76,76,0.02);
+    }
+  
   /* header cells */
     .color-alt-table-header th {
       font-family: Oswald, Arial, sans-serif;
