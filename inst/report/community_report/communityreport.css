@@ -169,15 +169,6 @@ left: 60%;
       font-size: 16px;
       font-weight: normal;
     }
-    
-    .color-alt-table tbody tr:nth-child(odd) td {
-      background-color: rgba(76,76,76,0.1)
-    }
-    
-    .color-alt-table tbody tr:nth-child(even) td {
-      background-color: rgba(76,76,76,0.02);
-    }
-  
   
   /* all cells */
     .color-alt-table th,
