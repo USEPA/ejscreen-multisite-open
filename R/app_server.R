@@ -1181,9 +1181,15 @@ app_server <- function(input, output, session) {
       
       ## if invalid data found, set invalid_alert() otherwise closeAlert()
       cat("Number of points:  "); cat(totalcount, 'total,', num_notna, 'valid,', num_na, ' invalid \n')
-      if (num_na > 0) {
+    if (num_na > 0) {
         #invalid_alert(num_na)
         invalid_alert[[current_upload_method()]] <- num_na
+        
+        #if all counts are invalid, disable analysis button
+        if(num_na == totalcount){
+          disable_buttons[[current_upload_method()]] <- 'TRUE'
+          showNotification('Warning: no valid site uploads exist. Please select a file with at least one valid upload', type = 'message', closeButton = TRUE)
+        }
       } else {
         #invalid_alert(NULL)
         invalid_alert[[current_upload_method()]] <- 0
