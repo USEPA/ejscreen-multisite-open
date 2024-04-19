@@ -426,24 +426,21 @@ generate_html_header <- function(analysis_title, totalpop, locationstr, in_shiny
 
  <link rel=\"stylesheet\"  type=\"text/css\" media=\"all\" href=\"communityreport.css\" />
 <div id=\"header-primary-background\">
+', img_html, '
 <div id=\"header-primary-background-inner\">
-<div id=\"header-background-detail\"></div>',
-         img_html,
-         '<h1 id="title" tabindex="0">EJAM Community Report</h1>
+         <h1 id="title" tabindex="0">EJAM Community Report</h1>
 <p>This report provides environmental and socioeconomic information for user-defined areas,<br> and combines that data into environmental justice and supplemental indexes.</p>
 </div>
 </div>
 
 <div class="header">
     <div style="width: 45%;">
-        <h2 id="placename" style="font-size: 3vw; padding-left: 2vw; max-width: 1000px; line-height: 1.15em; text-align: center; margin: 0;">', analysis_title , '</h2>
+        <h2 id="placename">', analysis_title , '</h2>
     </div>
     <div style="width: 55%;">
-        <h5 style="font-family: heebo, Arial, sans-serif; text-align: center; font-size: 1.5vw; line-height: 2vw; text-align: center;">', locationstr, '<br>Population: <span id="TOTALPOP">', totalpop, '</span><br></h5>
+        <h5>', locationstr, '<br>Population: <span id="TOTALPOP">', totalpop, '</span><br></h5>
     </div>
-</div>
-
-', sep = '', collapse = '')
+</div>', sep = '', collapse = '')
   # Population: <span id=\"TOTALPOP\">',totalpop,'</span><br>',
 }
 ################################################################### #
