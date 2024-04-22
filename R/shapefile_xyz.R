@@ -11,6 +11,7 @@
 # shapefile_from_filepaths()
 # shapefile_filepaths_from_folder()
 # shapefile_filepaths_valid()
+# shapefile_filepaths_validize()
 # shapefile_from_filepaths()
 # shapefile_from_gdbzip()
 # shapefile_from_gdb()
@@ -74,7 +75,10 @@ shapefile_from_any <- function(path = NULL, cleanit = TRUE, crs = 4269, layer = 
   # testfilename_zipdir2 <- system.file("testdata/shapes/portland_shp.zip", package = "EJAM") # .shp etc basenames are NOT same as .zip file basename
   #   testfilename_zipshp <- system.file("testdata/shapes/stations.zip",    package = "EJAM") # .shp etc basenames ARE IDENTICAL TO .zip file basename
   # testfilename_json <- system.file("testdata/shapes/portland.json",               package = "EJAM")
-  #
+  #  # testfilename_shp_alone <- system.file("testdata/shapes/portland_folder_shp/Neighborhoods_regions.shp",     package = "EJAM") # Neighborhoods_regions.shp
+  # # shapefile_filepaths_validize()  # needs unit tests: 
+  # testfilenameset_4 <- shapefile_filepaths_validize(testfilename_shp_alone)
+  
   #   file.exists(testfilename_dirshp)
   #   file.exists(testfilename_gdb)
   #   file.exists(testfilename_gdbzip)
@@ -521,7 +525,7 @@ shapefile_filepaths_from_folder <- function(folder = NULL) {
 #' @param filepaths vector of full paths with filenames (types .shp, .shx, .dbf, and .prj) as strings
 #'
 #' @return logical, indicating if all 4 extensions are found among the filepaths
-#' @seealso [shapefile_from_folder()]
+#' @seealso [shapefile_filepaths_validize()] [shapefile_from_folder()]
 #'
 #' @export
 #'
@@ -539,6 +543,40 @@ shapefile_filepaths_valid <- function(filepaths) {
   }
 }
 ############################################################################################## #
+
+#' Convert filepath(s) into one complete set (if possible) of a single basename and extensions .shp, .shx, .dbf, .prj
+#'
+#' @param filepaths vector of full path(s) with filename(s) as strings
+#'
+#' @return assuming only 1 base filename was provided and at least one of the
+#'   4 valid extensions (.shp, .shx, .dbf, and .prj) was included,
+#'   returns vector of exactly four filepaths, one with each extension.
+#'   But returns NULL if more than one base name was provided (since ambiguous),
+#'   or none of 4 extensions was provided.
+#'   Ignores and drops files with other extensions.
+#' @seealso [shapefile_filepaths_valid()] [shapefile_from_folder()]
+#'
+#' @export
+#'
+shapefile_filepaths_validize <- function(filepaths) {
+  
+  uniquebasenames = basename(tools::file_path_sans_ext(filepaths))
+  if (length(uniquebasenames) != 1) {
+    warning("More than one filename (excluding extensions) was found -- returning NULL")
+    return(NULL)
+  }
+  infile_ext <- tools::file_ext(filepaths)
+  if (any(tolower(infile_ext) %in% c('shp','shx','dbf','prj'))) {
+    filepaths <- paste0(tools::file_path_sans_ext(uniquebasenames), c('shp','shx','dbf','prj'))
+    return(filepaths)
+  } else {
+    warning("Need path/filenames with at least one of these extensions: .shp, .shx, .dbf, and .prj -- returning NULL")
+    # and cpg is ok but not essential?
+    return(NULL)
+  }
+}
+############################################################################################## #
+
 
 
 #' Drop invalid rows and warn if all invalid and add unique ID
