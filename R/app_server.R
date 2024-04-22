@@ -1591,11 +1591,7 @@ app_server <- function(input, output, session) {
                     need_proximityscore = FALSE, #input$need_proximityscore, # not relevant for FIPS
                     # infer_sitepoints = FALSE,
                     # need_blockwt = TRUE,
-                    
-                    threshgroup = list(input$an_threshgroup1, input$an_threshgroup2), # list("EJ-US-or-ST", "Supp-US-or-ST"),
-                    threshnames = list(input$an_threshnames1, input$an_threshnames2), # list(c(names_ej_pctile, names_ej_state_pctile), c(names_ej_supp_pctile, names_ej_supp_state_pctile)),
-                    threshold   = list(input$an_thresh_comp1, input$an_thresh_comp2),
-                    
+                    threshold1 = input$an_thresh_comp1, # list(input$an_thresh_comp1) # not sure this is needed or works here
                     # updateProgress = ??? , # not sure this is needed or works here
                     in_shiny = TRUE, # not sure this is needed or works here
                     # quiet = TRUE,
@@ -1898,10 +1894,7 @@ app_server <- function(input, output, session) {
                                  sf::st_drop_geometry()),
         ## user-selected quantiles to use
         #probs = as.numeric(input$an_list_pctiles),
-        
-        threshgroup = list(input$an_threshgroup1, input$an_threshgroup2), # list("EJ-US-or-ST", "Supp-US-or-ST"),
-        threshnames = list(input$an_threshnames1, input$an_threshnames2), # list(c(names_ej_pctile, names_ej_state_pctile), c(names_ej_supp_pctile, names_ej_supp_state_pctile)),
-        threshold   = list(input$an_thresh_comp1, input$an_thresh_comp2) # compare variables to 90th %ile or other percentile
+        threshold = list(input$an_thresh_comp1) # compare variables to 90th %ile or other percentile, like threshold1 param in ejamit()
       )
     } else {
       outsum <- EJAMbatch.summarizer::batch.summarize(
@@ -1909,9 +1902,7 @@ app_server <- function(input, output, session) {
         popstats =  data.frame(data_processed()$results_bysite),
         ## user-selected quantiles to use
         #probs = as.numeric(input$an_list_pctiles),
-        threshgroup = list(input$an_threshgroup1, input$an_threshgroup2), # list("EJ-US-or-ST", "Supp-US-or-ST"),
-        threshnames = list(input$an_threshnames1, input$an_threshnames2), # list(c(names_ej_pctile, names_ej_state_pctile), c(names_ej_supp_pctile, names_ej_supp_state_pctile)),
-        threshold   = list(input$an_thresh_comp1, input$an_thresh_comp2) # compare variables to 90th %ile or other percentile
+        threshold = list(input$an_thresh_comp1) # compare variables to 90th %ile or other percentile, like threshold1 param in ejamit()
       )
     }
     ## update overall progress bar

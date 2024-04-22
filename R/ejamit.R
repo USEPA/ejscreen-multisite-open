@@ -5,9 +5,7 @@
 #'   It does essentially what the web app does, to analyze/summarize near a set of points,
 #'   or in a set of polygons from a shapefile, or in a list of Census Units like Counties.
 #'
-#' @param sitepoints data.table with columns lat, lon giving point locations of
-#'   sites or facilities around which are circular buffers.
-#'   Ignored if shapefile_folder or shp is provided.
+#' @param sitepoints data.table with columns lat, lon giving point locations of sites or facilities around which are circular buffers
 #' @param radius in miles, defining circular buffer around a site point
 #' @param maxradius miles distance (max distance to check if not even 1 block point is within radius)
 #' @param avoidorphans logical If TRUE, then where not even 1 BLOCK internal point is within radius of a SITE,
@@ -25,13 +23,9 @@
 #' @param quadtree (a pointer to the large quadtree object) created using indexblocks() which uses the SearchTree package.
 #'   Takes about 2-5 seconds to create this each time it is needed.
 #'   It can be automatically created when the package is attached via the .onAttach() function
-#'   
 #' @param fips optional FIPS code vector to provide if using FIPS instead of sitepoints to specify places to analyze,
 #'   such as a list of US Counties or tracts. Passed to [getblocksnearby_from_fips()]
 #' @param shapefile_folder optional path to folder that has shapefiles to analyze polygons
-#' @param shp optional shapefile as already imported by [shapefile_from_folder()] or [shapefile_from_any()],
-#'   ignored if shapefile_folder also was specified.
-#'   
 #' @param countcols character vector of names of variables to aggregate within a buffer using a sum of counts,
 #'   like, for example, the number of people for whom a poverty ratio is known,
 #'   the count of which is the exact denominator needed to correctly calculate percent low income.
@@ -50,18 +44,10 @@
 #'   lat,lon of each site will be approximated as average of nearby blocks,
 #'   although a more accurate slower way would be to use reported distance of each of 3 of the furthest block points and triangulate
 #' @param need_blockwt if fips parameter is used, passed to [getblocksnearby_from_fips()]
-#' 
-#' @param threshold  passed to batch.summarize(), 
-#'   list of one or more percentiles like 80 or 90 or 95 to compare percentiles to
-#' @param threshnames passed to batch.summarize(),
-#'   list of one or more variable names (colnames of results_bysite) specifying
-#'   indicators to compare to thresholds
-#' @param threshgroup passed to batch.summarize(),
-#'   list of one or more strings used as the names of the groups of indicators
-#'   in threshnames.
-#' @param probs (might not be enabled) passed to batch.summarize(), vector of fractions, quantiles
-#'   reported in summary stats on each indicator
-#' 
+#' @param threshold1 percentile like 80 or 90 or 95 to compare percentiles to
+#'   "alone" for groups like white alone (whether or not hispanic),
+#'   "both" may try to include both,
+#'   or possibly "original" or "default" might be added as options - passed to batch.summarize()
 #' @param updateProgress progress bar function passed to [doaggregate()] in shiny app
 #' @param updateProgress_getblocks progress bar function passed to [getblocksnearby()] in shiny app
 #' @param in_shiny if fips parameter is used, passed to [getblocksnearby_from_fips()]
@@ -78,7 +64,7 @@
 #'
 #' @examples
 #'  # All in one step, using functions not shiny app:
-#'  out <- ejamit(testpoints_100, 1)
+#'  out <- ejamit(testpoints_100_dt, 2)
 #'
 #'  \dontrun{
 #'  # Do not specify sitepoints and it will prompt you for a file,
@@ -98,7 +84,7 @@
 #'   # use facility points from a random sample of EPA-regulated facilities
 #'   testsites <- testpoints_n(1e3)
 #'
-#'   # Specify distance from sites (residents within X miles of site point)
+#'   # Specify max distance from sites to look at (residents within X miles of site point)
 #'   radius <- 3.1 # miles
 #'
 #'   # Get summaries of all indicators near a set of points
@@ -115,10 +101,10 @@
 #'    distance_by_group(out$results_bybg_people)
 #'
 #'   # View maps
-#'   mapfastej(out$results_bysite, radius = 3.1)
+#'   mapfast(out$results_bysite, radius = 3.1)
 #'
 #'   # view results at a single site
-#'   mapfastej(out$results_bysite, radius = 3.1)
+#'   mapfast(out$results_bysite, radius = 3.1)
 #'   # all the raw numbers at one site
 #'   t(out$results_bysite[1, ])
 #'
@@ -147,28 +133,19 @@ ejamit <- function(sitepoints,
                    maxradius = 31.07,
                    avoidorphans = FALSE,
                    quadtree = NULL,
-                   
                    fips = NULL,
-                   shapefile_folder = NULL, 
-                   shp = NULL,
-                   
+                   shapefile_folder = NULL,
                    countcols = NULL,
                    popmeancols = NULL,
                    calculatedcols = NULL,
                    subgroups_type = "nh",
-                   include_ejindexes = TRUE,
+                   include_ejindexes = FALSE,
                    calculate_ratios = TRUE,
                    extra_demog = TRUE,
                    need_proximityscore = FALSE,
                    infer_sitepoints = FALSE,
                    need_blockwt = TRUE,
-                   
-                   # Can check all 4 types of EJ index pctile, to see how many (if any) of those 4 * 13, say, hit the threshold like 90th.
-                   threshold   = list(90, 90), # list(90, 90, 90, 90),  # like 80 or 90   # percentile threshold(s) to compare to like to 90th
-                   threshnames = list(c(names_ej_pctile, names_ej_state_pctile), c(names_ej_supp_pctile, names_ej_supp_state_pctile)), # list(c(names_ej_pctile, names_ej_state_pctile, names_ej_supp_pctile, names_ej_supp_state_pctile)),  #list(names_ej_pctile, names_ej_state_pctile, names_ej_supp_pctile, names_ej_supp_state_pctile),  # list(names(which(sapply(sitestats, class) != "character"))),
-                   threshgroup = list("EJ-US-or-ST", "Supp-US-or-ST"), # list(c("EJ US", "EJ State", "Suppl EJ US", "Suppl EJ State")), # list("EJ US", "EJ State", "Suppl EJ US", "Suppl EJ State"), # list("variables"),
-                   probs = c(0.25, 0.5, 0.75), # 100 * c(0, 0.25, 0.5, 0.75, 0.8, 0.9, 0.95, 0.99, 1),
-                   
+                   threshold1 = 90, # threshold.default['comp1']
                    updateProgress = NULL,
                    updateProgress_getblocks = NULL,
                    in_shiny = FALSE,
@@ -185,13 +162,8 @@ ejamit <- function(sitepoints,
 
   ## get blocks in POLYGONS / SHAPEFILES ####
 
-  if (!is.null(shapefile_folder) || !is.null(shp)) {
-    if (!is.null(shapefile_folder)) {
+  if (!is.null(shapefile_folder)) {
     shp <- shapefile_from_folder(folder = shapefile_folder, cleanit = TRUE)
-    } else {
-      shp <- shapefile_clean(shp)
-    }
-    
     if (!missing(radius)) {
       # add buffers around the polygons
       if (!silentinteractive) {cat('Adding buffer around each polygon.\n')}
@@ -307,7 +279,7 @@ ejamit <- function(sitepoints,
       stopifnot(is.data.frame(sitepoints), "lat" %in% colnames(sitepoints), "lon" %in% colnames(sitepoints), NROW(sitepoints) >= 1, is.numeric(sitepoints$lat))
       
       ## check for ejam_uniq_id column; warn and add if not present
-      if (!("character" %in% class(sitepoints)) & !c('ejam_uniq_id') %in% names(sitepoints)) {
+      if(!("character" %in% class(sitepoints)) & !c('ejam_uniq_id') %in% names(sitepoints)){
         warning('sitepoints did not contain a column named ejam_uniq_id, so one was added')
         sitepoints$ejam_uniq_id <- seq.int(length.out = NROW(sitepoints))
       }
@@ -443,23 +415,21 @@ ejamit <- function(sitepoints,
   # For each indicator, calc AVG and PCTILES, across all SITES and all PEOPLE
 
   # (doaggregate does not provide this)
-  
+
   out$results_summarized <- EJAMbatch.summarizer::batch.summarize(   # disabled only in ejam lite package ***
     sitestats = data.frame(out$results_bysite),
     popstats =  data.frame(out$results_bysite),
-    
-    threshnames = threshnames, # list(names_ej_state_pctile), # names of sets of indicators to compare to thresholds
-    threshold   = threshold, # list(threshold1),  # like 80 or 90   # percentile threshold(s) to compare to like to 90th
-    threshgroup = threshgroup, # list("EJ Index State", "EJ Index US", "Supplemental EJ Index State", "Supplemental EJ Index US"),
-    probs = probs, ## user-selected quantiles to report # as.numeric(input$an_list_pctiles)
-    wtscolname = "pop" 
+    ## user-selected quantiles to use
+    #probs = as.numeric(input$an_list_pctiles),
+    threshold = list(threshold1) # compare variables to 90 or other  %ile
   )
 
-  #   The percentiles in  $rows were wrong as of  late 2023  
+  #   The percentiles in these $rows seem wrong as of 10/2023 so far:
   #
   # rownames(out$results_summarized$rows)
   # [1] "Average site"             "Average person"           "Median site"              "Median person"            "Min"
   # [6]  "Max"                      "Sum"
+  #
   # "Percentile of sites 0"    "Percentile of sites 25"   "Percentile of sites 50"   "Percentile of sites 75"   "Percentile of sites 80"   "Percentile of sites 90"   "Percentile of sites 95"   "Percentile of sites 99"  "Percentile of sites 100"
   # "Percentile of people 0"   "Percentile of people 25"  "Percentile of people 50"  "Percentile of people 75"  "Percentile of people 80"  "Percentile of people 90"  "Percentile of people 95"  "Percentile of people 99"  "Percentile of people 100"
   ################################################################ #
