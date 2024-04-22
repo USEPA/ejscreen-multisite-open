@@ -18,11 +18,15 @@
 #'   
 #' @export
 #'
-datawrite_to_local <- function(varnames= c('bgid2fips',   'blockid2fips', 'blockpoints', 'blockwts' , 'quaddata' ), 
-                               ext=c(".arrow", ".rda")[1],
-                               folder_local_source = "~/../Downloads", 
-                               fun=c("arrow::write_ipc_file", "save")[1], # not sure save would work here. 
-                               justchecking = F, overwrite = FALSE) {
+datawrite_to_local <- function(
+    varnames = c(
+      'blockwts', 'blockpoints', 'blockid2fips', "quaddata",
+      'bgej', 'bgid2fips',
+      'frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact"),
+    ext = c(".arrow", ".rda")[1],
+    folder_local_source = "~/../Downloads", 
+    fun = c("arrow::write_ipc_file", "save")[1], # not sure save would work here. 
+    justchecking = F, overwrite = FALSE) {
   
   if (!is.character(fun)) {warning('must specify function in fun parameter as a quoted character string')
     return(NULL)
@@ -58,7 +62,7 @@ datawrite_to_local <- function(varnames= c('bgid2fips',   'blockid2fips', 'block
       if (dir.exists(folder_local_source)) {
         cat('The file is already saved in folder? ',  file.exists(localpaths[i]))
       }
-       cat('\n')
+      cat('\n')
     } else {
       if (file.exists(localpaths[i]) & !overwrite) {cat(localpaths[i], "already exists.\n  Set overwrite=TRUE if you want to replace it.\n")}
       if (!file.exists(localpaths[i]) | overwrite) {
@@ -84,7 +88,7 @@ datawrite_to_local <- function(varnames= c('bgid2fips',   'blockid2fips', 'block
         }
         if (file.exists(localpaths[i])) {cat("  saved ",  "\n\n")} else {cat("  Failed to save ",   '\n\n')}
       }
-     
+      
       
     }
   }   # end loop
