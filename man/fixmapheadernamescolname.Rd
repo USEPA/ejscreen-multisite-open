@@ -19,4 +19,7 @@ utility to convert aliases to proper colnames of map_headernames
   fixmapheadernamescolname(c('long', 'csv', 'api', 'r'))
 
 }
+\seealso{
+\code{\link[=varinfo]{varinfo()}}
+}
 \keyword{internal}

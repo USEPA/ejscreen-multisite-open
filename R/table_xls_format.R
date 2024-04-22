@@ -846,7 +846,7 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
 #' @param varcategory must be one of "Demographic"   "Environmental" "EJ Index" "other" 
 #'   as from dput(unique(map_headernames$varcategory))
 #' @return vector of colors like c('lightblue', 'gray') matching length of vartype
-#' @seealso [varname2vartype_ejam()]  [varname2varcategory_ejam()] [varname2color_ejam()]
+#' @seealso [varinfo()] [varname2vartype_ejam()]  [varname2varcategory_ejam()] [varname2color_ejam()]
 #' @export
 #'
 vartype_cat2color_ejam <- function(vartype=raw, varcategory="other") {
@@ -974,7 +974,7 @@ vartype_cat2color_ejam <- function(vartype=raw, varcategory="other") {
 #' @param varname things like us.avg.pctlowinc 
 #'
 #' @return vector of colors
-#' @seealso [varname2vartype_ejam()] [varname2varcategory_ejam()] [vartype_cat2color_ejam()]
+#' @seealso [varinfo()] [varname2vartype_ejam()] [varname2varcategory_ejam()] [vartype_cat2color_ejam()]
 #' @export
 #'
 varname2color_ejam <- function(varname, varnameinfo) {
@@ -1001,7 +1001,7 @@ varname2color_ejam <- function(varname, varnameinfo) {
 #' @param varnameinfo data.frame with info on type of each variable
 #'
 #' @return vector same size as varname
-#' @seealso [vartype_cat2color_ejam()] [varname2color_ejam()]
+#' @seealso [varinfo()] [vartype_cat2color_ejam()] [varname2color_ejam()]
 #' @export
 #'
 varname2vartype_ejam <- function(varname, varnameinfo) {
@@ -1042,7 +1042,7 @@ varname2vartype_ejam <- function(varname, varnameinfo) {
 #' @param varnameinfo data.frame with info on type of each variable
 #'
 #' @return vector same size as varname
-#' @seealso [vartype_cat2color_ejam()] [varname2color_ejam()]
+#' @seealso [varinfo()] [vartype_cat2color_ejam()] [varname2color_ejam()]
 #' @export
 #'
 varname2varcategory_ejam <- function(varname, varnameinfo) {

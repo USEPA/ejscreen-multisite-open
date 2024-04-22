@@ -2,7 +2,7 @@
 % Please edit documentation in R/acs_bycounty.R
 \name{acs_bycounty}
 \alias{acs_bycounty}
-\title{download ACS 5year data from Census API,}
+\title{download ACS 5year data from Census API, at County resolution}
 \usage{
 acs_bycounty(myvars = "B03002_001", myst = "DE", yr = 2021)
 }
@@ -18,16 +18,18 @@ tibble table from output of acs_bycounty() i.e., output of get_acs()
 from tidycensus pkg
 }
 \description{
-download ACS 5year data from Census API,
+download ACS 5year data from Census API, at County resolution
 }
 \examples{
+## also see examples for acs_bybg()
+\dontrun{
   x     <- acs_bycounty(myvars = "B03002_003", myst = "NY", yr = 2022) # nhwa
   denom <- acs_bycounty(myvars = "B03002_001", myst = "NY", yr = 2022) # pop
   z = x
   z$estimate = x$estimate / denom$estimate
   z$moe = 0  # x$moe / denom$estimate # need to calculate using census guidance if at all
   # z$variable = "pctnhwa" # not used if myvarnames is given
-  plot_bycounty(z, myvarnames = "Percent NonHispanic White Alone (i.e., Not People of Color)",
-                labeltype = scales::label_percent())
-
+  # plot_bycounty(z, myvarnames = "Percent NonHispanic White Alone (i.e., Not People of Color)",
+  #               labeltype = scales::label_percent()) # requires scales package
+}
 }

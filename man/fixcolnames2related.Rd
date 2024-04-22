@@ -46,4 +46,7 @@ fixcolnames2related(names_e, "usratio")
 # fixcolnames2related(names_ej, "uspctile") # does not return names_ej_pctile
   
 }
+\seealso{
+\code{\link[=varinfo]{varinfo()}} \code{\link[=fixcolnames]{fixcolnames()}}
+}
 \keyword{internal}

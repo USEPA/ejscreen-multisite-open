@@ -9,8 +9,8 @@
 #'   and where each bg is, which is useful for some situations.
 #'   
 #'   \preformatted{
-#'   As of 8/2023 it is the EJScreen 2.2 version of data, which uses ACS 2017-2021
-#'   and Census 2020. it has all US States, DC, PR, but not  "AS" "GU" "MP" "VI"
+#'   Has all US States, DC, PR, but not  "AS" "GU" "MP" "VI"
+#'   (and not U.S. Minor Outlying Islands FIPS 74 UM)
 #'   
 #'   How lat lon were estimated:
 #' 

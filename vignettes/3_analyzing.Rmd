@@ -539,9 +539,8 @@ distance_by_group_plot(
 
 ### Map blocks near 1 site
 
-```{r plotblocksnearby2, eval = TRUE, fig.height=5, fig.width=5}
-x = plotblocksnearby(testpoints_n(1, weighting = "block"), radius = 3,
-                     returnmap = FALSE)
+```{r plotblocksnearby2, eval = FALSE, fig.height=5, fig.width=5}
+x = plotblocksnearby(testpoints_10[1,], radius = 3, returnmap = FALSE)
 #  returnmap= TRUE is to actually return the leaflet map 
 # Use weighting="frs" in testpoints_n() to pick a random FRS facility's block
 ```

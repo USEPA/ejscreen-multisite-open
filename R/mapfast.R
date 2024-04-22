@@ -1,6 +1,6 @@
 
 
-#' Get a leaflet html widget map of data.frame with lat lon
+#' Map - points - Create leaflet html widget map of points using EJAM results with EJ stats
 #'
 #' Like [mapfast()] but with column_names = "ej"
 #'
@@ -15,7 +15,7 @@ mapfastej <- function(...) {
 ############################################################################ #
 
 
-#' Get a leaflet html widget map of data.frame with lat lon
+#' Map - points - Create leaflet html widget map of points using table with lat lon
 #'
 #' @param mydf data.frame or data.table with lat and lon columns or
 #'   columns that [latlon_infer()] can infer to be that

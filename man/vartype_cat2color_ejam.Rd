@@ -22,5 +22,5 @@ vector of colors like c('lightblue', 'gray') matching length of vartype
 Use color shading to make spreadsheet easier to use, grouping the indicators
 }
 \seealso{
-\code{\link[=varname2vartype_ejam]{varname2vartype_ejam()}}  \code{\link[=varname2varcategory_ejam]{varname2varcategory_ejam()}} \code{\link[=varname2color_ejam]{varname2color_ejam()}}
+\code{\link[=varinfo]{varinfo()}} \code{\link[=varname2vartype_ejam]{varname2vartype_ejam()}}  \code{\link[=varname2varcategory_ejam]{varname2varcategory_ejam()}} \code{\link[=varname2color_ejam]{varname2color_ejam()}}
 }

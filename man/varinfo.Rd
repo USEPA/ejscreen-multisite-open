@@ -2,7 +2,7 @@
 % Please edit documentation in R/varinfo.R
 \name{varinfo}
 \alias{varinfo}
-\title{varinfo gets metadata for a variable, like its type, definition, decimalS rounding, etc.}
+\title{Get metadata about a variable, like its type, short name, long definition, decimal places, etc.}
 \usage{
 varinfo(
   var = map_headernames$rname,
@@ -16,7 +16,7 @@ varinfo(
 
 \item{info}{types of metadata/info needed, such as "decimals", "long", etc.
 which should be among colnames of map_headernames,
-or alias like "long" as allowed by fixcolnames()}
+or alias like "long" as allowed by \code{\link[=fixcolnames]{fixcolnames()}}}
 
 \item{varnametype}{optional. colname of map_headernames to use when looking for var,
 like "rname" or "api" or "long"}
@@ -39,7 +39,30 @@ variable used in EJAM.
 }
 \details{
 See map_headernames for what kind of information is available there.
-But if a variable appears twice+ in var or in map_headernames, info returned only for the 1st row of those
+But if a variable appears twice+ in var or in map_headernames, info returned only for the 1st row of those.
+
+Developers may wish to know about these functions,
+several of which are not exported:
+\itemize{
+\item \code{\link[=varinfo]{varinfo()}}
+\item \code{\link[=varname2varcategory_ejam]{varname2varcategory_ejam()}}
+\item \code{\link[=varname2vartype_ejam]{varname2vartype_ejam()}}
+\item \code{\link[=table_rounding_info]{table_rounding_info()}}
+\item \code{\link[=fixcolnames]{fixcolnames()}}
+\item \code{\link[=fixcolnames_infer]{fixcolnames_infer()}}
+\item \code{\link[EJAMejscreenapi:fixnames_to_type]{EJAMejscreenapi::fixnames_to_type()}}
+\item EJAM fixcolnames2related()
+\item EJAM fix_pctcols_x100()
+\item EJAM fixmapheadernamescolname()
+\item EJAM var_is_numeric_ish()
+\item EJAM namesbyvarlist()
+\item EJAM names_whichlist()
+\item EJAM names_whichlist_multi()
+\item EJAM names_whichlist_multi_key()
+\item EJAM formula_varname()
+}
+
+and the various related data objects like map_headernames and namez
 }
 \examples{
 varinfo("traffic.score", "decimals")
@@ -60,8 +83,20 @@ varinfo(
 
 varinfo(names_all_r, c("varcategory", "varlist", "in_api", "in_bgcsv"))
 
+cbind(
+  namez$d, 
+  names_d, 
+  varinfo(names_d, "varlist"), 
+  usavg = unlist(avg.in.us[names_d]), 
+  usavg_varname = EJAM:::fixcolnames2related(names_d, "usavg"), 
+  categ = varname2varcategory_ejam(names_d)
+)
+
+names(map_headernames)
+t(varinfo(names_d[1]))
+
 }
 \seealso{
-fixcolnames() \code{\link[=table_rounding_info]{table_rounding_info()}}
+\code{\link[=fixcolnames]{fixcolnames()}} \code{\link[=table_rounding_info]{table_rounding_info()}}
 }
 \keyword{internal}

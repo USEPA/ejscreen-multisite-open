@@ -91,14 +91,13 @@ is approximately in one of the rough bounding boxes that includes the 4 Island A
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="co"># this would require the testpoints_1000 data from the EJAM package:</span></span></span>
-<span class="r-in"><span>  <span class="va">isles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="fu">latlon_is.islandareas</span><span class="op">(</span>lat <span class="op">=</span> <span class="va">testpoints_1000</span><span class="op">$</span><span class="va">lat</span>, lon <span class="op">=</span> <span class="va">testpoints_1000</span><span class="op">$</span><span class="va">lon</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="mapfast.html">mapfast</a></span><span class="op">(</span><span class="va">testpoints_1000</span><span class="op">[</span><span class="va">isles</span>, <span class="op">]</span><span class="op">)</span> <span class="co"># c(213,785)</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="fu"><a href="latlon_is.usa.html">latlon_is.usa</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">testpoints_1000</span><span class="op">$</span><span class="va">lat</span>, lon <span class="op">=</span> <span class="va">testpoints_1000</span><span class="op">$</span><span class="va">lon</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
-<span class="r-in"><span></span></span>
-</code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
+<span><span class="co"># this would require the testpoints_1000 data from the EJAM package:</span></span>
+<span>  <span class="va">isles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="fu">latlon_is.islandareas</span><span class="op">(</span>lat <span class="op">=</span> <span class="va">testpoints_1000</span><span class="op">$</span><span class="va">lat</span>, lon <span class="op">=</span> <span class="va">testpoints_1000</span><span class="op">$</span><span class="va">lon</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="mapfast.html">mapfast</a></span><span class="op">(</span><span class="va">testpoints_1000</span><span class="op">[</span><span class="va">isles</span>, <span class="op">]</span><span class="op">)</span> <span class="co"># c(213,785)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="fu"><a href="latlon_is.usa.html">latlon_is.usa</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="va">testpoints_1000</span><span class="op">$</span><span class="va">lat</span>, lon <span class="op">=</span> <span class="va">testpoints_1000</span><span class="op">$</span><span class="va">lon</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span></code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>

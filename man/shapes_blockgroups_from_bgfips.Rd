@@ -2,7 +2,7 @@
 % Please edit documentation in R/MAP_FUNCTIONS.R
 \name{shapes_blockgroups_from_bgfips}
 \alias{shapes_blockgroups_from_bgfips}
-\title{Get boundaries of blockgroups, via API, to map them}
+\title{Get blockgroups boundaries, via API, to map them}
 \usage{
 shapes_blockgroups_from_bgfips(
   bgfips = "010890029222",
@@ -30,7 +30,7 @@ for example provides EJScreen indicator values, NPL_CNT, TSDF_CNT, EXCEED_COUNT_
 spatial object via \code{\link[sf:st_read]{sf::st_read()}} # sf-data.frame, not sf-tibble like \code{\link[sf:st_read]{sf::read_sf()}}
 }
 \description{
-Get boundaries of blockgroups, via API, to map them
+Get blockgroups boundaries, via API, to map them
 }
 \details{
 This is useful mostly for small numbers of blockgroups.

@@ -74,6 +74,7 @@
 <span>  folder_local_source <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  envir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/environment.html" class="external-link">globalenv</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  justchecking <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  ignorelocal <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  silent <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -111,6 +112,10 @@ look in for locally saved copies in case pins board is not reachable by user.</p
 
 <dt>justchecking</dt>
 <dd><p>can set to TRUE to just see a list of what pins are stored in that board</p></dd>
+
+
+<dt>ignorelocal</dt>
+<dd><p>set it to TRUE to avoid 1st checking local disk for copies of files</p></dd>
 
 
 <dt>silent</dt>

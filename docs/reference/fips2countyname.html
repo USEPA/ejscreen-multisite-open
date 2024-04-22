@@ -86,61 +86,10 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span>  <span class="co"># names of all counties in ME and NY</span></span></span>
-<span class="r-in"><span>  <span class="fu">fips2countyname</span><span class="op">(</span><span class="fu"><a href="fips_counties_from_state_abbrev.html">fips_counties_from_state_abbrev</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ME"</span>, <span class="st">"NY"</span><span class="op">)</span><span class="op">)</span>, includestate <span class="op">=</span> <span class="st">"ST"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "Androscoggin County, ME" "Aroostook County, ME"   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "Cumberland County, ME"   "Franklin County, ME"    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "Hancock County, ME"      "Kennebec County, ME"    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "Knox County, ME"         "Lincoln County, ME"     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "Oxford County, ME"       "Penobscot County, ME"   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [11] "Piscataquis County, ME"  "Sagadahoc County, ME"   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "Somerset County, ME"     "Waldo County, ME"       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [15] "Washington County, ME"   "York County, ME"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [17] "Albany County, NY"       "Allegany County, NY"    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "Bronx County, NY"        "Broome County, NY"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [21] "Cattaraugus County, NY"  "Cayuga County, NY"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [23] "Chautauqua County, NY"   "Chemung County, NY"     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [25] "Chenango County, NY"     "Clinton County, NY"     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [27] "Columbia County, NY"     "Cortland County, NY"    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [29] "Delaware County, NY"     "Dutchess County, NY"    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [31] "Erie County, NY"         "Essex County, NY"       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [33] "Franklin County, NY"     "Fulton County, NY"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [35] "Genesee County, NY"      "Greene County, NY"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [37] "Hamilton County, NY"     "Herkimer County, NY"    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [39] "Jefferson County, NY"    "Kings County, NY"       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [41] "Lewis County, NY"        "Livingston County, NY"  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [43] "Madison County, NY"      "Monroe County, NY"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [45] "Montgomery County, NY"   "Nassau County, NY"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [47] "New York County, NY"     "Niagara County, NY"     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [49] "Oneida County, NY"       "Onondaga County, NY"    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [51] "Ontario County, NY"      "Orange County, NY"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [53] "Orleans County, NY"      "Oswego County, NY"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [55] "Otsego County, NY"       "Putnam County, NY"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [57] "Queens County, NY"       "Rensselaer County, NY"  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [59] "Richmond County, NY"     "Rockland County, NY"    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [61] "St. Lawrence County, NY" "Saratoga County, NY"    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [63] "Schenectady County, NY"  "Schoharie County, NY"   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [65] "Schuyler County, NY"     "Seneca County, NY"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [67] "Steuben County, NY"      "Suffolk County, NY"     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [69] "Sullivan County, NY"     "Tioga County, NY"       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [71] "Tompkins County, NY"     "Ulster County, NY"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [73] "Warren County, NY"       "Washington County, NY"  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [75] "Wayne County, NY"        "Westchester County, NY" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [77] "Wyoming County, NY"      "Yates County, NY"       </span>
-<span class="r-in"><span>   <span class="fu"><a href="fips_counties_from_state_abbrev.html">fips_counties_from_state_abbrev</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AK"</span>, <span class="st">"LA"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "02013" "02016" "02020" "02050" "02060" "02063" "02066" "02068" "02070"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [10] "02090" "02100" "02105" "02110" "02122" "02130" "02150" "02158" "02164"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [19] "02170" "02180" "02185" "02188" "02195" "02198" "02220" "02230" "02240"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [28] "02275" "02282" "02290" "22001" "22003" "22005" "22007" "22009" "22011"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [37] "22013" "22015" "22017" "22019" "22021" "22023" "22025" "22027" "22029"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [46] "22031" "22033" "22035" "22037" "22039" "22041" "22043" "22045" "22047"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [55] "22049" "22051" "22053" "22055" "22057" "22059" "22061" "22063" "22065"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [64] "22067" "22069" "22071" "22073" "22075" "22077" "22079" "22081" "22083"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [73] "22085" "22087" "22089" "22091" "22093" "22095" "22097" "22099" "22101"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [82] "22103" "22105" "22107" "22109" "22111" "22113" "22115" "22117" "22119"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [91] "22121" "22123" "22125" "22127"</span>
-<span class="r-in"><span></span></span>
-</code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span>  <span class="co"># names of all counties in ME and NY</span></span>
+<span>  <span class="fu">fips2countyname</span><span class="op">(</span><span class="fu"><a href="fips_counties_from_state_abbrev.html">fips_counties_from_state_abbrev</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ME"</span>, <span class="st">"NY"</span><span class="op">)</span><span class="op">)</span>, includestate <span class="op">=</span> <span class="st">"ST"</span><span class="op">)</span></span>
+<span>   <span class="fu"><a href="fips_counties_from_state_abbrev.html">fips_counties_from_state_abbrev</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"AK"</span>, <span class="st">"LA"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span></code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>

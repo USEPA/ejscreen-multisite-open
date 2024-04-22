@@ -12,17 +12,22 @@ ejamit(
   quadtree = NULL,
   fips = NULL,
   shapefile_folder = NULL,
+  shp = NULL,
   countcols = NULL,
   popmeancols = NULL,
   calculatedcols = NULL,
   subgroups_type = "nh",
-  include_ejindexes = FALSE,
+  include_ejindexes = TRUE,
   calculate_ratios = TRUE,
   extra_demog = TRUE,
   need_proximityscore = FALSE,
   infer_sitepoints = FALSE,
   need_blockwt = TRUE,
-  threshold1 = 90,
+  threshold = list(90, 90),
+  threshnames = list(c(names_ej_pctile, names_ej_state_pctile), c(names_ej_supp_pctile,
+    names_ej_supp_state_pctile)),
+  threshgroup = list("EJ-US-or-ST", "Supp-US-or-ST"),
+  probs = c(0.25, 0.5, 0.75),
   updateProgress = NULL,
   updateProgress_getblocks = NULL,
   in_shiny = FALSE,
@@ -34,7 +39,9 @@ ejamit(
 )
 }
 \arguments{
-\item{sitepoints}{data.table with columns lat, lon giving point locations of sites or facilities around which are circular buffers}
+\item{sitepoints}{data.table with columns lat, lon giving point locations of
+sites or facilities around which are circular buffers.
+Ignored if shapefile_folder or shp is provided.}
 
 \item{radius}{in miles, defining circular buffer around a site point}
 
@@ -61,6 +68,9 @@ It can be automatically created when the package is attached via the .onAttach()
 such as a list of US Counties or tracts. Passed to \code{\link[=getblocksnearby_from_fips]{getblocksnearby_from_fips()}}}
 
 \item{shapefile_folder}{optional path to folder that has shapefiles to analyze polygons}
+
+\item{shp}{optional shapefile as already imported by \code{\link[=shapefile_from_folder]{shapefile_from_folder()}} or \code{\link[=shapefile_from_any]{shapefile_from_any()}},
+ignored if shapefile_folder also was specified.}
 
 \item{countcols}{character vector of names of variables to aggregate within a buffer using a sum of counts,
 like, for example, the number of people for whom a poverty ratio is known,
@@ -90,10 +100,19 @@ although a more accurate slower way would be to use reported distance of each of
 
 \item{need_blockwt}{if fips parameter is used, passed to \code{\link[=getblocksnearby_from_fips]{getblocksnearby_from_fips()}}}
 
-\item{threshold1}{percentile like 80 or 90 or 95 to compare percentiles to
-"alone" for groups like white alone (whether or not hispanic),
-"both" may try to include both,
-or possibly "original" or "default" might be added as options - passed to batch.summarize()}
+\item{threshold}{passed to batch.summarize(),
+list of one or more percentiles like 80 or 90 or 95 to compare percentiles to}
+
+\item{threshnames}{passed to batch.summarize(),
+list of one or more variable names (colnames of results_bysite) specifying
+indicators to compare to thresholds}
+
+\item{threshgroup}{passed to batch.summarize(),
+list of one or more strings used as the names of the groups of indicators
+in threshnames.}
+
+\item{probs}{(might not be enabled) passed to batch.summarize(), vector of fractions, quantiles
+reported in summary stats on each indicator}
 
 \item{updateProgress}{progress bar function passed to \code{\link[=doaggregate]{doaggregate()}} in shiny app}
 
@@ -124,7 +143,7 @@ or in a set of polygons from a shapefile, or in a list of Census Units like Coun
 }
 \examples{
  # All in one step, using functions not shiny app:
- out <- ejamit(testpoints_100_dt, 2)
+ out <- ejamit(testpoints_100, 1)
 
  \dontrun{
  # Do not specify sitepoints and it will prompt you for a file,
@@ -144,7 +163,7 @@ or in a set of polygons from a shapefile, or in a list of Census Units like Coun
   # use facility points from a random sample of EPA-regulated facilities
   testsites <- testpoints_n(1e3)
 
-  # Specify max distance from sites to look at (residents within X miles of site point)
+  # Specify distance from sites (residents within X miles of site point)
   radius <- 3.1 # miles
 
   # Get summaries of all indicators near a set of points
@@ -161,10 +180,10 @@ or in a set of polygons from a shapefile, or in a list of Census Units like Coun
    distance_by_group(out$results_bybg_people)
 
   # View maps
-  mapfast(out$results_bysite, radius = 3.1)
+  mapfastej(out$results_bysite, radius = 3.1)
 
   # view results at a single site
-  mapfast(out$results_bysite, radius = 3.1)
+  mapfastej(out$results_bysite, radius = 3.1)
   # all the raw numbers at one site
   t(out$results_bysite[1, ])
 

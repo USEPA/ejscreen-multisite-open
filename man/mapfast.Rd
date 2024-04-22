@@ -2,7 +2,7 @@
 % Please edit documentation in R/mapfast.R
 \name{mapfast}
 \alias{mapfast}
-\title{Get a leaflet html widget map of data.frame with lat lon}
+\title{Map - points - Create leaflet html widget map of points using table with lat lon}
 \usage{
 mapfast(mydf, radius = 3, column_names = "all", labels = column_names)
 }
@@ -24,7 +24,7 @@ plots a leaflet map with popups with all the columns from mydf,
 and returns html widget
 }
 \description{
-Get a leaflet html widget map of data.frame with lat lon
+Map - points - Create leaflet html widget map of points using table with lat lon
 }
 \examples{
  mapfast(testpoints_500)

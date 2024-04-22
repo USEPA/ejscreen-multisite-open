@@ -17,8 +17,7 @@ url_4table(lat, lon, radius, regid = NULL, as_html = TRUE)
 to detailed ECHO facility reports}
 
 \item{as_html}{logical, optional.
-passed to url_ejscreen_report() and url_ejscreenmap()
-from EJAMejscreenapi package}
+passed to url_ejscreen_report() and url_ejscreenmap()}
 }
 \value{
 list of data.frames to append to the list of data.frames created by
@@ -31,6 +30,5 @@ Could start to use this in server and ejamit(), and already used in table_xls_fo
 }
 \seealso{
 url_ejscreen_report() url_ejscreenmap() url_echo_facility_webpage()
-from EJAMejscreenapi package
 }
 \keyword{internal}

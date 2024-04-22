@@ -2,7 +2,7 @@
 % Please edit documentation in R/MAP_FUNCTIONS.R
 \name{map_blockgroups_over_blocks}
 \alias{map_blockgroups_over_blocks}
-\title{Map blockgroup boundaries near 1 site, after plotblocksnearby()}
+\title{Map - Blockgroup polygons / boundaries near 1 site - Create leaflet map}
 \usage{
 map_blockgroups_over_blocks(y)
 }

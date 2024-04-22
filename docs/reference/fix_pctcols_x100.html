@@ -89,101 +89,24 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span> <span class="va">y</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>pctlowinc <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, pctpre1960 <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, avg.pctunemployed <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, avg.pctpre1960 <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-in"><span> <span class="fu">fix_pctcols_x100</span><span class="op">(</span><span class="va">y</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fix_pctcols_x100(y):</span> could not find function "fix_pctcols_x100"</span>
-<span class="r-in"><span> <span class="fu">fix_pctcols_x100</span><span class="op">(</span><span class="va">y</span>, <span class="va">names_pct_as_fraction_ejscreenit</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fix_pctcols_x100(y, names_pct_as_fraction_ejscreenit):</span> could not find function "fix_pctcols_x100"</span>
-<span class="r-in"><span> <span class="fu">fix_pctcols_x100</span><span class="op">(</span><span class="va">y</span>, <span class="va">names_pct_as_fraction_blockgroupstats</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fix_pctcols_x100(y, names_pct_as_fraction_blockgroupstats):</span> could not find function "fix_pctcols_x100"</span>
-<span class="r-in"><span> <span class="fu">fix_pctcols_x100</span><span class="op">(</span><span class="va">y</span>, <span class="va">names_pct_as_fraction_ejamit</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fix_pctcols_x100(y, names_pct_as_fraction_ejamit):</span> could not find function "fix_pctcols_x100"</span>
-<span class="r-in"><span> <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\n\n"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span> <span class="va">names_pct_as_fraction_ejscreenit</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "pctpre1960"           "avg.pctpre1960"       "state.avg.pctpre1960"</span>
-<span class="r-in"><span> <span class="va">names_pct_as_fraction_blockgroupstats</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "Demog.Index"      "Demog.Index.Supp" "pctlowinc"        "pctlingiso"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "pctunemployed"    "pctlths"          "lowlifex"         "pctunder5"       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "pctover64"        "pctmin"          </span>
-<span class="r-in"><span> <span class="va">names_pct_as_fraction_ejamit</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [1] "Demog.Index"                "Demog.Index.Supp"          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [3] "pctlowinc"                  "pctlingiso"                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [5] "pctunemployed"              "pctlths"                   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [7] "lowlifex"                   "pctunder5"                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   [9] "pctover64"                  "pctmin"                    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [11] "avg.Demog.Index"            "avg.Demog.Index.Supp"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [13] "avg.pctlowinc"              "avg.pctlingiso"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [15] "avg.pctunemployed"          "avg.pctlths"               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [17] "avg.lowlifex"               "avg.pctunder5"             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [19] "avg.pctover64"              "avg.pctmin"                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [21] "state.avg.Demog.Index"      "state.avg.Demog.Index.Supp"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [23] "state.avg.pctlowinc"        "state.avg.pctlingiso"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [25] "state.avg.pctunemployed"    "state.avg.pctlths"         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [27] "state.avg.lowlifex"         "state.avg.pctunder5"       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [29] "state.avg.pctover64"        "state.avg.pctmin"          </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [31] "pcthisp"                    "pctnhba"                   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [33] "pctnhaa"                    "pctnhaiana"                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [35] "pctnhnhpia"                 "pctnhotheralone"           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [37] "pctnhmulti"                 "pctnhwa"                   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [39] "avg.pcthisp"                "avg.pctnhba"               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [41] "avg.pctnhaa"                "avg.pctnhaiana"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [43] "avg.pctnhnhpia"             "avg.pctnhotheralone"       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [45] "avg.pctnhmulti"             "avg.pctnhwa"               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [47] "state.avg.pcthisp"          "state.avg.pctnhba"         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [49] "state.avg.pctnhaa"          "state.avg.pctnhaiana"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [51] "state.avg.pctnhnhpia"       "state.avg.pctnhotheralone" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [53] "state.avg.pctnhmulti"       "state.avg.pctnhwa"         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [55] "pcthisp"                    "pctba"                     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [57] "pctaa"                      "pctaiana"                  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [59] "pctnhpia"                   "pctotheralone"             </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [61] "pctmulti"                   "pctwa"                     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [63] "avg.pcthisp"                "avg.pctba"                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [65] "avg.pctaa"                  "avg.pctaiana"              </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [67] "avg.pctnhpia"               "avg.pctotheralone"         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [69] "avg.pctmulti"               "avg.pctwa"                 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [71] "state.avg.pcthisp"          "state.avg.pctba"           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [73] "state.avg.pctaa"            "state.avg.pctaiana"        </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [75] "state.avg.pctnhpia"         "state.avg.pctotheralone"   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [77] "state.avg.pctmulti"         "state.avg.pctwa"           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [79] "pcthisp"                    "pctnhba"                   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [81] "pctnhaa"                    "pctnhaiana"                </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [83] "pctnhnhpia"                 "pctnhotheralone"           </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [85] "pctnhmulti"                 "pctnhwa"                   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [87] "avg.pcthisp"                "avg.pctnhba"               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [89] "avg.pctnhaa"                "avg.pctnhaiana"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [91] "avg.pctnhnhpia"             "avg.pctnhotheralone"       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [93] "avg.pctnhmulti"             "avg.pctnhwa"               </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [95] "state.avg.pcthisp"          "state.avg.pctnhba"         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [97] "state.avg.pctnhaa"          "state.avg.pctnhaiana"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [99] "state.avg.pctnhnhpia"       "state.avg.pctnhotheralone" </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [101] "state.avg.pctnhmulti"       "state.avg.pctnhwa"         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [103] "pctdisability"              "pctmale"                   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [105] "pctfemale"                  "p_own_occupied"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [107] "pctunder18"                 "pctover17"                 </span>
-<span class="r-in"><span> <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\n\n"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span> <span class="va">ytable</span> <span class="op">=</span> <span class="fu">data.table</span><span class="op">(</span>pctlowinc <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, pctpre1960 <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, avg.pctunemployed <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, avg.pctpre1960 <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in data.table(pctlowinc = 1:2, pctpre1960 = 1:2, avg.pctunemployed = 1:2,     avg.pctpre1960 = 1:2):</span> could not find function "data.table"</span>
-<span class="r-in"><span> <span class="fu">fix_pctcols_x100</span><span class="op">(</span><span class="va">ytable</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fix_pctcols_x100(ytable):</span> could not find function "fix_pctcols_x100"</span>
-<span class="r-in"><span> <span class="fu">fix_pctcols_x100</span><span class="op">(</span><span class="va">ytable</span>, <span class="va">names_pct_as_fraction_blockgroupstats</span><span class="op">)</span> </span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fix_pctcols_x100(ytable, names_pct_as_fraction_blockgroupstats):</span> could not find function "fix_pctcols_x100"</span>
-<span class="r-in"><span> <span class="fu">fix_pctcols_x100</span><span class="op">(</span><span class="va">ytable</span>, <span class="va">names_pct_as_fraction_ejamit</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fix_pctcols_x100(ytable, names_pct_as_fraction_ejamit):</span> could not find function "fix_pctcols_x100"</span>
-<span class="r-in"><span> <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\n\n"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-in"><span> <span class="va">y</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   pctlowinc pctpre1960 avg.pctunemployed avg.pctpre1960</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 1         1          1                 1              1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 2         2          2                 2              2</span>
-<span class="r-in"><span> <span class="va">ytable</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'ytable' not found</span>
-<span class="r-in"><span> </span></span>
-</code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span> <span class="va">y</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>pctlowinc <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, pctpre1960 <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, avg.pctunemployed <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, avg.pctpre1960 <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span></span>
+<span> <span class="fu">fix_pctcols_x100</span><span class="op">(</span><span class="va">y</span><span class="op">)</span></span>
+<span> <span class="fu">fix_pctcols_x100</span><span class="op">(</span><span class="va">y</span>, <span class="va">names_pct_as_fraction_ejscreenit</span><span class="op">)</span></span>
+<span> <span class="fu">fix_pctcols_x100</span><span class="op">(</span><span class="va">y</span>, <span class="va">names_pct_as_fraction_blockgroupstats</span><span class="op">)</span></span>
+<span> <span class="fu">fix_pctcols_x100</span><span class="op">(</span><span class="va">y</span>, <span class="va">names_pct_as_fraction_ejamit</span><span class="op">)</span></span>
+<span> <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\n\n"</span><span class="op">)</span></span>
+<span> <span class="va">names_pct_as_fraction_ejscreenit</span></span>
+<span> <span class="va">names_pct_as_fraction_blockgroupstats</span></span>
+<span> <span class="va">names_pct_as_fraction_ejamit</span></span>
+<span> <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\n\n"</span><span class="op">)</span></span>
+<span> <span class="va">ytable</span> <span class="op">=</span> <span class="fu">data.table</span><span class="op">(</span>pctlowinc <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, pctpre1960 <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, avg.pctunemployed <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, avg.pctpre1960 <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span></span>
+<span> <span class="fu">fix_pctcols_x100</span><span class="op">(</span><span class="va">ytable</span><span class="op">)</span></span>
+<span> <span class="fu">fix_pctcols_x100</span><span class="op">(</span><span class="va">ytable</span>, <span class="va">names_pct_as_fraction_blockgroupstats</span><span class="op">)</span> </span>
+<span> <span class="fu">fix_pctcols_x100</span><span class="op">(</span><span class="va">ytable</span>, <span class="va">names_pct_as_fraction_ejamit</span><span class="op">)</span></span>
+<span> <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\n\n"</span><span class="op">)</span></span>
+<span> <span class="va">y</span></span>
+<span> <span class="va">ytable</span></span>
+<span> </span></code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
