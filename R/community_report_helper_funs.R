@@ -434,10 +434,10 @@ generate_html_header <- function(analysis_title, totalpop, locationstr, in_shiny
 </div>
 
 <div class="header">
-    <div style="width: 45%;">
+    <div>
         <h2 id="placename">', analysis_title , '</h2>
     </div>
-    <div style="width: 55%;">
+    <div>
         <h5>', locationstr, '<br>Population: <span id="TOTALPOP">', totalpop, '</span><br></h5>
     </div>
 </div>', sep = '', collapse = '')
@@ -451,7 +451,7 @@ generate_html_header <- function(analysis_title, totalpop, locationstr, in_shiny
 #' @keywords internal
 #'
 generate_demog_header <- function() {
-  '<div id=\"page-3-header\"<h2 tabindex=\"12\">Environmental and Socioeconomic Indicators Data</h2></div>'
+  '<div class=\"header\" id=\"page-3-header\"> <h2 tabindex=\"12\">Environmental and Socioeconomic Indicators Data</h2></div>'
 }
 ################################################################### #
 
@@ -475,7 +475,7 @@ generate_ej_header <- function() {
 
 
 #' Build header for EJ supp indexes in community report
-#'
+#'!
 #' @keywords internal
 #'
 generate_ej_supp_header <- function() {

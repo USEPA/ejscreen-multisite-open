@@ -72,9 +72,13 @@
     font-size: 3em;
     align-self: flex-start;
     line-height: 1em;
+    
+    @media screen and (max-width:768px) {
+    font-size: 2em;
+  }
   }
   
-  #header-primary-background-inner p {
+  #header-primary-background-inner p, #page-3-header h2 {
 color: white;
 font-family: heebo, Arial, sans-serif;
 font-size: 1em;
@@ -103,6 +107,13 @@ left: 60%;
     align-items: center;
     height: fit-content;
     padding: 1em 0;
+    flex-wrap: wrap;
+
+  }
+  
+  .header div {
+    flex: 1;
+    margin: 0 1em;
   }
   
   .header h2 {
@@ -112,6 +123,11 @@ left: 60%;
     line-height: 1em;
     text-align: center;
     margin: 0;
+        white-space: normal;
+    word-wrap: normal;
+       @media screen and (max-width:768px) {
+    font-size: 2em;
+  }
   }
   
   .header h5 {
@@ -122,12 +138,6 @@ left: 60%;
     margin: 0;
   }
   
-  #page-3-header {
-    background-color: #0e98d7;
-    color: white;
-    margin-top: 7px;
-    position: relative;
-  }
   
    #page-3-header h2 {
     text-align: center;
