@@ -367,11 +367,9 @@ fill_tbl_full_subgroups <- function(output_df) {
   
   full_html <- paste(full_html, tbl_head3, collapse = '\n')
   
-  var_values_d_lim <- c('PCT_HLI_SPANISH_LI','PCT_HLI_IE_LI',
-                        'PCT_HLI_API_LI','PCT_HLI_OTHER_LI')
-  
-  var_names_d_lim <- c('Speak Spanish', 'Speak Other Indo-European Languages',
-                       'Speak Asian-Pacific Island Languages', 'Speak Other Languages')
+  var_values_d_lim <- c("pct_hli_spanish_li", "pct_hli_ie_li", "pct_hli_api_li", "pct_hli_other_li")
+  var_names_d_lim <- fixcolnames(var_values_d_lim, 'r', 'shortlabel')
+  # c('Speak Spanish', 'Speak Other Indo-European Languages','Speak Asian-Pacific Island Languages', 'Speak Other Languages')
   
   tbl_rows_d_lim <- sapply(seq_along(var_values_d_lim), function(x) {
     fill_tbl_row_subgroups(output_df,

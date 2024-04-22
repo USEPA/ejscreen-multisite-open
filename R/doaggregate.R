@@ -273,7 +273,14 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
     ))
   if  (extra_demog) {
     countcols <-  c(countcols, c('LAN_UNIVERSE', 'LAN_SPANISH', 'LAN_ENG_NA', 'LAN_IE', 'LAN_API',
-      'HLI_SPANISH_LI', 'HLI_IE_LI',  'HLI_API_LI', 'HLI_OTHER_LI',
+                                 # "pct_hli_spanish_li = ifelse(lingiso == 0, 0, HLI_SPANISH_LI  /  lingiso)",
+                                 # "pct_hli_ie_li      = ifelse(lingiso == 0, 0, HLI_IE_LI       /  lingiso)",
+                                 # "pct_hli_api_li     = ifelse(lingiso == 0, 0, HLI_API_LI      /  lingiso)",
+                                 # "pct_hli_other_li   = ifelse(lingiso == 0, 0, HLI_OTHER_LI    /  lingiso)"
+                                 
+                                 # "hli_spanish_li", "hli_ie_li", "hli_api_li", "hli_other_li",
+                                 'HLI_SPANISH_LI', 'HLI_IE_LI',  'HLI_API_LI', 'HLI_OTHER_LI', # ***
+                                 
       'AGE_LT18', 'AGE_GT17', 'MALES', 'FEMALES', 'OWNHU',  'OCCHU',
       'DISAB_UNIVERSE', 'DISABILITY', 'HH_BPOV'))
   }
@@ -909,6 +916,8 @@ results_bysite <- merge(results_bysite, results_bysite_minmax, by = "ejam_uniq_i
     pctover17  =  ifelse(pop == 0, 0, AGE_GT17 / pop),
     pctmale    =  ifelse(pop == 0, 0, MALES    / pop),
     pctfemale  =  ifelse(pop == 0, 0, FEMALES  / pop),
+    
+    # pctfemale1849 = ifelse(pop == 0, 0, female1849  / pop),
 
     p_own_occupied =  ifelse(OCCHU == 0, 0, OWNHU / OCCHU),
 
@@ -919,10 +928,14 @@ results_bysite <- merge(results_bysite, results_bysite_minmax, by = "ejam_uniq_i
     pct_lan_ie      = ifelse(LAN_UNIVERSE == 0, 0, LAN_IE       / LAN_UNIVERSE),   # need to add to map_headernames
     pct_lan_api     = ifelse(LAN_UNIVERSE == 0, 0, LAN_API      / LAN_UNIVERSE),   # need to add to map_headernames
 
-    PCT_HLI_SPANISH_LI = ifelse(lingiso == 0, 0, HLI_SPANISH_LI  /  lingiso),  # need to add to map_headernames
-    PCT_HLI_IE_LI      = ifelse(lingiso == 0, 0, HLI_IE_LI       /  lingiso),  # need to add to map_headernames
-    PCT_HLI_API_LI     = ifelse(lingiso == 0, 0, HLI_API_LI      /  lingiso),  # need to add to map_headernames
-    PCT_HLI_OTHER_LI   = ifelse(lingiso == 0, 0, HLI_OTHER_LI    /  lingiso)   # need to add to map_headernames
+    pct_hli_spanish_li = ifelse(lingiso == 0, 0, HLI_SPANISH_LI  /  lingiso), # not sure we have these counts anywhere
+    pct_hli_ie_li      = ifelse(lingiso == 0, 0, HLI_IE_LI       /  lingiso), # not sure we have these counts anywhere
+    pct_hli_api_li     = ifelse(lingiso == 0, 0, HLI_API_LI      /  lingiso), # not sure we have these counts anywhere
+    pct_hli_other_li   = ifelse(lingiso == 0, 0, HLI_OTHER_LI    /  lingiso) # not sure we have these counts anywhere
+    # PCT_HLI_SPANISH_LI = ifelse(lingiso == 0, 0, HLI_SPANISH_LI  /  lingiso),
+    # PCT_HLI_IE_LI      = ifelse(lingiso == 0, 0, HLI_IE_LI       /  lingiso),
+    # PCT_HLI_API_LI     = ifelse(lingiso == 0, 0, HLI_API_LI      /  lingiso),
+    # PCT_HLI_OTHER_LI   = ifelse(lingiso == 0, 0, HLI_OTHER_LI    /  lingiso) 
 
     )]
 
@@ -1013,10 +1026,14 @@ results_bysite <- merge(results_bysite, results_bysite_minmax, by = "ejam_uniq_i
     pct_lan_ie      = ifelse(LAN_UNIVERSE == 0, 0, LAN_IE       / LAN_UNIVERSE),   # need to add to map_headernames
     pct_lan_api     = ifelse(LAN_UNIVERSE == 0, 0, LAN_API      / LAN_UNIVERSE),   # need to add to map_headernames
 
-    PCT_HLI_SPANISH_LI = ifelse(lingiso == 0, 0, HLI_SPANISH_LI  /  lingiso),  # need to add to map_headernames
-    PCT_HLI_IE_LI      = ifelse(lingiso == 0, 0, HLI_IE_LI       /  lingiso),  # need to add to map_headernames
-    PCT_HLI_API_LI     = ifelse(lingiso == 0, 0, HLI_API_LI      /  lingiso),  # need to add to map_headernames
-    PCT_HLI_OTHER_LI   = ifelse(lingiso == 0, 0, HLI_OTHER_LI    /  lingiso)   # need to add to map_headernames
+    pct_hli_spanish_li = ifelse(lingiso == 0, 0, HLI_SPANISH_LI  /  lingiso), # not sure we have these counts anywhere
+    pct_hli_ie_li      = ifelse(lingiso == 0, 0, HLI_IE_LI       /  lingiso), # not sure we have these counts anywhere
+    pct_hli_api_li     = ifelse(lingiso == 0, 0, HLI_API_LI      /  lingiso), # not sure we have these counts anywhere
+    pct_hli_other_li   = ifelse(lingiso == 0, 0, HLI_OTHER_LI    /  lingiso) # not sure we have these counts anywhere
+    # PCT_HLI_SPANISH_LI = ifelse(lingiso == 0, 0, HLI_SPANISH_LI  /  lingiso),
+    # PCT_HLI_IE_LI      = ifelse(lingiso == 0, 0, HLI_IE_LI       /  lingiso),
+    # PCT_HLI_API_LI     = ifelse(lingiso == 0, 0, HLI_API_LI      /  lingiso),
+    # PCT_HLI_OTHER_LI   = ifelse(lingiso == 0, 0, HLI_OTHER_LI    /  lingiso) 
 
   )]
   }
@@ -1494,14 +1511,19 @@ results_bysite <- merge(results_bysite, results_bysite_minmax, by = "ejam_uniq_i
         "percapincome",
         "P_OWN_OCCUPIED",
         "pctunder18", "pctover17",  "pctmale",   "pctfemale" ,
-        "PCT_HLI_SPANISH_LI", "PCT_HLI_IE_LI", "PCT_HLI_API_LI", "PCT_HLI_OTHER_LI"),
+        
+        "pct_hli_spanish_li", "pct_hli_ie_li", "pct_hli_api_li", "pct_hli_other_li"),
+        # "PCT_HLI_SPANISH_LI", "PCT_HLI_IE_LI", "PCT_HLI_API_LI", "PCT_HLI_OTHER_LI"),
 
       c("DISAB_UNIVERSE", "DISABILITY",
         "HH_BPOV",
         'OWNHU', "OCCHU", "OWNHU",
         'AGE_LT18', 'AGE_GT17', 'MALES', 'FEMALES',
+        
         'LAN_UNIVERSE', 'LAN_SPANISH', 'LAN_ENG_NA', 'LAN_IE', 'LAN_API',
+        # "hli_spanish_li", "hli_ie_li", "hli_api_li", "hli_other_li"),
         'HLI_SPANISH_LI', 'HLI_IE_LI',  'HLI_API_LI', 'HLI_OTHER_LI'),
+      
       ###  D US RATIOS?  # (above)
       ### D US PCTILE ###
       # "pctile.Demog.Index", #now in names_d_pctile
