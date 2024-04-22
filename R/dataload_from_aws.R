@@ -8,33 +8,34 @@
 #' 
 #'  Also see <https://shiny.posit.co/r/articles/improve/scoping/>
 #' 
-#'   Does it require credentials?
+#'   These files are public-facing -- no credentials required.
 #'   
-#'   Use dataload_from_aws(justchecking=TRUE), 
+#'   Use EJAM:::dataload_from_aws(justchecking=TRUE) 
 #'   
-#'   or datapack("EJAM") to get info, 
+#'   or EJAM:::datapack("EJAM") to get info
 #'   
-#'   or tables(), 
+#'   or tables()
 #'   
 #'   or object.size(quaddata)
 #'   
 #'  NOTE: blockid2fips is HUGE in memory, and is used only in 
-#'  state_from_blocktable() and state_from_blockid(), which are not always needed by the app, 
-#'  so maybe should not load this unless/until needed?
-#'  
+#'  state_from_blocktable() and state_from_blockid(), which are not always needed by the app
 #'   blockid2fips is roughly 600 MB in RAM because it stores 8 million block FIPS as text.
 #' 
-#'   List 9/2023 was:
+#'   Files may include the following:
 #'   
-#'   - blockid2fips (20 MB on disk, approx 600 MB RAM !!)
+#'   - frs               (150 MB .arrow file, approx 700 MB RAM)
+#'   - frs_by_programid  (approx 500 MB RAM)
+#'   - frs_by_sic        (approx  63 MB RAM)
+#'   - frs_by_naics      (approx  60 MB RAM)
+#'   - frs_by_mact       
 #'   
-#'   - quaddata (168 MB on disk, 218 MB RAM)
-#'   
-#'   - blockpoints (86 MB on disk, 156 MB RAM)
-#'   
-#'   - blockwts (31 MB on disk, 125 MB RAM)
-#'   
-#'   - bgid2fips (18 MB RAM)
+#'   - quaddata     (168 MB on disk, 229 MB RAM)
+#'   - blockid2fips ( 20 MB on disk, 621 MB RAM!)
+#'   - blockpoints  ( 86 MB on disk, 164 MB RAM)
+#'   - blockwts     ( 31 MB on disk, 196 MB RAM)
+#'   - bgej         (123 MB RAM)
+#'   - bgid2fips    ( 18 MB RAM)
 #'   
 #' @param varnames character vector of the quoted names of the data objects like blockwts or quaddata
 #' @param envir e.g., globalenv() or parent.frame()
@@ -50,16 +51,20 @@
 #' @seealso [datapack()] [dataload_from_pins()] [dataload_from_local()] [dataload_from_package()] [indexblocks()] [.onAttach()] 
 #' @return nothing - just loads data into environment (unless justchecking=T)
 #' 
-#' @noRd
+#' @export
 #'
-dataload_from_aws <- function(varnames= c('bgid2fips', 'blockid2fips', 'blockpoints', 'blockwts', 'quaddata' ),
-                              ext=c(".arrow", ".rda")[2],
-                              fun=c("arrow::read_ipc_file", "load")[2],  
-                              envir=globalenv(),  # should it be parent or global or package EJAM envt ??
-                              mybucket =  'dmap-data-commons-oa',
-                              mybucketfolder = "EJAM",
-                              folder_local_source = "./data/", 
-                              justchecking = FALSE, check_server_even_if_justchecking=TRUE, testing=FALSE) {
+dataload_from_aws <- function(
+    varnames = c('blockwts', 'blockpoints', 'blockid2fips', "quaddata",
+                 'bgej',
+                 'bgid2fips',
+                 'frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact")[1:4],
+    ext=c(".arrow", ".rda")[2],
+    fun=c("arrow::read_ipc_file", "load")[2],  
+    envir=globalenv(),  # should it be parent or global or package EJAM envt ??
+    mybucket =  'dmap-data-commons-oa',
+    mybucketfolder = "EJAM",
+    folder_local_source = "./data/", 
+    justchecking = FALSE, check_server_even_if_justchecking=TRUE, testing=FALSE) {
   
   ## how to get bucket contents if you want to explore the bucket ----
   # mybucket <-  'dmap-data-commons-oa' # 
@@ -206,7 +211,7 @@ dataload_from_aws <- function(varnames= c('bgid2fips', 'blockid2fips', 'blockpoi
   ## "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/blockpoints.rda"
   ## "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/blockwts.rda"
   ## "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/blockid2fips.rda"
-  #  #  obsolete: # "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/lookup_states.rda"  no longer on aws, but replaced with stateinfo2.rda in package data folder
+  
   ################################################################## # 
   
 }
