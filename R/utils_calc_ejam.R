@@ -127,20 +127,27 @@ calc_ejam <- function(bg,
 
 #' DRAFT utility to use formulas provided as text, to calculate indicators
 #'
-#' @param mydf data.frame//table of indicators or variables to use
+#' @param mydf data.frame of indicators or variables to use
 #' @param formulas text strings of formulas
-#' @param keep etc.
-#'
+#' @param keep useful if some of the formulas are just interim steps
+#'   creating evanescent variables created only for use in later formulas 
+#'   and not needed after that
+#' @return data.frame of results, but 
+#'   if mydf was a data.table, returns a data.table
 #'
 calc_byformula <- function(mydf, formulas = NULL, keep = formula_varname(formulas)) {
 
 
   # DRAFT WORK NOT COMPLETED
-
-
-  # keep is useful if some of the formulas are just interim steps
-  # creating evanescent variables created only for use in later formulas and not needed after that.
-
+  
+  if (is.data.table(mydf)) {
+    wasdt = TRUE
+    setDF(mydf)
+    on.exit(setDT(mydf))
+  } else {
+    wasdt = FALSE
+  }
+    
   if (is.null(formulas)) {
     stop("no formulas specified or found, so no calculation done")
   }
@@ -211,6 +218,10 @@ calc_byformula <- function(mydf, formulas = NULL, keep = formula_varname(formula
       outdf <- NULL
     }
   }
+  if (wasdt) {
+    setDT(outdf)
+  }
+  
   return(outdf)
 }
 ################################################################ #
