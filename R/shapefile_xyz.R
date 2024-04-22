@@ -410,6 +410,25 @@ shapefile_from_filepaths <- function(filepaths = NULL, cleanit = TRUE, crs = 426
       shpfilepath <- filepaths[grepl(".*shp$", filepaths, ignore.case = TRUE)]  # one (not more) files that end in .shp
       if (length(shpfilepath) > 1) {warning("using only ", shpfilepath[1], ", the first of more than one .shp file found"); shpfilepath <- shpfilepath[1] }
       # note this will add  ejam_uniq_id =  row_number()
+      
+      ## check for all layer names in .shp
+      layer_names <- sf::st_layers(shpfilepath)$name
+      if(is.null(layer)){
+        ## use first layer if multiple 
+        if(length(layer_names) > 1){
+          warning(paste0('More than 1 layer found; will use the first layer, named "',layer[1],'"'))
+          layer <- layer_names[1]
+        } else {
+          layer <- layer_names
+        }
+      } else {
+        ## exit if user-entered layer is not valid
+        if(!(layer %in% layer_names)){
+          warning(paste0('No layer named "',layer, '" was found'))
+          return(NULL)
+        }
+      }
+    
       return(
         shapefile_clean(
           sf::st_read(shpfilepath, layer = layer), # , crs = crs  should be left out here ?
@@ -420,6 +439,23 @@ shapefile_from_filepaths <- function(filepaths = NULL, cleanit = TRUE, crs = 426
     } else {
       # for shiny, do cleaning/check in server so it can offer messages
       shpfilepath <- filepaths[grepl(".*shp$", filepaths, ignore.case = TRUE)] # one or more files that end in .shp
+      ## check for all layer names in .shp
+      layer_names <- sf::st_layers(shpfilepath)$name
+      if(is.null(layer)){
+        ## use first layer if multiple 
+        if(length(layer_names) > 1){
+          warning(paste0('More than 1 layer found; will use the first layer, named "',layer[1],'"'))
+          layer <- layer_names[1]
+        } else {
+          layer <- layer_names
+        }
+      } else {
+        ## exit if user-entered layer is not valid
+        if(!(layer %in% layer_names)){
+          warning(paste0('No layer named "',layer, '" was found'))
+          return(NULL)
+        }
+      }
       shp <- sf::st_read(shpfilepath, layer = layer)  # , crs = crs  should be left out here ?
       return(
         dplyr::mutate(shp, ejam_uniq_id = dplyr::row_number()) # number them

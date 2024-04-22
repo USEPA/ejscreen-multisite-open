@@ -274,12 +274,16 @@ ejamit <- function(sitepoints,
 
       if (!silentinteractive) {cat('Finding blocks nearby.\n')}
 
+      # if user entered a table, path to a file (csv, xlsx), or whatever, then read it to get the lat lon values from there
+      sitepoints <- latlon_from_anything(sitepoints)
+      stopifnot(is.data.frame(sitepoints), "lat" %in% colnames(sitepoints), "lon" %in% colnames(sitepoints), NROW(sitepoints) >= 1, is.numeric(sitepoints$lat))
+      
       ## check for ejam_uniq_id column; warn and add if not present
-      if (!c('ejam_uniq_id') %in% names(sitepoints)) {
+      if(!("character" %in% class(sitepoints)) & !c('ejam_uniq_id') %in% names(sitepoints)){
         warning('sitepoints did not contain a column named ejam_uniq_id, so one was added')
         sitepoints$ejam_uniq_id <- seq.int(length.out = NROW(sitepoints))
       }
-
+      
       mysites2blocks <- getblocksnearby(
         sitepoints = sitepoints,
         radius = radius,

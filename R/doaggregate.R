@@ -1108,6 +1108,13 @@ results_bysite <- merge(results_bysite, results_bysite_minmax, by = "ejam_uniq_i
     sites2states <- ST_by_site_from_sites2blocks(sites2blocks)
     # returns a data.table with these columns:  ejam_uniq_id, ST  (and only 1 row per ejam_uniq_id! It is just to know the ST of each unique ejam_uniq_id)
     if (!missing(sites2states_or_latlon)) {
+      # if user entered a table, path to a file (csv, xlsx), or whatever, then read it to get the lat lon values from there
+      sites2states_or_latlon <- latlon_from_anything(sites2states_or_latlon)
+      
+      if(!("character" %in% class(sites2states_or_latlon)) & !c('ejam_uniq_id') %in% names(sites2states_or_latlon)){
+        warning('sites2states_or_latlon did not contain a column named ejam_uniq_id, so one was added')
+        sites2states_or_latlon$ejam_uniq_id <- seq.int(length.out = NROW(sites2states_or_latlon))
+      }
       # add in the lat,lon columns - this is always available if ejamit() called this since it passes the pts as sites2states_or_latlon
       if ("ejam_uniq_id" %in% names(sites2states_or_latlon) & "ejam_uniq_id" %in% names(sites2states)) {
 

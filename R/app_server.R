@@ -239,9 +239,9 @@ app_server <- function(input, output, session) {
   })
   # reactive to keep track of data type used in last analysis
   submitted_upload_method <- reactiveVal(NULL)
-  observeEvent(input$bt_get_results, {
-    submitted_upload_method(current_upload_method())
-  })
+  # observeEvent(input$bt_get_results, {
+  #   submitted_upload_method(current_upload_method())
+  # })
   
   observeEvent(input$show_data_preview,
                {
@@ -1181,9 +1181,15 @@ app_server <- function(input, output, session) {
       
       ## if invalid data found, set invalid_alert() otherwise closeAlert()
       cat("Number of points:  "); cat(totalcount, 'total,', num_notna, 'valid,', num_na, ' invalid \n')
-      if (num_na > 0) {
+    if (num_na > 0) {
         #invalid_alert(num_na)
         invalid_alert[[current_upload_method()]] <- num_na
+        
+        #if all counts are invalid, disable analysis button
+        if(num_na == totalcount){
+          disable_buttons[[current_upload_method()]] <- 'TRUE'
+          showNotification('Warning: no valid site uploads exist. Please select a file with at least one valid upload', type = 'message', closeButton = TRUE)
+        }
       } else {
         #invalid_alert(NULL)
         invalid_alert[[current_upload_method()]] <- 0
@@ -1552,7 +1558,7 @@ app_server <- function(input, output, session) {
   # >this part could be replaced by ejamit() or something like that ####
   
   observeEvent(input$bt_get_results, {  # (button is pressed)
-    
+    submitted_upload_method(current_upload_method())
     showNotification('Processing sites now!', type = 'message', duration = 1)
     
     ## progress bar setup overall for 3 operations  (getblocksnearby, doaggregate, batch.summarize)
@@ -3251,7 +3257,7 @@ app_server <- function(input, output, session) {
           ## set y axis limits to (0, max value) but allow 5% higher on upper end
           scale_y_continuous(limits = c(0, NA), expand = expansion(mult = c(0, 0.05))) +
           labs(
-            x = 'Percentile',
+            x = '',
             y = 'Number of sites',
             title = 'Histogram of Raw Indicator Values Across Sites'
           ) +
@@ -3275,7 +3281,7 @@ app_server <- function(input, output, session) {
           geom_histogram(aes(x = indicator), fill = '#005ea2',
                          bins = input$summ_hist_bins) +
           labs(
-            x = 'Percentile',
+            x = '',
             y = 'Number of Sites',
             title = 'Histogram of US Percentile Indicator Values Across Sites'
           ) +
