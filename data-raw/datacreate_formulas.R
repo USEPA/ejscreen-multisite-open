@@ -46,10 +46,11 @@ formulas_d <- c(
   "pct_lan_spanish = ifelse(LAN_UNIVERSE == 0, 0, LAN_SPANISH  / LAN_UNIVERSE)",
   "pct_lan_ie      = ifelse(LAN_UNIVERSE == 0, 0, LAN_IE       / LAN_UNIVERSE)",
   "pct_lan_api     = ifelse(LAN_UNIVERSE == 0, 0, LAN_API      / LAN_UNIVERSE)",
-  "PCT_HLI_SPANISH_LI = ifelse(lingiso == 0, 0, HLI_SPANISH_LI  /  lingiso)",
-  "PCT_HLI_IE_LI      = ifelse(lingiso == 0, 0, HLI_IE_LI       /  lingiso)",
-  "PCT_HLI_API_LI     = ifelse(lingiso == 0, 0, HLI_API_LI      /  lingiso)",
-  "PCT_HLI_OTHER_LI   = ifelse(lingiso == 0, 0, HLI_OTHER_LI    /  lingiso)"
+  
+  "pct_hli_spanish_li = ifelse(lingiso == 0, 0, HLI_SPANISH_LI  /  lingiso)",
+  "pct_hli_ie_li      = ifelse(lingiso == 0, 0, HLI_IE_LI       /  lingiso)",
+  "pct_hli_api_li     = ifelse(lingiso == 0, 0, HLI_API_LI      /  lingiso)",
+  "pct_hli_other_li   = ifelse(lingiso == 0, 0, HLI_OTHER_LI    /  lingiso)"
 )
 
 usethis::use_data(formulas_d, overwrite = TRUE)
