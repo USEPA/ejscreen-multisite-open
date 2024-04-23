@@ -108,6 +108,7 @@ left: 60%;
     height: fit-content;
     padding: 1em 0;
     flex-wrap: wrap;
+    justify-content: center;
 
   }
   
@@ -134,14 +135,20 @@ left: 60%;
     font-family: heebo, Arial, sans-serif;
     text-align: center;
     font-size: 1em;
-    text-align: center;
     margin: 0;
   }
   
+  #page-2-header p, #page-2-header h2 {
+    text-align: center;
+    width: 100%;
+  }
+  
+  #page-3-header  {
+     margin-top: 1em;
+  }
   
    #page-3-header h2 {
     text-align: center;
-    padding-top: 35px;
     font-size: 32px;
     padding-left: 20px;
   }
