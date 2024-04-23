@@ -120,9 +120,11 @@ shapefile_from_any <- function(path = NULL, cleanit = TRUE, crs = 4269, layer = 
   if (any(is.null(path)) || any(is.na(path)) || any(length(path)) == 0 || any(!is.character(path))) {
     if (interactive() && !shiny::isRunning()) {
 
-      # This lets RStudio user point to a file, but not to a whole folder!
-
-      path <- rstudioapi::selectFile(caption = "Select file(s)", path = getwd(), existing = TRUE)
+      # This lets RStudio user point to file OR folder
+      path <- rstudioapi::selectFile(caption = "Select a file (zip, shp, etc.) [or Cancel to specify a whole folder]", path = getwd(), existing = TRUE)
+      if (is.null(path)) {
+        path <- rstudioapi::selectDirectory(caption = "Select Folder", path = getwd())
+      }
 
     } else {
       if (shiny::isRunning()) {
