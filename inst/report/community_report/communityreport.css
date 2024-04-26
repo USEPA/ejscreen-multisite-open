@@ -322,6 +322,24 @@ left: 60%;
     line-height: 23px;
   }
   
+  .tab-content {
+    margin-left: 0px;
+    margin-right: 0px;
+  }
+  
+  .nav>li>a {
+    padding: 5px 10px;
+  }
+  
+  .about-EJAM-span {
+    margin: .5em 0;
+  }
+  
+  hr {
+    margin: .5em 0;
+  }
+  
+  
   
   /* ---------- table with leader lines (.....)  CSS ------------ */
 

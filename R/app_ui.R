@@ -103,10 +103,12 @@ app_ui  <- function(request) {
 
         tabPanel(
           title = 'Site Selection',
-          br(),
           #h3('Welcome to EJAM'),
-          span('EJAM lets you explore the demographics and environmental conditions in any list of places, such as for anyone who lives within 1 mile of a certain type of EPA-regulated site. You can learn more about EJAM at the ',
-               actionLink('link_to_about_page', label = 'About EJAM page.')),
+          div(
+            'EJAM lets you explore the demographics and environmental conditions in any list of places, such as for anyone who lives within 1 mile of a certain type of EPA-regulated site. You can learn more about EJAM at the ',
+            actionLink('link_to_about_page', label = 'About EJAM page.'),
+            class = "about-EJAM-span"
+          ),
           hr(), ## horizontal line
 
           ## fluidRow container for upload method (left column) and map (right column) ####
