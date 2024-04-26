@@ -269,7 +269,7 @@ left: 60%;
     line-height: 23px;
   }
   
-  h2:not(.article h2) {
+  h2:not(.title-panel h2) {
     font-family: Arial, sans-serif;
     font-size: 25px;
     font-style: normal;

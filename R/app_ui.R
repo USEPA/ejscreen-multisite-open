@@ -43,8 +43,11 @@ app_ui  <- function(request) {
       html_header_fmt,
 
       ### title (for app and browser tab) ####
-      titlePanel(title = "EJAM (Environmental Justice Analysis Multi-site) Tool",
-                 windowTitle = "EJAM (Environmental Justice Analysis Multi-site) Tool"
+      div(class = "title-panel",
+          titlePanel(
+            title = "EJAM (Environmental Justice Analysis Multi-site) Tool",
+            windowTitle = "EJAM (Environmental Justice Analysis Multi-site) Tool"
+          )
       ),
 
       # ***outline of tabs*** ####
