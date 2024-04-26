@@ -322,6 +322,10 @@ left: 60%;
     line-height: 23px;
   }
   
+  .site-logo__image {
+    padding-bottom: 0px;
+  }
+  
   .tab-content {
     margin-left: 0px;
     margin-right: 0px;
