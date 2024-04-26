@@ -117,7 +117,7 @@ app_ui  <- function(request) {
             ## upload-methods column ####
             column(
               4,  # through about line 359
-              h4('Specify Locations to Analyze', style = 'text-align: center;'),
+              h4('Specify Locations to Analyze'),
 
               ## input: use CATEGORIES of sites, or upload LOCATIONS ? ####
               div(style = 'border: 1px solid #005ea2; padding: 10px;',
@@ -398,26 +398,27 @@ app_ui  <- function(request) {
             #. ####
             column(8,
                    uiOutput('invalid_sites_alert2'),
-                   br(),
                    ## TABLE of uploaded points in Modal window via Button  ####
                    fluidRow(
-                     column(6,
-                            br(),
-                            ## output: display number of uploaded sites
-                            htmlOutput(outputId = 'an_map_text') #, # xxx
+                     column(4,
+                            h4('Selected Location Map'), #, # xxx
                      ),
-                     column(6,
+                     column(4,
+                            htmlOutput(outputId = 'an_map_text'),
+                     ),
+                     column(4,
                             ## add button and modal to show uploaded data interactively
                             actionButton('show_data_preview', label = 'Review selected sites',
                                          class = 'usa-button usa-button--outline'),
-
-
+                            
+                            
+                            
                      )
                    ), # end view data uploads
 
                    ## MAP of uploaded points ####
 
-                   h4('Selected Location Map'),
+
                    #helpText('Red circles indicate overlapping sites.'),
                    ## output: show leaflet map of uploaded points
                    shinycssloaders::withSpinner(
@@ -427,7 +428,6 @@ app_ui  <- function(request) {
                      )
                    ),
 
-                   br(),
                    # . ####
                    # ______ RUN ANALYSIS ________####
                    # (when button is pressed)
