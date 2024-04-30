@@ -105,8 +105,7 @@ app_ui  <- function(request) {
           title = 'Site Selection',
           #h3('Welcome to EJAM'),
           div(
-            'EJAM lets you explore the demographics and environmental conditions in any list of places, such as for anyone who lives within 1 mile of a certain type of EPA-regulated site. You can learn more about EJAM at the ',
-            actionLink('link_to_about_page', label = 'About EJAM page.'),
+            'EJAM lets you explore the demographics and environmental conditions in any list of places, such as for anyone who lives within 1 mile of a certain type of EPA-regulated site.',
             class = "about-EJAM-span"
           ),
           hr(), ## horizontal line
