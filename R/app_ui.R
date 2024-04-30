@@ -486,10 +486,6 @@ app_ui  <- function(request) {
                  ##br(),
                  ##actionButton('back_to_site_sel', label = div(icon('play', style = 'transform: rotate(180deg);'),
                                                               ## HTML('&nbsp;'), 'Return to Site Selection'), class = 'usa-button'),
-                 br(),
-
-                 h4('Overall Results'),
-                 helpText('The results of your analysis can be viewed in 3 forms: a summary report, interactive details, or a full written report.'),
                  # . ### #
                  ## tabsetPanel(id = 'results_tabs'  ####
                  #tags$div( class = 'results_tabs_theme',
