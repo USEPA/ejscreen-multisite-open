@@ -201,10 +201,10 @@
 #'
 #'  [ejamit()] (or [doaggregate()]) provides the following outputs:
 #'
-#'   * **results_overall**   one row data.table, like results_by_site, but just one row with
+#'   * **results_overall**   one row data.table, like results_bysite, but just one row with
 #'     aggregated results for all unique residents.
 #'
-#'   * **results_by_site**   results for individual sites (buffers) - a data.table of results,
+#'   * **results_bysite**   results for individual sites (buffers) - a data.table of results,
 #'     one row per ejam_uniq_id (i.e., each site analyzed), one column per indicator
 #'
 #'   * **results_bybg_people**  results for each block group, to allow for showing the distribution of each

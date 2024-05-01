@@ -367,7 +367,7 @@ fill_tbl_full_subgroups <- function(output_df) {
   
   full_html <- paste(full_html, tbl_head3, collapse = '\n')
   
-  var_values_d_lim <- c("pct_hli_spanish_li", "pct_hli_ie_li", "pct_hli_api_li", "pct_hli_other_li")
+  var_values_d_lim <- c("pctspanish_li", "pctie_li", "pctapi_li", "pctother_li")
   var_names_d_lim <- fixcolnames(var_values_d_lim, 'r', 'shortlabel')
   # c('Speak Spanish', 'Speak Other Indo-European Languages','Speak Asian-Pacific Island Languages', 'Speak Other Languages')
   
