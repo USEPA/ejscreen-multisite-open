@@ -270,11 +270,11 @@ cat(caption,'\n')
 
 print(
   DT::datatable(
-    mysites,
+    mysites[1:5, ],
     escape = FALSE,     rownames = FALSE,
     caption = caption,
     filter = "top"
-  )[1:10, ]
+  )
 )
 }
 ```
@@ -360,6 +360,10 @@ You can compare places defined by FIPS code, such as a group of US Counties.
 
 Compare all Counties in a State, using EJAM indicators
 
+```{r eval=FALSE, echo=FALSE, include=FALSE}
+# NOTE THE EXAMPLES BELOW ARE VERY SLOW TO LOAD/RUN ! 
+```
+
 ```{r counties_fips, eval = FALSE}
 
 # Get FIPS of each county in Delaware
@@ -407,11 +411,40 @@ mapfastej_counties(xmd$results_bysite, 'state.pctile.pctlowinc')
 
 # EXPLORING RESULTS
 
-## Site by site results in datatable format in RStudio viewer:
+### The most striking findings (e.g., which group is most overrepresented?)
+
+See examples above using ejam2report() but also you can check some key findings like this:
+
+```{r count_sites_with_n_high, eval=TRUE, echo = FALSE}
+x <- testoutput_ejamit_1000pts_1miles 
+out <- x$results_bysite
+out <- setDF(copy(out))
+ratio_benchmarks <- c(1.01, 1.50, 2, 3, 5, 10)
+ratiodata <- out[, names_d_ratio_to_state_avg]
+
+findings <- count_sites_with_n_high_scores(ratiodata, quiet = TRUE)  # long output to console !
+
+tail(findings$text[findings$text != ""], 1) # the most extreme finding!
+
+```
+
+### More summary findings
+
+```{r count_sites_etc_more, eval=TRUE, echo=FALSE}
+dimnames(findings)
+findings$text[2]
+head(findings$stats[ , , 1], 15)
+head(findings$stats[ , 1, ], 21)
+x = findings$stats[ , 1, ] 
+x[x[, "cum_pct"] >= 50 & x[, "cum_pct"] <= 80, ]
+findings$stats[ 1, , ]
+```
+
+## Site by site detailed results in datatable format in RStudio viewer:
 
 ```{r datatable30}
 out2 <- testoutput_ejamit_100pts_1miles
-DT::datatable(out2$results_bysite[1:30,   ], escape = FALSE, rownames = FALSE)
+DT::datatable(out2$results_bysite[1:5,   ], escape = FALSE, rownames = FALSE)
 
 # To see all 1,000 sites in table:
 #DT::datatable(out2$results_bysite[1:1000, ], escape = FALSE, rownames = FALSE)
@@ -430,24 +463,9 @@ cbind(overall = as.list( out2$results_overall[ , ..names_d_subgroups]))
 
 ```{r}
 out2 <- testoutput_ejamit_100pts_1miles
-cbind(as.list(out2$results_overall))
-```
-
-```{r count_sites_with_n_high, eval=TRUE}
-x <- testoutput_ejamit_1000pts_1miles 
-out <- x$results_bysite
-out <- setDF(copy(out))
-ratio_benchmarks <- c(1.01, 1.50, 2, 3, 5, 10)
-ratiodata <- out[, names_d_ratio_to_state_avg]
-
-findings <- count_sites_with_n_high_scores(out)  # long output to console !
-dimnames(findings)
-findings$text[2]
-head(findings$stats[ , , 1], 15)
-head(findings$stats[ , 1, ], 21)
-x = findings$stats[ , 1, ] 
-x[x[, "cum_pct"] >= 50 & x[, "cum_pct"] <= 80, ]
-findings$stats[ 1, , ]
+head(
+  cbind(as.list(out2$results_overall))
+  , 12)
 ```
 
 # DETAILS OF BLOCKS NEAR ONE SITE
@@ -472,7 +490,7 @@ elapsed <- system.time({
   
 }) # end of timed function
 print(elapsed)
-sites2blocks
+head(sites2blocks)
 ```
 
 #### doaggregate() will summarize indicators within each buffer and overall
@@ -498,12 +516,12 @@ dim(out$results_bysite)
 head(cbind(overall = as.list( out$results_overall)))
 
 ## To see just some subset of indicators, like Environmental only:
-cbind(overall = as.list( out$results_overall[ , ..names_e]))
-cbind(overall = as.list( out$results_overall[ , ..names_d]))
-cbind(overall = as.list( out$results_overall[ , ..names_d_subgroups]))
-cbind(overall = as.list( out$results_overall[ , ..names_e_pctile]))
-cbind(overall = as.list( out$results_overall[ , ..names_d_pctile]))
-# cbind(overall = as.list( out$results_overall[ , ..names_ej_pctile]))
+cbind(overall = as.list( out$results_overall[ , ..names_e])); cat("\n")
+cbind(overall = as.list( out$results_overall[ , ..names_d])); cat("\n")
+cbind(overall = as.list( out$results_overall[ , ..names_d_subgroups])); cat("\n")
+cbind(overall = as.list( out$results_overall[ , ..names_e_pctile])); cat("\n")
+cbind(overall = as.list( out$results_overall[ , ..names_d_pctile])); cat("\n")
+# cbind(overall = as.list( out$results_overall[ , ..names_ej_pctile])); cat("\n")
 ```
 
 # VISUALIZATION OF FINDINGS
@@ -522,7 +540,7 @@ abline(h = nrow(out$results_bysite)/10)
 
 ### Mean distance of each group
 
-```{r}
+```{r, eval=FALSE}
 # plot_distance_mean_by_group(testoutput_ejamit_1000pts_1miles$results_bybg_people)
 
 # larger radius reveals more information
@@ -542,6 +560,7 @@ distance_by_group_plot(
 ```{r plotblocksnearby2, eval = FALSE, fig.height=5, fig.width=5}
 x = plotblocksnearby(testpoints_10[1,], radius = 3, returnmap = FALSE)
 #  returnmap= TRUE is to actually return the leaflet map 
+
 # Use weighting="frs" in testpoints_n() to pick a random FRS facility's block
 ```
 
@@ -589,7 +608,7 @@ head(s2b_stats)
 
 ```
 
-```{r plot_count_of_blocks_nearby, eval=TRUE, fig.height=6, fig.width=5}
+```{r plot_count_of_blocks_nearby, eval=TRUE, fig.height=6, fig.width=6}
 
 # CDF of how many blocks are nearby a site
 plot(sort(s2b_stats$blocks_within_1mile), 
@@ -626,7 +645,7 @@ s2b_stats <- merge(sitepoints, s2b_stats, by = "ejam_uniq_id")
 mapfast(s2b_stats, radius = radius)
 ```
 
-```{r eval = TRUE, fig.height=5, fig.width=5}
+```{r s2b_stats_more, eval = TRUE, fig.height=5, fig.width=5}
 
 # Some places have very few -- if any -- blocks within 1 mile
 
