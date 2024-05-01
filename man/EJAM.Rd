@@ -202,9 +202,9 @@ bgid is more efficient than bgfips. bgfips is not here but is in a bgid2fips dat
 \section{\strong{Output results for user:}}{
 \code{\link[=ejamit]{ejamit()}} (or \code{\link[=doaggregate]{doaggregate()}}) provides the following outputs:
 \itemize{
-\item \strong{results_overall}   one row data.table, like results_by_site, but just one row with
+\item \strong{results_overall}   one row data.table, like results_bysite, but just one row with
 aggregated results for all unique residents.
-\item \strong{results_by_site}   results for individual sites (buffers) - a data.table of results,
+\item \strong{results_bysite}   results for individual sites (buffers) - a data.table of results,
 one row per ejam_uniq_id (i.e., each site analyzed), one column per indicator
 \item \strong{results_bybg_people}  results for each block group, to allow for showing the distribution of each
 indicator across everyone within each demographic group.
