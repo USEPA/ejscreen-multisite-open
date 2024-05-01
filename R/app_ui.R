@@ -41,6 +41,9 @@ app_ui  <- function(request) {
 
       ### html header inserted from global.R ####
       html_header_fmt,
+      
+      ### get current
+      current_date <- format(Sys.Date(), '%B %d, %Y'),
 
       ### title (for app and browser tab) ####
       div(class = "title-panel",
@@ -520,6 +523,13 @@ app_ui  <- function(request) {
                                    shinycssloaders::withSpinner(
                                      plotOutput(outputId = 'view1_summary_plot', width = '100%', height = '400px')  # {{ demog_plot }} goes in .html template
                                    )
+                                 )
+                               ),
+                               div(
+                                 style = "background-color: #edeff0; color: black; width: 100%; padding: 10px 20px; text-align: right; margin: 10px 0;",
+                                 p( style = "margin-bottom: 0",
+                                   "Version 2.2 | Report created on ", 
+                                   current_date,
                                  )
                                ),
                                br(),
