@@ -585,7 +585,16 @@ shapefile_clean <- function(shp, crs = 4269) {
 #' @return same format as [sf::st_buffer()] returns
 #' @import sf
 #' @seealso [get_blockpoints_in_shape()] [shapefile_from_sitepoints()] [shape_buffered_from_shapefile_points()]
-#'
+#' @examples 
+#' # Within 3 miles of the county borders
+#' fips_counties_from_state_abbrev("DE")[1]
+#' x = shapes_counties_from_countyfips("10001")
+#' xtra = shape_buffered_from_shapefile(x, radius.miles = 3)
+#' map_shapes_leaflet(x) %>%
+#'   map_shapes_leaflet_proxy(xtra, color = "black")
+#'   
+# (ignoring projectiong/datum for this example)
+#' 
 #' @export
 #'
 shape_buffered_from_shapefile <- function(shapefile, radius.miles, crs = 4269, ...) {
@@ -610,7 +619,17 @@ shape_buffered_from_shapefile <- function(shapefile, radius.miles, crs = 4269, .
 #' @return same format as [sf::st_buffer()] returns
 #' @import sf
 #' @seealso [get_blockpoints_in_shape()] [shapefile_from_sitepoints()] [shape_buffered_from_shapefile_points()]
-#'
+#' @examples 
+#' map_shapes_leaflet(
+#'   shape_buffered_from_shapefile_points(
+#'     shapefile_from_sitepoints(testpoints_100), 
+#'     radius.miles = 3
+#'   )
+#' ) 
+#' # (ignoring projections for this example)
+#' # compare to
+#' mapfast(testpoints_100)
+#' 
 #' @export
 #'
 shape_buffered_from_shapefile_points <- function(shapefile_points, radius.miles, crs = 4269, ...) {

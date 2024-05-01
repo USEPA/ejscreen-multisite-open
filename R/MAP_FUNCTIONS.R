@@ -3,6 +3,8 @@
 #
 # See source document outline for list of functions defined here ####
 
+#  seealso mapfast() mapfastej() ejam2map()  
+
 ########################### # ########################### # ########################### # ########################### #
 
 
@@ -15,7 +17,7 @@
 #' @param clustered, a vector of T/F values for each point, indicating if they overlap with another
 #'
 #' @return a leaflet map with circles, circleMarkers, and basic popup
-#' @seealso [map_facilities_proxy()]
+#' @seealso [mapfast()] [map_facilities_proxy()]
 #'
 #' @export
 #'
@@ -166,7 +168,7 @@ map_facilities_proxy <- function(mymap, rad = 3, highlight = FALSE, clustered = 
 #' @param static_not_leaflet set TRUE to use [map_shapes_plot()] instead of [map_shapes_leaflet()]
 #' @param main title for map
 #' @param ... passed to map_shapes_plot() if relevant
-#'
+#' @seealso [mapfastej()]
 #' @return leaflet html widget (but if static_not_leaflet=T,
 #'   returns just shapes_counties_from_countyfips(mydf$ejam_uniq_id))
 #' @examples \dontrun{
@@ -427,7 +429,7 @@ shapes_counties_from_countyfips <- function(countyfips = '10001', outFields = ""
 #'   EJScreen_2_21_US_Percentiles_Block_Groups/FeatureServer/0/query"
 #'
 #'   for example provides EJScreen indicator values, NPL_CNT, TSDF_CNT, EXCEED_COUNT_90, etc.
-#'
+#' @seealso [mapfast()]
 #' @return spatial object via [sf::st_read()] # sf-data.frame, not sf-tibble like [sf::read_sf()]
 #'
 #' @export

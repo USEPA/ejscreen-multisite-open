@@ -25,7 +25,7 @@ mapfastej <- function(...) {
 #'   in the popup. If a vector of colnames, only those are shown in popups.
 #' @param labels The labels used before the column_names, for map popups,
 #'   like  label: column_name  (ignored if column_names is ej or all)
-#' @seealso [popup_from_df()] [mapfastej()]
+#' @seealso [ejam2map()] [popup_from_df()] [mapfastej()]
 #' @return plots a leaflet map with popups with all the columns from mydf,
 #'   and returns html widget
 #' @import leaflet
@@ -33,6 +33,11 @@ mapfastej <- function(...) {
 #' @examples
 #'  mapfast(testpoints_500)
 #'  \dontrun{
+#'  
+#'  mapfastej(testoutput_ejamit_1000pts_1miles$results_bysite, radius = 1)
+#'  
+#'  ejam2map(testoutput_ejamit_1000pts_1miles)
+#'  
 #'  # see random sample of 1k FRS facilities
 #'  if (!exists("frs")) {
 #'    x <- try(require(EJAM)); if (!inherits(x, "try-error")) {
