@@ -91,13 +91,11 @@
     
     #################### # 
     #   blockid2fips is used only in state_from_blocktable() and state_from_blockid(), which are not necessarily used, 
-    #   so maybe should not load this unless/until needed
-    #     but, then we would need to be sure to track when it is used and load on the fly
-    # Alternative to pins board was DMAP data commons / AWS: 
-    # BUCKET_CONTENTS <- data.table::rbindlist(aws.s3::get_bucket(bucket = mybucket), fill = TRUE)
-    # baseurl <- "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/"
-    # urls <- paste0(baseurl, fnames)
-    ## "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/quaddata.rda"
+    #   so not loaded unless/until needed
+    # Alternative to pins board was DMAP data commons / AWS, where .rda format had been used: 
+    # EJAM:::dataload_from_aws(justchecking = TRUE)
+    ## could download directly like this:
+    ## browseURL("https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/quaddata.rda")
     ## "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/bgid2fips.rda"
     ## "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/blockpoints.rda"
     ## "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/blockwts.rda"
@@ -113,30 +111,9 @@
     # this duplicates code from  global.R 
     
     if (length(try(find.package("EJAM", quiet = T))) == 1) { # if it has been installed. but that function has to have already been added to package namespace once 
-      
+    
       indexblocks()   # EJAM function works only AFTER shiny does load all/source .R files or package attached
-      
     }
-    
-    # This cannot be saved with the pkg to be installed as data, because of what this createTree function creates (memory pointers?).
-    # NOT TESTED in context of an app published on RStudio Server
-    
-    # cat("Building index of Census Blocks (localtree)...\n")
-    # if (!exists("localtree")) {
-    #   if (!exists("quaddata")) {stop("requires quaddata to be loaded - cannot build localtree without it.")}
-    #   # It was obtained from AWS at one time, via  dataload_from_aws()
-    #   
-    #   # This assign() below is the same as the function called  indexblocks() 
-    #   # indexblocks() # this creates  localtree object
-    #   assign(
-    #     "localtree",
-    #     SearchTrees::createTree(quaddata, treeType = "quad", dataType = "point"),
-    #     envir = globalenv()
-    #     # need to test, but seems to work.
-    #     # But takes a couple seconds at every reload of pkg.
-    #   )
-    #   cat("  Done building index.\n")
-    # }
   }
   
   # load blockgroupstats etc. from package ####
@@ -161,6 +138,6 @@
     
   }
   
-  packageStartupMessage('For help using the EJAM package, try ?EJAM or `vignette(package = "EJAM")` ')
+  packageStartupMessage('For help using the EJAM package, try ?EJAM or see https://usepa.github.io/EJAM/index.html')
   
 }

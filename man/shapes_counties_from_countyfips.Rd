@@ -2,7 +2,7 @@
 % Please edit documentation in R/MAP_FUNCTIONS.R
 \name{shapes_counties_from_countyfips}
 \alias{shapes_counties_from_countyfips}
-\title{Get boundaries of US Counties via API, to map them}
+\title{Get Counties boundaries via API, to map them}
 \usage{
 shapes_counties_from_countyfips(
   countyfips = "10001",
@@ -27,11 +27,13 @@ Only default was tested}
 spatial object via \code{\link[sf:st_read]{sf::st_read()}}
 }
 \description{
-Get boundaries of US Counties via API, to map them
+Get Counties boundaries via API, to map them
 }
 \details{
 Used \code{\link[sf:st_read]{sf::read_sf()}}, which is an alias for \code{\link[sf:st_read]{sf::st_read()}}
 but with some modified default arguments.
 read_sf is quiet by default/ does not print info about data source, and
 read_sf returns an sf-tibble rather than an sf-data.frame
+
+Also note the tidycensus and tigris R packages.
 }

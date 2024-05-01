@@ -16,5 +16,5 @@ vector of colors
 Convert R variable name of indicator to appropriate color for header row in Excel
 }
 \seealso{
-\code{\link[=varname2vartype_ejam]{varname2vartype_ejam()}} \code{\link[=varname2varcategory_ejam]{varname2varcategory_ejam()}} \code{\link[=vartype_cat2color_ejam]{vartype_cat2color_ejam()}}
+\code{\link[=varinfo]{varinfo()}} \code{\link[=varname2vartype_ejam]{varname2vartype_ejam()}} \code{\link[=varname2varcategory_ejam]{varname2varcategory_ejam()}} \code{\link[=vartype_cat2color_ejam]{vartype_cat2color_ejam()}}
 }

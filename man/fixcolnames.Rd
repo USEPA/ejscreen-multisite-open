@@ -62,5 +62,5 @@ if you are really seeking metadata like what category it is in, it returns a bla
 
 }
 \seealso{
-varinfo() from EJAM pkg, and \code{\link[=fixnames_to_type]{fixnames_to_type()}} \code{\link[=fixcolnames]{fixcolnames()}} \code{\link[=fixnames]{fixnames()}}
+\code{\link[=varinfo]{varinfo()}}
 }

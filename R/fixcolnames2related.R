@@ -18,6 +18,7 @@
 #'    (but not any of the other values among 
 #'    unique(map_headernames$vartype) since those give ambiguous answers).
 #'
+#' @seealso [varinfo()] [fixcolnames()]
 #' @return vector as long as namesnow (or just returns namesnow if relatedtype is invalid)
 #'
 #' @examples 

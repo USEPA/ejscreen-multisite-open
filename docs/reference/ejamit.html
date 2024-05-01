@@ -247,74 +247,67 @@ passed to <code><a href="doaggregate.html">doaggregate()</a></code> also. app se
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span> <span class="co"># All in one step, using functions not shiny app:</span></span></span>
-<span class="r-in"><span> <span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">ejamit</span><span class="op">(</span><span class="va">testpoints_100_dt</span>, <span class="fl">2</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Finding blocks nearby.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>sitepoints did not contain a column named ejam_uniq_id, so one was added</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Analyzing 100 points, radius of 2 miles around each.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Aggregating at each buffer and overall.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Percentages stored as 0 to 1 rather than 0 to 100 will not be shown correctly unless adjusted, </span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>           because rounding info says 0 digits when the intent is to show 0 digits after the 0-100 percent number.</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span> <span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span> <span class="co"># Do not specify sitepoints and it will prompt you for a file,</span></span></span>
-<span class="r-in"><span> <span class="co"># if in RStudio in interactive mode!</span></span></span>
-<span class="r-in"><span> <span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">ejamit</span><span class="op">(</span>radius <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span>  <span class="co"># Specify facilities or sites as points for test data,</span></span></span>
-<span class="r-in"><span>  <span class="co"># use 1000 test facility points from the R package</span></span></span>
-<span class="r-in"><span>  <span class="va">testsites</span> <span class="op">&lt;-</span> <span class="va">testpoints_1000</span></span></span>
-<span class="r-in"><span>  <span class="co"># use facility points in an excel or csv file</span></span></span>
-<span class="r-in"><span>   <span class="va">testsites</span> <span class="op">&lt;-</span> <span class="fu"><a href="latlon_from_anything.html">latlon_from_anything</a></span><span class="op">(</span></span></span>
-<span class="r-in"><span>     <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"testdata/latlon/"</span>,</span></span>
-<span class="r-in"><span>      <span class="st">"testpoints_207_sites_with_signif_violations_NAICS_326_ECHO.csv"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>    package <span class="op">=</span> <span class="st">"EJAM"</span><span class="op">)</span></span></span>
-<span class="r-in"><span>    <span class="op">)</span></span></span>
-<span class="r-in"><span>   <span class="co"># head(testsites)</span></span></span>
-<span class="r-in"><span>  <span class="co"># use facility points from a random sample of EPA-regulated facilities</span></span></span>
-<span class="r-in"><span>  <span class="va">testsites</span> <span class="op">&lt;-</span> <span class="fu"><a href="testpoints_n.html">testpoints_n</a></span><span class="op">(</span><span class="fl">1e3</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span>  <span class="co"># Specify max distance from sites to look at (residents within X miles of site point)</span></span></span>
-<span class="r-in"><span>  <span class="va">radius</span> <span class="op">&lt;-</span> <span class="fl">3.1</span> <span class="co"># miles</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span>  <span class="co"># Get summaries of all indicators near a set of points</span></span></span>
-<span class="r-in"><span>  <span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">ejamit</span><span class="op">(</span><span class="va">testsites</span>, <span class="va">radius</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="co"># out &lt;- ejamit("myfile.xlsx", 3.1)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span>  <span class="co"># out2 &lt;- ejscreenit(testpoints_5)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span>  <span class="co"># View results overall</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">out</span><span class="op">$</span><span class="va">results_overall</span><span class="op">)</span>, <span class="fl">3.1</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span>  <span class="co"># View plots</span></span></span>
-<span class="r-in"><span>   <span class="fu">plot_distance_by_group</span><span class="op">(</span>results_bybg_people <span class="op">=</span> <span class="va">out</span><span class="op">$</span><span class="va">results_bybg_people</span><span class="op">)</span></span></span>
-<span class="r-in"><span>   <span class="fu">distance_by_group</span><span class="op">(</span><span class="va">out</span><span class="op">$</span><span class="va">results_bybg_people</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span>  <span class="co"># View maps</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="mapfast.html">mapfast</a></span><span class="op">(</span><span class="va">out</span><span class="op">$</span><span class="va">results_bysite</span>, radius <span class="op">=</span> <span class="fl">3.1</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span>  <span class="co"># view results at a single site</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="mapfast.html">mapfast</a></span><span class="op">(</span><span class="va">out</span><span class="op">$</span><span class="va">results_bysite</span>, radius <span class="op">=</span> <span class="fl">3.1</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="co"># all the raw numbers at one site</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">out</span><span class="op">$</span><span class="va">results_bysite</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span>  <span class="co"># if doing just 1st step of ejamit()</span></span></span>
-<span class="r-in"><span>  <span class="co">#  get distance between each site and every nearby Census block</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span>  <span class="va">s2b</span> <span class="op">&lt;-</span> <span class="va">testoutput_getblocksnearby_100pts_1miles</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="getblocks_diagnostics.html">getblocks_diagnostics</a></span><span class="op">(</span><span class="va">s2b</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span>  <span class="va">testsites</span> <span class="op">&lt;-</span> <span class="va">testpoints_10</span><span class="op">[</span><span class="fl">2</span>,<span class="op">]</span></span></span>
-<span class="r-in"><span>  <span class="va">s2b</span> <span class="op">&lt;-</span> <span class="fu"><a href="getblocksnearby.html">getblocksnearby</a></span><span class="op">(</span><span class="va">testsites</span>, radius <span class="op">=</span> <span class="fl">3.1</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="getblocks_diagnostics.html">getblocks_diagnostics</a></span><span class="op">(</span><span class="va">s2b</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="plotblocksnearby.html">plotblocksnearby</a></span><span class="op">(</span><span class="va">s2b</span><span class="op">)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span>  <span class="co"># if doing just 2d step of ejamit()</span></span></span>
-<span class="r-in"><span>  <span class="co">#  get summaries of all indicators based on table of distances</span></span></span>
-<span class="r-in"><span>  <span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="doaggregate.html">doaggregate</a></span><span class="op">(</span><span class="va">s2b</span>, <span class="va">testsites</span><span class="op">)</span> <span class="co"># this works now and is simpler</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
-</code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span> <span class="co"># All in one step, using functions not shiny app:</span></span>
+<span> <span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">ejamit</span><span class="op">(</span><span class="va">testpoints_100_dt</span>, <span class="fl">2</span><span class="op">)</span></span>
+<span></span>
+<span> <span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span>
+<span> <span class="co"># Do not specify sitepoints and it will prompt you for a file,</span></span>
+<span> <span class="co"># if in RStudio in interactive mode!</span></span>
+<span> <span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">ejamit</span><span class="op">(</span>radius <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># Specify facilities or sites as points for test data,</span></span>
+<span>  <span class="co"># use 1000 test facility points from the R package</span></span>
+<span>  <span class="va">testsites</span> <span class="op">&lt;-</span> <span class="va">testpoints_1000</span></span>
+<span>  <span class="co"># use facility points in an excel or csv file</span></span>
+<span>   <span class="va">testsites</span> <span class="op">&lt;-</span> <span class="fu"><a href="latlon_from_anything.html">latlon_from_anything</a></span><span class="op">(</span></span>
+<span>     <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"testdata/latlon/"</span>,</span>
+<span>      <span class="st">"testpoints_207_sites_with_signif_violations_NAICS_326_ECHO.csv"</span><span class="op">)</span>,</span>
+<span>    package <span class="op">=</span> <span class="st">"EJAM"</span><span class="op">)</span></span>
+<span>    <span class="op">)</span></span>
+<span>   <span class="co"># head(testsites)</span></span>
+<span>  <span class="co"># use facility points from a random sample of EPA-regulated facilities</span></span>
+<span>  <span class="va">testsites</span> <span class="op">&lt;-</span> <span class="fu"><a href="testpoints_n.html">testpoints_n</a></span><span class="op">(</span><span class="fl">1e3</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># Specify max distance from sites to look at (residents within X miles of site point)</span></span>
+<span>  <span class="va">radius</span> <span class="op">&lt;-</span> <span class="fl">3.1</span> <span class="co"># miles</span></span>
+<span></span>
+<span>  <span class="co"># Get summaries of all indicators near a set of points</span></span>
+<span>  <span class="va">out</span> <span class="op">&lt;-</span> <span class="fu">ejamit</span><span class="op">(</span><span class="va">testsites</span>, <span class="va">radius</span><span class="op">)</span></span>
+<span>  <span class="co"># out &lt;- ejamit("myfile.xlsx", 3.1)</span></span>
+<span></span>
+<span>  <span class="co"># out2 &lt;- ejscreenit(testpoints_5)</span></span>
+<span></span>
+<span>  <span class="co"># View results overall</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">out</span><span class="op">$</span><span class="va">results_overall</span><span class="op">)</span>, <span class="fl">3.1</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># View plots</span></span>
+<span>   <span class="fu">plot_distance_by_group</span><span class="op">(</span>results_bybg_people <span class="op">=</span> <span class="va">out</span><span class="op">$</span><span class="va">results_bybg_people</span><span class="op">)</span></span>
+<span>   <span class="fu">distance_by_group</span><span class="op">(</span><span class="va">out</span><span class="op">$</span><span class="va">results_bybg_people</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># View maps</span></span>
+<span>  <span class="fu"><a href="mapfast.html">mapfast</a></span><span class="op">(</span><span class="va">out</span><span class="op">$</span><span class="va">results_bysite</span>, radius <span class="op">=</span> <span class="fl">3.1</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># view results at a single site</span></span>
+<span>  <span class="fu"><a href="mapfast.html">mapfast</a></span><span class="op">(</span><span class="va">out</span><span class="op">$</span><span class="va">results_bysite</span>, radius <span class="op">=</span> <span class="fl">3.1</span><span class="op">)</span></span>
+<span>  <span class="co"># all the raw numbers at one site</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">out</span><span class="op">$</span><span class="va">results_bysite</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># if doing just 1st step of ejamit()</span></span>
+<span>  <span class="co">#  get distance between each site and every nearby Census block</span></span>
+<span></span>
+<span>  <span class="va">s2b</span> <span class="op">&lt;-</span> <span class="va">testoutput_getblocksnearby_100pts_1miles</span></span>
+<span>  <span class="fu"><a href="getblocks_diagnostics.html">getblocks_diagnostics</a></span><span class="op">(</span><span class="va">s2b</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="va">testsites</span> <span class="op">&lt;-</span> <span class="va">testpoints_10</span><span class="op">[</span><span class="fl">2</span>,<span class="op">]</span></span>
+<span>  <span class="va">s2b</span> <span class="op">&lt;-</span> <span class="fu"><a href="getblocksnearby.html">getblocksnearby</a></span><span class="op">(</span><span class="va">testsites</span>, radius <span class="op">=</span> <span class="fl">3.1</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="getblocks_diagnostics.html">getblocks_diagnostics</a></span><span class="op">(</span><span class="va">s2b</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="plotblocksnearby.html">plotblocksnearby</a></span><span class="op">(</span><span class="va">s2b</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># if doing just 2d step of ejamit()</span></span>
+<span>  <span class="co">#  get summaries of all indicators based on table of distances</span></span>
+<span>  <span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="doaggregate.html">doaggregate</a></span><span class="op">(</span><span class="va">s2b</span>, <span class="va">testsites</span><span class="op">)</span> <span class="co"># this works now and is simpler</span></span>
+<span></span>
+<span><span class="op">}</span></span></code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>

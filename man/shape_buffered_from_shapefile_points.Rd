@@ -32,6 +32,18 @@ shape_buffered_from_shapefile_points - add buffer around shape (points, here)
 \details{
 Just a wrapper for \code{\link[sf:geos_unary]{sf::st_buffer()}}
 }
+\examples{
+map_shapes_leaflet(
+  shape_buffered_from_shapefile_points(
+    shapefile_from_sitepoints(testpoints_100), 
+    radius.miles = 3
+  )
+) 
+# (ignoring projections for this example)
+# compare to
+mapfast(testpoints_100)
+
+}
 \seealso{
 \code{\link[=get_blockpoints_in_shape]{get_blockpoints_in_shape()}} \code{\link[=shapefile_from_sitepoints]{shapefile_from_sitepoints()}} \code{\link[=shape_buffered_from_shapefile_points]{shape_buffered_from_shapefile_points()}}
 }

@@ -32,7 +32,8 @@ outputs of EJSCREEN were reported as percentages 0 to 100 but as 0 to 1 in EJAM.
 }
 \value{
 prints summary to console, but returns invisible a list of data frames, with names
-EJSCREEN, EJAM, EJSCREEN_shown, EJAM_shown, same_shown, ratio, etc.
+EJSCREEN, EJAM, EJSCREEN_shown, EJAM_shown, same_shown, ratio,
+diff, absdiff, pctdiff, etc.
 
 For each data.frame, colnames are indicators like pop, blockcount_near_site, etc.
 and rows represent sites analyzed.

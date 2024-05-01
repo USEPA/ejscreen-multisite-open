@@ -54,49 +54,27 @@ EJAM is not only a web app built in shiny R, it is also an R package, using the 
 
 The development version of the app can be installed from the github USEPA github repository. It can be installed locally as an R package, and the data or functions can be used outside of the shiny app interface, if you want to reuse data or code, or want to do customized analysis or explore the data in R.
 
-## How to install
+To install EJAM, you will need to have access to the relevant GitHub repositories on EPA's enterprise github site, at [USEPA GitHub](https://github.com/USEPA "https://github.com/USEPA"){.uri target="_blank" rel="noreferrer noopener"}.
 
-To install EJAM, you will need to have access to the GitHub repositories on EPA's enterprise github site, at [USEPA GitHub](https://github.com/USEPA "https://github.com/USEPA"){.uri target="_blank" rel="noreferrer noopener"}. Unless/ until those repositories related to EJAM are public, you would need to be signed in on EPA's network, and for internal-only repositories, may need to use VPN.
+## How to install 
 
-### to install directly from GitHub, starting from RStudio
+### if you do not need to work with the source code
 
-If you know how to clone and build from source in RStudio, feel free to skip ahead to that topic.
-
-If you just want to install EJAM but not work with source code, you can try this approach
-(which will download and build from source, automatically):
+If you just want to install EJAM but not work with source code, you can try this approach that uses `remotes::install_github()`:
 
 ``` r
-if (!require(devtools)) {install.packages("devtools")}
-devtools::install_github('USEPA/EJAMejscreenapi')
-devtools::install_github('USEPA/EJAMbatch.summarizer')
-devtools::install_github('USEPA/EJAM')
-```
+if (!require(remotes)) {install.packages("remotes")}
+remotes::install_github(c(
+  'USEPA/EJAMejscreenapi',
+  'USEPA/EJAMbatch.summarizer',
+  'USEPA/EJAM'
+  ), type = "binary")
 
-If installing that way does not work, you might need to do the following:
-
-1.  create GitHub personal access token with 'repo scope'
-
--   Go to [https://github.com/settings/tokens](https://github.com/settings/tokens){.uri target="_blank" rel="noreferrer noopener"} and select Tokens (classic) on the left-hand side. Then click 'Generate New Token' -\> Generate new token (classic).
--   Give it a name and select all boxes under repo scope. Scroll down and click 'Generate Token'.
-
-2.  set GitHub credentials in Rstudio
-
--   one-time login: from the console, run credentials::set_github_pat(). Paste in your PAT to the login popup under 'Token'.
--   store credentials long-term: run `usethis::edit_r_environ()` to open your .Renviron file and and add a line with your PAT in this format: `GITHUB_PAT = 'abc'`
--   You can specify an extra argument `scope = 'project'` if you only want the PAT to work for a particular Rstudio project.
-
-3.  Install the packages using `devtools::install_github()`
-
-``` r
-if (!require(devtools)) {install.packages("devtools")}
-devtools::install_github('USEPA/EJAMejscreenapi')
-devtools::install_github('USEPA/EJAMbatch.summarizer')
-devtools::install_github('USEPA/EJAM')
 ```
 
 ### if you need the full source code and want to build/install in RStudio on your own
 
-There are 3 EJAM-specific packages as of 1/2024 that EJAM needs, all of which are in EPA-internal repositories:
+There are 3 EJAM-specific packages as of early 2024 that EJAM needs, all of which are in EPA github repositories:
 
 Essential packages only available on the [USEPA github](https://github.com/USEPA/EJAM "github.com/USEPA/EJAM"){.uri target="_blank" rel="noreferrer noopener"} (not CRAN) are:
 
@@ -112,15 +90,29 @@ b.  Yet another way to get the full source package is to use a browser to go to 
 
 c.  A third way is to Clone or Fork the package via GitHub Desktop or from the GitHub site.
 
-d.  At some point, a .zip or .tar version of the bundled package will be provided as well.
+Regardless of how you got the full source code, you would then need to build/install the package from source on your computer using RStudio (using the Build menu) or using the devtools package, for example.
 
-Regardless of how you got the full source code, you would then need to build/install the package from source on your computer using RStudio menus or using the devtools package, for example.
+### if the repository is currently non-public (internal or private, for EPA only)
 
-#### CRAN packages needed
+Note that if a USEPA github repository is not public, you need to be inside EPA's network (e.g., via VPN) and may also need to get a personal access token (PAT):
 
-EJAM needs a number of other packages to be installed that are available from CRAN. Trying to load and attach EJAM with require(EJAM) or library(EJAM) will alert you to those other packages you need to install if you don't already have them.
+1.  create a GitHub personal access token with 'repo scope'
 
-You could also see the list of CRAN packages needed by looking at the `DESCRIPTION` file in the R package source code root folder (as can be found in the code repository).
+- For background on this, see [https://usethis.r-lib.org/articles/git-credentials.html#tldr-use-https-2fa-and-a-github-personal-access-token](https://usethis.r-lib.org/articles/git-credentials.html#tldr-use-https-2fa-and-a-github-personal-access-token){.uri target="_blank" rel="noreferrer noopener"}
+
+-   Go to [https://github.com/settings/tokens](https://github.com/settings/tokens){.uri target="_blank" rel="noreferrer noopener"} and select Tokens (classic) on the left-hand side. Then click 'Generate New Token' -\> Generate new token (classic).
+-   Give it a name and select all boxes under repo scope. Scroll down and click 'Generate Token'.
+
+2.  save GitHub credentials via Rstudio
+
+-   one-time login: from the console, run `credentials::set_github_pat()`. Paste in your PAT to the login popup under 'Token'. This will save the PAT in your GITHUB_PAT environmental variable, where `remotes::install_github()` or `devtools::install_github()` will by default look for it.
+
+3.  Try again to install the packages using `devtools::install_github()`
+
+#### CRAN packages needed (dependencies)
+
+EJAM needs a number of other packages to be installed that are available from CRAN. Trying to load and attach EJAM with require(EJAM) or library(EJAM) will alert you to those other packages you need to install if you don't already have them. The list of CRAN packages needed is in the `DESCRIPTION` file in the R package source code root folder (as can be found in the code repository).
+
 
 ## Initialize: load/attach package
 

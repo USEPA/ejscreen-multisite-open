@@ -2,7 +2,7 @@
 % Please edit documentation in R/shapefile_xyz.R
 \name{shapefile_filepaths_valid}
 \alias{shapefile_filepaths_valid}
-\title{Confirm files have all the extensions .shp, .shx, .dbf, and .prj}
+\title{Confirm files have ALL the extensions .shp, .shx, .dbf, and .prj}
 \usage{
 shapefile_filepaths_valid(filepaths)
 }
@@ -13,7 +13,7 @@ shapefile_filepaths_valid(filepaths)
 logical, indicating if all 4 extensions are found among the filepaths
 }
 \description{
-Confirm files have all the extensions .shp, .shx, .dbf, and .prj
+Confirm files have ALL the extensions .shp, .shx, .dbf, and .prj
 }
 \seealso{
 \code{\link[=shapefile_from_folder]{shapefile_from_folder()}}

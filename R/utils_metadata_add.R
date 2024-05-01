@@ -143,6 +143,11 @@ metadata_check <- function(packages=EJAM::ejampackages, which=c(
     if (!is.null(wasnotloaded)) {
       unloadNamespace(asNamespace(wasnotloaded))
     }
+
+    some <- as.vector(apply(allresults[[ii]], 1, function(z) !all("NULL" == z)))
+    allresults[[ii]] <- cbind(allresults[[ii]], has_metadata = FALSE)
+    allresults[[ii]][some, "has_metadata"] <- TRUE
+    
   }
   #maybe...
   # allresults <- do.call(cbind, results)

@@ -2,7 +2,6 @@
 % Please edit documentation in R/app_run_EJAM.R
 \name{app_run_EJAM}
 \alias{app_run_EJAM}
-\alias{run_app}
 \title{Launch EJAM as shiny web app}
 \usage{
 app_run_EJAM(
@@ -34,14 +33,13 @@ request to determine whether the \code{ui} should be used to handle the
 request. Note that the entire request path must match the regular
 expression in order for the match to be considered successful.}
 
-\item{...}{arguments to pass to golem_opts. Maybe could be something like sitepoints="latlondata.xlsx" or sitepoints=\link{testpoints_100}
+\item{...}{arguments to pass to golem_opts.
+When implemented, this parameter could be used to pass something like
+sitepoints="latlondata.xlsx" or sitepoints=\link{testpoints_100}
 See \code{?golem::get_golem_options} for more details.}
 }
 \description{
-launch Shiny web app from RStudio
-}
-\details{
-An alias for run_app()
+Launches shiny web app from RStudio - \code{\link[=app_run_EJAM]{app_run_EJAM()}} and \code{\link[=run_app]{run_app()}} are the same
 }
 \seealso{
 \code{\link[=run_app]{run_app()}}

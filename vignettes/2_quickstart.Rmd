@@ -81,13 +81,14 @@ out <- ejamit(testpoints_100, radius = 3,
             silentinteractive = F, include_ejindexes = T)
 ```
 
-## Map with `mapfastej()`
+## Map with `ejam2map()`
 
 This creates an interactive map. Click a point on the map to see a popup with details about people near that point.
 
 ```{r map100, eval = TRUE}
 out <- testoutput_ejamit_100pts_1miles
-
+# ejam2map(out)
+# or 
 mapfastej(out$results_bysite)
 ```
 

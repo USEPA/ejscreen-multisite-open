@@ -51,4 +51,7 @@ namez$d_friendly which is a vector of terms like
    grep("\\\\.eo$", namez$ej, value = T)
 
 }
+\seealso{
+\code{\link[=varinfo]{varinfo()}}
+}
 \keyword{internal}

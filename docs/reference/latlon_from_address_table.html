@@ -84,32 +84,23 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="address_from_table.html">address_from_table</a></span><span class="op">(</span><span class="va">test_address_table</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "1200 Pennsylvania Ave Washington DC "</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [2] "5 pARK AVE NY NY "                   </span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">## fname &lt;- system.file("testdata/address/street_address_9.xlsx", package = "EJAM")</span></span></span>
-<span class="r-in"><span><span class="co">## pts &lt;- address_from_table(fname)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">pts</span> <span class="op">&lt;-</span> <span class="fu"><a href="latlon_from_address.html">latlon_from_address</a></span><span class="op">(</span><span class="va">test_addresses_9</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in geocode(address, pt = pt, xy = xy, ...):</span> could not find function "geocode"</span>
-<span class="r-in"><span><span class="co">## out &lt;- ejamit(pts, radius = 1)</span></span></span>
-<span class="r-in"><span><span class="co">## ejam2report(out)</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">latlon_from_address_table</span><span class="op">(</span><span class="va">test_address_table</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in geocode(address, pt = pt, xy = xy, ...):</span> could not find function "geocode"</span>
-<span class="r-in"><span><span class="fu">latlon_from_address_table</span><span class="op">(</span><span class="va">test_address_table_withfull</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in geocode(address, pt = pt, xy = xy, ...):</span> could not find function "geocode"</span>
-<span class="r-in"><span><span class="co">## *** NOTE IT FAILS IF A COLUMN WITH STREET NAME ONLY IS CALLED "address"</span></span></span>
-<span class="r-in"><span><span class="co">##   instead of that storing the full address.</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="fixcolnames_infer.html">fixcolnames_infer</a></span><span class="op">(</span>currentnames <span class="op">=</span> <span class="va">test_address_parts1</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "lat"     "lon"     "address" "street"  "city"    "state"   "zip"    </span>
-<span class="r-in"><span><span class="fu"><a href="fixcolnames_infer.html">fixcolnames_infer</a></span><span class="op">(</span>currentnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">test_address_table</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "Acol"         "street"       "city"         "state"        "zip"         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [6] "other_column"</span>
-<span class="r-in"><span></span></span>
-</code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu"><a href="address_from_table.html">address_from_table</a></span><span class="op">(</span><span class="va">test_address_table</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## fname &lt;- system.file("testdata/address/street_address_9.xlsx", package = "EJAM")</span></span>
+<span><span class="co">## pts &lt;- address_from_table(fname)</span></span>
+<span></span>
+<span><span class="va">pts</span> <span class="op">&lt;-</span> <span class="fu"><a href="latlon_from_address.html">latlon_from_address</a></span><span class="op">(</span><span class="va">test_addresses_9</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co">## out &lt;- ejamit(pts, radius = 1)</span></span>
+<span><span class="co">## ejam2report(out)</span></span>
+<span></span>
+<span><span class="fu">latlon_from_address_table</span><span class="op">(</span><span class="va">test_address_table</span><span class="op">)</span></span>
+<span><span class="fu">latlon_from_address_table</span><span class="op">(</span><span class="va">test_address_table_withfull</span><span class="op">)</span></span>
+<span><span class="co">## *** NOTE IT FAILS IF A COLUMN WITH STREET NAME ONLY IS CALLED "address"</span></span>
+<span><span class="co">##   instead of that storing the full address.</span></span>
+<span></span>
+<span><span class="fu"><a href="fixcolnames_infer.html">fixcolnames_infer</a></span><span class="op">(</span>currentnames <span class="op">=</span> <span class="va">test_address_parts1</span><span class="op">)</span></span>
+<span><span class="fu"><a href="fixcolnames_infer.html">fixcolnames_infer</a></span><span class="op">(</span>currentnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">test_address_table</span><span class="op">)</span><span class="op">)</span></span>
+<span></span></code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>

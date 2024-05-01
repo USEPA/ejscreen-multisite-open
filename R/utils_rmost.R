@@ -1,13 +1,14 @@
-#' utility to rm(list=ls()) but not remove key datasets EJAM uses 
-#'
+#' utility to rm(list=ls()) but NOT remove key datasets EJAM uses 
+#' @details removes them from globalenv()
+#' 
 #' @export
+#' @keywords internal
 #'
-rmost <- function(notremove=c(
-  'rmost', 
-  'localtree', 'blockgroupstats', 'usastats', 'statestats', 
-  'bgid2fips', 'blockid2fips', 'blockpoints', 'blockwts', 'quaddata',
-  'bgej'
-)) {
+rmost <- function(notremove = c(
+  "blockwts", "blockpoints", "blockid2fips", "quaddata", "localtree",
+  "bgej", "bgid2fips",
+  "frs", "frs_by_programid", "frs_by_naics", "frs_by_sic", "frs_by_mact"
+) ) {
   rm(list = setdiff(
     ls(envir = globalenv()),
     notremove

@@ -8,11 +8,6 @@
 bgej (DATA) EJScreen EJ Indexes for Census block groups
 }
 \details{
-\itemize{
-\item As of 08/2023 it was the EJScreen 2.2 version of data, which used ACS 2017-2021.
-}
-
-Each year this should be re-created as for the latest version.
-
-See \url{https://www.epa.gov/ejscreen}
+For documentation on the demographic and environmental data and indicators used by
+EJScreen and EJAM, see \url{https://www.epa.gov/ejscreen/understanding-ejscreen-results}.
 }

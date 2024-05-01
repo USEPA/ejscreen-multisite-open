@@ -17,4 +17,7 @@ vector maybe
 \description{
 See which key lists of names the given indicator names are in
 }
+\seealso{
+\code{\link[=varinfo]{varinfo()}}
+}
 \keyword{internal}

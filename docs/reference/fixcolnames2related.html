@@ -102,34 +102,16 @@ of the given variables.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">names_d</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "Demog.Index"      "Demog.Index.Supp" "pctlowinc"        "pctlingiso"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "pctunemployed"    "pctlths"          "lowlifex"         "pctunder5"       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "pctover64"        "pctmin"          </span>
-<span class="r-in"><span><span class="fu">fixcolnames2related</span><span class="op">(</span><span class="va">names_d</span>, <span class="st">'stateratio'</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fixcolnames2related(names_d, "stateratio"):</span> could not find function "fixcolnames2related"</span>
-<span class="r-in"><span><span class="va">names_d_ratio_to_state_avg</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "ratio.to.state.avg.Demog.Index"      "ratio.to.state.avg.Demog.Index.Supp"</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [3] "ratio.to.state.avg.pctlowinc"        "ratio.to.state.avg.pctlingiso"      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [5] "ratio.to.state.avg.pctunemployed"    "ratio.to.state.avg.pctlths"         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "ratio.to.state.avg.lowlifex"         "ratio.to.state.avg.pctunder5"       </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [9] "ratio.to.state.avg.pctover64"        "ratio.to.state.avg.pctmin"          </span>
-<span class="r-in"><span><span class="fu">fixcolnames2related</span><span class="op">(</span><span class="va">names_e</span>, <span class="st">"stateavg"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fixcolnames2related(names_e, "stateavg"):</span> could not find function "fixcolnames2related"</span>
-<span class="r-in"><span><span class="fu">fixcolnames2related</span><span class="op">(</span><span class="va">names_e</span>, <span class="st">"usvag"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fixcolnames2related(names_e, "usvag"):</span> could not find function "fixcolnames2related"</span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"avg."</span>, <span class="va">names_e</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] "avg.pm"              "avg.o3"              "avg.cancer"         </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [4] "avg.resp"            "avg.dpm"             "avg.pctpre1960"     </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [7] "avg.traffic.score"   "avg.proximity.npl"   "avg.proximity.rmp"  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [10] "avg.proximity.tsdf"  "avg.proximity.npdes" "avg.ust"            </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [13] "avg.rsei"           </span>
-<span class="r-in"><span><span class="fu">fixcolnames2related</span><span class="op">(</span><span class="va">names_e</span>, <span class="st">"usratio"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in fixcolnames2related(names_e, "usratio"):</span> could not find function "fixcolnames2related"</span>
-<span class="r-in"><span><span class="co"># names_ej # does not work with this as input</span></span></span>
-<span class="r-in"><span><span class="co"># fixcolnames2related(names_ej, "uspctile") # does not return names_ej_pctile</span></span></span>
-<span class="r-in"><span>  </span></span>
-</code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="va">names_d</span></span>
+<span><span class="fu">fixcolnames2related</span><span class="op">(</span><span class="va">names_d</span>, <span class="st">'stateratio'</span><span class="op">)</span></span>
+<span><span class="va">names_d_ratio_to_state_avg</span></span>
+<span><span class="fu">fixcolnames2related</span><span class="op">(</span><span class="va">names_e</span>, <span class="st">"stateavg"</span><span class="op">)</span></span>
+<span><span class="fu">fixcolnames2related</span><span class="op">(</span><span class="va">names_e</span>, <span class="st">"usvag"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"avg."</span>, <span class="va">names_e</span><span class="op">)</span></span>
+<span><span class="fu">fixcolnames2related</span><span class="op">(</span><span class="va">names_e</span>, <span class="st">"usratio"</span><span class="op">)</span></span>
+<span><span class="co"># names_ej # does not work with this as input</span></span>
+<span><span class="co"># fixcolnames2related(names_ej, "uspctile") # does not return names_ej_pctile</span></span>
+<span>  </span></code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
