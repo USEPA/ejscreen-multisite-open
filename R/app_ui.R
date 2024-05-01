@@ -1248,29 +1248,41 @@ app_ui  <- function(request) {
 
                 ### Threshold comparisons options --------------------- #
 
-                ## input: Name for 1st set of comparisons - where the table counts which scores are above certain cutoffs?
-                shiny::textInput(inputId = 'an_name_comp1',
+                ## input: GROUP NAME for 1st set of comparisons - where the table counts which scores are above certain cutoffs?
+                shiny::textInput(inputId = 'an_threshgroup1',
                                  label = 'Name for 1st set of comparisons',
-                                 ## this will need to be changed later
-                                 value = '',
-                                 placeholder = threshgroup.default['comp1']
+                                 value = default.an_threshgroup1
                 ),
-                ## input: Threshold value(s) for 1st set of comparisons
+                ## input: variable names for 1st set of comparisons
+                shiny::selectInput(inputId = 'an_threshnames1',
+                                   multiple = TRUE,
+                                 label = 'variable names for 1st set of comparisons',
+                                 choices = names_all_r,
+                                 selected = default.an_threshnames1
+                ),
+                ## input: Threshold VALUE(s) for 1st set of comparisons
                 numericInput(inputId = 'an_thresh_comp1',
                              label = 'Threshold value(s) for 1st set of comparisons (e.g. %ile 1-100):',
-                             value = threshold.default['comp1']
+                             value = default.an_thresh_comp1
                 ),
-                ## input: Name for 1st set of comparisons
-                shiny::textInput(inputId = 'an_name_comp2',
+                ###### #
+                
+                ## input: GROUP NAME for 2d set of comparisons
+                shiny::textInput(inputId = 'an_threshgroup2',
                                  label = 'Name for 2nd set of comparisons',
-                                 ## this will need to be changed later
-                                 value = '',
-                                 placeholder = threshgroup.default['comp2']
+                                 value =   default.an_threshgroup2
                 ),
-                ## input: Threshold value(s) for 2nd set of comparisons
+                ## input: variable names for 2d set of comparisons
+                shiny::selectInput(inputId = 'an_threshnames2',
+                                   multiple = TRUE,
+                                   label = 'variable names for 2d set of comparisons',
+                                   choices = names_all_r,
+                                   selected = default.an_threshnames2
+                ),
+                ## input: Threshold VALUE(s) for 2nd set of comparisons
                 numericInput(inputId = 'an_thresh_comp2',
                              label = 'Threshold value(s) for 2nd set of comparisons (e.g. %ile 1-100):',
-                             value = threshold.default['comp2']
+                             value = default.an_thresh_comp2
                 ),
                 ######################################################## #
                 ######################################################## #

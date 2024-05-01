@@ -91,22 +91,15 @@ from tidycensus pkg</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span>  <span class="va">x</span>     <span class="op">&lt;-</span> <span class="fu">acs_bycounty</span><span class="op">(</span>myvars <span class="op">=</span> <span class="st">"B03002_003"</span>, myst <span class="op">=</span> <span class="st">"NY"</span>, yr <span class="op">=</span> <span class="fl">2022</span><span class="op">)</span> <span class="co"># nhwa</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in acs_bycounty(myvars = "B03002_003", myst = "NY", yr = 2022):</span> requires tidycensus and other packages not yet added to EJAM pkg</span>
-<span class="r-in"><span>  <span class="va">denom</span> <span class="op">&lt;-</span> <span class="fu">acs_bycounty</span><span class="op">(</span>myvars <span class="op">=</span> <span class="st">"B03002_001"</span>, myst <span class="op">=</span> <span class="st">"NY"</span>, yr <span class="op">=</span> <span class="fl">2022</span><span class="op">)</span> <span class="co"># pop</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in acs_bycounty(myvars = "B03002_001", myst = "NY", yr = 2022):</span> requires tidycensus and other packages not yet added to EJAM pkg</span>
-<span class="r-in"><span>  <span class="va">z</span> <span class="op">=</span> <span class="va">x</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'x' not found</span>
-<span class="r-in"><span>  <span class="va">z</span><span class="op">$</span><span class="va">estimate</span> <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">estimate</span> <span class="op">/</span> <span class="va">denom</span><span class="op">$</span><span class="va">estimate</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'x' not found</span>
-<span class="r-in"><span>  <span class="va">z</span><span class="op">$</span><span class="va">moe</span> <span class="op">=</span> <span class="fl">0</span>  <span class="co"># x$moe / denom$estimate # need to calculate using census guidance if at all</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in z$moe = 0:</span> object 'z' not found</span>
-<span class="r-in"><span>  <span class="co"># z$variable = "pctnhwa" # not used if myvarnames is given</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="plot_bycounty.html">plot_bycounty</a></span><span class="op">(</span><span class="va">z</span>, myvarnames <span class="op">=</span> <span class="st">"Percent NonHispanic White Alone (i.e., Not People of Color)"</span>,</span></span>
-<span class="r-in"><span>                labeltype <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/label_percent.html" class="external-link">label_percent</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in plot_bycounty(z, myvarnames = "Percent NonHispanic White Alone (i.e., Not People of Color)",     labeltype = scales::label_percent()):</span> requires tidycensus and other packages not yet added to EJAM pkg</span>
-<span class="r-in"><span></span></span>
-</code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span>  <span class="va">x</span>     <span class="op">&lt;-</span> <span class="fu">acs_bycounty</span><span class="op">(</span>myvars <span class="op">=</span> <span class="st">"B03002_003"</span>, myst <span class="op">=</span> <span class="st">"NY"</span>, yr <span class="op">=</span> <span class="fl">2022</span><span class="op">)</span> <span class="co"># nhwa</span></span>
+<span>  <span class="va">denom</span> <span class="op">&lt;-</span> <span class="fu">acs_bycounty</span><span class="op">(</span>myvars <span class="op">=</span> <span class="st">"B03002_001"</span>, myst <span class="op">=</span> <span class="st">"NY"</span>, yr <span class="op">=</span> <span class="fl">2022</span><span class="op">)</span> <span class="co"># pop</span></span>
+<span>  <span class="va">z</span> <span class="op">=</span> <span class="va">x</span></span>
+<span>  <span class="va">z</span><span class="op">$</span><span class="va">estimate</span> <span class="op">=</span> <span class="va">x</span><span class="op">$</span><span class="va">estimate</span> <span class="op">/</span> <span class="va">denom</span><span class="op">$</span><span class="va">estimate</span></span>
+<span>  <span class="va">z</span><span class="op">$</span><span class="va">moe</span> <span class="op">=</span> <span class="fl">0</span>  <span class="co"># x$moe / denom$estimate # need to calculate using census guidance if at all</span></span>
+<span>  <span class="co"># z$variable = "pctnhwa" # not used if myvarnames is given</span></span>
+<span>  <span class="fu"><a href="plot_bycounty.html">plot_bycounty</a></span><span class="op">(</span><span class="va">z</span>, myvarnames <span class="op">=</span> <span class="st">"Percent NonHispanic White Alone (i.e., Not People of Color)"</span>,</span>
+<span>                labeltype <span class="op">=</span> <span class="fu">scales</span><span class="fu">::</span><span class="fu"><a href="https://scales.r-lib.org/reference/label_percent.html" class="external-link">label_percent</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span></span></code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>

@@ -12,7 +12,9 @@
 #'
 ejam2excel <- function(ejamitout,
                        fname = NULL, # full path and name, or just name of .xlsx file
-                       save_now = TRUE, overwrite = TRUE, launchexcel = FALSE,
+                       save_now = TRUE, 
+                       overwrite = TRUE, 
+                       launchexcel = FALSE,
                        interactive_console = TRUE,
                        ok2plot = TRUE,
                        in.testing = FALSE,

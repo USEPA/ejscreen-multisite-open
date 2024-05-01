@@ -2,7 +2,7 @@
 % Please edit documentation in R/MAP_FUNCTIONS.R
 \name{map_shapes_plot}
 \alias{map_shapes_plot}
-\title{Map using base R plot()}
+\title{Map - polygons - Use base R plot() to map polygons}
 \usage{
 map_shapes_plot(shapes, main = "Selected Census Units", ...)
 }
@@ -17,5 +17,5 @@ map_shapes_plot(shapes, main = "Selected Census Units", ...)
 Just draws map using plot()
 }
 \description{
-Map using base R plot()
+Map - polygons - Use base R plot() to map polygons
 }

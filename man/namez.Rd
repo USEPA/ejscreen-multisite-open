@@ -8,5 +8,5 @@
 namez (DATA) list of lists of indicator names (complete list in 1 object)
 }
 \seealso{
-EJAMejscreenapi dataset called map_headernames \link{names_d} \link{names_e}
+\code{\link[=varinfo]{varinfo()}}  EJAMejscreenapi dataset called map_headernames \link{names_d} \link{names_e}
 }

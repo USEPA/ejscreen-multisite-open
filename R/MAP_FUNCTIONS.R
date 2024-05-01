@@ -1,32 +1,23 @@
 
 # SEVERAL FUNCTIONS ARE IN THIS FILE ####
 #
-# FUNCTIONS DEFINED ####
+# See source document outline for list of functions defined here ####
 
-# map_facilities()
-# map_facilities_proxy()
-# mapfastej_counties()
-# map_blockgroups_over_blocks()
-# map_shapes_plot()
-# map_shapes_leaflet()
-# map_shapes_mapview()
-# shapes_counties_from_countyfips()
-# shapes_blockgroups_from_bgfips()
-# mapfast_gg()
+#  seealso mapfast() mapfastej() ejam2map()  
 
 ########################### # ########################### # ########################### # ########################### #
 
 
-#' Map - Create leaflet map within EJAM shiny app
+#' Map - points - Create leaflet map of points, in shiny app
 #'
-#' @description make a leaflet map of uploaded points
+#' @description make a leaflet map of uploaded points such as facilities
 #' @param mypoints, data frame of uploaded points
 #' @param rad, a size for drawing each circle (buffer search radius)
 #' @param highlight, a logicial for whether to highlight overlapping points (defaults to FALSE)
 #' @param clustered, a vector of T/F values for each point, indicating if they overlap with another
 #'
 #' @return a leaflet map with circles, circleMarkers, and basic popup
-#' @seealso [map_facilities_proxy()]
+#' @seealso [mapfast()] [map_facilities_proxy()]
 #'
 #' @export
 #'
@@ -93,15 +84,15 @@ map_facilities <- function(mypoints, rad = 3, highlight = FALSE, clustered) {
             setView(-110, 46, zoom = 3)
           mymap
         }
-        ### Button to print map ####
+        ### Button to print map 
         leaflet.extras2::addEasyprint(map = mymap, options = leaflet.extras2::easyprintOptions(exportOnly = TRUE, title = 'Save Map Snapshot'))
 }
 ########################### # ########################### # ########################### # ########################### #
 
 
-#' Map - Update leaflet map within EJAM shiny app
+#' Map - points - Update leaflet map of points, in shiny app
 #'
-#' @description update a leaflet map within the EJAM shiny app with uploaded points.
+#' @description update a leaflet map within the EJAM shiny app with uploaded points such as facilities
 #' @param mymap, leafletProxy map object to be added to
 #' @param rad, a size for drawing each circle (buffer search radius)
 #' @param highlight, a logicial for whether to highlight overlapping points (defaults to FALSE)
@@ -170,14 +161,14 @@ map_facilities_proxy <- function(mymap, rad = 3, highlight = FALSE, clustered = 
 ########################### # ########################### # ########################### # ########################### #
 
 
-#' Map Counties - Create static or HTML/leaflet map of counties
+#' Map - County polygons / boundaries - Create leaflet or static map
 #'
 #' @param mydf something like  ejamit(fips = fips_counties_from_statename("Kentucky"), radius = 0)$results_bysite
 #' @param colorvarname colname of indicator in mydf that drives color-coding
 #' @param static_not_leaflet set TRUE to use [map_shapes_plot()] instead of [map_shapes_leaflet()]
 #' @param main title for map
 #' @param ... passed to map_shapes_plot() if relevant
-#'
+#' @seealso [mapfastej()]
 #' @return leaflet html widget (but if static_not_leaflet=T,
 #'   returns just shapes_counties_from_countyfips(mydf$ejam_uniq_id))
 #' @examples \dontrun{
@@ -237,7 +228,7 @@ mapfastej_counties <- function(mydf, colorvarname = "pctile.Demog.Index.Supp",
 ########################### # ########################### # ########################### # ########################### #
 
 
-#' Map blockgroup boundaries near 1 site, after plotblocksnearby()
+#' Map - Blockgroup polygons / boundaries near 1 site - Create leaflet map
 #'
 #' Overlay blockgroups near 1 site, after plotblocksnearby(returnmap = TRUE)
 #'
@@ -280,7 +271,7 @@ map_blockgroups_over_blocks <- function(y) {
 ########################### # ########################### # ########################### # ########################### #
 
 
-#' Map using base R plot()
+#' Map - polygons - Use base R plot() to map polygons
 #'
 #' @param shapes like from shapes_counties_from_countyfips(fips_counties_from_state_abbrev("DE"))
 #' @param main title for map
@@ -296,7 +287,7 @@ map_shapes_plot <- function(shapes, main = "Selected Census Units", ...) {
 ########################### # ########################### # ########################### # ########################### #
 
 
-#' Map - Create a new leaflet map from shapefile data, in shiny app
+#' Map - polygons - Create leaflet map from shapefile, in shiny app
 #'
 #' @param shapes like from shapes_counties_from_countyfips(fips_counties_from_state_abbrev("DE"))
 #' @param color passed to leaflet::addPolygons()
@@ -313,7 +304,7 @@ map_shapes_leaflet <- function(shapes, color = "green", popup = shapes$NAME) {
 }
 ########################### # ########################### # ########################### # ########################### #
 
-#' Map - Update existing leaflet map by adding shapefile data, in shiny app
+#' Map - polygons - Update leaflet map by adding shapefile data, in shiny app
 #'
 #' @param mymap map like from leafletProxy()
 #' @param shapes like from shapes_counties_from_countyfips(fips_counties_from_state_abbrev("DE"))
@@ -334,7 +325,7 @@ map_shapes_leaflet_proxy <- function(mymap, shapes, color = "green", popup = sha
 ########################### # ########################### # ########################### # ########################### #
 
 
-#' Map - Use mapview from the mapview package if available
+#' Map - polygons - Use mapview package if available
 #'
 #' @param shapes like from shapes_counties_from_countyfips(fips_counties_from_state_abbrev("DE"))
 #' @param col.regions passed to [mapview::mapview()]
@@ -368,12 +359,14 @@ map_shapes_mapview <- function(shapes, col.regions = "green", map.types = "OpenS
 ########################### # ########################### # ########################### # ########################### #
 
 
-#' Get boundaries of US Counties via API, to map them
+#' Get Counties boundaries via API, to map them
 #'
 #' @details Used [sf::read_sf()], which is an alias for [sf::st_read()]
 #'   but with some modified default arguments.
 #'   read_sf is quiet by default/ does not print info about data source, and
 #'   read_sf returns an sf-tibble rather than an sf-data.frame
+#'   
+#'   Also note the tidycensus and tigris R packages.
 #'
 #' @param countyfips FIPS codes as 5-character strings (or numbers) in a vector
 #'   as from fips_counties_from_state_abbrev("DE")
@@ -423,7 +416,7 @@ shapes_counties_from_countyfips <- function(countyfips = '10001', outFields = ""
 ########################### # ########################### # ########################### # ########################### #
 
 
-#' Get boundaries of blockgroups, via API, to map them
+#' Get blockgroups boundaries, via API, to map them
 #'
 #' @details This is useful mostly for small numbers of blockgroups.
 #'   The EJScreen map services provide other ways to map blockgroups and see EJScreen data.
@@ -436,7 +429,7 @@ shapes_counties_from_countyfips <- function(countyfips = '10001', outFields = ""
 #'   EJScreen_2_21_US_Percentiles_Block_Groups/FeatureServer/0/query"
 #'
 #'   for example provides EJScreen indicator values, NPL_CNT, TSDF_CNT, EXCEED_COUNT_90, etc.
-#'
+#' @seealso [mapfast()]
 #' @return spatial object via [sf::st_read()] # sf-data.frame, not sf-tibble like [sf::read_sf()]
 #'
 #' @export
@@ -482,7 +475,7 @@ shapes_blockgroups_from_bgfips <- function(bgfips = '010890029222', outFields = 
 ########################### # ########################### # ########################### # ########################### #
 
 
-#' Map - ggplot2 map of points in the USA - very basic map
+#' Map - points - ggplot2 map of points in the USA - very basic map
 #'
 #' @param mydf data.frame with columns named lat and lon
 #' @param dotsize optional, size of dot representing a point

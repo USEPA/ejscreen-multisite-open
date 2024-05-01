@@ -17,4 +17,7 @@ a list of sets of names
 \description{
 See which lists of names the given indicator names are in
 }
+\seealso{
+\code{\link[=varinfo]{varinfo()}}
+}
 \keyword{internal}

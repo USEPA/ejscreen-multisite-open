@@ -53,20 +53,21 @@
 #'
 #' @export
 #'
-dataload_from_pins <- function(varnames = c(c('blockwts', 'blockpoints', 'blockid2fips', "quaddata"),
-                                            # load only if /when needed:
-                                            'bgej',
-                                            'bgid2fips',
-                                            c('frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact"))[1:4],
-                               boardfolder = "Mark",
-                               auth = "auto",
-                               server = "https://rstudio-connect.dmap-stage.aws.epa.gov",
-                               # server = "rstudio-connect.dmap-stage.aws.epa.gov",
-                               folder_local_source = NULL, # './data/', # or "~/../Downloads"
-                               envir = globalenv(),
-                               justchecking = FALSE,
-                               ignorelocal = FALSE,
-                               silent = FALSE) {
+dataload_from_pins <- function(
+    varnames = c('blockwts', 'blockpoints', 'blockid2fips', "quaddata",
+                 # load only if /when needed:
+                 'bgej',
+                 'bgid2fips',
+                 'frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact")[1:4],
+    boardfolder = "Mark",
+    auth = "auto",
+    server = "https://rstudio-connect.dmap-stage.aws.epa.gov",
+    # server = "rstudio-connect.dmap-stage.aws.epa.gov",
+    folder_local_source = NULL, # './data/', # or "~/../Downloads"
+    envir = globalenv(),
+    justchecking = FALSE,
+    ignorelocal = FALSE,
+    silent = FALSE) {
   
   if ('all' %in% tolower(varnames)) {
     varnames <- c(

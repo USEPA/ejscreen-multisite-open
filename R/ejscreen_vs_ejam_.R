@@ -149,7 +149,8 @@ ejscreen_vs_ejam <- function(latlon, radius = 3, nadrop = FALSE,
 #'   outputs of EJSCREEN were reported as percentages 0 to 100 but as 0 to 1 in EJAM.
 #'
 #' @return prints summary to console, but returns invisible a list of data frames, with names 
-#'   EJSCREEN, EJAM, EJSCREEN_shown, EJAM_shown, same_shown, ratio, etc.
+#'   EJSCREEN, EJAM, EJSCREEN_shown, EJAM_shown, same_shown, ratio, 
+#'   diff, absdiff, pctdiff, etc.
 #'   
 #'   For each data.frame, colnames are indicators like pop, blockcount_near_site, etc.
 #'   and rows represent sites analyzed.
@@ -706,8 +707,8 @@ if (1 == 0) {
   #"LAN_UNIVERSE" 
   # "LAN_ENG_NA" 
   #     "LAN_SPANISH"        "LAN_IE"        "LAN_API"     
-  #     "HLI_SPANISH_LI"     "HLI_IE_LI"     "HLI_API_LI"      "HLI_OTHER_LI"  
-  # "PCT_HLI_SPANISH_LI" "PCT_HLI_IE_LI" "PCT_HLI_API_LI"  "PCT_HLI_OTHER_LI" # "p_hli_api_li"  is in api output once renamed to rnames?? 
+  #     "HLI_SPANISH_LI"     "HLI_IE_LI"     "HLI_API_LI"      "HLI_OTHER_LI"  ###  but later edited map_headernames??
+  # "PCT_HLI_SPANISH_LI" "PCT_HLI_IE_LI" "PCT_HLI_API_LI"  "PCT_HLI_OTHER_LI" ### but later edited map_headernames
   #  "pct_lan_eng"
   #  "pct_lan_spanish"    "pct_lan_ie"    "pct_lan_api"
   # 

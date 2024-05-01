@@ -12,8 +12,9 @@
 #' @param keylists if true, only report for the key lists not friendly, all, these, need types.
 #' @param exactonly to limit output to rows with exact matches
 #'
+#' @seealso [varinfo()]
 #' @return a data.frame of whichlist, exactmatch, grepmatch, and grephits (examples)
-#'
+#' 
 #' @examples  
 #'    x <- names_whichlist("rsei", ignore.case.exact = T, ignore.case.grep = T)
 #'    subset(x, !grepl("friendly", x$whichlist))
@@ -75,6 +76,7 @@ names_whichlist <- function(x, exact=T, grepmatching=T, ignore.case.exact=FALSE,
 #' @param x vector of names (query terms)
 #' @param ... passed to names_whichlist()
 #'
+#' @seealso [varinfo()]
 #' @return a list of sets of names
 #' 
 #' @keywords internal
@@ -96,6 +98,7 @@ names_whichlist_multi = function(x, ...) {
 #' @param x vector of names
 #' @param ... passed to names_whichlist_multi()
 #'
+#' @seealso [varinfo()]
 #' @return vector maybe
 #' 
 #' @keywords internal

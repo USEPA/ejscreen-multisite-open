@@ -85,9 +85,9 @@ Set to FALSE to prevent long output showing in console in RStudio when in intera
 \value{
 list with named elements:
 \itemize{
-\item \strong{\code{results_overall}}   one row data.table, like results_by_site, but just one row with
+\item \strong{\code{results_overall}}   one row data.table, like results_bysite, but just one row with
 aggregated results for all unique residents.
-\item \strong{\code{results_by_site}}   results for individual sites (buffers) - a data.table of results,
+\item \strong{\code{results_bysite}}   results for individual sites (buffers) - a data.table of results,
 one row per ejam_uniq_id, one column per indicator
 \item \strong{results_bybg_people}  results for each block group, to allow for showing the distribution of each
 indicator across everyone within each demographic group.

@@ -11,9 +11,7 @@
 #'   to detailed ECHO facility reports
 #' @param as_html logical, optional.
 #'   passed to url_ejscreen_report() and url_ejscreenmap()
-#'   from EJAMejscreenapi package
 #' @seealso url_ejscreen_report() url_ejscreenmap() url_echo_facility_webpage()
-#'   from EJAMejscreenapi package
 #' @return list of data.frames to append to the list of data.frames created by
 #'   ejamit() or doaggregate(),
 #'   list(results_bysite = results_bysite, results_overall = results_overall,

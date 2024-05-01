@@ -121,7 +121,7 @@ thisplot <- thisdata %>%
     ggplot2::theme_bw() +
     ggplot2::labs(x = NULL, y = 'Ratio vs. Average', #fill = 'Legend',
                   title = main) +
-    #scale_x_discrete(labels = scales::label_wrap(7)) +
+    #scale_x_discrete(labels = scales::label_wrap(7)) +    # requires scales package
     #scale_x_discrete(labels = function(x) str_wrap(x, width = 10)) +
     #scale_x_discrete(guide = guide_axis(n.dodge = 2)) +
 

@@ -372,16 +372,6 @@ NULL
                                 n, "pts_", myrad, "miles")
     if (recreating_ejamit_output) {
 
-      # DEFAULTS:
-      #        sitepoints, radius = 3, maxradius = 31.07, avoidorphans = FALSE,
-      #        quadtree = NULL, quiet = TRUE, parallel = FALSE, fips = NULL,
-      #        shapefile_folder = NULL, in_shiny = FALSE, need_blockwt = TRUE,
-      #        countcols = NULL, popmeancols = NULL, calculatedcols = NULL,
-      #        testing = FALSE, include_ejindexes = FALSE, updateProgress = NULL,
-      #        need_proximityscore = FALSE, calculate_ratios = TRUE, silentinteractive = FALSE,
-      #        called_by_ejamit = TRUE, subgroups_type = "nh", extra_demog = TRUE,
-      #        infer_sitepoints = FALSE, threshold1 = 90)
-
       out_data_ejamit <- ejamit(testpoints_data, radius = myrad, silentinteractive = TRUE, quiet = TRUE,
                                 include_ejindexes = TRUE) #  # include_ejindexes = FALSE was the default but we want to test with them included
 

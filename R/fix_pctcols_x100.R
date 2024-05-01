@@ -12,6 +12,7 @@
 #'
 #'   names_pct_as_fraction_ejscreenit
 #'
+#' @seealso [varinfo()]
 #' @return df with data in specified columns multiplied by 100
 #'
 #' @examples 

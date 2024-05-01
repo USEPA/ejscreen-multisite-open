@@ -2,7 +2,7 @@
 % Please edit documentation in R/MAP_FUNCTIONS.R
 \name{mapfast_gg}
 \alias{mapfast_gg}
-\title{Map - ggplot2 map of points in the USA - very basic map}
+\title{Map - points - ggplot2 map of points in the USA - very basic map}
 \usage{
 mapfast_gg(
   mydf = data.frame(lat = 40, lon = -100)[0, ],
@@ -30,7 +30,7 @@ mapfast_gg(
 a ggplot() object
 }
 \description{
-Map - ggplot2 map of points in the USA - very basic map
+Map - points - ggplot2 map of points in the USA - very basic map
 }
 \examples{
 \dontrun{

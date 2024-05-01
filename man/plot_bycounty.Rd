@@ -11,7 +11,7 @@ plot_bycounty(
   mystate = NULL,
   labeltype = NULL,
   varinfo = NULL,
-  yr = 2021
+  yr = 2022
 )
 }
 \arguments{

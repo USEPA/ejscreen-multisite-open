@@ -221,26 +221,44 @@ default_plotkind_1pager <- "bar"  #    Bar = "bar", Box = "box", Ridgeline = "ri
 
 
 ######################################################## #
-### Threshold comparisons options --------------------- ####
-#
-## can be used by inputId 'an_list_pctiles'    #   CHECK IF THESE UNITS SHOULD BE 0-1 OR 0-100 ***
+### Threshold comparisons options ------------------- ####
+# stats summarizing EJ percentiles to count how many are at/above threshold percentile(s)
+
+# label for each group of indicators
+## newer way:
+default.an_threshgroup1 = "EJ-US-or-ST"
+default.an_threshgroup2 = "Supp-US-or-ST"
+### threshgroups = list("EJ-US-or-ST", "Supp-US-or-ST"), # list(c("EJ US", "EJ State", "Suppl EJ US", "Suppl EJ State")), # list("EJ US", "EJ State", "Suppl EJ US", "Suppl EJ State"), # list("variables"),
+### threshgroups = list(input$an_threshgroup1, input$an_threshgroup2),
+## older way:
+# threshgroup.default <- list(
+#   'comp1' = "EJ US pctiles",  'comp2' = "EJ State pctiles"
+# )
+
+# variable names of indicators compared to threshold
+## newer way:
+default.an_threshnames1 = c(names_ej_pctile, names_ej_state_pctile)
+default.an_threshnames2 = c(names_ej_supp_pctile, names_ej_supp_state_pctile)
+### threshnames = list(input$an_threshnames1, input$an_threshnames2)
+### threshnames = list(c(names_ej_pctile, names_ej_state_pctile), c(names_ej_supp_pctile, names_ej_supp_state_pctile)), # list(c(names_ej_pctile, names_ej_state_pctile, names_ej_supp_pctile, names_ej_supp_state_pctile)),  #list(names_ej_pctile, names_ej_state_pctile, names_ej_supp_pctile, names_ej_supp_state_pctile),  # list(names(which(sapply(sitestats, class) != "character")))
+## older way:
+### used defaults built into batch.summarize()
+
+# what threshold to compare to
+## newer way:
+default.an_thresh_comp1 = 90
+default.an_thresh_comp2 = 90
+### thresholds   = list(input$an_thresh_comp1, input$an_thresh_comp2)
+### thresholds   = list(90, 90) # percentile threshold(s) to compare to like to 90th
+## older way:
+# threshold.default <- c('comp1' = 90, 'comp2' = 80)
+
+######################################################## #
+  ## QUANTILES ...  can be used by inputId 'an_list_pctiles'    #   CHECK IF THESE UNITS SHOULD BE 0-1 OR 0-100 ***
 probs.default.selected <- c(   0.25,            0.80,     0.95)   #   CHECK IF THESE UNITS SHOULD BE 0-1 OR 0-100 ***
 probs.default.values   <- c(0, 0.25, 0.5, 0.75, 0.8, 0.9, 0.95, 0.99, 1)  #   CHECK IF THESE UNITS SHOULD BE 0-1 OR 0-100 ***
 probs.default.names <- formatC(probs.default.values, digits = 2, format = 'f', zero.print = '0')
-# a default for threshold in at/above threshold stat summarizing EJ US percentiles
-## used by inputIds 'an_thresh_comp1' and 'an_thresh_comp2'
-threshold.default <- c('comp1' = 90, 'comp2' = 80)    #   CHECK IF THESE UNITS SHOULD BE 0-1 OR 0-100 ***
-# at least threshold.default[1] is used in batch.summarizer() by ejamit() and app_server()
-#
-# which fields to compare to thresholds
-# EJ US pctiles or EJ State pctiles
-## used by inputIds 'an_fields_comp1' and 'an_fields_comp2'
-threshgroup.default <- list(
-  'comp1' = "EJ US pctiles",  'comp2' = "EJ State pctiles"
-)
 
-
-######################################################## #
 
 
 
@@ -526,7 +544,8 @@ html_header_fmt <- tagList(
 
   # WHERE TO FIND THIS template  #
   # browseURL("https://github.com/USEPA/webcms/blob/main/utilities/r/OneEPA_template.R")
-
+  # but also see
+  # https://www.epa.gov/themes/epa_theme/pattern-lab/patterns/pages-standalone-template/pages-standalone-template.rendered.html
   # START OF ONEEPA SHINY APP WEB UI TEMPLATE to insert within your fluid page
   #################################################################################################################### #
 

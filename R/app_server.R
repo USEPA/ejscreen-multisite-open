@@ -1050,20 +1050,20 @@ app_server <- function(input, output, session) {
     if (!(current_upload_method() %in% c('FIPS','SHP'))) {
       if (current_slider_val[[current_upload_method()]] == 0) {
         shinyjs::disable(id = 'bt_get_results')
-        showNotification(id = 'radius_warning', session=session,
-                         duration=NULL,type='warning',closeButton = F,
+        showNotification(id = 'radius_warning', session = session,
+                         duration = NULL, type = 'warning', closeButton = F,
                          'Please use a radius greater than 0 for analyzing points.')
         
-      } else if (current_slider_val[[current_upload_method()]] >0 &
-                 disable_buttons[[current_upload_method()]] == FALSE){
+      } else if (current_slider_val[[current_upload_method()]] > 0 &
+                 disable_buttons[[current_upload_method()]] == FALSE) {
         shinyjs::enable(id = 'bt_get_results')
         removeNotification(id = 'radius_warning', session = session)
       } else {
         removeNotification(id = 'radius_warning', session = session)
       }
-    } else {#else if(disable_buttons[[current_upload_method()]]==FALSE){
+    } else {#else if(disable_buttons[[current_upload_method()]] == FALSE) {
       
-      removeNotification(id='radius_warning', session=session)
+      removeNotification(id = 'radius_warning', session = session)
     }
     
     cat("Enabled/disabled button to get results, and showed/hid data preview based on current_upload_method() ==  ", current_upload_method(), "\n\n")
@@ -1521,10 +1521,10 @@ app_server <- function(input, output, session) {
     m <- try(data_uploaded(),silent = T)
     
     ## if not, show empty map
-    if(inherits(m, 'try-error')){
+    if (inherits(m, 'try-error')) {
       ## only print non-empty error messages
       error_msg <- attr(m,'condition')$message
-      if(error_msg != ""){
+      if (error_msg != "") {
         print(paste0("Error: ", error_msg))
       }
       leaflet() %>% addTiles() %>% setView(lat = 39.8283, lng = -98.5795, zoom = 4)
@@ -1591,20 +1591,23 @@ app_server <- function(input, output, session) {
                     # popmeancols = NULL,
                     # calculatedcols = NULL,
                     subgroups_type = input$subgroups_type,
-                    include_ejindexes   = (input$include_ejindexes == "TRUE"), # it was character not logical because of how input UI done
+                    include_ejindexes   = (input$include_ejindexes == "TRUE" || input$include_ejindexes == TRUE), # it was character not logical because of how input UI done?
                     calculate_ratios = input$calculate_ratios,
                     extra_demog = input$extra_demog,
                     need_proximityscore = FALSE, #input$need_proximityscore, # not relevant for FIPS
                     # infer_sitepoints = FALSE,
                     # need_blockwt = TRUE,
-                    threshold1 = input$an_thresh_comp1, # list(input$an_thresh_comp1) # not sure this is needed or works here
                     # updateProgress = ??? , # not sure this is needed or works here
                     in_shiny = TRUE, # not sure this is needed or works here
                     # quiet = TRUE,
                     # parallel = FALSE,
                     silentinteractive = TRUE,
                     # called_by_ejamit = TRUE, # not sure this is needed or works here
-                    testing = input$testing
+                    testing = input$testing,
+                    
+                    thresholds   = list(input$an_thresh_comp1, input$an_thresh_comp2), # thresholds = list(90, 90),
+                    threshnames  = list(input$an_threshnames1, input$an_threshnames2), # list(c(names_ej_pctile, names_ej_state_pctile), c(names_ej_supp_pctile, names_ej_supp_state_pctile)),
+                    threshgroups = list(input$an_threshgroup1, input$an_threshgroup2) # list("EJ-US-or-ST", "Supp-US-or-ST")
       )
       
       ## note which FIPS dropped by ejamit() (i.e., in getting step or doagg step) as invalid,
@@ -1896,19 +1899,27 @@ app_server <- function(input, output, session) {
       outsum <- EJAMbatch.summarizer::batch.summarize(
         sitestats = data.frame(data_processed()$results_bysite %>%
                                  sf::st_drop_geometry()),
-        popstats =  data.frame(data_processed()$results_bysite %>%
-                                 sf::st_drop_geometry()),
+        
+        # popstats =  data.frame(data_processed()$results_bysite %>%  # batch.summarize no longer needs it passed twice
+        #                          sf::st_drop_geometry()),
         ## user-selected quantiles to use
         #probs = as.numeric(input$an_list_pctiles),
-        threshold = list(input$an_thresh_comp1) # compare variables to 90th %ile or other percentile, like threshold1 param in ejamit()
+        
+        thresholds   = list(input$an_thresh_comp1, input$an_thresh_comp2), # thresholds = list(90, 90),
+        threshnames  = list(input$an_threshnames1, input$an_threshnames2), # list(c(names_ej_pctile, names_ej_state_pctile), c(names_ej_supp_pctile, names_ej_supp_state_pctile)),
+        threshgroups = list(input$an_threshgroup1, input$an_threshgroup2) # list("EJ-US-or-ST", "Supp-US-or-ST")
       )
     } else {
       outsum <- EJAMbatch.summarizer::batch.summarize(
         sitestats = data.frame(data_processed()$results_bysite),
-        popstats =  data.frame(data_processed()$results_bysite),
+        
+        # popstats =  data.frame(data_processed()$results_bysite), # batch.summarize no longer needs it passed
         ## user-selected quantiles to use
         #probs = as.numeric(input$an_list_pctiles),
-        threshold = list(input$an_thresh_comp1) # compare variables to 90th %ile or other percentile, like threshold1 param in ejamit()
+        
+        thresholds   = list(input$an_thresh_comp1, input$an_thresh_comp2), # thresholds = list(90, 90),
+        threshnames  = list(input$an_threshnames1, input$an_threshnames2), # list(c(names_ej_pctile, names_ej_state_pctile), c(names_ej_supp_pctile, names_ej_supp_state_pctile)),
+        threshgroups = list(input$an_threshgroup1, input$an_threshgroup2) # list("EJ-US-or-ST", "Supp-US-or-ST")
       )
     }
     ## update overall progress bar
@@ -2544,7 +2555,10 @@ app_server <- function(input, output, session) {
     friendly_names <- c(friendly_names, ejcols_friendly[which_ejcols_here])
     
     friendly_names <- c(friendly_names,
-                        '# of indicators above 90% threshold', 'State', 'EPA Region')
+                        names(data_summarized()$cols), 
+                        # 'Max of selected indicators',  ###
+                        # '# of indicators above threshold',   # will be made more flexible
+                        'State', 'EPA Region')
     # --------------------------------------------------- #
     
     #
@@ -2586,37 +2600,44 @@ app_server <- function(input, output, session) {
     #   dplyr::select(dplyr::all_of(cols_to_select), ST)
     
     # use data_summarized() that is from EJAMbatch.summarizer::batch.summarize()
+    batch.sum.cols = data_summarized()$cols
+    batch.sum.cols[is.na(batch.sum.cols$pop), ] <- NA
+    
     dt_final <- dt %>%
-      dplyr::bind_cols(data_summarized()$cols) %>%
+      dplyr::bind_cols(batch.sum.cols) %>%
       ## hide summary rows from table
       #dplyr::bind_rows(dt_avg) %>%
       #dplyr::bind_rows(dt_overall) %>%
       ## sort by Site ID - as numeric index
       #dplyr::arrange(ejam_uniq_id) %>%
       #dplyr::arrange(dplyr::desc(pop)) %>%
-      dplyr::mutate(Number.of.variables.at.above.threshold.of.90 = ifelse(is.na(pop), NA,
-                                                                          Number.of.variables.at.above.threshold.of.90)) %>%
+      # dplyr::mutate(
+      #   Number.of.variables.at.above.threshold.of.90 = ifelse(
+      #   is.na(pop), NA, 
+      #   Number.of.variables.at.above.threshold.of.90)) %>%
       dplyr::mutate(pop = ifelse(is.na(pop), NA, pop)) %>% #prettyNum(round(pop), big.mark = ','))) %>%
       dplyr::left_join(stateinfo %>% dplyr::select(ST, statename, REGION), by = 'ST') %>%
       dplyr::mutate(
         REGION = factor(REGION, levels = 1:10),
         statename = factor(statename)
       ) %>%
-      dplyr::select(-ST, -Max.of.variables)
+      dplyr::select(-ST ) # , -Max.of.variables)    # should be made more flexible so column need not be Max.of.variables
     
     colnames(dt_final) <- friendly_names
     
     dt_final <- dt_final %>%
-      dplyr::relocate(c('Invalid Reason',State, 'EPA Region', '# of indicators above 90% threshold'), .before = 2) # *** this cutoff should be dynamic, set by probs.default.values etc./ inputs
+      dplyr::relocate(c('Invalid Reason', State, 'EPA Region'),
+                        # , '# of indicators above threshold'), 
+                      .before = 2) # *** this cutoff should be dynamic, set by probs.default.values etc./ inputs
     
     ## set # of indicators above threshold to NA if population = 0
-    dt_final <- dt_final %>%
-      dplyr::mutate(`# of indicators above 90% threshold` = ifelse(`Est. Population` == 0, 'N/A',
-                                                                   `# of indicators above 90% threshold`))
+    # dt_final <- dt_final %>%
+    #   dplyr::mutate(`# of indicators above threshold` = ifelse(`Est. Population` == 0, 'N/A',
+    #                                                                `# of indicators above threshold`))
     
     ## drop indicator column until corrected
-    dt_final <- dt_final %>%
-      select(-`# of indicators above 90% threshold`)
+    # dt_final <- dt_final %>%
+    #   select(-`# of indicators above threshold`)
     
     n_cols_freeze <- 1
     
@@ -2835,7 +2856,7 @@ app_server <- function(input, output, session) {
         )
         
       } else {
-        progress_xl <-shiny::Progress$new(min = 0, max = 1)
+        progress_xl <- shiny::Progress$new(min = 0, max = 1)
         progress_xl$set(value = 0, message = 'Downloading', detail = 'Starting')
         updateProgress_xl <- function(value = NULL, message_detail=NULL, message_main = 'Preparing') {
           if (is.null(value)) { # - If value is NULL, it will move the progress bar 1/5 of the remaining distance.
