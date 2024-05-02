@@ -40,10 +40,12 @@ reference:
 - title: "Key Functions"
   desc: "The Main High-Level Functions in EJAM"
   contents:
+  - EJAM
   - app_run_EJAM
   - ejamit
   - ejam2report
   - ejam2excel
+  - ejam2map
   - ejam2ratios
   - ejscreenit_for_ejam
 - title: "Specify Points by Lat/Lon"
@@ -225,6 +227,9 @@ reference:
   - popshare_at_top_x_pct
   - popshare_p_lives_at_what_n
   - popshare_p_lives_at_what_pct
+
+  - distance_comparison_ejamit
+  
 - title: "Viewing Results"
 - subtitle: "Maps of Points"
   contents:
@@ -317,23 +322,28 @@ reference:
   - run_app
   - dataload_from_local
   - dataload_from_pins
+  - dataload_from_aws
   - ejampackages
 - title: internal
   contents:
-  - datawrite_to_local
-  - rmost
   - app_server
   - app_ui
+  - rmost
+  - map2browser
   - map_shapes_leaflet_proxy
   - map_facilities
   - map_facilities_proxy
-  - tablefixed
   - quaddata
+  - datawrite_to_local
   - radius_inferred
   - getfrsnearby
   - proxistat2
   - proximity.score.in.miles
+  - formula_varname
+  - custom_doaggregate
+  - custom_ejamit
   - ST_by_site_from_sites2blocks
+  - tablefixed
   - table_validated_ejamit_row
   - table_xls_from_ejam
   - table4gt_from_scorevectors
@@ -347,5 +357,4 @@ reference:
   - url_getacs_epaquery_chunked
   - url_get_eparest_chunked_by_id
   - url_get_via_url
-  - formula_varname
   - create_filename

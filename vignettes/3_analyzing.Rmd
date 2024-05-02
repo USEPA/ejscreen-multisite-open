@@ -6,7 +6,7 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-```{r developernote, eval=FALSE, echo= FALSE, include = FALSE}
+```{r developernote, eval=FALSE, echo=FALSE, include=FALSE}
 #  *>>>>>>>>>> Developer note: vignettes need to be tested/edited/rebuilt regularly <<<<<<<<<<<*
 #    - **See ?pkgdown::build_site** - EJAM uses the pkgdown R package to build help and articles/ vignettes as web pages
 ```
@@ -16,11 +16,11 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-knitr::opts_chunk$set(eval = FALSE)
+knitr::opts_chunk$set(eval = FALSE, warning = FALSE)
 # https://r-pkgs.org/vignettes.html
 ```
 
-```{r libraryEJAM, eval = TRUE, echo= FALSE, include= FALSE}
+```{r libraryEJAM, eval = TRUE, echo=FALSE, include=FALSE}
 # rm(list = ls())
 # golem::detach_all_attached()
 # 
@@ -146,9 +146,13 @@ y <- ejamit(latlon_from_regid(read_csv_or_xl()$REGISTRY_ID), radius = 1)
 
 ### by Facility, using EPA Program System ID
 
-```{r latlon_from_programid, eval = TRUE}
-# note latlon_from_programid() requires access to the frs_by_programid dataset, which it tries to load on demand.
+```{r tryload_frs_by_programid, include=FALSE}
 dataload_from_pins("frs_by_programid")
+```
+
+```{r latlon_from_programid, eval = TRUE}
+# latlon_from_programid() requires access to the frs_by_programid dataset, which it tries to load on demand.
+
 if (exists("frs_by_programid")) {
   latlon_from_programid(c("XJW000012435", "00768SRTRSROAD1"))
 }
@@ -156,10 +160,14 @@ if (exists("frs_by_programid")) {
 
 ### by EPA Regulatory Program
 
+```{r tryload_frs_AND_frs_by_programid, include=FALSE}
+dataload_from_pins("frs_by_programid")
+dataload_from_pins("frs")
+```
+
 ```{r latlon_from_program, eval = TRUE}
 # note latlon_from_programid() requires the frs and frs_by_programid datasets, which it tries to load on demand.
-dataload_from_pins("frs_by_programid")
-if (exists("frs_by_programid")) {
+if (exists("frs_by_programid") && exists("frs")) {
   
   ## Map of over 10,000 facilities in FRS identified as in the E-Grid power plant database
   
@@ -184,9 +192,12 @@ if (exists("frs_by_programid")) {
 
 ### by MACT Subpart (hazardous air pollutant source category)
 
+```{r tryload_frs_by_mact, include=FALSE}
+dataload_from_pins("frs_by_mact")
+```
+
 ```{r latlon_from_mactsubpart, eval = TRUE}
 # note latlon_from_mactsubpart() requires the frs_by_mact dataset, which it tries to load on demand
-dataload_from_pins("frs_by_mact")
 if (exists("frs_by_mact")) {
   
   # Search by name of category
@@ -270,11 +281,11 @@ cat(caption,'\n')
 
 print(
   DT::datatable(
-    mysites,
+    mysites[1:5, ],
     escape = FALSE,     rownames = FALSE,
     caption = caption,
     filter = "top"
-  )[1:10, ]
+  )
 )
 }
 ```
@@ -335,21 +346,24 @@ NROW(frs_from_naics(naics_from_any("chem", children = T)$code))
 
 You can upload polygons in a shapefile, and use EJAM to analyze them. See the Shiny app.
 
-See shapefile_from_any() and shapefile_from_folder() and related functions.
+See shapefile_from_any() and related functions:
 
-```{r}
-# shp1 <- shapefile_from_gdbzip(system.file("testdata/shapes/portland.gdb.zip", package = "EJAM"))
-
+```{r notrun_shapefile_functionlist, eval=FALSE, echo=TRUE}
+# shapefile_from_any()
+# shapefile_from_gdbzip()
+# shapefile_from_gdb()
+# shapefile_from_json()
+# shapefile_from_filepaths()
 # shapefile_from_folder()
 # shapefile_filepaths_from_folder()
 # shapefile_filepaths_valid()
-# shapefile_from_filepaths()
-# shapefile_from_gdbzip()
-# shapefile_from_gdb()
 # shapefile_clean()
 # shapefile_from_sitepoints()
 # shape_buffered_from_shapefile()
 # shape_buffered_from_shapefile_points()
+
+# shp1 <- shapefile_from_gdbzip(system.file("testdata/shapes/portland.gdb.zip", package = "EJAM"))
+
 ```
 
 # FIPS CODES
@@ -359,6 +373,10 @@ See shapefile_from_any() and shapefile_from_folder() and related functions.
 You can compare places defined by FIPS code, such as a group of US Counties.
 
 Compare all Counties in a State, using EJAM indicators
+
+```{r eval=FALSE, echo=FALSE, include=FALSE}
+# NOTE THE EXAMPLES BELOW ARE VERY SLOW TO LOAD/RUN ! 
+```
 
 ```{r counties_fips, eval = FALSE}
 
@@ -407,11 +425,56 @@ mapfastej_counties(xmd$results_bysite, 'state.pctile.pctlowinc')
 
 # EXPLORING RESULTS
 
-## Site by site results in datatable format in RStudio viewer:
+### The most striking findings (e.g., which group is most overrepresented?)
+
+See examples above using ejam2report() but also you can check some key findings like this:
+
+```{r count_sites_with_n_high, eval=TRUE, echo = TRUE}
+x <- testoutput_ejamit_1000pts_1miles 
+out <- x$results_bysite
+out <- setDF(copy(out))
+ratio_benchmarks <- c(1.01, 1.50, 2, 3, 5, 10)
+ratiodata <- out[, names_d_ratio_to_state_avg]
+
+findings <- count_sites_with_n_high_scores(ratiodata, quiet = TRUE)  # long output to console !
+
+tail(findings$text[findings$text != ""], 1) # the most extreme finding!
+
+```
+
+### The key facilities (e.g., which has the max of -- or has multiple elevated -- EJ indexes?)
+
+```{r topsites}
+out2 <- ejamit(
+  sitepoints =  testpoints_100,
+  radius = 3.1
+)
+x <- out2$results_summarized$cols
+x <- x[order(x[,1], decreasing = T), ]
+head(x, 3)
+cat("\n")
+x <- x[order(x[,2], decreasing = T), ]
+head(x, 3)
+```
+
+
+### More summary findings
+
+```{r count_sites_etc_more, eval = TRUE, echo = TRUE}
+dimnames(findings)
+findings$text[2]
+head(findings$stats[ , , 1], 15)
+head(findings$stats[ , 1, ], 21)
+x = findings$stats[ , 1, ] 
+x[x[, "cum_pct"] >= 50 & x[, "cum_pct"] <= 80, ]
+findings$stats[ 1, , ]
+```
+
+## Site by site detailed results in datatable format in RStudio viewer:
 
 ```{r datatable30}
 out2 <- testoutput_ejamit_100pts_1miles
-DT::datatable(out2$results_bysite[1:30,   ], escape = FALSE, rownames = FALSE)
+DT::datatable(out2$results_bysite[1:5,   ], escape = FALSE, rownames = FALSE)
 
 # To see all 1,000 sites in table:
 #DT::datatable(out2$results_bysite[1:1000, ], escape = FALSE, rownames = FALSE)
@@ -430,24 +493,9 @@ cbind(overall = as.list( out2$results_overall[ , ..names_d_subgroups]))
 
 ```{r}
 out2 <- testoutput_ejamit_100pts_1miles
-cbind(as.list(out2$results_overall))
-```
-
-```{r count_sites_with_n_high, eval=TRUE}
-x <- testoutput_ejamit_1000pts_1miles 
-out <- x$results_bysite
-out <- setDF(copy(out))
-ratio_benchmarks <- c(1.01, 1.50, 2, 3, 5, 10)
-ratiodata <- out[, names_d_ratio_to_state_avg]
-
-findings <- count_sites_with_n_high_scores(out)  # long output to console !
-dimnames(findings)
-findings$text[2]
-head(findings$stats[ , , 1], 15)
-head(findings$stats[ , 1, ], 21)
-x = findings$stats[ , 1, ] 
-x[x[, "cum_pct"] >= 50 & x[, "cum_pct"] <= 80, ]
-findings$stats[ 1, , ]
+head(
+  cbind(as.list(out2$results_overall))
+  , 12)
 ```
 
 # DETAILS OF BLOCKS NEAR ONE SITE
@@ -472,7 +520,7 @@ elapsed <- system.time({
   
 }) # end of timed function
 print(elapsed)
-sites2blocks
+head(sites2blocks)
 ```
 
 #### doaggregate() will summarize indicators within each buffer and overall
@@ -498,12 +546,12 @@ dim(out$results_bysite)
 head(cbind(overall = as.list( out$results_overall)))
 
 ## To see just some subset of indicators, like Environmental only:
-cbind(overall = as.list( out$results_overall[ , ..names_e]))
-cbind(overall = as.list( out$results_overall[ , ..names_d]))
-cbind(overall = as.list( out$results_overall[ , ..names_d_subgroups]))
-cbind(overall = as.list( out$results_overall[ , ..names_e_pctile]))
-cbind(overall = as.list( out$results_overall[ , ..names_d_pctile]))
-# cbind(overall = as.list( out$results_overall[ , ..names_ej_pctile]))
+cbind(overall = as.list( out$results_overall[ , ..names_e])); cat("\n")
+cbind(overall = as.list( out$results_overall[ , ..names_d])); cat("\n")
+cbind(overall = as.list( out$results_overall[ , ..names_d_subgroups])); cat("\n")
+cbind(overall = as.list( out$results_overall[ , ..names_e_pctile])); cat("\n")
+cbind(overall = as.list( out$results_overall[ , ..names_d_pctile])); cat("\n")
+# cbind(overall = as.list( out$results_overall[ , ..names_ej_pctile])); cat("\n")
 ```
 
 # VISUALIZATION OF FINDINGS
@@ -522,7 +570,7 @@ abline(h = nrow(out$results_bysite)/10)
 
 ### Mean distance of each group
 
-```{r}
+```{r plot_distance_mean_by_group_1, eval = TRUE}
 # plot_distance_mean_by_group(testoutput_ejamit_1000pts_1miles$results_bybg_people)
 
 # larger radius reveals more information
@@ -532,6 +580,7 @@ plot_distance_mean_by_group(y$results_bybg_people) # or distance_mean_by_group()
 print(distance_by_group(
   y$results_bybg_people, 
   demogvarname = 'pctlowinc', demoglabel = 'Low Income'))
+
 distance_by_group_plot(
   y$results_bybg_people,
   demogvarname = 'pctlowinc', demoglabel = 'Low Income')
@@ -542,6 +591,7 @@ distance_by_group_plot(
 ```{r plotblocksnearby2, eval = FALSE, fig.height=5, fig.width=5}
 x = plotblocksnearby(testpoints_10[1,], radius = 3, returnmap = FALSE)
 #  returnmap= TRUE is to actually return the leaflet map 
+
 # Use weighting="frs" in testpoints_n() to pick a random FRS facility's block
 ```
 
@@ -561,7 +611,7 @@ cat("  ", popshare_at_top_n(out$results_bysite$pop, c(1, 5, 10), astext = TRUE),
 
 ```
 
-```{r getblocksnearby2, eval = TRUE}
+```{r getblocksnearby2, eval = FALSE}
 ## Also could use this example intermediate step dataset 
 ## of n sites, with thousands of nearby blocks:
 # sites2blocks <- data.table::copy(testoutput_getblocksnearby_10pts_1miles)
@@ -589,7 +639,7 @@ head(s2b_stats)
 
 ```
 
-```{r plot_count_of_blocks_nearby, eval=TRUE, fig.height=6, fig.width=5}
+```{r plot_count_of_blocks_nearby, eval=FALSE, fig.height=5, fig.width=6}
 
 # CDF of how many blocks are nearby a site
 plot(sort(s2b_stats$blocks_within_1mile), 
@@ -602,7 +652,7 @@ abline(h = mean(s2b_stats$blocks_within_1mile), col = "red")
 
 ```
 
-```{r histoblocks, eval=TRUE, fig.height=6, fig.width=7}
+```{r histoblocks, eval = FALSE, fig.height=6, fig.width=7}
 # Histogram of how many blocks are nearby a site
 hist(sites2blocks[,.N, by = "ejam_uniq_id"][, N], 20, 
      xlab = "How many blocks are nearby?", 
@@ -619,14 +669,14 @@ quantile(s2b_stats$blocks_within_1mile, probs = (0:4) * 0.25)
 t(summary(s2b_stats))
 ```
 
-```{r s2b_stats, eval = TRUE, fig.height=5, fig.width=5}
+```{r s2b_stats, eval = FALSE, fig.height=5, fig.width=5}
 # map the sites with popups about how many blocks were found near each
 if (!('ejam_uniq_id' %in% names(sitepoints))) {sitepoints$ejam_uniq_id <- seq.int(length.out = NROW(sitepoints))}
 s2b_stats <- merge(sitepoints, s2b_stats, by = "ejam_uniq_id")
 mapfast(s2b_stats, radius = radius)
 ```
 
-```{r eval = TRUE, fig.height=5, fig.width=5}
+```{r s2b_stats_more, eval = FALSE, fig.height=5, fig.width=5}
 
 # Some places have very few -- if any -- blocks within 1 mile
 
@@ -643,7 +693,7 @@ densest <- s2b_stats$ejam_uniq_id[order(
 plotblocksnearby(sitepoints = sitepoints[sitepoints$ejam_uniq_id == densest, ])
 ```
 
-```{r eval = TRUE}
+```{r eval = FALSE}
 # Within a 1 mile radius, the blocks found tend to be about 2/3 of a mile from the site at the center.
 summary(s2b_stats$avgDistance)
 ```
