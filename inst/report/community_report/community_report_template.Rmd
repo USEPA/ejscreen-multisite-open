@@ -15,6 +15,8 @@ params:
   summary_plot: NA
 ---
 
+
+
 ```{r, echo=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 ```
@@ -42,3 +44,14 @@ params$map
 
  params$summary_plot
 ```
+
+
+
+```{r}
+current_date <- format(Sys.Date(), "%B %d, %Y")
+
+HTML('<div style="background-color: #edeff0; color: black; width: 100%; padding: 10px 20px; text-align: right; margin: 10px 0;">
+                   <p style="margin-bottom: 0;">Version 2.2 | Report created on ', current_date, '</p>
+                 </div>')
+```
+

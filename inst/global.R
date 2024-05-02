@@ -273,14 +273,9 @@ probs.default.names <- formatC(probs.default.values, digits = 2, format = 'f', z
 ### info text for "About EJAM" tab ####
 intro_text <- tagList(
   # tags$p("For more information about EJAM:"),
-  br(),
-  br(),
   h2( a(href = "https://usepa.github.io/EJAM/articles/0_whatis.html", "What is EJAM?", target = '_blank', rel = 'noreferrer noopener') ),
-  br(),
-  br(),
-  h2( a(href = "https://usepa.github.io/EJAM/index.html", "EJAM software tools for programmers or analysts using R", target = '_blank', rel = 'noreferrer noopener')),
-  br(),
-  br(),
+  p("EJAM is a tool developed by the United States Environmental Protection Agency (US EPA) that makes it easy to see demographic and environmental information summarized in and across any list of places in the nation. Using EJAM is like running an EJScreen report, but for hundreds or thousands of places, all at the same time."),
+  p("This provides interactive results and a formatted, ready-to-share report with written explanations of the results, tables, and graphics. The report can provide EJ-related information about people who live in communities near any of the industrial facilities on a list, for example."),
   br(),
   br()
 )
