@@ -105,8 +105,7 @@ app_ui  <- function(request) {
           title = 'Site Selection',
           #h3('Welcome to EJAM'),
           div(
-            'EJAM lets you explore the demographics and environmental conditions in any list of places, such as for anyone who lives within 1 mile of a certain type of EPA-regulated site. You can learn more about EJAM at the ',
-            actionLink('link_to_about_page', label = 'About EJAM page.'),
+            'EJAM lets you explore the demographics and environmental conditions in any list of places, such as for anyone who lives within 1 mile of a certain type of EPA-regulated site.',
             class = "about-EJAM-span"
           ),
           hr(), ## horizontal line
@@ -487,10 +486,6 @@ app_ui  <- function(request) {
                  ##br(),
                  ##actionButton('back_to_site_sel', label = div(icon('play', style = 'transform: rotate(180deg);'),
                                                               ## HTML('&nbsp;'), 'Return to Site Selection'), class = 'usa-button'),
-                 br(),
-
-                 h4('Overall Results'),
-                 helpText('The results of your analysis can be viewed in 3 forms: a summary report, interactive details, or a full written report.'),
                  # . ### #
                  ## tabsetPanel(id = 'results_tabs'  ####
                  #tags$div( class = 'results_tabs_theme',
@@ -525,6 +520,13 @@ app_ui  <- function(request) {
                                    shinycssloaders::withSpinner(
                                      plotOutput(outputId = 'view1_summary_plot', width = '100%', height = '400px')  # {{ demog_plot }} goes in .html template
                                    )
+                                 )
+                               ),
+                               div(
+                                 style = "background-color: #edeff0; color: black; width: 100%; padding: 10px 20px; text-align: right; margin: 10px 0;",
+                                 p( style = "margin-bottom: 0",
+                                   "Version 2.2 | Report created on ", 
+                                    format(Sys.Date(), '%B %d, %Y'),
                                  )
                                ),
                                br(),

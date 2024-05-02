@@ -99,7 +99,7 @@ fill_tbl_full <- function(output_df) {
   
   full_html <- ''
   
-  tbl_head <- '<table id=\"data-indicators-table\"        class=\"color-alt-table\"  summary=\"EJScreen environmental and socioeconomic indicators data\">
+  tbl_head <- '<table id=\"data-indicators-table\" class=\"color-alt-table\" style=\"margin-top: 0;\"  summary=\"EJScreen environmental and socioeconomic indicators data\">
   <thead id=\"data-indicators-table-header\" class=\"color-alt-table-header\">
   <tr>
   <th id=\"data-indicators-table-selected-variables\" scope=\"col\">SELECTED VARIABLES</th>
@@ -449,7 +449,7 @@ generate_html_header <- function(analysis_title, totalpop, locationstr, in_shiny
 #' @keywords internal
 #'
 generate_demog_header <- function() {
-  '<div class=\"header\" id=\"page-3-header\"> <h2 tabindex=\"12\">Environmental and Socioeconomic Indicators Data</h2></div>'
+  '<h3 tabindex=\"12\">Environmental and Socioeconomic Indicators Data</h3>'
 }
 ################################################################### #
 
