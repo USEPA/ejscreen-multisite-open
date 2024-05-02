@@ -1128,7 +1128,7 @@ app_server <- function(input, output, session) {
       
       
       msg <- HTML(paste0(
-        "<span style='border: 1px solid #005ea2; padding: 10px;'>Total shape(s) uploaded: <strong>",
+        "<span style='display: block; white-space: nowrap; border: 1px solid #005ea2; padding: 10px;'>Total shape(s) uploaded: <strong>",
         prettyNum(num_na + num_notna, big.mark = ","),"</strong></span>"
       ))
       an_map_text_shp(msg)
@@ -1148,7 +1148,7 @@ app_server <- function(input, output, session) {
       num_locs <- NROW(data_uploaded())
       
       msg <- HTML(paste0(
-        "<span style='border: 1px solid #005ea2; padding: 10px;'>Total location(s) uploaded by FIPS: <strong>",
+        "<span style='display: block; white-space: nowrap; border: 1px solid #005ea2; padding: 10px;'>Total location(s) uploaded by FIPS: <strong>",
         prettyNum(num_locs, big.mark = ","),"</strong></span>"
       ))
       an_map_text_fips(msg)
@@ -1196,7 +1196,7 @@ app_server <- function(input, output, session) {
       }
       
       msg <- HTML(paste0(
-        "<span style='border: 1px solid #005ea2; padding: 10px;'>Total location(s) uploaded: <strong>", prettyNum(num_na + num_notna, big.mark = ","),"</strong></span>"
+        "<span style='display: block; white-space: nowrap; border: 1px solid #005ea2; padding: 10px;'>Total location(s) uploaded: <strong>", prettyNum(num_na + num_notna, big.mark = ","),"</strong></span>"
         #"<br>","Site(s) with invalid lat/lon values: <strong>", prettyNum(num_na, big.mark = ","), "</strong>","</span>"
       ))
       an_map_text_pts[[current_upload_method()]] <- msg

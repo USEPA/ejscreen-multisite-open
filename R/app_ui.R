@@ -105,7 +105,7 @@ app_ui  <- function(request) {
           title = 'Site Selection',
           #h3('Welcome to EJAM'),
           div(
-            'EJAM lets you explore the demographics and environmental conditions in any list of places, such as for anyone who lives within 1 mile of a certain type of EPA-regulated site.',
+            p('EJAM lets you explore the demographics and environmental conditions in any list of places, such as for anyone who lives within 1 mile of a certain type of EPA-regulated site.'),
             class = "about-EJAM-span"
           ),
           hr(), ## horizontal line
@@ -116,7 +116,7 @@ app_ui  <- function(request) {
             ## upload-methods column ####
             column(
               4,  # through about line 359
-              h4('Specify Locations to Analyze'),
+              h3('Specify Locations to Analyze', style="margin-bottom: .5em;"),
 
               ## input: use CATEGORIES of sites, or upload LOCATIONS ? ####
               div(style = 'border: 1px solid #005ea2; padding: 10px;',
@@ -398,21 +398,21 @@ app_ui  <- function(request) {
             column(8,
                    uiOutput('invalid_sites_alert2'),
                    ## TABLE of uploaded points in Modal window via Button  ####
-                   fluidRow(
-                     column(4,
-                            h4('Selected Location Map'), #, # xxx
+                   div(
+                     style="display: flex; flex-direction: column; margin-bottom: .5em;",
+                       h3('Selected Location Map'),
+                     div (
+                       style="flex: 1; display: flex; align-items: center; flex-flow: row wrap; margin: .5em",
+                       div(
+                         htmlOutput(outputId = 'an_map_text')
+                       ),
+                       div(
+                         actionButton('show_data_preview', label = 'Review selected sites',
+                                      style="margin: .5em;",
+                                      class = 'usa-button usa-button--outline')
+                       )
                      ),
-                     column(4,
-                            htmlOutput(outputId = 'an_map_text'),
-                     ),
-                     column(4,
-                            ## add button and modal to show uploaded data interactively
-                            actionButton('show_data_preview', label = 'Review selected sites',
-                                         class = 'usa-button usa-button--outline'),
-                            
-                            
-                            
-                     )
+                    
                    ), # end view data uploads
 
                    ## MAP of uploaded points ####
