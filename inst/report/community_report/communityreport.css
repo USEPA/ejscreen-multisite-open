@@ -49,7 +49,7 @@
   }
   
   #header-primary-background { 
-  background-color: #0e98d7;
+  background-color: #005ea2;
   width: 100%;
   height: fit-content;
   display: inline-block;
@@ -101,7 +101,7 @@ width: 4em;
     position: relative;
     width: 100%;
     font-weight: bold;
-    background-color: #0e98d7;
+    background-color: #005ea2;
     color: white; 
     height: auto;
     display: flex;
@@ -411,7 +411,7 @@ border-radius: 0 0 50px 0;
 }
 
 #header-primary-background { 
-background-color: #0e98d7;
+background-color: #005ea2;
   width: 1060px;
 height: 220px;
 display: inline-block;
