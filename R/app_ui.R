@@ -116,7 +116,7 @@ app_ui  <- function(request) {
             ## upload-methods column ####
             column(
               4,  # through about line 359
-              h3('Specify Locations to Analyze', style="margin-bottom: .5em;"),
+              h3('Specify Locations to Analyze'),
 
               ## input: use CATEGORIES of sites, or upload LOCATIONS ? ####
               div(style = 'border: 1px solid #005ea2; padding: 10px;',
@@ -402,14 +402,12 @@ app_ui  <- function(request) {
                      style = "display: flex; flex-direction: column; margin-bottom: .5em;",
                      h3('Selected Location Map'),
                      div(
-                       style = "flex: 1; display: flex; flex-wrap: wrap; gap: 1em; margin-top: .5em; margin-bottom: .5em;",
+                       style = "flex: 1; display: flex; flex-wrap: wrap; gap: 1em;",
                        div(
                          htmlOutput(outputId = 'an_map_text'),
-                         style = "margin-bottom: .5em;"
                        ),
                        div(
                          actionButton('show_data_preview', label = 'Review selected sites',
-                                      style = "margin-bottom: .5em;",
                                       class = 'usa-button usa-button--outline')
                        )
                      ),
