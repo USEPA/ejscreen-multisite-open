@@ -963,7 +963,7 @@ html_footer_fmt <- tagList(
           </div>
         </div>
       </footer>
-      <a href="#" class="back-to-top" title="">
+      <a href="#" class="back-to-top" title="" aria-label="back-to-top">
         <svg class="back-to-top__icon" role="img" aria-label="">
         <svg class="back-to-top__icon" role="img" aria-label="" viewBox="0 0 19 12" id="arrow" xmlns="http://www.w3.org/2000/svg">
           <!-- use xlink:href="https://www.epa.gov/themes/epa_theme/images/sprite.artifact.svg#arrow"></use -->
