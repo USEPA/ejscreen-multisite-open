@@ -143,6 +143,6 @@ count_sites_with_n_high_scores <- function(scores, thresholds = c(1.01, 2, 5, 10
         }
     }
   }
-  if (!quiet) {print(findings$text[findings$text != ""])}
+  if (!quiet) {print(textout[textout != ""])}
   return(list(stats = sitestats, text = textout))
 }
