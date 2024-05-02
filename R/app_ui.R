@@ -459,10 +459,11 @@ app_ui  <- function(request) {
                             shiny::uiOutput("analysis_title_ui"),
 
                             ## input: START Button     ####
-                            shiny::actionButton(inputId = 'bt_get_results',
-                                                label = div('Start Analysis', HTML('&nbsp;'), icon('play')), class = 'usa-button'
-                                                ## extra formatting - optional
-                                                # style = 'color: #fff; background-color: #005ea2; height: 50px; width: 100px; border-radius: 5%;')
+                            shiny::actionButton(
+                              inputId = 'bt_get_results',
+                              label = div('Start Analysis', HTML('&nbsp; <i class="fas fa-play" aria-hidden="true"></i>')),
+                              class = 'usa-button',
+                              role = 'button'  
                             )
                      ),
                    ) # end fluidRow with radius slide and analysis title and start button
