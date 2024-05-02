@@ -399,20 +399,20 @@ app_ui  <- function(request) {
                    uiOutput('invalid_sites_alert2'),
                    ## TABLE of uploaded points in Modal window via Button  ####
                    div(
-                     style="display: flex; flex-direction: column; margin-bottom: .5em;",
-                       h3('Selected Location Map'),
-                     div (
-                       style="flex: 1; display: flex; align-items: center; flex-flow: row wrap; margin: .5em",
+                     style = "display: flex; flex-direction: column; margin-bottom: .5em;",
+                     h3('Selected Location Map'),
+                     div(
+                       style = "flex: 1; display: flex; flex-wrap: wrap; gap: 1em; margin-top: .5em; margin-bottom: .5em;",
                        div(
-                         htmlOutput(outputId = 'an_map_text')
+                         htmlOutput(outputId = 'an_map_text'),
+                         style = "margin-bottom: .5em;"
                        ),
                        div(
                          actionButton('show_data_preview', label = 'Review selected sites',
-                                      style="margin: .5em;",
+                                      style = "margin-bottom: .5em;",
                                       class = 'usa-button usa-button--outline')
                        )
                      ),
-                    
                    ), # end view data uploads
 
                    ## MAP of uploaded points ####
