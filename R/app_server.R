@@ -1383,10 +1383,11 @@ app_server <- function(input, output, session) {
   
   output$radius_label <- renderUI({
     val <- input$bt_rad_buff
-    lab <- paste0('<b>Distance from Site: <br/>', val, ' miles ','(',round(val / 0.62137119, 2), ' km)</b>')
+    lab <- paste0('<label for="bt_rad_buff"><b>Distance from Site:</b> <br/>', val, ' miles ','(',round(val / 0.62137119, 2), ' km)</label>')
     
     HTML(lab)
   })
+  
   ###################################################################################### #
   
   # *MAP of uploaded/selected places ####
