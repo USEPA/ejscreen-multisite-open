@@ -1,8 +1,9 @@
 ---
-title: "5. Using the EJScreen API via EJAM"
+title: "Using the EJScreen API via EJAM"
+description: "5. Using the EJScreen API via EJAM"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{5. Using the EJScreen API via EJAM}
+  %\VignetteIndexEntry{Using the EJScreen API via EJAM}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

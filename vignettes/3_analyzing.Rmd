@@ -1,11 +1,13 @@
 ---
-title: "3. Basics of Using EJAM for Analysis in RStudio"
+title: "Basics of Using EJAM for Analysis in RStudio"
+description: "3. Basics of Using EJAM for Analysis in RStudio"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{3. Basics of Using EJAM for Analysis in RStudio}
+  %\VignetteIndexEntry{Basics of Using EJAM for Analysis in RStudio}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
 ```{r developernote, eval=FALSE, echo=FALSE, include=FALSE}
 #  *>>>>>>>>>> Developer note: vignettes need to be tested/edited/rebuilt regularly <<<<<<<<<<<*
 #    - **See ?pkgdown::build_site** - EJAM uses the pkgdown R package to build help and articles/ vignettes as web pages
@@ -55,32 +57,32 @@ indexblocks()
 
 # Key Functions
 
--   **run_app()** to launch the web app locally (to run in RStudio on a single computer rather than on a server)
+-   **`run_app()`** to launch the web app locally (to run in RStudio on a single computer rather than on a server)
 
--   **ejamit()** provides most results in just one function, and they can be viewed using ejam2report() and ejam2excel(). Sample input to ejamit() is in testpoints_10 and sample output is in testoutput_ejamit_10pts_1miles. ejamit() especially relies on getblocksnearby() and doaggregate():
+-   **`ejamit()`** provides most results in just one function, and they can be viewed using `ejam2report()` and `ejam2excel()`. Sample input to `ejamit()` is in `testpoints_10` and sample output is in `testoutput_ejamit_10pts_1miles`. `ejamit()` especially relies on `getblocksnearby()` and `doaggregate()`:
 
--   getblocksnearby() takes a set of points (e.g., facilities) and finds the Census blocks near each. Sample input is in testpoints_100, and sample output is in testoutput_getblocksnearby_10pts_1miles
+-   `getblocksnearby()` takes a set of points (e.g., facilities) and finds the Census blocks near each. Sample input is in `testpoints_100`, and sample output is in `testoutput_getblocksnearby_10pts_1miles`
 
--   doaggregate() takes the list of blocks near each point, joins it to blockgroup indicators like from EJScreen, and aggregates at each buffered point as well as for the overall set of unique blocks (residents). Sample input is in testoutput_getblocksnearby_10pts_1miles and sample output is in testoutput_doaggregate_10pts_1miles
+-   `doaggregate()` takes the list of blocks near each point, joins it to blockgroup indicators like from EJScreen, and aggregates at each buffered point as well as for the overall set of unique blocks (residents). Sample input is in `testoutput_getblocksnearby_10pts_1miles` and sample output is in `testoutput_doaggregate_10pts_1miles`
 
 # Key groups of functions
 
 The EJAM package reference manual has a complete list of documented functions, grouped by category. There are several categories of functions listed there:
 
--   The overall functions ejamit(), ejam2report(), ejam2excel()
+-   Key Functions `ejamit()`, `ejam2report()`, `ejam2excel()`, `ejam2map()`, `ejam2ratios()`
 -   Specify Points by Lat/Lon
 -   Specify Facilities by ID
 -   Specify Facility Type
 -   Specify Places by Shapefile
 -   Specify Counties, etc./FIPS tools
--   Blocks, Distances, Residents - e.g., getblocksnearby()
+-   Blocks, Distances, Residents - e.g., `getblocksnearby()`
 -   Calculating and Aggregating
--   Viewing Results
--   Test Data
+-   Viewing Results (using the overall functions above)
+-   Test Data (if EJAM is installed, try `browseURL(system.file("testdata", package = "EJAM"))`)
 -   Utilities for finding URL or API info
 -   etc.
 
-Also see data("EJAM") and see ?dataload_from_pins() and usastats, statestats
+Also see `data("EJAM")` and see ?`dataload_from_pins()` and `usastats`, `statestats`
 
 # POINTS & NEARBY RESIDENTS
 
@@ -107,7 +109,7 @@ To analyze points and the circular areas around each one, you can specify the po
 
 You can define locations as all residents within X miles of any one or more of the specified points, and you can define those points in a few ways. One way is to upload a table of coordinates -- latitude and longitude for each point, one row per site, with columns called lat and lon (or some synonyms that work).
 
-The simplest way to do that in the RStudio console is to do something like `x <- ejamit(radius=1)`, and it prompts you to upload a spreadsheet with lat lon columns.
+The simplest way to do that in the RStudio console is something like `x <- ejamit()`, which prompts you to upload a spreadsheet with lat lon columns, and asks you for the radius.
 
 You can also specify a set of facilities by uploading their Registry ID numbers in a table, or using other identifiers. For example, there is a function `latlon_from_programid()` in the examples below.
 
@@ -349,20 +351,20 @@ You can upload polygons in a shapefile, and use EJAM to analyze them. See the Sh
 See shapefile_from_any() and related functions:
 
 ```{r notrun_shapefile_functionlist, eval=FALSE, echo=TRUE}
-# shapefile_from_any()
-# shapefile_from_gdbzip()
-# shapefile_from_gdb()
-# shapefile_from_json()
-# shapefile_from_filepaths()
-# shapefile_from_folder()
-# shapefile_filepaths_from_folder()
-# shapefile_filepaths_valid()
-# shapefile_clean()
-# shapefile_from_sitepoints()
-# shape_buffered_from_shapefile()
-# shape_buffered_from_shapefile_points()
+shapefile_from_any()
+shapefile_from_gdbzip()
+shapefile_from_gdb()
+shapefile_from_json()
+shapefile_from_filepaths()
+shapefile_from_folder()
+shapefile_filepaths_from_folder()
+shapefile_filepaths_valid()
+shapefile_clean()
+shapefile_from_sitepoints()
+shape_buffered_from_shapefile()
+shape_buffered_from_shapefile_points()
 
-# shp1 <- shapefile_from_gdbzip(system.file("testdata/shapes/portland.gdb.zip", package = "EJAM"))
+shp1 <- shapefile_from_gdbzip(system.file("testdata/shapes/portland.gdb.zip", package = "EJAM"))
 
 ```
 
@@ -456,7 +458,6 @@ cat("\n")
 x <- x[order(x[,2], decreasing = T), ]
 head(x, 3)
 ```
-
 
 ### More summary findings
 

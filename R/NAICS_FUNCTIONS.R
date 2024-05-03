@@ -175,22 +175,24 @@ naics_validation <- function(naics_enter, naics_select) {
 #'
 #' Used by naics_find()
 #' @details
-#' start with shortest (highest level) codes. since tied for nchar, these branches have zero overlap, so do each.
-#' for each of those, get its children = all rows where parentcode == substr(allcodes, 1, nchar(parentcode))
-#' put together list of all codes we want to include so far.
-#' now for the next longest set of codes in original list of codes,
-#' do same thing.
-#' etc. until did it for 5 digit ones to get 6digit children.
-#' take the unique(allthat)
-#' table(nchar(as.character(NAICS)))
-#'    2    3    4    5    6
-#'   17   99  311  709 1057
-#'
+#' - Starts with shortest (highest level) codes. Since tied for nchar, these branches have zero overlap, so do each.
+#' - For each of those, get its `children = all` rows where `parentcode == substr(allcodes, 1, nchar(parentcode))`
+#' - Put together list of all codes we want to include so far.
+#' - For the next longest set of codes in original list of codes, do same thing.
+#' - continue until done for 5-digit ones to get 6-digit children.
+#' - Take the `unique(allthat)`
+#' 
+#' `table(nchar(as.character(NAICS)))`
+#' 
+#' `   2    3    4    5    6`
+#' 
+#' `  17   99  311  709 1057`
+#' 
 #' @param codes vector of numerical or character
 #' @param allcodes Optional (already loaded with package) - dataset with all the codes
 #' @param quiet whether to avoid printing results to console
 #' @return vector of codes and their names
-#' @seealso naics_find() NAICS
+#' @seealso [naics_find()] [NAICS]
 #' @examples
 #'   naics2children(211)
 #'   naics_find(211, exactnumber=TRUE)

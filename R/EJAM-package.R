@@ -28,7 +28,7 @@
 #' a complete reference document on all functions, and
 #' articles (vignettes) introducing key functions and how to use them.
 #'
-#' @details  # **Data Sources for Demographic and Environmental Indicators** ** ##### THIS should be add to pkgdown site/ VIGNETTES ###################
+#' @details  # **Data Sources for Demographic and Environmental Indicators** ***this will be moved/added to a vignette ###################
 #' 
 #'   For documentation on the sources, definitions, and vintage of the
 #'   demographic and environmental data and indicators used by
@@ -43,13 +43,13 @@
 #'   
 #'   The American Community Survey 5-year summary file data are updated by
 #'   the United States Census Bureau annually, after which EJScreen and EJAM are updated.
-#'   - The early 2024 versions of EJAM and EJScreen 2.2 would use ACS 2017-2021.
-#'   - Starting around Summer 2024, EJAM and EJScreen would use ACS 2018-2022.
+#'   
+#'   - The mid 2024 releases are called version 2.3 (EJAM/EJScreen) and use ACS 2018-2022.
 #'   
 #'   
 #'   
 #'   
-#' @details  # **Key Functions:** ########################  MUCH OF THIS IS IN VIGNETTES, SO CONSOLIDATE ############################################
+#' @details  # **Key Functions:** ***much of this is in vignettes and will be merged ############################################
 #'
 #'   - **[run_app()]** Launch the web app (R Shiny interface)
 #'

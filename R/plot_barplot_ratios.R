@@ -8,7 +8,34 @@
 #'   but could be c(names_d_ratio_to_state_avg , names_d_subgroups_ratio_to_state_avg)
 #' @param main title of plot - must change to note it vs. State if not comparing to US avg.
 #' @param ... passed to [plot_barplot_ratios()]
-#' @examples plot_barplot_ratios_ez(testoutput_ejamit_100pts_1miles)
+#' @examples 
+#' 
+#' # Check a long list of indicators for any that are elevated
+#' 
+#' plot_barplot_ratios_ez(testoutput_ejamit_100pts_1miles,
+#'   varnames = names_these_ratio_to_avg,
+#'   main = "Envt & Demog Indicators at Selected Sites Compared to State Averages")
+#'   
+#' plot_barplot_ratios_ez(testoutput_ejamit_100pts_1miles,
+#'   varnames = names_these_ratio_to_state_avg,
+#'   main = "Envt & Demog Indicators at Selected Sites Compared to State Averages")
+#' 
+#' # Demographics only
+#' 
+#' # vs nationwide avg
+#' plot_barplot_ratios_ez(testoutput_ejamit_100pts_1miles)
+#' 
+#' # vs statewide avg
+#' plot_barplot_ratios_ez(testoutput_ejamit_1000pts_1miles, 
+#'   varnames = c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg),
+#'   main = "Demographics at Selected Sites Compared to State Averages")
+#' 
+#' # Environmental only
+#' 
+#' plot_barplot_ratios_ez(testoutput_ejamit_100pts_1miles,
+#'   varnames = c(names_e_ratio_to_avg, names_e_ratio_to_state_avg),
+#'   main = "Environmental Indicators at Selected Sites Compared to Averages")
+#'   
 #' @return ggplot
 #'
 #' @export
@@ -66,6 +93,9 @@ plot_barplot_ratios_ez = function(out, varnames = c(names_d_ratio_to_avg , names
 #' @param mycolorsavailable leave as default
 #' @param main title for plot, like "Demographics at the Analyzed Locations Compared to US Overall"
 #' @examples
+#'   
+#'   plot_barplot_ratios_ez(testoutput_ejamit_100pts_1miles)
+#'   
 #'   plot_barplot_ratios(unlist(testoutput_ejamit_1000pts_1miles$results_overall[ , c(..names_d_ratio_to_avg , ..names_d_subgroups_ratio_to_avg) ]))
 #'
 #' @seealso [table_xls_format()] [plot_barplot_ratios]

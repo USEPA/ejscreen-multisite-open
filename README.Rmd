@@ -49,7 +49,7 @@ EJAM makes it easy to see demographic and environmental information summarized i
 
 [The EJAM R Package for Analysts and Developers] written in the R programming language, with source code on GitHub. When used in RStudio, the EJAM package provides functions to help analysts work with block group data, points, and polygons, to very quickly aggregate and compare large numbers of locations. Note that EJAM also can be used as a web app by R/RStudio users if the package is installed and the shiny app is launched locally on a user's own computer.
 
-EJScreen will be able to leverage EJAM's technology to provide public access to batches of reports. EJAM itself is not an app running on a public website. A user-friendly web app will be made available to the public in the future, either as part of EJScreen (based on EJAM code) or as a separate EJAM app. A web app was being tested for internal use at EPA as of early 2024.
+EJScreen will be able to leverage EJAM's technology to provide public access to batches of reports. EJAM itself is not an app running on a public website. A user-friendly interface will be made available to the public in the future, as part of EJScreen (based on EJAM code). EJAM was being tested for internal use at EPA as of early 2024.
 
 EJAM is provided by the US Environmental Protection Agency (US EPA), and is being actively developed so that new versions will continue to be tested and released over time.
 
