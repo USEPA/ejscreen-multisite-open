@@ -2411,14 +2411,15 @@ app_server <- function(input, output, session) {
   
   ## Community report download ##
   output$community_download <- downloadHandler(
-    filename =
+    filename = function(){
       create_filename(file_desc = 'community report',
                       title = input$analysis_title,
                       buffer_dist = current_slider_val[[submitted_upload_method()]],
                       site_method = submitted_upload_method(),
                       with_datetime = TRUE,
                       ext = ifelse(input$format1pager == 'pdf', '.pdf','.html')
-      ),
+                      
+      )},
     content = function(file) {
       # Copy the report file to a temporary directory before processing it, in
       # case we don't have write permissions to the current working dir (which
