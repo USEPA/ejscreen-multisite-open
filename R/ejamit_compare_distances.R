@@ -14,8 +14,8 @@
 #'   radii <- c(1, 10)
 #'   pts <- testpoints_100
 #'   pts <- testpoints_10
-#'   x <- distance_comparison_ejamit(pts, radii = radii)
-#'   EJAM:::distance_comparison_ejamit2plot(x)
+#'   x <- ejamit_compare_distances(pts, radii = radii)
+#'   EJAM:::ejamit_compare_distances(x)
 #'   
 #' @seealso [plot_distance_by_pctd()], [distance_by_group()] and several other related functions
 #' @return data.table like ejamit()$results_overall but with one row
@@ -23,8 +23,10 @@
 #'   
 #' @export
 #'
-distance_comparison_ejamit <- function(sitepoints, radii = c(1,2,3), quiet = TRUE, silentinteractive = TRUE, plot = TRUE, ...) {
-  
+ejamit_compare_distances <- function(sitepoints, radii = c(1,2,3), quiet = TRUE, silentinteractive = TRUE, plot = TRUE, ...) {
+
+  # ejamit_compare_distances  could be a good name like jamit_compare_groups_of_places
+    
   z = list()
   for (i in seq_along(radii)) {
     z[[i]] <- EJAM::ejamit(sitepoints = sitepoints, radius = radii[i], quiet = quiet, silentinteractive = silentinteractive, ...)$results_overall
