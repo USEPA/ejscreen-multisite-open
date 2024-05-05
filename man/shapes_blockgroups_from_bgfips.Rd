@@ -36,3 +36,6 @@ Get blockgroups boundaries, via API, to map them
 This is useful mostly for small numbers of blockgroups.
 The EJScreen map services provide other ways to map blockgroups and see EJScreen data.
 }
+\seealso{
+\code{\link[=mapfast]{mapfast()}}
+}

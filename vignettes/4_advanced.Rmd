@@ -1,8 +1,9 @@
 ---
-title: "4. Advanced Features"
+title: "Advanced Features"
+description: "4. Advanced Features"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{4. Advanced Features}
+  %\VignetteIndexEntry{Advanced Features}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -52,3 +53,19 @@ knitr::opts_chunk$set(eval = FALSE)
 
 
 # Note: This article is not yet available.
+
+## Test data / Examples of Inputs and Outputs of Various Functions
+
+```{r, eval=FALSE, echo=TRUE}
+
+# This provides a useful list of test/sample data objects in key packages:
+
+x <- EJAM:::datapack(simple = FALSE); cat("\n\n") 
+x <- x[order(x$Package, x$Item), ] 
+x[grepl("^testp", x$Item), ]  ; cat("\n\n")
+x[grepl("^test_", x$Item), ]  ; cat("\n\n") 
+x[grepl("^testout", x$Item), ]  ; cat("\n\n") 
+x[grepl("^test[^op_]", x$Item), ]
+```
+
+

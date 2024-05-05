@@ -43,8 +43,11 @@ app_ui  <- function(request) {
       html_header_fmt,
 
       ### title (for app and browser tab) ####
-      titlePanel(title = "EJAM (Environmental Justice Analysis Multi-site) Tool",
-                 windowTitle = "EJAM (Environmental Justice Analysis Multi-site) Tool"
+      div(class = "title-panel",
+          titlePanel(
+            title = "EJAM (Environmental Justice Analysis Multi-site) Tool",
+            windowTitle = "EJAM (Environmental Justice Analysis Multi-site) Tool"
+          )
       ),
 
       # ***outline of tabs*** ####
@@ -100,10 +103,11 @@ app_ui  <- function(request) {
 
         tabPanel(
           title = 'Site Selection',
-          br(),
           #h3('Welcome to EJAM'),
-          span('EJAM lets you explore the demographics and environmental conditions in any list of places, such as for anyone who lives within 1 mile of a certain type of EPA-regulated site. You can learn more about EJAM at the ',
-               actionLink('link_to_about_page', label = 'About EJAM page.')),
+          div(
+            'EJAM lets you explore the demographics and environmental conditions in any list of places, such as for anyone who lives within 1 mile of a certain type of EPA-regulated site.',
+            class = "about-EJAM-span"
+          ),
           hr(), ## horizontal line
 
           ## fluidRow container for upload method (left column) and map (right column) ####
@@ -112,7 +116,7 @@ app_ui  <- function(request) {
             ## upload-methods column ####
             column(
               4,  # through about line 359
-              h4('Specify Locations to Analyze', style = 'text-align: center;'),
+              h4('Specify Locations to Analyze'),
 
               ## input: use CATEGORIES of sites, or upload LOCATIONS ? ####
               div(style = 'border: 1px solid #005ea2; padding: 10px;',
@@ -393,26 +397,27 @@ app_ui  <- function(request) {
             #. ####
             column(8,
                    uiOutput('invalid_sites_alert2'),
-                   br(),
                    ## TABLE of uploaded points in Modal window via Button  ####
                    fluidRow(
-                     column(6,
-                            br(),
-                            ## output: display number of uploaded sites
-                            htmlOutput(outputId = 'an_map_text') #, # xxx
+                     column(4,
+                            h4('Selected Location Map'), #, # xxx
                      ),
-                     column(6,
+                     column(4,
+                            htmlOutput(outputId = 'an_map_text'),
+                     ),
+                     column(4,
                             ## add button and modal to show uploaded data interactively
                             actionButton('show_data_preview', label = 'Review selected sites',
                                          class = 'usa-button usa-button--outline'),
-
-
+                            
+                            
+                            
                      )
                    ), # end view data uploads
 
                    ## MAP of uploaded points ####
 
-                   h4('Selected Location Map'),
+
                    #helpText('Red circles indicate overlapping sites.'),
                    ## output: show leaflet map of uploaded points
                    shinycssloaders::withSpinner(
@@ -422,7 +427,6 @@ app_ui  <- function(request) {
                      )
                    ),
 
-                   br(),
                    # . ####
                    # ______ RUN ANALYSIS ________####
                    # (when button is pressed)
@@ -479,13 +483,9 @@ app_ui  <- function(request) {
 
         # See Results tabPanel(title = "See Results" ####
         tabPanel(title = "See Results",
-                 br(),
-                 actionButton('back_to_site_sel', label = div(icon('play', style = 'transform: rotate(180deg);'),
-                                                              HTML('&nbsp;'), 'Return to Site Selection'), class = 'usa-button'),
-                 br(),br(),
-
-                 h4('Overall Results'),
-                 helpText('The results of your analysis can be viewed in 3 forms: a summary report, interactive details, or a full written report.'),
+                 ##br(),
+                 ##actionButton('back_to_site_sel', label = div(icon('play', style = 'transform: rotate(180deg);'),
+                                                              ## HTML('&nbsp;'), 'Return to Site Selection'), class = 'usa-button'),
                  # . ### #
                  ## tabsetPanel(id = 'results_tabs'  ####
                  #tags$div( class = 'results_tabs_theme',
@@ -520,6 +520,13 @@ app_ui  <- function(request) {
                                    shinycssloaders::withSpinner(
                                      plotOutput(outputId = 'view1_summary_plot', width = '100%', height = '400px')  # {{ demog_plot }} goes in .html template
                                    )
+                                 )
+                               ),
+                               div(
+                                 style = "background-color: #edeff0; color: black; width: 100%; padding: 10px 20px; text-align: right; margin: 10px 0;",
+                                 p( style = "margin-bottom: 0",
+                                   "Version 2.2 | Report created on ", 
+                                    format(Sys.Date(), '%B %d, %Y'),
                                  )
                                ),
                                br(),
@@ -1243,29 +1250,41 @@ app_ui  <- function(request) {
 
                 ### Threshold comparisons options --------------------- #
 
-                ## input: Name for 1st set of comparisons - where the table counts which scores are above certain cutoffs?
-                shiny::textInput(inputId = 'an_name_comp1',
+                ## input: GROUP NAME for 1st set of comparisons - where the table counts which scores are above certain cutoffs?
+                shiny::textInput(inputId = 'an_threshgroup1',
                                  label = 'Name for 1st set of comparisons',
-                                 ## this will need to be changed later
-                                 value = '',
-                                 placeholder = threshgroup.default['comp1']
+                                 value = default.an_threshgroup1
                 ),
-                ## input: Threshold value(s) for 1st set of comparisons
+                ## input: variable names for 1st set of comparisons
+                shiny::selectInput(inputId = 'an_threshnames1',
+                                   multiple = TRUE,
+                                 label = 'variable names for 1st set of comparisons',
+                                 choices = names_all_r,
+                                 selected = default.an_threshnames1
+                ),
+                ## input: Threshold VALUE(s) for 1st set of comparisons
                 numericInput(inputId = 'an_thresh_comp1',
                              label = 'Threshold value(s) for 1st set of comparisons (e.g. %ile 1-100):',
-                             value = threshold.default['comp1']
+                             value = default.an_thresh_comp1
                 ),
-                ## input: Name for 1st set of comparisons
-                shiny::textInput(inputId = 'an_name_comp2',
+                ###### #
+                
+                ## input: GROUP NAME for 2d set of comparisons
+                shiny::textInput(inputId = 'an_threshgroup2',
                                  label = 'Name for 2nd set of comparisons',
-                                 ## this will need to be changed later
-                                 value = '',
-                                 placeholder = threshgroup.default['comp2']
+                                 value =   default.an_threshgroup2
                 ),
-                ## input: Threshold value(s) for 2nd set of comparisons
+                ## input: variable names for 2d set of comparisons
+                shiny::selectInput(inputId = 'an_threshnames2',
+                                   multiple = TRUE,
+                                   label = 'variable names for 2d set of comparisons',
+                                   choices = names_all_r,
+                                   selected = default.an_threshnames2
+                ),
+                ## input: Threshold VALUE(s) for 2nd set of comparisons
                 numericInput(inputId = 'an_thresh_comp2',
                              label = 'Threshold value(s) for 2nd set of comparisons (e.g. %ile 1-100):',
-                             value = threshold.default['comp2']
+                             value = default.an_thresh_comp2
                 ),
                 ######################################################## #
                 ######################################################## #

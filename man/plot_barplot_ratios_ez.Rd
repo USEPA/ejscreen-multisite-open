@@ -29,5 +29,31 @@ ggplot
 Barplot of ratios of demographic (or other) scores to averages - simpler syntax
 }
 \examples{
+
+# Check a long list of indicators for any that are elevated
+
+plot_barplot_ratios_ez(testoutput_ejamit_100pts_1miles,
+  varnames = names_these_ratio_to_avg,
+  main = "Envt & Demog Indicators at Selected Sites Compared to State Averages")
+  
+plot_barplot_ratios_ez(testoutput_ejamit_100pts_1miles,
+  varnames = names_these_ratio_to_state_avg,
+  main = "Envt & Demog Indicators at Selected Sites Compared to State Averages")
+
+# Demographics only
+
+# vs nationwide avg
 plot_barplot_ratios_ez(testoutput_ejamit_100pts_1miles)
+
+# vs statewide avg
+plot_barplot_ratios_ez(testoutput_ejamit_1000pts_1miles, 
+  varnames = c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg),
+  main = "Demographics at Selected Sites Compared to State Averages")
+
+# Environmental only
+
+plot_barplot_ratios_ez(testoutput_ejamit_100pts_1miles,
+  varnames = c(names_e_ratio_to_avg, names_e_ratio_to_state_avg),
+  main = "Environmental Indicators at Selected Sites Compared to Averages")
+  
 }

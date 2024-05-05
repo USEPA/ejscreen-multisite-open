@@ -22,5 +22,5 @@ a leaflet map with circles, circleMarkers, and basic popup
 make a leaflet map of uploaded points such as facilities
 }
 \seealso{
-\code{\link[=map_facilities_proxy]{map_facilities_proxy()}}
+\code{\link[=mapfast]{mapfast()}} \code{\link[=map_facilities_proxy]{map_facilities_proxy()}}
 }

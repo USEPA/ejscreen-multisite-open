@@ -55,6 +55,7 @@ several of which are not exported:
 \item EJAM fix_pctcols_x100()
 \item EJAM fixmapheadernamescolname()
 \item EJAM var_is_numeric_ish()
+\item EJAM varin_map_headernames()
 \item EJAM namesbyvarlist()
 \item EJAM names_whichlist()
 \item EJAM names_whichlist_multi()

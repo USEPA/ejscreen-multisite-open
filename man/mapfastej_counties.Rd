@@ -38,3 +38,6 @@ Map - County polygons / boundaries - Create leaflet or static map
  }
 
 }
+\seealso{
+\code{\link[=mapfastej]{mapfastej()}}
+}

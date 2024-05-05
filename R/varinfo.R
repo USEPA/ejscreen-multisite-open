@@ -17,12 +17,13 @@
 #' - [fixcolnames()]
 #' - [fixcolnames_infer()]
 #' - [EJAMejscreenapi::fixnames_to_type()]
-#' 
 #' - EJAM fixcolnames2related()
 #' - EJAM fix_pctcols_x100()
 #' - EJAM fixmapheadernamescolname()
 #' - EJAM var_is_numeric_ish()
 #' 
+
+#' - EJAM varin_map_headernames()
 #' - EJAM namesbyvarlist()
 #' - EJAM names_whichlist()
 #' - EJAM names_whichlist_multi()
@@ -41,7 +42,7 @@
 #' @param varnametype optional. colname of map_headernames to use when looking for var,
 #'   like "rname" or "api" or "long"
 #'
-#' @seealso [fixcolnames()] [table_rounding_info()]
+#' @seealso [fixcolnames()] [table_rounding_info()] 
 #' @return data.frame of 1 or more rows, 1 or more columns, where
 #'
 #'  rowsnames are var (indicators like "pctmin")
@@ -97,6 +98,12 @@ varinfo <- function(var = map_headernames$rname, info=colnames(map_headernames),
   x <- map_headernames[match(var, map_headernames[ , varnametype]), info_true_name, drop = FALSE]
   rownames(x) <- make.unique(var) # BUT NOTE if a variable appears twice+ in map_headernames, info returned only for the 1st row of those
   colnames(x) <- info_or_alias
+  
+  # convenient view in RStudio:
+  if (NROW(x) <= 10 && NCOL(x) >= 10 && interactive()) {
+    print(t(x))
+  }
+  
   return(x)
 }
 #################################################################### #

@@ -19,8 +19,8 @@ ejam2ratios <- function(ejamitout,
 
   x <- round(
     data.frame(
-    Ratio_to_US_avg    = unlist(out$results_overall[, ..names_ratio_to_avg_these]),
-    Ratio_to_State_avg = unlist(out$results_overall[, ..names_ratio_to_state_avg_these])
+    Ratio_to_US_avg    = unlist(ejamitout$results_overall[, ..names_ratio_to_avg_these]),
+    Ratio_to_State_avg = unlist(ejamitout$results_overall[, ..names_ratio_to_state_avg_these])
     ), 1
     )
 

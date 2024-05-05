@@ -225,22 +225,33 @@ default_plotkind_1pager <- "bar"  #    Bar = "bar", Box = "box", Ridgeline = "ri
 # stats summarizing EJ percentiles to count how many are at/above threshold percentile(s)
 
 # label for each group of indicators
+## newer way:
 default.an_threshgroup1 = "EJ-US-or-ST"
 default.an_threshgroup2 = "Supp-US-or-ST"
-# threshgroup = list("EJ-US-or-ST", "Supp-US-or-ST"), # list(c("EJ US", "EJ State", "Suppl EJ US", "Suppl EJ State")), # list("EJ US", "EJ State", "Suppl EJ US", "Suppl EJ State"), # list("variables"),
-# threshgroup = list(input$an_threshgroup1, input$an_threshgroup2),
+### threshgroups = list("EJ-US-or-ST", "Supp-US-or-ST"), # list(c("EJ US", "EJ State", "Suppl EJ US", "Suppl EJ State")), # list("EJ US", "EJ State", "Suppl EJ US", "Suppl EJ State"), # list("variables"),
+### threshgroups = list(input$an_threshgroup1, input$an_threshgroup2),
+## older way:
+# threshgroup.default <- list(
+#   'comp1' = "EJ US pctiles",  'comp2' = "EJ State pctiles"
+# )
 
 # variable names of indicators compared to threshold
+## newer way:
 default.an_threshnames1 = c(names_ej_pctile, names_ej_state_pctile)
 default.an_threshnames2 = c(names_ej_supp_pctile, names_ej_supp_state_pctile)
-# threshnames = list(c(names_ej_pctile, names_ej_state_pctile), c(names_ej_supp_pctile, names_ej_supp_state_pctile)), # list(c(names_ej_pctile, names_ej_state_pctile, names_ej_supp_pctile, names_ej_supp_state_pctile)),  #list(names_ej_pctile, names_ej_state_pctile, names_ej_supp_pctile, names_ej_supp_state_pctile),  # list(names(which(sapply(sitestats, class) != "character"))),
-# threshnames = list(input$an_threshnames1, input$an_threshnames2),
+### threshnames = list(input$an_threshnames1, input$an_threshnames2)
+### threshnames = list(c(names_ej_pctile, names_ej_state_pctile), c(names_ej_supp_pctile, names_ej_supp_state_pctile)), # list(c(names_ej_pctile, names_ej_state_pctile, names_ej_supp_pctile, names_ej_supp_state_pctile)),  #list(names_ej_pctile, names_ej_state_pctile, names_ej_supp_pctile, names_ej_supp_state_pctile),  # list(names(which(sapply(sitestats, class) != "character")))
+## older way:
+### used defaults built into batch.summarize()
 
 # what threshold to compare to
+## newer way:
 default.an_thresh_comp1 = 90
 default.an_thresh_comp2 = 90
-# threshold   = list(90, 90), # list(90, 90, 90, 90),  # like 80 or 90   # percentile threshold(s) to compare to like to 90th
-# threshold   = list(input$an_thresh_comp1, input$an_thresh_comp2),
+### thresholds   = list(input$an_thresh_comp1, input$an_thresh_comp2)
+### thresholds   = list(90, 90) # percentile threshold(s) to compare to like to 90th
+## older way:
+# threshold.default <- c('comp1' = 90, 'comp2' = 80)
 
 ######################################################## #
   ## QUANTILES ...  can be used by inputId 'an_list_pctiles'    #   CHECK IF THESE UNITS SHOULD BE 0-1 OR 0-100 ***
@@ -262,14 +273,9 @@ probs.default.names <- formatC(probs.default.values, digits = 2, format = 'f', z
 ### info text for "About EJAM" tab ####
 intro_text <- tagList(
   # tags$p("For more information about EJAM:"),
-  br(),
-  br(),
   h2( a(href = "https://usepa.github.io/EJAM/articles/0_whatis.html", "What is EJAM?", target = '_blank', rel = 'noreferrer noopener') ),
-  br(),
-  br(),
-  h2( a(href = "https://usepa.github.io/EJAM/index.html", "EJAM software tools for programmers or analysts using R", target = '_blank', rel = 'noreferrer noopener')),
-  br(),
-  br(),
+  p("EJAM is a tool developed by the United States Environmental Protection Agency (US EPA) that makes it easy to see demographic and environmental information summarized in and across any list of places in the nation. Using EJAM is like running an EJScreen report, but for hundreds or thousands of places, all at the same time."),
+  p("This provides interactive results and a formatted, ready-to-share report with written explanations of the results, tables, and graphics. The report can provide EJ-related information about people who live in communities near any of the industrial facilities on a list, for example."),
   br(),
   br()
 )

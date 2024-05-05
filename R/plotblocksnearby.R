@@ -244,7 +244,7 @@ plotblocksnearby <- function(sitepoints, radius=3, sites2blocks, siteidvarname =
     }
     # Map popup info for each site (if available) and blocks surrounding the site
     vnames <- c('blockfips', 'blockid', 'blocklat', 'blocklon', 
-                'distance', 'distance_unadjusted', 'radius.miles', 'block_radius_miles',
+                'distance', 'distance_unadjusted', 'radius.miles', # 'block_radius_miles',
                 'blockwt', 'blockpop', 'pop_nearby',
                 'bgpop', 'bgfips', 'bgid',   #, names_d, names_d_subgroups, names_e,   # for blockgroup
                 'ejam_uniq_id', 'blockcount_near_site'       # for site

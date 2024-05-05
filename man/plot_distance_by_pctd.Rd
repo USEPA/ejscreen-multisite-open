@@ -7,6 +7,7 @@
 plot_distance_by_pctd(
   s2b = NULL,
   sitenum = NULL,
+  dpctvar = "pctlowinc",
   myvars = c(names_d_count, names_d_subgroups_count)[1],
   demoglabel = fixcolnames(myvars, "r", "shortlabel")
 )
@@ -17,10 +18,10 @@ If NULL (not provided as a parameter to the function), the function will just sh
 
 \item{sitenum}{one number that is the unique ID (the row number of original list of points) to look at in s2b}
 
+\item{dpctvar}{a colname of usastats and statestats that is the percentage version of myvars, like "pcthisp" or "pctlowinc"}
+
 \item{myvars}{a colname of a population count variable in blockgroupstats indicating which to plot, like "hisp" or "lowinc"
 and only works for one indicator at a time so far.}
-
-\item{dpctvar}{a colname of usastats and statestats that is the percentage version of myvars, like "pcthisp" or "pctlowinc"}
 }
 \value{
 returns s2b but with more columns in it, like cumpop, cumdpop, pctdwithin
