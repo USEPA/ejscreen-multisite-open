@@ -2,7 +2,8 @@
 % Please edit documentation in R/ejamit_compare_groups_of_places.R
 \name{ejamit_compare_types_of_places}
 \alias{ejamit_compare_types_of_places}
-\title{Compare subsets (types) of places that are all from one list}
+\title{Compare subsets (types) of places that are all from one list
+*** DRAFT - may change output formats of results_bytype vs results_overall}
 \usage{
 ejamit_compare_types_of_places(sitepoints, typeofsite = NULL, ...)
 }
@@ -18,6 +19,7 @@ similar to ejamit output but results_overall has one row per unique typeofsite
 }
 \description{
 Compare subsets (types) of places that are all from one list
+*** DRAFT - may change output formats of results_bytype vs results_overall
 }
 \examples{
   out = ejamit_compare_types_of_places(testpoints_10[1:4, ], 
