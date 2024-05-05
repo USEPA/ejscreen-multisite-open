@@ -23,7 +23,7 @@ knitr::opts_chunk$set(eval = FALSE)
 
 # EPA's EJ Analysis Multi-site (EJAM) tool
 
-EJAM is a toolkit that will be powering the new "multi-site" features in [EJScreen](https://www.epa.gov/ejscreen "https://www.epa.gov/ejscreen")
+EJAM is a toolkit that will be powering the new "multi-site" features in [EJScreen](https://www.epa.gov/ejscreen "https://www.epa.gov/ejscreen"){.uri target="_blank" rel="noreferrer noopener"}
 Developed by the United States Environmental Protection Agency (US EPA),
 EJAM makes it easy to see demographic and environmental information 
 summarized in and across multiple sites. These sites could include

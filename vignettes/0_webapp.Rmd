@@ -23,7 +23,7 @@ knitr::opts_chunk$set(eval = FALSE)
 
 # EJAM and EJScreen websites
 
-EJAM itself is not an app running on a public website. [EJScreen](https://www.epa.gov/ejscreen "https://www.epa.gov/ejscreen") will be able to leverage EJAM's technology to provide public access to batches of reports, and will be able to do rapid multi-site analysis in a future update. EPA is working to integrate EJAM's new toolkit into EJScreen's public screening and mapping web application, as a way to enable these features as soon as possible. A web app was being tested for internal use at EPA as of early 2024.
+EJAM itself is not an app running on a public website. [EJScreen](https://www.epa.gov/ejscreen "https://www.epa.gov/ejscreen"){.uri target="_blank" rel="noreferrer noopener"} will be able to leverage EJAM's technology to provide public access to batches of reports, and will be able to do rapid multi-site analysis in a future update. EPA is working to integrate EJAM's new toolkit into EJScreen's public screening and mapping web application, as a way to enable these features as soon as possible. A web app was being tested for internal use at EPA as of early 2024.
 
 <!--
 As of mid 2024, EPA staff can try a live beta test version of the EJAM web app - The beta test is accessible only at EPA offices or via VPN.

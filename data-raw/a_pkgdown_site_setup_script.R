@@ -59,16 +59,6 @@ Sys.time()
 ## build = TRUE means it converts a package source directory into a single bundled file. If binary = FALSE this creates a tar.gz package that can be installed on any platform, provided they have a full development environment (although packages without source code can typically be installed out of the box). If binary = TRUE, the package will have a platform specific extension (e.g. .zip for windows), and will only be installable on the current platform, but no development environment is needed.
 
 #################### # 
-# use  rstudio  menu, build ...
-# only use binary=TRUE if package has C that needs to be compiled. otherwise source package is better.
-## to (reinstall and) rebuild source package that makes it easier for users to install from github like this
-# remotes::install_github(c(
-#   'USEPA/EJAMejscreenapi',
-#   'USEPA/EJAMbatch.summarizer',
-#   'USEPA/EJAM'
-# ), build_vignettes = TRUE) # if you want their installed package 
-# to have vignettes available via vignette() or browseVignettes() in addition to the html versions available in the github pages at 
-#  
 
 #################### # 
 
@@ -80,13 +70,15 @@ EJAM::dataload_from_pins("all") # not sure this helps with building vignettes th
 
  #   devtools::test()
 
+
 #################### # 
+# Build regular R package vignettes ? in /doc/ ?
 
+ ## THIS TAKES SOME TIME: 
+ devtools::build_vignettes(quiet = FALSE, upgrade = "never", install = FALSE)
 
-# devtools::build_vignettes(quiet = FALSE, upgrade = "never", install = FALSE)
-# ℹ Building vignettes for EJAM
-
-# Recreate the pkgdown documentation webpages.
+ #################### # 
+# Build Articles (web based vignettes) for pkgdown website.  in /docs/ ? not /doc/ 
 # knit button might not work in some cases?
 
 # build_articles()
@@ -95,8 +87,6 @@ EJAM::dataload_from_pins("all") # not sure this helps with building vignettes th
 # build_article("3_analyzing",    new_process = FALSE)
 # build_article("1_installing",   new_process = FALSE)
 
-  
-  
 # This does ALL the pages over again:
 Sys.time() # next part can be SLOW 
 # reads the vignettes/xyz.Rmd and uses those as it
@@ -119,10 +109,39 @@ pkgdown::build_site_github_pages(
 # usethis::use_github_pages(branch = "main", path = "/docs") # FAST - just defines source and URL. already done earlier, prob do not need to repeat.
 
 
+# now these steps fail: 
+ #     build_search('.')   and   build_sitemap('.') 
+#    which is a step in 
+#   pkgdown:::build_site_local() which is part of 
+# pkgdown::build_site_github_pages()
+# ── Building search index ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+# Error in UseMethod("xml_find_first") : 
+#   no applicable method for 'xml_find_first' applied to an object of class "xml_document"
+# this step would work     pkgdown:::build_redirects(".")
+
+
+
 Sys.time() # 40 minutes for all of this to run with slowest options above
 #################### # 
 stop( ' then COMMIT AND PUSH THE NEW FILES ')
 browseURL("https://github.com/USEPA/EJAM/actions/") # to see automatic deployment happen
 stop()
+
+# use  rstudio  menu, build ...
+# only use binary=TRUE if package has C that needs to be compiled. otherwise source package is better.
+## to (reinstall and) rebuild source package that makes it easier for users to install from github like this
+# remotes::install_github(c(
+#   'USEPA/EJAMejscreenapi',
+#   'USEPA/EJAMbatch.summarizer',
+#   'USEPA/EJAM'
+# ), build_vignettes = TRUE) # if you want their installed package 
+# to have vignettes available via vignette() or browseVignettes() in addition to the html versions available in the github pages at 
+# #  
+# 
+# build(".")  # to build single file source package that could be shared with those who want to install without needing PAT. 
+# installation from github via remotes::
+# 
+# build("../EJAMejscreenapi")
+#  build("../EJAMbatch.summarizer")
 
  ################################################################## #

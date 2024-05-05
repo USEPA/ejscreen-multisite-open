@@ -39,7 +39,7 @@
 #'   For details on these updates and changes to datasets and indicators,
 #'   please see <https://www.epa.gov/ejscreen> and in particular note the
 #'   information about updates and changes here: 
-#'   (https://www.epa.gov/ejscreen/ejscreen-change-log)[https://www.epa.gov/ejscreen/ejscreen-change-log]
+#'   [EJScreen Change Log](https://www.epa.gov/ejscreen/ejscreen-change-log){.uri target="_blank" rel="noreferrer noopener"}
 #'   
 #'   The American Community Survey 5-year summary file data are updated by
 #'   the United States Census Bureau annually, after which EJScreen and EJAM are updated.
@@ -221,7 +221,7 @@
 #'
 #' EJAM uses the same approach as EJScreen does to identify the count and demographics of nearby residents,
 #' so EJScreen technical documentation should be consulted on the approach,
-#' at <https://www.epa.gov/ejscreen/technical-information-about-ejscreen>.
+#' at [EJScreen Technical Info](https://www.epa.gov/ejscreen/technical-information-about-ejscreen "EJScreen Technical Info"){.uri target="_blank" rel="noreferrer noopener"}.
 #' EJAM implements that approach using faster code and data formats, but it
 #' still uses the same high-resolution approach as described in EJScreen documentation
 #' and summarized below.

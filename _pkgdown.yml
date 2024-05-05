@@ -47,6 +47,8 @@ reference:
   - ejam2excel
   - ejam2map
   - ejam2ratios
+  - ejamit_compare_distances
+  - ejamit_compare_types_of_places
   - ejscreenit_for_ejam
 - title: "Specify Points by Lat/Lon"
   desc: "Utilities for working with latitude/ longitude or address"
@@ -227,9 +229,6 @@ reference:
   - popshare_at_top_x_pct
   - popshare_p_lives_at_what_n
   - popshare_p_lives_at_what_pct
-
-  - distance_comparison_ejamit
-  
 - title: "Viewing Results"
 - subtitle: "Maps of Points"
   contents:

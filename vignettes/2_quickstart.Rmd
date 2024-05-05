@@ -326,8 +326,8 @@ ejam2excel(ejamit(testpoints_10, radius = 1), save_now = T)
 
 # Documentation of Functions and Data
 
-- [README on GitHub](https://github.com/USEPA/EJAM/tree/main?tab=readme-ov-file#readme)
-- [Function Reference Document](../reference/index.html)
+- [README on GitHub](https://github.com/USEPA/EJAM/tree/main?tab=readme-ov-file#readme){.uri target="_blank" rel="noreferrer noopener"}
+- [Function Reference Document](../reference/index.html){.uri target="_blank" rel="noreferrer noopener"}
 - In RStudio, see `?EJAM`
 
 ```{r helpEJAM, eval=FALSE, include=TRUE}
