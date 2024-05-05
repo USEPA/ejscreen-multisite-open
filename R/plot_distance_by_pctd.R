@@ -24,7 +24,7 @@
 #'
 #' @export
 #'
-plot_distance_by_pctd <- function(s2b = NULL, sitenum = NULL,
+plot_distance_by_pctd <- function(s2b = NULL, sitenum = NULL, dpctvar = "pctlowinc",
                                   myvars = c(names_d_count, names_d_subgroups_count)[1],
                                   demoglabel=fixcolnames(myvars,"r","shortlabel")
                                   ) {
