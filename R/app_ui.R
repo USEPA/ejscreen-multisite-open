@@ -396,7 +396,7 @@ app_ui  <- function(request) {
             # ______ VIEW SITES ________ tabPanel(title = 'Site Selection'####
             #. ####
             column(8,
-                   uiOutput('invalid_sites_alert2'),
+                  
                    ## TABLE of uploaded points in Modal window via Button  ####
                    div(
                      style = "display: flex; flex-direction: column; margin-bottom: .5em;",
@@ -412,6 +412,7 @@ app_ui  <- function(request) {
                        )
                      ),
                    ), # end view data uploads
+                   uiOutput('invalid_sites_alert2'),
 
                    ## MAP of uploaded points ####
 
