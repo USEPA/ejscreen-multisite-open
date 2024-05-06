@@ -402,14 +402,16 @@ app_ui  <- function(request) {
                      style = "display: flex; flex-direction: column; margin-bottom: .5em;",
                      h3('Selected Location Map'),
                      div(
-                       style = "flex: 1; display: flex; flex-wrap: wrap; gap: 1em;",
-                       div(
-                         htmlOutput(outputId = 'an_map_text'),
-                       ),
+                       style = "flex: 1; display: flex; flex-wrap: wrap; gap: 1em; align-items: center;",
                        div(
                          actionButton('show_data_preview', label = 'Review selected sites',
                                       class = 'usa-button usa-button--outline')
-                       )
+                       ),
+                       if (!is.null('an_map_text')) {
+                         div(
+                           htmlOutput(outputId = 'an_map_text'),
+                         )
+                       },
                      ),
                    ), # end view data uploads
                    uiOutput('invalid_sites_alert2'),
