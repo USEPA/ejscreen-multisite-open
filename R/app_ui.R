@@ -403,15 +403,13 @@ app_ui  <- function(request) {
                      h3('Selected Location Map'),
                      div(
                        style = "flex: 1; display: flex; flex-wrap: wrap; gap: 1em; align-items: center;",
-                       div(
-                         actionButton('show_data_preview', label = 'Review selected sites',
-                                      class = 'usa-button usa-button--outline')
-                       ),
-                       if (!is.null('an_map_text')) {
+                         div(
+                           actionButton('show_data_preview', label = 'Review selected sites',
+                                        class = 'usa-button usa-button--outline')
+                         ),
                          div(
                            htmlOutput(outputId = 'an_map_text'),
                          )
-                       },
                      ),
                    ), # end view data uploads
                    uiOutput('invalid_sites_alert2'),
