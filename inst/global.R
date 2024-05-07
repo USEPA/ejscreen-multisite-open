@@ -776,7 +776,7 @@ html_header_fmt <- tagList(
               <div class="web-area-title"></div>
             </div>
             <div class="l-page__header-last">
-              <a href="#" class="header-link">Contact Us</a>
+              <a href="#" style="text-decoration: underline;" class="header-link">Contact Us</a>
             </div>
           </div>
           <article class="article">'
@@ -791,7 +791,7 @@ html_footer_fmt <- tagList(
       </div>
       <div class="l-page__footer">
         <div class="l-constrain">
-          <p><a href="#">Contact Us</a> to ask a question, provide feedback, or report a problem.</p>
+          <p><a href="#" style="text-decoration: underline;">Contact Us</a> to ask a question, provide feedback, or report a problem.</p>
         </div>
       </div>
     </div>'
@@ -963,9 +963,9 @@ html_footer_fmt <- tagList(
           </div>
         </div>
       </footer>
-      <a href="#" class="back-to-top" title="">
-        <svg class="back-to-top__icon" role="img" aria-label="">
-        <svg class="back-to-top__icon" role="img" aria-label="" viewBox="0 0 19 12" id="arrow" xmlns="http://www.w3.org/2000/svg">
+      <a href="#" class="back-to-top" title="" aria-label="back-to-top">
+        <svg class="back-to-top__icon" aria-label="">
+        <svg class="back-to-top__icon" aria-label="" viewBox="0 0 19 12" id="arrow" xmlns="http://www.w3.org/2000/svg">
           <!-- use xlink:href="https://www.epa.gov/themes/epa_theme/images/sprite.artifact.svg#arrow"></use -->
           <path fill="currentColor" d="M2.3 12l7.5-7.5 7.5 7.5 2.3-2.3L9.9 0 .2 9.7 2.5 12z"></path>
         </svg>

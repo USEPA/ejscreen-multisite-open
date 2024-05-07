@@ -49,7 +49,7 @@
   }
   
   #header-primary-background { 
-  background-color: #0e98d7;
+  background-color: #005ea2;
   width: 100%;
   height: fit-content;
   display: inline-block;
@@ -101,7 +101,7 @@ width: 4em;
     position: relative;
     width: 100%;
     font-weight: bold;
-    background-color: #0e98d7;
+    background-color: #005ea2;
     color: white; 
     height: auto;
     display: flex;
@@ -261,7 +261,7 @@ width: 4em;
     }
   
   h1 {
-    font-family: Arial, sans-serif;
+    /*font-family: Arial, sans-serif;*/
     font-size: 60px;
     font-style: normal;
     font-variant: normal;
@@ -270,7 +270,7 @@ width: 4em;
   }
   
   h2:not(.title-panel h2) {
-    font-family: Arial, sans-serif;
+    /*font-family: Arial, sans-serif;*/
     font-size: 25px;
     font-style: normal;
     font-variant: normal;
@@ -279,7 +279,7 @@ width: 4em;
   }
   
   h3 {
-    font-family: Arial, sans-serif;
+    /*font-family: Arial, sans-serif;*/
     font-size: 17px;
     font-style: normal;
     font-variant: normal;
@@ -288,7 +288,7 @@ width: 4em;
   }
   
   h4 {
-    font-family: Arial, sans-serif;
+    /*font-family: Arial, sans-serif;*/
     font-size: 13.5px;
     font-style: normal;
     font-variant: normal;
@@ -297,15 +297,16 @@ width: 4em;
   }
   
   p {
-    font-family: Arial, sans-serif;
+    /*font-family: Arial, sans-serif;*/
     font-style: normal;
     font-variant: normal;
     font-weight: 400;
     line-height: 23px;
   }
+
   
   blockquote {
-    font-family: Arial, sans-serif;
+    /*font-family: Arial, sans-serif;*/
     font-size: 17px;
     font-style: normal;
     font-variant: normal;
@@ -314,7 +315,7 @@ width: 4em;
   }
   
   pre {
-    font-family: Arial, sans-serif;
+    /*font-family: Arial, sans-serif;*/
     font-size: 11px;
     font-style: normal;
     font-variant: normal;
@@ -336,11 +337,11 @@ width: 4em;
   }
   
   .about-EJAM-span {
-    margin: .5em 0;
+    margin: 1em 0;
   }
   
   hr {
-    margin: .5em 0;
+    margin: 1em 0 !important;
   }
   
   
@@ -410,7 +411,7 @@ border-radius: 0 0 50px 0;
 }
 
 #header-primary-background { 
-background-color: #0e98d7;
+background-color: #005ea2;
   width: 1060px;
 height: 220px;
 display: inline-block;

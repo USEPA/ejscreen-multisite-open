@@ -1128,7 +1128,7 @@ app_server <- function(input, output, session) {
       
       
       msg <- HTML(paste0(
-        "<span style='border: 1px solid #005ea2; padding: 10px;'>Total shape(s) uploaded: <strong>",
+        "<span style='display: block; white-space: nowrap; border: 1px solid #005ea2; padding: 10px;'>Total shape(s) uploaded: <strong>",
         prettyNum(num_na + num_notna, big.mark = ","),"</strong></span>"
       ))
       an_map_text_shp(msg)
@@ -1148,7 +1148,7 @@ app_server <- function(input, output, session) {
       num_locs <- NROW(data_uploaded())
       
       msg <- HTML(paste0(
-        "<span style='border: 1px solid #005ea2; padding: 10px;'>Total location(s) uploaded by FIPS: <strong>",
+        "<span style='display: block; white-space: nowrap; border: 1px solid #005ea2; padding: 10px;'>Total location(s) uploaded by FIPS: <strong>",
         prettyNum(num_locs, big.mark = ","),"</strong></span>"
       ))
       an_map_text_fips(msg)
@@ -1196,7 +1196,7 @@ app_server <- function(input, output, session) {
       }
       
       msg <- HTML(paste0(
-        "<span style='border: 1px solid #005ea2; padding: 10px;'>Total location(s) uploaded: <strong>", prettyNum(num_na + num_notna, big.mark = ","),"</strong></span>"
+        "<span style='display: block; white-space: nowrap; border: 1px solid #005ea2; padding: 10px;'>Total location(s) uploaded: <strong>", prettyNum(num_na + num_notna, big.mark = ","),"</strong></span>"
         #"<br>","Site(s) with invalid lat/lon values: <strong>", prettyNum(num_na, big.mark = ","), "</strong>","</span>"
       ))
       an_map_text_pts[[current_upload_method()]] <- msg
@@ -1383,10 +1383,11 @@ app_server <- function(input, output, session) {
   
   output$radius_label <- renderUI({
     val <- input$bt_rad_buff
-    lab <- paste0('<b>Distance from Site: <br/>', val, ' miles ','(',round(val / 0.62137119, 2), ' km)</b>')
+    lab <- paste0('<label for="bt_rad_buff"><b>Distance from Site:</b> <br/>', val, ' miles ','(',round(val / 0.62137119, 2), ' km)</label>')
     
     HTML(lab)
   })
+  
   ###################################################################################### #
   
   # *MAP of uploaded/selected places ####
@@ -2432,10 +2433,10 @@ app_server <- function(input, output, session) {
                   to = file.path(tempdir(), 'communityreport.css'), overwrite = TRUE)
       }
       
-      if (!('EPA_logo_white.png') %in% list.files(file.path(tempdir(), 'www'))) {
+      if (!('EPA_logo_white_2.png') %in% list.files(file.path(tempdir(), 'www'))) {
         dir.create(file.path(tempdir(), 'www'))
-        file.copy(from = app_sys('report/community_report/EPA_logo_white.png'),
-                  to = file.path(tempdir(), 'www', 'EPA_logo_white.png'), overwrite = TRUE)
+        file.copy(from = app_sys('report/community_report/EPA_logo_white_2.png'),
+                  to = file.path(tempdir(), 'www', 'EPA_logo_white_2.png'), overwrite = TRUE)
       }
       
       ## copy Rmd from inst/report to temp folder  (note there had been a similar but not identical .Rmd in EJAM/www/)
@@ -2725,10 +2726,10 @@ app_server <- function(input, output, session) {
                       to = file.path(tempdir(), 'communityreport.css'), overwrite = TRUE)
           }
           
-          if (!('EPA_logo_white.png') %in% list.files(file.path(tempdir(), 'www'))) {
+          if (!('EPA_logo_white_2.png') %in% list.files(file.path(tempdir(), 'www'))) {
             dir.create(file.path(tempdir(), 'www'))
-            file.copy(from = app_sys('report/community_report/EPA_logo_white.png'),
-                      to = file.path(tempdir(), 'www', 'EPA_logo_white.png'), overwrite = TRUE)
+            file.copy(from = app_sys('report/community_report/EPA_logo_white_2.png'),
+                      to = file.path(tempdir(), 'www', 'EPA_logo_white_2.png'), overwrite = TRUE)
           }
           temp_comm_report <- file.path(tempdir(), paste0("comm_report",x,".html"))
           
