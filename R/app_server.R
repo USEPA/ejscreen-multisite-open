@@ -310,19 +310,26 @@ app_server <- function(input, output, session) {
       # older way
       
       infile_ext <- tools::file_ext(infiles)
-      if (!all(c('shp','shx','dbf','prj') %in% infile_ext)) {
+      if ((!all(c('shp','shx','dbf','prj') %in% infile_ext)) & (all(!(c('zip') %in% infile_ext)))) {
         disable_buttons[['SHP']] <- TRUE
         shiny::validate('Not all required file extensions found.')
       }
       
-      ########################################## #
-      # ---- This renames file from ugly tempfile name to original name as selected on user's drive - but why bother? --- #
-      dir <- unique(dirname(infiles)) # get folder (a temp one created by shiny for the uploaded file)
-      outfiles <- file.path(dir, input$ss_upload_shp$name) # create new path\name from temp dir plus original filename of file selected by user to upload
-      name <- strsplit(input$ss_upload_shp$name[1], "\\.")[[1]][1] # ??? get filename minus extension, of 1 file selected by user to upload
-      purrr::walk2(infiles, outfiles, ~file.rename(.x, .y)) # rename files from ugly tempfilename to original filename of file selected by user to upload
-      shp <- sf::read_sf(file.path(dir, paste0(name, ".shp"))) # read-in shapefile as tibble. note sf::st_read() versus sf::read_sf() !
-      ########################################## #
+      if (length(infiles) == 1 & any(grepl("zip",infiles))){
+        shp <- shapefile_from_zip(infiles)
+        if(any(sf::st_geometry_type(shp) == "POINT")){
+          stop("Shape file must be of polygon geometry.")
+        }
+      }else{
+        dir <- unique(dirname(infiles)) # get folder (a temp one created by shiny for the uploaded file)
+        outfiles <- file.path(dir, input$ss_upload_shp$name) # create new path\name from temp dir plus original filename of file selected by user to upload
+        name <- strsplit(input$ss_upload_shp$name[1], "\\.")[[1]][1] # ??? get filename minus extension, of 1 file selected by user to upload
+        purrr::walk2(infiles, outfiles, ~file.rename(.x, .y)) # rename files from ugly tempfilename to original filename of file selected by user to upload
+        
+        
+        
+        shp <- sf::read_sf(file.path(dir, paste0(name, ".shp"))) # read-in shapefile
+      }
       
       shp <- sf::st_zm(shp)
       
@@ -1128,7 +1135,7 @@ app_server <- function(input, output, session) {
       
       
       msg <- HTML(paste0(
-        "<span style='display: block; white-space: nowrap; border: 1px solid #005ea2; padding: 10px;'>Total shape(s) uploaded: <strong>",
+        "<span style='border: 1px solid #005ea2; padding: 10px;'>Total shape(s) uploaded: <strong>",
         prettyNum(num_na + num_notna, big.mark = ","),"</strong></span>"
       ))
       an_map_text_shp(msg)
@@ -1148,7 +1155,7 @@ app_server <- function(input, output, session) {
       num_locs <- NROW(data_uploaded())
       
       msg <- HTML(paste0(
-        "<span style='display: block; white-space: nowrap; border: 1px solid #005ea2; padding: 10px;'>Total location(s) uploaded by FIPS: <strong>",
+        "<span style='border: 1px solid #005ea2; padding: 10px;'>Total location(s) uploaded by FIPS: <strong>",
         prettyNum(num_locs, big.mark = ","),"</strong></span>"
       ))
       an_map_text_fips(msg)
@@ -1196,7 +1203,7 @@ app_server <- function(input, output, session) {
       }
       
       msg <- HTML(paste0(
-        "<span style='display: block; white-space: nowrap; border: 1px solid #005ea2; padding: 10px;'>Total location(s) uploaded: <strong>", prettyNum(num_na + num_notna, big.mark = ","),"</strong></span>"
+        "<span style='border: 1px solid #005ea2; padding: 10px;'>Total location(s) uploaded: <strong>", prettyNum(num_na + num_notna, big.mark = ","),"</strong></span>"
         #"<br>","Site(s) with invalid lat/lon values: <strong>", prettyNum(num_na, big.mark = ","), "</strong>","</span>"
       ))
       an_map_text_pts[[current_upload_method()]] <- msg
@@ -1383,11 +1390,10 @@ app_server <- function(input, output, session) {
   
   output$radius_label <- renderUI({
     val <- input$bt_rad_buff
-    lab <- paste0('<label for="bt_rad_buff"><b>Distance from Site:</b> <br/>', val, ' miles ','(',round(val / 0.62137119, 2), ' km)</label>')
+    lab <- paste0('<b>Distance from Site: <br/>', val, ' miles ','(',round(val / 0.62137119, 2), ' km)</b>')
     
     HTML(lab)
   })
-  
   ###################################################################################### #
   
   # *MAP of uploaded/selected places ####
@@ -2412,15 +2418,14 @@ app_server <- function(input, output, session) {
   
   ## Community report download ##
   output$community_download <- downloadHandler(
-    filename = function(){
+    filename =
       create_filename(file_desc = 'community report',
                       title = input$analysis_title,
                       buffer_dist = current_slider_val[[submitted_upload_method()]],
                       site_method = submitted_upload_method(),
                       with_datetime = TRUE,
                       ext = ifelse(input$format1pager == 'pdf', '.pdf','.html')
-                      
-      )},
+      ),
     content = function(file) {
       # Copy the report file to a temporary directory before processing it, in
       # case we don't have write permissions to the current working dir (which
@@ -2433,10 +2438,10 @@ app_server <- function(input, output, session) {
                   to = file.path(tempdir(), 'communityreport.css'), overwrite = TRUE)
       }
       
-      if (!('EPA_logo_white_2.png') %in% list.files(file.path(tempdir(), 'www'))) {
+      if (!('EPA_logo_white.png') %in% list.files(file.path(tempdir(), 'www'))) {
         dir.create(file.path(tempdir(), 'www'))
-        file.copy(from = app_sys('report/community_report/EPA_logo_white_2.png'),
-                  to = file.path(tempdir(), 'www', 'EPA_logo_white_2.png'), overwrite = TRUE)
+        file.copy(from = app_sys('report/community_report/EPA_logo_white.png'),
+                  to = file.path(tempdir(), 'www', 'EPA_logo_white.png'), overwrite = TRUE)
       }
       
       ## copy Rmd from inst/report to temp folder  (note there had been a similar but not identical .Rmd in EJAM/www/)
@@ -2726,10 +2731,10 @@ app_server <- function(input, output, session) {
                       to = file.path(tempdir(), 'communityreport.css'), overwrite = TRUE)
           }
           
-          if (!('EPA_logo_white_2.png') %in% list.files(file.path(tempdir(), 'www'))) {
+          if (!('EPA_logo_white.png') %in% list.files(file.path(tempdir(), 'www'))) {
             dir.create(file.path(tempdir(), 'www'))
-            file.copy(from = app_sys('report/community_report/EPA_logo_white_2.png'),
-                      to = file.path(tempdir(), 'www', 'EPA_logo_white_2.png'), overwrite = TRUE)
+            file.copy(from = app_sys('report/community_report/EPA_logo_white.png'),
+                      to = file.path(tempdir(), 'www', 'EPA_logo_white.png'), overwrite = TRUE)
           }
           temp_comm_report <- file.path(tempdir(), paste0("comm_report",x,".html"))
           
