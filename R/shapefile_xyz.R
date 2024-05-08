@@ -63,71 +63,18 @@
 #' @export
 #'
 shapefile_from_any <- function(path = NULL, cleanit = TRUE, crs = 4269, layer = NULL, ...) {
-
-  # test cases:
-  #   list.files(system.file("testdata/shapes/",     package = "EJAM"))
-  #  ##"portland.gdb"  "portland.gdb.zip"  "portland.json"  
-  #  ##"portland_folder_shp"  "portland_folder_shp.zip"
-  #  ##"portland_shp.zip"  ### "stations_shp.zip" "stations.zip"
-
-  #   testfilename_dirshp <- system.file("testdata/shapes/portland_folder_shp",     package = "EJAM")
-  #   testfilename_gdb    <- system.file("testdata/shapes/portland.gdb",            package = "EJAM")
-  #   testfilename_gdbzip <- system.file("testdata/shapes/portland.gdb.zip",        package = "EJAM")
-  #   testfilename_zipdir <- system.file("testdata/shapes/portland_folder_shp.zip", package = "EJAM")
-  # testfilename_zipdir2 <- system.file("testdata/shapes/portland_shp.zip", package = "EJAM") # .shp etc basenames are NOT same as .zip file basename
-  #   testfilename_zipshp <- system.file("testdata/shapes/stations.zip",    package = "EJAM") # .shp etc basenames ARE IDENTICAL TO .zip file basename
-  # testfilename_json <- system.file("testdata/shapes/portland.json",               package = "EJAM")
-  #  # testfilename_shp_alone <- system.file("testdata/shapes/portland_folder_shp/Neighborhoods_regions.shp",     package = "EJAM") # Neighborhoods_regions.shp
-  # # shapefile_filepaths_validize()  # needs unit tests: 
-  # testfilenameset_4 <- shapefile_filepaths_validize(testfilename_shp_alone)
   
-  #   file.exists(testfilename_dirshp)
-  #   file.exists(testfilename_gdb)
-  #   file.exists(testfilename_gdbzip)
-  #   file.exists(testfilename_zipdir)
-  #   file.exists(testfilename_zipshp)
-  #   file.exists(testfilename_zipshp2) ##
-  # file.exists(testfilename_json)
-  
-  # file.exists(testfilename_shp_alone)
-  # all(file.exists(testfilenameset_4))
-  #
-  #   x1 <- shapefile_from_any(testfilename_dirshp)    #ok
-  #   x2 <- shapefile_from_any(testfilename_gdb)       # fails; warns that shapefile_filepaths_valid() needs vector with .shp etc.
-  #   x3 <- shapefile_from_any(testfilename_gdbzip)   #ok
-  #   x4 <- shapefile_from_any(testfilename_zipdir)  # reports error in shapefile_from_gdb() must have extension .gdb, but works anyway
-  #   x5 <- shapefile_from_any(testfilename_zipshp)  # reports error in shapefile_from_gdb() must have extension .gdb, but works anyway
-  #   x52 <- shapefile_from_any(testfilename_zipshp2)  #  
-  # x6 <- shapefile_from_any(testfilename_json) #
-  
-  # x7 <- shapefile_from_any(testfilename_shp_alone)
-  # x8 <- shapefile_from_any(testfilenameset_4)
-  
-  #   x1b = shapefile_from_folder(testfilename_dirshp)
-  #   x2b = shapefile_from_gdb(   testfilename_gdb)
-  #   x3b = shapefile_from_gdbzip(testfilename_gdbzip)
-  #   x4b = shapefile_from_zip(   testfilename_zipdir) # reports error but works
-  #   x5b = shapefile_from_zip(   testfilename_zipshp)
-  #   x52b = shapefile_from_zip(   testfilename_zipshp2)
-  #   x6b = shapefile_from_json(   testfilename_json)
-  ## shapefile_from_filepaths()  #  needs unit tests:
-  # x7b <- shapefile_from_filepaths(testfilename_shp_alone) # just one of the names needed- may want this to work too
-  # x8b <- shapefile_from_filepaths(testfilenameset_4)  # vector of names
-  
-  # class(x1); class(x2); class(x3); class(x4); class(x5); class(x52); class(x6); class(x7); class(x8)
-  # class(x1b); class(x2b); class(x3b); class(x4b); class(x52b); class(x6b); class(x7b); class(x8b)
-  # rm(x1, x2, x3, x4, x5, x52, x6,   x7, x8)
-  # rm(x1b, x2b, x3b, x4b, x5b, x52b, x6b,   x7b, x8b)
+  # test cases:  see unit tests file
   
   if (any(is.null(path)) || any(is.na(path)) || any(length(path)) == 0 || any(!is.character(path))) {
     if (interactive() && !shiny::isRunning()) {
-
+      
       # This lets RStudio user point to file OR folder
       path <- rstudioapi::selectFile(caption = "Select a file (zip, shp, dbf, etc.) [or Cancel to specify a whole folder]", path = getwd(), existing = TRUE)
       if (is.null(path)) {
         path <- rstudioapi::selectDirectory(caption = "Select Folder", path = getwd())
       }
-
+      
     } else {
       if (shiny::isRunning()) {
         warning("need to specify valid path") #
@@ -137,24 +84,26 @@ shapefile_from_any <- function(path = NULL, cleanit = TRUE, crs = 4269, layer = 
       } #
     }
   }
-
+  
   if (length(path) == 1) {
-
+    
     if (dir.exists(path)) {
+      # true if like testdata/shapes/portland.gdb 
+      if (tolower(tools::file_ext(path)) == "gdb") {
+        return(shapefile_from_gdb(path, ...))                    # DOES NOT ALLOW FOR USING cleanit or crs here so far ***
+      }
+      if (tolower(tools::file_ext(path)) == "zip") {
+        return(shapefile_from_zip(path, cleanit = cleanit, crs = crs, ...))
+      }
       return(shapefile_from_folder(folder = path, cleanit = cleanit, crs = crs, ...))
     }
-    if (tolower(tools::file_ext(path)) == "gdb") {
-      return(shapefile_from_gdb(path, ...))                    # DOES NOT ALLOW FOR USING cleanit or crs here so far ***
-    }
-    if (tolower(tools::file_ext(path)) == "zip") {
-      return(shapefile_from_zip(path, cleanit = cleanit, crs = crs, ...))
-    }
+    
     ## st_read() should be able to handle .shp and some others
     # if (tolower(tools::file_ext(path)) %in% c("shp", "dbf")) {
     #   return(shapefile_from_filepaths(path, cleanit = cleanit, crs = crs, ...))
     # }
     # otherwise may be shp?, json or geojson, or some invalid type
-
+    
     # st_read() seems to guess at format from file extension, like .shp, etc.  see https://r-spatial.github.io/sf/articles/sf2.html
     x <- sf::st_read(path, layer = layer, ...)
     return(x)
@@ -163,11 +112,11 @@ shapefile_from_any <- function(path = NULL, cleanit = TRUE, crs = 4269, layer = 
       warning("If single path provided, it must be a .shp, .gdb, .zip, .geojson, or .json file, or a folder")
       return(NULL)
     }
-
+    
   } else {
-
+    
     x <- shapefile_from_filepaths(
-      filepaths = shapefile_filepaths_from_folder(folder, ...), cleanit = cleanit, crs = crs, ...)
+      filepaths = shapefile_filepaths_from_folder(folder = path, ...), cleanit = cleanit, crs = crs, ...)
     return(x)
   }
 }
@@ -188,16 +137,16 @@ shapefile_from_any <- function(path = NULL, cleanit = TRUE, crs = 4269, layer = 
 #' @export
 #'
 shapefile_from_json <- function(path, cleanit = TRUE, crs = 4269, layer = NULL, ...) {
-
+  
   warning("not  tested")
-if (missing(layer) || any(is.null(layer))) {
-  shp <-  sf::st_read(path, ...) # it sees .geojson extension and knows it is GeoJSON
-} else {
-  shp <-  sf::st_read(path, layer = layer, ...) # it sees .geojson extension and knows it is GeoJSON
-}
-sf::st_crs(shp) <- crs
+  if (missing(layer) || any(is.null(layer))) {
+    shp <-  sf::st_read(path, ...) # it sees .geojson extension and knows it is GeoJSON
+  } else {
+    shp <-  sf::st_read(path, layer = layer, ...) # it sees .geojson extension and knows it is GeoJSON
+  }
+  sf::st_crs(shp) <- crs
   if (cleanit) {shp <- shapefile_clean(shp)}
-
+  
   return(shp)
 }
 ############################################################################################## #
@@ -217,45 +166,59 @@ sf::st_crs(shp) <- crs
 #' @export
 #'
 shapefile_from_zip <- function(path, cleanit = TRUE, crs = 4269, layer = NULL, ...) {
-
+  
   # look at contents of zip
   # - if gdb, use x <- shapefile_from_gdbzip()
   # - if .shp etc. files, unzip files into tempfolder, then use x <- shapefile_from_folder(tempfolder)
   # - if folder, unzip foldername into tempfolder then use x <- shapefile_from_folder(foldername)
-
+  
+  all("gdb" == tools::file_ext(dirname(unzip(testfilename_gdbzip        , list = T)$Name)))
+  
   td <- tempdir()
   gname <- unzip(path, list = TRUE)
   gname <- gname$Name
-  gname <- unique(dirname(gname))
-  if (length(gname) != 1) {
-    cat(path, "appears to be .zip containing multiple files, maybe .shp etc. \n")
-    unzip(path, exdir = (td <- file.path(tempdir(), "tempsubdir") ) )
-
-    x <- shapefile_from_filepaths(
-      filepaths = shapefile_filepaths_from_folder(td), cleanit = cleanit, crs = crs, ...)
-    return(x)
-    # stop("zip file does not seem to have a single .gdb file or single folder in it")
-
-  } else {
-
-    # how to check if gdb in zip versus folder in zip?
+  
+  ################# #
+  if (all("gdb" == tolower(tools::file_ext(dirname(gname))))) {
+    # looks like zip had a .gdb in it
     x <- suppressWarnings(   try(shapefile_from_gdbzip(path, ...))  )
     if (!inherits(x, "try-error")) {
       cat(path, "appears to be .zip containing .gdb \n")
       return(x)
-    }
-
-    unzip(path, exdir = td)
-    if (dir.exists(file.path(td, gname))) {
-      # not sure if this will work to identify folder as opposed to .gdb? ***
-      cat("appears to be .zip containing a folder\n")
-      shp <- shapefile_from_folder(file.path(td, gname), cleanit = cleanit, crs = crs, ...)
     } else {
-      # could it be gdb here? should we confirm the .gdb extension? ***
-      cat("not able to determine format\n")
-      shp <- shapefile_from_json(shp, cleanit = cleanit, crs = crs, layer = layer, ...) # should work for any format that is like a shapefile
-      # shp <- shapefile_from_gdb(file.path(td, gname), layer = layer, ...)
+      warning("looked like .gdb was in .zip but failed to read using shapefile_from_gdbzip()")
+      return(NULL)
     }
+  }
+  ################# #
+  
+  if (all(dirname(gname) == ".")) {
+    # .zip contains just filenames (no folder)
+    cat(path, "appears to be .zip containing files \n")
+    unzip(path, exdir = (td <- file.path(tempdir(), "tempsubdir") ) )
+    
+    # may want to check file types here? what if zip had a json?
+    
+    shp <- shapefile_from_filepaths(
+      filepaths = shapefile_filepaths_from_folder(td), cleanit = cleanit, crs = crs, ...)
+    return(shp)
+    
+  } else {
+    # zip contains folder(s)
+    
+    gname <- unique(dirname(gname))
+    if (length(gname) > 1) {
+      warning("zip contains more than one folder, returning NULL")
+      return(NULL)
+    }
+    
+    cat(path, "appears to be .zip containing a folder \n")
+    unzip(path, exdir = (td <- file.path(tempdir(), "tempsubdir") ) )
+    
+    shp <- shapefile_from_folder(file.path(td, gname), cleanit = cleanit, crs = crs, ...)
+    
+    # cat("not able to determine format\n")
+    # shp <- shapefile_from_json(shp, cleanit = cleanit, crs = crs, layer = layer, ...) # should work for any format that is like a shapefile
   }
   return(shp)
 }
@@ -279,7 +242,7 @@ shapefile_from_zip <- function(path, cleanit = TRUE, crs = 4269, layer = NULL, .
 #' @export
 #'
 shapefile_from_gdb <- function(fname, layer = NULL, ...) {
-
+  
   if (missing(fname)) {
     message('fname not specified so looking in current folder')
     fname <- dir(pattern = "*.gdb")
@@ -293,7 +256,7 @@ shapefile_from_gdb <- function(fname, layer = NULL, ...) {
   if (tolower(tools::file_ext(fname)) != "gdb") {
     stop("fname must have extension .gdb")
   }
-
+  
   if (!is.null(layer)) {
     shp <- sf::st_read(fname, layer = layer, ...)
   } else {
@@ -302,7 +265,7 @@ shapefile_from_gdb <- function(fname, layer = NULL, ...) {
     lrz <- sf::st_layers(fname)
     if (length(lrz$name) > 1) {
       print(lrz)
-
+      
       if (interactive() & !shiny::isRunning()) {
         # ask which layer
         layer <- rstudioapi::showPrompt("Layer selection", "Which layer?", default = lrz$name[1])
@@ -319,7 +282,7 @@ shapefile_from_gdb <- function(fname, layer = NULL, ...) {
     }
     shp <- sf::st_read(fname, layer = layer, ...)
   }
-
+  
   return(
     dplyr::mutate(shp, ejam_uniq_id = dplyr::row_number()) # number them 1:N
   )
@@ -338,11 +301,11 @@ shapefile_from_gdb <- function(fname, layer = NULL, ...) {
 #' @export
 #'
 shapefile_from_gdbzip <- function(fname, layer = NULL, ...) {
-
+  
   if (missing(fname)) {
-
+    
     # could interactively allow one to point to a .zip file instead of just looking in working directory?
-
+    
     message('fname not specified so looking in current folder')
     fname <- dir(pattern = "*.zip")
   }
@@ -399,7 +362,7 @@ shapefile_from_gdbzip <- function(fname, layer = NULL, ...) {
 #' @export
 #'
 shapefile_from_folder <- function(folder = NULL, cleanit = TRUE, crs = 4269, ...) {
-
+  
   if (is.null(folder)) {
     if (interactive() && !shiny::isRunning()) {
       folder <- rstudioapi::selectDirectory(caption = "Select a folder that contains the files (.shp, .shx, .dbf, and .prj)", path = getwd())
@@ -413,9 +376,9 @@ shapefile_from_folder <- function(folder = NULL, cleanit = TRUE, crs = 4269, ...
       } #
     }
   }
-
+  
   # *** might want to change it to be flexible and examine what is in the folder instead of requiring it be .shp etc.
-
+  
   shapefile_from_filepaths(filepaths = shapefile_filepaths_from_folder(folder), cleanit = cleanit, crs = crs, ...)
 }
 ############################################################################################## #
@@ -437,7 +400,7 @@ shapefile_from_folder <- function(folder = NULL, cleanit = TRUE, crs = 4269, ...
 #' @export
 #'
 shapefile_from_filepaths <- function(filepaths = NULL, cleanit = TRUE, crs = 4269, layer = NULL, ...) {
-
+  
   if (is.null(filepaths)) {
     if (interactive() && !shiny::isRunning()) {
       filepaths <- rstudioapi::selectFile("Select .shp or .dbf file", filter = "Shapefiles (*.shp;*.dbf)", path = getwd())
@@ -457,7 +420,7 @@ shapefile_from_filepaths <- function(filepaths = NULL, cleanit = TRUE, crs = 426
     filepaths <- shapefile_filepaths_validize(filepaths)
     # based on the one actual file specified, returns full set of what valid names would be even if they are not all in that folder
   }
-
+  
   if (shapefile_filepaths_valid(filepaths = filepaths)) {
     
     if (!all(file.exists(filepaths))) {
@@ -486,14 +449,14 @@ shapefile_from_filepaths <- function(filepaths = NULL, cleanit = TRUE, crs = 426
           return(NULL)
         }
       }
-    
+      
       return(
         shapefile_clean(
           sf::st_read(shpfilepath, layer = layer, ...), # , crs = crs  should be left out here ?
           crs = crs
         )
       )
-
+      
     } else {
       # for shiny, do cleaning/check in server so it can offer messages
       shpfilepath <- filepaths[grepl(".*shp$", filepaths, ignore.case = TRUE)] # one or more files that end in .shp
@@ -536,7 +499,7 @@ shapefile_from_filepaths <- function(filepaths = NULL, cleanit = TRUE, crs = 426
 #' @export
 #'
 shapefile_filepaths_from_folder <- function(folder = NULL) {
-
+  
   if (is.null(folder)) {
     if (interactive() && !shiny::isRunning()) {
       folder <- rstudioapi::selectDirectory(caption = "Select a folder that contains the files (.shp, .shx, .dbf, and .prj)", path = getwd())
@@ -568,7 +531,7 @@ shapefile_filepaths_from_folder <- function(folder = NULL) {
 #' @export
 #'
 shapefile_filepaths_valid <- function(filepaths) {
-
+  
   infile_ext <- tools::file_ext(filepaths)
   # does not need .cpg ?
   ok <- all(c('shp','shx','dbf','prj') %in% tolower(infile_ext)) # note it ignores case here now
@@ -633,17 +596,17 @@ shapefile_filepaths_validize <- function(filepaths) {
 #' @export
 #'
 shapefile_clean <- function(shp, crs = 4269) {
-
+  
   # add error checking ***
-
+  
   if (nrow(shp) > 0) {
     shp <- dplyr::mutate(shp, ejam_uniq_id = dplyr::row_number()) # number them before dropping invalid ones,
     #   so that original list can be mapped to results list more easily
     shp <- shp[sf::st_is_valid(shp),]          # determines valid shapes, to use those and drop the others
     shp <- sf::st_transform(shp, crs = crs)  # NEED TO DOCUMENT THE ASSUMPTION IT USES THIS CRS ***
-
+    
   } else {
-
+    
     warning('No shapes found in file uploaded.')
     shp <- NULL
   }
@@ -678,9 +641,9 @@ shapefile_clean <- function(shp, crs = 4269) {
 #' @export
 #'
 shape_buffered_from_shapefile <- function(shapefile, radius.miles, crs = 4269, ...) {
-
+  
   # add error checking ***
-
+  
   return(sf::st_buffer(shapefile %>%  sf::st_transform(crs = crs), #
                        dist = units::set_units(radius.miles, "mi"), ...))
 }
@@ -713,9 +676,9 @@ shape_buffered_from_shapefile <- function(shapefile, radius.miles, crs = 4269, .
 #' @export
 #'
 shape_buffered_from_shapefile_points <- function(shapefile_points, radius.miles, crs = 4269, ...) {
-
+  
   # add error checking ***
-
+  
   return(sf::st_buffer(shapefile_points %>%  sf::st_transform(crs = crs), #
                        dist = units::set_units(radius.miles, "mi"), ...))
 }
@@ -736,9 +699,9 @@ shape_buffered_from_shapefile_points <- function(shapefile_points, radius.miles,
 #' @export
 #'
 shapefile_from_sitepoints <- function(sitepoints, crs = 4269, ...) {
-
+  
   # add error checking ***
-
+  
   #data.table::setDF(sitepoints)
   shpcoord <- sf::st_as_sf(sitepoints, coords = c('lon', 'lat'), crs = crs, ...) #   want 4269
   return(shpcoord)
@@ -763,7 +726,7 @@ shapefile_from_sitepoints <- function(sitepoints, crs = 4269, ...) {
 #' @export
 #'
 shapefile2latlon <- function(shp, include_only_latlon = TRUE) {
-
+  
   if (!("sf" %in% class(shp)) ||
       !("geometry" %in% names(shp)) ||
       !("sfc_POINT" %in% class(shp$geometry))) {
