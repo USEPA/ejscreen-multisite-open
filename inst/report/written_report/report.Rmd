@@ -154,6 +154,12 @@ sites. Demographic indicators are moderately above average overall.
 
 ## Summary of Findings
 
+```{r, eval=FALSE, echo=FALSE, include=FALSE}
+SEE notes on summarizer draft function 
+and examples of using count_sites_with_n_high_scores()
+```
+
+
 -   PLACEHOLDER EXAMPLE Overall, % people of color, % limited English
     proficiency, and the Demographic Indicator are more than 1.5x the
     State rate, for the population within 1 mile.
