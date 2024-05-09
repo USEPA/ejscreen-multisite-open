@@ -31,50 +31,47 @@
   packageStartupMessage("Now running .onAttach(), as part of attaching the EJAM package.")
   # packageStartupMessage('The leaflet package is what requires sp\n')
   
-  packageStartupMessage(
-    
-    # cat(
-    "\n
-      Developers may want to modify the .onAttach() or even .onLoad() function,
-      to control timing of the slow steps needed to load or create EJAM data, 
-      to have the delays occur at preferred times automatically
-      (or only manually when a coder initiates them interactively or via their code).
-      
-      These are the slow steps as EJAM starts:
-      
-      1- Download the large datasets stored online (quaddata, blockpoints, frs, etc.) 
-         EJAM uses dataload_from_pins() for this. Also see dataload_from_local() or dataload_from_aws()
-         quaddata is >150 MB on disk and >200 MB RAM, while all others are smaller on disk.
-         blockid2fips is roughly 600 MB in RAM because it stores 8 million block FIPS as text.
-      
-      2- Build the national index of all block point locations
-         EJAM function indexblocks() does this, using quaddata - see ?indexblocks
-      
-      3- Load into memory some datasets installed with EJAM (blockgroupstats, usastats, etc.)
-         EJAM function dataload_from_package() can do this - see ?dataload_from_package and ?datapack()  
-         Otherwise these are only lazyloaded at the moment they are needed, making a user wait.
-         blockgroupstats (>60 MB on disk, >200 MB in RAM) and usastats, statestats are essential.
-         frs-related tables are huge and not always required - needed to look up regulated sites by ID. 
-
-      These are the times at which you may want them to happen:
-      
-      - when the EJAM package is loaded and/or attached 
-        i.e., every time the source package is rebuilt it is loaded; but it is attached less often,
-        as when a coder uses require( ) in RStudio or script
-      
-      - when the shiny app launches and runs the global.R script 
-         i.e., only once a new user opens the app and their session starts,
-         and when a coder uses run_app(), either after library( ), or by using EJAM function run_app() 
-      
-      - once the app or coder actually needs a given dataset that is available for lazyLoad, which 
-        works only for data in EJAM/data/ like frs.rda, frs_by_programid.rda, frs_by_sic.rda, etc.
-        See utils::data( package = 'EJAM' )
-      
-      - only if manually obtained by coder via functions noted above.
-      \n\n"
-    # )
-  )
-  
+  # packageStartupMessage(
+  #    
+  #   "\n
+  #     Developers may want to modify the .onAttach() or even .onLoad() function,
+  #     to control timing of the slow steps needed to load or create EJAM data, 
+  #     to have the delays occur at preferred times automatically
+  #     (or only manually when a coder initiates them interactively or via their code).
+  #     
+  #     These occur as EJAM starts:
+  #     
+  #     1- Download the large datasets stored online (quaddata, blockpoints, frs, etc.) 
+  #        EJAM uses dataload_from_pins() for this. Also see dataload_from_local() or dataload_from_aws()
+  #        quaddata is >150 MB on disk and >200 MB RAM, while all others are smaller on disk.
+  #        blockid2fips is roughly 600 MB in RAM because it stores 8 million block FIPS as text.
+  #     
+  #     2- Build the national index of all block point locations
+  #        EJAM function indexblocks() does this, using quaddata - see ?indexblocks
+  #     
+  #     3- Load into memory some datasets installed with EJAM (blockgroupstats, usastats, etc.)
+  #        EJAM function dataload_from_package() can do this - see ?dataload_from_package and ?datapack()  
+  #        Otherwise these are only lazyloaded at the moment they are needed, making a user wait.
+  #        blockgroupstats (>60 MB on disk, >200 MB in RAM) and usastats, statestats are essential.
+  #        frs-related tables are huge and not always required - needed to look up regulated sites by ID. 
+  # 
+  #     These are the times at which you may want them to happen:
+  #     
+  #     - when the EJAM package is loaded and/or attached 
+  #       i.e., every time the source package is rebuilt it is loaded; but it is attached less often,
+  #       as when a coder uses require( ) in RStudio or script
+  #     
+  #     - when the shiny app launches and runs the global.R script 
+  #        i.e., only once a new user opens the app and their session starts,
+  #        and when a coder uses run_app(), either after library( ), or by using EJAM function run_app() 
+  #     
+  #     - once the app or coder actually needs a given dataset that is available for lazyLoad, which 
+  #       works only for data in EJAM/data/ like frs.rda, frs_by_programid.rda, frs_by_sic.rda, etc.
+  #       See utils::data( package = 'EJAM' )
+  #     
+  #     - only if manually obtained by coder via functions noted above.
+  #     \n\n"
+  # )
   
   # download BLOCK (not blockgroup) data, etc, from EPA AWS Data Commons ####
   
@@ -101,7 +98,6 @@
     ## "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/blockwts.rda"
     ## "https://dmap-data-commons-oa.s3.amazonaws.com/EJAM/blockid2fips.rda"
     ######################### # 
-    
   }
   
   # create index of all US block points, to enable fast queries ####
@@ -125,7 +121,6 @@
     if (length(try(find.package("EJAM", quiet = T))) == 1) { # The first time you try to install the package, it will not have access to EJAM :: etc. !
       
       dataload_from_package() # EJAM function works only AFTER shiny does load all/source .R files or package attached
-      
     }
     
     # load BLOCKGROUP (not block) data (EJScreen data), etc. from package
@@ -135,9 +130,11 @@
     # # would work after package is installed
     # data(list=c("frs", "frs_by_programid ", "frs_by_naics"),  package="EJAM")
     # # would be to preload some very large ones not always needed.
-    
   }
   
-  packageStartupMessage('For help using the EJAM package, try ?EJAM or see https://usepa.github.io/EJAM/index.html')
-  
+  packageStartupMessage('For help using the EJAM package in RStudio, try one of these:
+                        browseURL("https://usepa.github.io/EJAM/index.html")
+                        ?EJAM
+                        browseVignettes("EJAM") # if vignettes were included when installing
+                        ')
 }
