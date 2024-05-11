@@ -44,9 +44,10 @@ reference:
   - app_run_EJAM
   - ejamit
   - ejam2report
-  - ejam2excel
   - ejam2map
+  - ejam2excel
   - ejam2ratios
+  - ejam2barplot
   - ejamit_compare_distances
   - ejamit_compare_types_of_places
   - ejscreenit_for_ejam

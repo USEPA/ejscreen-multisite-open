@@ -457,37 +457,12 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   
   ##################################################### #  ##################################################### #  ##################################################### #
   
-  
   ##################################################### #
   
   # ___AGGREGATE by BG, the Distances and Sitecounts___ ######
   
-  
   ##################################################### #
-  # How to get Distrib and avg in each Demog group, ####
-  # * each Demog's DISTRIBUTION OF DISTANCES or ENVT
-  # for
-  # - Envt indicators, and for
-  # - Dist/proximity/sitecount stats.
-  #
-  # - also, want %D as function of distance.
-  #
-  # We have each blockgroup near each site, which means some small % of those bgs are duplicated in this table:
-  #   sites2bgs_plusblockgroupdata_bysite
-  #  and for those stats we would want to take only unique blockgroups from here,
-  #  using the shorter distance I think, so the distribution of distances does not doublecount people.
-  #
-  # Mostly we want this OVERALL (not by site)
-  #  But perhaps we might also want to see that distribution of distances by D *for just 1 site??*
-  #  And perhaps we might also want to see the %D as a function of continuous distance *at just 1 site??*
-  #  So although it would be simpler, clearer to return just all unique blockgroups NOT by site,
-  #   just to retain flexibility this function currently reports all instances of blockgroup-site pairing.
-  #
-  # see  EJAM/inst/notes_MISC/NOTES_IDEA_OUT_BY_BG_SHOWS_DISTRIB_OVER_PEOPLE.R
-  
-  
-  ##################################################### #
-  # >>NEED TO CHECK THIS overall calcution here ####
+  # >>NEED TO CHECK THIS overall calculation here ####
   # - not sure we want these distance/count items here like this:
   # Was going to try to do join of weights and the aggregation by blockid all in this one step? but not tested
   # and may need to do intermed step 1st, where
