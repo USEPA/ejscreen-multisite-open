@@ -2,35 +2,55 @@
 % Please edit documentation in R/plot_distance_by_pctd.R
 \name{plot_distance_by_pctd}
 \alias{plot_distance_by_pctd}
-\title{What percentage of this demographic group's population lives less than X miles from a site?}
+\title{What percentage of this demographic group's population lives less than X miles from a site? --- *** DRAFT - NEED TO RECHECK CALCULATIONS}
 \usage{
 plot_distance_by_pctd(
   s2b = NULL,
-  sitenum = NULL,
-  dpctvar = "pctlowinc",
-  myvars = c(names_d_count, names_d_subgroups_count)[1],
-  demoglabel = fixcolnames(myvars, "r", "shortlabel")
+  sitenum = 1,
+  score_colname = names_these[3],
+  scorewts_colname = "pop",
+  score_label = fixcolnames(score_colname, "r", "shortlabel"),
+  radius = 30
 )
 }
 \arguments{
-\item{s2b}{output of \code{\link[=getblocksnearby]{getblocksnearby()}}, a data.table of distance from each block centroid to each site.
-If NULL (not provided as a parameter to the function), the function will just show an example using a random point.}
+\item{s2b}{output of \code{\link[=getblocksnearby]{getblocksnearby()}}, or else can be
+a table of points with lat,lon columns and 1 row per point.
+If NULL (not provided as a parameter to the function),
+will prompt for a file to upload and use, if interactive() is TRUE, or else
+the function will just show an example using a random point.}
 
-\item{sitenum}{one number that is the unique ID (the row number of original list of points) to look at in s2b}
+\item{sitenum}{If used, one number that is the unique ID
+(the row number of original list of points) to look at in s2b.
+This should be the same as the value of s2b$ejam_uniq_id for
+the site to be analyzed.
+Will be able to omit or set to NULL to use overall aggregate of all sites.}
 
-\item{dpctvar}{a colname of usastats and statestats that is the percentage version of myvars, like "pcthisp" or "pctlowinc"}
+\item{score_colname}{colname in blockgroupstats for an indicator to be
+aggregated across blocks and blockgroups as a weighted mean}
 
-\item{myvars}{a colname of a population count variable in blockgroupstats indicating which to plot, like "hisp" or "lowinc"
-and only works for one indicator at a time so far.}
+\item{scorewts_colname}{colname in blockgroupstats -- like "pop" -- for the weight
+to use in aggregating the scores referred to by score_colname}
+
+\item{score_label}{optional friendly label for the variable}
+
+\item{radius}{optional radius to use as maximum analyzed or shown --
+if s2b was provided, this caps what is used and only shorter radii get shown
+(only relevant if s2b had radii larger than this radius parameter)
+and if s2b is not provided, interactively RStudio user is prompted
+to provide latlon file to analyze in getblocksnearby() and
+radius is used in that.}
 }
 \value{
-returns s2b but with more columns in it, like cumpop, cumdpop, pctdwithin
+returns s2b but with more columns in it like wtdmean_within
 }
 \description{
+*** DRAFT - NEED TO RECHECK CALCULATIONS
 This plots the cumulative share of residents found within each distance,
 for a single demographic group.
 }
 \details{
+
 Also see ejamit_compare_distances() for a plot  of several indicators at several distances!
 
 This function uses the distance of each Census block from the site in conjunction with
@@ -40,6 +60,23 @@ how far away residents in each group live. In contrast, the function
 which provides only block group resolution information about distance.
 }
 \examples{
-  plot_distance_by_pctd()
 
+ # Example of area where \%Black is
+ very high within 1 mile but drops by 3 miles away
+ pts = testpoints_100[3,]
+  plot_distance_by_pctd(
+    getblocksnearby(pts, radius = 10, quiet = T),
+    score_colname = "pctnhba")
+ #browseURL(url_ejscreen_report(lat = pts$lat, lon = pts$lon, radius = 0.5))
+ #browseURL(url_ejscreen_report(lat = pts$lat, lon = pts$lon, radius = 3))
+ 
+ # Example of area that has higher \%Hispanic as you go 
+ # 10 to 30 miles away from this specific point
+ pts = data.table(lat = 45.75464, lon = -94.36791)
+ plot_distance_by_pctd(pts,
+   sitenum = 1, score_colname = "pcthisp")
+ # browseURL(url_ejscreen_report(lat = pts$lat, lon = pts$lon, radius = 10))
+ # browseURL(url_ejscreen_report(lat = pts$lat, lon = pts$lon, radius = 30))
+ 
+ 
 }

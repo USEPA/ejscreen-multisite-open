@@ -63,7 +63,8 @@
 #'   [ejamit()] default is to set this to FALSE when calling [doaggregate()].
 #' @param called_by_ejamit Set to TRUE by [ejamit()] to suppress some outputs even if ejamit(silentinteractive=F)
 #' @param testing used while testing this function
-#'
+#' @param ... passed to getblocksnearby() etc. such as  report_progress_every_n = 0
+#' 
 #' @return A list of tables of results
 #'
 #' @examples
@@ -162,7 +163,8 @@ ejamit <- function(sitepoints,
                    parallel = FALSE,
                    silentinteractive = FALSE,
                    called_by_ejamit = TRUE,
-                   testing = FALSE
+                   testing = FALSE,
+                   ...
 ) {
   
   #  1. getblocksnearby() ####
@@ -301,8 +303,8 @@ ejamit <- function(sitepoints,
         # quadtree = localtree,
         quiet = quiet,
         parallel = parallel,
-        updateProgress = updateProgress_getblocks
-        # report_progress_every_n = 500  # would be passed through to getblocksnearbyviaQuadTree()
+        updateProgress = updateProgress_getblocks,
+        ...  #  could provide report_progress_every_n = 500  # would be passed through to getblocksnearbyviaQuadTree()
       )
       ################################################################################## #
       

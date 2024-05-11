@@ -52,7 +52,8 @@ knitr::opts_chunk$set(eval = FALSE)
 ```
 
 
-# Note: This article is not yet available.
+# Note: This article is a work in progress - currently just draft notes
+
 
 ## Test data / Examples of Inputs and Outputs of Various Functions
 
@@ -68,4 +69,214 @@ x[grepl("^testout", x$Item), ]  ; cat("\n\n")
 x[grepl("^test[^op_]", x$Item), ]
 ```
 
+
+
+## DISTANCES (RADIUS VALUES)
+
+
+### Mean distance of each group
+
+```{r plot_distance_mean_by_group_1, eval = TRUE}
+# plot_distance_mean_by_group(testoutput_ejamit_1000pts_1miles$results_bybg_people)
+
+# larger radius reveals more information
+
+y <- ejamit(testpoints_100, radius = 3.1)
+
+plot_distance_mean_by_group(y$results_bybg_people) 
+# or distance_mean_by_group() is a synonym
+
+print(distance_by_group(
+  y$results_bybg_people, 
+  demogvarname = 'pctlowinc', demoglabel = 'Low Income'))
+```
+
+
+### Comparing results for 2 or 3 specific distances
+
+```{r ejamit_compare_distances, eval=TRUE}
+  radii <- c(1,2,3,6,10)
+  radii <- c(1, 10)
+  pts <- testpoints_100
+  pts <- testpoints_10
+  x <- ejamit_compare_distances(pts, radii = radii)
+  EJAM:::distance_comparison_ejamit2plot(x)
+```
+
+
+### Demographics as a continuous function of distance
+```{r}
+ # Example of area where %Black is
+ # very high within 1 mile but drops by 3 miles away
+ pts = testpoints_100[3,]
+  plot_distance_by_pctd(
+    getblocksnearby(pts, radius = 10, quiet = T),
+    score_colname = "pctnhba")
+ #browseURL(url_ejscreen_report(lat = pts$lat, lon = pts$lon, radius = 0.5))
+ #browseURL(url_ejscreen_report(lat = pts$lat, lon = pts$lon, radius = 3))
+
+ # Example of area that has higher %Hispanic as you go
+ # 10 to 30 miles away from this specific point
+ pts = data.table(lat = 45.75464, lon = -94.36791)
+ plot_distance_by_pctd(pts,
+   sitenum = 1, score_colname = "pcthisp")
+ # browseURL(url_ejscreen_report(lat = pts$lat, lon = pts$lon, radius = 10))
+ # browseURL(url_ejscreen_report(lat = pts$lat, lon = pts$lon, radius = 30))
+```
+
+
+### Plot of how each group's share of everyone nearby changes with distance ?
+
+```{r distance_by_group_plot1, eval=TRUE}
+distance_by_group_plot(
+  y$results_bybg_people,
+  demogvarname = 'pctlowinc', demoglabel = 'Low Income')
+```
+
+
+
+## POPULATION DENSITY - AVG SITE VS AVG RESIDENT
+
+### Sites vary widely in count of blocks nearby, depending on population density
+
+-   what blocks are near each site
+-   how far are they
+-   how many blocks are typically near a given site (population density varies)
+-   how many sites are near a block (residents with \> 1 site nearby)
+
+```{r popshare_at, eval=TRUE}
+out <- testoutput_ejamit_100pts_1miles
+cat("  ", popshare_p_lives_at_what_pct(out$results_bysite$pop, p = 0.50, astext = TRUE), "\n")
+cat("  ", popshare_at_top_n(out$results_bysite$pop, c(1, 5, 10), astext = TRUE), "\n\n")
+
+```
+
+```{r getblocksnearby2, eval=TRUE}
+## Also could use this example intermediate step dataset 
+## of n sites, with thousands of nearby blocks:
+# sites2blocks <- data.table::copy(testoutput_getblocksnearby_10pts_1miles)
+radius <- 3
+sitepoints <- data.table::copy(testpoints_100) 
+
+sites2blocks <- getblocksnearby(sitepoints, radius, quadtree = localtree)
+
+names(sites2blocks)
+
+getblocks_summarize_blocks_per_site(sites2blocks) 
+
+# print() shows more info returned invisibly
+getblocks_diagnostics(sites2blocks)
+# Use data.table package here
+library(data.table)
+
+# Very few blocks are within a radius of 1/4 mile.
+# Hundreds are often within 1 mile, but sometimes there are 
+# only a handful or even zero.
+
+s2b_stats <- sites2blocks[ , .(
+  avgDistance = round(mean(distance), 2),
+  blocksfound = .N, 
+  blocks_within_1mile = sum(distance <= 1),
+  blocks_within_0.75   = sum(distance <= 0.75),
+  blocks_within_0.25  = sum(distance <= 0.25)
+), by = 'ejam_uniq_id'][order(blocksfound), ]
+setorder(s2b_stats, ejam_uniq_id)
+head(s2b_stats)
+```
+
+```{r plot_count_of_blocks_nearby, eval=TRUE, fig.height=5, fig.width=6}
+
+# CDF of how many blocks are nearby a site
+plot(sort(s2b_stats$blocks_within_1mile), 
+     main = "How many blocks are near each facility?", 
+     ylab = "# of blocks (whose internal point is) within 1 mile of each site", 
+     xlab = paste0(nrow(s2b_stats)," facilities ranked by # of blocks nearby"))
+abline(h = quantile(s2b_stats$blocks_within_1mile, probs = (0:4) * 0.25))
+abline(h = mean(s2b_stats$blocks_within_1mile), col = "red")
+
+
+```
+
+```{r histoblocks, eval=TRUE, fig.height=6, fig.width=7}
+# Histogram of how many blocks are nearby a site
+hist(sites2blocks[,.N, by = "ejam_uniq_id"][, N], 20, 
+     xlab = "How many blocks are nearby?", 
+     ylab = "Frequency (# of sites)", 
+     main = "A given site may have zero to hundreds of blocks nearby", 
+     sub = "A typical site in this example has about 100 blocks nearby")
+```
+
+```{r DTdatatable, eval = FALSE}
+
+DT::datatable(s2b_stats,  rownames = FALSE)
+# more summaries showing there may be only 1 block or hundreds within 1 mile
+quantile(s2b_stats$blocks_within_1mile, probs = (0:4) * 0.25)
+t(summary(s2b_stats))
+```
+
+```{r s2b_stats, eval = TRUE, fig.height=5, fig.width=5}
+# map the sites with popups about how many blocks were found near each
+if (!('ejam_uniq_id' %in% names(sitepoints))) {sitepoints$ejam_uniq_id <- seq.int(length.out = NROW(sitepoints))}
+s2b_stats <- merge(sitepoints, s2b_stats, by = "ejam_uniq_id")
+mapfast(s2b_stats, radius = radius)
+```
+
+```{r s2b_stats_more, eval = TRUE, fig.height=5, fig.width=5}
+
+# Some places have very few -- if any -- blocks within 1 mile
+
+tail(s2b_stats[order(s2b_stats$blocks_within_1mile, decreasing = T), 
+               c('ejam_uniq_id', 'blocks_within_1mile')], 3) 
+
+# Some places have hundreds nearby: a 1 mile radius is huge 
+# within a dense urban area
+
+head(s2b_stats[order(s2b_stats$blocks_within_1mile, decreasing = T), 
+               c('ejam_uniq_id', 'blocks_within_1mile')], 3)
+densest <- s2b_stats$ejam_uniq_id[order(
+  s2b_stats$blocks_within_1mile, decreasing = T)][1]
+plotblocksnearby(sitepoints = sitepoints[sitepoints$ejam_uniq_id == densest, ])
+```
+
+```{r eval = TRUE}
+# Within a 1 mile radius, the blocks found tend to be about 2/3 of a mile from the site at the center.
+summary(s2b_stats$avgDistance)
+```
+
+
+
+
+## DETAILS OF BLOCKS NEAR ONE SITE
+
+### Distances between each site and nearby blocks
+
+Use `getblocksnearby()` to quickly find residents/blocks that are within a specified distance,
+as a table of distances between sites and nearby blocks.
+
+```{r getblocksnearby1, eval = FALSE}
+sitepoints <- data.table::copy(testpoints_100) 
+# or 
+# sitepoints <- testpoints_n(100,"block") # random points
+radius <- 3.1
+elapsed <- system.time({
+  
+  sites2blocks <- getblocksnearby(
+    sitepoints = sitepoints,
+    radius = radius
+  )
+  
+}) # end of timed function
+print(elapsed)
+
+head(sites2blocks)
+```
+
+### Map and inspect the blocks near 1 site
+
+```{r plotblocksnearby2, eval = TRUE, fig.height=5, fig.width=5}
+x = plotblocksnearby(testpoints_10[1,], radius = 3, returnmap = FALSE)
+#  returnmap= TRUE is to actually return the leaflet map 
+
+# Use weighting="frs" in testpoints_n() to pick a random FRS facility's block
+```
 
