@@ -1,7 +1,19 @@
 
+#' @inherit plot_barplot_ratios_ez
+#' @export
+ejam2barplot = function(out, varnames = c(names_d_ratio_to_avg , names_d_subgroups_ratio_to_avg),
+                        main = "Demographics at the Analyzed Locations Compared to US Overall", ...) {
+  # ejam2barplot(out,varnames = c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg), main = "Demographics at Analyzed Locations Compared to Statewide")
+  plot_barplot_ratios_ez(out = out,
+                         varnames = varnames,
+                         main =  main, 
+                         ... = ...)
+}
+############################################################################################# #
+
 
 #' Barplot of ratios of demographic (or other) scores to averages - simpler syntax
-#'
+#' @aliases ejam2barplot
 #' @param out like from [ejamit()]
 #' @param varnames vector of indicator names that are ratios to avg, like 
 #'   c(names_d_ratio_to_avg , names_d_subgroups_ratio_to_avg)
@@ -12,27 +24,29 @@
 #' 
 #' # Check a long list of indicators for any that are elevated
 #' 
-#' plot_barplot_ratios_ez(testoutput_ejamit_100pts_1miles,
+#' out <- testoutput_ejamit_100pts_1miles
+#' 
+#' ejam2barplot(out,
 #'   varnames = names_these_ratio_to_avg,
 #'   main = "Envt & Demog Indicators at Selected Sites Compared to State Averages")
 #'   
-#' plot_barplot_ratios_ez(testoutput_ejamit_100pts_1miles,
+#' ejam2barplot(out,
 #'   varnames = names_these_ratio_to_state_avg,
 #'   main = "Envt & Demog Indicators at Selected Sites Compared to State Averages")
 #' 
 #' # Demographics only
 #' 
 #' # vs nationwide avg
-#' plot_barplot_ratios_ez(testoutput_ejamit_100pts_1miles)
+#' ejam2barplot(out)
 #' 
 #' # vs statewide avg
-#' plot_barplot_ratios_ez(testoutput_ejamit_1000pts_1miles, 
+#' ejam2barplot(out, 
 #'   varnames = c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg),
 #'   main = "Demographics at Selected Sites Compared to State Averages")
 #' 
 #' # Environmental only
 #' 
-#' plot_barplot_ratios_ez(testoutput_ejamit_100pts_1miles,
+#' ejam2barplot(out,
 #'   varnames = c(names_e_ratio_to_avg, names_e_ratio_to_state_avg),
 #'   main = "Environmental Indicators at Selected Sites Compared to Averages")
 #'   

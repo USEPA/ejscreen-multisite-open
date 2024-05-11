@@ -11,6 +11,10 @@ ejamit_compare_distances(
   quiet = TRUE,
   silentinteractive = TRUE,
   plot = TRUE,
+  myvars = names_d_subgroups_ratio_to_state_avg,
+  ylab = "Ratio of Avg. within X miles to Avg. Statewide or Nationwide",
+  ylim = c(0, 5),
+  n = 1,
   ...
 )
 }
@@ -22,6 +26,15 @@ ejamit_compare_distances(
 \item{quiet}{passed to \code{\link[=ejamit]{ejamit()}}}
 
 \item{silentinteractive}{passed to \code{\link[=ejamit]{ejamit()}}}
+
+\item{myvars}{for plot, see default value}
+
+\item{ylab}{for plot, see default value}
+
+\item{ylim}{for plot, see default value}
+
+\item{n}{how many of the indicators to report on (printed to console),
+when reporting which indicators most strongly increase as radius decreases.}
 
 \item{...}{passed to \code{\link[=ejamit]{ejamit()}}}
 }
@@ -39,7 +52,11 @@ run ejamit() once per radius, get a table with a row per radius
   pts <- testpoints_100
   pts <- testpoints_10
   x <- ejamit_compare_distances(pts, radii = radii)
-  EJAM:::ejamit_compare_distances(x)
+  
+  names(x) <- fixcolnames(names(x),"r","shortlabel")
+  
+  
+  
   
 }
 \seealso{

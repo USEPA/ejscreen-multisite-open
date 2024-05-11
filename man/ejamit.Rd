@@ -33,7 +33,8 @@ ejamit(
   parallel = FALSE,
   silentinteractive = FALSE,
   called_by_ejamit = TRUE,
-  testing = FALSE
+  testing = FALSE,
+  ...
 )
 }
 \arguments{
@@ -120,6 +121,8 @@ passed to \code{\link[=doaggregate]{doaggregate()}} also. app server sets this t
 \item{called_by_ejamit}{Set to TRUE by \code{\link[=ejamit]{ejamit()}} to suppress some outputs even if ejamit(silentinteractive=F)}
 
 \item{testing}{used while testing this function}
+
+\item{...}{passed to getblocksnearby() etc. such as  report_progress_every_n = 0}
 }
 \value{
 A list of tables of results
