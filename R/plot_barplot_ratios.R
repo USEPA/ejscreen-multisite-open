@@ -1,4 +1,5 @@
 
+
 #' Barplot of ratios of demographic (or other) scores to averages - simpler syntax
 #' @aliases plot_barplot_ratios_ez
 #' @param out like from [ejamit()]
