@@ -2,7 +2,8 @@
 % Please edit documentation in R/plot_barplot_ratios.R
 \name{plot_barplot_ratios_ez}
 \alias{plot_barplot_ratios_ez}
-\title{Same as ejam2barplot()}
+\alias{ejam2barplot}
+\title{Barplot of ratios of demographic (or other) scores to averages - simpler syntax}
 \usage{
 plot_barplot_ratios_ez(
   out,
@@ -11,6 +12,51 @@ plot_barplot_ratios_ez(
   ...
 )
 }
+\arguments{
+\item{out}{like from \code{\link[=ejamit]{ejamit()}}}
+
+\item{varnames}{vector of indicator names that are ratios to avg, like
+c(names_d_ratio_to_avg , names_d_subgroups_ratio_to_avg)
+but could be c(names_d_ratio_to_state_avg , names_d_subgroups_ratio_to_state_avg)}
+
+\item{main}{title of plot - must change to note it vs. State if not comparing to US avg.}
+
+\item{...}{passed to \code{\link[=plot_barplot_ratios]{plot_barplot_ratios()}}}
+}
+\value{
+ggplot
+}
 \description{
-Same as ejam2barplot()
+Barplot of ratios of demographic (or other) scores to averages - simpler syntax
+}
+\examples{
+
+# Check a long list of indicators for any that are elevated
+
+out <- testoutput_ejamit_100pts_1miles
+
+ejam2barplot(out,
+  varnames = names_these_ratio_to_avg,
+  main = "Envt & Demog Indicators at Selected Sites Compared to State Averages")
+  
+ejam2barplot(out,
+  varnames = names_these_ratio_to_state_avg,
+  main = "Envt & Demog Indicators at Selected Sites Compared to State Averages")
+
+# Demographics only
+
+# vs nationwide avg
+ejam2barplot(out)
+
+# vs statewide avg
+ejam2barplot(out, 
+  varnames = c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg),
+  main = "Demographics at Selected Sites Compared to State Averages")
+
+# Environmental only
+
+ejam2barplot(out,
+  varnames = c(names_e_ratio_to_avg, names_e_ratio_to_state_avg),
+  main = "Environmental Indicators at Selected Sites Compared to Averages")
+  
 }
