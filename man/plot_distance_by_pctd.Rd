@@ -29,6 +29,9 @@ returns s2b but with more columns in it, like cumpop, cumdpop, pctdwithin
 \description{
 This plots the cumulative share of residents found within each distance,
 for a single demographic group.
+}
+\details{
+Also see ejamit_compare_distances() for a plot  of several indicators at several distances!
 
 This function uses the distance of each Census block from the site in conjunction with
 the block group demographics, to provide a relatively detailed picture of
