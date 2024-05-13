@@ -461,7 +461,7 @@ generate_demog_header <- function() {
 generate_ej_header <- function() {
   '<br>
  <div id=\"page-2-header\" class=\"header\" style=\"background-color: #005ea2;  color: white; text-align: center; padding: 20px 32px 10px 32px;\">
-            <h2 tabindex=\"8\" style=\"font-size: 30px; margin-bottom: 5px\">Environmental Justice & Supplemental Indexes</h2>
+            <h2 tabindex=\"8\" style=\"font-size: 18px; margin-bottom: 5px\">Environmental Justice & Supplemental Indexes</h2>
             <p style=\"font-family: Oswald, Arial, sans-serif; font-size: 15px; padding-left: 20px;\">The environmental justice and supplemental indexes are a combination of environmental and socioeconomic information. There are thirteen EJ indexes and supplemental indexes in EJScreen reflecting the 13 environmental indicators. The indexes for a selected area are compared to those for all other locations in the state or nation. For more information and calculation details on the EJ and supplemental indexes, please visit the <a tabindex=\"9\" href=\"https://www.epa.gov/ejscreen\" style=\"color: white\">EJScreen website</a>. </p>
         </div>
         <div style=\"background-color: #71bf44; color: white; text-align: center; padding: 0 32px 7px 32px;\">
