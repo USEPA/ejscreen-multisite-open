@@ -3210,10 +3210,6 @@ app_server <- function(input, output, session) {
     input$summ_hist_ind
   })
   
-  current_hist_index_val <- reactive({
-    NULL
-  })
-  
   output$summ_hist_ind <- renderUI({
     
     req(input$include_ejindexes)
@@ -3311,10 +3307,10 @@ app_server <- function(input, output, session) {
         
         ## subset doaggregate results_bysite to selected indicator
         if (submitted_upload_method() == 'SHP') {
-          hist_input <- as.data.frame(data_processed()$results_bysite[, current_hist_ind()])#input$summ_hist_ind])
+          hist_input <- as.data.frame(data_processed()$results_bysite[, paste0('pctile.',current_hist_ind())])#input$summ_hist_ind])
           
         } else {
-          hist_input <- data_processed()$results_bysite[, current_hist_ind(), with=F]#input$summ_hist_ind, with = F]
+          hist_input <- data_processed()$results_bysite[, paste0('pctile.',current_hist_ind()), with=F]#input$summ_hist_ind, with = F]
           
         }
         
@@ -3322,7 +3318,9 @@ app_server <- function(input, output, session) {
         
         ggplot(hist_input) +
           geom_histogram(aes(x = indicator), fill = '#005ea2',
-                         bins = input$summ_hist_bins) +
+                         #bins = input$summ_hist_bins,
+                         breaks = seq(0,100, length.out = input$summ_hist_bins+1)
+                         ) +
           labs(
             x = '',
             y = 'Number of Sites',
@@ -3363,10 +3361,10 @@ app_server <- function(input, output, session) {
         
         ## subset doaggregate results_bysite to selected indicator
         if (submitted_upload_method() == 'SHP') {
-          hist_input <- as.data.frame(data_processed()$results_bysite[, c('pop',current_hist_ind())])
+          hist_input <- as.data.frame(data_processed()$results_bysite[, c('pop',paste0('pctile.',current_hist_ind()))])
           
         } else {
-          hist_input <- data_processed()$results_bysite[, c('pop',current_hist_ind()), with=F]
+          hist_input <- data_processed()$results_bysite[, c('pop',paste0('pctile.',current_hist_ind())), with=F]
           
         }
         
@@ -3375,7 +3373,9 @@ app_server <- function(input, output, session) {
         ## plot population weighted histogram
         ggplot(hist_input) +
           geom_histogram(aes(x = indicator, y = after_stat(density), weight = pop), fill = '#005ea2',
-                         bins = input$summ_hist_bins) +
+                         #bins = input$summ_hist_bins,
+                         breaks = seq(0,100, length.out = input$summ_hist_bins+1)
+          ) +
           ## set y axis limits to (0, max value) but allow 5% higher on upper end
           scale_y_continuous(limits = c(0, NA), expand = expansion(mult = c(0, 0.05))) +
           labs(
