@@ -116,7 +116,6 @@ app_ui  <- function(request) {
             ## upload-methods column ####
             column(
               4,  # through about line 359
-              h3('Specify Locations to Analyze'),
 
               ## input: use CATEGORIES of sites, or upload LOCATIONS ? ####
               div(style = 'border: 1px solid #005ea2; padding: 10px;',
@@ -126,42 +125,43 @@ app_ui  <- function(request) {
                                                'Upload specific locations'),
                                choiceValues = c('dropdown',
                                                 'upload'),
-                               selected = 'upload')
-              ),
-              br(),
-
-              ### input: what CATEGORY type? (NAICS, SIC, MACT, Program) ####
-              conditionalPanel(
-                condition = 'input.ss_choose_method == "dropdown"',
-                div(style = 'border: 1px solid #005ea2; padding: 10px;',
+                               selected = 'upload'),
+                  ### input: what CATEGORY type? (NAICS, SIC, MACT, Program) ####
+                  # end conditional choose category type
+                  conditionalPanel(
+                    condition = 'input.ss_choose_method == "dropdown"',
                     selectInput(inputId = 'ss_choose_method_drop',
-                                label = tags$span('How would you like to select categories?'),
-                                choices = c('by Industry (NAICS) Code' = 'NAICS',
-                                            'by Industry (SIC) Code'   = 'SIC',
-                                            'by EPA Program'           = 'EPA_PROGRAM',
-                                            'by MACT subpart'          = 'MACT'))
-                )
-              ), # end conditional choose category type
-
-              ### input: what LOCATIONS type to upload? (IDs, latlon, FIPS, Shapes) ####
-              conditionalPanel(
-                condition = 'input.ss_choose_method == "upload"',
-                div(style = 'border: 1px solid #005ea2; padding: 10px;',
+                                    label = tags$span('How would you like to select categories?'),
+                                    choices = c('by Industry (NAICS) Code' = 'NAICS',
+                                                'by Industry (SIC) Code'   = 'SIC',
+                                                'by EPA Program'           = 'EPA_PROGRAM',
+                                                'by MACT subpart'          = 'MACT'))
+                    
+                  ),
+                  ### input: what LOCATIONS type to upload? (IDs, latlon, FIPS, Shapes) ####
+                  # end conditional picking what type of IDs to upload
+                  conditionalPanel(
+                    condition = 'input.ss_choose_method == "upload"',
                     selectInput(inputId = 'ss_choose_method_upload',
-                                #label = 'What type of data are you uploading?',
-                                label = tags$span(
-                                  'What type of data are you uploading?'
-                                ),
-                                choices = c('Latitude/Longitude file upload'               = 'latlon',
-                                            'EPA Facility ID (FRS Identifiers)'            = 'FRS',
-                                            'EPA Program IDs'                              = 'EPA_PROGRAM',
-                                            'FIPS Codes'                                   = 'FIPS',
-                                            'Shapefile of polygons'                        = 'SHP')   # , selected = 'latlon'   # would set initial value but default is 1st in list
-                    )
-                )
-              ), # end conditional picking what type of IDs to upload
+                                    #label = 'What type of data are you uploading?',
+                                    label = tags$span(
+                                      'What type of data are you uploading?'
+                                    ),
+                                    choices = c('Latitude/Longitude file upload'               = 'latlon',
+                                                'EPA Facility ID (FRS Identifiers)'            = 'FRS',
+                                                'EPA Program IDs'                              = 'EPA_PROGRAM',
+                                                'FIPS Codes'                                   = 'FIPS',
+                                                'Shapefile of polygons'                        = 'SHP')   # , selected = 'latlon'   # would set initial value but default is 1st in list
+                        )
+                    
+                  ),
+              ),
+
+
+
 
               br(),
+
 
               ## *UPLOADING  SITES*  input: choose among facility dropdown options, conditional panel ####
 
@@ -400,7 +400,6 @@ app_ui  <- function(request) {
                    ## TABLE of uploaded points in Modal window via Button  ####
                    div(
                      style = "display: flex; flex-direction: column; margin-bottom: .5em;",
-                     h3('Selected Location Map'),
                      div(
                        style = "flex: 1; display: flex; flex-wrap: wrap; gap: 1em; align-items: center;",
                          div(

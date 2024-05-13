@@ -293,7 +293,7 @@ width: 4em;
   
   h4 {
     /*font-family: Arial, sans-serif;*/
-    font-size: 11px;
+    font-size: 14px;
     font-style: normal;
     font-variant: normal;
     font-weight: 700;
@@ -308,10 +308,15 @@ width: 4em;
     line-height: 23px;
   }
   
-  li, p, label, input, button, a, .selectize-input, .selectize-dropdown-content, .shiny-output-error, #an_map_text {
+  li, p, label, input, button, a, .selectize-input, .selectize-dropdown-content, .shiny-output-error, #an_map_text, .help-block {
     font-size: 13.5px !important;
   }
 
+.navbar1 .container {
+  width: 100%;
+}
+  
+}
   
   blockquote {
     /*font-family: Arial, sans-serif;*/
