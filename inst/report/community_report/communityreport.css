@@ -308,7 +308,7 @@ width: 4em;
     line-height: 23px;
   }
   
-  li, p, label, input, button, a, .selectize-input, .selectize-dropdown-content, .shiny-output-error {
+  li, p, label, input, button, a, .selectize-input, .selectize-dropdown-content, .shiny-output-error, #an_map_text {
     font-size: 13.5px !important;
   }
 
