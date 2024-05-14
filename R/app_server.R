@@ -1361,6 +1361,10 @@ app_server <- function(input, output, session) {
     'EPA_PROGRAM_up' = 1, 'EPA_PROGRAM_sel' = 1, 
     'FIPS' = 0, 'SHP' = 0
   )
+  
+  ## record radius at time of analysis
+  submitted_radius_val <- reactiveVal(NULL)
+                                         
   # update if advanced tab changes these
   observeEvent(
     input$default_miles,
@@ -1566,6 +1570,8 @@ app_server <- function(input, output, session) {
   
   observeEvent(input$bt_get_results, {  # (button is pressed)
     submitted_upload_method(current_upload_method())
+    submitted_radius_val(current_slider_val[[submitted_upload_method()]])
+    
     showNotification('Processing sites now!', type = 'message', duration = 1)
     
     ## progress bar setup overall for 3 operations  (getblocksnearby, doaggregate, batch.summarize)
@@ -2145,7 +2151,7 @@ app_server <- function(input, output, session) {
           #options = leafletOptions(zoomControl = FALSE, minZoom = 4)) %>%
           addTiles()  %>%
           addCircles(
-            radius = 1 * meters_per_mile,
+            radius = submitted_radius_val() * meters_per_mile,#1 * meters_per_mile,
             color = circle_color, fillColor = circle_color,
             fill = TRUE, weight = input$circleweight_in,
             #group = 'circles',
