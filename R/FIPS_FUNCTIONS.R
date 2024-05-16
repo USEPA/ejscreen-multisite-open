@@ -114,7 +114,11 @@ fipstype <- function(fips) {
 #' @export
 #'
 fips_lead_zero <- function(fips) {
-
+  
+  if (any(as.numeric(fips) != fips, na.rm = T) | any(is.na(as.numeric(fips)))) {
+    warning('some fips cannot be interpreted as numbers (e.g., are text or NA or logical')
+    }
+  
   #	TRY TO CLEAN UP vector of FIPS AND INFER GEOGRAPHIC SCALE
   # # Very similar to ejanalysis package file clean.fips()
 

@@ -436,25 +436,10 @@ app_ui  <- function(request) {
                             ## separated label from slider to allow for line break - shiny does not support it
                             ## in update*Input: https://github.com/rstudio/shiny/issues/3678
                             htmlOutput('radius_label'),
+                            
                             ## input: RADIUS SLIDER for circular buffer
-                            shiny::sliderInput(inputId = 'bt_rad_buff',
-                                               ## label is updated in server
-                                               label = "", # htmltools::h5('Within what distance of a site?'),
-                                               min = 0, 
-                                               
-                                               max = default_max_miles,
-                                               # max = input$max_miles,  ## but cannot use input$ in ui, only server
-                                               
-                                               # value = default_default_miles, # simplest but fails to listen to advanced tab or param passed in run_app()
-                                               # value = input$default_miles, ## ideal, but would have to do in server-- cannot use input$ in ui, only in server
-                                               value = ifelse(  ## a way to listen to param passed to run_app() but still fails to respond to advanced tab
-                                                 length(get_golem_options("default_default_miles")) > 0,
-                                                 get_golem_options("default_default_miles"),
-                                                 default_default_miles),
-                                               
-                                               step = 0.25, # *** if 0.1, would enable more flexibility but not allow quarter mile increment
-                                               post = ' miles'
-                            ),
+                            
+                            shiny::uiOutput("radius_slider_ui")
                      ),
                      column(6,
                             ## input: Name of analysis (goes in report header) ####
@@ -1059,42 +1044,12 @@ app_ui  <- function(request) {
 
                 # * Each time a user session is started, the application-level option set is duplicated, for that session.
                 # * If the options are set from inside the server function, then they will be scoped to the session.
-                h4("Defaults and caps are defined in global.R"),
+                # h5("Note: Some defaults and caps are defined in global.R"),
 
                 ######################################################## #
-                ##  ------------------------ Options in general and Testing ## ##
-
-                radioButtons("testing", "TESTING APP? testing = ", choices = c(Yes = TRUE, No = FALSE),
-                             inline = TRUE,
-                             selected = default_testing),
-
-                radioButtons("shiny.testmode", "shiny.testmode = ", choices = c(Yes = TRUE, No = FALSE),
-                             inline = TRUE,
-                             selected = default_shiny.testmode),
-                # If TRUE, then various features for testing Shiny applications are enabled.
-                # shiny.reactlog (defaults to FALSE)
-                #    If TRUE, enable logging of reactive events, which can be viewed later with the reactlogShow() function. This incurs a substantial performance penalty and should not be used in production.
-                #
-                # shiny.devmode (defaults to NULL)
-                # Option to enable Shiny Developer Mode. When set, different default getOption(key) values will be returned. See devmode() for more details.
-                #
-                # shiny.sanitize.errors (defaults to FALSE)
-                #    If TRUE, then normal errors (i.e. errors not wrapped in safeError) won't show up in the app; a simple generic error message is printed instead (the error and strack trace printed to the console remain unchanged). If you want to sanitize errors in general, but you DO want a particular error e to get displayed to the user, then set this option to TRUE and use stop(safeError(e)) for errors you want the user to see.
-                #
-                # shiny.suppressMissingContextError (defaults to FALSE)
-                #    Normally, invoking a reactive outside of a reactive context (or isolate()) results in an error. If this is TRUE, don't error in these cases. This should only be used for debugging or demonstrations of reactivity at the console.
-                #
-                # shiny.stacktraceoffset (defaults to TRUE)
-                #    If TRUE, then Shiny's printed stack traces will display srcrefs one line above their usual location. This is an arguably more intuitive arrangement for casual R users, as the name of a function appears next to the srcref where it is defined, rather than where it is currently being called from.
-                #
-                # shiny.trace (defaults to FALSE)
-                # Print messages sent between the R server and the web browser client to the R console. This is useful for debugging. Possible values are "send" (only print messages sent to the client), "recv" (only print messages received by the server), TRUE (print all messages), or FALSE (default; don't print any of these messages).
-                #
-                # shiny.autoload.r (defaults to TRUE)
-                # If TRUE, then the R/ of a shiny app will automatically be sourced.
-
-                checkboxInput('print_uploaded_points_to_log', label = "Print each new uploaded lat lon table full contents to server log",
-                              value = default_print_uploaded_points_to_log),
+                ## Bookmarking button ####
+                h2("Bookmarking to save settings and inputs"),
+                
                 conditionalPanel(condition = bookmarking_allowed, {
                   bookmarkButton()  # https://mastering-shiny.org/action-bookmark.html
                 }),
@@ -1103,10 +1058,9 @@ app_ui  <- function(request) {
                 # will not be editable here.
 
                 ######################################################## #
-                ##  ------------------------ Options in point/shape/file uploads, and radius  ## ##
-
-                ### ------------------------ limits on # of points/shapes/MB ####
-
+                ##  Uploading files/points/shapes ####
+                h2("Limits on uploads/points/shapes"),
+                
                 numericInput('max_pts_upload', label = "Cap on number of points one can UPLOAD, additional ones in uploaded table get dropped entirely",
                              min = 1000,  step = 500,
                              value = default_max_pts_upload,
@@ -1131,34 +1085,38 @@ app_ui  <- function(request) {
 
                 numericInput(inputId = 'max_mb_upload', label = 'Cap on size of file(s) one can upload in MB (an issue for shapefiles, mainly)',
                              min = minmax_mb_upload,
-                             value = default_max_mb_upload,
+                             value = global_or_param("default_max_mb_upload"),
                              max = maxmax_mb_upload,
                              step = minmax_mb_upload),
-
-                ### Options for Radius  ------------- #
                 
-                numericInput('default_miles', label = "Default miles radius",  # what is shown at app startup 
-                             min = 0.25,
-                             # value = default_default_miles, # how it was done before allowed it as a parameter in run_app()
-                             value = ifelse(
-                               ### also see server code where this is checked and modified as well
-                               ### and note default is different for each upload type (zero if shape or fips)
-                               ### check if param was passed to run_app() like run_app(default_default_miles = 3.1)
-                               length(get_golem_options("default_default_miles")) > 0, 
-                               get_golem_options("default_default_miles"), 
-                               default_default_miles),
-                             max   =     max_default_miles), # highest initial value that can be shown 
+                ######################################################## #
+                ## *Radius* options ####
+                h2("Radius options"),
+                
+                # minradius  # (set via global.R)
+                # minradius_shapefile # (0 set via global.R)
+                # stepradius # (set via global.R)
+                
+                numericInput('default_miles', label = "Default miles radius",  # what is shown at app startup for all but shapefiles
+                             ### Also note server code where radius can be modified via updateSliderInput, 
+                             ### and saved current value stored is specific to each upload type, returns to that when switch type back.
+                             min = minradius,  # from global.R
+                             value = global_or_param("default_default_miles"),
+                             max   = global_or_param("default_max_miles")), # (set via global.R) highest allowed default (i.e. initial) value 
+                
+                numericInput('default_miles_shapefile', label = "Default miles width of buffer around shapefile edges",
+                             min = minradius_shapefile, # from global.R
+                             global_or_param("default_default_miles_shapefile"),
+                             max   =     max_default_miles), # (set via global.R) highest allowed default (i.e. initial) value 
+                
                 numericInput('max_miles', label = "Maximum radius in miles",
-                             value = default_max_miles, # initial cap that advanced tab lets you increase here
-                             max        = maxmax_miles), # i.e., even in the advanced tab one cannot exceed this cap
-
+                             value = global_or_param("default_max_miles"), # (set via global.R) initial cap that advanced tab lets you increase here
+                             max        = maxmax_miles), # (set via global.R) i.e., even in the advanced tab one cannot exceed this cap
 
                 ######################################################## #
-
-                ##  ------------------------ Options in calculations and what stats to output ## ##
-
-                ### calculate and/or include in downloaded outputs
-
+                ## Calculating and reporting extra metrics ####
+                h2("Calculating and reporting extra metrics"),
+                
                 checkboxInput('calculate_ratios',
                               label = "Results in Excel should include ratios to US and State averages",
                               value = default_calculate_ratios),
@@ -1168,13 +1126,14 @@ app_ui  <- function(request) {
                 checkboxInput('include_extraindicators',
                               label = 'Results should include extra indicators from Community Report - *** not implemented yet',
                               value = default_include_extraindicators),
+ 
                 ######################################################## #
-
-                ## >Options for viewing results  ####
-
+                ## Viewing maps, saving results ####
+                h2("Viewing maps, saving results"),
+                
                 textInput('prefix_filenames', label = "Prefix to use in default file names when downloading [***NOT implemented yet]", value = ""),
 
-                ### ------------------------ map colors, weights, opacity ####
+                ## Map colors, weights, opacity ####
                 ### in ejscreenapi:
                 numericInput(inputId = "circleweight_in", label = "weight of circles in maps", value = default_circleweight),
 
@@ -1187,12 +1146,10 @@ app_ui  <- function(request) {
                 # cluster_color_default   <- "red"   ;
                 # highlight_color_default <- 'orange';
 
-
                 ######################################################## #
-
-                ### Excel formatting options   --------------------- #
-
-
+                ## Spreadsheet formatting of results ####
+                h2("Spreadsheet formatting of results"),
+                
                 # heatmap column names
 
 
@@ -1202,16 +1159,14 @@ app_ui  <- function(request) {
                 # heatmap colors for bins
 
 
-
                 checkboxInput("ok2plot",
                               label = "OK to try to plot graphics and include in Excel download",
                               value = default_ok2plot),
 
-                ######################################## #
-
-
-                ###  ------------------------ in getblocksnearby()  ------------- #
-
+                ######################################################## #
+                ##  Finding distances: getblocksnearby() ####
+                h2("Finding distances to nearby blocks and residents"),
+                
                 radioButtons(inputId = "avoidorphans",
                              label =  "Avoid orphans (by searching for nearest one out to maxradius, instead of reporting NA when no block is within radius)",
                              choices = c(Yes = TRUE, No = FALSE),
@@ -1222,9 +1177,11 @@ app_ui  <- function(request) {
                              label = 'If avoid orphans=T, Max distance in miles to search for closest single block if site has none within normal radius',
                              value =  default_maxradius,  # 50000 / meters_per_mile, # 31.06856 miles !!
                              min = 0, max = default_maxradius, step = 1),
-
-                ###  ------------------------ in doaggregate()   ------------- #
-
+                
+                ######################################################## #
+                ## Which indicators to include in outputs via doaggregate() ####
+                h2("Which indicators to include in outputs"),
+                
                 shiny::selectInput('subgroups_type',
                                    #    "nh" for non-hispanic race subgroups as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh;
                                    #    "alone" for EJScreen v2.2 style race subgroups as in    White Alone, wa and others in names_d_subgroups_alone;
@@ -1247,16 +1204,18 @@ app_ui  <- function(request) {
                                     label = "Need extra indicators from EJScreen v2.2 report, on language, age groups, gender, percent with disability, poverty, etc.",
                                     choices = list(Yes = TRUE, No = FALSE ),
                                     selected = default_extra_demog),
-
-                ### Threshold comparisons options --------------------- #
-
+                
+                ######################################################## #
+                ## Counting indicators reaching certain thresholds ####
+                h2("Counting indicators reaching certain thresholds"),
+                
                 ## input: GROUP NAME for 1st set of comparisons - where the table counts which scores are above certain cutoffs?
                 shiny::textInput(inputId = 'an_threshgroup1',
                                  label = 'Name for 1st set of comparisons',
                                  value = default.an_threshgroup1
                 ),
                 ## input: variable names for 1st set of comparisons
-                shiny::selectInput(inputId = 'an_threshnames1',
+                shiny::selectizeInput(inputId = 'an_threshnames1',
                                    multiple = TRUE,
                                  label = 'variable names for 1st set of comparisons',
                                  choices = names_all_r,
@@ -1275,7 +1234,7 @@ app_ui  <- function(request) {
                                  value =   default.an_threshgroup2
                 ),
                 ## input: variable names for 2d set of comparisons
-                shiny::selectInput(inputId = 'an_threshnames2',
+                shiny::selectizeInput(inputId = 'an_threshnames2',
                                    multiple = TRUE,
                                    label = 'variable names for 2d set of comparisons',
                                    choices = names_all_r,
@@ -1286,10 +1245,10 @@ app_ui  <- function(request) {
                              label = 'Threshold value(s) for 2nd set of comparisons (e.g. %ile 1-100):',
                              value = default.an_thresh_comp2
                 ),
+                
                 ######################################################## #
-                ######################################################## #
-
-                ### Short report options --------------------- #
+                ## Short report options ####
+                h2("Short report"),
 
                 shiny::textInput("standard_analysis_title",
                                  label = "Default title to show on each short report",
@@ -1302,22 +1261,62 @@ app_ui  <- function(request) {
                                     selected = default_plotkind_1pager),
 
                 ## _radio button on format of short report
-                #                  DISABLED UNTIL PDF KNITTING IS DEBUGGED
+                #                  was DISABLED while PDF KNITTING DEBUGGED
                 radioButtons("format1pager", "Format", choices = c(html = "html", html = "pdf"), inline = TRUE),
 
-
-                ### Long report options  --------------------- #
-
+                ######################################################## #
+                ## Long report options ####
+                h2("Long report"),
+                
                 # relocate any here from the Full Report tab??
 
                 br(), ## vertical space
 
                 shiny::radioButtons(inputId = "more3",
-                                    label = "more3 PLACEHOLDER",
-                                    choices = list(A = "a", B = "b", C = "c"),
+                                    label = "placeholder for options not yet implemented",
+                                    choices = list(TBD = "a", etc = "b"),
                                     selected = "a"),
 
                 # ),
+                
+                ##################################################### #
+                ## Testing modes ####
+                h2("Testing/ debugging modes"),
+                
+                radioButtons("testing", "testing?", choices = c(Yes = TRUE, No = FALSE),
+                             inline = TRUE,
+                             selected = default_testing),
+                
+                radioButtons("shiny.testmode", "shiny.testmode?", choices = c(Yes = TRUE, No = FALSE),
+                             inline = TRUE,
+                             selected = default_shiny.testmode),
+                # If TRUE, then various features for testing Shiny applications are enabled.
+                # shiny.reactlog (defaults to FALSE)
+                #    If TRUE, enable logging of reactive events, which can be viewed later with the reactlogShow() function. This incurs a substantial performance penalty and should not be used in production.
+                #
+                # shiny.devmode (defaults to NULL)
+                # Option to enable Shiny Developer Mode. When set, different default getOption(key) values will be returned. See devmode() for more details.
+                #
+                # shiny.sanitize.errors (defaults to FALSE)
+                #    If TRUE, then normal errors (i.e. errors not wrapped in safeError) won't show up in the app; a simple generic error message is printed instead (the error and strack trace printed to the console remain unchanged). If you want to sanitize errors in general, but you DO want a particular error e to get displayed to the user, then set this option to TRUE and use stop(safeError(e)) for errors you want the user to see.
+                #
+                # shiny.suppressMissingContextError (defaults to FALSE)
+                #    Normally, invoking a reactive outside of a reactive context (or isolate()) results in an error. If this is TRUE, don't error in these cases. This should only be used for debugging or demonstrations of reactivity at the console.
+                #
+                # shiny.stacktraceoffset (defaults to TRUE)
+                #    If TRUE, then Shiny's printed stack traces will display srcrefs one line above their usual location. This is an arguably more intuitive arrangement for casual R users, as the name of a function appears next to the srcref where it is defined, rather than where it is currently being called from.
+                #
+                # shiny.trace (defaults to FALSE)
+                # Print messages sent between the R server and the web browser client to the R console. This is useful for debugging. Possible values are "send" (only print messages sent to the client), "recv" (only print messages received by the server), TRUE (print all messages), or FALSE (default; don't print any of these messages).
+                #
+                # shiny.autoload.r (defaults to TRUE)
+                # If TRUE, then the R/ of a shiny app will automatically be sourced.
+                
+                checkboxInput('print_uploaded_points_to_log', label = "Print each new uploaded lat lon table full contents to server log",
+                              value = default_print_uploaded_points_to_log),
+                ## . ####
+                ############################################################### # 
+                # ejscreen API tool link ####
                 
                 span('EJAM tool for batch use of the EJScreen API: ',
                      a('ejscreenapi tool',

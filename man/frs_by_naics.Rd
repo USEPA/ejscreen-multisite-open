@@ -27,7 +27,7 @@ length(unique(frs_by_naics$REGISTRY_ID))
 
 \code{frs_by_naics[,uniqueN(REGISTRY_ID)]}
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{ 561,999  as of 3/26/23 but early 2023 had been 564,770
+\if{html}{\out{<div class="sourceCode">}}\preformatted{   e.g., 573,411 in mid 2024
 
 
     lat       lon  REGISTRY_ID  NAICS

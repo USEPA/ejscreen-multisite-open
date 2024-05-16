@@ -110,14 +110,14 @@ ejamit_compare_distances <- function(sitepoints, radii = c(1,2,3), quiet = TRUE,
   z = list()
   for (i in seq_along(radii)) {
     
-      z[[i]] <- EJAM::ejamit(sitepoints = sitepoints, radius = radii[i], 
+      z[[i]] <- ejamit(sitepoints = sitepoints, radius = radii[i], 
                              quiet = quiet, silentinteractive = silentinteractive, 
                              ...)$results_overall
   }
   z = rbindlist(z)
   
   # display some results in RStudio console
-  shown = data.frame(round(t(z)[names_these_ratio_to_state_avg, ], 1))
+  shown = data.frame(round(t(z)[myvars, ], 1))
   colnames(shown) <- radii
   rownames(shown) <- fixcolnames(rownames(shown), 'r', 'shortlabel')
   cat("\n")
@@ -125,7 +125,7 @@ ejamit_compare_distances <- function(sitepoints, radii = c(1,2,3), quiet = TRUE,
   
   if (plot) {
     cat("\n Indicators that most strongly get larger as you get closer: \n")
-    print(distance_comparison_ejamit2plot(z,
+    print(ejamit_compare_distances2plot(z,
                                           myvars = myvars,
                                           ylab = ylab,
                                           ylim = ylim,
@@ -138,7 +138,7 @@ ejamit_compare_distances <- function(sitepoints, radii = c(1,2,3), quiet = TRUE,
 #################################################################### #
 
 
-distance_trends = function(x, radii, n = 1) {
+ejamit_compare_distances_trends = function(x, radii, n = 1) {
   
   # radii <- x$radius.miles
   
@@ -168,7 +168,7 @@ distance_trends = function(x, radii, n = 1) {
 #'   
 #' @export
 #'
-distance_comparison_ejamit2plot <- function(outall, 
+ejamit_compare_distances2plot <- function(outall, 
                                             myvars = names_d_subgroups_ratio_to_state_avg, 
                                             ylab = "Ratio of Avg. within X miles to Avg. Statewide or Nationwide",
                                             ylim = c(0, 5),
@@ -181,7 +181,7 @@ distance_comparison_ejamit2plot <- function(outall,
   
   # REPORT STRONGEST n TREND(s)
   
-  topn = distance_trends(x = x, radii = radii, n = n)
+  topn = ejamit_compare_distances_trends(x = x, radii = radii, n = n)
   
   # PLOT
   

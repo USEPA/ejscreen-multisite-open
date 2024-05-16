@@ -29,13 +29,16 @@
     <a class="dropdown-item" href="../articles/0_webapp.html">Using EJAM</a>
     <div class="dropdown-divider"></div>
     <h6 class="dropdown-header" data-toc-skip>For analysts using R</h6>
-    <a class="dropdown-item" href="../articles/1_installing.html">1. Installing the EJAM R package</a>
-    <a class="dropdown-item" href="../articles/2_quickstart.html">2. Quick Start Guide</a>
-    <a class="dropdown-item" href="../articles/3_analyzing.html">3. Basics of Using EJAM for Analysis in RStudio</a>
-    <a class="dropdown-item" href="../articles/4_advanced.html">4. Advanced Features</a>
-    <a class="dropdown-item" href="../articles/5_ejscreenapi.html">5. Using the EJScreen API via EJAM</a>
-    <a class="dropdown-item" href="../articles/6_future_plans.html">6. Future Plans and Ideas for EJAM</a>
+    <a class="dropdown-item" href="../articles/1_installing.html">Installing the EJAM R package</a>
+    <a class="dropdown-item" href="../articles/2_quickstart.html">Quick Start Guide</a>
+    <a class="dropdown-item" href="../articles/3_analyzing.html">Basics of Using EJAM for Analysis in RStudio</a>
+    <a class="dropdown-item" href="../articles/4_advanced.html">Advanced Features</a>
+    <a class="dropdown-item" href="../articles/5_ejscreenapi.html">Using the EJScreen API via EJAM</a>
+    <a class="dropdown-item" href="../articles/6_future_plans.html">Future Plans and Ideas for EJAM</a>
   </div>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
@@ -75,7 +78,7 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>ratio.to.us.d.overall</dt>
-<dd><p>named list of a few ratios to plot, but see <code><a href="plot_barplot_ratios_ez.html">plot_barplot_ratios_ez()</a></code>
+<dd><p>named list of a few ratios to plot, but see <code><a href="ejam2barplot.html">ejam2barplot()</a></code>
 for an easier way to specify which indicator to show.</p></dd>
 
 
@@ -120,13 +123,13 @@ in EJAM server for tab showing barplots in Detailed Results</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p><code><a href="table_xls_format.html">table_xls_format()</a></code> plot_barplot_ratios</p></div>
+    <div class="dont-index"><p><code><a href="table_xls_format.html">table_xls_format()</a></code> <code><a href="ejam2ratios.html">ejam2ratios()</a></code> <code><a href="ejam2barplot.html">ejam2barplot()</a></code></p></div>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span>  </span>
-<span>  <span class="fu"><a href="plot_barplot_ratios_ez.html">plot_barplot_ratios_ez</a></span><span class="op">(</span><span class="va">testoutput_ejamit_100pts_1miles</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="ejam2barplot.html">ejam2barplot</a></span><span class="op">(</span><span class="va">testoutput_ejamit_100pts_1miles</span><span class="op">)</span></span>
 <span>  </span>
 <span>  <span class="fu">plot_barplot_ratios</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="va">testoutput_ejamit_1000pts_1miles</span><span class="op">$</span><span class="va">results_overall</span><span class="op">[</span> , <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">..names_d_ratio_to_avg</span> , <span class="va">..names_d_subgroups_ratio_to_avg</span><span class="op">)</span> <span class="op">]</span><span class="op">)</span><span class="op">)</span></span>
 <span></span></code></pre></div>

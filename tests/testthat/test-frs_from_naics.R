@@ -38,11 +38,14 @@ test_that('some naics have no sites',{
 
 test_that('results of subcategories only output when children = TRUE',{
   expect_no_warning(frs_from_naics(21222)) # "silver and gold mining"
-  expect_no_warning(frs_from_naics(21222, children = TRUE)) # "silver and gold mining"
-  expect_no_warning(frs_from_naics(212221)) # "gold mining"
+  suppressWarnings({
+    expect_no_error(frs_from_naics(21222, children = TRUE)) # "silver and gold mining" # warns now about the function - see warning
+  })
+    expect_no_warning(frs_from_naics(212221)) # "gold mining"
   expect_no_warning(frs_from_naics(212222)) # "silver mining"
-
+suppressWarnings({
   x <- frs_from_naics(21222, children = TRUE) # 373 # all gold and silver mining
+})
 
   expect_equal(length(which(grepl(212221,x$NAICS))), nrow(frs_from_naics(212221))) # 354 count of gold, matches subset from 21222 w/ children
   expect_equal(length(which(grepl(212222,x$NAICS))), nrow(frs_from_naics(212222))) # 41 count of silver, matches subset from 21222 w/ children

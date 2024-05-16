@@ -335,6 +335,6 @@ options(scipen = 0)
 test_that('should warn for text that cant be coerced into numeric FIPS', {
   expect_warning({
     val <- fips_lead_zero("blue")
-    ## probably should add   if (any(as.numeric(fips) != fips)) {warning('some fips cannot be interpreted as numbers')}
-    }) # leading zero
+    ## revised that function so it now does warn in this case, but does return something like "0blue" still.
+    }) 
 })

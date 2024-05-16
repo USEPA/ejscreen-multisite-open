@@ -25,7 +25,7 @@
 #'   
 #'   `frs_by_naics[,uniqueN(REGISTRY_ID)]`
 #'   
-#'      561,999  as of 3/26/23 but early 2023 had been 564,770
+#'        e.g., 573,411 in mid 2024
 #' 
 #' 
 #'         lat       lon  REGISTRY_ID  NAICS

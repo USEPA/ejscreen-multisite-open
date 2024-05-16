@@ -1,43 +1,32 @@
 # global.R defines variables needed in global environment
 
-# DO NOT source a modules defaults UNTIL INSIDE THE MODULE ####
+# Note: Do not set defaults for a module UNTIL INSIDE THE MODULE 
 #    EJAMejscreenapi module uses its own global.R file:
 #   source(system.file("global.R", package = "EJAMejscreenapi"))
 
-# ------------------------ ____ Get packages, functions, data ---------------------------------  ####
-library(shiny) # remove?
-# LOAD data and INDEX BLOCKS ####
-##         Note this would duplicate code in .onAttach()
-# EJAM ::
-#dataload_from_aws()  # was a SLOW STEP !! loads only missing ones # see ?dataload_from_aws for details
-# dataload_from_pins(varnames = c('bgej','bgid2fips', 'blockpoints','blockwts','quaddata'),
-#                    folder_local_source = './data/'
-#                       )
-# EJAM ::
-#indexblocks() # see ?indexblocks() for details. takes several seconds.
-# EJAM ::
-# dataload_from_package() # preload the key dataset at least? not essential
-
+################### #
+# library(shiny)? ####
+library(shiny)
 
 ################################################################## #
-
-# ------------------------ ____ SET DEFAULTS / OPTIONS for app ------------------------  ####
+# ~ ####
+# ------------------------ ____ SET DEFAULTS / OPTIONS for shiny app ------------------------  ####
 # NOTE DEFAULTS HERE ARE UNRELATED TO DEFAULTS IN API module that has its own namespace and is kept separate, like default radius, etc.
 # * Note each time a user session is started, the application-level option set is duplicated, for that session.
 # * If the options are set from inside the server function, then they will be scoped to the session.
 #     LET ADVANCED USERS ADJUST THESE, as INPUTS ON ADVANCED SETTINGS TAB
 
 ######################################################## #
-## >Options in general & Testing ####
+# Options in general & Testing ####
 
-## ------------------------ enable bookmarking? ####
+## Bookmarking allowed ####
 bookmarking_allowed <- TRUE  # https://mastering-shiny.org/action-bookmark.html
 if (bookmarking_allowed) {enableBookmarking(store = "url")}
 
 default_hide_advanced_settings <- TRUE
 default_hide_written_report <- TRUE
-default_testing        <- TRUE
-default_shiny.testmode <- TRUE  # If TRUE, then various features for testing Shiny applications are enabled.
+default_testing        <- FALSE
+default_shiny.testmode <- FALSE  # If TRUE, then various features for testing Shiny applications are enabled.
 default_print_uploaded_points_to_log <- TRUE
 
 ## disable autoloading of .R files
@@ -47,18 +36,19 @@ options(shiny.autoload.r = FALSE)
 ## note: was set at type = 1, but this caused screen to "bounce"
 options(spinner.color = "#005ea2", spinner.type = 4)
 
-# ------------------------ app title ####
+## app title & version   ###########################################
 # apptitle <- "EJAM v2.2"
+acs_version_global =  "2017-2021" #
+ejscreen_version_global =  "2.2"
 
-######################################################## #
-## ------------------------ IP address ####
+## (IP address  for ejscreenapi module) ###########################################
 # ips <- c('10.147.194.116', 'awsgeopub.epa.gov', '204.47.252.51', 'ejscreen.epa.gov')
 # whichip <- ips[4]
 
 ######################################################## #
-## Options in site point or file uploads, radius  ####
+# Options in site point or file uploads, radius  ####
 
-## ------------------------ limits on # of points etc. ####
+## Limits on # of points etc. ####
 
 ## Options in file upload size max
 minmax_mb_upload = 5 # MB
@@ -78,7 +68,6 @@ marker_cluster_cutoff  <- 1 * 1000  # *** EJAM only not api; for leaflet markerC
 default_max_pts_map   <- 5 * 1000
 maxmax_pts_map       <- 15 * 1000 # max we will show on map
 
-
  # input$max_pts_showtable uses these as its starting value and max allowed value
  default_max_pts_showtable <- 1000 # max to show in interactive viewer. It drops the rest.
  maxmax_pts_showtable  <- 5 * 1000 # 10k is extremely slow. check server side vs client side
@@ -91,19 +80,25 @@ maxmax_pts_map       <- 15 * 1000 # max we will show on map
   default_max_shapes_map <- 159 # TX has 254 counties, but no other state exceeds 159. EJAM::blockgroupstats[ , data.table::uniqueN(substr(bgfips, 1,5)), by = ST][order(V1), ]
  maxmax_shapes_map <- 254  # TX has 254 counties
 
- ## ------------------------ Options for Radius  #####
+ ## ------------------------ Radius options  #####
+
+#   radius miles for slider input where user specifies radius. Note 5 km is 3.1 miles, 10 km is 6.2 miles ; and 10 miles is 16 kilometers (10 * meters_per_mile/1000). 50 km is too much/ too slow.
+minradius  <- 0.50 # miles -- significant uncertainty as radius shrinks, at least if blockgroups are small such as if # of blockgroups in circle << 30.
+minradius_shapefile <- 0
+default_default_miles_shapefile <- 0
+stepradius <- 0.05 # miles.  0.25 allows quarter miles. 0.10 allows tenths. 0.05 is awkwardly small but allows both quarter mile and tenth of mile.
 
 # input$default_miles
-default_default_miles <- 1
+default_default_miles <- 1 # and can override this with run_app(radius=3.1), and also see effects of bookmarked advanced settings
 max_default_miles <- 50 * 1000 / meters_per_mile # 50 km
+
 # input$max_miles
 default_max_miles  <- 10 #
 maxmax_miles <- 50 * 1000 / meters_per_mile # 50 km
-#   radius miles for slider input where user specifies radius. Note 5 km is 3.1 miles, 10 km is 6.2 miles ; and 10 miles is 16 kilometers (10 * meters_per_mile/1000). 50 km is too much/ too slow.
-minradius  <- 0.25 # miles
-stepradius <- 0.05 # miles
+
 ## global constant (EJAMejscreenapi has this data loaded by pkg?)
 meters_per_mile <- 1609.344
+
 ######################################################## #
 ## EPA Programs (to limit NAICS/ facilities query) ####
 ## used by inputId 'ss_limit_fac1' and 'ss_limit_fac2'
@@ -113,26 +108,31 @@ default_epa_program_selected <- "CAMDBS" # has only about 739 sites
 
 ######################################################################################################## #
 
-## Options in calculations & what stats to output ####
+# Options in calculations & what stats to output ####
 
 ### calculate and/or include in downloaded outputs ------------- #
 
 default_calculate_ratios <- TRUE   # probably need to calculate even if not shown in excel download, since plots and short summary report rely on them/
 default_include_averages <- TRUE
 default_include_extraindicators <- TRUE
-
-
-
+### other params that might be added here and in advanced tab:
+# ejamit( 
+#   include_ejindexes = , 
+#   extra_demog = , 
+#   countcols = , popmeancols = ,  calculatedcols = ,
+#   need_proximityscore = , 
+#   subgroups_type = , 
+#   testing = )
 
 
 
 ######################################################## #
 
-# >Options for viewing results  ####
+# Options for viewing results  ####
 
 
 
-### ------------------------ map colors, weights, opacity ####
+##  Map colors, weights, opacity (for ejscreenapi module?) ####
 ### in ejscreenapi global.R:
  default_circleweight <- 4
 # opacitymin   <- 0
@@ -144,13 +144,13 @@ default_include_extraindicators <- TRUE
 # cluster_color_default   <- "red"   ;
 # highlight_color_default <- 'orange';
 
-# ## ------------------------ predict time to complete ####
+# (predict time to complete for ejscreenapi module) ####
 # perhourslow  <- 3000  # to give an estimate of how long it will take
 # perhourguess <- 6000  # seeing 8k if 1 mile, 4.7k if 5 miles, roughly. 207 ECHO run was 2 . 1  minutes, 5.9k/hr.
 # perhourfast <- 12000  # approx 12k RMP sites would take almost 2 hours (1 to 2 hours, or even 4?).
 # report_every_n_default <- 100
 
-## ------------------------ download as excel vs csv ####
+## (download as excel vs csv, for ejscreenapi module) ####
 # asExcel <- TRUE # WHETHER TO DOWNLOAD RESULTS AS EXCEL OR CSV
 
 ######################################################## #
@@ -221,7 +221,7 @@ default_plotkind_1pager <- "bar"  #    Bar = "bar", Box = "box", Ridgeline = "ri
 
 
 ######################################################## #
-### Threshold comparisons options ------------------- ####
+## Threshold comparisons options  ####
 # stats summarizing EJ percentiles to count how many are at/above threshold percentile(s)
 
 # label for each group of indicators
@@ -267,10 +267,10 @@ probs.default.names <- formatC(probs.default.values, digits = 2, format = 'f', z
 ################################################################# #
 # END OF DEFAULTS / OPTIONS / SETUP
 ################################################################# #
+# ~ ####
+# ------------------------ ____ HELP TEXT ------------------------  ####
 
-# HELP TEXT ####
-
-### info text for "About EJAM" tab ####
+## info text for "About EJAM" tab ####
 intro_text <- tagList(
   # tags$p("For more information about EJAM:"),
   h2( a(href = "https://usepa.github.io/EJAM/articles/0_whatis.html", "What is EJAM?", target = '_blank', rel = 'noreferrer noopener') ),
@@ -291,7 +291,7 @@ intro_text <- tagList(
 #          " document, or the R package ", a(href = 'https://usepa.github.io/EJAM/index.html', "EJAM documentation"), " including walkthroughs and reference on functions and data.")
 # )
 
-### help text for latlon upload ####
+## help text for latlon upload ####
 
 latlon_help_msg <- '
 <div class="row">
@@ -344,7 +344,7 @@ latlon_help_msg <- '
 #   </div>'
 
 
-### help text about ECHO facility search ####
+## help text about ECHO facility search ####
 ## used by inputId 'ss_search_echo'
 
 echo_url <-  'https://echo.epa.gov/facilities/facility-search' # used in server.R and in message below
@@ -356,7 +356,7 @@ echo_message <- shiny::HTML(paste0('To use the ECHO website to search for and sp
                                     4) click Download Data, then <br>
                                     5) Return to this app to upload that ECHO site list.<br>'))
 
-### help text for FRS ####
+## help text for FRS ####
 
 frs_help_msg <- HTML('  <div class="row">
     <div class="col-sm-12">
@@ -531,7 +531,7 @@ shp_help_msg <- '
 
 #################################################################################################################### #
 # ~ ####
-# TEMPLATE ONE EPA SHINY APP WEBPAGE _______ ####
+# ------------------------ ____ TEMPLATE ONE EPA SHINY APP WEBPAGE _______ ####
 
 html_header_fmt <- tagList(
   #################################################################################################################### #
@@ -583,7 +583,7 @@ html_header_fmt <- tagList(
     tags$meta(name="viewport", content="width=device-width, initial-scale=1.0"),
     tags$meta(`http-equiv`="x-ua-compatible", content="ie=edge"),
 
-    ### (Title could be defined here, or if using golem package, in golem_add_external_resources() within app_ui.R) ####
+    ## APP TITLE could be defined here, or if using golem package, in golem_add_external_resources() within app_ui.R ####
     #
     # tags$title('EJAM | US EPA'),
     tags$meta(name = "application-name", content = "EJAM"),

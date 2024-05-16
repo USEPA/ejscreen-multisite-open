@@ -236,12 +236,11 @@ mapfastej_counties <- function(mydf, colorvarname = "pctile.Demog.Index.Supp",
 #'
 #' @return leaflet map widget
 #' @seealso [plotblocksnearby()]  [map_shapes_mapview()]  [map_shapes_leaflet()]  [map_shapes_plot()]
-#' @examples dontrun{
+#' @examples
 #'  y <- plotblocksnearby(testpoints_10[5,],
 #'         radius = 3,
 #'         returnmap = TRUE)
 #'  map_blockgroups_over_blocks(y)
-#'   }
 #'
 #' @export
 #'
