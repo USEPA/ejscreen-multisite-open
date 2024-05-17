@@ -63,7 +63,8 @@
 #'   [ejamit()] default is to set this to FALSE when calling [doaggregate()].
 #' @param called_by_ejamit Set to TRUE by [ejamit()] to suppress some outputs even if ejamit(silentinteractive=F)
 #' @param testing used while testing this function
-#'
+#' @param ... passed to getblocksnearby() etc. such as  report_progress_every_n = 0
+#' 
 #' @return A list of tables of results
 #'
 #' @examples
@@ -162,7 +163,8 @@ ejamit <- function(sitepoints,
                    parallel = FALSE,
                    silentinteractive = FALSE,
                    called_by_ejamit = TRUE,
-                   testing = FALSE
+                   testing = FALSE,
+                   ...
 ) {
   
   #  1. getblocksnearby() ####
@@ -289,7 +291,7 @@ ejamit <- function(sitepoints,
       
       ## check for ejam_uniq_id column; warn and add if not present
       if (!("character" %in% class(sitepoints)) & !c('ejam_uniq_id') %in% names(sitepoints)) {
-        warning('sitepoints did not contain a column named ejam_uniq_id, so one was added')
+        # message('sitepoints did not contain a column named ejam_uniq_id, so one was added')
         sitepoints$ejam_uniq_id <- seq.int(length.out = NROW(sitepoints))
       }
       
@@ -301,8 +303,8 @@ ejamit <- function(sitepoints,
         # quadtree = localtree,
         quiet = quiet,
         parallel = parallel,
-        updateProgress = updateProgress_getblocks
-        # report_progress_every_n = 500  # would be passed through to getblocksnearbyviaQuadTree()
+        updateProgress = updateProgress_getblocks,
+        ...  #  could provide report_progress_every_n = 500  # would be passed through to getblocksnearbyviaQuadTree()
       )
       ################################################################################## #
       
@@ -452,13 +454,12 @@ ejamit <- function(sitepoints,
   
   out$formatted <- table_tall_from_overall(out$results_overall, out$longnames)
   
-  # 5. would be nice to provide the 1pager summary report as html here too
+  # 5.  1pager summary report as html could be here too, but avail via ejam2report()
   
   ################################################################ #
   if (interactive() & !silentinteractive & !in_shiny) {
     
-    # Show summary info and tips in RStudio console  ####
-    # NOTE: SOME OF THIS BELOW SHOULD BE USED IN A VIGNETTE RATHER THAN BEING HERE ***
+    # Show only a bit of summary info and tips in RStudio console  ####
     
     # Show bysite in DT::datatable view in RStudio ####
     # - Site by Site (each site)
@@ -475,41 +476,11 @@ ejamit <- function(sitepoints,
     )
     ###################################### #
     
-    # x <- cat(rtips(out = out, radius = radius, topic = 'pop density', andcat = F))
-    ## show some actual results on pop density, not how to get them.
-    cat(
-      paste0("Population Density: \n\n"),
-      paste0("  ", popshare_p_lives_at_what_pct(out$results_bysite$pop, p = 0.50, astext = TRUE), "\n"),
-      paste0("  ", popshare_at_top_n(out$results_bysite$pop, c(1, 5, 10), astext = TRUE), "\n\n")
-    )
-    
-    ###################################### #
-    # cat("To see barplots of average proximity by demog group:\n\n",
-    #     '     plot_distance_mean_by_group(out$results_bybg_people)',
-    #     "\n\n")
-    
-    # cat("To see bar or boxplots of ratios of %Demographics vs US averages:\n\n",
-    #     "     ?plot_barplot_ratios() in EJAM package # or \n",
-    #     "     ?boxplots_ratios() in EJAMejscreenapi package\n",
-    #     "     boxplots_ratios(ratios_to_avg(as.data.frame(out$results_bysite))$ratios_d)",
-    #     "\n\n")
-    #
-    #     cat("To see a map in RStudio: \n\n",
-    #         "     mapfastej(out$results_bysite, radius = out$results_overall$radius.miles)",
-    #         "\n\n")
-    
-    # cat("To view or save as excel files, see ?table_xls_from_ejam e.g., table_xls_from_ejam(out, fname = 'out.xlsx')  \n\n")
+    cat("To view or save, see ejam2report(), ejam2excel(), ejam2map(), ejam2ratios(), ejam2barplot(), etc.   \n\n")
     
     cat('Output is a list with the following names:\n')
     print(EJAM:::structure.of.output.list(out) )
-    
-    # # see most striking stat 
-    # mx <- count_sites_with_n_high_scores(pctile_data, 
-    #   thresholds = 1:100, quiet = TRUE,
-    #   text_indicatortype = "EJ Indexes",
-    #   text_suffix = "th percentile in the state.")
-    # tail(mx$text[mx$text != ""], 1) # the most extreme finding
-    
+
   }
   ################################################################ #
   

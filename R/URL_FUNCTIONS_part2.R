@@ -11,12 +11,14 @@
 #'   to detailed ECHO facility reports
 #' @param as_html logical, optional.
 #'   passed to url_ejscreen_report() and url_ejscreenmap()
-#' @seealso url_ejscreen_report() url_ejscreenmap() url_echo_facility_webpage()
+#' @seealso [url_ejscreen_report()] [url_ejscreenmap()] [url_echo_facility_webpage()]
 #' @return list of data.frames to append to the list of data.frames created by
-#'   ejamit() or doaggregate(),
-#'   list(results_bysite = results_bysite, results_overall = results_overall,
-#'   newcolnames=newcolnames)
+#'   [ejamit()] or [doaggregate()],
 #'   
+#'  `list(results_bysite = results_bysite, `
+#'  `    results_overall = results_overall,`
+#'  `      newcolnames=newcolnames)`
+#'
 #' @export
 #' @keywords internal
 #'

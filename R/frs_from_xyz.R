@@ -15,8 +15,8 @@
 frs_from_regid <- function(regid) {
   
   if (!exists("frs")) dataload_from_pins("frs")
-  
-  frs[REGISTRY_ID %in% regid, ]
+  frs[match(regid, frs$REGISTRY_ID), ] # to return results in same order as search terms were provided
+  # frs[REGISTRY_ID %in% regid, ]
 }
 ########################################## # 
 
@@ -40,8 +40,8 @@ frs_from_regid <- function(regid) {
 frs_from_programid <- function(programid) {
   
   if (!exists("frs")) dataload_from_pins("frs")
-  
-  frs[REGISTRY_ID %in% latlon_from_programid(programid)$REGISTRY_ID, ]
+  regid <- latlon_from_programid(programid)$REGISTRY_ID
+  frs[match(regid, REGISTRY_ID), ] # try to return results in same order as search terms were provided
 }
 ########################################## # 
 
@@ -59,7 +59,7 @@ frs_from_programid <- function(programid) {
 frs_from_program  <- function(program) {
   
   if (!exists("frs")) dataload_from_pins("frs")
-  
+  #  #  return results in any order since we are getting an entire program, not a list of facilities in some specified order
   frs[REGISTRY_ID %in% latlon_from_program(program)$REGISTRY_ID, ]
 }
 ########################################## # 
@@ -88,7 +88,7 @@ frs_from_program  <- function(program) {
 frs_from_naics <- function(naics_code_or_name, ...) {
   
   if (!exists("frs")) dataload_from_pins("frs")
-  
+  #  return results in any order since we are getting an entire NAICS, not a list of facilities in some specified order
   frs[REGISTRY_ID %in% regid_from_naics(naics_from_any(naics_code_or_name, ...)$code, id_only = TRUE) , ]
 }
 ########################################## # 

@@ -183,15 +183,15 @@ if (testing_in_logical_order) {
   # [ FAIL 0 | WARN 0 | SKIP 0 | PASS 14 ] # Finished testing  test-latlon_infer.R         #- could not find function "latlon_infer"
   # [ FAIL 0 | WARN 0 | SKIP 0 | PASS 17 ] # Finished testing  test-latlon_as.numeric.R   #- could not find function "latlon_as.numeric"
   # [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43 ] # Finished testing  test-latlon_df_clean.R     #- could not find function "latlon_df_clean"
-  # [ FAIL 0 | WARN 0 | SKIP 0 | PASS 12 ] # Finished testing  test-latlon_is.valid.R  ##########################################
-  # [ FAIL 0 |  WARN 1 | SKIP 0 | PASS 0 ]  # Finished testing  test-latlon_from_anything.R  ##########################################
-  # [ FAIL 0 | WARN 0 | SKIP 0 | PASS 16 ] # Finished testing  test-latlon_from_sic.R  ##########################################
+  # [ FAIL 0 | WARN 0 | SKIP 0 | PASS 12 ] # Finished testing  test-latlon_is.valid.R
+  # [ FAIL 0 |  WARN 1 | SKIP 0 | PASS 0 ]  # Finished testing  test-latlon_from_anything.R
+  # [ FAIL 0 | WARN 0 | SKIP 0 | PASS 16 ] # Finished testing  test-latlon_from_sic.R
 
   tgroup(test_fips)   #
   # [ FAIL 1 | WARN 0 | SKIP 0 | PASS 148 ] # Finished testing  test-fips_lead_zero.R  #----  fails to warn if given text that cannot be interpreted as numeric  fips
-  # [ FAIL 0 | WARN 0 | SKIP 0 | PASS 47 ]  # Finished testing  test-fips_bg_from_anyfips.R  ##########################################
-  # [ FAIL 0 | WARN 0 | SKIP 0 | PASS 6 ]   # Finished testing  test-state_from_fips.R  ##########################################
-  # [ FAIL 0 | WARN 0 | SKIP 0 | PASS 11 ]  # Finished testing  test-state_from_latlon.R  ##########################################
+  # [ FAIL 0 | WARN 0 | SKIP 0 | PASS 47 ]  # Finished testing  test-fips_bg_from_anyfips.R
+  # [ FAIL 0 | WARN 0 | SKIP 0 | PASS 6 ]   # Finished testing  test-state_from_fips.R
+  # [ FAIL 0 | WARN 0 | SKIP 0 | PASS 11 ]  # Finished testing  test-state_from_latlon.R
 
   tgroup(test_shape)  #
   # [ FAIL 0 | WARN 0 | SKIP 0 | PASS 16 ] Finished testing  test-shapefile_xyz.R
@@ -231,9 +231,54 @@ if (testing_in_logical_order) {
  # [ FAIL 3 | WARN 0 | SKIP 0 | PASS 6 ]  Finished testing  test-naics_validation.R -----------------------------
  # [ FAIL 0 | WARN 0 | SKIP 0 | PASS 10 ] Finished testing  test-naics2children.R
 
-
-
 }
-########################### #
+########################### #  ########################################## #
 
+#  as of 5/13/2024
+# 
+# [ FAIL 0 | WARN 0 | SKIP 0 | PASS 14 ] Finished testing  test-regid_from_naics.R
+# [ FAIL 0 | WARN 0 | SKIP 0 | PASS 28 ] Finished testing  test-frs_from_naics.R 
+# [ FAIL 0 | WARN 0 | SKIP 0 | PASS 4 ]  Finished testing  test-frs_from_programid.R
+# [ FAIL 0 | WARN 0 | SKIP 0 | PASS 4 ]  Finished testing  test-frs_from_regid.R 
+# [ FAIL 0 | WARN 0 | SKIP 0 | PASS 16 ] Finished testing  test-frs_from_sic.R 
+ # [ FAIL 1 | WARN 0 | SKIP 0 | PASS 7 ] Finished testing  test-frs_is_valid.R <<<<<<<<<<<# ── Failure (test-frs_is_valid.R:54:3): colname not REGISTRY_ID but seems to be ok alias, so check done for invalid numbers, so returns FALSE if invalid number ── # 
+# [ FAIL 0 | WARN 0 | SKIP 0 | PASS 14 ] Finished testing  test-latlon_infer.R 
+# [ FAIL 0 | WARN 0 | SKIP 0 | PASS 17 ] Finished testing  test-latlon_as.numeric.R
+# [ FAIL 0 | WARN 0 | SKIP 0 | PASS 43 ] Finished testing  test-latlon_df_clean.R
+# [ FAIL 0 | WARN 0 | SKIP 0 | PASS 12 ] Finished testing  test-latlon_is.valid.R
+ # [ FAIL 0 | WARN 1 | SKIP 0 | PASS 0 ]  Finished testing  test-latlon_from_anything.R   warn
+# [ FAIL 0 | WARN 0 | SKIP 0 | PASS 16 ] Finished testing  test-latlon_from_sic.R
+ # [ FAIL 1 | WARN 0 | SKIP 0 | PASS 148 ] Finished testing  test-fips_lead_zero.R <<<<<<<<<<< # ── Failure (test-fips_lead_zero.R:336:3): should warn for text that cant be coerced into numeric FIPS ──
+# [ FAIL 0 | WARN 0 | SKIP 0 | PASS 47 ] Finished testing  test-fips_bg_from_anyfips.R
+# [ FAIL 0 | WARN 0 | SKIP 0 | PASS 6 ]  Finished testing  test-state_from_fips.R
+# [ FAIL 0 | WARN 0 | SKIP 0 | PASS 11 ] Finished testing  test-state_from_latlon.R
+# [ FAIL 0 | WARN 0 | SKIP 0 | PASS 16 ] Finished testing  test-shapefile_xyz.R
+ # [ FAIL 0 | WARN 1 | SKIP 0 | PASS 1 ] Finished testing  test-radius_inferred.R      Warning (test-radius_inferred.R:24:7): Estimate of radius, inferred from reported distances from getblocksnearby(), is accurate if radius specified with 2 or 3 decimals ──
+# [ FAIL 0 | WARN 0 | SKIP 0 | PASS 3 ]  Finished testing  test-getblocks_summarize_blocks_per_site.
+# [ FAIL 0 | WARN 0 | SKIP 1 | PASS 11 ] Finished testing  test-getblocksnearby.R 
+ # [ FAIL 0 | WARN 2 | SKIP 0 | PASS 3 ]  Finished testing  test-getblocksnearby_from_fips.R    Warning 
+# [ FAIL 0 | WARN 0 | SKIP 0 | PASS 3 ]  Finished testing  test-getblocksnearbyviaQuadTree.R
+# [ FAIL 0 | WARN 0 | SKIP 0 | PASS 9 ]  Finished testing  test-varinfo.R
+# [ FAIL 0 | WARN 0 | SKIP 0 | PASS 11 ] Finished testing  test-pctile_from_raw_lookup.R
+ # [ FAIL 1 | WARN 0 | SKIP 0 | PASS 3 ] Finished testing  test-doaggregate.R  <<<<<<<<<<< # ── Error (test-doaggregate.R:49:1): NEED TO RECREATE THE TESTOUTPUT DATA NOW TO MAKE THIS PASS.
+# [ FAIL 0 | WARN 0 | SKIP 0 | PASS 9 ] Finished testing  test-ejamit.R
+# [ FAIL 0 | WARN 0 | SKIP 0 | PASS 5 ] Finished testing  test-mod_save_report.R
+# [ FAIL 0 | WARN 0 | SKIP 0 | PASS 5 ] Finished testing  test-mod_specify_sites.R
+# [ FAIL 0 | WARN 0 | SKIP 0 | PASS 5 ] Finished testing  test-mod_view_results.R
+# [ FAIL 0 | WARN 0 | SKIP 0 | PASS 0 ] Finished testing  test-golem_utils_server.R
+# [ FAIL 0 | WARN 0 | SKIP 0 | PASS 0 ] Finished testing  test-golem_utils_ui.R
+ # [ FAIL 0 | WARN 1 | SKIP 0 | PASS 11 ] Finished testing  test-ui_and_server.R   [test-ui_and_server.R#83]
+# [ FAIL 0 | WARN 0 | SKIP 0 | PASS 6 ]  Finished testing  test-naics_categories.R
+# [ FAIL 0 | WARN 0 | SKIP 0 | PASS 5 ]  Finished testing  test-naics_findwebscrape.R
+# [ FAIL 0 | WARN 0 | SKIP 0 | PASS 26 ] Finished testing  test-naics_from_any.R
+ # [ FAIL 0 | WARN 1 | SKIP 0 | PASS 18 ] Finished testing  test-naics_from_name.R          warning
+# [ FAIL 0 | WARN 0 | SKIP 0 | PASS 11 ] Finished testing  test-naics_subcodes_from_code.R
+# [ FAIL 0 | WARN 0 | SKIP 0 | PASS 10 ] Finished testing  test-naics2children.R 
+  # [ FAIL 4 | WARN 0 | SKIP 0 | PASS 21 ] Finished testing  test-naics_from_code.R  <<<<< THESE TESTS WERE FIXED SUBSEQUENTLY & passed
+
+ # [ FAIL 2 | WARN 0 | SKIP 0 | PASS 6 ] Finished testing  test-naics_validation.R  <<<<<  naics_validation() fails some and is not a good function <<<<< but also added good function naics_is.valid() that tests OK
+
+
+# done
+########################### #  ########################################## #
 

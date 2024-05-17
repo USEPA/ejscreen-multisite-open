@@ -1,11 +1,13 @@
 ---
-title: "3. Basics of Using EJAM for Analysis in RStudio"
+title: "Basics of Using EJAM for Analysis in RStudio"
+description: "3. Basics of Using EJAM for Analysis in RStudio"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{3. Basics of Using EJAM for Analysis in RStudio}
+  %\VignetteIndexEntry{Basics of Using EJAM for Analysis in RStudio}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
 ```{r developernote, eval=FALSE, echo=FALSE, include=FALSE}
 #  *>>>>>>>>>> Developer note: vignettes need to be tested/edited/rebuilt regularly <<<<<<<<<<<*
 #    - **See ?pkgdown::build_site** - EJAM uses the pkgdown R package to build help and articles/ vignettes as web pages
@@ -55,32 +57,32 @@ indexblocks()
 
 # Key Functions
 
--   **run_app()** to launch the web app locally (to run in RStudio on a single computer rather than on a server)
+-   **`run_app()`** to launch the web app locally (to run in RStudio on a single computer rather than on a server)
 
--   **ejamit()** provides most results in just one function, and they can be viewed using ejam2report() and ejam2excel(). Sample input to ejamit() is in testpoints_10 and sample output is in testoutput_ejamit_10pts_1miles. ejamit() especially relies on getblocksnearby() and doaggregate():
+-   **`ejamit()`** provides most results in just one function, and they can be viewed using `ejam2report()` and `ejam2excel()`. Sample input to `ejamit()` is in `testpoints_10` and sample output is in `testoutput_ejamit_10pts_1miles`. `ejamit()` especially relies on `getblocksnearby()` and `doaggregate()`:
 
--   getblocksnearby() takes a set of points (e.g., facilities) and finds the Census blocks near each. Sample input is in testpoints_100, and sample output is in testoutput_getblocksnearby_10pts_1miles
+-   `getblocksnearby()` takes a set of points (e.g., facilities) and finds the Census blocks near each. Sample input is in `testpoints_100`, and sample output is in `testoutput_getblocksnearby_10pts_1miles`
 
--   doaggregate() takes the list of blocks near each point, joins it to blockgroup indicators like from EJScreen, and aggregates at each buffered point as well as for the overall set of unique blocks (residents). Sample input is in testoutput_getblocksnearby_10pts_1miles and sample output is in testoutput_doaggregate_10pts_1miles
+-   `doaggregate()` takes the list of blocks near each point, joins it to blockgroup indicators like from EJScreen, and aggregates at each buffered point as well as for the overall set of unique blocks (residents). Sample input is in `testoutput_getblocksnearby_10pts_1miles` and sample output is in `testoutput_doaggregate_10pts_1miles`
 
 # Key groups of functions
 
 The EJAM package reference manual has a complete list of documented functions, grouped by category. There are several categories of functions listed there:
 
--   The overall functions ejamit(), ejam2report(), ejam2excel()
+-   Key Functions `ejamit()`, `ejam2report()`, `ejam2excel()`, `ejam2map()`, `ejam2ratios()`
 -   Specify Points by Lat/Lon
 -   Specify Facilities by ID
 -   Specify Facility Type
 -   Specify Places by Shapefile
 -   Specify Counties, etc./FIPS tools
--   Blocks, Distances, Residents - e.g., getblocksnearby()
+-   Blocks, Distances, Residents - e.g., `getblocksnearby()`
 -   Calculating and Aggregating
--   Viewing Results
--   Test Data
+-   Viewing Results (using the overall functions above)
+-   Test Data (if EJAM is installed, try `browseURL(system.file("testdata", package = "EJAM"))`)
 -   Utilities for finding URL or API info
 -   etc.
 
-Also see data("EJAM") and see ?dataload_from_pins() and usastats, statestats
+Also see `data("EJAM")` and see ?`dataload_from_pins()` and `usastats`, `statestats`
 
 # POINTS & NEARBY RESIDENTS
 
@@ -107,7 +109,7 @@ To analyze points and the circular areas around each one, you can specify the po
 
 You can define locations as all residents within X miles of any one or more of the specified points, and you can define those points in a few ways. One way is to upload a table of coordinates -- latitude and longitude for each point, one row per site, with columns called lat and lon (or some synonyms that work).
 
-The simplest way to do that in the RStudio console is to do something like `x <- ejamit(radius=1)`, and it prompts you to upload a spreadsheet with lat lon columns.
+The simplest way to do that in the RStudio console is something like `x <- ejamit()`, which prompts you to upload a spreadsheet with lat lon columns, and asks you for the radius.
 
 You can also specify a set of facilities by uploading their Registry ID numbers in a table, or using other identifiers. For example, there is a function `latlon_from_programid()` in the examples below.
 
@@ -349,20 +351,20 @@ You can upload polygons in a shapefile, and use EJAM to analyze them. See the Sh
 See shapefile_from_any() and related functions:
 
 ```{r notrun_shapefile_functionlist, eval=FALSE, echo=TRUE}
-# shapefile_from_any()
-# shapefile_from_gdbzip()
-# shapefile_from_gdb()
-# shapefile_from_json()
-# shapefile_from_filepaths()
-# shapefile_from_folder()
-# shapefile_filepaths_from_folder()
-# shapefile_filepaths_valid()
-# shapefile_clean()
-# shapefile_from_sitepoints()
-# shape_buffered_from_shapefile()
-# shape_buffered_from_shapefile_points()
+shapefile_from_any()
+shapefile_from_gdbzip()
+shapefile_from_gdb()
+shapefile_from_json()
+shapefile_from_filepaths()
+shapefile_from_folder()
+shapefile_filepaths_from_folder()
+shapefile_filepaths_valid()
+shapefile_clean()
+shapefile_from_sitepoints()
+shape_buffered_from_shapefile()
+shape_buffered_from_shapefile_points()
 
-# shp1 <- shapefile_from_gdbzip(system.file("testdata/shapes/portland.gdb.zip", package = "EJAM"))
+shp1 <- shapefile_from_gdbzip(system.file("testdata/shapes/portland.gdb.zip", package = "EJAM"))
 
 ```
 
@@ -457,7 +459,6 @@ x <- x[order(x[,2], decreasing = T), ]
 head(x, 3)
 ```
 
-
 ### More summary findings
 
 ```{r count_sites_etc_more, eval = TRUE, echo = TRUE}
@@ -498,51 +499,12 @@ head(
   , 12)
 ```
 
-# DETAILS OF BLOCKS NEAR ONE SITE
-
-### Detailed diagnostics or stats on intermediate results
-
-### getblocksnearby() will find residents/blocks that are within specified distance
-
-Less than 1 second for 100 sites, but a few seconds for 1,000 sites, or 500k / hour for this step
-
-```{r getblocksnearby1, eval = FALSE}
-sitepoints <- data.table::copy(testpoints_100) 
-# or 
-# sitepoints <- testpoints_n(100,"block") # random points
-radius <- 3
-elapsed <- system.time({
-  
-  sites2blocks <- getblocksnearby(
-    sitepoints = sitepoints,
-    radius = radius
-  )
-  
-}) # end of timed function
-print(elapsed)
-head(sites2blocks)
-```
-
-#### doaggregate() will summarize indicators within each buffer and overall
-
-```{r doaggregateX, eval = TRUE}
-# out <- doaggregate(testoutput_getblocksnearby_10pts_1miles)
-sites2blocks <- data.table::copy(testoutput_getblocksnearby_10pts_1miles)
-elapsed <- system.time({
-  out <- suppressWarnings( 
-    doaggregate(sites2blocks = sites2blocks) 
-  )
-}) 
-print(elapsed)
-
-names(out)
-dim(out$results_bysite)
-```
 
 #### See indicators aggregated over all people across all sites
 
 ```{r cbindagain, eval = TRUE}
 ## view output of batch run aggregation ####
+out <- testoutput_ejamit_1000pts_1miles
 head(cbind(overall = as.list( out$results_overall)))
 
 ## To see just some subset of indicators, like Environmental only:
@@ -554,9 +516,24 @@ cbind(overall = as.list( out$results_overall[ , ..names_d_pctile])); cat("\n")
 # cbind(overall = as.list( out$results_overall[ , ..names_ej_pctile])); cat("\n")
 ```
 
-# VISUALIZATION OF FINDINGS
 
-#### Histogram of indicators distribution over all people across all sites
+# VISUALIZATION OF FINDINGS (PLOTS)
+
+
+## Indicators
+
+
+### Barplot showing which indicator is most elevated overall
+
+```{r barplot_d, eval=TRUE}
+out <- testoutput_ejamit_1000pts_1miles
+
+ejam2barplot(out,
+  varnames = c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg),
+  main = "Demographics at Selected Sites Compared to State Averages")
+```
+
+### Histogram of indicators distribution over all people across all sites
 
 ```{r histo, eval = TRUE}
 hist(out$results_bysite$pctile.traffic.score, 10, xlab = "Local traffic scores (expressed as a percentile)", 
@@ -566,134 +543,5 @@ hist(out$results_bysite$pctile.traffic.score, 10, xlab = "Local traffic scores (
 abline(h = nrow(out$results_bysite)/10)
 ```
 
-## Distance plots
-
-### Mean distance of each group
-
-```{r plot_distance_mean_by_group_1, eval = TRUE}
-# plot_distance_mean_by_group(testoutput_ejamit_1000pts_1miles$results_bybg_people)
-
-# larger radius reveals more information
-y <- ejamit(testpoints_100, radius = 3)
-
-plot_distance_mean_by_group(y$results_bybg_people) # or distance_mean_by_group() is a synonym
-print(distance_by_group(
-  y$results_bybg_people, 
-  demogvarname = 'pctlowinc', demoglabel = 'Low Income'))
-
-distance_by_group_plot(
-  y$results_bybg_people,
-  demogvarname = 'pctlowinc', demoglabel = 'Low Income')
-```
-
-### Map blocks near 1 site
-
-```{r plotblocksnearby2, eval = FALSE, fig.height=5, fig.width=5}
-x = plotblocksnearby(testpoints_10[1,], radius = 3, returnmap = FALSE)
-#  returnmap= TRUE is to actually return the leaflet map 
-
-# Use weighting="frs" in testpoints_n() to pick a random FRS facility's block
-```
-
-# POPULATION DENSITY - AVG SITE VS AVG RESIDENT
-
-## Sites vary widely in count of blocks nearby, depending on population density
-
--   what blocks are near each site
--   how far are they
--   how many blocks are typically near a given site (population density varies)
--   how many sites are near a block (residents with \> 1 site nearby)
-
-```{r popshare_at, eval=TRUE}
-out <- testoutput_ejamit_100pts_1miles
-cat("  ", popshare_p_lives_at_what_pct(out$results_bysite$pop, p = 0.50, astext = TRUE), "\n")
-cat("  ", popshare_at_top_n(out$results_bysite$pop, c(1, 5, 10), astext = TRUE), "\n\n")
-
-```
-
-```{r getblocksnearby2, eval = FALSE}
-## Also could use this example intermediate step dataset 
-## of n sites, with thousands of nearby blocks:
-# sites2blocks <- data.table::copy(testoutput_getblocksnearby_10pts_1miles)
-radius <- 3
-sitepoints <- data.table::copy(testpoints_100) 
-sites2blocks <- getblocksnearby(sitepoints, radius, quadtree = localtree)
-names(sites2blocks)
-getblocks_summarize_blocks_per_site(sites2blocks) 
-# print() shows more info returned invisibly
-getblocks_diagnostics(sites2blocks)
-# Use data.table package here
-library(data.table)
-# Very few blocks are within a radius of 1/4 mile.
-# Hundreds are often within 1 mile, but sometimes there are 
-# only a handful or even zero.
-s2b_stats <- sites2blocks[ , .(
-  avgDistance = round(mean(distance), 2),
-  blocksfound = .N, 
-  blocks_within_1mile = sum(distance <= 1),
-  blocks_within_0.75   = sum(distance <= 0.75),
-  blocks_within_0.25  = sum(distance <= 0.25)
-), by = 'ejam_uniq_id'][order(blocksfound), ]
-setorder(s2b_stats, ejam_uniq_id)
-head(s2b_stats)
-
-```
-
-```{r plot_count_of_blocks_nearby, eval=FALSE, fig.height=5, fig.width=6}
-
-# CDF of how many blocks are nearby a site
-plot(sort(s2b_stats$blocks_within_1mile), 
-     main = "How many blocks are near each facility?", 
-     ylab = "# of blocks (whose internal point is) within 1 mile of each site", 
-     xlab = paste0(nrow(s2b_stats)," facilities ranked by # of blocks nearby"))
-abline(h = quantile(s2b_stats$blocks_within_1mile, probs = (0:4) * 0.25))
-abline(h = mean(s2b_stats$blocks_within_1mile), col = "red")
 
 
-```
-
-```{r histoblocks, eval = FALSE, fig.height=6, fig.width=7}
-# Histogram of how many blocks are nearby a site
-hist(sites2blocks[,.N, by = "ejam_uniq_id"][, N], 20, 
-     xlab = "How many blocks are nearby?", 
-     ylab = "Frequency (# of sites)", 
-     main = "A given site may have zero to hundreds of blocks nearby", 
-     sub = "A typical site in this example has about 100 blocks nearby")
-```
-
-```{r DTdatatable, eval = FALSE}
-
-DT::datatable(s2b_stats,  rownames = FALSE)
-# more summaries showing there may be only 1 block or hundreds within 1 mile
-quantile(s2b_stats$blocks_within_1mile, probs = (0:4) * 0.25)
-t(summary(s2b_stats))
-```
-
-```{r s2b_stats, eval = FALSE, fig.height=5, fig.width=5}
-# map the sites with popups about how many blocks were found near each
-if (!('ejam_uniq_id' %in% names(sitepoints))) {sitepoints$ejam_uniq_id <- seq.int(length.out = NROW(sitepoints))}
-s2b_stats <- merge(sitepoints, s2b_stats, by = "ejam_uniq_id")
-mapfast(s2b_stats, radius = radius)
-```
-
-```{r s2b_stats_more, eval = FALSE, fig.height=5, fig.width=5}
-
-# Some places have very few -- if any -- blocks within 1 mile
-
-tail(s2b_stats[order(s2b_stats$blocks_within_1mile, decreasing = T), 
-               c('ejam_uniq_id', 'blocks_within_1mile')], 3) 
-
-# Some places have hundreds nearby: a 1 mile radius is huge 
-# within a dense urban area
-
-head(s2b_stats[order(s2b_stats$blocks_within_1mile, decreasing = T), 
-               c('ejam_uniq_id', 'blocks_within_1mile')], 3)
-densest <- s2b_stats$ejam_uniq_id[order(
-  s2b_stats$blocks_within_1mile, decreasing = T)][1]
-plotblocksnearby(sitepoints = sitepoints[sitepoints$ejam_uniq_id == densest, ])
-```
-
-```{r eval = FALSE}
-# Within a 1 mile radius, the blocks found tend to be about 2/3 of a mile from the site at the center.
-summary(s2b_stats$avgDistance)
-```

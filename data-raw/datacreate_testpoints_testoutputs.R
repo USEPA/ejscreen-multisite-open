@@ -6,6 +6,10 @@
 # - sites2blocks data objects, and
 # - documentation files for all those
 
+metadatanow = list(ejscreen_version = "2.2", acs_version = "2017-2021", census_version = 2020, date_saved_in_package = Sys.Date())
+# x = EJAM:::metadata_add(x, metadata = metadatanow)
+
+
 ######################################################## #
 
 ## See the test data stored in each package
@@ -133,6 +137,8 @@ for (n in nvalues) {
     if (n == 100) {
       testpoints_100_dt <- data.table(testpoints_100)
       if (resaving_testpoints_rda) {
+        # attr(testpoints_100_dt, "date_saved_in_package") <- Sys.Date()
+        testpoints_100_dt = EJAM:::metadata_add(testpoints_100_dt, metadata = metadatanow)
         usethis::use_data(testpoints_100_dt , overwrite = TRUE)
       }
     }
@@ -140,7 +146,13 @@ for (n in nvalues) {
 
   ## save as DATASET ####
   if (resaving_testpoints_rda) {
-    text_to_do <- paste0("usethis::use_data(", testpoints_name, ", overwrite=TRUE)")
+    text_to_do <- paste0(
+      "", testpoints_name, " = EJAM:::metadata_add(", testpoints_name, ", metadata = metadatanow)"
+      # "attr(",  testpoints_name  ,", 'date_saved_in_package') <- Sys.Date()"
+      )
+    eval(parse(text = text_to_do))  
+    
+    text_to_do <- paste0("usethis::use_data(", c, ", overwrite=TRUE)")
     eval(parse(text = text_to_do))
   }
   ## save as EXCEL  ####
@@ -198,6 +210,11 @@ NULL
 
   testpoints_conus5 <- CONUS5
   ## save as DATASET ####
+  text_to_do <- paste0(
+    "", "testpoints_conus5", " = EJAM:::metadata_add(", "testpoints_conus5", ", metadata = metadatanow)"
+    # "attr(testpoints_conus5, 'date_saved_in_package') <- Sys.Date()"
+  )
+  eval(parse(text = text_to_do))
   usethis::use_data(testpoints_conus5, overwrite = TRUE)
 
   ## save as DOCUMENTATION ####
@@ -241,8 +258,19 @@ NULL"
       if (resaving_getblocksnearby_rda) {
         ## save as DATA ####
         #
+        text_to_do <- paste0(
+          "", out_varname_getblocks, " = EJAM:::metadata_add(", out_varname_getblocks, ", metadata = metadatanow)"
+          # "attr(",  out_varname_getblocks  ,", 'date_saved_in_package') <- Sys.Date()"
+        )
+        eval(parse(text = text_to_do))  
         text_to_do = paste0("usethis::use_data(", out_varname_getblocks, ", overwrite=TRUE)")
         eval(parse(text = text_to_do))                                             ############# #
+        
+        text_to_do <- paste0(
+          "", out_varname_getblocks_alias, " = EJAM:::metadata_add(", out_varname_getblocks_alias, ", metadata = metadatanow)"
+          # "attr(",  out_varname_getblocks_alias  ,", 'date_saved_in_package') <- Sys.Date()"
+        )
+        eval(parse(text = text_to_do))  
         text_to_do = paste0("usethis::use_data(", out_varname_getblocks_alias, ", overwrite=TRUE)")
         eval(parse(text = text_to_do))
       }
@@ -307,6 +335,11 @@ NULL
     }
     ## save as DATASET ####
     if (resaving_doaggregate_rda) {
+      text_to_do <- paste0(
+        "", out_varname_doagg, " = EJAM:::metadata_add(", out_varname_doagg, ", metadata = metadatanow)"
+        # "attr(",  out_varname_doagg  ,", 'date_saved_in_package') <- Sys.Date()"
+      )
+      eval(parse(text = text_to_do))  
       text_to_do = paste0("usethis::use_data(", out_varname_doagg, ", overwrite=TRUE)")
       eval(parse(text = text_to_do))                                             ############# #
     }
@@ -328,7 +361,7 @@ NULL
 
     if (resaving_doaggregate_excel) {
 
-      junk <- table_xls_format(overall =   out_data_doagg$results_overall,
+      junk <- EJAM:::table_xls_format(overall =   out_data_doagg$results_overall,
                                eachsite =  out_data_doagg$results_bysite,
                                longnames = out_data_doagg$longnames,
                                bybg =      out_data_doagg$results_bybg_people,
@@ -337,7 +370,7 @@ NULL
                                radius_or_buffer_in_miles = myrad,
                                buffer_desc = paste0("Within ", myrad, " miles"),
                                analysis_title =
-                                 "Example of outputs of doaggregate() being formatted and saved using table_xls_format()",
+                                 "Example of outputs of doaggregate() being formatted and saved using EJAM:::table_xls_format()",
                                saveas = paste0("./inst/testdata/examples_of_output/",
                                                out_varname_doagg, ".xlsx")
       )
@@ -382,7 +415,11 @@ NULL
     }
     if (resaving_ejamit_rda) {
       ## save as DATA IN PACKAGE ####
-      #
+      text_to_do <- paste0(
+        "", out_varname_ejamit, " = EJAM:::metadata_add(", out_varname_ejamit, ", metadata = metadatanow)"
+        # "attr(",  out_varname_ejamit  ,", 'date_saved_in_package') <- Sys.Date()"
+      )
+      eval(parse(text = text_to_do))  
       text_to_do = paste0("usethis::use_data(", out_varname_ejamit, ", overwrite=TRUE)")
       eval(parse(text = text_to_do))                                             ############# #
     }
@@ -429,8 +466,13 @@ if (redoing_ejscreenit_10_for_ejam_to_have) {
   myrad = 1
   testoutput_ejscreenit_10pts_1miles <- EJAMejscreenapi::ejscreenit(testpoints_10, radius = 1, calculate_ratios = TRUE,
                                                                     nosave = TRUE, nosee = TRUE,
-                                                                    interactiveprompt = FALSE, verbose = TRUE)
+                                                                    interactiveprompt = FALSE)
 
+  text_to_do <- paste0(
+    "", "testoutput_ejscreenit_10pts_1miles", " = EJAM:::metadata_add(", "testoutput_ejscreenit_10pts_1miles", ", metadata = metadatanow)"
+    # "attr(testoutput_ejscreenit_10pts_1miles, 'date_saved_in_package') <- Sys.Date()"
+  )
+  eval(parse(text = text_to_do))  
   usethis::use_data(testoutput_ejscreenit_10pts_1miles, overwrite = TRUE)
 
   ## save as DOCUMENTATION ####

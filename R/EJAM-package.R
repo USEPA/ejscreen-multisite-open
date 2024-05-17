@@ -28,7 +28,7 @@
 #' a complete reference document on all functions, and
 #' articles (vignettes) introducing key functions and how to use them.
 #'
-#' @details  # **Data Sources for Demographic and Environmental Indicators** ** ##### THIS should be add to pkgdown site/ VIGNETTES ###################
+#' @details  # **Data Sources for Demographic and Environmental Indicators** ***this will be moved/added to a vignette ###################
 #' 
 #'   For documentation on the sources, definitions, and vintage of the
 #'   demographic and environmental data and indicators used by
@@ -39,17 +39,17 @@
 #'   For details on these updates and changes to datasets and indicators,
 #'   please see <https://www.epa.gov/ejscreen> and in particular note the
 #'   information about updates and changes here: 
-#'   (https://www.epa.gov/ejscreen/ejscreen-change-log)[https://www.epa.gov/ejscreen/ejscreen-change-log]
+#'   [EJScreen Change Log](https://www.epa.gov/ejscreen/ejscreen-change-log){.uri target="_blank" rel="noreferrer noopener"}
 #'   
 #'   The American Community Survey 5-year summary file data are updated by
 #'   the United States Census Bureau annually, after which EJScreen and EJAM are updated.
-#'   - The early 2024 versions of EJAM and EJScreen 2.2 would use ACS 2017-2021.
-#'   - Starting around Summer 2024, EJAM and EJScreen would use ACS 2018-2022.
+#'   
+#'   - The mid 2024 releases are called version 2.3 (EJAM/EJScreen) and use ACS 2018-2022.
 #'   
 #'   
 #'   
 #'   
-#' @details  # **Key Functions:** ########################  MUCH OF THIS IS IN VIGNETTES, SO CONSOLIDATE ############################################
+#' @details  # **Key Functions:** ***much of this is in vignettes and will be merged ############################################
 #'
 #'   - **[run_app()]** Launch the web app (R Shiny interface)
 #'
@@ -221,7 +221,7 @@
 #'
 #' EJAM uses the same approach as EJScreen does to identify the count and demographics of nearby residents,
 #' so EJScreen technical documentation should be consulted on the approach,
-#' at <https://www.epa.gov/ejscreen/technical-information-about-ejscreen>.
+#' at [EJScreen Technical Info](https://www.epa.gov/ejscreen/technical-information-about-ejscreen "EJScreen Technical Info"){.uri target="_blank" rel="noreferrer noopener"}.
 #' EJAM implements that approach using faster code and data formats, but it
 #' still uses the same high-resolution approach as described in EJScreen documentation
 #' and summarized below.

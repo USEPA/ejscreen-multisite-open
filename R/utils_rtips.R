@@ -1,5 +1,11 @@
-# print pop density function tips
 
+## see draft functions to summarize like notable_ratios etc. in progress
+# and in or for long report executive summary etc.
+
+
+
+## draft temporary print pop density function tips. 
+##
 rtips <- function(out = testoutput_ejamit_1000pts_1miles, radius = 3, topic= "pop density", andcat = TRUE) {
 
   if (topic == 'pop density') {

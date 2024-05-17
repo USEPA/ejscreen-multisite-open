@@ -29,12 +29,12 @@
     <a class="dropdown-item" href="../articles/0_webapp.html">Using EJAM</a>
     <div class="dropdown-divider"></div>
     <h6 class="dropdown-header" data-toc-skip>For analysts using R</h6>
-    <a class="dropdown-item" href="../articles/1_installing.html">1. Installing the EJAM R package</a>
-    <a class="dropdown-item" href="../articles/2_quickstart.html">2. Quick Start Guide</a>
-    <a class="dropdown-item" href="../articles/3_analyzing.html">3. Basics of Using EJAM for Analysis in RStudio</a>
-    <a class="dropdown-item" href="../articles/4_advanced.html">4. Advanced Features</a>
-    <a class="dropdown-item" href="../articles/5_ejscreenapi.html">5. Using the EJScreen API via EJAM</a>
-    <a class="dropdown-item" href="../articles/6_future_plans.html">6. Future Plans and Ideas for EJAM</a>
+    <a class="dropdown-item" href="../articles/1_installing.html">Installing the EJAM R package</a>
+    <a class="dropdown-item" href="../articles/2_quickstart.html">Quick Start Guide</a>
+    <a class="dropdown-item" href="../articles/3_analyzing.html">Basics of Using EJAM for Analysis in RStudio</a>
+    <a class="dropdown-item" href="../articles/4_advanced.html">Advanced Features</a>
+    <a class="dropdown-item" href="../articles/5_ejscreenapi.html">Using the EJScreen API via EJAM</a>
+    <a class="dropdown-item" href="../articles/6_future_plans.html">Future Plans and Ideas for EJAM</a>
   </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -105,9 +105,24 @@ expression in order for the match to be considered successful.</p></dd>
 
 <dt>...</dt>
 <dd><p>arguments to pass to golem_opts.
-When implemented, this parameter could be used to pass something like
-sitepoints="latlondata.xlsx" or sitepoints=<a href="testpoints_100.html">testpoints_100</a>
-See <code><a href="https://rdrr.io/pkg/golem/man/get_golem_options.html" class="external-link">?golem::get_golem_options</a></code> for more details.</p></dd>
+This can be used to pass some of the variables that otherwise would be set to
+defaults defined in global.R, and currently can include the following:</p>
+<p>run_app(</p>
+<p></p><div class="sourceCode"><pre><code><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>default_default_miles<span class="ot">=</span><span class="fl">3.1</span>, </span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>default_max_miles<span class="ot">=</span><span class="dv">31</span>, </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>default_max_mb_upload<span class="ot">=</span><span class="dv">100</span>, </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>default_default_miles_shapefile <span class="ot">=</span> <span class="fl">0.5</span>, </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>advanced<span class="ot">=</span><span class="cn">TRUE</span>, </span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>testing<span class="ot">=</span><span class="cn">TRUE</span>, </span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>shiny.testmode<span class="ot">=</span><span class="cn">TRUE</span>, </span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># and this will be implemented at some point: </span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>sitepoints <span class="ot">=</span> mytable such as [testpoints_100]</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="do">## or maybe</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="do">## sitepoints = "path\latlondata.xlsx"</span></span></code></pre><p></p></div>
+<p>)</p>
+<p>This uses an internal function global_or_param()</p></dd>
 
 </dl></div>
     <div class="section level2">
