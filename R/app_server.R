@@ -329,7 +329,7 @@ app_server <- function(input, output, session) {
       # older way
       
       infile_ext <- tools::file_ext(infiles)
-      if ((!all(c('shp','shx','dbf','prj') %in% infile_ext)) & (all(!(c('zip') %in% infile_ext)))) {
+      if ((!all(c('shp','shx','dbf','prj') %in% infile_ext))) {
         disable_buttons[['SHP']] <- TRUE
         shiny::validate('Not all required file extensions found.')
       }
