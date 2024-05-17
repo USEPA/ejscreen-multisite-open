@@ -160,7 +160,9 @@ dataload_from_pins <- function(
             if (!silent) {cat(varname_i, spacing[i], " - was loaded from local folder, so server copy was not sought.\n")}
             varnames_gotten <- c(varnames_gotten, varname_i)
           }
-        } else {
+        }
+        
+        if (!exists(varname_i, envir = envir)) {
           if (!silent && !ignorelocal) {cat(varname_i, spacing[i], " - is NOT in local folder.\n")}
           
           # 3. TRY PINS SERVER last ####
