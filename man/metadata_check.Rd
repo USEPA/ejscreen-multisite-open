@@ -8,6 +8,8 @@ metadata_check(
   packages = EJAM::ejampackages,
   which = c("census_version", "acs_version", "acs_releasedate", "ACS",
     "ejscreen_version", "ejscreen_releasedate", "ejscreen_pkg_data", "year", "released"),
+  datasets = "all",
+  grepdatasets = FALSE,
   loadifnotloaded = TRUE
 )
 }
@@ -19,6 +21,12 @@ like EJAMejscreenapi}
 \item{which}{Optional vector (not list) of strings, the attributes.
 Default is some typical ones used in EJAM-related packages currently.}
 
+\item{datasets}{optional, "all" means all data objects exported?
+can be a vector of character names of the ones to check like c("bgpts", "blockpoints")}
+
+\item{grepdatasets}{optional, if set to TRUE, datasets should be a query to use
+via grep to identify which datasets to check. It always uses ignore.case=TRUE for this.}
+
 \item{loadifnotloaded}{Optional to control if func should temporarily attach packages not already loaded.}
 }
 \description{
@@ -26,5 +34,8 @@ Quick and dirty helper during development, to check all the
 attributes of all the data files in relevant packages.
 It loads unloaded packages as needed, which you might not want it to do,
 but it is not coded to be able to check attributes without doing that.
+}
+\seealso{
+\code{\link[=functions_in_pkg]{functions_in_pkg()}}
 }
 \keyword{internal}
