@@ -63,6 +63,7 @@ mapfast(bg_cenpop2020[ST == "LA",], radius = 0.01)
 ####################################################### # 
 #### DROP MOST OF THAT INFO ACTUALLY... 
 #  THIS IS 24MB and already have all this in bgpts, except for pop2020 and lat lon of pop2020wtd centroid !
+# see datacreate_bgpts.R too 
 
 bg_cenpop2020 <- bg_cenpop2020[, .(bgid, lat, lon, pop2020, ST)]
 
