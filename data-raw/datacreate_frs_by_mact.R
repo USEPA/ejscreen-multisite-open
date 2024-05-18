@@ -1,13 +1,28 @@
+# script to download and clean tables of facilities by MACT subpart
+
+# requires 1st updating 
+#   frs_by_programid
+
+# creates  frs_by_mact
+# creates  mact_table
+# creates  epa_programs
 
 
-# script to download and clean a table of facilities by MACT subpart
+
+stop("THIS IS NOT WORKING YET/ANYMORE - THE CODE WAS OUT OF ORDER SO THE SCRIPT DOES NOT WORK - NEEDS REVAMP")
+# check if rollback to main/earlier version would work- 
+# seems like it may have worked and then was edited to update those datasets using the already existing versions of some files
+# by using EJAM ::  xyzdataset  etc.
 
 
-oldwd <- getwd()
-setwd("~/../Downloads")
+###################################################### #
+# ~ ####
 
+# CREATE y aka "frs_by_mact"  ####
 
-
+################################# #
+## DOWNLOAD DATA ####
+#
 # One can download from ECHO all the 14,000 or so CAA Major Actives  
 # https://echo.epa.gov/tools/data-downloads
 # and then remove the ones without  "MACT" listed in the column called AIRPrograms
@@ -17,63 +32,64 @@ setwd("~/../Downloads")
 # https://echo.epa.gov/tools/data-downloads/icis-air-download-summary 
 # ICIS-Air Datasets
 
-fname = "https://echo.epa.gov/files/echodownloads/ICIS-AIR_downloads.zip"
-download.file(fname, "ICIS-AIR_downloads.zip")
-unzip("ICIS-AIR_downloads.zip", exdir = getwd() )
-# dir(pattern = "ICIS")
-# [1] "ICIS-AIR_downloads.zip"         "ICIS-AIR_FACILITIES.csv"       
-# [3] "ICIS-AIR_FCES_PCES.csv"         "ICIS-AIR_FORMAL_ACTIONS.csv"   
-# [5] "ICIS-AIR_INFORMAL_ACTIONS.csv"  "ICIS-AIR_POLLUTANTS.csv"       
-# [7] "ICIS-AIR_PROGRAM_SUBPARTS.csv"  "ICIS-AIR_PROGRAMS.csv"         
-# [9] "ICIS-AIR_STACK_TESTS.csv"       "ICIS-AIR_TITLEV_CERTS.csv"     
-# [11] "ICIS-AIR_VIOLATION_HISTORY.csv"
+td = tempdir()
+zipname = "https://echo.epa.gov/files/echodownloads/ICIS-AIR_downloads.zip"
+download.file(
+  zipname, 
+  destfile = file.path(td, "ICIS-AIR_downloads.zip")) # about 60 MB
+unzip(       file.path(td, "ICIS-AIR_downloads.zip"), exdir = file.path(td, "icis"))
+dir(file.path(td, "icis"), pattern = "ICIS")
+# [1] "ICIS-AIR_FACILITIES.csv"        "ICIS-AIR_FCES_PCES.csv"         "ICIS-AIR_FORMAL_ACTIONS.csv"   
+# [4] "ICIS-AIR_INFORMAL_ACTIONS.csv"  "ICIS-AIR_POLLUTANTS.csv"        "ICIS-AIR_PROGRAM_SUBPARTS.csv" 
+# [7] "ICIS-AIR_PROGRAMS.csv"          "ICIS-AIR_STACK_TESTS.csv"       "ICIS-AIR_TITLEV_CERTS.csv"     
+# [10] "ICIS-AIR_VIOLATION_HISTORY.csv"
+################################# #
 
-
-###################################################### #
-# Get the operating status to see which are Active/Operating or seasonal ?  ignored that here.
-#
+## check operating vs closed ?  ignored here - frs datacreate handled that 
 x = "ICIS-AIR_FACILITIES.csv"
-x = read.csv(x, stringsAsFactors = FALSE)
-names(x)
-# unique(x$AIR_OPERATING_STATUS_DESC)
-# "Operating"  "Permanently Closed"  ""  "Temporarily Closed" "Planned Facility" "Seasonal"  "Under Construction"
-
+x = read.csv(file.path(td, "icis", x), stringsAsFactors = FALSE)
+cbind(count = table(x$AIR_OPERATING_STATUS_DESC), pct = round(100 * table(x$AIR_OPERATING_STATUS_DESC)/NROW(x),0))
+#                     count pct
+#     [blank!]        11243   4
+# Operating          183540  67
+# Permanently Closed  73727  27  ** 27% are closed
+# Planned Facility      709   0
+# Seasonal              330   0
+# Temporarily Closed   4063   1
+# Under Construction    534   0
 rm(x)
-###################################################### #
-
+################################# #
 
 # Get the main table with info about MACT NESHAP subparts
 
 y = "ICIS-AIR_PROGRAM_SUBPARTS.csv"
-y = read.csv(y, stringsAsFactors = FALSE)
-
-setwd(oldwd)
-
+y = read.csv(file.path(td, "icis", y), stringsAsFactors = FALSE)
 # names(y)
 # > table(y$PROGRAM_CODE == "CAAMACT")
-# FALSE   TRUE 
-# 113547  67812 
+#  FALSE   TRUE 
+# 113887  68375   5/2024
 y <- y[y$PROGRAM_CODE == "CAAMACT", ]
 y$subpart <- gsub("CAAMACT", "", y$AIR_PROGRAM_SUBPART_CODE)
 y <- y[, c("PGM_SYS_ID", "subpart", "AIR_PROGRAM_SUBPART_DESC")]
-# unique(y$subpart)
+################################# #
+## (clean subpart codes) #### 
+#
+# unique(y$subpart)   ## e.g., FFFF, 6C, etc.
 # note that some are 6B or 6J not BBBBBB or JJJJJJ
 # cbind(sort(unique(y$subpart)))
-
-# function to convert something like 6B into BBBBBB
+#
+# function to convert something like 6B into BBBBBB. Done differently via tidyverse below also.
 expandit <- function(old) {
-  acount <-  (substr(old,1,1) %in% 0:9) 
+  acount <-  (substr(old,1,1) %in% 0:9)
   for (i in 1:length(old)) {
     if (acount[i]) {
-      old[i] <-     old[i] <- paste(rep(substr(old[i] ,2,2), as.numeric(  substr(old[i] ,1,1))), collapse = "") 
+      old[i] <- paste(rep(substr(old[i] ,2, 2), as.numeric(  substr(old[i] ,1,1))), collapse = "")
     } 
   }
-  old
+  return(old)
 }
-
 y$subpartclean <- expandit(y$subpart)
 y = y[ , c("PGM_SYS_ID", "subpartclean", "subpart", "AIR_PROGRAM_SUBPART_DESC")]
-
 # double check that against text within the description field
 z <- y$AIR_PROGRAM_SUBPART_DESC
 # cbind(gsub(".*Subpart (.*) - .*", "\\1", z ), z)
@@ -82,31 +98,69 @@ z <- gsub("(.*) - .*", "\\1", gsub(".*Subpart (.*) - .*", "\\1", z ))
 # z
 table(z == y$subpartclean)
 rm(z)
-# all true
-
+# all true 5/2024
+################################# #
+## clean titles  
 # Extract just the title of the category, without all the duplicative text that field has
 
 y$title <-  gsub((".* Subpart .{1,8} - ([a-zA-Z]*)"), "\\1", y$AIR_PROGRAM_SUBPART_DESC)
 # (cbind(y$AIR_PROGRAM_SUBPART_DESC,  gsub((".* Subpart .{1,8} - ([a-zA-Z]*)"), "\\1", y$AIR_PROGRAM_SUBPART_DESC)))[700:710,]
 y <- y[ , c("PGM_SYS_ID", "subpartclean", "title")]
 names(y) <- c("programid", "subpart", "title")
+dim(y) # [1] 68375     3
+################################# #
 
-# Make a table of the unique MACT codes and the title of each category
+## (y gets renamed "frs_by_mact") ####
 
-types <- unique(y[,c("subpart", "title")])
-## paste letters and titles together for displaying in dropdown menu
+data.table::setDT(y, key = c("subpart", "programid"))
+frs_by_mact <- data.table::copy(y)
+rm(y)
+############################################# #
+
+
+############################################# #
+# ~ ####
+
+# CREATE "mact_table" from "frs_by_mact" for site counts by Subpart ####
+
+# a table of the unique types (MACT codes) and the title of each  
+
+types <- unique(frs_by_mact[, c("subpart", "title")])
+
+## make dropdown_label (paste letters & titles together to show in dropdown menu) ####
 types$dropdown_label <- paste(types$subpart, stringr::str_to_title(types$title), sep = ' - ')
 types <- types[order(types$subpart), ]
 rownames(types) <- NULL
-names(types) <- c("subpart", "title",'dropdown_label')
+names(types) <- c("subpart", "title", 'dropdown_label')
+dim(types)  # 136  3
+# rename it 
+mact_table <- types  
+mact_counts <- frs_by_mact[, .N, by = 'subpart'] 
+mact_table <- dplyr::left_join(mact_table, mact_counts)
+mact_table$dropdown_label <- paste0(mact_table$dropdown_label, ' (',prettyNum(mact_table$N, big.mark = ','), ')')
+rm(mact_counts, types)
 
+########################################################################### # 
+########################################################################### # 
+# ~ ####
 
-# add AFS MACT data -------------------------------------------------------
+# CREATE "afs_mact" that helps make "frs_by_mact" (but that is used above??) ####
 
+# add AFS MACT data #
+
+## DOWNLOAD DATA ####
 ## source: https://echo.epa.gov/tools/data-downloads, AFS Dataset
-## https://echo.epa.gov/files/echodownloads/afs_downloads.zip
-AIR_PROGRAM <- readr::read_csv("afs_downloads/AIR_PROGRAM.csv")
-AFS_FACILITIES <- readr::read_csv("afs_downloads/AFS_FACILITIES.csv")
+zipurl = "https://echo.epa.gov/files/echodownloads/afs_downloads.zip"
+td = tempdir()
+zname = "afs_downloads.zip"
+download.file(zipurl, destfile = file.path(td, zname) )
+if (!file.exists(file.path(td,zname))) {stop("zip not downloaded")}
+unzip(file.path(td, zname), exdir = file.path(td, "afs_downloads"))
+if (!dir.exists(file.path(td, "afs_downloads"))) {stop("temp subfolder not created")}
+
+AIR_PROGRAM    <- readr::read_csv(file.path(td, "afs_downloads/AIR_PROGRAM.csv"))
+AFS_FACILITIES <- readr::read_csv(file.path(td, "afs_downloads/AFS_FACILITIES.csv"))
+# > class(AIR_PROGRAM) # [1] "spec_tbl_df" "tbl_df"      "tbl"         "data.frame" 
 
 AIR_PROGRAM$AFS_ID <- stringr::str_pad(AIR_PROGRAM$AFS_ID, width = 10, pad = "0")
 
@@ -116,11 +170,9 @@ AFS_FACILITIES$AIR_PROGRAM_CODE <- AIR_PROGRAM$AIR_PROGRAM_CODE[match(AFS_FACILI
 AIR_PROGRAM_MACT <- AFS_FACILITIES[AFS_FACILITIES$AIR_PROGRAM_CODE == "M",]
 AIR_PROGRAM_MACT$AFS_ID <- stringr::str_pad(AIR_PROGRAM_MACT$AFS_ID, 10, pad = "0")
 AIR_PROGRAM_MACT <- data.table::data.table(AIR_PROGRAM_MACT)
-
 AIR_PROGRAM_MACT <- tidyr::unnest(AIR_PROGRAM_MACT, cols = AIR_PROGRAM_CODE_SUBPARTS)
 
-AIR_PROGRAM_MACT_PLANT_ID <- tidyr::separate_longer_delim(AIR_PROGRAM_MACT, c(AIR_PROGRAM_CODE_SUBPARTS), delim=",") #AIR_PROGRAM_MACT[,list(AIR_PROGRAM_CODE_SUBPARTS = unlist( strsplit( AIR_PROGRAM_CODE_SUBPARTS , "," ) ) ) , by = PLANT_ID ]
-
+AIR_PROGRAM_MACT_PLANT_ID <- tidyr::separate_longer_delim(AIR_PROGRAM_MACT, c(AIR_PROGRAM_CODE_SUBPARTS), delim = ",") #AIR_PROGRAM_MACT[,list(AIR_PROGRAM_CODE_SUBPARTS = unlist( strsplit( AIR_PROGRAM_CODE_SUBPARTS , "," ) ) ) , by = PLANT_ID ]
 AIR_PROGRAM_MACT_PLANT_ID$AFS_ID <- AIR_PROGRAM_MACT$AFS_ID[match(AIR_PROGRAM_MACT_PLANT_ID$PLANT_ID,AIR_PROGRAM_MACT$PLANT_ID)]
 AIR_PROGRAM_MACT_PLANT_ID$PLANT_NAME <- AIR_PROGRAM_MACT$PLANT_NAME[match(AIR_PROGRAM_MACT_PLANT_ID$PLANT_ID,AIR_PROGRAM_MACT$PLANT_ID)]
 AIR_PROGRAM_MACT_PLANT_ID$EPA_REGION <- AIR_PROGRAM_MACT$EPA_REGION[match(AIR_PROGRAM_MACT_PLANT_ID$PLANT_ID,AIR_PROGRAM_MACT$PLANT_ID)]
@@ -134,63 +186,139 @@ AIR_PROGRAM_MACT_PLANT_ID$PRIMARY_SIC_CODE <- AIR_PROGRAM_MACT$PRIMARY_SIC_CODE[
 AIR_PROGRAM_MACT_PLANT_ID$SECONDARY_SIC_CODE <- AIR_PROGRAM_MACT$SECONDARY_SIC_CODE[match(AIR_PROGRAM_MACT_PLANT_ID$PLANT_ID,AIR_PROGRAM_MACT$PLANT_ID)]
 AIR_PROGRAM_MACT_PLANT_ID$NAICS_CODE <- AIR_PROGRAM_MACT$NAICS_CODE[match(AIR_PROGRAM_MACT_PLANT_ID$PLANT_ID,AIR_PROGRAM_MACT$PLANT_ID)]
 
-## this now contains approx 44K (19K with valid latlons) additional facilities linked to EPA_PROGRAM 'AIRS/AFS' 
-afs_mact <- AIR_PROGRAM_MACT_PLANT_ID %>% 
-  dplyr::select(programid = "AFS_ID",subpart = "AIR_PROGRAM_CODE_SUBPARTS") %>% 
-  dplyr::rowwise() %>% 
+# dim(AIR_PROGRAM_MACT_PLANT_ID)
+# [1] 46913    23 as of 5/2024 
+## this now contains >40k  additional facilities linked to EPA_PROGRAM 'AIRS/AFS' 
+##  (old list had only 19K with valid latlons) 
+
+afs_mact <- AIR_PROGRAM_MACT_PLANT_ID |> 
+  dplyr::select(programid = "AFS_ID", subpart = "AIR_PROGRAM_CODE_SUBPARTS") |>
+  dplyr::rowwise() |>
+  ## (clean subpart codes) #### 
   ## some subparts written as "6C" instead of "CCCCCC", so converting these to all letters
+  ## also see above the function expandit() that should do the same as this:
   dplyr::mutate(subpart = 
                   ifelse(stringr::str_detect(subpart, '[:digit:]'),
                          paste0(rep(substr(subpart, 2, 2), 
-                                    as.numeric(substr(subpart,1,1))),collapse=""),
+                                    as.numeric(substr(subpart,1,1))), collapse = ""),
                          subpart)
-  ) %>% 
-  dplyr::ungroup() %>% 
+  ) |>
+  dplyr::ungroup() |> 
   ## add title column
-  dplyr::left_join(types) 
+  dplyr::left_join(mact_table)    
+
+# finished creating afs_mact 
+
+####################################################### #
 
 
-y <- data.table::rbindlist(list(y, afs_mact))
+################### ################################## #################### ################################## #
+################### ################################## #################### ################################## #
+
+# >>>> STOP AND FIX <<<<< ####
+
+stop(" check this join and code sequencing -- where do these steps belong?? they were much later but code got shuffled")
+
+
+## _____WHY/WHEN DO JOIN ?  was frs_by_mact joined with types aka mact_table here or later ####
+# code seemed to go back and forth where frs_by_mact helped make mact_table but they got joined, afs_mact rbinded??
+
+
+frs_by_mact = frs_by_mact |>
+  ## add title column
+  dplyr::left_join(types) # types is created later @! --- DOES NOT MAKE SENSE  ****************
+
+
+# dim(frs_by_mact) # [1] 68375     4
+# "ICIS-AIR_PROGRAM_SUBPARTS.csv" was the source of frs_by_mact
+
+# >>> ??? combine  afs_mact + frs_by_mact (aka y) tables ? but they overlap ! ####
+
+# "https://echo.epa.gov/files/echodownloads/ICIS-AIR_downloads.zip", "ICIS-AIR_PROGRAM_SUBPARTS.csv" 
+#  was the source of y
+# dim(y)        # [1] 68375     4 as of 5/2024
+# y was used to create  frs_by_mact
+
+# "https://echo.epa.gov/files/echodownloads/afs_downloads.zip", AIR_PROGRAM.csv and AFS_FACILITIES.csv 
+#  was the source of afs_mact
+# dim(afs_mact) # [1] 46913     4 as of 5/2024
+
+# > intersect(y$programid, afs_mact$programid)
+# character(0)
+# > unique(substr(afs_mact$programid,1,2))
+# [1] "09" "23" "25" "34" "33" "44" "50" "36" "24" "72" "10" "11" "78" "42" "51" "54" "12" "01" "13" "21" "37" "28" "45" "17" "47" "18" "26" "27" "39" "22" "55" "05" "35" "40" "48" "19" "20" "29" "31"
+# [40] "08" "30" "49" "46" "38" "02" "06" "56" "04" "53" "32" "66" "69" "15" "16" "41"
+# > unique(substr(y$programid,1,2))
+# [1] "AR" "CT" "FL" "IA" "IL" "IN" "LA" "MA" "MD" "ME" "MI" "MN" "MS" "MT" "NC" "NJ" "02" "NM" "NY" "OH" "OK" "OR" "PA" "PR" "RI" "TN" "TX" "VA" "WA" "WI" "WV" "AL" "AK" "09" "CA" "CO" "DC" "DE" "GA"
+# [40] "HI" "ID" "KS" "KY" "MO" "ND" "NE" "NH" "SC" "SD" "UT" "VI" "WY" "10" "08" "VT" "05" "06" "AZ" "NV" "MP" "GU" "SU" "04"
+
+
+
+################### ################################## #################### ################################## #
+################### ################################## #################### ################################## #
+
+# >>>> STOP AND FIX <<<<< ####
+
+stop(" check this rbind !! ")
+
+
+## _____WHY DO THIS rbindlist ??? ####
+# they seem to overlap a lot and just have different ways of saving the programid !!  --- DOES NOT MAKE SENSE ****************
+
+frs_by_mact <- data.table::rbindlist(list(frs_by_mact, afs_mact))
 
 ## filter out missing latlons, now 55,411 valid records as of 6/2023
-y <- y %>% 
+frs_by_mact <- frs_by_mact %>% 
   ## join by programid to get lat and lon columns
-  dplyr::left_join(EJAM::frs_by_programid, by=c('programid' = 'pgm_sys_id')) 
-
-############### # 
-
-## add site counts for MACT Subparts
-mact_counts <- frs_by_mact[, .N, by='subpart'] # EJAM :: frs_by_programid
-mact_table <- dplyr::left_join(EJAM::mact_table, mact_counts)
-mact_table$dropdown_label <- paste0(mact_table$dropdown_label, ' (',prettyNum(mact_table$N, big.mark = ','), ')')
+  dplyr::left_join(frs_by_programid, by = c('programid' = 'pgm_sys_id')) 
 
 
-setwd("~")
 
-# save in the package
+################### ################################## #################### ################################## #
+################### ################################## #################### ################################## #
 
-data.table::setDT(y, key = c("subpart", "programid"))
-frs_by_mact <- data.table::copy(y)
-usethis::use_data(frs_by_mact, overwrite = TRUE)    # data.table
 
-mact_table <- types
-usethis::use_data(mact_table, overwrite = TRUE)  # data.frame
 
+#################################################### #
+# ~ ####
+
+# CREATE "epa_program_counts"  from  frs_by_programid  ####
 
 epa_program_counts <- dplyr::count(frs_by_programid, program, name = 'count') # EJAM :: frs_by_programid
 epa_program_counts$pgm_text_dropdown <- paste0(epa_program_counts$program, ' (',prettyNum(epa_program_counts$count, big.mark = ','), ')')
 epa_programs <- setNames(epa_program_counts$program, epa_program_counts$pgm_text_dropdown)
 
+
+#################################################### #
+# ~ ####
+
+# SAVE DATASETS for package ####
+
+## save mact_table ####
+mact_table     <- EJAM:::metadata_add(mact_table, metadata = list(downloaded = Sys.Date()))
+usethis::use_data(mact_table, overwrite = TRUE)  # data.frame
+
+## save frs_by_mact ####
+frs_by_mact   <- EJAM:::metadata_add(frs_by_mact, metadata = list(downloaded = Sys.Date()))
+usethis::use_data(frs_by_mact, overwrite = TRUE)    # data.table
+
+## save epa_programs ####
+epa_programs <- EJAM:::metadata_add(epa_programs, metadata = list(downloaded = Sys.Date()))
 usethis::use_data(epa_programs, overwrite = TRUE) # data.frame
+
+#################################################### #
+
+stop("done")
+
+
+
+################################################################################################ #
+################################################################################################ #
 
 # save(frs_by_mact, file = "frs_by_mact.rda")
 # save(mact_table, "mact_table.rda")
  
-
 ################################################################################################ #
-
-
-
 
 # Facility/Source Level Identifying Data (ICIS-AIR_FACILITIES.csv)
 #
@@ -215,31 +343,22 @@ usethis::use_data(epa_programs, overwrite = TRUE) # data.frame
 # https://echo.epa.gov/tools/data-downloads/icis-air-download-summary/air-program-code-subpart-descriptions#caamact
 
 
-
-
-
-
-
-
 ################################################################################################ #
 ################################################################################################ #
 
-
-
-# tried to use web services but without success
-
-
-
+if (1 == 0) {
+  
+# also tried to use web services but without success
 
 
 # https://echo.epa.gov/tools/web-services
 
 # FRS via ECHO does have a field called AIRMacts with comma separated list of subparts like CC, FFFF, YY
 #
-#  *** BUT so far I cannot get that type of query to work in their API - using MACT subparts as query of air systems services.
+#  *** BUT so far cannot get that type of query to work in their API - using MACT subparts as query of air systems services.
 #
-# ECHO API has air services that let you query on MACT subpart, but it fails the way I have tried.
-# ECHO API example of Air services - fails when I try to search on MACT subparts:
+# ECHO API has air services that let you query on MACT subpart, but it fails the way tried.
+# ECHO API example of Air services - fails when try to search on MACT subparts:
 # https://echodata.epa.gov/echo/air_rest_services.get_facilities?output=JSON&p_mact=FFFF&qcolumns=2%2C8%2C22%2C23%2C25%2C26
 
 # https://echodata.epa.gov/echo/air_rest_services.get_facility_info?p_act=Y&p_maj=Y&p_mact=ZZZZZ&qcolumns=2%2C8%2C22%2C23%2C25%2C26
@@ -312,4 +431,4 @@ x <- jsonlite::fromJSON(rawToChar(x$content))$Results$ClusterOutput$ClusterData[
 # "ColumnID": "25",
 # "ObjectName": "AIRMacts",
 # "Description": "The Maximum Achievable Control Technology (MACT) Subpart associated with the facility."
-
+}
