@@ -56,15 +56,45 @@ indexblocks()
 ```
 
 
-# Note: This article is a work in progress - currently just draft notes
+Note: This article is a work in progress - currently just draft notes
 
 
-## Test data / Examples of Inputs and Outputs of Various Functions
+## EXAMPLES OF FILES AND DATA EJAM CAN IMPORT OR OUTPUT
+
+### Sample spreadsheets and shapefiles: Examples of inputs and outputs of EJAM functions and web app
+
+To see examples of .xlsx files, installed locally with EJAM, as input files you can use to try out EJAM functions or the web app, or to see what an input file should look like:
 
 ```{r, eval=FALSE, echo=TRUE}
 
-# This provides a useful list of test/sample data objects in key packages:
+# Local folders with sample files
 
+```{r, eval = FALSE, echo = TRUE}
+
+# To see a list of local folders (where EJAM is installed locally) 
+# with files that can be uploaded to the EJAM web app
+# or provided as inputs to EJAM functions (as examples or for testing):
+
+cbind(path = x <- list.dirs(system.file("testdata/", package = "EJAM"), recursive = FALSE), folder = basename(x))
+
+# List of those local files
+
+for (example_type in x) {cat("\n", basename(example_type), "\n\n"); print(cbind(list.files(example_type)))}
+
+# Example of using a file 
+
+testpoint_files <- list.files(system.file("testdata/latlon", package = "EJAM"), full.names = T)
+testpoint_files
+
+latlon_from_anything(testpoint_files[2]) # aka latlon_any_format()
+
+```
+
+### Sample R data objects: Examples of inputs and outputs of EJAM functions
+
+To see examples of data objects, installed as part of EJAM and related packages, as inputs or intermediate data objects that you can use to try out EJAM functions, to see what the outputs and inputs look like, or to use for testing purposes:
+
+```{r, eval = FALSE, echo = TRUE}
 x <- EJAM:::datapack(simple = FALSE); cat("\n\n") 
 x <- x[order(x$Package, x$Item), ] 
 x[grepl("^testp", x$Item), ]  ; cat("\n\n")
@@ -73,6 +103,8 @@ x[grepl("^testout", x$Item), ]  ; cat("\n\n")
 x[grepl("^test[^op_]", x$Item), ]
 ```
 
+
+------------------------------------------------------------------------
 
 
 ## DISTANCES (RADIUS VALUES)
@@ -263,6 +295,8 @@ distance_by_group_plot(
 ```
 
 
+------------------------------------------------------------------------
+
 
 ## POPULATION DENSITY - AVG SITE VS AVG RESIDENT
 
@@ -373,6 +407,7 @@ summary(s2b_stats$avgDistance)
 ```
 
 
+------------------------------------------------------------------------
 
 
 ## DETAILS OF BLOCKS NEAR ONE SITE
