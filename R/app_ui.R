@@ -105,7 +105,7 @@ app_ui  <- function(request) {
           title = 'Site Selection',
           #h3('Welcome to EJAM'),
           div(
-            'EJAM lets you explore the demographics and environmental conditions in any list of places, such as for anyone who lives within 1 mile of a certain type of EPA-regulated site.',
+            p('EJAM lets you explore the demographics and environmental conditions in any list of places, such as for anyone who lives within 1 mile of a certain type of EPA-regulated site.'),
             class = "about-EJAM-span"
           ),
           hr(), ## horizontal line
@@ -116,7 +116,6 @@ app_ui  <- function(request) {
             ## upload-methods column ####
             column(
               4,  # through about line 359
-              h4('Specify Locations to Analyze'),
 
               ## input: use CATEGORIES of sites, or upload LOCATIONS ? ####
               div(style = 'border: 1px solid #005ea2; padding: 10px;',
@@ -126,42 +125,43 @@ app_ui  <- function(request) {
                                                'Upload specific locations'),
                                choiceValues = c('dropdown',
                                                 'upload'),
-                               selected = 'upload')
-              ),
-              br(),
-
-              ### input: what CATEGORY type? (NAICS, SIC, MACT, Program) ####
-              conditionalPanel(
-                condition = 'input.ss_choose_method == "dropdown"',
-                div(style = 'border: 1px solid #005ea2; padding: 10px;',
+                               selected = 'upload'),
+                  ### input: what CATEGORY type? (NAICS, SIC, MACT, Program) ####
+                  # end conditional choose category type
+                  conditionalPanel(
+                    condition = 'input.ss_choose_method == "dropdown"',
                     selectInput(inputId = 'ss_choose_method_drop',
-                                label = tags$span('How would you like to select categories?'),
-                                choices = c('by Industry (NAICS) Code' = 'NAICS',
-                                            'by Industry (SIC) Code'   = 'SIC',
-                                            'by EPA Program'           = 'EPA_PROGRAM',
-                                            'by MACT subpart'          = 'MACT'))
-                )
-              ), # end conditional choose category type
-
-              ### input: what LOCATIONS type to upload? (IDs, latlon, FIPS, Shapes) ####
-              conditionalPanel(
-                condition = 'input.ss_choose_method == "upload"',
-                div(style = 'border: 1px solid #005ea2; padding: 10px;',
+                                    label = tags$span('How would you like to select categories?'),
+                                    choices = c('by Industry (NAICS) Code' = 'NAICS',
+                                                'by Industry (SIC) Code'   = 'SIC',
+                                                'by EPA Program'           = 'EPA_PROGRAM',
+                                                'by MACT subpart'          = 'MACT'))
+                    
+                  ),
+                  ### input: what LOCATIONS type to upload? (IDs, latlon, FIPS, Shapes) ####
+                  # end conditional picking what type of IDs to upload
+                  conditionalPanel(
+                    condition = 'input.ss_choose_method == "upload"',
                     selectInput(inputId = 'ss_choose_method_upload',
-                                #label = 'What type of data are you uploading?',
-                                label = tags$span(
-                                  'What type of data are you uploading?'
-                                ),
-                                choices = c('Latitude/Longitude file upload'               = 'latlon',
-                                            'EPA Facility ID (FRS Identifiers)'            = 'FRS',
-                                            'EPA Program IDs'                              = 'EPA_PROGRAM',
-                                            'FIPS Codes'                                   = 'FIPS',
-                                            'Shapefile of polygons'                        = 'SHP')   # , selected = 'latlon'   # would set initial value but default is 1st in list
-                    )
-                )
-              ), # end conditional picking what type of IDs to upload
+                                    #label = 'What type of data are you uploading?',
+                                    label = tags$span(
+                                      'What type of data are you uploading?'
+                                    ),
+                                    choices = c('Latitude/Longitude file upload'               = 'latlon',
+                                                'EPA Facility ID (FRS Identifiers)'            = 'FRS',
+                                                'EPA Program IDs'                              = 'EPA_PROGRAM',
+                                                'FIPS Codes'                                   = 'FIPS',
+                                                'Shapefile of polygons'                        = 'SHP')   # , selected = 'latlon'   # would set initial value but default is 1st in list
+                        )
+                    
+                  ),
+              ),
+
+
+
 
               br(),
+
 
               ## *UPLOADING  SITES*  input: choose among facility dropdown options, conditional panel ####
 
@@ -396,24 +396,22 @@ app_ui  <- function(request) {
             # ______ VIEW SITES ________ tabPanel(title = 'Site Selection'####
             #. ####
             column(8,
-                   uiOutput('invalid_sites_alert2'),
+                  
                    ## TABLE of uploaded points in Modal window via Button  ####
-                   fluidRow(
-                     column(4,
-                            h4('Selected Location Map'), #, # xxx
+                   div(
+                     style = "display: flex; flex-direction: column; margin-bottom: .5em;",
+                     div(
+                       style = "flex: 1; display: flex; flex-wrap: wrap; gap: 1em; align-items: center;",
+                         div(
+                           actionButton('show_data_preview', label = 'Review selected sites',
+                                        class = 'usa-button usa-button--outline')
+                         ),
+                         div(
+                           htmlOutput(outputId = 'an_map_text'),
+                         )
                      ),
-                     column(4,
-                            htmlOutput(outputId = 'an_map_text'),
-                     ),
-                     column(4,
-                            ## add button and modal to show uploaded data interactively
-                            actionButton('show_data_preview', label = 'Review selected sites',
-                                         class = 'usa-button usa-button--outline'),
-                            
-                            
-                            
-                     )
                    ), # end view data uploads
+                   uiOutput('invalid_sites_alert2'),
 
                    ## MAP of uploaded points ####
 
@@ -446,10 +444,11 @@ app_ui  <- function(request) {
                             shiny::uiOutput("analysis_title_ui"),
 
                             ## input: START Button     ####
-                            shiny::actionButton(inputId = 'bt_get_results',
-                                                label = div('Start Analysis', HTML('&nbsp;'), icon('play')), class = 'usa-button'
-                                                ## extra formatting - optional
-                                                # style = 'color: #fff; background-color: #005ea2; height: 50px; width: 100px; border-radius: 5%;')
+                            shiny::actionButton(
+                              inputId = 'bt_get_results',
+                              label = div('Start Analysis', HTML('&nbsp; <i class="fas fa-play" aria-hidden="true"></i>')),
+                              class = 'usa-button',
+                              role = 'button'  
                             )
                      ),
                    ) # end fluidRow with radius slide and analysis title and start button
