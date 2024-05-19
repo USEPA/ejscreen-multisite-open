@@ -74,8 +74,8 @@ plot_distance_mean_by_group <- function(results_bybg_people,
   i.min <- which.min(x$ratio)
   mingroup = gsub("% ", "", rownames(x)[i.min])
   mingrouptext = paste0(mingroup, " is only ", round(100*x$ratio[i.min],0),"% as far as everyone else, ",
-                        round(x$avg_distance_for_group[   i.min],1)," miles vs ",
-                        round(x$avg_distance_for_nongroup[i.min],1)," miles")
+                        round(x$avg_distance_for_group[   i.min],2)," miles vs ",
+                        round(x$avg_distance_for_nongroup[i.min],2)," miles")
 
   if (returnwhat == "plot") {
     # how? just plot it and assume ggplot2::ggsave() can find it or does it need to be via ggplot not barplot?

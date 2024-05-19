@@ -49,7 +49,7 @@
   }
   
   #header-primary-background { 
-  background-color: #0e98d7;
+  background-color: #005ea2;
   width: 100%;
   height: fit-content;
   display: inline-block;
@@ -69,12 +69,12 @@
   
   #header-primary-background-inner h1 {
     color: white; 
-    font-size: 2em;
+    font-size: 1.5em;
     align-self: flex-start;
     line-height: 1em;
     
     @media screen and (max-width:768px) {
-    font-size: 2em;
+    font-size: 1.25em;
   }
   }
   
@@ -101,7 +101,7 @@ width: 4em;
     position: relative;
     width: 100%;
     font-weight: bold;
-    background-color: #0e98d7;
+    background-color: #005ea2;
     color: white; 
     height: auto;
     display: flex;
@@ -170,7 +170,7 @@ width: 4em;
     }
   
   .color-alt-table-title { 
-    font-size: 25px;
+    font-size: 22px;
     font-family: Oswald, Arial, sans-serif;
     text-align: center;
     text-transform: uppercase;
@@ -178,12 +178,12 @@ width: 4em;
   }
   
   .color-alt-table-title th {
-    padding: 10px 0; 
+    padding: 2.5px 0; 
   }
   
   /* every data cell */
     .color-alt-table td {
-      font-size: 16px;
+      font-size: 12px;
       font-weight: normal;
     }
   
@@ -208,9 +208,9 @@ width: 4em;
         border: 2px solid black;
       text-transform: uppercase;
       font-weight: bolder;
-      font-size: 17px;
+      font-size: 15px;
       line-height: 19px;
-      padding: 5px 5px 5px 10px;
+      padding: 2px 2px 2px 5px;
     }
   .color-alt-table-header th:first-of-type {
     text-align: left;
@@ -223,8 +223,8 @@ width: 4em;
         border: 2px solid black;
       text-transform: uppercase;
       font-weight: bolder;
-      font-size: 14px;
-      padding-left: 10px;
+      font-size: 12px;
+      padding-left: 5px;
     }
   .color-alt-table-subheader th:first-of-type {
     text-align: left;
@@ -243,7 +243,7 @@ width: 4em;
   /* first column only */
     .color-alt-table tr td:first-of-type { 
       text-align: left;
-      padding-left: 10px;
+      padding-left: 5px;
     }
   
   /* all columns but the first */
@@ -261,8 +261,8 @@ width: 4em;
     }
   
   h1 {
-    font-family: Arial, sans-serif;
-    font-size: 60px;
+    /*font-family: Arial, sans-serif;*/
+    font-size: 45px;
     font-style: normal;
     font-variant: normal;
     font-weight: 900;
@@ -270,7 +270,7 @@ width: 4em;
   }
   
   h2:not(.title-panel h2) {
-    font-family: Arial, sans-serif;
+    /*font-family: Arial, sans-serif;*/
     font-size: 25px;
     font-style: normal;
     font-variant: normal;
@@ -278,9 +278,13 @@ width: 4em;
     line-height: 23px;
   }
   
+  .title-panel h2 {
+    font-size: 25px;
+  }
+  
   h3 {
-    font-family: Arial, sans-serif;
-    font-size: 17px;
+    /*font-family: Arial, sans-serif;*/
+    font-size: 15px !important;
     font-style: normal;
     font-variant: normal;
     font-weight: 700;
@@ -288,8 +292,8 @@ width: 4em;
   }
   
   h4 {
-    font-family: Arial, sans-serif;
-    font-size: 13.5px;
+    /*font-family: Arial, sans-serif;*/
+    font-size: 14px;
     font-style: normal;
     font-variant: normal;
     font-weight: 700;
@@ -297,15 +301,25 @@ width: 4em;
   }
   
   p {
-    font-family: Arial, sans-serif;
+    /*font-family: Arial, sans-serif;*/
     font-style: normal;
     font-variant: normal;
     font-weight: 400;
     line-height: 23px;
   }
   
+  li, p, label, input, button, a, .selectize-input, .selectize-dropdown-content, .shiny-output-error, #an_map_text, .help-block {
+    font-size: 13.5px !important;
+  }
+
+.navbar1 .container {
+  width: 100%;
+}
+  
+}
+  
   blockquote {
-    font-family: Arial, sans-serif;
+    /*font-family: Arial, sans-serif;*/
     font-size: 17px;
     font-style: normal;
     font-variant: normal;
@@ -314,7 +328,7 @@ width: 4em;
   }
   
   pre {
-    font-family: Arial, sans-serif;
+    /*font-family: Arial, sans-serif;*/
     font-size: 11px;
     font-style: normal;
     font-variant: normal;
@@ -336,11 +350,11 @@ width: 4em;
   }
   
   .about-EJAM-span {
-    margin: .5em 0;
+    margin: 1em 0;
   }
   
   hr {
-    margin: .5em 0;
+    margin: 1em 0 !important;
   }
   
   
@@ -410,7 +424,7 @@ border-radius: 0 0 50px 0;
 }
 
 #header-primary-background { 
-background-color: #0e98d7;
+background-color: #005ea2;
   width: 1060px;
 height: 220px;
 display: inline-block;
