@@ -50,6 +50,7 @@ reference:
   - ejam2excel
   - ejam2ratios
   - ejam2barplot
+  - ejam2shapefile
   - ejamit_compare_distances
   - ejamit_compare_distances2plot
   - ejamit_compare_types_of_places
@@ -137,6 +138,7 @@ reference:
   - shapefile2latlon
   - shapes_counties_from_countyfips
   - shapes_blockgroups_from_bgfips
+  - ejam2shapefile
 - title: "Specify Counties etc."
   desc: >
     Tools to work with Census units and FIPS codes
@@ -235,6 +237,8 @@ reference:
 - title: "Viewing Results"
 - subtitle: "Maps of Points"
   contents:
+  - ejam2map
+  - ejam2shapefile
   - mapfast
   - mapfastej
   - mapfast_gg
@@ -260,6 +264,7 @@ reference:
   - plot_ridgeline_ratios
   - plot_vs_us
   - boxplots_ratios
+  - ejamit_compare_distances2plot
   - plot_demogshare_by_distance
   - plot_distance_by_pctd
   - plot_distance_by_group
@@ -269,6 +274,9 @@ reference:
   - plot_lorenz_popcount_by_site
 - subtitle: "Tables"
   contents:
+  - ejam2report
+  - ejam2excel
+  - ejam2ratios
   - table_tall_from_overall
   - table_round
   - table_rounding_info

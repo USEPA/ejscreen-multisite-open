@@ -14,11 +14,11 @@
 #' @examples
 #'   # x <- ejam2shapefile(ejamit(testpoints_100 , radius = 3.1), 
 #'   #    fname = "test100_3miles.shp", folder = "~/../Downloads")
-#'   out = testoutput_ejamit_10pts_1miles
-#'   # ejam2shapefile(out,
+#'   out <- testoutput_ejamit_10pts_1miles
+#'   # shp <- ejam2shapefile(out,
 #'   #   fname = "ejamoutput.shp", folder = "~/../Downloads")
 #' @details see 
-#'   https://doc.arcgis.com/en/arcgis-online/reference/shapefiles.htm 
+#'   [Shapefile format basics from arcgis.com](https://doc.arcgis.com/en/arcgis-online/reference/shapefiles.htm) 
 #' 
 #' @export
 #' 
