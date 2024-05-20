@@ -61,6 +61,9 @@
     <a class="dropdown-item" href="../articles/6_future_plans.html">Future Plans and Ideas for EJAM</a>
   </div>
 </li>
+<li class="nav-item">
+  <a class="nav-link" href="../news/index.html">Changelog</a>
+</li>
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
@@ -223,36 +226,10 @@ sites</em> as a whole, <em>for 2 or 3 specific distances</em><a class="anchor" a
 <span>  <span class="va">pts</span> <span class="op">&lt;-</span> <span class="va">testpoints_10</span> <span class="co">#  quicker for the example</span></span>
 <span>  <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ejamit_compare_distances.html">ejamit_compare_distances</a></span><span class="op">(</span><span class="va">pts</span>, radii <span class="op">=</span> <span class="va">radii</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Analyzing 10 points, radius of 1 miles around each.</span></span>
-<span><span class="co">#&gt; Connecting to Posit Connect 2024.01.0 at</span></span>
-<span><span class="co">#&gt; &lt;https://rstudio-connect.dmap-stage.aws.epa.gov&gt;</span></span>
-<span><span class="co">#&gt; Successfully connected to Posit Connect pins board.</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; bgej         - is NOT in memory. Checking local disk... bgej        is NOT found locally on disk at ~/../Downloads/EJAMbigfiles/bgej.arrow </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; bgej        is NOT found locally on disk at ~/../Downloads/EJAMbigfiles/bgej.arrow </span></span>
-<span><span class="co">#&gt; trying to load bgej  from EJAM/bgej.rda</span></span>
-<span><span class="co">#&gt; Client error: (404) Not Found</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  and could NOT download bgej from DMAP AWS data commons</span></span>
-<span><span class="co">#&gt; Warning in EJAMbatch.summarizer::batch.summarize(sitestats =</span></span>
-<span><span class="co">#&gt; data.frame(out$results_bysite), : specified threshnames not all found in</span></span>
-<span><span class="co">#&gt; sitestats colnames, so using defaults</span></span>
 <span><span class="co">#&gt; Warning in table_round(x): Percentages stored as 0 to 1 rather than 0 to 100 will not be shown correctly unless adjusted, </span></span>
 <span><span class="co">#&gt;           because rounding info says 0 digits when the intent is to show 0 digits after the 0-100 percent number.</span></span>
 <span><span class="co">#&gt; Analyzing 10 points, radius of 10 miles around each.</span></span>
-<span><span class="co">#&gt; Connecting to Posit Connect 2024.01.0 at</span></span>
-<span><span class="co">#&gt; &lt;https://rstudio-connect.dmap-stage.aws.epa.gov&gt;</span></span>
-<span><span class="co">#&gt; Successfully connected to Posit Connect pins board.</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; bgej         - is NOT in memory. Checking local disk... bgej        is NOT found locally on disk at ~/../Downloads/EJAMbigfiles/bgej.arrow </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; bgej        is NOT found locally on disk at ~/../Downloads/EJAMbigfiles/bgej.arrow </span></span>
-<span><span class="co">#&gt; trying to load bgej  from EJAM/bgej.rda</span></span>
-<span><span class="co">#&gt; Client error: (404) Not Found</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  and could NOT download bgej from DMAP AWS data commons</span></span>
-<span><span class="co">#&gt; Warning in EJAMbatch.summarizer::batch.summarize(sitestats = data.frame(out$results_bysite), : specified threshnames not all found in sitestats colnames, so using defaults</span></span>
-<span><span class="co">#&gt; Warning in EJAMbatch.summarizer::batch.summarize(sitestats = data.frame(out$results_bysite), : Percentages stored as 0 to 1 rather than 0 to 100 will not be shown correctly unless adjusted, </span></span>
+<span><span class="co">#&gt; Warning in table_round(x): Percentages stored as 0 to 1 rather than 0 to 100 will not be shown correctly unless adjusted, </span></span>
 <span><span class="co">#&gt;           because rounding info says 0 digits when the intent is to show 0 digits after the 0-100 percent number.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt;                                         1  10</span></span>
@@ -400,7 +377,7 @@ function of distance</em><a class="anchor" aria-label="anchor" href="#how-demogr
 <span></span>
 <span> <span class="co"># Example of area that has higher %Hispanic as you go</span></span>
 <span> <span class="co"># 10 to 30 miles away from this specific point</span></span>
-<span> <span class="va">pts</span> <span class="op">=</span> <span class="fu">data.table</span><span class="op">(</span>lat <span class="op">=</span> <span class="fl">45.75464</span>, lon <span class="op">=</span> <span class="op">-</span><span class="fl">94.36791</span><span class="op">)</span></span>
+<span> <span class="va">pts</span> <span class="op">=</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/data.table.html" class="external-link">data.table</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="fl">45.75464</span>, lon <span class="op">=</span> <span class="op">-</span><span class="fl">94.36791</span><span class="op">)</span></span>
 <span> <span class="fu"><a href="../reference/plot_distance_by_pctd.html">plot_distance_by_pctd</a></span><span class="op">(</span><span class="va">pts</span>,</span>
 <span>   sitenum <span class="op">=</span> <span class="fl">1</span>, score_colname <span class="op">=</span> <span class="st">"pcthisp"</span><span class="op">)</span></span>
 <span> <span class="co"># browseURL(url_ejscreen_report(lat = pts$lat, lon = pts$lon, radius = 10))</span></span>
