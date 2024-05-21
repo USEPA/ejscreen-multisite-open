@@ -61,6 +61,9 @@
     <a class="dropdown-item" href="../articles/6_future_plans.html">Future Plans and Ideas for EJAM</a>
   </div>
 </li>
+<li class="nav-item">
+  <a class="nav-link" href="../news/index.html">Changelog</a>
+</li>
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
@@ -82,8 +85,11 @@
 
 
 
-
-<div class="row">
+<link href="4_advanced_files/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+<script src="4_advanced_files/htmlwidgets-1.6.4/htmlwidgets.js"></script><link href="4_advanced_files/leaflet-1.3.1/leaflet.css" rel="stylesheet">
+<script src="4_advanced_files/leaflet-1.3.1/leaflet.js"></script><link href="4_advanced_files/leafletfix-1.0.0/leafletfix.css" rel="stylesheet">
+<script src="4_advanced_files/proj4-2.6.2/proj4.min.js"></script><script src="4_advanced_files/Proj4Leaflet-1.0.1/proj4leaflet.js"></script><link href="4_advanced_files/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet">
+<script src="4_advanced_files/leaflet-binding-2.2.2/leaflet.js"></script><script src="4_advanced_files/lfx-easyprint-1.0.0/dom-to-image.js"></script><script src="4_advanced_files/lfx-easyprint-1.0.0/FileSaver.js"></script><script src="4_advanced_files/lfx-easyprint-1.0.0/lfx-easyprint_full.js"></script><script src="4_advanced_files/lfx-easyprint-1.0.0/lfx-easyprint-bindings.js"></script><div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Advanced Features</h1>
             
@@ -95,7 +101,8 @@
     
     
 <div class="section level2">
-<h2 id="note-this-article-is-not-yet-available-">Note: This article is not yet available.<a class="anchor" aria-label="anchor" href="#note-this-article-is-not-yet-available-"></a>
+<h2 id="note-this-article-is-a-work-in-progress---currently-just-draft-notes">Note: This article is a work in progress - currently just draft
+notes<a class="anchor" aria-label="anchor" href="#note-this-article-is-a-work-in-progress---currently-just-draft-notes"></a>
 </h2>
 <div class="section level3">
 <h3 id="test-data-examples-of-inputs-and-outputs-of-various-functions">Test data / Examples of Inputs and Outputs of Various Functions<a class="anchor" aria-label="anchor" href="#test-data-examples-of-inputs-and-outputs-of-various-functions"></a>
@@ -110,6 +117,598 @@
 <span><span class="va">x</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"^test_"</span>, <span class="va">x</span><span class="op">$</span><span class="va">Item</span><span class="op">)</span>, <span class="op">]</span>  ; <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\n\n"</span><span class="op">)</span> </span>
 <span><span class="va">x</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"^testout"</span>, <span class="va">x</span><span class="op">$</span><span class="va">Item</span><span class="op">)</span>, <span class="op">]</span>  ; <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\n\n"</span><span class="op">)</span> </span>
 <span><span class="va">x</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"^test[^op_]"</span>, <span class="va">x</span><span class="op">$</span><span class="va">Item</span><span class="op">)</span>, <span class="op">]</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="distances-radius-values">DISTANCES (RADIUS VALUES)<a class="anchor" aria-label="anchor" href="#distances-radius-values"></a>
+</h3>
+<p>Distance from a potential source of environmental risk is often used
+as a simple proxy for actual exposure or risk, when data are limited.
+Proximity analysis uses distance (how far away) from a site, which is
+just the opposite of proximity (how near) to a site.</p>
+<p>Two basic ways to report demographics and risk are 1) showing
+demographics as a function or risk, and 2) showing risk as a function of
+demographics:</p>
+<ol style="list-style-type: decimal">
+<li><p>Demographics as a function of risk (or proximity): Many proximity
+analyses report percent demographics by distance or risk bin, such as %
+low income within 3 miles of a point. This expresses demographics as a
+function of proximity or risk. Sometimes other distance or risk bins are
+used, such as areas with risk above some cutoff. And sometimes instead
+of a continuous measure of % demographics, the demographic data are used
+to categorize places in bins, such as areas in the top quartile of
+poverty rates.</p></li>
+<li><p>Risk (or proximity) as a function of demographics: A different
+way to present this information is to report distance or risk as a
+function of demographic group – this expresses distance within each
+demographic group, such as the average distance by group or the full
+distribution of risk within each group.</p></li>
+</ol>
+<p>Proximity or distance as binary, categorical, or continuous metrics:
+Proximity analysis has often relied on picking a single distance, a
+radius, and analyzing conditions within that radius, such as all
+residents who live within 3 miles of a point where a regulated facility
+is located. Sometimes an analysis will look at two or even three
+distances. In some more sophisticated analyses, distance is treated as a
+continuous measure. Some tools like EJScreen use a proximity metric
+based on the inverse of distance (1/d) to provide a proximity score that
+gets higher as distance gets smaller. But many EJ analyses still use a
+single distance and analyze conditions within that distance.</p>
+<p>EJAM makes it easier to do any of these types of analysis, because
+conclusions can be sensitive to the choice of a single radius, and
+metrics and methods provide different perspectives and reveal a richer
+picture of where people actually live in relation to potential sources
+of exposure or risk.</p>
+<p>Proximity analysis using a single radius (binary distance) versus
+using continuous distance: There are two aspects of proximity to
+consider when analyzing demographic groups within a certain fixed
+distance (radius) from a single facility point (or a whole set of
+facilities). These two ways of summarizing proximity are
+complementary:</p>
+<ol style="list-style-type: decimal">
+<li><p>Which groups tend to live nearby in the sense of being within the
+selected radius versus outside the radius? In other words, which groups
+are “overrepresented” within X miles of the site? This treats proximity
+as a yes/no, binomial question – a resident is nearby or not. It would
+focus on whether someone is anywhere within 3 miles, say, and ignore the
+differences between being 1, 2, or 3 miles away.</p></li>
+<li><p>Among the residents within X miles of the site, which groups live
+especially close to the facility? This question recognizes proximity is
+a continuous variable, and focuses on the difference between 1 mile, 1.5
+miles, etc. However, it only looks at residents within the X miles
+radius area analyzed, so it fails to recognize that some groups tend to
+live more than 3 miles away, for example. This perspective does not take
+into account which groups are overrepresented within the original total
+radius near a site.</p></li>
+</ol>
+<p>This function does the second of these two types of analysis. It
+reports, only among those anywhere inside the radius, which groups are
+closer to the site.</p>
+<p>In a specific location, for example, one demographic group could be
+underrepresented within 3 miles, but those few who are in the group
+still might live right next to the facility in which case their average
+distance would be higher than that of any other group because this
+function only counts those within the radius analyzed.</p>
+<p>In some other location, the opposite could occur – if one group is
+overrepresented within 3 miles, they still might all live in a community
+about 2.9 miles away from the site – that would mean their distance from
+the site on average is greater (or their proximity score is lower) than
+other groups within 3 miles of the site.</p>
+<p>The question of whether to compare to Statewide or Nationwide or
+urban/rural or other reference averages or percentiles is related to
+this question of how to look at distances, or exposures or risk, just
+like it relates to how to look at demographic percentages. One could
+look at % demographics within 1 mile, 2 miles, etc. all the way out
+until one was looking at the county overall, the state overall, and
+eventually the nation overall. Selecting a single radius or selecting a
+single reference area should be done with a recognition of what
+questions one is actually trying to answer, and an understanding of how
+impacts vary with distance from a particular type of facility or source
+of potential risk.</p>
+<p>If one is comparing demographic groups in terms of distance (or risk
+level), or if one is comparing % demographics at each distance (or risk
+level), the implicit assumption is that there is some “expected” rate,
+and/or some “equitable” or “proportionate” % or ratio or risk.</p>
+<div class="section level4">
+<h4 id="which-groups-are-overrepresented-at-the-overall-list-of-sites-as-a-whole-within-x-mile-radius-vs-statewide">Which groups are <em>overrepresented</em> at the <em>OVERALL LIST of
+sites</em> as a whole, within X mile radius vs Statewide<a class="anchor" aria-label="anchor" href="#which-groups-are-overrepresented-at-the-overall-list-of-sites-as-a-whole-within-x-mile-radius-vs-statewide"></a>
+</h4>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/ejam2ratios.html">ejam2ratios</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="which-groups-are-overrepresented-at-the-overall-list-of-sites-as-a-whole-for-2-or-3-specific-distances">Which groups are <em>overrepresented</em> at the <em>OVERALL LIST of
+sites</em> as a whole, <em>for 2 or 3 specific distances</em><a class="anchor" aria-label="anchor" href="#which-groups-are-overrepresented-at-the-overall-list-of-sites-as-a-whole-for-2-or-3-specific-distances"></a>
+</h4>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span>  <span class="va">radii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">6</span>,<span class="fl">10</span><span class="op">)</span></span>
+<span>  <span class="va">radii</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">10</span><span class="op">)</span> <span class="co">#  quicker for the example</span></span>
+<span>  <span class="va">pts</span> <span class="op">&lt;-</span> <span class="va">testpoints_100</span></span>
+<span>  <span class="va">pts</span> <span class="op">&lt;-</span> <span class="va">testpoints_10</span> <span class="co">#  quicker for the example</span></span>
+<span>  <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ejamit_compare_distances.html">ejamit_compare_distances</a></span><span class="op">(</span><span class="va">pts</span>, radii <span class="op">=</span> <span class="va">radii</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Analyzing 10 points, radius of 1 miles around each.</span></span>
+<span><span class="co">#&gt; Warning in table_round(x): Percentages stored as 0 to 1 rather than 0 to 100 will not be shown correctly unless adjusted, </span></span>
+<span><span class="co">#&gt;           because rounding info says 0 digits when the intent is to show 0 digits after the 0-100 percent number.</span></span>
+<span><span class="co">#&gt; Analyzing 10 points, radius of 10 miles around each.</span></span>
+<span><span class="co">#&gt; Warning in table_round(x): Percentages stored as 0 to 1 rather than 0 to 100 will not be shown correctly unless adjusted, </span></span>
+<span><span class="co">#&gt;           because rounding info says 0 digits when the intent is to show 0 digits after the 0-100 percent number.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;                                         1  10</span></span>
+<span><span class="co">#&gt; Ratio to State avg %Hispanic          1.3 1.4</span></span>
+<span><span class="co">#&gt; Ratio to State avg %Black NHA         1.4 1.5</span></span>
+<span><span class="co">#&gt; Ratio to State avg %Asian NHA         0.8 1.1</span></span>
+<span><span class="co">#&gt; Ratio to State avg %AmerIndian/AK NHA 0.9 0.5</span></span>
+<span><span class="co">#&gt; Ratio to State avg %Hawaiian/PI NHA   0.3 0.7</span></span>
+<span><span class="co">#&gt; Ratio to State avg %Other NHA         4.3 1.2</span></span>
+<span><span class="co">#&gt; Ratio to State avg %multirace (NH)    1.4 0.8</span></span>
+<span><span class="co">#&gt; Ratio to State avg %White NHA         0.8 0.7</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  Indicators that most strongly get larger as you get closer:</span></span>
+<span><span class="co">#&gt; [1] "Ratio to State avg % Other single race (NHA)"</span></span>
+<span>  <span class="fu">EJAM</span><span class="fu">:::</span><span class="fu"><a href="../reference/ejamit_compare_distances2plot.html">ejamit_compare_distances2plot</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
+<p><img src="4_advanced_files/figure-html/ejamit_compare_distances-1.png" width="700"></p>
+<pre><code><span><span class="co">#&gt; [1] "Ratio to State avg % Other single race (NHA)"</span></span></code></pre>
+</div>
+<div class="section level4">
+<h4 id="which-groups-are-overrepresented-at-each-site-within-x-mile-radius-vs-statewide">Which groups are <em>overrepresented</em> at <em>EACH SITE</em>,
+within X mile radius vs Statewide<a class="anchor" aria-label="anchor" href="#which-groups-are-overrepresented-at-each-site-within-x-mile-radius-vs-statewide"></a>
+</h4>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="va">testoutput_ejamit_10pts_1miles</span></span>
+<span><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">out</span><span class="op">$</span><span class="va">results_bysite</span><span class="op">)</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ratio.to.state.avg.pctlowinc"</span>, <span class="st">"ratio.to.state.avg.pctmin"</span><span class="op">)</span><span class="op">]</span>, <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="../reference/fixcolnames.html">fixcolnames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>,<span class="st">"r"</span>,<span class="st">"shortlabel"</span><span class="op">)</span></span>
+<span><span class="va">x</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="mean-distance-of-each-group-at-the-overall-list-of-sites-as-a-whole">
+<em>Mean distance</em> of each group, at the <em>OVERALL LIST of
+sites</em> as a whole<a class="anchor" aria-label="anchor" href="#mean-distance-of-each-group-at-the-overall-list-of-sites-as-a-whole"></a>
+</h4>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="va">testoutput_ejamit_1000pts_1miles</span></span>
+<span><span class="co">## But try a larger radius to reveal more information:</span></span>
+<span><span class="co"># out &lt;- ejamit(testpoints_100, radius = 10)</span></span>
+<span></span>
+<span><span class="co"># see a table of demog indicators</span></span>
+<span><span class="fu"><a href="../reference/distance_mean_by_group.html">distance_mean_by_group</a></span><span class="op">(</span><span class="va">out</span><span class="op">$</span><span class="va">results_bybg_people</span><span class="op">)</span></span>
+<span><span class="co">#&gt;                                 group nearest nearer ratio</span></span>
+<span><span class="co">#&gt; Demog.Ind.                Demog.Index   FALSE   TRUE 0.992</span></span>
+<span><span class="co">#&gt; Suppl Demog.Ind.     Demog.Index.Supp   FALSE   TRUE 0.990</span></span>
+<span><span class="co">#&gt; %Low-inc.                   pctlowinc   FALSE   TRUE 0.985</span></span>
+<span><span class="co">#&gt; %Limited English           pctlingiso   FALSE   TRUE 0.986</span></span>
+<span><span class="co">#&gt; %Unemployed             pctunemployed   FALSE   TRUE 0.994</span></span>
+<span><span class="co">#&gt; %&lt; High School                pctlths   FALSE   TRUE 0.985</span></span>
+<span><span class="co">#&gt; %Low life expectancy         lowlifex   FALSE   TRUE 0.998</span></span>
+<span><span class="co">#&gt; %&lt; age 5                    pctunder5   FALSE  FALSE 1.003</span></span>
+<span><span class="co">#&gt; %&gt; age 64                   pctover64   FALSE  FALSE 1.002</span></span>
+<span><span class="co">#&gt; %POC                           pctmin   FALSE   TRUE 0.997</span></span>
+<span><span class="co">#&gt; %Hispanic                     pcthisp   FALSE  FALSE 1.000</span></span>
+<span><span class="co">#&gt; %Black NHA                    pctnhba   FALSE   TRUE 1.000</span></span>
+<span><span class="co">#&gt; %Asian NHA                    pctnhaa   FALSE   TRUE 0.999</span></span>
+<span><span class="co">#&gt; %AmerIndian/AK NHA         pctnhaiana    TRUE   TRUE 0.887</span></span>
+<span><span class="co">#&gt; %Hawaiian/PI NHA           pctnhnhpia   FALSE   TRUE 0.942</span></span>
+<span><span class="co">#&gt; %Other race NHA       pctnhotheralone   FALSE  FALSE 1.030</span></span>
+<span><span class="co">#&gt; %multirace NH              pctnhmulti   FALSE   TRUE 0.996</span></span>
+<span><span class="co">#&gt; %White NHA                    pctnhwa   FALSE   TRUE 1.000</span></span>
+<span><span class="co">#&gt;                      avg_distance_for_group avg_distance_for_nongroup</span></span>
+<span><span class="co">#&gt; Demog.Ind.                             0.69                      0.69</span></span>
+<span><span class="co">#&gt; Suppl Demog.Ind.                       0.68                      0.69</span></span>
+<span><span class="co">#&gt; %Low-inc.                              0.68                      0.69</span></span>
+<span><span class="co">#&gt; %Limited English                       0.68                      0.69</span></span>
+<span><span class="co">#&gt; %Unemployed                            0.69                      0.69</span></span>
+<span><span class="co">#&gt; %&lt; High School                         0.68                      0.69</span></span>
+<span><span class="co">#&gt; %Low life expectancy                   0.69                      0.69</span></span>
+<span><span class="co">#&gt; %&lt; age 5                               0.69                      0.69</span></span>
+<span><span class="co">#&gt; %&gt; age 64                              0.69                      0.69</span></span>
+<span><span class="co">#&gt; %POC                                   0.69                      0.69</span></span>
+<span><span class="co">#&gt; %Hispanic                              0.69                      0.69</span></span>
+<span><span class="co">#&gt; %Black NHA                             0.69                      0.69</span></span>
+<span><span class="co">#&gt; %Asian NHA                             0.69                      0.69</span></span>
+<span><span class="co">#&gt; %AmerIndian/AK NHA                     0.64                      0.72</span></span>
+<span><span class="co">#&gt; %Hawaiian/PI NHA                       0.66                      0.70</span></span>
+<span><span class="co">#&gt; %Other race NHA                        0.70                      0.68</span></span>
+<span><span class="co">#&gt; %multirace NH                          0.70                      0.70</span></span>
+<span><span class="co">#&gt; %White NHA                             0.69                      0.69</span></span>
+<span></span>
+<span><span class="co"># for a barplot, just race/ethnicity groups</span></span>
+<span><span class="fu"><a href="../reference/distance_mean_by_group.html">distance_mean_by_group</a></span><span class="op">(</span><span class="va">out</span><span class="op">$</span><span class="va">results_bybg_people</span>, </span>
+<span>                       demogvarname <span class="op">=</span> <span class="va">names_d_subgroups</span>,</span>
+<span>                       demoglabel <span class="op">=</span> <span class="fu"><a href="../reference/fixcolnames.html">fixcolnames</a></span><span class="op">(</span><span class="va">names_d_subgroups</span>, <span class="st">"r"</span>, <span class="st">"shortlabel"</span><span class="op">)</span>, </span>
+<span>                       graph <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> </span></code></pre></div>
+<p><img src="4_advanced_files/figure-html/distance_mean_by_group_1-1.png" width="700"></p>
+<pre><code><span><span class="co">#&gt;                              group nearest nearer ratio avg_distance_for_group</span></span>
+<span><span class="co">#&gt; %Hispanic                  pcthisp   FALSE  FALSE 1.000                   0.69</span></span>
+<span><span class="co">#&gt; %Black NHA                 pctnhba   FALSE   TRUE 1.000                   0.69</span></span>
+<span><span class="co">#&gt; %Asian NHA                 pctnhaa   FALSE   TRUE 0.999                   0.69</span></span>
+<span><span class="co">#&gt; %AmerIndian/AK NHA      pctnhaiana    TRUE   TRUE 0.887                   0.64</span></span>
+<span><span class="co">#&gt; %Hawaiian/PI NHA        pctnhnhpia   FALSE   TRUE 0.942                   0.66</span></span>
+<span><span class="co">#&gt; %Other race NHA    pctnhotheralone   FALSE  FALSE 1.030                   0.70</span></span>
+<span><span class="co">#&gt; %multirace NH           pctnhmulti   FALSE   TRUE 0.996                   0.70</span></span>
+<span><span class="co">#&gt; %White NHA                 pctnhwa   FALSE   TRUE 1.000                   0.69</span></span>
+<span><span class="co">#&gt;                    avg_distance_for_nongroup</span></span>
+<span><span class="co">#&gt; %Hispanic                               0.69</span></span>
+<span><span class="co">#&gt; %Black NHA                              0.69</span></span>
+<span><span class="co">#&gt; %Asian NHA                              0.69</span></span>
+<span><span class="co">#&gt; %AmerIndian/AK NHA                      0.72</span></span>
+<span><span class="co">#&gt; %Hawaiian/PI NHA                        0.70</span></span>
+<span><span class="co">#&gt; %Other race NHA                         0.68</span></span>
+<span><span class="co">#&gt; %multirace NH                           0.70</span></span>
+<span><span class="co">#&gt; %White NHA                              0.69</span></span>
+<span><span class="co"># or plot_distance_mean_by_group() is a synonym</span></span>
+<span></span>
+<span><span class="co"># for just 1 indicator</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="../reference/distance_mean_by_group.html">distance_mean_by_group</a></span><span class="op">(</span></span>
+<span>  <span class="va">out</span><span class="op">$</span><span class="va">results_bybg_people</span>, </span>
+<span>  demogvarname <span class="op">=</span> <span class="st">'pctlowinc'</span>, demoglabel <span class="op">=</span> <span class="st">'Low Income'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt;                group nearest nearer ratio avg_distance_for_group</span></span>
+<span><span class="co">#&gt; Low Income pctlowinc    TRUE   TRUE 0.985                   0.68</span></span>
+<span><span class="co">#&gt;            avg_distance_for_nongroup</span></span>
+<span><span class="co">#&gt; Low Income                      0.69</span></span></code></pre>
+</div>
+<div class="section level4">
+<h4 id="mean-distance-of-each-group-at-each-site-as-ratio-to-mean-of-everyone-else-nearby">
+<em>Mean distance</em> of each group, at <em>EACH SITE</em>, as
+ratio to mean of everyone else nearby<a class="anchor" aria-label="anchor" href="#mean-distance-of-each-group-at-each-site-as-ratio-to-mean-of-everyone-else-nearby"></a>
+</h4>
+<p>Ratios at each site, of avg dist of group / avg dist of everyone else
+near site:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="va">testoutput_ejamit_10pts_1miles</span></span>
+<span><span class="co">## But try a larger radius to reveal more information:</span></span>
+<span><span class="co"># out &lt;- ejamit(testpoints_10, radius = 31)</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/distance_by_group_by_site.html">distance_by_group_by_site</a></span><span class="op">(</span><span class="va">out</span><span class="op">$</span><span class="va">results_bybg_people</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># summary of closest group at each site and by how much</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>site <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>, closestgroup <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">which.min</span><span class="op">)</span><span class="op">]</span>, their_avg_distance_as_pct_of_everyone_elses <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">100</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">sapply</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">min</span><span class="op">)</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="how-demographics-at-one-site-vary-as-a-continuous-function-of-distance">How demographics at <em>ONE SITE</em> vary as <em>a continuous
+function of distance</em><a class="anchor" aria-label="anchor" href="#how-demographics-at-one-site-vary-as-a-continuous-function-of-distance"></a>
+</h4>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span> <span class="co"># Example of area where %Black is</span></span>
+<span> <span class="co"># very high within 1 mile but drops by 3 miles away</span></span>
+<span> <span class="va">pts</span> <span class="op">=</span> <span class="va">testpoints_100</span><span class="op">[</span><span class="fl">3</span>,<span class="op">]</span></span>
+<span>  <span class="fu"><a href="../reference/plot_distance_by_pctd.html">plot_distance_by_pctd</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="../reference/getblocksnearby.html">getblocksnearby</a></span><span class="op">(</span><span class="va">pts</span>, radius <span class="op">=</span> <span class="fl">10</span>, quiet <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>,</span>
+<span>    score_colname <span class="op">=</span> <span class="st">"pctnhba"</span><span class="op">)</span></span>
+<span> <span class="co">#browseURL(url_ejscreen_report(lat = pts$lat, lon = pts$lon, radius = 0.5))</span></span>
+<span> <span class="co">#browseURL(url_ejscreen_report(lat = pts$lat, lon = pts$lon, radius = 3))</span></span>
+<span></span>
+<span> <span class="co"># Example of area that has higher %Hispanic as you go</span></span>
+<span> <span class="co"># 10 to 30 miles away from this specific point</span></span>
+<span> <span class="va">pts</span> <span class="op">=</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/data.table.html" class="external-link">data.table</a></span><span class="op">(</span>lat <span class="op">=</span> <span class="fl">45.75464</span>, lon <span class="op">=</span> <span class="op">-</span><span class="fl">94.36791</span><span class="op">)</span></span>
+<span> <span class="fu"><a href="../reference/plot_distance_by_pctd.html">plot_distance_by_pctd</a></span><span class="op">(</span><span class="va">pts</span>,</span>
+<span>   sitenum <span class="op">=</span> <span class="fl">1</span>, score_colname <span class="op">=</span> <span class="st">"pcthisp"</span><span class="op">)</span></span>
+<span> <span class="co"># browseURL(url_ejscreen_report(lat = pts$lat, lon = pts$lon, radius = 10))</span></span>
+<span> <span class="co"># browseURL(url_ejscreen_report(lat = pts$lat, lon = pts$lon, radius = 30))</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="cumulative-distribution-plots-of-groups-as-a-continuous-function-of-distance">Cumulative Distribution plots of groups as <em>a continuous function
+of distance</em><a class="anchor" aria-label="anchor" href="#cumulative-distribution-plots-of-groups-as-a-continuous-function-of-distance"></a>
+</h4>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/distance_by_group_plot.html">distance_by_group_plot</a></span><span class="op">(</span></span>
+<span>  <span class="va">out</span><span class="op">$</span><span class="va">results_bybg_people</span>,</span>
+<span>  demogvarname <span class="op">=</span> <span class="st">'pctlowinc'</span>, demoglabel <span class="op">=</span> <span class="st">'Low Income'</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in distance_by_group_plot(out$results_bybg_people, demogvarname =</span></span>
+<span><span class="co">#&gt; "pctlowinc", : plotting just a random sample of 5,000 of these block groups to</span></span>
+<span><span class="co">#&gt; show pattern quickly</span></span></code></pre></div>
+<p><img src="4_advanced_files/figure-html/distance_by_group_plot1-1.png" width="700"></p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="population-density---avg-site-vs-avg-resident">POPULATION DENSITY - AVG SITE VS AVG RESIDENT<a class="anchor" aria-label="anchor" href="#population-density---avg-site-vs-avg-resident"></a>
+</h3>
+<div class="section level4">
+<h4 id="sites-vary-widely-in-count-of-blocks-nearby-depending-on-population-density">Sites vary widely in count of blocks nearby, depending on population
+density<a class="anchor" aria-label="anchor" href="#sites-vary-widely-in-count-of-blocks-nearby-depending-on-population-density"></a>
+</h4>
+<ul>
+<li>what blocks are near each site</li>
+<li>how far are they</li>
+<li>how many blocks are typically near a given site (population density
+varies)</li>
+<li>how many sites are near a block (residents with &gt; 1 site
+nearby)</li>
+</ul>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="va">testoutput_ejamit_100pts_1miles</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"  "</span>, <span class="fu"><a href="../reference/popshare_p_lives_at_what_pct.html">popshare_p_lives_at_what_pct</a></span><span class="op">(</span><span class="va">out</span><span class="op">$</span><span class="va">results_bysite</span><span class="op">$</span><span class="va">pop</span>, p <span class="op">=</span> <span class="fl">0.50</span>, astext <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    6% of places account for 50% of the total population (approx.)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"  "</span>, <span class="fu"><a href="../reference/popshare_at_top_n.html">popshare_at_top_n</a></span><span class="op">(</span><span class="va">out</span><span class="op">$</span><span class="va">results_bysite</span><span class="op">$</span><span class="va">pop</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">5</span>, <span class="fl">10</span><span class="op">)</span>, astext <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="st">"\n\n"</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    1, 5, 10 places account for 18%, 46%, 58% of the total population</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">## Also could use this example intermediate step dataset </span></span>
+<span><span class="co">## of n sites, with thousands of nearby blocks:</span></span>
+<span><span class="co"># sites2blocks &lt;- data.table::copy(testoutput_getblocksnearby_10pts_1miles)</span></span>
+<span><span class="va">radius</span> <span class="op">&lt;-</span> <span class="fl">3</span></span>
+<span><span class="va">sitepoints</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/copy.html" class="external-link">copy</a></span><span class="op">(</span><span class="va">testpoints_100</span><span class="op">)</span> </span>
+<span></span>
+<span><span class="va">sites2blocks</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getblocksnearby.html">getblocksnearby</a></span><span class="op">(</span><span class="va">sitepoints</span>, <span class="va">radius</span>, quadtree <span class="op">=</span> <span class="va">localtree</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Analyzing 100 points, radius of 3 miles around each.</span></span>
+<span><span class="co">#&gt; Finding Census blocks with internal point within  3  miles of the site (point), for each of 100  sites (points)...</span></span>
+<span><span class="co">#&gt; Stats via getblocks_diagnostics(), but BEFORE ADJUSTING UP FOR VERY SHORT DISTANCES: </span></span>
+<span><span class="co">#&gt; min distance before adjustment:  0.01569589 </span></span>
+<span><span class="co">#&gt; max distance before adjustment:  6.925482 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Adjusting upwards the very short distances now...</span></span>
+<span><span class="co">#&gt;  Stats via getblocks_diagnostics(), AFTER ADJUSTING up FOR SHORT DISTANCES: </span></span>
+<span><span class="co">#&gt; min distance AFTER adjustment:  0.027 </span></span>
+<span><span class="co">#&gt; max distance AFTER adjustment:  2.999998 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;    Summary stats on distances reported from any sites to any nearby blocks</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 2.999998 miles is max. distance to block internal point (distance_unadjusted)   </span></span>
+<span><span class="co">#&gt; 2.999998 miles is max. distance to average resident in block (distance reported)   </span></span>
+<span><span class="co">#&gt; 0.01569589 miles is shortest distance to block internal point (distance_unadjusted)   </span></span>
+<span><span class="co">#&gt; 0.027 miles is shortest distance to average resident in block (distance reported)   </span></span>
+<span><span class="co">#&gt; 112 block distances were adjusted (these stats may count some blocks twice if adjusted at 2+ sites)</span></span>
+<span><span class="co">#&gt;   81 block distances were adjusted up (reported dist to avg resident is &gt; dist to block internal point)</span></span>
+<span><span class="co">#&gt;   31 block distances were adjusted down (reported &lt; unadjusted)</span></span>
+<span><span class="co">#&gt; 76 unique sites had one or more block distances adjusted due to large block and short distance to block point</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 100 unique output sites</span></span>
+<span><span class="co">#&gt; 1,046 blocks are near the avg site or in avg buffer</span></span>
+<span><span class="co">#&gt;              (based on their block internal point, like a centroid)</span></span>
+<span><span class="co">#&gt; 104,621 blocks including doublecounting in overlaps, </span></span>
+<span><span class="co">#&gt;              in final row count (block-to-site pairs table)</span></span>
+<span><span class="co">#&gt; 94,859 actual unique blocks total</span></span>
+<span><span class="co">#&gt; 85,097 blocks (and their residents) have exactly 1 site nearby </span></span>
+<span><span class="co">#&gt; 9,762 blocks (and their residents) have exactly 2 sites nearby </span></span>
+<span><span class="co">#&gt; 0 blocks (and their residents) have exactly 3 sites nearby </span></span>
+<span><span class="co">#&gt; 1.102911 is ratio of blocks including multicounting / actual count of unique blocks</span></span>
+<span><span class="co">#&gt; 10.3% of unique blocks could get counted more than once </span></span>
+<span><span class="co">#&gt;              because those residents are near two or more sites </span></span>
+<span><span class="co">#&gt;              (assuming they live at the block internal point</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">sites2blocks</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "ejam_uniq_id"        "blockid"             "distance"           </span></span>
+<span><span class="co">#&gt; [4] "blockwt"             "bgid"                "distance_unadjusted"</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/getblocks_summarize_blocks_per_site.html">getblocks_summarize_blocks_per_site</a></span><span class="op">(</span><span class="va">sites2blocks</span><span class="op">)</span> </span>
+<span><span class="co">#&gt; Range and mean of count of blocks nearby the various sites:</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span></span>
+<span><span class="co">#&gt;      11     136     602    1046    1336    5735</span></span>
+<span></span>
+<span><span class="co"># print() shows more info returned invisibly</span></span>
+<span><span class="fu"><a href="../reference/getblocks_diagnostics.html">getblocks_diagnostics</a></span><span class="op">(</span><span class="va">sites2blocks</span><span class="op">)</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;    Summary stats on distances reported from any sites to any nearby blocks</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 2.999998 miles is max. distance to block internal point (distance_unadjusted)   </span></span>
+<span><span class="co">#&gt; 2.999998 miles is max. distance to average resident in block (distance reported)   </span></span>
+<span><span class="co">#&gt; 0.01569589 miles is shortest distance to block internal point (distance_unadjusted)   </span></span>
+<span><span class="co">#&gt; 0.027 miles is shortest distance to average resident in block (distance reported)   </span></span>
+<span><span class="co">#&gt; 112 block distances were adjusted (these stats may count some blocks twice if adjusted at 2+ sites)</span></span>
+<span><span class="co">#&gt;   81 block distances were adjusted up (reported dist to avg resident is &gt; dist to block internal point)</span></span>
+<span><span class="co">#&gt;   31 block distances were adjusted down (reported &lt; unadjusted)</span></span>
+<span><span class="co">#&gt; 76 unique sites had one or more block distances adjusted due to large block and short distance to block point</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 100 unique output sites</span></span>
+<span><span class="co">#&gt; 1,046 blocks are near the avg site or in avg buffer</span></span>
+<span><span class="co">#&gt;              (based on their block internal point, like a centroid)</span></span>
+<span><span class="co">#&gt; 104,621 blocks including doublecounting in overlaps, </span></span>
+<span><span class="co">#&gt;              in final row count (block-to-site pairs table)</span></span>
+<span><span class="co">#&gt; 94,859 actual unique blocks total</span></span>
+<span><span class="co">#&gt; 85,097 blocks (and their residents) have exactly 1 site nearby </span></span>
+<span><span class="co">#&gt; 9,762 blocks (and their residents) have exactly 2 sites nearby </span></span>
+<span><span class="co">#&gt; 0 blocks (and their residents) have exactly 3 sites nearby </span></span>
+<span><span class="co">#&gt; 1.102911 is ratio of blocks including multicounting / actual count of unique blocks</span></span>
+<span><span class="co">#&gt; 10.3% of unique blocks could get counted more than once </span></span>
+<span><span class="co">#&gt;              because those residents are near two or more sites </span></span>
+<span><span class="co">#&gt;              (assuming they live at the block internal point</span></span>
+<span><span class="co"># Use data.table package here</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: package 'data.table' was built under R version 4.3.3</span></span>
+<span></span>
+<span><span class="co"># Very few blocks are within a radius of 1/4 mile.</span></span>
+<span><span class="co"># Hundreds are often within 1 mile, but sometimes there are </span></span>
+<span><span class="co"># only a handful or even zero.</span></span>
+<span></span>
+<span><span class="va">s2b_stats</span> <span class="op">&lt;-</span> <span class="va">sites2blocks</span><span class="op">[</span> , <span class="fu">.</span><span class="op">(</span></span>
+<span>  avgDistance <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">distance</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span>,</span>
+<span>  blocksfound <span class="op">=</span> <span class="va">.N</span>, </span>
+<span>  blocks_within_1mile <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">distance</span> <span class="op">&lt;=</span> <span class="fl">1</span><span class="op">)</span>,</span>
+<span>  blocks_within_0.75   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">distance</span> <span class="op">&lt;=</span> <span class="fl">0.75</span><span class="op">)</span>,</span>
+<span>  blocks_within_0.25  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">distance</span> <span class="op">&lt;=</span> <span class="fl">0.25</span><span class="op">)</span></span>
+<span><span class="op">)</span>, by <span class="op">=</span> <span class="st">'ejam_uniq_id'</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">blocksfound</span><span class="op">)</span>, <span class="op">]</span></span>
+<span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/setorder.html" class="external-link">setorder</a></span><span class="op">(</span><span class="va">s2b_stats</span>, <span class="va">ejam_uniq_id</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">s2b_stats</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    ejam_uniq_id avgDistance blocksfound blocks_within_1mile blocks_within_0.75</span></span>
+<span><span class="co">#&gt;           &lt;int&gt;       &lt;num&gt;       &lt;int&gt;               &lt;int&gt;              &lt;int&gt;</span></span>
+<span><span class="co">#&gt; 1:            1        1.66         341                  88                 61</span></span>
+<span><span class="co">#&gt; 2:            2        2.13          56                   3                  2</span></span>
+<span><span class="co">#&gt; 3:            3        1.50        2111                 620                378</span></span>
+<span><span class="co">#&gt; 4:            4        1.65         735                 210                130</span></span>
+<span><span class="co">#&gt; 5:            5        0.90         405                 298                255</span></span>
+<span><span class="co">#&gt; 6:            6        2.00          48                   4                  4</span></span>
+<span><span class="co">#&gt;    blocks_within_0.25</span></span>
+<span><span class="co">#&gt;                 &lt;int&gt;</span></span>
+<span><span class="co">#&gt; 1:                  6</span></span>
+<span><span class="co">#&gt; 2:                  0</span></span>
+<span><span class="co">#&gt; 3:                 36</span></span>
+<span><span class="co">#&gt; 4:                 12</span></span>
+<span><span class="co">#&gt; 5:                 50</span></span>
+<span><span class="co">#&gt; 6:                  0</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co"># CDF of how many blocks are nearby a site</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">s2b_stats</span><span class="op">$</span><span class="va">blocks_within_1mile</span><span class="op">)</span>, </span>
+<span>     main <span class="op">=</span> <span class="st">"How many blocks are near each facility?"</span>, </span>
+<span>     ylab <span class="op">=</span> <span class="st">"# of blocks (whose internal point is) within 1 mile of each site"</span>, </span>
+<span>     xlab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">s2b_stats</span><span class="op">)</span>,<span class="st">" facilities ranked by # of blocks nearby"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">s2b_stats</span><span class="op">$</span><span class="va">blocks_within_1mile</span>, probs <span class="op">=</span> <span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span> <span class="op">*</span> <span class="fl">0.25</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">s2b_stats</span><span class="op">$</span><span class="va">blocks_within_1mile</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="4_advanced_files/figure-html/plot_count_of_blocks_nearby-1.png" width="576"></p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Histogram of how many blocks are nearby a site</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">sites2blocks</span><span class="op">[</span>,<span class="va">.N</span>, by <span class="op">=</span> <span class="st">"ejam_uniq_id"</span><span class="op">]</span><span class="op">[</span>, <span class="va">N</span><span class="op">]</span>, <span class="fl">20</span>, </span>
+<span>     xlab <span class="op">=</span> <span class="st">"How many blocks are nearby?"</span>, </span>
+<span>     ylab <span class="op">=</span> <span class="st">"Frequency (# of sites)"</span>, </span>
+<span>     main <span class="op">=</span> <span class="st">"A given site may have zero to hundreds of blocks nearby"</span>, </span>
+<span>     sub <span class="op">=</span> <span class="st">"A typical site in this example has about 100 blocks nearby"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="4_advanced_files/figure-html/histoblocks-1.png" width="672"></p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="fu">DT</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DT/man/datatable.html" class="external-link">datatable</a></span><span class="op">(</span><span class="va">s2b_stats</span>,  rownames <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co"># more summaries showing there may be only 1 block or hundreds within 1 mile</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">s2b_stats</span><span class="op">$</span><span class="va">blocks_within_1mile</span>, probs <span class="op">=</span> <span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span> <span class="op">*</span> <span class="fl">0.25</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">s2b_stats</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># map the sites with popups about how many blocks were found near each</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="st">'ejam_uniq_id'</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">sitepoints</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span><span class="va">sitepoints</span><span class="op">$</span><span class="va">ejam_uniq_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq.int</a></span><span class="op">(</span>length.out <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">NROW</a></span><span class="op">(</span><span class="va">sitepoints</span><span class="op">)</span><span class="op">)</span><span class="op">}</span></span>
+<span><span class="va">s2b_stats</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge</a></span><span class="op">(</span><span class="va">sitepoints</span>, <span class="va">s2b_stats</span>, by <span class="op">=</span> <span class="st">"ejam_uniq_id"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/mapfast.html">mapfast</a></span><span class="op">(</span><span class="va">s2b_stats</span>, radius <span class="op">=</span> <span class="va">radius</span><span class="op">)</span></span></code></pre></div>
+<div class="leaflet html-widget html-fill-item" id="htmlwidget-ac96cb3ee4656e2e9ec3" style="width:480px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-ac96cb3ee4656e2e9ec3">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false,"attribution":"&copy; <a href=\"https://openstreetmap.org/copyright/\">OpenStreetMap<\/a>,  <a href=\"https://opendatacommons.org/licenses/odbl/\">ODbL<\/a>"}]},{"method":"addCircles","args":[[40.66478,38.39657,40.34971,34.238356,41.351626,42.210608,33.83575,43.06623,44.33037,44.607389,44.5622,34.00255,42.84871,39.281609,39.1072,40.44519,41.55228,32.65896,41.18806,36.3733,41.765963,38.737189,34.320805,41.028894,40.55129,45.56802,45.54008,34.224205,44.54588,42.72435,34.105383,40.23321,46.90732,40.74836,38.39053,30.07394,33.40379,39.56686,33.228333,40.635226,42.676621,41.88805,25.91851,43.669225,37.8088,34.94638,34.065556,41.750688,36.61676,40.17353,38.54863,41.059085,44.8898,43.3463,30.182358,37.506654,45.51544,29.467922,36.911944,41.16786,41.56639,38.57299,39.188043,40.92497,33.368661,40.88991,46.666278,39.478111,33.699624,42.43759,33.75575,40.647771,44.865604,41.04158,40.7899,40.73868,47.70375,39.06548,38.59822,26.68223,38.19563,37.35819,33.5096,43.64384,42.45838,30.362953,39.62418,41.85287,33.727633,40.1942,33.18422,40.583031,45.56393,33.72709,42.727046,39.95224,37.52802,40.33382,36.8879,41.82161],[-74.89136999999999,-98.70086000000001,-79.84963999999999,-118.253428,-85.13566,-93.215351,-118.11689,-92.68472,-75.90884,-93.78310500000001,-74.905897,-118.1327,-106.3146,-121.858902,-84.61387999999999,-74.93169,-73.07089000000001,-117.10381,-103.67739,-84.23925,-87.663831,-122.145336,-111.00948,-76.466869,-89.25015,-94.5924,-122.64731,-118.607902,-70.55643000000001,-92.19929,-117.950665,-74.70677000000001,-95.06321,-74.24467,-90.58468000000001,-92.68047,-82.10532000000001,-75.0137,-97.303611,-73.967628,-83.239902,-87.848208,-97.44678999999999,-92.972261,-101.58307,-81.03807,-117.047222,-87.68286500000001,-88.32096,-74.02208,-90.37566,-73.765974,-89.51094000000001,-83.384,-85.72841699999999,-122.252962,-122.65868,-95.11463000000001,-83.919444,-111.96861,-73.918181,-121.49938,-120.834568,-72.69535999999999,-87.01028700000001,-124.08757,-112.514167,-96.07643899999999,-78.910265,-77.096585,-117.87106,-79.107394,-93.39997,-96.10195,-74.02005,-73.98324,-116.785747,-84.11596,-90.16107,-80.11203999999999,-86.97767,-120.74194,-112.1026,-70.98053,-93.80831000000001,-87.13959199999999,-86.47978999999999,-71.39655,-118.066351,-80.3128,-117.29259,-79.76570700000001,-94.94584999999999,-116.39837,-84.555521,-74.985556,-122.02633,-74.04594,-111.44425,-71.35842],4828.032,null,null,{"interactive":true,"className":"","stroke":true,"color":"#03F","weight":5,"opacity":0.5,"fill":true,"fillColor":"#03F","fillOpacity":0.2},["ejam_uniq_id: 1<br>lat: 40.66478<br>lon: -74.89137<br>sitenumber: 1<br>sitename: Example Site 1<br>avgDistance: 1.66<br>blocksfound: 341<br>blocks_within_1mile: 88<br>blocks_within_0.75: 61<br>blocks_within_0.25: 6","ejam_uniq_id: 2<br>lat: 38.39657<br>lon: -98.70086<br>sitenumber: 2<br>sitename: Example Site 2<br>avgDistance: 2.13<br>blocksfound: 56<br>blocks_within_1mile: 3<br>blocks_within_0.75: 2<br>blocks_within_0.25: 0","ejam_uniq_id: 3<br>lat: 40.34971<br>lon: -79.84964<br>sitenumber: 3<br>sitename: Example Site 3<br>avgDistance: 1.5<br>blocksfound: 2111<br>blocks_within_1mile: 620<br>blocks_within_0.75: 378<br>blocks_within_0.25: 36","ejam_uniq_id: 4<br>lat: 34.238356<br>lon: -118.253428<br>sitenumber: 4<br>sitename: Example Site 4<br>avgDistance: 1.65<br>blocksfound: 735<br>blocks_within_1mile: 210<br>blocks_within_0.75: 130<br>blocks_within_0.25: 12","ejam_uniq_id: 5<br>lat: 41.351626<br>lon: -85.13566<br>sitenumber: 5<br>sitename: Example Site 5<br>avgDistance: 0.9<br>blocksfound: 405<br>blocks_within_1mile: 298<br>blocks_within_0.75: 255<br>blocks_within_0.25: 50","ejam_uniq_id: 6<br>lat: 42.210608<br>lon: -93.215351<br>sitenumber: 6<br>sitename: Example Site 6<br>avgDistance: 2<br>blocksfound: 48<br>blocks_within_1mile: 4<br>blocks_within_0.75: 4<br>blocks_within_0.25: 0","ejam_uniq_id: 7<br>lat: 33.83575<br>lon: -118.11689<br>sitenumber: 7<br>sitename: Example Site 7<br>avgDistance: 1.94<br>blocksfound: 1861<br>blocks_within_1mile: 252<br>blocks_within_0.75: 142<br>blocks_within_0.25: 15","ejam_uniq_id: 8<br>lat: 43.06623<br>lon: -92.68472<br>sitenumber: 8<br>sitename: Example Site 8<br>avgDistance: 0.98<br>blocksfound: 443<br>blocks_within_1mile: 281<br>blocks_within_0.75: 194<br>blocks_within_0.25: 25","ejam_uniq_id: 9<br>lat: 44.33037<br>lon: -75.90884<br>sitenumber: 9<br>sitename: Example Site 9<br>avgDistance: 1.38<br>blocksfound: 108<br>blocks_within_1mile: 43<br>blocks_within_0.75: 37<br>blocks_within_0.25: 5","ejam_uniq_id: 10<br>lat: 44.607389<br>lon: -93.783105<br>sitenumber: 10<br>sitename: Example Site 10<br>avgDistance: 1.52<br>blocksfound: 223<br>blocks_within_1mile: 40<br>blocks_within_0.75: 18<br>blocks_within_0.25: 3","ejam_uniq_id: 11<br>lat: 44.5622<br>lon: -74.905897<br>sitenumber: 11<br>sitename: Example Site 11<br>avgDistance: 1.84<br>blocksfound: 67<br>blocks_within_1mile: 9<br>blocks_within_0.75: 5<br>blocks_within_0.25: 0","ejam_uniq_id: 12<br>lat: 34.00255<br>lon: -118.1327<br>sitenumber: 12<br>sitename: Example Site 12<br>avgDistance: 2.02<br>blocksfound: 2370<br>blocks_within_1mile: 214<br>blocks_within_0.75: 97<br>blocks_within_0.25: 10","ejam_uniq_id: 13<br>lat: 42.84871<br>lon: -106.3146<br>sitenumber: 13<br>sitename: Example Site 13<br>avgDistance: 1.49<br>blocksfound: 1985<br>blocks_within_1mile: 628<br>blocks_within_0.75: 377<br>blocks_within_0.25: 65","ejam_uniq_id: 14<br>lat: 39.281609<br>lon: -121.858902<br>sitenumber: 14<br>sitename: Example Site 14<br>avgDistance: 2.06<br>blocksfound: 11<br>blocks_within_1mile: 1<br>blocks_within_0.75: 1<br>blocks_within_0.25: 0","ejam_uniq_id: 15<br>lat: 39.1072<br>lon: -84.61388<br>sitenumber: 15<br>sitename: Example Site 15<br>avgDistance: 1.98<br>blocksfound: 644<br>blocks_within_1mile: 72<br>blocks_within_0.75: 33<br>blocks_within_0.25: 3","ejam_uniq_id: 16<br>lat: 40.44519<br>lon: -74.93169<br>sitenumber: 16<br>sitename: Example Site 16<br>avgDistance: 2.06<br>blocksfound: 113<br>blocks_within_1mile: 15<br>blocks_within_0.75: 11<br>blocks_within_0.25: 1","ejam_uniq_id: 17<br>lat: 41.55228<br>lon: -73.07089<br>sitenumber: 17<br>sitename: Example Site 17<br>avgDistance: 1.9<br>blocksfound: 1139<br>blocks_within_1mile: 118<br>blocks_within_0.75: 51<br>blocks_within_0.25: 5","ejam_uniq_id: 18<br>lat: 32.65896<br>lon: -117.10381<br>sitenumber: 18<br>sitename: Example Site 18<br>avgDistance: 1.88<br>blocksfound: 1370<br>blocks_within_1mile: 235<br>blocks_within_0.75: 132<br>blocks_within_0.25: 13","ejam_uniq_id: 19<br>lat: 41.18806<br>lon: -103.67739<br>sitenumber: 19<br>sitename: Example Site 19<br>avgDistance: 2.5<br>blocksfound: 37<br>blocks_within_1mile: 1<br>blocks_within_0.75: 1<br>blocks_within_0.25: 0","ejam_uniq_id: 20<br>lat: 36.3733<br>lon: -84.23925<br>sitenumber: 20<br>sitename: Example Site 20<br>avgDistance: 1.59<br>blocksfound: 53<br>blocks_within_1mile: 14<br>blocks_within_0.75: 11<br>blocks_within_0.25: 2","ejam_uniq_id: 21<br>lat: 41.765963<br>lon: -87.663831<br>sitenumber: 21<br>sitename: Example Site 21<br>avgDistance: 1.95<br>blocksfound: 5735<br>blocks_within_1mile: 732<br>blocks_within_0.75: 434<br>blocks_within_0.25: 60","ejam_uniq_id: 22<br>lat: 38.737189<br>lon: -122.145336<br>sitenumber: 22<br>sitename: Example Site 22<br>avgDistance: 1.34<br>blocksfound: 20<br>blocks_within_1mile: 7<br>blocks_within_0.75: 4<br>blocks_within_0.25: 0","ejam_uniq_id: 23<br>lat: 34.320805<br>lon: -111.00948<br>sitenumber: 23<br>sitename: Example Site 23<br>avgDistance: 1.16<br>blocksfound: 31<br>blocks_within_1mile: 17<br>blocks_within_0.75: 15<br>blocks_within_0.25: 3","ejam_uniq_id: 24<br>lat: 41.028894<br>lon: -76.466869<br>sitenumber: 24<br>sitename: Example Site 24<br>avgDistance: 2.05<br>blocksfound: 621<br>blocks_within_1mile: 34<br>blocks_within_0.75: 20<br>blocks_within_0.25: 2","ejam_uniq_id: 25<br>lat: 40.55129<br>lon: -89.25015<br>sitenumber: 25<br>sitename: Example Site 25<br>avgDistance: 1.87<br>blocksfound: 47<br>blocks_within_1mile: 9<br>blocks_within_0.75: 8<br>blocks_within_0.25: 4","ejam_uniq_id: 26<br>lat: 45.56802<br>lon: -94.5924<br>sitenumber: 26<br>sitename: Example Site 26<br>avgDistance: 2.11<br>blocksfound: 32<br>blocks_within_1mile: 3<br>blocks_within_0.75: 2<br>blocks_within_0.25: 0","ejam_uniq_id: 27<br>lat: 45.54008<br>lon: -122.64731<br>sitenumber: 27<br>sitename: Example Site 27<br>avgDistance: 1.89<br>blocksfound: 5432<br>blocks_within_1mile: 634<br>blocks_within_0.75: 336<br>blocks_within_0.25: 34","ejam_uniq_id: 28<br>lat: 34.224205<br>lon: -118.607902<br>sitenumber: 28<br>sitename: Example Site 28<br>avgDistance: 1.95<br>blocksfound: 1255<br>blocks_within_1mile: 134<br>blocks_within_0.75: 81<br>blocks_within_0.25: 11","ejam_uniq_id: 29<br>lat: 44.54588<br>lon: -70.55643<br>sitenumber: 29<br>sitename: Example Site 29<br>avgDistance: 1.06<br>blocksfound: 204<br>blocks_within_1mile: 96<br>blocks_within_0.75: 74<br>blocks_within_0.25: 8","ejam_uniq_id: 30<br>lat: 42.72435<br>lon: -92.19929<br>sitenumber: 30<br>sitename: Example Site 30<br>avgDistance: 2.06<br>blocksfound: 95<br>blocks_within_1mile: 4<br>blocks_within_0.75: 2<br>blocks_within_0.25: 0","ejam_uniq_id: 31<br>lat: 34.105383<br>lon: -117.950665<br>sitenumber: 31<br>sitename: Example Site 31<br>avgDistance: 2.16<br>blocksfound: 1405<br>blocks_within_1mile: 79<br>blocks_within_0.75: 44<br>blocks_within_0.25: 11","ejam_uniq_id: 32<br>lat: 40.23321<br>lon: -74.70677<br>sitenumber: 32<br>sitename: Example Site 32<br>avgDistance: 2.11<br>blocksfound: 1984<br>blocks_within_1mile: 142<br>blocks_within_0.75: 78<br>blocks_within_0.25: 12","ejam_uniq_id: 33<br>lat: 46.90732<br>lon: -95.06321<br>sitenumber: 33<br>sitename: Example Site 33<br>avgDistance: 1.39<br>blocksfound: 287<br>blocks_within_1mile: 107<br>blocks_within_0.75: 55<br>blocks_within_0.25: 4","ejam_uniq_id: 34<br>lat: 40.74836<br>lon: -74.24467<br>sitenumber: 34<br>sitename: Example Site 34<br>avgDistance: 1.96<br>blocksfound: 2806<br>blocks_within_1mile: 329<br>blocks_within_0.75: 173<br>blocks_within_0.25: 13","ejam_uniq_id: 35<br>lat: 38.39053<br>lon: -90.58468<br>sitenumber: 35<br>sitename: Example Site 35<br>avgDistance: 2.12<br>blocksfound: 139<br>blocks_within_1mile: 12<br>blocks_within_0.75: 9<br>blocks_within_0.25: 0","ejam_uniq_id: 36<br>lat: 30.07394<br>lon: -92.68047<br>sitenumber: 36<br>sitename: Example Site 36<br>avgDistance: 1.05<br>blocksfound: 147<br>blocks_within_1mile: 86<br>blocks_within_0.75: 49<br>blocks_within_0.25: 10","ejam_uniq_id: 37<br>lat: 33.40379<br>lon: -82.10532<br>sitenumber: 37<br>sitename: Example Site 37<br>avgDistance: 1.93<br>blocksfound: 391<br>blocks_within_1mile: 49<br>blocks_within_0.75: 28<br>blocks_within_0.25: 8","ejam_uniq_id: 38<br>lat: 39.56686<br>lon: -75.0137<br>sitenumber: 38<br>sitename: Example Site 38<br>avgDistance: 2.01<br>blocksfound: 219<br>blocks_within_1mile: 14<br>blocks_within_0.75: 6<br>blocks_within_0.25: 1","ejam_uniq_id: 39<br>lat: 33.228333<br>lon: -97.303611<br>sitenumber: 39<br>sitename: Example Site 39<br>avgDistance: 2.17<br>blocksfound: 54<br>blocks_within_1mile: 4<br>blocks_within_0.75: 2<br>blocks_within_0.25: 0","ejam_uniq_id: 40<br>lat: 40.635226<br>lon: -73.967628<br>sitenumber: 40<br>sitename: Example Site 40<br>avgDistance: 1.99<br>blocksfound: 4079<br>blocks_within_1mile: 523<br>blocks_within_0.75: 304<br>blocks_within_0.25: 38","ejam_uniq_id: 41<br>lat: 42.676621<br>lon: -83.239902<br>sitenumber: 41<br>sitename: Example Site 41<br>avgDistance: 2.03<br>blocksfound: 683<br>blocks_within_1mile: 88<br>blocks_within_0.75: 51<br>blocks_within_0.25: 7","ejam_uniq_id: 42<br>lat: 41.88805<br>lon: -87.848208<br>sitenumber: 42<br>sitename: Example Site 42<br>avgDistance: 1.87<br>blocksfound: 3696<br>blocks_within_1mile: 762<br>blocks_within_0.75: 500<br>blocks_within_0.25: 44","ejam_uniq_id: 43<br>lat: 25.91851<br>lon: -97.44679<br>sitenumber: 43<br>sitename: Example Site 43<br>avgDistance: 2.03<br>blocksfound: 1106<br>blocks_within_1mile: 111<br>blocks_within_0.75: 66<br>blocks_within_0.25: 8","ejam_uniq_id: 44<br>lat: 43.669225<br>lon: -92.972261<br>sitenumber: 44<br>sitename: Example Site 44<br>avgDistance: 1.18<br>blocksfound: 744<br>blocks_within_1mile: 357<br>blocks_within_0.75: 231<br>blocks_within_0.25: 30","ejam_uniq_id: 45<br>lat: 37.8088<br>lon: -101.58307<br>sitenumber: 45<br>sitename: Example Site 45<br>avgDistance: 2.08<br>blocksfound: 13<br>blocks_within_1mile: 1<br>blocks_within_0.75: 0<br>blocks_within_0.25: 0","ejam_uniq_id: 46<br>lat: 34.94638<br>lon: -81.03807<br>sitenumber: 46<br>sitename: Example Site 46<br>avgDistance: 1.87<br>blocksfound: 1085<br>blocks_within_1mile: 155<br>blocks_within_0.75: 89<br>blocks_within_0.25: 6","ejam_uniq_id: 47<br>lat: 34.065556<br>lon: -117.047222<br>sitenumber: 47<br>sitename: Example Site 47<br>avgDistance: 1.88<br>blocksfound: 312<br>blocks_within_1mile: 45<br>blocks_within_0.75: 20<br>blocks_within_0.25: 1","ejam_uniq_id: 48<br>lat: 41.750688<br>lon: -87.682865<br>sitenumber: 48<br>sitename: Example Site 48<br>avgDistance: 2.02<br>blocksfound: 5243<br>blocks_within_1mile: 530<br>blocks_within_0.75: 267<br>blocks_within_0.25: 33","ejam_uniq_id: 49<br>lat: 36.61676<br>lon: -88.32096<br>sitenumber: 49<br>sitename: Example Site 49<br>avgDistance: 1.49<br>blocksfound: 583<br>blocks_within_1mile: 160<br>blocks_within_0.75: 87<br>blocks_within_0.25: 9","ejam_uniq_id: 50<br>lat: 40.17353<br>lon: -74.02208<br>sitenumber: 50<br>sitename: Example Site 50<br>avgDistance: 1.82<br>blocksfound: 1541<br>blocks_within_1mile: 308<br>blocks_within_0.75: 197<br>blocks_within_0.25: 32","ejam_uniq_id: 51<br>lat: 38.54863<br>lon: -90.37566<br>sitenumber: 51<br>sitename: Example Site 51<br>avgDistance: 1.97<br>blocksfound: 1213<br>blocks_within_1mile: 110<br>blocks_within_0.75: 78<br>blocks_within_0.25: 14","ejam_uniq_id: 52<br>lat: 41.059085<br>lon: -73.765974<br>sitenumber: 52<br>sitename: Example Site 52<br>avgDistance: 1.96<br>blocksfound: 1213<br>blocks_within_1mile: 176<br>blocks_within_0.75: 103<br>blocks_within_0.25: 16","ejam_uniq_id: 53<br>lat: 44.8898<br>lon: -89.51094<br>sitenumber: 53<br>sitename: Example Site 53<br>avgDistance: 2.1<br>blocksfound: 155<br>blocks_within_1mile: 22<br>blocks_within_0.75: 13<br>blocks_within_0.25: 2","ejam_uniq_id: 54<br>lat: 43.3463<br>lon: -83.384<br>sitenumber: 54<br>sitename: Example Site 54<br>avgDistance: 1.84<br>blocksfound: 97<br>blocks_within_1mile: 10<br>blocks_within_0.75: 10<br>blocks_within_0.25: 2","ejam_uniq_id: 55<br>lat: 30.182358<br>lon: -85.728417<br>sitenumber: 55<br>sitename: Example Site 55<br>avgDistance: 2.05<br>blocksfound: 715<br>blocks_within_1mile: 64<br>blocks_within_0.75: 37<br>blocks_within_0.25: 7","ejam_uniq_id: 56<br>lat: 37.506654<br>lon: -122.252962<br>sitenumber: 56<br>sitename: Example Site 56<br>avgDistance: 1.92<br>blocksfound: 1559<br>blocks_within_1mile: 229<br>blocks_within_0.75: 131<br>blocks_within_0.25: 9","ejam_uniq_id: 57<br>lat: 45.51544<br>lon: -122.65868<br>sitenumber: 57<br>sitename: Example Site 57<br>avgDistance: 1.8<br>blocksfound: 4596<br>blocks_within_1mile: 791<br>blocks_within_0.75: 491<br>blocks_within_0.25: 79","ejam_uniq_id: 58<br>lat: 29.467922<br>lon: -95.11463<br>sitenumber: 58<br>sitename: Example Site 58<br>avgDistance: 2<br>blocksfound: 650<br>blocks_within_1mile: 62<br>blocks_within_0.75: 37<br>blocks_within_0.25: 6","ejam_uniq_id: 59<br>lat: 36.911944<br>lon: -83.919444<br>sitenumber: 59<br>sitename: Example Site 59<br>avgDistance: 1.92<br>blocksfound: 103<br>blocks_within_1mile: 22<br>blocks_within_0.75: 16<br>blocks_within_0.25: 6","ejam_uniq_id: 60<br>lat: 41.16786<br>lon: -111.96861<br>sitenumber: 60<br>sitename: Example Site 60<br>avgDistance: 1.78<br>blocksfound: 1004<br>blocks_within_1mile: 201<br>blocks_within_0.75: 105<br>blocks_within_0.25: 14","ejam_uniq_id: 61<br>lat: 41.56639<br>lon: -73.918181<br>sitenumber: 61<br>sitename: Example Site 61<br>avgDistance: 2.17<br>blocksfound: 463<br>blocks_within_1mile: 25<br>blocks_within_0.75: 15<br>blocks_within_0.25: 1","ejam_uniq_id: 62<br>lat: 38.57299<br>lon: -121.49938<br>sitenumber: 62<br>sitename: Example Site 62<br>avgDistance: 1.7<br>blocksfound: 2813<br>blocks_within_1mile: 581<br>blocks_within_0.75: 368<br>blocks_within_0.25: 51","ejam_uniq_id: 63<br>lat: 39.188043<br>lon: -120.834568<br>sitenumber: 63<br>sitename: Example Site 63<br>avgDistance: 1.82<br>blocksfound: 107<br>blocks_within_1mile: 12<br>blocks_within_0.75: 9<br>blocks_within_0.25: 2","ejam_uniq_id: 64<br>lat: 40.92497<br>lon: -72.69536<br>sitenumber: 64<br>sitename: Example Site 64<br>avgDistance: 1.77<br>blocksfound: 346<br>blocks_within_1mile: 57<br>blocks_within_0.75: 32<br>blocks_within_0.25: 5","ejam_uniq_id: 65<br>lat: 33.368661<br>lon: -87.010287<br>sitenumber: 65<br>sitename: Example Site 65<br>avgDistance: 2.28<br>blocksfound: 516<br>blocks_within_1mile: 22<br>blocks_within_0.75: 12<br>blocks_within_0.25: 0","ejam_uniq_id: 66<br>lat: 40.88991<br>lon: -124.08757<br>sitenumber: 66<br>sitename: Example Site 66<br>avgDistance: 1.53<br>blocksfound: 550<br>blocks_within_1mile: 126<br>blocks_within_0.75: 84<br>blocks_within_0.25: 5","ejam_uniq_id: 67<br>lat: 46.666278<br>lon: -112.514167<br>sitenumber: 67<br>sitename: Example Site 67<br>avgDistance: 2.09<br>blocksfound: 14<br>blocks_within_1mile: 2<br>blocks_within_0.75: 1<br>blocks_within_0.25: 0","ejam_uniq_id: 68<br>lat: 39.478111<br>lon: -96.076439<br>sitenumber: 68<br>sitename: Example Site 68<br>avgDistance: 2.19<br>blocksfound: 52<br>blocks_within_1mile: 2<br>blocks_within_0.75: 2<br>blocks_within_0.25: 0","ejam_uniq_id: 69<br>lat: 33.699624<br>lon: -78.910265<br>sitenumber: 69<br>sitename: Example Site 69<br>avgDistance: 1.81<br>blocksfound: 916<br>blocks_within_1mile: 132<br>blocks_within_0.75: 80<br>blocks_within_0.25: 12","ejam_uniq_id: 70<br>lat: 42.43759<br>lon: -77.096585<br>sitenumber: 70<br>sitename: Example Site 70<br>avgDistance: 1.98<br>blocksfound: 103<br>blocks_within_1mile: 13<br>blocks_within_0.75: 10<br>blocks_within_0.25: 1","ejam_uniq_id: 71<br>lat: 33.75575<br>lon: -117.87106<br>sitenumber: 71<br>sitename: Example Site 71<br>avgDistance: 1.88<br>blocksfound: 2317<br>blocks_within_1mile: 371<br>blocks_within_0.75: 218<br>blocks_within_0.25: 32","ejam_uniq_id: 72<br>lat: 40.647771<br>lon: -79.107394<br>sitenumber: 72<br>sitename: Example Site 72<br>avgDistance: 2.31<br>blocksfound: 324<br>blocks_within_1mile: 17<br>blocks_within_0.75: 12<br>blocks_within_0.25: 2","ejam_uniq_id: 73<br>lat: 44.865604<br>lon: -93.39997<br>sitenumber: 73<br>sitename: Example Site 73<br>avgDistance: 2.12<br>blocksfound: 786<br>blocks_within_1mile: 58<br>blocks_within_0.75: 36<br>blocks_within_0.25: 4","ejam_uniq_id: 74<br>lat: 41.04158<br>lon: -96.10195<br>sitenumber: 74<br>sitename: Example Site 74<br>avgDistance: 1.66<br>blocksfound: 67<br>blocks_within_1mile: 26<br>blocks_within_0.75: 18<br>blocks_within_0.25: 4","ejam_uniq_id: 75<br>lat: 40.7899<br>lon: -74.02005<br>sitenumber: 75<br>sitename: Example Site 75<br>avgDistance: 1.87<br>blocksfound: 2346<br>blocks_within_1mile: 453<br>blocks_within_0.75: 267<br>blocks_within_0.25: 38","ejam_uniq_id: 76<br>lat: 40.73868<br>lon: -73.98324<br>sitenumber: 76<br>sitename: Example Site 76<br>avgDistance: 1.97<br>blocksfound: 4258<br>blocks_within_1mile: 491<br>blocks_within_0.75: 302<br>blocks_within_0.25: 44","ejam_uniq_id: 77<br>lat: 47.70375<br>lon: -116.785747<br>sitenumber: 77<br>sitename: Example Site 77<br>avgDistance: 1.74<br>blocksfound: 1224<br>blocks_within_1mile: 211<br>blocks_within_0.75: 120<br>blocks_within_0.25: 10","ejam_uniq_id: 78<br>lat: 39.06548<br>lon: -84.11596<br>sitenumber: 78<br>sitename: Example Site 78<br>avgDistance: 1.7<br>blocksfound: 168<br>blocks_within_1mile: 57<br>blocks_within_0.75: 34<br>blocks_within_0.25: 4","ejam_uniq_id: 79<br>lat: 38.59822<br>lon: -90.16107<br>sitenumber: 79<br>sitename: Example Site 79<br>avgDistance: 2.16<br>blocksfound: 1739<br>blocks_within_1mile: 153<br>blocks_within_0.75: 85<br>blocks_within_0.25: 4","ejam_uniq_id: 80<br>lat: 26.68223<br>lon: -80.11204<br>sitenumber: 80<br>sitename: Example Site 80<br>avgDistance: 2.04<br>blocksfound: 1205<br>blocks_within_1mile: 113<br>blocks_within_0.75: 70<br>blocks_within_0.25: 9","ejam_uniq_id: 81<br>lat: 38.19563<br>lon: -86.97767<br>sitenumber: 81<br>sitename: Example Site 81<br>avgDistance: 1.84<br>blocksfound: 139<br>blocks_within_1mile: 21<br>blocks_within_0.75: 11<br>blocks_within_0.25: 2","ejam_uniq_id: 82<br>lat: 37.35819<br>lon: -120.74194<br>sitenumber: 82<br>sitename: Example Site 82<br>avgDistance: 2.06<br>blocksfound: 247<br>blocks_within_1mile: 10<br>blocks_within_0.75: 5<br>blocks_within_0.25: 0","ejam_uniq_id: 83<br>lat: 33.5096<br>lon: -112.1026<br>sitenumber: 83<br>sitename: Example Site 83<br>avgDistance: 1.93<br>blocksfound: 1875<br>blocks_within_1mile: 245<br>blocks_within_0.75: 137<br>blocks_within_0.25: 16","ejam_uniq_id: 84<br>lat: 43.64384<br>lon: -70.98053<br>sitenumber: 84<br>sitename: Example Site 84<br>avgDistance: 1.85<br>blocksfound: 127<br>blocks_within_1mile: 25<br>blocks_within_0.75: 16<br>blocks_within_0.25: 2","ejam_uniq_id: 85<br>lat: 42.45838<br>lon: -93.80831<br>sitenumber: 85<br>sitename: Example Site 85<br>avgDistance: 1.22<br>blocksfound: 357<br>blocks_within_1mile: 145<br>blocks_within_0.75: 82<br>blocks_within_0.25: 1","ejam_uniq_id: 86<br>lat: 30.362953<br>lon: -87.139592<br>sitenumber: 86<br>sitename: Example Site 86<br>avgDistance: 2.15<br>blocksfound: 193<br>blocks_within_1mile: 4<br>blocks_within_0.75: 3<br>blocks_within_0.25: 0","ejam_uniq_id: 87<br>lat: 39.62418<br>lon: -86.47979<br>sitenumber: 87<br>sitename: Example Site 87<br>avgDistance: 2.15<br>blocksfound: 100<br>blocks_within_1mile: 7<br>blocks_within_0.75: 4<br>blocks_within_0.25: 0","ejam_uniq_id: 88<br>lat: 41.85287<br>lon: -71.39655<br>sitenumber: 88<br>sitename: Example Site 88<br>avgDistance: 1.98<br>blocksfound: 3857<br>blocks_within_1mile: 429<br>blocks_within_0.75: 261<br>blocks_within_0.25: 43","ejam_uniq_id: 89<br>lat: 33.727633<br>lon: -118.066351<br>sitenumber: 89<br>sitename: Example Site 89<br>avgDistance: 1.92<br>blocksfound: 848<br>blocks_within_1mile: 159<br>blocks_within_0.75: 100<br>blocks_within_0.25: 13","ejam_uniq_id: 90<br>lat: 40.1942<br>lon: -80.3128<br>sitenumber: 90<br>sitename: Example Site 90<br>avgDistance: 2.37<br>blocksfound: 377<br>blocks_within_1mile: 21<br>blocks_within_0.75: 13<br>blocks_within_0.25: 1","ejam_uniq_id: 91<br>lat: 33.18422<br>lon: -117.29259<br>sitenumber: 91<br>sitename: Example Site 91<br>avgDistance: 1.94<br>blocksfound: 837<br>blocks_within_1mile: 139<br>blocks_within_0.75: 79<br>blocks_within_0.25: 6","ejam_uniq_id: 92<br>lat: 40.583031<br>lon: -79.765707<br>sitenumber: 92<br>sitename: Example Site 92<br>avgDistance: 1.62<br>blocksfound: 1311<br>blocks_within_1mile: 319<br>blocks_within_0.75: 234<br>blocks_within_0.25: 30","ejam_uniq_id: 93<br>lat: 45.56393<br>lon: -94.94585<br>sitenumber: 93<br>sitename: Example Site 93<br>avgDistance: 1.47<br>blocksfound: 58<br>blocks_within_1mile: 20<br>blocks_within_0.75: 19<br>blocks_within_0.25: 18","ejam_uniq_id: 94<br>lat: 33.72709<br>lon: -116.39837<br>sitenumber: 94<br>sitename: Example Site 94<br>avgDistance: 1.84<br>blocksfound: 715<br>blocks_within_1mile: 100<br>blocks_within_0.75: 59<br>blocks_within_0.25: 9","ejam_uniq_id: 95<br>lat: 42.727046<br>lon: -84.555521<br>sitenumber: 95<br>sitename: Example Site 95<br>avgDistance: 1.75<br>blocksfound: 2000<br>blocks_within_1mile: 364<br>blocks_within_0.75: 182<br>blocks_within_0.25: 33","ejam_uniq_id: 96<br>lat: 39.95224<br>lon: -74.985556<br>sitenumber: 96<br>sitename: Example Site 96<br>avgDistance: 1.93<br>blocksfound: 1325<br>blocks_within_1mile: 192<br>blocks_within_0.75: 122<br>blocks_within_0.25: 18","ejam_uniq_id: 97<br>lat: 37.52802<br>lon: -122.02633<br>sitenumber: 97<br>sitename: Example Site 97<br>avgDistance: 1.87<br>blocksfound: 1223<br>blocks_within_1mile: 202<br>blocks_within_0.75: 113<br>blocks_within_0.25: 17","ejam_uniq_id: 98<br>lat: 40.33382<br>lon: -74.04594<br>sitenumber: 98<br>sitename: Example Site 98<br>avgDistance: 1.94<br>blocksfound: 1057<br>blocks_within_1mile: 135<br>blocks_within_0.75: 77<br>blocks_within_0.25: 10","ejam_uniq_id: 99<br>lat: 36.8879<br>lon: -111.44425<br>sitenumber: 99<br>sitename: Example Site 99<br>avgDistance: 1.95<br>blocksfound: 170<br>blocks_within_1mile: 13<br>blocks_within_0.75: 10<br>blocks_within_0.25: 6","ejam_uniq_id: 100<br>lat: 41.82161<br>lon: -71.35842<br>sitenumber: 100<br>sitename: Example Site 100<br>avgDistance: 1.98<br>blocksfound: 2077<br>blocks_within_1mile: 263<br>blocks_within_0.75: 144<br>blocks_within_0.25: 22"],{"maxHeight":400,"maxWidth":850},null,{"interactive":false,"permanent":false,"direction":"auto","opacity":1,"offset":[0,0],"textsize":"10px","textOnly":false,"className":"","sticky":true},null,null]},{"method":"addEasyprint","args":[{"title":"Print map","position":"topleft","sizeModes":["A4Portrait","A4Landscape","CurrentSize"],"exportOnly":false,"tileWait":500,"filename":"map","hidden":false,"hideControlContainer":true,"spinnerBgColor":"#0DC5C1","customSpinnerClass":"epLoader"}]}],"limits":{"lat":[25.91851,47.70375],"lng":[-124.08757,-70.55643000000001]}},"evals":[],"jsHooks":[]}</script><div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co"># Some places have very few -- if any -- blocks within 1 mile</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">s2b_stats</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">s2b_stats</span><span class="op">$</span><span class="va">blocks_within_1mile</span>, decreasing <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>, </span>
+<span>               <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'ejam_uniq_id'</span>, <span class="st">'blocks_within_1mile'</span><span class="op">)</span><span class="op">]</span>, <span class="fl">3</span><span class="op">)</span> </span>
+<span><span class="co">#&gt;    ejam_uniq_id blocks_within_1mile</span></span>
+<span><span class="co">#&gt; 14           14                   1</span></span>
+<span><span class="co">#&gt; 19           19                   1</span></span>
+<span><span class="co">#&gt; 45           45                   1</span></span>
+<span></span>
+<span><span class="co"># Some places have hundreds nearby: a 1 mile radius is huge </span></span>
+<span><span class="co"># within a dense urban area</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">s2b_stats</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">s2b_stats</span><span class="op">$</span><span class="va">blocks_within_1mile</span>, decreasing <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>, </span>
+<span>               <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'ejam_uniq_id'</span>, <span class="st">'blocks_within_1mile'</span><span class="op">)</span><span class="op">]</span>, <span class="fl">3</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    ejam_uniq_id blocks_within_1mile</span></span>
+<span><span class="co">#&gt; 57           57                 791</span></span>
+<span><span class="co">#&gt; 42           42                 762</span></span>
+<span><span class="co">#&gt; 21           21                 732</span></span>
+<span><span class="va">densest</span> <span class="op">&lt;-</span> <span class="va">s2b_stats</span><span class="op">$</span><span class="va">ejam_uniq_id</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span></span>
+<span>  <span class="va">s2b_stats</span><span class="op">$</span><span class="va">blocks_within_1mile</span>, decreasing <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">]</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span>
+<span><span class="fu"><a href="../reference/plotblocksnearby.html">plotblocksnearby</a></span><span class="op">(</span>sitepoints <span class="op">=</span> <span class="va">sitepoints</span><span class="op">[</span><span class="va">sitepoints</span><span class="op">$</span><span class="va">ejam_uniq_id</span> <span class="op">==</span> <span class="va">densest</span>, <span class="op">]</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Analyzing 1 points, radius of 3 miles around each.</span></span>
+<span><span class="co">#&gt; Finding Census blocks with internal point within  3  miles of the site (point), for each of 1  sites (points)...</span></span>
+<span><span class="co">#&gt; Stats via getblocks_diagnostics(), but BEFORE ADJUSTING UP FOR VERY SHORT DISTANCES: </span></span>
+<span><span class="co">#&gt; min distance before adjustment:  0.02342987 </span></span>
+<span><span class="co">#&gt; max distance before adjustment:  6.646285 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Adjusting upwards the very short distances now...</span></span>
+<span><span class="co">#&gt;  Stats via getblocks_diagnostics(), AFTER ADJUSTING up FOR SHORT DISTANCES: </span></span>
+<span><span class="co">#&gt; min distance AFTER adjustment:  0.027 </span></span>
+<span><span class="co">#&gt; max distance AFTER adjustment:  2.999248 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;    Summary stats on distances reported from any sites to any nearby blocks</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 2.999248 miles is max. distance to block internal point (distance_unadjusted)   </span></span>
+<span><span class="co">#&gt; 2.999248 miles is max. distance to average resident in block (distance reported)   </span></span>
+<span><span class="co">#&gt; 0.02342987 miles is shortest distance to block internal point (distance_unadjusted)   </span></span>
+<span><span class="co">#&gt; 0.027 miles is shortest distance to average resident in block (distance reported)   </span></span>
+<span><span class="co">#&gt; 2 block distances were adjusted (these stats may count some blocks twice if adjusted at 2+ sites)</span></span>
+<span><span class="co">#&gt;   2 block distances were adjusted up (reported dist to avg resident is &gt; dist to block internal point)</span></span>
+<span><span class="co">#&gt;   0 block distances were adjusted down (reported &lt; unadjusted)</span></span>
+<span><span class="co">#&gt; 1 unique sites had one or more block distances adjusted due to large block and short distance to block point</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 1 unique output sites</span></span>
+<span><span class="co">#&gt; 4,596 blocks are near the avg site or in avg buffer</span></span>
+<span><span class="co">#&gt;              (based on their block internal point, like a centroid)</span></span>
+<span><span class="co">#&gt; 4,596 blocks including doublecounting in overlaps, </span></span>
+<span><span class="co">#&gt;              in final row count (block-to-site pairs table)</span></span>
+<span><span class="co">#&gt; 4,596 actual unique blocks total</span></span>
+<span><span class="co">#&gt; 4,596 blocks (and their residents) have exactly 1 site nearby </span></span>
+<span><span class="co">#&gt; 0 blocks (and their residents) have exactly 2 sites nearby </span></span>
+<span><span class="co">#&gt; 0 blocks (and their residents) have exactly 3 sites nearby </span></span>
+<span><span class="co">#&gt; 1 is ratio of blocks including multicounting / actual count of unique blocks</span></span>
+<span><span class="co">#&gt; 0% of unique blocks could get counted more than once </span></span>
+<span><span class="co">#&gt;              because those residents are near two or more sites </span></span>
+<span><span class="co">#&gt;              (assuming they live at the block internal point</span></span>
+<span><span class="co">#&gt; Warning in plotblocksnearby(sitepoints = sitepoints[sitepoints$ejam_uniq_id ==</span></span>
+<span><span class="co">#&gt; : siteidvarname specified ('ejam_uniq_id') is already a colname of sitepoints,</span></span>
+<span><span class="co">#&gt; but note it is not equal to rownumbers as assumed by getblocksnearby()</span></span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Within a 1 mile radius, the blocks found tend to be about 2/3 of a mile from the site at the center.</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">s2b_stats</span><span class="op">$</span><span class="va">avgDistance</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. </span></span>
+<span><span class="co">#&gt;   0.900   1.765   1.930   1.855   2.042   2.500</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level3">
+<h3 id="details-of-blocks-near-one-site">DETAILS OF BLOCKS NEAR ONE SITE<a class="anchor" aria-label="anchor" href="#details-of-blocks-near-one-site"></a>
+</h3>
+<div class="section level4">
+<h4 id="distances-between-each-site-and-nearby-blocks">Distances between each site and nearby blocks<a class="anchor" aria-label="anchor" href="#distances-between-each-site-and-nearby-blocks"></a>
+</h4>
+<p>Use <code><a href="../reference/getblocksnearby.html">getblocksnearby()</a></code> to quickly find residents/blocks
+that are within a specified distance, as a table of distances between
+sites and nearby blocks.</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">sitepoints</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/copy.html" class="external-link">copy</a></span><span class="op">(</span><span class="va">testpoints_100</span><span class="op">)</span> </span>
+<span><span class="co"># or </span></span>
+<span><span class="co"># sitepoints &lt;- testpoints_n(100,"block") # random points</span></span>
+<span><span class="va">radius</span> <span class="op">&lt;-</span> <span class="fl">3.1</span></span>
+<span><span class="va">elapsed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="op">{</span></span>
+<span>  </span>
+<span>  <span class="va">sites2blocks</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getblocksnearby.html">getblocksnearby</a></span><span class="op">(</span></span>
+<span>    sitepoints <span class="op">=</span> <span class="va">sitepoints</span>,</span>
+<span>    radius <span class="op">=</span> <span class="va">radius</span></span>
+<span>  <span class="op">)</span></span>
+<span>  </span>
+<span><span class="op">}</span><span class="op">)</span> <span class="co"># end of timed function</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">elapsed</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sites2blocks</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="map-and-inspect-the-blocks-near-1-site">Map and inspect the blocks near 1 site<a class="anchor" aria-label="anchor" href="#map-and-inspect-the-blocks-near-1-site"></a>
+</h4>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="../reference/plotblocksnearby.html">plotblocksnearby</a></span><span class="op">(</span><span class="va">testpoints_10</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span>, radius <span class="op">=</span> <span class="fl">3</span>, returnmap <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Analyzing 1 points, radius of 3 miles around each.</span></span>
+<span><span class="co">#&gt; Finding Census blocks with internal point within  3  miles of the site (point), for each of 1  sites (points)...</span></span>
+<span><span class="co">#&gt; Stats via getblocks_diagnostics(), but BEFORE ADJUSTING UP FOR VERY SHORT DISTANCES: </span></span>
+<span><span class="co">#&gt; min distance before adjustment:  0.2321264 </span></span>
+<span><span class="co">#&gt; max distance before adjustment:  4.412158 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Adjusting upwards the very short distances now...</span></span>
+<span><span class="co">#&gt;  Stats via getblocks_diagnostics(), AFTER ADJUSTING up FOR SHORT DISTANCES: </span></span>
+<span><span class="co">#&gt; min distance AFTER adjustment:  0.2321264 </span></span>
+<span><span class="co">#&gt; max distance AFTER adjustment:  2.990489 </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;    Summary stats on distances reported from any sites to any nearby blocks</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 2.990489 miles is max. distance to block internal point (distance_unadjusted)   </span></span>
+<span><span class="co">#&gt; 2.990489 miles is max. distance to average resident in block (distance reported)   </span></span>
+<span><span class="co">#&gt; 0.2321264 miles is shortest distance to block internal point (distance_unadjusted)   </span></span>
+<span><span class="co">#&gt; 0.2321264 miles is shortest distance to average resident in block (distance reported)   </span></span>
+<span><span class="co">#&gt; 2 block distances were adjusted (these stats may count some blocks twice if adjusted at 2+ sites)</span></span>
+<span><span class="co">#&gt;   1 block distances were adjusted up (reported dist to avg resident is &gt; dist to block internal point)</span></span>
+<span><span class="co">#&gt;   1 block distances were adjusted down (reported &lt; unadjusted)</span></span>
+<span><span class="co">#&gt; 1 unique sites had one or more block distances adjusted due to large block and short distance to block point</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 1 unique output sites</span></span>
+<span><span class="co">#&gt; 219 blocks are near the avg site or in avg buffer</span></span>
+<span><span class="co">#&gt;              (based on their block internal point, like a centroid)</span></span>
+<span><span class="co">#&gt; 219 blocks including doublecounting in overlaps, </span></span>
+<span><span class="co">#&gt;              in final row count (block-to-site pairs table)</span></span>
+<span><span class="co">#&gt; 219 actual unique blocks total</span></span>
+<span><span class="co">#&gt; 219 blocks (and their residents) have exactly 1 site nearby </span></span>
+<span><span class="co">#&gt; 0 blocks (and their residents) have exactly 2 sites nearby </span></span>
+<span><span class="co">#&gt; 0 blocks (and their residents) have exactly 3 sites nearby </span></span>
+<span><span class="co">#&gt; 1 is ratio of blocks including multicounting / actual count of unique blocks</span></span>
+<span><span class="co">#&gt; 0% of unique blocks could get counted more than once </span></span>
+<span><span class="co">#&gt;              because those residents are near two or more sites </span></span>
+<span><span class="co">#&gt;              (assuming they live at the block internal point</span></span>
+<span><span class="co">#  returnmap= TRUE is to actually return the leaflet map </span></span>
+<span></span>
+<span><span class="co"># Use weighting="frs" in testpoints_n() to pick a random FRS facility's block</span></span></code></pre></div>
+</div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

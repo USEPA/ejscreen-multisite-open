@@ -39,6 +39,9 @@ run ejamit() once per radius, get a table with a row per radius"><meta property=
     <a class="dropdown-item" href="../articles/6_future_plans.html">Future Plans and Ideas for EJAM</a>
   </div>
 </li>
+<li class="nav-item">
+  <a class="nav-link" href="../news/index.html">Changelog</a>
+</li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -73,6 +76,10 @@ run ejamit() once per radius, get a table with a row per radius</p>
 <span>  quiet <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  silentinteractive <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  plot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  myvars <span class="op">=</span> <span class="va">names_d_subgroups_ratio_to_state_avg</span>,</span>
+<span>  ylab <span class="op">=</span> <span class="st">"Ratio of Avg. within X miles to Avg. Statewide or Nationwide"</span>,</span>
+<span>  ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">5</span><span class="op">)</span>,</span>
+<span>  n <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -93,6 +100,23 @@ run ejamit() once per radius, get a table with a row per radius</p>
 
 <dt>silentinteractive</dt>
 <dd><p>passed to <code><a href="ejamit.html">ejamit()</a></code></p></dd>
+
+
+<dt>myvars</dt>
+<dd><p>for plot, see default value</p></dd>
+
+
+<dt>ylab</dt>
+<dd><p>for plot, see default value</p></dd>
+
+
+<dt>ylim</dt>
+<dd><p>for plot, see default value</p></dd>
+
+
+<dt>n</dt>
+<dd><p>how many of the indicators to report on (printed to console),
+when reporting which indicators most strongly increase as radius decreases.</p></dd>
 
 
 <dt>...</dt>
@@ -118,7 +142,11 @@ per radius.</p>
 <span>  <span class="va">pts</span> <span class="op">&lt;-</span> <span class="va">testpoints_100</span></span>
 <span>  <span class="va">pts</span> <span class="op">&lt;-</span> <span class="va">testpoints_10</span></span>
 <span>  <span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">ejamit_compare_distances</span><span class="op">(</span><span class="va">pts</span>, radii <span class="op">=</span> <span class="va">radii</span><span class="op">)</span></span>
-<span>  <span class="fu">EJAM</span><span class="fu">:::</span><span class="fu">ejamit_compare_distances</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span>  </span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="fixcolnames.html">fixcolnames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span>,<span class="st">"r"</span>,<span class="st">"shortlabel"</span><span class="op">)</span></span>
+<span>  </span>
+<span>  </span>
+<span>  </span>
 <span>  </span></code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

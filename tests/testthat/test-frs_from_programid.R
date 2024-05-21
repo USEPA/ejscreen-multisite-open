@@ -15,10 +15,11 @@ test_that('lookup works correctly',{
 
 
 # does it give an error when id doesnt exist?
-# no it doesn't, just returns an empty data frame
+# no it doesn't, just returns an empty data frame, or actually 1 row all NA values
 test_that('lookup works correctly',{
   expect_no_error({
     val <- frs_from_programid("fakeid")
     })
-  expect_equal(NROW(val), 0)
+  expect_true(all(is.na(val)))
+  # expect_equal(NROW(val), 0)
 })

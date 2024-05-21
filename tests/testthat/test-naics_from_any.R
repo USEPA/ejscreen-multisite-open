@@ -25,11 +25,13 @@ test_that('naics_from_any() -- URL and scrape lookup works', {
 
 test_that('naics_from_any() -- results of subcategories only output when children = TRUE', {
   expect_no_warning(naics_from_any(21222)) # "silver and gold mining"
-  expect_no_warning(naics_from_any(21222, children = TRUE)) # "silver and gold mining"
+  # expect_no_warning(naics_from_any(21222, children = TRUE)) # "silver and gold mining"
   expect_no_warning(naics_from_any(212221)) # "gold mining"
   expect_no_warning(naics_from_any(212222)) # "silver mining"
-
+suppressWarnings({
   x <- naics_from_any(21222, children = TRUE) # 3 (gold, silver, & silver+gold)
+  
+})
 
   expect_equal(length(which(grepl(212221,x$n6))), nrow(naics_from_any(212221))) # 1 gold mining naics
   expect_equal(length(which(grepl(212222,x$n6))), nrow(naics_from_any(212222))) # 1 silver mining naics

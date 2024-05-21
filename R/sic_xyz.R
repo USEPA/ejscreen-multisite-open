@@ -130,7 +130,8 @@ sic_subcodes_from_code <- function(mycodes) {
 sic_from_code <- function(mycodes, children=FALSE) {
   # find sictable data.table rows by exact matches on character SIC codes vector
   results <- NULL
-  results <- sictable[code %in% mycodes, ]
+  # results <- sictable[code %in% mycodes, ]
+  results <- sictable[match(mycodes, sictable$code), ]
   if (children) {
     # add subcategories
     results <- sic_subcodes_from_code(results$code)

@@ -37,6 +37,9 @@
     <a class="dropdown-item" href="../articles/6_future_plans.html">Future Plans and Ideas for EJAM</a>
   </div>
 </li>
+<li class="nav-item">
+  <a class="nav-link" href="../news/index.html">Changelog</a>
+</li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -89,14 +92,14 @@
         <dd>View HTML Report on EJAM Results (Overall or at 1 Site)</dd>
       </dl><dl><dt>
           
-          <code><a href="ejam2excel.html">ejam2excel()</a></code> 
-        </dt>
-        <dd>Save EJAM results in a spreadsheet</dd>
-      </dl><dl><dt>
-          
           <code><a href="ejam2map.html">ejam2map()</a></code> 
         </dt>
         <dd>Show EJAM results as a map of points</dd>
+      </dl><dl><dt>
+          
+          <code><a href="ejam2excel.html">ejam2excel()</a></code> 
+        </dt>
+        <dd>Save EJAM results in a spreadsheet</dd>
       </dl><dl><dt>
           
           <code><a href="ejam2ratios.html">ejam2ratios()</a></code> 
@@ -104,9 +107,24 @@
         <dd>Quick view of summary stats by type of stat, but lacks rounding specific to each type, etc.</dd>
       </dl><dl><dt>
           
+          <code><a href="ejam2barplot.html">ejam2barplot()</a></code> 
+        </dt>
+        <dd>Barplot of ratios of demographic (or other) scores to averages - simpler syntax</dd>
+      </dl><dl><dt>
+          
+          <code><a href="ejam2shapefile.html">ejam2shapefile()</a></code> 
+        </dt>
+        <dd>DRAFT - export EJAM results as shapefile for use in ArcPro, EJScreen, etc.</dd>
+      </dl><dl><dt>
+          
           <code><a href="ejamit_compare_distances.html">ejamit_compare_distances()</a></code> 
         </dt>
         <dd>compare ejamit results for more than one radius run ejamit() once per radius, get a table with a row per radius</dd>
+      </dl><dl><dt>
+          
+          <code><a href="ejamit_compare_distances2plot.html">ejamit_compare_distances2plot()</a></code> 
+        </dt>
+        <dd>plot indicators as a function of distance from point(s) plot results of ejamit_compare_distances()</dd>
       </dl><dl><dt>
           
           <code><a href="ejamit_compare_types_of_places.html">ejamit_compare_types_of_places()</a></code> 
@@ -222,7 +240,7 @@
       
     </div><div class="section level2">
       
-      <h3 id="choosing-naics-industry-codes">Choosing NAICS Industry Codes<a class="anchor" aria-label="anchor" href="#choosing-naics-industry-codes"></a></h3>
+      <h3 id="choosing-naics-sic-industry-codes">Choosing NAICS/SIC Industry Codes<a class="anchor" aria-label="anchor" href="#choosing-naics-sic-industry-codes"></a></h3>
       
 
       
@@ -238,19 +256,14 @@
         <dd>NAICS - General way to search for industry names and NAICS codes</dd>
       </dl><dl><dt>
           
-          <code><a href="naics2children.html">naics2children()</a></code> 
+          <code><a href="sic_from_any.html">sic_from_any()</a></code> 
         </dt>
-        <dd>NAICS - query NAICS codes and also see all children (subcategories) of any of those</dd>
+        <dd>General way to search for industry names and NAICS codes</dd>
       </dl><dl><dt>
           
-          <code><a href="naics_subcodes_from_code.html">naics_subcodes_from_code()</a></code> 
+          <code><a href="naics_is.valid.html">naics_is.valid()</a></code> 
         </dt>
-        <dd>NAICS - find subcategories of the given overall NAICS industry code(s)</dd>
-      </dl><dl><dt>
-          
-          <code><a href="naicstable.html">naicstable</a></code> 
-        </dt>
-        <dd>naicstable (DATA) data.table of NAICS code(s) and industry names for each EPA-regulated site in Facility Registry Service Also has the 2,3,4,5,and 6-digit NAICS that this code falls under, where relevant for given length</dd>
+        <dd>validate industry NAICS codes</dd>
       </dl><dl><dt>
           
           <code><a href="naics_categories.html">naics_categories()</a></code> 
@@ -258,19 +271,9 @@
         <dd>NAICS - See the names of industrial categories and their NAICS code</dd>
       </dl><dl><dt>
           
-          <code><a href="naics_counts.html">naics_counts</a></code> 
+          <code><a href="sic_categories.html">sic_categories()</a></code> 
         </dt>
-        <dd>naics_counts (DATA) data.frame with counts for each NAICS code, with and without subcodes, and labels that include the site counts</dd>
-      </dl><dl><dt>
-          
-          <code><a href="NAICS.html">NAICS</a></code> 
-        </dt>
-        <dd>NAICS (DATA) named list of all NAICS code numbers and industry name for each</dd>
-      </dl><dl><dt>
-          
-          <code><a href="frs_by_naics.html">frs_by_naics</a></code> 
-        </dt>
-        <dd>frs_by_naics (DATA) data.table of NAICS code(s) for each EPA-regulated site in Facility Registry Service</dd>
+        <dd>See the names of SIC industrial categories and their codes</dd>
       </dl><dl><dt>
           
           <code><a href="naics_url_of_code.html">naics_url_of_code()</a></code> 
@@ -281,9 +284,34 @@
           <code><a href="naics_findwebscrape.html">naics_findwebscrape()</a></code> 
         </dt>
         <dd>for query term, show list of roughly matching NAICS, scraped from web</dd>
+      </dl><dl><dt>
+          
+          <code><a href="naics_subcodes_from_code.html">naics_subcodes_from_code()</a></code> 
+        </dt>
+        <dd>NAICS - find subcategories of the given overall NAICS industry code(s)</dd>
+      </dl><dl><dt>
+          
+          <code><a href="sic_subcodes_from_code.html">sic_subcodes_from_code()</a></code> 
+        </dt>
+        <dd>Find subcategories of the given overall SIC industry code(s)</dd>
+      </dl><dl><dt>
+          
+          <code><a href="naics2children.html">naics2children()</a></code> 
+        </dt>
+        <dd>NAICS - query NAICS codes and also see all children (subcategories) of any of those</dd>
+      </dl><dl><dt>
+          
+          <code><a href="sic_from_name.html">sic_from_name()</a></code> 
+        </dt>
+        <dd>Search for industry names and SIC codes by query string</dd>
+      </dl><dl><dt>
+          
+          <code><a href="sic_from_code.html">sic_from_code()</a></code> 
+        </dt>
+        <dd>Search for industry names by SIC code(s), 4 digits each</dd>
       </dl></div><div class="section level2">
       
-      <h3 id="using-naics-industry-codes">Using NAICS Industry Codes<a class="anchor" aria-label="anchor" href="#using-naics-industry-codes"></a></h3>
+      <h3 id="using-naics-sic-industry-codes">Using NAICS/SIC Industry Codes<a class="anchor" aria-label="anchor" href="#using-naics-sic-industry-codes"></a></h3>
       
 
       
@@ -299,6 +327,11 @@
         <dd>Find EPA-regulated facilities in FRS by NAICS code (industrial category)</dd>
       </dl><dl><dt>
           
+          <code><a href="latlon_from_sic.html">latlon_from_sic()</a></code> 
+        </dt>
+        <dd>Find EPA-regulated facilities in FRS by SIC code (industrial category)</dd>
+      </dl><dl><dt>
+          
           <code><a href="regid_from_naics.html">regid_from_naics()</a></code> 
         </dt>
         <dd>Find EPA-regulated facilities in FRS by NAICS code (industrial category)</dd>
@@ -307,6 +340,57 @@
           <code><a href="frs_from_naics.html">frs_from_naics()</a></code> 
         </dt>
         <dd>Use NAICS code or industry title text search to see FRS Facility Registry Service data on those EPA-regulated sites</dd>
+      </dl><dl><dt>
+          
+          <code><a href="frs_from_sic.html">frs_from_sic()</a></code> 
+        </dt>
+        <dd>Use SIC code or industry title text search to see FRS Facility Registry Service data on those EPA-regulated sites</dd>
+      </dl></div><div class="section level2">
+      
+      <h3 id="naics-sic-datasets">NAICS/SIC datasets<a class="anchor" aria-label="anchor" href="#naics-sic-datasets"></a></h3>
+      
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="naics_counts.html">naics_counts</a></code> 
+        </dt>
+        <dd>naics_counts (DATA) data.frame with counts for each NAICS code, with and without subcodes, and labels that include the site counts</dd>
+      </dl><dl><dt>
+          
+          <code><a href="NAICS.html">NAICS</a></code> 
+        </dt>
+        <dd>NAICS (DATA) named list of all NAICS code numbers and industry name for each</dd>
+      </dl><dl><dt>
+          
+          <code><a href="SIC.html">SIC</a></code> 
+        </dt>
+        <dd>SIC (DATA) named list of all SIC code numbers and category name for each</dd>
+      </dl><dl><dt>
+          
+          <code><a href="naicstable.html">naicstable</a></code> 
+        </dt>
+        <dd>naicstable (DATA) data.table of NAICS code(s) and industry names for each EPA-regulated site in Facility Registry Service Also has the 2,3,4,5,and 6-digit NAICS that this code falls under, where relevant for given length</dd>
+      </dl><dl><dt>
+          
+          <code><a href="sictable.html">sictable</a></code> 
+        </dt>
+        <dd>sictable (DATA) data.table of SIC code(s) and industry names for each EPA-regulated site in Facility Registry Service Also has the 2,3, and 4-digit SIC that this code falls under, where relevant for given length</dd>
+      </dl><dl><dt>
+          
+          <code><a href="frs_by_naics.html">frs_by_naics</a></code> 
+        </dt>
+        <dd>frs_by_naics (DATA) data.table of NAICS code(s) for each EPA-regulated site in Facility Registry Service</dd>
+      </dl><dl><dt>
+          
+          <code><a href="frs_by_sic.html">frs_by_sic</a></code> 
+        </dt>
+        <dd>frs_by_sic (DATA) data.table of SIC code(s) for each EPA-regulated site in Facility Registry Service</dd>
       </dl></div><div class="section level2">
       
       <h3 id="epa-programs">EPA Programs<a class="anchor" aria-label="anchor" href="#epa-programs"></a></h3>
@@ -338,78 +422,6 @@
           <code><a href="frs_from_program.html">frs_from_program()</a></code> 
         </dt>
         <dd>Use EPA Program acronym like TRIS to see FRS Facility Registry Service data on those EPA-regulated sites</dd>
-      </dl></div><div class="section level2">
-      
-      <h3 id="choosing-a-sic-industry-code">Choosing a SIC Industry Code<a class="anchor" aria-label="anchor" href="#choosing-a-sic-industry-code"></a></h3>
-      
-
-      
-    </div><div id="" class="section level2">
-      
-      
-      
-
-      <dl><dt>
-          
-          <code><a href="sic_from_any.html">sic_from_any()</a></code> 
-        </dt>
-        <dd>General way to search for industry names and NAICS codes</dd>
-      </dl><dl><dt>
-          
-          <code><a href="sic_from_code.html">sic_from_code()</a></code> 
-        </dt>
-        <dd>Search for industry names by SIC code(s), 4 digits each</dd>
-      </dl><dl><dt>
-          
-          <code><a href="sic_from_name.html">sic_from_name()</a></code> 
-        </dt>
-        <dd>Search for industry names and SIC codes by query string</dd>
-      </dl><dl><dt>
-          
-          <code><a href="sic_subcodes_from_code.html">sic_subcodes_from_code()</a></code> 
-        </dt>
-        <dd>Find subcategories of the given overall SIC industry code(s)</dd>
-      </dl><dl><dt>
-          
-          <code><a href="sictable.html">sictable</a></code> 
-        </dt>
-        <dd>sictable (DATA) data.table of SIC code(s) and industry names for each EPA-regulated site in Facility Registry Service Also has the 2,3, and 4-digit SIC that this code falls under, where relevant for given length</dd>
-      </dl><dl><dt>
-          
-          <code><a href="sic_categories.html">sic_categories()</a></code> 
-        </dt>
-        <dd>See the names of SIC industrial categories and their codes</dd>
-      </dl><dl><dt>
-          
-          <code><a href="SIC.html">SIC</a></code> 
-        </dt>
-        <dd>SIC (DATA) named list of all SIC code numbers and category name for each</dd>
-      </dl></div><div class="section level2">
-      
-      <h3 id="using-a-sic-industry-code">Using a SIC Industry Code<a class="anchor" aria-label="anchor" href="#using-a-sic-industry-code"></a></h3>
-      
-
-      
-    </div><div id="" class="section level2">
-      
-      
-      
-
-      <dl><dt>
-          
-          <code><a href="latlon_from_sic.html">latlon_from_sic()</a></code> 
-        </dt>
-        <dd>Find EPA-regulated facilities in FRS by SIC code (industrial category)</dd>
-      </dl><dl><dt>
-          
-          <code><a href="frs_by_sic.html">frs_by_sic</a></code> 
-        </dt>
-        <dd>frs_by_sic (DATA) data.table of SIC code(s) for each EPA-regulated site in Facility Registry Service</dd>
-      </dl><dl><dt>
-          
-          <code><a href="frs_from_sic.html">frs_from_sic()</a></code> 
-        </dt>
-        <dd>Use SIC code or industry title text search to see FRS Facility Registry Service data on those EPA-regulated sites</dd>
       </dl></div><div class="section level2">
       
       <h3 id="mact-categories">MACT Categories<a class="anchor" aria-label="anchor" href="#mact-categories"></a></h3>
@@ -448,16 +460,6 @@
       
 
       <dl><dt>
-          
-          <code><a href="shapes_blockgroups_from_bgfips.html">shapes_blockgroups_from_bgfips()</a></code> 
-        </dt>
-        <dd>Get blockgroups boundaries, via API, to map them</dd>
-      </dl><dl><dt>
-          
-          <code><a href="shapes_counties_from_countyfips.html">shapes_counties_from_countyfips()</a></code> 
-        </dt>
-        <dd>Get Counties boundaries via API, to map them</dd>
-      </dl><dl><dt>
           
           <code><a href="shapefile_from_any.html">shapefile_from_any()</a></code> 
         </dt>
@@ -527,6 +529,21 @@
           <code><a href="shapefile2latlon.html">shapefile2latlon()</a></code> 
         </dt>
         <dd>Convert shapefile (class sf) of points to data.table of lat, lon columns</dd>
+      </dl><dl><dt>
+          
+          <code><a href="shapes_counties_from_countyfips.html">shapes_counties_from_countyfips()</a></code> 
+        </dt>
+        <dd>Get Counties boundaries via API, to map them</dd>
+      </dl><dl><dt>
+          
+          <code><a href="shapes_blockgroups_from_bgfips.html">shapes_blockgroups_from_bgfips()</a></code> 
+        </dt>
+        <dd>Get blockgroups boundaries, via API, to map them</dd>
+      </dl><dl><dt>
+          
+          <code><a href="ejam2shapefile.html">ejam2shapefile()</a></code> 
+        </dt>
+        <dd>DRAFT - export EJAM results as shapefile for use in ArcPro, EJScreen, etc.</dd>
       </dl></div><div class="section level2">
       <h2 id="specify-counties-etc-">Specify Counties etc.<a class="anchor" aria-label="anchor" href="#specify-counties-etc-"></a></h2>
       
@@ -703,7 +720,7 @@
         </dt>
         <dd>FIPS - Get EPA Region number from state FIPS code</dd>
       </dl></div><div class="section level2">
-      <h2 id="blocks-distances-residents">Blocks, Distances, Residents<a class="anchor" aria-label="anchor" href="#blocks-distances-residents"></a></h2>
+      <h2 id="finding-blocks-distances-and-residents">Finding Blocks, Distances, and Residents<a class="anchor" aria-label="anchor" href="#finding-blocks-distances-and-residents"></a></h2>
       
       <div class="section-desc"><p>GIS tools calculating which blocks (and residents) are in or near each place (within given radius of point or in FIPS or polygon), and their distances</p></div>
 
@@ -1068,9 +1085,14 @@
 
       <dl><dt>
           
-          <code><a href="plot_barplot_ratios_ez.html">plot_barplot_ratios_ez()</a></code> 
+          <code><a href="ejam2barplot.html">ejam2barplot()</a></code> 
         </dt>
         <dd>Barplot of ratios of demographic (or other) scores to averages - simpler syntax</dd>
+      </dl><dl><dt>
+          
+          <code><a href="plot_barplot_ratios_ez.html">plot_barplot_ratios_ez()</a></code> 
+        </dt>
+        <dd>Same as ejam2barplot()</dd>
       </dl><dl><dt>
           
           <code><a href="plot_barplot_ratios.html">plot_barplot_ratios()</a></code> 
@@ -1105,7 +1127,7 @@
           
           <code><a href="plot_distance_by_pctd.html">plot_distance_by_pctd()</a></code> 
         </dt>
-        <dd>What percentage of this demographic group's population lives less than X miles from a site?</dd>
+        <dd>What percentage of this demographic group's population lives less than X miles from a site? --- *** DRAFT - NEED TO RECHECK CALCULATIONS</dd>
       </dl><dl><dt>
           
           <code><a href="plot_distance_by_group.html">plot_distance_by_group()</a></code> 

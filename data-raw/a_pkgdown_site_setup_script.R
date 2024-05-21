@@ -28,28 +28,51 @@ library(devtools)
 library(usethis)
 library(pkgdown)
 
+
+#################### # 
+
 # devtools::build_readme() # takes a couple minutes! as it installs the package in a temporary library
 # build_rmd() is a wrapper around rmarkdown::render() that first installs a temporary copy of the package, and then renders each .Rmd in a clean R session.
 rmarkdown::render("README.Rmd")  # renders .Rmd to create a  .md file that works in github as a webpage
 
-#################### # 
-
-# in case this matters here:
-EJAM::dataload_from_pins("all") # not sure this helps with building vignettes though, which need access to frs file etc. in whatever environment they are built in
-
-
-# if  not et built by devtools::install ?... 
+# just build/install using RStudio buttons? but check if build options include vignettes
+# or can try this:
 
 devtools::document()
 
-
-# just build/install using RStudio buttons? but check if build options include vignettes
-# or can try this:
 Sys.time()   # about 4 minutes  
+
+##############################################
+# check if can reach pins or it will not build vignettes correctly
+dataload_pin_available <- function(boardfolder = "Mark",
+                                   auth = "auto",
+                                   server = "https://rstudio-connect.dmap-stage.aws.epa.gov", 
+                                   silent = FALSE) {
+  board <- tryCatch(pins::board_connect(server = server, auth = auth),
+                    error = function(e) e)
+  
+  if (inherits(board, "error")) {
+    board_available <- FALSE
+    if (!silent) {cat("Failed trying to connect to pins board server.\n\n")}
+  } else {
+    board_available <- TRUE
+    if (!silent) {cat("Successfully connected to Posit Connect pins board.\n\n")}
+  }
+  return(board_available)
+}
+##############################################
+if (!dataload_pin_available()) {stop("cannot build vignettes correctly without access to pins board")}
+##############################################
+
+##############################################
+# just in case building vignettes via install() does not successfully load those frs and other files
+EJAM::dataload_from_pins("all") # not sure this helps with building vignettes though, which need access to frs file etc. in whatever environment they are built in
+
 devtools::install(quick = TRUE,
                   upgrade = FALSE, 
-                  build_vignettes = TRUE,  # does it do that? it says "installing vignettes" but does not update the .html files in the vignette folder.
-                  # build_vignettes=TRUE if you want to re-render them without doing full build caused by quick=FALSE.
+                  # build_vignettes = TRUE,  # does it do that in the doc folder, or docs folder, or vignette folder, or where? it says "installing vignettes" but does not update the .html files in the vignette folder.
+                  build_vignettes = TRUE, # if you want to re-render them without doing full build caused by quick=FALSE.
+                  ## can do later via devtools::build_vignettes() 
                   build = FALSE,
                   quiet = FALSE
                   ) 
@@ -59,22 +82,41 @@ Sys.time()
 ## build = TRUE means it converts a package source directory into a single bundled file. If binary = FALSE this creates a tar.gz package that can be installed on any platform, provided they have a full development environment (although packages without source code can typically be installed out of the box). If binary = TRUE, the package will have a platform specific extension (e.g. .zip for windows), and will only be installable on the current platform, but no development environment is needed.
 
 #################### # 
+# but that seems to case an error that quitting / restarting RStudio seemed tfix(Error in `poll(list(self), ms)`:
+# ! Native call to `processx_poll` failed
+# Caused by error in `chain_call(c_processx_poll, pollables, type, as.integer(ms))`:
+#   ! lazy-load database 'C:/Users/... .. . ./EJAM/R/EJAM.rdb' is corrupt
+# Type .Last.error to see the more details.
+# Warning message:
+#   In do.call(".Call", list(.NAME, ...)) : internal error -3 in R_decompress1)
 
 #################### # 
 
 library(EJAM)  #
-EJAM::rmost()
+EJAM:::rmost()
+if (!dataload_pin_available()) {stop("cannot build vignettes correctly without access to pins board")}
 EJAM::dataload_from_pins("all") # not sure this helps with building vignettes though, which need access to frs file etc. in whatever environment they are built in
+
+########### but rstudio build button makes it try to load data and it connects to pins but does not use those yet-
+# tries to use local copies and fails to get .arrow files from local path supposed to be ~/../Downloads/......
+# so it loads the .rda from aws that are older and not all files are there. 
+## why did it not use the pins versions since it did connect? and why not found in that local path???
+## so did rm(list=ls()) and tried to continue from library( ) above .
+
 
 # may want to run tests and/or check here.
 
  #   devtools::test()
+# [ FAIL 7 | WARN 7 | SKIP 1 | PASS 617 ] as of 5/13/24
 
 
 #################### # 
-# Build regular R package vignettes ? in /doc/ ?
+# reBuild regular R package vignettes ? in /doc/ ?
 
  ## THIS TAKES SOME TIME: 
+# this puts the .html files in the 
+#  doc (not docs) folder, 
+# and copies the .Rmd files there too, and builds vignette index
  devtools::build_vignettes(quiet = FALSE, upgrade = "never", install = FALSE)
 
  #################### # 
@@ -110,20 +152,29 @@ pkgdown::build_site_github_pages(
 
 
 # now these steps fail: 
- #     build_search('.')   and   build_sitemap('.') 
+ #     build_search('.')   
 #    which is a step in 
 #   pkgdown:::build_site_local() which is part of 
 # pkgdown::build_site_github_pages()
 # ── Building search index ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 # Error in UseMethod("xml_find_first") : 
 #   no applicable method for 'xml_find_first' applied to an object of class "xml_document"
-# this step would work     pkgdown:::build_redirects(".")
+
+# but this step done alone works: 
+pkgdown:::build_sitemap('.') 
+
+# this step alone  works  too
+pkgdown:::build_redirects(".")
+ 
 
 
 
 Sys.time() # 40 minutes for all of this to run with slowest options above
 #################### # 
+
 stop( ' then COMMIT AND PUSH THE NEW FILES ')
+
+
 browseURL("https://github.com/USEPA/EJAM/actions/") # to see automatic deployment happen
 stop()
 

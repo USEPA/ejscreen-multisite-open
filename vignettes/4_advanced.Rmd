@@ -25,30 +25,34 @@ knitr::opts_chunk$set(eval = FALSE)
 # rm(list = ls())
 # golem::detach_all_attached()
 # 
-# library(EJAM)
-# # dataload_from_pins('all') # varnames = all  currently means all these:
+library(EJAM)
+dataload_from_pins('all') # varnames = all  currently means all these:
 # dataload_from_pins(
 #   c("blockwts", "blockpoints", "blockid2fips", "quaddata", 
 #     "bgej", "bgid2fips",
 #     "frs", "frs_by_programid", "frs_by_naics", "frs_by_sic", "frs_by_mact")
 # )
-# 
-# ##################################### #
+
+##################################### #
 # if (!exists("blockid2fips")) {
 #   cat("warning: blockid2fips not available\n")
 #   # *** temporary workaround if building vignette on 1 particular machine
-#   here <- "~/../../Downloads/EJAMbigfiles"
+#   here <- "~/../Downloads/EJAMbigfiles"
 #   varnames <- c('blockwts', 'blockpoints', 'blockid2fips', "quaddata",
-#                 'bgej','bgid2fips', 
+#                 'bgej','bgid2fips',
 #                 'frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact")
 #   fnames <- paste0(varnames, ".arrow")
 #   localpaths  <- paste0(here, '/', fnames)
-#   for (i in 1:length(varnames)) {assign(varnames[i], arrow::read_ipc_file(file = localpaths[i]))}
+#   for (i in 1:length(varnames)) {
+#     if (!exists(varnames[i])) {
+#     assign(varnames[i], arrow::read_ipc_file(file = localpaths[i]))
+#     }}
 #   rm(here, varnames, fnames, localpaths)
 # }
-# ##################################### #
-# 
-# indexblocks()
+##################################### #
+
+indexblocks()
+
 ```
 
 
@@ -73,38 +77,163 @@ x[grepl("^test[^op_]", x$Item), ]
 
 ## DISTANCES (RADIUS VALUES)
 
+Distance from a potential source of environmental risk is often used as a simple proxy for
+actual exposure or risk, when data are limited. Proximity analysis uses distance (how far away) from a site,
+which is just the opposite of proximity (how near) to a site.
 
-### Mean distance of each group
+Two basic ways to report demographics and risk are 1) showing demographics as a function or risk,
+and 2) showing risk as a function of demographics:
 
-```{r plot_distance_mean_by_group_1, eval = TRUE}
-# plot_distance_mean_by_group(testoutput_ejamit_1000pts_1miles$results_bybg_people)
+1. Demographics as a function of risk (or proximity): 
+Many proximity analyses report percent demographics by distance or risk bin, such
+as % low income within 3 miles of a point. This expresses
+demographics as a function of proximity or risk. Sometimes other
+distance or risk bins are used, such as areas with risk above some cutoff.
+And sometimes instead of a continuous measure of % demographics, the demographic data are used
+to categorize places in bins, such as areas in the top quartile of poverty rates.
 
-# larger radius reveals more information
+2. Risk (or proximity) as a function of demographics:
+A different way to present this information is to report distance or risk as a function of
+demographic group -- this expresses distance within each demographic group,
+such as the average distance by group or the full distribution of risk
+within each group.
 
-y <- ejamit(testpoints_100, radius = 3.1)
+Proximity or distance as binary, categorical, or continuous metrics:
+Proximity analysis has often relied on picking a single distance, a radius,
+and analyzing conditions within that radius, such as all residents who live
+within 3 miles of a point where a regulated facility is located. Sometimes
+an analysis will look at two or even three distances. In some more
+sophisticated analyses, distance is treated as a continuous measure. Some
+tools like EJScreen use a proximity metric based on the inverse of
+distance (1/d) to provide a proximity score that gets higher as distance gets smaller.
+But many EJ analyses still use a single distance and analyze conditions within
+that distance.
 
-plot_distance_mean_by_group(y$results_bybg_people) 
-# or distance_mean_by_group() is a synonym
+EJAM makes it easier to do any of these types of analysis, because conclusions
+can be sensitive to the choice of a single radius, and metrics and methods
+provide different perspectives and reveal a richer picture of where people
+actually live in relation to potential sources of exposure or risk.
 
-print(distance_by_group(
-  y$results_bybg_people, 
-  demogvarname = 'pctlowinc', demoglabel = 'Low Income'))
+Proximity analysis using a single radius (binary distance) versus using continuous distance:
+ There are two aspects of proximity to consider when analyzing
+   demographic groups within a certain fixed distance (radius) from a single
+   facility point (or a whole set of facilities). These two ways of summarizing
+   proximity are complementary:
+
+   1. Which groups tend to live nearby in the sense of being within the selected radius
+   versus outside the radius? In other words, which groups are "overrepresented"
+   within X miles of the site? This treats proximity as a yes/no, binomial
+   question -- a resident is nearby or not. It would focus on whether someone is
+   anywhere within 3 miles, say, and ignore the differences between
+   being 1, 2, or 3 miles away.
+
+   2. Among the residents within X miles of the site, which groups live especially close to the
+   facility? This question recognizes proximity is a continuous variable, and
+   focuses on the difference between 1 mile, 1.5 miles, etc. However, it only
+   looks at residents within the X miles radius area analyzed, so it fails
+   to recognize that some groups tend to live more than 3 miles away, for example.
+   This perspective does not take into account which groups are overrepresented
+   within the original total radius near a site.
+
+   This function does the second of these two types of analysis. It reports,
+   only among those anywhere inside the radius, which groups are closer to the site.
+
+   In a specific location, for example, one demographic group could be
+   underrepresented within 3 miles, but those few who are in the group
+   still might live right next to the facility in which case
+   their average distance would be higher than that of any other group
+   because this function only counts those within the radius analyzed.
+
+   In some other location, the opposite could occur -- if one group is
+   overrepresented within 3 miles, they still might all live in a community
+   about 2.9 miles away from the site -- that would mean their distance from
+   the site on average is greater (or their proximity score is lower)
+   than other groups within 3 miles of the site.
+   
+   The question of whether to compare to Statewide or Nationwide or urban/rural or other 
+   reference averages or percentiles is related to this question of how to look at distances,
+   or exposures or risk, just like it relates to how to look at demographic percentages.
+   One could look at % demographics within 1 mile, 2 miles, etc. all the way
+   out until one was looking at the county overall, the state overall, and
+   eventually the nation overall. Selecting a single radius or selecting a
+   single reference area should be done with a recognition of what questions
+   one is actually trying to answer, and an understanding of how impacts
+   vary with distance from a particular type of facility or source of potential risk.
+   
+   If one is comparing demographic groups in terms of distance (or risk level),
+   or if one is comparing % demographics at each distance (or risk level), 
+   the implicit assumption is that there is some
+   "expected" rate, and/or some "equitable" or "proportionate" % or ratio or risk.
+   
+   
+### Which groups are *overrepresented* at the *OVERALL LIST of sites* as a whole, within X mile radius vs Statewide
+
+```{r}
+ejam2ratios(out)
 ```
 
-
-### Comparing results for 2 or 3 specific distances
+### Which groups are *overrepresented* at the *OVERALL LIST of sites* as a whole, *for 2 or 3 specific distances*
 
 ```{r ejamit_compare_distances, eval=TRUE}
   radii <- c(1,2,3,6,10)
-  radii <- c(1, 10)
+  radii <- c(1, 10) #  quicker for the example
   pts <- testpoints_100
-  pts <- testpoints_10
+  pts <- testpoints_10 #  quicker for the example
   x <- ejamit_compare_distances(pts, radii = radii)
-  EJAM:::distance_comparison_ejamit2plot(x)
+  EJAM:::ejamit_compare_distances2plot(x)
+```
+
+### Which groups are *overrepresented* at *EACH SITE*, within X mile radius vs Statewide
+```{r}
+out <- testoutput_ejamit_10pts_1miles
+x = round(data.frame(out$results_bysite)[, c("ratio.to.state.avg.pctlowinc", "ratio.to.state.avg.pctmin")], 2)
+names(x) = fixcolnames(names(x),"r","shortlabel")
+x
 ```
 
 
-### Demographics as a continuous function of distance
+### *Mean distance* of each group, at the *OVERALL LIST of sites* as a whole
+
+```{r distance_mean_by_group_1, eval = TRUE}
+out <- testoutput_ejamit_1000pts_1miles
+## But try a larger radius to reveal more information:
+# out <- ejamit(testpoints_100, radius = 10)
+
+# see a table of demog indicators
+distance_mean_by_group(out$results_bybg_people)
+
+# for a barplot, just race/ethnicity groups
+distance_mean_by_group(out$results_bybg_people, 
+                       demogvarname = names_d_subgroups,
+                       demoglabel = fixcolnames(names_d_subgroups, "r", "shortlabel"), 
+                       graph = TRUE) 
+# or plot_distance_mean_by_group() is a synonym
+
+# for just 1 indicator
+print(distance_mean_by_group(
+  out$results_bybg_people, 
+  demogvarname = 'pctlowinc', demoglabel = 'Low Income'))
+```
+
+### *Mean distance* of each group, at *EACH SITE*, as ratio to mean of everyone else nearby
+
+Ratios at each site, of avg dist of group / avg dist of everyone else near site:
+
+```{r}
+out <- testoutput_ejamit_10pts_1miles
+## But try a larger radius to reveal more information:
+# out <- ejamit(testpoints_10, radius = 31)
+
+distance_by_group_by_site(out$results_bybg_people)
+
+# summary of closest group at each site and by how much
+data.frame(site = colnames(x), closestgroup = rownames(x)[sapply(x, which.min)], their_avg_distance_as_pct_of_everyone_elses = round(100 * sapply(x, min), 0))
+
+```
+
+
+### How demographics at *ONE SITE* vary as *a continuous function of distance*
+
 ```{r}
  # Example of area where %Black is
  # very high within 1 mile but drops by 3 miles away
@@ -125,11 +254,11 @@ print(distance_by_group(
 ```
 
 
-### Plot of how each group's share of everyone nearby changes with distance ?
+### Cumulative Distribution plots of groups as *a continuous function of distance*
 
 ```{r distance_by_group_plot1, eval=TRUE}
 distance_by_group_plot(
-  y$results_bybg_people,
+  out$results_bybg_people,
   demogvarname = 'pctlowinc', demoglabel = 'Low Income')
 ```
 

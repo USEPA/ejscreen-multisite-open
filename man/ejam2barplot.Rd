@@ -2,6 +2,7 @@
 % Please edit documentation in R/plot_barplot_ratios.R
 \name{ejam2barplot}
 \alias{ejam2barplot}
+\alias{plot_barplot_ratios_ez}
 \title{Barplot of ratios of demographic (or other) scores to averages - simpler syntax}
 \usage{
 ejam2barplot(
