@@ -190,6 +190,9 @@
     <loc>usepa.github.io/EJAM/reference/distance_mean_by_group.html</loc>
   </url>
   <url>
+    <loc>usepa.github.io/EJAM/reference/distance_trends.html</loc>
+  </url>
+  <url>
     <loc>usepa.github.io/EJAM/reference/distance_via_surfacedistance.html</loc>
   </url>
   <url>
@@ -230,6 +233,9 @@
   </url>
   <url>
     <loc>usepa.github.io/EJAM/reference/ejamit_compare_distances2plot.html</loc>
+  </url>
+  <url>
+    <loc>usepa.github.io/EJAM/reference/ejamit_compare_distances_fulloutput.html</loc>
   </url>
   <url>
     <loc>usepa.github.io/EJAM/reference/ejamit_compare_types_of_places.html</loc>
@@ -626,6 +632,15 @@
   </url>
   <url>
     <loc>usepa.github.io/EJAM/reference/namez.html</loc>
+  </url>
+  <url>
+    <loc>usepa.github.io/EJAM/reference/out_bydistance2results_bydistance.html</loc>
+  </url>
+  <url>
+    <loc>usepa.github.io/EJAM/reference/out_bydistance2results_bydistance_bysite.html</loc>
+  </url>
+  <url>
+    <loc>usepa.github.io/EJAM/reference/out_bydistance2results_bysite_bydistance.html</loc>
   </url>
   <url>
     <loc>usepa.github.io/EJAM/reference/pctiles_lookup_create.html</loc>
