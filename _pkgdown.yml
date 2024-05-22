@@ -221,19 +221,26 @@ reference:
   - statestats_queryd
   - statestats_querye
   - regionstats
-- subtitle: "Calculating Summary Stats, etc."
+- subtitle: "Comparing Distances / Multiple Radius Values"
   contents:
-  - count_sites_with_n_high_scores
-  - colcounter_summary_all
+  - ejamit_compare_distances
+  - ejamit_compare_distances_fulloutput
+  - ejamit_compare_distances2plot
   - distance_by_group_by_site
   - distance_by_group_plot
   - distance_cdf_by_group_plot
   - distance_mean_by_group
   - distance_by_group
+  - distance_trends
+- subtitle: "Calculating Summary Stats, etc."
+  contents:
+  - count_sites_with_n_high_scores
+  - colcounter_summary_all
   - popshare_at_top_n
   - popshare_at_top_x_pct
   - popshare_p_lives_at_what_n
   - popshare_p_lives_at_what_pct
+  - distance_trends
 - title: "Viewing Results"
 - subtitle: "Maps of Points"
   contents:
@@ -369,3 +376,6 @@ reference:
   - url_get_eparest_chunked_by_id
   - url_get_via_url
   - create_filename
+  - out_bydistance2results_bydistance
+  - out_bydistance2results_bydistance_bysite
+  - out_bydistance2results_bysite_bydistance

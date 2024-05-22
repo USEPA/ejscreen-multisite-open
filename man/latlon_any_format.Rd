@@ -25,6 +25,8 @@ Try to figure out if user provided latitude / longitude
 as vectors, data.frame, file, or interactively pick file.
 }
 \details{
+Also see draft internal function sitepoints_from_any()
+
 This function relies on
 
 \code{\link[=read_csv_or_xl]{read_csv_or_xl()}}  and

@@ -1,7 +1,8 @@
 ############################################################################# #
 
 #' Round numbers in a table, each column to appropriate number of decimal places
-#'
+#' @details Percentages stored as 0 to 1 rather than 0 to 100 will not be shown correctly unless adjusted, 
+#' because rounding info says 0 digits when the intent is to show 0 digits after the 0-100 percent number.
 #' @param x data.frame, data.table, or vector with at least some numerical columns, like the results
 #'   of ejamit()$results_bysite
 #' @param var optional, but assumed to be names(x) by default, specifies colnames of table
@@ -9,9 +10,7 @@
 #' @param varnametype optional, name of column in map_headernames that is looked in for var
 #' @param ... passed to [var_is_numeric_ish()] 
 #' @seealso [var_is_numeric_ish()] [table_rounding_info()]
-#' @return Returns the original x but with appropriate cells rounded off. 
-#' @export
-#'
+#' @return Returns the original x but with appropriate cells rounded off.
 #' @examples  
 #'   table_round(c(12.123456, 9, NA ), 'pm')
 #' 
@@ -23,10 +22,13 @@
 #'  table_rounding_info(names(x))
 #' 
 #'  table_round(x)
-#'   
+#' 
+#' @export
+#'
 table_round <- function(x, var = names(x), varnametype="rname", ...) {
-  warning("Percentages stored as 0 to 1 rather than 0 to 100 will not be shown correctly unless adjusted, 
-          because rounding info says 0 digits when the intent is to show 0 digits after the 0-100 percent number.")
+  # warning("Percentages stored as 0 to 1 rather than 0 to 100 will not be shown correctly unless adjusted, 
+  #         because rounding info says 0 digits when the intent is to show 0 digits after the 0-100 percent number.")
+  
   # treat a vector differently than a matrix/data.frame/data.table
   # even if those nonvectors are just 1 row (multiple indicators) like results_overall,
   # or just 1 column (single indicator) of a table (e.g., subset of df where drop=F)

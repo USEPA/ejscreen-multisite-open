@@ -17,14 +17,100 @@ getblocks_predict_blocks_per_site <- function(nsites, radius) {
 }
 ######################################################################################### # 
 
+## no documentation
+##
+blockcounts_table_just_counts <- function(blockcounts, cuts = c(-1, 0, 9, 29, 999999)) {
+  table(cut(blockcounts, cuts))
+}
+######################################################################################### # 
+
+## no documentation
+##
+text_in_or_within_x_miles_of <- function(radius) {
+  ifelse(radius == 0,
+         "in", 
+         # within x mile(s) of
+         paste0("within ", radius, " mile", ifelse(radius == 1, "", "s"), " of")
+  )
+}
+######################################################################################### # 
+
+#' utility - How many blocks (<10, <30, etc.) are near the sites (pop density affects accuracy)
+#'
+#' @param blockcounts vector like from 
+#'   
+#'   out <- testoutput_ejamit_1000pts_1miles
+#'   
+#'   blockcounts <- out$results_bysite$blockcount_near_site
+#'
+#' @param cuts optional vector defining bins
+#' @param labels optional vector of text labels for bins
+#' @return data.frame of counts in bins
+#' @noRd
+#' 
+blockcounts_table <- function(blockcounts, 
+                              cuts = c(-1, 0, 9, 29, 999999), 
+                              labels = c("Not even 1", "some but <10", "10-29", "at least 30 blocks")) {
+
+  justcounts <- blockcounts_table_just_counts(blockcounts = blockcounts, cuts = cuts)
+  x <- cbind(sites = justcounts)
+  rownames(x) <- NULL
+  x <- data.frame(x)
+  x$blocks_per_site <- labels
+  x
+}
+######################################################################################### # 
+
+#' utility - Plot How many blocks (<10, <30, etc.) are near the sites (pop density affects accuracy)
+#'
+#' @param blockcounts vector like from 
+#'   
+#'   out <- [testoutput_ejamit_1000pts_1mile]s
+#'   
+#'   blockcounts <- out$results_bysite$blockcount_near_site
+#'
+#'   or 
+#'   
+#'   getout <- testoutput_getblocksnearby_1000pts_1miles
+#'   
+#'   blockcounts <- getout[ , .N, keyby = 'ejam_uniq_id']$N
+#'   
+#' @param radius in miles (can use 0 if shapefiles analyzed)
+#' @param n optional count of sites should be length(blockcounts)
+#' @param cuts optional vector defining bins
+#' @param labels optional vector of text labels for bins
+#' @param ... passed to [barplot()]
+#'
+#' @return barplot
+#' @noRd
+#'
+blockcounts_plot <- function(blockcounts, radius, n = length(blockcounts), 
+                             cuts =  c(-1, 0, 9, 29, 999999), 
+                             labels = c("Not even 1", "some but <10", "10-29", "at least 30 blocks"), 
+                             ...) {
+  
+  justcounts <- blockcounts_table_just_counts(blockcounts = blockcounts, cuts = cuts)
+  milestext <- text_in_or_within_x_miles_of(radius)
+  maintext  <- paste0("How many blocks are ", milestext, " these ", n, " sites?")
+  
+  barplot(
+    justcounts,
+    names.arg = labels,
+    main = maintext,
+    ylab = "# of facilities (or sites or polygons)", 
+    xlab = "# of blocks nearby (or in polygon)",
+    ...
+  )
+}
+######################################################################################### # 
 
 #' utility - How many blocks are near the sites (pop density affects accuracy)
 #' 
 #' @description Number of blocks near avg site, how many sites have only 1 or fewer than 30 blocks nearby, etc.
 #' 
-#' @param x The output of getblocksnearby()
+#' @param x The output of [getblocksnearby()] like [testoutput_getblocksnearby_1000pts_1miles]
 #' @param varname colname of variable in data.table x that is the one to summarize by
-#' @return invisibly, a list of stats
+#' @return invisibly, a list of stats, and plot
 #' @import data.table
 #' @seealso [getblocks_diagnostics()]
 #' 
@@ -32,13 +118,21 @@ getblocks_predict_blocks_per_site <- function(nsites, radius) {
 #' @keywords internal
 #'
 getblocks_summarize_blocks_per_site <- function(x, varname='ejam_uniq_id') {
+  
   blocks_per_site_histo <- table(table(x[ , ..varname]))
   blocks_per_site_histo <- data.frame(
     blocks_nearby =  as.numeric(names(blocks_per_site_histo)), 
     freq_of_sites =  as.numeric(blocks_per_site_histo)
   )
+  
+  blockcounts = x[ , .N, keyby = varname]$N
+  blockcounts_plot(x[ , .N, keyby = varname]$N, radius = round(max(x$distance),2))
+  
   cat('Range and mean of count of blocks nearby the various sites:\n\n')
   print(summary(as.numeric(table(x[ , ..varname]))))
+  cat("\n")
+  
+  print(blockcounts_table(blockcounts = blockcounts))
   cat("\n")
   invisible(blocks_per_site_histo)
 }
@@ -47,7 +141,7 @@ getblocks_summarize_blocks_per_site <- function(x, varname='ejam_uniq_id') {
 
 #' utility - How many sites are near the blocks (site density near residents)
 #'
-#' @param x The output of [getblocksnearby()] like testoutput_getblocksnearby_10pts_1miles
+#' @param x The output of [getblocksnearby()] like [testoutput_getblocksnearby_10pts_1miles]
 #' @param varname colname of variable in data.table x that is the one to summarize by
 #' @return invisibly, a list of stats
 #' @import data.table
@@ -63,7 +157,7 @@ getblocks_summarize_sites_per_block <- function(x, varname='blockid') {
 
 #' utility - How many blocks and many other stats about blocks and sites
 #'
-#' @param x The output of [getblocksnearby()] like testoutput_getblocksnearby_10pts_1miles
+#' @param x The output of [getblocksnearby()] like [testoutput_getblocksnearby_10pts_1miles]
 #' @param detailed if TRUE, also shows in console a long table of frequencies via [getblocks_summarize_blocks_per_site()]
 #' @param see_distanceplot if TRUE, also draws scatter plot of adjusted vs unadj distances
 #' @param see_pctiles set to TRUE to see 20 percentiles of distance in a table
@@ -95,7 +189,7 @@ getblocks_diagnostics <- function(x, detailed=FALSE, see_pctiles=FALSE, see_dist
   
   # Distances ####
   
-  cat("\n   Summary stats on distances reported from any sites to any nearby blocks\n")
+  cat("\n   DISTANCES FROM BLOCKS (AND RESIDENTS) TO SITES (AND FOR CLOSEST SITE) \n")
   if (see_pctiles) {
     cat("\n")
     print(cbind(percentiles.of.distance = quantile(x$distance, probs = (0:20)/20)))
@@ -133,9 +227,9 @@ getblocks_diagnostics <- function(x, detailed=FALSE, see_pctiles=FALSE, see_dist
   if (detailed) {
     # Counts of blocks nearby, frequency of x nearby ####
     print(getblocks_summarize_blocks_per_site(x))
-    # returns table that gives Range and mean of count of blocks nearby the various sites,
+    # returns tables that gives Range and mean of count of blocks nearby the various sites,
     #   how many sites have only 1 block nearby, or <30 nearby, etc.
-    cat("Also see  getblocks_predict_blocks_per_site() \n")
+    #
     cat("\n\n")
   }
   
@@ -186,16 +280,18 @@ getblocks_diagnostics <- function(x, detailed=FALSE, see_pctiles=FALSE, see_dist
   
   # Print those extra stats to console ####
   
-  cat(paste0(prit(sitecount_unique_out), ' unique output sites\n'))
-  cat(paste0(prit(round(blockcount_avgsite, 0)), ' blocks are near the avg site or in avg buffer
-             (based on their block internal point, like a centroid)\n'))
-  # cat(paste0(prit(sites_withany_overlap), ' sites do not overlap with any others\n'))
+  cat("  BLOCK COUNTS PER SITE (FEWER MEANS HIGHER UNCERTAINTY AT THOSE SITES)\n\n")
+  
+  cat(paste0(prit(round(blockcount_avgsite, 0)), ' blocks are near the avg site or in avg buffer\n(based on their block internal point, like a centroid)\n'))
+  cat("\n")
+  blockcounts <- x[ , .N, keyby = "ejam_uniq_id"]$N
+  print(blockcounts_table(blockcounts = blockcounts))
+  
+  cat("\n  BLOCK COUNTS TOTAL AND IN OVERLAPS OF AREAS (MULTIPLE SITES FOR SOME RESIDENTS) \n\n")
+  
+  cat(paste0(prit(blockcount_unique), " actual unique blocks total\n" ))
   cat(paste0(prit(blockcount_incl_dupes), " blocks including doublecounting in overlaps, 
              in final row count (block-to-site pairs table)\n" ))
-  cat(paste0(prit(blockcount_unique), " actual unique blocks total\n" ))
-  cat(paste0(prit(uniqueblocks_near_only1site) ,    ' blocks (and their residents) have exactly 1 site nearby \n'))
-  cat(paste0(prit(uniqueblocks_near_exactly2site) , ' blocks (and their residents) have exactly 2 sites nearby \n'))
-  cat(paste0(prit(uniqueblocks_near_exactly3site) , ' blocks (and their residents) have exactly 3 sites nearby \n'))
   cat(paste0(prit(ratio_blocks_incl_dupes_to_unique), ' is ratio of blocks including multicounting / actual count of unique blocks\n'))
   cat(paste0(prit(100 * round(pct_of_unique_blocks_in_overlaps, 3)), 
              '% of unique blocks could get counted more than once 
@@ -204,8 +300,23 @@ getblocks_diagnostics <- function(x, detailed=FALSE, see_pctiles=FALSE, see_dist
   # cat(prit(count_block_site_distances), ' = count_block_site_distances',  '\n')
   # cat(prit(uniqueblocks_near_multisite),' = uniqueblocks_near_multisite ', '\n')
   
-  # PLOT ####
+  cat("\n  SITE COUNTS TOTAL AND IN OVERLAPS OF AREAS (MULTIPLE SITES FOR SOME RESIDENTS)\n\n")
+  
+  cat(paste0(prit(sitecount_unique_out), ' unique output sites\n\n'))
+  # cat(paste0(prit(sites_withany_overlap), ' sites do not overlap with any others\n'))
+  
+  cat(paste0(prit(uniqueblocks_near_only1site) ,    ' blocks (and their residents) have exactly 1 site nearby \n'))
+  cat(paste0(prit(uniqueblocks_near_exactly2site) , ' blocks (and their residents) have exactly 2 sites nearby \n'))
+  cat(paste0(prit(uniqueblocks_near_exactly3site) , ' blocks (and their residents) have exactly 3 sites nearby \n'))
+  
+  
+  # PLOTS ####
+  
+  # Plot nice histogram of count of blocks near each site, by default now
+  blockcounts_plot(blockcounts = blockcounts, radius = round(max(x$distance, na.rm = TRUE),2))
+  
   if (see_distanceplot) {
+    # show differences between unadjusted and adjusted distances
     # x = getblocksnearby(testpoints_1000, radius = 1, quiet = T)
     if (NROW(x) > 10000) {
       cat("plotting a sample of blocks since too many to easily plot them all\n")
