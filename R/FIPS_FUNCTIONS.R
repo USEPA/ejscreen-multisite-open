@@ -62,6 +62,9 @@
 #' @return vector of types: "block", "blockgroup", "tract", "county", or "state"
 #'
 #' @examples
+#'  testfips <- c("1", "12", "123", "1234", "12345", "", NA, "words")
+#'  fipstype(testfips)
+#'
 #'  fips_counties_from_statename(c("Connecticut", "Delaware") )
 #'  # [1] "09001" "09003" "09005" "09007" "09009" "09011" "09013" "09015" "10001" "10003" "10005"
 #'  fipstype(9001)
@@ -82,14 +85,15 @@
 #'
 fipstype <- function(fips) {
 
-  fips <- fips_lead_zero(fips = fips)
+  fips <- fips_lead_zero(fips = fips) # cleans them so each is NA or a valid nchar() string
   ftype <- rep(NA, length(fips))
-  ftype[nchar(fips) == 15] <- "block"
-  ftype[nchar(fips) == 12] <- "blockgroup"
-  ftype[nchar(fips) == 11] <- "tract"
-  ftype[nchar(fips) ==  7] <- "city"  # e.g, 5560500 is Oshkosh, WI
-  ftype[nchar(fips) ==  5] <- "county"
-  ftype[nchar(fips) ==  2] <- "state"
+
+  ftype[nchar(fips, keepNA = FALSE) == 15] <- "block"
+  ftype[nchar(fips, keepNA = FALSE) == 12] <- "blockgroup"
+  ftype[nchar(fips, keepNA = FALSE) == 11] <- "tract"
+  ftype[nchar(fips, keepNA = FALSE) ==  7] <- "city"  # e.g, 5560500 is Oshkosh, WI
+  ftype[nchar(fips, keepNA = FALSE) ==  5] <- "county"
+  ftype[!is.na(fips) && nchar(fips) ==  2] <- "state"
 
   if (anyNA(ftype)) {
     warning("some fips do not seem to be block, blockgroup, tract, county, or state FIPS (lengths with leading zeroes should be 15,12,11,5,2 respectively")
@@ -109,7 +113,11 @@ fipstype <- function(fips) {
 #'
 #' @return vector of same length
 #'
-#' @examples fips_lead_zero(c(1,"01",1234,"1234","12345",123456))
+#' @examples
+#' testfips1 <- c(1,"01",1234,"1234","12345",123456)
+#' testfips <- c(1, "1", "12", "123", "1234", "12345", "", NA, "words")
+#' fips_lead_zero(testfips1)
+#' fips_lead_zero(testfips)
 #'
 #' @export
 #'
@@ -120,30 +128,38 @@ fips_lead_zero <- function(fips) {
     }
   
   #	TRY TO CLEAN UP vector of FIPS AND INFER GEOGRAPHIC SCALE
-  # # Very similar to ejanalysis package file clean.fips()
 
-  fips[nchar(fips) == 0]	<- NA
+  ## keepNA = FALSE means that nchar() returns the number 2 instead of NA, which makes this work right.
+
+  fips[nchar(fips, keepNA = FALSE) == 0]	<- NA
   # 1 or 2 characters is state fips
-  fips[nchar(fips) == 1]	<- paste0("0", fips[nchar(fips) == 1])
+  fips[nchar(fips, keepNA = FALSE) == 1]	<- paste0("0", fips[nchar(fips, keepNA = FALSE) == 1])
   # 3 is bad
-  fips[nchar(fips) == 3]	<- NA
+  fips[nchar(fips, keepNA = FALSE) == 3]	<- NA
   # 4 or 5 is county
-  fips[nchar(fips) == 4]	<- paste0("0", fips[nchar(fips) == 4])
+  fips[nchar(fips, keepNA = FALSE) == 4]	<- paste0("0", fips[nchar(fips, keepNA = FALSE) == 4])
   # 6-9 are bad
-  fips[nchar(fips) == 6]	<- NA
-  fips[nchar(fips) == 7]	<- NA
-  fips[nchar(fips) == 8]	<- NA
-  fips[nchar(fips) == 9]	<- NA
+  fips[nchar(fips, keepNA = FALSE) == 6]	<- NA
+  fips[nchar(fips, keepNA = FALSE) == 7]	<- NA
+  fips[nchar(fips, keepNA = FALSE) == 8]	<- NA
+  fips[nchar(fips, keepNA = FALSE) == 9]	<- NA
   # 10 or 11 is tract
-  fips[nchar(fips) == 10]	<- paste0("0", fips[nchar(fips) == 10])
+  fips[nchar(fips, keepNA = FALSE) == 10]	<- paste0("0", fips[nchar(fips, keepNA = FALSE) == 10])
   # 12 is blockgroup
   # 13 is bad
-  fips[nchar(fips) == 13]	<- NA
+  fips[nchar(fips, keepNA = FALSE) == 13]	<- NA
   # 14-15 is block
-  fips[nchar(fips) == 14]	<- paste0("0", fips[nchar(fips) == 14])
-  fips[nchar(fips) >= 16]	<- NA
+  fips[nchar(fips, keepNA = FALSE) == 14]	<- paste0("0", fips[nchar(fips, keepNA = FALSE) == 14])
+  fips[nchar(fips, keepNA = FALSE) >= 16]	<- NA
 
-  # MAYBE COULD Remove if State code is invalid?
+  # convert to NA any other things like text that is not actually a number
+  suppressWarnings({fips[is.na(as.numeric(fips))] <- NA})
+
+  # MAYBE should remove or set to NA when State or County code is invalid? another function can check for that.
+
+  if (any(is.na(fips))) {
+    warning("Some FIPS were invalid or were NA values")
+  }
 
   return(fips)
 }
@@ -259,9 +275,15 @@ fips_state_from_statename <- function(statename) {
 #' @export
 #'
 fips_counties_from_statefips <- function(statefips) {
+  ftype = fipstype(statefips)
+  if (any(is.na(ftype)) || any(ftype != "state")) {
+    warning("Some of the supplied statefips values were NA or otherwise not recognized as State FIPS codes")
+    statefips <- statefips[!is.na(ftype) && ftype == "state"]
+  }
 
-  # EJAM :: blockgroupstats
+  # EJAM :: blockgroupstats  has all the usable FIPS codes in bgfips
   countyfips <- unique(substr(blockgroupstats$bgfips,1,5))
+  countyfips <- countyfips[!is.na(countyfips)]
   countyfips_in_state <- unique(countyfips[substr(countyfips,1,2) %in% statefips])
   return(countyfips_in_state)
 }
@@ -354,6 +376,10 @@ fips_counties_from_statename <- function(statename) {
 fips_bg_from_anyfips <- function(fips) {
 
   fips <- fips_lead_zero(fips)
+  if (any(is.na(fips))) {
+    warning("Some FIPS were invalid or were NA values")
+    fips <- fips[!is.na(fips)]
+  }
 
   # if smaller than bg (i.e., block fips), return just the parent bgs
   fips <- unique(substr(fips,1,12))
@@ -480,7 +506,14 @@ states_as_sites <- function(fips) {
 #'
 fips_st2eparegion <- function(stfips) {
 
-  EJAM::stateinfo$REGION[match(stfips, EJAM::stateinfo$FIPS.ST)]
+  stfips <- fips_lead_zero(stfips)
+  regnum <- EJAM::stateinfo$REGION[match(stfips, EJAM::stateinfo$FIPS.ST)]
+
+  if (any(is.na(regnum))) {
+    warning("Some stfips were invalid or were NA values or otherwise could not be converted to region number")
+    # regnum <- regnum[!is.na(regnum)]
+  }
+  return(regnum)
 }
 ############################################################################# #
 
@@ -501,8 +534,12 @@ fips_st2eparegion <- function(stfips) {
 #'
 fips2state_abbrev <- function(fips) {
 
-  stateinfo$ST[match(substr(fips_lead_zero(fips), 1, 2), stateinfo$FIPS.ST)]
+  abb <- stateinfo$ST[match(substr(fips_lead_zero(fips), 1, 2), stateinfo$FIPS.ST)]
   # confirm returns same length as input, and check how it handles nonmatches
+  if (any(is.na(abb))) {
+    warning("Some fips could not be converted to state abbreviation - returning NA for those")
+  }
+  return(abb)
 }
 ############################################################################# #
 
@@ -520,7 +557,11 @@ fips2state_abbrev <- function(fips) {
 #'
 fips2state_fips <- function(fips) {
 
-  substr(fips_lead_zero(fips), 1, 2)
+  stfips <- substr(fips_lead_zero(fips), 1, 2)
+  if (any(is.na(stfips))) {
+    warning("Some fips could not be converted to state fips - returning NA for those")
+  }
+  return(stfips)
 }
 ############################################################################# #
 
@@ -538,7 +579,11 @@ fips2state_fips <- function(fips) {
 #'
 fips2statename <- function(fips) {
 
-  stateinfo$statename[match(substr(fips_lead_zero(fips), 1, 2), stateinfo$FIPS.ST)]
+  stname <- stateinfo$statename[match(substr(fips_lead_zero(fips), 1, 2), stateinfo$FIPS.ST)]
+  if (any(is.na(stname))) {
+    warning("Some fips could not be converted to state name - returning NA for those")
+  }
+  return(stname)
 }
 ############################################################################# #
 
@@ -566,7 +611,12 @@ fips2countyname <- function(fips, includestate = c("ST", "Statename", "")[1]) {
   # if "county" return 1 for 1 in/out, not unique only?
   # if "tract", "blockgroup", "block",  return parent county once, not again for each tract inside the county ?
   out <- rep(NA, length(fips))
-  out[ftype == "county"] <- blockgroupstats$countyname[match(fips[ftype == "county"], substr(blockgroupstats$bgfips,1,5))]  #
+
+  ## *** need to handle NA values here since out[NA] <-  fails as cannot have NA in subset assignment
+  out[!is.na(ftype) && ftype == "county"] <- blockgroupstats$countyname[match(
+    fips[!is.na(ftype) && ftype == "county"],
+    substr(blockgroupstats$bgfips,1,5))]  #
+
   if (any(ftype != "county")) {
     warning("this function should only be used to convert county fips to county name, 1 to 1 - returning NA for fips that are not countyfips")
   }
@@ -576,7 +626,9 @@ fips2countyname <- function(fips, includestate = c("ST", "Statename", "")[1]) {
       addon <- ""
     }
   }
-  if (all(addon == "")) {return(out)} else {
+  if (all(addon == "")) {
+    return(out)
+  } else {
     out <- paste(out, addon, sep = ", ")
     return(out)
   }
@@ -605,9 +657,17 @@ fips2name  <- function(fips, ...) {
   fips <- fips_lead_zero(fips)
 
   out <- rep(NA, length(fips))
-  out[fipstype(fips) == "state"]  <- fips2statename(fips = fips[fipstype(fips) == "state"])
-  out[fipstype(fips) == "county"] <- fips2countyname(fips = fips[fipstype(fips) == "county"], ...)
+
+  ## *** need to handle NA values here since out[NA] <-  fails as cannot have NA in subset assignment
+  out[!is.na(fips) && fipstype(fips) == "state"]  <- fips2statename(fips = fips[!is.na(fips) && fipstype(fips) == "state"])
+  out[!is.na(fips) && fipstype(fips) == "county"] <- fips2countyname(fips = fips[!is.na(fips) && fipstype(fips) == "county"], ...)
+
   return(out)
 }
 ############################################################################# #
 
+# fips <- fips_lead_zero(fips)
+# if (any(is.na(fips))) {
+#   warning("Some FIPS were invalid or were NA values")
+#   fips <- fips[!is.na(fips)]
+# }
