@@ -35,6 +35,13 @@ Find industry names and codes by searching for queried code(s) or text
 \examples{
 # Also see vignette for examples
   naics_categories()
+  
+  naics_from_any("textile mills", children = F)
+  naics_from_any("textile mills", children = T)
+
+  frs_from_naics("textile mills", children = FALSE)
+  frs_from_naics("textile mills", children = TRUE)
+  \dontrun{
   naics_from_any(naics_categories(3))[order(name),.(name,code)][1:10,]
   naics_from_any(naics_categories(3))[order(code),.(code,name)][1:10,]
   naics_from_code(211)
@@ -72,7 +79,7 @@ Find industry names and codes by searching for queried code(s) or text
 #[1] 20
  NROW(naics_from_any("chem", children = T))
 [1] 104
-
+}
 }
 \seealso{
 \code{\link[=naics_subcodes_from_code]{naics_subcodes_from_code()}} \code{\link[=naics_from_code]{naics_from_code()}}  \code{\link[=naics_from_name]{naics_from_name()}}  \code{\link[=naics_from_any]{naics_from_any()}}

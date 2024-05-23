@@ -31,7 +31,7 @@
 #'   "in2", 'ft2', 'yd2', 'mi2'
 #'   )
 #'   Note that m2 is for square meters not square miles.
-#' @param towhat A strings specifying new units to convert to. Default is 'mi' which is miles.
+#' @param towhat A string specifying new units to convert to. Default is 'mi' which is miles.
 #' @return Returns a number or vector of numbers then length of the input x, 
 #'   with each element corresponding to an input element converted to new units.
 #' @seealso \code{\link{get.distances.all}} which allows you to specify a search radius and 
@@ -66,54 +66,57 @@ convert_units <- function(x, from='km', towhat='mi') {
     .Names = c("from", "mm", "cm", "m", "km", "sqmm", "sqcm", "sqm", "sqkm", "in", "ft", "yd", "mi", "sqin", "sqft", "sqyd", "sqmi"), 
     row.names = c(NA, 16L), class = "data.frame"
   )
-
-  # synonyms
+  ###################################################################### # 
+  from   <- fixnames_aliases(from,   na_if_no_match = TRUE, ignore.case = TRUE)
+  towhat <- fixnames_aliases(towhat, na_if_no_match = TRUE, ignore.case = TRUE)
+  ###################################################################### # 
+# ## older way
   
-  if (!(from %in% mult$from)) {
-    if (from %in% c('km2', 'kilometer2','kilometers2', 'sq kilometers', 'sq kilometer','sqkilometers', 'sqkilometer',  'squarekilometers', 'squarekilometer', 'square kilometers', 'square kilometer')) {from <- 'sqkm'}
-    if (from %in% c('m2', 'meter2','meters2', 'sq meters', 'sq meter','sqmeters', 'sqmeter',  'squaremeters', 'squaremeter', 'square meters', 'square meter'))  {from <- 'sqm'}
-    if (from %in% c('cm2'))  {from <- 'sqcm'}
-    if (from %in% c('mm2'))  {from <- 'sqmm'}
-    
-    if (from %in% c('kilometer', 'kilometers')) {from <- 'km'}
-    if (from %in% c('meter', 'meters')) {from <- 'm'}
-    if (from %in% c('centimeter', 'centimeters')) {from <- 'cm'}
-    if (from %in% c('millimeter', 'millimeters')) {from <- 'mm'}
-    
-    if (from %in% c('mi2', 'mile2','miles2', 'sq miles', 'sq mile','sqmiles', 'sqmile',  'squaremiles', 'squaremile', 'square miles', 'square mile')) {from <- 'sqmi'}
-    if (from %in% c('yd2')) {from <- 'sqyd'}
-    if (from %in% c('ft2')) {from <- 'sqft'}
-    if (from %in% c('in2')) {from <- 'sqin'}
-    
-    if (from %in% c('mile', 'miles')) {from <- 'mi'}
-    if (from %in% c('yard', 'yards')) {from <- 'yd'}
-    if (from %in% c('foot', 'feet')) {from <- 'ft'}
-    if (from %in% c('inch', 'inches')) {from <- 'in'}
-  }
-
-  if (!(towhat %in% names(mult))) {
-    if (towhat %in% c('km2', 'kilometer2','kilometers2', 'sq kilometers', 'sq kilometer','sqkilometers', 'sqkilometer',  'squarekilometers', 'squarekilometer', 'square kilometers', 'square kilometer')) {towhat <- 'sqkm'}
-    if (towhat %in% c('m2', 'meter2','meters2', 'sq meters', 'sq meter','sqmeters', 'sqmeter',  'squaremeters', 'squaremeter', 'square meters', 'square meter'))  {towhat <- 'sqm'}
-    if (towhat %in% c('cm2'))  {towhat <- 'sqcm'}
-    if (towhat %in% c('mm2'))  {towhat <- 'sqmm'}
-    
-    if (towhat %in% c('kilometer', 'kilometers')) {towhat <- 'km'}
-    if (towhat %in% c('meter', 'meters')) {towhat <- 'm'}
-    if (towhat %in% c('centimeter', 'centimeters')) {towhat <- 'cm'}
-    if (towhat %in% c('millimeter', 'millimeters')) {towhat <- 'mm'}
-    
-    if (towhat %in% c('mi2', 'mile2','miles2', 'sq miles', 'sq mile','sqmiles', 'sqmile',  'squaremiles', 'squaremile', 'square miles', 'square mile')) {towhat <- 'sqmi'}
-    if (towhat %in% c('yd2')) {towhat <- 'sqyd'}
-    if (towhat %in% c('ft2')) {towhat <- 'sqft'}
-    if (towhat %in% c('in2')) {towhat <- 'sqin'}
-    
-    if (towhat %in% c('mile', 'miles')) {towhat <- 'mi'}
-    if (towhat %in% c('yard', 'yards')) {towhat <- 'yd'}
-    if (towhat %in% c('foot', 'feet')) {towhat <- 'ft'}
-    if (towhat %in% c('inch', 'inches')) {towhat <- 'in'}
-  }
-  
-  if (!(from %in% mult$from)) {stop(paste(from, 'not found'))}
+#   if (!(from %in% mult$from)) {
+#     if (from %in% c('km2', 'kilometer2','kilometers2', 'sq kilometers', 'sq kilometer','sqkilometers', 'sqkilometer',  'squarekilometers', 'squarekilometer', 'square kilometers', 'square kilometer')) {from <- 'sqkm'}
+#     if (from %in% c('m2', 'meter2','meters2', 'sq meters', 'sq meter','sqmeters', 'sqmeter',  'squaremeters', 'squaremeter', 'square meters', 'square meter'))  {from <- 'sqm'}
+#     if (from %in% c('cm2'))  {from <- 'sqcm'}
+#     if (from %in% c('mm2'))  {from <- 'sqmm'}
+#     
+#     if (from %in% c('kilometer', 'kilometers')) {from <- 'km'}
+#     if (from %in% c('meter', 'meters')) {from <- 'm'}
+#     if (from %in% c('centimeter', 'centimeters')) {from <- 'cm'}
+#     if (from %in% c('millimeter', 'millimeters')) {from <- 'mm'}
+#     
+#     if (from %in% c('mi2', 'mile2','miles2', 'sq miles', 'sq mile','sqmiles', 'sqmile',  'squaremiles', 'squaremile', 'square miles', 'square mile')) {from <- 'sqmi'}
+#     if (from %in% c('yd2')) {from <- 'sqyd'}
+#     if (from %in% c('ft2')) {from <- 'sqft'}
+#     if (from %in% c('in2')) {from <- 'sqin'}
+#     
+#     if (from %in% c('mile', 'miles')) {from <- 'mi'}
+#     if (from %in% c('yard', 'yards')) {from <- 'yd'}
+#     if (from %in% c('foot', 'feet')) {from <- 'ft'}
+#     if (from %in% c('inch', 'inches')) {from <- 'in'}
+#   }
+# 
+#   if (!(towhat %in% names(mult))) {
+#     if (towhat %in% c('km2', 'kilometer2','kilometers2', 'sq kilometers', 'sq kilometer','sqkilometers', 'sqkilometer',  'squarekilometers', 'squarekilometer', 'square kilometers', 'square kilometer')) {towhat <- 'sqkm'}
+#     if (towhat %in% c('m2', 'meter2','meters2', 'sq meters', 'sq meter','sqmeters', 'sqmeter',  'squaremeters', 'squaremeter', 'square meters', 'square meter'))  {towhat <- 'sqm'}
+#     if (towhat %in% c('cm2'))  {towhat <- 'sqcm'}
+#     if (towhat %in% c('mm2'))  {towhat <- 'sqmm'}
+#     
+#     if (towhat %in% c('kilometer', 'kilometers')) {towhat <- 'km'}
+#     if (towhat %in% c('meter', 'meters')) {towhat <- 'm'}
+#     if (towhat %in% c('centimeter', 'centimeters')) {towhat <- 'cm'}
+#     if (towhat %in% c('millimeter', 'millimeters')) {towhat <- 'mm'}
+#     
+#     if (towhat %in% c('mi2', 'mile2','miles2', 'sq miles', 'sq mile','sqmiles', 'sqmile',  'squaremiles', 'squaremile', 'square miles', 'square mile')) {towhat <- 'sqmi'}
+#     if (towhat %in% c('yd2')) {towhat <- 'sqyd'}
+#     if (towhat %in% c('ft2')) {towhat <- 'sqft'}
+#     if (towhat %in% c('in2')) {towhat <- 'sqin'}
+#     
+#     if (towhat %in% c('mile', 'miles')) {towhat <- 'mi'}
+#     if (towhat %in% c('yard', 'yards')) {towhat <- 'yd'}
+#     if (towhat %in% c('foot', 'feet')) {towhat <- 'ft'}
+#     if (towhat %in% c('inch', 'inches')) {towhat <- 'in'}
+#   }
+  ###################################################################### # 
+  if (!(from %in% mult$from))     {stop(paste(from, 'not found'))}
   if (!(towhat %in% names(mult))) {stop(paste(towhat, 'not found'))}
   
   return( x * mult[ match(from, mult$from), towhat] )
