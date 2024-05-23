@@ -16,6 +16,9 @@ vector of types: "block", "blockgroup", "tract", "county", or "state"
 FIPS - Identify what type of Census geography is each FIPS code (block, county, etc.)
 }
 \examples{
+ testfips <- c("1", "12", "123", "1234", "12345", "", NA, "words")
+ fipstype(testfips)
+
  fips_counties_from_statename(c("Connecticut", "Delaware") )
  # [1] "09001" "09003" "09005" "09007" "09009" "09011" "09013" "09015" "10001" "10003" "10005"
  fipstype(9001)
