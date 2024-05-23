@@ -43,12 +43,19 @@ latlon_from_mactsubpart <- function(subpart = "JJJ", include_if_no_latlon = FALS
   
   if (!exists("frs_by_mact")) dataload_from_pins("frs_by_mact")
   query <- subpart
-  if (missing(subpart) || !is.atomic(query) || length(query) != 1 || class(query) !=  "character") {
-    warning("subpart must be a single character string like 'AAAA' ")
+  
+  if (missing(subpart) || !is.atomic(query) || class(query) !=  "character") {
+    warning("subpart must be a character vector of 1 or more codes like 'AAAA' ")
+    ## now allow more than 1 code in query
+  # if (missing(subpart) || !is.atomic(query) || length(query) != 1 || class(query) !=  "character") {
+  #   warning("subpart must be a single character string like 'AAAA' ")
+    
     query <- ""
     }
   query <- toupper(query)
-  mact_out = frs_by_mact[subpart == query, ] # could use %in% not == but groups are already large so not sure it makes sense to allow multiple
+  mact_out = frs_by_mact[subpart %in% query, ] # was using == which did not work for multiple codes in query.
+  #   now use %in% not == even though groups are already large so not always a great idea to allow multiple subparts
+  # mact_out <- frs_by_mact[match(query, subpart), ] 
   if (!include_if_no_latlon) {
     mact_out = mact_out[!is.na(lat) & !is.na(lon), ]
   }

@@ -213,7 +213,7 @@ fips_from_table <- function(fips_table, addleadzeroes=TRUE, inshiny=FALSE) {
 #'
 fips_state_from_state_abbrev <- function(ST) {
 
-  stateinfo$FIPS.ST[match(ST, stateinfo$ST )]
+  stateinfo$FIPS.ST[match(ST, stateinfo$ST )] # using match is ok since only 1st match returned per element of ST but stateinfo has only 1 match per value of ST
   # returns one per input, including repeats etc
   # retuns NA if no matching state abbrev found
 
@@ -238,7 +238,7 @@ fips_state_from_state_abbrev <- function(ST) {
 fips_state_from_statename <- function(statename) {
 
   # EJAM :: stateinfo
-  stateinfo$FIPS.ST[match(statename, stateinfo$statename)]
+  stateinfo$FIPS.ST[match(statename, stateinfo$statename)] # using match is ok since only 1st match returned per element of statename but stateinfo has only 1 match per value of statename
   # returns one per input, including repeats etc
   # retuns NA if no matching state  found
 }
@@ -480,8 +480,8 @@ states_as_sites <- function(fips) {
 #'
 fips_st2eparegion <- function(stfips) {
 
-  EJAM::stateinfo$REGION[match(stfips, EJAM::stateinfo$FIPS.ST)]
-}
+  EJAM::stateinfo$REGION[match(stfips, EJAM::stateinfo$FIPS.ST)] # using match is ok since only 1st match returned per element of query but there is only 1 match possible
+  }
 ############################################################################# #
 
 
@@ -501,7 +501,7 @@ fips_st2eparegion <- function(stfips) {
 #'
 fips2state_abbrev <- function(fips) {
 
-  stateinfo$ST[match(substr(fips_lead_zero(fips), 1, 2), stateinfo$FIPS.ST)]
+  stateinfo$ST[match(substr(fips_lead_zero(fips), 1, 2), stateinfo$FIPS.ST)] # using match is ok
   # confirm returns same length as input, and check how it handles nonmatches
 }
 ############################################################################# #
@@ -538,7 +538,7 @@ fips2state_fips <- function(fips) {
 #'
 fips2statename <- function(fips) {
 
-  stateinfo$statename[match(substr(fips_lead_zero(fips), 1, 2), stateinfo$FIPS.ST)]
+  stateinfo$statename[match(substr(fips_lead_zero(fips), 1, 2), stateinfo$FIPS.ST)] # using match is ok
 }
 ############################################################################# #
 
@@ -566,7 +566,8 @@ fips2countyname <- function(fips, includestate = c("ST", "Statename", "")[1]) {
   # if "county" return 1 for 1 in/out, not unique only?
   # if "tract", "blockgroup", "block",  return parent county once, not again for each tract inside the county ?
   out <- rep(NA, length(fips))
-  out[ftype == "county"] <- blockgroupstats$countyname[match(fips[ftype == "county"], substr(blockgroupstats$bgfips,1,5))]  #
+  out[ftype == "county"] <- blockgroupstats$countyname[match(fips[ftype == "county"], substr(blockgroupstats$bgfips,1,5))]  # using match is OK since 
+  # you want 1 countyname returned per countyfips in query, so the fact that only 1st match gets returned is actually good.
   if (any(ftype != "county")) {
     warning("this function should only be used to convert county fips to county name, 1 to 1 - returning NA for fips that are not countyfips")
   }
