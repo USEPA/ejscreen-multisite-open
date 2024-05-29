@@ -93,7 +93,7 @@ fipstype <- function(fips) {
   ftype[nchar(fips, keepNA = FALSE) == 11] <- "tract"
   ftype[nchar(fips, keepNA = FALSE) ==  7] <- "city"  # e.g, 5560500 is Oshkosh, WI
   ftype[nchar(fips, keepNA = FALSE) ==  5] <- "county"
-  ftype[!is.na(fips) && nchar(fips) ==  2] <- "state"
+  ftype[!is.na(fips) & nchar(fips) ==  2] <- "state"
 
   if (anyNA(ftype)) {
     warning("some fips do not seem to be block, blockgroup, tract, county, or state FIPS (lengths with leading zeroes should be 15,12,11,5,2 respectively")
@@ -123,7 +123,11 @@ fipstype <- function(fips) {
 #'
 fips_lead_zero <- function(fips) {
   
-  if (any(as.numeric(fips) != fips, na.rm = T) | any(is.na(as.numeric(fips)))) {
+  if (
+    suppressWarnings({
+      any(is.na(as.numeric(fips)))
+    })
+    ) {
     warning('some fips cannot be interpreted as numbers (e.g., are text or NA or logical')
     }
   
@@ -337,6 +341,8 @@ fips_counties_from_statename <- function(statename) {
 #'   among or within or containing those FIPS
 #'
 #' @details  This is a way to get a list of blockgroups, specified by state/county/tract or even block.
+#' 
+#'  This function is not optimized for speed -- it is slow for large queries.
 #'
 #' Takes a vector of one or more FIPS that could be State (2-digit), County (5-digit),
 #'   Tract (11-digit), or blockgroup (12 digit), or even block (15-digit fips).
