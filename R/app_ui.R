@@ -88,7 +88,7 @@ app_ui  <- function(request) {
                           br(),br(),
                    ),
                    column(4,
-                          htmltools::img(id = "biglogo", src = app_sys("app/www/ejamhex4.png"))
+                          htmltools::img(id = "biglogo", src = "../www/ejamhex4.png")
                    )
                  )
         ), # end About EJAM tab
