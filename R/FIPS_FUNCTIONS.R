@@ -282,7 +282,7 @@ fips_counties_from_statefips <- function(statefips) {
   ftype = fipstype(statefips)
   if (any(is.na(ftype)) || any(ftype != "state")) {
     warning("Some of the supplied statefips values were NA or otherwise not recognized as State FIPS codes")
-    statefips <- statefips[!is.na(ftype) && ftype == "state"]
+    statefips <- statefips[!is.na(ftype) & ftype == "state"]
   }
 
   # EJAM :: blockgroupstats  has all the usable FIPS codes in bgfips
@@ -620,8 +620,8 @@ fips2countyname <- function(fips, includestate = c("ST", "Statename", "")[1]) {
   out <- rep(NA, length(fips))
 
   ## *** need to handle NA values here since out[NA] <-  fails as cannot have NA in subset assignment
-  out[!is.na(ftype) && ftype == "county"] <- blockgroupstats$countyname[match(
-    fips[!is.na(ftype) && ftype == "county"],
+  out[!is.na(ftype) & ftype == "county"] <- blockgroupstats$countyname[match(
+    fips[!is.na(ftype) & ftype == "county"],
     substr(blockgroupstats$bgfips,1,5))]  #
   # using match is OK since 
   # you want 1 countyname returned per countyfips in query, so the fact that only 1st match gets returned is actually good.
@@ -653,7 +653,7 @@ fips2countyname <- function(fips, includestate = c("ST", "Statename", "")[1]) {
 #'   after county name
 #' @return vector of state and/or county names,
 #'   where county names optionally have comma and 2-character abbreviation or full state name.
-#'
+#' @seealso [countyname2fips()]
 #' @examples
 #'   fips2name(fips_counties_from_state_abbrev(c("AK", "LA"))  )
 #'   fips2name(c(22, 02013))  # can have mix where some are a whole state and others are a county.
@@ -668,8 +668,8 @@ fips2name  <- function(fips, ...) {
   out <- rep(NA, length(fips))
 
   ## *** need to handle NA values here since out[NA] <-  fails as cannot have NA in subset assignment
-  out[!is.na(fips) && fipstype(fips) == "state"]  <- fips2statename(fips = fips[!is.na(fips) && fipstype(fips) == "state"])
-  out[!is.na(fips) && fipstype(fips) == "county"] <- fips2countyname(fips = fips[!is.na(fips) && fipstype(fips) == "county"], ...)
+  out[!is.na(fips) & fipstype(fips) == "state"]  <- fips2statename(fips = fips[!is.na(fips) & fipstype(fips) == "state"])
+  out[!is.na(fips) & fipstype(fips) == "county"] <- fips2countyname(fips = fips[!is.na(fips) & fipstype(fips) == "county"], ...)
 
   return(out)
 }
