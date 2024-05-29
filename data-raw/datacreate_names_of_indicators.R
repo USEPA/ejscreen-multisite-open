@@ -133,16 +133,16 @@ subgroups_type <- c(  'nh', 'alone')[1]  # simple names without _nh or _alone sh
 ############################################################################## #
 
 # FOR NOW I AM putting these all in one list called namez, 
-#  and also lists in the varlist column of EJAMejscreenapi::map_headernames
+#  and also lists in the varlist column of  map_headernames
 # AND ALSO AS multiple objects like names_d 
 #
 #  But could recode later to use namez$d_friendly instead of names_d_friendly etc.
 #  and/or could recode later to use 1 big table, like A MERGED VERSION OF THESE:
 # 
 #  EJAMejscreenapi::map_headernames which is created from .xlsx using the script in /data-raw folder
-# older  EJAMbatch.summarizer  ::  varnamesinfo22.rda  which is prob from EJAMbatch.summarizer/inst/map_batch_to_friendly_fieldnames_2022_EJAM.xlsx but needed a creation script in data-raw folder to clarify that
 #  EJAM::namez 
-#  ejscreen package file ejscreenformulas 
+#  formulas_all as possible approach using calc_ejam()
+#  and older file  EJAMbatch.summarizer  ::  varnamesinfo22.rda  which was prob from EJAMbatch.summarizer/inst/map_batch_to_friendly_fieldnames_2022_EJAM.xlsx
 
 # In the short term, before some mapping file is used to track all variable names, we could simplify a bit by 
 # recoding all functions to use namez$d_friendly instead of names_d_friendly, etc., so there is only 1 .rda file and can see all names in 1 command or file,

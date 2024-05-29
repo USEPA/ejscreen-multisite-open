@@ -2,9 +2,28 @@
 #' Launch the Shiny Application in RStudio
 #' @description Launches shiny web app from RStudio - [app_run_EJAM()] and [run_app()] are the same
 #' @param ... arguments to pass to golem_opts.
-#'   When implemented, this parameter could be used to pass something like
-#'   sitepoints="latlondata.xlsx" or sitepoints=[testpoints_100]
-#' See `?golem::get_golem_options` for more details.
+#'   This can be used to pass some of the variables that otherwise would be set to
+#'   defaults defined in global.R, and currently can include the following:
+#'   
+#'   run_app(
+#'   
+#'     default_default_miles=3.1, 
+#'     default_max_miles=31, 
+#'     default_max_mb_upload=100, 
+#'     default_default_miles_shapefile = 0.5, 
+#'     advanced=TRUE, 
+#'     testing=TRUE, 
+#'     shiny.testmode=TRUE, 
+#'     
+#'     # and this will be implemented at some point: 
+#'     
+#'     sitepoints = mytable such as [testpoints_100]
+#'     ## or maybe
+#'     ## sitepoints = "path\latlondata.xlsx"
+#'   )
+#'   
+#'   This uses an internal function global_or_param()
+#'   
 #' @inheritParams shiny::shinyApp
 #' @return An object that represents the app. Printing the object or passing it to runApp() will run the app.
 #' @seealso [app_run_EJAM()]

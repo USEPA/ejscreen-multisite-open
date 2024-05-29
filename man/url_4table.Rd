@@ -21,14 +21,16 @@ passed to url_ejscreen_report() and url_ejscreenmap()}
 }
 \value{
 list of data.frames to append to the list of data.frames created by
-ejamit() or doaggregate(),
-list(results_bysite = results_bysite, results_overall = results_overall,
-newcolnames=newcolnames)
+\code{\link[=ejamit]{ejamit()}} or \code{\link[=doaggregate]{doaggregate()}},
+
+\verb{list(results_bysite = results_bysite, }
+\verb{    results_overall = results_overall,}
+\verb{      newcolnames=newcolnames)}
 }
 \description{
 Could start to use this in server and ejamit(), and already used in table_xls_format()
 }
 \seealso{
-url_ejscreen_report() url_ejscreenmap() url_echo_facility_webpage()
+\code{\link[=url_ejscreen_report]{url_ejscreen_report()}} \code{\link[=url_ejscreenmap]{url_ejscreenmap()}} \code{\link[=url_echo_facility_webpage]{url_echo_facility_webpage()}}
 }
 \keyword{internal}

@@ -78,11 +78,14 @@ test_that(
 # testServer() function makes it possible to test code in server functions and modules, without needing to run the full Shiny application
 
 testServer(EJAM:::app_server, {
-
+suppressWarnings({
   # Set and test an input
   session$setInputs(bt_rad_buff = 1)
   expect_equal(input$bt_rad_buff, 1)
-
+})
+  
+  cat("\n NEED MORE UNIT TESTS OF SHINY APP IN test-ui_and_server.R \N\N")
+  
 
   # Example of tests you can do on the server:
   # - Checking reactiveValues
@@ -90,6 +93,9 @@ testServer(EJAM:::app_server, {
   # - Checking output
   # expect_equal(output$txt, "Text")
 
+  
+  
+  
 })
 
 # Configure this test to fit your need

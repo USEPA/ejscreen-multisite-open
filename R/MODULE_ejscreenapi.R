@@ -612,7 +612,7 @@ mod_ejscreenapi_server <- function(id,
 
     ################################################################################################### #
     # >>>>>> RADIUS input: UI and text and limit for radius slider: Miles / Km ####
-    if (!exists("minradius")) {minradius <- 0.25}
+    if (!exists("minradius")) {minradius <- 0.5}
     if (!exists("stepradius")) {stepradius <-  0.05 }
     output$radius_slider <- renderUI({sliderInput(inputId = ns("radius_via_slider"),
                                                   label = paste0("Radius of ",     input$default_miles, " miles ",

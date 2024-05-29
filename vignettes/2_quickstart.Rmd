@@ -1,8 +1,9 @@
 ---
-title: "2. Quick Start Guide"
+title: "Quick Start Guide"
+description: "2. Quick Start Guide"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{2. Quick Start Guide}
+  %\VignetteIndexEntry{Quick Start Guide}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -75,7 +76,7 @@ out <- ejamit()
 
 If you want to try some test data first:
 
-```{r ejamit100, message=FALSE, warning=FALSE, include=FALSE}
+```{r ejamit100, message=FALSE, warning=FALSE, echo=TRUE, eval=FALSE}
 # EJAM analysis of 100 places, for everyone within 3 miles
 out <- ejamit(testpoints_100, radius = 3, 
             silentinteractive = F, include_ejindexes = T)
@@ -116,18 +117,37 @@ ejam2report(out)
 # see examples at ?plot_barplot_ratios
 ```
 
-```{r plot_barplot_ratios, echo=FALSE}
-## Demographics by default
+```{r plot_barplot_ratios, echo = TRUE}
 
 out <- testoutput_ejamit_100pts_1miles
-plot_barplot_ratios(unlist(testoutput_ejamit_1000pts_1miles$results_overall[ , c(..names_d_ratio_to_avg , ..names_d_subgroups_ratio_to_avg) ]))
 
-## Environmental indicators
+# Check a long list of indicators for any that are elevated
 
-plot_barplot_ratios(unlist(testoutput_ejamit_1000pts_1miles$results_overall[ , c(..names_d_ratio_to_avg , ..names_d_subgroups_ratio_to_avg) ]))
+ejam2barplot(out,
+  varnames = names_these_ratio_to_avg,
+  main = "Envt & Demog Indicators at Selected Sites Compared to State Averages")
 
-## Forthcoming version syntax is simpler! 
-## it will accept ejamit() output directly, as its input.
+ejam2barplot(out,
+  varnames = names_these_ratio_to_state_avg,
+  main = "Envt & Demog Indicators at Selected Sites Compared to State Averages")
+
+# Demographics only
+
+# vs nationwide avg
+ejam2barplot(testoutput_ejamit_100pts_1miles)
+
+# vs statewide avg
+ejam2barplot(testoutput_ejamit_1000pts_1miles,
+  varnames = c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg),
+  main = "Demographics at Selected Sites Compared to State Averages")
+
+# Environmental only
+
+ejam2barplot(testoutput_ejamit_100pts_1miles,
+  varnames = c(names_e_ratio_to_avg, names_e_ratio_to_state_avg),
+  main = "Environmental Indicators at Selected Sites Compared to Averages")
+
+
 ```
 
 ## Spreadsheet from `ejam2excel()`
@@ -168,6 +188,8 @@ sitepoints2  <- data.frame(
 
 EJAM comes with examples of points you can use to try things out:
 
+- [testpoints_10](../reference/testpoints_10.html)
+- etc.
 ```{r eval = TRUE, fig.height=4.83, fig.width=3}
 testpoints_10
 ```
@@ -180,11 +202,7 @@ head(sitepoints100, 3)
 
 ### Create a random sample of points representative of the average facility, average resident, or average area
 
-You can create a set of random points with function `testpoints_n()` that can be weighted to represent the average resident, average regulated facility, average point on a map weighted by square meters, etc. See more details in the documentation of the function testpoints_n().
-
-```{r help_testpoints, eval = FALSE}
-?testpoints_n
-```
+You can create a set of random points with function `testpoints_n()` that can be weighted to represent the average resident, average regulated facility, average point on a map weighted by square meters, etc. See more details in the documentation of the function `testpoints_n()`.
 
 #### Create random test data points in States of LA and TX
 
@@ -287,7 +305,7 @@ mapfastej(out$results_bysite)
 # will add HTML output in vignette below for ejam2report() example 
 ```
 
-```{r ejam2report2, include=FALSE, eval=FALSE}
+```{r ejam2report2, include=TRUE, eval=FALSE}
 out <- testoutput_ejamit_100pts_1miles
 x <- ejam2report(out)
 y <- ejam2report(out, sitenumber = 1, analysis_title = "EJAM Report on Site Number 1")
@@ -295,27 +313,30 @@ y <- ejam2report(out, sitenumber = 1, analysis_title = "EJAM Report on Site Numb
 
 ## See Results as a Spreadsheet (this Launches Excel)
 
-```{r table_xls_from_ejam-launchexcel, eval = FALSE}
+```{r table_xls_from_ejam-launchexcel, eval=FALSE}
 ejam2excel(ejamit(testpoints_10, radius = 1), launchexcel = T, save_now = F)
 # table_xls_from_ejam()  is another name for  ejam2excel() 
 ```
 
 ### Save Results as a Spreadsheet file
 
-```{r table_xls_from_ejam-savenow, eval = FALSE}
+```{r table_xls_from_ejam-savenow, eval=FALSE}
 ejam2excel(ejamit(testpoints_10, radius = 1), save_now = T)
 ```
 
 # Documentation of Functions and Data
 
--   See the [README on GitHub](https://github.com/USEPA/EJAM/tree/main?tab=readme-ov-file#readme)
+- [README on GitHub](https://github.com/USEPA/EJAM/tree/main?tab=readme-ov-file#readme){.uri target="_blank" rel="noreferrer noopener"}
+- [Function Reference Document](../reference/index.html){.uri target="_blank" rel="noreferrer noopener"}
+- In RStudio, see `?EJAM`
 
-```{r helpEJAM, eval = FALSE, include= FALSE}
+```{r helpEJAM, eval=FALSE, include=TRUE}
 ?EJAM
 # or 
 help("EJAM", package='EJAM')
 
 ?ejamit()
 
-vignette(package = "EJAM")
+# If vignettes were including in one's installation (but often are not), then this would work as well:
+browseVignettes(package = "EJAM")
 ```

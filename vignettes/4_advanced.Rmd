@@ -1,8 +1,9 @@
 ---
-title: "4. Advanced Features"
+title: "Advanced Features"
+description: "4. Advanced Features"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{4. Advanced Features}
+  %\VignetteIndexEntry{Advanced Features}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -24,31 +25,387 @@ knitr::opts_chunk$set(eval = FALSE)
 # rm(list = ls())
 # golem::detach_all_attached()
 # 
-# library(EJAM)
-# # dataload_from_pins('all') # varnames = all  currently means all these:
+library(EJAM)
+dataload_from_pins('all') # varnames = all  currently means all these:
 # dataload_from_pins(
 #   c("blockwts", "blockpoints", "blockid2fips", "quaddata", 
 #     "bgej", "bgid2fips",
 #     "frs", "frs_by_programid", "frs_by_naics", "frs_by_sic", "frs_by_mact")
 # )
-# 
-# ##################################### #
+
+##################################### #
 # if (!exists("blockid2fips")) {
 #   cat("warning: blockid2fips not available\n")
 #   # *** temporary workaround if building vignette on 1 particular machine
-#   here <- "~/../../Downloads/EJAMbigfiles"
+#   here <- "~/../Downloads/EJAMbigfiles"
 #   varnames <- c('blockwts', 'blockpoints', 'blockid2fips', "quaddata",
-#                 'bgej','bgid2fips', 
+#                 'bgej','bgid2fips',
 #                 'frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact")
 #   fnames <- paste0(varnames, ".arrow")
 #   localpaths  <- paste0(here, '/', fnames)
-#   for (i in 1:length(varnames)) {assign(varnames[i], arrow::read_ipc_file(file = localpaths[i]))}
+#   for (i in 1:length(varnames)) {
+#     if (!exists(varnames[i])) {
+#     assign(varnames[i], arrow::read_ipc_file(file = localpaths[i]))
+#     }}
 #   rm(here, varnames, fnames, localpaths)
 # }
-# ##################################### #
-# 
-# indexblocks()
+##################################### #
+
+indexblocks()
+
 ```
 
 
-# Note: This article is not yet available.
+# Note: This article is a work in progress - currently just draft notes
+
+
+## Test data / Examples of Inputs and Outputs of Various Functions
+
+```{r, eval=FALSE, echo=TRUE}
+
+# This provides a useful list of test/sample data objects in key packages:
+
+x <- EJAM:::datapack(simple = FALSE); cat("\n\n") 
+x <- x[order(x$Package, x$Item), ] 
+x[grepl("^testp", x$Item), ]  ; cat("\n\n")
+x[grepl("^test_", x$Item), ]  ; cat("\n\n") 
+x[grepl("^testout", x$Item), ]  ; cat("\n\n") 
+x[grepl("^test[^op_]", x$Item), ]
+```
+
+
+
+## DISTANCES (RADIUS VALUES)
+
+Distance from a potential source of environmental risk is often used as a simple proxy for
+actual exposure or risk, when data are limited. Proximity analysis uses distance (how far away) from a site,
+which is just the opposite of proximity (how near) to a site.
+
+Two basic ways to report demographics and risk are 1) showing demographics as a function or risk,
+and 2) showing risk as a function of demographics:
+
+1. Demographics as a function of risk (or proximity): 
+Many proximity analyses report percent demographics by distance or risk bin, such
+as % low income within 3 miles of a point. This expresses
+demographics as a function of proximity or risk. Sometimes other
+distance or risk bins are used, such as areas with risk above some cutoff.
+And sometimes instead of a continuous measure of % demographics, the demographic data are used
+to categorize places in bins, such as areas in the top quartile of poverty rates.
+
+2. Risk (or proximity) as a function of demographics:
+A different way to present this information is to report distance or risk as a function of
+demographic group -- this expresses distance within each demographic group,
+such as the average distance by group or the full distribution of risk
+within each group.
+
+Proximity or distance as binary, categorical, or continuous metrics:
+Proximity analysis has often relied on picking a single distance, a radius,
+and analyzing conditions within that radius, such as all residents who live
+within 3 miles of a point where a regulated facility is located. Sometimes
+an analysis will look at two or even three distances. In some more
+sophisticated analyses, distance is treated as a continuous measure. Some
+tools like EJScreen use a proximity metric based on the inverse of
+distance (1/d) to provide a proximity score that gets higher as distance gets smaller.
+But many EJ analyses still use a single distance and analyze conditions within
+that distance.
+
+EJAM makes it easier to do any of these types of analysis, because conclusions
+can be sensitive to the choice of a single radius, and metrics and methods
+provide different perspectives and reveal a richer picture of where people
+actually live in relation to potential sources of exposure or risk.
+
+Proximity analysis using a single radius (binary distance) versus using continuous distance:
+ There are two aspects of proximity to consider when analyzing
+   demographic groups within a certain fixed distance (radius) from a single
+   facility point (or a whole set of facilities). These two ways of summarizing
+   proximity are complementary:
+
+   1. Which groups tend to live nearby in the sense of being within the selected radius
+   versus outside the radius? In other words, which groups are "overrepresented"
+   within X miles of the site? This treats proximity as a yes/no, binomial
+   question -- a resident is nearby or not. It would focus on whether someone is
+   anywhere within 3 miles, say, and ignore the differences between
+   being 1, 2, or 3 miles away.
+
+   2. Among the residents within X miles of the site, which groups live especially close to the
+   facility? This question recognizes proximity is a continuous variable, and
+   focuses on the difference between 1 mile, 1.5 miles, etc. However, it only
+   looks at residents within the X miles radius area analyzed, so it fails
+   to recognize that some groups tend to live more than 3 miles away, for example.
+   This perspective does not take into account which groups are overrepresented
+   within the original total radius near a site.
+
+   This function does the second of these two types of analysis. It reports,
+   only among those anywhere inside the radius, which groups are closer to the site.
+
+   In a specific location, for example, one demographic group could be
+   underrepresented within 3 miles, but those few who are in the group
+   still might live right next to the facility in which case
+   their average distance would be higher than that of any other group
+   because this function only counts those within the radius analyzed.
+
+   In some other location, the opposite could occur -- if one group is
+   overrepresented within 3 miles, they still might all live in a community
+   about 2.9 miles away from the site -- that would mean their distance from
+   the site on average is greater (or their proximity score is lower)
+   than other groups within 3 miles of the site.
+   
+   The question of whether to compare to Statewide or Nationwide or urban/rural or other 
+   reference averages or percentiles is related to this question of how to look at distances,
+   or exposures or risk, just like it relates to how to look at demographic percentages.
+   One could look at % demographics within 1 mile, 2 miles, etc. all the way
+   out until one was looking at the county overall, the state overall, and
+   eventually the nation overall. Selecting a single radius or selecting a
+   single reference area should be done with a recognition of what questions
+   one is actually trying to answer, and an understanding of how impacts
+   vary with distance from a particular type of facility or source of potential risk.
+   
+   If one is comparing demographic groups in terms of distance (or risk level),
+   or if one is comparing % demographics at each distance (or risk level), 
+   the implicit assumption is that there is some
+   "expected" rate, and/or some "equitable" or "proportionate" % or ratio or risk.
+   
+   
+### Which groups are *overrepresented* at the *OVERALL LIST of sites* as a whole, within X mile radius vs Statewide
+
+```{r}
+ejam2ratios(out)
+```
+
+### Which groups are *overrepresented* at the *OVERALL LIST of sites* as a whole, *for 2 or 3 specific distances*
+
+```{r ejamit_compare_distances, eval=TRUE}
+  radii <- c(1,2,3,6,10)
+  radii <- c(1, 10) #  quicker for the example
+  pts <- testpoints_100
+  pts <- testpoints_10 #  quicker for the example
+  x <- ejamit_compare_distances(pts, radii = radii)
+  EJAM:::ejamit_compare_distances2plot(x)
+```
+
+### Which groups are *overrepresented* at *EACH SITE*, within X mile radius vs Statewide
+```{r}
+out <- testoutput_ejamit_10pts_1miles
+x = round(data.frame(out$results_bysite)[, c("ratio.to.state.avg.pctlowinc", "ratio.to.state.avg.pctmin")], 2)
+names(x) = fixcolnames(names(x),"r","shortlabel")
+x
+```
+
+
+### *Mean distance* of each group, at the *OVERALL LIST of sites* as a whole
+
+```{r distance_mean_by_group_1, eval = TRUE}
+out <- testoutput_ejamit_1000pts_1miles
+## But try a larger radius to reveal more information:
+# out <- ejamit(testpoints_100, radius = 10)
+
+# see a table of demog indicators
+distance_mean_by_group(out$results_bybg_people)
+
+# for a barplot, just race/ethnicity groups
+distance_mean_by_group(out$results_bybg_people, 
+                       demogvarname = names_d_subgroups,
+                       demoglabel = fixcolnames(names_d_subgroups, "r", "shortlabel"), 
+                       graph = TRUE) 
+# or plot_distance_mean_by_group() is a synonym
+
+# for just 1 indicator
+print(distance_mean_by_group(
+  out$results_bybg_people, 
+  demogvarname = 'pctlowinc', demoglabel = 'Low Income'))
+```
+
+### *Mean distance* of each group, at *EACH SITE*, as ratio to mean of everyone else nearby
+
+Ratios at each site, of avg dist of group / avg dist of everyone else near site:
+
+```{r}
+out <- testoutput_ejamit_10pts_1miles
+## But try a larger radius to reveal more information:
+# out <- ejamit(testpoints_10, radius = 31)
+
+distance_by_group_by_site(out$results_bybg_people)
+
+# summary of closest group at each site and by how much
+data.frame(site = colnames(x), closestgroup = rownames(x)[sapply(x, which.min)], their_avg_distance_as_pct_of_everyone_elses = round(100 * sapply(x, min), 0))
+
+```
+
+
+### How demographics at *ONE SITE* vary as *a continuous function of distance*
+
+```{r}
+ # Example of area where %Black is
+ # very high within 1 mile but drops by 3 miles away
+ pts = testpoints_100[3,]
+  plot_distance_by_pctd(
+    getblocksnearby(pts, radius = 10, quiet = T),
+    score_colname = "pctnhba")
+ #browseURL(url_ejscreen_report(lat = pts$lat, lon = pts$lon, radius = 0.5))
+ #browseURL(url_ejscreen_report(lat = pts$lat, lon = pts$lon, radius = 3))
+
+ # Example of area that has higher %Hispanic as you go
+ # 10 to 30 miles away from this specific point
+ pts = data.table(lat = 45.75464, lon = -94.36791)
+ plot_distance_by_pctd(pts,
+   sitenum = 1, score_colname = "pcthisp")
+ # browseURL(url_ejscreen_report(lat = pts$lat, lon = pts$lon, radius = 10))
+ # browseURL(url_ejscreen_report(lat = pts$lat, lon = pts$lon, radius = 30))
+```
+
+
+### Cumulative Distribution plots of groups as *a continuous function of distance*
+
+```{r distance_by_group_plot1, eval=TRUE}
+distance_by_group_plot(
+  out$results_bybg_people,
+  demogvarname = 'pctlowinc', demoglabel = 'Low Income')
+```
+
+
+
+## POPULATION DENSITY - AVG SITE VS AVG RESIDENT
+
+### Sites vary widely in count of blocks nearby, depending on population density
+
+-   what blocks are near each site
+-   how far are they
+-   how many blocks are typically near a given site (population density varies)
+-   how many sites are near a block (residents with \> 1 site nearby)
+
+```{r popshare_at, eval=TRUE}
+out <- testoutput_ejamit_100pts_1miles
+cat("  ", popshare_p_lives_at_what_pct(out$results_bysite$pop, p = 0.50, astext = TRUE), "\n")
+cat("  ", popshare_at_top_n(out$results_bysite$pop, c(1, 5, 10), astext = TRUE), "\n\n")
+
+```
+
+```{r getblocksnearby2, eval=TRUE}
+## Also could use this example intermediate step dataset 
+## of n sites, with thousands of nearby blocks:
+# sites2blocks <- data.table::copy(testoutput_getblocksnearby_10pts_1miles)
+radius <- 3
+sitepoints <- data.table::copy(testpoints_100) 
+
+sites2blocks <- getblocksnearby(sitepoints, radius, quadtree = localtree)
+
+names(sites2blocks)
+
+getblocks_summarize_blocks_per_site(sites2blocks) 
+
+# print() shows more info returned invisibly
+getblocks_diagnostics(sites2blocks)
+# Use data.table package here
+library(data.table)
+
+# Very few blocks are within a radius of 1/4 mile.
+# Hundreds are often within 1 mile, but sometimes there are 
+# only a handful or even zero.
+
+s2b_stats <- sites2blocks[ , .(
+  avgDistance = round(mean(distance), 2),
+  blocksfound = .N, 
+  blocks_within_1mile = sum(distance <= 1),
+  blocks_within_0.75   = sum(distance <= 0.75),
+  blocks_within_0.25  = sum(distance <= 0.25)
+), by = 'ejam_uniq_id'][order(blocksfound), ]
+setorder(s2b_stats, ejam_uniq_id)
+head(s2b_stats)
+```
+
+```{r plot_count_of_blocks_nearby, eval=TRUE, fig.height=5, fig.width=6}
+
+# CDF of how many blocks are nearby a site
+plot(sort(s2b_stats$blocks_within_1mile), 
+     main = "How many blocks are near each facility?", 
+     ylab = "# of blocks (whose internal point is) within 1 mile of each site", 
+     xlab = paste0(nrow(s2b_stats)," facilities ranked by # of blocks nearby"))
+abline(h = quantile(s2b_stats$blocks_within_1mile, probs = (0:4) * 0.25))
+abline(h = mean(s2b_stats$blocks_within_1mile), col = "red")
+
+
+```
+
+```{r histoblocks, eval=TRUE, fig.height=6, fig.width=7}
+# Histogram of how many blocks are nearby a site
+hist(sites2blocks[,.N, by = "ejam_uniq_id"][, N], 20, 
+     xlab = "How many blocks are nearby?", 
+     ylab = "Frequency (# of sites)", 
+     main = "A given site may have zero to hundreds of blocks nearby", 
+     sub = "A typical site in this example has about 100 blocks nearby")
+```
+
+```{r DTdatatable, eval = FALSE}
+
+DT::datatable(s2b_stats,  rownames = FALSE)
+# more summaries showing there may be only 1 block or hundreds within 1 mile
+quantile(s2b_stats$blocks_within_1mile, probs = (0:4) * 0.25)
+t(summary(s2b_stats))
+```
+
+```{r s2b_stats, eval = TRUE, fig.height=5, fig.width=5}
+# map the sites with popups about how many blocks were found near each
+if (!('ejam_uniq_id' %in% names(sitepoints))) {sitepoints$ejam_uniq_id <- seq.int(length.out = NROW(sitepoints))}
+s2b_stats <- merge(sitepoints, s2b_stats, by = "ejam_uniq_id")
+mapfast(s2b_stats, radius = radius)
+```
+
+```{r s2b_stats_more, eval = TRUE, fig.height=5, fig.width=5}
+
+# Some places have very few -- if any -- blocks within 1 mile
+
+tail(s2b_stats[order(s2b_stats$blocks_within_1mile, decreasing = T), 
+               c('ejam_uniq_id', 'blocks_within_1mile')], 3) 
+
+# Some places have hundreds nearby: a 1 mile radius is huge 
+# within a dense urban area
+
+head(s2b_stats[order(s2b_stats$blocks_within_1mile, decreasing = T), 
+               c('ejam_uniq_id', 'blocks_within_1mile')], 3)
+densest <- s2b_stats$ejam_uniq_id[order(
+  s2b_stats$blocks_within_1mile, decreasing = T)][1]
+plotblocksnearby(sitepoints = sitepoints[sitepoints$ejam_uniq_id == densest, ])
+```
+
+```{r eval = TRUE}
+# Within a 1 mile radius, the blocks found tend to be about 2/3 of a mile from the site at the center.
+summary(s2b_stats$avgDistance)
+```
+
+
+
+
+## DETAILS OF BLOCKS NEAR ONE SITE
+
+### Distances between each site and nearby blocks
+
+Use `getblocksnearby()` to quickly find residents/blocks that are within a specified distance,
+as a table of distances between sites and nearby blocks.
+
+```{r getblocksnearby1, eval = FALSE}
+sitepoints <- data.table::copy(testpoints_100) 
+# or 
+# sitepoints <- testpoints_n(100,"block") # random points
+radius <- 3.1
+elapsed <- system.time({
+  
+  sites2blocks <- getblocksnearby(
+    sitepoints = sitepoints,
+    radius = radius
+  )
+  
+}) # end of timed function
+print(elapsed)
+
+head(sites2blocks)
+```
+
+### Map and inspect the blocks near 1 site
+
+```{r plotblocksnearby2, eval = TRUE, fig.height=5, fig.width=5}
+x = plotblocksnearby(testpoints_10[1,], radius = 3, returnmap = FALSE)
+#  returnmap= TRUE is to actually return the leaflet map 
+
+# Use weighting="frs" in testpoints_n() to pick a random FRS facility's block
+```
+

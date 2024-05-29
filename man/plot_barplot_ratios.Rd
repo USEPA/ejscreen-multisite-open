@@ -12,7 +12,7 @@ plot_barplot_ratios(
 )
 }
 \arguments{
-\item{ratio.to.us.d.overall}{named list of a few ratios to plot, but see \code{\link[=plot_barplot_ratios_ez]{plot_barplot_ratios_ez()}}
+\item{ratio.to.us.d.overall}{named list of a few ratios to plot, but see \code{\link[=ejam2barplot]{ejam2barplot()}}
 for an easier way to specify which indicator to show.}
 
 \item{names2plot_friendly}{names to use for plot - should be same length as named list ratio.to.us.d.overall}
@@ -66,9 +66,12 @@ in EJAM server for tab showing barplots in Detailed Results
 }
 }
 \examples{
+  
+  ejam2barplot(testoutput_ejamit_100pts_1miles)
+  
   plot_barplot_ratios(unlist(testoutput_ejamit_1000pts_1miles$results_overall[ , c(..names_d_ratio_to_avg , ..names_d_subgroups_ratio_to_avg) ]))
 
 }
 \seealso{
-\code{\link[=table_xls_format]{table_xls_format()}} \link{plot_barplot_ratios}
+\code{\link[=table_xls_format]{table_xls_format()}} \code{\link[=ejam2ratios]{ejam2ratios()}} \code{\link[=ejam2barplot]{ejam2barplot()}}
 }
