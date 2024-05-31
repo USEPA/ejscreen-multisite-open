@@ -3,7 +3,11 @@
 #' sources subject to Maximum Achievable Control Technology (MACT) standards
 #' under the Clean Air Act.
 #' 
-#' @details See <https://www.epa.gov/stationary-sources-air-pollution/national-emission-standards-hazardous-air-pollutants-neshap-8>
+#' @details See [EPA information about MACT subparts, NESHAPs, etc.](https://www.epa.gov/stationary-sources-air-pollution/national-emission-standards-hazardous-air-pollutants-neshap-9)
+#' 
+#'  EPA's [ECHO query tools](https://echo.epa.gov/help/facility-search/search-criteria-help#facchar)
+#'  also provide search by NAICS or SIC, and by MACT subpart.
+#'
 #' @param subpart vector of one or more strings indicating the 
 #'   Subpart of CFR Title 40 Part 63 that covers the source category 
 #'   of interest, such as "FFFF" - see for example, 

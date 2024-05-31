@@ -19,6 +19,9 @@ Get lat lon, Registry ID, given NAICS industry code(s)
 Find all EPA Facility Registry Service (FRS) sites with this exact NAICS code (not subcategories)
 }
 \details{
+The EPA also provides a \href{https://www.epa.gov/frs/frs-query#industrial}{FRS Facility Industrial Classification Search tool}
+where you can find facilities based on NAICS or SIC.
+
 NOTE: many FRS sites lack NAICS code!
 
 Also, this function does not find the sites
@@ -35,4 +38,7 @@ See info about NAICS industry codes at \url{https://www.naics.com/search}
   head(latlon_from_naics(c(3366, 33661, 336611), id_only=TRUE))
   # mapfast(frs_from_naics(336611)) # simple map
 
+}
+\seealso{
+\code{\link[=frs_from_naics]{frs_from_naics()}}  \code{\link[=frs_from_sic]{frs_from_sic()}} \code{\link[=latlon_from_sic]{latlon_from_sic()}} \code{\link[=regid_from_naics]{regid_from_naics()}} \code{\link[=naics_from_any]{naics_from_any()}}
 }
