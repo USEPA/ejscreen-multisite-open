@@ -17,6 +17,12 @@ vector of county names, optionally with comma and 2-character abbreviation or fu
 \description{
 FIPS - Get county names from county FIPS codes
 }
+\details{
+NOTE THAT ISLAND AREAS WORK DIFFERENTLY SINCE THEIR FIPS ARE NOT QUITE LIKE COUNTY FIPS
+\itemize{
+\item FIRST 5 LETTERS OF FIPS ARE NOT THE UNIQUE "COUNTY" CODE IN Northern Mariana Islands
+}
+}
 \examples{
   # names of all counties in ME and NY
   fips2countyname(fips_counties_from_state_abbrev(c("ME", "NY")), includestate = "ST")
