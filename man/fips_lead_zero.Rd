@@ -24,3 +24,6 @@ fips_lead_zero(testfips1)
 fips_lead_zero(testfips)
 
 }
+\seealso{
+\code{\link[=fips_valid]{fips_valid()}} \code{\link[=fipstype]{fipstype()}}
+}

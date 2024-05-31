@@ -7,7 +7,7 @@
 fips_state_from_state_abbrev(ST)
 }
 \arguments{
-\item{ST}{vector of state abbreviations like c("NY","GA")}
+\item{ST}{vector of state abbreviations like c("NY","GA"), ignores case}
 }
 \value{
 vector of 2-digit state FIPS codes like c("10", "44", "44"),
