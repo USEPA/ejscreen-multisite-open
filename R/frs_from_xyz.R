@@ -53,6 +53,7 @@ frs_from_programid <- function(programid) {
 #' @param program vector of one or more EPA Program names used by FRS 
 #' @return relevant rows of the data.table called frs, which has column names that are
 #'   "lat" "lon" "REGISTRY_ID" "PRIMARY_NAME" "NAICS" "PGM_SYS_ACRNMS"
+#' @details Also see [EPA documentation describing each program code](https://www.epa.gov/frs/frs-data-sources) aka data source.
 #'     
 #' @export
 #' 
@@ -71,8 +72,15 @@ frs_from_program  <- function(program) {
 #' @param ... passed to [naics_from_any()]
 #' @return relevant rows of the data.table called frs, which has column names that are
 #'   "lat" "lon" "REGISTRY_ID" "PRIMARY_NAME" "NAICS" "PGM_SYS_ACRNMS"
-#' @seealso [regid_from_naics()] [naics_from_any()]
-#'
+#'   
+#' @seealso [latlon_from_naics()] [latlon_from_sic()] [frs_from_sic()] [regid_from_naics()] [naics_from_any()]
+#' 
+#' @details  The EPA also provides a [FRS Facility Industrial Classification Search tool](https://www.epa.gov/frs/frs-query#industrial)
+#'  where you can find facilities based on NAICS or SIC.
+#'  
+#'  EPA's [ECHO query tools](https://echo.epa.gov/help/facility-search/search-criteria-help#facchar)
+#'  also provide search by NAICS or SIC, and by MACT subpart.
+#'  
 #' @examples 
 #'   frs_from_naics("uranium")
 #'   mapfast(frs_from_naics(naics_from_any("nuclear")$code))

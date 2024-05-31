@@ -15,6 +15,13 @@
 #' @return a subset of the [naicstable] data.table (not just the codes column)
 #' @examples # Also see vignette for examples
 #'   naics_categories()
+#'   
+#'   naics_from_any("textile mills", children = F)
+#'   naics_from_any("textile mills", children = T)
+#' 
+#'   frs_from_naics("textile mills", children = FALSE)
+#'   frs_from_naics("textile mills", children = TRUE)
+#'   \dontrun{
 #'   naics_from_any(naics_categories(3))[order(name),.(name,code)][1:10,]
 #'   naics_from_any(naics_categories(3))[order(code),.(code,name)][1:10,]
 #'   naics_from_code(211)
@@ -52,7 +59,7 @@
 #' #[1] 20
 #'  NROW(naics_from_any("chem", children = T))
 #' [1] 104
-#'
+#' }
 #' @export
 #'
 naics_from_any <- function(query, children = FALSE, ignore.case = TRUE, fixed = FALSE,
@@ -242,7 +249,7 @@ naics2children <- function(codes, allcodes=EJAM::NAICS, quiet = FALSE) {
 #' @export
 #'
 naics_subcodes_from_code <- function(mycodes) {
-warning('may want to recode this function using match() as done in naics_from_code')
+
   mycodes <- suppressWarnings( { as.numeric(mycodes)}) # becomes NA if text that cannot be coerced into number
   if (any(is.na(mycodes))) {warning("mycodes should be numeric NAICS codes or text that can be interpreted as numeric, but some are NA values or character that cannot be coerced to numeric")}
   if (any(nchar(mycodes[!is.na(mycodes)]) < 2 | nchar(mycodes[!is.na(mycodes)]) > 6)) warning("mycodes should be 2-digit to 6-digit NAICS code(s)")
@@ -254,7 +261,7 @@ warning('may want to recode this function using match() as done in naics_from_co
   for (digits in 2:6) {
     mycolname <- cnames[digits]
     myvalues <- unlist(as.vector(naicstable[ , ..mycolname])) # this seems like a crazy workaround, but can't see how to subset data.table by specifying mycolname == 1123 when the column name is stored in mycolname
-    results[[digits]] <-  naicstable[ myvalues %in% mycodes[len == digits] ,] # subset(naicstable, mycolname %in% mycodes[len == digits] )
+    results[[digits]] <-  naicstable[myvalues %in% mycodes[len == digits], ] # subset(naicstable, mycolname %in% mycodes[len == digits] )
   }
   results <- data.table::rbindlist(results)
   return(results)
@@ -280,8 +287,8 @@ naics_from_code <- function(mycodes, children = FALSE) {
   if (any(is.na(mycodes))) {warning("mycodes should be numeric NAICS codes or text that can be interpreted as numeric, but some are NA values or character that cannot be coerced to numeric")}
 
   # find naicstable data.table rows by exact matches on numeric NAICS codes vector
-  results <- naicstable[match(mycodes, naicstable$code), ] # this should preserve sort order better
-  #
+  # results <- naicstable[match(mycodes, naicstable$code), ] # this would preserve sort order better BUT ONLY RETURNS 1st match !!!
+  results <- naicstable[code %in% mycodes, ] # this does not preserve order of mycodes queried, but cannot use match which would return only 1st match. 
   if (children) {
     # add subcategories
     results <- naics_subcodes_from_code(results$code)

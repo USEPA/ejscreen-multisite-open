@@ -328,8 +328,8 @@ head(naics_from_any(funion(a,b)[,code], children = T)[,.(name,code)] ) #  same
 A NAICS code can have many "children" or subcategories under it
 
 ```{r frs_from_naics-details, eval = TRUE}
-dataload_from_pins("frs")
-if (exists("frs")) {
+dataload_from_pins("frs", "frs_by_naics")
+if (exists("frs") & exists("frs_from_naics")) {
 
 NROW(naics_from_any("chem"))
 # about 20

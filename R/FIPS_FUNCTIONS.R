@@ -117,7 +117,7 @@ fipstype <- function(fips) {
   ftype[nchar(fips, keepNA = FALSE) ==  7] <- "city"  # e.g, 5560500 is Oshkosh, WI
   ftype[nchar(fips, keepNA = FALSE) ==  5] <- "county"
   ftype[!is.na(fips) & nchar(fips) ==  2] <- "state"
-  
+
   if (anyNA(ftype)) {
     warning("some fips do not seem to be block, blockgroup, tract, county, or state FIPS (lengths with leading zeroes should be 15,12,11,5,2 respectively")
   }
@@ -150,7 +150,7 @@ fips_lead_zero <- function(fips) {
   just_numerals = function(x) {!grepl("[^0123456789]", x)}
   fips[!just_numerals(fips)] <- NA 
   if (any(is.na(fips))) {warning('some fips cannot be interpreted as numbers (e.g., are text or NA or logical')}
-  
+
   #	TRY TO CLEAN UP vector of FIPS AND INFER GEOGRAPHIC SCALE
   
   ## keepNA = FALSE means that nchar() returns the number 2 instead of NA, which makes this work right.
@@ -445,6 +445,7 @@ fips_state_from_state_abbrev <- function(ST) {
 fips_state_from_statename <- function(statename) {
   
   # EJAM :: stateinfo
+
   stateinfo2$FIPS.ST[match(tolower(statename), tolower(stateinfo2$statename))] # using match is ok since only 1st match returned per element of statename but stateinfo has only 1 match per value of statename
 
   # returns one per input, including repeats etc
@@ -470,7 +471,7 @@ fips_counties_from_statefips <- function(statefips) {
   ftype = fipstype(statefips)
   if (any(is.na(ftype)) || any(ftype != "state")) {
     warning("Some of the supplied statefips values were NA or otherwise not recognized as State FIPS codes")
-    statefips <- statefips[!is.na(ftype) && ftype == "state"]
+    statefips <- statefips[!is.na(ftype) & ftype == "state"]
   }
   
   # EJAM :: blockgroupstats  has all the usable FIPS codes in bgfips
@@ -624,6 +625,8 @@ fips_counties_from_countynamefull <- function(fullname) {
 #'   among or within or containing those FIPS
 #'
 #' @details  This is a way to get a list of blockgroups, specified by state/county/tract or even block.
+#' 
+#'  This function is not optimized for speed -- it is slow for large queries.
 #'
 #' Takes a vector of one or more FIPS that could be State (2-digit), County (5-digit),
 #'   Tract (11-digit), or blockgroup (12 digit), or even block (15-digit fips).
@@ -749,7 +752,7 @@ fips_st2eparegion <- function(stfips) {
 fips2state_abbrev <- function(fips) {
 
   abb <- stateinfo2$ST[match(substr(fips_lead_zero(fips), 1, 2), stateinfo2$FIPS.ST)] # using match is ok
-  
+
   # confirm returns same length as input, and check how it handles nonmatches
   if (any(is.na(abb))) {
     warning("Some fips could not be converted to state abbreviation - returning NA for those")
@@ -833,6 +836,8 @@ fips2countyname <- function(fips, includestate = c("ST", "Statename", "")[1]) {
   out[!is.na(ftype) & ftype == "county"] <- blockgroupstats$countyname[match(
     fips[!is.na(ftype) & ftype == "county"],
     substr(blockgroupstats$bgfips,1,5))]  #
+  # using match is OK since 
+  # you want 1 countyname returned per countyfips in query, so the fact that only 1st match gets returned is actually good.
 
   # using match is OK since 
   # you want 1 countyname returned per countyfips in query, so the fact that only 1st match gets returned is actually good.
@@ -864,7 +869,7 @@ fips2countyname <- function(fips, includestate = c("ST", "Statename", "")[1]) {
 #'   after county name
 #' @return vector of state and/or county names,
 #'   where county names optionally have comma and 2-character abbreviation or full state name.
-#'
+#' @seealso [countyname2fips()]
 #' @examples
 #'   fips2name(fips_counties_from_state_abbrev(c("AK", "LA"))  )
 #'   fips2name(c(22, 02013))  # can have mix where some are a whole state and others are a county.
