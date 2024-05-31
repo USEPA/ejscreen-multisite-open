@@ -1,6 +1,9 @@
 
 #          datacreate_test_address.R
 
+metadatanow = list(date_saved_in_package = Sys.Date())
+# x = EJAM:::metadata_add(x, metadata = metadatanow)
+
 ##################### #
 
 # test data:
@@ -69,6 +72,8 @@ test_address_table_goodnames <- structure(list(
 
 ##################### #
 
+# metadata_add(test_address_table_9, )
+x = EJAM:::metadata_add(x, metadata = metadatanow)
 
 usethis::use_data(test_address_table_9,
                   test_address_parts1,
