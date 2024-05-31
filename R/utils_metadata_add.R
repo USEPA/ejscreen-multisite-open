@@ -32,6 +32,9 @@ metadata_add <- function(x, metadata) {
   
   if (missing(metadata)) {
     metadata <- list(
+      # date_downloaded = Sys.Date(),
+      date_updated = Sys.Date(), 
+      # date_saved_in_package = Sys.Date(),
       ejscreen_version =  '2.2',
       acs_version =          '2017-2021',
       census_version = 2020,
