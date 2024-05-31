@@ -196,7 +196,7 @@ fips_lead_zero <- function(fips) {
 #' @details This function provides one row per blockgroup.
 #'    [getblocksnearby_from_fips()] provides one row per block.
 #'    See more below under "Value"
-#' @param fips County FIPS vector (ideally as character not numeric values),
+#' @param fips County FIPS vector,
 #'   like fips_counties_from_state_abbrev("DE")
 #' @seealso [getblocksnearby_from_fips()]
 #' @return provides table similar to the output of getblocksnearby(),
@@ -204,11 +204,19 @@ fips_lead_zero <- function(fips) {
 #'   all pairs of county fips - bgid, and ejam_uniq_id (1 through N) assigned to each county
 #'   but missing blockid and distance so not ready for doaggregate().
 #' @examples
+#'  
+#'  # compare counties within a state:
+#'  x = counties_as_sites(fips_counties_from_state_abbrev("DE"))
+#'  out = 
+#'  
+#'  # compare two specific counties:
 #'  counties_as_sites(c('01001','72153'))
+#'  
 #'  # Largest US Counties by ACS Population Totals:
-#'  blockgroupstats[ , .(ST = ST[1], countypop = sum(pop)),
-#'   by=.(FIPS = substr(bgfips,1,5))][order(-countypop),][1:20, .(
-#'   CountyPopulation = prettyNum(countypop, big.mark = ","), FIPS, ST)]
+#'  y = blockgroupstats[ , .(ST = ST[1], countypop = sum(pop)),
+#'   by = .(FIPS = substr(bgfips,1,5))][order(-countypop),][1:20, .(
+#'     CountyPopulation = prettyNum(countypop, big.mark = ","), FIPS, ST)]
+#'  x = counties_as_sites(y$FIPS)
 #'
 #' @export
 #'
@@ -218,14 +226,21 @@ counties_as_sites <- function(fips) {
     message("leading zeroes being inferred since FIPS was provided as numbers not character class")
     fips <- fips_lead_zero(fips)
   }
-  
   # if (!all(fips_valid(fips))) {warning('some fips provided are not valid county fips')}
   
   # accept county fips vector
   # return counties2bgs table of pairs so doaggregate_blockgroups() or whatever can take that and do full EJ stats.
-  
+
   county2bg <- bgpts[substr(bgfips,1,5) %in% fips, .(countyfips = substr(bgfips,1,5), bgid) ]
+  if (NROW(county2bg) == 0) {warning("no valid fips, so returning empty data.table of 0 rows")}
   county2bg[, ejam_uniq_id := .GRP , by = "countyfips"]
+  
+  county2bg[ , blockid := bgid] # fix this to use the 1st block of each bgid
+  county2bg[ , blockwt := 1]
+  county2bg[ , distance := 0]
+  county2bg[ , distance_unadjusted := 0]
+  county2bg$blockid = blockwts[county2bg, .(blockid = blockid[1]), on = "bgid", by = "bgid"]$blockid
+  
   county2bg[, .(ejam_uniq_id, countyfips, bgid)]
 }
 ############################################### #
