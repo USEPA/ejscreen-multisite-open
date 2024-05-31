@@ -54,11 +54,12 @@ fips_valid <- function(fips) {
   # before using this, one should clean fips using 
   #   fips <- fips_lead_zero(fips)
   
-  ok = rep(FALSE, length(fips))
-  kind = fipstype(fips)
-  ok[kind == "state"] <- fips[kind == "state"] %in% stateinfo2$FIPS.ST[!is.na(stateinfo2$FIPS.ST)]
-  ok[kind == "county"] <- fips[kind == "county"] %in% substr(blockgroupstats$bgfips[!is.na(blockgroupstats$bgfips)], 1, 5)
-  ok[kind == "tract"] <- fips[kind == "tract"] %in%  substr(blockgroupstats$bgfips[!is.na(blockgroupstats$bgfips)], 1, 11)
+  ok <- rep(FALSE, length(fips))
+  suppressWarnings({kind <- fipstype(fips)})
+  kind[is.na(kind)] <- "fail"
+  ok[kind == "state"]      <- fips[kind == "state"]  %in% stateinfo2$FIPS.ST[!is.na(stateinfo2$FIPS.ST)]
+  ok[kind == "county"]     <- fips[kind == "county"] %in% substr(blockgroupstats$bgfips[!is.na(blockgroupstats$bgfips)], 1, 5)
+  ok[kind == "tract"]      <- fips[kind == "tract"]  %in%  substr(blockgroupstats$bgfips[!is.na(blockgroupstats$bgfips)], 1, 11)
   ok[kind == "blockgroup"] <- fips[kind == "blockgroup"] %in%  substr(blockgroupstats$bgfips[!is.na(blockgroupstats$bgfips)], 1, 12)
   # note not all bgfips were in bgpts table:  setdiff_yx(bgpts$bgfips, blockgroupstats$bgfips[!is.na(blockgroupstats$bgfips)])
   if (any(kind == "block")) {
@@ -117,7 +118,7 @@ fipstype <- function(fips) {
   ftype[nchar(fips, keepNA = FALSE) ==  7] <- "city"  # e.g, 5560500 is Oshkosh, WI
   ftype[nchar(fips, keepNA = FALSE) ==  5] <- "county"
   ftype[!is.na(fips) & nchar(fips) ==  2] <- "state"
-
+  
   if (anyNA(ftype)) {
     warning("some fips do not seem to be block, blockgroup, tract, county, or state FIPS (lengths with leading zeroes should be 15,12,11,5,2 respectively")
   }
@@ -145,12 +146,12 @@ fipstype <- function(fips) {
 #' @export
 #'
 fips_lead_zero <- function(fips) {
-
+  
   # if there are decimal places, negative signs, spaces, etc. then treat those fips as NA values
   just_numerals = function(x) {!grepl("[^0123456789]", x)}
   fips[!just_numerals(fips)] <- NA 
   if (any(is.na(fips))) {warning('some fips cannot be interpreted as numbers (e.g., are text or NA or logical')}
-
+  
   #	TRY TO CLEAN UP vector of FIPS AND INFER GEOGRAPHIC SCALE
   
   ## keepNA = FALSE means that nchar() returns the number 2 instead of NA, which makes this work right.
@@ -217,7 +218,7 @@ counties_as_sites <- function(fips) {
     message("leading zeroes being inferred since FIPS was provided as numbers not character class")
     fips <- fips_lead_zero(fips)
   }
-
+  
   # if (!all(fips_valid(fips))) {warning('some fips provided are not valid county fips')}
   
   # accept county fips vector
@@ -414,12 +415,12 @@ fips_from_name = function(x) {
 #' @export
 #'
 fips_state_from_state_abbrev <- function(ST) {
-
+  
   if (any(toupper(ST) %in% c("AS", "GU","MP", "UM", "VI"))) {
     message("note some of ST are among AS, GU, MP, UM, VI")
   }
   stateinfo2$FIPS.ST[match(toupper(ST), toupper(stateinfo2$ST))] # using match is ok since only 1st match returned per element of ST but stateinfo has only 1 match per value of ST
-
+  
   # returns one per input, including repeats etc
   # retuns NA if no matching state abbrev found
   
@@ -445,9 +446,9 @@ fips_state_from_state_abbrev <- function(ST) {
 fips_state_from_statename <- function(statename) {
   
   # EJAM :: stateinfo
-
+  
   stateinfo2$FIPS.ST[match(tolower(statename), tolower(stateinfo2$statename))] # using match is ok since only 1st match returned per element of statename but stateinfo has only 1 match per value of statename
-
+  
   # returns one per input, including repeats etc
   # retuns NA if no matching state  found
 }
@@ -723,7 +724,7 @@ fips_bg_from_anyfips <- function(fips) {
 fips_st2eparegion <- function(stfips) {
   
   stfips <- fips_lead_zero(stfips)
-
+  
   regnum <- EJAM::stateinfo2$REGION[match(stfips, EJAM::stateinfo2$FIPS.ST)] # using match is ok since only 1st match returned per element of query but there is only 1 match possible
   
   if (any(is.na(regnum))) {
@@ -750,9 +751,9 @@ fips_st2eparegion <- function(stfips) {
 #' @export
 #'
 fips2state_abbrev <- function(fips) {
-
+  
   abb <- stateinfo2$ST[match(substr(fips_lead_zero(fips), 1, 2), stateinfo2$FIPS.ST)] # using match is ok
-
+  
   # confirm returns same length as input, and check how it handles nonmatches
   if (any(is.na(abb))) {
     warning("Some fips could not be converted to state abbreviation - returning NA for those")
@@ -796,9 +797,9 @@ fips2state_fips <- function(fips) {
 #' @export
 #'
 fips2statename <- function(fips) {
-
+  
   stname <- stateinfo2$statename[match(substr(fips_lead_zero(fips), 1, 2), stateinfo2$FIPS.ST)] # using match is ok
-
+  
   if (any(is.na(stname))) {
     warning("Some fips could not be converted to state name - returning NA for those")
   }
@@ -838,7 +839,7 @@ fips2countyname <- function(fips, includestate = c("ST", "Statename", "")[1]) {
     substr(blockgroupstats$bgfips,1,5))]  #
   # using match is OK since 
   # you want 1 countyname returned per countyfips in query, so the fact that only 1st match gets returned is actually good.
-
+  
   # using match is OK since 
   # you want 1 countyname returned per countyfips in query, so the fact that only 1st match gets returned is actually good.
   
@@ -884,7 +885,7 @@ fips2name  <- function(fips, ...) {
   out <- rep(NA, length(fips))
   
   ## *** need to handle NA values here since out[NA] <-  fails as cannot have NA in subset assignment
-
+  
   out[!is.na(fips) & fipstype(fips) == "state"]  <- fips2statename(fips = fips[!is.na(fips) & fipstype(fips) == "state"])
   out[!is.na(fips) & fipstype(fips) == "county"] <- fips2countyname(fips = fips[!is.na(fips) & fipstype(fips) == "county"], ...)
   

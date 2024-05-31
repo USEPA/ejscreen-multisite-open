@@ -51,18 +51,37 @@
 
 # fips_valid()
 
-test_that("fips_valid() works", {
+test_that("fips_valid() works but is slow", {
+  
   expect_no_error({
-    testfipsx = c("10", "10001", "02170000300", "021700003003", "721537506011", 
-                  blockid2fips$blockfips[1])
-    x = fips_valid(testfipsx)
+    testfipsx <- c("10", "10001", "02170000300", 
+                   "021700003003", "721537506011", 
+                   "010010201001000")
+    x <- fips_valid(testfipsx)
   })
   expect_true(all(x))
   expect_identical(
     fipstype(testfipsx),
-    c("state", "county", "tract", "blockgroup", "blockgroup", 
+    c("state", "county", "tract",
+      "blockgroup", "blockgroup", 
       "block"
     )
+  )
+  
+  expect_no_error({
+    fips_valid(c('01',NA))
+    fips_valid(NA)
+    fips_valid("text")
+  })
+  expect_no_warning({
+    fips_valid(c('01',NA))
+    fips_valid(NA)
+    fips_valid("text")
+  })
+  expect_false(fips_valid(NA))
+  expect_identical(
+    fips_valid(c(NA, "01")),
+    c(FALSE, TRUE)
   )
   
   expect_identical(
