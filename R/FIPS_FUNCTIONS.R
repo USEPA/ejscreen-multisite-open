@@ -846,10 +846,10 @@ fips2countyname <- function(fips, includestate = c("ST", "Statename", "")[1]) {
       addon <- ""
     }
   }
-  if (all(addon == "")) {
+  if (all(addon == "") | all(is.na(out))) {
     return(out)
   } else {
-    out <- paste(out, addon, sep = ", ")
+    out[!is.na(out)] <- paste(out[!is.na(out)], addon[!is.na(out)], sep = ", ")
     return(out)
   }
 }
