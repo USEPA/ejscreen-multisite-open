@@ -1,5 +1,8 @@
 ###################################################### # 
 
+metadatanow = list(date_saved_in_package = Sys.Date())
+# x = EJAM:::metadata_add(x, metadata = metadatanow)
+
 # create testpoints_conus5  ####
 # to use for mapping whole continental united states range 
 # as in data entry module example
@@ -28,6 +31,7 @@ CONUS5$sitenumber <- as.numeric(CONUS5$sitenumber)
 #   ), row.names = c(NA, -5L), class = "data.frame")
 
 testpoints_conus5 <- CONUS5
+testpoints_conus5 <- EJAM:::metadata_add(testpoints_conus5, metadata = metadatanow)
 usethis::use_data(testpoints_conus5, overwrite = TRUE)
 
 # Document the dataset ####
