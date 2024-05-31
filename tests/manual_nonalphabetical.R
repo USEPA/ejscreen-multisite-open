@@ -2,6 +2,28 @@
 # a line in DESCRIPTION can control order the package tests happen
 # see https://testthat.r-lib.org/articles/parallel.html
 
+#                                          file    nb warning passed notpassed
+# 
+# 1:                      test-FIPS_FUNCTIONS.R   318       0    309         9
+
+# 2:           test-getblocksnearby_from_fips.R     9       6      3         6
+
+# 3:                       test-MAP_FUNCTIONS.R    21       6     15         6
+
+
+# 4:                         test-address_xyz.R    19       1     16         3
+
+# 5:                    test-naics_validation.R    11       0      9         2
+
+# 6:                     test-getblocksnearby.R    12       0     11         1
+
+# 7:                        test-frs_is_valid.R     8       0      7         1
+
+# 8:                         test-doaggregate.R     4       1      3         1
+
+########################################## # 
+########################################## # 
+
 testing_in_logical_order <- FALSE
 # testing_in_logical_order <- TRUE
 if (testing_in_logical_order) {
@@ -14,6 +36,14 @@ if (testing_in_logical_order) {
   tnames1 <-  basename(list.files(path = file.path(sdir, "tests/testthat"), full.names = TRUE, pattern = "test-"))
   {
     tnames2 <- c(
+      "test-FIPS_FUNCTIONS.R",
+      
+      "test-state_from_fips.R",
+      "test-state_from_latlon.R",
+      
+      # "test-fips_lead_zero.R",
+      # "test-fips_bg_from_anyfips.R",
+      
       "test-ui_and_server.R",   
       "test-ejamit.R",           
       "test-doaggregate.R",     
@@ -23,9 +53,6 @@ if (testing_in_logical_order) {
       "test-getblocks_summarize_blocks_per_site.R",
       "test-pctile_from_raw_lookup.R",
       "test-radius_inferred.R",             # this is SLOW THOUGH
-      
-      "test-state_from_fips.R",
-      "test-state_from_latlon.R",
       "test-shapefile_xyz.R",       
       
       "test-naics_from_name.R", 
@@ -53,8 +80,8 @@ if (testing_in_logical_order) {
       "test-address_xyz.R", 
       "test-latlon_from_address.R",
       
-      "test-fips_lead_zero.R",
-      "test-fips_bg_from_anyfips.R",
+      "test-MAP_FUNCTIONS.R",
+      
       
       "test-varinfo.R",
       
@@ -68,6 +95,7 @@ if (testing_in_logical_order) {
   ########################################## # 
   ## CHECK IF ALL ARE LISTED
   setdiff(tnames1, tnames2)
+  setdiff(tnames2, tnames1)
   if (!setequal(tnames1, tnames2)) {
     cat("need to add new files to list above and below")
     stop("add new files to list above and below")
@@ -76,6 +104,14 @@ if (testing_in_logical_order) {
   {
     # PUT TEST FILES INTO LOGICAL GROUPS ####
     
+    test_fips <- c(
+      
+      # "test-fips_lead_zero.R",   
+      # "test-fips_bg_from_anyfips.R",    #   test_file("tests/testthat/test-fips_bg_from_anyfips.R")
+      "test-FIPS_FUNCTIONS.R",
+      "test-state_from_fips.R",  
+      "test-state_from_latlon.R"   
+    )
     test_naics <- c(
       "test-naics_categories.R",   
       "test-naics_findwebscrape.R", 
@@ -104,12 +140,11 @@ if (testing_in_logical_order) {
       "test-address_xyz.R", 
       "test-latlon_from_address.R"  
     )
-    test_fips <- c(
-      "test-fips_lead_zero.R",   
-      "test-fips_bg_from_anyfips.R",    #   test_file("tests/testthat/test-fips_bg_from_anyfips.R")
-      "test-state_from_fips.R",  
-      "test-state_from_latlon.R"   
+    
+    test_maps <- c(
+      "test-MAP_FUNCTIONS.R"
     )
+    
     test_shape <- c(
       "test-shapefile_xyz.R"  
     )
@@ -139,13 +174,14 @@ if (testing_in_logical_order) {
       "test-ui_and_server.R"   
     )
   }
- {
+ # {
    ########################################## # 
     groupnames = c(
+      "test_fips",
       "test_naics",
       "test_frs",
       "test_latlon",
-      "test_fips",
+      "test_maps",
       "test_shape",
       "test_getblocks",
       "test_doag",
@@ -153,7 +189,7 @@ if (testing_in_logical_order) {
       "test_mod",
       "test_app"
     )
-  }
+  # }
   testlist <- sapply(groupnames  , FUN = get)
   ########################################## # 
   
@@ -236,15 +272,26 @@ if (testing_in_logical_order) {
   ########################### #  ########################################## #
   ########################### #  ########################################## #
   
+  ## to TEST JUST ONE GROUP:
+  
+  partial_testlist = list(test_maps = "test-MAP_FUNCTIONS.R")
+  # or 
+  partial_testlist = list(test_fips = c("test-FIPS_FUNCTIONS.R", "test-state_from_fips.R", "test-state_from_latlon.R"))
+  test_partial = testbygroup(testlist = partial_testlist)
+  
+  
+  
+  
+  
   # RUN ALL THE TESTS  ####
+
+    ## takes 7 to 8 minutes or so
   
-  Sys.time()
-  
-  x = testbygroup(testlist = testlist)
-  
-  Sys.time()  
-  
-  # save(x, file = "./tests/results_of_unit_testing_2024-05-20b.rda")
+  system.time({
+    testall = testbygroup(testlist = testlist)
+  })
+
+  save(testall, file = "./tests/results_of_unit_testing_2024-05-30.rda")
   
   ########################### #  ########################################## #
   ########################### #  ########################################## #
@@ -255,10 +302,12 @@ if (testing_in_logical_order) {
   ########################### #  ########################### #
   # HOW MANY TOTAL PASS/FAIL?
   
-  colSums(x[, .(nb,warning,passed, not)])
-  #  nb warning  passed     not 
-  # 395      23     346      49  LOOKS LIKE ROUGHLY  7 % OF TESTS FAIL WITH ERROR AND 6 % WARN 
-  
+  x = testall
+  x$err = x$nb - x$passed - x$warning
+  colSums(x[, .(nb, passed, not, warning, err)])
+  # >   colSums(x[, .(nb, passed, not, warning, err)])
+  #  nb  passed     not warning     err 
+  # 749     720      29      14      15   only 2% errors now
   ########################### #  ########################### #
   
   ## WHICH TEST GROUPS HAVE THE MOST FAILING TESTS?
@@ -269,21 +318,19 @@ if (testing_in_logical_order) {
    # x[1:40, ]
    bygroup = x[ , .(err = sum(not) - sum(warning), warning = sum(warning), pass =  sum(nb) - sum(not), tests = sum(nb)), by = "testgroup"]
    bygroup 
-   
-   #          testgroup   err warning  pass tests
-   #  
-   # 1:      test_fips    15      17    88   120   *** test-fips_lead_zero.R (2digit, 3digit, etc.),  and
-                                              #      test-fips_bg_from_anyfips.R ("what if inputs are invalid text strings") have the problematic tests
-   # 2:     test_naics     7       1    69    77   *** test-naics_from_code.R mostly ("warn if given naics code that is NA or ...")
-   
-   # 3: test_getblocks     1       4    21    26   test-getblocksnearby_from_fips.R mostly
-   # 4:    test_latlon     2       1    47    50   test-address_xyz.R mostly
-   # 5:       test_frs     1       0    63    64
-   # 6:      test_doag     0       0    23    23
-   # 7:    test_ejamit     0       0     9     9
-   # 8:       test_app     0       0    10    10
-   # 9:     test_shape     0       0    16    16
-   #10:       test_mod     0       0     0     0
+   # 
+   #         testgroup   err warning  pass tests 
+   # 1:      test_fips     9       0   326   335   ********
+   # 2: test_getblocks     1       6    23    30
+   # 3:      test_maps     0       6    15    21
+   # 4:    test_latlon     2       1   114   117
+   # 5:     test_naics     2       0   109   111
+   # 6:       test_frs     1       0    69    70
+   # 7:      test_doag     0       1    23    24
+   # 8:     test_shape     0       0    16    16
+   # 9:    test_ejamit     0       0     9     9
+   # 10:       test_mod     0       0     6     6
+   # 11:       test_app     0       0    10    10
   
 # same thing a diff way:  
     
@@ -293,18 +340,19 @@ if (testing_in_logical_order) {
   setnames(y, new = c("testgroup", "nb", "warning", "passed", "notpassed"))
   y$err = y$notpassed - y$warning
   y
-  #          testgroup    nb warning passed notpassed  err
-  
-  # 1:      test_fips   120      17     88        32    15
-  # 2:     test_naics    77       1     69         8     7
-  # 3: test_getblocks    26       4     21         5     1
-  # 4:    test_latlon    50       1     47         3     2
-  # 5:       test_frs    64       0     63         1     1
-  # 6:     test_shape    16       0     16         0     0
-  # 7:      test_doag    23       0     23         0     0
-  # 8:    test_ejamit     9       0      9         0     0
-  # 9:       test_mod     0       0      0         0     0
-  # 10:       test_app    10       0     10         0     0
+  #           testgroup    nb warning passed notpassed   err
+  # <char> <int>   <int>  <int>     <int> <int>
+  # 1:      test_fips   335       0    326         9     9
+  # 2: test_getblocks    30       6     23         7     1
+  # 3:      test_maps    21       6     15         6     0
+  # 4:    test_latlon   117       1    114         3     2
+  # 5:     test_naics   111       0    109         2     2
+  # 6:       test_frs    70       0     69         1     1
+  # 7:      test_doag    24       1     23         1     0
+  # 8:     test_shape    16       0     16         0     0
+  # 9:    test_ejamit     9       0      9         0     0
+  # 10:      test_mod     6       0      6         0     0
+  # 11:      test_app    10       0     10         0     0
   
   
   ########################### #  ########################### #
@@ -327,108 +375,75 @@ if (testing_in_logical_order) {
   setorder(byfile, -fails_bygroup, -fails_byfile)
   byfile
   #                                          file fails_byfile fails_bygroup      testgroup
-  
-  # 1:                      test-fips_lead_zero.R           17            32      test_fips
-  # 2:                test-fips_bg_from_anyfips.R           12            32      test_fips
-  # 3:                     test-state_from_fips.R            3            32      test_fips
-  # 4:                   test-state_from_latlon.R            0            32      test_fips
-  
-  # 5:                     test-naics_from_code.R            4             8     test_naics
-  # 6:                    test-naics_validation.R            2             8     test_naics
-  # 7:                     test-naics_from_name.R            1             8     test_naics
-  # 8:                 test-naics_findwebscrape.R            1             8     test_naics
-  # 9:                      test-naics_from_any.R            0             8     test_naics
-  # 10:            test-naics_subcodes_from_code.R            0             8     test_naics
-  # 11:                      test-naics2children.R            0             8     test_naics
-  # 12:                    test-naics_categories.R            0             8     test_naics
-  
-  # 13:           test-getblocksnearby_from_fips.R            3             5 test_getblocks
-  # 14:                     test-getblocksnearby.R            1             5 test_getblocks
-  # 15:                     test-radius_inferred.R            1             5 test_getblocks
-  # 16: test-getblocks_summarize_blocks_per_site.R            0             5 test_getblocks
-  # 17:          test-getblocksnearbyviaQuadTree.R            0             5 test_getblocks
-  
-  # 18:                         test-address_xyz.R            3             3    test_latlon
-  # 19:                     test-latlon_df_clean.R            0             3    test_latlon
-  # 20:                   test-latlon_as.numeric.R            0             3    test_latlon
-  # 21:                        test-latlon_infer.R            0             3    test_latlon
-  # 22:                     test-latlon_is.valid.R            0             3    test_latlon
-  # 23:                     test-latlon_from_sic.R            0             3    test_latlon
-  # 24:                 test-latlon_from_address.R            0             3    test_latlon
-  
-  # 25:                        test-frs_is_valid.R            1             1       test_frs
-  # 26:                      test-frs_from_naics.R            0             1       test_frs
+  # <char>        <int>         <int>         <char>
+  # 1:                      test-FIPS_FUNCTIONS.R            9             9      test_fips ***
+  # 2:                     test-state_from_fips.R            0             9      test_fips
+  # 3:                   test-state_from_latlon.R            0             9      test_fips
+  # 4:           test-getblocksnearby_from_fips.R            6             7 test_getblocks  ***
+  # 5:                     test-getblocksnearby.R            1             7 test_getblocks  **
+  # 6:                     test-radius_inferred.R            0             7 test_getblocks
+  # 7: test-getblocks_summarize_blocks_per_site.R            0             7 test_getblocks
+  # 8:          test-getblocksnearbyviaQuadTree.R            0             7 test_getblocks
+  # 9:                       test-MAP_FUNCTIONS.R            6             6      test_maps  ***
+  # 10:                         test-address_xyz.R            3             3    test_latlon  **
+  # 11:                        test-latlon_infer.R            0             3    test_latlon
+  # 12:                   test-latlon_as.numeric.R            0             3    test_latlon
+  # 13:                     test-latlon_df_clean.R            0             3    test_latlon
+  # 14:                     test-latlon_is.valid.R            0             3    test_latlon
+  # 15:                     test-latlon_from_sic.R            0             3    test_latlon
+  # 16:                 test-latlon_from_address.R            0             3    test_latlon
+  # 17:                    test-naics_validation.R            2             2     test_naics  **
+  # 18:                    test-naics_categories.R            0             2     test_naics
+  # 19:                 test-naics_findwebscrape.R            0             2     test_naics
+  # 20:                      test-naics_from_any.R            0             2     test_naics
+  # 21:                     test-naics_from_code.R            0             2     test_naics
+  # 22:                     test-naics_from_name.R            0             2     test_naics
+  # 23:            test-naics_subcodes_from_code.R            0             2     test_naics
+  # 24:                      test-naics2children.R            0             2     test_naics
+  # 25:                        test-frs_is_valid.R            1             1       test_frs  **
+  # 26:                         test-doaggregate.R            1             1      test_doag  **
   # 27:                    test-regid_from_naics.R            0             1       test_frs
-  # 28:                  test-frs_from_programid.R            0             1       test_frs
-  # 29:                      test-frs_from_regid.R            0             1       test_frs
-  # 30:                        test-frs_from_sic.R            0             1       test_frs
+  # 28:                      test-frs_from_naics.R            0             1       test_frs
+  # 29:                  test-frs_from_programid.R            0             1       test_frs
+  # 30:                      test-frs_from_regid.R            0             1       test_frs
+  # 31:                        test-frs_from_sic.R            0             1       test_frs
+  # 32:                             test-varinfo.R            0             1      test_doag
+  # 33:              test-pctile_from_raw_lookup.R            0             1      test_doag
+  # 34:                       test-shapefile_xyz.R            0             0     test_shape
+  # 35:                              test-ejamit.R            0             0    test_ejamit
+  # 36:                     test-mod_save_report.R            0             0       test_mod
+  # 37:                   test-mod_specify_sites.R            0             0       test_mod
+  # 38:                    test-mod_view_results.R            0             0       test_mod
+  # 39:                       test-ui_and_server.R            0             0       test_app
+  # file fails_byfile fails_bygroup      testgroup
   
   
   byfile = x[,  lapply(.(nb, warning, passed, not), sum), by = "file"]
   setorder(byfile, -V4)
   setnames(byfile, new = c("file", "nb", "warning", "passed", "notpassed"))
   byfile
+  
   #                                          file    nb warning passed notpassed
-  #        
-  # 1:                      test-fips_lead_zero.R    41       2     24        17  ****
-  # 2:                test-fips_bg_from_anyfips.R    59      12     47        12  ****
+  # 
+  # 1:                      test-FIPS_FUNCTIONS.R   318       0    309         9
   
-  # 3:                     test-naics_from_code.R     8       0      4         4
+  # 2:           test-getblocksnearby_from_fips.R     9       6      3         6
+  
+  # 3:                       test-MAP_FUNCTIONS.R    21       6     15         6
+  
   # 4:                         test-address_xyz.R    19       1     16         3
-  # 5:                     test-state_from_fips.R     9       3      6         3
-  # 6:           test-getblocksnearby_from_fips.R     6       3      3         3
-  # 7:                    test-naics_validation.R     8       0      6         2
-  # 8:                 test-naics_findwebscrape.R     6       1      5         1
-  # 9:                     test-naics_from_name.R     2       0      1         1
-  #10:                        test-frs_is_valid.R     2       0      1         1
-  #11:                     test-radius_inferred.R     2       1      1         1
-  #12:                     test-getblocksnearby.R    12       0     11         1
   
-  # 13:                    test-naics_categories.R     6       0      6         0
-  # 14:                      test-naics_from_any.R    26       0     26         0
-  # 15:            test-naics_subcodes_from_code.R    11       0     11         0
-  # 16:                      test-naics2children.R    10       0     10         0
-  # 17:                    test-regid_from_naics.R    14       0     14         0
-  # 18:                      test-frs_from_naics.R    28       0     28         0
-  # 19:                  test-frs_from_programid.R     2       0      2         0
-  # 20:                      test-frs_from_regid.R     2       0      2         0
-  # 21:                        test-frs_from_sic.R    16       0     16         0
-  # 22:                        test-latlon_infer.R     0       0      0         0
-  # 23:                   test-latlon_as.numeric.R     3       0      3         0
-  # 24:                     test-latlon_df_clean.R     0       0      0         0
-  # 25:                     test-latlon_is.valid.R     2       0      2         0
-  # 26:                     test-latlon_from_sic.R    16       0     16         0
-  # 27:                 test-latlon_from_address.R    10       0     10         0
-  # 28:                   test-state_from_latlon.R    11       0     11         0
-  # 29:                       test-shapefile_xyz.R    16       0     16         0
-  # 30: test-getblocks_summarize_blocks_per_site.R     3       0      3         0
-  # 31:          test-getblocksnearbyviaQuadTree.R     3       0      3         0
-  # 32:                             test-varinfo.R     9       0      9         0
-  # 33:              test-pctile_from_raw_lookup.R    11       0     11         0
-  # 34:                         test-doaggregate.R     3       0      3         0
-  # 35:                              test-ejamit.R     9       0      9         0
-  # 36:                     test-mod_save_report.R     0       0      0         0
-  # 37:                   test-mod_specify_sites.R     0       0      0         0
-  # 38:                    test-mod_view_results.R     0       0      0         0
-  # 39:                       test-ui_and_server.R    10       0     10         0
-  #                                           file    nb warning passed notpassed
+  # 5:                    test-naics_validation.R    11       0      9         2
+  
+  # 6:                     test-getblocksnearby.R    12       0     11         1
+  
+  # 7:                        test-frs_is_valid.R     8       0      7         1
+  
+  # 8:                         test-doaggregate.R     4       1      3         1
+   
   
   
-  ########################### #  ########################### #
-  ## which tests somehow cause multiple warnings or errors?
-  
- 
-#          testgroup                             file                                               test skipped  error    nb warning passed   not
-  
-#             <char>                           <char>                                             <char>  <lgcl> <lgcl> <int>   <int>  <int> <int>
-  
-#  1:      test_fips      test-fips_bg_from_anyfips.R            what if inputs are invalid text strings   FALSE  FALSE    16      12      4    12 ****
-#  2:     test_naics           test-naics_from_code.R warn if given naics code that is NA or text not li   FALSE   TRUE     8       0      4     4 **
-#  3:      test_fips           test-state_from_fips.R actually does not warn but does not crash, for inv   FALSE  FALSE     7       3      4     3 **
-#  4: test_getblocks test-getblocksnearby_from_fips.R             getblocksnearby_from_fips works at all   FALSE  FALSE     6       3      3     3 **
-#  5:      test_fips            test-fips_lead_zero.R should warn for text that cant be coerced into num   FALSE  FALSE     3       2      1     2 **
-
-  
+   
   
 } # end of big if
 ########################### #  ########################################## #
