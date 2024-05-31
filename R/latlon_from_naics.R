@@ -3,7 +3,11 @@
 #'
 #' Get lat lon, Registry ID, given NAICS industry code(s)
 #' Find all EPA Facility Registry Service (FRS) sites with this exact NAICS code (not subcategories)
-#' @details NOTE: many FRS sites lack NAICS code!
+#' @details 
+#'  The EPA also provides a [FRS Facility Industrial Classification Search tool](https://www.epa.gov/frs/frs-query#industrial)
+#'  where you can find facilities based on NAICS or SIC.
+#'  
+#' NOTE: many FRS sites lack NAICS code!
 #'
 #'   Also, this function does not find the sites
 #'   identified by FRS data as being in a child NAICS (subcategory of your exact query)!
@@ -11,11 +15,14 @@
 #'   Relies on  frs_by_naics (a data.table)
 #'
 #'   See info about NAICS industry codes at <https://www.naics.com/search>
+#'   
 #' @param naics a vector of naics codes, or
 #'   a data.table with column named code, as with output of [EJAM::naics_from_any()]
 #' @return A data.table (not just data.frame) with columns called
 #'   lat, lon, REGISTRY_ID, NAICS (but see the id_only parameter)
-#' @aliases latlon_from_naics
+#'   
+#' @seealso [frs_from_naics()]  [frs_from_sic()] [latlon_from_sic()] [regid_from_naics()] [naics_from_any()]
+#'   
 #' @examples
 #'   regid_from_naics(321114)
 #'   latlon_from_naics(321114)

@@ -30,7 +30,10 @@ sources subject to Maximum Achievable Control Technology (MACT) standards
 under the Clean Air Act.
 }
 \details{
-See \url{https://www.epa.gov/stationary-sources-air-pollution/national-emission-standards-hazardous-air-pollutants-neshap-8}
+See \href{https://www.epa.gov/stationary-sources-air-pollution/national-emission-standards-hazardous-air-pollutants-neshap-9}{EPA information about MACT subparts, NESHAPs, etc.}
+
+EPA's \href{https://echo.epa.gov/help/facility-search/search-criteria-help#facchar}{ECHO query tools}
+also provide search by NAICS or SIC, and by MACT subpart.
 }
 \examples{
   mact_table
