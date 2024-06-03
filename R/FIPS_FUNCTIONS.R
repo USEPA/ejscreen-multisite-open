@@ -197,6 +197,7 @@ fips_lead_zero <- function(fips) {
 #'    [getblocksnearby_from_fips()] provides one row per block.
 #'    See more below under "Value"
 #' @param fips County FIPS vector,
+
 #'   like fips_counties_from_state_abbrev("DE")
 #' @seealso [getblocksnearby_from_fips()]
 #' @return provides table similar to the output of getblocksnearby(),
@@ -226,10 +227,6 @@ counties_as_sites <- function(fips) {
     message("leading zeroes being inferred since FIPS was provided as numbers not character class")
     fips <- fips_lead_zero(fips)
   }
-  # if (!all(fips_valid(fips))) {warning('some fips provided are not valid county fips')}
-  
-  # accept county fips vector
-  # return counties2bgs table of pairs so doaggregate_blockgroups() or whatever can take that and do full EJ stats.
 
   county2bg <- bgpts[substr(bgfips,1,5) %in% fips, .(countyfips = substr(bgfips,1,5), bgid) ]
   if (NROW(county2bg) == 0) {warning("no valid fips, so returning empty data.table of 0 rows")}
@@ -241,6 +238,9 @@ counties_as_sites <- function(fips) {
   county2bg[ , distance_unadjusted := 0]
   county2bg$blockid = blockwts[county2bg, .(blockid = blockid[1]), on = "bgid", by = "bgid"]$blockid
   
+  county2bg <- bgpts[substr(bgfips,1,5) %in% fips, .(countyfips = substr(bgfips,1,5), bgid) ]
+  county2bg[, ejam_uniq_id := .GRP , by = "countyfips"]
+
   county2bg[, .(ejam_uniq_id, countyfips, bgid)]
 }
 ############################################### #
