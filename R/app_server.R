@@ -2545,10 +2545,10 @@ app_server <- function(input, output, session) {
                   to = file.path(tempdir(), 'communityreport.css'), overwrite = TRUE)
       }
       
-      if (!('EPA_logo_white.png') %in% list.files(file.path(tempdir(), 'www'))) {
+      if (!('EPA_logo_white_2.png') %in% list.files(file.path(tempdir(), 'www'))) {
         dir.create(file.path(tempdir(), 'www'))
-        file.copy(from = app_sys('report/community_report/EPA_logo_white.png'),
-                  to = file.path(tempdir(), 'www', 'EPA_logo_white.png'), overwrite = TRUE)
+        file.copy(from = app_sys('report/community_report/EPA_logo_white_2.png'),
+                  to = file.path(tempdir(), 'www', 'EPA_logo_white_2.png'), overwrite = TRUE)
       }
       
       ## copy Rmd from inst/report to temp folder  (note there had been a similar but not identical .Rmd in EJAM/www/)
