@@ -32,8 +32,12 @@ a subset of the \link{naicstable} data.table (not just the codes column)
 \description{
 Find industry names and codes by searching for queried code(s) or text
 }
+\details{
+Finding the right NAICS/SIC and finding all the right
+sites is complicated. See discussion of \code{\link[=latlon_from_naics]{latlon_from_naics()}}.
+}
 \examples{
-# Also see vignette for examples
+# Also see vignettes for many more examples, and discussion.
   naics_categories()
   
   naics_from_any("textile mills", children = F)
@@ -41,46 +45,8 @@ Find industry names and codes by searching for queried code(s) or text
 
   frs_from_naics("textile mills", children = FALSE)
   frs_from_naics("textile mills", children = TRUE)
-  \dontrun{
-  naics_from_any(naics_categories(3))[order(name),.(name,code)][1:10,]
-  naics_from_any(naics_categories(3))[order(code),.(code,name)][1:10,]
-  naics_from_code(211)
-  naicstable[code==211,]
-  naics_subcodes_from_code(211)
-  naics_from_code(211,  children = TRUE)
-  naicstable[n3==211,]
-  NAICS[211][1:3] # wrong
-  NAICS[NAICS == 211]
-  NAICS["211 - Oil and Gas Extraction"]
-
- naics_from_any("plastics and rubber")[,.(name,code)]
- naics_from_any(326)
- naics_from_any(326, children = T)[,.(code,name)]
- naics_from_any("plastics", children=T)[,unique(n3)]
- naics_from_any("pig")
- naics_from_any("pig ") # space after g
-
- # naics_from_any("copper smelting")
- # naics_from_any("copper smelting", website_scrape=TRUE)
- # browseURL(naics_from_any("copper smelting", website_url=TRUE) )
-
- a = naics_from_any("plastics")
- b = naics_from_any("rubber")
- fintersect(a,b)[,.(name,code)] #  a AND b
- funion(a,b)[,.(name,code)]     #  a OR  b
- naics_subcodes_from_code(funion(a,b)[,code])[,.(name,code)]   #  plus children
- naics_from_any(funion(a,b)[,code], children=T)[,.(name,code)] #  same
-
- NROW(naics_from_any(325))
-#[1] 1
- NROW(naics_from_any(325, children = T))
-#[1] 54
- NROW(naics_from_any("chem"))
-#[1] 20
- NROW(naics_from_any("chem", children = T))
-[1] 104
-}
+  
 }
 \seealso{
-\code{\link[=naics_subcodes_from_code]{naics_subcodes_from_code()}} \code{\link[=naics_from_code]{naics_from_code()}}  \code{\link[=naics_from_name]{naics_from_name()}}  \code{\link[=naics_from_any]{naics_from_any()}}
+\code{\link[=latlon_from_naics]{latlon_from_naics()}}  \code{\link[=frs_from_naics]{frs_from_naics()}}  \code{\link[=naics_subcodes_from_code]{naics_subcodes_from_code()}} \code{\link[=naics_from_code]{naics_from_code()}}  \code{\link[=naics_from_name]{naics_from_name()}}
 }

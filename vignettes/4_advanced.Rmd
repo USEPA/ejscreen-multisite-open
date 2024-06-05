@@ -63,9 +63,7 @@ indexblocks()
 
 Note: This article is a work in progress
 
-
 ## TEST DATA AVAILABLE FOR EJAM
-
 
 #### Examples of Inputs and Outputs of Various Functions
 
@@ -97,21 +95,187 @@ x[grepl("^testout", x$Item), ]  ; cat("\n\n")
 
 ```
 
-------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+
+# USING NAICS AND SIC CODES TO LOCATE FACILITIES BY INDUSTRY
+
+EJAM helps select regulated sites based on industrial classification, using
+NAICS or SIC code. Finding the right NAICS and finding all the right sites by
+NAICS is complicated. Doing so requires understanding the NAICS system and the
+FRS dataset, and the functions in EJAM that help find or use NAICS codes.
+
+NAICS/SIC categories can be explored in a few ways: - [NAICS.com
+website](https://www.naics.com) with extensive information [about
+NAICS](https://www.naics.com/everything-naics/) and
+[SIC](https://www.naics.com/everything-sic/) - [Key EJAM functions for using
+NAICS/SIC](https://usepa.github.io/EJAM/reference/index.html#specify-facility-type) -
+EPA [FRS Facility Industrial Classification Search
+tool](https://www.epa.gov/frs/frs-query#industrial) where you can find
+facilities based on NAICS or SIC. - EPA APIs exist that can be used for similar
+queries.
+
+Some key EJAM functions include [regid_from_naics()], [latlon_from_naics()],
+[frs_from_naics()], [naics_findwebscrape()], and [naics_categories()]. These
+functions can help find EPA FRS sites based on naics codes or titles. They rely
+on [frs_by_naics] (a data.table), and [naics_from_any()] for querying by code or
+title of category.
+
+Important points:
+
+-   Note that a very large fraction of all FRS sites (as obtained for use in
+    EJAM) lack NAICS code!
+
+-   Note that EJAM may query FRS sites differently than the FRS search tool or
+    other query tools would.
+
+-   Note that NAICS.com reports many more businesses for a given 6-digit
+    category than the FRS shows, which might be due to FRS only including
+    EPA-regulated sites but also due to data gaps.
+
+-   Note the difference between children = TRUE and children = FALSE in EJAM
+    functions like latlon_from_naics()
+
+-   Note that searching on a 6-digit code misses parent categories you may want.
+    The FRS data on NAICS by site is inconsistent in how many digits are
+    reported for the NAICS (explained below).
+
+A given site might be listed in the FRS as being under one or more NAICS codes
+of various lengths, such as only a parent code (large grouping), only a detailed
+code (6-digit), or some combination of codes and their subcategories.
+
+And the same title, like "Petroleum Refineries," may be assigned by the NAICS
+system to the category but also a subcategory, as with codes 32411 and 324110.
+The function [naics_from_any()] shows what codes and title exist in the NAICS
+system.
+
+Also, certain terms appear in the online description of a NAICS but not in the
+title of the NAICS -- the function [naics_findwebscrape()] helps with those
+cases, e.g., compare these:
+
+```{r webscrape_vs, eval=FALSE}
+
+naics_findwebscrape("cement")
+
+naics_from_any("cement")
+```
+
+Compare also these:
+
+```{r webscrape_vs2, eval=FALSE}
+
+naics_findwebscrape("refiner")
+
+naics_from_any("refiner")
+```
+
+`naics_findwebscrape("refiner")` reports "324110" (Petroleum Refineries) and
+other related industries, but not the 5-digit "32411" (also Petroleum
+Refineries).
+
+`naics_from_any("refiner")` reports "324110" and "32411" but not other related
+industries.
+
+Using `naics_findwebscrape()` finds only the 6-digit codes that match on title
+or description, so it would find some codes not found by [naics_from_any()]
+which does not query description, but could lead to missing some facilities in
+the sense that the 6-digit code does not cover the sites listed in FRS under
+only the 5-digit code for Petroleum Refineries (not the 6-digit).
+
+It is important to note that searching on a 6-digit code misses parent
+categories that may include sites you expect to find:
+
+`frs_from_naics("324110", children = F)[,1:5]` finds a few hundred sites, but it
+fails to find some sites you would find using
+`frs_from_naics("32411", children = F)[,1:5]`
+
+The code example below shows that the FRS dataset has some facilities listed
+under the 5-digit "32411" code only, some with the 6-digit "324110" code only,
+and some with both codes:
+
+```{r 5vs6digitNAICS, eval=TRUE}
+hasboth = intersect(
+  frs_from_naics("32411",  children = F)[,1:5]$REGISTRY_ID, 
+  frs_from_naics("324110", children = F)[,1:5]$REGISTRY_ID
+  )
+hasonly6digit = setdiff(
+  frs_from_naics("32411",  children = F)[,1:5]$REGISTRY_ID, 
+  frs_from_naics("324110", children = F)[,1:5]$REGISTRY_ID
+  )
+hasonly5digit = setdiff(
+  frs_from_naics("324110", children = F)[,1:5]$REGISTRY_ID, 
+  frs_from_naics("32411",  children = F)[,1:5]$REGISTRY_ID
+  )
+
+length(hasonly5digit)  # Most of the FRS sites here
+length(hasonly6digit)
+length(hasboth)
+
+```
+
+## Examples of some NAICS/SIC functions
+
+```{r naics_examples, eval=FALSE}
+
+  naics_from_any(naics_categories(3))[order(name),.(name,code)][1:10,]
+  naics_from_any(naics_categories(3))[order(code),.(code,name)][1:10,]
+  
+  naics_from_code(211)
+  naicstable[code==211,]
+  naics_subcodes_from_code(211)
+  naics_from_code(211,  children = TRUE)
+  naicstable[n3==211,]
+  NAICS[211][1:3] # wrong
+  NAICS[NAICS == 211]
+  NAICS["211 - Oil and Gas Extraction"]
+
+ naics_from_any("plastics and rubber")[,.(name,code)]
+ naics_from_any(326)
+ naics_from_any(326, children = T)[,.(code,name)]
+ naics_from_any("plastics", children=T)[,unique(n3)]
+ naics_from_any("pig")
+ naics_from_any("pig ") # space after g
+
+ # naics_from_any("copper smelting")
+ # naics_from_any("copper smelting", website_scrape=TRUE)
+ # browseURL(naics_from_any("copper smelting", website_url=TRUE) )
+
+ a = naics_from_any("plastics")
+ b = naics_from_any("rubber")
+ fintersect(a,b)[,.(name,code)] #  a AND b
+ funion(a,b)[,.(name,code)]     #  a OR  b
+ naics_subcodes_from_code(funion(a,b)[,code])[,.(name,code)]   #  plus children
+ naics_from_any(funion(a,b)[,code], children=T)[,.(name,code)] #  same
+
+ NROW(naics_from_any(325))
+#[1] 1
+ NROW(naics_from_any(325, children = T))
+#[1] 54
+ NROW(naics_from_any("chem"))
+#[1] 20
+ NROW(naics_from_any("chem", children = T))
+# [1] 104
+```
+
+
+--------------------------------------------------------------------------------
 
 # HOW TO ANALYZE PROXIMITY USING EJAM
 
-A discussion of background and considerations in selecting radius is provided after this section on how to use the functions.
+An outline of how to use key functions is provided below. After these examples
+is a discussion of background information and considerations in selecting
+radius.
 
 ## DEMOGRAPHICS BY DISTANCE AT BLOCK GROUP RESOLUTION
 
-It is easiest to analyze distance increments based on each blockgroup's average resident here. Block resolution is covered in a later section.
+It is easiest to analyze distance increments based on each blockgroup's average
+resident here. Block resolution is covered in a later section.
 
 ### WITHIN ONE RADIUS
 
 #### Overall list of sites
 
-At the *OVERALL LIST of sites* as a whole, which groups are *overrepresented* within X mile radius vs Statewide?
+At the *OVERALL LIST of sites* as a whole, which groups are *overrepresented*
+within X mile radius vs Statewide?
 
 ```{r ejamitrunnotshow, eval = TRUE, echo = FALSE, include = FALSE}
 out <- ejamit(testpoints_100, radius = 3.1)
@@ -131,7 +295,8 @@ ejam2barplot(out)
 
 #### Just one site
 
-At *JUST ONE SITE*, which groups are *overrepresented* within X mile radius vs Statewide?
+At *JUST ONE SITE*, which groups are *overrepresented* within X mile radius vs
+Statewide?
 
 ```{r ejamitx, eval = TRUE, echo = FALSE, include = FALSE}
 out1 <- ejamit(testpoints_100[2, ], radius = 3.1, quiet = TRUE)
@@ -148,7 +313,8 @@ ejam2barplot(out1)
 
 #### Site by site comparison
 
-Which groups are *overrepresented* at *EACH SITE*, within X mile radius vs Statewide
+Which groups are *overrepresented* at *EACH SITE*, within X mile radius vs
+Statewide
 
 ```{r tablesiteratios, eval = TRUE, echo = TRUE}
 out <- testoutput_ejamit_10pts_1miles
@@ -169,13 +335,12 @@ barplot(x$Ratio.to.State.avg..Low.inc.,
         xlab = "Site number")
 ```
 
-
-
 ### WITHIN MULTIPLE DISTANCES - COMPARING RADIUS CHOICES
 
 #### Overall list of sites
 
-At the *OVERALL LIST of sites* as a whole, which groups are *overrepresented* within X mile radius vs Statewide?
+At the *OVERALL LIST of sites* as a whole, which groups are *overrepresented*
+within X mile radius vs Statewide?
 
 ```{r ejamit_compare_distances, eval = TRUE, echo = TRUE}
 radii <- c(1,2,3,10)
@@ -201,20 +366,27 @@ See the plot
 ejamit_compare_distances2plot(x)
 ```
 
-
----------------------------------------------------------------------------
-
+--------------------------------------------------------------------------------
 
 ## DEMOGRAPHICS AT BLOCK GROUP RESOLUTION
 
-Most of the EJAM functions use distance to the average resident of a block group, which is calculated from the distance to each block's internal point and uses the approximation that within a block the average resident and all residents are as far as that internal point. For typical distances analyzed in EJAM (e.g., 3 mile radius, or about 5 km) that is a good approximation, since only about 2% of all US blocks are larger than 1 square mile.
+Most of the EJAM functions use distance to the average resident of a block
+group, which is calculated from the distance to each block's internal point and
+uses the approximation that within a block the average resident and all
+residents are as far as that internal point. For typical distances analyzed in
+EJAM (e.g., 3 mile radius, or about 5 km) that is a good approximation, since
+only about 2% of all US blocks are larger than 1 square mile.
 
-If you need high spatial resolution (block by block) plots of an indicator as a function of distance, you can directly work with getblocksnearby() or just use the function plot_distance_by_pctd(). It uses the distance from the site to each block's internal point (like a centroid) rather than just the distance to the average resident in each block group.
+If you need high spatial resolution (block by block) plots of an indicator as a
+function of distance, you can directly work with getblocksnearby() or just use
+the function plot_distance_by_pctd(). It uses the distance from the site to each
+block's internal point (like a centroid) rather than just the distance to the
+average resident in each block group.
 
 ### How demographics at *ONE SITE* vary as *a continuous function of distance*
 
-Example of area where %Black is very high within 1 mile but drops by 3
-miles away
+Example of area where %Black is very high within 1 mile but drops by 3 miles
+away
 
 ```{r plot_distance_by_pctd, eval = TRUE, echo = TRUE}
 pts = testpoints_100[3,]
@@ -225,8 +397,8 @@ plot_distance_by_pctd(
 #browseURL(url_ejscreen_report(lat = pts$lat, lon = pts$lon, radius = 3))
 ```
 
-Example of area that has higher %Hispanic as you go 10 to 30 miles away
-from this specific point
+Example of area that has higher %Hispanic as you go 10 to 30 miles away from
+this specific point
 
 ```{r plot_distance_by_pctd2, eval = TRUE, echo = TRUE}
 pts = data.table::data.table(lat = 45.75464, lon = -94.36791)
@@ -237,9 +409,9 @@ plot_distance_by_pctd(pts,
 # browseURL(url_ejscreen_report(lat = pts$lat, lon = pts$lon, radius = 30))
 ```
 
-Block by block details are also easy to view in a map of all the nearby blocks, as shown in the section on [plotblocksnearby()] and details of blocks near one site.
-
-
+Block by block details are also easy to view in a map of all the nearby blocks,
+as shown in the section on [plotblocksnearby()] and details of blocks near one
+site.
 
 ### Cumulative Distribution plots of groups as *a continuous function of distance*
 
@@ -249,11 +421,15 @@ distance_by_group_plot(
   demogvarname = 'pctlowinc', demoglabel = 'Low Income')
 ```
 
----------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 
 ## MEAN DISTANCE BY DEMOGRAPHIC GROUP
 
-The analysis described above looks at demographics as a function of distance. Another perspective is provided by looking at distance as a function of demographic group. This means looking at the average distance or the whole distribution of distances (or proximities) among all the residents within a single demographic group, one group at a time, and comparing these groups.
+The analysis described above looks at demographics as a function of distance.
+Another perspective is provided by looking at distance as a function of
+demographic group. This means looking at the average distance or the whole
+distribution of distances (or proximities) among all the residents within a
+single demographic group, one group at a time, and comparing these groups.
 
 ### Overall list of sites
 
@@ -283,10 +459,10 @@ print(distance_mean_by_group(
 
 ### Site by site comparison
 
-*Mean distance* of each group, at *EACH SITE*, as ratio to mean of everyone else nearby
+*Mean distance* of each group, at *EACH SITE*, as ratio to mean of everyone else
+nearby
 
-Ratios at each site, of avg dist of group / avg dist of everyone else
-near site:
+Ratios at each site, of avg dist of group / avg dist of everyone else near site:
 
 ```{r distance_by_group_by_site, eval = TRUE, echo = TRUE}
 
@@ -304,7 +480,7 @@ data.frame(site = colnames(x),
 )
 ```
 
----------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 
 ## BACKGROUND AND OVERVIEW OF ISSUES IN PROXIMITY, DISTANCE, OR RADIUS
 
@@ -319,18 +495,18 @@ Two basic ways to report demographics and risk are 1) showing demographics as a
 function or risk, and 2) showing risk as a function of demographics:
 
 1.  Demographics as a function of risk (or proximity): Many proximity analyses
-report percent demographics by distance or risk bin, such as % low income
-within 3 miles of a point. This expresses demographics as a function of
-proximity or risk. Sometimes other distance or risk bins are used, such as
-areas with risk above some cutoff. And sometimes instead of a continuous
-measure of % demographics, the demographic data are used to categorize
-places in bins, such as areas in the top quartile of poverty rates.
+    report percent demographics by distance or risk bin, such as % low income
+    within 3 miles of a point. This expresses demographics as a function of
+    proximity or risk. Sometimes other distance or risk bins are used, such as
+    areas with risk above some cutoff. And sometimes instead of a continuous
+    measure of % demographics, the demographic data are used to categorize
+    places in bins, such as areas in the top quartile of poverty rates.
 
 2.  Risk (or proximity) as a function of demographics: A different way to
-present this information is to report distance or risk as a function of
-demographic group -- this expresses distance within each demographic group,
-such as the average distance by group or the full distribution of risk
-within each group.
+    present this information is to report distance or risk as a function of
+    demographic group -- this expresses distance within each demographic group,
+    such as the average distance by group or the full distribution of risk
+    within each group.
 
 ### Radius, radii, or continuous distance?
 
@@ -353,31 +529,31 @@ actually live in relation to potential sources of exposure or risk.
 
 This is a tricky issue in proximity analysis: There is a subtle but vital
 difference between proximity analysis using a single radius (binary distance)
-and analysis using continuous distance. One way to think of this is that 
-there are two aspects of or degrees of proximity to consider when
-analyzing demographic groups within a certain fixed distance (radius) from a
-single facility point (or a whole set of facilities). These two ways of
-summarizing proximity are complementary:
+and analysis using continuous distance. One way to think of this is that there
+are two aspects of or degrees of proximity to consider when analyzing
+demographic groups within a certain fixed distance (radius) from a single
+facility point (or a whole set of facilities). These two ways of summarizing
+proximity are complementary:
 
-1.  Which groups tend to live nearby in the sense of being **within the
-radius versus outside the radius** selected? In other words, which groups are
-"overrepresented" within X miles of the site? This treats proximity as a
-yes/no, binomial question -- **a resident is nearby or not**. It would focus on
-whether someone is anywhere within 3 miles, say, and ignore the differences
-between being 1, 2, or 3 miles away.
-Most proximity analysis has tended to look at this type of summary.
+1.  Which groups tend to live nearby in the sense of being **within the radius
+    versus outside the radius** selected? In other words, which groups are
+    "overrepresented" within X miles of the site? This treats proximity as a
+    yes/no, binomial question -- **a resident is nearby or not**. It would focus
+    on whether someone is anywhere within 3 miles, say, and ignore the
+    differences between being 1, 2, or 3 miles away. Most proximity analysis has
+    tended to look at this type of summary.
 
 2.  Among the residents within X miles of the site, which groups live especially
-close to the facility? This question recognizes proximity is a continuous
-variable, and focuses on the difference between 1 mile, 1.5 miles, etc.
-However, it only looks at residents within the X miles radius area analyzed,
-so it fails to recognize that some groups tend to live more than 3 miles
-away, for example. This perspective does not take into account which groups
-are overrepresented within the original total radius near a site.
+    close to the facility? This question recognizes proximity is a continuous
+    variable, and focuses on the difference between 1 mile, 1.5 miles, etc.
+    However, it only looks at residents within the X miles radius area analyzed,
+    so it fails to recognize that some groups tend to live more than 3 miles
+    away, for example. This perspective does not take into account which groups
+    are overrepresented within the original total radius near a site.
 
-Some functions like distance_mean_by_group() or distance_by_group_by_site()
-do the second of these two types of analysis. They report, only
-among those anywhere inside the radius, which groups are closer to the site.
+Some functions like distance_mean_by_group() or distance_by_group_by_site() do
+the second of these two types of analysis. They report, only among those
+anywhere inside the radius, which groups are closer to the site.
 
 In a specific location, for example, one demographic group could be
 underrepresented within 3 miles, but those few who are in the group still might
@@ -409,9 +585,16 @@ implicit assumption is that there is some "expected" rate, and/or some
 
 ## CHOICE OF RADIUS AND UNCERTAINTY DUE TO A SMALL RADIUS WHERE BLOCKS ARE LARGE
 
-Choosing a radius (or polygon) that is small relative to local Census blocks can lead to significant uncertainty in EJAM/EJScreen estimates, so it is important to understand the details if one wants to use a small radius especially in rural (low population density) areas.
+Choosing a radius (or polygon) that is small relative to local Census blocks can
+lead to significant uncertainty in EJAM/EJScreen estimates, so it is important
+to understand the details if one wants to use a small radius especially in rural
+(low population density) areas.
 
-To help consider this uncertainty, EJAM reports how many block centroids were found inside each area (inside a circular buffer defined by the selected radius, or inside a polygon that is from a shapefile). That count of blocks is found in a column of the spreadsheet output provided by the web app and also the table called results_bysite that is one output of the ejamit() function:
+To help consider this uncertainty, EJAM reports how many block centroids were
+found inside each area (inside a circular buffer defined by the selected radius,
+or inside a polygon that is from a shapefile). That count of blocks is found in
+a column of the spreadsheet output provided by the web app and also the table
+called results_bysite that is one output of the ejamit() function:
 
 ```{r}
 # out <- ejamit(testpoints_1000, radius = 1)
@@ -431,6 +614,7 @@ barplot(
 ```
 
 For more details about distance adjustments, overlaps of circles, etc.
+
 ```{r diagnosticsdetails, eval = FALSE, echo = TRUE}
 getblocks_diagnostics(
   testoutput_getblocksnearby_1000pts_1miles,
@@ -441,29 +625,61 @@ getblocks_diagnostics(
 
 ### Suggestions on radius and uncertainty
 
-Here are some suggestions about how to consider the radius in relation to uncertainty where blocks are large:
+Here are some suggestions about how to consider the radius in relation to
+uncertainty where blocks are large:
 
-- A closer look at uncertainty and care in communicating uncertainty may be needed where a circle or polygon contains fewer than about 30 block centroids. That is especially important if it contains fewer than about 10, and essential if it contains only 1 or zero block centroids.
-- Using a radius of 5 miles or more does not raise these issues in 99% of US locations where EPA-regulated facilities are found.
-- A radius of 3 miles might need a closer look for about 1% to 5% of typical sites in the US.
-- A radius of 1 mile or less requires caution and understanding of the issues at a significant share of locations in the US (about 1 in 4 locations might need a closer look to check for uncertainties).
-- A 0.5 mile radius should not be used without cautious interpretation or offline analysis in most locations where EPA-regulated facilities are located.
-- A 0.25 mile radius should only be used on a case-by-case basis where each location is examined individually and other methods are likely more suited for the analysis of those sites.
+-   A closer look at uncertainty and care in communicating uncertainty may be
+    needed where a circle or polygon contains fewer than about 30 block
+    centroids. That is especially important if it contains fewer than about 10,
+    and essential if it contains only 1 or zero block centroids.
+-   Using a radius of 5 miles or more does not raise these issues in 99% of US
+    locations where EPA-regulated facilities are found.
+-   A radius of 3 miles might need a closer look for about 1% to 5% of typical
+    sites in the US.
+-   A radius of 1 mile or less requires caution and understanding of the issues
+    at a significant share of locations in the US (about 1 in 4 locations might
+    need a closer look to check for uncertainties).
+-   A 0.5 mile radius should not be used without cautious interpretation or
+    offline analysis in most locations where EPA-regulated facilities are
+    located.
+-   A 0.25 mile radius should only be used on a case-by-case basis where each
+    location is examined individually and other methods are likely more suited
+    for the analysis of those sites.
 
 These considerations are explained further in the discussion below.
 
-Demographic counts and percentages or environmental indicators are calculated from block group demographic and environmental indicators and an estimate of what fraction of each block group is inside each site. For proximity analysis that means a circle is drawn around a point using a radius, and for shapefiles a similar approach is used. In either case, the fraction of the block group counted as inside the area analyzed is based on which block centroids (each is technically called a block "internal point") are inside the circle or polygon. All the residents of a block are assumed to be inside if the block centroid is inside. This is exactly true unless a block is on the edge of the circle or polygon. Even for the ones on the edge, some centroids are just outside and some just inside the shape, so the contributions of some blocks are overcounted and other undercounted, but those tend to cancel each other out in the sense that it is unlikely they would all be undercounted, for example. Still, when a large share of the block points in circle or polygon are from blocks not entirely inside, uncertainty is higher than when the vast majority of blocks are entirely inside. In other words, if the circle or polygon has a very large number of blocks in it, uncertainty is lower because only a small fraction are along the edge and bisected. If a radius of 3 miles is used, the area is 28 square miles. If the blocks in that location are only about 0.28 square miles each, the circle might contain or partly contain about 100 blocks.
+Demographic counts and percentages or environmental indicators are calculated
+from block group demographic and environmental indicators and an estimate of
+what fraction of each block group is inside each site. For proximity analysis
+that means a circle is drawn around a point using a radius, and for shapefiles a
+similar approach is used. In either case, the fraction of the block group
+counted as inside the area analyzed is based on which block centroids (each is
+technically called a block "internal point") are inside the circle or polygon.
+All the residents of a block are assumed to be inside if the block centroid is
+inside. This is exactly true unless a block is on the edge of the circle or
+polygon. Even for the ones on the edge, some centroids are just outside and some
+just inside the shape, so the contributions of some blocks are overcounted and
+other undercounted, but those tend to cancel each other out in the sense that it
+is unlikely they would all be undercounted, for example. Still, when a large
+share of the block points in circle or polygon are from blocks not entirely
+inside, uncertainty is higher than when the vast majority of blocks are entirely
+inside. In other words, if the circle or polygon has a very large number of
+blocks in it, uncertainty is lower because only a small fraction are along the
+edge and bisected. If a radius of 3 miles is used, the area is 28 square miles.
+If the blocks in that location are only about 0.28 square miles each, the circle
+might contain or partly contain about 100 blocks.
 
-The dataset used by EJAM called blockwts has a column called block_radius_miles that is what the radius would be if the block were circular, and it was created based on area = pi * block_radius_miles^2 or block_radius_miles = sqrt(area / pi) where area is in square miles.
-
+The dataset used by EJAM called blockwts has a column called block_radius_miles
+that is what the radius would be if the block were circular, and it was created
+based on area = pi \* block_radius_miles\^2 or block_radius_miles = sqrt(area /
+pi) where area is in square miles.
 
 ### Details on the blocks found near one site
 
 #### Table of distances between each site and each block
 
-Use `getblocksnearby()` to quickly find residents/blocks that are within
-a specified distance, as a table of distances between sites and nearby
-blocks.
+Use `getblocksnearby()` to quickly find residents/blocks that are within a
+specified distance, as a table of distances between sites and nearby blocks.
 
 ```{r getblocksnearby1, eval = TRUE, echo = TRUE}
 sitepoints <- testpoints_10[1:2, ]
@@ -491,17 +707,24 @@ x <- plotblocksnearby(testpoints_10[1, ], radius = 3, returnmap = F)
 # Set returnmap= TRUE to actually return a leaflet map
 ```
 
-
 ## POPULATION DENSITY -- WHY THE AVG SITE AND AVG RESIDENT ARE SO DIFFERENT
 
-Reporting EJAM information summarized for the average site gives very different answers than reporting on the average resident near any one or more of those sites. The average site and average resident are completely different because most of the residents live near just a few of the sites -- the ones with higher population density -- when one is using a fixed radius at all sites, such as 3 miles from each site. Taking the average of sites gives equal weight to each site, even the ones with very few residents around them. Taking the average of all residents near all the sites gives equal weight to each person, so conditions near certain sites affect more people and have more influence on that average.
+Reporting EJAM information summarized for the average site gives very different
+answers than reporting on the average resident near any one or more of those
+sites. The average site and average resident are completely different because
+most of the residents live near just a few of the sites -- the ones with higher
+population density -- when one is using a fixed radius at all sites, such as 3
+miles from each site. Taking the average of sites gives equal weight to each
+site, even the ones with very few residents around them. Taking the average of
+all residents near all the sites gives equal weight to each person, so
+conditions near certain sites affect more people and have more influence on that
+average.
 
 ### Sites vary widely in count of blocks nearby, depending on population density (which is closely related to block area in square miles)
 
 -   what blocks are near each site
 -   how far are they
--   how many blocks are typically near a given site (population density
-varies)
+-   how many blocks are typically near a given site (population density varies)
 -   how many sites are near a block (residents with \> 1 site nearby)
 
 ```{r popshare_at, eval = TRUE, echo = TRUE}
@@ -523,8 +746,8 @@ names(sites2blocks)
 
 Very few blocks are within a radius of 1/4 mile.
 
-Hundreds are often within 1 mile, but sometimes there are only a handful
-or even zero.
+Hundreds are often within 1 mile, but sometimes there are only a handful or even
+zero.
 
 ```{r s2b_stats_xyz, eval = TRUE, echo = TRUE}
 
@@ -615,9 +838,9 @@ plotblocksnearby(sitepoints = sitepoints[sitepoints$ejam_uniq_id == densest, ])
 plotblocksnearby(sitepoints = sitepoints[sitepoints$ejam_uniq_id == densest, ])
 ```
 
-Within a 1 mile radius, the blocks found tend to be about 2/3 of a mile from the site at the center.
+Within a 1 mile radius, the blocks found tend to be about 2/3 of a mile from the
+site at the center.
 
 ```{r eval = TRUE, echo = TRUE}
 summary(s2b_stats$avgDistance)
 ```
-
