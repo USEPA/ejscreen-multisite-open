@@ -1,4 +1,6 @@
 
+# also see [latlon_from_naics()]  [frs_from_naics()] source code in another file
+
 
 #' NAICS - General way to search for industry names and NAICS codes
 #'
@@ -10,10 +12,14 @@
 #' @param fixed should it be an exact match? see [grepl()]
 #' @param website_scrape whether to scrape info from the NAICS website to return a table of codes and names that match (web query uses synonyms so gets more hits)
 #' @param website_url whether to return the URL of the webpage with info on the NAICS (web query uses synonyms so gets more hits)
-#' @seealso [naics_subcodes_from_code()] [naics_from_code()]  [naics_from_name()]  [naics_from_any()]
+#' @seealso [latlon_from_naics()]  [frs_from_naics()]  [naics_subcodes_from_code()] [naics_from_code()]  [naics_from_name()]
 #'
 #' @return a subset of the [naicstable] data.table (not just the codes column)
-#' @examples # Also see vignette for examples
+#' 
+#' @details Finding the right NAICS/SIC and finding all the right 
+#'   sites is complicated. See discussion of [latlon_from_naics()].
+#'   
+#' @examples # Also see vignettes for many more examples, and discussion.
 #'   naics_categories()
 #'   
 #'   naics_from_any("textile mills", children = F)
@@ -21,45 +27,7 @@
 #' 
 #'   frs_from_naics("textile mills", children = FALSE)
 #'   frs_from_naics("textile mills", children = TRUE)
-#'   \dontrun{
-#'   naics_from_any(naics_categories(3))[order(name),.(name,code)][1:10,]
-#'   naics_from_any(naics_categories(3))[order(code),.(code,name)][1:10,]
-#'   naics_from_code(211)
-#'   naicstable[code==211,]
-#'   naics_subcodes_from_code(211)
-#'   naics_from_code(211,  children = TRUE)
-#'   naicstable[n3==211,]
-#'   NAICS[211][1:3] # wrong
-#'   NAICS[NAICS == 211]
-#'   NAICS["211 - Oil and Gas Extraction"]
-#'
-#'  naics_from_any("plastics and rubber")[,.(name,code)]
-#'  naics_from_any(326)
-#'  naics_from_any(326, children = T)[,.(code,name)]
-#'  naics_from_any("plastics", children=T)[,unique(n3)]
-#'  naics_from_any("pig")
-#'  naics_from_any("pig ") # space after g
-#'
-#'  # naics_from_any("copper smelting")
-#'  # naics_from_any("copper smelting", website_scrape=TRUE)
-#'  # browseURL(naics_from_any("copper smelting", website_url=TRUE) )
-#'
-#'  a = naics_from_any("plastics")
-#'  b = naics_from_any("rubber")
-#'  fintersect(a,b)[,.(name,code)] #  a AND b
-#'  funion(a,b)[,.(name,code)]     #  a OR  b
-#'  naics_subcodes_from_code(funion(a,b)[,code])[,.(name,code)]   #  plus children
-#'  naics_from_any(funion(a,b)[,code], children=T)[,.(name,code)] #  same
-#'
-#'  NROW(naics_from_any(325))
-#' #[1] 1
-#'  NROW(naics_from_any(325, children = T))
-#' #[1] 54
-#'  NROW(naics_from_any("chem"))
-#' #[1] 20
-#'  NROW(naics_from_any("chem", children = T))
-#' [1] 104
-#' }
+#'   
 #' @export
 #'
 naics_from_any <- function(query, children = FALSE, ignore.case = TRUE, fixed = FALSE,
@@ -339,6 +307,7 @@ naics_from_name <- function(mynames, children = FALSE, ignore.case = TRUE, fixed
 #' See (https://naics.com) for more information on NAICS codes
 #'
 #' @param naics vector of one or more NAICS codes, like 11,"31-33",325
+#' @seealso [naics_from_any()] [naics_findwebscrape()]
 #' @return vector of URLs as strings like https://www.naics.com/six-digit-naics/?v=2017&code=22
 #'
 #' @export
