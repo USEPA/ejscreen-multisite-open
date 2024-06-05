@@ -207,18 +207,36 @@ fips_lead_zero <- function(fips) {
 #' @examples
 #'  
 #'  # compare counties within a state:
-#'  x = counties_as_sites(fips_counties_from_state_abbrev("DE"))
-#'  out = 
+#'  fipsRI = fips_counties_from_state_abbrev("RI")
+#'  x = counties_as_sites(fipsRI)
+#'  out = doaggregate(x) # similar to ejamit()
+#'  ejam2barplot_sites(out, "pop", names.arg = fipsRI)
 #'  
 #'  # compare two specific counties:
 #'  counties_as_sites(c('01001','72153'))
 #'  
 #'  # Largest US Counties by ACS Population Totals:
-#'  y = blockgroupstats[ , .(ST = ST[1], countypop = sum(pop)),
+#'  topcounties = blockgroupstats[ , .(ST = ST[1], countypop = sum(pop)),
 #'   by = .(FIPS = substr(bgfips,1,5))][order(-countypop),][1:20, .(
 #'     CountyPopulation = prettyNum(countypop, big.mark = ","), FIPS, ST)]
-#'  x = counties_as_sites(y$FIPS)
-#'
+#'  
+#'  myfips = topcounties$FIPS
+#'  
+#'  # simplest map of top counties
+#'  map_shapes_leaflet(shapes = shapes_counties_from_countyfips(myfips))
+#'  
+#'  # simplest way to get and map EJ stats on counties
+#'  out_c1 = ejamit(fips = myfips)
+#'  mapfastej_counties(out_c1$results_bysite)
+#'    
+#'  # another way to get and map EJ stats on counties
+#'  s2b = counties_as_sites(myfips)
+#'  out_c2 = doaggregate(s2b) 
+#'  # but without URLs/links to reports
+#'  bysite = out_c2$results_bysite
+#'  bysite$ejam_uniq_id <- myfips
+#'  mapfastej_counties(bysite)
+#'   
 #' @export
 #'
 counties_as_sites <- function(fips) {
@@ -238,10 +256,7 @@ counties_as_sites <- function(fips) {
   county2bg[ , distance_unadjusted := 0]
   county2bg$blockid = blockwts[county2bg, .(blockid = blockid[1]), on = "bgid", by = "bgid"]$blockid
   
-  county2bg <- bgpts[substr(bgfips,1,5) %in% fips, .(countyfips = substr(bgfips,1,5), bgid) ]
-  county2bg[, ejam_uniq_id := .GRP , by = "countyfips"]
-
-  county2bg[, .(ejam_uniq_id, countyfips, bgid)]
+  county2bg[, .(ejam_uniq_id, countyfips, bgid, blockid, blockwt, distance, distance_unadjusted)]
 }
 ############################################### #
 
