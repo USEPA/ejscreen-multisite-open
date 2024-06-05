@@ -48,13 +48,12 @@ reference:
   - ejam2report
   - ejam2map
   - ejam2excel
+  - ejam2shapefile
   - ejam2ratios
   - ejam2barplot
-  - ejam2shapefile
-  - ejamit_compare_distances
-  - ejamit_compare_distances2plot
+  - ejam2barplot_sites
   - ejamit_compare_types_of_places
-  - ejscreenit_for_ejam
+  - ejamit_compare_distances
 - title: "Specify Points by Lat/Lon"
   desc: "Utilities for working with latitude/ longitude or address"
   contents:
@@ -265,13 +264,17 @@ reference:
 - subtitle: "Plots"
   contents:
   - ejam2barplot
+  - ejam2barplot_sites
+  - plot_barplot_sites
+  - ejam2barplot_sitegroups
+  - plot_barplot_sitegroups
+  - ejamit_compare_distances2plot
   - plot_barplot_ratios_ez
   - plot_barplot_ratios
   - plot_ridgeline_ratios_ez
   - plot_ridgeline_ratios
   - plot_vs_us
   - boxplots_ratios
-  - ejamit_compare_distances2plot
   - plot_demogshare_by_distance
   - plot_distance_by_pctd
   - plot_distance_by_group
