@@ -345,8 +345,13 @@ reference:
   - dataload_from_pins
   - dataload_from_aws
   - ejampackages
+- title: "EJScreen API"
+  desc: "EJAM-EJScreen and using the EJScreen API"
+  contents:
+  - ejscreenit_for_ejam
 - title: internal
   contents:
+  - ejscreen_vs_ejam
   - app_server
   - app_ui
   - rmost
