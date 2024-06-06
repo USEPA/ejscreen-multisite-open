@@ -63,17 +63,64 @@ indexblocks()
 
 Note: This article is a work in progress
 
-## TEST DATA AVAILABLE FOR EJAM
+## EXAMPLES OF FILES & TEST DATA EJAM CAN IMPORT OR OUTPUT
 
-#### Examples of Inputs and Outputs of Various Functions
+### Sample spreadsheets & shapefiles for trying the web app
+
+Examples of .xlsx files are installed locally with EJAM, as input files you can
+use to try out EJAM functions or the web app, or to see what an input file
+should look like.
+
+**Local folders with sample files**
+
+To see a list of local folders (where EJAM is installed locally) with files that
+can be uploaded to the EJAM web app or provided as inputs to EJAM functions (as
+examples or for testing):
 
 ```{r, eval = FALSE, echo = TRUE}
+cbind(path = x <- list.dirs(
+  system.file("testdata/", package = "EJAM"),
+  recursive = FALSE),
+  folder = basename(x))
+```
 
-# This provides a useful list of test/ sample data objects in EJAM and related packages:
+**List of those local files**
 
-# THE LARGEST FILES that are included in the package
-# are mostly the blockgroupstats dataset from EJScreen
-# (note the block datasets are not in the package - they get downloaded)
+```{r, eval = FALSE, echo = TRUE}
+for (example_type in x) {
+  cat("\n", basename(example_type), "\n\n")
+  print(cbind(`Examples Available` = list.files(example_type)))
+  }
+```
+
+You can try uploading these kinds of files in the web app, for example, by
+finding them in these local folders where you installed the package:
+
+-   /`EJAM/testdata/latlon/testpoints_100.xlsx`
+-   /`EJAM/testdata/shapes/portland_shp.zip`
+-   etc.
+
+**Example of using a file in EJAM**
+
+```{r, eval = FALSE, echo = TRUE}
+testpoint_files <- list.files(
+  system.file("testdata/latlon", package = "EJAM"), 
+  full.names = T
+  )
+testpoint_files
+
+latlon_from_anything(testpoint_files[2]) # aka latlon_any_format()
+```
+
+### Sample R data objects: Examples of inputs & outputs of EJAM functions
+
+To see examples of data objects, installed as part of EJAM and related packages,
+as inputs or intermediate data objects that you can use to try out EJAM
+functions, to see what the outputs and inputs look like, or to use for testing
+purposes -- This code snippet provides a useful list of test/ sample data
+objects in EJAM and related packages:
+
+```{r, eval = TRUE, echo = TRUE}
 x <- EJAM:::datapack(simple = FALSE); cat("\n\n") 
 x <- x[order(x$Package, x$Item), ] 
 
@@ -94,6 +141,10 @@ x[grepl("^test[^op_]", x$Item), ]
 x[grepl("^testout", x$Item), ]  ; cat("\n\n") 
 
 ```
+
+Note the largest files included in the package are mostly the blockgroupstats
+dataset from EJScreen. Note the block datasets are not in the package - they get
+downloaded by the package at launch or as needed.
 
 --------------------------------------------------------------------------------
 
@@ -255,7 +306,6 @@ length(hasboth)
  NROW(naics_from_any("chem", children = T))
 # [1] 104
 ```
-
 
 --------------------------------------------------------------------------------
 
