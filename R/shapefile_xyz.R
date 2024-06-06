@@ -172,7 +172,6 @@ shapefile_from_zip <- function(path, cleanit = TRUE, crs = 4269, layer = NULL, .
   # - if .shp etc. files, unzip files into tempfolder, then use x <- shapefile_from_folder(tempfolder)
   # - if folder, unzip foldername into tempfolder then use x <- shapefile_from_folder(foldername)
   
-  all("gdb" == tools::file_ext(dirname(unzip(testfilename_gdbzip        , list = T)$Name)))
   
   td <- tempdir()
   gname <- unzip(path, list = TRUE)
