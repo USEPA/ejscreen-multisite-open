@@ -49,7 +49,7 @@ ejamit_compare_distances_fulloutput <- function(sitepoints, radii = c(1,2,3), qu
     stop("radii must be numbers between 0.5 and 31, and 30 different radii is the max allowed.")
   }
   # accept interactively or from filepath or from object, infer lat/lon cols, assign ejam_uniq_id
-  sitepoints <- sitepoints_from_any(sitepoints)   
+  sitepoints <- sitepoints_from_any(sitepoints, silentinteractive = silentinteractive)   
   out_bydistance <- list()
   for (i in seq_along(radii)) {
     out_bydistance[[i]] <- ejamit(sitepoints = sitepoints, radius = radii[i],
@@ -161,7 +161,7 @@ ejamit_compare_distances <- function(sitepoints, radii = c(1,2,3), quiet = TRUE,
   ################################################################################## #
   
   # Check and clean input points and radii
-  sitepoints <- sitepoints_from_any(sitepoints) # also done again in ejamit_compare_distances_fulloutput()
+  sitepoints <- sitepoints_from_any(sitepoints, silentinteractive = silentinteractive) # also done again in ejamit_compare_distances_fulloutput()
   if (length(radii) > 30 || max(radii, na.rm = T) > 31 || any(!is.numeric(radii)) || any(radii < 0.5)) {
     stop("radii must be numbers between 0.5 and 31, and 30 different radii is the max allowed.")
   }

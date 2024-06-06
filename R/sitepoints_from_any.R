@@ -5,7 +5,7 @@
 # then add ejam_uniq_id column
 
 
-sitepoints_from_any <- function(sitepoints) {
+sitepoints_from_any <- function(sitepoints, silentinteractive = TRUE) {
   
   # note this overlaps or duplicates code in ejamit() and app_server.R
   #   for data_up_latlon() around lines 81-110 and data_up_frs() at 116-148
