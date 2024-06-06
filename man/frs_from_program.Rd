@@ -17,3 +17,6 @@ relevant rows of the data.table called frs, which has column names that are
 Get data.table based on given FRS Program System CATEGORY.
 Find all FRS sites in a program like RCRAINFO, TRIS, or others.
 }
+\details{
+Also see \href{https://www.epa.gov/frs/frs-data-sources}{EPA documentation describing each program code} aka data source.
+}

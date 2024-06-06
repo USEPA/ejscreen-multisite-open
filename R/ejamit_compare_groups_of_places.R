@@ -16,12 +16,60 @@
 #'
 #' @examples
 #'   out <- ejamit_compare_types_of_places(testpoints_10[1:4, ], 
-#'   typeofsite <- c("A", "B", "B", "C"))
+#'     typeofsite = c("A", "B", "B", "C"))
 #'   cbind(Rows_or_length = sapply(out, NROW))
 #'   
-#'    x <- EJAM::state_from_latlon(lat = testpoints_1000$lat, lon = testpoints_1000$lon)
-#'    x <- data.frame(testpoints_1000, x)
-#'    out_bystate <- ejamit_compare_types_of_places(x, x$ST)
+#'   ejam2barplot_sitegroups(out, names_ratio_to_avg_these[1], topn = 3)
+#'   
+#'   ejam2barplot_sitegroups(out, "sitecount_unique", topn=3, sortby = F)
+#'   
+#'   ejam2barplot_sitegroups(out, "pop", topn = 3, sortby = F)
+#'   
+#'   # use calculated variable not in original table
+#'   df <- out$results_bytype
+#'   df$share <- df$pop / sum(df$pop)
+#'   df$pop_per_site <- df$pop / df$sitecount_unique
+#'   
+#'   plot_barplot_sites(df,
+#'     "share", ylab = "Share of Total Population",
+#'     topn = 3, names.arg = out$types , sortby = F)
+#'     
+#'   plot_barplot_sites(df,
+#'     "pop_per_site", ylab = "Pop. at Avg. Site in Group",
+#'     topn = 3, main = "Nearby Residents per Site, by Site Type",
+#'     names.arg = out$types , sortby = F)
+#'   
+#'   \dontrun{
+#'     
+#'   # Analyze by EPA Region
+#'   
+#'   pts <- data.frame(testpoints_1000)
+#'   
+#'   # Get State and EPA Region of each point from lat/lon
+#'   
+#'    x <- state_from_latlon(lat = pts$lat, lon = pts$lon)
+#'    pts <- data.frame(pts, x)
+#'    
+#'    out_byregion <- ejamit_compare_types_of_places(
+#'      pts, typeofsite = pts$REGION)
+#'    
+#'    dvarname <- names_d[3]
+#'    ejam2barplot_sitegroups(out_byregion, dvarname)
+#'    abline(h = usastats_means(dvarname))
+#'    
+#'    ejam2barplot_sitegroups(out_byregion, "ratio.to.avg.pctmin",
+#'       main = "By EPA Region", ylim = c(0, 2))
+#'    abline(h = 1)
+#'      
+#'    # Analyze by State (slow)
+#'    
+#'    out_bystate <- ejamit_compare_types_of_places(pts, typeofsite = pts$ST)
+#'    
+#'    ejam2barplot_sitegroups(out_bystate, "sitecount_unique", 
+#'      names.arg = out_bystate$types, topn = 52, cex.names = 0.5,
+#'      main = "Sites by State")
+#'
+#'   }
 #'   
 ejamit_compare_types_of_places <- function(sitepoints, typeofsite = NULL, ...) {
   

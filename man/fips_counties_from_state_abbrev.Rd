@@ -7,7 +7,7 @@
 fips_counties_from_state_abbrev(ST)
 }
 \arguments{
-\item{ST}{vector of state abbreviations like c("NY","GA")}
+\item{ST}{vector of state abbreviations like c("NY","GA"), ignoring case}
 }
 \value{
 vector of 5-digit character string county FIPS of all unique counties in those states

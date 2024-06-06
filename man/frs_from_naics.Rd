@@ -18,6 +18,13 @@ relevant rows of the data.table called frs, which has column names that are
 \description{
 Use NAICS code or industry title text search to see FRS Facility Registry Service data on those EPA-regulated sites
 }
+\details{
+The EPA also provides a \href{https://www.epa.gov/frs/frs-query#industrial}{FRS Facility Industrial Classification Search tool}
+where you can find facilities based on NAICS or SIC.
+
+EPA's \href{https://echo.epa.gov/help/facility-search/search-criteria-help#facchar}{ECHO query tools}
+also provide search by NAICS or SIC, and by MACT subpart.
+}
 \examples{
   frs_from_naics("uranium")
   mapfast(frs_from_naics(naics_from_any("nuclear")$code))
@@ -30,5 +37,5 @@ Use NAICS code or industry title text search to see FRS Facility Registry Servic
   
 }
 \seealso{
-\code{\link[=regid_from_naics]{regid_from_naics()}} \code{\link[=naics_from_any]{naics_from_any()}}
+\code{\link[=latlon_from_naics]{latlon_from_naics()}} \code{\link[=latlon_from_sic]{latlon_from_sic()}} \code{\link[=frs_from_sic]{frs_from_sic()}} \code{\link[=regid_from_naics]{regid_from_naics()}} \code{\link[=naics_from_any]{naics_from_any()}}
 }

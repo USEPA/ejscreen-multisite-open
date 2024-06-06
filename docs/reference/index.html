@@ -112,9 +112,14 @@
         <dd>Barplot of ratios of demographic (or other) scores to averages - simpler syntax</dd>
       </dl><dl><dt>
           
+          <code><a href="ejam2shapefile.html">ejam2shapefile()</a></code> 
+        </dt>
+        <dd>DRAFT - export EJAM results as shapefile for use in ArcPro, EJScreen, etc.</dd>
+      </dl><dl><dt>
+          
           <code><a href="ejamit_compare_distances.html">ejamit_compare_distances()</a></code> 
         </dt>
-        <dd>compare ejamit results for more than one radius run ejamit() once per radius, get a table with a row per radius</dd>
+        <dd>Compare EJAM results overall for more than one radius Run ejamit() once per radius, get a summary table with a row per radius</dd>
       </dl><dl><dt>
           
           <code><a href="ejamit_compare_distances2plot.html">ejamit_compare_distances2plot()</a></code> 
@@ -534,6 +539,11 @@
           <code><a href="shapes_blockgroups_from_bgfips.html">shapes_blockgroups_from_bgfips()</a></code> 
         </dt>
         <dd>Get blockgroups boundaries, via API, to map them</dd>
+      </dl><dl><dt>
+          
+          <code><a href="ejam2shapefile.html">ejam2shapefile()</a></code> 
+        </dt>
+        <dd>DRAFT - export EJAM results as shapefile for use in ArcPro, EJScreen, etc.</dd>
       </dl></div><div class="section level2">
       <h2 id="specify-counties-etc-">Specify Counties etc.<a class="anchor" aria-label="anchor" href="#specify-counties-etc-"></a></h2>
       
@@ -899,7 +909,7 @@
         <dd>regionstats (DATA) (obsolete) data.table of 100 percentiles and means for each EPA Region.</dd>
       </dl></div><div class="section level2">
       
-      <h3 id="calculating-summary-stats-etc-">Calculating Summary Stats, etc.<a class="anchor" aria-label="anchor" href="#calculating-summary-stats-etc-"></a></h3>
+      <h3 id="comparing-distances-multiple-radius-values">Comparing Distances / Multiple Radius Values<a class="anchor" aria-label="anchor" href="#comparing-distances-multiple-radius-values"></a></h3>
       
 
       
@@ -910,14 +920,19 @@
 
       <dl><dt>
           
-          <code><a href="count_sites_with_n_high_scores.html">count_sites_with_n_high_scores()</a></code> 
+          <code><a href="ejamit_compare_distances.html">ejamit_compare_distances()</a></code> 
         </dt>
-        <dd>Answers questions like What <code>%</code> of sites have at least 1 demog. indicator <code>&gt;2x</code> state avg?</dd>
+        <dd>Compare EJAM results overall for more than one radius Run ejamit() once per radius, get a summary table with a row per radius</dd>
       </dl><dl><dt>
           
-          <code><a href="colcounter_summary_all.html">colcounter_summary_all()</a></code> 
+          <code><a href="ejamit_compare_distances_fulloutput.html">ejamit_compare_distances_fulloutput()</a></code> 
         </dt>
-        <dd>Summarize count (and percent) of rows with exactly (and at least) N cols &gt;= various thresholds</dd>
+        <dd>Compare ejamit() full results for more than one radius Run ejamit() once per radius, get FULL ejamit() output list per radius</dd>
+      </dl><dl><dt>
+          
+          <code><a href="ejamit_compare_distances2plot.html">ejamit_compare_distances2plot()</a></code> 
+        </dt>
+        <dd>plot indicators as a function of distance from point(s) plot results of ejamit_compare_distances()</dd>
       </dl><dl><dt>
           
           <code><a href="distance_by_group_by_site.html">distance_by_group_by_site()</a></code> 
@@ -945,6 +960,32 @@
         <dd>See plot_distance_mean_by_group()</dd>
       </dl><dl><dt>
           
+          <code><a href="distance_trends.html">distance_trends()</a></code> 
+        </dt>
+        <dd>Which indicators fall most as proximity does? (i.e., are higher if closer to site) Which variables have strongest trend with distance based on slope of linear fit</dd>
+      </dl></div><div class="section level2">
+      
+      <h3 id="calculating-summary-stats-etc-">Calculating Summary Stats, etc.<a class="anchor" aria-label="anchor" href="#calculating-summary-stats-etc-"></a></h3>
+      
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="count_sites_with_n_high_scores.html">count_sites_with_n_high_scores()</a></code> 
+        </dt>
+        <dd>Answers questions like What <code>%</code> of sites have at least 1 demog. indicator <code>&gt;2x</code> state avg?</dd>
+      </dl><dl><dt>
+          
+          <code><a href="colcounter_summary_all.html">colcounter_summary_all()</a></code> 
+        </dt>
+        <dd>Summarize count (and percent) of rows with exactly (and at least) N cols &gt;= various thresholds</dd>
+      </dl><dl><dt>
+          
           <code><a href="popshare_at_top_n.html">popshare_at_top_n()</a></code> 
         </dt>
         <dd>top N sites account for what percent of residents?</dd>
@@ -963,6 +1004,11 @@
           <code><a href="popshare_p_lives_at_what_pct.html">popshare_p_lives_at_what_pct()</a></code> 
         </dt>
         <dd>what percent of sites account for P percent of residents?</dd>
+      </dl><dl><dt>
+          
+          <code><a href="distance_trends.html">distance_trends()</a></code> 
+        </dt>
+        <dd>Which indicators fall most as proximity does? (i.e., are higher if closer to site) Which variables have strongest trend with distance based on slope of linear fit</dd>
       </dl></div><div class="section level2">
       <h2 id="viewing-results">Viewing Results<a class="anchor" aria-label="anchor" href="#viewing-results"></a></h2>
       
@@ -981,6 +1027,16 @@
       
 
       <dl><dt>
+          
+          <code><a href="ejam2map.html">ejam2map()</a></code> 
+        </dt>
+        <dd>Show EJAM results as a map of points</dd>
+      </dl><dl><dt>
+          
+          <code><a href="ejam2shapefile.html">ejam2shapefile()</a></code> 
+        </dt>
+        <dd>DRAFT - export EJAM results as shapefile for use in ArcPro, EJScreen, etc.</dd>
+      </dl><dl><dt>
           
           <code><a href="mapfast.html">mapfast()</a></code> 
         </dt>
@@ -1110,6 +1166,11 @@
         <dd>quick boxplots of demographics across sites as ratios to US means</dd>
       </dl><dl><dt>
           
+          <code><a href="ejamit_compare_distances2plot.html">ejamit_compare_distances2plot()</a></code> 
+        </dt>
+        <dd>plot indicators as a function of distance from point(s) plot results of ejamit_compare_distances()</dd>
+      </dl><dl><dt>
+          
           <code><a href="plot_demogshare_by_distance.html">plot_demogshare_by_distance()</a></code> 
         </dt>
         <dd>plot_demogshare_by_distance - work in progress</dd>
@@ -1155,6 +1216,21 @@
       
 
       <dl><dt>
+          
+          <code><a href="ejam2report.html">ejam2report()</a></code> 
+        </dt>
+        <dd>View HTML Report on EJAM Results (Overall or at 1 Site)</dd>
+      </dl><dl><dt>
+          
+          <code><a href="ejam2excel.html">ejam2excel()</a></code> 
+        </dt>
+        <dd>Save EJAM results in a spreadsheet</dd>
+      </dl><dl><dt>
+          
+          <code><a href="ejam2ratios.html">ejam2ratios()</a></code> 
+        </dt>
+        <dd>Quick view of summary stats by type of stat, but lacks rounding specific to each type, etc.</dd>
+      </dl><dl><dt>
           
           <code><a href="table_tall_from_overall.html">table_tall_from_overall()</a></code> 
         </dt>

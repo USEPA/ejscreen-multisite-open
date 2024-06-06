@@ -6,6 +6,9 @@
 #'    This is the format with one row per site-NAICS pair, 
 #'    so multiple rows for one site if it is in multiple NAICS.
 #'  @details  
+#'  The EPA also provides a [FRS Facility Industrial Classification Search tool](https://www.epa.gov/frs/frs-query#industrial)
+#'  where you can find facilities based on NAICS or SIC.
+#'  
 #'  
 #'  MOST SITES LACK NAICS INFO IN FRS! NAICS is missing for about 80 percent of these facilities.
 #'   

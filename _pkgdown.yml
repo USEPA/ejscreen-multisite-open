@@ -48,12 +48,12 @@ reference:
   - ejam2report
   - ejam2map
   - ejam2excel
+  - ejam2shapefile
   - ejam2ratios
   - ejam2barplot
-  - ejamit_compare_distances
-  - ejamit_compare_distances2plot
+  - ejam2barplot_sites
   - ejamit_compare_types_of_places
-  - ejscreenit_for_ejam
+  - ejamit_compare_distances
 - title: "Specify Points by Lat/Lon"
   desc: "Utilities for working with latitude/ longitude or address"
   contents:
@@ -137,6 +137,7 @@ reference:
   - shapefile2latlon
   - shapes_counties_from_countyfips
   - shapes_blockgroups_from_bgfips
+  - ejam2shapefile
 - title: "Specify Counties etc."
   desc: >
     Tools to work with Census units and FIPS codes
@@ -219,22 +220,31 @@ reference:
   - statestats_queryd
   - statestats_querye
   - regionstats
-- subtitle: "Calculating Summary Stats, etc."
+- subtitle: "Comparing Distances / Multiple Radius Values"
   contents:
-  - count_sites_with_n_high_scores
-  - colcounter_summary_all
+  - ejamit_compare_distances
+  - ejamit_compare_distances_fulloutput
+  - ejamit_compare_distances2plot
   - distance_by_group_by_site
   - distance_by_group_plot
   - distance_cdf_by_group_plot
   - distance_mean_by_group
   - distance_by_group
+  - distance_trends
+- subtitle: "Calculating Summary Stats, etc."
+  contents:
+  - count_sites_with_n_high_scores
+  - colcounter_summary_all
   - popshare_at_top_n
   - popshare_at_top_x_pct
   - popshare_p_lives_at_what_n
   - popshare_p_lives_at_what_pct
+  - distance_trends
 - title: "Viewing Results"
 - subtitle: "Maps of Points"
   contents:
+  - ejam2map
+  - ejam2shapefile
   - mapfast
   - mapfastej
   - mapfast_gg
@@ -254,6 +264,11 @@ reference:
 - subtitle: "Plots"
   contents:
   - ejam2barplot
+  - ejam2barplot_sites
+  - plot_barplot_sites
+  - ejam2barplot_sitegroups
+  - plot_barplot_sitegroups
+  - ejamit_compare_distances2plot
   - plot_barplot_ratios_ez
   - plot_barplot_ratios
   - plot_ridgeline_ratios_ez
@@ -269,6 +284,9 @@ reference:
   - plot_lorenz_popcount_by_site
 - subtitle: "Tables"
   contents:
+  - ejam2report
+  - ejam2excel
+  - ejam2ratios
   - table_tall_from_overall
   - table_round
   - table_rounding_info
@@ -327,8 +345,13 @@ reference:
   - dataload_from_pins
   - dataload_from_aws
   - ejampackages
+- title: "EJScreen API"
+  desc: "EJAM-EJScreen and using the EJScreen API"
+  contents:
+  - ejscreenit_for_ejam
 - title: internal
   contents:
+  - ejscreen_vs_ejam
   - app_server
   - app_ui
   - rmost
@@ -361,3 +384,6 @@ reference:
   - url_get_eparest_chunked_by_id
   - url_get_via_url
   - create_filename
+  - out_bydistance2results_bydistance
+  - out_bydistance2results_bydistance_bysite
+  - out_bydistance2results_bysite_bydistance
