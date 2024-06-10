@@ -49,7 +49,7 @@ ejamit_compare_distances_fulloutput <- function(sitepoints, radii = c(1,2,3), qu
     stop("radii must be numbers between 0.5 and 31, and 30 different radii is the max allowed.")
   }
   # accept interactively or from filepath or from object, infer lat/lon cols, assign ejam_uniq_id
-  sitepoints <- sitepoints_from_any(sitepoints)   
+  sitepoints <- sitepoints_from_any(sitepoints, silentinteractive = silentinteractive)   
   out_bydistance <- list()
   for (i in seq_along(radii)) {
     out_bydistance[[i]] <- ejamit(sitepoints = sitepoints, radius = radii[i],
@@ -111,10 +111,11 @@ out_bydistance2results_bydistance <- function(out_bydistance) {
 #'   radii <- c(1, 10)
 #'   pts <- testpoints_100
 #'   pts <- testpoints_10
-#'   x <- ejamit_compare_distances(pts, radii = radii)
+#'   bydist <- ejamit_compare_distances(pts, radii = radii)
+#'   ejamit_compare_distances2plot(bydist, myvars = c(
+#'     "ratio.to.avg.pctlowinc", "ratio.to.avg.pcthisp", "ratio.to.avg.pctnhba"))
 #'   
-#'   names(x) <- fixcolnames(names(x),"r","shortlabel")
-#'   
+#'   names(bydist) <- fixcolnames(names(bydist), "r", "shortlabel")
 #'   
 #' @seealso [plot_distance_by_pctd()], [distance_by_group()],
 #'   and related internal functions
@@ -161,7 +162,7 @@ ejamit_compare_distances <- function(sitepoints, radii = c(1,2,3), quiet = TRUE,
   ################################################################################## #
   
   # Check and clean input points and radii
-  sitepoints <- sitepoints_from_any(sitepoints) # also done again in ejamit_compare_distances_fulloutput()
+  sitepoints <- sitepoints_from_any(sitepoints, silentinteractive = silentinteractive) # also done again in ejamit_compare_distances_fulloutput()
   if (length(radii) > 30 || max(radii, na.rm = T) > 31 || any(!is.numeric(radii)) || any(radii < 0.5)) {
     stop("radii must be numbers between 0.5 and 31, and 30 different radii is the max allowed.")
   }
@@ -234,7 +235,7 @@ distance_trends <- function(results_bydistance,
                             myvars = names_d_subgroups_ratio_to_state_avg,
                             radii = results_bydistance$radius.miles,
                             n = 1) {
-  results_bydistance <- data.frame(results_bydistance)[, names_d_subgroups_ratio_to_state_avg]
+  results_bydistance <- data.frame(results_bydistance)[, myvars]
   # REPORT STRONGEST TREND
   # fit line to points and report which has the most negative slope, e.g.
   slopes <- coef(lm(as.matrix(results_bydistance) ~ radii ))[2, ]
@@ -303,6 +304,11 @@ ejamit_compare_distances2plot <- function(results_bydistance,
   # or maybe
   # return(fixcolnames(names(x), "r", "shortlabel"))
 }
+#################################################################### #
+
+#' @export
+#' @inherit ejamit_compare_distances2plot
+ejam2barplot_distances <- ejamit_compare_distances2plot
 #################################################################### #
 
 
