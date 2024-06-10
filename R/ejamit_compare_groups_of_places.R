@@ -1,5 +1,11 @@
+## example
+# out <- ejamit_compare_types_of_places(testpoints_10[1:4, ], typeofsite = c("A", "B", "B", "C"))
 
-# out = ejamit_compare_types_of_places(testpoints_10[1:4, ], typeofsite = c("A", "B", "B", "C"))
+### Note that it takes roughly the same amount of time to do the getblocksnearby() for all points at once
+### versus doing it group by group, so it 
+### would not be much more efficient to do that part of ejamit() all at once:
+# system.time({x = list() ; ng = 10 ; for (i in 1:ng) x[[i]] = getblocksnearby(testpoints_1000[(1 + (i-1) * (1000/ng)):(i * (1000/ng)),])})
+# system.time({x= getblocksnearby(testpoints_1000)})
 
 
 #' Compare subsets (types) of places that are all from one list
@@ -7,7 +13,9 @@
 #'  e.g., change output formats of results_bytype vs results_overall
 #' 
 #' @param sitepoints see [ejamit()]
-#' @param typeofsite   vector of length same as NROW(sitepoints), where each unique value defines a group of sites
+#' @param typeofsite   vector of length same as NROW(sitepoints), where 
+#'   each unique value defines a group of sites
+#' @param silentinteractive passed to [ejamit()]
 #' @param ...  see [ejamit()]
 #'
 #' @return similar to ejamit output but results_overall has one row per unique typeofsite
@@ -71,7 +79,8 @@
 #'
 #'   }
 #'   
-ejamit_compare_types_of_places <- function(sitepoints, typeofsite = NULL, ...) {
+ejamit_compare_types_of_places <- function(sitepoints, typeofsite = NULL, 
+                                           silentinteractive = TRUE,  ...) {
   
   ########################################################### 
   #  Revamp ejamit_compare_types_of_places()
@@ -124,53 +133,78 @@ ejamit_compare_types_of_places <- function(sitepoints, typeofsite = NULL, ...) {
   # some bygroup version of ejamit could work easily with the ejam2xyz() functions.
   ########################################################### 
   
-  began = Sys.time()
+  # sitepoints_from_any() will 
+  # accept sitepoints interactively or from filepath or from object, 
+  # infer lat/lon cols,
   
-  if (is.null(typeofsite) || length(typeofsite) != NROW(sitepoints)) {
-    stop("typeofsite must be a vector of length same as NROW(sitepoints), where each unique value defines a group of sites")
-    }
-  types = unique(typeofsite)
-  results_overall <- list()
-  results_bysite <- list()
-  results_bybg_people <- list()
-  results_summarized <- list()
-  longnames <- list()
-  typeofsite_list <- list()
-  sitecount_bytype <- list()
+  # *** and this would assign ejam_uniq_id 1:N just once for ALL sites, not once per group...
+  # *** is that what we want? 
+  # *** ejamit() below in a loop will again create ejam_uniq_id 1:n within each group, though, right?!
   
-  if ("ejam_uniq_id" %in% names(sitepoints)) {stop("sitepoints must not already have a column named ejam_uniq_id")}
+  # Note sitepoints_from_any() is able to check if sitepoints was missing 
+  #  in expected params of ejamit_compare_types_of_places()
+  sitepoints <- sitepoints_from_any(sitepoints, silentinteractive = silentinteractive)   
   sitepoints <- data.frame(sitepoints)
-  sitepoints$ejam_uniq_id <- seq_len(NROW(sitepoints)) # assign ID 1:N just once for ALL sites, not once per group
-  # sitepoints$typeofsite <- typeofsite
-  ndone = 0
+  # sitepoints$typeofsite <- typeofsite # that would not get used
+  #################### # 
+  if (is.null(typeofsite) || length(typeofsite) != NROW(sitepoints)) {
+    stop("typeofsite must be a vector as long as NROW(sitepoints), each unique value defining a group of sites")
+  }
+  types <- unique(typeofsite)
+  
+  results_overall     <- list()
+  results_bysite      <- list()
+  # results_bybg_people <- list() # unused for now
+  # results_summarized  <- list() # unused for now (see comment below on complicated format)
+  longnames           <- list()
+  typeofsite_list     <- list()
+  sitecount_bytype    <- list()
+  ########################################################### 
+  
+  began <- Sys.time()
+  ndone <- 0
   
   for (i in seq_along(types)) {
+    
     cat("Type", i, "of", length(types), "=", types[i], " -- ")
-    # z[[i]] <- ejamit(sitepoints = sitepoints[typeofsite == types[i], ], ...)
+    
     out <- suppressWarnings({
+      
+      # *** WILL ejamit() ASSIGN ejam_uniq_id 1:N within each group of sites?
+      # Do we want 1:N for the full set of sites only? ***
+      
       ejamit(sitepoints = sitepoints[typeofsite == types[i], ], ..., quiet = TRUE, silentinteractive = TRUE)
     }) 
     
     results_overall[[i]] <- out$results_overall   # one row, for this group of places (this type) 
-    results_bysite[[i]] <- out$results_bysite    # one row per site, in this group
+    results_bysite[[i]]  <- out$results_bysite    # one row per site, in this group
     
-    # results_bybg_people[[i]] <- out$results_bybg_people   # one row per blockgroup near this group of sites
-    # results_summarized[[i]] <- out$results_summarized  # this itself is a list (the 2 names are "rows" and "cols"), 
-        # where cols is a table for this group of sites, 1 row per site in this group?. rows is a table of 1 col per indicator?
+    # results_bybg_people[[i]] <- out$results_bybg_people  # 1 row/blockgroup near this group of sites
+    
+    # results_summarized[[i]]  <- out$results_summarized   # but this itself is a named list:
+    #
+    #   This would be made by batch.summarize()
+    #   cols is a table for this group of sites, 1 row/site in this group, 
+    #      with "Max.of.EJ.US.or.ST", "Number.of.EJ.US.or.ST.at.above.threshold.of.90" etc.
+    #   rows is a table of 1 col/indicator, with rownames being 
+    #    "Average site","Average person", "Median site","Median person","Min","Max","Sum"
     
     longnames[[i]] <- out$longnames
     
-    typeofsite_list[[i]] <- typeofsite[typeofsite == types[i]]  # one item, name of this type of site
-    sitecount_bytype[[i]] <- NROW(results_bysite[[i]]) # one number, count of sites in this group = UNIQUE SITE counts (regid) since a site should be here only once per group.
-  ndone = ndone + sitecount_bytype[[i]]
-  cat("Finished", ndone, "of", NROW(sitepoints), "sites. ")
-  junk <- speedreport(began, Sys.time(), ndone)
-    }
+    # 1 item, the name of this type of site:
+    typeofsite_list[[i]] <- typeofsite[typeofsite == types[i]]
+    
+    # 1 number, the count of unique sites in group, as a site Should be here only once/group:
+    sitecount_bytype[[i]] <- NROW(results_bysite[[i]]) 
+    
+    ndone <- ndone + sitecount_bytype[[i]]
+    cat("Finished", ndone, "of", NROW(sitepoints), "sites. ")
+    junk <- speedreport(began, Sys.time(), ndone)
+  }
   cat("\n\n")
-
-  ## be careful about how many were submitted in original list,
+  
+  ## Be careful about how many were submitted in original list,
   ## vs  how many valid and included in results_bysite, etc.
-  ## 
   #    sapply(outall, NROW)
   # typeofsite       604629 all submitted to ejamit()
   # ejam_uniq_id     604629 same
@@ -180,23 +214,16 @@ ejamit_compare_types_of_places <- function(sitepoints, typeofsite = NULL, ...) {
   # results_bytype       99
   # results_overall      99
   # longnames           394
-  #
-  # > max(outall$results_bysite$ejam_uniq_id)
-  # [1] 604629
-  # > length(outall$results_bysite$ejam_uniq_id)
-  # [1] 603858
-  # > length(outall$results_bysite$ejam_uniq_id) - max(outall$results_bysite$ejam_uniq_id)
-  # [1] -771
-  
-  # so the actual vector of site type with results reported is
+  # > max(outall$results_bysite$ejam_uniq_id)  # [1] 604629
+  # > length(outall$results_bysite$ejam_uniq_id)  # [1] 603858
+  # > length(outall$results_bysite$ejam_uniq_id) - max(outall$results_bysite$ejam_uniq_id)  # [1] -771
+  # So the actual vector of site type with results reported is
   # not outall$typeofsite (which has all submitted)
   # but is only 
   # outall$typeofsite[outall$results_bysite$ejam_uniq_id]
   # (which is only those appearing in results_bysite)
   
-  
-  
-  out = list(
+  out <- list(
     
     types = types,
     sitecount_bytype = unlist(sitecount_bytype),
@@ -205,39 +232,43 @@ ejamit_compare_types_of_places <- function(sitepoints, typeofsite = NULL, ...) {
     results_overall = NA, # will be replaced but this sets the order of the list
     # results_overall = ejamit(sitepoints = sitepoints, ...)$results_overall,
     ## This seems inefficient to run them all AGAIN but as a whole instead of by group:
-
+    
     ejam_uniq_id = sitepoints$ejam_uniq_id,
     typeofsite = unlist(typeofsite_list),
     results_bysite = data.table::rbindlist(results_bysite),
-    # lacks column with typeofsite (to stay same shape as normal ejamit()$results_bysite), and out$typeofsite has that info.
+    # Does not have a column with typeofsite, because we want it to be the
+    #  same shape as normal ejamit()$results_bysite, so out$typeofsite has that info.
     
     # results_bybg_people  would be needed once per group to show x as func of distance within a typeofsite,
     # but cannot rbind them since they overlap where 2 groups of sites share some blockgroups.
     ## not sure how/if to report this... *** tbd
     
-     # results_summarized <- 0, # format is different. ## not sure how/if to report this... *** tbd
-
+    # results_summarized <- 0, # format is different. ## not sure how/if to report this... *** tbd
+    
     longnames = longnames[[1]]
   )
   
   # print(data.frame(sitecount = as.vector(out$sitecount_bytype), out$results_overall[ , c("typeofsite", "pop")]))
   
   out$results_overall <- out$results_bytype # overall is the name needed in ejam2excel() etc.
-  out$results_overall$ejam_uniq_id <- out$types # this is the code of each type, not typical ejam_uniq_id of 1:N
+  out$results_overall$ejam_uniq_id <- out$types # NOTE: this is the code of each type, not typical ejam_uniq_id of 1:N
   names(out$results_overall) <- gsub("ejam_uniq_id", "typeofsite", names(out$results_overall))
   
   print(  
     data.frame(
-      sitetype = out$types,
+      sitetype  = out$types,
       sitecount = out$sitecount_bytype,
       pop = round(out$results_bytype$pop, 0),
-      round(out$results_bytype[,
+      round(out$results_bytype[, 
                                names_d_ratio_to_state_avg,
+                               ## or else
                                # c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg), 
-                               with = FALSE], 1))
+                               
+                               with = FALSE], 1)
+    )
   )
   cat("Use  ejam2excel(out)  to view results, and see the types of sites compared, one row each, in the Overall tab\n")
-  
+  cat("Use ejam2barplot_sitegroups() to plot results.\n\n")
   ended <- Sys.time()
   cat(paste0("\n ", NROW(sitepoints), " sites in ", length(unique(typeofsite)), " groups (types of sites).\n"))
   speedreport(began, ended, NROW(sitepoints))
