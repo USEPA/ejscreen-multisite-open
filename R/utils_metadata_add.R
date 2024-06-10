@@ -4,50 +4,46 @@
 #'  It just makes it easier to set a few metadata attributes similarly
 #'  for a number of data elements, for example,
 #'  to add new or update existing attributes.
-#' @param x dataset (or any object) whose metadata you want to update or create
+#' @details This utility would be used in scripts in EJAM/data-raw/ to 
+#'   add metadata to objects like x before use_data(x, overwrite=T)
+#' @param x dataset (or any object) whose metadata (stored as attributes) you want to update or create
 #' @param metadata must be a named list, so that the function can do this for each i:
 #'   `attr(x, which=names(metadata)[i]) <- metadata[[i]]`
 #' @seealso metadata_check()
 #'
 #' @return returns x but with new or altered attributes
 #' @examples
+#'   metadata_check()
 #'   x <- data.frame(a=1:10,b=1001:1010)
 #'   metadata <- list(
-#'   ejscreen_version =  '2.2',
-#'   acs_version =          '2017-2021',
-#'   census_version = 2020,
-#'   ejscreen_releasedate = '2023-06-23',
-#'   acs_releasedate =      '2022-12-08',
-#'   ejscreen_pkg_data = NA
+#'     data_downloaded = "2024-07-01",
+#'     date_saved_in_package = as.character(Sys.Date())
 #'   )
 #'   x <- metadata_add(x, metadata)
 #'   attributes(x)
-#'   x <- metadata_add(x, list(status='final'))
+#'   x <- metadata_add(x, list(status = 'final'))
 #'   attr(x,'status')
-#'   
 #' 
 #' @keywords internal
-#' 
-metadata_add <- function(x, metadata) {
+#'
+metadata_add <- function(x, metadata = list(
+  date_saved_in_package = as.character(Sys.Date()),
+  date_downloaded       = as.character(Sys.Date()),
+  ejscreen_version      = "2.3",
+  ejscreen_releasedate = "2024-07-01",
+  acs_releasedate =      "2023-12-07",
+  acs_version =          "2018-2022",
+  census_version        = 2020
+)) {
   
   if (missing(metadata)) {
-    metadata <- list(
-      # date_downloaded = Sys.Date(),
-      date_updated = Sys.Date(), 
-      # date_saved_in_package = Sys.Date(),
-      ejscreen_version =  '2.2',
-      acs_version =          '2017-2021',
-      census_version = 2020,
-      ejscreen_releasedate = '2023-08-21',
-      acs_releasedate =      '2022-12-08',
-      ejscreen_pkg_data = NA
-    )
     txt <- paste0(paste0(names(metadata), "=", unlist(metadata)), collapse = ", ")
-    warning("metadata not specified, so used defaults from source code of this function: ", txt, "\n")
-    print(cbind(attributes = metadata))
+    message("metadata not specified, so used defaults from source code of this function: ", txt, "\n")
+    # print(cbind(attributes = metadata))
   }
-  if (!is.list(metadata)) {warning('metadata has to be a named list')
-    return(NULL)}
+  if (!is.list(metadata)) {stop('metadata has to be a named list')
+    # return(NULL)
+    }
   for (i in seq_along(metadata)) {
     attr(x, which = names(metadata)[i]) <- metadata[[i]]
   }
@@ -74,44 +70,55 @@ metadata_add <- function(x, metadata) {
 #'   via grep to identify which datasets to check. It always uses ignore.case=TRUE for this.
 #' @param loadifnotloaded Optional to control if func should temporarily attach packages not already loaded.
 #' @seealso [functions_in_pkg()]
-#' 
+#' @examples 
+#'   x <- metadata_check("EJAM")
+#'   x[x$has_metadata == TRUE, ]
+#'   table(x$has_metadata)
+#'
 #' @keywords internal
-#' 
+#'
 metadata_check <- function(packages = EJAM::ejampackages, 
                            which = c(
-                             'census_version', 
-                             'acs_version', 'acs_releasedate', 'ACS', 
-                             'ejscreen_version', 'ejscreen_releasedate', 'ejscreen_pkg_data', 
-                             'year', 'released'),
-                           datasets = "all",
-                           grepdatasets = FALSE,
+                             "date_saved_in_package",
+                             "date_downloaded",
+                             "ejscreen_version",
+                             "ejscreen_releasedate",
+                             "acs_releasedate",
+                             "acs_version",
+                             "census_version"
+                           ),
                            loadifnotloaded = TRUE) {
   
-  # ejscreen_version     "2.2"       
-  # acs_version          "2017-2021" 
-  # census_version       2020        
-  # ejscreen_releasedate "2023-06-23"
-  # acs_releasedate      "2022-12-08"
-  # ejscreen_pkg_data    NA      
-  
-  # The 2017-2021 American Community Survey 5-year estimates were released on Thursday, December 8, 2022.
-  # EJScreen incorporated that in July 2023.
+  # ejscreen_version =  '2.3',
+  # ejscreen_releasedate = "2024-07-01",
+  # acs_releasedate =      "2023-12-07",
+  # acs_version =          "2018-2022",
+  # census_version        = 2020
   
   #     previously:
-  # census_version = 2020,
+  # The 2017-2021 American Community Survey 5-year estimates were released on Thursday, December 8, 2022.
+  # EJScreen incorporated that in July 2023.
+  # 
   # acs_version = '2016-2020',
   # acs_releasedate = '3/17/2022',
   # ejscreen_version = '2.1',
   # ejscreen_releasedate = 'October 2022',
   # ejscreen_pkg_data = 'bg22'
-  #
+  # census_version = 2020,
   
   # utility to check if year attribute is set on each data file
   # does it really need to lazy load all these to check their attributes? that would be slow for big datasets, right?
-  get1attribute <- function(x, which) {try(attr(get(x), which = which))}
-  
-  if (is.null(packages)) {
-    # if not specified, report on all packages with EJ as part of their name, like EJAMejscreenapi.
+  get1attribute <- function(x, which, dates_as_text=FALSE) {
+    attribute1 <- try(attr(get(x), which = which))
+    if (is.null(attribute1) || inherits(attribute1, "try-error")) {
+      attribute1 <- NA
+    }
+    if (dates_as_text && "Date" %in% class(attribute1)) {attribute1 <- as.character(attribute1)}
+    return(attribute1)
+    }
+  ################################# # 
+  if (is.null(packages) || length(packages) == 0) {
+    # if null or empty is specified, report on all packages with EJ as part of their name, like EJAMejscreenapi.
     packages <- grep(pattern = 'EJ', ignore.case = TRUE, x = installed.packages(fields = 'Package'), value = TRUE)
     packages <- unique(packages[!grepl(",", packages)])
   }
@@ -121,9 +128,11 @@ metadata_check <- function(packages = EJAM::ejampackages,
   for (pkg in packages) {
     
     ii <- ii + 1
-    if (!(pkg %in% installed.packages(fields = 'Package'))) {
+    if (!(pkg %in% as.vector(installed.packages()[, "Package"]))) {  # installed.packages() is slow but comprehensive
       cat(paste0(pkg, ' package not installed\n'))
+      # packages <- packages[packages != pkg]
       # return a 1row data.frame with NA values, using the attributes listed in which as the colnames:
+
       results <- which; names(results) <- results; results[] <- NA
       next
     }
@@ -154,28 +163,60 @@ metadata_check <- function(packages = EJAM::ejampackages,
     
     if (length(which) == 1) {
       results <- cbind(sapply(rdafiles, FUN = get1attribute, which))
+
       colnames(results) <- which
+      results$has_metadata <- FALSE
+      rownames(results) <- "package not installed"
+      allresults[[ii]] <- results
+      allresults[[ii]] <- data.frame(package = pkg, item = rownames(results), allresults[[ii]])
+      rownames(allresults[[ii]]) <- NULL
     } else {
-      results <- list()
-      for (i in 1:length(which)) {
-        results[[i]] <- cbind(sapply(rdafiles, FUN = get1attribute, which[i]))
+      
+      rdafiles <- data(package = pkg)
+      rdafiles <- rdafiles$results[ , 'Item']
+      
+      ## see also EJAM ::: #  datapack()
+      # were_attached <- .packages() 
+      # were_loaded <- loadedNamespaces()
+      
+      if (!isNamespaceLoaded(pkg) & loadifnotloaded) {
+        wasnotloaded <- pkg
+        cat(paste0(pkg, ' package was not loaded, loading and attaching now\n'))
+        attachNamespace(pkg, include.only = rdafiles)   # library(pkg, character.only = TRUE)
+      } else {
+        wasnotloaded <- NULL
       }
-      results <- do.call(cbind, results)
-      colnames(results) <- which
-    }
-    allresults[[ii]] <- results
-    if (!is.null(wasnotloaded)) {
-      unloadNamespace(asNamespace(wasnotloaded))
-    }
+      
+      if (length(which) == 1) {
+        results <- cbind(sapply(rdafiles, FUN = get1attribute, which, dates_as_text = TRUE))
+        colnames(results) <- which
+      } else {
+        results <- list()
+        for (i in 1:length(which)) {
+          results[[i]] <- cbind(sapply(rdafiles, FUN = get1attribute, which[i], dates_as_text = TRUE))
+        }
+        results <- do.call(cbind, results)
+        colnames(results) <- which
+      }
+      
+      if (!is.null(wasnotloaded)) {
+        unloadNamespace(asNamespace(wasnotloaded))
+      }
     
-    some <- as.vector(apply(allresults[[ii]], 1, function(z) !all("NULL" == z)))
+    allresults[[ii]] <- results
+
+    some <- as.vector(apply(allresults[[ii]], 1, function(z) !all(is.na(z))))
     allresults[[ii]] <- cbind(allresults[[ii]], has_metadata = FALSE)
     allresults[[ii]][some, "has_metadata"] <- TRUE
+    allresults[[ii]] <- data.frame(package = pkg, item = rownames(allresults[[ii]]), allresults[[ii]])
+    rownames(allresults[[ii]]) <- NULL
+    }
+    
     
   }
-  #maybe...
-  # allresults <- do.call(cbind, results)
+  
   names(allresults) <- packages
+
   cat(
     '\n 
     Also see  
@@ -183,5 +224,19 @@ metadata_check <- function(packages = EJAM::ejampackages,
     x[!grepl("^name", x)] 
     \n\n'
   )
+  
+  # replace the NULL values with NA values,
+  # and make each column just a vector instead of a list
+  
+  
+  
+  allresults <- do.call(rbind, allresults)
+  
+  for (mycol in 1:NCOL(allresults)) {
+    allresults[, mycol] <- as.vector(unlist(allresults[, mycol] ))
+  }
+  
+  rownames(allresults) <- NULL
+  
   return(allresults)
 }
