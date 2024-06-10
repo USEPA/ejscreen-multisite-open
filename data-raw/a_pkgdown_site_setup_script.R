@@ -7,14 +7,11 @@
 ## 1st confirm personal access token PAT exists and not expired
 ##  (to allow use of github API to create new branch gh-pages, create github action, etc.)
 # git_sitrep() # git situation report
-##    To make a PAT:
+##    To make a PAT you used to use this:
 # usethis::create_github_token()
-##    To register a PAT, one way is as part of this
-# usethis::use_github_pages(branch = "main", path = "/docs")
-##   which does  usethis::use_pkgdown() and other steps,
-##   but note this replaces/deletes any existing _pkgdown.yml file !
-# Then modify the _pkgdown.yml file
-# and write/edit the .Rmd vignettes in the vignettes folder
+##    To register a PAT, see
+## https://usethis.r-lib.org/articles/git-credentials.html#git-credential-helpers-and-the-credential-store
+##    But Windows may just take care of this for you now in conjunction with github.
 ##############################################
 
 # SCRIPT TO REBUILD THE vignettes (articles) 
@@ -28,13 +25,12 @@ library(devtools)
 library(usethis)
 library(pkgdown)
 
-
 #################### # 
 
 # devtools::build_readme() # takes a couple minutes! as it installs the package in a temporary library
 # build_rmd() is a wrapper around rmarkdown::render() that first installs a temporary copy of the package, and then renders each .Rmd in a clean R session.
 rmarkdown::render("README.Rmd")  # renders .Rmd to create a  .md file that works in github as a webpage
-
+# 
 # just build/install using RStudio buttons? but check if build options include vignettes
 # or can try this:
 

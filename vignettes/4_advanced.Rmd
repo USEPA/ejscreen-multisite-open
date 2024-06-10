@@ -11,12 +11,12 @@ editor_options:
     wrap: 80
 ---
 
-```{r developernote, eval = FALSE, echo = FALSE, include = FALSE}
+```{r developernote, eval=FALSE, echo=FALSE, include=FALSE}
 #  *>>>>>>>>>> Developer note: vignettes need to be tested/edited/rebuilt regularly <<<<<<<<<<<*
-#    - **See ?pkgdown::build_site** - EJAM uses the pkgdown R package to build help and articles/ vignettes as web pages
+#    - **See ?pkgdown::build_site** and script in EJAM/data-raw/- EJAM uses the pkgdown R package to build help and articles/ vignettes as web pages
 ```
 
-```{r SETUP_default_eval_or_not, include = FALSE}
+```{r SETUP_default_eval_or_not, include=FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   fig.height = 6, fig.width = 7,
@@ -26,7 +26,7 @@ knitr::opts_chunk$set(eval = FALSE)
 # https://r-pkgs.org/vignettes.html
 ```
 
-```{r libraryEJAM, eval = TRUE, echo = FALSE, include = FALSE}
+```{r libraryEJAM, eval=TRUE, echo=FALSE, include=FALSE}
 # rm(list = ls())
 # golem::detach_all_attached()
 # 
@@ -65,34 +65,96 @@ Note: This article is a work in progress
 
 ## TEST DATA AVAILABLE FOR EJAM
 
-#### Examples of Inputs and Outputs of Various Functions
+### Sample spreadsheets & shapefiles for trying the web app
 
-```{r, eval = FALSE, echo = TRUE}
+Examples of .xlsx files are installed locally with EJAM, as input files you can
+use to try out EJAM functions or the web app, or to see what an input file
+should look like.
 
-# This provides a useful list of test/ sample data objects in EJAM and related packages:
+**Local folders with sample files**
 
-# THE LARGEST FILES that are included in the package
-# are mostly the blockgroupstats dataset from EJScreen
-# (note the block datasets are not in the package - they get downloaded)
-x <- EJAM:::datapack(simple = FALSE); cat("\n\n") 
-x <- x[order(x$Package, x$Item), ] 
+To open the locally installed "testdata" folders (in Windows File Explorer, or iOS Finder)
+```{r browseURL, eval=FALSE, echo=TRUE}
+browseURL(system.file("testdata", package = "EJAM"))
+```
 
-# POINT DATA (LAT/LON COORDINATES)
-# for testing ejamit(), mapfast(), ejscreenit(), getblocksnearby(), etc., etc.
-x[grepl("^testp", x$Item), ]  ; cat("\n\n")
+To see a list of local folders (where EJAM is installed locally) with files that can be uploaded to the EJAM web app or provided as inputs to EJAM functions (as examples or for testing):
+```{r, eval=FALSE, echo=TRUE}
+x <- list.dirs(system.file("testdata/", package = "EJAM"), recursive = FALSE)
 
-# STREET ADDRESSES
-# for testing geocoding in latlon_from_address() etc.
-x[grepl("^test_", x$Item), ]  ; cat("\n\n") 
+cbind(`Local folders with installed file examples` = x, Subfolder = basename(x))
+```
 
-# FACILITY REGISTRY IDs
-# for testing latlon_from_regid() etc.
+**Local sample files**
+
+To see a list of the files available locally as installed sample/test data:
+```{r, eval=TRUE, echo=TRUE}
+for (example_type in x) {
+    cat("\n", basename(example_type), "\n\n")
+    these = matrix(list.files(example_type))
+    colnames(these) <- paste0("Examples Installed in /testdata/", basename(example_type), "/")
+    print(cbind(these))
+}
+```
+
+You can try uploading these kinds of files in the web app, for example, by
+finding them in these local folders where you installed the package:
+
+-   /`EJAM/testdata/latlon/testpoints_100.xlsx`
+-   /`EJAM/testdata/shapes/portland_shp.zip`
+-   etc.
+
+**Example of using a file in EJAM**
+
+```{r, eval=FALSE, echo=TRUE}
+testpoint_files <- list.files(
+  system.file("testdata/latlon", package = "EJAM"), 
+  full.names = T
+  )
+testpoint_files
+
+latlon_from_anything(testpoint_files[2]) # aka latlon_any_format()
+```
+
+### Sample R data objects: Examples of inputs & outputs of EJAM functions
+
+To see examples of data objects, installed as part of EJAM and related packages,
+as inputs or intermediate data objects that you can use to try out EJAM
+functions, to see what the outputs and inputs look like, or to use for testing
+purposes -- This code snippet provides a useful list of test/ sample data
+objects in EJAM and related packages:
+
+**POINT DATA (LAT/LON COORDINATES)**
+for testing ejamit(), mapfast(), ejscreenit(), getblocksnearby(), etc.
+```{r testpoints_data, eval=TRUE, echo=TRUE}
+x <- EJAM:::datapack(simple = FALSE)
+cat("\n\n")
+x <- x[order(x$Package, x$Item), ]
+cat("\n\n")
+x[grepl("^testp", x$Item), ]
+cat("\n\n")
+```
+
+**STREET ADDRESSES**
+for testing geocoding in latlon_from_address() etc.
+```{r addresses_data, eval=TRUE, echo=TRUE}
+x[grepl("^test_", x$Item), ]
+cat("\n\n")
+```
+
+**FACILITY REGISTRY IDs**
+for testing latlon_from_regid() etc.
+```{r regids_data, eval=TRUE, echo=TRUE}
 x[grepl("^test[^op_]", x$Item), ]
+cat("\n\n")
+```
 
-# EXAMPLES OF THE OUTPUTS FROM ejamit(), ejscreenit(), getblocksnearby(), etc.
-# for testing ejam2report(), ejam2excel(), ejam2ratios(), ejam2barplot(), doaggregate(), etc.
-x[grepl("^testout", x$Item), ]  ; cat("\n\n") 
-
+**EXAMPLES OF OUTPUTS**
+from ejamit(), ejscreenit(), getblocksnearby(), etc.,
+you can use as inputs to ejam2report(), ejam2excel(), ejam2ratios(), ejam2barplot(), doaggregate(), etc.
+```{r testout_data, eval=TRUE, echo=TRUE}
+x[grepl("^testout", x$Item), ]
+cat("\n\n")
 ```
 
 --------------------------------------------------------------------------------
@@ -277,19 +339,19 @@ resident here. Block resolution is covered in a later section.
 At the *OVERALL LIST of sites* as a whole, which groups are *overrepresented*
 within X mile radius vs Statewide?
 
-```{r ejamitrunnotshow, eval = TRUE, echo = FALSE, include = FALSE}
+```{r ejamitrunnotshow, eval=TRUE, echo=FALSE, include=FALSE}
 out <- ejamit(testpoints_100, radius = 3.1)
 ```
 
-```{r ejamitshown, eval = FALSE, echo = TRUE, include = TRUE}
+```{r ejamitshown, eval=FALSE, echo=TRUE, include=TRUE}
 out <- ejamit(testpoints_100, radius = 3.1)
 ```
 
-```{r, eval = TRUE, echo = TRUE}
+```{r, eval=TRUE, echo=TRUE}
 ejam2ratios(out)
 ```
 
-```{r barplot, eval = TRUE, echo = TRUE, fig.height=5, fig.width=7}
+```{r barplot, eval=TRUE, echo=TRUE, fig.height=5, fig.width=7}
 ejam2barplot(out)
 ```
 
@@ -298,16 +360,16 @@ ejam2barplot(out)
 At *JUST ONE SITE*, which groups are *overrepresented* within X mile radius vs
 Statewide?
 
-```{r ejamitx, eval = TRUE, echo = FALSE, include = FALSE}
+```{r ejamitx, eval=TRUE, echo=FALSE, include=FALSE}
 out1 <- ejamit(testpoints_100[2, ], radius = 3.1, quiet = TRUE)
 ```
 
-```{r ejamitshown1pt, eval = FALSE, echo = TRUE, include = TRUE}
+```{r ejamitshown1pt, eval=FALSE, echo=TRUE, include=TRUE}
 out1 <- ejamit(testpoints_100[2, ], radius = 3.1)
 ejam2ratios(out1)
 ```
 
-```{r onesiteyy, eval = TRUE, echo = TRUE}
+```{r onesiteyy, eval=TRUE, echo=TRUE}
 ejam2barplot(out1)
 ```
 
@@ -316,7 +378,7 @@ ejam2barplot(out1)
 Which groups are *overrepresented* at *EACH SITE*, within X mile radius vs
 Statewide
 
-```{r tablesiteratios, eval = TRUE, echo = TRUE}
+```{r tablesiteratios, eval=TRUE, echo=TRUE}
 out <- testoutput_ejamit_10pts_1miles
 x = round(data.frame(out$results_bysite)[, c("ratio.to.state.avg.pctlowinc", "ratio.to.state.avg.pctmin")], 2)
 names(x) = fixcolnames(names(x),"r","shortlabel")
@@ -326,7 +388,7 @@ x
 
 Plot that, comparing sites, but for just one demographic indicator
 
-```{r barplot_compare_sites_one_D, eval = TRUE, echo = TRUE}
+```{r barplot_compare_sites_one_D, eval=TRUE, echo=TRUE}
 
 barplot(x$Ratio.to.State.avg..Low.inc., 
         names.arg = x$sitenumber,
@@ -342,7 +404,7 @@ barplot(x$Ratio.to.State.avg..Low.inc.,
 At the *OVERALL LIST of sites* as a whole, which groups are *overrepresented*
 within X mile radius vs Statewide?
 
-```{r ejamit_compare_distances, eval = TRUE, echo = TRUE}
+```{r ejamit_compare_distances, eval=TRUE, echo=TRUE}
 radii <- c(1,2,3,10)
 #radii <- c(1, 10) #  quicker example
 pts <- testpoints_100[10:12, ]
@@ -350,17 +412,17 @@ pts <- testpoints_100[10:12, ]
 
 See just the table
 
-```{r ejamit_compare_distances_seecommandonly, eval = FALSE, echo = TRUE, include = TRUE}
+```{r ejamit_compare_distances_seecommandonly, eval=FALSE, echo=TRUE, include=TRUE}
 x <- ejamit_compare_distances(pts, radii = radii, quiet = TRUE, plot = FALSE)
 ```
 
-```{r ejamit_compare_distances_seeoutputonly, eval = TRUE, echo = FALSE}
+```{r ejamit_compare_distances_seeoutputonly, eval=TRUE, echo=FALSE}
 x <- ejamit_compare_distances(pts, radii = radii, quiet = TRUE, plot = FALSE)
 ```
 
 See the plot
 
-```{r ejamit_compare_distances2plot, eval = TRUE, echo = TRUE, fig.height=5, fig.width=7}
+```{r ejamit_compare_distances2plot, eval=TRUE, echo=TRUE, fig.height=5, fig.width=7}
 # x <- ejamit_compare_distances(pts, radii = radii, quiet = TRUE) # in which default is plot=TRUE
 ## or 
 ejamit_compare_distances2plot(x)
@@ -388,8 +450,8 @@ average resident in each block group.
 Example of area where %Black is very high within 1 mile but drops by 3 miles
 away
 
-```{r plot_distance_by_pctd, eval = TRUE, echo = TRUE}
-pts = testpoints_100[3,]
+```{r plot_distance_by_pctd, eval=TRUE, echo=TRUE}
+pts <- testpoints_100[3,]
 plot_distance_by_pctd(
   getblocksnearby(pts, radius = 10, quiet = T),
   score_colname = "pctnhba")
@@ -400,8 +462,8 @@ plot_distance_by_pctd(
 Example of area that has higher %Hispanic as you go 10 to 30 miles away from
 this specific point
 
-```{r plot_distance_by_pctd2, eval = TRUE, echo = TRUE}
-pts = data.table::data.table(lat = 45.75464, lon = -94.36791)
+```{r plot_distance_by_pctd2, eval=TRUE, echo=TRUE}
+pts <- data.table::data.table(lat = 45.75464, lon = -94.36791)
 
 plot_distance_by_pctd(pts,
                       sitenum = 1, score_colname = "pcthisp")
@@ -409,13 +471,28 @@ plot_distance_by_pctd(pts,
 # browseURL(url_ejscreen_report(lat = pts$lat, lon = pts$lon, radius = 30))
 ```
 
+### *Step through all the sites* to see an indicator versus distance at each
+
+```{r step_thru_plots, eval=FALSE, echo=TRUE}
+pts <- testpoints_10
+s2b <- getblocksnearby(pts, radius = 10, quiet = T)
+for (i in 1:NROW(pts)) {
+  plot_distance_by_pctd(s2b, sitenum = i, score_colname = "pctlowinc")
+  readline() # hit any key to step through the plots
+}
+```
+
+
 Block by block details are also easy to view in a map of all the nearby blocks,
 as shown in the section on [plotblocksnearby()] and details of blocks near one
 site.
 
 ### Cumulative Distribution plots of groups as *a continuous function of distance*
 
+Out of all the residents within the area analyzed, see how some are mostly nearby
+and others are further away, as a CDF plot.
 ```{r distance_by_group_plot1, eval=TRUE}
+ # out <- ejamit(testpoints_10, radius = 10)
 distance_by_group_plot(
   out$results_bybg_people,
   demogvarname = 'pctlowinc', demoglabel = 'Low Income')
@@ -435,7 +512,7 @@ single demographic group, one group at a time, and comparing these groups.
 
 *Mean distance* of each group, at the *OVERALL LIST of sites* as a whole
 
-```{r distance_mean_by_group_1, eval = TRUE}
+```{r distance_mean_by_group_1, eval=TRUE}
 
 out <- testoutput_ejamit_1000pts_1miles
 ## But try a larger radius to reveal more information:
@@ -464,7 +541,7 @@ nearby
 
 Ratios at each site, of avg dist of group / avg dist of everyone else near site:
 
-```{r distance_by_group_by_site, eval = TRUE, echo = TRUE}
+```{r distance_by_group_by_site, eval=TRUE, echo=TRUE}
 
 out <- testoutput_ejamit_10pts_1miles
 ## But try a larger radius to reveal more information:
@@ -615,7 +692,7 @@ barplot(
 
 For more details about distance adjustments, overlaps of circles, etc.
 
-```{r diagnosticsdetails, eval = FALSE, echo = TRUE}
+```{r diagnosticsdetails, eval=FALSE, echo=TRUE}
 getblocks_diagnostics(
   testoutput_getblocksnearby_1000pts_1miles,
   # getblocksnearby(testpoints_1000, radius = 1, quiet = T),
@@ -681,7 +758,7 @@ pi) where area is in square miles.
 Use `getblocksnearby()` to quickly find residents/blocks that are within a
 specified distance, as a table of distances between sites and nearby blocks.
 
-```{r getblocksnearby1, eval = TRUE, echo = TRUE}
+```{r getblocksnearby1, eval=TRUE, echo=TRUE}
 sitepoints <- testpoints_10[1:2, ]
 
 sites2blocks <- getblocksnearby(
@@ -693,7 +770,7 @@ head(sites2blocks)
 
 #### Detailed stats on blocks found near site(s)
 
-```{r diagnostics, echo = TRUE, eval = TRUE}
+```{r diagnostics, echo=TRUE, eval=TRUE}
 x <- getblocks_diagnostics(sites2blocks)
 
 # x <- getblocks_summarize_blocks_per_site(sites2blocks) 
@@ -702,7 +779,7 @@ x <- getblocks_diagnostics(sites2blocks)
 
 #### Map 1 site to inspect the blocks nearby
 
-```{r plotblocksnearby2, eval = TRUE, echo = TRUE, fig.height=5, fig.width=5}
+```{r plotblocksnearby2, eval=TRUE, echo=TRUE, fig.height=5, fig.width=5}
 x <- plotblocksnearby(testpoints_10[1, ], radius = 3, returnmap = F)
 # Set returnmap= TRUE to actually return a leaflet map
 ```
@@ -727,7 +804,7 @@ average.
 -   how many blocks are typically near a given site (population density varies)
 -   how many sites are near a block (residents with \> 1 site nearby)
 
-```{r popshare_at, eval = TRUE, echo = TRUE}
+```{r popshare_at, eval=TRUE, echo=TRUE}
 out <- testoutput_ejamit_100pts_1miles
 cat("  ", popshare_p_lives_at_what_pct(out$results_bysite$pop, p = 0.50, astext = TRUE), "\n")
 cat("  ", popshare_at_top_n(out$results_bysite$pop, c(1, 5, 10), astext = TRUE), "\n\n")
@@ -736,7 +813,7 @@ cat("  ", popshare_at_top_n(out$results_bysite$pop, c(1, 5, 10), astext = TRUE),
 
 Find all blocks nearby each site
 
-```{r getblocksnearby2, eval = TRUE, echo = TRUE}
+```{r getblocksnearby2, eval=TRUE, echo=TRUE}
 radius <- 3
 sitepoints <- testpoints_100
 sites2blocks <- getblocksnearby(sitepoints, radius, quadtree = localtree, quiet = TRUE)
@@ -749,7 +826,7 @@ Very few blocks are within a radius of 1/4 mile.
 Hundreds are often within 1 mile, but sometimes there are only a handful or even
 zero.
 
-```{r s2b_stats_xyz, eval = TRUE, echo = TRUE}
+```{r s2b_stats_xyz, eval=TRUE, echo=TRUE}
 
 s2b_stats <- sites2blocks[ , .(
   avgDistance = round(mean(distance), 2),
@@ -764,7 +841,7 @@ head(s2b_stats)
 
 ### CDF of how many blocks are nearby a site
 
-```{r plot_count_of_blocks_nearby, eval = TRUE, echo = FALSE, fig.height=5, fig.width=6}
+```{r plot_count_of_blocks_nearby, eval=TRUE, echo=FALSE, fig.height=5, fig.width=6}
 
 plot(sort(s2b_stats$blocks_within_1mile), 
      main = "How many blocks are near each facility?", 
@@ -776,7 +853,7 @@ abline(h = mean(s2b_stats$blocks_within_1mile), col = "red")
 
 ### Histogram and table showing how many blocks are nearby a site
 
-```{r histoblocks, eval = TRUE, echo = TRUE, fig.height=6, fig.width=7}
+```{r histoblocks, eval=TRUE, echo=TRUE, fig.height=6, fig.width=7}
 
 hist(sites2blocks[,.N, by = "ejam_uniq_id"][, N], 20, 
      xlab = "How many blocks are nearby?", 
@@ -785,7 +862,7 @@ hist(sites2blocks[,.N, by = "ejam_uniq_id"][, N], 20,
      sub = "A typical site in this example has about 100 blocks nearby")
 ```
 
-```{r DTdatatable, eval = FALSE, echo = TRUE}
+```{r DTdatatable, eval=FALSE, echo=TRUE}
 DT::datatable(s2b_stats,  rownames = FALSE)
 # more summaries showing there may be only 1 block or hundreds within 1 mile
 ```
@@ -799,13 +876,13 @@ summary(s2b_stats[,6:10])
 
 Quantiles etc.
 
-```{r quantiles, eval = TRUE, echo = TRUE}
+```{r quantiles, eval=TRUE, echo=TRUE}
 quantile(s2b_stats$blocks_within_1mile, probs = (0:4) * 0.25)
 ```
 
 ### Map sites with popups about how many blocks were found near each site
 
-```{r s2b_stats, eval = TRUE, echo = TRUE, fig.height=5, fig.width=5}
+```{r s2b_stats, eval=TRUE, echo=TRUE, fig.height=5, fig.width=5}
 if (!('ejam_uniq_id' %in% names(sitepoints))) {sitepoints$ejam_uniq_id <- seq.int(length.out = NROW(sitepoints))}
 s2b_stats <- merge(sitepoints, s2b_stats, by = "ejam_uniq_id")
 mapfast(s2b_stats, radius = radius)
@@ -813,34 +890,34 @@ mapfast(s2b_stats, radius = radius)
 
 #### Some places have very few -- if any -- blocks within 1 mile
 
-```{r s2b_stats_more, eval = TRUE, echo = TRUE, fig.height=5, fig.width=5}
+```{r s2b_stats_more, eval=TRUE, echo=TRUE, fig.height=5, fig.width=5}
 tail(s2b_stats[order(s2b_stats$blocks_within_1mile, decreasing = T), 
                c('ejam_uniq_id', 'blocks_within_1mile')], 3) 
 ```
 
 #### Some places have hundreds nearby: a 1 mile radius is huge within a dense urban area
 
-```{r s2b_stats2, eval = TRUE, echo = TRUE, fig.height=5, fig.width=5}
+```{r s2b_stats2, eval=TRUE, echo=TRUE, fig.height=5, fig.width=5}
 head(s2b_stats[order(s2b_stats$blocks_within_1mile, decreasing = T), 
                c('ejam_uniq_id', 'blocks_within_1mile')], 3)
 ```
 
-```{r densest_plotblocks, eval = TRUE, echo = TRUE, fig.height=5, fig.width=5}
+```{r densest_plotblocks, eval=TRUE, echo=TRUE, fig.height=5, fig.width=5}
 densest <- s2b_stats$ejam_uniq_id[order(
   s2b_stats$blocks_within_1mile, decreasing = T)][1]
 ```
 
-```{r, doplotblocksnotshowoutput, eval = TRUE, echo = FALSE}
+```{r, doplotblocksnotshowoutput, eval=TRUE, echo=FALSE}
 plotblocksnearby(sitepoints = sitepoints[sitepoints$ejam_uniq_id == densest, ])
 ```
 
-```{r showplotblockscommandnotdoit, eval = FALSE, echo = TRUE, include = TRUE}
+```{r showplotblockscommandnotdoit, eval=FALSE, echo=TRUE, include=TRUE}
 plotblocksnearby(sitepoints = sitepoints[sitepoints$ejam_uniq_id == densest, ])
 ```
 
 Within a 1 mile radius, the blocks found tend to be about 2/3 of a mile from the
 site at the center.
 
-```{r eval = TRUE, echo = TRUE}
+```{r eval=TRUE, echo=TRUE}
 summary(s2b_stats$avgDistance)
 ```
