@@ -559,6 +559,11 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
   }
   openxlsx::setColWidths(wb, "longnames", cols = 1:2, widths = 90)
   
+  
+  openxlsx::setColWidths(wb, sheet = 'Each Site', 12:162, widths = narrow6)
+  openxlsx::setColWidths(wb, sheet = 'Overall', 10:160, widths = narrow6)
+ 
+  
   # HEADER ROW HEIGHT   ####
   
   openxlsx::setRowHeights(wb, sheet = 'Each Site', rows = 1, heights = 175)
