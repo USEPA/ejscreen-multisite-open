@@ -85,6 +85,10 @@ x <- list.dirs(system.file("testdata/", package = "EJAM"), recursive = FALSE)
 cbind(`Local folders with installed file examples` = x, Subfolder = basename(x))
 ```
 
+```{r eval=TRUE, message=FALSE, warning=FALSE, include=FALSE}
+x <- list.dirs(system.file("testdata/", package = "EJAM"), recursive = FALSE)
+```
+
 To see a list of the files available locally as installed sample/test data:
 ```{r, eval=TRUE, echo=TRUE}
 for (example_type in x) {
@@ -130,13 +134,18 @@ objects in EJAM and related packages:
 
 **POINT DATA (LAT/LON COORDINATES)**
 for testing ejamit(), mapfast(), ejscreenit(), getblocksnearby(), etc.
-```{r testpoints_data, eval=TRUE, echo=TRUE}
+```{r datapack, eval=TRUE, echo=FALSE, message=FALSE, include=FALSE}
 x <- EJAM:::datapack(simple = FALSE)
-cat("\n\n")
-x <- x[order(x$Package, x$Item), ]
-cat("\n\n")
+x <- x[order(x$Package, x$Item), !grepl("size", names(x))]
+```
+
+```{r datapackshow, eval=FALSE, echo=TRUE}
+x <- EJAM:::datapack(simple = FALSE)
+x <- x[order(x$Package, x$Item), !grepl("size", names(x))]
+```
+
+```{r testpoints_data, eval=TRUE, echo=TRUE}
 x[grepl("^testp", x$Item), ]
-cat("\n\n")
 ```
 
 **STREET ADDRESSES**
@@ -224,7 +233,6 @@ title of the NAICS -- the function [naics_findwebscrape()] helps with those
 cases, e.g., compare these:
 
 ```{r webscrape_vs, eval=FALSE}
-
 naics_findwebscrape("cement")
 
 naics_from_any("cement")
@@ -233,7 +241,6 @@ naics_from_any("cement")
 Compare also these:
 
 ```{r webscrape_vs2, eval=FALSE}
-
 naics_findwebscrape("refiner")
 
 naics_from_any("refiner")
@@ -286,7 +293,6 @@ length(hasboth)
 ## Examples of some NAICS/SIC functions
 
 ```{r naics_examples, eval=FALSE}
-
   naics_from_any(naics_categories(3))[order(name),.(name,code)][1:10,]
   naics_from_any(naics_categories(3))[order(code),.(code,name)][1:10,]
   
@@ -432,7 +438,7 @@ See the plot
 
 ```{r ejamit_compare_distances2plot, eval=TRUE, echo=TRUE, fig.height=5, fig.width=7}
 # x <- ejamit_compare_distances(pts, radii = radii, quiet = TRUE) # in which default is plot=TRUE
-## or 
+# or 
 ejamit_compare_distances2plot(x)
 ```
 
@@ -460,9 +466,10 @@ away
 
 ```{r plot_distance_by_pctd, eval=TRUE, echo=TRUE}
 pts <- testpoints_100[3,]
-plot_distance_by_pctd(
+y <- plot_distance_by_pctd(
   getblocksnearby(pts, radius = 10, quiet = T),
-  score_colname = "pctnhba")
+  score_colname = "pctnhba",
+  sitenum = 1)
 #browseURL(url_ejscreen_report(lat = pts$lat, lon = pts$lon, radius = 0.5))
 #browseURL(url_ejscreen_report(lat = pts$lat, lon = pts$lon, radius = 3))
 ```
@@ -473,7 +480,7 @@ this specific point
 ```{r plot_distance_by_pctd2, eval=TRUE, echo=TRUE}
 pts <- data.table::data.table(lat = 45.75464, lon = -94.36791)
 
-plot_distance_by_pctd(pts,
+y <- plot_distance_by_pctd(pts,
                       sitenum = 1, score_colname = "pcthisp")
 # browseURL(url_ejscreen_report(lat = pts$lat, lon = pts$lon, radius = 10))
 # browseURL(url_ejscreen_report(lat = pts$lat, lon = pts$lon, radius = 30))
