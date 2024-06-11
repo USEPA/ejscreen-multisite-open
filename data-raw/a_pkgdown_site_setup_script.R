@@ -6,9 +6,9 @@
 ## Initial setup: 
 ## 1st confirm personal access token PAT exists and not expired
 ##  (to allow use of github API to create new branch gh-pages, create github action, etc.)
-# git_sitrep() # git situation report
-##    To make a PAT you used to use this:
-# usethis::create_github_token()
+# see the diagnostic functions 
+# usethis::gh_token_help() and 
+# usethis::git_sitrep() 
 ##    To register a PAT, see
 ## https://usethis.r-lib.org/articles/git-credentials.html#git-credential-helpers-and-the-credential-store
 ##    But Windows may just take care of this for you now in conjunction with github.
