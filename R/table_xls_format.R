@@ -561,8 +561,8 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
   
   # HEADER ROW HEIGHT   ####
   
-  openxlsx::setRowHeights(wb, sheet = 'Each Site', rows = 1, heights = 115)
-  openxlsx::setRowHeights(wb, sheet = 'Overall',   rows = 1, heights = 115)
+  openxlsx::setRowHeights(wb, sheet = 'Each Site', rows = 1, heights = 175)
+  openxlsx::setRowHeights(wb, sheet = 'Overall',   rows = 1, heights = 175)
   
   # HEADER ROW COLOR ####
   
