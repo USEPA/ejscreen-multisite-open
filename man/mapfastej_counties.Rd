@@ -30,14 +30,18 @@ returns just shapes_counties_from_countyfips(mydf$ejam_uniq_id))
 \description{
 Map - County polygons / boundaries - Create leaflet or static map
 }
+\details{
+THIS ASSUMES THAT mydf$ejam_unique_id is the county FIPS codes
+}
 \examples{
 \dontrun{
  fips_ky <- fips_counties_from_statename("Kentucky")
  x <- ejamit(fips = fips_ky, radius = 0)
  mapfastej_counties(x$results_bysite)
  }
+ # map_shapes_leaflet(shapes = shapes_counties_from_countyfips(fips_ky))
 
 }
 \seealso{
-\code{\link[=mapfastej]{mapfastej()}}
+\code{\link[=mapfastej]{mapfastej()}} \code{\link[=map_shapes_leaflet]{map_shapes_leaflet()}}
 }

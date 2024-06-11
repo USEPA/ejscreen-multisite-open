@@ -168,7 +168,8 @@ map_facilities_proxy <- function(mymap, rad = 3, highlight = FALSE, clustered = 
 #' @param static_not_leaflet set TRUE to use [map_shapes_plot()] instead of [map_shapes_leaflet()]
 #' @param main title for map
 #' @param ... passed to map_shapes_plot() if relevant
-#' @seealso [mapfastej()]
+#' @details THIS ASSUMES THAT mydf$ejam_unique_id is the county FIPS codes
+#' @seealso [mapfastej()] [map_shapes_leaflet()]
 #' @return leaflet html widget (but if static_not_leaflet=T,
 #'   returns just shapes_counties_from_countyfips(mydf$ejam_uniq_id))
 #' @examples \dontrun{
@@ -176,6 +177,7 @@ map_facilities_proxy <- function(mymap, rad = 3, highlight = FALSE, clustered = 
 #'  x <- ejamit(fips = fips_ky, radius = 0)
 #'  mapfastej_counties(x$results_bysite)
 #'  }
+#'  # map_shapes_leaflet(shapes = shapes_counties_from_countyfips(fips_ky))
 #'
 #' @export
 #'

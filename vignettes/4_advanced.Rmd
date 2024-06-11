@@ -61,9 +61,11 @@ indexblocks()
 
 ```
 
+
 Note: This article is a work in progress
 
-## TEST DATA AVAILABLE FOR EJAM
+
+## EXAMPLES OF FILES & TEST DATA EJAM CAN IMPORT OR OUTPUT
 
 ### Sample spreadsheets & shapefiles for trying the web app
 
@@ -73,19 +75,15 @@ should look like.
 
 **Local folders with sample files**
 
-To open the locally installed "testdata" folders (in Windows File Explorer, or iOS Finder)
-```{r browseURL, eval=FALSE, echo=TRUE}
-browseURL(system.file("testdata", package = "EJAM"))
-```
+To see a list of local folders (where EJAM is installed locally) with files that
+can be uploaded to the EJAM web app or provided as inputs to EJAM functions (as
+examples or for testing):
 
-To see a list of local folders (where EJAM is installed locally) with files that can be uploaded to the EJAM web app or provided as inputs to EJAM functions (as examples or for testing):
 ```{r, eval=FALSE, echo=TRUE}
 x <- list.dirs(system.file("testdata/", package = "EJAM"), recursive = FALSE)
 
 cbind(`Local folders with installed file examples` = x, Subfolder = basename(x))
 ```
-
-**Local sample files**
 
 To see a list of the files available locally as installed sample/test data:
 ```{r, eval=TRUE, echo=TRUE}
@@ -104,6 +102,11 @@ finding them in these local folders where you installed the package:
 -   /`EJAM/testdata/shapes/portland_shp.zip`
 -   etc.
 
+To open the locally installed "testdata" folders (in Windows File Explorer, or iOS Finder)
+```{r browseURL, eval=FALSE, echo=TRUE}
+browseURL(system.file("testdata", package = "EJAM"))
+```
+
 **Example of using a file in EJAM**
 
 ```{r, eval=FALSE, echo=TRUE}
@@ -115,6 +118,7 @@ testpoint_files
 
 latlon_from_anything(testpoint_files[2]) # aka latlon_any_format()
 ```
+
 
 ### Sample R data objects: Examples of inputs & outputs of EJAM functions
 
@@ -156,6 +160,11 @@ you can use as inputs to ejam2report(), ejam2excel(), ejam2ratios(), ejam2barplo
 x[grepl("^testout", x$Item), ]
 cat("\n\n")
 ```
+
+Note that the largest files included in the package are mostly the blockgroupstats
+dataset from EJScreen. Note the block datasets are not in the package - they get
+downloaded by the package at launch or as needed.
+
 
 --------------------------------------------------------------------------------
 
@@ -317,7 +326,6 @@ length(hasboth)
  NROW(naics_from_any("chem", children = T))
 # [1] 104
 ```
-
 
 --------------------------------------------------------------------------------
 
