@@ -174,7 +174,7 @@ ejamit <- function(sitepoints,
   ## get blocks in POLYGONS / SHAPEFILES ####
   
   if (!is.null(shapefile)) {
-    shp <- shapefile_from_any(shapefile_folder, cleanit = TRUE)
+    shp <- shapefile_from_any(shapefile, cleanit = TRUE)
     if (!missing(radius)) {
       # add buffers around the polygons
       if (!silentinteractive) {cat('Adding buffer around each polygon.\n')}
