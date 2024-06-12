@@ -48,10 +48,10 @@ reference:
   - ejamit_compare_distances
   - ejamit_compare_types_of_places
   - ejam2report
-  - ejam2map
-  - ejam2excel
-  - ejam2shapefile
   - ejam2ratios
+  - ejam2excel
+  - ejam2map
+  - ejam2shapefile
   - ejam2barplot
   - ejam2barplot_sites
   - ejam2barplot_distances
