@@ -4,12 +4,20 @@
 \alias{ejamit_compare_types_of_places}
 \title{Compare subsets (types) of places that are all from one list}
 \usage{
-ejamit_compare_types_of_places(sitepoints, typeofsite = NULL, ...)
+ejamit_compare_types_of_places(
+  sitepoints,
+  typeofsite = NULL,
+  silentinteractive = TRUE,
+  ...
+)
 }
 \arguments{
 \item{sitepoints}{see \code{\link[=ejamit]{ejamit()}}}
 
-\item{typeofsite}{vector of length same as NROW(sitepoints), where each unique value defines a group of sites}
+\item{typeofsite}{vector of length same as NROW(sitepoints), where
+each unique value defines a group of sites}
+
+\item{silentinteractive}{passed to \code{\link[=ejamit]{ejamit()}}}
 
 \item{...}{see \code{\link[=ejamit]{ejamit()}}}
 }
