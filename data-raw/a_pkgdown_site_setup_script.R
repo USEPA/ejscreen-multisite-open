@@ -3,53 +3,103 @@
 # see https://pkgdown.r-lib.org/articles/pkgdown.html#configuration
 # see https://usethis.r-lib.org/reference/use_pkgdown.html
 ############################################################# # 
-## Initial setup: 
+#
+##   Initial setup of authorization tokens:
+#
 ## 1st confirm personal access token PAT exists and not expired
 ##  (to allow use of github API to create new branch gh-pages, create github action, etc.)
-# git_sitrep() # git situation report
+#     To check on PATs:
+# usethis::gh_token_help() and 
+# usethis::git_sitrep() # git situation report
 ##    To make a PAT:
 # usethis::create_github_token()
-##    To register a PAT, one way is as part of this
+##    To register a PAT, see
+# credentials::set_github_pat()
+##    https://usethis.r-lib.org/articles/git-credentials.html#git-credential-helpers-and-the-credential-store
+##    Windows more or less takes care of this for you now, in conjunction with github.
+############################################# #
+#
+##   Initial setup of github pages website using pkgdown:
+#
 # usethis::use_github_pages(branch = "main", path = "/docs")
-##   which does  usethis::use_pkgdown() and other steps,
-##   but note this replaces/deletes any existing _pkgdown.yml file !
-# Then modify the _pkgdown.yml file
-# and write/edit the .Rmd vignettes in the vignettes folder
-##############################################
+##   does
+# usethis::use_pkgdown()   and does other steps,
+##   but note it replaces/deletes any existing _pkgdown.yml file 
+#
+#   Also, for traditional (not pkgdown) vignettes, see the RStudio menu, 
+#   check on and maybe adjust the settings here:
+# "Build" - "Configure Build Options" - "Build Tools" - "Generate Docs with Roxygen"
+#   Look at the checkboxes for  build/install & vignettes.
+#   The traditional vignettes can get built at each install/build via these options,
+#   and/or be updated using 
+############################################# #
 
-# SCRIPT TO REBUILD THE vignettes (articles) 
-# Probably does not require all these steps, though.
-
-# Note: In RStudio menu, check on and maybe adjust the settings here:
-#   Build, Configure Build Options, Build Tools, Generate Docs with Roxygen
-  # look at the checkboxes for  build/install & vignettes 
+#    SCRIPT  TO  REBUILD  vignettes  (articles)
+#
+# Probably does not require all these steps, though
 
 library(devtools)
 library(usethis)
 library(pkgdown)
 
+#################### # 
+
 # devtools::build_readme() # takes a couple minutes! as it installs the package in a temporary library
 # build_rmd() is a wrapper around rmarkdown::render() that first installs a temporary copy of the package, and then renders each .Rmd in a clean R session.
 rmarkdown::render("README.Rmd")  # renders .Rmd to create a  .md file that works in github as a webpage
-
-#################### # 
-
-# in case this matters here:
-EJAM::dataload_from_pins("all") # not sure this helps with building vignettes though, which need access to frs file etc. in whatever environment they are built in
-
-
-# if  not et built by devtools::install ?... 
+# 
+# just build/install using RStudio buttons? but check if build options include vignettes
+# or can try this:
 
 devtools::document()
 
-
-# just build/install using RStudio buttons? but check if build options include vignettes
-# or can try this:
 Sys.time()   # about 4 minutes  
-devtools::install(quick = TRUE,
+
+##############################################
+# check if can reach pins or it will not build vignettes correctly
+dataload_pin_available <- function(boardfolder = "Mark",
+                                   auth = "auto",
+                                   server = "https://rstudio-connect.dmap-stage.aws.epa.gov", 
+                                   silent = FALSE) {
+  board <- tryCatch(pins::board_connect(server = server, auth = auth),
+                    error = function(e) e)
+  
+  if (inherits(board, "error")) {
+    board_available <- FALSE
+    if (!silent) {cat("Failed trying to connect to pins board server.\n\n")}
+  } else {
+    board_available <- TRUE
+    if (!silent) {cat("Successfully connected to Posit Connect pins board.\n\n")}
+  }
+  return(board_available)
+}
+##############################################
+if (!dataload_pin_available()) {stop("cannot build vignettes correctly without access to pins board")}
+##############################################
+
+# just in case building vignettes via install() does not successfully load those frs and other files
+
+EJAM::dataload_from_pins("all") # not sure this helps with building vignettes though, which need access to frs file etc. in whatever environment they are built in
+##############################################
+
+# devtools::check() 
+##   automatically builds and checks a source package, using all known best practices.
+# devtools::check_man()
+# devtools::check_built() checks an already-built package.
+
+
+## RUN TESTS OR CHECK
+
+# devtools::test()
+
+## [ FAIL 7 | WARN 7 | SKIP 1 | PASS 617 ] as of 5/13/24
+
+
+devtools::install(quick = FALSE,   # BUT USUALLY LEAVE IT AS TRUE
                   upgrade = FALSE, 
-                  build_vignettes = TRUE,  # does it do that? it says "installing vignettes" but does not update the .html files in the vignette folder.
-                  # build_vignettes=TRUE if you want to re-render them without doing full build caused by quick=FALSE.
+                  # build_vignettes = TRUE,  # does it do that in the doc folder, or docs folder, or vignette folder, or where? it says "installing vignettes" but does not update the .html files in the vignette folder.
+                  build_vignettes = TRUE, # if you want to re-render them without doing full build caused by quick=FALSE.
+                  ## can do later via devtools::build_vignettes() 
                   build = FALSE,
                   quiet = FALSE
                   ) 
@@ -59,25 +109,43 @@ Sys.time()
 ## build = TRUE means it converts a package source directory into a single bundled file. If binary = FALSE this creates a tar.gz package that can be installed on any platform, provided they have a full development environment (although packages without source code can typically be installed out of the box). If binary = TRUE, the package will have a platform specific extension (e.g. .zip for windows), and will only be installable on the current platform, but no development environment is needed.
 
 #################### # 
+# but that seems to case an error that quitting / restarting RStudio seemed tfix(Error in `poll(list(self), ms)`:
+# ! Native call to `processx_poll` failed
+# Caused by error in `chain_call(c_processx_poll, pollables, type, as.integer(ms))`:
+#   ! lazy-load database 'C:/Users/... .. . ./EJAM/R/EJAM.rdb' is corrupt
+# Type .Last.error to see the more details.
+# Warning message:
+#   In do.call(".Call", list(.NAME, ...)) : internal error -3 in R_decompress1)
 
 #################### # 
 
 library(EJAM)  #
-EJAM::rmost()
+EJAM:::rmost(notremove = "dataload_pin_available")
+if (!dataload_pin_available()) {stop("cannot build vignettes correctly without access to pins board")}
 EJAM::dataload_from_pins("all") # not sure this helps with building vignettes though, which need access to frs file etc. in whatever environment they are built in
 
-# may want to run tests and/or check here.
+########### but rstudio build button makes it try to load data and it connects to pins but does not use those yet-
+# tries to use local copies and fails to get .arrow files from local path supposed to be ~/../Downloads/......
+# so it loads the .rda from aws that are older and not all files are there. 
+## why did it not use the pins versions since it did connect? and why not found in that local path???
+## so did rm(list=ls()) and tried to continue from library( ) above .
 
- #   devtools::test()
+#################### # 
+# AGAIN? reBuild regular R package vignettes ? in /doc/ ?
+#    Already had done this:
+# devtools::install(build_vignettes = T)
+#    so why do it again using this:  ?
+## devtools::build_vignettes(quiet = FALSE, upgrade = "never", install = FALSE)
+#
+## and building those is SLOW.
+devtools::build_vignettes(quiet = FALSE, upgrade = "never", install = FALSE)
+devtools::install(build_vignettes = T)
+# This puts the .html files in the 
+#  doc (not docs) folder, 
+# and copies the .Rmd files there too, and builds vignette index
 
 
 #################### # 
-# Build regular R package vignettes ? in /doc/ ?
-
- ## THIS TAKES SOME TIME: 
- devtools::build_vignettes(quiet = FALSE, upgrade = "never", install = FALSE)
-
- #################### # 
 # Build Articles (web based vignettes) for pkgdown website.  in /docs/ ? not /doc/ 
 # knit button might not work in some cases?
 
@@ -95,7 +163,7 @@ Sys.time() # next part can be SLOW
 pkgdown::build_site_github_pages(
   dest_dir = "docs",
   clean = FALSE,        # faster if FALSE. TRUE would delete objects already attached? 
-  examples = FALSE,     # should only set TRUE if you want to include outputs of examples along with the function documentation!
+  examples = FALSE,     # *** should only set TRUE if you want to include outputs of examples along with the function documentation!
   new_process = FALSE,  # faster if FALSE (and HAD PROBLEMS IF TRUE... if FALSE then it can rely on having frs and other files available in current environment, for building vignettes?)
  
   devel = TRUE, # faster if TRUE - If FALSE, will first install the package to a temporary library, and will run all examples and vignettes in a new process.
@@ -108,22 +176,32 @@ pkgdown::build_site_github_pages(
 # that does  build_github_pages() ?
 # usethis::use_github_pages(branch = "main", path = "/docs") # FAST - just defines source and URL. already done earlier, prob do not need to repeat.
 
-
-# now these steps fail: 
- #     build_search('.')   and   build_sitemap('.') 
-#    which is a step in 
-#   pkgdown:::build_site_local() which is part of 
-# pkgdown::build_site_github_pages()
-# ── Building search index ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-# Error in UseMethod("xml_find_first") : 
-#   no applicable method for 'xml_find_first' applied to an object of class "xml_document"
-# this step would work     pkgdown:::build_redirects(".")
-
-
-
 Sys.time() # 40 minutes for all of this to run with slowest options above
+
+# But within that, it stops with error on this step: 
+#
+#     build_search('.')   # **** PROBLEM IN pkgdown ******
+# ── Building search index ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+# Error in UseMethod("xml_find_first") : no applicable method for 'xml_find_first' applied to an object of class "xml_document"
+#  and trying it alone afterwards fails with the same error.
+#
+# so it never gets to 
+#   pkgdown:::build_sitemap('.') etc. etc.
+#    which are steps in    
+# pkgdown:::build_site_local() 
+#    which is part of 
+# pkgdown::build_site_github_pages()
+# 
+# But then trying these two steps alone in command line works:
+
+    pkgdown:::build_sitemap('.')
+    pkgdown:::build_redirects(".")
+
 #################### # 
+
 stop( ' then COMMIT AND PUSH THE NEW FILES ')
+
+
 browseURL("https://github.com/USEPA/EJAM/actions/") # to see automatic deployment happen
 stop()
 

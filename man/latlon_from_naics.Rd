@@ -4,35 +4,61 @@
 \alias{latlon_from_naics}
 \title{Find EPA-regulated facilities in FRS by NAICS code (industrial category)}
 \usage{
-latlon_from_naics(naics, id_only = FALSE)
+latlon_from_naics(naics, children = TRUE, id_only = FALSE, ...)
 }
 \arguments{
-\item{naics}{a vector of naics codes, or
+\item{naics}{a vector of naics codes or query of titles of NAICS, or
 a data.table with column named code, as with output of \code{\link[=naics_from_any]{naics_from_any()}}}
+
+\item{children}{optional logical. set to FALSE to get only exact matches
+rather than all facilities whose NAICS
+starts with provided naics (or naics based on provided title).
+Many facilities have only a longer more specific NAICS code
+listed in the FRS, such as a 6-digit code, so if the category (e.g., 4-digit)
+is queried then without children = TRUE one would not find all the sites
+within that overall category.}
+
+\item{id_only}{optional logical. Must set TRUE to get only regid instead of table}
+
+\item{...}{passed to \code{\link[=naics_from_any]{naics_from_any()}}}
 }
 \value{
 A data.table (not just data.frame) with columns called
-lat, lon, REGISTRY_ID, NAICS (but see the id_only parameter)
+lat, lon, REGISTRY_ID, NAICS (unless id_only parameter set TRUE).
 }
 \description{
 Get lat lon, Registry ID, given NAICS industry code(s)
-Find all EPA Facility Registry Service (FRS) sites with this exact NAICS code (not subcategories)
+Find all EPA Facility Registry Service (FRS) sites with this/these NAICS code(s)
 }
 \details{
-NOTE: many FRS sites lack NAICS code!
+Important notes:
+\itemize{
+\item Finding the right NAICS and finding all the right sites by NAICS is complicated,
+and requires understanding the NAICS codes system, the FRS data, and the EJAM functions.
+See the discussion in the "Advanced" or other vignettes/articles.
+\item Many FRS sites lack NAICS code!
+\item Note the difference between children = TRUE and children = FALSE
+}
 
-Also, this function does not find the sites
-identified by FRS data as being in a child NAICS (subcategory of your exact query)!
+The functions like \code{\link[=regid_from_naics]{regid_from_naics()}}, \code{\link[=latlon_from_naics]{latlon_from_naics()}}, and \code{\link[=frs_from_naics]{frs_from_naics()}}
+try to find EPA FRS sites based on naics codes or titles.
 
-Relies on  frs_by_naics (a data.table)
+EPA also provides a \href{https://www.epa.gov/frs/frs-query#industrial}{FRS Facility Industrial Classification Search tool}
+where you can find facilities based on NAICS or SIC.
 
-See info about NAICS industry codes at \url{https://www.naics.com/search}
+See more about NAICS industry codes at \url{https://www.naics.com/search}
 }
 \examples{
   regid_from_naics(321114)
   latlon_from_naics(321114)
-  latlon_from_naics(EJAM::naics_from_any("cheese")[,code] )
+  # latlon_from_naics(naics_from_any("cheese")[,code] )
+  latlon_from_naics("cheese")
   head(latlon_from_naics(c(3366, 33661, 336611), id_only=TRUE))
+  head(regid_from_naics(c(3366, 33661, 336611))
+  head(regid_from_naics(3366, children = TRUE))
   # mapfast(frs_from_naics(336611)) # simple map
 
+}
+\seealso{
+\code{\link[=frs_from_naics]{frs_from_naics()}}  \code{\link[=frs_from_sic]{frs_from_sic()}} \code{\link[=latlon_from_sic]{latlon_from_sic()}} \code{\link[=regid_from_naics]{regid_from_naics()}} \code{\link[=naics_from_any]{naics_from_any()}}
 }

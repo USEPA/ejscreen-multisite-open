@@ -16,12 +16,10 @@ leaflet map widget
 Overlay blockgroups near 1 site, after plotblocksnearby(returnmap = TRUE)
 }
 \examples{
-dontrun{
  y <- plotblocksnearby(testpoints_10[5,],
         radius = 3,
         returnmap = TRUE)
  map_blockgroups_over_blocks(y)
-  }
 
 }
 \seealso{

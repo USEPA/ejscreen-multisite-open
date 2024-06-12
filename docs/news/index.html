@@ -37,6 +37,9 @@
     <a class="dropdown-item" href="../articles/6_future_plans.html">Future Plans and Ideas for EJAM</a>
   </div>
 </li>
+<li class="active nav-item">
+  <a class="nav-link" href="../news/index.html">Changelog</a>
+</li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
 
@@ -58,28 +61,180 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="2.2.2" id="ejam-222-3122024">EJAM 2.2.2 (3/12/2024)<a class="anchor" aria-label="anchor" href="#ejam-222-3122024"></a></h2>
-<ul><li><p>Documentation updates in pkgdown articles/ vignettes</p></li>
-<li><p>More test data / examples added</p></li>
-<li><p>Shapefile handling improved</p></li>
-<li><p>Bug fixes</p></li>
-<li><p>other updates/changes</p></li>
+<h2 class="pkg-version" data-toc-text="2.2.4" id="ejam-224-internal-beta-web-app-and-r-package-preparing-for-internal-deployment-june-2024">EJAM 2.2.4 internal beta web app and R package, preparing for internal deployment (June 2024)<a class="anchor" aria-label="anchor" href="#ejam-224-internal-beta-web-app-and-r-package-preparing-for-internal-deployment-june-2024"></a></h2>
+<div class="section level4">
+<h4 id="changed-2-2-4">Changed<a class="anchor" aria-label="anchor" href="#changed-2-2-4"></a></h4>
+<ul><li>
+<code><a href="../reference/latlon_from_naics.html">latlon_from_naics()</a></code> children = TRUE is now an option and the default. Note children = FALSE has been default in <code><a href="../reference/regid_from_naics.html">regid_from_naics()</a></code> and <code><a href="../reference/naics_from_name.html">naics_from_name()</a></code> etc. but that may change.</li>
+<li>
+<code><a href="../reference/fips_counties_from_state_abbrev.html">fips_counties_from_state_abbrev()</a></code> and <code><a href="../reference/fips_state_from_statename.html">fips_state_from_statename()</a></code> etc. are now not case-sensitive</li>
+</ul></div>
+<div class="section level4">
+<h4 id="r-package-additions-and-improvements-for-r-users-2-2-4">R package additions and improvements for R users<a class="anchor" aria-label="anchor" href="#r-package-additions-and-improvements-for-r-users-2-2-4"></a></h4>
+<ul><li>Improved <a href="https://usepa.github.io/EJAM/reference/ejam2barplot.html"><code>ejam2barplot()</code></a> shows easy plot of a few indicators overall.</li>
+<li>New <a href="https://usepa.github.io/EJAM/reference/ejam2barplot_sites.html"><code>ejam2barplot_sites()</code></a> shows plot comparing top sites, for 1 indicator.</li>
+<li>New <a href="https://usepa.github.io/EJAM/reference/names2fips.html"><code>names2fips()</code></a> converts State abbreviation, State name, or County name to FIPS code.</li>
+<li>New <code><a href="../reference/ejam2shapefile.html">ejam2shapefile()</a></code> drafted as a quick way to save results of ejamit() for import to other GIS tools</li>
+<li>New <code><a href="../reference/ejam2barplot_sitegroups.html">ejam2barplot_sitegroups()</a></code> shows output of <code>ejamit_compare_types_of_place()</code>
+</li>
+<li>
+<a href="https://usepa.github.io/EJAM/reference/ejamit_compare_types_of_place.html"><code>ejamit_compare_types_of_place()</code></a> and <a href="https://usepa.github.io/EJAM/reference/ejamit_compare_distances.html"><code>ejamit_compare_distances()</code></a> are flexible now in how sitepoints is defined: they let you specify sitepoints as an interactively selected file (if the sitepoints parameter is not provided) or a filepath or a data.frame object.</li>
+<li>Additions on how to select radius or radii, including uncertainty considerations in low-density areas, in <a href="https://usepa.github.io/EJAM/articles/4_advanced.html">Advanced article (vignette)</a>.</li>
+<li>New <code><a href="../reference/is.island.html">is.island()</a></code> function</li>
+<li>
+<code><a href="../reference/fips_state_from_state_abbrev.html">fips_state_from_state_abbrev()</a></code> and <code><a href="../reference/fips_from_table.html">fips_from_table()</a></code> etc. now can handle Island Territories AS, GU, MP, UM, VI</li>
+<li>
+<code><a href="../reference/counties_as_sites.html">counties_as_sites()</a></code> and <code><a href="../reference/states_as_sites.html">states_as_sites()</a></code> revamped</li>
+<li>
+<code><a href="../reference/mapfastej_counties.html">mapfastej_counties()</a></code> now accepts a data.frame not just data.table</li>
+<li>
+<code>fips_valid()</code> handles NA values better and recognizes more problematic fips</li>
+<li>New internal function ejscreen_vscript() for interactively running and comparing results using parameter <code>save_ejscreen_output = TRUE</code> in <code><a href="../reference/ejscreen_vs_ejam.html">ejscreen_vs_ejam()</a></code>
+</li>
+<li>New internal function <code><a href="../reference/ejscreen_vs_ejam_bysite.html">ejscreen_vs_ejam_bysite()</a></code> to show comparison site by site, for 1 indicator</li>
+</ul></div>
+<div class="section level4">
+<h4 id="bug-fixes-2-2-4">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-2-2-4"></a></h4>
+<ul><li>Several functions of the suite xyz_from_naics() and xyz_from_mact() etc. fixed – had been returning only first matching site.</li>
+<li>Many new unit tests for fips-related, map-related, and other functions.</li>
+<li>Fixed bug that caused errors in <code><a href="../reference/ejamit_compare_distances.html">ejamit_compare_distances()</a></code> and <code><a href="../reference/ejamit_compare_distances_fulloutput.html">ejamit_compare_distances_fulloutput()</a></code> <a href="https://github.com/USEPA/EJAM/commit/e2f11014e88c0b339f2ae5f60a73d25f769bbccf" class="external-link uri">https://github.com/USEPA/EJAM/commit/e2f11014e88c0b339f2ae5f60a73d25f769bbccf</a>
+</li>
+<li>Fixed bugs that caused <code><a href="../reference/ejscreen_vs_ejam.html">ejscreen_vs_ejam()</a></code> to not report pctownedunits and to have problems with any of x100varnames not being present in ejscreen output.</li>
+<li>Fixed <code><a href="../reference/fips2countyname.html">fips2countyname()</a></code> to return NA for inputs that are not countyfips</li>
+</ul><hr></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="2.2.3" id="ejam-223-internal-beta-web-app-and-r-package-may-2024">EJAM 2.2.3 internal beta web app and R package (May 2024)<a class="anchor" aria-label="anchor" href="#ejam-223-internal-beta-web-app-and-r-package-may-2024"></a></h2>
+<div class="section level3">
+<h3 id="significant-new-features-2-2-3">Significant New Features<a class="anchor" aria-label="anchor" href="#significant-new-features-2-2-3"></a></h3>
+<div class="section level4">
+<h4 id="documentation-of-all-ejam-r-functions-and-datasets-via-website-2-2-3">Documentation of all EJAM R functions and datasets via website<a class="anchor" aria-label="anchor" href="#documentation-of-all-ejam-r-functions-and-datasets-via-website-2-2-3"></a></h4>
+<p><a href="https://usepa.github.io/EJAM/index.html">The documentation website</a> includes</p>
+<ul><li>Overview of the R package</li>
+<li>Reference with documentation of every function and dataset</li>
+<li>How-to articles (aka vignettes) on installing, getting starting with key functions, and doing analysis in RStudio.</li>
+</ul></div>
+<div class="section level4">
+<h4 id="accessibility-and-usability-review-2-2-3">Accessibility and Usability Review<a class="anchor" aria-label="anchor" href="#accessibility-and-usability-review-2-2-3"></a></h4>
+<ul><li>UI is updated for 508 compliance and other standards and guidelines, including contrast and colors</li>
+<li>Webpage responsiveness and use of space are improved.</li>
+</ul></div>
+<div class="section level4">
+<h4 id="comparing-distances-2-2-3">Comparing Distances<a class="anchor" aria-label="anchor" href="#comparing-distances-2-2-3"></a></h4>
+<p>Comparing results at various distances is possible in new RStudio functions. This is not available in the web app UI, but may later be built into the web app interface.</p>
+<ul><li>Examples and background drafted in the <a href="https://usepa.github.io/EJAM/articles/4_advanced.html">Advanced article (vignette)</a> on how to compare distances, and how to select radius or radii, including uncertainty considerations in low-density areas.</li>
+<li>New <a href="https://usepa.github.io/EJAM/reference/ejamit_compare_distances.html"><code>ejamit_compare_distances()</code></a> lets you compare results at several different distances easily. It lets R users quickly run <code><a href="../reference/ejamit.html">ejamit()</a></code> for each of several distances, and automatically combines the results in convenient tables.</li>
+<li>A plot shows how the indicators vary with distance from the site(s).</li>
+<li>
+<code><a href="../reference/plot_distance_by_pctd.html">plot_distance_by_pctd()</a></code> is a related function and is now improved so it now can handle any indicator that can be aggregated as a weighted mean (not just demographics and not only population weights), is more flexible in input formats, does more error checking, and has documentation. * New functionality is still being further developed so formats may change.</li>
+</ul></div>
+<div class="section level4">
+<h4 id="comparing-groups-of-locations-or-facilities-2-2-3">Comparing Groups of Locations or Facilities<a class="anchor" aria-label="anchor" href="#comparing-groups-of-locations-or-facilities-2-2-3"></a></h4>
+<p>Comparing whole categories to each other and to reference groups of places is possible in new RStudio functions. This is not available in the web app UI, but may later be built into the web app interface. However, this type of analysis is best suited for work in RStudio because it would typically cover many thousands of sites, or even hundreds of thousands, which might take an hour per 200,000 sites, for example.</p>
+<ul><li>
+<p>New <a href="https://usepa.github.io/EJAM/reference/ejamit_compare_types_of_places.html"><code>ejamit_compare_types_of_places()</code></a> drafted and documented, providing powerful capabilities for comparing subgroups of places within one long list of sites. This allows one to do many types of larger analyses such as the following examples:</p>
+<ul><li>comparing places of type A versus type B, based on user-provided areas grouped in user-defined categories (types). For example these could be user-provided polygons defining various kinds of communities, watersheds, zones based on some criteria, etc., once a user has a list of locations they have labelled indicating which places are in which group/ category/ type of place.</li>
+<li>compare a specific set of EPA-regulated facilities to one or more relevant comparison groups of sites.</li>
+</ul></li>
+</ul><p>One now can categorize facilities based on any criteria for which one already has data in a table of sites. For example, groups of sites could be defined by a user if they have data on any of the following:</p>
+<ul><li>type of facility such as industrial sector defined by NAICS/SIC</li>
+<li>history of compliance/enforcement issues</li>
+<li>types of emissions controls</li>
+<li>magnitude of emissions</li>
+<li>modeled contribution to ambient levels or risks</li>
+<li>applicable rules to which the sites are subject</li>
+<li>geographic region</li>
+<li>urban/rual location</li>
+<li>parent company</li>
+<li>etc.</li>
+</ul><p>One can also include one or more reference groups within the single list of sites analyzed, to simplify comparison of one or more groups of sites to one or more reference groups of places. This allows one to compare residents within 3 miles of certain facilities, for example, to a random sample of comparably-sized locations (once the user has first generated that list of random locations to use as a reference group appended to the list of sites for analysis). * New functionality is still being further developed so formats may change.</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="other-changes-2-2-3">Other Changes<a class="anchor" aria-label="anchor" href="#other-changes-2-2-3"></a></h3>
+<div class="section level5">
+<h5 id="save-customized-settings-in-the-web-app-2-2-3">Save Customized Settings in the Web App<a class="anchor" aria-label="anchor" href="#save-customized-settings-in-the-web-app-2-2-3"></a></h5>
+<ul><li>
+<p>Many app settings and defaults now can be adjusted in the “Advanced”” page one can enable from the “About” page:</p>
+<ul><li>radius shown initially in app by default</li>
+<li>default title of analysis</li>
+<li>maximum radius allowed</li>
+<li>maximum file upload size</li>
+<li>which indicators are compared to which thresholds via Advanced tab of shiny app, to count how many of a certain group of indicators exceeds the 90th percentile, or exceeds 2x the State average, etc.</li>
+<li>many other settings</li>
+</ul></li>
+<li><p>Bookmarking in the advanced tab will enable a user to set up the app so it always starts off a certain way, with their preferred default radius, title of analysis, indicators, thresholds, etc. This is work in progress.</p></li>
+<li><p>The advanced tab also provides a link to what had been called an “interim batch tool” – EJAM’s ejscreenapi shiny app – if necessary to obtain a batch of data results directly from EJScreen (exact same numbers as reported by the EJScreen API), via link in advanced tab. This might be dropped or changed in the future.</p></li>
+<li><p>The “About”” tab has been improved.</p></li>
+</ul></div>
+<div class="section level5">
+<h5 id="r-package-improvements-for-r-users-2-2-3">R package improvements for R users<a class="anchor" aria-label="anchor" href="#r-package-improvements-for-r-users-2-2-3"></a></h5>
+<ul><li>
+<code><a href="../reference/run_app.html">run_app()</a></code> is updated – Several app settings and defaults now can be adjusted in RStudio using parameters provided to run_app(). This allows a few parameters to set radius in advance, or to show the advanced tab at startup by default, or do the following for example:
+<ul><li><code>run_app(default_default_miles=3.1, default_max_miles=31, default_max_mb_upload=100)</code></li>
+<li>see <code><a href="../reference/run_app.html">?run_app</a></code> for more parameters.</li>
+</ul></li>
+<li>New <code><a href="../reference/ejam2barplot.html">ejam2barplot()</a></code> simplifies seeing barplot comparing indicators such as the demographic groups, as ratios to state or national averages</li>
+<li>New <code><a href="../reference/ejam2ratios.html">ejam2ratios()</a></code> lets you easily see key ratios of indicators at sites analyzed compared to US/State average, in RStudio.</li>
+<li>New <code><a href="../reference/latlon_from_anything.html">latlon_from_anything()</a></code> provides more flexibility so user can provide path to a file, not just a table object</li>
+<li>New <code><a href="../reference/naics_is.valid.html">naics_is.valid()</a></code> is mostly for internal use</li>
+<li>New <code>acs_by_bg()</code> has been drafted and <code><a href="../reference/acs_bycounty.html">acs_bycounty()</a></code> is improved</li>
+<li>
+<code><a href="../reference/shapefile_from_any.html">shapefile_from_any()</a></code> and other shapefile reading functions are improved</li>
+<li>
+<code><a href="https://r-spatial.github.io/sf/reference/st_layers.html" class="external-link">sf::st_layers()</a></code> is now used by functions using shapefiles</li>
+<li>New testdata files (examples of input files to try uploading, and examples of output or intermediate data results) are expanded and improved. See the <a href="https://usepa.github.io/EJAM/articles/4_advanced.html#test-data-available-for-ejam">“Advanced” article section about what files and objects are installed with the package</a>.</li>
+</ul><!-- --><div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>     folders available at <span class="fu">system.file</span>(<span class="st">"testdata"</span>, <span class="at">package =</span> <span class="st">"EJAM"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>[<span class="dv">1</span>,] <span class="st">"EJAM/testdata/address"</span>                                       </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>[<span class="dv">2</span>,] <span class="st">"EJAM/testdata/examples_of_output"</span>                            </span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>[<span class="dv">3</span>,] <span class="st">"EJAM/testdata/fips"</span>                                          </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>[<span class="dv">4</span>,] <span class="st">"EJAM/testdata/latlon"</span>                                        </span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>[<span class="dv">5</span>,] <span class="st">"EJAM/testdata/program_type"</span>                                  </span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>[<span class="dv">6</span>,] <span class="st">"EJAM/testdata/programid"</span>                                     </span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>[<span class="dv">7</span>,] <span class="st">"EJAM/testdata/registryid"</span>                                    </span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>[<span class="dv">8</span>,] <span class="st">"EJAM/testdata/shapes"</span></span></code></pre></div>
+<ul><li>testoutput_ datasets updated to reflect updated formats and indicators provided by ejamit() and ejscreenit(), and invalid latlon points removed from testpoints_10 and testpoints_1000</li>
+<li>dataload_from_ functions improved</li>
+</ul></div>
+<div class="section level5">
+<h5 id="bug-fixes-2-2-3">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-2-2-3"></a></h5>
+<ul><li>fixed bug in start analysis button in shiny app</li>
+<li>fixed issue in shiny app when uploaded points were all invalid</li>
+<li>fixed histogram label that said Percentile in some cases where it should not</li>
+<li>
+<code><a href="../reference/plotblocksnearby.html">plotblocksnearby()</a></code> now no longer fails if given output of testpoints_n(n, weighting = “block”)</li>
+<li>
+<code><a href="../reference/getblocksnearby.html">getblocksnearby()</a></code> now correctly shows diagnostics on distances and block counts after the distances are adjusted based on lower limit and capped by radius specified</li>
+<li>
+<code><a href="../reference/naics_from_code.html">naics_from_code()</a></code> and <code><a href="../reference/sic_from_code.html">sic_from_code()</a></code> bug fixes</li>
+<li>names of language-related indicators mostly fixed</li>
+<li>other bug fixes</li>
+</ul></div>
+</div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="2.2.2" id="ejam-222-internal-beta-web-app-and-r-package-3122024">EJAM 2.2.2 internal beta web app and R package (3/12/2024)<a class="anchor" aria-label="anchor" href="#ejam-222-internal-beta-web-app-and-r-package-3122024"></a></h2>
+<ul><li>Documentation drafted for pkgdown articles/ vignettes</li>
+<li>More test data / examples added</li>
+<li>Shapefile handling improved</li>
+<li>Bug fixes</li>
+<li>other updates/changes</li>
 </ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="2.2.1" id="ejam-221-1312024">EJAM 2.2.1 (1/31/2024)<a class="anchor" aria-label="anchor" href="#ejam-221-1312024"></a></h2>
-<ul><li><p>Major changes</p></li>
-<li><p>Deployed to Posit Connect staging server as web app</p></li>
+<h2 class="pkg-version" data-toc-text="2.2.1" id="ejam-221-internal-beta-web-app-and-r-package-1312024">EJAM 2.2.1 internal beta web app and R package (1/31/2024)<a class="anchor" aria-label="anchor" href="#ejam-221-internal-beta-web-app-and-r-package-1312024"></a></h2>
+<ul><li>Major changes</li>
+<li>Deployed to Posit Connect staging server as a beta test web app</li>
 </ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="2.2.1" id="ejam-221-10182023">EJAM 2.2.1 (10/18/2023)<a class="anchor" aria-label="anchor" href="#ejam-221-10182023"></a></h2>
+<h2 class="pkg-version" data-toc-text="2.2.1" id="ejam-221-r-package-10182023">EJAM 2.2.1 R package (10/18/2023)<a class="anchor" aria-label="anchor" href="#ejam-221-r-package-10182023"></a></h2>
 <ul><li>Major changes</li>
 </ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="2.2.0" id="ejam-220-8032023">EJAM 2.2.0 (8/03/2023)<a class="anchor" aria-label="anchor" href="#ejam-220-8032023"></a></h2>
+<h2 class="pkg-version" data-toc-text="2.2.0" id="ejam-220-r-package-8032023">EJAM 2.2.0 R package (8/03/2023)<a class="anchor" aria-label="anchor" href="#ejam-220-r-package-8032023"></a></h2>
 <ul><li>Updated to match EJScreen version 2.2</li>
 </ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="2.1.1" id="ejam-211-9192022">EJAM 2.1.1 (9/19/2022)<a class="anchor" aria-label="anchor" href="#ejam-211-9192022"></a></h2>
+<h2 class="pkg-version" data-toc-text="2.1.1" id="ejam-211-r-package-9192022">EJAM 2.1.1 R package (9/19/2022)<a class="anchor" aria-label="anchor" href="#ejam-211-r-package-9192022"></a></h2>
 <ul><li>First version on USEPA github</li>
 </ul></div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

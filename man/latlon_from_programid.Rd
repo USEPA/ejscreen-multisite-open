@@ -26,6 +26,7 @@ Also note the FRS API:
 \url{https://www.epa.gov/frs/frs-rest-services}
 }
 \examples{
+ latlon_from_programid(testids_program_sys_id)
  latlon_from_programid(c("XJW000012435", "00768SRTRSROAD1"))
  pids <- c("7-0540-00003", "354362", "1513529", "485659", "LAG750956", 
    "CAC002995519", "3601252181", "3601439158")

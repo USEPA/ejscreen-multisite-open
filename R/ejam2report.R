@@ -79,10 +79,10 @@ ejam2report <- function(ejamout = testoutput_ejamit_10pts_1miles, sitenumber = N
                 to = file.path(tempdir(), 'communityreport.css'), overwrite = TRUE)          
     }
     
-    if (!('EPA_logo_white.png') %in% list.files(file.path(tempdir(), 'www'))) {
+    if (!('EPA_logo_white_2.png') %in% list.files(file.path(tempdir(), 'www'))) {
       dir.create(file.path(tempdir(), 'www'))
-      file.copy(from = app_sys('report/community_report/EPA_logo_white.png'),
-                to = file.path(tempdir(), 'www', 'EPA_logo_white.png'), overwrite = TRUE)
+      file.copy(from = app_sys('report/community_report/EPA_logo_white_2.png'),
+                to = file.path(tempdir(), 'www', 'EPA_logo_white_2.png'), overwrite = TRUE)
     }
     
     temp_comm_report <- file.path(tempdir(), paste0("comm_report",x,".html"))

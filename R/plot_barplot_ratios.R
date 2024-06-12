@@ -1,19 +1,6 @@
 
-#' @inherit plot_barplot_ratios_ez
-#' @export
-ejam2barplot = function(out, varnames = c(names_d_ratio_to_avg , names_d_subgroups_ratio_to_avg),
-                        main = "Demographics at the Analyzed Locations Compared to US Overall", ...) {
-  # ejam2barplot(out,varnames = c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg), main = "Demographics at Analyzed Locations Compared to Statewide")
-  plot_barplot_ratios_ez(out = out,
-                         varnames = varnames,
-                         main =  main, 
-                         ... = ...)
-}
-############################################################################################# #
-
-
 #' Barplot of ratios of demographic (or other) scores to averages - simpler syntax
-#' @aliases ejam2barplot
+#' @aliases plot_barplot_ratios_ez
 #' @param out like from [ejamit()]
 #' @param varnames vector of indicator names that are ratios to avg, like 
 #'   c(names_d_ratio_to_avg , names_d_subgroups_ratio_to_avg)
@@ -52,6 +39,19 @@ ejam2barplot = function(out, varnames = c(names_d_ratio_to_avg , names_d_subgrou
 #'   
 #' @return ggplot
 #'
+#' @export
+#'
+ejam2barplot = function(out, varnames = c(names_d_ratio_to_avg , names_d_subgroups_ratio_to_avg),
+                        main = "Demographics at the Analyzed Locations Compared to US Overall", ...) {
+  # ejam2barplot(out,varnames = c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg), main = "Demographics at Analyzed Locations Compared to Statewide")
+  plot_barplot_ratios_ez(out = out,
+                         varnames = varnames,
+                         main =  main, 
+                         ... = ...)
+}
+############################################################################################# #
+
+#' Same as ejam2barplot()
 #' @export
 #'
 plot_barplot_ratios_ez = function(out, varnames = c(names_d_ratio_to_avg , names_d_subgroups_ratio_to_avg),
@@ -101,18 +101,18 @@ plot_barplot_ratios_ez = function(out, varnames = c(names_d_ratio_to_avg , names
 #'   - the histograms code and discussion  in EJAMbatch.summarizer package
 #'
 #'
-#' @param ratio.to.us.d.overall named list of a few ratios to plot, but see [plot_barplot_ratios_ez()]
+#' @param ratio.to.us.d.overall named list of a few ratios to plot, but see [ejam2barplot()]
 #'   for an easier way to specify which indicator to show.
 #' @param names2plot_friendly names to use for plot - should be same length as named list ratio.to.us.d.overall
 #' @param mycolorsavailable leave as default
 #' @param main title for plot, like "Demographics at the Analyzed Locations Compared to US Overall"
 #' @examples
 #'   
-#'   plot_barplot_ratios_ez(testoutput_ejamit_100pts_1miles)
+#'   ejam2barplot(testoutput_ejamit_100pts_1miles)
 #'   
 #'   plot_barplot_ratios(unlist(testoutput_ejamit_1000pts_1miles$results_overall[ , c(..names_d_ratio_to_avg , ..names_d_subgroups_ratio_to_avg) ]))
 #'
-#' @seealso [table_xls_format()] [plot_barplot_ratios]
+#' @seealso [table_xls_format()] [ejam2ratios()] [ejam2barplot()] 
 #' @return ggplot should be returned
 #' @export
 plot_barplot_ratios <- function(ratio.to.us.d.overall,
