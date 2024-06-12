@@ -25,8 +25,8 @@ e.g., change output formats of results_bytype vs results_overall
   typeofsite <- c("A", "B", "B", "C"))
   cbind(Rows_or_length = sapply(out, NROW))
   
-  x <- EJAM::state_from_latlon(lat = testpoints_1000$lat, lon = testpoints_1000$lon)
-  x <- data.frame(testpoints_1000, x)
-  out_bystate <- ejamit_compare_types_of_places(x, x$ST)
+   x <- EJAM::state_from_latlon(lat = testpoints_1000$lat, lon = testpoints_1000$lon)
+   x <- data.frame(testpoints_1000, x)
+   out_bystate <- ejamit_compare_types_of_places(x, x$ST)
   
 }
