@@ -73,6 +73,8 @@ bibliography: report_references.bib
  
 # see these resources: 
 #
+#   https://quarto.org/docs/output-formats/ms-word.html
+
 # https://www.r-bloggers.com/2023/04/11-tricks-to-level-up-your-rmarkdown-documents/
 # https://bookdown.org/yihui/rmarkdown/parameterized-reports.html
 # https://bookdown.org/yihui/rmarkdown/
