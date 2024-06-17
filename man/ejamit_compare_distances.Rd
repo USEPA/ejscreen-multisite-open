@@ -2,8 +2,8 @@
 % Please edit documentation in R/ejamit_compare_distances.R
 \name{ejamit_compare_distances}
 \alias{ejamit_compare_distances}
-\title{compare ejamit results for more than one radius
-run ejamit() once per radius, get a table with a row per radius}
+\title{Compare EJAM results overall for more than one radius
+Run ejamit() once per radius, get a summary table with a row per radius}
 \usage{
 ejamit_compare_distances(
   sitepoints,
@@ -39,26 +39,26 @@ when reporting which indicators most strongly increase as radius decreases.}
 \item{...}{passed to \code{\link[=ejamit]{ejamit()}}}
 }
 \value{
-data.table like ejamit()$results_overall but with one row
-per radius.
+data.table you can call results_bydistance,
+like ejamit()$results_overall but with one row per radius
 }
 \description{
-compare ejamit results for more than one radius
-run ejamit() once per radius, get a table with a row per radius
+Compare EJAM results overall for more than one radius
+Run ejamit() once per radius, get a summary table with a row per radius
 }
 \examples{
   radii <- c(1,2,3,6,10)
   radii <- c(1, 10)
   pts <- testpoints_100
   pts <- testpoints_10
-  x <- ejamit_compare_distances(pts, radii = radii)
+  bydist <- ejamit_compare_distances(pts, radii = radii)
+  ejamit_compare_distances2plot(bydist, myvars = c(
+    "ratio.to.avg.pctlowinc", "ratio.to.avg.pcthisp", "ratio.to.avg.pctnhba"))
   
-  names(x) <- fixcolnames(names(x),"r","shortlabel")
-  
-  
-  
+  names(bydist) <- fixcolnames(names(bydist), "r", "shortlabel")
   
 }
 \seealso{
-\code{\link[=plot_distance_by_pctd]{plot_distance_by_pctd()}}, \code{\link[=distance_by_group]{distance_by_group()}} and several other related functions
+\code{\link[=plot_distance_by_pctd]{plot_distance_by_pctd()}}, \code{\link[=distance_by_group]{distance_by_group()}},
+and related internal functions
 }

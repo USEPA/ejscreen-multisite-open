@@ -11,6 +11,8 @@ test_that('lookup works correctly',{
 # it uses fips_bg_from_anyfips to check if it's valid.
 # any warnings should be added there not to this function
 test_that('actually does not warn but does not crash, for invalid fips',{
+  suppressWarnings({
+    
   expect_no_error({
     val <- state_from_fips("452")
     })
@@ -22,6 +24,7 @@ test_that('actually does not warn but does not crash, for invalid fips',{
     val <- state_from_fips("blue")
   })
   expect_true(is.na(val[1]))
+})
 })
 
 

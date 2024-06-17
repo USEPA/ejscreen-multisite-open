@@ -12,7 +12,7 @@ getblocks_diagnostics(
 )
 }
 \arguments{
-\item{x}{The output of \code{\link[=getblocksnearby]{getblocksnearby()}} like testoutput_getblocksnearby_10pts_1miles}
+\item{x}{The output of \code{\link[=getblocksnearby]{getblocksnearby()}} like \link{testoutput_getblocksnearby_10pts_1miles}}
 
 \item{detailed}{if TRUE, also shows in console a long table of frequencies via \code{\link[=getblocks_summarize_blocks_per_site]{getblocks_summarize_blocks_per_site()}}}
 
