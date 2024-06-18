@@ -2,14 +2,19 @@
 
 ## see ?calc_ejam() for examples showing how these can work
 
-
 ######################### #
 
-# NOTE THIS SAME INFO IS MORE OR LESS IN map_headernames$is.wtdmean and $denominator  !!
+# NOTE THIS SAME INFO IS MORE OR LESS IN
+# map_headernames$is.wtdmean and 
+# map_headernames$denominator  !!
+#  see github issue about the formulas
 # doaggregate() will probably move away from any of the info below and just use map_headernames$is.wtdmean and $denominator for most calculations??
 
-
+# countcols ####
+  
 countcols = "pop"
+
+# wtdmeancols ####
 
 # wtdmeancols = names_these
 
@@ -28,22 +33,24 @@ wtdmeancols = c(
   "pctunemployed",
   
   "pctdisability",
-  "pctownedunits",
+  "pctownedunits",   # ** check
   "pctpoor",
   
-  "pct_lan_spanish",  
-  "pct_lan_ie",    
-  "pct_lan_api",   
-  "pct_lan_eng_na",  
+  "pct_lan_spanish",    # ** check
+  "pct_lan_ie",      # ** check
+  "pct_lan_api",     # ** check
+  "pct_lan_eng_na",    # ** check
   
-  "pctspanish_li",
-  "pctie_li",
-  "pctapi_li",
-  "pctother_li", 
+  "pctspanish_li",  # ** check
+  "pctie_li",  # ** check
+  "pctapi_li",  # ** check
+  "pctother_li",   # ** check
   
-  "Demog.Index",    #??
-  "Demog.Index.Supp" # ?
+  "Demog.Index",    #??  # ** check
+  "Demog.Index.Supp" # ?  # ** check
 )
+
+## Define weights (denominators) ####
 
 wtscols = c(
   
@@ -85,11 +92,12 @@ wtscols = c(
 
 ################################ # 
 
-## save this info in map_headernames columns  is.wtdmean = TRUE  and  denominator = "pop" etc. (ie the weight)
+## save this info in map_headernames columns 
+#   is.wtdmean = TRUE  and 
+#   denominator = "pop" etc. (ie the weight)
 ##
 # usethis::use_data(wtdmeancols, overwrite = TRUE)
 # usethis::use_data(wtscols, overwrite = TRUE)
-
 
 cbind(wtdmeancols, wtscols)
 
@@ -137,15 +145,21 @@ cbind(wtdmeancols, wtscols)
 # [41,] "Demog.Index"      "pop"           
 # [42,] "Demog.Index.Supp" "pop" 
 
+######################### #
+# formulas_all  ####
+######################### #
 
-formulas_sum = c(paste0("aggregate_", countcols, " = sum(", countcols, ", na.rm = TRUE)"))
+formulas_sum     = c(paste0("aggregate_", countcols,    " = sum(", countcols, ",      na.rm = TRUE)"))
 formulas_wtdmean = c(paste0("aggregate_", wtdmeancols , " = sum(", wtscols, " * ", wtdmeancols, ", na.rm = TRUE) / sum(", wtscols, ", na.rm = TRUE)"))
-formulas_all = c(formulas_sum, formulas_wtdmean)
-formulas_all
+formulas_all     = c(formulas_sum, formulas_wtdmean)
+
+# formulas_all
 # [1] "aggregate_pop = sum(pop, na.rm = TRUE)"                                                                           
 # [2] "aggregate_lowlifex = sum(pop * lowlifex, na.rm = TRUE) / sum(pop, na.rm = TRUE)"  
 #  etc etc
 
+######################### #
+# formulas_d ####
 ######################### #
 
 # THESE WOULD BE THE FORMULAS IF PERCENTAGE IS CALCULATED AS RATIO OF SUMS OF COUNTS, NOT A WTDMEAN:
@@ -210,11 +224,17 @@ formulas_d <- c(
 )
     # pctfemale1849 = ifelse(pop == 0, 0, female1849  / pop),
 
+######################### #
+# metadata_add() & use_data() ####
+######################### #
+
+formulas_all <- EJAM:::metadata_add(formulas_all)
+
 usethis::use_data(formulas_all, overwrite = TRUE)
 
+formulas_d <- EJAM:::metadata_add(formulas_d)
+
 usethis::use_data(formulas_d, overwrite = TRUE)
-
-
 
 
 ################################################ #
