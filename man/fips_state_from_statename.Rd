@@ -7,7 +7,8 @@
 fips_state_from_statename(statename)
 }
 \arguments{
-\item{statename}{vector of state names like c("New York","Georgia")}
+\item{statename}{vector of state names like c("New York","Georgia"),
+ignoring case}
 }
 \value{
 vector of 2-digit state FIPS codes like c("10", "44", "44"),

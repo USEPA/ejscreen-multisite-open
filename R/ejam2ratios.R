@@ -6,6 +6,9 @@
 #' @param decimals optional number of decimal places to round to
 #'
 #' @return prints to console and returns a simple data.frame
+#' @examples 
+#'  ejam2barplot(testoutput_doaggregate_100pts_1miles)
+#'  ejam2ratios(testoutput_ejamit_100pts_1miles)
 #'
 #' @export
 #'

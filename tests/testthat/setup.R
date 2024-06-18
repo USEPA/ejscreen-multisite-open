@@ -20,10 +20,19 @@ set_state_inspector(function() {
 # require(testthat)
 # require(data.table)
 # require(magrittr)
+require(mapview)
 #   require(EJAM)
-suppressPackageStartupMessages({
-  library(EJAM)
-})
+############### does testthat already attach or load the package?
+# suppressPackageStartupMessages({
+#   if (interactive()) {
+#     useloadall = askYesNo("Do you want to load and test the current source code files version of EJAM (via devtools::load_all() etc., rather than testing the installed version)?", default = TRUE)
+#     if (useloadall) {
+#       devtools::load_all()
+#     } else {
+#       #  ### library(EJAM)  # need or not?
+#     }
+#   }
+# })
 suppressMessages({suppressWarnings({
   dataload_from_pins("all", silent = TRUE) # needs frs, etc.
 })})

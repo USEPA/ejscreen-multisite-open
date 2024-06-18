@@ -51,10 +51,11 @@ Run ejamit() once per radius, get a summary table with a row per radius
   radii <- c(1, 10)
   pts <- testpoints_100
   pts <- testpoints_10
-  x <- ejamit_compare_distances(pts, radii = radii)
+  bydist <- ejamit_compare_distances(pts, radii = radii)
+  ejamit_compare_distances2plot(bydist, myvars = c(
+    "ratio.to.avg.pctlowinc", "ratio.to.avg.pcthisp", "ratio.to.avg.pctnhba"))
   
-  names(x) <- fixcolnames(names(x),"r","shortlabel")
-  
+  names(bydist) <- fixcolnames(names(bydist), "r", "shortlabel")
   
 }
 \seealso{
