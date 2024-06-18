@@ -17,3 +17,8 @@ prints to console and returns a simple data.frame
 \description{
 Quick view of summary stats by type of stat, but lacks rounding specific to each type, etc.
 }
+\examples{
+ ejam2barplot(testoutput_doaggregate_100pts_1miles)
+ ejam2ratios(testoutput_ejamit_100pts_1miles)
+
+}
