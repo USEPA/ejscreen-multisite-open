@@ -11,7 +11,9 @@
 # ejscreen_vs_ejam_see1()
 # ejscreen_vs_ejam_see1map()
 
-
+# ejscreen_vscript()  is an unexported function that is 
+#  like a script that does all this and saves it locally in files
+#   for interactive analysis
 ######################################################################### # 
 
 
@@ -57,6 +59,9 @@
 #'   being scaled as 0 to 1 into rescaled values of 0 to 100, because some 
 #'   outputs of EJSCREEN were reported as percentages 0 to 100 but as 0 to 1 in EJAM.
 #' @param save_when_report see ejscreenapi_plus()
+#' @param save_ejscreen_output set to NULL to avoid saving ejscreen results locally.
+#'   If set to a filename, function will prompt in interactive R session
+#'   for a folder to use for saving the .rda results of ejscreenapi_plus()
 #' @param report_every_n see ejscreenapi_plus()
 #' @param calculate_ratios passed to ejscreenapi_plus() and [ejamit()]
 #' @param ... passed to ejamit() as any additional parameters,
@@ -108,23 +113,35 @@
 #' @seealso [ejscreen_vs_ejam_alreadyrun()]
 #' 
 #' @keywords internal
+#' @export
 #' 
 ejscreen_vs_ejam <- function(latlon, radius = 3, nadrop = FALSE,
+                             save_ejscreen_output = "ejscreenapi_plus_out.rda",
                                 save_when_report = TRUE, report_every_n = 250, # save every 10 minutes or so
                                 calculate_ratios = FALSE, include_ejindexes = TRUE,
                                 x100fix = TRUE, 
                                 x100varnames = c(
                                   names_d, names_d_avg, names_d_state_avg,
                                   names_d_subgroups, names_d_subgroups_avg, names_d_subgroups_state_avg,
-                                  "pctdisability",  "p_own_occupied", 
+                                  "pctdisability",  "pctownedunits", 
                                   "pctunder18", "pctover17", "pctmale", "pctfemale"), ...) {
   
+  if (!is.null(save_ejscreen_output)) {
+    if (interactive()) {
+      mydir = rstudioapi::selectDirectory("save ejscreen results in what folder?")
+    } else {
+      mydir = getwd()
+    }
+  }
   api1 <- ejscreenapi_plus(latlon, radius = radius, 
                            save_when_report = save_when_report, report_every_n = report_every_n, 
                            calculate_ratios = calculate_ratios)
   # or api1 <- ejscreenit(latlon, radius = radius)$table
   if (missing(latlon)) {latlon <- api1[ , c('id', 'lat', 'lon')]} # in case provided interactively above
   ejam1 <- ejamit(latlon, radius = radius, calculate_ratios = calculate_ratios, include_ejindexes = include_ejindexes, ...)$results_bysite
+  if (!is.null(save_ejscreen_output)) {
+     save(api1, file = file.path(mydir, save_ejscreen_output))
+  }
   z <- ejscreen_vs_ejam_alreadyrun(api1, ejam1, nadrop = nadrop, x100fix = x100fix)
   invisible(z)
 }
@@ -247,7 +264,7 @@ ejscreen_vs_ejam_alreadyrun <- function(apisite, ejamsite, nadrop = FALSE,
                                            x100varnames = c(
                                              names_d, names_d_avg, names_d_state_avg,
                                              names_d_subgroups, names_d_subgroups_avg, names_d_subgroups_state_avg,
-                                             "pctdisability",  "p_own_occupied", 
+                                             "pctdisability",  "pctownedunits", 
                                              "pctunder18", "pctover17", "pctmale", "pctfemale")) {
   
   # requires data.table
@@ -290,7 +307,8 @@ ejscreen_vs_ejam_alreadyrun <- function(apisite, ejamsite, nadrop = FALSE,
   ejamsite <- ejamsite[ , !(names(ejamsite) %in% c('ST', 'statename', "REGION", "EJScreen Report", "EJScreen Map", "ECHO report"))]
   
   if (x100fix) {
-    ejamsite[ , x100varnames] <- 100 * ejamsite[ , x100varnames]
+    fixable = x100varnames[x100varnames %in% names(ejamsite)]
+    ejamsite[ , fixable] <- 100 * ejamsite[ , fixable]
   }
   
   EJSCREEN_shown <- table_round(apisite)  # SLOW! ***
@@ -324,6 +342,30 @@ ejscreen_vs_ejam_alreadyrun <- function(apisite, ejamsite, nadrop = FALSE,
   invisible(z) 
 }
 ############################################################ #
+
+
+#' EJAM/EJSCREEN comparisons - see 1 site/row, check estimates for 1 indicator
+#'
+#' @param vsout results of [ejscreen_vs_ejam()]
+#' @param pts data.frame with lat, lon that was input to [ejscreen_vs_ejam()]
+#' @param varname default is "blockcount_near_site" but can be "pop", "Demog.Index", etc.
+#'
+#' @return table
+#' 
+#' @keywords internal
+#'
+ejscreen_vs_ejam_bysite <- function(vsout, pts, varname = "blockcount_near_site") {
+  if (missing(pts)) {pts = data.frame(n = 1:NROW(vsout$EJSCREEN))}
+  cat("\n\n", varname, "\n\n")
+  data.frame(
+    n = 1:NROW(pts),
+    pts[, intersect(c("sitenumber","lat","lon"), names(pts))], 
+    ejscreen = vsout$EJSCREEN[,varname], 
+    ejam = vsout$EJAM[,varname], 
+    difference = vsout$diff[,varname]
+  )
+}
+######################################################################################### # 
 
 
 #' EJAM/EJSCREEN comparisons - see summary stats after using ejscreen_vs_ejam()
@@ -472,8 +514,10 @@ ejscreen_vs_ejam_summary <- function(z = ejscreen_vs_ejam(),
   pct_agree <- pct_agree[order(pct_agree$pct.of.sites.agree.rounded, -pct_agree$within.x.pct.at.p.pct.of.sites, decreasing = T), ]
   
   # if (!missing(z)) {
-  usefulvars <- c('blockcount_near_site', 'pop', names_e, names_d,
-                  names_ej_pctile, names_ej_state_pctile, names_ej_supp_pctile, names_ej_supp_state_pctile)
+  usefulvars <- c('blockcount_near_site', 'pop', names_e, names_d, 
+                  #names_ej_pctile, names_ej_state_pctile, names_ej_supp_pctile, names_ej_supp_state_pctile,
+                  names_d_subgroups
+                  )
   usefulstats <- c('indicator',
                    #  "sites.with.data.both",
                    #  "sites.agree.rounded", "sites.agree.within.tol",
@@ -481,6 +525,8 @@ ejscreen_vs_ejam_summary <- function(z = ejscreen_vs_ejam(),
                    'median.pct.diff', 'max.pct.diff', 'within.x.pct.at.p.pct.of.sites')
   cat("\n\n")
   print(pct_agree[pct_agree$indicator %in% usefulvars, usefulstats])
+  cat("\n\n")
+  print(pct_agree[pct_agree$indicator %in% c("pop", "blockcount_near_site"), usefulstats])
   cat(paste0("\n\n Tolerance of ", tol, " was used, so difference of <", tol * 100, "% is within tolerance.\n\n"))
   cat(paste0("Probs (p) used was ", prob, ", so ", prob * 100, "% of sites are within absolute percentage difference reported in output of this function.\n\n" ))
   # }
@@ -507,7 +553,6 @@ ejscreen_vs_ejam_summary <- function(z = ejscreen_vs_ejam(),
 #'   EJAM estimates over EJSCREEN estimates, for specified list of indicators like in names_d
 #'
 #' @keywords internal
-#' @export
 #' 
 ejscreen_vs_ejam_summary_quantiles <- function(z, 
                                                mystat = c("ratio", "diff", "absdiff", "pctdiff", "abspctdiff")[1], 
@@ -551,7 +596,6 @@ ejscreen_vs_ejam_summary_quantiles <- function(z,
 #'   }
 #'
 #' @keywords internal
-#' @export
 #' 
 ejscreen_vs_ejam_see1 <- function(z, myvars = names_d, mysite = 1) {
   
@@ -578,7 +622,6 @@ ejscreen_vs_ejam_see1 <- function(z, myvars = names_d, mysite = 1) {
 #'  }
 #'
 #' @keywords internal
-#' @export
 #' 
 ejscreen_vs_ejam_see1map <- function(n = 1, x, overlay_blockgroups = FALSE, ...) {
   
@@ -602,6 +645,131 @@ ejscreen_vs_ejam_see1map <- function(n = 1, x, overlay_blockgroups = FALSE, ...)
 
 
 
+######################################################################################### # 
+
+
+ejscreen_vscript <- function(defdir = getwd(),
+                             n, newpts, pts, radius, savedejscreentableoutput) {
+  
+  # THIS IS A SCRIPT FOR INTERACTIVE RSTUDIO CONSOLE USE 
+  # TO RUN A SET OF POINTS THROUGH BOTH EJSCREEN AND EJAM 
+  # AND SAVE STATS ON THE DIFFERENCES
+  # -- including letting you use saved ejscreenapi results and input points
+  # so you can iterate and rerun just the EJAM portion and compare to the saved benchmark data.
+  
+  # newpts is T/F, pts is a data.frame, savedejscreentableoutput is a data.table from ejscreenit()$table
+  if (!interactive() & any(missing(n), missing(pts), missing(radius), missing(savedejscreentableoutput))) {
+    stop("required parameters not provided")
+  }
+  oldir = getwd()
+  on.exit(setwd(oldir))
+  
+  defdir = ifelse(dir.exists(defdir), defdir, getwd())
+  if (interactive()) {
+    mydir = rstudioapi::selectDirectory("Folder for saving files?", path = defdir)
+  } else {
+    mydir = defdir
+  }
+  setwd(mydir)
+  # setwd("~/../Desktop/EJAM Team Files/-0 TO DO LISTS AND ISSUES IN PACKAGES/comparisons")
+  
+  
+  # # a list of points can be analyzed interactively like this: 
+  if (missing(newpts)) {
+    newpts = askYesNo("Use a new set of random points? (instead of saved points)")
+  }
+  if (newpts) {
+    if (missing(n)) {
+      n = ask_number(default = 100, title = "Points", message = "How many points to run?")
+    }
+    pts <- testpoints_n(n, weighting = 'frs')
+  } else {
+    ###  or reload existing saved points and run EJAM again
+    if (missing(pts)) {
+      myfile = rstudioapi::selectFile("Which file has saved pts as .csv?", path = getwd())
+      pts <- read.csv(myfile) # load(file.path(mydir, "pts.rda"))
+    }
+    n = NROW(pts)
+  }
+  if (missing(radius)) {
+    radius = ask_number()
+  }
+  ############################################ #
+  
+  ### run the comparison 
+  if (missing(savedejscreentableoutput)) {
+    usesavedejscreen <- askYesNo("Use saved EJScreen results from prior run?")
+  } else {
+    usesavedejscreen <- TRUE
+  }
+  if (usesavedejscreen) {
+    ###  to redo just the ejam part but use already-run ejscreen numbers since that is slow.
+    if (missing(savedejscreentableoutput)) {
+      savedejscreentableoutput_FILENAME = rstudioapi::selectFile("Which file has saved ejscreenapi_plus_out results as .rda ?",  path = getwd())
+      nameofobject <- load(savedejscreentableoutput_FILENAME) # load(file.path(mydir, "ejscreenapi_plus_out.rda"))
+      savedejscreentableoutput <- get(nameofobject)
+    } else {
+      # savedejscreentableoutput should be the data.frame that is the output of ejscreenapi_plus() 
+    }
+    if (!is.data.frame(savedejscreentableoutput)) {stop("savedejscreentableoutput should be a data.frame output from ejscreenit()$table or similar")}
+    vs <- ejscreen_vs_ejam_alreadyrun(
+      apisite = savedejscreentableoutput,
+      ejamsite = ejamit(pts, radius = radius, include_ejindexes = TRUE)
+    )
+  } else {
+    ## to do it all from scratch
+    
+    vs <- ejscreen_vs_ejam(pts, radius = radius, include_ejindexes = TRUE)
+  }
+  ######################################################################################### # 
+  
+  #           save results in text file, csv, rda, etc.
+  
+  # mydir = rstudioapi::selectDirectory("Confirm folder/ where to save results files", path = getwd())
+  
+  # see some of the results and save all
+  
+  sumvs <- ejscreen_vs_ejam_summary(vs)
+  qqq <- ejscreen_vs_ejam_summary_quantiles(vs, mystat = 'ratio', myvars = c(names_these, 'pop'), digits = 2)
+  
+  fname = paste0("EJAM vs EJSCREEN results for ", n, " points")
+  write.csv(sumvs, file = file.path(mydir, paste0(fname, "-fullsummary.csv")))
+  write.csv(qqq,   file = file.path(mydir, paste0(fname, "-quantiles.csv")))
+  
+  tfile = file.path(mydir, paste0(fname, "-full-printout.txt"))
+  
+  sink(file = tfile)
+  on.exit(sink(NULL))
+  cat(fname, "\n\n"); print(Sys.Date())
+  cat("\n\n-------------------------------------------------------------------\n\n")
+  sumvs <- ejscreen_vs_ejam_summary(vs) # just printout not full results
+  cat("\n\n-------------------------------------------------------------------\n\n")
+  print( qqq[order(qqq[, "95%"], decreasing = F), c("50%", "95%")]  )
+  cat("\n\n-------------------------------------------------------------------\n\n")
+  print( ejscreen_vs_ejam_see1(vs, myvars = c('pop', names_these)) )
+  cat("\n\n-------------------------------------------------------------------\n\n")
+  print( ejscreen_vs_ejam_see1(vs, myvars = c('lowlifex', "Demog.Index.Supp")) )
+  cat("\n\n-------------------------------------------------------------------\n\n")
+  print(  ejscreen_vs_ejam_bysite(vs, pts) )
+  cat("\n\n-------------------------------------------------------------------\n\n")
+  sink(NULL)
+  
+  # open results in RStudio
+  #rstudioapi::documentOpen(tfile)
+  
+  ######################################################################################### # 
+  
+  #  save data for R:
+  write.csv(pts, row.names = FALSE, file = file.path(mydir, paste0("EJAM vs EJSCREEN latlon used for ", n, "test points.csv")))
+  # save(pts, file = file.path(mydir, paste0(fname, "-pts.rda")))
+  save(vs, file = file.path(mydir, paste0(fname, "-vs.rda")))
+  ############################ # 
+  setwd(oldir)
+  cat("\n\n  Files saved in ", mydir, "\n\n")
+  browseURL(mydir)
+  invisible(vs)
+}
+######################################################################################### # 
 
 
 
@@ -700,7 +868,7 @@ if (1 == 0) {
   # testoutput_ejscreenapi_1pts_1miles  has percentage but not counts like P_AGE_LT18 
   #  "AGE_LT18" "AGE_GT17" - counts are not in api output, only percents of these
   # "MALES" "FEMALES" - counts are not in api output, only percents of these like "P_MALES"
-  # "OWNHU"  "OCCHU"  - counts are not in api output, only percents of these like "P_OWN_OCCUPIED"
+  # "OWNHU"  "OCCHU"  - counts are not in api output, only percents of these like "P_OWN_OCCUPIED"  -- now "pctownedunits"
   #   "DISAB_UNIVERSE"  "DISABILITY"  - counts are not in api output, only percents of these like "P_DISABILITY" 
   # "PCT_HH_BPOV"   "HH_BPOV" - NOT SURE WHY THESE ARE MISSING
   #

@@ -32,8 +32,12 @@ a subset of the \link{naicstable} data.table (not just the codes column)
 \description{
 Find industry names and codes by searching for queried code(s) or text
 }
+\details{
+Finding the right NAICS/SIC and finding all the right
+sites is complicated. See discussion of \code{\link[=latlon_from_naics]{latlon_from_naics()}}.
+}
 \examples{
-# Also see vignette for examples
+# Also see vignettes for many more examples, and discussion.
   naics_categories()
   
   naics_from_any("textile mills", children = F)
@@ -41,6 +45,7 @@ Find industry names and codes by searching for queried code(s) or text
 
   frs_from_naics("textile mills", children = FALSE)
   frs_from_naics("textile mills", children = TRUE)
+  
   \dontrun{
   naics_from_any(naics_categories(3))[order(name),.(name,code)][1:10,]
   naics_from_any(naics_categories(3))[order(code),.(code,name)][1:10,]
@@ -80,7 +85,8 @@ Find industry names and codes by searching for queried code(s) or text
  NROW(naics_from_any("chem", children = T))
 [1] 104
 }
+
 }
 \seealso{
-\code{\link[=naics_subcodes_from_code]{naics_subcodes_from_code()}} \code{\link[=naics_from_code]{naics_from_code()}}  \code{\link[=naics_from_name]{naics_from_name()}}  \code{\link[=naics_from_any]{naics_from_any()}}
+\code{\link[=latlon_from_naics]{latlon_from_naics()}}  \code{\link[=frs_from_naics]{frs_from_naics()}}  \code{\link[=naics_subcodes_from_code]{naics_subcodes_from_code()}} \code{\link[=naics_from_code]{naics_from_code()}}  \code{\link[=naics_from_name]{naics_from_name()}}
 }

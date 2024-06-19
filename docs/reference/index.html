@@ -87,6 +87,16 @@
         <dd>Get an EJ analysis (demographic and environmental indicators) in or near a list of locations</dd>
       </dl><dl><dt>
           
+          <code><a href="ejamit_compare_distances.html">ejamit_compare_distances()</a></code> 
+        </dt>
+        <dd>Compare EJAM results overall for more than one radius Run ejamit() once per radius, get a summary table with a row per radius</dd>
+      </dl><dl><dt>
+          
+          <code><a href="ejamit_compare_types_of_places.html">ejamit_compare_types_of_places()</a></code> 
+        </dt>
+        <dd>Compare subsets (types) of places that are all from one list</dd>
+      </dl><dl><dt>
+          
           <code><a href="ejam2report.html">ejam2report()</a></code> 
         </dt>
         <dd>View HTML Report on EJAM Results (Overall or at 1 Site)</dd>
@@ -102,6 +112,11 @@
         <dd>Save EJAM results in a spreadsheet</dd>
       </dl><dl><dt>
           
+          <code><a href="ejam2shapefile.html">ejam2shapefile()</a></code> 
+        </dt>
+        <dd>DRAFT - export EJAM results as shapefile for use in ArcPro, EJScreen, etc.</dd>
+      </dl><dl><dt>
+          
           <code><a href="ejam2ratios.html">ejam2ratios()</a></code> 
         </dt>
         <dd>Quick view of summary stats by type of stat, but lacks rounding specific to each type, etc.</dd>
@@ -112,29 +127,19 @@
         <dd>Barplot of ratios of demographic (or other) scores to averages - simpler syntax</dd>
       </dl><dl><dt>
           
-          <code><a href="ejam2shapefile.html">ejam2shapefile()</a></code> 
+          <code><a href="ejam2barplot_sites.html">ejam2barplot_sites()</a></code> 
         </dt>
-        <dd>DRAFT - export EJAM results as shapefile for use in ArcPro, EJScreen, etc.</dd>
+        <dd>Barplot comparing sites on 1 indicator, based on full output of ejamit() easy high-level function for getting a quick look at top few sites</dd>
       </dl><dl><dt>
           
-          <code><a href="ejamit_compare_distances.html">ejamit_compare_distances()</a></code> 
-        </dt>
-        <dd>Compare EJAM results overall for more than one radius Run ejamit() once per radius, get a summary table with a row per radius</dd>
-      </dl><dl><dt>
-          
-          <code><a href="ejamit_compare_distances2plot.html">ejamit_compare_distances2plot()</a></code> 
+          <code><a href="ejam2barplot_distances.html">ejam2barplot_distances()</a></code> 
         </dt>
         <dd>plot indicators as a function of distance from point(s) plot results of ejamit_compare_distances()</dd>
       </dl><dl><dt>
           
-          <code><a href="ejamit_compare_types_of_places.html">ejamit_compare_types_of_places()</a></code> 
+          <code><a href="ejam2barplot_sitegroups.html">ejam2barplot_sitegroups()</a></code> 
         </dt>
-        <dd>Compare subsets (types) of places that are all from one list</dd>
-      </dl><dl><dt>
-          
-          <code><a href="ejscreenit_for_ejam.html">ejscreenit_for_ejam()</a></code> 
-        </dt>
-        <dd>Get EJScreen results directly from EJScreen servers via their API</dd>
+        <dd>Barplot comparing groups of sites on 1 indicator, for output of ejamit_compare_groups_of_places() easy high-level function for getting a quick look at top few groups of sites</dd>
       </dl></div><div class="section level2">
       <h2 id="specify-points-by-lat-lon">Specify Points by Lat/Lon<a class="anchor" aria-label="anchor" href="#specify-points-by-lat-lon"></a></h2>
       
@@ -334,7 +339,7 @@
           
           <code><a href="regid_from_naics.html">regid_from_naics()</a></code> 
         </dt>
-        <dd>Find EPA-regulated facilities in FRS by NAICS code (industrial category)</dd>
+        <dd>Find registry ids of EPA-regulated facilities in FRS by NAICS code (industrial category) Like latlon_from_naics() but returns only regid</dd>
       </dl><dl><dt>
           
           <code><a href="frs_from_naics.html">frs_from_naics()</a></code> 
@@ -563,9 +568,14 @@
 
       <dl><dt>
           
-          <code><a href="censusplaces.html">censusplaces</a></code> 
+          <code><a href="name2fips.html">name2fips()</a></code> 
         </dt>
-        <dd>censusplaces (DATA) Census FIPS and other basic info on 41,414 cities/towns/places</dd>
+        <dd>Get FIPS codes from names of states or counties inverse of fips2name(), 1-to-1 map statename, ST, countyname to FIPS of each</dd>
+      </dl><dl><dt>
+          
+          <code><a href="fips2name.html">fips2name()</a></code> 
+        </dt>
+        <dd>FIPS - Get county or state names from county or state FIPS codes</dd>
       </dl><dl><dt>
           
           <code><a href="fipstype.html">fipstype()</a></code> 
@@ -578,9 +588,9 @@
         <dd>FIPS - Add leading zeroes to fips codes if missing, replace with NA if length invalid</dd>
       </dl><dl><dt>
           
-          <code><a href="fips2name.html">fips2name()</a></code> 
+          <code><a href="fips_counties_from_countyname.html">fips_counties_from_countyname()</a></code> 
         </dt>
-        <dd>FIPS - Get county or state names from county or state FIPS codes</dd>
+        <dd>get FIPS for a county based on part of the countyname and state abbrev</dd>
       </dl><dl><dt>
           
           <code><a href="fips_bg_from_anyfips.html">fips_bg_from_anyfips()</a></code> 
@@ -591,6 +601,11 @@
           <code><a href="fips_from_table.html">fips_from_table()</a></code> 
         </dt>
         <dd>FIPS - Read and clean FIPS column from a table, after inferring which col it is</dd>
+      </dl><dl><dt>
+          
+          <code><a href="censusplaces.html">censusplaces</a></code> 
+        </dt>
+        <dd>censusplaces (DATA) Census FIPS and other basic info on 41,414 cities/towns/places</dd>
       </dl></div><div class="section level2">
       
       <h3 id="counties">Counties<a class="anchor" aria-label="anchor" href="#counties"></a></h3>
@@ -1136,6 +1151,16 @@
         <dd>Barplot of ratios of demographic (or other) scores to averages - simpler syntax</dd>
       </dl><dl><dt>
           
+          <code><a href="ejam2barplot_sites.html">ejam2barplot_sites()</a></code> 
+        </dt>
+        <dd>Barplot comparing sites on 1 indicator, based on full output of ejamit() easy high-level function for getting a quick look at top few sites</dd>
+      </dl><dl><dt>
+          
+          <code><a href="plot_barplot_sites.html">plot_barplot_sites()</a></code> 
+        </dt>
+        <dd>barplot comparing sites on 1 indicator, based on table of site data a quick way to plot a calculated variable at each site, which ejam2barplot_sites() can't</dd>
+      </dl><dl><dt>
+          
           <code><a href="plot_barplot_ratios_ez.html">plot_barplot_ratios_ez()</a></code> 
         </dt>
         <dd>Same as ejam2barplot()</dd>
@@ -1164,6 +1189,21 @@
           <code><a href="boxplots_ratios.html">boxplots_ratios()</a></code> 
         </dt>
         <dd>quick boxplots of demographics across sites as ratios to US means</dd>
+      </dl><dl><dt>
+          
+          <code><a href="ejam2barplot_sitegroups.html">ejam2barplot_sitegroups()</a></code> 
+        </dt>
+        <dd>Barplot comparing groups of sites on 1 indicator, for output of ejamit_compare_groups_of_places() easy high-level function for getting a quick look at top few groups of sites</dd>
+      </dl><dl><dt>
+          
+          <code><a href="plot_barplot_sitegroups.html">plot_barplot_sitegroups()</a></code> 
+        </dt>
+        <dd>barplot comparing groups of sites on 1 indicator, based on table of grouped site data</dd>
+      </dl><dl><dt>
+          
+          <code><a href="ejam2barplot_distances.html">ejam2barplot_distances()</a></code> 
+        </dt>
+        <dd>plot indicators as a function of distance from point(s) plot results of ejamit_compare_distances()</dd>
       </dl><dl><dt>
           
           <code><a href="ejamit_compare_distances2plot.html">ejamit_compare_distances2plot()</a></code> 
@@ -1521,6 +1561,22 @@
           <code><a href="ejampackages.html">ejampackages</a></code> 
         </dt>
         <dd>ejampackages (DATA) list of names of key EJAM-related R packages</dd>
+      </dl></div><div class="section level2">
+      <h2 id="ejscreen-api">EJScreen API<a class="anchor" aria-label="anchor" href="#ejscreen-api"></a></h2>
+      
+      <div class="section-desc"><p>EJAM-EJScreen and using the EJScreen API</p></div>
+
+      
+    </div><div id="" class="section level2">
+      
+      
+      
+
+      <dl><dt>
+          
+          <code><a href="ejscreenit_for_ejam.html">ejscreenit_for_ejam()</a></code> 
+        </dt>
+        <dd>Get EJScreen results directly from EJScreen servers via their API</dd>
       </dl></div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>

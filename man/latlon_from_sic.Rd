@@ -20,6 +20,9 @@ Get lat lon, Registry ID, given SIC industry code(s)
 Find all EPA Facility Registry Service (FRS) sites with this exact SIC code (not subcategories)
 }
 \details{
+The EPA also provides a \href{https://www.epa.gov/frs/frs-query#industrial}{FRS Facility Industrial Classification Search tool}
+where you can find facilities based on NAICS or SIC.
+
 NOTE: many FRS sites lack SIC code!
 
 Also, this function does not find the sites
