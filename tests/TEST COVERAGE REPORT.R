@@ -3,8 +3,8 @@ if (1 == 0) { # so it does not do anything if source() is done by testing
   
 # # Needed only for this script:
   # 
-#   library(fs)
-#   library(tidyverse)
+  library(fs)
+  library(tidyverse)
 
 tdat = bind_rows(
   tibble(
@@ -29,40 +29,40 @@ tdat %>%   print(n = Inf)
 
 tdat[!is.na(tdat$test) & is.na(tdat$R),  ] |> print(n = 500)
 
-# # A tibble: 25 × 3
+# A tibble: 23 × 3
 # name                                R          test                                                     
-# <chr>                               <fs::path> <fs::path>     
-
+# <chr>                               <fs::path> <fs::path>      
+#   
 # 1 address_xyz                         NA         tests/testthat/test-address_xyz.R                        
-# 2 fips_bg_from_anyfips                NA         tests/testthat/test-fips_bg_from_anyfips.R               
-# 3 fips_lead_zero                      NA         tests/testthat/test-fips_lead_zero.R           
+# 2 frs_from_naics                      NA         tests/testthat/test-frs_from_naics.R                     
+# 3 frs_from_programid                  NA         tests/testthat/test-frs_from_programid.R                 
+# 4 frs_from_regid                      NA         tests/testthat/test-frs_from_regid.R                     
+# 5 frs_from_sic                        NA         tests/testthat/test-frs_from_sic.R                       
 
-# 4 frs_from_naics                      NA         tests/testthat/test-frs_from_naics.R           
-# 5 frs_from_programid                  NA         tests/testthat/test-frs_from_programid.R                 
-# 6 frs_from_regid                      NA         tests/testthat/test-frs_from_regid.R                     
-# 7 frs_from_sic                        NA         tests/testthat/test-frs_from_sic.R                       
+# 6 getblocks_summarize_blocks_per_site NA         tests/testthat/test-getblocks_summarize_blocks_per_site.R
 
-# 8 getblocks_summarize_blocks_per_site NA         tests/testthat/test-getblocks_summarize_blocks_per_site.R
-# 9 golem_utils_server                  NA         tests/testthat/test-golem_utils_server.R                 
-# 10 golem_utils_ui                      NA         tests/testthat/test-golem_utils_ui.R                     
-# 11 latlon_from_sic                     NA         tests/testthat/test-latlon_from_sic.R                    
+# 7 golem_utils_server                  NA         tests/testthat/test-golem_utils_server.R                 
+# 8 golem_utils_ui                      NA         tests/testthat/test-golem_utils_ui.R                     
 
-# 12 mod_save_report                     NA         tests/testthat/test-mod_save_report.R                    
-# 13 mod_specify_sites                   NA         tests/testthat/test-mod_specify_sites.R                  
-# 14 mod_view_results                    NA         tests/testthat/test-mod_view_results.R                   
+# 9 latlon_from_sic                     NA         tests/testthat/test-latlon_from_sic.R                    
 
-# 15 naics2children                      NA         tests/testthat/test-naics2children.R                     
-# 16 naics_categories                    NA         tests/testthat/test-naics_categories.R                   
-# 17 naics_findwebscrape                 NA         tests/testthat/test-naics_findwebscrape.R                
-# 18 naics_from_any                      NA         tests/testthat/test-naics_from_any.R                     
-# 19 naics_from_code                     NA         tests/testthat/test-naics_from_code.R                    
-# 20 naics_from_name                     NA         tests/testthat/test-naics_from_name.R                    
-# 21 naics_subcodes_from_code            NA         tests/testthat/test-naics_subcodes_from_code.R           
-# 22 naics_validation                    NA         tests/testthat/test-naics_validation.R                   
+# 10 mod_save_report                     NA         tests/testthat/test-mod_save_report.R                    
+# 11 mod_specify_sites                   NA         tests/testthat/test-mod_specify_sites.R                  
+# 12 mod_view_results                    NA         tests/testthat/test-mod_view_results.R                   
 
-# 23 regid_from_naics                    NA         tests/testthat/test-regid_from_naics.R                   
-# 24 state_from_fips                     NA         tests/testthat/test-state_from_fips.R                    
-# 25 ui_and_server                       NA         tests/testthat/test-ui_and_server.R      
+# 13 naics2children                      NA         tests/testthat/test-naics2children.R                     
+# 14 naics_categories                    NA         tests/testthat/test-naics_categories.R                   
+# 15 naics_findwebscrape                 NA         tests/testthat/test-naics_findwebscrape.R                
+# 16 naics_from_any                      NA         tests/testthat/test-naics_from_any.R                     
+# 17 naics_from_code                     NA         tests/testthat/test-naics_from_code.R                    
+# 18 naics_from_name                     NA         tests/testthat/test-naics_from_name.R                    
+# 19 naics_subcodes_from_code            NA         tests/testthat/test-naics_subcodes_from_code.R           
+# 20 naics_validation                    NA         tests/testthat/test-naics_validation.R                   
+# 21 regid_from_naics                    NA         tests/testthat/test-regid_from_naics.R                   
+
+# 22 state_from_fips                     NA         tests/testthat/test-state_from_fips.R                    
+
+# 23 ui_and_server                       NA         tests/testthat/test-ui_and_server.R    
 
 
 
@@ -72,7 +72,7 @@ tdat[!is.na(tdat$test) & is.na(tdat$R),  ] |> print(n = 500)
 
 tdat[is.na(tdat$test) & !is.na(tdat$R) & "data_" != substr(tdat$name, 1,5), ] |> print(n = 500)
 
-# A tibble: 129 × 3
+# A tibble: 127 × 3
 #     name                                       R                                              test      
 # <chr>                                      <fs::path>                                     <fs::path>
 # 1 0_run_app                                  R/0_run_app.R                                  NA        
@@ -142,7 +142,7 @@ tdat[is.na(tdat$test) & !is.na(tdat$R) & "data_" != substr(tdat$name, 1,5), ] |>
 # 54 latlon_join_on_blockid                     R/latlon_join_on_blockid.R                     NA        
 # 55 mapfast                                    R/mapfast.R                                    NA   
 
-# 56 MAP_FUNCTIONS                              R/MAP_FUNCTIONS.R                              NA        
+# 56 MAP_FUNCTIONS                              R/MAP_FUNCTIONS.R   [NOW EXISTS]                           NA        
 
 # 57 MODULE_ejscreenapi                         R/MODULE_ejscreenapi.R                         NA        
 # 58 MODULE_latlontypedin                       R/MODULE_latlontypedin.R                       NA        
@@ -240,30 +240,34 @@ tdat[!is.na(tdat$test) & !is.na(tdat$R), c("R", "test")] |> print(n = 500)
 
 # # A tibble: 19 × 2
 #               R                              test                                            
-# <fs::path>                     <fs::path>                                      
+
+# 3 R/FIPS_FUNCTIONS.R             tests/testthat/test-FIPS_FUNCTIONS.R 
+
+# 4 R/frs_is_valid.R               tests/testthat/test-frs_is_valid.R   
+
+# 2 R/ejamit.R                     tests/testthat/test-ejamit.R         
 # 1 R/doaggregate.R                tests/testthat/test-doaggregate.R               
-# 2 R/ejamit.R                     tests/testthat/test-ejamit.R        
+# 5 R/getblocksnearby.R            tests/testthat/test-getblocksnearby.R           
+# 6 R/getblocksnearbyviaQuadTree.R tests/testthat/test-getblocksnearbyviaQuadTree.R
+# 7 R/getblocksnearby_from_fips.R  tests/testthat/test-getblocksnearby_from_fips.R 
 
-# 3 R/fixcolnames.R                tests/testthat/test-fixcolnames.R               
-# 4 R/fixcolnames_infer.R          tests/testthat/test-fixcolnames_infer.R  
+#  8 R/latlon_as.numeric.R          tests/testthat/test-latlon_as.numeric.R         
+#  9 R/latlon_df_clean.R            tests/testthat/test-latlon_df_clean.R           
+# 10 R/latlon_from_address.R        tests/testthat/test-latlon_from_address.R       
+# 11 R/latlon_from_anything.R       tests/testthat/test-latlon_from_anything.R      
+# 12 R/latlon_infer.R               tests/testthat/test-latlon_infer.R              
+# 13 R/latlon_is.valid.R            tests/testthat/test-latlon_is.valid.R           
 
-# 5 R/frs_is_valid.R               tests/testthat/test-frs_is_valid.R              
-
-# 6 R/getblocksnearby.R            tests/testthat/test-getblocksnearby.R           
-# 7 R/getblocksnearbyviaQuadTree.R tests/testthat/test-getblocksnearbyviaQuadTree.R
-# 8 R/getblocksnearby_from_fips.R  tests/testthat/test-getblocksnearby_from_fips.R 
-
-# 9 R/latlon_as.numeric.R          tests/testthat/test-latlon_as.numeric.R         
-# 10 R/latlon_df_clean.R            tests/testthat/test-latlon_df_clean.R           
-# 11 R/latlon_from_address.R        tests/testthat/test-latlon_from_address.R       
-# 12 R/latlon_from_anything.R       tests/testthat/test-latlon_from_anything.R      
-# 13 R/latlon_infer.R               tests/testthat/test-latlon_infer.R              
-# 14 R/latlon_is.valid.R            tests/testthat/test-latlon_is.valid.R           
+# 14 R/MAP_FUNCTIONS.R              tests/testthat/test-MAP_FUNCTIONS.R             
 
 # 15 R/pctile_from_raw_lookup.R     tests/testthat/test-pctile_from_raw_lookup.R    
+
 # 16 R/radius_inferred.R            tests/testthat/test-radius_inferred.R           
+
 # 17 R/shapefile_xyz.R              tests/testthat/test-shapefile_xyz.R             
+
 # 18 R/state_from_latlon.R          tests/testthat/test-state_from_latlon.R         
-# 19 R/varinfo.R                    tests/testthat/test-varinfo.R     
+
+# 19 R/varinfo.R                    tests/testthat/test-varinfo.R                 
 
 }

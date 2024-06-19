@@ -8,14 +8,15 @@ ejscreen_vs_ejam(
   latlon,
   radius = 3,
   nadrop = FALSE,
+  save_ejscreen_output = "ejscreenapi_plus_out.rda",
   save_when_report = TRUE,
   report_every_n = 250,
   calculate_ratios = FALSE,
   include_ejindexes = TRUE,
   x100fix = TRUE,
   x100varnames = c(names_d, names_d_avg, names_d_state_avg, names_d_subgroups,
-    names_d_subgroups_avg, names_d_subgroups_state_avg, "pctdisability",
-    "p_own_occupied", "pctunder18", "pctover17", "pctmale", "pctfemale"),
+    names_d_subgroups_avg, names_d_subgroups_state_avg, "pctdisability", "pctownedunits",
+    "pctunder18", "pctover17", "pctmale", "pctfemale"),
   ...
 )
 }
@@ -24,6 +25,10 @@ ejscreen_vs_ejam(
 and one row per site}
 
 \item{radius}{in miles, used in ejamit() and ejscreenapi_plus()}
+
+\item{save_ejscreen_output}{set to NULL to avoid saving ejscreen results locally.
+If set to a filename, function will prompt in interactive R session
+for a folder to use for saving the .rda results of ejscreenapi_plus()}
 
 \item{save_when_report}{see ejscreenapi_plus()}
 
