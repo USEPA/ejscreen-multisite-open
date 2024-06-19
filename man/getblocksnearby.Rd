@@ -77,5 +77,5 @@ and they are like centroids.
 The blocks are pre-indexed for the whole USA, via the data object quadtree aka localtree
 }
 \seealso{
-\code{\link[=ejamit]{ejamit()}}  \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}}
+\code{\link[=ejamit]{ejamit()}} \code{\link[=getblocksnearby_from_fips]{getblocksnearby_from_fips()}} \code{\link[=get_blockpoints_in_shape]{get_blockpoints_in_shape()}}
 }

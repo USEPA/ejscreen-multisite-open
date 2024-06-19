@@ -16,13 +16,16 @@ ejamit(
   popmeancols = NULL,
   calculatedcols = NULL,
   subgroups_type = "nh",
-  include_ejindexes = FALSE,
+  include_ejindexes = TRUE,
   calculate_ratios = TRUE,
   extra_demog = TRUE,
   need_proximityscore = FALSE,
   infer_sitepoints = FALSE,
   need_blockwt = TRUE,
-  threshold1 = 90,
+  thresholds = list(90, 90),
+  threshnames = list(c(names_ej_pctile, names_ej_state_pctile), c(names_ej_supp_pctile,
+    names_ej_supp_state_pctile)),
+  threshgroups = list("EJ-US-or-ST", "Supp-US-or-ST"),
   updateProgress = NULL,
   updateProgress_getblocks = NULL,
   in_shiny = FALSE,
@@ -30,7 +33,8 @@ ejamit(
   parallel = FALSE,
   silentinteractive = FALSE,
   called_by_ejamit = TRUE,
-  testing = FALSE
+  testing = FALSE,
+  ...
 )
 }
 \arguments{
@@ -90,10 +94,14 @@ although a more accurate slower way would be to use reported distance of each of
 
 \item{need_blockwt}{if fips parameter is used, passed to \code{\link[=getblocksnearby_from_fips]{getblocksnearby_from_fips()}}}
 
-\item{threshold1}{percentile like 80 or 90 or 95 to compare percentiles to
-"alone" for groups like white alone (whether or not hispanic),
-"both" may try to include both,
-or possibly "original" or "default" might be added as options - passed to batch.summarize()}
+\item{thresholds}{list of percentiles like list(80,90) passed to
+batch.summarize() in the EJAMbatch.summarizer package, to be
+counted to report how many of each set of indicators exceed thresholds
+at each site. (see default)}
+
+\item{threshnames}{list of groups of variable names (see default)}
+
+\item{threshgroups}{list of text names of the groups (see default)}
 
 \item{updateProgress}{progress bar function passed to \code{\link[=doaggregate]{doaggregate()}} in shiny app}
 
@@ -113,6 +121,8 @@ passed to \code{\link[=doaggregate]{doaggregate()}} also. app server sets this t
 \item{called_by_ejamit}{Set to TRUE by \code{\link[=ejamit]{ejamit()}} to suppress some outputs even if ejamit(silentinteractive=F)}
 
 \item{testing}{used while testing this function}
+
+\item{...}{passed to getblocksnearby() etc. such as  report_progress_every_n = 0}
 }
 \value{
 A list of tables of results

@@ -10,8 +10,8 @@ ejscreen_vs_ejam_alreadyrun(
   nadrop = FALSE,
   x100fix = TRUE,
   x100varnames = c(names_d, names_d_avg, names_d_state_avg, names_d_subgroups,
-    names_d_subgroups_avg, names_d_subgroups_state_avg, "pctdisability",
-    "p_own_occupied", "pctunder18", "pctover17", "pctmale", "pctfemale")
+    names_d_subgroups_avg, names_d_subgroups_state_avg, "pctdisability", "pctownedunits",
+    "pctunder18", "pctover17", "pctmale", "pctfemale")
 )
 }
 \arguments{
@@ -32,7 +32,8 @@ outputs of EJSCREEN were reported as percentages 0 to 100 but as 0 to 1 in EJAM.
 }
 \value{
 prints summary to console, but returns invisible a list of data frames, with names
-EJSCREEN, EJAM, EJSCREEN_shown, EJAM_shown, same_shown, ratio, etc.
+EJSCREEN, EJAM, EJSCREEN_shown, EJAM_shown, same_shown, ratio,
+diff, absdiff, pctdiff, etc.
 
 For each data.frame, colnames are indicators like pop, blockcount_near_site, etc.
 and rows represent sites analyzed.

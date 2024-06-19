@@ -44,10 +44,14 @@
 #'   lat,lon of each site will be approximated as average of nearby blocks,
 #'   although a more accurate slower way would be to use reported distance of each of 3 of the furthest block points and triangulate
 #' @param need_blockwt if fips parameter is used, passed to [getblocksnearby_from_fips()]
-#' @param threshold1 percentile like 80 or 90 or 95 to compare percentiles to
-#'   "alone" for groups like white alone (whether or not hispanic),
-#'   "both" may try to include both,
-#'   or possibly "original" or "default" might be added as options - passed to batch.summarize()
+#' 
+#' @param thresholds list of percentiles like list(80,90) passed to 
+#'   batch.summarize() in the EJAMbatch.summarizer package, to be 
+#'   counted to report how many of each set of indicators exceed thresholds
+#'   at each site. (see default)
+#' @param threshnames list of groups of variable names (see default)
+#' @param threshgroups list of text names of the groups (see default)
+#'   
 #' @param updateProgress progress bar function passed to [doaggregate()] in shiny app
 #' @param updateProgress_getblocks progress bar function passed to [getblocksnearby()] in shiny app
 #' @param in_shiny if fips parameter is used, passed to [getblocksnearby_from_fips()]
@@ -59,7 +63,8 @@
 #'   [ejamit()] default is to set this to FALSE when calling [doaggregate()].
 #' @param called_by_ejamit Set to TRUE by [ejamit()] to suppress some outputs even if ejamit(silentinteractive=F)
 #' @param testing used while testing this function
-#'
+#' @param ... passed to getblocksnearby() etc. such as  report_progress_every_n = 0
+#' 
 #' @return A list of tables of results
 #'
 #' @examples
@@ -139,13 +144,18 @@ ejamit <- function(sitepoints,
                    popmeancols = NULL,
                    calculatedcols = NULL,
                    subgroups_type = "nh",
-                   include_ejindexes = FALSE,
+                   include_ejindexes = TRUE,
                    calculate_ratios = TRUE,
                    extra_demog = TRUE,
                    need_proximityscore = FALSE,
                    infer_sitepoints = FALSE,
                    need_blockwt = TRUE,
-                   threshold1 = 90, # threshold.default['comp1']
+                   
+                   thresholds = list(90, 90),
+                   threshnames = list(c(names_ej_pctile, names_ej_state_pctile), 
+                                      c(names_ej_supp_pctile, names_ej_supp_state_pctile)),
+                   threshgroups = list("EJ-US-or-ST", "Supp-US-or-ST"),
+                   
                    updateProgress = NULL,
                    updateProgress_getblocks = NULL,
                    in_shiny = FALSE,
@@ -153,15 +163,16 @@ ejamit <- function(sitepoints,
                    parallel = FALSE,
                    silentinteractive = FALSE,
                    called_by_ejamit = TRUE,
-                   testing = FALSE
+                   testing = FALSE,
+                   ...
 ) {
-
+  
   #  1. getblocksnearby() ####
-
+  
   ######################## #
-
+  
   ## get blocks in POLYGONS / SHAPEFILES ####
-
+  
   if (!is.null(shapefile_folder)) {
     shp <- shapefile_from_folder(folder = shapefile_folder, cleanit = TRUE)
     if (!missing(radius)) {
@@ -191,17 +202,17 @@ ejamit <- function(sitepoints,
         testing = testing
       )
     )
-
+    
   } else {
-
+    
     if (!is.null(fips)) {
       ######################## #
-
+      
       ##  get blocks in FIPS  ####
-
+      
       # getblocksnearby_from_fips() should include doing something like fips_lead_zero() ?
       # but also want to know what type each fips is (probably all should be same like all are tracts or all are county fips)
-
+      
       radius <- 999 # use this value when analyzing by fips not by circular buffers.
       if (!silentinteractive) {cat('Finding blocks in each FIPS Census unit.\n')}
       mysites2blocks <- getblocksnearby_from_fips(
@@ -222,7 +233,7 @@ ejamit <- function(sitepoints,
           countcols = countcols,
           popmeancols = popmeancols,
           calculatedcols = calculatedcols,
-
+          
           subgroups_type = subgroups_type,
           include_ejindexes = include_ejindexes,
           calculate_ratios = calculate_ratios,
@@ -238,29 +249,31 @@ ejamit <- function(sitepoints,
     }
     if (is.null(fips)) {
       ######################## #
-
+      
       ## get blocks near LAT/LON POINTS  ####
-
+      
       if (missing(radius)) {warning(paste0("Using default radius of ", radius, " miles because not provided as parameter."))}
       if (!missing(quadtree)) {warning("quadtree should not be provided to ejamit() - that is handled by getblocksnearby() ")}
-
+      
       ################################################################################## #
       # note this overlaps or duplicates code in app_server.R
       #   for data_up_latlon() around lines 81-110 and data_up_frs() at 116-148
-
+      
       # select file
       if (missing(sitepoints)) {
         if (interactive() & !silentinteractive & !in_shiny) {
           sitepoints <- rstudioapi::selectFile(caption = "Select xlsx or csv with FIPS column of Census fips values", path = '.' )
+          # that returns the path to the file
           if (missing(radius)) {
             radius <- askradius(default = radius) # also see  askYesNo()
             # radius <- as.numeric(rstudioapi::showPrompt("Radius", "Within how many miles of each point?", 3))
           }
+          sitepoints <- latlon_any_format(sitepoints) # read file and infer colnames with lat lon
         } else {
           if (shiny::isRunning()) {
             warning("sitepoints (locations to analyze) is missing but required.")
             return(NULL)
-
+            
           } else {
             stop("sitepoints (locations to analyze) is missing but required.")
           }
@@ -269,15 +282,19 @@ ejamit <- function(sitepoints,
       # If user entered a table, path to a file (csv, xlsx), or whatever, then read it to get the lat lon values from there
       #  by using sitepoints <- latlon_from_anything(sitepoints) which gets done by getblocksnearby()
       ################################################################################## #
-
+      
       if (!silentinteractive) {cat('Finding blocks nearby.\n')}
-
+      
+      # if user entered a table, path to a file (csv, xlsx), or whatever, then read it to get the lat lon values from there
+      sitepoints <- latlon_from_anything(sitepoints)
+      stopifnot(is.data.frame(sitepoints), "lat" %in% colnames(sitepoints), "lon" %in% colnames(sitepoints), NROW(sitepoints) >= 1, is.numeric(sitepoints$lat))
+      
       ## check for ejam_uniq_id column; warn and add if not present
-      if(!c('ejam_uniq_id') %in% names(sitepoints)){
-        warning('sitepoints did not contain a column named ejam_uniq_id, so one was added')
+      if (!("character" %in% class(sitepoints)) & !c('ejam_uniq_id') %in% names(sitepoints)) {
+        # message('sitepoints did not contain a column named ejam_uniq_id, so one was added')
         sitepoints$ejam_uniq_id <- seq.int(length.out = NROW(sitepoints))
       }
-
+      
       mysites2blocks <- getblocksnearby(
         sitepoints = sitepoints,
         radius = radius,
@@ -286,15 +303,15 @@ ejamit <- function(sitepoints,
         # quadtree = localtree,
         quiet = quiet,
         parallel = parallel,
-        updateProgress = updateProgress_getblocks
-        # report_progress_every_n = 500  # would be passed through to getblocksnearbyviaQuadTree()
+        updateProgress = updateProgress_getblocks,
+        ...  #  could provide report_progress_every_n = 500  # would be passed through to getblocksnearbyviaQuadTree()
       )
       ################################################################################## #
-
+      
       # 2. doaggregate() ####
-
+      
       if (!silentinteractive) {cat('Aggregating at each buffer and overall.\n')}
-
+      
       out <- suppressWarnings(
         doaggregate(
           sites2blocks = mysites2blocks,
@@ -320,18 +337,18 @@ ejamit <- function(sitepoints,
       # ideally from ST column,
       # second from fips of block with smallest distance to site,
       # third from lat,lon of sitepoints intersected with shapefile of state bounds
-
-
+      
+      
     }
   }
   # end of lat lon vs FIPS vs shapefile
-
+  
   ################################################################ #
-
+  
   # 2b. add  HYPERLINKS  to output (to site by site table) ####
-
+  
   # ( doaggregate does not provide this   )
-
+  
   #  >this should be a function  and is used by both server and ejamit() ####
   # duplicated almost exactly in app_server (near line 1217) but uses reactives there. *** except this has been updated here to handle FIPS not just latlon analysis.
   # #  Do maybe something like this:
@@ -342,13 +359,13 @@ ejamit <- function(sitepoints,
   # setcolorder(out$results_bysite, neworder = links$newcolnames)
   # setcolorder(out$results_overall, neworder = links$newcolnames)
   # out$longnames <- c(newcolnames, links$longnames)
-
+  
   if ("REGISTRY_ID" %in% names(out$results_bysite)) {
     echolink = url_echo_facility_webpage(REGISTRY_ID, as_html = T)
   } else {
     echolink = rep(NA, NROW(out$results_bysite))
   }
-
+  
   if (!is.null(fips)) {
     # analyzing by FIPS not lat lon values
     areatype <- fipstype(fips)
@@ -379,7 +396,7 @@ ejamit <- function(sitepoints,
       `ECHO report`     = NA     # rep(NA,nrow(out$results_bysite))
     )]
   }
-
+  
   newcolnames <- c(
     "EJScreen Report",
     "EJScreen Map",
@@ -388,11 +405,11 @@ ejamit <- function(sitepoints,
   data.table::setcolorder(out$results_bysite,  neworder = newcolnames)
   data.table::setcolorder(out$results_overall, neworder = newcolnames)
   out$longnames <- c(newcolnames, out$longnames)
-
+  
   ################################################################ #
-
+  
   # 2c. add  RADIUS  to output (in server and in ejamit() ####
-
+  
   # ( doaggregate does not provide this ? )
   if (!is.null(fips)) {
     # Analyzed by FIPS so reporting a radius does not make sense here.
@@ -401,23 +418,26 @@ ejamit <- function(sitepoints,
   out$results_bysite[      , radius.miles := radius]
   out$results_overall[     , radius.miles := radius]
   out$results_bybg_people[ , radius.miles := radius] # do not really need to export to excel though, and most users do not need this large table
-
+  
   ################################################################ #
-
+  
   # 3. batch.summarize()**  ####
-
+  
   # For each indicator, calc AVG and PCTILES, across all SITES and all PEOPLE
-
+  
   # (doaggregate does not provide this)
-
+  
   out$results_summarized <- EJAMbatch.summarizer::batch.summarize(   # disabled only in ejam lite package ***
     sitestats = data.frame(out$results_bysite),
-    popstats =  data.frame(out$results_bysite),
+    # popstats =  data.frame(out$results_bysite), # now does not have to get passed twice
+    
     ## user-selected quantiles to use
     #probs = as.numeric(input$an_list_pctiles),
-    threshold = list(threshold1) # compare variables to 90 or other  %ile
+    thresholds = thresholds, # list(90, 90),
+    threshnames = threshnames, # list(c(names_ej_pctile, names_ej_state_pctile), c(names_ej_supp_pctile, names_ej_supp_state_pctile)),
+    threshgroups = threshgroups # list("EJ-US-or-ST", "Supp-US-or-ST")
   )
-
+  
   #   The percentiles in these $rows seem wrong as of 10/2023 so far:
   #
   # rownames(out$results_summarized$rows)
@@ -427,21 +447,20 @@ ejamit <- function(sitepoints,
   # "Percentile of sites 0"    "Percentile of sites 25"   "Percentile of sites 50"   "Percentile of sites 75"   "Percentile of sites 80"   "Percentile of sites 90"   "Percentile of sites 95"   "Percentile of sites 99"  "Percentile of sites 100"
   # "Percentile of people 0"   "Percentile of people 25"  "Percentile of people 50"  "Percentile of people 75"  "Percentile of people 80"  "Percentile of people 90"  "Percentile of people 95"  "Percentile of people 99"  "Percentile of people 100"
   ################################################################ #
-
+  
   # 4. add a tall summary table ####
-
+  
   # (doaggregate alone does not provide this)
-
+  
   out$formatted <- table_tall_from_overall(out$results_overall, out$longnames)
-
-  # 5. would be nice to provide the 1pager summary report as html here too
-
+  
+  # 5.  1pager summary report as html could be here too, but avail via ejam2report()
+  
   ################################################################ #
   if (interactive() & !silentinteractive & !in_shiny) {
-
-    # Show summary info and tips in RStudio console  ####
-    # NOTE: SOME OF THIS BELOW SHOULD BE USED IN A VIGNETTE RATHER THAN BEING HERE ***
-
+    
+    # Show only a bit of summary info and tips in RStudio console  ####
+    
     # Show bysite in DT::datatable view in RStudio ####
     # - Site by Site (each site)
     if (nrow(out$results_bysite) > 1000) {message("> 1,000 rows may be too much for client-side DataTables - only showing some rows here")}
@@ -456,38 +475,16 @@ ejamit <- function(sitepoints,
       )
     )
     ###################################### #
-
-    # x <- cat(rtips(out = out, radius = radius, topic = 'pop density', andcat = F))
-    ## show some actual results on pop density, not how to get them.
-    cat(
-      paste0("Population Density: \n\n"),
-      paste0("  ", popshare_p_lives_at_what_pct(out$results_bysite$pop, p = 0.50, astext = TRUE), "\n"),
-      paste0("  ", popshare_at_top_n(out$results_bysite$pop, c(1, 5, 10), astext = TRUE), "\n\n")
-    )
-
-    ###################################### #
-    # cat("To see barplots of average proximity by demog group:\n\n",
-    #     '     plot_distance_mean_by_group(out$results_bybg_people)',
-    #     "\n\n")
-
-    # cat("To see bar or boxplots of ratios of %Demographics vs US averages:\n\n",
-    #     "     ?plot_barplot_ratios() in EJAM package # or \n",
-    #     "     ?boxplots_ratios() in EJAMejscreenapi package\n",
-    #     "     boxplots_ratios(ratios_to_avg(as.data.frame(out$results_bysite))$ratios_d)",
-    #     "\n\n")
-#
-#     cat("To see a map in RStudio: \n\n",
-#         "     mapfastej(out$results_bysite, radius = out$results_overall$radius.miles)",
-#         "\n\n")
-
-    # cat("To view or save as excel files, see ?table_xls_from_ejam e.g., table_xls_from_ejam(out, fname = 'out.xlsx')  \n\n")
-
+    
+    cat("To view or save, see ejam2report(), ejam2excel(), ejam2map(), ejam2ratios(), ejam2barplot(), etc.   \n\n")
+    
     cat('Output is a list with the following names:\n')
     print(EJAM:::structure.of.output.list(out) )
+
   }
   ################################################################ #
-
-
+  
+  
   invisible(out)
 }
 

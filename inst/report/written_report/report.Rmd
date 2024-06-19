@@ -154,6 +154,12 @@ sites. Demographic indicators are moderately above average overall.
 
 ## Summary of Findings
 
+```{r, eval=FALSE, echo=FALSE, include=FALSE}
+SEE notes on summarizer draft function 
+and examples of using count_sites_with_n_high_scores()
+```
+
+
 -   PLACEHOLDER EXAMPLE Overall, % people of color, % limited English
     proficiency, and the Demographic Indicator are more than 1.5x the
     State rate, for the population within 1 mile.
@@ -265,7 +271,7 @@ if (params$testmode) {
 
 EPA's EJAM (Environmental Justice Analysis Multisite) tool was used to
 develop this analysis. EPA's [EJAM
-tool](https://rstudio-connect.dmap-stage.aws.epa.gov/content/163e7ff5-1a1b-4db4-ad9e-e9aa5d764002/ "Environmental Justice Analysis Multisite (EJAM) tool")
+tool](https://usepa.github.io/EJAM/index.html "Environmental Justice Analysis Multisite (EJAM) tool")
 is a user-friendly web app that can summarize demographics and
 environmental conditions for any list of places in the nation. 
 
@@ -285,9 +291,9 @@ See EJScreen methodology for details.
 The basic methodology and data used for this analysis are the same as
 those used in EPA's EJScreen tool, with a few exceptions described
 below, and are described in detail in EJScreen's documentation, at
-[EJScreen](https://epa.gov/ejscreen "EPA EJScreen homepage") and with
+[EJScreen](https://epa.gov/ejscreen "EPA EJScreen homepage"){.uri target="_blank" rel="noreferrer noopener"} and with
 more technical details available at [EJScreen technical documentation
-page](https://www.epa.gov/ejscreen/technical-information-about-ejscreen "EPA EJScreen technical information").
+page](https://www.epa.gov/ejscreen/technical-information-about-ejscreen "EPA EJScreen technical information"){.uri target="_blank" rel="noreferrer noopener"}.
 
 Like EJScreen, EJAM identifies residents near a given site by finding which Census block points are nearby, and counting the full block population as nearby if that point is nearby. The percent of each block group's population that is estimated as
 inside a buffer is based on which Census block internal points are
@@ -317,7 +323,7 @@ The only notable differences between the EJScreen and EJAM calculations of proxi
 
 ## Demographic and environmental indicators
 
-PLACEHOLDER - The demographics included here are those in EJScreen and
+The demographics included here are those in EJScreen and
 also race/ethnicity subgroups that comprise the total count of people of
 color. POC are defined as all other than those self-identifying in ACS
 survey data as white, single race, not Hispanic or Latino - i.e.,

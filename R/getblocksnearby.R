@@ -31,7 +31,7 @@
 #' @param ...  passed to [getblocksnearbyviaQuadTree()] or other such functions
 #' @return data.table like testoutput_getblocksnearby_10pts_1miles, with
 #'   columns named "ejam_uniq_id", "blockid", "distance", etc.
-#' @seealso [ejamit()]  [getblocksnearbyviaQuadTree()]
+#' @seealso [ejamit()] [getblocksnearby_from_fips()] [get_blockpoints_in_shape()]
 #'
 #' @export
 #'

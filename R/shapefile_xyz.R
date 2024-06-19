@@ -62,12 +62,17 @@
 shapefile_from_any <- function(path = NULL, cleanit = TRUE, crs = 4269, layer = NULL) {
 
   # test cases:
+  #   list.files(system.file("testdata/shapes/",     package = "EJAM"))
+  #  ##"portland.gdb"  "portland.gdb.zip"  "portland.json"  
+  #  ##"portland_folder_shp"  "portland_folder_shp.zip"
+  #  ##"portland_shp.zip"  ### "stations_shp.zip" "stations.zip"
 
-  #   testfilename_dirshp <- system.file("testdata/shapes/Portland_neighborhoods",     package = "EJAM")
-  #   testfilename_gdb    <- system.file("testdata/shapes/portland.gdb",               package = "EJAM")
-  #   testfilename_gdbzip <- system.file("testdata/shapes/portland.gdb.zip",           package = "EJAM")
-  #   testfilename_zipdir <- system.file("testdata/shapes/Portland_neighborhoods.zip", package = "EJAM")
-  #   testfilename_zipshp <- system.file("testdata/shapes/stations.zip",               package = "EJAM")
+  #   testfilename_dirshp <- system.file("testdata/shapes/portland_folder_shp",     package = "EJAM")
+  #   testfilename_gdb    <- system.file("testdata/shapes/portland.gdb",            package = "EJAM")
+  #   testfilename_gdbzip <- system.file("testdata/shapes/portland.gdb.zip",        package = "EJAM")
+  #   testfilename_zipdir <- system.file("testdata/shapes/portland_folder_shp.zip", package = "EJAM")
+  # testfilename_zipdir2 <- system.file("testdata/shapes/portland_shp.zip", package = "EJAM") # .shp etc basenames are NOT same as .zip file basename
+  #   testfilename_zipshp <- system.file("testdata/shapes/stations.zip",    package = "EJAM") # .shp etc basenames ARE IDENTICAL TO .zip file basename
   # testfilename_json <- system.file("testdata/shapes/portland.json",               package = "EJAM")
   #
   #   file.exists(testfilename_dirshp)
@@ -75,28 +80,39 @@ shapefile_from_any <- function(path = NULL, cleanit = TRUE, crs = 4269, layer = 
   #   file.exists(testfilename_gdbzip)
   #   file.exists(testfilename_zipdir)
   #   file.exists(testfilename_zipshp)
+  #   file.exists(testfilename_zipshp2) ##
   # file.exists(testfilename_json)
+  
+  # file.exists(testfilename_shp_alone)
+  # all(file.exists(testfilenameset_4))
   #
   #   x1 <- shapefile_from_any(testfilename_dirshp)    #ok
   #   x2 <- shapefile_from_any(testfilename_gdb)       # fails; warns that shapefile_filepaths_valid() needs vector with .shp etc.
   #   x3 <- shapefile_from_any(testfilename_gdbzip)   #ok
   #   x4 <- shapefile_from_any(testfilename_zipdir)  # reports error in shapefile_from_gdb() must have extension .gdb, but works anyway
   #   x5 <- shapefile_from_any(testfilename_zipshp)  # reports error in shapefile_from_gdb() must have extension .gdb, but works anyway
+  #   x52 <- shapefile_from_any(testfilename_zipshp2)  #  
   # x6 <- shapefile_from_any(testfilename_json) #
-  #
+  
+  # x7 <- shapefile_from_any(testfilename_shp_alone)
+  # x8 <- shapefile_from_any(testfilenameset_4)
+  
   #   x1b = shapefile_from_folder(testfilename_dirshp)
   #   x2b = shapefile_from_gdb(   testfilename_gdb)
   #   x3b = shapefile_from_gdbzip(testfilename_gdbzip)
   #   x4b = shapefile_from_zip(   testfilename_zipdir) # reports error but works
   #   x5b = shapefile_from_zip(   testfilename_zipshp)
+  #   x52b = shapefile_from_zip(   testfilename_zipshp2)
   #   x6b = shapefile_from_json(   testfilename_json)
-
-  # class(x1); class(x2); class(x3); class(x4); class(x5); class(x6)
-  # class(x1b); class(x2b); class(x3b); class(x4b); class(x5b); class(x6b)
-  # rm(x1, x2, x3, x4, x5, x6)
-  # rm(x1b, x2b, x3b, x4b, x5b, x6b)
-
-
+  ## shapefile_from_filepaths()  #  needs unit tests:
+  # x7b <- shapefile_from_filepaths(testfilename_shp_alone) # just one of the names needed- may want this to work too
+  # x8b <- shapefile_from_filepaths(testfilenameset_4)  # vector of names
+  
+  # class(x1); class(x2); class(x3); class(x4); class(x5); class(x52); class(x6); class(x7); class(x8)
+  # class(x1b); class(x2b); class(x3b); class(x4b); class(x52b); class(x6b); class(x7b); class(x8b)
+  # rm(x1, x2, x3, x4, x5, x52, x6,   x7, x8)
+  # rm(x1b, x2b, x3b, x4b, x5b, x52b, x6b,   x7b, x8b)
+  
   if (any(is.null(path)) || any(is.na(path)) || any(length(path)) == 0 || any(!is.character(path))) {
     if (interactive() && !shiny::isRunning()) {
 
@@ -185,7 +201,7 @@ shapefile_from_zip <- function(path, cleanit = TRUE, crs = 4269, layer = NULL) {
   gname <- gname$Name
   gname <- unique(dirname(gname))
   if (length(gname) != 1) {
-    cat("appears to be .zip containing multiple files, maybe .shp etc.")
+    cat(path, "appears to be .zip containing multiple files, maybe .shp etc. \n")
     unzip(path, exdir = (td <- file.path(tempdir(), "tempsubdir") ) )
 
     x <- shapefile_from_filepaths(
@@ -198,7 +214,7 @@ shapefile_from_zip <- function(path, cleanit = TRUE, crs = 4269, layer = NULL) {
     # how to check if gdb in zip versus folder in zip?
     x <- suppressWarnings(   try(shapefile_from_gdbzip(path))  )
     if (!inherits(x, "try-error")) {
-      cat("appears to be .zip containing .gdb\n")
+      cat(path, "appears to be .zip containing .gdb \n")
       return(x)
     }
 
@@ -410,6 +426,25 @@ shapefile_from_filepaths <- function(filepaths = NULL, cleanit = TRUE, crs = 426
       shpfilepath <- filepaths[grepl(".*shp$", filepaths, ignore.case = TRUE)]  # one (not more) files that end in .shp
       if (length(shpfilepath) > 1) {warning("using only ", shpfilepath[1], ", the first of more than one .shp file found"); shpfilepath <- shpfilepath[1] }
       # note this will add  ejam_uniq_id =  row_number()
+      
+      ## check for all layer names in .shp
+      layer_names <- sf::st_layers(shpfilepath)$name
+      if(is.null(layer)){
+        ## use first layer if multiple 
+        if(length(layer_names) > 1){
+          warning(paste0('More than 1 layer found; will use the first layer, named "',layer[1],'"'))
+          layer <- layer_names[1]
+        } else {
+          layer <- layer_names
+        }
+      } else {
+        ## exit if user-entered layer is not valid
+        if(!(layer %in% layer_names)){
+          warning(paste0('No layer named "',layer, '" was found'))
+          return(NULL)
+        }
+      }
+    
       return(
         shapefile_clean(
           sf::st_read(shpfilepath, layer = layer), # , crs = crs  should be left out here ?
@@ -420,6 +455,23 @@ shapefile_from_filepaths <- function(filepaths = NULL, cleanit = TRUE, crs = 426
     } else {
       # for shiny, do cleaning/check in server so it can offer messages
       shpfilepath <- filepaths[grepl(".*shp$", filepaths, ignore.case = TRUE)] # one or more files that end in .shp
+      ## check for all layer names in .shp
+      layer_names <- sf::st_layers(shpfilepath)$name
+      if(is.null(layer)){
+        ## use first layer if multiple 
+        if(length(layer_names) > 1){
+          warning(paste0('More than 1 layer found; will use the first layer, named "',layer[1],'"'))
+          layer <- layer_names[1]
+        } else {
+          layer <- layer_names
+        }
+      } else {
+        ## exit if user-entered layer is not valid
+        if(!(layer %in% layer_names)){
+          warning(paste0('No layer named "',layer, '" was found'))
+          return(NULL)
+        }
+      }
       shp <- sf::st_read(shpfilepath, layer = layer)  # , crs = crs  should be left out here ?
       return(
         dplyr::mutate(shp, ejam_uniq_id = dplyr::row_number()) # number them
@@ -464,7 +516,7 @@ shapefile_filepaths_from_folder <- function(folder = NULL) {
 ############################################################################################## #
 
 
-#' Confirm files have all the extensions .shp, .shx, .dbf, and .prj
+#' Confirm files have ALL the extensions .shp, .shx, .dbf, and .prj
 #'
 #' @param filepaths vector of full paths with filenames (types .shp, .shx, .dbf, and .prj) as strings
 #'
@@ -533,7 +585,16 @@ shapefile_clean <- function(shp, crs = 4269) {
 #' @return same format as [sf::st_buffer()] returns
 #' @import sf
 #' @seealso [get_blockpoints_in_shape()] [shapefile_from_sitepoints()] [shape_buffered_from_shapefile_points()]
-#'
+#' @examples 
+#' # Within 3 miles of the county borders
+#' fips_counties_from_state_abbrev("DE")[1]
+#' x = shapes_counties_from_countyfips("10001")
+#' xtra = shape_buffered_from_shapefile(x, radius.miles = 3)
+#' map_shapes_leaflet(x) %>%
+#'   map_shapes_leaflet_proxy(xtra, color = "black")
+#'   
+# (ignoring projectiong/datum for this example)
+#' 
 #' @export
 #'
 shape_buffered_from_shapefile <- function(shapefile, radius.miles, crs = 4269, ...) {
@@ -558,7 +619,17 @@ shape_buffered_from_shapefile <- function(shapefile, radius.miles, crs = 4269, .
 #' @return same format as [sf::st_buffer()] returns
 #' @import sf
 #' @seealso [get_blockpoints_in_shape()] [shapefile_from_sitepoints()] [shape_buffered_from_shapefile_points()]
-#'
+#' @examples 
+#' map_shapes_leaflet(
+#'   shape_buffered_from_shapefile_points(
+#'     shapefile_from_sitepoints(testpoints_100), 
+#'     radius.miles = 3
+#'   )
+#' ) 
+#' # (ignoring projections for this example)
+#' # compare to
+#' mapfast(testpoints_100)
+#' 
 #' @export
 #'
 shape_buffered_from_shapefile_points <- function(shapefile_points, radius.miles, crs = 4269, ...) {

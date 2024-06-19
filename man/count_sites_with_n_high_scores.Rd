@@ -6,8 +6,11 @@
 \usage{
 count_sites_with_n_high_scores(
   scores,
-  thresholds = c(1.01, 1.5, 2, 3, 5, 10),
-  xwide = c("statewide", "nationwide")[1]
+  thresholds = c(1.01, 2, 5, 10),
+  text_indicatortype = "indicators",
+  xwide = c("statewide", "nationwide")[1],
+  text_suffix = paste0(" times the ", xwide, " overall average."),
+  quiet = !interactive()
 )
 }
 \arguments{
@@ -17,8 +20,18 @@ count_sites_with_n_high_scores(
 in the scores table are ratios to the average, then the thresholds could be
 for example, 1.50, 2, etc. which would represent ratios that are 1.5x or 2x etc.}
 
+\item{text_indicatortype}{can be "EJ Indexes" or "demographic indicators"
+for example}
+
 \item{xwide}{must be "statewide" or "nationwide" -- used only in the text output
 that describes the findings.}
+
+\item{text_suffix}{If using ratios, use the default, which explains these
+thresholds as X times the average.
+If using percentiles as thresholds, set text_suffix = "."
+or text_suffix = "th percentile in the state." for example}
+
+\item{quiet}{whether to print findings to console}
 }
 \value{
 Returns a list with two named elements, "stats" and "text" where
@@ -42,14 +55,37 @@ at least (R) times the (State/National average)
 x <- testoutput_ejamit_1000pts_1miles 
 out <- x$results_bysite
 out <- setDF(copy(out))
-ratio_benchmarks <- c(1.01, 1.50, 2, 3, 5, 10)
-ratiodata <- out[, names_d_ratio_to_state_avg]
+ratio_data <- out[, names_d_ratio_to_state_avg]
+ratio_benchmarks <- c(2, 3, 5, 10)
 
-findings = count_sites_with_n_high_scores(out)
-dimnames(findings)
-findings$text[2]
+findings <- count_sites_with_n_high_scores(ratio_data, ratio_benchmarks)
+
+names(findings)
+dim(findings$text)
+# see most striking stat only
+tail(findings$text[findings$text != ""], 1) # the most extreme finding
+findings$text[findings$text != ""]
+
+dimnames(findings$stats) # count, cut, stat
+## stat can be count, cum, pct, or cum_pct
+
+findings$stats[1,,] # any of the indicators (at least one indicator)
+findings$stats[,,"count"]
 findings$stats[ , , 1]
 findings$stats[ , 1, ]
-findings$stats[ 1, , ]
+
+pctile_data <- testoutput_ejamit_1000pts_1miles$results_bysite
+pctile_data <- pctile_data[, ..names_ej_state_pctile]
+pctile_benchmarks <- c(80, 90)
+x <- count_sites_with_n_high_scores(pctile_data, pctile_benchmarks,
+  text_indicatortype = "EJ Indexes",
+  text_suffix = "th percentile in the state.")
+
+# see most striking stat only
+mx <- count_sites_with_n_high_scores(pctile_data, 
+  thresholds = 1:100, quiet = TRUE,
+  text_indicatortype = "EJ Indexes",
+  text_suffix = "th percentile in the state.")
+tail(mx$text[mx$text != ""], 1) # the most extreme finding
 
 }

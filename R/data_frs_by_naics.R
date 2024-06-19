@@ -6,6 +6,9 @@
 #'    This is the format with one row per site-NAICS pair, 
 #'    so multiple rows for one site if it is in multiple NAICS.
 #'  @details  
+#'  The EPA also provides a [FRS Facility Industrial Classification Search tool](https://www.epa.gov/frs/frs-query#industrial)
+#'  where you can find facilities based on NAICS or SIC.
+#'  
 #'  
 #'  MOST SITES LACK NAICS INFO IN FRS! NAICS is missing for about 80 percent of these facilities.
 #'   
@@ -25,7 +28,7 @@
 #'   
 #'   `frs_by_naics[,uniqueN(REGISTRY_ID)]`
 #'   
-#'      561,999  as of 3/26/23 but early 2023 had been 564,770
+#'        e.g., 573,411 in mid 2024
 #' 
 #' 
 #'         lat       lon  REGISTRY_ID  NAICS

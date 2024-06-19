@@ -2,7 +2,7 @@
 % Please edit documentation in R/MAP_FUNCTIONS.R
 \name{map_blockgroups_over_blocks}
 \alias{map_blockgroups_over_blocks}
-\title{Map blockgroup boundaries near 1 site, after plotblocksnearby()}
+\title{Map - Blockgroup polygons / boundaries near 1 site - Create leaflet map}
 \usage{
 map_blockgroups_over_blocks(y)
 }
@@ -16,12 +16,10 @@ leaflet map widget
 Overlay blockgroups near 1 site, after plotblocksnearby(returnmap = TRUE)
 }
 \examples{
-dontrun{
  y <- plotblocksnearby(testpoints_10[5,],
         radius = 3,
         returnmap = TRUE)
  map_blockgroups_over_blocks(y)
-  }
 
 }
 \seealso{

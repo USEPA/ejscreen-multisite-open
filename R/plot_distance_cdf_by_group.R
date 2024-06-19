@@ -189,7 +189,7 @@ distance_by_group_plot <- function(
     # distance_cdf_by_group_plot  is not written in a way that makes it easy to vectorize, so this could be rewritten
 
     data.table::setDF(cumdata)
-    points(cumdata$dist, 100 *  cumdata[ , demogvarname[i], with = FALSE],
+    points(cumdata$dist, 100 *  cumdata[ , demogvarname[i]],
            col = colorlist[i - 1],
            pch = c(0:6,15:25, 7:14)[i], # various base R shapes for the points
            ...)

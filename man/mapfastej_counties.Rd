@@ -2,7 +2,7 @@
 % Please edit documentation in R/MAP_FUNCTIONS.R
 \name{mapfastej_counties}
 \alias{mapfastej_counties}
-\title{Map Counties - Create static or HTML/leaflet map of counties}
+\title{Map - County polygons / boundaries - Create leaflet or static map}
 \usage{
 mapfastej_counties(
   mydf,
@@ -28,7 +28,10 @@ leaflet html widget (but if static_not_leaflet=T,
 returns just shapes_counties_from_countyfips(mydf$ejam_uniq_id))
 }
 \description{
-Map Counties - Create static or HTML/leaflet map of counties
+Map - County polygons / boundaries - Create leaflet or static map
+}
+\details{
+THIS ASSUMES THAT mydf$ejam_unique_id is the county FIPS codes
 }
 \examples{
 \dontrun{
@@ -36,5 +39,9 @@ Map Counties - Create static or HTML/leaflet map of counties
  x <- ejamit(fips = fips_ky, radius = 0)
  mapfastej_counties(x$results_bysite)
  }
+ # map_shapes_leaflet(shapes = shapes_counties_from_countyfips(fips_ky))
 
+}
+\seealso{
+\code{\link[=mapfastej]{mapfastej()}} \code{\link[=map_shapes_leaflet]{map_shapes_leaflet()}}
 }

@@ -8,5 +8,6 @@
 
 library(testthat)
 library(EJAM)
+dataload_from_pins("all")
 # test_local()
 test_check("EJAM")

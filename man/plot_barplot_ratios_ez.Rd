@@ -2,27 +2,15 @@
 % Please edit documentation in R/plot_barplot_ratios.R
 \name{plot_barplot_ratios_ez}
 \alias{plot_barplot_ratios_ez}
-\title{Barplot of ratios of demographic (or other) scores to averages - simpler syntax}
+\title{Same as ejam2barplot()}
 \usage{
 plot_barplot_ratios_ez(
   out,
   varnames = c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg),
+  main = "Demographics at the Analyzed Locations Compared to US Overall",
   ...
 )
 }
-\arguments{
-\item{out}{like from ejamit()}
-
-\item{varnames}{vector of indicator names that are ratios to avg}
-
-\item{...}{passed to plot_barplot_ratios()}
-}
-\value{
-ggplot
-}
 \description{
-Barplot of ratios of demographic (or other) scores to averages - simpler syntax
-}
-\examples{
-plot_barplot_ratios_ez(testoutput_ejamit_100pts_1miles)
+Same as ejam2barplot()
 }

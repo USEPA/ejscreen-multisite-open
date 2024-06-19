@@ -25,13 +25,32 @@ one or more sites, typically EPA-regulated facilities.
 This means the tools can provide the same information that an EJScreen standard report provides,
 but for a large number of reports (one for each site).
 }
-\section{\strong{Vignette}}{
-Walk-through guides will be available via \code{vignette(package = "EJAM")} or <EJAM-vignette.html> and
-pdf or html format documentation of functions and data will be at <EJAM.pdf> or <EJAM.html>
-Also see the README file.
+\section{\strong{Documentation of Functions and How to Use EJAM}}{
+See \url{https://usepa.github.io/EJAM/index.html} for
+a complete reference document on all functions, and
+articles (vignettes) introducing key functions and how to use them.
 }
 
-\section{\strong{Key Functions:}}{
+\section{\strong{Data Sources for Demographic and Environmental Indicators} ***this will be moved/added to a vignette}{
+For documentation on the sources, definitions, and vintage of the
+demographic and environmental data and indicators used by
+EJScreen and EJAM, see \url{https://www.epa.gov/ejscreen/understanding-ejscreen-results}.
+
+Each year, EJScreen and EJAM are updated to use newer demographic and environmental data,
+and some indicators may be added, dropped, or revised during those updates.
+For details on these updates and changes to datasets and indicators,
+please see \url{https://www.epa.gov/ejscreen} and in particular note the
+information about updates and changes here:
+\href{https://www.epa.gov/ejscreen/ejscreen-change-log}{EJScreen Change Log}{.uri target="_blank" rel="noreferrer noopener"}
+
+The American Community Survey 5-year summary file data are updated by
+the United States Census Bureau annually, after which EJScreen and EJAM are updated.
+\itemize{
+\item The mid 2024 releases are called version 2.3 (EJAM/EJScreen) and use ACS 2018-2022.
+}
+}
+
+\section{\strong{Key Functions:} ***much of this is in vignettes and will be merged}{
 \itemize{
 \item \strong{\code{\link[=run_app]{run_app()}}} Launch the web app (R Shiny interface)
 \item \strong{\code{\link[=ejamit]{ejamit()}}} Get results (tables, maps, plots) without the web app interface, largely by using these key functions:
@@ -182,9 +201,9 @@ bgid is more efficient than bgfips. bgfips is not here but is in a bgid2fips dat
 \section{\strong{Output results for user:}}{
 \code{\link[=ejamit]{ejamit()}} (or \code{\link[=doaggregate]{doaggregate()}}) provides the following outputs:
 \itemize{
-\item \strong{results_overall}   one row data.table, like results_by_site, but just one row with
+\item \strong{results_overall}   one row data.table, like results_bysite, but just one row with
 aggregated results for all unique residents.
-\item \strong{results_by_site}   results for individual sites (buffers) - a data.table of results,
+\item \strong{results_bysite}   results for individual sites (buffers) - a data.table of results,
 one row per ejam_uniq_id (i.e., each site analyzed), one column per indicator
 \item \strong{results_bybg_people}  results for each block group, to allow for showing the distribution of each
 indicator across everyone within each demographic group.
@@ -194,12 +213,23 @@ indicator across everyone within each demographic group.
 }
 
 \section{\strong{Identification of nearby residents -- methodology:}}{
+EJAM uses the same approach as EJScreen does to identify the count and demographics of nearby residents,
+so EJScreen technical documentation should be consulted on the approach,
+at \href{https://www.epa.gov/ejscreen/technical-information-about-ejscreen}{EJScreen Technical Info}{.uri target="_blank" rel="noreferrer noopener"}.
+EJAM implements that approach using faster code and data formats, but it
+still uses the same high-resolution approach as described in EJScreen documentation
+and summarized below.
+
 The identification of nearby residents is currently done in a way that includes all 2020 Census blocks whose
 "internal point" (a lat/lon provided by the Census Bureau) is within the specified distance of the facility point.
 This is taken from the EJScreen block weights file, but can also be independently calculated.
 
 The summary or aggregation or "rollup" within the buffer is done by calculating the
 population-weighted average block group score among all the people residing in the buffer.
+The weighting is by population count for variables that are fractions of population,
+but other denominators and weights (e.g., households count) are used as appropriate,
+as explained in EJScreen technical documentation on the formulas, and
+replicated by formulas used in EJAM functions such as doaggregate().
 
 Since the blockgroup population counts are from American Community Survey (ACS) estimates,
 but the block population counts are from a decennial census, the totals for a blockgroup differ.
@@ -226,7 +256,7 @@ the Decennial census blocks can provide, such as a dasymetric map approach.
 Useful links:
 \itemize{
   \item \url{https://usepa.github.io/EJAM/}
+  \item \url{https://github.com/USEPA/EJAM}
 }
 
 }
-\keyword{internal}

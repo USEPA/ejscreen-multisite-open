@@ -43,8 +43,11 @@ app_ui  <- function(request) {
       html_header_fmt,
 
       ### title (for app and browser tab) ####
-      titlePanel(title = "EJAM (Environmental Justice Analysis Multi-site) Tool",
-                 windowTitle = "EJAM (Environmental Justice Analysis Multi-site) Tool"
+      div(class = "title-panel",
+          titlePanel(
+            title = "EJAM (Environmental Justice Analysis Multi-site) Tool",
+            windowTitle = "EJAM (Environmental Justice Analysis Multi-site) Tool"
+          )
       ),
 
       # ***outline of tabs*** ####
@@ -100,10 +103,11 @@ app_ui  <- function(request) {
 
         tabPanel(
           title = 'Site Selection',
-          br(),
           #h3('Welcome to EJAM'),
-          span('EJAM lets you explore the demographics and environmental conditions in any list of places, such as for anyone who lives within 1 mile of a certain type of EPA-regulated site. You can learn more about EJAM at the ',
-               actionLink('link_to_about_page', label = 'About EJAM page.')),
+          div(
+            p('EJAM lets you explore the demographics and environmental conditions in any list of places, such as for anyone who lives within 1 mile of a certain type of EPA-regulated site.'),
+            class = "about-EJAM-span"
+          ),
           hr(), ## horizontal line
 
           ## fluidRow container for upload method (left column) and map (right column) ####
@@ -112,7 +116,6 @@ app_ui  <- function(request) {
             ## upload-methods column ####
             column(
               4,  # through about line 359
-              h4('Specify Locations to Analyze', style = 'text-align: center;'),
 
               ## input: use CATEGORIES of sites, or upload LOCATIONS ? ####
               div(style = 'border: 1px solid #005ea2; padding: 10px;',
@@ -122,42 +125,43 @@ app_ui  <- function(request) {
                                                'Upload specific locations'),
                                choiceValues = c('dropdown',
                                                 'upload'),
-                               selected = 'upload')
-              ),
-              br(),
-
-              ### input: what CATEGORY type? (NAICS, SIC, MACT, Program) ####
-              conditionalPanel(
-                condition = 'input.ss_choose_method == "dropdown"',
-                div(style = 'border: 1px solid #005ea2; padding: 10px;',
+                               selected = 'upload'),
+                  ### input: what CATEGORY type? (NAICS, SIC, MACT, Program) ####
+                  # end conditional choose category type
+                  conditionalPanel(
+                    condition = 'input.ss_choose_method == "dropdown"',
                     selectInput(inputId = 'ss_choose_method_drop',
-                                label = tags$span('How would you like to select categories?'),
-                                choices = c('by Industry (NAICS) Code' = 'NAICS',
-                                            'by Industry (SIC) Code'   = 'SIC',
-                                            'by EPA Program'           = 'EPA_PROGRAM',
-                                            'by MACT subpart'          = 'MACT'))
-                )
-              ), # end conditional choose category type
-
-              ### input: what LOCATIONS type to upload? (IDs, latlon, FIPS, Shapes) ####
-              conditionalPanel(
-                condition = 'input.ss_choose_method == "upload"',
-                div(style = 'border: 1px solid #005ea2; padding: 10px;',
+                                    label = tags$span('How would you like to select categories?'),
+                                    choices = c('by Industry (NAICS) Code' = 'NAICS',
+                                                'by Industry (SIC) Code'   = 'SIC',
+                                                'by EPA Program'           = 'EPA_PROGRAM',
+                                                'by MACT subpart'          = 'MACT'))
+                    
+                  ),
+                  ### input: what LOCATIONS type to upload? (IDs, latlon, FIPS, Shapes) ####
+                  # end conditional picking what type of IDs to upload
+                  conditionalPanel(
+                    condition = 'input.ss_choose_method == "upload"',
                     selectInput(inputId = 'ss_choose_method_upload',
-                                #label = 'What type of data are you uploading?',
-                                label = tags$span(
-                                  'What type of data are you uploading?'
-                                ),
-                                choices = c('Latitude/Longitude file upload'               = 'latlon',
-                                            'EPA Facility ID (FRS Identifiers)'            = 'FRS',
-                                            'EPA Program IDs'                              = 'EPA_PROGRAM',
-                                            'FIPS Codes'                                   = 'FIPS',
-                                            'Shapefile of polygons'                        = 'SHP')   # , selected = 'latlon'   # would set initial value but default is 1st in list
-                    )
-                )
-              ), # end conditional picking what type of IDs to upload
+                                    #label = 'What type of data are you uploading?',
+                                    label = tags$span(
+                                      'What type of data are you uploading?'
+                                    ),
+                                    choices = c('Latitude/Longitude file upload'               = 'latlon',
+                                                'EPA Facility ID (FRS Identifiers)'            = 'FRS',
+                                                'EPA Program IDs'                              = 'EPA_PROGRAM',
+                                                'FIPS Codes'                                   = 'FIPS',
+                                                'Shapefile of polygons'                        = 'SHP')   # , selected = 'latlon'   # would set initial value but default is 1st in list
+                        )
+                    
+                  ),
+              ),
+
+
+
 
               br(),
+
 
               ## *UPLOADING  SITES*  input: choose among facility dropdown options, conditional panel ####
 
@@ -392,27 +396,26 @@ app_ui  <- function(request) {
             # ______ VIEW SITES ________ tabPanel(title = 'Site Selection'####
             #. ####
             column(8,
-                   uiOutput('invalid_sites_alert2'),
-                   br(),
+                  
                    ## TABLE of uploaded points in Modal window via Button  ####
-                   fluidRow(
-                     column(6,
-                            br(),
-                            ## output: display number of uploaded sites
-                            htmlOutput(outputId = 'an_map_text') #, # xxx
+                   div(
+                     style = "display: flex; flex-direction: column; margin-bottom: .5em;",
+                     div(
+                       style = "flex: 1; display: flex; flex-wrap: wrap; gap: 1em; align-items: center;",
+                         div(
+                           actionButton('show_data_preview', label = 'Review selected sites',
+                                        class = 'usa-button usa-button--outline')
+                         ),
+                         div(
+                           htmlOutput(outputId = 'an_map_text'),
+                         )
                      ),
-                     column(6,
-                            ## add button and modal to show uploaded data interactively
-                            actionButton('show_data_preview', label = 'Review selected sites',
-                                         class = 'usa-button usa-button--outline'),
-
-
-                     )
                    ), # end view data uploads
+                   uiOutput('invalid_sites_alert2'),
 
                    ## MAP of uploaded points ####
 
-                   h4('Selected Location Map'),
+
                    #helpText('Red circles indicate overlapping sites.'),
                    ## output: show leaflet map of uploaded points
                    shinycssloaders::withSpinner(
@@ -422,7 +425,6 @@ app_ui  <- function(request) {
                      )
                    ),
 
-                   br(),
                    # . ####
                    # ______ RUN ANALYSIS ________####
                    # (when button is pressed)
@@ -432,25 +434,21 @@ app_ui  <- function(request) {
                             ## separated label from slider to allow for line break - shiny does not support it
                             ## in update*Input: https://github.com/rstudio/shiny/issues/3678
                             htmlOutput('radius_label'),
+                            
                             ## input: RADIUS SLIDER for circular buffer
-                            shiny::sliderInput(inputId = 'bt_rad_buff',
-                                               ## label is updated in server
-                                               label = "", # htmltools::h5('Within what distance of a site?'),
-                                               #label = htmltools::h5("Radius of circular buffer in miles"),
-                                               value = 1.0, step = 0.25,
-                                               min = 0, max = 10,
-                                               post = ' miles'
-                            ),
+                            
+                            shiny::uiOutput("radius_slider_ui")
                      ),
                      column(6,
                             ## input: Name of analysis (goes in report header) ####
                             shiny::uiOutput("analysis_title_ui"),
 
                             ## input: START Button     ####
-                            shiny::actionButton(inputId = 'bt_get_results',
-                                                label = div('Start Analysis', HTML('&nbsp;'), icon('play')), class = 'usa-button'
-                                                ## extra formatting - optional
-                                                # style = 'color: #fff; background-color: #005ea2; height: 50px; width: 100px; border-radius: 5%;')
+                            shiny::actionButton(
+                              inputId = 'bt_get_results',
+                              label = div('Start Analysis', HTML('&nbsp; <i class="fas fa-play" aria-hidden="true"></i>')),
+                              class = 'usa-button',
+                              role = 'button'  
                             )
                      ),
                    ) # end fluidRow with radius slide and analysis title and start button
@@ -469,13 +467,9 @@ app_ui  <- function(request) {
 
         # See Results tabPanel(title = "See Results" ####
         tabPanel(title = "See Results",
-                 br(),
-                 actionButton('back_to_site_sel', label = div(icon('play', style = 'transform: rotate(180deg);'),
-                                                              HTML('&nbsp;'), 'Return to Site Selection'), class = 'usa-button'),
-                 br(),br(),
-
-                 h4('Overall Results'),
-                 helpText('The results of your analysis can be viewed in 3 forms: a summary report, interactive details, or a full written report.'),
+                 ##br(),
+                 ##actionButton('back_to_site_sel', label = div(icon('play', style = 'transform: rotate(180deg);'),
+                                                              ## HTML('&nbsp;'), 'Return to Site Selection'), class = 'usa-button'),
                  # . ### #
                  ## tabsetPanel(id = 'results_tabs'  ####
                  #tags$div( class = 'results_tabs_theme',
@@ -510,6 +504,13 @@ app_ui  <- function(request) {
                                    shinycssloaders::withSpinner(
                                      plotOutput(outputId = 'view1_summary_plot', width = '100%', height = '400px')  # {{ demog_plot }} goes in .html template
                                    )
+                                 )
+                               ),
+                               div(
+                                 style = "background-color: #edeff0; color: black; width: 100%; padding: 10px 20px; text-align: right; margin: 10px 0;",
+                                 p( style = "margin-bottom: 0",
+                                   "Version 2.2 | Report created on ", 
+                                    format(Sys.Date(), '%B %d, %Y'),
                                  )
                                ),
                                br(),
@@ -1042,42 +1043,12 @@ app_ui  <- function(request) {
 
                 # * Each time a user session is started, the application-level option set is duplicated, for that session.
                 # * If the options are set from inside the server function, then they will be scoped to the session.
-                h4("Defaults and caps are defined in global.R"),
+                # h5("Note: Some defaults and caps are defined in global.R"),
 
                 ######################################################## #
-                ##  ------------------------ Options in general and Testing ## ##
-
-                radioButtons("testing", "TESTING APP? testing = ", choices = c(Yes = TRUE, No = FALSE),
-                             inline = TRUE,
-                             selected = default_testing),
-
-                radioButtons("shiny.testmode", "shiny.testmode = ", choices = c(Yes = TRUE, No = FALSE),
-                             inline = TRUE,
-                             selected = default_shiny.testmode),
-                # If TRUE, then various features for testing Shiny applications are enabled.
-                # shiny.reactlog (defaults to FALSE)
-                #    If TRUE, enable logging of reactive events, which can be viewed later with the reactlogShow() function. This incurs a substantial performance penalty and should not be used in production.
-                #
-                # shiny.devmode (defaults to NULL)
-                # Option to enable Shiny Developer Mode. When set, different default getOption(key) values will be returned. See devmode() for more details.
-                #
-                # shiny.sanitize.errors (defaults to FALSE)
-                #    If TRUE, then normal errors (i.e. errors not wrapped in safeError) won't show up in the app; a simple generic error message is printed instead (the error and strack trace printed to the console remain unchanged). If you want to sanitize errors in general, but you DO want a particular error e to get displayed to the user, then set this option to TRUE and use stop(safeError(e)) for errors you want the user to see.
-                #
-                # shiny.suppressMissingContextError (defaults to FALSE)
-                #    Normally, invoking a reactive outside of a reactive context (or isolate()) results in an error. If this is TRUE, don't error in these cases. This should only be used for debugging or demonstrations of reactivity at the console.
-                #
-                # shiny.stacktraceoffset (defaults to TRUE)
-                #    If TRUE, then Shiny's printed stack traces will display srcrefs one line above their usual location. This is an arguably more intuitive arrangement for casual R users, as the name of a function appears next to the srcref where it is defined, rather than where it is currently being called from.
-                #
-                # shiny.trace (defaults to FALSE)
-                # Print messages sent between the R server and the web browser client to the R console. This is useful for debugging. Possible values are "send" (only print messages sent to the client), "recv" (only print messages received by the server), TRUE (print all messages), or FALSE (default; don't print any of these messages).
-                #
-                # shiny.autoload.r (defaults to TRUE)
-                # If TRUE, then the R/ of a shiny app will automatically be sourced.
-
-                checkboxInput('print_uploaded_points_to_log', label = "Print each new uploaded lat lon table full contents to server log",
-                              value = default_print_uploaded_points_to_log),
+                ## Bookmarking button ####
+                h2("Bookmarking to save settings and inputs"),
+                
                 conditionalPanel(condition = bookmarking_allowed, {
                   bookmarkButton()  # https://mastering-shiny.org/action-bookmark.html
                 }),
@@ -1086,10 +1057,9 @@ app_ui  <- function(request) {
                 # will not be editable here.
 
                 ######################################################## #
-                ##  ------------------------ Options in point/shape/file uploads, and radius  ## ##
-
-                ### ------------------------ limits on # of points/shapes/MB ####
-
+                ##  Uploading files/points/shapes ####
+                h2("Limits on uploads/points/shapes"),
+                
                 numericInput('max_pts_upload', label = "Cap on number of points one can UPLOAD, additional ones in uploaded table get dropped entirely",
                              min = 1000,  step = 500,
                              value = default_max_pts_upload,
@@ -1114,28 +1084,38 @@ app_ui  <- function(request) {
 
                 numericInput(inputId = 'max_mb_upload', label = 'Cap on size of file(s) one can upload in MB (an issue for shapefiles, mainly)',
                              min = minmax_mb_upload,
-                             value = default_max_mb_upload,
+                             value = global_or_param("default_max_mb_upload"),
                              max = maxmax_mb_upload,
                              step = minmax_mb_upload),
-
-                ### Options for Radius  ------------- #
-
-                numericInput('default_miles', label = "Default miles radius",
-                             min = 0.25,
-                             value = default_default_miles,
-
-                             max   =     max_default_miles),
+                
+                ######################################################## #
+                ## *Radius* options ####
+                h2("Radius options"),
+                
+                # minradius  # (set via global.R)
+                # minradius_shapefile # (0 set via global.R)
+                # stepradius # (set via global.R)
+                
+                numericInput('default_miles', label = "Default miles radius",  # what is shown at app startup for all but shapefiles
+                             ### Also note server code where radius can be modified via updateSliderInput, 
+                             ### and saved current value stored is specific to each upload type, returns to that when switch type back.
+                             min = minradius,  # from global.R
+                             value = global_or_param("default_default_miles"),
+                             max   = global_or_param("default_max_miles")), # (set via global.R) highest allowed default (i.e. initial) value 
+                
+                numericInput('default_miles_shapefile', label = "Default miles width of buffer around shapefile edges",
+                             min = minradius_shapefile, # from global.R
+                             global_or_param("default_default_miles_shapefile"),
+                             max   =     max_default_miles), # (set via global.R) highest allowed default (i.e. initial) value 
+                
                 numericInput('max_miles', label = "Maximum radius in miles",
-                             value = default_max_miles,
-                             max        = maxmax_miles),
-
+                             value = global_or_param("default_max_miles"), # (set via global.R) initial cap that advanced tab lets you increase here
+                             max        = maxmax_miles), # (set via global.R) i.e., even in the advanced tab one cannot exceed this cap
 
                 ######################################################## #
-
-                ##  ------------------------ Options in calculations and what stats to output ## ##
-
-                ### calculate and/or include in downloaded outputs
-
+                ## Calculating and reporting extra metrics ####
+                h2("Calculating and reporting extra metrics"),
+                
                 checkboxInput('calculate_ratios',
                               label = "Results in Excel should include ratios to US and State averages",
                               value = default_calculate_ratios),
@@ -1145,13 +1125,14 @@ app_ui  <- function(request) {
                 checkboxInput('include_extraindicators',
                               label = 'Results should include extra indicators from Community Report - *** not implemented yet',
                               value = default_include_extraindicators),
+ 
                 ######################################################## #
-
-                ## >Options for viewing results  ####
-
+                ## Viewing maps, saving results ####
+                h2("Viewing maps, saving results"),
+                
                 textInput('prefix_filenames', label = "Prefix to use in default file names when downloading [***NOT implemented yet]", value = ""),
 
-                ### ------------------------ map colors, weights, opacity ####
+                ## Map colors, weights, opacity ####
                 ### in ejscreenapi:
                 numericInput(inputId = "circleweight_in", label = "weight of circles in maps", value = default_circleweight),
 
@@ -1164,12 +1145,10 @@ app_ui  <- function(request) {
                 # cluster_color_default   <- "red"   ;
                 # highlight_color_default <- 'orange';
 
-
                 ######################################################## #
-
-                ### Excel formatting options   --------------------- #
-
-
+                ## Spreadsheet formatting of results ####
+                h2("Spreadsheet formatting of results"),
+                
                 # heatmap column names
 
 
@@ -1179,16 +1158,14 @@ app_ui  <- function(request) {
                 # heatmap colors for bins
 
 
-
                 checkboxInput("ok2plot",
                               label = "OK to try to plot graphics and include in Excel download",
                               value = default_ok2plot),
 
-                ######################################## #
-
-
-                ###  ------------------------ in getblocksnearby()  ------------- #
-
+                ######################################################## #
+                ##  Finding distances: getblocksnearby() ####
+                h2("Finding distances to nearby blocks and residents"),
+                
                 radioButtons(inputId = "avoidorphans",
                              label =  "Avoid orphans (by searching for nearest one out to maxradius, instead of reporting NA when no block is within radius)",
                              choices = c(Yes = TRUE, No = FALSE),
@@ -1199,9 +1176,11 @@ app_ui  <- function(request) {
                              label = 'If avoid orphans=T, Max distance in miles to search for closest single block if site has none within normal radius',
                              value =  default_maxradius,  # 50000 / meters_per_mile, # 31.06856 miles !!
                              min = 0, max = default_maxradius, step = 1),
-
-                ###  ------------------------ in doaggregate()   ------------- #
-
+                
+                ######################################################## #
+                ## Which indicators to include in outputs via doaggregate() ####
+                h2("Which indicators to include in outputs"),
+                
                 shiny::selectInput('subgroups_type',
                                    #    "nh" for non-hispanic race subgroups as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh;
                                    #    "alone" for EJScreen v2.2 style race subgroups as in    White Alone, wa and others in names_d_subgroups_alone;
@@ -1224,37 +1203,51 @@ app_ui  <- function(request) {
                                     label = "Need extra indicators from EJScreen v2.2 report, on language, age groups, gender, percent with disability, poverty, etc.",
                                     choices = list(Yes = TRUE, No = FALSE ),
                                     selected = default_extra_demog),
-
-                ### Threshold comparisons options --------------------- #
-
-                ## input: Name for 1st set of comparisons - where the table counts which scores are above certain cutoffs?
-                shiny::textInput(inputId = 'an_name_comp1',
+                
+                ######################################################## #
+                ## Counting indicators reaching certain thresholds ####
+                h2("Counting indicators reaching certain thresholds"),
+                
+                ## input: GROUP NAME for 1st set of comparisons - where the table counts which scores are above certain cutoffs?
+                shiny::textInput(inputId = 'an_threshgroup1',
                                  label = 'Name for 1st set of comparisons',
-                                 ## this will need to be changed later
-                                 value = '',
-                                 placeholder = threshgroup.default['comp1']
+                                 value = default.an_threshgroup1
                 ),
-                ## input: Threshold value(s) for 1st set of comparisons
+                ## input: variable names for 1st set of comparisons
+                shiny::selectizeInput(inputId = 'an_threshnames1',
+                                   multiple = TRUE,
+                                 label = 'variable names for 1st set of comparisons',
+                                 choices = names_all_r,
+                                 selected = default.an_threshnames1
+                ),
+                ## input: Threshold VALUE(s) for 1st set of comparisons
                 numericInput(inputId = 'an_thresh_comp1',
                              label = 'Threshold value(s) for 1st set of comparisons (e.g. %ile 1-100):',
-                             value = threshold.default['comp1']
+                             value = default.an_thresh_comp1
                 ),
-                ## input: Name for 1st set of comparisons
-                shiny::textInput(inputId = 'an_name_comp2',
+                ###### #
+                
+                ## input: GROUP NAME for 2d set of comparisons
+                shiny::textInput(inputId = 'an_threshgroup2',
                                  label = 'Name for 2nd set of comparisons',
-                                 ## this will need to be changed later
-                                 value = '',
-                                 placeholder = threshgroup.default['comp2']
+                                 value =   default.an_threshgroup2
                 ),
-                ## input: Threshold value(s) for 2nd set of comparisons
+                ## input: variable names for 2d set of comparisons
+                shiny::selectizeInput(inputId = 'an_threshnames2',
+                                   multiple = TRUE,
+                                   label = 'variable names for 2d set of comparisons',
+                                   choices = names_all_r,
+                                   selected = default.an_threshnames2
+                ),
+                ## input: Threshold VALUE(s) for 2nd set of comparisons
                 numericInput(inputId = 'an_thresh_comp2',
                              label = 'Threshold value(s) for 2nd set of comparisons (e.g. %ile 1-100):',
-                             value = threshold.default['comp2']
+                             value = default.an_thresh_comp2
                 ),
+                
                 ######################################################## #
-                ######################################################## #
-
-                ### Short report options --------------------- #
+                ## Short report options ####
+                h2("Short report"),
 
                 shiny::textInput("standard_analysis_title",
                                  label = "Default title to show on each short report",
@@ -1267,22 +1260,69 @@ app_ui  <- function(request) {
                                     selected = default_plotkind_1pager),
 
                 ## _radio button on format of short report
-                #                  DISABLED UNTIL PDF KNITTING IS DEBUGGED
+                #                  was DISABLED while PDF KNITTING DEBUGGED
                 radioButtons("format1pager", "Format", choices = c(html = "html", html = "pdf"), inline = TRUE),
 
-
-                ### Long report options  --------------------- #
-
+                ######################################################## #
+                ## Long report options ####
+                h2("Long report"),
+                
                 # relocate any here from the Full Report tab??
 
                 br(), ## vertical space
 
                 shiny::radioButtons(inputId = "more3",
-                                    label = "more3 PLACEHOLDER",
-                                    choices = list(A = "a", B = "b", C = "c"),
-                                    selected = "a")  # ,
+                                    label = "placeholder for options not yet implemented",
+                                    choices = list(TBD = "a", etc = "b"),
+                                    selected = "a"),
 
-                # ) # end advanced features and settings subtab
+                # ),
+                
+                ##################################################### #
+                ## Testing modes ####
+                h2("Testing/ debugging modes"),
+                
+                radioButtons("testing", "testing?", choices = c(Yes = TRUE, No = FALSE),
+                             inline = TRUE,
+                             selected = default_testing),
+                
+                radioButtons("shiny.testmode", "shiny.testmode?", choices = c(Yes = TRUE, No = FALSE),
+                             inline = TRUE,
+                             selected = default_shiny.testmode),
+                # If TRUE, then various features for testing Shiny applications are enabled.
+                # shiny.reactlog (defaults to FALSE)
+                #    If TRUE, enable logging of reactive events, which can be viewed later with the reactlogShow() function. This incurs a substantial performance penalty and should not be used in production.
+                #
+                # shiny.devmode (defaults to NULL)
+                # Option to enable Shiny Developer Mode. When set, different default getOption(key) values will be returned. See devmode() for more details.
+                #
+                # shiny.sanitize.errors (defaults to FALSE)
+                #    If TRUE, then normal errors (i.e. errors not wrapped in safeError) won't show up in the app; a simple generic error message is printed instead (the error and strack trace printed to the console remain unchanged). If you want to sanitize errors in general, but you DO want a particular error e to get displayed to the user, then set this option to TRUE and use stop(safeError(e)) for errors you want the user to see.
+                #
+                # shiny.suppressMissingContextError (defaults to FALSE)
+                #    Normally, invoking a reactive outside of a reactive context (or isolate()) results in an error. If this is TRUE, don't error in these cases. This should only be used for debugging or demonstrations of reactivity at the console.
+                #
+                # shiny.stacktraceoffset (defaults to TRUE)
+                #    If TRUE, then Shiny's printed stack traces will display srcrefs one line above their usual location. This is an arguably more intuitive arrangement for casual R users, as the name of a function appears next to the srcref where it is defined, rather than where it is currently being called from.
+                #
+                # shiny.trace (defaults to FALSE)
+                # Print messages sent between the R server and the web browser client to the R console. This is useful for debugging. Possible values are "send" (only print messages sent to the client), "recv" (only print messages received by the server), TRUE (print all messages), or FALSE (default; don't print any of these messages).
+                #
+                # shiny.autoload.r (defaults to TRUE)
+                # If TRUE, then the R/ of a shiny app will automatically be sourced.
+                
+                checkboxInput('print_uploaded_points_to_log', label = "Print each new uploaded lat lon table full contents to server log",
+                              value = default_print_uploaded_points_to_log),
+                ## . ####
+                ############################################################### # 
+                # ejscreen API tool link ####
+                
+                span('EJAM tool for batch use of the EJScreen API: ',
+                     a('ejscreenapi tool',
+                       href = 'https://rstudio-connect.dmap-stage.aws.epa.gov/content/163e7ff5-1a1b-4db4-ad9e-e9aa5d764002/',
+                       target = '_blank', rel = 'noreferrer noopener'))
+                
+                # end advanced features and settings subtab
                 ##################################################################### #
 
        ) # end Advanced Settings + API tab ## ##

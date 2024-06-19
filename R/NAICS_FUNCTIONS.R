@@ -1,4 +1,6 @@
 
+# also see [latlon_from_naics()]  [frs_from_naics()] source code in another file
+
 
 #' NAICS - General way to search for industry names and NAICS codes
 #'
@@ -10,11 +12,23 @@
 #' @param fixed should it be an exact match? see [grepl()]
 #' @param website_scrape whether to scrape info from the NAICS website to return a table of codes and names that match (web query uses synonyms so gets more hits)
 #' @param website_url whether to return the URL of the webpage with info on the NAICS (web query uses synonyms so gets more hits)
-#' @seealso [naics_subcodes_from_code()] [naics_from_code()]  [naics_from_name()]  [naics_from_any()]
+#' @seealso [latlon_from_naics()]  [frs_from_naics()]  [naics_subcodes_from_code()] [naics_from_code()]  [naics_from_name()]
 #'
 #' @return a subset of the [naicstable] data.table (not just the codes column)
-#' @examples # Also see vignette for examples
+#' 
+#' @details Finding the right NAICS/SIC and finding all the right 
+#'   sites is complicated. See discussion of [latlon_from_naics()].
+#'   
+#' @examples # Also see vignettes for many more examples, and discussion.
 #'   naics_categories()
+#'   
+#'   naics_from_any("textile mills", children = F)
+#'   naics_from_any("textile mills", children = T)
+#' 
+#'   frs_from_naics("textile mills", children = FALSE)
+#'   frs_from_naics("textile mills", children = TRUE)
+#'   
+#'   \dontrun{
 #'   naics_from_any(naics_categories(3))[order(name),.(name,code)][1:10,]
 #'   naics_from_any(naics_categories(3))[order(code),.(code,name)][1:10,]
 #'   naics_from_code(211)
@@ -52,11 +66,12 @@
 #' #[1] 20
 #'  NROW(naics_from_any("chem", children = T))
 #' [1] 104
-#'
+#' }
+#' 
 #' @export
 #'
-naics_from_any <- function(query, children=FALSE, ignore.case = TRUE, fixed = FALSE,
-                           website_scrape=FALSE, website_url=FALSE) {
+naics_from_any <- function(query, children = FALSE, ignore.case = TRUE, fixed = FALSE,
+                           website_scrape = FALSE, website_url = FALSE) {
 
   # find naicstable data.table rows by vector of text queries and/or numeric NAICS codes
   # returns subset of naicstable, not in any particular order and number of rows may be longer than number of query terms
@@ -175,22 +190,24 @@ naics_validation <- function(naics_enter, naics_select) {
 #'
 #' Used by naics_find()
 #' @details
-#' start with shortest (highest level) codes. since tied for nchar, these branches have zero overlap, so do each.
-#' for each of those, get its children = all rows where parentcode == substr(allcodes, 1, nchar(parentcode))
-#' put together list of all codes we want to include so far.
-#' now for the next longest set of codes in original list of codes,
-#' do same thing.
-#' etc. until did it for 5 digit ones to get 6digit children.
-#' take the unique(allthat)
-#' table(nchar(as.character(NAICS)))
-#'    2    3    4    5    6
-#'   17   99  311  709 1057
-#'
+#' - Starts with shortest (highest level) codes. Since tied for nchar, these branches have zero overlap, so do each.
+#' - For each of those, get its `children = all` rows where `parentcode == substr(allcodes, 1, nchar(parentcode))`
+#' - Put together list of all codes we want to include so far.
+#' - For the next longest set of codes in original list of codes, do same thing.
+#' - continue until done for 5-digit ones to get 6-digit children.
+#' - Take the `unique(allthat)`
+#' 
+#' `table(nchar(as.character(NAICS)))`
+#' 
+#' `   2    3    4    5    6`
+#' 
+#' `  17   99  311  709 1057`
+#' 
 #' @param codes vector of numerical or character
 #' @param allcodes Optional (already loaded with package) - dataset with all the codes
 #' @param quiet whether to avoid printing results to console
 #' @return vector of codes and their names
-#' @seealso naics_find() NAICS
+#' @seealso [naics_find()] [NAICS]
 #' @examples
 #'   naics2children(211)
 #'   naics_find(211, exactnumber=TRUE)
@@ -252,7 +269,7 @@ naics_subcodes_from_code <- function(mycodes) {
   for (digits in 2:6) {
     mycolname <- cnames[digits]
     myvalues <- unlist(as.vector(naicstable[ , ..mycolname])) # this seems like a crazy workaround, but can't see how to subset data.table by specifying mycolname == 1123 when the column name is stored in mycolname
-    results[[digits]] <-  naicstable[ myvalues %in% mycodes[len == digits] ,] # subset(naicstable, mycolname %in% mycodes[len == digits] )
+    results[[digits]] <-  naicstable[myvalues %in% mycodes[len == digits], ] # subset(naicstable, mycolname %in% mycodes[len == digits] )
   }
   results <- data.table::rbindlist(results)
   return(results)
@@ -272,14 +289,14 @@ naics_subcodes_from_code <- function(mycodes) {
 #'
 #' @keywords internal
 #'
-naics_from_code <- function(mycodes, children=FALSE) {
+naics_from_code <- function(mycodes, children = FALSE) {
 
   mycodes <- suppressWarnings( { as.numeric(mycodes)}) # becomes NA if text that cannot be coerced into number
   if (any(is.na(mycodes))) {warning("mycodes should be numeric NAICS codes or text that can be interpreted as numeric, but some are NA values or character that cannot be coerced to numeric")}
 
   # find naicstable data.table rows by exact matches on numeric NAICS codes vector
-  results <- NULL
-  results <- naicstable[code %in% mycodes, ]
+  # results <- naicstable[match(mycodes, naicstable$code), ] # this would preserve sort order better BUT ONLY RETURNS 1st match !!!
+  results <- naicstable[code %in% mycodes, ] # this does not preserve order of mycodes queried, but cannot use match which would return only 1st match. 
   if (children) {
     # add subcategories
     results <- naics_subcodes_from_code(results$code)
@@ -306,7 +323,7 @@ naics_from_code <- function(mycodes, children=FALSE) {
 #'
 #' @keywords internal
 #'
-naics_from_name <- function(mynames, children=FALSE, ignore.case = TRUE, fixed = FALSE) {
+naics_from_name <- function(mynames, children = FALSE, ignore.case = TRUE, fixed = FALSE) {
 
   # find naicstable data.table rows by text search in NAICS industry names via grepl()
   if (any(is.na(mynames) | !(is.character(mynames)) | is.numeric((mynames)))) {warning( 'mynames should be non-NA character vector of text to look for in industry title(s) like "concrete"')}
@@ -330,6 +347,7 @@ naics_from_name <- function(mynames, children=FALSE, ignore.case = TRUE, fixed =
 #' See (https://naics.com) for more information on NAICS codes
 #'
 #' @param naics vector of one or more NAICS codes, like 11,"31-33",325
+#' @seealso [naics_from_any()] [naics_findwebscrape()]
 #' @return vector of URLs as strings like https://www.naics.com/six-digit-naics/?v=2017&code=22
 #'
 #' @export
@@ -374,7 +392,6 @@ naics_findwebscrape <- function(query) {
   x
 }
 ################################################################## #
-
 
 
 #' NAICS - Script to download NAICS file with code and name of sector

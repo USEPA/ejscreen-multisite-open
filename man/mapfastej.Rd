@@ -2,7 +2,7 @@
 % Please edit documentation in R/mapfast.R
 \name{mapfastej}
 \alias{mapfastej}
-\title{Get a leaflet html widget map of data.frame with lat lon}
+\title{Map - points - Create leaflet html widget map of points using EJAM results with EJ stats}
 \usage{
 mapfastej(...)
 }

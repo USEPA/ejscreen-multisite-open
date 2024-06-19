@@ -310,7 +310,7 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
     cat('Stats via getblocks_diagnostics(), but BEFORE ADJUSTING UP FOR VERY SHORT DISTANCES: \n')
     cat("min distance before adjustment: ", min(sites2blocks$distance, na.rm = TRUE), "\n")
     cat("max distance before adjustment: ", max(sites2blocks$distance, na.rm = TRUE), "\n\n")
-    getblocks_diagnostics(sites2blocks) # returns NA if no blocks nearby
+    #getblocks_diagnostics(sites2blocks) # returns NA if no blocks nearby
     cat("\n\nAdjusting upwards the very short distances now...\n ")
   }
   
@@ -345,7 +345,7 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
     cat('Stats via getblocks_diagnostics(), AFTER ADJUSTING up FOR SHORT DISTANCES: \n')
     cat("min distance AFTER adjustment: ", min(sites2blocks$distance, na.rm = TRUE), "\n")
     cat("max distance AFTER adjustment: ", max(sites2blocks$distance, na.rm = TRUE), "\n\n")
-    # getblocks_diagnostics(sites2blocks)  
+      getblocks_diagnostics(sites2blocks)  
     cat("\n")
   }
   ########################################################################### ## 

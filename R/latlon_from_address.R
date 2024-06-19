@@ -235,12 +235,13 @@ fixcolnames_infer <- function(currentnames, alias_list = NULL) {
 
 #' geocode, but only if AOI package is installed and attached
 #'   and what it imports like tidygeocoder etc.
-#'
+#' @details slow? about 100 per minute?
 #' @param address vector of addresses, but tested only for 1
 #' @param xy set it to TRUE if you want only x,y returned, see help for AOI pkg
 #' @param pt  see help for AOI pkg, return geometry if set to TRUE, allowing map.
 #'   param as provided is ignored and set to TRUE if aoimap=TRUE
 #' @param aoimap  see help for AOI pkg, create map if set to TRUE
+#' @param batchsize how many to request per geocode query, done in batches if necessary
 #' @param ...  passed to geocode() see help for AOI pkg
 #'
 #' @return returns tibble table of x,y or lat,lon values or geometries.
@@ -260,7 +261,7 @@ fixcolnames_infer <- function(currentnames, alias_list = NULL) {
 #'
 #' @export
 #'
-latlon_from_address <- function(address, xy=FALSE, pt = FALSE, aoimap=FALSE, ...) {
+latlon_from_address <- function(address, xy=FALSE, pt = FALSE, aoimap=FALSE, batchsize=25, ...) {
 
   ############################################## #
   # make AOI package only optional ####
@@ -279,12 +280,17 @@ latlon_from_address <- function(address, xy=FALSE, pt = FALSE, aoimap=FALSE, ...
 
     ############################################## #
   } else {
-    cat('for this to work you would need to use library(', 'AOI', ') first\n')
+    # cat('for this to work you would need to use library(', 'AOI', ') first\n')
     # how to make it attached or used without triggering renv or packrat to think we want to import or depend on it?
 
     # x <- geocode(c("1200 Pennsylvania Ave, NW Washington DC", "Dupont Circle", "Research Triangle Park"))
 
-    if (length(address) > 25) {stop("only 25 max supported in this function until decide if more ok")}
+    if (length(address) > batchsize) {
+       message("only ", batchsize," max supported per batch in this function until decide if more ok")
+       x <- latlon_from_address_batched(address = address, xy = xy, pt = aoimap, aoimap = FALSE, batchsize = batchsize, ...)
+       if (aoimap) {x |> aoi_map()} # check if it works like this here
+       return(x)
+    }  
 
     if (aoimap) {
       x <- geocode(address, pt = TRUE, xy = xy, ...)   |> aoi_map()   # AOI:: # avoid making renv think we require it
@@ -309,3 +315,34 @@ latlon_from_address <- function(address, xy=FALSE, pt = FALSE, aoimap=FALSE, ...
 }
 ####################################################################### #
 
+
+
+latlon_from_address_batched = function(address, batchsize=25, ...) {
+  
+  out = list()
+  # batchsize = 25
+  
+  # batches = length(address) %/% batchsize
+  dividedby_canfithowmany = `%/%`
+  dividedby_leaves = `%%`
+  batches = dividedby_canfithowmany(length(address), batchsize)
+  leftover = dividedby_leaves(length(address), batchsize)
+  
+  if (batches > 0) {
+    for (i in 1:batches) {
+      nstart = 1 + (i - 1) * batchsize
+      out[[i]] <- latlon_from_address(address[nstart:(nstart + batchsize - 1)], ...)
+      cat('Finished geocoding addresses', nstart, "-", (nstart + batchsize - 1), "out of", length(address), "\n")
+    }
+  } else {
+    i = 0
+    nstart = 1
+    batchsize = 0
+  }
+  if (leftover > 0) {
+    out[[i + 1]] <- latlon_from_address(address[(nstart + batchsize):length(address)])    
+  }
+  out = do.call(rbind, out)
+  out
+}
+####################################################################### #
