@@ -150,7 +150,7 @@ fips_lead_zero <- function(fips) {
   # if there are decimal places, negative signs, spaces, etc. then treat those fips as NA values
   just_numerals = function(x) {!grepl("[^0123456789]", x)}
   fips[!just_numerals(fips)] <- NA 
-  if (any(is.na(fips))) {warning('some fips cannot be interpreted as numbers (e.g., are text or NA or logical')}
+  if (anyNA(fips)) {warning('some fips cannot be interpreted as numbers (e.g., are text or NA or logical')}
   
   #	TRY TO CLEAN UP vector of FIPS AND INFER GEOGRAPHIC SCALE
   
@@ -245,7 +245,7 @@ counties_as_sites <- function(fips) {
     message("leading zeroes being inferred since FIPS was provided as numbers not character class")
     fips <- fips_lead_zero(fips)
   }
-
+  
   county2bg <- bgpts[substr(bgfips,1,5) %in% fips, .(countyfips = substr(bgfips,1,5), bgid) ]
   if (NROW(county2bg) == 0) {warning("no valid fips, so returning empty data.table of 0 rows")}
   county2bg[, ejam_uniq_id := .GRP , by = "countyfips"]
@@ -870,9 +870,6 @@ fips2countyname <- function(fips, includestate = c("ST", "Statename", "")[1]) {
   # using match is OK since 
   # you want 1 countyname returned per countyfips in query, so the fact that only 1st match gets returned is actually good.
   
-  # using match is OK since 
-  # you want 1 countyname returned per countyfips in query, so the fact that only 1st match gets returned is actually good.
-  
   if (any(ftype != "county")) {
     warning("this function should only be used to convert county fips to county name, 1 to 1 - returning NA for fips that are not countyfips")
   }
@@ -915,7 +912,6 @@ fips2name  <- function(fips, ...) {
   out <- rep(NA, length(fips))
   
   ## *** need to handle NA values here since out[NA] <-  fails as cannot have NA in subset assignment
-  
   out[!is.na(fips) & fipstype(fips) == "state"]  <- fips2statename(fips = fips[!is.na(fips) & fipstype(fips) == "state"])
   out[!is.na(fips) & fipstype(fips) == "county"] <- fips2countyname(fips = fips[!is.na(fips) & fipstype(fips) == "county"], ...)
   
