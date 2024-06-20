@@ -35,17 +35,14 @@ test_that("plot_barplot_sites works", {
 # slow
 suppressWarnings({
   suppressMessages({
-    cat("running ejamit_compare_types_of_places() to create test data...\n")
-    # junk = tempfile()
-    # sink(file = junk)
     junk <- capture_output({
-      # on.exit(sink(NULL))
+      
       out <- ejamit_compare_types_of_places(
         testpoints_10[1:4, ],
         typeofsite = c("A", "B", "B", "C")
       )
+      
     })
-    # sink(NULL)
   })
 })
 
