@@ -7,6 +7,7 @@
 ejamit(
   sitepoints,
   radius = 3,
+  radius_donut_lower_edge = 0,
   maxradius = 31.07,
   avoidorphans = FALSE,
   quadtree = NULL,
@@ -41,6 +42,8 @@ ejamit(
 \item{sitepoints}{data.table with columns lat, lon giving point locations of sites or facilities around which are circular buffers}
 
 \item{radius}{in miles, defining circular buffer around a site point}
+
+\item{radius_donut_lower_edge}{radius of lower edge of donut ring if analyzing a ring not circle}
 
 \item{maxradius}{miles distance (max distance to check if not even 1 block point is within radius)}
 

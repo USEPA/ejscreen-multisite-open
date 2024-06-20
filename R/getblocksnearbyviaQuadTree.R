@@ -28,6 +28,7 @@
 #'   
 #' @param sitepoints data.table with columns lat, lon giving point locations of sites or facilities around which are circular buffers
 #' @param radius in miles, defining circular buffer around a site point 
+#' @param radius_donut_lower_edge radius of lower edge of ring if analyzing ring not full circle
 #' @param maxradius miles distance (max distance to check if not even 1 block point is within radius)
 #' @param avoidorphans logical If TRUE, then where not even 1 BLOCK internal point is within radius of a SITE, 
 #'   it keeps looking past radius, up to maxradius, to find nearest 1 BLOCK. 
@@ -67,7 +68,7 @@
 #' @export
 #' @keywords internal
 #'   
-getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.07, avoidorphans = FALSE, 
+getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, radius_donut_lower_edge = 0, maxradius = 31.07, avoidorphans = FALSE, 
                                         report_progress_every_n = 500, quiet = FALSE, retain_unadjusted_distance = TRUE,
                                         quadtree, updateProgress = NULL) {
   
@@ -102,9 +103,10 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
   }
   if (class(quadtree) != "QuadTree") {stop('quadtree=localtree is not class quadtree.  - see getblocksnearby() and indexblocks()')}
   if (missing(radius)) {warning("radius missing so using default radius of 3 miles")}
-  stopifnot(is.numeric(radius), radius <= 100, radius >= 0, length(radius) == 1)
+  stopifnot(is.numeric(radius), radius <= 100, radius >= 0, length(radius) == 1,
+            is.numeric(radius_donut_lower_edge), radius_donut_lower_edge <= 100, radius_donut_lower_edge >= 0, length(radius_donut_lower_edge) == 1)
+  if (radius_donut_lower_edge > 0 && radius_donut_lower_edge >= radius) {stop("radius_donut_lower_edge must be less than radius")}
   if (!data.table::is.data.table(sitepoints)) {data.table::setDT(sitepoints)} # should we set a key or index here, like ? ***
-  
   #saving_ejam_uniq_id_as_submitted_to_getblocks <- FALSE
   if (!("ejam_uniq_id" %in% names(sitepoints))) {
     sitepoints$ejam_uniq_id <- seq.int(length.out = NROW(sitepoints))
@@ -339,8 +341,12 @@ getblocksnearbyviaQuadTree  <- function(sitepoints, radius = 3, maxradius = 31.0
   
   # now drop that info about area or size of block to save memory. do not need it later in sites2blocks
   sites2blocks[ , block_radius_miles := NULL]
-  sites2blocks <- sites2blocks[distance <= truedistance, ] # had been inside the loop.
-  
+  if (radius_donut_lower_edge > 0) {
+  sites2blocks <- sites2blocks[distance <= truedistance & distance > radius_donut_lower_edge, ] # if analyzing a ring (donut)
+  } else {
+    sites2blocks <- sites2blocks[distance <= truedistance, ] # had been inside the loop.
+    
+  }
   if (!quiet) {
     cat('Stats via getblocks_diagnostics(), AFTER ADJUSTING up FOR SHORT DISTANCES: \n')
     cat("min distance AFTER adjustment: ", min(sites2blocks$distance, na.rm = TRUE), "\n")

@@ -7,6 +7,7 @@
 #'
 #' @param sitepoints data.table with columns lat, lon giving point locations of sites or facilities around which are circular buffers
 #' @param radius in miles, defining circular buffer around a site point
+#' @param radius_donut_lower_edge radius of lower edge of donut ring if analyzing a ring not circle
 #' @param maxradius miles distance (max distance to check if not even 1 block point is within radius)
 #' @param avoidorphans logical If TRUE, then where not even 1 BLOCK internal point is within radius of a SITE,
 #'   it keeps looking past radius, up to maxradius, to find nearest 1 BLOCK.
@@ -135,6 +136,7 @@
 #'
 ejamit <- function(sitepoints,
                    radius = 3,
+                   radius_donut_lower_edge = 0,
                    maxradius = 31.07,
                    avoidorphans = FALSE,
                    quadtree = NULL,
@@ -166,7 +168,7 @@ ejamit <- function(sitepoints,
                    testing = FALSE,
                    ...
 ) {
-  
+ 
   #  1. getblocksnearby() ####
   
   ######################## #
@@ -298,6 +300,7 @@ ejamit <- function(sitepoints,
       mysites2blocks <- getblocksnearby(
         sitepoints = sitepoints,
         radius = radius,
+        radius_donut_lower_edge = radius_donut_lower_edge,
         maxradius = maxradius,
         avoidorphans = avoidorphans,
         # quadtree = localtree,

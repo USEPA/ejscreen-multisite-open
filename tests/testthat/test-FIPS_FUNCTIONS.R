@@ -201,13 +201,14 @@ test_that("counties_as_sites works", {
       )
     })
     
-    counties_as_sites(fips_counties_from_state_abbrev("DE"))
+    # counties_as_sites(fips_counties_from_state_abbrev("DE"))
     x = counties_as_sites(
       fips_counties_from_state_abbrev("DE")
     )
     expect_true(is.data.table(x))
     expect_identical(
-      names(x), c("ejam_uniq_id", "countyfips", "bgid")
+      names(x), c("ejam_uniq_id", "countyfips", "bgid", "blockid", "blockwt", 
+                  "distance", "distance_unadjusted")
     )
     expect_true(
       all(x$countyfips %in% fips_counties_from_state_abbrev("DE"))
@@ -220,7 +221,7 @@ test_that("counties_as_sites works", {
       counties_as_sites(c(10001, NA))  # it does warn in this case
     )
     expect_warning(
-      counties_as_sites(NA)  # it probably should warn in this case !
+      counties_as_sites(NA)  # it probably should warn in this case and does
     )
     # note it ignores duplicates:   counties_as_sites(c(10005, 10005))
   })
@@ -230,61 +231,68 @@ test_that("counties_as_sites works", {
 
 test_that("states_as_sites works", {
   suppressWarnings({
-    expect_no_error({
-      states_as_sites(
-        fips_state_from_state_abbrev("DE")
+    suppressMessages({
+      
+      expect_no_error({
+        states_as_sites(
+          fips_state_from_state_abbrev("DE")
+        )
+      })
+      x = states_as_sites(
+        fips_state_from_state_abbrev(c("RI", "DE"))
       )
+      expect_true(is.data.table(x))
+      expect_identical(
+        names(x), c("ejam_uniq_id", "statefips", "bgid")
+      )
+      expect_true(
+        all(x$statefips %in% fips_state_from_state_abbrev(c("RI", "DE")))
+      )
+      expect_true(
+        length(unique(x$ejam_uniq_id)) == length(fips_state_from_state_abbrev(c("RI", "DE")))
+      )
+      
+      expect_no_error(states_as_sites(c(10, NA)) )  # should not crash
+      expect_warning(
+        states_as_sites(c(10, NA))  # it does warn in this case
+      )
+      expect_warning(
+        states_as_sites(NA)  # it probably should warn in this case !
+      )
+      # note it ignores duplicates:   states_as_sites(c(10, 10))
     })
-    x = states_as_sites(
-      fips_state_from_state_abbrev(c("RI", "DE"))
-    )
-    expect_true(is.data.table(x))
-    expect_identical(
-      names(x), c("ejam_uniq_id", "statefips", "bgid")
-    )
-    expect_true(
-      all(x$statefips %in% fips_state_from_state_abbrev(c("RI", "DE")))
-    )
-    expect_true(
-      length(unique(x$ejam_uniq_id)) == length(fips_state_from_state_abbrev(c("RI", "DE")))
-    )
-    
-    expect_no_error(states_as_sites(c(10, NA)) )  # should not crash
-    expect_warning(
-      states_as_sites(c(10, NA))  # it does warn in this case
-    )
-    expect_warning(
-      states_as_sites(NA)  # it probably should warn in this case !
-    )
-    # note it ignores duplicates:   states_as_sites(c(10, 10))
   })
 })
+
 #################################################################### #
 
 test_that("is.island() works", {
   suppressWarnings({
-    expect_true({
-      all(is.island(statename = tolower(unique(stateinfo2$statename[stateinfo2$is.island.areas]))))
+    suppressMessages({
+      
+      expect_true({
+        all(is.island(statename = tolower(unique(stateinfo2$statename[stateinfo2$is.island.areas]))))
+      })
+      expect_true({
+        all(is.island(ST = tolower(unique(stateinfo2$ST[stateinfo2$is.island.areas]))))
+      })
+      expect_true({
+        all(is.island(fips = unique(stateinfo2$FIPS.ST[stateinfo2$is.island.areas])))
+      })
+      expect_true({
+        !(is.island(NA))
+      })
+      expect_error({
+        is.island(NULL)
+      })
+      expect_error({
+        is.island(ST = "NY", statename = "New York")
+      })
+      # is.island(c("PR", "DE", "AS", NA))
+      # is.island(statename = c("Guam", "New York", "american samoa", NA))
+      # is.island(fips = c(21001, 60, "60", "600010000000"))
+      # tail(cbind(stateinfo2[ , c("statename", "is.island.areas")], is.island(stateinfo2$ST)),10)
     })
-    expect_true({
-      all(is.island(ST = tolower(unique(stateinfo2$ST[stateinfo2$is.island.areas]))))
-    })
-    expect_true({
-      all(is.island(fips = unique(stateinfo2$FIPS.ST[stateinfo2$is.island.areas])))
-    })
-    expect_true({
-      is.na(is.island(NA))
-    })
-    expect_error({
-      is.island(NULL)
-    })
-    expect_error({
-      is.island(ST = "NY", statename = "New York")
-    })
-    # is.island(c("PR", "DE", "AS", NA))
-    # is.island(statename = c("Guam", "New York", "american samoa", NA))
-    # is.island(fips = c(21001, 60, "60", "600010000000"))
-    # tail(cbind(stateinfo2[ , c("statename", "is.island.areas")], is.island(stateinfo2$ST)),10)
     
   })
 })
@@ -400,7 +408,9 @@ test_that("fips_state_from_state_abbrev() works", {
         fips_state_from_state_abbrev("UM") == 74 #    U.S. Minor Outlying Islands 
       )
       
-      expect_warning(fips_state_from_state_abbrev("text"))  # probably should warn
+      expect_warning(
+        fips_state_from_state_abbrev(c("text", "other", "DE"))
+      )  # probably should warn
       expect_true(
         is.na(fips_state_from_state_abbrev("text"))  # DOES return NA
       )
@@ -443,7 +453,9 @@ test_that("fips_state_from_statename() works", {
         fips_state_from_statename("U.S. Minor Outlying Islands") == 74 #    U.S. Minor Outlying Islands 
       )
       
-      expect_warning(fips_state_from_statename("text"))  # probably should warn NO SUCH STATE
+      expect_warning(
+        fips_state_from_statename("text")
+      )  # probably should warn NO SUCH STATE
       expect_true(
         is.na(fips_state_from_statename("text"))  # DOES return NA
       )
@@ -497,15 +509,21 @@ test_that("fips_counties_from_state_abbrev() works", {
       )    
       
       expect_true(
-        length(fips_counties_from_state_abbrev("UM")) == 0 #  NO data for U.S. Minor Outlying Islands 
+        is.na(fips_counties_from_state_abbrev("UM"))#  NO data for U.S. Minor Outlying Islands 
       )
       
-      expect_warning(fips_counties_from_state_abbrev("text"))
-      expect_true(
-        is.na(fips_counties_from_state_abbrev("text")) # PROBABLY SHOULD BUT DOES NOT RETURN NA, just empty
+      expect_warning(
+        fips_counties_from_state_abbrev("text")
       )
       expect_warning(fips_counties_from_state_abbrev(13))
       expect_warning(fips_counties_from_state_abbrev(c(NA, "RI")))
+      
+      
+      expect_true(
+        is.na(
+          fips_counties_from_state_abbrev("text")
+        ) # PROBABLY SHOULD BUT DOES NOT RETURN NA, just empty
+      )
     })
   })
 })
@@ -535,12 +553,12 @@ test_that("fips_counties_from_statename() works", {
         )    
         
         expect_true(
-          length(fips_counties_from_statename("U.S. Minor Outlying Islands")) == 0 #  NO data for U.S. Minor Outlying Islands 
+          is.na(fips_counties_from_statename("U.S. Minor Outlying Islands"))  #  NO data for U.S. Minor Outlying Islands 
         )
         
         expect_warning(fips_counties_from_statename("text"))
         expect_true(
-          length(fips_counties_from_statename("text")) == 0  # DOES NOT RETURN NA, just empty
+          is.na(fips_counties_from_statename("text"))   # DOES NOT RETURN NA, just empty
         )
         expect_warning(fips_counties_from_statename(13))
         expect_warning(fips_counties_from_statename(c(NA, "Montana")))
@@ -843,10 +861,14 @@ test_that("fips2countyname() works", {
       )
       
     })
-    expect_warning(fips2countyname(NA))
-    expect_no_error(fips2countyname(NA))  # probably should not error, just warn
+    expect_warning(
+      fips2countyname(NA)
+    )
+    expect_no_error(
+      fips2countyname(NA)
+    ) 
     expect_true(
-      is.na(    fips2countyname(10) )  # probably should return NA rather than "NA, DE" 
+      is.na(fips2countyname(10))
     )
     
   })
@@ -865,22 +887,22 @@ test_that("fips2name() works", {
     # for counties
     expect_true(
       identical(
-      fips2name("10001"),
-      "Kent County, DE"
-    )
+        fips2name("10001"),
+        "Kent County, DE"
+      )
     )
     allcountyfips = fips_counties_from_statefips(stateinfo$FIPS.ST)
     expect_true(
       identical(
-      fips2name(allcountyfips),
-      fips2countyname(allcountyfips)
-    )
+        fips2name(allcountyfips),
+        fips2countyname(allcountyfips)
+      )
     )
     expect_true({
       identical(
         fips2name(fips = fips_counties_from_statename("Delaware")),
         c("Kent County, DE", "New Castle County, DE", "Sussex County, DE")
-        )
+      )
     })
     
     # 

@@ -20,10 +20,12 @@ A way to focus on 1 DISTANCE (RADIUS) at a time (after a multidistance run), for
 Get a list of tables, one per distance. Each table has a row per site.
 }
 \details{
-Extract results_bysite for each distance from list of ejamit() runs at multiple distances
+This function might not be used at all.
+Extract results_bysite for each distance
+from list of ejamit() runs at multiple distances
 }
 \seealso{
-\code{\link[=ejamit_compare_distances]{ejamit_compare_distances()}}
+\code{\link[=ejamit_compare_distances]{ejamit_compare_distances()}}  \code{\link[=ejamit_compare_distances_fulloutput]{ejamit_compare_distances_fulloutput()}}
 and internal functions \code{\link[=out_bydistance2results_bydistance]{out_bydistance2results_bydistance()}} \code{\link[=out_bydistance2results_bydistance_bysite]{out_bydistance2results_bydistance_bysite()}}
 }
 \keyword{internal}

@@ -10,23 +10,31 @@
 
 # test some different syntax
 test_that('no warning for standard code lookup', {
-  expect_no_warning(naics2children(21112))
-  expect_no_warning(naics2children("21112"))
+  capture_output({
+    expect_no_warning(naics2children(21112))
+    expect_no_warning(naics2children("21112"))
   })
+})
 
 test_that("warn if text instead of code provided", {
   expect_warning(naics2children(c("cement")))
 }) 
 
 test_that('list of queries returns joined results', {
-  expect_no_warning({x <- naics2children(c("211",  "452"))})
-  expect_no_warning({y <- naics2children("211")})
-  expect_no_warning({z <- naics2children("452")})
-  expect_equal(x, c(y,z))
+  capture_output({
+    expect_no_warning({
+      x <- naics2children(c("211",  "452"))
+    })
+    expect_no_warning({y <- naics2children("211")})
+    expect_no_warning({z <- naics2children("452")})
+    expect_equal(x, c(y,z))
+  })
 })
 
 test_that('order doesnt matter', {
-  expect_no_warning({x <- naics2children(c("211",  "452"))})
-  expect_no_warning({ y <- naics2children(c("452", "211"))})
-  expect_equal(x, y)
+  capture_output({
+    expect_no_warning({x <- naics2children(c("211",  "452"))})
+    expect_no_warning({ y <- naics2children(c("452", "211"))})
+    expect_equal(x, y)
+  })
 })

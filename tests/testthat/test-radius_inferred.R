@@ -20,12 +20,12 @@ testthat::test_that("Estimate of radius, inferred from reported distances from g
                       min = 0.5,
                       max = convert_units(5, from = "km", towhat = "miles"))
       actual <- round(actual, DECIMALS_USED_FOR_ACTUAL_RADIUS)
-
+capture_output({
       x <- getblocksnearby(
         testpoints_n(sitespertrial),
         radius = actual , quiet = T
       )
-
+})
       # print(
       # system.time(
       out[i, "actual"]   <- actual # single number
@@ -40,7 +40,7 @@ testthat::test_that("Estimate of radius, inferred from reported distances from g
       # )
 
     }
-    print(out)
+    # print(out) # shows results of every single trial
     mean_abs_error <- mean(abs(out$diff))
     cat("Average absolute error (difference in miles inferred and actual) is",
         mean_abs_error, "\n"
