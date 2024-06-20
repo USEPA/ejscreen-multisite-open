@@ -35,7 +35,7 @@
 #'
 #' @export
 #'
-getblocksnearby  <- function(sitepoints, radius=3, maxradius=31.07,
+getblocksnearby  <- function(sitepoints, radius=3, maxradius=31.07, radius_donut_lower_edge=0,
                              avoidorphans=FALSE,
                              # indexgridsize,
                              quadtree = NULL,
@@ -96,6 +96,7 @@ getblocksnearby  <- function(sitepoints, radius=3, maxradius=31.07,
 
   if (!parallel) {
     x <- getblocksnearbyviaQuadTree(sitepoints = sitepoints, radius = radius, maxradius = maxradius,
+                                    radius_donut_lower_edge = radius_donut_lower_edge,
                                     avoidorphans = avoidorphans,
                                     # indexgridsize = indexgridsize,
                                     quadtree = quadtree, quiet = quiet,
@@ -109,6 +110,7 @@ getblocksnearby  <- function(sitepoints, radius=3, maxradius=31.07,
       stop('parallel processing version not implemented yet')
     }
     x <- getblocksnearbyviaQuadTree_Clustered(sitepoints = sitepoints, radius = radius, maxradius = maxradius,
+                                              # radius_donut_lower_edge = radius_donut_lower_edge,
                                               avoidorphans = avoidorphans,
                                               # indexgridsize = indexgridsize,
                                               quadtree = quadtree,
