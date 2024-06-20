@@ -1,6 +1,10 @@
 
 # test_file("./tests/testthat/test-ejamit.R")
 
+########################################################## #
+# see test-ejamit_compare_distances.R  for test of "donuts ok in ejamit(radius_donut_lower_edge=3)"
+
+########################################################## #
 
 test_that('ejamit() returns a list with no error, for very simple example', {
   # no crash for basic example
@@ -30,7 +34,6 @@ test_that("ejamit() returns no distances greater than radius - even if maxradius
   )
   
 })
-
 
 
 # expect_identical(NROW(val), NROW(EJAM::testpoints_10))

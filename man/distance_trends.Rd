@@ -8,7 +8,7 @@ Which variables have strongest trend with distance based on slope of linear fit}
 distance_trends(
   results_bydistance,
   myvars = names_d_subgroups_ratio_to_state_avg,
-  radii = results_bydistance$radius.miles,
+  radii,
   n = 1
 )
 }

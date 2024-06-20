@@ -2,7 +2,7 @@
 % Please edit documentation in R/FIPS_FUNCTIONS.R
 \name{is.island}
 \alias{is.island}
-\title{check which fips or state names are island areas}
+\title{which fips, state names, or state abbreviations are island areas}
 \usage{
 is.island(ST = NULL, statename = NULL, fips = NULL)
 }
@@ -17,7 +17,7 @@ is.island(ST = NULL, statename = NULL, fips = NULL)
 logical vector of same length as the input
 }
 \description{
-check which fips or state names are island areas
+which fips, state names, or state abbreviations are island areas
 }
 \examples{
   is.island(c("PR", "DE", "AS", NA))

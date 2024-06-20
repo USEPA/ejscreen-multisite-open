@@ -35,7 +35,9 @@ sitepoints_from_any <- function(sitepoints, silentinteractive = TRUE) {
   stopifnot(is.data.frame(sitepoints), "lat" %in% colnames(sitepoints), "lon" %in% colnames(sitepoints), NROW(sitepoints) >= 1, is.numeric(sitepoints$lat))
   
   ## check for ejam_uniq_id column;  add if not present
-  if ('ejam_uniq_id' %in% names(sitepoints)) {message("Note that ejam_uniq_id was already in sitepoints, and might not be 1:NROW(sitepoints), which might cause issues")}
+  if ('ejam_uniq_id' %in% names(sitepoints)) {
+    message("Note that ejam_uniq_id was already in sitepoints, and might not be 1:NROW(sitepoints), which might cause issues")
+    }
   if (!("character" %in% class(sitepoints)) & !'ejam_uniq_id' %in% names(sitepoints)) {
     # message('sitepoints did not contain a column named ejam_uniq_id, so one was added')
     sitepoints$ejam_uniq_id <- seq.int(length.out = NROW(sitepoints))

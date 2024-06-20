@@ -77,8 +77,8 @@ build_community_report <- function(output_df, analysis_title, totalpop, location
   if (is.null(filename)) {
     return(HTML(full_page))
   } else {
-    sink(file = filename)
-    cat(HTML(full_page))
-    sink()
+    junk <- capture.output({
+      cat(HTML(full_page))
+    })
   }
 }
