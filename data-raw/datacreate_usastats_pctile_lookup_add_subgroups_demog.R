@@ -1,8 +1,10 @@
 ############################################################################ #
 # This script being used for  2023 version 2.2   
 
-# This script is to add columns to usastats and statestats with info on demographic subgroups and lowlifex
-# since basic ftp site lookup tables lacked demog subgroups and other variables like lowlifex 
+# First, usastats got created via  EJAM/data-raw/datacreate_usastats_pctile_lookup_add_subgroups_demog.R
+
+# Then, this script below was to add columns to usastats and statestats with info on demographic subgroups and lowlifex
+# since basic ftp site lookup tables for v2.2 lacked demog subgroups and other variables like lowlifex 
 #   but we want to be able to analyze ratio to mean and percentiles for those.
 # And to sort columns the same way they are ordered in names_d_subgroups_alone and names_d_subgroups_nh
 #

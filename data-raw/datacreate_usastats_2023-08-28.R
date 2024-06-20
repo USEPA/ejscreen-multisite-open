@@ -6,6 +6,8 @@
 # and save that info as  
 #  - new lookup tables in usastats and statestats
  
+# Also note the script in  EJAM/data-raw/datacreate_usastats_pctile_lookup_add_subgroups_demog.R
+
 #  ######################################################################## #
 
 #    csv/gdb files: Actual full dataset as csv files and geodatabases 

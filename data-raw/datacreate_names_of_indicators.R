@@ -2,7 +2,14 @@
 #  EJAM/data-raw/datacreate_names_of_indicators.R
 
 # also see  EJAM/data-raw/datacreate_names_pct_as_fraction_.R
-
+# and  datacreate_rename_blockgroupstats variables
+# and
+# after an update of map_headernames, can update names of indicators as stored in blockgroupstats like this:
+# but probably also need to check/update these:
+# usastats, statestats, avg
+# avg.in.us
+# high_pctiles_tied_with_min
+# etc.
 ########################################################################################################## #
 # ***
 #   to be reconciled with or replaced with map_headernames approach.
