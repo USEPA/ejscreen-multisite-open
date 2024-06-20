@@ -34,6 +34,8 @@
 }
 \details{
 Created by script in /data-raw/
+
+Also see \href{https://www.epa.gov/frs/frs-data-sources}{EPA documentation describing each program code} aka data source.
 }
 \examples{
 \dontrun{

@@ -15,7 +15,19 @@ vector of types: "block", "blockgroup", "tract", "county", or "state"
 \description{
 FIPS - Identify what type of Census geography is each FIPS code (block, county, etc.)
 }
+\details{
+Note a number of length 11 is an ambiguous case - might be a tract fips
+but might be a blockgroup fips with a missing leading zero.
+}
 \examples{
+ testfips <- c("1", "12", "123", "1234", "12345", "", NA, "words")
+ fipstype(testfips)
+ 
+ testfips16 = c("1", "12", "123", "1234", "12345", "123456", "1234567", "12345678", "123456789",
+                "1234567890", "12345678901", "123456789012", "1234567890123", "12345678901234",
+                               "123456789012345", "1234567890123456")
+ cbind(fipstype(testfips16), fips_lead_zero(testfips16), testfips16)
+
  fips_counties_from_statename(c("Connecticut", "Delaware") )
  # [1] "09001" "09003" "09005" "09007" "09009" "09011" "09013" "09015" "10001" "10003" "10005"
  fipstype(9001)

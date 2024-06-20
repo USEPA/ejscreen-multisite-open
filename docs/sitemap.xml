@@ -190,6 +190,9 @@
     <loc>usepa.github.io/EJAM/reference/distance_mean_by_group.html</loc>
   </url>
   <url>
+    <loc>usepa.github.io/EJAM/reference/distance_trends.html</loc>
+  </url>
+  <url>
     <loc>usepa.github.io/EJAM/reference/distance_via_surfacedistance.html</loc>
   </url>
   <url>
@@ -208,6 +211,15 @@
     <loc>usepa.github.io/EJAM/reference/ejam2barplot.html</loc>
   </url>
   <url>
+    <loc>usepa.github.io/EJAM/reference/ejam2barplot_distances.html</loc>
+  </url>
+  <url>
+    <loc>usepa.github.io/EJAM/reference/ejam2barplot_sitegroups.html</loc>
+  </url>
+  <url>
+    <loc>usepa.github.io/EJAM/reference/ejam2barplot_sites.html</loc>
+  </url>
+  <url>
     <loc>usepa.github.io/EJAM/reference/ejam2excel.html</loc>
   </url>
   <url>
@@ -220,6 +232,9 @@
     <loc>usepa.github.io/EJAM/reference/ejam2report.html</loc>
   </url>
   <url>
+    <loc>usepa.github.io/EJAM/reference/ejam2shapefile.html</loc>
+  </url>
+  <url>
     <loc>usepa.github.io/EJAM/reference/ejamit.html</loc>
   </url>
   <url>
@@ -227,6 +242,9 @@
   </url>
   <url>
     <loc>usepa.github.io/EJAM/reference/ejamit_compare_distances2plot.html</loc>
+  </url>
+  <url>
+    <loc>usepa.github.io/EJAM/reference/ejamit_compare_distances_fulloutput.html</loc>
   </url>
   <url>
     <loc>usepa.github.io/EJAM/reference/ejamit_compare_types_of_places.html</loc>
@@ -245,6 +263,9 @@
   </url>
   <url>
     <loc>usepa.github.io/EJAM/reference/ejscreen_vs_ejam_alreadyrun.html</loc>
+  </url>
+  <url>
+    <loc>usepa.github.io/EJAM/reference/ejscreen_vs_ejam_bysite.html</loc>
   </url>
   <url>
     <loc>usepa.github.io/EJAM/reference/ejscreen_vs_ejam_see1.html</loc>
@@ -299,6 +320,12 @@
   </url>
   <url>
     <loc>usepa.github.io/EJAM/reference/fips_bg_from_anyfips.html</loc>
+  </url>
+  <url>
+    <loc>usepa.github.io/EJAM/reference/fips_counties_from_countyname.html</loc>
+  </url>
+  <url>
+    <loc>usepa.github.io/EJAM/reference/fips_counties_from_countynamefull.html</loc>
   </url>
   <url>
     <loc>usepa.github.io/EJAM/reference/fips_counties_from_statefips.html</loc>
@@ -443,6 +470,9 @@
   </url>
   <url>
     <loc>usepa.github.io/EJAM/reference/input_names_listing.html</loc>
+  </url>
+  <url>
+    <loc>usepa.github.io/EJAM/reference/is.island.html</loc>
   </url>
   <url>
     <loc>usepa.github.io/EJAM/reference/islandareas.html</loc>
@@ -604,6 +634,9 @@
     <loc>usepa.github.io/EJAM/reference/naics_validation.html</loc>
   </url>
   <url>
+    <loc>usepa.github.io/EJAM/reference/name2fips.html</loc>
+  </url>
+  <url>
     <loc>usepa.github.io/EJAM/reference/namesbyvarlist.html</loc>
   </url>
   <url>
@@ -625,6 +658,15 @@
     <loc>usepa.github.io/EJAM/reference/namez.html</loc>
   </url>
   <url>
+    <loc>usepa.github.io/EJAM/reference/out_bydistance2results_bydistance.html</loc>
+  </url>
+  <url>
+    <loc>usepa.github.io/EJAM/reference/out_bydistance2results_bydistance_bysite.html</loc>
+  </url>
+  <url>
+    <loc>usepa.github.io/EJAM/reference/out_bydistance2results_bysite_bydistance.html</loc>
+  </url>
+  <url>
     <loc>usepa.github.io/EJAM/reference/pctiles_lookup_create.html</loc>
   </url>
   <url>
@@ -638,6 +680,12 @@
   </url>
   <url>
     <loc>usepa.github.io/EJAM/reference/plot_barplot_ratios_ez.html</loc>
+  </url>
+  <url>
+    <loc>usepa.github.io/EJAM/reference/plot_barplot_sitegroups.html</loc>
+  </url>
+  <url>
+    <loc>usepa.github.io/EJAM/reference/plot_barplot_sites.html</loc>
   </url>
   <url>
     <loc>usepa.github.io/EJAM/reference/plot_bycounty.html</loc>

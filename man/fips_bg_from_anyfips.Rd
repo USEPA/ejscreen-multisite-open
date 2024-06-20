@@ -21,6 +21,8 @@ among or within or containing those FIPS
 \details{
 This is a way to get a list of blockgroups, specified by state/county/tract or even block.
 
+This function is not optimized for speed -- it is slow for large queries.
+
 Takes a vector of one or more FIPS that could be State (2-digit), County (5-digit),
 Tract (11-digit), or blockgroup (12 digit), or even block (15-digit fips).
 

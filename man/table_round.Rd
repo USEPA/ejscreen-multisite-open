@@ -23,6 +23,10 @@ Returns the original x but with appropriate cells rounded off.
 \description{
 Round numbers in a table, each column to appropriate number of decimal places
 }
+\details{
+Percentages stored as 0 to 1 rather than 0 to 100 will not be shown correctly unless adjusted,
+because rounding info says 0 digits when the intent is to show 0 digits after the 0-100 percent number.
+}
 \examples{
  
   table_round(c(12.123456, 9, NA ), 'pm')
@@ -35,7 +39,7 @@ Round numbers in a table, each column to appropriate number of decimal places
  table_rounding_info(names(x))
 
  table_round(x)
-  
+
 }
 \seealso{
 \code{\link[=var_is_numeric_ish]{var_is_numeric_ish()}} \code{\link[=table_rounding_info]{table_rounding_info()}}

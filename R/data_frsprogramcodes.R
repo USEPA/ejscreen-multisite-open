@@ -30,6 +30,9 @@
 #'     11                                           Toxic Substances Control Act     TSCA
 #'     
 #' @details Created by script in /data-raw/
+#' 
+#' Also see [EPA documentation describing each program code](https://www.epa.gov/frs/frs-data-sources) aka data source.
+#' 
 #' @examples \dontrun{
 #'   frs_by_programid[program %in% frsprogramcodes$code, .N, by=program]
 #'   
