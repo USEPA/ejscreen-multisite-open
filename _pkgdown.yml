@@ -45,16 +45,17 @@ reference:
   - EJAM
   - app_run_EJAM
   - ejamit
-  - ejam2report
-  - ejam2map
-  - ejam2excel
-  - ejam2ratios
-  - ejam2barplot
-  - ejam2shapefile
   - ejamit_compare_distances
-  - ejamit_compare_distances2plot
   - ejamit_compare_types_of_places
-  - ejscreenit_for_ejam
+  - ejam2report
+  - ejam2ratios
+  - ejam2excel
+  - ejam2map
+  - ejam2shapefile
+  - ejam2barplot
+  - ejam2barplot_sites
+  - ejam2barplot_distances
+  - ejam2barplot_sitegroups
 - title: "Specify Points by Lat/Lon"
   desc: "Utilities for working with latitude/ longitude or address"
   contents:
@@ -146,12 +147,14 @@ reference:
     and EPA Regions
 - subtitle: "FIPS tools"
   contents:
-  - censusplaces
+  - name2fips
+  - fips2name
   - fipstype
   - fips_lead_zero
-  - fips2name
+  - fips_counties_from_countyname
   - fips_bg_from_anyfips
   - fips_from_table
+  - censusplaces
 - subtitle: "Counties"
   contents:
   - counties_as_sites
@@ -221,19 +224,26 @@ reference:
   - statestats_queryd
   - statestats_querye
   - regionstats
-- subtitle: "Calculating Summary Stats, etc."
+- subtitle: "Comparing Distances / Multiple Radius Values"
   contents:
-  - count_sites_with_n_high_scores
-  - colcounter_summary_all
+  - ejamit_compare_distances
+  - ejamit_compare_distances_fulloutput
+  - ejamit_compare_distances2plot
   - distance_by_group_by_site
   - distance_by_group_plot
   - distance_cdf_by_group_plot
   - distance_mean_by_group
   - distance_by_group
+  - distance_trends
+- subtitle: "Calculating Summary Stats, etc."
+  contents:
+  - count_sites_with_n_high_scores
+  - colcounter_summary_all
   - popshare_at_top_n
   - popshare_at_top_x_pct
   - popshare_p_lives_at_what_n
   - popshare_p_lives_at_what_pct
+  - distance_trends
 - title: "Viewing Results"
 - subtitle: "Maps of Points"
   contents:
@@ -258,12 +268,17 @@ reference:
 - subtitle: "Plots"
   contents:
   - ejam2barplot
+  - ejam2barplot_sites
+  - plot_barplot_sites
   - plot_barplot_ratios_ez
   - plot_barplot_ratios
   - plot_ridgeline_ratios_ez
   - plot_ridgeline_ratios
   - plot_vs_us
   - boxplots_ratios
+  - ejam2barplot_sitegroups
+  - plot_barplot_sitegroups
+  - ejam2barplot_distances
   - ejamit_compare_distances2plot
   - plot_demogshare_by_distance
   - plot_distance_by_pctd
@@ -335,8 +350,13 @@ reference:
   - dataload_from_pins
   - dataload_from_aws
   - ejampackages
+- title: "EJScreen API"
+  desc: "EJAM-EJScreen and using the EJScreen API"
+  contents:
+  - ejscreenit_for_ejam
 - title: internal
   contents:
+  - ejscreen_vs_ejam
   - app_server
   - app_ui
   - rmost
@@ -346,6 +366,7 @@ reference:
   - map_facilities_proxy
   - quaddata
   - datawrite_to_local
+  - is.island
   - radius_inferred
   - getfrsnearby
   - proxistat2
@@ -369,3 +390,6 @@ reference:
   - url_get_eparest_chunked_by_id
   - url_get_via_url
   - create_filename
+  - out_bydistance2results_bydistance
+  - out_bydistance2results_bydistance_bysite
+  - out_bydistance2results_bysite_bydistance

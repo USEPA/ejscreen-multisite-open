@@ -7,12 +7,12 @@
 getblocks_summarize_blocks_per_site(x, varname = "ejam_uniq_id")
 }
 \arguments{
-\item{x}{The output of getblocksnearby()}
+\item{x}{The output of \code{\link[=getblocksnearby]{getblocksnearby()}} like \link{testoutput_getblocksnearby_1000pts_1miles}}
 
 \item{varname}{colname of variable in data.table x that is the one to summarize by}
 }
 \value{
-invisibly, a list of stats
+invisibly, a list of stats, and plot
 }
 \description{
 Number of blocks near avg site, how many sites have only 1 or fewer than 30 blocks nearby, etc.

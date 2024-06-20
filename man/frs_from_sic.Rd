@@ -14,6 +14,9 @@ frs_from_sic(sic_code_or_name, ...)
 \value{
 relevant rows of the data.table called frs, which has column names that are
 "lat" "lon" "REGISTRY_ID" "PRIMARY_NAME" "NAICS" "SIC" "PGM_SYS_ACRNMS"
+
+The EPA also provides a \href{https://www.epa.gov/frs/frs-query#industrial}{FRS Facility Industrial Classification Search tool}
+where you can find facilities based on NAICS or SIC.
 }
 \description{
 Use SIC code or industry title text search to see FRS Facility Registry Service data on those EPA-regulated sites
@@ -30,5 +33,5 @@ Use SIC code or industry title text search to see FRS Facility Registry Service 
 
 }
 \seealso{
-\code{\link[=regid_from_sic]{regid_from_sic()}} \code{\link[=sic_from_any]{sic_from_any()}}
+\code{\link[=regid_from_sic]{regid_from_sic()}} \code{\link[=sic_from_any]{sic_from_any()}} \code{\link[=latlon_from_sic]{latlon_from_sic()}}
 }

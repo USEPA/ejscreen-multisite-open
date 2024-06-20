@@ -6,15 +6,17 @@
 plot results of ejamit_compare_distances()}
 \usage{
 ejamit_compare_distances2plot(
-  outall,
+  results_bydistance,
   myvars = names_d_subgroups_ratio_to_state_avg,
   ylab = "Ratio of Avg. within X miles to Avg. Statewide or Nationwide",
   ylim = c(0, 5),
-  n = 1
+  n = 1,
+  ...
 )
 }
 \arguments{
-\item{outall}{output of \code{\link[=ejamit_compare_distances]{ejamit_compare_distances()}}}
+\item{results_bydistance}{output of \code{\link[=ejamit_compare_distances]{ejamit_compare_distances()}}, table similar to
+ejamit()$results_overall except it has one row per distance.}
 
 \item{myvars}{optional, see \code{\link[=ejamit_compare_distances]{ejamit_compare_distances()}}}
 
@@ -23,9 +25,11 @@ ejamit_compare_distances2plot(
 \item{ylim}{optional, see \code{\link[=ejamit_compare_distances]{ejamit_compare_distances()}}}
 
 \item{n}{optional, see \code{\link[=ejamit_compare_distances]{ejamit_compare_distances()}}}
+
+\item{...}{optional, passed to plot}
 }
 \value{
-text vector length n, explaining which indicators most strongly
+text vector length n, naming which indicators most strongly
 increase as you get closer to the site(s)
 }
 \description{

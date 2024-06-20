@@ -8,6 +8,7 @@ getblocksnearby(
   sitepoints,
   radius = 3,
   maxradius = 31.07,
+  radius_donut_lower_edge = 0,
   avoidorphans = FALSE,
   quadtree = NULL,
   quiet = FALSE,
@@ -21,6 +22,8 @@ getblocksnearby(
 \item{radius}{in miles, defining circular buffer around a site point}
 
 \item{maxradius}{miles distance (max distance to check if not even 1 block point is within radius)}
+
+\item{radius_donut_lower_edge}{radius of lower edge of ring if analyzing ring not full circle}
 
 \item{avoidorphans}{logical If TRUE, then where not even 1 BLOCK internal point is within radius of a SITE,
 it keeps looking past radius, up to maxradius, to find nearest 1 BLOCK.

@@ -14,8 +14,14 @@
 #' @param varname name of column in bysite, like  "Demog.Index"
 #' @param type "box", "plotly", or "ggplot"
 #' @param colorfills two colors for boxplot
-#'
+#' @examples
+#'  # plot_vs_us(testoutput_ejamit_1000pts_1miles$results_bysite, type = 'box')
+#'  # plot_vs_us(testoutput_ejamit_1000pts_1miles$results_bysite, varname = "pctlingiso", type =  'box', ylim=c(0,20))
+#'  # plot_vs_us(testoutput_ejamit_1000pts_1miles$results_bysite, varname = "pctlingiso", type =  'ggplot')
+#'  # plot_vs_us(testoutput_ejamit_1000pts_1miles$results_bysite, varname = "pctnhaa", type =  'ggplot')
+#'  # plot_vs_us(testoutput_ejamit_1000pts_1miles$results_bysite, varname = "pctnhaa", type = 'box', ylim = c(0,20))
 #' @return plots
+#' 
 #' @export
 #'
 #' @examples dontrun{
