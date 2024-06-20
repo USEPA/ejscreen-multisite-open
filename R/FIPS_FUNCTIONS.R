@@ -912,11 +912,8 @@ fips2countyname <- function(fips, includestate = c("ST", "Statename", "")[1]) {
     substr(blockgroupstats$bgfips,1,5))]  #
   # using match is OK since 
   # you want 1 countyname returned per countyfips in query, so the fact that only 1st match gets returned is actually good.
-  
-  # using match is OK since 
-  # you want 1 countyname returned per countyfips in query, so the fact that only 1st match gets returned is actually good.
-  
-  if (all(is.na(ftype)) || any(ftype != "county")) {
+ 
+  if (any(ftype != "county")) {
     warning("this function should only be used to convert county fips to county name, 1 to 1 - returning NA for fips that are not countyfips")
   }
   if (includestate == TRUE) {includestate <- "Statename"}
@@ -958,7 +955,6 @@ fips2name  <- function(fips, ...) {
   out <- rep(NA, length(fips))
   
   ## *** need to handle NA values here since out[NA] <-  fails as cannot have NA in subset assignment
-  
   out[!is.na(fips) & fipstype(fips) == "state"]  <- fips2statename(fips = fips[!is.na(fips) & fipstype(fips) == "state"])
   out[!is.na(fips) & fipstype(fips) == "county"] <- fips2countyname(fips = fips[!is.na(fips) & fipstype(fips) == "county"], ...)
   if (anyNA(out)) {
