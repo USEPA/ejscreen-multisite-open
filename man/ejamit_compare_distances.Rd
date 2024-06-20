@@ -8,6 +8,7 @@ Run ejamit() once per radius, get a summary table with a row per radius}
 ejamit_compare_distances(
   sitepoints,
   radii = c(1, 2, 3),
+  donuts_not_cumulative = FALSE,
   quiet = TRUE,
   silentinteractive = TRUE,
   plot = TRUE,
@@ -21,22 +22,34 @@ ejamit_compare_distances(
 \arguments{
 \item{sitepoints}{like for \code{\link[=ejamit]{ejamit()}}}
 
-\item{radii}{vector of radius values like 1:3 for \code{\link[=ejamit]{ejamit()}}}
+\item{radii}{optional, vector of radius values like 1:3 for \code{\link[=ejamit]{ejamit()}}}
 
-\item{quiet}{passed to \code{\link[=ejamit]{ejamit()}}}
+\item{donuts_not_cumulative}{optional, when implemented, if set TRUE,
+would return results on areas in each "donut" or ring that is a distance bin,
+such as for
 
-\item{silentinteractive}{passed to \code{\link[=ejamit]{ejamit()}}}
+0 < R <= radii\link{1}
 
-\item{myvars}{for plot, see default value}
+radii\link{1} < R <= radii\link{2}
 
-\item{ylab}{for plot, see default value}
+etc.}
 
-\item{ylim}{for plot, see default value}
+\item{quiet}{optional, passed to \code{\link[=ejamit]{ejamit()}}}
 
-\item{n}{how many of the indicators to report on (printed to console),
+\item{silentinteractive}{optional, passed to \code{\link[=ejamit]{ejamit()}}}
+
+\item{plot}{optional logical, set FALSE to avoid plotting}
+
+\item{myvars}{optional, for plot, see default value}
+
+\item{ylab}{optional, for plot, see default value}
+
+\item{ylim}{optional, for plot, see default value}
+
+\item{n}{optional, how many of the indicators to report on (printed to console),
 when reporting which indicators most strongly increase as radius decreases.}
 
-\item{...}{passed to \code{\link[=ejamit]{ejamit()}}}
+\item{...}{optional, passed to \code{\link[=ejamit]{ejamit()}}}
 }
 \value{
 data.table you can call results_bydistance,
@@ -47,18 +60,21 @@ Compare EJAM results overall for more than one radius
 Run ejamit() once per radius, get a summary table with a row per radius
 }
 \examples{
-  radii <- c(1,2,3,6,10)
+  radii <- c(convert_units(5,"km","miles"), convert_units(50,"km","miles"))
+  radii <- 1:10
   radii <- c(1, 10)
   pts <- testpoints_100
   pts <- testpoints_10
+  
   bydist <- ejamit_compare_distances(pts, radii = radii)
   ejamit_compare_distances2plot(bydist, myvars = c(
     "ratio.to.avg.pctlowinc", "ratio.to.avg.pcthisp", "ratio.to.avg.pctnhba"))
   
   names(bydist) <- fixcolnames(names(bydist), "r", "shortlabel")
   
+  
 }
 \seealso{
 \code{\link[=plot_distance_by_pctd]{plot_distance_by_pctd()}}, \code{\link[=distance_by_group]{distance_by_group()}},
-and related internal functions
+and \code{\link[=ejamit_compare_distances_fulloutput]{ejamit_compare_distances_fulloutput()}}
 }

@@ -5,8 +5,11 @@
 # 
 # were created using a non-CRAN package (in github) called census2020download:
 
+# browseURL("https://ejanalysis.github.io/census2020download/reference/index.html")
+
 # devtools::install_github("ejanalysis/census2020download")
 # require # (census2020download)
+
 # ?census2020download   # the name of the package  
 # ?census2020_download  # the name of the function
 # Sys.time()

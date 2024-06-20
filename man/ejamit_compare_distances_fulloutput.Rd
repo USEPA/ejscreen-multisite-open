@@ -3,18 +3,14 @@
 \name{ejamit_compare_distances_fulloutput}
 \alias{ejamit_compare_distances_fulloutput}
 \title{Compare ejamit() full results for more than one radius
-Run ejamit() once per radius, get FULL ejamit() output list per radius}
+Helper used by ejamit_compare_distances() to run ejamit() once per radius, get FULL ejamit() output list per radius}
 \usage{
 ejamit_compare_distances_fulloutput(
   sitepoints,
   radii = c(1, 2, 3),
+  donuts_not_cumulative = FALSE,
   quiet = TRUE,
   silentinteractive = TRUE,
-  plot = TRUE,
-  myvars = names_d_subgroups_ratio_to_state_avg,
-  ylab = "Ratio of Avg. within X miles to Avg. Statewide or Nationwide",
-  ylim = c(0, 5),
-  n = 1,
   ...
 )
 }
@@ -23,21 +19,34 @@ ejamit_compare_distances_fulloutput(
 
 \item{radii}{vector of radius values like 1:3 for \code{\link[=ejamit]{ejamit()}}}
 
+\item{donuts_not_cumulative}{set to TRUE to get results on each ring not each full circle}
+
 \item{quiet}{passed to \code{\link[=ejamit]{ejamit()}}}
 
 \item{silentinteractive}{passed to \code{\link[=ejamit]{ejamit()}}}
 
-\item{myvars}{for plot, see default value}
-
 \item{...}{passed to \code{\link[=ejamit]{ejamit()}}}
 }
 \value{
-list you can call out_bydistance,
+list you can think of as "out_bydistance"
 where each element is the full output of ejamit() for 1 radius
 }
 \description{
 Compare ejamit() full results for more than one radius
-Run ejamit() once per radius, get FULL ejamit() output list per radius
+Helper used by ejamit_compare_distances() to run ejamit() once per radius, get FULL ejamit() output list per radius
+}
+\details{
+You typically only need \code{\link[=ejamit_compare_distances]{ejamit_compare_distances()}},
+which gives you just the summary overall at each distance,
+but if you want to retain the full outputs of ejamit() at each distance,
+such as results for every site at every distances,
+you can use \code{\link[=ejamit_compare_distances_fulloutput]{ejamit_compare_distances_fulloutput()}} and then to extract a slice of results,
+use helper functions like
+\itemize{
+\item \code{\link[=out_bydistance2results_bydistance]{out_bydistance2results_bydistance()}}
+\item \code{\link[=out_bydistance2results_bydistance_bysite]{out_bydistance2results_bydistance_bysite()}}
+\item \code{\link[=out_bydistance2results_bysite_bydistance]{out_bydistance2results_bysite_bydistance()}}
+}
 }
 \examples{
   radii <- c(1,2,3,6,10)
@@ -47,5 +56,6 @@ Run ejamit() once per radius, get FULL ejamit() output list per radius
   }
 }
 \seealso{
-\code{\link[=ejamit_compare_distances]{ejamit_compare_distances()}}
+wrapper \code{\link[=ejamit_compare_distances]{ejamit_compare_distances()}} and helpers
+\code{\link[=out_bydistance2results_bydistance]{out_bydistance2results_bydistance()}} \code{\link[=out_bydistance2results_bydistance_bysite]{out_bydistance2results_bydistance_bysite()}} \code{\link[=out_bydistance2results_bysite_bydistance]{out_bydistance2results_bysite_bydistance()}}
 }

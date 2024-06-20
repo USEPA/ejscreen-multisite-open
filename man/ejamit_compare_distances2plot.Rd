@@ -10,7 +10,8 @@ ejamit_compare_distances2plot(
   myvars = names_d_subgroups_ratio_to_state_avg,
   ylab = "Ratio of Avg. within X miles to Avg. Statewide or Nationwide",
   ylim = c(0, 5),
-  n = 1
+  n = 1,
+  ...
 )
 }
 \arguments{
@@ -24,6 +25,8 @@ ejamit()$results_overall except it has one row per distance.}
 \item{ylim}{optional, see \code{\link[=ejamit_compare_distances]{ejamit_compare_distances()}}}
 
 \item{n}{optional, see \code{\link[=ejamit_compare_distances]{ejamit_compare_distances()}}}
+
+\item{...}{optional, passed to plot}
 }
 \value{
 text vector length n, naming which indicators most strongly

@@ -55,11 +55,11 @@ getblocksnearby_from_fips <- function(fips, inshiny = FALSE, need_blockwt = TRUE
   if (length(fips_vec) == 1) {
     fips_vec <- c(fips_vec, na = NA) # quick workaround since code below failed if only 1 FIPS provided, like 1 state or only 1 county
   }
-  
+  suppressWarnings({ # because if length was 1 and added NA at end, this reports irrelevant warning
   ## create two-column dataframe with bgs (values) and original fips (ind)
   # fips_bg_from_anyfips() returns all blockgroup fips codes contained within each fips provided
   all_bgs <- stack(sapply(fips_vec, fips_bg_from_anyfips))
-  
+  })
   names(all_bgs) <- c('bgfips', 'ejam_uniq_id')
   # *** It actually could be more efficient to replace the above fips_bg_from_anyfips() 
   # or make a new func to provide bgid_from_anyfips() 
@@ -85,7 +85,7 @@ getblocksnearby_from_fips <- function(fips, inshiny = FALSE, need_blockwt = TRUE
     if (need_blockwt) {
       # provide blockwt to be consistent with getblocksnearby() and doaggregate() understands it if you want to use it after this.
       #fips_blockpoints[,blockwt := 1] # since doaggregate() uses blockwt even though we know the resulting bgwt will be 1 in every case if used FIPS codes bigger than blocks (blockgroups, tracts, counties, states, whatever)
-      fips_blockpoints <- merge(fips_blockpoints, blockwts[,.(blockid, blockwt)], on = "blockid")
+      fips_blockpoints <- merge(fips_blockpoints, blockwts[,.(blockid, blockwt)], by = "blockid")
     }
     
     ## remove any invalid  values 

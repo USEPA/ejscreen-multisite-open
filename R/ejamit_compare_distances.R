@@ -19,40 +19,66 @@
 
 
 #' Compare ejamit() full results for more than one radius
-#' Run ejamit() once per radius, get FULL ejamit() output list per radius
+#' Helper used by ejamit_compare_distances() to run ejamit() once per radius, get FULL ejamit() output list per radius
+#' @details You typically only need [ejamit_compare_distances()],
+#'   which gives you just the summary overall at each distance,
+#'   but if you want to retain the full outputs of ejamit() at each distance, 
+#'   such as results for every site at every distances,
+#'   you can use [ejamit_compare_distances_fulloutput()] and then to extract a slice of results, 
+#'   use helper functions like
+#'   
+#'   * [out_bydistance2results_bydistance()]
+#'   * [out_bydistance2results_bydistance_bysite()]
+#'   * [out_bydistance2results_bysite_bydistance()]
+#'   
 #' @param sitepoints like for [ejamit()]
 #' @param radii vector of radius values like 1:3 for [ejamit()]
+#' @param donuts_not_cumulative set to TRUE to get results on each ring not each full circle
 #' @param ... passed to [ejamit()]
 #' @param quiet passed to [ejamit()]
 #' @param silentinteractive passed to [ejamit()]
-#' @param myvars for plot, see default value
+#' 
 #' @examples 
 #'   radii <- c(1,2,3,6,10)
 #'   pts <- testpoints_10
 #'   \dontrun{
 #'   x <- ejamit_compare_distances_fulloutput(pts, radii = radii)
 #'   }
-#' @seealso [ejamit_compare_distances()]
-#' @return list you can call out_bydistance, 
+#' @seealso wrapper [ejamit_compare_distances()] and helpers 
+#'   [out_bydistance2results_bydistance()] [out_bydistance2results_bydistance_bysite()] [out_bydistance2results_bysite_bydistance()]
+
+#' @return list you can think of as "out_bydistance"  
 #'   where each element is the full output of ejamit() for 1 radius
 #'
 #' @export
 #'
-ejamit_compare_distances_fulloutput <- function(sitepoints, radii = c(1,2,3), quiet = TRUE, silentinteractive = TRUE, 
-                                                plot = TRUE, 
-                                                myvars = names_d_subgroups_ratio_to_state_avg, 
-                                                ylab = "Ratio of Avg. within X miles to Avg. Statewide or Nationwide",
-                                                ylim = c(0, 5),
-                                                n = 1,
+ejamit_compare_distances_fulloutput <- function(sitepoints, radii = c(1,2,3), 
+                                                donuts_not_cumulative = FALSE,
+                                                quiet = TRUE, silentinteractive = TRUE, 
                                                 ...) {
+  radii <- as.numeric(radii) # 1:2 is integer but c(1,2) is numeric, so this keeps class of radius.miles in output consistently always numeric, like for ejamit()
   if (length(radii) > 30 || max(radii, na.rm = T) > 31 || any(!is.numeric(radii)) || any(radii < 0.5)) {
     stop("radii must be numbers between 0.5 and 31, and 30 different radii is the max allowed.")
   }
   # accept interactively or from filepath or from object, infer lat/lon cols, assign ejam_uniq_id
-  sitepoints <- sitepoints_from_any(sitepoints, silentinteractive = silentinteractive)   
+  suppressMessages({
+    # avoid message about ejam_uniq_id already being there since this might be called by ejamit_compare_distances() which already added ejam_uniq_id
+    # but do sitepoints_from_any() here even if can be redundant, in case someone wants to use only ejamit_compare_distances_fulloutput() alone (not via ejamit_compare_distances() function)
+    sitepoints <- sitepoints_from_any(sitepoints, silentinteractive = silentinteractive)
+  })
   out_bydistance <- list()
+  
+  if (donuts_not_cumulative) {
+    radius_donut_lower_edge <- c(0, radii[1:(length(radii) - 1)])
+  } else {
+    radius_donut_lower_edge <- rep(0, length(radii))
+  }
+  
   for (i in seq_along(radii)) {
-    out_bydistance[[i]] <- ejamit(sitepoints = sitepoints, radius = radii[i],
+    out_bydistance[[i]] <- ejamit(sitepoints = sitepoints,
+                                  radius = radii[i],
+                                  radius_donut_lower_edge = radius_donut_lower_edge[i],
+                                  # donuts_not_cumulative = donuts_not_cumulative,
                                   quiet = quiet, silentinteractive = silentinteractive, 
                                   ...)
     # z[[i]] <- out[[i]]$results_overall # if were only retaining one row per distance, not results_bysite or results_bybg_people etc.
@@ -68,14 +94,14 @@ ejamit_compare_distances_fulloutput <- function(sitepoints, radii = c(1,2,3), qu
 
 #' Extract summary from list of ejamit() runs at multiple distances
 #' Get a table, one row per distance. Overall summary, not each site.
-#' @details Compile results_bydistance table from 
+#' @details This will compile a results_bydistance table from 
 #'   output of ejamit_compare_distances_fulloutput(),
 #'   using the ejamit()$results_overall for each distance.
 #' @param out_bydistance list of tables that is output of [ejamit_compare_distances_fulloutput()]
 #' @return a table you can call results_bydistance,
 #'   that is like ejamit()$results_overall, but that 
 #'   has 1 row per distance (radius or buffer width)
-#' @seealso [ejamit_compare_distances()]
+#' @seealso [ejamit_compare_distances()] [ejamit_compare_distances_fulloutput()]
 #' 
 #' @keywords internal
 #' 
@@ -96,43 +122,61 @@ out_bydistance2results_bydistance <- function(out_bydistance) {
 #' Run ejamit() once per radius, get a summary table with a row per radius
 #' 
 #' @param sitepoints like for [ejamit()]
-#' @param radii vector of radius values like 1:3 for [ejamit()]
-#' @param ... passed to [ejamit()]
-#' @param quiet  passed to [ejamit()]
-#' @param silentinteractive  passed to [ejamit()]
-#' @param myvars for plot, see default value
-#' @param ylab for plot, see default value
-#' @param ylim for plot, see default value
-#' @param n how many of the indicators to report on (printed to console),
+#' @param radii optional, vector of radius values like 1:3 for [ejamit()]
+#' @param donuts_not_cumulative optional, when implemented, if set TRUE,
+#'   would return results on areas in each "donut" or ring that is a distance bin,
+#'   such as for 
+#'   
+#'   0 < R <= radii[1]
+#'   
+#'   radii[1] < R <= radii[2]
+#'   
+#'   etc.
+#'   
+#' @param ... optional, passed to [ejamit()]
+#' 
+#' @param quiet optional, passed to [ejamit()]
+#' @param silentinteractive optional, passed to [ejamit()]
+#' 
+#' @param plot optional logical, set FALSE to avoid plotting
+#' @param myvars optional, for plot, see default value
+#' @param ylab optional, for plot, see default value
+#' @param ylim optional, for plot, see default value
+#' @param n optional, how many of the indicators to report on (printed to console),
 #'   when reporting which indicators most strongly increase as radius decreases.
 #' 
 #' @examples 
-#'   radii <- c(1,2,3,6,10)
+#'   radii <- c(convert_units(5,"km","miles"), convert_units(50,"km","miles"))
+#'   radii <- 1:10
 #'   radii <- c(1, 10)
 #'   pts <- testpoints_100
 #'   pts <- testpoints_10
+#'   
 #'   bydist <- ejamit_compare_distances(pts, radii = radii)
 #'   ejamit_compare_distances2plot(bydist, myvars = c(
 #'     "ratio.to.avg.pctlowinc", "ratio.to.avg.pcthisp", "ratio.to.avg.pctnhba"))
 #'   
 #'   names(bydist) <- fixcolnames(names(bydist), "r", "shortlabel")
 #'   
+#'   
 #' @seealso [plot_distance_by_pctd()], [distance_by_group()],
-#'   and related internal functions
+#'   and [ejamit_compare_distances_fulloutput()]
 #' 
 #' @return data.table you can call results_bydistance,
 #'   like ejamit()$results_overall but with one row per radius
-#'   
+#'
 #' @export
 #'
-ejamit_compare_distances <- function(sitepoints, radii = c(1,2,3), quiet = TRUE, silentinteractive = TRUE, 
+ejamit_compare_distances <- function(sitepoints, radii = c(1,2,3), 
+                                     donuts_not_cumulative = FALSE,
+                                     quiet = TRUE, silentinteractive = TRUE, 
                                      plot = TRUE, 
                                      myvars = names_d_subgroups_ratio_to_state_avg, 
                                      ylab = "Ratio of Avg. within X miles to Avg. Statewide or Nationwide",
                                      ylim = c(0, 5),
                                      n = 1,
                                      ...) {
-  ################################################################################## #
+  
   # Options for what format to return 
   # from this function or similarly ejamit_compare_types_of_places()
   #  (you can convert between these but the code is a little awkward, so one should be the primary output format, and helper functions might reformat between these)
@@ -163,20 +207,17 @@ ejamit_compare_distances <- function(sitepoints, radii = c(1,2,3), quiet = TRUE,
   
   # Check and clean input points and radii
   sitepoints <- sitepoints_from_any(sitepoints, silentinteractive = silentinteractive) # also done again in ejamit_compare_distances_fulloutput()
+  radii <- as.numeric(radii) # 1:2 is integer but c(1,2) is numeric, so this keeps class of radius.miles in output consistently always numeric, like for ejamit(). also done in ejamit_compare_distances_fulloutput() so this is redundant but if refactoring replaced the fulloutput approach this would ensure it still happens
   if (length(radii) > 30 || max(radii, na.rm = T) > 31 || any(!is.numeric(radii)) || any(radii < 0.5)) {
     stop("radii must be numbers between 0.5 and 31, and 30 different radii is the max allowed.")
   }
-  
+
   # Run ejamit() in loop once per distance (not super efficient since dont need all the output tables)
   out_bydistance <- ejamit_compare_distances_fulloutput(
     sitepoints = sitepoints,
     radii = radii,
-    quiet = quiet, silentinteractive = silentinteractive, 
-    plot = plot, 
-    myvars = myvars, 
-    ylab = ylab,
-    ylim = ylim,
-    n = n,
+    donuts_not_cumulative = donuts_not_cumulative, 
+    quiet = quiet, silentinteractive = silentinteractive,
     ...
   )
   ## old way retained only results_overall within loop which is more efficient but less generalized:
@@ -192,8 +233,9 @@ ejamit_compare_distances <- function(sitepoints, radii = c(1,2,3), quiet = TRUE,
   results_bydistance <- out_bydistance2results_bydistance(out_bydistance) 
   
   # Print key results in RStudio console
-  
-  shown = data.frame(round(t(results_bydistance)[myvars, ], 1))
+  availvars <- myvars[myvars %in% names(results_bydistance)]
+  if (length(availvars) > 0) {
+  shown = data.frame(round(t(results_bydistance[, ..availvars]), 1))
   colnames(shown) <- radii
   rownames(shown) <- fixcolnames(rownames(shown), 'r', 'shortlabel')
   cat("\n")
@@ -204,9 +246,10 @@ ejamit_compare_distances <- function(sitepoints, radii = c(1,2,3), quiet = TRUE,
   
   if (plot) {
     cat("\n Indicators that most strongly get larger as you get closer: \n")
+    
     print(
       ejamit_compare_distances2plot(results_bydistance,
-                                    myvars = myvars,
+                                    myvars = availvars,
                                     ylab = ylab,
                                     ylim = ylim,
                                     n = n
@@ -214,7 +257,7 @@ ejamit_compare_distances <- function(sitepoints, radii = c(1,2,3), quiet = TRUE,
     )
   }
   # return one row per distance (like results_overall, but for each distance)
-  
+  }
   return(results_bydistance)
 }
 #################################################################### #
@@ -233,9 +276,15 @@ ejamit_compare_distances <- function(sitepoints, radii = c(1,2,3), quiet = TRUE,
 #'   
 distance_trends <- function(results_bydistance, 
                             myvars = names_d_subgroups_ratio_to_state_avg,
-                            radii = results_bydistance$radius.miles,
+                            radii, # results_bydistance$radius.miles,
                             n = 1) {
+  if (missing(radii)) {radii <- as.numeric(results_bydistance$radius.miles)}
+  availvars <- myvars[myvars %in% names(results_bydistance)]
+  if (length(availvars) > 0) {
   results_bydistance <- data.frame(results_bydistance)[, myvars]
+  } else {
+    results_bydistance <- data.frame(results_bydistance)
+  }
   # REPORT STRONGEST TREND
   # fit line to points and report which has the most negative slope, e.g.
   slopes <- coef(lm(as.matrix(results_bydistance) ~ radii ))[2, ]
@@ -256,6 +305,7 @@ distance_trends <- function(results_bydistance,
 #' @param ylab  optional, see [ejamit_compare_distances()]
 #' @param ylim  optional, see [ejamit_compare_distances()]
 #' @param n  optional, see [ejamit_compare_distances()]
+#' @param ... optional, passed to plot
 #' @return text vector length n, naming which indicators most strongly
 #'   increase as you get closer to the site(s)
 #'   
@@ -265,7 +315,8 @@ ejamit_compare_distances2plot <- function(results_bydistance,
                                           myvars = names_d_subgroups_ratio_to_state_avg, 
                                           ylab = "Ratio of Avg. within X miles to Avg. Statewide or Nationwide",
                                           ylim = c(0, 5),
-                                          n = 1) {
+                                          n = 1, 
+                                          ...) {
   
   # ejamit_compare_distances2plot()
   #  could be renamed  results_bydistance2plot() ?
@@ -292,7 +343,8 @@ ejamit_compare_distances2plot <- function(results_bydistance,
            xlab = "Distance (radius) in miles",
            ylab = ylab,
            xlim = c(0, max(radii)),
-           ylim = ylim)
+           ylim = ylim, 
+           ...)
     } else {
       points(x = radii, y = x[, i], type = "b", col = mycolors[i])
     }
@@ -308,21 +360,37 @@ ejamit_compare_distances2plot <- function(results_bydistance,
 
 #' @export
 #' @inherit ejamit_compare_distances2plot
-ejam2barplot_distances <- ejamit_compare_distances2plot
+ejam2barplot_distances <- function(results_bydistance, 
+                                   myvars = names_d_subgroups_ratio_to_state_avg, 
+                                   ylab = "Ratio of Avg. within X miles to Avg. Statewide or Nationwide",
+                                   ylim = c(0, 5),
+                                   n = 1, 
+                                   ...) {
+  ejamit_compare_distances2plot(
+    results_bydistance = results_bydistance, 
+    myvars = myvars, 
+    ylab = ylab,
+    ylim = ylim,
+    n = n,
+    ... = ...
+  )
+  }
 #################################################################### #
 
 
 # internal function to extract/reassemble tables from ejamit_compare_distances_fulloutput()
-# NOT USED 
+# MAY NOT GET USED 
 
 #' A way to focus on 1 DISTANCE (RADIUS) at a time (after a multidistance run), for the list of sites
 #' Get a list of tables, one per distance. Each table has a row per site.
-#' @details Extract results_bysite for each distance from list of ejamit() runs at multiple distances
+#' @details This function might not be used at all. 
+#'   Extract results_bysite for each distance 
+#'   from list of ejamit() runs at multiple distances
 #' @param out_bydistance list of tables that is output of [ejamit_compare_distances_fulloutput()]
 #' @return a LIST you can call results_bysite_bydistance (not results_bydistance_bysite),
 #'   that is a list where each element is ejamit()$results_bysite for
 #'   a unique distance (radius or buffer width)
-#' @seealso [ejamit_compare_distances()] 
+#' @seealso [ejamit_compare_distances()]  [ejamit_compare_distances_fulloutput()]
 #'   and internal functions [out_bydistance2results_bydistance()] [out_bydistance2results_bydistance_bysite()]
 #'   
 #' @keywords internal
@@ -331,7 +399,7 @@ out_bydistance2results_bysite_bydistance <- function(out_bydistance) {
   
   results_bysite_bydistance <- list()
   for (i in seq_along(out_bydistance)) {
-    results_bysite_bydistance[[i]] <- out_bydistance[[i]]$results_bysite_bydistance
+    results_bysite_bydistance[[i]] <- out_bydistance[[i]]$results_bysite
   }
   return(
     (results_bysite_bydistance)  # a list of tables, one per distance. each table has a row per site.
@@ -339,12 +407,14 @@ out_bydistance2results_bysite_bydistance <- function(out_bydistance) {
 }
 #################################################################### #
 
+
 # internal function to extract/reassemble tables from ejamit_compare_distances_fulloutput()
-# NOT USED 
+# MAY NOT GET USED 
 
 #' A way to focus on 1 SITE at a time, for a few radius choices
 #' Get a list of tables, one per site. Each table has a row per distance.
-#' @details Extract/create results_bydistance for each site, 
+#' @details This function might not be used at all. 
+#'   Extract/create results_bydistance for each site, 
 #'   from list of ejamit() runs at multiple distances
 #' @param out_bydistance list of tables that is output of [ejamit_compare_distances_fulloutput()]
 #' @return a LIST you can call results_bydistance_bysite (not results_bysite_bydistance),
@@ -352,7 +422,7 @@ out_bydistance2results_bysite_bydistance <- function(out_bydistance) {
 #'   with one row per distance (radius or buffer width). 
 #'   This table is in the same format as the output of [ejamit_compare_distances()]
 #'   or the internal function out_bydistance2results_bydistance()
-#' @seealso [ejamit_compare_distances()] 
+#' @seealso [ejamit_compare_distances()] [ejamit_compare_distances_fulloutput()]
 #'   and internal functions [out_bydistance2results_bysite_bydistance()] [out_bydistance2results_bydistance()]
 #'   
 #' @keywords internal
@@ -369,7 +439,7 @@ out_bydistance2results_bydistance_bysite <- function(out_bydistance) {
     # one site, get all distances in a table for that site
     onesite_bydistance <- list()
     for (distance_i in seq_along(out_bydistance)) {
-      onesite_bydistance[[distance_i]] <- out_bydistance$results_bysite[sitenumber, ]
+      onesite_bydistance[[distance_i]] <- out_bydistance[[distance_i]]$results_bysite[sitenumber, ]
     }
     results_bydistance_bysite[[sitenumber]] <- rbindlist(onesite_bydistance)
   }
