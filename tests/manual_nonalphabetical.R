@@ -161,7 +161,9 @@ if (testing_in_logical_order) {
       "test-doaggregate.R"     
     )
     test_ejamit <- c(
-      "test-ejamit.R"  
+      "test-ejamit.R"  ,
+      "test-ejam2barplot_sites.R",
+      "test-ejamit_compare_groups_of_places.R"
     )
     test_mod <- c(
       "test-mod_save_report.R",    
@@ -276,8 +278,10 @@ if (testing_in_logical_order) {
   
   partial_testlist = list(test_maps = "test-MAP_FUNCTIONS.R")
   # or 
-  partial_testlist = list(test_fips = c("test-FIPS_FUNCTIONS.R", "test-state_from_fips.R", "test-state_from_latlon.R"))
-  test_partial = testbygroup(testlist = partial_testlist)
+  partial_testlist = list(test_fips = test_fips)
+                            # c("test-FIPS_FUNCTIONS.R", "test-state_from_fips.R", "test-state_from_latlon.R"))
+ 
+   test_partial = testbygroup(testlist = partial_testlist)
   
   
   
