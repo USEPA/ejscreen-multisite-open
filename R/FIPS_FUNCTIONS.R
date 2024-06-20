@@ -913,7 +913,7 @@ fips2countyname <- function(fips, includestate = c("ST", "Statename", "")[1]) {
   # using match is OK since 
   # you want 1 countyname returned per countyfips in query, so the fact that only 1st match gets returned is actually good.
  
-  if (any(ftype != "county")) {
+  if (all(is.na(ftype)) || any(ftype != "county")) {
     warning("this function should only be used to convert county fips to county name, 1 to 1 - returning NA for fips that are not countyfips")
   }
   if (includestate == TRUE) {includestate <- "Statename"}
