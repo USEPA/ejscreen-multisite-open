@@ -2523,91 +2523,82 @@ app_server <- function(input, output, session) {
   
   #############################################################################  #
   
-  ## Community report download ##
+  # Function to generate HTML content (community_download function)
+  community_download <- function() {
+    tempReport <- file.path(tempdir(), 'community_report_template.Rmd')
+    
+    # Copy necessary files to temporary directory
+    if (!file.exists(file.path(tempdir(), 'communityreport.css'))) {
+      file.copy(from = app_sys('report/community_report/communityreport.css'),
+                to = file.path(tempdir(), 'communityreport.css'), overwrite = TRUE)
+    }
+    
+    if (!file.exists(file.path(tempdir(), 'www', 'EPA_logo_white_2.png'))) {
+      dir.create(file.path(tempdir(), 'www'))
+      file.copy(from = app_sys('report/community_report/EPA_logo_white_2.png'),
+                to = file.path(tempdir(), 'www', 'EPA_logo_white_2.png'), overwrite = TRUE)
+    }
+    
+    # Copy Rmd file to temp directory
+    file.copy(from = app_sys('report/community_report/community_report_template.Rmd'),
+              to = tempReport, overwrite = TRUE)
+    
+    # Define parameters for Rmd rendering
+    rad <- data_processed()$results_overall$radius.miles
+    popstr <- prettyNum(total_pop(), big.mark = ',')
+    
+    if (submitted_upload_method() == 'SHP') {
+      location_type <- " selected polygons"
+      radiusstr <- paste0(rad, " mile", ifelse(rad > 1, "s", ""), " of ")
+    } else if (submitted_upload_method() == 'FIPS') {
+      location_type <- " selected shapes"
+      radiusstr <- ""
+    } else {
+      location_type <- " selected points"
+      radiusstr <- paste0(rad, " mile", ifelse(rad > 1, "s", ""), " of ")
+    }
+    
+    locationstr <- paste0("Residents within ",
+                          radiusstr,
+                          "any of the ", NROW(data_processed()$results_bysite[data_processed()$results_bysite$valid == T,]), location_type)
+    
+    params <- list(
+      output_df = data_processed()$results_overall,
+      analysis_title = input$analysis_title,
+      totalpop = popstr,
+      locationstr = locationstr,
+      include_ejindexes = (input$include_ejindexes == 'TRUE'),
+      in_shiny = FALSE,
+      filename = NULL,
+      map = report_map(),
+      summary_plot = v1_summary_plot()
+    )
+    
+    # Render Rmd to HTML
+    rmarkdown::render(tempReport,
+                      output_format = 'html_document',
+                      output_file = NULL,
+                      params = params,
+                      envir = new.env(parent = globalenv()),
+                      intermediates_dir = tempdir()
+    )
+  }
+  
+  # Wrapper function with downloadHandler
   output$community_download <- downloadHandler(
-    filename =
-      create_filename(file_desc = 'community report',
-                      title = input$analysis_title,
-                      buffer_dist = current_slider_val[[submitted_upload_method()]],
-                      site_method = submitted_upload_method(),
-                      with_datetime = TRUE,
-                      ext = ifelse(input$format1pager == 'pdf', '.pdf','.html')
-      ),
-    content = function(file) {
-      # Copy the report file to a temporary directory before processing it, in
-      # case we don't have write permissions to the current working dir (which
-      # can happen when deployed).
-      #tempReport <- file.path(tempdir(), "community_summary.html")
-      tempReport <- file.path(tempdir(), 'community_report_template.Rmd')
-      
-      if (!('communityreport.css' %in% list.files(tempdir()))) {
-        file.copy(from = app_sys('report/community_report/communityreport.css'),
-                  to = file.path(tempdir(), 'communityreport.css'), overwrite = TRUE)
-      }
-      
-      if (!('EPA_logo_white.png') %in% list.files(file.path(tempdir(), 'www'))) {
-        dir.create(file.path(tempdir(), 'www'))
-        file.copy(from = app_sys('report/community_report/EPA_logo_white.png'),
-                  to = file.path(tempdir(), 'www', 'EPA_logo_white.png'), overwrite = TRUE)
-      }
-      
-      ## copy Rmd from inst/report to temp folder  (note there had been a similar but not identical .Rmd in EJAM/www/)
-      file.copy(from = app_sys('report/community_report/community_report_template.Rmd'),  # treats EJAM/inst/ as root
-                to = tempReport, overwrite = TRUE)
-      
-      # htmltools::save_html(full_html_reactive(),
-      #                      file = tempReport)
-      
-      isolate({  # need someone to confirm this is needed/helpful and not a problem, to isolate this.
-        ## pass params to customize .Rmd doc  # ###
-        # params <- list(html_content = full_html_reactive(),
-        #                map         = report_map(),
-        #                summary_plot = v1_summary_plot())
-        rad <- data_processed()$results_overall$radius.miles # input$radius can be changed by user and would alter the report text but should just show what was run not what slider currently says
-        popstr <- prettyNum(total_pop(), big.mark = ',')
-        
-        if (submitted_upload_method() == 'SHP') {
-          location_type <- " selected polygons"
-          radiusstr <- paste0(rad, " mile",
-                              ifelse(rad > 1, "s", ""), " of ")
-          
-        } else if (submitted_upload_method() == 'FIPS') {
-          location_type <- " selected shapes"
-          radiusstr <- ""
-        } else {
-          location_type <- " selected points"
-          radiusstr <- paste0(rad, " mile", ifelse(rad > 1, "s", ""), " of ")
-          
-        }
-        
-        locationstr <- paste0("Residents within ",
-                              radiusstr,
-                              "any of the ", NROW(data_processed()$results_bysite[data_processed()$results_bysite$valid == T,]),location_type)
-        
-        params <- list(
-          output_df = data_processed()$results_overall,
-          analysis_title = input$analysis_title,
-          totalpop = popstr,
-          locationstr = locationstr,
-          include_ejindexes = (input$include_ejindexes == 'TRUE'),
-          in_shiny = FALSE,
-          filename = NULL,
-          map = report_map(),
-          summary_plot = v1_summary_plot()
-        )
-        
-      })
-      
-      rmarkdown::render(tempReport,
-                        output_format = 'html_document',
-                        output_file = file,
-                        params = params,
-                        envir = new.env(parent = globalenv()),
-                        intermediates_dir = tempdir()
+    filename = function() {
+      create_filename(
+        file_desc = 'community report',
+        title = input$analysis_title,
+        buffer_dist = current_slider_val[[submitted_upload_method()]],
+        site_method = submitted_upload_method(),
+        with_datetime = TRUE,
+        ext = ifelse(input$format1pager == 'pdf', '.pdf', '.html')
       )
-      
-      #file.copy(tempReport, file)
-      
+    },
+    content = function(file) {
+      html_content <- community_download()
+      file.rename(html_content, file)
     }
   )
   
@@ -2973,19 +2964,32 @@ app_server <- function(input, output, session) {
           }
           progress_xl$set(value = value, message = message_main, detail = message_detail)
         }
+        
+        #remove hyperlinks from excel output if shapefile is current_upload_method() - Temporary
+        if(current_upload_method() == "SHP"){
+          hyperlink_columns <- NULL
+        }else{
+          hyperlink_columns <- c("EJScreen Report", "EJScreen Map" ,'ECHO report')
+        }
         wb_out <- table_xls_format(
           # note they seem to be data.frames, not data.tables, at this point, unlike how ejamit() had been returning results.
           overall   = data_processed()$results_overall |> dplyr::select(names( data_processed()$results_overall)[keepcols]),
           eachsite  = data_processed()$results_bysite |> dplyr::select(names( data_processed()$results_bysite)[keepcols2]),# needs ..  # 1 row per site
           longnames = data_processed()$longnames[           keepcols2], # not need ..       # 1 row, but full plain English column names.  keepcols here should be selecting cols not rows.
           
+          html_content <- isolate({
+            community_download() 
+          }),
+          
           # *** NOTE:  data_processed()$results_bybg_people  #considered not providing this to xlsx by default. It is huge and for expert users,
           # ***    but useful to create a plot of distance by group. Perhaps that could be created here to avoid passing the entire large table to table_xls_format() just for the plot. ***
           
           mapadd = TRUE,
           report_map = report_map(),
+          community_reportadd = TRUE,
+          community_image = html_content,
           
-          hyperlink_colnames = c("EJScreen Report", "EJScreen Map" ,'ECHO report'),  # need to ensure these get formatted right to work as links in Excel
+          hyperlink_colnames = hyperlink_columns,  # need to ensure these get formatted right to work as links in Excel
           # heatmap_colnames = names(table_as_displayed)[pctile_colnums], # can use defaults
           # heatmap_cuts = c(80, 90, 95), # can use defaults
           # heatmap_colors = c('yellow', 'orange', 'red') # can use defaults
