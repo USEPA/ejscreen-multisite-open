@@ -12,6 +12,9 @@
 #' @param plot_distance_by_group logical, whether to try to add a plot of mean distance by group. 
 #'   This requires that bybg be provided as a parameter input to this function. 
 #' @param summary_plot optional plot object passed from EJAM shiny app to save in 'Plot' sheet of Excel table
+#' @param community_image
+#' @param community_reportadd
+#' @param summary_plot optional plot object passed from EJAM shiny app to save in 'Plot' sheet of Excel table
 #' @param plotlatest optional logical. If TRUE, the most recently displayed plot (prior to this function being called) will be inserted into a tab called plot2
 #' @param plotfilename the full path including name of .png file to insert
 #' @param mapadd logical optional - try to include a map of the points 
@@ -64,7 +67,9 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
                             plotlatest = FALSE, 
                             plotfilename = NULL, 
                             mapadd = FALSE,
+                            community_reportadd = FALSE,
                             report_map=NULL,
+                            community_image=NULL,
                             ok2plot = TRUE,
                             analysis_title = "EJAM analysis",
                             buffer_desc = "Selected Locations", 
@@ -216,6 +221,7 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
   if (!is.null(formatted)) {openxlsx::addWorksheet(wb, sheetName = 'Overall 2') }
   openxlsx::addWorksheet(wb, sheetName = 'longnames')
   openxlsx::addWorksheet(wb, sheetName = 'map') 
+  openxlsx::addWorksheet(wb, sheetName = 'Community Report')
   
   # openxlsx::addWorksheet(wb, sheetName = 'bybg') # a lot of rows and not essential except to calculate distance vs demog group stats/plots
   # the plot sheets and notes sheet are created below
@@ -328,6 +334,38 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     openxlsx::insertImage(wb, sheet = 'map', file = file.path(mytempdir, 'map1.png'),
                           width = 9, height = 7)
   }
+  
+  if(is.function(updateProgress)){
+    boldtext <- 'Rendering community report'
+    updateProgress(message_main = boldtext, value = 0.35)
+  }
+  
+  if (community_reportadd) {
+    mytempdir <- tempdir()
+    png_file <- file.path(mytempdir, 'community_report.png')
+    
+    # Convert HTML to image using webshot
+    tryCatch({
+      webshot::webshot(url = temp_html_file, file = png_file)
+    }, error = function(e) {
+      message("Error converting HTML to PNG:", e$message)
+      # Handle the error (e.g., fallback mechanism, logging, etc.)
+    })
+    
+    # Insert image into workbook
+    if (file.exists(png_file)) {
+      tryCatch({
+        openxlsx::insertImage(wb, sheet = 'Community Report', file = png_file, width = 11, height = 30)
+      }, error = function(e) {
+        message("Error inserting image into Excel:", e$message)
+        # Handle the error (e.g., fallback mechanism, logging, etc.)
+      })
+    } else {
+      message("PNG file not found or could not be generated.")
+    }
+  }
+
+  
   
   ######################################################################## #
   ## write to NOTES sheet  ####
