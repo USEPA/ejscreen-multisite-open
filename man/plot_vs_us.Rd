@@ -2,14 +2,18 @@
 % Please edit documentation in R/plot_vs_us - DRAFT.R
 \name{plot_vs_us}
 \alias{plot_vs_us}
-\title{draft code to plot distribution of a variable among residents near set of sites vs nationwide
-Not yet population weighted}
+\title{DRAFT - Plot distribution of data among residents at sites vs reference area (US, etc.)}
 \usage{
 plot_vs_us(
-  bysite = ejamit()$results_bysite,
-  varname = "Demog.Index",
-  refdt = NULL,
+  bysite = NULL,
+  varname = "pctlowinc",
   type = "box",
+  refarealabel = "In Avg. Blockgroup Nationwide",
+  siteslabel = "At Avg. Site Analyzed",
+  xlabels = c(refarealabel, siteslabel),
+  refdata = NULL,
+  nsample = 5000,
+  fix_pctcols = TRUE,
   colorfills = c("lightblue", "orange"),
   ...
 )
@@ -27,13 +31,21 @@ plot_vs_us(
 plots
 }
 \description{
-draft code to plot distribution of a variable among residents near set of sites vs nationwide
-Not yet population weighted
+DRAFT - Visualize indicator values (scores) as distributed across places
+}
+\details{
+Not yet population weighted, so it is the distribution across sites not residents.
+
+Could be recoded to allow multiple types of sites and/or reference zones
+more generally like for ejamit_compare_types_of_places()
 }
 \examples{
- # plot_vs_us(testoutput_ejamit_1000pts_1miles$results_bysite, type = 'box')
- # plot_vs_us(testoutput_ejamit_1000pts_1miles$results_bysite, varname = "pctlingiso", type =  'box', ylim=c(0,20))
- # plot_vs_us(testoutput_ejamit_1000pts_1miles$results_bysite, varname = "pctlingiso", type =  'ggplot')
- # plot_vs_us(testoutput_ejamit_1000pts_1miles$results_bysite, varname = "pctnhaa", type =  'ggplot')
- # plot_vs_us(testoutput_ejamit_1000pts_1miles$results_bysite, varname = "pctnhaa", type = 'box', ylim = c(0,20))
+dontrun{
+  out <- testoutput_ejamit_1000pts_1miles
+  plot_vs_us(out$results_bysite, type = 'box')
+  plot_vs_us(out$results_bysite, varname = "pctlingiso", type =  'box', ylim=c(0, 20))
+  plot_vs_us(out$results_bysite, varname = "pctlingiso", type =  'ggplot')
+  plot_vs_us(out$results_bysite, varname = "pctnhaa", type =  'ggplot')
+  plot_vs_us(out$results_bysite, varname = "pctnhaa", type = 'box', ylim = c(0, 20))
+  }
 }

@@ -1,6 +1,15 @@
 
-#' draft code to plot distribution of a variable among residents near set of sites vs nationwide
-#' Not yet population weighted
+
+#' DRAFT - Plot distribution of data among residents at sites vs reference area (US, etc.)
+#' @description DRAFT - Visualize indicator values (scores) as distributed across places
+#' 
+#' @details
+#' 
+#'   Not yet population weighted, so it is the distribution across sites not residents.
+#' 
+#'   Could be recoded to allow multiple types of sites and/or reference zones 
+#'   more generally like for ejamit_compare_types_of_places()
+#'   
 #' @param bysite table of results from ejamit()$results_bysite, like testoutput_ejamit_1000pts_1miles$results_bysite
 #' @param varname name of column in bysite, like  "Demog.Index"
 #' @param type "box", "plotly", or "ggplot"
@@ -15,51 +24,84 @@
 #' 
 #' @export
 #'
-plot_vs_us <- function(bysite = ejamit()$results_bysite, varname = "Demog.Index", refdt = NULL, type = "box", colorfills = c("lightblue", "orange"), ...) {
-  if (is.null(refdt)) {
-    refdt <- copy(blockgroupstats[ , c("pop", varname), with = FALSE])
+#' @examples dontrun{
+#'   out <- testoutput_ejamit_1000pts_1miles
+#'   plot_vs_us(out$results_bysite, type = 'box')
+#'   plot_vs_us(out$results_bysite, varname = "pctlingiso", type =  'box', ylim=c(0, 20))
+#'   plot_vs_us(out$results_bysite, varname = "pctlingiso", type =  'ggplot')
+#'   plot_vs_us(out$results_bysite, varname = "pctnhaa", type =  'ggplot')
+#'   plot_vs_us(out$results_bysite, varname = "pctnhaa", type = 'box', ylim = c(0, 20))
+#'   }
+plot_vs_us <- function(bysite = NULL, # ejamit()$results_bysite, 
+                       varname = "pctlowinc", 
+                       type = "box",
+                       refarealabel = "In Avg. Blockgroup Nationwide", siteslabel = "At Avg. Site Analyzed", xlabels = c(refarealabel, siteslabel),
+                       # could recode to allow multiple types of sites and/or reference zones more generally like for ejamit_compare_types_of_places()
+                       refdata = NULL, 
+                       nsample = 5000, fix_pctcols = TRUE,
+                       colorfills = c("lightblue", "orange"),
+                       ...) {
+  
+  stop("draft function - needs 0-100 vs 0-1 scaling fixed")
+  
+  stopifnot(NCOL(varname) == 1, NROW(varname) == 1, "character" %in% class(varname), all(varname %in% colnames(bysite)))
+  
+  # bysite
+  if (is.null(bysite)) {
+    if (interactive()) {
+      bysite <- ejamit()$results_bysite
+    } else {
+      stop("bysite is required")
+    }
   }
-  nsample <- 5000
-  # bysite <- testoutput_ejamit_1000pts_1miles$results_bysite
-  ## or
-  # bysite <- ejamit(testpoints_1000)
-  # bysite <- bysite$results_bysite
-  
+  if ("results_bysite" %in% names(bysite)) {
+    # looks like full output of ejamit() was provided, not just the results_bysite data.table
+    bysite <- copy(bysite$results_bysite)
+  } else {
+    bysite <- copy(bysite)
+  }
   # correct for different 0-1 or 0-100 scaling in blockgroupstats and ejamit()$results_bysite
-  refdt <- fix_pctcols_x100(refdt)
-  # x100_in_blockgroupstats <- names_pct_as_fraction_blockgroupstats
-  # setDF(refdt)
-  # refdt[ , x100_in_blockgroupstats] <- 100 * refdt[ , x100_in_blockgroupstats]
-  # setDT(refdt)
-  
-  # correct for different scaling in blockgroupstats and ejamit()$results_bysite
   bysite <- fix_pctcols_x100(bysite)
-  # x100varnames = c(
-  #   names_d, names_d_avg, names_d_state_avg,
-  #   names_d_subgroups, names_d_subgroups_avg, names_d_subgroups_state_avg,
-  #   "pctdisability",  "p_own_occupied", 
-  #   "pctunder18", "pctover17", "pctmale", "pctfemale")
-  # if (varname %in% x100varnames) {
-  #   setDF(bysite)
-  #   bysite[ , varname] <- 100 * bysite[ , varname]
-  #   setDT(bysite)
-  #   }
+  data.table::setDT(bysite)
+  sites <- cbind(bysite[ , c("pop", varname), with = FALSE], Locations = siteslabel)
   
-  sites <- cbind(bysite[ , c("pop", varname), with = FALSE], Locations = "Near these sites")
-
-  us <- cbind(refdt, Locations = "Nationwide")
-  us.sample <- us[sample(1:NROW(us), nsample), ]
-  both.sample <- rbind(us.sample, sites)
-  both <- rbind(us, sites)
-  setnames(both, varname, 'literalvarname')
+  # refdata -- If no reference area is specified, use all US block groups
+  if (is.null(refdata)) {
+    if (!(varname %in% names(blockgroupstats))) {stop(varname, "must be a column name in refdata (which is blockgroupstats by default)")}
+    if (is.data.table(blockgroupstats)) {
+      setDF(blockgroupstats)
+      refdata <- blockgroupstats[!is.na(blockgroupstats$pop) & !is.na(blockgroupstats[ , varname]), c("pop", varname)]
+      setDT(blockgroupstats)
+    } else {
+      refdata <- blockgroupstats[!is.na(blockgroupstats$pop) & !is.na(blockgroupstats[ , varname]), c("pop", varname)]
+    }
+    if (!fix_pctcols) {warning("if using default refdata, blockgroupstats, fix_pctcols must be TRUE and ignored if set FALSE")}
+    refdata <- fix_pctcols_x100(refdata)
+  } else {
+    if (!(varname %in% names(refdata))) {stop(varname, "must be a column name in refdata")}
+    if (fix_pctcols) {
+      message("assuming refdata provided was a subset of blockgroupstats, so rescaling some indicators to ensure all percentages are scaled as 0-100 not 0-1")
+      refdata <- fix_pctcols_x100(refdata)
+    }
+  }
+  data.table::setDT(refdata)
+  refdata$Locations <- refarealabel
+  refdata <- refdata[!is.na(pop), ]
+  
+  # Combine reference area and specified locations (e.g. near these sites)
+  # as full dataset but also a smaller sampling
+  both.sample <- rbind(refdata[sample(1:NROW(refdata), nsample), ], sites)
+  both        <- rbind(refdata, sites)
+  
+  setnames(both,        varname, 'literalvarname')
   setnames(both.sample, varname, 'literalvarname')
   
   bothmeans <- both[ , .(mean(literalvarname, na.rm = T)), by = "Locations"]$V1
   # both75 <- both[ , .(quantile(literalvarname, na.rm = T, probs = 0.75, type = 1))]$V1
   # both25 <- both[ , .(quantile(literalvarname, na.rm = T, probs = 0.25, type = 1))]$V1
-  # 
+  
   varlabel <- fixcolnames(varname, 'r', 'shortlabel')
-  maintitle <- paste0("Comparison of ", varlabel, " among residents near these sites versus nationwide")
+  maintitle <- paste0("Comparison of ", varlabel, " among Residents ", siteslabel, " versus ", refarealabel)
   
   if (type == 'box') {
     
@@ -68,7 +110,7 @@ plot_vs_us <- function(bysite = ejamit()$results_bysite, varname = "Demog.Index"
     points(1:2, bothmeans, col = 'black', pch = 22, bg = "white", cex = 3)
     abline(h = bothmeans[1], col = "white")
     abline(h = bothmeans[2], col = 'white')
-    points(jitter(1 + ("Near these sites" == both.sample$Locations)), both.sample$literalvarname, pch = 20, col = "darkgray", cex = 0.7) # pch = "."
+    points(jitter(1 + (siteslabel == both.sample$Locations)), both.sample$literalvarname, pch = 20, col = "darkgray", cex = 0.7) # pch = "."
     
   } else {
     
@@ -84,6 +126,7 @@ plot_vs_us <- function(bysite = ejamit()$results_bysite, varname = "Demog.Index"
       #   plotly::add_histogram(color = I("black"))
       # box <- plotly::plot_ly(d, x = ~Locations, y = ~Indicator, color = I("black")) %>% 
       #   plotly::add_boxplot(name = " ")
+      
       violin <- plotly::plot_ly(d, x = ~Locations, y = ~Indicator, color = I("blue")) %>%
         plotly::add_trace(type = "violin", name = " ")
       plotly::subplot(
@@ -111,20 +154,14 @@ plot_vs_us <- function(bysite = ejamit()$results_bysite, varname = "Demog.Index"
           geom_boxplot(aes(x = Locations, y = literalvarname, 
                            weight = pop, 
                            alpha = 0.03, col = "gray")) +
-
+          
           theme_bw() +
           theme(panel.grid = element_blank()) +
           xlab("Locations") +
           ylab(varlabel) +
           # labs(fill = "Locations", color = "Locations") +
           ggtitle(maintitle, subtitle = "WEIGHTED NOT YET IMPLEMENTED FOR Population weighted distribution (quantiles of all residents not sites)")
-        
       }
     }
   }}
-
-plot_box_per_column <- function(dt) {
-  
-  data.table::sh
-}
 
