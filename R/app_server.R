@@ -2969,6 +2969,13 @@ app_server <- function(input, output, session) {
           }
           progress_xl$set(value = value, message = message_main, detail = message_detail)
         }
+        
+        #remove hyperlinks from excel output if shapefile is current_upload_method() - Temporary
+        if(current_upload_method() == "SHP"){
+          hyperlink_columns <- NULL
+        }else{
+          hyperlink_columns <- c("EJScreen Report", "EJScreen Map" ,'ECHO report')
+        }
         wb_out <- table_xls_format(
           # note they seem to be data.frames, not data.tables, at this point, unlike how ejamit() had been returning results.
           overall   = data_processed()$results_overall |> dplyr::select(names( data_processed()$results_overall)[keepcols]),
@@ -2987,7 +2994,7 @@ app_server <- function(input, output, session) {
           community_reportadd = TRUE,
           community_image = html_content,
           
-          hyperlink_colnames = c("EJScreen Report", "EJScreen Map" ,'ECHO report'),  # need to ensure these get formatted right to work as links in Excel
+          hyperlink_colnames = hyperlink_columns,  # need to ensure these get formatted right to work as links in Excel
           # heatmap_colnames = names(table_as_displayed)[pctile_colnums], # can use defaults
           # heatmap_cuts = c(80, 90, 95), # can use defaults
           # heatmap_colors = c('yellow', 'orange', 'red') # can use defaults
@@ -3306,6 +3313,9 @@ app_server <- function(input, output, session) {
   
   # other plot ideas
   # https://exts.ggplot2.tidyverse.org/gallery/
+  current_hist_ind <- reactive({
+    input$summ_hist_ind
+  })
   
   output$summ_hist_ind <- renderUI({
     
@@ -3314,36 +3324,47 @@ app_server <- function(input, output, session) {
     
     if ((input$include_ejindexes == "TRUE")) {
       
+      ## use same root names so dropdown does not reset with other settings changing
+      root_nms <-  c(names_d,
+                     names_d_subgroups,
+                     names_e, names_ej, names_ej_supp)
+      
       if (input$summ_hist_data == 'pctile') {
         nms <-  c(names_d_pctile,
                   names_d_subgroups_pctile,
                   names_e_pctile, names_ej_pctile,
                   names_ej_supp_pctile)
         
+        friendly_nms <- fixcolnames(nms, oldtype = 'r', newtype = 'shortlabel')
+        
       } else if (input$summ_hist_data == 'raw') {
-        nms <-  c(names_d,
-                  names_d_subgroups,
-                  names_e, names_ej, names_ej_supp)
+        friendly_nms <- fixcolnames(root_nms, oldtype = 'r', newtype = 'shortlabel')
       }
-      friendly_nms <- fixcolnames(nms, oldtype = 'r', newtype = 'shortlabel')
       
     } else {
+
+      ## use same root names so dropdown does not reset with other settings changing
+      root_nms <- c(names_d,
+                    names_d_subgroups,
+                    names_e)
+      
       if (input$summ_hist_data == 'pctile') {
-        nms <-  c(names_d_pctile,
-                  names_d_subgroups_pctile,
-                  names_e_pctile)
+        nms <-  c(names_d_pctile, names_d_subgroups_pctile,names_e_pctile)
+        
+        friendly_nms <- fixcolnames(nms, oldtype = 'r', newtype = 'shortlabel')
+    
       } else if (input$summ_hist_data == 'raw') {
-        nms <-  c(names_d,
-                  names_d_subgroups,
-                  names_e)
+        nms <-  c(names_d, names_d_subgroups, names_e)
+        friendly_nms <- fixcolnames(root_nms, oldtype = 'r', newtype = 'shortlabel')
       }
-      friendly_nms <- fixcolnames(nms, oldtype = 'r', newtype = 'shortlabel')
+
     }
     selectInput('summ_hist_ind', label = 'Choose indicator',
                 choices = setNames(
-                  object = nms,
+                  object = root_nms,
                   nm = friendly_nms
-                ) # end setNames
+                ), # end setNames
+                selected = current_hist_ind()
     ) # end selectInput
   })
   
@@ -3367,9 +3388,11 @@ app_server <- function(input, output, session) {
         
         ## subset doaggregate results_bysite to selected indicator
         if (submitted_upload_method() == 'SHP') {
-          hist_input <- as.data.frame(data_processed()$results_bysite[, input$summ_hist_ind])
+          hist_input <- as.data.frame(data_processed()$results_bysite[, current_hist_ind()])#input$summ_hist_ind])
+          
         } else {
-          hist_input <- data_processed()$results_bysite[, input$summ_hist_ind, with = F]
+          hist_input <- data_processed()$results_bysite[, current_hist_ind(), with=F]#input$summ_hist_ind, with = F]
+          
         }
         names(hist_input)[1] <- 'indicator'
         
@@ -3391,15 +3414,20 @@ app_server <- function(input, output, session) {
         
         ## subset doaggregate results_bysite to selected indicator
         if (submitted_upload_method() == 'SHP') {
-          hist_input <- as.data.frame(data_processed()$results_bysite[, input$summ_hist_ind])
+
+          hist_input <- as.data.frame(data_processed()$results_bysite[, paste0('pctile.',current_hist_ind())])#input$summ_hist_ind])
+          
         } else {
-          hist_input <- data_processed()$results_bysite[, input$summ_hist_ind, with = F]
+          hist_input <- data_processed()$results_bysite[, paste0('pctile.',current_hist_ind()), with=F]#input$summ_hist_ind, with = F]
+          
         }
         names(hist_input)[1] <- 'indicator'
         
         ggplot(hist_input) +
           geom_histogram(aes(x = indicator), fill = '#005ea2',
-                         bins = input$summ_hist_bins) +
+                         #bins = input$summ_hist_bins,
+                         breaks = seq(0,100, length.out = input$summ_hist_bins+1)
+                         ) +
           labs(
             x = '',
             y = 'Number of Sites',
@@ -3413,9 +3441,12 @@ app_server <- function(input, output, session) {
         
         ## subset doaggregate results_bysite to selected indicator
         if (submitted_upload_method() == 'SHP') {
-          hist_input <- as.data.frame(data_processed()$results_bysite[, c('pop',input$summ_hist_ind)])
+
+          hist_input <- as.data.frame(data_processed()$results_bysite[, c('pop',current_hist_ind())])
+          
         } else {
-          hist_input <- data_processed()$results_bysite[, c('pop',input$summ_hist_ind), with = F]
+          hist_input <- data_processed()$results_bysite[, c('pop',current_hist_ind()), with=F]
+          
         }
         names(hist_input)[2] <- 'indicator'
         
@@ -3437,16 +3468,21 @@ app_server <- function(input, output, session) {
         
         ## subset doaggregate results_bysite to selected indicator
         if (submitted_upload_method() == 'SHP') {
-          hist_input <- as.data.frame(data_processed()$results_bysite[, c('pop',input$summ_hist_ind)])
+
+          hist_input <- as.data.frame(data_processed()$results_bysite[, c('pop',paste0('pctile.',current_hist_ind()))])
+          
         } else {
-          hist_input <- data_processed()$results_bysite[, c('pop',input$summ_hist_ind), with = F]
+          hist_input <- data_processed()$results_bysite[, c('pop',paste0('pctile.',current_hist_ind())), with=F]
+          
         }
         names(hist_input)[2] <- 'indicator'
         
         ## plot population weighted histogram
         ggplot(hist_input) +
           geom_histogram(aes(x = indicator, y = after_stat(density), weight = pop), fill = '#005ea2',
-                         bins = input$summ_hist_bins) +
+                         #bins = input$summ_hist_bins,
+                         breaks = seq(0,100, length.out = input$summ_hist_bins+1)
+          ) +
           ## set y axis limits to (0, max value) but allow 5% higher on upper end
           scale_y_continuous(limits = c(0, NA), expand = expansion(mult = c(0, 0.05))) +
           labs(

@@ -411,13 +411,10 @@ generate_html_header <- function(analysis_title, totalpop, locationstr, in_shiny
     shift_hbd <- 0
   }
   
-  #img_html <- paste0('<img src=\"',             'www/EPA_logo_white_2.png',   '\" alt=\"EPA logo\" width=\"110\" height=\"35\">')
-   img_html <- paste0('<img src=\"', app_sys('app/www/EPA_logo_white_2.png'),  '\" alt=\"EPA logo\" width=\"110\" height=\"35\">')
   
-  # img_html <- paste0('<img src="',app_sys('report/community_report/EPA_logo_white_2.png'),
-  #                    '" alt="EPA logo" width="110" height="35" style="position: absolute; left: 950px; top: ',shift_hbd+90,'px">')
-  #
-
+  img_html <- paste0('<img src=\"', 'www/EPA_logo_white_2.png',
+                     '\" alt=\"EPA logo\" width=\"110\" height=\"35\">')
+  
   paste0('
   <link href=\"https://fonts.googleapis.com/css2?family=Heebo:wght@500;600\" rel=\"stylesheet\">
   <link href=\"https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;700&amp;display=swap\" rel=\"stylesheet\">
