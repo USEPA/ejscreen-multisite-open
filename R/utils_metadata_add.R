@@ -85,12 +85,13 @@ metadata_add <- function(x, metadata = list(
 metadata_check <- function(packages = EJAM::ejampackages, 
                            which = c(
                              "date_saved_in_package",
-                             "date_downloaded",
+                             # "date_downloaded",
                              "ejscreen_version",
                              "ejscreen_releasedate",
                              "acs_releasedate",
                              "acs_version",
-                             "census_version"
+                             "census_version",
+                             "EJAMversion"
                            ),
                            loadifnotloaded = TRUE) {
   
