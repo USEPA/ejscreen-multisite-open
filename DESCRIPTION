@@ -79,6 +79,7 @@ RoxygenNote: 7.3.1
 Roxygen: list(markdown = TRUE)
 Config/testthat/parallel: false
 EJScreenVersion: 2.3
+EJScreenReleaseDate: June 2024
 ACSVersion: 2018-2022
 ACSReleaseDate: 2023-12-07
 CensusVersion: 2020
