@@ -73,7 +73,7 @@ sum(bg_cenpop2020$pop2020)
 sum(blockgroupstats$pop, na.rm = T)
 ####################################################### # 
 
-bg_cenpop2020 <-  metadata_add(bg_cenpop2020, metadata = list(download_date = Sys.time(), source = fname,  census_version = 2020)) 
+bg_cenpop2020 <-  metadata_add(bg_cenpop2020) 
 usethis::use_data(bg_cenpop2020, overwrite = TRUE)
 
 rm(bg_cenpop2020)

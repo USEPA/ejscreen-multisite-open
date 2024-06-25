@@ -26,13 +26,7 @@ map_headernames[is.na(map_headernames)] <- ''  #changeNAvaluestoemptycell,soitis
 
 
 # attr(map_headernames,"date_created") <- Sys.Date()
-map_headernames <- EJAM:::metadata_add(
-  map_headernames, 
-  metadata = list(
-    data_updated = as.character(Sys.Date()),
-    ejscreen_version = "2.3"
-  )
-)
+map_headernames <- EJAM:::metadata_add(map_headernames)
 
 usethis::use_data(map_headernames, overwrite = TRUE)
 
