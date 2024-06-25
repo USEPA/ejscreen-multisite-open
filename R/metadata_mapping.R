@@ -59,8 +59,19 @@ metadata_mapping <- list(
   testids_program_sys_id = list(),
   
   # datacreate_testids_registry_id.R
-  testids_registry_id = list()
-) 
+  testids_registry_id = list(),
+  
+  test_metadata_custom = list(
+    custominfo = 0, 
+    moreinfo = "oldvalue", 
+    unchangedinfo = 9
+  ),
+  
+  test_metadata_custom2 = list(
+    custominfo = 123, 
+    moreinfo = "abc"
+  )
+)
 
 get_metadata_mapping <- function(dsname) {
   return(metadata_mapping[[dsname]])

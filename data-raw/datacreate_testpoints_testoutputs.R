@@ -6,7 +6,8 @@
 # - sites2blocks data objects, and
 # - documentation files for all those
 
-metadatanow = list(ejscreen_version = "2.2", acs_version = "2017-2021", census_version = 2020, date_saved_in_package = Sys.Date())
+# metadatanow = list(ejscreen_version = "2.2", acs_version = "2017-2021", census_version = 2020, date_saved_in_package = Sys.Date())
+metadatanow = list()
 # x = EJAM:::metadata_add(x, metadata = metadatanow)
 
 
