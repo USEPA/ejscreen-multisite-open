@@ -9,6 +9,7 @@
 #' @param x dataset (or any object) whose metadata (stored as attributes) you want to update or create
 #' @param metadata must be a named list, so that the function can do this for each i:
 #'   `attr(x, which=names(metadata)[i]) <- metadata[[i]]`
+#'  EJAM, EJScreen, and other dataset versions and release dates are tracked in DESCRIPTION
 #' @seealso metadata_check()
 #'
 #' @return returns x but with new or altered attributes
@@ -26,15 +27,19 @@
 #' 
 #' @keywords internal
 #'
+library(desc)
+description_file <- description$new("DESCRIPTION")
+
 metadata_add <- function(x, metadata = list(
   date_saved_in_package = as.character(Sys.Date()),
   date_downloaded       = as.character(Sys.Date()),
-  ejscreen_version      = "2.3",
-  ejscreen_releasedate = "2024-07-01",
-  acs_releasedate =      "2023-12-07",
-  acs_version =          "2018-2022",
-  census_version        = 2020
+  ejscreen_version      = description_file$get("EJScreenVersion"),
+  acs_releasedate       = description_file$get("ACSReleaseDate"),
+  acs_version           = description_file$get("ACSVersion"),
+  census_version        = description_file$get("CensusVersion"),
+  version               = description_file$get("Version")
 )) {
+  
   
   if (missing(metadata)) {
     txt <- paste0(paste0(names(metadata), "=", unlist(metadata)), collapse = ", ")
