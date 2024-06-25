@@ -120,7 +120,9 @@ fipstype <- function(fips) {
   ftype[!is.na(fips) & nchar(fips) ==  2] <- "state"
   
   if (anyNA(ftype)) {
-    warning("some fips do not seem to be block, blockgroup, tract, county, or state FIPS (lengths with leading zeroes should be 15,12,11,5,2 respectively")
+    
+    howmanyna = sum(is.na(ftype))
+    warning("NA returned for ", howmanyna," fips that do not seem to be block, blockgroup, tract, county, or state FIPS (lengths with leading zeroes should be 15,12,11,5,2 respectively")
   }
   return(ftype)
 }
@@ -150,7 +152,7 @@ fips_lead_zero <- function(fips) {
   # if there are decimal places, negative signs, spaces, etc. then treat those fips as NA values
   just_numerals = function(x) {!grepl("[^0123456789]", x)}
   fips[!just_numerals(fips)] <- NA 
-  if (any(is.na(fips))) {warning('some fips cannot be interpreted as numbers (e.g., are text or NA or logical')}
+  # if (anyNA(fips)) {warning('some fips cannot be interpreted as numbers (e.g., are text or NA or logical')}
   
   #	TRY TO CLEAN UP vector of FIPS AND INFER GEOGRAPHIC SCALE
   
@@ -182,8 +184,9 @@ fips_lead_zero <- function(fips) {
   
   # MAYBE should remove or set to NA when State or County code is invalid? another function can check for that.
   
-  if (any(is.na(fips))) {
-    warning("Some FIPS had invalid number of characters (digits) or were NA values")
+  if (anyNA(fips)) {
+    howmanyna = sum(is.na(fips))
+    warning(howmanyna, " fips had invalid number of characters (digits) or were NA values")
   }
   
   return(fips)
@@ -245,7 +248,7 @@ counties_as_sites <- function(fips) {
     message("leading zeroes being inferred since FIPS was provided as numbers not character class")
     fips <- fips_lead_zero(fips)
   }
-
+  
   county2bg <- bgpts[substr(bgfips,1,5) %in% fips, .(countyfips = substr(bgfips,1,5), bgid) ]
   if (NROW(county2bg) == 0) {warning("no valid fips, so returning empty data.table of 0 rows")}
   county2bg[, ejam_uniq_id := .GRP , by = "countyfips"]
@@ -284,9 +287,14 @@ states_as_sites <- function(fips) {
     message("leading zeroes being inferred since FIPS was provided as numbers not character class")
     fips <- fips_lead_zero(fips)
   }
-  valids <- stateinfo2$FIPS.ST[!is.na(stateinfo2$FIPS.ST)]
-  if (!all(fips %in% valids)) {warning('some fips provided are not valid state fips')}
-  # if (!all(fipstype(fips) == 'state')) {warning('some fips provided are not valid state fips')} # that only checks if 2 characters() with leading zeroes)
+  is_ok_stfips <- (fipstype(fips) == "state" & fips_valid(fips))
+  # valids <- stateinfo2$FIPS.ST[!is.na(stateinfo2$FIPS.ST)]
+  # if (!all(fips %in% valids)) {
+  howmanyna <- sum(!is_ok_stfips) 
+  if (howmanyna > 0) { 
+    warning(howmanyna, ' fips provided are not valid state fips')
+  }
+  fips <- fips[is_ok_stfips]
   
   # accept state fips vector
   # return counties2bgs table of pairs so doaggregate_blockgroups() or whatever can take that and do full EJ stats.
@@ -298,7 +306,7 @@ states_as_sites <- function(fips) {
 ############################################### #
 
 
-#' check which fips or state names are island areas
+#' which fips, state names, or state abbreviations are island areas
 #'
 #' @param ST optional vector of 2 letter state abbreviations
 #' @param statename optional vector of statenames like "texas" or "Delaware"
@@ -319,14 +327,24 @@ is.island <- function(ST=NULL, statename=NULL, fips=NULL) {
     stop("one and only one of ST, statename, fips parameters must be provided, not NULL")
   }
   if (!is.null(ST)) {
-    return(stateinfo2$is.island.areas[match(toupper(ST), toupper(stateinfo2$ST))])
+    fips <- fips_state_from_state_abbrev(ST)
+    return(
+      stateinfo2$is.island.areas[match(fips, stateinfo2$FIPS.ST)]
+      # stateinfo2$is.island.areas[match(toupper(ST), toupper(stateinfo2$ST))]
+    )
   } 
   if (!is.null(statename)) {
-    return(stateinfo2$is.island.areas[match(toupper(statename), toupper(stateinfo2$statename))])
+    fips <- fips_state_from_statename(statename)
+    return(
+      stateinfo2$is.island.areas[match(fips, stateinfo2$FIPS.ST)]
+      # stateinfo2$is.island.areas[match(toupper(statename), toupper(stateinfo2$statename))]
+    )
   }
   if (!is.null(fips)) {
-    FIPS.ST <- fips2state_fips(fips)
-    return(stateinfo2$is.island.areas[match(FIPS.ST, stateinfo2$FIPS.ST)])
+    fips <- fips2state_fips(fips)
+    return(
+      stateinfo2$is.island.areas[match(fips, stateinfo2$FIPS.ST)]
+    )
   }
 }
 ############################################################################# #
@@ -449,8 +467,12 @@ fips_state_from_state_abbrev <- function(ST) {
   if (any(toupper(ST) %in% c("AS", "GU","MP", "UM", "VI"))) {
     message("note some of ST are among AS, GU, MP, UM, VI")
   }
-  stateinfo2$FIPS.ST[match(toupper(ST), toupper(stateinfo2$ST))] # using match is ok since only 1st match returned per element of ST but stateinfo has only 1 match per value of ST
-  
+  x <- stateinfo2$FIPS.ST[match(toupper(ST), toupper(stateinfo2$ST))] # using match is ok since only 1st match returned per element of ST but stateinfo has only 1 match per value of ST
+  if (anyNA(x)) {
+    howmanyna = sum(is.na(x))
+    warning("NA returned for ", howmanyna," ST that failed to match")
+  }
+  return(x)
   # returns one per input, including repeats etc
   # retuns NA if no matching state abbrev found
   
@@ -477,8 +499,12 @@ fips_state_from_statename <- function(statename) {
   
   # EJAM :: stateinfo
   
-  stateinfo2$FIPS.ST[match(tolower(statename), tolower(stateinfo2$statename))] # using match is ok since only 1st match returned per element of statename but stateinfo has only 1 match per value of statename
-  
+  x <- stateinfo2$FIPS.ST[match(tolower(statename), tolower(stateinfo2$statename))] # using match is ok since only 1st match returned per element of statename but stateinfo has only 1 match per value of statename
+  if (anyNA(x)) {
+    howmanyna = sum(is.na(x))
+    warning("NA returned for ", howmanyna," values that failed to match")
+  }
+  return(x)
   # returns one per input, including repeats etc
   # retuns NA if no matching state  found
 }
@@ -499,16 +525,21 @@ fips_state_from_statename <- function(statename) {
 #' @export
 #'
 fips_counties_from_statefips <- function(statefips) {
+  
   ftype = fipstype(statefips)
-  if (any(is.na(ftype)) || any(ftype != "state")) {
-    warning("Some of the supplied statefips values were NA or otherwise not recognized as State FIPS codes")
-    statefips <- statefips[!is.na(ftype) & ftype == "state"]
+  if ( any(ftype[!is.na(ftype)] != "state")) {
+    # fipstype() already provides warning about NA
+     warning("Some of the supplied statefips values were NA or otherwise not recognized as State FIPS codes")
+    
   }
+  statefips <- statefips[!is.na(ftype) & ftype == "state"]
+  if (length(statefips) == 0) {return(NA)}
   
   # EJAM :: blockgroupstats  has all the usable FIPS codes in bgfips
   countyfips <- unique(substr(blockgroupstats$bgfips,1,5))
   countyfips <- countyfips[!is.na(countyfips)]
   countyfips_in_state <- unique(countyfips[substr(countyfips,1,2) %in% statefips])
+  if (length(countyfips_in_state) == 0) {return(NA)}
   return(countyfips_in_state)
 }
 ############################################################################# #
@@ -640,12 +671,17 @@ fips_counties_from_countynamefull <- function(fullname) {
   # fips2name(y)
   # fips_counties_from_countynamefull("Harris County, tx")
   
-  substr(
+  x <- substr(
     blockgroupstats$bgfips,1,5
   )[match(
     tolower(fullname), 
     tolower(paste0(blockgroupstats$countyname, ", ", blockgroupstats$ST))
   )]
+  if (anyNA(x)) {
+    howmanyna = sum(is.na(x))
+    warning("NA returned for ", howmanyna," values that failed to match")
+  }
+  return(x)
 }
 ############################################################################# #
 
@@ -696,11 +732,13 @@ fips_counties_from_countynamefull <- function(fullname) {
 #'
 fips_bg_from_anyfips <- function(fips) {
   
-  fips <- fips_lead_zero(fips)
-  if (any(is.na(fips))) {
-    warning("Some FIPS were invalid or were NA values")
-    fips <- fips[!is.na(fips)]
+  x <- fips_lead_zero(fips)
+  
+  if (anyNA(x)) {
+    howmanyna = sum(is.na(x))
+    warning("NA returned for ", howmanyna," values that failed to match")
   }
+  fips <- x[!is.na(x)]
   
   # if smaller than bg (i.e., block fips), return just the parent bgs
   fips <- unique(substr(fips,1,12))
@@ -755,13 +793,12 @@ fips_st2eparegion <- function(stfips) {
   
   stfips <- fips_lead_zero(stfips)
   
-  regnum <- EJAM::stateinfo2$REGION[match(stfips, EJAM::stateinfo2$FIPS.ST)] # using match is ok since only 1st match returned per element of query but there is only 1 match possible
-  
-  if (any(is.na(regnum))) {
-    warning("Some stfips were invalid or were NA values or otherwise could not be converted to region number")
-    # regnum <- regnum[!is.na(regnum)]
+  x <- EJAM::stateinfo2$REGION[match(stfips, EJAM::stateinfo2$FIPS.ST)] # using match is ok since only 1st match returned per element of query but there is only 1 match possible
+  if (anyNA(x)) {
+    howmanyna = sum(is.na(x))
+    warning("NA returned for ", howmanyna," values that failed to match")
   }
-  return(regnum)
+  return(x)
 }
 ############################################################################# #
 
@@ -785,10 +822,12 @@ fips2state_abbrev <- function(fips) {
   abb <- stateinfo2$ST[match(substr(fips_lead_zero(fips), 1, 2), stateinfo2$FIPS.ST)] # using match is ok
   
   # confirm returns same length as input, and check how it handles nonmatches
-  if (any(is.na(abb))) {
-    warning("Some fips could not be converted to state abbreviation - returning NA for those")
+  x = abb
+  if (anyNA(x)) {
+    howmanyna = sum(is.na(x))
+    warning("NA returned for ", howmanyna," values that failed to match")
   }
-  return(abb)
+  return(x)
 }
 ############################################################################# #
 
@@ -807,8 +846,9 @@ fips2state_abbrev <- function(fips) {
 fips2state_fips <- function(fips) {
   
   stfips <- substr(fips_lead_zero(fips), 1, 2)
-  if (any(is.na(stfips))) {
-    warning("Some fips could not be converted to state fips - returning NA for those")
+  if (anyNA(stfips)) { 
+    howmanyna = sum(is.na(stfips))
+    warning(howmanyna, " fips could not be converted to state fips - returning NA for those")
   }
   return(stfips)
 }
@@ -828,10 +868,13 @@ fips2state_fips <- function(fips) {
 #'
 fips2statename <- function(fips) {
   
-  stname <- stateinfo2$statename[match(substr(fips_lead_zero(fips), 1, 2), stateinfo2$FIPS.ST)] # using match is ok
+  stfips = substr(fips_lead_zero(fips), 1, 2)
+  stfips[is.na(stfips)] <- "" # because NA would match the code in this table for United States, which has NA listed there as its fips
+  stname <- stateinfo2$statename[match(stfips, stateinfo2$FIPS.ST)] # using match is ok
   
-  if (any(is.na(stname))) {
-    warning("Some fips could not be converted to state name - returning NA for those")
+  if (anyNA(stname)) {
+    howmanyna = sum(is.na(stname))
+    warning(howmanyna, " fips could not be converted to state name - returning NA for those")
   }
   return(stname)
 }
@@ -869,11 +912,8 @@ fips2countyname <- function(fips, includestate = c("ST", "Statename", "")[1]) {
     substr(blockgroupstats$bgfips,1,5))]  #
   # using match is OK since 
   # you want 1 countyname returned per countyfips in query, so the fact that only 1st match gets returned is actually good.
-  
-  # using match is OK since 
-  # you want 1 countyname returned per countyfips in query, so the fact that only 1st match gets returned is actually good.
-  
-  if (any(ftype != "county")) {
+ 
+  if (all(is.na(ftype)) || any(ftype != "county")) {
     warning("this function should only be used to convert county fips to county name, 1 to 1 - returning NA for fips that are not countyfips")
   }
   if (includestate == TRUE) {includestate <- "Statename"}
@@ -915,18 +955,12 @@ fips2name  <- function(fips, ...) {
   out <- rep(NA, length(fips))
   
   ## *** need to handle NA values here since out[NA] <-  fails as cannot have NA in subset assignment
-  
   out[!is.na(fips) & fipstype(fips) == "state"]  <- fips2statename(fips = fips[!is.na(fips) & fipstype(fips) == "state"])
   out[!is.na(fips) & fipstype(fips) == "county"] <- fips2countyname(fips = fips[!is.na(fips) & fipstype(fips) == "county"], ...)
-  
+  if (anyNA(out)) {
+    howmanyna = sum(is.na(out))
+    warning("NA returned for ", howmanyna," values that failed to match")
+  }
   return(out)
 }
 ############################################################################# #
-
-
-
-# fips <- fips_lead_zero(fips)
-# if (any(is.na(fips))) {
-#   warning("Some FIPS were invalid or were NA values")
-#   fips <- fips[!is.na(fips)]
-# }

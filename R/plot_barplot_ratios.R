@@ -124,7 +124,7 @@ plot_barplot_ratios <- function(ratio.to.us.d.overall,
 
   # ratio.to.us.d.overall <-   unlist(  out$results_overall[ , c(..names_d_ratio_to_avg, ..names_d_subgroups_ratio_to_avg )]  )
     # ratio.to.us.d.overall <- ratio.to.us.d()  # reactive already available
-  # if ( all.equal(  names(ratio.to.us.d.overall), c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg))) {
+  # if (isTRUE(all.equal(names(ratio.to.us.d.overall), c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg)))) {
   #
   # #supershortnames <- substr(gsub(" |-|age","",gsub("People of Color","POC", names2plot_friendly)),1,6)
 

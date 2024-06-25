@@ -20,11 +20,11 @@ Extract summary from list of ejamit() runs at multiple distances
 Get a table, one row per distance. Overall summary, not each site.
 }
 \details{
-Compile results_bydistance table from
+This will compile a results_bydistance table from
 output of ejamit_compare_distances_fulloutput(),
 using the ejamit()$results_overall for each distance.
 }
 \seealso{
-\code{\link[=ejamit_compare_distances]{ejamit_compare_distances()}}
+\code{\link[=ejamit_compare_distances]{ejamit_compare_distances()}} \code{\link[=ejamit_compare_distances_fulloutput]{ejamit_compare_distances_fulloutput()}}
 }
 \keyword{internal}
