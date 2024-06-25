@@ -31,16 +31,13 @@ library(desc)
 description_file <- description$new("DESCRIPTION")
 
 metadata_add <- function(x, metadata = list(
-  date_saved_in_package = as.character(Sys.Date()),
-  date_downloaded       = as.character(Sys.Date()),
+  # date_downloaded     = as.character(Sys.Date()),
   ejscreen_version      = description_file$get("EJScreenVersion"),
+  ejscreen_releasedate  = description_file$get("EJScreenReleaseDate"),
   acs_releasedate       = description_file$get("ACSReleaseDate"),
   acs_version           = description_file$get("ACSVersion"),
-  census_version        = description_file$get("CensusVersion"),
-  version               = description_file$get("Version")
+  census_version        = description_file$get("CensusVersion")
 )) {
-  
-  
   if (missing(metadata)) {
     txt <- paste0(paste0(names(metadata), "=", unlist(metadata)), collapse = ", ")
     message("metadata not specified, so used defaults from source code of this function: ", txt, "\n")
@@ -48,7 +45,10 @@ metadata_add <- function(x, metadata = list(
   }
   if (!is.list(metadata)) {stop('metadata has to be a named list')
     # return(NULL)
-    }
+  }
+  
+  metadata$date_saved_in_package <- as.character(Sys.Date())
+  metadata$EJAMversion           <- description_file$get_version()
   for (i in seq_along(metadata)) {
     attr(x, which = names(metadata)[i]) <- metadata[[i]]
   }
