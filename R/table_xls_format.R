@@ -346,7 +346,7 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     
     # Convert HTML to image using webshot
     tryCatch({
-      webshot::webshot(url = temp_html_file, file = png_file)
+      webshot::webshot(url = community_image, file = png_file)
     }, error = function(e) {
       message("Error converting HTML to PNG:", e$message)
       # Handle the error (e.g., fallback mechanism, logging, etc.)
@@ -355,7 +355,8 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
     # Insert image into workbook
     if (file.exists(png_file)) {
       tryCatch({
-        openxlsx::insertImage(wb, sheet = 'Community Report', file = png_file, width = 11, height = 30)
+        # height and width are static, need to be updated if content on community report changes
+        openxlsx::insertImage(wb, sheet = 'Community Report', file = png_file, width = 11, height = 30, dpi = 500)
       }, error = function(e) {
         message("Error inserting image into Excel:", e$message)
         # Handle the error (e.g., fallback mechanism, logging, etc.)
