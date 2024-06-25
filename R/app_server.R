@@ -2971,15 +2971,16 @@ app_server <- function(input, output, session) {
         }else{
           hyperlink_columns <- c("EJScreen Report", "EJScreen Map" ,'ECHO report')
         }
+        
+        html_content <- isolate({
+          community_download() 
+        })
+        
         wb_out <- table_xls_format(
           # note they seem to be data.frames, not data.tables, at this point, unlike how ejamit() had been returning results.
           overall   = data_processed()$results_overall |> dplyr::select(names( data_processed()$results_overall)[keepcols]),
           eachsite  = data_processed()$results_bysite |> dplyr::select(names( data_processed()$results_bysite)[keepcols2]),# needs ..  # 1 row per site
           longnames = data_processed()$longnames[           keepcols2], # not need ..       # 1 row, but full plain English column names.  keepcols here should be selecting cols not rows.
-          
-          html_content <- isolate({
-            community_download() 
-          }),
           
           # *** NOTE:  data_processed()$results_bybg_people  #considered not providing this to xlsx by default. It is huge and for expert users,
           # ***    but useful to create a plot of distance by group. Perhaps that could be created here to avoid passing the entire large table to table_xls_format() just for the plot. ***
