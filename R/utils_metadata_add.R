@@ -29,15 +29,10 @@
 #'
 library(desc)
 description_file <- description$new("DESCRIPTION")
+source("R/metadata_mapping.R")
 
-metadata_add <- function(x, metadata = list(
-  # date_downloaded     = as.character(Sys.Date()),
-  ejscreen_version      = description_file$get("EJScreenVersion"),
-  ejscreen_releasedate  = description_file$get("EJScreenReleaseDate"),
-  acs_releasedate       = description_file$get("ACSReleaseDate"),
-  acs_version           = description_file$get("ACSVersion"),
-  census_version        = description_file$get("CensusVersion")
-)) {
+metadata_add <- function(x) {
+  metadata <- get_metadata_mapping(deparse(substitute(x)))
   if (missing(metadata)) {
     txt <- paste0(paste0(names(metadata), "=", unlist(metadata)), collapse = ", ")
     message("metadata not specified, so used defaults from source code of this function: ", txt, "\n")
@@ -48,7 +43,7 @@ metadata_add <- function(x, metadata = list(
   }
   
   metadata$date_saved_in_package <- as.character(Sys.Date())
-  metadata$EJAMversion           <- description_file$get_version()
+  metadata$EJAMversion           <- description_file$get("Version")
   for (i in seq_along(metadata)) {
     attr(x, which = names(metadata)[i]) <- metadata[[i]]
   }
