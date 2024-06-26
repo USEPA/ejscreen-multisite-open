@@ -200,6 +200,11 @@ shapefile_from_zip <- function(path, cleanit = TRUE, crs = 4269, layer = NULL, .
     
     shp <- shapefile_from_filepaths(
       filepaths = shapefile_filepaths_from_folder(td), cleanit = cleanit, crs = crs, ...)
+    
+    #remove files from temp directory to ensure processing is occurring on current files
+    f <- list.files(file.path(file.path(tempdir(), "tempsubdir") ), include.dirs = F, full.names = T, recursive = T)
+    file.remove(f)  
+    
     return(shp)
     
   } else {
@@ -215,6 +220,10 @@ shapefile_from_zip <- function(path, cleanit = TRUE, crs = 4269, layer = NULL, .
     unzip(path, exdir = (td <- file.path(tempdir(), "tempsubdir") ) )
     
     shp <- shapefile_from_folder(file.path(td, gname), cleanit = cleanit, crs = crs, ...)
+    
+    #remove files from temp directory to ensure processing is occurring on current files
+    f <- list.files(file.path(file.path(tempdir(), "tempsubdir") ), include.dirs = F, full.names = T, recursive = T)
+    file.remove(f)  
     
     # cat("not able to determine format\n")
     # shp <- shapefile_from_json(shp, cleanit = cleanit, crs = crs, layer = layer, ...) # should work for any format that is like a shapefile

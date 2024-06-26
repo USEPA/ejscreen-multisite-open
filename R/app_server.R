@@ -339,15 +339,6 @@ app_server <- function(input, output, session) {
           #read in zip file
           shp <- shapefile_from_zip(infiles)
           
-          #if NULL is return from shapefile_xyz, present message in app
-          if (is.null(shp)) {
-            shiny::validate("Uploaded file should contain the following file extensions: shp, shx, dbf, prj")
-          }
-          
-          #polygon contains point features, present message in app
-          if (any(sf::st_geometry_type(shp) == "POINT")) {
-            shiny::validate("Shape file must be of polygon geometry.")
-          }
           
           #Standard shapefile upload with temp directory upload
           }else{
@@ -357,8 +348,22 @@ app_server <- function(input, output, session) {
               purrr::walk2(infiles, outfiles, ~file.rename(.x, .y)) # rename files from ugly tempfilename to original filename of file selected by user to upload
               
               shp <- sf::read_sf(file.path(dir, paste0(name, ".shp"))) # read-in shapefile
+              
+              
             }
 
+      #if NULL is return from shapefile_xyz, present message in app
+      if (is.null(shp)) {
+        disable_buttons[['SHP']] <- TRUE
+        shiny::validate("Uploaded file should contain the following file extensions: shp, shx, dbf, prj")
+      }
+      
+      #if polygon contains point features, present message in app
+      if (any(sf::st_geometry_type(shp) == "POINT")) {
+        disable_buttons[['SHP']] <- TRUE
+        shiny::validate("Shape file must be of polygon geometry.")
+      }
+      
       shp <- sf::st_zm(shp)
       
       # standardize shapefile geometry (not always stardard variable name)
