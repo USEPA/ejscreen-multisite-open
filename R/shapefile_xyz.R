@@ -87,13 +87,19 @@ shapefile_from_any <- function(path = NULL, cleanit = TRUE, crs = 4269, layer = 
   
   if (length(path) == 1) {
     
-    if (dir.exists(path)) {
+    if (file.exists(path)) {
       # true if like testdata/shapes/portland.gdb 
       if (tolower(tools::file_ext(path)) == "gdb") {
         return(shapefile_from_gdb(path, ...))                    # DOES NOT ALLOW FOR USING cleanit or crs here so far ***
       }
       if (tolower(tools::file_ext(path)) == "zip") {
         return(shapefile_from_zip(path, cleanit = cleanit, crs = crs, ...))
+      }
+      if (tolower(tools::file_ext(path)) == "json") {
+        return(shapefile_from_json(path, cleanit = cleanit, crs = crs, ...))
+      }
+      if (tolower(tools::file_ext(path)) == "shp") {
+        return(sf::st_read(path, ...))
       }
       return(shapefile_from_folder(folder = path, cleanit = cleanit, crs = crs, ...))
     }
@@ -114,9 +120,7 @@ shapefile_from_any <- function(path = NULL, cleanit = TRUE, crs = 4269, layer = 
     }
     
   } else {
-    
-    x <- shapefile_from_filepaths(
-      filepaths = shapefile_filepaths_from_folder(folder = path, ...), cleanit = cleanit, crs = crs, ...)
+    x <- shapefile_from_filepaths(filepaths, cleanit = cleanit, crs = crs, ...)
     return(x)
   }
 }
@@ -138,7 +142,6 @@ shapefile_from_any <- function(path = NULL, cleanit = TRUE, crs = 4269, layer = 
 #'
 shapefile_from_json <- function(path, cleanit = TRUE, crs = 4269, layer = NULL, ...) {
   
-  warning("not  tested")
   if (missing(layer) || any(is.null(layer))) {
     shp <-  sf::st_read(path, ...) # it sees .geojson extension and knows it is GeoJSON
   } else {
