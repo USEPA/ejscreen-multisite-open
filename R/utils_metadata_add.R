@@ -33,17 +33,17 @@ source("R/metadata_mapping.R")
 
 metadata_add <- function(x) {
   metadata <- get_metadata_mapping(deparse(substitute(x)))
-  if (missing(metadata)) {
+  if (is.null(metadata)) {
     txt <- paste0(paste0(names(metadata), "=", unlist(metadata)), collapse = ", ")
     message("metadata not specified, so used defaults from source code of this function: ", txt, "\n")
     # print(cbind(attributes = metadata))
+    metadata <- get_metadata_mapping("default")
   }
   if (!is.list(metadata)) {stop('metadata has to be a named list')
     # return(NULL)
   }
   
   metadata$date_saved_in_package <- as.character(Sys.Date())
-  metadata$EJAMversion           <- description_file$get("Version")
   for (i in seq_along(metadata)) {
     attr(x, which = names(metadata)[i]) <- metadata[[i]]
   }
