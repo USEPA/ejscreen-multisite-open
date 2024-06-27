@@ -70,7 +70,9 @@ metadata_mapping <- list(
   test_metadata_custom2 = list(
     custominfo = 123, 
     moreinfo = "abc"
-  )
+  ),
+
+  default = default_metadata
 )
 
 get_metadata_mapping <- function(dsname) {
