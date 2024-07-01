@@ -1,97 +1,362 @@
-# very very basic tests for shapefile_ functions to start with
+# Tests for shapefile_ functions
+################################################################ #
 
-# possible test data:
-#
-#   testfilename_dirshp <- system.file("testdata/shapes/portland_folder_shp", package = "EJAM")
-#   testfilename_gdb    <- system.file("testdata/shapes/portland.gdb",        package = "EJAM")
-#   testfilename_gdbzip <- system.file("testdata/shapes/portland.gdb.zip",    package = "EJAM")
-#   testfilename_zipdir <- system.file("testdata/shapes/portland_shp.zip",    package = "EJAM") # and stations_shp.zip
-#   testfilename_zipshp <- system.file("testdata/shapes/stations.zip",        package = "EJAM")
-#   testfilename_json   <- system.file("testdata/shapes/portland.json",       package = "EJAM")
-#
-#   file.exists(testfilename_dirshp)
-#   file.exists(testfilename_gdb)
-#   file.exists(testfilename_gdbzip)
-#   file.exists(testfilename_zipdir)
-#   file.exists(testfilename_zipshp)
-# file.exists(testfilename_json)
-#
-#   x1 <- shapefile_from_any(testfilename_dirshp)    #ok
-#   x2 <- shapefile_from_any(testfilename_gdb)       # fails; warns that shapefile_filepaths_valid() needs vector with .shp etc.
-#   x3 <- shapefile_from_any(testfilename_gdbzip)   #ok
-#   x4 <- shapefile_from_any(testfilename_zipdir)  # reports error in shapefile_from_gdb() must have extension .gdb, but works anyway
-#   x5 <- shapefile_from_any(testfilename_zipshp)  # reports error in shapefile_from_gdb() must have extension .gdb, but works anyway
-# x6 <- shapefile_from_any(testfilename_json) #
-#
-#   x1b = shapefile_from_folder(testfilename_dirshp)
-#   x2b = shapefile_from_gdb(   testfilename_gdb)
-#   x3b = shapefile_from_gdbzip(testfilename_gdbzip)
-#   x4b = shapefile_from_zip(   testfilename_zipdir) # reports error but works
-#   x5b = shapefile_from_zip(   testfilename_zipshp)
-#   x6b = shapefile_from_json(   testfilename_json)
+# shapefile_from_json(testfilename_json)
+# shapefile_from_zip(testfilename_zipdir)    # shapefile_from_zip(testfilename_zipdir2)  #  shapefile_from_zip(testfilename_zipshp)
+# shapefile_from_gdb(testfilename_gdb)
+# shapefile_from_gdbzip(testfilename_gdbzip)
+# shapefile_from_folder(testfilename_dirshp)
+# shapefile_from_filepaths(testfilenameset_4)  # shapefile_from_filepaths(testfilename_shp_alone)
+# shapefile_from_sitepoints(testpoints_10) 
+# 
+# shapefile_filepaths_from_folder(testfilename_dirshp)
+# shapefile_filepaths_valid(testfilenameset_4)
+# shapefile_filepaths_validize(testfilename_shp_alone)
 
-# class(x1); class(x2); class(x3); class(x4); class(x5); class(x6)
-# class(x1b); class(x2b); class(x3b); class(x4b); class(x5b); class(x6b)
-# rm(x1, x2, x3, x4, x5, x6)
-# rm(x1b, x2b, x3b, x4b, x5b, x6b)
+# shapefile_clean(testshape)
+# shape_buffered_from_shapefile(testshape)
 
+# shape_buffered_from_shapefile_points(testshape_points)
+# shapefile2latlon(testshape_points)
+# latlon_from_shapefile(testshape_points)
 
-testthat::test_that("shapefile_ functions do not crash on testdata folder and files", {
+# shapefile_from_any(   various  inputs  allowed   )
 
+################################################################ #
+
+################################################################ #
+
+testthat::test_that("test data files are available", {
+  
   expect_no_error({
-    testfolder <- system.file("testdata/shapes/portland_folder_shp", package = "EJAM")
+    testfilename_dirshp    <- system.file("testdata/shapes/portland_folder_shp",     package = "EJAM")
+    testfilename_gdb       <- system.file("testdata/shapes/portland.gdb",            package = "EJAM")
+    testfilename_gdbzip    <- system.file("testdata/shapes/portland.gdb.zip",        package = "EJAM")
+    testfilename_zipdir    <- system.file("testdata/shapes/portland_folder_shp.zip", package = "EJAM")
+    testfilename_zipdir2   <- system.file("testdata/shapes/portland_shp.zip",        package = "EJAM") # .shp etc basenames are NOT same as  .zip file basename
+    testfilename_zipshp    <- system.file("testdata/shapes/stations.zip",            package = "EJAM") # .shp etc basenames ARE IDENTICAL TO .zip file basename
+    testfilename_json      <- system.file("testdata/shapes/portland.json",           package = "EJAM")
+    testfilename_shp_alone <- system.file("testdata/shapes/portland_folder_shp/Neighborhoods_regions.shp", package = "EJAM") # Neighborhoods_regions.shp
+    testfilenameset_4 <- shapefile_filepaths_validize(testfilename_shp_alone)
+  
+    testshape        <- shapefile_from_folder(testfilename_dirshp)
+    testshape_points <- shapefile_from_sitepoints(testpoints_10) 
   })
-  # dir.exists(testfolder)
-  expect_no_error({
-    testpaths <- shapefile_filepaths_from_folder(testfolder)
-  })
-  # all(file.exists(testpaths))
-  expect_no_error({
-    shapefile_filepaths_valid(testpaths)
-  })
+  
+  expect_true(file.exists(testfilename_dirshp))
+  expect_true(file.exists(testfilename_gdb))
+  expect_true(file.exists(testfilename_gdbzip))
+  expect_true(file.exists(testfilename_zipdir))
+  expect_true(file.exists(testfilename_zipdir2))
+  expect_true(file.exists(testfilename_zipshp))
+  expect_true(file.exists(testfilename_json))
+  expect_true(file.exists(testfilename_shp_alone))
+  expect_true(all(file.exists(testfilenameset_4)))
+  
+  #   list.files(system.file("testdata/shapes/",     package = "EJAM"))
+  #  ##"portland.gdb"  "portland.gdb.zip"  "portland.json"  
+  #  ##"portland_folder_shp"  "portland_folder_shp.zip"
+  #  ##"portland_shp.zip"  ### "stations_shp.zip" "stations.zip"
+})
+################################################################ #
 
-  expect_no_error({
-    testshape  <- shapefile_from_filepaths(testpaths) # need to fix
+################################################################ #
+testthat::test_that("shapefile_from_json(testfilename_json) not crash", {
+  testfilename_json      <- system.file("testdata/shapes/portland.json",           package = "EJAM")
+  expect_no_error({suppressWarnings({
+    JUNK <- shapefile_from_json(testfilename_json)
+  })})
+  expect_true(
+    "sf" %in% class(JUNK)
+    )
+  rm(JUNK)
+})
+######################################################### #        works
+testthat::test_that("shapefile_from_zip(testfilename_zipdir)  not crash", {
+  testfilename_zipdir    <- system.file("testdata/shapes/portland_folder_shp.zip", package = "EJAM")
+  expect_no_error({suppressWarnings({
+    JUNK <- shapefile_from_zip(testfilename_zipdir)
+  })})
+  expect_true(
+    "sf" %in% class(JUNK)
+  )
+  rm(JUNK)
+})
+######################################################### #         FAILS NOW            ######################################################### # 
+testthat::test_that("shapefile_from_zip(testfilename_zipdir2) not crash", {
+  testfilename_zipdir2   <- system.file("testdata/shapes/portland_shp.zip",        package = "EJAM") # .shp etc basenames are NOT same as  .zip file basename
+  expect_no_error({suppressWarnings({
+    JUNK <- shapefile_from_zip(testfilename_zipdir2)
+  })})
+  expect_true(
+    "sf" %in% class(JUNK)
+  )
+  rm(JUNK)
+})
+######################################################### #                    fail ######################################################### # 
+testthat::test_that("shapefile_from_zip(testfilename_zipshp) not crash", {
+  testfilename_zipshp    <- system.file("testdata/shapes/stations.zip",            package = "EJAM") # .shp etc basenames ARE IDENTICAL TO .zip file basename
+  expect_no_error({suppressWarnings({
+    JUNK <- shapefile_from_zip(testfilename_zipshp)
+  })})
+  expect_true(
+    "sf" %in% class(JUNK)
+  )
+  rm(JUNK)
+})
+######################################################### # ######################################################### # 
+testthat::test_that("shapefile_from_gdb(testfilename_gdb) not crash", {
+  testfilename_gdb       <- system.file("testdata/shapes/portland.gdb",            package = "EJAM")
+  expect_no_error({suppressWarnings({
+    JUNK <- shapefile_from_gdb(testfilename_gdb)
+  })})
+  expect_true(
+    "sf" %in% class(JUNK)
+  )
+  rm(JUNK)
+})
+######################################################### # 
+testthat::test_that("shapefile_from_gdbzip(testfilename_gdbzip) not crash", {
+  testfilename_gdbzip    <- system.file("testdata/shapes/portland.gdb.zip",        package = "EJAM")
+  expect_no_error({suppressWarnings({
+    JUNK <- shapefile_from_gdbzip(testfilename_gdbzip)
+  })})
+  expect_true(
+    "sf" %in% class(JUNK)
+  )
+  rm(JUNK)
+})
+######################################################### # 
+testthat::test_that("shapefile_from_folder(testfilename_dirshp) not crash", {
+  testfilename_dirshp    <- system.file("testdata/shapes/portland_folder_shp",     package = "EJAM")
+  expect_no_error({suppressWarnings({
+    JUNK <- shapefile_from_folder(testfilename_dirshp)
+  })})
+  expect_true(
+    "sf" %in% class(JUNK)
+  )
+  rm(JUNK)
+})
+######################################################### #
+testthat::test_that("shapefile_from_filepaths(testfilenameset_4) not crash", {
+  testfilename_shp_alone <- system.file("testdata/shapes/portland_folder_shp/Neighborhoods_regions.shp", package = "EJAM") # Neighborhoods_regions.shp
+  testfilenameset_4 <- shapefile_filepaths_validize(testfilename_shp_alone)
+  expect_no_error({suppressWarnings({
+    JUNK <- shapefile_from_filepaths(testfilenameset_4)
+  })})
+  expect_true(
+    "sf" %in% class(JUNK)
+  )
+  rm(JUNK)
+})
+######################################################### # 
+testthat::test_that("shapefile_from_filepaths(testfilename_shp_alone) not crash", {
+  testfilename_shp_alone <- system.file("testdata/shapes/portland_folder_shp/Neighborhoods_regions.shp", package = "EJAM") # Neighborhoods_regions.shp
+  expect_no_error({suppressWarnings({
+    JUNK <- shapefile_from_filepaths(testfilename_shp_alone)
+  })})
+  expect_true(
+    "sf" %in% class(JUNK)
+  )
+  rm(JUNK)
+})
+######################################################### #
+testthat::test_that("shapefile_from_sitepoints(testpoints_10)  not crash", {
+  expect_no_error({suppressWarnings({
+    JUNK <- shapefile_from_sitepoints(testpoints_10)
+    # testshape_points <- shapefile_from_sitepoints(testpoints_10) 
+  })})
+  expect_true(
+    "sf" %in% class(JUNK)
+  )
+  rm(JUNK)
+})
+######################################################### #                                
+testthat::test_that("shapefile_filepaths_from_folder(testfilename_dirshp) not crash", {
+  testfilename_dirshp    <- system.file("testdata/shapes/portland_folder_shp",     package = "EJAM")
+  expect_no_error({suppressWarnings({
+    JUNK <- shapefile_filepaths_from_folder(testfilename_dirshp)
+  })})
+  expect_true({
+    length(JUNK) > 1 & all(is.character(JUNK)) & all(file.exists(JUNK))
   })
-  expect_no_error({
-    testshape2 <- shapefile_from_folder(testfolder) # need to fix
+  rm(JUNK)
+})
+######################################################### #  
+testthat::test_that("shapefile_filepaths_valid(testfilenameset_4) not crash", {
+  testfilename_shp_alone <- system.file("testdata/shapes/portland_folder_shp/Neighborhoods_regions.shp", package = "EJAM") # Neighborhoods_regions.shp
+  testfilenameset_4 <- shapefile_filepaths_validize(testfilename_shp_alone)
+  expect_no_error({suppressWarnings({
+    JUNK <- shapefile_filepaths_valid(testfilenameset_4)
+  })})
+  expect_true({
+    JUNK
   })
-  expect_equal(testshape, testshape2)
-
-  expect_no_error({
+  rm(JUNK)
+})
+######################################################### #                                 
+testthat::test_that("shapefile_filepaths_validize(testfilename_shp_alone) not crash", {
+  testfilename_shp_alone <- system.file("testdata/shapes/portland_folder_shp/Neighborhoods_regions.shp", package = "EJAM") # Neighborhoods_regions.shp
+  expect_no_error({suppressWarnings({
+    JUNK <- shapefile_filepaths_validize(testfilename_shp_alone)
+  })})
+  expect_true(
+    length(JUNK) > 1 & all(is.character(JUNK)) ### & all(file.exists(JUNK))
+  )
+  rm(JUNK)
+})
+######################################################### # 
+testthat::test_that("shapefile_clean(testshape) not crash", {
+  testfilename_dirshp    <- system.file("testdata/shapes/portland_folder_shp",     package = "EJAM")
+  testshape <- shapefile_from_folder(testfilename_dirshp)
+  expect_no_error({suppressWarnings({
     JUNK <- shapefile_clean(testshape)
-    })
+  })})
+  expect_true(
+    "sf" %in% class(JUNK)
+  )
+  rm(JUNK)
+})
+######################################################### #                               
+testthat::test_that("shape_buffered_from_shapefile(testshape) not crash", {
+  testfilename_dirshp    <- system.file("testdata/shapes/portland_folder_shp",     package = "EJAM")
+  testshape <- shapefile_from_folder(testfilename_dirshp)[c(1,3), ]
+  expect_no_error({suppressWarnings({
+    JUNK <- shape_buffered_from_shapefile(testshape, radius.miles = 0.5)
+  })})
+  # mapview(testshape, col.regions = "darkgreen") + mapview(JUNK, col.regions = "lightgray")
+  expect_true({
+    "sf" %in% class(JUNK) & "sf" %in% class(testshape)
+  })
+  expect_true(
+    all((as.numeric((sf::st_area(JUNK)) / (sf::st_area(testshape)))) > 1)
+  )
+  rm(JUNK)
+})
+######################################################### #                                 
+testthat::test_that("shape_buffered_from_shapefile_points(testshape_points) not crash", {
+  testshape_points <- shapefile_from_sitepoints(testpoints_10[1:3, ])
+  expect_no_error({suppressWarnings({
+    JUNK <- shape_buffered_from_shapefile_points(testshape_points, radius.miles = 1)
+  })})
+  # mapview::mapview(JUNK[1, ])
+  # mapfast(testpoints_10[1, ], radius = 1)
+  expect_true(
+    "sf" %in% class(JUNK)
+  )
+  rm(JUNK)
+})
+######################################################### #
+testthat::test_that("shapefile2latlon(testshape_points) aka latlon_from_shapefile(testshape) not crash", {
+  testshape_points <- shapefile_from_sitepoints(testpoints_10)
+  expect_no_error({suppressWarnings({
+    JUNK <- shapefile2latlon(testshape_points)
+    JUNK <- latlon_from_shapefile(testshape_points)
+  })})
+  expect_true(
+    is.data.frame(JUNK) & data.table::is.data.table(JUNK)
+  )
+  rm(JUNK)
+})
+######################################################### # 
+testthat::test_that("latlon_from_shapefile(testshape_points) not crash", {
+  testshape_points <- shapefile_from_sitepoints(testpoints_10)
+  expect_no_error({suppressWarnings({
+    JUNK <- latlon_from_shapefile(testshape_points)
+  })})
+  expect_true(
+    is.data.frame(JUNK) & data.table::is.data.table(JUNK)
+  )
+  rm(JUNK)
+})
+######################################################### # 
 
-  expect_no_error(       shapefile_filepaths_from_folder(tempdir()))  # character(0)
-  expect_equal(0, length(shapefile_filepaths_from_folder(tempdir())))
+######################################################### # 
+######################################################### # 
 
-  expect_warning(    shapefile_from_folder(tempdir()))
-  expect_warning({
-    nullresults <- shapefile_from_folder(tempdir())
-    })
+testthat::test_that("shapefile_filepaths_from_folder() returns NULL and warns on empty folder", {
+  emptyfolder <- file.path(tempdir(), "emptysubdir")
+  if (!dir.exists(emptyfolder)) dir.create(emptyfolder)
+  expect_no_error(       shapefile_filepaths_from_folder(emptyfolder)  )  # character(0) ??
+  expect_equal(0, length(shapefile_filepaths_from_folder(emptyfolder))  )
+  suppressWarnings(expect_warning({nullresults <- shapefile_from_folder(emptyfolder)}))
   suppressWarnings(expect_equal(NULL, nullresults))
-
-  rm(testfolder, testpaths, testshape, testshape2, JUNK)
 })
+######################################################### # 
+######################################################### # 
 
-################################################################ #
-
-test_that("shapefile_from_gdb() works", {
-
+######################################################### # 
+testthat::test_that("shapefile_from_any(testfilename_dirshp) works", {
+  testfilename_dirshp    <- system.file("testdata/shapes/portland_folder_shp",     package = "EJAM")
   expect_no_error({
-    JUNK <- shapefile_from_gdb(system.file("testdata/shapes/portland.gdb", package = "EJAM"))
+    JUNK <- shapefile_from_any(testfilename_dirshp)
   })
   expect_true("sf" %in% class(JUNK))
-  rm(JUNK)
 })
-################################################################ #
-
-test_that("shapefile_from_gdbzip() works", {
-
+######################################################### # 
+testthat::test_that("shapefile_from_any(testfilename_gdb) works", {
+  testfilename_gdb       <- system.file("testdata/shapes/portland.gdb",            package = "EJAM")
   expect_no_error({
-    JUNK <- shapefile_from_gdbzip(system.file("testdata/shapes/portland.gdb.zip", package = "EJAM"))
+    JUNK <- shapefile_from_any(testfilename_gdb)
   })
   expect_true("sf" %in% class(JUNK))
-  rm(JUNK)
 })
+######################################################### # 
+testthat::test_that("shapefile_from_any(testfilename_gdbzip) works", {
+  testfilename_gdbzip    <- system.file("testdata/shapes/portland.gdb.zip",        package = "EJAM")
+  expect_no_error({
+    JUNK <- shapefile_from_any(testfilename_gdbzip)
+  })
+  expect_true("sf" %in% class(JUNK))
+})
+######################################################### # 
+testthat::test_that("shapefile_from_any(testfilename_zipdir) works", {
+  testfilename_zipdir    <- system.file("testdata/shapes/portland_folder_shp.zip", package = "EJAM")
+  expect_no_error({
+    JUNK <- shapefile_from_any(testfilename_zipdir)
+  })
+  expect_true("sf" %in% class(JUNK))
+})
+######################################################### # 
+testthat::test_that("shapefile_from_any(testfilename_zipdir2) works", {
+  testfilename_zipdir2   <- system.file("testdata/shapes/portland_shp.zip",        package = "EJAM") # .shp etc basenames are NOT same as  .zip file basename
+  expect_no_error({
+    JUNK <- shapefile_from_any(testfilename_zipdir2)
+  })
+  expect_true("sf" %in% class(JUNK))
+})
+######################################################### # 
+testthat::test_that("shapefile_from_any(testfilename_zipshp) works", {
+  testfilename_zipshp    <- system.file("testdata/shapes/stations.zip",            package = "EJAM") # .shp etc basenames ARE IDENTICAL TO .zip file basename
+  expect_no_error({
+    JUNK <- shapefile_from_any(testfilename_zipshp)
+  })
+  expect_true("sf" %in% class(JUNK))
+})
+######################################################### # 
+testthat::test_that("shapefile_from_any(testfilename_json) works", {
+  testfilename_json      <- system.file("testdata/shapes/portland.json",           package = "EJAM")
+  expect_no_error({
+    JUNK <- shapefile_from_any(testfilename_json)
+  })
+  expect_true("sf" %in% class(JUNK))
+})
+######################################################### # 
+testthat::test_that("shapefile_from_any(testfilename_shp_alone) works", {
+  testfilename_shp_alone <- system.file("testdata/shapes/portland_folder_shp/Neighborhoods_regions.shp", package = "EJAM") # Neighborhoods_regions.shp
+  expect_no_error({
+    JUNK <- shapefile_from_any(testfilename_shp_alone)
+  })
+  expect_true("sf" %in% class(JUNK))
+})
+######################################################### # 
+testthat::test_that("shapefile_from_any(testfilenameset_4) works", {
+  testfilenameset_4 <- shapefile_filepaths_validize(testfilename_shp_alone)
+  expect_no_error({
+    JUNK <- shapefile_from_any(testfilenameset_4)
+  })
+  expect_true("sf" %in% class(JUNK))
+})
+######################################################### # 
 
+################################################################################ #
