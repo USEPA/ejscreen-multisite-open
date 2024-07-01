@@ -4,7 +4,7 @@
 \alias{shapefile_from_any}
 \title{Read shapefile from any file or folder (trying to infer the format)}
 \usage{
-shapefile_from_any(path = NULL, cleanit = TRUE, crs = 4269, layer = NULL)
+shapefile_from_any(path = NULL, cleanit = TRUE, crs = 4269, layer = NULL, ...)
 }
 \arguments{
 \item{path}{path of file(s) that is/are .gdb, .zip, .shp etc., or folder
@@ -20,6 +20,8 @@ extensions .shp, .shx, .dbf, and .prj
 \item If .zip containing .gdb, reads with \code{\link[=shapefile_from_gdbzip]{shapefile_from_gdbzip()}}
 \item If .gdb, reads with \code{\link[=shapefile_from_gdb]{shapefile_from_gdb()}}
 \item If .shp, reads with \code{\link[=shapefile_from_filepaths]{shapefile_from_filepaths()}}
+which works only it is x.shp and no other .shp exists in folder
+and x.shx, x.dbf, x.prj are in the folder.
 \item If vector of .shp, .shx, .dbf, and .prj file names
 (that may include paths), reads with \code{\link[=shapefile_from_filepaths]{shapefile_from_filepaths()}}
 }}
@@ -29,7 +31,9 @@ extensions .shp, .shx, .dbf, and .prj
 \item{crs}{passed to shapefile_from_filepaths() etc. and
 default is crs = 4269 or Geodetic CRS NAD83}
 
-\item{layer}{optional layer name}
+\item{layer}{optional layer name passed to \code{\link[sf:st_read]{sf::st_read()}}}
+
+\item{...}{passed to \code{\link[sf:st_read]{sf::st_read()}}}
 }
 \value{
 a shapefile object using \code{\link[sf:st_read]{sf::st_read()}}

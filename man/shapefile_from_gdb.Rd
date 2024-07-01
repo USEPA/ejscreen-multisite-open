@@ -4,12 +4,14 @@
 \alias{shapefile_from_gdb}
 \title{read .gdb geodatabase file via sf::st_read()}
 \usage{
-shapefile_from_gdb(fname, layer = NULL)
+shapefile_from_gdb(fname, layer = NULL, ...)
 }
 \arguments{
 \item{fname}{path and filename of .gdb file}
 
 \item{layer}{optional name of layer, see \code{\link[sf:st_read]{sf::st_read()}}}
+
+\item{...}{passed to \code{\link[sf:st_read]{sf::st_read()}}}
 }
 \value{
 like output of \code{\link[sf:st_read]{sf::st_read()}} but with ejam_uniq_id column 1:NROW()
