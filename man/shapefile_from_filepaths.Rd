@@ -8,7 +8,8 @@ shapefile_from_filepaths(
   filepaths = NULL,
   cleanit = TRUE,
   crs = 4269,
-  layer = NULL
+  layer = NULL,
+  ...
 )
 }
 \arguments{
@@ -21,9 +22,11 @@ default is crs = 4269 or Geodetic CRS NAD83
 Also can check this via x <- sf::st_crs(sf::st_read()); x$input}
 
 \item{layer}{optional name of layer to read}
+
+\item{...}{passed to \code{\link[sf:st_read]{sf::st_read()}}}
 }
 \value{
-a shapefile object using sf::st_read()
+a shapefile object using \code{\link[sf:st_read]{sf::st_read()}}
 }
 \description{
 Read shapefile from disk based on the filenames given

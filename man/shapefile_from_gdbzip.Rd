@@ -4,12 +4,14 @@
 \alias{shapefile_from_gdbzip}
 \title{read .zip that contains geodatabase file via unzip and st_read}
 \usage{
-shapefile_from_gdbzip(fname, layer = NULL)
+shapefile_from_gdbzip(fname, layer = NULL, ...)
 }
 \arguments{
 \item{fname}{path to .zip file that contains a .gdb file}
 
 \item{layer}{optional name of layer, see \code{\link[sf:st_read]{sf::st_read()}}}
+
+\item{...}{passed to \code{\link[sf:st_read]{sf::st_read()}}}
 }
 \value{
 see \code{\link[=shapefile_from_gdb]{shapefile_from_gdb()}}

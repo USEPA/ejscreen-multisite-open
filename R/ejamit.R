@@ -26,7 +26,7 @@
 #'   It can be automatically created when the package is attached via the .onAttach() function
 #' @param fips optional FIPS code vector to provide if using FIPS instead of sitepoints to specify places to analyze,
 #'   such as a list of US Counties or tracts. Passed to [getblocksnearby_from_fips()]
-#' @param shapefile_folder optional path to folder that has shapefiles to analyze polygons
+#' @param shapefile optional sf shapefile object or path to .zip, .gdb, or folder that has a shapefiles, to analyze polygons
 #' @param countcols character vector of names of variables to aggregate within a buffer using a sum of counts,
 #'   like, for example, the number of people for whom a poverty ratio is known,
 #'   the count of which is the exact denominator needed to correctly calculate percent low income.
@@ -141,7 +141,7 @@ ejamit <- function(sitepoints,
                    avoidorphans = FALSE,
                    quadtree = NULL,
                    fips = NULL,
-                   shapefile_folder = NULL,
+                   shapefile = NULL,
                    countcols = NULL,
                    popmeancols = NULL,
                    calculatedcols = NULL,
@@ -175,8 +175,8 @@ ejamit <- function(sitepoints,
   
   ## get blocks in POLYGONS / SHAPEFILES ####
   
-  if (!is.null(shapefile_folder)) {
-    shp <- shapefile_from_folder(folder = shapefile_folder, cleanit = TRUE)
+  if (!is.null(shapefile)) {
+    shp <- shapefile_from_any(shapefile, cleanit = TRUE)
     if (!missing(radius)) {
       # add buffers around the polygons
       if (!silentinteractive) {cat('Adding buffer around each polygon.\n')}
