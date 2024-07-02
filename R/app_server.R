@@ -1174,7 +1174,7 @@ app_server <- function(input, output, session) {
     <div class="usa-alert__body">
       <p class="usa-alert__text">
         <strong>', ' Warning! ','</strong>', 'There are ', prettyNum(invalid_alert[[current_upload_method()]],big.mark = ","), ' selected sites without associated lat/lon information.',
-'</p>
+          '</p>
     </div>
   </div>
 </section>'))
@@ -1190,7 +1190,7 @@ app_server <- function(input, output, session) {
     <div class="usa-alert__body">
       <p class="usa-alert__text">
         <strong>', 'Warning! ','</strong>', 'There are ', invalid_alert[[current_upload_method()]], ' invalid location(s) in your dataset.',
-'</p>
+          '</p>
     </div>
   </div>
 </section>'))
@@ -2202,7 +2202,7 @@ app_server <- function(input, output, session) {
     #req(data_processed())
     validate(need(data_processed(), 'Please run an analysis to see results.'))
     circle_color <- '#000080'
-      
+    
     #if shapefile, merge geometry and create buffer if nonzero buffer is set
     if (submitted_upload_method() == "SHP") {
       
@@ -2340,7 +2340,7 @@ app_server <- function(input, output, session) {
         
         d_upload <- data_uploaded()
         base_color      <- '#000080'
-          # cluster_color   <- 'red'
+        # cluster_color   <- 'red'
         #req(input$bt_rad_buff)
         
         ## convert units to miles for circle size
@@ -2384,9 +2384,23 @@ app_server <- function(input, output, session) {
     # data_processed() needed for ridgeline or boxplot, and ratio.to.us.d() which is made from data_processed() is needed for boxplots,
     
     if (input$plotkind_1pager == 'bar') { # do BARPLOT NOT BOXPLOT
+      if (input$Custom_title_for_bar_plot_of_indicators == ''){
+        
+        #Default way
+        plot_barplot_ratios_ez(
+          out= data_processed(),
+          varnames = c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg), 
+        )
+        
+      }else{
+        #If there is a new title in advanced settings
+        plot_barplot_ratios_ez(
+          out= data_processed(),
+          varnames = c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg), 
+          main = input$Custom_title_for_bar_plot_of_indicators
+        )
+      }
       
-      plot_barplot_ratios(unlist(data_processed()$results_overall[ , c(..names_d_ratio_to_avg , ..names_d_subgroups_ratio_to_avg) ]),
-                          names2plot_friendly = fixcolnames(c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg), oldtype = 'r', newtype = 'shortlabel'))
       
     } else if (input$plotkind_1pager == 'ridgeline') {
       
@@ -3338,7 +3352,7 @@ app_server <- function(input, output, session) {
       }
       
     } else {
-
+      
       ## use same root names so dropdown does not reset with other settings changing
       root_nms <- c(names_d,
                     names_d_subgroups,
@@ -3348,12 +3362,12 @@ app_server <- function(input, output, session) {
         nms <-  c(names_d_pctile, names_d_subgroups_pctile,names_e_pctile)
         
         friendly_nms <- fixcolnames(nms, oldtype = 'r', newtype = 'shortlabel')
-    
+        
       } else if (input$summ_hist_data == 'raw') {
         nms <-  c(names_d, names_d_subgroups, names_e)
         friendly_nms <- fixcolnames(root_nms, oldtype = 'r', newtype = 'shortlabel')
       }
-
+      
     }
     selectInput('summ_hist_ind', label = 'Choose indicator',
                 choices = setNames(
@@ -3410,7 +3424,7 @@ app_server <- function(input, output, session) {
         
         ## subset doaggregate results_bysite to selected indicator
         if (submitted_upload_method() == 'SHP') {
-
+          
           hist_input <- as.data.frame(data_processed()$results_bysite[, paste0('pctile.',current_hist_ind())])#input$summ_hist_ind])
           
         } else {
@@ -3423,7 +3437,7 @@ app_server <- function(input, output, session) {
           geom_histogram(aes(x = indicator), fill = '#005ea2',
                          #bins = input$summ_hist_bins,
                          breaks = seq(0,100, length.out = input$summ_hist_bins+1)
-                         ) +
+          ) +
           labs(
             x = '',
             y = 'Number of Sites',
@@ -3437,7 +3451,7 @@ app_server <- function(input, output, session) {
         
         ## subset doaggregate results_bysite to selected indicator
         if (submitted_upload_method() == 'SHP') {
-
+          
           hist_input <- as.data.frame(data_processed()$results_bysite[, c('pop',current_hist_ind())])
           
         } else {
@@ -3464,7 +3478,7 @@ app_server <- function(input, output, session) {
         
         ## subset doaggregate results_bysite to selected indicator
         if (submitted_upload_method() == 'SHP') {
-
+          
           hist_input <- as.data.frame(data_processed()$results_bysite[, c('pop',paste0('pctile.',current_hist_ind()))])
           
         } else {
