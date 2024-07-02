@@ -1462,6 +1462,9 @@ app_server <- function(input, output, session) {
     'FIPS' = minradius_shapefile, 'SHP' = minradius_shapefile  # but disabled for FIPS  
   )
   
+  ## record radius at time of analysis
+  submitted_radius_val <- reactiveVal(NULL)
+                                         
   # set/update based on advanced tab set by global.R and then might be changed by a user
   observeEvent(
     input$default_miles,
@@ -1673,6 +1676,8 @@ app_server <- function(input, output, session) {
   
   observeEvent(input$bt_get_results, {  # (button is pressed)
     submitted_upload_method(current_upload_method())
+    submitted_radius_val(current_slider_val[[submitted_upload_method()]])
+    
     showNotification('Processing sites now!', type = 'message', duration = 1)
     
     ## progress bar setup overall for 3 operations  (getblocksnearby, doaggregate, batch.summarize)
@@ -2252,7 +2257,7 @@ app_server <- function(input, output, session) {
           #options = leafletOptions(zoomControl = FALSE, minZoom = 4)) %>%
           addTiles()  %>%
           addCircles(
-            radius = 1 * meters_per_mile,
+            radius = submitted_radius_val() * meters_per_mile,#1 * meters_per_mile,
             color = circle_color, fillColor = circle_color,
             fill = TRUE, weight = input$circleweight_in,
             #group = 'circles',
@@ -2604,7 +2609,7 @@ app_server <- function(input, output, session) {
       create_filename(
         file_desc = 'community report',
         title = input$analysis_title,
-        buffer_dist = current_slider_val[[submitted_upload_method()]],
+        buffer_dist = submitted_radius_val(),
         site_method = submitted_upload_method(),
         with_datetime = TRUE,
         ext = ifelse(input$format1pager == 'pdf', '.pdf', '.html')
@@ -2922,7 +2927,7 @@ app_server <- function(input, output, session) {
       
       create_filename(file_desc = 'results table',
                       title = input$analysis_title,
-                      buffer_dist = current_slider_val[[submitted_upload_method()]],
+                      buffer_dist = submitted_radius_val(),
                       site_method = submitted_upload_method(),
                       with_datetime = TRUE,
                       ext = '.xlsx')
@@ -3532,13 +3537,14 @@ app_server <- function(input, output, session) {
   
   ## Create and download FULL static report
   output$rg_download <- downloadHandler(
-    filename =
+    filename = function(){
       create_filename(file_desc = 'full report',
                       title = input$analysis_title,
-                      buffer_dist = current_slider_val[[submitted_upload_method()]],
+                      buffer_dist = submitted_radius_val(),
                       site_method = submitted_upload_method(),
                       with_datetime = TRUE,
-                      ext = '.doc'),
+                      ext = '.doc')
+      },
     
     content = function(file) {
       # Copy the report file to a temporary directory before processing it, in
