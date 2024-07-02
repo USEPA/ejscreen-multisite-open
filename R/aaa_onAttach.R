@@ -135,6 +135,6 @@
   packageStartupMessage('For help using the EJAM package in RStudio, try one of these:
                         browseURL("https://usepa.github.io/EJAM/index.html")
                         ?EJAM
-                        browseVignettes("EJAM") # if vignettes were included when installing
+                        
                         ')
 }
