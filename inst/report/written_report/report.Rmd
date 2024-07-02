@@ -73,6 +73,8 @@ bibliography: report_references.bib
  
 # see these resources: 
 #
+#   https://quarto.org/docs/output-formats/ms-word.html
+
 # https://www.r-bloggers.com/2023/04/11-tricks-to-level-up-your-rmarkdown-documents/
 # https://bookdown.org/yihui/rmarkdown/parameterized-reports.html
 # https://bookdown.org/yihui/rmarkdown/
@@ -153,6 +155,12 @@ scores -- are more notable than the demographic indicators at these
 sites. Demographic indicators are moderately above average overall.
 
 ## Summary of Findings
+
+```{r, eval=FALSE, echo=FALSE, include=FALSE}
+SEE notes on summarizer draft function 
+and examples of using count_sites_with_n_high_scores()
+```
+
 
 -   PLACEHOLDER EXAMPLE Overall, % people of color, % limited English
     proficiency, and the Demographic Indicator are more than 1.5x the
@@ -285,9 +293,9 @@ See EJScreen methodology for details.
 The basic methodology and data used for this analysis are the same as
 those used in EPA's EJScreen tool, with a few exceptions described
 below, and are described in detail in EJScreen's documentation, at
-[EJScreen](https://epa.gov/ejscreen "EPA EJScreen homepage") and with
+[EJScreen](https://epa.gov/ejscreen "EPA EJScreen homepage"){.uri target="_blank" rel="noreferrer noopener"} and with
 more technical details available at [EJScreen technical documentation
-page](https://www.epa.gov/ejscreen/technical-information-about-ejscreen "EPA EJScreen technical information").
+page](https://www.epa.gov/ejscreen/technical-information-about-ejscreen "EPA EJScreen technical information"){.uri target="_blank" rel="noreferrer noopener"}.
 
 Like EJScreen, EJAM identifies residents near a given site by finding which Census block points are nearby, and counting the full block population as nearby if that point is nearby. The percent of each block group's population that is estimated as
 inside a buffer is based on which Census block internal points are

@@ -53,12 +53,12 @@ but for a large number of reports (one for each site)."><meta property="og:image
     <a class="dropdown-item" href="../articles/0_webapp.html">Using EJAM</a>
     <div class="dropdown-divider"></div>
     <h6 class="dropdown-header" data-toc-skip>For analysts using R</h6>
-    <a class="dropdown-item" href="../articles/1_installing.html">1. Installing the EJAM R package</a>
-    <a class="dropdown-item" href="../articles/2_quickstart.html">2. Quick Start Guide</a>
-    <a class="dropdown-item" href="../articles/3_analyzing.html">3. Basics of Using EJAM for Analysis in RStudio</a>
-    <a class="dropdown-item" href="../articles/4_advanced.html">4. Advanced Features</a>
-    <a class="dropdown-item" href="../articles/5_ejscreenapi.html">5. Using the EJScreen API via EJAM</a>
-    <a class="dropdown-item" href="../articles/6_future_plans.html">6. Future Plans and Ideas for EJAM</a>
+    <a class="dropdown-item" href="../articles/1_installing.html">Installing the EJAM R package</a>
+    <a class="dropdown-item" href="../articles/2_quickstart.html">Quick Start Guide</a>
+    <a class="dropdown-item" href="../articles/3_analyzing.html">Basics of Using EJAM for Analysis in RStudio</a>
+    <a class="dropdown-item" href="../articles/4_advanced.html">Advanced Features</a>
+    <a class="dropdown-item" href="../articles/5_ejscreenapi.html">Using the EJScreen API via EJAM</a>
+    <a class="dropdown-item" href="../articles/6_future_plans.html">Future Plans and Ideas for EJAM</a>
   </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -106,7 +106,7 @@ a complete reference document on all functions, and
 articles (vignettes) introducing key functions and how to use them.</p>
     </div>
     <div class="section level2">
-    <h2 id="data-sources-for-demographic-and-environmental-indicators-this-should-be-add-to-pkgdown-site-vignettes"><strong>Data Sources for Demographic and Environmental Indicators</strong> ** ##### THIS should be add to pkgdown site/ VIGNETTES<a class="anchor" aria-label="anchor" href="#data-sources-for-demographic-and-environmental-indicators-this-should-be-add-to-pkgdown-site-vignettes"></a></h2>
+    <h2 id="data-sources-for-demographic-and-environmental-indicators-this-will-be-moved-added-to-a-vignette"><strong>Data Sources for Demographic and Environmental Indicators</strong> ***this will be moved/added to a vignette<a class="anchor" aria-label="anchor" href="#data-sources-for-demographic-and-environmental-indicators-this-will-be-moved-added-to-a-vignette"></a></h2>
     <p>For documentation on the sources, definitions, and vintage of the
 demographic and environmental data and indicators used by
 EJScreen and EJAM, see <a href="https://www.epa.gov/ejscreen/understanding-ejscreen-results" class="external-link">https://www.epa.gov/ejscreen/understanding-ejscreen-results</a>.</p>
@@ -115,13 +115,12 @@ and some indicators may be added, dropped, or revised during those updates.
 For details on these updates and changes to datasets and indicators,
 please see <a href="https://www.epa.gov/ejscreen" class="external-link">https://www.epa.gov/ejscreen</a> and in particular note the
 information about updates and changes here:
-(https://www.epa.gov/ejscreen/ejscreen-change-log)https://www.epa.gov/ejscreen/ejscreen-change-log</p>
+<a href="https://www.epa.gov/ejscreen/ejscreen-change-log" class="external-link">EJScreen Change Log</a>.uri target="_blank" rel="noreferrer noopener"</p>
 <p>The American Community Survey 5-year summary file data are updated by
-the United States Census Bureau annually, after which EJScreen and EJAM are updated.</p><ul><li><p>The early 2024 versions of EJAM and EJScreen 2.2 would use ACS 2017-2021.</p></li>
-<li><p>Starting around Summer 2024, EJAM and EJScreen would use ACS 2018-2022.</p></li>
+the United States Census Bureau annually, after which EJScreen and EJAM are updated.</p><ul><li><p>The mid 2024 releases are called version 2.3 (EJAM/EJScreen) and use ACS 2018-2022.</p></li>
 </ul></div>
     <div class="section level2">
-    <h2 id="key-functions-much-of-this-is-in-vignettes-so-consolidate"><strong>Key Functions:</strong> ########################  MUCH OF THIS IS IN VIGNETTES, SO CONSOLIDATE<a class="anchor" aria-label="anchor" href="#key-functions-much-of-this-is-in-vignettes-so-consolidate"></a></h2>
+    <h2 id="key-functions-much-of-this-is-in-vignettes-and-will-be-merged"><strong>Key Functions:</strong> ***much of this is in vignettes and will be merged<a class="anchor" aria-label="anchor" href="#key-functions-much-of-this-is-in-vignettes-and-will-be-merged"></a></h2>
     
 <ul><li><p><strong><code><a href="run_app.html">run_app()</a></code></strong> Launch the web app (R Shiny interface)</p></li>
 <li><p><strong><code><a href="ejamit.html">ejamit()</a></code></strong> Get results (tables, maps, plots) without the web app interface, largely by using these key functions:</p><ol><li><p>Getting key datasets and indexing blocks, if not yet done, via <code><a href="dataload_from_pins.html">dataload_from_pins()</a></code> and <code><a href="indexblocks.html">indexblocks()</a></code></p></li>
@@ -239,7 +238,7 @@ indicator across everyone within each demographic group.</p></li>
     <h2 id="identification-of-nearby-residents-methodology-"><strong>Identification of nearby residents -- methodology:</strong><a class="anchor" aria-label="anchor" href="#identification-of-nearby-residents-methodology-"></a></h2>
     <p>EJAM uses the same approach as EJScreen does to identify the count and demographics of nearby residents,
 so EJScreen technical documentation should be consulted on the approach,
-at <a href="https://www.epa.gov/ejscreen/technical-information-about-ejscreen" class="external-link">https://www.epa.gov/ejscreen/technical-information-about-ejscreen</a>.
+at <a href="https://www.epa.gov/ejscreen/technical-information-about-ejscreen" class="external-link">EJScreen Technical Info</a>.uri target="_blank" rel="noreferrer noopener".
 EJAM implements that approach using faster code and data formats, but it
 still uses the same high-resolution approach as described in EJScreen documentation
 and summarized below.</p>

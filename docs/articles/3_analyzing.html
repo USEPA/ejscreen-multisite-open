@@ -5,8 +5,8 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta name="description" content="EJAM">
-<title>3. Basics of Using EJAM for Analysis in RStudio • EJAM</title>
+<meta name="description" content="3. Basics of Using EJAM for Analysis in RStudio">
+<title>Basics of Using EJAM for Analysis in RStudio • EJAM</title>
 <!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
 <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
@@ -17,8 +17,8 @@
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js" integrity="sha512-7O5pXpc0oCRrxk8RUfDYFgn0nO1t+jLuIOQdOMRp4APB7uZ4vSjspzp5y6YDtDs4VzUSTbWzBFZ/LKJhnyFOKw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="3. Basics of Using EJAM for Analysis in RStudio">
-<meta property="og:description" content="EJAM">
+<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.11/clipboard.min.js" integrity="sha512-7O5pXpc0oCRrxk8RUfDYFgn0nO1t+jLuIOQdOMRp4APB7uZ4vSjspzp5y6YDtDs4VzUSTbWzBFZ/LKJhnyFOKw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Basics of Using EJAM for Analysis in RStudio">
+<meta property="og:description" content="3. Basics of Using EJAM for Analysis in RStudio">
 <meta property="og:image" content="usepa.github.io/EJAM/logo.svg">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -53,13 +53,16 @@
     <a class="dropdown-item" href="../articles/0_webapp.html">Using EJAM</a>
     <div class="dropdown-divider"></div>
     <h6 class="dropdown-header" data-toc-skip>For analysts using R</h6>
-    <a class="dropdown-item" href="../articles/1_installing.html">1. Installing the EJAM R package</a>
-    <a class="dropdown-item" href="../articles/2_quickstart.html">2. Quick Start Guide</a>
-    <a class="dropdown-item" href="../articles/3_analyzing.html">3. Basics of Using EJAM for Analysis in RStudio</a>
-    <a class="dropdown-item" href="../articles/4_advanced.html">4. Advanced Features</a>
-    <a class="dropdown-item" href="../articles/5_ejscreenapi.html">5. Using the EJScreen API via EJAM</a>
-    <a class="dropdown-item" href="../articles/6_future_plans.html">6. Future Plans and Ideas for EJAM</a>
+    <a class="dropdown-item" href="../articles/1_installing.html">Installing the EJAM R package</a>
+    <a class="dropdown-item" href="../articles/2_quickstart.html">Quick Start Guide</a>
+    <a class="dropdown-item" href="../articles/3_analyzing.html">Basics of Using EJAM for Analysis in RStudio</a>
+    <a class="dropdown-item" href="../articles/4_advanced.html">Advanced Features</a>
+    <a class="dropdown-item" href="../articles/5_ejscreenapi.html">Using the EJScreen API via EJAM</a>
+    <a class="dropdown-item" href="../articles/6_future_plans.html">Future Plans and Ideas for EJAM</a>
   </div>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="../news/index.html">Changelog</a>
 </li>
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
@@ -88,7 +91,7 @@
 <script src="3_analyzing_files/proj4-2.6.2/proj4.min.js"></script><script src="3_analyzing_files/Proj4Leaflet-1.0.1/proj4leaflet.js"></script><link href="3_analyzing_files/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet">
 <script src="3_analyzing_files/leaflet-binding-2.2.2/leaflet.js"></script><script src="3_analyzing_files/lfx-easyprint-1.0.0/dom-to-image.js"></script><script src="3_analyzing_files/lfx-easyprint-1.0.0/FileSaver.js"></script><script src="3_analyzing_files/lfx-easyprint-1.0.0/lfx-easyprint_full.js"></script><script src="3_analyzing_files/lfx-easyprint-1.0.0/lfx-easyprint-bindings.js"></script><div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="../logo.svg" class="logo" alt=""><h1>3. Basics of Using EJAM for Analysis in RStudio</h1>
+      <img src="../logo.svg" class="logo" alt=""><h1>Basics of Using EJAM for Analysis in RStudio</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/USEPA/EJAM/blob/HEAD/vignettes/3_analyzing.Rmd" class="external-link"><code>vignettes/3_analyzing.Rmd</code></a></small>
@@ -101,21 +104,26 @@
 <h2 id="key-functions">Key Functions<a class="anchor" aria-label="anchor" href="#key-functions"></a>
 </h2>
 <ul>
-<li><p><strong>run_app()</strong> to launch the web app locally (to run
-in RStudio on a single computer rather than on a server)</p></li>
-<li><p><strong>ejamit()</strong> provides most results in just one
-function, and they can be viewed using ejam2report() and ejam2excel().
-Sample input to ejamit() is in testpoints_10 and sample output is in
-testoutput_ejamit_10pts_1miles. ejamit() especially relies on
-getblocksnearby() and doaggregate():</p></li>
-<li><p>getblocksnearby() takes a set of points (e.g., facilities) and
-finds the Census blocks near each. Sample input is in testpoints_100,
-and sample output is in testoutput_getblocksnearby_10pts_1miles</p></li>
-<li><p>doaggregate() takes the list of blocks near each point, joins it
-to blockgroup indicators like from EJScreen, and aggregates at each
-buffered point as well as for the overall set of unique blocks
-(residents). Sample input is in testoutput_getblocksnearby_10pts_1miles
-and sample output is in testoutput_doaggregate_10pts_1miles</p></li>
+<li><p><strong><code><a href="../reference/run_app.html">run_app()</a></code></strong> to launch the web app
+locally (to run in RStudio on a single computer rather than on a
+server)</p></li>
+<li><p><strong><code><a href="../reference/ejamit.html">ejamit()</a></code></strong> provides most results in
+just one function, and they can be viewed using
+<code><a href="../reference/ejam2report.html">ejam2report()</a></code> and <code><a href="../reference/ejam2excel.html">ejam2excel()</a></code>. Sample input
+to <code><a href="../reference/ejamit.html">ejamit()</a></code> is in <code>testpoints_10</code> and sample
+output is in <code>testoutput_ejamit_10pts_1miles</code>.
+<code><a href="../reference/ejamit.html">ejamit()</a></code> especially relies on
+<code><a href="../reference/getblocksnearby.html">getblocksnearby()</a></code> and <code><a href="../reference/doaggregate.html">doaggregate()</a></code>:</p></li>
+<li><p><code><a href="../reference/getblocksnearby.html">getblocksnearby()</a></code> takes a set of points (e.g.,
+facilities) and finds the Census blocks near each. Sample input is in
+<code>testpoints_100</code>, and sample output is in
+<code>testoutput_getblocksnearby_10pts_1miles</code></p></li>
+<li><p><code><a href="../reference/doaggregate.html">doaggregate()</a></code> takes the list of blocks near each
+point, joins it to blockgroup indicators like from EJScreen, and
+aggregates at each buffered point as well as for the overall set of
+unique blocks (residents). Sample input is in
+<code>testoutput_getblocksnearby_10pts_1miles</code> and sample output
+is in <code>testoutput_doaggregate_10pts_1miles</code></p></li>
 </ul>
 </div>
 <div class="section level2">
@@ -125,21 +133,28 @@ and sample output is in testoutput_doaggregate_10pts_1miles</p></li>
 functions, grouped by category. There are several categories of
 functions listed there:</p>
 <ul>
-<li>The overall functions ejamit(), ejam2report(), ejam2excel()</li>
+<li>Key Functions <code><a href="../reference/ejamit.html">ejamit()</a></code>, <code><a href="../reference/ejam2report.html">ejam2report()</a></code>,
+<code><a href="../reference/ejam2excel.html">ejam2excel()</a></code>, <code><a href="../reference/ejam2map.html">ejam2map()</a></code>,
+<code><a href="../reference/ejam2ratios.html">ejam2ratios()</a></code>
+</li>
 <li>Specify Points by Lat/Lon</li>
 <li>Specify Facilities by ID</li>
 <li>Specify Facility Type</li>
 <li>Specify Places by Shapefile</li>
 <li>Specify Counties, etc./FIPS tools</li>
-<li>Blocks, Distances, Residents - e.g., getblocksnearby()</li>
+<li>Blocks, Distances, Residents - e.g.,
+<code><a href="../reference/getblocksnearby.html">getblocksnearby()</a></code>
+</li>
 <li>Calculating and Aggregating</li>
-<li>Viewing Results</li>
-<li>Test Data</li>
+<li>Viewing Results (using the overall functions above)</li>
+<li>Test Data (if EJAM is installed, try
+<code>browseURL(system.file("testdata", package = "EJAM"))</code>)</li>
 <li>Utilities for finding URL or API info</li>
 <li>etc.</li>
 </ul>
-<p>Also see data(“EJAM”) and see ?dataload_from_pins() and usastats,
-statestats</p>
+<p>Also see <code>data("EJAM")</code> and see
+?<code><a href="../reference/dataload_from_pins.html">dataload_from_pins()</a></code> and <code>usastats</code>,
+<code>statestats</code></p>
 </div>
 <div class="section level2">
 <h2 id="points-nearby-residents">POINTS &amp; NEARBY RESIDENTS<a class="anchor" aria-label="anchor" href="#points-nearby-residents"></a>
@@ -190,9 +205,9 @@ or more of the specified points, and you can define those points in a
 few ways. One way is to upload a table of coordinates – latitude and
 longitude for each point, one row per site, with columns called lat and
 lon (or some synonyms that work).</p>
-<p>The simplest way to do that in the RStudio console is to do something
-like <code>x &lt;- ejamit(radius=1)</code>, and it prompts you to upload
-a spreadsheet with lat lon columns.</p>
+<p>The simplest way to do that in the RStudio console is something like
+<code>x &lt;- ejamit()</code>, which prompts you to upload a spreadsheet
+with lat lon columns, and asks you for the radius.</p>
 <p>You can also specify a set of facilities by uploading their Registry
 ID numbers in a table, or using other identifiers. For example, there is
 a function <code><a href="../reference/latlon_from_programid.html">latlon_from_programid()</a></code> in the examples
@@ -236,10 +251,10 @@ lacks NAICS info for many regulated facilities!</p>
 <span><span class="fu"><a href="../reference/frs_from_regid.html">frs_from_regid</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">110071293460</span>, <span class="fl">110000333826</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## interactively upload file with table of REGISTRY_ID values</span></span>
-<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/latlon_from_regid.html">latlon_from_regid</a></span><span class="op">(</span><span class="fu">read_csv_or_xl</span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">REGISTRY_ID</span><span class="op">)</span></span>
+<span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/latlon_from_regid.html">latlon_from_regid</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/EJAMejscreenapi/man/read_csv_or_xl.html" class="external-link">read_csv_or_xl</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">REGISTRY_ID</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## and run through EJAM</span></span>
-<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ejamit.html">ejamit</a></span><span class="op">(</span><span class="fu"><a href="../reference/latlon_from_regid.html">latlon_from_regid</a></span><span class="op">(</span><span class="fu">read_csv_or_xl</span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">REGISTRY_ID</span><span class="op">)</span>, radius <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ejamit.html">ejamit</a></span><span class="op">(</span><span class="fu"><a href="../reference/latlon_from_regid.html">latlon_from_regid</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/EJAMejscreenapi/man/read_csv_or_xl.html" class="external-link">read_csv_or_xl</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">REGISTRY_ID</span><span class="op">)</span>, radius <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="co">#  # still debugging Island Areas validation here!</span></span></code></pre></div>
 </div>
 <div class="section level4">
@@ -250,11 +265,7 @@ lacks NAICS info for many regulated facilities!</p>
 <span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/exists.html" class="external-link">exists</a></span><span class="op">(</span><span class="st">"frs_by_programid"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/latlon_from_programid.html">latlon_from_programid</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"XJW000012435"</span>, <span class="st">"00768SRTRSROAD1"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span><span class="co">#&gt;         lat        lon  REGISTRY_ID  program      pgm_sys_id</span></span>
-<span><span class="co">#&gt;       &lt;num&gt;      &lt;num&gt;       &lt;char&gt;   &lt;char&gt;          &lt;char&gt;</span></span>
-<span><span class="co">#&gt; 1: 48.39008 -122.50088 110071133925 RCRAINFO    XJW000012435</span></span>
-<span><span class="co">#&gt; 2: 18.06229  -66.85967 110000307855     TRIS 00768SRTRSROAD1</span></span></code></pre></div>
+<span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="by-epa-regulatory-program">by EPA Regulatory Program<a class="anchor" aria-label="anchor" href="#by-epa-regulatory-program"></a>
@@ -281,37 +292,7 @@ lacks NAICS info for many regulated facilities!</p>
 <span>  <span class="va">epa_programs_counts</span> <span class="op">&lt;-</span> <span class="va">frs_by_programid</span><span class="op">[</span>, <span class="va">.N</span>, by <span class="op">=</span> <span class="st">"program"</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span>, <span class="op">]</span></span>
 <span>  <span class="va">epa_programs_counts</span><span class="op">$</span><span class="va">fed</span> <span class="op">=</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"^[A-Z]{2}[-]"</span>, <span class="fu"><a href="https://rdrr.io/r/base/vector.html" class="external-link">as.vector</a></span><span class="op">(</span><span class="va">epa_programs_counts</span><span class="op">$</span><span class="va">program</span><span class="op">)</span>,<span class="fl">1</span>,<span class="fl">3</span><span class="op">)</span></span>
 <span>  <span class="va">epa_programs_counts</span><span class="op">[</span><span class="va">fed</span> <span class="op">==</span> <span class="cn">TRUE</span>, <span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="op">-</span><span class="va">N</span><span class="op">)</span>, <span class="op">]</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">25</span>, <span class="op">]</span></span>
-<span><span class="op">}</span></span>
-<span><span class="co">#&gt; Warning in state_from_latlon(lat = lat, lon = lon): Some latitude / longitude</span></span>
-<span><span class="co">#&gt; were provided that are not found in any state</span></span>
-<span><span class="co">#&gt;           program      N    fed</span></span>
-<span><span class="co">#&gt;            &lt;char&gt;  &lt;int&gt; &lt;lgcl&gt;</span></span>
-<span><span class="co">#&gt;  1:      RCRAINFO 517725   TRUE</span></span>
-<span><span class="co">#&gt;  2:         NPDES 394581   TRUE</span></span>
-<span><span class="co">#&gt;  3:          ICIS 156855   TRUE</span></span>
-<span><span class="co">#&gt;  4:           AIR 134115   TRUE</span></span>
-<span><span class="co">#&gt;  5:           FIS 122496   TRUE</span></span>
-<span><span class="co">#&gt;  6:           EIS 119792   TRUE</span></span>
-<span><span class="co">#&gt;  7:      AIRS/AFS 101075   TRUE</span></span>
-<span><span class="co">#&gt;  8:      OSHA-OIS  85069   TRUE</span></span>
-<span><span class="co">#&gt;  9:          NCDB  70782   TRUE</span></span>
-<span><span class="co">#&gt; 10:          ACES  65353   TRUE</span></span>
-<span><span class="co">#&gt; 11:      IDNR_EFD  45963   TRUE</span></span>
-<span><span class="co">#&gt; 12:          SFDW  43309   TRUE</span></span>
-<span><span class="co">#&gt; 13:         ACRES  35541   TRUE</span></span>
-<span><span class="co">#&gt; 14:       AZURITE  35140   TRUE</span></span>
-<span><span class="co">#&gt; 15:           FDM  34623   TRUE</span></span>
-<span><span class="co">#&gt; 16:          TRIS  33178   TRUE</span></span>
-<span><span class="co">#&gt; 17:          SIMS  26061   TRUE</span></span>
-<span><span class="co">#&gt; 18:          NDEQ  25599   TRUE</span></span>
-<span><span class="co">#&gt; 19:           PDS  20585   TRUE</span></span>
-<span><span class="co">#&gt; 20:          SSTS  15371   TRUE</span></span>
-<span><span class="co">#&gt; 21:          TSCA  12619   TRUE</span></span>
-<span><span class="co">#&gt; 22: HWTS-DATAMART  12290   TRUE</span></span>
-<span><span class="co">#&gt; 23:         CEDRI  11731   TRUE</span></span>
-<span><span class="co">#&gt; 24:          SEMS  10986   TRUE</span></span>
-<span><span class="co">#&gt; 25:         EGRID  10615   TRUE</span></span>
-<span><span class="co">#&gt;           program      N    fed</span></span></code></pre></div>
+<span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="by-mact-subpart-hazardous-air-pollutant-source-category">by MACT Subpart (hazardous air pollutant source category)<a class="anchor" aria-label="anchor" href="#by-mact-subpart-hazardous-air-pollutant-source-category"></a>
@@ -341,20 +322,7 @@ lacks NAICS info for many regulated facilities!</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="fu"><a href="../reference/latlon_from_mactsubpart.html">latlon_from_mactsubpart</a></span><span class="op">(</span><span class="st">"A"</span>, include_if_no_latlon <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span>
 <span>  </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="../reference/latlon_from_mactsubpart.html">latlon_from_mactsubpart</a></span><span class="op">(</span><span class="st">"OOOO"</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="op">}</span></span>
-<span><span class="co">#&gt; Key: &lt;subpart, programid&gt;</span></span>
-<span><span class="co">#&gt;             programid subpart</span></span>
-<span><span class="co">#&gt;                &lt;char&gt;  &lt;char&gt;</span></span>
-<span><span class="co">#&gt; 1: 080000003800500001    OOOO</span></span>
-<span><span class="co">#&gt; 2: 0900000006111R9011    OOOO</span></span>
-<span><span class="co">#&gt;                                                         title      lat</span></span>
-<span><span class="co">#&gt;                                                        &lt;char&gt;    &lt;num&gt;</span></span>
-<span><span class="co">#&gt; 1: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 47.97940</span></span>
-<span><span class="co">#&gt; 2: PRINTING, COATING AND DYEING OF FABRICS AND OTHER TEXTILES 34.22082</span></span>
-<span><span class="co">#&gt;           lon  REGISTRY_ID program</span></span>
-<span><span class="co">#&gt;         &lt;num&gt;       &lt;char&gt;  &lt;char&gt;</span></span>
-<span><span class="co">#&gt; 1:  -99.02064 110000825867     AIR</span></span>
-<span><span class="co">#&gt; 2: -119.02272 110043415578     AIR</span></span></code></pre></div>
+<span><span class="op">}</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level3">
@@ -437,17 +405,26 @@ Sector<a class="anchor" aria-label="anchor" href="#naics-codes-to-map-or-analyze
 <span></span>
 <span><span class="co"># See a data table of facilities in one industry</span></span>
 <span><span class="fu"><a href="../reference/dataload_from_pins.html">dataload_from_pins</a></span><span class="op">(</span><span class="st">"frs"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #080808;">Connecting to Posit Connect 2024.01.0 at</span></span></span>
-<span><span class="co"><span style="color: #080808;">#&gt; &lt;https://rstudio-connect.dmap-stage.aws.epa.gov&gt;</span></span></span>
+<span><span class="co">#&gt; Connecting to Posit Connect 2024.05.0 at</span></span>
+<span><span class="co">#&gt; &lt;https://rstudio-connect.dmap-stage.aws.epa.gov&gt;</span></span>
 <span><span class="co">#&gt; Successfully connected to Posit Connect pins board.</span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; frs          - was already in memory (in specified envir), so local and/or server copies were not sought.</span></span>
+<span><span class="co">#&gt; frs          - is NOT in memory. Checking local disk... frs         is NOT found locally on disk at ~/../Downloads/EJAMbigfiles/frs.arrow </span></span>
+<span><span class="co">#&gt; frs          - is NOT in local folder.</span></span>
+<span><span class="co">#&gt; frs         - was read from pins board server, into memory (to specified envir).</span></span>
 <span><span class="co">#&gt; [1] "frs"</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/exists.html" class="external-link">exists</a></span><span class="op">(</span><span class="st">"frs"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span><span class="va">industryword</span> <span class="op">&lt;-</span> <span class="st">"pulp"</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span> <span class="fu"><a href="../reference/frs_from_naics.html">frs_from_naics</a></span><span class="op">(</span><span class="fu"><a href="../reference/naics_from_any.html">naics_from_any</a></span><span class="op">(</span><span class="va">industryword</span><span class="op">)</span><span class="op">$</span><span class="va">code</span><span class="op">)</span><span class="op">[</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">4</span><span class="op">]</span> <span class="op">)</span></span>
 <span><span class="op">}</span></span>
+<span><span class="co">#&gt; Connecting to Posit Connect 2024.05.0 at</span></span>
+<span><span class="co">#&gt; &lt;https://rstudio-connect.dmap-stage.aws.epa.gov&gt;</span></span>
+<span><span class="co">#&gt; Successfully connected to Posit Connect pins board.</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; frs_by_naics   - is NOT in memory. Checking local disk... frs_by_naics  is NOT found locally on disk at ~/../Downloads/EJAMbigfiles/frs_by_naics.arrow </span></span>
+<span><span class="co">#&gt; frs_by_naics   - is NOT in local folder.</span></span>
+<span><span class="co">#&gt; frs_by_naics  - was read from pins board server, into memory (to specified envir).</span></span>
 <span><span class="co">#&gt; Key: &lt;REGISTRY_ID&gt;</span></span>
 <span><span class="co">#&gt;         lat       lon  REGISTRY_ID                        PRIMARY_NAME</span></span>
 <span><span class="co">#&gt;       &lt;num&gt;     &lt;num&gt;       &lt;char&gt;                              &lt;char&gt;</span></span>
@@ -462,8 +439,8 @@ which you can click on to see popup windows about sites.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># note frs_from_naics() requires the frs dataset, which it tries to load on demand.</span></span>
 <span><span class="fu"><a href="../reference/dataload_from_pins.html">dataload_from_pins</a></span><span class="op">(</span><span class="st">"frs"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #080808;">Connecting to Posit Connect 2024.01.0 at</span></span></span>
-<span><span class="co"><span style="color: #080808;">#&gt; &lt;https://rstudio-connect.dmap-stage.aws.epa.gov&gt;</span></span></span>
+<span><span class="co">#&gt; Connecting to Posit Connect 2024.05.0 at</span></span>
+<span><span class="co">#&gt; &lt;https://rstudio-connect.dmap-stage.aws.epa.gov&gt;</span></span>
 <span><span class="co">#&gt; Successfully connected to Posit Connect pins board.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; frs          - was already in memory (in specified envir), so local and/or server copies were not sought.</span></span>
@@ -636,14 +613,14 @@ facility in ECHO and EJScreen</p>
 <span><span class="co">#&gt; 6: 326113</span></span></code></pre></div>
 <p>A NAICS code can have many “children” or subcategories under it</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/dataload_from_pins.html">dataload_from_pins</a></span><span class="op">(</span><span class="st">"frs"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #080808;">Connecting to Posit Connect 2024.01.0 at</span></span></span>
-<span><span class="co"><span style="color: #080808;">#&gt; &lt;https://rstudio-connect.dmap-stage.aws.epa.gov&gt;</span></span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/dataload_from_pins.html">dataload_from_pins</a></span><span class="op">(</span><span class="st">"frs"</span>, <span class="st">"frs_by_naics"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Connecting to Posit Connect 2024.05.0 at</span></span>
+<span><span class="co">#&gt; &lt;https://rstudio-connect.dmap-stage.aws.epa.gov&gt;</span></span>
 <span><span class="co">#&gt; Successfully connected to Posit Connect pins board.</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; frs          - was already in memory (in specified envir), so local and/or server copies were not sought.</span></span>
 <span><span class="co">#&gt; [1] "frs"</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/exists.html" class="external-link">exists</a></span><span class="op">(</span><span class="st">"frs"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/exists.html" class="external-link">exists</a></span><span class="op">(</span><span class="st">"frs"</span><span class="op">)</span> <span class="op">&amp;</span> <span class="fu"><a href="https://rdrr.io/r/base/exists.html" class="external-link">exists</a></span><span class="op">(</span><span class="st">"frs_from_naics"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">NROW</a></span><span class="op">(</span><span class="fu"><a href="../reference/naics_from_any.html">naics_from_any</a></span><span class="op">(</span><span class="st">"chem"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># about 20</span></span>
@@ -668,20 +645,20 @@ facility in ECHO and EJScreen</p>
 See the Shiny app.</p>
 <p>See shapefile_from_any() and related functions:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># shapefile_from_any()</span></span>
-<span><span class="co"># shapefile_from_gdbzip()</span></span>
-<span><span class="co"># shapefile_from_gdb()</span></span>
-<span><span class="co"># shapefile_from_json()</span></span>
-<span><span class="co"># shapefile_from_filepaths()</span></span>
-<span><span class="co"># shapefile_from_folder()</span></span>
-<span><span class="co"># shapefile_filepaths_from_folder()</span></span>
-<span><span class="co"># shapefile_filepaths_valid()</span></span>
-<span><span class="co"># shapefile_clean()</span></span>
-<span><span class="co"># shapefile_from_sitepoints()</span></span>
-<span><span class="co"># shape_buffered_from_shapefile()</span></span>
-<span><span class="co"># shape_buffered_from_shapefile_points()</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/shapefile_from_any.html">shapefile_from_any</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/shapefile_from_gdbzip.html">shapefile_from_gdbzip</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/shapefile_from_gdb.html">shapefile_from_gdb</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu">shapefile_from_json</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/shapefile_from_filepaths.html">shapefile_from_filepaths</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/shapefile_from_folder.html">shapefile_from_folder</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/shapefile_filepaths_from_folder.html">shapefile_filepaths_from_folder</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/shapefile_filepaths_valid.html">shapefile_filepaths_valid</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/shapefile_clean.html">shapefile_clean</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/shapefile_from_sitepoints.html">shapefile_from_sitepoints</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/shape_buffered_from_shapefile.html">shape_buffered_from_shapefile</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/shape_buffered_from_shapefile_points.html">shape_buffered_from_shapefile_points</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># shp1 &lt;- shapefile_from_gdbzip(system.file("testdata/shapes/portland.gdb.zip", package = "EJAM"))</span></span></code></pre></div>
+<span><span class="va">shp1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/shapefile_from_gdbzip.html">shapefile_from_gdbzip</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"testdata/shapes/portland.gdb.zip"</span>, package <span class="op">=</span> <span class="st">"EJAM"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -746,7 +723,17 @@ overrepresented?)<a class="anchor" aria-label="anchor" href="#the-most-striking-
 </h4>
 <p>See examples above using ejam2report() but also you can check some
 key findings like this:</p>
-<pre><code><span><span class="co">#&gt; [1] "At 3% of these sites, at least 1 of the indicators is at least 5 times the statewide overall average."</span></span></code></pre>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="va">testoutput_ejamit_1000pts_1miles</span> </span>
+<span><span class="va">out</span> <span class="op">&lt;-</span> <span class="va">x</span><span class="op">$</span><span class="va">results_bysite</span></span>
+<span><span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/setDF.html" class="external-link">setDF</a></span><span class="op">(</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/copy.html" class="external-link">copy</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">ratio_benchmarks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.01</span>, <span class="fl">1.50</span>, <span class="fl">2</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="va">ratiodata</span> <span class="op">&lt;-</span> <span class="va">out</span><span class="op">[</span>, <span class="va">names_d_ratio_to_state_avg</span><span class="op">]</span></span>
+<span></span>
+<span><span class="va">findings</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/count_sites_with_n_high_scores.html">count_sites_with_n_high_scores</a></span><span class="op">(</span><span class="va">ratiodata</span>, quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>  <span class="co"># long output to console !</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">findings</span><span class="op">$</span><span class="va">text</span><span class="op">[</span><span class="va">findings</span><span class="op">$</span><span class="va">text</span> <span class="op">!=</span> <span class="st">""</span><span class="op">]</span>, <span class="fl">1</span><span class="op">)</span> <span class="co"># the most extreme finding!</span></span>
+<span><span class="co">#&gt; [1] "At 3% of these sites, at least 1 of the indicators is at least 5 times the statewide overall average."</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="the-key-facilities-e-g--which-has-the-max-of-or-has-multiple-elevated-ej-indexes">The key facilities (e.g., which has the max of – or has multiple
@@ -767,45 +754,52 @@ elevated – EJ indexes?)<a class="anchor" aria-label="anchor" href="#the-key-fa
 <div class="section level4">
 <h4 id="more-summary-findings">More summary findings<a class="anchor" aria-label="anchor" href="#more-summary-findings"></a>
 </h4>
-<pre><code><span><span class="co">#&gt; NULL</span></span>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/dimnames.html" class="external-link">dimnames</a></span><span class="op">(</span><span class="va">findings</span><span class="op">)</span></span>
+<span><span class="co">#&gt; NULL</span></span>
+<span><span class="va">findings</span><span class="op">$</span><span class="va">text</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span></span>
 <span><span class="co">#&gt; [1] "At 95% of these sites, at least 1 of the indicators is at least 1.01 times the statewide overall average."</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">findings</span><span class="op">$</span><span class="va">stats</span><span class="op">[</span> , , <span class="fl">1</span><span class="op">]</span>, <span class="fl">15</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      cut</span></span>
 <span><span class="co">#&gt; count 1.01   2   5  10</span></span>
-<span><span class="co">#&gt;    0    50 686 962 984</span></span>
-<span><span class="co">#&gt;    1   157 181  25   3</span></span>
-<span><span class="co">#&gt;    2   163  60   0   0</span></span>
-<span><span class="co">#&gt;    3   115  29   0   0</span></span>
-<span><span class="co">#&gt;    4    70  16   0   0</span></span>
-<span><span class="co">#&gt;    5    73   8   0   0</span></span>
-<span><span class="co">#&gt;    6    85   3   0   0</span></span>
-<span><span class="co">#&gt;    7    91   4   0   0</span></span>
-<span><span class="co">#&gt;    8   109   0   0   0</span></span>
-<span><span class="co">#&gt;    9    72   0   0   0</span></span>
-<span><span class="co">#&gt;    10    2   0   0   0</span></span>
+<span><span class="co">#&gt;    0    50 708 969 992</span></span>
+<span><span class="co">#&gt;    1   162 160  25   2</span></span>
+<span><span class="co">#&gt;    2   181  45   0   0</span></span>
+<span><span class="co">#&gt;    3   110  32   0   0</span></span>
+<span><span class="co">#&gt;    4    79  21   0   0</span></span>
+<span><span class="co">#&gt;    5    70  11   0   0</span></span>
+<span><span class="co">#&gt;    6    77  13   0   0</span></span>
+<span><span class="co">#&gt;    7    82   4   0   0</span></span>
+<span><span class="co">#&gt;    8    91   0   0   0</span></span>
+<span><span class="co">#&gt;    9    88   0   0   0</span></span>
+<span><span class="co">#&gt;    10    4   0   0   0</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">findings</span><span class="op">$</span><span class="va">stats</span><span class="op">[</span> , <span class="fl">1</span>, <span class="op">]</span>, <span class="fl">21</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      stat</span></span>
 <span><span class="co">#&gt; count count cum pct cum_pct</span></span>
-<span><span class="co">#&gt;    0     50 987   5     100</span></span>
-<span><span class="co">#&gt;    1    157 937  16      95</span></span>
-<span><span class="co">#&gt;    2    163 780  17      79</span></span>
-<span><span class="co">#&gt;    3    115 617  12      63</span></span>
-<span><span class="co">#&gt;    4     70 502   7      51</span></span>
-<span><span class="co">#&gt;    5     73 432   7      44</span></span>
-<span><span class="co">#&gt;    6     85 359   9      36</span></span>
-<span><span class="co">#&gt;    7     91 274   9      28</span></span>
-<span><span class="co">#&gt;    8    109 183  11      19</span></span>
-<span><span class="co">#&gt;    9     72  74   7       7</span></span>
-<span><span class="co">#&gt;    10     2   2   0       0</span></span>
+<span><span class="co">#&gt;    0     50 994   5     100</span></span>
+<span><span class="co">#&gt;    1    162 944  16      95</span></span>
+<span><span class="co">#&gt;    2    181 782  18      79</span></span>
+<span><span class="co">#&gt;    3    110 601  11      60</span></span>
+<span><span class="co">#&gt;    4     79 491   8      49</span></span>
+<span><span class="co">#&gt;    5     70 412   7      41</span></span>
+<span><span class="co">#&gt;    6     77 342   8      34</span></span>
+<span><span class="co">#&gt;    7     82 265   8      27</span></span>
+<span><span class="co">#&gt;    8     91 183   9      18</span></span>
+<span><span class="co">#&gt;    9     88  92   9       9</span></span>
+<span><span class="co">#&gt;    10     4   4   0       0</span></span>
+<span><span class="va">x</span> <span class="op">=</span> <span class="va">findings</span><span class="op">$</span><span class="va">stats</span><span class="op">[</span> , <span class="fl">1</span>, <span class="op">]</span> </span>
+<span><span class="va">x</span><span class="op">[</span><span class="va">x</span><span class="op">[</span>, <span class="st">"cum_pct"</span><span class="op">]</span> <span class="op">&gt;=</span> <span class="fl">50</span> <span class="op">&amp;</span> <span class="va">x</span><span class="op">[</span>, <span class="st">"cum_pct"</span><span class="op">]</span> <span class="op">&lt;=</span> <span class="fl">80</span>, <span class="op">]</span></span>
 <span><span class="co">#&gt;      stat</span></span>
 <span><span class="co">#&gt; count count cum pct cum_pct</span></span>
-<span><span class="co">#&gt;     2   163 780  17      79</span></span>
-<span><span class="co">#&gt;     3   115 617  12      63</span></span>
-<span><span class="co">#&gt;     4    70 502   7      51</span></span>
+<span><span class="co">#&gt;     2   181 782  18      79</span></span>
+<span><span class="co">#&gt;     3   110 601  11      60</span></span>
+<span><span class="va">findings</span><span class="op">$</span><span class="va">stats</span><span class="op">[</span> <span class="fl">1</span>, , <span class="op">]</span></span>
 <span><span class="co">#&gt;       stat</span></span>
 <span><span class="co">#&gt; cut    count cum pct cum_pct</span></span>
-<span><span class="co">#&gt;   1.01    50 987   5     100</span></span>
-<span><span class="co">#&gt;   2      686 987  70     100</span></span>
-<span><span class="co">#&gt;   5      962 987  97     100</span></span>
-<span><span class="co">#&gt;   10     984 987 100     100</span></span></code></pre>
+<span><span class="co">#&gt;   1.01    50 994   5     100</span></span>
+<span><span class="co">#&gt;   2      708 994  71     100</span></span>
+<span><span class="co">#&gt;   5      969 994  97     100</span></span>
+<span><span class="co">#&gt;   10     992 994 100     100</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="site-by-site-detailed-results-in-datatable-format-in-rstudio-viewer">Site by site detailed results in datatable format in RStudio
@@ -860,152 +854,113 @@ output in console:<a class="anchor" aria-label="anchor" href="#overall-results-f
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">as.list</a></span><span class="op">(</span><span class="va">out2</span><span class="op">$</span><span class="va">results_overall</span><span class="op">)</span><span class="op">)</span></span>
 <span>  , <span class="fl">12</span><span class="op">)</span></span></code></pre></div>
-</div>
-</div>
-</div>
-<div class="section level2">
-<h2 id="details-of-blocks-near-one-site">DETAILS OF BLOCKS NEAR ONE SITE<a class="anchor" aria-label="anchor" href="#details-of-blocks-near-one-site"></a>
-</h2>
-<div class="section level4">
-<h4 id="detailed-diagnostics-or-stats-on-intermediate-results">Detailed diagnostics or stats on intermediate results<a class="anchor" aria-label="anchor" href="#detailed-diagnostics-or-stats-on-intermediate-results"></a>
-</h4>
-</div>
-<div class="section level4">
-<h4 id="getblocksnearby-will-find-residentsblocks-that-are-within-specified-distance">getblocksnearby() will find residents/blocks that are within
-specified distance<a class="anchor" aria-label="anchor" href="#getblocksnearby-will-find-residentsblocks-that-are-within-specified-distance"></a>
-</h4>
-<p>Less than 1 second for 100 sites, but a few seconds for 1,000 sites,
-or 500k / hour for this step</p>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sitepoints</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/copy.html" class="external-link">copy</a></span><span class="op">(</span><span class="va">testpoints_100</span><span class="op">)</span> </span>
-<span><span class="co"># or </span></span>
-<span><span class="co"># sitepoints &lt;- testpoints_n(100,"block") # random points</span></span>
-<span><span class="va">radius</span> <span class="op">&lt;-</span> <span class="fl">3</span></span>
-<span><span class="va">elapsed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="op">{</span></span>
-<span>  </span>
-<span>  <span class="va">sites2blocks</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getblocksnearby.html">getblocksnearby</a></span><span class="op">(</span></span>
-<span>    sitepoints <span class="op">=</span> <span class="va">sitepoints</span>,</span>
-<span>    radius <span class="op">=</span> <span class="va">radius</span></span>
-<span>  <span class="op">)</span></span>
-<span>  </span>
-<span><span class="op">}</span><span class="op">)</span> <span class="co"># end of timed function</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">elapsed</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">sites2blocks</span><span class="op">)</span></span></code></pre></div>
-<div class="section level5">
-<h5 id="doaggregate-will-summarize-indicators-within-each-buffer-and-overall">doaggregate() will summarize indicators within each buffer and
-overall<a class="anchor" aria-label="anchor" href="#doaggregate-will-summarize-indicators-within-each-buffer-and-overall"></a>
-</h5>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># out &lt;- doaggregate(testoutput_getblocksnearby_10pts_1miles)</span></span>
-<span><span class="va">sites2blocks</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/copy.html" class="external-link">copy</a></span><span class="op">(</span><span class="va">testoutput_getblocksnearby_10pts_1miles</span><span class="op">)</span></span>
-<span><span class="va">elapsed</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.time.html" class="external-link">system.time</a></span><span class="op">(</span><span class="op">{</span></span>
-<span>  <span class="va">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/warning.html" class="external-link">suppressWarnings</a></span><span class="op">(</span> </span>
-<span>    <span class="fu"><a href="../reference/doaggregate.html">doaggregate</a></span><span class="op">(</span>sites2blocks <span class="op">=</span> <span class="va">sites2blocks</span><span class="op">)</span> </span>
-<span>  <span class="op">)</span></span>
-<span><span class="op">}</span><span class="op">)</span> </span>
-<span><span class="co">#&gt; Inferring approximate radius is 1 miles, based on distances found.</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">elapsed</span><span class="op">)</span></span>
-<span><span class="co">#&gt;    user  system elapsed </span></span>
-<span><span class="co">#&gt;    0.34    0.03    0.53</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">out</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "results_overall"                     "results_bysite"                     </span></span>
-<span><span class="co">#&gt; [3] "results_bybg_people"                 "longnames"                          </span></span>
-<span><span class="co">#&gt; [5] "count_of_blocks_near_multiple_sites"</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">out</span><span class="op">$</span><span class="va">results_bysite</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1]   9 287</span></span></code></pre></div>
-</div>
 <div class="section level5">
 <h5 id="see-indicators-aggregated-over-all-people-across-all-sites">See indicators aggregated over all people across all sites<a class="anchor" aria-label="anchor" href="#see-indicators-aggregated-over-all-people-across-all-sites"></a>
 </h5>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">## view output of batch run aggregation ####</span></span>
+<span><span class="va">out</span> <span class="op">&lt;-</span> <span class="va">testoutput_ejamit_1000pts_1miles</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span>overall <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">as.list</a></span><span class="op">(</span> <span class="va">out</span><span class="op">$</span><span class="va">results_overall</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;              overall</span></span>
-<span><span class="co">#&gt; ejam_uniq_id NA     </span></span>
-<span><span class="co">#&gt; pop          60740.3</span></span>
-<span><span class="co">#&gt; lon          NA     </span></span>
-<span><span class="co">#&gt; lat          NA     </span></span>
-<span><span class="co">#&gt; ST           NA     </span></span>
-<span><span class="co">#&gt; statename    NA</span></span>
+<span><span class="co">#&gt;                 overall</span></span>
+<span><span class="co">#&gt; EJScreen Report NA     </span></span>
+<span><span class="co">#&gt; EJScreen Map    NA     </span></span>
+<span><span class="co">#&gt; ECHO report     NA     </span></span>
+<span><span class="co">#&gt; ejam_uniq_id    NA     </span></span>
+<span><span class="co">#&gt; pop             8939197</span></span>
+<span><span class="co">#&gt; lon             NA</span></span>
 <span></span>
 <span><span class="co">## To see just some subset of indicators, like Environmental only:</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span>overall <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">as.list</a></span><span class="op">(</span> <span class="va">out</span><span class="op">$</span><span class="va">results_overall</span><span class="op">[</span> , <span class="va">..names_e</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt;                 overall   </span></span>
-<span><span class="co">#&gt; pm              8.033511  </span></span>
-<span><span class="co">#&gt; o3              60.62275  </span></span>
-<span><span class="co">#&gt; cancer          26.52724  </span></span>
-<span><span class="co">#&gt; resp            0.2887633 </span></span>
-<span><span class="co">#&gt; dpm             0.3634965 </span></span>
-<span><span class="co">#&gt; pctpre1960      0.4127978 </span></span>
-<span><span class="co">#&gt; traffic.score   179.1214  </span></span>
-<span><span class="co">#&gt; proximity.npl   0.3872596 </span></span>
-<span><span class="co">#&gt; proximity.rmp   0.5952604 </span></span>
-<span><span class="co">#&gt; proximity.tsdf  1.353144  </span></span>
-<span><span class="co">#&gt; proximity.npdes 0.01370324</span></span>
-<span><span class="co">#&gt; ust             5.488647  </span></span>
-<span><span class="co">#&gt; rsei            6492.776</span></span>
+<span><span class="co">#&gt;                 overall  </span></span>
+<span><span class="co">#&gt; pm              8.552723 </span></span>
+<span><span class="co">#&gt; o3              63.56741 </span></span>
+<span><span class="co">#&gt; cancer          27.71071 </span></span>
+<span><span class="co">#&gt; resp            0.3615265</span></span>
+<span><span class="co">#&gt; dpm             0.4361229</span></span>
+<span><span class="co">#&gt; pctpre1960      0.4344714</span></span>
+<span><span class="co">#&gt; traffic.score   544.5517 </span></span>
+<span><span class="co">#&gt; proximity.npl   0.2513312</span></span>
+<span><span class="co">#&gt; proximity.rmp   0.5040679</span></span>
+<span><span class="co">#&gt; proximity.tsdf  5.941222 </span></span>
+<span><span class="co">#&gt; proximity.npdes 15.17743 </span></span>
+<span><span class="co">#&gt; ust             9.58116  </span></span>
+<span><span class="co">#&gt; rsei            4239.948</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span>overall <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">as.list</a></span><span class="op">(</span> <span class="va">out</span><span class="op">$</span><span class="va">results_overall</span><span class="op">[</span> , <span class="va">..names_d</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                  overall   </span></span>
-<span><span class="co">#&gt; Demog.Index      0.402214  </span></span>
-<span><span class="co">#&gt; Demog.Index.Supp 0.1772926 </span></span>
-<span><span class="co">#&gt; pctlowinc        0.3960105 </span></span>
-<span><span class="co">#&gt; pctlingiso       0.0681899 </span></span>
-<span><span class="co">#&gt; pctunemployed    0.05715225</span></span>
-<span><span class="co">#&gt; pctlths          0.148745  </span></span>
-<span><span class="co">#&gt; lowlifex         0.2163654 </span></span>
-<span><span class="co">#&gt; pctunder5        0.06424071</span></span>
-<span><span class="co">#&gt; pctover64        0.1083218 </span></span>
-<span><span class="co">#&gt; pctmin           0.4084175</span></span>
+<span><span class="co">#&gt; Demog.Index      0.4603789 </span></span>
+<span><span class="co">#&gt; Demog.Index.Supp 0.169314  </span></span>
+<span><span class="co">#&gt; pctlowinc        0.3403695 </span></span>
+<span><span class="co">#&gt; pctlingiso       0.09709285</span></span>
+<span><span class="co">#&gt; pctunemployed    0.06669376</span></span>
+<span><span class="co">#&gt; pctlths          0.1541029 </span></span>
+<span><span class="co">#&gt; lowlifex         0.1883108 </span></span>
+<span><span class="co">#&gt; pctunder5        0.06038705</span></span>
+<span><span class="co">#&gt; pctover64        0.1355078 </span></span>
+<span><span class="co">#&gt; pctmin           0.5803883</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span>overall <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">as.list</a></span><span class="op">(</span> <span class="va">out</span><span class="op">$</span><span class="va">results_overall</span><span class="op">[</span> , <span class="va">..names_d_subgroups</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt;                 overall     </span></span>
-<span><span class="co">#&gt; pcthisp         0.2547057   </span></span>
-<span><span class="co">#&gt; pctnhba         0.08590507  </span></span>
-<span><span class="co">#&gt; pctnhaa         0.0296854   </span></span>
-<span><span class="co">#&gt; pctnhaiana      0.008840918 </span></span>
-<span><span class="co">#&gt; pctnhnhpia      1.481718e-05</span></span>
-<span><span class="co">#&gt; pctnhotheralone 0.0009054944</span></span>
-<span><span class="co">#&gt; pctnhmulti      0.02836008  </span></span>
-<span><span class="co">#&gt; pctnhwa         0.5915825</span></span>
+<span><span class="co">#&gt;                 overall    </span></span>
+<span><span class="co">#&gt; pcthisp         0.3335722  </span></span>
+<span><span class="co">#&gt; pctnhba         0.1161991  </span></span>
+<span><span class="co">#&gt; pctnhaa         0.08996663 </span></span>
+<span><span class="co">#&gt; pctnhaiana      0.003047712</span></span>
+<span><span class="co">#&gt; pctnhnhpia      0.001639543</span></span>
+<span><span class="co">#&gt; pctnhotheralone 0.004964383</span></span>
+<span><span class="co">#&gt; pctnhmulti      0.03099878 </span></span>
+<span><span class="co">#&gt; pctnhwa         0.4196117</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span>overall <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">as.list</a></span><span class="op">(</span> <span class="va">out</span><span class="op">$</span><span class="va">results_overall</span><span class="op">[</span> , <span class="va">..names_e_pctile</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                        overall</span></span>
-<span><span class="co">#&gt; pctile.pm              45     </span></span>
-<span><span class="co">#&gt; pctile.o3              46     </span></span>
+<span><span class="co">#&gt; pctile.pm              60     </span></span>
+<span><span class="co">#&gt; pctile.o3              67     </span></span>
 <span><span class="co">#&gt; pctile.cancer          5      </span></span>
-<span><span class="co">#&gt; pctile.resp            4      </span></span>
-<span><span class="co">#&gt; pctile.dpm             79     </span></span>
-<span><span class="co">#&gt; pctile.pctpre1960      67     </span></span>
-<span><span class="co">#&gt; pctile.traffic.score   72     </span></span>
-<span><span class="co">#&gt; pctile.proximity.npl   93     </span></span>
-<span><span class="co">#&gt; pctile.proximity.rmp   79     </span></span>
-<span><span class="co">#&gt; pctile.proximity.tsdf  66     </span></span>
-<span><span class="co">#&gt; pctile.proximity.npdes 70     </span></span>
-<span><span class="co">#&gt; pctile.ust             79     </span></span>
-<span><span class="co">#&gt; pctile.rsei            89</span></span>
+<span><span class="co">#&gt; pctile.resp            31     </span></span>
+<span><span class="co">#&gt; pctile.dpm             87     </span></span>
+<span><span class="co">#&gt; pctile.pctpre1960      69     </span></span>
+<span><span class="co">#&gt; pctile.traffic.score   91     </span></span>
+<span><span class="co">#&gt; pctile.proximity.npl   89     </span></span>
+<span><span class="co">#&gt; pctile.proximity.rmp   76     </span></span>
+<span><span class="co">#&gt; pctile.proximity.tsdf  91     </span></span>
+<span><span class="co">#&gt; pctile.proximity.npdes 97     </span></span>
+<span><span class="co">#&gt; pctile.ust             88     </span></span>
+<span><span class="co">#&gt; pctile.rsei            84</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span>overall <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">as.list</a></span><span class="op">(</span> <span class="va">out</span><span class="op">$</span><span class="va">results_overall</span><span class="op">[</span> , <span class="va">..names_d_pctile</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>; <span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"\n"</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                         overall</span></span>
-<span><span class="co">#&gt; pctile.Demog.Index      64     </span></span>
-<span><span class="co">#&gt; pctile.Demog.Index.Supp 72     </span></span>
-<span><span class="co">#&gt; pctile.pctlowinc        69     </span></span>
-<span><span class="co">#&gt; pctile.pctlingiso       80     </span></span>
-<span><span class="co">#&gt; pctile.pctunemployed    63     </span></span>
-<span><span class="co">#&gt; pctile.pctlths          71     </span></span>
-<span><span class="co">#&gt; pctile.lowlifex         70     </span></span>
-<span><span class="co">#&gt; pctile.pctunder5        64     </span></span>
-<span><span class="co">#&gt; pctile.pctover64        30     </span></span>
-<span><span class="co">#&gt; pctile.pctmin           59</span></span>
+<span><span class="co">#&gt; pctile.Demog.Index      70     </span></span>
+<span><span class="co">#&gt; pctile.Demog.Index.Supp 69     </span></span>
+<span><span class="co">#&gt; pctile.pctlowinc        61     </span></span>
+<span><span class="co">#&gt; pctile.pctlingiso       84     </span></span>
+<span><span class="co">#&gt; pctile.pctunemployed    68     </span></span>
+<span><span class="co">#&gt; pctile.pctlths          73     </span></span>
+<span><span class="co">#&gt; pctile.lowlifex         44     </span></span>
+<span><span class="co">#&gt; pctile.pctunder5        61     </span></span>
+<span><span class="co">#&gt; pctile.pctover64        41     </span></span>
+<span><span class="co">#&gt; pctile.pctmin           71</span></span>
 <span><span class="co"># cbind(overall = as.list( out$results_overall[ , ..names_ej_pctile])); cat("\n")</span></span></code></pre></div>
 </div>
 </div>
 </div>
+</div>
 <div class="section level2">
-<h2 id="visualization-of-findings">VISUALIZATION OF FINDINGS<a class="anchor" aria-label="anchor" href="#visualization-of-findings"></a>
+<h2 id="visualization-of-findings-plots">VISUALIZATION OF FINDINGS (PLOTS)<a class="anchor" aria-label="anchor" href="#visualization-of-findings-plots"></a>
 </h2>
-<div class="section level5">
-<h5 id="histogram-of-indicators-distribution-over-all-people-across-all-sites">Histogram of indicators distribution over all people across all
+<div class="section level3">
+<h3 id="indicators">Indicators<a class="anchor" aria-label="anchor" href="#indicators"></a>
+</h3>
+<div class="section level4">
+<h4 id="barplot-showing-which-indicator-is-most-elevated-overall">Barplot showing which indicator is most elevated overall<a class="anchor" aria-label="anchor" href="#barplot-showing-which-indicator-is-most-elevated-overall"></a>
+</h4>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="va">testoutput_ejamit_1000pts_1miles</span></span>
+<span></span>
+<span><span class="fu"><a href="../reference/ejam2barplot.html">ejam2barplot</a></span><span class="op">(</span><span class="va">out</span>,</span>
+<span>  varnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">names_d_ratio_to_state_avg</span>, <span class="va">names_d_subgroups_ratio_to_state_avg</span><span class="op">)</span>,</span>
+<span>  main <span class="op">=</span> <span class="st">"Demographics at Selected Sites Compared to State Averages"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="3_analyzing_files/figure-html/barplot_d-1.png" width="700"></p>
+</div>
+<div class="section level4">
+<h4 id="histogram-of-indicators-distribution-over-all-people-across-all-sites">Histogram of indicators distribution over all people across all
 sites<a class="anchor" aria-label="anchor" href="#histogram-of-indicators-distribution-over-all-people-across-all-sites"></a>
-</h5>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+</h4>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">out</span><span class="op">$</span><span class="va">results_bysite</span><span class="op">$</span><span class="va">pctile.traffic.score</span>, <span class="fl">10</span>, xlab <span class="op">=</span> <span class="st">"Local traffic scores (expressed as a percentile)"</span>, </span>
 <span>     ylab <span class="op">=</span> <span class="st">"count of sites in each bin, out of 1,000 sites"</span>, freq <span class="op">=</span> <span class="cn">TRUE</span>, </span>
 <span>     main <span class="op">=</span> <span class="st">"Actual distribution of scores nearby, as percentiles, </span></span>
@@ -1013,486 +968,6 @@ sites<a class="anchor" aria-label="anchor" href="#histogram-of-indicators-distri
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">out</span><span class="op">$</span><span class="va">results_bysite</span><span class="op">)</span><span class="op">/</span><span class="fl">10</span><span class="op">)</span></span></code></pre></div>
 <p><img src="3_analyzing_files/figure-html/histo-1.png" width="700"></p>
 </div>
-<div class="section level3">
-<h3 id="distance-plots">Distance plots<a class="anchor" aria-label="anchor" href="#distance-plots"></a>
-</h3>
-<div class="section level4">
-<h4 id="mean-distance-of-each-group">Mean distance of each group<a class="anchor" aria-label="anchor" href="#mean-distance-of-each-group"></a>
-</h4>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># plot_distance_mean_by_group(testoutput_ejamit_1000pts_1miles$results_bybg_people)</span></span>
-<span></span>
-<span><span class="co"># larger radius reveals more information</span></span>
-<span><span class="va">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ejamit.html">ejamit</a></span><span class="op">(</span><span class="va">testpoints_100</span>, radius <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Finding blocks nearby.</span></span>
-<span><span class="co">#&gt; Warning in ejamit(testpoints_100, radius = 3): sitepoints did not contain a column named ejam_uniq_id, so one was</span></span>
-<span><span class="co">#&gt; added</span></span>
-<span><span class="co">#&gt; Analyzing 100 points, radius of 3 miles around each.</span></span>
-<span><span class="co">#&gt; debugging in: getblocksnearbyviaQuadTree(sitepoints = sitepoints, radius = radius, </span></span>
-<span><span class="co">#&gt;     maxradius = maxradius, avoidorphans = avoidorphans, quadtree = quadtree, </span></span>
-<span><span class="co">#&gt;     quiet = quiet, ...)</span></span>
-<span><span class="co">#&gt; debug at C:/Users/mcorrale/R/mysource/EJAM/R/getblocksnearbyviaQuadTree.R#70: {</span></span>
-<span><span class="co">#&gt;     if (class(quadtree) != "QuadTree") {</span></span>
-<span><span class="co">#&gt;         if (shiny::isRunning()) {</span></span>
-<span><span class="co">#&gt;             warning("quadtree must be an index created with indexblocks() or indexpoints(pts), from SearchTrees package with treeType = \"quad\" and dataType = \"point\"")</span></span>
-<span><span class="co">#&gt;             return(NULL)</span></span>
-<span><span class="co">#&gt;         }</span></span>
-<span><span class="co">#&gt;         else {</span></span>
-<span><span class="co">#&gt;             stop("quadtree must be an index created with indexblocks() or indexpoints(pts), from SearchTrees package with treeType = \"quad\" and dataType = \"point\"")</span></span>
-<span><span class="co">#&gt;         }</span></span>
-<span><span class="co">#&gt;     }</span></span>
-<span><span class="co">#&gt;     if (missing(sitepoints)) {</span></span>
-<span><span class="co">#&gt;         if (shiny::isRunning()) {</span></span>
-<span><span class="co">#&gt;             warning("sitepoints missing - see getblocksnearby()")</span></span>
-<span><span class="co">#&gt;             return(NULL)</span></span>
-<span><span class="co">#&gt;         }</span></span>
-<span><span class="co">#&gt;         else {</span></span>
-<span><span class="co">#&gt;             stop("sitepoints missing - see getblocksnearby()")</span></span>
-<span><span class="co">#&gt;         }</span></span>
-<span><span class="co">#&gt;     }</span></span>
-<span><span class="co">#&gt;     stopifnot(is.data.frame(sitepoints), "lat" %in% colnames(sitepoints), </span></span>
-<span><span class="co">#&gt;         "lon" %in% colnames(sitepoints), NROW(sitepoints) &gt;= </span></span>
-<span><span class="co">#&gt;             1, is.numeric(sitepoints$lat))</span></span>
-<span><span class="co">#&gt;     if (missing(quadtree)) {</span></span>
-<span><span class="co">#&gt;         if (shiny::isRunning()) {</span></span>
-<span><span class="co">#&gt;             warning("quadtree=localtree is missing - see getblocksnearby() and indexblocks()")</span></span>
-<span><span class="co">#&gt;             return(NULL)</span></span>
-<span><span class="co">#&gt;         }</span></span>
-<span><span class="co">#&gt;         else {</span></span>
-<span><span class="co">#&gt;             stop("quadtree=localtree is missing - see getblocksnearby() and indexblocks()")</span></span>
-<span><span class="co">#&gt;         }</span></span>
-<span><span class="co">#&gt;     }</span></span>
-<span><span class="co">#&gt;     if (class(quadtree) != "QuadTree") {</span></span>
-<span><span class="co">#&gt;         stop("quadtree=localtree is not class quadtree.  - see getblocksnearby() and indexblocks()")</span></span>
-<span><span class="co">#&gt;     }</span></span>
-<span><span class="co">#&gt;     if (missing(radius)) {</span></span>
-<span><span class="co">#&gt;         warning("radius missing so using default radius of 3 miles")</span></span>
-<span><span class="co">#&gt;     }</span></span>
-<span><span class="co">#&gt;     stopifnot(is.numeric(radius), radius &lt;= 100, radius &gt;= 0, </span></span>
-<span><span class="co">#&gt;         length(radius) == 1)</span></span>
-<span><span class="co">#&gt;     if (!data.table::is.data.table(sitepoints)) {</span></span>
-<span><span class="co">#&gt;         data.table::setDT(sitepoints)</span></span>
-<span><span class="co">#&gt;     }</span></span>
-<span><span class="co">#&gt;     if (!("ejam_uniq_id" %in% names(sitepoints))) {</span></span>
-<span><span class="co">#&gt;         sitepoints$ejam_uniq_id &lt;- seq.int(length.out = NROW(sitepoints))</span></span>
-<span><span class="co">#&gt;     }</span></span>
-<span><span class="co">#&gt;     earthRadius_miles &lt;- 3959</span></span>
-<span><span class="co">#&gt;     radians_per_degree &lt;- pi/180</span></span>
-<span><span class="co">#&gt;     truedistance &lt;- distance_via_surfacedistance(radius)</span></span>
-<span><span class="co">#&gt;     nRowsDf &lt;- NROW(sitepoints)</span></span>
-<span><span class="co">#&gt;     if (!quiet) {</span></span>
-<span><span class="co">#&gt;         cat("Finding Census blocks with internal point within ", </span></span>
-<span><span class="co">#&gt;             radius, " miles of the site (point), for each of", </span></span>
-<span><span class="co">#&gt;             nRowsDf, " sites (points)...\n")</span></span>
-<span><span class="co">#&gt;     }</span></span>
-<span><span class="co">#&gt;     lat_rad &lt;- sitepoints$lat * radians_per_degree</span></span>
-<span><span class="co">#&gt;     lon_rad &lt;- sitepoints$lon * radians_per_degree</span></span>
-<span><span class="co">#&gt;     FAC_X &lt;- earthRadius_miles * cos(lat_rad) * cos(lon_rad)</span></span>
-<span><span class="co">#&gt;     FAC_Y &lt;- earthRadius_miles * cos(lat_rad) * sin(lon_rad)</span></span>
-<span><span class="co">#&gt;     FAC_Z &lt;- earthRadius_miles * sin(lat_rad)</span></span>
-<span><span class="co">#&gt;     res &lt;- lapply(1:nRowsDf, FUN = function(a) {</span></span>
-<span><span class="co">#&gt;         vec &lt;- SearchTrees::rectLookup(localtree, xlims = FAC_X[a] + </span></span>
-<span><span class="co">#&gt;             c(-1, 1) * truedistance, ylims = FAC_Z[a] + c(-1, </span></span>
-<span><span class="co">#&gt;             1) * truedistance)</span></span>
-<span><span class="co">#&gt;         tmp &lt;- quaddata[vec, ]</span></span>
-<span><span class="co">#&gt;         distances &lt;- as.numeric(pdist::pdist(tmp[, .(BLOCK_X, </span></span>
-<span><span class="co">#&gt;             BLOCK_Y, BLOCK_Z)], c(FAC_X[a], FAC_Y[a], FAC_Z[a]))@dist)</span></span>
-<span><span class="co">#&gt;         tmp[, `:=`(distance, distances)]</span></span>
-<span><span class="co">#&gt;         tmp[, `:=`(ejam_uniq_id, sitepoints[a, .(ejam_uniq_id)])]</span></span>
-<span><span class="co">#&gt;         if (((a%%report_progress_every_n) == 0) &amp; interactive()) {</span></span>
-<span><span class="co">#&gt;             cat(paste("Finished finding blocks near ", a, " of ", </span></span>
-<span><span class="co">#&gt;                 nRowsDf), "\n")</span></span>
-<span><span class="co">#&gt;         }</span></span>
-<span><span class="co">#&gt;         pct_inc &lt;- 5</span></span>
-<span><span class="co">#&gt;         if (is.function(updateProgress) &amp; (nRowsDf &gt;= (100/pct_inc)) &amp; </span></span>
-<span><span class="co">#&gt;             (a%%round(nRowsDf/(100/pct_inc)) &lt; 1)) {</span></span>
-<span><span class="co">#&gt;             boldtext &lt;- paste0((pct_inc) * round((100/pct_inc * </span></span>
-<span><span class="co">#&gt;                 a/nRowsDf)), "% done")</span></span>
-<span><span class="co">#&gt;             updateProgress(message_main = boldtext, value = round((pct_inc) * </span></span>
-<span><span class="co">#&gt;                 a/nRowsDf, 2)/(pct_inc))</span></span>
-<span><span class="co">#&gt;         }</span></span>
-<span><span class="co">#&gt;         return(tmp[, .(blockid, distance, ejam_uniq_id)])</span></span>
-<span><span class="co">#&gt;     })</span></span>
-<span><span class="co">#&gt;     sites2blocks &lt;- data.table::rbindlist(res)</span></span>
-<span><span class="co">#&gt;     data.table::setkey(sites2blocks, blockid, ejam_uniq_id, distance)</span></span>
-<span><span class="co">#&gt;     if (!quiet) {</span></span>
-<span><span class="co">#&gt;         cat("Stats via getblocks_diagnostics(), but BEFORE ADJUSTING UP FOR VERY SHORT DISTANCES: \n")</span></span>
-<span><span class="co">#&gt;         cat("min distance before adjustment: ", min(sites2blocks$distance, </span></span>
-<span><span class="co">#&gt;             na.rm = TRUE), "\n")</span></span>
-<span><span class="co">#&gt;         cat("max distance before adjustment: ", max(sites2blocks$distance, </span></span>
-<span><span class="co">#&gt;             na.rm = TRUE), "\n\n")</span></span>
-<span><span class="co">#&gt;         cat("\n\nAdjusting upwards the very short distances now...\n ")</span></span>
-<span><span class="co">#&gt;     }</span></span>
-<span><span class="co">#&gt;     if (retain_unadjusted_distance) {</span></span>
-<span><span class="co">#&gt;         sites2blocks[, `:=`(distance_unadjusted, distance)]</span></span>
-<span><span class="co">#&gt;         sites2blocks &lt;- blockwts[sites2blocks, .(ejam_uniq_id, </span></span>
-<span><span class="co">#&gt;             blockid, distance, blockwt, bgid, block_radius_miles, </span></span>
-<span><span class="co">#&gt;             distance_unadjusted), on = "blockid"]</span></span>
-<span><span class="co">#&gt;     }</span></span>
-<span><span class="co">#&gt;     else {</span></span>
-<span><span class="co">#&gt;         sites2blocks &lt;- blockwts[sites2blocks, .(ejam_uniq_id, </span></span>
-<span><span class="co">#&gt;             blockid, distance, blockwt, bgid, block_radius_miles), </span></span>
-<span><span class="co">#&gt;             on = "blockid"]</span></span>
-<span><span class="co">#&gt;     }</span></span>
-<span><span class="co">#&gt;     sites2blocks[distance &lt; block_radius_miles, `:=`(distance, </span></span>
-<span><span class="co">#&gt;         0.9 * block_radius_miles)]</span></span>
-<span><span class="co">#&gt;     sites2blocks[, `:=`(block_radius_miles, NULL)]</span></span>
-<span><span class="co">#&gt;     sites2blocks &lt;- sites2blocks[distance &lt;= truedistance, ]</span></span>
-<span><span class="co">#&gt;     if (!quiet) {</span></span>
-<span><span class="co">#&gt;         cat("Stats via getblocks_diagnostics(), AFTER ADJUSTING up FOR SHORT DISTANCES: \n")</span></span>
-<span><span class="co">#&gt;         cat("min distance AFTER adjustment: ", min(sites2blocks$distance, </span></span>
-<span><span class="co">#&gt;             na.rm = TRUE), "\n")</span></span>
-<span><span class="co">#&gt;         cat("max distance AFTER adjustment: ", max(sites2blocks$distance, </span></span>
-<span><span class="co">#&gt;             na.rm = TRUE), "\n\n")</span></span>
-<span><span class="co">#&gt;         getblocks_diagnostics(sites2blocks)</span></span>
-<span><span class="co">#&gt;         cat("\n")</span></span>
-<span><span class="co">#&gt;     }</span></span>
-<span><span class="co">#&gt;     return(sites2blocks)</span></span>
-<span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; debug at C:/Users/mcorrale/R/mysource/EJAM/R/getblocksnearbyviaQuadTree.R#78: if (class(quadtree) != "QuadTree") {</span></span>
-<span><span class="co">#&gt;     if (shiny::isRunning()) {</span></span>
-<span><span class="co">#&gt;         warning("quadtree must be an index created with indexblocks() or indexpoints(pts), from SearchTrees package with treeType = \"quad\" and dataType = \"point\"")</span></span>
-<span><span class="co">#&gt;         return(NULL)</span></span>
-<span><span class="co">#&gt;     }</span></span>
-<span><span class="co">#&gt;     else {</span></span>
-<span><span class="co">#&gt;         stop("quadtree must be an index created with indexblocks() or indexpoints(pts), from SearchTrees package with treeType = \"quad\" and dataType = \"point\"")</span></span>
-<span><span class="co">#&gt;     }</span></span>
-<span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; debug at C:/Users/mcorrale/R/mysource/EJAM/R/getblocksnearbyviaQuadTree.R#86: if (missing(sitepoints)) {</span></span>
-<span><span class="co">#&gt;     if (shiny::isRunning()) {</span></span>
-<span><span class="co">#&gt;         warning("sitepoints missing - see getblocksnearby()")</span></span>
-<span><span class="co">#&gt;         return(NULL)</span></span>
-<span><span class="co">#&gt;     }</span></span>
-<span><span class="co">#&gt;     else {</span></span>
-<span><span class="co">#&gt;         stop("sitepoints missing - see getblocksnearby()")</span></span>
-<span><span class="co">#&gt;     }</span></span>
-<span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; debug at C:/Users/mcorrale/R/mysource/EJAM/R/getblocksnearbyviaQuadTree.R#94: stopifnot(is.data.frame(sitepoints), "lat" %in% colnames(sitepoints), </span></span>
-<span><span class="co">#&gt;     "lon" %in% colnames(sitepoints), NROW(sitepoints) &gt;= 1, is.numeric(sitepoints$lat))</span></span>
-<span><span class="co">#&gt; debug at C:/Users/mcorrale/R/mysource/EJAM/R/getblocksnearbyviaQuadTree.R#95: if (missing(quadtree)) {</span></span>
-<span><span class="co">#&gt;     if (shiny::isRunning()) {</span></span>
-<span><span class="co">#&gt;         warning("quadtree=localtree is missing - see getblocksnearby() and indexblocks()")</span></span>
-<span><span class="co">#&gt;         return(NULL)</span></span>
-<span><span class="co">#&gt;     }</span></span>
-<span><span class="co">#&gt;     else {</span></span>
-<span><span class="co">#&gt;         stop("quadtree=localtree is missing - see getblocksnearby() and indexblocks()")</span></span>
-<span><span class="co">#&gt;     }</span></span>
-<span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; debug at C:/Users/mcorrale/R/mysource/EJAM/R/getblocksnearbyviaQuadTree.R#103: if (class(quadtree) != "QuadTree") {</span></span>
-<span><span class="co">#&gt;     stop("quadtree=localtree is not class quadtree.  - see getblocksnearby() and indexblocks()")</span></span>
-<span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; debug at C:/Users/mcorrale/R/mysource/EJAM/R/getblocksnearbyviaQuadTree.R#104: if (missing(radius)) {</span></span>
-<span><span class="co">#&gt;     warning("radius missing so using default radius of 3 miles")</span></span>
-<span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; debug at C:/Users/mcorrale/R/mysource/EJAM/R/getblocksnearbyviaQuadTree.R#105: stopifnot(is.numeric(radius), radius &lt;= 100, radius &gt;= 0, length(radius) == </span></span>
-<span><span class="co">#&gt;     1)</span></span>
-<span><span class="co">#&gt; debug at C:/Users/mcorrale/R/mysource/EJAM/R/getblocksnearbyviaQuadTree.R#106: if (!data.table::is.data.table(sitepoints)) {</span></span>
-<span><span class="co">#&gt;     data.table::setDT(sitepoints)</span></span>
-<span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; debug at C:/Users/mcorrale/R/mysource/EJAM/R/getblocksnearbyviaQuadTree.R#106: data.table::setDT(sitepoints)</span></span>
-<span><span class="co">#&gt; debug at C:/Users/mcorrale/R/mysource/EJAM/R/getblocksnearbyviaQuadTree.R#109: if (!("ejam_uniq_id" %in% names(sitepoints))) {</span></span>
-<span><span class="co">#&gt;     sitepoints$ejam_uniq_id &lt;- seq.int(length.out = NROW(sitepoints))</span></span>
-<span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; debug at C:/Users/mcorrale/R/mysource/EJAM/R/getblocksnearbyviaQuadTree.R#127: earthRadius_miles &lt;- 3959</span></span>
-<span><span class="co">#&gt; debug at C:/Users/mcorrale/R/mysource/EJAM/R/getblocksnearbyviaQuadTree.R#128: radians_per_degree &lt;- pi/180</span></span>
-<span><span class="co">#&gt; debug at C:/Users/mcorrale/R/mysource/EJAM/R/getblocksnearbyviaQuadTree.R#130: truedistance &lt;- distance_via_surfacedistance(radius)</span></span>
-<span><span class="co">#&gt; debug at C:/Users/mcorrale/R/mysource/EJAM/R/getblocksnearbyviaQuadTree.R#133: nRowsDf &lt;- NROW(sitepoints)</span></span>
-<span><span class="co">#&gt; debug at C:/Users/mcorrale/R/mysource/EJAM/R/getblocksnearbyviaQuadTree.R#134: if (!quiet) {</span></span>
-<span><span class="co">#&gt;     cat("Finding Census blocks with internal point within ", </span></span>
-<span><span class="co">#&gt;         radius, " miles of the site (point), for each of", nRowsDf, </span></span>
-<span><span class="co">#&gt;         " sites (points)...\n")</span></span>
-<span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; debug at C:/Users/mcorrale/R/mysource/EJAM/R/getblocksnearbyviaQuadTree.R#139: lat_rad &lt;- sitepoints$lat * radians_per_degree</span></span>
-<span><span class="co">#&gt; debug at C:/Users/mcorrale/R/mysource/EJAM/R/getblocksnearbyviaQuadTree.R#140: lon_rad &lt;- sitepoints$lon * radians_per_degree</span></span>
-<span><span class="co">#&gt; debug at C:/Users/mcorrale/R/mysource/EJAM/R/getblocksnearbyviaQuadTree.R#141: FAC_X &lt;- earthRadius_miles * cos(lat_rad) * cos(lon_rad)</span></span>
-<span><span class="co">#&gt; debug at C:/Users/mcorrale/R/mysource/EJAM/R/getblocksnearbyviaQuadTree.R#142: FAC_Y &lt;- earthRadius_miles * cos(lat_rad) * sin(lon_rad)</span></span>
-<span><span class="co">#&gt; debug at C:/Users/mcorrale/R/mysource/EJAM/R/getblocksnearbyviaQuadTree.R#143: FAC_Z &lt;- earthRadius_miles * sin(lat_rad)</span></span>
-<span><span class="co">#&gt; debug at C:/Users/mcorrale/R/mysource/EJAM/R/getblocksnearbyviaQuadTree.R#146: res &lt;- lapply(1:nRowsDf, FUN = function(a) {</span></span>
-<span><span class="co">#&gt;     vec &lt;- SearchTrees::rectLookup(localtree, xlims = FAC_X[a] + </span></span>
-<span><span class="co">#&gt;         c(-1, 1) * truedistance, ylims = FAC_Z[a] + c(-1, 1) * </span></span>
-<span><span class="co">#&gt;         truedistance)</span></span>
-<span><span class="co">#&gt;     tmp &lt;- quaddata[vec, ]</span></span>
-<span><span class="co">#&gt;     distances &lt;- as.numeric(pdist::pdist(tmp[, .(BLOCK_X, BLOCK_Y, </span></span>
-<span><span class="co">#&gt;         BLOCK_Z)], c(FAC_X[a], FAC_Y[a], FAC_Z[a]))@dist)</span></span>
-<span><span class="co">#&gt;     tmp[, `:=`(distance, distances)]</span></span>
-<span><span class="co">#&gt;     tmp[, `:=`(ejam_uniq_id, sitepoints[a, .(ejam_uniq_id)])]</span></span>
-<span><span class="co">#&gt;     if (((a%%report_progress_every_n) == 0) &amp; interactive()) {</span></span>
-<span><span class="co">#&gt;         cat(paste("Finished finding blocks near ", a, " of ", </span></span>
-<span><span class="co">#&gt;             nRowsDf), "\n")</span></span>
-<span><span class="co">#&gt;     }</span></span>
-<span><span class="co">#&gt;     pct_inc &lt;- 5</span></span>
-<span><span class="co">#&gt;     if (is.function(updateProgress) &amp; (nRowsDf &gt;= (100/pct_inc)) &amp; </span></span>
-<span><span class="co">#&gt;         (a%%round(nRowsDf/(100/pct_inc)) &lt; 1)) {</span></span>
-<span><span class="co">#&gt;         boldtext &lt;- paste0((pct_inc) * round((100/pct_inc * a/nRowsDf)), </span></span>
-<span><span class="co">#&gt;             "% done")</span></span>
-<span><span class="co">#&gt;         updateProgress(message_main = boldtext, value = round((pct_inc) * </span></span>
-<span><span class="co">#&gt;             a/nRowsDf, 2)/(pct_inc))</span></span>
-<span><span class="co">#&gt;     }</span></span>
-<span><span class="co">#&gt;     return(tmp[, .(blockid, distance, ejam_uniq_id)])</span></span>
-<span><span class="co">#&gt; })</span></span>
-<span><span class="co">#&gt; debug at C:/Users/mcorrale/R/mysource/EJAM/R/getblocksnearbyviaQuadTree.R#178: sites2blocks &lt;- data.table::rbindlist(res)</span></span>
-<span><span class="co">#&gt; debug at C:/Users/mcorrale/R/mysource/EJAM/R/getblocksnearbyviaQuadTree.R#306: data.table::setkey(sites2blocks, blockid, ejam_uniq_id, distance)</span></span>
-<span><span class="co">#&gt; debug at C:/Users/mcorrale/R/mysource/EJAM/R/getblocksnearbyviaQuadTree.R#309: if (!quiet) {</span></span>
-<span><span class="co">#&gt;     cat("Stats via getblocks_diagnostics(), but BEFORE ADJUSTING UP FOR VERY SHORT DISTANCES: \n")</span></span>
-<span><span class="co">#&gt;     cat("min distance before adjustment: ", min(sites2blocks$distance, </span></span>
-<span><span class="co">#&gt;         na.rm = TRUE), "\n")</span></span>
-<span><span class="co">#&gt;     cat("max distance before adjustment: ", max(sites2blocks$distance, </span></span>
-<span><span class="co">#&gt;         na.rm = TRUE), "\n\n")</span></span>
-<span><span class="co">#&gt;     cat("\n\nAdjusting upwards the very short distances now...\n ")</span></span>
-<span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; debug at C:/Users/mcorrale/R/mysource/EJAM/R/getblocksnearbyviaQuadTree.R#327: if (retain_unadjusted_distance) {</span></span>
-<span><span class="co">#&gt;     sites2blocks[, `:=`(distance_unadjusted, distance)]</span></span>
-<span><span class="co">#&gt;     sites2blocks &lt;- blockwts[sites2blocks, .(ejam_uniq_id, blockid, </span></span>
-<span><span class="co">#&gt;         distance, blockwt, bgid, block_radius_miles, distance_unadjusted), </span></span>
-<span><span class="co">#&gt;         on = "blockid"]</span></span>
-<span><span class="co">#&gt; } else {</span></span>
-<span><span class="co">#&gt;     sites2blocks &lt;- blockwts[sites2blocks, .(ejam_uniq_id, blockid, </span></span>
-<span><span class="co">#&gt;         distance, blockwt, bgid, block_radius_miles), on = "blockid"]</span></span>
-<span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; Key: &lt;blockid, ejam_uniq_id, distance&gt;</span></span>
-<span><span class="co">#&gt;         blockid distance ejam_uniq_id</span></span>
-<span><span class="co">#&gt;           &lt;int&gt;    &lt;num&gt;        &lt;int&gt;</span></span>
-<span><span class="co">#&gt;      1:   82244 3.649753           65</span></span>
-<span><span class="co">#&gt;      2:   82245 3.487922           65</span></span>
-<span><span class="co">#&gt;      3:   82246 3.224020           65</span></span>
-<span><span class="co">#&gt;      4:   82247 3.109674           65</span></span>
-<span><span class="co">#&gt;      5:   82248 3.465352           65</span></span>
-<span><span class="co">#&gt;     ---                              </span></span>
-<span><span class="co">#&gt; 165660: 8112672 3.427040           13</span></span>
-<span><span class="co">#&gt; 165661: 8112673 3.182570           13</span></span>
-<span><span class="co">#&gt; 165662: 8112674 3.151106           13</span></span>
-<span><span class="co">#&gt; 165663: 8112911 4.249708           13</span></span>
-<span><span class="co">#&gt; 165664: 8112920 4.173998           13</span></span>
-<span><span class="co">#&gt; Key: &lt;blockid, ejam_uniq_id, distance&gt;</span></span>
-<span><span class="co">#&gt;         blockid distance ejam_uniq_id</span></span>
-<span><span class="co">#&gt;           &lt;int&gt;    &lt;num&gt;        &lt;int&gt;</span></span>
-<span><span class="co">#&gt;      1:   82244 3.649753           65</span></span>
-<span><span class="co">#&gt;      2:   82245 3.487922           65</span></span>
-<span><span class="co">#&gt;      3:   82246 3.224020           65</span></span>
-<span><span class="co">#&gt;      4:   82247 3.109674           65</span></span>
-<span><span class="co">#&gt;      5:   82248 3.465352           65</span></span>
-<span><span class="co">#&gt;     ---                              </span></span>
-<span><span class="co">#&gt; 165660: 8112672 3.427040           13</span></span>
-<span><span class="co">#&gt; 165661: 8112673 3.182570           13</span></span>
-<span><span class="co">#&gt; 165662: 8112674 3.151106           13</span></span>
-<span><span class="co">#&gt; 165663: 8112911 4.249708           13</span></span>
-<span><span class="co">#&gt; 165664: 8112920 4.173998           13</span></span>
-<span><span class="co">#&gt; Key: &lt;blockid, ejam_uniq_id, distance&gt;</span></span>
-<span><span class="co">#&gt;    blockid distance ejam_uniq_id</span></span>
-<span><span class="co">#&gt;      &lt;int&gt;    &lt;num&gt;        &lt;int&gt;</span></span>
-<span><span class="co">#&gt; 1:   82244 3.649753           65</span></span>
-<span><span class="co">#&gt; 2:   82245 3.487922           65</span></span>
-<span><span class="co">#&gt; 3:   82246 3.224020           65</span></span>
-<span><span class="co">#&gt; 4:   82247 3.109674           65</span></span>
-<span><span class="co">#&gt; 5:   82248 3.465352           65</span></span>
-<span><span class="co">#&gt; 6:   82249 3.470922           65</span></span>
-<span><span class="co">#&gt; debug at C:/Users/mcorrale/R/mysource/EJAM/R/getblocksnearbyviaQuadTree.R#328: sites2blocks[, `:=`(distance_unadjusted, distance)]</span></span>
-<span><span class="co">#&gt; Key: &lt;blockid, ejam_uniq_id, distance&gt;</span></span>
-<span><span class="co">#&gt;    blockid distance ejam_uniq_id</span></span>
-<span><span class="co">#&gt;      &lt;int&gt;    &lt;num&gt;        &lt;int&gt;</span></span>
-<span><span class="co">#&gt; 1:   82244 3.649753           65</span></span>
-<span><span class="co">#&gt; 2:   82245 3.487922           65</span></span>
-<span><span class="co">#&gt; 3:   82246 3.224020           65</span></span>
-<span><span class="co">#&gt; 4:   82247 3.109674           65</span></span>
-<span><span class="co">#&gt; 5:   82248 3.465352           65</span></span>
-<span><span class="co">#&gt; 6:   82249 3.470922           65</span></span>
-<span><span class="co">#&gt;  [1] "avoidorphans"               "earthRadius_miles"         </span></span>
-<span><span class="co">#&gt;  [3] "FAC_X"                      "FAC_Y"                     </span></span>
-<span><span class="co">#&gt;  [5] "FAC_Z"                      "lat_rad"                   </span></span>
-<span><span class="co">#&gt;  [7] "lon_rad"                    "maxradius"                 </span></span>
-<span><span class="co">#&gt;  [9] "nRowsDf"                    "quadtree"                  </span></span>
-<span><span class="co">#&gt; [11] "quiet"                      "radians_per_degree"        </span></span>
-<span><span class="co">#&gt; [13] "radius"                     "report_progress_every_n"   </span></span>
-<span><span class="co">#&gt; [15] "res"                        "retain_unadjusted_distance"</span></span>
-<span><span class="co">#&gt; [17] "sitepoints"                 "sites2blocks"              </span></span>
-<span><span class="co">#&gt; [19] "truedistance"               "updateProgress"            </span></span>
-<span><span class="co">#&gt; debug at C:/Users/mcorrale/R/mysource/EJAM/R/getblocksnearbyviaQuadTree.R#329: sites2blocks &lt;- blockwts[sites2blocks, .(ejam_uniq_id, blockid, </span></span>
-<span><span class="co">#&gt;     distance, blockwt, bgid, block_radius_miles, distance_unadjusted), </span></span>
-<span><span class="co">#&gt;     on = "blockid"]</span></span>
-<span><span class="co">#&gt; debug at C:/Users/mcorrale/R/mysource/EJAM/R/getblocksnearbyviaQuadTree.R#336: sites2blocks[distance &lt; block_radius_miles, `:=`(distance, 0.9 * </span></span>
-<span><span class="co">#&gt;     block_radius_miles)]</span></span>
-<span><span class="co">#&gt;  [1] "avoidorphans"               "earthRadius_miles"         </span></span>
-<span><span class="co">#&gt;  [3] "FAC_X"                      "FAC_Y"                     </span></span>
-<span><span class="co">#&gt;  [5] "FAC_Z"                      "lat_rad"                   </span></span>
-<span><span class="co">#&gt;  [7] "lon_rad"                    "maxradius"                 </span></span>
-<span><span class="co">#&gt;  [9] "nRowsDf"                    "quadtree"                  </span></span>
-<span><span class="co">#&gt; [11] "quiet"                      "radians_per_degree"        </span></span>
-<span><span class="co">#&gt; [13] "radius"                     "report_progress_every_n"   </span></span>
-<span><span class="co">#&gt; [15] "res"                        "retain_unadjusted_distance"</span></span>
-<span><span class="co">#&gt; [17] "sitepoints"                 "sites2blocks"              </span></span>
-<span><span class="co">#&gt; [19] "truedistance"               "updateProgress"            </span></span>
-<span><span class="co">#&gt; debug at C:/Users/mcorrale/R/mysource/EJAM/R/getblocksnearbyviaQuadTree.R#341: sites2blocks[, `:=`(block_radius_miles, NULL)]</span></span>
-<span><span class="co">#&gt; debug at C:/Users/mcorrale/R/mysource/EJAM/R/getblocksnearbyviaQuadTree.R#342: sites2blocks &lt;- sites2blocks[distance &lt;= truedistance, ]</span></span>
-<span><span class="co">#&gt; debug at C:/Users/mcorrale/R/mysource/EJAM/R/getblocksnearbyviaQuadTree.R#344: if (!quiet) {</span></span>
-<span><span class="co">#&gt;     cat("Stats via getblocks_diagnostics(), AFTER ADJUSTING up FOR SHORT DISTANCES: \n")</span></span>
-<span><span class="co">#&gt;     cat("min distance AFTER adjustment: ", min(sites2blocks$distance, </span></span>
-<span><span class="co">#&gt;         na.rm = TRUE), "\n")</span></span>
-<span><span class="co">#&gt;     cat("max distance AFTER adjustment: ", max(sites2blocks$distance, </span></span>
-<span><span class="co">#&gt;         na.rm = TRUE), "\n\n")</span></span>
-<span><span class="co">#&gt;     getblocks_diagnostics(sites2blocks)</span></span>
-<span><span class="co">#&gt;     cat("\n")</span></span>
-<span><span class="co">#&gt; }</span></span>
-<span><span class="co">#&gt; debug at C:/Users/mcorrale/R/mysource/EJAM/R/getblocksnearbyviaQuadTree.R#365: return(sites2blocks)</span></span>
-<span><span class="co">#&gt; exiting from: getblocksnearbyviaQuadTree(sitepoints = sitepoints, radius = radius, </span></span>
-<span><span class="co">#&gt;     maxradius = maxradius, avoidorphans = avoidorphans, quadtree = quadtree, </span></span>
-<span><span class="co">#&gt;     quiet = quiet, ...)</span></span>
-<span><span class="co">#&gt; Aggregating at each buffer and overall.</span></span>
-<span><span class="co">#&gt; Warning in table_round(x): Percentages stored as 0 to 1 rather than 0 to 100 will not be shown correctly unless adjusted, </span></span>
-<span><span class="co">#&gt;           because rounding info says 0 digits when the intent is to show 0 digits after the 0-100 percent number.</span></span>
-<span><span class="co">#&gt; Population Density: </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;    8% of places account for 50% of the total population (approx.)</span></span>
-<span><span class="co">#&gt;    1, 5, 10 places account for 14%, 41%, 55% of the total population</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Output is a list with the following names:</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;  out is a list </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;                                  Name     format rows cols vectorlength</span></span>
-<span><span class="co">#&gt; 1                     results_overall data.table    1  394           NA</span></span>
-<span><span class="co">#&gt; 2                      results_bysite data.table  100  394           NA</span></span>
-<span><span class="co">#&gt; 3                 results_bybg_people data.table 7930  137           NA</span></span>
-<span><span class="co">#&gt; 4                           longnames     vector   NA   NA          394</span></span>
-<span><span class="co">#&gt; 5 count_of_blocks_near_multiple_sites     vector   NA   NA            1</span></span>
-<span><span class="co">#&gt; 6                  results_summarized     vector   NA   NA            2</span></span>
-<span><span class="co">#&gt; 7                           formatted data.frame  394    2           NA</span></span>
-<span></span>
-<span><span class="fu"><a href="../reference/plot_distance_mean_by_group.html">plot_distance_mean_by_group</a></span><span class="op">(</span><span class="va">y</span><span class="op">$</span><span class="va">results_bybg_people</span><span class="op">)</span> <span class="co"># or distance_mean_by_group() is a synonym</span></span></code></pre></div>
-<p><img src="3_analyzing_files/figure-html/plot_distance_mean_by_group_1-1.png" width="700"></p>
-<pre><code><span><span class="co">#&gt;                                 group nearest nearer ratio avg_distance_for_group avg_distance_for_nongroup</span></span>
-<span><span class="co">#&gt; Demog.Ind.                Demog.Index   FALSE   TRUE 0.992                   1.99                      2.00</span></span>
-<span><span class="co">#&gt; Suppl Demog.Ind.     Demog.Index.Supp   FALSE   TRUE 0.991                   1.98                      2.00</span></span>
-<span><span class="co">#&gt; %Low-inc.                   pctlowinc   FALSE   TRUE 0.976                   1.96                      2.01</span></span>
-<span><span class="co">#&gt; %Limited English           pctlingiso   FALSE   TRUE 0.984                   1.97                      2.00</span></span>
-<span><span class="co">#&gt; %Unemployed             pctunemployed   FALSE  FALSE 1.004                   2.00                      2.00</span></span>
-<span><span class="co">#&gt; %&lt; High School                pctlths   FALSE   TRUE 0.995                   1.99                      2.00</span></span>
-<span><span class="co">#&gt; %Low life expectancy         lowlifex   FALSE  FALSE 1.003                   2.01                      2.00</span></span>
-<span><span class="co">#&gt; %&lt; age 5                    pctunder5   FALSE  FALSE 1.003                   2.00                      2.00</span></span>
-<span><span class="co">#&gt; %&gt; age 64                   pctover64   FALSE  FALSE 1.010                   2.01                      1.99</span></span>
-<span><span class="co">#&gt; %POC                           pctmin   FALSE  FALSE 1.004                   2.00                      1.99</span></span>
-<span><span class="co">#&gt; %Hispanic                     pcthisp   FALSE  FALSE 1.000                   1.99                      1.99</span></span>
-<span><span class="co">#&gt; %Black NHA                    pctnhba   FALSE  FALSE 1.000                   1.99                      1.99</span></span>
-<span><span class="co">#&gt; %Asian NHA                    pctnhaa   FALSE   TRUE 0.998                   2.04                      2.04</span></span>
-<span><span class="co">#&gt; %AmerIndian/AK NHA         pctnhaiana    TRUE   TRUE 0.955                   1.93                      2.02</span></span>
-<span><span class="co">#&gt; %Hawaiian/PI NHA           pctnhnhpia   FALSE  FALSE 1.009                   2.01                      1.99</span></span>
-<span><span class="co">#&gt; %Other race NHA       pctnhotheralone   FALSE   TRUE 0.974                   1.97                      2.02</span></span>
-<span><span class="co">#&gt; %multirace NH              pctnhmulti   FALSE   TRUE 0.999                   2.00                      2.00</span></span>
-<span><span class="co">#&gt; %White NHA                    pctnhwa   FALSE  FALSE 1.000                   1.99                      1.99</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu">distance_by_group</span><span class="op">(</span></span>
-<span>  <span class="va">y</span><span class="op">$</span><span class="va">results_bybg_people</span>, </span>
-<span>  demogvarname <span class="op">=</span> <span class="st">'pctlowinc'</span>, demoglabel <span class="op">=</span> <span class="st">'Low Income'</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt;                group nearest nearer ratio avg_distance_for_group avg_distance_for_nongroup</span></span>
-<span><span class="co">#&gt; Low Income pctlowinc    TRUE   TRUE 0.976                   1.96                      2.01</span></span>
-<span></span>
-<span><span class="fu"><a href="../reference/distance_by_group_plot.html">distance_by_group_plot</a></span><span class="op">(</span></span>
-<span>  <span class="va">y</span><span class="op">$</span><span class="va">results_bybg_people</span>,</span>
-<span>  demogvarname <span class="op">=</span> <span class="st">'pctlowinc'</span>, demoglabel <span class="op">=</span> <span class="st">'Low Income'</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in distance_by_group_plot(y$results_bybg_people, demogvarname = "pctlowinc", : plotting just a random</span></span>
-<span><span class="co">#&gt; sample of 5,000 of these block groups to show pattern quickly</span></span></code></pre>
-<p><img src="3_analyzing_files/figure-html/plot_distance_mean_by_group_1-2.png" width="700"></p>
-</div>
-<div class="section level4">
-<h4 id="map-blocks-near-1-site">Map blocks near 1 site<a class="anchor" aria-label="anchor" href="#map-blocks-near-1-site"></a>
-</h4>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">x</span> <span class="op">=</span> <span class="fu"><a href="../reference/plotblocksnearby.html">plotblocksnearby</a></span><span class="op">(</span><span class="va">testpoints_10</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span>, radius <span class="op">=</span> <span class="fl">3</span>, returnmap <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#  returnmap= TRUE is to actually return the leaflet map </span></span>
-<span></span>
-<span><span class="co"># Use weighting="frs" in testpoints_n() to pick a random FRS facility's block</span></span></code></pre></div>
-</div>
-</div>
-</div>
-<div class="section level2">
-<h2 id="population-density---avg-site-vs-avg-resident">POPULATION DENSITY - AVG SITE VS AVG RESIDENT<a class="anchor" aria-label="anchor" href="#population-density---avg-site-vs-avg-resident"></a>
-</h2>
-<div class="section level3">
-<h3 id="sites-vary-widely-in-count-of-blocks-nearby-depending-on-population-density">Sites vary widely in count of blocks nearby, depending on population
-density<a class="anchor" aria-label="anchor" href="#sites-vary-widely-in-count-of-blocks-nearby-depending-on-population-density"></a>
-</h3>
-<ul>
-<li>what blocks are near each site</li>
-<li>how far are they</li>
-<li>how many blocks are typically near a given site (population density
-varies)</li>
-<li>how many sites are near a block (residents with &gt; 1 site
-nearby)</li>
-</ul>
-<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">out</span> <span class="op">&lt;-</span> <span class="va">testoutput_ejamit_100pts_1miles</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"  "</span>, <span class="fu"><a href="../reference/popshare_p_lives_at_what_pct.html">popshare_p_lives_at_what_pct</a></span><span class="op">(</span><span class="va">out</span><span class="op">$</span><span class="va">results_bysite</span><span class="op">$</span><span class="va">pop</span>, p <span class="op">=</span> <span class="fl">0.50</span>, astext <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="st">"\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt;    6% of places account for 50% of the total population (approx.)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="st">"  "</span>, <span class="fu"><a href="../reference/popshare_at_top_n.html">popshare_at_top_n</a></span><span class="op">(</span><span class="va">out</span><span class="op">$</span><span class="va">results_bysite</span><span class="op">$</span><span class="va">pop</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">5</span>, <span class="fl">10</span><span class="op">)</span>, astext <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="st">"\n\n"</span><span class="op">)</span></span>
-<span><span class="co">#&gt;    1, 5, 10 places account for 18%, 46%, 58% of the total population</span></span></code></pre></div>
-<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">## Also could use this example intermediate step dataset </span></span>
-<span><span class="co">## of n sites, with thousands of nearby blocks:</span></span>
-<span><span class="co"># sites2blocks &lt;- data.table::copy(testoutput_getblocksnearby_10pts_1miles)</span></span>
-<span><span class="va">radius</span> <span class="op">&lt;-</span> <span class="fl">3</span></span>
-<span><span class="va">sitepoints</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/copy.html" class="external-link">copy</a></span><span class="op">(</span><span class="va">testpoints_100</span><span class="op">)</span> </span>
-<span><span class="va">sites2blocks</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getblocksnearby.html">getblocksnearby</a></span><span class="op">(</span><span class="va">sitepoints</span>, <span class="va">radius</span>, quadtree <span class="op">=</span> <span class="va">localtree</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">sites2blocks</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/getblocks_summarize_blocks_per_site.html">getblocks_summarize_blocks_per_site</a></span><span class="op">(</span><span class="va">sites2blocks</span><span class="op">)</span> </span>
-<span><span class="co"># print() shows more info returned invisibly</span></span>
-<span><span class="fu"><a href="../reference/getblocks_diagnostics.html">getblocks_diagnostics</a></span><span class="op">(</span><span class="va">sites2blocks</span><span class="op">)</span></span>
-<span><span class="co"># Use data.table package here</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span></span>
-<span><span class="co"># Very few blocks are within a radius of 1/4 mile.</span></span>
-<span><span class="co"># Hundreds are often within 1 mile, but sometimes there are </span></span>
-<span><span class="co"># only a handful or even zero.</span></span>
-<span><span class="va">s2b_stats</span> <span class="op">&lt;-</span> <span class="va">sites2blocks</span><span class="op">[</span> , <span class="fu">.</span><span class="op">(</span></span>
-<span>  avgDistance <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">distance</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span>,</span>
-<span>  blocksfound <span class="op">=</span> <span class="va">.N</span>, </span>
-<span>  blocks_within_1mile <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">distance</span> <span class="op">&lt;=</span> <span class="fl">1</span><span class="op">)</span>,</span>
-<span>  blocks_within_0.75   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">distance</span> <span class="op">&lt;=</span> <span class="fl">0.75</span><span class="op">)</span>,</span>
-<span>  blocks_within_0.25  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">distance</span> <span class="op">&lt;=</span> <span class="fl">0.25</span><span class="op">)</span></span>
-<span><span class="op">)</span>, by <span class="op">=</span> <span class="st">'ejam_uniq_id'</span><span class="op">]</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">blocksfound</span><span class="op">)</span>, <span class="op">]</span></span>
-<span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/setorder.html" class="external-link">setorder</a></span><span class="op">(</span><span class="va">s2b_stats</span>, <span class="va">ejam_uniq_id</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">s2b_stats</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="co"># CDF of how many blocks are nearby a site</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="va">s2b_stats</span><span class="op">$</span><span class="va">blocks_within_1mile</span><span class="op">)</span>, </span>
-<span>     main <span class="op">=</span> <span class="st">"How many blocks are near each facility?"</span>, </span>
-<span>     ylab <span class="op">=</span> <span class="st">"# of blocks (whose internal point is) within 1 mile of each site"</span>, </span>
-<span>     xlab <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">s2b_stats</span><span class="op">)</span>,<span class="st">" facilities ranked by # of blocks nearby"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">s2b_stats</span><span class="op">$</span><span class="va">blocks_within_1mile</span>, probs <span class="op">=</span> <span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span> <span class="op">*</span> <span class="fl">0.25</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/abline.html" class="external-link">abline</a></span><span class="op">(</span>h <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">s2b_stats</span><span class="op">$</span><span class="va">blocks_within_1mile</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Histogram of how many blocks are nearby a site</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/hist.html" class="external-link">hist</a></span><span class="op">(</span><span class="va">sites2blocks</span><span class="op">[</span>,<span class="va">.N</span>, by <span class="op">=</span> <span class="st">"ejam_uniq_id"</span><span class="op">]</span><span class="op">[</span>, <span class="va">N</span><span class="op">]</span>, <span class="fl">20</span>, </span>
-<span>     xlab <span class="op">=</span> <span class="st">"How many blocks are nearby?"</span>, </span>
-<span>     ylab <span class="op">=</span> <span class="st">"Frequency (# of sites)"</span>, </span>
-<span>     main <span class="op">=</span> <span class="st">"A given site may have zero to hundreds of blocks nearby"</span>, </span>
-<span>     sub <span class="op">=</span> <span class="st">"A typical site in this example has about 100 blocks nearby"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="fu">DT</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/DT/man/datatable.html" class="external-link">datatable</a></span><span class="op">(</span><span class="va">s2b_stats</span>,  rownames <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co"># more summaries showing there may be only 1 block or hundreds within 1 mile</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">s2b_stats</span><span class="op">$</span><span class="va">blocks_within_1mile</span>, probs <span class="op">=</span> <span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">4</span><span class="op">)</span> <span class="op">*</span> <span class="fl">0.25</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">s2b_stats</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># map the sites with popups about how many blocks were found near each</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="op">(</span><span class="st">'ejam_uniq_id'</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">sitepoints</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span><span class="va">sitepoints</span><span class="op">$</span><span class="va">ejam_uniq_id</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq.int</a></span><span class="op">(</span>length.out <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">NROW</a></span><span class="op">(</span><span class="va">sitepoints</span><span class="op">)</span><span class="op">)</span><span class="op">}</span></span>
-<span><span class="va">s2b_stats</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge</a></span><span class="op">(</span><span class="va">sitepoints</span>, <span class="va">s2b_stats</span>, by <span class="op">=</span> <span class="st">"ejam_uniq_id"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/mapfast.html">mapfast</a></span><span class="op">(</span><span class="va">s2b_stats</span>, radius <span class="op">=</span> <span class="va">radius</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="co"># Some places have very few -- if any -- blocks within 1 mile</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">s2b_stats</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">s2b_stats</span><span class="op">$</span><span class="va">blocks_within_1mile</span>, decreasing <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>, </span>
-<span>               <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'ejam_uniq_id'</span>, <span class="st">'blocks_within_1mile'</span><span class="op">)</span><span class="op">]</span>, <span class="fl">3</span><span class="op">)</span> </span>
-<span></span>
-<span><span class="co"># Some places have hundreds nearby: a 1 mile radius is huge </span></span>
-<span><span class="co"># within a dense urban area</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">s2b_stats</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">s2b_stats</span><span class="op">$</span><span class="va">blocks_within_1mile</span>, decreasing <span class="op">=</span> <span class="cn">T</span><span class="op">)</span>, </span>
-<span>               <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">'ejam_uniq_id'</span>, <span class="st">'blocks_within_1mile'</span><span class="op">)</span><span class="op">]</span>, <span class="fl">3</span><span class="op">)</span></span>
-<span><span class="va">densest</span> <span class="op">&lt;-</span> <span class="va">s2b_stats</span><span class="op">$</span><span class="va">ejam_uniq_id</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span></span>
-<span>  <span class="va">s2b_stats</span><span class="op">$</span><span class="va">blocks_within_1mile</span>, decreasing <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">]</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span>
-<span><span class="fu"><a href="../reference/plotblocksnearby.html">plotblocksnearby</a></span><span class="op">(</span>sitepoints <span class="op">=</span> <span class="va">sitepoints</span><span class="op">[</span><span class="va">sitepoints</span><span class="op">$</span><span class="va">ejam_uniq_id</span> <span class="op">==</span> <span class="va">densest</span>, <span class="op">]</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># Within a 1 mile radius, the blocks found tend to be about 2/3 of a mile from the site at the center.</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">s2b_stats</span><span class="op">$</span><span class="va">avgDistance</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

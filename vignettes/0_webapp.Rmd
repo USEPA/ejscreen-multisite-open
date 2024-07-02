@@ -1,5 +1,6 @@
 ---
 title: "Using EJAM"
+description: "Using EJAM"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Using EJAM}
@@ -8,7 +9,7 @@ vignette: >
 ---
 ```{r developernote, eval=FALSE, echo= FALSE, include = FALSE}
 #  *>>>>>>>>>> Developer note: vignettes need to be tested/edited/rebuilt regularly <<<<<<<<<<<*
-#    - **See ?pkgdown::build_site** - EJAM uses the pkgdown R package to build help and articles/ vignettes as web pages
+#    - **See ?pkgdown::build_site** and script in EJAM/data-raw/- EJAM uses the pkgdown R package to build help and articles/ vignettes as web pages
 ```
 
 ```{r SETUP_default_eval_or_not, include = FALSE}
@@ -22,10 +23,10 @@ knitr::opts_chunk$set(eval = FALSE)
 
 # EJAM and EJScreen websites
 
-EJScreen will be able to leverage EJAM's technology to provide public access to batches of reports. EJAM itself is not an app running on a public website. A user-friendly web app will be made available to the public in the future, either as part of EJScreen (based on EJAM code) or as a separate EJAM app. A web app was being tested for internal use at EPA as of early 2024.
+EJAM itself is not an app running on a public website. [EJScreen](https://www.epa.gov/ejscreen "https://www.epa.gov/ejscreen"){.uri target="_blank" rel="noreferrer noopener"} will be able to leverage EJAM's technology to provide public access to batches of reports, and will be able to do rapid multi-site analysis in a future update. EPA is working to integrate EJAM's new toolkit into EJScreen's public screening and mapping web application, as a way to enable these features as soon as possible. A web app was being tested for internal use at EPA as of early 2024.
 
 <!--
-As of February 2024, EPA staff can try a live beta test version of the EJAM web app - The beta test is accessible only at EPA offices or via VPN.
+As of mid 2024, EPA staff can try a live beta test version of the EJAM web app - The beta test is accessible only at EPA offices or via VPN.
 
 You must be inside EPA's network (e.g. using VPN) to access the EJAM web app, and need to authenticate with PIV card, currently.
 

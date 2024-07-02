@@ -7,6 +7,7 @@
 ejamit(
   sitepoints,
   radius = 3,
+  radius_donut_lower_edge = 0,
   maxradius = 31.07,
   avoidorphans = FALSE,
   quadtree = NULL,
@@ -33,13 +34,16 @@ ejamit(
   parallel = FALSE,
   silentinteractive = FALSE,
   called_by_ejamit = TRUE,
-  testing = FALSE
+  testing = FALSE,
+  ...
 )
 }
 \arguments{
 \item{sitepoints}{data.table with columns lat, lon giving point locations of sites or facilities around which are circular buffers}
 
 \item{radius}{in miles, defining circular buffer around a site point}
+
+\item{radius_donut_lower_edge}{radius of lower edge of donut ring if analyzing a ring not circle}
 
 \item{maxradius}{miles distance (max distance to check if not even 1 block point is within radius)}
 
@@ -120,6 +124,8 @@ passed to \code{\link[=doaggregate]{doaggregate()}} also. app server sets this t
 \item{called_by_ejamit}{Set to TRUE by \code{\link[=ejamit]{ejamit()}} to suppress some outputs even if ejamit(silentinteractive=F)}
 
 \item{testing}{used while testing this function}
+
+\item{...}{passed to getblocksnearby() etc. such as  report_progress_every_n = 0}
 }
 \value{
 A list of tables of results

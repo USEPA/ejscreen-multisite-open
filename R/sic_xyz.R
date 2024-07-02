@@ -4,7 +4,11 @@
 #' @param ... passed to [sic_from_any()]
 #' @return relevant rows of the data.table called frs, which has column names that are
 #'   "lat" "lon" "REGISTRY_ID" "PRIMARY_NAME" "NAICS" "SIC" "PGM_SYS_ACRNMS"
-#' @seealso [regid_from_sic()] [sic_from_any()]
+#'   
+#'  The EPA also provides a [FRS Facility Industrial Classification Search tool](https://www.epa.gov/frs/frs-query#industrial)
+#'  where you can find facilities based on NAICS or SIC.
+#'  
+#' @seealso [regid_from_sic()] [sic_from_any()] [latlon_from_sic()]
 #' @export
 #'
 #' @examples
@@ -30,7 +34,12 @@ frs_from_sic <- function(sic_code_or_name, ...) {
 #'
 #' @description Get lat lon, Registry ID, given SIC industry code(s)
 #' Find all EPA Facility Registry Service (FRS) sites with this exact SIC code (not subcategories)
-#' @details NOTE: many FRS sites lack SIC code!
+#' @details
+#'   
+#'  The EPA also provides a [FRS Facility Industrial Classification Search tool](https://www.epa.gov/frs/frs-query#industrial)
+#'  where you can find facilities based on NAICS or SIC.
+#' 
+#'  NOTE: many FRS sites lack SIC code!
 #'
 #'   Also, this function does not find the sites
 #'   identified by FRS data as being in a child SIC (subcategory of your exact query)!
@@ -130,7 +139,8 @@ sic_subcodes_from_code <- function(mycodes) {
 sic_from_code <- function(mycodes, children=FALSE) {
   # find sictable data.table rows by exact matches on character SIC codes vector
   results <- NULL
-  results <- sictable[code %in% mycodes, ]
+  # results <- sictable[code %in% mycodes, ]
+  results <- sictable[match(mycodes, sictable$code), ]
   if (children) {
     # add subcategories
     results <- sic_subcodes_from_code(results$code)

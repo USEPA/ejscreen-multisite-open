@@ -5,6 +5,8 @@
 #'    This is a named vector of EPA programs that lists the programs and has names with programs and program counts. Used by EJAM shiny app for dropdown menu.
 #' @details
 #'
+#'  Also see [EPA documentation describing each program code](https://www.epa.gov/frs/frs-data-sources) aka data source.
+#'
 #'   ## For a table sorted by how many facilities from FRS are listed for each program:
 #'
 #'   `epa_programs_counts <- frs_by_programid[, .N, by="program"][order(N), ]`

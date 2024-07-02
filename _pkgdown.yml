@@ -5,8 +5,10 @@ deploy:
   install_metadata: true
 navbar:
   structure:
-    left:  [intro, reference, articles, search]
+    left:  [intro, reference, articles, search, news]
     right: [github]
+news:
+  cran_dates: false
 footer:
   structure:
     left: [draftmsg]
@@ -43,11 +45,17 @@ reference:
   - EJAM
   - app_run_EJAM
   - ejamit
+  - ejamit_compare_distances
+  - ejamit_compare_types_of_places
   - ejam2report
+  - ejam2ratios
   - ejam2excel
   - ejam2map
-  - ejam2ratios
-  - ejscreenit_for_ejam
+  - ejam2shapefile
+  - ejam2barplot
+  - ejam2barplot_sites
+  - ejam2barplot_distances
+  - ejam2barplot_sitegroups
 - title: "Specify Points by Lat/Lon"
   desc: "Utilities for working with latitude/ longitude or address"
   contents:
@@ -71,44 +79,43 @@ reference:
   - frs_by_programid
 - title: "Specify Facility Type"
   desc: "NAICS, SIC, MACT, or EPA Program"
-- subtitle: "Choosing NAICS Industry Codes"
+- subtitle: "Choosing NAICS/SIC Industry Codes"
   contents:
   - naics_from_any
-  - naics2children
-  - naics_subcodes_from_code
-  - naicstable
+  - sic_from_any
+  - naics_is.valid
   - naics_categories
-  - naics_counts
-  - NAICS
-  - frs_by_naics
+  - sic_categories
   - naics_url_of_code
   - naics_findwebscrape
-- subtitle: "Using NAICS Industry Codes"
+  - naics_subcodes_from_code
+  - sic_subcodes_from_code
+  - naics2children
+  - sic_from_name
+  - sic_from_code
+- subtitle: "Using NAICS/SIC Industry Codes"
   contents:
   - latlon_from_naics
+  - latlon_from_sic
   - regid_from_naics
+  - regid_from_sic
   - frs_from_naics
+  - frs_from_sic  
+- subtitle: "NAICS/SIC datasets"
+  contents:
+  - naics_counts
+  - NAICS
+  - SIC
+  - naicstable
+  - sictable
+  - frs_by_naics
+  - frs_by_sic
 - subtitle: "EPA Programs"
   contents:
   - epa_programs
   - latlon_from_program
   - frsprogramcodes
   - frs_from_program
-- subtitle: "Choosing a SIC Industry Code"
-  contents:
-  - sic_from_any
-  - sic_from_code
-  - sic_from_name
-  - sic_subcodes_from_code
-  - sictable
-  - sic_categories
-  - SIC
-- subtitle: "Using a SIC Industry Code"
-  contents:
-  - latlon_from_sic
-  - regid_from_sic
-  - frs_by_sic
-  - frs_from_sic
 - subtitle: "MACT Categories"
   contents:
   - mact_table
@@ -116,8 +123,6 @@ reference:
   - frs_by_mact
 - title: "Specify Places by Shapefile"
   contents:
-  - shapes_blockgroups_from_bgfips
-  - shapes_counties_from_countyfips
   - shapefile_from_any
   - shapefile_from_folder
   - shapefile_from_filepaths
@@ -132,6 +137,9 @@ reference:
   - shape_buffered_from_shapefile_points
   - shapefile2blockpoints
   - shapefile2latlon
+  - shapes_counties_from_countyfips
+  - shapes_blockgroups_from_bgfips
+  - ejam2shapefile
 - title: "Specify Counties etc."
   desc: >
     Tools to work with Census units and FIPS codes
@@ -139,12 +147,14 @@ reference:
     and EPA Regions
 - subtitle: "FIPS tools"
   contents:
-  - censusplaces
+  - name2fips
+  - fips2name
   - fipstype
   - fips_lead_zero
-  - fips2name
+  - fips_counties_from_countyname
   - fips_bg_from_anyfips
   - fips_from_table
+  - censusplaces
 - subtitle: "Counties"
   contents:
   - counties_as_sites
@@ -170,7 +180,7 @@ reference:
 - subtitle: "Regions"
   contents:
   - fips_st2eparegion
-- title: "Blocks, Distances, Residents"
+- title: "Finding Blocks, Distances, and Residents"
   desc: >
     GIS tools calculating which blocks (and residents)
     are in or near each place (within given radius of point
@@ -214,25 +224,31 @@ reference:
   - statestats_queryd
   - statestats_querye
   - regionstats
-- subtitle: "Calculating Summary Stats, etc."
+- subtitle: "Comparing Distances / Multiple Radius Values"
   contents:
-  - count_sites_with_n_high_scores
-  - colcounter_summary_all
+  - ejamit_compare_distances
+  - ejamit_compare_distances_fulloutput
+  - ejamit_compare_distances2plot
   - distance_by_group_by_site
   - distance_by_group_plot
   - distance_cdf_by_group_plot
   - distance_mean_by_group
   - distance_by_group
+  - distance_trends
+- subtitle: "Calculating Summary Stats, etc."
+  contents:
+  - count_sites_with_n_high_scores
+  - colcounter_summary_all
   - popshare_at_top_n
   - popshare_at_top_x_pct
   - popshare_p_lives_at_what_n
   - popshare_p_lives_at_what_pct
-
-  - distance_comparison_ejamit
-  
+  - distance_trends
 - title: "Viewing Results"
 - subtitle: "Maps of Points"
   contents:
+  - ejam2map
+  - ejam2shapefile
   - mapfast
   - mapfastej
   - mapfast_gg
@@ -251,12 +267,19 @@ reference:
   - popup_from_df
 - subtitle: "Plots"
   contents:
+  - ejam2barplot
+  - ejam2barplot_sites
+  - plot_barplot_sites
   - plot_barplot_ratios_ez
   - plot_barplot_ratios
   - plot_ridgeline_ratios_ez
   - plot_ridgeline_ratios
   - plot_vs_us
   - boxplots_ratios
+  - ejam2barplot_sitegroups
+  - plot_barplot_sitegroups
+  - ejam2barplot_distances
+  - ejamit_compare_distances2plot
   - plot_demogshare_by_distance
   - plot_distance_by_pctd
   - plot_distance_by_group
@@ -266,6 +289,9 @@ reference:
   - plot_lorenz_popcount_by_site
 - subtitle: "Tables"
   contents:
+  - ejam2report
+  - ejam2excel
+  - ejam2ratios
   - table_tall_from_overall
   - table_round
   - table_rounding_info
@@ -324,8 +350,13 @@ reference:
   - dataload_from_pins
   - dataload_from_aws
   - ejampackages
+- title: "EJScreen API"
+  desc: "EJAM-EJScreen and using the EJScreen API"
+  contents:
+  - ejscreenit_for_ejam
 - title: internal
   contents:
+  - ejscreen_vs_ejam
   - app_server
   - app_ui
   - rmost
@@ -335,6 +366,7 @@ reference:
   - map_facilities_proxy
   - quaddata
   - datawrite_to_local
+  - is.island
   - radius_inferred
   - getfrsnearby
   - proxistat2
@@ -358,3 +390,6 @@ reference:
   - url_get_eparest_chunked_by_id
   - url_get_via_url
   - create_filename
+  - out_bydistance2results_bydistance
+  - out_bydistance2results_bydistance_bysite
+  - out_bydistance2results_bysite_bydistance

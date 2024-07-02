@@ -15,8 +15,8 @@
 frs_from_regid <- function(regid) {
   
   if (!exists("frs")) dataload_from_pins("frs")
-  
-  frs[REGISTRY_ID %in% regid, ]
+  frs[match(regid, frs$REGISTRY_ID), ] # to return results in same order as search terms were provided
+  # frs[REGISTRY_ID %in% regid, ]
 }
 ########################################## # 
 
@@ -40,8 +40,8 @@ frs_from_regid <- function(regid) {
 frs_from_programid <- function(programid) {
   
   if (!exists("frs")) dataload_from_pins("frs")
-  
-  frs[REGISTRY_ID %in% latlon_from_programid(programid)$REGISTRY_ID, ]
+  regid <- latlon_from_programid(programid)$REGISTRY_ID
+  frs[match(regid, REGISTRY_ID), ] # try to return results in same order as search terms were provided
 }
 ########################################## # 
 
@@ -53,13 +53,14 @@ frs_from_programid <- function(programid) {
 #' @param program vector of one or more EPA Program names used by FRS 
 #' @return relevant rows of the data.table called frs, which has column names that are
 #'   "lat" "lon" "REGISTRY_ID" "PRIMARY_NAME" "NAICS" "PGM_SYS_ACRNMS"
+#' @details Also see [EPA documentation describing each program code](https://www.epa.gov/frs/frs-data-sources) aka data source.
 #'     
 #' @export
 #' 
 frs_from_program  <- function(program) {
   
   if (!exists("frs")) dataload_from_pins("frs")
-  
+  #  #  return results in any order since we are getting an entire program, not a list of facilities in some specified order
   frs[REGISTRY_ID %in% latlon_from_program(program)$REGISTRY_ID, ]
 }
 ########################################## # 
@@ -71,8 +72,15 @@ frs_from_program  <- function(program) {
 #' @param ... passed to [naics_from_any()]
 #' @return relevant rows of the data.table called frs, which has column names that are
 #'   "lat" "lon" "REGISTRY_ID" "PRIMARY_NAME" "NAICS" "PGM_SYS_ACRNMS"
-#' @seealso [regid_from_naics()] [naics_from_any()]
-#'
+#'   
+#' @seealso [latlon_from_naics()] [latlon_from_sic()] [frs_from_sic()] [regid_from_naics()] [naics_from_any()]
+#' 
+#' @details  The EPA also provides a [FRS Facility Industrial Classification Search tool](https://www.epa.gov/frs/frs-query#industrial)
+#'  where you can find facilities based on NAICS or SIC.
+#'  
+#'  EPA's [ECHO query tools](https://echo.epa.gov/help/facility-search/search-criteria-help#facchar)
+#'  also provide search by NAICS or SIC, and by MACT subpart.
+#'  
 #' @examples 
 #'   frs_from_naics("uranium")
 #'   mapfast(frs_from_naics(naics_from_any("nuclear")$code))
@@ -88,7 +96,7 @@ frs_from_program  <- function(program) {
 frs_from_naics <- function(naics_code_or_name, ...) {
   
   if (!exists("frs")) dataload_from_pins("frs")
-  
+  #  return results in any order since we are getting an entire NAICS, not a list of facilities in some specified order
   frs[REGISTRY_ID %in% regid_from_naics(naics_from_any(naics_code_or_name, ...)$code, id_only = TRUE) , ]
 }
 ########################################## # 
