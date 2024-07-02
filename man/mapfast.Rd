@@ -4,7 +4,13 @@
 \alias{mapfast}
 \title{Map - points - Create leaflet html widget map of points using table with lat lon}
 \usage{
-mapfast(mydf, radius = 3, column_names = "all", labels = column_names)
+mapfast(
+  mydf,
+  radius = 3,
+  column_names = "all",
+  labels = column_names,
+  browse = FALSE
+)
 }
 \arguments{
 \item{mydf}{data.frame or data.table with lat and lon columns or
@@ -18,6 +24,11 @@ in the popup. If a vector of colnames, only those are shown in popups.}
 
 \item{labels}{The labels used before the column_names, for map popups,
 like  label: column_name  (ignored if column_names is ej or all)}
+
+\item{browse}{optional logical, set to TRUE if you want the function to
+launch a default browser window to show the map
+and print the temp filepath and filename in the console.
+Normally the map would be shown in the default RStudio viewer pane.}
 }
 \value{
 plots a leaflet map with popups with all the columns from mydf,
