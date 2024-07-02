@@ -2595,7 +2595,7 @@ app_server <- function(input, output, session) {
       create_filename(
         file_desc = 'community report',
         title = input$analysis_title,
-        buffer_dist = current_slider_val[[submitted_upload_method()]],
+        buffer_dist = submitted_radius_val(),
         site_method = submitted_upload_method(),
         with_datetime = TRUE,
         ext = ifelse(input$format1pager == 'pdf', '.pdf', '.html')
@@ -2913,7 +2913,7 @@ app_server <- function(input, output, session) {
       
       create_filename(file_desc = 'results table',
                       title = input$analysis_title,
-                      buffer_dist = current_slider_val[[submitted_upload_method()]],
+                      buffer_dist = submitted_radius_val(),
                       site_method = submitted_upload_method(),
                       with_datetime = TRUE,
                       ext = '.xlsx')
@@ -3523,13 +3523,14 @@ app_server <- function(input, output, session) {
   
   ## Create and download FULL static report
   output$rg_download <- downloadHandler(
-    filename =
+    filename = function(){
       create_filename(file_desc = 'full report',
                       title = input$analysis_title,
-                      buffer_dist = current_slider_val[[submitted_upload_method()]],
+                      buffer_dist = submitted_radius_val(),
                       site_method = submitted_upload_method(),
                       with_datetime = TRUE,
-                      ext = '.doc'),
+                      ext = '.doc')
+      },
     
     content = function(file) {
       # Copy the report file to a temporary directory before processing it, in
