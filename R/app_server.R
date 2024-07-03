@@ -2667,13 +2667,13 @@ app_server <- function(input, output, session) {
     # cols_to_select <- names(data_processed)
     # friendly_names <- longnames???
     cols_to_select <- c('ejam_uniq_id', 'invalid_msg',
-                        'pop', #'Community Report',
+                        'pop', 'Community Report',
                         'EJScreen Report', 'EJScreen Map', 'ECHO report', # 'ACS Report',
                         names_d, names_d_subgroups,
                         names_e #,
                         # no names here corresponding to number above x threshold, state, region ??
     )
-    friendly_names <- c('Site ID', 'Invalid Reason','Est. Population', #'Community Report',
+    friendly_names <- c('Site ID', 'Invalid Reason','Est. Population', 'Community Report',
                         'EJScreen Report', 'EJScreen Map', 'ECHO report', #'ACS Report',
                         names_d_friendly, names_d_subgroups_friendly,
                         names_e_friendly)
@@ -2707,13 +2707,13 @@ app_server <- function(input, output, session) {
       dplyr::mutate(index = row_number()) %>%
       dplyr::rowwise() %>%
       dplyr::mutate(
-        pop = ifelse(valid == T, pop, NA)#,
+        pop = ifelse(valid == T, pop, NA),
         # `EJScreen Report` = ifelse(valid == T, `EJScreen Report`, NA),
         # `ECHO Report` = ifelse(valid == T, `ECHO Report`, NA),
         # `EJScreen Map` = ifelse(valid == T, `EJScreen Map`, NA),
-        # `Community Report` = ifelse(valid == T, shinyInput(actionButton, 1, id = paste0('button_', index), label = "Generate",
-        #                                                    onclick = paste0('Shiny.onInputChange(\"select_button',index,'\",  this.id)' )
-        # ), '')
+         `Community Report` = ifelse(valid == T, shinyInput(actionButton, 1, id = paste0('button_', index), label = "Generate",
+                                                            onclick = paste0('Shiny.onInputChange(\"select_button',index,'\",  this.id)' )
+         ), '')
       ) %>%
       
       dplyr::ungroup() %>%
@@ -2818,7 +2818,7 @@ app_server <- function(input, output, session) {
   # also see  ejam2report() which mirrors the code below but as a function outside shiny
   observeEvent(
     lapply(
-      names(input)[grep("select_button[0-9]+",names(input))],
+      names(input)[grep("select_button[0-9]+", names(input))],
       function(name) {
         cur_button(input[[name]])
         input[[name]]
@@ -2827,7 +2827,6 @@ app_server <- function(input, output, session) {
         req(cur_button())
         x <- as.numeric(gsub('button_','', cur_button()))
         if ( data_processed()$results_bysite$valid[x] == T) {
-          #!(submitted_upload_method() %in% c('FIPS')) &
           popstr <- prettyNum(round(data_processed()$results_bysite$pop[x]), big.mark = ',')
           
           if (submitted_upload_method() == 'SHP') {
@@ -2863,8 +2862,7 @@ app_server <- function(input, output, session) {
           
           tempReport <- file.path(tempdir(), 'community_report_template.Rmd')
           
-          ## copy Rmd from inst/report to temp folder  (note there had been a similar but not identical .Rmd in EJAM/www/)
-          file.copy(from = app_sys('report/community_report/community_report_template.Rmd'),  # treats EJAM/inst/ as root
+          file.copy(from = app_sys('report/community_report/community_report_template.Rmd'),
                     to = tempReport, overwrite = TRUE)
           
           build_community_report(
@@ -2876,53 +2874,21 @@ app_server <- function(input, output, session) {
             in_shiny = F,
             filename = temp_comm_report
           )
-          browseURL(temp_comm_report)
           
-          ## can also generate reports through knitting Rmd template
-          ## this is easier to add in maps and plots but is slower to appear
-          
-          # isolate({  # need someone to confirm this is needed/helpful and not a problem, to isolate this.
-          #   ## pass params to customize .Rmd doc  # ###
-          #   # params <- list(html_content = full_html_reactive(),
-          #   #                map         = report_map(),
-          #   #                summary_plot = v1_summary_plot())
-          #   rad <- data_processed()$results_bysite[x,]$radius.miles # input radius can be changed by user and would alter the report text but should just show what was run not what slider currently says
-          #   popstr <- prettyNum(round(data_processed()$results_bysite$pop[x]), big.mark = ',')
-          #   locationstr <- paste0(data_processed()$results_bysite[x,]$radius.miles, ' Mile Ring Centered at ',
-          #                         data_processed()$results_bysite[x,]$lat, ', ',
-          #                         data_processed()$results_bysite[x,]$lon, '<br>', 'Area in Square Miles: ',
-          #                         round(pi* rad^2,2)
-          #   )
-          #   params <- list(
-          #     output_df = data_processed()$results_bysite[x,],
-          #     analysis_title = input$analysis_title,
-          #     totalpop = popstr,
-          #     locationstr = locationstr,
-          #     include_ejindexes = T,
-          #     in_shiny = F,
-          #     filename = NULL,#temp_comm_report,
-          #     map = report_map(),
-          #     summary_plot = v1_summary_plot()
-          #   )
-          #
-          # })
-          
-          # rmarkdown::render(tempReport,
-          #                   output_format = 'html_document',
-          #                   output_file = temp_comm_report,
-          #                   params = params,
-          #                   envir = new.env(parent = globalenv()),
-          #                   intermediates_dir = tempdir()
-          # )
-          
-          #browseURL(temp_comm_report)
+          output$download_report <- downloadHandler(
+            filename = function() { paste0("comm_report",x,".html") },
+            content = function(file) {
+              file.copy(temp_comm_report, file)
+            }
+          )
+          session$sendCustomMessage("trigger_download", list())
           
         } else {
           showModal(modalDialog(title = 'Report not available',
                                 'Individual site reports not yet available.'))
         }
-        #showModal(modalDialog("Thanks for pushing the button"))
       })
+  
   
   ## EXCEL DOWNLOAD  ####
   
