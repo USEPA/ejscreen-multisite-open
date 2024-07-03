@@ -31,6 +31,7 @@ frs_make_naics_lookup <- function(x) {
   
   x <- data.table::as.data.table(x)
   x <- x[ !is.na(NAICS), ]
+  x <- x[naics_is.valid(NAICS),]
   setkey(x, NAICS, REGISTRY_ID)
 #  head(x,20)
 #   head(x, 20)
