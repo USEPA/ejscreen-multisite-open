@@ -26,15 +26,13 @@
 # usethis::use_pkgdown()   and does other steps,
 ##   but note it replaces/deletes any existing _pkgdown.yml file 
 #
-#   Also, for traditional (not pkgdown) vignettes, see the RStudio menu, 
-#   check on and maybe adjust the settings here:
-# "Build" - "Configure Build Options" - "Build Tools" - "Generate Docs with Roxygen"
-#   Look at the checkboxes for  build/install & vignettes.
-#   The traditional vignettes can get built at each install/build via these options,
-#   and/or be updated using 
+#   Traditional (not pkgdown) vignettes are no longer recommended by roxygen2 pkg docs:
+# see   help(vignette_roclet, package = "roxygen2")
+# Can turn them off in RStudio "Build" - "Configure Build Options" - "Build Tools" - "Generate Docs with Roxygen"
+#   and by adding   --no-build-vignettes to the "Build Source Package" field in your project options. 
 ############################################# #
 
-#    SCRIPT  TO  REBUILD  vignettes  (articles)
+#    SCRIPT  TO  REBUILD  vignettes  (articles) using pkgdown
 #
 # Probably does not require all these steps, though
 
@@ -47,13 +45,13 @@ library(pkgdown)
 # devtools::build_readme() # takes a couple minutes! as it installs the package in a temporary library
 # build_rmd() is a wrapper around rmarkdown::render() that first installs a temporary copy of the package, and then renders each .Rmd in a clean R session.
 rmarkdown::render("README.Rmd")  # renders .Rmd to create a  .md file that works in github as a webpage
-# 
-# just build/install using RStudio buttons? but check if build options include vignettes
-# or can try this:
 
-devtools::document()
+# Usually just using devtools::load_all()  during development, not reinstalling every time you edit source.
+# You could build/install using RStudio buttons, 
+#  but 1st confirm you already turned off traditional vignette-building...  see   help(vignette_roclet, package = "roxygen2")
+# That button includes a step that is the same as   devtools::document()
 
-Sys.time()   # about 4 minutes  
+Sys.time()   # about 4 minutes for steps below
 
 ##############################################
 # check if can reach pins or it will not build vignettes correctly
@@ -77,9 +75,9 @@ dataload_pin_available <- function(boardfolder = "Mark",
 if (!dataload_pin_available()) {stop("cannot build vignettes correctly without access to pins board")}
 ##############################################
 
-# just in case building vignettes via install() does not successfully load those frs and other files
+# just in case 
 
-EJAM::dataload_from_pins("all") # not sure this helps with building vignettes though, which need access to frs file etc. in whatever environment they are built in
+EJAM::dataload_from_pins("all") #
 ##############################################
 
 # devtools::check() 
@@ -95,18 +93,26 @@ EJAM::dataload_from_pins("all") # not sure this helps with building vignettes th
 ## [ FAIL 7 | WARN 7 | SKIP 1 | PASS 617 ] as of 5/13/24
 
 
-devtools::install(quick = FALSE,   # BUT USUALLY LEAVE IT AS TRUE
-                  upgrade = FALSE, 
-                  # build_vignettes = TRUE,  # does it do that in the doc folder, or docs folder, or vignette folder, or where? it says "installing vignettes" but does not update the .html files in the vignette folder.
-                  build_vignettes = TRUE, # if you want to re-render them without doing full build caused by quick=FALSE.
-                  ## can do later via devtools::build_vignettes() 
-                  build = FALSE,
-                  quiet = FALSE
-                  ) 
+devtools::install(
+  
+  quick = TRUE,   # USUALLY LEAVE IT AS TRUE
+  # # quick=T is MUCH faster but skips docs, vignettes, etc., building 'EJAM_2.2.2.tar.gz' or the .zip binary, etc.
+  # # quick=F is SLOW!  takes a few minutes! 
+  
+  upgrade = FALSE, 
+  
+  # build_vignettes = FALSE,  
+  ## old-style vignetters were in  doc folder, but pkgdown-style are in   docs folder, 
+  
+  build = FALSE,
+  ## build = TRUE means it converts a package source directory into a single bundled file...
+  ##   If binary = FALSE this creates a tar.gz package that can be installed on any platform, provided they have a full development environment (although packages without source code can typically be installed out of the box). 
+  ##   If binary = TRUE, the package will have a platform specific extension (e.g. .zip for windows), and will only be installable on the current platform, but no development environment is needed.
+  
+  quiet = FALSE
+)
+
 Sys.time()
-# # quick=T is MUCH faster but skips docs, vignettes, etc., building 'EJAM_2.2.2.tar.gz' or the .zip binary, etc.
-# # quick=F is SLOW!  takes a few minutes! 
-## build = TRUE means it converts a package source directory into a single bundled file. If binary = FALSE this creates a tar.gz package that can be installed on any platform, provided they have a full development environment (although packages without source code can typically be installed out of the box). If binary = TRUE, the package will have a platform specific extension (e.g. .zip for windows), and will only be installable on the current platform, but no development environment is needed.
 
 #################### # 
 # but that seems to case an error that quitting / restarting RStudio seemed tfix(Error in `poll(list(self), ms)`:
@@ -131,26 +137,11 @@ EJAM::dataload_from_pins("all") # not sure this helps with building vignettes th
 ## so did rm(list=ls()) and tried to continue from library( ) above .
 
 #################### # 
-# AGAIN? reBuild regular R package vignettes ? in /doc/ ?
-#    Already had done this:
-# devtools::install(build_vignettes = T)
-#    so why do it again using this:  ?
-## devtools::build_vignettes(quiet = FALSE, upgrade = "never", install = FALSE)
-#
-## and building those is SLOW.
-devtools::build_vignettes(quiet = FALSE, upgrade = "never", install = FALSE)
-devtools::install(build_vignettes = T)
-# This puts the .html files in the 
-#  doc (not docs) folder, 
-# and copies the .Rmd files there too, and builds vignette index
-
-
-#################### # 
 # Build Articles (web based vignettes) for pkgdown website.  in /docs/ ? not /doc/ 
 # knit button might not work in some cases?
 
 # build_articles()
-  # # This works (at least for one article) ... new_process = FALSE seemed to help:
+# # This works (at least for one article) ... new_process = FALSE seemed to help:
 # build_article("6_future_plans", new_process = FALSE)
 # build_article("3_analyzing",    new_process = FALSE)
 # build_article("1_installing",   new_process = FALSE)
@@ -165,10 +156,10 @@ pkgdown::build_site_github_pages(
   clean = FALSE,        # faster if FALSE. TRUE would delete objects already attached? 
   examples = FALSE,     # *** should only set TRUE if you want to include outputs of examples along with the function documentation!
   new_process = FALSE,  # faster if FALSE (and HAD PROBLEMS IF TRUE... if FALSE then it can rely on having frs and other files available in current environment, for building vignettes?)
- 
+  
   devel = TRUE, # faster if TRUE - If FALSE, will first install the package to a temporary library, and will run all examples and vignettes in a new process.
-                # build_site() defaults to devel = FALSE so that you get high fidelity outputs when you building the complete site; 
-                # build_reference(), build_home() and friends default to devel = TRUE so that you can rapidly iterate during development.
+  # build_site() defaults to devel = FALSE so that you get high fidelity outputs when you building the complete site; 
+  # build_reference(), build_home() and friends default to devel = TRUE so that you can rapidly iterate during development.
   
   lazy = TRUE       # faster if TRUE   (can force a build despite no change in source vs destination copy)
 ) 
@@ -194,8 +185,8 @@ Sys.time() # 40 minutes for all of this to run with slowest options above
 # 
 # But then trying these two steps alone in command line works:
 
-    pkgdown:::build_sitemap('.')
-    pkgdown:::build_redirects(".")
+pkgdown:::build_sitemap('.')
+pkgdown:::build_redirects(".")
 
 #################### # 
 
@@ -212,14 +203,12 @@ stop()
 #   'USEPA/EJAMejscreenapi',
 #   'USEPA/EJAMbatch.summarizer',
 #   'USEPA/EJAM'
-# ), build_vignettes = TRUE) # if you want their installed package 
-# to have vignettes available via vignette() or browseVignettes() in addition to the html versions available in the github pages at 
-# #  
-# 
+# ), build_vignettes = FALSE) 
+#
 # build(".")  # to build single file source package that could be shared with those who want to install without needing PAT. 
 # installation from github via remotes::
 # 
 # build("../EJAMejscreenapi")
 #  build("../EJAMbatch.summarizer")
 
- ################################################################## #
+################################################################## #

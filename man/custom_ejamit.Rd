@@ -8,7 +8,7 @@ custom_ejamit(
   sitepoints,
   radius = 3,
   fips = NULL,
-  shapefile_folder = NULL,
+  shapefile = NULL,
   custom_blockgroupstats = blockgroupstats,
   countcols = names_wts,
   popmeancols = names_these,
@@ -25,7 +25,7 @@ custom_ejamit(
 
 \item{fips}{see \code{\link[=ejamit]{ejamit()}}}
 
-\item{shapefile_folder}{see \code{\link[=ejamit]{ejamit()}}}
+\item{shapefile}{see \code{\link[=ejamit]{ejamit()}}}
 
 \item{custom_blockgroupstats}{like blockgroupstats but with custom
 indicators, one value per block group, with colnames bgid, bgfips, pop}

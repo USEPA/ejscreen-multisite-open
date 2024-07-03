@@ -224,11 +224,11 @@ app_ui  <- function(request) {
                             ## input: Upload list of FRS identifiers
                             fileInput(inputId = 'ss_upload_shp',
                                       label = 'Upload a shapefile',
-                                      accept = c(".shp",".dbf",".sbn",".sbx",".shx",".prj"),
+                                      accept = c(".shp",".dbf",".sbn",".sbx",".shx",".prj",".zip"),
                                       multiple = TRUE
                             ),
                             tags$ul(
-                              tags$li('Required files: .shp, .shx, .dbf, .prj'),
+                              tags$li('Required files: .shp, .shx, .dbf, .prj, .zip'),
                               tags$li('Required fields: geometry')
                             ),
                             actionButton('shp_help', label = 'More Info', class = 'usa-button usa-button--outline')

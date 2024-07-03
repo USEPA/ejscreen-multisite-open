@@ -12,7 +12,7 @@ ejamit(
   avoidorphans = FALSE,
   quadtree = NULL,
   fips = NULL,
-  shapefile_folder = NULL,
+  shapefile = NULL,
   countcols = NULL,
   popmeancols = NULL,
   calculatedcols = NULL,
@@ -67,7 +67,7 @@ It can be automatically created when the package is attached via the .onAttach()
 \item{fips}{optional FIPS code vector to provide if using FIPS instead of sitepoints to specify places to analyze,
 such as a list of US Counties or tracts. Passed to \code{\link[=getblocksnearby_from_fips]{getblocksnearby_from_fips()}}}
 
-\item{shapefile_folder}{optional path to folder that has shapefiles to analyze polygons}
+\item{shapefile}{optional sf shapefile object or path to .zip, .gdb, or folder that has a shapefiles, to analyze polygons}
 
 \item{countcols}{character vector of names of variables to aggregate within a buffer using a sum of counts,
 like, for example, the number of people for whom a poverty ratio is known,

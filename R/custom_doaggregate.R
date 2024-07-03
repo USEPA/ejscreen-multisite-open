@@ -260,7 +260,7 @@ custom_doaggregate <- function(sites2blocks,
 #' @param sitepoints see [ejamit()]
 #' @param radius  see [ejamit()]
 #' @param fips  see [ejamit()]
-#' @param shapefile_folder  see [ejamit()]
+#' @param shapefile  see [ejamit()]
 #' @param custom_blockgroupstats like blockgroupstats but with custom
 #'   indicators, one value per block group, with colnames bgid, bgfips, pop
 #' @param countcols vector of colnames in custom_blockgroupstats to be
@@ -280,7 +280,7 @@ custom_doaggregate <- function(sites2blocks,
 #' 
 #' @export
 #' 
-custom_ejamit <- function(sitepoints, radius = 3, fips = NULL, shapefile_folder = NULL,
+custom_ejamit <- function(sitepoints, radius = 3, fips = NULL, shapefile = NULL,
                           custom_blockgroupstats = blockgroupstats,
                           countcols = names_wts,
                           popmeancols = names_these,
@@ -292,8 +292,8 @@ custom_ejamit <- function(sitepoints, radius = 3, fips = NULL, shapefile_folder 
   if (!is.null(fips)) {
     sites2blocks <- getblocksnearby_from_fips(fips)
   } else {
-    if (!is.null(shapefile_folder)) {
-      sites2blocks <- get_blockpoints_in_shape(shapefile_from_any(shapefile_folder))
+    if (!is.null(shapefile)) {
+      sites2blocks <- get_blockpoints_in_shape(shapefile_from_any(shapefile))
     } else {
        sites2blocks <- getblocksnearby(sitepoints = sitepoints, radius = radius)
     }

@@ -25,6 +25,10 @@ mapfastej <- function(...) {
 #'   in the popup. If a vector of colnames, only those are shown in popups.
 #' @param labels The labels used before the column_names, for map popups,
 #'   like  label: column_name  (ignored if column_names is ej or all)
+#' @param browse optional logical, set to TRUE if you want the function to
+#'   launch a default browser window to show the map
+#'   and print the temp filepath and filename in the console.
+#'   Normally the map would be shown in the default RStudio viewer pane.
 #' @seealso [ejam2map()] [popup_from_df()] [mapfastej()]
 #' @return plots a leaflet map with popups with all the columns from mydf,
 #'   and returns html widget
@@ -66,7 +70,7 @@ mapfastej <- function(...) {
 #'
 #' @export
 #'
-mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names) {
+mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names, browse = FALSE) {
 
   if (data.table::is.data.table(mydf)) {mydf <- as.data.frame(mydf)} # in case it was a data.table
   renamed <- mydf # use new names for lat and lon if necessary, but show original names in popup
@@ -94,10 +98,17 @@ mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names)
   radius.meters <- radius * meters_per_mile # data loaded by pkg EJAMejscreenapi
   # units are meters for addCircles, and pixels for addCircleMarkers
 
-  leaflet::leaflet(data = renamed) |> leaflet::addTiles() |>
+  x <- leaflet::leaflet(data = renamed) |> leaflet::addTiles() |>
     leaflet::addCircles(lng = ~lon, lat = ~lat, radius = radius.meters,
                         popupOptions = list(maxHeight = 400, maxWidth = 850),
                         popup = mypop) |>
     leaflet.extras2::addEasyprint( ) # button to print or print to pdf and save
+  
+  if (browse) {
+    htmlwidgets::saveWidget(x, file = fname <- tempfile("mapfast_", fileext = ".html"))
+    browseURL(fname)
+    cat(fname, "\n")
+  }
+  return(x)
 }
 ############################################################################ #
