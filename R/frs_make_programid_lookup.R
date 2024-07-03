@@ -18,7 +18,7 @@ frs_make_programid_lookup <- function(x) {
   x <- tidyr::separate_rows(x, PGM_SYS_ACRNMS, sep = ',') # SLOW
   x$PGM_SYS_ACRNMS <- trimws(x$PGM_SYS_ACRNMS)
   
-  x <- tidyr::separate(x, PGM_SYS_ACRNMS, sep = ':', into = c('program', 'pgm_sys_id'))
+  x <- tidyr::separate(x, PGM_SYS_ACRNMS, sep = ':', into = c('program', 'pgm_sys_id'), remove = FALSE)
   # Warning message:
   # Expected 2 pieces. Missing pieces filled with `NA` in 1190 rows
   # [32787, 32789, 32822, 32823, 32853, 32855, 32888, 32975, 32997, 32999, 

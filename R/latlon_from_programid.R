@@ -23,12 +23,16 @@
 #'
 #' @export
 #'
-latlon_from_programid <- function(programid) {
+latlon_from_programid <- function(programname,programid) {
   
-  if (missing(programid)) {return(NULL)}
+  if (missing(programid) | missing(programname)) {
+    warning('Please provide both programname and programid.')
+    return(NULL)
+  }
   
   if (!exists("frs_by_programid")) dataload_from_pins("frs_by_programid")
   
-  frs_by_programid[match(programid, frs_by_programid$pgm_sys_id), ] # slower but retains order
+  frs_by_programid[match(paste0(programname,':',programid), PGM_SYS_ACRNMS), ] # slower but retains order
+  #frs_by_programid[match(programid, frs_by_programid$pgm_sys_id), ] # slower but retains order
   #  frs_by_programid[pgm_sys_id %in% programid, ] # faster but lose sort order of input
 }
