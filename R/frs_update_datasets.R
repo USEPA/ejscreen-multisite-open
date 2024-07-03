@@ -49,140 +49,101 @@
 #' @seealso [frs_get()] [frs_inactive_ids()] [frs_drop_inactive()]
 #'    [frs_make_programid_lookup()] [frs_make_naics_lookup()] [frs_make_sic_lookup()] [frs_make_mact_lookup()] 
 #' 
-frs_update_datasets <- function(folder=NULL, folder_save_as_arrow = getwd(), downloaded_and_unzipped_already = FALSE, csvname = 'NATIONAL_SINGLE.CSV',
-                                save_as_arrow_frs=TRUE, save_as_arrow_frs_by_programid=TRUE, save_as_arrow_frs_by_naics=TRUE, save_as_arrow_frs_by_sic=TRUE, save_as_arrow_frs_by_mact=TRUE,
-                                save_as_data_frs=FALSE, save_as_data_frs_by_programid=FALSE, save_as_data_frs_by_naics=FALSE, save_as_data_frs_by_sic=FALSE, save_as_data_frs_by_mact=FALSE
-) {
-  
-  # (note date & define commas format) ####
-  nowtoday <- list(download_date = Sys.Date()) # frs_get() adds metadata with released as an attribute, already.
-  commas <- function(x) {prettyNum(x,big.mark = ",")}
-  # ~ ####
-  ###################################################### # 
-  # frs ####
-  
-  ## _download/ unzip/ clean ####
-  if (is.null(folder)) folder <- tempdir()  # frs_get() also does this:  if (is.null(folder)) {folder <- tempdir()}  , but might want to know here what is name of tempdir, so useful to create it here.
+frs_update_datasets <- function (folder = NULL, folder_save_as_arrow = getwd(), downloaded_and_unzipped_already = FALSE, 
+                                 csvname = "NATIONAL_SINGLE.CSV", save_as_arrow_frs = TRUE, 
+                                 save_as_arrow_frs_by_programid = TRUE, save_as_arrow_frs_by_naics = TRUE, 
+                                 save_as_arrow_frs_by_sic = TRUE, save_as_arrow_frs_by_mact = TRUE, 
+                                 save_as_data_frs = FALSE, save_as_data_frs_by_programid = FALSE, 
+                                 save_as_data_frs_by_naics = FALSE, save_as_data_frs_by_sic = FALSE, 
+                                 save_as_data_frs_by_mact = FALSE) 
+{
+  nowtoday <- list(download_date = Sys.Date())
+  commas <- function(x) {
+    prettyNum(x, big.mark = ",")
+  }
+  if (is.null(folder)) 
+    folder <- tempdir()
   cat("\nTrying to get frs datasets\n")
-  cat('This takes a *LONG* time to download, unzip, and read the large files! Please wait!\n')
-  frs <- frs_get(folder = folder, csvname = csvname, downloaded_and_unzipped_already = downloaded_and_unzipped_already) 
-  
-  ###################################################### # 
-  ## _drop inactive sites ####
-  
-  # keep only if an active site, or unclear whether active. 
+  cat("This takes a *LONG* time to download, unzip, and read the large files! Please wait!\n")
+  frs <- frs_get(folder = folder, csvname = csvname, downloaded_and_unzipped_already = downloaded_and_unzipped_already)
   closedidlist <- frs_inactive_ids()
   cat("frs rows total: ", commas(NROW(frs)), '\n')
   cat("frs clearly inactive IDs: ", commas(length(closedidlist)), "\n")
   frs <- frs_drop_inactive(frs = frs, closedid = closedidlist)
-  cat("frs rows actives: ", commas(NROW(frs)), '\n')
-  
-  ###################################################### # 
-  ## _save  ####
-  
-  EJAM::metadata_add(frs,              metadata = nowtoday)
+  cat("frs rows actives: ", commas(NROW(frs)), "\n")
+  EJAM:::metadata_add(frs, metadata = nowtoday)
   if (save_as_arrow_frs) {
-    arrow::write_ipc_file(frs,
-                          sink = file.path(folder_save_as_arrow, "frs.arrow"))
+    arrow::write_ipc_file(frs, sink = file.path(folder_save_as_arrow, 
+                                                "frs.arrow"))
   }
   if (save_as_data_frs) {
-    usethis::use_data(frs,              overwrite = TRUE)
+    usethis::use_data(frs, overwrite = TRUE)
   }
-  ##   read back in like this:
-  # frs <- arrow::read_ipc_file(file = file.path(folder_save_as_arrow, "frs.arrow"))
-  ##   or more generally, to assign to default, current environment: 
-  # varname <- "frs"
-  # fold <- folder_save_as_arrow # or, fold = getwd()
-  # fname <- paste0(varname, ".arrow")
-  # assign(varname, value = arrow::read_ipc_file(file = file.path(fold, fname))) 
-
-  ###################################################### # 
-  #  frs_by_programid ####
-  
   cat("\nTrying to create frs_by_programid\n")
   frs_by_programid <- frs_make_programid_lookup(x = frs)
-  EJAM::metadata_add(frs_by_programid, metadata = nowtoday)
+  EJAM:::metadata_add(frs_by_programid, metadata = nowtoday)
   if (save_as_arrow_frs_by_programid) {
-    arrow::write_ipc_file(frs_by_programid, 
-                          sink = file.path(folder_save_as_arrow, "frs_by_programid.arrow"))
+    arrow::write_ipc_file(frs_by_programid, sink = file.path(folder_save_as_arrow, 
+                                                             "frs_by_programid.arrow"))
   }
   if (save_as_data_frs_by_programid) {
     usethis::use_data(frs_by_programid, overwrite = TRUE)
   }
-  ###################################################### # 
-  #  frs_by_naics ####
-  
   cat("\nTrying to create frs_by_naics\n")
-  frs_by_naics     <- frs_make_naics_lookup(    x = frs)
-  cat("frs_by_programid rows: ", commas(NROW(frs_by_programid)), "\n")
-  cat("frs_by_naics rows: ",     commas(NROW(frs_by_naics)),     "\n")
-  EJAM::metadata_add(frs_by_naics,     metadata = nowtoday)
+  frs_by_naics <- frs_make_naics_lookup(x = frs)
+  cat("frs_by_programid rows: ", commas(NROW(frs_by_programid)), 
+      "\n")
+  cat("frs_by_naics rows: ", commas(NROW(frs_by_naics)), "\n")
+  EJAM:::metadata_add(frs_by_naics, metadata = nowtoday)
   if (save_as_arrow_frs_by_naics) {
-    arrow::write_ipc_file(frs_by_naics, 
-                          sink = file.path(folder_save_as_arrow, "frs_by_naics.arrow"))
+    arrow::write_ipc_file(frs_by_naics, sink = file.path(folder_save_as_arrow, 
+                                                         "frs_by_naics.arrow"))
   }
   if (save_as_data_frs_by_naics) {
-    usethis::use_data(frs_by_naics,     overwrite = TRUE)
+    usethis::use_data(frs_by_naics, overwrite = TRUE)
   }
-  ###################################################### # 
-  #  frs_by_sic ####
-  
   cat("\nTrying to create frs_by_sic\n")
-  frs_by_sic <- frs_clean_sic(frs) # should be redundant with frs_clean()
-  frs_by_sic <- frs_make_sic_lookup(frs_by_sic)
-  EJAM::metadata_add(frs_by_sic,     metadata = nowtoday)
+  frs_by_sic <- frs_clean_sic(frs)
+  frs_by_sic <- EJAM:::frs_make_sic_lookup(frs_by_sic)
+  EJAM:::metadata_add(frs_by_sic, metadata = nowtoday)
   if (save_as_arrow_frs_by_sic) {
-    arrow::write_ipc_file(frs_by_sic,
-                          sink = file.path(folder_save_as_arrow, "frs_by_sic.arrow"))
-  }  
-  if (save_as_data_frs_by_sic) {
-    usethis::use_data(frs_by_sic,     overwrite = TRUE)
+    arrow::write_ipc_file(frs_by_sic, sink = file.path(folder_save_as_arrow, 
+                                                       "frs_by_sic.arrow"))
   }
-  ###################################################### # 
-  #  frs_by_mact ####
-  
+  if (save_as_data_frs_by_sic) {
+    usethis::use_data(frs_by_sic, overwrite = TRUE)
+  }
   cat("Trying to create frs_by_mact\n")
   x <- frs_make_mact_lookup(frs_by_programid, folder = folder)
   frs_by_mact <- x$frs_by_mact
-  EJAM::metadata_add(frs_by_mact,     metadata = nowtoday)
+  EJAM:::metadata_add(frs_by_mact, metadata = nowtoday)
   if (save_as_arrow_frs_by_mact) {
-    arrow::write_ipc_file(frs_by_mact,
-                          sink = file.path(folder_save_as_arrow, "frs_by_mact.arrow"))
+    arrow::write_ipc_file(frs_by_mact, sink = file.path(folder_save_as_arrow, 
+                                                        "frs_by_mact.arrow"))
   }
   if (save_as_data_frs_by_mact) {
-    usethis::use_data(frs_by_mact,     overwrite = TRUE)
+    usethis::use_data(frs_by_mact, overwrite = TRUE)
   }
-  
-  ###################################################### # 
-  #  mact_table ####
-  
   cat("Trying to create mact_table\n")
   mact_table <- x$mact_table
   rm(x)
-  EJAM::metadata_add(mact_table,     metadata = nowtoday)
-  
+  EJAM:::metadata_add(mact_table, metadata = nowtoday)
   cat("\n\n**** HANDLE mact_table DIFFERENTLY ? \n\n")
-  arrow::write_ipc_file(mact_table,
-                        sink = file.path(folder_save_as_arrow, "mact_table.arrow"))
-  save(mact_table, file = file.path(folder_save_as_arrow, "mact_table.rda"))
+  arrow::write_ipc_file(mact_table, sink = file.path(folder_save_as_arrow, 
+                                                     "mact_table.arrow"))
+  save(mact_table, file = file.path(folder_save_as_arrow, 
+                                    "mact_table.rda"))
   if (interactive()) {
-    ##  KEEP THIS AS DATA IN PACKAGE - MUST BE IN CORRECT FOLDER OF SOURCE PKG THOUGH
     oldone <- getwd()
-    x = rstudioapi::selectDirectory("What folder is root of source package in which to store mact_table as data?", label = "Save")
+    x = rstudioapi::selectDirectory("What folder is root of source package in which to store mact_table as data?", 
+                                    label = "Save")
     setwd(x)
-    usethis::use_data(mact_table, overwrite = TRUE) #### 
+    usethis::use_data(mact_table, overwrite = TRUE)
     setwd(oldone)
   }
-  ###################################################### # 
-  
-  if (any(
-    save_as_data_frs, 
-    save_as_data_frs_by_programid, 
-    save_as_data_frs_by_naics, 
-    save_as_data_frs_by_sic, 
-    save_as_data_frs_by_mact
-    
-  )) {
+  if (any(save_as_data_frs, save_as_data_frs_by_programid, 
+          save_as_data_frs_by_naics, save_as_data_frs_by_sic, 
+          save_as_data_frs_by_mact)) {
     cat("You can now rebuild/install the package from source to update it.\n")
   }
   ############################################################# #
@@ -196,7 +157,7 @@ frs_update_datasets <- function(folder=NULL, folder_save_as_arrow = getwd(), dow
 
 # what this looks like in console:
 
-# > library(EJAMfrsdata)
+# devtools::load_all()
 # > frs_update_datasets()
 
 # This takes a *LONG* time to download, unzip, and read the large files! Please wait!

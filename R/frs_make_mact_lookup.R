@@ -180,6 +180,9 @@ frs_make_mact_lookup <- function(frs_by_programid, folder=NULL) {
     ## add title column
     dplyr::left_join(types) 
   
+  ## create dropdown labels
+  y$dropdown_label <- paste(y$subpart, stringr::str_to_title(y$title), 
+                            sep = " - ")
   y <- data.table::rbindlist(list(y, afs_mact))
   
   ###################################################### #
