@@ -1,14 +1,13 @@
 #' helper function for package to set attributes of a dataset
 #' 
-#' @description This can be used annually to update some datasets in a package.
+#' @description Together with the metadata_mapping.R script, this can be used 
+#'  annually to update the metadata for datasets in a package.
 #'  It just makes it easier to set a few metadata attributes similarly
 #'  for a number of data elements, for example,
 #'  to add new or update existing attributes.
 #' @details This utility would be used in scripts in EJAM/data-raw/ to 
 #'   add metadata to objects like x before use_data(x, overwrite=T)
 #' @param x dataset (or any object) whose metadata (stored as attributes) you want to update or create
-#' @param metadata must be a named list, so that the function can do this for each i:
-#'   `attr(x, which=names(metadata)[i]) <- metadata[[i]]`
 #'  EJAM, EJScreen, and other dataset versions and release dates are tracked in DESCRIPTION
 #' @seealso metadata_check()
 #'
@@ -16,14 +15,8 @@
 #' @examples
 #'   metadata_check()
 #'   x <- data.frame(a=1:10,b=1001:1010)
-#'   metadata <- list(
-#'     data_downloaded = "2024-07-01",
-#'     date_saved_in_package = as.character(Sys.Date())
-#'   )
-#'   x <- metadata_add(x, metadata)
+#'   x <- metadata_add(x)
 #'   attributes(x)
-#'   x <- metadata_add(x, list(status = 'final'))
-#'   attr(x,'status')
 #' 
 #' @keywords internal
 #'
@@ -85,8 +78,7 @@ metadata_check <- function(packages = EJAM::ejampackages,
                              "ejscreen_releasedate",
                              "acs_releasedate",
                              "acs_version",
-                             "census_version",
-                             "EJAMversion"
+                             "census_version"
                            ),
                            loadifnotloaded = TRUE) {
   
