@@ -1,77 +1,78 @@
 
 #' Each groups distribution of distances
-#' 
+#'
 #' @description SLOW / needs to be optimized.
 #'   CDF Line Plots of cumulative share of each demographic group, within each distance
-#' 
+#'
 #' @param results_bybg_people data.table from doaggregate()$results_bybg_people
 #' @param radius_miles miles radius that was max distance analyzed
-#' @param subgroups_type optional, can be set to "nh" or "alone". 
-#'   Specifies types of race ethnicity subgroups to use for demogvarname 
-#'   but only if demogvarname is not specified as a parameter. 
+#' @param subgroups_type optional, can be set to "nh" or "alone".
+#'   Specifies types of race ethnicity subgroups to use for demogvarname
+#'   but only if demogvarname is not specified as a parameter.
 #'   If neither is specified it tries to use default_subgroups_type
 #'   if that is a variable set by global.R, since it cannot check the reactive variable input$subgroups_type
-#'   outside the context of the web app. 
+#'   outside the context of the web app.
 #' @param demogvarname optional way to specify names of columns to use from results_bybg_people,
-#'   e.g., c("pctlowinc", "pctmin"), or  namez$d, or 
+#'   e.g., c("pctlowinc", "pctmin"), or  namez$d, or
 #'   could be a vector of subgroups such as namez$d_subgroups_nh that includes "pctnhba" etc.
 #'   or namez$d_subgroups_alone that includes "pctba" etc.,
-#'   but if demogvarname is not specified here as a parameter, 
+#'   but if demogvarname is not specified here as a parameter,
 #'   this info could also be specified by the subgroups_type parameter here.
 #'   If neither is specified, the function will try to use a default
 #'   (which may not reflect any changes being made during development of EJAM if default_subgroups_type is in flux)
 #' @param demoglabel friendly text names for labelling graphic, like "Low income residents"
 #' @param colorlist colors like "red" etc. for the demographic groups of interest
 #' @param coloroverall color like "gray" for everyone as a whole
-#' @param returnwhat If returnwhat is "table", invisibly returns a 
-#'   full table of sorted distances of blockgroups, 
+#' @param returnwhat If returnwhat is "table", invisibly returns a
+#'   full table of sorted distances of blockgroups,
 #'   cumulative count of demog groups at that block group's distance.
 #'   If returnwhat is "plotfilename" then it returns the full path including filename of a .png in a tempdir
 #'   If returnwhat is "plot" then it returns the plot object as needed for table_xls_format()
 #' @seealso [distance_by_group()] [ejamit()] for examples
-#' @return see returnwhat parameter 
-#' @examples 
+#' @aliases plot_distance_cdf_by_group
+#' @return see returnwhat parameter
+#' @examples
 #'  y <- ejamit(testpoints_100, radius = 3)
 #'  plot_distance_mean_by_group(y$results_bybg_people) # or distance_mean_by_group() synonym
-#'  print(distance_by_group(y$results_bybg_people, 
+#'  print(distance_by_group(y$results_bybg_people,
 #'    demogvarname = 'pctlowinc', demoglabel = 'Low Income'))
-#'  distance_by_group_plot(y$results_bybg_people, 
+#'  distance_by_group_plot(y$results_bybg_people,
 #'    demogvarname = 'pctlowinc', demoglabel = 'Low Income')
-#'  xyz = distance_by_group_plot(y$results_bybg_people) #  
+#'  xyz = distance_by_group_plot(y$results_bybg_people) #
 #'  tail(round(xyz,3))
-#'  tail(xyz[xyz$pctwa <= 0.501, ]) #  Median distance to nearest site here 
+#'  tail(xyz[xyz$pctwa <= 0.501, ]) #  Median distance to nearest site here
 #'    for White Alone is 2.15 miles, but >60% of Black Alone have a site that close.
-#'  tail(xyz[xyz$pctba <= 0.501, ]) #  Median distance to nearest site here 
+#'  tail(xyz[xyz$pctba <= 0.501, ]) #  Median distance to nearest site here
 #'    for Black Alone is 1.85 miles
-#'  round(tail(xyz[xyz$dist <=1, ]), 3) #  11% of White have a site within 1 mile, 
+#'  round(tail(xyz[xyz$dist <=1, ]), 3) #  11% of White have a site within 1 mile,
 #'    compared to 18.7% of Asian who do.
-#'    
+#'
 #' @export
 #'
 distance_by_group_plot <- function(
-    results_bybg_people = NULL, 
+    results_bybg_people = NULL,
     radius_miles=round(max(
       results_bybg_people$distance_min_avgperson[!is.infinite(
-        results_bybg_people$distance_min_avgperson)], na.rm = T), 1), 
+        results_bybg_people$distance_min_avgperson)], na.rm = T), 1),
     subgroups_type = NULL, # e.g.
     demogvarname = NULL,  # e.g. namez$d # see note above about this param
     demoglabel = NULL,
-    colorlist = colorspace::diverging_hcl(length(demogvarname)),  
-    coloroverall ="black", 
+    colorlist = colorspace::diverging_hcl(length(demogvarname)),
+    coloroverall ="black",
     returnwhat = "table",
     ...) {
-  
+
   if (missing(results_bybg_people)) {
     warning("missing results_bybg_people - returning test example results / plot")
     if (exists("testoutput_doaggregate_1000pts_1miles")) {
       results_bybg_people <- testoutput_doaggregate_1000pts_1miles$results_bybg_people
     } else {return(NA)}
   }
-  
+
   # Figure out what demog variables to use for plot
   if (!is.null(demogvarname)) {
     if (!is.null(subgroups_type)) {
-      # user specified a type 
+      # user specified a type
       if (subgroups_type == "nh")    {demogvarname <- namez$d_subgroups_nh}
       if (subgroups_type == "alone") {demogvarname <- namez$d_subgroups_alone}
       # and plotting "both" is not visually useful and nh makes more sense
@@ -93,7 +94,7 @@ distance_by_group_plot <- function(
   } else {
     # validate this user-provided demogvarname below to confirm those colnames exists
   }
-  
+
   # Figure out what labels to use for those demog variables
   if (!is.null(demoglabel)) {
     demoglabel <- fixcolnames(demogvarname, 'r', 'shortlabel') # renames those it is able to, using an EJAMejscreenapi function fixcolnames
@@ -102,7 +103,7 @@ distance_by_group_plot <- function(
     warning("length of demoglabel and demogvarname must be the same - trying to use defaults for labels instead")
     demoglabel <- fixcolnames(demogvarname, 'r', 'shortlabel') # renames those it is able to, using an EJAMejscreenapi function fixcolnames
   }
-  
+
   if (is.list(results_bybg_people) & ("results_bybg_people" %in% names(results_bybg_people))) {
     # assume it was a mistake and they meant to provide out$results_bybg_people not out itself
     results_bybg_people <- results_bybg_people$results_bybg_people
@@ -116,7 +117,7 @@ distance_by_group_plot <- function(
     setnames(x, c('dist', cnames))
     return(x)
   }
-  
+
   miss <- setdiff( c(demogvarname , 'distance_min_avgperson'), names(results_bybg_people))
   if (length(miss) > 0) {
     warning('These must be colnames of results_bybg_people but were not found: ', paste0(miss , collapse = ", "))
@@ -127,122 +128,122 @@ distance_by_group_plot <- function(
     setnames(x, c('dist', cnames))
     return(x)
   }
-  
+
   x <- results_bybg_people # not a full slow copy... done by reference using data.table::
-  
+
   # plot is too slow for huge datasets and can just plot a random sample of points if so huge:
   if (NROW(x) > 5000) {
     x <- x[sample(1:NROW(x), 5000, replace = F), ]
     warning('plotting just a random sample of 5,000 of these block groups to show pattern quickly')
   }
-  
+
   # SHOULD IT USE distance_avg or distance_min_avgperson ?? ***
-  
+
   # if Inf distance in that min_avgperson column (not sure why it happens), just use distance_min which seems to have valid numbers.
   fixthese = (is.infinite(x$distance_min_avgperson) | is.na(x$distance_min_avgperson))
   if (any(fixthese)) {
-    x$distance_min_avgperson[fixthese  ]  <-  x$distance_min[fixthese] 
+    x$distance_min_avgperson[fixthese  ]  <-  x$distance_min[fixthese]
   }
-  
-  
+
+
   # for a bg near 2+ sites, use the distance that is shorter (the distance to the closest of those sites)
   x[ , distance_min_avgperson := min(distance_min_avgperson, na.rm = TRUE), by = "bgid"] #  very few duplicate bgid values should be here - just when 2 sites near a bg
   # remove duplicated blockgroups now that you saved distance to closest site for each bg. since here we do not need stats site by site, so use shorter distance for any bg that is near 2+ sites.
   x <- unique(x, by = "bgid")
-  
+
   # specify demographic groups and reference (overall)
   x[ , overall := 1] # this represents the entire population, or 100 percent of the bg, to compare to x percent in any given subgroup of interest
   demogvarname <- c("overall", demogvarname)
-  
+
   # countvarname <- gsub("^min$","mins", gsub("pct","",demogvarname))
   # this will not work for other indicator names, only those like pctlowinc as percentage and lowinc as count
   # maybe instead use   names_d_count (but note none for Demog.Index, Demog.Index.Supp),   names_d_subgroups_count
-  
+
   x[ , overall := pop] # the count not the percent
   demoglabel <- c("Everyone", demoglabel)
-  
+
   # for each demog group, calculate the cumulative share of all people in the group, as distance increases among all the blockgroups
   # what is the most efficient way to do this  ?
   # we actually can just use counts that are in x, not calc counts from pop * pct
   x[ , pop := as.numeric(pop)]
-  
-  data.table::setorder(x, distance_min_avgperson) 
-  
+
+  data.table::setorder(x, distance_min_avgperson)
+
   # x[ , .SD := lapply(.SD, FUN = as.numeric), .SDcols = demogvarname]  ???
   cumdata <- x[ , lapply(.SD, FUN = function(z) collapse::fcumsum(pop * z, fill = T) / sum(pop * z, na.rm = TRUE)),
                 .SDcols = demogvarname]
   cumdata$dist <- x$distance_min_avgperson # has NA values
-  
-  # if (returnwhat == "plot") { # if plot is done using ggplot2, it can be returned and then saved etc via   ggsave() 
-  
-  plot(cumdata$dist, 100 * cumdata[ , overall], 
-       col = coloroverall, 
+
+  # if (returnwhat == "plot") { # if plot is done using ggplot2, it can be returned and then saved etc via   ggsave()
+
+  plot(cumdata$dist, 100 * cumdata[ , overall],
+       col = coloroverall,
        pch = NA_integer_, type = 'l', lty = "dotted",
        main = "Share of each Demographic Group Residing at Various Distances from Sites",
-       xlab = "Distance from nearest site (for the avg resident in the blockgroup)", 
+       xlab = "Distance from nearest site (for the avg resident in the blockgroup)",
        ylab = paste0("Of all the residents within ", radius_miles," miles, what % have a site within X miles?"),
        ylim = c(0, 100))
-  
+
   for (i in 2:length(demogvarname)) {
-    
+
     # distance_cdf_by_group_plot  is not written in a way that makes it easy to vectorize, so this could be rewritten
-    
+
     data.table::setDF(cumdata)
-    points(cumdata$dist, 100 *  cumdata[ , demogvarname[i], with = FALSE], 
+    points(cumdata$dist, 100 *  cumdata[ , demogvarname[i]],
            col = colorlist[i - 1],
            pch = c(0:6,15:25, 7:14)[i], # various base R shapes for the points
            ...)
   }
-  
+
   legend("topleft", legend =  demoglabel, lty =  c("dotted", rep("solid", length(colorlist))) , pt.bg = c(coloroverall, colorlist),  col = c(coloroverall, colorlist), pch =  c(NA_integer_, 1:6,15:25, 7:14)[1:length(demogvarname)])
-  
+
   # }
   if (returnwhat == "plotfilename") {
     fname = "distance_cdf.png"
     mytempdir = tempdir()
     png(file.path(mytempdir, fname), width = 2000, height = 1000)
-    plot(cumdata$dist, 100 * cumdata[ , overall], 
-         col = coloroverall, 
+    plot(cumdata$dist, 100 * cumdata[ , overall],
+         col = coloroverall,
          pch = NA_integer_, type = 'l', lty = "dotted",
          main = "Share of each Demographic Group Residing at Various Distances from Sites",
-         xlab = "Distance from nearest site (for the avg resident in the blockgroup)", 
+         xlab = "Distance from nearest site (for the avg resident in the blockgroup)",
          ylab = paste0("Of all the residents within ", radius_miles," miles, what % have a site within X miles?"),
          ylim = c(0, 100))
-    
+
     for (i in 2:length(demogvarname)) {
-      
+
       # distance_cdf_by_group_plot  is not written in a way that makes it easy to vectorize, so this could be rewritten
-      
+
       data.table::setDF(cumdata)
-      points(cumdata$dist, 100 *  cumdata[ , demogvarname[i]], 
+      points(cumdata$dist, 100 *  cumdata[ , demogvarname[i]],
              col = colorlist[i - 1],
              pch = c(0:6,15:25, 7:14)[i], # various base R shapes for the points
              ...)
     }
-    
+
     legend("topleft", legend =  demoglabel, lty =  c("dotted", rep("solid", length(colorlist))) , pt.bg = c(coloroverall, colorlist),  col = c(coloroverall, colorlist), pch =  c(NA_integer_, 1:6,15:25, 7:14)[1:length(demogvarname)])
     dev.off()
     return(file.path(mytempdir, fname))
   }
-  
+
   if (returnwhat == "table") {
     invisible(cumdata)
   }
-  
+
 }
-############################################################################################################# # 
+############################################################################################################# #
 
 #' What percentage of this demographic group's population lives less than X miles from a site?
-#' 
+#'
 #' @description This plots the cumulative share of residents found within each distance,
 #'   for a single demographic group.
-#'   
+#'
 #'   This function, distance_cdf_by_group_plot(), is based on ejamit()$results_bybg_people,
 #'   which provides only block group resolution information about distance.
 #'   For block resolution analysis of distance by group, see [plot_distance_by_pctd()].
-#'   
+#'
 #' @details The function distance_cdf_by_group_plot is SLOW - ***needs to be optimized
-#' 
+#'
 #' @param results_bybg_people data.table from doaggregate()$results_bybg_people
 #' @param radius_miles miles radius that was max distance analyzed
 #' @param demogvarname name of column in results_bybg_people, e.g., "pctlowinc"
@@ -251,16 +252,16 @@ distance_by_group_plot <- function(
 #' @param color2 color like "gray" for everyone else
 #' @seealso [distance_by_group()] [getblocksnearbyviaQuadTree()] for examples
 #' @inherit distance_by_group_plot examples
-#' @return invisibly returns full table of sorted distances of blockgroups, cumulative count of demog group at that block group's distance, 
+#' @return invisibly returns full table of sorted distances of blockgroups, cumulative count of demog group at that block group's distance,
 #' and cumulative count of everyone else in that block group
-#' 
+#'
 #' @export
-#' 
-distance_cdf_by_group_plot <- function(results_bybg_people, 
-                                       radius_miles=round(max(results_bybg_people$distance_min_avgperson, na.rm = T), 1), 
+#'
+distance_cdf_by_group_plot <- function(results_bybg_people,
+                                       radius_miles=round(max(results_bybg_people$distance_min_avgperson, na.rm = T), 1),
                                        demogvarname="Demog.Index", demoglabel=demogvarname,
                                        color1="red", color2="black") {
-  
+
   if (is.list(results_bybg_people) & ("results_bybg_people" %in% names(results_bybg_people))) {
     # assume it was a mistake and they meant to provide out$results_bybg_people not out itself
     results_bybg_people <- results_bybg_people$results_bybg_people
@@ -280,25 +281,25 @@ distance_cdf_by_group_plot <- function(results_bybg_people,
     return(x)
   }
   x <- results_bybg_people # not a full slow copy... done by reference using data.table::
-  data.table::setorder(x, distance_min_avgperson) 
-  
+  data.table::setorder(x, distance_min_avgperson)
+
   # remove duplicated blockgroups, since here we do not need stats site by site, so use shorter distance for any bg that is near 2+ sites.
   x[ , distance_min_avgperson := min(distance_min_avgperson, na.rm = TRUE), by = "bgid"]
   x <- unique(x, by = "bgid")
-  
+
   # should recode this to use directly the counts of D instead of recreating them via pop * .SD
-  
+
   cumdata <- x[ , .(
-    dist = distance_min_avgperson, 
-    # count_d = pop *   .SD, 
-    cumall_d    = collapse::fcumsum(pop *   .SD,       fill = TRUE) / sum(pop *        .SD,  na.rm = TRUE) , 
+    dist = distance_min_avgperson,
+    # count_d = pop *   .SD,
+    cumall_d    = collapse::fcumsum(pop *   .SD,       fill = TRUE) / sum(pop *        .SD,  na.rm = TRUE) ,
     cumall_nond = collapse::fcumsum(pop * (1 -   .SD), fill = TRUE) / sum(pop * (1 -   .SD), na.rm = TRUE)),
     .SDcols = demogvarname]
   # actual names will be dist, cumall_d.pctlowinc, cumall_nond.pctlowinc  for example, but using partial colname below still works:
-  plot(cumdata$dist, 100 * cumdata$cumall_d, 
-       col = color1, 
+  plot(cumdata$dist, 100 * cumdata$cumall_d,
+       col = color1,
        main = "Share of each Demographic Group Residing at Various Distances from Facilities",
-       xlab = "Living within X miles of facilities", 
+       xlab = "Living within X miles of facilities",
        ylab = paste0("% of all residents within ", radius_miles," miles"),
        ylim = c(0,100)
   )
@@ -308,14 +309,15 @@ distance_cdf_by_group_plot <- function(results_bybg_people,
   print(  distance_by_group(x, demogvarname = demogvarname, demoglabel = demoglabel) )
   invisible(cumdata)
 }
-############################################################################################################# # 
+############################################################################################################# #
 
 
-#' 
-#' @export
-#' 
+#' alias for distance_by_group_plot
+#' @return see [distance_by_group_plot()]
 #' @inherit distance_by_group_plot
-#' 
+#'
+#' @export
+#'
 plot_distance_cdf_by_group <- distance_by_group_plot    # function(...) {distance_by_group_plot(...)}
 
 # distance_by_group_plot is a synonym for plot_distance_cdf_by_group

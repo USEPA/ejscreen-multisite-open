@@ -21,5 +21,5 @@ helper function - given indicator names, look up what type each is
 The types are things like raw data count for indicator, average, percentile, etc.
 }
 \seealso{
-\code{\link[=vartype_cat2color_ejam]{vartype_cat2color_ejam()}} \code{\link[=varname2color_ejam]{varname2color_ejam()}}
+\code{\link[=varinfo]{varinfo()}} \code{\link[=vartype_cat2color_ejam]{vartype_cat2color_ejam()}} \code{\link[=varname2color_ejam]{varname2color_ejam()}}
 }

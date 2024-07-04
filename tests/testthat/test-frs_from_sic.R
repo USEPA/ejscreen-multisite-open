@@ -9,7 +9,11 @@ test_that('lookup works correctly',{
   expect_no_warning(val <- frs_from_sic("0780"))
   expect_true(!is.na(val$lat[1]))
   # Leading zeros can't be handled like with fips codes, fine
-  expect_warning(val <- frs_from_sic(0780))
+  suppressWarnings({
+    expect_warning(val <- frs_from_sic(0780))
+    
+  })
+  
   expect_false(!is.na(val$lat[1]))
   # 780 is not in frs data while 7800 is
   # so sub codes aren't being looked up unless the code itself returns results

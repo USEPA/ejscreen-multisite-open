@@ -20,5 +20,5 @@ Tells you which State contains each County (or tract or blockgroup or block)
 }
 \examples{
   fips2state_fips(fips_counties_from_statename(c("Delaware", "Rhode Island")))
-  
+
 }

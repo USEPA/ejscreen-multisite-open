@@ -12,6 +12,10 @@ naics_categories(digits = 2, dataset = EJAM::NAICS)
 \item{dataset}{Should default to the dataset called NAICS, installed with this package.
 see \link{NAICS}  Check attr(NAICS, 'year')}
 }
+\value{
+matrix with 1 column of 2-digit codes and rownames that look like
+"22 - Utilities" etc.
+}
 \description{
 Easy way to list the 2-digit NAICS (17 categories), or other level
 }

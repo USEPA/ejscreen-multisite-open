@@ -1,33 +1,35 @@
 
 #' Save EJAM results in a spreadsheet
-#' 
+#'
 #' @description ejam2excel() takes the output of something like ejamit() and
 #' creates a spreadsheet with an overall summary tab, a site by site table tab,
 #' as well as other tabs such as map, plot, notes, etc.
 #' It is an alias for table_xls_from_ejam()
-#' 
+#' @return same as what [table_xls_from_ejam()] returns
 #' @inheritParams table_xls_from_ejam
-#' 
+#'
 #' @export
-#' 
-ejam2excel <- function(ejamitout, 
-                       fname = NULL, # full path and name, or just name of .xlsx file 
-                       save_now = TRUE, overwrite = TRUE, launchexcel = FALSE,
-                       interactive_console = TRUE, 
+#'
+ejam2excel <- function(ejamitout,
+                       fname = NULL, # full path and name, or just name of .xlsx file
+                       save_now = TRUE, 
+                       overwrite = TRUE, 
+                       launchexcel = FALSE,
+                       interactive_console = TRUE,
                        ok2plot = TRUE,
                        in.testing = FALSE,
                        in.analysis_title =  "EJAM analysis",
                        react.v1_summary_plot = NULL,
                        radius_or_buffer_in_miles = NULL,  #  input$bt_rad_buff
-                       buffer_desc = "Selected Locations", 
-                       radius_or_buffer_description = 'Miles radius of circular buffer (or distance used if buffering around polygons)', 
+                       buffer_desc = "Selected Locations",
+                       radius_or_buffer_description = 'Miles radius of circular buffer (or distance used if buffering around polygons)',
                        # radius_or_buffer_description =   "Distance from each site (radius of each circular buffer around a point)",
                        hyperlink_colnames = c("EJScreen Report", "EJScreen Map", "ECHO report"),
                        ...
 ) {
-  
+
   table_xls_from_ejam(
-    ejamitout, 
+    ejamitout,
     fname,
     save_now,
     overwrite,
@@ -42,5 +44,5 @@ ejam2excel <- function(ejamitout,
     radius_or_buffer_description,
     hyperlink_colnames,
     ...
-  ) 
+  )
 }

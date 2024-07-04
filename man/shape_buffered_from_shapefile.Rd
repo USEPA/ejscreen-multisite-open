@@ -18,11 +18,24 @@ and to st_crs(x)$units otherwise)}
 
 \item{...}{passed to st_buffer()}
 }
+\value{
+same format as \code{\link[sf:geos_unary]{sf::st_buffer()}} returns
+}
 \description{
 shape_buffered_from_shapefile - add buffer around shape
 }
 \details{
 Just a wrapper for \code{\link[sf:geos_unary]{sf::st_buffer()}}
+}
+\examples{
+# Within 3 miles of the county borders
+fips_counties_from_state_abbrev("DE")[1]
+x = shapes_counties_from_countyfips("10001")
+xtra = shape_buffered_from_shapefile(x, radius.miles = 3)
+map_shapes_leaflet(x) \%>\%
+  map_shapes_leaflet_proxy(xtra, color = "black")
+  
+
 }
 \seealso{
 \code{\link[=get_blockpoints_in_shape]{get_blockpoints_in_shape()}} \code{\link[=shapefile_from_sitepoints]{shapefile_from_sitepoints()}} \code{\link[=shape_buffered_from_shapefile_points]{shape_buffered_from_shapefile_points()}}

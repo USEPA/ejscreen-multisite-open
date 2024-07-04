@@ -1,46 +1,33 @@
 # global.R defines variables needed in global environment
 
-# DO NOT source a modules defaults UNTIL INSIDE THE MODULE ####
+# Note: Do not set defaults for a module UNTIL INSIDE THE MODULE 
 #    EJAMejscreenapi module uses its own global.R file:
 #   source(system.file("global.R", package = "EJAMejscreenapi"))
 
-# ------------------------ ____ Get packages, functions, data ---------------------------------  ####
-library(shiny) # remove?
-# LOAD data and INDEX BLOCKS ####
-##         Note this would duplicate code in .onAttach()
-# EJAM ::
-#dataload_from_aws()  # was a SLOW STEP !! loads only missing ones # see ?dataload_from_aws for details 
-# dataload_from_pins(varnames = c('bgej','bgid2fips', 'blockpoints','blockwts','quaddata'),
-#                    folder_local_source = './data/'
-#                       )
-# EJAM ::
-#indexblocks() # see ?indexblocks() for details. takes several seconds. 
-# EJAM ::
-# dataload_from_package() # preload the key dataset at least? not essential
+################### #
+# library(shiny)? ####
+library(shiny)
 
-
-################################################################## # 
-
-# ------------------------ ____ SET DEFAULTS / OPTIONS for app ------------------------  ####
+################################################################## #
+# ~ ####
+# ------------------------ ____ SET DEFAULTS / OPTIONS for shiny app ------------------------  ####
 # NOTE DEFAULTS HERE ARE UNRELATED TO DEFAULTS IN API module that has its own namespace and is kept separate, like default radius, etc.
-# * Note each time a user session is started, the application-level option set is duplicated, for that session. 
+# * Note each time a user session is started, the application-level option set is duplicated, for that session.
 # * If the options are set from inside the server function, then they will be scoped to the session.
 #     LET ADVANCED USERS ADJUST THESE, as INPUTS ON ADVANCED SETTINGS TAB
 
-######################################################## # 
-## >Options in general & Testing #### 
+######################################################## #
+# Options in general & Testing ####
 
-## ------------------------ enable bookmarking? ####
+## Bookmarking allowed ####
 bookmarking_allowed <- TRUE  # https://mastering-shiny.org/action-bookmark.html
 if (bookmarking_allowed) {enableBookmarking(store = "url")}
 
 default_hide_advanced_settings <- TRUE
-default_testing        <- TRUE
-default_shiny.testmode <- TRUE  # If TRUE, then various features for testing Shiny applications are enabled.
+default_hide_written_report <- TRUE
+default_testing        <- FALSE
+default_shiny.testmode <- FALSE  # If TRUE, then various features for testing Shiny applications are enabled.
 default_print_uploaded_points_to_log <- TRUE
-
-## Raise Memory Limit on file upload to 100Mb  
-options(shiny.maxRequestSize = 100*1024^2) 
 
 ## disable autoloading of .R files
 options(shiny.autoload.r = FALSE)
@@ -49,22 +36,29 @@ options(shiny.autoload.r = FALSE)
 ## note: was set at type = 1, but this caused screen to "bounce"
 options(spinner.color = "#005ea2", spinner.type = 4)
 
-# ------------------------ app title ####
+## app title & version   ###########################################
 # apptitle <- "EJAM v2.2"
+acs_version_global =  "2017-2021" #
+ejscreen_version_global =  "2.2"
 
-######################################################## # 
-## ------------------------ IP address ####
+## (IP address  for ejscreenapi module) ###########################################
 # ips <- c('10.147.194.116', 'awsgeopub.epa.gov', '204.47.252.51', 'ejscreen.epa.gov')
 # whichip <- ips[4]
 
-######################################################## # 
-## Options in site point uploads, radius  ####
+######################################################## #
+# Options in site point or file uploads, radius  ####
 
-## ------------------------ limits on # of points ####
+## Limits on # of points etc. ####
+
+## Options in file upload size max
+minmax_mb_upload = 5 # MB
+default_max_mb_upload = 50 # MB (note shiny default is only 5 MB)
+maxmax_mb_upload = 350 # MB
+options(shiny.maxRequestSize = default_max_mb_upload * 1024^2)
 
 # input$max_pts_upload
-default_max_pts_upload  <-   5 * 1000 
-maxmax_pts_upload  <-  10 * 1000 #   cap uploaded points 
+default_max_pts_upload  <-   5 * 1000
+maxmax_pts_upload  <-  10 * 1000 #   cap uploaded points
 
 ### THESE 2 ARE NOT USED ANYMORE I THINK:
 max_points_can_map    <- 15 * 1000  # *** EJAM only not api
@@ -72,66 +66,76 @@ marker_cluster_cutoff  <- 1 * 1000  # *** EJAM only not api; for leaflet markerC
 
 # input$max_pts_map uses these as its starting value and max allowed value
 default_max_pts_map   <- 5 * 1000
-maxmax_pts_map       <- 15 * 1000 # max we will show on map 
-
+maxmax_pts_map       <- 15 * 1000 # max we will show on map
 
  # input$max_pts_showtable uses these as its starting value and max allowed value
  default_max_pts_showtable <- 1000 # max to show in interactive viewer. It drops the rest.
- maxmax_pts_showtable  <- 5 * 1000 # 10k is extremely slow. check server side vs client side 
+ maxmax_pts_showtable  <- 5 * 1000 # 10k is extremely slow. check server side vs client side
 
   # input$max_pts_run uses these as its starting value and max allowed value
  default_max_pts_run  <-  1 * 1000 # initial cap but can adjust in advanced tab
- maxmax_pts_run       <- 15 * 1000 # absolute max you can analyze here, even with advanced tab 
+ maxmax_pts_run       <- 15 * 1000 # absolute max you can analyze here, even with advanced tab
 
  # input$max_shapes_map uses these as its starting value and max allowed value
   default_max_shapes_map <- 159 # TX has 254 counties, but no other state exceeds 159. EJAM::blockgroupstats[ , data.table::uniqueN(substr(bgfips, 1,5)), by = ST][order(V1), ]
  maxmax_shapes_map <- 254  # TX has 254 counties
- 
- ## ------------------------ Options for Radius  #####
- 
-# input$default_miles
-default_default_miles <- 1 
-max_default_miles <- 50 * 1000 / meters_per_mile # 50 km
-# input$max_miles
-default_max_miles  <- 10 # 
-maxmax_miles <- 50 * 1000 / meters_per_mile # 50 km
+
+ ## ------------------------ Radius options  #####
+
 #   radius miles for slider input where user specifies radius. Note 5 km is 3.1 miles, 10 km is 6.2 miles ; and 10 miles is 16 kilometers (10 * meters_per_mile/1000). 50 km is too much/ too slow.
-minradius  <- 0.25 # miles
-stepradius <- 0.05 # miles
+minradius  <- 0.50 # miles -- significant uncertainty as radius shrinks, at least if blockgroups are small such as if # of blockgroups in circle << 30.
+minradius_shapefile <- 0
+default_default_miles_shapefile <- 0
+stepradius <- 0.05 # miles.  0.25 allows quarter miles. 0.10 allows tenths. 0.05 is awkwardly small but allows both quarter mile and tenth of mile.
+
+# input$default_miles
+default_default_miles <- 1 # and can override this with run_app(radius=3.1), and also see effects of bookmarked advanced settings
+max_default_miles <- 50 * 1000 / meters_per_mile # 50 km
+
+# input$max_miles
+default_max_miles  <- 10 #
+maxmax_miles <- 50 * 1000 / meters_per_mile # 50 km
+
 ## global constant (EJAMejscreenapi has this data loaded by pkg?)
 meters_per_mile <- 1609.344
-######################################################## # 
-## EPA Programs (to limit NAICS/ facilities query) #### 
+
+######################################################## #
+## EPA Programs (to limit NAICS/ facilities query) ####
 ## used by inputId 'ss_limit_fac1' and 'ss_limit_fac2'
 default_epa_program_selected <- "CAMDBS" # has only about 739 sites
 # cbind(epa_programs)
 # sort(unique(frs_by_programid$program)) # similar  # EJAM :: frs_by_programid
 
-######################################################################################################## # 
+######################################################################################################## #
 
-## Options in calculations & what stats to output ####
+# Options in calculations & what stats to output ####
 
 ### calculate and/or include in downloaded outputs ------------- #
 
 default_calculate_ratios <- TRUE   # probably need to calculate even if not shown in excel download, since plots and short summary report rely on them/
 default_include_averages <- TRUE
 default_include_extraindicators <- TRUE
-
-
-
+### other params that might be added here and in advanced tab:
+# ejamit( 
+#   include_ejindexes = , 
+#   extra_demog = , 
+#   countcols = , popmeancols = ,  calculatedcols = ,
+#   need_proximityscore = , 
+#   subgroups_type = , 
+#   testing = )
 
 
 
 ######################################################## #
 
-# >Options for viewing results  ####
+# Options for viewing results  ####
 
 
 
-### ------------------------ map colors, weights, opacity ####
+##  Map colors, weights, opacity (for ejscreenapi module?) ####
 ### in ejscreenapi global.R:
  default_circleweight <- 4
-# opacitymin   <- 0 
+# opacitymin   <- 0
 # opacitymax   <- 0.5
 # opacitystep  <- 0.025
 # opacitystart <- 0.5
@@ -140,16 +144,16 @@ default_include_extraindicators <- TRUE
 # cluster_color_default   <- "red"   ;
 # highlight_color_default <- 'orange';
 
-# ## ------------------------ predict time to complete ####
+# (predict time to complete for ejscreenapi module) ####
 # perhourslow  <- 3000  # to give an estimate of how long it will take
 # perhourguess <- 6000  # seeing 8k if 1 mile, 4.7k if 5 miles, roughly. 207 ECHO run was 2 . 1  minutes, 5.9k/hr.
 # perhourfast <- 12000  # approx 12k RMP sites would take almost 2 hours (1 to 2 hours, or even 4?).
 # report_every_n_default <- 100
 
-## ------------------------ download as excel vs csv ####
+## (download as excel vs csv, for ejscreenapi module) ####
 # asExcel <- TRUE # WHETHER TO DOWNLOAD RESULTS AS EXCEL OR CSV
 
-######################################################## # 
+######################################################## #
 
 ### Excel formatting options   --------------------- #
 
@@ -164,10 +168,10 @@ default_include_extraindicators <- TRUE
 
 
 
-default_ok2plot <- FALSE # the plots to put in excel tabs via table_xls_from_ejam() and table_xls_format() and the plot functions
+default_ok2plot <- TRUE # the plots to put in excel tabs via table_xls_from_ejam() and table_xls_format() and the plot functions
 
 
-############################################################################## # # # 
+############################################################################## # # #
 
 # relevant to EJAM only, not api:
 
@@ -181,30 +185,30 @@ default_maxradius <-  31.06856  # max search dist if no block within radius # 50
 
 ### in doaggregate()   ------------- #
 
-## demog subgroups type  
-default_subgroups_type <- 'nh'  
+## demog subgroups type
+default_subgroups_type <- 'nh'
 # this sets the default in the web app only, not in functions doaggregate() and ejamit() and plot_distance_mean_by_group() etc.,
-# if used outside web app app_server and app_ui code, as in using datacreate_testpoints_testoutputs.R  
+# if used outside web app app_server and app_ui code, as in using datacreate_testpoints_testoutputs.R
 # "nh" for non-hispanic race subgroups as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh;
 # "alone" for EJScreen v2.2 style race subgroups as in    White Alone, wa and others in names_d_subgroups_alone;
 # "both" for both versions. Possibly another option is "original" or "default" but work in progress.
 
 default_need_proximityscore <- FALSE # need_proximityscore is a param in doaggregate() or ejamit()
 default_include_ejindexes   <- TRUE # include_ejindexes is a param in doaggregate() or ejamit()
-default_extra_demog <- TRUE # extra_demog is a param in  doaggregate() or ejamit(), 
+default_extra_demog <- TRUE # extra_demog is a param in  doaggregate() or ejamit(),
   # label = "Need extra indicators from EJScreen v2.2 report, on language, age groups, gender, percent with disability, poverty, etc.",
 
 
-######################################################## # 
+######################################################## #
 ### Short report options --------------------- #
 
 default_standard_analysis_title <-  'Summary of EJ Analysis' # Default title to show on each short report
 default_plotkind_1pager <- "bar"  #    Bar = "bar", Box = "box", Ridgeline = "ridgeline"
-   
 
 
 
-######################################################## # 
+
+######################################################## #
 ### Long report options  --------------------- #
 
 # relocate any here from the Full Report tab?? - defaults could be set here and made flexible elsewhere
@@ -216,62 +220,78 @@ default_plotkind_1pager <- "bar"  #    Bar = "bar", Box = "box", Ridgeline = "ri
 
 
 
-######################################################## # 
-### Threshold comparisons options --------------------- ####
-#
-## can be used by inputId 'an_list_pctiles'    #   CHECK IF THESE UNITS SHOULD BE 0-1 OR 0-100 ***
+######################################################## #
+## Threshold comparisons options  ####
+# stats summarizing EJ percentiles to count how many are at/above threshold percentile(s)
+
+# label for each group of indicators
+## newer way:
+default.an_threshgroup1 = "EJ-US-or-ST"
+default.an_threshgroup2 = "Supp-US-or-ST"
+### threshgroups = list("EJ-US-or-ST", "Supp-US-or-ST"), # list(c("EJ US", "EJ State", "Suppl EJ US", "Suppl EJ State")), # list("EJ US", "EJ State", "Suppl EJ US", "Suppl EJ State"), # list("variables"),
+### threshgroups = list(input$an_threshgroup1, input$an_threshgroup2),
+## older way:
+# threshgroup.default <- list(
+#   'comp1' = "EJ US pctiles",  'comp2' = "EJ State pctiles"
+# )
+
+# variable names of indicators compared to threshold
+## newer way:
+default.an_threshnames1 = c(names_ej_pctile, names_ej_state_pctile)
+default.an_threshnames2 = c(names_ej_supp_pctile, names_ej_supp_state_pctile)
+### threshnames = list(input$an_threshnames1, input$an_threshnames2)
+### threshnames = list(c(names_ej_pctile, names_ej_state_pctile), c(names_ej_supp_pctile, names_ej_supp_state_pctile)), # list(c(names_ej_pctile, names_ej_state_pctile, names_ej_supp_pctile, names_ej_supp_state_pctile)),  #list(names_ej_pctile, names_ej_state_pctile, names_ej_supp_pctile, names_ej_supp_state_pctile),  # list(names(which(sapply(sitestats, class) != "character")))
+## older way:
+### used defaults built into batch.summarize()
+
+# what threshold to compare to
+## newer way:
+default.an_thresh_comp1 = 90
+default.an_thresh_comp2 = 90
+### thresholds   = list(input$an_thresh_comp1, input$an_thresh_comp2)
+### thresholds   = list(90, 90) # percentile threshold(s) to compare to like to 90th
+## older way:
+# threshold.default <- c('comp1' = 90, 'comp2' = 80)
+
+######################################################## #
+  ## QUANTILES ...  can be used by inputId 'an_list_pctiles'    #   CHECK IF THESE UNITS SHOULD BE 0-1 OR 0-100 ***
 probs.default.selected <- c(   0.25,            0.80,     0.95)   #   CHECK IF THESE UNITS SHOULD BE 0-1 OR 0-100 ***
 probs.default.values   <- c(0, 0.25, 0.5, 0.75, 0.8, 0.9, 0.95, 0.99, 1)  #   CHECK IF THESE UNITS SHOULD BE 0-1 OR 0-100 ***
 probs.default.names <- formatC(probs.default.values, digits = 2, format = 'f', zero.print = '0')
-# a default for threshold in at/above threshold stat summarizing EJ US percentiles
-## used by inputIds 'an_thresh_comp1' and 'an_thresh_comp2'
-threshold.default <- c('comp1' = 90, 'comp2' = 80)    #   CHECK IF THESE UNITS SHOULD BE 0-1 OR 0-100 ***
-# at least threshold.default[1] is used in batch.summarizer() by ejamit() and app_server()
-#
-# which fields to compare to thresholds 
-# EJ US pctiles or EJ State pctiles
-## used by inputIds 'an_fields_comp1' and 'an_fields_comp2'
-threshgroup.default <- list(
-  'comp1' = "EJ US pctiles",  'comp2' = "EJ State pctiles"
-)
-
-
-######################################################## # 
 
 
 
 
 
-################################################################# # 
+
+################################################################# #
 # END OF DEFAULTS / OPTIONS / SETUP
-################################################################# # 
+################################################################# #
+# ~ ####
+# ------------------------ ____ HELP TEXT ------------------------  ####
 
-# HELP TEXT ####
-
-### info text for "About EJAM" tab ####
+## info text for "About EJAM" tab ####
 intro_text <- tagList(
-  tags$p("EPA has developed a number of different tools for mapping and analysis of information related to environmental justice (EJ), including EJScreen and EJAM. "),
-  tags$p("EJScreen provides a dataset with environmental, demographic, and EJ indicators for each Census block group in the US. \n"),
-  tags$p("EJScreen can provide a report summarizing those values for the average resident within some distance (e.g., 1 mile) from a specified point."),
-  tags$p("It is often useful to know the nature of the environmental conditions, the demographics, and/or EJ index values near a whole set of the facilities in a particular sector, such as in the context of developing a proposed rule. "),
-  tags$p("EJAM allows users to select a set of facilities, defined by NAICs industrial category codes or by uploading a list of locations. EJAM then provides a summary report for all residential locations near the selected facilities."),
-  tags$p("See in-app info/tips, and the EJAM user guide (forthcoming) for more about using the app."),
-  tags$p("Programmers can see the ", a(href = 'https://github.com/USEPA/EJAM#ejam', "README"), 
-         " document, or the R package ", a(href = 'vignette/EJAM-vignette.html', "Vignette"), " and R package documentation on functions and data."),
-  tags$p("Features of this tool include:"),
-  tags$ul(
-    tags$li("Several methods of selecting a set of facilities for analysis, including industry sector and uploaded of facility locations"),
-    tags$li("User-specified buffer distance"),
-    tags$li("Very fast analysis of which residents (defined by Census blocks) are nearby, and the distance to each block's internal point"),
-    # tags$li("Optional use of the next nearest census block centroid for facilities with no census block centroid within selected buffer distance"),
-    tags$li("At each facility, calculation of demographic, environmental, or other EJ-related statistics"),
-    tags$li("Overall, for the facilities and residents near any of them as a whole, calculation of the same kinds of statistics, but with no double counting of residents near two or more facilities"),
-    tags$li("Interactive views of results in tables, maps, plots, and text"),
-    tags$li("Downloads of results in tables, maps, plots, and report text")
-  )
+  # tags$p("For more information about EJAM:"),
+  h2( a(href = "https://usepa.github.io/EJAM/articles/0_whatis.html", "What is EJAM?", target = '_blank', rel = 'noreferrer noopener') ),
+  p("EJAM is a tool developed by the United States Environmental Protection Agency (US EPA) that makes it easy to see demographic and environmental information summarized in and across any list of places in the nation. Using EJAM is like running an EJScreen report, but for hundreds or thousands of places, all at the same time."),
+  p("This provides interactive results and a formatted, ready-to-share report with written explanations of the results, tables, and graphics. The report can provide EJ-related information about people who live in communities near any of the industrial facilities on a list, for example."),
+  br(),
+  br()
 )
+# intro_text <- tagList(
+#   tags$p("EPA has developed a number of different tools for mapping and analysis of information related to environmental justice (EJ), including EJScreen and EJAM. "),
+#   tags$p("EJScreen provides a dataset with environmental, demographic, and EJ indicators for each Census block group in the US. \n"),
+#   tags$p("EJScreen can provide a report summarizing those values for the average resident within some distance (e.g., 1 mile) from a specified point."),
+#   tags$p("It is often useful to know the nature of the environmental conditions, the demographics, and/or EJ index values near a whole set of the facilities in a particular sector, such as in the context of developing a proposed rule. "),
+#   tags$p("EJAM allows users to select a set of areas (e.g., via shapefiles) or the areas near facilities defined by NAICs industrial category codes or by uploading a list of point locations."),
+#   tags$p("EJAM then provides a summary report for all residential locations near the selected facilities."),
+#   tags$p("See in-app info/tips, and the EJAM and EJScreen documentation for more about the tools and datasets (indicators)."),
+#   tags$p("Programmers can see the ", a(href = 'https://github.com/USEPA/EJAM?tab=readme-ov-file#readme', "Github repository and README"),
+#          " document, or the R package ", a(href = 'https://usepa.github.io/EJAM/index.html', "EJAM documentation"), " including walkthroughs and reference on functions and data.")
+# )
 
-### help text for latlon upload ####
+## help text for latlon upload ####
 
 latlon_help_msg <- '
 <div class="row">
@@ -279,14 +299,14 @@ latlon_help_msg <- '
   <div class="well">
   <div id="selectFrom1" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline">
   <label class="control-label" for="selectFrom1">
-  <p>You may upload a list of location coordinates (latitudes and longitudes).</p> 
-  <p>The file should contain at least these two columns: lat and lon. 
-  There can be other columns like an ID column that should be unique (no duplicates), 
+  <p>You may upload a list of location coordinates (latitudes and longitudes).</p>
+  <p>The file should contain at least these two columns: lat and lon.
+  There can be other columns like an ID column that should be unique (no duplicates),
   and each record should be separated by a carriage return.</p>
-  <p>It also will work with some alternative names (and case insensitive) like 
-  Latitude, Lat, latitude, long, longitude, Longitude, Long, LONG, LAT, etc. 
-  but to avoid any mixup of names it is suggested that the file use lat and lon. </p> 
-  <p>The file could be formatted as follows, for example: </p> 
+  <p>It also will work with some alternative names (and case insensitive) like
+  Latitude, Lat, latitude, long, longitude, Longitude, Long, LONG, LAT, etc.
+  but to avoid any mixup of names it is suggested that the file use lat and lon. </p>
+  <p>The file could be formatted as follows, for example: </p>
   </label>
   <br>
   ID,lat,lon<br>
@@ -310,7 +330,7 @@ latlon_help_msg <- '
 #     <div class="col-sm-12">
 #         <div id="selectFrom1" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline">
 #           <label class="control-label" for="selectFrom1">
-#             <h5>Users may use only one of the four methods of defining the Universe of Interest: 
+#             <h5>Users may use only one of the four methods of defining the Universe of Interest:
 #             <ul>
 #               <li>Select by Industry (NAICS) Code</li>
 #               <li>Upload EPA Facility ID (FRS Identifers) file</li>
@@ -324,27 +344,27 @@ latlon_help_msg <- '
 #   </div>'
 
 
-### help text about ECHO facility search ####
+## help text about ECHO facility search ####
 ## used by inputId 'ss_search_echo'
 
 echo_url <-  'https://echo.epa.gov/facilities/facility-search' # used in server.R and in message below
-echo_message <- shiny::HTML(paste0('To use the ECHO website to search for and specify a list of regulated facilities, 
+echo_message <- shiny::HTML(paste0('To use the ECHO website to search for and specify a list of regulated facilities,
                                     <br>1) Go to ', '<a href=\"', echo_url, '\", target=\"_blank\" rel=\"noreferrer noopener\">', echo_url,  '</a>', ' and <br>
-                                    2) Navigate website and select categories to include in data, then <br>  
+                                    2) Navigate website and select categories to include in data, then <br>
                                     3) Under Search Criteria Selected-Facility Characteristics-Results View select <b>Data Table</b> and click <b>Search</b>, then <br>
                                     3) click Customize Columns, use checkboxes to include Latitude and Longitude, then <br>
                                     4) click Download Data, then <br>
                                     5) Return to this app to upload that ECHO site list.<br>'))
 
-### help text for FRS ####
+## help text for FRS ####
 
 frs_help_msg <- HTML('  <div class="row">
     <div class="col-sm-12">
       <div class="well">
         <div id="selectFrom1" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline">
           <label class="control-label" for="selectFrom1">
-            <h5>You may upload a list of FRS IDs. The FRS ID should be in the second column. It should be unique (no duplicates), and it should be titled REGISTRY_ID. Each record should be separated by a carriage return. </h5> 
-            <h5>The file should be formatted as follows: </h5> 
+            <h5>You may upload a list of FRS IDs. The FRS ID should be in the second column. It should be unique (no duplicates), and it should be titled REGISTRY_ID. Each record should be separated by a carriage return. </h5>
+            <h5>The file should be formatted as follows: </h5>
           </label>
 					<br>num,REGISTRY_ID<br>
 		      1,110000308006<br>
@@ -369,12 +389,12 @@ epa_program_help_msg <- '
   <div class="well">
   <div id="selectFrom1" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline">
   <label class="control-label" for="selectFrom1">
-  <p>You may upload a list of EPA Programs and Program IDs.</p> 
-  <p>The file should contain at least these two columns: program and pgm_sys_id. 
-  There can be other columns like an ID column that should be unique (no duplicates), 
+  <p>You may upload a list of EPA Programs and Program IDs.</p>
+  <p>The file should contain at least these two columns: program and pgm_sys_id.
+  There can be other columns like an ID column that should be unique (no duplicates),
   and each record should be separated by a carriage return.</p>
-  <p>It also will work with additional optional columns such as Facility Registry ID (REGISTRY_ID), latitude (lat), and longitude (lon). </p> 
-  <p>The file could be formatted as follows, for example: </p> 
+  <p>It also will work with additional optional columns such as Facility Registry ID (REGISTRY_ID), latitude (lat), and longitude (lon). </p>
+  <p>The file could be formatted as follows, for example: </p>
   </label>
   <br>
   program,	pgm_sys_id<br>
@@ -399,11 +419,11 @@ fips_help_msg <- '
   <div class="well">
   <div id="selectFrom1" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline">
   <label class="control-label" for="selectFrom1">
-  <p>You may upload a list of FIPS codes specified at the State (2-digit), County (5-digit), Tract (11-digit), or blockgroup (12 digit), or even block (15-digit fips) .</p> 
+  <p>You may upload a list of FIPS codes specified at the State (2-digit), County (5-digit), Tract (11-digit), or blockgroup (12 digit), or even block (15-digit fips) .</p>
   <p>The file should contain at least one column, FIPS, with the fips codes. It will also work with the following aliases: fips, fips_code, fipscode, Fips, statefips, countyfips, ST_FIPS, st_fips
-  There can be other columns like an ID column that should be unique (no duplicates), 
+  There can be other columns like an ID column that should be unique (no duplicates),
   and each record should be separated by a carriage return.</p>
-  <p>The file could be formatted as follows, for example: </p> 
+  <p>The file could be formatted as follows, for example: </p>
   </label>
   <br>
  FIPS<br>
@@ -427,9 +447,9 @@ shp_help_msg <- '
   <div class="well">
   <div id="selectFrom1" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline">
   <label class="control-label" for="selectFrom1">
-  <p>You may upload a set of shapefiles with polgyons.</p> 
-  <p>The upload should contain at least these four related file extensions: .shp, .shx, .dbf, .prj 
-  There must be an ID column (OBJECTID_1) that should be unique (no duplicates), 
+  <p>You may upload a set of shapefiles with polgyons.</p>
+  <p>The upload should contain at least these four related file extensions: .shp, .shx, .dbf, .prj
+  There must be an ID column (OBJECTID_1) that should be unique (no duplicates),
   and each record should be separated by a carriage return.</p>
   </div>
   </div>
@@ -442,12 +462,12 @@ epa_program_help_msg <- '
   <div class="well">
   <div id="selectFrom1" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline">
   <label class="control-label" for="selectFrom1">
-  <p>You may upload a list of EPA Programs and Program IDs.</p> 
-  <p>The file should contain at least these two columns: program and pgm_sys_id. 
-  There can be other columns like an ID column that should be unique (no duplicates), 
+  <p>You may upload a list of EPA Programs and Program IDs.</p>
+  <p>The file should contain at least these two columns: program and pgm_sys_id.
+  There can be other columns like an ID column that should be unique (no duplicates),
   and each record should be separated by a carriage return.</p>
-  <p>It also will work with additional optional columns such as Facility Registry ID (REGISTRY_ID), latitude (lat), and longitude (lon). </p> 
-  <p>The file could be formatted as follows, for example: </p> 
+  <p>It also will work with additional optional columns such as Facility Registry ID (REGISTRY_ID), latitude (lat), and longitude (lon). </p>
+  <p>The file could be formatted as follows, for example: </p>
   </label>
   <br>
   program,	pgm_sys_id<br>
@@ -472,11 +492,11 @@ fips_help_msg <- '
   <div class="well">
   <div id="selectFrom1" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline">
   <label class="control-label" for="selectFrom1">
-  <p>You may upload a list of FIPS codes specified at the State (2-digit), County (5-digit), Tract (11-digit), or blockgroup (12 digit), or even block (15-digit fips) .</p> 
+  <p>You may upload a list of FIPS codes specified at the State (2-digit), County (5-digit), Tract (11-digit), or blockgroup (12 digit), or even block (15-digit fips) .</p>
   <p>The file should contain at least one column, FIPS, with the fips codes. It will also work with the following aliases: fips, fips_code, fipscode, Fips, statefips, countyfips, ST_FIPS, st_fips
-  There can be other columns like an ID column that should be unique (no duplicates), 
+  There can be other columns like an ID column that should be unique (no duplicates),
   and each record should be separated by a carriage return.</p>
-  <p>The file could be formatted as follows, for example: </p> 
+  <p>The file could be formatted as follows, for example: </p>
   </label>
   <br>
  FIPS<br>
@@ -500,9 +520,9 @@ shp_help_msg <- '
   <div class="well">
   <div id="selectFrom1" class="form-group shiny-input-radiogroup shiny-input-container shiny-input-container-inline">
   <label class="control-label" for="selectFrom1">
-  <p>You may upload a set of shapefiles with polgyons.</p> 
-  <p>The upload should contain at least these four related file extensions: .shp, .shx, .dbf, .prj 
-  There must be an ID column (OBJECTID_1) that should be unique (no duplicates), 
+  <p>You may upload a set of shapefiles with polgyons.</p>
+  <p>The upload should contain at least these four related file extensions: .shp, .shx, .dbf, .prj
+  There must be an ID column (OBJECTID_1) that should be unique (no duplicates),
   and each record should be separated by a carriage return.</p>
   </div>
   </div>
@@ -511,22 +531,23 @@ shp_help_msg <- '
 
 #################################################################################################################### #
 # ~ ####
-# TEMPLATE ONE EPA SHINY APP WEBPAGE _______ ####
+# ------------------------ ____ TEMPLATE ONE EPA SHINY APP WEBPAGE _______ ####
 
 html_header_fmt <- tagList(
   #################################################################################################################### #
-  
-  
-  # WHERE TO FIND THIS template  # 
+
+
+  # WHERE TO FIND THIS template  #
   # browseURL("https://github.com/USEPA/webcms/blob/main/utilities/r/OneEPA_template.R")
-  
-  # START OF ONEEPA SHINY APP WEB UI TEMPLATE to insert within your fluid page  
-  #################################################################################################################### #      
-  
+  # but also see
+  # https://www.epa.gov/themes/epa_theme/pattern-lab/patterns/pages-standalone-template/pages-standalone-template.rendered.html
+  # START OF ONEEPA SHINY APP WEB UI TEMPLATE to insert within your fluid page
+  #################################################################################################################### #
+
   tags$html(class = "no-js", lang = "en"),
-  
+
   ### head ####
-  
+
   tags$head(
     HTML(
       "<!-- Google Tag Manager -->
@@ -540,12 +561,12 @@ html_header_fmt <- tagList(
     ),
     tags$meta(charset="utf-8"),
     tags$meta(property="og:site_name", content="US EPA"),
-    
+
     #tags$link(rel = "stylesheet", type = "text/css", href = "css/uswds.css"),
     tags$link(rel="stylesheet", type = "text/css", href = "https://cdnjs.cloudflare.com/ajax/libs/uswds/3.0.0-beta.3/css/uswds.min.css", integrity="sha512-ZKvR1/R8Sgyx96aq5htbFKX84hN+zNXN73sG1dEHQTASpNA8Pc53vTbPsEKTXTZn9J4G7R5Il012VNsDEReqCA==", crossorigin="anonymous", referrerpolicy="no-referrer"),
     tags$link(rel="canonical", href="https://www.epa.gov/themes/epa_theme/pattern-lab/.markup-only.html"),
     tags$link(rel="shortlink", href="https://www.epa.gov/themes/epa_theme/pattern-lab/.markup-only.html"),
-    
+
     tags$meta(property="og:url", content="https://www.epa.gov/themes/epa_theme/pattern-lab/.markup-only.html"),
     tags$meta(property="og:url", content="https://www.epa.gov/themes/epa_theme/pattern-lab/.markup-only.html"),
     tags$meta(property="og:image", content="https://www.epa.gov/sites/all/themes/epa/img/epa-standard-og.jpg"),
@@ -561,21 +582,21 @@ html_header_fmt <- tagList(
     tags$meta(name="HandheldFriendly", content="true"),
     tags$meta(name="viewport", content="width=device-width, initial-scale=1.0"),
     tags$meta(`http-equiv`="x-ua-compatible", content="ie=edge"),
-    
-    ### (Title could be defined here, or if using golem package, in golem_add_external_resources() within app_ui.R) ####
-    # 
+
+    ## APP TITLE could be defined here, or if using golem package, in golem_add_external_resources() within app_ui.R ####
+    #
     # tags$title('EJAM | US EPA'),
     tags$meta(name = "application-name", content = "EJAM"),
-    
+
     ## EPA FAVICONS - but can be specified in (and this would conflict with) golem_add_external_resources() within app_ui.R ####
-    
+
     # try to let app_ui.R define the main favicon instead of using the EPA one....
     # tags$link(rel="icon",                      href="https://www.epa.gov/themes/epa_theme/images/favicon-32.png", sizes="32x32"),
     # tags$link(rel="icon", type="image/x-icon", href="https://www.epa.gov/themes/epa_theme/images/favicon.ico"),
-    
+
     tags$meta(name="msapplication-TileColor", content="#FFFFFF"),
     tags$meta(name="msapplication-TileImage", content="https://www.epa.gov/themes/epa_theme/images/favicon-144.png"),
-    
+
     tags$meta(name="msapplication-config", content="https://www.epa.gov/themes/epa_theme/images/ieconfig.xml"),
     tags$link(rel="apple-touch-icon-precomposed", sizes="196x196", href="https://www.epa.gov/themes/epa_theme/images/favicon-196.png"),
     tags$link(rel="apple-touch-icon-precomposed", sizes="152x152", href="https://www.epa.gov/themes/epa_theme/images/favicon-152.png"),
@@ -584,9 +605,9 @@ html_header_fmt <- tagList(
     tags$link(rel="apple-touch-icon-precomposed", sizes="114x114", href="https://www.epa.gov/themes/epa_theme/images/favicon-114.png"),
     tags$link(rel="apple-touch-icon-precomposed", sizes="72x72", href="https://www.epa.gov/themes/epa_theme/images/favicon-72.png"),
     tags$link(rel="apple-touch-icon-precomposed", href="https://www.epa.gov/themes/epa_theme/images/favicon-180.png"),
-    
-    
-    
+
+
+
     tags$link(rel="preload", href="https://www.epa.gov/themes/epa_theme/fonts/source-sans-pro/sourcesanspro-regular-webfont.woff2", as="font", crossorigin="anonymous"),
     tags$link(rel="preload", href="https://www.epa.gov/themes/epa_theme/fonts/source-sans-pro/sourcesanspro-bold-webfont.woff2", as="font", crossorigin="anonymous"),
     tags$link(rel="preload", href="https://www.epa.gov/themes/epa_theme/fonts/merriweather/Latin-Merriweather-Bold.woff2", as="font", crossorigin="anonymous"),
@@ -602,7 +623,7 @@ html_header_fmt <- tagList(
     tags$link(rel="stylesheet", media="all", href="https://www.epa.gov/core/themes/stable/css/system/components/tree-child.module.css?r6lsex"),
     tags$link(rel="stylesheet", media="all", href="https://www.epa.gov/themes/epa_theme/css/styles.css?r6lsex"),
     tags$link(rel="stylesheet", media="all", href="https://www.epa.gov/themes/epa_theme/css-lib/colorbox.min.css?r6lsex"),
-    
+
     tags$script(src = 'https://cdnjs.cloudflare.com/ajax/libs/uswds/3.0.0-beta.3/js/uswds-init.min.js'),
     #fix container-fluid that boostrap RShiny uses
     tags$style(HTML(
@@ -618,21 +639,21 @@ html_header_fmt <- tagList(
           }'
     ))
   ),
-  
+
   ### Body tag and Site Header ####
-  
+
   tags$body(class="path-themes not-front has-wide-template", id="top",
             tags$script(src = 'https://cdnjs.cloudflare.com/ajax/libs/uswds/3.0.0-beta.3/js/uswds.min.js')),
   HTML(
     '<div class="skiplinks" role="navigation" aria-labelledby="skip-to-main">
         <a id="skip-to-main" href="#main" class="skiplinks__link visually-hidden focusable">Skip to main content</a>
       </div>
-  
+
   	<!-- Google Tag Manager (noscript) -->
   	<noscript><iframe src=https://www.googletagmanager.com/ns.html?id=GTM-L8ZB
   	height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   	<!-- End Google Tag Manager (noscript) -->
-  
+
       <div class="dialog-off-canvas-main-canvas" data-off-canvas-main-canvas>
       <section class="usa-banner" aria-label="Official government website">
         <div class="usa-accordion">
@@ -745,7 +766,7 @@ html_header_fmt <- tagList(
       </header>
       <main id="main" class="main" role="main" tabindex="-1">'
   ),
-  
+
   ### Individual Page Header ####
   HTML(
     '<div class="l-page  has-footer">
@@ -755,7 +776,7 @@ html_header_fmt <- tagList(
               <div class="web-area-title"></div>
             </div>
             <div class="l-page__header-last">
-              <a href="#" class="header-link">Contact Us</a>
+              <a href="#" style="text-decoration: underline;" class="header-link">Contact Us</a>
             </div>
           </div>
           <article class="article">'
@@ -764,18 +785,18 @@ html_header_fmt <- tagList(
 
 html_footer_fmt <- tagList(
   ### Individual Page Footer ####
-  
+
   HTML(
     '</article>
       </div>
       <div class="l-page__footer">
         <div class="l-constrain">
-          <p><a href="#">Contact Us</a> to ask a question, provide feedback, or report a problem.</p>
+          <p><a href="#" style="text-decoration: underline;">Contact Us</a> to ask a question, provide feedback, or report a problem.</p>
         </div>
       </div>
     </div>'
   ),
-  
+
   ### Site Footer ####
   HTML(
     '</main>
@@ -875,7 +896,7 @@ html_footer_fmt <- tagList(
                     <svg class="icon icon--social" aria-hidden="true" viewBox="0 0 448 512" id="facebook-square" xmlns="http://www.w3.org/2000/svg">
                       <!-- use xlink:href="https://www.epa.gov/themes/epa_theme/images/sprite.artifact.svg#facebook-square"></use-->
                       <path fill="currentcolor" d="M400 32H48A48 48 0 000 80v352a48 48 0 0048 48h137.25V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.27c-30.81 0-40.42 19.12-40.42 38.73V256h68.78l-11 71.69h-57.78V480H400a48 48 0 0048-48V80a48 48 0 00-48-48z"></path>
-                    </svg> 
+                    </svg>
                     <span class="usa-tag external-link__tag" title="Exit EPA Website">
                       <span aria-hidden="true">Exit</span>
                       <span class="u-visually-hidden"> Exit EPA Website</span>
@@ -942,9 +963,9 @@ html_footer_fmt <- tagList(
           </div>
         </div>
       </footer>
-      <a href="#" class="back-to-top" title="">
-        <svg class="back-to-top__icon" role="img" aria-label="">
-        <svg class="back-to-top__icon" role="img" aria-label="" viewBox="0 0 19 12" id="arrow" xmlns="http://www.w3.org/2000/svg">
+      <a href="#" class="back-to-top" title="" aria-label="back-to-top">
+        <svg class="back-to-top__icon" aria-label="">
+        <svg class="back-to-top__icon" aria-label="" viewBox="0 0 19 12" id="arrow" xmlns="http://www.w3.org/2000/svg">
           <!-- use xlink:href="https://www.epa.gov/themes/epa_theme/images/sprite.artifact.svg#arrow"></use -->
           <path fill="currentColor" d="M2.3 12l7.5-7.5 7.5 7.5 2.3-2.3L9.9 0 .2 9.7 2.5 12z"></path>
         </svg>

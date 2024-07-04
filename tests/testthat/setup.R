@@ -20,10 +20,19 @@ set_state_inspector(function() {
 # require(testthat)
 # require(data.table)
 # require(magrittr)
+require(mapview)
 #   require(EJAM)
-suppressPackageStartupMessages({
-  library(EJAM)
-})
+############### does testthat already attach or load the package?
+# suppressPackageStartupMessages({
+#   if (interactive()) {
+#     useloadall = askYesNo("Do you want to load and test the current source code files version of EJAM (via devtools::load_all() etc., rather than testing the installed version)?", default = TRUE)
+#     if (useloadall) {
+#       devtools::load_all()
+#     } else {
+#       #  ### library(EJAM)  # need or not?
+#     }
+#   }
+# })
 suppressMessages({suppressWarnings({
   dataload_from_pins("all", silent = TRUE) # needs frs, etc.
 })})
@@ -48,17 +57,7 @@ if (exists("ejamit") & exists("blockgroupstats") & exists("testpoints_10")) {
            include_ejindexes = TRUE)) # include_ejindexes = FALSE was the default but we want to test with them included
   }))
   }
-  # DEFAULTS:
-  #        sitepoints, radius = 3, maxradius = 31.07, avoidorphans = FALSE,
-  #        quadtree = NULL, quiet = TRUE, parallel = FALSE, fips = NULL,
-  #        shapefile_folder = NULL, in_shiny = FALSE, need_blockwt = TRUE,
-  #        countcols = NULL, popmeancols = NULL, calculatedcols = NULL,
-  #        testing = FALSE,
-  # include_ejindexes = FALSE,
-  # updateProgress = NULL,
-  #        need_proximityscore = FALSE, calculate_ratios = TRUE, silentinteractive = FALSE,
-  #        called_by_ejamit = TRUE, subgroups_type = "nh", extra_demog = TRUE,
-  #        infer_sitepoints = FALSE, threshold1 = 90)
+  # NOTE THE DEFAULT VALUES OF ejamit() !
 
 } else {
   warning("missing ejamit() or blockgroupstats, so using pre-calculated results in tests")

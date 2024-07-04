@@ -2,7 +2,7 @@
 % Please edit documentation in R/MAP_FUNCTIONS.R
 \name{map_shapes_leaflet_proxy}
 \alias{map_shapes_leaflet_proxy}
-\title{Map - Update existing leaflet map by adding shapefile data, in shiny app}
+\title{Map - polygons - Update leaflet map by adding shapefile data, in shiny app}
 \usage{
 map_shapes_leaflet_proxy(mymap, shapes, color = "green", popup = shapes$NAME)
 }
@@ -19,5 +19,5 @@ map_shapes_leaflet_proxy(mymap, shapes, color = "green", popup = shapes$NAME)
 html widget like from leaflet::leafletProxy()
 }
 \description{
-Map - Update existing leaflet map by adding shapefile data, in shiny app
+Map - polygons - Update leaflet map by adding shapefile data, in shiny app
 }

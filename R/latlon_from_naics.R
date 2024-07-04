@@ -1,49 +1,98 @@
 
 #' Find EPA-regulated facilities in FRS by NAICS code (industrial category)
-#' 
-#' Get lat lon, Registry ID, given NAICS industry code(s)
-#' Find all EPA Facility Registry Service (FRS) sites with this exact NAICS code (not subcategories)
-#' @details NOTE: many FRS sites lack NAICS code! 
-#' 
-#'   Also, this function does not find the sites 
-#'   identified by FRS data as being in a child NAICS (subcategory of your exact query)!
+#' @description Get lat lon, Registry ID, given NAICS industry code(s)
+#' Find all EPA Facility Registry Service (FRS) sites with this/these NAICS code(s)
+#' @details 
+#'  Important notes:
+#'  
+#'  * Finding the right NAICS and finding all the right sites by NAICS is complicated,
+#'  and requires understanding the NAICS codes system, the FRS data, and the EJAM functions. 
+#'  See the discussion in the "Advanced" or other vignettes/articles. 
+#'  
+#'  * Many FRS sites lack NAICS code!
+#'
+#'  * Note the difference between children = TRUE and children = FALSE
 #'   
-#'   Relies on  frs_by_naics (a data.table)
+#'   The functions like [regid_from_naics()], [latlon_from_naics()], and [frs_from_naics()]
+#'   try to find EPA FRS sites based on naics codes or titles.
 #'   
-#'   See info about NAICS industry codes at <https://www.naics.com/search>
-#' @param naics a vector of naics codes, or 
-#'   a data.table with column named code, as with output of [EJAM::naics_from_any()] 
+#'  EPA also provides a [FRS Facility Industrial Classification Search tool](https://www.epa.gov/frs/frs-query#industrial)
+#'  where you can find facilities based on NAICS or SIC.
+#'
+#'  See more about NAICS industry codes at <https://www.naics.com/search>
+#'   
+#' @param naics a vector of naics codes or query of titles of NAICS, or
+#'   a data.table with column named code, as with output of [naics_from_any()]
+#' @param id_only optional logical. Must set TRUE to get only regid instead of table
+#' @param children optional logical. set to FALSE to get only exact matches
+#'   rather than all facilities whose NAICS
+#'   starts with provided naics (or naics based on provided title).
+#'   Many facilities have only a longer more specific NAICS code
+#'   listed in the FRS, such as a 6-digit code, so if the category (e.g., 4-digit)
+#'   is queried then without children = TRUE one would not find all the sites
+#'   within that overall category.
+#'   
+#' @param ... passed to [naics_from_any()]
 #' @return A data.table (not just data.frame) with columns called
-#'   lat, lon, REGISTRY_ID, NAICS (but see the id_only parameter)
-#' @examples 
+#'   lat, lon, REGISTRY_ID, NAICS (unless id_only parameter set TRUE).
+#'   
+#' @seealso [frs_from_naics()]  [frs_from_sic()] [latlon_from_sic()] [regid_from_naics()] [naics_from_any()]
+#'   
+#' @examples
 #'   regid_from_naics(321114)
 #'   latlon_from_naics(321114)
-#'   latlon_from_naics(EJAM::naics_from_any("cheese")[,code] )
+#'   # latlon_from_naics(naics_from_any("cheese")[,code] )
+#'   latlon_from_naics("cheese")
 #'   head(latlon_from_naics(c(3366, 33661, 336611), id_only=TRUE))
+#'   head(regid_from_naics(c(3366, 33661, 336611))
+#'   head(regid_from_naics(3366, children = TRUE))
 #'   # mapfast(frs_from_naics(336611)) # simple map
 #'
 #' @export
 #'
-latlon_from_naics <- function(naics, id_only=FALSE) {
-  
+latlon_from_naics <- function(naics, children = TRUE, id_only = FALSE, ...) {
+
   if (missing(naics)) {return(NULL)}
   if (data.table::is.data.table(naics) & "code" %in% names(naics)) {naics <- naics$code} # flexible in case it was given output of EJAM::naics_from_any() which is a table not just code
-  
+
   if (!exists("frs_by_naics")) dataload_from_pins("frs_by_naics")
+  
+  naics <- naics_from_any(query = naics, children = children, ...)$code # children = TRUE would get more than just exact matches to the provided specific number of digits NAICS
   
   if (id_only) {
     return(frs_by_naics[NAICS %in% naics, REGISTRY_ID])
+    # return(frs_by_naics[REGISTRY_ID %in% regid_from_naics(naics), REGISTRY_ID])
   } else {
     return(frs_by_naics[NAICS %in% naics, ])
+    # return(frs_by_naics[REGISTRY_ID %in% regid_from_naics(naics), ])
   }
 }
 ########################################## #
 
 
-#' @inherit latlon_from_naics
+#' Find registry ids of EPA-regulated facilities in FRS by NAICS code (industrial category)
+#' Like latlon_from_naics() but returns only regid
+#' @param naics a vector of naics codes, or
+#'   a data.table with column named code, as with output of [naics_from_any()]
+#' @param children optional logical. Must set to TRUE to get facilities whose NAICS
+#'   starts with provided naics (or naics based on provided title) rather than
+#'   only exact matches. Many facilities have only a longer more specific NAICS code
+#'   listed in the FRS, such as a 6-digit code, so if the category (e.g., 4-digit)
+#'   is queried then children = TRUE has to be specified to find all the sites
+#'   within that overall category.
+#' @param id_only optional, only for backward compatibility
+#' @param ... passed to [naics_from_any()]
+#' @seealso [latlon_from_naics()]
+#' @details Finding the right NAICS/SIC and finding all the right 
+#'   sites is complicated. See discussion of [latlon_from_naics()].
+#' @return vector of registry ID values of facilities in EPA FRS
+#'   that are listed there as being in this/these NAICS,
+#'   like [latlon_from_naics()] but with id_only = TRUE
 #' 
 #' @export
-#' 
-regid_from_naics <- latlon_from_naics
-
-######################################## # 
+#'
+regid_from_naics <- function(naics, children = FALSE, id_only = TRUE, ...) {
+  
+  latlon_from_naics(naics = naics, children = children, id_only = id_only, ...)
+}
+######################################## #

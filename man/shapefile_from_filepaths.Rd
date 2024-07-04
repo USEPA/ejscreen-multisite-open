@@ -4,7 +4,12 @@
 \alias{shapefile_from_filepaths}
 \title{Read shapefile from disk based on the filenames given}
 \usage{
-shapefile_from_filepaths(filepaths = NULL, cleanit = TRUE, crs = 4269)
+shapefile_from_filepaths(
+  filepaths = NULL,
+  cleanit = TRUE,
+  crs = 4269,
+  layer = NULL
+)
 }
 \arguments{
 \item{filepaths}{vector of full paths with filenames (types .shp, .shx, .dbf, and .prj) as strings}
@@ -13,10 +18,12 @@ shapefile_from_filepaths(filepaths = NULL, cleanit = TRUE, crs = 4269)
 
 \item{crs}{if cleanit = TRUE, crs is passed to shapefile_clean()
 default is crs = 4269 or Geodetic CRS NAD83
-Also can check this via x <- sf::st_crs(sf::read_sf()); x$input}
+Also can check this via x <- sf::st_crs(sf::st_read()); x$input}
+
+\item{layer}{optional name of layer to read}
 }
 \value{
-a shapefile object using sf::read_sf()
+a shapefile object using sf::st_read()
 }
 \description{
 Read shapefile from disk based on the filenames given

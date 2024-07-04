@@ -20,16 +20,20 @@ vector of codes and their names
 Used by naics_find()
 }
 \details{
-start with shortest (highest level) codes. since tied for nchar, these branches have zero overlap, so do each.
-for each of those, get its children = all rows where parentcode == substr(allcodes, 1, nchar(parentcode))
-put together list of all codes we want to include so far.
-now for the next longest set of codes in original list of codes,
-do same thing.
-etc. until did it for 5 digit ones to get 6digit children.
-take the unique(allthat)
-table(nchar(as.character(NAICS)))
-2    3    4    5    6
-17   99  311  709 1057
+\itemize{
+\item Starts with shortest (highest level) codes. Since tied for nchar, these branches have zero overlap, so do each.
+\item For each of those, get its \code{children = all} rows where \code{parentcode == substr(allcodes, 1, nchar(parentcode))}
+\item Put together list of all codes we want to include so far.
+\item For the next longest set of codes in original list of codes, do same thing.
+\item continue until done for 5-digit ones to get 6-digit children.
+\item Take the \code{unique(allthat)}
+}
+
+\code{table(nchar(as.character(NAICS)))}
+
+\verb{   2    3    4    5    6}
+
+\verb{  17   99  311  709 1057}
 }
 \examples{
   naics2children(211)
@@ -41,5 +45,5 @@ table(nchar(as.character(NAICS)))
 
 }
 \seealso{
-naics_find() NAICS
+\code{\link[=naics_find]{naics_find()}} \link{NAICS}
 }

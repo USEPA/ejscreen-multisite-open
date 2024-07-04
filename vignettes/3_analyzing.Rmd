@@ -1,27 +1,33 @@
 ---
-title: "3. Basics of Using EJAM for Analysis in RStudio"
+title: "Basics of Using EJAM for Analysis in RStudio"
+description: "3. Basics of Using EJAM for Analysis in RStudio"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{3. Basics of Using EJAM for Analysis in RStudio}
+  %\VignetteIndexEntry{Basics of Using EJAM for Analysis in RStudio}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
+```{r developernote, eval=FALSE, echo=FALSE, include=FALSE}
+#  *>>>>>>>>>> Developer note: vignettes need to be tested/edited/rebuilt regularly <<<<<<<<<<<*
+#    - **See ?pkgdown::build_site** and script in EJAM/data-raw/- EJAM uses the pkgdown R package to build help and articles/ vignettes as web pages
+```
 
 ```{r SETUP_default_eval_or_not, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-knitr::opts_chunk$set(eval = FALSE)
+knitr::opts_chunk$set(eval = FALSE, warning = FALSE)
 # https://r-pkgs.org/vignettes.html
 ```
 
-```{r libraryEJAM, eval = TRUE, echo= FALSE, include= FALSE}
+```{r libraryEJAM, eval = TRUE, echo=FALSE, include=FALSE}
 # rm(list = ls())
 # golem::detach_all_attached()
 # 
 library(EJAM)
-dataload_from_pins('all') # varnames = all  currently means all these:
+dataload_from_pins('all', envir = as.environment(-1)) # varnames = all  currently means all these:
 # dataload_from_pins(
 #   c("blockwts", "blockpoints", "blockid2fips", "quaddata", 
 #     "bgej", "bgid2fips",
@@ -29,7 +35,7 @@ dataload_from_pins('all') # varnames = all  currently means all these:
 # )
 
 ##################################### #
-if (!exists("blockid2fips")) {
+if (!exists("blockid2fips") || !exists("frs")) {
   cat("warning: blockid2fips not available\n")
   # *** temporary workaround if building vignette on 1 particular machine
   here <-   "~/../../Downloads/EJAMbigfiles"
@@ -40,7 +46,7 @@ if (!exists("blockid2fips")) {
   localpaths  <- paste0(here, '/', fnames)
   for (i in 1:length(varnames)) {
     if (!exists(varnames[i]) & file.exists(localpaths[i])) {
-    assign(varnames[i], arrow::read_ipc_file(file = localpaths[i]))
+      assign(varnames[i], arrow::read_ipc_file(file = localpaths[i]))
     }}
   rm(here, varnames, fnames, localpaths)
 }
@@ -51,32 +57,32 @@ indexblocks()
 
 # Key Functions
 
--   **run_app()** to launch the web app locally (to run in RStudio on a single computer rather than on a server)
+-   **`run_app()`** to launch the web app locally (to run in RStudio on a single computer rather than on a server)
 
--   **ejamit()** provides most results in just one function, and they can be viewed using ejam2report() and ejam2excel(). Sample input to ejamit() is in testpoints_10 and sample output is in testoutput_ejamit_10pts_1miles. ejamit() especially relies on getblocksnearby() and doaggregate():
+-   **`ejamit()`** provides most results in just one function, and they can be viewed using `ejam2report()` and `ejam2excel()`. Sample input to `ejamit()` is in `testpoints_10` and sample output is in `testoutput_ejamit_10pts_1miles`. `ejamit()` especially relies on `getblocksnearby()` and `doaggregate()`:
 
--   getblocksnearby() takes a set of points (e.g., facilities) and finds the Census blocks near each. Sample input is in testpoints_100, and sample output is in testoutput_getblocksnearby_10pts_1miles
+-   `getblocksnearby()` takes a set of points (e.g., facilities) and finds the Census blocks near each. Sample input is in `testpoints_100`, and sample output is in `testoutput_getblocksnearby_10pts_1miles`
 
--   doaggregate() takes the list of blocks near each point, joins it to blockgroup indicators like from EJScreen, and aggregates at each buffered point as well as for the overall set of unique blocks (residents). Sample input is in testoutput_getblocksnearby_10pts_1miles and sample output is in testoutput_doaggregate_10pts_1miles
+-   `doaggregate()` takes the list of blocks near each point, joins it to blockgroup indicators like from EJScreen, and aggregates at each buffered point as well as for the overall set of unique blocks (residents). Sample input is in `testoutput_getblocksnearby_10pts_1miles` and sample output is in `testoutput_doaggregate_10pts_1miles`
 
 # Key groups of functions
 
-The [EJAM package reference manual](https://bookish-disco-p8oe8wq.pages.github.io/reference/index.html) has a complete list of documented functions, grouped by category. There are several categories of functions listed there:
+The EJAM package reference manual has a complete list of documented functions, grouped by category. There are several categories of functions listed there:
 
--   The overall functions ejamit(), ejam2report(), ejam2excel()
+-   Key Functions `ejamit()`, `ejam2report()`, `ejam2excel()`, `ejam2map()`, `ejam2ratios()`
 -   Specify Points by Lat/Lon
 -   Specify Facilities by ID
 -   Specify Facility Type
 -   Specify Places by Shapefile
 -   Specify Counties, etc./FIPS tools
--   Blocks, Distances, Residents - e.g., getblocksnearby()
+-   Blocks, Distances, Residents - e.g., `getblocksnearby()`
 -   Calculating and Aggregating
--   Viewing Results
--   Test Data
+-   Viewing Results (using the overall functions above)
+-   Test Data (if EJAM is installed, try `browseURL(system.file("testdata", package = "EJAM"))`)
 -   Utilities for finding URL or API info
 -   etc.
 
-Also see data("EJAM") and see ?dataload_from_pins() and usastats, statestats
+Also see `data("EJAM")` and see ?`dataload_from_pins()` and `usastats`, `statestats`
 
 # POINTS & NEARBY RESIDENTS
 
@@ -94,8 +100,8 @@ To analyze points and the circular areas around each one, you can specify the po
 
 -   A list of points defined by coordinates or by EPA ID numbers for each point
 -   All points that are the locations of EPA-regulated facilities of a certain type. The categories that can be used include the following:
-    -   EPA Program (e.g., all greenhouse gas reporting facilities)
-    -   Industry type, based on NAICS code (e.g., )
+-   EPA Program (e.g., all greenhouse gas reporting facilities)
+-   Industry type, based on NAICS code (e.g., )
 
 ## Compare all Points in a Category
 
@@ -103,7 +109,7 @@ To analyze points and the circular areas around each one, you can specify the po
 
 You can define locations as all residents within X miles of any one or more of the specified points, and you can define those points in a few ways. One way is to upload a table of coordinates -- latitude and longitude for each point, one row per site, with columns called lat and lon (or some synonyms that work).
 
-The simplest way to do that in the RStudio console is to do something like `x <- ejamit(radius=1)`, and it prompts you to upload a spreadsheet with lat lon columns.
+The simplest way to do that in the RStudio console is something like `x <- ejamit()`, which prompts you to upload a spreadsheet with lat lon columns, and asks you for the radius.
 
 You can also specify a set of facilities by uploading their Registry ID numbers in a table, or using other identifiers. For example, there is a function `latlon_from_programid()` in the examples below.
 
@@ -115,8 +121,8 @@ You can specify sites by NAICS, but it is important to note the FRS lacks NAICS 
 
 ```{r naics_from_any, eval = TRUE}
 naics_from_any("paint and coating", children = T)
-# note latlon_from_naics() requires the frs_by_naics dataset, which it tries to load on demand.
-head(latlon_from_naics(325510)) # has about 1,000 facilities
+## note latlon_from_naics() requires the frs_by_naics dataset, which it tries to load on demand.
+# head(latlon_from_naics(325510)) # has about 1,000 facilities
 
 ## All sectors with this phrase in their NAICS title
 #
@@ -142,47 +148,82 @@ y <- ejamit(latlon_from_regid(read_csv_or_xl()$REGISTRY_ID), radius = 1)
 
 ### by Facility, using EPA Program System ID
 
-```{r latlon_from_programid, eval = TRUE}
-# note latlon_from_programid() requires the frs_by_programid dataset, which it tries to load on demand.
+```{r tryload_frs_by_programid, include=FALSE}
+dataload_from_pins("frs_by_programid")
+```
 
-latlon_from_programid(c("XJW000012435", "00768SRTRSROAD1"))
+```{r latlon_from_programid, eval = TRUE}
+# latlon_from_programid() requires access to the frs_by_programid dataset, which it tries to load on demand.
+
+if (exists("frs_by_programid")) {
+  latlon_from_programid(c("XJW000012435", "00768SRTRSROAD1"))
+}
 ```
 
 ### by EPA Regulatory Program
 
+```{r tryload_frs_AND_frs_by_programid, include=FALSE}
+dataload_from_pins("frs_by_programid")
+dataload_from_pins("frs")
+```
+
 ```{r latlon_from_program, eval = TRUE}
 # note latlon_from_programid() requires the frs and frs_by_programid datasets, which it tries to load on demand.
+if (exists("frs_by_programid") && exists("frs")) {
+  
+  ## Map of over 10,000 facilities in FRS identified as in the E-Grid power plant database
+  
+  pts <- latlon_from_program("EGRID")[, 1:4]
+  mapfast(pts)
+  
+  ## In just 1 State
+  pts[, ST := state_from_latlon(lat = lat, lon = lon)$ST]
+  mapfast(pts[ST == "TX", ], radius = 1)
 
-head(cbind(Count.of.facilities = sort(table(frs_by_programid$program), decreasing = T)), 20)
-
-latlon_from_program("CAMDBS")[,1:6]
+  ## 10 largest programs (including State programs in the dataset)
+  
+  head(cbind(Count.of.facilities = sort(table(frs_by_programid$program), decreasing = T)), 10)
+  
+  ## Largest Federal lists (many of the codes represent State databases)
+  
+  epa_programs_counts <- frs_by_programid[, .N, by = "program"][order(N), ]
+  epa_programs_counts$fed = !grepl("^[A-Z]{2}[-]", as.vector(epa_programs_counts$program),1,3)
+  epa_programs_counts[fed == TRUE, ][order(-N), ][1:25, ]
+}
 ```
 
 ### by MACT Subpart (hazardous air pollutant source category)
 
+```{r tryload_frs_by_mact, include=FALSE}
+dataload_from_pins("frs_by_mact")
+```
+
 ```{r latlon_from_mactsubpart, eval = TRUE}
 # note latlon_from_mactsubpart() requires the frs_by_mact dataset, which it tries to load on demand
-
-# Search by name of category
-mact_table[grepl("ethylene", mact_table$title, ignore.case = T), ]
-eto <- rbind(
-  latlon_from_mactsubpart("O" ), 
-  latlon_from_mactsubpart("WWWWW")
-)
-#  Map the category
-mapfast(eto)
-
-# Browse the full list of categories
-# mact_table[ , c("N", "subpart", "title")]
-
-# The 10 largest categories
-tail(mact_table[order(mact_table$N), c("N", "subpart", "title")], 10)
-
-# Many facilities lack latitude longitude information in this database
-nrow(latlon_from_mactsubpart("A", include_if_no_latlon = TRUE))
-nrow(latlon_from_mactsubpart("A", include_if_no_latlon = FALSE))
-
-head(latlon_from_mactsubpart("OOOO"), 2)
+if (exists("frs_by_mact")) {
+  
+  # Search by name of category
+  mact_table[grepl("ethylene", mact_table$title, ignore.case = T), ]
+  eto <- rbind(
+    latlon_from_mactsubpart("O" ), 
+    latlon_from_mactsubpart("WWWWW")
+  )
+  #  Map the category
+  mapfast(eto)
+  
+  
+  # Browse the full list of categories
+  # mact_table[ , c("N", "subpart", "title")]
+  
+  # The 10 largest categories
+  tail(mact_table[order(mact_table$N), c("N", "subpart", "title")], 10)
+  
+  # Many facilities lack latitude longitude information in this database
+  nrow(latlon_from_mactsubpart("A", include_if_no_latlon = TRUE))
+  nrow(latlon_from_mactsubpart("A", include_if_no_latlon = FALSE))
+  
+  head(latlon_from_mactsubpart("OOOO"), 2)
+}
 ```
 
 ## Working with NAICS Codes (Industry Codes)
@@ -192,21 +233,28 @@ head(latlon_from_mactsubpart("OOOO"), 2)
 NAICS/industry categories
 
 ```{r pulpindustry, eval = TRUE}
+
 naics_categories()
 naics_from_any(naics_categories(3))[order(name),.(name,code)][1:10,]
 naics_from_any(naics_categories(3))[order(code),.(code,name)][1:10,]
 
 # See a data table of facilities in one industry
+dataload_from_pins("frs")
+if (exists("frs")) {
 industryword <- "pulp"
+
 head( frs_from_naics(naics_from_any(industryword)$code)[,1:4] )
+}
 ```
 
 Quick map of EPA-regulated facilities in one industrial category, which you can click on to see popup windows about sites.
 
 ```{r mapfast(frs_from_naics), eval = TRUE, fig.height=5, fig.width=5}
 # note frs_from_naics() requires the frs dataset, which it tries to load on demand.
-
+dataload_from_pins("frs")
+if (exists("frs")) {
 mapfast(frs_from_naics("smelt")) # may be slow the 1st time, if it loads frs dataset
+}
 ```
 
 (but note that this FRS dataset lacks NAICS for most facilities!)
@@ -216,7 +264,7 @@ Table of facilities in an industry, plus links to each facility in ECHO and EJSc
 ```{r frs_from_naics-chemicalmanuf, eval = FALSE}
 industryword <- "chemical manuf"
 #  industryword <- "smelt"
-
+if (exists("frs")) {
 mysites <- frs_from_naics(industryword, children = FALSE)[,1:5]
 
 regids <- mysites$REGISTRY_ID
@@ -235,12 +283,13 @@ cat(caption,'\n')
 
 print(
   DT::datatable(
-    mysites,
+    mysites[1:5, ],
     escape = FALSE,     rownames = FALSE,
     caption = caption,
     filter = "top"
-  )[1:10, ]
+  )
 )
+}
 ```
 
 Map of facilities in an industry, plus popups with links to each facility in ECHO and EJScreen
@@ -279,6 +328,9 @@ head(naics_from_any(funion(a,b)[,code], children = T)[,.(name,code)] ) #  same
 A NAICS code can have many "children" or subcategories under it
 
 ```{r frs_from_naics-details, eval = TRUE}
+dataload_from_pins("frs", "frs_by_naics")
+if (exists("frs") & exists("frs_from_naics")) {
+
 NROW(naics_from_any("chem"))
 # about 20
 NROW(naics_from_any("chem", children = T))
@@ -287,6 +339,7 @@ NROW(frs_from_naics(naics_from_any("chem")$code))
 # a few thousand
 NROW(frs_from_naics(naics_from_any("chem", children = T)$code))
 # >10,000
+}
 ```
 
 # SHAPEFILES
@@ -295,7 +348,25 @@ NROW(frs_from_naics(naics_from_any("chem", children = T)$code))
 
 You can upload polygons in a shapefile, and use EJAM to analyze them. See the Shiny app.
 
-See shapefile_from_folder() and related functions.
+See shapefile_from_any() and related functions:
+
+```{r notrun_shapefile_functionlist, eval=FALSE, echo=TRUE}
+shapefile_from_any()
+shapefile_from_gdbzip()
+shapefile_from_gdb()
+shapefile_from_json()
+shapefile_from_filepaths()
+shapefile_from_folder()
+shapefile_filepaths_from_folder()
+shapefile_filepaths_valid()
+shapefile_clean()
+shapefile_from_sitepoints()
+shape_buffered_from_shapefile()
+shape_buffered_from_shapefile_points()
+
+shp1 <- shapefile_from_gdbzip(system.file("testdata/shapes/portland.gdb.zip", package = "EJAM"))
+
+```
 
 # FIPS CODES
 
@@ -304,6 +375,10 @@ See shapefile_from_folder() and related functions.
 You can compare places defined by FIPS code, such as a group of US Counties.
 
 Compare all Counties in a State, using EJAM indicators
+
+```{r eval=FALSE, echo=FALSE, include=FALSE}
+# NOTE THE EXAMPLES BELOW ARE VERY SLOW TO LOAD/RUN ! 
+```
 
 ```{r counties_fips, eval = FALSE}
 
@@ -352,11 +427,55 @@ mapfastej_counties(xmd$results_bysite, 'state.pctile.pctlowinc')
 
 # EXPLORING RESULTS
 
-## Site by site results in datatable format in RStudio viewer:
+### The most striking findings (e.g., which group is most overrepresented?)
+
+See examples above using ejam2report() but also you can check some key findings like this:
+
+```{r count_sites_with_n_high, eval=TRUE, echo = TRUE}
+x <- testoutput_ejamit_1000pts_1miles 
+out <- x$results_bysite
+out <- setDF(copy(out))
+ratio_benchmarks <- c(1.01, 1.50, 2, 3, 5, 10)
+ratiodata <- out[, names_d_ratio_to_state_avg]
+
+findings <- count_sites_with_n_high_scores(ratiodata, quiet = TRUE)  # long output to console !
+
+tail(findings$text[findings$text != ""], 1) # the most extreme finding!
+
+```
+
+### The key facilities (e.g., which has the max of -- or has multiple elevated -- EJ indexes?)
+
+```{r topsites}
+out2 <- ejamit(
+  sitepoints =  testpoints_100,
+  radius = 3.1
+)
+x <- out2$results_summarized$cols
+x <- x[order(x[,1], decreasing = T), ]
+head(x, 3)
+cat("\n")
+x <- x[order(x[,2], decreasing = T), ]
+head(x, 3)
+```
+
+### More summary findings
+
+```{r count_sites_etc_more, eval = TRUE, echo = TRUE}
+dimnames(findings)
+findings$text[2]
+head(findings$stats[ , , 1], 15)
+head(findings$stats[ , 1, ], 21)
+x = findings$stats[ , 1, ] 
+x[x[, "cum_pct"] >= 50 & x[, "cum_pct"] <= 80, ]
+findings$stats[ 1, , ]
+```
+
+## Site by site detailed results in datatable format in RStudio viewer:
 
 ```{r datatable30}
 out2 <- testoutput_ejamit_100pts_1miles
-DT::datatable(out2$results_bysite[1:30,   ], escape = FALSE, rownames = FALSE)
+DT::datatable(out2$results_bysite[1:5,   ], escape = FALSE, rownames = FALSE)
 
 # To see all 1,000 sites in table:
 #DT::datatable(out2$results_bysite[1:1000, ], escape = FALSE, rownames = FALSE)
@@ -375,85 +494,46 @@ cbind(overall = as.list( out2$results_overall[ , ..names_d_subgroups]))
 
 ```{r}
 out2 <- testoutput_ejamit_100pts_1miles
-cbind(as.list(out2$results_overall))
+head(
+  cbind(as.list(out2$results_overall))
+  , 12)
 ```
 
-```{r count_sites_with_n_high, eval=TRUE}
-x <- testoutput_ejamit_1000pts_1miles 
-out <- x$results_bysite
-out <- setDF(copy(out))
-ratio_benchmarks <- c(1.01, 1.50, 2, 3, 5, 10)
-ratiodata <- out[, names_d_ratio_to_state_avg]
-
-findings <- count_sites_with_n_high_scores(out)  # long output to console !
-dimnames(findings)
-findings$text[2]
-head(findings$stats[ , , 1], 15)
-head(findings$stats[ , 1, ], 21)
-x = findings$stats[ , 1, ] 
-x[x[, "cum_pct"] >= 50 & x[, "cum_pct"] <= 80, ]
-findings$stats[ 1, , ]
-```
-
-# DETAILS OF BLOCKS NEAR ONE SITE
-
-### Detailed diagnostics or stats on intermediate results
-
-### getblocksnearby() will find residents/blocks that are within specified distance
-
-Less than 1 second for 100 sites, but a few seconds for 1,000 sites, or 500k / hour for this step
-
-```{r getblocksnearby1, eval = FALSE}
-sitepoints <- data.table::copy(testpoints_100) 
-# or 
-# sitepoints <- testpoints_n(100,"block") # random points
-radius <- 3
-elapsed <- system.time({
-  
-  sites2blocks <- getblocksnearby(
-    sitepoints = sitepoints,
-    radius = radius
-  )
-  
-}) # end of timed function
-print(elapsed)
-sites2blocks
-```
-
-#### doaggregate() will summarize indicators within each buffer and overall
-
-```{r doaggregateX, eval = TRUE}
-# out <- doaggregate(testoutput_getblocksnearby_10pts_1miles)
-sites2blocks <- data.table::copy(testoutput_getblocksnearby_10pts_1miles)
-elapsed <- system.time({
-  out <- suppressWarnings( 
-    doaggregate(sites2blocks = sites2blocks) 
-  )
-}) 
-print(elapsed)
-
-names(out)
-dim(out$results_bysite)
-```
 
 #### See indicators aggregated over all people across all sites
 
 ```{r cbindagain, eval = TRUE}
 ## view output of batch run aggregation ####
+out <- testoutput_ejamit_1000pts_1miles
 head(cbind(overall = as.list( out$results_overall)))
 
 ## To see just some subset of indicators, like Environmental only:
-cbind(overall = as.list( out$results_overall[ , ..names_e]))
-cbind(overall = as.list( out$results_overall[ , ..names_d]))
-cbind(overall = as.list( out$results_overall[ , ..names_d_subgroups]))
-cbind(overall = as.list( out$results_overall[ , ..names_e_pctile]))
-cbind(overall = as.list( out$results_overall[ , ..names_d_pctile]))
-# cbind(overall = as.list( out$results_overall[ , ..names_ej_pctile]))
+cbind(overall = as.list( out$results_overall[ , ..names_e])); cat("\n")
+cbind(overall = as.list( out$results_overall[ , ..names_d])); cat("\n")
+cbind(overall = as.list( out$results_overall[ , ..names_d_subgroups])); cat("\n")
+cbind(overall = as.list( out$results_overall[ , ..names_e_pctile])); cat("\n")
+cbind(overall = as.list( out$results_overall[ , ..names_d_pctile])); cat("\n")
+# cbind(overall = as.list( out$results_overall[ , ..names_ej_pctile])); cat("\n")
 ```
 
-# VISUALIZATION OF FINDINGS
 
-#### Histogram of indicators distribution over all people across all sites
+# VISUALIZATION OF FINDINGS (PLOTS)
+
+
+## Indicators
+
+
+### Barplot showing which indicator is most elevated overall
+
+```{r barplot_d, eval=TRUE}
+out <- testoutput_ejamit_1000pts_1miles
+
+ejam2barplot(out,
+  varnames = c(names_d_ratio_to_state_avg, names_d_subgroups_ratio_to_state_avg),
+  main = "Demographics at Selected Sites Compared to State Averages")
+```
+
+### Histogram of indicators distribution over all people across all sites
 
 ```{r histo, eval = TRUE}
 hist(out$results_bysite$pctile.traffic.score, 10, xlab = "Local traffic scores (expressed as a percentile)", 
@@ -463,132 +543,5 @@ hist(out$results_bysite$pctile.traffic.score, 10, xlab = "Local traffic scores (
 abline(h = nrow(out$results_bysite)/10)
 ```
 
-## Distance plots
-
-### Mean distance of each group
-
-```{r}
-# plot_distance_mean_by_group(testoutput_ejamit_1000pts_1miles$results_bybg_people)
-
-# larger radius reveals more information
-y <- ejamit(testpoints_100, radius = 3)
-
-plot_distance_mean_by_group(y$results_bybg_people) # or distance_mean_by_group() is a synonym
-print(distance_by_group(
-  y$results_bybg_people, 
-  demogvarname = 'pctlowinc', demoglabel = 'Low Income'))
-distance_by_group_plot(
-  y$results_bybg_people,
-  demogvarname = 'pctlowinc', demoglabel = 'Low Income')
-```
-
-### Map blocks near 1 site
-
-```{r plotblocksnearby2, eval = TRUE, fig.height=5, fig.width=5}
-x = plotblocksnearby(testpoints_n(1), radius = 3, returnmap = FALSE)
-#  returnmap= TRUE is to actually return the leaflet map 
-
-```
-
-# POPULATION DENSITY - AVG SITE VS AVG RESIDENT
-
-## Sites vary widely in count of blocks nearby, depending on population density
-
--   what blocks are near each site
--   how far are they
--   how many blocks are typically near a given site (population density varies)
--   how many sites are near a block (residents with \> 1 site nearby)
-
-```{r popshare_at, eval=TRUE}
-out <- testoutput_ejamit_100pts_1miles
-cat("  ", popshare_p_lives_at_what_pct(out$results_bysite$pop, p = 0.50, astext = TRUE), "\n")
-cat("  ", popshare_at_top_n(out$results_bysite$pop, c(1, 5, 10), astext = TRUE), "\n\n")
-
-```
-
-```{r getblocksnearby2, eval = TRUE}
-## Also could use this example intermediate step dataset 
-## of n sites, with thousands of nearby blocks:
-# sites2blocks <- data.table::copy(testoutput_getblocksnearby_10pts_1miles)
-radius <- 3
-sitepoints <- data.table::copy(testpoints_100) 
-sites2blocks <- getblocksnearby(sitepoints, radius, quadtree = localtree)
-names(sites2blocks)
-getblocks_summarize_blocks_per_site(sites2blocks) 
-# print() shows more info returned invisibly
-getblocks_diagnostics(sites2blocks)
-# Use data.table package here
-library(data.table)
-# Very few blocks are within a radius of 1/4 mile.
-# Hundreds are often within 1 mile, but sometimes there are 
-# only a handful or even zero.
-s2b_stats <- sites2blocks[ , .(
-  avgDistance = round(mean(distance), 2),
-  blocksfound = .N, 
-  blocks_within_1mile = sum(distance <= 1),
-  blocks_within_0.75   = sum(distance <= 0.75),
-  blocks_within_0.25  = sum(distance <= 0.25)
-), by = 'ejam_uniq_id'][order(blocksfound), ]
-setorder(s2b_stats, ejam_uniq_id)
-head(s2b_stats)
-
-```
-
-```{r plot_count_of_blocks_nearby, eval=TRUE, fig.height=6, fig.width=5}
-
-# CDF of how many blocks are nearby a site
-plot(sort(s2b_stats$blocks_within_1mile), 
-     main = "How many blocks are near each facility?", 
-     ylab = "# of blocks (whose internal point is) within 1 mile of each site", 
-     xlab = paste0(nrow(s2b_stats)," facilities ranked by # of blocks nearby"))
-abline(h = quantile(s2b_stats$blocks_within_1mile, probs = (0:4) * 0.25))
-abline(h = mean(s2b_stats$blocks_within_1mile), col = "red")
 
 
-```
-
-```{r histoblocks, eval=TRUE, fig.height=6, fig.width=7}
-# Histogram of how many blocks are nearby a site
-hist(sites2blocks[,.N, by = "ejam_uniq_id"][, N], 20, 
-     xlab = "How many blocks are nearby?", 
-     ylab = "Frequency (# of sites)", 
-     main = "A given site may have zero to hundreds of blocks nearby", 
-     sub = "A typical site in this example has about 100 blocks nearby")
-```
-
-```{r DTdatatable, eval = FALSE}
-
-DT::datatable(s2b_stats,  rownames = FALSE)
-# more summaries showing there may be only 1 block or hundreds within 1 mile
-quantile(s2b_stats$blocks_within_1mile, probs = (0:4) * 0.25)
-t(summary(s2b_stats))
-```
-
-```{r s2b_stats, eval = TRUE, fig.height=5, fig.width=5}
-# map the sites with popups about how many blocks were found near each
-if (!('ejam_uniq_id' %in% names(sitepoints))) {sitepoints$ejam_uniq_id <- seq.int(length.out = NROW(sitepoints))}
-s2b_stats <- merge(sitepoints, s2b_stats, by = "ejam_uniq_id")
-mapfast(s2b_stats, radius = radius)
-```
-
-```{r eval = TRUE, fig.height=5, fig.width=5}
-
-# Some places have very few -- if any -- blocks within 1 mile
-
-tail(s2b_stats[order(s2b_stats$blocks_within_1mile, decreasing = T), 
-               c('ejam_uniq_id', 'blocks_within_1mile')], 3) 
-
-# Some places have hundreds nearby: a 1 mile radius is huge 
-# within a dense urban area
-
-head(s2b_stats[order(s2b_stats$blocks_within_1mile, decreasing = T), 
-               c('ejam_uniq_id', 'blocks_within_1mile')], 3)
-densest <- s2b_stats$ejam_uniq_id[order(
-  s2b_stats$blocks_within_1mile, decreasing = T)][1]
-plotblocksnearby(sitepoints = sitepoints[sitepoints$ejam_uniq_id == densest, ])
-```
-
-```{r eval = TRUE}
-# Within a 1 mile radius, the blocks found tend to be about 2/3 of a mile from the site at the center.
-summary(s2b_stats$avgDistance)
-```

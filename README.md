@@ -1,68 +1,123 @@
 EJAM Environmental Justice Analysis Multisite tool
 ================
 
-# <img src="man/figures/logosmall.png" align="right" width="170" height="190"/>
+# <img src="man/figures/logo659.png" align="right" width="250px"/>
 
 <!-- README.md is generated from README.Rmd. Please edit Rmd not md  -->
 <!-- badges: start -->
-<!-- comment out the badge for now
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
- -->
+<!-- or we could comment out the badge  -->
+
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+
 <!-- badges: end -->
 
-[The EJAM Web App](#the-ejam-web-app) makes it easy to see demographic
-and environmental information summarized in and across any list of
-places in the nation. Using EJAM is like running an EJScreen report, but
-for hundreds or thousands of places, all at the same time. The web app
-lets you quickly check a summary report, explore interactive maps,
-tables, and plots, and download a summary or detailed spreadsheet. The
-GIS methods are as accurate as what EJScreen uses but highly optimized
-to be very fast.
+EJAM makes it easy to see demographic and environmental information
+summarized in and across any list of places in the nation. Using EJAM is
+like running an EJScreen report, but for hundreds or thousands of
+places, all at the same time. EJAM lets you quickly check a summary
+report, explore interactive maps, tables, and plots, and download a
+summary or detailed spreadsheet. The GIS methods are as accurate as what
+EJScreen uses but highly optimized to be very fast.
 
 [The EJAM R Package for Analysts and
 Developers](#the-ejam-r-package-for-analysts-and-developers) written in
-the R programming language, with source code on GitHub. It provides
-functions to help work with block group data, points, and polygons, to
-very quickly aggregate and compare large numbers of locations.
+the R programming language, with source code on GitHub. When used in
+RStudio, the EJAM package provides functions to help analysts work with
+block group data, points, and polygons, to very quickly aggregate and
+compare large numbers of locations. Note that EJAM also can be used as a
+web app by R/RStudio users if the package is installed and the shiny app
+is launched locally on a user’s own computer.
 
-EJAM is provided by the US Environmental Protection Agency (US EPA).
+EJScreen will be able to leverage EJAM’s technology to provide public
+access to batches of reports. EJAM itself is not an app running on a
+public website. A user-friendly interface will be made available to the
+public in the future, as part of EJScreen (based on EJAM code). EJAM was
+being tested for internal use at EPA as of early 2024.
 
-## The EJAM Web App
+EJAM is provided by the US Environmental Protection Agency (US EPA), and
+is being actively developed so that new versions will continue to be
+tested and released over time.
 
-- [What is EJAM?](articles/0_what_is_ejam.html "0_what_is_ejam.html")
+- [What is EJAM?](https://usepa.github.io/EJAM/articles/0_whatis.html)
 
-- [Using EJAM as a Web App](articles/0_webapp.html "0_webapp.html")
+## EJAM as a Web App
 
-- [EJAM live beta
-  test](https://rstudio-connect.dmap-stage.aws.epa.gov/content/cb2bc9cf-75c3-4db1-ad28-e92940fe4438/ "https://rstudio-connect.dmap-stage.aws.epa.gov/content/cb2bc9cf-75c3-4db1-ad28-e92940fe4438/")
-  (must be at EPA offices or on VPN)
+- [Using EJAM as a Web
+  App](https://usepa.github.io/EJAM/articles/0_webapp.html) <!-- 
+      -   EJAM beta test is accessible only if at EPA offices or on VPN
+  -->
 
 ## The EJAM R Package for Analysts and Developers
 
 - [1. Installing the EJAM R
-  package](articles/1_installing.html "1_installing.html")
+  package](https://usepa.github.io/EJAM/articles/1_installing.html)
 
 - [2. Quick Start Guide to the EJAM R
-  package](articles/2_quickstart.html "2_quickstart.html")
+  package](https://usepa.github.io/EJAM/articles/2_quickstart.html)
 
 - [3. Basics of Using EJAM for Analysis in
-  RStudio](articles/3_analyzing.html "3_analyzing.html")
+  RStudio](https://usepa.github.io/EJAM/articles/3_analyzing.html)
 
 - [4. Advanced Features in the EJAM R
-  package](articles/4_advanced.html "4_advanced.html")
+  package](https://usepa.github.io/EJAM/articles/4_advanced.html)
 
 - [5. Accessing a Batch of EJScreen Reports via
-  EJAM](articles/5_ejscreenapi.html "5_ejscreenapi.html")
+  EJAM](https://usepa.github.io/EJAM/articles/5_ejscreenapi.html)
 
 - [6. Future Plans for
-  EJAM](articles/6_future_plans.html "6_future_plans.html")
+  EJAM](https://usepa.github.io/EJAM/articles/6_future_plans.html)
 
 - [Reference Manual Documenting all EJAM Package Functions and
-  Data](reference/index.html "index.html")
+  Data](https://usepa.github.io/EJAM/articles/index.html)
 
 - [GitHub Repository - Code and Data, at
   USEPA/EJAM](https://github.com/USEPA/EJAM#readme "https://github.com/USEPA/EJAM#readme")
-  (via EPA VPN or LAN in-office)
+
+## Open-Source Code Policy
+
+Effective August 8, 2016, the <a
+href="https://obamawhitehouse.archives.gov/sites/default/files/omb/memoranda/2016/m_16_21.pdf"
+class="uri" target="_blank" rel="noreferrer noopener">OMB Mandate:
+M-16-21; Federal Source Code Policy: Achieving Efficiency, Transparency,
+and Innovation through Reusable and Open Source Software</a> applies to
+new custom-developed code created or procured by EPA consistent with the
+scope and applicability requirements of Office of Management and
+Budget’s (OMB’s) Federal Source Code Policy. In general, it states that
+all new custom-developed code by Federal Agencies should be made
+available and reusable as open-source code.
+
+The EPA specific implementation of OMB Mandate M-16-21 is addressed in
+the <a
+href="https://www.epa.gov/irmpoli8/policy-procedures-and-guidance-system-life-cycle-management-slcm"
+class="uri" target="_blank" rel="noreferrer noopener">System Life Cycle
+Management Procedure</a>. EPA has chosen to use GitHub as its version
+control system as well as its inventory of open-source code projects.
+EPA uses GitHub to inventory its custom-developed, open-source code and
+generate the necessary metadata file that is then posted to code.gov for
+broad reuse in compliance with OMB Mandate M-16-21.
+
+If you have any questions or want to read more, check out the
+<a href="https://github.com/USEPA/open-source-projects" class="uri"
+target="_blank" rel="noreferrer noopener">EPA Open Source Project
+Repo</a> and <a
+href="https://www.epa.gov/developers/open-source-software-and-epa-code-repository-requirements"
+class="uri" target="_blank" rel="noreferrer noopener">EPA’s Interim Open
+Source Code Guidance</a>.
+
+## Contributing
+
+- [How to
+  Contribute](https://github.com/USEPA/EJAM/blob/master/CONTRIBUTING.md)
+
+  - We encourage analysts and developers to test the EJAM R package and
+    the EJAM shiny app, and provide feedback, or to share code, and we
+    welcome your suggestions or contributions.
+
+## License
+
+By submitting a pull request or issue, you are agreeing to comply with a
+waiver of copyright interest.
 
 ## Disclaimer for App
 
@@ -89,3 +144,8 @@ manufacturer, or otherwise, does not constitute or imply their
 endorsement, recommendation or favoring by EPA. The EPA seal and logo
 shall not be used in any manner to imply endorsement of any commercial
 product or activity by EPA or the United States Government.
+
+## Contact
+
+If you have questions or comments, please contact Mark Corrales
+(corrales.mark@epa.gov).

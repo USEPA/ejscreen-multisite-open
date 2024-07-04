@@ -16,7 +16,7 @@ vector of ST info like AK, CA, DE, etc.
 given data.table with blockid column, get state abbreviation of each - not used?
 }
 \examples{
-state_from_blocktable(blockpoints[45:49,])
+EJAM:::state_from_blocktable(blockpoints[45:49,])
 
 }
 \keyword{internal}

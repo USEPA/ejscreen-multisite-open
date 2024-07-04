@@ -1,6 +1,6 @@
 ## works just like EJAMfrsdata pkg function called frs_clean but for SIC codes instead of NAICS
-frs_clean_sic <- function (frs, usefulcolumns = c("LATITUDE83", "LONGITUDE83", 
-                                               "REGISTRY_ID", "PRIMARY_NAME", "SIC_CODES", "PGM_SYS_ACRNMS")) 
+frs_clean_sic <- function(frs, usefulcolumns = c("LATITUDE83", "LONGITUDE83", 
+                                                 "REGISTRY_ID", "PRIMARY_NAME", "SIC_CODES", "PGM_SYS_ACRNMS")) 
 {
   frs <- frs[, ..usefulcolumns]
   setnames(frs, "LATITUDE83", "lat")
@@ -95,7 +95,7 @@ usethis::use_data(frs_by_sic)
 # list of SIC codes
 # from https://www2.census.gov/programs-surveys/cbp/technical-documentation/records-layouts/sic-code-descriptions/sic88_97.txt
 sic_txt <- readr::read_delim('sic88_97.txt', 
-                             skip=1, delim='  ', col_names = c('code','desc'))
+                             skip = 1, delim = '  ', col_names = c('code','desc'))
 sic_txt <- sic_txt %>% dplyr::mutate(code = gsub("[^0-9]+", "", code))
 
 ## separate 2- and 3-digit codes
@@ -117,9 +117,9 @@ SIC <- sic_cats4 %>%
   deframe() 
 
 ## add counts to SIC code names for shiny dropdown
-sic_counts_nosub <- frs_by_sic[, .N, by='SIC']
+sic_counts_nosub <- frs_by_sic[, .N, by = 'SIC']
 sic_counts_names <- enframe(SIC) %>%
-  dplyr::left_join(sic_counts_nosub, by=c('value'='SIC')) %>%
+  dplyr::left_join(sic_counts_nosub, by = c('value' = 'SIC')) %>%
   dplyr::mutate(name = ifelse(!is.na(N),
                               paste0(name, ' (', N, ' sites)'), name)) %>%
   select(-N) %>%
@@ -132,30 +132,30 @@ usethis::use_data(SIC, overwrite = TRUE)
 
 
 ## add counts to NAICS code names for shiny dropdown
-naics_counts_nosub <- frs_by_naics[, .N, by='NAICS']
+naics_counts_nosub <- frs_by_naics[, .N, by = 'NAICS']
 naics_counts_names <- enframe(NAICS) %>%
-  dplyr::left_join(naics_counts_nosub, by=c('value'='NAICS')) %>%
+  dplyr::left_join(naics_counts_nosub, by = c('value' = 'NAICS')) %>%
   dplyr::mutate(name = ifelse(!is.na(N),
                               paste0(name, ' (', N, ' sites)'), name)) %>%
   select(-N) %>%
   deframe()
 
-naics_counts_w_subs <- sapply(NAICS, function(x) {frs_from_naics(x, children=T)[, .N]})
+naics_counts_w_subs <- sapply(NAICS, function(x) {frs_from_naics(x, children = T)[, .N]})
 
 naics_counts <- data.frame(NAICS, count_w_subs = naics_counts_w_subs)
-naics_counts <- enframe(NAICS,value='NAICS') %>% 
+naics_counts <- enframe(NAICS,value = 'NAICS') %>% 
   left_join(naics_counts) %>% 
   dplyr::left_join(naics_counts_nosub) %>% 
-  rename(count_no_subs= N) %>% 
+  rename(count_no_subs = N) %>% 
   mutate(label_w_subs = ifelse(count_w_subs > 0, paste0(name, ' (', 
-                               prettyNum(count_w_subs, big.mark=','),' sites)'),
+                                                        prettyNum(count_w_subs, big.mark = ','),' sites)'),
                                name
-                               ),
-         label_no_subs = ifelse(!is.na(count_no_subs) & count_no_subs > 0,
-                                paste0(name, ' (', 
-                                       prettyNum(count_no_subs, big.mark=','),' sites)'),
-                                name)
-         )
+  ),
+  label_no_subs = ifelse(!is.na(count_no_subs) & count_no_subs > 0,
+                         paste0(name, ' (', 
+                                prettyNum(count_no_subs, big.mark = ','),' sites)'),
+                         name)
+  )
 
 usethis::use_data(naics_counts, overwrite = TRUE)
 

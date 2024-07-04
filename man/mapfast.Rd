@@ -2,7 +2,7 @@
 % Please edit documentation in R/mapfast.R
 \name{mapfast}
 \alias{mapfast}
-\title{Get a leaflet html widget map of data.frame with lat lon}
+\title{Map - points - Create leaflet html widget map of points using table with lat lon}
 \usage{
 mapfast(mydf, radius = 3, column_names = "all", labels = column_names)
 }
@@ -24,12 +24,16 @@ plots a leaflet map with popups with all the columns from mydf,
 and returns html widget
 }
 \description{
-Get a leaflet html widget map of data.frame with lat lon
+Map - points - Create leaflet html widget map of points using table with lat lon
 }
 \examples{
- 
  mapfast(testpoints_500)
  \dontrun{
+ 
+ mapfastej(testoutput_ejamit_1000pts_1miles$results_bysite, radius = 1)
+ 
+ ejam2map(testoutput_ejamit_1000pts_1miles)
+ 
  # see random sample of 1k FRS facilities
  if (!exists("frs")) {
    x <- try(require(EJAM)); if (!inherits(x, "try-error")) {
@@ -44,9 +48,9 @@ Get a leaflet html widget map of data.frame with lat lon
  mapfastej(out)
  mapfast(out, column_names = 'ej')
  mapfast(out)
- 
+
  # Save .html file and view it in your browser
-  
+
  mytable <- testoutput_ejscreenit_5$table
  # names(mytable) <- fixcolnames(names(mytable), 'long', 'r')
  ## now, that renaming is done by mapfast function
@@ -55,8 +59,8 @@ Get a leaflet html widget map of data.frame with lat lon
  htmltools::save_html(mymap, file = tfile)
  browseURL(tfile)
   }
-  
+
 }
 \seealso{
-\code{\link[=popup_from_df]{popup_from_df()}} \code{\link[=mapfastej]{mapfastej()}}
+\code{\link[=ejam2map]{ejam2map()}} \code{\link[=popup_from_df]{popup_from_df()}} \code{\link[=mapfastej]{mapfastej()}}
 }

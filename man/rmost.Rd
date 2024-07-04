@@ -2,13 +2,18 @@
 % Please edit documentation in R/utils_rmost.R
 \name{rmost}
 \alias{rmost}
-\title{utility to rm(list=ls()) but not remove key datasets EJAM uses}
+\title{utility to rm(list=ls()) but NOT remove key datasets EJAM uses}
 \usage{
 rmost(
-  notremove = c("rmost", "localtree", "blockgroupstats", "usastats", "statestats",
-    "bgid2fips", "blockid2fips", "blockpoints", "blockwts", "quaddata", "bgej")
+  notremove = c("blockwts", "blockpoints", "blockid2fips", "quaddata", "localtree",
+    "bgej", "bgid2fips", "frs", "frs_by_programid", "frs_by_naics", "frs_by_sic",
+    "frs_by_mact")
 )
 }
 \description{
-utility to rm(list=ls()) but not remove key datasets EJAM uses
+utility to rm(list=ls()) but NOT remove key datasets EJAM uses
 }
+\details{
+removes them from globalenv()
+}
+\keyword{internal}

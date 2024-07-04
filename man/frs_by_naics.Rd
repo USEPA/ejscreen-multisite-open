@@ -8,6 +8,8 @@
 This is the format with one row per site-NAICS pair,
 so multiple rows for one site if it is in multiple NAICS.
 @details
+The EPA also provides a \href{https://www.epa.gov/frs/frs-query#industrial}{FRS Facility Industrial Classification Search tool}
+where you can find facilities based on NAICS or SIC.
 
 MOST SITES LACK NAICS INFO IN FRS! NAICS is missing for about 80 percent of these facilities.
 
@@ -27,7 +29,7 @@ length(unique(frs_by_naics$REGISTRY_ID))
 
 \code{frs_by_naics[,uniqueN(REGISTRY_ID)]}
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{ 561,999  as of 3/26/23 but early 2023 had been 564,770
+\if{html}{\out{<div class="sourceCode">}}\preformatted{   e.g., 573,411 in mid 2024
 
 
     lat       lon  REGISTRY_ID  NAICS

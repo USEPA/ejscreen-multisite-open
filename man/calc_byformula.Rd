@@ -7,11 +7,17 @@
 calc_byformula(mydf, formulas = NULL, keep = formula_varname(formulas))
 }
 \arguments{
-\item{mydf}{data.frame//table of indicators or variables to use}
+\item{mydf}{data.frame of indicators or variables to use}
 
 \item{formulas}{text strings of formulas}
 
-\item{keep}{etc.}
+\item{keep}{useful if some of the formulas are just interim steps
+creating evanescent variables created only for use in later formulas
+and not needed after that}
+}
+\value{
+data.frame of results, but
+if mydf was a data.table, returns a data.table
 }
 \description{
 DRAFT utility to use formulas provided as text, to calculate indicators

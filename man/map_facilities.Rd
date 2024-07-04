@@ -2,7 +2,7 @@
 % Please edit documentation in R/MAP_FUNCTIONS.R
 \name{map_facilities}
 \alias{map_facilities}
-\title{Map - Create leaflet map within EJAM shiny app}
+\title{Map - points - Create leaflet map of points, in shiny app}
 \usage{
 map_facilities(mypoints, rad = 3, highlight = FALSE, clustered)
 }
@@ -19,8 +19,8 @@ map_facilities(mypoints, rad = 3, highlight = FALSE, clustered)
 a leaflet map with circles, circleMarkers, and basic popup
 }
 \description{
-make a leaflet map of uploaded points
+make a leaflet map of uploaded points such as facilities
 }
 \seealso{
-\code{\link[=map_facilities_proxy]{map_facilities_proxy()}}
+\code{\link[=mapfast]{mapfast()}} \code{\link[=map_facilities_proxy]{map_facilities_proxy()}}
 }
