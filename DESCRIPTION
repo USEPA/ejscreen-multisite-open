@@ -1,7 +1,7 @@
 Package: EJAM
 Title: EJAM Environmental Justice Analysis Multisite tool
-Version: 2.2.1
-Author:  USEPA
+Version: 2.2.2
+Author: Mark Corrales <corrales.mark@epa.gov>
 Maintainer: Mark Corrales <corrales.mark@epa.gov>
 License: MIT + file LICENSE.md
 Description: Web app and R tools to easily summarize
@@ -12,8 +12,7 @@ Description: Web app and R tools to easily summarize
     Very fast identification of nearby blocks and distances, and 
     aggregation of indicators within each distance by site and overall.
     EJScreen indicators are included.
-URL: https://bookish-disco-p8oe8wq.pages.github.io/, https://github.com/USEPA/EJAM
-BugReports: https://github.com/USEPA/EJAM/issues/
+URL: https://usepa.github.io/EJAM/, https://github.com/USEPA/EJAM
 Depends: 
     R (>= 2.10),
     EJAMbatch.summarizer,
@@ -59,12 +58,23 @@ Imports:
 Suggests: 
     knitr,
     spelling,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    AOI,
+    datasets, 
+    fipio,
+    htmlwidgets, 
+    jsonlite,
+    leaflet.extras,
+    rnaturalearth,
+    rvest,
+    terra,
+    tidygeocoder,
+    units
 Config/testthat/edition: 3
 Encoding: UTF-8
 LazyData: true
 Language: en-US
 VignetteBuilder: knitr, rmarkdown
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 Roxygen: list(markdown = TRUE)
-Config/testthat/parallel: true
+Config/testthat/parallel: false

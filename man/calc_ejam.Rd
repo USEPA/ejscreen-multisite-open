@@ -24,3 +24,45 @@ DRAFT utility to use formulas provided as text, to calculate indicators
 \details{
 may be used by doaggregate_custom()
 }
+\examples{
+
+### example using just 10 block groups from 1 county in Delaware
+
+ c1 <- fips2countyname(fips_counties_from_state_abbrev('DE'), includestate = F)[1]
+ bgdf = data.frame(EJAM::blockgroupstats[ST == "DE" & countyname == c1, ])[1:10, ]
+
+ newdf <- calc_ejam(bgdf, keep.old = "",
+   formulas = c(
+     "my_custom_recalc_demog <- (pctlowinc + pctmin)/2",
+     "mystat2  = 100 * pctlowinc"))
+cbind(Demog.Index = bgdf$Demog.Index, newdf, pctlowinc = bgdf$pctlowinc)
+
+newdf <- calc_ejam(bgdf, formulas = formulas_d)
+newdf
+
+
+##  example of entire US
+#
+newdf1  <- calc_ejam(as.data.frame(bgdf), formulas = formulas_d)
+  t(summary(newdf1))
+
+bgdf <- data.frame(blockgroupstats)
+newdf <- calc_ejam(bgdf,
+                   keep.old = c('bgid', 'pop', 'hisp'),
+                   keep.new = "all",
+                   formulas = formulas_d
+)
+round(t(newdf[1001:1002, ]), 3)
+cbind(
+  newdf[1001:1031, c('hisp', 'pop', 'pcthisp')],
+  check = (newdf$hisp[1001:1031] / newdf$pop[1001:1031])
+  )
+## note the 0-100 percentages in blockgroupstats versus the 0-1 calculated percentages
+cbind(round(sapply(newdf, max, na.rm=T),2),
+names(newdf) \%in\% names_pct_as_fraction_blockgroupstats)
+
+EJAM:::formula_varname(formulas_d)
+
+rm(bgdf)
+
+}

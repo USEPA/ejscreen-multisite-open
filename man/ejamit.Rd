@@ -7,6 +7,7 @@
 ejamit(
   sitepoints,
   radius = 3,
+  radius_donut_lower_edge = 0,
   maxradius = 31.07,
   avoidorphans = FALSE,
   quadtree = NULL,
@@ -16,13 +17,16 @@ ejamit(
   popmeancols = NULL,
   calculatedcols = NULL,
   subgroups_type = "nh",
-  include_ejindexes = FALSE,
+  include_ejindexes = TRUE,
   calculate_ratios = TRUE,
   extra_demog = TRUE,
   need_proximityscore = FALSE,
   infer_sitepoints = FALSE,
   need_blockwt = TRUE,
-  threshold1 = 90,
+  thresholds = list(90, 90),
+  threshnames = list(c(names_ej_pctile, names_ej_state_pctile), c(names_ej_supp_pctile,
+    names_ej_supp_state_pctile)),
+  threshgroups = list("EJ-US-or-ST", "Supp-US-or-ST"),
   updateProgress = NULL,
   updateProgress_getblocks = NULL,
   in_shiny = FALSE,
@@ -30,13 +34,16 @@ ejamit(
   parallel = FALSE,
   silentinteractive = FALSE,
   called_by_ejamit = TRUE,
-  testing = FALSE
+  testing = FALSE,
+  ...
 )
 }
 \arguments{
 \item{sitepoints}{data.table with columns lat, lon giving point locations of sites or facilities around which are circular buffers}
 
 \item{radius}{in miles, defining circular buffer around a site point}
+
+\item{radius_donut_lower_edge}{radius of lower edge of donut ring if analyzing a ring not circle}
 
 \item{maxradius}{miles distance (max distance to check if not even 1 block point is within radius)}
 
@@ -72,8 +79,9 @@ the count of which is the exact denominator needed to correctly calculate percen
 
 \item{subgroups_type}{Optional (uses default). Set this to "nh" for non-hispanic race subgroups
 as in Non-Hispanic White Alone, nhwa and others in names_d_subgroups_nh;
-"alone" for EJScreen v2.2 style race subgroups as in White Alone, wa and others in names_d_subgroups_alone;
-"both" for both versions. Possibly another option is "original" or "default"}
+"alone" for race subgroups like White Alone, wa and others in names_d_subgroups_alone;
+"both" for both versions. Possibly another option is "original" or "default"
+Alone means single race.}
 
 \item{include_ejindexes}{whether to try to include EJ Indexes (assuming dataset is available) - passed to \code{\link[=doaggregate]{doaggregate()}}}
 
@@ -89,29 +97,35 @@ although a more accurate slower way would be to use reported distance of each of
 
 \item{need_blockwt}{if fips parameter is used, passed to \code{\link[=getblocksnearby_from_fips]{getblocksnearby_from_fips()}}}
 
-\item{threshold1}{percentile like 80 or 90 or 95 to compare percentiles to
-"alone" for groups like white alone (whether or not hispanic),
-"both" may try to include both,
-or possibly "original" or "default" might be added as options - passed to batch.summarize()}
+\item{thresholds}{list of percentiles like list(80,90) passed to
+batch.summarize() in the EJAMbatch.summarizer package, to be
+counted to report how many of each set of indicators exceed thresholds
+at each site. (see default)}
 
-\item{updateProgress}{progress bar function passed to doaggregate in shiny app}
+\item{threshnames}{list of groups of variable names (see default)}
 
-\item{updateProgress_getblocks}{progress bar function passed to getblocksnearby in shiny app}
+\item{threshgroups}{list of text names of the groups (see default)}
+
+\item{updateProgress}{progress bar function passed to \code{\link[=doaggregate]{doaggregate()}} in shiny app}
+
+\item{updateProgress_getblocks}{progress bar function passed to \code{\link[=getblocksnearby]{getblocksnearby()}} in shiny app}
 
 \item{in_shiny}{if fips parameter is used, passed to \code{\link[=getblocksnearby_from_fips]{getblocksnearby_from_fips()}}}
 
-\item{quiet}{Optional. set to TRUE to avoid message about using getblock_diagnostics(),
+\item{quiet}{Optional. set to TRUE to avoid message about using \code{\link[=getblocks_diagnostics]{getblocks_diagnostics()}},
 which is relevant only if a user saved the output of this function.}
 
-\item{parallel}{whether to use parallel processing in getblocksnearby() but may not be implemented yet.}
+\item{parallel}{whether to use parallel processing in \code{\link[=getblocksnearby]{getblocksnearby()}}, but not implemented yet.}
 
 \item{silentinteractive}{to prevent long output showing in console in RStudio when in interactive mode,
-passed to doaggregate() also. app server sets this to TRUE when calling doaggregate() but
-ejamit() default is to set this to FALSE when calling doaggregate().}
+passed to \code{\link[=doaggregate]{doaggregate()}} also. app server sets this to TRUE when calling doaggregate() but
+\code{\link[=ejamit]{ejamit()}} default is to set this to FALSE when calling \code{\link[=doaggregate]{doaggregate()}}.}
 
-\item{called_by_ejamit}{Set to TRUE by ejamit() to suppress some outputs even if ejamit(silentinteractive=F)}
+\item{called_by_ejamit}{Set to TRUE by \code{\link[=ejamit]{ejamit()}} to suppress some outputs even if ejamit(silentinteractive=F)}
 
 \item{testing}{used while testing this function}
+
+\item{...}{passed to getblocksnearby() etc. such as  report_progress_every_n = 0}
 }
 \value{
 A list of tables of results
@@ -124,53 +138,60 @@ or in a set of polygons from a shapefile, or in a list of Census Units like Coun
 \examples{
  # All in one step, using functions not shiny app:
  out <- ejamit(testpoints_100_dt, 2)
- 
+
  \dontrun{
  # Do not specify sitepoints and it will prompt you for a file,
  # if in RStudio in interactive mode!
  out <- ejamit(radius = 3)
- 
-  # Specify facilities or sites as points for test data, 
-  # use 1000 test facility points from the R package 
-  testsites <- testpoints_1000_dt
+
+  # Specify facilities or sites as points for test data,
+  # use 1000 test facility points from the R package
+  testsites <- testpoints_1000
   # use facility points in an excel or csv file
-  testsites <- latlon_from_anything(
-   "./inst/testdata/testpoints_207_sites_with_signif_violations_NAICS_326_ECHO.csv")
+   testsites <- latlon_from_anything(
+     system.file(paste0("testdata/latlon/",
+      "testpoints_207_sites_with_signif_violations_NAICS_326_ECHO.csv"),
+    package = "EJAM")
+    )
+   # head(testsites)
   # use facility points from a random sample of EPA-regulated facilities
-  testsites <- testpoints_n(1e3)  
-  
+  testsites <- testpoints_n(1e3)
+
   # Specify max distance from sites to look at (residents within X miles of site point)
   radius <- 3.1 # miles
-  
-  # Get summaries of all indicators near a set of points 
-  out <- ejamit(testsites, radius)  
-  # out <- ejamit("myfile.xlsx", 3.1)  
-  
+
+  # Get summaries of all indicators near a set of points
+  out <- ejamit(testsites, radius)
+  # out <- ejamit("myfile.xlsx", 3.1)
+
   # out2 <- ejscreenit(testpoints_5)
-  
+
   # View results overall
   round(t(out$results_overall), 3.1)
-  
+
   # View plots
-  # plot_distance_avg_by_group(out)  
-  # distance_by_group_plot(out)
-  
+   plot_distance_by_group(results_bybg_people = out$results_bybg_people)
+   distance_by_group(out$results_bybg_people)
+
   # View maps
   mapfast(out$results_bysite, radius = 3.1)
-  
+
   # view results at a single site
+  mapfast(out$results_bysite, radius = 3.1)
+  # all the raw numbers at one site
   t(out$results_bysite[1, ])
-  t(out$results_bysite[out$results_bysite$ejam_uniq_id == 2, ])
-  
-  
-  # if doing just 1st step of ejamit() 
+
+  # if doing just 1st step of ejamit()
   #  get distance between each site and every nearby Census block
-  s2b <- testdata_sites2blocks
-  s2b <- getblocksnearby(testsites, radius = radius)
-  s2b <- getblocksnearbyviaQuadTree(testsites, radius = radius)
+
+  s2b <- testoutput_getblocksnearby_100pts_1miles
+  getblocks_diagnostics(s2b)
+
+  testsites <- testpoints_10[2,]
+  s2b <- getblocksnearby(testsites, radius = 3.1)
   getblocks_diagnostics(s2b)
   plotblocksnearby(s2b)
-   
+
   # if doing just 2d step of ejamit()
   #  get summaries of all indicators based on table of distances
   out <- doaggregate(s2b, testsites) # this works now and is simpler

@@ -23,7 +23,7 @@
 options( "golem.app.prod" = FALSE)
 
 # EJAM::
-
+library(EJAM)
 run_app( )  # if EJAM is not installed and loaded and attached, how would a server running app.R know what this function is??
   # shiny does not actually source all the .R files until when, exactly? I dont think it would have by now? ***
   

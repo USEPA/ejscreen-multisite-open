@@ -2,14 +2,13 @@
 % Please edit documentation in R/mapfast.R
 \name{mapfastej}
 \alias{mapfastej}
-\title{Get a leaflet html widget map of data.frame with lat lon
-
-Like \code{\link[=mapfast]{mapfast()}} but with column_names = "ej"}
+\title{Map - points - Create leaflet html widget map of points using EJAM results with EJ stats}
 \usage{
 mapfastej(...)
 }
+\value{
+like what \code{\link[=mapfast]{mapfast()}} returns
+}
 \description{
-Get a leaflet html widget map of data.frame with lat lon
-
 Like \code{\link[=mapfast]{mapfast()}} but with column_names = "ej"
 }

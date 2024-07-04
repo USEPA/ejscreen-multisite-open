@@ -9,7 +9,8 @@ pctile_from_raw_lookup(
   myvector,
   varname.in.lookup.table,
   lookup = usastats,
-  zone = "USA"
+  zone = "USA",
+  quiet = TRUE
 )
 }
 \arguments{
@@ -32,6 +33,8 @@ To use state lookups set lookup=statestats}
 If specified, must appear in a column called REGION within the lookup table,
 or NA returned for each item looked up and warning given.
 For example, it could be "NY" for New York State, "USA" for national percentiles.}
+
+\item{quiet}{set to FALSE to see details on where certain scores were all NA values like in 1 state}
 }
 \value{
 By default, returns numeric vector length of myvector.
@@ -81,12 +84,12 @@ data.frame(value = eg, pctile = lookup_pctile(eg, names_d))
 
   # compare ejscreen API output percentiles to those from this function:
   for (vname in c(names_d[c(1,3:6,8:10)] )) {
-     print(pctile_from_raw_lookup(testoutput_ejscreenapi_plus_100[,vname] / 100, vname, 
-       lookup = usastats) 
+     print(pctile_from_raw_lookup(testoutput_ejscreenapi_plus_100[,vname] / 100, vname,
+       lookup = usastats)
        - testoutput_ejscreenapi_plus_100[,paste0("pctile.",vname)] )
   }
   for (vname in c(names_e )) {
-     print(pctile_from_raw_lookup(testoutput_ejscreenapi_plus_100[,vname], vname, 
+     print(pctile_from_raw_lookup(testoutput_ejscreenapi_plus_100[,vname], vname,
        lookup = usastats)
          - testoutput_ejscreenapi_plus_100[,paste0("pctile.",vname)] )
   }

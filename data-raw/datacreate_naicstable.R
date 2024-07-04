@@ -4,7 +4,7 @@
 # library(data.table)
 # EJAM::NAICS is where NAICS was
 
-naicstable <- data.table(code=as.vector(NAICS), name=names(NAICS))
+naicstable <- data.table(code = as.vector(NAICS), name = names(NAICS))
 naicstable[ , num_name := trimws(name)]
 naicstable[ , name := trimws(gsub(".* - ", "", name))]
 

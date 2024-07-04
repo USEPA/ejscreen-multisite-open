@@ -2,7 +2,7 @@
 % Please edit documentation in R/MAP_FUNCTIONS.R
 \name{map_shapes_leaflet}
 \alias{map_shapes_leaflet}
-\title{Map - Create a new leaflet map from shapefile data, in shiny app}
+\title{Map - polygons - Create leaflet map from shapefile, in shiny app}
 \usage{
 map_shapes_leaflet(shapes, color = "green", popup = shapes$NAME)
 }
@@ -17,5 +17,5 @@ map_shapes_leaflet(shapes, color = "green", popup = shapes$NAME)
 html widget from leaflet::leaflet()
 }
 \description{
-Map - Create a new leaflet map from shapefile data, in shiny app
+Map - polygons - Create leaflet map from shapefile, in shiny app
 }

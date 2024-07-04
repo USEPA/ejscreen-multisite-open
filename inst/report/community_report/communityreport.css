@@ -48,39 +48,111 @@
   color: white;
   }
   
-  #header-secondary-background { 
-  background-color: #71bf44;
-  width: 1090px;
-  /*width: 90%;*/
-  height: 210px;
-  display: inline-block;
-  position: absolute;
-  /*top: var(--shift_hsb);630px;*/
-  left: 100px;
-  border-radius: 0 0 50px 0;
-  }
-  
   #header-primary-background { 
-  background-color: #0e98d7;
-  width: 1079px;
-  /*width: 90%;*/
-  height: 220px;
+  background-color: #005ea2;
+  width: 100%;
+  height: fit-content;
   display: inline-block;
   border-radius: 0 0 50px 0;
-  position: absolute;
+  position: relative;
   /*top: var(--shift_hpb); /*600px;*/
-  left: 100px;
+  box-shadow: 5px 5px #71bf44;
+  margin: 1em 0px
   }
   
-  #header-background-detail { 
-  display: inline-block;
-  width: 35px;
-  height: 30px;
-  position: absolute;
-  left: 1179px;
-  /*top: var(--shift_hbd); /*560px;*/
-  background-color: white;
+  
+    #header-primary-background-inner {
+    display: flex;
+    flex-direction: column;
+    padding: 20px 30px;
+    }
+  
+  #header-primary-background-inner h1 {
+    color: white; 
+    font-size: 1.5em;
+    align-self: flex-start;
+    line-height: 1em;
+    
+    @media screen and (max-width:768px) {
+    font-size: 1.25em;
   }
+  }
+  
+  #header-primary-background-inner p, #page-3-header h2 {
+color: white;
+font-size: 1em;
+text-align: center;
+padding-left: 30px;
+align-self: flex-start;
+margin: 0;
+
+  }
+  
+#header-primary-background img {
+color: white;
+position: absolute;
+left: 70%;
+height: fit-content;
+width: 4em;
+
+  }
+  
+  .header {
+    position: relative;
+    width: 100%;
+    font-weight: bold;
+    background-color: #005ea2;
+    color: white; 
+    height: auto;
+    display: flex;
+    align-items: center;
+    height: fit-content;
+    padding: 1em 0;
+    flex-wrap: wrap;
+    justify-content: center;
+
+  }
+  
+  .header div {
+    flex: 1;
+    margin: 0 1em;
+  }
+  
+  .header h2 {
+    font-size: 3em;
+    padding-left: 2vw;
+    max-width: 1000px;
+    line-height: 1em;
+    text-align: center;
+    margin: 0;
+        white-space: normal;
+    word-wrap: normal;
+       @media screen and (max-width:768px) {
+  }
+  }
+  
+  .header h5 {
+    font-family: heebo, Arial, sans-serif;
+    text-align: center;
+    font-size: 1em;
+    margin: 0;
+  }
+
+  
+  #page-2-header p, #page-2-header h2 {
+    text-align: center;
+    width: 100%;
+  }
+  
+  #page-3-header  {
+     margin-top: .5em;
+  }
+  
+   #page-3-header h2 {
+    text-align: center;
+    padding-left: 20px;
+  }
+  
   
   .linear-bar-chart .apexcharts-legend {
     background-color: #cfcfcf;
@@ -93,12 +165,12 @@
   .color-alt-table { 
       border-collapse: collapse;
       font-family: Oswald, Arial, sans-serif;
-      width: 90%;
+      width: 100%;
       margin: 30px auto;
     }
   
   .color-alt-table-title { 
-    font-size: 25px;
+    font-size: 22px;
     font-family: Oswald, Arial, sans-serif;
     text-align: center;
     text-transform: uppercase;
@@ -106,12 +178,12 @@
   }
   
   .color-alt-table-title th {
-    padding: 10px 0; 
+    padding: 2.5px 0; 
   }
   
   /* every data cell */
     .color-alt-table td {
-      font-size: 16px;
+      font-size: 12px;
       font-weight: normal;
     }
   
@@ -121,6 +193,14 @@
     border: 2px solid black;
   }
   
+    .color-alt-table tbody tr:nth-child(odd) td {
+      background-color: rgba(76,76,76,0.1)
+    }
+    
+    .color-alt-table tbody tr:nth-child(even) td {
+      background-color: rgba(76,76,76,0.02);
+    }
+  
   /* header cells */
     .color-alt-table-header th {
       font-family: Oswald, Arial, sans-serif;
@@ -128,9 +208,9 @@
         border: 2px solid black;
       text-transform: uppercase;
       font-weight: bolder;
-      font-size: 17px;
+      font-size: 15px;
       line-height: 19px;
-      padding: 5px 5px 5px 10px;
+      padding: 2px 2px 2px 5px;
     }
   .color-alt-table-header th:first-of-type {
     text-align: left;
@@ -143,8 +223,8 @@
         border: 2px solid black;
       text-transform: uppercase;
       font-weight: bolder;
-      font-size: 14px;
-      padding-left: 10px;
+      font-size: 12px;
+      padding-left: 5px;
     }
   .color-alt-table-subheader th:first-of-type {
     text-align: left;
@@ -163,7 +243,7 @@
   /* first column only */
     .color-alt-table tr td:first-of-type { 
       text-align: left;
-      padding-left: 10px;
+      padding-left: 5px;
     }
   
   /* all columns but the first */
@@ -181,16 +261,16 @@
     }
   
   h1 {
-    font-family: Arial, sans-serif;
-    font-size: 60px;
+    /*font-family: Arial, sans-serif;*/
+    font-size: 45px;
     font-style: normal;
     font-variant: normal;
     font-weight: 900;
     line-height: 23px;
   }
   
-  h2 {
-    font-family: Arial, sans-serif;
+  h2:not(.title-panel h2) {
+    /*font-family: Arial, sans-serif;*/
     font-size: 25px;
     font-style: normal;
     font-variant: normal;
@@ -198,9 +278,13 @@
     line-height: 23px;
   }
   
+  .title-panel h2 {
+    font-size: 25px;
+  }
+  
   h3 {
-    font-family: Arial, sans-serif;
-    font-size: 17px;
+    /*font-family: Arial, sans-serif;*/
+    font-size: 15px !important;
     font-style: normal;
     font-variant: normal;
     font-weight: 700;
@@ -208,8 +292,8 @@
   }
   
   h4 {
-    font-family: Arial, sans-serif;
-    font-size: 13.5px;
+    /*font-family: Arial, sans-serif;*/
+    font-size: 14px;
     font-style: normal;
     font-variant: normal;
     font-weight: 700;
@@ -217,15 +301,25 @@
   }
   
   p {
-    font-family: Arial, sans-serif;
+    /*font-family: Arial, sans-serif;*/
     font-style: normal;
     font-variant: normal;
     font-weight: 400;
     line-height: 23px;
   }
   
+  li, p, label, input, button, a, .selectize-input, .selectize-dropdown-content, .shiny-output-error, #an_map_text, .help-block {
+    font-size: 13.5px !important;
+  }
+
+.navbar1 .container {
+  width: 100%;
+}
+  
+}
+  
   blockquote {
-    font-family: Arial, sans-serif;
+    /*font-family: Arial, sans-serif;*/
     font-size: 17px;
     font-style: normal;
     font-variant: normal;
@@ -234,13 +328,35 @@
   }
   
   pre {
-    font-family: Arial, sans-serif;
+    /*font-family: Arial, sans-serif;*/
     font-size: 11px;
     font-style: normal;
     font-variant: normal;
     font-weight: 400;
     line-height: 23px;
   }
+  
+  .site-logo__image {
+    padding-bottom: 0px;
+  }
+  
+  .tab-content {
+    margin-left: 0px;
+    margin-right: 0px;
+  }
+  
+  .nav>li>a {
+    padding: 5px 10px;
+  }
+  
+  .about-EJAM-span {
+    margin: 1em 0;
+  }
+  
+  hr {
+    margin: 1em 0 !important;
+  }
+  
   
   
   /* ---------- table with leader lines (.....)  CSS ------------ */
@@ -308,7 +424,7 @@ border-radius: 0 0 50px 0;
 }
 
 #header-primary-background { 
-background-color: #0e98d7;
+background-color: #005ea2;
   width: 1060px;
 height: 220px;
 display: inline-block;

@@ -8,6 +8,7 @@ getblocksnearby(
   sitepoints,
   radius = 3,
   maxradius = 31.07,
+  radius_donut_lower_edge = 0,
   avoidorphans = FALSE,
   quadtree = NULL,
   quiet = FALSE,
@@ -21,6 +22,8 @@ getblocksnearby(
 \item{radius}{in miles, defining circular buffer around a site point}
 
 \item{maxradius}{miles distance (max distance to check if not even 1 block point is within radius)}
+
+\item{radius_donut_lower_edge}{radius of lower edge of ring if analyzing ring not full circle}
 
 \item{avoidorphans}{logical If TRUE, then where not even 1 BLOCK internal point is within radius of a SITE,
 it keeps looking past radius, up to maxradius, to find nearest 1 BLOCK.
@@ -44,6 +47,10 @@ It can be automatically created when the package is attached via the .onAttach()
 which is relevant only if a user saved the output of this function.}
 
 \item{...}{passed to \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} or other such functions}
+}
+\value{
+data.table like testoutput_getblocksnearby_10pts_1miles, with
+columns named "ejam_uniq_id", "blockid", "distance", etc.
 }
 \description{
 Get distance from each site (e.g., facility) to each
@@ -73,5 +80,5 @@ and they are like centroids.
 The blocks are pre-indexed for the whole USA, via the data object quadtree aka localtree
 }
 \seealso{
-\code{\link[=ejamit]{ejamit()}}  \code{\link[=getblocksnearbyviaQuadTree]{getblocksnearbyviaQuadTree()}} \code{\link[=getblocksnearbyviaQuadTree_Clustered]{getblocksnearbyviaQuadTree_Clustered()}} \code{\link[=getblocksnearbyviaQuadTree2]{getblocksnearbyviaQuadTree2()}}
+\code{\link[=ejamit]{ejamit()}} \code{\link[=getblocksnearby_from_fips]{getblocksnearby_from_fips()}} \code{\link[=get_blockpoints_in_shape]{get_blockpoints_in_shape()}}
 }

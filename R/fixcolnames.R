@@ -23,7 +23,7 @@
 #' @param mapping_for_names default is a dataset already in the package.
 #'   A data.frame passed to [fixnames()] to do the work
 #'   with columns oldnames (original), longname_tableheader (long), newnames_ejscreenapi (friendly)
-#' @seealso varinfo() from EJAM pkg, and [fixnames_to_type()] [fixcolnames()] [fixnames()]
+#' @seealso [varinfo()]
 #' @return Vector or new column names same length as input
 #' @examples  # see package tests
 #'   fixcolnames(c("RAW_D_INCOME", "S_D_LIFEEXP")) # assumes it was in original format as API outputs

@@ -23,5 +23,8 @@ FIPS - Get county or state names from county or state FIPS codes
 \examples{
   fips2name(fips_counties_from_state_abbrev(c("AK", "LA"))  )
   fips2name(c(22, 02013))  # can have mix where some are a whole state and others are a county.
-  
+
+}
+\seealso{
+\code{\link[=countyname2fips]{countyname2fips()}}
 }

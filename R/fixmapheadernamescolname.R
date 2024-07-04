@@ -8,6 +8,8 @@
 #' @examples 
 #'   fixmapheadernamescolname(c('long', 'csv', 'api', 'r'))
 #' 
+#' @seealso [varinfo()]
+#' 
 #' @keywords internal
 #'
 fixmapheadernamescolname <- function(x) {

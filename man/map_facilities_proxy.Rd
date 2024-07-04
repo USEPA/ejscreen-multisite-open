@@ -2,7 +2,7 @@
 % Please edit documentation in R/MAP_FUNCTIONS.R
 \name{map_facilities_proxy}
 \alias{map_facilities_proxy}
-\title{Map - Update leaflet map within EJAM shiny app}
+\title{Map - points - Update leaflet map of points, in shiny app}
 \usage{
 map_facilities_proxy(
   mymap,
@@ -30,7 +30,7 @@ map_facilities_proxy(
 a leaflet map with circles, circleMarkers, and basic popup
 }
 \description{
-update a leaflet map within the EJAM shiny app with uploaded points.
+update a leaflet map within the EJAM shiny app with uploaded points such as facilities
 }
 \seealso{
 \code{\link[=map_facilities]{map_facilities()}}

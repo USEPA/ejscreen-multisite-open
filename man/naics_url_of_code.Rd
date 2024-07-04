@@ -15,3 +15,6 @@ vector of URLs as strings like https://www.naics.com/six-digit-naics/?v=2017&cod
 \description{
 See (https://naics.com) for more information on NAICS codes
 }
+\seealso{
+\code{\link[=naics_from_any]{naics_from_any()}} \code{\link[=naics_findwebscrape]{naics_findwebscrape()}}
+}

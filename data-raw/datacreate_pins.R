@@ -12,20 +12,28 @@
 # ~ ####
 #################################################################### #
 
-# GET DATASETS ####
-# 
-# Get them manually from where created. 
+# UPDATE OR GET DATASETS ####
 
-##################################### # 
+library(EJAM)
+library(pins)
 
-# blockwts etc.####
+## 1st update/ create (or just read in) latest versions of datasets 
+## using scripts as listed in  
+#      EJAM/data-raw/datacreate_0_REGULAR_UPDATES_NOTES.R
+## or 
+## e.g. read from local data folder or wherever
+# load('data/blockgroupstats.rda')  etc.
+### or 
+# dataload_from_local("all") 
+### or
+### assuming newest versions are on pins board ! 
+# dataload_from_pins("all", ignorelocal = TRUE)
 
-#  The block datasets were created as explained in
-#  EJAM/data-raw/datacreate_blockwts.R  and other code.
+############################################################### #
 
 # bgej ####
 #
-#  bgej as rda was here but now is .arrow in pins board
+#  bgej was rda  here, but now is .arrow in pins board
 # https://github.com/USEPA/EJAM/blob/8b156cc867b8d2f59aa81891113e61af8db2a7bb/data/bgej.rda
 # https://github.com/USEPA/EJAM/raw/8b156cc867b8d2f59aa81891113e61af8db2a7bb/data/bgej.rda
 # load("~/../Downloads/bgej.rda")
@@ -45,6 +53,39 @@
 # (frsprogramcodes.rda is tiny and not a table so cannot use .arrow for it and not in pins board
 #  - see EJAM/data-raw/datacreate_frsprogramcodes.R )
 
+#################################################################### #
+
+stop()
+####################################################### #
+# assuming newest versions are on pins board ! 
+dataload_from_pins("all", ignorelocal = TRUE)
+
+#         save_huge_data_files
+# script to put all datasets from pins into a data folder in 
+# EJAM-opensource repository/package
+
+# To update a particular local folder, e.g.:
+
+setwd("./../EJAM-opensource/data")
+
+setwd("~/../Downloads/EJAMbigfiles")
+
+arrow::write_ipc_file(blockwts,     "blockwts.arrow")
+arrow::write_ipc_file(blockpoints,  "blockpoints.arrow")
+arrow::write_ipc_file(blockid2fips, "blockid2fips.arrow")
+arrow::write_ipc_file(quaddata,     "quaddata.arrow")
+
+arrow::write_ipc_file(bgej,         "bgej.arrow")
+arrow::write_ipc_file(bgid2fips,    "bgid2fips.arrow")
+
+arrow::write_ipc_file(frs,              "frs.arrow")
+arrow::write_ipc_file(frs_by_programid, "frs_by_programid.arrow")
+arrow::write_ipc_file(frs_by_naics,     "frs_by_naics.arrow")
+arrow::write_ipc_file(frs_by_sic,       "frs_by_sic.arrow")
+arrow::write_ipc_file(frs_by_mact,      "frs_by_mact.arrow")
+
+####################################################### #
+
 
 #################################################################### #
 
@@ -56,11 +97,37 @@ board <- pins::board_connect(auth = "auto")   # uses  "rsconnect"
 # confirm you can see it:
 board %>% pins::pin_browse("Mark")
 
+## connect to board linked to posit connect
+
+board <- board_connect(versioned = TRUE)
+
+## other options for creating boards: 
+## board_local() - link to local file folder
+## board_folder() - link to dropbox or network drive
+## board_s3() - link to S3 bucket, such as EPA Data commons
+## board_url() - build board from data URLs, allow read-only access to datasets
+############################################################### #
+
+## list all datasets in a board
+pin_list(board = board)
+
+## print board or dataset metadata
+board
+# pin_meta(board = board, name = 'blockgroupstats_rds')
+
+## show versions of a dataset
+# pin_versions(board = board, name = 'blockgroupstats_rds')
+
+## read datasets back in from the board
+# system.time({bgstats <- board %>% pin_read('blockgroupstats_rds')})
+# system.time({bgstats <- board %>% pin_read('blockgroupstats_arrow')})
+
+
 #################################################################### #
 # WRITE DATA TO BOARD ####
+#################################################################### #
 
-## frs and frs_by_programid ####
-#   create frs-related ones here too:
+## FRS DATA   ####
 
 board %>% 
   pins::pin_write(x = frs, 
@@ -99,7 +166,8 @@ board %>%
   )
 ################### # 
 
-#                               note   bgej  was a tibble but replaced 12/5/23 with as.data.frame(bgej) version
+# BLOCKGROUP DATA             note   bgej  was a tibble but replaced 12/5/23 with as.data.frame(bgej) version
+
 board %>% 
   pins::pin_write(x = bgej, 
             name = "bgej", type = "arrow", 
@@ -115,6 +183,10 @@ board %>%
             description = "data.table of approx 242k blockgroups with Census FIPS for each blockgroup ID - See documentation in EJAM package", 
             versioned = TRUE, metadata = list(upload_date = Sys.Date(), ejscreen_version = "2.2")
   )
+################### # 
+
+# BLOCKS DATA
+
 board %>% 
   pins::pin_write(x = blockid2fips, 
             name = "blockid2fips", type = "arrow", 
@@ -143,6 +215,7 @@ board %>%
             description = "data.table of approx 8 million Census blocks with blockid, bgid, blockwt, block_radius_miles - See documentation in EJAM package", 
             versioned = TRUE, metadata = list(upload_date = Sys.Date(), ejscreen_version = "2.2")
   )
+################### # 
 
 
 ############################################################### # 
@@ -164,7 +237,7 @@ board %>% pins::pin_browse("Mark/frs")
 # Note user needs own Posit Connect API key if not accessible by all on network, but should be accessible by all on network as configured as of 12/2023 
 
 ### via URL ####
-# if Mark is logged in and has api key etc already, 
+# if logged in and have api key etc already, 
 # this does work to download it: 
 # https://rstudio-connect.dmap-stage.aws.epa.gov/content/343456d8-d580-47e1-87f2-1ec95ad7f792/_rev1116/bgej.arrow
 

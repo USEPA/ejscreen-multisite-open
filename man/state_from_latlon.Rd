@@ -27,7 +27,7 @@ Takes 3 seconds to find state for 1k points, so a faster alternative would be us
  pts[, ST := state_from_latlon(lat=lat, lon = lon)$ST]
  #map these points
  mapfast(pts[ST == 'TX',], radius = 1) # 1 miles radius circles
- 
+
 }
 \seealso{
 \link{states_shapefile} \code{\link[=get_blockpoints_in_shape]{get_blockpoints_in_shape()}} \code{\link[=states_infer]{states_infer()}}

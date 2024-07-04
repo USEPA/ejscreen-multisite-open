@@ -7,7 +7,8 @@
 fips_counties_from_statename(statename)
 }
 \arguments{
-\item{statename}{vector of state names like c("New York","Georgia")}
+\item{statename}{vector of state names like c("New York","Georgia"),
+ignoring case}
 }
 \value{
 vector of 5-digit character string county FIPS of all unique counties in those states
@@ -17,5 +18,5 @@ FIPS - Get ALL county fips in specified states
 }
 \examples{
 fips_counties_from_statename("Delaware")
-  
+
 }

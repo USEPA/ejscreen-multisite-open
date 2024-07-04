@@ -4,10 +4,13 @@
 
 # does it work?
 test_that('lookup works correctly',{
+  suppressWarnings({
+    
   expect_no_warning({val <- state_from_latlon("18", "-66")})
   expect_equal(val$statename, "Puerto Rico")
   expect_no_warning(val <- state_from_latlon(18, -66))
   expect_equal(val$statename, "Puerto Rico")
+  })
 })
 
 # add warning that lat long are not in the states (empty dataframe)

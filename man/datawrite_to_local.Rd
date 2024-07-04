@@ -5,7 +5,8 @@
 \title{Save datasets during package development}
 \usage{
 datawrite_to_local(
-  varnames = c("bgid2fips", "blockid2fips", "blockpoints", "blockwts", "quaddata"),
+  varnames = c("blockwts", "blockpoints", "blockid2fips", "quaddata", "bgej",
+    "bgid2fips", "frs", "frs_by_programid", "frs_by_naics", "frs_by_sic", "frs_by_mact"),
   ext = c(".arrow", ".rda")[1],
   folder_local_source = "~/../Downloads",
   fun = c("arrow::write_ipc_file", "save")[1],

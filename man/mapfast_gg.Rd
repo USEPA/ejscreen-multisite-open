@@ -2,7 +2,7 @@
 % Please edit documentation in R/MAP_FUNCTIONS.R
 \name{mapfast_gg}
 \alias{mapfast_gg}
-\title{Map - ggplot2 map of points in the USA - very basic map}
+\title{Map - points - ggplot2 map of points in the USA - very basic map}
 \usage{
 mapfast_gg(
   mydf = data.frame(lat = 40, lon = -100)[0, ],
@@ -30,18 +30,18 @@ mapfast_gg(
 a ggplot() object
 }
 \description{
-Map - ggplot2 map of points in the USA - very basic map
+Map - points - ggplot2 map of points in the USA - very basic map
 }
 \examples{
 \dontrun{
   mapfast_gg(EJAM::testpoints_10)
-  
+
   pts <- read.table(textConnection(
-  "lat lon 
-  39.5624775 -119.7410994 
+  "lat lon
+  39.5624775 -119.7410994
   42.38748056 -94.61803333"
   ),
-  header = TRUE, 
+  header = TRUE,
   as.is = TRUE
   )
   mapfast_gg(pts)

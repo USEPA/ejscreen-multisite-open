@@ -22,5 +22,5 @@ tells if variable is "Demographic" "Environmental" "EJ Index" or "other"
 as from dput(unique(map_headernames$varcategory))
 }
 \seealso{
-\code{\link[=vartype_cat2color_ejam]{vartype_cat2color_ejam()}} \code{\link[=varname2color_ejam]{varname2color_ejam()}}
+\code{\link[=varinfo]{varinfo()}} \code{\link[=vartype_cat2color_ejam]{vartype_cat2color_ejam()}} \code{\link[=varname2color_ejam]{varname2color_ejam()}}
 }

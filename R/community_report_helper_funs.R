@@ -99,7 +99,7 @@ fill_tbl_full <- function(output_df) {
   
   full_html <- ''
   
-  tbl_head <- '<table id=\"data-indicators-table\"        class=\"color-alt-table\"  summary=\"EJScreen environmental and socioeconomic indicators data\">
+  tbl_head <- '<table id=\"data-indicators-table\" class=\"color-alt-table\" style=\"margin-top: 0;\"  summary=\"EJScreen environmental and socioeconomic indicators data\">
   <thead id=\"data-indicators-table-header\" class=\"color-alt-table-header\">
   <tr>
   <th id=\"data-indicators-table-selected-variables\" scope=\"col\">SELECTED VARIABLES</th>
@@ -367,11 +367,9 @@ fill_tbl_full_subgroups <- function(output_df) {
   
   full_html <- paste(full_html, tbl_head3, collapse = '\n')
   
-  var_values_d_lim <- c('PCT_HLI_SPANISH_LI','PCT_HLI_IE_LI',
-                        'PCT_HLI_API_LI','PCT_HLI_OTHER_LI')
-  
-  var_names_d_lim <- c('Speak Spanish', 'Speak Other Indo-European Languages',
-                       'Speak Asian-Pacific Island Languages', 'Speak Other Languages')
+  var_values_d_lim <- c("pctspanish_li", "pctie_li", "pctapi_li", "pctother_li")
+  var_names_d_lim <- fixcolnames(var_values_d_lim, 'r', 'shortlabel')
+  # c('Speak Spanish', 'Speak Other Indo-European Languages','Speak Asian-Pacific Island Languages', 'Speak Other Languages')
   
   tbl_rows_d_lim <- sapply(seq_along(var_values_d_lim), function(x) {
     fill_tbl_row_subgroups(output_df,
@@ -413,11 +411,9 @@ generate_html_header <- function(analysis_title, totalpop, locationstr, in_shiny
     shift_hbd <- 0
   }
   
-  # img_html <- paste0('<img src="',app_sys('report/community_report/EPA_logo_white.png'),
-  #                    '" alt="EPA logo" width="110" height="35" style="position: absolute; left: 950px; top: ',shift_hbd+90,'px">')
-  #
-  img_html <- paste0('<img src=\"', 'www/EPA_logo_white.png',
-                     '\" alt=\"EPA logo\" width=\"110\" height=\"35\" style=\"position: absolute; left: 820px; top: ', shift_hbd + 50, 'px\">')
+  
+  img_html <- paste0('<img src=\"', 'www/EPA_logo_white_2.png',
+                     '\" alt=\"EPA logo\" width=\"110\" height=\"35\">')
   
   paste0('
   <link href=\"https://fonts.googleapis.com/css2?family=Heebo:wght@500;600\" rel=\"stylesheet\">
@@ -425,21 +421,22 @@ generate_html_header <- function(analysis_title, totalpop, locationstr, in_shiny
   <link href=\"https://fonts.googleapis.com/css2?family=Noto+Sans&amp;display=swap\" rel=\"stylesheet\">
 
  <link rel=\"stylesheet\"  type=\"text/css\" media=\"all\" href=\"communityreport.css\" />
-<div id=\"header-secondary-background\" ', 'style=\"top: ', shift_hsb, 'px;\"', '></div>
-<div id=\"header-primary-background\" ', 'style=\"top: ', shift_hpb, 'px;\"','></div>
-<div id=\"header-background-detail\" ', 'style=\"top: ', shift_hbd, 'px;\"','></div>',
-img_html,
-'<h1 id=\"title\" tabindex=\"0\" style=\"white-space: nowrap; position: absolute; color: white;left: 140px; top: ',shift_hbd + 80,'px\">EJAM Community Report</h1>
-<p style=\"color: white;position: absolute;font-family: heebo, Arial, sans-serif; font-size: 20px; top: ',shift_hbd + 170,'px; left: 240px; text-align: center; white-space: nowrap;\">This report provides environmental and socioeconomic information for user-defined areas,<br> and combines that data into environmental justice and supplemental indexes.</p>
-<div class=\"header\" style=\"margin-top: 302px; width: 100%; font-weight: bold; background-color: #0e98d7;color: white;height: 115px;clear: both;\">
-<div style=\"width: 45%; float:left\">
-<h2 id=\"placename\" style=\"font-size: 45px;padding-left: 50px;max-width: 1000px;line-height: 1.15em;text-align: center;max-height: 115px;margin: 0;\">', analysis_title , '</h2>
-</div>',
-'<div style=\"width: 55%; float:right\">
-   <h5 style=\"font-family: heebo, Arial, sans-serif;text-align: center;font-size: 22px;line-height: 29px;text-align: center;\">',locationstr,'<br>','Population: <span id=\"TOTALPOP\">',totalpop,'</span><br>','</h5>
+<div id=\"header-primary-background\">
+', img_html, '
+<div id=\"header-primary-background-inner\">
+         <h1 id="title" tabindex="0">EJAM Community Report</h1>
+<p>This report provides environmental and socioeconomic information for user-defined areas,<br> and combines that data into environmental justice and supplemental indexes.</p>
 </div>
 </div>
-', sep = '', collapse = '')
+
+<div class="header">
+    <div>
+        <h2 id="placename">', analysis_title , '</h2>
+    </div>
+    <div>
+        <h5>', locationstr, '<br>Population: <span id="TOTALPOP">', totalpop, '</span><br></h5>
+    </div>
+</div>', sep = '', collapse = '')
   # Population: <span id=\"TOTALPOP\">',totalpop,'</span><br>',
 }
 ################################################################### #
@@ -450,7 +447,7 @@ img_html,
 #' @keywords internal
 #'
 generate_demog_header <- function() {
-  '<div id=\"page-3-header\" class=\"header\" style=\"background-color: #0e98d7; color: white; height: 85px; clear: both; margin-top: 7px;\"><h2 tabindex=\"12\" style=\"text-align: center; padding-top: 35px; font-size: 32px; padding-left: 20px;\">Environmental and Socioeconomic Indicators Data</h2></div>'
+  '<h3 tabindex=\"12\">Environmental and Socioeconomic Indicators Data</h3>'
 }
 ################################################################### #
 
@@ -461,8 +458,8 @@ generate_demog_header <- function() {
 #'
 generate_ej_header <- function() {
   '<br>
- <div id=\"page-2-header\" class=\"header\" style=\"background-color: #0e98d7; color: white; text-align: center; padding: 20px 32px 10px 32px; margin: 10px 0 -23px 0;\">
-            <h2 tabindex=\"8\" style=\"font-size: 30px; margin-bottom: -5px\">Environmental Justice & Supplemental Indexes</h2>
+ <div id=\"page-2-header\" class=\"header\" style=\"background-color: #005ea2;  color: white; text-align: center; padding: 20px 32px 10px 32px;\">
+            <h2 tabindex=\"8\" style=\"font-size: 18px; margin-bottom: 5px\">Environmental Justice & Supplemental Indexes</h2>
             <p style=\"font-family: Oswald, Arial, sans-serif; font-size: 15px; padding-left: 20px;\">The environmental justice and supplemental indexes are a combination of environmental and socioeconomic information. There are thirteen EJ indexes and supplemental indexes in EJScreen reflecting the 13 environmental indicators. The indexes for a selected area are compared to those for all other locations in the state or nation. For more information and calculation details on the EJ and supplemental indexes, please visit the <a tabindex=\"9\" href=\"https://www.epa.gov/ejscreen\" style=\"color: white\">EJScreen website</a>. </p>
         </div>
         <div style=\"background-color: #71bf44; color: white; text-align: center; padding: 0 32px 7px 32px;\">
@@ -474,7 +471,7 @@ generate_ej_header <- function() {
 
 
 #' Build header for EJ supp indexes in community report
-#'
+#'!
 #' @keywords internal
 #'
 generate_ej_supp_header <- function() {

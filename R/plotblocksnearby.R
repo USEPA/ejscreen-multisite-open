@@ -155,6 +155,11 @@ plotblocksnearby <- function(sitepoints, radius=3, sites2blocks, siteidvarname =
     # Put site point(s) (which have lat,lon) and surrounding block points (which have blocklat,blocklon) into one table
     setDT(sitepoints) # not sure this is needed
     x <- copy(sitepoints)
+    if ("blockid" %in% names(x)) {
+      setnames(x, "blockid", "blockid.of.site")
+    } else {
+      # x$blockid.of.site <- NA
+    }
     if (siteidvarname %in% names(x)) {
       if (!all(as.vector(unlist(x[ , ..siteidvarname])) == 1:NROW(x))) {
         warning(paste0("siteidvarname specified ('", siteidvarname,"') is already a colname of sitepoints, but note it is not equal to rownumbers as assumed by getblocksnearby()"))
@@ -182,18 +187,29 @@ plotblocksnearby <- function(sitepoints, radius=3, sites2blocks, siteidvarname =
     if (!zeronearby) {
       # BLOCKS SURROUNDING A SITE
       xb <- copy(x)
+      xb[ , blockcount_near_site := .N, by = siteidvarname]
+      if ("blockid.of.site" %in% names(xb)) {xb$blockid.of.site <- NULL}
       xb[, lat := blocklat]
       xb[, lon := blocklon]
       xb <- unique(xb)
+      
     }
     if (really_sitepoints) {
       
       # SITE AT CENTER OF A CIRCLE
       xpt <- copy(x)
+      xpt[ , blockcount_near_site := .N, by = siteidvarname]
       xpt <- xpt[ !duplicated(xpt[ , .(lat,lon)]),] # only one point per siteidvarname, since the block coordinates in x had been named blocklat, blocklon, so the lat,lon here were just the site coordinates
       xpt$distance <- 0
       xpt$bgid    <- NA
-      xpt$blockwt <- NA; xpt$blockid  <- NA; xpt$blocklat <- NA; xpt$blocklon <- NA
+      xpt$blockwt <- NA
+      if ("blockid.of.site" %in% names(xpt)) {
+        xpt$blockid  <- xpt$blockid.of.site
+        xpt$blockid.of.site <- NULL
+      } else {
+        xpt$blockid <- NA
+      }
+      xpt$blocklat <- NA; xpt$blocklon <- NA
       if (zeronearby) {
         mapinfo <- xpt
       } else {
@@ -209,7 +225,7 @@ plotblocksnearby <- function(sitepoints, radius=3, sites2blocks, siteidvarname =
           warning("cannot find blockid2fips")
           blockid2fips <- data.table(blockid = NA, blockfips = NA)
         }
-        }
+      }
       mapinfo[blockid2fips, blockfips := blockfips, on = "blockid"]
       mapinfo[ , bgfips := substr(blockfips, 1, 12)]
       mapinfo[blockgroupstats, bgpop := pop, on = 'bgid']
@@ -228,11 +244,11 @@ plotblocksnearby <- function(sitepoints, radius=3, sites2blocks, siteidvarname =
     }
     # Map popup info for each site (if available) and blocks surrounding the site
     vnames <- c('blockfips', 'blockid', 'blocklat', 'blocklon', 
-                'distance', 'distance_unadjusted', 'radius.miles', 'block_radius_miles',
+                'distance', 'distance_unadjusted', 'radius.miles', # 'block_radius_miles',
                 'blockwt', 'blockpop', 'pop_nearby',
-                 'bgpop', 'bgfips', 'bgid',   #, names_d, names_d_subgroups, names_e,   # for blockgroup
-                 'ejam_uniq_id', 'blockcount_near_site'       # for site
-                )
+                'bgpop', 'bgfips', 'bgid',   #, names_d, names_d_subgroups, names_e,   # for blockgroup
+                'ejam_uniq_id', 'blockcount_near_site'       # for site
+    )
     vnames <- intersect(vnames, colnames(mapinfo))
     z <- leaflet::addCircles(z, lat = mapinfo$lat, lng = mapinfo$lon, fillOpacity = 0.1, 
                              popup = popup_from_df(setDF(mapinfo), column_names = vnames), radius = 10)

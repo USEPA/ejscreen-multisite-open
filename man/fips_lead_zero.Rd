@@ -18,6 +18,12 @@ It does NOT check if FIPS is valid other than checking its length.
 fips could be a state, county, tract, blockgroup, or block FIPS code.
 }
 \examples{
-fips_lead_zero(c(1,"01",1234,"1234","12345",123456))
+testfips1 <- c(1,"01",1234,"1234","12345",123456)
+testfips <- c(1, "1", "12", "123", "1234", "12345", "", NA, "words")
+fips_lead_zero(testfips1)
+fips_lead_zero(testfips)
 
+}
+\seealso{
+\code{\link[=fips_valid]{fips_valid()}} \code{\link[=fipstype]{fipstype()}}
 }
