@@ -65,7 +65,6 @@ frs_active_ids <- function(active=TRUE, closecodes = c(
 #'
 #' @return vector of FRS IDs that are the clearly inactive sites -- or all other sites -- 
 #'   depending on value of active 
-#' @export
 #'
 frs_inactive_ids <- function(active=FALSE, ...) {
   frs_active_ids(active = active, ...)
