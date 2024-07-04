@@ -62,6 +62,10 @@ latlon_from_address_table <- function(x) {
 
   if (missing(x) && interactive()) {
     x <- rstudioapi::selectFile(caption = "Select .csv or .xlsx with addresses")
+  } else if(missing(x)){
+    
+      warning('No value provided for argument "x".')
+      return(NULL)
   }
   if (all(is.character(x)) && length(x) == 1) {
     if (file.exists(x)) {
@@ -88,6 +92,9 @@ address_from_table <- function(x) {
 
   if (missing(x) && interactive()) {
     x <- rstudioapi::selectFile(caption = "Select .csv or .xlsx with addresses")
+  } else if (missing(x)){
+    warning('No value provided for argument "x".')
+    return(NULL)
   }
   if (all(is.character(x)) && length(x) == 1) {
     if (file.exists(x)) {
@@ -125,6 +132,9 @@ address_from_table_goodnames <- function(x, colnames_allowed = c('address', 'str
 
   if (missing(x) && interactive()) {
     x <- rstudioapi::selectFile(caption = "Select .csv or .xlsx with addresses")
+  }else if (missing(x)){
+    warning('No value provided for argument "x".')
+    return(NULL)
   }
   if (all(is.character(x)) && length(x) == 1) {
     if (file.exists(x)) {

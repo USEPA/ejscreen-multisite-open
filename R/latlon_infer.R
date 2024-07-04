@@ -22,6 +22,10 @@
 #'
 latlon_infer <- function(mycolnames) {
   
+  if(missing(mycolnames)){
+    warning('No value provided for argument "mycolnames".')
+    return(NULL)
+  }
   x <- mycolnames
   
   # Latitude, Lat, latitude, long, longitude, Longitude, Long, LONG, LAT, etc. 
