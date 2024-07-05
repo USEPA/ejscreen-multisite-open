@@ -1,3 +1,5 @@
+description_file <- desc::description$new("DESCRIPTION")
+
 default_metadata <- list(
   ejscreen_version      = description_file$get("EJScreenVersion"),
   ejscreen_releasedate  = description_file$get("EJScreenReleaseDate"),

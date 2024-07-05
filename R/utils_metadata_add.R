@@ -20,8 +20,6 @@
 #' 
 #' @keywords internal
 #'
-library(desc)
-description_file <- description$new("DESCRIPTION")
 source("R/metadata_mapping.R")
 
 metadata_add <- function(x) {
