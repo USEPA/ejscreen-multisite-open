@@ -106,7 +106,7 @@ finding them in these local folders where you installed the package:
 -   /`EJAM/testdata/shapes/portland_shp.zip`
 -   etc.
 
-To open the locally installed "testdata" folders (in Windows File Explorer, or iOS Finder)
+To open the locally installed "testdata" folders (in Windows File Explorer, or MacOS Finder)
 ```{r browseURL, eval=FALSE, echo=TRUE}
 browseURL(system.file("testdata", package = "EJAM"))
 ```
