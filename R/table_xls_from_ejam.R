@@ -42,6 +42,7 @@ table_xls_from_ejam <- function(ejamitout,
                                 radius_or_buffer_description = 'Miles radius of circular buffer (or distance used if buffering around polygons)', 
                                 # radius_or_buffer_description =   "Distance from each site (radius of each circular buffer around a point)",
                                 hyperlink_colnames = c("EJScreen Report", "EJScreen Map", "ECHO report"),
+                                site_method = "",
                                 ...
 ) {
   
@@ -52,12 +53,13 @@ table_xls_from_ejam <- function(ejamitout,
   
   if (is.null(fname)) {
     fname_was_provided <- FALSE
-    default_pathname <- paste0(
-      gsub(" ", ".", gsub(":", "", Sys.time())),
-      " ", "EJAM output ", 
-      npts, "pts ", radius_or_buffer_in_miles, "miles", 
-      ".xlsx") 
-    # e.g.,   "2023-10-10.220725 EJAM output 10pts 3miles.xlsx"
+    #changed the way the filename path was generated
+    default_pathname <- create_filename(file_desc = "results_table",
+                                        title = in.analysis_title,
+                                        buffer_dist = radius_or_buffer_in_miles,
+                                        site_method = site_method,
+                                        with_datetime = TRUE, 
+                                        ext = ".xlsx")
     pathname <- default_pathname
   } else {
     fname_was_provided <- TRUE
@@ -137,30 +139,34 @@ table_xls_from_ejam <- function(ejamitout,
   
   if (save_now) {
     if (interactive_console & interactive()) {
-      # *** replace this awkward interface- should allow normal save where you can alter or confirm both the filename and the folder
-      # and  should we parse what they provided and if only filename given, prompt them for folder?
-      if (fname_was_provided) {
-        # ok, pathname exists already. 
-      } else {
-        pathname <- rstudioapi::showPrompt(
-          "Save spreadsheet file", 
-          "Confirm folder and name of file to save",
-          default = pathname
-        )
+      if(!fname_was_provided){
+        repeat{
+          pathname <- rstudioapi::showPrompt(
+            "Save spreadsheet file",
+            "Confirm folder and name of file to save",
+            default = pathname
+          )
+          
+          if(is.null(pathname) || pathname ==  ""){
+            cat('Invalid path/file, please provide a valid path.\n')
+            next
+          }
+          if(grepl("[<>:\"/\\?*]", pathname)){
+            stop("Filename ocntains invalid characters: <>:\"/\\|?*. Please provide a valid name. \n")
+            next
+          }
+          break
+          
+        }
         
       }
       
-      # do error checking of pathname here and if invalid, should let you try again
-      # ***
-      
-      
       
     }
-    if (is.null(pathname)) {
+    if (is.null(pathname) || pathname == "" || grepl("[<>:\"/\\?*]", pathname)) { #perform a more robust check of the pathname here. 
       cat('Invalid path/file, so using default: ', default_pathname, '\n')
       pathname <- default_pathname
     }
-    # do error checking of pathname here - in case not interactively set and want to warn/ exit more gracefully
     
     cat("Saving as ", pathname, "\n")
     ## save file and return for downloading - or do this within table_xls_format( , saveas=fname) ?

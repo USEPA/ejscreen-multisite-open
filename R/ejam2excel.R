@@ -25,6 +25,7 @@ ejam2excel <- function(ejamitout,
                        radius_or_buffer_description = 'Miles radius of circular buffer (or distance used if buffering around polygons)',
                        # radius_or_buffer_description =   "Distance from each site (radius of each circular buffer around a point)",
                        hyperlink_colnames = c("EJScreen Report", "EJScreen Map", "ECHO report"),
+                       site_method = "",
                        ...
 ) {
 
@@ -43,6 +44,7 @@ ejam2excel <- function(ejamitout,
     buffer_desc,
     radius_or_buffer_description,
     hyperlink_colnames,
+    site_method,
     ...
   )
 }
