@@ -67,7 +67,7 @@ dim(bgpts)
 
 # add metadata -------------------   CHECK THIS AND/OR UPDATE/CHANGE IT TO HAVE BETTER METADATA ***
 
-bgpts <- EJAM:::metadata_add(bgpts, metadata = list(date_updated = Sys.Date()))
+bgpts <- EJAM:::metadata_add(bgpts)
 
 # save for EJAM package
 

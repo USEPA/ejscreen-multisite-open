@@ -1,49 +1,40 @@
 #' helper function for package to set attributes of a dataset
 #' 
-#' @description This can be used annually to update some datasets in a package.
+#' @description Together with the metadata_mapping.R script, this can be used 
+#'  annually to update the metadata for datasets in a package.
 #'  It just makes it easier to set a few metadata attributes similarly
 #'  for a number of data elements, for example,
 #'  to add new or update existing attributes.
 #' @details This utility would be used in scripts in EJAM/data-raw/ to 
 #'   add metadata to objects like x before use_data(x, overwrite=T)
 #' @param x dataset (or any object) whose metadata (stored as attributes) you want to update or create
-#' @param metadata must be a named list, so that the function can do this for each i:
-#'   `attr(x, which=names(metadata)[i]) <- metadata[[i]]`
+#'  EJAM, EJScreen, and other dataset versions and release dates are tracked in DESCRIPTION
 #' @seealso metadata_check()
 #'
 #' @return returns x but with new or altered attributes
 #' @examples
 #'   metadata_check()
 #'   x <- data.frame(a=1:10,b=1001:1010)
-#'   metadata <- list(
-#'     data_downloaded = "2024-07-01",
-#'     date_saved_in_package = as.character(Sys.Date())
-#'   )
-#'   x <- metadata_add(x, metadata)
+#'   x <- metadata_add(x)
 #'   attributes(x)
-#'   x <- metadata_add(x, list(status = 'final'))
-#'   attr(x,'status')
 #' 
 #' @keywords internal
 #'
-metadata_add <- function(x, metadata = list(
-  date_saved_in_package = as.character(Sys.Date()),
-  date_downloaded       = as.character(Sys.Date()),
-  ejscreen_version      = "2.3",
-  ejscreen_releasedate = "2024-07-01",
-  acs_releasedate =      "2023-12-07",
-  acs_version =          "2018-2022",
-  census_version        = 2020
-)) {
-  
-  if (missing(metadata)) {
+source("R/metadata_mapping.R")
+
+metadata_add <- function(x) {
+  metadata <- get_metadata_mapping(deparse(substitute(x)))
+  if (is.null(metadata)) {
     txt <- paste0(paste0(names(metadata), "=", unlist(metadata)), collapse = ", ")
     message("metadata not specified, so used defaults from source code of this function: ", txt, "\n")
     # print(cbind(attributes = metadata))
+    metadata <- get_metadata_mapping("default")
   }
   if (!is.list(metadata)) {stop('metadata has to be a named list')
     # return(NULL)
-    }
+  }
+  
+  metadata$date_saved_in_package <- as.character(Sys.Date())
   for (i in seq_along(metadata)) {
     attr(x, which = names(metadata)[i]) <- metadata[[i]]
   }
@@ -80,7 +71,7 @@ metadata_add <- function(x, metadata = list(
 metadata_check <- function(packages = EJAM::ejampackages, 
                            which = c(
                              "date_saved_in_package",
-                             "date_downloaded",
+                             # "date_downloaded",
                              "ejscreen_version",
                              "ejscreen_releasedate",
                              "acs_releasedate",

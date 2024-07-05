@@ -295,15 +295,15 @@ epa_programs <- setNames(epa_program_counts$program, epa_program_counts$pgm_text
 # SAVE DATASETS for package ####
 
 ## save mact_table ####
-mact_table     <- EJAM:::metadata_add(mact_table, metadata = list(downloaded = Sys.Date()))
+mact_table     <- EJAM:::metadata_add(mact_table)
 usethis::use_data(mact_table, overwrite = TRUE)  # data.frame
 
 ## save frs_by_mact ####
-frs_by_mact   <- EJAM:::metadata_add(frs_by_mact, metadata = list(downloaded = Sys.Date()))
+frs_by_mact   <- EJAM:::metadata_add(frs_by_mact)
 usethis::use_data(frs_by_mact, overwrite = TRUE)    # data.table
 
 ## save epa_programs ####
-epa_programs <- EJAM:::metadata_add(epa_programs, metadata = list(downloaded = Sys.Date()))
+epa_programs <- EJAM:::metadata_add(epa_programs)
 usethis::use_data(epa_programs, overwrite = TRUE) # data.frame
 
 #################################################### #

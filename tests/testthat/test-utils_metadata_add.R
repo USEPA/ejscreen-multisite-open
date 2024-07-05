@@ -78,14 +78,15 @@ test_that("metadata_add default works", {
   )
 })
 
-
+# metadata fields to associate with a dataset should be added to the R/metadata_mapping.R script
 test_that("metadata_add assignments work", {
   
   expect_no_error({
-    x <- data.frame(a = 1:10, b = 1:10)
+    test_metadata_custom <- data.frame(a = 1:10, b = 1:10)
+    test_metadata_custom2 <- data.frame(a = 1:10, b = 1:10)
     suppressMessages({
-      x <- metadata_add(x, metadata = list(custominfo = 0, moreinfo = "oldvalue", unchangedinfo = 9))
-      x <- metadata_add(x, metadata = list(custominfo = 123, moreinfo = "abc"))
+      x <- metadata_add(test_metadata_custom)
+      x <- metadata_add(test_metadata_custom2)
     })
   })
   expect_identical(

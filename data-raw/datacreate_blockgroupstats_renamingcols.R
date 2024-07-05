@@ -42,7 +42,6 @@ names(blockgroupstats) <- EJAM::fixcolnames(names(blockgroupstats), "oldnames", 
 # "p_english"      "p_spanish"      "p_french"       "p_rus_pol_slav" "p_other_ie"     "p_vietnamese"   "p_other_asian"  "p_arabic"       "p_other"        "p_non_english" 
 
 EJAM:::metadata_add(blockgroupstats)
-EJAM:::metadata_add(blockgroupstats, metadata = list(file_updated = Sys.Date()))
 usethis::use_data(blockgroupstats, overwrite = TRUE)
 
 # [88,] "lan_universe"
@@ -63,19 +62,16 @@ usethis::use_data(blockgroupstats, overwrite = TRUE)
 names(usastats) <- EJAM::fixcolnames(names(usastats), "oldnames", "r") 
 names(usastats) <- fixonce(names(usastats))
 EJAM:::metadata_add(usastats)
-EJAM:::metadata_add(usastats, metadata = list(file_updated = Sys.Date()))
 usethis::use_data(usastats, overwrite = TRUE)
 
 names(statestats) <- EJAM::fixcolnames(names(statestats), "oldnames", "r") 
 names(statestats) <- fixonce(names(statestats))
 EJAM:::metadata_add(statestats)
-EJAM:::metadata_add(statestats, metadata = list(file_updated = Sys.Date()))
 usethis::use_data(statestats, overwrite = TRUE)
 
 names(avg.in.us) <- EJAM::fixcolnames(names(avg.in.us), "oldnames", "r") 
 names(avg.in.us) <- fixonce(names(avg.in.us))
 EJAM:::metadata_add(avg.in.us)
-EJAM:::metadata_add(avg.in.us, metadata = list(file_updated = Sys.Date()))
 usethis::use_data(avg.in.us, overwrite = TRUE)
 
 
@@ -86,7 +82,6 @@ for (i in 1:length(high_pctiles_tied_with_min)) {
   names(high_pctiles_tied_with_min[[i]]) <- fixonce(names(high_pctiles_tied_with_min[[i]]))
 }
 EJAM:::metadata_add(high_pctiles_tied_with_min)
-EJAM:::metadata_add(high_pctiles_tied_with_min, metadata = list(file_updated = Sys.Date()))
 usethis::use_data(high_pctiles_tied_with_min, overwrite = TRUE)
 
 
