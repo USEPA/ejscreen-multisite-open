@@ -1,6 +1,6 @@
 Package: EJAM
 Title: EJAM Environmental Justice Analysis Multisite tool
-Version: 2.2.2-EJScreen2.3
+Version: 2.2.2
 Author: Mark Corrales <corrales.mark@epa.gov>
 Maintainer: Mark Corrales <corrales.mark@epa.gov>
 License: MIT + file LICENSE.md
