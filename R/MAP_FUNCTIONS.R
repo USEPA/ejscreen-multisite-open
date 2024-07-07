@@ -509,9 +509,12 @@ mapfast_gg <- function(mydf=data.frame(lat = 40, lon = -100)[0,],
                        xlab = "Longitude", ylab = "Latitude", ...) {
 
   plotout <- ggplot2::ggplot() +
-    # The usa data.frame has cols long, lat, group, etc.
-    ggplot2::geom_polygon(data = ggplot2::map_data("usa"), ggplot2::aes(x = long, y = lat, group = group), fill = "gray", alpha = 0.75) +
-    ggplot2::geom_point(  data = mydf, ggplot2::aes(lon, lat), color = ptcolor, size = dotsize) +
+    ggplot2::geom_polygon(data = ggplot2::map_data("usa"), 
+                          # Note the ggplot2 "usa" dataset 
+                          # longitude is called "long" but mydf calls it "lon"
+                          ggplot2::aes(x = long, y = lat, group = group), fill = "gray", alpha = 0.75) +
+    ggplot2::geom_point(  data = mydf, 
+                          ggplot2::aes(x = lon, y = lat), color = ptcolor, size = dotsize) +
     ggplot2::labs(x = xlab, y = ylab, ...)
   return(plotout)
 }
