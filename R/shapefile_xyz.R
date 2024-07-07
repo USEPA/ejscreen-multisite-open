@@ -120,6 +120,7 @@ shapefile_from_any <- function(path = NULL, cleanit = TRUE, crs = 4269, layer = 
     }
     
   } else {
+    filepaths <- path
     x <- shapefile_from_filepaths(filepaths, cleanit = cleanit, crs = crs, ...)
     return(x)
   }
