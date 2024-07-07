@@ -67,6 +67,7 @@ fixnames_aliases <- function(x, na_if_no_match = FALSE, alias_list = NULL, ignor
   # synonyms
   if (is.null(alias_list)) {
     alias_list <- list(
+      # do these need to and is it ok to have the names like sqkm and km etc. also within each list? ***
       sqkm = c('km2', 'kilometer2','kilometers2', 'sq kilometers', 'sq kilometer','sqkilometers', 'sqkilometer',  'squarekilometers', 'squarekilometer', 'square kilometers', 'square kilometer'),
       sqm = c('m2', 'meter2','meters2', 'sq meters', 'sq meter','sqmeters', 'sqmeter',  'squaremeters', 'squaremeter', 'square meters', 'square meter'),
       sqcm = 'cm2',    
@@ -98,12 +99,12 @@ fixnames_aliases <- function(x, na_if_no_match = FALSE, alias_list = NULL, ignor
       # used in fixcolnames("pctlowinc", "rname", "long") etc.
       rname = "r",
       # longname_tableheader = long, # *** problem! we already interpret "long" as "lon" (longitude)
-      longname_tableheader = c("longname",  "full", "description"),
-      shortlabel = c("shortname", "short"),
-      apiname = 'api',
-      csvname2.2 = "csv",
-      oldnames = "original",
-      newnames_ejscreenapi = "friendly"
+      longname_tableheader = c("longname",  "full", "description", "longname_tableheader"),
+      shortlabel = c("shortlabel", "shortname", "short"),
+      apiname = c('api', 'apiname'),
+      csvname2.2 = c("csv", "csvname2.2"),
+      oldnames = c("original", "oldnames"),
+      newnames_ejscreenapi = c("friendly", "newnames_ejscreenapi")
     )
   } else {
     stopifnot(is.list(alias_list), all(sapply(alias_list, is.atomic)), all(sapply(alias_list, length) > 0))
