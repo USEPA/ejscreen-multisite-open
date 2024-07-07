@@ -1,6 +1,5 @@
-
-
-
+# !diagnostics off
+##   disables diagnostics within this document
 
 
 

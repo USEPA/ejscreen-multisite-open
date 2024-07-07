@@ -1,7 +1,6 @@
 
 #  FUNCTIONS
 
-# fixcolnames_infer()
 
 # address_from_table_goodnames()
 # address_from_table()
@@ -25,18 +24,6 @@
 
 ################################ #
 
-testthat::test_that("fixcolnames_infer works", {
-  
-  test_address_table_renamed <- test_address_table
-  testthat::expect_no_error({names(test_address_table_renamed) <- fixcolnames_infer(names(test_address_table_renamed))})
-  testthat::expect_identical(test_address_table_goodnames, test_address_table_renamed)
-  
-  testthat::expect_identical(fixcolnames_infer(currentnames = test_address_parts1 ),
-                             c("lat", "lon", "address", "street", "city", "state", "zip"))
-  testthat::expect_identical(fixcolnames_infer(currentnames = names(test_address_table) ),
-                             c("Acol", "street", "city", "state", "zip", "other_column"))
-})
-###################### #
 
 testthat::test_that("address_from_table_goodnames works", {
   

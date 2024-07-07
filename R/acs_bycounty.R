@@ -67,15 +67,15 @@ acs_bycounty <- function(myvars = "B03002_001", myst = "DE", yr = 2021) {
 #' plot comparison of counties in 1 state, for 1 indicator (variable)
 #'
 #' @param x table that is output of acs_bycounty() i.e., output of get_acs()
-#'   from tidycensus pkg
-#' @param myvars optional .extracted from x, one or more ACS5 variables like "B03002_001"
+#'   from tidycensus pkg that downloads ACS Census Bureau data via API.
+#' @param myvars optional .extracted from x, one (or more?) ACS5 variables like "B03002_001"
 #' @param myvarnames optional friendlier names of myvars
 #' @param mystate name of state
 #' @param labeltype as from scales package.  for continuous scales:
 #'   label_bytes(), label_number_auto(), label_number_si(), label_ordinal(),
 #'   label_parse(), label_percent(), label_pvalue(), label_scientific()
 #'
-#' @param varinfo large table of metadata as from load_variables function
+#' @param acsinfo large table of metadata as from load_variables function
 #'   from tidycensus pkg
 #' @param yr like 2021 or 2022 end of 5 year ACS
 #'
@@ -84,21 +84,31 @@ acs_bycounty <- function(myvars = "B03002_001", myst = "DE", yr = 2021) {
 #' @export
 #'
 plot_bycounty <- function(x, myvars = x$variable[1], myvarnames = NULL, mystate = NULL,
-                          labeltype = NULL, varinfo = NULL, yr = 2022) {
+                          labeltype = NULL, acsinfo = NULL, yr = 2022) {
   
-  if (exists("get_acs") && exists("str_remove")) {
+  if (exists("get_acs") & exists("str_remove") & exists("label_number_auto")) {
     # see acs_bycounty() notes
     if (is.null(labeltype)) {labeltype <- label_number_auto()} # requires scales pkg
     if (missing(mystate) || is.null(mystate)) {
       mystate <- gsub("^.*, ", "", x$NAME[1])
     }
     
+    if (length(unique(x$variable)) > 1) {stop("x$variable must be one unique variable only")}
+    if (length(myvars) > 1) {stop("myvars must be length 1")}
+    
     ### get long name of variable and of state
     if (missing(myvarnames) || is.null(myvarnames)) {
-      if (missing(varinfo)) {
-        varinfo <- load_variables(yr, "acs5")  # requires tidycensus package 
+      if (missing(acsinfo)) {
+        cat("downloading acs variable information to get myvarnames (plain english names of variables) ... \n")
+        acsinfo <- load_variables(yr, "acs5")  # requires tidycensus package 
       }
-      myvarnames <- gsub("!!", " ", varinfo$label[match(myvars, varinfo$name)])
+      myvarnames <- acsinfo$label[match(myvars, acsinfo$name)]   # match is ok since each unique name should appear only once in acsinfo table.  anyDuplicated(acsinfo$name)
+    shortname <- gsub(".*!!([^!]*)$", "\\1", myvarnames)  # e.g., Male:  or   
+    startofname <- gsub("(.*!!)([^!]*)$", "\\1", myvarnames) # can be ""      myvarnames <- gsub("!!", " ", myvarnames)
+      myvarnames <- gsub("^Estimate", "", myvarnames)
+    } else {
+      shortname = myvarnames
+      startofname = myvarnames
     }
     
     plot_errorbar <- ggplot(x,
@@ -113,10 +123,10 @@ plot_bycounty <- function(x, myvars = x$variable[1], myvarnames = NULL, mystate 
       ggplot2::scale_y_discrete(labels = function(x) {
         str_remove(x, paste0(" County, ", mystate))  # requires stringr package 
       }) + 
-      ggplot2::labs(title = paste0(myvarnames, ", ", yr - 4, "-", yr," ACS"),
+      ggplot2::labs(title = paste0(shortname, ", ", yr - 4, "-", yr," ACS"),
                     subtitle = paste0("Counties in ", mystate),
                     caption = "Data acquired with R and tidycensus. Error bars represent margin of error around estimates.",
-                    x = "ACS estimate",
+                    x = myvarnames, # startofname, # "ACS estimate",
                     y = "") +
       ggplot2::theme_minimal(base_size = 12)
     
@@ -138,8 +148,8 @@ plot_bycounty <- function(x, myvars = x$variable[1], myvarnames = NULL, mystate 
 
 ################################# #
 
-# varinfo <- tidycensus::load_variables(2022, "acs5")
-# varinfo[substr(varinfo$name, 1,6) == "B03002", ]
+# acsinfo <- tidycensus::load_variables(2022, "acs5")
+# acsinfo[substr(acsinfo$name, 1,6) == "B03002", ]
 # B03002_003
 ################################# #
 

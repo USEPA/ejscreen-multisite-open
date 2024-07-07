@@ -95,7 +95,7 @@ address_from_table <- function(x) {
     }
   }
 
-  names(x) <- fixcolnames_infer(names(x))
+  names(x) <- fixcolnames_infer(names(x)) # see also fixnames_aliases() 
   addresses <- address_from_table_goodnames(x)
   return(addresses)
 }
@@ -151,84 +151,6 @@ address_from_table_goodnames <- function(x, colnames_allowed = c('address', 'str
       apply(x[, cols2use], 1, paste, collapse = " ")
     }
   )
-}
-####################################################################### #
-
-
-#' convert colnames to standardized names based on aliases
-#'
-#' Used by address_from_table
-#'
-#' @param currentnames vector of colnames that may include aliases
-#' @param alias_list optional named list where
-#'   names are standard colnames like "street"
-#'   and each named element in list is a vector of aliases
-#'   for that standard name
-#'
-#' @return vector like currentnames but some renamed to a
-#'   standard name if alias found, ignoring case.
-#'
-#' @export
-#'
-fixcolnames_infer <- function(currentnames, alias_list = NULL) {
-
-  if (is.null(alias_list)) {
-    alias_list <-   list(
-      address = c("address"),
-      lat = lat_alias, lon = lon_alias,
-      street = c("street", "street address", "address1", "address 1"),
-      city = c("city", "cityname", "city name"),
-      state = c("state", "mystate", "statename", "ST"),
-      zip = c("zip", "zipcode", "zip code")
-    )
-  }
-
-  ################################################## #
-  fixcolname1_infer <- function(currentnames, standardname, aliases = NULL) {
-
-    lword <- standardname
-    x <- currentnames
-
-    if (!(lword %in% x)) {
-
-      if (lword == 'lat') {
-        # try to infer lat, using these in order of preferred to less
-        # aliases <- tolower(c('lat', 'latitude83', 'latitude', 'latitudes', 'faclat', 'lats'))
-        aliases <- lat_alias
-      }
-      if (lword == 'lon') {
-        # try to infer lon, using these in order of preferred to less
-        # aliases <- tolower(c('lon', 'longitude83', 'longitude', 'longitudes', 'faclong', 'long', 'longs', 'lons','lng'))
-        aliases <- lon_alias
-      }
-
-      bestfound <- intersect(aliases, tolower(x))[1]
-      # bestfound <- x[which.min( match(x, aliases ) )] # another way
-      if (is.na(bestfound)) { # intersect()[1] returns NA if none
-        # warning(paste0(lword, ' missing and no synonyms found')) # do not change x at all
-      } else {
-        # ignoring case, replace any exact match(es) to that one word. # should ideally confirm unique?
-        x <- gsub(paste0('^', bestfound, '$'), lword, x, ignore.case = TRUE)
-      }
-    }
-    if (sum(grepl(paste0('^', lword, '$'), x)) > 1) {warning(paste0('DUPLICATED ', lword))}
-    x
-  }
-  ################################################## #
-
-  newer <- currentnames
-
-  for (i in seq_along(alias_list)) {
-    standardname <- names(alias_list)[i]
-    aliases <- alias_list[[i]]
-
-    newer <- fixcolname1_infer(
-      currentnames = newer,
-      standardname = standardname,
-      aliases = aliases
-    )
-  }
-  return(newer)
 }
 ####################################################################### #
 

@@ -1,3 +1,5 @@
+# !diagnostics off
+##   disables diagnostics within this document
 
 if (1 == 0) { # so it does not do anything if source() is done by testing 
   

@@ -141,7 +141,7 @@ ls()
 #   dir( "~/../EJ 2021/EJScreen 2023/FTP 2023 intranet/documents_20230821 (1)")
 #   EJSCREEN_2023_BG_extra_US_lookup.csv   EJSCREEN_2023_BG_extra_state_lookup.csv   
 # # OID_	PCTILE	LIFEEXP	LIFEEXPPCT	HEARTDISEASE	ASTHMA	CANCER	DISABILITYPCT	LIMITEDBBPCT	NOHINCPCT	flood_y00	flood_y30	fire_y00	fire_y30
-# fixnames(c('OID_',	'PCTILE',	'LIFEEXP',	'LIFEEXPPCT',	'HEARTDISEASE',	'ASTHMA',	'CANCER',	'DISABILITYPCT',	'LIMITEDBBPCT',	'NOHINCPCT',	'flood_y00',	'flood_y30',	'fire_y00',	'fire_y30'), oldtype = 'api', newtype = 'r')
+# fixcolnames(c('OID_',	'PCTILE',	'LIFEEXP',	'LIFEEXPPCT',	'HEARTDISEASE',	'ASTHMA',	'CANCER',	'DISABILITYPCT',	'LIMITEDBBPCT',	'NOHINCPCT',	'flood_y00',	'flood_y30',	'fire_y00',	'fire_y30'), oldtype = 'api', newtype = 'r')
 # renames none 
 
 #################################################################### #

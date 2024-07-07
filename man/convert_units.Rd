@@ -24,7 +24,7 @@ c(
 )
 Note that m2 is for square meters not square miles.}
 
-\item{towhat}{A strings specifying new units to convert to. Default is 'mi' which is miles.}
+\item{towhat}{A string specifying new units to convert to. Default is 'mi' which is miles.}
 }
 \value{
 Returns a number or vector of numbers then length of the input x,
