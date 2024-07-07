@@ -4,7 +4,7 @@
 #' @param mycolnames e.g., colnames(x) where x is a data.frame from read.csv
 #'
 #' @return returns all of mycolnames except replacing the best candidates with lat and lon
-#' @seealso latlon_df_clean() latlon_infer() latlon_is.valid() latlon_as.numeric()
+#' @seealso latlon_df_clean() latlon_is.valid() latlon_as.numeric()[fixnames_aliases()] [fixcolnames_infer()]
 #'
 #' @examples 
 #'   latlon_infer(c('trilat', 'belong', 'belong')) # warns if no alias found, 
@@ -24,18 +24,16 @@ latlon_infer <- function(mycolnames) {
   
   x <- mycolnames
   
-  # Latitude, Lat, latitude, long, longitude, Longitude, Long, LONG, LAT, etc. 
-  
   infer <- function(lword, x) {
     if (!(lword %in% x)) {
       if (lword == 'lat') {
         # try to infer lat, using these in order of preferred to less
-        # aliases <- tolower(c('lat', 'latitude83', 'latitude', 'latitudes', 'faclat', 'lats'))
+        # aliases <- tolower(c('lat', 'latitude83', 'latitude', 'latitudes', 'faclat', 'lats', "y"))
         aliases <- lat_alias
       }
       if (lword == 'lon') {
         # try to infer lon, using these in order of preferred to less
-        # aliases <- tolower(c('lon', 'longitude83', 'longitude', 'longitudes', 'faclong', 'long', 'longs', 'lons','lng'))
+        # aliases <- tolower(c('lon', 'longitude83', 'longitude', 'longitudes', 'faclong', 'lons','long', 'longs', 'lng', "x"))
         aliases <- lon_alias
       }
       
