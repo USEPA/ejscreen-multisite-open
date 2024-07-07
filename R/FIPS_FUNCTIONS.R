@@ -412,7 +412,8 @@ fips_from_table <- function(fips_table, addleadzeroes=TRUE, inshiny=FALSE) {
 #' @examples 
 #' name2fips(c("de", "NY"))
 #' name2fips("rhode island")
-#' name2fips(c("delaware", "NY")) 
+#' name2fips(c("delaware", "NY"))
+#' 
 #' @export
 #'
 name2fips = function(x) {
@@ -436,14 +437,12 @@ name2fips = function(x) {
 ############################################################################# #
 
 #' @export
-#' @keywords internal
 names2fips <- function(x) {
   # this is just an alias where "names" is plural instead of singular "name"
   name2fips(x = x)}
 ############################################################################# #
 
 #' @export
-#' @inheritParams name2fips
 fips_from_name = function(x) {
   # name2fips is a useful alias, though not consistent, so keep fips_from_name() also just in case
   name2fips(x = x)    

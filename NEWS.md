@@ -9,10 +9,10 @@
 
 -   Improved [`ejam2barplot()`](https://usepa.github.io/EJAM/reference/ejam2barplot.html) shows easy plot of a few indicators overall.
 -   New [`ejam2barplot_sites()`](https://usepa.github.io/EJAM/reference/ejam2barplot_sites.html) shows plot comparing top sites, for 1 indicator.
--   New [`names2fips()`](https://usepa.github.io/EJAM/reference/names2fips.html) converts State abbreviation, State name, or County name to FIPS code.
+-   New [`name2fips()`](https://usepa.github.io/EJAM/reference/name2fips.html) converts State abbreviation, State name, or County name to FIPS code.
 -   New `ejam2shapefile()` drafted as a quick way to save results of ejamit() for import to other GIS tools
--   New `ejam2barplot_sitegroups()` shows output of `ejamit_compare_types_of_place()`
--   [`ejamit_compare_types_of_place()`](https://usepa.github.io/EJAM/reference/ejamit_compare_types_of_place.html) and [`ejamit_compare_distances()`](https://usepa.github.io/EJAM/reference/ejamit_compare_distances.html) are flexible now in how sitepoints is defined: they let you specify sitepoints as an interactively selected file (if the sitepoints parameter is not provided) or a filepath or a data.frame object.
+-   New `ejam2barplot_sitegroups()` shows output of `ejamit_compare_types_of_places()`
+-   [`ejamit_compare_types_of_places()`](https://usepa.github.io/EJAM/reference/ejamit_compare_types_of_places.html) and [`ejamit_compare_distances()`](https://usepa.github.io/EJAM/reference/ejamit_compare_distances.html) are flexible now in how sitepoints is defined: they let you specify sitepoints as an interactively selected file (if the sitepoints parameter is not provided) or a filepath or a data.frame object.
 -   Additions on how to select radius or radii, including uncertainty considerations in low-density areas, in [Advanced article (vignette)](https://usepa.github.io/EJAM/articles/4_advanced.html).
 -   New `is.island()` function
 -   `fips_state_from_state_abbrev()` and `fips_from_table()` etc. now can handle Island Territories AS, GU, MP, UM, VI
