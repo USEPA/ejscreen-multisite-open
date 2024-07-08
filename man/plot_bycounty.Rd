@@ -10,15 +10,15 @@ plot_bycounty(
   myvarnames = NULL,
   mystate = NULL,
   labeltype = NULL,
-  varinfo = NULL,
+  acsinfo = NULL,
   yr = 2022
 )
 }
 \arguments{
 \item{x}{table that is output of acs_bycounty() i.e., output of get_acs()
-from tidycensus pkg}
+from tidycensus pkg that downloads ACS Census Bureau data via API.}
 
-\item{myvars}{optional .extracted from x, one or more ACS5 variables like "B03002_001"}
+\item{myvars}{optional .extracted from x, one (or more?) ACS5 variables like "B03002_001"}
 
 \item{myvarnames}{optional friendlier names of myvars}
 
@@ -28,7 +28,7 @@ from tidycensus pkg}
 label_bytes(), label_number_auto(), label_number_si(), label_ordinal(),
 label_parse(), label_percent(), label_pvalue(), label_scientific()}
 
-\item{varinfo}{large table of metadata as from load_variables function
+\item{acsinfo}{large table of metadata as from load_variables function
 from tidycensus pkg}
 
 \item{yr}{like 2021 or 2022 end of 5 year ACS}

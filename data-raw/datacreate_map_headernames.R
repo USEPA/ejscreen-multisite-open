@@ -6,7 +6,8 @@
 
 getwd()
 setwd('~/../../R/mysource/EJAM')
-dir(pattern = "map_headernames")
+dir("./data-raw", pattern = "map_headernames")
+dir("./data", pattern = "map_headernames")
 
 # file.exists()
 
@@ -14,10 +15,7 @@ map_headernames <- as.data.frame(readxl::read_xlsx(
   './data-raw/map_headernames_2.3.xlsx'
   ))
 
-
-
 map_headernames[is.na(map_headernames)] <- ''  #changeNAvaluestoemptycell,soitiseasiertosubsetetc.
-
 # map_headernames$rname[is.na(map_headernames$rname)] <- ""
 # map_headernames$apiname[is.na(map_headernames$apiname)] <- ""
 # map_headernames$csvname2.2[is.na(map_headernames$csvname2.2)] <- ""
@@ -25,14 +23,19 @@ map_headernames[is.na(map_headernames)] <- ''  #changeNAvaluestoemptycell,soitis
 # map_headernames$longname_tableheader[is.na(map_headernames$longname_tableheader)] <- ""
 
 
+# NOTE THE UPDATED VERSION OF THE PACKAGE MUST BE INSTALLED FOR metadata_add() to use the right version info
+# or it must be loaded via load.all() and dont use EJAM:::
+
 # attr(map_headernames,"date_created") <- Sys.Date()
 map_headernames <- EJAM:::metadata_add(map_headernames)
 
 usethis::use_data(map_headernames, overwrite = TRUE)
 
 
-cat('must redo sample dataset outputs like in EJAM and  EJAMejscreenapi/data-raw/datacreate_testoutput_ejscreenit_or_ejscreenapi_plus_50.R\n')
- 
+cat('must redo sample dataset outputs like in EJAM and  EJAMejscreenapi/data-raw \n')
+# EJAM/data-raw/datacreate_testpoints_testoutputs.R
+# /datacreate_testoutput_ejscreenit_or_ejscreenapi_plus_50.R
+
 cbind(names(map_headernames))
 stop('this is a script')
 

@@ -2,24 +2,38 @@
 % Please edit documentation in R/fixmapheadernamescolname.R
 \name{fixmapheadernamescolname}
 \alias{fixmapheadernamescolname}
-\title{utility to convert aliases to proper colnames of map_headernames}
+\title{utility to convert aliases to proper colnames of map_headernames
+used by varinfo() and fixcolnames()}
 \usage{
-fixmapheadernamescolname(x)
+fixmapheadernamescolname(
+  x,
+  alias_list = list(rname = "r", longname_tableheader = c("long", "longname",
+    "longnames", "full", "description"), shortlabel = c("short", "shortname",
+    "shortnames", "labels", "label"), apiname = "api", csvname2.3 = c("csv", "csvname"),
+    csvname2.2 = "csvname2.2", newnames_ejscreenapi = "friendly", oldnames =
+    c("original", "old", "oldname"))
+)
 }
 \arguments{
 \item{x}{character vector of colnames of map_headernames, or aliases like "long"}
+
+\item{alias_list}{optional named list where canonical names (colnames in map_headernames)
+are the names of vectors of alternative names}
 }
 \value{
 vector where aliases are replaced with actual colnames and unmatched ones left as-is
 }
 \description{
 utility to convert aliases to proper colnames of map_headernames
+used by varinfo() and fixcolnames()
 }
 \examples{
   fixmapheadernamescolname(c('long', 'csv', 'api', 'r'))
 
 }
 \seealso{
-\code{\link[=varinfo]{varinfo()}}
+\code{\link[=fixnames_aliases]{fixnames_aliases()}}
+
+\code{\link[=varinfo]{varinfo()}} \code{\link[=fixnames_aliases]{fixnames_aliases()}}
 }
 \keyword{internal}

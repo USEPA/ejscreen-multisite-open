@@ -19,8 +19,10 @@ fixmapheadernamescolname <- function(x,
                                        longname_tableheader = c("long", "longname", "longnames", "full", "description"),
                                        shortlabel = c("short", "shortname", "shortnames", "labels", "label"),
                                        apiname = 'api',
-                                       csvname2.2 = c("csv", "csvname"),  # *** change with v 2.2 vs 2.3
-                                       newnames_ejscreenapi = "friendly",
+                                       csvname2.3 = c("csv", "csvname"),  # *** changed with v 2.2 vs 2.3
+                                       csvname2.2 = "csvname2.2",         # *** changed with v 2.2 vs 2.3
+                                       newnames_ejscreenapi = "friendly", 
+                                       # SHOULD PHASE OUT "friendly" - CONFUSING TO USE friendly for long elsewhere but  rname here
                                        oldnames = c("original", "old", "oldname")
                                      )) {
   
@@ -33,7 +35,7 @@ fixmapheadernamescolname <- function(x,
   )
   
   # akas <- list(api = 'apiname',
-  #              csv = 'csvname2.2',
+  #              csv = 'csvname2.3', 
   #              r =   'rname',
   #              original = 'oldnames',
   #              friendly = 'newnames_ejscreenapi',

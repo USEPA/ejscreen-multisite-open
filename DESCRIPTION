@@ -76,7 +76,7 @@ Encoding: UTF-8
 LazyData: true
 Language: en-US
 VignetteBuilder: knitr, rmarkdown
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Roxygen: list(markdown = TRUE)
 Config/testthat/parallel: false
 EJScreenVersion: 2.3
