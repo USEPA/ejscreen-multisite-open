@@ -60,15 +60,48 @@ file.exists(zfile)
 # tdir <- tempdir()
 acs22 <- shapefile_from_any(zfile)
 dim(acs22)
+
 # names(acs22)  # EJAM add these 2 columns at the end: "Shape" "ejam_uniq_id"
 # These column names were not in map_headernames as csv or api names.
 # dim(x)
 acs22 <- data.frame(acs22)
 acs22$Shape <- NULL    #   we dont need to save the actual polygons here
 
+############################# # 
+
+# VERY LARGE FILE !   367 MB as .rda  
+# SAVE ELSEWHERE UNTIL KEY VARIABLES EXTRACTED AND RENAMED ...
+
+stop("save large file?")
+
+#     save(acs22, file = "./data-raw/acs22.rda")
+
+### write.csv(acs22, file = "./data-raw/acs22.csv")
+
+##################### #
+
 acs22acsgdbnames <- names(acs22)
 
+# check VARIABLE NAMES ####  
+
+# Note only around 60 of the acs22 colnames are in map_headernames -- 
+
+intersect(map_headernames$rname, fixcolnames(acs22acsgdbnames, 'api', 'r'))  # only 4
+intersect(map_headernames$rname, fixcolnames(acs22acsgdbnames, 'csv', 'r'))  # only 5
+intersect(map_headernames$rname, fixcolnames(acs22acsgdbnames, 'original', 'r'))  # a few more
+intersect(map_headernames$rname, fixcolnames(acs22acsgdbnames, 'acsbgname', 'r'))  # the most 
+# > intersect(map_headernames$rname, fixcolnames(acs22acsgdbnames, 'acsbgname', 'r'))
+# [1] "pcthisp"         "pctnhba"         "pctnhaa"         "pctnhaiana"      "pctnhnhpia"      "pctnhotheralone" "pctnhmulti"      "pctnhwa"        
+# [9] "hisp"            "nhba"            "nhaa"            "nhaiana"         "nhnhpia"         "nhotheralone"    "nhmulti"         "nhwa"           
+# [17] "pctba"           "pctaa"           "pctaiana"        "pctnhpia"        "pctotheralone"   "pctmulti"        "pctwa"           "ba"             
+# [25] "aa"              "aiana"           "nhpia"           "otheralone"      "multi"           "wa"              "lan_universe"    "lan_eng_na"     
+# [33] "lan_spanish"     "lan_ie"          "lan_api"         "spanish_li"      "ie_li"           "api_li"          "other_li"        "occupiedunits"  
+# [41] "pctdisability"   "disab_universe"  "disability"      "pctownedunits"   "pctspanish_li"   "pctie_li"        "pctapi_li"       "pctother_li"    
+# [49] "ownedunits"      "poor"            "pctpoor"         "lifexyears"      "percapincome"    "pctmale"         "pctfemale"       "pctunder18"     
+# [57] "pctover17"       "female"          "male"            "over17"          "under18"         "Shape_Length"  
+
 ## read the long indicator names (aliases) we had manually exported from ArcPro
+
 file.exists("~/../EJ 2021/EJSCREEN 2024/acs2022header.csv")
 acs22longnames <- names(read.csv("~/../EJ 2021/EJSCREEN 2024/acs2022header.csv"))
 acs22longnames <- c(acs22longnames, "ejam_uniq_id")
@@ -79,27 +112,102 @@ head(
 tail(
   cbind(acs22acsgdbnames, acs22longnames)
 )
-
-# Note almost all the acs22 colnames are NOT in map_headernames -- 
-#  These colnames are specific to the ACS download even though 
-#  many are the same variables as are in the EJScreen table that created blockgroupstats 
-#  and in the API outputs - different names are used in each place by EJScreen. 
-#
-# > which(names(acs22) %in% map_headernames$apiname)
-# [1]  65  70 664
-# > which(names(acs22) %in% map_headernames$csvname2.2)
-# [1] 302 663 673 674
+########################  #
 
 save(acs22acsgdbnames, file = "./data-raw/acs22acsgdbnames.rda")
 save(acs22longnames, file = "./data-raw/acs22longnames.rda")
 
 ############################# # 
+# fix about 62 of the colnames that get recognized, including names_d_subgroups, etc.
 
-# SAVE ELSEWHERE UNTIL KEY VARIABLES EXTRACTED AND RENAMED ...
+names(acs22) <- fixcolnames(names(acs22), 'acsbgname', 'r')
 
-# save(acs22, file = "./data-raw/acs22.rda") # VERY LARGE FILE ! 367 MB as .rda 
+# > cbind( intersect(map_headernames$rname, fixcolnames(acs22acsgdbnames, 'acsbgname', 'r')), fixcolnames(intersect(map_headernames$rname, fixcolnames(acs22acsgdbnames, 'acsbgname', 'r')), 'r', 'varlist'))
+# [,1]              [,2]                           
+# [1,] "pcthisp"         "names_d_subgroups_nh"         ### but also just  "names_d_subgroups"  
+# [2,] "pctnhba"         "names_d_subgroups_nh"         
+# [3,] "pctnhaa"         "names_d_subgroups_nh"         
+# [4,] "pctnhaiana"      "names_d_subgroups_nh"         
+# [5,] "pctnhnhpia"      "names_d_subgroups_nh"         
+# [6,] "pctnhotheralone" "names_d_subgroups_nh"         
+# [7,] "pctnhmulti"      "names_d_subgroups_nh"         
+# [8,] "pctnhwa"         "names_d_subgroups_nh"         
 
-# write.csv(acs22, file = "./data-raw/acs22.csv")
+# [9,] "hisp"            "names_d_subgroups_nh_count"   
+# [10,] "nhba"            "names_d_subgroups_nh_count"   
+# [11,] "nhaa"            "names_d_subgroups_nh_count"   
+# [12,] "nhaiana"         "names_d_subgroups_nh_count"   
+# [13,] "nhnhpia"         "names_d_subgroups_nh_count"   
+# [14,] "nhotheralone"    "names_d_subgroups_nh_count"   
+# [15,] "nhmulti"         "names_d_subgroups_nh_count"   
+# [16,] "nhwa"            "names_d_subgroups_nh_count"   
 
-############################# # 
+# [17,] "pctba"           "names_d_subgroups_alone"      
+# [18,] "pctaa"           "names_d_subgroups_alone"      
+# [19,] "pctaiana"        "names_d_subgroups_alone"      
+# [20,] "pctnhpia"        "names_d_subgroups_alone"      
+# [21,] "pctotheralone"   "names_d_subgroups_alone"      
+# [22,] "pctmulti"        "names_d_subgroups_alone"      
+# [23,] "pctwa"           "names_d_subgroups_alone"      
+# [24,] "ba"              "names_d_subgroups_alone_count"
+# [25,] "aa"              "names_d_subgroups_alone_count"
+# [26,] "aiana"           "names_d_subgroups_alone_count"
+# [27,] "nhpia"           "names_d_subgroups_alone_count"
+# [28,] "otheralone"      "names_d_subgroups_alone_count"
+# [29,] "multi"           "names_d_subgroups_alone_count"
+# [30,] "wa"              "names_d_subgroups_alone_count"
+
+# [31,] "lan_universe"    "names_d_extra_count"          
+# [32,] "lan_eng_na"      "names_d_extra_count"          
+# [33,] "lan_spanish"     "names_d_extra_count"          
+# [34,] "lan_ie"          "names_d_extra_count"          
+# [35,] "lan_api"         "names_d_extra_count"          
+# [36,] "spanish_li"      "names_d_extra_count"          
+# [37,] "ie_li"           "names_d_extra_count"          
+# [38,] "api_li"          "names_d_extra_count"          
+# [39,] "other_li"        "names_d_extra_count"          
+# [40,] "occupiedunits"   "names_d_extra_count"     
+
+# [41,] "pctdisability"   "names_d_extra"            ## should be in names_d  now?    
+# [42,] "disab_universe"  "names_d_extra_count"          
+# [43,] "disability"      "names_d_extra_count"     
+
+# [44,] "pctownedunits"   "names_d_extra"                
+# [45,] "pctspanish_li"   "names_d_extra"                
+# [46,] "pctie_li"        "names_d_extra"                
+# [47,] "pctapi_li"       "names_d_extra"                
+# [48,] "pctother_li"     "names_d_extra"                
+# [49,] "ownedunits"      "names_d_extra_count"          
+# [50,] "poor"            "names_d_extra_count"          
+# [51,] "pctpoor"         "names_d_extra"                
+# [52,] "lifexyears"      "x_anyother"                   
+# [53,] "percapincome"    "x_anyother"                   
+# [54,] "pctmale"         "names_d_extra"                
+# [55,] "pctfemale"       "names_d_extra"                
+# [56,] "pctunder18"      "names_d_extra"                
+# [57,] "pctover17"       "names_d_extra"                
+# [58,] "female"          "names_d_extra_count"          
+# [59,] "male"            "names_d_extra_count"          
+# [60,] "over17"          "names_d_extra_count"          
+# [61,] "under18"         "names_d_extra_count"          
+# [62,] "Shape_Length"    "x_anyother" 
+
+#################################################################################### #
+
+### ADD THOSE COLUMNS TO blockgroupstats table now 
+
+
+
+# to be done ...
+
+
+
+
+
+
+
+
+
+#################################################################################### #
+
 

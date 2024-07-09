@@ -12,14 +12,27 @@
 # ~ ####
 #################################################################### #
 
+## example of reading data from a pins board into a shiny app
+## see more at https://pins.rstudio.com/articles/posit-connect.html
+# if (FALSE) {
+#   library(shiny)
+#   ui <- fluidPage(
+#     tableOutput("table")
+#   )
+#   
+#   server <- function(input, output, session) {
+#     #board <- board_local()
+#     data <- pin_reactive_read(board, "blockgroupstats_arrow", interval = 1000)
+#     output$table <- renderTable(data()[1:100,1:10])
+#   }
+#   shinyApp(ui, server)
+# }
+############################################################### #
+
 # UPDATE OR GET DATASETS ####
 
-library(EJAM)
-library(pins)
-
 ## 1st update/ create (or just read in) latest versions of datasets 
-## using scripts as listed in  
-#      EJAM/data-raw/datacreate_0_REGULAR_UPDATES_NOTES.R
+##
 ## or 
 ## e.g. read from local data folder or wherever
 # load('data/blockgroupstats.rda')  etc.
@@ -55,44 +68,63 @@ library(pins)
 
 #################################################################### #
 
-stop()
+library(EJAM)
+library(pins)
+library(arrow)
+library(magrittr)
+library(data.table)
+
 ####################################################### #
-# assuming newest versions are on pins board ! 
-dataload_from_pins("all", ignorelocal = TRUE)
+# To load data only if newest versions already are on pins board ...
+if (interactive()) {
+  getfrompins <- askYesNo("Download all from pins board right now? (do not do this if you have newer versions loaded and ready to post to pins board)", default = FALSE)
+  if (!is.na(getfrompins) && getfrompins) {
+     dataload_from_pins("all", ignorelocal = TRUE)
+  }
+}
 
-#         save_huge_data_files
-# script to put all datasets from pins into a data folder in 
-# EJAM-opensource repository/package
-
-# To update a particular local folder, e.g.:
-
-setwd("./../EJAM-opensource/data")
-
-setwd("~/../Downloads/EJAMbigfiles")
-
-arrow::write_ipc_file(blockwts,     "blockwts.arrow")
-arrow::write_ipc_file(blockpoints,  "blockpoints.arrow")
-arrow::write_ipc_file(blockid2fips, "blockid2fips.arrow")
-arrow::write_ipc_file(quaddata,     "quaddata.arrow")
-
-arrow::write_ipc_file(bgej,         "bgej.arrow")
-arrow::write_ipc_file(bgid2fips,    "bgid2fips.arrow")
-
-arrow::write_ipc_file(frs,              "frs.arrow")
-arrow::write_ipc_file(frs_by_programid, "frs_by_programid.arrow")
-arrow::write_ipc_file(frs_by_naics,     "frs_by_naics.arrow")
-arrow::write_ipc_file(frs_by_sic,       "frs_by_sic.arrow")
-arrow::write_ipc_file(frs_by_mact,      "frs_by_mact.arrow")
-
+if (interactive()) {
+  savelocal <- askYesNo("Save in local folder also?", default = FALSE)
+  if (!is.na(savelocal) && savelocal) {
+    locdir <- rstudioapi::selectDirectory("Select Directory where you want to save local copies", path = "~/../Downloads/EJAMbigfiles")
+    if (dir.exists(locdir)) {
+      older = getwd()
+      on.exit(setwd(older))
+      setwd(locdir)
+      
+      # To save to a local folder:
+      #    save_huge_data_files ?
+      # script to put all datasets from pins into a data folder in 
+      # EJAM-opensource repository/package
+      # To update a particular local folder, e.g.:
+      # setwd("./../EJAM-opensource/data")
+      # setwd("~/../Downloads/EJAMbigfiles")
+      
+      arrow::write_ipc_file(blockwts,     "blockwts.arrow")
+      arrow::write_ipc_file(blockpoints,  "blockpoints.arrow")
+      arrow::write_ipc_file(blockid2fips, "blockid2fips.arrow")
+      arrow::write_ipc_file(quaddata,     "quaddata.arrow")
+      
+      arrow::write_ipc_file(bgej,         "bgej.arrow")
+      arrow::write_ipc_file(bgid2fips,    "bgid2fips.arrow")
+      
+      arrow::write_ipc_file(frs,              "frs.arrow")
+      arrow::write_ipc_file(frs_by_programid, "frs_by_programid.arrow")
+      arrow::write_ipc_file(frs_by_naics,     "frs_by_naics.arrow")
+      arrow::write_ipc_file(frs_by_sic,       "frs_by_sic.arrow")
+      arrow::write_ipc_file(frs_by_mact,      "frs_by_mact.arrow")
+      
+      setwd(older)
+    }
+  } 
+}
 ####################################################### #
 
 
 #################################################################### #
 
-# CREATE/SPECIFY BOARD ####
+# Create or connect to existing pins board ####
 
-# instead of storing in aws dmap data commons
-library(pins)
 board <- pins::board_connect(auth = "auto")   # uses  "rsconnect"
 # confirm you can see it:
 board %>% pins::pin_browse("Mark")
@@ -127,53 +159,64 @@ board
 # WRITE DATA TO BOARD ####
 #################################################################### #
 
+meta = 0
+meta <- EJAM:::metadata_add(meta)
+## or 
+meta <- list(date_pins_updated = as.character(Sys.Date()), ejscreen_version = "2.3")
+# print(meta)
+
 ## FRS DATA   ####
 
+if (exists("frs")) {
 board %>% 
   pins::pin_write(x = frs, 
             name = "frs", type = "arrow", 
             title = "frs data from EJScreen for EJAM", 
             description = "data.table -- See documentation in EJAM package", 
-            versioned = TRUE, metadata = list(upload_date = Sys.Date(), ejscreen_version = "2.2")
-  )
+            versioned = TRUE, metadata = attributes(meta)
+  )}
+if (exists("frs_by_programid")) {
 board %>% 
   pins::pin_write(x = frs_by_programid, 
             name = "frs_by_programid", type = "arrow", 
             title = "frs_by_programid data from EJScreen for EJAM", 
             description = "data.table -- See documentation in EJAM package", 
-            versioned = TRUE, metadata = list(upload_date = Sys.Date(), ejscreen_version = "2.2")
-  )
-board %>% 
+            versioned = TRUE, metadata = attributes(meta)
+  )}
+if (exists("frs_by_naics")) {
+  board %>% 
   pins::pin_write(x = frs_by_naics, 
             name = "frs_by_naics", type = "arrow", 
             title = "frs_by_naics data from EJScreen for EJAM", 
             description = "data.table -- See documentation in EJAM package", 
-            versioned = TRUE, metadata = list(upload_date = Sys.Date(), ejscreen_version = "2.2")
-  )
+            versioned = TRUE, metadata = attributes(meta)
+  )}
+if (exists("frs_by_sic")) {
 board %>% 
   pins::pin_write(x = frs_by_sic, 
             name = "frs_by_sic", type = "arrow", 
             title = "frs_by_sic data from EJScreen for EJAM", 
             description = "data.table -- See documentation in EJAM package", 
-            versioned = TRUE, metadata = list(upload_date = Sys.Date(), ejscreen_version = "2.2")
-  )
+            versioned = TRUE, metadata = attributes(meta)
+  )}
+if (exists("frs_by_mact")) {
 board %>% 
   pins::pin_write(x = frs_by_mact, 
             name = "frs_by_mact", type = "arrow", 
             title = "frs_by_mact data from EJScreen for EJAM", 
             description = "data.table -- See documentation in EJAM package", 
-            versioned = TRUE, metadata = list(upload_date = Sys.Date(), ejscreen_version = "2.2")
-  )
+            versioned = TRUE, metadata = attributes(meta)
+  )}
 ################### # 
 
-# BLOCKGROUP DATA             note   bgej  was a tibble but replaced 12/5/23 with as.data.frame(bgej) version
+# BLOCKGROUP DATA      
 
 board %>% 
   pins::pin_write(x = bgej, 
             name = "bgej", type = "arrow", 
             title = "bgej data from EJScreen for EJAM", 
             description = "data.frame -- approx 243k blockgroups, like blockgroupstats but for EJ Index raw scores, with bgfips, bgid, etc. - See documentation in EJAM package", 
-            versioned = TRUE, metadata = list(upload_date = Sys.Date(), ejscreen_version = "2.2")
+            versioned = TRUE, metadata = attributes(meta)
   )
 
 board %>% 
@@ -181,7 +224,7 @@ board %>%
             name = "bgid2fips", type = "arrow", 
             title = "bgid2fips data for EJAM", 
             description = "data.table of approx 242k blockgroups with Census FIPS for each blockgroup ID - See documentation in EJAM package", 
-            versioned = TRUE, metadata = list(upload_date = Sys.Date(), ejscreen_version = "2.2")
+            versioned = TRUE, metadata = attributes(meta)
   )
 ################### # 
 
@@ -192,28 +235,28 @@ board %>%
             name = "blockid2fips", type = "arrow", 
             title = "blockid2fips data for EJAM", 
             description = "data.table of approx 8 million Census blocks with Census FIPS for each block ID - See documentation in EJAM package", 
-            versioned = TRUE, metadata = list(upload_date = Sys.Date(), ejscreen_version = "2.2")
+            versioned = TRUE, metadata = attributes(meta)
   )
 board %>% 
   pins::pin_write(x = blockpoints, 
             name = "blockpoints", type = "arrow", 
             title = "blockpoints data for EJAM", 
             description = "data.table of approx 8 million Census blocks with blockid, lat, lon - See documentation in EJAM package", 
-            versioned = TRUE, metadata = list(upload_date = Sys.Date(), ejscreen_version = "2.2")
+            versioned = TRUE, metadata = attributes(meta)
   )
 board %>% 
   pins::pin_write(x = quaddata, 
             name = "quaddata", type = "arrow", 
             title = "quaddata data for EJAM", 
             description = "data.table of approx 8 million Census blocks with BLOCK_X, BLOCK_Z, BLOCK_Y, blockid, used to create index of all US block point locations - See documentation in EJAM package", 
-            versioned = TRUE, metadata = list(upload_date = Sys.Date(), ejscreen_version = "2.2")
+            versioned = TRUE, metadata = attributes(meta)
   ) 
 board %>% 
   pins::pin_write(x = blockwts, 
             name = "blockwts", type = "arrow", 
             title = "blockwts data from EJScreen for EJAM", 
             description = "data.table of approx 8 million Census blocks with blockid, bgid, blockwt, block_radius_miles - See documentation in EJAM package", 
-            versioned = TRUE, metadata = list(upload_date = Sys.Date(), ejscreen_version = "2.2")
+            versioned = TRUE, metadata = attributes(meta)
   )
 ################### # 
 

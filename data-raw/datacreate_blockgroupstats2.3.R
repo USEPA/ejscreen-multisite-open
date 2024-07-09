@@ -19,6 +19,8 @@
 ############################################################################################ #
 
 rm(list = ls())
+print(.packages()) # what is loaded (attached?)
+# golem::detach_all_attached() # unattach EJAM so cannot lazy load statestats by accident, for example
 
 localfolder <- "~/../Downloads/ejscreen new ftp downloads"
 if (!dir.exists(localfolder)) {dir.create(localfolder)}
@@ -44,8 +46,11 @@ blockgroupstats_source_usa.zip   <- "EJScreen_2024_BG_with_AS_CNMI_GU_VI.csv.zip
 blockgroupstats_source_usa.csv   <- "EJScreen_2024_BG_with_AS_CNMI_GU_VI.csv"   # not for download - it will be available after unzip
 blockgroupstats_source_state.zip <- "EJScreen_2024_BG_StatePct_with_AS_CNMI_GU_VI.csv.zip"
 blockgroupstats_source_state.csv <- "EJSCREEN_2024_BG_StatePct_with_AS_CNMI_GU_VI.csv"  # note inconsistent CAPS used there    # not for download - it will be available after unzip
-# blockgroupstats_source_usa.gdb.zip   <- "EJScreen_2024_BG_with_AS_CNMI_GU_VI.gdb.zip"           # gdb is not essential
-# blockgroupstats_source_state.gdb.zip <- "EJScreen_2024_BG_StatePct_with_AS_CNMI_GU_VI.gdb.zip"  # gdb is not essential
+
+blockgroupstats_source_usa.gdb.zip   <- "EJScreen_2024_BG_with_AS_CNMI_GU_VI.gdb.zip"           # gdb is not essential
+blockgroupstats_source_usa.gdb       <- "EJScreen_2024_BG_with_AS_CNMI_GU_VI.gdb"
+blockgroupstats_source_state.gdb.zip <- "EJScreen_2024_BG_StatePct_with_AS_CNMI_GU_VI.gdb.zip"  # gdb is not essential
+blockgroupstats_source_state.gdb     <- "EJScreen_2024_BG_StatePct_with_AS_CNMI_GU_VI.gdb"
 
 #   data for   usastats and statestats
 usastats_source.csv              <- "EJScreen_2024_BG_National_Lookup.csv"
@@ -64,10 +69,37 @@ fnames <- c(
   # and the other  .csv files are found inside zip files after download
 )
 
+options(timeout = max(300, getOption("timeout"))) # default is 60 seconds 
+
 curl::multi_download(urls = file.path(baseurl, fnames), 
                      destfiles = file.path(td, fnames))
 
-# ARCHIVE THE .xlsx files in cases needed ####
+########################################################### #
+
+## if gdb needed:
+needgdb = FALSE
+if (needgdb) {
+  
+  curl::multi_download(
+    urls = file.path(baseurl, c(blockgroupstats_source_usa.gdb.zip, blockgroupstats_source_state.gdb.zip)),
+    destfiles = file.path(td, c(blockgroupstats_source_usa.gdb.zip, blockgroupstats_source_state.gdb.zip))
+  )
+  unzip(          file.path(td, blockgroupstats_source_usa.gdb.zip),    exdir =  td, overwrite = TRUE)
+  unzip(          file.path(td, blockgroupstats_source_state.gdb.zip),  exdir =  td, overwrite = TRUE)
+  gdbpath_usa   = file.path(td, blockgroupstats_source_usa.gdb)
+  gdbpath_state = file.path(td, blockgroupstats_source_state.gdb)
+  file.copy(gdbpath_usa, file.path(mydir, blockgroupstats_source_usa.gdb))
+  file.copy(gdbpath_state, file.path(mydir, blockgroupstats_source_state.gdb))
+  gdbpath_usa   = file.path(mydir, blockgroupstats_source_usa.gdb)
+  gdbpath_state = file.path(mydir, blockgroupstats_source_state.gdb)
+  # dir(mydir)
+  file.exists(gdbpath_usa)
+  file.exists(gdbpath_state)
+  
+}
+######################################################### #
+
+# ARCHIVE  .xlsx files in case needed ####
 
 file.copy(file.path(td, usastats_new_explained.xlsx),   file.path(localfolder, usastats_new_explained.xlsx), overwrite = TRUE)
 file.copy(file.path(td, statestats_new_explained.xlsx), file.path(localfolder, statestats_new_explained.xlsx), overwrite = TRUE)
@@ -188,8 +220,8 @@ cbind(sort(names(blockgroupstats_new)[fixcolnames(names(blockgroupstats_new),'cs
 # WILL RENAME COLUMNS OF DATA.FRAME TO MATCH WHAT IS USED IN EJAM::   package  
 # instead of sticking with variable names from FTP site.
 
-names(blockgroupstats_new)       <-  EJAM::fixcolnames(names(blockgroupstats_new),       oldtype = 'csv', newtype = 'r') # 
-names(blockgroupstats_new_state) <-  EJAM::fixcolnames(names(blockgroupstats_new_state), oldtype = 'csv', newtype = 'r') # 
+names(blockgroupstats_new)       <-  fixcolnames(names(blockgroupstats_new),       oldtype = 'csv', newtype = 'r') # 
+names(blockgroupstats_new_state) <-  fixcolnames(names(blockgroupstats_new_state), oldtype = 'csv', newtype = 'r') # 
 
 names(usastats_new)    <- fixcolnames(names(usastats_new),   oldtype = "csv", newtype = "r")
 names(statestats_new)  <- fixcolnames(names(statestats_new), oldtype = "csv", newtype = "r")
@@ -202,19 +234,48 @@ names(statestats_new)  <- fixcolnames(names(statestats_new), oldtype = "csv", ne
 cols2drop <- grep("^pctile|state.pctile|^bin", names(blockgroupstats_new), value = TRUE)
 # extra ones not renamed by fixcolnames() since did not bother to put all Text and Bin columns names in map_headernames
 cols2drop <- c(cols2drop, c("B_D2_DWATER", "B_D2_NO2", "B_D5_DWATER", "B_D5_NO2",  "B_DISABILITYPCT", "B_DWATER", "B_NO2", 
-                               "T_D2_DWATER", "T_D2_NO2",  "T_D5_DWATER", "T_D5_NO2", "T_DISABILITYPCT", "T_DWATER", "T_NO2")
-               )  
+                            "T_D2_DWATER", "T_D2_NO2",  "T_D5_DWATER", "T_D5_NO2", "T_DISABILITYPCT", "T_DWATER", "T_NO2")
+)  
 cat("\n Dropping these columns: \n\n")
 print(cbind(cols2drop))
 
 blockgroupstats_new       <- blockgroupstats_new[,       !(names(blockgroupstats_new)       %in% cols2drop)]
 blockgroupstats_new_state <- blockgroupstats_new_state[, !(names(blockgroupstats_new_state) %in% cols2drop)]
+
 usastats_new              <- usastats_new[,              !(names(usastats_new)              %in% cols2drop)]
 statestats_new            <- statestats_new[,            !(names(statestats_new)            %in% cols2drop)]
 
 dim(blockgroupstats_new); dim(EJAM::blockgroupstats)
+
+
+
+
 dim(usastats_new);   dim(EJAM::usastats)
 dim(statestats_new); dim(EJAM::statestats)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 setdiff(          names(blockgroupstats_new), names(EJAM::blockgroupstats))
 EJAM:::setdiff_yx(names(blockgroupstats_new), names(EJAM::blockgroupstats))
@@ -224,7 +285,7 @@ names(blockgroupstats_new)
 
 ############################################################## #
 # rename fips column 
-names(blockgroupstats_new) <- gsub("id", "OBJECTID", names(blockgroupstats_new))
+names(blockgroupstats_new)       <- gsub("id", "OBJECTID", names(blockgroupstats_new))
 names(blockgroupstats_new_state) <- gsub("id", "OBJECTID", names(blockgroupstats_new_state))
 
 ############################################################## #
@@ -260,60 +321,15 @@ blockgroupstats_new$bgid <- bgpts$bgid[match(blockgroupstats_new$bgfips, bgpts$b
 save.image(file = file.path(localfolder, "save.image blockgroupstats_new -- in progress.rda"))
 
 
-
-
+########################################################### #
+########################################################### #
 ################################################################################ #
-
-
 
 ###### MOVE EJ INDEXES FROM blockgroupstats_new and blockgroupstats_new_state
 ## to  a consolidated bgej  table 
 
 # merge US EJ with the state.EJ.DISPARITY columns ####
 # from the  blockgroupstats_new_state  table
-
-#  varnames used for state and us pctiles ... make them distinct
-cbind(names(EJAM::usastats), names(EJAM::statestats)) # no - 
-# EJ index vars were adjusted to indicate if state pctile or us pctile
-
-# [26,] "EJ.DISPARITY.pm.eo"                "state.EJ.DISPARITY.pm.eo"               
-# [27,] "EJ.DISPARITY.pm.supp"              "state.EJ.DISPARITY.pm.supp"    
-
-# [28,] "EJ.DISPARITY.o3.eo"                "state.EJ.DISPARITY.o3.eo"               
-# [29,] "EJ.DISPARITY.o3.supp"              "state.EJ.DISPARITY.o3.supp"   
-
-# [30,] "EJ.DISPARITY.dpm.eo"               "state.EJ.DISPARITY.dpm.eo"              
-# [31,] "EJ.DISPARITY.dpm.supp"             "state.EJ.DISPARITY.dpm.supp"    
-
-#  etc.
-
-# > setdiff(names(statestats), names(usastats))
-# [1] "state.EJ.DISPARITY.pm.eo"                "state.EJ.DISPARITY.pm.supp"          
-# "state.EJ.DISPARITY.o3.eo"  "state.EJ.DISPARITY.o3.supp"   
-# "state.EJ.DISPARITY.dpm.eo"               "state.EJ.DISPARITY.dpm.supp"
-# etc
-# [25] "state.EJ.DISPARITY.proximity.npdes.eo"   "state.EJ.DISPARITY.proximity.npdes.supp"
-
-all.equal(names(usastats_new), names(statestats_new))  # yes 
-# still same so far, so they need to be adjusted
-setdiff(          names(usastats_new), names(statestats_new))
-EJAM:::setdiff_yx(names(usastats_new), names(statestats_new))
-
-
-# make them distinct
-
-
-# to be done...
-
-
-
-
-# to be done...
-
-
-
-
-
 
 # dataload_from_pins("bgej")
 # > names( bgej)
@@ -338,25 +354,9 @@ EJAM:::setdiff_yx(names(usastats_new), names(statestats_new))
 # [52] "state.EJ.DISPARITY.proximity.tsdf.eo"    "state.EJ.DISPARITY.proximity.tsdf.supp"  "state.EJ.DISPARITY.ust.eo"
 # [55] "state.EJ.DISPARITY.ust.supp"  "state.EJ.DISPARITY.proximity.npdes.eo" "state.EJ.DISPARITY.proximity.npdes.supp"
 
-bgej <- blockgroupstats_new[ , c("OBJECTID",  "bgfips", "bgid",
-                                 "ST", "pop", 
-                                 names_ej, 
-                                 names_ej_state)]
 
 
 
-
-
-
-########################################################### #
-
-############################################################## #
-### get or create these columns: 
-# State EJ count at80th is missing ####
-# "state.count.ej.80up"      "state.count.ej.80up.supp"
-
-#  already has these:
-# "count.ej.80up"      "count.ej.80up.supp"
 
 
 # to be done...
@@ -364,10 +364,61 @@ bgej <- blockgroupstats_new[ , c("OBJECTID",  "bgfips", "bgid",
 
 
 
-############################################################## #
 
-# race ethnic subgroups are missing ####
-### get these columns from a separate database/ table to be obtained separately:
+
+
+# then...
+
+bgej <- as.data.frame(
+  blockgroupstats_new[ , c("OBJECTID",  "bgfips", "bgid",
+                           "ST", "pop", 
+                           names_ej, 
+                           names_ej_state)]
+)
+bgej <- metadata_add(bgej)
+
+##  Save bgej to pins board as .arrow file
+
+#     # using script in    datacreate_pins.R
+
+
+
+
+
+# to be done...
+
+
+
+
+
+
+########################################################### ############################################################ #
+
+
+########################################################### #
+########################################################### #
+
+# SWITCH datasets TO NEW VERSIONS  #### 
+
+blockgroupstats <- blockgroupstats_new
+
+rm(blockgroupstats_new, blockgroupstats_new_state)
+gc()
+
+# save work in progress as IMAGE ####
+
+save.image(file = file.path(localfolder, "save.image work in progress on blockgroupstats.rda"))
+
+################################################################################ #
+
+########################################################### #
+########################################################### #
+
+# Obtain and add RACE ETHNICITY SUBGROUPS   ####
+
+### get via script in
+#   "EJAM/data-raw/datacreate_blockgroupstats2.3_add_d_acs22columns.R"
+
 
 #     "pcthisp"                  "pctba"                    "pctaa"                    "pctaiana"                
 # [11] "pctnhpia"                 "pctotheralone"            "pctmulti"                 "pctwa"    "hisp"
@@ -390,17 +441,29 @@ bgej <- blockgroupstats_new[ , c("OBJECTID",  "bgfips", "bgid",
 
 
 
+# to be done...
+
+
+
+
+
+
+
+
 ########################################################### #
 ########################################################### #
 
 
+### Get or create these columns: 
+# 
+# State EJ count at80th is missing ####
+# "state.count.ej.80up"      "state.count.ej.80up.supp"
+# 
+#  already has these:
+# "count.ej.80up"      "count.ej.80up.supp"
 
 
 
-
-
-
-##############   after map_headernames fixed to handle all new indicator names... 
 
 
 
@@ -413,37 +476,21 @@ bgej <- blockgroupstats_new[ , c("OBJECTID",  "bgfips", "bgid",
 
 
 
+
 ################################################################################ #
 ################################################################################ #
-
-# SWITCH datasets TO NEW VERSIONS  #### 
-
-blockgroupstats <- blockgroupstats_new
-usastats   <- usastats_new
-statestats <- statestats_new
-
-# make rownames less confusing since starting with 1 was for the row where PCTILE == 0,
-# so make them match in USA one at least, but cannot same way for state one since they repeat for each state
-rownames(usastats)     <- usastats$PCTILE
-rownames(statestats) <- paste0(statestats$REGION, statestats$PCTILE) 
 
 # ADD METADATA #### 
-
-blockgroupstats    <- EJAM:::metadata_add(blockgroupstats)
-usastats           <- EJAM:::metadata_add(usastats)
-statestats         <- EJAM:::metadata_add(statestats)
-
 # use_data() to save for PACKAGE ####
 
+blockgroupstats    <- EJAM:::metadata_add(blockgroupstats)
 usethis::use_data(blockgroupstats, overwrite = T)
-usethis::use_data(usastats,   overwrite = T)
-usethis::use_data(statestats, overwrite = T)
 
 ################################################################################ #
 
 # ARCHIVE as IMAGE ####
 
-save.image(file = file.path(localfolder, "save.image NEW blockgroupstats usastats statestats.rda"))
+save.image(file = file.path(localfolder, "save.image work on NEW blockgroupstats usastats statestats.rda"))
 
 ################################################################################ #
 
