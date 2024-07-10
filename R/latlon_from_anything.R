@@ -67,7 +67,7 @@ latlon_from_anything <- function(x,y) {
   if (is.list(x) & !is.data.frame(x)) {x <- as.data.frame(x)} # like if x <- list(lon = 1:5, lat = 1:5)
   if (is.matrix(x) | is.array(x) ) {x <- as.data.frame(x)}
   if (!is.data.frame(x)) { # also if data.table (but not if a matrix or a non-df-list or array or vector)
-    if (is.character(x) & length(x) == 1) {
+    if (is.atomic(x) && is.character(x) & length(x) == 1) {
       # seems to be a file name with path, so read it
       if (!file.exists(x)) {
         if (shiny::isRunning()) {

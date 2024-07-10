@@ -63,7 +63,7 @@ latlon_from_address_table <- function(x) {
   if (missing(x) && interactive()) {
     x <- rstudioapi::selectFile(caption = "Select .csv or .xlsx with addresses")
   }
-  if (all(is.character(x)) && length(x) == 1) {
+  if (is.atomic(x) && all(is.character(x)) && length(x) == 1) {
     if (file.exists(x)) {
       x <- EJAMejscreenapi::read_csv_or_xl(x)
     }
@@ -89,7 +89,7 @@ address_from_table <- function(x) {
   if (missing(x) && interactive()) {
     x <- rstudioapi::selectFile(caption = "Select .csv or .xlsx with addresses")
   }
-  if (all(is.character(x)) && length(x) == 1) {
+  if (all(is.character(x)) && is.atomic(x) && length(x) == 1) {
     if (file.exists(x)) {
       x <- EJAMejscreenapi::read_csv_or_xl(x)
     }
@@ -126,12 +126,12 @@ address_from_table_goodnames <- function(x, colnames_allowed = c('address', 'str
   if (missing(x) && interactive()) {
     x <- rstudioapi::selectFile(caption = "Select .csv or .xlsx with addresses")
   }
-  if (all(is.character(x)) && length(x) == 1) {
+  if (is.atomic(x) && all(is.character(x)) && length(x) == 1) {
     if (file.exists(x)) {
       x <- EJAMejscreenapi::read_csv_or_xl(x)
     }
   }
-
+  stopifnot(is.atomic(colnames_allowed))
   colnamesfound <- intersect(names(x), colnames_allowed)
   if ("address" %in% colnamesfound && !("street" %in% colnamesfound) && !("city" %in% colnamesfound)) {
     # seems like address column must be the entire address with street, city, state all in it ?
@@ -158,7 +158,7 @@ address_from_table_goodnames <- function(x, colnames_allowed = c('address', 'str
 #' geocode, but only if AOI package is installed and attached
 #'   and what it imports like tidygeocoder etc.
 #' @details slow? about 100 per minute?
-#' @param address vector of addresses, but tested only for 1
+#' @param address vector of addresses
 #' @param xy set it to TRUE if you want only x,y returned, see help for AOI pkg
 #' @param pt  see help for AOI pkg, return geometry if set to TRUE, allowing map.
 #'   param as provided is ignored and set to TRUE if aoimap=TRUE
@@ -185,6 +185,12 @@ address_from_table_goodnames <- function(x, colnames_allowed = c('address', 'str
 #'
 latlon_from_address <- function(address, xy=FALSE, pt = FALSE, aoimap=FALSE, batchsize=25, ...) {
 
+  stopifnot(is.atomic(address), is.character(address), length(address) <= 1000,
+            is.atomic(xy),     is.logical(xy), 
+            is.atomic(pt),     is.logical(pt), 
+            is.atomic(aoimap), is.logical(aoimap),
+            is.atomic(batchsize), is.numeric(batchsize), batchsize <= 100)
+  
   ############################################## #
   # make AOI package only optional ####
   ### all these are imported by AOI pkg that were not yet needed by EJAM:

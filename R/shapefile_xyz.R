@@ -66,7 +66,7 @@ shapefile_from_any <- function(path = NULL, cleanit = TRUE, crs = 4269, layer = 
   
   # test cases:  see unit tests file
   
-  if (any(is.null(path)) || any(is.na(path)) || any(length(path)) == 0 || any(!is.character(path))) {
+  if (any(is.null(path)) || any(is.na(path)) || any(length(path)) == 0 || any(!is.character(path)) || !is.atomic(path)) {
     if (interactive() && !shiny::isRunning()) {
       
       # This lets RStudio user point to file OR folder
