@@ -1,4 +1,12 @@
 
+
+x = function(localfolder = "~/../Downloads/ejscreen new ftp downloads", 
+             baseurl = "https://gaftp.epa.gov/EJScreen/2024/2.30_July_useMe/",
+             
+) {
+  
+}
+
 # SCRIPT TO UPDATE EJSCREEN BLOCKGROUP DATA AND PERCENTILE LOOKUP TABLES FOR EJAM YEARLY
 
 ############################################################################################ #
@@ -18,11 +26,11 @@
 
 ############################################################################################ #
 
-rm(list = ls())
-print(.packages()) # what is loaded (attached?)
+# rm(list = ls())
+# print(.packages()) # what is loaded (attached?)
 # golem::detach_all_attached() # unattach EJAM so cannot lazy load statestats by accident, for example
 
-localfolder <- "~/../Downloads/ejscreen new ftp downloads"
+
 if (!dir.exists(localfolder)) {dir.create(localfolder)}
 
 library(EJAM)
@@ -38,7 +46,7 @@ library(EJAM)
 
 # EJScreen v 2.3 ftp site files as of 7/5/2024
 
-baseurl <- "https://gaftp.epa.gov/EJScreen/2024/2.30_July_useMe/"
+# baseurl <- "https://gaftp.epa.gov/EJScreen/2024/2.30_July_useMe/"
 # browseURL(baseurl)
 
 #   data for   blockgroupstats
@@ -59,6 +67,7 @@ usastats_new_explained.xlsx      <- "EJScreen_2024_BG_Percentiles_Columns.xlsx"
 statestats_new_explained.xlsx    <- "EJScreen_2024_BG_State_Percentiles_Columns.xlsx"
 
 td <- tempdir()  # or...   localpath <-  "~/../EJ,,,,,"
+
 fnames <- c(
   blockgroupstats_source_usa.zip,
   blockgroupstats_source_state.zip, # we need this only for its state versions of EJ indexes (used to create state pctiles)
@@ -479,18 +488,12 @@ save.image(file = file.path(localfolder, "save.image work in progress on blockgr
 
 ################################################################################ #
 ################################################################################ #
-
-# ADD METADATA #### 
-# use_data() to save for PACKAGE ####
-
-blockgroupstats    <- EJAM:::metadata_add(blockgroupstats)
-usethis::use_data(blockgroupstats, overwrite = T)
-
+ 
 ################################################################################ #
 
 # ARCHIVE as IMAGE ####
 
-save.image(file = file.path(localfolder, "save.image work on NEW blockgroupstats usastats statestats.rda"))
+# save.image(file = file.path(localfolder, "save.image work on NEW blockgroupstats usastats statestats.rda"))
 
 ################################################################################ #
 

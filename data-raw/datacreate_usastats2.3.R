@@ -30,10 +30,10 @@ downloadnow <- TRUE
 
 baseurl = "https://gaftp.epa.gov/EJScreen/2024/2.30_July_useMe/"
 
-blockgroupstats_source_usa.gdb.zip   <- "EJScreen_2024_BG_with_AS_CNMI_GU_VI.gdb.zip"           # gdb is not essential
-blockgroupstats_source_usa.gdb       <- "EJScreen_2024_BG_with_AS_CNMI_GU_VI.gdb"
-blockgroupstats_source_state.gdb.zip <- "EJScreen_2024_BG_StatePct_with_AS_CNMI_GU_VI.gdb.zip"  # gdb is not essential
-blockgroupstats_source_state.gdb     <- "EJScreen_2024_BG_StatePct_with_AS_CNMI_GU_VI.gdb"
+blockgroupstats_source_usa.gdb.zip   = "EJScreen_2024_BG_with_AS_CNMI_GU_VI.gdb.zip"           # gdb is not essential
+blockgroupstats_source_usa.gdb       = "EJScreen_2024_BG_with_AS_CNMI_GU_VI.gdb"
+blockgroupstats_source_state.gdb.zip = "EJScreen_2024_BG_StatePct_with_AS_CNMI_GU_VI.gdb.zip"  # gdb is not essential
+blockgroupstats_source_state.gdb     = "EJScreen_2024_BG_StatePct_with_AS_CNMI_GU_VI.gdb"
 
 gdbzipname       = blockgroupstats_source_usa.gdb.zip
 gdbname          = blockgroupstats_source_usa.gdb
@@ -51,8 +51,8 @@ options(timeout = max(300, getOption("timeout"))) # default of 60 seconds is not
 
 ejscreen_download_gdb <- function(
     folder = tempdir(), 
-    gdbzipname = gdbzipname,
-    gdbname =    gdbname, 
+    gdbzipname = blockgroupstats_source_usa.gdb.zip,
+    gdbname =    blockgroupstats_source_usa.gdb, 
     baseurl = baseurl) {
   cat("downloading gdb.zip\n")
   download.file(file.path(baseurl, gdbzipname), destfile = file.path(folder, gdbzipname))
@@ -87,8 +87,8 @@ ejscreen_read_unzipped_lookups <- function(mypath) {
 }
 
 ejscreen_pctile_lookups_from_ftp <- function(folder = tempdir(), 
-                                             gdbzipname = gdbzipname, 
-                                             gdbname =    gdbname,
+                                             gdbzipname = blockgroupstats_source_usa.gdb.zip, 
+                                             gdbname =    blockgroupstats_source_usa.gdb,
                                              baseurl = baseurl) {
 
   mypath <- ejscreen_download_gdb(folder, gdbzipname, gdbname, baseurl)
@@ -210,32 +210,18 @@ statestats <- statestats_new
 save.image(file = "~/../Downloads/work in progress on usastats 2024-07.rda")
 
 
-stop()
-
-# at this point, switch over to use script in 
-# EJAM/data-raw/datacreate_usastats_pctile_lookup_add_subgroups_demog.R
-
+stop("at this point, before saving these via use_data(), do script in 
+     EJAM/data-raw/datacreate_usastats_pctile_lookup_add_subgroups_demog.R 
+     and also will use EJAM/data-raw/datacreate_avg.in.us.R")
 
 
 
 
-
-
-
-
-
-# ADD METADATA #### 
-# use_data() to save for PACKAGE ####
-
-usastats           <- EJAM:::metadata_add(usastats)
-statestats         <- EJAM:::metadata_add(statestats)
-usethis::use_data(usastats,   overwrite = T)
-usethis::use_data(statestats, overwrite = T)
 
 
 ##########################################################################################################################################
 
-# check them to see if OK before replacing existing datasets in package...
+# check them to see if OK before replacing existing datasets in package?
 
 # statestats has some NA values:
 # but that is OK, if the function looking up pctiles can handle NA values for a zone! and there is not a better way to indicate missing values.

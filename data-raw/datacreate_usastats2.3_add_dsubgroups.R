@@ -29,7 +29,7 @@ names(  usastats2.2)[names(  usastats2.2) == "LIFEEXP"] <- "lifexyears"
 # "lowlifex" %in% names(EJAM::blockgroupstats) # TRUE
 
 ############################################################################# # 
-# to add percentile lookup info on demog subgroups, we need that info from blockgroupstats
+# to add percentile lookup info on demog subgroups, we need that info from blockgroupstats - from new version or already-installed version???
 library(data.table)
 bg <- data.table::copy(EJAM::blockgroupstats)
 bg <- data.table::setDF(bg)
@@ -219,18 +219,20 @@ if (all(usastats2.2[,intersect(names_d_subgroups_both, names(usastats2.2))] == 0
   # save.image(file = 'work on usastats and statestats 2023-08-23 end.rda')
   save.image(file = 'work on usastats and statestats 2023-12-12 end.rda')
   
-  ####### now create avg.in.us before moving on...
+  ################################################ #
   
-  "EJAM/data-raw/datacreate_avg.in.us.R"
+  stop("next, create avg.in.us (before removing usastats from memory) ")
+  ####### next, create avg.in.us (before removing usastats from memory)
   
+ #  "EJAM/data-raw/datacreate_avg.in.us.R"
   
-  
+   
   
   
   rm(list = ls())
   
 
-  stop('now need to rebuild EJAM package with those new datasets and push changes')
+  print('now need to rebuild EJAM package with those new datasets and push changes')
   
   ################################################ #
 # }

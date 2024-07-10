@@ -1,105 +1,103 @@
 
 #  EJAM/data-raw/datacreate_names_of_indicators.R
 
-# also see  EJAM/data-raw/datacreate_names_pct_as_fraction_.R
-# and  datacreate_rename_blockgroupstats variables
-# and
-# after an update of map_headernames, can update names of indicators as stored in blockgroupstats like this:
-# but probably also need to check/update these:
-# usastats, statestats, avg
-# avg.in.us
-# high_pctiles_tied_with_min
-# etc.
 ########################################################################################################## #
 # ***
-#   to be reconciled with or replaced with map_headernames approach.
-## see EJAMejscreenapi::map_headernames$varlist which now has most or all of these in a table  
+#   to be reconciled with or replaced with map_headernames approach...
+##    map_headernames$varlist  which now has most or all of these in a table 
+## but subgroups info is tricky since $varlist was "names_d_subgroups_nh" not "names_d_subgroups" 
 
 ########################################################################################################## #
 ########################################################################################################## #
 if ( 1 == 0 ) {
-#  friendly names differ -  script to compare them: 
-
-vvv <- function(vlist = "names_r_all") {
-  vars =  get(vlist) # same as names_d
-  fr = paste0(vlist, "_friendly")
-  if (exists(fr)) {
-    vars_f = get(fr) # same as  names_d_friendly  
-  } else {
-    vars_f = rep(NA, length(vlist))
+  #  friendly names differ -  script to compare them: 
+  
+  vvv <- function(vlist = "names_r_all") {
+    vars =  get(vlist) # same as names_d
+    fr = paste0(vlist, "_friendly")
+    if (exists(fr)) {
+      vars_f = get(fr) # same as  names_d_friendly  
+    } else {
+      vars_f = rep(NA, length(vlist))
+    }
+    # print(
+    data.frame(
+      vlist = vlist,
+      names_x = vars,
+      maphead.names_friendly = fixcolnames(vars, 'r', 'names_friendly'),
+      shortlabel             = fixcolnames(vars, 'r', 'shortlabel'),
+      long                   = fixcolnames(vars, 'r', 'long'),
+      names_x_friendly = vars_f
+    )
+    # )
   }
-  # print(
-  data.frame(
-    vlist = vlist,
-    names_x = vars,
-    maphead.names_friendly = fixcolnames(vars, 'r', 'names_friendly'),
-    shortlabel             = fixcolnames(vars, 'r', 'shortlabel'),
-    long                   = fixcolnames(vars, 'r', 'long'),
-    names_x_friendly = vars_f
-  )
-  # )
-}
-lists_to_check <- paste0("names_", grep("friendly|these|all_r|wts|subgroups_alone|subgroups_nh", invert = T, names(namez), value = T))
-# vvv("names_d")
-# vvv(lists_to_check[1])
-out <- list()
-for (i in 1:length(lists_to_check)) {
-  out[[i]] <- vvv(lists_to_check[i])
-}
-out <- data.table::rbindlist(out)
-# print(out)
-
-# confirmed that 2 are identical but others differ:
-## shortlabel == out$maphead.names_friendly 
-# versus  long,  
-# versus  names_x_friendly 
-
-# the same:
-# table(out$shortlabel == out$maphead.names_friendly, useNA = "always")  # 458 TRUE
-
-# not matching:
-# table(out$shortlabel == out$long,               useNA = "always")  # F (but True 69 times)
-# table(out$shortlabel == out$names_x_friendly,   useNA = "always")  # F (or na 122 times)
-# table(out$long       == out$names_x_friendly,   useNA = "always")  #  F (or na 122 times, or 9 times true)
-
-# which are shortest?
-# table(nchar(out$shortlabel) > nchar(out$long), useNA = 'always') # long is almost always longer
-# table(nchar(out$shortlabel) > nchar(out$names_x_friendly), useNA = 'always') # in 63 indicators, names_x_friendly is shorter/better,
-# so we should id those and use the shorter name, from names_x_friendly for those 63 or so.
-# which lists of names are those 63 in?
-# out[nchar(out$shortlabel) > nchar(out$names_x_friendly), 
-#     .( vlist, names_x, shortlabel, names_x_friendly) ] 
-# See which lists of names for which we should replace shortlabel with the shorter one that is in 
-# actually, just do this:
-# for raw EJ scores: fix names_ej rows, $shortlabel column, to say "(raw)" at the end not "EJ Index", and prefix with "EJ: "
-# life expectancy: OK as is. shortlabel is good enough. 
-# "Toxic Releases to Air" is long but ok, for names_ej_pctile and related, and names_ej etc.
-# "Air toxics " is long but ok.
-
-# bottom line is we can leave map_headernames alone and use shortlabel column for plots, etc.
-
-# should we make identical the names_x_friendly and the maphead.names_friendly??
-# when do they disagree? 
-out[maphead.names_friendly != names_x_friendly , .(vlist, names_x_friendly, maphead.names_friendly)]
-out[maphead.names_friendly != names_x_friendly , .(vlist, names_x_friendly, maphead.names_friendly )][1:100, ]
-
-# i think maphead.names_friendly in xlsx should be replaced to be identical to names_x_friendly and get those 
-# from long, since map_headernames$longname_tableheader is the longest and most accurate full description.
-# So just keep the very short name in shortlabel and the very long one in longnames_tableheader,
-# but change maphead.names_friendly, names_x_friendly by 
-#copying the map_headernames$longname_tableheader column and 
- #pasting it onto (replacing) map_headernames$names_friendly column
-# AND manually replace in EJAM/data-raw/datacreate_names_of_indicators.R,
-#  all the names_xyz_friendly lists with what is in map_headernames$longname_tableheader somehow.
-
-# see out df above  to see the careful names from this file and namez etc.
-## and maybe put them into mapheadernames longnames and namesfriendly columns where better?
-
+  lists_to_check <- paste0("names_", grep("friendly|these|all_r|wts|subgroups_alone|subgroups_nh", invert = T, names(namez), value = T))
+  # vvv("names_d")
+  # vvv(lists_to_check[1])
+  out <- list()
+  for (i in 1:length(lists_to_check)) {
+    out[[i]] <- vvv(lists_to_check[i])
+  }
+  out <- data.table::rbindlist(out)
+  # print(out)
+  
+  # confirmed that 2 are identical but others differ:
+  ## shortlabel == out$maphead.names_friendly 
+  # versus  long,  
+  # versus  names_x_friendly 
+  
+  # the same:
+  # table(out$shortlabel == out$maphead.names_friendly, useNA = "always")  # 458 TRUE
+  
+  # not matching:
+  # table(out$shortlabel == out$long,               useNA = "always")  # F (but True 69 times)
+  # table(out$shortlabel == out$names_x_friendly,   useNA = "always")  # F (or na 122 times)
+  # table(out$long       == out$names_x_friendly,   useNA = "always")  #  F (or na 122 times, or 9 times true)
+  
+  # which are shortest?
+  # table(nchar(out$shortlabel) > nchar(out$long), useNA = 'always') # long is almost always longer
+  # table(nchar(out$shortlabel) > nchar(out$names_x_friendly), useNA = 'always') # in 63 indicators, names_x_friendly is shorter/better,
+  # so we should id those and use the shorter name, from names_x_friendly for those 63 or so.
+  # which lists of names are those 63 in?
+  # out[nchar(out$shortlabel) > nchar(out$names_x_friendly), 
+  #     .( vlist, names_x, shortlabel, names_x_friendly) ] 
+  # See which lists of names for which we should replace shortlabel with the shorter one that is in 
+  # actually, just do this:
+  # for raw EJ scores: fix names_ej rows, $shortlabel column, to say "(raw)" at the end not "EJ Index", and prefix with "EJ: "
+  # life expectancy: OK as is. shortlabel is good enough. 
+  # "Toxic Releases to Air" is long but ok, for names_ej_pctile and related, and names_ej etc.
+  # "Air toxics " is long but ok.
+  
+  # bottom line is we can leave map_headernames alone and use shortlabel column for plots, etc.
+  
+  # should we make identical the names_x_friendly and the maphead.names_friendly??
+  # when do they disagree? 
+  out[maphead.names_friendly != names_x_friendly , .(vlist, names_x_friendly, maphead.names_friendly)]
+  out[maphead.names_friendly != names_x_friendly , .(vlist, names_x_friendly, maphead.names_friendly )][1:100, ]
+  
+  # i think maphead.names_friendly in xlsx should be replaced to be identical to names_x_friendly and get those 
+  # from long, since map_headernames$longname_tableheader is the longest and most accurate full description.
+  # So just keep the very short name in shortlabel and the very long one in longnames_tableheader,
+  # but change maphead.names_friendly, names_x_friendly by 
+  #copying the map_headernames$longname_tableheader column and 
+  #pasting it onto (replacing) map_headernames$names_friendly column
+  # AND manually replace in EJAM/data-raw/datacreate_names_of_indicators.R,
+  #  all the names_xyz_friendly lists with what is in map_headernames$longname_tableheader somehow.
+  
+  # see out df above  to see the careful names from this file and namez etc.
+  ## and maybe put them into mapheadernames longnames and namesfriendly columns where better?
+  
 }
 ########################################################################################################## #
 ########################################################################################################## #
 
+datacreate_names_of_indicators <- function() {
 
+  ### this will create but also assign metadata to and save for pkg via use_data()
+  ### unlike other datacreate_  functions that do not do the metadata and use_data steps!
+  ### It is really kind of a script, but packaged as a function here so that
+  ### all the variables created do not show up in the global environment - they get saved in pkg ready for lazy-loading if/when needed
+    
 # ** change when ready to switch to using subgroups_alone like white alone not nonhispanic white alone:
 
 subgroups_type <- c(  'nh', 'alone')[1]  # simple names without _nh or _alone should be usable/ what is used in code, and here get set same as nh for now and set to same as alone when want to switch 
@@ -213,8 +211,8 @@ names_d <- c(
 # friendly raw percents
 # > dput(fixcolnames(names_d, 'r', 'long'))
 names_d_friendly <-  c("Demographic Index", "Supplemental Demographic Index", "% Low Income", 
-  "% in limited English-speaking Households", "% Unemployed", "% with Less Than High School Education", 
-  "Low life expectancy", "% under Age 5", "% over Age 64", "% People of Color"
+                       "% in limited English-speaking Households", "% Unemployed", "% with Less Than High School Education", 
+                       "Low life expectancy", "% under Age 5", "% over Age 64", "% People of Color"
 )
 # names_d_friendly <- c(
 #   "Demog.Ind.",   "Suppl Demog Index", 
@@ -233,19 +231,19 @@ names_d_friendly <-  c("Demographic Index", "Supplemental Demographic Index", "%
 # dput(fixcolnames(names_d_count, 'r', 'long'))
 names_d_count_friendly <- fixcolnames(names_d_count, 'r', 'long')
 # names_d_count_friendly <- paste0("Count of ", gsub("% ", "", names_d_friendly))
-  all.equal(names_d_count_friendly, map_headernames$longname_tableheader[map_headernames$varlist == "names_d_count"])
+all.equal(names_d_count_friendly, map_headernames$longname_tableheader[map_headernames$varlist == "names_d_count"])
 # [1] TRUE
- cbind(names_d_count_friendly, paste0("Count of ", gsub("% ", "", names_d_count_friendly)))
- # >  cbind(names_d_count_friendly, paste0("Count of ", gsub("% ", "", names_d_count_friendly)))
- # names_d_count_friendly                                                                                    
- # [1,] "Low income resident count"                      "Count of Low income resident count"                     
- # [2,] "Limited English-speaking Households"            "Count of Limited English-speaking Households"           
- # [3,] "Unemployed resident count"                      "Count of Unemployed resident count"                     
- # [4,] "Less Than High School Education resident count" "Count of Less Than High School Education resident count"
- # [5,] "Under Age 5 resident count"                     "Count of Under Age 5 resident count"                    
- # [6,] "Over Age 64 resident count"                     "Count of Over Age 64 resident count"                    
- # [7,] "People of Color resident count"                 "Count of People of Color resident count"   
- # 
+cbind(names_d_count_friendly, paste0("Count of ", gsub("% ", "", names_d_count_friendly)))
+# >  cbind(names_d_count_friendly, paste0("Count of ", gsub("% ", "", names_d_count_friendly)))
+# names_d_count_friendly                                                                                    
+# [1,] "Low income resident count"                      "Count of Low income resident count"                     
+# [2,] "Limited English-speaking Households"            "Count of Limited English-speaking Households"           
+# [3,] "Unemployed resident count"                      "Count of Unemployed resident count"                     
+# [4,] "Less Than High School Education resident count" "Count of Less Than High School Education resident count"
+# [5,] "Under Age 5 resident count"                     "Count of Under Age 5 resident count"                    
+# [6,] "Over Age 64 resident count"                     "Count of Over Age 64 resident count"                    
+# [7,] "People of Color resident count"                 "Count of People of Color resident count"   
+# 
 
 # counts with exceptions, and other counts
 names_d_count <- gsub('pct', '', names_d)
@@ -258,7 +256,7 @@ all.equal(names_d_count, map_headernames$rname[map_headernames$varlist == "names
 
 # names_d_other_count <- c("pop", "nonmins", "povknownratio", "age25up", "hhlds", "unemployedbase", "pre1960", "builtunits")
 names_d_other_count <- map_headernames$rname[map_headernames$varlist == 'names_d_other_count']
-                        # c("pop", "nonmins", "age25up", "hhlds", "unemployedbase", "pre1960", "builtunits", "povknownratio")
+# c("pop", "nonmins", "age25up", "hhlds", "unemployedbase", "pre1960", "builtunits", "povknownratio")
 # dput(map_headernames$rname[map_headernames$varlist == 'names_d_other_count'])
 
 names_d_other_count_friendly <- c('Population', 
@@ -269,7 +267,7 @@ names_d_other_count_friendly <- c('Population',
                                   'Count of housing units built pre-1960',
                                   'Count of housing units (denominator for %pre-1960)',
                                   'Count of hhlds with known poverty ratio (denominator for % low income)'
-                                  )
+)
 # this was not being used
 # these are not quite the same
 # cbind( fixcolnames(names_d_other_count, 'r', 'long'),
@@ -323,7 +321,7 @@ names_d_subgroups_alone_friendly <- fixcolnames(names_d_subgroups_alone, 'r', 'l
 # [6,] "% Other race (single race, includes Hispanic)"                                 "% Other race, single race"
 # [7,] "% Two or more races (includes Hispanic)"                                       "% Multirace (two or more races)"
 # [8,] "% White (single race, includes Hispanic)"                                      "% White (single race, includes White Hispanic)"   
-  
+
 # new way to be consistent with maphead
 names_d_subgroups_nh_friendly <- dput(fixcolnames(names_d_subgroups_nh, 'r', 'long'))
 # names_d_subgroups_nh_friendly <- c(   # , non-Hispanic
@@ -396,7 +394,7 @@ all.equal(names_ej_state,          paste0('state.', names_ej))
 all.equal(names_ej_state_friendly, paste0('State ', names_ej_friendly))  # no 
 ## not quite the same
 # cbind( names_ej_state_friendly, paste0('State ', names_ej_friendly)) 
-   
+
 # dput(fixcolnames(names_ej_state, 'r', 'long'))
 
 
@@ -404,7 +402,7 @@ names_ej_supp <- map_headernames$rname[map_headernames$varlist == "names_ej_supp
 names_ej_supp_friendly <-  fixcolnames(names_ej_supp, 'r', 'short') 
 all.equal(names_ej_supp, gsub("\\.eo$", ".supp", names_ej))#  gsub("\\.eo$", ".supp", names_ej) # not just this: # paste0(          names_ej, '.supp')
 ## not quite the same
- # cbind( names_ej_supp_friendly, gsub("EJ", "Supp. EJ", names_ej_friendly))
+# cbind( names_ej_supp_friendly, gsub("EJ", "Supp. EJ", names_ej_friendly))
 # names_ej_supp_friendly                                             
 
 # dput(fixcolnames(names_ej_supp, 'r', 'long'))
@@ -416,8 +414,8 @@ names_ej_supp_state_friendly <- fixcolnames(names_ej_supp_state, 'r', 'short')
 all.equal(names_ej_supp_state, paste0('state.', names_ej_supp))
 all.equal(names_ej_supp_state_friendly, gsub("EJ", "Supp. EJ", names_ej_state_friendly))
 ## not quite the same
-  # cbind(names_ej_supp_state_friendly, gsub("EJ", "Supp. EJ", names_ej_state_friendly)) 
-      # names_ej_supp_state_friendly
+# cbind(names_ej_supp_state_friendly, gsub("EJ", "Supp. EJ", names_ej_state_friendly)) 
+# names_ej_supp_state_friendly
 #  [1,] "EJ Supp: PM2.5 (state raw)"                     "Supp. EJ: PM2.5 (state raw)"                    
 #  [2,] "EJ Supp: Ozone (state raw)"                     "Supp. EJ: Ozone (state raw)"                    
 #  [3,] "EJ Supp: NO2 (state raw)"                       "Supp. EJ: NO2 (state raw)"                      
@@ -438,8 +436,8 @@ all.equal(names_ej_supp_state_friendly, gsub("EJ", "Supp. EJ", names_ej_state_fr
 
 names_d_pctile                 <- paste0(      'pctile.', names_d)
 names_d_state_pctile           <- paste0('state.pctile.', names_d)
- all.equal( map_headernames$rname[map_headernames$varlist == "names_d_pctile"] ,       paste0(      'pctile.', names_d))
- all.equal( map_headernames$rname[map_headernames$varlist == "names_d_state_pctile"] , paste0('state.pctile.', names_d))
+all.equal( map_headernames$rname[map_headernames$varlist == "names_d_pctile"] ,       paste0(      'pctile.', names_d))
+all.equal( map_headernames$rname[map_headernames$varlist == "names_d_state_pctile"] , paste0('state.pctile.', names_d))
 
 names_d_subgroups_alone_pctile       <- paste0(      'pctile.', names_d_subgroups_alone) # newer
 names_d_subgroups_alone_state_pctile <- paste0('state.pctile.', names_d_subgroups_alone) # newer
@@ -516,8 +514,8 @@ if ('alone' %in% subgroups_type) {
 names_e_pctile_friendly                 <- fixcolnames(names_e_pctile, 'r', 'long') 
 all.equal(
   names_e_pctile_friendly,
-          paste0(  'US percentile for ',  names_e_friendly)
-  )
+  paste0(  'US percentile for ',  names_e_friendly)
+)
 
 names_e_state_pctile_friendly           <- fixcolnames(names_e_state_pctile, 'r', 'long') 
 all.equal(
@@ -766,6 +764,9 @@ all.equal(names_e_ratio_to_state_avg_friendly,  fixcolnames(names_e_ratio_to_sta
 
 ############################################################################## #
 # these ####
+
+# names_these is just another way to conveniently refer to these much-used variables from within server code
+
 ## see doaggregate() where these are used:
 
 #  Only one of the 3 ways can be used here:
@@ -1027,19 +1028,22 @@ namesoflistsofnames <- c('names_all', namesoflistsofnames)
 # could double check to see if fixcolnames and map_headernames give same answers as the lists here. 
 
 
-############################################################################## #
-#   USE_DATA ####
+
+############################################################################## ############################################################################### #
+############################################################################## ############################################################################### #
+
+
+#  metadata_add & USE_DATA ####
+
 
 namez <- EJAM:::metadata_add(namez)
 usethis::use_data(namez, overwrite = TRUE)
 
-############################################################################## #
-# AND ALSO STORE EACH LITTLE OBJECT ? ####
+#  STORE EVERY OBJECT but dont add metadata to each ####
 
 names_e     <- EJAM:::metadata_add(names_e)
 names_all_r <- EJAM:::metadata_add(names_all_r)
-names_ej  <- EJAM:::metadata_add(names_ej)
-
+names_ej    <- EJAM:::metadata_add(names_ej)
 
 usethis::use_data(
   
@@ -1141,15 +1145,23 @@ usethis::use_data(
 
 ############################################################################## #
 
-# just for conveniently referring to these in server code
-notfound = setdiff(names_these, names(EJAM::usastats))
-notfound_st = setdiff(names_these, names(EJAM::statestats))
-notfound_bg = setdiff(names_these, names(EJAM::blockgroupstats))
-if (length(notfound   ) > 0) {warning('some of names_these are not column names found in EJAM::usastats  ... ',        paste0(notfound,    collapse = ', '), '\n')} else {print('ok')}
-if (length(notfound_st) > 0) {warning('some of names_these are not column names found in EJAM::statestats  ... ',      paste0(notfound_st, collapse = ', '), '\n')} else {print('ok')}
-if (length(notfound_bg) > 0) {warning('some of names_these are not column names found in EJAM::blockgroupstats  ... ', paste0(notfound_bg, collapse = ', '), '\n')} else {print('ok')}
-rm(notfound, notfound_st, notfound_bg)
-
-
+if (exists("usastats") && exists("statestats")) {
+  cat("checking new names_these vs colnames of whatever versions of usastats and statestats are attached or just created or else lazy loaded from installed pkg\n")
+  notfound    = setdiff(names_these, names(usastats))   # uses attached possibly new version if different than installed version. fails if pkg not attached and new usastats not just made
+  notfound_st = setdiff(names_these, names(statestats)) # ditto
+  if (length(notfound   ) > 0) {warning('some of names_these are not column names found in usastats  ... ',        paste0(notfound,    collapse = ', '), '\n')} else {print('ok')}
+  if (length(notfound_st) > 0) {warning('some of names_these are not column names found in statestats  ... ',      paste0(notfound_st, collapse = ', '), '\n')} else {print('ok')}
+  rm(notfound, notfound_st)
+} else {
+  warning("did not check if all names_these are in names(statestats) and names(usastats) because usastats or statestats is missing")
+}
+if (exists("blockgroupstats")) {
+  cat("checking new names_these vs colnames of whatever versions of blockgroupstats is attached or just created or else lazy loaded from installed pkg\n")
+  notfound_bg = setdiff(names_these, names(blockgroupstats))   # ditto
+  if (length(notfound_bg) > 0) {warning('some of names_these are not column names found in blockgroupstats  ... ', paste0(notfound_bg, collapse = ', '), '\n')} else {print('ok')}
+  rm(notfound_bg)
+}
+return(names_these)
+}
 # ( make sure all the Envt variables etc are actually in usastats dataset)
-message('make sure all the Demog and Envt variables etc are actually in the latest installed usastats dataset')
+# message('make sure all the Demog and Envt variables etc are actually in the latest installed usastats dataset')

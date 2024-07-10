@@ -1,3 +1,7 @@
+
+
+datacreate_names_pct_as_fraction_ <- function(map_headernames)   {
+  
 ##################### # 
 # datacreate_names_pct_as_fraction_.R
 
@@ -6,11 +10,11 @@
 # map_headernames$pct_as_fraction_ejamit          is TRUE when  map_headernames$rname %in% names_pct_as_fraction_ejamit
 # map_headernames$pct_as_fraction_ejscreenit      is TRUE when  map_headernames$rname %in% names_pct_as_fraction_ejscreenit
 
-
 names_pct_as_fraction_blockgroupstats <- map_headernames$rname[map_headernames$pct_as_fraction_blockgroupstats]
 # names_pct_as_fraction_blockgroupstats <- names_d
 
 names_pct_as_fraction_ejamit <- map_headernames$rname[map_headernames$pct_as_fraction_ejamit]
+
 # names_pct_as_fraction_ejamit <-  c(
 #   names_d, 
 #   names_d_avg, names_d_state_avg,
@@ -27,14 +31,25 @@ names_pct_as_fraction_ejscreenit <-  map_headernames$rname[map_headernames$pct_a
 
 # had to put that info into map_headernames.xlsx first
 
+
+
+### if we wanted to return all these and do metadata and use_data outside this function: 
+# 
+# x <- list(names_pct_as_fraction_ejamit = names_pct_as_fraction_ejamit,
+#           names_pct_as_fraction_ejscreenit = names_pct_as_fraction_ejscreenit, 
+#           names_pct_as_fraction_ejamit = names_pct_as_fraction_ejamit)
+# return(x)
+
+
+names_pct_as_fraction_blockgroupstats <- metadata_add(names_pct_as_fraction_blockgroupstats)
+names_pct_as_fraction_ejscreenit      <- metadata_add(names_pct_as_fraction_ejscreenit)
+names_pct_as_fraction_ejamit          <- metadata_add(names_pct_as_fraction_ejamit)
+
 usethis::use_data(names_pct_as_fraction_blockgroupstats, overwrite = T)
-usethis::use_data(names_pct_as_fraction_ejscreenit, overwrite = T)
-usethis::use_data(names_pct_as_fraction_ejamit, overwrite = T)
+usethis::use_data(names_pct_as_fraction_ejscreenit,      overwrite = T)
+usethis::use_data(names_pct_as_fraction_ejamit,          overwrite = T)
 
-
-
-### should document them
-
+return(NULL)
 
 
 ##################### # 
@@ -53,3 +68,4 @@ usethis::use_data(names_pct_as_fraction_ejamit, overwrite = T)
 ###
 ###    pctpre1960, state.avg.pctpre1960, avg.pctpre1960
 
+}

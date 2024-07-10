@@ -1,7 +1,18 @@
-data(statestats)
+
+#   create high_pctiles_tied_with_min
+
+datacreate_high_pctiles_tied_with_min <- function(usastats, statestats) {
+  
+  # if reported pctile per lookup function is <= these high_pctiles_tied_with_min, 
+  # then report instead zero as the percentile.
+  
+  ######################################## #
+  
+  # by state ####
+  
 states <- unique(statestats$REGION)
-x <- copy(statestats)
-setDT(x)
+x <- data.table::copy(statestats)
+data.table::setDT(x)
 
 datacols <- setdiff(names(x), c('PCTILE', 'REGION'))
 
@@ -17,9 +28,11 @@ for (i in 1:length(states)) {
     high_pctiles_tied_with_min[[i]] <- y
 }
 
-# now for the usa
+######################################## #
 
-x <- copy(usastats)
+# for USA overall ####
+
+x <- data.table::copy(usastats)
 setDT(x)
 datacols <- setdiff(names(x), c('PCTILE', 'REGION'))
 i <- length(states) + 1
@@ -29,23 +42,16 @@ y <- x[ , lapply(.SD, FUN = function(x) {
 y[y == 100] <- 0 # when all the values are tied, such as when data is just missing, report 0 percentile always, not 100th percentile.
 high_pctiles_tied_with_min[[i]] <- y
 
-
 names(high_pctiles_tied_with_min) <- c(states, "USA")
+return(high_pctiles_tied_with_min)
+}
+##################################################################################### #
 
 
-# if reported pctile per lookup function is <= these high_pctiles_tied_with_min, 
-# then report instead zero as the percentile.
+# to examine results
 
 
-
-# high_pctiles_tied_with_min
-
-usethis::use_data(high_pctiles_tied_with_min, overwrite = TRUE)
-
-
-
-###########################################
-
+if (1 == 0) {
 {
   # to spot check these results in states: 
   
@@ -56,7 +62,7 @@ usethis::use_data(high_pctiles_tied_with_min, overwrite = TRUE)
   p <- unlist(p)
   # (this will not show all rows where pctile was set to 0 because all the pctiles are zero for that indicator)
   print(
-    statestats[statestats$REGION == mystate, c('REGION', 'PCTILE', myvar)][1:(p+2) , ]
+    statestats[statestats$REGION == mystate, c('REGION', 'PCTILE', myvar)][1:(p + 2) , ]
   )
   cat("highest percentile tied with minimum value for ", myvar, " in ", mystate, " is ", p,'\n')
 }
@@ -70,7 +76,7 @@ usethis::use_data(high_pctiles_tied_with_min, overwrite = TRUE)
   p <- high_pctiles_tied_with_min[[mystate]][ , ..myvar]
   p <- unlist(p) 
   print(
-    usastats[ , c('REGION', 'PCTILE', myvar)][1:(p+2) , ]
+    usastats[ , c('REGION', 'PCTILE', myvar)][1:(p + 2) , ]
   )
   cat("highest percentile tied with minimum value for ", myvar, " in ", mystate, " is ", p,'\n')
 }
@@ -103,3 +109,5 @@ datacols <- setdiff(names(usastats),  c('PCTILE', 'REGION')); states <- unique(u
 
 datacols <- setdiff(names(usastats),  c('PCTILE', 'REGION')); states <- unique(usastats$REGION);  for (myvar in datacols) {for (mystate in states) {z = statestats[mystate == usastats$REGION, myvar]
   if ((z[1] == z[2]) & (z[1] == 0)) {cat("in ",mystate, " for ", myvar, " = ", z[1], '\n')}}}
+}
+##################################################################################### #
