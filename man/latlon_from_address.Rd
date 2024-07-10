@@ -15,7 +15,7 @@ latlon_from_address(
 )
 }
 \arguments{
-\item{address}{vector of addresses, but tested only for 1}
+\item{address}{vector of addresses}
 
 \item{xy}{set it to TRUE if you want only x,y returned, see help for AOI pkg}
 
