@@ -4,7 +4,8 @@
 #' @description This is the main function in EJAM that runs the analysis.
 #'   It does essentially what the web app does, to analyze/summarize near a set of points,
 #'   or in a set of polygons from a shapefile, or in a list of Census Units like Counties.
-#'
+#' @details See examples in vignettes/ articles at https://usepa.github.io/EJAM/index.html
+#' 
 #' @param sitepoints data.table with columns lat, lon giving point locations of sites or facilities around which are circular buffers
 #' @param radius in miles, defining circular buffer around a site point
 #' @param radius_donut_lower_edge radius of lower edge of donut ring if analyzing a ring not circle
@@ -47,7 +48,7 @@
 #' @param need_blockwt if fips parameter is used, passed to [getblocksnearby_from_fips()]
 #' 
 #' @param thresholds list of percentiles like list(80,90) passed to 
-#'   batch.summarize() in the EJAMbatch.summarizer package, to be 
+#'   batch.summarize(), to be 
 #'   counted to report how many of each set of indicators exceed thresholds
 #'   at each site. (see default)
 #' @param threshnames list of groups of variable names (see default)
@@ -64,11 +65,14 @@
 #'   [ejamit()] default is to set this to FALSE when calling [doaggregate()].
 #' @param called_by_ejamit Set to TRUE by [ejamit()] to suppress some outputs even if ejamit(silentinteractive=F)
 #' @param testing used while testing this function
-#' @param ... passed to getblocksnearby() etc. such as  report_progress_every_n = 0
+#' @param ... passed to [getblocksnearby()] etc. such as  report_progress_every_n = 0
 #' 
 #' @return A list of tables of results
 #'
 #' @examples
+#' 
+#' # See examples in vignettes/ articles at https://usepa.github.io/EJAM/index.html
+#' 
 #'  # All in one step, using functions not shiny app:
 #'  out <- ejamit(testpoints_100_dt, 2)
 #'
@@ -83,7 +87,7 @@
 #'   # use facility points in an excel or csv file
 #'    testsites <- latlon_from_anything(
 #'      system.file(paste0("testdata/latlon/",
-#'       "testpoints_207_sites_with_signif_violations_NAICS_326_ECHO.csv"),
+#'       "testpoints_10.xlsx"),
 #'     package = "EJAM")
 #'     )
 #'    # head(testsites)
