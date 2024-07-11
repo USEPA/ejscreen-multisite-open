@@ -2,8 +2,6 @@
 ##   disables diagnostics within this document
 
 
-
-
 # test_local()   would test the local source pkg
 
 # test_package() would test an installed package
@@ -11,38 +9,51 @@
 # test_check()   would test an installed package in the way that is used by R CMD check or check()
 
 
+## Setting testing_in_logical_order to TRUE 
+## and source-ing this whole file (or step by step)
+## would run tests quietly, 
+## one group of functions at a time, and print summaries to console.
 
+testing_in_logical_order <- TRUE
+# testing_in_logical_order <- FALSE
 
 
 # which test is run first? alphabetical is default but
 # a line in DESCRIPTION can control order the package tests happen
 # see https://testthat.r-lib.org/articles/parallel.html
 
-#                                          file    nb warning passed notpassed
-# 
-# 1:                      test-FIPS_FUNCTIONS.R   318       0    309         9
-
-# 2:           test-getblocksnearby_from_fips.R     9       6      3         6
-
-# 3:                       test-MAP_FUNCTIONS.R    21       6     15         6
-
-
-# 4:                         test-address_xyz.R    19       1     16         3
-
-# 5:                    test-naics_validation.R    11       0      9         2
-
-# 6:                     test-getblocksnearby.R    12       0     11         1
-
-# 7:                        test-frs_is_valid.R     8       0      7         1
-
-# 8:                         test-doaggregate.R     4       1      3         1
 
 ########################################## # 
 ########################################## # 
 
-testing_in_logical_order <- FALSE
-# testing_in_logical_order <- TRUE
+
 if (testing_in_logical_order) {
+  
+  library(testthat)
+  
+  if (interactive()) {
+    useloadall = askYesNo("Do you want to load and test the current source code files version of EJAM (via devtools::load_all() etc.,
+                        rather than testing the installed version)?", default = TRUE)
+    if (useloadall) {
+      devtools::load_all()
+    } else {
+      suppressPackageStartupMessages({
+        library(EJAM)  # need or not?
+      })
+    }
+  } else {
+    suppressPackageStartupMessages({
+      library(EJAM)  # need or not?
+    })
+  }
+  
+  dataload_from_pins("all")
+  if (file.exists("./tests/testthat/setup.R")) {
+    source("./tests/testthat/setup.R") #   asks if need load_all or library
+  } else {
+    cat("Need to source the setup.R file first \n")    
+  }
+  
   
   ########################################## # 
   
@@ -205,6 +216,7 @@ if (testing_in_logical_order) {
       "test-ui_and_server.R"   
     )
   }
+
  # {
    ########################################## # 
     groupnames = c(
@@ -245,7 +257,7 @@ if (testing_in_logical_order) {
   ########################################## # 
   
   #################################################### #
-
+  
   library(testthat)
   library(data.table) # used in functions here
   library(magrittr)
@@ -265,39 +277,55 @@ if (testing_in_logical_order) {
       suppressWarnings(suppressMessages({
         
         junk <- capture_output({
-        x = testthat::test_file(
-          file.path("./tests/testthat/", fnames[i]), 
-          reporter = reporter)
+          x <- testthat::test_file(
+            file.path("./tests/testthat/", fnames[i]), 
+            reporter = reporter)
         })
-
+        
       }))
-      x = as.data.frame(x)
-      x = x[, c( 'file' ,  'test', 
-                 'skipped', 'error',
-                 'nb', 'warning' ,'passed')]
-      x$not <- x$nb - x$passed
-      x$test = substr(x$test, 1, 50) # some are long
+      x <- as.data.frame(x)
+      x$tests <- x$nb
+      x$nb <- NULL
+      
+      x$flag <- x$tests - x$passed
+      x$err  <- x$tests - x$passed - x$warning
+      
+      x$error_cant_test <- ifelse(x$error, 1, 0)
+      x$error <- NULL
+      
+      x$skipped <- ifelse(x$skipped, 1, 0)
+      
+      x <- x[, c('file',  'test', 
+                 'tests', 'passed', 'failed',  'err',
+                 'warning', 'flag', 'skipped', 'error_cant_test'
+                   )]
+      
+      x$test <- substr(x$test, 1, 50) # some are long
       xtable[[i]] <- data.table::data.table(x)
     }
     cat("\n")
     xtable <- data.table::rbindlist(xtable)
-    print(colSums(xtable[, .(nb, warning, passed, not)]))
+    print(colSums(xtable[, .(tests, passed, failed, err,
+                             warning, flag, 
+                             skipped, error_cant_test)]))
     return(xtable)
   }
   ########################### #
   
   # FUNCTION THAT RUNS ONE SPECIFIC GROUP OF TESTS AT A TIME
+  
   testbygroup <- function(testlist) {
+    
     # testlist[[(names(testlist)[[1]])]] is the same as get(names(testlist)[[1]]), vector of filenames
-    xtable = list()
-    i = 0
+    xtable <- list()
+    i <- 0
     for (tgroupname in names(testlist)) {
-      i = i + 1
+      i <- i + 1
       cat("", tgroupname, "group has", length(testlist[[tgroupname]]), "test files ")
       # print(data.frame(files = testlist[[tgroupname]]))
       xtable[[i]] <- data.table::data.table(testgroup = tgroupname, test1group(testlist[[tgroupname]]) )
     }
-    xtable = data.table::rbindlist(xtable)
+    xtable <- data.table::rbindlist(xtable)
     return(xtable)
   }
   ########################### #
@@ -308,164 +336,265 @@ if (testing_in_logical_order) {
   
   ## to TEST JUST ONE FILE OR ONE GROUP:
   
-  partial_testlist = list(test_ejamit = test_ejamit)
-# or 
-  partial_testlist = list(test_fips = test_fips)
-                            # c("test-FIPS_FUNCTIONS.R", "test-state_from_fips.R", "test-state_from_latlon.R"))
- 
+  partial_testlist <- list(test_ejamit = test_ejamit)
+  # or 
+  partial_testlist <- list(test_fips = test_fips)
+  partial_testlist <- list(test_fips =  c( "test-state_from_fips.R"))
   
-   test_partial = testbygroup(testlist = partial_testlist)
+  ## uncomment this to use it: 
+  # test_partial <- testbygroup(testlist = partial_testlist)
   
-  
-  
-  ########################### #  ########################################## #
-  ########################### #  ########################################## #
-  
-  
-  # RUN ALL THE TESTS  ####
+} # end if, setup
 
-    ## takes 5 minutes or so
+########################### #  ########################################## #
+########################### #  ########################################## #
+
+if (testing_in_logical_order) {
+  # RUN ALL THE TESTS  ####
   
-  system.time({
-    testall = testbygroup(testlist = testlist)
+  ## takes 5 minutes or so
+  
+  x <- system.time({
+    testall <- testbygroup(testlist = testlist)
   })
+  print(x)
   #   user  system elapsed    5 minutes
   # 217.80   18.68  395.68 
   
-  # save(testall, file = "./tests/results_of_unit_testing_2024-05-30.rda")
-  save(testall, file = "./tests/results_of_unit_testing_2024-06-18_donutbranch.rda")
   
-  ########################### #  ########################################## #
-  ########################### #  ########################################## #
-  ########################### #  ########################################## #
+} # end  if - run
+
+########################### #  ########################################## #
+########################### #  ########################################## #
+########################### #  ########################################## #
+
+
+if (testing_in_logical_order) {
+  
+  # save(testall, file = "./tests/results_of_unit_testing_2024-05-30.rda")
+  fname <- paste0("./tests/results_of_unit_testing_", as.character(Sys.Date()), ".rda")
+  save(testall, file = fname)
+  
+} # end if - save
+
+########################### #  ########################################## #
+########################### #  ########################################## #
+########################### #  ########################################## #
+
+
+if (testing_in_logical_order) {
   
   # LOOK AT RESULTS SUMMARIES ####
   
   ########################### #  ########################### #
+  
   # HOW MANY TOTAL PASS/FAIL?
   
-  x = testall
-  x$err = x$nb - x$passed - x$warning
-  colSums(x[, .(nb, passed, not, warning, err)])
+  x <- testall
+  colSums(x[, .( err, warning, tests, passed, failed, warning, flag, skipped, error_cant_test)])
+  print(round(100 * colSums(x[, .( err, warning, tests, passed, failed, warning, flag, skipped, error_cant_test)])
+              / sum(x$tests), 1))
+  print(Sys.Date())
   
-  # >   colSums(x[, .(nb, passed, not, warning, err)])
+   # 7/1/24
   
-  #  nb  passed     not warning     err 
-  # 790     756      34      14      20 
-  
-    #   2.5% of tests have errors and 1.7% have warnings   ***********
-  
-  ########################### #  ########################### #
-  
-  ## WHICH TEST GROUPS HAVE THE MOST FAILING TESTS?
-  
-   x[ , fails_byfile := sum(not), by = "file"]
-   x[ , fails_bygroup := sum(not), by = "testgroup"]
-   setorder(x, -fails_bygroup)
-   # x[1:40, ]
-   bygroup = x[ , .(err = sum(not) - sum(warning), warning = sum(warning), pass =  sum(nb) - sum(not), tests = sum(nb)), by = "testgroup"]
-   bygroup 
-   # 
-   #         testgroup   err warning  pass tests
-   
-   # 1:      test_fips     9       0   330   339 
-   
-   # 2: test_getblocks     1       6    23    30
-   # 3:      test_maps     0       6    15    21
-   # 4:       test_frs     4       0    62    66
-   # 5:     test_naics     2       1   109   112
-   # 6:    test_latlon     2       1   112   115
-   # 7:    test_ejamit     2       0    50    52
-   
-   # 8:     test_shape     0       0    16    16
-   # 9:      test_doag     0       0    23    23
-   #10:       test_mod     0       0     6     6
-   #11:       test_app     0       0    10    10
-  
-# same thing a diff way:  
-    
-  y = x[,  lapply(.(nb, warning, passed, not), sum), by = "testgroup"]
-  
-  setorder(y, -V4)
-  setnames(y, new = c("testgroup", "nb", "warning", "passed", "notpassed"))
-  y$err = y$notpassed - y$warning
-  y
-  #         testgroup    nb warning passed notpassed   err
-  
-  # 1:      test_fips   339       0    330         9     9  ****
-  # 2: test_getblocks    30       6     23         7     1
-  # 3:      test_maps    21       6     15         6     0
-  # 4:       test_frs    66       0     62         4     4 **
-  # 5:     test_naics   112       1    109         3     2
-  # 6:    test_latlon   115       1    112         3     2
-  # 7:    test_ejamit    52       0     50         2     2
-  
-  
-  ########################### #  ########################### #
-  ## WHICH INDIVIDUAL FILES HAVE THE MOST FAILING TESTS?
-  # 
-    x[file %in% "test-naics_from_code.R", ]
-  #     testgroup                   file                                               test skipped  error    nb warning passed   not fails_byfile fails_bygroup
-  
-  # 1: test_naics test-naics_from_code.R                no warning for standard code lookup   FALSE   TRUE     0       0      0     0            4             8
-  # 2: test_naics test-naics_from_code.R results of subcategories only output when children   FALSE   TRUE     0       0      0     0            4             8
-  
-  # 3: test_naics test-naics_from_code.R warn if given naics code that is NA or text not li   FALSE   TRUE     8       0      4     4            4             8
-  
-  # 4: test_naics test-naics_from_code.R             list of queries returns joined results   FALSE   TRUE     0       0      0     0            4             8
-  
+  # err         warning           tests          passed          failed         warning            flag         skipped error_cant_test 
+  # 14              11             892             867              12              11              25               2               7 
 
-  junk  = x[,  lapply(.(nb, warning, passed, not), sum), by = "file"]
+  # err         warning           tests          passed          failed         warning            flag         skipped error_cant_test 
+  # 1.6             1.2           100.0            97.2             1.3             1.2             2.8             0.2             0.8 
   
-  byfile <- x[ , .(fails_byfile = fails_byfile[1], fails_bygroup = fails_bygroup[1], testgroup = testgroup[1]), by = "file"]
-  setorder(byfile, -fails_bygroup, -fails_byfile)
-  byfile
-  #                                           file fails_byfile fails_bygroup      testgroup
- 
-  #  1:                      test-FIPS_FUNCTIONS.R            9             9      test_fips
-  #  4:           test-getblocksnearby_from_fips.R            6             7 test_getblocks
+  # about 1.6 % of unit tests have errors   as of 7/1/24   ***********
+  # (and ~1% have warnings)   ***********
   
-  #  5:                     test-getblocksnearby.R            1             7 test_getblocks
-  #  9:                       test-MAP_FUNCTIONS.R            6             6      test_maps
-  # 10:                    test-regid_from_naics.R            3             4       test_frs
-  # 11:                        test-frs_is_valid.R            1             4       test_frs
-  # 16:                         test-address_xyz.R            3             3    test_latlon
-  # 17:                    test-naics_validation.R            2             3     test_naics
-  # 18:                 test-naics_findwebscrape.R            1             3     test_naics
-  # 31:            test-ejamit_compare_distances.R            1             2    test_ejamit
-  # 32:     test-ejamit_compare_groups_of_places.R            1             2    test_ejamit
-  # file fails_byfile fails_bygroup      testgroup
+  ########################### #  ########################### #
+  
+  ## WHICH TEST GROUPS or FILES HAVE THE MOST FAILING TESTS?
+  
+  x[ , flag_byfile := sum(flag), by = "file"]
+  x[ , err_byfile  := sum(err),  by = "file"]
+  
+  x[ , flag_bygroup := sum(flag), by = "testgroup"]
+  x[ , err_bygroup  := sum(err),  by = "testgroup"]
+  
+  setorder(x, -err_bygroup, testgroup, -flag, -failed, file)
+  keygroups <- x[x$tests != x$passed | x$error_cant_test > 0, 1:11]
+  keygroups
+  
+  # 7/1/24
+  #          testgroup                                   file                                               test tests passed failed   err warning  flag skipped error_cant_test
+  # 
+  #  1:      test_doag                     test-doaggregate.R   error if in inputs are null, empty, NA, or blank     7      1      3     3       3     6       0               0
+  #  2:      test_doag                     test-doaggregate.R radius param to doag that is 1.5x as big as radius     2      0      1     1       1     2       0               0
+  #  3:      test_doag                     test-doaggregate.R same result if radius requested is 32 or 50, since     2      1      0     0       1     1       0               0
+  #  4:      test_doag                     test-doaggregate.R still same exact results_bysite as previously save     0      0      0     0       0     0       0               1
+  #  5:      test_doag                     test-doaggregate.R still same exact results_bybg_people as previously     0      0      0     0       0     0       0               1
+  #  6:      test_doag                     test-doaggregate.R     still same exact longnames as previously saved     0      0      0     0       0     0       0               1
+
+    #  7:       test_frs                test-regid_from_naics.R    no crash (but fails to warn)  for invalid NAICS     4      2      2     2       0     2       0               0
+  #  8:       test_frs                    test-frs_is_valid.R colname not REGISTRY_ID but seems to be ok alias,      1      0      1     1       0     1       0               0
+  #  9:       test_frs                test-regid_from_naics.R no crash (but fails to warn) if not present in dat     2      1      1     1       0     1       0               0
+  # 10:       test_frs                test-regid_from_naics.R                             lookup works correctly     1      1      0     0       0     0       0               1
+  # 11:       test_frs                test-regid_from_naics.R                                      works in list     1      1      0     0       0     0       0               1
+  # 12:    test_ejamit        test-ejamit_compare_distances.R                   ejamit_compare_distances() works     5      4      1     1       0     1       0               0
+  # 13:    test_ejamit test-ejamit_compare_groups_of_places.R                              works if only 1 point     1      0      0     1       0     1       1               0
+  # 14:     test_naics                test-naics_validation.R fake NAICS in naics_validation() should report tha     3      1      1     1       1     2       0               0
+  # 15:     test_naics                test-naics_validation.R is multiple values for naics_validation(naics_sele     1      0      1     1       0     1       0               0
+  # 16: test_getblocks                 test-getblocksnearby.R            getblocksnearby() same results as saved     1      0      1     1       0     1       0               0
+  # 17: test_getblocks                 test-radius_inferred.R Estimate of radius, inferred from reported distanc     2      1      0     0       1     1       0               0
+  # 18:    test_latlon                     test-address_xyz.R                          latlon_from_address works     3      2      0     0       1     1       0               0
+  # 19:    test_latlon            test-latlon_from_anything.R                latlon_from_anything works with csv     2      1      0     0       1     1       0               0
+  # 20:    test_latlon            test-latlon_from_anything.R               latlon_from_anything works with xlsx     1      0      0     1       0     1       1               0
+  # 21:    test_latlon               test-latlon_as.numeric.R                            empty vector returns NA     0      0      0     0       0     0       0               1
+  # 22:      test_maps                   test-MAP_FUNCTIONS.R                         mapfastej_counties() works     4      2      0     0       2     2       0               0
+  # 23:     test_shape                   test-shapefile_xyz.R        shapefile_from_any(testfilenameset_4) works     0      0      0     0       0     0       0               1
+  #          testgroup                                   file                                               test tests passed failed   err warning  flag skipped error_cant_test
   
   
-  
-  byfile = x[,  lapply(.(nb, warning, passed, not), sum), by = "file"]
-  setorder(byfile, -V4)
-  setnames(byfile, new = c("file", "nb", "warning", "passed", "notpassed"))
-  byfile
-  
-  # >   byfile
-  #                                          file    nb warning passed notpassed  6/24
+  prioritize = x[order(-x$flag, -x$failed), 1:11]
+  prioritize <- prioritize[prioritize$tests != prioritize$passed | prioritize$error_cant_test > 0, ]
+  prioritize
+  # 7/1/24
+  # >   prioritize
+  #         testgroup                                   file                                               test tests passed failed   err warning  flag skipped error_cant_test
+  # 1:      test_doag                     test-doaggregate.R   error if in inputs are null, empty, NA, or blank     7      1      3     3       3     6       0               0
+  # 2:       test_frs                test-regid_from_naics.R    no crash (but fails to warn)  for invalid NAICS     4      2      2     2       0     2       0               0
+  # 3:      test_doag                     test-doaggregate.R radius param to doag that is 1.5x as big as radius     2      0      1     1       1     2       0               0
+  # 4:     test_naics                test-naics_validation.R fake NAICS in naics_validation() should report tha     3      1      1     1       1     2       0               0
+  # 5:      test_maps                   test-MAP_FUNCTIONS.R                         mapfastej_counties() works     4      2      0     0       2     2       0               0
+  # 6:       test_frs                    test-frs_is_valid.R colname not REGISTRY_ID but seems to be ok alias,      1      0      1     1       0     1       0               0
+  # 7:       test_frs                test-regid_from_naics.R no crash (but fails to warn) if not present in dat     2      1      1     1       0     1       0               0
+  # 8:    test_ejamit        test-ejamit_compare_distances.R                   ejamit_compare_distances() works     5      4      1     1       0     1       0               0
+  # 9:     test_naics                test-naics_validation.R is multiple values for naics_validation(naics_sele     1      0      1     1       0     1       0               0
+  #10: test_getblocks                 test-getblocksnearby.R            getblocksnearby() same results as saved     1      0      1     1       0     1       0               0
+  #11:      test_doag                     test-doaggregate.R same result if radius requested is 32 or 50, since     2      1      0     0       1     1       0               0
+  #12:    test_ejamit test-ejamit_compare_groups_of_places.R                              works if only 1 point     1      0      0     1       0     1       1               0
+  #13: test_getblocks                 test-radius_inferred.R Estimate of radius, inferred from reported distanc     2      1      0     0       1     1       0               0
+  #14:    test_latlon                     test-address_xyz.R                          latlon_from_address works     3      2      0     0       1     1       0               0
+  #15:    test_latlon            test-latlon_from_anything.R                latlon_from_anything works with csv     2      1      0     0       1     1       0               0
+  #16:    test_latlon            test-latlon_from_anything.R               latlon_from_anything works with xlsx     1      0      0     1       0     1       1               0
+  #17:      test_doag                     test-doaggregate.R still same exact results_bysite as previously save     0      0      0     0       0     0       0               1
+  #18:      test_doag                     test-doaggregate.R still same exact results_bybg_people as previously     0      0      0     0       0     0       0               1
+  #19:      test_doag                     test-doaggregate.R     still same exact longnames as previously saved     0      0      0     0       0     0       0               1
+  #20:       test_frs                test-regid_from_naics.R                             lookup works correctly     1      1      0     0       0     0       0               1
+  #21:       test_frs                test-regid_from_naics.R                                      works in list     1      1      0     0       0     0       0               1
+  #22:    test_latlon               test-latlon_as.numeric.R                            empty vector returns NA     0      0      0     0       0     0       0               1
+  #23:     test_shape                   test-shapefile_xyz.R        shapefile_from_any(testfilenameset_4) works     0      0      0     0       0     0       0               1
+  #testgroup                                   file                                               test tests passed failed   err warning  flag skipped error_cant_test
   #
-  # 1:                      test-FIPS_FUNCTIONS.R   322       0    313         9  ****
-  # 2:           test-getblocksnearby_from_fips.R     9       6      3         6  ****
-  
-  # 3:                       test-MAP_FUNCTIONS.R    21       6     15         6  ****
-  
-  # 4:                    test-regid_from_naics.R    10       0      7         3  **
-  # 6:                    test-naics_validation.R    11       0      9         2  **
-  
-  # 5:                         test-address_xyz.R    19       1     16         3  **
-  
-  # 7:                     test-getblocksnearby.R    12       0     11         1
-  # 8:                        test-frs_is_valid.R     8       0      7         1
-  # 9:                 test-naics_findwebscrape.R     6       1      5         1
- # 10:            test-ejamit_compare_distances.R    31       0     30         1
- # 11:     test-ejamit_compare_groups_of_places.R     6       0      5         1
-   
   
   
-   
+  ########################### #
   
-} # end of big if
+  ## WHICH GROUPS (OF FILES)? 
+  #
+  bygroup <- x[ , .(err = sum(err), warning = sum(warning), flag = sum(flag), 
+                    passed = sum(passed), tests = sum(tests)), by = "testgroup"]
+  bygroup
+  print(Sys.Date())
+  
+  #         testgroup   err warning  flag passed tests    as of 7/1/24 
+  
+  # 1:     test_naics     7       1     8     69    77
+  
+  # 2:       test_frs     4       0     4     56    60
+  # 3:      test_doag     4       4     8     50    58
+  # 4:    test_ejamit     4       0     4     43    47
+  # 5: test_getblocks     2       0     2     19    21
+  
+  # 6:      test_fips     1       0     1    320   321
+  # 7:    test_latlon     1       2     3     69    72
+  # 8:      test_maps     1       1     2     15    17
+  
+  # 9:     test_shape     0       0     0     67    67
+  #10:       test_mod     0       0     0      0     0
+  #11:       test_app     0       0     0     10    10
+  
+  ## same thing a diff way:
+  # y <- x[,  lapply(.(err, warning, flag, passed, tests), sum), by = "testgroup"]
+  # setnames(y, new = c("testgroup","err", "warning", "flag", "passed", "tests"))
+  # setorder(y, -err)
+  
+  ########################### #  ########################### #
+  
+  ## WHICH FILES HAVE THE MOST FAILING TESTS?
+  # 
+  
+  byfile <- x[ , .(
+    err_byfile = err_byfile[1], 
+    err_bygroup = err_bygroup[1],
+    testgroup = testgroup[1]
+  ), 
+  by = "file"]
+  setorder(byfile, -err_bygroup, testgroup, -err_byfile, file)
+  setcolorder(byfile, neworder = c("testgroup", "err_bygroup", "file", "err_byfile"))
+  byfile
+  print(Sys.Date())
+  
+  #          testgroup err_bygroup                                       file err_byfile
+  
+  #  1:     test_naics           7                     test-naics_from_code.R          4    ***  as of 7/1/24
+  #  2:     test_naics           7                    test-naics_validation.R          2  ***
+  #  3:     test_naics           7                     test-naics_from_name.R          1
+  #  4:     test_naics           7                      test-naics2children.R          0
+  #  5:     test_naics           7                    test-naics_categories.R          0
+  #  6:     test_naics           7                 test-naics_findwebscrape.R          0
+  #  7:     test_naics           7                      test-naics_from_any.R          0
+  #  8:     test_naics           7            test-naics_subcodes_from_code.R          0
+  
+  #  9:      test_doag           4                         test-doaggregate.R          4  ***
+  # 10:      test_doag           4              test-pctile_from_raw_lookup.R          0
+  # 11:      test_doag           4                             test-varinfo.R          0
+  
+  # 12:    test_ejamit           4            test-ejamit_compare_distances.R          3  ***
+  # 13:    test_ejamit           4     test-ejamit_compare_groups_of_places.R          1
+  # 14:    test_ejamit           4                  test-ejam2barplot_sites.R          0
+  # 15:    test_ejamit           4                              test-ejamit.R          0
+  
+  # 16:       test_frs           4                    test-regid_from_naics.R          3  ***
+  # 17:       test_frs           4                        test-frs_is_valid.R          1
+  # 18:       test_frs           4                      test-frs_from_naics.R          0
+  # 19:       test_frs           4                  test-frs_from_programid.R          0
+  # 20:       test_frs           4                      test-frs_from_regid.R          0
+  # 21:       test_frs           4                        test-frs_from_sic.R          0
+  
+  # 22: test_getblocks           2 test-getblocks_summarize_blocks_per_site.R          1
+  # 23: test_getblocks           2                     test-getblocksnearby.R          1
+  # 24: test_getblocks           2           test-getblocksnearby_from_fips.R          0
+  # 25: test_getblocks           2          test-getblocksnearbyviaQuadTree.R          0
+  # 26: test_getblocks           2                     test-radius_inferred.R          0
+  
+  # 27:      test_fips           1                      test-FIPS_FUNCTIONS.R          1
+  # 28:      test_fips           1                     test-state_from_fips.R          0
+  # 29:      test_fips           1                   test-state_from_latlon.R          0
+  
+  # 30:    test_latlon           1                test-latlon_from_anything.R          1
+  # 31:    test_latlon           1                         test-address_xyz.R          0
+  # 32:    test_latlon           1                   test-latlon_as.numeric.R          0
+  # 33:    test_latlon           1                     test-latlon_df_clean.R          0
+  # 34:    test_latlon           1                 test-latlon_from_address.R          0
+  # 35:    test_latlon           1                     test-latlon_from_sic.R          0
+  # 36:    test_latlon           1                        test-latlon_infer.R          0
+  # 37:    test_latlon           1                     test-latlon_is.valid.R          0
+  
+  # 38:      test_maps           1                       test-MAP_FUNCTIONS.R          1
+  
+  # 39:       test_app           0                       test-ui_and_server.R          0
+  # 40:       test_mod           0                     test-mod_save_report.R          0
+  # 41:       test_mod           0                   test-mod_specify_sites.R          0
+  # 42:       test_mod           0                    test-mod_view_results.R          0
+  # 43:     test_shape           0                       test-shapefile_xyz.R          0
+  
+  #          testgroup err_bygroup                                       file err_byfile
+  
+  
+  
+  #  WHICH TESTS, EXACTLY?
+  
+  
+  x
+  
+} # end of big if - viewing results
+
 ########################### #  ########################################## #
 

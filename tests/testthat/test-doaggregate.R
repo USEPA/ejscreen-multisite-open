@@ -39,6 +39,7 @@ test_that('doaggregate() returns a correctly named list, with no error', {
 ################# #
 # DOES IT STILL RETURN WHAT IT USED TO, OR HAS FUNCTION CHANGED SO THAT OUTPUTS NO LONGER MATCH ARCHIVED OUTPUTS? ####
 ################# #
+test_that("still same exact results_overall as previously saved", {
 
 # # data created/saved was this:
 # out_data_doagg <- doaggregate(out_data_getblocks, sites2states_or_latlon = testpoints_data, radius = myrad, include_ejindexes = TRUE) # not the default but want to test this way
@@ -46,12 +47,12 @@ test_that('doaggregate() returns a correctly named list, with no error', {
 suppressWarnings({
 # WHAT IT RETURNS NOW:
 x <- doaggregate(testoutput_getblocksnearby_10pts_1miles,  sites2states_or_latlon = testpoints_10,  radius = 1, include_ejindexes = TRUE)
-overall_has_changed <- !all.equal(testoutput_doaggregate_10pts_1miles$results_overall,
-                                  x$results_overall)
+overall_has_changed <- !isTRUE(identical(
+  testoutput_doaggregate_10pts_1miles$results_overall,
+  x$results_overall))
 })
-overall_has_changed
+# overall_has_changed
 
-test_that("still same exact results_overall as previously saved", {
   expect_equal(
     testoutput_doaggregate_10pts_1miles$results_overall,
     x$results_overall # use defaults
