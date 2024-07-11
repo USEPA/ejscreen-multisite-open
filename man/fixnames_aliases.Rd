@@ -56,32 +56,13 @@ The alias_list could be for example this:
    'square kilometers', 'square kilometer'),
   sqm = c('m2', 'meter2','meters2', 'sq meters', 'sq meter','sqmeters', 'sqmeter',
   'squaremeters', 'squaremeter', 'square meters', 'square meter'),
-  sqcm = 'cm2',    
-  sqmm = 'mm2',
-  km = c('kilometer', 'kilometers'),
-  m = c('meter', 'meters'),
-  cm = c('centimeter', 'centimeters'),
-  mm = c('millimeter', 'millimeters'),
-  sqmi = c('mi2', 'mile2','miles2', 'sq miles', 'sq mile','sqmiles', 'sqmile',  
-    'squaremiles', 'squaremile', 'square miles', 'square mile'), 
-  sqyd = c('yd2'),
-  sqft = c('ft2'),
-  sqin = c('in2'),
   mi = c('mile', 'miles'),
-  yd = c('yard', 'yards'),
-  ft = c('foot', 'feet'),
-  `in` = c('inch', 'inches'), 
   
   lat = lat_alias,
   #[1]"lat" "latitude83" "latitude" "latitudes"  "faclat" "lats" "y" 
   lon = lon_alias, 
   #[1]"lon" "longitude83" "longitude" "longitudes" "faclong" "lons" "long" "longs" "lng" "x"
   
-  address = c("address"),
-  street = c("street", "street address", "address1", "address 1"),
-  city = c("city", "cityname", "city name"),
-  state = c("state", "mystate", "statename", "ST"),
-  zip = c("zip", "zipcode", "zip code")
 )
 }
 }
@@ -98,5 +79,5 @@ fixnames_aliases(c(1:4, "na", "tbd"),
 
 }
 \seealso{
-\code{\link[=fixcolnames_infer]{fixcolnames_infer()}}
+\code{\link[=fixcolnames_infer]{fixcolnames_infer()}} \code{\link[=latlon_infer]{latlon_infer()}}
 }

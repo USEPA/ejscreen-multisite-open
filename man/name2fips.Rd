@@ -26,5 +26,6 @@ inverse of fips2name(), 1-to-1 map statename, ST, countyname to FIPS of each
 \examples{
 name2fips(c("de", "NY"))
 name2fips("rhode island")
-name2fips(c("delaware", "NY")) 
+name2fips(c("delaware", "NY"))
+
 }
