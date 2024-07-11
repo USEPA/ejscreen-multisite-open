@@ -103,7 +103,8 @@ if (testing_in_logical_order) {
       
       "test-MAP_FUNCTIONS.R",
       
-      
+      "test-fixcolnames.R",
+      "test-fixcolnames_infer.R",
       "test-varinfo.R",
       
       "test-mod_save_report.R",
@@ -176,6 +177,12 @@ if (testing_in_logical_order) {
       "test-getblocksnearby_from_fips.R", 
       "test-getblocksnearbyviaQuadTree.R" 
     )
+    
+    test_fixcolnames <- c(
+      "test-fixcolnames.R",
+      "test-fixcolnames_infer.R"
+    )
+    
     test_doag <- c(
       "test-varinfo.R",  
       "test-pctile_from_raw_lookup.R",  
@@ -208,6 +215,7 @@ if (testing_in_logical_order) {
       "test_maps",
       "test_shape",
       "test_getblocks",
+      "test_fixcolnames",
       "test_doag",
       "test_ejamit",
       "test_mod",
