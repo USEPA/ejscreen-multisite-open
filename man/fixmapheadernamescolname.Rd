@@ -8,9 +8,11 @@ used by varinfo() and fixcolnames()}
 fixmapheadernamescolname(
   x,
   alias_list = list(rname = "r", longname_tableheader = c("long", "longname",
-    "longnames", "full", "description"), shortlabel = c("short", "shortname",
-    "shortnames", "labels", "label"), apiname = "api", csvname2.2 = c("csv", "csvname"),
-    newnames_ejscreenapi = "friendly", oldnames = c("original", "old", "oldname"))
+    "longnames", "full", "description", "longname_tableheader", "header"), shortlabel =
+    c("short", "shortname", "shortnames", "shortlabel", "shortlabels", "labels",
+    "label"), apiname = c("api", "apiname"), csvname2.2 = c("csv", "csvname"),
+    newnames_ejscreenapi = "friendly", oldnames = c("original", "old", "oldname",
+    "oldnames"))
 )
 }
 \arguments{
