@@ -98,12 +98,16 @@ fixnames_aliases <- function(x, na_if_no_match = FALSE, alias_list = NULL, ignor
       
       # used in fixcolnames("pctlowinc", "rname", "long") etc.
       rname = "r",
+      
       # longname_tableheader = long, # *** problem! we already interpret "long" as "lon" (longitude)
-      longname_tableheader = c("longname",  "full", "description", "longname_tableheader"),
-      shortlabel = c("shortlabel", "shortname", "short"),
+      longname_tableheader = c(
+        # "long", 
+        "longname", "longnames", "full", "description", "longname_tableheader", "header"),
+      
+      shortlabel = c("short", "shortname", "shortnames", "shortlabel", "shortlabels", "labels", "label"),
       apiname = c('api', 'apiname'),
       csvname2.2 = c("csv", "csvname2.2"),
-      oldnames = c("original", "oldnames"),
+      oldnames = c("original", "old", "oldname", "oldnames"),
       newnames_ejscreenapi = c("friendly", "newnames_ejscreenapi")
     )
   } else {
@@ -138,6 +142,7 @@ fixnames_aliases <- function(x, na_if_no_match = FALSE, alias_list = NULL, ignor
                           na_if_no_match = na_if_no_match, 
                           alias_list = alias_list,
                           ignore.case = ignore.case)
+  x <- unlist(x) # fixes problem!! where if x was already the canonical name(s) and no non-canonical ones provided, it would return a list
   return(x)  
 }
 ###################################################################### # 
