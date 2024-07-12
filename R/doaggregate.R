@@ -222,12 +222,9 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   ##################################################### #
   
   ## SUM OF COUNTS, vs WTD AVG, vs via FORMULA (usually ratio of sums of counts)
-  # That info is sort of stored already as one of unique(map_headernames$calculation_type) and see calc_ejam() and formulas_d
-  # map_headernames[map_headernames$calculation_type == "popwtd mean",     c('varlist', "rname") ]
-  # map_headernames[map_headernames$calculation_type == "percent formula", c('varlist', "rname") ]
-  # map_headernames$rname[grepl("denom", map_headernames$names_friendly, ignore.case = TRUE)] # [1] "unemployedbase" "builtunits"
-  #
-  # see pdf documenting denominator (weights) for each indicator aggregated via weighted average.
+  # That info is sort of stored already in map_headernames 
+  # see notes in custom_doaggregate() and  calc_ejam() and formulas_d
+  # 
   ##################################################### #
   
   if (include_ejindexes & !exists("bgej")) {

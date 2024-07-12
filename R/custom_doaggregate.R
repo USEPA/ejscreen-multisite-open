@@ -1,4 +1,8 @@
 
+
+# see notes about weighted means below
+
+
 ############################################### # 
 
 
@@ -181,6 +185,52 @@ custom_doaggregate <- function(sites2blocks,
   ## wtd means
  
   # wtcols -- easier to just assume it is pop, but will need other denominators 
+  
+  ################################################################################################################ #
+  
+  #  NOTES ABOUT CALCULATION TYPE ESPEC FOR WEIGHTED MEANS
+  #
+  #
+  # see pdf documenting denominator (weights) for each indicator aggregated via weighted average.
+  
+  ## if writing more flexible general code, see doaggregate etc. for using 3 kinds of calculated variables.
+  ## Specify Which vars are SUM OF COUNTS, vs WTD AVG, vs via FORMULA (usually ratio of sums of counts) ####
+  ## That info is sort of stored already in map_headernames
+  ## BUT redundant...
+  # map_headernames$calculation_type  e.g., "wtdmean"
+  # map_headernames$is.wtdmean  - TRUE/FALSE
+  # map_headernames$denominator - e.g., "pop" or "hhlds" etc.
+  
+  # calctype <- function(varnames) {
+  
+  # map_headernames$is.wtdmean == TRUE
+  # map_headernames$denominator
+  # map_headernames[map_headernames$calculation_type == "popwtd mean",     c('varlist', "rname") ]
+  # map_headernames[map_headernames$calculation_type == "percent formula", c('varlist', "rname") ]
+  # map_headernames$rname[grepl("denom", map_headernames$names_friendly, ignore.case = TRUE)] # [1] "unemployedbase" "builtunits"
+  
+  
+  #   ## map_headernames$calculation_type[match(varnames, map_headernames$rname)]
+  # }
+  #
+  # thesevars <- c(names_d_other_count, names_d_count, names_d_subgroups_count, names_d)
+  #
+  # countcols      <- thesevars[calctype(thesevars) == "sum of counts"  ]
+  # popmeancols    <- thesevars[calctype(thesevars) == "popwtd mean"    ]
+  # calculatedcols <- thesevars[calctype(thesevars) == "percent formula"]
+  #
+  # countcols_inbgstat       <- intersect(countcols,      names(blockgroupstats))
+  # popmeancols_inbgstats    <- intersect(popmeancols,    names(blockgroupstats))
+  # calculatedcols_inbgstats <- intersect(calculatedcols, names(blockgroupstats))
+  
+  
+  # countvarname <- c(names_d_subgroups_count) #  "hisp"         "nhba"         "nhaa"         "nhaiana"      "nhnhpia"      "nhotheralone" "nhmulti"      "nhwa"
+  ### or for percentages that do not always use pop as denominator, etc:
+  # countvarname <- c(names_d_count, names_d_other_count)
+  # [1] "lowinc"         "lingiso"        "unemployed"     "lths"           "under5"         "over64"         "mins"           "pop"            "nonmins"        "povknownratio"  "age25up"
+  # [12] "hhlds"          "unemployedbase" "pre1960"        "builtunits"
+  ###### #
+  ################################################################################################################ #
   
   popmeancols_inbgstats = popmeancols[popmeancols %in% names(bybg_overall)]
   
