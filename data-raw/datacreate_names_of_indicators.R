@@ -115,7 +115,7 @@ subgroups_type <- c(  'nh', 'alone')[1]  # simple names without _nh or _alone sh
 
 # for example...
 #
-# cbind( xlsnames = EJAMejscreenapi::map_headernames['names_ej' == EJAMejscreenapi::map_headernames$varlist, c( 'names_friendly')],  names_ej_friendly )
+# cbind( xlsnames = map_headernames['names_ej' == map_headernames$varlist, c( 'names_friendly')],  names_ej_friendly )
 # xlsnames                              names_ej_friendly     
 # [1 ,] "EJ: PM2.5 (raw)"                     "EJ: PM2.5"           
 # [2, ] "EJ: Ozone (raw)"                     "EJ: Ozone"           
@@ -144,8 +144,8 @@ subgroups_type <- c(  'nh', 'alone')[1]  # simple names without _nh or _alone sh
 #  But could recode later to use namez$d_friendly instead of names_d_friendly etc.
 #  and/or could recode later to use 1 big table, like A MERGED VERSION OF THESE:
 # 
-#  EJAMejscreenapi::map_headernames which is created from .xlsx using the script in /data-raw folder
-#  EJAM::namez 
+#  map_headernames which is created from .xlsx using the script in /data-raw folder
+#  namez 
 #  formulas_all as possible approach using calc_ejam()
 #  and older file  EJAMbatch.summarizer  ::  varnamesinfo22.rda  which was prob from EJAMbatch.summarizer/inst/map_batch_to_friendly_fieldnames_2022_EJAM.xlsx
 
@@ -165,12 +165,11 @@ subgroups_type <- c(  'nh', 'alone')[1]  # simple names without _nh or _alone sh
 
 
 
-# see also:  EJAMejscreenapi/map_headernames.csv/xlsx  
-#         or EJAMejscreenapi::map_headernames$newnames_ejscreenapi[ mapheadernames$varlist == "names_d] 
+# see also:   
+#          map_headernames$newnames_ejscreenapi[ mapheadernames$varlist == "names_d] 
 
 # see also:  EJAM/data-raw/names_of_indicators.R (this file)
-# see also:  EJAMbatch.summarizer/data-raw/names_of_variables.R
-# see also: ejscreen package file names.e, ejscreenformulas, etc. 
+
 
 ############################################################################## #
 # To rename indicator variables ####

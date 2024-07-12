@@ -437,7 +437,7 @@ ejamit <- function(sitepoints,
   out$results_summarized <- EJAMbatch.summarizer::batch.summarize(   # disabled only in ejam lite package ***
     sitestats = data.frame(out$results_bysite),
     # popstats =  data.frame(out$results_bysite), # now does not have to get passed twice
-    
+    quiet = quiet,
     ## user-selected quantiles to use
     #probs = as.numeric(input$an_list_pctiles),
     thresholds = thresholds, # list(90, 90),

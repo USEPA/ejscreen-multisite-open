@@ -116,7 +116,7 @@ if (try_this_module_here) {
       sitenumber = c(1,  2,     3,     4,      5),
       sitename = c("Site in upper northwest", "Site in Maine", "Site near Los Angeles", "Site in south FL", "Site near Lincoln Nebraska")
     ), row.names = 1:5, class = "data.frame")
-    # init_data <-  EJAM :: testpoints_conus5   # EJAM :: testpoints_10[1:2, ]
+    # init_data <-   testpoints_10[1:2, ]
 
     # Send table template as initial value, but the module updates that reactive_data1 as the user types
     reactive_data1 <-  reactiveVal(init_data)

@@ -87,7 +87,7 @@ if (try_demo_module_here) {
       sitenumber = c(1,  2,     3,     4,      5),
       sitename = c("Site in upper northwest", "Site in Maine", "Site near Los Angeles", "Site in south FL", "Site near Lincoln Nebraska")
     ), row.names = 1:5, class = "data.frame")
-     # init_data <-  EJAM::testpoints_conus5   # EJAM::testpoints_10[1:2, ]
+     # init_data <-  testpoints_10[1:2, ]
     reactive_data1 <-  reactiveVal(init_data)
     
     MODULE_SERVER_latlontypedin_DEMO(id = "tab1", reactdat = reactive_data1)  # ************************* THE server logic OF THE MODULE IS used HERE

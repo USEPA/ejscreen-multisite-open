@@ -385,7 +385,6 @@ reference:
   - sites2blocks_example100pts_1miles
   - sites2blocks_example10pts_1miles
   - testpoints_100_dt
-  - testpoints_conus5
   - url_getacs_epaquery_chunked
   - url_get_eparest_chunked_by_id
   - url_get_via_url
