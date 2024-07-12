@@ -29,7 +29,7 @@ usethis::use_data(map_headernames, overwrite = TRUE)
 
 ######################################### #
 # datacreate_names_of_indicators.R
-# datacreate_names_pct_as_fraction_.R
+# datacreate_names_pct_as_fraction.R
 #
 ### this will create but also assign metadata to and save for pkg via use_data()
 ### unlike other datacreate_  functions that do not do the metadata and use_data steps!
@@ -41,10 +41,14 @@ usethis::use_data(map_headernames, overwrite = TRUE)
 
 source("./data-raw/datacreate_names_of_indicators.R")
 datacreate_names_of_indicators()    # this does metadata and use_data inside the function
-datacreate_names_pct_as_fraction_(map_headernames = map_headernames)  # this does metadata and use_data inside the function
+
+source("./data-raw/datacreate_names_pct_as_fraction.R")
+datacreate_names_pct_as_fraction(map_headernames = map_headernames)  # this does metadata and use_data inside the function
 ### Now use load_all() to make available those new variable name lists (the source package as just updated, not the version installed)
 load_all()
 ######################################### #
+
+
 
 
 ######################################### #

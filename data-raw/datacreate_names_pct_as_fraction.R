@@ -1,9 +1,9 @@
 
 
-datacreate_names_pct_as_fraction_ <- function(map_headernames)   {
+datacreate_names_pct_as_fraction <- function(map_headernames)   {
   
 ##################### # 
-# datacreate_names_pct_as_fraction_.R
+# datacreate_names_pct_as_fraction.R
 
 ## this should happen after map_headernames is recreated if necessary
 # map_headernames$pct_as_fraction_blockgroupstats is TRUE when  map_headernames$rname %in% names_pct_as_fraction_blockgroupstats
