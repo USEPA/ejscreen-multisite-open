@@ -1,11 +1,29 @@
-#State/state equivalent entity-based text files containing the 
-#mean centers of population for each census block group 
-#within a state/state equivalent entity for the 2020 Census.
+
+# State/state equivalent entity-based text files containing the 
+# mean centers of population for each census block group 
+# within a state/state equivalent entity for the 2020 Census.
+
+# bgpts and 
+# bg_cenpop2020
+# are very, very similar,
+# but 
+# bg_cenpop2020 is essentially downloaded from census
+# while
+# bgpts is calculated here to approximate a centroid for each blockgroup
+# so it probably makes sense to get rid of bgpts and where it was used
+# just use bg_cenpop2020
+# ?
+
 
 # 3/23
 
 #The record layout is:
 #
+# STATEFP,COUNTYFP,TRACTCE,BLKGRPCE,POPULATION,LATITUDE,LONGITUDE
+# 01,001,020100,1,575,+32.464466,-086.486302
+# 01,001,020100,2,1200,+32.482744,-086.486741
+# 01,001,020200,1,974,+32.478370,-086.474486
+
 #STATEFP:  2-character state FIPS code
 #COUNTYFP:  3-character county FIPS code
 #TRACTCE:  6-character census tract code

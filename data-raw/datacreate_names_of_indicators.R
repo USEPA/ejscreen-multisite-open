@@ -194,45 +194,20 @@ names_wts <- "pop"
 #  DEMOGRAPHICS - rawpct, friendlypct, and count; and other counts like denominators (not pctile) ####
 
 # raw percents
-names_d <- c(
-  "Demog.Index",   "Demog.Index.Supp",
-  
-  "pctlowinc",  
-  "pctlingiso",   
-  "pctunemployed",
-  "pctlths",   # note this sort order was fixed 3/2/23 to put lowinc before min, to match friendly order
-  "lowlifex", 
-  "pctunder5",  "pctover64", 
-  
-  "pctmin"
-)
+names_d <- map_headernames$rname[map_headernames$varlist == "names_d"]
 
 # friendly raw percents
 # > dput(fixcolnames(names_d, 'r', 'long'))
-names_d_friendly <-  c("Demographic Index", "Supplemental Demographic Index", "% Low Income", 
-                       "% in limited English-speaking Households", "% Unemployed", "% with Less Than High School Education", 
-                       "Low life expectancy", "% under Age 5", "% over Age 64", "% People of Color"
-)
-# names_d_friendly <- c(
-#   "Demog.Ind.",   "Suppl Demog Index", 
-#   
-#   "% Low-inc.", 
-#   "% Limited English",
-#   "% Unemployed",
-#   "% < High School", 
-#   "Low life expectancy",    # note this is not a percent, actually?
-#   "% < age 5", "% > age 64", 
-#   
-#   "% People of Color"
-# )
+names_d_friendly <- fixcolnames(names_d, 'r', 'long')
 
 # no friendly version of counts?  e.g., 
 # dput(fixcolnames(names_d_count, 'r', 'long'))
 names_d_count_friendly <- fixcolnames(names_d_count, 'r', 'long')
+
 # names_d_count_friendly <- paste0("Count of ", gsub("% ", "", names_d_friendly))
-all.equal(names_d_count_friendly, map_headernames$longname_tableheader[map_headernames$varlist == "names_d_count"])
+# all.equal(names_d_count_friendly, map_headernames$longname_tableheader[map_headernames$varlist == "names_d_count"])
 # [1] TRUE
-cbind(names_d_count_friendly, paste0("Count of ", gsub("% ", "", names_d_count_friendly)))
+# cbind(names_d_count_friendly, paste0("Count of ", gsub("% ", "", names_d_count_friendly)))
 # >  cbind(names_d_count_friendly, paste0("Count of ", gsub("% ", "", names_d_count_friendly)))
 # names_d_count_friendly                                                                                    
 # [1,] "Low income resident count"                      "Count of Low income resident count"                     
@@ -247,7 +222,7 @@ cbind(names_d_count_friendly, paste0("Count of ", gsub("% ", "", names_d_count_f
 # counts with exceptions, and other counts
 names_d_count <- gsub('pct', '', names_d)
 names_d_count <- gsub('min', 'mins', names_d_count)
-dontuse = names_d_count %in% c('Demog.Index',  'Demog.Index.Supp', 'lowlifex') # there is no count for these
+dontuse = names_d_count %in% c('Demog.Index',  'Demog.Index.Supp',  "Demog.Index.State" ,     "Demog.Index.Supp.State" ,'lowlifex') # there is no count for these
 names_d_count <- names_d_count[!dontuse]
 # names_d_count_friendly <- names_d_count_friendly[!dontuse]
 rm(dontuse)
@@ -256,18 +231,19 @@ all.equal(names_d_count, map_headernames$rname[map_headernames$varlist == "names
 # names_d_other_count <- c("pop", "nonmins", "povknownratio", "age25up", "hhlds", "unemployedbase", "pre1960", "builtunits")
 names_d_other_count <- map_headernames$rname[map_headernames$varlist == 'names_d_other_count']
 # c("pop", "nonmins", "age25up", "hhlds", "unemployedbase", "pre1960", "builtunits", "povknownratio")
-# dput(map_headernames$rname[map_headernames$varlist == 'names_d_other_count'])
+ 
+names_d_other_count_friendly <- fixcolnames(names_d_other_count, 'r', 'long')
+#   c('Population', 
+#                                   'Count of non-POC', 
+#                                   'Count of age 25+ (denominator for %<high school)',
+#                                   'Count of households (denominator for %limited English)',
+#                                   'Count of denominator for %unemployed', 
+#                                   'Count of housing units built pre-1960',
+#                                   'Count of housing units (denominator for %pre-1960)',
+#                                   'Count of hhlds with known poverty ratio (denominator for % low income)'
+# )
+# this was not being used.
 
-names_d_other_count_friendly <- c('Population', 
-                                  'Count of non-POC', 
-                                  'Count of age 25+ (denominator for %<high school)',
-                                  'Count of households (denominator for %limited English)',
-                                  'Count of denominator for %unemployed', 
-                                  'Count of housing units built pre-1960',
-                                  'Count of housing units (denominator for %pre-1960)',
-                                  'Count of hhlds with known poverty ratio (denominator for % low income)'
-)
-# this was not being used
 # these are not quite the same
 # cbind( fixcolnames(names_d_other_count, 'r', 'long'),
 #        names_d_other_count_friendly )
@@ -283,18 +259,23 @@ names_d_other_count_friendly <- c('Population',
 # subgroups_type
 
 # raw percents
-names_d_subgroups_nh    <- c("pcthisp", "pctnhba", "pctnhaa", "pctnhaiana", "pctnhnhpia", "pctnhotheralone", "pctnhmulti", "pctnhwa")
-names_d_subgroups_alone <- c("pcthisp",  "pctba",   "pctaa",   "pctaiana",   "pctnhpia",   "pctotheralone",   "pctmulti",   "pctwa")
-all.equal(names_d_subgroups_nh, map_headernames$rname[map_headernames$varlist == "names_d_subgroups_nh"])
-all.equal(names_d_subgroups_alone, map_headernames$rname[map_headernames$varlist == "names_d_subgroups_alone"])
 
+names_d_subgroups_nh    <- map_headernames$rname[map_headernames$varlist == "names_d_subgroups_nh"]
+names_d_subgroups_alone <- map_headernames$rname[map_headernames$varlist == "names_d_subgroups_alone"]
+all.equal(names_d_subgroups_nh, 
+          c("pcthisp", "pctnhba", "pctnhaa", "pctnhaiana", "pctnhnhpia", "pctnhotheralone", "pctnhmulti", "pctnhwa"))
+all.equal(names_d_subgroups_alone,
+          c("pcthisp",  "pctba",   "pctaa",   "pctaiana",   "pctnhpia",   "pctotheralone",   "pctmulti",   "pctwa"))
 
 # counts
-names_d_subgroups_nh_count    <- c("hisp", "nhba",  "nhaa",   "nhaiana",  "nhnhpia",    "nhotheralone",    "nhmulti",    "nhwa")
-names_d_subgroups_alone_count <- c("hisp",   "ba",    "aa",     "aiana",    "nhpia",      "otheralone",      "multi",      "wa")
+names_d_subgroups_nh_count    <- map_headernames$rname[map_headernames$varlist == "names_d_subgroups_nh_count"]
+names_d_subgroups_alone_count <- map_headernames$rname[map_headernames$varlist == "names_d_subgroups_alone_count"]
 # or  names_d_subgroups_count <-  gsub("pct", "", names_d_subgroups)
-all.equal(names_d_subgroups_nh_count, map_headernames$rname[map_headernames$varlist == "names_d_subgroups_nh_count"])
-all.equal(names_d_subgroups_alone_count, map_headernames$rname[map_headernames$varlist == "names_d_subgroups_alone_count"])
+all.equal(names_d_subgroups_nh_count, 
+          c("hisp", "nhba",  "nhaa",   "nhaiana",  "nhnhpia",    "nhotheralone",    "nhmulti",    "nhwa"))
+all.equal(names_d_subgroups_alone_count,
+          c("hisp",   "ba",    "aa",     "aiana",    "nhpia",      "otheralone",      "multi",      "wa")
+          )
 
 # friendly raw percents
 
@@ -433,20 +414,22 @@ all.equal(names_ej_supp_state_friendly, gsub("EJ", "Supp. EJ", names_ej_state_fr
 
 # PERCENTILES - D & sub; E; EJ (us & st, normal & supp) - friendly versions after that ####
 
-names_d_pctile                 <- paste0(      'pctile.', names_d)
-names_d_state_pctile           <- paste0('state.pctile.', names_d)
-all.equal( map_headernames$rname[map_headernames$varlist == "names_d_pctile"] ,       paste0(      'pctile.', names_d))
-all.equal( map_headernames$rname[map_headernames$varlist == "names_d_state_pctile"] , paste0('state.pctile.', names_d))
+names_d_pctile                 <- map_headernames$rname[map_headernames$varlist == "names_d_pctile"] 
+names_d_state_pctile           <- map_headernames$rname[map_headernames$varlist == "names_d_state_pctile"] 
+all.equal(names_d_pctile,       paste0(      'pctile.', names_d))
+all.equal(names_d_state_pctile, paste0('state.pctile.', names_d))
 
-names_d_subgroups_alone_pctile       <- paste0(      'pctile.', names_d_subgroups_alone) # newer
-names_d_subgroups_alone_state_pctile <- paste0('state.pctile.', names_d_subgroups_alone) # newer
-all.equal(names_d_subgroups_alone_pctile,       map_headernames$rname[map_headernames$varlist == "names_d_subgroups_alone_pctile"])
-all.equal(names_d_subgroups_alone_state_pctile, map_headernames$rname[map_headernames$varlist == "names_d_subgroups_alone_state_pctile"])
+names_d_subgroups_alone_pctile       <- map_headernames$rname[map_headernames$varlist == "names_d_subgroups_alone_pctile"]
+names_d_subgroups_alone_state_pctile <- map_headernames$rname[map_headernames$varlist == "names_d_subgroups_alone_state_pctile"]
+all.equal(names_d_subgroups_alone_pctile, paste0('pctile.', names_d_subgroups_alone))
+all.equal(names_d_subgroups_alone_state_pctile, paste0('state.pctile.', names_d_subgroups_alone))
 
-names_d_subgroups_nh_pctile       <- paste0(      'pctile.', names_d_subgroups_nh) # newer
-names_d_subgroups_nh_state_pctile <- paste0('state.pctile.', names_d_subgroups_nh) # newer
-all.equal(names_d_subgroups_nh_pctile,  map_headernames$rname[map_headernames$varlist == "names_d_subgroups_nh_pctile"])
-all.equal(names_d_subgroups_nh_state_pctile,  map_headernames$rname[map_headernames$varlist == "names_d_subgroups_nh_state_pctile"])
+names_d_subgroups_nh_pctile       <- map_headernames$rname[map_headernames$varlist == "names_d_subgroups_nh_pctile"]
+names_d_subgroups_nh_state_pctile <- map_headernames$rname[map_headernames$varlist == "names_d_subgroups_nh_state_pctile"]
+all.equal(names_d_subgroups_nh_pctile, 
+          paste0('pctile.', names_d_subgroups_nh))
+all.equal(names_d_subgroups_nh_state_pctile, 
+          paste0('state.pctile.', names_d_subgroups_nh))
 
 if ('alone' %in% subgroups_type) {
   names_d_subgroups_pctile            <- names_d_subgroups_alone_pctile
@@ -494,9 +477,9 @@ all.equal(names_d_subgroups_alone_pctile_friendly,       paste0(   'US percentil
 all.equal(names_d_subgroups_alone_state_pctile_friendly, paste0('State percentile for ', names_d_subgroups_alone_friendly) )
 
 names_d_subgroups_nh_pctile_friendly          <- fixcolnames(names_d_subgroups_nh_pctile, 'r', 'long')
+names_d_subgroups_nh_state_pctile_friendly    <- fixcolnames(names_d_subgroups_nh_state_pctile, 'r', 'long')
 all.equal(names_d_subgroups_nh_pctile_friendly,
           paste0(   'US percentile for ', names_d_subgroups_nh_friendly)) # newer 
-names_d_subgroups_nh_state_pctile_friendly    <- fixcolnames(names_d_subgroups_nh_state_pctile, 'r', 'long')
 all.equal(names_d_subgroups_nh_state_pctile_friendly, 
           paste0('State percentile for ', names_d_subgroups_nh_friendly)) # newer 
 
@@ -600,9 +583,6 @@ rm(names_pctile, names_state_pctile)
 # varsneedpctiles <- c(names_e,  names_d, names_d_subgroups, names_ej)  # _nh   and  _alone  ?
 # varnames.us.pctile <- paste0('pctile.', varsneedpctiles)
 # varnames.state.pctile <- paste0('state.pctile.', varsneedpctiles)
-
-
-
 
 
 
@@ -737,27 +717,26 @@ names_d_ratio_to_state_avg_friendly <- paste0("Ratio to ", names_d_state_avg_fri
 
 names_d_subgroups_nh_ratio_to_avg_friendly          <- paste0("Ratio to ", names_d_subgroups_nh_avg_friendly)
 names_d_subgroups_nh_ratio_to_state_avg_friendly    <- paste0("Ratio to ", names_d_subgroups_nh_state_avg_friendly)
-### differ
-# 
+  ### differ
 # all.equal(names_d_subgroups_nh_ratio_to_avg_friendly,  fixcolnames(names_d_subgroups_nh_ratio_to_avg, 'r', 'long'))
 # all.equal(names_d_subgroups_nh_ratio_to_state_avg_friendly,  fixcolnames(names_d_subgroups_nh_ratio_to_state_avg, 'r', 'long'))
 
 names_d_subgroups_alone_ratio_to_avg_friendly       <- paste0("Ratio to ", names_d_subgroups_alone_avg_friendly)
 names_d_subgroups_alone_ratio_to_state_avg_friendly <- paste0("Ratio to ", names_d_subgroups_alone_state_avg_friendly)
-### differ
+  ### differ
 # all.equal(names_d_subgroups_alone_ratio_to_avg_friendly,  fixcolnames(names_d_subgroups_alone_ratio_to_avg, 'r', 'long'))
 # all.equal(names_d_subgroups_alone_ratio_to_state_avg_friendly,  fixcolnames(names_d_subgroups_alone_ratio_to_state_avg, 'r', 'long'))
 
 names_d_subgroups_ratio_to_avg_friendly             <- paste0("Ratio to ", names_d_subgroups_avg_friendly)      
 names_d_subgroups_ratio_to_state_avg_friendly       <- paste0("Ratio to ", names_d_subgroups_state_avg_friendly)  
-### differ
+  ### differ
 # all.equal(names_d_subgroups_ratio_to_avg_friendly,  fixcolnames(names_d_subgroups_ratio_to_avg, 'r', 'long'))
 # all.equal(names_d_subgroups_ratio_to_state_avg_friendly,  fixcolnames(names_d_subgroups_ratio_to_state_avg, 'r', 'long'))
 
 names_e_ratio_to_avg_friendly       <- paste0("Ratio to ", names_e_avg_friendly)
 names_e_ratio_to_state_avg_friendly <- paste0("Ratio to ", names_e_state_avg_friendly)
-all.equal(names_e_ratio_to_avg_friendly,  fixcolnames(names_e_ratio_to_avg, 'r', 'long'))
-all.equal(names_e_ratio_to_state_avg_friendly,  fixcolnames(names_e_ratio_to_state_avg, 'r', 'long'))
+  all.equal(names_e_ratio_to_avg_friendly,  fixcolnames(names_e_ratio_to_avg, 'r', 'long'))
+  all.equal(names_e_ratio_to_state_avg_friendly,  fixcolnames(names_e_ratio_to_state_avg, 'r', 'long'))
 # dput(fixcolnames(names_e_ratio_to_avg, 'r', 'long'))
 # dput(fixcolnames(names_e_ratio_to_state_avg, 'r', 'long'))
 
@@ -1035,14 +1014,17 @@ namesoflistsofnames <- c('names_all', namesoflistsofnames)
 #  metadata_add & USE_DATA ####
 
 
-namez <- EJAM:::metadata_add(namez)
+namez <- metadata_add(namez)
 usethis::use_data(namez, overwrite = TRUE)
 
 #  STORE EVERY OBJECT but dont add metadata to each ####
 
-names_e     <- EJAM:::metadata_add(names_e)
-names_all_r <- EJAM:::metadata_add(names_all_r)
-names_ej    <- EJAM:::metadata_add(names_ej)
+names_d_subgroups <- metadata_add(names_d_subgroups)
+names_d     <- metadata_add(names_d)
+names_e     <- metadata_add(names_e)
+names_ej    <- metadata_add(names_ej)
+names_ej    <- metadata_add(names_ej_supp)
+names_all_r <- metadata_add(names_all_r)
 
 usethis::use_data(
   

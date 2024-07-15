@@ -4,78 +4,115 @@
 
 ######################### #
 
-# NOTE THIS SAME INFO IS MORE OR LESS IN
-# map_headernames$is.wtdmean and 
-# map_headernames$denominator  !!
+# NOTE THIS SAME INFO IS MORE OR LESS IN map_headernames
+# 
+# unique(map_headernames$calculation_type)
+# [1] "lookedup"        - pctile                                          
+# [2] "popwtd mean"       - "Demog.Index", pm, "EJ.DISPARITY.pm.eo", etc.                                        
+# [3] "wtdmean"           - weight is a count var other than pop                                        
+# [4] "ratio to avg"                                              
+# [5] "constant"        - averages, mostly                                          
+# [6] "sum of counts" - ok. but "count.NPL", "count.TSDF" should be "count of unique ids" ? 
+# [7] "bins"                                                      
+# [8] "flag"         -  "yesno_tribal" etc.                                           
+# [9] "percent formula"    - "p_spanish", etc. - or should they be popwtd mean? ***                                       
+# [10] "count of unique ids"   - "num_school" etc.                                   
+# [11] "?"                                                         
+# [12] "other"          - "sitecount_max", "distance_min", etc.                                           
+# [13] "ej formula"      - or should they be popwtd mean ?                                          
+# [14] "?? count of high avgstate pctiles or popwtd mean of those?" - "count.ej.80up" etc.
+# [15] "mode"      - ST, statename, REGION
+#
+# by( map_headernames$rname, map_headernames$calculation_type, cbind)
+# 
+# map_headernames[map_headernames$calculation_type == "wtdmean", 
+#                 c("rname", "denominator")]
+# map_headernames$rname[map_headernames$is.wtdmean] 
+#
 #  see github issue about the formulas
 # doaggregate() will probably move away from any of the info below and just use map_headernames$is.wtdmean and $denominator for most calculations??
+#
+# map_headernames$rname[map_headernames$calculation_type == "constant"]
+# grep("avg", map_headernames$rname[map_headernames$calculation_type == "constant"], value = T)
+# grep("avg", map_headernames$rname[map_headernames$calculation_type == "constant"], value = T, invert = TRUE)
 
 # countcols ####
   
-countcols = "pop"
-
+# countcols = "pop"
+countcols <- names_all[calctype(names_all) %in%  "sum of counts"]
+  
 # wtdmeancols ####
 
-# wtdmeancols = names_these
+wtdmeancols <- names_all[calctype(names_all) %in%  c("wtdmean", "popwtd mean")]
 
-wtdmeancols = c(
-  
-  "lowlifex", "pctunder5", "pctover64", "pctmin",
-  names_d_subgroups_alone,
-  names_d_subgroups_nh,        # remove hisp that is already in other list?
-  
-  "pctunder18", "pctover17", "pctmale", "pctfemale",  
-  
-  "pctlowinc",
-  "pctlths",
-  "pctlingiso",
-  "pctpre1960",
-  "pctunemployed",
-  
-  "pctdisability",
-  "pctownedunits",   # ** check
-  "pctpoor",
-  
-  "pct_lan_spanish",    # ** check
-  "pct_lan_ie",      # ** check
-  "pct_lan_api",     # ** check
-  "pct_lan_eng_na",    # ** check
-  
-  "pctspanish_li",  # ** check
-  "pctie_li",  # ** check
-  "pctapi_li",  # ** check
-  "pctother_li",   # ** check
-  
-  "Demog.Index",    #??  # ** check
-  "Demog.Index.Supp" # ?  # ** check
-)
+  # map_headernames$rname[map_headernames$calculation_type == "popwtd mean"]
+# varnames = c(names_d, names_d_subgroups, names_d_subgroups_alone, 
+#              "pctdisability",   "pctownedunits",  "pctpoor", 
+#              "pct_lan_spanish",  "pct_lan_ie",  "pct_lan_api", "pct_lan_eng_na",
+#              "pctspanish_li",   "pctie_li",  "pctapi_li" , "pctother_li" )
+
+# wtdmeancols = c(
+#   
+#   "lowlifex", "pctunder5", "pctover64", "pctmin",
+#   names_d_subgroups_alone,
+#   names_d_subgroups_nh,        # remove hisp that is already in other list?
+#   
+#   "pctunder18", "pctover17", "pctmale", "pctfemale",  
+#   
+#   "pctlowinc",
+#   "pctlths",
+#   "pctlingiso",
+#   "pctpre1960",
+#   "pctunemployed",
+#   
+#   "pctdisability",
+#   "pctownedunits",   # ** check
+#   "pctpoor",
+#   
+#   "pct_lan_spanish",    # ** check
+#   "pct_lan_ie",      # ** check
+#   "pct_lan_api",     # ** check
+#   "pct_lan_eng_na",    # ** check
+#   
+#   "pctspanish_li",  # ** check
+#   "pctie_li",  # ** check
+#   "pctapi_li",  # ** check
+#   "pctother_li",   # ** check
+#   
+#   "Demog.Index",    #??  # ** check
+#   "Demog.Index.Supp", # ?  # ** check
+#   "Demog.Index.State" ,   # new
+#   "Demog.Index.Supp.State"  # new
+# )
 
 ## Define weights (denominators) ####
 
-wtscols = c(
-  
-  rep("pop", 4), 
-  rep("pop", length(names_d_subgroups_alone)),
-  rep("pop", length(names_d_subgroups_nh)),
-  
-  rep("pop", 4), # ages and gender
-  
-  "povknownratio",
-  "age25up",
-  "hhlds",
-  "builtunits",
-  "unemployedbase",
-  
-  "disab_universe",
-  "occupiedunits",
-  "hhlds", #??   # "povknownratio",  # ???
-  
-  rep("lan_universe", 4),
-  rep("lingiso", 4),
-  
-  "pop", #? pop?
-  "pop"  #? pop?
-) 
+wtscols = varinfo(wtdmeancols, "denominator")$denominator
+
+# wtscols = c(
+#   
+#   rep("pop", 4), 
+#   rep("pop", length(names_d_subgroups_alone)),
+#   rep("pop", length(names_d_subgroups_nh)),
+#   
+#   rep("pop", 4), # ages and gender
+#   
+#   "povknownratio",
+#   "age25up",
+#   "hhlds",
+#   "builtunits",
+#   "unemployedbase",
+#   
+#   "disab_universe",
+#   "occupiedunits",
+#   "hhlds", #??   # "povknownratio",  # ???
+#   
+#   rep("lan_universe", 4),
+#   rep("lingiso", 4),
+#   
+#   "pop", #? pop?
+#   "pop"  #? pop?
+# ) 
 
 # pct_lan_spanish = ifelse(lan_universe == 0, 0, lan_spanish  / lan_universe),  # blockgroupstats has these counts
 # pct_lan_ie      = ifelse(lan_universe == 0, 0, lan_ie       / lan_universe),  # blockgroupstats has these counts
@@ -99,7 +136,7 @@ wtscols = c(
 # usethis::use_data(wtdmeancols, overwrite = TRUE)
 # usethis::use_data(wtscols, overwrite = TRUE)
 
-cbind(wtdmeancols, wtscols)
+# cbind(wtdmeancols, wtscols)
 
 # wtdmeancols        wtscols         
 # [1,] "lowlifex"         "pop"           
@@ -149,7 +186,7 @@ cbind(wtdmeancols, wtscols)
 # formulas_all  ####
 ######################### #
 
-formulas_sum     = c(paste0("aggregate_", countcols,    " = sum(", countcols, ",      na.rm = TRUE)"))
+formulas_sum     = c(paste0("aggregate_", countcols,    " = sum(", countcols, ",  na.rm = TRUE)"))
 formulas_wtdmean = c(paste0("aggregate_", wtdmeancols , " = sum(", wtscols, " * ", wtdmeancols, ", na.rm = TRUE) / sum(", wtscols, ", na.rm = TRUE)"))
 formulas_all     = c(formulas_sum, formulas_wtdmean)
 
@@ -163,78 +200,96 @@ formulas_all     = c(formulas_sum, formulas_wtdmean)
 ######################### #
 
 # THESE WOULD BE THE FORMULAS IF PERCENTAGE IS CALCULATED AS RATIO OF SUMS OF COUNTS, NOT A WTDMEAN:
-## these were hardcoded in doaggregate() and here, but could be replaced by weighted means based on above info.
 
-formulas_d <- c(
-  
-  # "poptotal =  sum(pop, na.rm = TRUE)", # just to make lists same length and name cannot be same as input name
-  
-  # lowlifex ??? was wtdmean, not by formula, already 
-  
-  "pctunder5       = 1 * ifelse(pop == 0, 0,            under5        / pop)",
-  "pctover64       = 1 * ifelse(pop == 0, 0,            over64        / pop)",
-  "pctmin          = 1 * ifelse(pop == 0, 0, as.numeric(mins)         / pop)",
+# RATIOS OF COUNTS
+varnames = wtdmeancols
+varnames = c(names_d, names_d_subgroups, names_d_subgroups_alone, 
+             "pctdisability",   "pctownedunits",  "pctpoor", 
+             "pct_lan_spanish",  "pct_lan_ie",  "pct_lan_api", "pct_lan_eng_na",  # no calc type info
+             "pctspanish_li",   "pctie_li",  "pctapi_li" , "pctother_li" )
 
-    "pcthisp         = 1 * ifelse(pop == 0, 0, as.numeric(hisp )        / pop)", ##
-  "pctnhba         = 1 * ifelse(pop == 0, 0, as.numeric(nhba )        / pop)",
-  "pctnhaiana      = 1 * ifelse(pop == 0, 0, as.numeric(nhaiana)      / pop)",
-  "pctnhaa         = 1 * ifelse(pop == 0, 0, as.numeric(nhaa )        / pop)",
-  "pctnhnhpia      = 1 * ifelse(pop == 0, 0, as.numeric(nhnhpia )     / pop)",
-  "pctnhotheralone = 1 * ifelse(pop == 0, 0, as.numeric(nhotheralone) / pop)",
-  "pctnhmulti      = 1 * ifelse(pop == 0, 0, as.numeric(nhmulti )     / pop)",
-  "pctnhwa         = 1 * ifelse(pop == 0, 0, as.numeric(nhwa )        / pop)",
+varnames_count = gsub("pct", "", varnames)
+varnames_wt = varinfo(varnames, "denominator")$denominator
+cbind(varnames, varnames_count, varnames_wt)
+formulas_d <- (paste0(varnames, "      <- ifelse(", varnames_wt," == 0, 0, as.numeric(", varnames_count, ") / ", varnames_wt, ")", collapse = "\n"))
+# cat(formulas_d)
+formulas_d <- unlist(strsplit(formulas_d, "\n"))
 
- #### "pcthisp         = 1 * ifelse(pop == 0, 0, as.numeric(hisp )        / pop)", # was not repeated
-  "pctba         = 1 * ifelse(pop == 0, 0, as.numeric(ba )        / pop)",
-  "pctaiana      = 1 * ifelse(pop == 0, 0, as.numeric(aiana)      / pop)",
-  "pctaa         = 1 * ifelse(pop == 0, 0, as.numeric(aa )        / pop)",
-  "pctnhpia      = 1 * ifelse(pop == 0, 0, as.numeric(nhpia )     / pop)",
-  "pctotheralone = 1 * ifelse(pop == 0, 0, as.numeric(otheralone) / pop)",
-  "pctmulti      = 1 * ifelse(pop == 0, 0, as.numeric(multi )     / pop)",
-  "pctwa         = 1 * ifelse(pop == 0, 0, as.numeric(wa )        / pop)",
-  
-  "pctunder18 =  ifelse(pop == 0, 0, age_lt18 / pop)",
-  "pctover17  =  ifelse(pop == 0, 0, age_gt17 / pop)",
-  "pctmale    =  ifelse(pop == 0, 0, male    / pop)",
-  "pctfemale  =  ifelse(pop == 0, 0, female  / pop)",
-  
-  "pctlowinc       = 1 * ifelse(povknownratio  == 0, 0, lowinc                 / povknownratio)",
-  "pctlths         = 1 * ifelse(age25up        == 0, 0, as.numeric(lths)       / age25up)",
-  "pctlingiso      = 1 * ifelse(hhlds          == 0, 0, lingiso                / hhlds)",
-  "pctpre1960      = 1 * ifelse(builtunits     == 0, 0, pre1960                / builtunits)",
-  "pctunemployed   = 1 * ifelse(unemployedbase == 0, 0, as.numeric(unemployed) / unemployedbase)",
 
-  "pctdisability  = ifelse(disab_universe == 0, 0, disability / disab_universe)",  # 
-  "pctownedunits =  ifelse(occupiedunits == 0, 0, ownedunits / occupiedunits)",  ##  
-  "pctpoor  =  ifelse(hhlds == 0, 0, poor / hhlds)",  ##  ?
-  
-  "pct_lan_spanish = ifelse(lan_universe == 0, 0, lan_spanish  / lan_universe)",  ## 
-  "pct_lan_ie      = ifelse(lan_universe == 0, 0, lan_ie       / lan_universe)",  ##  
-  "pct_lan_api     = ifelse(lan_universe == 0, 0, lan_api      / lan_universe)",  ## 
-    "pct_lan_eng_na     = ifelse(lan_universe == 0, 0, lan_eng_na   / lan_universe)",  ##  
-
-  "pctspanish_li = ifelse(lingiso == 0, 0, spanish_li  /  lingiso)",   ##  
-  "pctie_li      = ifelse(lingiso == 0, 0, ie_li       /  lingiso)",   ## 
-  "pctapi_li     = ifelse(lingiso == 0, 0, api_li      /  lingiso)",   ##  
-  "pctother_li   = ifelse(lingiso == 0, 0, other_li    /  lingiso)",     ## 
-  
-  "Demog.Index = (pctlowinc + pctmin) / 2",
-  "Demog.Index.Supp  = (pctlowinc + pctunemployed + pctlths + pctlingiso + ifelse(is.na(lowlifex), 0, lowlifex) ) / ifelse(is.na(lowlifex), 4, 5)"
-  
-)
-    # pctfemale1849 = ifelse(pop == 0, 0, female1849  / pop),
 
 ######################### #
 # metadata_add() & use_data() ####
 ######################### #
 
-formulas_all <- EJAM:::metadata_add(formulas_all)
+formulas_all <- metadata_add(formulas_all)
 
 usethis::use_data(formulas_all, overwrite = TRUE)
 
-formulas_d <- EJAM:::metadata_add(formulas_d)
+formulas_d <- metadata_add(formulas_d)
 
 usethis::use_data(formulas_d, overwrite = TRUE)
 
-
 ################################################ #
+
+
+# formulas_d <- c(
+#   
+#   # "poptotal =  sum(pop, na.rm = TRUE)", # just to make lists same length and name cannot be same as input name
+#   
+#   # lowlifex ??? was wtdmean, not by formula, already 
+#   
+#   "pctunder5       = 1 * ifelse(pop == 0, 0,            under5        / pop)",
+#   "pctover64       = 1 * ifelse(pop == 0, 0,            over64        / pop)",
+#   "pctmin          = 1 * ifelse(pop == 0, 0, as.numeric(mins)         / pop)",
+# 
+#     "pcthisp         = 1 * ifelse(pop == 0, 0, as.numeric(hisp )        / pop)", ##
+#   "pctnhba         = 1 * ifelse(pop == 0, 0, as.numeric(nhba )        / pop)",
+#   "pctnhaiana      = 1 * ifelse(pop == 0, 0, as.numeric(nhaiana)      / pop)",
+#   "pctnhaa         = 1 * ifelse(pop == 0, 0, as.numeric(nhaa )        / pop)",
+#   "pctnhnhpia      = 1 * ifelse(pop == 0, 0, as.numeric(nhnhpia )     / pop)",
+#   "pctnhotheralone = 1 * ifelse(pop == 0, 0, as.numeric(nhotheralone) / pop)",
+#   "pctnhmulti      = 1 * ifelse(pop == 0, 0, as.numeric(nhmulti )     / pop)",
+#   "pctnhwa         = 1 * ifelse(pop == 0, 0, as.numeric(nhwa )        / pop)",
+# 
+#  #### "pcthisp         = 1 * ifelse(pop == 0, 0, as.numeric(hisp )        / pop)", # was not repeated
+#   "pctba         = 1 * ifelse(pop == 0, 0, as.numeric(ba )        / pop)",
+#   "pctaiana      = 1 * ifelse(pop == 0, 0, as.numeric(aiana)      / pop)",
+#   "pctaa         = 1 * ifelse(pop == 0, 0, as.numeric(aa )        / pop)",
+#   "pctnhpia      = 1 * ifelse(pop == 0, 0, as.numeric(nhpia )     / pop)",
+#   "pctotheralone = 1 * ifelse(pop == 0, 0, as.numeric(otheralone) / pop)",
+#   "pctmulti      = 1 * ifelse(pop == 0, 0, as.numeric(multi )     / pop)",
+#   "pctwa         = 1 * ifelse(pop == 0, 0, as.numeric(wa )        / pop)",
+#   
+#   "pctunder18 =  ifelse(pop == 0, 0, age_lt18 / pop)",
+#   "pctover17  =  ifelse(pop == 0, 0, age_gt17 / pop)",
+#   "pctmale    =  ifelse(pop == 0, 0, male    / pop)",
+#   "pctfemale  =  ifelse(pop == 0, 0, female  / pop)",
+#   
+#   "pctlowinc       = 1 * ifelse(povknownratio  == 0, 0, lowinc                 / povknownratio)",
+#   "pctlths         = 1 * ifelse(age25up        == 0, 0, as.numeric(lths)       / age25up)",
+#   "pctlingiso      = 1 * ifelse(hhlds          == 0, 0, lingiso                / hhlds)",
+#   "pctpre1960      = 1 * ifelse(builtunits     == 0, 0, pre1960                / builtunits)",
+#   "pctunemployed   = 1 * ifelse(unemployedbase == 0, 0, as.numeric(unemployed) / unemployedbase)",
+# 
+#   "pctdisability  = ifelse(disab_universe == 0, 0, disability / disab_universe)",  # 
+#   "pctownedunits =  ifelse(occupiedunits == 0, 0, ownedunits / occupiedunits)",  ##  
+#   "pctpoor  =  ifelse(hhlds == 0, 0, poor / hhlds)",  ##  ?
+#   
+#   "pct_lan_spanish = ifelse(lan_universe == 0, 0, lan_spanish  / lan_universe)",  ## 
+#   "pct_lan_ie      = ifelse(lan_universe == 0, 0, lan_ie       / lan_universe)",  ##  
+#   "pct_lan_api     = ifelse(lan_universe == 0, 0, lan_api      / lan_universe)",  ## 
+#     "pct_lan_eng_na     = ifelse(lan_universe == 0, 0, lan_eng_na   / lan_universe)",  ##  
+# 
+#   "pctspanish_li = ifelse(lingiso == 0, 0, spanish_li  /  lingiso)",   ##  
+#   "pctie_li      = ifelse(lingiso == 0, 0, ie_li       /  lingiso)",   ## 
+#   "pctapi_li     = ifelse(lingiso == 0, 0, api_li      /  lingiso)",   ##  
+#   "pctother_li   = ifelse(lingiso == 0, 0, other_li    /  lingiso)"     # ,     ## 
+#   
+#   # "Demog.Index = (pctlowinc + pctmin) / 2",
+#   # "Demog.Index.Supp  = (pctlowinc + pctunemployed + pctlths + pctlingiso + ifelse(is.na(lowlifex), 0, lowlifex) ) / ifelse(is.na(lowlifex), 4, 5)"
+#  
+# # # formulas changed and there are 4 variants of demog index for v2.3
+#   
+# )
+    # pctfemale1849 = ifelse(pop == 0, 0, female1849  / pop),
+##################################################################################### # 

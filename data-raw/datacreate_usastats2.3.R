@@ -9,6 +9,8 @@
 # data.table format is used below for the blockgroupstats starting point 
 # data.frame format is used below for all other files/info
 
+if (0 == 1) {
+  
 #################################################################### #
 ##___ SET WORKING DIRECTORY  to save EJAM data ####
 # grep("mysource",  (Sys.getenv()), value = T)
@@ -135,68 +137,25 @@ ls()
 # as a double-check
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+}
 
 ################################################################################ #
 
 # make rownames less confusing since starting with 1 was for the row where PCTILE == 0,
 # so make them match in USA one at least, but cannot same way for state one since they repeat for each state
+
 rownames(usastats_new)     <- usastats_new$PCTILE
 rownames(statestats_new) <- paste0(statestats_new$REGION, statestats_new$PCTILE) 
 
 # MAKE THE STATE EJ INDICATORS (RAW SCORES) COLUMNS HAVE STATE PERCENTILE NAMES TO DISTINGUISH FROM US VERSIONS 
 # BUT BE SURE THAT LOOKUP CODE TURNING RAW STATE EJ SCORES INTO PCTILES IS USING THE RIGHT NAMES 
 
-names(statestats_new) <- gsub("EJ.DISPARITY", "state.EJ.DISPARITY", names(statestats_new))
-
-cbind(names(usastats_new), names(statestats_new))
-
-# > setdiff(names(statestats), names(usastats))
-# [1] "state.EJ.DISPARITY.pm.eo"                "state.EJ.DISPARITY.pm.supp"          
-# "state.EJ.DISPARITY.o3.eo"  "state.EJ.DISPARITY.o3.supp"   
-# "state.EJ.DISPARITY.dpm.eo"               "state.EJ.DISPARITY.dpm.supp"
-# etc
-# [25] "state.EJ.DISPARITY.proximity.npdes.eo"   "state.EJ.DISPARITY.proximity.npdes.supp"
-
-all.equal(names(usastats_new), names(statestats_new))  # yes 
-# still same so far, so they need to be adjusted
-setdiff(          names(usastats_new), names(statestats_new))
-EJAM:::setdiff_yx(names(usastats_new), names(statestats_new))
-
-
-#  varnames used for state and us pctiles ... make them distinct
-cbind(names(EJAM::usastats), names(EJAM::statestats)) 
-# no - 
-# EJ index vars were adjusted to indicate if state pctile or us pctile
-
-# [26,] "EJ.DISPARITY.pm.eo"                "state.EJ.DISPARITY.pm.eo"               
-# [27,] "EJ.DISPARITY.pm.supp"              "state.EJ.DISPARITY.pm.supp"    
-
-# [28,] "EJ.DISPARITY.o3.eo"                "state.EJ.DISPARITY.o3.eo"               
-# [29,] "EJ.DISPARITY.o3.supp"              "state.EJ.DISPARITY.o3.supp"   
-
-# [30,] "EJ.DISPARITY.dpm.eo"               "state.EJ.DISPARITY.dpm.eo"              
-# [31,] "EJ.DISPARITY.dpm.supp"             "state.EJ.DISPARITY.dpm.supp"    
-
-#  etc.
+setDT(statestats_new)
+data.table::setnames(statestats_new, 
+                     old = c(names_ej, names_ej_supp), 
+                     new = c(names_ej_state, names_ej_supp_state))
+setDF(statestats_new)
+# cbind(names(usastats_new), names(statestats_new))
 
 ################################################################################ #
 
@@ -204,15 +163,23 @@ cbind(names(EJAM::usastats), names(EJAM::statestats))
 
 usastats   <- usastats_new
 statestats <- statestats_new
+rm(statestats_new, usastats_new)
+gc()
+
+
+blockgroupstats <- blockgroupstats_new
+
+rm(blockgroupstats_new)
+gc()
+
 
 ##########################################################################################################################################
 
-save.image(file = "~/../Downloads/work in progress on usastats 2024-07.rda")
+# save.image(file = "~/../Downloads/work in progress on usastats 2024-07.rda")
 
 
-stop("at this point, before saving these via use_data(), do script in 
-     EJAM/data-raw/datacreate_usastats_pctile_lookup_add_subgroups_demog.R 
-     and also will use EJAM/data-raw/datacreate_avg.in.us.R")
+cat("at this point, before saving these via use_data(), do script in 
+     EJAM/data-raw/datacreate_usastats_pctile_lookup_add_subgroups_demog.R \n")
 
 
 

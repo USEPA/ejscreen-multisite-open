@@ -1,13 +1,13 @@
 Package: EJAM
 Title: EJAM Environmental Justice Analysis Multisite tool
-Version: 2.2.2
+Version: 2.3.0
 Author: Mark Corrales <corrales.mark@epa.gov>
 Maintainer: Mark Corrales <corrales.mark@epa.gov>
 License: MIT + file LICENSE.md
 Description: Web app and R tools to easily summarize
     demographics and environmental indicators
     for residents in or near a large number of areas or specific sites.
-    Sites can be specified in a variety of ways: coordinates, facility IDs,
+    Sites can be specified in a variety of ways - coordinates, facility IDs,
     type of facility, shapefile, or Census areas.
     Very fast identification of nearby blocks and distances, and 
     aggregation of indicators within each distance by site and overall.
@@ -80,7 +80,7 @@ RoxygenNote: 7.3.2
 Roxygen: list(markdown = TRUE)
 Config/testthat/parallel: false
 EJScreenVersion: 2.3
-EJScreenReleaseDate: June 2024
+EJScreenReleaseDate: July 2024
 ACSVersion: 2018-2022
 ACSReleaseDate: 2023-12-07
 CensusVersion: 2020

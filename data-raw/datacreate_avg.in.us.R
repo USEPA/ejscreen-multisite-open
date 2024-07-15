@@ -1,9 +1,16 @@
 
 datacreate_avg.in.us <- function(usastats = NULL, 
-                                 longlist = unique(c(names_e, names_d, names_d_subgroups_nh, names_d_subgroups_alone)), )
-{
-  if (is.null(usastats)) {stop("requires usastats")}
+                                 longlist = unique(c(names_e, names_d, names_d_subgroups_nh, names_d_subgroups_alone))
+                                 ) {
   
+  if (is.null(usastats)) {stop("requires usastats be passed here explicitly, to be sure the right (updated) version is used")}
+  miss = setdiff(longlist, names(usastats)) 
+  if (length(miss) > 0)  {
+    cat("\n    Variable names not found in usastats:\n\n")
+    print(miss)
+    stop("some of longlist of indicator names are not found among colnames(usastats) -- 1st blockgroupstats must be updated, then usastats must be updated, then avg.in.us can be updated.")
+  }
+    
   # a data.frame of 1 row per variable:
   # print(
   #   usastats_means(varnames = longlist, dig = 6)

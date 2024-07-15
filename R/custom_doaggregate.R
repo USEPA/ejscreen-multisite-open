@@ -49,6 +49,37 @@ calc_bgwts_overall <- function(sites2blocks) {
 }
 ############################################### # 
 
+#' utility - what type of formula is used to aggregate this variable?
+#'
+#' @param varnames vector like names_d
+#'
+#' @return vector same length as varnames, like c("sum of counts", "wtdmean")
+#' @examples calctype(names_these)
+#' 
+#' @export
+#' @keywords internal
+#'
+calctype <- function(varnames) {
+  varinfo(varnames, "calculation_type")[, "calculation_type"]
+  # map_headernames$calculation_type[match(varnames, map_headernames$rname)]
+}
+############################################### # 
+
+#' utility - what variable is the weight used to aggregate this variable as a weighted mean?
+#'
+#' @param varnames vector like names_d
+#'
+#' @return vector same length as varnames, like c("pop", "povknownratio", "hhlds")
+#' @examples calcweight(names_these)
+#' 
+#' @export
+#' @keywords internal
+#' 
+calcweight <- function(varnames) {
+  varinfo(varnames, "denominator")[, "denominator"]
+  # map_headernames$denominator[match(varnames, map_headernames$rname)]
+}
+############################################### # 
 
 # custom_doaggregate_from_sites2blocks
 
@@ -201,22 +232,19 @@ custom_doaggregate <- function(sites2blocks,
   # map_headernames$is.wtdmean  - TRUE/FALSE
   # map_headernames$denominator - e.g., "pop" or "hhlds" etc.
   
-  # calctype <- function(varnames) {
-  
-  # map_headernames$is.wtdmean == TRUE
+    # map_headernames$is.wtdmean == TRUE
   # map_headernames$denominator
-  # map_headernames[map_headernames$calculation_type == "popwtd mean",     c('varlist', "rname") ]
+  # map_headernames[map_headernames$calculation_type == "wtdmean",     c('varlist', "rname") ]
   # map_headernames[map_headernames$calculation_type == "percent formula", c('varlist', "rname") ]
   # map_headernames$rname[grepl("denom", map_headernames$names_friendly, ignore.case = TRUE)] # [1] "unemployedbase" "builtunits"
   
+
   
-  #   ## map_headernames$calculation_type[match(varnames, map_headernames$rname)]
-  # }
-  #
   # thesevars <- c(names_d_other_count, names_d_count, names_d_subgroups_count, names_d)
   #
   # countcols      <- thesevars[calctype(thesevars) == "sum of counts"  ]
-  # popmeancols    <- thesevars[calctype(thesevars) == "popwtd mean"    ]
+  # popmeancols    <- thesevars[calctype(thesevars) == "wtdmean" & calctype(thesevars) == "wtdmean"    ]
+  # wtdmeancols    <- thesevars[calctype(thesevars) == "wtdmean"    ]
   # calculatedcols <- thesevars[calctype(thesevars) == "percent formula"]
   #
   # countcols_inbgstat       <- intersect(countcols,      names(blockgroupstats))

@@ -1,25 +1,29 @@
 
 #          datacreate_test_address.R
 
-# metadatanow = list(date_saved_in_package = Sys.Date())
-# x = EJAM:::metadata_add(x, metadata = metadatanow)
-
 ##################### #
 
 # test data:
 
-
 # test_address_parts1
 # test_addresses2
-# test_addresses_9
+
 # test_address_table_9
+# test_addresses_9
+
 # test_address_table
-# test_address_table_withfull
 # test_address_table_goodnames
+# test_address_table_withfull
+
 ##################### #
 
-
 # test data defined:
+
+test_address_parts1 <- c("latitude", "LONGITUDE",
+                         "address", "STREET", "City", "Statename", "zipcode")
+
+test_addresses2 <- c("1200 Pennsylvania Ave, NW Washington DC",
+                     "Research Triangle Park")
 
 
 test_address_table_9 <- structure(list(
@@ -41,15 +45,9 @@ test_address_table_9 <- structure(list(
   County = c("Madison County", "Lake County", "Lake County", "Lake County", "Porter County",
              "Wayne County", "Butler County", "Cuyahoga County", "Allegheny County")
 ), row.names = c(NA, -9L), class = "data.frame")
-##################### #
 
 test_addresses_9 <- address_from_table(test_address_table_9)
 
-test_address_parts1 <- c("latitude", "LONGITUDE",
-                         "address", "STREET", "City", "Statename", "zipcode")
-
-test_addresses2 <- c("1200 Pennsylvania Ave, NW Washington DC",
-                     "Research Triangle Park")
 
 test_address_table <- data.frame(
   Acol = 1:2,
@@ -60,8 +58,6 @@ test_address_table <- data.frame(
   other_column = 9:10
 )
 
-test_address_table_withfull <- data.frame(Address = test_addresses2, test_address_table)
-
 test_address_table_goodnames <- structure(list(
   Acol = 1:2,
   street = c("1200 Pennsylvania Ave", "5 pARK AVE"),
@@ -70,29 +66,42 @@ test_address_table_goodnames <- structure(list(
   other_column = 9:10
 ), class = "data.frame", row.names = c(NA, -2L))
 
-##################### #
-
-# metadata_add(test_address_table_9, )
-x = EJAM:::metadata_add(x)
-
-usethis::use_data(test_address_table_9,
-                  test_address_parts1,
-                  test_addresses_9,
-                  test_addresses2,
-                  test_address_table,
-                  test_address_table_withfull,
-                  test_address_table_goodnames,
-                  overwrite = TRUE)
+test_address_table_withfull <- data.frame(Address = test_addresses2, test_address_table)
 
 ##################### #
 
+# EJAM ::: metadata_add
 
-writexl::write_xlsx(test_address_table_9, "./inst/testdata/address/test_address_table_9.xlsx")
+test_address_parts1          = metadata_add(test_address_parts1)
+test_addresses2              = metadata_add(test_addresses2)
 
-writexl::write_xlsx(test_address_table, "./inst/testdata/address/test_address_table.xlsx")
+test_address_table_9         = metadata_add(test_address_table_9)
+test_addresses_9             = metadata_add(test_addresses_9)
 
-writexl::write_xlsx(test_address_table_withfull, "./inst/testdata/address/test_address_table_withfull.xlsx")
+test_address_table           = metadata_add(test_address_table)
+test_address_table_goodnames = metadata_add(test_address_table_goodnames)
+test_address_table_withfull  = metadata_add(test_address_table_withfull)
 
+usethis::use_data(
+  
+  test_address_parts1,
+  test_addresses2,
+  
+  test_address_table_9,
+  test_addresses_9,
+  
+  test_address_table,
+  test_address_table_goodnames,
+  test_address_table_withfull,
+  
+  overwrite = TRUE)
+
+##################### #
+
+writexl::write_xlsx(test_address_table_9,         "./inst/testdata/address/test_address_table_9.xlsx")
+
+writexl::write_xlsx(test_address_table,           "./inst/testdata/address/test_address_table.xlsx")
 writexl::write_xlsx(test_address_table_goodnames, "./inst/testdata/address/test_address_table_goodnames.xlsx")
+writexl::write_xlsx(test_address_table_withfull,  "./inst/testdata/address/test_address_table_withfull.xlsx")
 
 ##################### #

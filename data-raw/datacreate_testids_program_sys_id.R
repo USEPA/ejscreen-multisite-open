@@ -6,7 +6,7 @@ testids_program_sys_id <- c(
   "CAC002995519", "3601252181", "3601439158"
 )
 
-testids_program_sys_id <- EJAM:::metadata_add(testids_program_sys_id)
+testids_program_sys_id <- metadata_add(testids_program_sys_id)
 
 usethis::use_data(testids_program_sys_id, overwrite = TRUE)
 

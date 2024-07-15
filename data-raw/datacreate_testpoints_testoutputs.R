@@ -132,7 +132,7 @@ if (needconus5) {
   rm(CONUS5)
   ## save as DATASET ###   #
   text_to_do <- paste0(
-    "", "testpoints_conus5", " = EJAM:::metadata_add(", "testpoints_conus5", ", metadata = metadatanow)"
+    "", "testpoints_conus5", " = metadata_add(", "testpoints_conus5", ", metadata = metadatanow)"
     # "attr(testpoints_conus5, 'date_saved_in_package') <- as.character( Sys.Date())"
   )
   eval(parse(text = text_to_do))
@@ -191,7 +191,7 @@ for (n in nvalues) {
       testpoints_100_dt <- data.table(testpoints_100)
       if (resaving_testpoints_rda) {
         # attr(testpoints_100_dt, "date_saved_in_package") <- Sys.Date()
-        testpoints_100_dt = EJAM:::metadata_add(testpoints_100_dt)
+        testpoints_100_dt = metadata_add(testpoints_100_dt)
         usethis::use_data(testpoints_100_dt , overwrite = TRUE)
       }
     }
@@ -200,7 +200,7 @@ for (n in nvalues) {
   ## save as DATASET ####
   if (resaving_testpoints_rda) {
     text_to_do <- paste0(
-      "", testpoints_name, " = EJAM:::metadata_add(", testpoints_name, ")"
+      "", testpoints_name, " = metadata_add(", testpoints_name, ")"
       # "attr(",  testpoints_name  ,", 'date_saved_in_package') <- Sys.Date()"
       )
     eval(parse(text = text_to_do))  
@@ -261,7 +261,7 @@ NULL
         ## save as DATA ####
         #
         text_to_do <- paste0(
-          "", out_varname_getblocks, " = EJAM:::metadata_add(", out_varname_getblocks, ")"
+          "", out_varname_getblocks, " = metadata_add(", out_varname_getblocks, ")"
           # "attr(",  out_varname_getblocks  ,", 'date_saved_in_package') <- Sys.Date()"
         )
         eval(parse(text = text_to_do))  
@@ -269,7 +269,7 @@ NULL
         eval(parse(text = text_to_do))                                             ############# #
         
         text_to_do <- paste0(
-          "", out_varname_getblocks_alias, " = EJAM:::metadata_add(", out_varname_getblocks_alias, ")"
+          "", out_varname_getblocks_alias, " = metadata_add(", out_varname_getblocks_alias, ")"
           # "attr(",  out_varname_getblocks_alias  ,", 'date_saved_in_package') <- Sys.Date()"
         )
         eval(parse(text = text_to_do))  
@@ -338,7 +338,7 @@ NULL
     ## save as DATASET ####
     if (resaving_doaggregate_rda) {
       text_to_do <- paste0(
-        "", out_varname_doagg, " = EJAM:::metadata_add(", out_varname_doagg, ")"
+        "", out_varname_doagg, " = metadata_add(", out_varname_doagg, ")"
         # "attr(",  out_varname_doagg  ,", 'date_saved_in_package') <- Sys.Date()"
       )
       eval(parse(text = text_to_do))  
@@ -418,7 +418,7 @@ NULL
     if (resaving_ejamit_rda) {
       ## save as DATA IN PACKAGE ####
       text_to_do <- paste0(
-        "", out_varname_ejamit, " = EJAM:::metadata_add(", out_varname_ejamit, ")"
+        "", out_varname_ejamit, " = metadata_add(", out_varname_ejamit, ")"
         # "attr(",  out_varname_ejamit  ,", 'date_saved_in_package') <- Sys.Date()"
       )
       eval(parse(text = text_to_do))  
@@ -473,7 +473,7 @@ if (redoing_ejscreenit_10_for_ejam_to_have) {
                                                                     interactiveprompt = FALSE)
   
   text_to_do <- paste0(
-    "", "testoutput_ejscreenit_10pts_1miles", " = EJAM:::metadata_add(", "testoutput_ejscreenit_10pts_1miles", ")"
+    "", "testoutput_ejscreenit_10pts_1miles", " = metadata_add(", "testoutput_ejscreenit_10pts_1miles", ")"
     # "attr(testoutput_ejscreenit_10pts_1miles, 'date_saved_in_package') <- Sys.Date()"
   )
   eval(parse(text = text_to_do))  

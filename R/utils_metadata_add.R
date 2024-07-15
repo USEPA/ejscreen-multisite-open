@@ -1,6 +1,6 @@
-#' helper function for package to set attributes of a dataset
+#' helper function for package to set metadata attributes of a dataset
 #' 
-#' @description Together with the metadata_mapping.R script, this can be used 
+#' @description Together with the metadata_mapping script, this can be used 
 #'  annually to update the metadata for datasets in a package.
 #'  It just makes it easier to set a few metadata attributes similarly
 #'  for a number of data elements, for example,
@@ -20,9 +20,12 @@
 #' 
 #' @keywords internal
 #'
-source("R/metadata_mapping.R")
+
+# source("R/metadata_mapping.R")  # this already would get loaded via devtools::load_all() or library(EJAM)
+# rstudioapi::documentOpen("./R/metadata_mapping.R")
 
 metadata_add <- function(x) {
+  
   metadata <- get_metadata_mapping(deparse(substitute(x)))
   if (is.null(metadata)) {
     txt <- paste0(paste0(names(metadata), "=", unlist(metadata)), collapse = ", ")
@@ -55,8 +58,8 @@ metadata_add <- function(x) {
 #'   like EJAMejscreenapi
 #' @param which Optional vector (not list) of strings, the attributes. 
 #'   Default is some typical ones used in EJAM-related packages currently.
-#' @param datasets optional, "all" means all data objects exported?
-#'   can be a vector of character names of the ones to check like c("bgpts", "blockpoints")
+#' @param datasets optional, "all" means all data objects exported.
+#'   Can be a vector of character names of the ones to check like c("bgpts", "blockpoints")
 #' @param grepdatasets optional, if set to TRUE, datasets should be a query to use
 #'   via grep to identify which datasets to check. It always uses ignore.case=TRUE for this.
 #' @param loadifnotloaded Optional to control if func should temporarily attach packages not already loaded.
@@ -69,9 +72,10 @@ metadata_add <- function(x) {
 #' @keywords internal
 #'
 metadata_check <- function(packages = EJAM::ejampackages, 
+                           datasets = "all",
                            which = c(
                              "date_saved_in_package",
-                             # "date_downloaded",
+                             "date_downloaded",
                              "ejscreen_version",
                              "ejscreen_releasedate",
                              "acs_releasedate",
@@ -85,17 +89,6 @@ metadata_check <- function(packages = EJAM::ejampackages,
   # acs_releasedate =      "2023-12-07",
   # acs_version =          "2018-2022",
   # census_version        = 2020
-  
-  #     previously:
-  # The 2017-2021 American Community Survey 5-year estimates were released on Thursday, December 8, 2022.
-  # EJScreen incorporated that in July 2023.
-  # 
-  # acs_version = '2016-2020',
-  # acs_releasedate = '3/17/2022',
-  # ejscreen_version = '2.1',
-  # ejscreen_releasedate = 'October 2022',
-  # ejscreen_pkg_data = 'bg22'
-  # census_version = 2020,
   
   # utility to check if year attribute is set on each data file
   # does it really need to lazy load all these to check their attributes? that would be slow for big datasets, right?
@@ -128,13 +121,14 @@ metadata_check <- function(packages = EJAM::ejampackages,
       next
     }
     ############################################### # 
-    # GET THE datasets TO CHECK ####
+    # which datasets to check ####
     
-    ## also see  functions 
+    ## also see 
     # EJAM:::functions_in_pkg(pkg = pkg, internal_included = TRUE, exportedfuncs_included = TRUE, data_included = TRUE)
-    
+    ## and
     # rdafiles <- datapack(pkg = pkg)$Item  # same thing as data(package = pkg)$results[ , "Item"]
     rdafiles <- data(package = pkg)$results[ , "Item"]
+    
     if (datasets[1] != "all") {
       if (grepdatasets) {
         rdafiles <- rdafiles[grepl(datasets, rdafiles, ignore.case = TRUE)]
@@ -202,25 +196,26 @@ metadata_check <- function(packages = EJAM::ejampackages,
     allresults[[ii]] <- data.frame(package = pkg, item = rownames(allresults[[ii]]), allresults[[ii]])
     rownames(allresults[[ii]]) <- NULL
     }
-    
-    
   }
   
   names(allresults) <- packages
 
   cat(
     '\n 
-    Also see  
-    x = EJAM:::functions_in_pkg(pkg = "EJAM", internal_included = FALSE, exportedfuncs_included = FALSE, data_included = TRUE)$object  
-    x[!grepl("^name", x)] 
-    \n\n'
+Also see  
+    
+    x = EJAM:::functions_in_pkg(pkg = "EJAM", 
+      internal_included = FALSE, exportedfuncs_included = FALSE, data_included = TRUE)$object 
+    x[!grepl("^name", x)] \n
+Also see \n
+    y = EJAM:::datapack(pkg = "EJAM", simple = F)
+    rdafiles =  y$Item   # same thing as data(package = pkg)$results[ , "Item"]
+    \n'
   )
   
   # replace the NULL values with NA values,
   # and make each column just a vector instead of a list
-  
-  
-  
+
   allresults <- do.call(rbind, allresults)
   
   for (mycol in 1:NCOL(allresults)) {

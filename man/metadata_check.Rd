@@ -6,8 +6,9 @@
 \usage{
 metadata_check(
   packages = EJAM::ejampackages,
-  which = c("date_saved_in_package", "ejscreen_version", "ejscreen_releasedate",
-    "acs_releasedate", "acs_version", "census_version"),
+  datasets = "all",
+  which = c("date_saved_in_package", "date_downloaded", "ejscreen_version",
+    "ejscreen_releasedate", "acs_releasedate", "acs_version", "census_version"),
   loadifnotloaded = TRUE
 )
 }
@@ -16,13 +17,13 @@ metadata_check(
 and if not specified, default is to report on all packages with EJ as part of their name,
 like EJAMejscreenapi}
 
+\item{datasets}{optional, "all" means all data objects exported.
+Can be a vector of character names of the ones to check like c("bgpts", "blockpoints")}
+
 \item{which}{Optional vector (not list) of strings, the attributes.
 Default is some typical ones used in EJAM-related packages currently.}
 
 \item{loadifnotloaded}{Optional to control if func should temporarily attach packages not already loaded.}
-
-\item{datasets}{optional, "all" means all data objects exported?
-can be a vector of character names of the ones to check like c("bgpts", "blockpoints")}
 
 \item{grepdatasets}{optional, if set to TRUE, datasets should be a query to use
 via grep to identify which datasets to check. It always uses ignore.case=TRUE for this.}

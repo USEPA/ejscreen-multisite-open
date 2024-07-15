@@ -1,11 +1,18 @@
 
 
-x = function(localfolder = "~/../Downloads/ejscreen new ftp downloads", 
-             baseurl = "https://gaftp.epa.gov/EJScreen/2024/2.30_July_useMe/",
-             
-) {
-  
-}
+localfolder = "~/../Downloads/ejscreen new ftp downloads"
+baseurl = "https://gaftp.epa.gov/EJScreen/2024/2.30_July_useMe/"
+
+# x = function(localfolder = "~/../Downloads/ejscreen new ftp downloads", 
+#              baseurl = "https://gaftp.epa.gov/EJScreen/2024/2.30_July_useMe/",
+#              
+# ) {
+#   if (!dir.exists(localfolder)) {dir.create(localfolder)}
+#   
+#   
+#   
+#   
+# }
 
 # SCRIPT TO UPDATE EJSCREEN BLOCKGROUP DATA AND PERCENTILE LOOKUP TABLES FOR EJAM YEARLY
 
@@ -20,23 +27,7 @@ x = function(localfolder = "~/../Downloads/ejscreen new ftp downloads",
 # [11] "PINSURLTRY.R" 
 ### and had also been info in a file here but that was moved:  EJAMejscreenapi/data-raw/update_to_ejscreenv2.2.R    
 
-### also need to update:
-# avg.in.us
-# high_pctiles_tied_with_min
-
 ############################################################################################ #
-
-# rm(list = ls())
-# print(.packages()) # what is loaded (attached?)
-# golem::detach_all_attached() # unattach EJAM so cannot lazy load statestats by accident, for example
-
-
-if (!dir.exists(localfolder)) {dir.create(localfolder)}
-
-library(EJAM)
-# note the current/old versions of usastats, statestats, blockgroupstats get attached for lazyloading so 
-# be aware of that while creating new versions
-#################################################################################### # 
 
 #  DOWNLOAD/UPDATE BLOCK GROUP DATA FILE(S)
 
@@ -256,35 +247,18 @@ statestats_new            <- statestats_new[,            !(names(statestats_new)
 
 dim(blockgroupstats_new); dim(EJAM::blockgroupstats)
 
-
-
-
 dim(usastats_new);   dim(EJAM::usastats)
 dim(statestats_new); dim(EJAM::statestats)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# > dim(blockgroupstats_new); dim(EJAM::blockgroupstats)
+# [1] 243022     81
+# [1] 243021    112
+# > dim(usastats_new);   dim(EJAM::usastats)
+# [1] 103  52
+# [1] 102  77
+# > dim(statestats_new); dim(EJAM::statestats)
+# [1] 5356   52
+# [1] 5304   77
 
 setdiff(          names(blockgroupstats_new), names(EJAM::blockgroupstats))
 EJAM:::setdiff_yx(names(blockgroupstats_new), names(EJAM::blockgroupstats))
@@ -293,7 +267,7 @@ names(blockgroupstats_new)
 # names(usastats_new)
 
 ############################################################## #
-# rename fips column 
+# rename fips column ?
 names(blockgroupstats_new)       <- gsub("id", "OBJECTID", names(blockgroupstats_new))
 names(blockgroupstats_new_state) <- gsub("id", "OBJECTID", names(blockgroupstats_new_state))
 
@@ -302,13 +276,31 @@ names(blockgroupstats_new_state) <- gsub("id", "OBJECTID", names(blockgroupstats
 
 table(EJAM:::fips_valid(blockgroupstats_new$OBJECTID))
 blockgroupstats_new$bgfips <- fips_lead_zero(blockgroupstats_new$OBJECTID)
+blockgroupstats_new_state$bgfips <- fips_lead_zero(blockgroupstats_new$OBJECTID)
+
+
 table(EJAM:::fips_valid(blockgroupstats_new$bgfips))
 # Warning message:
 #   In fips_lead_zero(blockgroupstats_new$OBJECTID) :
 #   270 fips had invalid number of characters (digits) or were NA values
+# > table(EJAM:::fips_valid(blockgroupstats_new$OBJECTID))
+# 
+# FALSE   TRUE 
+# 3403 239619 
+# > blockgroupstats_new$bgfips <- fips_lead_zero(blockgroupstats_new$OBJECTID)
+# Warning message:
+#   In fips_lead_zero(blockgroupstats_new$OBJECTID) :
+#   270 fips had invalid number of characters (digits) or were NA values
+# > table(EJAM:::fips_valid(blockgroupstats_new$bgfips))
+# 
+# FALSE   TRUE 
+# 3403 239619 
+
+blockgroupstats_new$OBJECTID <- NULL
+blockgroupstats_new_state$OBJECTID <- NULL
 
 blockgroupstats_new$bgid <- bgpts$bgid[match(blockgroupstats_new$bgfips, bgpts$bgfips)]
-
+blockgroupstats_new_state$bgid <- bgpts$bgid[match(blockgroupstats_new_state$bgfips, bgpts$bgfips)]
 # > table(is.na(blockgroupstats$bgfips))
 # 
 # FALSE 
@@ -324,24 +316,22 @@ blockgroupstats_new$bgid <- bgpts$bgid[match(blockgroupstats_new$bgfips, bgpts$b
 # to be done...
 
 
-#######  save work in progress here
-
-
-save.image(file = file.path(localfolder, "save.image blockgroupstats_new -- in progress.rda"))
 
 
 ########################################################### #
 ########################################################### #
 ################################################################################ #
 
+# bgej ####
+
 ###### MOVE EJ INDEXES FROM blockgroupstats_new and blockgroupstats_new_state
 ## to  a consolidated bgej  table 
 
-# merge US EJ with the state.EJ.DISPARITY columns ####
+## merge US EJ with the state.EJ.DISPARITY columns ####
 # from the  blockgroupstats_new_state  table
 
 # dataload_from_pins("bgej")
-# > names( bgej)
+# > names( bgej) 
 # [1] "OBJECTID"                                "bgfips"                                  "bgid"
 # [4] "ST"                                      "pop"                                     
 #      "EJ.DISPARITY.pm.eo"                     
@@ -363,41 +353,41 @@ save.image(file = file.path(localfolder, "save.image blockgroupstats_new -- in p
 # [52] "state.EJ.DISPARITY.proximity.tsdf.eo"    "state.EJ.DISPARITY.proximity.tsdf.supp"  "state.EJ.DISPARITY.ust.eo"
 # [55] "state.EJ.DISPARITY.ust.supp"  "state.EJ.DISPARITY.proximity.npdes.eo" "state.EJ.DISPARITY.proximity.npdes.supp"
 
+blockgroupstats_new_state <- blockgroupstats_new_state[, c("bgid", "bgfips", names_ej, names_ej_supp)]
+data.table::setDT(blockgroupstats_new_state)
+data.table::setDT(blockgroupstats_new)
+data.table::setnames(blockgroupstats_new_state,
+                     old =  c("bgid", "bgfips", names_ej, names_ej_supp), 
+                     new =  c("bgid", "bgfips", c(names_ej_state, names_ej_supp_state))
+)
+# > all.equal(blockgroupstats_new$bgid, blockgroupstats_new_state$bgid)
+# [1] TRUE
+data.table::setDF(blockgroupstats_new)
+data.table::setDF(blockgroupstats_new_state)
 
-
-
-
-
-# to be done...
-
-
-
-
-
-
-
-# then...
-
-bgej <- as.data.frame(
-  blockgroupstats_new[ , c("OBJECTID",  "bgfips", "bgid",
+bgej <- data.table(
+  blockgroupstats_new[ , c("bgid", "bgfips", 
                            "ST", "pop", 
                            names_ej, 
-                           names_ej_state)]
+                           names_ej_supp)],
+  blockgroupstats_new_state[, c(names_ej_state, 
+                                names_ej_supp_state)]
 )
-bgej <- metadata_add(bgej)
+# all.equal(data.frame(bgej)[, names_ej], blockgroupstats_new[,names_ej])
 
-##  Save bgej to pins board as .arrow file
+rm(blockgroupstats_new_state)
+blockgroupstats_new[, c(names_ej, names_ej_supp)] <- NULL
+setDT(blockgroupstats_new)
+setcolorder(blockgroupstats_new, c("bgid", "bgfips", "statename", "ST", "countyname", "REGION",
+                                   "pop",
+                                   names_d, names_e), before = 1)
 
+############################################### # 
+
+
+## bgej is left in globalenv by this script -
+# later acan Save bgej to pins board as .arrow file
 #     # using script in    datacreate_pins.R
-
-
-
-
-
-# to be done...
-
-
-
 
 
 
@@ -406,13 +396,6 @@ bgej <- metadata_add(bgej)
 
 ########################################################### #
 ########################################################### #
-
-# SWITCH datasets TO NEW VERSIONS  #### 
-
-blockgroupstats <- blockgroupstats_new
-
-rm(blockgroupstats_new, blockgroupstats_new_state)
-gc()
 
 # save work in progress as IMAGE ####
 
@@ -488,7 +471,7 @@ save.image(file = file.path(localfolder, "save.image work in progress on blockgr
 
 ################################################################################ #
 ################################################################################ #
- 
+
 ################################################################################ #
 
 # ARCHIVE as IMAGE ####

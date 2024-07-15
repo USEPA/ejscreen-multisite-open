@@ -6,7 +6,7 @@ testids_registry_id <- c(
   110030509215, 110019033810, 110056111559, 110056982323
 )
 
-testids_registry_id <- EJAM:::metadata_add(testids_registry_id)
+testids_registry_id <- metadata_add(testids_registry_id)
 
 usethis::use_data(testids_registry_id, overwrite = TRUE)
  
