@@ -1,44 +1,14 @@
 
+# SCRIPT TO DOWNLOAD/UPDATE EJSCREEN BLOCKGROUP DATA AND PERCENTILE LOOKUP TABLES FOR EJAM YEARLY
 
+############################################################################################ #
 localfolder = "~/../Downloads/ejscreen new ftp downloads"
-baseurl = "https://gaftp.epa.gov/EJScreen/2024/2.30_July_useMe/"
-
-# x = function(localfolder = "~/../Downloads/ejscreen new ftp downloads", 
-#              baseurl = "https://gaftp.epa.gov/EJScreen/2024/2.30_July_useMe/",
-#              
-# ) {
-#   if (!dir.exists(localfolder)) {dir.create(localfolder)}
-#   
-#   
-#   
-#   
-# }
-
-# SCRIPT TO UPDATE EJSCREEN BLOCKGROUP DATA AND PERCENTILE LOOKUP TABLES FOR EJAM YEARLY
-
-############################################################################################ #
-## older scripts:
-# /dev/notes_datasets
-# [1] "0_SCRIPT_overview_get_ejscreendata.R"             "1_SCRIPT_EJAMejscreen_download.R"                
-# [3] "2_SCRIPT_FOR_FIPS_ST_TRACT_CNTY.R"                "3_SCRIPT_create_bgDemog_ejscreen2.1_andtracts.R" 
-# [5] "4_SCRIPT_ADD_PUERTORICO_DEMOG_SUBGROUPS.R"        "5_SCRIPT_merge_demogsubgroups_v2.1.R"            
-# [7] "6_SCRIPT_create_blockgroupstats.R"                "8_SCRIPT_make_MeansByGroup_and_Ratios_RRS.US22.R"
-# [9] "9_SCRIPT_PCTILELOOKUPS_READ-CSVS-MID-2022.R"      "NOTES_which_states_are_in_which_datasets.R"      
-# [11] "PINSURLTRY.R" 
-### and had also been info in a file here but that was moved:  EJAMejscreenapi/data-raw/update_to_ejscreenv2.2.R    
-
-############################################################################################ #
-
-#  DOWNLOAD/UPDATE BLOCK GROUP DATA FILE(S)
-
-#################################################################################### # 
-
-# DOWNLOAD ZIP and FILES ####
-
+td <- tempdir()  
 # EJScreen v 2.3 ftp site files as of 7/5/2024
-
-# baseurl <- "https://gaftp.epa.gov/EJScreen/2024/2.30_July_useMe/"
+baseurl = "https://gaftp.epa.gov/EJScreen/2024/2.30_July_useMe/"
 # browseURL(baseurl)
+needgdb = FALSE
+# require(arrow)
 
 #   data for   blockgroupstats
 blockgroupstats_source_usa.zip   <- "EJScreen_2024_BG_with_AS_CNMI_GU_VI.csv.zip"
@@ -56,8 +26,38 @@ usastats_source.csv              <- "EJScreen_2024_BG_National_Lookup.csv"
 statestats_source.csv            <- "EJScreen_2024_BG_State_Lookup.csv"
 usastats_new_explained.xlsx      <- "EJScreen_2024_BG_Percentiles_Columns.xlsx"
 statestats_new_explained.xlsx    <- "EJScreen_2024_BG_State_Percentiles_Columns.xlsx"
+############################################################################################ #
 
-td <- tempdir()  # or...   localpath <-  "~/../EJ,,,,,"
+
+if (!dir.exists(localfolder)) {
+  if (interactive()) {
+    localfolder <- rstudioapi::selectDirectory("Save local copies where?")
+    if (is.na(localfolder) || !dir.exists(localfolder)) {stop(localfolder, " folder does not exist")}
+  }
+  localfolder <- getwd()
+  }
+cat("Using this FTP folder as source of data: ", baseurl, "\n")
+cat("Using this folder as local folder to save copies in: ", localfolder, "\n")
+
+#   # if this were a function not a script  ... 
+# x = function(localfolder = "~/../Downloads/ejscreen new ftp downloads", 
+#              baseurl = "https://gaftp.epa.gov/EJScreen/2024/2.30_July_useMe/" 
+# ) {
+#   if (!dir.exists(localfolder)) {dir.create(localfolder)}
+# }
+############################################################################################ #
+## older scripts:
+# /dev/notes_datasets
+# [1] "0_SCRIPT_overview_get_ejscreendata.R"             "1_SCRIPT_EJAMejscreen_download.R"                
+# [3] "2_SCRIPT_FOR_FIPS_ST_TRACT_CNTY.R"                "3_SCRIPT_create_bgDemog_ejscreen2.1_andtracts.R" 
+# [5] "4_SCRIPT_ADD_PUERTORICO_DEMOG_SUBGROUPS.R"        "5_SCRIPT_merge_demogsubgroups_v2.1.R"            
+# [7] "6_SCRIPT_create_blockgroupstats.R"                "8_SCRIPT_make_MeansByGroup_and_Ratios_RRS.US22.R"
+# [9] "9_SCRIPT_PCTILELOOKUPS_READ-CSVS-MID-2022.R"      "NOTES_which_states_are_in_which_datasets.R"      
+# [11] "PINSURLTRY.R" 
+### and had also been info in a file here but that was moved:  EJAMejscreenapi/data-raw/update_to_ejscreenv2.2.R    
+############################################################################################ #
+
+# DOWNLOAD ZIP and CSV ####
 
 fnames <- c(
   blockgroupstats_source_usa.zip,
@@ -68,18 +68,14 @@ fnames <- c(
   statestats_new_explained.xlsx
   # and the other  .csv files are found inside zip files after download
 )
-
 options(timeout = max(300, getOption("timeout"))) # default is 60 seconds 
 
 curl::multi_download(urls = file.path(baseurl, fnames), 
                      destfiles = file.path(td, fnames))
-
 ########################################################### #
 
 ## if gdb needed:
-needgdb = FALSE
 if (needgdb) {
-  
   curl::multi_download(
     urls = file.path(baseurl, c(blockgroupstats_source_usa.gdb.zip, blockgroupstats_source_state.gdb.zip)),
     destfiles = file.path(td, c(blockgroupstats_source_usa.gdb.zip, blockgroupstats_source_state.gdb.zip))
@@ -88,22 +84,23 @@ if (needgdb) {
   unzip(          file.path(td, blockgroupstats_source_state.gdb.zip),  exdir =  td, overwrite = TRUE)
   gdbpath_usa   = file.path(td, blockgroupstats_source_usa.gdb)
   gdbpath_state = file.path(td, blockgroupstats_source_state.gdb)
-  file.copy(gdbpath_usa, file.path(mydir, blockgroupstats_source_usa.gdb))
+  file.copy(gdbpath_usa,   file.path(mydir, blockgroupstats_source_usa.gdb))
   file.copy(gdbpath_state, file.path(mydir, blockgroupstats_source_state.gdb))
   gdbpath_usa   = file.path(mydir, blockgroupstats_source_usa.gdb)
   gdbpath_state = file.path(mydir, blockgroupstats_source_state.gdb)
-  # dir(mydir)
-  file.exists(gdbpath_usa)
-  file.exists(gdbpath_state)
-  
+  cat("Downloads: ", gdbpath_usa,   " -- saved in tempdir successfully? ", file.exists(gdbpath_usa),   "\n")
+  cat("Downloads: ", gdbpath_state, " -- saved in tempdir successfully? ", file.exists(gdbpath_state), "\n")
 }
 ######################################################### #
 
 # ARCHIVE  .xlsx files in case needed ####
-
-file.copy(file.path(td, usastats_new_explained.xlsx),   file.path(localfolder, usastats_new_explained.xlsx), overwrite = TRUE)
-file.copy(file.path(td, statestats_new_explained.xlsx), file.path(localfolder, statestats_new_explained.xlsx), overwrite = TRUE)
-
+if (interactive()) {
+  savex = askYesNo("Save usastats_new_explained.xlsx in localfolder?")
+  if (!is.na(savex) && savex) {
+    file.copy(file.path(td, usastats_new_explained.xlsx),   file.path(localfolder, usastats_new_explained.xlsx), overwrite = TRUE)
+    file.copy(file.path(td, statestats_new_explained.xlsx), file.path(localfolder, statestats_new_explained.xlsx), overwrite = TRUE)
+  }
+  }
 ########################################################### #
 
 # UNZIP files ####
@@ -142,50 +139,54 @@ gc()
 # archive unaltered versions (just for convenience, in case needed, to avoid downloading again)
 # Later they will get saved for the package as data, or maybe put in pins board
 
-save.image(file = file.path(localfolder, "save.image just after ftp downloads original colnames.rda"))
+# save.image(file = file.path(localfolder, "save.image just after ftp downloads original colnames.rda"))
 # load(file = file.path(localfolder, "save.image just after ftp downloads original colnames.rda"))
 
 varnames <- c("blockgroupstats_new", 
               "blockgroupstats_new_state",
               "usastats_new",
               "statestats_new")
-
-savearrow <- function(varnames, localfolder=getwd()) {
+########################### #
+savearrow <- function(varnames, fnames = paste0(varnames, ".arrow"), localfolder = getwd()) {
   ## to save as .arrow files
-  ext <- ".arrow"
-  fnames <- paste0(varnames, "_as_on_ftp", ext)
   localpaths  <- paste0(localfolder, '/', fnames)
   # require(arrow)
   for (i in 1:length(varnames)) {
-    text_to_do <- paste0("x <- arrow::write_ipc_file(", 
-                         varnames[i],", ",  
-                         "sink = '", localpaths[i], "')"  
-    )
+    text_to_do <- paste0("x <- arrow::write_ipc_file(", varnames[i],", ", "sink = '", localpaths[i], "')")
     cat(" ", text_to_do, '\n')
     x <- eval(parse(text = text_to_do)) # executes the command
   }
+  return(x) # ?
 }
-
+########################### #
 if (interactive()) {
   ASARROW = askYesNo("Save copies as .arrow ? (not .rda)", default = FALSE)
 } else {
   ASARROW = FALSE
 }
 if (ASARROW) {
-  savearrow(varnames = varnames, localfolder = localfolder)
-  file.exists(file.path(localfolder,"blockgroupstats_new_as_on_ftp.arrow"))
-  file.exists(file.path(localfolder,"usastats_new_as_on_ftp.arrow"))
-  file.exists(file.path(localfolder,"statestats_new_as_on_ftp.arrow"))
+  fnames = paste0(paste0(varnames,  "_as_on_ftp"), ".arrow")
+  savearrow(varnames = varnames, fnames = fnames, localfolder = localfolder)
+  for (i in seq_along(fnames)) {
+    cat(file.path(localfolder, fnames[i]), " saved: "); cat(file.exists(file.path(localfolder, fnames[i]))); cat("\n")
+  }
+  # file.exists(file.path(localfolder,"blockgroupstats_new_as_on_ftp.arrow"))
+  # file.exists(file.path(localfolder,"usastats_new_as_on_ftp.arrow"))
+  # file.exists(file.path(localfolder,"statestats_new_as_on_ftp.arrow"))
 } else {
   ## to save as .rda files
   # ext <- ".rda"
+  fnames = paste0(paste0(varnames,  "_as_on_ftp"), ".rda")
   save(blockgroupstats_new,       file = file.path(localfolder, "blockgroupstats_new_as_on_ftp.rda"))  # about 118 MB on disk
   save(blockgroupstats_new_state, file = file.path(localfolder, "blockgroupstats_new_state_as_on_ftp.rda"))
   save(usastats_new,              file = file.path(localfolder, "usastats_new_as_on_ftp.rda"))
   save(statestats_new,            file = file.path(localfolder, "statestats_new_as_on_ftp.rda"))
-  file.exists(file.path(localfolder,"blockgroupstats_new.rda"))
-  file.exists(file.path(localfolder,"usastats_new.arrow"))
-  file.exists(file.path(localfolder,"statestats_new.arrow"))
+  for (i in seq_along(fnames)) {
+    cat(file.path(localfolder, fnames[i]), " saved: "); cat(file.exists(file.path(localfolder, fnames[i]))); cat("\n")
+  }
+  # file.exists(file.path(localfolder,"blockgroupstats_new.rda"))
+  # file.exists(file.path(localfolder,"usastats_new.arrow"))
+  # file.exists(file.path(localfolder,"statestats_new.arrow"))
 }
 rm(varnames,   ASARROW)
 browseURL(localfolder)
@@ -386,7 +387,7 @@ setcolorder(blockgroupstats_new, c("bgid", "bgfips", "statename", "ST", "countyn
 
 
 ## bgej is left in globalenv by this script -
-# later acan Save bgej to pins board as .arrow file
+# later can Save bgej to pins board as .arrow file
 #     # using script in    datacreate_pins.R
 
 
@@ -399,7 +400,7 @@ setcolorder(blockgroupstats_new, c("bgid", "bgfips", "statename", "ST", "countyn
 
 # save work in progress as IMAGE ####
 
-save.image(file = file.path(localfolder, "save.image work in progress on blockgroupstats.rda"))
+# save.image(file = file.path(localfolder, "save.image work in progress on blockgroupstats.rda"))
 
 ################################################################################ #
 
