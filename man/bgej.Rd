@@ -10,4 +10,23 @@ bgej (DATA) EJScreen EJ Indexes for Census block groups
 \details{
 For documentation on the demographic and environmental data and indicators used by
 EJScreen and EJAM, see \url{https://www.epa.gov/ejscreen/understanding-ejscreen-results}.
+
+bgej is a table of all blockgroups, with the raw scores of the EJ Indexes
+and supplemental EJ Indexes for all the environmental indicators.
+
+See
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{dataload_from_pins('bgej')
+
+names(bgej)
+}\if{html}{\out{</div>}}
+
+The column names are these:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{c("OBJECTID", "bgfips", "bgid", "ST", "pop", 
+
+names_ej, 
+
+names_ej_supp)
+}\if{html}{\out{</div>}}
 }
