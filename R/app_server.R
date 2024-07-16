@@ -2875,14 +2875,6 @@ app_server <- function(input, output, session) {
             filename = temp_comm_report
           )
           
-          output$download_report <- downloadHandler(
-            filename = function() { paste0("comm_report",x,".html") },
-            content = function(file) {
-              file.copy(temp_comm_report, file)
-            }
-          )
-          session$sendCustomMessage("trigger_download", list())
-          
         } else {
           showModal(modalDialog(title = 'Report not available',
                                 'Individual site reports not yet available.'))
