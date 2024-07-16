@@ -135,6 +135,8 @@ gc()
 # all that takes roughly 1 minute
 
 ########################################################### #
+# >  blockgroupstats_new ####
+# > usastats_new, statestats_new ####
 
 # archive unaltered versions (just for convenience, in case needed, to avoid downloading again)
 # Later they will get saved for the package as data, or maybe put in pins board
@@ -196,7 +198,7 @@ browseURL(localfolder)
 
 # map_headernames check:
 
-cbind(sort(names(blockgroupstats_new)[fixcolnames(names(blockgroupstats_new),'csv','r') == names(blockgroupstats_new)]))
+# cbind(sort(names(blockgroupstats_new)[fixcolnames(names(blockgroupstats_new),'csv','r') == names(blockgroupstats_new)]))
 # 
 # [1,] "B_D2_DWATER"    
 # [2,] "B_D2_NO2"       
@@ -217,9 +219,7 @@ cbind(sort(names(blockgroupstats_new)[fixcolnames(names(blockgroupstats_new),'cs
 
 ########################################################### #
 
-# RENAME ALL VARIABLES (COLUMN NAMES) ####
-# WILL RENAME COLUMNS OF DATA.FRAME TO MATCH WHAT IS USED IN EJAM::   package  
-# instead of sticking with variable names from FTP site.
+## rename colnames ####
 
 names(blockgroupstats_new)       <-  fixcolnames(names(blockgroupstats_new),       oldtype = 'csv', newtype = 'r') # 
 names(blockgroupstats_new_state) <-  fixcolnames(names(blockgroupstats_new_state), oldtype = 'csv', newtype = 'r') # 
@@ -227,7 +227,7 @@ names(blockgroupstats_new_state) <-  fixcolnames(names(blockgroupstats_new_state
 names(usastats_new)    <- fixcolnames(names(usastats_new),   oldtype = "csv", newtype = "r")
 names(statestats_new)  <- fixcolnames(names(statestats_new), oldtype = "csv", newtype = "r")
 
-# Drop columns not needed by EJAM ####
+## drop columns not needed by EJAM ####
 
 ##  drop all the map bin and text popup columns
 ##  drop all the percentile columns, since we lookup those using an aggregated (wtdavg) raw indicator value for each location analyzed.
@@ -246,10 +246,12 @@ blockgroupstats_new_state <- blockgroupstats_new_state[, !(names(blockgroupstats
 usastats_new              <- usastats_new[,              !(names(usastats_new)              %in% cols2drop)]
 statestats_new            <- statestats_new[,            !(names(statestats_new)            %in% cols2drop)]
 
-dim(blockgroupstats_new); dim(EJAM::blockgroupstats)
 
-dim(usastats_new);   dim(EJAM::usastats)
-dim(statestats_new); dim(EJAM::statestats)
+
+# dim(blockgroupstats_new); dim(EJAM::blockgroupstats)
+# 
+# dim(usastats_new);   dim(EJAM::usastats)
+# dim(statestats_new); dim(EJAM::statestats)
 
 # > dim(blockgroupstats_new); dim(EJAM::blockgroupstats)
 # [1] 243022     81
@@ -264,7 +266,7 @@ dim(statestats_new); dim(EJAM::statestats)
 setdiff(          names(blockgroupstats_new), names(EJAM::blockgroupstats))
 EJAM:::setdiff_yx(names(blockgroupstats_new), names(EJAM::blockgroupstats))
 
-names(blockgroupstats_new)
+# names(blockgroupstats_new)
 # names(usastats_new)
 
 ############################################################## #
@@ -273,14 +275,13 @@ names(blockgroupstats_new)       <- gsub("id", "OBJECTID", names(blockgroupstats
 names(blockgroupstats_new_state) <- gsub("id", "OBJECTID", names(blockgroupstats_new_state))
 
 ############################################################## #
-# try create bgfips and bgid columns ####
+## add bgfips and bgid columns ####
 
-table(EJAM:::fips_valid(blockgroupstats_new$OBJECTID))
-blockgroupstats_new$bgfips <- fips_lead_zero(blockgroupstats_new$OBJECTID)
+# table(EJAM:::fips_valid(blockgroupstats_new$OBJECTID))
+blockgroupstats_new$bgfips       <- fips_lead_zero(blockgroupstats_new$OBJECTID)
 blockgroupstats_new_state$bgfips <- fips_lead_zero(blockgroupstats_new$OBJECTID)
 
-
-table(EJAM:::fips_valid(blockgroupstats_new$bgfips))
+# table(EJAM:::fips_valid(blockgroupstats_new$bgfips))
 # Warning message:
 #   In fips_lead_zero(blockgroupstats_new$OBJECTID) :
 #   270 fips had invalid number of characters (digits) or were NA values
@@ -300,7 +301,7 @@ table(EJAM:::fips_valid(blockgroupstats_new$bgfips))
 blockgroupstats_new$OBJECTID <- NULL
 blockgroupstats_new_state$OBJECTID <- NULL
 
-blockgroupstats_new$bgid <- bgpts$bgid[match(blockgroupstats_new$bgfips, bgpts$bgfips)]
+blockgroupstats_new$bgid       <- bgpts$bgid[match(blockgroupstats_new$bgfips,       bgpts$bgfips)]
 blockgroupstats_new_state$bgid <- bgpts$bgid[match(blockgroupstats_new_state$bgfips, bgpts$bgfips)]
 # > table(is.na(blockgroupstats$bgfips))
 # 
@@ -311,7 +312,25 @@ blockgroupstats_new_state$bgid <- bgpts$bgid[match(blockgroupstats_new_state$bgf
 #  FALSE   TRUE    ***   
 # 242335    686 
 
-#### see why some are bad fips or na or missing...
+# ?? why some bad fips? ####
+#or na or missing...
+
+
+# to be done...
+
+
+
+########################################################### #
+
+### Get or create these columns? 
+# 
+# ?? missing state.count.ej.80up, state.count.ej.80up.supp ####
+# 
+#  already has these:
+# "count.ej.80up"      "count.ej.80up.supp"
+
+
+
 
 
 # to be done...
@@ -319,11 +338,12 @@ blockgroupstats_new_state$bgid <- bgpts$bgid[match(blockgroupstats_new_state$bgf
 
 
 
-########################################################### #
+
+################################################################################ #
 ########################################################### #
 ################################################################################ #
 
-# bgej ####
+# > bgej ####
 
 ###### MOVE EJ INDEXES FROM blockgroupstats_new and blockgroupstats_new_state
 ## to  a consolidated bgej  table 
@@ -383,101 +403,17 @@ setcolorder(blockgroupstats_new, c("bgid", "bgfips", "statename", "ST", "countyn
                                    "pop",
                                    names_d, names_e), before = 1)
 
-############################################### # 
-
-
 ## bgej is left in globalenv by this script -
 # later can Save bgej to pins board as .arrow file
 #     # using script in    datacreate_pins.R
 
-
-
 ########################################################### ############################################################ #
 
-
-########################################################### #
-########################################################### #
-
-# save work in progress as IMAGE ####
-
-# save.image(file = file.path(localfolder, "save.image work in progress on blockgroupstats.rda"))
-
-################################################################################ #
-
-########################################################### #
-########################################################### #
-
-# Obtain and add RACE ETHNICITY SUBGROUPS   ####
-
-### get via script in
-#   "EJAM/data-raw/datacreate_blockgroupstats2.3_add_d_acs22columns.R"
-
-
-#     "pcthisp"                  "pctba"                    "pctaa"                    "pctaiana"                
-# [11] "pctnhpia"                 "pctotheralone"            "pctmulti"                 "pctwa"    "hisp"
-# [16] "ba"                       "aa"                       "aiana"  "nhpia"  "otheralone"  
-# [21] "multi"  "wa"  "pctnhba"  "pctnhaa"  "pctnhaiana"              
-# [26] "pctnhnhpia"               "pctnhotheralone"          "pctnhmulti"  "pctnhwa"                  "nhba"  
-# [31] "nhaa"                     "nhaiana"                  "nhnhpia" "nhotheralone"             "nhmulti"  
-# [36] "nhwa"                
-# "under18"                  "over17" "male"                     "female"                  
-# [41] "poor"                     "pctpoor"                  "lan_universe" "lan_eng_na"               "lan_spanish" 
-# [46] "lan_ie"                   "lan_api"                  "spanish_li" "pctspanish_li"            "ie_li" 
-# [51] "pctie_li"                 "api_li"                   "pctapi_li" "other_li"                 "pctother_li" 
-# [56] "occupiedunits"            "ownedunits"               "pctownedunits"            "lifexyears"               "pctmale"
-# [61] "pctfemale"                "percapincome"             "pctunder18"               "pctover17"      
-
-
-
-
-
-
-
-
-# to be done...
-
-
-
-
-
-
-
-
-########################################################### #
-########################################################### #
-
-
-### Get or create these columns: 
-# 
-# State EJ count at80th is missing ####
-# "state.count.ej.80up"      "state.count.ej.80up.supp"
-# 
-#  already has these:
-# "count.ej.80up"      "count.ej.80up.supp"
-
-
-
-
-
-
-# to be done...
-
-
-
-
-
-
-
-
-
-################################################################################ #
-################################################################################ #
-
-################################################################################ #
-
-# ARCHIVE as IMAGE ####
-
+# ARCHIVE as IMAGE?  
+#
 # save.image(file = file.path(localfolder, "save.image work on NEW blockgroupstats usastats statestats.rda"))
 
 ################################################################################ #
 
+### (next will do script in
+#   "EJAM/data-raw/datacreate_blockgroupstats2.3_add_d_acs22columns.R" )

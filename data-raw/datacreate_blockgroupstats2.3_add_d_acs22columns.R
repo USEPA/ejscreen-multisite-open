@@ -142,76 +142,106 @@ tail(
   cbind(acs22acsgdbnames, acs22acsgdbnames_r, acs22longnames), 15
 )
 ########################  #
-
+# save colnames in data-raw ####
 save(acs22acsgdbnames, file = "./data-raw/datafile_acs22acsgdbnames.rda")
 save(acs22longnames,   file = "./data-raw/datafile_acs22longnames.rda")
 
 ############################# # 
 # fix about 62 of the colnames that get recognized, including names_d_subgroups, etc.
-
+fixcolnames(acs22acsgdbnames, 'acsbgname', 'r')
 names(acs22) <- fixcolnames(names(acs22), 'acsbgname', 'r')
 
+# > names(acs22)[fixcolnames(names(acs22), 'acsbgname', 'r') !=   fixcolnames(names(acs22), 'csv', 'r')]
+# [1] "LINGISO"    "LIFEEXPPCT" "Shape_Area"
+#  already got those via ftp site so do not need from acs22
 
+# archive the very large acs22full.arrow locally ####
+savearrow("acs22", fnames = "acs22full.arrow", localfolder = localfolder)
+file.exists(file.path(localfolder, "acs22full.arrow"))
+# acs22 <- arrow::read_ipc_file(file.path(localfolder, "acs22full.arrow"))
 
+############################################################################ # 
 
-# > cbind( intersect(map_headernames$rname, fixcolnames(acs22acsgdbnames, 'acsbgname', 'r')), fixcolnames(intersect(map_headernames$rname, fixcolnames(acs22acsgdbnames, 'acsbgname', 'r')), 'r', 'varlist'))
-# [,1]              [,2]                           
-# [1,] "pcthisp"         "names_d_subgroups_nh"         ### but also just  "names_d_subgroups"  
-# [2,] "pctnhba"         "names_d_subgroups_nh"         
-# [3,] "pctnhaa"         "names_d_subgroups_nh"         
-# [4,] "pctnhaiana"      "names_d_subgroups_nh"         
-# [5,] "pctnhnhpia"      "names_d_subgroups_nh"         
-# [6,] "pctnhotheralone" "names_d_subgroups_nh"         
-# [7,] "pctnhmulti"      "names_d_subgroups_nh"         
-# [8,] "pctnhwa"         "names_d_subgroups_nh"         
+############################################################################ # 
 
-# [9,] "hisp"            "names_d_subgroups_nh_count"   
-# [10,] "nhba"            "names_d_subgroups_nh_count"   
-# [11,] "nhaa"            "names_d_subgroups_nh_count"   
-# [12,] "nhaiana"         "names_d_subgroups_nh_count"   
-# [13,] "nhnhpia"         "names_d_subgroups_nh_count"   
-# [14,] "nhotheralone"    "names_d_subgroups_nh_count"   
-# [15,] "nhmulti"         "names_d_subgroups_nh_count"   
-# [16,] "nhwa"            "names_d_subgroups_nh_count"   
+# drop most columns
 
-# [17,] "pctba"           "names_d_subgroups_alone"      
-# [18,] "pctaa"           "names_d_subgroups_alone"      
-# [19,] "pctaiana"        "names_d_subgroups_alone"      
-# [20,] "pctnhpia"        "names_d_subgroups_alone"      
-# [21,] "pctotheralone"   "names_d_subgroups_alone"      
-# [22,] "pctmulti"        "names_d_subgroups_alone"      
-# [23,] "pctwa"           "names_d_subgroups_alone"      
-# [24,] "ba"              "names_d_subgroups_alone_count"
-# [25,] "aa"              "names_d_subgroups_alone_count"
-# [26,] "aiana"           "names_d_subgroups_alone_count"
-# [27,] "nhpia"           "names_d_subgroups_alone_count"
-# [28,] "otheralone"      "names_d_subgroups_alone_count"
-# [29,] "multi"           "names_d_subgroups_alone_count"
-# [30,] "wa"              "names_d_subgroups_alone_count"
+acs22$bgfips <- acs22$STCNTRBG
+acs22 = data.table(bgfips = acs22$bgfips, acs22[, names(acs22) %in% map_headernames$rname])
 
-# [31,] "lan_universe"    "names_d_extra_count"          
-# [32,] "lan_eng_na"      "names_d_extra_count"          
-# [33,] "lan_spanish"     "names_d_extra_count"          
-# [34,] "lan_ie"          "names_d_extra_count"          
-# [35,] "lan_api"         "names_d_extra_count"          
-# [36,] "spanish_li"      "names_d_extra_count"          
-# [37,] "ie_li"           "names_d_extra_count"          
-# [38,] "api_li"          "names_d_extra_count"          
-# [39,] "other_li"        "names_d_extra_count"          
-# [40,] "occupiedunits"   "names_d_extra_count"     
+# dim(acs22)
+# [1] 242336    676
+# > acs22 = data.table(acs22$bgfips, acs22[, names(acs22) %in% map_headernames$rname])
+# > dim(acs22)
+# [1] 242336     63
 
-# [41,] "pctdisability"   "names_d_extra"            ## should be in names_d  now     
-# [42,] "disab_universe"  "names_d_extra_count"          
-# [43,] "disability"      "names_d_extra_count"     
+# get rid of redundant columns before merge with bg stats
+setDF(acs22)
+acs22 <- acs22[, c("bgfips", names(acs22)[!(names(acs22) %in% names(blockgroupstats_new))])]
+setDT(acs22)
 
+# archive the smaller acs22.arrow ####
+
+savearrow("acs22", fnames = "acs22.arrow", localfolder = localfolder)
+file.exists(file.path(localfolder, "acs22.arrow"))
+# acs22 <- arrow::read_ipc_file(file.path(localfolder, "acs22.arrow"))
+
+############################################################################ # 
+############################################################################ # 
+
+cbind( intersect(map_headernames$rname, fixcolnames(acs22acsgdbnames, 'acsbgname', 'r')), fixcolnames(intersect(map_headernames$rname, fixcolnames(acs22acsgdbnames, 'acsbgname', 'r')), 'r', 'varlist'))
+# # [,1]              [,2]                           
+# [1,] "pctdisability"   "names_d"                      
+# [2,] "disability"      "names_d_count"                
+# [3,] "disab_universe"  "names_d_count"                
+# [4,] "pcthisp"         "names_d_subgroups_nh"         
+# [5,] "pctnhba"         "names_d_subgroups_nh"         
+# [6,] "pctnhaa"         "names_d_subgroups_nh"         
+# [7,] "pctnhaiana"      "names_d_subgroups_nh"         
+# [8,] "pctnhnhpia"      "names_d_subgroups_nh"         
+# [9,] "pctnhotheralone" "names_d_subgroups_nh"         
+# [10,] "pctnhmulti"      "names_d_subgroups_nh"         
+# [11,] "pctnhwa"         "names_d_subgroups_nh"         
+# [12,] "hisp"            "names_d_subgroups_nh_count"   
+# [13,] "nhba"            "names_d_subgroups_nh_count"   
+# [14,] "nhaa"            "names_d_subgroups_nh_count"   
+# [15,] "nhaiana"         "names_d_subgroups_nh_count"   
+# [16,] "nhnhpia"         "names_d_subgroups_nh_count"   
+# [17,] "nhotheralone"    "names_d_subgroups_nh_count"   
+# [18,] "nhmulti"         "names_d_subgroups_nh_count"   
+# [19,] "nhwa"            "names_d_subgroups_nh_count"   
+# [20,] "pctba"           "names_d_subgroups_alone"      
+# [21,] "pctaa"           "names_d_subgroups_alone"      
+# [22,] "pctaiana"        "names_d_subgroups_alone"      
+# [23,] "pctnhpia"        "names_d_subgroups_alone"      
+# [24,] "pctotheralone"   "names_d_subgroups_alone"      
+# [25,] "pctmulti"        "names_d_subgroups_alone"      
+# [26,] "pctwa"           "names_d_subgroups_alone"      
+# [27,] "ba"              "names_d_subgroups_alone_count"
+# [28,] "aa"              "names_d_subgroups_alone_count"
+# [29,] "aiana"           "names_d_subgroups_alone_count"
+# [30,] "nhpia"           "names_d_subgroups_alone_count"
+# [31,] "otheralone"      "names_d_subgroups_alone_count"
+# [32,] "multi"           "names_d_subgroups_alone_count"
+# [33,] "wa"              "names_d_subgroups_alone_count"
+# [34,] "lan_universe"    "names_d_extra_count"          
+# [35,] "lan_eng_na"      "names_d_extra_count"          
+# [36,] "lan_spanish"     "names_d_extra_count"          
+# [37,] "lan_ie"          "names_d_extra_count"          
+# [38,] "lan_api"         "names_d_extra_count"          
+# [39,] "spanish_li"      "names_d_extra_count"          
+# [40,] "ie_li"           "names_d_extra_count"          
+# [41,] "api_li"          "names_d_extra_count"          
+# [42,] "other_li"        "names_d_extra_count"          
+# [43,] "occupiedunits"   "names_d_extra_count"          
 # [44,] "pctownedunits"   "names_d_extra"                
 # [45,] "pctspanish_li"   "names_d_extra"                
 # [46,] "pctie_li"        "names_d_extra"                
 # [47,] "pctapi_li"       "names_d_extra"                
 # [48,] "pctother_li"     "names_d_extra"                
-# [49,] "ownedunits"      "names_d_extra_count"          
-# [50,] "poor"            "names_d_extra_count"          
-# [51,] "pctpoor"         "names_d_extra"                
+# [49,] "pctpoor"         "names_d_extra"                
+# [50,] "ownedunits"      "names_d_extra_count"          
+# [51,] "poor"            "names_d_extra_count"          
 # [52,] "lifexyears"      "x_anyother"                   
 # [53,] "percapincome"    "x_anyother"                   
 # [54,] "pctmale"         "names_d_extra"                
@@ -222,21 +252,39 @@ names(acs22) <- fixcolnames(names(acs22), 'acsbgname', 'r')
 # [59,] "male"            "names_d_extra_count"          
 # [60,] "over17"          "names_d_extra_count"          
 # [61,] "under18"         "names_d_extra_count"          
-# [62,] "Shape_Length"    "x_anyother" 
+# [62,] "Shape_Length"    "x_anyother"                   
 
 #################################################################################### #
+# > blockgroupstats ####
+# MERGE ACS22 AND BLOCKGROUPSTATS_NEW  ####
 
-### ADD THOSE COLUMNS TO blockgroupstats table now 
-
-
-
-# to be done ...
+# "bgfips" %in% names(acs22)
 
 #  can use data.table to merge or join blockgroupstats_new and acs22, key on bgid 
 
+# > dim(acs22)
+# [1] 242336     59
+# > dim(blockgroupstats_new)
+# [1] 243022     56
 
+blockgroupstats <- merge(blockgroupstats_new, acs22, 
+                         by = "bgfips", all.x = TRUE)
 
+# > dim(blockgroupstats)
+# [1] 243022    114
 
+# check it
+
+rm(blockgroupstats_new)
+rm(acs22)
+
+rm(i, savex, zfile, cols2drop, needgdb)
+rm("blockgroupstats_source_state.gdb",
+   "blockgroupstats_source_state.gdb.zip" ,
+   "blockgroupstats_source_usa.gdb",
+   "blockgroupstats_source_usa.gdb.zip"  )
+rm("statestats_new_explained.xlsx" , "usastats_new_explained.xlsx")
+rm("fnames"  )
 #################################################################################### #
 
 

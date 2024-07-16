@@ -1,28 +1,78 @@
 ############################################################################ #
-# This script was used for  2023 version 2.2   
 
-# First, usastats got created via  EJAM/data-raw/datacreate_usastats_pctile_lookup_add_subgroups_demog.R
+# First, usastats statestats got created via 
+# EJAM/data-raw/datacreate_blockgroupstats2.3.R
+# EJAM/data-raw/datacreate_usastats2.3.R
 
-# Then, this script below was to add columns to usastats and statestats with info on demographic subgroups and lowlifex
+# Then, this script below was to add columns to usastats and statestats with info on demographic subgroups
+# and maybe other indicators like lowlifex 
 # since basic ftp site lookup tables for v2.2 lacked demog subgroups and other variables like lowlifex 
-#   but we want to be able to analyze ratio to mean and percentiles for those.
-# And to sort columns the same way they are ordered in names_d_subgroups_alone and names_d_subgroups_nh
+# That is because community report in EJScreen does not report others as percentiles, just raw.
+#   but we want to be able to analyze ratio to mean and percentiles for 
+# demog subgroups and possibly various other indicators that are extra ones on ejscreen community report.
+# All those extra columns and demog subgroups have been added to blockgroupstats via acs22
+
+# also want to sort columns the same way they are ordered in names_d_subgroups_alone and names_d_subgroups_nh
 #
-# Also, need to confirm answer to questions of what States/places to include when calculating US percentiles.
+############################################################################# #
+
+# ??? need to confirm what States/places to include when calculating US percentiles ####
+# Check what States are included in lookup table
+#>   setdiff(unique(blockgroupstats$ST), unique(statestats$REGION))
+# [1] "AS" "GU" "MP" "VI"
+
+# ideally would create  pctile lookup info for demog subgroups, in us, states, island areas; 
+# except that EJScreen community report does not actually report those as percentiles, only as raw percentages,
+# even though EJAM was reporting them as percentiles, so either redo EJAM calc of pctiles table for subgroups
+# OR just stop reporting those as percentiles.
+# Not sure which is easier to do quickly. 
+# Simplifies things to stop reporting those as pctiles, just use NA for that cell in a table, 
+# but maybe need to have NA values in cols in usastats, statestats for those indicators since code looks for them.
+# 
+# and same for any other indicators we want to report as percentiles in EJAM 
+
+############################################################################# #
+
+# ADD DEMOG SUBGROUPS to PCTILE LOOKUP ####
+
+#  create pctile lookup columns for the demog subgroups, from the full dataset of all blockgroups.
 
 names_d_subgroups_both <- c(names_d_subgroups_nh, names_d_subgroups_alone)
 
-# setdiff(names(statestats_new), c(EJAM::names_e, EJAM::names_d, EJAM::names_ej_state, EJAM::names_ej_supp_state  )) #  
-# [1] "PCTILE"             "REGION"             "LIFEEXP"            "HEARTDISEASE"       "ASTHMA"             "cancer.rate.adults"
-# [7] "DISABILITYPCT"      "LIMITEDBBPCT"       "NOHINCPCT"          "flood_y00"          "flood_y30"          "fire_y00"          
-# [13] "fire_y30"  
-setdiff(names(statestats_new), c(names_e, names_d, names_ej_state, names_ej_supp_state))
-setdiff(names(  usastats_new), c(names_e, names_d, names_ej  ,     names_ej_supp      ))
+# # compare to current names
+# setdiff(names(  usastats), c(names_e, names_d, names_ej  ,     names_ej_supp      ))
+# setdiff(names(statestats), c(names_e, names_d, names_ej_state, names_ej_supp_state))
+# # each lookup now has lookup info for
+# lowlifex, old cancer and resp  indicators, extra demo like asthma, and subgroups_alone
+# not in names_ lists here. ok
 
-# fix a couple names not renamed by older map_headernames
-names(statestats_new)[names(statestats_new) == "LIFEEXP"] <- "lifexyears"
-names(  usastats_new)[names(  usastats_new) == "LIFEEXP"] <- "lifexyears"
-# setdiff(names(  usastats_new), c(names_e, names_d, names_ej  ,     names_ej_supp      )) %in% names(blockgroupstats)
+# missing from usastats right now: ***
+
+EJAM:::setdiff_yx(names(  usastats), c(names_e, names_d, names_ej  ,     names_ej_supp      ))
+EJAM:::setdiff_yx(names(statestats), c(names_e, names_d, names_ej_state, names_ej_supp_state))
+#
+#  "Demog.Index.State", "Demog.Index.Supp.State"
+# "no2"                    "drinking"
+# "EJ.DISPARITY.no2.eo"    "EJ.DISPARITY.drinking.eo"   
+# "EJ.DISPARITY.no2.supp"  "EJ.DISPARITY.drinking.supp"
+# and state.EJ. versions missing from statestats
+
+# # compare to installed 
+# setdiff(names(statestats), c(EJAM::names_e, EJAM::names_d, EJAM::names_ej_state, EJAM::names_ej_supp_state  ))
+# setdiff(names(  usastats), c(EJAM::names_e, EJAM::names_d, EJAM::names_ej  ,     EJAM::names_ej_supp      ))
+
+## missing from statestats now: ***
+
+EJAM:::setdiff_yx(names(statestats), c(EJAM::names_e, EJAM::names_d, EJAM::names_ej_state, EJAM::names_ej_supp_state  ))
+EJAM:::setdiff_yx(names(  usastats), c(EJAM::names_e, EJAM::names_d, EJAM::names_ej  ,     EJAM::names_ej_supp      ))
+
+
+
+
+# fix a couple names not renamed by older map_headernames?
+names(statestats)[names(statestats) == "LIFEEXP"] <- "lifexyears"
+names(  usastats)[names(  usastats) == "LIFEEXP"] <- "lifexyears"
+# setdiff(names(  usastats), c(names_e, names_d, names_ej  ,     names_ej_supp      )) %in% names(blockgroupstats)
 # [1] FALSE  TRUE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
 # lifexyears is in blockgroupstats 
 # "lifexyears" %in% names(blockgroupstats) # TRUE
@@ -80,8 +130,8 @@ if (!("ST" %in% names(bg))) {
 updated = FALSE
 
 # drop the std.dev rows since never used and dropping them again for each indicator in looping use of pctile_from_raw_lookup() is kind of slow.
-if (("std.dev" %in% (  usastats_new$PCTILE))) {  usastats_new <-   usastats_new[  usastats_new$PCTILE != "std.dev", ] ; updated = TRUE}
-if (("std.dev" %in% (statestats_new$PCTILE))) {statestats_new <- statestats_new[statestats_new$PCTILE != "std.dev", ] ; updated = TRUE}
+if (("std.dev" %in% (  usastats$PCTILE))) {  usastats <-   usastats[  usastats$PCTILE != "std.dev", ] ; updated = TRUE}
+if (("std.dev" %in% (statestats$PCTILE))) {statestats <- statestats[statestats$PCTILE != "std.dev", ] ; updated = TRUE}
 
 ############################################################################ # 
 
@@ -94,18 +144,18 @@ if (("std.dev" %in% (statestats_new$PCTILE))) {statestats_new <- statestats_new[
 ################################################ #
 
 
- names(usastats_new)
+ names(usastats)
 
-if (all(usastats_new[,intersect(names_d_subgroups_both, names(usastats_new))] == 0)  | 
-    any(!(names_d_subgroups_both %in% names(usastats_new))))  {
-  # Error in `[.data.frame`(usastats_new, , names_d_subgroups_both) : 
+if (all(usastats[,intersect(names_d_subgroups_both, names(usastats))] == 0)  | 
+    any(!(names_d_subgroups_both %in% names(usastats))))  {
+  # Error in `[.data.frame`(usastats, , names_d_subgroups_both) : 
   #   undefined columns selected
   
   usastats_subgroups   <- pctiles_lookup_create(data.frame(bg)[ , names_d_subgroups_both]) # function from EJAM package
   usastats_subgroups <- rbind(0, usastats_subgroups); usastats_subgroups$PCTILE[1] <- 0
   usastats_subgroups[1, c("OBJECTID", "REGION")] <- c(0, "USA")
 
-  usastats2 <- cbind(usastats_new, usastats_subgroups[ , setdiff(names(usastats_subgroups), names(usastats_new))  ])
+  usastats2 <- cbind(usastats, usastats_subgroups[ , setdiff(names(usastats_subgroups), names(usastats))  ])
 
   # sort cols as sorted in names_d_subgroups_both
   subvars <- intersect(names_d_subgroups_both, names(usastats2) )
@@ -113,8 +163,8 @@ if (all(usastats_new[,intersect(names_d_subgroups_both, names(usastats_new))] ==
     othervars <- setdiff(names(usastats2), subvars)
     usastats2 <- usastats2[ , c(othervars, subvars)]
   }
-  all.equal(usastats_new, usastats2[,1:length(names(usastats_new))]) # usastats2 has same plus more columns
-  usastats_new <- usastats2
+  all.equal(usastats, usastats2[,1:length(names(usastats))]) # usastats2 has same plus more columns
+  usastats <- usastats2
    
   rm( usastats2, usastats_subgroups)
   
@@ -124,7 +174,7 @@ if (all(usastats_new[,intersect(names_d_subgroups_both, names(usastats_new))] ==
 ##  CREATE STATESTATS LOOKUP TABLE for subgroups ####
 ################################################ #
 
-# if (all(statestats_new[,names_d_subgroups_both] == 0)  | any(!(names_d_subgroups_both %in% names(statestats_new)))) {
+# if (all(statestats[,names_d_subgroups_both] == 0)  | any(!(names_d_subgroups_both %in% names(statestats)))) {
   
   statestats_subgroups <- pctiles_lookup_create(data.frame(bg)[ , names_d_subgroups_both], zone.vector = bg$ST) # from EJAM package
   
@@ -144,17 +194,17 @@ if (all(usastats_new[,intersect(names_d_subgroups_both, names(usastats_new))] ==
   
   statestats_subgroups$OBJECTID <- paste0(statestats_subgroups$REGION, statestats_subgroups$PCTILE) #1:NROW(statestats_subgroups)
   
-  if (length(setdiff(names(statestats_subgroups), names(statestats_new))) > 0) {
+  if (length(setdiff(names(statestats_subgroups), names(statestats))) > 0) {
     statestats2 <- merge(
-      statestats_new, 
-      statestats_subgroups[,  unique(c("PCTILE", "REGION", setdiff(names(statestats_subgroups), names(statestats_new))))], 
+      statestats, 
+      statestats_subgroups[,  unique(c("PCTILE", "REGION", setdiff(names(statestats_subgroups), names(statestats))))], 
       all.x = TRUE, all.y = FALSE, 
       by = c("PCTILE", "REGION")
     )
     statestats2$OBJECTID.x <- NULL
     statestats2$OBJECTID.y <- NULL
   } else {
-    statestats2 <- statestats_new
+    statestats2 <- statestats
   }
   statestats2 <- statestats2[order(statestats2$REGION, as.numeric(statestats2$PCTILE)), ]
   statestats2$OBJECTID <- 1:NROW(statestats2)
@@ -168,7 +218,7 @@ if (all(usastats_new[,intersect(names_d_subgroups_both, names(usastats_new))] ==
   }
   statestats2   <- EJAM::metadata_add(statestats2)
   attr(statestats2, "ejscreen_releasedate") <- '2023-08-21'
-  statestats_new <- statestats2
+  statestats <- statestats2
   # done with state file
  rm(statestats2)
   ################################################ #
@@ -177,15 +227,9 @@ if (all(usastats_new[,intersect(names_d_subgroups_both, names(usastats_new))] ==
   ########################################################## # 
   
   # now save these within the EJAM package as datasets
-  
 
-  data.table::setDF(usastats_new) # keep as data.frame actually in the package
-  data.table::setDF(statestats_new) # keep as data.frame actually
-  
-  usastats   <- usastats_new
-  statestats <- statestats_new
-  
-  rm(usastats_new, statestats_new)
+  data.table::setDF(usastats) # keep as data.frame actually in the package
+  data.table::setDF(statestats) # keep as data.frame actually
   
   # setwd(file.path(Sys.getenv("R_USER"), "EJAM")); getwd() # just make sure this is the right one
   
@@ -199,6 +243,7 @@ if (all(usastats_new[,intersect(names_d_subgroups_both, names(usastats_new))] ==
   
     attributes(  usastats)[!("row.names" == names(attributes(usastats)))] 
   attributes(statestats)[!("row.names" == names(attributes(statestats)))] 
+  ########################################################## # 
   
   # fix duplicate name where hisp was in alone and nh versions
   usastats$pcthisp.1 <- NULL

@@ -169,43 +169,48 @@ load_all()
 # rstudioapi::documentOpen("./data-raw/datacreate_blockgroupstats2.3_add_d_acs22columns.R")
 #
 source("./data-raw/datacreate_blockgroupstats2.3.R")
+# created bgej
+# created blockgroupstats_new as interim object
+# created usastats, statestats but not final versions yet
 
 source("./data-raw/datacreate_blockgroupstats2.3_add_d_acs22columns.R")
+# created blockgroupstats 
+
+
+# check blockgroupstats
+
 
 blockgroupstats    <- metadata_add(blockgroupstats)
 usethis::use_data(blockgroupstats, overwrite = T)
 
 bgej <- metadata_add(bgej)
+
 cat("bgej created in globalenv but not saved yet\n")
 ### do not save this one in the pkg - it is large
 ## do not save via  usethis::use_data(bgej, overwrite = TRUE)
 ## Save bgej to pins board as .arrow file
 ##  using script in    datacreate_pins.R
-######################################### #
 
-
-stop(' not finished here - datacreate_blockgroupstats2.3.R does some or all of usastats etc.
-     so those scripts need to get merged, 
-     etc.')
-
-stop(' not finished here - see datacreate_blockgroupstats2.3.R also which downloads them')
+source("./data-raw/datacreate_pins.R")
+datawrite_to_pins("bgej")
 
 ######################################### #
-# datacreate_usastats2.3.R ####
 # datacreate_usastats2.3_add_dsubgroups.R ####
 #
 # rstudioapi::documentOpen("./data-raw/datacreate_usastats2.3.R")
 # rstudioapi::documentOpen("./data-raw/datacreate_usastats2.3_add_dsubgroups.R")
 
-# source("./data-raw/datacreate_usastats2.3.R")
-# source("./data-raw/datacreate_usastats2.3_add_dsubgroups.R")
-# 
+source("./data-raw/datacreate_usastats2.3.R")
+source("./data-raw/datacreate_usastats2.3_add_dsubgroups.R")
+
 # usastats_statestats  <- datacreate_usastats2.3()
 # usastats_statestats  <- datacreate_usastats2.3_add_dsubgroups.R(usastats_statestats)
-# 
+
 # usastats   <- usastats_statestats$usastats
 # statestats <- usastats_statestats$statestats
 
+setDT(usastats)
+setDT(statestats)
 
 usastats   <- metadata_add(usastats)
 statestats <- metadata_add(statestats)

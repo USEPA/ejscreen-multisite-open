@@ -1,3 +1,4 @@
+
 #' Save datasets during package development
 #' 
 #' Utility to write large object(s) like EJAM datasets to local disk for convenience during app/pkg development, 
@@ -40,6 +41,18 @@ datawrite_to_local <- function(
   if (justchecking) {
     cat("Just checking, so nothing is being saved.\n\n")
   }
+  
+  if (interactive() && missing(folder_local_source)) {
+    folder_local_source <- rstudioapi::selectDirectory(
+      "Select Directory where you want to save local copies", 
+      path = "~/../Downloads/EJAMbigfiles"
+      # To update a particular local folder, e.g.:
+      # locdir = ("./../EJAM-opensource/data")
+      # locdir = ("~/../Downloads/EJAMbigfiles")
+    )
+    if (is.na(folder_local_source)) {stop('must specify a folder')}
+  }
+  
   if (!dir.exists(folder_local_source)) {
     cat(folder_local_source, ' does not exist.\n\n')
     if (!justchecking) {
@@ -47,6 +60,19 @@ datawrite_to_local <- function(
       warning( 'Nothing could be saved.')
       return()
     }
+  }
+  
+  # Ask to confirm each of the defaults 
+  if (interactive() && missing(overwrite)) {
+    overwrite <- askYesNo("overwrite if file already exists locally?")
+    if (is.na(overwrite)) {stop('stopping')}
+  }
+  if (interactive() && missing(varnames)) {
+    confirmed <- rep(TRUE, length(varnames))
+    for (i in seq_along(varnames)) {
+      confirmed[i] <- askYesNo(paste0("Save ", varnames[i], "?"))
+    }
+    varnames <- varnames[!is.na(confirmed) & confirmed]
   }
   
   fnames <- paste0(varnames, ext)
@@ -84,15 +110,18 @@ datawrite_to_local <- function(
           cat(" ", text_to_do, '\n')
           x <- eval(parse(text = text_to_do)) # executes the command
           
+          # arrow::write_ipc_file(bgej,         file.path(locdir, "bgej.arrow"))
           # arrow::write_ipc_file( UNQUOTED OBJECT NAME!***, sink = localpaths[i])
         }
         if (file.exists(localpaths[i])) {cat("  saved ",  "\n\n")} else {cat("  Failed to save ",   '\n\n')}
       }
       
-      
     }
   }   # end loop
   cat('\n\n')
+  if (interactive()) {
+    browseURL(folder_local_source)
+  }
   invisible(localpaths)
 }
 ##############################################################

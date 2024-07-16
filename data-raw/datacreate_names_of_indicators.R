@@ -1022,8 +1022,12 @@ usethis::use_data(namez, overwrite = TRUE)
 names_d_subgroups <- metadata_add(names_d_subgroups)
 names_d     <- metadata_add(names_d)
 names_e     <- metadata_add(names_e)
-names_ej    <- metadata_add(names_ej)
-names_ej    <- metadata_add(names_ej_supp)
+
+names_ej            <- metadata_add(names_ej)
+names_ej_supp       <- metadata_add(names_ej_supp)
+names_ej_state      <- metadata_add(names_ej_state)
+names_ej_supp_state <- metadata_add(names_ej_supp_state)
+
 names_all_r <- metadata_add(names_all_r)
 
 usethis::use_data(

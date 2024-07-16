@@ -1,8 +1,10 @@
-#  
+#  This had been a 
 # Script to download .gdb file with new 7/2024 version 2.3 EJScreen
 # gdb is one place to find the blockgroup data and also has lookup tables for US and State percentile cutoffs and means.
 # .gdb is not essential but good double-check on separately downloaded .csv versions of those.
-# Also see EJAM/data-raw/datacreate_blockgroupstats2.3 which gets those .csv files.
+
+# But now just see  EJAM/data-raw/datacreate_blockgroupstats2.3 which gets those .csv files for
+#  usastats_new, statestats_new
 
 #  ######################################################################## #
 
@@ -12,7 +14,10 @@
 if (0 == 1) {
   
 #################################################################### #
-##___ SET WORKING DIRECTORY  to save EJAM data ####
+   
+   # OBSOLETE ALTERNATIVE SOURCE OF DATA ####
+  
+##___ SET WORKING DIRECTORY  to save EJAM data  
 # grep("mysource",  (Sys.getenv()), value = T)
 setwd(file.path(Sys.getenv("R_USER"), "EJAM")); getwd() 
 # print(.packages()) # what is loaded (attached?)
@@ -24,9 +29,9 @@ downloadnow <- TRUE
 
 #################################################################################### # 
 
-#   PERCENTILE LOOKUP TABLES ####
+#   PERCENTILE LOOKUP TABLES  
 
-## GET GDB, EXTRACT LOOKUPS ####
+## GET GDB, EXTRACT LOOKUPS  
 
 # functions to download, unzip, and read  pctile lookup tables  from gdb file on ftp site 
 
@@ -141,6 +146,9 @@ ls()
 
 ################################################################################ #
 
+# FINISH CREATING usastats, statestats ####
+
+# > usastats_new, statestats_new rownames ####
 # make rownames less confusing since starting with 1 was for the row where PCTILE == 0,
 # so make them match in USA one at least, but cannot same way for state one since they repeat for each state
 
@@ -155,38 +163,26 @@ data.table::setnames(statestats_new,
                      old = c(names_ej, names_ej_supp), 
                      new = c(names_ej_state, names_ej_supp_state))
 setDF(statestats_new)
+# but later they will be data.table I think
 # cbind(names(usastats_new), names(statestats_new))
 
 ################################################################################ #
 
-# SWITCH datasets TO NEW VERSIONS  #### 
+# switch to usastats, statestats (from usastats_new, etc.)  #### 
 
 usastats   <- usastats_new
 statestats <- statestats_new
 rm(statestats_new, usastats_new)
 gc()
 
-
-blockgroupstats <- blockgroupstats_new
-
-rm(blockgroupstats_new)
-gc()
-
-
-##########################################################################################################################################
+######################################################################################## ################## #
 
 # save.image(file = "~/../Downloads/work in progress on usastats 2024-07.rda")
-
 
 cat("at this point, before saving these via use_data(), do script in 
      EJAM/data-raw/datacreate_usastats_pctile_lookup_add_subgroups_demog.R \n")
 
-
-
-
-
-
-##########################################################################################################################################
+######################################################################################## ################## #
 
 # check them to see if OK before replacing existing datasets in package?
 
@@ -201,49 +197,6 @@ cat("at this point, before saving these via use_data(), do script in
 # seems inefficient. should fix percentile lookup function to handle cases where a REGION is missing from lookup table.
 
 
-##########################################################################################################################################
-##########  A   PROBLEM HERE  
-# LOOKUP TABLES FROM THE GEODATABASES HAD ONLY ABOUT 50 KEY VARIABLES, BUT 
-# LACK THE DEMOGRAPHIC SUBGROUPS LOOKUP INFO, FOR EXAMPLE! 
-# That is because community report in EJScreen does not report others as percentiles, just raw.
-# DEMOG SUBGROUPS NOT HERE AND MANY OTHER NEW INDICATORS NOT IN LOOKUP HERE EITHER but maybe do not need percentiles of those
+######################################################################################## ################## #
 
-
-# one option was to create
-# placeholders with 0 values, for now to make code work for now?? ####
-# do not have and do not need pctiles for subgroups maybe, since EJScreen does not report them that way. EJAM was doing that though.
-# 
-# subgroup_placeholders <- data.frame(matrix(0, nrow = NROW(usastats2.2), ncol = length( c(names_d_subgroups_nh, names_d_subgroups_alone))))
-# names(subgroup_placeholders) <- c(names_d_subgroups_nh, names_d_subgroups_alone)
-# usastats2.2 <- cbind(usastats2.2, subgroup_placeholders)
-# 
-# subgroup_placeholders <- data.frame(matrix(0, nrow = NROW(statestats2.2), ncol = length( c(names_d_subgroups_nh, names_d_subgroups_alone))))
-# names(subgroup_placeholders) <-  c(names_d_subgroups_nh, names_d_subgroups_alone)
-# statestats2.2 <- cbind(statestats2.2, subgroup_placeholders)
-
-# Other option is create pctile lookup columns for the demog subgroups, from the full dataset of all blockgroups.
-
-
-
-
-############################################################################# #
-# Check what States are included in lookup table
-#>   setdiff(unique(blockgroupstats$ST), unique(statestats$REGION))
-# [1] "AS" "GU" "MP" "VI"
-
-############################################################################# #
-
-
-# ideally would create  pctile lookup info for demog subgroups, in us, states, island areas; 
-# except that EJScreen community report does not actually report those as percentiles, only as raw percentages,
-# even though EJAM was reporting them as percentiles, so either redo EJAM calc of pctiles table for subgroups
-# OR just stop reporting those as percentiles.
-# Not sure which is easier to do quickly. 
-# Simplifies things to stop reporting those as pctiles, just use NA for that cell in a table, 
-# but maybe need to have NA values in cols in usastats and statestats for those indicators since code looks for them.
-# 
-# and same for any other indicators we want to report as percentiles in EJAM 
-
-# done with lookup percentile tables 
-
-#################################################################### #
+# NEXT SCRIPT HAS TO ADD DEMOG SUBGROUPS ####
