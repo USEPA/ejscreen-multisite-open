@@ -8,6 +8,7 @@
 # using a non-CRAN package (in github) called census2020download
 # and they only need to be updated if FIPS codes or boundaries of blockgroups or blocks change.
 ######################################### # 
+if (!exists("askquestions")) {askquestions <- TRUE}
 
 # do_download = TRUE
 

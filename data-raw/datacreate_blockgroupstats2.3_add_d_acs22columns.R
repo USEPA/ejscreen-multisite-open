@@ -1,13 +1,43 @@
 # script to read the ACS 2018-2022 data
 # that will be used by EJScreen 2.3 in July 2024
+################################################## #
+
+# 1. GOT "ACS2022_Transfer.gdb.zip" FROM EJSCREEN TEAM ####
 
 # EJScreen team (VZ) provided the data file 6/5/2024
 # via GoAnywhere Services <noreply@epa.gov>
 # ACS2022_Transfer.gdb.zip	688.32 MB
 # M downloaded it locally and saved it here:
 # "~/../EJ 2021/EJSCREEN 2024/ACS2022_Transfer.gdb.zip"
+################################################## #
 
-# option 1:  (not used except to check variable names, as acs2022header.csv used below) 
+# 2. MANUALLY EXPORTED gdb table aliases as longnames ####
+
+## read the long indicator names (aliases) we had manually exported from ArcPro
+if (file.exists("~/../EJ 2021/EJSCREEN 2024/acs2022header.csv")) {
+  acs22longnames <- names(read.csv("~/../EJ 2021/EJSCREEN 2024/acs2022header.csv"))
+  acs22longnames <- c(acs22longnames, "ejam_uniq_id")
+} else {
+  acs22longnames = NA
+}
+################################################## #
+
+# Read .zip  ####
+# 
+zfile <- "~/../EJ 2021/EJSCREEN 2024/ACS2022_Transfer.gdb.zip"
+if (!file.exists(zfile)) {stop("did not find expected file at  '~/../EJ 2021/EJSCREEN 2024/ACS2022_Transfer.gdb.zip'")}
+# tdir <- tempdir()
+acs22 <- shapefile_from_any(zfile)
+# names(acs22)  # EJAM added these 2 columns at the end: "Shape" "ejam_uniq_id"
+### These column names were not in map_headernames as csv or api names.
+acs22 <- data.frame(acs22)
+acs22$Shape <- NULL    #   we dont need to save the actual polygons here
+# dim(acs22)  # [1] 242336    675
+################################################## #
+
+# An alternative way to read the gdb, using Python, not used here
+
+#  (not used except to check variable names, as acs2022header.csv used below) 
 {
   #  Manually unzip/extract .zip to .gdb in windows, then
   #  open ArcPro, add Data to add the BG22_POLY_ACS22ALL to a map, 
@@ -54,26 +84,14 @@
   # [1] "character"
 }
 ################################################## #
-# Option 2: Read .zip using R:
-# 
-zfile <- "~/../EJ 2021/EJSCREEN 2024/ACS2022_Transfer.gdb.zip"
-if (!file.exists(zfile)) {stop("did not find expected file at  '~/../EJ 2021/EJSCREEN 2024/ACS2022_Transfer.gdb.zip'")}
-# tdir <- tempdir()
-acs22 <- shapefile_from_any(zfile)
-# names(acs22)  # EJAM added these 2 columns at the end: "Shape" "ejam_uniq_id"
-### These column names were not in map_headernames as csv or api names.
-acs22 <- data.frame(acs22)
-acs22$Shape <- NULL    #   we dont need to save the actual polygons here
-# dim(acs22)  # [1] 242336    675
 
-############################# # 
-
-# VERY LARGE FILE !   367 MB as .rda  
-# KEPT FULL FILE ELSEWHERE AND JUST KEY VARIABLES EXTRACTED AND RENAMED ARE SAVED IN EJAM PACKAGE
+# acs22 starts as a VERY LARGE FILE !   367 MB as .rda  
+# KEPT FULL FILE ELSEWHERE AND 
+# JUST KEY VARIABLES EXTRACTED AND RENAMED ARE SAVED IN EJAM PACKAGE
 
 ##################### #
 
-# check VARIABLE NAMES ####  
+# check names(acs22) ####  
 
 acs22acsgdbnames <- names(acs22)
 acs22acsgdbnames_r <- fixcolnames(acs22acsgdbnames, "acsname", 'r')
@@ -85,40 +103,14 @@ acs22acsgdbnames_r <- fixcolnames(acs22acsgdbnames, "acsname", 'r')
 #   cat("  # found in ACS22 extra file, per fixcolnames(), map_headernames: ", 
 #       sum(namesbyvarlist(vlists[i])$rname %in% acs22acsgdbnames_r), '/', length(namesbyvarlist(vlists[i])$rname), '\n') 
 # }
-## found in ACS extra file: 
-# c(
-# names_d_subgroups, names_d_subgroups_count, 
-# names_d_subgroups_alone, names_d_subgroups_alone_count, 
-# names_d_subgroups_nh, names_d_subgroups_nh_count, 
-# 
-# names_d_extra, # 11/12
-# names_d_extra_count,  # 18/18
-# 
-# x_anyother        # only 3/173   lifexyears, percapincome,  Shape_Length;  
-# )
-# > namesbyvarlist('names_d_extra')
-# varlist         rname
-# 327 names_d_extra pctdisability
-# 330 names_d_extra      lowlifex    # this one was NOT in the acs file 
-# 341 names_d_extra pctownedunits
-# 342 names_d_extra pctspanish_li
-# 343 names_d_extra      pctie_li
-# 344 names_d_extra     pctapi_li
-# 345 names_d_extra   pctother_li
-# 346 names_d_extra       pctpoor
-# 382 names_d_extra       pctmale
-# 383 names_d_extra     pctfemale
-# 384 names_d_extra    pctunder18
-# 385 names_d_extra     pctover17
-
-#  only around 60 of the acs22 colnames were in map_headernames at first
-
-intersect(map_headernames$rname, fixcolnames(acs22acsgdbnames, 'api', 'r'))  # only 4
-intersect(map_headernames$rname, fixcolnames(acs22acsgdbnames, 'csv', 'r'))  # only 5
-intersect(map_headernames$rname, fixcolnames(acs22acsgdbnames, 'original', 'r'))  #  more
-intersect(map_headernames$rname, fixcolnames(acs22acsgdbnames, 'acsname', 'r'))  # the most -- about 62 matches at some point while working on this
+## found in ACS extra file ... 
+##  only around 60 of the acs22 colnames were in map_headernames at first
 #
-# > intersect(map_headernames$rname, fixcolnames(acs22acsgdbnames, 'acsname', 'r'))
+# intersect(map_headernames$rname, fixcolnames(acs22acsgdbnames, 'api', 'r'))  # only 4
+# intersect(map_headernames$rname, fixcolnames(acs22acsgdbnames, 'csv', 'r'))  # only 5
+# intersect(map_headernames$rname, fixcolnames(acs22acsgdbnames, 'original', 'r'))  #  more
+# intersect(map_headernames$rname, fixcolnames(acs22acsgdbnames, 'acsname', 'r'))  # the most -- about 62 matches at some point while working on this
+## > intersect(map_headernames$rname, fixcolnames(acs22acsgdbnames, 'acsname', 'r'))
 # [1] "pcthisp"         "pctnhba"         "pctnhaa"         "pctnhaiana"      "pctnhnhpia"      "pctnhotheralone" "pctnhmulti"      "pctnhwa"        
 # [9] "hisp"            "nhba"            "nhaa"            "nhaiana"         "nhnhpia"         "nhotheralone"    "nhmulti"         "nhwa"           
 # [17] "pctba"           "pctaa"           "pctaiana"        "pctnhpia"        "pctotheralone"   "pctmulti"        "pctwa"           "ba"             
@@ -128,43 +120,44 @@ intersect(map_headernames$rname, fixcolnames(acs22acsgdbnames, 'acsname', 'r')) 
 # [49] "ownedunits"      "poor"            "pctpoor"         "lifexyears"      "percapincome"    "pctmale"         "pctfemale"       "pctunder18"     
 # [57] "pctover17"       "female"          "male"            "over17"          "under18"         "Shape_Length"  
 
-## read the long indicator names (aliases) we had manually exported from ArcPro
-if (file.exists("~/../EJ 2021/EJSCREEN 2024/acs2022header.csv")) {
-acs22longnames <- names(read.csv("~/../EJ 2021/EJSCREEN 2024/acs2022header.csv"))
-acs22longnames <- c(acs22longnames, "ejam_uniq_id")
-} else {
-  acs22longnames = NA
-}
-head(
-  cbind(acs22acsgdbnames, acs22acsgdbnames_r, acs22longnames), 30
-)
-tail(
-  cbind(acs22acsgdbnames, acs22acsgdbnames_r, acs22longnames), 15
-)
+# head(
+#   cbind(acs22acsgdbnames, acs22acsgdbnames_r, acs22longnames), 30
+# )
+# tail(
+#   cbind(acs22acsgdbnames, acs22acsgdbnames_r, acs22longnames), 15
+# )
 ########################  #
-# save colnames in data-raw ####
-save(acs22acsgdbnames, file = "./data-raw/datafile_acs22acsgdbnames.rda")
-save(acs22longnames,   file = "./data-raw/datafile_acs22longnames.rda")
+
+# save names(acs) and longnames (aliases) in data-raw ####
+
+if (exists("acs22acsgdbnames")) {
+  save(acs22acsgdbnames, file = "./data-raw/datafile_acs22acsgdbnames.rda")}
+if (exists("acs22longnames")) {
+  save(acs22longnames,   file = "./data-raw/datafile_acs22longnames.rda")}
 
 ############################# # 
-# fix about 62 of the colnames that get recognized, including names_d_subgroups, etc.
+
+# Rename >60 of the colnames ####
+
+# that get recognized, including names_d_subgroups, etc.
 fixcolnames(acs22acsgdbnames, 'acsname', 'r')
 names(acs22) <- fixcolnames(names(acs22), 'acsname', 'r')
 
 # > names(acs22)[fixcolnames(names(acs22), 'acsname', 'r') !=   fixcolnames(names(acs22), 'csv', 'r')]
 # [1] "LINGISO"    "LIFEEXPPCT" "Shape_Area"
 #  already got those via ftp site so do not need from acs22
+############################################################################ # 
+
+# Archive huge acs22full.arrow locally ####
+
 if (askYesNo(" archive the very large acs22full.arrow locally?")) {
-# archive the very large acs22full.arrow locally ####
-datawrite_to_local("acs22", fnames = "acs22full.arrow", localfolder = localfolder)
-file.exists(file.path(localfolder, "acs22full.arrow"))
-# acs22 <- arrow::read_ipc_file(file.path(localfolder, "acs22full.arrow"))
+  datawrite_to_local("acs22", fnames = "acs22full.arrow", localfolder = localfolder)
+  file.exists(file.path(localfolder, "acs22full.arrow"))
+  # acs22 <- arrow::read_ipc_file(file.path(localfolder, "acs22full.arrow"))
 }
 ############################################################################ # 
 
-############################################################################ # 
-
-# drop most columns
+# Drop most columns ####
 
 acs22$bgfips <- acs22$STCNTRBG
 acs22 = data.table(bgfips = acs22$bgfips, acs22[, names(acs22) %in% map_headernames$rname])
@@ -182,7 +175,7 @@ setDT(acs22)
 # > dim(acs22)
 # [1] 242336     66
 
-# archive the smaller acs22.arrow ####
+# Archive small acs22.arrow ####
 
 datawrite_to_local("acs22", fnames = "acs22.arrow", localfolder = localfolder)
 file.exists(file.path(localfolder, "acs22.arrow"))
@@ -257,29 +250,40 @@ file.exists(file.path(localfolder, "acs22.arrow"))
 # [62,] "Shape_Length"    "x_anyother"                   
 
 #################################################################################### #
-# > blockgroupstats ####
-# MERGE ACS22 AND BLOCKGROUPSTATS_NEW  ####
+
+# MERGE (ACS and blockgroupstats_new)  ####
 
 # "bgfips" %in% names(acs22)
 
-#  can use data.table to merge or join blockgroupstats_new and acs22, key on bgid 
-
-# > dim(acs22)
-# [1] 242336     59
-# > dim(blockgroupstats_new)
-# [1] 243022     56
+if (NROW(acs22) != NROW(blockgroupstats_new)) {
+  print("Note the number of places (rows) diffes between the ACS table and blockgroupstats.")
+}
+  print("dimensions of ACS table (after dropping many columns not used:")
+  print(dim(acs22))
+  print("dimensions of blockgroupstats before merging in ACS info:")
+  print(dim(blockgroupstats_new))
+  
+  # > dim(acs22)
+  # [1] 242336     59
+  # > dim(blockgroupstats_new)
+  # [1] 243022     56
+  
+# if in data.table formats, uses data.table::merge() 
+  # to merge or join blockgroupstats_new and acs22, key on bgid 
 
 blockgroupstats <- merge(blockgroupstats_new, acs22, 
                          by = "bgfips", all.x = TRUE)
 
-# > dim(blockgroupstats)
+print("dimensions of blockgroupstats AFTER merging in ACS info:")
+print( dim(blockgroupstats) )
 # [1] 243022    114
 
-# check it
+# > blockgroupstats is now in globalenv() ####
+
+# > could add QA/QC steps here? ####
 
 
-
-
+# clean up ####
 
 rm(blockgroupstats_new)
 rm(acs22)

@@ -1,6 +1,8 @@
 
 # SCRIPT TO DOWNLOAD/UPDATE EJSCREEN BLOCKGROUP DATA AND PERCENTILE LOOKUP TABLES FOR EJAM YEARLY
 
+if (!exists("askquestions")) {askquestions <- TRUE}
+
 ############################################################################################ #
 localfolder = "~/../Downloads/ejscreen new ftp downloads"
 td <- tempdir()  
@@ -28,9 +30,8 @@ usastats_new_explained.xlsx      <- "EJScreen_2024_BG_Percentiles_Columns.xlsx"
 statestats_new_explained.xlsx    <- "EJScreen_2024_BG_State_Percentiles_Columns.xlsx"
 ############################################################################################ #
 
-
 if (!dir.exists(localfolder)) {
-  if (interactive()) {
+  if (interactive() && askquestions) {
     localfolder <- rstudioapi::selectDirectory("Save local copies where?")
     if (is.na(localfolder) || !dir.exists(localfolder)) {stop(localfolder, " folder does not exist")}
   }
