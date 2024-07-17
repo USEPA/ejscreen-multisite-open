@@ -247,11 +247,17 @@ source("./data-raw/datacreate_formulas.R")
 
 # may want to rebuild/ reinstall the package here, or at least load_all()  ?
 
+# EJAM:::datawrite_to_pins()
+# or 
+load_all()
+
+
+
 
 ######################################### #
 # datacreate_testpoints_testoutputs.R ####
-
 # rstudioapi::documentOpen("./data-raw/datacreate_testpoints_testoutputs.R")
+
 source("./data-raw/datacreate_testpoints_testoutputs.R")
 # that script does metadata_add() and use_data()
 
@@ -311,8 +317,13 @@ if (askYesNo("recreate bgpts?")) {source("./data-raw/datacreate_bgpts.R")}
 # 
 # warning("must use VPN to have access to pins board ")
 
+# EJAM:::datawrite_to_pins()
+  # or 
+load_all()
+
 datawrite_to_pins()
 
+rmost()
 
 ######################################### ########################################## ######################################### #
 ########################################## ########################################## ########################################## #

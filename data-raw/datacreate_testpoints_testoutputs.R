@@ -5,7 +5,9 @@
 # - points dataset objects (like testpoints_10 saved as and installed from source file "EJAM/data/testpoints_10.rda")
 # - other dataset objects (like testoutput_ejamit_1000pts_1miles)
 # - documentation files for all those (like source file saved as "EJAM/R/data_testpoints_10.R", readable via ?testpoints_10 in RStudio)
-
+if (!exists("metadata_add")) {
+  metadata_add = EJAM:::metadata_add 
+}
 ######################################################## ######################################################### #
 
 ## See the test datasets and the sample files installed with each package:
