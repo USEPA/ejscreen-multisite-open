@@ -2561,6 +2561,64 @@ app_server <- function(input, output, session) {
       
       locationstr <- paste0("Residents within ", rad, " mile", ifelse(rad > 1, "s", ""), 
                             " of the selected location within ", location_name)
+      
+      # Create a filtered version of report_map for single location
+      single_location_map <- reactive({
+        req(data_processed())
+        validate(need(data_processed(), 'Please run an analysis to see results.'))
+        
+        filtered_data <- data_processed()$results_bysite[row_index, ]
+        
+        if (submitted_upload_method() == "SHP") {
+          # Handle shapefile case
+          shp_valid <- data_uploaded()[data_uploaded()$ejam_uniq_id == filtered_data$ejam_uniq_id, ]
+          d_up <- shp_valid
+          d_up_geo <- d_up[,c("ejam_uniq_id","geometry")]
+          d_merge = merge(d_up_geo, filtered_data, by = "ejam_uniq_id", all.x = FALSE, all.y = TRUE)
+          
+          popup_labels <- fixcolnames(namesnow = setdiff(names(d_merge),c('geometry', 'valid', 'invalid_msg')), oldtype = 'r', newtype = 'shortlabel')
+          
+          if (input$bt_rad_buff > 0) {
+            d_uploads <- sf::st_buffer(d_merge[d_merge$valid == T, ], dist = units::set_units(input$bt_rad_buff, "mi"))
+            leaflet(d_uploads) %>% addTiles() %>%
+              addPolygons(data = d_uploads, color = '#000080',
+                          popup = popup_from_df(d_uploads %>% sf::st_drop_geometry() %>% dplyr::select(-valid, -invalid_msg), labels = popup_labels),
+                          popupOptions = popupOptions(maxHeight = 200))
+          } else {
+            data_spatial_convert <- d_merge[d_merge$valid == T, ] %>%
+              dplyr::select(-valid, -invalid_msg) %>%
+              sf::st_zm() %>% as('Spatial')
+            leaflet(data_spatial_convert) %>% addTiles() %>%
+              addPolygons(color = '#000080',
+                          popup = popup_from_df(data_spatial_convert %>% sf::st_drop_geometry(),
+                                                labels = popup_labels),
+                          popupOptions = popupOptions(maxHeight = 200))
+          }
+        } else if (submitted_upload_method() != "FIPS") {
+          # Handle non-FIPS case
+          popup_labels <- fixcolnames(namesnow = names(filtered_data), oldtype = 'r', newtype = 'shortlabel')
+          popup_labels[is.na(popup_labels)] <- names(filtered_data)[is.na(popup_labels)]
+          
+          leaflet(filtered_data) %>%
+            addTiles() %>%
+            addCircles(
+              radius = 1 * meters_per_mile,
+              color = '#000080', fillColor = '#000080',
+              fill = TRUE, weight = input$circleweight_in,
+              popup = popup_from_df(
+                filtered_data %>%
+                  dplyr::mutate(dplyr::across(
+                    dplyr::where(is.numeric), \(x) round(x, digits = 3))),
+                labels = popup_labels),
+              popupOptions = popupOptions(maxHeight = 200)
+            )
+        } else {
+          # FIPS case
+          leaflet() %>% addTiles() %>% fitBounds(-115, 37, -65, 48)
+        }
+      })
+      
+      map_to_use <- single_location_map()
     } else {
       output_df <- data_processed()$results_overall
       popstr <- prettyNum(total_pop(), big.mark = ',')
@@ -2568,6 +2626,7 @@ app_server <- function(input, output, session) {
                             " of any of the ", NROW(data_processed()$results_bysite[data_processed()$results_bysite$valid == T,]), 
                             " selected ", ifelse(submitted_upload_method() == 'SHP', "polygons", 
                                                  ifelse(submitted_upload_method() == 'FIPS', "shapes", "points")))
+      map_to_use <- report_map()
     }
     
     params <- list(
@@ -2578,7 +2637,7 @@ app_server <- function(input, output, session) {
       include_ejindexes = (input$include_ejindexes == 'TRUE'),
       in_shiny = FALSE,
       filename = NULL,
-      map = report_map(),
+      map = map_to_use,
       summary_plot = v1_summary_plot()
     )
     
