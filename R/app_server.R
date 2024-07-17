@@ -2560,7 +2560,7 @@ app_server <- function(input, output, session) {
       location_name <- output_df$statename
       
       locationstr <- paste0("Residents within ", rad, " mile", ifelse(rad > 1, "s", ""), 
-                            " of the selected location within ", location_name)
+                            " of the selected location")
       
       # Create a filtered version of report_map for single location
       single_location_map <- reactive({
