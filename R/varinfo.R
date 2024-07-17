@@ -125,11 +125,12 @@ varinfo <- function(var = map_headernames$rname, info=colnames(map_headernames),
 #     t1 <- t2 <- t3 <- t4 <- tt1 <- tt2 <- tt3 <- tt4 <- NA
 #     x <- c( "rname",
 #             'api' , 'apiname',
-#             'csv' , 'csvname2.2',
+#           'acs', 'acsname',
+#             'csv' , 'csvname',
 #             'r' , 'rname',
-#             'original' , 'oldnames',
-#             'friendly' , 'newnames_ejscreenapi',
-#             'long', 'longname_tableheader')
+#             'original' ,
+#              
+#             'long', 'longname')
 #     t1 <- varinfo(var =   'pctmin',       info = 'decimals')
 #     t2 <- varinfo(var = names_all_r, info = 'decimals')
 #     t3 <- varinfo(var =   'pctmin',       info = c('decimals', x))

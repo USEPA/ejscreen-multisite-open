@@ -16,14 +16,14 @@
 fixmapheadernamescolname <- function(x, 
                                      alias_list = list(
                                        rname = "r",
-                                       longname_tableheader = c("long", "longname", "longnames", "full", "description"),
+                                       longname = c("long", "longnames", "full", "description"),
                                        shortlabel = c("short", "shortname", "shortnames", "labels", "label"),
+                                       acsname = 'acs',
                                        apiname = 'api',
-                                       csvname2.3 = c("csv", "csvname"),  # *** changed with v 2.2 vs 2.3
-                                       csvname2.2 = "csvname2.2",         # *** changed with v 2.2 vs 2.3
-                                       newnames_ejscreenapi = "friendly", 
+                                       csvname = c("csv"),  # *** changed with v 2.2 vs 2.3
+                                       # csvname2.2 = "csvname2.2",         # *** changed with v 2.2 vs 2.3
                                        # SHOULD PHASE OUT "friendly" - CONFUSING TO USE friendly for long elsewhere but  rname here
-                                       oldnames = c("original", "old", "oldname")
+                                       oldname = c("original", "old", "oldnames")
                                      )) {
   
   # long is potentially a problem! 
@@ -35,11 +35,11 @@ fixmapheadernamescolname <- function(x,
   )
   
   # akas <- list(api = 'apiname',
-  #              csv = 'csvname2.3', 
+  #              csv = 'csvname', 
+  #              acs = 'acsname',
   #              r =   'rname',
-  #              original = 'oldnames',
-  #              friendly = 'newnames_ejscreenapi',
-  #              long = 'longname_tableheader')
+  #              original = 'oldname',
+  #              long = 'longname')
   # x[x %in% names(akas)] <- as.vector(unlist(akas[match(x[x %in% names(akas)], names(akas))]))
   
   return(x)

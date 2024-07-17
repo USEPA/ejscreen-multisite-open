@@ -1,7 +1,8 @@
 ############################################################### #
 
 ## Scripts to update / create latest versions of datasets 
-# ANNUAL blockgroup data from ACS and EJScreen, etc.
+# ANNUAL blockgroup data from ACS and EJScreen
+# NON-ANNUAL (frequent, episodic, etc.) other datasets
 # see EJAM's github issues about this
 
 # load latest source functions EJAM/R/*.R and EJAM/data/*.rda files ####
@@ -38,10 +39,11 @@ if (0 == 1) {
   documentOpen('./data-raw/datacreate_names_of_indicators.R')   # ok
   documentOpen('./data-raw/datacreate_names_pct_as_fraction.R') # ok
   #  ejscreen demog and envt data on every blockgroup
-  documentOpen('./data-raw/datacreate_blockgroupstats2.3.R') # and bgej           # in progress
-  documentOpen('./data-raw/datacreate_blockgroupstats2.3_add_d_acs22columns.R')   # in progress
+  documentOpen("./data-raw/datacreate_metadata4pins.R") # ok
+  documentOpen('./data-raw/datacreate_blockgroupstats2.3.R') # and bgej      # ok
+  documentOpen('./data-raw/datacreate_blockgroupstats2.3_add_d_acs22columns.R')   # ok
   #  lookup tables
-  documentOpen('./data-raw/datacreate_usastats2.3.R')                 # in progress
+  documentOpen('./data-raw/datacreate_usastats2.3.R')                 # in progress ?
   documentOpen('./data-raw/datacreate_usastats2.3_add_dsubgroups.R')  # in progress
   documentOpen('./data-raw/datacreate_avg.in.us.R')                   # ok
   documentOpen('./data-raw/datacreate_high_pctiles_tied_with_min.R')  # ok
@@ -103,36 +105,20 @@ if (0 == 1) {
 
 ## use full metadata if related to ejscreen or census/acs
 # x <- metadata_add(x)
-######################################### #
 
-# # new indicators, variable names
-# documentOpen('./data-raw/datacreate_map_headernames.R')
-# documentOpen('./data-raw/datacreate_names_of_indicators.R')
-# documentOpen('./data-raw/datacreate_names_pct_as_fraction.R')
-# #  ejscreen demog and envt data on every blockgroup
-# documentOpen('./data-raw/datacreate_blockgroupstats2.3.R') # and bgej
-# documentOpen('./data-raw/datacreate_blockgroupstats2.3_add_d_acs22columns.R')
-# #  lookup tables
-# documentOpen('./data-raw/datacreate_usastats2.3.R')
-# documentOpen('./data-raw/datacreate_usastats2.3_add_dsubgroups.R')
-# documentOpen('./data-raw/datacreate_avg.in.us.R')
-# documentOpen('./data-raw/datacreate_high_pctiles_tied_with_min.R')
-# documentOpen('./data-raw/datacreate_formulas.R')
-# documentOpen('./data-raw/datacreate_testpoints_testoutputs.R')
 ######################################### ########################################## #
+
 
 ######################################### #
 # datacreate_map_headernames.R ####
 #
-#  MUST UPDATE THE map_headernames.xlsx MANUALLY, FIRST
-#  then do this to convert it to dataset for package
-#  This just reads spreadsheet, essentially.
-
 # rstudioapi::documentOpen("./data-raw/datacreate_map_headernames.R")
+#
+#  UPDATE map_headernames.xlsx MANUALLY, 
+#  then do this to read .xlsx and save as dataset for package
+
 source("./data-raw/datacreate_map_headernames.R")
-map_headernames <- datacreate_map_headernames(
-  './data-raw/map_headernames_2.3.xlsx'
-)
+map_headernames <- datacreate_map_headernames('./data-raw/map_headernames_2.3.xlsx')
 map_headernames <- metadata_add(map_headernames)
 usethis::use_data(map_headernames, overwrite = TRUE)
 
@@ -155,11 +141,24 @@ source("./data-raw/datacreate_names_of_indicators.R")
 datacreate_names_of_indicators()    # this does metadata and use_data inside the function
 
 source("./data-raw/datacreate_names_pct_as_fraction.R")
-datacreate_names_pct_as_fraction(map_headernames = map_headernames)  # this does metadata and use_data inside the function
-### Now use load_all() to make available those new variable name lists (the source package as just updated, not the version installed)
+datacreate_names_pct_as_fraction(map_headernames = map_headernames)  
+# That function does metadata_add and use_data
+
+######################################### #
+# datacreate_metadata4pins.R ####
+# rstudioapi::documentOpen("./data-raw/datacreate_metadata4pins.R")
+source("./data-raw/datacreate_metadata4pins.R") # does use_data()
+# this just stores title, description of each dataset that gets put in pins board - no dates info
+# dates info for pins is generated right when being written to pins board.
+
+######################################### #
+### Must use load_all() or build/install, to make available those new variable name lists 
+#  and possibly modified  metadata4pins.rda
+#  (the source package as just updated, not the version installed)
+#  and so all functions will use the new source version 
 
 load_all()
-######################################### #
+
 
 ######################################### #
 # datacreate_blockgroupstats2.3 ####
@@ -172,35 +171,31 @@ source("./data-raw/datacreate_blockgroupstats2.3.R")
 # created bgej
 # created blockgroupstats_new as interim object
 # created usastats, statestats but not final versions yet
-
 source("./data-raw/datacreate_blockgroupstats2.3_add_d_acs22columns.R")
 # created blockgroupstats 
-
-
-# check blockgroupstats
-
 
 blockgroupstats    <- metadata_add(blockgroupstats)
 usethis::use_data(blockgroupstats, overwrite = T)
 
 bgej <- metadata_add(bgej)
+## do not save via  usethis::use_data(bgej, overwrite = TRUE) - it is a large file
 
-cat("bgej created in globalenv but not saved yet\n")
-### do not save this one in the pkg - it is large
-## do not save via  usethis::use_data(bgej, overwrite = TRUE)
+cat("bgej created in globalenv but not saved yet - will try to save to pins board now \n")
 ## Save bgej to pins board as .arrow file
 ##  using script in    datacreate_pins.R
 
-source("./data-raw/datacreate_pins.R")
-datawrite_to_pins("bgej")
+datawrite_to_pins("bgej", type = "arrow") # defaults should work but anyone doing this needs authentication, access to pins board !
 
 ######################################### #
 # datacreate_usastats2.3_add_dsubgroups.R ####
-#
+# datacreate_usastats2.3_add_dsubgroups.R ####
+
 # rstudioapi::documentOpen("./data-raw/datacreate_usastats2.3.R")
 # rstudioapi::documentOpen("./data-raw/datacreate_usastats2.3_add_dsubgroups.R")
 
 source("./data-raw/datacreate_usastats2.3.R")
+# now usastats and statestats exist
+
 source("./data-raw/datacreate_usastats2.3_add_dsubgroups.R")
 
 # usastats_statestats  <- datacreate_usastats2.3()
@@ -209,16 +204,14 @@ source("./data-raw/datacreate_usastats2.3_add_dsubgroups.R")
 # usastats   <- usastats_statestats$usastats
 # statestats <- usastats_statestats$statestats
 
-setDT(usastats)
-setDT(statestats)
+setDF(usastats)    #   do we want it as data.frame??
+setDF(statestats)  #   do we want it as data.frame??
 
 usastats   <- metadata_add(usastats)
 statestats <- metadata_add(statestats)
 
 usethis::use_data(usastats,   overwrite = T)
 usethis::use_data(statestats, overwrite = T)
-######################################### #
-
 
 ######################################### #
 # datacreate_avg.in.us.R ####
@@ -233,8 +226,6 @@ avg.in.us <- datacreate_avg.in.us(usastats = usastats,  # must be the updated/ne
 )
 avg.in.us <- metadata_add(avg.in.us)
 usethis::use_data(avg.in.us, overwrite = TRUE)
-######################################### #
-
 
 ######################################### #
 # datacreate_high_pctiles_tied_with_min.R ####
@@ -244,24 +235,35 @@ source("./data-raw/datacreate_high_pctiles_tied_with_min.R")
 high_pctiles_tied_with_min <- datacreate_high_pctiles_tied_with_min(usastats, statestats)
 high_pctiles_tied_with_min <- metadata_add(high_pctiles_tied_with_min)
 usethis::use_data(high_pctiles_tied_with_min, overwrite = TRUE)
-######################################### #
-
 
 ######################################### #
 # datacreate_formulas.R ####
 # 
 # rstudioapi::documentOpen("./data-raw/datacreate_formulas.R")
 source("./data-raw/datacreate_formulas.R")
+# that script does metadata_add() and use_data()
+
+
+
+# may want to rebuild/ reinstall the package here, or at least load_all()  ?
+
 
 ######################################### #
 # datacreate_testpoints_testoutputs.R ####
 
 # rstudioapi::documentOpen("./data-raw/datacreate_testpoints_testoutputs.R")
-
 source("./data-raw/datacreate_testpoints_testoutputs.R")
+# that script does metadata_add() and use_data()
 
 ######################################### #
-
+# datacreate_stateinfo.R ####
+# datacreate_stateinfo2.R ####
+# documentOpen('./data-raw/datacreate_stateinfo.R')          # ok (missing Island Areas)
+# documentOpen('./data-raw/datacreate_stateinfo2.R')         # ok (has Island Areas)
+## ok to update metadata whenever - these should never really change but want to note version 2.3 etc.
+source('./data-raw/datacreate_stateinfo.R')
+source('./data-raw/datacreate_stateinfo2.R')
+# that script does metadata_add() and use_data()
 
 ######################################### #
 # datacreate_ejampackages.R ####
@@ -275,7 +277,7 @@ source('./data-raw/datacreate_ejampackages.R')
 # 
 # rstudioapi::documentOpen("./data-raw/datacreate_blockwts.R")
 
-stop("not finished updating 'datacreate_blockwts.R' script to include Island Areas GU VI MP AS")
+warning("not finished updating 'datacreate_blockwts.R' script to include Island Areas GU VI MP AS")
 
 source('./data-raw/datacreate_blockwts.R') # script that includes metadata_add() and use_data()
 
@@ -298,19 +300,21 @@ if (askYesNo("recreate bgpts?")) {source("./data-raw/datacreate_bgpts.R")}
 ######################################### #
 
 
+######################################### ########################################## ######################################### #
+########################################## ########################################## ########################################## #
 
 
 ######################################### #
 # datacreate_pins.R ####
 #
 # rstudioapi::documentOpen("./data-raw/datacreate_pins.R")
+# 
+# warning("must use VPN to have access to pins board ")
 
-warning("must use VPN to have access to pins board ")
-# in progress ***
-stop(" need to finish/ confirm finished updating datacreate_pins.R")
+datawrite_to_pins()
 
 
-source("./data-raw/datacreate_pins.R")
-######################################### #
+######################################### ########################################## ######################################### #
+########################################## ########################################## ########################################## #
 
 

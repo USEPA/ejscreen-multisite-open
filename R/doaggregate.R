@@ -1564,7 +1564,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
       x <- as.list(results$results_overall)
       x <- data.frame(variable = names(x), overall = unlist(x))
       rownames(x) <- NULL
-      x$longname <- results$longname  #   map_headernames$longname_tableheader[match(x$variable, map_headernames$newnames_ejscreenapi)]
+      x$longname <- results$longname
       x$longname <- substr(x$longname, 1, 40) # truncated only for dispaly in RStudio console
       x$overall <- round(x$overall, 3) # only for dispaly in RStudio console
       print(x) # print to console, 125 rows

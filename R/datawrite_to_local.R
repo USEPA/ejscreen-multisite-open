@@ -5,56 +5,67 @@
 #' formatted as .arrow or .rda
 #' 
 #' @param varnames vector of object names
-#' @param ext file .extension appropriate to the format, ".rda" or ".arrow"
-#' @param fun function to use, but as a character string, like "arrow::write_ipc_file"
-#'   but fun is ignored if ext=".rda" since it then just uses save()
+#' @param fnames optional vector of file names including extension ".rda" or ".arrow", but without path.
+#'   Default is .arrow 
 #' @param justchecking set this to FALSE to actually save instead of 
 #'   just seeing in console info or the commands to be used, to test/check this
-#' @param folder_local_source path to local folder without slash at end
+#' @param localfolder path to local folder without slash at end
 #' @param overwrite Set to TRUE to overwrite file if it exists already, with new copy.
 #' @return the paths of the objects as requested to be saved whether or not actually done
-#' @seealso [datawrite_to_aws()]  [datawrite_to_local()] [dataload_from_local()] [dataload_from_aws()] 
+#' @seealso [dataload_from_local()] 
 #' @examples 
-#'   # datawrite_to_local(ext = ".arrow", folder_local_source = ".", justchecking = F, overwrite = T) 
+#'   x = 1
+#'   datawrite_to_local("x", localfolder = ".", justchecking = T) 
 #'   
 #' @export
 #'
 datawrite_to_local <- function(
+    
     varnames = c(
       'blockwts', 'blockpoints', 'blockid2fips', "quaddata",
       'bgej', 'bgid2fips',
       'frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact"),
-    ext = c(".arrow", ".rda")[1],
-    folder_local_source = "~/../Downloads", 
-    fun = c("arrow::write_ipc_file", "save")[1], # not sure save would work here. 
+    
+    fnames = paste0(varnames, ".arrow"),
+    
+    localfolder = "~/../Downloads", 
+    
     justchecking = F, overwrite = FALSE) {
   
-  if (!is.character(fun)) {warning('must specify function in fun parameter as a quoted character string')
-    return(NULL)
-  }
-  if (length(ext) > 1)    {
-    warning('must specify only one file extension for all the files')
-    return(NULL)
-  }
-  if ((ext == '.arrow') & missing(fun)) {fun <- "arrow::write_ipc_file"} 
+  if (!all(is.character(varnames))) {
+    ok = FALSE
+    varnames = deparse(substitute(varnames))
+    if (all(sapply(varnames, exists))) {
+      if (interactive()) {
+      ok <- askYesNo(paste0("looks like you provided unquoted object names ... do you mean '", varnames[1],"' etc.?"))
+      if (is.na(ok)) {ok <- FALSE} # clicked cancel
+      warning("varnames must be a character vector of quoted names of objects like c('x', 'y') \n")
+      if (!ok) {return(NULL)}
+      }}
+    if (!ok) {
+    stop("varnames must be a character vector of quoted names of objects like c('x', 'y') ")
+    }}
+  ####################################################### #
+ext <- paste0(".", tools::file_ext(fnames))
+  
   cat("\n\n")
   if (justchecking) {
     cat("Just checking, so nothing is being saved.\n\n")
   }
   
-  if (interactive() && missing(folder_local_source)) {
-    folder_local_source <- rstudioapi::selectDirectory(
+  if (interactive() && missing(localfolder)) {
+    localfolder <- rstudioapi::selectDirectory(
       "Select Directory where you want to save local copies", 
       path = "~/../Downloads/EJAMbigfiles"
       # To update a particular local folder, e.g.:
       # locdir = ("./../EJAM-opensource/data")
       # locdir = ("~/../Downloads/EJAMbigfiles")
     )
-    if (is.na(folder_local_source)) {stop('must specify a folder')}
+    if (is.na(localfolder)) {stop('must specify a folder')}
   }
   
-  if (!dir.exists(folder_local_source)) {
-    cat(folder_local_source, ' does not exist.\n\n')
+  if (!dir.exists(localfolder)) {
+    cat(localfolder, ' does not exist.\n\n')
     if (!justchecking) {
       cat("Nothing could be saved.\n\n")
       warning( 'Nothing could be saved.')
@@ -63,37 +74,37 @@ datawrite_to_local <- function(
   }
   
   # Ask to confirm each of the defaults 
-  if (interactive() && missing(overwrite)) {
-    overwrite <- askYesNo("overwrite if file already exists locally?")
-    if (is.na(overwrite)) {stop('stopping')}
-  }
   if (interactive() && missing(varnames)) {
     confirmed <- rep(TRUE, length(varnames))
     for (i in seq_along(varnames)) {
-      confirmed[i] <- askYesNo(paste0("Save ", varnames[i], "?"))
+      confirmed[i] <- askYesNo(paste0("Save ", varnames[i], " (as ", fnames[i],")?"))
     }
     varnames <- varnames[!is.na(confirmed) & confirmed]
   }
   
-  fnames <- paste0(varnames, ext)
-  localpaths  <- paste0(folder_local_source, '/', fnames)
-  # if (justchecking) {cat("The folder " , folder_local_source, "exists? ", file.exists(folder_local_source), '\n\n')}
+  localpaths  <- paste0(localfolder, '/', fnames)
+  # if (justchecking) {cat("The folder " , localfolder, "exists? ", file.exists(localfolder), '\n\n')}
+  if (!justchecking && interactive() && missing(overwrite) && any(file.exists(localpaths))) {
+    overwrite <- askYesNo("overwrite files that already exist locally?")
+    if (is.na(overwrite)) {stop('stopping')}
+  }
   
-  for (i in 1:length(varnames)) {
+  for (i in seq_along(varnames)) {
     
     this <- varnames[i] 
     
     if (justchecking) {
       cat(this, "is in memory? ", exists(x = this ), '... ') # looks in default environment!!
-      if (dir.exists(folder_local_source)) {
+      if (dir.exists(localfolder)) {
         cat('The file is already saved in folder? ',  file.exists(localpaths[i]))
       }
       cat('\n')
     } else {
-      if (file.exists(localpaths[i]) & !overwrite) {cat(localpaths[i], "already exists.\n  Set overwrite=TRUE if you want to replace it.\n")}
+      if (file.exists(localpaths[i]) & !overwrite) {
+        cat(localpaths[i], "already exists.\n  Set overwrite=TRUE if you want to replace it.\n")}
       if (!file.exists(localpaths[i]) | overwrite) {
         
-        if (ext == ".rda") {
+        if (ext[i] == ".rda") {
           
           cat("saving", localpaths[i] , "\n")
           save(list = this, file = localpaths[i])
@@ -109,7 +120,7 @@ datawrite_to_local <- function(
           )
           cat(" ", text_to_do, '\n')
           x <- eval(parse(text = text_to_do)) # executes the command
-          
+          rm(x)
           # arrow::write_ipc_file(bgej,         file.path(locdir, "bgej.arrow"))
           # arrow::write_ipc_file( UNQUOTED OBJECT NAME!***, sink = localpaths[i])
         }
@@ -119,8 +130,8 @@ datawrite_to_local <- function(
     }
   }   # end loop
   cat('\n\n')
-  if (interactive()) {
-    browseURL(folder_local_source)
+  if (interactive() & !justchecking) {
+    browseURL(localfolder)
   }
   invisible(localpaths)
 }

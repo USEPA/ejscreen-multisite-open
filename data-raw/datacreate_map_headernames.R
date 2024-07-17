@@ -52,13 +52,6 @@ if (1 == 0) {
 # 
 # names(jsonlite::fromJSON(rawToChar((ejscreenRESTbroker(lon = -80, lat = 42))$content)))
 
-
-############################################################# #
-## see variable names in table called map_headernames  from  EJAMejscreenapi
-# 
-# EJAMejscreenapi::map_headernames[, c("oldnames", "newnames_ejscreenapi", "varlist")]
-
-
 ############################################################# #
 ## see names as used in EJAM
 # 
@@ -66,39 +59,14 @@ if (1 == 0) {
 # 
 # library(EJAM)
 # x = names(ejamit(testpoints_50)$results_bysite)
-# y = EJAMejscreenapi::map_headernames$newnames_ejscreenapi
+# y = EJAMejscreenapi::map_headernames$rname
 # setdiff(x,y) ###  "EJScreen Report" "EJScreen Map"    "ACS Report"      "ECHO report"    
 # 
 # names_all
 # as.vector(unlist(namez)) 
 # names(namez)
 
-
-
-# see just the friendly names 
-# 
-# namez[grepl("friendly", names(namez))]
-# 
-# map_headernames$names_friendly["" != map_headernames$names_friendly]
-# unique(map_headernames$shortlabel)
-# 
-# x = map_headernames[, c("newnames_ejscreenapi", "names_friendly", 'shortlabel', "varlist")]
-# x=x[order(x$varlist),]
-# # intersect(paste0("names_", names(namez)) , x$varlist )
-# 
-#   lists that were not yet in map_headernames: 
-# setdiff(paste0("names_", names(namez)) , x$varlist )
-# 
-# 
-# 
-# setdiff_yx(paste0("names_", names(namez)) , x$varlist )
-# 
-# # these are missing from namez and from EJAM names_all
-# "names_ej_supp"
-# "names_ej_supp_pctile"
-# "names_ej_supp_state_pctile"
-#
-#  "names_d_median"             "names_e_median"
+ 
 
 ############################################################# #
 ## see variable names as provided in EJScreen dataset downloaded from FTP site
@@ -137,7 +105,7 @@ for (i in 1:length(nnn)) {
   if (i == 1) {
     df = data.frame(
       varlist = checked, 
-      in.ejscreenapi.map_headernames  = map_headernames$newnames_ejscreenapi[map_headernames$varlist == checked],
+      in.ejscreenapi.map_headernames  = map_headernames$rname[map_headernames$varlist == checked],
       in.ejam.namez = get(checked),
       friendly.name.in.ejscreenapi.map_headernames = thosevars, 
       friendly.name.in.ejam.namez = zz
@@ -145,7 +113,7 @@ for (i in 1:length(nnn)) {
   } else {
     dfmore = data.frame(
       varlist = checked, 
-      in.ejscreenapi.map_headernames  =  map_headernames$newnames_ejscreenapi[map_headernames$varlist == checked],
+      in.ejscreenapi.map_headernames  =  map_headernames$rname[map_headernames$varlist == checked],
       in.ejam.namez = get(checked),
       friendly.name.in.ejscreenapi.map_headernames = thosevars, 
       friendly.name.in.ejam.namez = zz

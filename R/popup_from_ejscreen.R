@@ -42,8 +42,8 @@ popup_from_ejscreen <- function(out, linkcolname='EJScreen Report', linkcolname2
   # SPECIFY indicators/VARIABLE NAMES  ####
   
   names.d.api        <- c(
-    map_headernames$newnames_ejscreenapi[map_headernames$varlist == "names_d"] #, 
-    # map_headernames$newnames_ejscreenapi[map_headernames$varlist == "names_d_subgroups"]      # disabled because had been coded to require pctiles and raw and friendly all be the same length.
+    map_headernames$rname[map_headernames$varlist == "names_d"] #, 
+    # map_headernames$rname[map_headernames$varlist == "names_d_subgroups"]      # disabled because had been coded to require pctiles and raw and friendly all be the same length.
   )   
   names.d.nice.api   <- c(
     # map_headernames$names_friendly[map_headernames$varlist == "names_d"]  #, or   
@@ -52,33 +52,33 @@ popup_from_ejscreen <- function(out, linkcolname='EJScreen Report', linkcolname2
   )
 
     names.d.pctile.api <- c(
-    map_headernames$newnames_ejscreenapi[map_headernames$varlist == "names_d_pctile"]  #  , 
-    # map_headernames$newnames_ejscreenapi[map_headernames$varlist == "names_d_subgroups_pctile"]   # ejscreen 2.2 does not provide the percentiles of subgroups
+    map_headernames$rname[map_headernames$varlist == "names_d_pctile"]  #  , 
+    # map_headernames$rname[map_headernames$varlist == "names_d_subgroups_pctile"]   # ejscreen 2.2 does not provide the percentiles of subgroups
   )
   names.d.state.pctile.api <- c(
-    map_headernames$newnames_ejscreenapi[map_headernames$varlist == "names_d_state_pctile"] #, 
-    # map_headernames$newnames_ejscreenapi[map_headernames$varlist == "names_d_subgroups_state_pctile"]   # ejscreen 2.2 does not provide the percentiles of subgroups
+    map_headernames$rname[map_headernames$varlist == "names_d_state_pctile"] #, 
+    # map_headernames$rname[map_headernames$varlist == "names_d_subgroups_state_pctile"]   # ejscreen 2.2 does not provide the percentiles of subgroups
   )  
   
   
-  names.e.api       <- map_headernames$newnames_ejscreenapi[map_headernames$varlist == "names_e"]  # EJAM ::names_e
+  names.e.api       <- map_headernames$rname[map_headernames$varlist == "names_e"]  # EJAM ::names_e
   # names.e.nice.api   <- map_headernames$names_friendly[map_headernames$varlist == "names_e"] 
   names.e.nice.api   <-   fixcolnames(names.e.api, 'r', 'shortlabel')
   names.e.pctile.api <- c(
-    map_headernames$newnames_ejscreenapi[map_headernames$varlist == "names_e_pctile"]
+    map_headernames$rname[map_headernames$varlist == "names_e_pctile"]
   )
   names.e.state.pctile.api <- c(
-    map_headernames$newnames_ejscreenapi[map_headernames$varlist == "names_e_state_pctile"] 
+    map_headernames$rname[map_headernames$varlist == "names_e_state_pctile"] 
   )
   
   # EJ:  include the us, normal and supplemental, all in this one variable list:
   names.ej.pctile.api <- c(
-    map_headernames$newnames_ejscreenapi[map_headernames$varlist == "names_ej_pctile"],
-    map_headernames$newnames_ejscreenapi[map_headernames$varlist == "names_ej_supp_pctile"]
+    map_headernames$rname[map_headernames$varlist == "names_ej_pctile"],
+    map_headernames$rname[map_headernames$varlist == "names_ej_supp_pctile"]
   )
   names.ej.state.pctile.api <- c(
-    map_headernames$newnames_ejscreenapi[map_headernames$varlist == "names_ej_state_pctile"],
-    map_headernames$newnames_ejscreenapi[map_headernames$varlist == "names_ej_supp_state_pctile"] 
+    map_headernames$rname[map_headernames$varlist == "names_ej_state_pctile"],
+    map_headernames$rname[map_headernames$varlist == "names_ej_supp_state_pctile"] 
   )
   names.ej.pctile.api_USORSTATE <- fixcolnames(names.ej.pctile.api, 'r', 'shortlabel')
   # names.ej.pctile.api_USORSTATE
@@ -96,7 +96,7 @@ popup_from_ejscreen <- function(out, linkcolname='EJScreen Report', linkcolname2
   ############################################ #
   # how many significant digits to report?
   
-  esigfigs <- map_headernames[ "" != (map_headernames$sigfigs), c("sigfigs", 'newnames_ejscreenapi')]
+  esigfigs <- map_headernames[ "" != (map_headernames$sigfigs), c("sigfigs", 'rname')]
   names(esigfigs) <- c("sigfigs", "evar")
   esigfigs.api <- esigfigs
   # esigfigs.api <- structure(list(
@@ -110,7 +110,7 @@ popup_from_ejscreen <- function(out, linkcolname='EJScreen Report', linkcolname2
   ############################################ #
   # text explaining units of measure like ug/m3
   
-  popupunits <- map_headernames[ "" != (map_headernames$units), c("units", 'newnames_ejscreenapi')]
+  popupunits <- map_headernames[ "" != (map_headernames$units), c("units", 'rname')]
   names(popupunits) <- c("units","evar")
   popupunits.api <- popupunits
   #   popupunits.api <- structure(list(

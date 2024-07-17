@@ -17,24 +17,23 @@
 #' @export
 #' @keywords internal
 #'
-varin_map_headernames <- function(query = "lowinc", ignore.case = TRUE, cols_with_names = c("oldnames",
+varin_map_headernames <- function(query = "lowinc", ignore.case = TRUE, cols_with_names = c("oldname",
                                                                                             "apiname", 
-                                                                                            "ejscreen_api",
                                                                                             "api_synonym",
-                                                                                            "acsbgname" ,
-                                                                                            "csvname2.2",
+                                                                                            "acsname" ,
+                                                                                            "csvname",
                                                                                             "ejscreen_csv",
                                                                                             "rname",
-                                                                                            "newnames_ejscreenapi",
                                                                                             "topic_root_term",
                                                                                             "basevarname",
                                                                                             "denominator",
                                                                                             "shortlabel",
-                                                                                            "names_friendly",
-                                                                                            "longname_tableheader",
+                                                                                            
+                                                                                            "longname",
                                                                                             "description",
                                                                                             "csvlongname",
                                                                                             "api_description",
+                                                                                            "acs_description",
                                                                                             "varlist"
 )) {
   

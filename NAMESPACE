@@ -221,6 +221,7 @@ export(vartype_cat2color_ejam)
 import(DT)
 import(RMySQL)
 import(SearchTrees)
+import(arrow)
 import(data.table)
 import(dplyr, except = c(first, last, between))
 

@@ -51,8 +51,8 @@ boxplots_ratios <- function(x, selected_dvar_colname='Demog.Index', selected_dva
     selected_dvar_nicename <- fixcolnames(selected_dvar_colname, 'r', 'long')
   }
   # now just use semi-long aka friendly varnames for all the rest of the function
-  names(x)              <- fixnames_to_type(names(x),                oldtype = "newnames_ejscreenapi", newtype = "shortlabel")
-  selected_dvar_colname <- fixnames_to_type((selected_dvar_colname), oldtype = "newnames_ejscreenapi", newtype = "shortlabel")
+  names(x)              <- fixnames_to_type(names(x),                oldtype = "rname", newtype = "shortlabel")
+  selected_dvar_colname <- fixnames_to_type((selected_dvar_colname), oldtype = "rname", newtype = "shortlabel")
 
   DemogRatio75th <- round(stats::quantile(x[ , selected_dvar_colname], 0.75, na.rm = TRUE), 2)
   #DemogRatio50th <- round(stats::quantile(x[ , selected_dvar_colname], 0.50, na.rm = TRUE), 2)

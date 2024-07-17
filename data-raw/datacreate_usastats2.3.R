@@ -196,6 +196,18 @@ cat("at this point, before saving these via use_data(), do script in
 # also, no Island Areas here at all as rows - maybe add those but with only NA values for all pctiles and mean and all indicators?
 # seems inefficient. should fix percentile lookup function to handle cases where a REGION is missing from lookup table.
 
+########################
+
+# >> TEMP PLACEHOLDERS: "Demog.Index.State" "Demog.Index.Supp.State" ####
+
+statestats$Demog.Index.State      <- statestats$Demog.Index
+statestats$Demog.Index.Supp.State <- statestats$Demog.Index.Supp
+
+
+usastats$Demog.Index.State      <- usastats$Demog.Index
+usastats$Demog.Index.Supp.State <- usastats$Demog.Index.Supp
+
+
 
 ######################################################################################## ################## #
 

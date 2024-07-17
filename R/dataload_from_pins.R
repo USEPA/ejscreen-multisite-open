@@ -88,6 +88,7 @@ dataload_from_pins <- function(
   ####################################################### #
   # Check access to pins board server ####
   #
+  cat("\n")
   if (auth == "rsconnect") {
     board <- tryCatch(
       pins::board_connect(auth = "rsconnect") # ignore server default here. use server and key already configured for rsconnect.

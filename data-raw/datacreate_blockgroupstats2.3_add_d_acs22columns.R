@@ -76,7 +76,7 @@ acs22$Shape <- NULL    #   we dont need to save the actual polygons here
 # check VARIABLE NAMES ####  
 
 acs22acsgdbnames <- names(acs22)
-acs22acsgdbnames_r <- fixcolnames(acs22acsgdbnames, "acsbgname", 'r')
+acs22acsgdbnames_r <- fixcolnames(acs22acsgdbnames, "acsname", 'r')
 
 # vlists = unique(map_headernames$varlist) 
 # for (i in 1:length(vlists)) {
@@ -116,9 +116,9 @@ acs22acsgdbnames_r <- fixcolnames(acs22acsgdbnames, "acsbgname", 'r')
 intersect(map_headernames$rname, fixcolnames(acs22acsgdbnames, 'api', 'r'))  # only 4
 intersect(map_headernames$rname, fixcolnames(acs22acsgdbnames, 'csv', 'r'))  # only 5
 intersect(map_headernames$rname, fixcolnames(acs22acsgdbnames, 'original', 'r'))  #  more
-intersect(map_headernames$rname, fixcolnames(acs22acsgdbnames, 'acsbgname', 'r'))  # the most -- about 62 matches at some point while working on this
+intersect(map_headernames$rname, fixcolnames(acs22acsgdbnames, 'acsname', 'r'))  # the most -- about 62 matches at some point while working on this
 #
-# > intersect(map_headernames$rname, fixcolnames(acs22acsgdbnames, 'acsbgname', 'r'))
+# > intersect(map_headernames$rname, fixcolnames(acs22acsgdbnames, 'acsname', 'r'))
 # [1] "pcthisp"         "pctnhba"         "pctnhaa"         "pctnhaiana"      "pctnhnhpia"      "pctnhotheralone" "pctnhmulti"      "pctnhwa"        
 # [9] "hisp"            "nhba"            "nhaa"            "nhaiana"         "nhnhpia"         "nhotheralone"    "nhmulti"         "nhwa"           
 # [17] "pctba"           "pctaa"           "pctaiana"        "pctnhpia"        "pctotheralone"   "pctmulti"        "pctwa"           "ba"             
@@ -148,18 +148,18 @@ save(acs22longnames,   file = "./data-raw/datafile_acs22longnames.rda")
 
 ############################# # 
 # fix about 62 of the colnames that get recognized, including names_d_subgroups, etc.
-fixcolnames(acs22acsgdbnames, 'acsbgname', 'r')
-names(acs22) <- fixcolnames(names(acs22), 'acsbgname', 'r')
+fixcolnames(acs22acsgdbnames, 'acsname', 'r')
+names(acs22) <- fixcolnames(names(acs22), 'acsname', 'r')
 
-# > names(acs22)[fixcolnames(names(acs22), 'acsbgname', 'r') !=   fixcolnames(names(acs22), 'csv', 'r')]
+# > names(acs22)[fixcolnames(names(acs22), 'acsname', 'r') !=   fixcolnames(names(acs22), 'csv', 'r')]
 # [1] "LINGISO"    "LIFEEXPPCT" "Shape_Area"
 #  already got those via ftp site so do not need from acs22
-
+if (askYesNo(" archive the very large acs22full.arrow locally?")) {
 # archive the very large acs22full.arrow locally ####
-savearrow("acs22", fnames = "acs22full.arrow", localfolder = localfolder)
+datawrite_to_local("acs22", fnames = "acs22full.arrow", localfolder = localfolder)
 file.exists(file.path(localfolder, "acs22full.arrow"))
 # acs22 <- arrow::read_ipc_file(file.path(localfolder, "acs22full.arrow"))
-
+}
 ############################################################################ # 
 
 ############################################################################ # 
@@ -173,23 +173,25 @@ acs22 = data.table(bgfips = acs22$bgfips, acs22[, names(acs22) %in% map_headerna
 # [1] 242336    676
 # > acs22 = data.table(acs22$bgfips, acs22[, names(acs22) %in% map_headernames$rname])
 # > dim(acs22)
-# [1] 242336     63
+# [1] 242336     73
 
 # get rid of redundant columns before merge with bg stats
 setDF(acs22)
 acs22 <- acs22[, c("bgfips", names(acs22)[!(names(acs22) %in% names(blockgroupstats_new))])]
 setDT(acs22)
+# > dim(acs22)
+# [1] 242336     66
 
 # archive the smaller acs22.arrow ####
 
-savearrow("acs22", fnames = "acs22.arrow", localfolder = localfolder)
+datawrite_to_local("acs22", fnames = "acs22.arrow", localfolder = localfolder)
 file.exists(file.path(localfolder, "acs22.arrow"))
 # acs22 <- arrow::read_ipc_file(file.path(localfolder, "acs22.arrow"))
 
 ############################################################################ # 
 ############################################################################ # 
 
-cbind( intersect(map_headernames$rname, fixcolnames(acs22acsgdbnames, 'acsbgname', 'r')), fixcolnames(intersect(map_headernames$rname, fixcolnames(acs22acsgdbnames, 'acsbgname', 'r')), 'r', 'varlist'))
+# cbind( intersect(map_headernames$rname, fixcolnames(acs22acsgdbnames, 'acsname', 'r')), fixcolnames(intersect(map_headernames$rname, fixcolnames(acs22acsgdbnames, 'acsname', 'r')), 'r', 'varlist'))
 # # [,1]              [,2]                           
 # [1,] "pctdisability"   "names_d"                      
 # [2,] "disability"      "names_d_count"                
@@ -274,6 +276,10 @@ blockgroupstats <- merge(blockgroupstats_new, acs22,
 # [1] 243022    114
 
 # check it
+
+
+
+
 
 rm(blockgroupstats_new)
 rm(acs22)

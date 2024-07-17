@@ -52,10 +52,6 @@ EJAM:::setdiff_yx(names(  usastats), c(names_e, names_d, names_ej  ,     names_e
 EJAM:::setdiff_yx(names(statestats), c(names_e, names_d, names_ej_state, names_ej_supp_state))
 #
 #  "Demog.Index.State", "Demog.Index.Supp.State"
-# "no2"                    "drinking"
-# "EJ.DISPARITY.no2.eo"    "EJ.DISPARITY.drinking.eo"   
-# "EJ.DISPARITY.no2.supp"  "EJ.DISPARITY.drinking.supp"
-# and state.EJ. versions missing from statestats
 
 # # compare to installed 
 # setdiff(names(statestats), c(EJAM::names_e, EJAM::names_d, EJAM::names_ej_state, EJAM::names_ej_supp_state  ))
@@ -65,21 +61,9 @@ EJAM:::setdiff_yx(names(statestats), c(names_e, names_d, names_ej_state, names_e
 
 EJAM:::setdiff_yx(names(statestats), c(EJAM::names_e, EJAM::names_d, EJAM::names_ej_state, EJAM::names_ej_supp_state  ))
 EJAM:::setdiff_yx(names(  usastats), c(EJAM::names_e, EJAM::names_d, EJAM::names_ej  ,     EJAM::names_ej_supp      ))
-
-
-
-
-# fix a couple names not renamed by older map_headernames?
-names(statestats)[names(statestats) == "LIFEEXP"] <- "lifexyears"
-names(  usastats)[names(  usastats) == "LIFEEXP"] <- "lifexyears"
-# setdiff(names(  usastats), c(names_e, names_d, names_ej  ,     names_ej_supp      )) %in% names(blockgroupstats)
-# [1] FALSE  TRUE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE FALSE
-# lifexyears is in blockgroupstats 
-# "lifexyears" %in% names(blockgroupstats) # TRUE
-# "lowlifex" %in% names(blockgroupstats) # TRUE
-
 ############################################################################# # 
-# to add percentile lookup info on demog subgroups, we need that info from blockgroupstats - from new version or already-installed version???
+
+# to add percentile lookup info on demog subgroups, we need that info from blockgroupstats 
 library(data.table)
 bg <- data.table::copy(blockgroupstats)
 bg <- data.table::setDF(bg)
@@ -98,63 +82,50 @@ golem::detach_all_attached() # unattach EJAM:: pkg while doing this to avoid con
 cbind(percent.NA   =  round(sapply(bg[,names_d_subgroups_both], function(x) sum(is.na(x) )) / NROW(bg), 3) * 100) # count is.na values for each indicator
 cbind(percent.zero =  round(sapply(bg[,names_d_subgroups_both], function(x) sum(0 == (x), na.rm = T)) / NROW(bg), 3) * 100) # count zero  values for each indicator
   
-# need ST column in blockgroupstats to create the statestats lookup table of demog subgroup info,
-# so add FIPS.ST and ST columns to blockgroupstats if not already there
-
-if (!("ST" %in% names(bg))) {
-  # bg = ejanalysis package file addFIPScomponents(bg, fipscolname = "bgfips",  clean = FALSE)
-  # bg$FIPS.ST <- substr(bg$bgfips,1,2)
-  # bg$ST <- EJAM::stateinfo$ST[match(bg$FIPS.ST, EJAM::stateinfo$FIPS.ST)]
-  bg$ST <- bg$ST_ABBREV
-}
-  
   ############################################################################# # 
 
-
+warning('RESOLVE QUESTION OF WHETHER US PCTILES ARE AMONG 50 STATES PLUS DC, OR ALSO PR, OR EVEN ALSO ISLAND AREAS')
     # need to first RESOLVE QUESTION OF WHETHER US PCTILES ARE AMONG 50 STATES PLUS DC, OR ALSO PR, OR EVEN ALSO ISLAND AREAS.
   # SEEMS LIKE US PCTILE SHOULD BE AMONG 50+DC, EXCLUDING PR?
   # THEN STATE-SPECIFIC PCTILES WILL TREAT DC AND PR AS STATES, 
   # AND NOT SURE IF ISLAND AREAS GET PCTILES CREATED AND WHAT DATA ARE AVAILABLE IN THEM.
-  
-  
-  
+# > unique(bg$ST[is.island(bg$ST)])
+# note some of ST are among AS, GU, MP, UM, VI
+# [1] "AS" "GU" "MP" "VI"
+
   ############################################################################# # 
-  # statestats has some NA values, and some missing columns:
+  # statestats has some NA values, and some missing columns?
   # 
-  # also, no Island Areas here at all as rows
-  # also, no d_subgroups numbers yet - only names_d_subgroups_alone were there and zero values were there, not NA values.
-  
+  #  no d_subgroups numbers yet  
   
 ############################################################################# # 
 
 updated = FALSE
 
-# drop the std.dev rows since never used and dropping them again for each indicator in looping use of pctile_from_raw_lookup() is kind of slow.
-if (("std.dev" %in% (  usastats$PCTILE))) {  usastats <-   usastats[  usastats$PCTILE != "std.dev", ] ; updated = TRUE}
-if (("std.dev" %in% (statestats$PCTILE))) {statestats <- statestats[statestats$PCTILE != "std.dev", ] ; updated = TRUE}
+# drop the std rows since never used and dropping them again for each indicator in looping use of pctile_from_raw_lookup() is kind of slow.
+if (("std" %in% (  usastats$PCTILE))) {  usastats <-   usastats[  usastats$PCTILE != "std", ] ; updated = TRUE}
+if (("std" %in% (statestats$PCTILE))) {statestats <- statestats[statestats$PCTILE != "std", ] ; updated = TRUE}
 
 ############################################################################ # 
 
 ################################################ #
 # Add to demog subgroups to percentile lookup tables #### 
 
-
 ################################################ #
 ## CREATE USA LOOKUP for subgroups ####
 ################################################ #
 
-
- names(usastats)
+ # names(usastats)
 
 if (all(usastats[,intersect(names_d_subgroups_both, names(usastats))] == 0)  | 
     any(!(names_d_subgroups_both %in% names(usastats))))  {
-  # Error in `[.data.frame`(usastats, , names_d_subgroups_both) : 
-  #   undefined columns selected
   
   usastats_subgroups   <- pctiles_lookup_create(data.frame(bg)[ , names_d_subgroups_both]) # function from EJAM package
   usastats_subgroups <- rbind(0, usastats_subgroups); usastats_subgroups$PCTILE[1] <- 0
   usastats_subgroups[1, c("OBJECTID", "REGION")] <- c(0, "USA")
-
+# dim(usastats_subgroups)
+# [1] 102  19
+  dim(usastats)
   usastats2 <- cbind(usastats, usastats_subgroups[ , setdiff(names(usastats_subgroups), names(usastats))  ])
 
   # sort cols as sorted in names_d_subgroups_both
@@ -216,8 +187,7 @@ if (all(usastats[,intersect(names_d_subgroups_both, names(usastats))] == 0)  |
     othervars <- setdiff(names(statestats2), subvars)
     statestats2 <- statestats2[ , c(othervars, subvars)]
   }
-  statestats2   <- EJAM::metadata_add(statestats2)
-  attr(statestats2, "ejscreen_releasedate") <- '2023-08-21'
+ 
   statestats <- statestats2
   # done with state file
  rm(statestats2)
@@ -226,20 +196,6 @@ if (all(usastats[,intersect(names_d_subgroups_both, names(usastats))] == 0)  |
   rm(morecols, updated, subvars, statestats_subgroups, zerorowperstate, othervars)
   ########################################################## # 
   
-  # now save these within the EJAM package as datasets
-
-  data.table::setDF(usastats) # keep as data.frame actually in the package
-  data.table::setDF(statestats) # keep as data.frame actually
-  
-  # setwd(file.path(Sys.getenv("R_USER"), "EJAM")); getwd() # just make sure this is the right one
-  
-  usastats   <- EJAM::metadata_add(usastats)
-  statestats <- EJAM::metadata_add(statestats)
-  
-  # attr(  usastats, 'ejscreen_releasedate') <- "2023-09"
-  # attr(statestats, 'ejscreen_releasedate') <- "2023-09"
-  # attr(  usastats, 'download_date') <- Sys.time()
-  # attr(statestats, 'download_date') <- Sys.time()
   
     attributes(  usastats)[!("row.names" == names(attributes(usastats)))] 
   attributes(statestats)[!("row.names" == names(attributes(statestats)))] 
@@ -252,13 +208,10 @@ if (all(usastats[,intersect(names_d_subgroups_both, names(usastats))] == 0)  |
   statestats$OBJECTID <- NULL
   
 # fix scaling of percentages of new groups:
-    usastats[, unique(c(EJAM::names_d_subgroups_alone, EJAM::names_d_subgroups_nh))] <-   usastats[, unique(c(EJAM::names_d_subgroups_alone, EJAM::names_d_subgroups_nh))]  / 100
-  statestats[, unique(c(EJAM::names_d_subgroups_alone, EJAM::names_d_subgroups_nh))] <- statestats[, unique(c(EJAM::names_d_subgroups_alone, EJAM::names_d_subgroups_nh))]  / 100
-  
-  # COMPAREd AUGUST AND SEPTEMBER VERSIONS
- 
-  usethis::use_data(  usastats, overwrite = T)
-  usethis::use_data(statestats, overwrite = T) 
+    usastats[, unique(c(names_d_subgroups_alone, names_d_subgroups_nh))] <-   usastats[, unique(c( names_d_subgroups_alone, 
+                                                                                                   names_d_subgroups_nh))]  / 100
+  statestats[, unique(c(names_d_subgroups_alone,  names_d_subgroups_nh))] <- statestats[, unique(c( names_d_subgroups_alone, 
+                                                                                                    names_d_subgroups_nh))]  / 100
   rm(bg)
   
   # save.image(file = 'work on usastats and statestats 2024-07.rda')

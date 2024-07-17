@@ -7,11 +7,10 @@ used by varinfo() and fixcolnames()}
 \usage{
 fixmapheadernamescolname(
   x,
-  alias_list = list(rname = "r", longname_tableheader = c("long", "longname",
-    "longnames", "full", "description"), shortlabel = c("short", "shortname",
-    "shortnames", "labels", "label"), apiname = "api", csvname2.3 = c("csv", "csvname"),
-    csvname2.2 = "csvname2.2", newnames_ejscreenapi = "friendly", oldnames =
-    c("original", "old", "oldname"))
+  alias_list = list(rname = "r", longname = c("long", "longnames", "full",
+    "description"), shortlabel = c("short", "shortname", "shortnames", "labels",
+    "label"), acsname = "acs", apiname = "api", csvname = c("csv"), oldname =
+    c("original", "old", "oldnames"))
 )
 }
 \arguments{

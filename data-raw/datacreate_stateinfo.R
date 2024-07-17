@@ -68,7 +68,7 @@ stateinfo <- structure(list(
 
 ###################################################################################### # 
 
-stateinfo <-  EJAM::metadata_add(stateinfo)
+stateinfo <-  metadata_add(stateinfo)
 usethis::use_data(stateinfo, overwrite = TRUE)
 
 ###################################################################################### # 

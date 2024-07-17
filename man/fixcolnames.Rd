@@ -4,7 +4,7 @@
 \alias{fixcolnames}
 \title{helper function to rename variables that are colnames of data.frame}
 \usage{
-fixcolnames(namesnow, oldtype = "csvname2.3", newtype = "r", mapping_for_names)
+fixcolnames(namesnow, oldtype = "csvname", newtype = "r", mapping_for_names)
 }
 \arguments{
 \item{namesnow}{vector of colnames to be renamed}

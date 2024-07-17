@@ -2260,7 +2260,7 @@ app_server <- function(input, output, session) {
         # popup_labels <- c(data_processed()$longnames, 'State Name')
         # popup_labels[popup_labels == ""] <- map_headernames$names_friendly[match(
         #   names(data_processed()$results_bysite)[popup_labels == ""],
-        #   EJAMejscreenapi :: map_headernames$newnames_ejscreenapi)]
+        #   map_headernames$rname)]
         #
         # popup_labels <- map_headernames$names_friendly[match(names(data_processed()$results_bysite),map_headernames$rname)] # fixcolnames() is easier to read
         popup_labels <- fixcolnames(namesnow = names(data_processed()$results_bysite), oldtype = 'r', newtype = 'shortlabel')
@@ -2647,7 +2647,7 @@ app_server <- function(input, output, session) {
   # })
   # output$overall_results_tall <- renderDT({
   #   tallout <- cbind(overall = round(unlist(data_processed()$results_overall), 3))
-  #   rownames(tallout) <- fixnames_to_type(rownames(tallout), "newnames_ejscreenapi", "longname_tableheader")
+  #   rownames(tallout) <- fixnames_to_type(rownames(tallout), "rname", "longname")
   #   tallout
   # })
   

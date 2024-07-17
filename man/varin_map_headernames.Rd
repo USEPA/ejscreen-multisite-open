@@ -7,10 +7,10 @@
 varin_map_headernames(
   query = "lowinc",
   ignore.case = TRUE,
-  cols_with_names = c("oldnames", "apiname", "ejscreen_api", "api_synonym", "acsbgname",
-    "csvname2.2", "ejscreen_csv", "rname", "newnames_ejscreenapi", "topic_root_term",
-    "basevarname", "denominator", "shortlabel", "names_friendly", "longname_tableheader",
-    "description", "csvlongname", "api_description", "varlist")
+  cols_with_names = c("oldname", "apiname", "api_synonym", "acsname", "csvname",
+    "ejscreen_csv", "rname", "topic_root_term", "basevarname", "denominator",
+    "shortlabel", "longname", "description", "csvlongname", "api_description",
+    "acs_description", "varlist")
 )
 }
 \arguments{

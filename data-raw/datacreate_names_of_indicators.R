@@ -76,13 +76,13 @@ if ( 1 == 0 ) {
   out[maphead.names_friendly != names_x_friendly , .(vlist, names_x_friendly, maphead.names_friendly )][1:100, ]
   
   # i think maphead.names_friendly in xlsx should be replaced to be identical to names_x_friendly and get those 
-  # from long, since map_headernames$longname_tableheader is the longest and most accurate full description.
+  # from long, since map_headernames$longname  is the longest and most accurate full description.
   # So just keep the very short name in shortlabel and the very long one in longnames_tableheader,
   # but change maphead.names_friendly, names_x_friendly by 
-  #copying the map_headernames$longname_tableheader column and 
+  #copying the map_headernames$longname column and 
   #pasting it onto (replacing) map_headernames$names_friendly column
   # AND manually replace in EJAM/data-raw/datacreate_names_of_indicators.R,
-  #  all the names_xyz_friendly lists with what is in map_headernames$longname_tableheader somehow.
+  #  all the names_xyz_friendly lists with what is in map_headernames$longname somehow.
   
   # see out df above  to see the careful names from this file and namez etc.
   ## and maybe put them into mapheadernames longnames and namesfriendly columns where better?
@@ -107,9 +107,9 @@ subgroups_type <- c(  'nh', 'alone')[1]  # simple names without _nh or _alone sh
 # names_ej_friendly can be used instead for pctiles, probably, since it does not mention whether it is raw or percentile
 
 # library(EJAMejscreenapi)
-# map_headernames[grepl("ej", map_headernames$varlist), c('varlist', 'newnames_ejscreenapi', 'names_friendly')]
-# map_headernames[grepl("_d", map_headernames$varlist), c('varlist', 'newnames_ejscreenapi', 'names_friendly')]
-# map_headernames[map_headernames$varlist == 'names_e' | grepl("names_e_", map_headernames$varlist), c('varlist', 'newnames_ejscreenapi', 'names_friendly')]
+# map_headernames[grepl("ej", map_headernames$varlist), c('varlist', 'rname', 'names_friendly')]
+# map_headernames[grepl("_d", map_headernames$varlist), c('varlist', 'rname', 'names_friendly')]
+# map_headernames[map_headernames$varlist == 'names_e' | grepl("names_e_", map_headernames$varlist), c('varlist', 'rname', 'names_friendly')]
 # unique(map_headernames$varlist)
 
 
@@ -166,7 +166,7 @@ subgroups_type <- c(  'nh', 'alone')[1]  # simple names without _nh or _alone sh
 
 
 # see also:   
-#          map_headernames$newnames_ejscreenapi[ mapheadernames$varlist == "names_d] 
+#          map_headernames$rname[ mapheadernames$varlist == "names_d] 
 
 # see also:  EJAM/data-raw/names_of_indicators.R (this file)
 
@@ -205,7 +205,7 @@ names_d_friendly <- fixcolnames(names_d, 'r', 'long')
 names_d_count_friendly <- fixcolnames(names_d_count, 'r', 'long')
 
 # names_d_count_friendly <- paste0("Count of ", gsub("% ", "", names_d_friendly))
-# all.equal(names_d_count_friendly, map_headernames$longname_tableheader[map_headernames$varlist == "names_d_count"])
+# all.equal(names_d_count_friendly, map_headernames$longname[map_headernames$varlist == "names_d_count"])
 # [1] TRUE
 # cbind(names_d_count_friendly, paste0("Count of ", gsub("% ", "", names_d_count_friendly)))
 # >  cbind(names_d_count_friendly, paste0("Count of ", gsub("% ", "", names_d_count_friendly)))
@@ -345,7 +345,7 @@ all.equal(names_d_subgroups_nh_count_friendly, gsub("% ", "Count of ", names_d_s
 names_e           <- map_headernames$rname[map_headernames$varlist == "names_e"]
 names_e_friendly  <- fixcolnames(names_e, 'r', 'long') 
 all.equal(names_e_friendly, 
-          map_headernames$longname_tableheader[map_headernames$varlist == "names_e"]
+          map_headernames$longname[map_headernames$varlist == "names_e"]
 )
 
 ############################################################################## #
@@ -360,7 +360,7 @@ all.equal(names_e_friendly,
 
 # raw EJ actually has all 4 of these: US normal, State normal; US Suppl, State Suppl  versions (+friendly)
 
-# cbind(map_headernames$longname_tableheader[map_headernames$varlist == "names_e"], map_headernames$longname_tableheader[map_headernames$varlist == "names_ej"])
+# cbind(map_headernames$longname[map_headernames$varlist == "names_e"], map_headernames$longname[map_headernames$varlist == "names_ej"])
 
 names_ej <- map_headernames$rname[map_headernames$varlist == "names_ej"] # paste0('EJ.DISPARITY.', names_e, '.eo')
 all.equal(names_ej, paste0('EJ.DISPARITY.', names_e, '.eo'))

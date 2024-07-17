@@ -149,18 +149,7 @@ varnames <- c("blockgroupstats_new",
               "usastats_new",
               "statestats_new")
 ########################### #
-savearrow <- function(varnames, fnames = paste0(varnames, ".arrow"), localfolder = getwd()) {
-  ## to save as .arrow files
-  localpaths  <- paste0(localfolder, '/', fnames)
-  # require(arrow)
-  for (i in 1:length(varnames)) {
-    text_to_do <- paste0("x <- arrow::write_ipc_file(", varnames[i],", ", "sink = '", localpaths[i], "')")
-    cat(" ", text_to_do, '\n')
-    x <- eval(parse(text = text_to_do)) # executes the command
-  }
-  return(x) # ?
-}
-########################### #
+
 if (interactive()) {
   ASARROW = askYesNo("Save copies as .arrow ? (not .rda)", default = FALSE)
 } else {
@@ -168,7 +157,7 @@ if (interactive()) {
 }
 if (ASARROW) {
   fnames = paste0(paste0(varnames,  "_as_on_ftp"), ".arrow")
-  savearrow(varnames = varnames, fnames = fnames, localfolder = localfolder)
+  datawrite_to_local(varnames = varnames, fnames = fnames, localfolder = localfolder, overwrite = TRUE)
   for (i in seq_along(fnames)) {
     cat(file.path(localfolder, fnames[i]), " saved: "); cat(file.exists(file.path(localfolder, fnames[i]))); cat("\n")
   }
@@ -402,6 +391,9 @@ setDT(blockgroupstats_new)
 setcolorder(blockgroupstats_new, c("bgid", "bgfips", "statename", "ST", "countyname", "REGION",
                                    "pop",
                                    names_d, names_e), before = 1)
+
+# save local copy for convenience ####
+datawrite_to_local("bgej", localfolder = localfolder)
 
 ## bgej is left in globalenv by this script -
 # later can Save bgej to pins board as .arrow file
