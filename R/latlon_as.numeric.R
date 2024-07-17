@@ -26,25 +26,25 @@
 #' @keywords internal
 #'
 latlon_as.numeric <- function(x) {
-  if (!is.null(dim(x)) | !is.atomic(x)) {
+  
+  if (!is.null(dim(x)) || !is.atomic(x) || is.null(x) || length(x) == 0) {
     if (shiny::isRunning()) {
       warning('latlon_as.numeric(x) expects x to be a vector like 1:10 or df$mycol, not a data.frame, list, or anything else.')
       return(NA)
     } else {
-      stop('latlon_as.numeric(x) expects x to be a vector like 1:10 or df$mycol, not a data.frame, list, or anything else.')
-      
+      stop('latlon_as.numeric(x) expects x to be a vector like 1:10 or df$mycol, not a data.frame, list, length zero, or anything else.')
     }
   }
-  if (is.null(x)) {warning("No values provided to latlon_as.numeric()"); return(NA)}
- 
-  if (!is.null(dim(x)) | !is.atomic(x) | is.list(x)) {stop('latlon_as.numeric(x) expects x to be a vector like 1:10 or df$mycol, not a data.frame, list, or anything else.')}
+
   oldx <- x
   x <- (gsub('[^012345678.9-]', '',  x))
   # NOTE THIS does not warn if NA was an input but does warn if other stuff was input (presumably intended as numbers) that gets turned into NA:
-  if (any(x[!is.na(oldx)] == '' & oldx[!is.na(oldx)] != '')) warning('After stripping non numeric characters via latlon_as.numeric(x), no actual number was left in at least some elements of x, and returning NA in those cases.')
+  if (any(x[!is.na(oldx)] == '' & oldx[!is.na(oldx)] != '')) {
+    warning('After stripping non numeric characters via latlon_as.numeric(x), no actual number was left in at least some elements of x, and returning NA in those cases.')
+  }
   return(as.numeric(x))
   
   # removes anything other than numeric characters used in lat or lon, so retain only minus signs, decimal points, and numeric digits.
-  # fix crash when read lat or lon that has any characters in it besides minus, decimal, and number, like not just whitespace but also tab or other strange characters
+  # may want to fix crash when read lat or lon that has any characters in it besides minus, decimal, and number, like not just whitespace but also tab or other strange characters...
   # as.numeric(trimws(x)) # would do only part of this.
 }

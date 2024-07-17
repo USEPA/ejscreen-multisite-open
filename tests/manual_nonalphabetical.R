@@ -111,6 +111,7 @@ if (testing_in_logical_order) {
       "test-latlon_from_anything.R",
       "test-address_xyz.R", 
       "test-latlon_from_address.R",
+      "test-latlon_from_vectorofcsvpairs.R",
       
       "test-MAP_FUNCTIONS.R",
       
@@ -130,7 +131,7 @@ if (testing_in_logical_order) {
   setdiff(tnames1, tnames2)
   setdiff(tnames2, tnames1)
   if (!setequal(tnames1, tnames2)) {
-    cat("need to add new files to list above and below")
+    cat("need to add new files to list above and below\n")
     stop("add new files to list above and below")
   }
   ########################################## # 
@@ -171,7 +172,8 @@ if (testing_in_logical_order) {
       "test-latlon_from_anything.R",   
       "test-latlon_from_sic.R",
       "test-address_xyz.R", 
-      "test-latlon_from_address.R"  
+      "test-latlon_from_address.R",
+      "test-latlon_from_vectorofcsvpairs.R"
     )
     
     test_maps <- c(

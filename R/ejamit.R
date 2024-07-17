@@ -290,8 +290,9 @@ ejamit <- function(sitepoints,
       ################################################################################## #
       
       if (!silentinteractive) {cat('Finding blocks nearby.\n')}
-      
+      ################################################################################## #
       # if user entered a table, path to a file (csv, xlsx), or whatever, then read it to get the lat lon values from there
+      # sitepoints <- sitepoints_from_anything(sitepoints) # COULD SWITCH TO USE THIS AND DROP ejam_uniq_id code below
       sitepoints <- latlon_from_anything(sitepoints)
       stopifnot(is.data.frame(sitepoints), "lat" %in% colnames(sitepoints), "lon" %in% colnames(sitepoints), NROW(sitepoints) >= 1, is.numeric(sitepoints$lat))
       
@@ -300,7 +301,7 @@ ejamit <- function(sitepoints,
         # message('sitepoints did not contain a column named ejam_uniq_id, so one was added')
         sitepoints$ejam_uniq_id <- seq.int(length.out = NROW(sitepoints))
       }
-      
+      ################################################################################## #
       mysites2blocks <- getblocksnearby(
         sitepoints = sitepoints,
         radius = radius,
@@ -434,7 +435,7 @@ ejamit <- function(sitepoints,
   
   # (doaggregate does not provide this)
   
-  out$results_summarized <- EJAMbatch.summarizer::batch.summarize(   # disabled only in ejam lite package ***
+  out$results_summarized <- EJAMbatch.summarizer::batch.summarize(
     sitestats = data.frame(out$results_bysite),
     # popstats =  data.frame(out$results_bysite), # now does not have to get passed twice
     quiet = quiet,
@@ -483,10 +484,11 @@ ejamit <- function(sitepoints,
     )
     ###################################### #
     
-    cat("To view or save, see ejam2report(), ejam2excel(), ejam2map(), ejam2ratios(), ejam2barplot(), etc.   \n\n")
-    
     cat('Output is a list with the following names:\n')
     print(EJAM:::structure.of.output.list(out) )
+    
+    cat("\nTo view or save, see ejam2report(), ejam2excel(), ejam2map(), ejam2ratios(), ejam2barplot(), etc.   \n\n")
+
 
   }
   ################################################################ #

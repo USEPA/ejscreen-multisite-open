@@ -7,7 +7,8 @@
 latlon_is.valid(lat, lon, quiet = TRUE)
 }
 \arguments{
-\item{lat}{vector of latitudes}
+\item{lat}{vector of latitudes
+(or data.frame with colnames lat and lon, in which case lon param must be missing)}
 
 \item{lon}{vector of longitudes}
 
