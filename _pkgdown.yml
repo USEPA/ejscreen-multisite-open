@@ -264,7 +264,6 @@ reference:
 - subtitle: "Map Popups"
   contents:
   - popup_from_any
-  - popup_from_df
 - subtitle: "Plots"
   contents:
   - ejam2barplot
@@ -364,6 +363,7 @@ reference:
   - map_shapes_leaflet_proxy
   - map_facilities
   - map_facilities_proxy
+  - popup_from_df
   - quaddata
   - datawrite_to_local
   - is.island

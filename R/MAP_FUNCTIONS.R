@@ -349,9 +349,11 @@ map_shapes_mapview <- function(shapes, col.regions = "green", map.types = "OpenS
     warning("mapview package would be needed and is not attached - checking if installed")
     junk <- try(find.package("mapview"), silent = TRUE)
     if (inherits(junk, "try-error")) {
-      stop("mapview package is not available")
+      warning("mapview package does not appear to be installed")
+      return(NULL)
     } else {
-      stop("mapview package appears to be installed but not attached. Try using library() or require()")
+      warning("mapview package appears to be installed but not attached. Try using library(mapview) or require(mapview)")
+      return(NULL)
     }
   } else {
     mapview(shapes, col.regions = col.regions, map.types = map.types)

@@ -15,7 +15,7 @@ if (try_demo_module_here) {
   golem::detach_all_attached()
   rm(list = ls())
   pkgs <- c('shiny', 'dplyr', 'rhandsontable', 'data.table', 'leaflet') 
-  # note it does not require EJAM package but does need to be able to do this- EJAMejscreenapi :: popup_from_df(mypoints) 
+  # 
   for (pkg in pkgs) {require(pkg, character.only = TRUE)}
   
   ################################################ ################################################# #
@@ -113,7 +113,7 @@ if (try_demo_module_here) {
             addCircles(      lat = ~latitude, lng = ~longitude,
                              radius = 50000, # 50000 meters is 50km   #  3 * meters_per_mile ,  # radius_miles() * meters_per_mile, 
                              color = "red", fillColor = "red",   fill = TRUE,  
-                             popup = popup_from_df(mypoints)     
+                             popup = popup_from_any(mypoints)     
             )
           #### %>% clearBounds() # clears the bound, so that the view will be automatically determined by the range of latitude/longitude data in the map layers if provided;
           mymap

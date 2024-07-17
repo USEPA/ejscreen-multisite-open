@@ -334,25 +334,46 @@ if (testing_in_logical_order) {
   ########################### #  ########################################## #
   ########################### #  ########################################## #
   
-  ## to TEST JUST ONE FILE OR ONE GROUP:
-  
-  partial_testlist <- list(test_ejamit = test_ejamit)
-  # or 
-  partial_testlist <- list(test_fips = test_fips)
-  partial_testlist <- list(test_fips =  c( "test-state_from_fips.R"))
-  
-  ## uncomment this to use it: 
-  # test_partial <- testbygroup(testlist = partial_testlist)
-  
 } # end if, setup
 
 ########################### #  ########################################## #
 ########################### #  ########################################## #
 
 if (testing_in_logical_order) {
+  
+  
+  ## to TEST JUST ONE FILE OR ONE GROUP:
+  
+  #    test_file("./tests/testthat/test-MAP_FUNCTIONS.R" )
+  ## or
+  
+  partial_testlist <- list(
+    
+    # test_fips = test_fips,
+    # test_naics,
+    # test_frs,
+    # test_latlon,
+    test_maps = test_maps,
+    # test_shape,
+    # test_getblocks,
+    # test_fixcolnames,
+    # test_doag,
+    # test_ejamit,
+    # test_mod,
+    test_app = test_app
+  )
+  # or 
+  #   partial_testlist <- list(test_fips =  c( "test-state_from_fips.R"))
+  
+  ## uncomment this to use it: 
+  # 
+  #        test_partial <- testbygroup(testlist = partial_testlist)
+  
+  ########################### #  ########################################## #
+  
   # RUN ALL THE TESTS  ####
   
-  ## takes 5 minutes or so
+  ## takes almost 5 minutes 
   
   x <- system.time({
     testall <- testbygroup(testlist = testlist)

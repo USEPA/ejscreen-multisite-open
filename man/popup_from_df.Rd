@@ -2,7 +2,8 @@
 % Please edit documentation in R/popup_from_df.R
 \name{popup_from_df}
 \alias{popup_from_df}
-\title{Map popups - Simple map popup from a data.frame, one point per row}
+\title{Map popups - Simple map popup from a data.frame, one point per row
+MAY DEPRECATE - See popup_from_any() for newer more general replacement for this.}
 \usage{
 popup_from_df(x, column_names = names(x), labels = column_names, n = "all")
 }
@@ -21,7 +22,8 @@ A vector of strings, one per row or map point,
 with a line break separating column elements
 }
 \description{
-Creates popup that leaflet::addPopups can use.
+Map popups - Simple map popup from a data.frame, one point per row
+MAY DEPRECATE - See popup_from_any() for newer more general replacement for this.
 }
 \details{
 Each popup is made from one row of the data.frame.

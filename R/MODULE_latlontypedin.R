@@ -141,7 +141,7 @@ if (try_this_module_here) {
                        radius = 10000 ,  # radius_miles() * meters_per_mile,
                        color = "red", fillColor = "red", fill = TRUE,
                        # color = base_color(), fillColor = base_color(), fill = TRUE, weight = circleweight,
-                       popup = popup_from_df(mypoints)   )
+                       popup = popup_from_any(mypoints)   )
           mymap
         })
       } else {  # length(mypoints) == 0
