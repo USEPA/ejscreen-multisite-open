@@ -2544,46 +2544,34 @@ app_server <- function(input, output, session) {
   #############################################################################  #
   
   # Function to generate HTML content (community_download function)
-  community_download <- function() {
-    tempReport <- file.path(tempdir(), 'community_report_template.Rmd')
-    
-    # Copy necessary files to temporary directory
-    if (!file.exists(file.path(tempdir(), 'communityreport.css'))) {
-      file.copy(from = app_sys('report/community_report/communityreport.css'),
-                to = file.path(tempdir(), 'communityreport.css'), overwrite = TRUE)
-    }
-    
-    if (!file.exists(file.path(tempdir(), 'www', 'EPA_logo_white_2.png'))) {
-      dir.create(file.path(tempdir(), 'www'))
-      file.copy(from = app_sys('report/community_report/EPA_logo_white_2.png'),
-                to = file.path(tempdir(), 'www', 'EPA_logo_white_2.png'), overwrite = TRUE)
-    }
-    
-    # Copy Rmd file to temp directory
-    file.copy(from = app_sys('report/community_report/community_report_template.Rmd'),
-              to = tempReport, overwrite = TRUE)
+  # Modify the community_download function to accept a row_index parameter
+  community_download <- function(file, row_index = NULL) {
+    tempReport <- setup_temp_files()
     
     # Define parameters for Rmd rendering
     rad <- data_processed()$results_overall$radius.miles
-    popstr <- prettyNum(total_pop(), big.mark = ',')
     
-    if (submitted_upload_method() == 'SHP') {
-      location_type <- " selected polygons"
-      radiusstr <- paste0(rad, " mile", ifelse(rad > 1, "s", ""), " of ")
-    } else if (submitted_upload_method() == 'FIPS') {
-      location_type <- " selected shapes"
-      radiusstr <- ""
+    # Adjust the data based on whether a specific row is selected
+    if (!is.null(row_index)) {
+      output_df <- data_processed()$results_bysite[row_index, ]
+      popstr <- prettyNum(output_df$pop, big.mark = ',')
+      
+      # Get the name of the selected location
+      location_name <- output_df$statename
+      
+      locationstr <- paste0("Residents within ", rad, " mile", ifelse(rad > 1, "s", ""), 
+                            " of the selected location within ", location_name)
     } else {
-      location_type <- " selected points"
-      radiusstr <- paste0(rad, " mile", ifelse(rad > 1, "s", ""), " of ")
+      output_df <- data_processed()$results_overall
+      popstr <- prettyNum(total_pop(), big.mark = ',')
+      locationstr <- paste0("Residents within ", rad, " mile", ifelse(rad > 1, "s", ""), 
+                            " of any of the ", NROW(data_processed()$results_bysite[data_processed()$results_bysite$valid == T,]), 
+                            " selected ", ifelse(submitted_upload_method() == 'SHP', "polygons", 
+                                                 ifelse(submitted_upload_method() == 'FIPS', "shapes", "points")))
     }
     
-    locationstr <- paste0("Residents within ",
-                          radiusstr,
-                          "any of the ", NROW(data_processed()$results_bysite[data_processed()$results_bysite$valid == T,]), location_type)
-    
     params <- list(
-      output_df = data_processed()$results_overall,
+      output_df = output_df,
       analysis_title = input$analysis_title,
       totalpop = popstr,
       locationstr = locationstr,
@@ -2597,14 +2585,14 @@ app_server <- function(input, output, session) {
     # Render Rmd to HTML
     rmarkdown::render(tempReport,
                       output_format = 'html_document',
-                      output_file = NULL,
+                      output_file = file,
                       params = params,
                       envir = new.env(parent = globalenv()),
                       intermediates_dir = tempdir()
     )
   }
   
-  # Wrapper function with downloadHandler
+  # downloadHandler for community_download
   output$community_download <- downloadHandler(
     filename = function() {
       create_filename(
@@ -2617,8 +2605,30 @@ app_server <- function(input, output, session) {
       )
     },
     content = function(file) {
-      html_content <- community_download()
-      file.rename(html_content, file)
+      community_download(file)
+    }
+  )
+  
+  # downloadHandler for the modal download button
+  output$download_report <- downloadHandler(
+    filename = function() {
+      location_suffix <- if (!is.null(selected_location_name())) {
+        paste0(" - ", selected_location_name())
+      } else {
+        ""
+      }
+      create_filename(
+        file_desc = paste0('community report', location_suffix),
+        title = input$analysis_title,
+        buffer_dist = current_slider_val[[submitted_upload_method()]],
+        site_method = submitted_upload_method(),
+        with_datetime = TRUE,
+        ext = ifelse(input$format1pager == 'pdf', '.pdf', '.html')
+      )
+    },
+    content = function(file) {
+      req(temp_file_path())
+      file.copy(temp_file_path(), file)
     }
   )
   
@@ -2815,7 +2825,34 @@ app_server <- function(input, output, session) {
   #############################################################################  #
   ## SUMMARY REPORT ON 1 SITE (via Button on Table of Sites) ####
   cur_button <- reactiveVal(NULL)
-  # also see  ejam2report() which mirrors the code below but as a function outside shiny
+  temp_file_path <- reactiveVal(NULL)
+  selected_location_name <- reactiveVal(NULL)
+  
+  # Function to copy necessary files to temp directory
+  setup_temp_files <- function() {
+    tempReport <- file.path(tempdir(), 'community_report_template.Rmd')
+    
+    # Copy Rmd file to temp directory
+    file.copy(from = app_sys('report/community_report/community_report_template.Rmd'),
+              to = tempReport, overwrite = TRUE)
+    
+    # Copy CSS file
+    if (!file.exists(file.path(tempdir(), 'communityreport.css'))) {
+      file.copy(from = app_sys('report/community_report/communityreport.css'),
+                to = file.path(tempdir(), 'communityreport.css'), overwrite = TRUE)
+    }
+    
+    # Copy logo file
+    if (!file.exists(file.path(tempdir(), 'www', 'EPA_logo_white_2.png'))) {
+      dir.create(file.path(tempdir(), 'www'), showWarnings = FALSE, recursive = TRUE)
+      file.copy(from = app_sys('report/community_report/EPA_logo_white_2.png'),
+                to = file.path(tempdir(), 'www', 'EPA_logo_white_2.png'), overwrite = TRUE)
+    }
+    
+    return(tempReport)
+  }
+  
+  # Observer for the submit buttons
   observeEvent(
     lapply(
       names(input)[grep("select_button[0-9]+", names(input))],
@@ -2826,60 +2863,33 @@ app_server <- function(input, output, session) {
         req(data_processed())
         req(cur_button())
         x <- as.numeric(gsub('button_','', cur_button()))
-        if ( data_processed()$results_bysite$valid[x] == T) {
-          popstr <- prettyNum(round(data_processed()$results_bysite$pop[x]), big.mark = ',')
-          
-          if (submitted_upload_method() == 'SHP') {
-            locationstr <- paste0('Polygon ', data_up_shp()[x,]$OBJECTID_1)
-            if (data_processed()$results_bysite[x,]$radius.miles > 0) {
-              locationstr <- paste0(locationstr, '<br>with ', data_processed()$results_bysite[x,]$radius.miles, ' mile buffer')
-            }
-          } else if (submitted_upload_method() == 'FIPS') {
-            locationstr <- paste0('FIPS Code ', data_processed()$results_bysite[x,]$ejam_uniq_id)
-          } else {
-            locationstr <- paste0(data_processed()$results_bysite[x,]$radius.miles, ' Mile Ring Centered at ',
-                                  data_processed()$results_bysite[x,]$lat, ', ',
-                                  data_processed()$results_bysite[x,]$lon, '<br>', 'Area in Square Miles: ',
-                                  round(pi * data_processed()$results_bysite[x,]$radius.miles^2, 2)
-            )
-          }
-          
-          if (!('main.css' %in% list.files(tempdir()))) {
-            file.copy(from = app_sys('report/community_report/main.css'),
-                      to = file.path(tempdir(), 'main.css'), overwrite = TRUE)
-          }
-          if (!('communityreport.css' %in% list.files(tempdir()))) {
-            file.copy(from = app_sys('report/community_report/communityreport.css'),
-                      to = file.path(tempdir(), 'communityreport.css'), overwrite = TRUE)
-          }
-          
-          if (!('EPA_logo_white.png') %in% list.files(file.path(tempdir(), 'www'))) {
-            dir.create(file.path(tempdir(), 'www'))
-            file.copy(from = app_sys('report/community_report/EPA_logo_white.png'),
-                      to = file.path(tempdir(), 'www', 'EPA_logo_white.png'), overwrite = TRUE)
-          }
-          temp_comm_report <- file.path(tempdir(), paste0("comm_report",x,".html"))
-          
-          tempReport <- file.path(tempdir(), 'community_report_template.Rmd')
-          
-          file.copy(from = app_sys('report/community_report/community_report_template.Rmd'),
-                    to = tempReport, overwrite = TRUE)
-          
-          build_community_report(
-            output_df = data_processed()$results_bysite[x,],
-            analysis_title = input$analysis_title,
-            totalpop = popstr,
-            locationstr = locationstr,
-            include_ejindexes = input$include_ejindexes,
-            in_shiny = F,
-            filename = temp_comm_report
-          )
-          
-        } else {
-          showModal(modalDialog(title = 'Report not available',
-                                'Individual site reports not yet available.'))
-        }
+        
+        # Get the name of the selected location
+        location_name <- data_processed()$results_bysite[x, "statename"]
+        selected_location_name(location_name)
+        
+        # Create a temporary file name
+        temp_file <- tempfile(fileext = ifelse(input$format1pager == 'pdf', '.pdf', '.html'))
+        
+        # Store the temporary file path in the reactive value
+        temp_file_path(temp_file)
+        
+        # Call the community_download function with the current row index
+        community_download(file = temp_file, row_index = x)
+        
+        # Trigger the download
+        showModal(modalDialog(
+          title = "Download Ready",
+          "Your report is ready. Click the button below to download.",
+          footer = tagList(
+            downloadButton("download_report", "Download Report"),
+            modalButton("Close")
+          ),
+          easyClose = TRUE,
+          size = "m"
+        ))
       })
+  
   
   
   ## EXCEL DOWNLOAD  ####
