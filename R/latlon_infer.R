@@ -23,6 +23,16 @@
 latlon_infer <- function(mycolnames) {
   
   x <- mycolnames
+  if (!is.atomic(x) || !is.vector(x)) {
+    if (is.data.frame(x)) {
+      stop("latlon_infer() requires a vector of colnames(yourdata.frame) as input, not a data.frame")
+    } else {
+      stop("latlon_infer() requires a vector of colnames as input")
+    }
+  }
+  if (all(is.na(x))) {warning("all of mycolnames were NA")} else {
+    if (any(is.na(x))) {warning("some of mycolnames were NA")}
+  }
   
   infer <- function(lword, x) {
     if (!(lword %in% x)) {
@@ -53,7 +63,7 @@ latlon_infer <- function(mycolnames) {
   x <- infer('lat', x)
   x <- infer('lon', x)
   if (!isTRUE(all.equal(x, mycolnames))) {
-    warning("Replaced column names that were inferred to be and therefore renamed as the lat and/or lon columns!")
+    message("Replaced column names that were inferred to be and therefore renamed as the lat and/or lon columns!")
   }
   return(x)
 }

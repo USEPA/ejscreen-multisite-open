@@ -32,8 +32,7 @@ A vector of strings, one per row or map point,
 with a line break separating column elements
 }
 \description{
-Creates popup vector that leaflet::addCircles or leaflet::addPopups can use.
-Works similarly to popup_from_df, but now extends to data.table
+Creates popup vector leaflet::addCircles or leaflet::addPopups can use.
 }
 \details{
 Each popup is made from one row of the data.frame.

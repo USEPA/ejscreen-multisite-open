@@ -4,18 +4,16 @@
 \alias{latlon_any_format}
 \title{Get lat/lon flexibly - from file, data.frame, data.table, or lat/lon vectors}
 \usage{
-latlon_any_format(x, y)
+latlon_any_format(anything, lon_if_used)
 }
 \arguments{
-\item{x}{If missing and interactive mode in RStudio, prompts user for file. Otherwise,
+\item{anything}{If missing and interactive mode in RStudio, prompts user for file. Otherwise,
 this can be a filename (csv or xlsx, with path), or data.frame/ data.table/ matrix,
 or vector of longitudes (in which case y must be the latitudes).
-Note that even though it is called latlon_etc the
-lon is x and comes before the lat among parameters x,y (unlike in most other functions here using lat,lon)
 File or data.frame/data.table/matrix must have columns called lat and lon, or names that can
 be inferred to be that by latlon_infer()}
 
-\item{y}{If x is a vector of longitudes, y must be the latitudes. Ignored otherwise.}
+\item{lon_if_used}{If anything parameter is a vector of longitudes, lon_if_used must be the latitudes. Ignored otherwise.}
 }
 \value{
 A data.frame that has at least columns lon and lat (and others if they were in x)
@@ -25,35 +23,48 @@ Try to figure out if user provided latitude / longitude
 as vectors, data.frame, file, or interactively pick file.
 }
 \details{
-Also see draft internal function sitepoints_from_any()
+Also see closely related function \code{\link[=sitepoints_from_any]{sitepoints_from_any()}}.
 
 This function relies on
 
 \code{\link[=read_csv_or_xl]{read_csv_or_xl()}}  and
 
-\code{\link[=latlon_df_clean]{latlon_df_clean()}} which in turn uses \code{\link[=latlon_infer]{latlon_infer()}} \code{\link[=latlon_as.numeric]{latlon_as.numeric()}} \code{\link[=latlon_is.valid]{latlon_is.valid()}}
+\code{\link[=latlon_df_clean]{latlon_df_clean()}}
+which in turn uses \code{\link[=latlon_infer]{latlon_infer()}} \code{\link[=latlon_as.numeric]{latlon_as.numeric()}} \code{\link[=latlon_is.valid]{latlon_is.valid()}}
 
-\code{\link[=read_and_clean_points]{read_and_clean_points()}} from EJAMejscreenapi
+A draft function \code{\link[=read_and_clean_points]{read_and_clean_points()}} would a more general way to get points,
 
-would be the most general / flexible broadest way to get points, but is still work in progress
-
-is similar to what is done by latlon_from_anything()
+but is still work in progress... it is similar to latlon_from_anything()
 
 except it also uses these functions:
 
-\code{\link[=latlon_from_regid]{latlon_from_regid()}}
+\code{\link[=latlon_from_regid]{latlon_from_regid()}},  \code{\link[=latlon_from_programid]{latlon_from_programid()}}
 
-\code{\link[=latlon_from_programid]{latlon_from_programid()}}   but not  _from_naics() ?
+and could eventually use  _from_naics() etc.
+
+Even more generally, FIPS and shapefile inputs could be read through a
+single wrapper function at some point.
 }
 \examples{
-  \dontrun{
+ latlon_from_anything(testpoints_10)
+ latlon_from_anything(testpoints_10$lat, testpoints_10$lon)
+ pts = c("33,-100", "32,-101")
+ latlon_from_anything(pts)
+ pts = data.frame(Longitude = testpoints_10$lon, Latitude = testpoints_10$lat)
+ latlon_from_anything(pts)
+ pts = data.table(Lat = testpoints_10$lat, Long = testpoints_10$lon)
+ latlon_from_anything(pts)
+ \dontrun{
  if (interactive()) {
- pts <- latlon_from_anything()
+   pts <- latlon_from_anything()
  }}
- latlon_from_anything(testpoints_100[1:6,] )
- latlon_from_anything(testpoints_100[1:6, c('lat','lon')] )
- latlon_from_anything(x=testpoints_100$lon[1:6], y=testpoints_100$lat[1:6] )
+ \dontrun{
+ pts = system.file("testdata/latlon/testpoints_10.xlsx", package = "EJAM")
+ latlon_from_anything(pts)
+ }
+  
 }
 \seealso{
-read_csv_or_xl() latlon_df_clean()
+\code{\link[=sitepoints_from_any]{sitepoints_from_any()}} which is like this but also adds ejam_uniq_id column,
+and see \code{\link[=read_csv_or_xl]{read_csv_or_xl()}} and \code{\link[=latlon_df_clean]{latlon_df_clean()}}
 }

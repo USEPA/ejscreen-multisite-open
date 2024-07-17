@@ -27,7 +27,7 @@
 #' @examples \dontrun{
 #'   out <- testoutput_ejscreenapi_plus_50
 #'   x <- popup_from_ejscreen(out)
-#'   popup_print(x)
+#'   popup_print(x[1])
 #'   mapfastej(out)
 #' }
 #' 
