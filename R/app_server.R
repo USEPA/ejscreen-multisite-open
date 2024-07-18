@@ -2403,10 +2403,19 @@ app_server <- function(input, output, session) {
     req(data_processed())
     # data_processed() needed for ridgeline or boxplot, and ratio.to.us.d() which is made from data_processed() is needed for boxplots,
     
-    if (input$plotkind_1pager == 'bar') { # do BARPLOT NOT BOXPLOT
-      
-      plot_barplot_ratios(unlist(data_processed()$results_overall[ , c(..names_d_ratio_to_avg , ..names_d_subgroups_ratio_to_avg) ]),
-                          names2plot_friendly = fixcolnames(c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg), oldtype = 'r', newtype = 'shortlabel'))
+    if (input$plotkind_1pager == 'bar') {
+      if (!is.null(cur_button())) {
+        selected_row <- as.numeric(gsub('button_', '', isolate(cur_button())))
+        plot_barplot_ratios(
+          unlist(data_processed()$results_bysite[selected_row, c(..names_d_ratio_to_avg, ..names_d_subgroups_ratio_to_avg)]),
+          names2plot_friendly = fixcolnames(c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg), oldtype = 'r', newtype = 'shortlabel')
+        )
+      } else {
+        plot_barplot_ratios(
+          unlist(data_processed()$results_overall[, c(..names_d_ratio_to_avg, ..names_d_subgroups_ratio_to_avg)]),
+          names2plot_friendly = fixcolnames(c(names_d_ratio_to_avg, names_d_subgroups_ratio_to_avg), oldtype = 'r', newtype = 'shortlabel')
+        )
+      }
       
     } else if (input$plotkind_1pager == 'ridgeline') {
       
@@ -2536,10 +2545,23 @@ app_server <- function(input, output, session) {
     # box
   })
   
+  
   ## output: show box/barplot of indicator ratios in Summary Report #
   output$view1_summary_plot <- renderPlot({
     v1_summary_plot()
   })
+  
+  observeEvent(input$results_tabs, {
+
+    if (!is.null(cur_button())) {
+    cur_button(NULL)
+      # Trigger a re-render of the summary plot
+      output$view1_summary_plot <- renderPlot({
+        v1_summary_plot()
+      })
+    }
+    })
+
   
   #############################################################################  #
   
