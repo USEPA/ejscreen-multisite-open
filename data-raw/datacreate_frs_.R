@@ -56,7 +56,6 @@ for (varname in frs_vars) {
 ## WRITE .arrow FILES TO pins BOARD on Posit Connect server, once loaded in memory
 ################################################################################ # 
 # 
-# THAT IS DONE BY SCRIPT  IN  
-# EJAM/data-raw/datacreate_pins.R 
+# THAT IS DONE BY  datawrite_to_pins() 
  
 # and copy to any local folder being used to cache them, e.g., EJAM/data folder

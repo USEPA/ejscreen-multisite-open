@@ -27,6 +27,26 @@ datacreate_avg.in.us <- function(usastats = NULL,
   avg.in.us <-   usastats[ usastats$PCTILE == "mean",  longlist ]
   return(avg.in.us)
 }
+
+# use function ####
+avg.in.us <- datacreate_avg.in.us(usastats = usastats,  # must be the updated/new usastats
+                                  longlist = unique(c(  # must use the updated/new indicator variable names
+                                    names_e, 
+                                    names_d, names_d_subgroups_nh, names_d_subgroups_alone
+                                  ))
+)
+
+# metadata and use_data ####
+
+avg.in.us <- metadata_add(avg.in.us)
+usethis::use_data(avg.in.us, overwrite = TRUE)
+
+
+cat("FINISHED A SCRIPT\n")
+cat("\n In globalenv() so far: \n\n")
+print(ls())
+
+
 ################################################################################ #
 
 if (1 == 0) {

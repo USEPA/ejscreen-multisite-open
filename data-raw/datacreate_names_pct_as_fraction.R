@@ -69,3 +69,8 @@ return(NULL)
 ###    pctpre1960, state.avg.pctpre1960, avg.pctpre1960
 
 }
+
+# USE FUNCTION ####
+datacreate_names_pct_as_fraction(map_headernames = map_headernames)  
+# That function does metadata_add and use_data
+

@@ -222,9 +222,32 @@ if (all(usastats[,intersect(names_d_subgroups_both, names(usastats))] == 0)  |
   ####### next, create avg.in.us (before removing usastats from memory)
   
  #  "EJAM/data-raw/datacreate_avg.in.us.R"
+
+  
+  # usastats_statestats  <- datacreate_usastats2.3()
+  # usastats_statestats  <- datacreate_usastats2.3_add_dsubgroups.R(usastats_statestats)
+  
+  # usastats   <- usastats_statestats$usastats
+  # statestats <- usastats_statestats$statestats
+  
+  # metadata and use_data ####
+  
+  setDF(usastats)    #   do we want it as data.frame??
+  setDF(statestats)  #   do we want it as data.frame??
+  
+  usastats   <- metadata_add(usastats)
+  statestats <- metadata_add(statestats)
+  
+  usethis::use_data(usastats,   overwrite = T)
+  usethis::use_data(statestats, overwrite = T)
   
    
   print('now need to rebuild EJAM package with those new datasets and push changes')
+  
+  
+  cat("FINISHED A SCRIPT\n")
+  cat("\n In globalenv() so far: \n\n")
+  print(ls())
   
   ################################################ #
 # }

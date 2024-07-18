@@ -2,6 +2,8 @@
 # that will be used by EJScreen 2.3 in July 2024
 ################################################## #
 
+if (!exists("askquestions")) {askquestions <- TRUE}
+
 # 1. GOT "ACS2022_Transfer.gdb.zip" FROM EJSCREEN TEAM ####
 
 # EJScreen team (VZ) provided the data file 6/5/2024
@@ -18,14 +20,25 @@ if (file.exists("~/../EJ 2021/EJSCREEN 2024/acs2022header.csv")) {
   acs22longnames <- names(read.csv("~/../EJ 2021/EJSCREEN 2024/acs2022header.csv"))
   acs22longnames <- c(acs22longnames, "ejam_uniq_id")
 } else {
+  if (file.exists("./data-raw/datafile_acs22longnames.rda")) {
+    load("./data-raw/datafile_acs22longnames.rda")
+  } else {
   acs22longnames = NA
-}
+}}
 ################################################## #
 
 # Read .zip  ####
-# 
+
 zfile <- "~/../EJ 2021/EJSCREEN 2024/ACS2022_Transfer.gdb.zip"
-if (!file.exists(zfile)) {stop("did not find expected file at  '~/../EJ 2021/EJSCREEN 2024/ACS2022_Transfer.gdb.zip'")}
+if (!file.exists(zfile)) {
+  stop(paste0("did not find expected file at ", zfile))
+  if (askquestions && interactive()) {
+    zfile <- selectFile(paste0("SELECT FILE ", basename(zfile)))
+    if (!file.exists(zfile)) {
+      stop(paste0("did not find expected file at ", zfile))
+    }
+  }
+  }
 # tdir <- tempdir()
 acs22 <- shapefile_from_any(zfile)
 # names(acs22)  # EJAM added these 2 columns at the end: "Shape" "ejam_uniq_id"
@@ -150,17 +163,21 @@ names(acs22) <- fixcolnames(names(acs22), 'acsname', 'r')
 
 # Archive huge acs22full.arrow locally ####
 
-if (askYesNo(" archive the very large acs22full.arrow locally?")) {
-  datawrite_to_local("acs22", fnames = "acs22full.arrow", localfolder = localfolder)
-  file.exists(file.path(localfolder, "acs22full.arrow"))
-  # acs22 <- arrow::read_ipc_file(file.path(localfolder, "acs22full.arrow"))
+if (askquestions && interactive()) {
+  if (askYesNo(paste0(" archive the very large acs22full.arrow (all columns even those not needed) locally? (at ", localfolder, ")"))) {
+    datawrite_to_local("acs22", fnames = "acs22full.arrow", localfolder = localfolder)
+    cat("success? ")
+    file.exists(file.path(localfolder, "acs22full.arrow"))
+    cat("\n")
+    # acs22 <- arrow::read_ipc_file(file.path(localfolder, "acs22full.arrow"))
+  }
 }
 ############################################################################ # 
 
 # Drop most columns ####
 
 acs22$bgfips <- acs22$STCNTRBG
-acs22 = data.table(bgfips = acs22$bgfips, acs22[, names(acs22) %in% map_headernames$rname])
+acs22 <- data.table(bgfips = acs22$bgfips, acs22[, names(acs22) %in% map_headernames$rname])
 
 # dim(acs22)
 # [1] 242336    676
@@ -177,10 +194,15 @@ setDT(acs22)
 
 # Archive small acs22.arrow ####
 
-datawrite_to_local("acs22", fnames = "acs22.arrow", localfolder = localfolder)
-file.exists(file.path(localfolder, "acs22.arrow"))
-# acs22 <- arrow::read_ipc_file(file.path(localfolder, "acs22.arrow"))
-
+savehere <- TRUE
+if (askquestions && interactive()) {
+  savehere = askYesNo("Save a local copy of key columns of acs22.arrow ? ")
+  if (!is.na(savehere) && savehere) {
+    datawrite_to_local("acs22", fnames = "acs22.arrow", localfolder = localfolder)
+    file.exists(file.path(localfolder, "acs22.arrow"))
+    # acs22 <- arrow::read_ipc_file(file.path(localfolder, "acs22.arrow"))
+  }}
+rm(savehere)
 ############################################################################ # 
 ############################################################################ # 
 
@@ -258,18 +280,18 @@ file.exists(file.path(localfolder, "acs22.arrow"))
 if (NROW(acs22) != NROW(blockgroupstats_new)) {
   print("Note the number of places (rows) diffes between the ACS table and blockgroupstats.")
 }
-  print("dimensions of ACS table (after dropping many columns not used:")
-  print(dim(acs22))
-  print("dimensions of blockgroupstats before merging in ACS info:")
-  print(dim(blockgroupstats_new))
-  
-  # > dim(acs22)
-  # [1] 242336     59
-  # > dim(blockgroupstats_new)
-  # [1] 243022     56
-  
+print("dimensions of ACS table (after dropping many columns not used:")
+print(dim(acs22))
+print("dimensions of blockgroupstats before merging in ACS info:")
+print(dim(blockgroupstats_new))
+
+# > dim(acs22)
+# [1] 242336     59
+# > dim(blockgroupstats_new)
+# [1] 243022     56
+
 # if in data.table formats, uses data.table::merge() 
-  # to merge or join blockgroupstats_new and acs22, key on bgid 
+# to merge or join blockgroupstats_new and acs22, key on bgid 
 
 blockgroupstats <- merge(blockgroupstats_new, acs22, 
                          by = "bgfips", all.x = TRUE)
@@ -295,6 +317,21 @@ rm("blockgroupstats_source_state.gdb",
    "blockgroupstats_source_usa.gdb.zip"  )
 rm("statestats_new_explained.xlsx" , "usastats_new_explained.xlsx")
 rm("fnames"  )
+################################################## #
+
+# metadata, use_data ####
+
+blockgroupstats    <- metadata_add(blockgroupstats)
+usethis::use_data(blockgroupstats, overwrite = T)
+
+bgej <- metadata_add(bgej)
+## do not save via  usethis::use_data(bgej, overwrite = TRUE) - it is a large file
+cat("bgej created in globalenv but not saved yet - will try to save to pins board now \n")
+
+cat("FINISHED A SCRIPT\n")
+cat("\n In globalenv() so far: \n\n")
+print(ls())
+
 #################################################################################### #
 
 

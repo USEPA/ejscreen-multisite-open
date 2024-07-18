@@ -8,11 +8,15 @@
 # using a non-CRAN package (in github) called census2020download
 # and they only need to be updated if FIPS codes or boundaries of blockgroups or blocks change.
 ######################################### # 
+
+warning("not finished updating 'datacreate_blockwts.R' script to include Island Areas GU VI MP AS")
+
+
 if (!exists("askquestions")) {askquestions <- TRUE}
 
 # do_download = TRUE
 
-if (interactive()) {
+if (interactive() && askquestions) {
   do_download <- askYesNo("Download and update all block tables like blockpoints, blockwts, etc.? 
   (Must update if FIPS codes or boundaries of blockgroups or blocks changed)")
   if (is.na(do_download)) {do_download <- FALSE}
@@ -22,7 +26,7 @@ if (interactive()) {
 
 # do_data_save = TRUE
 
-if (interactive()) {
+if (interactive() && askquestions) {
   do_data_save <- askYesNo("Do metadata_add() and use_data() ?")
   if (is.na(do_data_save)) {do_data_save <- FALSE}
 } else {
@@ -46,7 +50,7 @@ if (!do_download) {
   } else {
     ## tryinstall ####
     
-    if (interactive()) {
+    if (interactive() && askquestions) {
       tryinstall = askYesNo("Requires the census2020download package, not found installed yet. Try to install now from github?")
       if (is.na(tryinstall)) {tryinstall <- FALSE}
     } else {
@@ -131,8 +135,7 @@ if (!do_download) {
 # rm(blocks)
 # names(xlist)
 
-# Those block data.table objecs were then saved via pins board, 
-# explained in EJAM/data-raw/datacreate_pins.R
+# Those block data.table objecs were then saved via pins board 
 
 #################################################################################### # 
 

@@ -1150,3 +1150,11 @@ return(names_these)
 }
 # ( make sure all the Envt variables etc are actually in usastats dataset)
 # message('make sure all the Demog and Envt variables etc are actually in the latest installed usastats dataset')
+
+# USE FUNCTION #### 
+datacreate_names_of_indicators()    # this does metadata and use_data inside the function
+
+
+cat("FINISHED A SCRIPT\n")
+cat("\n In globalenv() so far: \n\n")
+print(ls())

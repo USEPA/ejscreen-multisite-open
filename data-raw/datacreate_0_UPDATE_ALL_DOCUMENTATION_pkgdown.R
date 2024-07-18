@@ -35,7 +35,7 @@
 #    SCRIPT  TO  REBUILD  vignettes  (articles) using pkgdown
 #
 # Probably does not require all these steps, though
-
+# library() ####
 library(devtools)
 library(usethis)
 library(pkgdown)
@@ -53,8 +53,8 @@ rmarkdown::render("README.Rmd")  # renders .Rmd to create a  .md file that works
 
 Sys.time()   # about 4 minutes for steps below
 
-##############################################
-# check if can reach pins or it will not build vignettes correctly
+############################################# #
+# check if can reach pins or cant build vignettes correctly ####
 dataload_pin_available <- function(boardfolder = "Mark",
                                    auth = "auto",
                                    server = "https://rstudio-connect.dmap-stage.aws.epa.gov", 
@@ -71,27 +71,28 @@ dataload_pin_available <- function(boardfolder = "Mark",
   }
   return(board_available)
 }
-##############################################
+############################################# #
 if (!dataload_pin_available()) {stop("cannot build vignettes correctly without access to pins board")}
-##############################################
-
+############################################# #
+# dataload all ####
 # just in case 
 
 EJAM::dataload_from_pins("all") #
-##############################################
+############################################# #
 
+# RUN TESTS OR CHECK ?
+
+# check() ?? ####
 # devtools::check() 
 ##   automatically builds and checks a source package, using all known best practices.
 # devtools::check_man()
 # devtools::check_built() checks an already-built package.
 
-
-## RUN TESTS OR CHECK
-
 # devtools::test()
 
 ## [ FAIL 7 | WARN 7 | SKIP 1 | PASS 617 ] as of 5/13/24
-
+############################################# #
+# install() ####
 
 devtools::install(
   
@@ -124,9 +125,12 @@ Sys.time()
 #   In do.call(".Call", list(.NAME, ...)) : internal error -3 in R_decompress1)
 
 #################### # 
+# library(EJAM) ####
 
 library(EJAM)  #
 EJAM:::rmost(notremove = "dataload_pin_available")
+
+# dataload again ####
 if (!dataload_pin_available()) {stop("cannot build vignettes correctly without access to pins board")}
 EJAM::dataload_from_pins("all") # not sure this helps with building vignettes though, which need access to frs file etc. in whatever environment they are built in
 
@@ -137,7 +141,8 @@ EJAM::dataload_from_pins("all") # not sure this helps with building vignettes th
 ## so did rm(list=ls()) and tried to continue from library( ) above .
 
 #################### # 
-# Build Articles (web based vignettes) for pkgdown website.  in /docs/ ? not /doc/ 
+# Build Articles #### 
+# (web based vignettes) for pkgdown website.  in /docs/ ? not /doc/ 
 # knit button might not work in some cases?
 
 # build_articles()
@@ -152,6 +157,10 @@ Sys.time() # next part can be SLOW
 #  recreates all .html files, etc. (could perhaps do as bkgd job)
 
 pkgdown::build_site_github_pages(
+  
+  # but this function is meant to be used as part of github actions
+  # https://pkgdown.r-lib.org/reference/build_site_github_pages.html
+  
   dest_dir = "docs",
   clean = FALSE,        # faster if FALSE. TRUE would delete objects already attached? 
   examples = FALSE,     # *** should only set TRUE if you want to include outputs of examples along with the function documentation!
@@ -163,9 +172,7 @@ pkgdown::build_site_github_pages(
   
   lazy = TRUE       # faster if TRUE   (can force a build despite no change in source vs destination copy)
 ) 
-# that does  build_site()  and then    
-# that does  build_github_pages() ?
-# usethis::use_github_pages(branch = "main", path = "/docs") # FAST - just defines source and URL. already done earlier, prob do not need to repeat.
+# that does clean_site(),   build_site(), and  build_github_pages() 
 
 Sys.time() # 40 minutes for all of this to run with slowest options above
 
@@ -185,15 +192,18 @@ Sys.time() # 40 minutes for all of this to run with slowest options above
 # 
 # But then trying these two steps alone in command line works:
 
+# to finish that ? ####
 pkgdown:::build_sitemap('.')
 pkgdown:::build_redirects(".")
 
 #################### # 
 
+# stop and push new files now ####
+
 stop( ' then COMMIT AND PUSH THE NEW FILES ')
 
-
 browseURL("https://github.com/USEPA/EJAM/actions/") # to see automatic deployment happen
+
 stop()
 
 # use  rstudio  menu, build ...

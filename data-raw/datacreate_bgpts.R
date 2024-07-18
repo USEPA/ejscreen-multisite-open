@@ -5,6 +5,11 @@
 
 #########     THIS IS ONLY A DRAFT -- NEEDS CLEANUP BEFORE USED AGAIN
 
+
+warning("see notes in `./data-raw/datacreate_bg_cenpop2020.R`-- bgpts and bg_cenpop2020 are very, very similar, so may want to consolidate to use only one.")
+
+
+
 # help(bgpts, package = "EJAM")
 
 # Start from blockpoints (Census 2020 block internal points) ####

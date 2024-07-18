@@ -31,7 +31,6 @@ datawrite_to_pins = function(
   justchecking = FALSE,
   silent = FALSE,
   
-  
   access_type = "all",
   boardfolder = "Mark",
   auth = "auto",
@@ -55,41 +54,60 @@ datawrite_to_pins = function(
       stop("varnames must be a character vector of quoted names of objects like c('x', 'y') ")
     }}
   ####################################################### #
-  
+  if (!justchecking) {
   # Metadata for pins board entry ####
   
   ### this is the metadata already inside each object (each dataset)
-  meta = 0
-  meta <- metadata_add(meta)
-  
+  capture.output({
+    meta <- metadata_add(0)
+    })
   ### this is the metadata to write to the pins board:
   ###  A list containing additional metadata to store with the pin. 
   ###  When retrieving the pin, this will be stored in the user key, to avoid potential clashes with the metadata that pins itself use.
-  
   meta <- list(
-    date_pins_updated = c(pinsUploadDate = as.character(Sys.Date())), 
+    date_pins_updated = c(pinsUploadDate = as.character(Sys.Date())),  
+    # redundant - created date already stored by pins but ok
     ejscreen_version = attr(meta, "ejscreen_version")
   )
+  }
   ####################################################### #
-  
-  # CONNECT to existing pins board ####
-  
-  board <- board_connect(versioned = TRUE)
-  ## *** do we need error checking on access ?
+  # Check access to pins board ####
+  #
+  # https://rstudio-connect.dmap-stage.aws.epa.gov/connect/#/content/listing?q=is:published+type:pin+owner:Mark
+  cat("\n")
+  if (auth == "rsconnect") {
+    # ignore server default here. use server and key already configured for rsconnect.
+    board <- tryCatch(pins::board_connect(auth = "rsconnect", versioned = TRUE), 
+                      error = function(e) {e})
+  } else {
+    board <- tryCatch(pins::board_connect(server = server, auth = auth, versioned = TRUE),
+                      error = function(e) {e})
+  }
+  if (inherits(board, "error")) {
+    board_available <- FALSE
+    if (!silent) {cat("Failed trying to connect to pins board server.\n\n")}
+  } else {
+    board_available <- TRUE
+    if (!silent) {cat("Successfully connected to Posit Connect pins board.\n\n")}
+  }
+  if (!board_available) {
+    return(NULL)
+  }
   
   ####################################################### #
   if (justchecking) {
     ## list all datasets in a board
-    print(cbind(
-      pin_list(board = board)
-    )); cat('\n')
     ## see metadata about board overall, or dataset
-    # board
-    x <- list()
-    for (i in 1:length(varnames)) {
-      x[[i]] <- data.frame(object = varnames[i], pin_meta(board = board, name = paste0(boardfolder, '/', varnames[i]))$user) 
+    x <- pin_search(board, boardfolder) # defaults to all objects in that folder
+    x$name = gsub(paste0(boardfolder,"/"), "", x$name) 
+    if ("ejscreen_version" %in% names(x$meta[[1]]$user)) {
+      ejv = x$meta[[1]]$user$ejscreen_version
+    } else {
+      ejv = NA
     }
-    x <- do.call(rbind, x)
+    x = data.frame(x[, c('name', 'title', 'type', 'file_size', 'created')], 
+                   ejscreen_version = ejv)
+    x$varnames = (x$name %in% varnames)
     return(x)
      ## could also show current and all prior versions of a dataset
     # pin_versions(board = board, name = 'bgej')
@@ -132,7 +150,7 @@ datawrite_to_pins = function(
                            "title = pin_title, ",
                            "description = pin_description, ",
                            "versioned = TRUE, ",
-                           "metadata = attributes(meta), ",
+                           "metadata = meta, ",
                            "type = type, ", 
                            "access_type = access_type",
                            ")"

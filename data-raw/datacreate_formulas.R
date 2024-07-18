@@ -229,6 +229,11 @@ formulas_d <- metadata_add(formulas_d)
 
 usethis::use_data(formulas_d, overwrite = TRUE)
 
+
+cat("FINISHED A SCRIPT\n")
+cat("\n In globalenv() so far: \n\n")
+print(ls())
+
 ################################################ #
 
 

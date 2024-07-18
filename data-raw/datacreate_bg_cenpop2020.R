@@ -35,12 +35,10 @@
 #STATEFP,COUNTYFP,TRACTCE,BLKGRPCE,POPULATION,LATITUDE,LONGITUDE
 #01,001,020100,1,575,+32.464466,-086.486302
 #01,001,020100,2,1200,+32.482744,-086.486741
-# 
-# if (interactive()) {
-# # browseURL("https://www2.census.gov/geo/docs/reference/cenpop2020/blkgrp/CenPop2020_Mean_BG.txt")
-# }
+
 ####################################################### # 
 
+if (!exists("askquestions")) {askquestions <- TRUE}
 
 fname <- "https://www2.census.gov/geo/docs/reference/cenpop2020/blkgrp/CenPop2020_Mean_BG.txt" # 10 MB size file
 x <- readr::read_csv(fname, col_types = "ccccidd") # keep FIPS as character with leading zeroes  # x <- read.csv(fname)

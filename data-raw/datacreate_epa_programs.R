@@ -2,7 +2,7 @@
 # This must be redone/ rebuilt whenever frs and frs_by_programid  are updated to get counts updated !! ***
 # This data object `epa_programs` is used in ui to offer a list of programs with a count of sites for each
 
-# 1st must update frs_by_programid, via script in EJAM/datacreate_frs_.R  and maybe also datacreate_pins.R
+# 1st must update frs_by_programid, via script in EJAM/datacreate_frs_.R  
 
 
 # get the frs_by_programid dataset (which should have been just updated via script in EJAM/datacreate_frs_.R ! )

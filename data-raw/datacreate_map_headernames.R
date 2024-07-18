@@ -23,6 +23,15 @@ datacreate_map_headernames <- function(fname = './data-raw/map_headernames_2.3.x
 }
 ################################################################################# #
 
+map_headernames <- datacreate_map_headernames('./data-raw/map_headernames_2.3.xlsx')
+map_headernames <- metadata_add(map_headernames)
+usethis::use_data(map_headernames, overwrite = TRUE)
+
+
+cat("FINISHED A SCRIPT\n")
+cat("\n In globalenv() so far: \n\n")
+print(ls())
+
 
 if (1 == 0) {
 ############################################################# #

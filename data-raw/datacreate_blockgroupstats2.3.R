@@ -36,7 +36,7 @@ if (!dir.exists(localfolder)) {
     if (is.na(localfolder) || !dir.exists(localfolder)) {stop(localfolder, " folder does not exist")}
   }
   localfolder <- getwd()
-  }
+}
 cat("Using this FTP folder as source of data: ", baseurl, "\n")
 cat("Using this folder as local folder to save copies in: ", localfolder, "\n")
 
@@ -95,13 +95,13 @@ if (needgdb) {
 ######################################################### #
 
 # ARCHIVE  .xlsx files in case needed ####
-if (interactive()) {
+if (interactive() && askquestions) {
   savex = askYesNo("Save usastats_new_explained.xlsx in localfolder?")
   if (!is.na(savex) && savex) {
     file.copy(file.path(td, usastats_new_explained.xlsx),   file.path(localfolder, usastats_new_explained.xlsx), overwrite = TRUE)
     file.copy(file.path(td, statestats_new_explained.xlsx), file.path(localfolder, statestats_new_explained.xlsx), overwrite = TRUE)
   }
-  }
+}
 ########################################################### #
 
 # UNZIP files ####
@@ -150,43 +150,54 @@ varnames <- c("blockgroupstats_new",
               "usastats_new",
               "statestats_new")
 ########################### #
-
-if (interactive()) {
-  ASARROW = askYesNo("Save copies as .arrow ? (not .rda)", default = FALSE)
-} else {
-  ASARROW = FALSE
+if (interactive() && askquestions) {
+  SAVELOCAL = askYesNo("Save copies locally now?")
+  if (is.na(SAVELOCAL)) {SAVELOCAL <- FALSE}
 }
-if (ASARROW) {
-  fnames = paste0(paste0(varnames,  "_as_on_ftp"), ".arrow")
-  datawrite_to_local(varnames = varnames, fnames = fnames, localfolder = localfolder, overwrite = TRUE)
-  for (i in seq_along(fnames)) {
-    cat(file.path(localfolder, fnames[i]), " saved: "); cat(file.exists(file.path(localfolder, fnames[i]))); cat("\n")
+if (SAVELOCAL) {
+  
+  if (interactive() && askquestions) {
+    ASARROW = askYesNo("Save copies as .arrow ? (not .rda)", default = FALSE)
+    if (is.na(ASARROW)) {ASARROW <- FALSE}
+  } else {
+    ASARROW <- FALSE
   }
-  # file.exists(file.path(localfolder,"blockgroupstats_new_as_on_ftp.arrow"))
-  # file.exists(file.path(localfolder,"usastats_new_as_on_ftp.arrow"))
-  # file.exists(file.path(localfolder,"statestats_new_as_on_ftp.arrow"))
-} else {
-  ## to save as .rda files
-  # ext <- ".rda"
-  fnames = paste0(paste0(varnames,  "_as_on_ftp"), ".rda")
-  save(blockgroupstats_new,       file = file.path(localfolder, "blockgroupstats_new_as_on_ftp.rda"))  # about 118 MB on disk
-  save(blockgroupstats_new_state, file = file.path(localfolder, "blockgroupstats_new_state_as_on_ftp.rda"))
-  save(usastats_new,              file = file.path(localfolder, "usastats_new_as_on_ftp.rda"))
-  save(statestats_new,            file = file.path(localfolder, "statestats_new_as_on_ftp.rda"))
-  for (i in seq_along(fnames)) {
-    cat(file.path(localfolder, fnames[i]), " saved: "); cat(file.exists(file.path(localfolder, fnames[i]))); cat("\n")
+  if (ASARROW) {
+    fnames = paste0(paste0(varnames,  "_as_on_ftp"), ".arrow")
+    datawrite_to_local(varnames = varnames, fnames = fnames, localfolder = localfolder, overwrite = TRUE)
+    for (i in seq_along(fnames)) {
+      cat(file.path(localfolder, fnames[i]), " saved: "); cat(file.exists(file.path(localfolder, fnames[i]))); cat("\n")
+    }
+    # file.exists(file.path(localfolder,"blockgroupstats_new_as_on_ftp.arrow"))
+    # file.exists(file.path(localfolder,"usastats_new_as_on_ftp.arrow"))
+    # file.exists(file.path(localfolder,"statestats_new_as_on_ftp.arrow"))
+  } else {
+    ## to save as .rda files
+    # ext <- ".rda"
+    fnames = paste0(paste0(varnames,  "_as_on_ftp"), ".rda")
+    save(blockgroupstats_new,       file = file.path(localfolder, "blockgroupstats_new_as_on_ftp.rda"))  # about 118 MB on disk
+    save(blockgroupstats_new_state, file = file.path(localfolder, "blockgroupstats_new_state_as_on_ftp.rda"))
+    save(usastats_new,              file = file.path(localfolder, "usastats_new_as_on_ftp.rda"))
+    save(statestats_new,            file = file.path(localfolder, "statestats_new_as_on_ftp.rda"))
+    for (i in seq_along(fnames)) {
+      cat(file.path(localfolder, fnames[i]), " saved: "); cat(file.exists(file.path(localfolder, fnames[i]))); cat("\n")
+    }
+    # file.exists(file.path(localfolder,"blockgroupstats_new.rda"))
+    # file.exists(file.path(localfolder,"usastats_new.arrow"))
+    # file.exists(file.path(localfolder,"statestats_new.arrow"))
   }
-  # file.exists(file.path(localfolder,"blockgroupstats_new.rda"))
-  # file.exists(file.path(localfolder,"usastats_new.arrow"))
-  # file.exists(file.path(localfolder,"statestats_new.arrow"))
+  rm(varnames,   ASARROW)
+  browseURL(localfolder)
+  # if (!silent) {
+    cat("\n So far in globalenv() are these: \n\n")
+    print(ls())
+  # }
 }
-rm(varnames,   ASARROW)
-browseURL(localfolder)
 ########################################################### #
 ########################################################### #
 ########################################################### #
 
-# map_headernames check:
+# map_headernames check: ####
 
 # cbind(sort(names(blockgroupstats_new)[fixcolnames(names(blockgroupstats_new),'csv','r') == names(blockgroupstats_new)]))
 # 
@@ -236,8 +247,6 @@ blockgroupstats_new_state <- blockgroupstats_new_state[, !(names(blockgroupstats
 usastats_new              <- usastats_new[,              !(names(usastats_new)              %in% cols2drop)]
 statestats_new            <- statestats_new[,            !(names(statestats_new)            %in% cols2drop)]
 
-
-
 # dim(blockgroupstats_new); dim(EJAM::blockgroupstats)
 # 
 # dim(usastats_new);   dim(EJAM::usastats)
@@ -253,14 +262,14 @@ statestats_new            <- statestats_new[,            !(names(statestats_new)
 # [1] 5356   52
 # [1] 5304   77
 
-setdiff(          names(blockgroupstats_new), names(EJAM::blockgroupstats))
-EJAM:::setdiff_yx(names(blockgroupstats_new), names(EJAM::blockgroupstats))
+# setdiff(          names(blockgroupstats_new), names(EJAM::blockgroupstats))
+# EJAM:::setdiff_yx(names(blockgroupstats_new), names(EJAM::blockgroupstats))
 
 # names(blockgroupstats_new)
 # names(usastats_new)
 
 ############################################################## #
-# rename fips column ?
+# rename fips column ? ####
 names(blockgroupstats_new)       <- gsub("id", "OBJECTID", names(blockgroupstats_new))
 names(blockgroupstats_new_state) <- gsub("id", "OBJECTID", names(blockgroupstats_new_state))
 
@@ -312,9 +321,9 @@ blockgroupstats_new_state$bgid <- bgpts$bgid[match(blockgroupstats_new_state$bgf
 
 ########################################################### #
 
-### Get or create these columns? 
+### Get or create these columns? ####
 # 
-# ?? missing state.count.ej.80up, state.count.ej.80up.supp ####
+warning("may be missing state.count.ej.80up, state.count.ej.80up.supp")
 # 
 #  already has these:
 # "count.ej.80up"      "count.ej.80up.supp"
@@ -393,12 +402,42 @@ setcolorder(blockgroupstats_new, c("bgid", "bgfips", "statename", "ST", "countyn
                                    "pop",
                                    names_d, names_e), before = 1)
 
-# save local copy for convenience ####
-datawrite_to_local("bgej", localfolder = localfolder)
+
+
+########################################################## # 
+SAVELOCAL <- FALSE
+if (interactive() && askquestions) {
+  SAVELOCAL = askYesNo("Save bgej locally now?")
+  if (is.na(SAVELOCAL)) {SAVELOCAL <- FALSE}
+}
+if (SAVELOCAL) {
+  
+  # save bgej local copy for convenience ####
+  datawrite_to_local("bgej", localfolder = localfolder)
+  
+  # ASARROW = TRUE
+  # if (ASARROW) {
+  #   fnames = paste0(paste0(varnames,  "_as_on_ftp"), ".arrow")
+  #   datawrite_to_local(varnames = varnames, fnames = fnames, localfolder = localfolder, overwrite = TRUE)
+  #   for (i in seq_along(fnames)) {
+  #     cat(file.path(localfolder, fnames[i]), " saved: "); cat(file.exists(file.path(localfolder, fnames[i]))); cat("\n")
+  #   }
+  #   # file.exists(file.path(localfolder,"blockgroupstats_new_as_on_ftp.arrow"))
+  #   # file.exists(file.path(localfolder,"usastats_new_as_on_ftp.arrow"))
+  #   # file.exists(file.path(localfolder,"statestats_new_as_on_ftp.arrow"))
+  # }  
+  rm(   ASARROW)
+  
+}
+########################### #
+
 
 ## bgej is left in globalenv by this script -
 # later can Save bgej to pins board as .arrow file
-#     # using script in    datacreate_pins.R
+#   
+cat("FINISHED A SCRIPT\n")
+cat("\n In globalenv() so far: \n\n")
+print(ls())
 
 ########################################################### ############################################################ #
 
