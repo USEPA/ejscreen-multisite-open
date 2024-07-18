@@ -9,9 +9,11 @@
 #* @apiDescription Provides EJAM/EJScreen batch analysis summary results.
 #* See the EJAM package for technical documentation on functions powering the API, at <https://usepa.github.io/EJAM/index.html>
 
-future::plan("multisession")
+# future::plan("multisession")  # did not seem to work
+
 ############################# #
 
+library(EJAM)
 
 ############################# #
 
@@ -24,8 +26,6 @@ future::plan("multisession")
 ####################################################### #
 #  DEFINE API ENDPOINTS ####
 ####################################################### #
-
-return("not working yet for shapefile inputs")
 
 
 # ejamit ####
@@ -48,7 +48,7 @@ return("not working yet for shapefile inputs")
 #* 
 #* @get /ejamit
 #* 
-function(lat = 40.81417, lon = -96.69963, radius = 1, shapefile = NULL, names = "long", test = "false") {
+function(lat = 40.81417, lon = -96.69963, radius = 1, shapefile = 0, names = "long", test = "false") {
   
   lat <- as.numeric(lat); lon <- as.numeric(lon); radius <- as.numeric(radius)
   if (length(lat) != 1 | length(lon) != 1) {lat <- 40.81417; lon <- -96.69963}
@@ -58,9 +58,11 @@ function(lat = 40.81417, lon = -96.69963, radius = 1, shapefile = NULL, names = 
     out <- as.data.frame(EJAM::testoutput_ejamit_10pts_1miles$results_overall)
   } else {
     
-    promises::future_promise({  
+    # promises::future_promise({  # did not seem to work
       
-       if (!is.null(shapefile)) {
+       if (!all(0 == shapefile)) {
+         
+         return("not working yet for shapefile inputs")
          
          out <- ejamit(
            shapefile = shapefile,
@@ -75,7 +77,7 @@ function(lat = 40.81417, lon = -96.69963, radius = 1, shapefile = NULL, names = 
       )$results_overall
       
       }
-    })
+    # })
     
   }
   
@@ -118,12 +120,12 @@ function(lat = 40.81417, lon = -96.69963, radius = 1, names = "long", test = "fa
   if (test == "true") {
     out <- as.data.frame(EJAM::testoutput_ejamit_10pts_1miles$results_overall)
   } else {
-    promises::future_promise({  # })
+    # promises::future_promise({ # did not seem to work 
       out <- ejamit(
         sitepoints = data.frame(lat = lat, lon = lon),
         radius = radius
       )$results_overall
-    })
+    # }) # did not seem to work
   }
   
   if (names == "long") {
@@ -163,7 +165,7 @@ function(lat, lon, radius) {
   # if (!exists("blockwts"))  dataload_from_pins()
   # if (!exists("localtree")) indexblocks()
   
-  promises::future_promise({  # })
+  # promises::future_promise({  # 
     
     out <- EJAM::getblocksnearby(
       data.frame(
@@ -172,7 +174,7 @@ function(lat, lon, radius) {
       ),
       radius = as.numeric(radius)  # , quadtree = localtree
     )
-  })
+  # })
   out
 }
 ####################################################### #
@@ -201,7 +203,7 @@ function(polys,
   # if (!exists("blockwts"))  dataload_from_pins()
   # if (!exists("localtree")) indexblocks()
   
-  promises::future_promise({  # })
+  # promises::future_promise({  # })
     
     out <- EJAM::get_blockpoints_in_shape(
       polys = polys,
@@ -210,7 +212,7 @@ function(polys,
       safety_margin_ratio = safety_margin_ratio,
       crs = crs
     )
-  })
+  # })
   out
 }
 ####################################################### #
@@ -228,14 +230,14 @@ function(polys,
 #* @get /doaggregate
 #* 
 function(sites2blocks, sites2states_or_latlon, countcols, popmeancols, calculatedcols, ...) {
-  promises::future_promise({  
+  # promises::future_promise({  
     require(EJAM)
     if (!exists("blockwts"))  dataload_from_pins()
     if (!exists("localtree")) indexblocks()
     EJAM::doaggregate(sites2blocks = sites2blocks,
                       sites2states_or_latlon = sites2states_or_latlon,
                       countcols = countcols, popmeancols = popmeancols, calculatedcols = calculatedcols, ... )
-  })
+  # })
 }
 # ####################################################### #
 
@@ -256,9 +258,9 @@ function(msg="") {
 #   # out <- table_xls_from_ejam(ejamit(sitepoints = sitepoints, radius = radius), launchexcel = F, save_now = FALSE)
 # }) 
 
-# promises::future_promise({  # }) 
+# ##promises::future_promise({  # }) 
 #   out <- as.data.frame(as.data.frame(EJAM::ejamit(sitepoints = sitepoints, radius = radius)[["results_overall"]]))
-# }) 
+# ##}) 
 # }
 #
 
