@@ -15,7 +15,7 @@ footer:
     right: [package, versionmsg]
   components:
     draftmsg: DRAFT/beta
-    versionmsg: Version 2.2.2 beta
+    versionmsg: Version 2.2.2 beta <!-- as.vector(desc::description$new("DESCRIPTION")$get("Version")) ->
 home:
   title: EJAM Environmental Justice Analysis Multisite
   description: Webapp and tools summarizing demographic and environmental data for hundreds of places quickly and accurately
