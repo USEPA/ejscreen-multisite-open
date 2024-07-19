@@ -30,6 +30,8 @@ latlon_as.numeric <- function(x) {
     warning('No value provided for argument "x".')
     return(NULL)
   }
+  if (is.null(x)) {warning("No values provided to latlon_as.numeric()"); return(NA)}
+  
   if (!is.null(dim(x)) | !is.atomic(x)) {
     if (shiny::isRunning()) {
       warning('latlon_as.numeric(x) expects x to be a vector like 1:10 or df$mycol, not a data.frame, list, or anything else.')
@@ -39,8 +41,7 @@ latlon_as.numeric <- function(x) {
       
     }
   }
-  if (is.null(x)) {warning("No values provided to latlon_as.numeric()"); return(NA)}
- 
+  
   if (!is.null(dim(x)) | !is.atomic(x) | is.list(x)) {stop('latlon_as.numeric(x) expects x to be a vector like 1:10 or df$mycol, not a data.frame, list, or anything else.')}
   oldx <- x
   x <- (gsub('[^012345678.9-]', '',  x))
