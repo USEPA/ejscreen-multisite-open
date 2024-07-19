@@ -3052,7 +3052,8 @@ app_server <- function(input, output, session) {
           longnames = data_processed()$longnames[           keepcols2], # not need ..       # 1 row, but full plain English column names.  keepcols here should be selecting cols not rows.
           
           html_content <- isolate({
-            community_download() 
+            temp_file <- tempfile(fileext = '.html')
+            community_download(file = temp_file, row_index = NULL)
           }),
           
           # *** NOTE:  data_processed()$results_bybg_people  #considered not providing this to xlsx by default. It is huge and for expert users,
