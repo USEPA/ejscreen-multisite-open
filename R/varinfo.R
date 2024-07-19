@@ -16,7 +16,6 @@
 #' 
 #' - [fixcolnames()]
 #' - [fixcolnames_infer()]
-#' - [EJAMejscreenapi::fixnames_to_type()]
 #' - EJAM fixcolnames2related()
 #' - EJAM fix_pctcols_x100()
 #' - EJAM fixmapheadernamescolname()

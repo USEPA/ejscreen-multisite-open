@@ -122,7 +122,7 @@ fill_tbl_full <- function(output_df) {
   full_html <- paste(full_html, tbl_head, sep = '\n')
   
   ## reorder indicators to match report order
-  var_values_e <- EJAMejscreenapi::map_headernames |>
+  var_values_e <- map_headernames |>
     dplyr::filter(varlist == 'names_e') |>
     dplyr::arrange(sort_within_varlistEJSCREENREPORT) |>
     dplyr::pull(rname)
@@ -141,7 +141,7 @@ fill_tbl_full <- function(output_df) {
   
   
   ## reorder indicators to match report order
-  var_values_d <- EJAMejscreenapi::map_headernames |>
+  var_values_d <- map_headernames |>
     dplyr::filter(varlist == 'names_d') |>
     dplyr::arrange(sort_within_varlistEJSCREENREPORT) |>
     dplyr::pull(rname)
@@ -194,7 +194,7 @@ fill_tbl_full_ej <- function(output_df) {
   full_html <- tbl_head #paste(full_html, tbl_head, sep='\n')
   
   ## reorder indicators to match report order
-  var_values_ej <- EJAMejscreenapi::map_headernames |>
+  var_values_ej <- map_headernames |>
     dplyr::filter(varlist == 'names_ej') |>
     dplyr::arrange(sort_within_varlistEJSCREENREPORT) |>
     dplyr::pull(rname)
@@ -209,12 +209,12 @@ fill_tbl_full_ej <- function(output_df) {
                         })
   
   full_html <- paste(full_html,
-                      paste(tbl_rows_ej, collapse='\n'),
-                      sep='', collapse='\n')
+                      paste(tbl_rows_ej, collapse = '\n'),
+                      sep = '', collapse = '\n')
   full_html <- paste(full_html, tbl_head2, collapse = '\n')
   
   ## reorder indicators to match report order
-  var_values_ej_supp <- EJAMejscreenapi::map_headernames |>
+  var_values_ej_supp <- map_headernames |>
     dplyr::filter(varlist == 'names_ej_supp') |>
     dplyr::arrange(sort_within_varlistEJSCREENREPORT) |>
     dplyr::pull(rname)
@@ -229,8 +229,8 @@ fill_tbl_full_ej <- function(output_df) {
                         })
   
   full_html <- paste(full_html,
-                      paste(tbl_rows_ej_supp, collapse='\n'),
-                      sep='', collapse='\n')
+                      paste(tbl_rows_ej_supp, collapse = '\n'),
+                      sep = '', collapse = '\n')
   
   full_html <- paste(full_html, '</tbody>
 </table>', collapse = '\n')
@@ -315,10 +315,10 @@ fill_tbl_full_subgroups <- function(output_df) {
 <th colspan=\"7\">Limited English Speaking Breakdown</th>
   </tr>'
   
-  full_html <- paste(full_html, tbl_head, sep='\n')
+  full_html <- paste(full_html, tbl_head, sep = '\n')
   
   ## reorder indicators to match report order
-  var_values_d_race <- EJAMejscreenapi::map_headernames |>
+  var_values_d_race <- map_headernames |>
     dplyr::filter(varlist == 'names_d_subgroups') |>
     dplyr::arrange(sort_within_varlistEJSCREENREPORT) |>
     dplyr::pull(rname)
@@ -328,12 +328,12 @@ fill_tbl_full_subgroups <- function(output_df) {
   tbl_rows_d_race <- sapply(seq_along(var_values_d_race), function(x) {
     fill_tbl_row_subgroups(output_df,
                            var_value = var_values_d_race[x],
-                           var_name=var_names_d_race[x])
+                           var_name = var_names_d_race[x])
   })
   full_html <- paste(full_html,
-                     paste(tbl_rows_d_race , collapse='\n'),
+                     paste(tbl_rows_d_race , collapse = '\n'),
                      
-                     sep='', collapse='\n')
+                     sep = '', collapse = '\n')
   full_html <- paste(full_html, tbl_head2,collapse = '\n')
   
   
