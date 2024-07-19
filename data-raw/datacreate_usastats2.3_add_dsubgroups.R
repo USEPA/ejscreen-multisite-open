@@ -100,11 +100,11 @@ warning('RESOLVE QUESTION OF WHETHER US PCTILES ARE AMONG 50 STATES PLUS DC, OR 
   
 ############################################################################# # 
 
-updated = FALSE
+updated_usastates = FALSE; updated_statestates = FALSE
 
 # drop the std rows since never used and dropping them again for each indicator in looping use of pctile_from_raw_lookup() is kind of slow.
-if (("std" %in% (  usastats$PCTILE))) {  usastats <-   usastats[  usastats$PCTILE != "std", ] ; updated = TRUE}
-if (("std" %in% (statestats$PCTILE))) {statestats <- statestats[statestats$PCTILE != "std", ] ; updated = TRUE}
+if (("std" %in% (  usastats$PCTILE))) {  usastats <-   usastats[  usastats$PCTILE != "std", ] ; updated_usastates <- TRUE}
+if (("std" %in% (statestats$PCTILE))) {statestats <- statestats[statestats$PCTILE != "std", ] ; updated_statestates <- TRUE}
 
 ############################################################################ # 
 
@@ -120,7 +120,7 @@ if (("std" %in% (statestats$PCTILE))) {statestats <- statestats[statestats$PCTIL
 if (all(usastats[,intersect(names_d_subgroups_both, names(usastats))] == 0)  | 
     any(!(names_d_subgroups_both %in% names(usastats))))  {
   
-  usastats_subgroups   <- pctiles_lookup_create(data.frame(bg)[ , names_d_subgroups_both]) # function from EJAM package
+  usastats_subgroups   <- EJAM:::pctiles_lookup_create(data.frame(bg)[ , names_d_subgroups_both]) # function from EJAM package
   usastats_subgroups <- rbind(0, usastats_subgroups); usastats_subgroups$PCTILE[1] <- 0
   usastats_subgroups[1, c("OBJECTID", "REGION")] <- c(0, "USA")
 # dim(usastats_subgroups)
@@ -147,7 +147,7 @@ if (all(usastats[,intersect(names_d_subgroups_both, names(usastats))] == 0)  |
 
 # if (all(statestats[,names_d_subgroups_both] == 0)  | any(!(names_d_subgroups_both %in% names(statestats)))) {
   
-  statestats_subgroups <- pctiles_lookup_create(data.frame(bg)[ , names_d_subgroups_both], zone.vector = bg$ST) # from EJAM package
+  statestats_subgroups <- EJAM:::pctiles_lookup_create(data.frame(bg)[ , names_d_subgroups_both], zone.vector = bg$ST) # from EJAM package
   
   # names(statestats_subgroups)
   morecols = data.frame(as.list(rep(0,length(names_d_subgroups_both))))
@@ -193,7 +193,9 @@ if (all(usastats[,intersect(names_d_subgroups_both, names(usastats))] == 0)  |
  rm(statestats2)
   ################################################ #
   ################################################ #
-  rm(morecols, updated, subvars, statestats_subgroups, zerorowperstate, othervars)
+  rm(morecols, 
+     updated_usastates, updated_statestates,
+     subvars, statestats_subgroups, zerorowperstate, othervars)
   ########################################################## # 
   
   

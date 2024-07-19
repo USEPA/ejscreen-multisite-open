@@ -1,37 +1,66 @@
-## code to prepare `naicstable` dataset goes here
-# usethis::use_data_raw("naicstable") 
 
-# library(data.table)
-# EJAM::NAICS is where NAICS was
+datacreate_sictable <- function(SIC, 
+                                sic_url = "https://www2.census.gov/programs-surveys/cbp/technical-documentation/records-layouts/sic-code-descriptions/sic88_97.txt", 
+                                sic_version = "1987") {
+  
+  ###################################################################################
+  # create SIC or sictable ####
+  # 
+  ## SIC is a named list for use in dropdown menu
+  ## sictable is a data.table with code, n2,n3,n4,name,num_name  (but used to be tibble?)
+  
+  # see explanation of SIC vs NAICS here: 
+  #  https://www.census.gov/topics/employment/industry-occupation/about/faq.html#par_textimage_291814576 
+  
+  # see official SIC and NAICS info from Census here: 
+  #   https://www.census.gov/naics/?68967
+  
+  # See https://www.naics.com/everything-sic/ 
+  # see history of SIC here
+  #  https://guides.loc.gov/industry-research/classification-sic
+  # See https://www.osha.gov/data/sic-search etc.
+  #
+  # In the United States, the SIC system was last revised in 1987
+  #
+  # and was last used by the Census Bureau for the 1992 Economic Census, 
+  # and has been replaced by the North American Industry Classification System (NAICS code), 
+  # which was released in 1997. 
+  # Some U.S. government departments and agencies, such as the [SEC]...
+  # continued to use SIC codes through at least 2019.
+  # - wikipedia.
+  ###################################################################################
+  
+  if (missing(SIC)) {
+    if (exists("SIC")) {
+      # was in parent env / path, so use it?
+    } else {
+      stop("SIC not attached, sictable not created.")
+    }
+  }
+  
+  sictable <- data.table::data.table(code = as.vector(SIC), name = names(SIC))
+  sictable[ , num_name := trimws(name)]
+  sictable[ , name := trimws(gsub(".* - ", "", name))]
+  
+  sictable[ , n2 := substr(code, 1, 2)]
+  sictable[ , n3 := substr(code, 1, 3)]
+  sictable[ , n4 := substr(code, 1, 4)]
+  
+  sictable <- sictable[ , .(code, n2, n3, n4, name, num_name)]
+  
+  
+  attr(sictable, "date_downloaded") <- as.character(Sys.Date())
+  attr(sictable, "source_url")     <- sic_url
+  attr(sictable, "SIC_numbers_version") <- sic_version
+  attr(sictable, "date_saved_in_package") <- as.character(Sys.Date())
+  usethis::use_data(sictable, overwrite = TRUE)
+  cat("saved sictable\n")
+ 
+  #    table(nchar(sictable$code))
+  #     sictable 
+  
+  invisible(sictable)
+}
+############################################################################ #
 
-sictable <- data.table(code = as.vector(SIC), name = names(SIC))
-sictable[ , num_name := trimws(name)]
-sictable[ , name := trimws(gsub(".* - ", "", name))]
-
-sictable[ , n2 := substr(code,1,2)]
-sictable[ , n3 := substr(code,1,3)]
-sictable[ , n4 := substr(code,1,4)]
-
-sictable <- sictable[ , .(code, n2, n3, n4, name, num_name)]
-attr(sictable, "updated") <- "6/2023"
-usethis::use_data(sictable, overwrite = TRUE)
-
-
-# table(nchar(sictable$code))
-# 
-#    4 
-#  1117 
-
-# > sictable
-# code n2  n3   n4                               name                                  num_name
-# 1: 0700 07 070 0700              Agricultural services              0700 - Agricultural services
-# 2: 0710 07 071 0710          Soil preparation services          0710 - Soil preparation services
-# 3: 0720 07 072 0720                      Crop services                      0720 - Crop services
-# 4: 0740 07 074 0740                Veterinary services                0740 - Veterinary services
-# 5: 0750 07 075 0750 Animal services, except veterinary 0750 - Animal services, except veterinary
-# ---                                                                                              
-# 1113: 8742 87 874 8742     Management consulting services     8742 - Management consulting services
-# 1114: 8743 87 874 8743          Public relations services          8743 - Public relations services
-# 1115: 8744 87 874 8744        Facilities support services        8744 - Facilities support services
-# 1116: 8748 87 874 8748        Business consulting, n.e.c.        8748 - Business consulting, n.e.c.
-# 1117: 8900 89 890 8900                   Services, n.e.c.                   8900 - Services, n.e.c.
+sictable <- datacreate_SIC() 

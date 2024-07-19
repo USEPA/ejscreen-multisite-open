@@ -1010,6 +1010,9 @@ namesoflistsofnames <- c('names_all', namesoflistsofnames)
 ############################################################################## ############################################################################### #
 ############################################################################## ############################################################################### #
 
+for (vl in unique(map_headernames$varlist)) {
+  if (nchar(vl) > 0 && !exists(vl)) {warning(paste0(vl, " was not created as a data object."))}
+}
 
 #  metadata_add & USE_DATA ####
 
@@ -1154,7 +1157,17 @@ return(names_these)
 # USE FUNCTION #### 
 datacreate_names_of_indicators()    # this does metadata and use_data inside the function
 
-
+# Warning messages:
+#   1: names_d_demogindexstate was not created as a data object. 
+# 2: names_d_language_count was not created as a data object. 
+# 3: x_mapcolor was not created as a data object. 
+# 4: x_maptextpopup was not created as a data object. 
+# 5: names_d_extra was not created as a data object. 
+# 6: names_d_extra_count was not created as a data object. 
+# 7: x_anyother was not created as a data object. 
+# 8: names_d_language was not created as a data object. 
+# 9: custom was not created as a data object. 
+# > 
 cat("FINISHED A SCRIPT\n")
 cat("\n In globalenv() so far: \n\n")
 print(ls())

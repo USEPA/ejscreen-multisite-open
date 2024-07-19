@@ -470,7 +470,7 @@ if (redoing_ejscreenit_10_for_ejam_to_have) {
   # using the API that EJScreen provides, for comparison, to have available as data saved in EJAM pkg:
   testpoints_name <- "testpoints_10"
   myrad = 1
-  testoutput_ejscreenit_10pts_1miles <- EJAMejscreenapi::ejscreenit(testpoints_10, radius = 1, calculate_ratios = TRUE,
+  testoutput_ejscreenit_10pts_1miles <- ejscreenit(testpoints_10, radius = 1, calculate_ratios = TRUE,
                                                                     nosave = TRUE, nosee = TRUE,
                                                                     interactiveprompt = FALSE)
   
@@ -489,7 +489,7 @@ if (redoing_ejscreenit_10_for_ejam_to_have) {
 #' @title test output of ejscreenit(), using the EJScreen API
 #' @details This is the output of
 #'
-#'  EJAMejscreenapi::ejscreenit(
+#'  ejscreenit(
 #'
 #'    testpoints_10, radius = 1,
 #'

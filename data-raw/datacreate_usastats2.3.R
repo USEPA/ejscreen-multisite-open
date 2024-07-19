@@ -148,12 +148,6 @@ ls()
 
 # FINISH CREATING usastats, statestats ####
 
-# > usastats_new, statestats_new rownames ####
-# make rownames less confusing since starting with 1 was for the row where PCTILE == 0,
-# so make them match in USA one at least, but cannot same way for state one since they repeat for each state
-
-rownames(usastats_new)     <- usastats_new$PCTILE
-rownames(statestats_new) <- paste0(statestats_new$REGION, statestats_new$PCTILE) 
 
 # MAKE THE STATE EJ INDICATORS (RAW SCORES) COLUMNS HAVE STATE PERCENTILE NAMES TO DISTINGUISH FROM US VERSIONS 
 # BUT BE SURE THAT LOOKUP CODE TURNING RAW STATE EJ SCORES INTO PCTILES IS USING THE RIGHT NAMES 
@@ -165,6 +159,13 @@ data.table::setnames(statestats_new,
 setDF(statestats_new)
 # but later they will be data.table I think
 # cbind(names(usastats_new), names(statestats_new))
+
+# > usastats_new, statestats_new rownames ####
+# make rownames less confusing since starting with 1 was for the row where PCTILE == 0,
+# so make them match in USA one at least, but cannot same way for state one since they repeat for each state
+
+rownames(usastats_new)     <- usastats_new$PCTILE
+rownames(statestats_new) <- paste0(statestats_new$REGION, statestats_new$PCTILE) 
 
 ################################################################################ #
 
@@ -198,14 +199,21 @@ cat("at this point, before saving these via use_data(), do script in
 
 ########################
 
-# >> TEMP PLACEHOLDERS: "Demog.Index.State" "Demog.Index.Supp.State" ####
-
-statestats$Demog.Index.State      <- statestats$Demog.Index
-statestats$Demog.Index.Supp.State <- statestats$Demog.Index.Supp
-
-
-usastats$Demog.Index.State      <- usastats$Demog.Index
-usastats$Demog.Index.Supp.State <- usastats$Demog.Index.Supp
+# FIX DEMOG INDEX US VS STATE NAMES ####
+# use state version when reporting state percentiles, but do not use a special name for them
+if ("Demog.Index.State" %in% colnames(statestats)) {
+  statestats$Demog.Index      <- statestats$Demog.Index.State
+} else {
+ warning("did not find statestats$Demog.Index.State so check that Demog.Index.State column is correct there") 
+}
+if ("Demog.Index.Supp.State" %in% colnames(statestats)) {
+statestats$Demog.Index.Supp <- statestats$Demog.Index.Supp.State
+} else {
+  warning("did not find statestats$Demog.Index.Supp.State so check that Demog.Index.State column is correct there") 
+}
+#  # these are ok and will not need state versions
+# usastats$Demog.Index.State      <- usastats$Demog.Index
+# usastats$Demog.Index.Supp.State <- usastats$Demog.Index.Supp
 
 
 

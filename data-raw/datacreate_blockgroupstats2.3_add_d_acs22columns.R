@@ -2,7 +2,7 @@
 # that will be used by EJScreen 2.3 in July 2024
 ################################################## #
 
-if (!exists("askquestions")) {askquestions <- TRUE}
+if (!exists("askquestions")) {askquestions <- FALSE}
 
 # 1. GOT "ACS2022_Transfer.gdb.zip" FROM EJSCREEN TEAM ####
 

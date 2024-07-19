@@ -11,8 +11,7 @@
 
 warning("not finished updating 'datacreate_blockwts.R' script to include Island Areas GU VI MP AS")
 
-
-if (!exists("askquestions")) {askquestions <- TRUE}
+if (!exists("askquestions")) {askquestions <- FALSE}
 
 # do_download = TRUE
 

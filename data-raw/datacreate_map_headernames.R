@@ -1,14 +1,16 @@
+if (!exists("askquestions")) {askquestions <- FALSE}
+if (!exists("rawdir")) {rawdir <- './data-raw'}
 
-datacreate_map_headernames <- function(fname = './data-raw/map_headernames_2.3.xlsx') {
+#createorupdatethetablethatmapsfromoneversionof
+#variablenames(e.g.,long,clearerones)
+#toanother(e.g.,shortereasierforanalysisorprogramminginR,etc.)
+
+datacreate_map_headernames <- function(rawdir = "./data-raw", fname = 'map_headernames_2.3.xlsx') {
   
-  #scripttocreateorupdatethetablethatmapsfromoneversionof
-  #variablenames(e.g.,long,clearerones)toanother(e.g.,shortereasierforanalysisorprogramminginR,etc.)
-  #a<-read.csv('./data-raw/map_headernames.csv')
+  fpath <- file.path(rawdir, fname)
+  if (!file.exists(fpath)) {stop("did not find (but this requires) ", fpath)}
   
-  # if it is being created from the spreadsheet:
-  if (!file.exists(fname)) {stop("did not find (but this requires) ", fname)}
-  
-  map_headernames <- as.data.frame(readxl::read_xlsx(fname))
+  map_headernames <- as.data.frame(readxl::read_xlsx(fpath))
   
   map_headernames[is.na(map_headernames)] <- ''  #changeNAvaluestoemptycell,soitiseasiertosubsetetc.
   
@@ -23,7 +25,23 @@ datacreate_map_headernames <- function(fname = './data-raw/map_headernames_2.3.x
 }
 ################################################################################# #
 
-map_headernames <- datacreate_map_headernames('./data-raw/map_headernames_2.3.xlsx')
+#  UPDATE map_headernames_2.3.xlsx MANUALLY, 
+#  then read .xlsx and save as dataset for package
+if (askquestions && interactive()) {
+  y <- askYesNo("Want to open .xlsx to edit it now?")
+  if (!is.na(y) && y) {
+    fpath = rstudioapi::selectFile(path = rawdir, filter = "xlsx")
+    browseURL(fpath)
+    y <- askYesNo("Y if done editing and ready to go on, N to abort/stop")
+    if (is.na(y) || !y) {stop("stopping script")} 
+  }
+}
+if (!exists("fpath")) {
+  map_headernames <- datacreate_map_headernames()
+} else {
+  map_headernames <- datacreate_map_headernames(fpath)
+}
+
 map_headernames <- metadata_add(map_headernames)
 usethis::use_data(map_headernames, overwrite = TRUE)
 
@@ -68,7 +86,7 @@ if (1 == 0) {
 # 
 # library(EJAM)
 # x = names(ejamit(testpoints_50)$results_bysite)
-# y = EJAMejscreenapi::map_headernames$rname
+# y = map_headernames$rname
 # setdiff(x,y) ###  "EJScreen Report" "EJScreen Map"    "ACS Report"      "ECHO report"    
 # 
 # names_all

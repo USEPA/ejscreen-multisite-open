@@ -36,13 +36,12 @@
 #
 # Probably does not require all these steps, though
 # library() ####
-library(devtools)
-library(usethis)
-library(pkgdown)
+require(devtools)
+require(pkgdown)
 
 #################### # 
 
-# devtools::build_readme() # takes a couple minutes! as it installs the package in a temporary library
+# build_rmd() takes a couple minutes as it installs the package in a temporary library
 # build_rmd() is a wrapper around rmarkdown::render() that first installs a temporary copy of the package, and then renders each .Rmd in a clean R session.
 rmarkdown::render("README.Rmd")  # renders .Rmd to create a  .md file that works in github as a webpage
 

@@ -1,7 +1,8 @@
 
 # SCRIPT TO DOWNLOAD/UPDATE EJSCREEN BLOCKGROUP DATA AND PERCENTILE LOOKUP TABLES FOR EJAM YEARLY
 
-if (!exists("askquestions")) {askquestions <- TRUE}
+if (!exists("askquestions")) {askquestions <- FALSE}
+if (!exists("rawdir")) {rawdir <- './data-raw'}
 
 ############################################################################################ #
 localfolder = "~/../Downloads/ejscreen new ftp downloads"
@@ -34,8 +35,9 @@ if (!dir.exists(localfolder)) {
   if (interactive() && askquestions) {
     localfolder <- rstudioapi::selectDirectory("Save local copies where?")
     if (is.na(localfolder) || !dir.exists(localfolder)) {stop(localfolder, " folder does not exist")}
+  } else {
+    localfolder <- getwd() 
   }
-  localfolder <- getwd()
 }
 cat("Using this FTP folder as source of data: ", baseurl, "\n")
 cat("Using this folder as local folder to save copies in: ", localfolder, "\n")
@@ -150,6 +152,7 @@ varnames <- c("blockgroupstats_new",
               "usastats_new",
               "statestats_new")
 ########################### #
+SAVELOCAL=TRUE
 if (interactive() && askquestions) {
   SAVELOCAL = askYesNo("Save copies locally now?")
   if (is.na(SAVELOCAL)) {SAVELOCAL <- FALSE}
