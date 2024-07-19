@@ -210,14 +210,14 @@ source_maybe("datacreate_metadata4pins.R") # does use_data()
 #  (the source package as just updated, not the version installed)
 #  and so all functions will use the new source version 
 
-load_all()
+devtools::load_all()
 
 ######################################### #
-# datacreate_blockgroupstats2.3 ####
+# datacreate_blockgroupstats2.3 (also starts making usastats,statestats!!) ####
 # datacreate_blockgroupstats2.3_add_d_acs22columns ####
 # rstudioapi::documentOpen("./data-raw/datacreate_blockgroupstats2.3.R")
 # rstudioapi::documentOpen("./data-raw/datacreate_blockgroupstats2.3_add_d_acs22columns.R")
-source_maybe("datacreate_blockgroupstats2.3.R")
+source_maybe("datacreate_blockgroupstats2.3.R") # (also starts making usastats,statestats!!)
 # created bgej
 # created blockgroupstats_new as interim object
 # created usastats, statestats but not final versions yet
