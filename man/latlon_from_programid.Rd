@@ -4,7 +4,7 @@
 \alias{latlon_from_programid}
 \title{Get lat lon, Registry ID, and NAICS, for given FRS Program System ID}
 \usage{
-latlon_from_programid(programid)
+latlon_from_programid(programname, programid)
 }
 \arguments{
 \item{programid}{like "XJW000012435"}
