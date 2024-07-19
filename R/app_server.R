@@ -2704,7 +2704,7 @@ else if (input$plotkind_1pager == 'ridgeline') {
       )
     },
     content = function(file) {
-      html_content <- community_download()
+      html_content <-  community_download(file)
       file.rename(html_content, file)
     }
   )
@@ -3066,7 +3066,8 @@ else if (input$plotkind_1pager == 'ridgeline') {
         }
         
         html_content <- isolate({
-          community_download() 
+          temp_file <- tempfile(fileext = '.html')
+          community_download(file = temp_file, row_index = NULL)
         })
         
         wb_out <- table_xls_format(
@@ -3075,10 +3076,7 @@ else if (input$plotkind_1pager == 'ridgeline') {
           eachsite  = data_processed()$results_bysite |> dplyr::select(names( data_processed()$results_bysite)[keepcols2]),# needs ..  # 1 row per site
           longnames = data_processed()$longnames[           keepcols2], # not need ..       # 1 row, but full plain English column names.  keepcols here should be selecting cols not rows.
           
-          html_content <- isolate({
-            temp_file <- tempfile(fileext = '.html')
-            community_download(file = temp_file, row_index = NULL)
-          }),
+
           
           # *** NOTE:  data_processed()$results_bybg_people  #considered not providing this to xlsx by default. It is huge and for expert users,
           # ***    but useful to create a plot of distance by group. Perhaps that could be created here to avoid passing the entire large table to table_xls_format() just for the plot. ***
