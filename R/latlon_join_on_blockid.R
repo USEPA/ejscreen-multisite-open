@@ -12,9 +12,9 @@
 #'
 #' @keywords internal
 #'
-latlon_join_on_blockid = function(s2b) {
+latlon_join_on_blockid = function(s2b=NA) {
   
-  if(missing(s2b)){
+  if(missing(s2b)| all(is.na(s2b)) | is.null(s2b)){
       warning('No value provided for argument "s2b".')
       return(NULL)
   }
