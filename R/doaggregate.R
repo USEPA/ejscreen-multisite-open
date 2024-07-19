@@ -1077,6 +1077,18 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   # these lines about names of variables should be pulled out of here and defined as params or another way   xxx
   # specify which variables get converted to percentile form
   
+  ################################## #
+  # >>>PERCENTILES LOOKUP SPECIAL CASE:####
+  
+  # state.pctile.Demog.Index <- 
+    # lookup Demog.Index.State value
+    # but in cols statestats$Demog.Index 
+    
+    # state.pctile.Demog.Index.Supp <- 
+    # lookup Demog.Index.Supp.State value
+    # but in cols statestats$Demog.Index.Supp 
+  ############################## #
+  
   varsneedpctiles <- c(names_e,  names_d, subs   ) # ONLY IF THESE ARE ALL IN LOOKUP TABLES AND blockgroupstats?
   # varsneedpctiles <- intersect(varsneedpctiles, names(blockgroupstats))
   varnames.us.pctile    <- paste0(      'pctile.', varsneedpctiles) # but EJ indexes do not follow that naming scheme and are handled with separate code
@@ -1330,6 +1342,20 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
       results_overall[  , ..names_these] /
       results_overall[, ..names_these_state_avg]
     
+    
+    ############################### #
+    # >>> RATIO CALC SPECIAL CASE: ####
+    
+    ratios_to_state_avg_bysite$ratio.to.state.avg.Demog.Index.Supp <- 
+      results_bysite$Demog.Index.Supp.State / 
+      results_bysite$state.avg.Demog.Index.Supp 
+
+    ratios_to_state_avg_overall$ratio.to.state.avg.Demog.Index
+      results_overall$Demog.Index.State /
+      results_overall$state.avg.Demog.Index
+
+      ############################### #
+    
     # add those all to results tables
     colnames(ratios_to_avg_bysite)  <- names_these_ratio_to_avg
     colnames(ratios_to_avg_overall) <- names_these_ratio_to_avg
@@ -1521,6 +1547,21 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   data.table::setcolorder(sites2bgs_plusblockgroupdata_bysite, neworder = useful_column_order3)
   
   ##################################################### #  ##################################################### #  ##################################################### #
+  
+  
+  
+  ##################### #
+  # >>> OUTPUT OF DOAGGREGATE SPECIAL CASE: ####
+  results_overall$Demog.Index.Supp.State <- NA
+  results_overall$Demog.Index.State  <- NA
+  results_bysite$Demog.Index.Supp.State <- NA
+  results_bysite$Demog.Index.State <- NA
+  sites2bgs_plusblockgroupdata_bysite$Demog.Index.Supp.State <- NA
+  sites2bgs_plusblockgroupdata_bysite$Demog.Index.State  <- NA
+  # These get used to find pctiles and ratio/avg,
+  # but then we will report raw scores as NA 
+  # to avoid showing 4 versions of Demog.Index raw unitless.
+  ######################## #
   
   # COLUMNS RENAME ####
   
