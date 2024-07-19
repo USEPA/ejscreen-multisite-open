@@ -62,7 +62,11 @@ latlon_from_address_table <- function(x) {
 
   if (missing(x) && interactive()) {
     x <- rstudioapi::selectFile(caption = "Select .csv or .xlsx with addresses")
-  } else if(missing(x)){
+    if(is.null(x)){
+      warning('No value provided for argument "x".')
+      return(NULL)
+    }
+  } else if(missing(x) | all(is.na(x)) | is.null(x)){
     
       warning('No value provided for argument "x".')
       return(NULL)
@@ -92,7 +96,11 @@ address_from_table <- function(x) {
 
   if (missing(x) && interactive()) {
     x <- rstudioapi::selectFile(caption = "Select .csv or .xlsx with addresses")
-  } else if (missing(x)){
+    if(is.null(x)){
+      warning('No value provided for argument "x".')
+      return(NULL)
+    }
+  } else if (missing(x) | all(is.na(x)) | is.null(x)){
     warning('No value provided for argument "x".')
     return(NULL)
   }
@@ -132,7 +140,11 @@ address_from_table_goodnames <- function(x, colnames_allowed = c('address', 'str
 
   if (missing(x) && interactive()) {
     x <- rstudioapi::selectFile(caption = "Select .csv or .xlsx with addresses")
-  }else if (missing(x)){
+    if(is.null(x)){
+      warning('No value provided for argument "x".')
+      return(NULL)
+    }
+  } else if (missing(x) | all(is.na(x)) | is.null(x)){
     warning('No value provided for argument "x".')
     return(NULL)
   }
@@ -285,7 +297,8 @@ latlon_from_address <- function(address, xy=FALSE, pt = FALSE, aoimap=FALSE, bat
   # }
   x <- try(find.package("AOI"))
   if (inherits(x, "try-error")) {
-    warning("AOI package not available")
+    warning('AOI package not available. To install, run:
+            devtools::install_github("https://github.com/mikejohnson51/AOI/", auth_token = NULL)')
     x <- NULL
 
     ############################################## #
