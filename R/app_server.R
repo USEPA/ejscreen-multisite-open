@@ -2586,11 +2586,21 @@ else if (input$plotkind_1pager == 'ridgeline') {
   # Function to generate HTML content (community_download function)
   # Modify the community_download function to accept a row_index parameter
   community_download <- function(file, row_index = NULL) {
+    # Create a progress object
+    progress <- shiny::Progress$new()
+    progress$set(message = "Generating report", value = 0)
+    
+    # Ensure that the progress bar is closed when we exit this function
+    on.exit(progress$close())
+    
+    progress$set(value = 0.1, detail = "Setting up temporary files...")
     tempReport <- setup_temp_files()
     
+    progress$set(value = 0.2, detail = "Defining parameters...")
     # Define parameters for Rmd rendering
     rad <- data_processed()$results_overall$radius.miles
     
+    progress$set(value = 0.3, detail = "Adjusting data...")
     # Adjust the data based on whether a specific row is selected
     if (!is.null(row_index)) {
       output_df <- data_processed()$results_bysite[row_index, ]
@@ -2599,9 +2609,10 @@ else if (input$plotkind_1pager == 'ridgeline') {
       # Get the name of the selected location
       location_name <- output_df$statename
       
-      locationstr <- paste0("Residents within ", rad, " mile", ifelse(rad > 1, "s", ""), 
+      locationstr <- paste0("Residents within ", rad, " mile", ifelse(rad > 1, "s", ""),
                             " of the selected location")
       
+      progress$set(value = 0.4, detail = "Creating map...")
       # Create a filtered version of report_map for single location
       single_location_map <- reactive({
         req(data_processed())
