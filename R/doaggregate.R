@@ -222,9 +222,10 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   ##################################################### #
   
   ## SUM OF COUNTS, vs WTD AVG, vs via FORMULA (usually ratio of sums of counts)
-  # That info is sort of stored already in map_headernames 
+  # That info is sort of stored already in map_headernames$calculation_type and $denominator
   # see notes in custom_doaggregate() and  calc_ejam() and formulas_d
   # 
+ 
   ##################################################### #
   
   if (include_ejindexes & !exists("bgej")) {
@@ -262,19 +263,12 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
       names_d_other_count,
       names_d_count,
       subs_count
-      #
+
     ))
     if  (extra_demog) {
       countcols <-  c(countcols, c(
-        # 'LAN_UNIVERSE', 'LAN_SPANISH', 'LAN_ENG_NA', 'LAN_IE', 'LAN_API',
-        # 'HLI_SPANISH_LI', 'HLI_IE_LI',  'HLI_API_LI', 'HLI_OTHER_LI', # ***
-
-        "lan_universe", 
-        "lan_spanish", "lan_ie", "lan_api", "lan_eng_na",
-        "spanish_li", "ie_li", "api_li", "other_li",
         
-        # 'AGE_LT18', 'AGE_GT17', 'MALES', 'FEMALES', 'OWNHU',  'OCCHU',
-        # 'DISAB_UNIVERSE', 'DISABILITY', 'HH_BPOV'
+        namesbyvarlist('names_d_language_count', 'rname')$rname, #  see also [varin_map_headernames()] [varinfo()] [names_whichlist_multi_key()]
         
         "over17", "under18",  "male", "female", "ownedunits", "occupiedunits",
           "disab_universe", "disability", "poor"
@@ -285,10 +279,10 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
     calculatedcols <- unique(c(
       names_d[names_d != 'lowlifex'],      #   "lowlifex"(use popwtd mean)   "Demog.Index.Supp",  # already in names_d
       subs,
+      
+      namesbyvarlist('names_d_language', 'rname')$rname, # wtd means but special denominators ! ***
+      
       'flagged'
-      
-      #  xxx
-      
     ))
   }
   
@@ -296,6 +290,12 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   
   if (is.null(popmeancols)) {
     popmeancols <- unique(c(
+      
+      # need these now to get ratio to state avg and percentile in state for c('Demog.Index.Supp', 'Demog.Index')
+      c('Demog.Index.Supp.State', 'Demog.Index.State'),
+      
+      
+      
       'lowlifex',  # I think it is just pop wtd mean  - not completely sure it should be via popwtd mean, or calculated via formula actually.
       names_e,
       
@@ -306,20 +306,6 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
       popmeancols <- c(popmeancols, ejnames_raw)
     }
   }
-  
-  # notes on formulas:
-  #
-  # ** CHECK THIS:  EJScreen treats pctpre1960 as if can do popwtd avg, right? Technically pctpre1960 should use ejscreenformulas. . . ratio of sums of counts pre1960 and denom builtunits
-  # only 3 of names.d are exactly popmeans,  ("pctmin", "pctunder5", "pctover64") since denominators are pop.
-  #   May as well just calculate all of the names.d.pct exactly not some as popwtd mean and others not.
-  # flagged is a variable that maybe has an obvious single way to be aggregated for a buffer?
-  # It could signal if any EJ>80 for avg person as avg of each EJ index for all residents in buffer,
-  # (or alternatively could perhaps tell us if there is any flagged bg at all in buffer?).
-  
-  # see ejscreen package file ejscreenformulas$formula to help calculate
-  # calculatedcols <- c(ejscreen package file names.d, ejscreen package file names.d.subgroups, 'flagged') # use formulas for these
-  # but avoid depending on ejscreen package,
-  
   ##################################################### #
   # ...update progress bar in shiny app ####
   if (is.function(updateProgress)) {
@@ -329,7 +315,6 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   ##################################################### #
   
   #____________________________________________________   #  ##################################################### #  ######################################################
-  
   
   # ____AGGREGATE by BLOCK across sites #############################################################################################
   
@@ -344,9 +329,7 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   
   # sort rows
   
-  
   data.table::setorder(sites2blocks, ejam_uniq_id, bgid, blockid) # new
-  
   
   ################################################################ #
   # Just create some new columns in sites2blocks,
@@ -865,7 +848,6 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
     pctunemployed   = 1 * ifelse(unemployedbase == 0, 0, as.numeric(unemployed) / unemployedbase)
   ) ]
   
-  
   results_overall[ , `:=`(
     Demog.Index = (pctlowinc + pctmin) / 2,
     # *** add supplemental indicator
@@ -1077,18 +1059,6 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   # these lines about names of variables should be pulled out of here and defined as params or another way   xxx
   # specify which variables get converted to percentile form
   
-  ################################## #
-  # >>>PERCENTILES LOOKUP SPECIAL CASE:####
-  
-  # state.pctile.Demog.Index <- 
-    # lookup Demog.Index.State value
-    # but in cols statestats$Demog.Index 
-    
-    # state.pctile.Demog.Index.Supp <- 
-    # lookup Demog.Index.Supp.State value
-    # but in cols statestats$Demog.Index.Supp 
-  ############################## #
-  
   varsneedpctiles <- c(names_e,  names_d, subs   ) # ONLY IF THESE ARE ALL IN LOOKUP TABLES AND blockgroupstats?
   # varsneedpctiles <- intersect(varsneedpctiles, names(blockgroupstats))
   varnames.us.pctile    <- paste0(      'pctile.', varsneedpctiles) # but EJ indexes do not follow that naming scheme and are handled with separate code
@@ -1104,7 +1074,9 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   #  >>>> VERY SLOW STEP; also the function  pctile_from_raw_lookup()  may need to be optimized ####
   # here it loops over the 31 to 83 (if ej) indicators, and then the function itself loops over USA + up to 50+ states ! ***
   for (i in seq_along(varsneedpctiles)) {
+    
     myvar <- varsneedpctiles[i]
+    
     if ((myvar %in% names(usastats)) & (myvar %in% names(results_bysite)) & (myvar %in% names(results_overall))) {  # use this function to look in the lookup table to find the percentile that corresponds to each raw score value:
       us.pctile.cols_bysite[    , varnames.us.pctile[[i]]]    <- pctile_from_raw_lookup(
         unlist(results_bysite[  , ..myvar]), varname.in.lookup.table = myvar, lookup = usastats)
@@ -1115,9 +1087,34 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
       us.pctile.cols_bysite[    , varnames.us.pctile[[i]]] <- NA
       us.pctile.cols_overall[   , varnames.us.pctile[[i]]] <- NA
     }
-    if ((myvar %in% names(statestats)) & (myvar %in% names(results_bysite)) ) {
+    
+    ################################## #
+    # >>>PERCENTILES SPECIAL CASE:####
+    
+    # state.pctile.Demog.Index <- 
+    # percentile based on using the blockgroupstats$Demog.Index.State  value (myvar_to_use)
+    #  but look in statestats$Demog.Index  column  
+    
+    # state.pctile.Demog.Index.Supp <- 
+    # percentile based on using the blockgroupstats$Demog.Index.Supp.State  value (myvar_to_use)
+    #  but look in statestats$Demog.Index.Supp  column 
+    
+    # "myvar_to_use" is the special state-focused variable name to use as the raw score for state pctile,
+    # Demog.Index.State or Demog.Index.Supp.State, which is how they are named in blockgroupstats and therefore as found in results_bysite
+    # but not how they are named in statestats and not how they get reported in general as raw scores if at all.
+
+      if (myvar %in% c("Demog.Index", "Demog.Index.Supp")) {
+      myvar_to_use <- paste0(myvar, ".State") 
+    } else {
+      myvar_to_use <- myvar
+    }
+      ############################## #
+      
+    if ((myvar %in% names(statestats)) && (myvar_to_use %in% names(results_bysite)) ) {
+      
       state.pctile.cols_bysite[ , varnames.state.pctile[[i]]] <- pctile_from_raw_lookup(    ### VERY SLOW STEP 289 msec
-        unlist(results_bysite[  , ..myvar]), varname.in.lookup.table = myvar, lookup = statestats, zone =  results_bysite$ST)
+        unlist(results_bysite[  , ..myvar_to_use]), varname.in.lookup.table = myvar, lookup = statestats, zone =  results_bysite$ST
+        )
       ## These must be done later, as avg of sites:
       # state.pctile.cols_overall[, varnames.state.pctile[[i]]] <- pctile_from_raw_lookup(unlist(results_overall[ , ..myvar]), varname.in.lookup.table = myvar, lookup = statestats, zone =  results_overall$ST)
     } else {
@@ -1433,6 +1430,8 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
       ### D RAW % ##
       names_d,   # Demog.Index, percent low income, etc.
       subs, # e.g., subs <- names_d_subgroups_nh  # or subs <-  names_d_subgroups,  like percent hispanic etc.
+      ### D Special State versions for calculating Ratio to State or State Percentile !
+      c("Demog.Index.State", "Demog.Index.Supp.State"),  # map_headernames$rname[map_headernames$varlist %in% "names_d_demogindexstate"],
       
       ## EXTRA DEMOGRAPHICS
       
@@ -1510,10 +1509,13 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
           "ownedunits", "occupiedunits",  # 'OWNHU', "OCCHU",  # make upper/lowercase consistent in blockgroupstats, etc.
           "under18", "over17",  # 'AGE_LT18', 'AGE_GT17', 
           "male", "female",   #'MALES', 'FEMALES',# make upper/lowercase consistent in blockgroupstats, etc.
-          
-          "spanish_li", "ie_li", "api_li", "other_li",  # 'HLI_SPANISH_LI', 'HLI_IE_LI',  'HLI_API_LI', 'HLI_OTHER_LI'),    # make upper/lowercase consistent
-      "lan_universe", "lan_spanish" , "lan_eng_na", "lan_ie", "lan_api"),  #  'LAN_UNIVERSE', 'LAN_SPANISH', 'LAN_ENG_NA', 'LAN_IE', 'LAN_API',# make upper/lowercase consistent in blockgroupstats, etc.
       
+          # LANGUAGE VARIABLES 
+          
+          map_headernames$rname[map_headernames$varlist %in% c("names_d_language", "names_d_language_count")] ,    
+      # "spanish_li", "ie_li", "api_li", "other_li",  
+      # "lan_universe", "lan_spanish" , "lan_eng_na", "lan_ie", "lan_api"), 
+
       
       ## BG counts, BLOCK counts ----------------------------------------\
       
@@ -1528,7 +1530,8 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
       
       'radius', 'radius.miles' # it will use whichever version of name is found
       
-    )
+    ))
+    
     useful_column_order <- collapse::funique(useful_column_order)
     
   } # (can fold code here) ----------------------------------------\##################################################### #
@@ -1552,14 +1555,15 @@ doaggregate <- function(sites2blocks, sites2states_or_latlon=NA,
   
   ##################### #
   # >>> OUTPUT OF DOAGGREGATE SPECIAL CASE: ####
-  results_overall$Demog.Index.Supp.State <- NA
-  results_overall$Demog.Index.State  <- NA
-  results_bysite$Demog.Index.Supp.State <- NA
-  results_bysite$Demog.Index.State <- NA
-  sites2bgs_plusblockgroupdata_bysite$Demog.Index.Supp.State <- NA
-  sites2bgs_plusblockgroupdata_bysite$Demog.Index.State  <- NA
+  # c('Demog.Index.Supp.State', 'Demog.Index.State')
+  # results_overall$Demog.Index.Supp.State <- NA
+  # results_overall$Demog.Index.State      <- NA
+  # results_bysite$Demog.Index.Supp.State  <- NA
+  # results_bysite$Demog.Index.State       <- NA
+  # sites2bgs_plusblockgroupdata_bysite$ <- NA
+  # sites2bgs_plusblockgroupdata_bysite$Demog.Index.State      <- NA
   # These get used to find pctiles and ratio/avg,
-  # but then we will report raw scores as NA 
+  # but then we may want to report raw scores as NA or at least just leave those out of the lists like names_d 
   # to avoid showing 4 versions of Demog.Index raw unitless.
   ######################## #
   
