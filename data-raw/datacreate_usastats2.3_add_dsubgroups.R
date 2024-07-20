@@ -51,8 +51,7 @@ names_d_subgroups_both <- c(names_d_subgroups_nh, names_d_subgroups_alone)
 EJAM:::setdiff_yx(names(  usastats), c(names_e, names_d, names_ej  ,     names_ej_supp      ))
 EJAM:::setdiff_yx(names(statestats), c(names_e, names_d, names_ej_state, names_ej_supp_state))
 #
-#  "Demog.Index.State", "Demog.Index.Supp.State"
-
+# 
 # # compare to installed 
 # setdiff(names(statestats), c(EJAM::names_e, EJAM::names_d, EJAM::names_ej_state, EJAM::names_ej_supp_state  ))
 # setdiff(names(  usastats), c(EJAM::names_e, EJAM::names_d, EJAM::names_ej  ,     EJAM::names_ej_supp      ))
@@ -67,7 +66,6 @@ EJAM:::setdiff_yx(names(  usastats), c(EJAM::names_e, EJAM::names_d, EJAM::names
 library(data.table)
 bg <- data.table::copy(blockgroupstats)
 bg <- data.table::setDF(bg)
-golem::detach_all_attached() # unattach EJAM:: pkg while doing this to avoid confusion with lazyloaded vars
 
 # check those subgroup demog columns in bg
   if (  0 == length(intersect(names_d_subgroups_both, names(bg)))) {
@@ -147,7 +145,8 @@ if (all(usastats[,intersect(names_d_subgroups_both, names(usastats))] == 0)  |
 
 # if (all(statestats[,names_d_subgroups_both] == 0)  | any(!(names_d_subgroups_both %in% names(statestats)))) {
   
-  statestats_subgroups <- EJAM:::pctiles_lookup_create(data.frame(bg)[ , names_d_subgroups_both], zone.vector = bg$ST) # from EJAM package
+# EJAM::: not needed if did load_all()
+  statestats_subgroups <- pctiles_lookup_create(data.frame(bg)[ , names_d_subgroups_both], zone.vector = bg$ST) # from EJAM package
   
   # names(statestats_subgroups)
   morecols = data.frame(as.list(rep(0,length(names_d_subgroups_both))))
@@ -198,9 +197,9 @@ if (all(usastats[,intersect(names_d_subgroups_both, names(usastats))] == 0)  |
      subvars, statestats_subgroups, zerorowperstate, othervars)
   ########################################################## # 
   
-  
-    attributes(  usastats)[!("row.names" == names(attributes(usastats)))] 
-  attributes(statestats)[!("row.names" == names(attributes(statestats)))] 
+  # 
+  # attributes(  usastats)[!("row.names" == names(attributes(usastats)))] 
+  # attributes(statestats)[!("row.names" == names(attributes(statestats)))] 
   ########################################################## # 
   
   # fix duplicate name where hisp was in alone and nh versions
@@ -242,10 +241,8 @@ if (all(usastats[,intersect(names_d_subgroups_both, names(usastats))] == 0)  |
   
   usethis::use_data(usastats,   overwrite = T)
   usethis::use_data(statestats, overwrite = T)
-  
    
   print('now need to rebuild EJAM package with those new datasets and push changes')
-  
   
   cat("FINISHED A SCRIPT\n")
   cat("\n In globalenv() so far: \n\n")

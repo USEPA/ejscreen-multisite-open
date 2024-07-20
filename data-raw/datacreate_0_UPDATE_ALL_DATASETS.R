@@ -5,12 +5,22 @@
 # NON-ANNUAL (frequent, episodic, etc.) other datasets
 # see EJAM's github issues about this
 
+# setup ####
+
 rm(list = ls())
 
-rawdir = "./data-raw"
+if (!exists("localfolder")) { localfolder = "~/../Downloads/ejscreen new ftp downloads"}
+if (!exists("td")) {td <- tempdir() }
+if (!exists("rawdir")) {rawdir <- './data-raw'}
 if (!dir.exists(rawdir)) {stop("need to do this from source package folder, EJAM/")}
+if (!exists("askquestions")) {askquestions <- FALSE}
+if (interactive()) {
+  askquestions <- askYesNo("Do you want to answer questions interactively like this about what to save where, etc.? (vs running all scripts without pauses)")
+  if (is.na("askquestions")) {askquestions <- FALSE}
+}
 
 golem::detach_all_attached()
+
 require(devtools)
 require(rstudioapi)
 
@@ -23,11 +33,38 @@ load_all()
 # like metadata_add(), newly saved .rda files, etc.
 #  Otherwise internal functions don't work in scripts, and it would use installed not new source versions.
 
-if (!exists("askquestions")) {askquestions <- FALSE}
-if (interactive()) {
-  askquestions <- askYesNo("Do you want to answer questions interactively like this about what to save where, etc.? (vs running all scripts without pauses)")
-  if (is.na("askquestions")) {askquestions <- FALSE}
+######################################### #
+######################################### #
+source_maybe <- function(scriptname = NULL,
+                         DOIT = TRUE, 
+                         askquestions = NULL, question = paste0("Do ", scriptname, "?"),
+                         folder = NULL) {
+  if (is.null(scriptname)) {stop("requires scriptname")}
+  if (missing(askquestions)) {
+    if (is.null(askquestions)) {askquestions <- TRUE} # else it was taken from parent env
+  }
+  if (exists("rawdir") && missing(folder)) {
+    folder <- rawdir
+  } else {
+    if (missing(folder)) {
+      folder <-  "./data-raw"
+    }  
+  }
+  if (askquestions && interactive()) {
+    DOIT <- askYesNo(question)
+    if (!is.na(DOIT) && DOIT) {DOIT <- TRUE}
+  }
+  if (DOIT) {
+    cat(paste0("Doing ", scriptname, " \n"))
+    spath = file.path(folder, scriptname)
+    if (!file.exists(spath)) {stop(paste0("requires valid folder and scriptname. Tried: ", spath))}
+    source(spath)
+  } else {
+    cat("Skipping ", scriptname, "\n")
+  }
 }
+######################################### #
+######################################### #
 
 ######################################### #
 #
@@ -38,7 +75,7 @@ cat('\n ')
 cat("\n\n", "To open & edit one of the datacreate_ files,
     you can source a line below\n\n",
     paste0(paste0(
-  "\t documentOpen('", rawdir, "/", fnames, "')"), collapse = "\n"))
+      "\t documentOpen('", rawdir, "/", fnames, "')"), collapse = "\n"))
 
 if (0 == 1) {
   
@@ -79,60 +116,31 @@ if (0 == 1) {
   documentOpen('./data-raw/datacreate_islandareas.R')        # ok
   documentOpen('./data-raw/datacreate_censusplaces.R')       # not used yet
   
-  # when frs/naics/sic info is updated
-  #
+  # when frs info is updated
+  
   documentOpen('./data-raw/datacreate_frs_.R')            #  BUT SEE IF THIS HAS BEEN REPLACED  ***
   documentOpen('./data-raw/datacreate_frs_by_mact.R')     #
   documentOpen('./data-raw/datacreate_frs_by_sic.R')      #
   documentOpen('./data-raw/datacreate_frsprogramcodes.R') #
   documentOpen('./data-raw/datacreate_epa_programs.R')    #
+  documentOpen('./data-raw/datacreate_testids_program_sys_id.R')  # 
+  documentOpen('./data-raw/datacreate_testids_registry_id.R')     #
+  # NAICS/SIC
   documentOpen('./data-raw/datacreate_naics_counts.R')    # script
   documentOpen('./data-raw/datacreate_naicstable.R')      # script. does date_saved_in_package & use_data
   documentOpen('./data-raw/datacreate_SIC.R')             
   documentOpen('./data-raw/datacreate_sic_counts.R')      
   documentOpen('./data-raw/datacreate_sictable.R')        
-  documentOpen('./data-raw/datacreate_testids_program_sys_id.R')  # 
-  documentOpen('./data-raw/datacreate_testids_registry_id.R')     #
   
-  # misc for package to work
-  #
+  # misc
   documentOpen('./data-raw/datacreate_lat_alias.R')
   documentOpen('./data-raw/datacreate_ejampackages.R')
   documentOpen('./data-raw/datacreate_meters_per_mile.R')
+  
+  ### and then datawrite_to_pins() if those datasets were updated. 
+  
 }
-
-######################################### #
-######################################### #
-source_maybe <- function(scriptname = NULL,
-                         DOIT = TRUE, 
-                         askquestions = NULL, question = paste0("Do ", scriptname, "?"),
-                         folder = NULL) {
-  if (is.null(scriptname)) {stop("requires scriptname")}
-  if (missing(askquestions)) {
-    if (is.null(askquestions)) {askquestions <- TRUE} # else it was taken from parent env
-  }
-  if (exists("rawdir") && missing(folder)) {
-    folder <- rawdir
-  } else {
-    if (missing(folder)) {
-      folder <-  "./data-raw"
-    }  
-  }
-  if (askquestions && interactive()) {
-    DOIT <- askYesNo(question)
-    if (!is.na(DOIT) && DOIT) {DOIT <- TRUE}
-  }
-  if (DOIT) {
-    cat(paste0("Doing ", scriptname, " \n"))
-    spath = file.path(folder, scriptname)
-    if (!file.exists(spath)) {stop(paste0("requires valid folder and scriptname. Tried: ", spath))}
-    source(spath)
-  } else {
-    cat("Skipping ", scriptname, "\n")
-  }
-}
-######################################### #
-######################################### #
+######################################### ########################################## #
 
 ######################################### #
 # metadata ####
@@ -144,8 +152,7 @@ source_maybe <- function(scriptname = NULL,
 ## use full metadata if related to ejscreen or census/acs
 # x <- metadata_add(x)
 
-######################################### ########################################## #
-
+######################################### #
 # check pins board access ####
 
 x <- datawrite_to_pins(justchecking = T) # load_all() first or use EJAM:::
@@ -175,12 +182,12 @@ if (!is.null(x)) {
   }
 }
 ######################################### ########################################## #
+######################################### ########################################## #
 
 ######################################### #
 # datacreate_map_headernames.R ####
 # rstudioapi::documentOpen("./data-raw/datacreate_map_headernames.R")
 source_maybe("datacreate_map_headernames.R", DOIT = TRUE)
-
 ######################################### #
 # datacreate_names_of_indicators.R ####
 # rstudioapi::documentOpen("./data-raw/datacreate_names_of_indicators.R")
@@ -191,19 +198,16 @@ source_maybe("datacreate_names_of_indicators.R")
 ### BUT any subsequent scripts that depend on those will not use the correct new versions unless we do load.all() anyway... 
 ### metadata is assigned inside this  
 ### use_data is done inside this  
-
 ######################################### #
 # datacreate_names_pct_as_fraction.R ####
 # rstudioapi::documentOpen("./data-raw/datacreate_names_pct_as_fraction.R")
 source_maybe("datacreate_names_pct_as_fraction.R")
-
 ######################################### #
 # datacreate_metadata4pins.R ####
 # rstudioapi::documentOpen("./data-raw/datacreate_metadata4pins.R")
 source_maybe("datacreate_metadata4pins.R") # does use_data()
 # this just stores title, description of each dataset that gets put in pins board - no dates info
 # dates info for pins is generated right when being written to pins board.
-
 ######################################### #
 ### Must use load_all() or build/install, to make available those new variable name lists 
 #  and possibly modified  metadata4pins.rda
@@ -234,43 +238,64 @@ if (askquestions && interactive()) {
     # defaults should work but anyone doing this needs authentication, access to pins board !
   }}
 
-
 ######################################### #
 # datacreate_usastats2.3.R ####
-# datacreate_usastats2.3_add_dsubgroups.R ####
 # rstudioapi::documentOpen("./data-raw/datacreate_usastats2.3.R")
-# rstudioapi::documentOpen("./data-raw/datacreate_usastats2.3_add_dsubgroups.R")
 source_maybe("datacreate_usastats2.3.R")
 # now usastats and statestats exist
+######################################### #
+# datacreate_usastats2.3_add_dsubgroups.R ####
+# rstudioapi::documentOpen("./data-raw/datacreate_usastats2.3_add_dsubgroups.R")
 source_maybe("datacreate_usastats2.3_add_dsubgroups.R")
-
 ######################################### #
 # datacreate_avg.in.us.R ####
 # rstudioapi::documentOpen("./data-raw/datacreate_avg.in.us.R")
 source_maybe("datacreate_avg.in.us.R")
-
 ######################################### #
 # datacreate_high_pctiles_tied_with_min.R ####
 # rstudioapi::documentOpen("./data-raw/datacreate_high_pctiles_tied_with_min.R")
 source_maybe("datacreate_high_pctiles_tied_with_min.R")
-
 ######################################### #
 # datacreate_formulas.R ####
 # rstudioapi::documentOpen("./data-raw/datacreate_formulas.R")
 source_maybe("datacreate_formulas.R")
-
-# may want to rebuild/ reinstall the package here, or at least load_all()  ?
-
-load_all()
-
 ######################################### #
-# datacreate_testpoints_testoutputs.R ####
-# rstudioapi::documentOpen("./data-raw/datacreate_testpoints_testoutputs.R")
-source_maybe("datacreate_testpoints_testoutputs.R")
+
+ls()
+
+
+# may want to rebuild/ reinstall the package here,
+# or at least load_all()  ?
+
+
+devtools::check()
+
+
+devtools::test()
+
+
+devtools::install(quick = TRUE)
+
+
+save.image(file.path(localfolder, "work in progress.rda"))
+
+
+
 ######################################### #
 # datacreate_test_address.R #### 
 # rstudioapi::documentOpen('./data-raw/datacreate_test_address.R')  
 source_maybe("datacreate_test_address.R")
+######################################### #
+# datacreate_testids_program_sys_id.R ####
+# documentOpen('./data-raw/datacreate_testids_program_sys_id.R')  # 
+source_maybe("datacreate_testids_program_sys_id.R")
+######################################### #
+# datacreate_testpoints_testoutputs.R ####
+# rstudioapi::documentOpen("./data-raw/datacreate_testpoints_testoutputs.R")
+source_maybe("datacreate_testpoints_testoutputs.R")
+
+load_all()
+
 
 ######################################### ########################################## #
 
@@ -334,21 +359,27 @@ source_maybe("datacreate_censusplaces.R", DOIT = FALSE, folder = rawdir)
 
 
 ######################################### ########################################## #
-
+# 
 # # when frs/naics/sic info is updated
 # #
+# FRS ####
+
 # documentOpen('./data-raw/datacreate_frs_.R')            #  BUT SEE IF THIS HAS BEEN REPLACED  ***
 # documentOpen('./data-raw/datacreate_frs_by_mact.R')     #
 # documentOpen('./data-raw/datacreate_frs_by_sic.R')      #
 # documentOpen('./data-raw/datacreate_frsprogramcodes.R') #
 # documentOpen('./data-raw/datacreate_epa_programs.R')    #
+# documentOpen('./data-raw/datacreate_testids_program_sys_id.R')  # 
+# documentOpen('./data-raw/datacreate_testids_registry_id.R')     #
+
+# NAICS/SIC ####
+
 # documentOpen('./data-raw/datacreate_naics_counts.R')    # script
 # documentOpen('./data-raw/datacreate_naicstable.R')      # script. does date_saved_in_package & use_data
 # documentOpen('./data-raw/datacreate_SIC.R')             
 # documentOpen('./data-raw/datacreate_sic_counts.R')      
 # documentOpen('./data-raw/datacreate_sictable.R')        
-# documentOpen('./data-raw/datacreate_testids_program_sys_id.R')  # 
-# documentOpen('./data-raw/datacreate_testids_registry_id.R')     #
+
 
 
 
@@ -372,10 +403,6 @@ cat("frs functions not here yet \n")
 # datacreate_ejampackages.R ####
 source_maybe('datacreate_ejampackages.R')
 ######################################### #
-# datacreate_testids_program_sys_id.R ####
-# documentOpen('./data-raw/datacreate_testids_program_sys_id.R')  # 
-source_maybe("datacreate_testids_program_sys_id.R")
-######################################### #
 # datacreate_meters_per_mile.R ####
 # documentOpen('./data-raw/datacreate_meters_per_mile.R')
 source_maybe("datacreate_meters_per_mile.R")
@@ -384,7 +411,7 @@ source_maybe("datacreate_meters_per_mile.R")
 
 ######################################### #
 ######################################### #
-
+# PINS ####
 # datawrite_to_pins() ####
 
 # varnames = c(
@@ -398,7 +425,7 @@ datawrite_to_pins() # it will ask interactively to confirm which ones among defa
 ######################################### #
 ######################################### #
 
-# cleanup- remove most objects ####
+# Cleanup- remove most objects ####
 
 rmost(
   notremove = c(

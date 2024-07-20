@@ -6,22 +6,11 @@
 
 # NOTE THIS SAME INFO IS MORE OR LESS IN map_headernames
 # 
+
+# map_headernames$rname[map_headernames$calculation_type == "wtdmean"]
+# map_headernames$rname[map_headernames$calculation_type == "ej formula"]
+
 # unique(map_headernames$calculation_type)
-# [1] "lookedup"        - pctile                                          
-# [2] "popwtd mean"       - "Demog.Index", pm, "EJ.DISPARITY.pm.eo", etc.                                        
-# [3] "wtdmean"           - weight is a count var other than pop                                        
-# [4] "ratio to avg"                                              
-# [5] "constant"        - averages, mostly                                          
-# [6] "sum of counts" - ok. but "count.NPL", "count.TSDF" should be "count of unique ids" ? 
-# [7] "bins"                                                      
-# [8] "flag"         -  "yesno_tribal" etc.                                           
-# [9] "percent formula"    - "p_spanish", etc. - or should they be popwtd mean? ***                                       
-# [10] "count of unique ids"   - "num_school" etc.                                   
-# [11] "?"                                                         
-# [12] "other"          - "sitecount_max", "distance_min", etc.                                           
-# [13] "ej formula"      - or should they be popwtd mean ?                                          
-# [14] "?? count of high avgstate pctiles or popwtd mean of those?" - "count.ej.80up" etc.
-# [15] "mode"      - ST, statename, REGION
 #
 # by( map_headernames$rname, map_headernames$calculation_type, cbind)
 # 
@@ -35,21 +24,28 @@
 # map_headernames$rname[map_headernames$calculation_type == "constant"]
 # grep("avg", map_headernames$rname[map_headernames$calculation_type == "constant"], value = T)
 # grep("avg", map_headernames$rname[map_headernames$calculation_type == "constant"], value = T, invert = TRUE)
+# grep("univ|base", map_headernames$rname, ignore.case = T, value = T)
 
 # countcols ####
   
 # countcols = "pop"
-countcols <- names_all[calctype(names_all) %in%  "sum of counts"]
+countcols <- names_all_r[calctype(names_all_r) %in%  "sum of counts"]
   
 # wtdmeancols ####
 
-wtdmeancols <- names_all[calctype(names_all) %in%  c("wtdmean", "popwtd mean")]
+## POPULATION WEIGHTED
+# x =  map_headernames$rname[map_headernames$calculation_type == "wtdmean" & map_headernames$denominator == "pop"]
+# ## OTHER-WEIGHTED
+# y = map_headernames$rname[map_headernames$calculation_type == "wtdmean" & map_headernames$denominator != "pop"]
 
-  # map_headernames$rname[map_headernames$calculation_type == "popwtd mean"]
-# varnames = c(names_d, names_d_subgroups, names_d_subgroups_alone, 
-#              "pctdisability",   "pctownedunits",  "pctpoor", 
-#              "pct_lan_spanish",  "pct_lan_ie",  "pct_lan_api", "pct_lan_eng_na",
-#              "pctspanish_li",   "pctie_li",  "pctapi_li" , "pctother_li" )
+wtdmeancols <- names_all_r[calctype(names_all_r) %in%  c("wtdmean")]
+
+## Define weights (denominators) ####
+
+wtscols = varinfo(wtdmeancols, "denominator")$denominator
+
+
+
 
 # wtdmeancols = c(
 #   
@@ -84,10 +80,6 @@ wtdmeancols <- names_all[calctype(names_all) %in%  c("wtdmean", "popwtd mean")]
 #   "Demog.Index.State" ,   # new
 #   "Demog.Index.Supp.State"  # new
 # )
-
-## Define weights (denominators) ####
-
-wtscols = varinfo(wtdmeancols, "denominator")$denominator
 
 # wtscols = c(
 #   

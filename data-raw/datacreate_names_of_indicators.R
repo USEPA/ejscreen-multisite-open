@@ -1157,6 +1157,8 @@ return(names_these)
 # USE FUNCTION #### 
 datacreate_names_of_indicators()    # this does metadata and use_data inside the function
 
+rm(datacreate_names_of_indicators)
+
 # Warning messages:
 #   1: names_d_demogindexstate was not created as a data object. 
 # 2: names_d_language_count was not created as a data object. 
@@ -1167,7 +1169,7 @@ datacreate_names_of_indicators()    # this does metadata and use_data inside the
 # 7: x_anyother was not created as a data object. 
 # 8: names_d_language was not created as a data object. 
 # 9: custom was not created as a data object. 
-# > 
+
 cat("FINISHED A SCRIPT\n")
 cat("\n In globalenv() so far: \n\n")
 print(ls())

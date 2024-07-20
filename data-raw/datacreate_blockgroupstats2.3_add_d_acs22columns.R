@@ -306,10 +306,9 @@ print( dim(blockgroupstats) )
 
 
 # clean up ####
-
+capture.output({
 rm(blockgroupstats_new)
 rm(acs22)
-
 rm(i, savex, zfile, cols2drop, needgdb)
 rm("blockgroupstats_source_state.gdb",
    "blockgroupstats_source_state.gdb.zip" ,
@@ -317,6 +316,7 @@ rm("blockgroupstats_source_state.gdb",
    "blockgroupstats_source_usa.gdb.zip"  )
 rm("statestats_new_explained.xlsx" , "usastats_new_explained.xlsx")
 rm("fnames"  )
+})
 ################################################## #
 
 # metadata, use_data ####

@@ -3,10 +3,11 @@
 
 if (!exists("askquestions")) {askquestions <- FALSE}
 if (!exists("rawdir")) {rawdir <- './data-raw'}
+if (!exists("localfolder")) { localfolder = "~/../Downloads/ejscreen new ftp downloads"}
+if (!exists("td")) {td <- tempdir() }
 
 ############################################################################################ #
-localfolder = "~/../Downloads/ejscreen new ftp downloads"
-td <- tempdir()  
+
 # EJScreen v 2.3 ftp site files as of 7/5/2024
 baseurl = "https://gaftp.epa.gov/EJScreen/2024/2.30_July_useMe/"
 # browseURL(baseurl)
@@ -97,6 +98,7 @@ if (needgdb) {
 ######################################################### #
 
 # ARCHIVE  .xlsx files in case needed ####
+savex = FALSE
 if (interactive() && askquestions) {
   savex = askYesNo("Save usastats_new_explained.xlsx in localfolder?")
   if (!is.na(savex) && savex) {
@@ -152,7 +154,7 @@ varnames <- c("blockgroupstats_new",
               "usastats_new",
               "statestats_new")
 ########################### #
-SAVELOCAL=TRUE
+SAVELOCAL <- TRUE
 if (interactive() && askquestions) {
   SAVELOCAL = askYesNo("Save copies locally now?")
   if (is.na(SAVELOCAL)) {SAVELOCAL <- FALSE}

@@ -45,6 +45,7 @@ if (!exists("fpath")) {
 map_headernames <- metadata_add(map_headernames)
 usethis::use_data(map_headernames, overwrite = TRUE)
 
+rm(datacreate_map_headernames)
 
 cat("FINISHED A SCRIPT\n")
 cat("\n In globalenv() so far: \n\n")

@@ -73,4 +73,4 @@ return(NULL)
 # USE FUNCTION ####
 datacreate_names_pct_as_fraction(map_headernames = map_headernames)  
 # That function does metadata_add and use_data
-
+rm("datacreate_names_pct_as_fraction")

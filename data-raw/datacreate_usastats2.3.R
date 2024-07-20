@@ -178,14 +178,7 @@ gc()
 
 ######################################################################################## ################## #
 
-# save.image(file = "~/../Downloads/work in progress on usastats 2024-07.rda")
-
-cat("at this point, before saving these via use_data(), do script in 
-     EJAM/data-raw/datacreate_usastats_pctile_lookup_add_subgroups_demog.R \n")
-
-######################################################################################## ################## #
-
-# check them to see if OK before replacing existing datasets in package?
+ # save.image(file = "~/../Downloads/work in progress on usastats 2024-07.rda")
 
 # statestats has some NA values:
 # but that is OK, if the function looking up pctiles can handle NA values for a zone! and there is not a better way to indicate missing values.
@@ -200,23 +193,57 @@ cat("at this point, before saving these via use_data(), do script in
 ########################
 
 # FIX DEMOG INDEX US VS STATE NAMES ####
-# use state version when reporting state percentiles, but do not use a special name for them
-if ("Demog.Index.State" %in% colnames(statestats)) {
-  statestats$Demog.Index      <- statestats$Demog.Index.State
-} else {
- warning("did not find statestats$Demog.Index.State so check that Demog.Index.State column is correct there") 
-}
-if ("Demog.Index.Supp.State" %in% colnames(statestats)) {
-statestats$Demog.Index.Supp <- statestats$Demog.Index.Supp.State
-} else {
-  warning("did not find statestats$Demog.Index.Supp.State so check that Demog.Index.State column is correct there") 
-}
+
+## Confirmed that so far that in statestats,
+## the 2 Demog.Index columns already have the right state-specific info for these 2 special variables:
+## that were called xyz.State in blockgroupstats but are called the regular name in statestats now:
+
+# blockgroupstats[, .(mean(Demog.Index.State), mean(Demog.Index.Supp.State)), by = "ST"]
+#        ST       V1       V2
+# <char>    <num>    <num>
+# 1:     AS 5.815654       NA
+# 2:     GU       NA       NA
+# 3:     MP 1.163122       NA
+# 4:     AL 1.490787 1.950988   good
+# 5:     AK 1.651188 1.476892   good
+# ...
+# > statestats[statestats$PCTILE == "mean", c("REGION", "Demog.Index", "Demog.Index.Supp")]
+#        REGION Demog.Index Demog.Index.Supp
+# ALmean     AL    1.490787         1.950988   good
+# AKmean     AK    1.651188         1.476892   good
+# ...
+
+# We want to use state version when reporting state percentiles, but do not use a special name for them in usa
+# if ("Demog.Index.State" %in% colnames(statestats)) {
+#   statestats$Demog.Index      <- statestats$Demog.Index.State
+# } else {
+#  warning("did not find statestats$Demog.Index.State so check that Demog.Index.State column is correct there") 
+# }
+# if ("Demog.Index.Supp.State" %in% colnames(statestats)) {
+# statestats$Demog.Index.Supp <- statestats$Demog.Index.Supp.State
+# } else {
+#   warning("did not find statestats$Demog.Index.Supp.State so check that Demog.Index.State column is correct there") 
+# }
 #  # these are ok and will not need state versions
 # usastats$Demog.Index.State      <- usastats$Demog.Index
 # usastats$Demog.Index.Supp.State <- usastats$Demog.Index.Supp
+################################################### ################## #
+
+# Save the work-in-progress tables as data in ./data/ .rda  for now just to
+# make sure we do not accidentally load_all() and start using the old versions again
+use_data(usastats, overwrite = TRUE)
+use_data(statestats, overwrite = TRUE)
 
 
+cat("FINISHED A SCRIPT\n")
+cat("\n In globalenv() so far: \n\n")
+print(ls())
 
 ######################################################################################## ################## #
 
 # NEXT SCRIPT HAS TO ADD DEMOG SUBGROUPS ####
+
+cat("Next we need to do 
+EJAM/data-raw/datacreate_usastats_pctile_lookup_add_subgroups_demog.R \n")
+
+######################################################################################## ################## #
