@@ -5,10 +5,11 @@
 # NON-ANNUAL (frequent, episodic, etc.) other datasets
 # see EJAM's github issues about this
 
-# setup ####
+# Setup ####
 
 rm(list = ls())
-
+# "~/../Downloads/ejscreen new ftp downloads"
+# "~/../Downloads/EJAMbigfiles"
 if (!exists("localfolder")) { localfolder = "~/../Downloads/ejscreen new ftp downloads"}
 if (!exists("td")) {td <- tempdir() }
 if (!exists("rawdir")) {rawdir <- './data-raw'}
@@ -26,7 +27,7 @@ require(rstudioapi)
 
 load_all()
 
-# load_all() ####
+## load_all() ####
 # Get latest source functions and data: 
 # from  EJAM/R/*.R and EJAM/data/*.rda 
 # Attaches exported + internal functions & data 
@@ -68,7 +69,8 @@ source_maybe <- function(scriptname = NULL,
 
 ######################################### #
 #
-# List of datacreate_ files & When to use each ####
+## List of datacreate_ files ####
+## & when to use each ####
 
 fnames <- dir(rawdir, pattern = 'datacreate_')
 cat('\n ')
@@ -89,7 +91,7 @@ if (0 == 1) {
   documentOpen("./data-raw/datacreate_metadata4pins.R") # ok
   documentOpen('./data-raw/datacreate_blockgroupstats2.3.R') # and bgej      # ok
   documentOpen('./data-raw/datacreate_blockgroupstats2.3_add_d_acs22columns.R')   # ok
-  #  lookup tables
+  #  pctile and avg lookup tables
   documentOpen('./data-raw/datacreate_usastats2.3.R')                 # in progress ?
   documentOpen('./data-raw/datacreate_usastats2.3_add_dsubgroups.R')  # in progress
   documentOpen('./data-raw/datacreate_avg.in.us.R')                   # ok
@@ -143,7 +145,7 @@ if (0 == 1) {
 ######################################### ########################################## #
 
 ######################################### #
-# metadata ####
+## metadata ####
 #
 ## use simple metadata for data not related to EJScreen or Census, like just frs-related, naics-related, etc.
 # attr(x, "date_downloaded")       <- as.character(Sys.Date()) # if relevant
@@ -153,7 +155,7 @@ if (0 == 1) {
 # x <- metadata_add(x)
 
 ######################################### #
-# check pins board access ####
+## check pins board access ####
 
 x <- datawrite_to_pins(justchecking = T) # load_all() first or use EJAM:::
 if (!is.null(x)) {
@@ -183,13 +185,16 @@ if (!is.null(x)) {
 }
 ######################################### ########################################## #
 ######################################### ########################################## #
+# # ~ ####
+# *** Annual EJScreen updates ####
 
+## new indicators, variable names ####
 ######################################### #
-# datacreate_map_headernames.R ####
+### datacreate_map_headernames.R ####
 # rstudioapi::documentOpen("./data-raw/datacreate_map_headernames.R")
 source_maybe("datacreate_map_headernames.R", DOIT = TRUE)
 ######################################### #
-# datacreate_names_of_indicators.R ####
+### datacreate_names_of_indicators.R ####
 # rstudioapi::documentOpen("./data-raw/datacreate_names_of_indicators.R")
 source_maybe("datacreate_names_of_indicators.R")
 ### this will create but also assign metadata to and save for pkg via use_data() 
@@ -199,11 +204,11 @@ source_maybe("datacreate_names_of_indicators.R")
 ### metadata is assigned inside this  
 ### use_data is done inside this  
 ######################################### #
-# datacreate_names_pct_as_fraction.R ####
+### datacreate_names_pct_as_fraction.R ####
 # rstudioapi::documentOpen("./data-raw/datacreate_names_pct_as_fraction.R")
 source_maybe("datacreate_names_pct_as_fraction.R")
 ######################################### #
-# datacreate_metadata4pins.R ####
+### datacreate_metadata4pins.R ####
 # rstudioapi::documentOpen("./data-raw/datacreate_metadata4pins.R")
 source_maybe("datacreate_metadata4pins.R") # does use_data()
 # this just stores title, description of each dataset that gets put in pins board - no dates info
@@ -215,6 +220,9 @@ source_maybe("datacreate_metadata4pins.R") # does use_data()
 #  and so all functions will use the new source version 
 
 devtools::load_all()
+
+### demog and envt data on every blockgroup ####
+### + pctile and avg lookup tables ####
 
 ######################################### #
 # datacreate_blockgroupstats2.3 (also starts making usastats,statestats!!) ####
@@ -263,7 +271,6 @@ source_maybe("datacreate_formulas.R")
 
 ls()
 
-
 # may want to rebuild/ reinstall the package here,
 # or at least load_all()  ?
 
@@ -290,7 +297,7 @@ devtools::test()
 
 load_all()
 
-
+## examples of outputs ####
 ######################################### #
 # datacreate_test_address.R #### 
 # rstudioapi::documentOpen('./data-raw/datacreate_test_address.R')  
@@ -311,24 +318,12 @@ load_all()
 
 ######################################### #
 ######################################### #
-# 
-# # when census fips codes or boundaries change (& ejscreen updates accordingly)
-# 
-# #   blocks
+# # ~ ####
+# *** When FIPS or Census boundaries change (& ejscreen updates accordingly) ####
+
+######################################### #
+# blocks  ####
 # documentOpen('./data-raw/datacreate_blockwts.R')           # needs Island Areas added
-
-# #   blockgroups
-# documentOpen('./data-raw/datacreate_bg_cenpop2020.R')      # confirm if changed since 2020
-# documentOpen('./data-raw/datacreate_bgpts.R')              # redundant w bg_cenpop2020, pick one to use
-
-# #   states
-# documentOpen('./data-raw/datacreate_states_shapefile.R')   # check if want 2020 or 2022+ file
-# documentOpen('./data-raw/datacreate_stateinfo.R')          # ok (missing Island Areas)
-# documentOpen('./data-raw/datacreate_stateinfo2.R')         # ok (has Island Areas)
-
-# #   other geo
-# documentOpen('./data-raw/datacreate_islandareas.R')        # ok
-# documentOpen('./data-raw/datacreate_censusplaces.R')       # not used yet
 
 ######################################### #
 # datacreate_blockwts.R ####
@@ -339,6 +334,10 @@ source_maybe('datacreate_blockwts.R', DOIT = FALSE) # script that includes metad
 # except when FIPS codes or boundaries change for blocks or blockgroups.
 #  or possibly to add data that had been missing, for Island Areas AS, GU, MP, VI ***
 ######################################### #
+# blockgroups ####
+# documentOpen('./data-raw/datacreate_bg_cenpop2020.R')      # confirm if changed since 2020
+# documentOpen('./data-raw/datacreate_bgpts.R')              # redundant w bg_cenpop2020, pick one to use
+
 # datacreate_bg_cenpop2020.R ####
 # rstudioapi::documentOpen("./data-raw/datacreate_bg_cenpop2020.R")
 source_maybe("datacreate_bg_cenpop2020.R", DOIT = FALSE, folder = rawdir)
@@ -347,6 +346,11 @@ source_maybe("datacreate_bg_cenpop2020.R", DOIT = FALSE, folder = rawdir)
 # rstudioapi::documentOpen("./data-raw/datacreate_bgpts.R")
 source_maybe("datacreate_bgpts.R", DOIT = FALSE, folder = rawdir)
 ######################################### #
+# states ####
+# documentOpen('./data-raw/datacreate_states_shapefile.R')   # check if want 2020 or 2022+ file
+# documentOpen('./data-raw/datacreate_stateinfo.R')          # ok (missing Island Areas)
+# documentOpen('./data-raw/datacreate_stateinfo2.R')         # ok (has Island Areas)
+
 # datacreate_states_shapefile.R ####
 # documentOpen('./data-raw/datacreate_states_shapefile.R')   # check if want 2020 or 2022+ file
 source_maybe("datacreate_states_shapefile.R", DOIT = FALSE, folder = rawdir)
@@ -359,6 +363,11 @@ source_maybe("datacreate_states_shapefile.R", DOIT = FALSE, folder = rawdir)
 source_maybe('datacreate_stateinfo.R', DOIT = FALSE, folder = rawdir)
 source_maybe('datacreate_stateinfo2.R', DOIT = FALSE, folder = rawdir)
 ######################################### #
+
+# other geo ####
+# documentOpen('./data-raw/datacreate_islandareas.R')        # ok
+# documentOpen('./data-raw/datacreate_censusplaces.R')       # not used yet
+
 # datacreate_islandareas.R ####
 # documentOpen('./data-raw/datacreate_islandareas.R')        # ok
 source_maybe("datacreate_islandareas.R", DOIT = FALSE, folder = rawdir)
@@ -369,8 +378,8 @@ source_maybe("datacreate_censusplaces.R", DOIT = FALSE, folder = rawdir)
 
 
 ######################################### ########################################## #
-# 
-# # when frs/naics/sic info is updated
+# # ~ ####
+# *** FRS updates (+ NAICS/SIC) ####
 # #
 # FRS ####
 
@@ -434,8 +443,8 @@ datawrite_to_pins() # it will ask interactively to confirm which ones among defa
 
 ######################################### #
 ######################################### #
-
-# Cleanup- remove most objects ####
+# # ~ ####
+# Cleanup/ remove most objects ####
 
 rmost(
   notremove = c(
