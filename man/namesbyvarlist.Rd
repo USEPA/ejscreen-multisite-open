@@ -33,6 +33,8 @@ Note names_d_friendly refers to the semi-long names to use in labels
  namesbyvarlist( 'names_e_pctile', c('r', 'longname'))    
  namesbyvarlist(c('names_e_pctile', 'names_e_state_pctile'), 
    c('varlist', 'r', 'api',   'names_friendly', 'longname'))
-
+}
+\seealso{
+\code{\link[=varin_map_headernames]{varin_map_headernames()}} \code{\link[=varinfo]{varinfo()}} \code{\link[=names_whichlist_multi_key]{names_whichlist_multi_key()}}
 }
 \keyword{internal}

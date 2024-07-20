@@ -21,7 +21,7 @@
 #'  namesbyvarlist( 'names_e_pctile', c('r', 'longname'))    
 #'  namesbyvarlist(c('names_e_pctile', 'names_e_state_pctile'), 
 #'    c('varlist', 'r', 'api',   'names_friendly', 'longname'))
-#'
+#' @seealso [varin_map_headernames()] [varinfo()] [names_whichlist_multi_key()]
 #' @keywords internal
 #' @export
 #'
@@ -32,7 +32,7 @@ namesbyvarlist <- function(varlist, nametype=c('rname','longname','apiname')[1])
                            api = 'apiname', # if they say oldtype="api" then look up each of namesnow within the column map_headernames$apiname 
                            csv = 'csvname',
                            r =   'rname',
-                          acs = 'acsname',,
+                          acs = 'acsname',
                            original = 'oldname',   # which might be csvname2.2 or apiname or rname
                           shortlabel = 'shortlabel', 
                           long = 'longname',      # similar to names_friendly or csvlongname or gdb23longname or csv_descriptions_name, etc.
