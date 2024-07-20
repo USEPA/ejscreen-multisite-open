@@ -268,17 +268,27 @@ ls()
 # or at least load_all()  ?
 
 
+devtools::install(quick = TRUE)
+
+
+save.image(file.path(localfolder, "work in progress.rda"))
+
+
+
+
+############################### pause here
+
+
+
+
 devtools::check()
 
 
 devtools::test()
 
 
-devtools::install(quick = TRUE)
 
-
-save.image(file.path(localfolder, "work in progress.rda"))
-
+load_all()
 
 
 ######################################### #
