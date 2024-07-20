@@ -41,7 +41,7 @@ popup_from_ejscreen <- function(out, linkcolname='EJScreen Report', linkcolname2
   ############################################ #
   # SPECIFY indicators/VARIABLE NAMES  ####
   
-  names.d.nice      <- fixcolnames(names_d, 'r', 'shortlabel')
+  names_d_nice_pop      <- fixcolnames(names_d, 'r', 'shortlabel')
   names_d_pctile_pop       <- names_d_pctile
   names_d_state_pctile_pop <- names_d_state_pctile
   names_e_pop <- names_e
@@ -247,11 +247,11 @@ popup_from_ejscreen <- function(out, linkcolname='EJScreen Report', linkcolname2
     warning('none of names_d were found in out')
     poptext.d <- NULL
   } else {
-    names.d.nice <- names.d.nice[dok]
+    names_d_nice_pop <- names_d_nice_pop[dok]
     names_d_pctile_pop <- names_d_pctile_pop[names_d_pctile_pop %in% names(out)] #  there are state and US ones, so 2x as many as there are names_d
     names_d_state_pctile_pop <- names_d_state_pctile_pop[names_d_state_pctile_pop %in% names(out)] # there are state and US ones, so 2x as many as there are names_d
     poptext.d <-  make.popup.d.api(d = out[, names_d] / 100, pctile = out[, names_d_pctile_pop], state.pctile = out[, names_d_state_pctile_pop], prefix = '') # includes state pctiles too, now
-    names(poptext.d) <- names.d.nice
+    names(poptext.d) <- names_d_nice_pop
   }
   if (length(eok) == 0) {
     warning('none of names_e_pop were found in out')
