@@ -9,7 +9,8 @@
 
 
 
-stop("THIS IS NOT WORKING YET/ANYMORE - THE CODE WAS OUT OF ORDER SO THE SCRIPT DOES NOT WORK - NEEDS REVAMP")
+stop("THIS IS NOT WORKING YET/ANYMORE - THE CODE WAS OUT OF ORDER SO THE SCRIPT DOES NOT WORK -
+     WAS IT REPLACED BY frs_update_datasets() ??")
 # check if rollback to main/earlier version would work- 
 # seems like it may have worked and then was edited to update those datasets using the already existing versions of some files
 # by using EJAM ::  xyzdataset  etc.
