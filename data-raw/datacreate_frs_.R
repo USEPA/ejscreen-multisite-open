@@ -1,6 +1,6 @@
-###################################################################################
+################################################################################## #
 # SCRIPT TO READ AND CLEAN LATEST FRS (and FRS BY SIC) AND SAVE FOR USE AS DATASETS
-###################################################################################
+################################################################################## #
 
 # Note: As of 12/23, EJAM will no longer store some key frs files as package EJAM/data/
 #  but as pins on connect server board.
@@ -9,11 +9,16 @@
 ## DOWNLOAD FRS info AND UPDATE/CREATE & SAVE LOCAL FILES for frs-related datasets
 ################################################################################ # 
 #
-## library(## EJAMfrsdata)
-mydir <- "~/../Downloads/arrow_frs" # or where you want to save them locally once updated
+
+mydir <- "~/../Downloads/EJAMbigfiles" # or where you want to save them locally once updated
 
 if (!dir.exists(mydir)) {dir.create(mydir)}
-if (!exists("alreadygot")) {alreadygot <- FALSE; mytemp <- tempdir()}
+if (!exists("alreadygot")) {
+  alreadygot <- FALSE
+  mytemp <- tempdir()
+}
+
+# This function frs_update_datasets() was in a separate pkg but moving it to EJAM pkg 
 
 frs_update_datasets(folder = mytemp, # default would use a tempdir() but not return its name
                     downloaded_and_unzipped_already = alreadygot,
@@ -29,8 +34,8 @@ frs_update_datasets(folder = mytemp, # default would use a tempdir() but not ret
                     save_as_data_frs_by_programid = FALSE,
                     save_as_data_frs_by_sic       = FALSE)
 alreadygot <- TRUE
-dir(mydir)
-# rm(mydir)
+# dir(folder_save_as_arrow)
+
 
 ##################################### # 
 # frsprogramcodes.rda
@@ -45,7 +50,7 @@ dir(mydir)
 ##  LOAD dataset FILES INTO MEMORY (If saved as .arrow locally but not kept in memory)
 ################################################################################ # 
 #
-fold <- mydir
+fold <- folder_save_as_arrow
 frs_vars <- c('frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact")
 for (varname in frs_vars) {
   fname <- paste0(varname, ".arrow")
@@ -57,5 +62,5 @@ for (varname in frs_vars) {
 ################################################################################ # 
 # 
 # THAT IS DONE BY  datawrite_to_pins() 
- 
+
 # and copy to any local folder being used to cache them, e.g., EJAM/data folder
