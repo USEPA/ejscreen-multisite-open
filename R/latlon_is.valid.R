@@ -9,12 +9,16 @@
 #' @keywords internal
 #'
 latlon_is.available  <- function(lat, lon) {
-  if(missing(lat) | missing(lon) | is.null(lat) | is.null(lon)){
+  if(missing(lat) | missing(lon)){
     warning('"lat" and/or "lon" argument not provided, please provide both values.')
     return(FALSE)
   }
-  if(is.na(as.numeric(lat)) | is.na(as.numeric(lon))){
+  if(all(is.na(as.numeric(lat))) | all(is.na(as.numeric(lon)))){
     warning('"lat" and/or "lon" cannot be coerced to a numeric.')
+    return(FALSE)
+  }
+  if(is.null(lat) | is.null(lon)){
+    warning('No lat or lon column found')
     return(FALSE)
   }
   !is.na(lat) & !is.na(lon)
@@ -35,12 +39,16 @@ latlon_is.available  <- function(lat, lon) {
 #' @keywords internal
 #'
 latlon_is.usa <- function(lat, lon) {
-  if(missing(lat) | missing(lon)| is.null(lat) | is.null(lon)){
+  if(missing(lat) | missing(lon)){
     warning('"lat" and/or "lon" argument not provided, please provide both values.')
     return(FALSE)
   }
-  if(is.na(as.numeric(lat)) | is.na(as.numeric(lon))){
+  if(all(is.na(as.numeric(lat))) | all(is.na(as.numeric(lon)))){
     warning('"lat" and/or "lon" cannot be coerced to a numeric.')
+    return(FALSE)
+  }
+  if(is.null(lat) | is.null(lon)){
+    warning('No lat or lon column found')
     return(FALSE)
   }
   !(
@@ -60,11 +68,14 @@ latlon_is.usa <- function(lat, lon) {
 #' @keywords internal
 #'
 latlon_is.possible   <- function(lat, lon) {
-  if(missing(lat) | missing(lon)| is.null(lat) | is.null(lon)){
+  if(missing(lat) | missing(lon)){
+    warning('"lat" and/or "lon" argument not provided, please provide both values.')
+    return(FALSE)
+  }else if (is.null(lat) | is.null(lon)){ 
     warning('"lat" and/or "lon" argument not provided, please provide both values.')
     return(FALSE)
   }
-  if(is.na(as.numeric(lat)) | is.na(as.numeric(lon))){
+  if(all(is.na(as.numeric(lat))) | all(is.na(as.numeric(lon)))){
     warning('"lat" and/or "lon" cannot be coerced to a numeric.')
     return(FALSE)
   }
@@ -92,12 +103,16 @@ latlon_is.possible   <- function(lat, lon) {
 #' @keywords internal
 #'
 latlon_is.islandareas <- function(lat, lon)  {
-  if(missing(lat) | missing(lon)| is.null(lat) | is.null(lon)){
+  if(missing(lat) | missing(lon)){
     warning('"lat" and/or "lon" argument not provided, please provide both values.')
     return(FALSE)
   }
-  if(is.na(as.numeric(lat)) | is.na(as.numeric(lon))){
+  if(all(is.na(as.numeric(lat))) | all(is.na(as.numeric(lon)))){
     warning('"lat" and/or "lon" cannot be coerced to a numeric.')
+    return(FALSE)
+  }
+  if(is.null(lat) | is.null(lon)){
+    warning('No lat or lon column found')
     return(FALSE)
   }
 
@@ -148,12 +163,11 @@ latlon_is.islandareas <- function(lat, lon)  {
 #' @export
 #'
 latlon_is.valid <- function(lat, lon, quiet = TRUE) {
-
-  if(missing(lat) | missing(lon)| is.null(lat) | is.null(lon)){
+  if(missing(lat) | missing(lon)){
     warning('"lat" and/or "lon" argument not provided, please provide both values.')
     return(FALSE)
   }
-  if(is.na(as.numeric(lat)) | is.na(as.numeric(lon))){
+  if(all(is.na(as.numeric(lat))) | all(is.na(as.numeric(lon)))){
     warning('"lat" and/or "lon" cannot be coerced to a numeric.')
     return(FALSE)
   }

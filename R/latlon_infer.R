@@ -20,10 +20,14 @@
 #'
 #' @keywords internal
 #'
-latlon_infer <- function(mycolnames=NA) {
+latlon_infer <- function(mycolnames) {
   
-  if(missing(mycolnames) | all(is.na(mycolnames)) | is.null(mycolnames)){
+  if (missing(mycolnames)){
     warning('No value provided for argument "mycolnames".')
+    return(NULL)
+  }
+  else if(all(is.na(mycolnames)) | is.null(mycolnames)){
+    warning('NULL or NA "mycolnames" passed as inputs.')
     return(NULL)
   }
   x <- mycolnames

@@ -25,7 +25,7 @@
 #'
 latlon_from_programid <- function(programid) {
   
-  if (missing(programid)) {return(NULL)}
+  if (missing(programid)) {return(NULL)} else if (all(is.na(programid)) | is.null(programid)){return(NULL)}
   
   if (!exists("frs_by_programid")) dataload_from_pins("frs_by_programid")
   
