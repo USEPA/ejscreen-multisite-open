@@ -20,13 +20,14 @@ epa_programs <- setNames(epa_program_counts$program, epa_program_counts$pgm_text
 # save in EJAM/data/ folder for use as a dataset loaded with the EJAM package:
 
 epa_programs <- metadata_add(epa_programs)
-usethis::use_data(epa_programs)
+usethis::use_data(epa_programs, overwrite = TRUE)
 
 
 
 ############################################################################################ #
 
-# ***  note `epa_programs` is somewhat redundant with  `frsprogramcodes`
+# ***  note `epa_programs` is a complete list and has counts, while 
+#  `frsprogramcodes` has the full titles but only about a dozen key programs and no counts.
 
 #   frsprogramcodes
 #                                                               description     code
@@ -41,6 +42,8 @@ usethis::use_data(epa_programs)
 # 9                                        Greenhouse Gas Reporting Program   E-GGRT
 # 10                                             Emissions Inventory System      EIS
 # 11                                           Toxic Substances Control Act     TSCA
+# 12   Assessment, Cleanup and Redevelopment Exchange System (ACRES) for Brownfields    ACRES
+# 13 Biennial Reporters (BR) Hazardous Waste Treatment, Storage, Disposal Facilities       BR
 
 # (frsprogramcodes.rda is tiny and not a table so cannot use .arrow for it and not in pins board
 #  - see EJAM/data-raw/datacreate_frsprogramcodes.R )
