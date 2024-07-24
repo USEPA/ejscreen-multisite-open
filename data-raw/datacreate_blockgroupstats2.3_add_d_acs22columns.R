@@ -12,7 +12,6 @@ if (!exists("askquestions")) {askquestions <- FALSE}
 # M downloaded it locally and saved it here:
 # "~/../EJ 2021/EJSCREEN 2024/ACS2022_Transfer.gdb.zip"
 ################################################## #
-
 # 2. MANUALLY EXPORTED gdb table aliases as longnames ####
 
 ## read the long indicator names (aliases) we had manually exported from ArcPro
@@ -25,9 +24,11 @@ if (file.exists("~/../EJ 2021/EJSCREEN 2024/acs2022header.csv")) {
   } else {
   acs22longnames = NA
 }}
-################################################## #
+# ~--------------------------- ####
 
-# Read .zip  ####
+################################################## ################################################### #
+
+# READ ACS2022  gdb.zip  ####
 
 zfile <- "~/../EJ 2021/EJSCREEN 2024/ACS2022_Transfer.gdb.zip"
 if (!file.exists(zfile)) {
@@ -38,7 +39,7 @@ if (!file.exists(zfile)) {
       stop(paste0("did not find expected file at ", zfile))
     }
   }
-  }
+}
 # tdir <- tempdir()
 acs22 <- shapefile_from_any(zfile)
 # names(acs22)  # EJAM added these 2 columns at the end: "Shape" "ejam_uniq_id"
@@ -46,7 +47,26 @@ acs22 <- shapefile_from_any(zfile)
 acs22 <- data.frame(acs22)
 acs22$Shape <- NULL    #   we dont need to save the actual polygons here
 # dim(acs22)  # [1] 242336    675
-################################################## #
+############################################################################ # 
+
+# acs22 starts as a VERY LARGE FILE !   367 MB as .rda  
+# KEPT FULL FILE ELSEWHERE AND 
+# JUST KEY VARIABLES EXTRACTED AND RENAMED ARE SAVED IN EJAM PACKAGE
+
+# SAVE ARCHIVED VERSION in .arrow format (instead of gdb.zip)
+# ARCHIVE complete ACS22full.arrow ####
+# huge acs22full.arrow locally BEFORE RENAMING OR DROPPING ANY COLUMNS 
+
+if (askquestions && interactive()) {
+  if (askYesNo(paste0(" archive the very large acs22full.arrow (all columns even those not needed) locally? (at ", localfolder, ")"))) {
+    datawrite_to_local("acs22", fnames = "acs22full.arrow", localfolder = localfolder)
+    cat("success? ")
+    file.exists(file.path(localfolder, "acs22full.arrow"))
+    cat("\n")
+    # acs22 <- arrow::read_ipc_file(file.path(localfolder, "acs22full.arrow"))
+  }
+}
+################################################## ################################################### #
 
 # An alternative way to read the gdb, using Python, not used here
 
@@ -98,15 +118,13 @@ acs22$Shape <- NULL    #   we dont need to save the actual polygons here
 }
 ################################################## #
 
-# acs22 starts as a VERY LARGE FILE !   367 MB as .rda  
-# KEPT FULL FILE ELSEWHERE AND 
-# JUST KEY VARIABLES EXTRACTED AND RENAMED ARE SAVED IN EJAM PACKAGE
+# RENAME COLUMNS ####
 
 ##################### #
 
-# check names(acs22) ####  
+## Check names(acs22) ####  
 
-acs22acsgdbnames <- names(acs22)
+acs22acsgdbnames <- names(acs22) # before getting renamed or any dropped
 acs22acsgdbnames_r <- fixcolnames(acs22acsgdbnames, "acsname", 'r')
 
 # vlists = unique(map_headernames$varlist) 
@@ -141,7 +159,7 @@ acs22acsgdbnames_r <- fixcolnames(acs22acsgdbnames, "acsname", 'r')
 # )
 ########################  #
 
-# save names(acs) and longnames (aliases) in data-raw ####
+## Save original names(acs) and longnames (aliases) in data-raw ####
 
 if (exists("acs22acsgdbnames")) {
   save(acs22acsgdbnames, file = "./data-raw/datafile_acs22acsgdbnames.rda")}
@@ -150,7 +168,7 @@ if (exists("acs22longnames")) {
 
 ############################# # 
 
-# Rename >60 of the colnames ####
+## Rename >60 of the colnames ####
 
 # that get recognized, including names_d_subgroups, etc.
 fixcolnames(acs22acsgdbnames, 'acsname', 'r')
@@ -161,20 +179,7 @@ names(acs22) <- fixcolnames(names(acs22), 'acsname', 'r')
 #  already got those via ftp site so do not need from acs22
 ############################################################################ # 
 
-# Archive huge acs22full.arrow locally ####
-
-if (askquestions && interactive()) {
-  if (askYesNo(paste0(" archive the very large acs22full.arrow (all columns even those not needed) locally? (at ", localfolder, ")"))) {
-    datawrite_to_local("acs22", fnames = "acs22full.arrow", localfolder = localfolder)
-    cat("success? ")
-    file.exists(file.path(localfolder, "acs22full.arrow"))
-    cat("\n")
-    # acs22 <- arrow::read_ipc_file(file.path(localfolder, "acs22full.arrow"))
-  }
-}
-############################################################################ # 
-
-# Drop most columns ####
+# DROP MOST COLUMNS ####
 
 acs22$bgfips <- acs22$STCNTRBG
 acs22 <- data.table(bgfips = acs22$bgfips, acs22[, names(acs22) %in% map_headernames$rname])
@@ -191,8 +196,9 @@ acs22 <- acs22[, c("bgfips", names(acs22)[!(names(acs22) %in% names(blockgroupst
 setDT(acs22)
 # > dim(acs22)
 # [1] 242336     66
+############################################################################ # 
 
-# Archive small acs22.arrow ####
+# ARCHIVE small acs22.arrow ####
 
 savehere <- TRUE
 if (askquestions && interactive()) {
@@ -273,7 +279,7 @@ rm(savehere)
 
 #################################################################################### #
 
-# MERGE (ACS and blockgroupstats_new)  ####
+# MERGE with blockgroupstats_new  ####
 
 # "bgfips" %in% names(acs22)
 
@@ -305,21 +311,11 @@ print( dim(blockgroupstats) )
 # > could add QA/QC steps here? ####
 
 
-# clean up ####
-capture.output({
-rm(blockgroupstats_new)
-rm(acs22)
-rm(i, savex, zfile, cols2drop, needgdb)
-rm("blockgroupstats_source_state.gdb",
-   "blockgroupstats_source_state.gdb.zip" ,
-   "blockgroupstats_source_usa.gdb",
-   "blockgroupstats_source_usa.gdb.zip"  )
-rm("statestats_new_explained.xlsx" , "usastats_new_explained.xlsx")
-rm("fnames"  )
-})
-################################################## #
 
-# metadata, use_data ####
+# ~--------------------------- ####
+################################################## #
+# METADATA + SAVE IN PKG ####
+# metadata_add(), use_data() 
 
 blockgroupstats    <- metadata_add(blockgroupstats)
 usethis::use_data(blockgroupstats, overwrite = T)
@@ -332,6 +328,19 @@ cat("FINISHED A SCRIPT\n")
 cat("\n In globalenv() so far: \n\n")
 print(ls())
 
+
+# Clean up ####
+capture.output({
+  rm(blockgroupstats_new)
+  rm(acs22)
+  rm(i, savex, zfile, cols2drop, needgdb)
+  rm("blockgroupstats_source_state.gdb",
+     "blockgroupstats_source_state.gdb.zip" ,
+     "blockgroupstats_source_usa.gdb",
+     "blockgroupstats_source_usa.gdb.zip"  )
+  rm("statestats_new_explained.xlsx" , "usastats_new_explained.xlsx")
+  rm("fnames"  )
+})
 #################################################################################### #
 
 
