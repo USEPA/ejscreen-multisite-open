@@ -5,20 +5,51 @@
 # NON-ANNUAL (frequent, episodic, etc.) other datasets
 # see EJAM's github issues about this
 
-# Setup ####
+# SETUP ####
 
 rm(list = ls())
-# "~/../Downloads/ejscreen new ftp downloads"
-# "~/../Downloads/EJAMbigfiles"
-if (!exists("localfolder")) { localfolder = "~/../Downloads/ejscreen new ftp downloads"}
+#localfolder <-  "~/../Downloads/ejscreen new ftp downloads"
+localfolder <- "~/../Downloads/EJAMbigfiles"
+if (interactive()) {localfolder <- rstudioapi::selectDirectory("Confirm where to archive .arrow and other files locally", path = localfolder) }
+if (!dir.exists(localfolder)) {stop(paste0("need valid localfolder - ", localfolder, " was not found"))}
 if (!exists("td")) {td <- tempdir() }
 if (!exists("rawdir")) {rawdir <- './data-raw'}
-if (!dir.exists(rawdir)) {stop("need to do this from source package folder, EJAM/")}
+if (!dir.exists(rawdir)) {stop("need to do this from source package folder, from where it can find a folder at ", rawdir)}
 if (!exists("askquestions")) {askquestions <- FALSE}
 if (interactive()) {
   askquestions <- askYesNo("Do you want to answer questions interactively like this about what to save where, etc.? (vs running all scripts without pauses)")
   if (is.na("askquestions")) {askquestions <- FALSE}
 }
+######################################### #
+source_maybe <- function(scriptname = NULL,
+                         DOIT = TRUE, 
+                         question = paste0("Do ", scriptname, "?"),
+                         folder = NULL) {
+  if (is.null(scriptname)) {stop("requires scriptname")}
+  if (!exists('askquestions')) {
+    askquestions <- TRUE
+  }
+  if (exists("rawdir") && missing(folder)) {
+    folder <- rawdir
+  } else {
+    if (missing(folder)) {
+      folder <-  "./data-raw"
+    }  
+  }
+  if (askquestions && interactive()) {
+    DOIT <- utils::askYesNo(question)
+    if (!is.na(DOIT) && DOIT) {DOIT <- TRUE}
+  }
+  if (DOIT) {
+    cat(paste0("Doing ", scriptname, " \n"))
+    spath = file.path(folder, scriptname)
+    if (!file.exists(spath)) {stop(paste0("requires valid folder and scriptname. Tried: ", spath))}
+    source(spath)
+  } else {
+    cat("Skipping ", scriptname, "\n")
+  }
+}
+######################################### #
 
 golem::detach_all_attached()
 
@@ -33,44 +64,10 @@ load_all()
 # Attaches exported + internal functions & data 
 # like metadata_add(), newly saved .rda files, etc.
 #  Otherwise internal functions don't work in scripts, and it would use installed not new source versions.
-
-######################################### #
-######################################### #
-source_maybe <- function(scriptname = NULL,
-                         DOIT = TRUE, 
-                         askquestions = NULL, question = paste0("Do ", scriptname, "?"),
-                         folder = NULL) {
-  if (is.null(scriptname)) {stop("requires scriptname")}
-  if (missing(askquestions)) {
-    if (is.null(askquestions)) {askquestions <- TRUE} # else it was taken from parent env
-  }
-  if (exists("rawdir") && missing(folder)) {
-    folder <- rawdir
-  } else {
-    if (missing(folder)) {
-      folder <-  "./data-raw"
-    }  
-  }
-  if (askquestions && interactive()) {
-    DOIT <- askYesNo(question)
-    if (!is.na(DOIT) && DOIT) {DOIT <- TRUE}
-  }
-  if (DOIT) {
-    cat(paste0("Doing ", scriptname, " \n"))
-    spath = file.path(folder, scriptname)
-    if (!file.exists(spath)) {stop(paste0("requires valid folder and scriptname. Tried: ", spath))}
-    source(spath)
-  } else {
-    cat("Skipping ", scriptname, "\n")
-  }
-}
-######################################### #
-######################################### #
-
-######################################### #
+######################################### ########################################## #
 #
 ## List of datacreate_ files ####
-## & when to use each ####
+## & when to use each 
 
 fnames <- dir(rawdir, pattern = 'datacreate_')
 cat('\n ')
@@ -83,22 +80,23 @@ if (0 == 1) {
   
   # with annual ejscreen data updates
   # 
-  #  new indicators, variable names
+  ##  new indicators, variable names
   documentOpen('./data-raw/datacreate_map_headernames.R')       # ok
   documentOpen('./data-raw/datacreate_names_of_indicators.R')   # ok
   documentOpen('./data-raw/datacreate_names_pct_as_fraction.R') # ok
-  #  ejscreen demog and envt data on every blockgroup
+  ##  ejscreen demog and envt data on every blockgroup
+  ##  + pctile and avg lookup tables
   documentOpen("./data-raw/datacreate_metadata4pins.R") # ok
   documentOpen('./data-raw/datacreate_blockgroupstats2.3.R') # and bgej      # ok
   documentOpen('./data-raw/datacreate_blockgroupstats2.3_add_d_acs22columns.R')   # ok
-  #  pctile and avg lookup tables
-  documentOpen('./data-raw/datacreate_usastats2.3.R')                 # in progress ?
-  documentOpen('./data-raw/datacreate_usastats2.3_add_dsubgroups.R')  # in progress
+
+  documentOpen('./data-raw/datacreate_usastats2.3.R')                 # ok
+  documentOpen('./data-raw/datacreate_usastats2.3_add_dsubgroups.R')  # ok
   documentOpen('./data-raw/datacreate_avg.in.us.R')                   # ok
   documentOpen('./data-raw/datacreate_high_pctiles_tied_with_min.R')  # ok
-  #  calculations and examples of outputs
-  documentOpen('./data-raw/datacreate_formulas.R')                    # in progress; maybe not used yet
-  documentOpen('./data-raw/datacreate_testpoints_testoutputs.R')      # ok
+  ##  calculations and examples of outputs
+  documentOpen('./data-raw/datacreate_formulas.R')                    # was in progress; maybe not used yet
+  documentOpen('./data-raw/datacreate_testpoints_testoutputs.R')      # confirm new datasets/functions/indicators work here
   documentOpen('./data-raw/datacreate_test_address.R')       # ok
   
   # when census fips codes or boundaries change (& ejscreen updates accordingly)
@@ -120,9 +118,10 @@ if (0 == 1) {
   
   # when frs info is updated
   
-  documentOpen('./data-raw/datacreate_frs_.R')            #  BUT SEE IF THIS HAS BEEN REPLACED  ***
-  documentOpen('./data-raw/datacreate_frs_by_mact.R')     #
-  documentOpen('./data-raw/datacreate_frs_by_sic.R')      #
+  documentOpen('./data-raw/datacreate_frs_.R')            #  BUT SEE IF THIS HAS BEEN REVISED/ REPLACED  ***
+  documentOpen('./data-raw/datacreate_frs_by_mact.R')     #  BUT SEE IF THIS HAS BEEN REPLACED  ***
+  documentOpen('./data-raw/datacreate_frs_by_sic.R')      #  BUT SEE IF THIS HAS BEEN REPLACED  ***
+  
   documentOpen('./data-raw/datacreate_frsprogramcodes.R') #
   documentOpen('./data-raw/datacreate_epa_programs.R')    #
   documentOpen('./data-raw/datacreate_testids_program_sys_id.R')  # 
@@ -141,11 +140,11 @@ if (0 == 1) {
   
   ### and then datawrite_to_pins() if those datasets were updated. 
   
-}
+} # outline/list of datacreate_ files
 ######################################### ########################################## #
 
 ######################################### #
-## metadata ####
+## metadata notes ####
 #
 ## use simple metadata for data not related to EJScreen or Census, like just frs-related, naics-related, etc.
 # attr(x, "date_downloaded")       <- as.character(Sys.Date()) # if relevant
@@ -155,7 +154,7 @@ if (0 == 1) {
 # x <- metadata_add(x)
 
 ######################################### #
-## check pins board access ####
+## Verify pins board access ####
 
 x <- datawrite_to_pins(justchecking = T) # load_all() first or use EJAM:::
 if (!is.null(x)) {
@@ -185,10 +184,10 @@ if (!is.null(x)) {
 }
 ######################################### ########################################## #
 ######################################### ########################################## #
-# # ~ ####
-# *** Annual EJScreen updates ####
+# ~------------------------------------------- ####
+# *** ANNUAL UPDATES OF EJScreen ####
 
-## new indicators, variable names ####
+## Indicator/variable names etc. ####
 ######################################### #
 ### datacreate_map_headernames.R ####
 # rstudioapi::documentOpen("./data-raw/datacreate_map_headernames.R")
@@ -219,22 +218,25 @@ source_maybe("datacreate_metadata4pins.R") # does use_data()
 #  (the source package as just updated, not the version installed)
 #  and so all functions will use the new source version 
 
+rmost(notremove = c("askquestions", "localfolder", "td", "rawdir", "source_maybe"))
+
 devtools::load_all()
 
-### demog and envt data on every blockgroup ####
-### + pctile and avg lookup tables ####
+## Demog + Envt data on blockgroups ####
+## + pctile & avg lookup tables (usastats, statestats) ####
 
 ######################################### #
-# datacreate_blockgroupstats2.3 (also starts making usastats,statestats!!) ####
-# datacreate_blockgroupstats2.3_add_d_acs22columns ####
+### datacreate_blockgroupstats2.3 (also starts making usastats,statestats!!) ####
+### ACS22 via datacreate_blockgroupstats2.3_add_d_acs22columns ####
 # rstudioapi::documentOpen("./data-raw/datacreate_blockgroupstats2.3.R")
-# rstudioapi::documentOpen("./data-raw/datacreate_blockgroupstats2.3_add_d_acs22columns.R")
 source_maybe("datacreate_blockgroupstats2.3.R") # (also starts making usastats,statestats!!)
 # created bgej
 # created blockgroupstats_new as interim object
 # created usastats, statestats but not final versions yet
-source_maybe("datacreate_blockgroupstats2.3_add_d_acs22columns.R")
-# created blockgroupstats 
+
+# rstudioapi::documentOpen("./data-raw/datacreate_blockgroupstats2.3_add_d_acs22columns.R")  # reads ACS22 extra file of demographics not on ftp site
+source_maybe("datacreate_blockgroupstats2.3_add_d_acs22columns.R")  # reads ACS22 extra file of demographics not on ftp site
+# created blockgroupstats (now with demog subgroups from ACS22 extra file of demographics not on ftp site)
 
 ######################################### #
 if (askquestions && interactive()) {
@@ -247,29 +249,28 @@ if (askquestions && interactive()) {
   }}
 
 ######################################### #
-# datacreate_usastats2.3.R ####
+### datacreate_usastats2.3.R ####
 # rstudioapi::documentOpen("./data-raw/datacreate_usastats2.3.R")
 source_maybe("datacreate_usastats2.3.R")
 # now usastats and statestats exist
 ######################################### #
-# datacreate_usastats2.3_add_dsubgroups.R ####
+### datacreate_usastats2.3_add_dsubgroups.R ####
 # rstudioapi::documentOpen("./data-raw/datacreate_usastats2.3_add_dsubgroups.R")
 source_maybe("datacreate_usastats2.3_add_dsubgroups.R")
 ######################################### #
-# datacreate_avg.in.us.R ####
+### datacreate_avg.in.us.R ####
 # rstudioapi::documentOpen("./data-raw/datacreate_avg.in.us.R")
 source_maybe("datacreate_avg.in.us.R")
 ######################################### #
-# datacreate_high_pctiles_tied_with_min.R ####
+### datacreate_high_pctiles_tied_with_min.R ####
 # rstudioapi::documentOpen("./data-raw/datacreate_high_pctiles_tied_with_min.R")
 source_maybe("datacreate_high_pctiles_tied_with_min.R")
 ######################################### #
-# datacreate_formulas.R ####
+### datacreate_formulas.R ####
 # rstudioapi::documentOpen("./data-raw/datacreate_formulas.R")
 source_maybe("datacreate_formulas.R")
 ######################################### #
-
-ls()
+ 
 
 # may want to rebuild/ reinstall the package here,
 # or at least load_all()  ?
@@ -278,8 +279,21 @@ ls()
 devtools::install(quick = TRUE)
 
 
-save.image(file.path(localfolder, "work in progress.rda"))
+load_all()
 
+## Test data & examples of outputs ####
+######################################### #
+### datacreate_test_address.R #### 
+# rstudioapi::documentOpen('./data-raw/datacreate_test_address.R')  
+source_maybe("datacreate_test_address.R")
+######################################### #
+### datacreate_testids_program_sys_id.R ####
+# documentOpen('./data-raw/datacreate_testids_program_sys_id.R')  # 
+source_maybe("datacreate_testids_program_sys_id.R")
+
+
+
+save.image(file.path(localfolder, "work in progress.rda"))
 
 
 
@@ -287,46 +301,52 @@ save.image(file.path(localfolder, "work in progress.rda"))
 
 
 
-
-devtools::check()
+devtools::check() 
 
 
 devtools::test()
 
 
-
 load_all()
 
-## examples of outputs ####
+
+
+
 ######################################### #
-# datacreate_test_address.R #### 
-# rstudioapi::documentOpen('./data-raw/datacreate_test_address.R')  
-source_maybe("datacreate_test_address.R")
-######################################### #
-# datacreate_testids_program_sys_id.R ####
-# documentOpen('./data-raw/datacreate_testids_program_sys_id.R')  # 
-source_maybe("datacreate_testids_program_sys_id.R")
-######################################### #
-# datacreate_testpoints_testoutputs.R ####
+### datacreate_testpoints_testoutputs.R ####
 # rstudioapi::documentOpen("./data-raw/datacreate_testpoints_testoutputs.R")
 source_maybe("datacreate_testpoints_testoutputs.R")
 
-load_all()
+# ~------------------------------------------- ####
+## Formerly in EJAMejscreenapi package ####
+######################################### #
+### datacreate_default_points_shown_at_startup.R ####
+source_maybe('datacreate_default_points_shown_at_startup.R')
+### datacreate_ejscreenRESTbroker2table_na_filler.R ####
+source_maybe('datacreate_ejscreenRESTbroker2table_na_filler.R')
+### datacreate_testoutput_ejscreenit_or_ejscreenapi_plus_50.R  ####
+source_maybe('datacreate_testoutput_ejscreenit_or_ejscreenapi_plus_50.R')
+### datacreate_testpoints_5_50_500.R ####
+source_maybe('datacreate_testpoints_5_50_500.R')
 
 
 ######################################### ########################################## #
 
-######################################### #
-######################################### #
-# # ~ ####
-# *** When FIPS or Census boundaries change (& ejscreen updates accordingly) ####
+
+install()
+
 
 ######################################### #
-# blocks  ####
+######################################### #
+# ~------------------------------------------- ####
+# *** FIPS CODE UPDATES or Census Boundary changes (once EJScreen incorporates those) ####
+
+######################################### #
+## blocks  ####
 # documentOpen('./data-raw/datacreate_blockwts.R')           # needs Island Areas added
 
 ######################################### #
-# datacreate_blockwts.R ####
+### datacreate_blockwts.R ####
 # rstudioapi::documentOpen("./data-raw/datacreate_blockwts.R")
 source_maybe('datacreate_blockwts.R', DOIT = FALSE) # script that includes metadata_add() and use_data()
 # Creates blockwts, blockpoints, etc.,
@@ -334,29 +354,29 @@ source_maybe('datacreate_blockwts.R', DOIT = FALSE) # script that includes metad
 # except when FIPS codes or boundaries change for blocks or blockgroups.
 #  or possibly to add data that had been missing, for Island Areas AS, GU, MP, VI ***
 ######################################### #
-# blockgroups ####
+## blockgroups ####
 # documentOpen('./data-raw/datacreate_bg_cenpop2020.R')      # confirm if changed since 2020
 # documentOpen('./data-raw/datacreate_bgpts.R')              # redundant w bg_cenpop2020, pick one to use
 
-# datacreate_bg_cenpop2020.R ####
+### datacreate_bg_cenpop2020.R ####
 # rstudioapi::documentOpen("./data-raw/datacreate_bg_cenpop2020.R")
 source_maybe("datacreate_bg_cenpop2020.R", DOIT = FALSE, folder = rawdir)
 ######################################### #
-# datacreate_bgpts.R ####
+### datacreate_bgpts.R ####
 # rstudioapi::documentOpen("./data-raw/datacreate_bgpts.R")
 source_maybe("datacreate_bgpts.R", DOIT = FALSE, folder = rawdir)
 ######################################### #
-# states ####
+## states ####
 # documentOpen('./data-raw/datacreate_states_shapefile.R')   # check if want 2020 or 2022+ file
 # documentOpen('./data-raw/datacreate_stateinfo.R')          # ok (missing Island Areas)
 # documentOpen('./data-raw/datacreate_stateinfo2.R')         # ok (has Island Areas)
 
-# datacreate_states_shapefile.R ####
+### datacreate_states_shapefile.R ####
 # documentOpen('./data-raw/datacreate_states_shapefile.R')   # check if want 2020 or 2022+ file
 source_maybe("datacreate_states_shapefile.R", DOIT = FALSE, folder = rawdir)
 ######################################### #
-# datacreate_stateinfo.R ####
-# datacreate_stateinfo2.R ####
+### datacreate_stateinfo.R ####
+### datacreate_stateinfo2.R ####
 # documentOpen('./data-raw/datacreate_stateinfo.R')          # ok (missing Island Areas)
 # documentOpen('./data-raw/datacreate_stateinfo2.R')         # ok (has Island Areas)
 ## ok to update metadata whenever - these should never really change but want to note version 2.3 etc.
@@ -364,87 +384,190 @@ source_maybe('datacreate_stateinfo.R', DOIT = FALSE, folder = rawdir)
 source_maybe('datacreate_stateinfo2.R', DOIT = FALSE, folder = rawdir)
 ######################################### #
 
-# other geo ####
+## other geo ####
 # documentOpen('./data-raw/datacreate_islandareas.R')        # ok
 # documentOpen('./data-raw/datacreate_censusplaces.R')       # not used yet
 
-# datacreate_islandareas.R ####
+### datacreate_islandareas.R ####
 # documentOpen('./data-raw/datacreate_islandareas.R')        # ok
 source_maybe("datacreate_islandareas.R", DOIT = FALSE, folder = rawdir)
 ######################################### #
-# datacreate_censusplaces.R ####
+### datacreate_censusplaces.R ####
 # documentOpen('./data-raw/datacreate_censusplaces.R')       # not used yet
 source_maybe("datacreate_censusplaces.R", DOIT = FALSE, folder = rawdir)
 
 
 ######################################### ########################################## #
-# # ~ ####
-# *** FRS updates (+ NAICS/SIC) ####
-# #
+# ~------------------------------------------- ####
+# *** FRS UPDATES (incl. NAICS/SIC) ####
+
+########################################## #
+
 # FRS ####
 
-# documentOpen('./data-raw/datacreate_frs_.R')            #  BUT SEE IF THIS HAS BEEN REPLACED  ***
-# documentOpen('./data-raw/datacreate_frs_by_mact.R')     #
+
+## >>> frs functions need cleanup here <<< ####
+
+cat(                                        "frs functions need cleanup here  \n")
+warning("frs functions need cleanup here")
+
+
+## frs_by_ (lat,lon, regid,program,mact) ####
+
+### ? datacreate_frs_.R ####
+# documentOpen('./data-raw/datacreate_frs_.R')            #  BUT SEE IF THIS HAS BEEN REVISED/ REPLACED  ***
+# THAT SCRIPT USES frs_update_datasets() to download data, create datasets for pkg, 
+# and save them locally, and read them into memory.
+# That creates frs, frs_by_programid, frs_by_naics, frs_by_sic, frs_by_mact
+
+source_maybe("datacreate_frs_.R", DOIT = FALSE, folder = rawdir)
+
+
+### ? datacreate_frs_by_sic.R - is it redundant with frs_update_datasets() ?  SEE IF THIS HAS BEEN REPLACED ? ####
 # documentOpen('./data-raw/datacreate_frs_by_sic.R')      #
+
+### ? datacreate_frs_by_mact.R - is it redundant with frs_update_datasets() ?  SEE IF THIS HAS BEEN REPLACED ? ####
+# documentOpen('./data-raw/datacreate_frs_by_mact.R')   #  BUT SEE IF THIS HAS BEEN REPLACED  ***
+
+
+### datacreate_frsprogramcodes.R ####
 # documentOpen('./data-raw/datacreate_frsprogramcodes.R') #
+source_maybe('datacreate_frsprogramcodes.R')
+### datacreate_epa_programs.R ####
 # documentOpen('./data-raw/datacreate_epa_programs.R')    #
+source_maybe('datacreate_epa_programs.R')
+
+### datacreate_testids_program_sys_id.R ####
 # documentOpen('./data-raw/datacreate_testids_program_sys_id.R')  # 
+source_maybe('datacreate_testids_program_sys_id.R')
+### datacreate_testids_registry_id.R ####
 # documentOpen('./data-raw/datacreate_testids_registry_id.R')     #
+source_maybe('datacreate_testids_registry_id.R')
+########################################## #
 
 # NAICS/SIC ####
 
+
+## >>>             ADD SCRIPTS HERE? <<< ####
+
+cat(                                        "naics functions not here yet? \n")
+warning("naics functions not here yet")
+
+
+### datacreate_naics_counts.R ####
 # documentOpen('./data-raw/datacreate_naics_counts.R')    # script
+source_maybe('datacreate_naics_counts.R')
+### datacreate_naicstable.R ####
 # documentOpen('./data-raw/datacreate_naicstable.R')      # script. does date_saved_in_package & use_data
-# documentOpen('./data-raw/datacreate_SIC.R')             
-# documentOpen('./data-raw/datacreate_sic_counts.R')      
-# documentOpen('./data-raw/datacreate_sictable.R')        
+source_maybe('datacreate_naicstable.R')
 
-
-
-
-
-
-cat("frs functions not here yet \n")
-# to be put here ... ***
-
-
-
-
-
-
-
-
-
-######################################### ########################################## #
-# # misc for package to work
-
-######################################### #
-# datacreate_ejampackages.R ####
-source_maybe('datacreate_ejampackages.R')
-######################################### #
-# datacreate_meters_per_mile.R ####
-# documentOpen('./data-raw/datacreate_meters_per_mile.R')
-source_maybe("datacreate_meters_per_mile.R")
+### datacreate_SIC.R ####
+# documentOpen('./data-raw/datacreate_SIC.R')
+source_maybe('datacreate_SIC.R')
+### datacreate_sic_counts.R ####
+# documentOpen('./data-raw/datacreate_sic_counts.R')
+source_maybe('datacreate_sic_counts.R')
+### datacreate_sictable.R ####
+# documentOpen('./data-raw/datacreate_sictable.R')
+source_maybe('datacreate_sictable.R')
 
 ######################################### ########################################## #
 
 ######################################### #
 ######################################### #
-# PINS ####
-# datawrite_to_pins() ####
+# ~------------------------------------------- ####
+# *** PINNED DATA UPDATES ####
+# For any of the datasets stored on the pins board server,
+# Upload the new versions of those (large) data objects whenever they get updated. 
 
-# varnames = c(
+## datawrite_to_pins() ####
+
+################## #
+# pindates() & pinned() helper functions were NOT WORKING YET - date format is messed up
+
+pindates  <- function(varnames =  c(
+  'blockwts', 'blockpoints', 'blockid2fips', "quaddata",
+  'bgej', 'bgid2fips',
+  'frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact"
+)) {
+  junk <- capture.output({
+    x <- dataload_from_pins(justchecking = TRUE, silent = TRUE, 
+                            varnames = varnames)
+  })
+  x <- x[, c("name", "created", "ejscreen_version")]
+  if (!missing(varnames))  {
+    # only show info for the specific ones queried, not all pinned
+    xshell <- data.frame(name = varnames, 
+                         # still need to fix date  format... 
+                         created = 0, ejscreen_version = NA)
+    for (i in seq_along(varnames)) {
+      if (varnames[i] %in% x$name) {
+        xshell[i, ] <- x[x$name == varnames[i], ]
+      }
+    }
+    x <- xshell
+  }
+  return(x) 
+}
+################## #   NOT WORKING YET 
+# pinned <- function(varnames = c(
 #   'blockwts', 'blockpoints', 'blockid2fips', "quaddata",
 #   'bgej', 'bgid2fips',
-#   'frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact")
-# for (i in seq_along(varnames)) {
+#   'frs', 'frs_by_programid', 'frs_by_naics', "frs_by_sic", "frs_by_mact"
+# )) {
+#   x <- pindates(varnames)
+#   x$created[is.na(x$created)] <- 0
+#   x <- x[x$created != 0,]
+#   y = (varnames %in% x$name)
+#   names(y) <- varnames[varnames %in% x$name]
+#   return(y)
+# }
+################## #
+# data.frame(varname = varnames, 
+#   pinned = pinned(varnames),
+#   datepinned = pindates(varnames)$created,
+#   attached = varnames %in% ls(), 
+#   loaded_or_lazyloadable = sapply(varnames, exists), 
+#   in_data_folder = varnames %in% tools::file_path_sans_ext(basename(dir("./data")) )
+#   )
+################## #
+
+# Review the datasets / pins
+
+cat("Which datasets are attached or can be lazyloaded in memory, of those you may want to pin?")
+x = dataload_from_pins(justchecking = TRUE, silent = TRUE, 
+                       varnames = c(
+                         "blockwts", "blockpoints", "blockid2fips", "quaddata", # "localtree",
+                         "bgej", "bgid2fips",
+                         "frs", "frs_by_programid", "frs_by_naics", "frs_by_sic", "frs_by_mact"
+                       )
+)
+cat("These datasets are currently seen on the pins board: \n")
+x[,c("name", "created", "ejscreen_version")]
+
+cat("These datasets get written to pins board by the function dataload_from_pins() \n")
+print(formals(dataload_from_pins)$varnames)
+
+cat("\n\n")
 #   
 datawrite_to_pins() # it will ask interactively to confirm which ones among defaults to save to pins
 
 ######################################### #
 ######################################### #
-# # ~ ####
-# Cleanup/ remove most objects ####
+# ~------------------------------------------- ####
+########################################## #
+# misc ####
+# probably do not need to update these often or ever, but ok to do so
+######################################### #
+### datacreate_ejampackages.R ####
+source_maybe('datacreate_ejampackages.R')
+######################################### #
+### datacreate_meters_per_mile.R ####
+# documentOpen('./data-raw/datacreate_meters_per_mile.R')
+source_maybe("datacreate_meters_per_mile.R")
+######################################### # 
+# ~ ####
+# CLEANUP - Remove most objects ####
 
 rmost(
   notremove = c(
