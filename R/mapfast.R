@@ -64,7 +64,7 @@ mapfast <- function(mydf, radius = 3, column_names='all', labels = column_names,
     }
   }
 
-  radius.meters <- radius * meters_per_mile # data loaded by pkg EJAMejscreenapi
+  radius.meters <- radius * meters_per_mile # data loaded by pkg
   # units are meters for addCircles, and pixels for addCircleMarkers
 
   x <- leaflet::leaflet(data = renamed) |> leaflet::addTiles() |>

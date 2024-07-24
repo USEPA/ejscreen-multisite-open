@@ -20,7 +20,7 @@ if (!exists("metadata_add")) {
 ## To see the folder where the installed package has examples of files:
 ##
 #  browseURL(system.file("testdata", package = "EJAM"))
-#  browseURL(system.file("testdata", package = "EJAMejscreenapi"))
+#  browseURL(system.file("testdata", package = "EJAMejscreenapi")) # ? if still relevant
 
 ## To see a list of installed data objects:
 ##
@@ -52,9 +52,9 @@ if (!exists("metadata_add")) {
 # 23                          testpoints_10000           test points data.frame with columns sitenumber, lat, lon
 # 24                         testpoints_100_dt           test points data.frame with columns sitenumber, lat, lon
 
-## To see data() objects that get installed by the other package (not created in this script):
+## To see data() objects that used to be installed by the other package (not created in this script):
 ##
-  # x = data(package = "EJAMejscreenapi")
+  # x = data(package = "EJAMejscreenapi") # if still relevant
   # as.data.frame(x$results[grepl("^test",  (x$results[, "Item"])), c('Item', "Title")])
 #                                         Item                                                                                   Title
 # 1                     testids_program_sys_id                           test data, string vector of EPA FRS Program System ID numbers

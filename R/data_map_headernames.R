@@ -24,8 +24,9 @@
 #'   
 #'   `data.frame(t(map_headernames[1:2, ]))`
 #'   
-#'   
-#'   See how many variables are on each list, for example: 
+#' @examples
+#'   #   See how many variables are on each list, for example: 
+#'   \dontrun{
 #'   
 #'   
 #'   data.table::setDT(copy(map_headernames))[, .(
@@ -60,6 +61,6 @@
 #'    statestats = some %in% names(statestats))
 #'  info <- info[nchar(paste0(info$api, info$csv, info$acs)) > 0, ]
 #'  info
-#'  
+#'   }
 #'  
 NULL

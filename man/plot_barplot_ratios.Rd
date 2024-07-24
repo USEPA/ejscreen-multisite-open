@@ -52,9 +52,9 @@ in EJAM server for tab showing barplots in Detailed Results
 \item in EJAM server for SHORT report if box type, and
 \item in EJAM server for LONG report passed as a parameter
 }
-\item boxplots_ratios()   in EJAMejscreenapi
+\item boxplots_ratios()
 (NOT in EJAM server for Detailed Results interactive views)
-\item ejscreenapi_script() code also relevant? in EJAMejscreenapi
+\item ejscreenapi_script() code also relevant?
 \item box/scatter examples in ggplot, \url{https://r-graph-gallery.com/89-box-and-scatter-plot-with-ggplot2.html}
 \item boxplots in base R, \url{https://www.r-bloggers.com/2023/09/how-to-reorder-boxplots-in-r-a-comprehensive-guide}
 }
@@ -62,7 +62,6 @@ in EJAM server for tab showing barplots in Detailed Results
 \strong{For HISTOGRAMS, see:}
 \itemize{
 \item output$summ_display_hist <- renderPlot   in EJAM server for interactive views
-\item the histograms code and discussion  in EJAMbatch.summarizer package
 }
 }
 \examples{

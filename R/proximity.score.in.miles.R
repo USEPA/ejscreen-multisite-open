@@ -16,7 +16,7 @@ proximity.score.in.miles <- function(scoresdf=NULL) {
   # [1] "traffic.score"   "proximity.npdes" "proximity.npl"   "proximity.rmp"   "proximity.tsdf" 
   # but .npdes is weighted by exposure so should not really be included
   # and traffic.score is weighted by volume of traffic and units or scope differ
-  miles_per_km <- 0.6213712 # 1000 / meters_per_mile # EJAMejscreenapi :: meters_per_mile
+  miles_per_km <- 0.6213712 # 1000 / meters_per_mile
   scoresdf <- as.data.frame(scoresdf)
   
   x = 1 / scoresdf

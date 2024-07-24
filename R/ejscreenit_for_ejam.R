@@ -2,7 +2,7 @@
 
 #' Get EJScreen results directly from EJScreen servers via their API
 #' 
-#' A wrapper for EJAM to use ejscreenit() from the EJAMejscreenapi package
+#' A wrapper for EJAM to use ejscreenit() 
 #' 
 #' @param sitepoints table with lat and lon columns
 #' @param radius in miles

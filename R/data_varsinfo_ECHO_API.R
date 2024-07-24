@@ -1,0 +1,33 @@
+#' @name varsinfo_ECHO_API
+#' @docType data
+#' @title Table of metadata about the variables available via the ECHO API
+#' @details 
+#'  The ECHO API provides access to facilities in the EPA Facility Registry Service (FRS).
+#'  Metadata were obtained from here: https://echodata.epa.gov/echo/echo_rest_services.metadata?output=JSON
+#'  This table has some useful information about selected variables that are available.
+#'  It notes which are the most useful for EJAM-related work, and notes
+#'  the name and ID of the variable, which is needed to request that info via the API.
+#'  
+#'  Also see  [EJAMejscreenapi::get_facility_info_via_ECHO()]
+#'  This table has 316 rows and these columns: 
+#'  "ObjectName", "desc", "ColumnID", "critical", "best", "useful", 
+#'  "programid", "ej", "ColumnName", "DataType", "DataLength", "Description", 
+#'  "all"
+#'  For example one row has this information:
+#'  ObjectName "SDWAIDs" 
+#'  desc       "A unique 9-character ID assigned for each public w"
+#'  ColumnID   "24" 
+#'  Critical   "FALSE"
+#'  best       "TRUE"
+#'  useful     "TRUE"
+#'  programid  "TRUE"
+#'  ej         "FALSE"
+#'  ColumnName "SDWA_IDS"
+#'  etc. 
+#'  
+#'  To see a full list of variables of interest:
+#'  
+#'  subset(EJAMejscreenapi::varsinfo_ECHO_API, EJAMejscreenapi::varsinfo_ECHO_API$useful)
+#'   
+#' @keywords internal
+NULL

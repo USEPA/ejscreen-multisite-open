@@ -11,8 +11,8 @@ if (testing_ejscreenapi_module) {
 
   # library(   shiny); library(   magrittr); library(   leaflet)  # must attach all of those manually for this to work unless EJAM attached already?
 
-  # library( ## EJAMejscreenapi)
-    source(system.file("global.R", package = "EJAMejscreenapi"))
+  # THIS SHOULD STAY ONLY INSIDE THE MODULE'S NAMESPACE:  ! TO AVOID INTERFERING WITH EJAM globalenv() etc.
+   # source(system.file("global_EJAMejscreenapi.R", package = "EJAM"))
 
   # library( ## EJAM) # for testpoints_10, e.g., BUT THAT WOULD REPLACE AN UPDATED MODULE BELOW IF NOT ALREADY REBUILT/RELOADED WITH UPDATE
 
@@ -131,7 +131,7 @@ mod_ejscreenapi_ui <- function(id,
                                ) {
   ns <- NS(id)
   # I think this needs to be here or in outer app that calls the module, not just in mod_ejscreenapi_server(), so it will be available within this function like specifying default values in UI select/radio buttons/etc.
-  # source(system.file("global.R", package = "EJAMejscreenapi"))
+  # source(system.file("global_EJAMejscreenapi.R", package = "EJAM"))
 
   tagList(
     #  from here on within the brackets is directly copied from ejscreenapi pkg app_ui.R code
@@ -426,8 +426,7 @@ mod_ejscreenapi_server <- function(id,
   # stopifnot(!is.reactive(default_points_shown_at_startup)) # currently this is not supposed to be reactive but would be if we wanted app-controlled default not just passed when calling function
   # stopifnot(!is.reactive(parameter2))
 
-      source(system.file("global.R", package = "EJAMejscreenapi"))  ### IMPORTANTLY THESE WILL STAY WITHIN THE MODULE NAMESPACE, AND NOT BE AVAILABLE TO OR INTERFERE WITH MAIN APP'S DEFAULTS/ETC.
-
+      source(system.file("global_EJAMejscreenapi.R", package = "EJAM"))  ### IMPORTANTLY THESE MUST STAY WITHIN THE MODULE NAMESPACE, AND NOT BE AVAILABLE TO OR INTERFERE WITH MAIN APP'S DEFAULTS/ETC.
 
   # moduleServer ####
 
@@ -620,7 +619,7 @@ mod_ejscreenapi_server <- function(id,
                                                   value =                          input$default_miles,
                                                   min = minradius, max = input$max_miles, step = stepradius
     ) })
-    # minradius and stepradius are defined in EJAMejscreenapi pkg global.R file
+    # minradius and stepradius are defined in   global_EJAMejscreenapi.R file
 
     shiny::observe({     shiny::updateSliderInput(session = session, inputId = ns('radius_via_slider'),
                                                   label = paste0("Radius of ",     input$radius_via_slider, " miles ",
@@ -882,7 +881,7 @@ mod_ejscreenapi_server <- function(id,
           ##  ratio to US avg -------------
 
           # colnames of table must be rnames or be specified here ! *** THIS PRESUMES VIA DEFAULT PARAMETERS WHAT THE SORT ORDER IS OF THE VARIABLES !
-          usratios <- ratios_to_avg(table_as_displayed,
+          usratios <- calc_ratios_to_avg(table_as_displayed,
                                     evarnames = names_e_FOR_RATIOS,
                                     dvarnames = names_d_FOR_RATIOS)   # lacks subgroups and supplementary ?
           eratios <- round(usratios$ratios_e, 4)
@@ -897,7 +896,7 @@ mod_ejscreenapi_server <- function(id,
 
           ##  ratio to STATE avg --------------
 
-          st_ratios <- ratios_to_avg(table_as_displayed, zone.prefix = "state.", evarnames = names_e_FOR_RATIOS, dvarnames = names_d_FOR_RATIOS ) # USE THE STATE AVERAGES
+          st_ratios <- calc_ratios_to_avg(table_as_displayed, zone.prefix = "state.", evarnames = names_e_FOR_RATIOS, dvarnames = names_d_FOR_RATIOS ) # USE THE STATE AVERAGES
           eratios <- round(st_ratios$ratios_e, 4)
           dratios <- round(st_ratios$ratios_d, 4)    # lacks subgroups and supplementary ?
           names(eratios) <- map_headernames$rname[ map_headernames$varlist == "names_e_ratio_to_state_avg"]
@@ -1106,8 +1105,8 @@ mod_ejscreenapi_server <- function(id,
       # circles overlap if 2 facilities are twice the radius apart  # in miles
       # check either pts() or results_table() depending on value of most_recently_changed() being 'upload' or 'results'
       # Do not limit by cap on mapping yet, since this info gets used in table download also which has a larger cap or no cap.
-      if (most_recently_changed() == 'results') {x <-  near_eachother(lat = results_table()$lat, lon = results_table()$lon, distance = 2 * radius_miles()) }
-      if (most_recently_changed() == 'upload')  {x <-  near_eachother(lat = pts()$lat,           lon = pts()$lon,           distance = 2 * radius_miles()) }
+      if (most_recently_changed() == 'results') {x <-  distance_near_eachother(lat = results_table()$lat, lon = results_table()$lon, distance = 2 * radius_miles()) }
+      if (most_recently_changed() == 'upload')  {x <-  distance_near_eachother(lat = pts()$lat,           lon = pts()$lon,           distance = 2 * radius_miles()) }
       x
     })
 
@@ -1277,8 +1276,8 @@ mod_ejscreenapi_server <- function(id,
       req(results_table())
       out <- results_table()
       names(out) <- fixcolnames(names(out), oldtype = 'api', newtype = 'r', mapping_for_names = map_headernames)
-      us.ratios    <- ratios_to_avg(out)
-      #state.ratios <- ratios_to_avg(out = out, zone.prefix = 'state')
+      us.ratios    <- calc_ratios_to_avg(out)
+      #state.ratios <- calc_ratios_to_avg(out = out, zone.prefix = 'state')
       ## boxplots_ratios(us.ratios$ratios_d)
       outplot <- boxplots_ratios(us.ratios$ratios_d, 'pctlowinc', '% low income', wheretext = paste0("Within ", out$radius.miles[1]," miles of"))
       outplot

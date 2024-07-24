@@ -9,7 +9,7 @@ doaggregate(
   sites2states_or_latlon = NA,
   radius = NULL,
   countcols = NULL,
-  popmeancols = NULL,
+  wtdmeancols = NULL,
   calculatedcols = NULL,
   subgroups_type = "nh",
   include_ejindexes = FALSE,
@@ -47,9 +47,6 @@ using a sum of counts, like, for example, the number of people for whom a
 poverty ratio is known, the count of which is the exact denominator needed
 to correctly calculate percent low income.}
 
-\item{popmeancols}{character vector of names of variables to aggregate within a buffer
-using population weighted mean.}
-
 \item{calculatedcols}{character vector of names of variables to aggregate within a buffer
 using formulas that have to be specified.}
 
@@ -81,6 +78,9 @@ Set to FALSE to prevent long output showing in console in RStudio when in intera
 \item{testing}{used while testing this function}
 
 \item{...}{more to pass to another function? Not used currently.}
+
+\item{popmeancols}{character vector of names of variables to aggregate within a buffer
+using population weighted mean.}
 }
 \value{
 list with named elements:

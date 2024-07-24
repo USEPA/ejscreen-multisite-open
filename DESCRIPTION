@@ -14,9 +14,7 @@ Description: Web app and R tools to easily summarize
     EJScreen indicators are included.
 URL: https://usepa.github.io/EJAM/, https://github.com/USEPA/EJAM
 Depends: 
-    R (>= 2.10),
-    EJAMbatch.summarizer,
-    EJAMejscreenapi
+    R (>= 2.10)
 Imports:
     attempt,
     collapse,

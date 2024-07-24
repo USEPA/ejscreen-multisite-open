@@ -2,6 +2,7 @@
 % Please edit documentation in R/namesbyvarlist.R
 \name{namesbyvarlist}
 \alias{namesbyvarlist}
+\alias{varlist2names}
 \title{Get indicator names within a varlist like names_d}
 \usage{
 namesbyvarlist(varlist, nametype = c("rname", "longname", "apiname")[1])
@@ -19,7 +20,14 @@ a data.frame one row per indicator, one col per nametype and a column identifyin
 Get indicator names within a varlist like names_d
 }
 \details{
-Note names_d_friendly refers to the semi-long names to use in labels
+Note names_d_friendly refers to the semi-long names to use in labels.
+
+varlist2names() is a way to just get a vector of variable names even if the varlist is not stored as a separate data object
+and is only found in the map_headernames$varlist column:
+
+varlist2names(c('names_d', 'names_d_subgroups'))
+
+c(names_d, names_d_subgroups)
 }
 \examples{
  unique(map_headernames$varlist)
@@ -35,6 +43,6 @@ Note names_d_friendly refers to the semi-long names to use in labels
    c('varlist', 'r', 'api',   'names_friendly', 'longname'))
 }
 \seealso{
-\code{\link[=varin_map_headernames]{varin_map_headernames()}} \code{\link[=varinfo]{varinfo()}} \code{\link[=names_whichlist_multi_key]{names_whichlist_multi_key()}}
+\code{\link[=varin_map_headernames]{varin_map_headernames()}} \code{\link[=varinfo]{varinfo()}} \code{\link[=names_whichlist_multi_key]{names_whichlist_multi_key()}} \code{\link[=vnames]{vnames()}}
 }
 \keyword{internal}

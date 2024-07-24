@@ -126,7 +126,7 @@ testthat::test_that("ejamit can use fips=fips_counties_from_statename()", {
 ############################### # ############################### # ############################### # ############################### #
 
 
-# more tests for ejscreenit go here ? or in EJAMejscreenapi package?
+# more tests for ejscreenit go here ? 
 
 
 # # ***

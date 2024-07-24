@@ -419,7 +419,7 @@ app_server <- function(input, output, session) {
   
   # # Use a default initial template of lat lon values table ready for user to type into
   # # and then the module updates that reactive_data1 object as the user types
-  # latlon_template <- data.table(lat = 0, lon = 0, sitenumber = 1, sitename = "")  # default_points_shown_at_startup[1:2, ] # EJAMejscreenapi :: testpoints_5[1:2, ] # could  be put in global.R
+  # latlon_template <- data.table(lat = 0, lon = 0, sitenumber = 1, sitename = "")  # default_points_shown_at_startup[1:2, ] #  testpoints_5[1:2, ] # could  be put in global.R
   # reactive_data1 <-  reactiveVal(latlon_template)
   # ## or... try something like this:   Try to pass to module as param the last uploaded pts() ?
   # observe(
@@ -1337,7 +1337,7 @@ app_server <- function(input, output, session) {
   #
   #   # which sites have residents that might also be near others sites?
   #   # circles overlap if 2 facilities are twice the radius apart  # in miles
-  #   EJAMejscreenapi :: near_eachother(
+  #       distance_near_eachother(
   #     lon = data_uploaded()$lon,
   #     lat = data_uploaded()$lat,
   #     distance = 2 * input$bt_rad_buff
@@ -2030,7 +2030,7 @@ app_server <- function(input, output, session) {
     # 3) **batch.summarize()** on already processed data ####
     
     if (submitted_upload_method() == 'SHP') {
-      outsum <- EJAMbatch.summarizer::batch.summarize(
+      outsum <- batch.summarize(
         sitestats = data.frame(data_processed()$results_bysite %>%
                                  sf::st_drop_geometry()),
         
@@ -2044,7 +2044,7 @@ app_server <- function(input, output, session) {
         threshgroups = list(input$an_threshgroup1, input$an_threshgroup2) # list("EJ-US-or-ST", "Supp-US-or-ST")
       )
     } else {
-      outsum <- EJAMbatch.summarizer::batch.summarize(
+      outsum <- batch.summarize(
         sitestats = data.frame(data_processed()$results_bysite),
         
         # popstats =  data.frame(data_processed()$results_bysite), # batch.summarize no longer needs it passed
@@ -2733,7 +2733,7 @@ app_server <- function(input, output, session) {
     #          ejam_uniq_id = as.character(ejam_uniq_id)) %>%
     #   dplyr::select(dplyr::all_of(cols_to_select), ST)
     
-    # use data_summarized() that is from EJAMbatch.summarizer::batch.summarize()
+    # use data_summarized() that is from batch.summarize()
     batch.sum.cols = data_summarized()$cols
     batch.sum.cols[is.na(batch.sum.cols$pop), ] <- NA
     

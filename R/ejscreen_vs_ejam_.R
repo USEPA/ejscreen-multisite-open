@@ -846,7 +846,7 @@ if (1 == 0) {
   
   # WILL FIX: 
   
-  # ejscreenapi() outputs now differ from those names in testoutput_ejscreenapi_1pts_1miles - rebuild examples in EJAMejscreenapi pkg
+  # ejscreenapi() outputs now differ from those names in testoutput_ejscreenapi_1pts_1miles - rebuild examples for  ejscreenapi 
   setdiff2(names(x), names(testoutput_ejscreenapi_1pts_1miles))
   # ok in map_headernames
   # [1] "P_NHWHITE"      "P_NHBLACK"      "P_NHASIAN"      "P_NHAMERIND"    "P_NHHAWPAC"     "P_NHOTHER_RACE" "P_NHTWOMORE"    "TOTALPOP"      

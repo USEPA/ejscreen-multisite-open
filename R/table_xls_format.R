@@ -125,7 +125,7 @@ table_xls_format <- function(overall, eachsite, longnames=NULL, formatted=NULL, 
   }
   
   if (is.null(heatmap2_colnames)) {
-    heatmap2_colnames <- map_headernames$rname[grepl('ratio', map_headernames$varlist)] # from EJAMejscreenapi ::
+    heatmap2_colnames <- map_headernames$rname[grepl('ratio', map_headernames$varlist)] 
   }
   
   if (testing) {

@@ -54,7 +54,7 @@ from US block groups or people's bg scores)
   # x <- testoutput_ejscreenit_50$table # or
   x <- testoutput_ejscreenapi_plus_5
   myradius <- x$radius.miles[1]
-  boxplots_ratios(ratios_to_avg(x)$ratios_d, wheretext = myradius)
-  #boxplots_ratios(ratios_to_avg(x)$ratios_e, wheretext = myradius)
+  boxplots_ratios(calc_ratios_to_avg(x)$ratios_d, wheretext = myradius)
+  #boxplots_ratios(calc_ratios_to_avg(x)$ratios_e, wheretext = myradius)
 
 }

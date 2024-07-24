@@ -52,8 +52,3 @@ convert_units(1, 'mi', 'km')
 convert_units(c(1e6, 1), 'sqm', 'sqkm')
 
 }
-\seealso{
-\code{\link{get.distances.all}} which allows you to specify a search radius and
-get distances only within that radius, and related functions.
-}
-\concept{proximity}
