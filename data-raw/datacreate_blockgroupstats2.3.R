@@ -57,8 +57,7 @@ cat("Using this folder as local folder to save copies in: ", localfolder, "\n")
 # [5] "4_SCRIPT_ADD_PUERTORICO_DEMOG_SUBGROUPS.R"        "5_SCRIPT_merge_demogsubgroups_v2.1.R"            
 # [7] "6_SCRIPT_create_blockgroupstats.R"                "8_SCRIPT_make_MeansByGroup_and_Ratios_RRS.US22.R"
 # [9] "9_SCRIPT_PCTILELOOKUPS_READ-CSVS-MID-2022.R"      "NOTES_which_states_are_in_which_datasets.R"      
-# [11] "PINSURLTRY.R" 
-### and had also been info in a file here but that was moved:  EJAMejscreenapi/data-raw/update_to_ejscreenv2.2.R    
+# [11] "PINSURLTRY.R"     
 ############################################################################################ #
 
 # DOWNLOAD ZIP and CSV ####

@@ -214,7 +214,7 @@ custom_doaggregate <- function(sites2blocks,
   
   #################### #
   ## wtd means
- 
+ ####   see drafted  calc_wtdmeans()
   # wtcols -- easier to just assume it is pop, but will need other denominators 
   
   ################################################################################################################ #

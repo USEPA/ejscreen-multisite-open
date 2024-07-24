@@ -57,7 +57,7 @@
 #'   Puts certain columns first.
 #'   
 #' @param results_table from ejscreenapi() function for example
-#' @seealso [url_ejscreenmap()] [near_eachother()]
+#' @seealso [url_ejscreenmap()] [distance_near_eachother()]
 #' @return the input table but with extra columns
 #' 
 #' @keywords internal
@@ -106,7 +106,7 @@ urls_clusters_and_sort_cols <- function(results_table) {
   # Add column to flag sites that are near each other ####
   #
   # want this to reflect radius in this data run, not whatever user may have just changed it to for the next run, so do not use is_clustered()
-  results_table$overlaps_another <- near_eachother(lon = results_table$lon, lat = results_table$lat, 
+  results_table$overlaps_another <- distance_near_eachother(lon = results_table$lon, lat = results_table$lat, 
                                                    distance = 2 * results_table$distance) # not radius_miles() !
   
   ########################################### #  
@@ -198,7 +198,7 @@ url_ejscreen_report <- function(lon='', lat='', radius='', as_html=FALSE, linkte
     fips <- areaid
     
     fipstype_copy <- function(fips) {
-      fips <- fips_lead_zero.api(fips = fips) # could use EJAM ::: fips_lead_zero
+      fips <- fips_lead_zero(fips = fips) # could use EJAM ::: fips_lead_zero
       ftype <- rep(NA, length(fips))
       ftype[nchar(fips) == 15] <- "block"
       ftype[nchar(fips) == 12] <- "blockgroup"

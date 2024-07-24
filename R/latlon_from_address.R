@@ -176,8 +176,7 @@ address_from_table_goodnames <- function(x, colnames_allowed = c('address', 'str
 #'   # fname = system.file("testdata/address/street_address_9.xlsx", package="EJAM")
 #'
 #' #x1 <- read_csv_or_xl(fname)
-#' #x2 <- latlon_any_format(fname)
-#' #x3 <- latlon_from_anything(fname)
+#' #x2 <- latlon_from_anything(fname)
 #' #names(x1)
 #' #names(x2)
 #'

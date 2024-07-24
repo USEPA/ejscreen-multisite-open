@@ -42,11 +42,16 @@ if (!exists("fpath")) {
   map_headernames <- datacreate_map_headernames(fpath)
 }
 
+# patch to fill in some missing info, used by batch.summarize()
+# but should make names_r_all more complete
+map_headernames$calculation_type[map_headernames$rname %in% setdiff(map_headernames$rname[calctype(map_headernames$rname) == "sum of counts"], names_all_r[calctype(names_all_r) == "sum of counts"])] <- "sum of counts"
+
+
 map_headernames <- metadata_add(map_headernames)
 usethis::use_data(map_headernames, overwrite = TRUE)
 
 rm(datacreate_map_headernames)
-
+rm(y)
 cat("FINISHED A SCRIPT\n")
 cat("\n In globalenv() so far: \n\n")
 print(ls())
@@ -108,7 +113,7 @@ if (1 == 0) {
 
 ###################################################################### #
 #  COMPARE EJAM friendly names stored in namez or lists like names_d_friendly 
-#  versus  the friendly names stored in EJAMejscreenapi map_headernames  and xlsx that creates it ####
+#  versus  the friendly names stored in  map_headernames  and xlsx that creates it ####
 
 stop('this is a script')
 ## requires EJAM package to refer to namez
@@ -164,3 +169,10 @@ save(reconcile_friendly_names, file = "reconcile_friendly_names.rda")
 write.csv(reconcile_friendly_names, file = "reconcile_friendly_names.csv", row.names = F)
 
 }
+
+# # which sources provide which variables or indicators? 
+# #
+# some = unique(map_headernames$rname[map_headernames$varlist != "" & map_headernames$varlist != "x_anyother"])
+# info = varinfo(some, info = c('api', 'csv', 'acs', 'varlist'))
+# info[nchar(paste0(info$api, info$csv, info$acs)) > 0, ]
+# 

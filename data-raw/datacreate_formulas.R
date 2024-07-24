@@ -29,7 +29,7 @@
 # countcols ####
   
 # countcols = "pop"
-countcols <- names_all_r[calctype(names_all_r) %in%  "sum of counts"]
+countcols <- intersect(names_all_r[calctype(names_all_r) %in%  "sum of counts"], names(blockgroupstats))
   
 # wtdmeancols ####
 
@@ -38,7 +38,7 @@ countcols <- names_all_r[calctype(names_all_r) %in%  "sum of counts"]
 # ## OTHER-WEIGHTED
 # y = map_headernames$rname[map_headernames$calculation_type == "wtdmean" & map_headernames$denominator != "pop"]
 
-wtdmeancols <- names_all_r[calctype(names_all_r) %in%  c("wtdmean")]
+wtdmeancols <- intersect(names_all_r[calctype(names_all_r) %in%  c("wtdmean")], names(blockgroupstats))
 
 ## Define weights (denominators) ####
 

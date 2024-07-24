@@ -353,9 +353,9 @@ fill_tbl_full_subgroups <- function(output_df) {
   
   full_html <- paste(full_html, tbl_head3, collapse = '\n')
   
-  var_values_d_lim <- c("pctspanish_li", "pctie_li", "pctapi_li", "pctother_li")
+  var_values_d_lim <- intersect(names_d_language, names(blockgroupstats))  
+ # names_d_language_li
   var_names_d_lim <- fixcolnames(var_values_d_lim, 'r', 'short')
-  # c('Speak Spanish', 'Speak Other Indo-European Languages','Speak Asian-Pacific Island Languages', 'Speak Other Languages')
   
   tbl_rows_d_lim <- sapply(seq_along(var_values_d_lim), function(x) {
     fill_tbl_row_subgroups(output_df,

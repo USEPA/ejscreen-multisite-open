@@ -62,12 +62,6 @@ tested and released over time.
 - [4. Advanced Features in the EJAM R
   package](https://usepa.github.io/EJAM/articles/4_advanced.html)
 
-- [5. Accessing a Batch of EJScreen Reports via
-  EJAM](https://usepa.github.io/EJAM/articles/5_ejscreenapi.html)
-
-- [6. Future Plans for
-  EJAM](https://usepa.github.io/EJAM/articles/6_future_plans.html)
-
 - [Reference Manual Documenting all EJAM Package Functions and
   Data](https://usepa.github.io/EJAM/articles/index.html)
 

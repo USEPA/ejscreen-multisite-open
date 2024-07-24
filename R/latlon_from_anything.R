@@ -34,6 +34,9 @@
 #'   File or data.frame/data.table/matrix must have columns called lat and lon, or names that can
 #'   be inferred to be that by latlon_infer()
 #' @param lon_if_used If anything parameter is a vector of longitudes, lon_if_used must be the latitudes. Ignored otherwise.
+#' @param interactiveprompt If TRUE (default) and in interactive mode not running shiny,
+#'    will prompt user for file if "anything" is missing.
+#'    
 #' @seealso [sitepoints_from_any()] which is like this but also adds ejam_uniq_id column, 
 #'   and see [read_csv_or_xl()] and [latlon_df_clean()]
 #' @return A data.frame that has at least columns lon and lat (and others if they were in anything),
@@ -56,24 +59,31 @@
 #'  latlon_from_anything(pts)
 #'  }
 #'   
-#' @aliases latlon_any_format
 #'
 #' @export
 #'
-latlon_from_anything <- function(anything, lon_if_used) {
-  x <- anything
-  # y <- lon_if_used
-  if (missing(x) || is.null(x) || all(length(x) == 0) || "" %in% x) {
-    if (interactive() && !shiny::isRunning()) {
-      x <- rstudioapi::selectFile(caption = "Select xlsx or csv with lat,lon values", path = '.' ) 
+latlon_from_anything <- function(anything, lon_if_used, interactiveprompt = TRUE) {
+  
+
+  if (missing(anything) || is.null(anything) || all(length(anything) == 0) || "" %in% anything) {
+    if (interactive() && !shiny::isRunning() && interactiveprompt) {
+      
+      if (!rstudioapi::isAvailable()) {
+        x <- file.choose()
+        # if somehow the user is interactive like in R console NOT using RStudio  
       } else {
+        x <- rstudioapi::selectFile(caption = "Select xlsx or csv with lat,lon values", path = '.' )  
+      } 
+    } else {
       if (shiny::isRunning()) {
         warning("file path/name needed but not provided")
         return(NULL)
       } else {
-        stop("file path/name needed but not provided")
+        stop("file path/name needed in latlon_from_anything(), but not provided")
       }
-    }}
+    }} else {
+      x <- anything
+    }
   
   # figure out if x is a filename or data.table or data.frame
   # of lat, lon values, and clean it up for use.
@@ -88,7 +98,7 @@ latlon_from_anything <- function(anything, lon_if_used) {
       # the grepl to check for comma is to make sure it is not a single csv like "30,-100"
       # seems to be a file name with path, so read it
       if (file.exists(x)) {
-        pts <- read_csv_or_xl(x) # from EJAMejscreenapi ::
+        pts <- read_csv_or_xl(x) 
       } else {
         if (shiny::isRunning()) {
           warning(paste0(x, ' is not a filepath/name that exists, and otherwise must be a vector of latitudes or a table of points'))
@@ -150,7 +160,9 @@ latlon_from_anything <- function(anything, lon_if_used) {
 #' @inherit latlon_from_anything
 #' @return A data.frame that has at least columns lon and lat (and others if they were in x)
 #' @export
+#' @keywords internal
 #'
-latlon_any_format <- latlon_from_anything
-
+latlon_any_format <- function(anything, lon_if_used, interactiveprompt = TRUE) {
+  latlon_from_anything(anything = anything, lon_if_used = lon_if_used, interactiveprompt = interactiveprompt)
+}
 ########################################################### #

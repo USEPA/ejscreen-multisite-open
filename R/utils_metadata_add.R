@@ -54,8 +54,9 @@ metadata_add <- function(x) {
 #'   but it is not coded to be able to check attributes without doing that.
 #' 
 #' @param packages Optional. e.g. 'EJAMejscreendata', or can be a vector of character strings, 
-#'   and if not specified, default is to report on all packages with EJ as part of their name, 
-#'   like EJAMejscreenapi
+#'   and if not specified, default is to report on EJAM::ejampackages.
+#'   If set to NULL, it only reports on objects already attached.
+#'   
 #' @param which Optional vector (not list) of strings, the attributes. 
 #'   Default is some typical ones used in EJAM-related packages currently.
 #' @param datasets optional, "all" means all data objects exported.
@@ -65,6 +66,9 @@ metadata_add <- function(x) {
 #' @param loadifnotloaded Optional to control if func should temporarily attach packages not already loaded.
 #' @seealso [functions_in_pkg()]
 #' @examples 
+#'   # tail(metadata_check( ))
+#'   metadata_check(packages = NULL)
+#'   
 #'   x <- metadata_check("EJAM")
 #'   x[x$has_metadata == TRUE, ]
 #'   table(x$has_metadata)
@@ -82,6 +86,7 @@ metadata_check <- function(packages = EJAM::ejampackages,
                              "acs_version",
                              "census_version"
                            ),
+                           grepdatasets = FALSE,
                            loadifnotloaded = TRUE) {
   
   # ejscreen_version =  '2.3',
@@ -99,14 +104,39 @@ metadata_check <- function(packages = EJAM::ejampackages,
     }
     if (dates_as_text && "Date" %in% class(attribute1)) {attribute1 <- as.character(attribute1)}
     return(attribute1)
-    }
-  ################################# # 
-  if (is.null(packages) || length(packages) == 0) {
-    # if null or empty is specified, report on all packages with EJ as part of their name, like EJAMejscreenapi.
-    packages <- grep(pattern = 'EJ', ignore.case = TRUE, x = installed.packages(fields = 'Package'), value = TRUE)
-    packages <- unique(packages[!grepl(",", packages)])
   }
-  
+  ########################################### #   ########################################### # 
+  if (is.null(packages) || length(packages) == 0) {
+    # if null or empty is specified, report on attached objects not what is in packages.
+    
+    if (datasets[1] == "all") {
+      datasets <- ls(envir = globalenv())
+    } else {
+      if (grepdatasets) {
+        datasets <- grep(datasets, ls(envir = globalenv()), ignore.case = TRUE, value = TRUE)
+      } else {
+        if (!(all(datasets %in% ls(envir = globalenv())))) {warning("Showing only the datasets found - some were not in globalenv()")}
+        datasets <- datasets[datasets %in% ls(envir = globalenv())]
+      }
+    }
+    # print(datasets); print('are the specified objects that were found in ls()')
+    results <- data.frame(package = NA, 
+                          item = datasets, 
+                          matrix(NA, ncol = length(which), nrow = length(datasets)),
+                          has_metadata = NA) 
+    colnames(results) <- c("package", 
+                           "item",
+                           which, 
+                           "has_metadata")
+    for (dn in seq_along(datasets)) {
+      whichall <- attributes(get(datasets[dn]))
+      whichfound <- intersect(which, names(whichall))
+      results[results$item == datasets[dn], whichfound]                <- unlist(whichall[whichfound])
+      results[results$item == datasets[dn], "has_metadata"] <- any(!is.na(unlist(whichall[whichfound])))
+    }
+    return(results)
+  }
+  ########################################### #   ########################################### # 
   allresults <- list()
   ii <- 0
   for (pkg in packages) {
@@ -116,7 +146,7 @@ metadata_check <- function(packages = EJAM::ejampackages,
       cat(paste0(pkg, ' package not installed\n'))
       # packages <- packages[packages != pkg]
       # return a 1row data.frame with NA values, using the attributes listed in which as the colnames:
-
+      
       results <- which; names(results) <- results; results[] <- NA
       next
     }
@@ -127,16 +157,22 @@ metadata_check <- function(packages = EJAM::ejampackages,
     # EJAM:::functions_in_pkg(pkg = pkg, internal_included = TRUE, exportedfuncs_included = TRUE, data_included = TRUE)
     ## and
     # rdafiles <- datapack(pkg = pkg)$Item  # same thing as data(package = pkg)$results[ , "Item"]
+    
+    ## see also EJAM ::: #  datapack()
+    # were_attached <- .packages() 
+    # were_loaded <- loadedNamespaces()
+    
     rdafiles <- data(package = pkg)$results[ , "Item"]
     
     if (datasets[1] != "all") {
       if (grepdatasets) {
-        rdafiles <- rdafiles[grepl(datasets, rdafiles, ignore.case = TRUE)]
+        rdafiles <- grep(datasets, rdafiles, ignore.case = TRUE, value = TRUE)
       } else {
         if (!(all(datasets %in% rdafiles))) {warning("not all specified datasets were found")}
-        rdafiles = datasets[datasets %in% rdafiles]
+        rdafiles <- datasets[datasets %in% rdafiles]
       }
     }
+    
     if (!isNamespaceLoaded(pkg) & loadifnotloaded) {
       wasnotloaded <- pkg
       cat(paste0(pkg, ' package was not loaded, loading and attaching now\n'))
@@ -146,23 +182,18 @@ metadata_check <- function(packages = EJAM::ejampackages,
     }
     ############################################### # 
     
-    if (length(which) == 1) {
+    if (length(which) == 1) {    # this case was not working yet
+      
       results <- cbind(sapply(rdafiles, FUN = get1attribute, which))
-
       colnames(results) <- which
+      
       results$has_metadata <- FALSE
       rownames(results) <- "package not installed"
       allresults[[ii]] <- results
       allresults[[ii]] <- data.frame(package = pkg, item = rownames(results), allresults[[ii]])
       rownames(allresults[[ii]]) <- NULL
+      
     } else {
-      
-      rdafiles <- data(package = pkg)
-      rdafiles <- rdafiles$results[ , 'Item']
-      
-      ## see also EJAM ::: #  datapack()
-      # were_attached <- .packages() 
-      # were_loaded <- loadedNamespaces()
       
       if (!isNamespaceLoaded(pkg) & loadifnotloaded) {
         wasnotloaded <- pkg
@@ -173,9 +204,12 @@ metadata_check <- function(packages = EJAM::ejampackages,
       }
       
       if (length(which) == 1) {
+        
         results <- cbind(sapply(rdafiles, FUN = get1attribute, which, dates_as_text = TRUE))
         colnames(results) <- which
+        
       } else {
+        
         results <- list()
         for (i in 1:length(which)) {
           results[[i]] <- cbind(sapply(rdafiles, FUN = get1attribute, which[i], dates_as_text = TRUE))
@@ -187,19 +221,19 @@ metadata_check <- function(packages = EJAM::ejampackages,
       if (!is.null(wasnotloaded)) {
         unloadNamespace(asNamespace(wasnotloaded))
       }
-    
-    allresults[[ii]] <- results
-
-    some <- as.vector(apply(allresults[[ii]], 1, function(z) !all(is.na(z))))
-    allresults[[ii]] <- cbind(allresults[[ii]], has_metadata = FALSE)
-    allresults[[ii]][some, "has_metadata"] <- TRUE
-    allresults[[ii]] <- data.frame(package = pkg, item = rownames(allresults[[ii]]), allresults[[ii]])
-    rownames(allresults[[ii]]) <- NULL
+      
+      allresults[[ii]] <- results
+      
+      some <- as.vector(apply(allresults[[ii]], 1, function(z) !all(is.na(z))))
+      allresults[[ii]] <- cbind(allresults[[ii]], has_metadata = FALSE)
+      allresults[[ii]][some, "has_metadata"] <- TRUE
+      allresults[[ii]] <- data.frame(package = pkg, item = rownames(allresults[[ii]]), allresults[[ii]])
+      rownames(allresults[[ii]]) <- NULL
     }
   }
   
   names(allresults) <- packages
-
+  
   cat(
     '\n 
 Also see  
@@ -215,7 +249,7 @@ Also see \n
   
   # replace the NULL values with NA values,
   # and make each column just a vector instead of a list
-
+  
   allresults <- do.call(rbind, allresults)
   
   for (mycol in 1:NCOL(allresults)) {
