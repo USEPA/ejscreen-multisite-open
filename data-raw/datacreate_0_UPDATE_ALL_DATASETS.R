@@ -70,15 +70,81 @@ load_all()
 ## & when to use each 
 
 fnames <- dir(rawdir, pattern = 'datacreate_')
-cat('\n ')
-cat("\n\n", "To open & edit one of the datacreate_ files,
-    you can source a line below\n\n",
-    paste0(paste0(
-      "\t documentOpen('", rawdir, "/", fnames, "')"), collapse = "\n"))
-
+# cat("\n \n\n", "To open & edit one of the datacreate_ files,
+#     you can source a line below\n\n",
+#     paste0(paste0(
+#       "\t documentOpen('", rawdir, "/", fnames, "')"), collapse = "\n"))
 if (0 == 1) {
+          ####   THESE ARE SORTED INTO GROUPS THAT GO TOGETHER : 
+  x <- c("datacreate_0_UPDATE_ALL_DATASETS.R", "datacreate_0_UPDATE_ALL_DOCUMENTATION_pkgdown.R",
+    "datacreate_map_headernames.R", "datacreate_names_of_indicators.R", "datacreate_names_pct_as_fraction.R", "datacreate_metadata4pins.R", "datacreate_blockgroupstats2.3.R", "datacreate_blockgroupstats2.3_add_d_acs22columns.R", "datacreate_usastats2.3.R", "datacreate_usastats2.3_add_dsubgroups.R", "datacreate_avg.in.us.R", "datacreate_high_pctiles_tied_with_min.R", "datacreate_formulas.R", "datacreate_test_address.R", "datacreate_testpoints_testoutputs.R", 
+    "datacreate_default_points_shown_at_startup.R", "datacreate_testpoints_5_50_500.R", "datacreate_ejscreenRESTbroker2table_na_filler.R", "datacreate_testoutput_ejscreenit_or_ejscreenapi_plus_50.R",
+    "datacreate_blockwts.R", "datacreate_bg_cenpop2020.R", "datacreate_bgpts.R", "datacreate_states_shapefile.R", "datacreate_stateinfo.R", "datacreate_stateinfo2.R", "datacreate_islandareas.R", "datacreate_censusplaces.R", 
+    "datacreate_frs_.R", "datacreate_frs_by_mact.R", "datacreate_frs_by_sic.R", "datacreate_frsprogramcodes.R", "datacreate_epa_programs.R", "datacreate_testids_program_sys_id.R", "datacreate_testids_registry_id.R", "datacreate_naics_counts.R", "datacreate_naicstable.R", "datacreate_SIC.R", "datacreate_sic_counts.R", "datacreate_sictable.R", 
+    "datacreate_lat_alias.R", "datacreate_ejampackages.R", "datacreate_meters_per_mile.R"
+    )
+  setdiff(x, dir(rawdir, pattern = 'datacreate_') )
+  setdiff( dir(rawdir, pattern = 'datacreate_'), x )
+  cat("\n \n\n", "To open & edit one of the datacreate_ files,
+    you can source a line below\n\n",
+      paste0(paste0(
+        "\t documentOpen('", rawdir, "/", x, "')"), collapse = "\n"))
+  # cbind(x)
+  # [1,] "datacreate_0_UPDATE_ALL_DATASETS.R"                       
+  # [2,] "datacreate_0_UPDATE_ALL_DOCUMENTATION_pkgdown.R"  
   
-  # with annual ejscreen data updates
+  # [3,] "datacreate_map_headernames.R"                             
+  # [4,] "datacreate_names_of_indicators.R"                         
+  # [5,] "datacreate_names_pct_as_fraction.R"                       
+  # [6,] "datacreate_metadata4pins.R"                               
+  # [7,] "datacreate_blockgroupstats2.3.R"                          
+  # [8,] "datacreate_blockgroupstats2.3_add_d_acs22columns.R"       
+  # [9,] "datacreate_usastats2.3.R"                                 
+  # [10,] "datacreate_usastats2.3_add_dsubgroups.R"                  
+  # [11,] "datacreate_avg.in.us.R"                                   
+  # [12,] "datacreate_high_pctiles_tied_with_min.R"                  
+  # [13,] "datacreate_formulas.R"                                    
+  # [14,] "datacreate_test_address.R"                    
+  # [15,] "datacreate_testpoints_testoutputs.R"                      
+  
+  # [16,] "datacreate_default_points_shown_at_startup.R"      
+  # [17,] "datacreate_testpoints_5_50_500.R"             
+  # [18,] "datacreate_ejscreenRESTbroker2table_na_filler.R"          
+  # [19,] "datacreate_testoutput_ejscreenit_or_ejscreenapi_plus_50.R"
+  
+  # [20,] "datacreate_blockwts.R"                                    
+  # [21,] "datacreate_bg_cenpop2020.R"                               
+  # [22,] "datacreate_bgpts.R"                                       
+  # [23,] "datacreate_states_shapefile.R"                            
+  # [24,] "datacreate_stateinfo.R"                                   
+  # [25,] "datacreate_stateinfo2.R"                                  
+  # [26,] "datacreate_islandareas.R"                                 
+  # [27,] "datacreate_censusplaces.R"          
+  
+  # [28,] "datacreate_frs_.R"                                        
+  # [29,] "datacreate_frs_by_mact.R"                                 
+  # [30,] "datacreate_frs_by_sic.R"                                  
+  # [31,] "datacreate_frsprogramcodes.R"                             
+  # [32,] "datacreate_epa_programs.R"                                
+  # [33,] "datacreate_testids_program_sys_id.R"                      
+  # [34,] "datacreate_testids_registry_id.R"                         
+  # [35,] "datacreate_naics_counts.R"                                
+  # [36,] "datacreate_naicstable.R"                                  
+  # [37,] "datacreate_SIC.R"                                         
+  # [38,] "datacreate_sic_counts.R"                                  
+  # [39,] "datacreate_sictable.R"             
+  
+  # [40,] "datacreate_lat_alias.R"                                   
+  # [41,] "datacreate_ejampackages.R"                                
+  # [42,] "datacreate_meters_per_mile.R"                                                      
+
+  
+####################################### # 
+  # overall
+  documentOpen('./data-raw/datacreate_0_UPDATE_ALL_DATASETS.R')
+  documentOpen('./data-raw/datacreate_0_UPDATE_ALL_DOCUMENTATION_pkgdown.R')
+
+    # with annual ejscreen data updates
   # 
   ##  new indicators, variable names
   documentOpen('./data-raw/datacreate_map_headernames.R')       # ok
@@ -96,8 +162,13 @@ if (0 == 1) {
   documentOpen('./data-raw/datacreate_high_pctiles_tied_with_min.R')  # ok
   ##  calculations and examples of outputs
   documentOpen('./data-raw/datacreate_formulas.R')                    # was in progress; maybe not used yet
-  documentOpen('./data-raw/datacreate_testpoints_testoutputs.R')      # confirm new datasets/functions/indicators work here
   documentOpen('./data-raw/datacreate_test_address.R')       # ok
+  documentOpen('./data-raw/datacreate_testpoints_testoutputs.R')      # confirm new datasets/functions/indicators work here
+  # from the original  EJAMejscreenapi  package
+  documentOpen('./data-raw/datacreate_default_points_shown_at_startup.R')            
+  documentOpen('./data-raw/datacreate_testpoints_5_50_500.R')            
+  documentOpen('./data-raw/datacreate_ejscreenRESTbroker2table_na_filler.R')         
+  documentOpen('./data-raw/datacreate_testoutput_ejscreenit_or_ejscreenapi_plus_50.R')
   
   # when census fips codes or boundaries change (& ejscreen updates accordingly)
   #
@@ -181,6 +252,7 @@ if (!is.null(x)) {
     message("Expected to see on pin board but not there: ", paste0(setdiff(pin_expected, pin_seen), collapse = ", "))
     message("Seeon on pin board but not expected: ", paste0(setdiff(pin_seen, pin_expected), collapse = ", "))
   }
+  rm(pin_seen, pin_expected, x)
 }
 ######################################### ########################################## #
 ######################################### ########################################## #
@@ -286,10 +358,6 @@ load_all()
 ### datacreate_test_address.R #### 
 # rstudioapi::documentOpen('./data-raw/datacreate_test_address.R')  
 source_maybe("datacreate_test_address.R")
-######################################### #
-### datacreate_testids_program_sys_id.R ####
-# documentOpen('./data-raw/datacreate_testids_program_sys_id.R')  # 
-source_maybe("datacreate_testids_program_sys_id.R")
 
 
 
@@ -320,15 +388,18 @@ source_maybe("datacreate_testpoints_testoutputs.R")
 # ~------------------------------------------- ####
 ## Formerly in EJAMejscreenapi package ####
 ######################################### #
+
 ### datacreate_default_points_shown_at_startup.R ####
 source_maybe('datacreate_default_points_shown_at_startup.R')
-### datacreate_ejscreenRESTbroker2table_na_filler.R ####
-source_maybe('datacreate_ejscreenRESTbroker2table_na_filler.R')
-### datacreate_testoutput_ejscreenit_or_ejscreenapi_plus_50.R  ####
-source_maybe('datacreate_testoutput_ejscreenit_or_ejscreenapi_plus_50.R')
 ### datacreate_testpoints_5_50_500.R ####
 source_maybe('datacreate_testpoints_5_50_500.R')
 
+### datacreate_ejscreenRESTbroker2table_na_filler.R ####
+# rstudioapi::documentOpen("./data-raw/datacreate_ejscreenRESTbroker2table_na_filler.R")
+source_maybe('datacreate_ejscreenRESTbroker2table_na_filler.R')
+### datacreate_testoutput_ejscreenit_or_ejscreenapi_plus_50.R  ####
+# rstudioapi::documentOpen("./data-raw/datacreate_testoutput_ejscreenit_or_ejscreenapi_plus_50.R")
+source_maybe('datacreate_testoutput_ejscreenit_or_ejscreenapi_plus_50.R')
 
 ######################################### ########################################## #
 
@@ -433,6 +504,7 @@ source_maybe("datacreate_frs_.R", DOIT = FALSE, folder = rawdir)
 ### datacreate_frsprogramcodes.R ####
 # documentOpen('./data-raw/datacreate_frsprogramcodes.R') #
 source_maybe('datacreate_frsprogramcodes.R')
+
 ### datacreate_epa_programs.R ####
 # documentOpen('./data-raw/datacreate_epa_programs.R')    #
 source_maybe('datacreate_epa_programs.R')
@@ -440,6 +512,7 @@ source_maybe('datacreate_epa_programs.R')
 ### datacreate_testids_program_sys_id.R ####
 # documentOpen('./data-raw/datacreate_testids_program_sys_id.R')  # 
 source_maybe('datacreate_testids_program_sys_id.R')
+
 ### datacreate_testids_registry_id.R ####
 # documentOpen('./data-raw/datacreate_testids_registry_id.R')     #
 source_maybe('datacreate_testids_registry_id.R')
@@ -470,8 +543,21 @@ source_maybe('datacreate_sic_counts.R')
 ### datacreate_sictable.R ####
 # documentOpen('./data-raw/datacreate_sictable.R')
 source_maybe('datacreate_sictable.R')
-
 ######################################### ########################################## #
+
+# misc ####
+# probably do not need to update these often or ever, but ok to do so
+######################################### #
+### datacreate_latalias.R ####
+source_maybe('datacreate_latalias.R')
+######################################### #
+### datacreate_ejampackages.R ####
+source_maybe('datacreate_ejampackages.R')
+######################################### #
+### datacreate_meters_per_mile.R ####
+# documentOpen('./data-raw/datacreate_meters_per_mile.R')
+source_maybe("datacreate_meters_per_mile.R")
+######################################### # 
 
 ######################################### #
 ######################################### #
@@ -555,17 +641,6 @@ datawrite_to_pins() # it will ask interactively to confirm which ones among defa
 ######################################### #
 ######################################### #
 # ~------------------------------------------- ####
-########################################## #
-# misc ####
-# probably do not need to update these often or ever, but ok to do so
-######################################### #
-### datacreate_ejampackages.R ####
-source_maybe('datacreate_ejampackages.R')
-######################################### #
-### datacreate_meters_per_mile.R ####
-# documentOpen('./data-raw/datacreate_meters_per_mile.R')
-source_maybe("datacreate_meters_per_mile.R")
-######################################### # 
 # ~ ####
 # CLEANUP - Remove most objects ####
 

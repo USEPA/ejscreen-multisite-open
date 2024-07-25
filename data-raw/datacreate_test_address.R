@@ -70,7 +70,7 @@ test_address_table_withfull <- data.frame(Address = test_addresses2, test_addres
 
 ##################### #
 
-# EJAM ::: metadata_add
+# metadata ####
 
 test_address_parts1          = metadata_add(test_address_parts1)
 test_addresses2              = metadata_add(test_addresses2)
@@ -81,6 +81,8 @@ test_addresses_9             = metadata_add(test_addresses_9)
 test_address_table           = metadata_add(test_address_table)
 test_address_table_goodnames = metadata_add(test_address_table_goodnames)
 test_address_table_withfull  = metadata_add(test_address_table_withfull)
+
+# use_data ####
 
 usethis::use_data(
   
@@ -98,10 +100,23 @@ usethis::use_data(
 
 ##################### #
 
-writexl::write_xlsx(test_address_table_9,         "./inst/testdata/address/test_address_table_9.xlsx")
+# write.xlsx ####
 
-writexl::write_xlsx(test_address_table,           "./inst/testdata/address/test_address_table.xlsx")
-writexl::write_xlsx(test_address_table_goodnames, "./inst/testdata/address/test_address_table_goodnames.xlsx")
-writexl::write_xlsx(test_address_table_withfull,  "./inst/testdata/address/test_address_table_withfull.xlsx")
+# use openxlsx::write.xlsx() instead of writexl package function called write_xlsx()
+# writexl is zero dependency package for writing xlsx files that is light weight,
+# but we already have imported openxlsx package to use more features like formatting it offers for xlsx download in app,
+# so may as well just use that to write xlsx and maybe can avoid dependency on writexl.
+
+savex <-  function(x, folder = "./inst/testdata", fname = "example.xlsx")  {
+  if (!dir.exists(folder)) {stop("tried to save .xlsx but folder does not exist: ", folder)}
+  fpath <- file.path(folder, fname)
+  openxlsx::write.xlsx(x, file = fpath, overwrite = TRUE)
+  if (!file.exists(fpath)) {stop("tried but could not save ", fpath)} else {cat("saved ", fpath, "\n")}
+}
+
+savex(test_address_table_9,         "./inst/testdata/address", "test_address_table_9.xlsx")
+savex(test_address_table,           "./inst/testdata/address", "test_address_table.xlsx")
+savex(test_address_table_goodnames, "./inst/testdata/address", "test_address_table_goodnames.xlsx")
+savex(test_address_table_withfull,  "./inst/testdata/address", "test_address_table_withfull.xlsx")
 
 ##################### #
